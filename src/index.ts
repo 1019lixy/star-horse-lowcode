@@ -1,3 +1,6 @@
+// 在文件最顶部添加以下代码
+import 'core-js/stable'
+import 'regenerator-runtime/runtime'
 import {App, defineAsyncComponent} from "vue";
 import piniaInstance from "@/store";
 import '@/assets/css/index.scss';
@@ -8,6 +11,7 @@ export * from "@/api/system.ts";
 export * from "@/api/user_func.ts";
 const items = import.meta.glob([
     "@/components/comp/*.vue",
+    "@/components/system/*.vue",
     "@/components/formcomp/items/*.vue",
     "@/components/formcomp/container/*.vue",
 ]);

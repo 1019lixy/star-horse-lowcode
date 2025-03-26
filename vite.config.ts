@@ -13,6 +13,7 @@ import AutoImport from "unplugin-auto-import/vite";
 import {visualizer} from "rollup-plugin-visualizer";
 //此插件是处理外部依赖 比如cdn引入的js
 import tailwindcss from "@tailwindcss/vite";
+import {viteStaticCopy} from 'vite-plugin-static-copy'
 
 const codeHost: string = "http://192.168.20.165:8888/";
 // const codeHost:string = "http://localhost:8888/"
@@ -171,6 +172,14 @@ export default defineConfig((mode) => {
                 resolvers: [ElementPlusResolver({importStyle: "sass"})]
             }),
             progress(),
+            viteStaticCopy({
+                targets: [
+                    {
+                        src: 'src/icons/**/*',  // 需要复制的图标路径
+                        dest: 'assets/icons'    // 输出到 dist/assets/icons
+                    }
+                ]
+            }),
             topLevelAwait(),
             // viteCommonjs(),
             vueJsx({}),
@@ -182,19 +191,11 @@ export default defineConfig((mode) => {
             }),
             createSvgIconsPlugin({
                 iconDirs: [resolve(process.cwd(), "src/icons"), resolve(process.cwd(), "src/assets/icons/svg")],
-                symbolId: "icon-[dir]-[name]"
+                symbolId: "icon-[dir]-[name]",
+                svgoOptions: true,
+                inject: 'body-first',
+                customDomId: '__svg__icons__dom__'
             }),
-            // monacoEditorPlugin({ languageWorkers: ['editorWorkerService', 'typescript', 'json', 'html']}),
-            //开启gzip,后端nginx 需要 gzip_static设置为on
-            /* viteCompression({
-                       //生成压缩包gz
-                       verbose: true,
-                       disable: false,
-                       threshold: 10240,
-                       algorithm: 'gzip',
-                       deleteOriginFile: true,
-                       ext: '.gz',
-                   }),*/
             visualizer({
                 open: false, // 构建完成后自动打开分析页面
                 gzipSize: true,
@@ -220,8 +221,9 @@ export default defineConfig((mode) => {
         build: {
             //  告诉打包工具 "vue-demi" 也是外部依赖项
             rollupOptions: {
-                external: ["vue",'pinia'],
+                external: ["vue", 'pinia', 'core-js', 'regenerator-runtime'],
                 output: {
+                    assetFileNames: 'assets/[name][extname]', // 修正资源输出路径
                     // 禁用代码分割
                     inlineDynamicImports: true,
                     // 合并所有chunk到单个文件
