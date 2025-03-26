@@ -13,7 +13,7 @@ export const useButtonPermissionStore = defineStore("buttonPermission", () => {
     const currentPermission = ref<any>({});
 
     const addRoute = async (route: RouteLocationNormalized) => {
-        const meta: any = route.meta;
+        const meta: any = route?.meta;
         return await getPagePermission(meta?.menuId);
     };
     /**

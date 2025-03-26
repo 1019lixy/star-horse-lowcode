@@ -77,7 +77,9 @@ const props = defineProps({
   //全局配置，动态页面使用
   globalConfig: {type: Object as PropType<any>, required: false},
   //是否动态页面
-  isDynamic: {type: Boolean, default: false}
+  isDynamic: {type: Boolean, default: false},
+  //按钮权限
+  btnPermissions: {type: Object as PropType<any>, required: false},
 });
 const emits = defineEmits(["selectItem"]);
 let route = useRoute();
@@ -196,7 +198,11 @@ const permissionList = () => {
   return permissions.value;
 };
 const init = async () => {
-  permissions.value = await pagePermission.addRoute(route);
+  if (props.btnPermissions) {
+    permissions.value = props.btnPermissions;
+  } else {
+    permissions.value = await pagePermission.addRoute(route);
+  }
   //拿到别人共享的信息
   let resultData = await loadData("/system-config/system/dataPermission/currentMenuPermissionPerson", {});
   commonPersons.value = resultData.data;

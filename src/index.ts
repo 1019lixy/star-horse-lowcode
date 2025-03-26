@@ -1,6 +1,7 @@
 import {App, defineAsyncComponent} from "vue";
 import piniaInstance from "@/store";
 import '@/assets/css/index.scss';
+
 export * from "@/api/star_horse_apis.ts";
 export * from "@/api/star_horse_utils.ts";
 export * from "@/api/system.ts";
@@ -28,5 +29,21 @@ const install = (app: App<Element>) => {
 export * from "@/components/comp";
 export * from "@/components/formcomp/container";
 export * from "@/components/formcomp/items";
+export * from "@/components/system";
 export * from "@/components/types";
+// 导出所有store
+export * from '@/store/ButtonPermission.ts';
+export * from '@/store/ConsumerView.ts';
+export * from '@/store/ContinusConfig.ts';
+export * from '@/store/CopyerOperation.ts';
+export * from '@/store/DesignForm.ts';
+export * from '@/store/DesignGraph.ts';
+export * from '@/store/DesignPage.ts';
+export * from '@/store/DynamicForm.ts';
+export * from '@/store/GlobalConfig.ts';
+export * from '@/store/SelfOperation.ts';
+export * from '@/store/UserInfo.ts';
+
+export {default as piniaInstance} from '@/store'
+
 export default {install};
