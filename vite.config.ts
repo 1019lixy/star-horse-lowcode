@@ -220,7 +220,7 @@ export default defineConfig((mode) => {
         build: {
             //  告诉打包工具 "vue-demi" 也是外部依赖项
             rollupOptions: {
-                external: ["vue"],
+                external: ["vue",'pinia'],
                 output: {
                     // 禁用代码分割
                     inlineDynamicImports: true,
@@ -228,7 +228,8 @@ export default defineConfig((mode) => {
                     manualChunks: undefined,
                     // 在 UMD 构建模式下为这些外部化的依赖提供一个全局变量
                     globals: {
-                        vue: "Vue",
+                        vue: 'Vue',
+                        pinia: 'Pinia'
                     },
                 },
             },
@@ -241,7 +242,8 @@ export default defineConfig((mode) => {
             lib: {
                 entry: "src/index.ts", //指定组件编译入口文件
                 name: "star-horse-lowcode",
-                fileName: (format) => `index.${format}.js`
+                fileName: (format) => `index.${format}.js`,
+                formats: ['es', 'cjs']
             }, //库编译模式配置
             // 开启并行压缩
             parallel: true,

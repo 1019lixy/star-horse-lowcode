@@ -1,5 +1,10 @@
 import {App, defineAsyncComponent} from "vue";
 import piniaInstance from "@/store";
+import '@/assets/css/index.scss';
+export * from "@/api/star_horse_apis.ts";
+export * from "@/api/star_horse_utils.ts";
+export * from "@/api/system.ts";
+export * from "@/api/user_func.ts";
 const items = import.meta.glob([
     "@/components/comp/*.vue",
     "@/components/formcomp/items/*.vue",
@@ -23,4 +28,5 @@ const install = (app: App<Element>) => {
 export * from "@/components/comp";
 export * from "@/components/formcomp/container";
 export * from "@/components/formcomp/items";
+export * from "@/components/types";
 export default {install};

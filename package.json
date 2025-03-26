@@ -2,7 +2,7 @@
   "name": "star-horse-lowcode",
   "private": false,
   "author": "l_1019@163.com",
-  "version": "2.6.0",
+  "version": "2.6.2",
   "type": "module",
   "description": "星马低代码平台",
   "keywords": [
@@ -32,7 +32,9 @@
     ".": {
       "import": "./dist/index.es.js",
       "require": "./dist/index.umd.js"
-    }
+    },
+    "./dist/index.css": "./dist/index.css",
+    "./dist/style.css": "./dist/style.css"
   },
   "scripts": {
     "lint": "eslint .",
