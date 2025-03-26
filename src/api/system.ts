@@ -89,7 +89,7 @@ export async function printerList(): Promise<Array<SelectOption>> {
     };
     const options: Array<SelectOption> = [];
     //创建一个实例
-    const ws = new WebSocket("ws://127.0.0.1:55333");
+    const ws = new WebSocket(import.meta.env.VITE_PRINTER_URL);
     //用于指定连接成功后的回调函数
     ws.onopen = (_evt) => {
         console.log("Connection open ...");

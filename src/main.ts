@@ -3,12 +3,10 @@ import "@/assets/css/index.scss";
 import "@/assets/css/flow.scss";
 import "tailwindcss/index.css";
 import userComponent from "@/components/comp/selfcomp";
-import nodeComponent from "@/views/continuous/nodeInfo/nodecomp";
 import userContainerComponent from "@/components/comp/items/callitem";
 import itemComponent from "@/components/formcomp/items/allitem";
 import containerComponent from "@/components/formcomp/container/callitem";
 import commonComponent from "@/components/common/index";
-import flowNodeComponent from "@/views/workflow/plugin/node/nodes.ts";
 import systemComponent from "@/components/system/SystemComp";
 import App from "@/App.vue";
 import {createApp} from "vue";
@@ -20,7 +18,6 @@ import "highlight.js/lib/common";
 import hljsVuePlugin from "@highlightjs/vue-plugin";
 import "animate.css";
 import ZhLocale from "element-plus/es/locale/lang/zh-cn"; // 中文
-import router from "@/router/index.ts";
 import draggable from "vuedraggable";
 import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 import piniaInstance from "@/store";
@@ -49,15 +46,12 @@ app.use(commonComponent);
 app.use(userContainerComponent);
 app.use(systemComponent);
 app.use(containerComponent);
-app.use(nodeComponent);
-app.use(flowNodeComponent);
 app.use(VueParticles, {
     init: async engine => {
         await loadSlim(engine);
     },
 });
 app.use(piniaInstance);
-app.use(router);
 VMEditor.use(vuepressTheme, {
     Prism,
     Hljs: hljs

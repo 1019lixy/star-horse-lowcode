@@ -7,7 +7,7 @@
   import { dynamicFormContextMenuData } from "@/plugins/AblesPlugin.ts";
   import FieldList from "@/components/formcomp/utils/FieldList.vue";
   import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
-  import { fieldCopy } from "@/views/dyform/utils/FieldOperationUtils.ts";
+  import { fieldCopy } from "@/utils/FieldOperationUtils.ts";
 
   const props = defineProps({
     parentField: { type: Object },

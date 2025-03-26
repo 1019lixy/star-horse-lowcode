@@ -1,26 +1,17 @@
 import axios, {AxiosResponse, InternalAxiosRequestConfig} from "axios";
-import {getToken, getUserInfo, removeToken, setCustomerInfo, setToken, setUserInfo} from "@/utils/auth";
-import router from "@/router";
+import {getToken, getUserInfo, removeToken} from "@/utils/auth";
 import {error, warning} from "../utils/message";
-import {Config} from "@/api/settings.ts";
-import {reactive} from "vue";
-import {MenusInfo} from "@/components/types/MenusInfo";
 import piniaInstance from "@/store";
 import {useNavBarListStore} from "@/store/NavBarList.ts";
 import {useUserInfoStore} from "@/store/UserInfo.ts";
 import {useViewCacheStore} from "@/store/ViewCache.ts";
 import {SelectOption} from "@/components/types/SearchProps";
-import {NavigationGuardNext, RouteLocationNormalized} from "vue-router";
 import {useButtonPermissionStore} from "@/store/ButtonPermission.ts";
 import {loadData} from "@/api/star_horse_utils.ts";
 import {getFingerId} from "@/api/finger_utils.ts";
 import {ServiceEnums} from "@/components/enums/ServiceEnums.ts";
 
-const navBarListStore = useNavBarListStore(piniaInstance);
 const userStore = useUserInfoStore(piniaInstance);
-const pagePermission = useButtonPermissionStore(piniaInstance);
-const viewListStore = useViewCacheStore(piniaInstance);
-
 const service = axios.create({
     baseURL: "/",
     timeout: 50000,
@@ -37,7 +28,6 @@ service.interceptors.request.use(
         if (token && config.headers) {
             config.headers.token = token;
             config.headers["Finger-Token"] = fingerToken;
-            config.headers["menuPosition"] = getMenuId();
         }
         return config;
     },
@@ -131,66 +121,6 @@ export function selectMenusTreeData(data: any) {
     return list;
 }
 
-/**
- * 用户登录
- * @param loginData 登录参数
- */
-export async function userLogin(loginData: any) {
-    let data: any = {};
-    let errMsg = null;
-    const resultData = await loadData(`${ServiceEnums.SYSTEM_PREFIX}usersAuditEntity/userLogin`, loginData);
-    if (resultData.error) {
-        errMsg = resultData.error;
-    } else {
-        const userData = resultData.data;
-        if (loginData.tokenId != userData.dataNo) {
-            errMsg = "Token不一致，登录可能被非法劫持，请重新登录";
-        } else {
-            const condition = {
-                userId: userData.idUsersinfo
-            };
-            userData["rememberMe"] = loginData.rememberMe;
-            userStore.login(userData);
-            setToken(userData.dataNo, data.rememberMe);
-            setUserInfo(userData);
-            setCustomerInfo(userData.customerInfo);
-            //登录成功，获取当前用户的权限菜单
-            await permissionMenus(condition, "-1").then((res2) => {
-                createRouterAndMenuList(res2.data.data);
-                data = userData;
-            });
-        }
-    }
-    return {data, errMsg};
-}
-
-/**
- * 退出登录
- * @param data 登出参数
- */
-export async function userLogout(data: Array<any>) {
-    const resultDdata = await loadData(`${ServiceEnums.SYSTEM_PREFIX}usersAuditEntity/userLogout`, data);
-    if (resultDdata.error) {
-        warning(resultDdata.error);
-        return;
-    }
-    removeToken();
-    userStore.logout();
-    navBarListStore.clearAll();
-    viewListStore.clearAll();
-    pagePermission.cleanPermission();
-    router.push({path: "/login"});
-}
-
-export function getMenuId() {
-    const meta = router.currentRoute.value.meta;
-    let menuId = meta?.menuId as string;
-    if (!menuId) {
-        return "";
-    }
-    menuId = menuId.split("_")[1];
-    return menuId;
-}
 
 /**
  * 加载权限
@@ -240,98 +170,6 @@ export async function permissionResources(data: any) {
         }
         return redata;
     }
-}
-
-/**
- * 将Store里的菜单还原
- */
-export async function restoreMenu(to: RouteLocationNormalized, _next: NavigationGuardNext) {
-    const data = localStorage.getItem("menusInfo");
-    if (data) {
-        createRouterAndMenuList(JSON.parse(data));
-    }
-    const redata = router.getRoutes().find((item) => item.path == to.fullPath);
-    if (redata) {
-        await router.push(to);
-    } else {
-        await router.push("/");
-    }
-}
-
-/**
- * 创建路由和菜单数据
- * @param redata
- * @returns {[]}
- */
-export function createRouterAndMenuList(redata: Array<object>): MenusInfo[] {
-    let leftMenuDatas: MenusInfo[] = [];
-    const pageButtonPermissions: any = {};
-    if (!redata) {
-        return leftMenuDatas;
-    }
-    const baseDir = "/src/views";
-    const compPath = import.meta.glob("@/views/**/*.vue");
-
-    /**
-     * 递归组装菜单
-     * @param redata
-     * @param key_index
-     */
-    function loopCreateMenu(redata: any, key_index: number) {
-        let sindex = 1;
-        const menuDatas: MenusInfo[] = [];
-        for (let index = 0; index < redata.length; index++) {
-            const item = redata[index];
-            if (item.menuPath == "#" && item.children?.length == 0) {
-                continue;
-            }
-            const menuId = item.idMenusinfo;
-            if (menuId) {
-                pageButtonPermissions[menuId.toString()] = item["pageButtonPermissions"];
-            }
-            const arr = item.menuPath.split("/");
-            let menuName = arr[arr.length - 1];
-            menuName = menuName.endsWith(Config.fileExt) ? menuName.split(".")[0] : menuName;
-            let path = item.menuPath?.startsWith("/") ? item.menuPath : "/" + item.menuPath;
-            path = path.endsWith(Config.fileExt) ? path : path + Config.fileExt;
-            const prefix = key_index + "_";
-            const data = reactive<MenusInfo>({
-                path: item.menuPath,
-                component: compPath[`${baseDir}${path}`],
-                name: menuName,
-                children: [],
-                meta: {
-                    menuIcon: item.menuIcon,
-                    title: item.menuName,
-                    menuId: menuId ? prefix + menuId : prefix + sindex++,
-                    keepAlive: item.keepAlive
-                }
-            });
-            if (path.indexOf("/page/") == -1) {
-                if (item.openType == "self") {
-                    router.addRoute("Index", data);
-                } else {
-                    router.addRoute(data);
-                }
-            } else {
-                userStore.addDynamicMenus(data);
-            }
-            //如果有子节点
-            if (item.children && item.children.length > 0) {
-                data.children = loopCreateMenu(item.children, key_index + 1);
-            }
-            menuDatas.push(data);
-        }
-        return menuDatas;
-    }
-
-    leftMenuDatas = loopCreateMenu(redata, 1);
-
-    userStore.addPermissionMenus(leftMenuDatas);
-    pagePermission.addAllPermission(pageButtonPermissions);
-    localStorage.setItem("menusInfo", JSON.stringify(redata));
-    localStorage.setItem("dynamicMenusLists", JSON.stringify(userStore.dynamicMenus));
-    return leftMenuDatas;
 }
 
 /**

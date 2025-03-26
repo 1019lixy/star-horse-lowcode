@@ -1,10 +1,39 @@
 {
-  "name": "starhorseui",
-  "private": true,
+  "name": "star-horse-lowcode",
+  "private": false,
   "author": "l_1019@163.com",
   "version": "2.6",
   "type": "module",
-  "description": "need node.js v21",
+  "description": "星马低代码平台",
+  "keywords": [
+    "lowcode",
+    "low-code",
+    "star",
+    "star-horse",
+    "star-horse-lowcode",
+    "星马",
+    "低代码",
+    "低代码平台",
+    "星马低代码平台"
+  ],
+  "license": "MIT",
+  "homepage": "none",
+  "repository": {
+    "type": "git",
+    "url": "none"
+  },
+  "main": "dist/sh-crontab.js",
+  "module": "dist/sh-crontab.umd.cjs",
+  "types": "types/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.es.js",
+      "require": "./dist/index.umd.js"
+    }
+  },
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",

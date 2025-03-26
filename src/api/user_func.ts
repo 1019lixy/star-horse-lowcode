@@ -5,7 +5,6 @@ import {getUserInfo} from "@/utils/auth.ts";
 import {Ref} from "vue";
 import {createCondition} from "@/api/star_horse_utils.ts";
 import {success, warning} from "@/utils/message.ts";
-import router from "@/router";
 import {UserFuncInfo} from "@/components/types/PageFieldInfo";
 
 /**

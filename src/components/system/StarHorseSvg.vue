@@ -1,6 +1,6 @@
 <script setup lang="ts" name="StarHorseSvg">
   import { computed, PropType } from "vue";
-  import { ShapeInfo } from "@/views/dyform/page/shapes.ts";
+  import { ShapeInfo } from "@/utils/shapes.ts";
 
   const props = defineProps({
     className: { type: String },

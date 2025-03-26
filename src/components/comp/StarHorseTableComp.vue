@@ -15,7 +15,7 @@ import {useRoute} from "vue-router";
 import {useButtonPermissionStore} from "@/store/ButtonPermission.ts";
 import TableColumn from "@/components/comp/items/tableColumn.vue";
 import {useGlobalConfigStore} from "@/store/GlobalConfig.ts";
-import {analysisFields} from "@/views/dyform/utils/preview.ts";
+import {analysisFields} from "@/utils/preview.ts";
 import {isSystemManage} from "@/utils/auth.ts";
 import {removeEmptyCondition} from "@/api/system.ts";
 import {Config} from "@/api/settings.ts";

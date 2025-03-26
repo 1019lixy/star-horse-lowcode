@@ -12,7 +12,6 @@ import {ElementPlusResolver} from "unplugin-vue-components/resolvers";
 import AutoImport from "unplugin-auto-import/vite";
 import {visualizer} from "rollup-plugin-visualizer";
 //此插件是处理外部依赖 比如cdn引入的js
-import vueDevTools from "vite-plugin-vue-devtools";
 import tailwindcss from "@tailwindcss/vite";
 
 const codeHost: string = "http://192.168.20.165:8888/";
@@ -221,26 +220,17 @@ export default defineConfig((mode) => {
         build: {
             //  告诉打包工具 "vue-demi" 也是外部依赖项
             rollupOptions: {
+                external: ["vue"],
                 output: {
-                    manualChunks(id: any) {
-                        if (id.includes("node_modules")) {
-                            //此处不要随修改，否则很可能打包后代码不能正常运行
-                            if (id.includes('element-plus')) return 'element-plus';
-                            if (id.includes('echarts')) return 'echarts';
-                            if (id.includes('monaco-editor')) return 'monaco-editor';
-                            if (id.includes('bpmn-js')) return 'bpmn-js';
-                            if (id.includes('@wangeditor')) return 'wangeditor';
-                            if (id.includes('flv.js')) return 'flv';
-                            if (id.includes('gridstack')) return 'gridstack';
-                            if (id.includes('sortablejs')) return 'sortablejs';
-                            if (id.includes('lodash')) return 'lodash';
-                            return "vendor";
-                        }
-                    }
+                    // 禁用代码分割
+                    inlineDynamicImports: true,
+                    // 合并所有chunk到单个文件
+                    manualChunks: undefined,
+                    // 在 UMD 构建模式下为这些外部化的依赖提供一个全局变量
+                    globals: {
+                        vue: "Vue",
+                    },
                 },
-                input: {
-                    main: resolve(__dirname, "index.html")
-                }
             },
             terserOptions: {
                 compress: {
@@ -248,6 +238,11 @@ export default defineConfig((mode) => {
                     drop_debugger: mode.mode === "production"
                 }
             },
+            lib: {
+                entry: "src/index.ts", //指定组件编译入口文件
+                name: "star-horse-lowcode",
+                fileName: (format) => `index.${format}.js`
+            }, //库编译模式配置
             // 开启并行压缩
             parallel: true,
             //chunk 大小警告的限制（以 kbs 为单位）
@@ -266,11 +261,7 @@ export default defineConfig((mode) => {
             sourcemap: mode.mode === "development",
             //自定义底层的 Rollup 打包配置
             //@rollup/plugin-commonjs 插件的选项
-            commonjsOptions: {
-                // 强制包含CodeMirror相关模块
-                include: [/node_modules/, /@codemirror/],
-                transformMixedEsModules: true
-            },
+            commonjsOptions: {},
             //构建的库
             // Vite项目 build打包后浏览器中可直接使用的方法 https://blog.csdn.net/weixin_54898878/article/details/129730628
             // lib: {},

@@ -11,7 +11,7 @@
   import { useDesignGraphStore } from "@/store/DesignGraph.ts";
   import { closeLoad, formFieldMapping, load } from "@/api/star_horse_utils.ts";
   import Help from "@/components/help.vue";
-  import ConsumerDbListComp from "@/views/dbsearch/utils/ConsumerDbListComp.vue";
+  import ConsumerDbListComp from "@/components/common/ConsumerDbListComp.vue";
   import StarHorseEditor from "@/components/system/StarHorseEditor.vue";
   import { useConsumerViewStore } from "@/store/ConsumerView.ts";
   import { Config } from "@/api/settings.ts";
