@@ -4,7 +4,7 @@ import progress from "vite-plugin-progress";
 import vueJsx from "@vitejs/plugin-vue-jsx";
 import inject from "@rollup/plugin-inject";
 import topLevelAwait from "vite-plugin-top-level-await";
-import {resolve} from "path";
+import {resolve,relative,join} from "path";
 import fs from "fs";
 import {createSvgIconsPlugin} from "vite-plugin-svg-icons";
 import Components from "unplugin-vue-components/vite";
@@ -176,7 +176,13 @@ export default defineConfig((mode) => {
                 targets: [
                     {
                         src: 'src/icons/**/*',  // 需要复制的图标路径
-                        dest: 'assets/icons'    // 输出到 dist/assets/icons
+                        dest: 'assets/icons' ,   // 输出到 dist/assets/icons
+                        rename: (name, extension, fullPath) => {
+                            const relativePath = relative(join(process.cwd(), 'src/icons'), fullPath)
+                                .replace(/\\/g, '/') // 统一使用正斜杠
+                                .replace(/\//g, '-'); // 替换路径分隔符
+                            return `icon-${relativePath}`;
+                        },
                     }
                 ]
             }),
@@ -191,7 +197,7 @@ export default defineConfig((mode) => {
             }),
             createSvgIconsPlugin({
                 iconDirs: [resolve(process.cwd(), "src/icons"), resolve(process.cwd(), "src/assets/icons/svg")],
-                symbolId: "icon-[dir]-[name]",
+                symbolId: "icon-[name]", // 保持简化规则
                 svgoOptions: true,
                 inject: 'body-first',
                 customDomId: '__svg__icons__dom__'
