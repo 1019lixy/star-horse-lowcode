@@ -109,10 +109,7 @@ export default defineConfig((mode) => {
             createSvgIconsPlugin({
                 iconDirs: [resolve(process.cwd(), "src/icons"),
                     resolve(process.cwd(), "src/assets/icons/svg")],
-                symbolId: "icon-[dir]-[name]",
-                svgoOptions: true,
-                inject: 'body-first',
-                customDomId: '__svg__icons__dom__'
+                symbolId: "icon-[dir]-[name]"
             }),
             visualizer({
                 open: false, // 构建完成后自动打开分析页面
