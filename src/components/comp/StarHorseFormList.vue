@@ -22,7 +22,7 @@ const props = defineProps({
   fieldList: {type: Object, required: true},
   defaultValues: {type: Object, default: {}},
   batchName: {type: String, default: "batchDataList"},
-  primaryKey: {type: String},
+  primaryKey: {type: [String, Object] as PropType<string | any>},
   initRows: {type: Number, default: 0},
   importInfo: {type: Object},
   title: {type: String, default: ""},
@@ -35,7 +35,7 @@ const props = defineProps({
 });
 const emits = defineEmits(["addRow", "removeRow"]);
 const dataForm: ModelRef<any> = defineModel("dataForm");
-const formFields = inject("formFields") as ShallowReactive<any>;
+const formFields = inject("formFields",{}) as ShallowReactive<any>;
 const loading = ref(null);
 const starHorseFormListRef = ref(null);
 

@@ -44,7 +44,7 @@
     lineFieldList: { type: Object as PropType<PageFieldInfo> },
     batchName: { type: String, default: "batchDataList" },
     batchFieldName: { type: String, default: "batchFieldList" },
-    primaryKey: { type: String, required: true },
+    primaryKey: {type: [String, Object] as PropType<string | any>,required:true},
     rules: { type: Object },
     showCompList: { type: Object, required: true },
     showDbList: { type: Object, required: false },

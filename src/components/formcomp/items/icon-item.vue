@@ -8,11 +8,10 @@
     <el-popover
       :popper-style="{ width: 'inherit !important' }"
       ref="popoverRef"
-      placement="bottom-end"
+      :placement="field.preps['placement']??'bottom-end'"
       :disabled="
         (!context.attrs['formData']['_' + field.preps['name'] + 'Editable'] && field.preps['disabled'] == 'Y') ||
-        field.preps['listView'] == 'Y'
-      "
+        field.preps['listView'] == 'Y'"
       trigger="click"
     >
       <template #reference>

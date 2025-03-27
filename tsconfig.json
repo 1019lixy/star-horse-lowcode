@@ -14,7 +14,7 @@
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
+    "noEmit": false, // 必须改为 false 才能生成声明文件
     "jsx": "preserve",
     /* Linting */
     "strict": true,
@@ -24,8 +24,9 @@
     "allowSyntheticDefaultImports": true
   },
   "declaration": true,
-  "declarationDir": "dist/types",
+  "declarationDir": "dist",
   "emitDeclarationOnly": true,
+  "outDir": "dist",  // 明确指定输出目录
   "include": ["src/**/*", "types/**/*.d.ts", "node_modules/unplugin-auto-import/auto-imports.d.ts"],
   "exclude": ["dist", "node_modules"],
   "references": [

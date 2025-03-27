@@ -11,7 +11,7 @@
     subFormFlag: { type: String, default: "N" },
     batchName: { type: String, default: "batchDataList" },
     batchFieldName: { type: String, default: "batchFieldList" },
-    primaryKey: { type: String },
+    primaryKey: {type: [String, Object] as PropType<string | any>},
     commonFormat: { type: Function, required: true }
   });
   const dataForm: ModelRef<any> = defineModel("dataForm");

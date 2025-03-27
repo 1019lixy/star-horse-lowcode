@@ -17,7 +17,7 @@ defineProps({
   propPrefix: {type: String, default: ""},
   batchName: {type: String, default: "batchDataList"},
   batchFieldName: {type: String, default: "batchFieldList"},
-  primaryKey: {type: String},
+  primaryKey: {type: [String, Object] as PropType<string | any>},
   compSize: {type: String, default: Config.compSize},
   rules: {type: Object},
   isView: {type: Boolean, default: false},

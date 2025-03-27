@@ -589,25 +589,19 @@ hr {
         height: 100% !important;
         padding: 5px;
 
-        .search_btn {
-          display: flex;
-
-          .search_content {
-            flex: 1;
-          }
-
-          .el-dropdown {
-            vertical-align: top;
-            justify-content: center;
-            align-items: center;
-            width: 80px;
-          }
-        }
       }
     }
   }
 }
-
+.search_btn {
+  display: flex;
+  .el-dropdown {
+    vertical-align: top;
+    justify-content: center;
+    align-items: center;
+    width: 80px;
+  }
+}
 .main-design,
 .main-design-phone,
 .main-design-pad {
