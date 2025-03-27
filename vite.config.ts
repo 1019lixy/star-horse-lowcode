@@ -5,7 +5,6 @@ import vueJsx from "@vitejs/plugin-vue-jsx";
 import inject from "@rollup/plugin-inject";
 import topLevelAwait from "vite-plugin-top-level-await";
 import {resolve} from "path";
-import fs from "fs";
 import {createSvgIconsPlugin} from "vite-plugin-svg-icons";
 import Components from "unplugin-vue-components/vite";
 import {ElementPlusResolver} from "unplugin-vue-components/resolvers";
@@ -13,7 +12,7 @@ import AutoImport from "unplugin-auto-import/vite";
 import {visualizer} from "rollup-plugin-visualizer";
 //此插件是处理外部依赖 比如cdn引入的js
 import tailwindcss from "@tailwindcss/vite";
-import {viteStaticCopy} from 'vite-plugin-static-copy'
+import dts from 'vite-plugin-dts';
 
 const codeHost: string = "http://192.168.20.165:8888/";
 // const codeHost:string = "http://localhost:8888/"
@@ -29,84 +28,6 @@ const userDbHost: string = "http://localhost:7758/";
  */
 export default defineConfig((mode) => {
     let optimizeDepsList: string[] = [];
-    if (mode.mode === "development") {
-        optimizeDepsList = [
-            "vue",
-            "vue-router",
-            "vue3-guides",
-            "element-plus/es",
-            "vue3-infinite-viewer",
-            "lodash-es",
-            "smooth-signature",
-            "jsoneditor",
-            "@vueuse/core",
-            "jsoneditor",
-            "preview-image-js/icon.js",
-            "@fullcalendar/vue3",
-            "@fullcalendar/daygrid",
-            "@fullcalendar/timegrid",
-            "@fullcalendar/multimonth",
-            "@fullcalendar/core/locales/zh-cn",
-            "@fullcalendar/list",
-            "@fullcalendar/interaction",
-            "axios",
-            "qs",
-            "gridstack",
-            "preview-image-js",
-            "bpmn-js/lib/Modeler",
-            "bpmn-js-token-simulation",
-            "bpmn-js-bpmnlint",
-            "diagram-js-minimap",
-            "html2canvas",
-            "echarts",
-            "codemirror",
-            "@codemirror/view",
-            "@codemirror/state",
-            "@codemirror/commands",
-            "@codemirror/autocomplete",
-            "@codemirror/lang-python",
-            "@codemirror/lang-javascript",
-            "@codemirror/lang-java",
-            "@codemirror/lang-json",
-            "@codemirror/lang-yaml",
-            "@codemirror/lang-vue",
-            "@codemirror/lang-html",
-            "@codemirror/lang-cpp",
-            "@codemirror/lang-xml",
-            "@codemirror/lang-markdown",
-            "@codemirror/lang-go",
-            "@codemirror/lang-sql",
-            "thememirror",
-            "sortablejs",
-            "jsencrypt",
-            "uuid",
-            "jquery",
-            "@wangeditor/editor",
-            "@wangeditor/editor-for-vue",
-            "@replit/codemirror-minimap",
-            "element-plus/dist/locale/zh-cn.mjs",
-            "element-plus/dist/locale/en.mjs",
-            "pinia",
-            "axios",
-            "@vueuse/core",
-            "flv.js"
-        ];
-        fs.readdirSync("node_modules/element-plus/es/components").map(async (dirname) => {
-            try {
-                fs.accessSync(`node_modules/element-plus/es/components/${dirname}/style/css.mjs`, fs.constants.F_OK);
-                optimizeDepsList.push(`element-plus/es/components/${dirname}/style/css`);
-            } catch (e) {
-                console.log(`1,将强制对${dirname}进行依赖预构建异常`);
-            }
-            //注意，一定要包含下面这部分
-            try {
-                fs.accessSync(`node_modules/element-plus/es/components/${dirname}/style/index.mjs`, fs.constants.F_OK);
-                optimizeDepsList.push(`element-plus/es/components/${dirname}/style/index`);
-            } catch (e) {
-                console.log(`2,将强制对${dirname}进行依赖预构建异常`);
-            }
-        });
-    }
     return {
         base: "/",
         server: {
@@ -162,6 +83,10 @@ export default defineConfig((mode) => {
                     defineModel: true
                 }
             }),
+            dts({
+                insertTypesEntry: true,
+                copyDtsFiles: true
+            }),
             AutoImport({
                 imports: ["vue"],
                 resolvers: [ElementPlusResolver()]
@@ -172,14 +97,6 @@ export default defineConfig((mode) => {
                 resolvers: [ElementPlusResolver({importStyle: "sass"})]
             }),
             progress(),
-            viteStaticCopy({
-                targets: [
-                    {
-                        src: 'src/icons/**/*',  // 需要复制的图标路径
-                        dest: 'assets/icons'    // 输出到 dist/assets/icons
-                    }
-                ]
-            }),
             topLevelAwait(),
             // viteCommonjs(),
             vueJsx({}),
@@ -190,7 +107,8 @@ export default defineConfig((mode) => {
                 "windows.$": "jquery"
             }),
             createSvgIconsPlugin({
-                iconDirs: [resolve(process.cwd(), "src/icons"), resolve(process.cwd(), "src/assets/icons/svg")],
+                iconDirs: [resolve(process.cwd(), "src/icons"),
+                    resolve(process.cwd(), "src/assets/icons/svg")],
                 symbolId: "icon-[dir]-[name]",
                 svgoOptions: true,
                 inject: 'body-first',

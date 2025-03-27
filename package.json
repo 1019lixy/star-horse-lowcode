@@ -2,7 +2,7 @@
   "name": "star-horse-lowcode",
   "private": false,
   "author": "l_1019@163.com",
-  "version": "2.6.4",
+  "version": "2.6.6",
   "type": "module",
   "description": "星马低代码平台",
   "keywords": [
@@ -24,7 +24,7 @@
   },
   "main": "dist/index.es.js",
   "module": "dist/index.cjs.js",
-  "types": "types/index.d.ts",
+  "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
@@ -34,7 +34,8 @@
       "require": "./dist/index.umd.js"
     },
     "./dist/assets/index.css": "./dist/assets/index.css",
-    "./dist/assets/style.css": "./dist/assets/style.css"
+    "./dist/assets/style.css": "./dist/assets/style.css",
+    "./dist/assets/icons/*": "./dist/assets/icons/*"
   },
   "scripts": {
     "lint": "eslint .",
@@ -42,7 +43,7 @@
     "memory": "cross-env LIMIT=3072 increase-memory-limit",
     "serve": " vite --mode development",
     "build:dev": "cross-env NODE_OPTIONS=--max-old-space-size=8192 vite build --mode development",
-    "build:prod": "cross-env NODE_OPTIONS=--max-old-space-size=8192 vite build --mode production",
+    "build:prod": "cross-env NODE_OPTIONS=--max-old-space-size=8192 vite build &&tsc --emitDeclarationOnly --outDir dist --mode production",
     "preview": "vite preview --mode production",
     "deploy": "vite build --mode production && node deploy.js",
     "testPublish": "node deploy.js",
@@ -185,6 +186,7 @@
     "video.js": "^8.22.0",
     "videojs-contrib-hls": "^5.15.0",
     "vite-plugin-compression": "^0.5.1",
+    "vite-plugin-dts": "^4.5.3",
     "vite-plugin-eslint": "^1.8.1",
     "vite-plugin-inspect": "^11.0.0",
     "vite-plugin-monaco-editor": "^1.1.0",

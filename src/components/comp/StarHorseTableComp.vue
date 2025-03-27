@@ -21,13 +21,15 @@ import {removeEmptyCondition} from "@/api/system.ts";
 import {Config} from "@/api/settings.ts";
 import Tablebtn from "@/components/comp/items/tablebtn.vue";
 import Help from "@/components/help.vue";
+import videojs from "video.js";
+import any = videojs.any;
 
 const dynamicForm = useDynamicFormStore(piniaInstance);
 const props = defineProps({
   //url地址
   compUrl: {type: Object as PropType<ApiUrls>, required: true},
   //主键
-  primaryKey: {type: Object as PropType<any>, required: true},
+  primaryKey: {type: [String, Object] as PropType<string | any>, required: true},
   //列名
   fieldList: {type: Object as PropType<PageFieldInfo>, required: true},
   //按钮隐藏条件
@@ -82,7 +84,7 @@ const props = defineProps({
   btnPermissions: {type: Object as PropType<any>, required: false},
 });
 const emits = defineEmits(["selectItem"]);
-let route = useRoute();
+const route = useRoute();
 let pagePermission = useButtonPermissionStore(piniaInstance);
 let configStore = useGlobalConfigStore(piniaInstance);
 let permissions = ref<any>({});

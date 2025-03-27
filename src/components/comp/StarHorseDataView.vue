@@ -13,7 +13,7 @@
     globalCondition: { type: Object },
     outerData: { type: Object },
     dynamicForm: { type: Boolean, default: false },
-    primaryKey: { type: String, default: "id" },
+    primaryKey: {type: [String, Object] as PropType<string | any>, default: "id"},
     batchFieldName: { type: String, default: "batchFieldList" },
     dataFormat: { type: Function, default: null }
   });

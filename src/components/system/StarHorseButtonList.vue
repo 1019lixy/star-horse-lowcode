@@ -8,7 +8,7 @@ import {getToken} from "@/utils/auth.ts";
 import {useGlobalConfigStore} from "@/store/GlobalConfig.ts";
 import piniaInstance from "@/store";
 import {useButtonPermissionStore} from "@/store/ButtonPermission.ts";
-import {useRoute} from "vue-router";
+import {useRoute,useRouter} from "vue-router";
 import {UserFuncInfo} from "@/components/types/PageFieldInfo";
 import Help from "@/components/help.vue";
 import {Config} from "@/api/settings.ts";
@@ -31,7 +31,7 @@ const emits = defineEmits([
   "btnOperation",
   "tableCompFunc"
 ]);
-let route = useRoute();
+const route = useRoute();
 let configStore = useGlobalConfigStore(piniaInstance);
 let pagePermission = useButtonPermissionStore(piniaInstance);
 let compSize = computed(() => configStore.configFormInfo?.buttonSize || Config.compSize);

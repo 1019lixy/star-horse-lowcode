@@ -4,10 +4,11 @@
   import Sortable from "sortablejs";
   import { warning } from "@/utils/message";
   import { Config } from "@/api/settings.ts";
+  import {PropType} from "vue/dist/vue";
 
   const props = defineProps({
     //主键
-    primaryKey: { type: String, required: true },
+    primaryKey: {type: [String, Object] as PropType<string | any>,required:true},
     //列名
     fieldList: { type: Object, required: true },
     //格式化方法

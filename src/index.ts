@@ -1,10 +1,17 @@
+import "virtual:svg-icons-register";
 // 在文件最顶部添加以下代码
-import 'core-js/stable'
-import 'regenerator-runtime/runtime'
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
 import {App, defineAsyncComponent} from "vue";
 import piniaInstance from "@/store";
 import '@/assets/css/index.scss';
-
+import "highlight.js/styles/idea.css";
+import "element-plus/theme-chalk/index.css";
+import "@/assets/css/flow.scss";
+import "tailwindcss/index.css";
+import ElementPlus from "element-plus";
+import * as ElementPlusIconsVue from "@element-plus/icons-vue";
+import ZhLocale from "element-plus/es/locale/lang/zh-cn";
 export * from "@/api/star_horse_apis.ts";
 export * from "@/api/star_horse_utils.ts";
 export * from "@/api/system.ts";
@@ -27,6 +34,15 @@ const install = (app: App<Element>) => {
             app.component(name, defineAsyncComponent(component));
         }
     });
+    app.use(ElementPlus, {
+        locale: ZhLocale
+    });
+    /**
+     * 加载elementplus 自己提供的图标
+     */
+    for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+        app.component(key, component);
+    }
 };
 
 // 导出所有组件用于按需引入

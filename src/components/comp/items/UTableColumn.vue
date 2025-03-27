@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {Config} from "@/api/settings.ts";
 import {batchFieldDefaultValues} from "@/api/star_horse_utils.ts";
+import {PropType} from "vue/dist/vue";
 
 defineProps({
   item: {type: Object, required: true},
@@ -8,7 +9,7 @@ defineProps({
   staticColumn: {type: String, default: "N"},
   size: {type: String, default: Config.compSize},
   batchName: {type: String, default: "batchDataList"},
-  primaryKey: {type: String}
+  primaryKey: {type: [String, Object] as PropType<string | any>},
 });
 </script>
 

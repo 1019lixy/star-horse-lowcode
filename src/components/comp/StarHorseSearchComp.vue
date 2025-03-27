@@ -186,12 +186,16 @@ defineExpose({
 </template>
 <style lang="scss" scoped>
 :deep(.el-form-item) {
-  width: unset;
+  width: auto; // 强制设置为自动宽度
+  margin-right: 8px !important; // 添加右侧间距
+  flex-shrink: 0; // 防止收缩
+  margin-bottom: 0 !important;
 }
 
-/*:deep(.el-form-item__label) {
-min-width: 80px;
-}*/
+.el-form-item, .el-form-item-small {
+  margin-bottom: 0 !important;
+}
+
 
 :deep(.el-form-item__label):last-child {
   max-width: 5px;
@@ -200,6 +204,7 @@ min-width: 80px;
 .search_content {
   display: flex;
   flex-direction: column;
+  flex: 1;
 
   .search_area {
     display: flex;
@@ -208,6 +213,8 @@ min-width: 80px;
     flex: 1;
     justify-content: left;
     flex-shrink: 0;
+    gap: 12px; // 新增间隔控制
+    align-items: center; // 新增垂直对齐方式
   }
 
   .search_btn {

@@ -29,7 +29,7 @@ const props = defineProps({
   batchName: {type: String, default: "batchDataList"},
   batchFieldName: {type: String, default: "batchFieldList"},
   outerFormData: {type: Object as PropType<any>},
-  primaryKey: {type: String},
+  primaryKey: {type: [String, Object] as PropType<string | any>},
   globalCondition: {type: Object},
   rules: {type: Object},
   formSize: {type: String, default: Config.compSize},
@@ -64,7 +64,7 @@ const exportData = () => {
 const closeDialog = inject("closeDialog") as Function;
 let dialogOperation = inject("dialogOperation") as ShallowReactive<any>;
 const dialogProps = inject<DialogProps>("dialogProps", {});
-const formFields = inject("formFields") as ShallowReactive<any>;
+const formFields = inject("formFields",{}) as ShallowReactive<any>;
 
 const loadData = async () => {
   if (!props.compUrl || !props.compUrl.loadByIdUrl || !dialogProps.ids) {

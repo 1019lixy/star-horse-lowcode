@@ -26,6 +26,7 @@ declare module 'vue' {
     CollapseItem: typeof import('./src/components/comp/items/collapseItem.vue')['default']
     ColorItem: typeof import('./src/components/formcomp/items/color-item.vue')['default']
     ConsumerDbListComp: typeof import('./src/components/common/ConsumerDbListComp.vue')['default']
+    ContentMenu: typeof import('./src/components/system/ContentMenu.vue')['default']
     ContextMenu: typeof import('./src/components/tags/ContextMenu.vue')['default']
     CronItem: typeof import('./src/components/formcomp/items/cron-item.vue')['default']
     Crontab: typeof import('./src/components/cron/Crontab.vue')['default']

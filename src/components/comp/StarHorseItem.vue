@@ -9,12 +9,13 @@ import {uuid} from "@/api/system.ts";
 import {Config} from "@/api/settings.ts";
 import {SearchFields} from "@/components/types/SearchProps";
 import {checkVisible} from "@/api/form_utils.ts";
+import {PropType} from "vue/dist/vue";
 
 const props = defineProps({
   // allItem: {type: Array, required: true},
   item: {type: Object, required: true},
   column: {type: Object},
-  primaryKey: {type: String},
+  primaryKey: {type: [String, Object] as PropType<string | any>},
   // 数据索引
   dataIndex: {type: Number, default: -1},
   bareFlag: {type: Boolean, default: false},
@@ -30,7 +31,7 @@ let userOperation = useSelfOperationStore(piniaInstance);
 const dataForm: ModelRef<any> = defineModel("dataForm");
 const itemType = ref<string>("input");
 const emit = defineEmits(["dataSearch", "focus", "blur"]);
-const formFields: any = inject("formFields");
+const formFields: any = inject("formFields",{});
 const field = ref<any>({
   preps: {}
 });
