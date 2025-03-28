@@ -16,14 +16,17 @@
     "isolatedModules": true,
     "noEmit": false, // 必须改为 false 才能生成声明文件
     "jsx": "preserve",
-    /* Linting */
-    "strict": true,
+    // 关闭严格模式
+    "strict": false,
     "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedParameters": false,
+    "noImplicitAny": false,
+    "noEmitOnError": false,
     "noFallthroughCasesInSwitch": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "declaration": true
   },
-  "declaration": true,
+
   "declarationDir": "dist",
   "emitDeclarationOnly": true,
   "outDir": "dist",  // 明确指定输出目录

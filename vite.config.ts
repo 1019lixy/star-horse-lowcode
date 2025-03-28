@@ -160,7 +160,7 @@ export default defineConfig((mode) => {
                 entry: "src/index.ts", //指定组件编译入口文件
                 name: "star-horse-lowcode",
                 fileName: (format) => `index.${format}.js`,
-                formats: ['es', 'cjs']
+                formats: ['es', 'cjs','umd']
             }, //库编译模式配置
             // 开启并行压缩
             parallel: true,

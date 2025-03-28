@@ -24,7 +24,7 @@ export function i18n(key: keyof typeof zh_CN, ...args: any[]) {
     return `[${key}]`;
   } else {
     resultList.push(result);
-    args.forEach((arg, i) => {
+    args.forEach((arg:any) => {
       const temp = langSet[arg];
       if (temp) {
         resultList.push(temp);

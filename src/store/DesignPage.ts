@@ -5,7 +5,7 @@ import {DynamicNode} from "@/components/types/DynamicNode";
 export const useDesignPageStore = defineStore("designPage",
     () => {
         const nodeList = ref<Array<DynamicNode>>([]);
-        const currentNode = ref<DynamicNode>({});
+        const currentNode = ref<DynamicNode>(null);
         const isEdit = ref<boolean>(false);
         const defaultZindex = ref<number>(100);
         /**

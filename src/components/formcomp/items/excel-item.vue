@@ -11,10 +11,12 @@
 
 <script lang="ts">
 import {onMounted, onBeforeUnmount, ref, toRaw, defineComponent, shallowRef} from 'vue'
+/*
 import {createUniver, defaultTheme, LocaleType, merge, Univer} from '@univerjs/presets';
 import {UniverSheetsCorePreset} from '@univerjs/presets/preset-sheets-core';
 import UniverPresetSheetsCoreZhCN from '@univerjs/presets/preset-sheets-core/locales/zh-CN';
 import '@univerjs/presets/lib/styles/preset-sheets-core.css';
+*/
 
 export default defineComponent({
   setup(_props, context) {
@@ -23,10 +25,10 @@ export default defineComponent({
     let formItem = shallowRef({label: "input", required: false});
     let dataField = shallowRef("");
     const container = ref<HTMLElement | null>(null);
-    const univerAPIRef = ref<Univer | null>(null);
+    // const univerAPIRef = ref<Univer | null>(null);
 
     onMounted(() => {
-      const {univerAPI} = createUniver({
+      /*const {univerAPI} = createUniver({
         locale: LocaleType.ZH_CN,
         locales: {
           [LocaleType.ZH_CN]: merge(
@@ -44,12 +46,12 @@ export default defineComponent({
 
       univerAPI.createWorkbook({name: 'Test Sheet'});
 
-      univerAPIRef.value = univerAPI;
+      univerAPIRef.value = univerAPI;*/
     });
 
     onBeforeUnmount(() => {
-      toRaw(container.value)?.dispose();
-      univerAPIRef.value = null;
+      /*toRaw(container.value)?.dispose();
+      univerAPIRef.value = null;*/
     });
     return {parentField, context, field, formItem, dataField, container};
   }

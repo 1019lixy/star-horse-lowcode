@@ -27,14 +27,14 @@ export const operationConfirm = (msg: string): Promise<boolean> => {
  */
 export const message = (
   msg: string,
-  type: string = "info",
+  type: any = "info",
   duration: number = 2000,
   title: string = "提示",
-  position: string = "top-right"
+  position: any = "top-right"
 ) => {
   Message({
     message: msg,
-    type: type,
+    type: type??"info",
     duration: duration,
     title: title,
     position: position,

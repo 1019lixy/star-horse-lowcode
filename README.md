@@ -16,8 +16,11 @@ app.mount('#app')
 3. 说明
 ```
 Node 版本 >20
+该组件库基于vue3+ts+pinia+vue-router+element-plus开发，
 插件已内置了Element-Plus 最新版本，无序额外引用，
-此组件提供了对Element-Plus 官方组件的封装，
+该组件提供了对Element-Plus 官方组件的封装，
+支持参数见：PageFieldInfo.t.ts 下的 FieldInfo,所有官方参数
+配置到preps:{}里面;
 同时也提供了自定义的组件如：
  cron Cron 表达式、
  dialog-input 弹出选择器、
@@ -25,6 +28,25 @@ Node 版本 >20
  page-select 下拉分页选择器、
  等；具体描述待后期知识库完善后，可在知识库上进行查看。
  此次发布只是低代码平台的核心组件库，后期会根据实际情况发布设计模块功能。
+ 该组件库里面存在着 两个接口会自动调用后端，一个是用户分享数据接口（下一个版本会屏蔽掉），一个是转发地址接口（配置了会调用）
+ 后面用户只需要配置好 const dataUrl: ApiUrls = apiInstance("system-config", "system/areainfo");
+ //以分页接口pageListUrl为例，最终会映射成：/system-config/system/areainfo/pageListUrl,
+ 返回数据格式为：
+ 分页接口：{
+  code: 0,
+  data: {
+    dataList: [],
+    totalData: 0,
+    pageSize: 10,
+    pageNum: 1
+  },
+  cnMessage: "操作成功"
+}，非分页接口：{
+  code: 0,
+  data: []|{},
+  cnMessage: "操作成功"
+}
+就可以和后端正常通讯了，这里涉及到Token和动态路由的问题，后续会进行完善。
  待后期知识库功能完善后将进行全面开源，敬请期待。
  该组件右本人独立耗时4年开发完成（前端+后端），其中可能存在没测到的bug，不喜勿喷。
  使用过程中遇到问题或提出你的宝贵意见可邮件至：l_1019@163.com

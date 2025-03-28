@@ -47,8 +47,6 @@ export const useConsumerViewStore = defineStore(
     };
   },
   {
-    persist: {
-      enabled: false
-    }
+    persist:false
   }
 );

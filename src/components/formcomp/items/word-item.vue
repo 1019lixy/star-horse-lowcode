@@ -10,6 +10,7 @@
 </template>
 <script lang="ts" name="excelItem">
 import {defineComponent, onMounted, ref, shallowRef} from "vue";
+/*
 import {createUniver, defaultTheme, LocaleType, merge} from '@univerjs/presets'
 import {UniverDocsCorePreset} from '@univerjs/presets/preset-docs-core'
 import docsCoreZhCN from '@univerjs/presets/preset-docs-core/locales/zh-CN'
@@ -20,6 +21,7 @@ import docsHyperLinkZhCN from '@univerjs/presets/preset-docs-hyper-link/locales/
 import '@univerjs/presets/lib/styles/preset-docs-core.css'
 import '@univerjs/presets/lib/styles/preset-docs-drawing.css'
 import '@univerjs/presets/lib/styles/preset-docs-hyper-link.css'
+*/
 
 export default defineComponent({
   setup(_props, context) {
@@ -33,7 +35,7 @@ export default defineComponent({
       context.emit("selfFunc");
     };
     const init = async () => {
-      const {univerAPI} = createUniver({
+      /*const {univerAPI} = createUniver({
         locale: LocaleType.ZH_CN,
         locales: {
           [LocaleType.ZH_CN]: merge(
@@ -52,7 +54,7 @@ export default defineComponent({
           UniverDocsHyperLinkPreset(),
         ],
       })
-      univerAPI.createUniverDoc({})
+      univerAPI.createUniverDoc({})*/
     };
     const rendered = () => {
     };

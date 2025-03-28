@@ -262,8 +262,8 @@ export function analysisFields(compList: Array<any>) {
                 fieldList.push(item);
               });
             } else if (temp.batchFieldList) {
-              temp.batchFieldList.forEach((item) => {
-                item.fieldList.forEach((sitem) => {
+              temp.batchFieldList.forEach((item:any) => {
+                item.fieldList.forEach((sitem:any) => {
                   sitem.priority = priority++;
                   fieldList.push(sitem);
                 });

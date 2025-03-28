@@ -7,7 +7,6 @@ import {error, success, warning} from "@/utils/message.ts";
 import {useDesignFormStore} from "@/store/DesignForm.ts";
 import piniaInstance from "@/store";
 import {validRulesList} from "@/api/valid_utils.ts";
-import {matchesType} from "react-dnd-html5-backend/dist/matchesType";
 
 const designForm = useDesignFormStore(piniaInstance);
 
@@ -587,7 +586,7 @@ export function urlFields() {
         }
     ];
     //需考虑或查询
-    const paramFields: FieldInfo[] = [
+    const paramFields: FieldInfo[] | any = [
         {
             batchFieldList: [{
                 batchName: "queryParams",
@@ -668,7 +667,7 @@ export function paramsFields(paramsConfigRef: Ref<any>, fieldName: string, item:
     }
     const disableUrl = ref<boolean>(false);
     let currentData: Array<any> = [];
-    datas?.forEach((item) => {
+    datas?.forEach((item: any) => {
         if (item.fieldName == fieldName) {
             currentData = item.configParams;
             return false;
@@ -676,7 +675,7 @@ export function paramsFields(paramsConfigRef: Ref<any>, fieldName: string, item:
     });
     const fields: Array<any> = [];
     const fieldList = ref<SelectOption[]>([]);
-    const dataUrls: FieldInfo[] = [
+    const dataUrls: FieldInfo[] | any = [
         [
             {
                 label: "系统环境",
