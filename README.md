@@ -17,7 +17,6 @@ app.mount('#app')
 ```
 Node 版本 >20
 该组件库基于vue3+ts+pinia+vue-router+element-plus开发，
-插件已内置了Element-Plus 最新版本，无序额外引用，
 该组件提供了对Element-Plus 官方组件的封装，
 支持参数见：PageFieldInfo.t.ts 下的 FieldInfo,所有官方参数
 配置到preps:{}里面;
@@ -26,7 +25,7 @@ Node 版本 >20
  dialog-input 弹出选择器、
  usercomp 动态组件、
  page-select 下拉分页选择器、
- 等；具体描述待后期知识库完善后，可在知识库上进行查看。
+ 等；当前发布的组件是便于个人使用， 具体描述待后期知识库完善后，可在知识库上进行查看。
  此次发布只是低代码平台的核心组件库，后期会根据实际情况发布设计模块功能。
  该组件库里面存在着 两个接口会自动调用后端，一个是用户分享数据接口（下一个版本会屏蔽掉），一个是转发地址接口（配置了会调用）
  后面用户只需要配置好 const dataUrl: ApiUrls = apiInstance("system-config", "system/areainfo");
