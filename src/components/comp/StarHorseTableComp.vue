@@ -201,7 +201,7 @@ const permissionList = () => {
   return permissions.value;
 };
 const init = async () => {
-  if (props.btnPermissions) {
+  if (props.btnPermissions&&Object.keys(props.btnPermissions).length > 0) {
     permissions.value = props.btnPermissions;
   } else {
     permissions.value = await pagePermission.addRoute(route);

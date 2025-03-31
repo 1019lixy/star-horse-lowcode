@@ -1,13 +1,9 @@
 import axios, {AxiosResponse, InternalAxiosRequestConfig} from "axios";
-import {getToken, getUserInfo, removeToken} from "@/utils/auth";
-import {error, warning} from "../utils/message";
+import {getToken, getUserInfo} from "@/utils/auth";
+import {error} from "../utils/message";
 import piniaInstance from "@/store";
-import {useNavBarListStore} from "@/store/NavBarList.ts";
 import {useUserInfoStore} from "@/store/UserInfo.ts";
-import {useViewCacheStore} from "@/store/ViewCache.ts";
 import {SelectOption} from "@/components/types/SearchProps";
-import {useButtonPermissionStore} from "@/store/ButtonPermission.ts";
-import {loadData} from "@/api/star_horse_utils.ts";
 import {getFingerId} from "@/api/finger_utils.ts";
 import {ServiceEnums} from "@/components/enums/ServiceEnums.ts";
 
