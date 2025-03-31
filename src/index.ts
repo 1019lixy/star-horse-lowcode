@@ -9,6 +9,7 @@ import "element-plus/theme-chalk/index.css";
 import "@/assets/css/flow.scss";
 import "tailwindcss/index.css";
 import piniaInstance from "@/store";
+import type {Router} from 'vue-router';
 
 export * from "@/api/star_horse_apis.ts";
 export * from "@/api/star_horse_utils.ts";
@@ -22,8 +23,16 @@ const items = import.meta.glob([
     "@/components/formcomp/items/*.vue",
     "@/components/formcomp/container/*.vue",
 ]);
+// 声明全局变量存储宿主应用的 router
+declare global {
+    var __hostRouter__: Router | undefined
+}
 // 插件安装方法
-const install = (app: App<Element>) => {
+const install = (app: App<Element>, options?: { router?: Router }) => {
+    // 注入宿主应用的 router 实例
+    if (options?.router) {
+        app.provide('starHorseRouter', options.router);
+    }
     Object.entries(items).forEach(([path, component]) => {
         const name = path
             .split("/").pop()  // 获取文件名
@@ -57,4 +66,7 @@ export * from '@/store/UserInfo.ts';
 //将pinia的实例导出，否则会导致在设计表单时数据不一致
 export {piniaInstance};
 
-export default {install, piniaInstance};
+export default {
+    install,
+    piniaInstance
+};

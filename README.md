@@ -5,9 +5,11 @@
 在main.js中引入
 import StarHorseLowCode from "star-horse-lowcode";
 import "star-horse-lowcode/dist/assets/index.css"
-
+import "router" from "@/router";
 const app = createApp(App);
-app.use(StarHorseLowCode);
+app.use(StarHorseLowCode,{
+  router: router
+});
 app.mount('#app')
 ```
 2. 启动项目

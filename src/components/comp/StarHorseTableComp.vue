@@ -208,7 +208,7 @@ const init = async () => {
   }
   //拿到别人共享的信息
   let resultData = await loadData("/system-config/system/dataPermission/currentMenuPermissionPerson", {});
-  commonPersons.value = resultData.data;
+  commonPersons.value = resultData?.data;
   //是否初始化时自动加载列表数据开关
   if (!props.fieldList?.stopAutoLoad) {
     loadByPage();
