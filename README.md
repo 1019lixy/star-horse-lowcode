@@ -177,3 +177,8 @@ onMounted(() => {
 5.示例图片
 ![图片描述](dist/images/img.png)
 
+6.BUG 修改记录
+```
+1. 2025-03-31 修复动态表单Store piniaInstance 对象共享数据问题
+ 
+

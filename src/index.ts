@@ -8,11 +8,14 @@ import "highlight.js/styles/idea.css";
 import "element-plus/theme-chalk/index.css";
 import "@/assets/css/flow.scss";
 import "tailwindcss/index.css";
+import piniaInstance from "@/store";
 
 export * from "@/api/star_horse_apis.ts";
 export * from "@/api/star_horse_utils.ts";
+export * from "@/api/date_utils.ts";
 export * from "@/api/system.ts";
 export * from "@/api/user_func.ts";
+export * from "@/utils/message.ts";
 const items = import.meta.glob([
     "@/components/comp/*.vue",
     "@/components/system/*.vue",
@@ -51,5 +54,7 @@ export * from '@/store/DynamicForm.ts';
 export * from '@/store/GlobalConfig.ts';
 export * from '@/store/SelfOperation.ts';
 export * from '@/store/UserInfo.ts';
+//将pinia的实例导出，否则会导致在设计表单时数据不一致
+export {piniaInstance};
 
-export default {install};
+export default {install, piniaInstance};
