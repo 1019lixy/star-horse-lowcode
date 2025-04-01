@@ -114,8 +114,9 @@ provide("dialogProps", dialogProps);
 const btnPermisson:any={
   add:"add",
   edit:"edit",
-  delete:"delete",
-  view:"view",
+  batchDelete:"batchDelete",
+  download:"download",
+  upload:"upload",
   export:"export",
   import:"import",
 }
@@ -182,6 +183,6 @@ onMounted(() => {
 6.BUG 修改记录
 ```
 1. 2025-03-31 修复动态表单Store piniaInstance 对象共享数据问题
-2. 2025-03-31 修复列表操作按钮不显示问题
+              修复列表操作按钮不显示问题
  
 

@@ -9,7 +9,7 @@ import ContextMenu from "@/components/tags/ContextMenu.vue";
 import {useTemplateRefsList} from "@vueuse/core";
 import piniaInstance from "@/store";
 
-const {currentRoute, push, replace} = useRouter();
+const {currentRoute, push, replace} = useRouter()??window.__hostRouter__;
 const viewListStore = useNavBarListStore(piniaInstance);
 const navTagsList = computed(() => viewListStore.navTagsList);
 // 初始化tag

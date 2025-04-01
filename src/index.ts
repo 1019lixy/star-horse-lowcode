@@ -32,6 +32,7 @@ const install = (app: App<Element>, options?: { router?: Router }) => {
     // 注入宿主应用的 router 实例
     if (options?.router) {
         app.provide('starHorseRouter', options.router);
+        window.__hostRouter__ = options.router;
     }
     Object.entries(items).forEach(([path, component]) => {
         const name = path

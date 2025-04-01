@@ -22,8 +22,6 @@ import {removeEmptyCondition} from "@/api/system.ts";
 import {Config} from "@/api/settings.ts";
 import Tablebtn from "@/components/comp/items/tablebtn.vue";
 import Help from "@/components/help.vue";
-import videojs from "video.js";
-import any = videojs.any;
 
 const dynamicForm = useDynamicFormStore(piniaInstance);
 const props = defineProps({
@@ -201,7 +199,7 @@ const permissionList = () => {
   return permissions.value;
 };
 const init = async () => {
-  if (props.btnPermissions&&Object.keys(props.btnPermissions).length > 0) {
+  if (props.btnPermissions && Object.keys(props.btnPermissions).length > 0) {
     permissions.value = props.btnPermissions;
   } else {
     permissions.value = await pagePermission.addRoute(route);

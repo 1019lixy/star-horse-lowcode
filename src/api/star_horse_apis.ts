@@ -6,7 +6,8 @@ import {useUserInfoStore} from "@/store/UserInfo.ts";
 import {SelectOption} from "@/components/types/SearchProps";
 import {getFingerId} from "@/api/finger_utils.ts";
 import {ServiceEnums} from "@/components/enums/ServiceEnums.ts";
-import { useRouter } from 'vue-router'
+import {useRouter} from 'vue-router'
+
 const userStore = useUserInfoStore(piniaInstance);
 const service = axios.create({
     baseURL: "/",
@@ -36,7 +37,7 @@ service.interceptors.request.use(
 
 export function getMenuId() {
     //@ts-ignore
-    const router = useRouter();
+    const router = useRouter() ?? window.__hostRouter__;
     const meta = router?.currentRoute?.value?.meta;
     let menuId = meta?.menuId as string;
     if (!menuId) {
