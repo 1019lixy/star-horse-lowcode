@@ -70,7 +70,9 @@ const searchFormData = reactive<SearchFields>({
     {label: "区域编码", defaultVisible: true, matchType: "lk", fieldName: "areaCode", type: "input"}
   ]
 });
-//表单和页面属性
+/**
+ * 表格属性, 
+ */
 const tableFieldList = reactive<PageFieldInfo>({
   fieldList: [
     {
