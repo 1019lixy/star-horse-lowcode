@@ -2,7 +2,7 @@
 import {computed, inject, onMounted, ref, unref, watch} from "vue";
 import {warning} from "@/utils/message";
 import {FieldInfo} from "@/components/types/PageFieldInfo";
-import {ModelRef} from "vue-demi";
+import {ModelRef} from "vue";
 import {useSelfOperationStore} from "@/store/SelfOperation.ts";
 import piniaInstance from "@/store";
 import {uuid} from "@/api/system.ts";

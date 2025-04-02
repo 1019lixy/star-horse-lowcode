@@ -3,7 +3,7 @@ import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
 import {onMounted, PropType} from "vue";
 import {ApiUrls} from "@/components/types/ApiUrls";
 import {FieldInfo} from "@/components/types/PageFieldInfo";
-import {ModelRef} from "vue-demi";
+import {ModelRef} from "vue";
 import {Config} from "@/api/settings.ts";
 import {getDataIndex, getFormData, getPrefix, checkObject, loadProp, validMsg, checkVisible} from "@/api/form_utils.ts";
 

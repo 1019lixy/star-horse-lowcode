@@ -4,7 +4,7 @@ import {onMounted, PropType, ref} from "vue";
 import {ApiUrls} from "@/components/types/ApiUrls";
 import {FieldInfo} from "@/components/types/PageFieldInfo";
 import StarHorseFormTable from "@/components/comp/StarHorseFormTable.vue";
-import {ModelRef} from "vue-demi";
+import {ModelRef} from "vue";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
 import {Config} from "@/api/settings.ts";
 import {getDataIndex, getFormData, getPrefix,checkObject} from "@/api/form_utils.ts";

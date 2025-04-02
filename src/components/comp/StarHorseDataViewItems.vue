@@ -1,7 +1,7 @@
 <script setup lang="ts" name="StarHorseDataViewObject">
   import { PropType } from "vue";
   import { PageFieldInfo } from "@/components/types/PageFieldInfo";
-  import { ModelRef } from "vue-demi";
+  import { ModelRef } from "vue";
   import { commonParseCodeToName } from "@/api/star_horse_utils.ts";
 
   const props = defineProps({

@@ -9,7 +9,7 @@ import {getToken} from "@/utils/auth";
 import Sortable from "sortablejs";
 import {Sort} from "@element-plus/icons-vue"
 import Help from "@/components/help.vue";
-import {ModelRef} from "vue-demi";
+import {ModelRef} from "vue";
 import {uuid} from "@/api/system.ts";
 import UTableColumn from "@/components/comp/items/UTableColumn.vue";
 import StarHorseForm from "@/components/comp/StarHorseForm.vue";

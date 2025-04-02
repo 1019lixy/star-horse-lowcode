@@ -8,7 +8,7 @@ import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 import {MenusInfo} from "@/components/types/MenusInfo";
 import {BatchFieldInfo, FieldInfo, OrderByInfo, PageFieldInfo, TabFieldInfo} from "@/components/types/PageFieldInfo";
 import {ApiUrls} from "@/components/types/ApiUrls";
-import {Reactive} from "vue-demi";
+import {Reactive} from "vue";
 import {DialogProps} from "@/components/types/DialogProps";
 import {createDatetime} from "@/api/date_utils.ts";
 import {pinyin} from "pinyin-pro";

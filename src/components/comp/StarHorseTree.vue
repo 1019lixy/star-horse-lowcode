@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {computed, nextTick, onMounted, reactive, ref, unref, PropType} from "vue";
 import {TreeNode, TreeNodeData} from "element-plus/es/components/tree-v2/src/types";
-import {ModelRef} from "vue-demi";
+import {ModelRef} from "vue";
 import SubSystemMenu from "@/components/menu/SubSystemMenu.vue";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
 import {useGlobalConfigStore} from "@/store/GlobalConfig.ts";

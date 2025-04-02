@@ -3,7 +3,7 @@
   import { ApiUrls } from "@/components/types/ApiUrls";
   import { PageFieldInfo } from "@/components/types/PageFieldInfo";
   import StarHorseFormTable from "@/components/comp/StarHorseFormTable.vue";
-  import { ModelRef } from "vue-demi";
+  import { ModelRef } from "vue";
   import { Config } from "@/api/settings.ts";
 
   const props = defineProps({

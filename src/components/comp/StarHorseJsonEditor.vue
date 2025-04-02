@@ -2,7 +2,7 @@
 import {markRaw, nextTick, onBeforeUnmount, onMounted, ref} from "vue";
 import JsonEditor from "jsoneditor";
 import "jsoneditor/dist/jsoneditor.min.css";
-import {ModelRef} from "vue-demi";
+import {ModelRef} from "vue";
 
 const props = defineProps({
   options: {type: Object},

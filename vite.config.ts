@@ -62,7 +62,16 @@ export default defineConfig((mode) => {
             createSvgIconsPlugin({
                 iconDirs: [resolve(process.cwd(), "src/icons"),
                     resolve(process.cwd(), "src/assets/icons/svg")],
-                symbolId: "icon-[dir]-[name]"
+                symbolId: "icon-[dir]-[name]",
+                svgoOptions: {
+                    plugins: [
+                        { name: 'removeTitle' }, // 删除<title>标签
+                        { name: 'removeDesc' }, // 删除<desc>标签
+                        { name: 'removeAttrs', params: { attrs: ['fill', 'stroke', 'class'] } }, // 删除指定属性
+                        { name: 'collapseGroups' }, // 合并重复分组
+                        { name: 'convertPathData' } // 优化路径数据
+                    ]
+                }
             }),
             /*visualizer({
                 open: false, // 构建完成后自动打开分析页面
@@ -81,7 +90,6 @@ export default defineConfig((mode) => {
         resolve: {
             alias: {
                 "@": resolve(__dirname, "./src"),
-                "monaco-editor": "monaco-editor/esm/vs/editor/editor.api.js"
             },
             extensions: [".js", ".vue", ".json", ".ts", ".jsx"]
         },

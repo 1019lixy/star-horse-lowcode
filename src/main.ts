@@ -17,7 +17,7 @@ import "highlight.js/styles/idea.css"; //这里有多个样式，自己可以根
 import "highlight.js/lib/common";
 import hljsVuePlugin from "@highlightjs/vue-plugin";
 import "animate.css";
-import ZhLocale from "element-plus/es/locale/lang/zh-cn"; // 中文
+import ZhLocale from "element-plus/dist/locale/zh-cn.mjs"; // 中文
 import draggable from "vuedraggable";
 import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 import piniaInstance from "@/store";
