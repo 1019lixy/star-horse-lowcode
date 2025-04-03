@@ -8,7 +8,7 @@ import {getToken} from "@/utils/auth.ts";
 import {useGlobalConfigStore} from "@/store/GlobalConfig.ts";
 import piniaInstance from "@/store";
 import {useButtonPermissionStore} from "@/store/ButtonPermission.ts";
-import {useRoute, useRouter} from "vue-router";
+import {useRoute} from "vue-router";
 import {UserFuncInfo} from "@/components/types/PageFieldInfo";
 import Help from "@/components/help.vue";
 import {Config} from "@/api/settings.ts";

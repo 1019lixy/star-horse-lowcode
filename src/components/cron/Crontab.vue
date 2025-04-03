@@ -1,5 +1,4 @@
 <template>
-  {{ dataValue }}
   <el-tabs type="border-card" v-model="tabActive">
     <el-tab-pane label="秒" name="0" v-if="shouldHide('second')">
       <CrontabSecond @update="updateContabValue" :cron="contabValueObj" :check="checkNumber" ref="cronsecond" />

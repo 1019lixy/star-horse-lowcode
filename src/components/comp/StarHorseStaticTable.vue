@@ -4,7 +4,7 @@
   import Sortable from "sortablejs";
   import { warning } from "@/utils/message";
   import { Config } from "@/api/settings.ts";
-  import {PropType} from "vue/dist/vue";
+  import {PropType} from "vue";
 
   const props = defineProps({
     //主键

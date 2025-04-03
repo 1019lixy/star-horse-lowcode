@@ -795,9 +795,12 @@ export function paramsFields(paramsConfigRef: Ref<any>, fieldName: string, item:
             label: "属性名称",
             fieldName: "fieldName",
             type: "select",
-            allowCreate: true,
+
             optionList: fieldList,
-            formVisible: true
+            formVisible: true,
+            preps:{
+                allowCreate: true,
+            }
         },
         {
             label: "搜索显示",

@@ -215,11 +215,11 @@ export default defineComponent({
         @blur="itemAction('blur')"
         v-model="context.attrs['formData'][field.preps['name']]"
     >
-      <template #empty="scope">
+      <template #empty>
         <el-card class="inner_content" style="margin: 5px">
           <!--          <div class="search_btn" :style="{'flex-direction':Config.buttonStyle.value=='line'?'column':'row'}">-->
           <star-horse-search-comp
-              :formData="context.attrs['field']!.preps['searchFieldList']"
+              :formData="field.preps['searchFieldList']"
               @searchData="(data: any) => searchDataFun(data)"
               :mutComp="true"
               :compUrl="field.preps['dataUrl']"

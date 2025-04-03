@@ -288,7 +288,7 @@ const moveColumn = () => {
   }
 };
 
-const editData = (row: any, _column: any, evt: Event) => {
+const editData = (row: any, _column?: any, evt?: Event) => {
   if (evt) {
     evt.stopPropagation();
   }
@@ -569,7 +569,7 @@ const setDataInfo = (fieldName: string, val: any) => {
  * @param column
  * @param evt
  */
-const selectRow = (row: any, _column: any, evt: Event) => {
+const selectRow = (row: any, _column?: any, evt?: Event) => {
   if (!evt) {
     dynamicForm.setSelectData(row);
     emits("selectItem", row);

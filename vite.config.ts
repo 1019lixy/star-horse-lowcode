@@ -12,13 +12,16 @@ import AutoImport from "unplugin-auto-import/vite";
 //此插件是处理外部依赖 比如cdn引入的js
 import tailwindcss from "@tailwindcss/vite";
 import dts from 'vite-plugin-dts';
-
+import {visualizer} from "rollup-plugin-visualizer";
 // https://vitejs.dev/config/
 /**
  * 此配置文件，非必需不要随便做修改，特别是打包相关的参数
  */
 export default defineConfig((mode) => {
-    let optimizeDepsList: string[] = [];
+    let optimizeDepsList: string[] = [ 'vue',
+        'vue-router',
+        'pinia',
+        'axios'];
     return {
         base: "/",
 
@@ -65,19 +68,19 @@ export default defineConfig((mode) => {
                 symbolId: "icon-[dir]-[name]",
                 svgoOptions: {
                     plugins: [
-                        { name: 'removeTitle' }, // 删除<title>标签
-                        { name: 'removeDesc' }, // 删除<desc>标签
-                        { name: 'removeAttrs', params: { attrs: ['fill', 'stroke', 'class'] } }, // 删除指定属性
-                        { name: 'collapseGroups' }, // 合并重复分组
-                        { name: 'convertPathData' } // 优化路径数据
+                        {name: 'removeTitle'}, // 删除<title>标签
+                        {name: 'removeDesc'}, // 删除<desc>标签
+                        {name: 'removeAttrs', params: {attrs: ['fill', 'stroke', 'class']}}, // 删除指定属性
+                        {name: 'collapseGroups'}, // 合并重复分组
+                        {name: 'convertPathData'} // 优化路径数据
                     ]
                 }
             }),
-            /*visualizer({
+            visualizer({
                 open: false, // 构建完成后自动打开分析页面
                 gzipSize: true,
                 brotliSize: true
-            })*/
+            })
         ],
         css: {
             //解决 Deprecation Warning: The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0.

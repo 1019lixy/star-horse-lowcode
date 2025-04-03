@@ -48,11 +48,7 @@ let buttonControl = reactive<any>({
 const getComponentName = (data: any) => {
   return data?.itemType + "-item";
 };
-const checkItem = (items: any) => {
-  if (!items["items"]) {
-    items["items"] = [];
-  }
-};
+
 const onDragAdd = (evt: Event, dataList: any) => {
   selectCurrentTd();
   let newIndex = evt.newIndex;

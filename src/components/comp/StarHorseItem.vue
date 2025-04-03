@@ -9,7 +9,7 @@ import {uuid} from "@/api/system.ts";
 import {Config} from "@/api/settings.ts";
 import {SearchFields} from "@/components/types/SearchProps";
 import {checkVisible} from "@/api/form_utils.ts";
-import {PropType} from "vue/dist/vue";
+import {PropType} from "vue";
 
 const props = defineProps({
   // allItem: {type: Array, required: true},

@@ -107,7 +107,7 @@ export default defineComponent({
         //如果参数是动态参数，则在当前form中寻找对应名称的值
         let urlParam: any = {};
         if (action.isDynamicParam == "Y") {
-          let dynamicParams: DynamicParamField[] = action.params;
+          let dynamicParams: SearchParams[] | DynamicParamField[] = action.params;
           let params: SearchParams[] = [];
           dynamicParams?.forEach((dynamicParam) => {
             let value = context.attrs['formData'][dynamicParam.paramName] ?? dynamicParam.defaultValue;

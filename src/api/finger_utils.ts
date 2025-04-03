@@ -14,7 +14,7 @@ function getLocalIp() {
             pc.setLocalDescription(offer)
         ).catch(err => console.error(err));
 
-        pc.onicecandidate = (ice) => {
+        pc.onicecandidate = (ice:any) => {
             if (ice.candidate) {
                 const ip = ice.candidate.address ||
                     ice.candidate.ip ||

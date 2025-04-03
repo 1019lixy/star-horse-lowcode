@@ -173,6 +173,15 @@
   const resetData = () => {
     dataOptions.value = [];
   };
+  const pageChangeClick = (val: number) => {
+    pageInfo.currentPage = val;
+    loadData();
+  }
+  const pageSizeClick = (val: number) => {
+    pageInfo.pageSize = val;
+    pageInfo.currentPage = 1;
+    loadData();
+  }
   defineExpose({
     open
   });

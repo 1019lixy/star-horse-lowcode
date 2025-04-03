@@ -2,7 +2,7 @@
   "name": "star-horse-lowcode",
   "private": false,
   "author": "l_1019@163.com",
-  "version": "2.7.0",
+  "version": "2.7.02",
   "type": "module",
   "description": "星马低代码平台",
   "keywords": [
@@ -44,6 +44,7 @@
     "serve": " vite --mode development",
     "build:dev": "cross-env NO_TYPE_CHECK=true NODE_OPTIONS=--max-old-space-size=8192 vite build --mode development",
     "build:prod": "cross-env NODE_OPTIONS=--max-old-space-size=16384  vite build --mode production",
+    "build": "vite build --mode production",
     "clean": "rimraf node_modules/.vite && rimraf node_modules/.cache",
     "preview": "vite preview --mode production",
     "deploy": "vite build --mode production && node deploy.js",
@@ -51,78 +52,33 @@
     "createNodeImageList": "node ./script/createNodeImageList.js"
   },
   "dependencies": {
-    "@antv/x6": "^2.18.1",
-    "@antv/x6-plugin-clipboard": "^2.1.6",
-    "@antv/x6-plugin-history": "^2.2.4",
-    "@antv/x6-plugin-keyboard": "^2.2.3",
-    "@antv/x6-plugin-selection": "^2.2.2",
-    "@antv/x6-plugin-snapline": "^2.1.7",
-    "@antv/x6-plugin-stencil": "^2.1.5",
-    "@antv/x6-plugin-transform": "^2.1.8",
-    "@antv/x6-vue-shape": "^2.1.2",
-
-
-
+    "@element-plus/icons-vue": "^2.3.1",
     "@fingerprintjs/fingerprintjs": "^4.6.1",
-
-    "@fullcalendar/core": "^6.1.15",
-    "@fullcalendar/daygrid": "^6.1.15",
-    "@fullcalendar/interaction": "^6.1.15",
-    "@fullcalendar/list": "^6.1.15",
-    "@fullcalendar/multimonth": "^6.1.15",
-    "@fullcalendar/timegrid": "^6.1.15",
-    "@fullcalendar/vue3": "^6.1.15",
-
     "@highlightjs/vue-plugin": "^2.1.0",
-    "@jiaminghi/data-view": "^2.10.0",
     "@originjs/vite-plugin-commonjs": "^1.0.3",
-    "@replit/codemirror-minimap": "^0.5.2",
     "@rollup/plugin-inject": "^5.0.5",
-
     "@tailwindcss/vite": "^4.0.14",
-    "tailwindcss": "^4.0.14",
-
-
     "@vitejs/plugin-vue-jsx": "^4.1.2",
     "@vue/cli-plugin-babel": "^5.0.8",
     "@vue/cli-plugin-eslint": "^5.0.8",
     "@vue/cli-service": "^5.0.8",
-
-    "@wangeditor/editor": "^5.1.23",
-    "@wangeditor/editor-for-vue": "^5.1.12",
-
-    "animate.css": "^4.1.1",
+    "@vueup/vue-quill": "^1.2.0",
     "autoprefixer": "^10.4.21",
     "axios": "^1.8.3",
-
-
-    "clipboard": "^2.0.11",
+    "chalk": "5.4.1",
     "core-js": "^3.41.0",
     "cross-env": "^7.0.3",
     "css-loader": "^7.1.2",
     "echarts": "^5.6.0",
-
-    "@element-plus/icons-vue": "^2.3.1",
     "element-plus": "^2.9.6",
-
-    "file-drops": "^0.5.0",
-    "flv.js": "^1.6.2",
     "glob": "^11.0.1",
-    "gridstack": "^11.5.0",
-    "highlight.js": "^11.11.1",
-    "html2canvas": "^1.4.1",
-    "i18n": "^0.15.1",
     "increase-memory-limit": "^1.0.7",
     "jquery": "^3.7.1",
-    "js-cookie": "^3.0.5",
-    "jsencrypt": "^3.3.2",
     "jsoneditor": "^10.1.3",
     "less": "^4.2.2",
     "less-loader": "^12.2.0",
-
     "node-scp": "^0.0.23",
-    "nprogress": "^0.2.0",
-
+    "ora": "^8.2.0",
     "path-browserify": "^1.0.1",
     "pinia": "^3.0.1",
     "pinia-plugin-persistedstate": "^4.2.0",
@@ -131,36 +87,16 @@
     "preview-image-js": "^1.1.9",
     "prismjs": "^1.30.0",
     "process": "^0.11.10",
-    "rollup-plugin-external-globals": "^0.13.0",
-    "rollup-plugin-postcss": "^4.0.2",
+    "quill-image-uploader": "^1.3.0",
     "rollup-plugin-visualizer": "^5.14.0",
-    "rxjs": "^7.8.2",
-    "sass": "^1.86.0",
-
-    "ora": "^8.2.0",
-    "scp2": "^0.5.0",
-    "chalk": "5.4.1",
-    "string-width": "^7.2.0",
-    "strip-ansi": "^7.1.0",
-    "swiper": "^11.2.5",
-
     "smooth-signature": "^1.0.15",
     "sortablejs": "^1.15.6",
-    "speak-tts": "^2.0.8",
-
-
-
-
-
+    "tailwindcss": "^4.0.14",
     "typescript": "^5.8.2",
     "unplugin-auto-import": "^19.1.1",
     "unplugin-vue-components": "^28.4.1",
     "uuid": "^11.1.0",
     "v-md-editor": "^1.0.6",
-
-    "video.js": "^8.22.0",
-    "videojs-contrib-hls": "^5.15.0",
-
     "vite-plugin-compression": "^0.5.1",
     "vite-plugin-dts": "^4.5.3",
     "vite-plugin-eslint": "^1.8.1",
@@ -168,28 +104,15 @@
     "vite-plugin-progress": "^0.0.7",
     "vite-plugin-static-copy": "^2.3.0",
     "vite-plugin-svg-icons": "^2.0.1",
-
     "vue": "^3.5.13",
+    "vue-i18n": "^11.1.2",
     "vue-m-message": "^4.0.2",
     "vue-router": "^4.5.0",
-    "vue3-guides": "^0.12.2",
-    "vue3-infinite-viewer": "^0.17.1",
-    "vue3-moveable": "^0.28.0",
-
-    "vue3-selecto": "^1.12.3",
-    "vuedraggable": "^4.1.0",
-    "vue-pdf-embed": "^2.1.2",
-
-    "vue-axios": "^3.5.2",
-    "vue-facing-decorator": "^3.0.4",
-    "vue-i18n": "^11.1.2",
-
-
-    "vue3-dnd": "^2.1.0"
-
+    "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
+    "@types/jquery": "^3.5.32",
     "@types/nprogress": "^0.2.3",
     "@types/prismjs": "^1.26.5",
     "@types/sortablejs": "^1.15.8",

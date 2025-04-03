@@ -1,7 +1,5 @@
 import "virtual:svg-icons-register";
 // 在文件最顶部添加以下代码
-import 'core-js/stable';
-import 'regenerator-runtime/runtime';
 import {App, defineAsyncComponent} from "vue";
 import '@/assets/css/index.scss';
 import "highlight.js/styles/idea.css";
@@ -40,7 +38,7 @@ const install = (app: App<Element>, options?: { router?: Router }) => {
             ?.replace(/\.vue$/, ""); // 移除扩展名
 
         if (name) {
-            app.component(name, defineAsyncComponent(component));
+            app.component(name, defineAsyncComponent(component as any));
         }
     });
 
@@ -58,7 +56,6 @@ export * from '@/store/ConsumerView.ts';
 export * from '@/store/ContinusConfig.ts';
 export * from '@/store/CopyerOperation.ts';
 export * from '@/store/DesignForm.ts';
-export * from '@/store/DesignGraph.ts';
 export * from '@/store/DesignPage.ts';
 export * from '@/store/DynamicForm.ts';
 export * from '@/store/GlobalConfig.ts';

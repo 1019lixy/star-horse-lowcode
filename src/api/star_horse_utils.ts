@@ -440,7 +440,8 @@ export function loadElementPlusIcon() {
 export function loadSvgIcons() {
     const items = import.meta.glob("@/icons/*.svg");
     const menuIconList = [];
-    for (const [key, value] of Object.entries(items)) {
+    for (const item of Object.entries(items)) {
+        const key = item[0];
         const name = key.slice(key.lastIndexOf("/") + 1, key.lastIndexOf("."));
         menuIconList.push({name: name, value: name});
     }

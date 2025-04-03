@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {Config} from "@/api/settings.ts";
 import {batchFieldDefaultValues} from "@/api/star_horse_utils.ts";
-import {PropType} from "vue/dist/vue";
+import {PropType} from "vue";
 
 defineProps({
   item: {type: Object, required: true},
