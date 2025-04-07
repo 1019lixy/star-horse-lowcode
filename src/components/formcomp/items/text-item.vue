@@ -30,7 +30,21 @@ export default defineComponent({
       :parentField="parentField"
   >
     <div class="cell-header" @click="itemAction('click')">
-      <span>{{ field.preps["textContent"] || field.preps["placeholder"] }}</span>
+      <div :style="{
+        display: 'flex',
+        verticalAlign: field.preps['verticalAlign']??'middle',
+        justifyContent: field.preps['justifyContent']??'center',
+        alignItems: field.preps['alignItems']??'center',
+        wordBreak: field.preps['wordBreak']??'normal',
+        width: field.preps['width']??'100%',
+        height:  field.preps['height']??'100%',
+        fontWeight: field.preps['fontWeight']??'600',
+        color: field.preps['color']??'inherit',
+        backgroundColor: field.preps['backgroundColor']??'none',
+        borderRadius: field.preps['fontWeight']??'none',
+        border: field.preps['border']??'none'
+      }">{{ field.preps["textContent"] || field.preps["placeholder"] }}
+      </div>
     </div>
   </starhorse-form-item>
 </template>
@@ -38,16 +52,5 @@ export default defineComponent({
 .cell-header {
   width: 100%;
   height: 100%;
-
-  span {
-    display: flex;
-    vertical-align: middle;
-    justify-content: center;
-    align-items: center;
-    word-break: normal;
-    width: 100%;
-    height: 100%;
-    font-weight: 600;
-  }
 }
 </style>
