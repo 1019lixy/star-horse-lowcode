@@ -18,7 +18,7 @@ const props = defineProps({
   //按钮默认显示限制，超出按钮个数则折叠显示
   showLimit: {type: Number, default: 3}
 });
-let validButtonList = ref<UserFuncInfo[]>([]);
+let validButtonList = ref<UserFuncInfo[]|any>([]);
 /**
  * 过滤掉需要隐藏的按钮
  */

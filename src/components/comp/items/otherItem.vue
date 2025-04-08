@@ -8,7 +8,7 @@ import {Config} from "@/api/settings.ts";
 
 const props = defineProps({
   compUrl: {type: Object as PropType<ApiUrls>},
-  item: {type: Object as PropType<FieldInfo>, required: true},
+  item: {type: Object as PropType<FieldInfo|any>, required: true},
   objectName: {type: String},
   // 数据索引
   dataIndex: {type: Number, default: -1},

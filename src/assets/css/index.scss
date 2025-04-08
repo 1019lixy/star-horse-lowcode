@@ -580,7 +580,12 @@ hr {
       .nav_area {
         flex-shrink: 0;
       }
-
+      .search-content {
+        min-height: 30px !important;
+        margin: 5px 0;
+        border: 1px solid #eee;
+        border-radius: 3px;
+      }
       .inner_content {
         flex: 1;
         display: flex;

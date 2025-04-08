@@ -79,6 +79,9 @@ const props = defineProps({
   globalConfig: {type: Object as PropType<any>, required: false},
   //是否动态页面
   isDynamic: {type: Boolean, default: false},
+  //隐藏按钮列表
+  hideButtonList: {type: Boolean, default: false},
+
   //按钮权限
   btnPermissions: {type: Object as PropType<any>, required: false},
 });
@@ -784,6 +787,16 @@ defineExpose({
     功能开发中，现在点击提交按钮导出所有数据
   </star-horse-dialog>
   <div class="star-horse-table">
+    <div class="tb_title" v-if="(title||helpMsg)&&!dialogInput">
+      <help :message="helpMsg" v-if="helpMsg"/>
+      <star-horse-icon
+          icon-class="info"
+          v-else
+          size="14px"
+          style="font-weight: bold; color: var(--star-horse-style)"
+      />
+      {{ title }}
+    </div>
     <div
         style="
         display: flex;
@@ -794,14 +807,14 @@ defineExpose({
         v-if="!dialogInput"
     >
       <div class="tb_title">
-        <help :message="helpMsg" v-if="helpMsg"/>
-        <star-horse-icon
-            icon-class="info"
-            v-else
-            size="14px"
-            style="font-weight: bold; color: var(--star-horse-style)"
+        <star-horse-button-list
+            @tableCompFunc="(fun: any) => tableCompFunc(fun)"
+            :compUrl="compUrl"
+            :btnPermission="permissions"
+            :dialogProps="dialogProps"
+            :showType="'dropdown'"
+            v-if="!hideButtonList"
         />
-        {{ title }}
       </div>
       <div style="display: flex; align-items: center; flex-direction: row-reverse">
         <star-horse-icon

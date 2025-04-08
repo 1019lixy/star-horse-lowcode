@@ -118,19 +118,19 @@ export declare interface FieldInfo {
     /**
      * 是否必须项
      */
-    required?: boolean|Ref<boolean>;
+    required?: boolean | Ref<boolean>;
     /**
      * 表单是否显示该属性
      */
-    formVisible?: boolean|Ref<boolean>;
+    formVisible?: boolean | Ref<boolean>;
     /**
      * 列表是否显示该属性
      */
-    listVisible?: boolean|Ref<boolean>;
+    listVisible?: boolean | Ref<boolean>;
     /**
      * 查看页面是否显示该属性
      */
-    viewVisible?: boolean|Ref<boolean>;
+    viewVisible?: boolean | Ref<boolean>;
 
     /**
      * 列表所在列最小宽度
@@ -143,15 +143,15 @@ export declare interface FieldInfo {
     /**
      * 是否禁用,Y 禁用 N 非禁用
      */
-    disabled?: string|Ref<string>;
+    disabled?: string | Ref<string>;
     /**
      * 编辑时禁用，Y 禁用 N 非禁用
      */
-    editDisabled?: string|Ref<string>;
+    editDisabled?: string | Ref<string>;
     /**
      * 是否允许多选,在类型为select时有效 Y 多选
      */
-    multiple?: string|Ref<string>;
+    multiple?: string | Ref<string>;
     /**
      * Tab容器数据
      */
@@ -232,6 +232,19 @@ export declare interface FieldInfo {
      * 校验规则
      */
     rules?: RuleType[] | any;
+    /**
+     * 添加事件
+     */
+    addActions?: Function|string;
+    /**
+     * 编辑事件
+     */
+    editActions?: Function|string;
+
+    /**
+     * 删除事件
+     */
+    removeActions?: Function|string;
 }
 
 /**

@@ -8,7 +8,7 @@
 
   defineProps({
     compUrl: { type: Object as PropType<ApiUrls> },
-    item: { type: Object as PropType<PageFieldInfo>, required: true },
+    item: { type: Object as PropType<PageFieldInfo|any>, required: true },
     objectName: { type: String },
     // 数据索引
     dataIndex: {type: Number, default: -1},

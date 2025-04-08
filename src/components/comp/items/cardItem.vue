@@ -9,7 +9,7 @@ import {getDataIndex, getFormData, getPrefix, checkObject, loadProp, validMsg, c
 
 const props = defineProps({
   compUrl: {type: Object as PropType<ApiUrls>},
-  item: {type: Array as PropType<Array<FieldInfo>>, required: true},
+  item: {type: Array as PropType<Array<FieldInfo>|any>, required: true},
   objectName: {type: String},
   // 数据索引
   dataIndex: {type: Number, default: -1},
