@@ -104,7 +104,7 @@ const uploadSuccess = (_response: any, _file: any, _fileList: any) => {
   //closeLoad();
   tableCompFunc("refresh");
 };
-let buttonList = ref<UserFuncInfo[]>([]);
+let buttonList = ref<UserFuncInfo[]|any>([]);
 /**
  * 扩展按钮
  */
@@ -295,9 +295,13 @@ defineExpose({
       v-if="showType == 'dropdown' && Object.keys(permissions || {}).length > 0"
   >
     <el-sub-menu index="1">
-      <template #title> 操作</template>
+      <template #title>
+        <el-tooltip content="操作" placement="top">
+          <star-horse-icon icon-class="operation" size="16px" cursor="pointer"/>
+        </el-tooltip>
+      </template>
       <template v-for="(item, index) in buttonList">
-        <template v-if="item.children && item.children.length > 0">
+        <template v-if="item.children?.length > 0">
           <el-sub-menu :index="'2-' + index" v-if="permissions[item.authority]">
             <template #title>
               {{ item.btnName }}
