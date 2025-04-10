@@ -5,20 +5,13 @@
     :form-item="field"
     :parentField="parentField"
   >
-    <v-md-editor
+    <MdEditor
       v-model="context.attrs['formData'][field.preps['name']]"
-      :mode="field.preps['mode'] || 'edit'"
-      :height="field.preps['height'] || ''"
-      :tab-size="field.preps['tabSize'] || 2"
-      :toc-nav-position-right="field.preps['tocNavPositionRight'] == 'Y'"
-      :default-show-toc="field.preps['defaultVisibleToc'] == 'Y'"
+      :theme="field.preps['theme'] || 'light'"
+      :language="field.preps['language'] || 'zh-CN'"
+      :previewTheme="field.preps['previewTheme'] || 'default'"
+      :codeTheme="field.preps['codeTheme'] || 'github'"
       :placeholder="field.preps['placeholder'] || '请输入' + field.preps['label']"
-      :autofocus="field.preps['autofocus'] == 'Y'"
-      :default-fullscreen="field.preps['defaultFullscreen'] == 'Y'"
-      :include-level="field.preps['includeLevel'] || [2, 3]"
-      :left-toolbar="field.preps['leftToolbar'] || defaultLeftToolBar"
-      :right-toolbar="field.preps['rightToolbar'] || defaultRightToolBar"
-      :toolbar="field.preps['toolbar'] || {}"
       class="markdown-editor"
     />
   </starhorse-form-item>
@@ -26,8 +19,11 @@
 <script lang="ts" name="markdown">
   import { defineComponent, onMounted, onUpdated, ref, shallowRef } from "vue";
   import { allAction } from "@/components/formcomp/utils/ItemRelationEventUtils.ts";
+  import { MdEditor } from "md-editor-v3";
+  import "md-editor-v3/lib/style.css";
 
   export default defineComponent({
+    components: { MdEditor },
     setup(_props, context) {
       const parentField = context.attrs["parentField"];
 

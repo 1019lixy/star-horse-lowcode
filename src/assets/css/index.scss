@@ -213,7 +213,10 @@ a {
 }
 
 .h100 {
+  display: flex !important;
+  overflow: hidden;
   height: 100% !important;
+  flex-direction: column;
 }
 
 .h100-overflow-hidden {

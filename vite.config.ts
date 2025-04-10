@@ -1,9 +1,9 @@
 import {defineConfig} from "vite";
 import vue from "@vitejs/plugin-vue";
+//编译进度条插件
 import progress from "vite-plugin-progress";
 import vueJsx from "@vitejs/plugin-vue-jsx";
 import inject from "@rollup/plugin-inject";
-import topLevelAwait from "vite-plugin-top-level-await";
 import {resolve} from "path";
 import {createSvgIconsPlugin} from "vite-plugin-svg-icons";
 import Components from "unplugin-vue-components/vite";
@@ -11,20 +11,18 @@ import {ElementPlusResolver} from "unplugin-vue-components/resolvers";
 import AutoImport from "unplugin-auto-import/vite";
 //此插件是处理外部依赖 比如cdn引入的js
 import tailwindcss from "@tailwindcss/vite";
-import dts from 'vite-plugin-dts';
 import {visualizer} from "rollup-plugin-visualizer";
 // https://vitejs.dev/config/
 /**
  * 此配置文件，非必需不要随便做修改，特别是打包相关的参数
  */
 export default defineConfig((mode) => {
-    let optimizeDepsList: string[] = [ 'vue',
+    let optimizeDepsList: string[] = ['vue',
         'vue-router',
         'pinia',
         'axios'];
     return {
         base: "/",
-
         optimizeDeps: {
             // force: true,
             include: optimizeDepsList
@@ -39,10 +37,7 @@ export default defineConfig((mode) => {
                     defineModel: true
                 }
             }),
-            dts({
-                insertTypesEntry: true,
-                copyDtsFiles: true
-            }),
+
             AutoImport({
                 imports: ["vue"],
                 resolvers: [ElementPlusResolver()]
@@ -53,7 +48,6 @@ export default defineConfig((mode) => {
                 resolvers: [ElementPlusResolver({importStyle: "sass"})]
             }),
             progress(),
-            topLevelAwait(),
             // viteCommonjs(),
             vueJsx({}),
             inject({

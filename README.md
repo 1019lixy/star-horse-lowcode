@@ -149,22 +149,16 @@ onMounted(() => {
   >
     <star-horse-data-view :dataFormat="dataFormat" :field-list="tableFieldList" :compUrl="dataUrl"/>
   </star-horse-dialog>
-  <el-card class="inner_content">
-    <div class="search_btn" >
+  <div class="search-content">
+    <div class="search_btn" :style="{ 'flex-direction': Config.buttonStyle.value == 'line'? 'column' : 'row' }">
       <star-horse-search-comp
-          @searchData="(data: any) => testRef.createSearchParams(data)"
+          @searchData="(data: any) => areainfoRef.createSearchParams(data)"
           :formData="searchFormData"
           :compUrl="dataUrl"
       />
-      <hr/>
-      <star-horse-button-list
-          @tableCompFunc="(fun: any) => testRef.tableCompFunc(fun)"
-          :compUrl="dataUrl"
-          :btnPermissions="btnPermisson"
-          :dialogProps="dialogProps"
-      />
     </div>
-    <hr/>
+  </div>
+  <el-card class="inner_content">
     <star-horse-table-comp
         ref="testRef"
         :fieldList="tableFieldList"

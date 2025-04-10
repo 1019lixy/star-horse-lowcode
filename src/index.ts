@@ -15,6 +15,7 @@ export * from "@/api/date_utils.ts";
 export * from "@/api/system.ts";
 export * from "@/api/user_func.ts";
 export * from "@/utils/message.ts";
+export * from "@/api/finger_utils.ts"
 const items = import.meta.glob([
     "@/components/comp/*.vue",
     "@/components/system/*.vue",

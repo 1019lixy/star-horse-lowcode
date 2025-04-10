@@ -16,18 +16,10 @@ import "virtual:svg-icons-register";
 import "highlight.js/styles/idea.css"; //这里有多个样式，自己可以根据需要切换
 import "highlight.js/lib/common";
 import hljsVuePlugin from "@highlightjs/vue-plugin";
-import "animate.css";
 import ZhLocale from "element-plus/dist/locale/zh-cn.mjs"; // 中文
 import draggable from "vuedraggable";
 import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 import piniaInstance from "@/store";
-import VMEditor from "v-md-editor";
-import "v-md-editor/lib/style/base-editor.css";
-import vuepressTheme from "v-md-editor/lib/theme/vuepress.js";
-import "v-md-editor/lib/theme/style/vuepress.css";
-import Prism from "prismjs";
-import "prismjs/components/prism-json.js";
-import hljs from "highlight.js";
 
 
 const app = createApp(App);
@@ -47,11 +39,7 @@ app.use(systemComponent);
 app.use(containerComponent);
 
 app.use(piniaInstance);
-VMEditor.use(vuepressTheme, {
-    Prism,
-    Hljs: hljs
-});
-app.use(VMEditor);
+
 app.use(ElementPlus, {
     locale: ZhLocale
 });
