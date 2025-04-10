@@ -154,7 +154,7 @@ provide("dialogOperation", clickFunction);
         </div>
         <template #footer>
           <span class="dialog-footer" v-if="!isView">
-            <slot name="extand"></slot>
+            <slot name="extend"></slot>
             <el-button
                 @click="operation('merge', 'close')"
                 style="background: var(--star-horse-style); color: var(--star-horse-white)"

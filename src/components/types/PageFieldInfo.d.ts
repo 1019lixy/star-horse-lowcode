@@ -341,6 +341,10 @@ export declare interface UserFuncInfo {
      */
     disabled?: string;
     /**
+     * 按钮显示位置，默认在列表的右侧
+     */
+    position?: 'table'|'toolbar';
+    /**
      * 子节点
      */
     children?: UserFuncInfo[]
@@ -542,7 +546,7 @@ export declare interface ExpandTable {
     /**
      * 扩展按钮方法
      */
-    extandFuncs?: UserFuncInfo[],
+    extendFuncs?: UserFuncInfo[],
     /**
      * 扩展方法API接口
      */

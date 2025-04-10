@@ -18,7 +18,7 @@ const props = defineProps({
   compUrl: {type: Object as PropType<ApiUrls>, required: true},
   viewFlag: {type: Boolean, default: false},
   //自定义按钮
-  extandBtns: {type: Array as PropType<UserFuncInfo[]>},
+  extendBtns: {type: Array as PropType<UserFuncInfo[]>},
   //预检查方法,如果设置了预检查方法，必须要检查通过后，按钮事件才能继续往下执行
   preValidFunc: {type: Object, default: {}},
   btnPermissions: {type: Object as PropType<any>, required: false},
@@ -104,12 +104,12 @@ const uploadSuccess = (_response: any, _file: any, _fileList: any) => {
   //closeLoad();
   tableCompFunc("refresh");
 };
-let buttonList = ref<UserFuncInfo[]|any>([]);
+let buttonList = ref<UserFuncInfo[] | any>([]);
 /**
  * 扩展按钮
  */
-const extandBtnFunction = (): Array<UserFuncInfo> => {
-  let arr: Array<UserFuncInfo> = [];
+const extendBtnFunction = (): Array<UserFuncInfo> => {
+  let arr: Array<UserFuncInfo | any> = [];
   if (props.viewFlag) {
     return arr;
   }
@@ -164,14 +164,17 @@ const extandBtnFunction = (): Array<UserFuncInfo> => {
     funcName: (actionName: string) => btnOperation(actionName)
   });
   //自定义按钮，如果时自定义按钮，则覆盖原有的按钮
-  if (props.extandBtns && props.extandBtns.length > 0) {
-    for (let i in arr) {
-      let temp: UserFuncInfo = arr[i];
-      if (props.extandBtns.find((item) => item.btnName == temp.btnName && item.authority == temp.authority)) {
-        arr.splice(i, 1);
+  if (props.extendBtns?.length > 0) {
+    let extBtns: UserFuncInfo[] = props.extendBtns.filter((item) => item.position == "toolbar") || [];
+    if (extBtns?.length > 0) {
+      for (let i in arr) {
+        let temp: UserFuncInfo = arr[i];
+        if (extBtns.find((item: UserFuncInfo) => item.btnName == temp.btnName && item.authority == temp.authority)) {
+          arr.splice(i, 1);
+        }
       }
+      arr.push(...extBtns);
     }
-    arr.push(...props.extandBtns);
   }
   arr.sort((a: UserFuncInfo, b: UserFuncInfo) => (a.priority || 100) - (b.priority || 100));
   return arr;
@@ -190,7 +193,7 @@ onMounted(() => {
   init();
 });
 onUpdated(() => {
-  buttonList.value = extandBtnFunction();
+  buttonList.value = extendBtnFunction();
 });
 defineExpose({
   setFormData

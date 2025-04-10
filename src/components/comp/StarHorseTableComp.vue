@@ -26,7 +26,7 @@ import Help from "@/components/help.vue";
 const dynamicForm = useDynamicFormStore(piniaInstance);
 const props = defineProps({
   //url地址
-  compUrl: {type: Object as PropType<ApiUrls>, required: true},
+  compUrl: {type: Object as PropType<ApiUrls | any>, required: true},
   //主键
   primaryKey: {type: [String, Object] as PropType<string | any>, required: true},
   //列名
@@ -63,7 +63,7 @@ const props = defineProps({
   //标题
   title: {type: String},
   //自定义按钮
-  extandBtns: {type: Array as PropType<UserFuncInfo[]>},
+  extendBtns: {type: Array as PropType<UserFuncInfo[]>},
   //多选
   multipleSelect: {type: Boolean, default: false},
   //按钮操作权限
@@ -390,6 +390,7 @@ const tbCommonFun = (name: string | undefined, param: any) => {
   } else {
     console.log("未定义的功能", name);
   }
+  return false;
 };
 /**
  * 解析主键
@@ -606,29 +607,32 @@ const selectRow = (row: any, _column?: any, evt?: Event) => {
 };
 
 let buttonList = ref<UserFuncInfo[]>([]);
+let toolbarButtonList = ref<UserFuncInfo[]>([]);
 /**
  * 扩展按钮
  */
-const extandBtnFunction = (): Array<UserFuncInfo> => {
+const extendBtnFunction = (): Array<UserFuncInfo> => {
   let arr: Array<UserFuncInfo> = [];
+  const extendBtnsCopy: UserFuncInfo[] = props.extendBtns ? JSON.parse(JSON.stringify(props.extendBtns)) : [];
+
   //单独定义的按钮
-  if (props.extandBtns && props.extandBtns.length > 0) {
-    props.extandBtns.forEach((item) => {
+  extendBtnsCopy?.forEach((item: UserFuncInfo) => {
+    if (item.position != "toolbar") {
       if (!item.funcName) {
         item.funcName = (row: any) => tbCommonFun(item.authority, row);
       }
       arr.push(item);
-    });
-  }
+    }
+  });
   //在定义字段时定义的按钮
-  if (props.fieldList["userTableFuncs"]) {
-    props.fieldList["userTableFuncs"].forEach((item) => {
+  props.fieldList["userTableFuncs"]?.forEach((item: UserFuncInfo) => {
+    if (item.position != "toolbar") {
       if (!item.funcName) {
         item.funcName = (row: any) => tbCommonFun(item.authority, row);
       }
       arr.push(item);
-    });
-  }
+    }
+  });
   if (!props.disableAction) {
     let edit = arr.filter((item) => item.authority == "edit")?.length;
     if (!edit) {
@@ -761,7 +765,10 @@ onMounted(() => {
   init();
 });
 onUpdated(() => {
-  buttonList.value = extandBtnFunction();
+  if (JSON.stringify(buttonList.value) !== JSON.stringify(extendBtnFunction())) {
+    buttonList.value = extendBtnFunction();
+    toolbarButtonList.value = buttonList.value.filter((item) => item.position == "toolbar") || [];
+  }
 });
 //导出方法和变量
 defineExpose({
@@ -811,6 +818,7 @@ defineExpose({
             @tableCompFunc="(fun: any) => tableCompFunc(fun)"
             :compUrl="compUrl"
             :btnPermission="permissions"
+            :extendBtns="extendBtns"
             :dialogProps="dialogProps"
             :showType="'dropdown'"
             v-if="!hideButtonList"
@@ -929,7 +937,7 @@ defineExpose({
               >
                 <el-table-column fixed="left" label="操作" :width="160" v-if="expandTable.showButton">
                   <template #default="innerScope">
-                    <template v-for="epd in expandTable.extandFuncs">
+                    <template v-for="epd in expandTable.extendFuncs">
                       <el-tooltip :content="epd.btnName">
                         <star-horse-icon
                             v-if="permissions[epd.authority!]"
@@ -967,7 +975,8 @@ defineExpose({
         />
         <el-table-column
             v-if="
-            (!disableAction || (disableAction && extandBtns?.length > 0)) && Object.keys(permissions || {}).length > 0
+            (!disableAction || (disableAction && extendBtns?.filter(item=>item.position!='toolbar')?.length > 0))
+            && Object.keys(permissions || {}).length > 0
           "
             fixed="right"
             label="操作"
