@@ -61,7 +61,7 @@ const dynamicHandleAddForm = async (row: any, type: string) => {
 };
 const mergeData = async () => {
   let flag = false;
-  await rowDataFormRef.value.$refs.starHorseFormRef.validate((res) => (flag = res));
+  await rowDataFormRef.value.$refs.starHorseFormRef.validate((res:any) => (flag = res));
   if (!flag) {
     return;
   }
@@ -92,7 +92,7 @@ const dynamicHandleAddRow = (row: any, type: number) => {
     emits("addRow", row);
   } else {
     let index = row.xh - 1;
-    formFields && formFields[props.batchName].splice(index, 1);
+    formFields && formFields[props.batchName]?.splice(index, 1);
     dataForm.value[props.batchName].splice(index, 1);
     emits("removeRow", row);
   }

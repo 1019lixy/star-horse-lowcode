@@ -122,7 +122,7 @@ provide("dialogOperation", clickFunction);
                   v-if="!!isFullScreen && draggable"
                   :title="i18n('dialog.resize')"
               >
-                <star-horse-icon icon-class="fullscreen-shrink" color="var(--star-horse-white)"/>
+                <star-horse-icon icon-class="fullscreen-shrink" color="var(--star-horse-white)" cursor="pointer"/>
               </el-button>
               <el-button
                   style="background: var(--star-horse-style); color: var(--star-horse-white)"
@@ -132,7 +132,7 @@ provide("dialogOperation", clickFunction);
                   v-if="!isFullScreen && draggable"
                   :title="i18n('dialog.fullScreen')"
               >
-                <star-horse-icon icon-class="fullscreen-expand" color="var(--star-horse-white)"/>
+                <star-horse-icon icon-class="fullscreen-expand" color="var(--star-horse-white)" cursor="pointer"/>
               </el-button>
             </template>
             <el-button
@@ -142,7 +142,7 @@ provide("dialogOperation", clickFunction);
                 link
                 :title="i18n('dialog.close')"
             >
-              <star-horse-icon icon-class="close" color="var(--star-horse-white)"/>
+              <star-horse-icon icon-class="close" color="var(--star-horse-white)" cursor="pointer"/>
             </el-button>
           </div>
         </template>
@@ -160,7 +160,7 @@ provide("dialogOperation", clickFunction);
                 style="background: var(--star-horse-style); color: var(--star-horse-white)"
                 :size="compSize"
             >
-              <star-horse-icon icon-class="save" style="color: var(--star-horse-white)"/>
+              <star-horse-icon icon-class="save" cursor="pointer" style="color: var(--star-horse-white)"/>
               {{ btnText ?? i18n("dialog.submit") }}
             </el-button>
             <el-button
@@ -169,7 +169,7 @@ provide("dialogOperation", clickFunction);
                 :size="compSize"
                 v-if="isShowBtnContinue"
             >
-              <star-horse-icon icon-class="save_continue" style="color: var(--star-horse-white)"/>
+              <star-horse-icon icon-class="save_continue" cursor="pointer" style="color: var(--star-horse-white)"/>
               {{ i18n("dialog.submitContinue") }}</el-button
             >
             <el-button
@@ -179,7 +179,7 @@ provide("dialogOperation", clickFunction);
                 style="background: var(--star-horse-style); color: var(--star-horse-white)"
                 v-if="isShowSave"
             >
-              <star-horse-icon icon-class="short_save"/>{{ i18n("dialog.save") }}</el-button
+              <star-horse-icon icon-class="short_save" cursor="pointer"/>{{ i18n("dialog.save") }}</el-button
             >
             <el-button
                 @click="operation('mergeDraft', 'continue')"
@@ -188,7 +188,7 @@ provide("dialogOperation", clickFunction);
                 style="background: var(--star-horse-style); color: var(--star-horse-white)"
                 v-if="isShowSave && isShowBtnContinue"
             >
-              <star-horse-icon icon-class="save"/>{{ i18n("dialog.saveContinue") }}</el-button
+              <star-horse-icon icon-class="save" cursor="pointer"/>{{ i18n("dialog.saveContinue") }}</el-button
             >
             <template v-for="item in userBtn">
               <el-button
@@ -200,12 +200,12 @@ provide("dialogOperation", clickFunction);
                 }"
                   :size="compSize"
               >
-                <star-horse-icon :icon-class="item.icon" style="color: var(--star-horse-white)"/>
+                <star-horse-icon :icon-class="item.icon" cursor="pointer" style="color: var(--star-horse-white)"/>
                 {{ item.btnName }}
               </el-button>
             </template>
             <el-button @click="operation('resetForm', 'reset')" :size="compSize" link v-if="isShowReset">
-              <star-horse-icon icon-class="undo" style="color: var(--star-horse-style)"/>
+              <star-horse-icon icon-class="undo"  cursor="pointer" style="color: var(--star-horse-style)"/>
               {{ i18n("dialog.reset") }}</el-button
             >
           </span>
