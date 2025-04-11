@@ -123,17 +123,19 @@ onMounted(() => {
           <star-horse-icon
               @click.stop="selectParentContainer()"
               icon-class="select-parent"
+              cursor="pointer"
               style="color: var(--star-horse-white)"
           />
         </el-tooltip>
 
         <el-tooltip content="更换组件">
-          <star-horse-icon @click.stop="exchangeItem" icon-class="exchange" style="color: var(--star-horse-white)"/>
+          <star-horse-icon @click.stop="exchangeItem" icon-class="exchange"  cursor="pointer" style="color: var(--star-horse-white)"/>
         </el-tooltip>
         <el-tooltip content="上移" v-if="parentField?.itemType != 'table'">
           <star-horse-icon
               @click.stop="moveUpItem(isEdit, formItem?.preps, parentField)"
               icon-class="move-up"
+              cursor="pointer"
               style="color: var(--star-horse-white)"
           />
         </el-tooltip>
@@ -141,6 +143,7 @@ onMounted(() => {
           <star-horse-icon
               @click.stop="moveDownItem(isEdit, formItem?.preps, parentField)"
               icon-class="move-down"
+              cursor="pointer"
               style="color: var(--star-horse-white)"
           />
         </el-tooltip>
@@ -148,6 +151,7 @@ onMounted(() => {
           <star-horse-icon
               @click.stop="removeItem(isEdit, formItem?.preps, parentField)"
               icon-class="clear-all"
+              cursor="pointer"
               style="color: var(--star-horse-white)"
           />
         </el-tooltip>
@@ -219,7 +223,7 @@ onMounted(() => {
     position: absolute;
     //bottom: -25px;
     top: 0;
-    transform: translate(0, -100%);
+    transform: translate(0, -50%);
     right: 0;
     align-items: center;
     background: var(--star-horse-style);
@@ -242,7 +246,7 @@ onMounted(() => {
     align-items: center;
     background: var(--star-horse-style);
     z-index: 9999999;
-    transform: translate(0, -100%);
+    transform: translate(0, -50%);
 
     .svg-icon {
       font-size: 12px;
