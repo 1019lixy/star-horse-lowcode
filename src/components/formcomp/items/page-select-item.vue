@@ -20,7 +20,7 @@ export default defineComponent({
     let formItem = shallowRef({label: "input", required: false});
     let dataField = shallowRef("");
     let multipleSelection = shallowRef<Array<any>>([]);
-    let actionName = shallowRef("keydown.enter");
+    let actionName = shallowRef("normal");
     let pageInfo = ref<PageProps>({
       pageSize: 20,
       currentPage: 1,
@@ -160,7 +160,7 @@ export default defineComponent({
         }
     );
     onMounted(() => {
-      actionName.value = field.preps?.actionName || "keydown.enter";
+      actionName.value = field.preps?.actionName || "normal";
       loadByPage(true);
       if (!context.attrs["isSearch"]) {
         allAction(context, actionName.value, true);

@@ -79,7 +79,7 @@
       };
       onMounted(() => {
         initData();
-        actionName.value = field.preps?.actionName || "keydown.enter";
+        actionName.value = field.preps?.actionName || "normal";
         if (!context.attrs["isSearch"]) {
           allAction(context, actionName.value, !field.preps["needInitLink"]);
         }

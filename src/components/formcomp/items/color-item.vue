@@ -34,7 +34,7 @@
         allAction(context, prep);
       };
       onMounted(() => {
-        actionName.value = field.preps?.actionName || "keydown.enter";
+        actionName.value = field.preps?.actionName || "normal";
         if (!context.attrs["isSearch"]) {
           allAction(context, actionName.value, true);
         }

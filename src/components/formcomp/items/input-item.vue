@@ -81,7 +81,7 @@
       let preSelect = shallowRef("");
       let appSelect = shallowRef("");
       const inputItemRef = ref();
-      let actionName = shallowRef("keydown.enter");
+      let actionName = shallowRef("normal");
       const dynamicFunction = (_funcName: string, data: any) => {
         if (!data) {
           return;
@@ -100,7 +100,7 @@
         allAction(context, prep);
       };
       onMounted(() => {
-        actionName.value = field.preps?.actionName || "keydown.enter";
+        actionName.value = field.preps?.actionName || "normal";
         if (!context.attrs["isSearch"]) {
           allAction(context, actionName.value, true);
         }

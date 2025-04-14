@@ -94,7 +94,7 @@ export default defineComponent({
         console.error(e);
       }
     };
-    let actionName = shallowRef("keydown.enter");
+    let actionName = shallowRef("normal");
     const itemAction = (prep: any) => {
       allAction(context, prep);
     };
@@ -152,7 +152,7 @@ export default defineComponent({
       dialogInputTableRef.value?.createSearchParams(data);
     };
     onMounted(() => {
-      actionName.value = field.preps?.actionName || "keydown.enter";
+      actionName.value = field.preps?.actionName || "normal";
       if (!context.attrs["isSearch"]) {
         allAction(context, actionName.value, true);
       }

@@ -67,7 +67,7 @@ export default defineComponent({
     let btnDialogVisible = shallowRef<boolean>(false);
     const btnCompRef = shallowRef();
     onMounted(() => {
-      actionName.value = field.preps?.actionName || "keydown.enter";
+      actionName.value = field.preps?.actionName || "normal";
     });
     const operResultAction = async () => {
       let action: BtnAction = field.preps;

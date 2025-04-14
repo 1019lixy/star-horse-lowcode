@@ -57,7 +57,7 @@ export default defineComponent({
     let dataField = shallowRef("");
     let userTableRef = shallowRef();
     let dialogInputVisible = shallowRef<boolean>(false);
-    let actionName = shallowRef("keydown.enter");
+    let actionName = shallowRef("normal");
     let userOptionList = shallowRef<Array<any>>([]);
     const itemAction = (prep: any) => {
       allAction(context, prep);

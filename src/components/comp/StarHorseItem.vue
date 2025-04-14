@@ -221,7 +221,7 @@ const compPreps = () => {
     dataForm.value[props.item?.fieldName] = props.item?.defaultValue;
   }
 };
-const defaultAction = ref("keydown.enter");
+const defaultAction = ref("normal");
 const typeList = ["select", "tselect", "date", "daterange"];
 const actionName = ref();
 const randId = ref();
