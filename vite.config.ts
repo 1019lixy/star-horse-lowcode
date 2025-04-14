@@ -25,8 +25,8 @@ export default defineConfig((mode) => {
         base: "/",
         optimizeDeps: {
             // force: true,
-            include: optimizeDepsList
-            // exclude:[]
+            include: optimizeDepsList,
+            exclude: ['vue-demi']
         },
         plugins: [
             tailwindcss(),
@@ -96,6 +96,7 @@ export default defineConfig((mode) => {
             rollupOptions: {
                 external: ["vue", 'pinia', 'core-js', 'regenerator-runtime'],
                 output: {
+                    exports:"named",
                     assetFileNames: 'assets/[name][extname]', // 修正资源输出路径
                     // 禁用代码分割
                     inlineDynamicImports: true,

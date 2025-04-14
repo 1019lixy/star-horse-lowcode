@@ -13,10 +13,7 @@ import {createApp} from "vue";
 import ElementPlus from "element-plus";
 // 导入svg图标
 import "virtual:svg-icons-register";
-import "highlight.js/styles/idea.css"; //这里有多个样式，自己可以根据需要切换
-import "highlight.js/lib/common";
-import hljsVuePlugin from "@highlightjs/vue-plugin";
-import ZhLocale from "element-plus/dist/locale/zh-cn.mjs"; // 中文
+import zhCn from "element-plus/dist/locale/zh-cn.mjs"; // 中文
 import draggable from "vuedraggable";
 import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 import piniaInstance from "@/store";
@@ -41,9 +38,9 @@ app.use(containerComponent);
 app.use(piniaInstance);
 
 app.use(ElementPlus, {
-    locale: ZhLocale
+    locale: zhCn
 });
-app.use(hljsVuePlugin);
+// app.use(hljsVuePlugin);
 app.config.performance = true;
 /**
  * 处理未捕获异常

@@ -2,7 +2,7 @@ import "virtual:svg-icons-register";
 // 在文件最顶部添加以下代码
 import {App, defineAsyncComponent} from "vue";
 import '@/assets/css/index.scss';
-import "highlight.js/styles/idea.css";
+// import "highlight.js/styles/idea.css";
 import "element-plus/theme-chalk/index.css";
 import "@/assets/css/flow.scss";
 import "tailwindcss/index.css";

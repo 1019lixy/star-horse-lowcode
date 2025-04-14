@@ -1038,6 +1038,7 @@ defineExpose({
         @current-change="pageChangeClick"
         @size-change="pageSizeClick"
         :size="compSize"
+        :page-sizes="[20, 50, 100,200,300, 400]"
         layout="total, sizes, prev, pager, next, jumper"
         v-model:currentPage="pageInfo.currentPage"
         v-model:page-size="pageInfo.pageSize"

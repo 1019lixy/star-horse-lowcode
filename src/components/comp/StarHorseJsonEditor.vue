@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import {markRaw, nextTick, onBeforeUnmount, onMounted, ref} from "vue";
-import JsonEditor from "jsoneditor";
-import "jsoneditor/dist/jsoneditor.min.css";
-import {ModelRef} from "vue";
+import {ModelRef, nextTick, onBeforeUnmount, onMounted, ref} from "vue";
+import JsonEditor from 'vue3-ts-jsoneditor';
 
 const props = defineProps({
   options: {type: Object},
@@ -29,13 +27,16 @@ const emits = defineEmits([
   "validationError"
 ]);
 const json: ModelRef<any> = defineModel("modelValue");
-const jsonEditorRef = ref();
+// const jsonEditorRef = ref();
+
+const queryLanguages = ref<any>(['javascript' | 'lodash' | 'jmespath' | 'jsonquery' | 'jsonpath']);
+
 let expandedModes = ref<Array<string>>(["tree", "view", "form"]);
 // 全屏处理
 let isFullScreen = ref<boolean>(false);
 let hasLogo = ref<boolean>(true);
 let showFullScreen = ref<boolean>(false);
-let editor = ref<JsonEditor>(null);
+let editor = ref(null);
 const toggleFullScreen = async () => {
   isFullScreen.value = !isFullScreen.value;
   await nextTick(() => {
@@ -58,7 +59,7 @@ const init = () => {
     };
 
     // 兼容一次性删除所有内容
-    const text = editor.value.getText();
+    const text = editor.value?.getText();
     if (!text) {
       setJson("");
       return;
@@ -90,7 +91,7 @@ const init = () => {
   const onValidationError = (errors) => {
     emits("validationError", editor.value, errors);
   };
-  const finalOptions = {
+  const finalOptions: any = {
     ...props.options,
     indentation: 2,
     language: props.language,
@@ -105,7 +106,10 @@ const init = () => {
     onBlur,
     onValidationError
   };
-  editor.value = markRaw(new JsonEditor(jsonEditorRef.value, finalOptions));
+  // editor.value = createJSONEditor({
+  //   target: jsonEditorRef.value,
+  //   props: finalOptions
+  // });// markRaw(new JSONEditor(jsonEditorRef.value, finalOptions));
 };
 onMounted(() => {
   init();
@@ -122,17 +126,11 @@ defineExpose({
 });
 </script>
 <template>
-  <div class="container" :class="{ 'full-screen-container': isFullScreen }">
-    <div ref="jsonEditorRef" class="json-editor"/>
-    <div
-        class="full-screen"
-        :class="{
-        show: showFullScreen,
-        right: !hasLogo
-      }"
-        @click="toggleFullScreen"
-    />
-  </div>
+  <json-editor ref="editor"
+               mode="text"
+               v-model:text="json"
+               :queryLanguagesIds="queryLanguages"
+               class="json-editor"/>
 </template>
 
 <style scoped lang="scss">
