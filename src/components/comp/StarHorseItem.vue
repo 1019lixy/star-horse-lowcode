@@ -18,7 +18,7 @@ const props = defineProps({
   primaryKey: {type: [String, Object] as PropType<string | any>},
   // 数据索引
   dataIndex: {type: Number, default: -1},
-  bareFlag: {type: Boolean, default: false},
+  bareFlag: {type: Object as PropType<Boolean|String>, default: false},
   batchName: {type: String, default: ""},
   compSize: {type: String, default: Config.compSize},
   isSearch: {type: Boolean, default: false}, //是否查询数据
@@ -162,7 +162,7 @@ const compPreps = () => {
     field.value.preps["inactiveText"] = props.item?.inactiveText || "否";
     field.value.preps["activeValue"] = props.item?.activeValue || "Y";
     field.value.preps["inactiveValue"] = props.item?.inactiveValue || "N";
-  } else if (itemType.value == "comp") {
+  } else if (itemType.value == "usercomp") {
     field.value.preps["params"] = props.item?.params || {};
   }
   field.value.preps["multiple"] = props.item?.multiple;
@@ -271,7 +271,7 @@ onMounted(() => {
 }
 </style>
 <template>
-  <div v-if="bareFlag || field.preps.headerFlag == 'Y'" class="bare-comp">
+  <div v-if="bareFlag===true||bareFlag=='Y' || field.preps.headerFlag == 'Y'" class="bare-comp">
     <component
         :id="randId"
         :is="(dataForm&&dataForm['_' + field.preps.name + 'Type'] || itemType) + '-item'"

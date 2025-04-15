@@ -12,7 +12,7 @@
     }" v-if="field.preps?.viewType=='form'"/>
     <component :is="field.preps?.componentName"
                ref="btnCompRef"
-               v-else-if="field.preps?.viewType=='comp'"
+               v-else-if="field.preps?.viewType=='usercomp'"
                :params="field.preps?.params"/>
   </star-horse-dialog>
   <starhorse-form-item

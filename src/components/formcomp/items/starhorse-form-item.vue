@@ -1,5 +1,5 @@
 <script setup lang="ts" name="starhorse-form-item">
-import {computed, onMounted, ref} from "vue";
+import {computed, onMounted, PropType, ref} from "vue";
 import {useDesignFormStore} from "@/store/DesignForm.ts";
 import piniaInstance from "@/store/index.ts";
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
@@ -18,7 +18,7 @@ const props = defineProps({
   formItem: {type: Object, required: true},
   isDesign: {type: Boolean, default: true},
   //是否需要css 修饰
-  bareFlag: {type: Boolean, default: false}
+  bareFlag: {type: Object as PropType<Boolean | String>, default: false}
 });
 let designForm = useDesignFormStore(piniaInstance);
 let isEdit = computed(() => designForm.isEdit);
@@ -84,7 +84,8 @@ onMounted(() => {
     </template>
     <field-list @selectData="changeItem"/>
   </star-horse-dialog>
-  <div class="item-info" :style="{margin:formItem.preps?.itemType=='button'?'5px auto':'unset'}" v-if="bareFlag">
+  <div :class="{'item-info':formItem.preps?.itemType!='usercomp'}"
+       :style="{margin:formItem.preps?.itemType=='button'?'5px auto':'unset'}" v-if="bareFlag===true||bareFlag=='Y'">
     <help :message="formItem.preps?.helpMsg" v-if="formItem.preps?.helpMsg"/>
     <slot></slot>
   </div>
@@ -114,7 +115,10 @@ onMounted(() => {
         <help :message="formItem.preps?.helpMsg" v-if="formItem.preps?.helpMsg"/>
         <slot></slot>
       </el-form-item>
-      <div v-else class="bare-item item-info" :style="{margin:formItem?.itemType=='button'?'5px auto':'unset'}">
+      <div v-else :class="{'bare-item':true,
+                           'item-info':formItem.preps?.itemType!='usercomp'
+                          }"
+           :style="{margin:formItem?.itemType=='button'?'5px auto':'unset'}">
         <help :message="formItem.preps?.helpMsg" v-if="formItem.preps?.helpMsg"/>
         <slot></slot>
       </div>
@@ -127,9 +131,9 @@ onMounted(() => {
               style="color: var(--star-horse-white)"
           />
         </el-tooltip>
-
         <el-tooltip content="更换组件">
-          <star-horse-icon @click.stop="exchangeItem" icon-class="exchange"  cursor="pointer" style="color: var(--star-horse-white)"/>
+          <star-horse-icon @click.stop="exchangeItem" icon-class="exchange" cursor="pointer"
+                           style="color: var(--star-horse-white)"/>
         </el-tooltip>
         <el-tooltip content="上移" v-if="parentField?.itemType != 'table'">
           <star-horse-icon

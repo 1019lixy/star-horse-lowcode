@@ -1,10 +1,11 @@
 import {error} from "@/utils/message.ts";
 import {userFunction} from "@/api/user_func.ts";
-import {createCondition} from "@/api/star_horse_utils.ts";
+import {compDynamicData} from "@/api/star_horse_utils.ts";
 import piniaInstance from "@/store";
 import {useSelfOperationStore} from "@/store/SelfOperation.ts";
 import {useDesignFormStore} from "@/store/DesignForm.ts";
 import {computed} from "vue";
+import {SelectOption} from "@/components/types";
 
 const designForm = useDesignFormStore(piniaInstance);
 const userOperation = useSelfOperationStore(piniaInstance);
@@ -16,7 +17,7 @@ const isDesign = computed(() => designForm.isEdit);
  */
 const change = (context: any) => {
     const field = context.attrs["field"] as any;
-    const relation = field.preps.dataRelation;
+    const relation = field.preps?.dataRelation;
     operationRelation(relation, "change", context.attrs["formData"], field.preps["name"]);
 };
 /**
@@ -25,7 +26,7 @@ const change = (context: any) => {
  */
 const input = (context: any) => {
     const field = context.attrs["field"] as any;
-    const relation = field.preps.dataRelation;
+    const relation = field.preps?.dataRelation;
     operationRelation(relation, "input", context.attrs["formData"], field.preps["name"]);
 };
 /**
@@ -34,7 +35,7 @@ const input = (context: any) => {
  */
 const focus = (context: any) => {
     const field = context.attrs["field"] as any;
-    const relation = field.preps.dataRelation;
+    const relation = field.preps?.dataRelation;
     operationRelation(relation, "focus", context.attrs["formData"], field.preps["name"]);
 };
 /**
@@ -43,7 +44,7 @@ const focus = (context: any) => {
  */
 const blur = (context: any) => {
     const field = context.attrs["field"] as any;
-    const relation = field.preps.dataRelation;
+    const relation = field.preps?.dataRelation;
     operationRelation(relation, "blur", context.attrs["formData"], field.preps["name"]);
 };
 /**
@@ -52,7 +53,7 @@ const blur = (context: any) => {
  */
 const mouseEnter = (context: any) => {
     const field = context.attrs["field"] as any;
-    const relation = field.preps.dataRelation;
+    const relation = field.preps?.dataRelation;
     operationRelation(relation, "enter", context.attrs["formData"], field.preps["name"]);
 };
 
@@ -63,7 +64,7 @@ const mouseEnter = (context: any) => {
  * @param formData
  * @param currentName
  */
-const operationRelation = (relation: any, actionName: string, formData: any, currentName: string) => {
+const operationRelation = async (relation: any, actionName: string, formData: any, currentName: string) => {
     if (!relation || actionName != relation.actionName) {
         return;
     }
@@ -81,18 +82,9 @@ const operationRelation = (relation: any, actionName: string, formData: any, cur
         }
         const field = userOperation.getFormItem(fieldName);
         const params: any = temp.params;
-        const matchType: string = temp.matchType;
-        if (conditon == "query") {
-            //输入的值作为查询条件
-            const cond = createCondition(params, currentVal, matchType);
-
-            let queryParams = field.preps["queryParams"];
-            if (queryParams) {
-                queryParams = field.preps["queryParams"].filter((item: any) => item.name != params);
-            }
-            queryParams.push(cond);
-            field.preps["queryParams"] = queryParams;
-            //怎么触发执行
+        //数据联动
+        if (conditon == "dataLinkage") {
+            formData[fieldName + "OptionList"] = await compDynamicData(field.preps);
         } else if (conditon == "eqDisable" || conditon == "eqDisableOrEditable") {
             //输入的值等于指定值隐藏否则显示
             formData["_" + fieldName + "Editable"] = !(currentVal == params);
@@ -157,7 +149,7 @@ const allAction = (context: any, actionName: string, isInit: boolean = false) =>
             return;
     }
 
-    if (actionName == "input" && actionName != field.preps["actionName"]) {
+    if (actionName == "input" && actionName != tempName) {
         return;
     }
     //处理自定义响应事件

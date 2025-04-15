@@ -11,6 +11,7 @@ defineProps({
   batchName: {type: String, default: "batchDataList"},
   primaryKey: {type: [String, Object] as PropType<string | any>},
 });
+const exclusionFields: string[] = ["divider", "button", "usercomp"];
 </script>
 
 <template>
@@ -19,7 +20,7 @@ defineProps({
       :label="item.label"
       sortable
       :min-width="item.minWidth || Config.defaultColumnWidth + 'px'"
-      v-if="item.formVisible"
+      v-if="item.formVisible&&!exclusionFields.includes(item.type)"
   >
     <template #default="scope">
       <template v-if="item.batchFieldList?.length > 0">

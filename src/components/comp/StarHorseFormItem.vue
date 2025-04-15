@@ -8,7 +8,7 @@ import {Config} from "@/api/settings.ts";
 
 defineProps({
   compUrl: {type: Object as PropType<ApiUrls>},
-  fieldList: {type: Object as PropType<PageFieldInfo>, required: true},
+  fieldList: {type: Object as PropType<PageFieldInfo|any>, required: true},
   objectName: {type: String},
   subFormFlag: {type: String, default: "N"},
   // 数据索引

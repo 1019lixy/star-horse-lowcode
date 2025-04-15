@@ -37,7 +37,7 @@ onMounted(() => {
     <template v-for="sitem in item">
       <el-col
           :span="sitem.colspan || sitem.preps?.colspan || 24 / item.length"
-          v-if="sitem.type != 'button' && sitem.type != 'comp'"
+          v-if="sitem.type != 'button' && sitem.type != 'usercomp'"
       >
         <el-form-item
             :size="compSize"

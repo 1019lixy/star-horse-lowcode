@@ -181,5 +181,7 @@ onMounted(() => {
 1. 2025-03-31 修复动态表单Store piniaInstance 对象共享数据问题
               修复列表操作按钮不显示问题
 2. 2025-04-11 修改动态表单设计组件css间距问题
- 
+3. 2025-04-15 修改动态表单comp组件名称错误问题 ,
+              优化编辑列表排除divider,button和usercomp组件显示,
+              修复usercomp组件没有被纳入formVisible 控制范围
 

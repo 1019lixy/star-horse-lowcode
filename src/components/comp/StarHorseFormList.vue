@@ -36,7 +36,7 @@ const props = defineProps({
 });
 const emits = defineEmits(["addRow", "removeRow"]);
 const dataForm: ModelRef<any> = defineModel("dataForm");
-const formFields = inject("formFields",{}) as ShallowReactive<any>;
+const formFields = inject("formFields", {}) as ShallowReactive<any>;
 const loading = ref(null);
 const starHorseFormListRef = ref(null);
 
@@ -61,7 +61,8 @@ const dynamicHandleAddForm = async (row: any, type: string) => {
 };
 const mergeData = async () => {
   let flag = false;
-  await rowDataFormRef.value.$refs.starHorseFormRef.validate((res:any) => (flag = res));
+  let formRef = rowDataFormRef.value.$refs.starHorseFormRef;
+  await formRef.validate((res: any) => (flag = res));
   if (!flag) {
     return;
   }
