@@ -84,7 +84,7 @@ const operationRelation = async (relation: any, actionName: string, formData: an
         const params: any = temp.params;
         //数据联动
         if (conditon == "dataLinkage") {
-            formData[fieldName + "OptionList"] = await compDynamicData(field.preps);
+            formData[fieldName + "OptionList"] = await compDynamicData(temp);
         } else if (conditon == "eqDisable" || conditon == "eqDisableOrEditable") {
             //输入的值等于指定值隐藏否则显示
             formData["_" + fieldName + "Editable"] = !(currentVal == params);
