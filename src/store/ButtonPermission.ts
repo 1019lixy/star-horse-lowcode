@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {ref} from "vue";
+import {ref, unref} from "vue";
 import {RouteLocationNormalized} from "vue-router";
 import {postRequest} from "@/api/star_horse_apis.ts";
 import {getUserInfo} from "@/utils/auth.ts";
@@ -13,7 +13,10 @@ export const useButtonPermissionStore = defineStore("buttonPermission", () => {
     const currentPermission = ref<any>({});
 
     const addRoute = async (route: RouteLocationNormalized) => {
-        const meta: any = route?.meta;
+        //如果当前路由为空，则获取宿主的路由
+        let data: any = route ?? (window.__hostRouter__?.currentRoute || window.__hostRouter__);
+        const meta: any = unref(data)?.meta;
+        console.log(meta);
         return await getPagePermission(meta?.menuId);
     };
     /**
@@ -80,5 +83,13 @@ export const useButtonPermissionStore = defineStore("buttonPermission", () => {
         }
         return currentPermission.value;
     };
-    return {addPermission, addAllPermission, addRoute, removePermission, cleanPermission};
+    return {
+        pageBtnPermisson,
+        currentPermission,
+        addPermission,
+        addAllPermission,
+        addRoute,
+        removePermission,
+        cleanPermission
+    };
 });

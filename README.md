@@ -5,9 +5,11 @@
 在main.js中引入
 import StarHorseLowCode from "star-horse-lowcode";
 import "star-horse-lowcode/dist/assets/index.css"
-
+import "router" from "@/router";
 const app = createApp(App);
-app.use(StarHorseLowCode);
+app.use(StarHorseLowCode,{
+  router: router
+});
 app.mount('#app')
 ```
 2. 启动项目
@@ -17,7 +19,6 @@ app.mount('#app')
 ```
 Node 版本 >20
 该组件库基于vue3+ts+pinia+vue-router+element-plus开发，
-插件已内置了Element-Plus 最新版本，无序额外引用，
 该组件提供了对Element-Plus 官方组件的封装，
 支持参数见：PageFieldInfo.t.ts 下的 FieldInfo,所有官方参数
 配置到preps:{}里面;
@@ -26,7 +27,7 @@ Node 版本 >20
  dialog-input 弹出选择器、
  usercomp 动态组件、
  page-select 下拉分页选择器、
- 等；具体描述待后期知识库完善后，可在知识库上进行查看。
+ 等；当前发布的组件是便于个人使用， 具体描述待后期知识库完善后，可在知识库上进行查看。
  此次发布只是低代码平台的核心组件库，后期会根据实际情况发布设计模块功能。
  该组件库里面存在着 两个接口会自动调用后端，一个是用户分享数据接口（下一个版本会屏蔽掉），一个是转发地址接口（配置了会调用）
  后面用户只需要配置好 const dataUrl: ApiUrls = apiInstance("system-config", "system/areainfo");
@@ -69,7 +70,9 @@ const searchFormData = reactive<SearchFields>({
     {label: "区域编码", defaultVisible: true, matchType: "lk", fieldName: "areaCode", type: "input"}
   ]
 });
-//表单和页面属性
+/**
+ * 表格属性, 
+ */
 const tableFieldList = reactive<PageFieldInfo>({
   fieldList: [
     {
@@ -113,8 +116,9 @@ provide("dialogProps", dialogProps);
 const btnPermisson:any={
   add:"add",
   edit:"edit",
-  delete:"delete",
-  view:"view",
+  batchDelete:"batchDelete",
+  download:"download",
+  upload:"upload",
   export:"export",
   import:"import",
 }
@@ -145,22 +149,16 @@ onMounted(() => {
   >
     <star-horse-data-view :dataFormat="dataFormat" :field-list="tableFieldList" :compUrl="dataUrl"/>
   </star-horse-dialog>
-  <el-card class="inner_content">
-    <div class="search_btn" >
+  <div class="search-content">
+    <div class="search_btn" :style="{ 'flex-direction': Config.buttonStyle.value == 'line'? 'column' : 'row' }">
       <star-horse-search-comp
-          @searchData="(data: any) => testRef.createSearchParams(data)"
+          @searchData="(data: any) => areainfoRef.createSearchParams(data)"
           :formData="searchFormData"
           :compUrl="dataUrl"
       />
-      <hr/>
-      <star-horse-button-list
-          @tableCompFunc="(fun: any) => testRef.tableCompFunc(fun)"
-          :compUrl="dataUrl"
-          :btnPermissions="btnPermisson"
-          :dialogProps="dialogProps"
-      />
     </div>
-    <hr/>
+  </div>
+  <el-card class="inner_content">
     <star-horse-table-comp
         ref="testRef"
         :fieldList="tableFieldList"
@@ -177,4 +175,13 @@ onMounted(() => {
 ```
 5.示例图片
 ![图片描述](dist/images/img.png)
+
+6.BUG 修改记录
+```
+1. 2025-03-31 修复动态表单Store piniaInstance 对象共享数据问题
+              修复列表操作按钮不显示问题
+2. 2025-04-11 修改动态表单设计组件css间距问题
+3. 2025-04-15 修改动态表单comp组件名称错误问题 ,
+              优化编辑列表排除divider,button和usercomp组件显示,
+              修复usercomp组件没有被纳入formVisible 控制范围
 

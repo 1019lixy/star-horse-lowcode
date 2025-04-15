@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { onMounted, PropType, ref } from "vue";
   import { FieldInfo } from "@/components/types/PageFieldInfo";
-  import { ModelRef } from "vue-demi";
+  import { ModelRef } from "vue";
 
   defineProps({
     item: { type: Array as PropType<Array<FieldInfo>>, required: true },

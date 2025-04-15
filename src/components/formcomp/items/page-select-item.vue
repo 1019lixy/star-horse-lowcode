@@ -20,7 +20,7 @@ export default defineComponent({
     let formItem = shallowRef({label: "input", required: false});
     let dataField = shallowRef("");
     let multipleSelection = shallowRef<Array<any>>([]);
-    let actionName = shallowRef("keydown.enter");
+    let actionName = shallowRef("normal");
     let pageInfo = ref<PageProps>({
       pageSize: 20,
       currentPage: 1,
@@ -160,7 +160,7 @@ export default defineComponent({
         }
     );
     onMounted(() => {
-      actionName.value = field.preps?.actionName || "keydown.enter";
+      actionName.value = field.preps?.actionName || "normal";
       loadByPage(true);
       if (!context.attrs["isSearch"]) {
         allAction(context, actionName.value, true);
@@ -215,11 +215,11 @@ export default defineComponent({
         @blur="itemAction('blur')"
         v-model="context.attrs['formData'][field.preps['name']]"
     >
-      <template #empty="scope">
+      <template #empty>
         <el-card class="inner_content" style="margin: 5px">
           <!--          <div class="search_btn" :style="{'flex-direction':Config.buttonStyle.value=='line'?'column':'row'}">-->
           <star-horse-search-comp
-              :formData="context.attrs['field']!.preps['searchFieldList']"
+              :formData="field.preps['searchFieldList']"
               @searchData="(data: any) => searchDataFun(data)"
               :mutComp="true"
               :compUrl="field.preps['dataUrl']"

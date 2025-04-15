@@ -90,7 +90,7 @@ const addTab = () => {
         @tab-remove="dynamicFunc('tabRemove', field['tabRemove'])"
     >
       <el-tab-pane
-          v-for="(adata, index) in field['preps']['elements']"
+          v-for="adata in field['preps']['elements']"
           :label="adata['label']"
           :name="adata['tabName']"
       >

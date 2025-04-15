@@ -48,7 +48,7 @@ export default defineComponent({
     const field = context.attrs["field"] as any;
     let formItem = shallowRef({label: "input", required: false});
     let dataField = shallowRef("");
-    let actionName = shallowRef("keydown.enter");
+    let actionName = shallowRef("normal");
     const itemAction = (prep: any) => {
       allAction(context, prep);
     };
@@ -70,7 +70,7 @@ export default defineComponent({
     };
     onMounted(() => {
       initData();
-      actionName.value = field.preps?.actionName || "keydown.enter";
+      actionName.value = field.preps?.actionName || "normal";
       if (!context.attrs["isSearch"]) {
         allAction(context, actionName.value, true);
       }

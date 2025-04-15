@@ -2,7 +2,6 @@
 import {computed, onMounted, PropType, ref} from "vue";
 import {useDesignFormStore} from "@/store/DesignForm.ts";
 import piniaInstance from "@/store/index.ts";
-import {checkVisible, getDataIndex, getFormData, getPrefix, loadProp, validMsg} from "@/api/form_utils.ts";
 import {uuid} from "@/api/system.ts";
 
 const props = defineProps({
@@ -12,7 +11,6 @@ const props = defineProps({
   field: {type: Object as PropType<any>}
 });
 let designForm = useDesignFormStore(piniaInstance);
-let isEdit = computed(() => designForm.isEdit);
 const isDragging = computed(() => designForm.isDragging);
 let containerType: Array<string> = ["tab", "box", "table", "card", "dytable", "collapse"];
 const getComponentName = (data: any) => {

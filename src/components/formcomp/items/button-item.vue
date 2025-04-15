@@ -12,7 +12,7 @@
     }" v-if="field.preps?.viewType=='form'"/>
     <component :is="field.preps?.componentName"
                ref="btnCompRef"
-               v-else-if="field.preps?.viewType=='comp'"
+               v-else-if="field.preps?.viewType=='usercomp'"
                :params="field.preps?.params"/>
   </star-horse-dialog>
   <starhorse-form-item
@@ -67,7 +67,7 @@ export default defineComponent({
     let btnDialogVisible = shallowRef<boolean>(false);
     const btnCompRef = shallowRef();
     onMounted(() => {
-      actionName.value = field.preps?.actionName || "keydown.enter";
+      actionName.value = field.preps?.actionName || "normal";
     });
     const operResultAction = async () => {
       let action: BtnAction = field.preps;
@@ -107,7 +107,7 @@ export default defineComponent({
         //如果参数是动态参数，则在当前form中寻找对应名称的值
         let urlParam: any = {};
         if (action.isDynamicParam == "Y") {
-          let dynamicParams: DynamicParamField[] = action.params;
+          let dynamicParams: SearchParams[] | DynamicParamField[] = action.params;
           let params: SearchParams[] = [];
           dynamicParams?.forEach((dynamicParam) => {
             let value = context.attrs['formData'][dynamicParam.paramName] ?? dynamicParam.defaultValue;

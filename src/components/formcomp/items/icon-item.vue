@@ -97,7 +97,7 @@
       let allIconList = ref<any>([]);
       let iconType = ref<string>("system");
       const popoverRef = shallowRef();
-      let actionName = shallowRef("keydown.enter");
+      let actionName = shallowRef("normal");
       const assignIcon = (iconName: string) => {
         context.attrs["formData"][field.preps["name"]] = iconName;
         unref(popoverRef).popperRef?.delayHide?.();
@@ -122,7 +122,7 @@
         context.emit("selfFunc", prep);
       };
       onMounted(() => {
-        actionName.value = field.preps?.actionName || "keydown.enter";
+        actionName.value = field.preps?.actionName || "normal";
         if (field.preps["values"]?.length > 0) {
           allIconList.value = field.preps["values"];
           iconType.value = "user";

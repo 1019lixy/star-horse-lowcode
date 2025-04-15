@@ -2,14 +2,14 @@
 import {computed, inject, onMounted, ref, unref, watch} from "vue";
 import {warning} from "@/utils/message";
 import {FieldInfo} from "@/components/types/PageFieldInfo";
-import {ModelRef} from "vue-demi";
+import {ModelRef} from "vue";
 import {useSelfOperationStore} from "@/store/SelfOperation.ts";
 import piniaInstance from "@/store";
 import {uuid} from "@/api/system.ts";
 import {Config} from "@/api/settings.ts";
 import {SearchFields} from "@/components/types/SearchProps";
 import {checkVisible} from "@/api/form_utils.ts";
-import {PropType} from "vue/dist/vue";
+import {PropType} from "vue";
 
 const props = defineProps({
   // allItem: {type: Array, required: true},
@@ -18,7 +18,7 @@ const props = defineProps({
   primaryKey: {type: [String, Object] as PropType<string | any>},
   // 数据索引
   dataIndex: {type: Number, default: -1},
-  bareFlag: {type: Boolean, default: false},
+  bareFlag: {type: Object as PropType<Boolean|String>, default: false},
   batchName: {type: String, default: ""},
   compSize: {type: String, default: Config.compSize},
   isSearch: {type: Boolean, default: false}, //是否查询数据
@@ -162,7 +162,7 @@ const compPreps = () => {
     field.value.preps["inactiveText"] = props.item?.inactiveText || "否";
     field.value.preps["activeValue"] = props.item?.activeValue || "Y";
     field.value.preps["inactiveValue"] = props.item?.inactiveValue || "N";
-  } else if (itemType.value == "comp") {
+  } else if (itemType.value == "usercomp") {
     field.value.preps["params"] = props.item?.params || {};
   }
   field.value.preps["multiple"] = props.item?.multiple;
@@ -221,7 +221,7 @@ const compPreps = () => {
     dataForm.value[props.item?.fieldName] = props.item?.defaultValue;
   }
 };
-const defaultAction = ref("keydown.enter");
+const defaultAction = ref("normal");
 const typeList = ["select", "tselect", "date", "daterange"];
 const actionName = ref();
 const randId = ref();
@@ -271,7 +271,7 @@ onMounted(() => {
 }
 </style>
 <template>
-  <div v-if="bareFlag || field.preps.headerFlag == 'Y'" class="bare-comp">
+  <div v-if="bareFlag===true||bareFlag=='Y' || field.preps.headerFlag == 'Y'" class="bare-comp">
     <component
         :id="randId"
         :is="(dataForm&&dataForm['_' + field.preps.name + 'Type'] || itemType) + '-item'"
@@ -367,7 +367,7 @@ onMounted(() => {
   justify-content: left;
   flex: 1;
   align-items: center;
-  margin: 5px auto;
+  margin: 0 auto;
 }
 
 .bare-comp {

@@ -1,78 +1,32 @@
 import {defineConfig} from "vite";
 import vue from "@vitejs/plugin-vue";
+//编译进度条插件
 import progress from "vite-plugin-progress";
 import vueJsx from "@vitejs/plugin-vue-jsx";
 import inject from "@rollup/plugin-inject";
-import topLevelAwait from "vite-plugin-top-level-await";
 import {resolve} from "path";
 import {createSvgIconsPlugin} from "vite-plugin-svg-icons";
 import Components from "unplugin-vue-components/vite";
 import {ElementPlusResolver} from "unplugin-vue-components/resolvers";
 import AutoImport from "unplugin-auto-import/vite";
-import {visualizer} from "rollup-plugin-visualizer";
 //此插件是处理外部依赖 比如cdn引入的js
 import tailwindcss from "@tailwindcss/vite";
-import dts from 'vite-plugin-dts';
-
-const codeHost: string = "http://192.168.20.165:8888/";
-// const codeHost:string = "http://localhost:8888/"
-const systemHost: string = "http://localhost:8749/";
-// const systemHost:string = "http://192.168.20.204:8749/"
-const workflowHost: string = "http://localhost:8899/";
-const continuousHost: string = "http://localhost:8859/";
-const userDbHost: string = "http://localhost:7758/";
-// const userDbHost:string = "http://192.168.20.204:7758/"
+import {visualizer} from "rollup-plugin-visualizer";
 // https://vitejs.dev/config/
 /**
  * 此配置文件，非必需不要随便做修改，特别是打包相关的参数
  */
 export default defineConfig((mode) => {
-    let optimizeDepsList: string[] = [];
+    let optimizeDepsList: string[] = ['vue',
+        'vue-router',
+        'pinia',
+        'axios'];
     return {
         base: "/",
-        server: {
-            port: 8880,
-            host: true,
-            open: true,
-            hmr: true,
-            proxy: {
-                "/system-config": {
-                    target: systemHost,
-                    changeOrigin: true,
-                    rewrite: (path: string) => path.replace(/^\/system-config/, "/system-config-dev"),
-                    ws: true
-                },
-                "/code-generator": {
-                    target: codeHost,
-                    changeOrigin: true,
-                    rewrite: (path: string) => path.replace(/^\/code-generator/, "/code-generator-dev"),
-                    ws: true
-                },
-                "/flow-engine": {
-                    target: workflowHost,
-                    changeOrigin: true,
-                    rewrite: (path: string) => path.replace(/^\/flow-engine/, "/flow-engine-dev"),
-                    ws: true
-                },
-                "/continuous-manage": {
-                    target: continuousHost,
-                    changeOrigin: true,
-                    rewrite: (path: string) => path.replace(/^\/continuous-manage/, "/continuous-manage-dev"),
-                    ws: true
-                },
-
-                "/userdb-manage": {
-                    target: userDbHost,
-                    changeOrigin: true,
-                    rewrite: (path: string) => path.replace(/^\/userdb-manage/, "/userdb-manage-dev"),
-                    ws: true
-                }
-            }
-        },
         optimizeDeps: {
             // force: true,
-            include: optimizeDepsList
-            // exclude:[]
+            include: optimizeDepsList,
+            exclude: ['vue-demi']
         },
         plugins: [
             tailwindcss(),
@@ -83,10 +37,7 @@ export default defineConfig((mode) => {
                     defineModel: true
                 }
             }),
-            dts({
-                insertTypesEntry: true,
-                copyDtsFiles: true
-            }),
+
             AutoImport({
                 imports: ["vue"],
                 resolvers: [ElementPlusResolver()]
@@ -97,7 +48,6 @@ export default defineConfig((mode) => {
                 resolvers: [ElementPlusResolver({importStyle: "sass"})]
             }),
             progress(),
-            topLevelAwait(),
             // viteCommonjs(),
             vueJsx({}),
             inject({
@@ -109,7 +59,16 @@ export default defineConfig((mode) => {
             createSvgIconsPlugin({
                 iconDirs: [resolve(process.cwd(), "src/icons"),
                     resolve(process.cwd(), "src/assets/icons/svg")],
-                symbolId: "icon-[dir]-[name]"
+                symbolId: "icon-[dir]-[name]",
+                svgoOptions: {
+                    plugins: [
+                        {name: 'removeTitle'}, // 删除<title>标签
+                        {name: 'removeDesc'}, // 删除<desc>标签
+                        {name: 'removeAttrs', params: {attrs: ['fill', 'stroke', 'class']}}, // 删除指定属性
+                        {name: 'collapseGroups'}, // 合并重复分组
+                        {name: 'convertPathData'} // 优化路径数据
+                    ]
+                }
             }),
             visualizer({
                 open: false, // 构建完成后自动打开分析页面
@@ -128,7 +87,6 @@ export default defineConfig((mode) => {
         resolve: {
             alias: {
                 "@": resolve(__dirname, "./src"),
-                "monaco-editor": "monaco-editor/esm/vs/editor/editor.api.js"
             },
             extensions: [".js", ".vue", ".json", ".ts", ".jsx"]
         },
@@ -138,6 +96,7 @@ export default defineConfig((mode) => {
             rollupOptions: {
                 external: ["vue", 'pinia', 'core-js', 'regenerator-runtime'],
                 output: {
+                    exports:"named",
                     assetFileNames: 'assets/[name][extname]', // 修正资源输出路径
                     // 禁用代码分割
                     inlineDynamicImports: true,
@@ -160,7 +119,7 @@ export default defineConfig((mode) => {
                 entry: "src/index.ts", //指定组件编译入口文件
                 name: "star-horse-lowcode",
                 fileName: (format) => `index.${format}.js`,
-                formats: ['es', 'cjs','umd']
+                formats: ['es', 'cjs', 'umd']
             }, //库编译模式配置
             // 开启并行压缩
             parallel: true,

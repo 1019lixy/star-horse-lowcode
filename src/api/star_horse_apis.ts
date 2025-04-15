@@ -1,15 +1,12 @@
 import axios, {AxiosResponse, InternalAxiosRequestConfig} from "axios";
-import {getToken, getUserInfo, removeToken} from "@/utils/auth";
-import {error, warning} from "../utils/message";
+import {getToken, getUserInfo} from "@/utils/auth";
+import {error} from "../utils/message";
 import piniaInstance from "@/store";
-import {useNavBarListStore} from "@/store/NavBarList.ts";
 import {useUserInfoStore} from "@/store/UserInfo.ts";
-import {useViewCacheStore} from "@/store/ViewCache.ts";
 import {SelectOption} from "@/components/types/SearchProps";
-import {useButtonPermissionStore} from "@/store/ButtonPermission.ts";
-import {loadData} from "@/api/star_horse_utils.ts";
 import {getFingerId} from "@/api/finger_utils.ts";
 import {ServiceEnums} from "@/components/enums/ServiceEnums.ts";
+import {useRouter} from 'vue-router'
 
 const userStore = useUserInfoStore(piniaInstance);
 const service = axios.create({
@@ -28,6 +25,7 @@ service.interceptors.request.use(
         if (token && config.headers) {
             config.headers.token = token;
             config.headers["Finger-Token"] = fingerToken;
+            config.headers["menuPosition"] = getMenuId();
         }
         return config;
     },
@@ -36,6 +34,19 @@ service.interceptors.request.use(
         return Promise.reject(error);
     }
 );
+
+export function getMenuId() {
+    //@ts-ignore
+    const router = useRouter() ?? window.__hostRouter__;
+    const meta = router?.currentRoute?.value?.meta;
+    let menuId = meta?.menuId as string;
+    if (!menuId) {
+        return "";
+    }
+    menuId = menuId.split("_")[1];
+    return menuId;
+}
+
 const forceLoginOut = () => {
     userStore.showLoginDialog();
     // console.log("系统超时，请登录后再操出");

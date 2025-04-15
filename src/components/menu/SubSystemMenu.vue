@@ -43,7 +43,7 @@
 <template>
   <template v-for="item in dataList">
     <el-sub-menu
-      v-if="item.children && item.children.length > 0"
+      v-if="item.children?.length > 0"
       :class="{ 'is-active': item[preps.value] == currentItem[preps.value] }"
       :index="item[preps.value]"
     >

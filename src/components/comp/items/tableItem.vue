@@ -3,12 +3,12 @@
   import { ApiUrls } from "@/components/types/ApiUrls";
   import { PageFieldInfo } from "@/components/types/PageFieldInfo";
   import StarHorseFormTable from "@/components/comp/StarHorseFormTable.vue";
-  import { ModelRef } from "vue-demi";
+  import { ModelRef } from "vue";
   import { Config } from "@/api/settings.ts";
 
   const props = defineProps({
     compUrl: { type: Object as PropType<ApiUrls> },
-    item: { type: Object as PropType<PageFieldInfo>, required: true },
+    item: { type: Object as PropType<PageFieldInfo|any>, required: true },
     objectName: { type: String },
     // 数据索引
     dataIndex: {type: Number, default: -1},

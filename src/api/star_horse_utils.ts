@@ -8,7 +8,7 @@ import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 import {MenusInfo} from "@/components/types/MenusInfo";
 import {BatchFieldInfo, FieldInfo, OrderByInfo, PageFieldInfo, TabFieldInfo} from "@/components/types/PageFieldInfo";
 import {ApiUrls} from "@/components/types/ApiUrls";
-import {Reactive} from "vue-demi";
+import {Reactive} from "vue";
 import {DialogProps} from "@/components/types/DialogProps";
 import {createDatetime} from "@/api/date_utils.ts";
 import {pinyin} from "pinyin-pro";
@@ -440,7 +440,8 @@ export function loadElementPlusIcon() {
 export function loadSvgIcons() {
     const items = import.meta.glob("@/icons/*.svg");
     const menuIconList = [];
-    for (const [key, value] of Object.entries(items)) {
+    for (const item of Object.entries(items)) {
+        const key = item[0];
         const name = key.slice(key.lastIndexOf("/") + 1, key.lastIndexOf("."));
         menuIconList.push({name: name, value: name});
     }

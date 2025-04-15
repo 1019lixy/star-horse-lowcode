@@ -77,7 +77,7 @@
       const field = context.attrs["field"] as any;
       let formItem = shallowRef({ label: "input", required: false });
       let dataField = shallowRef("");
-      let actionName = shallowRef("keydown.enter");
+      let actionName = shallowRef("normal");
       let slotStyle = shallowRef("");
       // input焦点事件
       const isFocus = ref();
@@ -106,7 +106,7 @@
         allAction(context, prep);
       };
       onMounted(() => {
-        actionName.value = field.preps?.actionName || "keydown.enter";
+        actionName.value = field.preps?.actionName || "normal";
         field.preps["maxName"] = field.preps["name"] + "Max";
         field.preps["minName"] = field.preps["name"] + "Min";
         let val = context.attrs["formData"][field.preps["name"]];

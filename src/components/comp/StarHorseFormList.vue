@@ -7,8 +7,9 @@ import {error, operationConfirm, success, warning} from "@/utils/message";
 import {download} from "@/api/star_horse_apis.ts";
 import {getToken} from "@/utils/auth";
 import Sortable from "sortablejs";
+import {Sort} from "@element-plus/icons-vue"
 import Help from "@/components/help.vue";
-import {ModelRef} from "vue-demi";
+import {ModelRef} from "vue";
 import {uuid} from "@/api/system.ts";
 import UTableColumn from "@/components/comp/items/UTableColumn.vue";
 import StarHorseForm from "@/components/comp/StarHorseForm.vue";
@@ -35,7 +36,7 @@ const props = defineProps({
 });
 const emits = defineEmits(["addRow", "removeRow"]);
 const dataForm: ModelRef<any> = defineModel("dataForm");
-const formFields = inject("formFields",{}) as ShallowReactive<any>;
+const formFields = inject("formFields", {}) as ShallowReactive<any>;
 const loading = ref(null);
 const starHorseFormListRef = ref(null);
 
@@ -60,7 +61,8 @@ const dynamicHandleAddForm = async (row: any, type: string) => {
 };
 const mergeData = async () => {
   let flag = false;
-  await rowDataFormRef.value.$refs.starHorseFormRef.validate((res) => (flag = res));
+  let formRef = rowDataFormRef.value.$refs.starHorseFormRef;
+  await formRef.validate((res: any) => (flag = res));
   if (!flag) {
     return;
   }
@@ -91,7 +93,7 @@ const dynamicHandleAddRow = (row: any, type: number) => {
     emits("addRow", row);
   } else {
     let index = row.xh - 1;
-    formFields && formFields[props.batchName].splice(index, 1);
+    formFields && formFields[props.batchName]?.splice(index, 1);
     dataForm.value[props.batchName].splice(index, 1);
     emits("removeRow", row);
   }

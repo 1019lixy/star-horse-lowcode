@@ -4,14 +4,14 @@ import {onMounted, PropType, ref} from "vue";
 import {ApiUrls} from "@/components/types/ApiUrls";
 import {FieldInfo} from "@/components/types/PageFieldInfo";
 import StarHorseFormTable from "@/components/comp/StarHorseFormTable.vue";
-import {ModelRef} from "vue-demi";
+import {ModelRef} from "vue";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
 import {Config} from "@/api/settings.ts";
 import {getDataIndex, getFormData, getPrefix,checkObject} from "@/api/form_utils.ts";
 
 const props = defineProps({
   compUrl: {type: Object as PropType<ApiUrls>},
-  item: {type: Array as PropType<Array<FieldInfo>>, required: true},
+  item: {type: Array as PropType<Array<FieldInfo>|any>, required: true},
   objectName: {type: String},
   // 数据索引
   dataIndex: {type: Number, default: -1},

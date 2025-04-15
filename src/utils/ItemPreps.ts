@@ -795,9 +795,12 @@ export function paramsFields(paramsConfigRef: Ref<any>, fieldName: string, item:
             label: "属性名称",
             fieldName: "fieldName",
             type: "select",
-            allowCreate: true,
+
             optionList: fieldList,
-            formVisible: true
+            formVisible: true,
+            preps: {
+                allowCreate: true,
+            }
         },
         {
             label: "搜索显示",
@@ -1245,11 +1248,13 @@ const fieldMap: any = reactive({
         fieldList: [
             {
                 label: "函数名称",
-                fieldName: "StarHorseEditor",
                 type: "usercomp",
                 required: true,
                 formVisible: true,
-                listVisible: true
+                listVisible: true,
+                preps: {
+                    name: "StarHorseEditor"
+                }
             }
         ]
     }

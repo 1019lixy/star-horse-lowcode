@@ -213,7 +213,10 @@ a {
 }
 
 .h100 {
+  display: flex !important;
+  overflow: hidden;
   height: 100% !important;
+  flex-direction: column;
 }
 
 .h100-overflow-hidden {
@@ -580,7 +583,12 @@ hr {
       .nav_area {
         flex-shrink: 0;
       }
-
+      .search-content {
+        min-height: 30px !important;
+        margin: 5px 0;
+        border: 1px solid #eee;
+        border-radius: 3px;
+      }
       .inner_content {
         flex: 1;
         display: flex;
@@ -785,10 +793,6 @@ hr {
 
 .comp-item {
   width: 100%;
-  margin-top: 10px;
-  /* &:nth-child(n+1) {
-     margin-top: 10px;
-   }*/
 }
 
 .dy-tr {

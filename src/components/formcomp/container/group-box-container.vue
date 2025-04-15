@@ -181,6 +181,7 @@
       <el-tooltip content="选中容器">
         <star-horse-icon
           class="icon-cls"
+          cursor="pointer"
           @click.stop="selectData"
           icon-class="select-parent"
           style="color: var(--star-horse-white)"
@@ -189,6 +190,7 @@
       <el-tooltip content="删除容器">
         <star-horse-icon
           class="icon-cls"
+          cursor="pointer"
           @click.stop="removeData"
           icon-class="clear-all"
           style="color: var(--star-horse-white)"
@@ -201,6 +203,7 @@
           <star-horse-icon
             @click.stop="tableOperation('insertRow', formItem?.preps)"
             icon-class="insert_row"
+            cursor="pointer"
             style="color: var(--star-horse-white)"
           />
         </el-tooltip>
@@ -210,6 +213,7 @@
           <star-horse-icon
             @click.stop="tableOperation('insertCol', formItem?.preps)"
             icon-class="insert_col"
+            cursor="pointer"
             style="color: var(--star-horse-white)"
           />
         </el-tooltip>

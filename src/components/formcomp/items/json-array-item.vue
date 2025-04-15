@@ -37,7 +37,7 @@
           resize="none"
           @change="itemAction('change')"
           @input="itemAction('input')"
-          @keydown.enter="itemAction('enter')"
+          @normal="itemAction('enter')"
           @focus="itemAction('focus')"
           @blur="itemAction('blur')"
           v-model="context.attrs['formData'][field.preps['name']]"
@@ -97,7 +97,7 @@
         let fun = new Function(data);
         fun();
       };
-      let actionName = shallowRef("keydown.enter");
+      let actionName = shallowRef("normal");
       const itemAction = (prep: any) => {
         allAction(context, prep);
       };
@@ -138,7 +138,7 @@
         dialogInputVisible.value = false;
       };
       onMounted(() => {
-        actionName.value = field.preps?.actionName || "keydown.enter";
+        actionName.value = field.preps?.actionName || "normal";
         if (!context.attrs["isSearch"]) {
           allAction(context, actionName.value, true);
         }

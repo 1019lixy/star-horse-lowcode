@@ -7,7 +7,7 @@ import {Config} from "@/api/settings.ts";
 
 const props = defineProps({
   compUrl: {type: Object as PropType<ApiUrls>},
-  item: {type: Array as PropType<Array<FieldInfo>>, required: true},
+  item: {type: Array as PropType<Array<FieldInfo>|any>, required: true},
   objectName: {type: String},
   // 数据索引
   dataIndex: {type: Number, default: -1},
@@ -37,7 +37,7 @@ onMounted(() => {
     <template v-for="sitem in item">
       <el-col
           :span="sitem.colspan || sitem.preps?.colspan || 24 / item.length"
-          v-if="sitem.type != 'button' && sitem.type != 'comp'"
+          v-if="sitem.type != 'button' && sitem.type != 'usercomp'"
       >
         <el-form-item
             :size="compSize"

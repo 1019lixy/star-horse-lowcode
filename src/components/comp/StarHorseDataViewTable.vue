@@ -2,7 +2,7 @@
   import { PropType } from "vue";
   import { FieldInfo } from "@/components/types/PageFieldInfo";
   import { rowClassName } from "@/api/star_horse_utils.ts";
-  import { ModelRef } from "vue-demi";
+  import { ModelRef } from "vue";
   import { Config } from "@/api/settings.ts";
 
   defineProps({

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {computed} from "vue";
-import {ModelRef} from "vue-demi";
+import {ModelRef} from "vue";
 
 const props = defineProps({
   level: {type: Number, default: 1}

@@ -1,4 +1,4 @@
-<script lang="ts" name="signature-item">
+<script lang="ts">
   import { defineComponent, nextTick, onMounted, onUpdated, ref, shallowRef } from "vue";
   import SmoothSignature from "smooth-signature";
   import { warning } from "@/utils/message.ts";
@@ -55,7 +55,7 @@
           return;
         }
         previewDialog.value = true;
-        const pngUrl = signature.value.getPNG();
+        // const pngUrl = signature.value.getPNG();
         // imagesPreview(pngUrl);
         // window.previewImage(pngUrl);
       };

@@ -6,6 +6,7 @@ import {PageProps} from "@/components/types/PageProps";
 import {closeLoad, createCondition, deleteByIds, isJson, load, loadData} from "@/api/star_horse_utils.ts";
 import {BtnHideCondition, SearchParams} from "@/components/types/Params";
 import Sortable from "sortablejs";
+import {Sort} from "@element-plus/icons-vue";
 import {DialogProps} from "../types/DialogProps";
 import {error, warning} from "@/utils/message";
 import {ExpandTable, FieldInfo, OrderByInfo, PageFieldInfo, UserFuncInfo} from "@/components/types/PageFieldInfo";
@@ -21,13 +22,11 @@ import {removeEmptyCondition} from "@/api/system.ts";
 import {Config} from "@/api/settings.ts";
 import Tablebtn from "@/components/comp/items/tablebtn.vue";
 import Help from "@/components/help.vue";
-import videojs from "video.js";
-import any = videojs.any;
 
 const dynamicForm = useDynamicFormStore(piniaInstance);
 const props = defineProps({
   //url地址
-  compUrl: {type: Object as PropType<ApiUrls>, required: true},
+  compUrl: {type: Object as PropType<ApiUrls | any>, required: true},
   //主键
   primaryKey: {type: [String, Object] as PropType<string | any>, required: true},
   //列名
@@ -64,7 +63,7 @@ const props = defineProps({
   //标题
   title: {type: String},
   //自定义按钮
-  extandBtns: {type: Array as PropType<UserFuncInfo[]>},
+  extendBtns: {type: Array as PropType<UserFuncInfo[]>},
   //多选
   multipleSelect: {type: Boolean, default: false},
   //按钮操作权限
@@ -80,6 +79,9 @@ const props = defineProps({
   globalConfig: {type: Object as PropType<any>, required: false},
   //是否动态页面
   isDynamic: {type: Boolean, default: false},
+  //隐藏按钮列表
+  hideButtonList: {type: Boolean, default: false},
+
   //按钮权限
   btnPermissions: {type: Object as PropType<any>, required: false},
 });
@@ -200,14 +202,14 @@ const permissionList = () => {
   return permissions.value;
 };
 const init = async () => {
-  if (props.btnPermissions) {
+  if (props.btnPermissions && Object.keys(props.btnPermissions).length > 0) {
     permissions.value = props.btnPermissions;
   } else {
     permissions.value = await pagePermission.addRoute(route);
   }
   //拿到别人共享的信息
   let resultData = await loadData("/system-config/system/dataPermission/currentMenuPermissionPerson", {});
-  commonPersons.value = resultData.data;
+  commonPersons.value = resultData?.data;
   //是否初始化时自动加载列表数据开关
   if (!props.fieldList?.stopAutoLoad) {
     loadByPage();
@@ -289,7 +291,7 @@ const moveColumn = () => {
   }
 };
 
-const editData = (row: any, _column: any, evt: Event) => {
+const editData = (row: any, _column?: any, evt?: Event) => {
   if (evt) {
     evt.stopPropagation();
   }
@@ -388,6 +390,7 @@ const tbCommonFun = (name: string | undefined, param: any) => {
   } else {
     console.log("未定义的功能", name);
   }
+  return false;
 };
 /**
  * 解析主键
@@ -570,7 +573,7 @@ const setDataInfo = (fieldName: string, val: any) => {
  * @param column
  * @param evt
  */
-const selectRow = (row: any, _column: any, evt: Event) => {
+const selectRow = (row: any, _column?: any, evt?: Event) => {
   if (!evt) {
     dynamicForm.setSelectData(row);
     emits("selectItem", row);
@@ -604,29 +607,32 @@ const selectRow = (row: any, _column: any, evt: Event) => {
 };
 
 let buttonList = ref<UserFuncInfo[]>([]);
+let toolbarButtonList = ref<UserFuncInfo[]>([]);
 /**
  * 扩展按钮
  */
-const extandBtnFunction = (): Array<UserFuncInfo> => {
+const extendBtnFunction = (): Array<UserFuncInfo> => {
   let arr: Array<UserFuncInfo> = [];
+  const extendBtnsCopy: UserFuncInfo[] = props.extendBtns ? JSON.parse(JSON.stringify(props.extendBtns)) : [];
+
   //单独定义的按钮
-  if (props.extandBtns && props.extandBtns.length > 0) {
-    props.extandBtns.forEach((item) => {
+  extendBtnsCopy?.forEach((item: UserFuncInfo) => {
+    if (item.position != "toolbar") {
       if (!item.funcName) {
         item.funcName = (row: any) => tbCommonFun(item.authority, row);
       }
       arr.push(item);
-    });
-  }
+    }
+  });
   //在定义字段时定义的按钮
-  if (props.fieldList["userTableFuncs"]) {
-    props.fieldList["userTableFuncs"].forEach((item) => {
+  props.fieldList["userTableFuncs"]?.forEach((item: UserFuncInfo) => {
+    if (item.position != "toolbar") {
       if (!item.funcName) {
         item.funcName = (row: any) => tbCommonFun(item.authority, row);
       }
       arr.push(item);
-    });
-  }
+    }
+  });
   if (!props.disableAction) {
     let edit = arr.filter((item) => item.authority == "edit")?.length;
     if (!edit) {
@@ -759,7 +765,10 @@ onMounted(() => {
   init();
 });
 onUpdated(() => {
-  buttonList.value = extandBtnFunction();
+  if (JSON.stringify(buttonList.value) !== JSON.stringify(extendBtnFunction())) {
+    buttonList.value = extendBtnFunction();
+    toolbarButtonList.value = buttonList.value.filter((item) => item.position == "toolbar") || [];
+  }
 });
 //导出方法和变量
 defineExpose({
@@ -785,6 +794,16 @@ defineExpose({
     功能开发中，现在点击提交按钮导出所有数据
   </star-horse-dialog>
   <div class="star-horse-table">
+    <div class="tb_title" v-if="(title||helpMsg)&&!dialogInput">
+      <help :message="helpMsg" v-if="helpMsg"/>
+      <star-horse-icon
+          icon-class="info"
+          v-else
+          size="14px"
+          style="font-weight: bold; color: var(--star-horse-style)"
+      />
+      {{ title }}
+    </div>
     <div
         style="
         display: flex;
@@ -795,14 +814,15 @@ defineExpose({
         v-if="!dialogInput"
     >
       <div class="tb_title">
-        <help :message="helpMsg" v-if="helpMsg"/>
-        <star-horse-icon
-            icon-class="info"
-            v-else
-            size="14px"
-            style="font-weight: bold; color: var(--star-horse-style)"
+        <star-horse-button-list
+            @tableCompFunc="(fun: any) => tableCompFunc(fun)"
+            :compUrl="compUrl"
+            :btnPermission="permissions"
+            :extendBtns="extendBtns"
+            :dialogProps="dialogProps"
+            :showType="'dropdown'"
+            v-if="!hideButtonList"
         />
-        {{ title }}
       </div>
       <div style="display: flex; align-items: center; flex-direction: row-reverse">
         <star-horse-icon
@@ -917,7 +937,7 @@ defineExpose({
               >
                 <el-table-column fixed="left" label="操作" :width="160" v-if="expandTable.showButton">
                   <template #default="innerScope">
-                    <template v-for="epd in expandTable.extandFuncs">
+                    <template v-for="epd in expandTable.extendFuncs">
                       <el-tooltip :content="epd.btnName">
                         <star-horse-icon
                             v-if="permissions[epd.authority!]"
@@ -955,7 +975,8 @@ defineExpose({
         />
         <el-table-column
             v-if="
-            (!disableAction || (disableAction && extandBtns?.length > 0)) && Object.keys(permissions || {}).length > 0
+            (!disableAction || (disableAction && extendBtns?.filter(item=>item.position!='toolbar')?.length > 0))
+            && Object.keys(permissions || {}).length > 0
           "
             fixed="right"
             label="操作"
@@ -1017,6 +1038,7 @@ defineExpose({
         @current-change="pageChangeClick"
         @size-change="pageSizeClick"
         :size="compSize"
+        :page-sizes="[20, 50, 100,200,300, 400]"
         layout="total, sizes, prev, pager, next, jumper"
         v-model:currentPage="pageInfo.currentPage"
         v-model:page-size="pageInfo.pageSize"

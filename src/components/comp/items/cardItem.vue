@@ -3,13 +3,13 @@ import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
 import {onMounted, PropType} from "vue";
 import {ApiUrls} from "@/components/types/ApiUrls";
 import {FieldInfo} from "@/components/types/PageFieldInfo";
-import {ModelRef} from "vue-demi";
+import {ModelRef} from "vue";
 import {Config} from "@/api/settings.ts";
 import {getDataIndex, getFormData, getPrefix, checkObject, loadProp, validMsg, checkVisible} from "@/api/form_utils.ts";
 
 const props = defineProps({
   compUrl: {type: Object as PropType<ApiUrls>},
-  item: {type: Array as PropType<Array<FieldInfo>>, required: true},
+  item: {type: Array as PropType<Array<FieldInfo>|any>, required: true},
   objectName: {type: String},
   // 数据索引
   dataIndex: {type: Number, default: -1},
@@ -43,7 +43,7 @@ const removeRow = (row: any) => {
 };
 
 const init = () => {
-  console.log("carditem................", props.dataIndex)
+  // console.log("carditem................", props.dataIndex)
 };
 onMounted(() => {
   init();
