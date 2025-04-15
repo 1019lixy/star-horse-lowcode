@@ -4,7 +4,7 @@ import {batchFieldDefaultValues} from "@/api/star_horse_utils.ts";
 import {PropType} from "vue";
 
 defineProps({
-  item: {type: Object, required: true},
+  item: {type: Object as PropType<any>, required: true},
   rules: {type: Object},
   staticColumn: {type: String, default: "N"},
   size: {type: String, default: Config.compSize},
