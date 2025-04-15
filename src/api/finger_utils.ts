@@ -69,7 +69,7 @@ export async function generateDeviceId(userIp: string) {
         });
     const data = {browserFinger, hardwareInfo, userIp}
     let deviceId = btoa(JSON.stringify(data));
-    localStorage.setItem('deviceId', deviceId);
+    sessionStorage.setItem('deviceId', deviceId);
     return deviceId; // 使用 Base64 编码生成设备 ID
 }
 
@@ -77,6 +77,6 @@ export async function generateDeviceId(userIp: string) {
  * 获取设备 ID
  */
 export function getFingerId() {
-    return localStorage.getItem('deviceId');
+    return sessionStorage.getItem('deviceId');
 }
 

@@ -15,7 +15,6 @@
     await postRequest("/system-config/system/informationsEntity/getUserSystem/" + query, [])
       .then((res) => {
         dataList.value = res?.data?.data;
-        console.log(dataList.value.length);
       })
       .catch((err) => {
         console.log(err);
