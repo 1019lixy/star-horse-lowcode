@@ -76,6 +76,7 @@ onMounted(() => {
 });
 provide("closeDialog", beforeClose);
 const fullScreen = () => {
+  if (props.hideFullScreenIcon) return;
   isFullScreen.value = !isFullScreen.value;
 };
 let clickFunction = reactive<any>({});
@@ -111,7 +112,7 @@ provide("dialogOperation", clickFunction);
           :style="dialogStyle"
       >
         <template #header="{ close }">
-          <h3>{{ title || dialogProps.dialogTitle }}</h3>
+          <h3 @dblclick="fullScreen">{{ title || dialogProps.dialogTitle }}</h3>
           <div class="my-header">
             <template v-if="!hideFullScreenIcon">
               <el-button
@@ -205,7 +206,7 @@ provide("dialogOperation", clickFunction);
               </el-button>
             </template>
             <el-button @click="operation('resetForm', 'reset')" :size="compSize" link v-if="isShowReset">
-              <star-horse-icon icon-class="undo"  cursor="pointer" style="color: var(--star-horse-style)"/>
+              <star-horse-icon icon-class="undo" cursor="pointer" style="color: var(--star-horse-style)"/>
               {{ i18n("dialog.reset") }}</el-button
             >
           </span>
