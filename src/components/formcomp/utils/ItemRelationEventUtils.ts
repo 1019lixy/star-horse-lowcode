@@ -117,15 +117,22 @@ const operationRelation = async (relation: any, actionName: string, formData: an
  */
 const allAction = (context: any, actionName: string, isInit: boolean = false) => {
     //设计时的初始化不作处理
+    const field = context.attrs["field"] as any;
+    if (!isInit && actionName != "normal") {
+        try {
+            context.emit("selfFunc", actionName, context.attrs["formData"]);
+        } catch (e) {
+            error("事件触发异常：" + e);
+        }
+    }
     if ((isDesign.value && isInit) || actionName == "normal") {
         return;
     }
-    const field = context.attrs["field"] as any;
     const tempName = field.preps?.actionName;
     //如果没有设置事件则不处理
-    if (actionName != tempName) {
-        return;
-    }
+    // if (actionName != tempName) {
+    //     return;
+    // }
     //处理连动
     switch (actionName) {
         case "change":
@@ -155,11 +162,6 @@ const allAction = (context: any, actionName: string, isInit: boolean = false) =>
     //处理自定义响应事件
     if (actionName == field.preps["actionName"] && field.preps["actionRelation"]) {
         field.preps["actionRelation"](context.attrs["formData"][field.preps["name"]], context.attrs["formData"]["xh"]);
-    }
-    try {
-        context.emit("selfFunc", actionName, context.attrs["formData"]);
-    } catch (e) {
-        error("事件触发异常：" + e);
     }
 };
 /**
