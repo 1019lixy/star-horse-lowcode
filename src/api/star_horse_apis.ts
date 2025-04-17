@@ -269,7 +269,6 @@ export function downloadFile(fileUrl: string, fileName: string, method: string =
 /**
  * 加载已配置的菜单
  * @param param
- * @returns {Promise<AxiosResponse<*>>}
  */
 export function loadConfigedMenus(param: Array<object>) {
     return postRequest(`${ServiceEnums.SYSTEM_PREFIX}menusinfoEntity/getAllByCondition`, param);
@@ -278,7 +277,6 @@ export function loadConfigedMenus(param: Array<object>) {
 /**
  * 获取部门信息
  * @param param
- * @returns {Promise<AxiosResponse<*>>}
  */
 export async function loadDepartments(param: Array<object>) {
     let redata: any[] = [];
@@ -298,7 +296,6 @@ export async function loadDepartments(param: Array<object>) {
 /**
  * 获取部门信息
  * @param param
- * @returns {Promise<AxiosResponse<*>>}
  */
 export async function loadSystems(param: Array<object>) {
     let redata: any[] = [];
@@ -318,7 +315,6 @@ export async function loadSystems(param: Array<object>) {
 /**
  * 获取数据字典
  * @param dictName
- * @returns {Promise<unknown>}
  */
 export async function loadDict(dictName: string) {
     let redata: Array<SelectOption> = [];
@@ -327,7 +323,7 @@ export async function loadDict(dictName: string) {
     };
     await postRequest(`${ServiceEnums.SYSTEM_PREFIX}dictinfoEntity/getAllByCondition`, param)
         .then((res) => {
-            if (res?.data?.code != 0) {
+            if (res?.data?.code) {
                 console.log(res.data.cnMessage);
             } else {
                 const resdata = res?.data?.data;
@@ -346,7 +342,6 @@ export async function loadDict(dictName: string) {
 /**
  * 获取下拉数据
  * @param param
- * @returns {Promise<unknown>}
  */
 export async function loadRoleDatas(param: Array<object>) {
     let redata: any[] = [];
@@ -368,7 +363,6 @@ export async function loadRoleDatas(param: Array<object>) {
  * Post 请求
  * @param url
  * @param data
- * @returns {Promise<AxiosResponse<any>>}
  */
 export function postRequest(url: string, data: Array<any> | any) {
     return service.post(url, data);
