@@ -1,11 +1,11 @@
-import {useDesignFormStore} from "@/store/DesignForm.ts";
-import {useCopyerOperationStore} from "@/store/CopyerOperation.ts";
-import piniaInstance from "@/store";
-import {computed} from "vue";
-import {operationConfirm, warning} from "@/utils/message.ts";
-import {ModuleEnums} from "@/components/enums/ModuleEnums.ts";
-import {copyContainer, moveDownItem, moveUpItem, removeItem} from "@/plugins/AblesPlugin.ts";
-import {uuid} from "@/api/system.ts";
+import {useDesignFormStore} from '@/store/DesignForm.ts';
+import {useCopyerOperationStore} from '@/store/CopyerOperation.ts';
+import piniaInstance from '@/store';
+import {computed} from 'vue';
+import {operationConfirm, warning} from '@/utils/message.ts';
+import {ModuleEnums} from '@/components/enums/ModuleEnums.ts';
+import {copyContainer, moveDownItem, moveUpItem, removeItem} from '@/plugins/AblesPlugin.ts';
+import {uuid} from '@/api/system.ts';
 
 const designForm = useDesignFormStore(piniaInstance);
 const copyerOperation = useCopyerOperationStore(piniaInstance);
@@ -25,11 +25,11 @@ const dyCopy = () => {
     }
     const item: any = currentComp.value;
     if (!item || Object.keys(item).length === 0) {
-        warning("请先选择要复制的组件");
+        warning('请先选择要复制的组件');
         return;
     }
     const copyItem: any = JSON.parse(JSON.stringify(item));
-    copyerOperation.keyboardOperation("copy", ModuleEnums.DYNAMIC_FORM, {}, copyItem);
+    copyerOperation.keyboardOperation('copy', ModuleEnums.DYNAMIC_FORM, {}, copyItem);
 };
 /**
  * 剪切
@@ -40,11 +40,11 @@ const dyCut = () => {
     }
     const item: any = currentComp.value;
     if (!item || Object.keys(item).length === 0) {
-        warning("请先选择要剪切的组件");
+        warning('请先选择要剪切的组件');
         return;
     }
     const copyItem: any = JSON.parse(JSON.stringify(item));
-    copyerOperation.keyboardOperation("cut", ModuleEnums.DYNAMIC_FORM, {}, copyItem);
+    copyerOperation.keyboardOperation('cut', ModuleEnums.DYNAMIC_FORM, {}, copyItem);
 };
 /**
  * 粘贴
@@ -59,43 +59,43 @@ const dyPaste = () => {
     }
     const compType = copyItem.compType;
     const itemType = copyItem.itemType;
-    if (action.value === "cut") {
+    if (action.value === 'cut') {
         removeItem(list.value, currentComp.value, parentContainer.value);
     }
-    if (compType == "container") {
-        copyContainer(list.value, copyItem, action.value === "cut");
+    if (compType == 'container') {
+        copyContainer(list.value, copyItem, action.value === 'cut');
     } else {
         copyItem.id = uuid();
         copyItem.preps.id = copyItem.id;
 
-        copyItem.preps.label = copyItem.preps.label + "(复制)";
+        copyItem.preps.label = copyItem.preps.label + '(复制)';
         //判断copyItem.preps.name是否以数字结尾，如果是，则去掉数字，然后加上formInfo.value["dataIndex"]
         let name = copyItem.preps.name;
         if (name.match(/\d+$/)) {
-            name = name.replace(/\d+$/, "");
+            name = name.replace(/\d+$/, '');
         }
         copyItem.preps.name = name + designForm.getFieldDataIndex();
         list.value.push(copyItem);
     }
-    designForm.selectItem(copyItem, itemType, "");
+    designForm.selectItem(copyItem, itemType, '');
 };
 const dyEnter = () => {
-    console.log("enter");
+    console.log('enter');
 };
 /**
  * tab
  */
 const dyTab = () => {
-    console.log("tab");
+    console.log('tab');
 };
 /**
  * 撤销
  */
 const dyEscape = () => {
-    console.log("escape");
+    console.log('escape');
 };
 const dyBackspace = () => {
-    console.log("backspace");
+    console.log('backspace');
 };
 
 const dyRedo = () => {
@@ -105,7 +105,7 @@ const dyRedo = () => {
 const dyUndo = () => {
     //已有实现接口
     // designForm.undo();
-    console.log("undo");
+    console.log('undo');
 };
 const dyNew = () => {
     //已有实现接口
@@ -120,40 +120,40 @@ const dyNew = () => {
 const dySave = () => {
     //已有实现接口
     // designForm.setBatchEditFieldVisible(true);
-    console.log("save");
+    console.log('save');
 };
 const dyOpen = () => {
-    console.log("open");
+    console.log('open');
 };
 const dyDelete = () => {
-    operationConfirm("确定要删除所选组件吗？").then(() => {
-        console.log("delete");
+    operationConfirm('确定要删除所选组件吗？').then(() => {
+        console.log('delete');
     });
 };
 const dySelectAll = () => {
-    console.log("selectAll");
+    console.log('selectAll');
 };
 const dyDeleteAll = () => {
-    operationConfirm("确定要删除所有组件吗？").then(() => {
+    operationConfirm('确定要删除所有组件吗？').then(() => {
         designForm.clearAll();
     });
-    console.log("deleteAll");
+    console.log('deleteAll');
 };
 const dyFind = () => {
-    console.log("find");
+    console.log('find');
 };
 const dyExchange = () => {
     designForm.setComponentVisible(true);
-    console.log("exchange");
+    console.log('exchange');
 };
 const dyGroup = () => {
-    console.log("group");
+    console.log('group');
 };
 const dyUnGroup = () => {
-    console.log("unGroup");
+    console.log('unGroup');
 };
 const dyPrint = () => {
-    console.log("print");
+    console.log('print');
 };
 const dyPreview = () => {
     //已有实现接口
@@ -169,41 +169,41 @@ const dyReturn = () => {
 };
 const dyUp = () => {
     moveUpItem(true, currentComp.value, {});
-    console.log("up");
+    console.log('up');
 };
 const dyDown = () => {
     moveDownItem(true, currentComp.value, {});
-    console.log("down");
+    console.log('down');
 };
 const dyLeft = () => {
-    console.log("left");
+    console.log('left');
 };
 const dyRight = () => {
-    console.log("right");
+    console.log('right');
 };
 const dyAltUp = () => {
-    console.log("altUp");
+    console.log('altUp');
 };
 const dyAltDown = () => {
-    console.log("altDown");
+    console.log('altDown');
 };
 const dyAltLeft = () => {
-    console.log("altLeft");
+    console.log('altLeft');
 };
 const dyAltRight = () => {
-    console.log("altRight");
+    console.log('altRight');
 };
 const dyCtrlUp = () => {
-    console.log("ctrlUp");
+    console.log('ctrlUp');
 };
 const dyCtrlDown = () => {
-    console.log("ctrlDown");
+    console.log('ctrlDown');
 };
 const dyCtrlLeft = () => {
-    console.log("ctrlLeft");
+    console.log('ctrlLeft');
 };
 const dyCtrlRight = () => {
-    console.log("ctrlRight");
+    console.log('ctrlRight');
 };
 export {
     dyCopy,

@@ -1,8 +1,8 @@
 <script setup lang="ts" name="box-container">
-import {ComponentInternalInstance, computed, getCurrentInstance, PropType} from "vue";
-import {warning} from "@/utils/message";
-import {useDesignFormStore} from "@/store/DesignForm.ts";
-import piniaInstance from "@/store/index.ts";
+import {ComponentInternalInstance, computed, getCurrentInstance, PropType} from 'vue';
+import {warning} from '@/utils/message';
+import {useDesignFormStore} from '@/store/DesignForm.ts';
+import piniaInstance from '@/store/index.ts';
 
 const props = defineProps({
   parentField: {type: String},
@@ -18,17 +18,17 @@ let draggingItem = computed(() => designForm.draggingItem);
 let isEdit = computed(() => designForm.isEdit);
 const isDragging = computed(() => designForm.isDragging);
 let boxCompList = computed(() => props.field);
-let excludeContainerType: Array<string> = ["box", "tab", "table", "dytable", "collapse", "card"];
+let excludeContainerType: Array<string> = ['box', 'tab', 'table', 'dytable', 'collapse', 'card'];
 
 const checkItem = (items: any) => {
-  if (!items["items"]) {
-    items["items"] = [];
+  if (!items['items']) {
+    items['items'] = [];
   }
 };
 const onDragAdd = (evt: Event, dataList: any) => {
   let newIndex = evt.newIndex;
   if (excludeContainerType.includes(draggingItem.value.itemType)) {
-    warning("栅格容器不允许嵌套其他容器");
+    warning('栅格容器不允许嵌套其他容器');
     let elements = props.field.preps.elements;
     for (let inde in elements) {
       let element = elements[inde];
@@ -37,7 +37,7 @@ const onDragAdd = (evt: Event, dataList: any) => {
         for (let i in column?.items) {
           let item = column.items[i];
           if (draggingItem.value.id == item.id) {
-            console.log("find data", item);
+            console.log('find data', item);
             column.items.splice(i, 1);
           }
         }
@@ -45,9 +45,9 @@ const onDragAdd = (evt: Event, dataList: any) => {
     }
     return false;
   }
-  if (newIndex != null && newIndex != "undefined") {
+  if (newIndex != null && newIndex != 'undefined') {
     let dataInfo = dataList[newIndex];
-    designForm.selectItem(dataInfo, dataInfo.itemType, "");
+    designForm.selectItem(dataInfo, dataInfo.itemType, '');
   }
 };
 
@@ -96,6 +96,7 @@ const onDragAdd = (evt: Event, dataList: any) => {
                   :field="data"
                   :formInfo="formInfo"
                   :isDesign="isDesign"
+                  :disabled="disabled"
                   :is="data.itemType + (data.compType === 'container' ? '-container' : '-item')"
                   :parentField="boxCompList"
                   :formData="formData"
@@ -116,6 +117,7 @@ const onDragAdd = (evt: Event, dataList: any) => {
           <component
               :field="data"
               :isDesign="isDesign"
+              :disabled="disabled"
               :is="data.itemType + (data.compType === 'container' ? '-container' : '-item')"
               :formData="formData"
               :formInfo="formInfo"

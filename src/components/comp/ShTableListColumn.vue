@@ -1,20 +1,20 @@
 <script setup lang="ts" name="ShTableListColumn">
-  import { inject } from "vue";
-  import { DialogProps } from "@/components/types/DialogProps";
-  import { Config } from "@/api/settings.ts";
-  import { validMsg } from "@/api/form_utils.ts";
-  import {PropType} from "vue";
+  import { inject } from 'vue';
+  import { DialogProps } from '@/components/types/DialogProps';
+  import { Config } from '@/api/settings.ts';
+  import { validMsg } from '@/api/form_utils.ts';
+  import {PropType} from 'vue';
   defineProps({
     dataForm: { type: Object, required: true },
     index: { type: Object, required: true },
     item: { type: Object, required: true },
-    staticColumn: { type: String, default: "N" },
+    staticColumn: { type: String, default: 'N' },
     primaryKey: {type: [String, Object] as PropType<string | any>},
-    batchName: { type: String, default: "batchDataList" },
+    batchName: { type: String, default: 'batchDataList' },
     rules: { type: Object },
     size: { type: String, default: Config.compSize }
   });
-  const dialogProps = inject<DialogProps>("dialogProps");
+  const dialogProps = inject<DialogProps>('dialogProps');
 </script>
 <template>
   <template v-if="staticColumn == 'Y'">

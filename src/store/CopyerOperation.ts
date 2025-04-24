@@ -1,14 +1,14 @@
-import { defineStore } from "pinia";
-import { ref } from "vue";
-import { ModuleEnums } from "@/components/enums/ModuleEnums.ts";
-import { message } from "@/utils/message.ts";
+import { defineStore } from 'pinia';
+import { ref } from 'vue';
+import { ModuleEnums } from '@/components/enums/ModuleEnums.ts';
+import { message } from '@/utils/message.ts';
 
 /**
  * 用户自定义方法处理逻辑
  */
-export const useCopyerOperationStore = defineStore("copyerOperation", () => {
+export const useCopyerOperationStore = defineStore('copyerOperation', () => {
   //执行的动作
-  const action = ref<string>("");
+  const action = ref<string>('');
   //模块
   const module = ref<ModuleEnums>();
   //父级容器
@@ -30,10 +30,10 @@ export const useCopyerOperationStore = defineStore("copyerOperation", () => {
     action.value = act;
     parentContainer.value = container;
     copyerData.value = data;
-    if (act == "copy") {
-      message("复制成功");
-    } else if (act == "cut") {
-      message("剪切成功");
+    if (act == 'copy') {
+      message('复制成功');
+    } else if (act == 'cut') {
+      message('剪切成功');
     }
   };
   //设置动作
@@ -50,7 +50,7 @@ export const useCopyerOperationStore = defineStore("copyerOperation", () => {
   };
   //清除所有数据
   const clearAll = () => {
-    action.value = "";
+    action.value = '';
     parentContainer.value = {};
     copyerData.value = {};
   };

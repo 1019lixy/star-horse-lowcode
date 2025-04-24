@@ -1,10 +1,10 @@
-import { ref } from "vue";
+import { ref } from 'vue';
 
 export const Config: any = {
   /**
    * @description 网站标题
    */
-  title: "StarHorseDevops",
+  title: 'StarHorseDevops',
   /**
    * @description 是否显示 tagsView
    */
@@ -28,16 +28,16 @@ export const Config: any = {
   /**
    * @description token key
    */
-  TokenKey: "STAR-HORSE-TOEKN",
+  TokenKey: 'STAR-HORSE-TOEKN',
   /**
    * 用户登录信息
    */
-  loginInfo: "userInfo",
+  loginInfo: 'userInfo',
   /**
    * 客户信息
    */
-  customerInfo: "customerInfo",
-  reportId: "reportId",
+  customerInfo: 'customerInfo',
+  reportId: 'reportId',
   /**
    * @description 请求超时时间，毫秒（默认2分钟）
    */
@@ -57,25 +57,25 @@ export const Config: any = {
   /**
    * 备案号
    */
-  caseNumber: "",
+  caseNumber: '',
   /**
    * RSA 公钥
    */
-  publicKey: "publicKey",
+  publicKey: 'publicKey',
   /**
    * 文件扩展名
    */
-  fileExt: ".vue",
+  fileExt: '.vue',
   /**
    * 按钮风格
    */
-  buttonStyle: ref("dropdown"),
+  buttonStyle: ref('dropdown'),
   /**
    * 默认列表宽度
    */
-  defaultColumnWidth: "120",
+  defaultColumnWidth: '120',
   /**
    * 组件大小
    */
-  compSize: "small"
+  compSize: 'small'
 };

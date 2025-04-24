@@ -1,27 +1,27 @@
 <script setup lang="ts">
-import {onMounted} from "vue";
+import {onMounted} from 'vue';
 
 export interface DataTagProps {
   data: any;
   displayName?: string;
   displayValue?: string;
-  type?: "success" | "info" | "warning" | "danger";
+  type?: 'success' | 'info' | 'warning' | 'danger';
   closable?: boolean;
 }
 
 const props = withDefaults(defineProps<DataTagProps>(), {
   closable: false,
-  displayName: "name",
-  displayValue: "value",
-  type: "info"
+  displayName: 'name',
+  displayValue: 'value',
+  type: 'info'
 });
 const emits = defineEmits<{
-  (e: "close", id: string): void;
+  (e: 'close', id: string): void;
 }>();
 
 onMounted(() => {
   if (!props.data) {
-    throw new Error("username is required");
+    throw new Error('username is required');
   }
 
   // getById(props.id).then((res) => {
@@ -32,7 +32,7 @@ onMounted(() => {
   // })
 });
 const onClose = () => {
-  emits("close", props.data);
+  emits('close', props.data);
 };
 </script>
 <template>

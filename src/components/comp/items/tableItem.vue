@@ -1,10 +1,10 @@
 <script setup lang="ts">
-  import { onMounted, PropType, ref } from "vue";
-  import { ApiUrls } from "@/components/types/ApiUrls";
-  import { PageFieldInfo } from "@/components/types/PageFieldInfo";
-  import StarHorseFormTable from "@/components/comp/StarHorseFormTable.vue";
-  import { ModelRef } from "vue";
-  import { Config } from "@/api/settings.ts";
+  import { onMounted, PropType, ref } from 'vue';
+  import { ApiUrls } from '@/components/types/ApiUrls';
+  import { PageFieldInfo } from '@/components/types/PageFieldInfo';
+  import StarHorseFormTable from '@/components/comp/StarHorseFormTable.vue';
+  import { ModelRef } from 'vue';
+  import { Config } from '@/api/settings.ts';
 
   const props = defineProps({
     compUrl: { type: Object as PropType<ApiUrls> },
@@ -12,16 +12,16 @@
     objectName: { type: String },
     // 数据索引
     dataIndex: {type: Number, default: -1},
-    subFormFlag: { type: String, default: "N" },
-    batchName: { type: String, default: "batchDataList" },
-    batchFieldName: { type: String, default: "batchFieldList" },
+    subFormFlag: { type: String, default: 'N' },
+    batchName: { type: String, default: 'batchDataList' },
+    batchFieldName: { type: String, default: 'batchFieldList' },
     primaryKey: {type: [String, Object] as PropType<string | any>,required:true},
     rules: { type: Object },
     compSize: { type: String, default: Config.compSize },
     isView: { type: Boolean, default: false }
   });
-  const emits = defineEmits(["addRow", "removeRow"]);
-  const dataForm: ModelRef<any> = defineModel("dataForm");
+  const emits = defineEmits(['addRow', 'removeRow']);
+  const dataForm: ModelRef<any> = defineModel('dataForm');
   const init = () => {
 
   };
@@ -30,14 +30,14 @@
    * @param row
    */
   const addRow = (row: any) => {
-    emits("addRow", row);
+    emits('addRow', row);
   };
   /**
    * 列表删除行数据
    * @param row
    */
   const removeRow = (row: any) => {
-    emits("removeRow", row);
+    emits('removeRow', row);
   };
   onMounted(() => {
     init();

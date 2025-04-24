@@ -64,22 +64,22 @@
   </starhorse-form-item>
 </template>
 <script lang="ts">
-import {defineComponent, nextTick, onMounted, ref, shallowRef} from "vue";
-import {warning} from "@/utils/message";
-import {FieldMapping} from "@/components/types/PageFieldInfo";
-import {SearchParams} from "@/components/types/Params";
-import {isJson} from "@/api/star_horse_utils.ts";
-import {allAction, checkIsDisabled} from "@/components/formcomp/utils/ItemRelationEventUtils.ts";
+import {defineComponent, nextTick, onMounted, ref, shallowRef} from 'vue';
+import {warning} from '@/utils/message';
+import {FieldMapping} from '@/components/types/PageFieldInfo';
+import {SearchParams} from '@/components/types/Params';
+import {isJson} from '@/api/star_horse_utils.ts';
+import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
 
 export default defineComponent({
   methods: {checkIsDisabled},
   setup(_props, context) {
-    const parentField = context.attrs["parentField"];
+    const parentField = context.attrs['parentField'];
 
-    const field = context.attrs["field"] as any;
+    const field = context.attrs['field'] as any;
     const dialogInputTableRef = ref();
-    let formItem = shallowRef({label: "input", required: false});
-    let dataField = shallowRef("");
+    let formItem = shallowRef({label: 'input', required: false});
+    let dataField = shallowRef('');
     let dialogInputVisible = shallowRef(false);
     // let multipleSelection = shallowRef<any>([]);
     // let instance=getCurrentInstance();
@@ -94,17 +94,17 @@ export default defineComponent({
         console.error(e);
       }
     };
-    let actionName = shallowRef("normal");
+    let actionName = shallowRef('normal');
     const itemAction = (prep: any) => {
       allAction(context, prep);
     };
     const selectItem = (row: any) => {
-      let data = "";
-      let needField = field.preps["needField"];
+      let data = '';
+      let needField = field.preps['needField'];
       if (!row || !isJson(row)) {
         let selectDatas = dialogInputTableRef.value.multipleSelection;
         if (!selectDatas) {
-          warning("请选择数据");
+          warning('请选择数据');
           return;
         }
         data = selectDatas[0];
@@ -112,21 +112,21 @@ export default defineComponent({
         data = row;
       }
       //如果没有指定属性，则默认取相同的属性
-      let name = field.preps["name"];
+      let name = field.preps['name'];
       if (!needField) {
-        context.attrs["formData"][name] = data[name];
+        context.attrs['formData'][name] = data[name];
       } else {
         needField.forEach((item: FieldMapping) => {
           if (needField.length == 1) {
-            context.attrs["formData"][name] = data[item.sourceField];
+            context.attrs['formData'][name] = data[item.sourceField];
           } else {
-            context.attrs["formData"][item.distField] = data[item.sourceField];
+            context.attrs['formData'][item.distField] = data[item.sourceField];
           }
         });
       }
       console.log(data, needField);
-      if (field.preps["recall"]) {
-        field.preps["recall"](row);
+      if (field.preps['recall']) {
+        field.preps['recall'](row);
       }
       closeAction();
     };
@@ -136,24 +136,24 @@ export default defineComponent({
     const showVisible = () => {
       dialogInputVisible.value = true;
       nextTick(() => {
-        let fields = field.preps["needField"];
-        let name = field.preps["name"];
+        let fields = field.preps['needField'];
+        let name = field.preps['name'];
         let realName = name;
-        if (field.preps["aliasName"]) {
-          realName = field.preps["aliasName"];
+        if (field.preps['aliasName']) {
+          realName = field.preps['aliasName'];
         }
         if (fields) {
           name = fields.map((item: FieldMapping) => item.sourceField)[0];
         }
-        dialogInputTableRef.value?.setDataInfo(name, context.attrs["formData"][realName]);
+        dialogInputTableRef.value?.setDataInfo(name, context.attrs['formData'][realName]);
       });
     };
     const searchData = (data: SearchParams[]) => {
       dialogInputTableRef.value?.createSearchParams(data);
     };
     onMounted(() => {
-      actionName.value = field.preps?.actionName || "normal";
-      if (!context.attrs["isSearch"]) {
+      actionName.value = field.preps?.actionName || 'normal';
+      if (!context.attrs['isSearch']) {
         allAction(context, actionName.value, true);
       }
     });

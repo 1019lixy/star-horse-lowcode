@@ -10,24 +10,24 @@
   </starhorse-form-item>
 </template>
 <script lang="ts" name="audioItem">
-import {defineComponent, onMounted, shallowRef} from "vue";
-import {blobData} from "@/api/star_horse_apis.ts";
-import Help from "@/components/help.vue";
+import {defineComponent, onMounted, shallowRef} from 'vue';
+import {blobData} from '@/api/star_horse_apis.ts';
+import Help from '@/components/help.vue';
 
 export default defineComponent({
   components: {Help},
   setup(props, context) {
-    const parentField = context.attrs["parentField"];
+    const parentField = context.attrs['parentField'];
 
-    const field = context.attrs["field"] as any;
-    let formItem = shallowRef({label: "input", required: false});
-    let dataField = shallowRef("");
+    const field = context.attrs['field'] as any;
+    let formItem = shallowRef({label: 'input', required: false});
+    let dataField = shallowRef('');
     let audio;
     const itemAction = () => {
-      context.emit("selfFunc");
+      context.emit('selfFunc');
     };
     const init = async () => {
-      let file = await blobData(field["audioUrl"]);
+      let file = await blobData(field['audioUrl']);
       if (!file) {
         return;
       }
@@ -127,10 +127,10 @@ export default defineComponent({
         offset++; // next source sample
       }
       // create Blob
-      return new Blob([buffer], {type: "audio/wav"});
+      return new Blob([buffer], {type: 'audio/wav'});
     };
     onMounted(() => {
-      audio = document.getElementById("audio");
+      audio = document.getElementById('audio');
       init();
     });
     return {parentField, context, field, formItem, dataField};

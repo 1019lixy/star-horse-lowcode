@@ -1,27 +1,27 @@
 <script lang="ts">
-import {defineComponent, onMounted, ref, shallowRef, watch} from "vue";
-import {PageProps} from "@/components/types/PageProps";
-import {closeLoad, createCondition, load} from "@/api/star_horse_utils.ts";
-import {postRequest} from "@/api/star_horse_apis.ts";
-import {FieldMapping, OrderByInfo} from "@/components/types/PageFieldInfo";
-import {SearchParams} from "@/components/types/Params";
-import {allAction, checkIsDisabled} from "@/components/formcomp/utils/ItemRelationEventUtils.ts";
-import StarHorseTableComp from "@/components/comp/StarHorseTableComp.vue";
+import {defineComponent, onMounted, ref, shallowRef, watch} from 'vue';
+import {PageProps} from '@/components/types/PageProps';
+import {closeLoad, createCondition, load} from '@/api/star_horse_utils.ts';
+import {postRequest} from '@/api/star_horse_apis.ts';
+import {FieldMapping, OrderByInfo} from '@/components/types/PageFieldInfo';
+import {SearchParams} from '@/components/types/Params';
+import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
+import StarHorseTableComp from '@/components/comp/StarHorseTableComp.vue';
 
 export default defineComponent({
   components: {StarHorseTableComp},
   methods: {checkIsDisabled},
   setup(_props, context) {
-    const parentField = context.attrs["parentField"];
+    const parentField = context.attrs['parentField'];
     // let formData = context.attrs["formData"] as any;
-    const field = context.attrs["field"] as any;
+    const field = context.attrs['field'] as any;
     const starHorseTableCompRef = ref();
-    const filterCondtion = field.preps["filterCondition"] as Array<SearchParams>;
-    const orderBy = field.preps["orderBy"] as Array<OrderByInfo>;
-    let formItem = shallowRef({label: "input", required: false});
-    let dataField = shallowRef("");
+    const filterCondtion = field.preps['filterCondition'] as Array<SearchParams>;
+    const orderBy = field.preps['orderBy'] as Array<OrderByInfo>;
+    let formItem = shallowRef({label: 'input', required: false});
+    let dataField = shallowRef('');
     let multipleSelection = shallowRef<Array<any>>([]);
-    let actionName = shallowRef("normal");
+    let actionName = shallowRef('normal');
     let pageInfo = ref<PageProps>({
       pageSize: 20,
       currentPage: 1,
@@ -46,10 +46,10 @@ export default defineComponent({
       }
       if (isInit) {
         let fieldName = loadSourceField();
-        let value = context.attrs["formData"][field.preps["aliasName"] || field.preps["name"]];
+        let value = context.attrs['formData'][field.preps['aliasName'] || field.preps['name']];
         if (fieldName && value) {
-          if ("Y" == field.preps["multiple"]) {
-            searchData.value.push(createCondition(fieldName, Array.isArray(value) ? value : value.split(";"), "in"));
+          if ('Y' == field.preps['multiple']) {
+            searchData.value.push(createCondition(fieldName, Array.isArray(value) ? value : value.split(';'), 'in'));
           } else {
             searchData.value.push(createCondition(fieldName, value));
           }
@@ -59,7 +59,7 @@ export default defineComponent({
       if (orderBy) {
         orderByTemp = orderBy;
       }
-      if (!field.preps["dataUrl"]?.pageListUrl) {
+      if (!field.preps['dataUrl']?.pageListUrl) {
         return;
       }
       let params: any = {
@@ -76,13 +76,13 @@ export default defineComponent({
           port: field.preps.dataUrl?.port,
           protocol: field.preps.dataUrl?.protocol,
           env: field.preps.dataUrl?.env,
-          httpMethod: field.preps.dataUrl?.httpMethod || "POST",
-          dataType: field.preps.dataUrl?.dataType || "JSON",
+          httpMethod: field.preps.dataUrl?.httpMethod || 'POST',
+          dataType: field.preps.dataUrl?.dataType || 'JSON',
           searchInfo: params
         };
-        url = "/system-config/redirect/pageList";
+        url = '/system-config/redirect/pageList';
       }
-      load("数据加载中");
+      load('数据加载中');
       postRequest(url, params)
           .then((res) => {
             let redata = res.data?.data;
@@ -128,42 +128,42 @@ export default defineComponent({
       assignVal();
     };
     const loadSourceField = (aliasFirst: boolean = true) => {
-      let fields: any = field.preps["needField"];
-      let name = aliasFirst ? field.preps["aliasName"] || field.preps["name"] : field.preps["name"];
-      return fields?.find((temp: FieldMapping) => temp.distField == name)?.sourceField || "";
+      let fields: any = field.preps['needField'];
+      let name = aliasFirst ? field.preps['aliasName'] || field.preps['name'] : field.preps['name'];
+      return fields?.find((temp: FieldMapping) => temp.distField == name)?.sourceField || '';
     };
     const assignVal = () => {
-      let fields: any = field.preps["needField"];
-      let name = field.preps["name"];
+      let fields: any = field.preps['needField'];
+      let name = field.preps['name'];
       if (fields) {
         fields.forEach((temp: FieldMapping) => {
           let value = multipleSelection.value.map((item: any) => item[temp.sourceField]);
-          if (!field.preps["multiple"] || field.preps["multiple"] == "N") {
+          if (!field.preps['multiple'] || field.preps['multiple'] == 'N') {
             value = value[0];
           }
           if (fields.length == 1) {
-            context.attrs["formData"][name] = value;
+            context.attrs['formData'][name] = value;
           } else {
-            context.attrs["formData"][temp.distField] = value;
+            context.attrs['formData'][temp.distField] = value;
           }
         });
       } else {
-        context.attrs["formData"][name] = multipleSelection.value.map((item) => item[name]);
+        context.attrs['formData'][name] = multipleSelection.value.map((item) => item[name]);
       }
-      if (field.preps["recall"]) {
-        field.preps["recall"](multipleSelection.value);
+      if (field.preps['recall']) {
+        field.preps['recall'](multipleSelection.value);
       }
     };
     watch(
-        () => field.preps["dataUrl"],
+        () => field.preps['dataUrl'],
         () => {
           loadByPage();
         }
     );
     onMounted(() => {
-      actionName.value = field.preps?.actionName || "normal";
+      actionName.value = field.preps?.actionName || 'normal';
       loadByPage(true);
-      if (!context.attrs["isSearch"]) {
+      if (!context.attrs['isSearch']) {
         allAction(context, actionName.value, true);
       }
     });

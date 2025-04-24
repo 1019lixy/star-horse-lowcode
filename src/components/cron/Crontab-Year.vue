@@ -39,14 +39,14 @@
   }
 </style>
 <script lang="ts" setup name="crontab-year">
-  import { computed, onMounted, ref, watch } from "vue";
+  import { computed, onMounted, ref, watch } from 'vue';
 
   const props = defineProps({
     check: { type: Function },
     month: {},
     cron: { type: Object }
   });
-  const emits = defineEmits(["update"]);
+  const emits = defineEmits(['update']);
   let fullYear = ref(0);
   let radioValue = ref(1);
   let cycle01 = ref(0);
@@ -59,13 +59,13 @@
   const cycleTotalFun = () => {
     cycle01.value = checkNum.value?.(cycle01.value, fullYear.value, fullYear.value + 100);
     cycle02.value = checkNum.value?.(cycle02.value, fullYear.value + 1, fullYear.value + 101);
-    return cycle01.value + "-" + cycle02.value;
+    return cycle01.value + '-' + cycle02.value;
   };
   // 计算平均用到的值
   const averageTotalFun = () => {
     average01.value = checkNum.value?.(average01.value, fullYear.value, fullYear.value + 100);
     average02.value = checkNum.value?.(average02.value, 1, 10);
-    return average01.value + "/" + average02.value;
+    return average01.value + '/' + average02.value;
   };
   // 计算勾选的checkbox值合集
   const checkboxStringFun = () => {
@@ -76,55 +76,55 @@
   let checkboxString = computed(() => checkboxStringFun());
   // 单选按钮值变化时
   const radioChange = () => {
-    if (props.cron?.month === "*") {
-      emits("update", "month", "0", "year");
+    if (props.cron?.month === '*') {
+      emits('update', 'month', '0', 'year');
     }
-    if (props.cron?.day === "*") {
-      emits("update", "day", "0", "year");
+    if (props.cron?.day === '*') {
+      emits('update', 'day', '0', 'year');
     }
-    if (props.cron?.hour === "*") {
-      emits("update", "hour", "0", "year");
+    if (props.cron?.hour === '*') {
+      emits('update', 'hour', '0', 'year');
     }
-    if (props.cron?.min === "*") {
-      emits("update", "min", "0", "year");
+    if (props.cron?.min === '*') {
+      emits('update', 'min', '0', 'year');
     }
-    if (props.cron?.second === "*") {
-      emits("update", "second", "0", "year");
+    if (props.cron?.second === '*') {
+      emits('update', 'second', '0', 'year');
     }
     switch (radioValue.value) {
       case 1:
-        emits("update", "year", "");
+        emits('update', 'year', '');
         break;
       case 2:
-        emits("update", "year", "*");
+        emits('update', 'year', '*');
         break;
       case 3:
-        emits("update", "year", cycle01.value + "-" + cycle02.value);
+        emits('update', 'year', cycle01.value + '-' + cycle02.value);
         break;
       case 4:
-        emits("update", "year", average01.value + "/" + average02.value);
+        emits('update', 'year', average01.value + '/' + average02.value);
         break;
       case 5:
-        emits("update", "year", checkboxString.value);
+        emits('update', 'year', checkboxString.value);
         break;
     }
   };
   // 周期两个值变化时
   const cycleChange = () => {
     if (radioValue.value == 3) {
-      emits("update", "year", cycleTotal.value);
+      emits('update', 'year', cycleTotal.value);
     }
   };
   // 平均两个值变化时
   const averageChange = () => {
     if (radioValue.value == 4) {
-      emits("update", "year", averageTotal.value);
+      emits('update', 'year', averageTotal.value);
     }
   };
   // checkbox值变化时
   const checkboxChange = () => {
     if (radioValue.value == 5) {
-      emits("update", "year", checkboxString.value);
+      emits('update', 'year', checkboxString.value);
     }
   };
   watch(

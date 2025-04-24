@@ -1,14 +1,14 @@
-import {defineStore} from "pinia";
-import {ref, unref} from "vue";
-import {RouteLocationNormalized} from "vue-router";
-import {postRequest} from "@/api/star_horse_apis.ts";
-import {getUserInfo} from "@/utils/auth.ts";
-import {warning} from "@/utils/message.ts";
+import {defineStore} from 'pinia';
+import {ref, unref} from 'vue';
+import {RouteLocationNormalized} from 'vue-router';
+import {postRequest} from '@/api/star_horse_apis.ts';
+import {getUserInfo} from '@/utils/auth.ts';
+import {warning} from '@/utils/message.ts';
 
 /**
  * 用户权限控制
  */
-export const useButtonPermissionStore = defineStore("buttonPermission", () => {
+export const useButtonPermissionStore = defineStore('buttonPermission', () => {
     const pageBtnPermisson = ref<any>({});
     const currentPermission = ref<any>({});
 
@@ -50,13 +50,13 @@ export const useButtonPermissionStore = defineStore("buttonPermission", () => {
     const getPagePermission = async (menuId: string) => {
         currentPermission.value = [];
         if (menuId) {
-            menuId = menuId.split("_")[1];
+            menuId = menuId.split('_')[1];
             let permissons: any = []; // pageBtnPermisson.value[menuId];
             //  console.log(permissons);
             if (!permissons || permissons.length == 0) {
                 const userId = getUserInfo()?.idUsersinfo;
                 if (!userId) {
-                    warning("Session 失效");
+                    warning('Session 失效');
                     return;
                 }
                 //没拿到则到数据库中去取
@@ -72,7 +72,7 @@ export const useButtonPermissionStore = defineStore("buttonPermission", () => {
                 if (permissons && permissons.length > 0) {
                     addPermission(menuId, permissons);
                 } else {
-                    warning("没有页面按钮操作权限,请联系系统管理员授权");
+                    warning('没有页面按钮操作权限,请联系系统管理员授权');
                 }
             }
             const permission: any = {};

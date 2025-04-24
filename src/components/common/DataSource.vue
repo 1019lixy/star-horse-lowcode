@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import {onMounted, ref, toRef} from "vue";
-import {SelectOption} from "@/components/types/SearchProps";
-import {searchMatchList} from "@/api/star_horse_utils.ts";
-import {loadDict} from "@/api/star_horse_apis.ts";
-import {createData, dataSourceFields, validInterface} from "@/utils/ItemPreps.ts";
-import {warning} from "@/utils/message.ts";
+import {onMounted, ref, toRef} from 'vue';
+import {SelectOption} from '@/components/types/SearchProps';
+import {searchMatchList} from '@/api/star_horse_utils.ts';
+import {loadDict} from '@/api/star_horse_apis.ts';
+import {createData, dataSourceFields, validInterface} from '@/utils/ItemPreps.ts';
+import {warning} from '@/utils/message.ts';
 
 defineOptions({
-  name: "DataSource"
-})
+  name: 'DataSource'
+});
 const props = defineProps({
   recall: {
     type: Function,
@@ -21,7 +21,7 @@ const props = defineProps({
 
     }
   }
-})
+});
 const dataSourceFormRef = ref();
 let envList = ref<Array<SelectOption>>([]);
 const getFormData = async (extendErrorMsg?: string) => {
@@ -30,7 +30,7 @@ const getFormData = async (extendErrorMsg?: string) => {
   await validInterface(reData, dataSourceFormRef, (dataList: any, _successMsg: string, errorMsg: string) => {
     if (!errorMsg) {
       //只保存静态数据,
-      reData["values"] = createData(dataSourceFormRef, dataList).reDataList;
+      reData['values'] = createData(dataSourceFormRef, dataList).reDataList;
     } else {
       flag = false;
       warning(extendErrorMsg ?? errorMsg);
@@ -39,18 +39,18 @@ const getFormData = async (extendErrorMsg?: string) => {
   if (flag)
     return reData;
   return false;
-}
+};
 const setFormData = (data: any) => {
   dataSourceFormRef.value?.setFormData(data);
-}
+};
 onMounted(async () => {
   matchTypeList.value = searchMatchList();
-  envList.value = await loadDict("system_environment");
+  envList.value = await loadDict('system_environment');
 });
 defineExpose({
   getFormData,
   setFormData
-})
+});
 </script>
 
 <template>

@@ -1,5 +1,5 @@
 import {CompParams} from '@/components/types/PageFieldInfo';
-import {Ref} from "vue";
+import {Ref} from 'vue';
 
 export type SelectOption = {
     name?: string,

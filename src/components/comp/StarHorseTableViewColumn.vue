@@ -1,9 +1,9 @@
 <script setup lang="ts" name="StarHorseTableColumn">
-  import { PropType } from "vue";
-  import { Config } from "@/api/settings.ts";
+  import { PropType } from 'vue';
+  import { Config } from '@/api/settings.ts';
 
   const props = defineProps({
-    batchName: { type: String, default: "" },
+    batchName: { type: String, default: '' },
     item: { type: Object as PropType<any>, required: true },
     commonFormat: { type: Function, required: true }
   });
@@ -11,7 +11,7 @@
   const dataFormat = (scope: any) => {
     let item = props.item;
     let val: string = scope.row[item.hideName || item.fieldName];
-    if (item.type == "select" || item.type == "checkbox" || item.type == "radio") {
+    if (item.type == 'select' || item.type == 'checkbox' || item.type == 'radio') {
       return item.preps?.values?.find((temp: any) => String(temp.value) == val)?.name || val;
     }
     if (props.commonFormat && scope.column.property) {

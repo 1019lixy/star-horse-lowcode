@@ -1,17 +1,17 @@
 <script lang="ts" setup>
-  import { computed, nextTick, onBeforeUnmount, onMounted, ref } from "vue";
-  import { useZIndex } from "@/api/system.ts";
-  import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
+  import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
+  import { useZIndex } from '@/api/system.ts';
+  import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
 
   defineOptions({
-    name: "PageEditorContentMenu"
+    name: 'PageEditorContentMenu'
   });
 
   const props = defineProps({
     menuData: { type: Array, default: () => [] },
     isSubMenu: { type: Boolean, default: false },
     autoHide: { type: Boolean, default: true },
-    active: { type: [String, Number], default: "" }
+    active: { type: [String, Number], default: '' }
   });
   const emit = defineEmits<{
     hide: [];
@@ -44,7 +44,7 @@
     if (!visible.value) return;
     visible.value = false;
     subMenu.value?.hide();
-    emit("hide");
+    emit('hide');
   };
 
   const clickHandler = (item: any) => {
@@ -85,13 +85,13 @@
       nextTick(() => {
         e && setPosition(e);
         curZIndex.value = zIndex.nextZIndex();
-        emit("show");
+        emit('show');
       });
     }, 300);
   };
   const showSubMenu = (item: any, index: number) => {
     const menuItem = item;
-    if (typeof item !== "object") {
+    if (typeof item !== 'object') {
       return;
     }
     subMenuData.value = menuItem.items || [];
@@ -116,17 +116,17 @@
   };
 
   const mouseenterHandler = () => {
-    emit("mouseenter");
+    emit('mouseenter');
   };
 
   onMounted(() => {
     if (props.isSubMenu) return;
-    globalThis.addEventListener("mousedown", outsideClickHideHandler, true);
+    globalThis.addEventListener('mousedown', outsideClickHideHandler, true);
   });
 
   onBeforeUnmount(() => {
     if (props.isSubMenu) return;
-    globalThis.removeEventListener("mousedown", outsideClickHideHandler, true);
+    globalThis.removeEventListener('mousedown', outsideClickHideHandler, true);
   });
 
   defineExpose({

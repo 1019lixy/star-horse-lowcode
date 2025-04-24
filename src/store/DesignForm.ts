@@ -1,9 +1,9 @@
-import {defineStore} from "pinia";
-import {SelectOption} from "@/components/types/SearchProps";
-import {Config} from "@/api/settings.ts";
-import {ref, unref} from "vue";
+import {defineStore} from 'pinia';
+import {SelectOption} from '@/components/types/SearchProps';
+import {Config} from '@/api/settings.ts';
+import {ref, unref} from 'vue';
 
-export const useDesignFormStore = defineStore("designForm", () => {
+export const useDesignFormStore = defineStore('designForm', () => {
     const containerList = ref<Array<any>>([]);
     const formDataList = ref<Array<any>>([]);
     const selfFormDataList = ref<Array<any>>([]);
@@ -12,11 +12,11 @@ export const useDesignFormStore = defineStore("designForm", () => {
     const compList = ref<any>([]);
     const formData = ref<any>({});
     const currentComp = ref<Array<any> | any>();
-    const currentItemType = ref<string>("");
-    const currentCompCategory = ref<string>("");
-    const parentCompType = ref<string>("");
-    const currentItemId = ref<string>("");
-    const currentSubItemId = ref<string>("");
+    const currentItemType = ref<string>('');
+    const currentCompCategory = ref<string>('');
+    const parentCompType = ref<string>('');
+    const currentItemId = ref<string>('');
+    const currentSubItemId = ref<string>('');
     const isEdit = ref<boolean>(false);
     const componentVisible = ref<boolean>(false);
     const batchEditFieldVisible = ref<boolean>(false);
@@ -73,11 +73,11 @@ export const useDesignFormStore = defineStore("designForm", () => {
         const record = unref(historyRecord);
         if (!record.datas[record.index]) {
             currentFormPreps.value = {};
-            currentItemType.value = "";
+            currentItemType.value = '';
             currentComp.value = {};
-            currentItemId.value = "";
-            parentCompType.value = "";
-            currentCompCategory.value = "";
+            currentItemId.value = '';
+            parentCompType.value = '';
+            currentCompCategory.value = '';
             compList.value = [];
         } else {
             const data = JSON.parse(record.datas[record.index]);
@@ -155,7 +155,7 @@ export const useDesignFormStore = defineStore("designForm", () => {
             const selectList: Array<any> = [];
             for (const index in datas) {
                 const temp: any = datas[index];
-                if (temp.itemType == "box" || temp.itemType == "dytable") {
+                if (temp.itemType == 'box' || temp.itemType == 'dytable') {
                     const elements = temp.preps.elements;
                     for (const sindex in elements) {
                         const columns = elements[sindex].columns;
@@ -164,13 +164,13 @@ export const useDesignFormStore = defineStore("designForm", () => {
                             if (column.items && column.items.length > 0) {
                                 selectList.push(
                                     ...column.items
-                                        ?.map((item: any) => ({name: item.preps?.label, type: "item", value: item.preps?.name}))
+                                        ?.map((item: any) => ({name: item.preps?.label, type: 'item', value: item.preps?.name}))
                                         .filter((item: SelectOption) => item.name)
                                 );
                             }
                         }
                     }
-                } else if (temp.itemType == "table") {
+                } else if (temp.itemType == 'table') {
                     const elements = temp.preps.elements;
                     const children: SelectOption[] = [];
                     for (const index in elements) {
@@ -186,17 +186,17 @@ export const useDesignFormStore = defineStore("designForm", () => {
                     selectList.push({
                         name: temp.preps?.label,
                         value: temp.preps?.batchFieldName,
-                        type: "container",
+                        type: 'container',
                         children: children
                     });
-                } else if (temp.itemType == "tab" || temp.itemType == "collapse" || temp.itemType == "card") {
+                } else if (temp.itemType == 'tab' || temp.itemType == 'collapse' || temp.itemType == 'card') {
                     const elements = temp.preps?.elements;
                     for (const index in elements) {
                         const element = elements[index];
                         selectList.push({
                             name: element.label,
                             value: element.objectName,
-                            type: "container",
+                            type: 'container',
                             children: innerFunc(element.items)
                         });
                     }
@@ -204,7 +204,7 @@ export const useDesignFormStore = defineStore("designForm", () => {
                     selectList.push({
                         name: temp.preps?.label,
                         value: temp.preps?.name,
-                        type: "item"
+                        type: 'item'
                     });
                 }
             }
@@ -244,7 +244,7 @@ export const useDesignFormStore = defineStore("designForm", () => {
         currentItemId.value = currItemId;
     };
     const setCurrentFormPreps = (currFormPreps: any) => {
-        currentFormPreps.value = currFormPreps["preps"] || currFormPreps;
+        currentFormPreps.value = currFormPreps['preps'] || currFormPreps;
     };
     const setContainerList = (list: any) => {
         containerList.value = list;
@@ -264,14 +264,14 @@ export const useDesignFormStore = defineStore("designForm", () => {
      */
     const setDraggingItem = (dragItem: any) => {
         draggingItem.value = dragItem;
-        setIsDragging(true)
+        setIsDragging(true);
     };
     /**
      * 设置是否正在拖动
      */
     const setIsDragging = (flag: boolean) => {
         isDragging.value = flag;
-    }
+    };
     /**
      * 删除数据
      */
@@ -299,32 +299,32 @@ export const useDesignFormStore = defineStore("designForm", () => {
         isEdit.value = true;
         isDragging.value = false;
         currentFormPreps.value = {};
-        currentItemType.value = "";
+        currentItemType.value = '';
         currentComp.value = {};
-        currentItemId.value = "";
-        currentItemType.value = "";
-        parentCompType.value = "";
-        currentCompCategory.value = "";
+        currentItemId.value = '';
+        currentItemType.value = '';
+        parentCompType.value = '';
+        currentCompCategory.value = '';
         formInfo.value = {
-            rules: "",
-            inline: "N",
-            labelPosition: "left",
-            labelWidth: "",
-            labelSuffix: "",
-            hideRequiredAsterisk: "N",
-            requireAsteriskPosition: "left",
-            showMessage: "Y",
-            inlineMessage: "N",
-            statusIcon: "N",
-            primaryKeyPolicy: "manual",
-            createTable: "Y",
-            validateOnRuleChange: "Y",
+            rules: '',
+            inline: 'N',
+            labelPosition: 'left',
+            labelWidth: '',
+            labelSuffix: '',
+            hideRequiredAsterisk: 'N',
+            requireAsteriskPosition: 'left',
+            showMessage: 'Y',
+            inlineMessage: 'N',
+            statusIcon: 'N',
+            primaryKeyPolicy: 'manual',
+            createTable: 'Y',
+            validateOnRuleChange: 'Y',
             size: Config.compSize,
-            disabled: "N",
+            disabled: 'N',
             dataIndex: 1,
-            scrollToError: "N",
-            formId: "id" + ms,
-            tbName: "tb" + ms
+            scrollToError: 'N',
+            formId: 'id' + ms,
+            tbName: 'tb' + ms
         };
         compList.value = [];
         formData.value = {index: 1};
@@ -350,11 +350,11 @@ export const useDesignFormStore = defineStore("designForm", () => {
      * 获取字段索引
      */
     const getFieldDataIndex = () => {
-        if (!formInfo.value["dataIndex"]) {
-            formInfo.value["dataIndex"] = 1;
+        if (!formInfo.value['dataIndex']) {
+            formInfo.value['dataIndex'] = 1;
         }
-        return formInfo.value["dataIndex"]++;
-    }
+        return formInfo.value['dataIndex']++;
+    };
     return {
         formData,
         formInfo,

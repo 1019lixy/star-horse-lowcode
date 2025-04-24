@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import {Config} from "@/api/settings.ts";
-import {batchFieldDefaultValues} from "@/api/star_horse_utils.ts";
-import {PropType} from "vue";
+import {Config} from '@/api/settings.ts';
+import {batchFieldDefaultValues} from '@/api/star_horse_utils.ts';
+import {PropType} from 'vue';
 
 defineProps({
   item: {type: Object as PropType<any>, required: true},
   rules: {type: Object},
-  staticColumn: {type: String, default: "N"},
+  staticColumn: {type: String, default: 'N'},
   size: {type: String, default: Config.compSize},
-  batchName: {type: String, default: "batchDataList"},
+  batchName: {type: String, default: 'batchDataList'},
   primaryKey: {type: [String, Object] as PropType<string | any>},
 });
-const exclusionFields: string[] = ["divider", "button", "usercomp"];
+const exclusionFields: string[] = ['divider', 'button', 'usercomp'];
 </script>
 
 <template>

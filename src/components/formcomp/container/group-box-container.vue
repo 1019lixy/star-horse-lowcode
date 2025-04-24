@@ -1,13 +1,13 @@
 <script setup lang="ts" name="GroupBoxContainer">
-import {operationConfirm} from "@/utils/message";
-import piniaInstance from "@/store/index.ts";
-import {useDesignFormStore} from "@/store/DesignForm.ts";
-import {computed, ref,PropType} from "vue";
-import {colDataInfo} from "@/components/formcomp/container/dytableUtils.ts";
-import {dynamicFormContextMenuData} from "@/plugins/AblesPlugin.ts";
-import FieldList from "@/components/formcomp/utils/FieldList.vue";
-import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
-import {fieldCopy} from "@/utils/FieldOperationUtils.ts";
+import {operationConfirm} from '@/utils/message';
+import piniaInstance from '@/store/index.ts';
+import {useDesignFormStore} from '@/store/DesignForm.ts';
+import {computed, ref,PropType} from 'vue';
+import {colDataInfo} from '@/components/formcomp/container/dytableUtils.ts';
+import {dynamicFormContextMenuData} from '@/plugins/AblesPlugin.ts';
+import FieldList from '@/components/formcomp/utils/FieldList.vue';
+import StarHorseDialog from '@/components/comp/StarHorseDialog.vue';
+import {fieldCopy} from '@/utils/FieldOperationUtils.ts';
 
 const props = defineProps({
   isDesign: {type: Boolean, default: false},
@@ -24,14 +24,14 @@ let componentVisible = computed(() => {
 let isEdit = computed(() => designForm.isEdit);
 const selectData = () => {
   let container = props.formItem;
-  designForm.selectItem(container, container?.itemType, "");
+  designForm.selectItem(container, container?.itemType, '');
 };
 const removeData = () => {
-  operationConfirm("删除容器，容器内的所有元素都会被删除").then((res) => {
+  operationConfirm('删除容器，容器内的所有元素都会被删除').then((res) => {
     if (res) {
       let id = props.formItem.preps?.id || props.formItem.id;
       console.log(id, props.parentField);
-      if (props.parentField?.itemType == "tab") {
+      if (props.parentField?.itemType == 'tab') {
         let elements = props.parentField!.preps.elements;
         for (let i = 0; i < elements.length; i++) {
           let items = elements[i].items;
@@ -42,7 +42,7 @@ const removeData = () => {
             }
           }
         }
-      } else if (props.parentField?.itemType == "box") {
+      } else if (props.parentField?.itemType == 'box') {
       } else {
         let dataList = compList.value;
         for (let i = 0; i < dataList.length; i++) {
@@ -58,7 +58,7 @@ const containerContextMenuRef = ref();
 const containerContextMenu = (evt: MouseEvent) => {
   evt.stopPropagation();
   evt.preventDefault();
-  console.log("容器触发。。。");
+  console.log('容器触发。。。');
   evt.props = props;
   containerContextMenuRef.value?.show(evt);
 };
@@ -66,7 +66,7 @@ const close = () => {
   designForm.setComponentVisible(false);
 };
 const addItem = (item: any) => {
-  let type = item.category == 2 ? "container" : "formItem";
+  let type = item.category == 2 ? 'container' : 'formItem';
   let data = fieldCopy(item, type);
   let itemType = props.formItem.itemType;
   console.log(data, props.formItem);
@@ -80,7 +80,7 @@ const addItem = (item: any) => {
     let columns = element.columns;
     if (!columns) {
       let items = element.items;
-      if (itemType == "table") {
+      if (itemType == 'table') {
         if (items.length == 0) {
           items.push(data);
           return;
@@ -103,10 +103,10 @@ const addItem = (item: any) => {
 const tableOperation = (actonName: string, _preps: any) => {
   let preps = props.formItem.preps;
   if (!preps.elements) {
-    preps["elements"] = [];
+    preps['elements'] = [];
   }
-  let isBox = props.formItem.itemType == "box";
-  if (actonName == "insertRow") {
+  let isBox = props.formItem.itemType == 'box';
+  if (actonName == 'insertRow') {
     //获取最大的数字
     let rows: Array<any> = preps.elements;
     if (rows.length > 0) {
@@ -137,15 +137,15 @@ const tableOperation = (actonName: string, _preps: any) => {
         columns: []
       });
     }
-  } else if (actonName == "insertCol") {
-    if (props.formItem.itemType == "table") {
+  } else if (actonName == 'insertCol') {
+    if (props.formItem.itemType == 'table') {
       preps.columns = (preps.columns || 1) + 1;
       return;
     }
     for (let index in preps.elements) {
       let row: any = preps.elements[index];
       if (!row.columns) {
-        row["columns"] = [];
+        row['columns'] = [];
       }
       let col = colDataInfo();
       if (isBox) {

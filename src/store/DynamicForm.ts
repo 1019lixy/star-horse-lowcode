@@ -1,8 +1,8 @@
-import { defineStore } from "pinia";
-import { warning } from "@/utils/message";
-import { ref } from "vue";
+import { defineStore } from 'pinia';
+import { warning } from '@/utils/message';
+import { ref } from 'vue';
 
-export const useDynamicFormStore = defineStore("dynamicForm", () => {
+export const useDynamicFormStore = defineStore('dynamicForm', () => {
   const dataForm: any = ref({});
   const selectData: any = ref(null);
   const dataId: any = ref(null);
@@ -112,7 +112,7 @@ export const useDynamicFormStore = defineStore("dynamicForm", () => {
    */
   const renameField = (sourceField: string, distField: string, newValue?: any) => {
     if (Object.keys(dataForm.value).includes(distField)) {
-      warning("新的属性名已存在，不能进行修改");
+      warning('新的属性名已存在，不能进行修改');
       return;
     }
     const bakeValue = dataForm.value[sourceField];
@@ -141,7 +141,7 @@ export const useDynamicFormStore = defineStore("dynamicForm", () => {
     }
     const dataFun = (data: any, sourceField: string, distField: string, newValue?: any) => {
       if (Object.keys(data).includes(distField)) {
-        warning("新的属性名已存在，不能进行修改");
+        warning('新的属性名已存在，不能进行修改');
         return false;
       }
       const bakeValue: any = data[sourceField];

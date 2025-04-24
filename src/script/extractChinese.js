@@ -1,7 +1,7 @@
-import fs from "fs/promises";
-import path from "path";
+import fs from 'fs/promises';
+import path from 'path';
 
-const projectDir = "../../src"; // Project directory
+const projectDir = '../../src'; // Project directory
 const chineseTexts = new Set();
 
 async function traverseDirectory(dir) {
@@ -11,9 +11,9 @@ async function traverseDirectory(dir) {
     const stat = await fs.stat(filePath);
     if (stat.isDirectory()) {
       await traverseDirectory(filePath);
-    } else if (file.endsWith(".vue")) {
+    } else if (file.endsWith('.vue')) {
       //|| file.endsWith('.ts')
-      const content = await fs.readFile(filePath, "utf8");
+      const content = await fs.readFile(filePath, 'utf8');
       const regex = /[\u4e00-\u9fa5]+/g;
       let match;
       while ((match = regex.exec(content)) !== null) {
@@ -38,9 +38,9 @@ async function main() {
 
 export default zh_CN;`;
 
-  await fs.writeFile("./zh_CN_test.ts", output);
+  await fs.writeFile('./zh_CN_test.ts', output);
 }
 
 main().catch((error) => {
-  console.error("An error occurred:", error);
+  console.error('An error occurred:', error);
 });

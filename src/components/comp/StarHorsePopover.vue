@@ -1,6 +1,6 @@
 <script lang="ts" setup name="StarHorsePopover">
-import {onMounted, ref} from "vue";
-import icon from "@/assets/icon";
+import {onMounted, ref} from 'vue';
+import icon from '@/assets/icon';
 
 defineProps({
   menuIcon: {type: String}
@@ -8,7 +8,7 @@ defineProps({
 let iconList = ref<Array<any>>(icon);
 const menuIconSelect = (corn: any) => {
   console.log(corn);
-}
+};
 onMounted(() => {
 
 });

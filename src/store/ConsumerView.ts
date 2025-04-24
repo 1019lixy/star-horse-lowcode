@@ -1,11 +1,11 @@
-import { defineStore } from "pinia";
-import { ref } from "vue";
+import { defineStore } from 'pinia';
+import { ref } from 'vue';
 
 export const useConsumerViewStore = defineStore(
-  "consumerView",
+  'consumerView',
   () => {
     const tableList = ref<any>({});
-    const dbConfigId = ref<string>("");
+    const dbConfigId = ref<string>('');
 
     /**
      *赋值

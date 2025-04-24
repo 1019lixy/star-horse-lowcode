@@ -37,7 +37,7 @@
   }
 </style>
 <script lang="ts" setup name="crontab-hour">
-  import { computed, ref, watch } from "vue";
+  import { computed, ref, watch } from 'vue';
 
   let radioValue = ref(1);
   let cycle01 = ref(1);
@@ -51,23 +51,23 @@
     cron: { type: Object }
   });
   let checkNum = ref(props.check);
-  const emits = defineEmits(["update"]);
+  const emits = defineEmits(['update']);
   // 计算两个周期值
   const cycleTotalFun = () => {
     cycle01.value = checkNum.value?.(cycle01.value, 0, 23);
     cycle02.value = checkNum.value?.(cycle02.value, 0, 23);
-    return cycle01.value + "-" + cycle02.value;
+    return cycle01.value + '-' + cycle02.value;
   };
   // 计算平均用到的值
   const averageTotalFun = () => {
     average01.value = checkNum.value?.(average01.value, 0, 23);
     average02.value = checkNum.value?.(average02.value, 1, 23);
-    return average01.value + "/" + average02.value;
+    return average01.value + '/' + average02.value;
   };
   // 计算勾选的checkbox值合集
   const checkboxStringFun = () => {
     let str = checkboxList.value.join();
-    return str == "" ? "*" : str;
+    return str == '' ? '*' : str;
   };
   let cycleTotal = computed(() => cycleTotalFun());
   let averageTotal = computed(() => averageTotalFun());
@@ -75,44 +75,44 @@
   // 单选按钮值变化时
   const radioChange = () => {
     if (radioValue.value === 1) {
-      emits("update", "hour", "*", "hour");
-      emits("update", "day", "*", "hour");
+      emits('update', 'hour', '*', 'hour');
+      emits('update', 'day', '*', 'hour');
     } else {
-      if (props.cron?.min === "*") {
-        emits("update", "min", "0", "hour");
+      if (props.cron?.min === '*') {
+        emits('update', 'min', '0', 'hour');
       }
-      if (props.cron?.second === "*") {
-        emits("update", "second", "0", "hour");
+      if (props.cron?.second === '*') {
+        emits('update', 'second', '0', 'hour');
       }
     }
     switch (radioValue.value) {
       case 2:
-        emits("update", "hour", cycle01.value + "-" + cycle02.value);
+        emits('update', 'hour', cycle01.value + '-' + cycle02.value);
         break;
       case 3:
-        emits("update", "hour", average01.value + "/" + average02.value);
+        emits('update', 'hour', average01.value + '/' + average02.value);
         break;
       case 4:
-        emits("update", "hour", checkboxString.value);
+        emits('update', 'hour', checkboxString.value);
         break;
     }
   };
   // 周期两个值变化时
   const cycleChange = () => {
     if (radioValue.value == 2) {
-      emits("update", "hour", cycleTotal.value);
+      emits('update', 'hour', cycleTotal.value);
     }
   };
   // 平均两个值变化时
   const averageChange = () => {
     if (radioValue.value == 3) {
-      emits("update", "hour", averageTotal.value);
+      emits('update', 'hour', averageTotal.value);
     }
   };
   // checkbox值变化时
   const checkboxChange = () => {
     if (radioValue.value == 4) {
-      emits("update", "hour", checkboxString.value);
+      emits('update', 'hour', checkboxString.value);
     }
   };
   watch(

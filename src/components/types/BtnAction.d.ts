@@ -1,5 +1,5 @@
-import {FieldInfo} from "@/components/types/PageFieldInfo";
-import {SearchParams} from "@/components/types/Params";
+import {FieldInfo} from '@/components/types/PageFieldInfo';
+import {SearchParams} from '@/components/types/Params';
 
 export declare interface DynamicParamField {
     //参数名称

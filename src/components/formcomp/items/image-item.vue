@@ -107,10 +107,10 @@
   </starhorse-form-item>
 </template>
 <script lang="ts">
-import {defineComponent, onMounted, shallowRef} from "vue";
-import {allAction, checkIsDisabled} from "@/components/formcomp/utils/ItemRelationEventUtils.ts";
-import {Picture as IconPicture} from "@element-plus/icons-vue";
-import {getToken} from "@/utils/auth.ts";
+import {defineComponent, onMounted, shallowRef} from 'vue';
+import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
+import {Picture as IconPicture} from '@element-plus/icons-vue';
+import {getToken} from '@/utils/auth.ts';
 
 export default defineComponent({
   methods: {getToken,checkIsDisabled},
@@ -118,41 +118,41 @@ export default defineComponent({
     IconPicture
   },
   setup(_props, context) {
-    const parentField = context.attrs["parentField"];
+    const parentField = context.attrs['parentField'];
 
-    const field = context.attrs["field"] as any;
-    let formItem = shallowRef({label: "input", required: false});
-    let dataField = shallowRef("");
-    let actionName = shallowRef("change");
-    let defaultAction = "/system-config/annex/upload/common";
+    const field = context.attrs['field'] as any;
+    let formItem = shallowRef({label: 'input', required: false});
+    let dataField = shallowRef('');
+    let actionName = shallowRef('change');
+    let defaultAction = '/system-config/annex/upload/common';
     let defaultViewList = shallowRef([]);
     const itemAction = (prep: any) => {
       allAction(context, prep);
     };
     const removeImage = () => {
       console.log(context.attrs);
-      context.attrs["formData"][field.preps["name"]] = "";
+      context.attrs['formData'][field.preps['name']] = '';
       defaultViewList.value = [];
     };
     const selfAction = (prep: any, uploadFile: any, uploadFiles: any = [], param: any = {}) => {
-      if (prep == "success") {
+      if (prep == 'success') {
         let result = param.data;
-        let path = (field.preps["context"] || "/system-config") + result.path;
-        context.attrs["formData"][field.preps["name"]] = path;
+        let path = (field.preps['context'] || '/system-config') + result.path;
+        context.attrs['formData'][field.preps['name']] = path;
         defaultViewList.value.push(path);
         //默认将上传成功的属性存入数据对象
-        if (!field.preps["keepResult"] || field.preps["keepResult"] == "Y") {
+        if (!field.preps['keepResult'] || field.preps['keepResult'] == 'Y') {
           Object.entries(result).forEach(([key, value]) => {
-            context.attrs["formData"][key] = value;
+            context.attrs['formData'][key] = value;
           });
         }
         //console.log(param.data.path);
       }
-      context.emit("selfFunc", prep, uploadFile, uploadFiles, param);
+      context.emit('selfFunc', prep, uploadFile, uploadFiles, param);
     };
     onMounted(() => {
-      actionName.value = field.preps?.actionName || "normal";
-      if (!context.attrs["isSearch"]) {
+      actionName.value = field.preps?.actionName || 'normal';
+      if (!context.attrs['isSearch']) {
         allAction(context, actionName.value, true);
       }
     });

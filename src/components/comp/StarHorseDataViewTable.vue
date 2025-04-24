@@ -1,9 +1,9 @@
 <script setup lang="ts" name="StarHorseDataViewObject">
-  import { PropType } from "vue";
-  import { FieldInfo } from "@/components/types/PageFieldInfo";
-  import { rowClassName } from "@/api/star_horse_utils.ts";
-  import { ModelRef } from "vue";
-  import { Config } from "@/api/settings.ts";
+  import { PropType } from 'vue';
+  import { FieldInfo } from '@/components/types/PageFieldInfo';
+  import { rowClassName } from '@/api/star_horse_utils.ts';
+  import { ModelRef } from 'vue';
+  import { Config } from '@/api/settings.ts';
 
   defineProps({
     item: { type: Array as PropType<Array<FieldInfo>>, required: true },
@@ -11,7 +11,7 @@
     compSize: { type: String, default: Config.compSize },
     commonFormat: { type: Function, required: true }
   });
-  const dataForm: ModelRef<any> = defineModel("dataForm");
+  const dataForm: ModelRef<any> = defineModel('dataForm');
 </script>
 <template>
   <div

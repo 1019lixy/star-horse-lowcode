@@ -2,11 +2,11 @@ export enum ServiceEnums {
     /**
      * 系统服务
      */
-    SYSTEM_SERVICE = "system-config",
+    SYSTEM_SERVICE = 'system-config',
     /**
      * 数据库服务
      */
-    DBUSER_SERVICE = "dbuser-manage",
+    DBUSER_SERVICE = 'dbuser-manage',
     /**
      * 公共接口前缀
      */

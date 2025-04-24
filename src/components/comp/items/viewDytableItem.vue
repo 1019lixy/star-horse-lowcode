@@ -1,20 +1,20 @@
 <script setup lang="ts">
-  import { onMounted, PropType } from "vue";
-  import { FieldInfo } from "@/components/types/PageFieldInfo";
-  import { ModelRef } from "vue";
+  import { onMounted, PropType } from 'vue';
+  import { FieldInfo } from '@/components/types/PageFieldInfo';
+  import { ModelRef } from 'vue';
 
   const props = defineProps({
     item: { type: Array as PropType<Array<FieldInfo>>, required: true },
     commonFormat: { type: Function, required: true }
   });
-  const dataForm: ModelRef<any> = defineModel("dataForm");
+  const dataForm: ModelRef<any> = defineModel('dataForm');
   const dataFormat = (item: any) => {
-    let name = item["hideName"] || item["fieldName"];
+    let name = item['hideName'] || item['fieldName'];
     let val = dataForm.value[name];
     try {
       return props.commonFormat(name, val, dataForm.value);
     } catch (e) {
-      return val || "--";
+      return val || '--';
     }
   };
   const init = () => {};

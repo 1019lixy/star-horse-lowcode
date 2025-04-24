@@ -29,17 +29,17 @@
   </starhorse-form-item>
 </template>
 <script lang="ts">
-import {defineComponent, onMounted, shallowRef} from "vue";
-import {allAction, checkIsDisabled} from "@/components/formcomp/utils/ItemRelationEventUtils.ts";
+import {defineComponent, onMounted, shallowRef} from 'vue';
+import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
 
 export default defineComponent({
   methods: {checkIsDisabled},
   setup(_props, context) {
-    const parentField = context.attrs["parentField"];
+    const parentField = context.attrs['parentField'];
 
-    const field = context.attrs["field"] as any;
-    let formItem = shallowRef({label: "input", required: false});
-    let dataField = shallowRef("");
+    const field = context.attrs['field'] as any;
+    let formItem = shallowRef({label: 'input', required: false});
+    let dataField = shallowRef('');
     const dynamicFunction = (data: any) => {
       if (!data) {
         return;
@@ -47,13 +47,13 @@ export default defineComponent({
       let fun = new Function(data);
       fun();
     };
-    let actionName = shallowRef("normal");
+    let actionName = shallowRef('normal');
     const itemAction = (prep: string) => {
       allAction(context, prep);
     };
     onMounted(() => {
-      actionName.value = field.preps?.actionName || "normal";
-      if (!context.attrs["isSearch"]) {
+      actionName.value = field.preps?.actionName || 'normal';
+      if (!context.attrs['isSearch']) {
         allAction(context, actionName.value, true);
       }
     });

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import {onMounted, PropType} from "vue";
-import {ApiUrls} from "@/components/types/ApiUrls";
-import {FieldInfo} from "@/components/types/PageFieldInfo";
-import {validMsg, loadProp, checkVisible} from "@/api/form_utils.ts";
-import {Config} from "@/api/settings.ts";
+import {onMounted, PropType} from 'vue';
+import {ApiUrls} from '@/components/types/ApiUrls';
+import {FieldInfo} from '@/components/types/PageFieldInfo';
+import {validMsg, loadProp, checkVisible} from '@/api/form_utils.ts';
+import {Config} from '@/api/settings.ts';
 
 const props = defineProps({
   compUrl: {type: Object as PropType<ApiUrls>},
@@ -12,18 +12,18 @@ const props = defineProps({
   // 数据索引
   dataIndex: {type: Number, default: -1},
   // 父节点名称
-  propPrefix: {type: String, default: ""},
+  propPrefix: {type: String, default: ''},
   parentPreps: {type: Object, default: {}},
-  subFormFlag: {type: String, default: "N"},
-  batchName: {type: String, default: "batchDataList"},
-  batchFieldName: {type: String, default: "batchFieldList"},
+  subFormFlag: {type: String, default: 'N'},
+  batchName: {type: String, default: 'batchDataList'},
+  batchFieldName: {type: String, default: 'batchFieldList'},
   primaryKey: {type: [String, Object] as PropType<string | any>,required:true},
   rules: {type: Object},
   compSize: {type: String, default: Config.compSize},
   isView: {type: Boolean, default: false},
   isEdit: {type: Boolean, default: false}
 });
-const dataForm = defineModel("dataForm");
+const dataForm = defineModel('dataForm');
 
 const init = () => {
 };

@@ -1,12 +1,12 @@
 <script setup lang="ts">
-  import { useVModel } from "@vueuse/core";
-  import type { TreeNodeData } from "element-plus/es/components/tree/src/tree.type";
-  import { type ElTree } from "element-plus";
-  import { reactive, ref, watch } from "vue";
-  import { postRequest } from "@/api/star_horse_apis.ts";
-  import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
-  import { closeLoad } from "@/api/star_horse_utils.ts";
-  import { PageProps } from "@/components/types/PageProps";
+  import { useVModel } from '@vueuse/core';
+  import type { TreeNodeData } from 'element-plus/es/components/tree/src/tree.type';
+  import { type ElTree } from 'element-plus';
+  import { reactive, ref, watch } from 'vue';
+  import { postRequest } from '@/api/star_horse_apis.ts';
+  import StarHorseDialog from '@/components/comp/StarHorseDialog.vue';
+  import { closeLoad } from '@/api/star_horse_utils.ts';
+  import { PageProps } from '@/components/types/PageProps';
 
   export type ModelValueType = any;
 
@@ -24,25 +24,25 @@
   }
 
   const props = withDefaults(defineProps<DataDropdownProps>(), {
-    displayName: "name",
-    displayValue: "value",
-    compSize: "small",
+    displayName: 'name',
+    displayValue: 'value',
+    compSize: 'small',
     pageSize: 0,
     multiple: false,
     checkStrictly: true
   });
 
   const emits = defineEmits<{
-    (e: "update:modelValue", modelValue: ModelValueType): void;
+    (e: 'update:modelValue', modelValue: ModelValueType): void;
   }>();
   const treeProps = {
     label: props.displayName,
-    children: "children",
+    children: 'children',
     value: props.displayValue,
-    isLeaf: "leaf",
+    isLeaf: 'leaf',
     class: (data: TreeNodeData) => renderClass(data)
   };
-  const value: any = useVModel(props, "modelValue", emits);
+  const value: any = useVModel(props, 'modelValue', emits);
 
   const dataOptions = ref<Array<any>>([]);
   const dataOrgOptions = ref<Array<any>>([]);
@@ -56,17 +56,17 @@
     | {
         [key: string]: boolean;
       } => {
-    let value = props.displayValue || "value";
+    let value = props.displayValue || 'value';
     const val = dataOptions.value.find((e) => e[value] === data[value]);
     if (val) {
-      return "is-active";
+      return 'is-active';
     } else {
-      return "";
+      return '';
     }
   };
 
   const onNodeClick = (data: any) => {
-    let value = props.displayValue || "value";
+    let value = props.displayValue || 'value';
     if (props.multiple) {
       const index = dataOptions.value.findIndex((e) => e[value] === data[value]);
       if (index === -1) {
@@ -156,7 +156,7 @@
     } else {
       dataOptions.value = [];
     }
-    console.log("onOpen", dataOrgOptions);
+    console.log('onOpen', dataOrgOptions);
   };
   const handelConfirm = () => {
     if (props.multiple) {
@@ -176,12 +176,12 @@
   const pageChangeClick = (val: number) => {
     pageInfo.currentPage = val;
     loadData();
-  }
+  };
   const pageSizeClick = (val: number) => {
     pageInfo.pageSize = val;
     pageInfo.currentPage = 1;
     loadData();
-  }
+  };
   defineExpose({
     open
   });

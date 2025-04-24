@@ -55,7 +55,7 @@ function getHardwareInfo() {
  * @param userIp
  */
 export async function generateDeviceId(userIp: string) {
-    let browserFinger = "";
+    let browserFinger = '';
     let hardwareInfo = getHardwareInfo();
     if (!userIp) {
         userIp = window.location.hostname;
@@ -67,7 +67,7 @@ export async function generateDeviceId(userIp: string) {
             browserFinger = result.visitorId; // 浏览器指纹
             console.log('Browser Fingerprint:', browserFinger);
         });
-    const data = {browserFinger, hardwareInfo, userIp}
+    const data = {browserFinger, hardwareInfo, userIp};
     let deviceId = btoa(JSON.stringify(data));
     sessionStorage.setItem('deviceId', deviceId);
     return deviceId; // 使用 Base64 编码生成设备 ID

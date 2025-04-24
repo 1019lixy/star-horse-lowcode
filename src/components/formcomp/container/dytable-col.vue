@@ -1,11 +1,11 @@
 <script setup lang="ts" name="box-container">
-import {computed, onMounted, PropType, reactive, watch, ref} from "vue";
-import {warning} from "@/utils/message";
-import {useDesignFormStore} from "@/store/DesignForm.ts";
-import piniaInstance from "@/store/index.ts";
-import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
-import {tableAction, tableCellOperation} from "@/components/formcomp/container/dytableUtils.ts";
-import {Config} from "@/api/settings.ts";
+import {computed, onMounted, PropType, reactive, watch, ref} from 'vue';
+import {warning} from '@/utils/message';
+import {useDesignFormStore} from '@/store/DesignForm.ts';
+import piniaInstance from '@/store/index.ts';
+import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
+import {tableAction, tableCellOperation} from '@/components/formcomp/container/dytableUtils.ts';
+import {Config} from '@/api/settings.ts';
 
 const props = defineProps({
   parentField: {type: Object as PropType<any>},
@@ -24,7 +24,7 @@ const props = defineProps({
 });
 let designForm = useDesignFormStore(piniaInstance);
 let draggingItem = computed(() => designForm.draggingItem);
-let excludeContainerType: Array<string> = ["box", "tab", "table", "dytable", "collapse", "card"];
+let excludeContainerType: Array<string> = ['box', 'tab', 'table', 'dytable', 'collapse', 'card'];
 let currentSubItemId = computed(() => designForm.currentSubItemId);
 let isEdit = computed(() => designForm.isEdit);
 const isDragging = computed(() => designForm.isDragging);
@@ -48,14 +48,14 @@ let buttonControl = reactive<any>({
   deleteWholeRowDisabled: false
 });
 const getComponentName = (data: any) => {
-  return data?.itemType + "-item";
+  return data?.itemType + '-item';
 };
 
 const onDragAdd = (evt: Event, dataList: any) => {
   selectCurrentTd();
   let newIndex = evt.newIndex;
   if (excludeContainerType.includes(draggingItem.value.itemType)) {
-    warning("动态表格容器不允许嵌套其他容器");
+    warning('动态表格容器不允许嵌套其他容器');
     let columns = props.fields?.columns;
     for (let sind in columns) {
       let column = columns[sind];
@@ -68,9 +68,9 @@ const onDragAdd = (evt: Event, dataList: any) => {
     }
     return false;
   }
-  if (newIndex != null && newIndex != "undefined") {
+  if (newIndex != null && newIndex != 'undefined') {
     let dataInfo = dataList[newIndex];
-    designForm.selectItem(dataInfo, dataInfo.itemType, "");
+    designForm.selectItem(dataInfo, dataInfo.itemType, '');
   }
 };
 
@@ -179,6 +179,7 @@ watch(
               :field="data"
               :formInfo="formInfo"
               :isDesign="isDesign"
+              :disabled="disabled"
               :is="getComponentName(data)"
               :parentField="parentField"
               :formData="formData"

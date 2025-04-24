@@ -1,24 +1,24 @@
 <script setup lang="ts" name="StarHorseDataView">
-  import { ApiUrls } from "@/components/types/ApiUrls";
-  import { inject, nextTick, onMounted, PropType, ref, watch } from "vue";
-  import { DialogProps } from "@/components/types/DialogProps";
-  import { formFieldMapping, isJson, loadById } from "@/api/star_horse_utils.ts";
+  import { ApiUrls } from '@/components/types/ApiUrls';
+  import { inject, nextTick, onMounted, PropType, ref, watch } from 'vue';
+  import { DialogProps } from '@/components/types/DialogProps';
+  import { formFieldMapping, isJson, loadById } from '@/api/star_horse_utils.ts';
 
   const dataForm = ref<any>({});
   const props = defineProps({
     compUrl: { type: Object as PropType<ApiUrls> },
     objectName: { type: String },
-    subFormFlag: { type: String, default: "N" },
+    subFormFlag: { type: String, default: 'N' },
     fieldList: { type: Object, required: true },
     globalCondition: { type: Object },
     outerData: { type: Object },
     dynamicForm: { type: Boolean, default: false },
-    primaryKey: {type: [String, Object] as PropType<string | any>, default: "id"},
-    batchFieldName: { type: String, default: "batchFieldList" },
+    primaryKey: {type: [String, Object] as PropType<string | any>, default: 'id'},
+    batchFieldName: { type: String, default: 'batchFieldList' },
     dataFormat: { type: Function, default: null }
   });
-  const emits = defineEmits(["dataLoaded"]);
-  const dialogProps = inject<DialogProps>("dialogProps");
+  const emits = defineEmits(['dataLoaded']);
+  const dialogProps = inject<DialogProps>('dialogProps');
   watch(
     () => dialogProps?.ids,
     (val) => {
@@ -50,7 +50,7 @@
     //如果是Json 对象
     if (isJson(id)) {
       params = { ...params, ...id };
-      objData = await loadById(props.compUrl?.loadByIdForViewUrl!, "", params);
+      objData = await loadById(props.compUrl?.loadByIdForViewUrl!, '', params);
     } else {
       objData = await loadById(props.compUrl?.loadByIdForViewUrl!, id, params);
     }
@@ -73,7 +73,7 @@
       }
     }
     await nextTick(() => {
-      emits("dataLoaded", objData, true);
+      emits('dataLoaded', objData, true);
     });
   };
   const setData = (data: any) => {

@@ -1,15 +1,15 @@
 <script setup lang="ts">
-  import { onMounted, PropType, ref } from "vue";
-  import { PageFieldInfo } from "@/components/types/PageFieldInfo";
-  import { ModelRef } from "vue";
+  import { onMounted, PropType, ref } from 'vue';
+  import { PageFieldInfo } from '@/components/types/PageFieldInfo';
+  import { ModelRef } from 'vue';
 
   const props = defineProps({
     item: { type: Object as PropType<PageFieldInfo>, required: true },
-    batchFieldName: { type: String, default: "batchFieldList" },
+    batchFieldName: { type: String, default: 'batchFieldList' },
     commonFormat: { type: Function, required: true }
   });
-  const dataForm: ModelRef<any> = defineModel("dataForm");
-  let tabModel = ref<string>("");
+  const dataForm: ModelRef<any> = defineModel('dataForm');
+  let tabModel = ref<string>('');
   const init = () => {
     if (props.item && props.item[props.batchFieldName]?.length > 1) {
       tabModel.value = props.item[props.batchFieldName][0].tabName;

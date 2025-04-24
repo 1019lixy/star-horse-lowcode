@@ -63,19 +63,19 @@
   </starhorse-form-item>
 </template>
 <script lang="ts">
-import {defineComponent, onMounted, shallowRef, watch, ref, useSlots} from "vue";
-import {allAction, checkIsDisabled} from "@/components/formcomp/utils/ItemRelationEventUtils.ts";
-import {warning} from "@/utils/message.ts";
+import {defineComponent, onMounted, shallowRef, watch, ref, useSlots} from 'vue';
+import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
+import {warning} from '@/utils/message.ts';
 
 export default defineComponent({
   methods: {checkIsDisabled},
   setup(_props, context) {
-    const parentField = context.attrs["parentField"];
-    const field = context.attrs["field"] as any;
-    let formItem = shallowRef({label: "input", required: false});
-    let dataField = shallowRef("");
-    let actionName = shallowRef("normal");
-    let slotStyle = shallowRef("");
+    const parentField = context.attrs['parentField'];
+    const field = context.attrs['field'] as any;
+    let formItem = shallowRef({label: 'input', required: false});
+    let dataField = shallowRef('');
+    let actionName = shallowRef('normal');
+    let slotStyle = shallowRef('');
     // input焦点事件
     const isFocus = ref();
     const handleFocus = () => {
@@ -93,33 +93,33 @@ export default defineComponent({
     // 无论template标签内是否插入了内容，均视为已使用该插槽
     const slots = useSlots();
     const itemAction = (prep: string) => {
-      let min = context.attrs["formData"][field.preps["minName"]];
-      let max = context.attrs["formData"][field.preps["maxName"]];
+      let min = context.attrs['formData'][field.preps['minName']];
+      let max = context.attrs['formData'][field.preps['maxName']];
       if (max < min) {
-        warning("最大值不能小于最小值");
+        warning('最大值不能小于最小值');
         return;
       }
-      context.attrs["formData"][field.preps["name"]] = `${min}-${max}`;
+      context.attrs['formData'][field.preps['name']] = `${min}-${max}`;
       allAction(context, prep);
     };
     onMounted(() => {
-      actionName.value = field.preps?.actionName || "normal";
-      field.preps["maxName"] = field.preps["name"] + "Max";
-      field.preps["minName"] = field.preps["name"] + "Min";
-      let val = context.attrs["formData"][field.preps["name"]];
+      actionName.value = field.preps?.actionName || 'normal';
+      field.preps['maxName'] = field.preps['name'] + 'Max';
+      field.preps['minName'] = field.preps['name'] + 'Min';
+      let val = context.attrs['formData'][field.preps['name']];
       if (val) {
-        let data = val.split("-");
-        context.attrs["formData"][field.preps["minName"]] = Number(data[0]);
-        context.attrs["formData"][field.preps["maxName"]] = Number(data[1]);
+        let data = val.split('-');
+        context.attrs['formData'][field.preps['minName']] = Number(data[0]);
+        context.attrs['formData'][field.preps['maxName']] = Number(data[1]);
       }
-      if (!context.attrs["isSearch"]) {
+      if (!context.attrs['isSearch']) {
         allAction(context, actionName.value, true);
       }
     });
     watch(
-        () => context.attrs["formFieldList"],
+        () => context.attrs['formFieldList'],
         () => {
-          itemAction("init");
+          itemAction('init');
         },
         {immediate: true, deep: true}
     );

@@ -1,8 +1,8 @@
-import {defineStore} from "pinia";
-import {ref} from "vue";
-import {DynamicNode} from "@/components/types/DynamicNode";
+import {defineStore} from 'pinia';
+import {ref} from 'vue';
+import {DynamicNode} from '@/components/types/DynamicNode';
 
-export const useDesignPageStore = defineStore("designPage",
+export const useDesignPageStore = defineStore('designPage',
     () => {
         const nodeList = ref<Array<DynamicNode>>([]);
         const currentNode = ref<DynamicNode>(null);

@@ -49,40 +49,40 @@
   </starhorse-form-item>
 </template>
 <script lang="ts">
-import {defineComponent, nextTick, onMounted, reactive, shallowRef} from "vue";
-import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
-import {PageFieldInfo} from "@/components/types/PageFieldInfo";
-import StarHorseForm from "@/components/comp/StarHorseForm.vue";
-import {allAction, checkIsDisabled} from "@/components/formcomp/utils/ItemRelationEventUtils.ts";
-import StarHorseJsonEditor from "@/components/comp/StarHorseJsonEditor.vue";
+import {defineComponent, nextTick, onMounted, reactive, shallowRef} from 'vue';
+import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
+import {PageFieldInfo} from '@/components/types/PageFieldInfo';
+import StarHorseForm from '@/components/comp/StarHorseForm.vue';
+import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
+import StarHorseJsonEditor from '@/components/comp/StarHorseJsonEditor.vue';
 
 export default defineComponent({
   components: {StarHorseJsonEditor, StarHorseForm, StarHorseIcon},
   methods: {checkIsDisabled},
   setup(_props, context) {
-    const parentField = context.attrs["parentField"];
-    const field = context.attrs["field"] as any;
-    let formItem = shallowRef({label: "input", required: false});
-    let dataField = shallowRef("");
+    const parentField = context.attrs['parentField'];
+    const field = context.attrs['field'] as any;
+    let formItem = shallowRef({label: 'input', required: false});
+    let dataField = shallowRef('');
     let dialogInputVisible = shallowRef<boolean>(false);
     let jsonFormRef = shallowRef();
     let jsonArray = shallowRef<Array<any>>([]);
     let jsonTableField = reactive<PageFieldInfo>({
       batchFieldList: [
         {
-          batchName: "jsonDatas",
+          batchName: 'jsonDatas',
           fieldList: [
             {
-              label: "Name/名称",
-              fieldName: "name",
-              type: "input",
+              label: 'Name/名称',
+              fieldName: 'name',
+              type: 'input',
               required: true,
               formVisible: true
             },
             {
-              label: "Value/值",
-              fieldName: "value",
-              type: "input",
+              label: 'Value/值',
+              fieldName: 'value',
+              type: 'input',
               required: true,
               formVisible: true
             }
@@ -97,26 +97,26 @@ export default defineComponent({
       let fun = new Function(data);
       fun();
     };
-    let actionName = shallowRef("normal");
+    let actionName = shallowRef('normal');
     const itemAction = (prep: any) => {
       allAction(context, prep);
     };
     const editJsonData = async () => {
-      let jsonStr = context.attrs["formData"][field.preps["name"]];
+      let jsonStr = context.attrs['formData'][field.preps['name']];
       let formData: any = {};
       if (jsonStr) {
-        formData["jsonDatas"] = JSON.parse(jsonStr);
-        jsonArray.value = formData["jsonDatas"];
+        formData['jsonDatas'] = JSON.parse(jsonStr);
+        jsonArray.value = formData['jsonDatas'];
       }
       dialogInputVisible.value = true;
       await nextTick();
-      if (field.preps["devType"] != "Y") {
+      if (field.preps['devType'] != 'Y') {
         jsonFormRef.value.setFormData(formData);
       }
     };
     const selectItem = async () => {
-      if (field.preps["devType"] == "Y") {
-        context.attrs["formData"][field.preps["name"]] = JSON.stringify(jsonArray.value, null, 4);
+      if (field.preps['devType'] == 'Y') {
+        context.attrs['formData'][field.preps['name']] = JSON.stringify(jsonArray.value, null, 4);
       } else {
         let flag = false;
         await jsonFormRef.value.$refs.starHorseFormRef.validate((res: boolean) => {
@@ -126,8 +126,8 @@ export default defineComponent({
           return;
         }
         let formData = jsonFormRef.value.getFormData().value;
-        let dataList = formData["jsonDatas"];
-        context.attrs["formData"][field.preps["name"]] = JSON.stringify(dataList, null, 4);
+        let dataList = formData['jsonDatas'];
+        context.attrs['formData'][field.preps['name']] = JSON.stringify(dataList, null, 4);
       }
       closeAction();
     };
@@ -138,8 +138,8 @@ export default defineComponent({
       dialogInputVisible.value = false;
     };
     onMounted(() => {
-      actionName.value = field.preps?.actionName || "normal";
-      if (!context.attrs["isSearch"]) {
+      actionName.value = field.preps?.actionName || 'normal';
+      if (!context.attrs['isSearch']) {
         allAction(context, actionName.value, true);
       }
     });

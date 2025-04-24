@@ -1,23 +1,23 @@
 <script lang="ts">
-import {defineComponent, shallowRef} from "vue";
-import {allAction, checkIsDisabled} from "@/components/formcomp/utils/ItemRelationEventUtils.ts";
+import {defineComponent, shallowRef} from 'vue';
+import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
 
 export default defineComponent({
   methods: {checkIsDisabled},
   setup(_props, context) {
-    const parentField = context.attrs["parentField"];
-    const field = context.attrs["field"] as any;
-    let formItem = shallowRef({label: "input", required: false});
-    let dataField = shallowRef("");
+    const parentField = context.attrs['parentField'];
+    const field = context.attrs['field'] as any;
+    let formItem = shallowRef({label: 'input', required: false});
+    let dataField = shallowRef('');
     const itemAction = (prep: any) => {
       allAction(context, prep);
     };
     const tagType = (val: any) => {
       let tagMap = field?.preps?.tagMap;
       if (tagMap && Object.keys(tagMap).length > 0) {
-        return tagMap[val] || "primary";
+        return tagMap[val] || 'primary';
       }
-      return field?.preps?.tagType || "primary";
+      return field?.preps?.tagType || 'primary';
     };
     return {parentField, context, field, formItem, dataField, itemAction, tagType};
   }

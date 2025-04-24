@@ -14,22 +14,22 @@
   </starhorse-form-item>
 </template>
 <script lang="ts" name="view-markdown">
-import {defineComponent, onMounted, shallowRef, ref, nextTick, onUpdated} from "vue";
-import MarkdownIt from "markdown-it";
-import {checkIsDisabled} from "@/components/formcomp/utils/ItemRelationEventUtils.ts";
+import {defineComponent, onMounted, shallowRef, ref, nextTick, onUpdated} from 'vue';
+import MarkdownIt from 'markdown-it';
+import {checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
 
 export default defineComponent({
   methods: {checkIsDisabled},
   setup(_props, context) {
-    const parentField = context.attrs["parentField"];
+    const parentField = context.attrs['parentField'];
 
-    const field = context.attrs["field"] as any;
-    let formItem = shallowRef({label: "input", required: false});
-    let dataField = shallowRef("");
+    const field = context.attrs['field'] as any;
+    let formItem = shallowRef({label: 'input', required: false});
+    let dataField = shallowRef('');
     let markdownEditor = ref();
     let markdown = ref<MarkdownIt>(null);
     const itemAction = () => {
-      context.emit("selfFunc");
+      context.emit('selfFunc');
     };
     const init = async () => {
       await nextTick(() => {

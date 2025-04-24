@@ -1,11 +1,11 @@
-import {error} from "@/utils/message.ts";
-import {userFunction} from "@/api/user_func.ts";
-import {compDynamicData} from "@/api/star_horse_utils.ts";
-import piniaInstance from "@/store";
-import {useSelfOperationStore} from "@/store/SelfOperation.ts";
-import {useDesignFormStore} from "@/store/DesignForm.ts";
-import {computed} from "vue";
-import {SelectOption} from "@/components/types";
+import {error} from '@/utils/message.ts';
+import {userFunction} from '@/api/user_func.ts';
+import {compDynamicData} from '@/api/star_horse_utils.ts';
+import piniaInstance from '@/store';
+import {useSelfOperationStore} from '@/store/SelfOperation.ts';
+import {useDesignFormStore} from '@/store/DesignForm.ts';
+import {computed} from 'vue';
+import {SelectOption} from '@/components/types';
 
 const designForm = useDesignFormStore(piniaInstance);
 const userOperation = useSelfOperationStore(piniaInstance);
@@ -16,45 +16,45 @@ const isDesign = computed(() => designForm.isEdit);
  * @param context
  */
 const change = (context: any) => {
-    const field = context.attrs["field"] as any;
+    const field = context.attrs['field'] as any;
     const relation = field.preps?.dataRelation;
-    operationRelation(relation, "change", context.attrs["formData"], field.preps["name"]);
+    operationRelation(relation, 'change', context.attrs['formData'], field.preps['name']);
 };
 /**
  * Input 事件
  * @param context
  */
 const input = (context: any) => {
-    const field = context.attrs["field"] as any;
+    const field = context.attrs['field'] as any;
     const relation = field.preps?.dataRelation;
-    operationRelation(relation, "input", context.attrs["formData"], field.preps["name"]);
+    operationRelation(relation, 'input', context.attrs['formData'], field.preps['name']);
 };
 /**
  * Focus 事件
  * @param context
  */
 const focus = (context: any) => {
-    const field = context.attrs["field"] as any;
+    const field = context.attrs['field'] as any;
     const relation = field.preps?.dataRelation;
-    operationRelation(relation, "focus", context.attrs["formData"], field.preps["name"]);
+    operationRelation(relation, 'focus', context.attrs['formData'], field.preps['name']);
 };
 /**
  * Blur 事件
  * @param context
  */
 const blur = (context: any) => {
-    const field = context.attrs["field"] as any;
+    const field = context.attrs['field'] as any;
     const relation = field.preps?.dataRelation;
-    operationRelation(relation, "blur", context.attrs["formData"], field.preps["name"]);
+    operationRelation(relation, 'blur', context.attrs['formData'], field.preps['name']);
 };
 /**
  * Enter 事件
  * @param context
  */
 const mouseEnter = (context: any) => {
-    const field = context.attrs["field"] as any;
+    const field = context.attrs['field'] as any;
     const relation = field.preps?.dataRelation;
-    operationRelation(relation, "enter", context.attrs["formData"], field.preps["name"]);
+    operationRelation(relation, 'enter', context.attrs['formData'], field.preps['name']);
 };
 
 /**
@@ -83,27 +83,27 @@ const operationRelation = async (relation: any, actionName: string, formData: an
         const field = userOperation.getFormItem(fieldName);
         const params: any = temp.params;
         //数据联动
-        if (conditon == "dataLinkage") {
-            formData[fieldName + "OptionList"] = await compDynamicData(temp);
-        } else if (conditon == "eqDisable" || conditon == "eqDisableOrEditable") {
+        if (conditon == 'dataLinkage') {
+            formData[fieldName + 'OptionList'] = await compDynamicData(temp);
+        } else if (conditon == 'eqDisable' || conditon == 'eqDisableOrEditable') {
             //输入的值等于指定值隐藏否则显示
-            formData["_" + fieldName + "Editable"] = !(currentVal == params);
-        } else if (conditon == "eqEditable" || conditon == "eqEditableOrDisable") {
+            formData['_' + fieldName + 'Editable'] = !(currentVal == params);
+        } else if (conditon == 'eqEditable' || conditon == 'eqEditableOrDisable') {
             //输入的值等于指定值显示否则隐藏
-            formData["_" + fieldName + "Editable"] = currentVal == params;
-        } else if (conditon == "assignValue") {
+            formData['_' + fieldName + 'Editable'] = currentVal == params;
+        } else if (conditon == 'assignValue') {
             //输入的值等于指定值时赋予新值
             if (
-                field.itemType == "select" ||
-                field.itemType == "tselect" ||
-                field.itemType == "autocomplete" ||
-                field.itemType == "cascade"
+                field.itemType == 'select' ||
+                field.itemType == 'tselect' ||
+                field.itemType == 'autocomplete' ||
+                field.itemType == 'cascade'
             ) {
                 field.preps.values = JSON.parse(params);
             } else {
                 formData[field.name] = params;
             }
-        } else if (conditon == "changeType") {
+        } else if (conditon == 'changeType') {
             //输入的值等于指定值时改变字段类型
             field.itemType = params;
         }
@@ -117,15 +117,15 @@ const operationRelation = async (relation: any, actionName: string, formData: an
  */
 const allAction = (context: any, actionName: string, isInit: boolean = false) => {
     //设计时的初始化不作处理
-    const field = context.attrs["field"] as any;
-    if (!isInit && actionName != "normal") {
+    const field = context.attrs['field'] as any;
+    if (!isInit && actionName != 'normal') {
         try {
-            context.emit("selfFunc", actionName, context.attrs["formData"]);
+            context.emit('selfFunc', actionName, context.attrs['formData']);
         } catch (e) {
-            error("事件触发异常：" + e);
+            error('事件触发异常：' + e);
         }
     }
-    if ((isDesign.value && isInit) || actionName == "normal") {
+    if ((isDesign.value && isInit) || actionName == 'normal') {
         return;
     }
     const tempName = field.preps?.actionName;
@@ -135,33 +135,33 @@ const allAction = (context: any, actionName: string, isInit: boolean = false) =>
     // }
     //处理连动
     switch (actionName) {
-        case "change":
+        case 'change':
             change(context);
             break;
-        case "input":
+        case 'input':
             input(context);
             break;
-        case "focus":
+        case 'focus':
             focus(context);
             break;
-        case "blur":
+        case 'blur':
             blur(context);
             break;
-        case "enter":
-        case "keydown.enter":
+        case 'enter':
+        case 'keydown.enter':
             mouseEnter(context);
             break;
         default:
-            console.log("不支持的事件：" + actionName);
+            console.log('不支持的事件：' + actionName);
             return;
     }
 
-    if (actionName == "input" && actionName != tempName) {
+    if (actionName == 'input' && actionName != tempName) {
         return;
     }
     //处理自定义响应事件
-    if (actionName == field.preps["actionName"] && field.preps["actionRelation"]) {
-        field.preps["actionRelation"](context.attrs["formData"][field.preps["name"]], context.attrs["formData"]["xh"]);
+    if (actionName == field.preps['actionName'] && field.preps['actionRelation']) {
+        field.preps['actionRelation'](context.attrs['formData'][field.preps['name']], context.attrs['formData']['xh']);
     }
 };
 /**
@@ -173,12 +173,12 @@ const buttonAction = (context: any, code: string) => {
     if (code) {
         userFunction(code, context);
     } else {
-        const field = context.attrs["field"] as any;
-        context.attrs["formData"]["starHorseBtnName"] = field.preps["name"];
-        if (field.preps["actions"]) {
-            field.preps["actions"](context.attrs["formData"]);
+        const field = context.attrs['field'] as any;
+        context.attrs['formData']['starHorseBtnName'] = field.preps['name'];
+        if (field.preps['actions']) {
+            field.preps['actions'](context.attrs['formData']);
         }
-        context.emit("selfFunc", context.attrs["formData"]);
+        context.emit('selfFunc', context.attrs['formData']);
     }
 };
 /**
@@ -189,9 +189,9 @@ const checkIsDisabled = (context: any) => {
     const {attrs} = context;
     const {field} = attrs;
     const fieldName = field.preps?.name;
-    const isExplicitlyDisabled = attrs.disabled === true || attrs.disabled === "Y";
-    const isImplicitlyDisabled = !attrs.formData[`_${fieldName}Editable`] && field.preps?.disabled === "Y";
+    const isExplicitlyDisabled = attrs.disabled === true || attrs.disabled === 'Y';
+    const isImplicitlyDisabled = !attrs.formData[`_${fieldName}Editable`] && field.preps?.disabled === 'Y';
 
     return isExplicitlyDisabled || isImplicitlyDisabled;
-}
+};
 export {allAction, buttonAction, checkIsDisabled};

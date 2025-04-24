@@ -48,34 +48,34 @@
   </starhorse-form-item>
 </template>
 <script lang="ts" name="buttonItem">
-import {defineComponent, onMounted, shallowRef, unref} from "vue";
-import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
-import {buttonAction, checkIsDisabled} from "@/components/formcomp/utils/ItemRelationEventUtils.ts";
-import {httpRequest} from "@/api/star_horse_apis.ts";
-import {operationConfirm, warning} from "@/utils/message.ts";
-import {BtnAction, DynamicParamField} from "@/components/types/BtnAction";
-import {SearchParams} from "@/components/types/Params";
-import {createCondition} from "@/api/star_horse_utils.ts";
+import {defineComponent, onMounted, shallowRef, unref} from 'vue';
+import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
+import {buttonAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
+import {httpRequest} from '@/api/star_horse_apis.ts';
+import {operationConfirm, warning} from '@/utils/message.ts';
+import {BtnAction, DynamicParamField} from '@/components/types/BtnAction';
+import {SearchParams} from '@/components/types/Params';
+import {createCondition} from '@/api/star_horse_utils.ts';
 
 export default defineComponent({
   methods: {checkIsDisabled},
   components: {StarHorseIcon},
   setup(_props, context) {
-    const parentField = context.attrs["parentField"];
-    const field = context.attrs["field"] as any;
-    let formItem = shallowRef({label: "input", required: false});
-    let dataField = shallowRef("");
-    let actionName = shallowRef("click");
+    const parentField = context.attrs['parentField'];
+    const field = context.attrs['field'] as any;
+    let formItem = shallowRef({label: 'input', required: false});
+    let dataField = shallowRef('');
+    let actionName = shallowRef('click');
     let btnDialogVisible = shallowRef<boolean>(false);
     const btnCompRef = shallowRef();
     onMounted(() => {
-      actionName.value = field.preps?.actionName || "normal";
+      actionName.value = field.preps?.actionName || 'normal';
     });
     const operResultAction = async () => {
       let action: BtnAction = field.preps;
       let formData: any = {};
-      if (action?.viewType == "comp") {
-        formData = await btnCompRef.value?.getFormData("请先填写表单数据");
+      if (action?.viewType == 'comp') {
+        formData = await btnCompRef.value?.getFormData('请先填写表单数据');
         if (!formData) {
           return;
         }
@@ -85,7 +85,7 @@ export default defineComponent({
       debugger;
       context.attrs['formData'][field.preps['name']] = JSON.stringify(unref(formData));
       close();
-    }
+    };
     //打开对话框
     const openDialog = async () => {
 
@@ -100,7 +100,7 @@ export default defineComponent({
       let action: BtnAction = field.preps;
       //执行代码块
       if (action?.needConfirm) {
-        let result = operationConfirm(action.confirmMsg ?? "确定要执行此操作吗");
+        let result = operationConfirm(action.confirmMsg ?? '确定要执行此操作吗');
         if (!result) {
           return;
         }
@@ -108,22 +108,22 @@ export default defineComponent({
       if (action?.viewType == 'inter') {
         //如果参数是动态参数，则在当前form中寻找对应名称的值
         let urlParam: any = {};
-        if (action.isDynamicParam == "Y") {
+        if (action.isDynamicParam == 'Y') {
           let dynamicParams: SearchParams[] | DynamicParamField[] = action.params;
           let params: SearchParams[] = [];
           dynamicParams?.forEach((dynamicParam) => {
             let value = context.attrs['formData'][dynamicParam.paramName] ?? dynamicParam.defaultValue;
-            params.push(createCondition(dynamicParam.paramName, value, dynamicParam.matchType))
+            params.push(createCondition(dynamicParam.paramName, value, dynamicParam.matchType));
           });
-          urlParam["fieldList"] = params;
+          urlParam['fieldList'] = params;
         } else {
           urlParam = action.params;
         }
         if (!action.url) {
-          warning("请提供需要调用的接口");
+          warning('请提供需要调用的接口');
           return;
         }
-        httpRequest(action.url!, action.method ?? "POST", urlParam).then((res: any) => {
+        httpRequest(action.url!, action.method ?? 'POST', urlParam).then((res: any) => {
           //仅仅执行，则直接调用接口
           console.log(res);
           let reData = res.data;
@@ -134,42 +134,42 @@ export default defineComponent({
           let datas = reData?.data;
           if (action?.afterAction) {
             if (!datas) {
-              warning("返回数据为空，无法赋值");
+              warning('返回数据为空，无法赋值');
               return;
             }
             if (Array.isArray(datas)) {
-              warning("返回数据为数组，无法赋值");
+              warning('返回数据为数组，无法赋值');
               return;
             }
             //执行后搜集返回结果
-            if (action?.afterAction == "assignCurrentName") {
+            if (action?.afterAction == 'assignCurrentName') {
               context.attrs['formData'][field.preps['name']] = datas;
-            } else if (action?.afterAction == "assignForm") {
+            } else if (action?.afterAction == 'assignForm') {
               let entries = Object.entries(datas);
               entries.forEach(([key, value]) => {
                 context.attrs['formData'][key] = value;
-              })
+              });
             }
           }
-        })
-      } else if (action?.viewType == "code") {
+        });
+      } else if (action?.viewType == 'code') {
         if (!action.code) {
-          warning("请提供需要执行的代码");
+          warning('请提供需要执行的代码');
           return;
         }
         buttonAction(context, action.code);
-      } else if (action?.viewType == "method") {
+      } else if (action?.viewType == 'method') {
         if (!action.code) {
-          warning("请提供需要执行的函数名");
+          warning('请提供需要执行的函数名');
           return;
         }
       } else {
         btnDialogVisible.value = true;
       }
-    }
+    };
     const close = () => {
       btnDialogVisible.value = false;
-    }
+    };
     const dynamicFunc = (code: any) => {
       // openDialog();
       //如果是配置的标准操作

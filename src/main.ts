@@ -1,27 +1,27 @@
-import "element-plus/theme-chalk/index.css";
-import "@/assets/css/index.scss";
-import "@/assets/css/flow.scss";
-import "tailwindcss/index.css";
-import userComponent from "@/components/comp/selfcomp";
-import userContainerComponent from "@/components/comp/items/callitem";
-import itemComponent from "@/components/formcomp/items/allitem";
-import containerComponent from "@/components/formcomp/container/callitem";
-import commonComponent from "@/components/common/index";
-import systemComponent from "@/components/system/SystemComp";
-import App from "@/App.vue";
-import {createApp} from "vue";
-import ElementPlus from "element-plus";
+import 'element-plus/theme-chalk/index.css';
+import '@/assets/css/index.scss';
+import '@/assets/css/flow.scss';
+import 'tailwindcss/index.css';
+import userComponent from '@/components/comp/selfcomp';
+import userContainerComponent from '@/components/comp/items/callitem';
+import itemComponent from '@/components/formcomp/items/allitem';
+import containerComponent from '@/components/formcomp/container/callitem';
+import commonComponent from '@/components/common/index';
+import systemComponent from '@/components/system/SystemComp';
+import App from '@/App.vue';
+import {createApp} from 'vue';
+import ElementPlus from 'element-plus';
 // 导入svg图标
-import "virtual:svg-icons-register";
-import zhCn from "element-plus/dist/locale/zh-cn.mjs"; // 中文
-import draggable from "vuedraggable";
-import * as ElementPlusIconsVue from "@element-plus/icons-vue";
-import piniaInstance from "@/store";
+import 'virtual:svg-icons-register';
+import zhCn from 'element-plus/dist/locale/zh-cn.mjs'; // 中文
+import draggable from 'vuedraggable';
+import * as ElementPlusIconsVue from '@element-plus/icons-vue';
+import piniaInstance from '@/store';
 
 
 const app = createApp(App);
 // window.app = app;
-app.component("draggable", draggable);
+app.component('draggable', draggable);
 /**
  * 加载elementplus 自己提供的图标
  */
@@ -65,4 +65,4 @@ app.config.warnHandler = () => null;
 //     console.log(instance);
 //     console.log(trace);
 // }
-app.mount("#app");
+app.mount('#app');

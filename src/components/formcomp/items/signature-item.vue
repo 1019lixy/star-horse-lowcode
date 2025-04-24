@@ -1,18 +1,18 @@
 <script lang="ts">
-import {defineComponent, nextTick, onMounted, onUpdated, ref, shallowRef} from "vue";
-import SmoothSignature from "smooth-signature";
-import {warning} from "@/utils/message.ts";
-import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
-import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
-import {checkIsDisabled} from "@/components/formcomp/utils/ItemRelationEventUtils.ts";
+import {defineComponent, nextTick, onMounted, onUpdated, ref, shallowRef} from 'vue';
+import SmoothSignature from 'smooth-signature';
+import {warning} from '@/utils/message.ts';
+import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
+import StarHorseDialog from '@/components/comp/StarHorseDialog.vue';
+import {checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
 export default defineComponent({
   components: {StarHorseDialog, StarHorseIcon},
   methods: {checkIsDisabled},
   setup(_props, context) {
-    const parentField = context.attrs["parentField"];
-    const field = context.attrs["field"] as any;
-    let formItem = shallowRef({label: "input", required: false});
-    let dataField = shallowRef("");
+    const parentField = context.attrs['parentField'];
+    const field = context.attrs['field'] as any;
+    let formItem = shallowRef({label: 'input', required: false});
+    let dataField = shallowRef('');
     let previewDialog = shallowRef<boolean>(false);
     let signature = ref<SmoothSignature>(null);
     let canvas = ref();
@@ -22,14 +22,14 @@ export default defineComponent({
       minWidth: 4,
       maxWidth: 12,
       // color: '#1890ff',
-      bgColor: "#f6f6f6"
+      bgColor: '#f6f6f6'
     };
     const itemAction = () => {
-      context.emit("selfFunc");
+      context.emit('selfFunc');
     };
     const init = async () => {
       await nextTick(() => {
-        let singatureCanvas = document.getElementById("singatureCanvas");
+        let singatureCanvas = document.getElementById('singatureCanvas');
         if (!signature.value && canvas.value && singatureCanvas) {
           signature.value = new SmoothSignature(singatureCanvas, options);
         }
@@ -46,13 +46,13 @@ export default defineComponent({
 
     const handleColor = (evt: MouseEvent) => {
       evt && evt.defaultPrevented;
-      signature.value.color = "#" + Math.random().toString(16).slice(-6);
+      signature.value.color = '#' + Math.random().toString(16).slice(-6);
     };
     const handlePreview = (evt: MouseEvent) => {
       evt && evt.defaultPrevented;
       const isEmpty = signature.value.isEmpty();
       if (isEmpty) {
-        warning("请先签名");
+        warning('请先签名');
         return;
       }
       previewDialog.value = true;

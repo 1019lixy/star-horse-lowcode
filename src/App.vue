@@ -19,22 +19,22 @@
 <StarHorseJsonEditor :modelValue="val"/>
 </template>
 <script lang="ts" setup>
-import {onMounted, ref} from "vue";
-import StarHorseJsonEditor from "@/components/comp/StarHorseJsonEditor.vue";
-const val=ref<string>("{}");
-const currentPage4 = ref(4)
+import {onMounted, ref} from 'vue';
+import StarHorseJsonEditor from '@/components/comp/StarHorseJsonEditor.vue';
+const val=ref<string>('{}');
+const currentPage4 = ref(4);
 
-const pageSize4 = ref(100)
-const size = ref<string>('default')
-const background = ref(false)
-const disabled = ref(false)
+const pageSize4 = ref(100);
+const size = ref<string>('default');
+const background = ref(false);
+const disabled = ref(false);
 
 const handleSizeChange = (val: number) => {
-  console.log(`${val} items per page`)
-}
+  console.log(`${val} items per page`);
+};
 const handleCurrentChange = (val: number) => {
-  console.log(`current page: ${val}`)
-}
+  console.log(`current page: ${val}`);
+};
 const closeAction = () => {
   //关闭浏览器清空数据
   window.onbeforeunload = async (evt) => {

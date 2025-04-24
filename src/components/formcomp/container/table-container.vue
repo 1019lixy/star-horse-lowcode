@@ -1,10 +1,10 @@
 <script setup lang="ts" name="table-container">
 // 右键菜单组件
-import {computed, PropType, ref} from "vue";
-import {operationConfirm, warning} from "@/utils/message";
-import {useDesignFormStore} from "@/store/DesignForm.ts";
-import piniaInstance from "@/store/index.ts";
-import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
+import {computed, PropType, ref} from 'vue';
+import {operationConfirm, warning} from '@/utils/message';
+import {useDesignFormStore} from '@/store/DesignForm.ts';
+import piniaInstance from '@/store/index.ts';
+import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
 
 let containerTableRef = ref(); // 强制刷新表格
 const props = defineProps({
@@ -17,16 +17,16 @@ const props = defineProps({
 });
 let designForm = useDesignFormStore(piniaInstance);
 let draggingItem = computed(() => designForm.draggingItem);
-let excludeContainerType: Array<string> = ["box", "tab", "table", "dytable", "collapse", "card"];
+let excludeContainerType: Array<string> = ['box', 'tab', 'table', 'dytable', 'collapse', 'card'];
 let isEdit = computed(() => designForm.isEdit);
 const isDragging = computed(() => designForm.isDragging);
 const getComponentName = (data: any) => {
-  return data?.itemType + "-item";
+  return data?.itemType + '-item';
 };
 const onDragAdd = (evt: Event, dataList: any) => {
   let newIndex = evt.newIndex;
   if (excludeContainerType.includes(draggingItem.value.itemType)) {
-    warning("容器不能嵌套容器");
+    warning('容器不能嵌套容器');
     let elements = props.field.preps.elements;
     for (let inde in elements) {
       let element = elements[inde];
@@ -35,7 +35,7 @@ const onDragAdd = (evt: Event, dataList: any) => {
         for (let i in column?.items) {
           let item = column.items[i];
           if (draggingItem.value.id == item.id) {
-            console.log("find data", item);
+            console.log('find data', item);
             column.items.splice(i, 1);
           }
         }
@@ -43,9 +43,9 @@ const onDragAdd = (evt: Event, dataList: any) => {
     }
     return false;
   }
-  if (newIndex != null && newIndex != "undefined") {
+  if (newIndex != null && newIndex != 'undefined') {
     let dataInfo = dataList[newIndex];
-    designForm.selectItem(dataInfo, dataInfo.itemType, "");
+    designForm.selectItem(dataInfo, dataInfo.itemType, '');
   }
 };
 const analysisData = (index: number) => {
@@ -77,7 +77,7 @@ const tdOut = (evt: MouseEvent, _index: number) => {
   currentIndex.value = 0;
 };
 const deleteCol = (index: number) => {
-  operationConfirm("列删除后，对应的组件也会删除，确认删除吗？").then((res: boolean) => {
+  operationConfirm('列删除后，对应的组件也会删除，确认删除吗？').then((res: boolean) => {
     if (res) {
       let elements = props.field.preps.elements;
       elements.splice(index - 1, 1);
@@ -143,6 +143,7 @@ const deleteCol = (index: number) => {
                       :key="data?.id"
                       :field="data"
                       :isDesign="isDesign"
+                      :disabled="disabled"
                       :formInfo="formInfo"
                       :is="getComponentName(data)"
                       :parentField="field"

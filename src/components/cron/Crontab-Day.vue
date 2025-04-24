@@ -49,7 +49,7 @@
   }
 </style>
 <script setup lang="ts" name="crontab-day">
-  import { computed, ref, watch } from "vue";
+  import { computed, ref, watch } from 'vue';
 
   let radioValue = ref(1);
   let workday = ref(1);
@@ -64,18 +64,18 @@
     cron: { type: Object }
   });
   let checkNum = ref(props.check);
-  const emits = defineEmits(["update"]);
+  const emits = defineEmits(['update']);
   // 计算两个周期值
   const cycleTotalFun = () => {
     cycle01.value = checkNum.value?.(cycle01.value, 1, 31);
     cycle02.value = checkNum.value?.(cycle02.value, 1, 31);
-    return cycle01.value + "-" + cycle02.value;
+    return cycle01.value + '-' + cycle02.value;
   };
   // 计算平均用到的值
   const averageTotalFun = () => {
     average01.value = checkNum.value?.(average01.value, 1, 31);
     average02.value = checkNum.value?.(average02.value, 1, 31);
-    return average01.value + "/" + average02.value;
+    return average01.value + '/' + average02.value;
   };
   // 计算工作日格式
   const workdayCheckFun = () => {
@@ -85,7 +85,7 @@
   // 计算勾选的checkbox值合集
   const checkboxStringFun = () => {
     let str = checkboxList.value.join();
-    return str == "" ? "*" : str;
+    return str == '' ? '*' : str;
   };
   let cycleTotal = computed(() => cycleTotalFun());
   let averageTotal = computed(() => averageTotalFun());
@@ -94,71 +94,71 @@
   // 单选按钮值变化时
   const radioChange = () => {
     if (radioValue.value === 1) {
-      emits("update", "day", "*", "day");
-      emits("update", "week", "?", "day");
-      emits("update", "month", "*", "day");
+      emits('update', 'day', '*', 'day');
+      emits('update', 'week', '?', 'day');
+      emits('update', 'month', '*', 'day');
     } else {
-      if (props.cron?.hour === "*") {
-        emits("update", "hour", "0", "day");
+      if (props.cron?.hour === '*') {
+        emits('update', 'hour', '0', 'day');
       }
-      if (props.cron?.min === "*") {
-        emits("update", "min", "0", "day");
+      if (props.cron?.min === '*') {
+        emits('update', 'min', '0', 'day');
       }
-      if (props.cron?.second === "*") {
-        emits("update", "second", "0", "day");
+      if (props.cron?.second === '*') {
+        emits('update', 'second', '0', 'day');
       }
     }
     switch (radioValue.value) {
       case 2:
-        emits("update", "day", "?");
+        emits('update', 'day', '?');
         break;
       case 3:
-        emits("update", "day", cycle01.value + "-" + cycle02.value);
+        emits('update', 'day', cycle01.value + '-' + cycle02.value);
         break;
       case 4:
-        emits("update", "day", average01.value + "/" + average02.value);
+        emits('update', 'day', average01.value + '/' + average02.value);
         break;
       case 5:
-        emits("update", "day", workday.value + "W");
+        emits('update', 'day', workday.value + 'W');
         break;
       case 6:
-        emits("update", "day", "L");
+        emits('update', 'day', 'L');
         break;
       case 7:
-        emits("update", "day", checkboxString.value);
+        emits('update', 'day', checkboxString.value);
         break;
     }
   };
   // 周期两个值变化时
   const cycleChange = () => {
     if (radioValue.value == 3) {
-      emits("update", "day", cycleTotal.value);
+      emits('update', 'day', cycleTotal.value);
     }
   };
   // 平均两个值变化时
   const averageChange = () => {
     if (radioValue.value == 4) {
-      emits("update", "day", averageTotal.value);
+      emits('update', 'day', averageTotal.value);
     }
   };
   // 最近工作日值变化时
   const workdayChange = () => {
     if (radioValue.value == 5) {
-      emits("update", "day", workday.value + "W");
+      emits('update', 'day', workday.value + 'W');
     }
   };
   // checkbox值变化时
   const checkboxChange = () => {
     if (radioValue.value == 7) {
-      emits("update", "day", checkboxString.value);
+      emits('update', 'day', checkboxString.value);
     }
   };
   // 父组件传递的week发生变化触发
   const weekChange = () => {
     //判断week值与day不能同时为“?”
-    if (props.cron?.week == "?" && radioValue.value == 2) {
+    if (props.cron?.week == '?' && radioValue.value == 2) {
       radioValue.value = 1;
-    } else if (props.cron?.week !== "?" && radioValue.value != 2) {
+    } else if (props.cron?.week !== '?' && radioValue.value != 2) {
       radioValue.value = 2;
     }
   };

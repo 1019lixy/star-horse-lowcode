@@ -1,5 +1,5 @@
-import {Config} from "@/api/settings.ts";
-import {SearchParams} from "@/components/types/Params";
+import {Config} from '@/api/settings.ts';
+import {SearchParams} from '@/components/types/Params';
 
 export function getToken() {
     return sessionStorage.getItem(Config.TokenKey);
@@ -33,7 +33,7 @@ export function setCustomerInfo(customerInfo: any) {
 export function getCustomerInfo() {
     const str = sessionStorage.getItem(Config.customerInfo);
     //未找到客户编码
-    if (!str || str == "undefined") {
+    if (!str || str == 'undefined') {
         return null;
     }
     return JSON.parse(str);
@@ -42,7 +42,7 @@ export function getCustomerInfo() {
 /**
  * 获取查询对象
  */
-export function getCustomerParam(propertyName: string = ""): SearchParams | null {
+export function getCustomerParam(propertyName: string = ''): SearchParams | null {
     const customerInfo = getCustomerInfo();
     if (!customerInfo || !propertyName) {
         return null;

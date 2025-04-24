@@ -5,7 +5,7 @@
  */
 export function createDate(val: any) {
   if (!val) {
-    return "--";
+    return '--';
   }
   return dateParse(val, false);
 }
@@ -14,7 +14,7 @@ export function createDate(val: any) {
  * 当前日期
  * @param split
  */
-export function currentDate(split: string = "-") {
+export function currentDate(split: string = '-') {
   const date = new Date();
   return dateParse(date, false, split);
 }
@@ -41,12 +41,12 @@ export function monthRange(date: Date) {
   const lastDay = new Date(date.getTime());
   const year = date.getFullYear();
   let month: number | string = currentMonth + 1;
-  month = month < 10 ? "0" + month : month;
+  month = month < 10 ? '0' + month : month;
   return {
     startDate: firstDay,
-    starDateStr: year + "-" + month + "-01",
+    starDateStr: year + '-' + month + '-01',
     lastDate: lastDay,
-    lastDateStr: year + "-" + month + "-" + lastDay.getDate()
+    lastDateStr: year + '-' + month + '-' + lastDay.getDate()
   };
 }
 
@@ -57,23 +57,23 @@ export function monthRange(date: Date) {
  * @param split
  * @param needSecond
  */
-export function dateParse(date: Date, needTime: boolean = true, split: string = "-", needSecond: boolean = false) {
+export function dateParse(date: Date, needTime: boolean = true, split: string = '-', needSecond: boolean = false) {
   if (!date) {
-    return "";
+    return '';
   }
   const m = date.getMonth() + 1;
-  const m1 = m < 10 ? "0" + m : m;
-  const day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
-  const hour = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
-  const minute = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
-  const second = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+  const m1 = m < 10 ? '0' + m : m;
+  const day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
+  const hour = date.getHours() < 10 ? '0' + date.getHours() : date.getHours();
+  const minute = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes();
+  const second = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
   let restr = date.getFullYear() + split + m1 + split + day;
-  const tm = hour + ":" + minute;
+  const tm = hour + ':' + minute;
   if (needTime) {
-    restr += " " + tm;
+    restr += ' ' + tm;
   }
   if (needSecond) {
-    restr += ":" + second;
+    restr += ':' + second;
   }
   return restr;
 }
@@ -83,8 +83,8 @@ export function dateParse(date: Date, needTime: boolean = true, split: string = 
  * @param val
  */
 export function createDatetime(val: any) {
-  if (!val || val == "undefined" || val == "-") {
-    return "--";
+  if (!val || val == 'undefined' || val == '-') {
+    return '--';
   }
   const date = new Date(val);
   return dateParse(date);

@@ -21,17 +21,17 @@
   </starhorse-form-item>
 </template>
 <script lang="ts">
-import {defineComponent, shallowRef, onMounted, watch} from "vue";
-import {checkIsDisabled} from "@/components/formcomp/utils/ItemRelationEventUtils.ts";
+import {defineComponent, shallowRef, onMounted, watch} from 'vue';
+import {checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
 
 export default defineComponent({
   methods: {checkIsDisabled},
   setup(_props, context) {
-    const parentField = context.attrs["parentField"];
+    const parentField = context.attrs['parentField'];
 
-    const field = context.attrs["field"] as any;
-    let formItem = shallowRef({label: "input", required: false});
-    let dataField = shallowRef("");
+    const field = context.attrs['field'] as any;
+    let formItem = shallowRef({label: 'input', required: false});
+    let dataField = shallowRef('');
     const currentComponent = shallowRef(null);
     const loadComponent = async () => {
       let compName = field['preps'].compName;
@@ -46,14 +46,14 @@ export default defineComponent({
       } else {
         currentComponent.value = field?.preps['name'];
       }
-    }
+    };
     onMounted(() => {
       loadComponent();
     });
     watch(() => [field.preps?.compName, field.preps?.name],
         () => {
           loadComponent();
-        }, {immediate: false})
+        }, {immediate: false});
     return {parentField, context, field, formItem, dataField, currentComponent};
   }
 });

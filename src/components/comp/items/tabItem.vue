@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
-import {onMounted, PropType, ref} from "vue";
-import {ApiUrls} from "@/components/types/ApiUrls";
-import {FieldInfo} from "@/components/types/PageFieldInfo";
-import StarHorseFormTable from "@/components/comp/StarHorseFormTable.vue";
-import {ModelRef} from "vue";
-import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
-import {Config} from "@/api/settings.ts";
-import {getDataIndex, getFormData, getPrefix,checkObject} from "@/api/form_utils.ts";
+import StarHorseFormItem from '@/components/comp/StarHorseFormItem.vue';
+import {onMounted, PropType, ref} from 'vue';
+import {ApiUrls} from '@/components/types/ApiUrls';
+import {FieldInfo} from '@/components/types/PageFieldInfo';
+import StarHorseFormTable from '@/components/comp/StarHorseFormTable.vue';
+import {ModelRef} from 'vue';
+import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
+import {Config} from '@/api/settings.ts';
+import {getDataIndex, getFormData, getPrefix,checkObject} from '@/api/form_utils.ts';
 
 const props = defineProps({
   compUrl: {type: Object as PropType<ApiUrls>},
@@ -16,25 +16,25 @@ const props = defineProps({
   // 数据索引
   dataIndex: {type: Number, default: -1},
   // 父节点名称
-  propPrefix: {type: String,default:""},
+  propPrefix: {type: String,default:''},
   parentPreps: {type: Object, default: {}},
-  subFormFlag: {type: String, default: "N"},
-  batchName: {type: String, default: "batchDataList"},
-  batchFieldName: {type: String, default: "batchFieldList"},
+  subFormFlag: {type: String, default: 'N'},
+  batchName: {type: String, default: 'batchDataList'},
+  batchFieldName: {type: String, default: 'batchFieldList'},
   primaryKey: {type: [String, Object] as PropType<string | any>,required:true},
   rules: {type: Object},
   compSize: {type: String, default: Config.compSize},
   isView: {type: Boolean, default: false}
 });
-const emits = defineEmits(["addRow", "removeRow"]);
-const dataForm: ModelRef<any> = defineModel("dataForm");
+const emits = defineEmits(['addRow', 'removeRow']);
+const dataForm: ModelRef<any> = defineModel('dataForm');
 
 /**
  * 列表添加行数据
  * @param row
  */
 const addRow = (row: any) => {
-  emits("addRow", row);
+  emits('addRow', row);
 };
 const closeOperation = (tabName: any) => {
   props.item.tabList?.forEach((item: any, index: number) => {
@@ -52,7 +52,7 @@ const closeOperation = (tabName: any) => {
  * @param row
  */
 const removeRow = (row: any) => {
-  emits("removeRow", row);
+  emits('removeRow', row);
 };
 const init = () => {
 };

@@ -1,26 +1,26 @@
 <script setup lang="ts" name="StarHorseSvg">
-  import { computed, PropType } from "vue";
-  import { ShapeInfo } from "@/utils/shapes.ts";
+  import { computed, PropType } from 'vue';
+  import { ShapeInfo } from '@/utils/shapes.ts';
 
   const props = defineProps({
     className: { type: String },
-    title: { type: String, default: "" },
-    size: { type: String, default: "20px" },
+    title: { type: String, default: '' },
+    size: { type: String, default: '20px' },
     width: { type: Number, default: 200 },
     height: { type: Number, default: 200 },
     data: { type: Object as PropType<ShapeInfo>, default: {} },
     borderOffset: { type: Number, default: 0 },
-    color: { type: String, default: "var(--star-horse-style)" },
-    backgroundColor: { type: String, default: "#fff" },
-    borderColor: { type: String, default: "#ebebeb" },
+    color: { type: String, default: 'var(--star-horse-style)' },
+    backgroundColor: { type: String, default: '#fff' },
+    borderColor: { type: String, default: '#ebebeb' },
     borderWidth: { type: Number, default: 0 },
-    cursor: { type: String, default: "default" }
+    cursor: { type: String, default: 'default' }
   });
   const svgClass = computed(() => {
     if (props.className) {
-      return "svg-icon " + props.className;
+      return 'svg-icon ' + props.className;
     } else {
-      return "svg-icon";
+      return 'svg-icon';
     }
   });
 </script>

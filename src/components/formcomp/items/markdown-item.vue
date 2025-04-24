@@ -18,27 +18,27 @@
   </starhorse-form-item>
 </template>
 <script lang="ts" name="markdown">
-import {defineComponent, onMounted, onUpdated, ref, shallowRef} from "vue";
-import {allAction, checkIsDisabled} from "@/components/formcomp/utils/ItemRelationEventUtils.ts";
-import {MdEditor} from "md-editor-v3";
-import "md-editor-v3/lib/style.css";
+import {defineComponent, onMounted, onUpdated, ref, shallowRef} from 'vue';
+import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
+import {MdEditor} from 'md-editor-v3';
+import 'md-editor-v3/lib/style.css';
 
 export default defineComponent({
   components: {MdEditor},
   methods: {checkIsDisabled},
   setup(_props, context) {
-    const parentField = context.attrs["parentField"];
+    const parentField = context.attrs['parentField'];
 
-    const field = context.attrs["field"] as any;
-    let formItem = shallowRef({label: "input", required: false});
-    let dataField = shallowRef("");
+    const field = context.attrs['field'] as any;
+    let formItem = shallowRef({label: 'input', required: false});
+    let dataField = shallowRef('');
     let defaultLeftToolBar = shallowRef<string>(
-        "undo redo clear | h bold italic strikethrough quote | ul ol table hr | link image code"
+        'undo redo clear | h bold italic strikethrough quote | ul ol table hr | link image code'
     );
-    let defaultRightToolBar = shallowRef<string>("preview toc sync-scroll fullscreen");
+    let defaultRightToolBar = shallowRef<string>('preview toc sync-scroll fullscreen');
     let markdownEditor = ref();
     const itemAction = () => {
-      allAction(context, "change");
+      allAction(context, 'change');
     };
     const init = async () => {
     };

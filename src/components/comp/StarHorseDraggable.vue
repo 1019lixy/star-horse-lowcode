@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import {onMounted, PropType, ref} from "vue";
-import {DynamicNode} from "@/components/types/DynamicNode";
-import {dynamicPageContextMenuData} from "@/plugins/AblesPlugin.ts";
+import {onMounted, PropType, ref} from 'vue';
+import {DynamicNode} from '@/components/types/DynamicNode';
+import {dynamicPageContextMenuData} from '@/plugins/AblesPlugin.ts';
 
 const props = defineProps({
   msg: {
@@ -17,16 +17,16 @@ const props = defineProps({
     default: false
   }
 });
-const emits = defineEmits(["selectNode"]);
+const emits = defineEmits(['selectNode']);
 const pointList = ref<Array<string>>([
-  "left",
-  "right",
-  "top",
-  "bottom",
-  "bottom-right",
-  "bottom-left",
-  "top-right",
-  "top-left"
+  'left',
+  'right',
+  'top',
+  'bottom',
+  'bottom-right',
+  'bottom-left',
+  'top-right',
+  'top-left'
 ]);
 
 const init = async () => {
@@ -51,7 +51,7 @@ const handleClear = () => {
   };
 };
 const selectItem = () => {
-  emits("selectNode", props.node);
+  emits('selectNode', props.node);
 };
 /**
  * 改变div的大小
@@ -80,39 +80,39 @@ const rangeMove = (evt: MouseEvent, direction: string) => {
     moveActive.value = true;
     // 根据方向设置调整逻辑
     switch (direction) {
-      case "right":
+      case 'right':
         shouldAdjustWidth = true;
         break;
-      case "left":
+      case 'left':
         shouldAdjustWidth = true;
         adjustLeft = true;
         invertWidthDirection = true;
         break;
-      case "top":
+      case 'top':
         shouldAdjustHeight = true;
         adjustTop = true;
         invertHeightDirection = true;
         break;
-      case "bottom":
+      case 'bottom':
         shouldAdjustHeight = true;
         break;
-      case "bottom-right":
+      case 'bottom-right':
         shouldAdjustWidth = true;
         shouldAdjustHeight = true;
         break;
-      case "bottom-left":
+      case 'bottom-left':
         shouldAdjustWidth = true;
         shouldAdjustHeight = true;
         adjustLeft = true;
         invertWidthDirection = true;
         break;
-      case "top-right":
+      case 'top-right':
         shouldAdjustWidth = true;
         shouldAdjustHeight = true;
         adjustTop = true;
         invertHeightDirection = true;
         break;
-      case "top-left":
+      case 'top-left':
         shouldAdjustWidth = true;
         shouldAdjustHeight = true;
         adjustLeft = true;
@@ -167,11 +167,11 @@ const dragStart = (evt: MouseEvent) => {
   nodeStartX.value = props.node.left || 0;
   nodeStartY.value = props.node.top || 0;
   // 锁定鼠标样式
-  document.body.style.cursor = "grabbing";
+  document.body.style.cursor = 'grabbing';
 };
 const dragAction = (evt: MouseEvent) => {
   if (isDragging.value && props.isActive) {
-    console.log("dragAction");
+    console.log('dragAction');
     const deltaX = evt.clientX - initialX.value;
     const deltaY = evt.clientY - initialY.value;
     props.node.left = nodeStartX.value + deltaX;
@@ -180,7 +180,7 @@ const dragAction = (evt: MouseEvent) => {
 };
 const endAction = (evt: MouseEvent) => {
   isDragging.value = false;
-  document.body.style.cursor = ""; // 恢复默认鼠标样式
+  document.body.style.cursor = ''; // 恢复默认鼠标样式
 };
 const contentMenuRef = ref();
 const contextmenu = (e: MouseEvent) => {

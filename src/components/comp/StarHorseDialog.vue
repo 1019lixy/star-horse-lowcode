@@ -1,11 +1,11 @@
 <script setup lang="ts" name="StarHorseDialog">
-import {computed, onMounted, PropType, provide, reactive, ref, watch} from "vue";
-import {DialogProps} from "@/components/types/DialogProps";
-import {i18n} from "@/lang";
-import {UserFuncInfo} from "@/components/types/PageFieldInfo";
-import {Config} from "@/api/settings.ts";
+import {computed, onMounted, PropType, provide, reactive, ref, watch} from 'vue';
+import {DialogProps} from '@/components/types/DialogProps';
+import {i18n} from '@/lang';
+import {UserFuncInfo} from '@/components/types/PageFieldInfo';
+import {Config} from '@/api/settings.ts';
 
-const emits = defineEmits(["merge", "mergeDraft", "resetForm", "open", "closeAction"]);
+const emits = defineEmits(['merge', 'mergeDraft', 'resetForm', 'open', 'closeAction']);
 const props = defineProps({
   dialogVisible: {type: Boolean, default: false},
   dialogProps: {type: Object as PropType<DialogProps>, default: {}},
@@ -14,8 +14,8 @@ const props = defineProps({
   isShowBtnContinue: {type: Boolean, default: false},
   isView: {type: Boolean, default: false},
   draggable: {type: Boolean, default: true},
-  boxHeight: {type: String, default: "60%"},
-  boxWidth: {type: String, default: "60%"},
+  boxHeight: {type: String, default: '60%'},
+  boxWidth: {type: String, default: '60%'},
   isBatch: {type: Boolean, default: false},
   fullScreen: {type: Boolean, default: false},
   hideFullScreenIcon: {type: Boolean, default: false},
@@ -25,8 +25,8 @@ const props = defineProps({
   selfClose: {type: Boolean, default: false},
   btnText: {type: String},
   userBtn: {type: Array<UserFuncInfo>, default: []},
-  btnTextContinue: {type: String, default: "提交并继续"},
-  title: {type: String, default: ""},
+  btnTextContinue: {type: String, default: '提交并继续'},
+  title: {type: String, default: ''},
   compSize: {type: String, default: Config.compSize}
 });
 let windowsType = ref<boolean>(false);
@@ -42,10 +42,10 @@ watch(
 );
 let isFullScreen = ref(props.fullScreen);
 const dialogStyle = computed(() => {
-  return {"max-height": isFullScreen.value ? "100%" : props.boxHeight};
+  return {'max-height': isFullScreen.value ? '100%' : props.boxHeight};
 });
 const beforeClose = () => {
-  emits("closeAction");
+  emits('closeAction');
   windowsType.value = false;
   if (props.selfClose) {
     return;
@@ -70,11 +70,11 @@ const beforeClose = () => {
   }
 };
 const open = () => {
-  emits("open");
+  emits('open');
 };
 onMounted(() => {
 });
-provide("closeDialog", beforeClose);
+provide('closeDialog', beforeClose);
 const fullScreen = () => {
   if (props.hideFullScreenIcon) return;
   isFullScreen.value = !isFullScreen.value;
@@ -84,11 +84,11 @@ const operation = (funcName: string, type: string) => {
   if (props.selfFunc) {
     emits(`${funcName}`, type);
   } else {
-    clickFunction["funcName"] = funcName;
-    clickFunction["type"] = type;
+    clickFunction['funcName'] = funcName;
+    clickFunction['type'] = type;
   }
 };
-provide("dialogOperation", clickFunction);
+provide('dialogOperation', clickFunction);
 </script>
 <template>
   <Teleport to="body">

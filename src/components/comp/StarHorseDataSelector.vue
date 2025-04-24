@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import {useVModel} from "@vueuse/core";
-import DataTag from "@/components/comp/utils/DataTag.vue";
-import DataPicker, {type ModelValueType} from "@/components/comp/utils/DataPicker.vue";
-import {useFormDisabled} from "element-plus";
-import type {CSSProperties} from "vue";
-import {computed, ref} from "vue";
-import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
+import {useVModel} from '@vueuse/core';
+import DataTag from '@/components/comp/utils/DataTag.vue';
+import DataPicker, {type ModelValueType} from '@/components/comp/utils/DataPicker.vue';
+import {useFormDisabled} from 'element-plus';
+import type {CSSProperties} from 'vue';
+import {computed, ref} from 'vue';
+import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
 
 export interface DataSelectorProps {
   modelValue: ModelValueType;
@@ -27,19 +27,19 @@ export interface DataSelectorProps {
 const props = withDefaults(defineProps<DataSelectorProps>(), {
   multiple: false,
   disabled: false,
-  compSize: "small",
+  compSize: 'small',
   pageSize: 0,
-  displayName: "name",
-  displayValue: "value",
+  displayName: 'name',
+  displayValue: 'value',
   checkStrictly: true,
-  placeholder: "请选择数据"
+  placeholder: '请选择数据'
 });
 const emits = defineEmits<{
-  (e: "update:modelValue", modelValue: ModelValueType): void;
-  (e: "selectedData", selectData: any): void;
+  (e: 'update:modelValue', modelValue: ModelValueType): void;
+  (e: 'selectedData', selectData: any): void;
 }>();
-const value: any = useVModel(props, "modelValue", emits);
-const emitData: any = useVModel(props, "selectedData", emits);
+const value: any = useVModel(props, 'modelValue', emits);
+const emitData: any = useVModel(props, 'selectedData', emits);
 const selectData: any = ref<any>();
 const valueArr = computed<string[]>(() => {
   emitData.value = selectData.value;
@@ -70,7 +70,7 @@ const onClose = (data: any) => {
     selectData.value = null;
     value.value = null;
   }
-  emits("selectedData", selectData.value);
+  emits('selectedData', selectData.value);
 };
 </script>
 

@@ -1,8 +1,8 @@
 import {SearchFields, SelectOption} from '@/components/types/SearchProps';
 import {ApiUrls} from '@/components/types/ApiUrls';
 import {SearchParams} from '@/components/types/Params';
-import {RuleType} from "@/components/types/RuleType";
-import {Ref} from "vue";
+import {RuleType} from '@/components/types/RuleType';
+import {Ref} from 'vue';
 
 /**
  * Tab 表单数据

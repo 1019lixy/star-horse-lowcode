@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
-import {onMounted, PropType} from "vue";
-import {ApiUrls} from "@/components/types/ApiUrls";
-import {FieldInfo} from "@/components/types/PageFieldInfo";
-import {ModelRef} from "vue";
-import {Config} from "@/api/settings.ts";
-import {getDataIndex, getFormData, getPrefix, checkObject, loadProp, validMsg, checkVisible} from "@/api/form_utils.ts";
+import StarHorseFormItem from '@/components/comp/StarHorseFormItem.vue';
+import {onMounted, PropType} from 'vue';
+import {ApiUrls} from '@/components/types/ApiUrls';
+import {FieldInfo} from '@/components/types/PageFieldInfo';
+import {ModelRef} from 'vue';
+import {Config} from '@/api/settings.ts';
+import {getDataIndex, getFormData, getPrefix, checkObject, loadProp, validMsg, checkVisible} from '@/api/form_utils.ts';
 
 const props = defineProps({
   compUrl: {type: Object as PropType<ApiUrls>},
@@ -14,32 +14,32 @@ const props = defineProps({
   // 数据索引
   dataIndex: {type: Number, default: -1},
   // 父节点名称
-  propPrefix: {type: String, default: ""},
+  propPrefix: {type: String, default: ''},
   parentPreps: {type: Object, default: {}},
-  subFormFlag: {type: String, default: "N"},
-  batchName: {type: String, default: "batchDataList"},
-  batchFieldName: {type: String, default: "batchFieldList"},
+  subFormFlag: {type: String, default: 'N'},
+  batchName: {type: String, default: 'batchDataList'},
+  batchFieldName: {type: String, default: 'batchFieldList'},
   primaryKey: {type: [String, Object] as PropType<string | any>,required:true},
   rules: {type: Object},
   compSize: {type: String, default: Config.compSize},
   isView: {type: Boolean, default: false},
   isEdit: {type: Boolean, default: false}
 });
-const emits = defineEmits(["addRow", "removeRow"]);
-const dataForm: ModelRef<any> = defineModel("dataForm");
+const emits = defineEmits(['addRow', 'removeRow']);
+const dataForm: ModelRef<any> = defineModel('dataForm');
 /**
  * 列表添加行数据
  * @param row
  */
 const addRow = (row: any) => {
-  emits("addRow", row);
+  emits('addRow', row);
 };
 /**
  * 列表删除行数据
  * @param row
  */
 const removeRow = (row: any) => {
-  emits("removeRow", row);
+  emits('removeRow', row);
 };
 
 const init = () => {

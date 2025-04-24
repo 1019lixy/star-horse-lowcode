@@ -25,11 +25,11 @@ const particlesCfg = {
     events: {
       onClick: {
         enable: true,
-        mode: "push"
+        mode: 'push'
       },
       onHover: {
         enable: true,
-        mode: "repulse"
+        mode: 'repulse'
       },
       resize: true
     },
@@ -51,10 +51,10 @@ const particlesCfg = {
   },
   particles: {
     color: {
-      value: "#ffffff"
+      value: '#ffffff'
     },
     links: {
-      color: "#ffffff",
+      color: '#ffffff',
       distance: 150,
       enable: true,
       opacity: 1,
@@ -64,9 +64,9 @@ const particlesCfg = {
       enable: true
     },
     move: {
-      direction: "none",
+      direction: 'none',
       enable: true,
-      outMode: "bounce",
+      outMode: 'bounce',
       random: false,
       speed: 0.5,
       straight: false
@@ -82,7 +82,7 @@ const particlesCfg = {
       value: 0.5
     },
     shape: {
-      type: "circle"
+      type: 'circle'
     },
     size: {
       random: true,

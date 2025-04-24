@@ -36,27 +36,27 @@
   </starhorse-form-item>
 </template>
 <script lang="ts">
-import {defineComponent, onMounted, shallowRef} from "vue";
-import {compDynamicData} from "@/api/star_horse_utils.ts";
-import {SelectOption} from "@/components/types/SearchProps";
-import {allAction, checkIsDisabled} from "@/components/formcomp/utils/ItemRelationEventUtils.ts";
+import {defineComponent, onMounted, shallowRef} from 'vue';
+import {compDynamicData} from '@/api/star_horse_utils.ts';
+import {SelectOption} from '@/components/types/SearchProps';
+import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
 
 export default defineComponent({
   methods: {checkIsDisabled},
   setup(_props, context) {
-    const parentField = context.attrs["parentField"];
+    const parentField = context.attrs['parentField'];
 
-    const field = context.attrs["field"] as any;
-    let formItem = shallowRef({label: "input", required: false});
-    let dataField = shallowRef("");
-    let actionName = shallowRef("normal");
+    const field = context.attrs['field'] as any;
+    let formItem = shallowRef({label: 'input', required: false});
+    let dataField = shallowRef('');
+    let actionName = shallowRef('normal');
     let bakeData: SelectOption[] = [];
     const itemAction = (prep: string) => {
       allAction(context, prep);
     };
     const initData = async () => {
-      field.preps["values"] = await compDynamicData(field.preps);
-      bakeData = JSON.parse(JSON.stringify(field.preps["values"]));
+      field.preps['values'] = await compDynamicData(field.preps);
+      bakeData = JSON.parse(JSON.stringify(field.preps['values']));
     };
 
     // let bakeQueryString
@@ -89,8 +89,8 @@ export default defineComponent({
 
     onMounted(() => {
       initData();
-      actionName.value = field.preps?.actionName || "normal";
-      if (!context.attrs["isSearch"]) {
+      actionName.value = field.preps?.actionName || 'normal';
+      if (!context.attrs['isSearch']) {
         allAction(context, actionName.value, true);
       }
     });

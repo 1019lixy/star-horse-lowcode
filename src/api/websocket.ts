@@ -1,8 +1,8 @@
 // WebSocket地址
-import { warning } from "@/utils/message.ts";
-import { getUserInfo } from "@/utils/auth.ts";
+import { warning } from '@/utils/message.ts';
+import { getUserInfo } from '@/utils/auth.ts';
 
-let globalUrl: string = "";
+let globalUrl: string = '';
 // WebSocket实例
 let ws: WebSocket;
 // 重连定时器实例
@@ -14,8 +14,8 @@ const websocket = {
   // WebSocket建立连接
   init(url: string, _username: string) {
     // 判断浏览器是否支持WebSocket
-    if (!("WebSocket" in window)) {
-      warning("您的浏览器不支持 WebSocket");
+    if (!('WebSocket' in window)) {
+      warning('您的浏览器不支持 WebSocket');
       return;
     }
     globalUrl = url;
@@ -27,20 +27,20 @@ const websocket = {
     ws = new WebSocket(url);
     // 监听WebSocket连接
     ws.onopen = () => {
-      console.log("WebSocket连接成功");
+      console.log('WebSocket连接成功');
     };
     // 监听WebSocket连接错误信息
     ws.onerror = (e) => {
-      console.log("WebSocket重连开关", isReconnecting);
-      console.log("WebSocket数据传输发生错误", e);
+      console.log('WebSocket重连开关', isReconnecting);
+      console.log('WebSocket数据传输发生错误', e);
       // 打开重连
       reconnect();
     };
     // 监听WebSocket接收消息
     ws.onmessage = (e) => {
-      console.log("WebSocket接收后端消息:" + e.data);
+      console.log('WebSocket接收后端消息:' + e.data);
       // 心跳消息不做处理
-      if (e.data === "ok") {
+      if (e.data === 'ok') {
         return;
       }
       // 调用回调函数处理接收到的消息
@@ -79,17 +79,17 @@ const websocket = {
 window.onbeforeunload = () => {
   // 在窗口关闭时关闭 WebSocket 连接
   websocket.close();
-  console.log("WebSocket窗口关闭事件触发");
+  console.log('WebSocket窗口关闭事件触发');
 };
 
 // 浏览器刷新重新连接
 // 刷新页面后需要重连-并且是在登录之后
-if (performance.getEntriesByType("navigation")[0]?.type === "reload") {
-  console.log("WebSocket浏览器刷新了");
+if (performance.getEntriesByType('navigation')[0]?.type === 'reload') {
+  console.log('WebSocket浏览器刷新了');
 
   // 延迟一定时间再执行 WebSocket 初始化，确保页面完全加载后再进行连接
   setTimeout(() => {
-    console.log("WebSocket执行刷新后重连...");
+    console.log('WebSocket执行刷新后重连...');
     // 刷新后重连
     // 获取username（假设为测试username写死，现在是动态获取）
     const username = getUserInfo().idUsersinfo;
@@ -99,7 +99,7 @@ if (performance.getEntriesByType("navigation")[0]?.type === "reload") {
 
 // 重连方法
 function reconnect() {
-  console.log("WebSocket重连开关", isReconnecting);
+  console.log('WebSocket重连开关', isReconnecting);
   // 判断是否主动关闭连接
   if (isReconnecting) {
     return;
@@ -107,7 +107,7 @@ function reconnect() {
   // 重连定时器-每次WebSocket错误方法onerror触发它都会触发
   reconnectTimer && clearTimeout(reconnectTimer);
   reconnectTimer = setTimeout(() => {
-    console.log("WebSocket执行断线重连...");
+    console.log('WebSocket执行断线重连...');
     // 获取username（假设为测试username写死，现在是动态获取）
     const username = getUserInfo().idUsersinfo;
     websocket.init(globalUrl, username);

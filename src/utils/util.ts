@@ -5,9 +5,9 @@
  */
 export const initFieldList = (data: any, rule: any = {}) => {
   // 如果不是对象直接返回空数组
-  if (Object.prototype.toString.call(data) !== "[object Object]") return [];
+  if (Object.prototype.toString.call(data) !== '[object Object]') return [];
   return Object.keys(data).reduce((prev: any, key: string) => {
-    const operator = rule[key] || "eq";
+    const operator = rule[key] || 'eq';
     prev.push({ propertyName: key, operation: operator, value: data[key] });
     return prev;
   }, []);
@@ -27,7 +27,7 @@ export const buildCascaderDept = (data: any, users: any) => {
   // 找出所有根节点
   for (const item of data) {
     /** 首先遍历data */
-    if (item.parentid === "2") {
+    if (item.parentid === '2') {
       const id = item.id;
       let b = [];
       data = data.filter((b: any) => b.id !== id);

@@ -1,11 +1,11 @@
-import { defineStore } from "pinia";
-import { Ref, ref } from "vue";
-import { PageFieldInfo } from "@/components/types/PageFieldInfo";
+import { defineStore } from 'pinia';
+import { Ref, ref } from 'vue';
+import { PageFieldInfo } from '@/components/types/PageFieldInfo';
 
 /**
  * 用户自定义方法处理逻辑
  */
-export const useSelfOperationStore = defineStore("selfOperation", () => {
+export const useSelfOperationStore = defineStore('selfOperation', () => {
   const formFieldList = ref<PageFieldInfo>({});
   const fieldItemList = ref<any>({});
   const formData = ref<any>({});

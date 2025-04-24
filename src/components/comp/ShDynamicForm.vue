@@ -1,24 +1,24 @@
 <script setup lang="ts" name="ShDynamicForm">
-  import { inject, PropType, ref, ShallowReactive, watch } from "vue";
-  import { ApiUrls } from "@/components/types/ApiUrls";
-  import { error, success, warning } from "@/utils/message";
-  import { postRequest } from "@/api/star_horse_apis.ts";
-  import { closeLoad, load, loadById } from "@/api/star_horse_utils.ts";
-  import { DialogProps } from "@/components/types/DialogProps";
+  import { inject, PropType, ref, ShallowReactive, watch } from 'vue';
+  import { ApiUrls } from '@/components/types/ApiUrls';
+  import { error, success, warning } from '@/utils/message';
+  import { postRequest } from '@/api/star_horse_apis.ts';
+  import { closeLoad, load, loadById } from '@/api/star_horse_utils.ts';
+  import { DialogProps } from '@/components/types/DialogProps';
 
   const props = defineProps({
     compUrl: { type: Object as PropType<ApiUrls>, required: true },
     fieldList: { type: Object as PropType<any>, required: true },
     formInfo: { type: Object as PropType<any>, required: true },
     rules: { type: Object },
-    typeModel: { type: String, default: "normal" }
+    typeModel: { type: String, default: 'normal' }
   });
-  const emits = defineEmits(["refresh"]);
+  const emits = defineEmits(['refresh']);
   const starHorseFormRef = ref();
   const dataForm = ref<any>({});
-  const closeDialog = inject("closeDialog") as Function;
-  const dialogOperation = inject("dialogOperation") as ShallowReactive<any>;
-  const dialogProps = inject<DialogProps>("dialogProps", {});
+  const closeDialog = inject('closeDialog') as Function;
+  const dialogOperation = inject('dialogOperation') as ShallowReactive<any>;
+  const dialogProps = inject<DialogProps>('dialogProps', {});
 
   const assignDefault = () => {
     dataForm.value = {};
@@ -37,11 +37,11 @@
     });
   };
   const mergeDraft = (type: string) => {
-    console.log("mergeDraft", type);
+    console.log('mergeDraft', type);
     doMerge();
   };
   const doMerge = () => {
-    load("数据处理中");
+    load('数据处理中');
     postRequest(props.compUrl.mergeUrl!, dataForm.value)
         .then((res) => {
           closeLoad();
@@ -51,13 +51,13 @@
           } else {
             success(res.data.cnMessage);
           }
-          emits("refresh");
+          emits('refresh');
           resetForm();
           closeDialog();
           //关闭弹窗
         })
         .catch((err) => {
-          error("接口调用异常" + err);
+          error('接口调用异常' + err);
         })
         .finally(() => {
           closeLoad();
@@ -69,16 +69,16 @@
   watch(
       () => dialogOperation,
       (val: any) => {
-        if (val["funcName"] == "merge") {
-          merge(val["type"]);
-        } else if (val["funcName"] == "mergeDraft") {
-          mergeDraft(val["type"]);
-        } else if (val["funcName"] == "resetForm") {
+        if (val['funcName'] == 'merge') {
+          merge(val['type']);
+        } else if (val['funcName'] == 'mergeDraft') {
+          mergeDraft(val['type']);
+        } else if (val['funcName'] == 'resetForm') {
           resetForm();
         }
         //为了触发多次点击响应
-        dialogOperation["funcName"] = "";
-        dialogOperation["type"] = "";
+        dialogOperation['funcName'] = '';
+        dialogOperation['type'] = '';
       },
       {
         immediate: false,

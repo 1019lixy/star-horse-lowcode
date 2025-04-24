@@ -1,9 +1,9 @@
-import {defineStore} from "pinia";
-import {MenusInfo} from "@/components/types/MenusInfo";
-import {ref} from "vue";
+import {defineStore} from 'pinia';
+import {MenusInfo} from '@/components/types/MenusInfo';
+import {ref} from 'vue';
 
 export const useUserInfoStore = defineStore(
-    "userInfo",
+    'userInfo',
     () => {
         const userInfo = ref<any>({});
         const pageButtonPermission = ref<any>({});
@@ -13,10 +13,10 @@ export const useUserInfoStore = defineStore(
 
         const showLoginDialog = () => {
             loginDialogVisible.value = true;
-        }
+        };
         const closeLoginDialog = () => {
             loginDialogVisible.value = false;
-        }
+        };
         /**
          * 用户登录
          * @param data

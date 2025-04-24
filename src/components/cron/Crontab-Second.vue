@@ -37,7 +37,7 @@
   }
 </style>
 <script setup lang="ts" name="crontab-second">
-  import { computed, onMounted, ref, watch } from "vue";
+  import { computed, onMounted, ref, watch } from 'vue';
 
   let radioValue = ref(1);
   let cycle01 = ref(1);
@@ -52,23 +52,23 @@
     radioParent: {}
   });
   let checkNum = ref(props.check);
-  const emits = defineEmits(["update"]);
+  const emits = defineEmits(['update']);
   // 计算两个周期值
   const cycleTotalFun = () => {
     cycle01.value = checkNum.value?.(cycle01.value, 0, 59);
     cycle02.value = checkNum.value?.(cycle02.value, 0, 59);
-    return cycle01.value + "-" + cycle02.value;
+    return cycle01.value + '-' + cycle02.value;
   };
   // 计算平均用到的值
   const averageTotalFun = () => {
     average01.value = checkNum.value?.(average01.value, 0, 59);
     average02.value = checkNum.value?.(average02.value, 1, 59);
-    return average01.value + "/" + average02.value;
+    return average01.value + '/' + average02.value;
   };
   // 计算勾选的checkbox值合集
   const checkboxStringFun = () => {
     let str = checkboxList.value.join();
-    return str == "" ? "*" : str;
+    return str == '' ? '*' : str;
   };
   let cycleTotal = computed(() => cycleTotalFun());
   let averageTotal = computed(() => averageTotalFun());
@@ -77,51 +77,51 @@
   const radioChange = () => {
     switch (radioValue.value) {
       case 1:
-        emits("update", "second", "*", "second");
-        emits("update", "min", "*", "second");
+        emits('update', 'second', '*', 'second');
+        emits('update', 'min', '*', 'second');
         break;
       case 2:
-        emits("update", "second", cycle01.value + "-" + cycle02.value);
+        emits('update', 'second', cycle01.value + '-' + cycle02.value);
         break;
       case 3:
-        emits("update", "second", average01.value + "/" + average02.value);
+        emits('update', 'second', average01.value + '/' + average02.value);
         break;
       case 4:
-        emits("update", "second", checkboxString.value);
+        emits('update', 'second', checkboxString.value);
         break;
     }
   };
   // 周期两个值变化时
   const cycleChange = () => {
     if (radioValue.value == 2) {
-      emits("update", "second", cycleTotal.value);
+      emits('update', 'second', cycleTotal.value);
     }
   };
   // 平均两个值变化时
   const averageChange = () => {
     if (radioValue.value == 3) {
-      emits("update", "second", averageTotal.value);
+      emits('update', 'second', averageTotal.value);
     }
   };
   // checkbox值变化时
   const checkboxChange = () => {
     if (radioValue.value == 4) {
-      emits("update", "second", checkboxString.value);
+      emits('update', 'second', checkboxString.value);
     }
   };
   const othChange = () => {
     //反解析
     let ins = props.cron?.second;
-    console.log("second", ins);
-    if (ins === "*") {
+    console.log('second', ins);
+    if (ins === '*') {
       radioValue.value = 1;
-    } else if (ins.indexOf("-") > -1) {
+    } else if (ins.indexOf('-') > -1) {
       radioValue.value = 2;
-    } else if (ins.indexOf("/") > -1) {
+    } else if (ins.indexOf('/') > -1) {
       radioValue.value = 3;
     } else {
       radioValue.value = 4;
-      checkboxList.value = ins.split(",");
+      checkboxList.value = ins.split(',');
     }
   };
   watch(

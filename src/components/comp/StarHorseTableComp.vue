@@ -1,27 +1,27 @@
 <script lang="ts" setup name="StarHorseTableComp">
-import {ApiUrls} from "@/components/types/ApiUrls";
-import {computed, inject, onMounted, onUpdated, PropType, reactive, ref, unref, watch} from "vue";
-import {download, postRequest} from "@/api/star_horse_apis.ts";
-import {PageProps} from "@/components/types/PageProps";
-import {closeLoad, createCondition, deleteByIds, isJson, load, loadData} from "@/api/star_horse_utils.ts";
-import {BtnHideCondition, SearchParams} from "@/components/types/Params";
-import Sortable from "sortablejs";
-import {Sort} from "@element-plus/icons-vue";
-import {DialogProps} from "../types/DialogProps";
-import {error, warning} from "@/utils/message";
-import {ExpandTable, FieldInfo, OrderByInfo, PageFieldInfo, UserFuncInfo} from "@/components/types/PageFieldInfo";
-import {useDynamicFormStore} from "@/store/DynamicForm.ts";
-import piniaInstance from "@/store";
-import {useRoute} from "vue-router";
-import {useButtonPermissionStore} from "@/store/ButtonPermission.ts";
-import TableColumn from "@/components/comp/items/tableColumn.vue";
-import {useGlobalConfigStore} from "@/store/GlobalConfig.ts";
-import {analysisFields} from "@/utils/preview.ts";
-import {isSystemManage} from "@/utils/auth.ts";
-import {removeEmptyCondition} from "@/api/system.ts";
-import {Config} from "@/api/settings.ts";
-import Tablebtn from "@/components/comp/items/tablebtn.vue";
-import Help from "@/components/help.vue";
+import {ApiUrls} from '@/components/types/ApiUrls';
+import {computed, inject, onMounted, onUpdated, PropType, reactive, ref, unref, watch} from 'vue';
+import {download, postRequest} from '@/api/star_horse_apis.ts';
+import {PageProps} from '@/components/types/PageProps';
+import {closeLoad, createCondition, deleteByIds, isJson, load, loadData} from '@/api/star_horse_utils.ts';
+import {BtnHideCondition, SearchParams} from '@/components/types/Params';
+import Sortable from 'sortablejs';
+import {Sort} from '@element-plus/icons-vue';
+import {DialogProps} from '../types/DialogProps';
+import {error, warning} from '@/utils/message';
+import {ExpandTable, FieldInfo, OrderByInfo, PageFieldInfo, UserFuncInfo} from '@/components/types/PageFieldInfo';
+import {useDynamicFormStore} from '@/store/DynamicForm.ts';
+import piniaInstance from '@/store';
+import {useRoute} from 'vue-router';
+import {useButtonPermissionStore} from '@/store/ButtonPermission.ts';
+import TableColumn from '@/components/comp/items/tableColumn.vue';
+import {useGlobalConfigStore} from '@/store/GlobalConfig.ts';
+import {analysisFields} from '@/utils/preview.ts';
+import {isSystemManage} from '@/utils/auth.ts';
+import {removeEmptyCondition} from '@/api/system.ts';
+import {Config} from '@/api/settings.ts';
+import Tablebtn from '@/components/comp/items/tablebtn.vue';
+import Help from '@/components/help.vue';
 
 const dynamicForm = useDynamicFormStore(piniaInstance);
 const props = defineProps({
@@ -44,7 +44,7 @@ const props = defineProps({
   //弹窗模式
   dialogInput: {type: Boolean, default: false},
   //默认表格高度
-  height: {type: String, default: "400"},
+  height: {type: String, default: '400'},
   //过滤条件
   filterCondition: {type: Array as PropType<SearchParams[]>},
   orderBy: {type: Array as PropType<OrderByInfo[]>},
@@ -69,7 +69,7 @@ const props = defineProps({
   //按钮操作权限
   // permissions: {type: Object, required: true, default: {}},
   //行高
-  lineHeight: {type: String, default: "30px"},
+  lineHeight: {type: String, default: '30px'},
   //显示多选框
   showSelection: {type: Boolean, default: true},
   expandTable: {type: Object as PropType<ExpandTable>},
@@ -85,14 +85,14 @@ const props = defineProps({
   //按钮权限
   btnPermissions: {type: Object as PropType<any>, required: false},
 });
-const emits = defineEmits(["selectItem"]);
+const emits = defineEmits(['selectItem']);
 const route = useRoute();
 let pagePermission = useButtonPermissionStore(piniaInstance);
 let configStore = useGlobalConfigStore(piniaInstance);
 let permissions = ref<any>({});
 const configInfo = computed(() => {
   let data = configStore.configFormInfo;
-  showType(data.tableType == "card" ? "list" : "card");
+  showType(data.tableType == 'card' ? 'list' : 'card');
   return data;
 });
 let compSize = computed(() => configStore.configFormInfo?.inputSize || Config.compSize);
@@ -108,7 +108,7 @@ let pageInfo = reactive<PageProps>({
 let searchFields = reactive<Array<SearchParams>>([]);
 let orderBys = reactive<Array<OrderByInfo>>([]);
 let fieldVisible = ref<boolean>(false);
-let dialogProps = inject("dialogProps") as DialogProps;
+let dialogProps = inject('dialogProps') as DialogProps;
 let toolFields = reactive<Array<any>>([]);
 const exportOperationVisible = ref<boolean>(false);
 /**
@@ -116,23 +116,23 @@ const exportOperationVisible = ref<boolean>(false);
  * @param authority 权限编码
  */
 const tableCompFunc = (authority: any) => {
-  if (authority == "refresh") {
+  if (authority == 'refresh') {
     loadByPage();
-  } else if (authority == "batchDelete") {
+  } else if (authority == 'batchDelete') {
     batchDelete();
-  } else if (authority == "export") {
+  } else if (authority == 'export') {
     exportOperationVisible.value = true;
-  } else if (authority == "execution") {
-    console.log("你点击了执行按钮");
+  } else if (authority == 'execution') {
+    console.log('你点击了执行按钮');
   }
 };
 
 const selectedFields = () => {
   exportData();
   exportOperationVisible.value = false;
-}
+};
 const exportData = () => {
-  load("数据处理中");
+  load('数据处理中');
   let ids: any = getIds();
   let params = [];
   let keys: any = props.primaryKey;
@@ -144,10 +144,10 @@ const exportData = () => {
         for (let id in ids) {
           temp.push(id[key]);
         }
-        params.push(createCondition(key, temp, "in"));
+        params.push(createCondition(key, temp, 'in'));
       }
     } else {
-      params.push(createCondition(keys, ids, "in"));
+      params.push(createCondition(keys, ids, 'in'));
     }
   } else {
     params = searchFields;
@@ -160,11 +160,11 @@ const exportData = () => {
     fieldList: params
   };
   if (props.fieldList?.orderBy) {
-    condition["orderBy"] = props.fieldList.orderBy;
+    condition['orderBy'] = props.fieldList.orderBy;
   }
   download(props.compUrl!.exportAllUrl!, condition)
       .catch((err: any) => {
-        error("接口不存在或网络异常:" + err);
+        error('接口不存在或网络异常:' + err);
       })
       .finally(() => {
         closeLoad();
@@ -208,7 +208,7 @@ const init = async () => {
     permissions.value = await pagePermission.addRoute(route);
   }
   //拿到别人共享的信息
-  let resultData = await loadData("/system-config/system/dataPermission/currentMenuPermissionPerson", {});
+  let resultData = await loadData('/system-config/system/dataPermission/currentMenuPermissionPerson', {});
   commonPersons.value = resultData?.data;
   //是否初始化时自动加载列表数据开关
   if (!props.fieldList?.stopAutoLoad) {
@@ -269,12 +269,12 @@ const reCreateData = () => {
   }
 };
 const moveColumn = () => {
-  const tbody = document.querySelector(".sh-columns .el-table__body-wrapper tbody") as HTMLElement | null;
+  const tbody = document.querySelector('.sh-columns .el-table__body-wrapper tbody') as HTMLElement | null;
   if (tbody) {
     Sortable.create(tbody, {
-      handle: ".move",
+      handle: '.move',
       animation: 200,
-      ghostClass: "ghost",
+      ghostClass: 'ghost',
       onEnd(event: any) {
         const {oldIndex, newIndex} = event;
         if (oldIndex === newIndex) {
@@ -301,7 +301,7 @@ const editData = (row: any, _column?: any, evt?: Event) => {
   if (!props.dialogInput) {
     viewById(id);
   } else {
-    emits("selectItem", row);
+    emits('selectItem', row);
   }
 };
 /**
@@ -315,13 +315,13 @@ const checkParent = (val: any) => {
   let flag = false;
   for (let i in val) {
     let item = val[i];
-    if (item["children"] && item["children"].length > 0) {
+    if (item['children'] && item['children'].length > 0) {
       flag = true;
       starHorseTableCompRef.value.toggleRowSelection(item, false);
     }
   }
   if (flag) {
-    warning("非叶子节点不能选择");
+    warning('非叶子节点不能选择');
     return false;
   }
   return true;
@@ -376,19 +376,19 @@ const handleSelectionChange = (val: any) => {
   }
 };
 const getRowIdentity = (row: any) => {
-  return analysisPrimaryKeys(props.primaryKey, row) || "";
+  return analysisPrimaryKeys(props.primaryKey, row) || '';
 };
 
 const tbCommonFun = (name: string | undefined, param: any) => {
   let id = analysisPrimaryKeys(props.primaryKey, param);
-  if (name == "view") {
+  if (name == 'view') {
     viewById(id);
-  } else if (name == "edit") {
+  } else if (name == 'edit') {
     editById(id);
-  } else if (name == "delete" || name == "batchDelete") {
+  } else if (name == 'delete' || name == 'batchDelete') {
     deleteById(id);
   } else {
-    console.log("未定义的功能", name);
+    console.log('未定义的功能', name);
   }
   return false;
 };
@@ -413,7 +413,7 @@ const analysisPrimaryKeys = (keys: any, row: any) => {
   }
 };
 const splitKey = (key: string, row: any) => {
-  let arr = key?.split(".");
+  let arr = key?.split('.');
   if (arr?.length > 1) {
     let temp = row;
     for (let i in arr) {
@@ -469,7 +469,7 @@ const pageChangeClick = (currentPage: number) => {
   loadByPage();
 };
 //弹出选择框属性名称
-const inputFieldName = ref<string>("");
+const inputFieldName = ref<string>('');
 const commonPersons = ref<Array<string>>([]);
 //弹窗选择框属性值
 const inputFieldVal = ref<any>();
@@ -494,7 +494,7 @@ const createParams = () => {
   }
   //加入共享人的信息
   if (commonPersons.value && commonPersons.value.length && !isSystemManage()) {
-    searchTemp.push(createCondition("a.createdBy", commonPersons.value, "in"));
+    searchTemp.push(createCondition('a.createdBy', commonPersons.value, 'in'));
   }
   if (!props.compUrl?.pageListUrl) {
     return;
@@ -512,7 +512,7 @@ const createParams = () => {
  */
 const loadByPage = () => {
   let url: string = props.compUrl?.pageListUrl as string;
-  console.log("url", url);
+  console.log('url', url);
   let params: any = createParams();
   if (props.compUrl?.redirect) {
     params = {
@@ -521,14 +521,14 @@ const loadByPage = () => {
       port: props.compUrl?.port,
       protocol: props.compUrl?.protocol,
       env: props.compUrl?.env,
-      httpMethod: props.compUrl?.httpMethod || "POST",
-      dataType: props.compUrl?.dataType || "JSON",
+      httpMethod: props.compUrl?.httpMethod || 'POST',
+      dataType: props.compUrl?.dataType || 'JSON',
       searchInfo: params
     };
-    url = "/system-config/redirect/pageList";
+    url = '/system-config/redirect/pageList';
   }
   if (props.needLoad) {
-    load("数据加载中");
+    load('数据加载中');
   }
   postRequest(url, params)
       .then((res: any) => {
@@ -576,7 +576,7 @@ const setDataInfo = (fieldName: string, val: any) => {
 const selectRow = (row: any, _column?: any, evt?: Event) => {
   if (!evt) {
     dynamicForm.setSelectData(row);
-    emits("selectItem", row);
+    emits('selectItem', row);
     return;
   }
   evt.stopPropagation();
@@ -603,7 +603,7 @@ const selectRow = (row: any, _column?: any, evt?: Event) => {
     starHorseTableCompRef.value.toggleRowSelection(row, false);
   }
   dynamicForm.setSelectData(row);
-  emits("selectItem", row);
+  emits('selectItem', row);
 };
 
 let buttonList = ref<UserFuncInfo[]>([]);
@@ -617,7 +617,7 @@ const extendBtnFunction = (): Array<UserFuncInfo> => {
 
   //单独定义的按钮
   extendBtnsCopy?.forEach((item: UserFuncInfo) => {
-    if (item.position != "toolbar") {
+    if (item.position != 'toolbar') {
       if (!item.funcName) {
         item.funcName = (row: any) => tbCommonFun(item.authority, row);
       }
@@ -625,8 +625,8 @@ const extendBtnFunction = (): Array<UserFuncInfo> => {
     }
   });
   //在定义字段时定义的按钮
-  props.fieldList["userTableFuncs"]?.forEach((item: UserFuncInfo) => {
-    if (item.position != "toolbar") {
+  props.fieldList['userTableFuncs']?.forEach((item: UserFuncInfo) => {
+    if (item.position != 'toolbar') {
       if (!item.funcName) {
         item.funcName = (row: any) => tbCommonFun(item.authority, row);
       }
@@ -634,34 +634,34 @@ const extendBtnFunction = (): Array<UserFuncInfo> => {
     }
   });
   if (!props.disableAction) {
-    let edit = arr.filter((item) => item.authority == "edit")?.length;
+    let edit = arr.filter((item) => item.authority == 'edit')?.length;
     if (!edit) {
       arr.push({
-        authority: "edit",
-        btnName: "编辑",
-        icon: "edit",
+        authority: 'edit',
+        btnName: '编辑',
+        icon: 'edit',
         priority: 10,
-        funcName: (row: any) => tbCommonFun("edit", row)
+        funcName: (row: any) => tbCommonFun('edit', row)
       });
     }
-    let view = arr.filter((item) => item.authority == "view")?.length;
+    let view = arr.filter((item) => item.authority == 'view')?.length;
     if (!view) {
       arr.push({
-        authority: "view",
-        btnName: "查看",
+        authority: 'view',
+        btnName: '查看',
         priority: 20,
-        icon: "data-view",
-        funcName: (row: any) => tbCommonFun("view", row)
+        icon: 'data-view',
+        funcName: (row: any) => tbCommonFun('view', row)
       });
     }
-    let del = arr.filter((item) => item.authority == "delete")?.length;
+    let del = arr.filter((item) => item.authority == 'delete')?.length;
     if (!del) {
       arr.push({
-        authority: "delete",
-        btnName: "删除",
+        authority: 'delete',
+        btnName: '删除',
         priority: 30,
-        icon: "delete",
-        funcName: (row: any) => tbCommonFun("delete", row)
+        icon: 'delete',
+        funcName: (row: any) => tbCommonFun('delete', row)
       });
     }
   }
@@ -684,11 +684,11 @@ const expandCommonFun = (name: string, row: any, parentRow: any) => {
     }
   }
   //如果在当前行数据没有找到对应的字段，再从父级进行查找
-  if (name == "view") {
+  if (name == 'view') {
     viewById(id, true);
-  } else if (name == "edit") {
+  } else if (name == 'edit') {
     editById(id, true);
-  } else if (name == "delete") {
+  } else if (name == 'delete') {
     deleteById(id, true);
   }
 };
@@ -704,7 +704,7 @@ const getDatas = async (
     limitSize: number = 0,
     params: SearchParams[] = [],
     orderBys: OrderByInfo[] = [],
-    url: string = "",
+    url: string = '',
     usePageCondition: boolean = true
 ) => {
   let tempSearchParams: SearchParams[] = [];
@@ -722,12 +722,12 @@ const getDatas = async (
     orderBy: orderBys
   });
   if (result.error) {
-    warning("数据加载异常：" + result.error);
+    warning('数据加载异常：' + result.error);
   }
   return result.data;
 };
 
-let dataShowType = ref<string>("list");
+let dataShowType = ref<string>('list');
 let cardFieldList = ref<FieldInfo[]>([]);
 const loadField = (): FieldInfo[] => {
   let {fieldList} = analysisFields(props.fieldList?.fieldList);
@@ -737,37 +737,37 @@ const loadField = (): FieldInfo[] => {
   }
   return [];
 };
-let typeTitle = ref<string>("切换为卡片模式");
-let typeIcon = ref<string>("card1");
+let typeTitle = ref<string>('切换为卡片模式');
+let typeIcon = ref<string>('card1');
 
 /**
  * 数据展示风格
  * @param type
  */
 const showType = (type: string) => {
-  type = type == "card" ? "list" : "card";
+  type = type == 'card' ? 'list' : 'card';
   dataShowType.value = type;
-  if (type == "card" && cardFieldList.value.length == 0) {
+  if (type == 'card' && cardFieldList.value.length == 0) {
     cardFieldList.value = loadField();
   }
-  if (type == "card") {
-    typeTitle.value = "切换为列表模式";
-    typeIcon.value = "list";
+  if (type == 'card') {
+    typeTitle.value = '切换为列表模式';
+    typeIcon.value = 'list';
   } else {
-    typeTitle.value = "切换为卡片模式";
-    typeIcon.value = "card1";
+    typeTitle.value = '切换为卡片模式';
+    typeIcon.value = 'card1';
   }
 };
 const getSelectedDatas = () => {
   return multipleSelection.value;
-}
+};
 onMounted(() => {
   init();
 });
 onUpdated(() => {
   if (JSON.stringify(buttonList.value) !== JSON.stringify(extendBtnFunction())) {
     buttonList.value = extendBtnFunction();
-    toolbarButtonList.value = buttonList.value.filter((item) => item.position == "toolbar") || [];
+    toolbarButtonList.value = buttonList.value.filter((item) => item.position == 'toolbar') || [];
   }
 });
 //导出方法和变量

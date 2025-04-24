@@ -1,16 +1,16 @@
 <script setup lang="ts" name="starhorse-form-item">
-import {computed, onMounted, PropType, ref} from "vue";
-import {useDesignFormStore} from "@/store/DesignForm.ts";
-import piniaInstance from "@/store/index.ts";
-import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
-import FieldList from "@/components/formcomp/utils/FieldList.vue";
+import {computed, onMounted, PropType, ref} from 'vue';
+import {useDesignFormStore} from '@/store/DesignForm.ts';
+import piniaInstance from '@/store/index.ts';
+import StarHorseDialog from '@/components/comp/StarHorseDialog.vue';
+import FieldList from '@/components/formcomp/utils/FieldList.vue';
 import {
   dynamicFormContextMenuData,
   getParentComp,
   moveDownItem,
   moveUpItem,
   removeItem
-} from "@/plugins/AblesPlugin.ts";
+} from '@/plugins/AblesPlugin.ts';
 
 const props = defineProps({
   parentField: {type: Object},
@@ -33,7 +33,7 @@ const selectParentContainer = () => {
   if (!isEdit.value) {
     return;
   }
-  designForm.selectItem(props.parentField, "", "container");
+  designForm.selectItem(props.parentField, '', 'container');
 };
 const selectData = (data: any) => {
   if (!isEdit.value) {
@@ -49,12 +49,12 @@ const close = () => {
   designForm.setComponentVisible(false);
 };
 const changeItem = (item: any) => {
-  props.formItem["itemType"] = item["itemType"];
+  props.formItem['itemType'] = item['itemType'];
   if (item.category == 2) {
-    props.formItem["compType"] = "container";
+    props.formItem['compType'] = 'container';
   }
-  props.formItem["preps"] = {
-    ...props.formItem["preps"],
+  props.formItem['preps'] = {
+    ...props.formItem['preps'],
     itemNameLabel: item.itemName
   };
   close();

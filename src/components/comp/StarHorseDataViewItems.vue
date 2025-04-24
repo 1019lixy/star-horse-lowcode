@@ -1,25 +1,25 @@
 <script setup lang="ts" name="StarHorseDataViewObject">
-  import { PropType } from "vue";
-  import { PageFieldInfo } from "@/components/types/PageFieldInfo";
-  import { ModelRef } from "vue";
-  import { commonParseCodeToName } from "@/api/star_horse_utils.ts";
+  import { PropType } from 'vue';
+  import { PageFieldInfo } from '@/components/types/PageFieldInfo';
+  import { ModelRef } from 'vue';
+  import { commonParseCodeToName } from '@/api/star_horse_utils.ts';
 
   const props = defineProps({
     // compUrl: {type: Object as PropType<ApiUrls>},
     fieldList: { type: Object as PropType<PageFieldInfo>, required: true },
     objectName: { type: String },
-    subFormFlag: { type: String, default: "N" },
-    batchName: { type: String, default: "batchDataList" },
-    batchFieldName: { type: String, default: "batchFieldList" },
+    subFormFlag: { type: String, default: 'N' },
+    batchName: { type: String, default: 'batchDataList' },
+    batchFieldName: { type: String, default: 'batchFieldList' },
     primaryKey: {type: [String, Object] as PropType<string | any>},
     commonFormat: { type: Function, required: true }
   });
-  const dataForm: ModelRef<any> = defineModel("dataForm");
+  const dataForm: ModelRef<any> = defineModel('dataForm');
 
   const itemCommonFormat = (name: string, cellValue: any, row: any) => {
     cellValue = commonParseCodeToName(name, cellValue);
-    if (name == "isDel") {
-      return cellValue == 1 ? "是" : "否";
+    if (name == 'isDel') {
+      return cellValue == 1 ? '是' : '否';
     }
     return null == props.commonFormat ? cellValue : props.commonFormat(name, cellValue, row);
   };

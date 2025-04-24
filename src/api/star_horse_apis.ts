@@ -1,19 +1,19 @@
-import axios, {AxiosResponse, InternalAxiosRequestConfig} from "axios";
-import {getToken, getUserInfo} from "@/utils/auth";
-import {error} from "../utils/message";
-import piniaInstance from "@/store";
-import {useUserInfoStore} from "@/store/UserInfo.ts";
-import {SelectOption} from "@/components/types/SearchProps";
-import {getFingerId} from "@/api/finger_utils.ts";
-import {ServiceEnums} from "@/components/enums/ServiceEnums.ts";
-import {useRouter} from 'vue-router'
+import axios, {AxiosResponse, InternalAxiosRequestConfig} from 'axios';
+import {getToken, getUserInfo} from '@/utils/auth';
+import {error} from '../utils/message';
+import piniaInstance from '@/store';
+import {useUserInfoStore} from '@/store/UserInfo.ts';
+import {SelectOption} from '@/components/types/SearchProps';
+import {getFingerId} from '@/api/finger_utils.ts';
+import {ServiceEnums} from '@/components/enums/ServiceEnums.ts';
+import {useRouter} from 'vue-router';
 
 const userStore = useUserInfoStore(piniaInstance);
 const service = axios.create({
-    baseURL: "/",
+    baseURL: '/',
     timeout: 50000,
     headers: {
-        "Content-Type": "application/json; charset=utf-8"
+        'Content-Type': 'application/json; charset=utf-8'
     }
 });
 // 添加请求拦截器
@@ -24,8 +24,8 @@ service.interceptors.request.use(
         // 请求头带上token
         if (token && config.headers) {
             config.headers.token = token;
-            config.headers["Finger-Token"] = fingerToken;
-            config.headers["menuPosition"] = getMenuId();
+            config.headers['Finger-Token'] = fingerToken;
+            config.headers['menuPosition'] = getMenuId();
         }
         return config;
     },
@@ -41,9 +41,9 @@ export function getMenuId() {
     const meta = router?.currentRoute?.value?.meta;
     let menuId = meta?.menuId as string;
     if (!menuId) {
-        return "";
+        return '';
     }
-    menuId = menuId.split("_")[1];
+    menuId = menuId.split('_')[1];
     return menuId;
 }
 
@@ -70,10 +70,10 @@ service.interceptors.response.use(
     },
     (err) => {
         const data = err.toString().toLowerCase();
-        if (data?.includes("status code 401")) {
+        if (data?.includes('status code 401')) {
             forceLoginOut();
-        } else if (data?.includes("status code 500")) {
-            error("服务接口异常，请联系管理员");
+        } else if (data?.includes('status code 500')) {
+            error('服务接口异常，请联系管理员');
             return Promise.reject(err);
         } else {
             console.log(err);
@@ -100,7 +100,7 @@ export function getValidateImg() {
  * @param content
  */
 export async function rtCode(content: string) {
-    let data = "";
+    let data = '';
     await getRequest(`${ServiceEnums.GLOBAL_PREFIX}qrCode/${content}`).then((res) => {
         data = res.data.data;
     });
@@ -116,15 +116,15 @@ export function selectMenusTreeData(data: any) {
     const list: any = [];
     data.forEach((item: any) => {
         const temp: any = {};
-        temp["value"] = item.idMenusinfo;
-        temp["label"] = item.menuName;
+        temp['value'] = item.idMenusinfo;
+        temp['label'] = item.menuName;
         if (item.children && item.children.length > 0) {
-            temp["children"] = [];
+            temp['children'] = [];
             item.children.forEach((sitem: any) => {
                 const stemp: any = {};
-                stemp["value"] = sitem.idMenusinfo;
-                stemp["label"] = sitem.menuName;
-                temp["children"].push(stemp);
+                stemp['value'] = sitem.idMenusinfo;
+                stemp['label'] = sitem.menuName;
+                temp['children'].push(stemp);
             });
         }
         list.push(temp);
@@ -177,7 +177,7 @@ export async function permissionResources(data: any) {
         if (redata && redata.length > 0) {
             userStore.pushPageButtonPermission(data.menuId, redata);
         } else {
-            console.log("没有页面按钮操作权限,请联系系统管理员授权");
+            console.log('没有页面按钮操作权限,请联系系统管理员授权');
         }
         return redata;
     }
@@ -191,9 +191,9 @@ export async function permissionResources(data: any) {
 export function download(url: string, param: any) {
     return new Promise((resolve, reject) => {
         service
-            .post(url, param, {responseType: "blob"})
+            .post(url, param, {responseType: 'blob'})
             .then((res) => {
-                downloadData(res.data, decodeURI(res.headers["content-disposition"].split("=")[1]));
+                downloadData(res.data, decodeURI(res.headers['content-disposition'].split('=')[1]));
                 resolve(null);
             })
             .catch((err) => {
@@ -210,7 +210,7 @@ export function download(url: string, param: any) {
  */
 export function downloadData(data: any, name: string) {
     const blob = new Blob([data]);
-    const delement = document.createElement("a");
+    const delement = document.createElement('a');
     const href = window.URL.createObjectURL(blob);
     delement.href = href;
     delement.download = name;
@@ -225,14 +225,14 @@ export function downloadData(data: any, name: string) {
  * @param url
  * @param method
  */
-export async function blobData(url: string, method: string = "post") {
+export async function blobData(url: string, method: string = 'post') {
     let redata: any = null;
-    if (method == "get") {
-        await service.get(url, {responseType: "blob"}).then((res) => {
+    if (method == 'get') {
+        await service.get(url, {responseType: 'blob'}).then((res) => {
             redata = new Blob([res.data]);
         });
     } else {
-        await service.post(url, [], {responseType: "blob"}).then((res) => {
+        await service.post(url, [], {responseType: 'blob'}).then((res) => {
             redata = new Blob([res.data]);
         });
     }
@@ -245,11 +245,11 @@ export async function blobData(url: string, method: string = "post") {
  * @param fileName 文件名称
  * @param method 请求方式
  */
-export function downloadFile(fileUrl: string, fileName: string, method: string = "post") {
+export function downloadFile(fileUrl: string, fileName: string, method: string = 'post') {
     return new Promise(async (resolve, reject) => {
         try {
             let blob = await blobData(fileUrl, method);
-            let delement = document.createElement("a");
+            let delement = document.createElement('a');
             let href = window.URL.createObjectURL(blob);
             delement.href = href;
             delement.download = fileName;        //下载后文件名
@@ -262,7 +262,7 @@ export function downloadFile(fileUrl: string, fileName: string, method: string =
         } catch (e) {
             reject(e);
         }
-    })
+    });
 
 }
 
@@ -319,7 +319,7 @@ export async function loadSystems(param: Array<object>) {
 export async function loadDict(dictName: string) {
     let redata: Array<SelectOption> = [];
     const param = {
-        fieldList: [{propertyName: "dictType", value: dictName ? dictName : "common"}]
+        fieldList: [{propertyName: 'dictType', value: dictName ? dictName : 'common'}]
     };
     await postRequest(`${ServiceEnums.SYSTEM_PREFIX}dictinfoEntity/getAllByCondition`, param)
         .then((res) => {
@@ -331,7 +331,7 @@ export async function loadDict(dictName: string) {
                     return {
                         name: item.dictName,
                         value: item.dictCode
-                    }
+                    };
                 });
             }
         })
@@ -389,7 +389,7 @@ export function httpRequest(url: string, method: string, data: any) {
         url: url,
         method: method,
         data: data
-    })
+    });
 }
 
 /**
@@ -399,7 +399,7 @@ export function httpRequest(url: string, method: string, data: any) {
  * @returns {Promise<AxiosResponse<any>>}
  */
 export function uploadRequest(url: string, data: Array<any>) {
-    return service.post(url, data, {headers: {"Content-Type": "multipart/form-data"}});
+    return service.post(url, data, {headers: {'Content-Type': 'multipart/form-data'}});
 }
 
 /**
@@ -411,5 +411,5 @@ export function trim(data: string) {
     if (!data) {
         return data;
     }
-    return data.replace(/(^\s*)|(\s*$)/g, "");
+    return data.replace(/(^\s*)|(\s*$)/g, '');
 }

@@ -1,25 +1,25 @@
 <script setup lang="ts">
-import {ModelRef, onBeforeUnmount, onMounted, ref} from "vue";
+import {ModelRef, onBeforeUnmount, onMounted, ref} from 'vue';
 import JsonEditor from 'vue3-ts-jsoneditor';
 
 const props = defineProps({
   options: {type: Object},
   currentMode: {
     type: String,
-    default: "code"
+    default: 'code'
   },
   modeList: {
     type: Array,
-    default: () => ["tree", "code", "form", "text", "view"]
+    default: () => ['tree', 'code', 'form', 'text', 'view']
   },
   // en, es zh-CN, pt-BR, tr, ja, fr-FR, de, ru, ko
   language: {
     type: String,
-    default: "zh-CN"
+    default: 'zh-CN'
   }
 });
 
-const json: ModelRef<any> = defineModel("modelValue");
+const json: ModelRef<any> = defineModel('modelValue');
 // const jsonEditorRef = ref();
 
 const queryLanguages = ref<any>(['javascript' | 'lodash' | 'jmespath' | 'jsonquery' | 'jsonpath']);

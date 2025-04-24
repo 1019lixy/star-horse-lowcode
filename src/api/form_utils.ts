@@ -1,4 +1,4 @@
-import {getValidType} from "@/api/valid_utils.ts";
+import {getValidType} from '@/api/valid_utils.ts';
 
 /**
  * 解析动态表单中的子节点数据是否需要合并到父节点中
@@ -15,7 +15,7 @@ export function dynamicFormAnalysis(props: any, dataForm: any) {
     for (const key in globalCondition) {
         const temp = globalCondition[key];
         //如果非子表
-        if ("N" == temp.subFormFlag) {
+        if ('N' == temp.subFormFlag) {
             const data = dataForm[temp.tableName];
             delete dataForm[temp.tableName];
             if (data instanceof Array) {
@@ -36,35 +36,35 @@ export function dynamicFormAnalysis(props: any, dataForm: any) {
  */
 export function validMsg(item: any, dataForm: any) {
     const rules = [];
-    if (item.required && item.disabled != "Y") {
-        rules.push({required: true, message: `${item.label}不能为空`, trigger: "blur"});
-        if (item.type == "number-range") {
+    if (item.required && item.disabled != 'Y') {
+        rules.push({required: true, message: `${item.label}不能为空`, trigger: 'blur'});
+        if (item.type == 'number-range') {
             rules.push({
                 validator: (_rule: any, _value: any, callback: any) => {
                     const fieldName = item.fieldName;
-                    if (dataForm[fieldName + "Min"] + "" === "") {
-                        callback(new Error("必填项小值不能为空"));
+                    if (dataForm[fieldName + 'Min'] + '' === '') {
+                        callback(new Error('必填项小值不能为空'));
                     }
-                    if (dataForm[fieldName + "Max"] + "" === "") {
-                        callback(new Error("必填项大值不能为空"));
+                    if (dataForm[fieldName + 'Max'] + '' === '') {
+                        callback(new Error('必填项大值不能为空'));
                     }
-                    if (dataForm[fieldName + "Min"] > dataForm[fieldName + "Max"]) {
-                        callback(new Error("小值不能大于大值"));
+                    if (dataForm[fieldName + 'Min'] > dataForm[fieldName + 'Max']) {
+                        callback(new Error('小值不能大于大值'));
                     }
                 },
-                trigger: "blur"
+                trigger: 'blur'
             });
         }
     } else {
-        if (item.type == "number-range") {
+        if (item.type == 'number-range') {
             rules.push({
                 validator: (_rule: any, _value: any, callback: any) => {
                     const fieldName = item.fieldName;
-                    if (parseFloat(dataForm[fieldName + "Min"]) > parseFloat(dataForm[fieldName + "Max"])) {
-                        callback(new Error("小值不能大于大值"));
+                    if (parseFloat(dataForm[fieldName + 'Min']) > parseFloat(dataForm[fieldName + 'Max'])) {
+                        callback(new Error('小值不能大于大值'));
                     }
                 },
-                trigger: "blur"
+                trigger: 'blur'
             });
         }
     }
@@ -76,7 +76,7 @@ export function validMsg(item: any, dataForm: any) {
                     if (rule?.name?.length > 0) {
                         rules.push(getValidType(rule.name, rule.options));
                     } else {
-                        if (typeof rule == "string") {
+                        if (typeof rule == 'string') {
                             rules.push(getValidType(rule));
                         } else {
                             rules.push(rule);
@@ -87,7 +87,7 @@ export function validMsg(item: any, dataForm: any) {
                 if (itemRules?.name?.length > 0) {
                     rules.push(getValidType(itemRules.name, itemRules.options));
                 } else {
-                    if (typeof itemRules == "string") {
+                    if (typeof itemRules == 'string') {
                         rules.push(getValidType(itemRules));
                     } else {
                         rules.push(itemRules);
@@ -95,7 +95,7 @@ export function validMsg(item: any, dataForm: any) {
                 }
             }
         }
-    }
+    };
     //解决某些非标准的规则
     innerFun(itemRules);
     return rules;
@@ -115,9 +115,9 @@ export function checkObject(dataForm: any, item: any, index: number, parentIndex
 
 
 export function getFormData(item: any, dataForm: any, prefix: string, parentIndex: number, index: number) {
-    if (item.subFormFlag == "Y") {
+    if (item.subFormFlag == 'Y') {
         if (item && item.objectName) {
-            console.log("checkObject", item.objectName);
+            console.log('checkObject', item.objectName);
             if (!Object.keys(dataForm).includes(item.objectName)) {
                 dataForm[item.objectName] = [{}];
             }
@@ -143,12 +143,12 @@ export function getFormData(item: any, dataForm: any, prefix: string, parentInde
 export function getDataIndex(data: any, prefix: string, parentIndex: number, index: number) {
     let pronPrefix: number = 0;
     if (prefix && prefix.length > 0) {
-        if (data.subFormFlag == "Y") {
+        if (data.subFormFlag == 'Y') {
             pronPrefix = (parentIndex > -1 ? 0 : index);
         } else {
             pronPrefix = parentIndex;
         }
-    } else if (data.subFormFlag == "Y") {
+    } else if (data.subFormFlag == 'Y') {
         //如果父表大于0,说明当前是父表的子表，应该用父表的索引
         pronPrefix = parentIndex > 0 ? parentIndex : index;
     } else {
@@ -167,11 +167,11 @@ export function getDataIndex(data: any, prefix: string, parentIndex: number, ind
  */
 export function loadProp(prefix: string, fieldName: string, parentIndex: number, currentIndex: number) {
     if (prefix && prefix.length > 0) {
-        return prefix + "." + fieldName + (currentIndex > -1 ? "." + currentIndex : parentIndex > -1 ? "." + parentIndex : "");
+        return prefix + '.' + fieldName + (currentIndex > -1 ? '.' + currentIndex : parentIndex > -1 ? '.' + parentIndex : '');
     } else if (parentIndex >= 0) {
-        return fieldName + "." + parentIndex;
+        return fieldName + '.' + parentIndex;
     } else if (currentIndex >= 0) {
-        return fieldName + "." + currentIndex;
+        return fieldName + '.' + currentIndex;
     } else {
         return fieldName;
     }
@@ -186,18 +186,18 @@ export function loadProp(prefix: string, fieldName: string, parentIndex: number,
  * @param index
  */
 export function getPrefix(data: any, prefix: string, parentIndex: number, index: number) {
-    let pronPrefix = "";
+    let pronPrefix = '';
     if (prefix && prefix.length > 0) {
-        if (data.subFormFlag == "Y") {
-            pronPrefix = prefix + "." + data.objectName + "." + (parentIndex > -1 ? 0 : index);
+        if (data.subFormFlag == 'Y') {
+            pronPrefix = prefix + '.' + data.objectName + '.' + (parentIndex > -1 ? 0 : index);
         } else {
             pronPrefix = prefix;
         }
-    } else if (data.subFormFlag == "Y") {
+    } else if (data.subFormFlag == 'Y') {
         //如果父表大于0,说明当前是父表的子表，应该用父表的索引
-        pronPrefix = data.objectName + "." + (parentIndex > 0 ? parentIndex : index);
+        pronPrefix = data.objectName + '.' + (parentIndex > 0 ? parentIndex : index);
     } else {
-        pronPrefix = "";
+        pronPrefix = '';
     }
     return pronPrefix;
 }
@@ -208,5 +208,5 @@ export function getPrefix(data: any, prefix: string, parentIndex: number, index:
  * @param dataForm
  */
 export function checkVisible(item: any, dataForm: any) {
-    return item.formVisible || dataForm['_' + item.fieldName + 'Visible'] == 'Y'
+    return item.formVisible || dataForm['_' + item.fieldName + 'Visible'] == 'Y';
 }

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-  import { PropType } from "vue";
-  import { ApiUrls } from "@/components/types/ApiUrls";
-  import { Config } from "@/api/settings.ts";
+  import { PropType } from 'vue';
+  import { ApiUrls } from '@/components/types/ApiUrls';
+  import { Config } from '@/api/settings.ts';
 
   defineProps({
     //url地址

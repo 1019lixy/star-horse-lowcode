@@ -1,30 +1,30 @@
 <script setup lang="ts" name="StarHorseFormItem">
-import {inject, PropType} from "vue";
-import {ApiUrls} from "@/components/types/ApiUrls";
-import {DialogProps} from "@/components/types/DialogProps";
-import {PageFieldInfo} from "@/components/types/PageFieldInfo";
-import {ModelRef} from "vue";
-import {Config} from "@/api/settings.ts";
+import {inject, PropType} from 'vue';
+import {ApiUrls} from '@/components/types/ApiUrls';
+import {DialogProps} from '@/components/types/DialogProps';
+import {PageFieldInfo} from '@/components/types/PageFieldInfo';
+import {ModelRef} from 'vue';
+import {Config} from '@/api/settings.ts';
 
 defineProps({
   compUrl: {type: Object as PropType<ApiUrls>},
   fieldList: {type: Object as PropType<PageFieldInfo|any>, required: true},
   objectName: {type: String},
-  subFormFlag: {type: String, default: "N"},
+  subFormFlag: {type: String, default: 'N'},
   // 数据索引
   dataIndex: {type: Number, default: -1},
   // 父节点名称
-  propPrefix: {type: String, default: ""},
-  batchName: {type: String, default: "batchDataList"},
-  batchFieldName: {type: String, default: "batchFieldList"},
+  propPrefix: {type: String, default: ''},
+  batchName: {type: String, default: 'batchDataList'},
+  batchFieldName: {type: String, default: 'batchFieldList'},
   primaryKey: {type: [String, Object] as PropType<string | any>},
   compSize: {type: String, default: Config.compSize},
   rules: {type: Object},
   isView: {type: Boolean, default: false},
   isEdit: {type: Boolean, default: true},
 });
-const dataForm: ModelRef<any> = defineModel("dataForm");
-const dialogProps = inject<DialogProps>("dialogProps", {});
+const dataForm: ModelRef<any> = defineModel('dataForm');
+const dialogProps = inject<DialogProps>('dialogProps', {});
 </script>
 <template>
   <template v-for="item in fieldList.fieldList">

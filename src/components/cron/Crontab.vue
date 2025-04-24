@@ -66,17 +66,17 @@
   </div>
 </template>
 <script setup lang="ts">
-  import { computed, nextTick, onMounted, ref, watch } from "vue";
-  import CrontabSecond from "@/components/cron/Crontab-Second.vue";
-  import CrontabMin from "@/components/cron/Crontab-Min.vue";
-  import CrontabHour from "@/components/cron/Crontab-Hour.vue";
-  import CrontabDay from "@/components/cron/Crontab-Day.vue";
-  import Crontabmonth from "@/components/cron/Crontab-Month.vue";
-  import CrontabWeek from "@/components/cron/Crontab-Week.vue";
-  import CrontabYear from "@/components/cron/Crontab-Year.vue";
-  import CrontabResult from "@/components/cron/Crontab-Result.vue";
-  import { copy } from "@/api/star_horse_utils.ts";
-  import { useVModel } from "@vueuse/core";
+  import { computed, nextTick, onMounted, ref, watch } from 'vue';
+  import CrontabSecond from '@/components/cron/Crontab-Second.vue';
+  import CrontabMin from '@/components/cron/Crontab-Min.vue';
+  import CrontabHour from '@/components/cron/Crontab-Hour.vue';
+  import CrontabDay from '@/components/cron/Crontab-Day.vue';
+  import Crontabmonth from '@/components/cron/Crontab-Month.vue';
+  import CrontabWeek from '@/components/cron/Crontab-Week.vue';
+  import CrontabYear from '@/components/cron/Crontab-Year.vue';
+  import CrontabResult from '@/components/cron/Crontab-Result.vue';
+  import { copy } from '@/api/star_horse_utils.ts';
+  import { useVModel } from '@vueuse/core';
 
   export interface Crontab {
     expression: string;
@@ -85,10 +85,10 @@
   }
 
   const props = withDefaults(defineProps<Crontab>(), {});
-  const emits = defineEmits(["update:modelValue"]);
-  let dataValue = useVModel(props, "modelValue", emits);
-  let tabTitles = ref<Array<string>>(["秒", "分钟", "小时", "日", "月", "周", "年"]);
-  let tabActive = ref<string>("0");
+  const emits = defineEmits(['update:modelValue']);
+  let dataValue = useVModel(props, 'modelValue', emits);
+  let tabTitles = ref<Array<string>>(['秒', '分钟', '小时', '日', '月', '周', '年']);
+  let tabActive = ref<string>('0');
   const cronsecond = ref();
   const cronmin = ref();
   const cronhour = ref();
@@ -96,35 +96,35 @@
   const cronmonth = ref();
   const cronweek = ref();
   const cronyear = ref();
-  const prototypeCron = ["0 0 0 0 0 *", "* * * * * ? *", "* * * * * ?"];
+  const prototypeCron = ['0 0 0 0 0 *', '* * * * * ? *', '* * * * * ?'];
   let contabValueObj = ref<any>({
-    second: "*",
-    min: "*",
-    hour: "*",
-    day: "*",
-    month: "*",
-    week: "?",
-    year: ""
+    second: '*',
+    min: '*',
+    hour: '*',
+    day: '*',
+    month: '*',
+    week: '?',
+    year: ''
   });
-  let contabValueString = ref<string>("");
+  let contabValueString = ref<string>('');
   const contabValueStringFun = () => {
     let obj = contabValueObj.value;
     let val =
       obj.second +
-      " " +
+      ' ' +
       obj.min +
-      " " +
+      ' ' +
       obj.hour +
-      " " +
+      ' ' +
       obj.day +
-      " " +
+      ' ' +
       obj.month +
-      " " +
+      ' ' +
       obj.week +
-      (obj.year == "" ? "" : " " + obj.year);
+      (obj.year == '' ? '' : ' ' + obj.year);
     contabValueString.value = val;
     if (!prototypeCron.includes(val)) {
-      emits("update:modelValue", val);
+      emits('update:modelValue', val);
     }
   };
   const shouldHide = (key: any) => {
@@ -133,7 +133,7 @@
   const resolveExp = () => {
     //反解析 表达式
     if (dataValue.value) {
-      let arr = dataValue.value.split(" ");
+      let arr = dataValue.value.split(' ');
       if (arr.length >= 6) {
         //6 位以上是合法表达式
         let obj: any = {
@@ -143,7 +143,7 @@
           day: arr[3],
           month: arr[4],
           week: arr[5],
-          year: arr[6] ? arr[6] : ""
+          year: arr[6] ? arr[6] : ''
         };
         contabValueObj.value = obj;
         for (let i in obj) {
@@ -166,17 +166,17 @@
     }
   };
   const getRefObj = (name: string) => {
-    if (name == "cronsecond") {
+    if (name == 'cronsecond') {
       return cronsecond;
-    } else if (name == "cronmin") {
+    } else if (name == 'cronmin') {
       return cronmin;
-    } else if (name == "cronhour") {
+    } else if (name == 'cronhour') {
       return cronhour;
-    } else if (name == "cronday") {
+    } else if (name == 'cronday') {
       return cronday;
-    } else if (name == "cronmonth") {
+    } else if (name == 'cronmonth') {
       return cronmonth;
-    } else if (name == "cronweek") {
+    } else if (name == 'cronweek') {
       return cronweek;
     } else {
       return cronyear;
@@ -184,92 +184,92 @@
   };
   //赋值到组件
   const changeRadio = async (name: string, value: string) => {
-    let arr = ["second", "min", "hour", "month"],
-      refName = "cron" + name,
+    let arr = ['second', 'min', 'hour', 'month'],
+      refName = 'cron' + name,
       insValue;
     let refObj = getRefObj(refName);
     await nextTick();
     if (arr.includes(name)) {
-      if (value === "*") {
+      if (value === '*') {
         insValue = 1;
-      } else if (value.indexOf("-") > -1) {
-        let indexArr: Array<any> = value.split("-");
+      } else if (value.indexOf('-') > -1) {
+        let indexArr: Array<any> = value.split('-');
         isNaN(indexArr[0]) ? (refObj.value.cycle01 = 0) : (refObj.value.cycle01 = indexArr[0]);
         refObj.value.cycle02 = indexArr[1];
         insValue = 2;
-      } else if (value.indexOf("/") > -1) {
-        let indexArr: Array<any> = value.split("/");
+      } else if (value.indexOf('/') > -1) {
+        let indexArr: Array<any> = value.split('/');
         isNaN(indexArr[0]) ? (refObj.value.average01 = 0) : (refObj.value.average01 = indexArr[0]);
         refObj.value.average02 = indexArr[1];
         insValue = 3;
       } else {
-        if (name == "month" && value == "0") {
+        if (name == 'month' && value == '0') {
           insValue = 1;
         } else {
           insValue = 4;
-          refObj.value.checkboxList = value.split(",");
+          refObj.value.checkboxList = value.split(',');
         }
       }
-      console.log("insValue", name, value, insValue);
-    } else if (name == "day") {
-      if (value === "*") {
+      console.log('insValue', name, value, insValue);
+    } else if (name == 'day') {
+      if (value === '*') {
         insValue = 1;
-      } else if (value == "?") {
+      } else if (value == '?') {
         insValue = 2;
-      } else if (value.indexOf("-") > -1) {
-        let indexArr: Array<any> = value.split("-");
+      } else if (value.indexOf('-') > -1) {
+        let indexArr: Array<any> = value.split('-');
         isNaN(indexArr[0]) ? (refObj.value.cycle01 = 0) : (refObj.value.cycle01 = indexArr[0]);
         refObj.value.cycle02 = indexArr[1];
         insValue = 3;
-      } else if (value.indexOf("/") > -1) {
-        let indexArr: Array<any> = value.split("/");
+      } else if (value.indexOf('/') > -1) {
+        let indexArr: Array<any> = value.split('/');
         isNaN(indexArr[0]) ? (refObj.value.average01 = 0) : (refObj.value.average01 = indexArr[0]);
         refObj.value.average02 = indexArr[1];
         insValue = 4;
-      } else if (value.indexOf("W") > -1) {
-        let indexArr: Array<any> = value.split("W");
+      } else if (value.indexOf('W') > -1) {
+        let indexArr: Array<any> = value.split('W');
         isNaN(indexArr[0]) ? (refObj.value.workday = 0) : (refObj.value.workday = indexArr[0]);
         insValue = 5;
-      } else if (value === "L") {
+      } else if (value === 'L') {
         insValue = 6;
       } else {
-        refObj.value.checkboxList = value.split(",");
+        refObj.value.checkboxList = value.split(',');
         insValue = 7;
       }
-    } else if (name == "week") {
-      if (value === "*") {
+    } else if (name == 'week') {
+      if (value === '*') {
         insValue = 1;
-      } else if (value == "?") {
+      } else if (value == '?') {
         insValue = 2;
-      } else if (value.indexOf("-") > -1) {
-        let indexArr: Array<any> = value.split("-");
+      } else if (value.indexOf('-') > -1) {
+        let indexArr: Array<any> = value.split('-');
         isNaN(indexArr[0]) ? (refObj.value.cycle01 = 0) : (refObj.value.cycle01 = indexArr[0]);
         refObj.value.cycle02 = indexArr[1];
         insValue = 3;
-      } else if (value.indexOf("#") > -1) {
-        let indexArr: Array<any> = value.split("#");
+      } else if (value.indexOf('#') > -1) {
+        let indexArr: Array<any> = value.split('#');
         isNaN(indexArr[0]) ? (refObj.value.average01 = 1) : (refObj.value.average01 = indexArr[0]);
         refObj.value.average02 = indexArr[1];
         insValue = 4;
-      } else if (value.indexOf("L") > -1) {
-        let indexArr: Array<any> = value.split("L");
+      } else if (value.indexOf('L') > -1) {
+        let indexArr: Array<any> = value.split('L');
         isNaN(indexArr[0]) ? (refObj.value.weekday = 1) : (refObj.value.weekday = indexArr[0]);
         insValue = 5;
       } else {
-        refObj.value.checkboxList = value.split(",");
+        refObj.value.checkboxList = value.split(',');
         insValue = 7;
       }
-    } else if (name == "year") {
-      if (value == "") {
+    } else if (name == 'year') {
+      if (value == '') {
         insValue = 1;
-      } else if (value == "*") {
+      } else if (value == '*') {
         insValue = 2;
-      } else if (value.indexOf("-") > -1) {
+      } else if (value.indexOf('-') > -1) {
         insValue = 3;
-      } else if (value.indexOf("/") > -1) {
+      } else if (value.indexOf('/') > -1) {
         insValue = 4;
       } else {
-        refObj.value.checkboxList = value.split(",");
+        refObj.value.checkboxList = value.split(',');
         insValue = 5;
       }
     }
@@ -290,13 +290,13 @@
   const clearCron = () => {
     // 还原选择项
     contabValueObj.value = {
-      second: "*",
-      min: "*",
-      hour: "*",
-      day: "*",
-      month: "*",
-      week: "?",
-      year: ""
+      second: '*',
+      min: '*',
+      hour: '*',
+      day: '*',
+      month: '*',
+      week: '?',
+      year: ''
     };
     for (let j in contabValueObj.value) {
       changeRadio(j, contabValueObj.value[j]);

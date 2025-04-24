@@ -1,4 +1,4 @@
-import {SearchParams} from "@/components/types/Params";
+import {SearchParams} from '@/components/types/Params';
 
 /**
  * 组件用到的属性

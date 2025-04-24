@@ -1,8 +1,8 @@
-const path = require("path");
-const fs = require("fs");
+const path = require('path');
+const fs = require('fs');
 
-const fileDest = path.join(__dirname, "../src/assets/icons/svg");
-const targetDest = path.join(__dirname, "../src/assets/image.js");
+const fileDest = path.join(__dirname, '../src/assets/icons/svg');
+const targetDest = path.join(__dirname, '../src/assets/image.js');
 
 const run = (dir) => {
   let dirs = fs.readdirSync(dir);
@@ -26,7 +26,7 @@ const walkDir = (dir, item) => {
   });
   let itemList = [];
   fileList.forEach((file) => {
-    let fileName = item + "_" + file.replace(/\.svg$/, "").replaceAll("-", "");
+    let fileName = item + '_' + file.replace(/\.svg$/, '').replaceAll('-', '');
     importList.push(`import ${fileName} from '@/assets/icons/svg/${item}/${file}'`);
     itemList.push({
       url: fileName,
@@ -40,11 +40,11 @@ const walkDir = (dir, item) => {
   });
   const content = `
 // 该文件请运行npm run createNodeImageList命令自动生成
-${importList.join("\n")}
-export default ${JSON.stringify(list, null, 2).replace(/(url":\s*)"([^"]+)"(,)/g, "$1$2$3")}
+${importList.join('\n')}
+export default ${JSON.stringify(list, null, 2).replace(/(url":\s*)"([^"]+)"(,)/g, '$1$2$3')}
 `;
   fs.writeFileSync(targetDest, content);
 };
 
 run(fileDest);
-console.log("运行成功");
+console.log('运行成功');
