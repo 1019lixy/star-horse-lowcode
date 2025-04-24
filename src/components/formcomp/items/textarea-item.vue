@@ -26,6 +26,7 @@
   </star-horse-dialog>
   <starhorse-form-item
       :isDesign="context.attrs['isDesign']"
+      :disabled="context.attrs['disabled']"
       :bareFlag="context.attrs['bareFlag']"
       :form-item="field"
       :parentField="parentField"
@@ -34,7 +35,7 @@
         @dblclick="maxEdit"
         :fid="field.preps['name']"
         :clearable="field.preps['clearable'] == 'Y'"
-        :disabled="!context.attrs['formData']['_' + field.preps['name'] + 'Editable'] && field.preps['disabled'] == 'Y'"
+        :disabled="checkIsDisabled(context)"
         :max="field.preps['max']"
         :maxlength="field.preps['maxlength']"
         :min="field.preps['min']"
@@ -57,11 +58,12 @@
 </template>
 <script lang="ts">
 import {defineComponent, onMounted, shallowRef} from "vue";
-import {allAction} from "@/components/formcomp/utils/ItemRelationEventUtils.ts";
+import {allAction, checkIsDisabled} from "@/components/formcomp/utils/ItemRelationEventUtils.ts";
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 
 export default defineComponent({
   components: {StarHorseDialog},
+  methods: {checkIsDisabled},
   setup(_props, context) {
     const parentField = context.attrs["parentField"];
     const field = context.attrs["field"] as any;

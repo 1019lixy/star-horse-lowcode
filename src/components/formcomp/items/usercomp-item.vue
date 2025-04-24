@@ -1,6 +1,7 @@
 <template>
   <starhorse-form-item
       :isDesign="context.attrs['isDesign']"
+      :disabled="context.attrs['disabled']"
       :bareFlag="context.attrs['bareFlag']"
       :formItem="field"
       :parentField="parentField"
@@ -8,6 +9,7 @@
     <component
         :is="currentComponent"
         :isDesign="context.attrs['isDesign']"
+        :disabled="context.attrs['disabled']"
         :bareFlag="context.attrs['bareFlag']"
         :nodeFieldList="field['preps'].params?.nodeFieldList"
         :lineFieldList="field['preps'].params?.lineFieldList"
@@ -20,8 +22,10 @@
 </template>
 <script lang="ts">
 import {defineComponent, shallowRef, onMounted, watch} from "vue";
+import {checkIsDisabled} from "@/components/formcomp/utils/ItemRelationEventUtils.ts";
 
 export default defineComponent({
+  methods: {checkIsDisabled},
   setup(_props, context) {
     const parentField = context.attrs["parentField"];
 

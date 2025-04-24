@@ -5,6 +5,8 @@ import piniaInstance from "@/store/index.ts";
 
 const props = defineProps({
   parentField: {type: String},
+  isDesign: {type: Boolean,default: false},
+  disabled: {type: Object as PropType<Boolean | String>},
   formInfo: {type: Object as PropType<any>},
   formData: {type: Object as PropType<any>},
   field: {type: Object as PropType<any>}
@@ -28,7 +30,6 @@ const checkItem = (adata: any) => {
   }
 };
 const onDragAdd = (evt: Event, dataList: any) => {
-  console.log(evt, dataList);
   let newIndex = evt.newIndex;
   if (newIndex != null && newIndex != "undefined") {
     let dataInfo = dataList[newIndex];
@@ -74,7 +75,9 @@ const addTab = () => {
 };
 </script>
 <template>
-  <group-box-container class="star-horse-form-container" :parentField="parentField" :form-item="field">
+  <group-box-container class="star-horse-form-container"
+                       :isDesign="isDesign"
+                       :parentField="parentField" :form-item="field">
     <el-tabs
         class="tab-container"
         :tab-position="field.preps['tablePosition'] || 'top'"
@@ -107,10 +110,10 @@ const addTab = () => {
             <template #item="{ element: data }">
 
               <div class="comp-item" :style="{marginTop:isContainer(data)?'25px':'10px'}">
-
                 <component
                     :key="data.id"
                     :field="data"
+                    :isDesign="isDesign"
                     :formInfo="formInfo"
                     :is="getComponentName(data)"
                     :parentField="field"
@@ -127,6 +130,7 @@ const addTab = () => {
 <style lang="scss" scoped>
 .tab-design {
   height: 100%;
+  min-height: 200px;
   overflow-y: auto;
 }
 </style>

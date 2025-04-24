@@ -16,7 +16,8 @@ const props = defineProps({
   parentField: {type: Object},
   parentId: {type: Object},
   formItem: {type: Object, required: true},
-  isDesign: {type: Boolean, default: true},
+  isDesign: {type: Boolean, default: false},
+  disabled: {type: Object as PropType<Boolean | String>},
   //是否需要css 修饰
   bareFlag: {type: Object as PropType<Boolean | String>, default: false}
 });

@@ -1,130 +1,134 @@
 <script setup lang="ts" name="table-container">
-  // 右键菜单组件
-  import { computed, PropType, ref } from "vue";
-  import { operationConfirm, warning } from "@/utils/message";
-  import { useDesignFormStore } from "@/store/DesignForm.ts";
-  import piniaInstance from "@/store/index.ts";
-  import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
+// 右键菜单组件
+import {computed, PropType, ref} from "vue";
+import {operationConfirm, warning} from "@/utils/message";
+import {useDesignFormStore} from "@/store/DesignForm.ts";
+import piniaInstance from "@/store/index.ts";
+import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
 
-  let containerTableRef = ref(); // 强制刷新表格
-  const props = defineProps({
-    parentField: { type: String },
-    formInfo: { type: Object as PropType<any> },
-    formData: { type: Object as PropType<any> },
-    field: { type: Object as PropType<any> }
-  });
-  let designForm = useDesignFormStore(piniaInstance);
-  let draggingItem = computed(() => designForm.draggingItem);
-  let excludeContainerType: Array<string> = ["box", "tab", "table", "dytable", "collapse", "card"];
-  let isEdit = computed(() => designForm.isEdit);
-  const isDragging = computed(() => designForm.isDragging);
-  const getComponentName = (data: any) => {
-    return data?.itemType + "-item";
-  };
-  const onDragAdd = (evt: Event, dataList: any) => {
-    let newIndex = evt.newIndex;
-    if (excludeContainerType.includes(draggingItem.value.itemType)) {
-      warning("容器不能嵌套容器");
-      let elements = props.field.preps.elements;
-      for (let inde in elements) {
-        let element = elements[inde];
-        for (let sind in element?.columns) {
-          let column = element.columns[sind];
-          for (let i in column?.items) {
-            let item = column.items[i];
-            if (draggingItem.value.id == item.id) {
-              console.log("find data", item);
-              column.items.splice(i, 1);
-            }
+let containerTableRef = ref(); // 强制刷新表格
+const props = defineProps({
+  parentField: {type: String},
+  isDesign: {type: Boolean,default: false},
+  disabled: {type: Object as PropType<Boolean | String>},
+  formInfo: {type: Object as PropType<any>},
+  formData: {type: Object as PropType<any>},
+  field: {type: Object as PropType<any>}
+});
+let designForm = useDesignFormStore(piniaInstance);
+let draggingItem = computed(() => designForm.draggingItem);
+let excludeContainerType: Array<string> = ["box", "tab", "table", "dytable", "collapse", "card"];
+let isEdit = computed(() => designForm.isEdit);
+const isDragging = computed(() => designForm.isDragging);
+const getComponentName = (data: any) => {
+  return data?.itemType + "-item";
+};
+const onDragAdd = (evt: Event, dataList: any) => {
+  let newIndex = evt.newIndex;
+  if (excludeContainerType.includes(draggingItem.value.itemType)) {
+    warning("容器不能嵌套容器");
+    let elements = props.field.preps.elements;
+    for (let inde in elements) {
+      let element = elements[inde];
+      for (let sind in element?.columns) {
+        let column = element.columns[sind];
+        for (let i in column?.items) {
+          let item = column.items[i];
+          if (draggingItem.value.id == item.id) {
+            console.log("find data", item);
+            column.items.splice(i, 1);
           }
         }
       }
-      return false;
     }
-    if (newIndex != null && newIndex != "undefined") {
-      let dataInfo = dataList[newIndex];
-      designForm.selectItem(dataInfo, dataInfo.itemType, "");
+    return false;
+  }
+  if (newIndex != null && newIndex != "undefined") {
+    let dataInfo = dataList[newIndex];
+    designForm.selectItem(dataInfo, dataInfo.itemType, "");
+  }
+};
+const analysisData = (index: number) => {
+  let field = props.field?.preps;
+  let elements = field?.elements;
+  let f = elements.find((item: any) => item.colIndex == index);
+  if (index > 1) {
+    if (!f) {
+      elements.push({
+        colIndex: index,
+        items: []
+      });
     }
-  };
-  const analysisData = (index: number) => {
-    let field = props.field?.preps;
-    let elements = field?.elements;
-    let f = elements.find((item: any) => item.colIndex == index);
-    if (index > 1) {
-      if (!f) {
-        elements.push({
-          colIndex: index,
-          items: []
-        });
+  }
+  return f?.items[0]?.preps?.label || `Title${index}`;
+};
+let currentIndex = ref<number>(-1);
+const tdOver = (evt: MouseEvent, index: number) => {
+  evt.preventDefault();
+  evt.stopPropagation();
+  if (currentIndex.value == index) {
+    return;
+  }
+  currentIndex.value = index;
+};
+const tdOut = (evt: MouseEvent, _index: number) => {
+  evt.preventDefault();
+  evt.stopPropagation();
+  currentIndex.value = 0;
+};
+const deleteCol = (index: number) => {
+  operationConfirm("列删除后，对应的组件也会删除，确认删除吗？").then((res: boolean) => {
+    if (res) {
+      let elements = props.field.preps.elements;
+      elements.splice(index - 1, 1);
+      for (let index in elements) {
+        elements[index].colIndex = parseInt(index) + 1;
       }
+      // console.log(elements);
+      props.field.preps.columns = props.field.preps.columns - 1;
+      currentIndex.value = 0;
     }
-    return f?.items[0]?.preps?.label || `Title${index}`;
-  };
-  let currentIndex = ref<number>(-1);
-  const tdOver = (evt: MouseEvent, index: number) => {
-    evt.preventDefault();
-    evt.stopPropagation();
-    if (currentIndex.value == index) {
-      return;
-    }
-    currentIndex.value = index;
-  };
-  const tdOut = (evt: MouseEvent, _index: number) => {
-    evt.preventDefault();
-    evt.stopPropagation();
-    currentIndex.value = 0;
-  };
-  const deleteCol = (index: number) => {
-    operationConfirm("列删除后，对应的组件也会删除，确认删除吗？").then((res: boolean) => {
-      if (res) {
-        let elements = props.field.preps.elements;
-        elements.splice(index - 1, 1);
-        for (let index in elements) {
-          elements[index].colIndex = parseInt(index) + 1;
-        }
-        // console.log(elements);
-        props.field.preps.columns = props.field.preps.columns - 1;
-        currentIndex.value = 0;
-      }
-    });
-  };
+  });
+};
 </script>
 <template>
-  <group-box-container class="star-horse-form-container" :parentField="parentField" :form-item="field">
+  <group-box-container class="star-horse-form-container"
+                       :isDesign="isDesign"
+                       :parentField="parentField" :form-item="field">
     <table
-      ref="containerTableRef"
-      class="dynamic-table"
-      :style="{
-        border: isEdit ? '1px solid #dfe6ec' : 'none'
+        ref="containerTableRef"
+        class="dynamic-table"
+        :style="{
+        border: isEdit&&isDesign ? '1px solid #dfe6ec' : 'none'
       }"
     >
       <thead class="container-thead">
-        <tr>
-          <th
+      <tr>
+        <th
             v-for="td of parseInt(field.preps.columns || 1)"
             @mouseenter="(evt) => tdOver(evt, td)"
             @mouseleave="(evt) => tdOut(evt, td)"
-          >
-            <div class="td-operator" v-if="currentIndex == td && isEdit">
-              <el-tooltip content="删除列">
-                <star-horse-icon icon-class="delete" cursor="pointer" @click="deleteCol(td)" />
-              </el-tooltip>
-            </div>
-            {{ analysisData(td) }}
-          </th>
-        </tr>
+        >
+          <div class="td-operator" v-if="currentIndex == td && isEdit&&isDesign">
+            <el-tooltip content="删除列">
+              <star-horse-icon icon-class="delete" cursor="pointer" @click="deleteCol(td)"/>
+            </el-tooltip>
+          </div>
+          {{ analysisData(td) }}
+        </th>
+      </tr>
       </thead>
       <tbody>
-        <tr>
-          <template v-for="td of parseInt(field.preps.columns || 1)">
-            <td
+      <tr>
+        <template v-for="td of parseInt(field.preps.columns || 1)">
+          <td
               :style="{ width: 100 / parseInt(field.preps.columns || 1) + '%', 'margin-top': '5px' }"
               class="td-clz"
               :class="{'dragging-area':isDragging}"
               @mouseenter="(evt) => tdOver(evt, td)"
               @mouseleave="(evt) => tdOut(evt, td)"
-            >
-              <draggable
+          >
+            <draggable
                 @add="(evt: Event) => onDragAdd(evt, field.preps.elements[td - 1].items)"
                 class="smain-design"
                 tag="div"
@@ -132,71 +136,72 @@
                 ghostClass="ghost"
                 animation="200"
                 :list="field.preps.elements[td - 1].items"
-              >
-                <template #item="{ element: data }">
-                  <div class="comp-item">
-                    <component
+            >
+              <template #item="{ element: data }">
+                <div class="comp-item">
+                  <component
                       :key="data?.id"
                       :field="data"
+                      :isDesign="isDesign"
                       :formInfo="formInfo"
                       :is="getComponentName(data)"
                       :parentField="field"
                       :formData="formData"
-                    />
-                  </div>
-                </template>
-              </draggable>
-            </td>
-          </template>
-        </tr>
+                  />
+                </div>
+              </template>
+            </draggable>
+          </td>
+        </template>
+      </tr>
       </tbody>
     </table>
   </group-box-container>
 </template>
 <style lang="scss" scoped>
-  .container-thead tr {
-    background: var(--star-horse-shadow);
-    height: 35px;
-    border-radius: 3px;
-    margin-bottom: 5px;
-    border: 1px solid #dfe6ec;
+.container-thead tr {
+  background: var(--star-horse-shadow);
+  height: 35px;
+  border-radius: 3px;
+  margin-bottom: 5px;
+  border: 1px solid #dfe6ec;
+}
+
+th {
+  position: relative;
+  border: 1px solid #dfe6ec;
+
+  .td-operator {
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 9999;
   }
+}
 
-  th {
-    position: relative;
-    border: 1px solid #dfe6ec;
+tr {
+  width: 100%;
+}
 
-    .td-operator {
-      position: absolute;
-      right: 0;
-      top: 0;
-      z-index: 9999;
-    }
+.td-clz {
+  flex-direction: row;
+  padding: 5px;
+  border: 1px solid #dfe6ec;
+  border-top: none;
+  height: 35px;
+}
+
+.comp-item {
+  margin: unset;
+}
+
+.dynamic-table {
+  width: 100%;
+
+  thead {
+    background: var(--star-horse-font-color);
+    height: 30px;
+    font-size: 14px;
   }
-
-  tr {
-    width: 100%;
-  }
-
-  .td-clz {
-    flex-direction: row;
-    padding: 5px;
-    border: 1px solid #dfe6ec;
-    border-top: none;
-    height: 35px;
-  }
-
-  .comp-item {
-    margin: unset;
-  }
-
-  .dynamic-table {
-    width: 100%;
-
-    thead {
-      background: var(--star-horse-font-color);
-      height: 30px;
-      font-size: 14px;
-    }
-  }
+}
 </style>

@@ -5,11 +5,12 @@ import {closeLoad, createCondition, load} from "@/api/star_horse_utils.ts";
 import {postRequest} from "@/api/star_horse_apis.ts";
 import {FieldMapping, OrderByInfo} from "@/components/types/PageFieldInfo";
 import {SearchParams} from "@/components/types/Params";
-import {allAction} from "@/components/formcomp/utils/ItemRelationEventUtils.ts";
+import {allAction, checkIsDisabled} from "@/components/formcomp/utils/ItemRelationEventUtils.ts";
 import StarHorseTableComp from "@/components/comp/StarHorseTableComp.vue";
 
 export default defineComponent({
   components: {StarHorseTableComp},
+  methods: {checkIsDisabled},
   setup(_props, context) {
     const parentField = context.attrs["parentField"];
     // let formData = context.attrs["formData"] as any;
@@ -189,6 +190,7 @@ export default defineComponent({
 <template>
   <starhorse-form-item
       :isDesign="context.attrs['isDesign']"
+      :disabled="context.attrs['disabled']"
       :bareFlag="context.attrs['bareFlag']"
       :formItem="field"
       :parentField="parentField"
@@ -201,7 +203,7 @@ export default defineComponent({
         :collapse-tags="true"
         :collapse-tags-tooltip="true"
         :default-first-option="field.preps['defaultFirstOption'] == 'Y'"
-        :disabled="!context.attrs['formData']['_' + field.preps['name'] + 'Editable'] && field.preps['disabled'] == 'Y'"
+        :disabled="checkIsDisabled(context)"
         :filterable="true"
         :multiple="field.preps['multiple'] == 'Y'"
         :multiple-limit="field.preps['multipleLimit']"

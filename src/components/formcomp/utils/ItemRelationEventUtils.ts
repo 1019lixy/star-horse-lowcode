@@ -181,4 +181,17 @@ const buttonAction = (context: any, code: string) => {
         context.emit("selfFunc", context.attrs["formData"]);
     }
 };
-export {allAction, buttonAction};
+/**
+ * 检查是否禁用
+ * @param context
+ */
+const checkIsDisabled = (context: any) => {
+    const {attrs} = context;
+    const {field} = attrs;
+    const fieldName = field.preps?.name;
+    const isExplicitlyDisabled = attrs.disabled === true || attrs.disabled === "Y";
+    const isImplicitlyDisabled = !attrs.formData[`_${fieldName}Editable`] && field.preps?.disabled === "Y";
+
+    return isExplicitlyDisabled || isImplicitlyDisabled;
+}
+export {allAction, buttonAction, checkIsDisabled};

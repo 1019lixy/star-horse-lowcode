@@ -305,7 +305,7 @@ onMounted(() => {
       :style="{
         height: itemType != 'button' ? '100%' : 'inherit',
         minWidth:isSearch?'200px':'unset',
-        maxWidth:isSearch?'500px':'unset',
+        maxHeight:isSearch?'500px':'unset',
         width: dragWidth ||item.minWidth || 'inherit',
         position: 'relative'
   }"

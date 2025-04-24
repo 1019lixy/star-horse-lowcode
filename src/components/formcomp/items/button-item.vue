@@ -17,6 +17,7 @@
   </star-horse-dialog>
   <starhorse-form-item
       :isDesign="context.attrs['isDesign']"
+      :disabled="context.attrs['disabled']"
       :bareFlag="context.attrs['bareFlag']"
       :form-item="field"
       :parentField="parentField"
@@ -25,7 +26,7 @@
         :autofocus="field?.preps['autofocus'] == 'Y'"
         :bg="field?.preps['bg'] == 'Y'"
         :circle="field?.preps['circle'] == 'Y'"
-        :disabled="!context.attrs['formData']['_' + field.preps['name'] + 'Editable'] && field?.preps['disabled'] == 'Y'"
+        :disabled="checkIsDisabled(context)"
         :link="field?.preps['link'] == 'Y'"
         :loading="field?.preps['loading'] == 'Y'"
         :loading-icon="field?.preps['loadingIcon']"
@@ -47,16 +48,17 @@
   </starhorse-form-item>
 </template>
 <script lang="ts" name="buttonItem">
-import {defineComponent, onMounted, shallowRef,unref} from "vue";
+import {defineComponent, onMounted, shallowRef, unref} from "vue";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
-import {buttonAction} from "@/components/formcomp/utils/ItemRelationEventUtils.ts";
-import {httpRequest, postRequest} from "@/api/star_horse_apis.ts";
+import {buttonAction, checkIsDisabled} from "@/components/formcomp/utils/ItemRelationEventUtils.ts";
+import {httpRequest} from "@/api/star_horse_apis.ts";
 import {operationConfirm, warning} from "@/utils/message.ts";
 import {BtnAction, DynamicParamField} from "@/components/types/BtnAction";
 import {SearchParams} from "@/components/types/Params";
 import {createCondition} from "@/api/star_horse_utils.ts";
 
 export default defineComponent({
+  methods: {checkIsDisabled},
   components: {StarHorseIcon},
   setup(_props, context) {
     const parentField = context.attrs["parentField"];
@@ -73,7 +75,7 @@ export default defineComponent({
       let action: BtnAction = field.preps;
       let formData: any = {};
       if (action?.viewType == "comp") {
-        formData =await btnCompRef.value?.getFormData("请先填写表单数据");
+        formData = await btnCompRef.value?.getFormData("请先填写表单数据");
         if (!formData) {
           return;
         }

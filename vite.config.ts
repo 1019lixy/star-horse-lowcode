@@ -12,6 +12,8 @@ import AutoImport from "unplugin-auto-import/vite";
 //此插件是处理外部依赖 比如cdn引入的js
 import tailwindcss from "@tailwindcss/vite";
 import {visualizer} from "rollup-plugin-visualizer";
+//生产types文件插件
+import dts from 'vite-plugin-dts';
 // https://vitejs.dev/config/
 /**
  * 此配置文件，非必需不要随便做修改，特别是打包相关的参数
@@ -37,7 +39,10 @@ export default defineConfig((mode) => {
                     defineModel: true
                 }
             }),
-
+            dts({
+                insertTypesEntry: true,
+                rollupTypes: false,
+            }),
             AutoImport({
                 imports: ["vue"],
                 resolvers: [ElementPlusResolver()]

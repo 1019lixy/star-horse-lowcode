@@ -1,8 +1,9 @@
 <script lang="ts">
 import {defineComponent, shallowRef} from "vue";
-import {allAction} from "@/components/formcomp/utils/ItemRelationEventUtils.ts";
+import {allAction, checkIsDisabled} from "@/components/formcomp/utils/ItemRelationEventUtils.ts";
 
 export default defineComponent({
+  methods: {checkIsDisabled},
   setup(_props, context) {
     const parentField = context.attrs["parentField"];
     const field = context.attrs["field"] as any;
@@ -25,6 +26,7 @@ export default defineComponent({
 <template>
   <starhorse-form-item
       :isDesign="context.attrs['isDesign']"
+      :disabled="context.attrs['disabled']"
       :bareFlag="context.attrs['bareFlag']"
       :formItem="field"
       :parentField="parentField"

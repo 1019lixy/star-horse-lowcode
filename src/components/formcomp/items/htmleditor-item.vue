@@ -1,6 +1,7 @@
 <template>
   <starhorse-form-item
       :isDesign="context.attrs['isDesign']"
+      :disabled="context.attrs['disabled']"
       :bareFlag="context.attrs['bareFlag']"
       :form-item="field"
       :parentField="parentField"
@@ -25,18 +26,20 @@
   </starhorse-form-item>
 </template>
 <script lang="ts">
-import {defineComponent, getCurrentInstance, shallowRef} from "vue";
+import {defineComponent, shallowRef} from "vue";
 import {QuillEditor} from '@vueup/vue-quill';
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
-import {allAction} from "@/components/formcomp/utils/ItemRelationEventUtils.ts";
+import {allAction, checkIsDisabled} from "@/components/formcomp/utils/ItemRelationEventUtils.ts";
 import {postRequest} from "@/api/star_horse_apis.ts";
 import ImageUploader from 'quill-image-uploader';
+
 export default defineComponent({
   components: {QuillEditor},
   beforeUnmount: () => {
     // const {proxy} = getCurrentInstance();
 
   },
+  methods: {checkIsDisabled},
   setup(_props, context) {
     const parentField = context.attrs["parentField"];
 
@@ -63,7 +66,7 @@ export default defineComponent({
     const handleCreated = (editor: any) => {
       editorRef.value = editor; // 记录 editor 实例，重要！
     };
-    const modules:any = {
+    const modules: any = {
       name: 'imageUploader',
       module: ImageUploader,
       options: {

@@ -17,7 +17,7 @@
         :compUrl="field.preps['dataUrl']"
         ref="dialogInputTableRef"
         :dialogInput="true"
-         height="400px"
+        height="400px"
         :filterCondition="field.preps['filterCondition']"
         :orderBy="field.preps['orderBy']"
         @selectItem="selectItem"
@@ -27,13 +27,14 @@
   </star-horse-dialog>
   <starhorse-form-item
       :isDesign="context.attrs['isDesign']"
+      :disabled="context.attrs['disabled']"
       :bareFlag="context.attrs['bareFlag']"
       :formItem="field"
       :parentField="parentField"
   >
     <el-input
         :clearable="field.preps['clearable'] == 'Y'"
-        :disabled="!context.attrs['formData']['_' + field.preps['name'] + 'Editable'] && field.preps['disabled'] == 'Y'"
+        :disabled="checkIsDisabled(context)"
         :max="field.preps['max']"
         :maxlength="field.preps['maxlength']"
         :min="field.preps['min']"
@@ -56,9 +57,7 @@
             icon="Search"
             @click="showVisible"
             :size="context.attrs.formInfo?.size || field?.preps['size'] || 'default'"
-            :disabled="
-            !context.attrs['formData']['_' + field.preps['name'] + 'Editable'] && field.preps['disabled'] == 'Y'
-          "
+            :disabled="checkIsDisabled(context)"
         />
       </template>
     </el-input>
@@ -70,9 +69,10 @@ import {warning} from "@/utils/message";
 import {FieldMapping} from "@/components/types/PageFieldInfo";
 import {SearchParams} from "@/components/types/Params";
 import {isJson} from "@/api/star_horse_utils.ts";
-import {allAction} from "@/components/formcomp/utils/ItemRelationEventUtils.ts";
+import {allAction, checkIsDisabled} from "@/components/formcomp/utils/ItemRelationEventUtils.ts";
 
 export default defineComponent({
+  methods: {checkIsDisabled},
   setup(_props, context) {
     const parentField = context.attrs["parentField"];
 

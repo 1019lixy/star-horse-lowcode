@@ -2,7 +2,7 @@
   "name": "star-horse-lowcode",
   "private": false,
   "author": "l_1019@163.com",
-  "version": "2.7.14",
+  "version": "2.7.15",
   "type": "module",
   "description": "星马低代码平台",
   "keywords": [
@@ -89,6 +89,7 @@
     "unplugin-auto-import": "^19.1.2",
     "unplugin-vue-components": "^28.4.1",
     "uuid": "^11.1.0",
+    "vite-plugin-dts": "^4.5.3",
     "vite-plugin-progress": "^0.0.7",
     "vite-plugin-svg-icons": "^2.0.1",
     "vue": "^3.5.13",

@@ -5,6 +5,8 @@ import piniaInstance from "@/store/index.ts";
 
 const props = defineProps({
   parentField: {type: String},
+  isDesign: {type: Boolean,default: false},
+  disabled: {type: Object as PropType<Boolean | String>},
   formInfo: {type: Object as PropType<any>},
   formData: {type: Object as PropType<any>},
   field: {type: Object as PropType<any>}
@@ -64,7 +66,9 @@ watch(
 );
 </script>
 <template>
-  <group-box-container class="star-horse-form-container" :parentField="parentField" :form-item="field">
+  <group-box-container class="star-horse-form-container"
+                       :isDesign="isDesign"
+                       :parentField="parentField" :form-item="field">
     <el-collapse v-model="activeTabName" class="collapse-container" :accordion="field.preps['accordion'] == 'Y'">
       <el-collapse-item v-for="adata in field['preps']['elements']" :name="adata.tabName">
         <template #title>
@@ -87,6 +91,7 @@ watch(
                 <component
                     :key="data.id"
                     :field="data"
+                    :isDesign="isDesign"
                     :formInfo="formInfo"
                     :is="getComponentName(data)"
                     :parentField="field"
@@ -111,6 +116,7 @@ watch(
 
 .card-design {
   height: 100%;
+  min-height: 200px;
   overflow-y: auto;
 }
 </style>

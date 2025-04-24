@@ -6,13 +6,17 @@
   let containerTableRef = ref(); // 强制刷新表格
   defineProps({
     parentField: { type: String },
+    isDesign: { type: Boolean },
+    disabled: {type: Object as PropType<Boolean | String>},
     formInfo: { type: Object as PropType<any> },
     formData: { type: Object as PropType<any> },
     field: { type: Object as PropType<any> }
   });
 </script>
 <template>
-  <group-box-container class="star-horse-form-container" :parentField="parentField" :form-item="field">
+  <group-box-container class="star-horse-form-container"
+                       :isDesign="isDesign"
+                       :parentField="parentField" :form-item="field">
     <table ref="containerTableRef" class="dynamic-table">
       <tbody>
         <tr v-for="(row, rowIndex) in field.preps.elements" class="dy-tr">
@@ -21,6 +25,7 @@
               :field="td"
               :formInfo="formInfo"
               :formData="formData"
+              :isDesign="isDesign"
               :isFirstRow="rowIndex == 0"
               :parentField="field"
               :isLastRow="rowIndex == field.preps.elements.length - 1"

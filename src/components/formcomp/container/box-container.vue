@@ -6,6 +6,8 @@ import piniaInstance from "@/store/index.ts";
 
 const props = defineProps({
   parentField: {type: String},
+  isDesign: {type: Boolean,default: false},
+  disabled: {type: Object as PropType<Boolean | String>},
   formInfo: {type: Object as PropType<any>},
   formData: {type: Object as PropType<any>},
   field: {type: Object as PropType<any>}
@@ -59,7 +61,9 @@ const onDragAdd = (evt: Event, dataList: any) => {
 //     })
 </script>
 <template>
-  <group-box-container class="star-horse-form-container" :parentField="parentField" :form-item="boxCompList">
+  <group-box-container class="star-horse-form-container"
+                       :isDesign="isDesign"
+                       :parentField="parentField" :form-item="boxCompList">
     <el-row
         v-for="element in boxCompList.preps.elements"
         :gutter="boxCompList.preps?.gutter || 10"
@@ -91,6 +95,7 @@ const onDragAdd = (evt: Event, dataList: any) => {
                   :key="data.id"
                   :field="data"
                   :formInfo="formInfo"
+                  :isDesign="isDesign"
                   :is="data.itemType + (data.compType === 'container' ? '-container' : '-item')"
                   :parentField="boxCompList"
                   :formData="formData"
@@ -110,6 +115,7 @@ const onDragAdd = (evt: Event, dataList: any) => {
         <template v-for="data in sdata.items">
           <component
               :field="data"
+              :isDesign="isDesign"
               :is="data.itemType + (data.compType === 'container' ? '-container' : '-item')"
               :formData="formData"
               :formInfo="formInfo"

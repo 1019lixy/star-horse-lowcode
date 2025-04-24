@@ -12,6 +12,8 @@ const props = defineProps({
   formInfo: {type: Object as PropType<any>},
   formData: {type: Object as PropType<any>},
   parentComp: {type: Object as PropType<any>},
+  isDesign: {type: Boolean,default: false},
+  disabled: {type: Object as PropType<Boolean | String>},
   field: {type: Object as PropType<any>},
   isFirstRow: {type: Boolean, default: false},
   isLastRow: {type: Boolean, default: false},
@@ -176,6 +178,7 @@ watch(
               :key="data?.id"
               :field="data"
               :formInfo="formInfo"
+              :isDesign="isDesign"
               :is="getComponentName(data)"
               :parentField="parentField"
               :formData="formData"
@@ -183,7 +186,7 @@ watch(
         </div>
       </template>
     </draggable>
-    <div class="table-cell-action" v-if="isEdit && currentSubItemId == field._uuid">
+    <div class="table-cell-action" v-if="isEdit&&isDesign && currentSubItemId == field._uuid">
       <el-dropdown trigger="click" @command="handleTableCellCommand" :size="Config.compSize">
         <star-horse-icon icon-class="menu"/>
         <template #dropdown>

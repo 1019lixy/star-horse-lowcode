@@ -1,6 +1,7 @@
 <template>
   <starhorse-form-item
       :isDesign="context.attrs['isDesign']"
+      :disabled="context.attrs['disabled']"
       :bareFlag="context.attrs['bareFlag']"
       :form-item="field"
       :parentField="parentField"
@@ -11,7 +12,7 @@
         :filterable="field.preps['filterable'] == 'Y'"
         :collapse-tags="field.preps['collapseTags'] == 'Y'"
         :collapse-tags-tooltip="field.preps['collapseTagsTooltip'] == 'Y'"
-        :disabled="!context.attrs['formData']['_' + field.preps['name'] + 'Editable'] && field.preps['disabled'] == 'Y'"
+        :disabled="checkIsDisabled(context)"
         :options="field.preps['values']"
         :placeholder="'请选择' + field.preps['label']"
         :props="{
@@ -39,9 +40,10 @@
 <script lang="ts">
 import {defineComponent, nextTick, onMounted, shallowRef} from "vue";
 import {compDynamicData, isJson} from "@/api/star_horse_utils.ts";
-import {allAction} from "@/components/formcomp/utils/ItemRelationEventUtils.ts";
+import {allAction, checkIsDisabled} from "@/components/formcomp/utils/ItemRelationEventUtils.ts";
 
 export default defineComponent({
+  methods: {checkIsDisabled},
   setup(_props, context) {
     const parentField = context.attrs["parentField"];
 

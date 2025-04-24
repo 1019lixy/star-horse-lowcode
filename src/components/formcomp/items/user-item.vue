@@ -14,13 +14,14 @@
   </star-horse-dialog>
   <starhorse-form-item
       :isDesign="context.attrs['isDesign']"
+      :disabled="context.attrs['disabled']"
       :bareFlag="context.attrs['bareFlag']"
       :form-item="field"
       :parentField="parentField"
   >
     <el-mention
         :clearable="field.preps['clearable'] == 'Y'"
-        :disabled="!context.attrs['formData']['_' + field.preps['name'] + 'Editable'] && field.preps['disabled'] == 'Y'"
+        :disabled="checkIsDisabled(context)"
         :max="field.preps['max']"
         :maxlength="field.preps['maxlength']"
         :min="field.preps['min']"
@@ -48,8 +49,10 @@
 import {defineComponent, nextTick, shallowRef} from "vue";
 import {FieldMapping} from "@/components/types/PageFieldInfo";
 import {warning} from "@/utils/message.ts";
-import {allAction} from "@/components/formcomp/utils/ItemRelationEventUtils.ts";
+import {allAction, checkIsDisabled} from "@/components/formcomp/utils/ItemRelationEventUtils.ts";
+
 export default defineComponent({
+  methods: {checkIsDisabled},
   setup(_props, context) {
     const parentField = context.attrs["parentField"];
     const field = context.attrs["field"] as any;

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ModelRef, nextTick, onBeforeUnmount, onMounted, ref} from "vue";
+import {ModelRef, onBeforeUnmount, onMounted, ref} from "vue";
 import JsonEditor from 'vue3-ts-jsoneditor';
 
 const props = defineProps({
@@ -18,103 +18,31 @@ const props = defineProps({
     default: "zh-CN"
   }
 });
-const emits = defineEmits([
-  "textSelectionChange",
-  "selectionChange",
-  "colorPicker",
-  "focus",
-  "blur",
-  "validationError"
-]);
+
 const json: ModelRef<any> = defineModel("modelValue");
 // const jsonEditorRef = ref();
 
 const queryLanguages = ref<any>(['javascript' | 'lodash' | 'jmespath' | 'jsonquery' | 'jsonpath']);
 
-let expandedModes = ref<Array<string>>(["tree", "view", "form"]);
 // 全屏处理
-let isFullScreen = ref<boolean>(false);
-let hasLogo = ref<boolean>(true);
-let showFullScreen = ref<boolean>(false);
 let editor = ref(null);
-const toggleFullScreen = async () => {
-  isFullScreen.value = !isFullScreen.value;
-  await nextTick(() => {
-    const event = new Event("resize");
-    window.dispatchEvent(event);
-  });
-};
-const expandAll = () => {
-  if (expandedModes.value.includes(editor.value?.getMode())) {
-    editor.value?.expandAll();
-  }
-};
+
 const setEditorContent = (value) => {
-  editor.value?.set(value);
+
+};
+const onCollapse = () => {
+  editor.value.$collapseAll();
+};
+
+const onExpand = () => {
+  editor.value.$expandAll();
 };
 const init = () => {
-  const onChange = () => {
-    const setJson = (data) => {
-      json.value = data;
-    };
-
-    // 兼容一次性删除所有内容
-    const text = editor.value?.getText();
-    if (!text) {
-      setJson("");
-      return;
-    }
-    try {
-      const json = editor.value.get();
-      setJson(json);
-    } catch (error) {
-    }
-  };
-  const onModeChange = () => {
-    expandAll();
-  };
-  const onTextSelectionChange = (start, end, text) => {
-    emits("textSelectionChange", editor.value, start, end, text);
-  };
-  const onSelectionChange = (start, end) => {
-    emits("selectionChange", editor.value, start, end);
-  };
-  const onColorPicker = (parent, color, onChange) => {
-    emits("colorPicker", editor.value, parent, color, onChange);
-  };
-  const onFocus = ({target}) => {
-    emits("focus", editor.value, target);
-  };
-  const onBlur = ({target}) => {
-    emits("blur", editor.value, target);
-  };
-  const onValidationError = (errors) => {
-    emits("validationError", editor.value, errors);
-  };
-  const finalOptions: any = {
-    ...props.options,
-    indentation: 2,
-    language: props.language,
-    mode: props.currentMode,
-    modes: props.modeList,
-    onChange,
-    onModeChange,
-    onTextSelectionChange,
-    onSelectionChange,
-    onColorPicker,
-    onFocus,
-    onBlur,
-    onValidationError
-  };
-  // editor.value = createJSONEditor({
-  //   target: jsonEditorRef.value,
-  //   props: finalOptions
-  // });// markRaw(new JSONEditor(jsonEditorRef.value, finalOptions));
 };
 onMounted(() => {
   init();
   setEditorContent(json.value);
-  $(".jsoneditor-poweredBy").remove();
+  // $(".jsoneditor-poweredBy").remove();
 });
 onBeforeUnmount(() => {
   editor.value?.destroy();
@@ -129,6 +57,7 @@ defineExpose({
   <json-editor ref="editor"
                mode="text"
                v-model:text="json"
+
                :queryLanguagesIds="queryLanguages"
                class="json-editor"/>
 </template>

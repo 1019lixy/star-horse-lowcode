@@ -6,6 +6,8 @@ import {uuid} from "@/api/system.ts";
 
 const props = defineProps({
   parentField: {type: String},
+  isDesign: {type: Boolean,default: false},
+  disabled: {type: Object as PropType<Boolean | String>},
   formInfo: {type: Object as PropType<any>},
   formData: {type: Object as PropType<any>},
   field: {type: Object as PropType<any>}
@@ -62,7 +64,9 @@ onMounted(() => {
 });
 </script>
 <template>
-  <group-box-container class="star-horse-form-container" :parentField="parentField" :form-item="field">
+  <group-box-container class="star-horse-form-container"
+                       :isDesign="isDesign"
+                       :parentField="parentField" :form-item="field">
     <el-card class="card-container" :shadow="field.preps['shadow'] == 'Y'" v-for="adata in field['preps']['elements']">
       <template #header>
         <div class="card-header flex items-center justify-between ">
@@ -86,6 +90,7 @@ onMounted(() => {
                   <component
                       :key="header.id"
                       :field="header"
+                      :isDesign="isDesign"
                       :formInfo="formInfo"
                       :is="getComponentName(header)"
                       :parentField="field"
@@ -114,6 +119,7 @@ onMounted(() => {
               <component
                   :key="item.id"
                   :field="item"
+                  :isDesign="isDesign"
                   :formInfo="formInfo"
                   :is="getComponentName(item)"
                   :parentField="field"
@@ -129,6 +135,7 @@ onMounted(() => {
 <style lang="scss" scoped>
 .card-design {
   height: 100%;
+  min-height: 200px;
   overflow-y: auto;
 }
 </style>
