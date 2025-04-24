@@ -6,7 +6,7 @@
   let containerTableRef = ref(); // 强制刷新表格
   defineProps({
     parentField: { type: String },
-    isDesign: { type: Boolean },
+    isDesign: { type: Boolean,default: false },
     disabled: {type: Object as PropType<Boolean | String>},
     formInfo: { type: Object as PropType<any> },
     formData: { type: Object as PropType<any> },
@@ -16,6 +16,7 @@
 <template>
   <group-box-container class="star-horse-form-container"
                        :isDesign="isDesign"
+                       :disabled="disabled"
                        :parentField="parentField" :form-item="field">
     <table ref="containerTableRef" class="dynamic-table">
       <tbody>

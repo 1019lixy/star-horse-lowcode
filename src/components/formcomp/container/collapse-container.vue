@@ -68,6 +68,7 @@ watch(
 <template>
   <group-box-container class="star-horse-form-container"
                        :isDesign="isDesign"
+                       :disabled="disabled"
                        :parentField="parentField" :form-item="field">
     <el-collapse v-model="activeTabName" class="collapse-container" :accordion="field.preps['accordion'] == 'Y'">
       <el-collapse-item v-for="adata in field['preps']['elements']" :name="adata.tabName">

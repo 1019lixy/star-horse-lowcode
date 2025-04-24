@@ -51,18 +51,11 @@ const onDragAdd = (evt: Event, dataList: any) => {
   }
 };
 
-// watch(() => props.field,
-//     () => {
-//       update!.proxy!.$forceUpdate();
-//       console.log("forceupdate")
-//     }, {
-//       immediate: false,
-//       deep: true
-//     })
 </script>
 <template>
   <group-box-container class="star-horse-form-container"
                        :isDesign="isDesign"
+                       :disabled="disabled"
                        :parentField="parentField" :form-item="boxCompList">
     <el-row
         v-for="element in boxCompList.preps.elements"

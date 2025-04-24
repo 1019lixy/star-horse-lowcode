@@ -173,7 +173,7 @@ watch(
         :list="field.items"
     >
       <template #item="{ element: data }">
-        <div :class="{ 'comp-item': data?.preps['headerFlag'] != 'Y', 'bare-item': data?.preps['headerFlag'] == 'Y' }">
+        <div class="comp-item">
           <component
               :key="data?.id"
               :field="data"

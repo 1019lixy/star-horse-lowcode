@@ -66,6 +66,7 @@ onMounted(() => {
 <template>
   <group-box-container class="star-horse-form-container"
                        :isDesign="isDesign"
+                       :disabled="disabled"
                        :parentField="parentField" :form-item="field">
     <el-card class="card-container" :shadow="field.preps['shadow'] == 'Y'" v-for="adata in field['preps']['elements']">
       <template #header>

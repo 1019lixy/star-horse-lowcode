@@ -77,6 +77,7 @@ const addTab = () => {
 <template>
   <group-box-container class="star-horse-form-container"
                        :isDesign="isDesign"
+                       :disabled="disabled"
                        :parentField="parentField" :form-item="field">
     <el-tabs
         class="tab-container"

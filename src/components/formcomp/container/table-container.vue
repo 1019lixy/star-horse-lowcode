@@ -9,7 +9,7 @@ import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
 let containerTableRef = ref(); // 强制刷新表格
 const props = defineProps({
   parentField: {type: String},
-  isDesign: {type: Boolean,default: false},
+  isDesign: {type: Boolean, default: false},
   disabled: {type: Object as PropType<Boolean | String>},
   formInfo: {type: Object as PropType<any>},
   formData: {type: Object as PropType<any>},
@@ -94,6 +94,7 @@ const deleteCol = (index: number) => {
 <template>
   <group-box-container class="star-horse-form-container"
                        :isDesign="isDesign"
+                       :disabled="disabled"
                        :parentField="parentField" :form-item="field">
     <table
         ref="containerTableRef"
