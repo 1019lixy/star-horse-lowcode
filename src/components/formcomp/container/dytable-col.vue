@@ -173,7 +173,7 @@ watch(
         :list="field.items"
     >
       <template #item="{ element: data }">
-        <div class="comp-item">
+        <div :class="{ 'comp-item': data?.preps['headerFlag'] != 'Y', 'bare-item': data?.preps['headerFlag'] == 'Y' }">
           <component
               :key="data?.id"
               :field="data"
@@ -244,7 +244,7 @@ watch(
   border-radius: 3px;
   height: 100%;
   display: flex;
-  pointer-events: none; // 禁止内部元素拦截事件
+  //pointer-events: none; // 禁止内部元素拦截事件
   flex-direction: column;
   vertical-align: middle;
   justify-content: center;

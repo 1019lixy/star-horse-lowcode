@@ -184,4 +184,6 @@ onMounted(() => {
 3. 2025-04-15 修改动态表单comp组件名称错误问题 ,
               优化编辑列表排除divider,button和usercomp组件显示,
               修复usercomp组件没有被纳入formVisible 控制范围
+4. 2025-04-24 修复表单容器全局禁止不生效问题
+              修复表单组件dytable选择td不生效问题
 
