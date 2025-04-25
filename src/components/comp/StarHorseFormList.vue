@@ -406,7 +406,7 @@ onMounted(async () => {
 
 :deep(.el-form-item) {
   font-size: 11px;
-  margin-bottom: 1px;
+ /* margin-bottom: 1px;*/
 }
 
 :deep(.el-input__inner),

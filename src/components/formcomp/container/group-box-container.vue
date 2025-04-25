@@ -1,8 +1,8 @@
 <script setup lang="ts" name="GroupBoxContainer">
-import {operationConfirm} from '@/utils/message';
+import {operationConfirm, warning} from '@/utils/message';
 import piniaInstance from '@/store/index.ts';
 import {useDesignFormStore} from '@/store/DesignForm.ts';
-import {computed, ref,PropType} from 'vue';
+import {computed, ref, PropType} from 'vue';
 import {colDataInfo} from '@/components/formcomp/container/dytableUtils.ts';
 import {dynamicFormContextMenuData} from '@/plugins/AblesPlugin.ts';
 import FieldList from '@/components/formcomp/utils/FieldList.vue';
@@ -55,7 +55,7 @@ const removeData = () => {
   });
 };
 const containerContextMenuRef = ref();
-const containerContextMenu = (evt: MouseEvent) => {
+const containerContextMenu = (evt: MouseEvent | any) => {
   evt.stopPropagation();
   evt.preventDefault();
   console.log('容器触发。。。');
@@ -156,6 +156,9 @@ const tableOperation = (actonName: string, _preps: any) => {
       }
       row.columns.push(col);
     }
+  } else if (actonName == 'copy') {
+    //拷贝容器
+    warning("功能开发中")
   }
 };
 </script>
@@ -220,13 +223,13 @@ const tableOperation = (actonName: string, _preps: any) => {
           />
         </el-tooltip>
       </template>
-      <!--      <el-tooltip content="复制容器">
-              <star-horse-icon
-                  @click.stop="tableOperation('copy',formItem?.preps)"
-                  icon-class="copy"
-                  style="color: var(&#45;&#45;star-horse-white)"
-              />
-            </el-tooltip>-->
+      <el-tooltip content="复制容器">
+        <star-horse-icon
+            @click.stop="tableOperation('copy',formItem?.preps)"
+            icon-class="copy"
+            style="color: var(--star-horse-white)"
+        />
+      </el-tooltip>
     </div>
     <Teleport to="body">
       <ContentMenu
@@ -296,7 +299,6 @@ const tableOperation = (actonName: string, _preps: any) => {
 
 .el-form-item {
   position: relative;
-
   :deep(.el-form-item__label) {
     white-space: nowrap;
     text-overflow: ellipsis;

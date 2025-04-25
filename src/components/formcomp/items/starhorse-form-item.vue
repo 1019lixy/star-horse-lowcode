@@ -13,9 +13,9 @@ import {
 } from '@/plugins/AblesPlugin.ts';
 
 const props = defineProps({
-  parentField: {type: Object},
-  parentId: {type: Object},
-  formItem: {type: Object, required: true},
+  parentField: {type: Object as PropType<any>},
+  parentId: {type: Object as PropType<any>},
+  formItem: {type: Object as PropType<any>, required: true},
   isDesign: {type: Boolean, default: false},
   disabled: {type: Object as PropType<Boolean | String>},
   //是否需要css 修饰
@@ -30,13 +30,13 @@ let componentVisible = computed(() => {
   return designForm.componentVisible && currentItemId.value == props.formItem?.preps.id;
 });
 const selectParentContainer = () => {
-  if (!isEdit.value) {
+  if (!isEdit.value || props.disabled === true || props.disabled == 'Y') {
     return;
   }
   designForm.selectItem(props.parentField, '', 'container');
 };
 const selectData = (data: any) => {
-  if (!isEdit.value) {
+  if (!isEdit.value || props.disabled === true || props.disabled == 'Y') {
     return;
   }
   designForm.selectItem(props.formItem, data.itemType, getParentComp(props.parentField));
@@ -61,7 +61,7 @@ const changeItem = (item: any) => {
   selectData(props.formItem);
 };
 const itemContextMenuRef = ref();
-const itemContextMenu = (evt: MouseEvent) => {
+const itemContextMenu = (evt: MouseEvent | any) => {
   evt.stopPropagation();
   evt.preventDefault();
   evt.props = props;
@@ -93,9 +93,9 @@ onMounted(() => {
   <div v-else class="form-item-operation">
     <div
         :class="{
-        'design-star-horse': isEdit,
+        'design-star-horse': isEdit&&!disabled,
         'field-item': true,
-        'active-item': currentItemId == formItem?.preps.id && isEdit
+        'active-item': currentItemId == formItem?.preps.id && isEdit&&!disabled
       }"
         v-if="isDesign"
         @click="selectData(formItem)"
@@ -106,6 +106,9 @@ onMounted(() => {
           v-if="
           parentField?.itemType != 'table' && formItem.preps?.itemType != 'divider' && formItem?.preps['headerFlag'] != 'Y'
         "
+          :style="{
+          marginBottom:isEdit&&!disabled?'1px':'18px',
+          }"
           :label="formItem?.preps['hideLabel'] == 'Y' ? '' : formItem?.preps['label']"
           :prop="formItem?.preps['name']"
           :required="formItem?.preps['required'] == 'Y'"
@@ -123,7 +126,7 @@ onMounted(() => {
         <help :message="formItem.preps?.helpMsg" v-if="formItem.preps?.helpMsg"/>
         <slot></slot>
       </div>
-      <div class="field-action" v-if="isEdit && currentItemId == formItem?.preps.id">
+      <div class="field-action" v-if="isEdit&&!disabled && currentItemId == formItem?.preps.id">
         <el-tooltip content="选择父容器" v-if="parentField?.itemType">
           <star-horse-icon
               @click.stop="selectParentContainer()"
@@ -220,9 +223,9 @@ onMounted(() => {
     height: 100%;
   }
 
-  .el-form-item {
-    margin-bottom: 1px;
-  }
+  /*  .el-form-item {
+      margin-bottom: 1px;
+    }*/
 
   .field-action {
     position: absolute;

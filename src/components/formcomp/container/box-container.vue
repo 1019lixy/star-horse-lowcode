@@ -114,8 +114,7 @@ const onDragAdd = (evt: Event, dataList: any) => {
               :is="data.itemType + (data.compType === 'container' ? '-container' : '-item')"
               :formData="formData"
               :formInfo="formInfo"
-          >
-          </component>
+          />
         </template>
       </el-col>
     </el-row>

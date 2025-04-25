@@ -7,7 +7,7 @@ import {closeLoad, createCondition, deleteByIds, isJson, load, loadData} from '@
 import {BtnHideCondition, SearchParams} from '@/components/types/Params';
 import Sortable from 'sortablejs';
 import {Sort} from '@element-plus/icons-vue';
-import {DialogProps} from '../types/DialogProps';
+import {DialogProps} from '@/components/types/DialogProps';
 import {error, warning} from '@/utils/message';
 import {ExpandTable, FieldInfo, OrderByInfo, PageFieldInfo, UserFuncInfo} from '@/components/types/PageFieldInfo';
 import {useDynamicFormStore} from '@/store/DynamicForm.ts';
@@ -22,6 +22,7 @@ import {removeEmptyCondition} from '@/api/system.ts';
 import {Config} from '@/api/settings.ts';
 import Tablebtn from '@/components/comp/items/tablebtn.vue';
 import Help from '@/components/help.vue';
+import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 
 const dynamicForm = useDynamicFormStore(piniaInstance);
 const props = defineProps({
@@ -1032,18 +1033,20 @@ defineExpose({
         </el-space>
       </el-scrollbar>
     </div>
-    <el-pagination
-        v-if="showPageBar"
-        :total="pageInfo.totalData"
-        @current-change="pageChangeClick"
-        @size-change="pageSizeClick"
-        :size="compSize"
-        :page-sizes="[20, 50, 100,200,300, 400]"
-        layout="total, sizes, prev, pager, next, jumper"
-        v-model:currentPage="pageInfo.currentPage"
-        v-model:page-size="pageInfo.pageSize"
-        v-model:pageCount="pageInfo.totalPage"
-    />
+    <el-config-provider :locale="zhCn">
+      <el-pagination
+          v-if="showPageBar"
+          :total="pageInfo.totalData"
+          @current-change="pageChangeClick"
+          @size-change="pageSizeClick"
+          :size="compSize"
+          :page-sizes="[20, 50, 100,200,300, 400]"
+          layout="total, sizes, prev, pager, next, jumper"
+          v-model:currentPage="pageInfo.currentPage"
+          v-model:page-size="pageInfo.pageSize"
+          v-model:pageCount="pageInfo.totalPage"
+      />
+    </el-config-provider>
   </div>
 </template>
 <style lang="scss" scoped>
