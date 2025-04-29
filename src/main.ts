@@ -1,6 +1,7 @@
 import 'element-plus/theme-chalk/index.css';
 import '@/assets/css/index.scss';
 import '@/assets/css/flow.scss';
+import '@/assets/icons.css';
 import 'tailwindcss/index.css';
 import userComponent from '@/components/comp/selfcomp';
 import userContainerComponent from '@/components/comp/items/callitem';
