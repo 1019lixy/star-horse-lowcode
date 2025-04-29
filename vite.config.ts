@@ -5,7 +5,6 @@ import progress from 'vite-plugin-progress';
 import vueJsx from '@vitejs/plugin-vue-jsx';
 import inject from '@rollup/plugin-inject';
 import {resolve} from 'path';
-import {createSvgIconsPlugin} from 'vite-plugin-svg-icons';
 import Components from 'unplugin-vue-components/vite';
 import {ElementPlusResolver} from 'unplugin-vue-components/resolvers';
 import AutoImport from 'unplugin-auto-import/vite';
@@ -42,6 +41,7 @@ export default defineConfig((mode) => {
             dts({
                 insertTypesEntry: true,
                 rollupTypes: false,
+                exclude:["**/*.svg"]
             }),
             AutoImport({
                 imports: ['vue'],
@@ -60,20 +60,6 @@ export default defineConfig((mode) => {
                 jQuery: 'jquery',
                 'windows.jQuery': 'jquery',
                 'windows.$': 'jquery'
-            }),
-            createSvgIconsPlugin({
-                iconDirs: [resolve(process.cwd(), 'src/icons'),
-                    resolve(process.cwd(), 'src/assets/icons/svg')],
-                symbolId: 'icon-[dir]-[name]',
-                svgoOptions: {
-                    plugins: [
-                        {name: 'removeTitle'}, // 删除<title>标签
-                        {name: 'removeDesc'}, // 删除<desc>标签
-                        {name: 'removeAttrs', params: {attrs: ['fill', 'stroke', 'class']}}, // 删除指定属性
-                        {name: 'collapseGroups'}, // 合并重复分组
-                        {name: 'convertPathData'} // 优化路径数据
-                    ]
-                }
             }),
             visualizer({
                 open: false, // 构建完成后自动打开分析页面
@@ -99,9 +85,9 @@ export default defineConfig((mode) => {
         build: {
             //  告诉打包工具 "vue-demi" 也是外部依赖项
             rollupOptions: {
-                external: ['vue', 'pinia', 'core-js', 'element-plus'],
+                external: ['vue', 'pinia', 'core-js', 'element-plus' ],
                 output: {
-                    exports:'named',
+                    exports: 'named',
                     assetFileNames: 'assets/[name][extname]', // 修正资源输出路径
                     // 禁用代码分割
                     inlineDynamicImports: true,

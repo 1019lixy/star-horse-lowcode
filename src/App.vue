@@ -1,26 +1,10 @@
 <template>
-  <el-pagination
-      :page-size="20"
-      :pager-count="11"
-      layout="prev, pager, next"
-      :total="1000"
-  />
-  <el-pagination
-      v-model:current-page="currentPage4"
-      v-model:page-size="pageSize4"
-      :page-sizes="[100, 200, 300, 400]"
-      :disabled="disabled"
-      :background="background"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="400"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-  />
-<StarHorseJsonEditor :modelValue="val"/>
+ <star-horse-icon icon-class="add" />
 </template>
 <script lang="ts" setup>
 import {onMounted, ref} from 'vue';
 import StarHorseJsonEditor from '@/components/comp/StarHorseJsonEditor.vue';
+import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
 const val=ref<string>('{}');
 const currentPage4 = ref(4);
 

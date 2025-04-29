@@ -12,9 +12,9 @@
     color: { type: String, default: 'var(--star-horse-style)' },
     cursor: { type: String, default: 'default' }
   });
-  const iconName = computed(() => `#icon-${props.iconClass}`);
+  const iconName = computed(() => `sh-${props.iconClass}`);
   const svgClass = computed(() => {
-    let cls = props.border ? 'svg-icon icon-border' : props.boxShow ? 'svg-icon icon-cls' : 'svg-icon';
+    let cls = props.border ? 'sh_icon svg-icon icon-border' : props.boxShow ? 'sh_icon svg-icon icon-cls' : 'sh_icon svg-icon';
     if (props.className) {
       return cls + props.className;
     } else {
@@ -28,8 +28,9 @@
     width: v-bind(size);
     height: v-bind(size);
     color: v-bind(color);
+    font-size: v-bind(size);
     margin-left: 0.35em;
-    margin-right: 0.35em;
+    /*margin-right: 0.35em;*/
     vertical-align: -0.15em;
     fill: currentColor;
     overflow: hidden;
@@ -50,8 +51,6 @@
   }
 </style>
 <template>
-  <svg aria-hidden="false" :class="svgClass">
-    <use :xlink:href="iconName"></use>
-    <title v-if="!!title">{{ title }}</title>
-  </svg>
+  <i aria-hidden="false" :class="[svgClass,iconName]" :title="title">
+  </i>
 </template>

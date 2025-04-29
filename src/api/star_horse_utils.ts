@@ -438,7 +438,7 @@ export function loadElementPlusIcon() {
  * 自定义的svg图标
  */
 export function loadSvgIcons() {
-    const items = import.meta.glob('@/icons/*.svg');
+    const items = import.meta.glob('/src/icons/*.svg');
     const menuIconList = [];
     for (const item of Object.entries(items)) {
         const key = item[0];
