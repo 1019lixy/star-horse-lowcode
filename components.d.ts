@@ -47,6 +47,7 @@ declare module 'vue' {
     ElAnchorLink: typeof import('element-plus/es')['ElAnchorLink']
     ElAutocomplete: typeof import('element-plus/es')['ElAutocomplete']
     ElAvatar: typeof import('element-plus/es')['ElAvatar']
+    ElBadge: typeof import('element-plus/es')['ElBadge']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCard: typeof import('element-plus/es')['ElCard']
     ElCascader: typeof import('element-plus/es')['ElCascader']
