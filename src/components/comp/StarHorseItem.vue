@@ -18,7 +18,7 @@ const props = defineProps({
   primaryKey: {type: [String, Object] as PropType<string | any>},
   // 数据索引
   dataIndex: {type: Number, default: -1},
-  bareFlag: {type: Object as PropType<Boolean|String>, default: false},
+  bareFlag: {type: Object as PropType<Boolean | String>, default: false},
   batchName: {type: String, default: ''},
   compSize: {type: String, default: Config.compSize},
   isSearch: {type: Boolean, default: false}, //是否查询数据
@@ -31,7 +31,7 @@ let userOperation = useSelfOperationStore(piniaInstance);
 const dataForm: ModelRef<any> = defineModel('dataForm');
 const itemType = ref<string>('input');
 const emit = defineEmits(['dataSearch', 'focus', 'blur']);
-const formFields: any = inject('formFields',{});
+const formFields: any = inject('formFields', {});
 const field = ref<any>({
   preps: {}
 });
@@ -372,8 +372,10 @@ onMounted(() => {
 
 .bare-comp {
   flex: 1;
+  display: flex;
+  align-items: center;
   width: 100%;
-  margin-right: 5px;
+  margin: 5px;
 }
 
 .brother-node {

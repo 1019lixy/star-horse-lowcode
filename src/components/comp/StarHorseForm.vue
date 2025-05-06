@@ -396,7 +396,7 @@ defineExpose({
         :rules="rules"
         :scroll-to-error="true"
         :scroll-into-view-options="true"
-        :inline-message="true"
+        :inline-message="false"
         :status-icon="true"
         :label-position="labelPosition"
         require-asterisk-position="right"

@@ -1,36 +1,74 @@
 <template>
- <star-horse-icon icon-class="add" />
+  <star-horse-form :fieldList="formField"/>
 </template>
 <script lang="ts" setup>
-import {onMounted, ref} from 'vue';
-import StarHorseJsonEditor from '@/components/comp/StarHorseJsonEditor.vue';
-import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
-const val=ref<string>('{}');
-const currentPage4 = ref(4);
+import StarHorseForm from "@/components/comp/StarHorseForm.vue";
+import {reactive} from "vue";
+import {PageFieldInfo} from "@/components/types";
 
-const pageSize4 = ref(100);
-const size = ref<string>('default');
-const background = ref(false);
-const disabled = ref(false);
+const formField = reactive<PageFieldInfo>({
+  fieldList: [{
+    dytableList: [
+      [{
 
-const handleSizeChange = (val: number) => {
-  console.log(`${val} items per page`);
-};
-const handleCurrentChange = (val: number) => {
-  console.log(`current page: ${val}`);
-};
-const closeAction = () => {
-  //关闭浏览器清空数据
-  window.onbeforeunload = async (evt) => {
-    evt.preventDefault();
-    // userInfoStore.logout();
-    // await userLogout(userInfo || {});
-  };
-};
-onMounted(() => {
-  closeAction();
+        fieldName: "txt1",
+        formVisible: true,
+        type: "text",
+        preps: {
+          textContent: "文本1",
+          labelFlag: "Y"
+        }
+      }, {
+
+        fieldName: "txt2",
+        type: "text",
+        formVisible: true,
+        preps: {
+          textContent: "文本2",
+          colspan: 2,
+          labelFlag: "Y"
+        }
+
+      }],
+      [{
+        label: "名字1",
+        fieldName: "name1",
+        required:true,
+        formVisible: true,
+        preps:{
+        }
+      }, {
+        label: "名字2",
+        fieldName: "name2",
+        required:true,
+        formVisible: true,
+        preps: {
+          colspan: 2,
+        }
+
+      }],
+      [{
+        label: "名字3",
+        fieldName: "name3",
+        formVisible: true,
+        preps:{
+        }
+      }, {
+        label: "名字4",
+        fieldName: "name4",
+        formVisible: true,
+        preps:{
+        }
+      }, {
+        label: "名字5",
+        fieldName: "name5",
+        formVisible: true,
+        preps:{
+        }
+      }]
+    ]
+  }]
 });
-
 </script>
 <style lang="scss">
 #app {

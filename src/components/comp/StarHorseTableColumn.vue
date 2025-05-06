@@ -6,7 +6,7 @@ import {closeLoad, commonParseCodeToName} from '@/api/star_horse_utils.ts';
 import {error, success, warning} from '@/utils/message';
 import {Config} from '@/api/settings.ts';
 import {createComponent} from '@/api/system.ts';
-import {createDatetime} from "@/api/date_utils.ts";
+import {createDatetime, dateTypes, parseDateByType} from "@/api/date_utils.ts";
 
 const props = defineProps({
   compUrl: {type: Object},
@@ -86,8 +86,8 @@ const currentDataFormat = (scope: any) => {
   let val: string = scope.row[name];
   //下拉数据,checkbox,radio切换为对应的名称
   let fname: string = '';
-  if (item.type == "date" || item.type == "datetime") {
-    return createDatetime(val, item.item == "datetime")
+  if (dateTypes.includes(item.type)) {
+    return parseDateByType(val, item.type)
   }
   if (item.type == 'select' || item.type == 'checkbox' || item.type == 'radio') {
     fname = item.preps?.values?.find((temp: any) => String(temp.value) == val)?.name;

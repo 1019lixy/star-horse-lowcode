@@ -1,4 +1,15 @@
 /**
+ * 日期类型
+ * @type {string[]}
+ */
+export const dateTypes = [
+    'year', 'years', 'month', 'months',
+    'date', 'dates', 'datetime', 'week',
+    'datetimerange', 'daterange', 'monthrange',
+    'yearrange'
+];
+
+/**
  * 创建日期
  * @param val
  * @returns {string}
@@ -85,13 +96,86 @@ export function dateParse(date: Date, needTime: boolean = true, split: string = 
  * @param needSecond
  * @param split
  */
-export function createDatetime(val: any,isDateTime: boolean = true, needSecond: boolean = false,split: string = '-') {
+export function createDatetime(val: any, isDateTime: boolean = true, needSecond: boolean = false, split: string = '-') {
     if (!val || val == 'undefined' || val == '-') {
         return '--';
     }
     try {
         const date = new Date(val);
         return dateParse(date, isDateTime, split, needSecond);
+    } catch (e) {
+        return val;
+    }
+
+}
+
+// 新增周数计算函数
+function getWeek(date: Date) {
+    const target = new Date(date.valueOf());
+    const dayNr = (date.getDay() + 6) % 7;
+    target.setDate(target.getDate() - dayNr + 3);
+    const firstThursday = target.valueOf();
+    target.setMonth(0, 1);
+    if (target.getDay() !== 4) {
+        target.setMonth(0, 1 + ((4 - target.getDay()) + 7) % 7);
+    }
+    return 1 + Math.ceil((firstThursday - target) / 604800000);
+}
+
+/**
+ * 创建年月日时分秒
+ * @param val
+ * @param type
+ * @param needSecond
+ * @param split
+ */
+export function parseDateByType(val: any, type: string, needSecond: boolean = false, split: string = '-') {
+    if (!val || val == 'undefined' || val == '-') {
+        return '--';
+    }
+    try {
+        // 处理日期范围数组
+        if (Array.isArray(val) && type.includes('range')) {
+            if (v instanceof Date) return v;
+            if (typeof v === 'string' && /^\d+$/.test(v)) return Number(v);
+            return v;
+            const formatStart = parseDateByType(start, type.replace('range', ''), needSecond, split);
+            const formatEnd = parseDateByType(end, type.replace('range', ''), needSecond, split);
+            return `${formatStart} 至 ${formatEnd}`;
+        }
+        // 统一转换日期对象
+        let date = val;
+        if (!(val instanceof Date)) {
+            if (typeof val === 'string' && /^\d+$/.test(val)) {
+                date = new Date(Number(val));
+            } else {
+                date = new Date(val);
+            }
+        }
+        // 根据不同类型设置不同格式
+        switch (type) {
+            case 'year':
+            case 'years':
+                return date.getFullYear().toString(); // 返回纯年份
+            case 'month':
+            case 'months':
+                return date.getFullYear() + split + (date.getMonth() + 1).toString().padStart(2, '0'); // 年月
+            case 'date':
+            case 'dates':
+                return dateParse(date, false, split); // 年月日
+            case 'datetime':
+                return dateParse(date, true, split, needSecond); // 日期+时间
+            case 'week':
+                return `${date.getFullYear()}年第${getWeek(date)}周`; // 年份和周数
+            case 'datetimerange':
+                return dateParse(date, true, split, needSecond);  // 时间范围返回完整时间
+            case 'daterange':
+            case 'monthrange':
+            case 'yearrange':
+                return dateParse(date, false, split);  // 日期范围返回基础日期
+            default:
+                return dateParse(date, type.includes('time'), split, needSecond);
+        }
     } catch (e) {
         return val;
     }

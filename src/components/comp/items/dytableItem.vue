@@ -1,96 +1,125 @@
 <script setup lang="ts">
-  import { onMounted, PropType } from 'vue';
-  import { ApiUrls } from '@/components/types/ApiUrls';
-  import { PageFieldInfo } from '@/components/types/PageFieldInfo';
-  import { ModelRef } from 'vue';
-  import {loadProp, validMsg} from '@/api/form_utils.ts';
-  import { Config } from '@/api/settings.ts';
+import {onMounted, PropType} from 'vue';
+import {ApiUrls} from '@/components/types/ApiUrls';
+import {PageFieldInfo} from '@/components/types/PageFieldInfo';
+import {ModelRef} from 'vue';
+import {loadProp, validMsg} from '@/api/form_utils.ts';
+import {Config} from '@/api/settings.ts';
 
-  defineProps({
-    compUrl: { type: Object as PropType<ApiUrls> },
-    item: { type: Object as PropType<PageFieldInfo|any>, required: true },
-    objectName: { type: String },
-    // 数据索引
-    dataIndex: {type: Number, default: -1},
-    // 父节点名称
-    propPrefix: { type: String,default:'' },
-    parentPreps: { type: Object, default: {} },
-    subFormFlag: { type: String, default: 'N' },
-    batchName: { type: String, default: 'batchDataList' },
-    batchFieldName: { type: String, default: 'batchFieldList' },
-    primaryKey: {type: [String, Object] as PropType<string | any>,required:true},
-    rules: { type: Object },
-    compSize: { type: String, default: Config.compSize },
-    isView: { type: Boolean, default: false },
-    isEdit: { type: Boolean, default: false }
-  });
-  const dataForm: ModelRef<any> = defineModel('dataForm');
-  const init = () => {};
-  onMounted(() => {
-    init();
-  });
+defineProps({
+  compUrl: {type: Object as PropType<ApiUrls>},
+  item: {type: Object as PropType<PageFieldInfo | any>, required: true},
+  objectName: {type: String},
+  // 数据索引
+  dataIndex: {type: Number, default: -1},
+  // 父节点名称
+  propPrefix: {type: String, default: ''},
+  parentPreps: {type: Object, default: {}},
+  subFormFlag: {type: String, default: 'N'},
+  batchName: {type: String, default: 'batchDataList'},
+  batchFieldName: {type: String, default: 'batchFieldList'},
+  primaryKey: {type: [String, Object] as PropType<string | any>, required: true},
+  rules: {type: Object},
+  compSize: {type: String, default: Config.compSize},
+  isView: {type: Boolean, default: false},
+  isEdit: {type: Boolean, default: false}
+});
+const dataForm: ModelRef<any> = defineModel('dataForm');
+const init = () => {
+};
+onMounted(() => {
+  init();
+});
 </script>
 
 <template>
   <template v-if="item.dytableList?.length > 0">
     <table ref="containerTableRef" :class="{ 'dynamic-table': true, 'instance-table': true }">
       <tbody>
-        <tr v-for="(row, rowIndex) in item.dytableList" class="dy-tr">
-          <td
+      <tr v-for="(row, rowIndex) in item.dytableList" class="dy-tr">
+        <td
             v-for="(sitem, colIndex) in row"
             :colspan="sitem.preps?.colspan || 1"
             :rowspan="sitem.preps?.rowspan || 1"
+            :class="{'title-style':sitem.preps?.labelFlag=='Y'}"
             :style="{
               width: sitem.preps?.colWidth + '% !important' || '',
               height: sitem.preps?.colHeight + '% !important' || '',
+              'text-align':sitem.preps?.textAlign??'left',
               'white-space': 'nowrap',
               'word-break': !!sitem.preps?.wordBreak ? 'break-all' : 'keep-all'
             }"
-          >
-            <el-form-item
+        >
+          <el-form-item
               :size="compSize"
               :label="sitem.label"
               :required="sitem.required"
+              style="width: 100%;height: 100%"
               :prop="loadProp(propPrefix,sitem.fieldName,-1,-1)"
               :labelPosition="parentPreps?.labelPosition"
               :rules="validMsg(sitem, dataForm)"
-              v-if="sitem.formVisible && sitem.label && sitem.preps?.headerFlag != 'Y'"
-            >
-              <star-horse-item
+              v-if="sitem.formVisible && sitem.label && sitem.preps?.labelFlag != 'Y'"
+          >
+            <star-horse-item
                 :primaryKey="primaryKey"
                 :compSize="compSize"
                 v-model:dataForm="dataForm"
                 :item="sitem"
                 :dataIndex="dataIndex"
                 :isEdit="isEdit"
-              />
-            </el-form-item>
-            <star-horse-item
+            />
+          </el-form-item>
+          <star-horse-item
               v-else-if="sitem.formVisible || sitem.viewVisible"
               :compSize="compSize"
               :primaryKey="primaryKey"
               v-model:dataForm="dataForm"
               :item="sitem"
+              style="width: 100%;height: 100%"
               :dataIndex="dataIndex"
               :isEdit="isEdit"
-            />
-          </td>
-        </tr>
+          />
+        </td>
+      </tr>
       </tbody>
     </table>
   </template>
 </template>
 
 <style scoped lang="scss">
-  .instance-table {
-    width: 100%;
-    height: 100%;
-    table-layout: fixed;
+.title-style {
+  font-weight: 700;
 
-    td {
-      line-height: 40px;
-      height: 40px;
-      padding: 0 10px 0 0;
-    }
+  background: #f5f7fa;
+  color: #606266;
+}
+
+table {
+  display: table;
+  border-collapse: separate;
+  box-sizing: border-box;
+  text-indent: initial;
+  unicode-bidi: isolate;
+  border-spacing: 0;
+  border-color: gray;
+}
+
+tr {
+  display: table-row;
+  vertical-align: inherit;
+  unicode-bidi: isolate;
+  border-color: inherit;
+}
+
+.instance-table {
+  /*  width: inherit;
+    height: inherit;*/
+
+  td {
+    line-height: 40px;
+    border: 1px solid #ebeef5;
+    height: 40px;
+    padding: 0 10px 0 0;
   }
+}
 </style>
