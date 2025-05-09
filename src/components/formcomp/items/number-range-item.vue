@@ -121,24 +121,24 @@ const handleBlur = () => {
 // 无论template标签内是否插入了内容，均视为已使用该插槽
 const slots = useSlots();
 const itemAction = (prep: string) => {
-  let min = formData[props.field.preps['minName']];
-  let max = formData[props.field.preps['maxName']];
+  let min = formData.value[props.field.preps['minName']];
+  let max = formData.value[props.field.preps['maxName']];
   if (max < min) {
     warning('最大值不能小于最小值');
     return;
   }
-  formData[props.field.preps['name']] = `${min}-${max}`;
+  formData.value[props.field.preps['name']] = `${min}-${max}`;
   allAction(props, emits, formData, prep);
 };
 onMounted(() => {
   actionName.value = props.field.preps?.actionName || 'normal';
   props.field.preps['maxName'] = props.field.preps['name'] + 'Max';
   props.field.preps['minName'] = props.field.preps['name'] + 'Min';
-  let val: any = formData[props.field.preps['name']];
+  let val: any = formData.value[props.field.preps['name']];
   if (val) {
     let data = val.split('-');
-    formData[props.field.preps['minName']] = Number(data[0]);
-    formData[props.field.preps['maxName']] = Number(data[1]);
+    formData.value[props.field.preps['minName']] = Number(data[0]);
+    formData.value[props.field.preps['maxName']] = Number(data[1]);
   }
   if (!props.isSearch) {
     allAction(props, emits, formData, actionName.value, true);

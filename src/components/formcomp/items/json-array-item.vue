@@ -125,21 +125,21 @@ const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
 const editJsonData = async () => {
-  let jsonStr = formData[props.field.preps['name']];
-  let formData: any = {};
+  let jsonStr = formData.value[props.field.preps['name']];
+  let temp: any = {};
   if (jsonStr) {
-    formData['jsonDatas'] = JSON.parse(jsonStr);
-    jsonArray.value = formData['jsonDatas'];
+    temp['jsonDatas'] = JSON.parse(jsonStr);
+    jsonArray.value = temp['jsonDatas'];
   }
   dialogInputVisible.value = true;
   await nextTick();
   if (props.field.preps['devType'] != 'Y') {
-    jsonFormRef.value.setFormData(formData);
+    jsonFormRef.value.setFormData(temp);
   }
 };
 const selectItem = async () => {
   if (props.field.preps['devType'] == 'Y') {
-    formData[props.field.preps['name']] = JSON.stringify(jsonArray.value, null, 4);
+    formData.value[props.field.preps['name']] = JSON.stringify(jsonArray.value, null, 4);
   } else {
     let flag = false;
     await jsonFormRef.value.$refs.starHorseFormRef.validate((res: boolean) => {
@@ -148,9 +148,9 @@ const selectItem = async () => {
     if (!flag) {
       return;
     }
-    let formData = jsonFormRef.value.getFormData().value;
-    let dataList = formData['jsonDatas'];
-    formData[props.field.preps['name']] = JSON.stringify(dataList, null, 4);
+    let temp = jsonFormRef.value.getFormData().value;
+    let dataList = temp['jsonDatas'];
+    formData.value[props.field.preps['name']] = JSON.stringify(dataList, null, 4);
   }
   closeAction();
 };

@@ -45,7 +45,7 @@ const emits = defineEmits(['selfFunc', 'selectItem']);
 const formData = defineModel("formData");
 
 onMounted(() => {
-  formData[props.field.preps['name']] = props.field.preps['content'];
+  formData.value[props.field.preps['name']] = props.field.preps['content'];
 })
 
 </script>

@@ -95,12 +95,12 @@ const close = () => {
   cronVisible.value = false;
 };
 const open = () => {
-  cronDataValue.value = formData[props.field.preps['name']];
+  cronDataValue.value = formData.value[props.field.preps['name']];
   console.log(cronDataValue.value);
   cronVisible.value = true;
 };
 const submit = () => {
-  formData[props.field.preps['name']] = cronDataValue.value;
+  formData.value[props.field.preps['name']] = cronDataValue.value;
   close();
 };
 resetForm();

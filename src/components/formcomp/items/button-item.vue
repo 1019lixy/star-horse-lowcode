@@ -105,7 +105,7 @@ const operResultAction = async () => {
   } else {
     formData = await btnCompRef.value?.getFormData().value;
   }
-  formData[props.field.preps['name']] = JSON.stringify(unref(formData));
+  formData.value[props.field.preps['name']] = JSON.stringify(unref(formData));
   close();
 };
 //打开对话框
@@ -134,7 +134,7 @@ const openDialog = async () => {
       let dynamicParams: SearchParams[] | DynamicParamField[] | any = action.params;
       let params: SearchParams[] = [];
       dynamicParams?.forEach((dynamicParam: any) => {
-        let value = formData[dynamicParam.paramName] ?? dynamicParam.defaultValue;
+        let value = formData.value[dynamicParam.paramName] ?? dynamicParam.defaultValue;
         params.push(createCondition(dynamicParam.paramName, value, dynamicParam.matchType));
       });
       urlParam['fieldList'] = params;
@@ -165,11 +165,11 @@ const openDialog = async () => {
         }
         //执行后搜集返回结果
         if (action?.afterAction == 'assignCurrentName') {
-          formData[props.field.preps['name']] = datas;
+          formData.value[props.field.preps['name']] = datas;
         } else if (action?.afterAction == 'assignForm') {
           let entries = Object.entries(datas);
           entries.forEach(([key, value]) => {
-            formData[key] = value;
+            formData.value[key] = value;
           });
         }
       }

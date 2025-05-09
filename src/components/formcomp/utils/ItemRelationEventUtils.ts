@@ -4,7 +4,7 @@ import {compDynamicData} from '@/api/star_horse_utils.ts';
 import piniaInstance from '@/store';
 import {useSelfOperationStore} from '@/store/SelfOperation.ts';
 import {useDesignFormStore} from '@/store/DesignForm.ts';
-import {computed} from 'vue';
+import {computed, isRef} from 'vue';
 
 const designForm = useDesignFormStore(piniaInstance);
 const userOperation = useSelfOperationStore(piniaInstance);
@@ -122,11 +122,12 @@ const operationRelation = async (relation: any, actionName: string, formData: an
  * @param isInit
  */
 const allAction = (context: any, emits: any, formData: any, actionName: string, isInit: boolean = false) => {
+    const currentData=isRef(formData) ? formData.value : formData;
     //设计时的初始化不作处理
     const field = context.field as any;
     if (!isInit && actionName != 'normal') {
         try {
-            emits('selfFunc', actionName, formData);
+            emits('selfFunc', actionName, currentData);
         } catch (e) {
             error('事件触发异常：' + e);
         }
@@ -142,20 +143,20 @@ const allAction = (context: any, emits: any, formData: any, actionName: string, 
     //处理连动
     switch (actionName) {
         case 'change':
-            change(context, formData);
+            change(context, currentData);
             break;
         case 'input':
-            input(context, formData);
+            input(context, currentData);
             break;
         case 'focus':
-            focus(context, formData);
+            focus(context, currentData);
             break;
         case 'blur':
-            blur(context, formData);
+            blur(context, currentData);
             break;
         case 'enter':
         case 'keydown.enter':
-            mouseEnter(context, formData);
+            mouseEnter(context, currentData);
             break;
         default:
             console.log('不支持的事件：' + actionName);
@@ -167,7 +168,7 @@ const allAction = (context: any, emits: any, formData: any, actionName: string, 
     }
     //处理自定义响应事件
     if (actionName == field.preps['actionName'] && field.preps['actionRelation']) {
-        field.preps['actionRelation'](formData[field.preps['name']], formData['xh']);
+        field.preps['actionRelation'](currentData[field.preps['name']], currentData['xh']);
     }
 };
 /**
@@ -178,15 +179,16 @@ const allAction = (context: any, emits: any, formData: any, actionName: string, 
  * @param code
  */
 const buttonAction = (context: any, emits: any, formData: any, code: string) => {
+    const currentData = isRef(formData) ? formData.value : formData;
     if (code) {
-        userFunction(code, context, formData);
+        userFunction(code, context, currentData);
     } else {
         const field = context.field as any;
-        formData['starHorseBtnName'] = field.preps['name'];
+        currentData['starHorseBtnName'] = field.preps['name'];
         if (field.preps['actions']) {
-            field.preps['actions'](formData);
+            field.preps['actions'](currentData);
         }
-        emits('selfFunc', formData);
+        emits('selfFunc', currentData);
     }
 };
 /**

@@ -73,11 +73,11 @@ const formData = defineModel("formData");
 let actionName = shallowRef('normal');
 const itemAction = (prep: any) => {
   if (prep == 'change' && props.field.preps['type']?.includes('range')) {
-    let val = formData[props.field.preps['name']];
+    let val = formData.value[props.field.preps['name']];
     // console.log(field.preps, val);
     if (props.field.preps['needSplitName'] == 'Y') {
-      formData[props.field.preps['name'] + 'Start'] = val[0];
-      formData[props.field.preps['name'] + 'End'] = val[1];
+      formData.value[props.field.preps['name'] + 'Start'] = val[0];
+      formData.value[props.field.preps['name'] + 'End'] = val[1];
     }
   }
   // console.log(formData);

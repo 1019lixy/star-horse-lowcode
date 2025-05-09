@@ -72,7 +72,7 @@ const loadByPage = (isInit: boolean = false) => {
   }
   if (isInit) {
     let fieldName = loadSourceField();
-    let value: any = formData[props.field.preps['aliasName'] || props.field.preps['name']];
+    let value: any = formData.value[props.field.preps['aliasName'] || props.field.preps['name']];
     if (fieldName && value) {
       if ('Y' == props.field.preps['multiple']) {
         searchData.value.push(createCondition(fieldName, Array.isArray(value) ? value : value.split(';'), 'in'));
@@ -168,13 +168,13 @@ const assignVal = () => {
         value = value[0];
       }
       if (fields.length == 1) {
-        formData[name] = value;
+        formData.value[name] = value;
       } else {
-        formData[temp.distField] = value;
+        formData.value[temp.distField] = value;
       }
     });
   } else {
-    formData[name] = multipleSelection.value.map((item) => item[name]);
+    formData.value[name] = multipleSelection.value.map((item) => item[name]);
   }
   if (props.field.preps['recall']) {
     props.field.preps['recall'](multipleSelection.value);
@@ -187,8 +187,8 @@ watch(
     }
 );
 onMounted(() => {
-  filterCondition.value = props.field.preps['filterCondition'] as Array<SearchParams>
-  orderBy.value = props.field.preps['orderBy'] as Array<OrderByInfo>
+  filterCondition.value = props.field.preps['filterCondition'] as Array<SearchParams>;
+  orderBy.value = props.field.preps['orderBy'] as Array<OrderByInfo>;
   actionName.value = props.field.preps?.actionName || 'normal';
   loadByPage(true);
   if (!props.isSearch) {
