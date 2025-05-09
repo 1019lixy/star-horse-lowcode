@@ -1,13 +1,13 @@
 <template>
-<!--  {{ dataForm }}
+  {{ dataForm }}
   <el-input v-model="dataForm.txt1"/>
-  <qrcode-item
+  <input-item
       :formData="dataForm"
       :field="{
         preps: {
           name: 'txt1'
         }
-      }"/>-->
+      }"/>
     <star-horse-form :fieldList="formField"/>
 </template>
 <script lang="ts" setup>
