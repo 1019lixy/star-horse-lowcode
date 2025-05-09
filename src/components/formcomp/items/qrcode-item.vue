@@ -1,4 +1,4 @@
-<script lang="ts">
+<script setup lang="ts">
 import QRCode from "qrcode.vue-next";
 
 const props = defineProps({

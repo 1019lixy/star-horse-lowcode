@@ -124,6 +124,7 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     SelectItem: typeof import('./src/components/formcomp/items/select-item.vue')['default']
     ShDynamicForm: typeof import('./src/components/comp/ShDynamicForm.vue')['default']
+    ShForm: typeof import('./src/components/comp/ShForm.vue')['default']
     ShTableListColumn: typeof import('./src/components/comp/ShTableListColumn.vue')['default']
     SignatureItem: typeof import('./src/components/formcomp/items/signature-item.vue')['default']
     SliderItem: typeof import('./src/components/formcomp/items/slider-item.vue')['default']

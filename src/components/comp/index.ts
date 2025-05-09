@@ -20,3 +20,4 @@ export {default as StarHorseTableComp} from './StarHorseTableComp.vue';
 export {default as StarHorseTableViewColumn} from './StarHorseTableViewColumn.vue';
 export {default as StarHorseTree} from './StarHorseTree.vue';
 export {default as MessageItem} from './items/MessageItem.vue';
+export {default as ShForm} from './ShForm.vue';

@@ -9,7 +9,7 @@
     <audio :fid="field.preps['name']" ref="audio" controls></audio>
   </starhorse-form-item>
 </template>
-<script lang="ts" name="audioItem">
+<script setup lang="ts" name="audioItem">
 import {onMounted, ref} from 'vue';
 import {blobData} from '@/api/star_horse_apis.ts';
 

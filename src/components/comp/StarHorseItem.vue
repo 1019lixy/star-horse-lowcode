@@ -282,7 +282,7 @@ onMounted(() => {
         :bareFlag="bareFlag"
         :field="field"
         :dataIndex="dataIndex"
-        :formData="dataForm"
+        v-model:formData="dataForm"
     />
     <div v-if="item.brotherNodes" style="width: 15px"/>
     <template v-for="temp in item.brotherNodes">
@@ -328,7 +328,7 @@ onMounted(() => {
         :bareFlag="bareFlag"
         :field="field"
         :dataIndex="dataIndex"
-        :formData="dataForm"
+        v-model:formData="dataForm"
     />
     <div v-if="item.brotherNodes" class="brother-node">
       <template v-for="temp in item.brotherNodes">

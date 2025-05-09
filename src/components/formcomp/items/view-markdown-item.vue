@@ -13,7 +13,7 @@
     />
   </starhorse-form-item>
 </template>
-<script lang="ts" name="view-markdown">
+<script setup lang="ts" name="view-markdown">
 import {nextTick, onMounted, onUpdated, ref} from 'vue';
 import MarkdownIt from 'markdown-it';
 

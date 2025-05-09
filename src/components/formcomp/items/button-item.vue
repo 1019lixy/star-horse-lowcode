@@ -181,10 +181,11 @@ const openDialog = async () => {
     }
     buttonAction(props, emits, formData, action.code);
   } else if (action?.viewType == 'method') {
-    if (!action.code) {
-      warning('请提供需要执行的函数名');
+    if (!action.actions) {
+      warning('请提供需要执行的函数');
       return;
     }
+    action.actions(formData);
   } else {
     btnDialogVisible.value = true;
   }

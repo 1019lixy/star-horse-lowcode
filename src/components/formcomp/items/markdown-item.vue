@@ -17,7 +17,7 @@
     />
   </starhorse-form-item>
 </template>
-<script lang="ts" name="markdown">
+<script setup lang="ts" name="markdown">
 import {onMounted, onUpdated} from 'vue';
 import {allAction} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
 import 'md-editor-v3/lib/style.css';

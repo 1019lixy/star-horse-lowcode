@@ -8,7 +8,7 @@
   >
     <el-input-number
         :fid="field.preps['name']"
-        :controls-position="field.preps['controlsPosition'] || ''"
+        :controls-position="field.preps['controlsPosition'] || 'right'"
         :controls="field.preps['controls'] == 'Y'"
         :disabled="checkIsDisabled(props)"
         :max="field.preps['max'] || Infinity"

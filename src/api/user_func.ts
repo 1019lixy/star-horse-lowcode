@@ -5,8 +5,8 @@ import {getUserInfo} from "@/utils/auth.ts";
 import {Ref} from "vue";
 import {createCondition} from "@/api/star_horse_utils.ts";
 import {success, warning} from "@/utils/message.ts";
-import router from "@/router";
 import {UserFuncInfo} from "@/components/types/PageFieldInfo";
+import {useRouter} from "vue-router";
 
 /**
  * 动态表单用户自定义驱动
@@ -110,6 +110,7 @@ export function userAction(tableRef: Ref, primaryKey: string, datas: Array<any>)
                 warning("暂未实现");
             } else if (item["eventType"] == "page") {
                 //打开页面
+                let router= useRouter()&&window.__hostRouter__;
                 item["funcName"] = (row: any) => {
                     router.push({
                         path: content,
