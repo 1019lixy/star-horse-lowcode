@@ -1,9 +1,9 @@
 <template>
   <starhorse-form-item
-      :isDesign="context.attrs['isDesign']"
-      :disabled="context.attrs['disabled']"
-      :bareFlag="context.attrs['bareFlag']"
-      :form-item="field"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      :formItem="field"
       :parentField="parentField"
   >
     <div class="number-range-container">
@@ -13,7 +13,7 @@
       <div
           class="number-range"
           :class="{
-          'is-disabled': checkIsDisabled(context),
+          'is-disabled': checkIsDisabled(props),
           'is-focus': isFocus,
           'number-range-border-radius': true
         }"
@@ -21,19 +21,19 @@
         <el-input-number
             :fid="field.preps['minName']"
             :controls="false"
-            :disabled="checkIsDisabled(context)"
+            :disabled="checkIsDisabled(props)"
             :min="field.preps['min'] || -Infinity"
             :clearable="field.preps['clearable'] == 'Y'"
             :placeholder="field.preps['placeholder'] || '请输入' + field.preps['label'] + '最小值'"
             :precision="field.preps['precision']"
             :readonly="field.preps['readonly'] == 'Y'"
-            :size="context.attrs.formInfo?.size || field?.preps['size'] || 'default'"
+            :size="formInfo?.size || field?.preps['size'] || 'default'"
             :step="field.preps['step']"
             :step-strictly="field.preps['stepStrictly'] == 'Y'"
             @change="itemAction('change')"
             @blur="handleBlur"
             @focus="handleFocus"
-            v-model="context.attrs['formData'][field.preps['minName']]"
+            v-model="formData[field.preps['minName']]"
         />
         <div class="to">
           <span>{{ field.preps["to"] || "-" }}</span>
@@ -41,19 +41,19 @@
         <el-input-number
             :fid="field.preps['maxName']"
             :controls="false"
-            :disabled="checkIsDisabled(context)"
+            :disabled="checkIsDisabled(props)"
             :max="field.preps['max'] || Infinity"
             :clearable="field.preps['clearable'] == 'Y'"
             :placeholder="field.preps['placeholder'] || '请输入' + field.preps['label'] + '最大值'"
             :precision="field.preps['precision']"
             :readonly="field.preps['readonly'] == 'Y'"
-            :size="context.attrs.formInfo?.size || field?.preps['size'] || 'default'"
+            :size="formInfo?.size || field?.preps['size'] || 'default'"
             :step="field.preps['step']"
             @change="itemAction('change')"
             @blur="handleBlur"
             @focus="handleFocus"
             :step-strictly="field.preps['stepStrictly'] == 'Y'"
-            v-model="context.attrs['formData'][field.preps['maxName']]"
+            v-model="formData[field.preps['maxName']]"
         />
       </div>
       <div v-if="field.preps['suffix']" :class="{ 'slot-default': slotStyle === 'default', 'slot-pend ': true }">
@@ -62,82 +62,95 @@
     </div>
   </starhorse-form-item>
 </template>
-<script lang="ts">
-import {defineComponent, onMounted, shallowRef, watch, ref, useSlots} from 'vue';
+<script setup lang="ts">
+import {onMounted, ref, shallowRef, useSlots, watch} from 'vue';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
 import {warning} from '@/utils/message.ts';
 
-export default defineComponent({
-  methods: {checkIsDisabled},
-  setup(_props, context) {
-    const parentField = context.attrs['parentField'];
-    const field = context.attrs['field'] as any;
-    let formItem = shallowRef({label: 'input', required: false});
-    let dataField = shallowRef('');
-    let actionName = shallowRef('normal');
-    let slotStyle = shallowRef('');
-    // input焦点事件
-    const isFocus = ref();
-    const handleFocus = () => {
-      isFocus.value = true;
-    };
-    const handleBlur = () => {
-      isFocus.value = false;
-    };
-
-    // 处理数字精度
-    // 判断插槽是否被使用
-    // 组件外部使用时插入了
-    // <template #插槽名 >
-    // </template>
-    // 无论template标签内是否插入了内容，均视为已使用该插槽
-    const slots = useSlots();
-    const itemAction = (prep: string) => {
-      let min = context.attrs['formData'][field.preps['minName']];
-      let max = context.attrs['formData'][field.preps['maxName']];
-      if (max < min) {
-        warning('最大值不能小于最小值');
-        return;
-      }
-      context.attrs['formData'][field.preps['name']] = `${min}-${max}`;
-      allAction(context, prep);
-    };
-    onMounted(() => {
-      actionName.value = field.preps?.actionName || 'normal';
-      field.preps['maxName'] = field.preps['name'] + 'Max';
-      field.preps['minName'] = field.preps['name'] + 'Min';
-      let val = context.attrs['formData'][field.preps['name']];
-      if (val) {
-        let data = val.split('-');
-        context.attrs['formData'][field.preps['minName']] = Number(data[0]);
-        context.attrs['formData'][field.preps['maxName']] = Number(data[1]);
-      }
-      if (!context.attrs['isSearch']) {
-        allAction(context, actionName.value, true);
-      }
-    });
-    watch(
-        () => context.attrs['formFieldList'],
-        () => {
-          itemAction('init');
-        },
-        {immediate: true, deep: true}
-    );
-    return {
-      parentField,
-      context,
-      field,
-      formItem,
-      dataField,
-      actionName,
-      itemAction,
-      handleBlur,
-      handleFocus,
-      isFocus,
-      slotStyle
-    };
+const props = defineProps({
+  isDesign: {
+    type: Boolean,
+    default: false
+  },
+  disabled: {
+    type: Boolean,
+    default: false
+  },
+  bareFlag: {
+    type: Boolean,
+    default: false
+  }, isSearch: {
+    type: Boolean,
+    default: false
+  },
+  field: {
+    type: Object,
+    default: {}
+  },
+  parentField: {
+    type: Object,
+    default: {}
+  },
+  formInfo: {
+    type: Object,
+    default: {}
+  },
+  formFieldList: {
+    type: Array,
+    default: () => []
   }
 });
+const emits = defineEmits(['selfFunc', 'selectItem']);
+const formData = defineModel("formData");
+let actionName = shallowRef('normal');
+let slotStyle = shallowRef('');
+// input焦点事件
+const isFocus = ref();
+const handleFocus = () => {
+  isFocus.value = true;
+};
+const handleBlur = () => {
+  isFocus.value = false;
+};
+
+// 处理数字精度
+// 判断插槽是否被使用
+// 组件外部使用时插入了
+// <template #插槽名 >
+// </template>
+// 无论template标签内是否插入了内容，均视为已使用该插槽
+const slots = useSlots();
+const itemAction = (prep: string) => {
+  let min = formData[props.field.preps['minName']];
+  let max = formData[props.field.preps['maxName']];
+  if (max < min) {
+    warning('最大值不能小于最小值');
+    return;
+  }
+  formData[props.field.preps['name']] = `${min}-${max}`;
+  allAction(props, emits, formData, prep);
+};
+onMounted(() => {
+  actionName.value = props.field.preps?.actionName || 'normal';
+  props.field.preps['maxName'] = props.field.preps['name'] + 'Max';
+  props.field.preps['minName'] = props.field.preps['name'] + 'Min';
+  let val: any = formData[props.field.preps['name']];
+  if (val) {
+    let data = val.split('-');
+    formData[props.field.preps['minName']] = Number(data[0]);
+    formData[props.field.preps['maxName']] = Number(data[1]);
+  }
+  if (!props.isSearch) {
+    allAction(props, emits, formData, actionName.value, true);
+  }
+});
+watch(
+    () => props.formFieldList,
+    () => {
+      itemAction('init');
+    },
+    {immediate: true, deep: true}
+);
 </script>
 <style lang="scss" scoped>
 .el-input-number {

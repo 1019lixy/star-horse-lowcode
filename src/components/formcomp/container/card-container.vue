@@ -9,11 +9,11 @@ const props = defineProps({
   isDesign: {type: Boolean,default: false},
   disabled: {type: Object as PropType<Boolean | String>},
   formInfo: {type: Object as PropType<any>},
-  formData: {type: Object as PropType<any>},
   field: {type: Object as PropType<any>}
 });
 let designForm = useDesignFormStore(piniaInstance);
 const isDragging = computed(() => designForm.isDragging);
+const formData = defineModel("formData");
 let containerType: Array<string> = ['tab', 'box', 'table', 'card', 'dytable', 'collapse'];
 const getComponentName = (data: any) => {
   return containerType.includes(data.itemType) ? data.itemType + '-container' : data.itemType + '-item';
@@ -96,7 +96,7 @@ onMounted(() => {
                       :formInfo="formInfo"
                       :is="getComponentName(header)"
                       :parentField="field"
-                      :formData="formData"
+                      v-model:formData="formData"
                   />
                 </div>
               </template>
@@ -126,7 +126,7 @@ onMounted(() => {
                   :formInfo="formInfo"
                   :is="getComponentName(item)"
                   :parentField="field"
-                  :formData="formData"
+                  v-model:formData="formData"
               />
             </div>
           </template>

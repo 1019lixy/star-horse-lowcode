@@ -179,13 +179,12 @@ const tableOperation = (actonName: string, _preps: any) => {
   </star-horse-dialog>
   <div class="field-item" v-if="isEdit&&isDesign" @contextmenu="containerContextMenu">
     <slot></slot>
-    <div class="drag-handler" v-if="isEdit&&isDesign && currentItemId == formItem.id">
+    <div class="drag-handler"  v-if="isEdit&&isDesign && currentItemId == formItem.id">
       <el-tooltip content="拖动">
-        <star-horse-icon icon-class="drag" style="color: var(--star-horse-white)"/>
+        <star-horse-icon  icon-class="drag" size="18px" style="color: var(--star-horse-white)"/>
       </el-tooltip>
       <el-tooltip content="选中容器">
         <star-horse-icon
-            class="icon-cls"
             cursor="pointer"
             @click.stop="selectData"
             icon-class="select-parent"
@@ -194,7 +193,6 @@ const tableOperation = (actonName: string, _preps: any) => {
       </el-tooltip>
       <el-tooltip content="删除容器">
         <star-horse-icon
-            class="icon-cls"
             cursor="pointer"
             @click.stop="removeData"
             icon-class="clear-all"
@@ -244,57 +242,9 @@ const tableOperation = (actonName: string, _preps: any) => {
 </template>
 <style lang="scss" scoped>
 .field-item {
-  width: 99%;
-  position: relative;
-  padding: 3px;
+
   border: 1px dashed #e6a23c;
-  margin: 3px auto;
 
-  .field-action {
-    position: absolute;
-    top: 0;
-    transform: translate(0, -100%);
-    right: 0;
-    align-items: center;
-    background: var(--star-horse-style);
-    z-index: 99;
-    display: flex;
-
-    .svg-icon {
-      font-size: 14px;
-      color: var(--star-horse-white);
-      margin: 0 3px;
-      cursor: pointer;
-    }
-  }
-
-  .drag-handler {
-    position: absolute;
-    top: 0;
-    left: 3px;
-    transform: translate(0, -100%);
-    background: var(--star-horse-style);
-    z-index: 999;
-    text-align: right;
-    align-items: center;
-    display: flex;
-    flex-direction: row;
-
-    .icon-cls {
-      font-size: 14px;
-      color: var(--star-horse-white);
-      margin: 0 3px;
-      cursor: pointer;
-    }
-  }
-}
-
-.field-action,
-.drag-handler {
-  .svg-icon {
-    margin-left: 0;
-    margin-right: 0;
-  }
 }
 
 .el-form-item {

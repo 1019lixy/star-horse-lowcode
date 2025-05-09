@@ -9,9 +9,9 @@
     isDesign: { type: Boolean,default: false },
     disabled: {type: Object as PropType<Boolean | String>},
     formInfo: { type: Object as PropType<any> },
-    formData: { type: Object as PropType<any> },
     field: { type: Object as PropType<any> }
   });
+  const formData = defineModel("formData");
 </script>
 <template>
   <group-box-container class="star-horse-form-container"
@@ -25,7 +25,7 @@
             <dytable-col
               :field="td"
               :formInfo="formInfo"
-              :formData="formData"
+              v-model:formData="formData"
               :isDesign="isDesign"
               :disabled="disabled"
               :isFirstRow="rowIndex == 0"

@@ -1,33 +1,53 @@
 <template>
   <starhorse-form-item
-      :isDesign="context.attrs['isDesign']"
-      :disabled="context.attrs['disabled']"
-      :bareFlag="context.attrs['bareFlag']"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
       :formItem="field"
       :parentField="parentField"
   >
     <div class="user_html" v-html="field.preps['content']"/>
   </starhorse-form-item>
 </template>
-<script lang="ts">
-import {defineComponent, shallowRef} from 'vue';
-import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
+<script setup lang="ts">
+import {onMounted} from "vue";
 
-export default defineComponent({
-  methods: {checkIsDisabled},
-  setup(_props, context) {
-    const parentField = context.attrs['parentField'];
-
-    const field = context.attrs['field'] as any;
-    let formItem = shallowRef({label: 'input', required: false});
-    let dataField = shallowRef('');
-    context.attrs['formData'][field.preps['name']] = field.preps['content'];
-    const itemAction = (prep: any) => {
-      allAction(context, prep);
-    };
-    return {parentField, context, field, formItem, dataField, itemAction};
+const props = defineProps({
+  isDesign: {
+    type: Boolean,
+    default: false
+  },
+  disabled: {
+    type: Boolean,
+    default: false
+  },
+  bareFlag: {
+    type: Boolean,
+    default: false
+  }, isSearch: {
+    type: Boolean,
+    default: false
+  },
+  field: {
+    type: Object,
+    default: {}
+  },
+  parentField: {
+    type: Object,
+    default: {}
+  },
+  formInfo: {
+    type: Object,
+    default: {}
   }
 });
+const emits = defineEmits(['selfFunc', 'selectItem']);
+const formData = defineModel("formData");
+
+onMounted(() => {
+  formData[props.field.preps['name']] = props.field.preps['content'];
+})
+
 </script>
 <style lang="scss" scoped>
 .user_html {

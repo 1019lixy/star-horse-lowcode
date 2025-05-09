@@ -10,7 +10,6 @@ import {Config} from '@/api/settings.ts';
 const props = defineProps({
   parentField: {type: Object as PropType<any>},
   formInfo: {type: Object as PropType<any>},
-  formData: {type: Object as PropType<any>},
   parentComp: {type: Object as PropType<any>},
   isDesign: {type: Boolean,default: false},
   disabled: {type: Object as PropType<Boolean | String>},
@@ -28,6 +27,7 @@ let excludeContainerType: Array<string> = ['box', 'tab', 'table', 'dytable', 'co
 let currentSubItemId = computed(() => designForm.currentSubItemId);
 let isEdit = computed(() => designForm.isEdit);
 const isDragging = computed(() => designForm.isDragging);
+const formData = defineModel("formData");
 const isResizing = ref(false);
 const resizeDirection = ref<'width' | 'height' | null>(null);
 const startX = ref(0);
@@ -182,7 +182,7 @@ watch(
               :disabled="disabled"
               :is="getComponentName(data)"
               :parentField="parentField"
-              :formData="formData"
+              v-model:formData="formData"
           />
         </div>
       </template>

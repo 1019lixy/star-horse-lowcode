@@ -25,17 +25,17 @@
     />
   </star-horse-dialog>
   <starhorse-form-item
-      :isDesign="context.attrs['isDesign']"
-      :disabled="context.attrs['disabled']"
-      :bareFlag="context.attrs['bareFlag']"
-      :form-item="field"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      :formItem="field"
       :parentField="parentField"
   >
     <el-input
         @dblclick="maxEdit"
         :fid="field.preps['name']"
         :clearable="field.preps['clearable'] == 'Y'"
-        :disabled="checkIsDisabled(context)"
+        :disabled="checkIsDisabled(props)"
         :max="field.preps['max']"
         :maxlength="field.preps['maxlength']"
         :min="field.preps['min']"
@@ -44,7 +44,7 @@
         :readonly="field.preps['readonly'] == 'Y'"
         :rows="field.preps['rows']"
         :show-word-limit="field.preps['showWordLimit'] == 'Y'"
-        :size="context.attrs.formInfo?.size || field?.preps['size'] || 'default'"
+        :size="formInfo?.size || field?.preps['size'] || 'default'"
         type="textarea"
         :resize="field?.preps['resize'] || '--'"
         @change="itemAction('change')"
@@ -52,64 +52,73 @@
         @keydown.enter="itemAction('enter')"
         @focus="itemAction('focus')"
         @blur="itemAction('blur')"
-        v-model="context.attrs['formData'][field.preps['name']]"
+        v-model="formData[field.preps['name']]"
     />
   </starhorse-form-item>
 </template>
-<script lang="ts">
-import {defineComponent, onMounted, shallowRef} from 'vue';
+<script setup lang="ts">
+import {onMounted, shallowRef} from 'vue';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
 import StarHorseDialog from '@/components/comp/StarHorseDialog.vue';
 
-export default defineComponent({
-  components: {StarHorseDialog},
-  methods: {checkIsDisabled},
-  setup(_props, context) {
-    const parentField = context.attrs['parentField'];
-    const field = context.attrs['field'] as any;
-    let formItem = shallowRef({label: 'input', required: false});
-    let dataField = shallowRef('');
-    const editorDialogVisible = shallowRef(false);
-    const dynamicFunction = (data: any) => {
-      if (!data) {
-        return;
-      }
-      let fun = new Function(data);
-      fun();
-    };
-    let actionName = shallowRef('normal');
-    const itemAction = (prep: any) => {
-      allAction(context, prep);
-    };
-    const maxEdit = () => {
-      if (!context.attrs['formData']['_' + field.preps['name'] + 'Editable'] && field.preps['disabled'] == 'Y') {
-        return;
-      }
-      dataField.value = context.attrs['formData'][field.preps['name']];
-      editorDialogVisible.value = true;
-    };
-    const dataMerge = () => {
-      context.attrs['formData'][field.preps['name']] = dataField.value;
-    };
-    onMounted(() => {
-      actionName.value = field.preps?.actionName || 'normal';
-      if (!context.attrs['isSearch']) {
-        allAction(context, actionName.value, true);
-      }
-    });
-    return {
-      parentField,
-      context,
-      field,
-      formItem,
-      dataField,
-      dynamicFunction,
-      itemAction,
-      actionName,
-      editorDialogVisible,
-      dataMerge,
-      maxEdit
-    };
+const props = defineProps({
+  isDesign: {
+    type: Boolean,
+    default: false
+  },
+  disabled: {
+    type: Boolean,
+    default: false
+  },
+  bareFlag: {
+    type: Boolean,
+    default: false
+  }, isSearch: {
+    type: Boolean,
+    default: false
+  },
+  field: {
+    type: Object,
+    default: {}
+  },
+  parentField: {
+    type: Object,
+    default: {}
+  },
+  formInfo: {
+    type: Object,
+    default: {}
+  }
+});
+const emits = defineEmits(['selfFunc', 'selectItem']);
+const formData = defineModel("formData");
+const editorDialogVisible = shallowRef(false);
+const dataField = shallowRef('');
+const dynamicFunction = (data: any) => {
+  if (!data) {
+    return;
+  }
+  let fun = new Function(data);
+  fun();
+};
+let actionName = shallowRef('normal');
+const itemAction = (prep: any) => {
+  allAction(props, emits, formData, prep);
+};
+const maxEdit = () => {
+  if (!formData['_' + props.field.preps['name'] + 'Editable'] && props.field.preps['disabled'] == 'Y') {
+    return;
+  }
+  dataField.value = formData[props.field.preps['name']];
+  editorDialogVisible.value = true;
+};
+const dataMerge = () => {
+  formData[props.field.preps['name']] = dataField.value;
+};
+onMounted(() => {
+  actionName.value =props.field.preps?.actionName || 'normal';
+  if (!props.isSearch) {
+    allAction(props, emits, formData, actionName.value, true);
   }
 });
 </script>

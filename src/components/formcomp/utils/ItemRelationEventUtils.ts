@@ -5,7 +5,6 @@ import piniaInstance from '@/store';
 import {useSelfOperationStore} from '@/store/SelfOperation.ts';
 import {useDesignFormStore} from '@/store/DesignForm.ts';
 import {computed} from 'vue';
-import {SelectOption} from '@/components/types';
 
 const designForm = useDesignFormStore(piniaInstance);
 const userOperation = useSelfOperationStore(piniaInstance);
@@ -14,47 +13,52 @@ const isDesign = computed(() => designForm.isEdit);
 /**
  * Change 事件
  * @param context
+ * @param formData
  */
-const change = (context: any) => {
-    const field = context.attrs['field'] as any;
+const change = (context: any, formData: any) => {
+    const field = context.field as any;
     const relation = field.preps?.dataRelation;
-    operationRelation(relation, 'change', context.attrs['formData'], field.preps['name']);
+    operationRelation(relation, 'change', formData, field.preps['name']);
 };
 /**
  * Input 事件
  * @param context
+ * @param formData
  */
-const input = (context: any) => {
-    const field = context.attrs['field'] as any;
+const input = (context: any, formData: any) => {
+    const field = context.field as any;
     const relation = field.preps?.dataRelation;
-    operationRelation(relation, 'input', context.attrs['formData'], field.preps['name']);
+    operationRelation(relation, 'input', formData, field.preps['name']);
 };
 /**
  * Focus 事件
  * @param context
+ * @param formData
  */
-const focus = (context: any) => {
-    const field = context.attrs['field'] as any;
+const focus = (context: any, formData: any) => {
+    const field = context.field as any;
     const relation = field.preps?.dataRelation;
-    operationRelation(relation, 'focus', context.attrs['formData'], field.preps['name']);
+    operationRelation(relation, 'focus', formData, field.preps['name']);
 };
 /**
  * Blur 事件
  * @param context
+ * @param formData
  */
-const blur = (context: any) => {
-    const field = context.attrs['field'] as any;
+const blur = (context: any, formData: any) => {
+    const field = context.field as any;
     const relation = field.preps?.dataRelation;
-    operationRelation(relation, 'blur', context.attrs['formData'], field.preps['name']);
+    operationRelation(relation, 'blur', formData, field.preps['name']);
 };
 /**
  * Enter 事件
  * @param context
+ * @param formData
  */
-const mouseEnter = (context: any) => {
-    const field = context.attrs['field'] as any;
+const mouseEnter = (context: any, formData: any) => {
+    const field = context.field as any;
     const relation = field.preps?.dataRelation;
-    operationRelation(relation, 'enter', context.attrs['formData'], field.preps['name']);
+    operationRelation(relation, 'enter', formData, field.preps['name']);
 };
 
 /**
@@ -112,15 +116,17 @@ const operationRelation = async (relation: any, actionName: string, formData: an
 /**
  * 所有触发的事件
  * @param context
+ * @param emits
+ * @param formData
  * @param actionName
  * @param isInit
  */
-const allAction = (context: any, actionName: string, isInit: boolean = false) => {
+const allAction = (context: any, emits: any, formData: any, actionName: string, isInit: boolean = false) => {
     //设计时的初始化不作处理
-    const field = context.attrs['field'] as any;
+    const field = context.field as any;
     if (!isInit && actionName != 'normal') {
         try {
-            context.emit('selfFunc', actionName, context.attrs['formData']);
+            emits('selfFunc', actionName, formData);
         } catch (e) {
             error('事件触发异常：' + e);
         }
@@ -136,20 +142,20 @@ const allAction = (context: any, actionName: string, isInit: boolean = false) =>
     //处理连动
     switch (actionName) {
         case 'change':
-            change(context);
+            change(context, formData);
             break;
         case 'input':
-            input(context);
+            input(context, formData);
             break;
         case 'focus':
-            focus(context);
+            focus(context, formData);
             break;
         case 'blur':
-            blur(context);
+            blur(context, formData);
             break;
         case 'enter':
         case 'keydown.enter':
-            mouseEnter(context);
+            mouseEnter(context, formData);
             break;
         default:
             console.log('不支持的事件：' + actionName);
@@ -161,32 +167,34 @@ const allAction = (context: any, actionName: string, isInit: boolean = false) =>
     }
     //处理自定义响应事件
     if (actionName == field.preps['actionName'] && field.preps['actionRelation']) {
-        field.preps['actionRelation'](context.attrs['formData'][field.preps['name']], context.attrs['formData']['xh']);
+        field.preps['actionRelation'](formData[field.preps['name']], formData['xh']);
     }
 };
 /**
  * Button 组件的点击事件
  * @param context
+ * @param emits
+ * @param formData
  * @param code
  */
-const buttonAction = (context: any, code: string) => {
+const buttonAction = (context: any, emits: any, formData: any, code: string) => {
     if (code) {
-        userFunction(code, context);
+        userFunction(code, context, formData);
     } else {
-        const field = context.attrs['field'] as any;
-        context.attrs['formData']['starHorseBtnName'] = field.preps['name'];
+        const field = context.field as any;
+        formData['starHorseBtnName'] = field.preps['name'];
         if (field.preps['actions']) {
-            field.preps['actions'](context.attrs['formData']);
+            field.preps['actions'](formData);
         }
-        context.emit('selfFunc', context.attrs['formData']);
+        emits('selfFunc', formData);
     }
 };
 /**
  * 检查是否禁用
- * @param context
+ * @param attrs
  */
-const checkIsDisabled = (context: any) => {
-    const {attrs} = context;
+const checkIsDisabled = (attrs: any) => {
+    // const {attrs} = context;
     const {field} = attrs;
     const fieldName = field.preps?.name;
     const isExplicitlyDisabled = attrs.disabled === true || attrs.disabled === 'Y';

@@ -9,12 +9,11 @@ const props = defineProps({
   isDesign: {type: Boolean,default: false},
   disabled: {type: Object as PropType<Boolean | String>},
   formInfo: {type: Object as PropType<any>},
-  formData: {type: Object as PropType<any>},
   field: {type: Object as PropType<any>}
 });
 let designForm = useDesignFormStore(piniaInstance);
 let draggingItem = computed(() => designForm.draggingItem);
-// let itemType = ref('container');
+const formData = defineModel("formData");
 let isEdit = computed(() => designForm.isEdit);
 const isDragging = computed(() => designForm.isDragging);
 let boxCompList = computed(() => props.field);
@@ -92,7 +91,7 @@ const onDragAdd = (evt: Event, dataList: any) => {
                   :disabled="disabled"
                   :is="data.itemType + (data.compType === 'container' ? '-container' : '-item')"
                   :parentField="boxCompList"
-                  :formData="formData"
+                  v-model:formData="formData"
               />
             </div>
           </template>
@@ -112,7 +111,7 @@ const onDragAdd = (evt: Event, dataList: any) => {
               :isDesign="isDesign"
               :disabled="disabled"
               :is="data.itemType + (data.compType === 'container' ? '-container' : '-item')"
-              :formData="formData"
+              v-model:formData="formData"
               :formInfo="formInfo"
           />
         </template>

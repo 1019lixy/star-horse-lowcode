@@ -1,19 +1,19 @@
 <template>
   <starhorse-form-item
-      :isDesign="context.attrs['isDesign']"
-      :disabled="context.attrs['disabled']"
-      :bareFlag="context.attrs['bareFlag']"
-      :form-item="field"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      :formItem="field"
       :parentField="parentField"
   >
     <el-radio-group
         :fid="field.preps['name']"
-        :disabled="checkIsDisabled(context)"
+        :disabled="checkIsDisabled(props)"
         :readonly="field.preps['readonly'] == 'Y'"
-        :size="context.attrs.formInfo?.size || field?.preps['size'] || 'default'"
+        :size="formInfo?.size || field?.preps['size'] || 'default'"
         :text-color="field.preps['textColor']"
         @change="itemAction"
-        v-model="context.attrs['formData'][field.preps['name']]"
+        v-model="formData[field.preps['name']]"
     >
       <el-radio-button
           v-if="field.preps.radioType = 'button'"
@@ -37,26 +37,47 @@
     </el-radio-group>
   </starhorse-form-item>
 </template>
-<script lang="ts">
-import {defineComponent, onMounted, shallowRef} from 'vue';
+<script setup lang="ts">
+import {onMounted} from 'vue';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
 
-export default defineComponent({
-  methods: {checkIsDisabled},
-  setup(_props, context) {
-    const parentField = context.attrs['parentField'];
-
-    const field = context.attrs['field'] as any;
-    let formItem = shallowRef({label: 'input', required: false});
-    let dataField = shallowRef('');
-    const itemAction = () => {
-      allAction(context, 'change');
-    };
-    onMounted(() => {
-      allAction(context, 'change', true);
-    });
-    return {parentField, context, field, formItem, dataField, itemAction};
+const props = defineProps({
+  isDesign: {
+    type: Boolean,
+    default: false
+  },
+  disabled: {
+    type: Boolean,
+    default: false
+  },
+  bareFlag: {
+    type: Boolean,
+    default: false
+  }, isSearch: {
+    type: Boolean,
+    default: false
+  },
+  field: {
+    type: Object,
+    default: {}
+  },
+  parentField: {
+    type: Object,
+    default: {}
+  },
+  formInfo: {
+    type: Object,
+    default: {}
   }
+});
+const emits = defineEmits(['selfFunc', 'selectItem']);
+const formData = defineModel("formData");
+
+const itemAction = () => {
+  allAction(props, emits, formData, 'change');
+};
+onMounted(() => {
+  allAction(props, emits, formData, 'change', true);
 });
 </script>
 <style scoped></style>

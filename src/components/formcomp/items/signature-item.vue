@@ -1,87 +1,93 @@
-<script lang="ts">
-import {defineComponent, nextTick, onMounted, onUpdated, ref, shallowRef} from 'vue';
+<script setup lang="ts">
+import {nextTick, onMounted, onUpdated, ref, shallowRef} from 'vue';
 import SmoothSignature from 'smooth-signature';
 import {warning} from '@/utils/message.ts';
 import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
 import StarHorseDialog from '@/components/comp/StarHorseDialog.vue';
-import {checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
-export default defineComponent({
-  components: {StarHorseDialog, StarHorseIcon},
-  methods: {checkIsDisabled},
-  setup(_props, context) {
-    const parentField = context.attrs['parentField'];
-    const field = context.attrs['field'] as any;
-    let formItem = shallowRef({label: 'input', required: false});
-    let dataField = shallowRef('');
-    let previewDialog = shallowRef<boolean>(false);
-    let signature = ref<SmoothSignature>(null);
-    let canvas = ref();
-    const options = {
-      width: Math.min(window.innerWidth, 1000),
-      height: 600,
-      minWidth: 4,
-      maxWidth: 12,
-      // color: '#1890ff',
-      bgColor: '#f6f6f6'
-    };
-    const itemAction = () => {
-      context.emit('selfFunc');
-    };
-    const init = async () => {
-      await nextTick(() => {
-        let singatureCanvas = document.getElementById('singatureCanvas');
-        if (!signature.value && canvas.value && singatureCanvas) {
-          signature.value = new SmoothSignature(singatureCanvas, options);
-        }
-      });
-    };
-    const clear = (evt: MouseEvent) => {
-      evt && evt.defaultPrevented;
-      signature.value && signature.value.clear();
-    };
-    const undo = (evt: MouseEvent) => {
-      evt && evt.defaultPrevented;
-      signature.value && signature.value.undo();
-    };
 
-    const handleColor = (evt: MouseEvent) => {
-      evt && evt.defaultPrevented;
-      signature.value.color = '#' + Math.random().toString(16).slice(-6);
-    };
-    const handlePreview = (evt: MouseEvent) => {
-      evt && evt.defaultPrevented;
-      const isEmpty = signature.value.isEmpty();
-      if (isEmpty) {
-        warning('请先签名');
-        return;
-      }
-      previewDialog.value = true;
-      // const pngUrl = signature.value.getPNG();
-      // imagesPreview(pngUrl);
-      // window.previewImage(pngUrl);
-    };
-    onMounted(() => {
-      init();
-    });
-    onUpdated(() => {
-      init();
-    });
-    return {
-      parentField,
-      context,
-      field,
-      formItem,
-      dataField,
-      handlePreview,
-      itemAction,
-      clear,
-      undo,
-      handleColor,
-      canvas,
-      signature,
-      previewDialog
-    };
+const props = defineProps({
+  isDesign: {
+    type: Boolean,
+    default: false
+  },
+  disabled: {
+    type: Boolean,
+    default: false
+  },
+  bareFlag: {
+    type: Boolean,
+    default: false
+  }, isSearch: {
+    type: Boolean,
+    default: false
+  },
+  field: {
+    type: Object,
+    default: {}
+  },
+  parentField: {
+    type: Object,
+    default: {}
+  },
+  formInfo: {
+    type: Object,
+    default: {}
   }
+});
+const emits = defineEmits(['selfFunc', 'selectItem']);
+const formData = defineModel("formData");
+let previewDialog = shallowRef<boolean>(false);
+let signature = ref<SmoothSignature>(null);
+let canvas = ref();
+const options = {
+  width: Math.min(window.innerWidth, 1000),
+  height: 600,
+  minWidth: 4,
+  maxWidth: 12,
+  // color: '#1890ff',
+  bgColor: '#f6f6f6'
+};
+const itemAction = () => {
+  context.emit('selfFunc');
+};
+const init = async () => {
+  await nextTick(() => {
+    let singatureCanvas = document.getElementById('singatureCanvas');
+    if (!signature.value && canvas.value && singatureCanvas) {
+      signature.value = new SmoothSignature(singatureCanvas, options);
+    }
+  });
+};
+const clear = (evt: MouseEvent) => {
+  evt && evt.defaultPrevented;
+  signature.value && signature.value.clear();
+};
+const undo = (evt: MouseEvent) => {
+  evt && evt.defaultPrevented;
+  signature.value && signature.value.undo();
+};
+
+const handleColor = (evt: MouseEvent) => {
+  evt && evt.defaultPrevented;
+  signature.value.color = '#' + Math.random().toString(16).slice(-6);
+};
+const handlePreview = (evt: MouseEvent) => {
+  evt && evt.defaultPrevented;
+  const isEmpty = signature.value.isEmpty();
+  if (isEmpty) {
+    warning('请先签名');
+    return;
+  }
+  previewDialog.value = true;
+  // const pngUrl = signature.value.getPNG();
+  // imagesPreview(pngUrl);
+  // window.previewImage(pngUrl);
+};
+onMounted(() => {
+  init();
+});
+onUpdated(() => {
+  init();
 });
 </script>
 <template>
@@ -94,15 +100,15 @@ export default defineComponent({
     <el-image :src="signature.getPNG()"/>
   </star-horse-dialog>
   <starhorse-form-item
-      :isDesign="context.attrs['isDesign']"
-      :disabled="context.attrs['disabled']"
-      :bareFlag="context.attrs['bareFlag']"
-      :form-item="field"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      :formItem="field"
       :parentField="parentField"
   >
     <div class="pcDemo">
       <div class="inner_button">
-        <el-menu mode="horizontal" style="height: inherit; width: 100%" >
+        <el-menu mode="horizontal" style="height: inherit; width: 100%">
           <el-menu-item @click="clear">
             <el-tooltip content="清除">
               <star-horse-icon icon-class="reset"/>

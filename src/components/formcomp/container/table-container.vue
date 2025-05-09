@@ -12,7 +12,6 @@ const props = defineProps({
   isDesign: {type: Boolean, default: false},
   disabled: {type: Object as PropType<Boolean | String>},
   formInfo: {type: Object as PropType<any>},
-  formData: {type: Object as PropType<any>},
   field: {type: Object as PropType<any>}
 });
 let designForm = useDesignFormStore(piniaInstance);
@@ -20,6 +19,7 @@ let draggingItem = computed(() => designForm.draggingItem);
 let excludeContainerType: Array<string> = ['box', 'tab', 'table', 'dytable', 'collapse', 'card'];
 let isEdit = computed(() => designForm.isEdit);
 const isDragging = computed(() => designForm.isDragging);
+const formData = defineModel("formData");
 const getComponentName = (data: any) => {
   return data?.itemType + '-item';
 };
@@ -148,7 +148,7 @@ const deleteCol = (index: number) => {
                       :formInfo="formInfo"
                       :is="getComponentName(data)"
                       :parentField="field"
-                      :formData="formData"
+                      v-model:formData="formData"
                   />
                 </div>
               </template>

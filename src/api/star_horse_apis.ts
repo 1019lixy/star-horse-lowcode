@@ -396,7 +396,6 @@ export function httpRequest(url: string, method: string, data: any) {
  * Post Upload 请求
  * @param url
  * @param data
- * @returns {Promise<AxiosResponse<any>>}
  */
 export function uploadRequest(url: string, data: Array<any>) {
     return service.post(url, data, {headers: {'Content-Type': 'multipart/form-data'}});

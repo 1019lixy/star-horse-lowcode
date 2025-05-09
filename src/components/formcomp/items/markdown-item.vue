@@ -1,13 +1,13 @@
 <template>
   <starhorse-form-item
-      :isDesign="context.attrs['isDesign']"
-      :disabled="context.attrs['disabled']"
-      :bareFlag="context.attrs['bareFlag']"
-      :form-item="field"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      :formItem="field"
       :parentField="parentField"
   >
     <MdEditor
-        v-model="context.attrs['formData'][field.preps['name']]"
+        v-model="formData[field.preps['name']]"
         :theme="field.preps['theme'] || 'light'"
         :language="field.preps['language'] || 'zh-CN'"
         :previewTheme="field.preps['previewTheme'] || 'default'"
@@ -18,48 +18,52 @@
   </starhorse-form-item>
 </template>
 <script lang="ts" name="markdown">
-import {defineComponent, onMounted, onUpdated, ref, shallowRef} from 'vue';
-import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
-import {MdEditor} from 'md-editor-v3';
+import {onMounted, onUpdated} from 'vue';
+import {allAction} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
 import 'md-editor-v3/lib/style.css';
 
-export default defineComponent({
-  components: {MdEditor},
-  methods: {checkIsDisabled},
-  setup(_props, context) {
-    const parentField = context.attrs['parentField'];
-
-    const field = context.attrs['field'] as any;
-    let formItem = shallowRef({label: 'input', required: false});
-    let dataField = shallowRef('');
-    let defaultLeftToolBar = shallowRef<string>(
-        'undo redo clear | h bold italic strikethrough quote | ul ol table hr | link image code'
-    );
-    let defaultRightToolBar = shallowRef<string>('preview toc sync-scroll fullscreen');
-    let markdownEditor = ref();
-    const itemAction = () => {
-      allAction(context, 'change');
-    };
-    const init = async () => {
-    };
-    onMounted(() => {
-      init();
-    });
-    onUpdated(() => {
-      init();
-    });
-    return {
-      parentField,
-      context,
-      field,
-      formItem,
-      dataField,
-      markdownEditor,
-      itemAction,
-      defaultLeftToolBar,
-      defaultRightToolBar
-    };
+const props = defineProps({
+  isDesign: {
+    type: Boolean,
+    default: false
+  },
+  disabled: {
+    type: Boolean,
+    default: false
+  },
+  bareFlag: {
+    type: Boolean,
+    default: false
+  }, isSearch: {
+    type: Boolean,
+    default: false
+  },
+  field: {
+    type: Object,
+    default: {}
+  },
+  parentField: {
+    type: Object,
+    default: {}
+  },
+  formInfo: {
+    type: Object,
+    default: {}
   }
+});
+const emits = defineEmits(['selfFunc', 'selectItem']);
+const formData = defineModel("formData");
+
+const itemAction = () => {
+  allAction(props, emits, formData, 'change');
+};
+const init = async () => {
+};
+onMounted(() => {
+  init();
+});
+onUpdated(() => {
+  init();
 });
 </script>
 <style lang="scss" scoped>

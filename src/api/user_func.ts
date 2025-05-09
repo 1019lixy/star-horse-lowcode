@@ -1,12 +1,12 @@
-import {useSelfOperationStore} from '@/store/SelfOperation.ts';
-import piniaInstance from '@/store';
-import {download, getRequest, postRequest, uploadRequest} from '@/api/star_horse_apis.ts';
-import {getUserInfo} from '@/utils/auth.ts';
-import {Ref} from 'vue';
-import {createCondition} from '@/api/star_horse_utils.ts';
-import {success, warning} from '@/utils/message.ts';
-import {UserFuncInfo} from '@/components/types/PageFieldInfo';
-import {useRouter} from 'vue-router';
+import {useSelfOperationStore} from "@/store/SelfOperation.ts";
+import piniaInstance from "@/store";
+import {download, getRequest, postRequest,uploadRequest} from "@/api/star_horse_apis.ts";
+import {getUserInfo} from "@/utils/auth.ts";
+import {Ref} from "vue";
+import {createCondition} from "@/api/star_horse_utils.ts";
+import {success, warning} from "@/utils/message.ts";
+import router from "@/router";
+import {UserFuncInfo} from "@/components/types/PageFieldInfo";
 
 /**
  * 动态表单用户自定义驱动
@@ -16,8 +16,10 @@ const userOperation = useSelfOperationStore(piniaInstance);
  * 用户自定义事件对接接口
  * @param code 需要执行的代码
  * @param context 组件上下文信息
+ * @param formData
+ * @param formInfo
  */
-export const userFunction = (code: string, context: any) => {
+export const userFunction = (code: string, context: any, formData: any) => {
     if (!code) {
         return;
     }
@@ -39,21 +41,21 @@ export const userFunction = (code: string, context: any) => {
      * upload 上传数据接口
      */
     const fun = new Function(
-        'currentField',
-        'formData',
-        'formFields',
-        'formInstance',
-        'userInfo',
-        'postRequest',
-        'getRequest',
-        'download',
-        'upload',
+        "currentField",
+        "formData",
+        "formFields",
+        "formInstance",
+        "userInfo",
+        "postRequest",
+        "getRequest",
+        "download",
+        "upload",
         code
     );
     fun.call(
         this,
-        context.attrs['formInfo'],
-        context.attrs['formData'],
+        context.formInfo,
+        formData,
         formFields,
         formInstance,
         getUserInfo(),
@@ -75,10 +77,10 @@ export function userAction(tableRef: Ref, primaryKey: string, datas: Array<any>)
     const btnList: Array<UserFuncInfo> = [];
     if (datas && datas.length > 0) {
         datas.forEach((item: any) => {
-            const content = item['funcName'];
-            if (item['eventType'] == 'interface') {
-                if (item['authority'] == 'download') {
-                    item['funcName'] = (row: any) => {
+            const content = item["funcName"];
+            if (item["eventType"] == "interface") {
+                if (item["authority"] == "download") {
+                    item["funcName"] = (row: any) => {
                         const fieldList: any = [];
                         fieldList.push(createCondition(primaryKey, row[primaryKey]));
                         download(content, {
@@ -88,7 +90,7 @@ export function userAction(tableRef: Ref, primaryKey: string, datas: Array<any>)
                         });
                     };
                 } else {
-                    item['funcName'] = (row: any) => {
+                    item["funcName"] = (row: any) => {
                         const fieldList: any = [];
                         fieldList.push(createCondition(primaryKey, row[primaryKey]));
                         postRequest(content, {
@@ -98,18 +100,17 @@ export function userAction(tableRef: Ref, primaryKey: string, datas: Array<any>)
                                 warning(res.data.cnMessage);
                                 return;
                             }
-                            success('操作成功');
+                            success("操作成功");
                             tableRef.value?.loadByPage();
                         });
                     };
                 }
-            } else if (item['eventType'] == 'dialog') {
+            } else if (item["eventType"] == "dialog") {
                 //弹出对话框
-                warning('暂未实现');
-            } else if (item['eventType'] == 'page') {
+                warning("暂未实现");
+            } else if (item["eventType"] == "page") {
                 //打开页面
-                item['funcName'] = (row: any) => {
-                    let router= useRouter()&&window.__hostRouter__;
+                item["funcName"] = (row: any) => {
                     router.push({
                         path: content,
                         query: {

@@ -1,15 +1,15 @@
 <template>
   <starhorse-form-item
-      :isDesign="context.attrs['isDesign']"
-      :disabled="context.attrs['disabled']"
-      :bareFlag="context.attrs['bareFlag']"
-      :form-item="field"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      :formItem="field"
       :parentField="parentField"
   >
     <el-input
         v-if="field.preps['assignType'] == 'url'"
         :placeholder="field.preps['placeholder'] || '请输入图片地址：如：http://localhost/assert/test.jpg'"
-        v-model="context.attrs['formData'][field.preps['name']]"
+        v-model="formData[field.preps['name']]"
     >
       <template #append>
         <el-upload
@@ -44,8 +44,8 @@
     <div class="image-area" v-else>
       <el-image
           :style="{
-          width: context.attrs['formData'][field.preps['name']] ? field.preps['width'] || '100px' : '100%',
-          height: context.attrs['formData'][field.preps['name']] ? field.preps['height'] || '100px' : '100%'
+          width: formData[field.preps['name']] ? field.preps['width'] || '100px' : '100%',
+          height: formData[field.preps['name']] ? field.preps['height'] || '100px' : '100%'
         }"
           :zoom-rate="field.preps['zoomRate'] || 1.2"
           :max-scale="field.preps['maxScale'] || 2"
@@ -54,7 +54,7 @@
           :initial-index="field.preps['initialIndex'] || 5"
           :fit="field.preps['fit'] || 'contain'"
           :fid="field.preps['name']"
-          :src="context.attrs['formData'][field.preps['name']] || ''"
+          :src="formData[field.preps['name']] || ''"
       >
         <template #error>
           <el-upload
@@ -96,7 +96,7 @@
           </div>
         </template>
       </el-image>
-      <div class="image-remove" v-if="context.attrs['formData'][field.preps['name']] && context.attrs['isDesign']">
+      <div class="image-remove" v-if="formData[field.preps['name']] &&isDesign">
         <el-tooltip content="删除图片">
           <el-button title="" size="small" type="text" @click="removeImage">
             <star-horse-icon icon-class="delete" color="var(--el-color-danger)" cursor="pointer"/>
@@ -106,71 +106,78 @@
     </div>
   </starhorse-form-item>
 </template>
-<script lang="ts">
-import {defineComponent, onMounted, shallowRef} from 'vue';
-import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
+<script setup lang="ts">
+import {onMounted, shallowRef} from 'vue';
+import {allAction} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
 import {Picture as IconPicture} from '@element-plus/icons-vue';
 import {getToken} from '@/utils/auth.ts';
 
-export default defineComponent({
-  methods: {getToken,checkIsDisabled},
-  components: {
-    IconPicture
+const props = defineProps({
+  isDesign: {
+    type: Boolean,
+    default: false
   },
-  setup(_props, context) {
-    const parentField = context.attrs['parentField'];
-
-    const field = context.attrs['field'] as any;
-    let formItem = shallowRef({label: 'input', required: false});
-    let dataField = shallowRef('');
-    let actionName = shallowRef('change');
-    let defaultAction = '/system-config/annex/upload/common';
-    let defaultViewList = shallowRef([]);
-    const itemAction = (prep: any) => {
-      allAction(context, prep);
-    };
-    const removeImage = () => {
-      console.log(context.attrs);
-      context.attrs['formData'][field.preps['name']] = '';
-      defaultViewList.value = [];
-    };
-    const selfAction = (prep: any, uploadFile: any, uploadFiles: any = [], param: any = {}) => {
-      if (prep == 'success') {
-        let result = param.data;
-        let path = (field.preps['context'] || '/system-config') + result.path;
-        context.attrs['formData'][field.preps['name']] = path;
-        defaultViewList.value.push(path);
-        //默认将上传成功的属性存入数据对象
-        if (!field.preps['keepResult'] || field.preps['keepResult'] == 'Y') {
-          Object.entries(result).forEach(([key, value]) => {
-            context.attrs['formData'][key] = value;
-          });
-        }
-        //console.log(param.data.path);
-      }
-      context.emit('selfFunc', prep, uploadFile, uploadFiles, param);
-    };
-    onMounted(() => {
-      actionName.value = field.preps?.actionName || 'normal';
-      if (!context.attrs['isSearch']) {
-        allAction(context, actionName.value, true);
-      }
-    });
-    return {
-      parentField,
-      context,
-      field,
-      formItem,
-      dataField,
-      itemAction,
-      actionName,
-      selfAction,
-      removeImage,
-      defaultAction,
-      defaultViewList
-    };
+  disabled: {
+    type: Boolean,
+    default: false
+  },
+  bareFlag: {
+    type: Boolean,
+    default: false
+  }, isSearch: {
+    type: Boolean,
+    default: false
+  },
+  field: {
+    type: Object,
+    default: {}
+  },
+  parentField: {
+    type: Object,
+    default: {}
+  },
+  formInfo: {
+    type: Object,
+    default: {}
   }
 });
+const emits = defineEmits(['selfFunc', 'selectItem']);
+const formData = defineModel("formData");
+
+let actionName = shallowRef('change');
+let defaultAction = '/system-config/annex/upload/common';
+let defaultViewList = shallowRef([]);
+const itemAction = (prep: any) => {
+  allAction(props, emits, formData, prep);
+};
+const removeImage = () => {
+
+  formData[props.field.preps['name']] = '';
+  defaultViewList.value = [];
+};
+const selfAction = (prep: any, uploadFile: any, uploadFiles: any = [], param: any = {}) => {
+  if (prep == 'success') {
+    let result = param.data;
+    let path = (props.field.preps['context'] || '/system-config') + result.path;
+    formData[props.field.preps['name']] = path;
+    defaultViewList.value.push(path);
+    //默认将上传成功的属性存入数据对象
+    if (!props.field.preps['keepResult'] || props.field.preps['keepResult'] == 'Y') {
+      Object.entries(result).forEach(([key, value]) => {
+        formData[key] = value;
+      });
+    }
+    //console.log(param.data.path);
+  }
+  emits('selfFunc', prep, uploadFile, uploadFiles, param);
+};
+onMounted(() => {
+  actionName.value = props.field.preps?.actionName || 'normal';
+  if (!props.isSearch) {
+    allAction(props, emits, formData, actionName.value, true);
+  }
+});
+
 </script>
 <style lang="scss" scoped>
 .image-area {
