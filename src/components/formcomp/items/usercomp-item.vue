@@ -11,11 +11,8 @@
         :isDesign="context.attrs['isDesign']"
         :disabled="context.attrs['disabled']"
         :bareFlag="context.attrs['bareFlag']"
-        :nodeFieldList="field['preps'].params?.nodeFieldList"
-        :lineFieldList="field['preps'].params?.lineFieldList"
-        :customerItems="field['preps'].params?.nodeList"
         :readonly="field['preps']['readonly'] == 'Y'"
-        :preps="field['preps']"
+        v-bind="field['preps']"
         v-model:dataForm="context.attrs['formData']"
     />
   </starhorse-form-item>

@@ -117,6 +117,7 @@ declare module 'vue' {
     OtherItem: typeof import('./src/components/comp/items/otherItem.vue')['default']
     PageSelectItem: typeof import('./src/components/formcomp/items/page-select-item.vue')['default']
     PasswordItem: typeof import('./src/components/formcomp/items/password-item.vue')['default']
+    QrcodeItem: typeof import('./src/components/formcomp/items/qrcode-item.vue')['default']
     RadioItem: typeof import('./src/components/formcomp/items/radio-item.vue')['default']
     RateItem: typeof import('./src/components/formcomp/items/rate-item.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

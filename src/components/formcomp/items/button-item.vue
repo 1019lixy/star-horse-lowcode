@@ -35,7 +35,7 @@
         :round="field?.preps['round'] == 'Y'"
         :size="context.attrs.formInfo?.size || field?.preps['size'] || 'default'"
         :text="field?.preps['text'] == 'Y'"
-        @click="dynamicFunc(field?.preps['click'])"
+        @click="dynamicFunc()"
         :type="field?.preps['type']"
     >
       <star-horse-icon
@@ -82,7 +82,6 @@ export default defineComponent({
       } else {
         formData = await btnCompRef.value?.getFormData().value;
       }
-      debugger;
       context.attrs['formData'][field.preps['name']] = JSON.stringify(unref(formData));
       close();
     };
@@ -125,7 +124,6 @@ export default defineComponent({
         }
         httpRequest(action.url!, action.method ?? 'POST', urlParam).then((res: any) => {
           //仅仅执行，则直接调用接口
-          console.log(res);
           let reData = res.data;
           if (reData.code) {
             warning(reData.cnMessage);
@@ -159,10 +157,11 @@ export default defineComponent({
         }
         buttonAction(context, action.code);
       } else if (action?.viewType == 'method') {
-        if (!action.code) {
-          warning('请提供需要执行的函数名');
+        if (!action.actions) {
+          warning('请提供需要执行的函数');
           return;
         }
+        action.actions(context.attrs['formData'])
       } else {
         btnDialogVisible.value = true;
       }

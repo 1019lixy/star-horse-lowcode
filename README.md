@@ -188,3 +188,4 @@ onMounted(() => {
               修复表单组件dytable选择td不生效问题
 5. 2025-04-29 修改svg图标为字体图标
 6. 2025-05-07 优化star-horse-table-comp组件，当属性类别为日期类型时，自动格式化日期
+7. 2025-05-08 增加qrcode组件,优化StarHorseFormList组件动态添加行，定位到最底部

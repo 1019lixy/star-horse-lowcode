@@ -15,7 +15,7 @@ export declare interface DynamicParamField {
  */
 export declare interface BtnAction {
     //视图类型
-    viewType: string;
+    viewType: "inter"|"comp" | "code" | "method";
     //动态表单参数
     idDynamicForm?: string,
     //动态组件名称
@@ -41,6 +41,10 @@ export declare interface BtnAction {
      */
 
     afterAction?: string,
+    /**
+     * 执行函数
+     */
+    actions?: Function,
     /**
      * js代码块
      */

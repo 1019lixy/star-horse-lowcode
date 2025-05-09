@@ -490,7 +490,9 @@ export function copy(msg: string) {
  * @param rowIndex
  */
 export function rowClassName({row, rowIndex}: any) {
-    row.xh = rowIndex + 1;
+    if (row) {
+        row.xh = rowIndex + 1;
+    }
 }
 
 /**

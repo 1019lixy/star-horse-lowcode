@@ -5,7 +5,6 @@ import piniaInstance from '@/store';
 import {useSelfOperationStore} from '@/store/SelfOperation.ts';
 import {useDesignFormStore} from '@/store/DesignForm.ts';
 import {computed} from 'vue';
-import {SelectOption} from '@/components/types';
 
 const designForm = useDesignFormStore(piniaInstance);
 const userOperation = useSelfOperationStore(piniaInstance);

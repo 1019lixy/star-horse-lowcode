@@ -40,3 +40,4 @@ export {default as uploadItem} from './upload-item.vue';
 export {default as userItem} from './user-item.vue';
 export {default as usercompItem} from './usercomp-item.vue';
 export {default as viewMarkdownItem} from './view-markdown-item.vue';
+export {default as qrcodeItem} from './qrcode-item.vue';
