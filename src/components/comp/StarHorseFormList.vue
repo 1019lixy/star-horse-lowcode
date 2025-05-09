@@ -1,5 +1,5 @@
 <script lang="ts" setup name="StarHorseFormList">
-import {inject, nextTick, onMounted, PropType, ref, ShallowReactive} from 'vue';
+import {inject, ModelRef, nextTick, onMounted, PropType, ref, ShallowReactive, watch} from 'vue';
 import {ApiUrls} from '@/components/types/ApiUrls';
 import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
 import {rowClassName} from '@/api/star_horse_utils.ts';
@@ -9,7 +9,6 @@ import {getToken} from '@/utils/auth';
 import Sortable from 'sortablejs';
 import {Sort} from '@element-plus/icons-vue';
 import Help from '@/components/help.vue';
-import {ModelRef} from 'vue';
 import {uuid} from '@/api/system.ts';
 import UTableColumn from '@/components/comp/items/UTableColumn.vue';
 import StarHorseForm from '@/components/comp/StarHorseForm.vue';
@@ -32,6 +31,8 @@ const props = defineProps({
   staticColumn: {type: String, default: 'N'},
   size: {type: String, default: Config.compSize},
   isView: {type: Boolean, default: false},
+  showCheckBox: {type: Boolean, default: false},
+  selectAll: {type: Boolean, default: false},
   subFlag: {type: Boolean, default: false}
 });
 const emits = defineEmits(['addRow', 'removeRow']);
@@ -105,6 +106,17 @@ const dynamicHandleAddRow = (row: any, type: number) => {
       temp.actions(dataForm, 'oper');
     }
   }
+  // 添加滚动逻辑
+  const tableEl = starHorseFormListRef.value?.$el
+  const scrollContainer = tableEl?.querySelector('.el-table--scrollable-y .el-scrollbar__wrap')
+  if (scrollContainer) {
+    // 获取首行高度
+    const firstRow = scrollContainer.querySelector('.el-table__row')
+    const rowHeight = firstRow ? firstRow.offsetHeight : 42 // 默认42px
+    // 增量滚动（当前滚动位置 + 行高）
+    scrollContainer.scrollTop += rowHeight
+  }
+
 };
 const getRowIdentity = (row: any) => {
   return (row.xh || 0) + 1;
@@ -212,7 +224,20 @@ const init = async () => {
 onMounted(async () => {
   await init();
 });
-
+watch(
+    () => dataForm.value[props.batchName],
+    (val) => {
+      if (val && val.length > 0 && props.showCheckBox && props.selectAll) {
+        nextTick(() => {
+          // 改用原生全选方法
+          starHorseFormListRef.value?.toggleAllSelection(true);
+        })
+      }
+    }, {
+      immediate: false,
+      deep: true
+    }
+)
 </script>
 <template>
   <star-horse-dialog
@@ -295,13 +320,14 @@ onMounted(async () => {
         border
         sortable
         :size="size"
-        :row-key="getRowIdentity"
         :strip="true"
+        :row-key="getRowIdentity"
         :highlight-current-row="true"
         :row-class-name="rowClassName"
         ref="starHorseFormListRef"
         class="sh-columns"
         :stripe="true"
+        :virtual="true"
         :header-cell-style="{
         background: '#f2f2f2',
         color: '#707070',
@@ -310,7 +336,7 @@ onMounted(async () => {
       }"
         :cell-style="{ 'font-size': '12px' }"
     >
-      <el-table-column type="selection" fixed="left" width="50" align="center" v-if="false"/>
+      <el-table-column type="selection" fixed="left" width="50" align="center" v-if="showCheckBox"/>
       <el-table-column label="序号" align="center" prop="xh" width="50"/>
       <el-table-column prop="" label="排序" width="60">
         <template #default="scope">
@@ -406,7 +432,7 @@ onMounted(async () => {
 
 :deep(.el-form-item) {
   font-size: 11px;
- /* margin-bottom: 1px;*/
+  /* margin-bottom: 1px;*/
 }
 
 :deep(.el-input__inner),

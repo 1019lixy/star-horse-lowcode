@@ -438,7 +438,7 @@ export function loadElementPlusIcon() {
  * 自定义的svg图标
  */
 export function loadSvgIcons() {
-    const items = import.meta.glob('@/icons/*.svg');
+    const items = import.meta.glob('/src/icons/*.svg');
     const menuIconList = [];
     for (const item of Object.entries(items)) {
         const key = item[0];
@@ -490,7 +490,9 @@ export function copy(msg: string) {
  * @param rowIndex
  */
 export function rowClassName({row, rowIndex}: any) {
-    row.xh = rowIndex + 1;
+    if (row) {
+        row.xh = rowIndex + 1;
+    }
 }
 
 /**

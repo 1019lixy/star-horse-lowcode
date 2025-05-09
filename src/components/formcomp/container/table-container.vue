@@ -161,6 +161,22 @@ const deleteCol = (index: number) => {
   </group-box-container>
 </template>
 <style lang="scss" scoped>
+table {
+  display: table;
+  border-collapse: separate;
+  box-sizing: border-box;
+  text-indent: initial;
+  unicode-bidi: isolate;
+  border-spacing: 2px;
+  border-color: gray;
+}
+tr {
+  display: table-row;
+  vertical-align: inherit;
+  unicode-bidi: isolate;
+  border-color: inherit;
+}
+
 .container-thead tr {
   background: var(--star-horse-shadow);
   height: 35px;
@@ -199,6 +215,7 @@ tr {
 
 .dynamic-table {
   width: 100%;
+  border-collapse: collapse;
 
   thead {
     background: var(--star-horse-font-color);

@@ -2,6 +2,7 @@ import 'element-plus/theme-chalk/index.css';
 import '@/assets/css/index.scss';
 import '@/assets/css/flow.scss';
 import 'tailwindcss/index.css';
+import '@/assets/icons.css';
 import userComponent from '@/components/comp/selfcomp';
 import userContainerComponent from '@/components/comp/items/callitem';
 import itemComponent from '@/components/formcomp/items/allitem';
@@ -11,8 +12,6 @@ import systemComponent from '@/components/system/SystemComp';
 import App from '@/App.vue';
 import {createApp} from 'vue';
 import ElementPlus from 'element-plus';
-// 导入svg图标
-import 'virtual:svg-icons-register';
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'; // 中文
 import draggable from 'vuedraggable';
 import * as ElementPlusIconsVue from '@element-plus/icons-vue';

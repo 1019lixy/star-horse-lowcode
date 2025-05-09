@@ -35,7 +35,7 @@
         :round="field?.preps['round'] == 'Y'"
         :size="formInfo?.size || field?.preps['size'] || 'default'"
         :text="field?.preps['text'] == 'Y'"
-        @click="dynamicFunc(field?.preps['click'])"
+        @click="dynamicFunc(field?.preps['code'] )"
         :type="field?.preps['type']"
     >
       <star-horse-icon

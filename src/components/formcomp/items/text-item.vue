@@ -55,8 +55,8 @@ const tagType = (val: any) => {
       <div :style="{
         display: 'flex',
         verticalAlign: field.preps['verticalAlign']??'middle',
-        justifyContent: field.preps['justifyContent']??'center',
-        alignItems: field.preps['alignItems']??'center',
+        justifyContent: field.preps['justifyContent']??'left',
+        alignItems: field.preps['alignItems']??'left',
         wordBreak: field.preps['wordBreak']??'normal',
         width: field.preps['width']??'100%',
         height:  field.preps['height']??'100%',
@@ -64,7 +64,8 @@ const tagType = (val: any) => {
         color: field.preps['color']??'inherit',
         backgroundColor: field.preps['backgroundColor']??'none',
         borderRadius: field.preps['fontWeight']??'none',
-        border: field.preps['border']??'none'
+        border: field.preps['border']??'none',
+        margin:' 0 5px'
       }">{{ field.preps["textContent"] || field.preps["placeholder"] }}
       </div>
     </div>

@@ -202,4 +202,19 @@ const checkIsDisabled = (attrs: any) => {
 
     return isExplicitlyDisabled || isImplicitlyDisabled;
 };
-export {allAction, buttonAction, checkIsDisabled};
+const useFormField = (context: any, field: any) => {
+    const fieldName = computed(() => field.preps.name);
+    const updateFormData = (value: any) => {
+        const newData =context.attrs.formData;
+        newData[fieldName.value] = value;
+        // context.emit('form-data-update', newData);
+    };
+
+    return {
+        fieldValue: computed({
+            get: () => context.attrs.formData[fieldName.value],
+            set: updateFormData
+        })
+    };
+}
+export {allAction, buttonAction, checkIsDisabled, useFormField};

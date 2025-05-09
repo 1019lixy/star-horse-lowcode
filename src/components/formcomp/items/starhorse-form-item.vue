@@ -1,5 +1,5 @@
 <script setup lang="ts" name="starhorse-form-item">
-import {computed, onMounted, PropType, ref} from 'vue';
+import {computed, onMounted, PropType, ref,shallowRef} from 'vue';
 import {useDesignFormStore} from '@/store/DesignForm.ts';
 import piniaInstance from '@/store/index.ts';
 import StarHorseDialog from '@/components/comp/StarHorseDialog.vue';
@@ -23,22 +23,18 @@ const props = defineProps({
 });
 let designForm = useDesignFormStore(piniaInstance);
 let isEdit = computed(() => designForm.isEdit);
-// let refresh = computed(() => designForm.refresh);
-// let compList = computed(() => designForm.compList);
 let currentItemId = computed(() => designForm.currentItemId);
+const isDisabled = computed(() => props.disabled === true || props.disabled == 'Y');
+
 let componentVisible = computed(() => {
   return designForm.componentVisible && currentItemId.value == props.formItem?.preps.id;
 });
 const selectParentContainer = () => {
-  if (!isEdit.value || props.disabled === true || props.disabled == 'Y') {
-    return;
-  }
+  if (!isEdit.value || isDisabled.value) return;
   designForm.selectItem(props.parentField, '', 'container');
 };
 const selectData = (data: any) => {
-  if (!isEdit.value || props.disabled === true || props.disabled == 'Y') {
-    return;
-  }
+  if (!isEdit.value || isDisabled.value) return;
   designForm.selectItem(props.formItem, data.itemType, getParentComp(props.parentField));
 };
 

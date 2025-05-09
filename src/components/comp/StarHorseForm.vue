@@ -8,7 +8,7 @@ import {
   onMounted,
   PropType,
   ref,
-  ShallowReactive, unref,
+  ShallowReactive, unref,toRef,
   watch
 } from 'vue';
 import {ApiUrls} from '@/components/types/ApiUrls';
@@ -53,7 +53,9 @@ let userOperation = useSelfOperationStore(piniaInstance);
 //刷新事件，数据已加载事件，导出数据更新数据
 const emits = defineEmits(['refresh', 'dataLoaded', 'exportData', 'removeRow', 'addRow']);
 const starHorseFormRef = ref(null);
-const dataForm = ref<any>({});
+const dataForm = props.outerFormData
+    ? toRef(props, 'outerFormData')
+    : ref({});
 //更新外面传进来的数据
 
 const exportData = () => {
@@ -396,7 +398,7 @@ defineExpose({
         :rules="rules"
         :scroll-to-error="true"
         :scroll-into-view-options="true"
-        :inline-message="true"
+        :inline-message="false"
         :status-icon="true"
         :label-position="labelPosition"
         require-asterisk-position="right"
