@@ -1,7 +1,7 @@
-import {defineStore} from 'pinia';
-import {SelectOption} from '@/components/types/SearchProps';
-import {Config} from '@/api/settings.ts';
-import {ref, unref} from 'vue';
+import { defineStore } from 'pinia';
+import { SelectOption } from '@/components/types/SearchProps';
+import { Config } from '@/api/settings.ts';
+import { ref, unref } from 'vue';
 
 export const useDesignFormStore = defineStore('designForm', () => {
     const containerList = ref<Array<any>>([]);
@@ -10,6 +10,7 @@ export const useDesignFormStore = defineStore('designForm', () => {
     const allFormDataList = ref<Array<any>>([]);
     const formInfo = ref<any>({});
     const compList = ref<any>([]);
+    const compListNoLayer = ref<any>([]);
     const formData = ref<any>({});
     const currentComp = ref<Array<any> | any>();
     const currentItemType = ref<string>('');
@@ -148,69 +149,103 @@ export const useDesignFormStore = defineStore('designForm', () => {
         compList.value = comps;
     };
     /**
-     * 获取属性列表
+     * 通过组件Id查找数据
+     * @param itemId 组件Id
+     * @returns 
+     */
+    const selectItemById = (itemId: string) => {
+        if (compListNoLayer.value?.length == 0) {
+            loadCompNames();
+        }
+        return compListNoLayer.value?.find(item => item.id == itemId);
+    }
+    /**
+     * 获取属性列表，
+     * 如果要使用compListNoLayer 必须先调用loadCompNames 方法
      */
     const loadCompNames = () => {
+
         const innerFunc = (datas: Array<any>) => {
             const selectList: Array<any> = [];
+            const compList: Array<any> = [];
             for (const index in datas) {
                 const temp: any = datas[index];
                 if (temp.itemType == 'box' || temp.itemType == 'dytable') {
                     const elements = temp.preps.elements;
+                    const children: SelectOption[] = [];
                     for (const sindex in elements) {
                         const columns = elements[sindex].columns;
                         for (const ssindex in columns) {
                             const column = columns[ssindex];
                             if (column.items && column.items.length > 0) {
-                                selectList.push(
+                                children.push(
                                     ...column.items
-                                        ?.map((item: any) => ({name: item.preps?.label, type: 'item', value: item.preps?.name}))
+                                        ?.map((item: any) => ({ name: item.preps?.label, id: item.preps?.id, compType: "item", type: item.preps?.itemType, value: item.preps?.name }))
                                         .filter((item: SelectOption) => item.name)
                                 );
+                                compList.push(...column.items);
                             }
                         }
                     }
+                    selectList.push({
+                        name: temp.preps?.label ?? temp.preps?.itemNameLabel,
+                        value: temp.preps?.name,
+                        id: temp.preps?.id,
+                        type: temp.itemType,
+                        compType: "container",
+                        children: children
+                    });
                 } else if (temp.itemType == 'table') {
                     const elements = temp.preps.elements;
                     const children: SelectOption[] = [];
                     for (const index in elements) {
                         const element = elements[index];
-                        if (element.items && element.items.length > 0) {
+                        if (element.items?.length > 0) {
                             children.push(
                                 ...element.items
-                                    ?.map((item: any) => ({name: item.preps?.label, value: item.preps?.name}))
+                                    ?.map((item: any) => ({ name: item.preps?.label, id: item.preps?.id, compType: "item", type: item.itemType ?? item.preps?.itemType, value: item.preps?.name }))
                                     .filter((item: SelectOption) => item.name)
                             );
+                            compList.push(...element.items);
                         }
                     }
                     selectList.push({
                         name: temp.preps?.label,
                         value: temp.preps?.batchFieldName,
-                        type: 'container',
+                        id: temp.id, type: temp.itemType,
+                        compType: "container",
                         children: children
                     });
                 } else if (temp.itemType == 'tab' || temp.itemType == 'collapse' || temp.itemType == 'card') {
                     const elements = temp.preps?.elements;
                     for (const index in elements) {
                         const element = elements[index];
+                        const subItems = innerFunc(element.items);
                         selectList.push({
                             name: element.label,
                             value: element.objectName,
-                            type: 'container',
-                            children: innerFunc(element.items)
+                            id: temp.id, type: temp.itemType,
+                            compType: "container",
+                            children: subItems.selectList
                         });
+                        compList.push(...subItems.compList)
                     }
                 } else {
                     selectList.push({
                         name: temp.preps?.label,
                         value: temp.preps?.name,
-                        type: 'item'
+                        compType: "item",
+                        id: temp.preps?.id, type: temp.itemType ?? temp.preps?.itemType,
                     });
                 }
+                compList.push(temp);
             }
-            return selectList;
+            return { selectList, compList };
         };
-        return innerFunc(compList.value);
+
+        const resultDatas = innerFunc(compList.value);
+        compListNoLayer.value = resultDatas.compList;
+        return resultDatas.selectList;
     };
 
     /**
@@ -327,7 +362,7 @@ export const useDesignFormStore = defineStore('designForm', () => {
             tbName: 'tb' + ms
         };
         compList.value = [];
-        formData.value = {index: 1};
+        formData.value = { index: 1 };
         historyRecord.value = {
             index: -1,
             maxStep: 20,
@@ -379,6 +414,7 @@ export const useDesignFormStore = defineStore('designForm', () => {
         batchEditFieldVisible,
         previewVisible,
         shortKeyDisabled,
+        selectItemById,
         setAllFormDataList,
         setSelfFormDataList,
         setFormDataList,
