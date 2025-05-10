@@ -124,13 +124,13 @@ const selectItem = (row: any) => {
   //如果没有指定属性，则默认取相同的属性
   let name = props.field.preps['name'];
   if (!needField) {
-    formData[name] = data[name];
+    formData.value[name] = data[name];
   } else {
     needField.forEach((item: FieldMapping) => {
       if (needField.length == 1) {
-        formData[name] = data[item.sourceField];
+        formData.value[name] = data[item.sourceField];
       } else {
-        formData[item.distField] = data[item.sourceField];
+        formData.value[item.distField] = data[item.sourceField];
       }
     });
   }
@@ -155,7 +155,7 @@ const showVisible = () => {
     if (fields) {
       name = fields.map((item: FieldMapping) => item.sourceField)[0];
     }
-    dialogInputTableRef.value?.setDataInfo(name, formData[realName]);
+    dialogInputTableRef.value?.setDataInfo(name, formData.value[realName]);
   });
 };
 const searchData = (data: SearchParams[]) => {

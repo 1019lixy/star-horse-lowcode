@@ -1,7 +1,7 @@
 <template>
   {{ dataForm }}
   <el-input v-model="dataForm.txt1"/>
-  <input-item
+  <icon-item
       :formData="dataForm"
       :field="{
         preps: {

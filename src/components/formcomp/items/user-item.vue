@@ -133,14 +133,14 @@ const selectItem = (_row: any) => {
   }
 
   if (!needField) {
-    formData[name] = temp[name].join(' ');
-    formData[aliasName] = temp[aliasName].join(' ');
+    formData.value[name] = temp[name].join(' ');
+    formData.value[aliasName] = temp[aliasName].join(' ');
   } else {
     needField.forEach((item: FieldMapping) => {
       if (needField.length == 1) {
-        formData[name] = temp[item.sourceField].join(' ');
+        formData.value[name] = temp[item.sourceField].join(' ');
       } else {
-        formData[item.distField] = temp[item.distField].join(' ');
+        formData.value[item.distField] = temp[item.distField].join(' ');
       }
     });
   }
@@ -164,7 +164,7 @@ const showVisible = () => {
     if (fields) {
       name = fields.map((item: FieldMapping) => item.sourceField)[0];
     }
-    userTableRef.value.$refs.employeeInfoRef.setDataInfo(name, formData[realName]);
+    userTableRef.value.$refs.employeeInfoRef.setDataInfo(name, formData.value[realName]);
   });
 };
 </script>

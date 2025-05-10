@@ -55,7 +55,7 @@ const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
 onMounted(() => {
-  formData[props.field.preps['name']] = props.field.preps['content'];
+  formData.value[props.field.preps['name']] = props.field.preps['content'];
 });
 </script>
 <style scoped></style>

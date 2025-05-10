@@ -78,8 +78,6 @@ const props = defineProps({
 });
 const emits = defineEmits(['selfFunc', 'selectItem']);
 const formData = defineModel("formData");
-let formItem = shallowRef({label: 'input', required: false});
-let dataField = shallowRef('');
 let actionName = shallowRef('change');
 const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);

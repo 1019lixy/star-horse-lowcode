@@ -106,14 +106,14 @@ const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
 const maxEdit = () => {
-  if (!formData['_' + props.field.preps['name'] + 'Editable'] && props.field.preps['disabled'] == 'Y') {
+  if (!formData.value['_' + props.field.preps['name'] + 'Editable'] && props.field.preps['disabled'] == 'Y') {
     return;
   }
-  dataField.value = formData[props.field.preps['name']];
+  dataField.value = formData.value[props.field.preps['name']];
   editorDialogVisible.value = true;
 };
 const dataMerge = () => {
-  formData[props.field.preps['name']] = dataField.value;
+  formData.value[props.field.preps['name']] = dataField.value;
 };
 onMounted(() => {
   actionName.value =props.field.preps?.actionName || 'normal';

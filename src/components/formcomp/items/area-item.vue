@@ -80,14 +80,14 @@ const itemAction = (prep: any) => {
 const initData = async () => {
   await nextTick();
   props.field.preps['values'] = await compDynamicData(props.field.preps);
-  let data: any = formData[props.field.preps['name']];
+  let data: any = formData.value[props.field.preps['name']];
   if (data) {
-    formData[props.field.preps['name']] = JSON.parse(data);
+    formData.value[props.field.preps['name']] = JSON.parse(data);
   } else {
     //解决加载慢问题，导致数据没法回显
     setTimeout(() => {
-      let data: any = formData[props.field.preps['name']];
-      formData[props.field.preps['name']] = data ? JSON.parse(data) : [];
+      let data: any = formData.value[props.field.preps['name']];
+      formData.value[props.field.preps['name']] = data ? JSON.parse(data) : [];
     }, 200);
   }
 };

@@ -152,19 +152,19 @@ const itemAction = (prep: any) => {
 };
 const removeImage = () => {
 
-  formData[props.field.preps['name']] = '';
+  formData.value[props.field.preps['name']] = '';
   defaultViewList.value = [];
 };
 const selfAction = (prep: any, uploadFile: any, uploadFiles: any = [], param: any = {}) => {
   if (prep == 'success') {
     let result = param.data;
     let path = (props.field.preps['context'] || '/system-config') + result.path;
-    formData[props.field.preps['name']] = path;
+    formData.value[props.field.preps['name']] = path;
     defaultViewList.value.push(path);
     //默认将上传成功的属性存入数据对象
     if (!props.field.preps['keepResult'] || props.field.preps['keepResult'] == 'Y') {
       Object.entries(result).forEach(([key, value]) => {
-        formData[key] = value;
+        formData.value[key] = value;
       });
     }
     //console.log(param.data.path);
