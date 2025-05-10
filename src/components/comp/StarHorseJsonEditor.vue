@@ -57,7 +57,6 @@ defineExpose({
   <json-editor ref="editor"
                mode="text"
                v-model:text="json"
-
                :queryLanguagesIds="queryLanguages"
                class="json-editor"/>
 </template>

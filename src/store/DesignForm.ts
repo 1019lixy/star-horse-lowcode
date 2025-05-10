@@ -18,6 +18,7 @@ export const useDesignFormStore = defineStore('designForm', () => {
     const parentCompType = ref<string>('');
     const currentItemId = ref<string>('');
     const currentSubItemId = ref<string>('');
+    const currentSubTabName = ref<string>('');
     const isEdit = ref<boolean>(false);
     const componentVisible = ref<boolean>(false);
     const batchEditFieldVisible = ref<boolean>(false);
@@ -135,11 +136,14 @@ export const useDesignFormStore = defineStore('designForm', () => {
     const setSubItemId = (subItemId: string) => {
         currentSubItemId.value = subItemId;
     };
+    const setCurrentSubTabName = (tabName: string) => {
+        currentSubTabName.value = tabName;
+    }
     /**
      * 设置表单信息
      * @param formData
      */
-    const setFormInfo = (formData: any) => {
+    const setFormInfo = (formData: any) => {    
         formInfo.value = {
             ...unref(formInfo),
             ...formData
@@ -165,7 +169,7 @@ export const useDesignFormStore = defineStore('designForm', () => {
      */
     const loadCompNames = () => {
 
-        const innerFunc = (datas: Array<any>) => {
+        const innerFunc = (datas: Array<any>, tabName: string) => {
             const selectList: Array<any> = [];
             const compList: Array<any> = [];
             for (const index in datas) {
@@ -180,7 +184,11 @@ export const useDesignFormStore = defineStore('designForm', () => {
                             if (column.items && column.items.length > 0) {
                                 children.push(
                                     ...column.items
-                                        ?.map((item: any) => ({ name: item.preps?.label, id: item.preps?.id, compType: "item", type: item.preps?.itemType, value: item.preps?.name }))
+                                        ?.map((item: any) => ({
+                                            name: item.preps?.label, id: item.preps?.id, compType: "item",
+                                            tabName,
+                                            type: item.preps?.itemType, value: item.preps?.name
+                                        }))
                                         .filter((item: SelectOption) => item.name)
                                 );
                                 compList.push(...column.items);
@@ -191,6 +199,7 @@ export const useDesignFormStore = defineStore('designForm', () => {
                         name: temp.preps?.label ?? temp.preps?.itemNameLabel,
                         value: temp.preps?.name,
                         id: temp.preps?.id,
+                        tabName,
                         type: temp.itemType,
                         compType: "container",
                         children: children
@@ -203,7 +212,10 @@ export const useDesignFormStore = defineStore('designForm', () => {
                         if (element.items?.length > 0) {
                             children.push(
                                 ...element.items
-                                    ?.map((item: any) => ({ name: item.preps?.label, id: item.preps?.id, compType: "item", type: item.itemType ?? item.preps?.itemType, value: item.preps?.name }))
+                                    ?.map((item: any) => ({
+                                        name: item.preps?.label, id: item.preps?.id, compType: "item",
+                                        tabName, type: item.itemType ?? item.preps?.itemType, value: item.preps?.name
+                                    }))
                                     .filter((item: SelectOption) => item.name)
                             );
                             compList.push(...element.items);
@@ -212,6 +224,7 @@ export const useDesignFormStore = defineStore('designForm', () => {
                     selectList.push({
                         name: temp.preps?.label,
                         value: temp.preps?.batchFieldName,
+                        tabName,
                         id: temp.id, type: temp.itemType,
                         compType: "container",
                         children: children
@@ -220,10 +233,12 @@ export const useDesignFormStore = defineStore('designForm', () => {
                     const elements = temp.preps?.elements;
                     for (const index in elements) {
                         const element = elements[index];
-                        const subItems = innerFunc(element.items);
+                        const tempTabName = tabName ? tabName + "__" + element.tabName : tabName;
+                        const subItems = innerFunc(element.items, tempTabName);
                         selectList.push({
                             name: element.label,
                             value: element.objectName,
+                            tabName: tempTabName,
                             id: temp.id, type: temp.itemType,
                             compType: "container",
                             children: subItems.selectList
@@ -234,6 +249,7 @@ export const useDesignFormStore = defineStore('designForm', () => {
                     selectList.push({
                         name: temp.preps?.label,
                         value: temp.preps?.name,
+                        tabName,
                         compType: "item",
                         id: temp.preps?.id, type: temp.itemType ?? temp.preps?.itemType,
                     });
