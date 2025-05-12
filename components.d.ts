@@ -11,6 +11,7 @@ declare module 'vue' {
     AreaItem: typeof import('./src/components/formcomp/items/area-item.vue')['default']
     AudioItem: typeof import('./src/components/formcomp/items/audio-item.vue')['default']
     AutocompleteItem: typeof import('./src/components/formcomp/items/autocomplete-item.vue')['default']
+    BarcodeItem: typeof import('./src/components/formcomp/items/barcode-item.vue')['default']
     BoxContainer: typeof import('./src/components/formcomp/container/box-container.vue')['default']
     BoxItem: typeof import('./src/components/comp/items/boxItem.vue')['default']
     ButtonItem: typeof import('./src/components/formcomp/items/button-item.vue')['default']

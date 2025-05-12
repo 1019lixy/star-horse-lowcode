@@ -1,14 +1,15 @@
 <template>
   {{ dataForm }}
   <el-input v-model="dataForm.txt1"/>
-  <icon-item
+  -----------------
+  <barcode-item
       :formData="dataForm"
       :field="{
         preps: {
           name: 'txt1'
         }
       }"/>
-    <star-horse-form :fieldList="formField"/>
+  <!--   <star-horse-form :fieldList="formField"/> -->
 </template>
 <script lang="ts" setup>
 import {reactive, ref} from "vue";
