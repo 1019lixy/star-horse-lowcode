@@ -1,5 +1,5 @@
 <template>
-  {{ dataForm }}
+ <!--  {{ dataForm }}
   <el-input v-model="dataForm.txt1"/>
   -----------------
   <barcode-item
@@ -8,14 +8,15 @@
         preps: {
           name: 'txt1'
         }
-      }"/>
+      }"/> -->
+      <test/>
   <!--   <star-horse-form :fieldList="formField"/> -->
 </template>
 <script lang="ts" setup>
 import {reactive, ref} from "vue";
 import {PageFieldInfo} from "@/components/types";
 import QrcodeItem from "@/components/formcomp/items/qrcode-item.vue";
-
+import test from "@/components/test.vue";
 const dataForm = ref<any>({})
 const formField = reactive<PageFieldInfo>( {
   "fieldList": [
