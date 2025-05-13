@@ -38,24 +38,24 @@ const dataValue = computed(() => formData.value[props.field.preps.name]);
 const createCode = () => {
   const preps = props.field.preps;
   bwipjs.toCanvas(barcodeRef.value, {
-    bcid: preps.bcid ?? 'code128',       
-    text: dataValue.value ?? "none",    
-    scale: preps.scale ?? 3,              
-    height: preps.height ?? 10,              
-    includetext: preps.includeText ? preps.includeText == 'Y' : true,
-    textxalign: preps.textxAlign ?? 'center',
+    bcid: preps?.bcid ?? 'code128',
+    text: dataValue.value ?? "none",
+    scale: preps?.scale ?? 3,
+    height: preps?.height ?? 10,
+    includetext: preps?.includeText ? preps.includeText == 'Y' : true,
+    textxalign: preps?.textxAlign ?? 'center',
   });
 }
 onMounted(() => {
   nextTick(() => {
     createCode();
-    allAction(props,emits,formData,"change",true);
+    allAction(props, emits, formData, "change", true);
   })
 });
-watch(() => dataValue.value,
+watch(() => [dataValue.value,props.field.preps],
   () => {
     createCode(),
-    allAction(props,emits,formData,"change",false);
+      allAction(props, emits, formData, "change", false);
   }, { immidate: false, deep: true });
 </script>
 <template>
