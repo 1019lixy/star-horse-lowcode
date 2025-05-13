@@ -110,11 +110,9 @@ const handleResizeMove = (e: MouseEvent) => {
     const delta = e.clientX - startX.value;
     const newWidth = startWidth.value + delta;
     // 同步更新所有关联行中相同列索引的宽度
-    console.log(props.parentField?.preps.elements);
     props.parentField?.preps.elements.forEach(row => {
       const targetCol = row.columns[props.colIndex];
       if (targetCol) {
-        console.log(targetCol);
         targetCol.colWidth = `${Math.max(20, newWidth)}px`;
       }
     });
@@ -151,7 +149,7 @@ watch(
 <template>
   <td
       class="edit_col"
-      :class="{'dragging-area':isDragging，
+      :class="{'dragging-area':isDragging,
         'no-drag': !isEdit
       }"
       :colspan="field.colspan || 1"
