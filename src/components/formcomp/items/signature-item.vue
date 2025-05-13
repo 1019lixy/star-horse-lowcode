@@ -48,7 +48,7 @@ const options = {
   bgColor: '#f6f6f6'
 };
 const itemAction = () => {
-  context.emit('selfFunc');
+ emits('selfFunc',formData);
 };
 const init = async () => {
   await nextTick(() => {

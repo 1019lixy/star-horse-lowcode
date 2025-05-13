@@ -31,7 +31,7 @@ const props = defineProps({
   }
 });
 const emits = defineEmits(['selfFunc', 'selectItem']);
-const formData = defineModel("formData");
+const formData = defineModel<any>("formData");
 const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };

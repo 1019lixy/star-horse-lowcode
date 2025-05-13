@@ -110,11 +110,9 @@ const handleResizeMove = (e: MouseEvent) => {
     const delta = e.clientX - startX.value;
     const newWidth = startWidth.value + delta;
     // 同步更新所有关联行中相同列索引的宽度
-    console.log(props.parentField?.preps.elements);
     props.parentField?.preps.elements.forEach(row => {
       const targetCol = row.columns[props.colIndex];
       if (targetCol) {
-        console.log(targetCol);
         targetCol.colWidth = `${Math.max(20, newWidth)}px`;
       }
     });
@@ -151,7 +149,9 @@ watch(
 <template>
   <td
       class="edit_col"
-      :class="{'dragging-area':isDragging}"
+      :class="{'dragging-area':isDragging,
+        'no-drag': !isEdit
+      }"
       :colspan="field.colspan || 1"
       :rowspan="field.rowspan || 1"
       :style="{
@@ -189,7 +189,7 @@ watch(
     </draggable>
     <div class="table-cell-action" v-if="isEdit&&isDesign && currentSubItemId == field._uuid">
       <el-dropdown trigger="click" @command="handleTableCellCommand" :size="Config.compSize">
-        <star-horse-icon icon-class="menu"/>
+        <star-horse-icon icon-class="menu" style="color:var(--star-horse-white)"/>
         <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item command="insertLeftCol">左边插入列</el-dropdown-item>
@@ -356,6 +356,18 @@ watch(
 
   &.is-resizing {
     background: rgba(64, 158, 255, 0.1);
+  }
+  &.no-drag {
+    &::after, &::before {
+      display: none !important;  // 禁用拖拽手柄
+      pointer-events: none !important;
+    }
+    
+    &:hover {
+      &::after, &::before {
+        opacity: 0 !important;
+      }
+    }
   }
 }
 </style>
