@@ -10,7 +10,7 @@
         }
       }"/> -->
       <test/>
-  <!--   <star-horse-form :fieldList="formField"/> -->
+    <star-horse-form :fieldList="formField"/>
 </template>
 <script lang="ts" setup>
 import {reactive, ref} from "vue";

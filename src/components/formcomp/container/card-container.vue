@@ -1,8 +1,8 @@
 <script setup lang="ts" name="card-container">
 import {computed, onMounted, PropType, ref} from 'vue';
-import {useDesignFormStore} from '@/store/DesignForm.ts';
+import {useDesignFormStore} from '@/store/DesignForm';
 import piniaInstance from '@/store/index.ts';
-import {uuid} from '@/api/system.ts';
+import {uuid} from '@/api/system';
 
 const props = defineProps({
   parentField: {type: String},

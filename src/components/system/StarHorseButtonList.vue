@@ -1,10 +1,10 @@
 <script setup lang="ts" name="StarHorseButtonList">
 import {computed, onMounted, onUpdated, PropType, ref} from 'vue';
 import {ApiUrls} from '@/components/types/ApiUrls';
-import {download} from '@/api/star_horse_apis.ts';
-import {error} from '@/utils/message.ts';
+import {download} from '@/api/star_horse_apis';
+import {error} from '@/utils/message';
 import {DialogProps} from '../types/DialogProps';
-import {getToken} from '@/utils/auth.ts';
+import {getToken} from '@/utils/auth';
 import {useGlobalConfigStore} from '@/store/GlobalConfig.ts';
 import piniaInstance from '@/store';
 import {useButtonPermissionStore} from '@/store/ButtonPermission.ts';

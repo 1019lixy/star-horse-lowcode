@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {onMounted, PropType, ref} from 'vue';
 import {DynamicNode} from '@/components/types/DynamicNode';
-import {dynamicPageContextMenuData} from '@/plugins/AblesPlugin.ts';
+import {dynamicPageContextMenuData} from '@/plugins/AblesPlugin';
 
 const props = defineProps({
   msg: {

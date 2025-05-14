@@ -11,7 +11,7 @@
 </template>
 <script setup lang="ts" name="audioItem">
 import {onMounted, ref} from 'vue';
-import {blobData} from '@/api/star_horse_apis.ts';
+import {blobData} from '@/api/star_horse_apis';
 
 const props = defineProps({
   isDesign: {

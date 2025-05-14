@@ -1,11 +1,11 @@
-import {useDesignFormStore} from '@/store/DesignForm.ts';
-import {useCopyerOperationStore} from '@/store/CopyerOperation.ts';
+import {useDesignFormStore} from '@/store/DesignForm';
+import {useCopyerOperationStore} from '@/store/CopyerOperation';
 import piniaInstance from '@/store';
 import {computed} from 'vue';
-import {operationConfirm, warning} from '@/utils/message.ts';
-import {ModuleEnums} from '@/components/enums/ModuleEnums.ts';
-import {copyContainer, moveDownItem, moveUpItem, removeItem} from '@/plugins/AblesPlugin.ts';
-import {uuid} from '@/api/system.ts';
+import {operationConfirm, warning} from '@/utils/message';
+import {ModuleEnums} from '@/components/enums/ModuleEnums';
+import {copyContainer, moveDownItem, moveUpItem, removeItem} from '@/plugins/AblesPlugin';
+import {uuid} from '@/api/system';
 
 const designForm = useDesignFormStore(piniaInstance);
 const copyerOperation = useCopyerOperationStore(piniaInstance);

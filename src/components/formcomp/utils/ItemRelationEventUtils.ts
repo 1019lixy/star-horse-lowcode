@@ -1,9 +1,9 @@
-import {error} from '@/utils/message.ts';
+import {error} from '@/utils/message';
 import {userFunction} from '@/api/user_func.ts';
-import {compDynamicData} from '@/api/star_horse_utils.ts';
+import {compDynamicData} from '@/api/star_horse_utils';
 import piniaInstance from '@/store';
-import {useSelfOperationStore} from '@/store/SelfOperation.ts';
-import {useDesignFormStore} from '@/store/DesignForm.ts';
+import {useSelfOperationStore} from '@/store/SelfOperation';
+import {useDesignFormStore} from '@/store/DesignForm';
 import {computed, isRef} from 'vue';
 
 const designForm = useDesignFormStore(piniaInstance);

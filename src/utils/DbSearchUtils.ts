@@ -1,7 +1,7 @@
-import { error, warning } from '@/utils/message.ts';
+import { error, warning } from '@/utils/message';
 import { SelectOption } from '@/components/types/SearchProps';
-import { closeLoad, load, loadGetData } from '@/api/star_horse_utils.ts';
-import { getRequest } from '@/api/star_horse_apis.ts';
+import { closeLoad, load, loadGetData } from '@/api/star_horse_utils';
+import { getRequest } from '@/api/star_horse_apis';
 import piniaInstance from '@/store';
 import { useConsumerViewStore } from '@/store/ConsumerView.ts';
 

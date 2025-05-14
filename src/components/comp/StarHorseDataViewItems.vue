@@ -2,7 +2,7 @@
   import { PropType } from 'vue';
   import { PageFieldInfo } from '@/components/types/PageFieldInfo';
   import { ModelRef } from 'vue';
-  import { commonParseCodeToName } from '@/api/star_horse_utils.ts';
+  import { commonParseCodeToName } from '@/api/star_horse_utils';
 
   const props = defineProps({
     // compUrl: {type: Object as PropType<ApiUrls>},

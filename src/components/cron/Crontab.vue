@@ -75,7 +75,7 @@
   import CrontabWeek from '@/components/cron/Crontab-Week.vue';
   import CrontabYear from '@/components/cron/Crontab-Year.vue';
   import CrontabResult from '@/components/cron/Crontab-Result.vue';
-  import { copy } from '@/api/star_horse_utils.ts';
+  import { copy } from '@/api/star_horse_utils';
   import { useVModel } from '@vueuse/core';
 
   export interface Crontab {

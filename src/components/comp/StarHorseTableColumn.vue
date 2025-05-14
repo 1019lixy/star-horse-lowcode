@@ -1,12 +1,12 @@
 <script setup lang="ts" name="StarHorseTableColumn">
 import StarHorseItem from '@/components/comp/StarHorseItem.vue';
 import {nextTick, PropType, ref} from 'vue';
-import {postRequest} from '@/api/star_horse_apis.ts';
-import {closeLoad, commonParseCodeToName} from '@/api/star_horse_utils.ts';
+import {postRequest} from '@/api/star_horse_apis';
+import {closeLoad, commonParseCodeToName} from '@/api/star_horse_utils';
 import {error, success, warning} from '@/utils/message';
 import {Config} from '@/api/settings.ts';
-import {createComponent} from '@/api/system.ts';
-import {createDatetime, dateTypes, parseDateByType} from "@/api/date_utils.ts";
+import {createComponent} from '@/api/system';
+import {createDatetime, dateTypes, parseDateByType} from "@/api/date_utils";
 
 const props = defineProps({
   compUrl: {type: Object},

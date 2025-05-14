@@ -2,10 +2,10 @@ import axios, {AxiosResponse, InternalAxiosRequestConfig} from 'axios';
 import {getToken, getUserInfo} from '@/utils/auth';
 import {error} from '../utils/message';
 import piniaInstance from '@/store';
-import {useUserInfoStore} from '@/store/UserInfo.ts';
+import {useUserInfoStore} from '@/store/UserInfo';
 import {SelectOption} from '@/components/types/SearchProps';
-import {getFingerId} from '@/api/finger_utils.ts';
-import {ServiceEnums} from '@/components/enums/ServiceEnums.ts';
+import {getFingerId} from '@/api/finger_utils';
+import {ServiceEnums} from '@/components/enums/ServiceEnums';
 import {useRouter} from 'vue-router';
 
 const userStore = useUserInfoStore(piniaInstance);

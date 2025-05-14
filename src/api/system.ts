@@ -1,6 +1,6 @@
 import {TreeNodeData} from 'element-plus/es/components/tree-v2/src/types';
 import {SearchInfo, SearchParams} from '@/components/types/Params';
-import {createCondition, isJson, loadData} from '@/api/star_horse_utils.ts';
+import {createCondition, isJson, loadData} from '@/api/star_horse_utils';
 import {SelectOption} from '@/components/types/SearchProps';
 import {useDark, useToggle} from '@vueuse/core';
 import {useGlobalConfigStore} from '@/store/GlobalConfig.ts';

@@ -1,6 +1,6 @@
 <script setup lang="ts" name="starhorse-form-item">
 import {computed, onMounted, PropType, ref,shallowRef} from 'vue';
-import {useDesignFormStore} from '@/store/DesignForm.ts';
+import {useDesignFormStore} from '@/store/DesignForm';
 import piniaInstance from '@/store/index.ts';
 import StarHorseDialog from '@/components/comp/StarHorseDialog.vue';
 import FieldList from '@/components/formcomp/utils/FieldList.vue';
@@ -10,7 +10,7 @@ import {
   moveDownItem,
   moveUpItem,
   removeItem
-} from '@/plugins/AblesPlugin.ts';
+} from '@/plugins/AblesPlugin';
 
 const props = defineProps({
   parentField: {type: Object as PropType<any>},

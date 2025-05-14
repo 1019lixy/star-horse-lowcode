@@ -2,7 +2,7 @@
   import { ApiUrls } from '@/components/types/ApiUrls';
   import { inject, nextTick, onMounted, PropType, ref, watch } from 'vue';
   import { DialogProps } from '@/components/types/DialogProps';
-  import { formFieldMapping, isJson, loadById } from '@/api/star_horse_utils.ts';
+  import { formFieldMapping, isJson, loadById } from '@/api/star_horse_utils';
 
   const dataForm = ref<any>({});
   const props = defineProps({

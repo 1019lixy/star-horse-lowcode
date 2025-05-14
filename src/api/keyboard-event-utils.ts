@@ -1,6 +1,6 @@
 import { ref } from 'vue';
 import { ShortKey } from '@/components/types/ShortKey';
-import { ModuleEnums } from '@/components/enums/ModuleEnums.ts';
+import { ModuleEnums } from '@/components/enums/ModuleEnums';
 import {
   altDownFun,
   altLeftFun,

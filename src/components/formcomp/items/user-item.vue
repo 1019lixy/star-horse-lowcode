@@ -48,7 +48,7 @@
 <script setup lang="ts">
 import {nextTick, shallowRef} from 'vue';
 import {FieldMapping} from '@/components/types/PageFieldInfo';
-import {warning} from '@/utils/message.ts';
+import {warning} from '@/utils/message';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
 
 const props = defineProps({

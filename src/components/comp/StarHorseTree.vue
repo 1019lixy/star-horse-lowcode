@@ -8,12 +8,12 @@ import {useGlobalConfigStore} from '@/store/GlobalConfig.ts';
 import piniaInstance from '@/store';
 import {PageProps} from '@/components/types/PageProps';
 import {ApiUrls} from '@/components/types/ApiUrls';
-import {warning} from '@/utils/message.ts';
+import {warning} from '@/utils/message';
 import {SearchParams} from '@/components/types/Params';
 import {OrderByInfo} from '@/components/types/PageFieldInfo';
-import {postRequest} from '@/api/star_horse_apis.ts';
-import {closeLoad, createCondition, loadData} from '@/api/star_horse_utils.ts';
-import {isSystemManage} from '@/utils/auth.ts';
+import {postRequest} from '@/api/star_horse_apis';
+import {closeLoad, createCondition, loadData} from '@/api/star_horse_utils';
+import {isSystemManage} from '@/utils/auth';
 import {Config} from '@/api/settings.ts';
 import Help from '@/components/help.vue';
 

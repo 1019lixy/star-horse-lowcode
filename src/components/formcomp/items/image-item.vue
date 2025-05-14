@@ -110,7 +110,7 @@
 import {onMounted, shallowRef} from 'vue';
 import {allAction} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
 import {Picture as IconPicture} from '@element-plus/icons-vue';
-import {getToken} from '@/utils/auth.ts';
+import {getToken} from '@/utils/auth';
 
 const props = defineProps({
   isDesign: {

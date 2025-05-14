@@ -1,7 +1,7 @@
 <script setup lang="ts" name="box-container">
 import {computed, onMounted, PropType, reactive, watch, ref} from 'vue';
 import {warning} from '@/utils/message';
-import {useDesignFormStore} from '@/store/DesignForm.ts';
+import {useDesignFormStore} from '@/store/DesignForm';
 import piniaInstance from '@/store/index.ts';
 import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
 import {tableAction, tableCellOperation} from '@/components/formcomp/container/dytableUtils.ts';

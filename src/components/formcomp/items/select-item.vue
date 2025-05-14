@@ -43,7 +43,7 @@
 </template>
 <script setup lang="ts">
 import {onMounted, shallowRef} from 'vue';
-import {compDynamicData, createFilter, dynamicUrlOperation} from '@/api/star_horse_utils.ts';
+import {compDynamicData, createFilter, dynamicUrlOperation} from '@/api/star_horse_utils';
 import {SearchParams} from '@/components/types/Params';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
 

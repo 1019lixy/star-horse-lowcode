@@ -1,6 +1,6 @@
 <script lang="ts" setup name="StarHorseStaticTable">
   import { onMounted, reactive, ref, unref } from 'vue';
-  import { commonParseCodeToName } from '@/api/star_horse_utils.ts';
+  import { commonParseCodeToName } from '@/api/star_horse_utils';
   import Sortable from 'sortablejs';
   import { warning } from '@/utils/message';
   import { Config } from '@/api/settings.ts';

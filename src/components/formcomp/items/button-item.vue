@@ -50,11 +50,11 @@
 <script setup lang="ts" name="buttonItem">
 import {onMounted, PropType, shallowRef, unref} from 'vue';
 import {buttonAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
-import {httpRequest} from '@/api/star_horse_apis.ts';
-import {operationConfirm, warning} from '@/utils/message.ts';
+import {httpRequest} from '@/api/star_horse_apis';
+import {operationConfirm, warning} from '@/utils/message';
 import {BtnAction, DynamicParamField} from '@/components/types/BtnAction';
 import {SearchParams} from '@/components/types/Params';
-import {createCondition} from '@/api/star_horse_utils.ts';
+import {createCondition} from '@/api/star_horse_utils';
 
 const props = defineProps({
   isDesign: {

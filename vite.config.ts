@@ -1,13 +1,13 @@
 import {defineConfig} from 'vite';
 import vue from '@vitejs/plugin-vue';
-//编译进度条插件
-import progress from 'vite-plugin-progress';
+
 import vueJsx from '@vitejs/plugin-vue-jsx';
 import inject from '@rollup/plugin-inject';
 import {resolve} from 'path';
 import Components from 'unplugin-vue-components/vite';
 import {ElementPlusResolver} from 'unplugin-vue-components/resolvers';
 import AutoImport from 'unplugin-auto-import/vite';
+import progress from "vite-plugin-progress";
 //此插件是处理外部依赖 比如cdn引入的js
 import tailwindcss from '@tailwindcss/vite';
 import {visualizer} from 'rollup-plugin-visualizer';
@@ -85,7 +85,7 @@ export default defineConfig((mode) => {
         build: {
             //  告诉打包工具 "vue-demi" 也是外部依赖项
             rollupOptions: {
-                external: ['vue', 'pinia', 'core-js', 'element-plus' ],
+                external: ['vue', 'pinia', 'core-js', 'elementPlus' ],
                 output: {
                     exports: 'named',
                     assetFileNames: 'assets/[name][extname]', // 修正资源输出路径

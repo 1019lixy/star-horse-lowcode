@@ -2,7 +2,7 @@
 // 右键菜单组件
 import {computed, PropType, ref} from 'vue';
 import {operationConfirm, warning} from '@/utils/message';
-import {useDesignFormStore} from '@/store/DesignForm.ts';
+import {useDesignFormStore} from '@/store/DesignForm';
 import piniaInstance from '@/store/index.ts';
 import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
 

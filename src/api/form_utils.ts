@@ -1,4 +1,4 @@
-import {getValidType} from '@/api/valid_utils.ts';
+import {getValidType} from '@/api/valid_utils';
 
 /**
  * 解析动态表单中的子节点数据是否需要合并到父节点中

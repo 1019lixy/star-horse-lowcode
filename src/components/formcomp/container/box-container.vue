@@ -1,7 +1,7 @@
 <script setup lang="ts" name="box-container">
 import {ComponentInternalInstance, computed, getCurrentInstance, PropType} from 'vue';
 import {warning} from '@/utils/message';
-import {useDesignFormStore} from '@/store/DesignForm.ts';
+import {useDesignFormStore} from '@/store/DesignForm';
 import piniaInstance from '@/store/index.ts';
 
 const props = defineProps({

@@ -1,6 +1,6 @@
 <script setup lang="ts" name="tab-container">
 import {computed, onMounted, PropType, ref, watch} from 'vue';
-import {useDesignFormStore} from '@/store/DesignForm.ts';
+import {useDesignFormStore} from '@/store/DesignForm';
 import piniaInstance from '@/store/index.ts';
 
 const props = defineProps({

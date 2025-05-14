@@ -1,10 +1,10 @@
 <script setup lang="ts" name="GroupBoxContainer">
 import {operationConfirm, warning} from '@/utils/message';
 import piniaInstance from '@/store/index.ts';
-import {useDesignFormStore} from '@/store/DesignForm.ts';
+import {useDesignFormStore} from '@/store/DesignForm';
 import {computed, ref, PropType} from 'vue';
 import {colDataInfo} from '@/components/formcomp/container/dytableUtils.ts';
-import {dynamicFormContextMenuData} from '@/plugins/AblesPlugin.ts';
+import {dynamicFormContextMenuData} from '@/plugins/AblesPlugin';
 import FieldList from '@/components/formcomp/utils/FieldList.vue';
 import StarHorseDialog from '@/components/comp/StarHorseDialog.vue';
 import {fieldCopy} from '@/utils/FieldOperationUtils.ts';

@@ -1,9 +1,9 @@
 <script lang="ts" setup name="StarHorseTableComp">
 import {ApiUrls} from '@/components/types/ApiUrls';
 import {computed, inject, onMounted, onUpdated, PropType, reactive, ref, unref, watch} from 'vue';
-import {download, postRequest} from '@/api/star_horse_apis.ts';
+import {download, postRequest} from '@/api/star_horse_apis';
 import {PageProps} from '@/components/types/PageProps';
-import {closeLoad, createCondition, deleteByIds, isJson, load, loadData} from '@/api/star_horse_utils.ts';
+import {closeLoad, createCondition, deleteByIds, isJson, load, loadData} from '@/api/star_horse_utils';
 import {BtnHideCondition, SearchParams} from '@/components/types/Params';
 import Sortable from 'sortablejs';
 import {Sort} from '@element-plus/icons-vue';
@@ -17,8 +17,8 @@ import {useButtonPermissionStore} from '@/store/ButtonPermission.ts';
 import TableColumn from '@/components/comp/items/tableColumn.vue';
 import {useGlobalConfigStore} from '@/store/GlobalConfig.ts';
 import {analysisFields} from '@/utils/preview.ts';
-import {isSystemManage} from '@/utils/auth.ts';
-import {removeEmptyCondition} from '@/api/system.ts';
+import {isSystemManage} from '@/utils/auth';
+import {removeEmptyCondition} from '@/api/system';
 import {Config} from '@/api/settings.ts';
 import Tablebtn from '@/components/comp/items/tablebtn.vue';
 import Help from '@/components/help.vue';

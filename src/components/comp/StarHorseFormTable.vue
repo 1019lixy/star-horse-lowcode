@@ -1,6 +1,6 @@
 <script setup lang="ts" name="StarHorseFormItem">
   import { onMounted, ref } from 'vue';
-  import { batchFieldDefaultValues } from '@/api/star_horse_utils.ts';
+  import { batchFieldDefaultValues } from '@/api/star_horse_utils';
   import { ModelRef } from 'vue';
   import { Config } from '@/api/settings.ts';
 

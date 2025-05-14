@@ -2,14 +2,14 @@
 import {inject, ModelRef, nextTick, onMounted, PropType, ref, ShallowReactive, watch} from 'vue';
 import {ApiUrls} from '@/components/types/ApiUrls';
 import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
-import {rowClassName} from '@/api/star_horse_utils.ts';
+import {rowClassName} from '@/api/star_horse_utils';
 import {error, operationConfirm, success, warning} from '@/utils/message';
-import {download} from '@/api/star_horse_apis.ts';
+import {download} from '@/api/star_horse_apis';
 import {getToken} from '@/utils/auth';
 import Sortable from 'sortablejs';
 import {Sort} from '@element-plus/icons-vue';
 import Help from '@/components/help.vue';
-import {uuid} from '@/api/system.ts';
+import {uuid} from '@/api/system';
 import UTableColumn from '@/components/comp/items/UTableColumn.vue';
 import StarHorseForm from '@/components/comp/StarHorseForm.vue';
 import {Config} from '@/api/settings.ts';

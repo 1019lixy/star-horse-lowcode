@@ -10,13 +10,13 @@ import '@/assets/icons.css';
 import piniaInstance from '@/store';
 import type {Router} from 'vue-router';
 
-export * from '@/api/star_horse_apis.ts';
-export * from '@/api/star_horse_utils.ts';
-export * from '@/api/date_utils.ts';
-export * from '@/api/system.ts';
+export * from '@/api/star_horse_apis';
+export * from '@/api/star_horse_utils';
+export * from '@/api/date_utils';
+export * from '@/api/system';
 export * from '@/api/user_func.ts';
-export * from '@/utils/message.ts';
-export * from '@/api/finger_utils.ts';
+export * from '@/utils/message';
+export * from '@/api/finger_utils';
 const items = import.meta.glob([
     '@/components/comp/*.vue',
     '@/components/system/*.vue',
@@ -56,13 +56,13 @@ export * from '@/components/types';
 export * from '@/store/ButtonPermission.ts';
 export * from '@/store/ConsumerView.ts';
 export * from '@/store/ContinusConfig.ts';
-export * from '@/store/CopyerOperation.ts';
-export * from '@/store/DesignForm.ts';
+export * from '@/store/CopyerOperation';
+export * from '@/store/DesignForm';
 export * from '@/store/DesignPage.ts';
 export * from '@/store/DynamicForm.ts';
 export * from '@/store/GlobalConfig.ts';
-export * from '@/store/SelfOperation.ts';
-export * from '@/store/UserInfo.ts';
+export * from '@/store/SelfOperation';
+export * from '@/store/UserInfo';
 //将pinia的实例导出，否则会导致在设计表单时数据不一致
 export {piniaInstance};
 

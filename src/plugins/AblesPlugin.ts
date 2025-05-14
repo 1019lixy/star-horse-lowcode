@@ -1,8 +1,8 @@
-import { useCopyerOperationStore } from '@/store/CopyerOperation.ts';
+import { useCopyerOperationStore } from '@/store/CopyerOperation';
 import piniaInstance from '@/store';
 import { computed, reactive, ref } from 'vue';
-import { useDesignFormStore } from '@/store/DesignForm.ts';
-import { uuid } from '@/api/system.ts';
+import { useDesignFormStore } from '@/store/DesignForm';
+import { uuid } from '@/api/system';
 import { DynamicNode } from '@/components/types/DynamicNode';
 import { useDesignPageStore } from '@/store/DesignPage.ts';
 

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import {onMounted, ref, toRef} from 'vue';
 import {SelectOption} from '@/components/types/SearchProps';
-import {searchMatchList} from '@/api/star_horse_utils.ts';
-import {loadDict} from '@/api/star_horse_apis.ts';
+import {searchMatchList} from '@/api/star_horse_utils';
+import {loadDict} from '@/api/star_horse_apis';
 import {createData, dataSourceFields, validInterface} from '@/utils/ItemPreps.ts';
-import {warning} from '@/utils/message.ts';
+import {warning} from '@/utils/message';
 
 defineOptions({
   name: 'DataSource'

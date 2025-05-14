@@ -1,9 +1,9 @@
 import {defineStore} from 'pinia';
 import {ref, unref} from 'vue';
 import {RouteLocationNormalized} from 'vue-router';
-import {postRequest} from '@/api/star_horse_apis.ts';
-import {getUserInfo} from '@/utils/auth.ts';
-import {warning} from '@/utils/message.ts';
+import {postRequest} from '@/api/star_horse_apis';
+import {getUserInfo} from '@/utils/auth';
+import {warning} from '@/utils/message';
 
 /**
  * 用户权限控制

@@ -56,7 +56,7 @@ watch(() => [dataValue.value,props.field.preps],
   () => {
     createCode(),
       allAction(props, emits, formData, "change", false);
-  }, { immidate: false, deep: true });
+  }, { immediate: false, deep: true });
 </script>
 <template>
   <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"

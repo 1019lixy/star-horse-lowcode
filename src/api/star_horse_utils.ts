@@ -1,7 +1,7 @@
 import {JoinSearchParams, SearchInfo, SearchParams} from '@/components/types/Params';
 import {reactive, ShallowRef, unref} from 'vue';
 import {ElLoading} from 'element-plus';
-import {download, getRequest, postRequest, uploadRequest} from '@/api/star_horse_apis.ts';
+import {download, getRequest, postRequest, uploadRequest} from '@/api/star_horse_apis';
 import {error, operationConfirm, success, warning} from '@/utils/message';
 import {SelectOption} from '@/components/types/SearchProps';
 import * as ElementPlusIconsVue from '@element-plus/icons-vue';
@@ -10,9 +10,9 @@ import {BatchFieldInfo, FieldInfo, OrderByInfo, PageFieldInfo, TabFieldInfo} fro
 import {ApiUrls} from '@/components/types/ApiUrls';
 import {Reactive} from 'vue';
 import {DialogProps} from '@/components/types/DialogProps';
-import {createDatetime} from '@/api/date_utils.ts';
+import {createDatetime} from '@/api/date_utils';
 import {pinyin} from 'pinyin-pro';
-import {ServiceEnums} from '@/components/enums/ServiceEnums.ts';
+import {ServiceEnums} from '@/components/enums/ServiceEnums';
 
 let loading: any = null;
 /**

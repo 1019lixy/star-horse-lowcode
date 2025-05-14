@@ -1,6 +1,6 @@
 // WebSocket地址
-import { warning } from '@/utils/message.ts';
-import { getUserInfo } from '@/utils/auth.ts';
+import { warning } from '@/utils/message';
+import { getUserInfo } from '@/utils/auth';
 
 let globalUrl: string = '';
 // WebSocket实例

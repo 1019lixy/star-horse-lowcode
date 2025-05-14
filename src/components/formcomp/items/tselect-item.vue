@@ -46,8 +46,8 @@
 </template>
 <script setup lang="ts">
 import {onMounted, shallowRef} from 'vue';
-import {dictData, loadData} from '@/api/star_horse_utils.ts';
-import {error} from '@/utils/message.ts';
+import {dictData, loadData} from '@/api/star_horse_utils';
+import {error} from '@/utils/message';
 import {SelectOption} from '@/components/types/SearchProps';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
 

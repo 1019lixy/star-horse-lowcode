@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { useDesignFormStore } from '@/store/DesignForm.ts';
+  import { useDesignFormStore } from '@/store/DesignForm';
   import piniaInstance from '@/store';
   import {computed, ComputedRef, ref} from 'vue';
 

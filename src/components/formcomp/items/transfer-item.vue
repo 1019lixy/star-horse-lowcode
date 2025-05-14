@@ -37,7 +37,7 @@
 </template>
 <script setup lang="ts">
 import {onMounted, shallowRef} from 'vue';
-import {compDynamicData} from '@/api/star_horse_utils.ts';
+import {compDynamicData} from '@/api/star_horse_utils';
 import {SelectOption} from '@/components/types/SearchProps';
 import {allAction} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
 

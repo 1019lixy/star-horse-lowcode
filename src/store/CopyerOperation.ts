@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { ModuleEnums } from '@/components/enums/ModuleEnums.ts';
-import { message } from '@/utils/message.ts';
+import { ModuleEnums } from '@/components/enums/ModuleEnums';
+import { message } from '@/utils/message';
 
 /**
  * 用户自定义方法处理逻辑

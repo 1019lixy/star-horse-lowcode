@@ -2,7 +2,7 @@
 import {computed, nextTick, onMounted, PropType, ref} from 'vue';
 import {ApiUrls} from '@/components/types/ApiUrls';
 import {SearchFields, SelectOption} from '@/components/types/SearchProps';
-import {isJson, searchMatchList} from '@/api/star_horse_utils.ts';
+import {isJson, searchMatchList} from '@/api/star_horse_utils';
 import {useGlobalConfigStore} from '@/store/GlobalConfig.ts';
 import piniaInstance from '@/store';
 import {analysisSearchData} from '@/utils/preview.ts';

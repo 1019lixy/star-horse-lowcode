@@ -1,8 +1,8 @@
-import { postRequest } from '@/api/star_horse_apis.ts';
+import { postRequest } from '@/api/star_horse_apis';
 import { error } from '@/utils/message';
-import { closeLoad, load } from '@/api/star_horse_utils.ts';
+import { closeLoad, load } from '@/api/star_horse_utils';
 import { SearchParams } from '@/components/types/Params';
-import { success } from '@/utils/message.ts';
+import { success } from '@/utils/message';
 
 /**
  * 获取视图属性

@@ -1,9 +1,9 @@
-import {uuid} from '@/api/system.ts';
+import {uuid} from '@/api/system';
 import {computed} from 'vue';
-import {useDesignFormStore} from '@/store/DesignForm.ts';
+import {useDesignFormStore} from '@/store/DesignForm';
 import piniaInstance from '@/store';
 import {SearchParams} from '@/components/types/Params';
-import {postRequest} from '@/api/star_horse_apis.ts';
+import {postRequest} from '@/api/star_horse_apis';
 
 const designForm = useDesignFormStore(piniaInstance);
 const formData = computed(() => designForm.formData);

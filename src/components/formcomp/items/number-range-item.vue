@@ -65,7 +65,7 @@
 <script setup lang="ts">
 import {onMounted, ref, shallowRef, useSlots, watch} from 'vue';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
-import {warning} from '@/utils/message.ts';
+import {warning} from '@/utils/message';
 
 const props = defineProps({
   isDesign: {
