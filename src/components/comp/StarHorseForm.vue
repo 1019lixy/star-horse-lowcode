@@ -53,9 +53,7 @@ let userOperation = useSelfOperationStore(piniaInstance);
 //刷新事件，数据已加载事件，导出数据更新数据
 const emits = defineEmits(['refresh', 'dataLoaded', 'exportData', 'removeRow', 'addRow']);
 const starHorseFormRef = ref(null);
-const dataForm = props.outerFormData
-    ? toRef(props, 'outerFormData')
-    : ref({});
+const dataForm =ref({});
 //更新外面传进来的数据
 
 const exportData = () => {
@@ -83,10 +81,9 @@ const loadData = async () => {
   } else {
     objData = await loadById(props.compUrl?.loadByIdUrl!, id, params);
   }
-  // dataForm.value = {...objData};
-
+  console.log('加载数据', objData);
   let data = formFieldMapping(props.fieldList);
-  dataForm.value = objData;
+  dataForm.value =objData;
   //如果是动态表单
   if (props.dynamicForm) {
     for (let i in params) {

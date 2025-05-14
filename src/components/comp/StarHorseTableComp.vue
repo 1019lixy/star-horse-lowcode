@@ -614,7 +614,7 @@ let toolbarButtonList = ref<UserFuncInfo[]>([]);
  */
 const extendBtnFunction = (): Array<UserFuncInfo> => {
   let arr: Array<UserFuncInfo> = [];
-  const extendBtnsCopy: UserFuncInfo[] = props.extendBtns ? JSON.parse(JSON.stringify(props.extendBtns)) : [];
+  const extendBtnsCopy: UserFuncInfo[] = props.extendBtns?? [];
 
   //单独定义的按钮
   extendBtnsCopy?.forEach((item: UserFuncInfo) => {
