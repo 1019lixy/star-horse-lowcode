@@ -56,6 +56,7 @@ const removeData = () => {
 };
 const containerContextMenuRef = ref();
 const containerContextMenu = (evt: MouseEvent | any) => {
+  if (!isEdit.value) return;
   evt.stopPropagation();
   evt.preventDefault();
   console.log('容器触发。。。');
@@ -69,7 +70,6 @@ const addItem = (item: any) => {
   let type = item.category == 2 ? 'container' : 'formItem';
   let data = fieldCopy(item, type);
   let itemType = props.formItem.itemType;
-  console.log(data, props.formItem);
   let activeItemName = props.formItem.activeItemName;
   let elements = props.formItem.preps.elements;
   for (let index in elements) {
@@ -94,7 +94,6 @@ const addItem = (item: any) => {
       let col = columns[colIndex];
       if (col.items.length == 0) {
         col.items.push(data);
-        // designForm.selectItem(data, data.itemType, type);
         return;
       }
     }

@@ -58,6 +58,7 @@ const changeItem = (item: any) => {
 };
 const itemContextMenuRef = ref();
 const itemContextMenu = (evt: MouseEvent | any) => {
+  if (!isEdit.value || isDisabled.value) return;
   evt.stopPropagation();
   evt.preventDefault();
   evt.props = props;

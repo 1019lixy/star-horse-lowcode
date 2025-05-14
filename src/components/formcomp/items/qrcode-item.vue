@@ -42,7 +42,7 @@ const formData = defineModel("formData");
       :parentField="parentField"
   >
     <QRCode
-        :value="formData[field.preps['name']]"
+        :value="formData[field.preps['name']]??field.preps['content']"
         :size="field.preps.size??160"
         :bgColor="field.preps.bgColor??'#fff'"
         :color="field.preps.color??'#000'"
