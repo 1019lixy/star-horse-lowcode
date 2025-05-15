@@ -1,6 +1,7 @@
 <template>
   <EditDataDialog
   v-model="dialogInputVisible"
+  :disabled="checkIsDisabled(props)"
   :initial-content="formData[field.preps['name']]"
   @confirm="handleContentConfirm"
 />
@@ -123,10 +124,6 @@ const handleContentConfirm=(newContent:string)=>{
   dialogInputVisible.value=false; 
 }
 const editContent=()=>{
-  if (!formData.value['_' + props.field.preps['name'] + 'Editable'] && props.field.preps['disabled'] == 'Y') {
-    return;
-  }
-  console.log("editContent");
   dialogInputVisible.value=true;
 }
 onMounted(() => {

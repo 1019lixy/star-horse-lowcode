@@ -1,6 +1,7 @@
 <template>
    <EditDataDialog
   v-model="editorDialogVisible"
+  :disabled="checkIsDisabled(props)"
   :initial-content="formData[field.preps['name']]"
   @confirm="handleContentConfirm"
 />
@@ -85,10 +86,6 @@ const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
 const maxEdit = () => {
-  if (!formData.value['_' + props.field.preps['name'] + 'Editable'] && props.field.preps['disabled'] == 'Y') {
-    return;
-  }
-  dataField.value = formData.value[props.field.preps['name']];
   editorDialogVisible.value = true;
 };
 const handleContentConfirm = (newContent:string) => {

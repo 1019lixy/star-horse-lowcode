@@ -106,7 +106,7 @@ defineExpose({
           <template v-if="(!item.type || item.type == 'input') && (!item.disabled || item.disabled == 'N')" :span="6">
             <el-select
                 :size="compSize"
-                style="width: 90px; height: 100%; padding-top: 2px"
+                style="width: 90px !important; height: 100%; padding-top: 2px"
                 v-model="item['matchType']"
                 clearable
                 filterable
