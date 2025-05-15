@@ -1,4 +1,9 @@
 <template>
+  <EditDataDialog
+  v-model="dialogInputVisible"
+  :initial-content="formData[field.preps['name']]"
+  @confirm="handleContentConfirm"
+/>
   <starhorse-form-item
       :isDesign="isDesign"
       :disabled="disabled"
@@ -13,7 +18,7 @@
         :maxlength="field.preps['maxlength']"
         :min="field.preps['min']"
         :autofocus="field.preps['autofocus'] == 'Y'"
-        :minlength="field.preps['maxlength']"
+        :minlength="field.preps['minlength']"
         :placeholder="field.preps['placeholder'] || '请输入' + (field.preps['label'] || '')"
         :readonly="field.preps['readonly'] == 'Y'"
         :size="formInfo?.size || field?.preps['size'] || 'default'"
@@ -26,6 +31,7 @@
         @keydown.enter="itemAction('enter')"
         @focus="itemAction('focus')"
         @blur="itemAction('blur')"
+        @dblclick="editContent"
         v-model="formData[field.preps['name']]"
     >
       <template #prepend v-if="field.preps['prependText']">
@@ -68,7 +74,7 @@
 <script setup lang="ts">
 import {nextTick, onMounted, ref, shallowRef} from 'vue';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
-
+import EditDataDialog from "@/components/formcomp/utils/EditDataDialog.vue";
 defineOptions({
   name: 'InputItem'
 })
@@ -105,12 +111,24 @@ const emits = defineEmits(['selfFunc', 'selectItem']);
 const formData = defineModel("formData");
 const inputItemRef = ref();
 let actionName = shallowRef('normal');
+const dialogInputVisible=ref<boolean>(false);
 const initEvent = async () => {
   await nextTick();
 };
 const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
+const handleContentConfirm=(newContent:string)=>{
+  formData.value[props.field.preps['name']]=newContent;
+  dialogInputVisible.value=false; 
+}
+const editContent=()=>{
+  if (!formData.value['_' + props.field.preps['name'] + 'Editable'] && props.field.preps['disabled'] == 'Y') {
+    return;
+  }
+  console.log("editContent");
+  dialogInputVisible.value=true;
+}
 onMounted(() => {
   actionName.value = props.field.preps?.actionName || 'normal';
   if (!props.isSearch) {

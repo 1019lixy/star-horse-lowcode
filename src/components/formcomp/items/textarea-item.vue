@@ -1,29 +1,9 @@
 <template>
-  <star-horse-dialog
-      :selfFunc="true"
-      :dialogVisible="editorDialogVisible"
-      title="编辑数据"
-      :box-width="'50%'"
-      @merge="dataMerge"
-      @resetForm="dataField=''"
-      :hideFullScreenIcon="true"
-      @closeAction="editorDialogVisible=false"
-  >
-    <el-input
-        :clearable="field.preps['clearable'] == 'Y'"
-        :max="field.preps['max']"
-        :maxlength="field.preps['maxlength']"
-        :min="field.preps['min']"
-        :minlength="field.preps['maxlength']"
-        :placeholder="field.preps['placeholder'] || '请输入' + field.preps['label']"
-        :readonly="field.preps['readonly'] == 'Y'"
-        rows="20"
-        show-word-limit
-        resize="both"
-        type="textarea"
-        v-model="dataField"
-    />
-  </star-horse-dialog>
+   <EditDataDialog
+  v-model="editorDialogVisible"
+  :initial-content="formData[field.preps['name']]"
+  @confirm="handleContentConfirm"
+/>
   <starhorse-form-item
       :isDesign="isDesign"
       :disabled="disabled"
@@ -59,8 +39,7 @@
 <script setup lang="ts">
 import {onMounted, shallowRef} from 'vue';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
-import StarHorseDialog from '@/components/comp/StarHorseDialog.vue';
-
+import EditDataDialog from "@/components/formcomp/utils/EditDataDialog.vue";
 const props = defineProps({
   isDesign: {
     type: Boolean,
@@ -112,8 +91,8 @@ const maxEdit = () => {
   dataField.value = formData.value[props.field.preps['name']];
   editorDialogVisible.value = true;
 };
-const dataMerge = () => {
-  formData.value[props.field.preps['name']] = dataField.value;
+const handleContentConfirm = (newContent:string) => {
+  formData.value[props.field.preps['name']] = newContent;
 };
 onMounted(() => {
   actionName.value =props.field.preps?.actionName || 'normal';
