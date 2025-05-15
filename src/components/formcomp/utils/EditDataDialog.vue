@@ -22,7 +22,7 @@ const props = defineProps({
   disabled: {
     type: Boolean,
     default: false
-  }
+  },
   placeholder: String,
   initialContent: String
 });
