@@ -6,9 +6,9 @@ import {ModelRef} from 'vue';
 import {useSelfOperationStore} from '@/store/SelfOperation';
 import piniaInstance from '@/store';
 import {uuid} from '@/api/system';
-import {Config} from '@/api/settings.ts';
+import {Config} from '@/api/settings';
 import {SearchFields} from '@/components/types/SearchProps';
-import {checkVisible} from '@/api/form_utils.ts';
+import {checkVisible} from '@/api/form_utils';
 import {PropType} from 'vue';
 
 const props = defineProps({

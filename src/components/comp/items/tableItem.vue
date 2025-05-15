@@ -4,7 +4,7 @@
   import { PageFieldInfo } from '@/components/types/PageFieldInfo';
   import StarHorseFormTable from '@/components/comp/StarHorseFormTable.vue';
   import { ModelRef } from 'vue';
-  import { Config } from '@/api/settings.ts';
+  import { Config } from '@/api/settings';
 
   const props = defineProps({
     compUrl: { type: Object as PropType<ApiUrls> },

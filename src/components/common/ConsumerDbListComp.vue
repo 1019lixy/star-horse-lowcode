@@ -1,12 +1,12 @@
 <script setup lang="ts">
   import { computed, onMounted, ref, watch } from 'vue';
-  import { initDbList, openDatabase, tableColumns } from '@/utils/DbSearchUtils.ts';
+  import { initDbList, openDatabase, tableColumns } from '@/utils/DbSearchUtils';
   import piniaInstance from '@/store';
-  import { useGlobalConfigStore } from '@/store/GlobalConfig.ts';
-  import { SelectOption } from '@/components/types/SearchProps.d.ts';
+  import { useGlobalConfigStore } from '@/store/GlobalConfig';
+  import { SelectOption } from '@/components/types/SearchProps';
   import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
-  import { useConsumerViewStore } from '@/store/ConsumerView.ts';
-  import { Config } from '@/api/settings.ts';
+  import { useConsumerViewStore } from '@/store/ConsumerView';
+  import { Config } from '@/api/settings';
 
   let configStore = useGlobalConfigStore(piniaInstance);
   const consumerView = useConsumerViewStore(piniaInstance);

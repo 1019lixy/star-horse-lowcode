@@ -12,7 +12,7 @@ import Help from '@/components/help.vue';
 import {uuid} from '@/api/system';
 import UTableColumn from '@/components/comp/items/UTableColumn.vue';
 import StarHorseForm from '@/components/comp/StarHorseForm.vue';
-import {Config} from '@/api/settings.ts';
+import {Config} from '@/api/settings';
 
 let importDialogVisible = ref<boolean>(false);
 let rowDialogVisible = ref<boolean>(false);

@@ -14,7 +14,7 @@ import {OrderByInfo} from '@/components/types/PageFieldInfo';
 import {postRequest} from '@/api/star_horse_apis';
 import {closeLoad, createCondition, loadData} from '@/api/star_horse_utils';
 import {isSystemManage} from '@/utils/auth';
-import {Config} from '@/api/settings.ts';
+import {Config} from '@/api/settings';
 import Help from '@/components/help.vue';
 
 const props = defineProps({

@@ -21,7 +21,7 @@ import StarHorseFormItem from '@/components/comp/StarHorseFormItem.vue';
 import piniaInstance from '@/store';
 import {useSelfOperationStore} from '@/store/SelfOperation';
 import {SelectOption} from '@/components/types/SearchProps';
-import {Config} from '@/api/settings.ts';
+import {Config} from '@/api/settings';
 
 const props = defineProps({
   compUrl: {type: Object as PropType<ApiUrls>},

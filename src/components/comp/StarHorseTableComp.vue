@@ -19,7 +19,7 @@ import { useGlobalConfigStore } from '@/store/GlobalConfig.ts';
 import { analysisFields } from '@/utils/preview.ts';
 import { isSystemManage } from '@/utils/auth';
 import { removeEmptyCondition } from '@/api/system';
-import { Config } from '@/api/settings.ts';
+import { Config } from '@/api/settings';
 import Tablebtn from '@/components/comp/items/tablebtn.vue';
 import Help from '@/components/help.vue';
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'

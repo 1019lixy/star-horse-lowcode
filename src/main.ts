@@ -11,8 +11,8 @@ import commonComponent from '@/components/common/index';
 import systemComponent from '@/components/system/SystemComp';
 import App from '@/App.vue';
 import {createApp} from 'vue';
-import ElementPlus from 'element-plus';
-import zhCn from 'element-plus/dist/locale/zh-cn.mjs'; // 中文
+// import ElementPlus from 'element-plus';
+// import zhCn from 'element-plus/dist/locale/zh-cn.mjs'; // 中文
 import draggable from 'vuedraggable';
 import * as ElementPlusIconsVue from '@element-plus/icons-vue';
 import piniaInstance from '@/store';
@@ -36,9 +36,9 @@ app.use(containerComponent);
 
 app.use(piniaInstance);
 
-app.use(ElementPlus, {
-    locale: zhCn
-});
+// app.use(ElementPlus, {
+//     locale: zhCn
+// });
 // app.use(hljsVuePlugin);
 app.config.performance = true;
 /**

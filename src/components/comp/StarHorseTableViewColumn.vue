@@ -1,6 +1,6 @@
 <script setup lang="ts" name="StarHorseTableColumn">
   import { PropType } from 'vue';
-  import { Config } from '@/api/settings.ts';
+  import { Config } from '@/api/settings';
 
   const props = defineProps({
     batchName: { type: String, default: '' },

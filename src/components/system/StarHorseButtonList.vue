@@ -11,7 +11,7 @@ import {useButtonPermissionStore} from '@/store/ButtonPermission.ts';
 import {useRoute} from 'vue-router';
 import {UserFuncInfo} from '@/components/types/PageFieldInfo';
 import Help from '@/components/help.vue';
-import {Config} from '@/api/settings.ts';
+import {Config} from '@/api/settings';
 
 const props = defineProps({
   dialogProps: {type: Object as PropType<DialogProps>, required: true},

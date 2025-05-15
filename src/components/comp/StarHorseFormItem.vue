@@ -4,7 +4,7 @@ import {ApiUrls} from '@/components/types/ApiUrls';
 import {DialogProps} from '@/components/types/DialogProps';
 import {PageFieldInfo} from '@/components/types/PageFieldInfo';
 import {ModelRef} from 'vue';
-import {Config} from '@/api/settings.ts';
+import {Config} from '@/api/settings';
 
 defineProps({
   compUrl: {type: Object as PropType<ApiUrls>},

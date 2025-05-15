@@ -3,7 +3,7 @@
   import { FieldInfo } from '@/components/types/PageFieldInfo';
   import { rowClassName } from '@/api/star_horse_utils';
   import { ModelRef } from 'vue';
-  import { Config } from '@/api/settings.ts';
+  import { Config } from '@/api/settings';
 
   defineProps({
     item: { type: Array as PropType<Array<FieldInfo>>, required: true },

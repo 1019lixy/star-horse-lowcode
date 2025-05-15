@@ -5,7 +5,7 @@ import {useDesignFormStore} from '@/store/DesignForm';
 import piniaInstance from '@/store/index.ts';
 import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
 import {tableAction, tableCellOperation} from '@/components/formcomp/container/dytableUtils.ts';
-import {Config} from '@/api/settings.ts';
+import {Config} from '@/api/settings';
 
 const props = defineProps({
   parentField: {type: Object as PropType<any>},

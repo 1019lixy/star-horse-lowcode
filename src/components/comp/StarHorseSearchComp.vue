@@ -7,7 +7,7 @@ import {useGlobalConfigStore} from '@/store/GlobalConfig.ts';
 import piniaInstance from '@/store';
 import {analysisSearchData} from '@/utils/preview.ts';
 import {SearchParams} from '@/components/types/Params';
-import {Config} from '@/api/settings.ts';
+import {Config} from '@/api/settings';
 
 let matchTypeList = ref<SelectOption[]>();
 let sarchIcon = ref<string>('search_down');

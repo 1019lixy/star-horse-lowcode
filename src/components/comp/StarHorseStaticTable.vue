@@ -3,7 +3,7 @@
   import { commonParseCodeToName } from '@/api/star_horse_utils';
   import Sortable from 'sortablejs';
   import { warning } from '@/utils/message';
-  import { Config } from '@/api/settings.ts';
+  import { Config } from '@/api/settings';
   import {PropType} from 'vue';
 
   const props = defineProps({

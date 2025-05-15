@@ -11,7 +11,7 @@
     },
     "types": ["node", "vite/client"],
     /* Bundler mode */
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": false, // 必须改为 false 才能生成声明文件
@@ -24,7 +24,6 @@
     "noEmitOnError": false,
     "noFallthroughCasesInSwitch": true,
     "allowSyntheticDefaultImports": true,
-    "allowImportingTsExtensions": true,
     "declaration": true
   },
 

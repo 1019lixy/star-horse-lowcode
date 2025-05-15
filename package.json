@@ -2,7 +2,7 @@
   "name": "star-horse-lowcode",
   "private": false,
   "author": "l_1019@163.com",
-  "version": "2.7.30",
+  "version": "2.7.32",
   "type": "module",
   "description": "星马低代码平台",
   "keywords": [
@@ -81,7 +81,6 @@
     "process": "^0.11.10",
     "qrcode.vue-next": "^0.0.10",
     "quill-image-uploader": "^1.3.0",
-    "rollup-plugin-visualizer": "^5.14.0",
     "smooth-signature": "^1.1.0",
     "sortablejs": "^1.15.6",
     "svgicons2svgfont": "^15.0.1",

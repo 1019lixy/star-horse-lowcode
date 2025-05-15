@@ -2,9 +2,9 @@
 import {onMounted, PropType} from 'vue';
 import {ApiUrls} from '@/components/types/ApiUrls';
 import {FieldInfo} from '@/components/types/PageFieldInfo';
-import {checkVisible, loadProp, validMsg} from '@/api/form_utils.ts';
+import {checkVisible, loadProp, validMsg} from '@/api/form_utils';
 import {ModelRef} from 'vue';
-import {Config} from '@/api/settings.ts';
+import {Config} from '@/api/settings';
 
 const props = defineProps({
   compUrl: {type: Object as PropType<ApiUrls>},

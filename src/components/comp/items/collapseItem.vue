@@ -4,8 +4,8 @@ import {onMounted, PropType} from 'vue';
 import {ApiUrls} from '@/components/types/ApiUrls';
 import {FieldInfo} from '@/components/types/PageFieldInfo';
 import {ModelRef} from 'vue';
-import {Config} from '@/api/settings.ts';
-import {getDataIndex, getFormData, getPrefix,checkObject} from '@/api/form_utils.ts';
+import {Config} from '@/api/settings';
+import {getDataIndex, getFormData, getPrefix,checkObject} from '@/api/form_utils';
 
 const props=defineProps({
   compUrl: {type: Object as PropType<ApiUrls>},
