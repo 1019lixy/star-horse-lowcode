@@ -87,7 +87,7 @@ export default defineConfig((mode) => {
             rollupOptions: {
                 external: ['vue', 'pinia', 'core-js', 'elementPlus' ],
                 output: {
-                    exports:'default',
+                    exports:'named',
                     assetFileNames: 'assets/[name][extname]', // 修正资源输出路径
                     // 禁用代码分割
                     inlineDynamicImports: true,
