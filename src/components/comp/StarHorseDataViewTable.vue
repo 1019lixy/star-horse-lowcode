@@ -1,11 +1,10 @@
 <script setup lang="ts" name="StarHorseDataViewObject">
-  import { PropType } from 'vue';
-  import { FieldInfo } from '@/components/types/PageFieldInfo';
-  import { rowClassName } from '@/api/star_horse_utils';
-  import { ModelRef } from 'vue';
-  import { Config } from '@/api/settings';
+import {ModelRef, PropType} from 'vue';
+import {FieldInfo} from '@/components/types/PageFieldInfo';
+import {rowClassName} from '@/api/star_horse_utils';
+import {Config} from '@/api/settings';
 
-  defineProps({
+defineProps({
     item: { type: Array as PropType<Array<FieldInfo>>, required: true },
     batchName: { type: String, required: true },
     compSize: { type: String, default: Config.compSize },

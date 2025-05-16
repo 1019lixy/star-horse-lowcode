@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import {computed, nextTick, onMounted, reactive, ref, unref, PropType} from 'vue';
+import {computed, ModelRef, nextTick, onMounted, PropType, reactive, ref, unref} from 'vue';
 import {TreeNode, TreeNodeData} from 'element-plus/es/components/tree-v2/src/types';
-import {ModelRef} from 'vue';
 import SubSystemMenu from '@/components/menu/SubSystemMenu.vue';
 import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
-import {useGlobalConfigStore} from '@/store/GlobalConfig.ts';
+import {useGlobalConfigStore} from '@/store/GlobalConfig';
 import piniaInstance from '@/store';
 import {PageProps} from '@/components/types/PageProps';
 import {ApiUrls} from '@/components/types/ApiUrls';

@@ -1,7 +1,7 @@
-import { defineStore } from 'pinia';
-import { SelectOption } from '@/components/types/SearchProps';
-import { Config } from '@/api/settings';
-import { ref, unref } from 'vue';
+import {defineStore} from 'pinia';
+import {SelectOption} from '@/components/types/SearchProps';
+import {Config} from '@/api/settings';
+import {ref, unref} from 'vue';
 
 export const useDesignFormStore = defineStore('designForm', () => {
     const containerList = ref<Array<any>>([]);
@@ -155,7 +155,7 @@ export const useDesignFormStore = defineStore('designForm', () => {
     /**
      * 通过组件Id查找数据
      * @param itemId 组件Id
-     * @returns 
+     * @returns
      */
     const selectItemById = (itemId: string) => {
         if (compListNoLayer.value?.length == 0) {

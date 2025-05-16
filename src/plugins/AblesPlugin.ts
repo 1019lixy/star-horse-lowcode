@@ -1,10 +1,10 @@
-import { useCopyerOperationStore } from '@/store/CopyerOperation';
+import {useCopyerOperationStore} from '@/store/CopyerOperation';
 import piniaInstance from '@/store';
-import { computed, reactive, ref } from 'vue';
-import { useDesignFormStore } from '@/store/DesignForm';
-import { uuid } from '@/api/system';
-import { DynamicNode } from '@/components/types/DynamicNode';
-import { useDesignPageStore } from '@/store/DesignPage.ts';
+import {computed, reactive, ref} from 'vue';
+import {useDesignFormStore} from '@/store/DesignForm';
+import {uuid} from '@/api/system';
+import {DynamicNode} from '@/components/types/DynamicNode';
+import {useDesignPageStore} from '@/store/DesignPage';
 
 const copyerAction = useCopyerOperationStore(piniaInstance);
 const designForm = useDesignFormStore(piniaInstance);
@@ -15,7 +15,6 @@ const pasteDisplay = computed(() => {
   const action = copyerAction.action;
   return !!action;
 });
-
 export function getParentComp(parentField: any) {
   return parentField &&
     (parentField.itemType == 'box' ||

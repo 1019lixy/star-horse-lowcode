@@ -15,80 +15,80 @@
 // clickEffect: 布尔类型。默认true。是否有click特效。
 // clickMode: String类型。默认true。可用的click模式有: "push", "remove", "repulse", "bubble"。
 const particlesCfg = {
-  /*  background: {
-         color: {
-             value: '#0d47a1'
-         }
-     },*/
-  fpsLimit: 120,
-  interactivity: {
-    events: {
-      onClick: {
-        enable: true,
-        mode: 'push'
-      },
-      onHover: {
-        enable: true,
-        mode: 'repulse'
-      },
-      resize: true
+    /*  background: {
+           color: {
+               value: '#0d47a1'
+           }
+       },*/
+    fpsLimit: 120,
+    interactivity: {
+        events: {
+            onClick: {
+                enable: true,
+                mode: 'push'
+            },
+            onHover: {
+                enable: true,
+                mode: 'repulse'
+            },
+            resize: true
+        },
+        modes: {
+            bubble: {
+                distance: 400,
+                duration: 2,
+                opacity: 0.3,
+                size: 40
+            },
+            push: {
+                quantity: 4
+            },
+            repulse: {
+                distance: 200,
+                duration: 0.4
+            }
+        }
     },
-    modes: {
-      bubble: {
-        distance: 400,
-        duration: 2,
-        opacity: 0.3,
-        size: 40
-      },
-      push: {
-        quantity: 4
-      },
-      repulse: {
-        distance: 200,
-        duration: 0.4
-      }
-    }
-  },
-  particles: {
-    color: {
-      value: '#ffffff'
+    particles: {
+        color: {
+            value: '#ffffff'
+        },
+        links: {
+            color: '#ffffff',
+            distance: 150,
+            enable: true,
+            opacity: 1,
+            width: 1
+        },
+        collisions: {
+            enable: true
+        },
+        move: {
+            direction: 'none',
+            enable: true,
+            outMode: 'bounce',
+            random: false,
+            speed: 0.5,
+            straight: false
+        },
+        number: {
+            density: {
+                enable: true,
+                area: 800
+            },
+            value: 80
+        },
+        opacity: {
+            value: 0.5
+        },
+        shape: {
+            type: 'circle'
+        },
+        size: {
+            random: true,
+            value: 5
+        }
     },
-    links: {
-      color: '#ffffff',
-      distance: 150,
-      enable: true,
-      opacity: 1,
-      width: 1
-    },
-    collisions: {
-      enable: true
-    },
-    move: {
-      direction: 'none',
-      enable: true,
-      outMode: 'bounce',
-      random: false,
-      speed: 0.5,
-      straight: false
-    },
-    number: {
-      density: {
-        enable: true,
-        area: 800
-      },
-      value: 80
-    },
-    opacity: {
-      value: 0.5
-    },
-    shape: {
-      type: 'circle'
-    },
-    size: {
-      random: true,
-      value: 5
-    }
-  },
-  detectRetina: true
+    detectRetina: true
 };
-export { particlesCfg };
+export {particlesCfg};

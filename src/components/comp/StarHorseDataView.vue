@@ -1,10 +1,10 @@
 <script setup lang="ts" name="StarHorseDataView">
-  import { ApiUrls } from '@/components/types/ApiUrls';
-  import { inject, nextTick, onMounted, PropType, ref, watch } from 'vue';
-  import { DialogProps } from '@/components/types/DialogProps';
-  import { formFieldMapping, isJson, loadById } from '@/api/star_horse_utils';
+import {ApiUrls} from '@/components/types/ApiUrls';
+import {inject, nextTick, onMounted, PropType, ref, watch} from 'vue';
+import {DialogProps} from '@/components/types/DialogProps';
+import {formFieldMapping, isJson, loadById} from '@/api/star_horse_utils';
 
-  const dataForm = ref<any>({});
+const dataForm = ref<any>({});
   const props = defineProps({
     compUrl: { type: Object as PropType<ApiUrls> },
     objectName: { type: String },

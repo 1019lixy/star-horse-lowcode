@@ -81,7 +81,7 @@
 <script setup lang="ts">
 import {onMounted, ref, shallowRef, unref} from 'vue';
 import {loadElementPlusIcon, loadSvgIcons} from '@/api/star_horse_utils';
-import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
+import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
 import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
 

@@ -15,7 +15,7 @@ const fontStream = new SVGIcons2SVGFontStream({
     fixedWidth: false,  // 统一宽度
     centerVertically: true,
     centerHorizontally: true,
-    preserveAspectRatio:true
+    preserveAspectRatio: true
 });
 
 // 新增递归收集SVG文件函数

@@ -1,12 +1,11 @@
 <script setup lang="ts">
-  import { onMounted, PropType, ref } from 'vue';
-  import { ApiUrls } from '@/components/types/ApiUrls';
-  import { PageFieldInfo } from '@/components/types/PageFieldInfo';
-  import StarHorseFormTable from '@/components/comp/StarHorseFormTable.vue';
-  import { ModelRef } from 'vue';
-  import { Config } from '@/api/settings';
+import {ModelRef, onMounted, PropType} from 'vue';
+import {ApiUrls} from '@/components/types/ApiUrls';
+import {PageFieldInfo} from '@/components/types/PageFieldInfo';
+import StarHorseFormTable from '@/components/comp/StarHorseFormTable.vue';
+import {Config} from '@/api/settings';
 
-  const props = defineProps({
+const props = defineProps({
     compUrl: { type: Object as PropType<ApiUrls> },
     item: { type: Object as PropType<PageFieldInfo|any>, required: true },
     objectName: { type: String },

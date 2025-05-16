@@ -3,7 +3,7 @@
 import {computed, PropType, ref} from 'vue';
 import {operationConfirm, warning} from '@/utils/message';
 import {useDesignFormStore} from '@/store/DesignForm';
-import piniaInstance from '@/store/index.ts';
+import piniaInstance from '@/store/index';
 import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
 
 let containerTableRef = ref(); // 强制刷新表格

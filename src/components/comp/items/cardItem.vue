@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import StarHorseFormItem from '@/components/comp/StarHorseFormItem.vue';
-import {onMounted, PropType} from 'vue';
+import {ModelRef, onMounted, PropType} from 'vue';
 import {ApiUrls} from '@/components/types/ApiUrls';
 import {FieldInfo} from '@/components/types/PageFieldInfo';
-import {ModelRef} from 'vue';
 import {Config} from '@/api/settings';
-import {getDataIndex, getFormData, getPrefix, checkObject, loadProp, validMsg, checkVisible} from '@/api/form_utils';
+import {checkObject, checkVisible, getDataIndex, getFormData, getPrefix, loadProp, validMsg} from '@/api/form_utils';
 
 const props = defineProps({
   compUrl: {type: Object as PropType<ApiUrls>},

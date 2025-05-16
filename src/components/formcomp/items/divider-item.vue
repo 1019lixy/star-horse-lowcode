@@ -17,7 +17,7 @@
 </template>
 <script setup lang="ts">
 import {onMounted} from 'vue';
-import {allAction} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
+import {allAction} from '@/components/formcomp/utils/ItemRelationEventUtils';
 
 const props = defineProps({
   isDesign: {

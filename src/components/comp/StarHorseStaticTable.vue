@@ -1,12 +1,11 @@
 <script lang="ts" setup name="StarHorseStaticTable">
-  import { onMounted, reactive, ref, unref } from 'vue';
-  import { commonParseCodeToName } from '@/api/star_horse_utils';
-  import Sortable from 'sortablejs';
-  import { warning } from '@/utils/message';
-  import { Config } from '@/api/settings';
-  import {PropType} from 'vue';
+import {onMounted, PropType, reactive, ref, unref} from 'vue';
+import {commonParseCodeToName} from '@/api/star_horse_utils';
+import Sortable from 'sortablejs';
+import {warning} from '@/utils/message';
+import {Config} from '@/api/settings';
 
-  const props = defineProps({
+const props = defineProps({
     //主键
     primaryKey: {type: [String, Object] as PropType<string | any>,required:true},
     //列名

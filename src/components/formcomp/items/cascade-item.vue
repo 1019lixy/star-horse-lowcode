@@ -40,7 +40,7 @@
 <script setup lang="ts">
 import {nextTick, onMounted, shallowRef} from 'vue';
 import {compDynamicData, isJson} from '@/api/star_horse_utils';
-import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
+import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
 
 const props = defineProps({
   isDesign: {

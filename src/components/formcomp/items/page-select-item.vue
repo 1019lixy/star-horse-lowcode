@@ -5,7 +5,7 @@ import {closeLoad, createCondition, load} from '@/api/star_horse_utils';
 import {postRequest} from '@/api/star_horse_apis';
 import {FieldMapping, OrderByInfo} from '@/components/types/PageFieldInfo';
 import {SearchParams} from '@/components/types/Params';
-import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
+import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
 
 const props = defineProps({
   isDesign: {

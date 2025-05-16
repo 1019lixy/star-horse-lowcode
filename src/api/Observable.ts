@@ -1,4 +1,5 @@
-import { Ref, ref } from 'vue';
+import {Ref, ref} from 'vue';
+
 // 观察者模式基类
 class Observable<T> {
     private subscribers: ((value: T) => void)[] = [];

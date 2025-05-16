@@ -15,8 +15,8 @@
 <script lang="ts" setup>
 import {reactive, ref} from "vue";
 import {PageFieldInfo} from "@/components/types";
-import QrcodeItem from "@/components/formcomp/items/qrcode-item.vue";
 import test from "@/components/test.vue";
+
 const dataForm = ref<any>({})
 const formField = reactive<PageFieldInfo>( {
   "fieldList": [

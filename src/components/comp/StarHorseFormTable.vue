@@ -1,10 +1,9 @@
 <script setup lang="ts" name="StarHorseFormItem">
-  import { onMounted, ref } from 'vue';
-  import { batchFieldDefaultValues } from '@/api/star_horse_utils';
-  import { ModelRef } from 'vue';
-  import { Config } from '@/api/settings';
+import {ModelRef, onMounted, ref} from 'vue';
+import {batchFieldDefaultValues} from '@/api/star_horse_utils';
+import {Config} from '@/api/settings';
 
-  defineProps({
+defineProps({
     item: { type: Object, required: true },
     rules: { type: Object },
     initRows: { type: Number, default: 0 },

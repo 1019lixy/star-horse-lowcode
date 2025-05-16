@@ -53,7 +53,7 @@ import {nextTick, onMounted, reactive, shallowRef} from 'vue';
 import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
 import {PageFieldInfo} from '@/components/types/PageFieldInfo';
 import StarHorseForm from '@/components/comp/StarHorseForm.vue';
-import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
+import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
 import StarHorseJsonEditor from '@/components/comp/StarHorseJsonEditor.vue';
 
 const props = defineProps({

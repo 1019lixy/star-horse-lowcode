@@ -39,8 +39,9 @@
 </template>
 <script setup lang="ts">
 import {onMounted, shallowRef} from 'vue';
-import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
+import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
 import EditDataDialog from "@/components/formcomp/utils/EditDataDialog.vue";
+
 const props = defineProps({
   isDesign: {
     type: Boolean,

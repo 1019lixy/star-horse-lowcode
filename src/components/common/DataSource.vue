@@ -3,7 +3,7 @@ import {onMounted, ref, toRef} from 'vue';
 import {SelectOption} from '@/components/types/SearchProps';
 import {searchMatchList} from '@/api/star_horse_utils';
 import {loadDict} from '@/api/star_horse_apis';
-import {createData, dataSourceFields, validInterface} from '@/utils/ItemPreps.ts';
+import {createData, dataSourceFields, validInterface} from '@/utils/ItemPreps';
 import {warning} from '@/utils/message';
 
 defineOptions({

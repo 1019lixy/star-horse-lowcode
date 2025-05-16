@@ -1,14 +1,14 @@
 <script setup lang="ts">
-  import { computed, onMounted, ref, watch } from 'vue';
-  import { initDbList, openDatabase, tableColumns } from '@/utils/DbSearchUtils';
-  import piniaInstance from '@/store';
-  import { useGlobalConfigStore } from '@/store/GlobalConfig';
-  import { SelectOption } from '@/components/types/SearchProps';
-  import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
-  import { useConsumerViewStore } from '@/store/ConsumerView';
-  import { Config } from '@/api/settings';
+import {computed, onMounted, ref, watch} from 'vue';
+import {initDbList, openDatabase, tableColumns} from '@/utils/DbSearchUtils';
+import piniaInstance from '@/store';
+import {useGlobalConfigStore} from '@/store/GlobalConfig';
+import {SelectOption} from '@/components/types/SearchProps';
+import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
+import {useConsumerViewStore} from '@/store/ConsumerView';
+import {Config} from '@/api/settings';
 
-  let configStore = useGlobalConfigStore(piniaInstance);
+let configStore = useGlobalConfigStore(piniaInstance);
   const consumerView = useConsumerViewStore(piniaInstance);
   let compSize = computed(() => configStore.configFormInfo?.buttonSize || Config.compSize);
   let dataForm = ref<any>({});

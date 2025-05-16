@@ -1,15 +1,13 @@
 <script setup lang="ts" name="StarHorseItem">
-import {computed, inject, onMounted, ref, unref, watch} from 'vue';
+import {computed, inject, ModelRef, onMounted, PropType, ref, unref, watch} from 'vue';
 import {warning} from '@/utils/message';
 import {FieldInfo} from '@/components/types/PageFieldInfo';
-import {ModelRef} from 'vue';
 import {useSelfOperationStore} from '@/store/SelfOperation';
 import piniaInstance from '@/store';
 import {uuid} from '@/api/system';
 import {Config} from '@/api/settings';
 import {SearchFields} from '@/components/types/SearchProps';
 import {checkVisible} from '@/api/form_utils';
-import {PropType} from 'vue';
 
 const props = defineProps({
   // allItem: {type: Array, required: true},

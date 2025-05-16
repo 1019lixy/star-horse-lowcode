@@ -74,8 +74,9 @@
 </template>
 <script setup lang="ts">
 import {nextTick, onMounted, ref, shallowRef} from 'vue';
-import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
+import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
 import EditDataDialog from "@/components/formcomp/utils/EditDataDialog.vue";
+
 defineOptions({
   name: 'InputItem'
 })
@@ -121,7 +122,7 @@ const itemAction = (prep: any) => {
 };
 const handleContentConfirm=(newContent:string)=>{
   formData.value[props.field.preps['name']]=newContent;
-  dialogInputVisible.value=false; 
+  dialogInputVisible.value=false;
 }
 const editContent=()=>{
   dialogInputVisible.value=true;

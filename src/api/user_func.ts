@@ -1,6 +1,6 @@
 import {useSelfOperationStore} from "@/store/SelfOperation";
 import piniaInstance from "@/store";
-import {download, getRequest, postRequest,uploadRequest} from "@/api/star_horse_apis";
+import {download, getRequest, postRequest, uploadRequest} from "@/api/star_horse_apis";
 import {getUserInfo} from "@/utils/auth";
 import {Ref} from "vue";
 import {createCondition} from "@/api/star_horse_utils";

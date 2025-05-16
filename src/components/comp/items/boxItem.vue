@@ -2,7 +2,7 @@
 import {onMounted, PropType} from 'vue';
 import {ApiUrls} from '@/components/types/ApiUrls';
 import {FieldInfo} from '@/components/types/PageFieldInfo';
-import {validMsg, loadProp, checkVisible} from '@/api/form_utils';
+import {checkVisible, loadProp, validMsg} from '@/api/form_utils';
 import {Config} from '@/api/settings';
 
 const props = defineProps({

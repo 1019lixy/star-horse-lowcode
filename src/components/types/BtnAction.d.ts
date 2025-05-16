@@ -1,4 +1,3 @@
-import {FieldInfo} from '@/components/types/PageFieldInfo';
 import {SearchParams} from '@/components/types/Params';
 
 export declare interface DynamicParamField {
@@ -15,7 +14,7 @@ export declare interface DynamicParamField {
  */
 export declare interface BtnAction {
     //视图类型
-    viewType: "inter"|"comp" | "code" | "method";
+    viewType: "inter" | "comp" | "code" | "method";
     //动态表单参数
     idDynamicForm?: string,
     //动态组件名称

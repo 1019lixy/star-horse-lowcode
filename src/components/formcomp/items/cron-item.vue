@@ -42,7 +42,7 @@
 import {onMounted, ref, shallowRef} from 'vue';
 import Crontab from '@/components/cron/Crontab.vue';
 import StarHorseDialog from '@/components/comp/StarHorseDialog.vue';
-import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
+import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
 
 
 const props = defineProps({

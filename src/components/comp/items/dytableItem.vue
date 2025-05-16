@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import {onMounted, PropType} from 'vue';
+import {ModelRef, onMounted, PropType} from 'vue';
 import {ApiUrls} from '@/components/types/ApiUrls';
 import {PageFieldInfo} from '@/components/types/PageFieldInfo';
-import {ModelRef} from 'vue';
 import {loadProp, validMsg} from '@/api/form_utils';
 import {Config} from '@/api/settings';
 
