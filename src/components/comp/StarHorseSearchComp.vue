@@ -3,11 +3,11 @@ import {computed, nextTick, onMounted, PropType, ref} from 'vue';
 import {ApiUrls} from '@/components/types/ApiUrls';
 import {SearchFields, SelectOption} from '@/components/types/SearchProps';
 import {isJson, searchMatchList} from '@/api/star_horse_utils';
-import {useGlobalConfigStore} from '@/store/GlobalConfig.ts';
+import {useGlobalConfigStore} from '@/store/GlobalConfig';
 import piniaInstance from '@/store';
-import {analysisSearchData} from '@/utils/preview.ts';
+import {analysisSearchData} from '@/utils/preview';
 import {SearchParams} from '@/components/types/Params';
-import {Config} from '@/api/settings.ts';
+import {Config} from '@/api/settings';
 
 let matchTypeList = ref<SelectOption[]>();
 let sarchIcon = ref<string>('search_down');
@@ -106,7 +106,7 @@ defineExpose({
           <template v-if="(!item.type || item.type == 'input') && (!item.disabled || item.disabled == 'N')" :span="6">
             <el-select
                 :size="compSize"
-                style="width: 90px; height: 100%; padding-top: 2px"
+                style="width: 90px !important; height: 100%; padding-top: 2px"
                 v-model="item['matchType']"
                 clearable
                 filterable

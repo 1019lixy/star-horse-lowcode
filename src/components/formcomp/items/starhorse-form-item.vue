@@ -1,16 +1,10 @@
 <script setup lang="ts" name="starhorse-form-item">
-import {computed, onMounted, PropType, ref,shallowRef} from 'vue';
+import {computed, onMounted, PropType, ref} from 'vue';
 import {useDesignFormStore} from '@/store/DesignForm';
-import piniaInstance from '@/store/index.ts';
+import piniaInstance from '@/store/index';
 import StarHorseDialog from '@/components/comp/StarHorseDialog.vue';
 import FieldList from '@/components/formcomp/utils/FieldList.vue';
-import {
-  dynamicFormContextMenuData,
-  getParentComp,
-  moveDownItem,
-  moveUpItem,
-  removeItem
-} from '@/plugins/AblesPlugin';
+import {dynamicFormContextMenuData, getParentComp, moveDownItem, moveUpItem, removeItem} from '@/plugins/AblesPlugin';
 
 const props = defineProps({
   parentField: {type: Object as PropType<any>},

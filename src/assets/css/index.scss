@@ -92,7 +92,7 @@ a {
 .el-autocomplete,
 .el-input-number,
 .el-input-number--small {
-  width: 100%;
+  width: 100% !important;
 }
 
 .el-form-item__content {

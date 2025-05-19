@@ -66,19 +66,19 @@
   </div>
 </template>
 <script setup lang="ts">
-  import { computed, nextTick, onMounted, ref, watch } from 'vue';
-  import CrontabSecond from '@/components/cron/Crontab-Second.vue';
-  import CrontabMin from '@/components/cron/Crontab-Min.vue';
-  import CrontabHour from '@/components/cron/Crontab-Hour.vue';
-  import CrontabDay from '@/components/cron/Crontab-Day.vue';
-  import Crontabmonth from '@/components/cron/Crontab-Month.vue';
-  import CrontabWeek from '@/components/cron/Crontab-Week.vue';
-  import CrontabYear from '@/components/cron/Crontab-Year.vue';
-  import CrontabResult from '@/components/cron/Crontab-Result.vue';
-  import { copy } from '@/api/star_horse_utils';
-  import { useVModel } from '@vueuse/core';
+import {nextTick, onMounted, ref, watch} from 'vue';
+import CrontabSecond from '@/components/cron/Crontab-Second.vue';
+import CrontabMin from '@/components/cron/Crontab-Min.vue';
+import CrontabHour from '@/components/cron/Crontab-Hour.vue';
+import CrontabDay from '@/components/cron/Crontab-Day.vue';
+import Crontabmonth from '@/components/cron/Crontab-Month.vue';
+import CrontabWeek from '@/components/cron/Crontab-Week.vue';
+import CrontabYear from '@/components/cron/Crontab-Year.vue';
+import CrontabResult from '@/components/cron/Crontab-Result.vue';
+import {copy} from '@/api/star_horse_utils';
+import {useVModel} from '@vueuse/core';
 
-  export interface Crontab {
+export interface Crontab {
     expression: string;
     modelValue: string;
     hideComponent: any;

@@ -44,6 +44,7 @@ declare module 'vue' {
     DytableCol: typeof import('./src/components/formcomp/container/dytable-col.vue')['default']
     DytableContainer: typeof import('./src/components/formcomp/container/dytable-container.vue')['default']
     DytableItem: typeof import('./src/components/comp/items/dytableItem.vue')['default']
+    EditDataDialog: typeof import('./src/components/formcomp/utils/EditDataDialog.vue')['default']
     ElAnchor: typeof import('element-plus/es')['ElAnchor']
     ElAnchorLink: typeof import('element-plus/es')['ElAnchorLink']
     ElAutocomplete: typeof import('element-plus/es')['ElAutocomplete']

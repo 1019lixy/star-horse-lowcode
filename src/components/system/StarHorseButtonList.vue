@@ -5,13 +5,13 @@ import {download} from '@/api/star_horse_apis';
 import {error} from '@/utils/message';
 import {DialogProps} from '../types/DialogProps';
 import {getToken} from '@/utils/auth';
-import {useGlobalConfigStore} from '@/store/GlobalConfig.ts';
+import {useGlobalConfigStore} from '@/store/GlobalConfig';
 import piniaInstance from '@/store';
-import {useButtonPermissionStore} from '@/store/ButtonPermission.ts';
+import {useButtonPermissionStore} from '@/store/ButtonPermission';
 import {useRoute} from 'vue-router';
 import {UserFuncInfo} from '@/components/types/PageFieldInfo';
 import Help from '@/components/help.vue';
-import {Config} from '@/api/settings.ts';
+import {Config} from '@/api/settings';
 
 const props = defineProps({
   dialogProps: {type: Object as PropType<DialogProps>, required: true},

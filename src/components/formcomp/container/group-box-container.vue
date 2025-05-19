@@ -1,13 +1,13 @@
 <script setup lang="ts" name="GroupBoxContainer">
 import {operationConfirm, warning} from '@/utils/message';
-import piniaInstance from '@/store/index.ts';
+import piniaInstance from '@/store/index';
 import {useDesignFormStore} from '@/store/DesignForm';
-import {computed, ref, PropType} from 'vue';
-import {colDataInfo} from '@/components/formcomp/container/dytableUtils.ts';
+import {computed, PropType, ref} from 'vue';
+import {colDataInfo} from '@/components/formcomp/container/dytableUtils';
 import {dynamicFormContextMenuData} from '@/plugins/AblesPlugin';
 import FieldList from '@/components/formcomp/utils/FieldList.vue';
 import StarHorseDialog from '@/components/comp/StarHorseDialog.vue';
-import {fieldCopy} from '@/utils/FieldOperationUtils.ts';
+import {fieldCopy} from '@/utils/FieldOperationUtils';
 
 const props = defineProps({
   isDesign: {type: Boolean, default: false},

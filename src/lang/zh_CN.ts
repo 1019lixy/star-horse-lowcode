@@ -1,4 +1,4 @@
-import { Config } from '@/api/settings.ts';
+import {Config} from '@/api/settings';
 
 export default {
   'starhorse.copyright': Config.footerTxt,

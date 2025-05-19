@@ -1,6 +1,6 @@
-import { ref } from 'vue';
-import { ShortKey } from '@/components/types/ShortKey';
-import { ModuleEnums } from '@/components/enums/ModuleEnums';
+import {ref} from 'vue';
+import {ShortKey} from '@/components/types/ShortKey';
+import {ModuleEnums} from '@/components/enums/ModuleEnums';
 import {
   altDownFun,
   altLeftFun,
@@ -36,7 +36,7 @@ import {
   undoFun,
   unGroupFun,
   upFun
-} from '@/api/short-key-operation.ts';
+} from '@/api/short-key-operation';
 
 const ctrlKey = ref<boolean>(false);
 const altKey = ref<boolean>(false);

@@ -49,7 +49,7 @@
 </template>
 <script setup lang="ts" name="buttonItem">
 import {onMounted, PropType, shallowRef, unref} from 'vue';
-import {buttonAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
+import {buttonAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
 import {httpRequest} from '@/api/star_horse_apis';
 import {operationConfirm, warning} from '@/utils/message';
 import {BtnAction, DynamicParamField} from '@/components/types/BtnAction';

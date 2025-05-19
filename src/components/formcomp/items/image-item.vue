@@ -108,7 +108,7 @@
 </template>
 <script setup lang="ts">
 import {onMounted, shallowRef} from 'vue';
-import {allAction} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
+import {allAction} from '@/components/formcomp/utils/ItemRelationEventUtils';
 import {Picture as IconPicture} from '@element-plus/icons-vue';
 import {getToken} from '@/utils/auth';
 

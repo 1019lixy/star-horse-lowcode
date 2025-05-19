@@ -235,16 +235,16 @@ export declare interface FieldInfo {
     /**
      * 添加事件
      */
-    addActions?: Function|string;
+    addActions?: Function | string;
     /**
      * 编辑事件
      */
-    editActions?: Function|string;
+    editActions?: Function | string;
 
     /**
      * 删除事件
      */
-    removeActions?: Function|string;
+    removeActions?: Function | string;
 }
 
 /**
@@ -343,7 +343,7 @@ export declare interface UserFuncInfo {
     /**
      * 按钮显示位置，默认在列表的右侧
      */
-    position?: 'table'|'toolbar';
+    position?: 'table' | 'toolbar';
     /**
      * 子节点
      */

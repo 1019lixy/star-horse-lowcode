@@ -1,10 +1,10 @@
 <script setup lang="ts" name="StarHorseHmenu">
-  import { inject, onMounted, ref } from 'vue';
-  import { postRequest } from '@/api/star_horse_apis';
-  import { getUserInfo } from '@/utils/auth';
-  import SystemSubMenu from '@/components/menu/SystemSubMenu.vue';
+import {inject, onMounted, ref} from 'vue';
+import {postRequest} from '@/api/star_horse_apis';
+import {getUserInfo} from '@/utils/auth';
+import SystemSubMenu from '@/components/menu/SystemSubMenu.vue';
 
-  let dataList = ref([]);
+let dataList = ref([]);
   const loadMenuFun = inject('loadMenu') as Function;
   const handleSelect = (data: any) => {
     loadMenuFun(data);

@@ -2,7 +2,7 @@
 import {nextTick, onMounted, PropType, ref} from 'vue';
 import {UserFuncInfo} from '@/components/types/PageFieldInfo';
 import {BtnHideCondition} from '@/components/types/Params';
-import {Config} from '@/api/settings.ts';
+import {Config} from '@/api/settings';
 
 const props = defineProps({
   //按钮列表

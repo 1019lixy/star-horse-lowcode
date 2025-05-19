@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import {computed, nextTick, onMounted, reactive, ref, unref, PropType} from 'vue';
+import {computed, ModelRef, nextTick, onMounted, PropType, reactive, ref, unref} from 'vue';
 import {TreeNode, TreeNodeData} from 'element-plus/es/components/tree-v2/src/types';
-import {ModelRef} from 'vue';
 import SubSystemMenu from '@/components/menu/SubSystemMenu.vue';
 import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
-import {useGlobalConfigStore} from '@/store/GlobalConfig.ts';
+import {useGlobalConfigStore} from '@/store/GlobalConfig';
 import piniaInstance from '@/store';
 import {PageProps} from '@/components/types/PageProps';
 import {ApiUrls} from '@/components/types/ApiUrls';
@@ -14,7 +13,7 @@ import {OrderByInfo} from '@/components/types/PageFieldInfo';
 import {postRequest} from '@/api/star_horse_apis';
 import {closeLoad, createCondition, loadData} from '@/api/star_horse_utils';
 import {isSystemManage} from '@/utils/auth';
-import {Config} from '@/api/settings.ts';
+import {Config} from '@/api/settings';
 import Help from '@/components/help.vue';
 
 const props = defineProps({

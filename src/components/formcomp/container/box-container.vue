@@ -1,8 +1,8 @@
 <script setup lang="ts" name="box-container">
-import {ComponentInternalInstance, computed, getCurrentInstance, PropType} from 'vue';
+import {computed, PropType} from 'vue';
 import {warning} from '@/utils/message';
 import {useDesignFormStore} from '@/store/DesignForm';
-import piniaInstance from '@/store/index.ts';
+import piniaInstance from '@/store/index';
 
 const props = defineProps({
   parentField: {type: String},

@@ -1,4 +1,4 @@
-import { uuid } from '@/api/system';
+import {uuid} from '@/api/system';
 
 /**
  * 定义td 数据

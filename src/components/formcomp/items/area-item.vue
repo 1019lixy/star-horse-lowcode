@@ -40,7 +40,7 @@
 import {nextTick, onMounted, shallowRef} from 'vue';
 import {compDynamicData} from '@/api/star_horse_utils';
 import areaData from '@/api/pcas-code.json';
-import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
+import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
 
 const props = defineProps({
   isDesign: {

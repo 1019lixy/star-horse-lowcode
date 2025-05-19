@@ -54,7 +54,7 @@
 <script setup lang="ts">
 import {nextTick, onMounted, ref, shallowRef, watch} from 'vue';
 import {getToken} from '@/utils/auth';
-import {checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
+import {checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
 
 const props = defineProps({
   isDesign: {

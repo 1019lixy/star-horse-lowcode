@@ -1,9 +1,9 @@
 <script setup lang="ts">
-  import { useDesignFormStore } from '@/store/DesignForm';
-  import piniaInstance from '@/store';
-  import {computed, ComputedRef, ref} from 'vue';
+import {useDesignFormStore} from '@/store/DesignForm';
+import piniaInstance from '@/store';
+import {computed, ComputedRef, ref} from 'vue';
 
-  defineOptions({
+defineOptions({
     name: 'FieldList'
   });
   const containerRef = ref();

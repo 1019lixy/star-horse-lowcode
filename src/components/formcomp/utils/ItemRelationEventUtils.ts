@@ -1,5 +1,5 @@
 import {error} from '@/utils/message';
-import {userFunction} from '@/api/user_func.ts';
+import {userFunction} from '@/api/user_func';
 import {compDynamicData} from '@/api/star_horse_utils';
 import piniaInstance from '@/store';
 import {useSelfOperationStore} from '@/store/SelfOperation';

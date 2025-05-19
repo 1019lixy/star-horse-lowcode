@@ -1,9 +1,9 @@
 <script setup lang="ts">
-  import { PropType } from 'vue';
-  import { ApiUrls } from '@/components/types/ApiUrls';
-  import { Config } from '@/api/settings.ts';
+import {PropType} from 'vue';
+import {ApiUrls} from '@/components/types/ApiUrls';
+import {Config} from '@/api/settings';
 
-  defineProps({
+defineProps({
     //url地址
     compUrl: { type: Object as PropType<ApiUrls>, required: true },
     //列名

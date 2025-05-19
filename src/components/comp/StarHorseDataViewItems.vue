@@ -1,10 +1,9 @@
 <script setup lang="ts" name="StarHorseDataViewObject">
-  import { PropType } from 'vue';
-  import { PageFieldInfo } from '@/components/types/PageFieldInfo';
-  import { ModelRef } from 'vue';
-  import { commonParseCodeToName } from '@/api/star_horse_utils';
+import {ModelRef, PropType} from 'vue';
+import {PageFieldInfo} from '@/components/types/PageFieldInfo';
+import {commonParseCodeToName} from '@/api/star_horse_utils';
 
-  const props = defineProps({
+const props = defineProps({
     // compUrl: {type: Object as PropType<ApiUrls>},
     fieldList: { type: Object as PropType<PageFieldInfo>, required: true },
     objectName: { type: String },

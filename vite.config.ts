@@ -10,7 +10,7 @@ import AutoImport from 'unplugin-auto-import/vite';
 import progress from "vite-plugin-progress";
 //此插件是处理外部依赖 比如cdn引入的js
 import tailwindcss from '@tailwindcss/vite';
-import {visualizer} from 'rollup-plugin-visualizer';
+// import {visualizer} from 'rollup-plugin-visualizer';
 //生产types文件插件
 import dts from 'vite-plugin-dts';
 // https://vitejs.dev/config/
@@ -61,11 +61,11 @@ export default defineConfig((mode) => {
                 'windows.jQuery': 'jquery',
                 'windows.$': 'jquery'
             }),
-            visualizer({
+          /*   visualizer({
                 open: false, // 构建完成后自动打开分析页面
                 gzipSize: true,
                 brotliSize: true
-            })
+            }) */
         ],
         css: {
             //解决 Deprecation Warning: The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0.
@@ -87,7 +87,7 @@ export default defineConfig((mode) => {
             rollupOptions: {
                 external: ['vue', 'pinia', 'core-js', 'elementPlus' ],
                 output: {
-                    exports: 'named',
+                    exports:'named',
                     assetFileNames: 'assets/[name][extname]', // 修正资源输出路径
                     // 禁用代码分割
                     inlineDynamicImports: true,
@@ -102,8 +102,12 @@ export default defineConfig((mode) => {
             },
             terserOptions: {
                 compress: {
+                    keep_infinity: true,
                     drop_console: mode.mode === 'production',
                     drop_debugger: mode.mode === 'production'
+                },
+                format:{
+                    comments: false,
                 }
             },
             lib: {

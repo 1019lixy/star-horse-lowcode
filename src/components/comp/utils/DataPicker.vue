@@ -1,14 +1,14 @@
 <script setup lang="ts">
-  import { useVModel } from '@vueuse/core';
-  import type { TreeNodeData } from 'element-plus/es/components/tree/src/tree.type';
-  import { type ElTree } from 'element-plus';
-  import { reactive, ref, watch } from 'vue';
-  import { postRequest } from '@/api/star_horse_apis';
-  import StarHorseDialog from '@/components/comp/StarHorseDialog.vue';
-  import { closeLoad } from '@/api/star_horse_utils';
-  import { PageProps } from '@/components/types/PageProps';
+import {useVModel} from '@vueuse/core';
+import type {TreeNodeData} from 'element-plus/es/components/tree/src/tree.type';
+import {type ElTree} from 'element-plus';
+import {reactive, ref, watch} from 'vue';
+import {postRequest} from '@/api/star_horse_apis';
+import StarHorseDialog from '@/components/comp/StarHorseDialog.vue';
+import {closeLoad} from '@/api/star_horse_utils';
+import {PageProps} from '@/components/types/PageProps';
 
-  export type ModelValueType = any;
+export type ModelValueType = any;
 
   export interface DataDropdownProps {
     modelValue: ModelValueType;

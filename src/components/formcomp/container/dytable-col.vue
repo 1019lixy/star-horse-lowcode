@@ -1,11 +1,11 @@
 <script setup lang="ts" name="box-container">
-import {computed, onMounted, PropType, reactive, watch, ref} from 'vue';
+import {computed, onMounted, PropType, reactive, ref, watch} from 'vue';
 import {warning} from '@/utils/message';
 import {useDesignFormStore} from '@/store/DesignForm';
-import piniaInstance from '@/store/index.ts';
+import piniaInstance from '@/store/index';
 import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
-import {tableAction, tableCellOperation} from '@/components/formcomp/container/dytableUtils.ts';
-import {Config} from '@/api/settings.ts';
+import {tableAction, tableCellOperation} from '@/components/formcomp/container/dytableUtils';
+import {Config} from '@/api/settings';
 
 const props = defineProps({
   parentField: {type: Object as PropType<any>},
@@ -362,7 +362,7 @@ watch(
       display: none !important;  // 禁用拖拽手柄
       pointer-events: none !important;
     }
-    
+
     &:hover {
       &::after, &::before {
         opacity: 0 !important;

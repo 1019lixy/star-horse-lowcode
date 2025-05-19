@@ -19,7 +19,7 @@
 </template>
 <script setup lang="ts" name="markdown">
 import {onMounted, onUpdated} from 'vue';
-import {allAction} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
+import {allAction} from '@/components/formcomp/utils/ItemRelationEventUtils';
 import 'md-editor-v3/lib/style.css';
 
 const props = defineProps({

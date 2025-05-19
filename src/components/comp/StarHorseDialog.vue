@@ -3,7 +3,7 @@ import {computed, onMounted, PropType, provide, reactive, ref, watch} from 'vue'
 import {DialogProps} from '@/components/types/DialogProps';
 import {i18n} from '@/lang';
 import {UserFuncInfo} from '@/components/types/PageFieldInfo';
-import {Config} from '@/api/settings.ts';
+import {Config} from '@/api/settings';
 
 const emits = defineEmits(['merge', 'mergeDraft', 'resetForm', 'open', 'closeAction']);
 const props = defineProps({

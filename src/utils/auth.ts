@@ -1,4 +1,4 @@
-import {Config} from '@/api/settings.ts';
+import {Config} from '@/api/settings';
 import {SearchParams} from '@/components/types/Params';
 
 export function getToken() {

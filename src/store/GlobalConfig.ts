@@ -1,5 +1,5 @@
 import {defineStore} from 'pinia';
-import {Config} from '@/api/settings.ts';
+import {Config} from '@/api/settings';
 import {ref} from 'vue';
 
 export const useGlobalConfigStore = defineStore(

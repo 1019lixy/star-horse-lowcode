@@ -1,17 +1,17 @@
 <script setup lang="ts">
-  import { onMounted, PropType } from 'vue';
-  import { FieldInfo } from '@/components/types/PageFieldInfo';
-  import { ModelRef } from 'vue';
+import {ModelRef, onMounted, PropType} from 'vue';
+import {FieldInfo} from '@/components/types/PageFieldInfo';
 
-  const props = defineProps({
-    item: { type: Array as PropType<Array<FieldInfo>>, required: true },
-    commonFormat: { type: Function, required: true }
-  });
-  const dataForm: ModelRef<any> = defineModel('dataForm');
-  const init = () => {};
-  onMounted(() => {
-    init();
-  });
+const props = defineProps({
+  item: {type: Array as PropType<Array<FieldInfo>>, required: true},
+  commonFormat: {type: Function, required: true}
+});
+const dataForm: ModelRef<any> = defineModel('dataForm');
+const init = () => {
+};
+onMounted(() => {
+  init();
+});
 </script>
 
 <template>
@@ -24,12 +24,12 @@
           </div>
         </template>
         <star-horse-data-view-items
-          :objectName="cardItem.objectName"
-          :subFormFlag="cardItem.subFormFlag"
-          v-model:data-form="dataForm"
-          :commonFormat="commonFormat"
-          primaryKey="id"
-          :fieldList="{
+            :objectName="cardItem.objectName"
+            :subFormFlag="cardItem.subFormFlag"
+            v-model:data-form="dataForm"
+            :commonFormat="commonFormat"
+            primaryKey="id"
+            :fieldList="{
             ...cardItem
           }"
         />
@@ -39,7 +39,7 @@
 </template>
 
 <style scoped lang="scss">
-  .el-card:nth-child(n + 1) {
-    margin-top: 10px;
-  }
+.el-card:nth-child(n + 1) {
+  margin-top: 10px;
+}
 </style>

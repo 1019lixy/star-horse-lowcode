@@ -1,7 +1,7 @@
-import { defineStore } from 'pinia';
-import { SelectOption } from '@/components/types/SearchProps';
-import { Config } from '@/api/settings.ts';
-import { ref, shallowRef, unref } from 'vue';
+import {defineStore} from 'pinia';
+import {SelectOption} from '@/components/types/SearchProps';
+import {Config} from '@/api/settings';
+import {ref, unref} from 'vue';
 
 export const useDesignFormStore = defineStore('designForm', () => {
     const containerList = ref<Array<any>>([]);
@@ -9,7 +9,7 @@ export const useDesignFormStore = defineStore('designForm', () => {
     const selfFormDataList = ref<Array<any>>([]);
     const allFormDataList = ref<Array<any>>([]);
     const formInfo = ref<any>({});
-    const compList = shallowRef<Array<any>>([]);
+    const compList = ref<Array<any>>([]);
     const compListNoLayer = ref<any>([]);
     const formData = ref<any>({});
     const currentComp = ref<Array<any> | any>();
@@ -155,7 +155,7 @@ export const useDesignFormStore = defineStore('designForm', () => {
     /**
      * 通过组件Id查找数据
      * @param itemId 组件Id
-     * @returns 
+     * @returns
      */
     const selectItemById = (itemId: string) => {
         if (compListNoLayer.value?.length == 0) {
@@ -379,13 +379,6 @@ export const useDesignFormStore = defineStore('designForm', () => {
         };
         compList.value = [];
         formData.value = { index: 1 };
-        if (typeof window !== 'undefined') {
-            requestIdleCallback(() => {
-                if (compList.value.length === 0) {
-                    gc(); // 手动触发垃圾回收
-                }
-            });
-        }
         historyRecord.value = {
             index: -1,
             maxStep: 20,

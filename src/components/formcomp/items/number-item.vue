@@ -38,7 +38,7 @@
 </template>
 <script setup lang="ts">
 import {nextTick, onMounted, shallowRef} from 'vue';
-import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils.ts';
+import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
 
 defineOptions({
   name: 'NumberItem'
@@ -91,7 +91,7 @@ onMounted(() => {
 
 </script>
 <style lang="scss" scoped>
-:deep(.el-input-number--small) {
+:deep(.el-input-number) {
   width: 100% !important;
 }
 </style>

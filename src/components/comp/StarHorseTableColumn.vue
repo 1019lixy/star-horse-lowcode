@@ -4,9 +4,9 @@ import {nextTick, PropType, ref} from 'vue';
 import {postRequest} from '@/api/star_horse_apis';
 import {closeLoad, commonParseCodeToName} from '@/api/star_horse_utils';
 import {error, success, warning} from '@/utils/message';
-import {Config} from '@/api/settings.ts';
+import {Config} from '@/api/settings';
 import {createComponent} from '@/api/system';
-import {createDatetime, dateTypes, parseDateByType} from "@/api/date_utils";
+import {dateTypes, parseDateByType} from "@/api/date_utils";
 
 const props = defineProps({
   compUrl: {type: Object},

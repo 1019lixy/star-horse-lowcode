@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import bwipjs from 'bwip-js';
-import { onMounted, nextTick, ref, computed, watch } from "vue";
-import { allAction } from '../utils/ItemRelationEventUtils';
+import {computed, nextTick, onMounted, ref, watch} from "vue";
+import {allAction} from '../utils/ItemRelationEventUtils';
+
 const props = defineProps({
   isDesign: {
     type: Boolean,

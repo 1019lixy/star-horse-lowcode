@@ -7,14 +7,14 @@ const fpPromise = FingerprintJS.load();
 
 function getLocalIp() {
     return new Promise((resolve) => {
-        const pc = new RTCPeerConnection({ iceServers: [] });
+        const pc = new RTCPeerConnection({iceServers: []});
         pc.createDataChannel('');
 
         pc.createOffer().then(offer =>
             pc.setLocalDescription(offer)
         ).catch(err => console.error(err));
 
-        pc.onicecandidate = (ice:any) => {
+        pc.onicecandidate = (ice: any) => {
             if (ice.candidate) {
                 const ip = ice.candidate.address ||
                     ice.candidate.ip ||
