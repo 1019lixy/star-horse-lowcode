@@ -93,7 +93,9 @@ const changeArrow = (evt: MouseEvent) => {
 };
 const treeOperation = (cmd: string) => {
   if (props.treeType == 'tree') {
-    if (cmd == 'collapse') {
+    if (cmd == "add") {
+      emits('addData', {});
+    } else if (cmd == 'collapse') {
       Object.values(treeRef.value!.store.nodesMap).forEach((v: any) => v.collapse());
     } else {
       Object.values(treeRef.value!.store.nodesMap).forEach((v: any) => v.expand());
@@ -102,7 +104,9 @@ const treeOperation = (cmd: string) => {
     const getAllSubNodeIndex = (datas: any) => {
       datas.forEach((item: any) => {
         if (item.children && item.children.length > 0) {
-          if (cmd == 'collapse') {
+          if (cmd == "add") {
+            emits('addData', {});
+          } else if (cmd == 'collapse') {
             menuTreeRef.value.close(item[props.preps.value]);
           } else {
             menuTreeRef.value!.open(item[props.preps.value]);
@@ -290,8 +294,10 @@ defineExpose({
         <star-horse-icon icon-class="v-dot" color="var(--star-horse-style)" size="20px"/>
         <template #dropdown>
           <el-dropdown-menu>
+            <el-dropdown-item v-if="btnVisible" command="add">添加数据</el-dropdown-item>
             <el-dropdown-item command="expand">展开全部</el-dropdown-item>
             <el-dropdown-item command="collapse">折叠全部</el-dropdown-item>
+
           </el-dropdown-menu>
         </template>
       </el-dropdown>

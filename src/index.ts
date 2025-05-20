@@ -63,6 +63,7 @@ export * from '@/store/DynamicForm';
 export * from '@/store/GlobalConfig';
 export * from '@/store/SelfOperation';
 export * from '@/store/UserInfo';
+
 //将pinia的实例导出，否则会导致在设计表单时数据不一致
 export {piniaInstance};
 

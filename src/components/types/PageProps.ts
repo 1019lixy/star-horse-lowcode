@@ -1,7 +1,7 @@
 /**
  * 页面数据信息
  */
-declare export interface PageProps {
+export declare interface PageProps {
     /**
      * 数据总条数
      */

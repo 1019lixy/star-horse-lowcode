@@ -1,4 +1,4 @@
-declare export interface Tags {
+export declare interface Tags {
     /**
      * 中文名字
      */

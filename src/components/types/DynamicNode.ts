@@ -1,4 +1,4 @@
-declare export interface DynamicNode {
+export declare interface DynamicNode {
     /**
      * 节点ID
      */

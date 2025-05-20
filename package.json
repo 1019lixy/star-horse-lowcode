@@ -24,18 +24,19 @@
   },
   "main": "dist/index.es.js",
   "module": "dist/index.cjs.js",
-  "types": "dist/index.d.ts",
+  "types": "dist/types/index.ts",
   "files": [
-    "dist"
+    "dist",
+    "src/components/types/**/*.ts"
   ],
   "exports": {
     ".": {
+      "types": "./dist/types/index.ts",
       "import": "./dist/index.es.js",
       "require": "./dist/index.umd.js"
     },
     "./dist/assets/index.css": "./dist/assets/index.css",
-    "./dist/assets/style.css": "./dist/assets/style.css",
-    "./dist/assets/icons/*": "./dist/assets/icons/*"
+    "./dist/assets/style.css": "./dist/assets/style.css"
   },
   "scripts": {
     "lint": "eslint .",

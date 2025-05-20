@@ -26,7 +26,7 @@ let dataList = ref([]);
   });
 </script>
 <template>
-  <el-menu class="system-menu" mode="horizontal" :ellipsis="false">
+  <el-menu class="system-menu" mode="horizontal" v-bind="$attrs">
     <SystemSubMenu :dataList="dataList" style="width: 100% !important" />
   </el-menu>
 </template>
@@ -70,6 +70,7 @@ let dataList = ref([]);
   }
 
   :deep(.el-sub-menu) {
+    box-sizing: border-box;
     background-color: unset !important;
   }
 

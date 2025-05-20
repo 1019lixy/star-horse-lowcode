@@ -3,7 +3,7 @@ import {OrderByInfo} from '@/components/types/PageFieldInfo';
 /**
  * 查询条件组装数据对象
  */
-declare export interface SearchParams {
+export declare  interface SearchParams {
     /**
      * 属性名称
      */
@@ -25,7 +25,7 @@ declare export interface SearchParams {
 /**
  * 查询条件组装数据对象
  */
-declare export interface JoinSearchParams {
+export declare interface JoinSearchParams {
     /**
      * 属性名称
      */
@@ -47,7 +47,7 @@ declare export interface JoinSearchParams {
 /**
  * 查询对象
  */
-declare export interface SearchInfo {
+export declare interface SearchInfo {
     /**
      * 每页数据量大小
      */
@@ -77,7 +77,7 @@ declare export interface SearchInfo {
 /**
  * 列表按钮隐藏条件
  */
-declare export interface BtnHideCondition {
+export declare interface BtnHideCondition {
     /**
      * 属性名
      */
@@ -85,7 +85,7 @@ declare export interface BtnHideCondition {
     /**
      * 按钮
      */
-    btnName: Array[string] | string,
+    btnName: Array<string> | string,
     /**
      * 值
      */
