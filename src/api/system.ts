@@ -286,7 +286,7 @@ export function commonField() {
     });
     fields.push({
         label: '创建日期',
-        fieldName: 'createdDate',
+        fieldName: 'createdTime',
         type: 'date',
         formVisible: false,
         listVisible: false
@@ -300,7 +300,7 @@ export function commonField() {
     });
     fields.push({
         label: '修改日期',
-        fieldName: 'updatedDate',
+        fieldName: 'updatedTime',
         type: 'date',
         formVisible: false,
         listVisible: false

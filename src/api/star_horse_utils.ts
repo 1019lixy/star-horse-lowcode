@@ -317,7 +317,7 @@ export function commonParseCodeToName(name: string, cellValue: any) {
     if (name == 'state' || name.includes('&state')) {
         return cellValue == 1 ? '正常' : '异常';
     }
-    const preps: Array<string> = ['createdTime', 'updatedTime', 'createdDate', 'updatedDate', 'createTime', 'editTime'];
+    const preps: Array<string> = ['createdTime', 'updatedTime', 'createdTime', 'updatedTime', 'createTime', 'editTime'];
     const result = preps.find(
         (item) => name?.includes('&' + item) || convertToCamelCase(name)?.toLowerCase() === item.toLowerCase()
     );
