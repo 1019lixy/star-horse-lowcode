@@ -39,8 +39,11 @@ export default defineConfig((mode) => {
                 }
             }),
             dts({
+                entryRoot: './src',
+                outDir:"dist/types",
                 insertTypesEntry: true,
-                rollupTypes: false,
+                rollupTypes: true,
+                tsconfigPath: './tsconfig.json',
                 exclude:["**/*.svg"]
             }),
             AutoImport({

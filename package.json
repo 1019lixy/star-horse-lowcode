@@ -2,7 +2,7 @@
   "name": "star-horse-lowcode",
   "private": false,
   "author": "l_1019@163.com",
-  "version": "2.7.33",
+  "version": "2.7.36",
   "type": "module",
   "description": "星马低代码平台",
   "keywords": [
@@ -24,19 +24,17 @@
   },
   "main": "dist/index.es.js",
   "module": "dist/index.cjs.js",
-  "types": "dist/types/index.ts",
+  "types": "dist/types/index.d.ts",
   "files": [
-    "dist",
-    "src/components/types/**/*.ts"
+    "dist"
   ],
   "exports": {
     ".": {
-      "types": "./dist/types/index.ts",
+      "types": "./dist/types/index.d.ts",
       "import": "./dist/index.es.js",
       "require": "./dist/index.umd.js"
     },
-    "./dist/assets/index.css": "./dist/assets/index.css",
-    "./dist/assets/style.css": "./dist/assets/style.css"
+    "./*": "./dist/*"
   },
   "scripts": {
     "lint": "eslint .",
