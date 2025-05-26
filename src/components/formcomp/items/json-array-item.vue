@@ -55,6 +55,7 @@ import {PageFieldInfo} from '@/components/types/PageFieldInfo';
 import StarHorseForm from '@/components/comp/StarHorseForm.vue';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
 import StarHorseJsonEditor from '@/components/comp/StarHorseJsonEditor.vue';
+import {isJson} from "@/api/star_horse_utils";
 
 const props = defineProps({
   isDesign: {
@@ -127,8 +128,11 @@ const itemAction = (prep: any) => {
 const editJsonData = async () => {
   let jsonStr = formData.value[props.field.preps['name']];
   let temp: any = {};
-  if (jsonStr) {
+  if (jsonStr && isJson(jsonStr)) {
     temp['jsonDatas'] = JSON.parse(jsonStr);
+    jsonArray.value = temp['jsonDatas'];
+  } else {
+    temp['jsonDatas'] = [{}];
     jsonArray.value = temp['jsonDatas'];
   }
   dialogInputVisible.value = true;

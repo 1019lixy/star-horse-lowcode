@@ -165,6 +165,7 @@ declare module 'vue' {
     TableColumn: typeof import('./src/components/comp/items/tableColumn.vue')['default']
     TableContainer: typeof import('./src/components/formcomp/container/table-container.vue')['default']
     TableItem: typeof import('./src/components/comp/items/tableItem.vue')['default']
+    TabPanelItem: typeof import('./src/components/comp/items/tabPanelItem.vue')['default']
     TagItem: typeof import('./src/components/formcomp/items/tag-item.vue')['default']
     Test: typeof import('./src/components/test.vue')['default']
     TextareaItem: typeof import('./src/components/formcomp/items/textarea-item.vue')['default']
@@ -187,7 +188,7 @@ declare module 'vue' {
     ViewTabItem: typeof import('./src/components/comp/items/viewTabItem.vue')['default']
     ViewTableItem: typeof import('./src/components/comp/items/viewTableItem.vue')['default']
   }
-  export interface ComponentCustomProperties {
+  export interface GlobalDirectives {
     vLoading: typeof import('element-plus/es')['ElLoadingDirective']
   }
 }
