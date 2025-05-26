@@ -4,7 +4,7 @@
 ```shell
 在main.js中引入
 import StarHorseLowCode from "star-horse-lowcode";
-import "star-horse-lowcode/dist/assets/index.css"
+import "star-horse-lowcode/assets/index.css"
 import "router" from "@/router";
 const app = createApp(App);
 app.use(StarHorseLowCode,{
@@ -196,3 +196,4 @@ onMounted(() => {
               修复已知Bug
 10. 2025-05-15 修复已知Bug,
                增加双击文本输入框或者多行文本输入框，弹窗对话框编辑数据
+11. 2025-05-24 修复已知Bug, 删除冗余数据

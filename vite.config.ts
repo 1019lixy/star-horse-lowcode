@@ -39,8 +39,11 @@ export default defineConfig((mode) => {
                 }
             }),
             dts({
+                entryRoot: './src',
+                outDir:"dist/types",
                 insertTypesEntry: true,
-                rollupTypes: false,
+                rollupTypes: true,
+                tsconfigPath: './tsconfig.json',
                 exclude:["**/*.svg"]
             }),
             AutoImport({
@@ -103,8 +106,8 @@ export default defineConfig((mode) => {
             terserOptions: {
                 compress: {
                     keep_infinity: true,
-                    drop_console: mode.mode === 'production',
-                    drop_debugger: mode.mode === 'production'
+                    drop_console: true,
+                    drop_debugger: true
                 },
                 format:{
                     comments: false,

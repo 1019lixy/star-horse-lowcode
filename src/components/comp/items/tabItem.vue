@@ -10,17 +10,17 @@ import {checkObject, getDataIndex, getFormData, getPrefix} from '@/api/form_util
 
 const props = defineProps({
   compUrl: {type: Object as PropType<ApiUrls>},
-  item: {type: Array as PropType<Array<FieldInfo>|any>, required: true},
+  item: {type: Array as PropType<Array<FieldInfo> | any>, required: true},
   objectName: {type: String},
   // 数据索引
   dataIndex: {type: Number, default: -1},
   // 父节点名称
-  propPrefix: {type: String,default:''},
+  propPrefix: {type: String, default: ''},
   parentPreps: {type: Object, default: {}},
   subFormFlag: {type: String, default: 'N'},
   batchName: {type: String, default: 'batchDataList'},
   batchFieldName: {type: String, default: 'batchFieldList'},
-  primaryKey: {type: [String, Object] as PropType<string | any>,required:true},
+  primaryKey: {type: [String, Object] as PropType<string | any>, required: true},
   rules: {type: Object},
   compSize: {type: String, default: Config.compSize},
   isView: {type: Boolean, default: false}
@@ -86,7 +86,7 @@ onMounted(() => {
               <help v-if="tabItem.helpMsg" :message="tabItem.helpMsg"/>
             </div>
           </template>
-          <el-scrollbar height="100%"  >
+          <el-scrollbar height="100%">
             <star-horse-form-item
                 :isView="isView"
                 :compUrl="compUrl"
@@ -159,9 +159,14 @@ onMounted(() => {
   flex: 1;
   overflow: auto;
 }
-:deep(.el-scrollbar__view){
+
+:deep(.el-scrollbar__view) {
   display: flex;
   flex-direction: column;
   height: 100%;
+}
+
+:deep(.el-tabs) {
+  overflow: auto !important;
 }
 </style>
