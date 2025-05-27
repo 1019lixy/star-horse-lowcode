@@ -65,8 +65,6 @@ const props = defineProps({
 const emits = defineEmits(['selfFunc', 'selectItem']);
 const formData = defineModel("formData");
 
-let editorConfig = shallowRef({});
-let toolbarConfig = shallowRef({});
 const editorRef = shallowRef(); // 编辑器实例，必须用 shallowRef
 const dynamicFunction = (data: any) => {
   if (!data) {
@@ -105,10 +103,7 @@ const modules: any = {
   }
 };
 onMounted(() => {
-  toolbarConfig.value = {
-    //excludeKeys: ["insertLink", "insertImage", "editImage", "viewImageLink", "insertVideo", "emotion", "fullScreen"],
-  };
-  editorConfig.value = {placeholder: '请输入内容...', MENU_CONF: {}};
-})
+
+});
 </script>
 <style scoped></style>

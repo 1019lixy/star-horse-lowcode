@@ -1,14 +1,14 @@
 <template>
-<!--   {{ dataForm }}
+   {{ dataForm }}
   <el-input v-model="dataForm.txt1"/>
-  -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;
-  <barcode-item
+  -----------------
+  <htmleditor-item
       :formData="dataForm"
       :field="{
         preps: {
           name: 'txt1'
         }
-      }"/>-->
+      }"/>
 <!--      <test/>-->
 <!--    <star-horse-form :fieldList="formField"/>-->
 </template>
