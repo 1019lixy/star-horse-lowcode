@@ -61,7 +61,7 @@ export const useButtonPermissionStore = defineStore('buttonPermission', () => {
                     return;
                 }
                 //没拿到则到数据库中去取
-                await postRequest(`${permissionUrlPrefix}${userId}/${menuId}`, {}).then(
+                await postRequest(`${permissionUrlPrefix.value}${userId}/${menuId}`, {}).then(
                     (res) => {
                         if (res.data.code) {
                             console.log(res.data.cnMessage);
