@@ -1,0 +1,21 @@
+# 排除开发文件
+src/
+!dist/
+!src/components/types/**/*.ts
+
+# 排除构建工具
+vite.config.*
+*.local
+
+# 排除测试文件
+__tests__/
+*.test.*
+
+# 排除文档
+docs/
+*.md
+
+# 排除配置文件
+.eslint*
+.prettier*
+tsconfig*
