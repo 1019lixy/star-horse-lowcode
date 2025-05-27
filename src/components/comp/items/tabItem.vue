@@ -72,42 +72,20 @@ onMounted(() => {
         @tabAdd="item.addActions"
     >
       <template v-for="(tabItem, key) in item.tabList">
-        <el-tab-pane
-            :label="tabItem.title"
-            v-if="tabItem['disVisible']??Object.keys(tabItem).length > 0"
-            :name="tabItem.tabName || key"
-            :disabled="tabItem.disabled"
-            :index="checkObject(dataForm,tabItem,key,dataIndex,propPrefix)"
-        >
-          <template #label>
-            <div class="custom-tabs-label">
-              <star-horse-icon :icon-class="tabItem.icon" v-if="tabItem.icon"/>
-              <span>{{ tabItem.title }}</span>
-              <help v-if="tabItem.helpMsg" :message="tabItem.helpMsg"/>
-            </div>
-          </template>
-          <el-scrollbar height="100%">
-            <star-horse-form-item
-                :isView="isView"
-                :compUrl="compUrl"
-                :compSize="compSize"
-                @addRow="addRow"
-                @removeRow="removeRow"
-
-                :objectName="tabItem.objectName"
-                :dataForm="getFormData(tabItem,dataForm,propPrefix,dataIndex,key)"
-                :dataIndex="getDataIndex(tabItem,propPrefix,dataIndex,key)"
-                :propPrefix="getPrefix(tabItem,propPrefix,dataIndex,key)"
-                :fieldList="{
-                ...tabItem
-              }"
-                :rules="rules"
-                :subFormFlag="tabItem.subFormFlag"
-                :primaryKey="primaryKey"
-            />
-
-          </el-scrollbar>
-        </el-tab-pane>
+        <tabPanelItem
+            :item="tabItem"
+            :dataIndex="dataIndex"
+            :itemKey="key"
+            :isView="isView"
+            parentType="tab"
+            :compUrl="compUrl"
+            :compSize="compSize"
+            :propPrefix="propPrefix"
+            @addRow="addRow"
+            v-model:dataForm="dataForm"
+            @removeRow="removeRow"
+            :rules="rules"
+        />
       </template>
     </el-tabs>
   </template>
@@ -115,27 +93,20 @@ onMounted(() => {
     <template v-if="item.batchFieldList.length > 1 && (!item.displayStyle || item.displayStyle == 'tab')">
       <el-tabs v-model="item.fieldName" :type="item.type || ''">
         <template v-for="(sitem, key) in item.batchFieldList">
-          <el-tab-pane
-              v-if="sitem['disVisible']??Object.keys(sitem).length > 0"
-              :label="sitem['title']"
-              :name="sitem.tabName || 'tab' + key"
-              :disabled="sitem.disabled"
-          >
-            <template #label>
-              <div class="custom-tabs-label">
-                <star-horse-icon :icon-class="sitem.icon" v-if="sitem.icon"/>
-                <span>{{ sitem.title }}</span>
-              </div>
-            </template>
-            <star-horse-form-table
-                :size="compSize"
-                @addRow="addRow"
-                @removeRow="removeRow"
-                :rules="rules"
-                :item="sitem"
-                v-model:dataForm="dataForm"
-            />
-          </el-tab-pane>
+          <tabPanelItem
+              :item="sitem"
+              :dataIndex="dataIndex"
+              :itemKey="key"
+              :isView="isView"
+              :compUrl="compUrl"
+              :compSize="compSize"
+              parentType="batch"
+              :propPrefix="propPrefix"
+              @addRow="addRow"
+              v-model:dataForm="dataForm"
+              @removeRow="removeRow"
+              :rules="rules"
+          />
         </template>
       </el-tabs>
     </template>
