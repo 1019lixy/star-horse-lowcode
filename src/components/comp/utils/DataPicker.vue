@@ -98,11 +98,7 @@ export type ModelValueType = any;
   );
   const filterNode = (value: string, data: TreeNodeData): boolean => {
     if (!value) return true;
-    // if (props.pageSize > 0) {
-    //
-    // } else {
     return data[props.displayName].includes(value);
-    // }
   };
   let pageInfo = reactive<PageProps>({
     pageSize: 20,

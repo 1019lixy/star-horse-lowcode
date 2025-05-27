@@ -48,13 +48,11 @@ const props = defineProps({
     }
   }
 });
-// let configStore = GlobalConfig(piniaInstance);
-// let compSize = computed(() => configStore.configFormInfo?.inputSize || Config.compSize);
 let userOperation = useSelfOperationStore(piniaInstance);
 //刷新事件，数据已加载事件，导出数据更新数据
 const emits = defineEmits(['refresh', 'dataLoaded', 'exportData', 'removeRow', 'addRow',"inited"]);
 const starHorseFormRef = ref(null);
-const dataForm =ref({});
+const dataForm =ref<any>({});
 //更新外面传进来的数据
 
 const exportData = () => {
@@ -82,7 +80,6 @@ const loadData = async () => {
   } else {
     objData = await loadById(props.compUrl?.loadByIdUrl!, id, params);
   }
-  console.log('加载数据', objData);
   let data = formFieldMapping(props.fieldList);
   dataForm.value =objData;
   //如果是动态表单
@@ -154,7 +151,7 @@ const assignStatusName = () => {
       dataForm.value['statusName'] = sData.name;
     }
   }
-  let batchFields = props.fieldList.batchFieldList || [];
+  let batchFields = props.fieldList?.batchFieldList || [];
   batchFields?.forEach((item: BatchFieldInfo) => {
     if (dataForm.value[item.batchName]) {
       for (let index = 0; index < dataForm.value[item.batchName]?.length; index++) {
@@ -173,7 +170,7 @@ const mergeDraft = (type: string) => {
 
 const analysisSameToParentField = (): Array<string> => {
   let batchName: Array<string> = [];
-  let batchFields = props.fieldList.batchFieldList || [];
+  let batchFields = props.fieldList?.batchFieldList || [];
   const analysis = (batchFields: BatchFieldInfo[]) => {
     batchFields.forEach((item: BatchFieldInfo) => {
       if ('N' == item.subFormFlag) {
@@ -184,7 +181,7 @@ const analysisSameToParentField = (): Array<string> => {
   //单独定义的批量属性
   analysis(batchFields);
   //嵌入fieldList里的批量属性
-  let fieldList = props.fieldList.fieldList || [];
+  let fieldList = props.fieldList?.fieldList || [];
   const arrayFieldList = (fieldList: FieldInfo[]) => {
     for (let index in fieldList) {
       let temp: any = fieldList[index];
@@ -265,8 +262,7 @@ const doMerge = (type: string) => {
       });
 };
 const resetForm = () => {
-  dataForm.value = formFieldMapping(props.fieldList).defaultDatas;
-  //props.outerFormData?.value || props.outerFormData;
+  dataForm.value = formFieldMapping(props.fieldList)?.defaultDatas;
   let data = unref(props.outerFormData);
   if (data && Object.keys(data).length > 0) {
     dataForm.value = {...dataForm.value, ...data};

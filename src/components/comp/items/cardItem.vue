@@ -42,7 +42,6 @@ const removeRow = (row: any) => {
 };
 
 const init = () => {
-  // console.log("carditem................", props.dataIndex)
 };
 onMounted(() => {
   init();

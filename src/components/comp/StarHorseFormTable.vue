@@ -1,10 +1,10 @@
 <script setup lang="ts" name="StarHorseFormItem">
-import {ModelRef, onMounted, ref} from 'vue';
+import {ModelRef, onMounted, PropType, ref} from 'vue';
 import {batchFieldDefaultValues} from '@/api/star_horse_utils';
 import {Config} from '@/api/settings';
 
 defineProps({
-    item: { type: Object, required: true },
+    item: { type: Object as PropType<any>, required: true },
     rules: { type: Object },
     initRows: { type: Number, default: 0 },
     size: { type: String, default: Config.compSize }

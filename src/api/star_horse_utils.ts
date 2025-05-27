@@ -14,22 +14,12 @@ import {pinyin} from 'pinyin-pro';
 import {ServiceEnums} from '@/components/enums/ServiceEnums';
 
 let loading: any = null;
-/**
- * 系统接口
- */
-const systemUrl: string = `${ServiceEnums.SYSTEM_PREFIX}informationsEntity/systemTree`;
+
 /**
  * 字典接口
  */
 const dictUrl: string = `${ServiceEnums.SYSTEM_PREFIX}dictinfoEntity/getAllByCondition`;
-/**
- * 获取所有菜单
- */
-const menuUrl: string = `${ServiceEnums.SYSTEM_PREFIX}menusinfoEntity/getAllTreeDataByCondition`;
-/**
- * 归属主体
- */
-const customerUrl: string = `${ServiceEnums.SYSTEM_PREFIX}customer/getAllByCondition`;
+
 
 /**
  * 加载Post 数据
@@ -92,130 +82,7 @@ export async function loadGetData(url: string) {
     };
 }
 
-/**
- * 加载所有系统信息
- * @param params 查询参数
- */
-export async function loadSystemInfo(params: any) {
-    let systemList: SelectOption[] = [];
-    await postRequest(systemUrl, {
-        fieldList: params
-    })
-        .then((res) => {
-            const redata = res.data;
-            if (redata.code == 0) {
-                const data = redata.data;
-                if (redata.data) {
-                    systemList = createTree(data, 'idInformations', 'sysName', '');
-                }
-            }
-        })
-        .catch((err) => {
-            console.error(err);
-        });
-    return systemList;
-}
 
-/**
- * 加载所有主体信息
- * @param params 查询参数
- */
-export async function loadCustomInfo(params: any) {
-    const customerList: SelectOption[] = [];
-    await postRequest(customerUrl, {
-        fieldList: params
-    })
-        .then((res) => {
-            const redata = res.data;
-            if (redata.code == 0) {
-                const data = redata.data;
-                if (redata.data) {
-                    data.forEach((item: any) => {
-                        const temp: SelectOption = {name: item.customerName, value: item.idCustomer};
-                        customerList.push(temp);
-                    });
-                }
-            }
-        })
-        .catch((err) => {
-            console.error(err);
-        });
-    return customerList;
-}
-
-/**
- * 加载部门信息
- * @param param 查询参数
- */
-export async function loadDepartmentInfo(param: any) {
-    let deptData: any = [];
-    await postRequest(`${ServiceEnums.SYSTEM_PREFIX}departmentEntity/deptTree`, {
-        fieldList: param
-    })
-        .then((res) => {
-            if (res.data.code != 0) {
-                console.warn(res.data.cnMessage);
-            } else {
-                deptData = res.data.data;
-            }
-        })
-        .catch((err) => console.error(err));
-    return deptData;
-}
-
-/**
- * 获取角色信息
- * @param param
- */
-export async function loadRolesInfo(param: any) {
-    const roleData: SelectOption[] = [];
-    await postRequest(`${ServiceEnums.SYSTEM_PREFIX}rolesinfoEntity/queryUserAllRoles`, {
-        fieldList: param
-    })
-        .then((res) => {
-            if (res.data.code) {
-                console.warn(res.data.cnMessage);
-            } else {
-                const redata = res.data.data;
-                redata.forEach((item: any) => {
-                    roleData.push({name: item.roleName, value: item.idRolesinfo});
-                });
-            }
-        })
-        .catch((err) => console.error(err));
-    return roleData;
-}
-
-/**
- * 加载菜单数据
- * @param direct
- * @param params
- * @param needSystem
- */
-export async function loadMenusInfo(direct: boolean, params: any, needSystem: boolean) {
-    let menuDatas: any = [];
-    await postRequest(`${menuUrl}/${needSystem}`, {
-        fieldList: params,
-        orderBy: [{fieldName: 'idInformations'}]
-    })
-        .then((res) => {
-            const redata = res.data;
-            if (redata.code != 0) {
-                console.warn(redata.cnMessage);
-            } else {
-                if (direct) {
-                    menuDatas = redata.data;
-                } else {
-                    //构建菜单树
-                    menuDatas = createTree(redata.data, 'idMenusinfo', 'menuName', '');
-                }
-            }
-        })
-        .catch((err) => {
-            console.error(err);
-        });
-    return menuDatas;
-}
 
 /**
  * 构建菜单树
@@ -264,16 +131,7 @@ export function closeLoad() {
     }
 }
 
-/**
- * 公共数据格式化
- * @param _row
- * @param column
- * @param cellValue
- * @param _index
- */
-export function commonDataFormat(_row: any, column: any, cellValue: any, _index: number) {
-    return commonParseCodeToName(column.property, cellValue);
-}
+
 
 /**
  * 下划线转驼峰
@@ -499,97 +357,6 @@ export function rowClassName({row, rowIndex}: any) {
  */
 export function createCondition(name: string, val: any, matchType: string = 'eq'): SearchParams {
     return {propertyName: name, value: val, operation: matchType};
-}
-
-/**
- * 创建关联条件
- * @param leftFieldName 左表字段名称
- * @param rightFieldName 右表字段名称
- * @param matchType 匹配方式
- */
-export function createJoinCondition(
-    leftFieldName: string,
-    rightFieldName: string,
-    matchType: string = 'eq'
-): JoinSearchParams {
-    return {leftFieldName, rightFieldName, operation: matchType};
-}
-
-/**
- * 解析已组装的条件
- * @param conditions
- * @param name
- */
-export function analysisField(conditions: SearchParams[], name: string) {
-    return conditions.find((item) => item.propertyName?.endsWith(name)) || {};
-}
-
-/**
- * 动态过滤数据
- * @param search
- * @param menusList
- */
-export function filterTree(search: any, menusList: MenusInfo[]): MenusInfo[] {
-    // let tempData = permissionMenuList.value;
-    const filterRecursive = (node: any, parentInclude: any) => {
-        // 如果节点是数组，则对每个元素应用过滤逻辑
-        if (Array.isArray(node)) {
-            const result: Array<any> = node
-                .map((child) => filterRecursive(child, parentInclude))
-                .filter((item) => item !== null);
-            return result;
-        }
-        const containsData = !search || node.meta?.title.toLowerCase().includes(search?.toLowerCase());
-        const includeNode = parentInclude || containsData;
-        const filteredChildren: any =
-            node.children && node.children.length > 0 ? filterRecursive(node.children, includeNode) : [];
-        return includeNode || filteredChildren.length > 0 ? {...node, children: filteredChildren} : null;
-    };
-    const filteredTree = filterRecursive(menusList, false);
-    return JSON.parse(JSON.stringify(filteredTree));
-}
-
-/**
- * 设置css 全局变量
- * @param name 变量名称
- * @param val 变量值
- * @param dom
- */
-export function setCssVar(name: string, val: any, dom = document.documentElement) {
-    dom.style.setProperty(name, val);
-}
-
-/**
- * 获取关联属性逻辑
- * @param formFields 表单属性
- * @param fieldName 属性名称
- * @param batchName 关联Key 如果有
- * @param xh 列序号
- */
-export function relationFieldOperation(
-    formFields: any,
-    fieldName: string,
-    batchName: string | null,
-    xh: number | null
-): any {
-    if (batchName) {
-        const tempList = formFields[batchName];
-        for (const index in tempList) {
-            const tmpIndex = +index;
-            const item = tempList[index] as Array<ShallowRef>;
-            //数组
-            if (tmpIndex + 1 === xh) {
-                for (const ind in item) {
-                    const temp = item[ind].value;
-                    if (temp.preps.name == fieldName) {
-                        return temp;
-                    }
-                }
-            }
-        }
-    } else {
-        return formFields[fieldName].value;
-    }
 }
 
 /**

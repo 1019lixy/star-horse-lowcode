@@ -7,7 +7,7 @@ import {validMsg} from '@/api/form_utils';
 defineProps({
     dataForm: { type: Object, required: true },
     index: { type: Object, required: true },
-    item: { type: Object, required: true },
+    item: { type: Object as PropType<any>, required: true },
     staticColumn: { type: String, default: 'N' },
     primaryKey: {type: [String, Object] as PropType<string | any>},
     batchName: { type: String, default: 'batchDataList' },

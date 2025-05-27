@@ -84,7 +84,6 @@ const emits = defineEmits(['selfFunc', 'selectItem']);
 const formData = defineModel("formData");
 let userTableRef = shallowRef();
 let dialogInputVisible = shallowRef<boolean>(false);
-let actionName = shallowRef('normal');
 let userOptionList = shallowRef<Array<any>>([]);
 const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
@@ -97,7 +96,6 @@ const selectItem = (_row: any) => {
     warning('请选择数据');
     return;
   }
-  console.log(selectDatas);
   //如果没有指定属性，则默认取相同的属性
   let name = props.field.preps['name'];
   let aliasName = props.field.preps['aliasName'];

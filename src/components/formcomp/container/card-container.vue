@@ -37,7 +37,7 @@ const checkItem = (adata: any, type: string) => {
     }
   }
 };
-const onDragAdd = (evt: Event, dataList: any) => {
+const onDragAdd = (evt: Event|any, dataList: any) => {
   console.log(evt, dataList);
   let newIndex = evt.newIndex;
   if (newIndex != null && newIndex != 'undefined') {

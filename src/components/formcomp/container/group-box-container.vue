@@ -30,7 +30,6 @@ const removeData = () => {
   operationConfirm('删除容器，容器内的所有元素都会被删除').then((res) => {
     if (res) {
       let id = props.formItem.preps?.id || props.formItem.id;
-      console.log(id, props.parentField);
       if (props.parentField?.itemType == 'tab') {
         let elements = props.parentField!.preps.elements;
         for (let i = 0; i < elements.length; i++) {
@@ -59,7 +58,6 @@ const containerContextMenu = (evt: MouseEvent | any) => {
   if (!isEdit.value) return;
   evt.stopPropagation();
   evt.preventDefault();
-  console.log('容器触发。。。');
   evt.props = props;
   containerContextMenuRef.value?.show(evt);
 };
@@ -241,9 +239,7 @@ const tableOperation = (actonName: string, _preps: any) => {
 </template>
 <style lang="scss" scoped>
 .field-item {
-
   border: 1px dashed #e6a23c;
-
 }
 
 .el-form-item {

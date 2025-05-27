@@ -10,7 +10,6 @@ import {SearchFields} from '@/components/types/SearchProps';
 import {checkVisible} from '@/api/form_utils';
 
 const props = defineProps({
-  // allItem: {type: Array, required: true},
   item: {type: Object, required: true},
   column: {type: Object},
   primaryKey: {type: [String, Object] as PropType<string | any>},

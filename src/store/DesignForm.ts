@@ -169,7 +169,7 @@ export const useDesignFormStore = defineStore('designForm', () => {
      */
     const loadCompNames = () => {
 
-        const innerFunc = (datas: Array<any>, tabName: string) => {
+        const innerFunc = (datas: Array<any>, tabName?: string) => {
             const selectList: Array<any> = [];
             const compList: Array<any> = [];
             for (const index in datas) {
@@ -430,6 +430,7 @@ export const useDesignFormStore = defineStore('designForm', () => {
         batchEditFieldVisible,
         previewVisible,
         shortKeyDisabled,
+        setCurrentSubTabName,
         selectItemById,
         setAllFormDataList,
         setSelfFormDataList,

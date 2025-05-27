@@ -26,12 +26,10 @@ const checkItem = (adata: any) => {
     adata['items'] = [];
   }
 };
-const onDragAdd = (evt: Event, dataList: any) => {
-  console.log(evt, dataList);
+const onDragAdd = (evt: Event|any, dataList: any) => {
   let newIndex = evt.newIndex;
   if (newIndex != null && newIndex != 'undefined') {
     let dataInfo = dataList[newIndex];
-    // designForm.setDraggingItem({});
     designForm.selectItem(dataInfo, dataInfo.itemType, '');
   }
 };

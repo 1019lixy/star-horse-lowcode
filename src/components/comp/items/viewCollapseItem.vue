@@ -4,7 +4,7 @@ import {FieldInfo} from '@/components/types/PageFieldInfo';
 import {checkObject} from '@/api/form_utils';
 
 defineProps({
-  item: {type: Array as PropType<Array<FieldInfo>>, required: true},
+  item: {type: Array as PropType<Array<FieldInfo> | any>, required: true},
   objectName: {type: String},
   dataIndex: {type: Number, default: -1},
   subFormFlag: {type: String, default: 'N'},
@@ -21,7 +21,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <template v-if="item.collapseList && item.collapseList.length > 0">
+  <template v-if="item.collapseList?.length > 0">
     <el-collapse v-model="item.fieldName">
       <template v-for="(collapseItem, key) in item.collapseList">
         <el-collapse-item

@@ -29,7 +29,7 @@ const checkItem = (adata: any) => {
     adata['items'] = [];
   }
 };
-const onDragAdd = (evt: Event, dataList: any) => {
+const onDragAdd = (evt: Event|any, dataList: any) => {
   let newIndex = evt.newIndex;
   if (newIndex != null && newIndex != 'undefined') {
     let dataInfo = dataList[newIndex];

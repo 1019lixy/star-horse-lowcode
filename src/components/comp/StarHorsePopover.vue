@@ -1,16 +1,38 @@
 <script lang="ts" setup name="StarHorsePopover">
 import {onMounted, ref} from 'vue';
+import {postRequest} from "@/api/star_horse_apis";
+import {warning} from "@/utils/message";
 import icon from '@/assets/icon';
 
-defineProps({
-  menuIcon: {type: String}
+const props = defineProps({
+  menuIcon: {type: String},
+  iconUrl: {type: String},
+  iconSize: {type: Number, default: 48},
+  icons: {type: Array, default: () => []}
 });
-let iconList = ref<Array<any>>(icon);
+const emits = defineEmits(['selectIcon']);
+let iconList = ref<Array<any>>([]);
 const menuIconSelect = (corn: any) => {
-  console.log(corn);
+  emits('selectIcon', corn);
 };
+const init = () => {
+  if (props.iconUrl) {
+    postRequest(props.iconUrl, {}).then((res) => {
+      const resData = res.data;
+      if (resData.code) {
+        warning(resData.cnMessage);
+        return;
+      }
+      iconList.value = resData.data;
+    })
+  } else if (props.icons.length > 0) {
+    iconList.value = props.icons;
+  } else {
+    iconList.value = icon;
+  }
+}
 onMounted(() => {
-
+  init();
 });
 </script>
 <template>

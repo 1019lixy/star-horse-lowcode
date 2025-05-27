@@ -1,6 +1,5 @@
 <script setup lang="ts" name="StarHorseSvg">
 import {computed, PropType} from 'vue';
-import {ShapeInfo} from '@/utils/shapes';
 
 const props = defineProps({
   className: {type: String},
@@ -8,7 +7,7 @@ const props = defineProps({
   size: {type: String, default: '20px'},
   width: {type: Number, default: 200},
   height: {type: Number, default: 200},
-  data: {type: Object as PropType<ShapeInfo>, default: {}},
+  data: {type: Object as PropType<any>, default: {}},
   borderOffset: {type: Number, default: 0},
   color: {type: String, default: 'var(--star-horse-style)'},
   backgroundColor: {type: String, default: '#fff'},

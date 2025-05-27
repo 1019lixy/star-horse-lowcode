@@ -96,7 +96,6 @@ const close = () => {
 };
 const open = () => {
   cronDataValue.value = formData.value[props.field.preps['name']];
-  console.log(cronDataValue.value);
   cronVisible.value = true;
 };
 const submit = () => {

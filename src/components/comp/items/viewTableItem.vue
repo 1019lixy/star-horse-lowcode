@@ -3,7 +3,7 @@ import {ModelRef, onMounted, PropType, ref} from 'vue';
 import {PageFieldInfo} from '@/components/types/PageFieldInfo';
 
 const props = defineProps({
-  item: {type: Object as PropType<PageFieldInfo>, required: true},
+  item: {type: Object as PropType<PageFieldInfo | any>, required: true},
   batchFieldName: {type: String, default: 'batchFieldList'},
   commonFormat: {type: Function, required: true}
 });

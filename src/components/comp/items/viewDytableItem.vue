@@ -3,7 +3,7 @@ import {ModelRef, onMounted, PropType} from 'vue';
 import {FieldInfo} from '@/components/types/PageFieldInfo';
 
 const props = defineProps({
-  item: {type: Array as PropType<Array<FieldInfo>>, required: true},
+  item: {type: Array as PropType<Array<FieldInfo> | any>, required: true},
   commonFormat: {type: Function, required: true}
 });
 const dataForm: ModelRef<any> = defineModel('dataForm');
@@ -24,7 +24,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <template v-if="item.dytableList && item.dytableList.length > 0">
+  <template v-if="item.dytableList?.length > 0">
     <table ref="containerTableRef" :class="{ 'dynamic-table': true, 'instance-table': true }">
       <tbody>
       <tr v-for="(row, rowIndex) in item.dytableList" class="dy-tr">

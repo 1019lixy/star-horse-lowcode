@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {computed, nextTick, onBeforeUnmount, onMounted, ref} from 'vue';
+import {computed, nextTick, onBeforeUnmount, onMounted, PropType, ref} from 'vue';
 import {useZIndex} from '@/api/system';
 import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
 
@@ -8,7 +8,7 @@ defineOptions({
   });
 
   const props = defineProps({
-    menuData: { type: Array, default: () => [] },
+    menuData: { type: Array as PropType<any>, default: () => [] },
     isSubMenu: { type: Boolean, default: false },
     autoHide: { type: Boolean, default: true },
     active: { type: [String, Number], default: '' }
@@ -226,7 +226,6 @@ defineOptions({
           margin: 0;
         }
       }
-
       &.button {
         &:hover {
           background-color: #6b778c;
@@ -235,10 +234,8 @@ defineOptions({
             color: var(--star-horse-style);
           }
         }
-
         &.active {
           background-color: #6b778c;
-
           &.menu-item i {
             color: #fff;
           }

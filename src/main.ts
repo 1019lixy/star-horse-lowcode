@@ -7,7 +7,6 @@ import userComponent from '@/components/comp/selfcomp';
 import userContainerComponent from '@/components/comp/items/callitem';
 import itemComponent from '@/components/formcomp/items/allitem';
 import containerComponent from '@/components/formcomp/container/callitem';
-import commonComponent from '@/components/common/index';
 import systemComponent from '@/components/system/SystemComp';
 import App from '@/App.vue';
 import {createApp} from 'vue';
@@ -29,7 +28,6 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 }
 app.use(userComponent);
 app.use(itemComponent);
-app.use(commonComponent);
 app.use(userContainerComponent);
 app.use(systemComponent);
 app.use(containerComponent);

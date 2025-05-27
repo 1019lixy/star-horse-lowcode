@@ -19,7 +19,9 @@ const props = defineProps({
   }
 });
 
-const json: ModelRef<any> = defineModel('modelValue');
+const json: ModelRef<any> = defineModel('modelValue', {
+  default: {}
+});
 // const jsonEditorRef = ref();
 
 const queryLanguages = ref<any>(['javascript' | 'lodash' | 'jmespath' | 'jsonquery' | 'jsonpath']);
@@ -42,7 +44,6 @@ const init = () => {
 onMounted(() => {
   init();
   setEditorContent(json.value);
-  // $(".jsoneditor-poweredBy").remove();
 });
 onBeforeUnmount(() => {
   editor.value?.destroy();

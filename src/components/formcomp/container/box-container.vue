@@ -24,7 +24,7 @@ const checkItem = (items: any) => {
     items['items'] = [];
   }
 };
-const onDragAdd = (evt: Event, dataList: any) => {
+const onDragAdd = (evt: Event|any, dataList: any) => {
   let newIndex = evt.newIndex;
   if (excludeContainerType.includes(draggingItem.value.itemType)) {
     warning('栅格容器不允许嵌套其他容器');
@@ -36,7 +36,6 @@ const onDragAdd = (evt: Event, dataList: any) => {
         for (let i in column?.items) {
           let item = column.items[i];
           if (draggingItem.value.id == item.id) {
-            console.log('find data', item);
             column.items.splice(i, 1);
           }
         }

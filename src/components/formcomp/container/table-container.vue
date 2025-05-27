@@ -23,7 +23,7 @@ const formData = defineModel("formData");
 const getComponentName = (data: any) => {
   return data?.itemType + '-item';
 };
-const onDragAdd = (evt: Event, dataList: any) => {
+const onDragAdd = (evt: Event|any, dataList: any) => {
   let newIndex = evt.newIndex;
   if (excludeContainerType.includes(draggingItem.value.itemType)) {
     warning('容器不能嵌套容器');
@@ -35,7 +35,6 @@ const onDragAdd = (evt: Event, dataList: any) => {
         for (let i in column?.items) {
           let item = column.items[i];
           if (draggingItem.value.id == item.id) {
-            console.log('find data', item);
             column.items.splice(i, 1);
           }
         }
@@ -84,7 +83,6 @@ const deleteCol = (index: number) => {
       for (let index in elements) {
         elements[index].colIndex = parseInt(index) + 1;
       }
-      // console.log(elements);
       props.field.preps.columns = props.field.preps.columns - 1;
       currentIndex.value = 0;
     }

@@ -2,8 +2,6 @@ import {uuid} from '@/api/system';
 import {computed} from 'vue';
 import {useDesignFormStore} from '@/store/DesignForm';
 import piniaInstance from '@/store';
-import {SearchParams} from '@/components/types/Params';
-import {postRequest} from '@/api/star_horse_apis';
 
 const designForm = useDesignFormStore(piniaInstance);
 const formData = computed(() => designForm.formData);
@@ -85,89 +83,3 @@ export function fieldCopy(data: any, type: string) {
     return mvData;
 }
 
-export function compFieldInit() {
-    const url = '/userdb-manage/userdb/dynamicFormItems/getAllByCondition';
-    const allFormDataList: Array<any> = [];
-    const assignData = (datas: any) => {
-        datas.forEach((item: any) => {
-            allFormDataList.push({
-                name: item.itemName,
-                value: item.itemType
-            });
-        });
-    };
-    const initContainer = () => {
-        const params: SearchParams[] = [
-            {
-                propertyName: 'category',
-                value: 2
-            },
-            {
-                propertyName: 'isDel',
-                value: 0
-            }
-        ];
-        const query = {
-            fieldList: params,
-            orderBy: [{fieldName: 'dataSort', ascOrDesc: 'asc'}]
-        };
-        return new Promise((resolve) => {
-            postRequest(url, query).then((res) => {
-                resolve(res.data?.data); // 解析响应数据
-            });
-        });
-    };
-    const initItems = () => {
-        const params: SearchParams[] = [
-            {
-                propertyName: 'category',
-                value: 1
-            },
-            {
-                propertyName: 'isDel',
-                value: 0
-            }
-        ];
-        const query = {
-            fieldList: params,
-            orderBy: [{fieldName: 'dataSort', ascOrDesc: 'asc'}]
-        };
-        return new Promise((resolve) => {
-            postRequest(url, query).then((res) => {
-                resolve(res.data?.data);
-            });
-        });
-    };
-    const initSelfItems = () => {
-        const params: SearchParams[] = [
-            {
-                propertyName: 'category',
-                value: 3
-            },
-            {
-                propertyName: 'isDel',
-                value: 0
-            }
-        ];
-        const query = {
-            fieldList: params,
-            orderBy: [{fieldName: 'dataSort', ascOrDesc: 'asc'}]
-        };
-        return new Promise((resolve) => {
-            postRequest(url, query).then((res) => {
-                resolve(res.data?.data);
-            });
-        });
-    };
-    // 使用 Promise.all 实现并发
-    return Promise.all([initContainer(), initItems(), initSelfItems()]).then(([containerRes, itemsRes, selfItemsRes]) => {
-        // 所有请求完成后统一处理数据
-        assignData(containerRes);
-        assignData(itemsRes);
-        assignData(selfItemsRes);
-        designForm.setContainerList(containerRes);
-        designForm.setFormDataList(itemsRes);
-        designForm.setSelfFormDataList(selfItemsRes);
-        designForm.setAllFormDataList(allFormDataList);
-    });
-}

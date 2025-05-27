@@ -51,12 +51,12 @@ const getComponentName = (data: any) => {
   return data?.itemType + '-item';
 };
 
-const onDragAdd = (evt: Event, dataList: any) => {
+const onDragAdd = (evt: Event|any, dataList: any) => {
   selectCurrentTd();
   let newIndex = evt.newIndex;
   if (excludeContainerType.includes(draggingItem.value.itemType)) {
     warning('动态表格容器不允许嵌套其他容器');
-    let columns = props.fields?.columns;
+    let columns = props.field?.columns;
     for (let sind in columns) {
       let column = columns[sind];
       for (let i in column?.items) {
@@ -116,7 +116,6 @@ const handleResizeMove = (e: MouseEvent) => {
         targetCol.colWidth = `${Math.max(20, newWidth)}px`;
       }
     });
-    // props.field.colWidth = `${Math.max(20, newWidth)}px`; // 最小20px
   } else {
     const delta = e.clientY - startY.value;
     const newHeight = startHeight.value + delta;

@@ -11,14 +11,16 @@ import {warning} from '@/utils/message';
 export const useButtonPermissionStore = defineStore('buttonPermission', () => {
     const pageBtnPermisson = ref<any>({});
     const currentPermission = ref<any>({});
-
+    const permissionUrlPrefix = ref<string>("/system-config/system/resourcesEntity/permissionResources/");
     const addRoute = async (route: RouteLocationNormalized) => {
         //如果当前路由为空，则获取宿主的路由
         let data: any = route ?? (window.__hostRouter__?.currentRoute || window.__hostRouter__);
         const meta: any = unref(data)?.meta;
-        console.log(meta);
         return await getPagePermission(meta?.menuId);
     };
+    const setPermissionUrl = (url: string) => {
+        permissionUrlPrefix.value = url;
+    }
     /**
      * 添加单个权限
      * @param menuId
@@ -51,8 +53,7 @@ export const useButtonPermissionStore = defineStore('buttonPermission', () => {
         currentPermission.value = [];
         if (menuId) {
             menuId = menuId.split('_')[1];
-            let permissons: any = []; // pageBtnPermisson.value[menuId];
-            //  console.log(permissons);
+            let permissons: any = [];
             if (!permissons || permissons.length == 0) {
                 const userId = getUserInfo()?.idUsersinfo;
                 if (!userId) {
@@ -60,7 +61,7 @@ export const useButtonPermissionStore = defineStore('buttonPermission', () => {
                     return;
                 }
                 //没拿到则到数据库中去取
-                await postRequest(`/system-config/system/resourcesEntity/permissionResources/${userId}/${menuId}`, {}).then(
+                await postRequest(`${permissionUrlPrefix}${userId}/${menuId}`, {}).then(
                     (res) => {
                         if (res.data.code) {
                             console.log(res.data.cnMessage);
@@ -86,6 +87,7 @@ export const useButtonPermissionStore = defineStore('buttonPermission', () => {
     return {
         pageBtnPermisson,
         currentPermission,
+        setPermissionUrl,
         addPermission,
         addAllPermission,
         addRoute,

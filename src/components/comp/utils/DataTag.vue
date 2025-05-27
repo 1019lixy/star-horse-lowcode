@@ -23,13 +23,6 @@ onMounted(() => {
   if (!props.data) {
     throw new Error('username is required');
   }
-
-  // getById(props.id).then((res) => {
-  //   if (res.success) {
-  //     roleInfo.id = res.data.id
-  //     roleInfo.name = res.data.name
-  //   }
-  // })
 });
 const onClose = () => {
   emits('close', props.data);

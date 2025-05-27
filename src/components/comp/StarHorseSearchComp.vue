@@ -100,7 +100,7 @@ defineExpose({
 </script>
 <template>
   <div class="search_content">
-    <el-form class="search_area" :size="compSize" v-if="formData && formData.fieldList">
+    <el-form class="search_area" :size="compSize" v-if="formData?.fieldList">
       <template v-for="item in formData.fieldList" v-if="defaultSearch">
         <el-form-item :size="compSize" :label="item.label" v-if="item.defaultVisible" :prop="item.fieldName">
           <template v-if="(!item.type || item.type == 'input') && (!item.disabled || item.disabled == 'N')" :span="6">
@@ -130,7 +130,7 @@ defineExpose({
           />
         </el-form-item>
       </template>
-      <template v-for="item in formData.fieldList" v-else>
+      <template v-for="item in formData?.fieldList" v-else>
         <el-form-item :size="compSize" :label="item.label" :prop="item.fieldName">
           <template v-if="item.type == 'input' && (!item.disabled || item.disabled == 'N')" :span="6">
             <el-select

@@ -3,7 +3,7 @@ import {ModelRef, onMounted, PropType, unref} from 'vue';
 import {FieldInfo} from '@/components/types/PageFieldInfo';
 
 const props = defineProps({
-  item: {type: Array as PropType<Array<FieldInfo>>, required: true},
+  item: {type: Array as PropType<Array<FieldInfo>|any>, required: true},
   commonFormat: {type: Function, required: true}
 });
 const dataForm: ModelRef<any> = defineModel('dataForm');
