@@ -14,7 +14,6 @@ import draggable from 'vuedraggable';
 import * as ElementPlusIconsVue from '@element-plus/icons-vue';
 import piniaInstance from '@/store';
 
-
 const app = createApp(App);
 // window.app = app;
 app.component('draggable', draggable);

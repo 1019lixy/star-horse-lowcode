@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import QRCode from "qrcode.vue-next";
+import type {ImageSettings} from 'qrcode.vue';
+import QrcodeVue from 'qrcode.vue';
+import {computed, nextTick, onMounted, ref, watch} from "vue";
+import {allAction} from '../utils/ItemRelationEventUtils';
 
 const props = defineProps({
   isDesign: {
@@ -30,33 +33,46 @@ const props = defineProps({
     default: {}
   }
 });
+const imageSettings = ref<ImageSettings>({height: 0, src: "", width: 0});
 const emits = defineEmits(['selfFunc', 'selectItem']);
 const formData = defineModel("formData");
+const dataValue = computed(() => formData.value[props.field.preps.name]);
+const createCode = () => {
+  if (props.field.preps.src) {
+    imageSettings.value = {
+      src: props.field.preps.src,
+      width: props.field.preps.width ?? 30,
+      height: props.field.preps.height ?? 30,
+      excavate: true,
+    };
+  }
+}
+onMounted(() => {
+  nextTick(() => {
+    createCode();
+    allAction(props, emits, formData, "change", true);
+  });
+});
+watch(() => [dataValue.value, props.field.preps],
+    () => {
+      createCode();
+      allAction(props, emits, formData, "change", false);
+    }, {immediate: false, deep: true});
 </script>
 <template>
-  <starhorse-form-item
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :formItem="field"
-      :parentField="parentField"
-  >
-    <QRCode
-        :value="formData[field.preps['name']]??field.preps['content']"
-        :size="field.preps.size??160"
-        :bgColor="field.preps.bgColor??'#fff'"
-        :color="field.preps.color??'#000'"
+  <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
+                       :parentField="parentField">
+    <qrcode-vue
+        :value="dataValue"
         :level="field.preps.level??'M'"
-        :type="field.preps.type??'svg'"
-        :icon="field.preps.icon"
-        :iconSize="field.preps.iconSize"
-        :iconSettings="field.preps.iconSettings??undefined"
-        :imageSettings="field.preps.imageSettings??undefined"
-        :status="field.preps.status??'active'"
-        :bordered="true"
-        style="margin: 5px"
-        @change="() => console.log('change')"
-        @refresh="() => console.log('refresh')"
+        :render-as="field.preps.renderAs??'svg'"
+        :background="field.preps.background??'#ffffff'"
+        :foreground="field.preps.foreground??'#000000'"
+        :gradient="field.preps.gradient??false"
+        :gradient-type="field.preps.gradientType??'linear'"
+        :gradient-start-color="field.preps.gradientStartColor??'#000000'"
+        :gradient-end-color="field.preps.gradientEndColor??'#ffffff'"
+        :image-settings='imageSettings'
     />
   </starhorse-form-item>
 </template>

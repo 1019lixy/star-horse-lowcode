@@ -396,10 +396,10 @@ defineExpose({
 }
 
 .search-input {
-  width: 100%;
+  width: 98%;
   align-items: center;
   display: flex;
-  margin: 5px;
+  margin: 5px auto;
 }
 
 .tree-content {

@@ -1,24 +1,25 @@
 <template>
- <!--  {{ dataForm }}
+<!--   {{ dataForm }}
   <el-input v-model="dataForm.txt1"/>
-  -----------------
+  -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;
   <barcode-item
       :formData="dataForm"
       :field="{
         preps: {
           name: 'txt1'
         }
-      }"/> -->
-      <test/>
-    <star-horse-form :fieldList="formField"/>
+      }"/>-->
+<!--      <test/>-->
+<!--    <star-horse-form :fieldList="formField"/>-->
 </template>
 <script lang="ts" setup>
 import {reactive, ref} from "vue";
-import {PageFieldInfo} from "@/components/types";
+/*import {PageFieldInfo} from "@/components/types";
 import test from "@/components/test.vue";
-
-const dataForm = ref<any>({})
-const formField = reactive<PageFieldInfo>( {
+import QrcodeItem from "@/components/formcomp/items/qrcode-item.vue";
+*/
+const dataForm = ref<any>({});
+/*const formField = reactive<PageFieldInfo>( {
   "fieldList": [
     [
       {
@@ -294,7 +295,7 @@ const formField = reactive<PageFieldInfo>( {
                 "rows": 2,
                 "uniqueValid": "N",
                 "required": "Y",
-                "formatter": "(/** @type {any} */ value) => {                console.log(value);            }",
+                "formatter": "(/!** @type {any} *!/ value) => {                console.log(value);            }",
                 "min": 0,
                 "readonly": "no",
                 "size": "small",
@@ -1046,7 +1047,7 @@ const formField = reactive<PageFieldInfo>( {
                   "disabled": "no",
                   "max": null,
                   "clearable": "no",
-                  "formatter": "(/** @type {any} */ value) => {                console.log(value);            }",
+                  "formatter": "(/!** @type {any} *!/ value) => {                console.log(value);            }",
                   "size": "small",
                   "suffixIcon": "",
                   "resize": "none",
@@ -1462,7 +1463,7 @@ const formField = reactive<PageFieldInfo>( {
   "batchName": "batchDataList",
   "tableCellEditabled": false,
   "stopAutoLoad": false
-});
+});*/
 </script>
 <style lang="scss">
 #app {
