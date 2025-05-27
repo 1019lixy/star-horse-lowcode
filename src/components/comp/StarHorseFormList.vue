@@ -35,7 +35,7 @@ const props = defineProps({
   selectAll: {type: Boolean, default: false},
   subFlag: {type: Boolean, default: false}
 });
-const emits = defineEmits(['addRow', 'removeRow']);
+const emits = defineEmits(['addRow', 'removeRow', "inited"]);
 const dataForm: ModelRef<any> = defineModel('dataForm');
 const formFields = inject('formFields', {}) as ShallowReactive<any>;
 const loading = ref(null);
@@ -220,6 +220,8 @@ const init = async () => {
   }
   console.log(dataForm.value[props.batchName]);
   moveColumn();
+  await nextTick();
+  emits('inited');
 };
 onMounted(async () => {
   await init();

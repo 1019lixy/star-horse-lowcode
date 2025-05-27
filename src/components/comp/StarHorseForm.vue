@@ -52,7 +52,7 @@ const props = defineProps({
 // let compSize = computed(() => configStore.configFormInfo?.inputSize || Config.compSize);
 let userOperation = useSelfOperationStore(piniaInstance);
 //刷新事件，数据已加载事件，导出数据更新数据
-const emits = defineEmits(['refresh', 'dataLoaded', 'exportData', 'removeRow', 'addRow']);
+const emits = defineEmits(['refresh', 'dataLoaded', 'exportData', 'removeRow', 'addRow',"inited"]);
 const starHorseFormRef = ref(null);
 const dataForm =ref({});
 //更新外面传进来的数据
@@ -314,6 +314,8 @@ const removeRow = (row: any) => {
 const recordFieldInfo = async () => {
   await nextTick();
   userOperation.init(props.fieldList, dataForm, starHorseFormRef);
+  await nextTick();
+  emits('inited');
 };
 const tableListRef = ref<any>([]);
 onActivated(() => {
