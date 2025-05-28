@@ -8,7 +8,7 @@ import {getValidType} from '@/api/valid_utils';
 export function dynamicFormAnalysis(props: any, dataForm: any) {
     //props.globalCondition 有属性不是子表，需要额外封装
     const globalCondition = props.globalCondition;
-    let dataList: any = [] | {};
+    let dataList: any = {};
     if (!globalCondition || globalCondition.length == 0) {
         return dataList;
     }
@@ -18,7 +18,8 @@ export function dynamicFormAnalysis(props: any, dataForm: any) {
         if ('N' == temp.subFormFlag) {
             const data = dataForm[temp.tableName];
             delete dataForm[temp.tableName];
-            if (data instanceof Array) {
+            if (Array.isArray(data)) {
+                dataList = [];
                 data.forEach((item) => {
                     dataList.push({...item, ...dataForm});
                 });
@@ -27,6 +28,7 @@ export function dynamicFormAnalysis(props: any, dataForm: any) {
             }
         }
     }
+    return dataList;
 }
 
 /**

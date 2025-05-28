@@ -30,7 +30,7 @@ export async function loadData(url: string, params: SearchParams[] | any, orderB
     let data: any = null;
     let error = '';
     let cond = params;
-    if (params instanceof Array) {
+    if (Array.isArray(params)) {
         cond = {
             fieldList: params,
             orderBy: orderBy
@@ -251,20 +251,21 @@ export async function deleteByIds(url: string, ids: any, msg: string = '确认�
  * 根据字典类别获取字典数据
  * @param dictType 字典类别
  * @param exclusion 排除字典项
+ * @param userUrl 用户自定义接口
  */
-export async function dictData(dictType: string, exclusion: Array<string> = []) {
+export async function dictData(dictType: string, exclusion: Array<string> = [], userUrl?: string) {
     const query = [];
     query.push({
         propertyName: 'dictType',
         value: dictType
     });
     const dicts: SelectOption[] = [];
-    await postRequest(dictUrl, {fieldList: query})
+    await postRequest(userUrl ?? dictUrl, {fieldList: query})
         .then((res) => {
             const redata = res.data;
             if (redata.code == 0) {
                 redata.data?.forEach((item: any) => {
-                    if (exclusion && exclusion.includes(item.dictCode)) {
+                    if (exclusion?.includes(item.dictCode)) {
                         return;
                     }
                     dicts.push({name: item.dictName, value: item.dictCode});
@@ -361,15 +362,19 @@ export function createCondition(name: string, val: any, matchType: string = 'eq'
  * @param v
  */
 export function isJson(v: any) {
-    if (v && typeof v === 'string') {
-        const start = v.substring(0, 1);
-        const end = v.substring(v.length - 1, v.length);
-        return (start == '{' && end == '}') || (start == '[' && end == ']');
+    if (typeof v === 'string') {
+        try {
+            JSON.parse(v);
+            return true;
+        } catch {
+            return false;
+        }
     }
-    if (typeof v === 'object' && Object.prototype.toString.call(v).toLowerCase() === '[object object]' && !v.length) {
-        return true;
-    }
-    return false;
+    return (
+        typeof v === 'object' &&
+        v !== null &&
+        Object.prototype.toString.call(v) === '[object Object]'
+    );
 }
 
 /**
@@ -500,6 +505,7 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
 /**
  * 批量列表数据默认值
  * @param datas
+ * @param dataForm
  */
 export function batchFieldDefaultValues(datas: BatchFieldInfo, dataForm: any) {
     let defaultValues: any = {};
@@ -531,7 +537,6 @@ export function batchFieldDefaultValues(datas: BatchFieldInfo, dataForm: any) {
 /**
  * 动态组件数据
  * @param preps 组件参数信息
- * @param prototype 数据原样返回
  */
 export async function compDynamicData(preps: any) {
     const temp = preps;
@@ -561,9 +566,9 @@ export async function compDynamicData(preps: any) {
  *
  * @param preps 组件参数信息
  * @param queryInfo 查询条件
- * @param prototype 数据原样返回
+ * @param proxyUrl 代理接口,为空时，默认使用/system-config/redirect/execute
  */
-export async function dynamicUrlOperation(preps: any, queryInfo?: SearchParams[]) {
+export async function dynamicUrlOperation(preps: any, queryInfo?: SearchParams[], proxyUrl?: string) {
     const temp = preps;
     const reDataList: SelectOption[] = [];
     const requestParams: any = [];
@@ -583,7 +588,7 @@ export async function dynamicUrlOperation(preps: any, queryInfo?: SearchParams[]
         requestParams.push(...queryInfo);
     }
     let url = temp['preinterfaceUrl'] + temp['interfaceUrl'];
-    const params = {
+    const params: any = {
         url: temp['interfaceUrl'],
         host: temp['host'],
         port: temp['port'],
@@ -595,7 +600,7 @@ export async function dynamicUrlOperation(preps: any, queryInfo?: SearchParams[]
             fieldList: requestParams
         }
     };
-    url = '/system-config/redirect/execute';
+    url = proxyUrl ?? '/system-config/redirect/execute';
     const validResult = await loadData(url, params);
     if (validResult.error) {
         error(validResult.error);
@@ -633,21 +638,6 @@ export async function createFilter(queryString: string) {
             restaurant?.value?.toString()?.toLowerCase().search(queryString?.toLowerCase())
         );
     };
-}
-
-
-export async function dbConfigList(): Promise<SelectOption[]> {
-    const {data, error} = await loadGetData('/userdb-manage/dbsearch/dbinfoEntity/getDbInfoByUser');
-    if (error) {
-        warning(error);
-        return [];
-    }
-    return data?.map((item: any) => {
-        return {
-            name: item.name,
-            value: item.configId + ''
-        };
-    });
 }
 
 

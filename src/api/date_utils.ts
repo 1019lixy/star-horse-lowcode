@@ -119,7 +119,7 @@ function getWeek(date: Date) {
     if (target.getDay() !== 4) {
         target.setMonth(0, 1 + ((4 - target.getDay()) + 7) % 7);
     }
-    return 1 + Math.ceil((firstThursday - target) / 604800000);
+    return 1 + Math.ceil((firstThursday - target.valueOf()) / 604800000);
 }
 
 /**
@@ -136,9 +136,8 @@ export function parseDateByType(val: any, type: string, needSecond: boolean = fa
     try {
         // 处理日期范围数组
         if (Array.isArray(val) && type.includes('range')) {
-            if (v instanceof Date) return v;
-            if (typeof v === 'string' && /^\d+$/.test(v)) return Number(v);
-            return v;
+            const start = val[0];
+            const end = val[1];
             const formatStart = parseDateByType(start, type.replace('range', ''), needSecond, split);
             const formatEnd = parseDateByType(end, type.replace('range', ''), needSecond, split);
             return `${formatStart} 至 ${formatEnd}`;
