@@ -2,7 +2,7 @@
 import {ModelRef, onBeforeUnmount, onMounted, ref} from 'vue';
 import JsonEditor from 'vue3-ts-jsoneditor';
 
-const props = defineProps({
+ defineProps({
   options: {type: Object},
   currentMode: {
     type: String,

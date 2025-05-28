@@ -147,9 +147,7 @@ const formData = defineModel("formData");
 let actionName = shallowRef('change');
 let defaultAction = '/system-config/annex/upload/common';
 let defaultViewList = shallowRef([]);
-const itemAction = (prep: any) => {
-  allAction(props, emits, formData, prep);
-};
+
 const removeImage = () => {
 
   formData.value[props.field.preps['name']] = '';

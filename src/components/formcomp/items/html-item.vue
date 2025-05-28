@@ -1,7 +1,7 @@
 <template>
   <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
     :parentField="parentField">
-    <div class="user_html" v-html="formData.value[props.field.preps['name']] || field.preps['content']" />
+    <div class="user_html" v-html="formData[field.preps['name']] || field.preps['content']" />
   </starhorse-form-item>
 </template>
 <script setup lang="ts">

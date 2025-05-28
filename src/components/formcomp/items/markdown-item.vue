@@ -54,9 +54,6 @@ const props = defineProps({
 const emits = defineEmits(['selfFunc', 'selectItem']);
 const formData = defineModel("formData");
 
-const itemAction = () => {
-  allAction(props, emits, formData, 'change');
-};
 const init = async () => {
 };
 onMounted(() => {

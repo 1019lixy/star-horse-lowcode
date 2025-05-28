@@ -66,7 +66,6 @@ const props = defineProps({
 });
 const emits = defineEmits(['selfFunc', 'selectItem']);
 const formData: ModelRef<any> = defineModel("formData");
-const sliderValue = ref(0);
 const itemAction = () => {
   allAction(props, emits, formData, 'change');
 };

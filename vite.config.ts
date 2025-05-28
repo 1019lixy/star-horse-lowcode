@@ -1,15 +1,12 @@
 import {defineConfig} from 'vite';
 import vue from '@vitejs/plugin-vue';
 
-import vueJsx from '@vitejs/plugin-vue-jsx';
 import inject from '@rollup/plugin-inject';
 import {resolve} from 'path';
 import Components from 'unplugin-vue-components/vite';
 import {ElementPlusResolver} from 'unplugin-vue-components/resolvers';
 import AutoImport from 'unplugin-auto-import/vite';
-import progress from "vite-plugin-progress";
-//此插件是处理外部依赖 比如cdn引入的js
-import tailwindcss from '@tailwindcss/vite';
+
 // import {visualizer} from 'rollup-plugin-visualizer';
 //生产types文件插件
 import dts from 'vite-plugin-dts';
@@ -30,7 +27,6 @@ export default defineConfig((mode) => {
             exclude: ['vue-demi']
         },
         plugins: [
-            tailwindcss(),
             // vueDevTools(),
             vue({
                 script: {
@@ -55,9 +51,7 @@ export default defineConfig((mode) => {
                 // 这里就是相关ui库的解析工具, 里面的选项有是否使用自动导入样式 如果需要通过 var 变量改变主题 需要注意一下
                 resolvers: [ElementPlusResolver({importStyle: 'sass'})]
             }),
-            progress(),
             // viteCommonjs(),
-            vueJsx({}),
             inject({
                 $: 'jquery', // 这里会自动载入 node_modules 中的 jquery
                 jQuery: 'jquery',

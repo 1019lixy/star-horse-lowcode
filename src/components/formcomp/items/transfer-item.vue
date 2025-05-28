@@ -83,34 +83,6 @@ const initData = async () => {
   bakeData.value = JSON.parse(JSON.stringify(props.field?.preps['values']??[]));
 };
 
-// let bakeQueryString
-const querySearch = async (_queryString: string, _item: Record<string, any>) => {
-  // let temp = field.preps;
-  // let dataSource = temp['dataSource'];
-  //虽然实现类远程搜索，但是数据没法还原为初始状态
-  // if (dataSource == "url") {
-  //   console.log(queryString);
-  //   if (!queryString) {
-  //    field.preps["values"] = JSON.parse(JSON.stringify(bakeData));
-  //     return false;
-  //   }
-  //   if (bakeQueryString == queryString) {
-  //     return false;
-  //   }
-  //   bakeQueryString = queryString;
-  //   let searchParams: SearchParams[] = [];
-  //   searchParams.push({
-  //     propertyName: temp["selectLabel"],
-  //     value: queryString,
-  //     operation: "lk"
-  //   });
-  //   temp['values'] = await dynamicUrlOperation(temp, searchParams);
-  // } else {
-  //temp['values'] = queryString ? temp['values'].filter(createFilter(queryString)) : temp['values'];
-  // }
-  // return item.initial.toLowerCase().includes(queryString.toLowerCase());
-};
-
 onMounted(() => {
   initData();
   actionName.value = props.field.preps?.actionName || 'normal';

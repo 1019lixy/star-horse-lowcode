@@ -66,13 +66,7 @@ const emits = defineEmits(['selfFunc', 'selectItem']);
 const formData = defineModel("formData");
 
 const editorRef = shallowRef(); // 编辑器实例，必须用 shallowRef
-const dynamicFunction = (data: any) => {
-  if (!data) {
-    return;
-  }
-  let fun = new Function(data);
-  fun();
-};
+
 const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };

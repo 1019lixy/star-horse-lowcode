@@ -74,14 +74,7 @@ const props = defineProps({
 const emits = defineEmits(['selfFunc', 'selectItem']);
 const formData = defineModel("formData");
 const editorDialogVisible = shallowRef(false);
-const dataField = shallowRef('');
-const dynamicFunction = (data: any) => {
-  if (!data) {
-    return;
-  }
-  let fun = new Function(data);
-  fun();
-};
+
 let actionName = shallowRef('normal');
 const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);

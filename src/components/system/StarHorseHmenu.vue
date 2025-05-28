@@ -1,8 +1,8 @@
 <script setup lang="ts" name="StarHorseHmenu">
-import {onMounted} from 'vue';
+import {ModelRef, onMounted} from 'vue';
 import SystemSubMenu from '@/components/menu/SystemSubMenu.vue';
 
-let dataList = defineModel("dataList");
+let dataList:ModelRef<any> = defineModel("dataList");
 const initData = async () => {
 
 };

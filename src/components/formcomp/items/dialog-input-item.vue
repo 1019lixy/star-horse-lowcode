@@ -158,9 +158,7 @@ const showVisible = () => {
     dialogInputTableRef.value?.setDataInfo(name, formData.value[realName]);
   });
 };
-const searchData = (data: SearchParams[]) => {
-  dialogInputTableRef.value?.createSearchParams(data);
-};
+
 onMounted(() => {
   actionName.value = props.field.preps?.actionName || 'normal';
   if (!props.isSearch) {
