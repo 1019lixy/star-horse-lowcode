@@ -1,6 +1,6 @@
 import axios, {AxiosResponse, InternalAxiosRequestConfig} from 'axios';
 import {getToken} from '@/utils/auth';
-import {error} from '../utils/message';
+import {error} from '@/utils/message';
 import piniaInstance from '@/store';
 import {useUserInfoStore} from '@/store/UserInfo';
 import {getFingerId} from '@/api/finger_utils';
@@ -151,7 +151,6 @@ export function postRequest(url: string, data: Array<any> | any) {
 /**
  * Get请求
  * @param url
- * @returns {Promise<AxiosResponse<any>>}
  */
 export function getRequest(url: string) {
     return service.get(url);
@@ -162,7 +161,6 @@ export function getRequest(url: string) {
  * @param url 请求地址
  * @param data 请求参数
  * @param method 请求方法
- * @returns {Promise<AxiosResponse<any>>}
  */
 export function httpRequest(url: string, method: string, data: any) {
     return service.request({
@@ -184,7 +182,6 @@ export function uploadRequest(url: string, data: Array<any>) {
 /**
  * 去除空格
  * @param data
- * @returns {*}
  */
 export function trim(data: string) {
     if (!data) {
