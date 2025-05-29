@@ -63,7 +63,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, ref, shallowRef, useSlots, watch} from 'vue';
+import {onMounted, ref, shallowRef, watch} from 'vue';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
 import {warning} from '@/utils/message';
 
@@ -119,7 +119,7 @@ const handleBlur = () => {
 // <template #插槽名 >
 // </template>
 // 无论template标签内是否插入了内容，均视为已使用该插槽
-const slots = useSlots();
+
 const itemAction = (prep: string) => {
   let min = formData.value[props.field.preps['minName']];
   let max = formData.value[props.field.preps['maxName']];

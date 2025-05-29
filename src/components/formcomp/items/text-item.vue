@@ -35,13 +35,7 @@ const formData = defineModel<any>("formData");
 const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
-const tagType = (val: any) => {
-  let tagMap = props.field?.preps?.tagMap;
-  if (tagMap && Object.keys(tagMap).length > 0) {
-    return tagMap[val] || 'primary';
-  }
-  return props.field?.preps?.tagType || 'primary';
-};
+
 </script>
 <template>
   <starhorse-form-item

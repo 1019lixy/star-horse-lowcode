@@ -1,7 +1,7 @@
 <template>
-   {{ dataForm }}
+<!--   {{ dataForm }}
   <el-input v-model="dataForm.txt1"/>
-  -----------------
+  -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;
   <htmleditor-item
       :formData="dataForm"
       :field="{
@@ -9,16 +9,15 @@
           name: 'txt1'
         }
       }"/>
-<!--      <test/>-->
-<!--    <star-horse-form :fieldList="formField"/>-->
+      <test/>
+    <star-horse-form :fieldList="formField"/>-->
 </template>
 <script lang="ts" setup>
-import {reactive, ref} from "vue";
-/*import {PageFieldInfo} from "@/components/types";
+/*import {reactive, ref} from "vue";
+import {PageFieldInfo} from "@/components/types";
 import test from "@/components/test.vue";
 import QrcodeItem from "@/components/formcomp/items/qrcode-item.vue";
-*/
-const dataForm = ref<any>({});
+const dataForm = ref<any>({});*/
 /*const formField = reactive<PageFieldInfo>( {
   "fieldList": [
     [

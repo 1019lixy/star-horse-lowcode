@@ -11,7 +11,7 @@
 </template>
 <script setup lang="ts">
 
-const props = defineProps({
+ defineProps({
   isDesign: {
     type: Boolean,
     default: false

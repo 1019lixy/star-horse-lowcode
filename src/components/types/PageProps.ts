@@ -21,5 +21,5 @@ export declare interface PageProps {
     /**
      * 数据
      */
-    dataList?: Array | null
+    dataList?: Array<any> | null
 }

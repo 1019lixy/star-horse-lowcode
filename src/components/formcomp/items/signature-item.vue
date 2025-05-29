@@ -4,8 +4,7 @@ import SmoothSignature from 'smooth-signature';
 import {warning} from '@/utils/message';
 import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
 import StarHorseDialog from '@/components/comp/StarHorseDialog.vue';
-
-const props = defineProps({
+defineProps({
   isDesign: {
     type: Boolean,
     default: false
@@ -46,9 +45,6 @@ const options = {
   maxWidth: 12,
   // color: '#1890ff',
   bgColor: '#f6f6f6'
-};
-const itemAction = () => {
- emits('selfFunc',formData);
 };
 const init = async () => {
   await nextTick(() => {

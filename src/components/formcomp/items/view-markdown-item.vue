@@ -17,7 +17,7 @@
 import {nextTick, onMounted, onUpdated, ref} from 'vue';
 import MarkdownIt from 'markdown-it';
 
-const props = defineProps({
+defineProps({
   isDesign: {
     type: Boolean,
     default: false
