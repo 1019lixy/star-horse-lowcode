@@ -1,9 +1,6 @@
 /**
  * 客户端生成唯一指纹
  */
-import FingerprintJS from '@fingerprintjs/fingerprintjs';
-// 初始化 FingerprintJS
-const fpPromise = FingerprintJS.load();
 
 function getLocalIp() {
     return new Promise((resolve) => {
@@ -55,19 +52,11 @@ function getHardwareInfo() {
  * @param userIp
  */
 export async function generateDeviceId(userIp: string) {
-    let browserFinger = '';
     let hardwareInfo = getHardwareInfo();
     if (!userIp) {
         userIp = window.location.hostname;
     }
-
-    // 获取浏览器指纹
-    await fpPromise.then(fp => fp.get())
-        .then(result => {
-            browserFinger = result.visitorId; // 浏览器指纹
-            console.log('Browser Fingerprint:', browserFinger);
-        });
-    const data = {browserFinger, hardwareInfo, userIp};
+    const data = { hardwareInfo, userIp};
     let deviceId = btoa(JSON.stringify(data));
     sessionStorage.setItem('deviceId', deviceId);
     return deviceId; // 使用 Base64 编码生成设备 ID
