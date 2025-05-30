@@ -78,7 +78,7 @@ const tableFieldList = reactive<PageFieldInfo>({
     {
       label: "区域主键",
       fieldName: "idAreainfo",
-      type: "long"
+      type: "input"
     },
     {
       label: "父节点编号",
@@ -171,6 +171,70 @@ onMounted(() => {
   </el-card>
 </template>
 <style lang="scss" scoped></style>
+组件列表说明：
+
+以下组件的使用方式 是将 type设置为对应的名字 如： {
+      label: "区域名称",
+      fieldName: "areaName",
+      type: "area"
+    }, 渲染后就是区域选择，如果type 为空系统默认为input，渲染后显示文本输入框,
+以下组件有好多是对Element-Plus 官方组件做的二次封装，如果要配置对应的参数请如下配置
+{
+      label: "性别",
+      fieldName: "sex",
+      type: "radio",
+	  preps:{
+	  values:[{name:"男",value:"male"},{name:"女",value:"female"}],
+	  ...
+	  }
+    }, 
+毕竟不是全职开发，因此帮助文档只能尽可能的抽时间写。
+具体表单的布局方式请参见发布包里的类别文件：PageFieldInfo.d.ts 这里面有对box 布局，tab 布局，table 布局的定义。
+目前支持的组件如下：
+area        区域组件 
+audio       视频组件
+autocomplete 自动完成组件
+button       按钮组件
+cascade      级联组件
+checkbox     复选框组件
+color         颜色组件
+cron          Cron表达式组件
+datetime      日期组件
+depart         部门组件
+dialog-input   弹出选择器组件 
+divider        分割线
+html           html 只读组件
+htmleditor     html编辑器组件
+icon           图标组件
+image          图片组件
+input          文本框组件
+json-array     Json数组组件
+json           Json组件
+markdown       Markdown组件
+number         数字组件
+number-range   数字范围组件
+page-select    下拉分页选择组件 
+password        密码框组件
+radio          单选框组件
+rate            评分组件
+select         下拉框组件
+signature      签名组件
+slider         滑块组件
+switch         开关组件
+tag            Tag组件
+text           文本组件
+textarea       文本域组件
+time           时间组件
+timePicker     时间选择器组件
+transfer      穿梭框组件
+tselect       树形选择器组件
+unknown       未知组件  无实际意义
+upload        上传组件
+user          用户组件 业务强关联不适合引用项目使用，后期会进行改造
+usercomp       用户自定义组件
+view-markdown  只读Markdown组件
+qrcode         二维码组件
+barcode        条形码组件
 
 ```
 5.示例图片
@@ -198,3 +262,6 @@ onMounted(() => {
                增加双击文本输入框或者多行文本输入框，弹窗对话框编辑数据
 11. 2025-05-24 修复已知Bug, 删除冗余数据
 12. 2025-05-27 优化本组件从项目中剥离时将遗留耦合的业务代码进一步剥离，保证组件的独立性,同时替换过时的组件
+
+
+

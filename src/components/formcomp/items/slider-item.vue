@@ -32,7 +32,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {ModelRef, onMounted, ref} from 'vue';
+import {ModelRef, onMounted} from 'vue';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
 
 const props = defineProps({

@@ -67,7 +67,6 @@
 import {nextTick, onMounted, ref, shallowRef} from 'vue';
 import {warning} from '@/utils/message';
 import {FieldMapping} from '@/components/types/PageFieldInfo';
-import {SearchParams} from '@/components/types/Params';
 import {isJson} from '@/api/star_horse_utils';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
 
