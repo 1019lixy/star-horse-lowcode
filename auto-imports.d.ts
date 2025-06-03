@@ -66,6 +66,7 @@ declare global {
   const watchEffect: typeof import('vue')['watchEffect']
   const watchPostEffect: typeof import('vue')['watchPostEffect']
   const watchSyncEffect: typeof import('vue')['watchSyncEffect']
+  const zhCn: typeof import('element-plus/es/locale/lang/zh-cn')['default']
 }
 // for type re-export
 declare global {

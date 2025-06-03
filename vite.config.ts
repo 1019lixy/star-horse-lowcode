@@ -35,15 +35,21 @@ export default defineConfig((mode) => {
             }),
             dts({
                 entryRoot: './src',
-                outDir:"dist/types",
+                outDir: "dist/types",
                 insertTypesEntry: true,
                 rollupTypes: true,
                 tsconfigPath: './tsconfig.json',
-                exclude:["**/*.svg"]
+                exclude: ["**/*.svg"]
             }),
             AutoImport({
-                imports: ['vue'],
-                resolvers: [ElementPlusResolver()]
+                imports: ['vue', {
+                    'element-plus/es/locale/lang/zh-cn': [
+                        ['default', 'zhCn'] // 别名导入中文包
+                    ]
+                }],
+                resolvers: [ElementPlusResolver({
+                    importStyle: 'sass'
+                })]
             }),
             Components({
                 dirs: ['src/components', 'src/views'],
@@ -57,11 +63,11 @@ export default defineConfig((mode) => {
                 'windows.jQuery': 'jquery',
                 'windows.$': 'jquery'
             }),
-          /*   visualizer({
-                open: false, // 构建完成后自动打开分析页面
-                gzipSize: true,
-                brotliSize: true
-            }) */
+            /*   visualizer({
+                  open: false, // 构建完成后自动打开分析页面
+                  gzipSize: true,
+                  brotliSize: true
+              }) */
         ],
         css: {
             //解决 Deprecation Warning: The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0.
@@ -81,9 +87,9 @@ export default defineConfig((mode) => {
         build: {
             //  告诉打包工具 "vue-demi" 也是外部依赖项
             rollupOptions: {
-                external: ['vue', 'pinia', 'core-js', 'elementPlus' ],
+                external: ['vue', 'pinia', 'core-js', 'element-plus'],
                 output: {
-                    exports:'named',
+                    exports: 'named',
                     assetFileNames: 'assets/[name][extname]', // 修正资源输出路径
                     // 禁用代码分割
                     inlineDynamicImports: true,
@@ -102,7 +108,7 @@ export default defineConfig((mode) => {
                     drop_console: true,
                     drop_debugger: true
                 },
-                format:{
+                format: {
                     comments: false,
                 }
             },

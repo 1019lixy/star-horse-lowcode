@@ -362,19 +362,21 @@ export function createCondition(name: string, val: any, matchType: string = 'eq'
  * @param v
  */
 export function isJson(v: any) {
-    if (typeof v === 'string') {
+    if (!v) {
+        return false;
+    }
+    if (v && typeof v === 'string' && /^\{.*\}$/.test(v) || /^\[.*\]$/.test(v)) {
         try {
             JSON.parse(v);
             return true;
-        } catch {
+        } catch (e) {
             return false;
         }
     }
-    return (
-        typeof v === 'object' &&
-        v !== null &&
-        Object.prototype.toString.call(v) === '[object Object]'
-    );
+    if (typeof v === 'object' && Object.prototype.toString.call(v).toLowerCase() === '[object object]' && !v.length) {
+        return true;
+    }
+    return false;
 }
 
 /**
