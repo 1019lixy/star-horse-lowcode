@@ -5,7 +5,9 @@ const props = defineProps({
   iconClass: {type: String, required: true},
   className: {type: String},
   title: {type: String, default: ''},
-  size: {type: String, default: '20px'},
+  size: {type: String, default: '18px'},
+  marginLeft: {type: String, default: '0.1em'},
+  marginRight: {type: String, default: '0.1em'},
   // 图标是否有边框
   boxShow: {type: Boolean, default: false},
   border: {type: Boolean, default: false},
@@ -29,8 +31,8 @@ const svgClass = computed(() => {
   height: v-bind(size);
   color: v-bind(color);
   font-size: v-bind(size);
-  margin-left: 0.35em;
-  /*margin-right: 0.35em;*/
+  margin-left: v-bind(marginLeft);
+  margin-right: v-bind(marginRight);
   vertical-align: -0.15em;
   fill: currentColor;
   overflow: hidden;
@@ -51,6 +53,5 @@ const svgClass = computed(() => {
 }
 </style>
 <template>
-  <i aria-hidden="false" :class="[svgClass,iconName]" :title="title">
-  </i>
+  <i aria-hidden="false" :class="[svgClass,iconName]" :title="title"/>
 </template>
