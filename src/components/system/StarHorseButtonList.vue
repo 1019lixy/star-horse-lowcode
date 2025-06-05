@@ -202,7 +202,7 @@ defineExpose({
 <template>
   <ul class="inner_button" v-if="showType == 'line' && Object.keys(permissions || {}).length > 0">
     <template v-for="item in buttonList">
-      <template v-if="item.children && item.children.length > 0">
+      <template v-if="item.children?.length > 0">
         <el-dropdown
             :size="compSize"
             split-button
@@ -210,30 +210,21 @@ defineExpose({
             placement="top-start"
             v-if="permissions[item.authority]"
         >
-          <star-horse-icon :icon-class="item.icon" color="var(--star-horse-white)"/>
+          <star-horse-icon :icon-class="item.icon" />
           {{ item.btnName }}
           <template #dropdown>
             <el-dropdown-menu>
               <template v-for="sitem in item.children">
-                <el-dropdown-item v-if="permissions[sitem.authority]">
-                  <el-button
-                      @click="sitem.funcName(sitem.btnName)"
-                      link
-                      title=""
-                      :type="sitem.authority == 'delete' || sitem.authority == 'batchDelete' ? 'danger' : 'primary'"
-                      style="color: var(--star-horse-white)"
-                      :size="compSize"
-                  >
-                    <star-horse-icon
-                        :icon-class="item.icon || 'edit'"
-                        :color="
+                <el-dropdown-item v-if="permissions[sitem.authority]" @click="sitem.funcName(sitem.btnName)">
+                  <star-horse-icon
+                      :icon-class="item.icon || 'edit'"
+                      :color="
                         item.authority == 'delete' || item.authority == 'batchDelete'
                           ? 'var(--el-style-danger)'
                           : 'var(--star-horse-style)'
                       "
-                    />
-                    {{ sitem.btnName }}
-                  </el-button>
+                  />
+                  {{ sitem.btnName }}
                   <help :message="sitem.helpMsg" v-if="sitem.helpMsg"/>
                 </el-dropdown-item>
               </template>
@@ -242,7 +233,7 @@ defineExpose({
         </el-dropdown>
       </template>
       <template v-else>
-        <li v-if="permissions[item.authority]">
+        <li v-if="permissions[item.authority]&&item.authority == 'upload'">
           <el-upload
               :auto-upload="true"
               :on-change="upload"
@@ -256,38 +247,26 @@ defineExpose({
               :headers="{ token: getToken() }"
               class="upload"
               name="file"
-              v-if="item.authority == 'upload'"
+              title="导入"
           >
-            <el-button
-                type="primary"
-                title=""
-                style="color: var(--star-horse-white); margin-left: 5px"
-                :size="compSize"
-            >
-              <star-horse-icon icon-class="excel-upload" color="var(--star-horse-white)"/>
-              导入
-            </el-button>
+            <star-horse-icon title="导入"  :border="true" icon-class="excel-upload" />
           </el-upload>
-          <el-button
-              v-else
-              @click="item.funcName(item.authority)"
-              title=""
-              :type="item.authority == 'delete' || item.authority == 'batchDelete' ? 'danger' : 'primary'"
-              style="color: var(--star-horse-white); margin-left: 5px"
-              :size="compSize"
-          >
-            <star-horse-icon
-                :icon-class="item.icon || 'edit'"
-                siez="16px"
-                :color="
+        </li>
+        <li
+            v-else
+            @click="item.funcName(item.authority)"
+            :title="item.btnName "
+        >
+          <star-horse-icon
+              :icon-class="item.icon || 'edit'"
+              :title="item.btnName "
+              :border="true"
+              :color="
                 item.authority == 'delete' || item.authority == 'batchDelete'
                   ? 'var(--el-style-danger)'
-                  : 'var(--star-horse-white)'
+                  : 'var(--star-horse-style)'
               "
-            />
-            {{ item.btnName }}
-          </el-button>
-          <help :message="item.helpMsg" v-if="item.helpMsg"/>
+          /><help :message="item.helpMsg" v-if="item.helpMsg"/>
         </li>
       </template>
     </template>
