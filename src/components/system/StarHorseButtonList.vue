@@ -249,7 +249,7 @@ defineExpose({
               name="file"
               title="导入"
           >
-            <star-horse-icon title="导入"  :border="true" icon-class="excel-upload" />
+            <star-horse-icon title="导入" width="27px"   icon-class="excel-upload" />
           </el-upload>
         </li>
         <li
@@ -260,7 +260,7 @@ defineExpose({
           <star-horse-icon
               :icon-class="item.icon || 'edit'"
               :title="item.btnName "
-              :border="true"
+              width="27px"
               :color="
                 item.authority == 'delete' || item.authority == 'batchDelete'
                   ? 'var(--el-style-danger)'
