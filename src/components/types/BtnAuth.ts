@@ -27,3 +27,17 @@ export declare interface BtnAuth {
      */
     children?: BtnAuth[]
 }
+/**
+ * 按钮响应事件前置校验
+ */
+export declare interface PreValid {
+    authority: string;
+    /**
+     * 校验方法
+     */
+    valid: Function;
+    /**
+     * 校验失败提示信息
+     */
+    msg?: string;
+}

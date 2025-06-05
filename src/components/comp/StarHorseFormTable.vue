@@ -45,7 +45,7 @@ defineProps({
     @removeRow="removeRow"
     v-if="Object.keys(item).includes('disVisible') ? item['disVisible'] : true"
     :helpMsg="item['helpMsg']"
-    :staticColumn="item.staticData || 'N'"
+    :staticColumn="item.staticData ?? 'Y'"
     :downloadTemplateUrl="item['downloadTemplateUrl']"
     :importInfo="item['importInfo']"
     :defaultValues="batchFieldDefaultValues(item,dataForm)"

@@ -8,6 +8,7 @@ import userContainerComponent from '@/components/comp/items/callitem';
 import itemComponent from '@/components/formcomp/items/allitem';
 import containerComponent from '@/components/formcomp/container/callitem';
 import systemComponent from '@/components/system/SystemComp';
+// @ts-ignore
 import App from '@/App.vue';
 import {createApp} from 'vue';
 import draggable from 'vuedraggable';

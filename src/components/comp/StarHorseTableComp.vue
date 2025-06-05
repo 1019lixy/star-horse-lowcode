@@ -23,6 +23,7 @@ import {Config} from '@/api/settings';
 import Tablebtn from '@/components/comp/items/tablebtn.vue';
 import Help from '@/components/help.vue';
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
+import {PreValid} from "@/components/types/BtnAuth";
 
 const dynamicForm = useDynamicFormStore(piniaInstance);
 const props = defineProps({
@@ -38,8 +39,6 @@ const props = defineProps({
   showBatchField: {type: Boolean, default: false},
   //格式化方法
   dataFormat: {type: Function, default: null},
-  /*  //按钮大小
-  configInfo.inputSize: {type: String, default: "default"},*/
   //禁用事件
   disableAction: {type: Boolean, default: false},
   //弹窗模式
@@ -65,14 +64,15 @@ const props = defineProps({
   title: {type: String},
   //自定义按钮
   extendBtns: {type: Array as PropType<UserFuncInfo[]>},
+  //预检查方法,如果设置了预检查方法，必须要检查通过后，按钮事件才能继续往下执行
+  preValidFunc: {type: Object as PropType<Array<PreValid> | any>, default: {}},
   //多选
   multipleSelect: {type: Boolean, default: false},
-  //按钮操作权限
-  // permissions: {type: Object, required: true, default: {}},
   //行高
   lineHeight: {type: String, default: '30px'},
   //显示多选框
   showSelection: {type: Boolean, default: true},
+  //扩展表格属性
   expandTable: {type: Object as PropType<ExpandTable>},
   //帮助提示
   helpMsg: {type: String},
@@ -815,6 +815,7 @@ defineExpose({
         <star-horse-button-list @tableCompFunc="(fun: any) => tableCompFunc(fun)" :compUrl="compUrl"
                                 :btnPermission="permissions" :extendBtns="extendBtns" :dialogProps="dialogProps"
                                 :showType="'dropdown'"
+                                :preValidFunc="preValidFunc"
                                 v-if="!hideButtonList"/>
       </div>
       <div style="display: flex; align-items: center; flex-direction: row-reverse">

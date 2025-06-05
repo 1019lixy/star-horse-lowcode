@@ -2,7 +2,7 @@
 import {computed, onMounted, onUpdated, PropType, ref} from 'vue';
 import {ApiUrls} from '@/components/types/ApiUrls';
 import {download} from '@/api/star_horse_apis';
-import {error} from '@/utils/message';
+import {error, warning} from '@/utils/message';
 import {DialogProps} from '../types/DialogProps';
 import {getToken} from '@/utils/auth';
 import {useGlobalConfigStore} from '@/store/GlobalConfig';
@@ -12,6 +12,7 @@ import {useRoute} from 'vue-router';
 import {UserFuncInfo} from '@/components/types/PageFieldInfo';
 import Help from '@/components/help.vue';
 import {Config} from '@/api/settings';
+import {PreValid} from "@/components/types/BtnAuth";
 
 const props = defineProps({
   dialogProps: {type: Object as PropType<DialogProps>, required: true},
@@ -20,7 +21,7 @@ const props = defineProps({
   //自定义按钮
   extendBtns: {type: Array as PropType<UserFuncInfo[]>},
   //预检查方法,如果设置了预检查方法，必须要检查通过后，按钮事件才能继续往下执行
-  preValidFunc: {type: Object, default: {}},
+  preValidFunc: {type: Object as PropType<Array<PreValid> | any>, default: {}},
   btnPermissions: {type: Object as PropType<any>, required: false},
 });
 const emits = defineEmits([
@@ -47,12 +48,17 @@ const tableCompFunc = (funcName: string) => {
 };
 const btnOperation = (funcName: string) => {
   //检查前置条件
-  if (props.preValidFunc && props.preValidFunc[funcName]) {
-    let result = props.preValidFunc[funcName]();
+  const preFunc = props.preValidFunc?.find((item: PreValid) => item.authority == funcName);
+  if (preFunc) {
+    const result = preFunc.valid?.();
     if (!result) {
+      if (preFunc.msg?.length > 1) {
+        warning(preFunc.msg);
+      }
       return;
     }
   }
+
 
   //？表示判断是否为空 ！表示断言not null
   if (funcName == 'add') {

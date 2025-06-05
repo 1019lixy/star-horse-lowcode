@@ -28,7 +28,7 @@ const props = defineProps({
   title: {type: String, default: ''},
   helpMsg: {type: String, default: ''},
   rules: {type: Object},
-  staticColumn: {type: String, default: 'N'},
+  staticColumn: {type: String, default: 'Y'},
   size: {type: String, default: Config.compSize},
   isView: {type: Boolean, default: false},
   showCheckBox: {type: Boolean, default: false},
@@ -256,7 +256,7 @@ watch(
   <star-horse-dialog
       :title="'编辑数据'"
       :dialogVisible="rowDialogVisible"
-      :boxWidth="'60%'"
+      :boxWidth="'50%'"
       :selfFunc="true"
       @merge="mergeData"
       @closeAction="closeAction"
@@ -417,6 +417,10 @@ watch(
   padding: 0;
 }
 
+:deep(.cell) {
+  display: flex;
+}
+
 .dynamic-tools {
   display: flex;
   justify-content: space-between;
@@ -462,24 +466,5 @@ watch(
 
 :deep(.el-select) {
   line-height: 25px;
-}
-
-// 强制开启GPU加速
-:deep(.el-table__body-wrapper) {
-  transform: translateZ(0);
-  will-change: transform;
-}
-
-// 减少表格单元格复杂度
-:deep(.el-table__row) {
-  > td {
-    div {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: -webkit-box;
-      -webkit-line-clamp: 2; // 限制文本行数
-      -webkit-box-orient: vertical;
-    }
-  }
 }
 </style>

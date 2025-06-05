@@ -1,5 +1,5 @@
 <script setup lang="ts" name="StarHorseTableColumn">
-import {PropType} from 'vue';
+import {PropType, unref} from 'vue';
 import {Config} from '@/api/settings';
 import {createDatetime} from "@/api/date_utils";
 
@@ -13,7 +13,8 @@ const props = defineProps({
     let item = props.item;
     let val: string = scope.row[item.hideName || item.fieldName];
     if (item.type == 'select' || item.type == 'checkbox' || item.type == 'radio') {
-      return item.preps?.values?.find((temp: any) => String(temp.value) == val)?.name || val;
+      return item.preps?.values?.find((temp: any) => String(temp.value) == val)?.name
+          ||unref(item.optionList)?.find((temp: any) => String(temp.value) == val)?.name|| val;
     }
     if(item.type == 'date' || item.type == 'datetime'){
         return createDatetime(val);
