@@ -1,16 +1,20 @@
 <template>
-<!--   {{ dataForm }}
-  <el-input v-model="dataForm.txt1"/>
-  -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;
-  <htmleditor-item
-      :formData="dataForm"
-      :field="{
-        preps: {
-          name: 'txt1'
-        }
-      }"/>
-      <test/>-->
-<!--    <star-horse-form :fieldList="formField"/>-->
+  <!--   {{ dataForm }}
+    <el-input v-model="dataForm.txt1"/>
+    -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;
+    <htmleditor-item
+        :formData="dataForm"
+        :field="{
+          preps: {
+            name: 'txt1'
+          }
+        }"/>
+        <test/>-->
+  <!--    <star-horse-form :fieldList="formField"/>-->
+<!--  <star-horse-button-list
+      :btnPermissions="{add:'add',edit:'edit',view:'view',upload:'upload',run:'run',export:'export',download:'download'}"
+
+  />-->
 </template>
 <script lang="ts" setup>
 // import {reactive, ref} from "vue";
@@ -18,6 +22,15 @@
 // // import test from "@/components/test.vue";
 // // import QrcodeItem from "@/components/formcomp/items/qrcode-item.vue";
 // const dataForm = ref<any>({});
+// import {onMounted} from "vue";
+// import {useGlobalConfigStore} from "@/store/GlobalConfig";
+// // import piniaInstance from "@/store";
+// let configStore = useGlobalConfigStore(piniaInstance);
+// onMounted(() => {
+//   configStore.setConfigFormInfo({
+//     buttonShowType:"line"
+//   })
+// })
 // const formField = reactive<PageFieldInfo>( {
 //   "fieldList": [
 //     [
@@ -1463,6 +1476,8 @@
 //   "tableCellEditabled": false,
 //   "stopAutoLoad": false
 // });
+import StarHorseButtonList from "@/components/system/StarHorseButtonList.vue";
+import piniaInstance from "@/store";
 </script>
 <style lang="scss">
 #app {

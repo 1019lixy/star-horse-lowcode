@@ -5,6 +5,8 @@
   --star-horse-background: #fff;
   --star-horse-shadow: #f7f7f9;
   --star-horse-disable: gray;
+  --star-horse-warning: #f6d28d;
+  --star-horse-danger: #f56c6c;
   --star-horse-light-gray: #ccc;
   --star-horse-font-color: #fafaf;
   --star-horse-border—color: #2233;
@@ -768,7 +770,7 @@ hr {
   align-items: center;
   justify-content: flex-end;
   text-align: right;
-  height: 40px;
+  height: 30px;
   background: var(--star-horse-background);
   border: dashed 1px var(--star-horse-font-color);
   -moz-user-select: none;
@@ -778,11 +780,26 @@ hr {
 
   li {
     text-wrap: none;
-    /*  padding: 0 10px;*/
-    font-weight: 800;
+    border: 1px solid var(--star-horse-style);
+    height: 25px;
     display: flex;
-    min-width: 40px;
+    cursor: pointer;
+    justify-content: center;
+    margin-right: 5px;
+    border-radius: 3px;
+    min-width: 30px;
     align-items: center;
+
+    div {
+      display: flex;
+      align-items: center;
+    }
+
+    i {
+      cursor: pointer !important;
+      margin-right: unset !important;
+      margin-left: unset !important;
+    }
   }
 }
 

@@ -167,7 +167,7 @@ const extendBtnFunction = (): Array<UserFuncInfo> => {
   if (props.extendBtns?.length > 0) {
     let extBtns: UserFuncInfo[] = props.extendBtns.filter((item) => item.position == 'toolbar') || [];
     if (extBtns?.length > 0) {
-      for (let i in arr) {
+      for (let i = 0; i < arr.length; i++) {
         let temp: UserFuncInfo = arr[i];
         if (extBtns.find((item: UserFuncInfo) => item.btnName == temp.btnName && item.authority == temp.authority)) {
           arr.splice(i, 1);
@@ -210,7 +210,7 @@ defineExpose({
             placement="top-start"
             v-if="permissions[item.authority]"
         >
-          <star-horse-icon :icon-class="item.icon" />
+          <star-horse-icon :icon-class="item.icon" width="27px" size="18px"/>
           {{ item.btnName }}
           <template #dropdown>
             <el-dropdown-menu>
@@ -218,10 +218,10 @@ defineExpose({
                 <el-dropdown-item v-if="permissions[sitem.authority]" @click="sitem.funcName(sitem.btnName)">
                   <star-horse-icon
                       :icon-class="item.icon || 'edit'"
+                      width="27px" size="18px"
                       :color="
                         item.authority == 'delete' || item.authority == 'batchDelete'
-                          ? 'var(--el-style-danger)'
-                          : 'var(--star-horse-style)'
+                          ? '#f56c6c' : 'var(--star-horse-style)'
                       "
                   />
                   {{ sitem.btnName }}
@@ -249,7 +249,7 @@ defineExpose({
               name="file"
               title="导入"
           >
-            <star-horse-icon title="导入" width="27px"   icon-class="excel-upload" />
+            <star-horse-icon title="导入" width="27px" size="18px" icon-class="excel-upload"/>
           </el-upload>
         </li>
         <li
@@ -260,13 +260,15 @@ defineExpose({
           <star-horse-icon
               :icon-class="item.icon || 'edit'"
               :title="item.btnName "
+              size="18px"
               width="27px"
               :color="
                 item.authority == 'delete' || item.authority == 'batchDelete'
-                  ? 'var(--el-style-danger)'
+                  ? '#f56c6c'
                   : 'var(--star-horse-style)'
               "
-          /><help :message="item.helpMsg" v-if="item.helpMsg"/>
+          />
+          <help :message="item.helpMsg" v-if="item.helpMsg"/>
         </li>
       </template>
     </template>

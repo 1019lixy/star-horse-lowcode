@@ -10,6 +10,8 @@ const props = defineProps({
   height: {type: String, default: '22px'},
   marginLeft: {type: String, default: '0.1em'},
   marginRight: {type: String, default: '0.1em'},
+  borderRadius: {type: String, default: '5px'},
+  boorderPadding: {type: String, default: '3px'},
   // 图标是否有边框
   boxShow: {type: Boolean, default: false},
   border: {type: Boolean, default: false},
@@ -40,20 +42,21 @@ const svgClass = computed(() => {
   overflow: hidden;
   outline: none;
   align-items: center;
+  justify-content: center;
   display: flex;
 }
 
 .icon-border {
-  border-radius: 7px;
+  border-radius: v-bind(borderRadius);
   border: 1px solid var(--star-horse-style);
-  padding: 3px;
+  padding: v-bind(boorderPadding);
 }
 
 .icon-cls {
   background: var(--star-horse-style);
   color: var(--star-horse-white);
-  border-radius: 7px;
-  padding: 3px;
+  border-radius: v-bind(borderRadius);
+  padding: v-bind(boorderPadding);
 }
 </style>
 <template>
