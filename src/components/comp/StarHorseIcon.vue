@@ -6,8 +6,8 @@ const props = defineProps({
   className: {type: String},
   title: {type: String, default: ''},
   size: {type: String, default: '20px'},
-  width: {type: String, default: '20px'},
-  height: {type: String, default: '20px'},
+  width: {type: String, default: '24px'},
+  height: {type: String, default: '22px'},
   marginLeft: {type: String, default: '0.1em'},
   marginRight: {type: String, default: '0.1em'},
   // 图标是否有边框
