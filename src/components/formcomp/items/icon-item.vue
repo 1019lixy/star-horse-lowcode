@@ -27,7 +27,9 @@
         <star-horse-icon
             :icon-class="formData[field.preps['name']]"
             v-else
-            size="40px"
+            size="30px"
+            width="30px"
+            height="30px"
             style="
             font-size: 50px;
             color: var(--star-horse-style);
@@ -60,7 +62,7 @@
           >
             <el-icon
                 class="star-icon"
-                style="font-size: 50px; color: var(--star-horse-style)"
+                style="font-size: 35px; color: var(--star-horse-style)"
                 v-if="iconType == 'system'"
             >
               <component :is="sdata.value"/>
@@ -69,7 +71,9 @@
                 :icon-class="sdata.value"
                 v-else
                 size="30px"
-                style="font-size: 50px; color: var(--star-horse-style)"
+                width="30px"
+                height="30px"
+                style="color: var(--star-horse-style)"
                 cursor="pointer"
             />
           </li>

@@ -19,12 +19,12 @@ let rowDialogVisible = ref<boolean>(false);
 const rowDataFormRef = ref();
 const props = defineProps({
   compUrl: {type: Object as PropType<ApiUrls>},
-  fieldList: {type: Object, required: true},
+  fieldList: {type: Object as PropType<any>, required: true},
   defaultValues: {type: Object, default: {}},
   batchName: {type: String, default: 'batchDataList'},
   primaryKey: {type: [String, Object] as PropType<string | any>},
   initRows: {type: Number, default: 0},
-  importInfo: {type: Object},
+  importInfo: {type: Object as PropType<any>},
   title: {type: String, default: ''},
   helpMsg: {type: String, default: ''},
   rules: {type: Object},
@@ -78,6 +78,8 @@ const mergeData = async () => {
 const closeAction = () => {
   rowDialogVisible.value = false;
 };
+
+
 /**
  * 动态添加行
  * @param row
@@ -106,16 +108,25 @@ const dynamicHandleAddRow = (row: any, type: number) => {
       temp.actions(dataForm, 'oper');
     }
   }
-  // 添加滚动逻辑
-  const tableEl = starHorseFormListRef.value?.$el
-  const scrollContainer = tableEl?.querySelector('.el-table--scrollable-y .el-scrollbar__wrap')
-  if (scrollContainer) {
-    // 获取首行高度
-    const firstRow = scrollContainer.querySelector('.el-table__row')
-    const rowHeight = firstRow ? firstRow.offsetHeight : 42 // 默认42px
-    // 增量滚动（当前滚动位置 + 行高）
-    scrollContainer.scrollTop += rowHeight
-  }
+  // 修改后的滚动逻辑：
+  nextTick(() => {
+    const tryScroll = (attempt = 0) => {
+      const tableEl = starHorseFormListRef.value?.$el
+      const scrollContainer = tableEl?.querySelector('.el-table--scrollable-y .el-scrollbar__wrap')
+      if (scrollContainer) {
+        // const firstRow = scrollContainer.querySelector('.el-table__row')
+        // const rowHeight = firstRow ? firstRow.offsetHeight : 42
+        // 仅在新行添加时滚动（type=1）
+        if (type === 1) {
+          scrollContainer.scrollTop = scrollContainer.scrollHeight - scrollContainer.clientHeight
+        }
+      } else if (attempt < 3) { // 最多重试3次
+        setTimeout(() => tryScroll(attempt + 1), 50)
+      }
+    }
+
+    tryScroll()
+  })
 
 };
 const getRowIdentity = (row: any) => {
@@ -330,12 +341,18 @@ watch(
         class="sh-columns"
         :stripe="true"
         :virtual="true"
+        :virtual-scroll-threshold="10"
+        :virtual-scroll-options="{
+          scrollSensitivity: 60,
+          scrollDebounce: 20
+        }"
+        :use-virtual="dataForm[batchName]?.length > 10"
         :header-cell-style="{
-        background: '#f2f2f2',
-        color: '#707070',
-        'font-size': '12px',
-        'background-image': '-webkit-gradient(linear,left 0,left 100%,from(#f8f8f8),to(#ececec))'
-      }"
+            background: '#f2f2f2',
+            color: '#707070',
+            'font-size': '12px',
+            'background-image': '-webkit-gradient(linear,left 0,left 100%,from(#f8f8f8),to(#ececec))'
+          }"
         :cell-style="{ 'font-size': '12px' }"
     >
       <el-table-column type="selection" fixed="left" width="50" align="center" v-if="showCheckBox"/>
@@ -445,5 +462,24 @@ watch(
 
 :deep(.el-select) {
   line-height: 25px;
+}
+
+// 强制开启GPU加速
+:deep(.el-table__body-wrapper) {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+// 减少表格单元格复杂度
+:deep(.el-table__row) {
+  > td {
+    div {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2; // 限制文本行数
+      -webkit-box-orient: vertical;
+    }
+  }
 }
 </style>

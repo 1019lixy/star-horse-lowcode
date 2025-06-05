@@ -5,7 +5,9 @@ const props = defineProps({
   iconClass: {type: String, required: true},
   className: {type: String},
   title: {type: String, default: ''},
-  size: {type: String, default: '18px'},
+  size: {type: String, default: '20px'},
+  width: {type: String, default: '20px'},
+  height: {type: String, default: '20px'},
   marginLeft: {type: String, default: '0.1em'},
   marginRight: {type: String, default: '0.1em'},
   // 图标是否有边框
@@ -18,7 +20,7 @@ const iconName = computed(() => `sh-${props.iconClass}`);
 const svgClass = computed(() => {
   let cls = props.border ? 'sh_icon svg-icon icon-border' : props.boxShow ? 'sh_icon svg-icon icon-cls' : 'sh_icon svg-icon';
   if (props.className) {
-    return cls + props.className;
+    return cls + " " + props.className;
   } else {
     return cls;
   }
@@ -27,8 +29,8 @@ const svgClass = computed(() => {
 <style lang="scss" scoped>
 .svg-icon {
   cursor: v-bind(cursor);
-  width: v-bind(size);
-  height: v-bind(size);
+  width: v-bind(width);
+  height: v-bind(height);
   color: v-bind(color);
   font-size: v-bind(size);
   margin-left: v-bind(marginLeft);
@@ -37,6 +39,8 @@ const svgClass = computed(() => {
   fill: currentColor;
   overflow: hidden;
   outline: none;
+  align-items: center;
+  display: flex;
 }
 
 .icon-border {

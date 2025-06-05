@@ -998,5 +998,6 @@ defineExpose({
 
 :deep(.el-card__footer) {
   padding: 5px 20px;
+  display: flex;
 }
 </style>

@@ -5,7 +5,7 @@ import {resolve} from 'path';
 import Components from 'unplugin-vue-components/vite';
 import {ElementPlusResolver} from 'unplugin-vue-components/resolvers';
 import AutoImport from 'unplugin-auto-import/vite';
-
+import tailwindcss from '@tailwindcss/vite';
 // import {visualizer} from 'rollup-plugin-visualizer';
 //生产types文件插件
 import dts from 'vite-plugin-dts';
@@ -26,7 +26,7 @@ export default defineConfig((mode) => {
             exclude: ['vue-demi']
         },
         plugins: [
-            // vueDevTools(),
+            tailwindcss(),
             vue({
                 script: {
                     // 开启 defineModel
@@ -87,7 +87,7 @@ export default defineConfig((mode) => {
         build: {
             //  告诉打包工具 "vue-demi" 也是外部依赖项
             rollupOptions: {
-                external: ['vue', 'pinia', 'core-js', 'element-plus'],
+                external: ['vue', 'pinia', 'core-js', 'elementPlus'],
                 output: {
                     exports: 'named',
                     assetFileNames: 'assets/[name][extname]', // 修正资源输出路径
