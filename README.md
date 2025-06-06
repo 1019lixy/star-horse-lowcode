@@ -264,6 +264,22 @@ barcode        条形码组件
 12. 2025-05-27 优化本组件从项目中剥离时将遗留耦合的业务代码进一步剥离，保证组件的独立性,同时替换过时的组件
 13. 2025-06-02 修复判断数据是否Json bug
 14. 2025-06-05 修复已知Bug
+15. 2025-06-06 增加按钮响应事件的前置校验 preValidFunc：
+                <star-horse-table-comp
+        ref="projectMemberRef"
+        :fieldList="tableFieldList"
+        :primaryKey="primaryKey"
+        :preValidFunc="[{
+          authority:'add',
+          valid:()=>{
+           //返回true 表示校验通过，返回false 表示校验不通过
+            return projectId !='-1'
+          },
+          msg:'请先选择项目'
+        }]"
+        :compUrl="dataUrl"
+        :dataFormat="dataFormat"
+    />
 
 
 

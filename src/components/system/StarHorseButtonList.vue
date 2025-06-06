@@ -21,7 +21,7 @@ const props = defineProps({
   //自定义按钮
   extendBtns: {type: Array as PropType<UserFuncInfo[]>},
   //预检查方法,如果设置了预检查方法，必须要检查通过后，按钮事件才能继续往下执行
-  preValidFunc: {type: Object as PropType<Array<PreValid> | any>, default: {}},
+  preValidFunc: {type: Object as PropType<Array<PreValid>>},
   btnPermissions: {type: Object as PropType<any>, required: false},
 });
 const emits = defineEmits([
@@ -48,18 +48,18 @@ const tableCompFunc = (funcName: string) => {
 };
 const btnOperation = (funcName: string) => {
   //检查前置条件
-  const preFunc = props.preValidFunc?.find((item: PreValid) => item.authority == funcName);
-  if (preFunc) {
-    const result = preFunc.valid?.();
-    if (!result) {
-      if (preFunc.msg?.length > 1) {
-        warning(preFunc.msg);
+  if (props.preValidFunc?.length > 0 && Array.isArray(props.preValidFunc)) {
+    const preFunc = props.preValidFunc.find((item: PreValid) => item.authority == funcName);
+    if (preFunc) {
+      const result = preFunc.valid?.();
+      if (!result) {
+        if (preFunc.msg?.length > 1) {
+          warning(preFunc.msg);
+        }
+        return;
       }
-      return;
     }
   }
-
-
   //？表示判断是否为空 ！表示断言not null
   if (funcName == 'add') {
     //  dataForm.value = {};

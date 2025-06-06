@@ -3,12 +3,12 @@
     <el-input v-model="dataForm.txt1"/>
     -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;
     <htmleditor-item
-        :formData="dataForm"
-        :field="{
-          preps: {
-            name: 'txt1'
-          }
-        }"/>
+          :formData="dataForm"
+          :field="{
+            preps: {
+              name: 'txt1'
+            }
+          }"/>
         <test/>-->
   <!--    <star-horse-form :fieldList="formField"/>-->
 <!--  <star-horse-button-list
