@@ -669,6 +669,7 @@ export function apiInstance(appName: string, urlPrefix: string, condition: Array
         oneConditionUrl: `${prefix}/getOneByCondition`,
         importUrl: `${prefix}/importData`,
         uploadUrl: `${appName}/annex/upload/common`,
+        modifyColumnsUrl: `${prefix}/modifyColumns`,
         condition: condition
     };
     apiUrls.pageAction = (params: SearchInfo) => {
@@ -686,14 +687,14 @@ export function apiInstance(appName: string, urlPrefix: string, condition: Array
     apiUrls.batchMergeDraftAction = (param: any) => {
         return postRequest(apiUrls.batchMergeDraftUrl!, param);
     };
-    apiUrls.loadByIdAction = async (id: any, isView: boolean, params: any = {}) => {
-        return await loadById(isView ? apiUrls.loadByIdForViewUrl! : apiUrls.loadByIdUrl!, id, params);
+    apiUrls.loadByIdAction = (id: any, isView: boolean, params: any = {}) => {
+        return loadById(isView ? apiUrls.loadByIdForViewUrl! : apiUrls.loadByIdUrl!, id, params);
     };
-    apiUrls.deleteAction = async (params: any) => {
-        return await deleteByIds(apiUrls.deleteUrl!, params);
+    apiUrls.deleteAction = (params: any) => {
+        return deleteByIds(apiUrls.deleteUrl!, params);
     };
-    apiUrls.deleteByConditionAction = async (params: any) => {
-        return await postRequest(apiUrls.deleteByConditionUrl!, params);
+    apiUrls.deleteByConditionAction = (params: any) => {
+        return postRequest(apiUrls.deleteByConditionUrl!, params);
     };
     apiUrls.exportDataAction = async (param: any) => {
         return await download(apiUrls.exportAllUrl!, param);
@@ -701,11 +702,11 @@ export function apiInstance(appName: string, urlPrefix: string, condition: Array
     apiUrls.downloadTemplateAction = async (param: any) => {
         return await download(apiUrls.downloadTemplateUrl!, param || {});
     };
-    apiUrls.queryConditionAction = async (params: SearchParams[] | any, orderBy: OrderByInfo[] = []) => {
-        return await loadData(apiUrls.listConditionUrl!, params, orderBy);
+    apiUrls.queryConditionAction = (params: SearchParams[] | any, orderBy: OrderByInfo[] = []) => {
+        return loadData(apiUrls.listConditionUrl!, params, orderBy);
     };
-    apiUrls.queryOneByConditionAction = async (params: SearchParams[] | any, orderBy: OrderByInfo[] = []) => {
-        return await loadData(apiUrls.oneConditionUrl!, params, orderBy);
+    apiUrls.queryOneByConditionAction = (params: SearchParams[] | any, orderBy: OrderByInfo[] = []) => {
+        return loadData(apiUrls.oneConditionUrl!, params, orderBy);
     };
     apiUrls.importAction = (param: any) => {
         return uploadRequest(apiUrls.importUrl!, param);
@@ -713,9 +714,12 @@ export function apiInstance(appName: string, urlPrefix: string, condition: Array
     apiUrls.uploadAction = (param: any) => {
         return uploadRequest(apiUrls.uploadUrl!, param);
     };
-    apiUrls.executeAction = async (param: any) => {
-        return await postRequest(apiUrls.executeUrl!, param);
+    apiUrls.executeAction = (param: any) => {
+        return postRequest(apiUrls.executeUrl!, param);
     };
+    apiUrls.modifyColumnsAction = (param: any) => {
+        return postRequest(apiUrls.modifyColumnsUrl!, param);
+    }
     return apiUrls;
 }
 

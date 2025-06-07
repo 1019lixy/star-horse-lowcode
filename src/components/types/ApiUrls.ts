@@ -69,6 +69,10 @@ export  type ApiUrls = {
      */
     executeUrl?: string,
     /**
+     * 修改字段接口
+     */
+    modifyColumnsUrl?: string,
+    /**
      * 接口路径前缀
      */
     basePrefix?: string,
@@ -153,6 +157,15 @@ export  type ApiUrls = {
      * 执行接口
      */
     executeAction?: Function;
+    /**
+     * 修改字段接口,
+     * 接收的参数为：{
+     *   columnsInfo：{},//要修改的字段及修改后的值
+     *   conditions：[] //修改条件
+     * }
+     */
+    modifyColumnsAction?: Function;
+
 }
 
 
