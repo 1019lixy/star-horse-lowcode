@@ -52,6 +52,7 @@ const props = defineProps({
           v-if="Object.keys(temp).includes('disVisible') ? temp['disVisible'] : true"
           :name="temp.tabName || 'sub_tab' + key"
           :disabled="temp.disabled"
+          class="h-full flex flex-col"
         >
           <star-horse-form-table
             :size="compSize"

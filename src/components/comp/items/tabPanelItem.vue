@@ -51,6 +51,7 @@ onMounted(() => {
       :label="item['title']"
       :name="item.tabName || 'tab' + itemKey"
       :disabled="item.disabled"
+      class="h-full flex flex-col"
   >
     <template #label>
       <div class="custom-tabs-label">

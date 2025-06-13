@@ -10,7 +10,7 @@ import {SearchFields} from '@/components/types/SearchProps';
 import {checkVisible} from '@/api/form_utils';
 
 const props = defineProps({
-  item: {type: Object, required: true},
+  item: {type: Object as PropType<any>, required: true},
   column: {type: Object},
   primaryKey: {type: [String, Object] as PropType<string | any>},
   // 数据索引
@@ -79,6 +79,10 @@ const compPreps = () => {
     helpMsg: props.item?.helpMsg,
     readonly: props.item?.readonly || props.isView ? 'Y' : 'N'
   };
+  if (!props.item['starHorseCompId']) {
+    props.item['starHorseCompId'] = uuid();
+  }
+  field.value['preps']['starHorseCompId'] = props.item['starHorseCompId'];
   itemType.value = props.item?.type || props.item?.fieldType || 'input';
   field.value.preps['itemType'] = itemType.value;
   field.value['isDesign'] = props.isDesign;
@@ -257,7 +261,6 @@ onMounted(() => {
   if (typeList.includes(props.item?.type) || typeList.includes(props.item?.fieldType)) {
     defaultAction.value = 'change';
   }
-  randId.value = 'Id' + uuid();
   actionName.value = props.item?.actionName ? props.item?.actionName : defaultAction.value;
   compPreps();
 });
@@ -270,7 +273,7 @@ onMounted(() => {
 <template>
   <div v-if="bareFlag===true||bareFlag=='Y' || field.preps.headerFlag == 'Y'" class="bare-comp">
     <component
-        :id="randId"
+        :id="field.preps.starHorseCompId"
         :is="(dataForm&&dataForm['_' + field.preps.name + 'Type'] || itemType) + '-item'"
         @selfFunc="actionDispatcher"
         :isDesign="isDesign"
@@ -316,7 +319,7 @@ onMounted(() => {
         v-if="itemType != 'button'&&isSearch"
     ></div>
     <component
-        :id="randId"
+        :id="field.preps.starHorseCompId"
         :is="(dataForm&&dataForm['_' + field.preps.name + 'Type'] || itemType) + '-item'"
         @selfFunc="actionDispatcher"
         :isDesign="isDesign"
