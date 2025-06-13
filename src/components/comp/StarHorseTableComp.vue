@@ -17,7 +17,7 @@ import TableColumn from '@/components/comp/items/tableColumn.vue';
 import {useGlobalConfigStore} from '@/store/GlobalConfig';
 import {analysisFields} from '@/utils/preview';
 import {isSystemManage} from '@/utils/auth';
-import {removeEmptyCondition} from '@/api/system';
+import {removeEmptyCondition, uuid} from '@/api/system';
 import {Config} from '@/api/settings';
 import Tablebtn from '@/components/comp/items/tablebtn.vue';
 import Help from '@/components/help.vue';
@@ -426,7 +426,7 @@ const splitKey = (key: string, row: any) => {
     }
     return temp;
   } else {
-    return row[key];
+    return row[key] ?? uuid();
   }
 };
 const viewById = (id: any, isExpand: boolean = false) => {
