@@ -7,7 +7,6 @@ import {error, operationConfirm, success, warning} from '@/utils/message';
 import {download} from '@/api/star_horse_apis';
 import {getToken} from '@/utils/auth';
 import Sortable from 'sortablejs';
-import {Sort} from '@element-plus/icons-vue';
 import Help from '@/components/help.vue';
 import {uuid} from '@/api/system';
 import UTableColumn from '@/components/comp/items/UTableColumn.vue';

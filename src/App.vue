@@ -1,5 +1,10 @@
 <template>
+<!--  <el-splitter>
+    <el-splitter-panel>1</el-splitter-panel>
+    <el-splitter-panel>2</el-splitter-panel>
+  </el-splitter>-->
   <!--   {{ dataForm }}
+
     <el-input v-model="dataForm.txt1"/>
     -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;
     <htmleditor-item

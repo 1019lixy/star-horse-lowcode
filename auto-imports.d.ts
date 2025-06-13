@@ -7,10 +7,6 @@
 export {}
 declare global {
   const EffectScope: typeof import('vue')['EffectScope']
-  const ElButtonGroup: typeof import('element-plus/es')['ElButtonGroup']
-  const ElCheckboxGroup: typeof import('element-plus/es')['ElCheckboxGroup']
-  const ElCollection$1: typeof import('element-plus/es')['ElCollection$1']
-  const ElCollectionItem$1: typeof import('element-plus/es')['ElCollectionItem$1']
   const computed: typeof import('vue')['computed']
   const createApp: typeof import('vue')['createApp']
   const customRef: typeof import('vue')['customRef']

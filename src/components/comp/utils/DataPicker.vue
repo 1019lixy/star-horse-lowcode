@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import {useVModel} from '@vueuse/core';
-import type {TreeNodeData} from 'element-plus/es/components/tree/src/tree.type';
-import {type ElTree} from 'element-plus';
 import {reactive, ref, watch} from 'vue';
 import {postRequest} from '@/api/star_horse_apis';
 import StarHorseDialog from '@/components/comp/StarHorseDialog.vue';
@@ -40,17 +38,17 @@ export type ModelValueType = any;
     children: 'children',
     value: props.displayValue,
     isLeaf: 'leaf',
-    class: (data: TreeNodeData) => renderClass(data)
+    class: (data: any) => renderClass(data)
   };
   const value: any = useVModel(props, 'modelValue', emits);
 
   const dataOptions = ref<Array<any>>([]);
   const dataOrgOptions = ref<Array<any>>([]);
-  const orgTreeRef = ref<InstanceType<typeof ElTree>>();
+  const orgTreeRef = ref<InstanceType<any>>();
   const expandedKeys = ref<string[]>([]);
 
   const renderClass = (
-    data: TreeNodeData
+    data: any
   ):
     | string
     | {

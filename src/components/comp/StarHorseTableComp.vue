@@ -6,7 +6,6 @@ import {PageProps} from '@/components/types/PageProps';
 import {closeLoad, createCondition, deleteByIds, isJson, load, loadData} from '@/api/star_horse_utils';
 import {BtnHideCondition, SearchParams} from '@/components/types/Params';
 import Sortable from 'sortablejs';
-import {Sort} from '@element-plus/icons-vue';
 import {DialogProps} from '@/components/types/DialogProps';
 import {error, warning} from '@/utils/message';
 import {ExpandTable, FieldInfo, OrderByInfo, PageFieldInfo, UserFuncInfo} from '@/components/types/PageFieldInfo';

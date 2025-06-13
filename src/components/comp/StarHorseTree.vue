@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import {computed, ModelRef, nextTick, onMounted, PropType, reactive, ref, unref} from 'vue';
-import {TreeNode, TreeNodeData} from 'element-plus/es/components/tree-v2/src/types';
 import SubSystemMenu from '@/components/menu/SubSystemMenu.vue';
 import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
 import {useGlobalConfigStore} from '@/store/GlobalConfig';
@@ -382,7 +381,7 @@ defineExpose({
   font-size: 13px;
   font-weight: 800;
   background: rgb(229, 230, 235);
-
+  border:1px solid #33272729;
   justify-content: space-between;
 
   .title {
