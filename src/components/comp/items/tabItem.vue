@@ -7,7 +7,7 @@ import {Config} from '@/api/settings';
 
 const props = defineProps({
   compUrl: {type: Object as PropType<ApiUrls>},
-  item: {type: Array as PropType<Array<FieldInfo> | any>, required: true},
+  item: {type: Array as PropType<any>, required: true},
   objectName: {type: String},
   // 数据索引
   dataIndex: {type: Number, default: -1},
@@ -17,7 +17,7 @@ const props = defineProps({
   subFormFlag: {type: String, default: 'N'},
   batchName: {type: String, default: 'batchDataList'},
   batchFieldName: {type: String, default: 'batchFieldList'},
-  primaryKey: {type: [String, Object] as PropType<string | any>, required: true},
+  primaryKey: {type: [String, Object] as PropType<string | any>},
   rules: {type: Object},
   compSize: {type: String, default: Config.compSize},
   isView: {type: Boolean, default: false}
@@ -68,7 +68,7 @@ onMounted(() => {
         @tabChange="item.actions"
         @tabAdd="item.addActions"
     >
-      <template v-for="(tabItem, key) in item.tabList">
+      <template v-for="(tabItem, key) in item.tabList" :key="tabItem.fieldName||tabItem.tabName||key">
         <tabPanelItem
             :item="tabItem"
             :dataIndex="dataIndex"
@@ -89,7 +89,7 @@ onMounted(() => {
   <template v-else-if="item.batchFieldList?.length > 0">
     <template v-if="item.batchFieldList.length > 1 && (!item.displayStyle || item.displayStyle == 'tab')">
       <el-tabs v-model="item.fieldName" :type="item.type || ''">
-        <template v-for="(sitem, key) in item.batchFieldList">
+        <template v-for="(sitem, key) in item.batchFieldList" :key="sitem.fieldName||sitem.tabName||key">
           <tabPanelItem
               :item="sitem"
               :dataIndex="dataIndex"
@@ -107,7 +107,7 @@ onMounted(() => {
         </template>
       </el-tabs>
     </template>
-    <template v-else v-for="temp in item.batchFieldList">
+    <template v-else v-for="(temp,key) in item.batchFieldList" :key="temp.fieldName||temp.tabName||key">
       <star-horse-form-table
           :rules="rules"
           :size="compSize"

@@ -153,15 +153,15 @@ const checkboxChange = () => {
     emits('update', 'day', checkboxString.value);
   }
 };
-// 父组件传递的week发生变化触发
-const weekChange = () => {
-  //判断week值与day不能同时为“?”
-  if (props.cron?.week == '?' && radioValue.value == 2) {
-    radioValue.value = 1;
-  } else if (props.cron?.week !== '?' && radioValue.value != 2) {
-    radioValue.value = 2;
-  }
-};
+// // 父组件传递的week发生变化触发
+// const weekChange = () => {
+//   //判断week值与day不能同时为“?”
+//   if (props.cron?.week == '?' && radioValue.value == 2) {
+//     radioValue.value = 1;
+//   } else if (props.cron?.week !== '?' && radioValue.value != 2) {
+//     radioValue.value = 2;
+//   }
+// };
 watch(
     () => radioValue.value,
     (_val) => radioChange(),

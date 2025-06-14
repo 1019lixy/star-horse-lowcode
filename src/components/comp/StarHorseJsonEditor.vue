@@ -2,7 +2,7 @@
 import {ModelRef, onBeforeUnmount, onMounted, ref} from 'vue';
 import JsonEditor from 'vue3-ts-jsoneditor';
 
- defineProps({
+defineProps({
   options: {type: Object},
   currentMode: {
     type: String,
@@ -23,21 +23,14 @@ const json: ModelRef<any> = defineModel('modelValue', {
   default: {}
 });
 // const jsonEditorRef = ref();
-
-const queryLanguages = ref<any>(['javascript' | 'lodash' | 'jmespath' | 'jsonquery' | 'jsonpath']);
+// 'javascript' | 'lodash' | 'jmespath' | 'jsonquery' | 'jsonpath'
+const queryLanguages: Array<any> = ['javascript', 'lodash', 'jmespath', 'jsonquery', 'jsonpath'];
 
 // 全屏处理
 let editor = ref(null);
 
 const setEditorContent = (value) => {
 
-};
-const onCollapse = () => {
-  editor.value.$collapseAll();
-};
-
-const onExpand = () => {
-  editor.value.$expandAll();
 };
 const init = () => {
 };

@@ -109,21 +109,21 @@ const checkboxChange = () => {
     emits('update', 'second', checkboxString.value);
   }
 };
-const othChange = () => {
-  //反解析
-  let ins = props.cron?.second;
-  console.log('second', ins);
-  if (ins === '*') {
-    radioValue.value = 1;
-  } else if (ins.indexOf('-') > -1) {
-    radioValue.value = 2;
-  } else if (ins.indexOf('/') > -1) {
-    radioValue.value = 3;
-  } else {
-    radioValue.value = 4;
-    checkboxList.value = ins.split(',');
-  }
-};
+// const othChange = () => {
+//   //反解析
+//   let ins = props.cron?.second;
+//   console.log('second', ins);
+//   if (ins === '*') {
+//     radioValue.value = 1;
+//   } else if (ins.indexOf('-') > -1) {
+//     radioValue.value = 2;
+//   } else if (ins.indexOf('/') > -1) {
+//     radioValue.value = 3;
+//   } else {
+//     radioValue.value = 4;
+//     checkboxList.value = ins.split(',');
+//   }
+// };
 watch(
     () => radioValue.value,
     (_val) => radioChange(),

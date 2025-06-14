@@ -28,7 +28,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <template v-if="item.type == 'usercomp'">
+  <template v-if="item.type == 'usercomp'||item.type=='button'">
     <star-horse-item
         v-if="item.formVisible || item.listVisible || item.viewVisible"
         :primaryKey="'id'"

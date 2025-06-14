@@ -27,9 +27,10 @@ onMounted(() => {
   <template v-if="item.dytableList?.length > 0">
     <table ref="containerTableRef" :class="{ 'dynamic-table': true, 'instance-table': true }">
       <tbody>
-      <tr v-for="(row, rowIndex) in item.dytableList" class="dy-tr">
+      <tr v-for="(row, rowIndex) in item.dytableList" :key="row.id||row._uuid || rowIndex" class="dy-tr">
         <td
             v-for="(sitem, colIndex) in row"
+            :key="sitem.id||sitem._uuid || colIndex"
             :colspan="sitem.preps?.colspan || 1"
             :rowspan="sitem.preps?.rowspan || 1"
             :style="{

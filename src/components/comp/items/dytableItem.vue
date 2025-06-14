@@ -17,7 +17,7 @@ defineProps({
   subFormFlag: {type: String, default: 'N'},
   batchName: {type: String, default: 'batchDataList'},
   batchFieldName: {type: String, default: 'batchFieldList'},
-  primaryKey: {type: [String, Object] as PropType<string | any>, required: true},
+  primaryKey: {type: [String, Object] as PropType<string | any>},
   rules: {type: Object},
   compSize: {type: String, default: Config.compSize},
   isView: {type: Boolean, default: false},
@@ -35,9 +35,10 @@ onMounted(() => {
   <template v-if="item.dytableList?.length > 0">
     <table ref="containerTableRef" :class="{ 'dynamic-table': true, 'instance-table': true }">
       <tbody>
-      <tr v-for="(row, rowIndex) in item.dytableList" class="dy-tr">
+      <tr v-for="(row, rowIndex) in item.dytableList" :key="row.id||row._uuid||rowIndex" class="dy-tr">
         <td
             v-for="(sitem, colIndex) in row"
+            :key="sitem.id||sitem._uuid||colIndex"
             :colspan="sitem.preps?.colspan || 1"
             :rowspan="sitem.preps?.rowspan || 1"
             :class="{'title-style':sitem.preps?.labelFlag=='Y'}"

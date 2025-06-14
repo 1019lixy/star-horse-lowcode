@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {ref} from 'vue';
-
-const props = defineProps({
+defineProps({
 
   needScroller: {
     type: Boolean,

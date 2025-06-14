@@ -23,7 +23,7 @@ onMounted(() => {
 <template>
   <template v-if="item.collapseList?.length > 0">
     <el-collapse v-model="item.fieldName">
-      <template v-for="(collapseItem, key) in item.collapseList">
+      <template v-for="(collapseItem, key) in item.collapseList" :key="collapseItem.tabName||key">
         <el-collapse-item
             v-if="Object.keys(collapseItem).length > 0"
             :title="collapseItem.title"

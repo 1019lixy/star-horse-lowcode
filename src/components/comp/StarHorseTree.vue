@@ -86,7 +86,7 @@ let pageInfo = reactive<PageProps>({
 const onQueryChanged = (query: string) => {
   treeRef.value!.filter(query);
 };
-const filterMethod = (query: string, node: TreeNode) => {
+const filterMethod = (query: string, node: any) => {
   return node[props.preps?.label]!.toLowerCase().includes(query?.toLowerCase());
 };
 const changeArrow = (evt: MouseEvent) => {
@@ -126,7 +126,7 @@ const treeOperation = (cmd: string) => {
   }
 };
 let selectedDataList = ref<Array<any>>([]);
-const operSelectData = (data: TreeNodeData, checked: boolean) => {
+const operSelectData = (data: any, checked: boolean) => {
   if (checked) {
     let hasData = selectedDataList.value.find((item) => item[props.preps.value] == data[props.preps.value]);
     if (!hasData) {

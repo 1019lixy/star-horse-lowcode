@@ -51,9 +51,6 @@ const formData = defineModel("formData");
 
 let markdownEditor = ref();
 let markdown = ref<MarkdownIt>(null);
-const itemAction = () => {
-  emits('selfFunc', 'change', formData);
-};
 const init = async () => {
   await nextTick(() => {
     if (!markdown.value && markdownEditor.value) {

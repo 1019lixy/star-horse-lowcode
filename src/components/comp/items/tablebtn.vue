@@ -18,7 +18,7 @@ const props = defineProps({
   //按钮默认显示限制，超出按钮个数则折叠显示
   showLimit: {type: Number, default: 3}
 });
-let validButtonList = ref<UserFuncInfo[]|any>([]);
+let validButtonList = ref<UserFuncInfo[] | any>([]);
 /**
  * 过滤掉需要隐藏的按钮
  */
@@ -71,7 +71,7 @@ onMounted(() => {
 
 <template>
   <template v-if="validButtonList.length > 3">
-    <el-tooltip :content="item.btnName" v-for="item in validButtonList.slice(0, 3)">
+    <el-tooltip :content="item.btnName" v-for="item in validButtonList.slice(0, 3)" :key="item.authority">
       <star-horse-icon
           v-if="permissions[item.authority!]"
           @click="item.funcName!(row)"
@@ -88,6 +88,7 @@ onMounted(() => {
         <el-dropdown-menu>
           <el-dropdown-item
               v-for="auth in validButtonList.slice(3, validButtonList.length)"
+              :key="auth.authority"
               :v-if="permissions[auth.authority!]"
           >
             <el-button
@@ -109,7 +110,7 @@ onMounted(() => {
     </el-dropdown>
   </template>
   <template v-else>
-    <el-tooltip :content="item.btnName" v-for="item in validButtonList">
+    <el-tooltip :content="item.btnName" v-for="item in validButtonList" :key="item.authority">
       <star-horse-icon
           v-if="permissions[item.authority]"
           @click="item.funcName(row)"

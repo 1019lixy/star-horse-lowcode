@@ -18,7 +18,7 @@ onMounted(() => {
 <template>
   <template v-if="item.tabList?.length > 0">
     <el-tabs v-model="item.fieldName" type="border-card" class="view-tab">
-      <template v-for="(tabItem, key) in item.tabList">
+      <template v-for="(tabItem, key) in item.tabList" :key="tabItem.tabName||key">
         <view-tab-panel-item
             :item="tabItem"
             :commonFormat="commonFormat"
@@ -32,7 +32,7 @@ onMounted(() => {
   <template v-else-if="item.batchFieldList?.length > 0">
     <template v-if="item.batchFieldList.length > 1 && (!item.displayStyle || item.displayStyle == 'tab')">
       <el-tabs v-model="normalTabList">
-        <template v-for="(sitem, key) in item.batchFieldList">
+        <template v-for="(sitem, key) in item.batchFieldList" :key="sitem.tabName||key">
           <view-tab-panel-item
               :item="sitem"
               :commonFormat="commonFormat"
@@ -43,7 +43,7 @@ onMounted(() => {
         </template>
       </el-tabs>
     </template>
-    <template v-else v-for="(sitem, key) in item.batchFieldList">
+    <template v-else v-for="(sitem, key) in item.batchFieldList" :key="sitem.tabName||key">
       <star-horse-data-view-table
           v-if="Object.keys(sitem).length > 0"
           :item="sitem"

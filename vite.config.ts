@@ -105,8 +105,8 @@ export default defineConfig((mode) => {
             terserOptions: {
                 compress: {
                     keep_infinity: true,
-                    drop_console: true,
-                    drop_debugger: true
+                    drop_console: false,
+                    drop_debugger: false
                 },
                 format: {
                     comments: false,

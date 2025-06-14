@@ -1,5 +1,5 @@
 <script setup lang="ts" name="StarHorseItem">
-import {computed, inject, ModelRef, onMounted, PropType, ref, unref, watch} from 'vue';
+import {computed, inject, ModelRef, onMounted, PropType, ref, shallowRef, unref, watch} from 'vue';
 import {warning} from '@/utils/message';
 import {FieldInfo} from '@/components/types/PageFieldInfo';
 import {useSelfOperationStore} from '@/store/SelfOperation';
@@ -15,7 +15,7 @@ const props = defineProps({
   primaryKey: {type: [String, Object] as PropType<string | any>},
   // 数据索引
   dataIndex: {type: Number, default: -1},
-  bareFlag: {type: Object as PropType<Boolean | String>, default: false},
+  bareFlag: {type: Object as PropType<boolean | string>, default: false},
   batchName: {type: String, default: ''},
   compSize: {type: String, default: Config.compSize},
   isSearch: {type: Boolean, default: false}, //是否查询数据
@@ -29,7 +29,7 @@ const dataForm: ModelRef<any> = defineModel('dataForm');
 const itemType = ref<string>('input');
 const emit = defineEmits(['dataSearch', 'focus', 'blur']);
 const formFields: any = inject('formFields', {});
-const field = ref<any>({
+const field = shallowRef<any>({
   preps: {}
 });
 field.value.preps.size = computed(() => props.compSize);
@@ -58,8 +58,12 @@ const actionDispatcher = (act: string, ...params: any[]) => {
 };
 //页面属性改变，重新刷新数据
 watch(
-    () => [props.item, props.isEdit],
+    () => [
+        props.item,
+      props.isEdit
+    ],
     () => {
+      console.log('组件属性改变', props.item);
       compPreps();
     },
     {
@@ -225,7 +229,6 @@ const compPreps = () => {
 const defaultAction = ref('normal');
 const typeList = ['select', 'tselect', 'date', 'daterange'];
 const actionName = ref();
-const randId = ref();
 const componentRef = ref();
 const isDragging = ref(false);
 const startX = ref(0);
@@ -273,7 +276,7 @@ onMounted(() => {
 <template>
   <div v-if="bareFlag===true||bareFlag=='Y' || field.preps.headerFlag == 'Y'" class="bare-comp">
     <component
-        :id="field.preps.starHorseCompId"
+        :key="field.preps.starHorseCompId"
         :is="(dataForm&&dataForm['_' + field.preps.name + 'Type'] || itemType) + '-item'"
         @selfFunc="actionDispatcher"
         :isDesign="isDesign"
@@ -319,7 +322,7 @@ onMounted(() => {
         v-if="itemType != 'button'&&isSearch"
     ></div>
     <component
-        :id="field.preps.starHorseCompId"
+        :key="field.preps.starHorseCompId"
         :is="(dataForm&&dataForm['_' + field.preps.name + 'Type'] || itemType) + '-item'"
         @selfFunc="actionDispatcher"
         :isDesign="isDesign"

@@ -76,13 +76,14 @@ onMounted(() => {
     </template>
     <field-list @selectData="changeItem"/>
   </star-horse-dialog>
-  <div :class="{'item-info':formItem.preps?.itemType!='usercomp'}"
+  <div class="w-fill" :class="{'item-info':formItem.preps?.itemType!='usercomp'}"
        :style="{margin:formItem.preps?.itemType=='button'?'5px auto':'unset'}" v-if="bareFlag===true||bareFlag=='Y'">
     <help :message="formItem.preps?.helpMsg" v-if="formItem.preps?.helpMsg"/>
     <slot></slot>
   </div>
   <div v-else class="form-item-operation">
     <div
+        class="w-fill"
         :class="{
         'design-star-horse': isEdit&&!disabled,
         'field-item': true,
@@ -110,7 +111,7 @@ onMounted(() => {
         <help :message="formItem.preps?.helpMsg" v-if="formItem.preps?.helpMsg"/>
         <slot></slot>
       </el-form-item>
-      <div v-else :class="{'bare-item':true,
+      <div class="w-fill" v-else :class="{'bare-item':true,
                            'item-info':formItem.preps?.itemType!='usercomp'
                           }"
            :style="{margin:formItem?.itemType=='button'?'5px auto':'unset'}">
@@ -179,11 +180,13 @@ onMounted(() => {
 <style lang="scss" scoped>
 .form-item-operation {
   display: flex;
+  width: 100%;
   flex: 1;
 }
 
 .item-info {
-  display: inline-flex;
+  display: flex;
+  flex-direction: column;
   width: 100%;
   align-items: center;
 }
@@ -201,7 +204,6 @@ onMounted(() => {
   min-height: 50px;
   z-index: 0;
 }
-
 
 
 .el-form-item {

@@ -34,7 +34,7 @@ defineProps({
   }
 });
 const emits = defineEmits(['selfFunc', 'selectItem']);
-const formData = defineModel("formData");
+// const formData = defineModel("formData");
 let previewDialog = shallowRef<boolean>(false);
 let signature = ref<SmoothSignature>(null);
 let canvas = ref();

@@ -193,7 +193,7 @@ provide('dialogOperation', clickFunction);
             >
             <template v-for="item in userBtn">
               <el-button
-                  @click="item?.funcName()"
+                  @click="item?.funcName?.()"
                   :disabled="item.disabled == 'Y'"
                   :style="{
                   background: item.disabled == 'Y' ? 'var(--star-horse-disable)' : 'var(--star-horse-style)',

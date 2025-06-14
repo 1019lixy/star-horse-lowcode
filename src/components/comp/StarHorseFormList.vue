@@ -365,10 +365,11 @@ watch(
           </el-tag>
         </template>
       </el-table-column>
-      <template v-for="item in fieldList">
+      <template v-for="item in fieldList" :key="item.fieldName">
         <template v-if="Array.isArray(item)">
           <UTableColumn
               :item="temp"
+              :key="temp.fieldName"
               v-for="temp in item"
               :size="size"
               :rules="rules"

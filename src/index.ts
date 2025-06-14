@@ -17,6 +17,7 @@ export * from '@/utils/message';
 export * from '@/api/finger_utils';
 const items = import.meta.glob([
     '@/components/comp/*.vue',
+    '@/components/comp/items/*.vue',
     '@/components/system/*.vue',
     '@/components/formcomp/items/*.vue',
     '@/components/formcomp/container/*.vue',

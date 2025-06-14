@@ -7,7 +7,7 @@ import {Config} from '@/api/settings';
 
 const props = defineProps({
   compUrl: {type: Object as PropType<ApiUrls>},
-  item: {type: Array as PropType<Array<FieldInfo>|any>, required: true},
+  item: {type: Array as PropType<any>, required: true},
   objectName: {type: String},
   // 数据索引
   dataIndex: {type: Number, default: -1},
@@ -17,7 +17,7 @@ const props = defineProps({
   subFormFlag: {type: String, default: 'N'},
   batchName: {type: String, default: 'batchDataList'},
   batchFieldName: {type: String, default: 'batchFieldList'},
-  primaryKey: {type: [String, Object] as PropType<string | any>,required:true},
+  primaryKey: {type: [String, Object] as PropType<string | any>},
   rules: {type: Object},
   compSize: {type: String, default: Config.compSize},
   isView: {type: Boolean, default: false},
@@ -34,7 +34,7 @@ onMounted(() => {
 
 <template>
   <el-row v-if="Array.isArray(item)" :gutter="10">
-    <template v-for="sitem in item">
+    <template v-for="(sitem,index) in item" :key="sitem.fieldName||index">
       <el-col
           :span="sitem.colspan || sitem.preps?.colspan || 24 / item.length"
           v-if="sitem.type != 'button' && sitem.type != 'usercomp'"

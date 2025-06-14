@@ -94,7 +94,7 @@ export type ModelValueType = any;
       orgTreeRef.value?.filter(val);
     }
   );
-  const filterNode = (value: string, data: TreeNodeData): boolean => {
+  const filterNode = (value: string, data: any): boolean => {
     if (!value) return true;
     return data[props.displayName].includes(value);
   };

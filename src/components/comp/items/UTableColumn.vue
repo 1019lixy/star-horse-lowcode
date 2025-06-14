@@ -20,11 +20,11 @@ const exclusionFields: string[] = ['divider', 'button', 'usercomp'];
       :label="item.label"
       sortable
       :min-width="item.minWidth || Config.defaultColumnWidth + 'px'"
-        v-if="item.formVisible&&!exclusionFields.includes(item.type)"
+      v-if="item.formVisible&&!exclusionFields.includes(item.type)"
   >
     <template #default="scope">
       <template v-if="item.batchFieldList?.length > 0">
-        <template v-for="sitem in item.batchFieldList">
+        <template v-for="(sitem,skey) in item.batchFieldList" :key="sitem.batchName||sitem.fieldName||skey">
           <star-horse-form-list
               style="min-height: 100px; width: 100% !important"
               v-model:dataForm="scope.row"

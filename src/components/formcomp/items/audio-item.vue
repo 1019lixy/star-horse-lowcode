@@ -43,7 +43,7 @@ const props = defineProps({
   }
 });
 const emits = defineEmits(['selfFunc', 'selectItem']);
-const formData = defineModel("formData");
+// const formData = defineModel("formData");
 let audio = ref();
 const init = async () => {
   let file = await blobData(props.field['audioUrl']);
@@ -57,7 +57,7 @@ const init = async () => {
     let arrBuffer = event.target.result as ArrayBuffer;
     let audioCtx = new AudioContext();
     audioCtx.decodeAudioData(arrBuffer, function (audioBuffer) {
-      let duration = audioBuffer.duration;
+      // let duration = audioBuffer.duration;
       let channels = audioBuffer.numberOfChannels;
       let rate = audioBuffer.sampleRate;
       // 3秒

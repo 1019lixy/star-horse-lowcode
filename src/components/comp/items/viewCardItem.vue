@@ -4,6 +4,7 @@ import {FieldInfo} from '@/components/types/PageFieldInfo';
 
 const props = defineProps({
   item: {type: Array as PropType<Array<FieldInfo> | any>, required: true},
+  primaryKey: {type: [String, Object] as PropType<string | any>},
   commonFormat: {type: Function, required: true}
 });
 const dataForm: ModelRef<any> = defineModel('dataForm');
@@ -15,7 +16,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <template v-for="cardItem in item.cardList">
+  <template v-for="(cardItem,key) in item.cardList" :key="cardItem.tabName||key">
     <el-card shadow="hover" v-if="Object.keys(cardItem).length > 0">
       <template #header>
         <div class="card-header">
@@ -27,7 +28,7 @@ onMounted(() => {
           :subFormFlag="cardItem.subFormFlag"
           v-model:data-form="dataForm"
           :commonFormat="commonFormat"
-          primaryKey="id"
+          :primaryKey="primaryKey"
           :fieldList="{
             ...cardItem
           }"

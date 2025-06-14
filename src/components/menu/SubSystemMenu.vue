@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import {ref} from 'vue';
+import {PropType, ref} from 'vue';
 import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
 
 defineProps({
   dataList: {type: Array, required: true},
   preps: {
-    type: Object,
+    type: Object as PropType<any>,
     default: () => {
       return {
         value: 'value',
@@ -41,9 +41,9 @@ const removeData = (item: any) => {
 };
 </script>
 <template>
-  <template v-for="item in dataList">
+  <template v-for="(item,key) in dataList" :key="key">
     <el-sub-menu
-        v-if="item.children?.length > 0"
+        v-if="item?.children?.length > 0"
         :class="{ 'is-active': item[preps.value] == currentItem[preps.value] }"
         :index="item[preps.value]"
     >
@@ -70,7 +70,7 @@ const removeData = (item: any) => {
         </div>
       </template>
       <SubSystemMenu
-          :dataList="item.children"
+          :dataList="item?.children"
           :preps="preps"
           @selectData="selectData"
           @removeData="removeData"

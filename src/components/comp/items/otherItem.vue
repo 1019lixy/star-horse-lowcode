@@ -17,7 +17,7 @@ const props = defineProps({
   subFormFlag: {type: String, default: 'N'},
   batchName: {type: String, default: 'batchDataList'},
   batchFieldName: {type: String, default: 'batchFieldList'},
-  primaryKey: {type: [String, Object] as PropType<string | any>, required: true},
+  primaryKey: {type: [String, Object] as PropType<string | any>},
   rules: {type: Object},
   compSize: {type: String, default: Config.compSize},
   isView: {type: Boolean, default: false},
