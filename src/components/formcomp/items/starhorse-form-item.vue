@@ -186,9 +186,9 @@ onMounted(() => {
 
 .item-info {
   display: flex;
-  flex-direction: column;
   width: 100%;
-  align-items: center;
+  flex: 1;
+  justify-content: start;
 }
 
 .active-item {
