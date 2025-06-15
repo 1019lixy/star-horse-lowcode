@@ -21,7 +21,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, shallowRef, watch} from 'vue';
+import {onMounted, shallowRef, watch, PropType} from 'vue';
 import {compDynamicData, createFilter, dynamicUrlOperation} from '@/api/star_horse_utils';
 import {SearchParams} from '@/components/types/Params';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
@@ -43,16 +43,14 @@ const props = defineProps({
     default: false
   },
   field: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
+    required: true
   },
   parentField: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   },
   formInfo: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   }
 });
 const emits = defineEmits(['selfFunc', 'selectItem']);

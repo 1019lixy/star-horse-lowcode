@@ -1,10 +1,10 @@
 <template>
   <EditDataDialog
-  v-model="dialogInputVisible"
-  :disabled="checkIsDisabled(props)"
-  :initial-content="formData[field.fieldName]"
-  @confirm="handleContentConfirm"
-/>
+      v-model="dialogInputVisible"
+      :disabled="checkIsDisabled(props)"
+      :initial-content="formData[field.fieldName]"
+      @confirm="handleContentConfirm"
+  />
   <starhorse-form-item
       :isDesign="isDesign"
       :disabled="disabled"
@@ -65,7 +65,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {nextTick, onMounted, ref, shallowRef} from 'vue';
+import {nextTick, onMounted, ref, shallowRef, PropType} from 'vue';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
 import EditDataDialog from "@/components/formcomp/utils/EditDataDialog.vue";
 
@@ -89,35 +89,33 @@ const props = defineProps({
     default: false
   },
   field: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
+    required: true
   },
   parentField: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   },
   formInfo: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   }
 });
 const emits = defineEmits(['selfFunc', 'selectItem']);
 const formData = defineModel("formData");
 const inputItemRef = ref();
 let actionName = shallowRef('normal');
-const dialogInputVisible=ref<boolean>(false);
+const dialogInputVisible = ref<boolean>(false);
 const initEvent = async () => {
   await nextTick();
 };
 const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
-const handleContentConfirm=(newContent:string)=>{
-  formData.value[props.field.fieldName]=newContent;
-  dialogInputVisible.value=false;
+const handleContentConfirm = (newContent: string) => {
+  formData.value[props.field.fieldName] = newContent;
+  dialogInputVisible.value = false;
 }
-const editContent=()=>{
-  dialogInputVisible.value=true;
+const editContent = () => {
+  dialogInputVisible.value = true;
 }
 onMounted(() => {
   actionName.value = props.field.actionName || 'normal';

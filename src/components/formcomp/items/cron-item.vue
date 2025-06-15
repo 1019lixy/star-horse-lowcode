@@ -39,7 +39,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, ref, shallowRef} from 'vue';
+import {onMounted, ref, shallowRef, PropType} from 'vue';
 import Crontab from '@/components/cron/Crontab.vue';
 import StarHorseDialog from '@/components/comp/StarHorseDialog.vue';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
@@ -62,16 +62,14 @@ const props = defineProps({
     default: false
   },
   field: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
+    required: true
   },
   parentField: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   },
   formInfo: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   }
 });
 const emits = defineEmits(['selfFunc', 'selectItem']);

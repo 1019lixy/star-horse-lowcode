@@ -19,7 +19,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, shallowRef, watch} from 'vue';
+import {onMounted, shallowRef, watch, PropType} from 'vue';
 import {compDynamicData} from '@/api/star_horse_utils';
 import {SelectOption} from '@/components/types/SearchProps';
 import {allAction} from '@/components/formcomp/utils/ItemRelationEventUtils';
@@ -41,16 +41,14 @@ const props = defineProps({
     default: false
   },
   field: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
+    required: true
   },
   parentField: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   },
   formInfo: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   }
 });
 const emits = defineEmits(['selfFunc', 'selectItem']);
@@ -63,7 +61,7 @@ const itemAction = (prep: string) => {
 };
 const initData = async () => {
   props.field.preps['values'] = await compDynamicData(props.field);
-  bakeData.value = JSON.parse(JSON.stringify(props.field?.preps['values']??[]));
+  bakeData.value = JSON.parse(JSON.stringify(props.field?.preps['values'] ?? []));
 };
 
 onMounted(() => {

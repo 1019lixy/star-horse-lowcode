@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import {nextTick, onMounted, onUpdated, ref, shallowRef} from 'vue';
+import {nextTick, onMounted, onUpdated, ref, shallowRef, PropType} from 'vue';
 import SmoothSignature from 'smooth-signature';
 import {warning} from '@/utils/message';
 import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
 import StarHorseDialog from '@/components/comp/StarHorseDialog.vue';
+
 defineProps({
   isDesign: {
     type: Boolean,
@@ -21,16 +22,14 @@ defineProps({
     default: false
   },
   field: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
+    required: true
   },
   parentField: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   },
   formInfo: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   }
 });
 const emits = defineEmits(['selfFunc', 'selectItem']);

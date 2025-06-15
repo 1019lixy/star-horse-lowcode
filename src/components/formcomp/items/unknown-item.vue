@@ -10,8 +10,9 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
+import {PropType} from "vue";
 
- defineProps({
+defineProps({
   isDesign: {
     type: Boolean,
     default: false
@@ -28,16 +29,14 @@
     default: false
   },
   field: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
+    required: true
   },
   parentField: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   },
   formInfo: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   }
 });
 const emits = defineEmits(['selfFunc', 'selectItem']);

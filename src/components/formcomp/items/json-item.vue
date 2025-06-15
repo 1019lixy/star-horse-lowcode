@@ -46,7 +46,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {nextTick, onMounted, reactive, shallowRef} from 'vue';
+import {nextTick, onMounted, reactive, shallowRef, PropType} from 'vue';
 import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
 import {PageFieldInfo} from '@/components/types/PageFieldInfo';
 import StarHorseForm from '@/components/comp/StarHorseForm.vue';
@@ -71,16 +71,14 @@ const props = defineProps({
     default: false
   },
   field: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
+    required: true
   },
   parentField: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   },
   formInfo: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   }
 });
 const emits = defineEmits(['selfFunc', 'selectItem']);
@@ -118,7 +116,7 @@ const itemAction = (prep: any) => {
 const editJsonData = async () => {
   let jsonStr = formData.value[props.field.fieldName];
   let temp: any = {};
-  if (jsonStr&&isJson(jsonStr)) {
+  if (jsonStr && isJson(jsonStr)) {
     jsonObject.value = JSON.parse(jsonStr);
     let arr = [];
     for (let key in jsonObject.value) {
@@ -128,8 +126,8 @@ const editJsonData = async () => {
       });
     }
     temp['jsonDatas'] = arr;
-  }else{
-    temp['jsonDatas'] ={};
+  } else {
+    temp['jsonDatas'] = {};
   }
   dialogInputVisible.value = true;
   await nextTick();

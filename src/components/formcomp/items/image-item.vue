@@ -107,7 +107,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, shallowRef} from 'vue';
+import {onMounted, shallowRef, PropType} from 'vue';
 import {allAction} from '@/components/formcomp/utils/ItemRelationEventUtils';
 import {getToken} from '@/utils/auth';
 
@@ -128,16 +128,14 @@ const props = defineProps({
     default: false
   },
   field: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
+    required: true
   },
   parentField: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   },
   formInfo: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   }
 });
 const emits = defineEmits(['selfFunc', 'selectItem']);
@@ -159,9 +157,9 @@ const selfAction = (prep: any, uploadFile: any, uploadFiles: any = [], param: an
     formData.value[props.field.fieldName] = path;
     defaultViewList.value.push(path);
     //默认将上传成功的属性存入数据对象
-      Object.entries(result).forEach(([key, value]) => {
-        formData.value[key] = value;
-      });
+    Object.entries(result).forEach(([key, value]) => {
+      formData.value[key] = value;
+    });
     //console.log(param.data.path);
   }
   emits('selfFunc', prep, uploadFile, uploadFiles, param);

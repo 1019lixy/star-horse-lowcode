@@ -41,7 +41,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {nextTick, onMounted, reactive, shallowRef} from 'vue';
+import {nextTick, onMounted, reactive, shallowRef, PropType} from 'vue';
 import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
 import {PageFieldInfo} from '@/components/types/PageFieldInfo';
 import StarHorseForm from '@/components/comp/StarHorseForm.vue';
@@ -66,16 +66,14 @@ const props = defineProps({
     default: false
   },
   field: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
+    required: true
   },
   parentField: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   },
   formInfo: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   }
 });
 const emits = defineEmits(['selfFunc', 'selectItem']);
@@ -127,7 +125,7 @@ const editJsonData = async () => {
   }
 };
 const selectItem = async () => {
-  if (props.field.preps['devType'] ) {
+  if (props.field.preps['devType']) {
     formData.value[props.field.fieldName] = JSON.stringify(jsonArray.value, null, 4);
   } else {
     let flag = false;

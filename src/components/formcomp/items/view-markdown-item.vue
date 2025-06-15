@@ -14,7 +14,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts" name="view-markdown">
-import {nextTick, onMounted, onUpdated, ref} from 'vue';
+import {nextTick, onMounted, onUpdated, ref, PropType} from 'vue';
 import MarkdownIt from 'markdown-it';
 
 defineProps({
@@ -34,16 +34,14 @@ defineProps({
     default: false
   },
   field: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
+    required: true
   },
   parentField: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   },
   formInfo: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   }
 });
 const emits = defineEmits(['selfFunc', 'selectItem']);

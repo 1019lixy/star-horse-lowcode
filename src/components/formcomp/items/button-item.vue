@@ -63,15 +63,13 @@ const props = defineProps({
   },
   field: {
     type: Object as PropType<any>,
-    default: {}
+    required:true
   },
   parentField: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   },
   formInfo: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   }
 });
 const emits = defineEmits(['selfFunc', 'selectItem']);

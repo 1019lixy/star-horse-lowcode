@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {nextTick, onMounted, ref, shallowRef} from 'vue';
+import {nextTick, onMounted, ref, shallowRef, PropType} from 'vue';
 import {warning} from '@/utils/message';
 import {FieldInfo, FieldMapping} from '@/components/types/PageFieldInfo';
 import {isJson} from '@/api/star_horse_utils';
@@ -23,16 +23,14 @@ const props = defineProps({
     default: false
   },
   field: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
+    required: true
   },
   parentField: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   },
   formInfo: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   }
 });
 const emits = defineEmits(['selfFunc', 'selectItem']);
@@ -100,7 +98,7 @@ onMounted(() => {
     warning('属性' + props.field?.label + '需要配置params 信息');
     return;
   }
-  if ( inputPreps.searchFieldList?.length === 0) {
+  if (inputPreps.searchFieldList?.length === 0) {
     let searchFieldList: Array<SearchFields> = [];
     inputPreps.fieldList?.forEach((item: FieldInfo) => {
       if (item.searchVisible) {

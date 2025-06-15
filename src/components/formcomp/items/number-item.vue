@@ -27,7 +27,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {nextTick, onMounted, shallowRef} from 'vue';
+import {nextTick, onMounted, shallowRef, PropType} from 'vue';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
 
 defineOptions({
@@ -50,16 +50,14 @@ const props = defineProps({
     default: false
   },
   field: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
+    required: true
   },
   parentField: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   },
   formInfo: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   }
 });
 const emits = defineEmits(['selfFunc', 'selectItem']);
@@ -72,12 +70,12 @@ const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
 onMounted(() => {
-  if(!props.field.preps){
-    props.field.preps={}
+  if (!props.field.preps) {
+    props.field.preps = {}
   }
-  props.field.preps['step']=props.field.preps['step']||1;
-  props.field.preps['min']=props.field.preps['min']||0;
-  props.field.preps['precision']=props.field.preps['precision']||0;
+  props.field.preps['step'] = props.field.preps['step'] || 1;
+  props.field.preps['min'] = props.field.preps['min'] || 0;
+  props.field.preps['precision'] = props.field.preps['precision'] || 0;
   actionName.value = props.field.actionName || 'normal';
   if (!props.isSearch) {
     allAction(props, emits, formData, actionName.value, true);

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Vue3Barcode from 'vue3-barcode';
-import {computed, nextTick, onMounted, ref, watch} from "vue";
+import {computed, nextTick, onMounted, ref, watch,PropType} from "vue";
 import {allAction} from '../utils/ItemRelationEventUtils';
 
 const props = defineProps({
@@ -20,16 +20,14 @@ const props = defineProps({
     default: false
   },
   field: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
+    required: true
   },
   parentField: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   },
   formInfo: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   }
 });
 const barcodeRef = ref();

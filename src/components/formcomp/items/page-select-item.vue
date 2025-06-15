@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, ref, shallowRef, watch} from 'vue';
+import {onMounted, ref, shallowRef, watch, PropType} from 'vue';
 import {PageProps} from '@/components/types/PageProps';
 import {closeLoad, createCondition, load} from '@/api/star_horse_utils';
 import {postRequest} from '@/api/star_horse_apis';
@@ -27,16 +27,14 @@ const props = defineProps({
     default: false
   },
   field: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
+    required: true
   },
   parentField: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   },
   formInfo: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   }
 });
 const emits = defineEmits(['selfFunc', 'selectItem']);
@@ -195,7 +193,7 @@ onMounted(() => {
     warning('属性' + props.field?.label + '需要配置params 信息');
     return;
   }
-  if ( inputPreps.searchFieldList?.length === 0) {
+  if (inputPreps.searchFieldList?.length === 0) {
     let searchFieldList: Array<SearchFields> = [];
     inputPreps.fieldList?.forEach((item: FieldInfo) => {
       if (item.searchVisible) {

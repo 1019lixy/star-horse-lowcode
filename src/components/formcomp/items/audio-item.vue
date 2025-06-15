@@ -10,7 +10,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts" name="audioItem">
-import {onMounted, ref} from 'vue';
+import {onMounted, ref, PropType} from 'vue';
 import {blobData} from '@/api/star_horse_apis';
 
 const props = defineProps({
@@ -30,16 +30,14 @@ const props = defineProps({
     default: false
   },
   field: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
+    required: true
   },
   parentField: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   },
   formInfo: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   }
 });
 const emits = defineEmits(['selfFunc', 'selectItem']);

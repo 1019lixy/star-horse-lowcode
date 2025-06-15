@@ -84,7 +84,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, ref, shallowRef, unref} from 'vue';
+import {onMounted, ref, shallowRef, unref, PropType} from 'vue';
 import {loadElementPlusIcon, loadSvgIcons} from '@/api/star_horse_utils';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
 import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
@@ -107,16 +107,14 @@ const props = defineProps({
     default: false
   },
   field: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
+    required: true
   },
   parentField: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   },
   formInfo: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   }
 });
 const emits = defineEmits(['selfFunc', 'selectItem']);
@@ -179,7 +177,8 @@ onMounted(() => {
   .system-icon {
     margin-top: 5px;
     justify-content: center;
-    li{
+
+    li {
       margin: 1px;
     }
   }

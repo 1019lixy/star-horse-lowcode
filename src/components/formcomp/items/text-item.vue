@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import {PropType} from "vue";
 import {allAction} from '@/components/formcomp/utils/ItemRelationEventUtils';
 
 const props = defineProps({
@@ -18,16 +19,14 @@ const props = defineProps({
     default: false
   },
   field: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
+    required: true
   },
   parentField: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   },
   formInfo: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   }
 });
 const emits = defineEmits(['selfFunc', 'selectItem']);
@@ -60,7 +59,7 @@ const itemAction = (prep: any) => {
         borderRadius: field.preps?.fontWeight??'none',
         border: field.preps?.border??'none',
         margin:' 0 5px'
-      }">{{ field.preps?.textContent|| field.preps?.placeholder}}
+      }">{{ field.preps?.textContent || field.preps?.placeholder }}
       </div>
     </div>
   </starhorse-form-item>

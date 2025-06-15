@@ -1,10 +1,10 @@
 <template>
-   <EditDataDialog
-  v-model="editorDialogVisible"
-  :disabled="checkIsDisabled(props)"
-  :initial-content="formData[field.fieldName]"
-  @confirm="handleContentConfirm"
-/>
+  <EditDataDialog
+      v-model="editorDialogVisible"
+      :disabled="checkIsDisabled(props)"
+      :initial-content="formData[field.fieldName]"
+      @confirm="handleContentConfirm"
+  />
   <starhorse-form-item
       :isDesign="isDesign"
       :disabled="disabled"
@@ -29,7 +29,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, shallowRef} from 'vue';
+import {onMounted, shallowRef, PropType} from 'vue';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
 import EditDataDialog from "@/components/formcomp/utils/EditDataDialog.vue";
 
@@ -50,16 +50,14 @@ const props = defineProps({
     default: false
   },
   field: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
+    required: true
   },
   parentField: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   },
   formInfo: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   }
 });
 const emits = defineEmits(['selfFunc', 'selectItem']);
@@ -73,11 +71,11 @@ const itemAction = (prep: any) => {
 const maxEdit = () => {
   editorDialogVisible.value = true;
 };
-const handleContentConfirm = (newContent:string) => {
+const handleContentConfirm = (newContent: string) => {
   formData.value[props.field.fieldName] = newContent;
 };
 onMounted(() => {
-  actionName.value =props.field.actionName || 'normal';
+  actionName.value = props.field.actionName || 'normal';
   if (!props.isSearch) {
     allAction(props, emits, formData, actionName.value, true);
   }

@@ -84,16 +84,16 @@ const selfAction = (prep: any, uploadFile: any, uploadFiles: any = [], param: an
     let result = param.data;
     formData.value[props.field.fieldName] = result.path;
     //默认将上传成功的属性存入数据对象
-      Object.entries(result).forEach(([key, value]) => {
-        formData.value[key] = value;
-      });
+    Object.entries(result).forEach(([key, value]) => {
+      formData.value[key] = value;
+    });
   }
   console.log(prep, uploadFile, uploadFiles, param);
- emits('selfFunc', prep, uploadFile, uploadFiles, param);
+  emits('selfFunc', prep, uploadFile, uploadFiles, param);
 };
 onMounted(async () => {
-  if(!props.field.preps){
-    props.field.preps={}
+  if (!props.field.preps) {
+    props.field.preps = {}
   }
   props.field.preps['action'] = props.field.preps['action'] || '/system-config/annex/upload/commonFiles';
   await nextTick();

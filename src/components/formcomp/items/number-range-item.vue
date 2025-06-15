@@ -50,7 +50,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, ref, shallowRef, watch} from 'vue';
+import {onMounted, ref, shallowRef, watch, PropType} from 'vue';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
 import {warning} from '@/utils/message';
 
@@ -71,16 +71,14 @@ const props = defineProps({
     default: false
   },
   field: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
+    required: true
   },
   parentField: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   },
   formInfo: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   },
   formFieldList: {
     type: Array,

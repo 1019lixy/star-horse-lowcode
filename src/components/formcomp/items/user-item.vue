@@ -38,7 +38,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {nextTick, shallowRef} from 'vue';
+import {nextTick, shallowRef, PropType} from 'vue';
 import {FieldMapping} from '@/components/types/PageFieldInfo';
 import {warning} from '@/utils/message';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
@@ -60,16 +60,14 @@ const props = defineProps({
     default: false
   },
   field: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
+    required: true
   },
   parentField: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   },
   formInfo: {
-    type: Object,
-    default: {}
+    type: Object as PropType<any>,
   }
 });
 const emits = defineEmits(['selfFunc', 'selectItem']);
