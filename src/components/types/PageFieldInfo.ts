@@ -145,17 +145,17 @@ export declare interface FieldInfo {
      */
     optionList?: SelectOption[] | Ref<SelectOption[]>;
     /**
-     * 是否禁用,Y 禁用 N 非禁用
+     * 是否禁用,true 禁用 false 非禁用
      */
-    disabled?: string | Ref<string>;
+    disabled?: boolean | Ref<boolean>;
     /**
-     * 编辑时禁用，Y 禁用 N 非禁用
+     * 编辑时禁用，true 禁用 false 非禁用
      */
-    editDisabled?: string | Ref<string>;
+    editDisabled?: boolean | Ref<boolean>;
     /**
      * 是否允许多选,在类型为select时有效 Y 多选
      */
-    multiple?: string | Ref<string>;
+    multiple?: boolean | Ref<boolean>;
     /**
      * Tab容器数据
      */

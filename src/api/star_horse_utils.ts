@@ -538,19 +538,22 @@ export function batchFieldDefaultValues(datas: BatchFieldInfo, dataForm: any) {
 
 /**
  * 动态组件数据
- * @param preps 组件参数信息
+ * @param field 组件参数信息
  */
-export async function compDynamicData(preps: any) {
-    const temp = preps;
+export async function compDynamicData(field: any) {
+    const temp = field;
     let reDataList: SelectOption[] = [];
-    const dataSource = temp?.dataSource;
-    const urlOrDictName = temp?.urlOrDictName;
+    const dataSource = temp.preps?.dataSource;
+    const urlOrDictName = temp.preps?.urlOrDictName;
     //如果已经有数据了，就不再请求
-    if (preps['values']?.length > 0) {
-        return preps['values'];
+    if (field.preps?.values?.length > 0) {
+        return field.preps?.values;
+    }
+    if (field?.optionList?.length > 0) {
+        return field.optionList;
     }
     if (dataSource == 'url') {
-        reDataList = await dynamicUrlOperation(preps);
+        reDataList = await dynamicUrlOperation(field);
     } else if (dataSource == 'dict') {
         const dicts = await dictData(urlOrDictName);
         if (Object.keys(dicts).length == 0) {
@@ -559,7 +562,7 @@ export async function compDynamicData(preps: any) {
             reDataList = dicts;
         }
     } else {
-        reDataList = temp['values'];
+        reDataList = temp?.values ?? temp?.preps?.values;
     }
     return reDataList;
 }
@@ -571,7 +574,7 @@ export async function compDynamicData(preps: any) {
  * @param proxyUrl 代理接口,为空时，默认使用/system-config/redirect/execute
  */
 export async function dynamicUrlOperation(preps: any, queryInfo?: SearchParams[], proxyUrl?: string) {
-    const temp = preps;
+    const temp = preps.preps || preps;
     const reDataList: SelectOption[] = [];
     const requestParams: any = [];
     const queryParams = temp?.queryParams;

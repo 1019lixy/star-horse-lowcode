@@ -24,7 +24,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, shallowRef} from 'vue';
+import {onMounted, shallowRef, watch} from 'vue';
 import {dictData, loadData} from '@/api/star_horse_utils';
 import {error} from '@/utils/message';
 import {SelectOption} from '@/components/types/SearchProps';
@@ -145,5 +145,10 @@ onMounted(() => {
     allAction(props, emits, formData, actionName.value, true);
   }
 });
+watch(() => formData.value[props.field.fieldName + "OptionList"], (val) => {
+  if (val?.length > 0) {
+    props.field.preps['data'] = val;
+  }
+})
 </script>
 <style scoped></style>

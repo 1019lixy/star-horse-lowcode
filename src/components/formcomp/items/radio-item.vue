@@ -37,8 +37,9 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted} from 'vue';
+import {onMounted, watch} from 'vue';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
+import {compDynamicData} from "@/api/star_horse_utils";
 
 const props = defineProps({
   isDesign: {
@@ -75,8 +76,20 @@ const formData = defineModel("formData");
 const itemAction = () => {
   allAction(props, emits, formData, 'change');
 };
+const initData = async () => {
+  props.field.preps['values'] = await compDynamicData(props.field);
+};
 onMounted(() => {
+  if (!props.field.preps) {
+    props.field.preps = {}
+  }
+  initData();
   allAction(props, emits, formData, 'change', true);
 });
+watch(() => formData.value[props.field.fieldName + "OptionList"], (val) => {
+  if (val?.length > 0) {
+    props.field.preps['values'] = val;
+  }
+})
 </script>
 <style scoped></style>

@@ -1,7 +1,7 @@
 <template>
 
   <!--      <star-horse-form :fieldList="tableFieldList"/>-->
-  <select-item
+  <radio-item
       :field="{
    preps: {
     name: 'parentId',
@@ -18,6 +18,11 @@
   }}"
       :formData="formData"
   />
+  <button-item
+      :field="{
+    label:'Button',
+    fieldName:'btn',
+   }"/>
 </template>
 <script lang="ts" setup>
 import {ref} from "vue";
@@ -155,6 +160,7 @@ const formData = ref({
 //   ]
 // };
 import SelectItem from "@/components/formcomp/items/select-item.vue";
+import ButtonItem from "@/components/formcomp/items/button-item.vue";
 </script>
 <style lang="scss">
 #app {

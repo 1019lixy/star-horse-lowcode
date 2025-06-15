@@ -21,7 +21,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {nextTick, onMounted, shallowRef} from 'vue';
+import {nextTick, onMounted, shallowRef, watch} from 'vue';
 import {compDynamicData, isJson} from '@/api/star_horse_utils';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
 
@@ -62,7 +62,7 @@ const itemAction = (prep: any) => {
 };
 const initData = async () => {
   await nextTick();
-  props.field.preps['values'] = await compDynamicData(props.field.preps);
+  props.field.preps['values'] = await compDynamicData(props.field);
   let data: any = formData.value[props.field.fieldName];
   if (isJson(data)) {
     formData.value[props.field.fieldName] = JSON.parse(data);
@@ -90,7 +90,11 @@ onMounted(() => {
     allAction(props, emits, formData, actionName.value, true);
   }
 });
-
+watch(() => formData.value[props.field.fieldName + "OptionList"], (val) => {
+  if (val?.length > 0) {
+    props.field.preps['values'] = val;
+  }
+})
 </script>
 <style lang="scss" scoped>
 :deep(.el-cascader) {

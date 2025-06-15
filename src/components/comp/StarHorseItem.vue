@@ -12,10 +12,10 @@ import {checkVisible} from '@/api/form_utils';
 const props = defineProps({
   item: {type: Object as PropType<any>, required: true},
   column: {type: Object},
-  primaryKey: {type: [String, Object] as PropType<string | any>},
+  primaryKey: {type: Object as PropType<any>},
   // 数据索引
   dataIndex: {type: Number, default: -1},
-  bareFlag: {type: Object as PropType<boolean | string>, default: false},
+  bareFlag: {type: Object as PropType<any>, default: false},
   batchName: {type: String, default: ''},
   compSize: {type: String, default: Config.compSize},
   isSearch: {type: Boolean, default: false}, //是否查询数据

@@ -23,13 +23,13 @@
           :label="items[field.preps?.props?.label || 'name']"
           :value="items[field.preps?.props?.value || 'value']"
           :key="items[field.preps?.props?.value || 'value']"
-          v-for="items in field.preps?.values || formData[field.fieldName + 'OptionList']"
+          v-for="items in field.preps?.values"
       />
     </el-select>
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, shallowRef} from 'vue';
+import {onMounted, shallowRef, watch} from 'vue';
 import {compDynamicData, createFilter, dynamicUrlOperation} from '@/api/star_horse_utils';
 import {SearchParams} from '@/components/types/Params';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
@@ -73,7 +73,7 @@ const itemAction = (prep: any) => {
  * 动态获取数据
  */
 const initData = async () => {
-  props.field.preps['values'] = await compDynamicData(props.field.preps);
+  props.field.preps['values'] = await compDynamicData(props.field);
 };
 const remoteMethod = async (queryString: string) => {
   let temp = props.field.preps;
@@ -91,13 +91,13 @@ const remoteMethod = async (queryString: string) => {
   }
 };
 onMounted(() => {
-  if(!props.field.preps){
-    props.field.preps={}
+  if (!props.field.preps) {
+    props.field.preps = {}
   }
-  props.field.preps['remote']=props.field.preps['remote']||props.field.preps['dataSource'] == 'url';
-  props.field.preps['filterable']=true;
-  props.field.preps['collapseTags']=true;
-  props.field.preps['values']=props.field?.optionList;
+  props.field.preps['remote'] = props.field.preps['remote'] || props.field.preps['dataSource'] == 'url';
+  props.field.preps['filterable'] = true;
+  props.field.preps['collapseTags'] = true;
+  props.field.preps['values'] = props.field?.optionList;
   initData();
   actionName.value = props.field.actionName || 'normal';
   if (!props.isSearch) {
@@ -105,7 +105,11 @@ onMounted(() => {
   }
 
 });
-
+watch(() => formData.value[props.field.fieldName + "OptionList"], (val) => {
+  if (val?.length > 0) {
+    props.field.preps['values'] = val;
+  }
+})
 </script>
 <style lang="scss" scoped>
 .el-select {

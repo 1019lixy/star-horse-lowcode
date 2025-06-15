@@ -1,12 +1,12 @@
 <template>
-  <star-horse-dialog :title="field?.preps['dialogTitle']||'配置按钮事件'"
+  <star-horse-dialog :title="field.preps?.dialogTitle||'配置按钮事件'"
                      :selfFunc="true"
                      @merge="operResultAction"
                      :dialogVisible="btnDialogVisible"
-                     :boxWidth="field?.preps['boxWidth']||'50%'"
-                     :isShowReset="field?.preps['isShowReset']??false"
+                     :boxWidth="field.preps?.boxWidth||'50%'"
+                     :isShowReset="field.preps?.isShowReset??false"
                      @closeAction="close"
-                     :btnText="field?.preps['dialogBtn']??'确定'">
+                     :btnText="field.preps?.dialogBtn??'确定'">
     <star-horse-form ref="btnFormRef" :fieldList="{
       fieldList: field.preps?.fieldList,
     }" v-if="field.preps?.viewType=='form'"/>
@@ -25,14 +25,14 @@
     <el-button
         :disabled="checkIsDisabled(props)"
         v-bind="field.preps"
-        @click="dynamicFunc(field?.preps['code'] )"
+        @click="dynamicFunc(field.preps?.code )"
     >
       <star-horse-icon
-          v-if="field?.preps['icon']"
-          :icon-class="field?.preps['icon']"
+          v-if="field.preps?.icon"
+          :icon-class="field.preps.icon"
           style="vertical-align: middle; color: var(--star-horse-style)"
       />
-      {{ field.preps["label"] }}
+      {{ field?.label }}
     </el-button>
   </starhorse-form-item>
 </template>
@@ -80,9 +80,7 @@ const formData = defineModel("formData");
 let actionName = shallowRef('click');
 let btnDialogVisible = shallowRef<boolean>(false);
 const btnCompRef = shallowRef();
-onMounted(() => {
-  actionName.value = props.field.actionName || 'normal';
-});
+
 const operResultAction = async () => {
   let action: BtnAction = props.field.preps;
   let formData: any = {};
@@ -191,7 +189,9 @@ const dynamicFunc = (code: any) => {
     buttonAction(props, emits, formData, code);
   }
 };
-
+onMounted(() => {
+  actionName.value = props.field.actionName || 'normal';
+});
 </script>
 <style lang="scss" scoped>
 :deep(.el-icon) {

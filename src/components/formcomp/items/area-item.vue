@@ -63,7 +63,7 @@ const itemAction = (prep: any) => {
 };
 const initData = async () => {
   await nextTick();
-  props.field.preps['values'] = await compDynamicData(props.field.preps);
+  props.field.preps['values'] = await compDynamicData(props.field);
   let data: any = formData.value[props.field.fieldName];
   if (data) {
     formData.value[props.field.fieldName] = JSON.parse(data);

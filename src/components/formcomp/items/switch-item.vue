@@ -56,13 +56,13 @@ const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
 onMounted(() => {
-  if(!props.field.preps){
-    props.field.preps={}
+  if (!props.field.preps) {
+    props.field.preps = {}
   }
-  props.field.preps['activeText'] = props.field.preps['activeText'] || '是';
-  props.field.preps['inactiveText'] = props.field.preps['inactiveText'] || '否';
-  props.field.preps['activeValue'] = props.field.preps['activeValue'] || 'Y';
-  props.field.preps['inactiveValue'] = props.field.preps['inactiveValue'] || 'N';
+  props.field.preps['activeText'] = props.field.preps['activeText'] ?? '是';
+  props.field.preps['inactiveText'] = props.field.preps['inactiveText'] ?? '否';
+  props.field.preps['activeValue'] = props.field.preps['activeValue'] ?? true;
+  props.field.preps['inactiveValue'] = props.field.preps['inactiveValue'] ?? false;
   actionName.value = props.field.actionName || 'normal';
   if (!props.isSearch) {
     allAction(props, emits, formData, actionName.value, false);

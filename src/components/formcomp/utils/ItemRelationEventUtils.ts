@@ -88,7 +88,7 @@ const operationRelation = async (relation: any, actionName: string, formData: an
         const params: any = temp.params;
         //数据联动
         if (conditon == 'dataLinkage') {
-            formData[fieldName + 'OptionList'] = await compDynamicData(temp);
+            formData[fieldName + 'OptionList'] = await compDynamicData({preps:temp});
         } else if (conditon == 'eqDisable' || conditon == 'eqDisableOrEditable') {
             //输入的值等于指定值隐藏否则显示
             formData['_' + fieldName + 'Editable'] = !(currentVal == params);
@@ -105,7 +105,7 @@ const operationRelation = async (relation: any, actionName: string, formData: an
             ) {
                 field.preps.values = JSON.parse(params);
             } else {
-                formData[field.name] = params;
+                formData[field.fieldName] = params;
             }
         } else if (conditon == 'changeType') {
             //输入的值等于指定值时改变字段类型
@@ -185,8 +185,8 @@ const buttonAction = (context: any, emits: any, formData: any, code: string) => 
     } else {
         const field = context.field as any;
         currentData['starHorseBtnName'] = field.fieldName;
-        if (field.preps['actions']) {
-            field.preps['actions'](currentData);
+        if (field.actions) {
+            field.actions(currentData);
         }
         emits('selfFunc', currentData);
     }
@@ -201,12 +201,12 @@ const checkIsDisabled = (attrs: any) => {
     const fieldName = field.fieldName;
     const isExplicitlyDisabled = attrs?.disabled || attrs.editDisabled || field.disabled
         || field.preps?.disabled || field.editDisabled || field.preps?.editDisabled;
-    const isImplicitlyDisabled = !attrs.formData[`_${fieldName}Editable`] && field.preps?.disabled === 'Y';
+    const isImplicitlyDisabled = !attrs?.formData?.[`_${fieldName}Editable`] && field?.preps?.disabled === 'Y';
 
     return isExplicitlyDisabled===true || isImplicitlyDisabled===true;
 };
 const useFormField = (context: any, field: any) => {
-    const fieldName = computed(() => field.preps.name);
+    const fieldName = computed(() => field.fieldName);
     const updateFormData = (value: any) => {
         const newData = context.attrs.formData;
         newData[fieldName.value] = value;
