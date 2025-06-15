@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {ModelRef, onMounted, PropType} from 'vue';
 import {FieldInfo} from '@/components/types/PageFieldInfo';
+import {compKey} from "@/api/system";
 
 const props = defineProps({
   item: {type: Array as PropType<Array<FieldInfo> | any>, required: true},
@@ -27,10 +28,10 @@ onMounted(() => {
   <template v-if="item.dytableList?.length > 0">
     <table ref="containerTableRef" :class="{ 'dynamic-table': true, 'instance-table': true }">
       <tbody>
-      <tr v-for="(row, rowIndex) in item.dytableList" :key="row.id||row._uuid || rowIndex" class="dy-tr">
+      <tr v-for="(row, rowIndex) in item.dytableList" :key="compKey(row,rowIndex)" class="dy-tr">
         <td
             v-for="(sitem, colIndex) in row"
-            :key="sitem.id||sitem._uuid || colIndex"
+            :key="compKey(sitem,colIndex)"
             :colspan="sitem.preps?.colspan || 1"
             :rowspan="sitem.preps?.rowspan || 1"
             :style="{

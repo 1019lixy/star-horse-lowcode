@@ -2,6 +2,7 @@
 import {Config} from '@/api/settings';
 import {batchFieldDefaultValues} from '@/api/star_horse_utils';
 import {PropType} from 'vue';
+import {compKey} from "@/api/system";
 
 defineProps({
   item: {type: Object as PropType<any>, required: true},
@@ -24,7 +25,7 @@ const exclusionFields: string[] = ['divider', 'button', 'usercomp'];
   >
     <template #default="scope">
       <template v-if="item.batchFieldList?.length > 0">
-        <template v-for="(sitem,skey) in item.batchFieldList" :key="sitem.batchName||sitem.fieldName||skey">
+        <template v-for="(sitem,skey) in item.batchFieldList" :key="compKey(sitem,skey)">
           <star-horse-form-list
               style="min-height: 100px; width: 100% !important"
               v-model:dataForm="scope.row"

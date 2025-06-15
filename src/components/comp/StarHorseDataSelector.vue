@@ -6,6 +6,7 @@ import {useFormDisabled} from 'element-plus';
 import type {CSSProperties} from 'vue';
 import {computed, ref} from 'vue';
 import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
+import {compKey} from "@/api/system";
 
 export interface DataSelectorProps {
   modelValue: ModelValueType;
@@ -90,7 +91,8 @@ const onClose = (data: any) => {
   <div class="data-wrapper">
     <star-horse-icon @click="openDataPicker" cursor="pointer" icon-class="select-data" :border="true"/>
     <DataTag
-        v-for="item in valueArr"
+        v-for="(item,key) in valueArr"
+        :key="compKey(item,key)"
         :closable="!disabled"
         :data="item"
         :display-name="displayName"

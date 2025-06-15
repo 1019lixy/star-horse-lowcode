@@ -11,10 +11,6 @@
         :isDesign="isDesign"
         :disabled="disabled"
         :bareFlag="bareFlag"
-        :nodeFieldList="field['preps'].params?.nodeFieldList"
-        :lineFieldList="field['preps'].params?.lineFieldList"
-        :customerItems="field['preps'].params?.nodeList"
-        :readonly="field['preps']['readonly'] == 'Y'"
         v-bind="field['preps']"
         v-model:dataForm="formData"
     />

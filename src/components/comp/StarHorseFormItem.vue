@@ -4,6 +4,7 @@ import {ApiUrls} from '@/components/types/ApiUrls';
 import {DialogProps} from '@/components/types/DialogProps';
 import {PageFieldInfo} from '@/components/types/PageFieldInfo';
 import {Config} from '@/api/settings';
+import {compKey} from "@/api/system";
 
 defineProps({
   compUrl: {type: Object as PropType<ApiUrls>},
@@ -41,9 +42,9 @@ const checkItemType = (item: any) => {
 }
 </script>
 <template>
-  <template v-for="(item,index) in fieldList.fieldList" :key="item.fieldName||'st_h'+index">
+  <template v-for="(item,index) in fieldList.fieldList" :key="compKey(item,index,false,'form')">
     <component
-        :Key="item.fieldName||'st_h_comp'+index"
+        :Key="compKey(item,index,true)"
         :is="checkItemType(item)"
         :primary-key="primaryKey"
         :item="item"

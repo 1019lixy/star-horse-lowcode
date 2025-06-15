@@ -18,7 +18,7 @@ const isDesign = computed(() => designForm.isEdit);
 const change = (context: any, formData: any) => {
     const field = context.field as any;
     const relation = field.preps?.dataRelation;
-    operationRelation(relation, 'change', formData, field.preps['name']);
+    operationRelation(relation, 'change', formData, field.fieldName);
 };
 /**
  * Input 事件
@@ -28,7 +28,7 @@ const change = (context: any, formData: any) => {
 const input = (context: any, formData: any) => {
     const field = context.field as any;
     const relation = field.preps?.dataRelation;
-    operationRelation(relation, 'input', formData, field.preps['name']);
+    operationRelation(relation, 'input', formData, field.fieldName);
 };
 /**
  * Focus 事件
@@ -38,7 +38,7 @@ const input = (context: any, formData: any) => {
 const focus = (context: any, formData: any) => {
     const field = context.field as any;
     const relation = field.preps?.dataRelation;
-    operationRelation(relation, 'focus', formData, field.preps['name']);
+    operationRelation(relation, 'focus', formData, field.fieldName);
 };
 /**
  * Blur 事件
@@ -48,7 +48,7 @@ const focus = (context: any, formData: any) => {
 const blur = (context: any, formData: any) => {
     const field = context.field as any;
     const relation = field.preps?.dataRelation;
-    operationRelation(relation, 'blur', formData, field.preps['name']);
+    operationRelation(relation, 'blur', formData, field.fieldName);
 };
 /**
  * Enter 事件
@@ -58,7 +58,7 @@ const blur = (context: any, formData: any) => {
 const mouseEnter = (context: any, formData: any) => {
     const field = context.field as any;
     const relation = field.preps?.dataRelation;
-    operationRelation(relation, 'enter', formData, field.preps['name']);
+    operationRelation(relation, 'enter', formData, field.fieldName);
 };
 
 /**
@@ -122,7 +122,7 @@ const operationRelation = async (relation: any, actionName: string, formData: an
  * @param isInit
  */
 const allAction = (context: any, emits: any, formData: any, actionName: string, isInit: boolean = false) => {
-    const currentData=isRef(formData) ? formData.value : formData;
+    const currentData = isRef(formData) ? formData.value : formData;
     //设计时的初始化不作处理
     const field = context.field as any;
     if (!isInit && actionName != 'normal') {
@@ -167,8 +167,8 @@ const allAction = (context: any, emits: any, formData: any, actionName: string, 
         return;
     }
     //处理自定义响应事件
-    if (actionName == field.preps['actionName'] && field.preps['actionRelation']) {
-        field.preps['actionRelation'](currentData[field.preps['name']], currentData['xh']);
+    if (actionName == field.actionName && field.actionRelation) {
+        field.actionRelation(currentData[field.fieldName], currentData['xh']);
     }
 };
 /**
@@ -184,7 +184,7 @@ const buttonAction = (context: any, emits: any, formData: any, code: string) => 
         userFunction(code, context, currentData);
     } else {
         const field = context.field as any;
-        currentData['starHorseBtnName'] = field.preps['name'];
+        currentData['starHorseBtnName'] = field.fieldName;
         if (field.preps['actions']) {
             field.preps['actions'](currentData);
         }
@@ -198,16 +198,17 @@ const buttonAction = (context: any, emits: any, formData: any, code: string) => 
 const checkIsDisabled = (attrs: any) => {
     // const {attrs} = context;
     const {field} = attrs;
-    const fieldName = field.preps?.name;
-    const isExplicitlyDisabled = attrs.disabled === true || attrs.disabled === 'Y';
+    const fieldName = field.fieldName;
+    const isExplicitlyDisabled = attrs?.disabled || attrs.editDisabled || field.disabled
+        || field.preps?.disabled || field.editDisabled || field.preps?.editDisabled;
     const isImplicitlyDisabled = !attrs.formData[`_${fieldName}Editable`] && field.preps?.disabled === 'Y';
 
-    return isExplicitlyDisabled || isImplicitlyDisabled;
+    return isExplicitlyDisabled===true || isImplicitlyDisabled===true;
 };
 const useFormField = (context: any, field: any) => {
     const fieldName = computed(() => field.preps.name);
     const updateFormData = (value: any) => {
-        const newData =context.attrs.formData;
+        const newData = context.attrs.formData;
         newData[fieldName.value] = value;
         // context.emit('form-data-update', newData);
     };

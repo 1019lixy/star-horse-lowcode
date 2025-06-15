@@ -23,20 +23,9 @@
       :parentField="parentField"
   >
     <el-button
-        :autofocus="field?.preps['autofocus'] == 'Y'"
-        :bg="field?.preps['bg'] == 'Y'"
-        :circle="field?.preps['circle'] == 'Y'"
         :disabled="checkIsDisabled(props)"
-        :link="field?.preps['link'] == 'Y'"
-        :loading="field?.preps['loading'] == 'Y'"
-        :loading-icon="field?.preps['loadingIcon']"
-        :native-type="field?.preps['nativeType']"
-        :plain="field?.preps['plain'] == 'Y'"
-        :round="field?.preps['round'] == 'Y'"
-        :size="formInfo?.size || field?.preps['size'] || 'default'"
-        :text="field?.preps['text'] == 'Y'"
+        v-bind="field.preps"
         @click="dynamicFunc(field?.preps['code'] )"
-        :type="field?.preps['type']"
     >
       <star-horse-icon
           v-if="field?.preps['icon']"
@@ -92,7 +81,7 @@ let actionName = shallowRef('click');
 let btnDialogVisible = shallowRef<boolean>(false);
 const btnCompRef = shallowRef();
 onMounted(() => {
-  actionName.value = props.field.preps?.actionName || 'normal';
+  actionName.value = props.field.actionName || 'normal';
 });
 const operResultAction = async () => {
   let action: BtnAction = props.field.preps;
@@ -105,7 +94,7 @@ const operResultAction = async () => {
   } else {
     formData = await btnCompRef.value?.getFormData().value;
   }
-  formData.value[props.field.preps['name']] = JSON.stringify(unref(formData));
+  formData.value[props.field.fieldName] = JSON.stringify(unref(formData));
   close();
 };
 //打开对话框
@@ -165,7 +154,7 @@ const openDialog = async () => {
         }
         //执行后搜集返回结果
         if (action?.afterAction == 'assignCurrentName') {
-          formData.value[props.field.preps['name']] = datas;
+          formData.value[props.field.fieldName] = datas;
         } else if (action?.afterAction == 'assignForm') {
           let entries = Object.entries(datas);
           entries.forEach(([key, value]) => {

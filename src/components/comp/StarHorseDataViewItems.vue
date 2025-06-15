@@ -2,6 +2,7 @@
 import {ModelRef, PropType} from 'vue';
 import {PageFieldInfo} from '@/components/types/PageFieldInfo';
 import {commonParseCodeToName} from '@/api/star_horse_utils';
+import {compKey} from "@/api/system";
 
 const props = defineProps({
   // compUrl: {type: Object as PropType<ApiUrls>},
@@ -39,8 +40,8 @@ const checkItemType = (item: any) => {
 }
 </script>
 <template>
-  <template v-for="item in fieldList.fieldList" :key="item.fieldName">
-    <component :is="checkItemType(item)" :item="item" v-model:dataForm="dataForm" :commonFormat="itemCommonFormat"/>
+  <template v-for="(item,key) in fieldList.fieldList" :key="compKey(item,key)">
+    <component :is="checkItemType(item)"  :item="item" v-model:dataForm="dataForm" :commonFormat="itemCommonFormat"/>
   </template>
   <view-table-item
       :item="fieldList"

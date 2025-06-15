@@ -5,6 +5,7 @@ import {error, success, warning} from '@/utils/message';
 import {postRequest} from '@/api/star_horse_apis';
 import {closeLoad, load, loadById} from '@/api/star_horse_utils';
 import {DialogProps} from '@/components/types/DialogProps';
+import {compKey} from "@/api/system";
 
 const props = defineProps({
     compUrl: { type: Object as PropType<ApiUrls>, required: true },
@@ -96,8 +97,7 @@ const props = defineProps({
       }
     },
     {
-      immediate: true,
-      deep: true
+      immediate: true
     }
   );
 
@@ -115,23 +115,23 @@ const props = defineProps({
     :rules="rules"
     class="data-form"
     ref="starHorseFormRef"
-    :disabled="formInfo['disabled'] == 'Y'"
-    :hide-required-asterisk="formInfo['hideRequiredAsterisk'] == 'Y'"
-    :inline="formInfo.inline == 'Y'"
-    :inline-message="formInfo['inlineMessage'] == 'Y'"
+    :disabled="formInfo['disabled']??false"
+    :hide-required-asterisk="formInfo['hideRequiredAsterisk']??false"
+    :inline="formInfo.inline ??false"
+    :inline-message="formInfo['inlineMessage'] ??false"
     :label-position="formInfo['labelPosition']"
     :label-suffix="formInfo['labelSuffix']"
     :label-width="formInfo['labelWidth']"
     :require-asterisk-position="formInfo['requireAsteriskPosition']"
-    :scroll-to-error="formInfo['scrollToError'] == 'Y'"
-    :show-message="formInfo['showMessage'] == 'Y'"
+    :scroll-to-error="formInfo['scrollToError']??true"
+    :show-message="formInfo['showMessage']??true"
     :size="formInfo['size']"
-    :status-icon="formInfo['statusIcon'] == 'Y'"
-    :validate-on-rule-change="formInfo['validateOnRuleChange'] == 'Y'"
+    :status-icon="formInfo['statusIcon']??true"
+    :validate-on-rule-change="formInfo['validateOnRuleChange']??true"
   >
-    <template v-for="data in fieldList">
+    <template v-for="(data,key) in fieldList" :key="compKey(data,key,false,'dyform')">
       <component
-        :id="data.id"
+        :key="compKey(data,key,true)"
         :field="data"
         :formData="dataForm"
         :is="data.itemType + '-container'"

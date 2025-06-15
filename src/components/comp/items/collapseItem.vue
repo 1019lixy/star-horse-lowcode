@@ -5,6 +5,7 @@ import {ApiUrls} from '@/components/types/ApiUrls';
 import {FieldInfo} from '@/components/types/PageFieldInfo';
 import {Config} from '@/api/settings';
 import {checkObject, getDataIndex, getFormData, getPrefix} from '@/api/form_utils';
+import {compKey} from "@/api/system";
 
 const props=defineProps({
   compUrl: {type: Object as PropType<ApiUrls>},
@@ -51,7 +52,7 @@ onMounted(() => {
   <template v-if="item.collapseList?.length > 0">
     <el-scrollbar style="margin-top: 10px">
       <el-collapse v-model="item.fieldName" :accordion="item.preps?.accordion" v-on:change="item.actions">
-        <template v-for="(collapseItem, key) in item.collapseList" :key="collapseItem.fieldName||collapseItem.tabName||key">
+        <template v-for="(collapseItem, key) in item.collapseList" :key="compKey(collapseItem,key)">
           <el-collapse-item
               v-if="collapseItem['disVisible']??Object.keys(collapseItem).length > 0"
               :name="collapseItem.tabName || key"

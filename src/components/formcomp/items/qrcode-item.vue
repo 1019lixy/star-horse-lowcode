@@ -36,13 +36,13 @@ const props = defineProps({
 const imageSettings = ref<ImageSettings>({height: 0, src: "", width: 0});
 const emits = defineEmits(['selfFunc', 'selectItem']);
 const formData = defineModel("formData");
-const dataValue = computed(() => formData.value[props.field.preps.name]);
+const dataValue = computed(() => formData.value[props.field.fieldName]);
 const createCode = () => {
   if (props.field.preps.src) {
     imageSettings.value = {
-      src: props.field.preps.src,
-      width: props.field.preps.width ?? 30,
-      height: props.field.preps.height ?? 30,
+      src: props.field.preps?.src,
+      width: props.field.preps?.width ?? 30,
+      height: props.field.preps?.height ?? 30,
       excavate: true,
     };
   }
@@ -64,14 +64,7 @@ watch(() => [dataValue.value, props.field.preps],
                        :parentField="parentField">
     <qrcode-vue
         :value="dataValue"
-        :level="field.preps.level??'M'"
-        :render-as="field.preps.renderAs??'svg'"
-        :background="field.preps.background??'#ffffff'"
-        :foreground="field.preps.foreground??'#000000'"
-        :gradient="field.preps.gradient??false"
-        :gradient-type="field.preps.gradientType??'linear'"
-        :gradient-start-color="field.preps.gradientStartColor??'#000000'"
-        :gradient-end-color="field.preps.gradientEndColor??'#ffffff'"
+        v-bind="field.preps"
         :image-settings='imageSettings'
     />
   </starhorse-form-item>

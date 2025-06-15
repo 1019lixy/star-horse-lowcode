@@ -2,6 +2,7 @@
 import {PropType} from 'vue';
 import {ApiUrls} from '@/components/types/ApiUrls';
 import {Config} from '@/api/settings';
+import {compKey} from "@/api/system";
 
 defineProps({
   //url地址
@@ -22,7 +23,7 @@ defineProps({
 });
 </script>
 <template>
-  <template v-for="(item,index) in fieldList?.fieldList" :key="'box'+index">
+  <template v-for="(item,index) in fieldList?.fieldList" :key="compKey(item,index)">
     <template v-if="Array.isArray(item)">
       <star-horse-table-column
           :data-format="dataFormat"
@@ -33,12 +34,12 @@ defineProps({
           :sortable="sortable"
           :compSize="compSize"
           :compUrl="compUrl"
-          :key="sitem.fieldName||key"
+          :key="compKey(sitem,key)"
           v-for="(sitem,key) in item"
       />
     </template>
     <template v-else-if="item.tabList?.length > 0">
-      <template v-for="(tabItems,key) in item.tabList" :key="'tab'+key">
+      <template v-for="(tabItems,key) in item.tabList" :key="compKey(tabItems,key)">
         <star-horse-table-column
             :data-format="dataFormat"
             :cellEditable="fieldList['cellEditable']"
@@ -48,12 +49,13 @@ defineProps({
             :sortable="sortable"
             :compSize="compSize"
             :compUrl="compUrl"
-            v-for="sitem in tabItems.fieldList"
+            :key="compKey(sitem,skey)"
+            v-for="(sitem,skey) in tabItems.fieldList"
         />
       </template>
     </template>
     <template v-else-if="item.dytableList?.length > 0">
-      <template v-for="(tabItems,key) in item.dytableList" :key="'dytable'+key">
+      <template v-for="(tabItems,key) in item.dytableList" :key="compKey(tabItems,key)">
         <star-horse-table-column
             :data-format="dataFormat"
             :cellEditable="fieldList['cellEditable']"
@@ -63,12 +65,13 @@ defineProps({
             :sortable="sortable"
             :compSize="compSize"
             :compUrl="compUrl"
-            v-for="sitem in tabItems"
+            :key="compKey(sitem,skey)"
+            v-for="(sitem,skey) in tabItems"
         />
       </template>
     </template>
     <template v-else-if="item.batchFieldList?.length > 0">
-      <template v-for="(batchItems,key) in item.batchFieldList" :key="'batch'+key">
+      <template v-for="(batchItems,key) in item.batchFieldList" :key="compKey(batchItems,key)">
         <star-horse-table-column
             :data-format="dataFormat"
             :cellEditable="fieldList['cellEditable']"
@@ -78,7 +81,8 @@ defineProps({
             :sortable="sortable"
             :compSize="compSize"
             :compUrl="compUrl"
-            v-for="sitem in batchItems.fieldList"
+            :key="compKey(sitem,skey)"
+            v-for="(sitem,skey) in batchItems.fieldList"
         />
       </template>
     </template>
@@ -94,7 +98,7 @@ defineProps({
         :item="item"
     />
   </template>
-  <template v-if="showBatchField" v-for="(item,skey) in fieldList['batchFieldList']" :key="'bfd'+skey">
+  <template v-if="showBatchField" v-for="(item,skey) in fieldList['batchFieldList']" :key="compKey(item,skey)">
     <star-horse-table-column
         :data-format="dataFormat"
         :compSize="compSize"

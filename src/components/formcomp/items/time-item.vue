@@ -7,29 +7,19 @@
       :parentField="parentField"
   >
     <el-time-select
-        :fid="field.preps['name']"
-        :arrow-control="field.preps['arrowControl'] == 'Y'"
-        :clearable="field.preps['clearable'] == 'Y'"
+        :fid="field.fieldName"
+
         :disabled="checkIsDisabled(props)"
-        :start="field.preps['start'] || '00:00'"
-        :end="field.preps['end'] || '24:00'"
-        :step="field.preps['end'] || '00:05'"
-        :editable="field.preps['editable'] == 'Y'"
-        :end-placeholder="field.preps['endPlaceholder'] || '请选择结束' + field.preps['label']"
-        :format="field.preps['format'] || 'HH:mm'"
-        :value-format="field.preps['valueFormat'] || 'HH:mm'"
-        :is-range="field.preps['isRange'] == 'Y'"
-        :placeholder="field.preps['placeholder'] || '请选择' + field.preps['label']"
-        :range-separator="field.preps['rangeSeparator']"
-        :readonly="field.preps['readonly'] == 'Y'"
-        :size="formInfo?.size || field?.preps['size'] || 'small'"
-        :start-placeholder="field.preps['startPlaceholder'] || '请选择开始' + field.preps['label']"
+        :start="field.preps?.start || '00:00'"
+        :end="field.preps?.end|| '24:00'"
+        :step="field.preps?.step || '00:05'"
+        v-bind="field.preps"
         @change="itemAction('change')"
         @input="itemAction('input')"
         @keydown.enter="itemAction('enter')"
         @focus="itemAction('focus')"
         @blur="itemAction('blur')"
-        v-model="formData[field.preps['name']]"
+        v-model="formData[field.fieldName]"
     />
   </starhorse-form-item>
 </template>
@@ -74,7 +64,7 @@ const itemAction = (prep: string) => {
   allAction(props, emits, formData, prep);
 };
 onMounted(() => {
-  actionName.value = props.field.preps?.actionName || 'normal';
+  actionName.value = props.field.actionName || 'normal';
   if (!props.isSearch) {
     allAction(props, emits, formData, actionName.value, true);
   }

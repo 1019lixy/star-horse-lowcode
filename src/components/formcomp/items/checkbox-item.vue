@@ -7,22 +7,20 @@
       :parentField="parentField"
   >
     <el-checkbox-group
-        :fid="field.preps['name']"
+        :fid="field.fieldName"
         :disabled="checkIsDisabled(props)"
-        :readonly="field.preps['readonly'] == 'Y'"
-        :size="formInfo?.size || field?.preps['size'] || 'small'"
+        :readonly="field.preps?.readonly??false"
         @change="itemAction"
-        v-model="formData[field.preps['name']]"
+        v-model="formData[field.fieldName]"
     >
       <el-checkbox
-          :border="item['border'] == 'Y'"
-          :checked="item['checked'] == 'Y'"
-          :disabled="item['disabled'] == 'Y'"
-          :label="item[field.preps['props']?.label || 'name']"
-          :value="item[field.preps['props']?.value || 'value']"
-          v-for="item in field.preps['values']"
-      >
-      </el-checkbox>
+          :border="item['border'] ??true"
+          :checked="item['checked']"
+          :disabled="item['disabled']??false"
+          :label="item[field.preps?.props?.label || 'name']"
+          :value="item[field.preps?.props?.value || 'value']"
+          v-for="item in field.preps?.values"
+      />
     </el-checkbox-group>
   </starhorse-form-item>
 </template>

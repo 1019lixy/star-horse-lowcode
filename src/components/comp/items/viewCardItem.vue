@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {ModelRef, onMounted, PropType} from 'vue';
 import {FieldInfo} from '@/components/types/PageFieldInfo';
+import {compKey} from "@/api/system";
 
 const props = defineProps({
   item: {type: Array as PropType<Array<FieldInfo> | any>, required: true},
@@ -16,7 +17,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <template v-for="(cardItem,key) in item.cardList" :key="cardItem.tabName||key">
+  <template v-for="(cardItem,key) in item.cardList" :key="compKey(cardItem,key)">
     <el-card shadow="hover" v-if="Object.keys(cardItem).length > 0">
       <template #header>
         <div class="card-header">

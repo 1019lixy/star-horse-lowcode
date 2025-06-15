@@ -4,6 +4,7 @@ import {DialogProps} from '@/components/types/DialogProps';
 import {i18n} from '@/lang';
 import {UserFuncInfo} from '@/components/types/PageFieldInfo';
 import {Config} from '@/api/settings';
+import {compKey} from "@/api/system";
 
 const emits = defineEmits(['merge', 'mergeDraft', 'resetForm', 'open', 'closeAction']);
 const props = defineProps({
@@ -191,12 +192,12 @@ provide('dialogOperation', clickFunction);
             >
               <star-horse-icon icon-class="save" cursor="pointer"/>{{ i18n("dialog.saveContinue") }}</el-button
             >
-            <template v-for="item in userBtn">
+            <template v-for="(item,key) in userBtn" :key="compKey(item,key)">
               <el-button
                   @click="item?.funcName?.()"
-                  :disabled="item.disabled == 'Y'"
+                  :disabled="item.disabled??false"
                   :style="{
-                  background: item.disabled == 'Y' ? 'var(--star-horse-disable)' : 'var(--star-horse-style)',
+                  background: item.disabled  ? 'var(--star-horse-disable)' : 'var(--star-horse-style)',
                   color: 'var(--star-horse-white)'
                 }"
                   :size="compSize"

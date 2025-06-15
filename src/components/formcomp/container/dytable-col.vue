@@ -6,6 +6,7 @@ import piniaInstance from '@/store/index';
 import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
 import {tableAction, tableCellOperation} from '@/components/formcomp/container/dytableUtils';
 import {Config} from '@/api/settings';
+import {uuid} from "@/api/system";
 
 const props = defineProps({
   parentField: {type: Object as PropType<any>},
@@ -166,13 +167,14 @@ watch(
         @add="(evt: Event) => onDragAdd(evt, field.items)"
         class="smain-design"
         tag="div"
+        :item-key="uuid()"
         group="starHorseGroup"
         ghostClass="ghost"
         animation="200"
         :list="field.items"
     >
       <template #item="{ element: data }">
-        <div :class="{ 'comp-item': data?.preps['headerFlag'] != 'Y', 'bare-item': data?.preps['headerFlag'] == 'Y' }">
+        <div :class="{ 'comp-item': data?.preps['headerFlag'] != 'Y', 'bare-item': data?.preps['headerFlag'] }">
           <component
               :key="data?.id"
               :field="data"

@@ -18,15 +18,15 @@
       :parentField="parentField"
   >
     <el-input
-        :fid="field.preps['name']"
-        :size="formInfo?.size || field?.preps['size'] || 'default'"
+        :fid="field.fieldName"
+
         readonly
         @change="itemAction('change')"
         @input="itemAction('input')"
         @keydown.enter="itemAction('enter')"
         @focus="itemAction('focus')"
         @blur="itemAction('blur')"
-        v-model="formData[field.preps['name']]"
+        v-model="formData[field.fieldName]"
     >
       <template #append>
         <el-button
@@ -86,7 +86,7 @@ const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
 const resetForm = () => {
-  // formData[field.preps['name']] = defaultExpress;
+  // formData[field.fieldName] = defaultExpress;
   if (cronTabRef.value) {
     cronTabRef.value.clearCron();
   }
@@ -95,16 +95,16 @@ const close = () => {
   cronVisible.value = false;
 };
 const open = () => {
-  cronDataValue.value = formData.value[props.field.preps['name']];
+  cronDataValue.value = formData.value[props.field.fieldName];
   cronVisible.value = true;
 };
 const submit = () => {
-  formData.value[props.field.preps['name']] = cronDataValue.value;
+  formData.value[props.field.fieldName] = cronDataValue.value;
   close();
 };
 resetForm();
 onMounted(() => {
-  actionName.value = props.field.preps?.actionName || 'normal';
+  actionName.value = props.field.actionName || 'normal';
   if (!props.isSearch) {
     allAction(props, emits, formData, actionName.value, true);
   }

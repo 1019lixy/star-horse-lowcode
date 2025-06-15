@@ -4,6 +4,7 @@ import {ApiUrls} from '@/components/types/ApiUrls';
 import {PageFieldInfo} from '@/components/types/PageFieldInfo';
 import {loadProp, validMsg} from '@/api/form_utils';
 import {Config} from '@/api/settings';
+import {compKey} from "@/api/system";
 
 defineProps({
   compUrl: {type: Object as PropType<ApiUrls>},
@@ -35,10 +36,10 @@ onMounted(() => {
   <template v-if="item.dytableList?.length > 0">
     <table ref="containerTableRef" :class="{ 'dynamic-table': true, 'instance-table': true }">
       <tbody>
-      <tr v-for="(row, rowIndex) in item.dytableList" :key="row.id||row._uuid||rowIndex" class="dy-tr">
+      <tr v-for="(row, rowIndex) in item.dytableList" :key="compKey(row,rowIndex)" class="dy-tr">
         <td
             v-for="(sitem, colIndex) in row"
-            :key="sitem.id||sitem._uuid||colIndex"
+            :key="(sitem,colIndex)"
             :colspan="sitem.preps?.colspan || 1"
             :rowspan="sitem.preps?.rowspan || 1"
             :class="{'title-style':sitem.preps?.labelFlag=='Y'}"

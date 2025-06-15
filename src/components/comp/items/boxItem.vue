@@ -4,6 +4,7 @@ import {ApiUrls} from '@/components/types/ApiUrls';
 import {FieldInfo} from '@/components/types/PageFieldInfo';
 import {checkVisible, loadProp, validMsg} from '@/api/form_utils';
 import {Config} from '@/api/settings';
+import {compKey} from "@/api/system";
 
 const props = defineProps({
   compUrl: {type: Object as PropType<ApiUrls>},
@@ -34,14 +35,14 @@ onMounted(() => {
 
 <template>
   <el-row v-if="Array.isArray(item)" :gutter="10">
-    <template v-for="(sitem,index) in item" :key="sitem.fieldName||index">
+    <template v-for="(sitem,index) in item" :key="compKey(sitem,index)">
       <el-col
           :span="sitem.colspan || sitem.preps?.colspan || 24 / item.length"
           v-if="sitem.type != 'button' && sitem.type != 'usercomp'"
       >
         <el-form-item
             :size="compSize"
-            :label="sitem.preps?.hideLabel == 'Y' ? '' : sitem.label"
+            :label="sitem.preps?.hideLabel ? '' : sitem.label"
             :required="sitem.required"
             :prop="loadProp(propPrefix,sitem.fieldName,-1,-1)"
             :labelPosition="parentPreps?.labelPosition"

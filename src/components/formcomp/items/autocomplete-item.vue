@@ -7,26 +7,16 @@
       :parentField="parentField"
   >
     <el-autocomplete
-        :fid="field.preps['name']"
-        :clearable="field.preps['clearable'] == 'Y'"
+        :fid="field.fieldName"
         :disabled="checkIsDisabled(props)"
-        :readonly="field.preps['readonly'] == 'Y'"
         :fetch-suggestions="querySearch"
-        :fit-input-width="field.preps['fitInputWidth'] == 'Y'"
-        :aria-label="field.preps['label']"
-        :hide-loading="false"
-        :size="formInfo?.size || field?.preps['size'] || 'default'"
-        :placeholder="field.preps['placeholder'] || '请输入' + field.preps['label']"
-        :placement="field.preps['placement'] || 'bottom-start'"
-        :teleported="field.preps['teleported'] == 'Y'"
-        :trigger-on-focus="field.preps['triggerOnFocus'] == 'Y'"
-        :value-key="field.preps['valueKey'] || 'value'"
+        v-bind="field.preps"
         @change="itemAction('change')"
         @input="itemAction('input')"
         @keydown.enter="itemAction('enter')"
         @focus="itemAction('focus')"
         @blur="itemAction('blur')"
-        v-model="formData[field.preps['name']]"
+        v-model="formData[field.fieldName]"
     />
   </starhorse-form-item>
 </template>
@@ -80,7 +70,7 @@ const initData = async () => {
 };
 onMounted(() => {
   initData();
-  actionName.value = props.field.preps?.actionName || 'normal';
+  actionName.value = props.field.actionName || 'normal';
   if (!props.isSearch) {
     allAction(props, emits, formData, actionName.value, true);
   }

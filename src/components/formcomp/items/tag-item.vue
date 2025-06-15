@@ -55,20 +55,14 @@ const tagType = (val: any) => {
       :parentField="parentField"
   >
     <el-tag
-        :type="tagType(formData[field.preps['name']])"
-        :disable-transitions="field?.preps?.disableTransitions == 'Y'"
-        :hit="field?.preps?.hit == 'Y'"
-        :color="field?.preps?.color"
-        :effect="field?.preps?.effect || 'light'"
-        :round="field?.preps?.round == 'Y'"
-        :size="formInfo?.size || field?.preps?.size || 'default'"
+        v-bind="field.preps"
         @click="itemAction('click')"
     >
       {{
         (callBack && callBack()) ||
-        formData[field.preps["name"]] ||
-        field.preps["placeholder"] ||
-        "请赋值" + field.preps["label"]
+        formData[field.fieldName] ||
+        field.preps?.placeholder ||
+        "请赋值" + field.label
       }}
     </el-tag>
   </starhorse-form-item>

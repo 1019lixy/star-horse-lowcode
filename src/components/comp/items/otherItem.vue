@@ -46,7 +46,7 @@ onMounted(() => {
   </template>
   <el-form-item
       :size="compSize"
-      :label="item.preps?.hideLabel == 'Y' ? '' : item.label"
+      :label="item.preps?.hideLabel  ? '' : item.label"
       :required="item.required"
       :rules="validMsg(item, dataForm)"
       :prop="loadProp(propPrefix,item.fieldName,-1,-1)"

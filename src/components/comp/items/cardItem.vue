@@ -5,6 +5,7 @@ import {ApiUrls} from '@/components/types/ApiUrls';
 import {FieldInfo} from '@/components/types/PageFieldInfo';
 import {Config} from '@/api/settings';
 import {checkObject, checkVisible, getDataIndex, getFormData, getPrefix, loadProp, validMsg} from '@/api/form_utils';
+import {compKey} from "@/api/system";
 
 const props = defineProps({
   compUrl: {type: Object as PropType<ApiUrls>},
@@ -50,7 +51,7 @@ onMounted(() => {
 
 <template>
   <template v-if="item.cardList?.length > 0">
-    <template v-for="(cardItem,key) in item.cardList" :key="cardItem.fieldName||cardItem.tabName||key">
+    <template v-for="(cardItem,key) in item.cardList" :key="compKey(cardItem,key)">
       <el-card
           shadow="hover"
           style="margin-bottom: 10px"
@@ -62,10 +63,10 @@ onMounted(() => {
             <div class="w-[60%]">
               {{ cardItem.title || cardItem.tabName }} <help v-if="cardItem.helpMsg" :message="cardItem.helpMsg"/>
             </div>
-            <div class="flex-1" v-for="headerItem in cardItem.headerFieldList">
+            <div class="flex-1" v-for="(headerItem,key) in cardItem.headerFieldList" :key="compKey(headerItem,key)">
               <el-form-item
                   :size="compSize"
-                  :label="headerItem.preps?.hideLabel == 'Y' ? '' : headerItem.label"
+                  :label="headerItem.preps?.hideLabel  ? '' : headerItem.label"
                   :required="headerItem.required"
                   :prop="loadProp(getPrefix(cardItem,propPrefix,dataIndex,key),headerItem.fieldName,-1,-1)"
                   :labelPosition="parentPreps?.labelPosition"

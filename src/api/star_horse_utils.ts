@@ -543,10 +543,10 @@ export function batchFieldDefaultValues(datas: BatchFieldInfo, dataForm: any) {
 export async function compDynamicData(preps: any) {
     const temp = preps;
     let reDataList: SelectOption[] = [];
-    const dataSource = temp['dataSource'];
-    const urlOrDictName = temp['urlOrDictName'];
+    const dataSource = temp?.dataSource;
+    const urlOrDictName = temp?.urlOrDictName;
     //如果已经有数据了，就不再请求
-    if (preps['values'] && preps['values'].length > 0) {
+    if (preps['values']?.length > 0) {
         return preps['values'];
     }
     if (dataSource == 'url') {
@@ -574,7 +574,7 @@ export async function dynamicUrlOperation(preps: any, queryInfo?: SearchParams[]
     const temp = preps;
     const reDataList: SelectOption[] = [];
     const requestParams: any = [];
-    const queryParams = temp['queryParams'];
+    const queryParams = temp?.queryParams;
     queryParams?.forEach((item: any) => {
         if (!item.name) {
             return;

@@ -7,24 +7,11 @@
       :parentField="parentField"
   >
     <el-rate
-        :fid="field.preps['name']"
-        :allow-half="field.preps['allowHalf'] == 'Y'"
-        :clearable="field.preps['clearable'] == 'Y'"
-        :colors="field.preps['colors']"
+        :fid="field.fieldName"
+        v-bind="field.preps"
         :disabled="checkIsDisabled(props)"
-        :disabled-void-color="field.preps['disabledVoidColor']"
-        :high-threshold="field.preps['highThreshold']"
-        :low-threshold="field.preps['lowThreshold']"
-        :max="isNaN(field.preps['max']) ? 5 : field.preps['max']"
-        :score-template="field.preps['scoreTemplate']"
-        :show-score="field.preps['showScore'] == 'Y'"
         @change="itemAction"
-        :show-text="field.preps['showText'] == 'Y'"
-        :size="formInfo?.size || field?.preps['size'] || 'default'"
-        :text-color="field.preps['textColor']"
-        :texts="field.preps['texts']"
-        :void-color="field.preps['voidColor']"
-        v-model="formData[field.preps['name']]"
+        v-model="formData[field.fieldName]"
     />
   </starhorse-form-item>
 </template>

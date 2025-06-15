@@ -7,31 +7,21 @@
       :parentField="parentField"
   >
     <el-input-number
-        :fid="field.preps['name']"
-        :controls-position="field.preps['controlsPosition'] || 'right'"
-        :controls="field.preps['controls'] == 'Y'"
+        :fid="field.fieldName"
         :disabled="checkIsDisabled(props)"
-        :max="field.preps['max'] || Infinity"
-        :min="field.preps['min'] || -Infinity"
-        :clearable="field.preps['clearable'] == 'Y'"
-        :placeholder="field.preps['placeholder'] || '请输入' + field.preps['label']"
-        :precision="field.preps['precision']"
-        :readonly="field.preps['readonly'] == 'Y'"
-        :size="formInfo?.size || field?.preps['size'] || 'default'"
-        :step="field.preps['step']"
-        :step-strictly="field.preps['stepStrictly'] == 'Y'"
+        v-bind="field.preps"
         @change="itemAction('change')"
         @input="itemAction('input')"
         @keydown.enter="itemAction('enter')"
         @focus="itemAction('focus')"
         @blur="itemAction('blur')"
-        v-model="formData[field.preps['name']]"
+        v-model="formData[field.fieldName]"
     >
       <template #prefix>
-        <span v-if="field.preps['prefix']">{{ field.preps["prefix"] }}</span>
+        <span v-if="field.preps?.prefix">{{ field.preps["prefix"] }}</span>
       </template>
       <template #suffix>
-        <span v-if="field.preps['suffix']">{{ field.preps["suffix"] }}</span>
+        <span v-if="field.preps?.suffix">{{ field.preps["suffix"] }}</span>
       </template>
     </el-input-number>
   </starhorse-form-item>
@@ -82,10 +72,17 @@ const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
 onMounted(() => {
-  actionName.value = props.field.preps?.actionName || 'normal';
+  if(!props.field.preps){
+    props.field.preps={}
+  }
+  props.field.preps['step']=props.field.preps['step']||1;
+  props.field.preps['min']=props.field.preps['min']||0;
+  props.field.preps['precision']=props.field.preps['precision']||0;
+  actionName.value = props.field.actionName || 'normal';
   if (!props.isSearch) {
     allAction(props, emits, formData, actionName.value, true);
   }
+
   initEvent();
 });
 

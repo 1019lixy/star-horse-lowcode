@@ -4,6 +4,7 @@ import {ApiUrls} from '@/components/types/ApiUrls';
 import {FieldInfo} from '@/components/types/PageFieldInfo';
 import StarHorseFormTable from '@/components/comp/StarHorseFormTable.vue';
 import {Config} from '@/api/settings';
+import {compKey} from "@/api/system";
 
 const props = defineProps({
   compUrl: {type: Object as PropType<ApiUrls>},
@@ -63,12 +64,12 @@ onMounted(() => {
         v-model="item.fieldName"
         :type="item.type || ''"
         @tabRemove="closeOperation"
-        :closable="item.closable == 'Y'"
-        :addable="item.addable == 'Y'"
+        :closable="item.closable"
+        :addable="item.addable"
         @tabChange="item.actions"
         @tabAdd="item.addActions"
     >
-      <template v-for="(tabItem, key) in item.tabList" :key="tabItem.fieldName||tabItem.tabName||key">
+      <template v-for="(tabItem, key) in item.tabList" :key="compKey(tabItem,key)">
         <tabPanelItem
             :item="tabItem"
             :dataIndex="dataIndex"
@@ -89,7 +90,7 @@ onMounted(() => {
   <template v-else-if="item.batchFieldList?.length > 0">
     <template v-if="item.batchFieldList.length > 1 && (!item.displayStyle || item.displayStyle == 'tab')">
       <el-tabs v-model="item.fieldName" :type="item.type || ''">
-        <template v-for="(sitem, key) in item.batchFieldList" :key="sitem.fieldName||sitem.tabName||key">
+        <template v-for="(sitem, key) in item.batchFieldList" :key="compKey(sitem,key)">
           <tabPanelItem
               :item="sitem"
               :dataIndex="dataIndex"
@@ -107,7 +108,7 @@ onMounted(() => {
         </template>
       </el-tabs>
     </template>
-    <template v-else v-for="(temp,key) in item.batchFieldList" :key="temp.fieldName||temp.tabName||key">
+    <template v-else v-for="(temp,key) in item.batchFieldList" :key="compKey(temp,key)">
       <star-horse-form-table
           :rules="rules"
           :size="compSize"

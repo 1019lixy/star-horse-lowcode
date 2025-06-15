@@ -17,7 +17,7 @@ import TableColumn from '@/components/comp/items/tableColumn.vue';
 import {useGlobalConfigStore} from '@/store/GlobalConfig';
 import {analysisFields} from '@/utils/preview';
 import {isSystemManage} from '@/utils/auth';
-import {removeEmptyCondition, uuid} from '@/api/system';
+import {compKey, removeEmptyCondition, uuid} from '@/api/system';
 import {Config} from '@/api/settings';
 import Tablebtn from '@/components/comp/items/tablebtn.vue';
 import Help from '@/components/help.vue';
@@ -877,7 +877,7 @@ defineExpose({
                         :cell-style="{ height: '30px', 'font-size': '12px' }" border>
                 <el-table-column fixed="left" label="操作" :width="160" v-if="expandTable.showButton">
                   <template #default="innerScope">
-                    <template v-for="epd in expandTable.extendFuncs">
+                    <template v-for="(epd,key) in expandTable.extendFuncs"  :key="compKey(epd,key)">
                       <el-tooltip :content="epd.btnName">
                         <star-horse-icon v-if="permissions[epd.authority!]"
                                          @click="expandCommonFun(epd.authority!, innerScope.row, scope.row)"
@@ -912,7 +912,7 @@ defineExpose({
     <div class="data-card-area" v-else>
       <el-scrollbar height="100%">
         <el-space wrap>
-          <el-card v-for="data in pageInfo.dataList" :key="data[primaryKey]" class="box-card"
+          <el-card v-for="(data,key) in pageInfo.dataList" :key="compKey(data,key)" class="box-card"
                    style="width: 250px !important; height: 180px !important" shadow="hover">
             <template #header>
               <div class="card-header" @click="selectRow(data)" @dblclick="editData(data)">
@@ -920,7 +920,7 @@ defineExpose({
               </div>
             </template>
 
-            <div class="card-item item" style="width: 99%; margin: 1px auto" v-for="item in cardFieldList?.slice(1, 3)">
+            <div class="card-item item" style="width: 99%; margin: 1px auto" :Key="compKey(item,key)" v-for="(item,key) in cardFieldList?.slice(1, 3)">
               <label>{{ item.label }} :</label>
               <div class="content" @click="selectRow(data)" @dblclick="editData(data)">
                 <el-tooltip :content="dataFormat(item.fieldName, data[item.fieldName], data)">

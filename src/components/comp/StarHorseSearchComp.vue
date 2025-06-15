@@ -8,6 +8,7 @@ import piniaInstance from '@/store';
 import {analysisSearchData} from '@/utils/preview';
 import {SearchParams} from '@/components/types/Params';
 import {Config} from '@/api/settings';
+import {compKey} from "@/api/system";
 
 let matchTypeList = ref<SelectOption[]>();
 let sarchIcon = ref<string>('search_down');
@@ -101,7 +102,7 @@ defineExpose({
 <template>
   <div class="search_content">
     <el-form class="search_area" :size="compSize" v-if="formData?.fieldList">
-      <template v-for="item in formData.fieldList" v-if="defaultSearch">
+      <template v-for="(item,index) in formData.fieldList" :key="compKey(item,index)" v-if="defaultSearch">
         <el-form-item :size="compSize" :label="item.label" v-if="item.defaultVisible" :prop="item.fieldName">
           <template v-if="(!item.type || item.type == 'input') && (!item.disabled || item.disabled == 'N')" :span="6">
             <el-select
@@ -130,8 +131,8 @@ defineExpose({
           />
         </el-form-item>
       </template>
-      <template v-for="item in formData?.fieldList" v-else>
-        <el-form-item :size="compSize" :label="item.label" :prop="item.fieldName">
+      <template v-for="(item,index) in formData?.fieldList"  v-else>
+        <el-form-item :size="compSize" :label="item.label" :prop="item.fieldName" >
           <template v-if="item.type == 'input' && (!item.disabled || item.disabled == 'N')" :span="6">
             <el-select
                 :size="compSize"

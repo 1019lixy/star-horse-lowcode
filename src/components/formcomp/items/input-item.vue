@@ -2,7 +2,7 @@
   <EditDataDialog
   v-model="dialogInputVisible"
   :disabled="checkIsDisabled(props)"
-  :initial-content="formData[field.preps['name']]"
+  :initial-content="formData[field.fieldName]"
   @confirm="handleContentConfirm"
 />
   <starhorse-form-item
@@ -13,19 +13,11 @@
       :parentField="parentField"
   >
     <el-input
-        :clearable="field.preps['clearable'] == 'Y'"
         :disabled="checkIsDisabled(props)"
-        :max="field.preps['max']"
-        :maxlength="field.preps['maxlength']"
-        :min="field.preps['min']"
-        :autofocus="field.preps['autofocus'] == 'Y'"
-        :minlength="field.preps['minlength']"
-        :placeholder="field.preps['placeholder'] || '请输入' + (field.preps['label'] || '')"
-        :readonly="field.preps['readonly'] == 'Y'"
-        :size="formInfo?.size || field?.preps['size'] || 'default'"
+        v-bind="field.preps"
         type="text"
         ref="inputItemRef"
-        :fid="field.preps['name']"
+        :fid="field.fieldName"
         class="input-with-select"
         @change="itemAction('change')"
         @input="itemAction('input')"
@@ -33,36 +25,36 @@
         @focus="itemAction('focus')"
         @blur="itemAction('blur')"
         @dblclick="editContent"
-        v-model="formData[field.preps['name']]"
+        v-model="formData[field.fieldName]"
     >
-      <template #prepend v-if="field.preps['prependText']">
-        {{ field.preps["prependText"] }}
+      <template #prepend v-if="field.preps?.prependText">
+        {{ field.preps?.prependText }}
       </template>
-      <template #prepend v-if="field.preps['prependList']">
-        <el-select v-model="formData['pre' + field.preps['name']]">
+      <template #prepend v-if="field.preps?.prependList">
+        <el-select v-model="formData['pre' + field.fieldName]">
           <el-option
-              v-for="item in field.preps['prependList']"
+              v-for="item in field.preps?.prependList"
               :key="item.value"
               :label="item.name"
               :value="item.value"
           />
         </el-select>
       </template>
-      <template #append v-if="field.preps['appendText']">
-        {{ field.preps["appendText"] }}
+      <template #append v-if="field.preps?.appendText">
+        {{ field.preps?.appendText }}
       </template>
-      <template #append v-if="field.preps['appendAction']">
+      <template #append v-if="field.preps?.appendAction">
         <star-horse-icon
-            :title="field.preps['appendAction'].actionTitle"
+            :title="field.preps?.appendAction?.actionTitle"
             style="cursor: pointer"
-            :icon-class="field.preps['appendAction'].icon || 'document'"
-            @click="field.preps['appendAction'].actions(formData)"
+            :icon-class="field.preps?.appendAction?.icon || 'document'"
+            @click="field.preps?.appendAction?.actions(formData)"
         />
       </template>
-      <template #append v-if="field.preps['appendList']">
-        <el-select v-model="formData['app' + field.preps['name']]">
+      <template #append v-if="field.preps?.appendList">
+        <el-select v-model="formData['app' + field.fieldName]">
           <el-option
-              v-for="item in field.preps['appendList']"
+              v-for="item in field.preps?.appendList"
               :key="item.value"
               :label="item.name"
               :value="item.value"
@@ -121,14 +113,14 @@ const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
 const handleContentConfirm=(newContent:string)=>{
-  formData.value[props.field.preps['name']]=newContent;
+  formData.value[props.field.fieldName]=newContent;
   dialogInputVisible.value=false;
 }
 const editContent=()=>{
   dialogInputVisible.value=true;
 }
 onMounted(() => {
-  actionName.value = props.field.preps?.actionName || 'normal';
+  actionName.value = props.field.actionName || 'normal';
   if (!props.isSearch) {
     allAction(props, emits, formData, actionName.value, true);
   }

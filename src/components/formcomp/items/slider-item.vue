@@ -7,27 +7,12 @@
       :parentField="parentField"
   >
     <el-slider
-        :fid="field.preps['name']"
+        :fid="field.fieldName"
         :disabled="checkIsDisabled(props)"
-        :format-tooltip="field.preps['formatTooltip'] == 'Y'"
-        :format-value-text="field.preps['formatValueText']"
-        :height="field.preps['height']"
-        :input-size="field.preps['inputSize']"
-        :aria-label="field.preps['label']"
-        :marks="field.preps['marks']"
-        :max="isNaN(field.preps['max'])?100:field.preps['max']"
-        :min="isNaN(field.preps['min'])?0:field.preps['min']"
-        :range="field.preps['range'] == 'Y'"
-        :range-end-label="field.preps['rangeEndLabel']"
-        :range-start-label="field.preps['rangeStartLabel']"
-        :show-input="field.preps['showInput'] == 'Y'"
-        :show-input-controls="field.preps['showInputControls'] == 'Y'"
-        :show-stops="field.preps['showStops'] == 'Y'"
-        :show-tooltip="field.preps['showTooltip'] == 'Y'"
-        :size="formInfo?.size || field?.preps['size'] || 'default'"
-        :step="isNaN(field.preps['step'])?1:field.preps['step']"
+        v-bind="field.preps"
+        :step="field.preps?.step??1"
         @change="itemAction"
-        v-model="formData[props.field.preps['name']]"
+        v-model="formData[field.fieldName]"
     />
   </starhorse-form-item>
 </template>

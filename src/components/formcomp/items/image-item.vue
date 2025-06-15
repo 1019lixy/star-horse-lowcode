@@ -7,9 +7,9 @@
       :parentField="parentField"
   >
     <el-input
-        v-if="field.preps['assignType'] == 'url'"
-        :placeholder="field.preps['placeholder'] || '请输入图片地址：如：http://localhost/assert/test.jpg'"
-        v-model="formData[field.preps['name']]"
+        v-if="field.preps?.assignType == 'url'"
+        :placeholder="field.preps?.placeholder || ''"
+        v-model="formData[field.fieldName]"
     >
       <template #append>
         <el-upload
@@ -30,7 +30,7 @@
           "
             :show-file-list="false"
             accept=".jpg,.jpeg,.png,.gif,.bmp,.webp"
-            :action="field.preps['action'] || defaultAction"
+            :action="field.action|| defaultAction"
             :headers="{ token: getToken() }"
             class="upload"
             name="file"
@@ -44,17 +44,17 @@
     <div class="image-area" v-else>
       <el-image
           :style="{
-          width: formData[field.preps['name']] ? field.preps['width'] || '100px' : '100%',
-          height: formData[field.preps['name']] ? field.preps['height'] || '100px' : '100%'
+          width: formData[field.fieldName] ? field.preps?.width || '100px' : '100%',
+          height: formData[field.fieldName] ? field.preps?.height || '100px' : '100%'
         }"
-          :zoom-rate="field.preps['zoomRate'] || 1.2"
-          :max-scale="field.preps['maxScale'] || 2"
-          :min-scale="field.preps['minScale'] || 0.2"
-          :preview-src-list="field.preps['previewSrcList'] || defaultViewList"
-          :initial-index="field.preps['initialIndex'] || 5"
-          :fit="field.preps['fit'] || 'contain'"
-          :fid="field.preps['name']"
-          :src="formData[field.preps['name']] || ''"
+          :zoom-rate="field.preps?.zoomRate || 1.2"
+          :max-scale="field.preps?.maxScale || 2"
+          :min-scale="field.preps?.minScale || 0.2"
+          :preview-src-list="field.preps?.previewSrcList || defaultViewList"
+          :initial-index="field.preps?.initialIndex|| 5"
+          :fit="field.preps?.fit || 'contain'"
+          :fid="field.fieldName"
+          :src="formData[field.fieldName] || ''"
       >
         <template #error>
           <el-upload
@@ -96,7 +96,7 @@
           </div>
         </template>
       </el-image>
-      <div class="image-remove" v-if="formData[field.preps['name']] &&isDesign">
+      <div class="image-remove" v-if="formData[field.fieldName] &&isDesign">
         <el-tooltip content="删除图片">
           <el-button title="" size="small" type="text" @click="removeImage">
             <star-horse-icon icon-class="delete" color="var(--el-color-danger)" cursor="pointer"/>
@@ -149,27 +149,25 @@ let defaultViewList = shallowRef([]);
 
 const removeImage = () => {
 
-  formData.value[props.field.preps['name']] = '';
+  formData.value[props.field.fieldName] = '';
   defaultViewList.value = [];
 };
 const selfAction = (prep: any, uploadFile: any, uploadFiles: any = [], param: any = {}) => {
   if (prep == 'success') {
     let result = param.data;
     let path = (props.field.preps['context'] || '/system-config') + result.path;
-    formData.value[props.field.preps['name']] = path;
+    formData.value[props.field.fieldName] = path;
     defaultViewList.value.push(path);
     //默认将上传成功的属性存入数据对象
-    if (!props.field.preps['keepResult'] || props.field.preps['keepResult'] == 'Y') {
       Object.entries(result).forEach(([key, value]) => {
         formData.value[key] = value;
       });
-    }
     //console.log(param.data.path);
   }
   emits('selfFunc', prep, uploadFile, uploadFiles, param);
 };
 onMounted(() => {
-  actionName.value = props.field.preps?.actionName || 'normal';
+  actionName.value = props.field.actionName || 'normal';
   if (!props.isSearch) {
     allAction(props, emits, formData, actionName.value, true);
   }

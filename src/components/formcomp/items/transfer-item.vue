@@ -8,30 +8,13 @@
   >
     <el-transfer
         :fid="field?.preps['name']"
-        :button-texts="field?.preps['buttonTexts']"
-        :data="field?.preps['values']"
-        :props="{
-        key: field?.preps['props']?.key || 'value',
-        label: field?.preps['props']?.label || 'name'
-      }"
-        :filter-placeholder="field?.preps['filterPlaceholder'] || '请输入' + field?.preps['label']"
-        :filterable="field?.preps['filterable'] == 'Y'"
-        :format="{
-        noChecked: '${total}',
-        hasChecked: '${checked}/${total}'
-      }"
-
-        :target-order="field?.preps['targetOrder']"
-        :titles="[field?.preps['leftTitle'], field?.preps['rightTitle']]"
-        :size="formInfo?.size || field?.preps['size'] || 'default'"
-        :left-default-checked="JSON.parse(field?.preps['leftDefaultChecked']||'[]')"
-        :right-default-checked="JSON.parse(field?.preps['rightDefaultChecked']||'[]')"
+        v-bind="field.preps"
         @change="itemAction('change')"
         @input="itemAction('input')"
         @keydown.enter="itemAction('enter')"
         @focus="itemAction('focus')"
         @blur="itemAction('blur')"
-        v-model="formData[field.preps['name']]"
+        v-model="formData[field.fieldName]"
     />
   </starhorse-form-item>
 </template>
@@ -85,7 +68,7 @@ const initData = async () => {
 
 onMounted(() => {
   initData();
-  actionName.value = props.field.preps?.actionName || 'normal';
+  actionName.value = props.field.actionName || 'normal';
   if (!props.isSearch) {
     allAction(props, emits, formData, actionName.value, true);
   }

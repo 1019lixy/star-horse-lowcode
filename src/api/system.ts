@@ -114,6 +114,22 @@ export function removeEmptyCondition(condition: SearchParams[]): SearchParams[] 
     return params;
 }
 
+/**
+ * 组件key
+ * @param item
+ * @param key
+ * @param isComp 是否组件
+ * @param prefix 前缀
+ * @param suffix 后缀
+ */
+export function compKey(item: any, key: number | string, isComp?: boolean, prefix?: string, suffix?: string) {
+    let name = "";
+    if (item) {
+        name = item.id || item._uuid || item.fieldName || item.tabName;
+    }
+    return (prefix ?? "") + name + "_" + (isComp ? 'comp_' : 'temp_') + key + (suffix ?? '');
+
+}
 
 const zIndex = ref(0);
 export const DEFAULT_INITIAL_Z_INDEX = 2000;

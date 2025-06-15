@@ -4,6 +4,7 @@ import {ApiUrls} from '@/components/types/ApiUrls';
 import {PageFieldInfo} from '@/components/types/PageFieldInfo';
 import StarHorseFormTable from '@/components/comp/StarHorseFormTable.vue';
 import {Config} from '@/api/settings';
+import {compKey} from "@/api/system";
 
 const props = defineProps({
   compUrl: {type: Object as PropType<ApiUrls>},
@@ -46,7 +47,7 @@ onMounted(() => {
 <template>
   <template v-if="item[batchFieldName]?.length > 1 && (!item.displayStyle || item.displayStyle == 'tab')">
     <el-tabs v-model="item.fieldName">
-      <template v-for="(temp, key) in item[batchFieldName]" :key="temp.tabName||temp.fieldName||key">
+      <template v-for="(temp, key) in item[batchFieldName]" :key="compKey(temp,key)">
         <el-tab-pane
             :label="temp['title']"
             v-if="Object.keys(temp).includes('disVisible') ? temp['disVisible'] : true"
@@ -66,7 +67,7 @@ onMounted(() => {
       </template>
     </el-tabs>
   </template>
-  <template v-else v-for="(temp,key) in item[batchFieldName]" :key="temp.tabName||temp.fieldName||'key'">
+  <template v-else v-for="(temp,key) in item[batchFieldName]" :key="compKey(temp,key)">
     <star-horse-form-table
         :size="compSize"
         :rules="rules"

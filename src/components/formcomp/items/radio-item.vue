@@ -7,31 +7,30 @@
       :parentField="parentField"
   >
     <el-radio-group
-        :fid="field.preps['name']"
+        :fid="field.fieldName"
         :disabled="checkIsDisabled(props)"
-        :readonly="field.preps['readonly'] == 'Y'"
-        :size="formInfo?.size || field?.preps['size'] || 'default'"
-        :text-color="field.preps['textColor']"
+        :readonly="field.preps?.readonly??false"
+        :text-color="field.preps?.textColor"
         @change="itemAction"
-        v-model="formData[field.preps['name']]"
+        v-model="formData[field.fieldName]"
     >
       <el-radio-button
-          v-if="field.preps.radioType = 'button'"
-          :border="item['border'] == 'Y'"
+          v-if="field.preps?.radioType == 'button'"
+          :border="item['border']??true"
           :checked="item['checked']"
-          :disabled="item['disabled'] == 'Y'"
+          :disabled="item['disabled']??false"
           :label="item['name']"
           :value="item['value']"
-          v-for="item in field.preps['values']"
+          v-for="item in field.preps?.values"
       />
       <el-radio
           v-else
-          :border="item['border'] == 'Y'"
+          :border="item['border']??false"
           :checked="item['checked']"
-          :disabled="item['disabled'] == 'Y'"
+          :disabled="item['disabled']??false"
           :label="item['name']"
           :value="item['value']"
-          v-for="item in field.preps['values']"
+          v-for="item in field.preps?.values"
       >
       </el-radio>
     </el-radio-group>

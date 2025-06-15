@@ -7,16 +7,14 @@
       :parentField="parentField"
   >
     <el-color-picker
-        :fid="field.preps['name']"
-        :color-format="field.preps['colorFormat']"
+        :fid="field.fieldName"
         :disabled="checkIsDisabled(props)"
-        :show-alpha="field.preps['showAlpha'] == 'Y'"
-        :size="formInfo?.size || field?.preps['size'] || 'default'"
+        v-bind="field.preps"
         @change="itemAction('change')"
         @keydown.enter="itemAction('enter')"
         @focus="itemAction('focus')"
         @blur="itemAction('blur')"
-        v-model="formData[field.preps['name']]"
+        v-model="formData[field.fieldName]"
     />
   </starhorse-form-item>
 </template>
@@ -61,7 +59,7 @@ const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
 onMounted(() => {
-  actionName.value = props.field.preps?.actionName || 'normal';
+  actionName.value = props.field.actionName || 'normal';
   if (!props.isSearch) {
     allAction(props, emits, formData, actionName.value, true);
   }

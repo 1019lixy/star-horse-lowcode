@@ -7,23 +7,10 @@
       :parentField="parentField"
   >
     <el-upload
-        :fid="field.preps['name']"
-        :accept="field.preps['accept']"
-        :action="field.preps['action']"
-        :auto-upload="field.preps['autoUpload'] ? field.preps['autoUpload'] == 'Y' : true"
-        :before-remove="field.preps['beforeRemove']"
-        :before-upload="field.preps['beforeUpload']"
-        :data="field.preps['data'] || {}"
+        :fid="field.fieldName"
         :disabled="checkIsDisabled(props)"
-        :drag="field.preps['drag'] == 'Y'"
         :headers="headers"
-        :http-request="field.preps['httpRequest']"
-        :limit="field.preps['limit']"
-        :list-type="field.preps['listType'] || 'text'"
-        :method="field.preps['method'] || 'post'"
-        :multiple="field.preps['multiple'] == 'Y'"
-        :name="field.preps['aliasName'] || 'file'"
-        :size="formInfo?.size || field?.preps['size'] || 'default'"
+        v-bind="field.preps"
         :on-change="(uploadFile: any, uploadFiles: any) => selfAction('change', uploadFile, uploadFiles)"
         :on-error="(error: any, uploadFile: any, uploadFiles: any) => selfAction('error', uploadFile, uploadFiles, error)"
         :on-exceed="(files: any, uploadFiles: any) => selfAction('exceed', files, uploadFiles)"
@@ -36,14 +23,13 @@
         (response: any, uploadFile: any, uploadFiles: any) => selfAction('success', uploadFile, uploadFiles, response)
       "
         style="width: 100% !important; display: flex; align-items: center; position: relative"
-        :show-file-list="field.preps['showFileList'] == 'Y'"
-        :with-credentials="field.preps['withCredentials'] == 'Y'"
+
         v-model:file-list="dataField"
     >
-      <el-icon class="el-icon--upload" v-if="field.preps['drag'] == 'Y'">
+      <el-icon class="el-icon--upload" v-if="field.preps['drag'] ">
         <upload-filled/>
       </el-icon>
-      <div class="el-upload__text" v-if="field.preps['drag'] == 'Y'"> 将文件拖到此处 或 <em>点击上传</em></div>
+      <div class="el-upload__text" v-if="field.preps['drag']"> 将文件拖到此处 或 <em>点击上传</em></div>
       <template #tip v-if="field.preps['maxSize']">
         <div class="el-upload__tip"> 文件大小不能超过{{ field.preps["maxSize"] }}</div>
       </template>
@@ -96,20 +82,22 @@ let headers = ref<any>({});
 const selfAction = (prep: any, uploadFile: any, uploadFiles: any = [], param: any = {}) => {
   if (prep == 'success') {
     let result = param.data;
-    formData.value[props.field.preps['name']] = result.path;
+    formData.value[props.field.fieldName] = result.path;
     //默认将上传成功的属性存入数据对象
-    if (!props.field.preps['keepResult'] || props.field.preps['keepResult'] == 'Y') {
       Object.entries(result).forEach(([key, value]) => {
         formData.value[key] = value;
       });
-    }
   }
   console.log(prep, uploadFile, uploadFiles, param);
  emits('selfFunc', prep, uploadFile, uploadFiles, param);
 };
 onMounted(async () => {
+  if(!props.field.preps){
+    props.field.preps={}
+  }
+  props.field.preps['action'] = props.field.preps['action'] || '/system-config/annex/upload/commonFiles';
   await nextTick();
-  let datas = formData.value[props.field.preps['name']];
+  let datas = formData.value[props.field.fieldName];
   if (datas) {
     dataField.value.push({url: (props.field.preps['context'] || '/system-config') + datas});
   }
@@ -122,8 +110,8 @@ onMounted(async () => {
 watch(
     () => props.formFieldList,
     (val: any) => {
-      if (val && Object.keys(val).includes(props.field.preps['name'])) {
-        dataField.value = [{url: (props.field.preps['context'] || '/system-config') + val[props.field.preps['name']]}];
+      if (val && Object.keys(val).includes(props.field.fieldName)) {
+        dataField.value = [{url: (props.field.preps['context'] || '/system-config') + val[props.field.fieldName]}];
       }
     },
     {immediate: true, deep: true}

@@ -2,6 +2,7 @@
 import {onMounted, PropType, ref} from 'vue';
 import {DynamicNode} from '@/components/types/DynamicNode';
 import {dynamicPageContextMenuData} from '@/plugins/AblesPlugin';
+import {compKey} from "@/api/system";
 
 const props = defineProps({
   msg: {
@@ -221,7 +222,8 @@ onMounted(() => {
       <div
           class="node-point"
           :class="'node-point-' + item"
-          v-for="item in pointList"
+          v-for="(item,key) in pointList"
+          :key="compKey(item,key)"
           @mousedown="rangeMove($event, item)"
           v-if="isActive"
       ></div>

@@ -1,9 +1,30 @@
 <template>
 
-<!--      <star-horse-form :fieldList="tableFieldList"/>-->
-
+  <!--      <star-horse-form :fieldList="tableFieldList"/>-->
+  <select-item
+      :field="{
+   preps: {
+    name: 'parentId',
+    values: [
+      {
+        name: '一级',
+        value: '123'
+      },
+      {
+        name: '二级',
+        value: '456'
+      }
+    ]
+  }}"
+      :formData="formData"
+  />
 </template>
 <script lang="ts" setup>
+import {ref} from "vue";
+const ss=ref("33")
+const formData = ref({
+  parentId: '123'
+})
 // import {PageFieldInfo} from "@/types/PageFieldInfo";
 // const tableFieldList :PageFieldInfo|any={
 //   fieldList: [
@@ -133,6 +154,7 @@
 //     }
 //   ]
 // };
+import SelectItem from "@/components/formcomp/items/select-item.vue";
 </script>
 <style lang="scss">
 #app {

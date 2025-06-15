@@ -1,7 +1,7 @@
 <template>
   <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
     :parentField="parentField">
-    <div class="user_html" v-html="formData[field.preps['name']] || field.preps['content']" />
+    <div class="user_html" v-html="formData[field.fieldName] || field.preps?.content" />
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
@@ -40,7 +40,7 @@ const emits = defineEmits(['selfFunc', 'selectItem']);
 const formData = defineModel("formData");
 
 onMounted(() => {
-  formData.value[props.field.preps['name']] = formData.value[props.field.preps['name']] || props.field.preps['content'];
+  formData.value[props.field.fieldName] = formData.value[props.field.fieldName] || props.field.preps?.content;
 })
 
 </script>

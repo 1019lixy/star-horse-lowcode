@@ -2,6 +2,7 @@
 import {computed, onMounted, PropType, ref, watch} from 'vue';
 import {useDesignFormStore} from '@/store/DesignForm';
 import piniaInstance from '@/store/index';
+import {compKey, uuid} from "@/api/system";
 
 const props = defineProps({
   parentField: {type: String},
@@ -83,10 +84,10 @@ const addTab = () => {
         class="tab-container"
         :tab-position="field.preps['tablePosition'] || 'top'"
         :type="field.preps['type'] || ''"
-        :closable="field.preps['closable'] == 'Y'"
-        :addable="field.preps['addable'] == 'Y'"
-        :editable="field.preps['editable'] == 'Y'"
-        :stretch="field.preps['stretch'] == 'Y'"
+        :closable="field.preps['closable'] "
+        :addable="field.preps['addable'] "
+        :editable="field.preps['editable'] "
+        :stretch="field.preps['stretch'] "
         v-model="activeTabName"
         @tab-add="addTab()"
         @tab-click="dynamicFunc('tabClick', field['tabClick'])"
@@ -94,7 +95,8 @@ const addTab = () => {
         @tab-remove="dynamicFunc('tabRemove', field['tabRemove'])"
     >
       <el-tab-pane
-          v-for="adata in field['preps']['elements']"
+          v-for="(adata,key) in field['preps']['elements']"
+          :key="compKey(adata,key)"
           :label="adata['label']"
           :name="adata['tabName']"
       >
@@ -105,6 +107,7 @@ const addTab = () => {
               class="tab-design"
               group="starHorseGroup"
               animation="100"
+              :item-key="uuid()"
               ghostClass="ghost"
               :list="adata['items']"
           >

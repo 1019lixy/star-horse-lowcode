@@ -2,7 +2,7 @@
    <EditDataDialog
   v-model="editorDialogVisible"
   :disabled="checkIsDisabled(props)"
-  :initial-content="formData[field.preps['name']]"
+  :initial-content="formData[field.fieldName]"
   @confirm="handleContentConfirm"
 />
   <starhorse-form-item
@@ -14,26 +14,17 @@
   >
     <el-input
         @dblclick="maxEdit"
-        :fid="field.preps['name']"
-        :clearable="field.preps['clearable'] == 'Y'"
         :disabled="checkIsDisabled(props)"
-        :max="field.preps['max']"
-        :maxlength="field.preps['maxlength']"
-        :min="field.preps['min']"
-        :minlength="field.preps['maxlength']"
-        :placeholder="field.preps['placeholder'] || '请输入' + field.preps['label']"
-        :readonly="field.preps['readonly'] == 'Y'"
-        :rows="field.preps['rows']"
-        :show-word-limit="field.preps['showWordLimit'] == 'Y'"
-        :size="formInfo?.size || field?.preps['size'] || 'default'"
+        :fid="field.fieldName"
+        v-bind="field.preps"
         type="textarea"
-        :resize="field?.preps['resize'] || '--'"
+
         @change="itemAction('change')"
         @input="itemAction('input')"
         @keydown.enter="itemAction('enter')"
         @focus="itemAction('focus')"
         @blur="itemAction('blur')"
-        v-model="formData[field.preps['name']]"
+        v-model="formData[field.fieldName]"
     />
   </starhorse-form-item>
 </template>
@@ -83,10 +74,10 @@ const maxEdit = () => {
   editorDialogVisible.value = true;
 };
 const handleContentConfirm = (newContent:string) => {
-  formData.value[props.field.preps['name']] = newContent;
+  formData.value[props.field.fieldName] = newContent;
 };
 onMounted(() => {
-  actionName.value =props.field.preps?.actionName || 'normal';
+  actionName.value =props.field.actionName || 'normal';
   if (!props.isSearch) {
     allAction(props, emits, formData, actionName.value, true);
   }

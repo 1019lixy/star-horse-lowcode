@@ -1,6 +1,6 @@
 <template>
   <star-horse-dialog
-      :title="field.preps['label'] + '数据选择'"
+      :title="field.label + '数据选择'"
       :self-func="true"
       :dialog-visible="dialogInputVisible"
       @merge="selectItem"
@@ -20,27 +20,19 @@
       :parentField="parentField"
   >
     <el-mention
-        :clearable="field.preps['clearable'] == 'Y'"
         :disabled="checkIsDisabled(props)"
-        :max="field.preps['max']"
-        :maxlength="field.preps['maxlength']"
-        :min="field.preps['min']"
         :options="userOptionList"
         :whole="true"
-        :minlength="field.preps['maxlength']"
-        :placeholder="field.preps['placeholder'] || '请输入' + field.preps['label']"
-        :prefix-icon="field.preps['prefixIcon']"
-        :readonly="field.preps['readonly'] == 'Y'"
-        :size="formInfo?.size || field?.preps['size'] || 'default'"
-        :fid="field.preps['name']"
+        :fid="field.fieldName"
+        v-bind="field.preps"
         @change="itemAction('change')"
         @keydown.enter="itemAction('enter')"
         @focus="itemAction('focus')"
         @blur="itemAction('blur')"
-        v-model="formData[field.preps['name']]"
+        v-model="formData[field.fieldName]"
     >
       <template #append>
-        <star-horse-icon icon-class="user-add" @click="showVisible" :disabled="field.preps['disabled'] == 'Y'"/>
+        <star-horse-icon icon-class="user-add" @click="showVisible" :disabled="field.preps['disabled']"/>
       </template>
     </el-mention>
   </starhorse-form-item>
@@ -97,7 +89,7 @@ const selectItem = (_row: any) => {
     return;
   }
   //如果没有指定属性，则默认取相同的属性
-  let name = props.field.preps['name'];
+  let name = props.field.fieldName;
   let aliasName = props.field.preps['aliasName'];
   let temp: any = {};
   for (let i in selectDatas) {
@@ -154,7 +146,7 @@ const showVisible = () => {
   dialogInputVisible.value = true;
   nextTick(() => {
     let fields = props.field.preps['needField'];
-    let name = props.field.preps['name'];
+    let name = props.field.fieldName;
     let realName = name;
     if (props.field.preps['aliasName']) {
       realName = props.field.preps['aliasName'];

@@ -7,32 +7,16 @@
       :parentField="parentField"
   >
     <el-cascader
-        :fid="field.preps['name']"
-        :clearable="field.preps['clearable'] == 'Y'"
-        :filterable="field.preps['filterable'] == 'Y'"
-        :collapse-tags="field.preps['collapseTags'] == 'Y'"
-        :collapse-tags-tooltip="field.preps['collapseTagsTooltip'] == 'Y'"
+        :fid="field.fieldName"
+        v-bind="field.preps"
         :disabled="checkIsDisabled(props)"
         :options="areaData"
-        :placeholder="'请选择' + field.preps['label']"
-        :props="{
-        multiple: field.preps['props']?.multiple == 'Y',
-        checkStrictly: field.preps['props']?.checkStrictly == 'Y',
-        expandTrigger: field.preps['props']?.expandTrigger || 'click',
-        label: 'name',
-        value: 'code',
-        emitPath: field.preps['props']?.emitPath == 'Y'
-      }"
-        :separator="field.preps['separator']"
-        :show-all-levels="field.preps['showAllLevels'] == 'Y'"
-        :size="formInfo?.size || field?.preps['size'] || 'default'"
-        :tag-type="field.preps['tagType']"
         @change="itemAction('change')"
         @input="itemAction('input')"
         @keydown.enter="itemAction('enter')"
         @focus="itemAction('focus')"
         @blur="itemAction('blur')"
-        v-model="formData[field.preps['name']]"
+        v-model="formData[field.fieldName]"
     />
   </starhorse-form-item>
 </template>
@@ -80,20 +64,20 @@ const itemAction = (prep: any) => {
 const initData = async () => {
   await nextTick();
   props.field.preps['values'] = await compDynamicData(props.field.preps);
-  let data: any = formData.value[props.field.preps['name']];
+  let data: any = formData.value[props.field.fieldName];
   if (data) {
-    formData.value[props.field.preps['name']] = JSON.parse(data);
+    formData.value[props.field.fieldName] = JSON.parse(data);
   } else {
     //解决加载慢问题，导致数据没法回显
     setTimeout(() => {
-      let data: any = formData.value[props.field.preps['name']];
-      formData.value[props.field.preps['name']] = data ? JSON.parse(data) : [];
+      let data: any = formData.value[props.field.fieldName];
+      formData.value[props.field.fieldName] = data ? JSON.parse(data) : [];
     }, 200);
   }
 };
 onMounted(() => {
   initData();
-  actionName.value = props.field.preps?.actionName || 'normal';
+  actionName.value = props.field.actionName || 'normal';
   if (!props.isSearch) {
     allAction(props, emits, formData, actionName.value, true);
   }

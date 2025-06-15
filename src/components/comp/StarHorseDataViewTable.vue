@@ -3,6 +3,7 @@ import {ModelRef, PropType} from 'vue';
 import {FieldInfo} from '@/components/types/PageFieldInfo';
 import {rowClassName} from '@/api/star_horse_utils';
 import {Config} from '@/api/settings';
+import {compKey} from "@/api/system";
 
 defineProps({
   item: {type: Array as PropType<Array<FieldInfo> | any>, required: true},
@@ -45,25 +46,27 @@ const dataForm: ModelRef<any> = defineModel('dataForm');
     }"
   >
     <el-table-column label="序号" fixed align="center" prop="xh" width="60"/>
-    <template v-for="aitem in item?.fieldList">
+    <template v-for="(aitem,index) in item?.fieldList" :key="compKey(aitem,index)">
       <template v-if="Array.isArray(aitem)">
-        <star-horse-table-view-column :commonFormat="commonFormat" :item="sitem" v-for="sitem in aitem"/>
+        <star-horse-table-view-column :commonFormat="commonFormat" :item="sitem" v-for="(sitem,key) in aitem" :key="compKey(sitem,key)"/>
       </template>
       <template v-else-if="aitem.tabList?.length > 0">
-        <template v-for="tabItems in aitem.tabList">
+        <template v-for="(tabItems,key) in aitem.tabList" :key="compKey(tabItems,key)">
           <star-horse-table-view-column
               :commonFormat="commonFormat"
               :item="sitem"
-              v-for="sitem in tabItems.fieldList"
+              :key="compKey(sitem,skey)"
+              v-for="(sitem,skey) in tabItems.fieldList"
           />
         </template>
       </template>
       <template v-else-if="aitem.batchFieldList?.length > 0">
-        <template v-for="batchItems in aitem.batchFieldList">
+        <template v-for="(batchItems,bkey) in aitem.batchFieldList" :key="compKey(batchItems,bkey)">
           <star-horse-table-view-column
               :commonFormat="commonFormat"
               :item="sitem"
-              v-for="sitem in batchItems.fieldList"
+              :key="compKey(sitem,skey)"
+              v-for="(sitem,skey) in batchItems.fieldList"
           />
         </template>
       </template>

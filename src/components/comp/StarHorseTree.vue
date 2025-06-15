@@ -14,6 +14,7 @@ import {closeLoad, createCondition} from '@/api/star_horse_utils';
 import {isSystemManage} from '@/utils/auth';
 import {Config} from '@/api/settings';
 import Help from '@/components/help.vue';
+import {compKey} from "@/api/system";
 
 const props = defineProps({
   preps: {
@@ -256,8 +257,8 @@ defineExpose({
   <el-card class="inner_content" :style="{ width: collapse ? '60px' : 'unset',
                                            height: '100%',
                                            padding: 'unset' }">
-    <div class="selected-data gap-2" v-if="showSelectData && selectedDataList.length > 0">
-      <template v-for="item in selectedDataList">
+    <div class="selected-data gap-2" v-if="selectedDataList?.length > 0">
+      <template v-for="(item,key) in selectedDataList" :key="compKey(item,key)">
         <el-tag closable @close="operSelectData(item, false)">{{ item[preps.label] }}</el-tag>
       </template>
     </div>

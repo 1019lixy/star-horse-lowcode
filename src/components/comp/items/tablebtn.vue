@@ -3,6 +3,7 @@ import {nextTick, onMounted, PropType, ref} from 'vue';
 import {UserFuncInfo} from '@/components/types/PageFieldInfo';
 import {BtnHideCondition} from '@/components/types/Params';
 import {Config} from '@/api/settings';
+import {compKey} from "@/api/system";
 
 const props = defineProps({
   //按钮列表
@@ -71,7 +72,7 @@ onMounted(() => {
 
 <template>
   <template v-if="validButtonList.length > 3">
-    <el-tooltip :content="item.btnName" v-for="item in validButtonList.slice(0, 3)" :key="item.authority">
+    <el-tooltip :content="item.btnName" v-for="(item,key) in validButtonList.slice(0, 3)" :key="compKey(item,key)">
       <star-horse-icon
           v-if="permissions[item.authority!]"
           @click="item.funcName!(row)"
@@ -87,8 +88,8 @@ onMounted(() => {
       <template #dropdown>
         <el-dropdown-menu>
           <el-dropdown-item
-              v-for="auth in validButtonList.slice(3, validButtonList.length)"
-              :key="auth.authority"
+              v-for="(auth,key) in validButtonList.slice(3, validButtonList.length)"
+              :key="compKey(auth,key)"
               :v-if="permissions[auth.authority!]"
           >
             <el-button
@@ -110,7 +111,7 @@ onMounted(() => {
     </el-dropdown>
   </template>
   <template v-else>
-    <el-tooltip :content="item.btnName" v-for="item in validButtonList" :key="item.authority">
+    <el-tooltip :content="item.btnName" v-for="(item,key) in validButtonList" :key="compKey(item,key)">
       <star-horse-icon
           v-if="permissions[item.authority]"
           @click="item.funcName(row)"

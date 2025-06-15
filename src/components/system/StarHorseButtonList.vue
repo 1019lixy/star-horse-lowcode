@@ -13,6 +13,7 @@ import {UserFuncInfo} from '@/components/types/PageFieldInfo';
 import Help from '@/components/help.vue';
 import {Config} from '@/api/settings';
 import {PreValid} from "@/components/types/BtnAuth";
+import {compKey} from "@/api/system";
 
 const props = defineProps({
   dialogProps: {type: Object as PropType<DialogProps>, required: true},
@@ -207,7 +208,7 @@ defineExpose({
 </script>
 <template>
   <ul class="inner_button" v-if="showType == 'line' && Object.keys(permissions || {}).length > 0">
-    <template v-for="item in buttonList">
+    <template v-for="(item,key) in buttonList" :key="compKey(item,key)">
       <template v-if="item.children?.length > 0">
         <el-dropdown
             :size="compSize"
@@ -220,7 +221,7 @@ defineExpose({
           {{ item.btnName }}
           <template #dropdown>
             <el-dropdown-menu>
-              <template v-for="sitem in item.children">
+              <template v-for="(sitem,skey) in item.children" :key="compKey(sitem,skey)">
                 <el-dropdown-item v-if="permissions[sitem.authority]" @click="sitem.funcName(sitem.btnName)">
                   <star-horse-icon
                       :icon-class="item.icon || 'edit'"
@@ -290,13 +291,13 @@ defineExpose({
           <star-horse-icon icon-class="operation" size="16px" cursor="pointer"/>
         </el-tooltip>
       </template>
-      <template v-for="(item, index) in buttonList">
+      <template v-for="(item, index) in buttonList" :key="compKey(item,index)">
         <template v-if="item.children?.length > 0">
           <el-sub-menu :index="'2-' + index" v-if="permissions[item.authority]">
             <template #title>
               {{ item.btnName }}
             </template>
-            <template v-for="(sitem, sindex) in item.children">
+            <template v-for="(sitem, sindex) in item.children" :key="compKey(sitem,sindex)">
               <el-menu-item
                   :index="'3-' + index + '-' + sindex"
                   @click="sitem.funcName(sitem.authority)"

@@ -7,24 +7,16 @@
       :parentField="parentField"
   >
     <el-input
-        :fid="field.preps['name']"
-        :clearable="field.preps['clearable'] == 'Y'"
+        :fid="field.fieldName"
         :disabled="checkIsDisabled(props)"
-        :max="field.preps['max']"
-        :maxlength="field.preps['maxlength']"
-        :min="field.preps['min']"
-        :minlength="field.preps['maxlength']"
-        :placeholder="field.preps['placeholder'] || '请输入' + field.preps['label']"
-        :readonly="field.preps['readonly'] == 'Y'"
-        :show-password="field.preps['showPassword'] == 'Y'"
-        :size="formInfo?.size || field?.preps['size'] || 'default'"
+        v-bind="field.preps"
         type="password"
         @change="itemAction('change')"
         @input="itemAction('input')"
         @keydown.enter="itemAction('enter')"
         @focus="itemAction('focus')"
         @blur="itemAction('blur')"
-        v-model="formData[field.preps['name']]"
+        v-model="formData[field.fieldName]"
     />
   </starhorse-form-item>
 </template>
@@ -70,7 +62,7 @@ const itemAction = (prep: string) => {
   allAction(props, emits, formData, prep);
 };
 onMounted(() => {
-  actionName.value = props.field.preps?.actionName || 'normal';
+  actionName.value = props.field.actionName || 'normal';
   if (!props.isSearch) {
     allAction(props, emits, formData, actionName.value, true);
   }

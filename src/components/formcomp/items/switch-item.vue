@@ -7,19 +7,11 @@
       :parentField="parentField"
   >
     <el-switch
-        :fid="field.preps['name']"
-        :active-color="field.preps['activeColor']"
-        :active-text="field.preps['activeText']"
-        :active-value="field.preps['activeValue']"
-        :before-change="field.preps['beforeChange']"
+        :fid="field.fieldName"
         :disabled="checkIsDisabled(props)"
-        :inactive-color="field.preps['inactiveColor']"
-        :inactive-text="field.preps['inactiveText']"
-        :inactive-value="field.preps['inactiveValue']"
-        :size="formInfo?.size || field?.preps['size'] || 'default'"
-        :width="field.preps['width']"
+        v-bind="field.preps"
         @change="itemAction('change')"
-        v-model="formData[field.preps['name']]"
+        v-model="formData[field.fieldName]"
     />
   </starhorse-form-item>
 </template>
@@ -64,7 +56,14 @@ const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
 onMounted(() => {
-  actionName.value = props.field.preps?.actionName || 'normal';
+  if(!props.field.preps){
+    props.field.preps={}
+  }
+  props.field.preps['activeText'] = props.field.preps['activeText'] || '是';
+  props.field.preps['inactiveText'] = props.field.preps['inactiveText'] || '否';
+  props.field.preps['activeValue'] = props.field.preps['activeValue'] || 'Y';
+  props.field.preps['inactiveValue'] = props.field.preps['inactiveValue'] || 'N';
+  actionName.value = props.field.actionName || 'normal';
   if (!props.isSearch) {
     allAction(props, emits, formData, actionName.value, false);
   }

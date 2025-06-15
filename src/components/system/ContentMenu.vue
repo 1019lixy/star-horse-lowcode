@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import {computed, nextTick, onBeforeUnmount, onMounted, PropType, ref} from 'vue';
-import {useZIndex} from '@/api/system';
+import {compKey, useZIndex} from '@/api/system';
 import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
 
 defineOptions({
@@ -143,7 +143,7 @@ defineOptions({
     <div v-show="visible" class="content-menu" ref="menu" :style="menuStyle" @mouseenter="mouseenterHandler()">
       <slot name="title"></slot>
 
-      <template v-for="(item, index) in menuData">
+      <template v-for="(item, index) in menuData" :key="compKey(item,index)">
         <el-divider v-if="item.type == 'divider'" :direction="item.direction" />
         <div
           v-if="item.type == 'button' && item.display"

@@ -4,6 +4,7 @@ import {commonParseCodeToName} from '@/api/star_horse_utils';
 import Sortable from 'sortablejs';
 import {warning} from '@/utils/message';
 import {Config} from '@/api/settings';
+import {compKey} from "@/api/system";
 
 const props = defineProps({
     //主键
@@ -285,13 +286,14 @@ const props = defineProps({
       border
     >
       <el-table-column type="selection" align="center" fixed="left" :reserve-selection="true"> </el-table-column>
-      <template v-for="item in fieldList['fieldList']">
-        <template v-if="item instanceof Array">
+      <template v-for="(item,index) in fieldList['fieldList']" :Key="compKey(item,index)">
+        <template v-if="Array.isArray(item)">
           <star-horse-table-column
             :data-format="dataFormat"
             :cellEditable="fieldList['tableCellEditabled']"
             :item="sitem"
-            v-for="sitem in item"
+            :key="compKey(sitem,key)"
+            v-for="(sitem,key) in item"
           />
         </template>
         <template v-else-if="item.tabList?.length > 0">
@@ -299,7 +301,8 @@ const props = defineProps({
             :data-format="dataFormat"
             :cellEditable="fieldList['tableCellEditabled']"
             :item="sitem"
-            v-for="sitem in item.tabList.fieldList"
+            :key="compKey(sitem,key)"
+            v-for="(sitem,key) in item.tabList.fieldList"
           />
         </template>
         <star-horse-table-column
@@ -309,7 +312,7 @@ const props = defineProps({
           :item="item"
         />
       </template>
-      <template v-if="showBatchField" v-for="item in fieldList['batchFieldList']">
+      <template v-if="showBatchField" v-for="(item,key) in fieldList['batchFieldList']"  :key="compKey(item,key)">
         <star-horse-table-column :data-format="dataFormat" :item="item" />
       </template>
     </el-table>

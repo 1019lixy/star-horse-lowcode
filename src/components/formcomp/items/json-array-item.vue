@@ -1,13 +1,13 @@
 <template>
   <star-horse-dialog
-      :title="field.preps['label'] + 'JSON数组编辑'"
+      :title="field.label + 'JSON数组编辑'"
       :self-func="true"
       :dialog-visible="dialogInputVisible"
       @merge="selectItem"
       @resetForm="resetForm"
       @closeAction="closeAction"
   >
-    <star-horse-json-editor v-if="field.preps['devType'] == 'Y'" v-model:modelValue="jsonArray" style="height: 100vh"/>
+    <star-horse-json-editor v-if="field.preps?.devType" v-model:modelValue="jsonArray" style="height: 100vh"/>
     <star-horse-form v-else :field-list="jsonTableField" ref="jsonFormRef"/>
   </star-horse-dialog>
   <starhorse-form-item
@@ -20,26 +20,18 @@
     <div class="json-comp">
       <div class="json-box">
         <el-input
-            :fid="field.preps['name']"
-            :clearable="field.preps['clearable'] == 'Y'"
+            :fid="field.fieldName"
             :disabled="checkIsDisabled(props)"
-            :max="field.preps['max']"
-            :maxlength="field.preps['maxlength']"
-            :min="field.preps['min']"
-            :minlength="field.preps['minlength']"
-            :placeholder="field.preps['placeholder'] || '请输入' + field.preps['label']"
-            :readonly="field.preps['readonly'] == 'Y'"
             :rows="field.preps['rows'] || 3"
-            :show-word-limit="field.preps['showWordLimit'] == 'Y'"
-            :size="formInfo?.size || field?.preps['size'] || 'default'"
             type="textarea"
             resize="none"
+            v-bind="field.preps"
             @change="itemAction('change')"
             @input="itemAction('input')"
             @normal="itemAction('enter')"
             @focus="itemAction('focus')"
             @blur="itemAction('blur')"
-            v-model="formData[field.preps['name']]"
+            v-model="formData[field.fieldName]"
         />
       </div>
       <div class="json-btn" @click="editJsonData" title="编辑数据">
@@ -119,7 +111,7 @@ const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
 const editJsonData = async () => {
-  let jsonStr = formData.value[props.field.preps['name']];
+  let jsonStr = formData.value[props.field.fieldName];
   let temp: any = {};
   if (jsonStr && isJson(jsonStr)) {
     temp['jsonDatas'] = JSON.parse(jsonStr);
@@ -130,13 +122,13 @@ const editJsonData = async () => {
   }
   dialogInputVisible.value = true;
   await nextTick();
-  if (props.field.preps['devType'] != 'Y') {
+  if (!props.field.preps['devType']) {
     jsonFormRef.value.setFormData(temp);
   }
 };
 const selectItem = async () => {
-  if (props.field.preps['devType'] == 'Y') {
-    formData.value[props.field.preps['name']] = JSON.stringify(jsonArray.value, null, 4);
+  if (props.field.preps['devType'] ) {
+    formData.value[props.field.fieldName] = JSON.stringify(jsonArray.value, null, 4);
   } else {
     let flag = false;
     await jsonFormRef.value.$refs.starHorseFormRef.validate((res: boolean) => {
@@ -147,7 +139,7 @@ const selectItem = async () => {
     }
     let temp = jsonFormRef.value.getFormData().value;
     let dataList = temp['jsonDatas'];
-    formData.value[props.field.preps['name']] = JSON.stringify(dataList, null, 4);
+    formData.value[props.field.fieldName] = JSON.stringify(dataList, null, 4);
   }
   closeAction();
 };
@@ -158,7 +150,7 @@ const closeAction = () => {
   dialogInputVisible.value = false;
 };
 onMounted(() => {
-  actionName.value = props.field.preps?.actionName || 'normal';
+  actionName.value = props.field.actionName || 'normal';
   if (!props.isSearch) {
     allAction(props, emits, formData, actionName.value, true);
   }

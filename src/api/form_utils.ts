@@ -117,9 +117,8 @@ export function checkObject(dataForm: any, item: any, index: number, parentIndex
 
 
 export function getFormData(item: any, dataForm: any, prefix: string, parentIndex: number, index: number) {
-    if (item.subFormFlag == 'Y') {
+    if (item.subFormFlag=='Y') {
         if (item && item.objectName) {
-            console.log('checkObject', item.objectName);
             if (!Object.keys(dataForm).includes(item.objectName)) {
                 dataForm[item.objectName] = [{}];
             }
@@ -144,13 +143,13 @@ export function getFormData(item: any, dataForm: any, prefix: string, parentInde
  */
 export function getDataIndex(data: any, prefix: string, parentIndex: number, index: number) {
     let pronPrefix: number = 0;
-    if (prefix && prefix.length > 0) {
-        if (data.subFormFlag == 'Y') {
+    if (prefix?.length > 0) {
+        if (data.subFormFlag=='Y') {
             pronPrefix = (parentIndex > -1 ? 0 : index);
         } else {
             pronPrefix = parentIndex;
         }
-    } else if (data.subFormFlag == 'Y') {
+    } else if (data.subFormFlag=='Y') {
         //如果父表大于0,说明当前是父表的子表，应该用父表的索引
         pronPrefix = parentIndex > 0 ? parentIndex : index;
     } else {
@@ -210,5 +209,5 @@ export function getPrefix(data: any, prefix: string, parentIndex: number, index:
  * @param dataForm
  */
 export function checkVisible(item: any, dataForm: any) {
-    return item.formVisible || dataForm['_' + item.fieldName + 'Visible'] == 'Y';
+    return item.formVisible || dataForm['_' + item.fieldName + 'Visible'];
 }

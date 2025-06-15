@@ -3,6 +3,7 @@ import {onMounted, ref} from 'vue';
 import {postRequest} from "@/api/star_horse_apis";
 import {warning} from "@/utils/message";
 import icon from '@/assets/icon';
+import {compKey} from "@/api/system";
 
 const props = defineProps({
   menuIcon: {type: String},
@@ -42,7 +43,8 @@ onMounted(() => {
     </template>
     <ul class="system-icon">
       <li
-          v-for="sdata in iconList"
+          v-for="(sdata,key) in iconList"
+          :key="compKey(sdata,key)"
           @click="menuIconSelect(sdata.menuIcon)"
           :class="menuIcon == sdata.menuIcon ? 'icon-active' : ''"
       >

@@ -7,7 +7,7 @@
       :parentField="parentField"
   >
     <div class="number-range-container">
-      <div v-if="field.preps['prefix']" :class="{ 'slot-default': slotStyle === 'default', 'slot-pend ': true }">
+      <div v-if="field.preps?.prefix" :class="{ 'slot-default': slotStyle === 'default', 'slot-pend ': true }">
         {{ field.preps["prefix"] }}
       </div>
       <div
@@ -19,44 +19,31 @@
         }"
       >
         <el-input-number
-            :fid="field.preps['minName']"
+            :fid="field.preps?.minName"
             :controls="false"
             :disabled="checkIsDisabled(props)"
-            :min="field.preps['min'] || -Infinity"
-            :clearable="field.preps['clearable'] == 'Y'"
-            :placeholder="field.preps['placeholder'] || '请输入' + field.preps['label'] + '最小值'"
-            :precision="field.preps['precision']"
-            :readonly="field.preps['readonly'] == 'Y'"
-            :size="formInfo?.size || field?.preps['size'] || 'default'"
-            :step="field.preps['step']"
-            :step-strictly="field.preps['stepStrictly'] == 'Y'"
+            v-bind="field.preps"
             @change="itemAction('change')"
             @blur="handleBlur"
             @focus="handleFocus"
             v-model="formData[field.preps['minName']]"
         />
         <div class="to">
-          <span>{{ field.preps["to"] || "-" }}</span>
+          <span>{{ field.preps?.to || "-" }}</span>
         </div>
         <el-input-number
-            :fid="field.preps['maxName']"
+            :fid="field.preps?.maxName"
             :controls="false"
             :disabled="checkIsDisabled(props)"
-            :max="field.preps['max'] || Infinity"
-            :clearable="field.preps['clearable'] == 'Y'"
-            :placeholder="field.preps['placeholder'] || '请输入' + field.preps['label'] + '最大值'"
-            :precision="field.preps['precision']"
-            :readonly="field.preps['readonly'] == 'Y'"
-            :size="formInfo?.size || field?.preps['size'] || 'default'"
-            :step="field.preps['step']"
+            v-bind="field.preps"
             @change="itemAction('change')"
             @blur="handleBlur"
             @focus="handleFocus"
-            :step-strictly="field.preps['stepStrictly'] == 'Y'"
+            :step-strictly="field.preps?.stepStrictly"
             v-model="formData[field.preps['maxName']]"
         />
       </div>
-      <div v-if="field.preps['suffix']" :class="{ 'slot-default': slotStyle === 'default', 'slot-pend ': true }">
+      <div v-if="field.preps?.suffix" :class="{ 'slot-default': slotStyle === 'default', 'slot-pend ': true }">
         {{ field.preps["suffix"] }}
       </div>
     </div>
@@ -127,14 +114,14 @@ const itemAction = (prep: string) => {
     warning('最大值不能小于最小值');
     return;
   }
-  formData.value[props.field.preps['name']] = `${min}-${max}`;
+  formData.value[props.field.fieldName] = `${min}-${max}`;
   allAction(props, emits, formData, prep);
 };
 onMounted(() => {
-  actionName.value = props.field.preps?.actionName || 'normal';
-  props.field.preps['maxName'] = props.field.preps['name'] + 'Max';
-  props.field.preps['minName'] = props.field.preps['name'] + 'Min';
-  let val: any = formData.value[props.field.preps['name']];
+  actionName.value = props.field.actionName || 'normal';
+  props.field.preps['maxName'] = props.field.fieldName + 'Max';
+  props.field.preps['minName'] = props.field.fieldName + 'Min';
+  let val: any = formData.value[props.field.fieldName];
   if (val) {
     let data = val.split('-');
     formData.value[props.field.preps['minName']] = Number(data[0]);

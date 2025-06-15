@@ -7,39 +7,18 @@
       :parentField="parentField"
   >
     <el-tree-select
-        :fid="field.preps['name']"
-        :readonly="field.preps['readonly'] == 'Y'"
-        :show-checkbox="field.preps['showCheckbox'] == 'Y'"
-        :check-strictly="field.preps['checkStrictly'] == 'Y'"
-        :clearable="field.preps['clearable'] == 'Y'"
+        :fid="field.fieldName"
         :disabled="checkIsDisabled(props)"
-        :collapse-tags="field.preps['collapseTags'] == 'Y'"
-        :collapse-tags-tooltip="field.preps['collapseTagsTooltip'] == 'Y'"
-        :default-first-option="field.preps['defaultFirstOption'] == 'Y'"
         :default-expand-all="true"
-        :props="{
-        label: field.preps['props']?.label || 'name',
-        value: field.preps['props']?.value || 'value',
-        children: field.preps['props']?.children || 'children',
-        disabled: field.preps['props']?.disabled || 'disabled',
-        isLeaf: field.preps['props']?.isLeaf || 'isLeaf',
-        class: field.preps['props']?.class || 'class'
-      }"
-        :filterable="field.preps['filterable'] == 'Y'"
+        v-bind="field.preps"
         :filter-node-method="filterNodeMethod"
-        :multiple="field.preps['multiple'] == 'Y'"
-        :multiple-limit="field.preps['multipleLimit']"
-        :placeholder="field.preps['placeholder'] || '请选择' + (field.preps['label'] || '')"
-        :size="formInfo?.size || field?.preps['size'] || 'default'"
-        :data="field.preps['values'] || formData[field.preps['name'] + 'OptionList']"
-        :tag-type="field.preps['tagType']"
         :render-content="renderContent"
         @change="itemAction('change')"
         @input="itemAction('input')"
         @keydown.enter="itemAction('enter')"
         @focus="itemAction('focus')"
         @blur="itemAction('blur')"
-        v-model="formData[field.preps['name']]"
+        v-model="formData[field.fieldName]"
     >
     </el-tree-select>
   </starhorse-form-item>
@@ -93,7 +72,7 @@ const filterNodeMethod = (value: any, data: any) => {
 };
 const renderContent = (_h: Function, data: any) => {
   let labelName = props.field.preps.props?.label || 'label';
-  if (props.field.preps['showCode'] == 'Y') {
+  if (props.field.preps['showCode']) {
     let codeName = props.field.preps.props?.code || props.field.preps.props?.value || 'value';
     return `${data.data[labelName]}(${data.data['code'] || data.data[codeName] || ''})`;
   }
@@ -137,20 +116,31 @@ const initData = async () => {
       validResult.data.forEach((item: any) => {
         reDataList.push({name: item[temp['selectLabel']], value: item[temp['selectValue']]});
       });
-      props.field.preps['values'] = reDataList;
+      props.field.preps['data'] = reDataList;
     }
   } else if (dataSource == 'dict') {
     let dicts = await dictData(urlOrDictName);
     if (Object.keys(dicts).length == 0) {
       error('数据字典可能未配置');
     } else {
-      props.field.preps['values'] = dicts;
+      props.field.preps['data'] = dicts;
     }
   }
 };
 onMounted(() => {
+  if (!props.field.preps) {
+    props.field.preps = {}
+  }
+  props.field.preps['remote'] = props.field.preps['remote'] || props.field.preps['dataSource'] == 'url';
+  props.field.preps['filterable'] = true;
+  props.field.preps['collapseTags'] = true;
+  props.field.preps['data'] = props.field?.optionList;
+  props.field.preps['props'] = props.field.preps['props'] || {
+    label: 'name',
+    value: 'value'
+  };
   initData();
-  actionName.value = props.field.preps?.actionName || 'normal';
+  actionName.value = props.field.actionName || 'normal';
   if (!props.isSearch) {
     allAction(props, emits, formData, actionName.value, true);
   }

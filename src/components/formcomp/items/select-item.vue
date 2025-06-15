@@ -7,36 +7,23 @@
       :parentField="parentField"
   >
     <el-select
-        :fid="field.preps['name']"
-        :readonly="field.preps['readonly'] == 'Y'"
-        :automatic-dropdown="field.preps['automaticDropdown'] == 'Y'"
-        :clearable="field.preps['clearable'] == 'Y'"
-        :collapse-tags="field.preps['collapseTags'] == 'Y'"
-        :collapse-tags-tooltip="field.preps['collapseTagsTooltip'] == 'Y'"
-        :default-first-option="field.preps['defaultFirstOption'] == 'Y'"
+        :fid="field.fieldName"
         :disabled="checkIsDisabled(props)"
-        :filterable="field.preps['filterable'] == 'Y' || field.preps['allowCreate'] == 'Y'"
-        :multiple="field.preps['multiple'] == 'Y'"
-        :remote="field.preps['remote'] == 'Y' || field.preps['dataSource'] == 'url'"
-        :remote-show-suffix="field.preps['remoteShowSuffix'] == 'Y'"
+        v-bind="field.preps"
         :remote-method="remoteMethod"
-        :allow-create="field.preps['allowCreate'] == 'Y'"
-        :multiple-limit="field.preps['multipleLimit']"
-        :placeholder="field.preps['placeholder'] || '请选择' + field.preps['label']"
-        :size="formInfo?.size || field?.preps['size'] || 'default'"
-        :tag-type="field.preps['tagType']"
         @change="itemAction('change')"
         @input="itemAction('input')"
         @keydown.enter="itemAction('enter')"
         @focus="itemAction('focus')"
         @blur="itemAction('blur')"
-        v-model="formData[field.preps['name']]"
+        v-model="formData[field.fieldName]"
     >
       <el-option
-          :disabled="'Y' == items['disabled']"
+          :disabled="items['disabled']"
           :label="items[field.preps?.props?.label || 'name']"
           :value="items[field.preps?.props?.value || 'value']"
-          v-for="items in field.preps['values'] || formData[field.preps['name'] + 'OptionList']"
+          :key="items[field.preps?.props?.value || 'value']"
+          v-for="items in field.preps?.values || formData[field.fieldName + 'OptionList']"
       />
     </el-select>
   </starhorse-form-item>
@@ -104,11 +91,19 @@ const remoteMethod = async (queryString: string) => {
   }
 };
 onMounted(() => {
+  if(!props.field.preps){
+    props.field.preps={}
+  }
+  props.field.preps['remote']=props.field.preps['remote']||props.field.preps['dataSource'] == 'url';
+  props.field.preps['filterable']=true;
+  props.field.preps['collapseTags']=true;
+  props.field.preps['values']=props.field?.optionList;
   initData();
-  actionName.value = props.field.preps?.actionName || 'normal';
+  actionName.value = props.field.actionName || 'normal';
   if (!props.isSearch) {
     allAction(props, emits, formData, actionName.value, !props.field.preps['needInitLink']);
   }
+
 });
 
 </script>

@@ -7,11 +7,11 @@
       :parentField="parentField"
   >
     <el-divider
-        :direction="field.preps['direction'] || 'horizontal'"
+        :direction="field.preps?.direction || 'horizontal'"
         @change="itemAction('change')"
-        :content-position="field.preps['contentPosition'] || 'center'"
+        :content-position="field.preps?.contentPosition || 'center'"
     >
-      {{ field.preps["content"] }}
+      {{ field.preps?.content }}
     </el-divider>
   </starhorse-form-item>
 </template>
@@ -55,7 +55,7 @@ const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
 onMounted(() => {
-  formData.value[props.field.preps['name']] = props.field.preps['content'];
+  formData.value[props.field.fieldName] = props.field.preps?.content;
 });
 </script>
 <style scoped></style>

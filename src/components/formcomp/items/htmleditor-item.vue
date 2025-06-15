@@ -9,17 +9,17 @@
     <div style="border: 1px solid #ccc">
 
       <QuillEditor
-          :style="{ height: field.preps.height || '300px', 'overflow-y': 'hidden' }"
+          :style="{ height: field.preps?.height || '300px', 'overflow-y': 'hidden' }"
           :modules="modules"
           @change="itemAction('change')"
           @input="itemAction('input')"
           @keydown.enter="itemAction('enter')"
           @focus="itemAction('focus')"
           @blur="itemAction('blur')"
-          v-model="formData[field.preps['name']]"
+          v-model="formData[field.fieldName]"
           theme="snow"
           toolbar="full"
-          :fid="field.preps['name']"
+          :fid="field.fieldName"
           @onCreated="handleCreated"
       />
     </div>

@@ -8,7 +8,7 @@ import {download} from '@/api/star_horse_apis';
 import {getToken} from '@/utils/auth';
 import Sortable from 'sortablejs';
 import Help from '@/components/help.vue';
-import {uuid} from '@/api/system';
+import {compKey, uuid} from '@/api/system';
 import UTableColumn from '@/components/comp/items/UTableColumn.vue';
 import StarHorseForm from '@/components/comp/StarHorseForm.vue';
 import {Config} from '@/api/settings';
@@ -365,12 +365,12 @@ watch(
           </el-tag>
         </template>
       </el-table-column>
-      <template v-for="item in fieldList" :key="item.fieldName">
+      <template v-for="(item,key) in fieldList" :key="compKey(item,key)">
         <template v-if="Array.isArray(item)">
           <UTableColumn
               :item="temp"
-              :key="temp.fieldName"
-              v-for="temp in item"
+              :key="compKey(temp,skey)"
+              v-for="(temp,skey) in item"
               :size="size"
               :rules="rules"
               :batchName="batchName"

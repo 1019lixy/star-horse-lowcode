@@ -6,7 +6,7 @@
       :formItem="field"
       :parentField="parentField"
   >
-    <audio :fid="field.preps['name']" ref="audio" controls></audio>
+    <audio :fid="field.fieldName" ref="audio" controls></audio>
   </starhorse-form-item>
 </template>
 <script setup lang="ts" name="audioItem">

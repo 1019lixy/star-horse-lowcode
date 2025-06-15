@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {ModelRef, onMounted, PropType, ref} from 'vue';
 import {FieldInfo} from '@/components/types/PageFieldInfo';
+import {compKey} from "@/api/system";
 
 defineProps({
   item: {type: Array as PropType<Array<FieldInfo> | any>, required: true},
@@ -18,7 +19,7 @@ onMounted(() => {
 <template>
   <template v-if="item.tabList?.length > 0">
     <el-tabs v-model="item.fieldName" type="border-card" class="view-tab">
-      <template v-for="(tabItem, key) in item.tabList" :key="tabItem.tabName||key">
+      <template v-for="(tabItem, key) in item.tabList" :key="compKey(tabItem,key)">
         <view-tab-panel-item
             :item="tabItem"
             :commonFormat="commonFormat"
@@ -32,7 +33,7 @@ onMounted(() => {
   <template v-else-if="item.batchFieldList?.length > 0">
     <template v-if="item.batchFieldList.length > 1 && (!item.displayStyle || item.displayStyle == 'tab')">
       <el-tabs v-model="normalTabList">
-        <template v-for="(sitem, key) in item.batchFieldList" :key="sitem.tabName||key">
+        <template v-for="(sitem, key) in item.batchFieldList" :key="compKey(sitem,key)">
           <view-tab-panel-item
               :item="sitem"
               :commonFormat="commonFormat"
@@ -43,7 +44,7 @@ onMounted(() => {
         </template>
       </el-tabs>
     </template>
-    <template v-else v-for="(sitem, key) in item.batchFieldList" :key="sitem.tabName||key">
+    <template v-else v-for="(sitem, key) in item.batchFieldList" :key="compKey(sitem,key)">
       <star-horse-data-view-table
           v-if="Object.keys(sitem).length > 0"
           :item="sitem"

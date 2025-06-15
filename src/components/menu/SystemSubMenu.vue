@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {computed, inject} from 'vue';
+import {compKey} from "@/api/system";
 
 const props = defineProps({
   dataList: {type: Array<any>, required: true},
@@ -10,7 +11,7 @@ let menuColor = computed(() => (props.level > 1 ? 'var(--star-horse-shadow)' : '
 </script>
 <template>
   <div v-if="level > 1" style="height: 2px; background: var(--star-horse-white)"></div>
-  <template v-for="item in dataList">
+  <template v-for="(item,key) in dataList" :key="compKey(item,key)">
     <el-sub-menu
         popper-class="popper-class"
         v-if="item.children && item.children.length > 0"

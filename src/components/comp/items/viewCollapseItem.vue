@@ -2,6 +2,7 @@
 import {ModelRef, onMounted, PropType} from 'vue';
 import {FieldInfo} from '@/components/types/PageFieldInfo';
 import {checkObject} from '@/api/form_utils';
+import {compKey} from "@/api/system";
 
 defineProps({
   item: {type: Array as PropType<Array<FieldInfo> | any>, required: true},
@@ -23,7 +24,7 @@ onMounted(() => {
 <template>
   <template v-if="item.collapseList?.length > 0">
     <el-collapse v-model="item.fieldName">
-      <template v-for="(collapseItem, key) in item.collapseList" :key="collapseItem.tabName||key">
+      <template v-for="(collapseItem, key) in item.collapseList" :key="compKey(collapseItem,key)">
         <el-collapse-item
             v-if="Object.keys(collapseItem).length > 0"
             :title="collapseItem.title"

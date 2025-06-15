@@ -68,7 +68,7 @@ onMounted(() => {
                        :isDesign="isDesign"
                        :disabled="disabled"
                        :parentField="parentField" :form-item="field">
-    <el-card class="card-container" :shadow="field.preps['shadow'] == 'Y'" v-for="adata in field['preps']['elements']">
+    <el-card class="card-container" :shadow="field.preps['shadow']" v-for="adata in field['preps']['elements']">
       <template #header>
         <div class="card-header flex items-center justify-between ">
           <div class="w-[60%]">

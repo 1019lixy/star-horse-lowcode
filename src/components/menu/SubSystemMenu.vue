@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {PropType, ref} from 'vue';
 import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
+import {compKey} from "@/api/system";
 
 defineProps({
   dataList: {type: Array, required: true},
@@ -41,7 +42,7 @@ const removeData = (item: any) => {
 };
 </script>
 <template>
-  <template v-for="(item,key) in dataList" :key="key">
+  <template v-for="(item,key) in dataList" :key="compKey(item,key)">
     <el-sub-menu
         v-if="item?.children?.length > 0"
         :class="{ 'is-active': item[preps.value] == currentItem[preps.value] }"

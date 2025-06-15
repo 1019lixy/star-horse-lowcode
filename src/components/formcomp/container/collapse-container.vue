@@ -2,6 +2,7 @@
 import {computed, onMounted, PropType, ref, watch} from 'vue';
 import {useDesignFormStore} from '@/store/DesignForm';
 import piniaInstance from '@/store/index';
+import {uuid} from "@/api/system";
 
 const props = defineProps({
   parentField: {type: String},
@@ -68,7 +69,7 @@ watch(
                        :isDesign="isDesign"
                        :disabled="disabled"
                        :parentField="parentField" :form-item="field">
-    <el-collapse v-model="activeTabName" class="collapse-container" :accordion="field.preps['accordion'] == 'Y'">
+    <el-collapse v-model="activeTabName" class="collapse-container" :accordion="field.preps['accordion']">
       <el-collapse-item v-for="adata in field['preps']['elements']" :name="adata.tabName">
         <template #title>
           <div class="collapse-item-title title">
@@ -82,6 +83,7 @@ watch(
               class="card-design"
               group="starHorseGroup"
               animation="100"
+              :item-key="uuid()"
               ghostClass="ghost"
               :list="adata['items']"
           >

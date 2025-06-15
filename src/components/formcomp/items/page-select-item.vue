@@ -3,9 +3,12 @@ import {onMounted, ref, shallowRef, watch} from 'vue';
 import {PageProps} from '@/components/types/PageProps';
 import {closeLoad, createCondition, load} from '@/api/star_horse_utils';
 import {postRequest} from '@/api/star_horse_apis';
-import {FieldMapping, OrderByInfo} from '@/components/types/PageFieldInfo';
+import {FieldInfo, FieldMapping, OrderByInfo} from '@/components/types/PageFieldInfo';
 import {SearchParams} from '@/components/types/Params';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
+import {compKey} from "@/api/system";
+import {warning} from "@/utils/message";
+import {SearchFields} from "@/components/types";
 
 const props = defineProps({
   isDesign: {
@@ -72,9 +75,9 @@ const loadByPage = (isInit: boolean = false) => {
   }
   if (isInit) {
     let fieldName = loadSourceField();
-    let value: any = formData.value[props.field.preps['aliasName'] || props.field.preps['name']];
+    let value: any = formData.value[props.field.aliasName || props.field.fieldName];
     if (fieldName && value) {
-      if ('Y' == props.field.preps['multiple']) {
+      if ('Y' == props.field.preps?.multiple) {
         searchData.value.push(createCondition(fieldName, Array.isArray(value) ? value : value.split(';'), 'in'));
       } else {
         searchData.value.push(createCondition(fieldName, value));
@@ -85,7 +88,7 @@ const loadByPage = (isInit: boolean = false) => {
   if (orderBy.value?.length > 0) {
     orderByTemp = orderBy.value;
   }
-  if (!props.field.preps['dataUrl']?.pageListUrl) {
+  if (!props.field.params['dataUrl']?.pageListUrl) {
     return;
   }
   let params: any = {
@@ -94,16 +97,16 @@ const loadByPage = (isInit: boolean = false) => {
     fieldList: searchData.value,
     orderBy: orderByTemp
   };
-  let url: string = props.field.preps.dataUrl?.pageListUrl;
-  if (props.field.preps.dataUrl.redirect) {
+  let url: string = props.field.params.dataUrl?.pageListUrl;
+  if (props.field.params.dataUrl.redirect) {
     params = {
       url,
-      host: props.field.preps.dataUrl?.host,
-      port: props.field.preps.dataUrl?.port,
-      protocol: props.field.preps.dataUrl?.protocol,
-      env: props.field.preps.dataUrl?.env,
-      httpMethod: props.field.preps.dataUrl?.httpMethod || 'POST',
-      dataType: props.field.preps.dataUrl?.dataType || 'JSON',
+      host: props.field.params.dataUrl?.host,
+      port: props.field.params.dataUrl?.port,
+      protocol: props.field.params.dataUrl?.protocol,
+      env: props.field.params.dataUrl?.env,
+      httpMethod: props.field.params.dataUrl?.httpMethod || 'POST',
+      dataType: props.field.params.dataUrl?.dataType || 'JSON',
       searchInfo: params
     };
     url = '/system-config/redirect/pageList';
@@ -135,7 +138,7 @@ const searchDataFun = (data: any) => {
   loadByPage();
 };
 const getRowIdentity = (row: any) => {
-  return row[props.field.preps.primaryKey];
+  return row[props.field.params.primaryKey];
 };
 const handleSelectionChange = (val: any) => {
   multipleSelection.value = val;
@@ -143,7 +146,7 @@ const handleSelectionChange = (val: any) => {
 };
 const selectRow = (row: any, _column: any, _evt: any) => {
   const selected = multipleSelection.value.some(
-      (item: any) => item[props.field.preps.primaryKey] === row[props.field.preps.primaryKey]
+      (item: any) => item[props.field.params.primaryKey] === row[props.field.params.primaryKey]
   );
   if (!selected) {
     multipleSelection.value.push(row);
@@ -154,17 +157,17 @@ const selectRow = (row: any, _column: any, _evt: any) => {
   assignVal();
 };
 const loadSourceField = (aliasFirst: boolean = true) => {
-  let fields: any = props.field.preps['needField'];
-  let name = aliasFirst ? props.field.preps['aliasName'] || props.field.preps['name'] : props.field.preps['name'];
+  let fields: any = props.field.params['needField'];
+  let name = aliasFirst ? props.field.params['aliasName'] || props.field.fieldName : props.field.fieldName;
   return fields?.find((temp: FieldMapping) => temp.distField == name)?.sourceField || '';
 };
 const assignVal = () => {
-  let fields: any = props.field.preps['needField'];
-  let name = props.field.preps['name'];
+  let fields: any = props.field.params['needField'];
+  let name = props.field.fieldName;
   if (fields) {
     fields.forEach((temp: FieldMapping) => {
       let value = multipleSelection.value.map((item: any) => item[temp.sourceField]);
-      if (!props.field.preps['multiple'] || props.field.preps['multiple'] == 'N') {
+      if (!props.field.preps?.multiple) {
         value = value[0];
       }
       if (fields.length == 1) {
@@ -176,20 +179,42 @@ const assignVal = () => {
   } else {
     formData.value[name] = multipleSelection.value.map((item) => item[name]);
   }
-  if (props.field.preps['recall']) {
-    props.field.preps['recall'](multipleSelection.value);
+  if (props.field.params['recall']) {
+    props.field.params['recall'](multipleSelection.value);
   }
 };
 watch(
-    () => props.field.preps['dataUrl'],
+    () => props.field.params['dataUrl'],
     () => {
       loadByPage();
     }
 );
 onMounted(() => {
-  filterCondition.value = props.field.preps['filterCondition'] as Array<SearchParams>;
-  orderBy.value = props.field.preps['orderBy'] as Array<OrderByInfo>;
-  actionName.value = props.field.preps?.actionName || 'normal';
+  let inputPreps = props.field?.params;
+  if (!inputPreps) {
+    warning('属性' + props.field?.label + '需要配置params 信息');
+    return;
+  }
+  if ( inputPreps.searchFieldList?.length === 0) {
+    let searchFieldList: Array<SearchFields> = [];
+    inputPreps.fieldList?.forEach((item: FieldInfo) => {
+      if (item.searchVisible) {
+        let temp: any = {
+          ...item
+        };
+        if (item.prefix) {
+          temp['fieldName'] = item.prefix + '.' + temp['fieldName'];
+        }
+        temp['defaultVisible'] = true;
+        if (item?.type == 'input' && !item['matchType']) {
+          temp['matchType'] = 'lk';
+        }
+        searchFieldList.push(temp);
+      }
+    });
+    inputPreps.searchFieldList = {fieldList: searchFieldList};
+  }
+  actionName.value = props.field.actionName || 'normal';
   loadByPage(true);
   if (!props.isSearch) {
     allAction(props, emits, formData, actionName.value, true);
@@ -205,35 +230,23 @@ onMounted(() => {
       :parentField="parentField"
   >
     <el-select
-        :fid="field.preps['name']"
-        :readonly="field.preps['readonly'] == 'Y'"
-        :automatic-dropdown="field.preps['automaticDropdown'] == 'Y'"
-        :clearable="true"
-        :collapse-tags="true"
-        :collapse-tags-tooltip="true"
-        :default-first-option="field.preps['defaultFirstOption'] == 'Y'"
-        :disabled="checkIsDisabled(props)"
-        :filterable="true"
-        :multiple="field.preps['multiple'] == 'Y'"
-        :multiple-limit="field.preps['multipleLimit']"
-        :placeholder="field.preps['placeholder'] || '请选择' + field.preps['label']"
-        :size="formInfo?.size || field?.preps['size'] || 'default'"
-        :tag-type="field.preps['tagType']"
+        :fid="field.fieldName"
+        v-bind="field.preps"
         @change="itemAction('change')"
         @input="itemAction('input')"
         @keydown.enter="itemAction('enter')"
         @focus="itemAction('focus')"
         @blur="itemAction('blur')"
-        v-model="formData[field.preps['name']]"
+        v-model="formData[field.fieldName]"
     >
       <template #empty>
         <el-card class="inner_content" style="margin: 5px">
           <!--          <div class="search_btn" :style="{'flex-direction':Config.buttonStyle.value=='line'?'column':'row'}">-->
           <star-horse-search-comp
-              :formData="field.preps['searchFieldList']"
+              :formData="field.params['searchFieldList']"
               @searchData="(data: any) => searchDataFun(data)"
               :mutComp="true"
-              :compUrl="field.preps['dataUrl']"
+              :compUrl="field.params['dataUrl']"
           />
           <el-table
               ref="starHorseTableCompRef"
@@ -255,21 +268,22 @@ onMounted(() => {
               border
           >
             <el-table-column type="selection" align="center" fixed="left" :reserve-selection="true"/>
-            <template v-for="item in field.preps?.fieldList?.fieldList">
+            <template v-for="(item,key) in field.params?.fieldList" :key="compKey(item,key)">
               <template v-if="Array.isArray(item)">
                 <star-horse-table-column
-                    v-for="sitem in item"
-                    :compUrl="field.preps['dataUrl']"
+                    v-for="(sitem,skey) in item"
+                    :key="compKey(sitem,skey)"
+                    :compUrl="field.params['dataUrl']"
                     :cellEditable="false"
-                    :data-format="field.preps['dataFormat']"
+                    :data-format="field.params['dataFormat']"
                     :item="sitem"
                 />
               </template>
               <star-horse-table-column
                   v-else
-                  :compUrl="field.preps['dataUrl']"
+                  :compUrl="field.params['dataUrl']"
                   :cellEditable="false"
-                  :data-format="field.preps['dataFormat']"
+                  :data-format="field.params['dataFormat']"
                   :item="item"
               />
             </template>

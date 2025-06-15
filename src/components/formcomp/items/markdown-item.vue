@@ -7,12 +7,12 @@
       :parentField="parentField"
   >
     <MdEditor
-        v-model="formData[field.preps['name']]"
-        :theme="field.preps['theme'] || 'light'"
-        :language="field.preps['language'] || 'zh-CN'"
-        :previewTheme="field.preps['previewTheme'] || 'default'"
-        :codeTheme="field.preps['codeTheme'] || 'github'"
-        :placeholder="field.preps['placeholder'] || '请输入' + field.preps['label']"
+        v-model="formData[field.fieldName]"
+        :theme="'light'"
+        :language=" 'zh-CN'"
+        :previewTheme=" 'default'"
+        :codeTheme="'github'"
+        v-bind="field.preps"
         class="markdown-editor"
     />
   </starhorse-form-item>

@@ -60,7 +60,7 @@ const blurEvent = (column: any) => {
       });
 };
 const cellClick = (row: any, column: any) => {
-  if (!props.cellEditable || props.item['disabled'] == 'Y' || props.item['editDisabled'] == 'Y') {
+  if (!props.cellEditable || props.item['disabled']  || props.item['editDisabled'] ) {
     return;
   }
   row['isSelected'] = true;
@@ -139,12 +139,12 @@ const createPreps = (item: any) => {
       :show-overflow-tooltip="true"
   >
     <template #default="scope">
-      <template v-if="item.preps?.showComp == 'Y'">
+      <template v-if="item.preps?.showComp">
         <el-popover
             ref="popover"
             :placement="item.preps.placement || 'left'"
             :width="'auto'"
-            v-if="item.preps.popover == 'Y'"
+            v-if="item.preps.popover"
             @show="showOperation"
         >
           <template #reference>

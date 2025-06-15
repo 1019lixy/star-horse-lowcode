@@ -1,74 +1,10 @@
-<template>
-  <star-horse-dialog
-      :title="field.preps['label'] + '数据选择'"
-      :self-func="true"
-      :dialog-visible="dialogInputVisible"
-      @merge="selectItem"
-      @closeAction="closeAction"
-  >
-    <star-horse-search-comp
-        @searchData="(data: any) => dialogInputTableRef.createSearchParams(data)"
-        :formData="field.preps['searchFieldList']"
-        :compUrl="field.preps['dataUrl']"
-    />
-    <star-horse-table-comp
-        :fieldList="field.preps['fieldList']"
-        :primaryKey="field.preps['primaryKey']"
-        :compUrl="field.preps['dataUrl']"
-        ref="dialogInputTableRef"
-        :dialogInput="true"
-        height="400px"
-        :filterCondition="field.preps['filterCondition']"
-        :orderBy="field.preps['orderBy']"
-        @selectItem="selectItem"
-        :dataFormat="field.preps['dataFormat']"
-        :disableAction="true"
-    />
-  </star-horse-dialog>
-  <starhorse-form-item
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :formItem="field"
-      :parentField="parentField"
-  >
-    <el-input
-        :clearable="field.preps['clearable'] == 'Y'"
-        :disabled="checkIsDisabled(props)"
-        :max="field.preps['max']"
-        :maxlength="field.preps['maxlength']"
-        :min="field.preps['min']"
-        :minlength="field.preps['maxlength']"
-        :placeholder="field.preps['placeholder'] || '请输入' + field.preps['label']"
-        :prefix-icon="field.preps['prefixIcon']"
-        :readonly="field.preps['readonly'] == 'Y'"
-        :size="formInfo?.size || field?.preps['size'] || 'default'"
-        type="text"
-        :fid="field.preps['name']"
-        @change="itemAction('change')"
-        @input="itemAction('input')"
-        @keydown.enter="itemAction('enter')"
-        @focus="itemAction('focus')"
-        @blur="itemAction('blur')"
-        v-model="formData[field.preps['name']]"
-    >
-      <template #append>
-        <el-button
-            icon="Search"
-            @click="showVisible"
-            :size="formInfo?.size || field?.preps['size'] || 'default'"
-            :disabled="checkIsDisabled(props)"
-        />
-      </template>
-    </el-input>
-  </starhorse-form-item>
-</template>
 <script setup lang="ts">
 import {nextTick, onMounted, ref, shallowRef} from 'vue';
 import {warning} from '@/utils/message';
-import {FieldMapping} from '@/components/types/PageFieldInfo';
+import {FieldInfo, FieldMapping} from '@/components/types/PageFieldInfo';
 import {isJson} from '@/api/star_horse_utils';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
+import {SearchFields} from "@/components/types";
 
 const props = defineProps({
   isDesign: {
@@ -109,7 +45,7 @@ const itemAction = (prep: any) => {
 };
 const selectItem = (row: any) => {
   let data = '';
-  let needField = props.field.preps['needField'];
+  let needField = props.field.params?.needField;
   if (!row || !isJson(row)) {
     let selectDatas = dialogInputTableRef.value.multipleSelection;
     if (!selectDatas) {
@@ -121,7 +57,7 @@ const selectItem = (row: any) => {
     data = row;
   }
   //如果没有指定属性，则默认取相同的属性
-  let name = props.field.preps['name'];
+  let name = props.field.fieldName;
   if (!needField) {
     formData.value[name] = data[name];
   } else {
@@ -134,8 +70,8 @@ const selectItem = (row: any) => {
     });
   }
   console.log(data, needField);
-  if (props.field.preps['recall']) {
-    props.field.preps['recall'](row);
+  if (props.field.params?.recall) {
+    props.field.params['recall'](row);
   }
   closeAction();
 };
@@ -145,11 +81,11 @@ const closeAction = () => {
 const showVisible = () => {
   dialogInputVisible.value = true;
   nextTick(() => {
-    let fields = props.field.preps['needField'];
-    let name = props.field.preps['name'];
+    let fields = props.field.params.needField;
+    let name = props.field.fieldName;
     let realName = name;
-    if (props.field.preps['aliasName']) {
-      realName = props.field.preps['aliasName'];
+    if (props.field.aliasName) {
+      realName = props.field?.aliasName;
     }
     if (fields) {
       name = fields.map((item: FieldMapping) => item.sourceField)[0];
@@ -159,12 +95,95 @@ const showVisible = () => {
 };
 
 onMounted(() => {
-  actionName.value = props.field.preps?.actionName || 'normal';
+  let inputPreps = props.field?.params;
+  if (!inputPreps) {
+    warning('属性' + props.field?.label + '需要配置params 信息');
+    return;
+  }
+  if ( inputPreps.searchFieldList?.length === 0) {
+    let searchFieldList: Array<SearchFields> = [];
+    inputPreps.fieldList?.forEach((item: FieldInfo) => {
+      if (item.searchVisible) {
+        let temp: any = {
+          ...item
+        };
+        if (item.prefix) {
+          temp['fieldName'] = item.prefix + '.' + temp['fieldName'];
+        }
+        temp['defaultVisible'] = true;
+        if (item?.type == 'input' && !item['matchType']) {
+          temp['matchType'] = 'lk';
+        }
+        searchFieldList.push(temp);
+      }
+    });
+    inputPreps.searchFieldList = {fieldList: searchFieldList};
+  }
+  actionName.value = props.field.actionName || 'normal';
   if (!props.isSearch) {
     allAction(props, emits, formData, actionName.value, true);
   }
 });
 </script>
+<template>
+  <star-horse-dialog
+      :title="field.label + '数据选择'"
+      :self-func="true"
+      :dialog-visible="dialogInputVisible"
+      @merge="selectItem"
+      @closeAction="closeAction"
+  >
+    <star-horse-search-comp
+        @searchData="(data: any) => dialogInputTableRef.createSearchParams(data)"
+        :formData="field.params['searchFieldList']"
+        :compUrl="field.params['dataUrl']"
+    />
+    <star-horse-table-comp
+        :fieldList="{
+          cellEditable: false,
+          fieldList: field.params['fieldList']
+        }"
+        :primaryKey="field.params['primaryKey']"
+        :compUrl="field.params['dataUrl']"
+        ref="dialogInputTableRef"
+        :dialogInput="true"
+        height="400px"
+        :filterCondition="field.params['filterCondition']"
+        :orderBy="field.params['orderBy']"
+        @selectItem="selectItem"
+        :dataFormat="field.params['dataFormat']"
+        :disableAction="true"
+    />
+  </star-horse-dialog>
+  <starhorse-form-item
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      :formItem="field"
+      :parentField="parentField"
+  >
+    <el-input
+        :disabled="checkIsDisabled(props)"
+        type="text"
+        v-bind="field.preps"
+        :fid="field.fieldName"
+        @change="itemAction('change')"
+        @input="itemAction('input')"
+        @keydown.enter="itemAction('enter')"
+        @focus="itemAction('focus')"
+        @blur="itemAction('blur')"
+        v-model="formData[field.fieldName]"
+    >
+      <template #append>
+        <el-button
+            icon="Search"
+            @click="showVisible"
+            :disabled="checkIsDisabled(props)"
+        />
+      </template>
+    </el-input>
+  </starhorse-form-item>
+</template>
 <style lang="scss" scoped>
 :deep(.el-input-group__append) {
   padding: 0 20px !important;

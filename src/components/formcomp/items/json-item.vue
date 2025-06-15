@@ -1,6 +1,6 @@
 <template>
   <star-horse-dialog
-      :title="field.preps['label'] + 'JSON对象编辑'"
+      :title="field.label + 'JSON对象编辑'"
       :self-func="true"
       :dialog-visible="dialogInputVisible"
       @merge="selectItem"
@@ -8,7 +8,7 @@
       @closeAction="closeAction"
   >
     <star-horse-json-editor
-        v-if="field.preps['devType'] == 'Y'"
+        v-if="field.preps?.devType"
         v-model:modelValue="jsonObject"
         style="height: 100vh"
     />
@@ -24,18 +24,11 @@
     <div class="json-comp">
       <div class="json-box">
         <el-input
-            :fid="field.preps['name']"
-            :clearable="field.preps['clearable'] == 'Y'"
+            :fid="field.fieldName"
+            v-bind="field.preps"
             :disabled="checkIsDisabled(props)"
-            :max="field.preps['max']"
-            :maxlength="field.preps['maxlength']"
-            :min="field.preps['min']"
-            :minlength="field.preps['minlength']"
-            :placeholder="field.preps['placeholder'] || '请输入' + field.preps['label']"
             :readonly="true"
             :rows="field.preps['rows'] || 3"
-            :show-word-limit="field.preps['showWordLimit'] == 'Y'"
-            :size="formInfo?.size || field?.preps['size'] || 'default'"
             type="textarea"
             resize="none"
             @change="itemAction('change')"
@@ -43,7 +36,7 @@
             @keydown.enter="itemAction('enter')"
             @focus="itemAction('focus')"
             @blur="itemAction('blur')"
-            v-model="formData[field.preps['name']]"
+            v-model="formData[field.fieldName]"
         />
       </div>
       <div class="json-btn" @click="editJsonData" title="编辑数据">
@@ -123,7 +116,7 @@ const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
 const editJsonData = async () => {
-  let jsonStr = formData.value[props.field.preps['name']];
+  let jsonStr = formData.value[props.field.fieldName];
   let temp: any = {};
   if (jsonStr&&isJson(jsonStr)) {
     jsonObject.value = JSON.parse(jsonStr);
@@ -145,8 +138,8 @@ const editJsonData = async () => {
   }
 };
 const selectItem = async () => {
-  if (props.field.preps['devType'] == 'Y') {
-    formData.value[props.field.preps['name']] = JSON.stringify(jsonObject.value, null, 4);
+  if (props.field.preps['devType']) {
+    formData.value[props.field.fieldName] = JSON.stringify(jsonObject.value, null, 4);
   } else {
     let flag = false;
     await jsonFormRef.value.$refs.starHorseFormRef.validate((res: boolean) => {
@@ -161,7 +154,7 @@ const selectItem = async () => {
     dataList.forEach((item: any) => {
       jsonData[item.name] = item.value;
     });
-    formData.value[props.field.preps['name']] = JSON.stringify(jsonData, null, 4);
+    formData.value[props.field.fieldName] = JSON.stringify(jsonData, null, 4);
   }
   closeAction();
 };
@@ -172,7 +165,7 @@ const closeAction = () => {
   dialogInputVisible.value = false;
 };
 onMounted(() => {
-  actionName.value = props.field.preps?.actionName || 'normal';
+  actionName.value = props.field.actionName || 'normal';
   if (!props.isSearch) {
     allAction(props, emits, formData, actionName.value, true);
   }

@@ -5,6 +5,7 @@ import {operationConfirm, warning} from '@/utils/message';
 import {useDesignFormStore} from '@/store/DesignForm';
 import piniaInstance from '@/store/index';
 import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
+import {uuid} from "@/api/system";
 
 let containerTableRef = ref(); // 强制刷新表格
 const props = defineProps({
@@ -134,6 +135,7 @@ const deleteCol = (index: number) => {
                 group="starHorseGroup"
                 ghostClass="ghost"
                 animation="200"
+                :item-key="uuid()"
                 :list="field.preps.elements[td - 1].items"
             >
               <template #item="{ element: data }">

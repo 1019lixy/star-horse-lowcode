@@ -9,8 +9,8 @@
     <el-popover
         :popper-style="{ width: 'inherit !important' }"
         ref="popoverRef"
-        :placement="field.preps['placement']??'bottom-start'"
-        :disabled="checkIsDisabled(props)||field.preps['listView'] == 'Y'"
+        :placement="field.preps?.placement??'bottom-start'"
+        :disabled="checkIsDisabled(props)||field.preps?.listView"
         trigger="click"
     >
       <template #reference>
@@ -19,13 +19,13 @@
             fit="fill"
             shape="square"
             :style="{
-            'font-size': field.preps['listView'] == 'Y' ? '22px' : '24px',
-            background: field.preps['listView'] == 'Y' ? 'unset' : 'var(--el-avatar-bg-color)'
+            'font-size': field.preps?.listView ? '22px' : '24px',
+            background: field.preps?.listView  ? 'unset' : 'var(--el-avatar-bg-color)'
           }"
-            :icon="formData[field.preps['name']]"
+            :icon="formData[field.fieldName]"
         />
         <star-horse-icon
-            :icon-class="formData[field.preps['name']]"
+            :icon-class="formData[field.fieldName]"
             v-else
             size="30px"
             width="30px"
@@ -42,7 +42,7 @@
       <div class="icon-items">
         <div class="search-box">
           <el-input
-              :size="formInfo?.size || field?.preps['size'] || 'default'"
+
               v-model="searchName"
               @keydown.enter="dataSearch"
               clearable
@@ -58,14 +58,15 @@
               v-for="sdata in iconList"
               @click="assignIcon(sdata.value)"
               :title="sdata.name"
-              :class="{ 'icon-active': sdata.value == formData[field.preps['name']] }"
+              :key="sdata.value"
+              :class="{ 'icon-active': sdata.value == formData[field.fieldName] }"
           >
             <el-icon
                 class="star-icon"
                 style="font-size: 35px; color: var(--star-horse-style)"
                 v-if="iconType == 'system'"
             >
-              <component :is="sdata.value"/>
+              <component :is="sdata.value" :key="sdata.value+'_comp'"/>
             </el-icon>
             <star-horse-icon
                 :icon-class="sdata.value"
@@ -128,7 +129,7 @@ let iconType = ref<string>('system');
 const popoverRef = shallowRef();
 let actionName = shallowRef('normal');
 const assignIcon = (iconName: string) => {
-  formData.value[props.field.preps['name']] = iconName;
+  formData.value[props.field.fieldName] = iconName;
   unref(popoverRef).popperRef?.delayHide?.();
   itemAction('blur');
 };
@@ -142,22 +143,22 @@ const dataSearch = () => {
   }
 };
 const itemAction = (prep: any) => {
-  if (prep == actionName.value && props.field.preps['actionRelation']) {
-    props.field.preps['actionRelation'](
-        formData.value[props.field.preps['name']],
+  if (prep == actionName.value && props.field?.actionRelation) {
+    props.field?.actionRelation(
+        formData.value[props.field.fieldName],
         formData.value['xh']
     );
   }
   emits('selfFunc', prep, formData.value);
 };
 onMounted(() => {
-  actionName.value = props.field.preps?.actionName || 'normal';
-  if (props.field.preps['values']?.length > 0) {
+  actionName.value = props.field.actionName || 'normal';
+  if (props.field.preps?.values?.length > 0) {
     allIconList.value = props.field.preps['values'];
     iconType.value = 'user';
-  } else if (props.field.preps['iconType'] == 'user') {
+  } else if (props.field.preps?.iconType == 'user') {
     allIconList.value = loadSvgIcons();
-    iconType.value = props.field.preps['iconType'];
+    iconType.value = props.field.preps.iconType;
   } else {
     allIconList.value = loadElementPlusIcon();
     iconType.value = 'system';

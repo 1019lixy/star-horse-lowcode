@@ -9,7 +9,7 @@
     <div
         ref="markdownEditor"
         class="markdown-editor"
-        v-html="markdown.render(formData[field.preps['name']] || '')"
+        v-html="markdown.render(formData[field.fieldName] || '')"
     />
   </starhorse-form-item>
 </template>
