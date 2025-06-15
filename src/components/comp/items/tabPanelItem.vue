@@ -1,10 +1,7 @@
 <script setup lang="ts">
-import StarHorseFormItem from '@/components/comp/StarHorseFormItem.vue';
 import {ModelRef, onMounted, PropType} from 'vue';
 import {ApiUrls} from '@/components/types/ApiUrls';
 import {FieldInfo} from '@/components/types/PageFieldInfo';
-import StarHorseFormTable from '@/components/comp/StarHorseFormTable.vue';
-import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
 import {Config} from '@/api/settings';
 import {getDataIndex, getFormData, getPrefix} from '@/api/form_utils';
 
@@ -13,7 +10,7 @@ const props = defineProps({
   item: {type: Array as PropType<Array<FieldInfo> | any>, required: true},
   // 数据索引
   dataIndex: {type: Number, default: -1},
-  itemKey: {type: Number, default: 0},
+  itemKey: {type: [Number,String] , default: 0},
   // 父节点名称
   propPrefix: {type: String, default: ''},
   rules: {type: Object},
