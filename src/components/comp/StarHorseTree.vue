@@ -17,7 +17,7 @@ import {compKey} from "@/api/system";
 
 const props = defineProps({
   preps: {
-    type: Object,
+    type: Object as PropType<any>,
     default: () => {
       return {
         value: 'value',
@@ -256,7 +256,7 @@ defineExpose({
   <el-card class="inner_content" :style="{ width: collapse ? '60px' : 'unset',
                                            height: '100%',
                                            padding: 'unset' }">
-    <div class="selected-data gap-2" v-if="selectedDataList?.length > 0">
+    <div class="selected-data gap-2" v-if="showSelectData&&selectedDataList?.length > 0">
       <template v-for="(item,index) in selectedDataList" :key="compKey(item,index)">
         <el-tag closable @close="operSelectData(item, false)">{{ item[preps.label] }}</el-tag>
       </template>
@@ -368,8 +368,10 @@ defineExpose({
 .selected-data {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   justify-content: start;
-  margin: 5px;
+  align-items: center;
+  margin: 8px 5px;
   border: 1px dashed var(--star-horse-shadow);
 }
 
@@ -381,7 +383,7 @@ defineExpose({
   font-size: 13px;
   font-weight: 800;
   background: rgb(229, 230, 235);
-  border:1px solid #33272729;
+  border: 1px solid #33272729;
   justify-content: space-between;
 
   .title {

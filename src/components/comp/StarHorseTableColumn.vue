@@ -60,7 +60,7 @@ const blurEvent = (column: any) => {
       });
 };
 const cellClick = (row: any, column: any) => {
-  if (!props.cellEditable || props.item['disabled']  || props.item['editDisabled'] ) {
+  if (!props.cellEditable || props.item['disabled'] || props.item['editDisabled']) {
     return;
   }
   row['isSelected'] = true;
@@ -108,11 +108,11 @@ const showOperation = async () => {
 const prototypeCheck = (item: any) => {
   let flag = Object.keys(item).includes('listPrototypeDisplay');
   if (flag) {
-    return item.listPrototypeDisplay === true || item.listPrototypeDisplay !== 'N';
+    return typeof item.listPrototypeDisplay == 'boolean' ? item.listPrototypeDisplay : true;
   } else {
     flag = Object.keys(item.preps || {}).includes('listPrototypeDisplay');
     if (flag) {
-      return item.preps.listPrototypeDisplay === true || item.preps.listPrototypeDisplay !== 'N';
+      return typeof item.preps?.listPrototypeDisplay == 'boolean' ? item.preps?.listPrototypeDisplay : true;
     }
   }
   return false;
@@ -165,7 +165,7 @@ const createPreps = (item: any) => {
                   data: { type: Object },
                   item: { type: Object }
                 }
-              })
+              },window.__hostApp__ )
             "
               :data="scope.row"
               :item="item"

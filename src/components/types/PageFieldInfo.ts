@@ -118,7 +118,7 @@ export declare interface FieldInfo {
     /**
      * 以组件形式展示,如果是指定的组件，将以指定组件形式展示
      */
-    listPrototypeDisplay?: boolean | string;
+    listPrototypeDisplay?: boolean;
     /**
      * 是否必须项
      */
