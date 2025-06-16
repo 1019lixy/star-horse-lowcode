@@ -312,7 +312,7 @@ const props = defineProps({
           :item="item"
         />
       </template>
-      <template v-if="showBatchField" v-for="(item,key) in fieldList['batchFieldList']"  :key="compKey(item,key)">
+      <template v-if="showBatchField" v-for="(item,index) in fieldList['batchFieldList']"  :key="compKey(item,index)">
         <star-horse-table-column :data-format="dataFormat" :item="item" />
       </template>
     </el-table>

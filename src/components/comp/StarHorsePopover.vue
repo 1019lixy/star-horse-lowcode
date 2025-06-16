@@ -2,7 +2,6 @@
 import {onMounted, ref} from 'vue';
 import {postRequest} from "@/api/star_horse_apis";
 import {warning} from "@/utils/message";
-import icon from '@/assets/icon';
 import {compKey} from "@/api/system";
 
 const props = defineProps({
@@ -26,10 +25,8 @@ const init = () => {
       }
       iconList.value = resData.data;
     })
-  } else if (props.icons.length > 0) {
-    iconList.value = props.icons;
   } else {
-    iconList.value = icon;
+    iconList.value = props.icons;
   }
 }
 onMounted(() => {

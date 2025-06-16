@@ -77,7 +77,7 @@ onMounted(() => {
     <field-list @selectData="changeItem"/>
   </star-horse-dialog>
   <div class="w-fill" :class="{'item-info':formItem.preps?.itemType!='usercomp'}"
-       :style="{margin:formItem.preps?.itemType=='button'?'5px auto':'unset'}" v-if="bareFlag===true||bareFlag=='Y'">
+       :style="{margin:formItem.preps?.itemType=='button'?'5px auto':'unset'}" v-if="bareFlag===true">
     <help :message="formItem.preps?.helpMsg" v-if="formItem.preps?.helpMsg"/>
     <slot></slot>
   </div>

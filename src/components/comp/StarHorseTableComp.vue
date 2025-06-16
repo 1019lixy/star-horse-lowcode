@@ -877,7 +877,7 @@ defineExpose({
                         :cell-style="{ height: '30px', 'font-size': '12px' }" border>
                 <el-table-column fixed="left" label="操作" :width="160" v-if="expandTable.showButton">
                   <template #default="innerScope">
-                    <template v-for="(epd,key) in expandTable.extendFuncs"  :key="compKey(epd,key)">
+                    <template v-for="(epd,index) in expandTable.extendFuncs"  :key="compKey(epd,index)">
                       <el-tooltip :content="epd.btnName">
                         <star-horse-icon v-if="permissions[epd.authority!]"
                                          @click="expandCommonFun(epd.authority!, innerScope.row, scope.row)"

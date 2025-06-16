@@ -84,11 +84,11 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, ref, shallowRef, unref, PropType} from 'vue';
-import {loadElementPlusIcon, loadSvgIcons} from '@/api/star_horse_utils';
+import {onMounted, PropType, ref, shallowRef, unref} from 'vue';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
 import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
+import {compDynamicData} from "@/api/star_horse_utils";
 
 const props = defineProps({
   isDesign: {
@@ -149,24 +149,21 @@ const itemAction = (prep: any) => {
   }
   emits('selfFunc', prep, formData.value);
 };
+const init = async () => {
+  const dataa = await compDynamicData(props.field);
+  if (dataa?.length) {
+    allIconList.value = dataa;
+  }
+  iconType.value = props.field.preps?.iconType ?? 'system';
+  iconList.value = allIconList.value;
+}
 onMounted(() => {
   actionName.value = props.field.actionName || 'normal';
-  if (props.field.preps?.values?.length > 0) {
-    allIconList.value = props.field.preps['values'];
-    iconType.value = 'user';
-  } else if (props.field.preps?.iconType == 'user') {
-    allIconList.value = loadSvgIcons();
-    iconType.value = props.field.preps.iconType;
-  } else {
-    allIconList.value = loadElementPlusIcon();
-    iconType.value = 'system';
-  }
-  iconList.value = allIconList.value;
+  init();
   if (!props.isSearch) {
     allAction(props, emits, formData, actionName.value, true);
   }
 });
-
 </script>
 <style scoped>
 .icon-items {

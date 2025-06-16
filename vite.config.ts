@@ -63,11 +63,6 @@ export default defineConfig((mode) => {
                 'windows.jQuery': 'jquery',
                 'windows.$': 'jquery'
             }),
-            /*   visualizer({
-                  open: false, // 构建完成后自动打开分析页面
-                  gzipSize: true,
-                  brotliSize: true
-              }) */
         ],
         css: {
             //解决 Deprecation Warning: The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0.
@@ -87,7 +82,7 @@ export default defineConfig((mode) => {
         build: {
             //  告诉打包工具 "vue-demi" 也是外部依赖项
             rollupOptions: {
-                external: ['vue', 'pinia', 'core-js', 'elementPlus'],
+                external: ['vue', 'pinia', 'core-js', 'elementPlus',"simple/**/*"],
                 output: {
                     exports: 'named',
                     assetFileNames: 'assets/[name][extname]', // 修正资源输出路径

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {computed, ModelRef, nextTick, onMounted, PropType, reactive, ref, unref} from 'vue';
 import SubSystemMenu from '@/components/menu/SubSystemMenu.vue';
-import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
 import {useGlobalConfigStore} from '@/store/GlobalConfig';
 import piniaInstance from '@/store';
 import {PageProps} from '@/components/types/PageProps';
@@ -258,7 +257,7 @@ defineExpose({
                                            height: '100%',
                                            padding: 'unset' }">
     <div class="selected-data gap-2" v-if="selectedDataList?.length > 0">
-      <template v-for="(item,key) in selectedDataList" :key="compKey(item,key)">
+      <template v-for="(item,index) in selectedDataList" :key="compKey(item,index)">
         <el-tag closable @close="operSelectData(item, false)">{{ item[preps.label] }}</el-tag>
       </template>
     </div>

@@ -1,9 +1,8 @@
 // 在文件最顶部添加以下代码
 import {App, defineAsyncComponent} from 'vue';
+import 'tailwindcss/index.css';
 import '@/assets/css/index.scss';
 import 'element-plus/theme-chalk/index.css';
-import '@/assets/css/flow.scss';
-import 'tailwindcss/index.css';
 import '@/assets/icons.css';
 import piniaInstance from '@/store';
 import type {Router} from 'vue-router';

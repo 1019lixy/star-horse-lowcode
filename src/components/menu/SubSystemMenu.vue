@@ -4,7 +4,7 @@ import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
 import {compKey} from "@/api/system";
 
 defineProps({
-  dataList: {type: Array, required: true},
+  dataList: {type: Array<any>, required: true},
   preps: {
     type: Object as PropType<any>,
     default: () => {

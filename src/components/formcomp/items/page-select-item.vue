@@ -230,6 +230,7 @@ onMounted(() => {
     <el-select
         :fid="field.fieldName"
         v-bind="field.preps"
+        :disabled="checkIsDisabled(props)"
         @change="itemAction('change')"
         @input="itemAction('input')"
         @keydown.enter="itemAction('enter')"

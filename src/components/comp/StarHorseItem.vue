@@ -1,17 +1,14 @@
 <script setup lang="ts" name="StarHorseItem">
-import {computed, inject, ModelRef, onMounted, PropType, ref, shallowRef, unref, watch} from 'vue';
-import {warning} from '@/utils/message';
-import {FieldInfo} from '@/components/types/PageFieldInfo';
+import {computed, inject, ModelRef, onMounted, PropType, ref} from 'vue';
 import {useSelfOperationStore} from '@/store/SelfOperation';
 import piniaInstance from '@/store';
 import {compKey, uuid} from '@/api/system';
 import {Config} from '@/api/settings';
-import {SearchFields} from '@/components/types/SearchProps';
 import {checkVisible} from '@/api/form_utils';
 
 const props = defineProps({
   item: {type: Object as PropType<any>, required: true},
-  column: {type: Object  as PropType<any>},
+  column: {type: Object as PropType<any>},
   primaryKey: {type: Object as PropType<any>},
   // 数据索引
   dataIndex: {type: Number, default: -1},
@@ -164,7 +161,7 @@ const stopDrag = () => {
   }
 };
 const checkClassName = () => {
-  if (props.bareFlag|| props.item.preps?.headerFlag) {
+  if (props.bareFlag || props.item.preps?.headerFlag) {
     return 'bare-comp';
   } else {
     return 'comp-info';
@@ -174,7 +171,7 @@ onMounted(() => {
   if (typeList.includes(props.item?.type) || typeList.includes(props.item?.fieldType)) {
     defaultAction.value = 'change';
   }
-  actionName.value = props.item?.actionName??defaultAction.value;
+  actionName.value = props.item?.actionName ?? defaultAction.value;
   init();
 });
 </script>

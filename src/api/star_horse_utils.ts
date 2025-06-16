@@ -4,7 +4,6 @@ import {ElLoading} from 'element-plus';
 import {download, getRequest, postRequest, uploadRequest} from '@/api/star_horse_apis';
 import {error, operationConfirm, success, warning} from '@/utils/message';
 import {SelectOption} from '@/components/types/SearchProps';
-import * as ElementPlusIconsVue from '@element-plus/icons-vue';
 import {BatchFieldInfo, FieldInfo, OrderByInfo, PageFieldInfo, TabFieldInfo} from '@/components/types/PageFieldInfo';
 import {ApiUrls} from '@/components/types/ApiUrls';
 import {DialogProps} from '@/components/types/DialogProps';
@@ -281,27 +280,27 @@ export async function dictData(dictType: string, exclusion: Array<string> = [], 
 /**
  * 加载ElementPlus 提供的官方矢量图标
  */
-export function loadElementPlusIcon() {
-    const menuIconList = [];
-    for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
-        menuIconList.push({name: key, value: component.name});
-    }
-    return menuIconList;
-}
+// export function loadElementPlusIcon() {
+//     const menuIconList = [];
+//     for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+//         menuIconList.push({name: key, value: component.name});
+//     }
+//     return menuIconList;
+// }
 
 /**
  * 自定义的svg图标
  */
-export function loadSvgIcons() {
-    const items = import.meta.glob('/src/icons/*.svg');
-    const menuIconList = [];
-    for (const item of Object.entries(items)) {
-        const key = item[0];
-        const name = key.slice(key.lastIndexOf('/') + 1, key.lastIndexOf('.'));
-        menuIconList.push({name: name, value: name});
-    }
-    return menuIconList;
-}
+// export function loadSvgIcons() {
+//     const items = import.meta.glob('/src/icons/*.svg');
+//     const menuIconList = [];
+//     for (const item of Object.entries(items)) {
+//         const key = item[0];
+//         const name = key.slice(key.lastIndexOf('/') + 1, key.lastIndexOf('.'));
+//         menuIconList.push({name: name, value: name});
+//     }
+//     return menuIconList;
+// }
 
 /**
  * 数据匹配方式

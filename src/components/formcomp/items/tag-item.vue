@@ -55,6 +55,7 @@ const tagType = (val: any) => {
   >
     <el-tag
         v-bind="field.preps"
+        :type="tagType(formData[field.fieldName])"
         @click="itemAction('click')"
     >
       {{
