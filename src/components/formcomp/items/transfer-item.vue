@@ -60,7 +60,10 @@ const itemAction = (prep: string) => {
   allAction(props, emits, formData, prep);
 };
 const initData = async () => {
-  props.field.preps['values'] = await compDynamicData(props.field);
+  const dataa = await compDynamicData(props.field);
+  if (dataa?.length) {
+    props.field.preps['values'] = dataa;
+  }
   bakeData.value = JSON.parse(JSON.stringify(props.field?.preps['values'] ?? []));
 };
 
@@ -78,6 +81,8 @@ watch(() => formData.value[props.field.fieldName + "OptionList"], (val) => {
   if (val?.length > 0) {
     props.field.preps['values'] = val;
   }
+},{
+  immediate: true,
 })
 </script>
 <style scoped></style>

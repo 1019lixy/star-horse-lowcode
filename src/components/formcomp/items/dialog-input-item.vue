@@ -67,7 +67,6 @@ const selectItem = (row: any) => {
       }
     });
   }
-  console.log(data, needField);
   if (props.field.params?.recall) {
     props.field.params['recall'](row);
   }

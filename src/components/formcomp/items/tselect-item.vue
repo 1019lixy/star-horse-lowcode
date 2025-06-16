@@ -24,10 +24,8 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, shallowRef, watch, PropType} from 'vue';
-import {dictData, loadData} from '@/api/star_horse_utils';
-import {error} from '@/utils/message';
-import {SelectOption} from '@/components/types/SearchProps';
+import {onMounted, PropType, shallowRef, watch} from 'vue';
+import {compDynamicData} from '@/api/star_horse_utils';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
 
 const props = defineProps({
@@ -80,49 +78,9 @@ const renderContent = (_h: Function, data: any) => {
  * 动态获取数据
  */
 const initData = async () => {
-  let temp = props.field.preps;
-  let dataSource = temp['dataSource'];
-  let urlOrDictName = temp['urlOrDictName'];
-  let queryParams = temp['queryParams'];
-  if (dataSource == 'url') {
-    let requestParams = [] as any;
-    queryParams?.forEach((item: any) => {
-      if (!item.name) {
-        return;
-      }
-      requestParams.push({
-        propertyName: item.name,
-        value: item.value,
-        operation: item.matchType
-      });
-    });
-    let url = temp['preinterfaceUrl'] + temp['interfaceUrl'];
-    let params = {
-      url: url,
-      httpMethod: temp.httpMethod || 'POST',
-      dataType: temp.dataType || 'JSON',
-      searchInfo: {
-        fieldList: requestParams
-      }
-    };
-    url = '/system-config/redirect/execute';
-    let validResult = await loadData(url, params);
-    if (validResult.error) {
-      error(validResult.error);
-    } else {
-      let reDataList: SelectOption[] = [];
-      validResult.data.forEach((item: any) => {
-        reDataList.push({name: item[temp['selectLabel']], value: item[temp['selectValue']]});
-      });
-      props.field.preps['data'] = reDataList;
-    }
-  } else if (dataSource == 'dict') {
-    let dicts = await dictData(urlOrDictName);
-    if (Object.keys(dicts).length == 0) {
-      error('数据字典可能未配置');
-    } else {
-      props.field.preps['data'] = dicts;
-    }
+  const dataa = await compDynamicData(props.field);
+  if (dataa?.length) {
+    props.field.preps['data'] = dataa;
   }
 };
 onMounted(() => {
@@ -132,7 +90,6 @@ onMounted(() => {
   props.field.preps['remote'] = props.field.preps['remote'] || props.field.preps['dataSource'] == 'url';
   props.field.preps['filterable'] = true;
   props.field.preps['collapseTags'] = true;
-  props.field.preps['data'] = props.field?.optionList;
   props.field.preps['props'] = props.field.preps['props'] || {
     label: 'name',
     value: 'value'
@@ -147,6 +104,8 @@ watch(() => formData.value[props.field.fieldName + "OptionList"], (val) => {
   if (val?.length > 0) {
     props.field.preps['data'] = val;
   }
-})
+}, {
+  immediate: true,
+});
 </script>
 <style scoped></style>

@@ -11,11 +11,11 @@ import {checkVisible} from '@/api/form_utils';
 
 const props = defineProps({
   item: {type: Object as PropType<any>, required: true},
-  column: {type: Object},
+  column: {type: Object  as PropType<any>},
   primaryKey: {type: Object as PropType<any>},
   // 数据索引
   dataIndex: {type: Number, default: -1},
-  bareFlag: {type: Object as PropType<any>, default: false},
+  bareFlag: {type: Boolean, default: false},
   batchName: {type: String, default: ''},
   compSize: {type: String, default: Config.compSize},
   isSearch: {type: Boolean, default: false}, //是否查询数据
@@ -68,20 +68,20 @@ const actionDispatcher = (act: string, ...params: any[]) => {
   }
 };
 //页面属性改变，重新刷新数据
-watch(
-    () => [
-      props.item,
-      props.isEdit
-    ],
-    () => {
-      console.log('组件属性改变', props.item);
-      compPreps();
-    },
-    {
-      immediate: false,
-      deep: true
-    }
-);
+// watch(
+//     () => [
+//       props.item,
+//       props.isEdit
+//     ],
+//     () => {
+//       console.log('组件属性改变', props.item);
+//       compPreps();
+//     },
+//     {
+//       immediate: false,
+//       deep: true
+//     }
+// );
 const dateType: Array<string> = ['year', 'month', 'date', 'datetime', 'week', 'datetimerange', 'daterange'];
 const init = () => {
   if (!props.item['id']) {
@@ -164,7 +164,7 @@ const stopDrag = () => {
   }
 };
 const checkClassName = () => {
-  if (props.bareFlag === true || props.bareFlag == 'Y' || props.item.preps?.headerFlag) {
+  if (props.bareFlag|| props.item.preps?.headerFlag) {
     return 'bare-comp';
   } else {
     return 'comp-info';

@@ -29,7 +29,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, shallowRef, watch, PropType} from 'vue';
+import {onMounted, PropType, shallowRef, watch} from 'vue';
 import {compDynamicData, createFilter, dynamicUrlOperation} from '@/api/star_horse_utils';
 import {SearchParams} from '@/components/types/Params';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
@@ -71,7 +71,10 @@ const itemAction = (prep: any) => {
  * 动态获取数据
  */
 const initData = async () => {
-  props.field.preps['values'] = await compDynamicData(props.field);
+  const dataa = await compDynamicData(props.field);
+  if (dataa?.length) {
+    props.field.preps['values'] = dataa;
+  }
 };
 const remoteMethod = async (queryString: string) => {
   let temp = props.field.preps;
@@ -95,7 +98,6 @@ onMounted(() => {
   props.field.preps['remote'] = props.field.preps['remote'] || props.field.preps['dataSource'] == 'url';
   props.field.preps['filterable'] = true;
   props.field.preps['collapseTags'] = true;
-  props.field.preps['values'] = props.field?.optionList;
   initData();
   actionName.value = props.field.actionName || 'normal';
   if (!props.isSearch) {
@@ -107,6 +109,8 @@ watch(() => formData.value[props.field.fieldName + "OptionList"], (val) => {
   if (val?.length > 0) {
     props.field.preps['values'] = val;
   }
+}, {
+  immediate: true,
 })
 </script>
 <style lang="scss" scoped>

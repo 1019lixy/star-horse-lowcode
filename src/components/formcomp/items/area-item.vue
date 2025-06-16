@@ -10,7 +10,6 @@
         :fid="field.fieldName"
         v-bind="field.preps"
         :disabled="checkIsDisabled(props)"
-        :options="areaData"
         @change="itemAction('change')"
         @input="itemAction('input')"
         @keydown.enter="itemAction('enter')"
@@ -21,7 +20,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {nextTick, onMounted, shallowRef, PropType} from 'vue';
+import {nextTick, onMounted, PropType, shallowRef, watch} from 'vue';
 import {compDynamicData} from '@/api/star_horse_utils';
 import areaData from '@/api/pcas-code.json';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
@@ -60,8 +59,18 @@ const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
 const initData = async () => {
+  if (!props.field.preps) {
+    props.field.preps = {}
+  }
+  if (props.field.preps.user) {
+    const data = await compDynamicData(props.field);
+    if (data?.length) {
+      props.field.preps['options'] = data;
+    }
+  } else {
+    props.field.preps['options'] = areaData;
+  }
   await nextTick();
-  props.field.preps['values'] = await compDynamicData(props.field);
   let data: any = formData.value[props.field.fieldName];
   if (data) {
     formData.value[props.field.fieldName] = JSON.parse(data);
@@ -79,6 +88,13 @@ onMounted(() => {
   if (!props.isSearch) {
     allAction(props, emits, formData, actionName.value, true);
   }
+});
+watch(() => formData.value[props.field.fieldName + "OptionList"], (val) => {
+  if (val?.length > 0) {
+    props.field.preps['options'] = val;
+  }
+}, {
+  immediate: true,
 });
 </script>
 <style lang="scss" scoped>

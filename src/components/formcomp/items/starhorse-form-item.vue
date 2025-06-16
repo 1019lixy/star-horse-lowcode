@@ -11,14 +11,14 @@ const props = defineProps({
   parentId: {type: Object as PropType<any>},
   formItem: {type: Object as PropType<any>, required: true},
   isDesign: {type: Boolean, default: false},
-  disabled: {type: Object as PropType<Boolean | String>},
+  disabled: {type: Boolean,default:false},
   //是否需要css 修饰
-  bareFlag: {type: Object as PropType<Boolean | String>, default: false}
+  bareFlag: {type: Boolean, default: false}
 });
 let designForm = useDesignFormStore(piniaInstance);
 let isEdit = computed(() => designForm.isEdit);
 let currentItemId = computed(() => designForm.currentItemId);
-const isDisabled = computed(() => props.disabled === true || props.disabled == 'Y');
+const isDisabled = computed(() => props.disabled);
 
 let componentVisible = computed(() => {
   return designForm.componentVisible && currentItemId.value == props.formItem?.preps.id;

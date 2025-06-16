@@ -546,11 +546,11 @@ export async function compDynamicData(field: any) {
     const dataSource = temp.preps?.dataSource;
     const urlOrDictName = temp.preps?.urlOrDictName;
     //如果已经有数据了，就不再请求
-    if (field.preps?.values?.length > 0) {
-        return field.preps?.values;
+    if (unref(field.preps?.values)?.length > 0) {
+        return unref(field.preps?.values);
     }
-    if (field?.optionList?.length > 0) {
-        return field.optionList;
+    if (unref(field?.optionList)?.length > 0) {
+        return unref(field.optionList);
     }
     if (dataSource == 'url') {
         reDataList = await dynamicUrlOperation(field);
@@ -562,7 +562,7 @@ export async function compDynamicData(field: any) {
             reDataList = dicts;
         }
     } else {
-        reDataList = temp?.values ?? temp?.preps?.values;
+        reDataList = unref(temp?.preps?.values) || unref(temp?.optionList) || [];
     }
     return reDataList;
 }
@@ -637,10 +637,10 @@ export async function dynamicUrlOperation(preps: any, queryInfo?: SearchParams[]
  * @param queryString 查询参数
  */
 export async function createFilter(queryString: string) {
-    return (restaurant: SelectOption) => {
+    return (data: SelectOption) => {
         return (
-            restaurant?.name?.toLowerCase().search(queryString?.toLowerCase()) ||
-            restaurant?.value?.toString()?.toLowerCase().search(queryString?.toLowerCase())
+            data?.name?.toLowerCase().search(queryString?.toLowerCase()) ||
+            data?.value?.toString()?.toLowerCase().search(queryString?.toLowerCase())
         );
     };
 }

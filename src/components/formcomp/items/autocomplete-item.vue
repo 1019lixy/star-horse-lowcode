@@ -21,7 +21,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, shallowRef, watch, PropType} from 'vue';
+import {onMounted, PropType, shallowRef, watch} from 'vue';
 import {compDynamicData, createFilter, dynamicUrlOperation} from '@/api/star_horse_utils';
 import {SearchParams} from '@/components/types/Params';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
@@ -64,7 +64,10 @@ const itemAction = (prep: any) => {
  * 动态获取数据
  */
 const initData = async () => {
-  props.field.preps['values'] = await compDynamicData(props.field);
+  const data = await compDynamicData(props.field);
+  if (data?.length) {
+    props.field.preps['values'] = data;
+  }
 };
 onMounted(() => {
   if (!props.field.preps) {
@@ -97,6 +100,6 @@ watch(() => formData.value[props.field.fieldName + "OptionList"], (val) => {
   if (val?.length > 0) {
     props.field.preps['data'] = val;
   }
-})
+}, {immediate: true})
 </script>
 <style scoped></style>

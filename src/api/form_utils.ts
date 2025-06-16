@@ -38,7 +38,7 @@ export function dynamicFormAnalysis(props: any, dataForm: any) {
  */
 export function validMsg(item: any, dataForm: any) {
     const rules = [];
-    if (item.required && item.disabled != 'Y') {
+    if (item.required && !item.disabled) {
         rules.push({required: true, message: `${item.label}不能为空`, trigger: 'blur'});
         if (item.type == 'number-range') {
             rules.push({

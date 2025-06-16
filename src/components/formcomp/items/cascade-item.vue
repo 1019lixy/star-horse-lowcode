@@ -9,7 +9,6 @@
     <el-cascader
         :fid="field.fieldName"
         v-bind="field.preps"
-        :options="field.preps['values']"
         :disabled="checkIsDisabled(props)"
         @change="itemAction('change')"
         @input="itemAction('input')"
@@ -60,7 +59,10 @@ const itemAction = (prep: any) => {
 };
 const initData = async () => {
   await nextTick();
-  props.field.preps['values'] = await compDynamicData(props.field);
+  const dataa = await compDynamicData(props.field);
+  if (dataa?.length) {
+    props.field.preps['options'] = dataa;
+  }
   let data: any = formData.value[props.field.fieldName];
   if (isJson(data)) {
     formData.value[props.field.fieldName] = JSON.parse(data);
@@ -76,7 +78,6 @@ onMounted(() => {
   if (!props.field.preps) {
     props.field.preps = {}
   }
-  props.field.preps['values'] = props.field?.optionList;
   props.field.preps['props'] = {
     label: 'name',
     multiple: props.field?.multiple,
@@ -90,8 +91,10 @@ onMounted(() => {
 });
 watch(() => formData.value[props.field.fieldName + "OptionList"], (val) => {
   if (val?.length > 0) {
-    props.field.preps['values'] = val;
+    props.field.preps['options'] = val;
   }
+},{
+  immediate: true,
 })
 </script>
 <style lang="scss" scoped>
