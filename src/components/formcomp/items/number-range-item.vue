@@ -23,6 +23,7 @@
             :controls="false"
             :disabled="checkIsDisabled(props)"
             v-bind="field.preps"
+            :placeholder="field.preps?.minPlaceholder"
             @change="itemAction('change')"
             @blur="handleBlur"
             @focus="handleFocus"
@@ -39,6 +40,7 @@
             @change="itemAction('change')"
             @blur="handleBlur"
             @focus="handleFocus"
+            :placeholder="field.preps?.maxPlaceholder"
             :step-strictly="field.preps?.stepStrictly"
             v-model="formData[field.preps['maxName']]"
         />

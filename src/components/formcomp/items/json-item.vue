@@ -1,58 +1,19 @@
 <template>
-  <star-horse-dialog
-      :title="field.label + 'JSON对象编辑'"
-      :self-func="true"
-      :dialog-visible="dialogInputVisible"
-      @merge="selectItem"
-      @resetForm="resetForm"
-      @closeAction="closeAction"
-  >
-    <star-horse-json-editor
-        v-if="field.preps?.devType"
-        v-model:modelValue="jsonObject"
-        style="height: 100vh"
-    />
-    <star-horse-form v-else :field-list="jsonTableField" ref="jsonFormRef"/>
-  </star-horse-dialog>
-  <starhorse-form-item
+  <base-json-item
       :isDesign="isDesign"
       :disabled="disabled"
-      :bareFlag="bareFlag"
-      :formItem="field"
+      :field="field"
+      @selectItem="itemAction"
+      :formInfo="formInfo"
+      v-model:formData="formData"
+      @selfFunc="itemAction"
       :parentField="parentField"
-  >
-    <div class="json-comp">
-      <div class="json-box">
-        <el-input
-            :fid="field.fieldName"
-            v-bind="field.preps"
-            :disabled="checkIsDisabled(props)"
-            :readonly="true"
-            :rows="field.preps['rows'] || 3"
-            type="textarea"
-            resize="none"
-            @change="itemAction('change')"
-            @input="itemAction('input')"
-            @keydown.enter="itemAction('enter')"
-            @focus="itemAction('focus')"
-            @blur="itemAction('blur')"
-            v-model="formData[field.fieldName]"
-        />
-      </div>
-      <div class="json-btn" @click="editJsonData" title="编辑数据">
-        <star-horse-icon icon-class="edit" style="cursor: pointer"/>
-      </div>
-    </div>
-  </starhorse-form-item>
+      dataType="object"
+  />
 </template>
 <script setup lang="ts">
-import {nextTick, onMounted, reactive, shallowRef, PropType} from 'vue';
-import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
-import {PageFieldInfo} from '@/components/types/PageFieldInfo';
-import StarHorseForm from '@/components/comp/StarHorseForm.vue';
-import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
-import StarHorseJsonEditor from '@/components/comp/StarHorseJsonEditor.vue';
-import {isJson} from "@/api/star_horse_utils";
+import {onMounted, PropType, shallowRef} from 'vue';
+import {allAction} from '@/components/formcomp/utils/ItemRelationEventUtils';
 
 const props = defineProps({
   isDesign: {
@@ -83,86 +44,14 @@ const props = defineProps({
 });
 const emits = defineEmits(['selfFunc', 'selectItem']);
 const formData = defineModel("formData");
-let dialogInputVisible = shallowRef<boolean>(false);
-let jsonFormRef = shallowRef();
-let jsonObject = shallowRef<any>({});
-let jsonTableField = reactive<PageFieldInfo>({
-  batchFieldList: [
-    {
-      batchName: 'jsonDatas',
-      fieldList: [
-        {
-          label: 'Name/名称',
-          fieldName: 'name',
-          type: 'input',
-          required: true,
-          formVisible: true
-        },
-        {
-          label: 'Value/值',
-          fieldName: 'value',
-          type: 'input',
-          required: true,
-          formVisible: true
-        }
-      ]
-    }
-  ]
-});
 let actionName = shallowRef('normal');
 const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
-const editJsonData = async () => {
-  let jsonStr = formData.value[props.field.fieldName];
-  let temp: any = {};
-  if (jsonStr && isJson(jsonStr)) {
-    jsonObject.value = JSON.parse(jsonStr);
-    let arr = [];
-    for (let key in jsonObject.value) {
-      arr.push({
-        name: key,
-        value: jsonObject.value[key]
-      });
-    }
-    temp['jsonDatas'] = arr;
-  } else {
-    temp['jsonDatas'] = {};
-  }
-  dialogInputVisible.value = true;
-  await nextTick();
-  if (props.field.preps['devType'] != 'Y') {
-    jsonFormRef.value.setFormData(temp);
-  }
-};
-const selectItem = async () => {
-  if (props.field.preps['devType']) {
-    formData.value[props.field.fieldName] = JSON.stringify(jsonObject.value, null, 4);
-  } else {
-    let flag = false;
-    await jsonFormRef.value.$refs.starHorseFormRef.validate((res: boolean) => {
-      flag = res;
-    });
-    if (!flag) {
-      return;
-    }
-    let temp = jsonFormRef.value.getFormData().value;
-    let dataList = temp['jsonDatas'];
-    let jsonData: any = {};
-    dataList.forEach((item: any) => {
-      jsonData[item.name] = item.value;
-    });
-    formData.value[props.field.fieldName] = JSON.stringify(jsonData, null, 4);
-  }
-  closeAction();
-};
-const resetForm = () => {
-  jsonFormRef.value.setFormData({jsonDatas: [{}]});
-};
-const closeAction = () => {
-  dialogInputVisible.value = false;
-};
 onMounted(() => {
+  if (!props.field.preps) {
+    props.field.preps = {};
+  }
   actionName.value = props.field.actionName || 'normal';
   if (!props.isSearch) {
     allAction(props, emits, formData, actionName.value, true);
@@ -171,38 +60,5 @@ onMounted(() => {
 
 </script>
 <style lang="scss" scoped>
-.json-comp {
-  width: 100%;
-  display: flex;
-  align-items: center;
 
-  .json-box {
-    flex: 1;
-    margin-right: 5px;
-
-    :deep(.el-input) {
-      height: 60px !important;
-    }
-  }
-
-  .json-btn {
-    cursor: pointer;
-    border: 1px solid var(--star-horse-style);
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    vertical-align: middle;
-  }
-}
-
-:deep(.jsoneditor) {
-  border-bottom: thin solid var(--star-horse-style);
-}
-
-:deep(.jsoneditor-menu) {
-  background-color: var(--star-horse-style);
-  border-bottom: 1px solid var(--star-horse-style);
-}
 </style>

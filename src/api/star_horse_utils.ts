@@ -1,6 +1,7 @@
 import {SearchInfo, SearchParams} from '@/components/types/Params';
 import {reactive, Reactive, unref} from 'vue';
 import {ElLoading} from 'element-plus';
+import JSON5 from 'json5';
 import {download, getRequest, postRequest, uploadRequest} from '@/api/star_horse_apis';
 import {error, operationConfirm, success, warning} from '@/utils/message';
 import {SelectOption} from '@/components/types/SearchProps';
@@ -278,31 +279,6 @@ export async function dictData(dictType: string, exclusion: Array<string> = [], 
 }
 
 /**
- * 加载ElementPlus 提供的官方矢量图标
- */
-// export function loadElementPlusIcon() {
-//     const menuIconList = [];
-//     for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
-//         menuIconList.push({name: key, value: component.name});
-//     }
-//     return menuIconList;
-// }
-
-/**
- * 自定义的svg图标
- */
-// export function loadSvgIcons() {
-//     const items = import.meta.glob('/src/icons/*.svg');
-//     const menuIconList = [];
-//     for (const item of Object.entries(items)) {
-//         const key = item[0];
-//         const name = key.slice(key.lastIndexOf('/') + 1, key.lastIndexOf('.'));
-//         menuIconList.push({name: name, value: name});
-//     }
-//     return menuIconList;
-// }
-
-/**
  * 数据匹配方式
  */
 export function searchMatchList(): SelectOption[] {
@@ -364,11 +340,12 @@ export function isJson(v: any) {
     if (!v) {
         return false;
     }
-    if (v && typeof v === 'string' && /^\{.*\}$/.test(v) || /^\[.*\]$/.test(v)) {
+    if (v && typeof v === 'string' && (/^\{[\s\S]*\}$/.test(v) || /^\[[\s\S]*\]$/.test(v))) {
         try {
-            JSON.parse(v);
+            JSON5.parse(v);
             return true;
         } catch (e) {
+            console.log(e);
             return false;
         }
     }

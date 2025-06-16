@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import {ModelRef, onBeforeUnmount, onMounted, ref} from 'vue';
+import {ModelRef, onBeforeUnmount, onMounted, PropType, ref} from 'vue';
 import JsonEditor from 'vue3-ts-jsoneditor';
 
 defineProps({
-  options: {type: Object},
+  options: {type: Object as PropType<any>},
   currentMode: {
     type: String,
     default: 'code'
@@ -39,7 +39,6 @@ onMounted(() => {
   setEditorContent(json.value);
 });
 onBeforeUnmount(() => {
-  editor.value?.destroy();
   editor.value = null;
 });
 defineExpose({
@@ -50,7 +49,7 @@ defineExpose({
 <template>
   <json-editor ref="editor"
                mode="text"
-               v-model:text="json"
+               v-model:json="json"
                :queryLanguagesIds="queryLanguages"
                class="json-editor"/>
 </template>

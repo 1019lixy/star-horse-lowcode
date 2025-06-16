@@ -10,6 +10,11 @@
         :fid="field.fieldName"
         :disabled="checkIsDisabled(props)"
         v-bind="field.preps"
+        :format="field.preps?.format || 'YYYY-MM-DD HH:mm:ss'"
+        :value-format="field.preps?.valueFormat"
+        date-format="YYYY-MM-DD"
+        time-format="HH:mm"
+        :type="field.type"
         @change="itemAction('change')"
         @input="itemAction('input')"
         @keydown.enter="itemAction('enter')"
@@ -20,7 +25,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, shallowRef, PropType} from 'vue';
+import {onMounted, PropType, shallowRef} from 'vue';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
 
 const props = defineProps({

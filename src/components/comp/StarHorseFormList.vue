@@ -12,13 +12,14 @@ import {compKey, uuid} from '@/api/system';
 import UTableColumn from '@/components/comp/items/UTableColumn.vue';
 import StarHorseForm from '@/components/comp/StarHorseForm.vue';
 import {Config} from '@/api/settings';
+import {FieldInfo} from "@/components/types";
 
 let importDialogVisible = ref<boolean>(false);
 let rowDialogVisible = ref<boolean>(false);
 const rowDataFormRef = ref();
 const props = defineProps({
   compUrl: {type: Object as PropType<ApiUrls>},
-  fieldList: {type: Object as PropType<any>, required: true},
+  fieldList: {type: Object as PropType<FieldInfo[]>, required: true},
   defaultValues: {type: Object, default: {}},
   batchName: {type: String, default: 'batchDataList'},
   primaryKey: {type: [String, Object] as PropType<string | any>},
@@ -113,8 +114,6 @@ const dynamicHandleAddRow = (row: any, type: number) => {
       const tableEl = starHorseFormListRef.value?.$el
       const scrollContainer = tableEl?.querySelector('.el-table--scrollable-y .el-scrollbar__wrap')
       if (scrollContainer) {
-        // const firstRow = scrollContainer.querySelector('.el-table__row')
-        // const rowHeight = firstRow ? firstRow.offsetHeight : 42
         // 仅在新行添加时滚动（type=1）
         if (type === 1) {
           scrollContainer.scrollTop = scrollContainer.scrollHeight - scrollContainer.clientHeight

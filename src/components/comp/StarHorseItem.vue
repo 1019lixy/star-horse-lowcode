@@ -80,13 +80,42 @@ const actionDispatcher = (act: string, ...params: any[]) => {
 //     }
 // );
 const dateType: Array<string> = ['year', 'month', 'date', 'datetime', 'week', 'datetimerange', 'daterange'];
+const fieldType = () => {
+  itemType.value = props.item?.type || props.item?.fieldType || 'input';
+  if (dateType.includes(itemType.value)) {
+    itemType.value = 'datetime';
+    //日期默认以时间戳赋值
+  }
+}
+const inputType = ["input", "textarea", "password", "number", "view-markdown", "json", "json-array"];
+const selectType = ["select", "tselect", "cascader", "autocomplete", "area", "cron", "transfer", "dialog-input", "page-select"];
+const fieldPlaceholder = () => {
+  if (!props.item.preps) {
+    props.item.preps = {};
+  }
+  if (inputType.includes(itemType.value)) {
+    props.item.preps['placeholder'] = "请输入" + props.item.label;
+  } else if (selectType.includes(itemType.value)) {
+    props.item.preps['placeholder'] = "请选择" + props.item.label;
+  }
+  if (props.item?.type?.includes("range") && itemType.value == 'datetime') {
+    props.item.preps['startPlaceholder'] = "请选择" + '开始日期';
+    props.item.preps['endPlaceholder'] = "请选择" + '结束日期';
+  } else if (itemType.value == "number-range") {
+    props.item.preps['minPlaceholder'] = "请输入" + '最小值';
+    props.item.preps['maxPlaceholder'] = "请输入" + '最大值';
+  }
+}
 const init = () => {
+  fieldType();
   if (!props.item['id']) {
     props.item['id'] = uuid();
   }
   props.item["clearable"] = true;
   props.item["readonly"] = props.item?.readonly || props.isView;
+  fieldPlaceholder();
   if (props.item.preps) {
+
     let keys = Object.keys(props.item.preps);
     for (let key in keys) {
       let val = props.item.preps[key];
@@ -98,11 +127,7 @@ const init = () => {
   compPreps();
 }
 const compPreps = () => {
-  itemType.value = props.item?.type || props.item?.fieldType || 'input';
-  if (dateType.includes(itemType.value)) {
-    itemType.value = 'datetime';
-    //日期默认以时间戳赋值
-  }
+  fieldType();
   //过滤掉查询表单的信息
   if (!props.isSearch && formFields) {
     let fieldName = props.item.fieldName;

@@ -3,8 +3,7 @@ import {isJson} from '@/api/star_horse_utils';
 import {useDark, useToggle} from '@vueuse/core';
 import {v4 as uuidv4} from 'uuid';
 import {DyCompField} from '@/components/types/DyCompField';
-import {computed, createApp, Ref, ref, unref} from 'vue';
-import App from '@/App.vue';
+import {computed, Ref, ref, unref} from 'vue';
 
 /**
  * UUID
@@ -78,10 +77,11 @@ export const batchModifyAction = (items: Array<any>, val: any, fieldName: string
 /**
  * 动态创建组件
  * @param compInfo 组件信息
+ * @param app 父组件
  */
-export function createComponent(compInfo: DyCompField) {
-    const app = createApp(App);
-    return app.component(compInfo.name, {
+export function createComponent(compInfo: DyCompField, app: any) {
+    !app && console.log('app is null');
+    return app?.component(compInfo.name, {
         components: compInfo.components || {},
         template: compInfo.template,
         data: () => compInfo.data || {},

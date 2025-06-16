@@ -55,6 +55,7 @@
     "element-plus": "^2.10.2",
     "glob": "^11.0.3",
     "jquery": "^3.7.1",
+    "json5": "^2.2.3",
     "less": "^4.3.0",
     "less-loader": "^12.3.0",
     "md-editor-v3": "^5.7.0",
