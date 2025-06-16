@@ -6,6 +6,8 @@ import 'element-plus/theme-chalk/index.css';
 import '@/assets/icons.css';
 import piniaInstance from '@/store';
 import type {Router} from 'vue-router';
+import ElementPlus from "element-plus";
+import zhCn from "element-plus/dist/locale/zh-cn.mjs";
 
 export * from '@/api/star_horse_apis';
 export * from '@/api/star_horse_utils';
@@ -26,11 +28,22 @@ declare global {
     var __hostRouter__: Router | undefined;
 }
 // 插件安装方法
-const install = (app: App<Element>, options?: { router?: Router }) => {
+const install = (app: App<Element>, options?: {
+    router?: Router,
+    elementPlusOptions?: any // 添加Element Plus配置选项
+}) => {
     // 注入宿主应用的 router 实例
     if (options?.router) {
         app.provide('starHorseRouter', options.router);
         window.__hostRouter__ = options.router;
+    }
+// 只在没有配置时才设置中文
+    if (!options?.elementPlusOptions?.locale) {
+        app.use(ElementPlus, {
+            locale: zhCn
+        })
+    } else {
+        app.use(ElementPlus, options.elementPlusOptions)
     }
     Object.entries(items).forEach(([path, component]) => {
         const name = path

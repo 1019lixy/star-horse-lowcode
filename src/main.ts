@@ -13,6 +13,8 @@ import {createApp} from 'vue';
 import draggable from 'vuedraggable';
 import * as ElementPlusIconsVue from '@element-plus/icons-vue';
 import piniaInstance from '@/store';
+import ElementPlus from "element-plus";
+import zhCn from "element-plus/es/locale/lang/zh-cn";
 
 const app = createApp(App);
 // window.app = app;
@@ -31,10 +33,9 @@ app.use(containerComponent);
 
 app.use(piniaInstance);
 
-// app.use(ElementPlus, {
-//     locale: zhCn
-// });
-// app.use(hljsVuePlugin);
+app.use(ElementPlus, {
+    locale: zhCn
+});
 app.config.performance = true;
 /**
  * 处理未捕获异常
@@ -43,9 +44,7 @@ app.config.performance = true;
  * @param info
  */
 app.config.errorHandler = (err, instance, info) => {
-    console.log(err);
-    console.log(instance);
-    console.log(info);
+    console.error(err, instance, info);
 };
 /**
  * 处理警告
@@ -54,9 +53,5 @@ app.config.errorHandler = (err, instance, info) => {
  * @param info
  */
 app.config.warnHandler = () => null;
-// app.config.warnHandler=(msg, instance, trace)=>{
-//     console.log(msg);
-//     console.log(instance);
-//     console.log(trace);
-// }
+
 app.mount('#app');

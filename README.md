@@ -6,9 +6,18 @@
 import StarHorseLowCode from "star-horse-lowcode";
 import "star-horse-lowcode/assets/index.css"
 import "router" from "@/router";
+import ElementPlus from 'element-plus'
+import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 const app = createApp(App);
+app.use(ElementPlus, { locale: zhCn })
+//没有配置elementPlusOptions,组件认为没有用elementPlus,
+// 所以会在组件内部引入elementPlus
 app.use(StarHorseLowCode,{
-  router: router
+  router: router,
+  
+  elementPlusOptions: {
+   locale: zhCn
+   }
 });
 app.mount('#app')
 ```

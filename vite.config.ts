@@ -47,6 +47,11 @@ export default defineConfig((mode) => {
                         ['default', 'zhCn'] // 别名导入中文包
                     ]
                 }],
+                vueTemplate: true,
+                dts: './auto-imports.d.ts',
+                eslintrc: {
+                    enabled: true
+                },
                 resolvers: [ElementPlusResolver({
                     importStyle: 'sass'
                 })]

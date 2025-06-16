@@ -14,7 +14,6 @@
         :value-format="field.preps?.valueFormat"
         date-format="YYYY-MM-DD"
         time-format="HH:mm"
-        :type="field.type"
         @change="itemAction('change')"
         @input="itemAction('input')"
         @keydown.enter="itemAction('enter')"
@@ -25,7 +24,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, PropType, shallowRef} from 'vue';
+import {onBeforeMount, onMounted, PropType, shallowRef} from 'vue';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
 
 const props = defineProps({
@@ -57,7 +56,7 @@ const props = defineProps({
 });
 const emits = defineEmits(['selfFunc', 'selectItem']);
 const formData = defineModel("formData");
-
+const disabledDate = shallowRef<any>([]);
 let actionName = shallowRef('normal');
 const itemAction = (prep: any) => {
   if (prep == 'change' && props.field.preps['type']?.includes('range')) {
@@ -69,7 +68,20 @@ const itemAction = (prep: any) => {
   }
   allAction(props, emits, formData, prep);
 };
+onBeforeMount(() => {
+  if (!props.field.preps) {
+    props.field.preps = {};
+  }
+  props.field.preps['type'] = props.field.preps['type'] || props.field.type || 'date';
+  disabledDate.value = props.field.preps['disabledDate']?.split(';') || [];
+  delete props.field.preps['disabledDate'];
+})
 onMounted(() => {
+  //后面增加判断规则
+  props.field.preps['disabledDate'] = (date: Date) => {
+    console.log(disabledDate.value,date.getDate());
+    return disabledDate.value.includes(date.getDate().toString());
+  };
   actionName.value = props.field.actionName || 'normal';
   if (!props.isSearch) {
     allAction(props, emits, formData, actionName.value, true);
