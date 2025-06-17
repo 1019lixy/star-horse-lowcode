@@ -1,8 +1,9 @@
 <script setup lang="ts" name="StarHorseHmenu">
 import {ModelRef, onMounted} from 'vue';
 import SystemSubMenu from '@/components/menu/SystemSubMenu.vue';
+import {compKey} from "@/api/system";
 
-let dataList:ModelRef<any> = defineModel("dataList");
+let dataList: ModelRef<any> = defineModel("dataList");
 const initData = async () => {
 
 };
@@ -13,7 +14,9 @@ onMounted(() => {
 </script>
 <template>
   <el-menu class="system-menu" mode="horizontal" v-bind="$attrs">
-    <SystemSubMenu :dataList="dataList" style="width: 100% !important"/>
+    <template v-for="(sitem,key) in dataList" :key="compKey(sitem,key)">
+      <SystemSubMenu :item="sitem"/>
+    </template>
   </el-menu>
 </template>
 <style lang="scss" scoped>

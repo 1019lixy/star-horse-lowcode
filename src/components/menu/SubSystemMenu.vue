@@ -71,7 +71,7 @@ const removeData = (item: any) => {
         </div>
       </template>
       <SubSystemMenu
-          :dataList="item?.children"
+          :dataList="item.children"
           :preps="preps"
           @selectData="selectData"
           @removeData="removeData"
