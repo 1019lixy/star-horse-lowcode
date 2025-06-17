@@ -12,6 +12,7 @@ defineProps({
   batchName: {type: String, default: 'batchDataList'},
   primaryKey: {type: [String, Object] as PropType<string | any>},
 });
+const _compKey = compKey;
 const exclusionFields: string[] = ['divider', 'button', 'usercomp'];
 </script>
 
@@ -25,7 +26,7 @@ const exclusionFields: string[] = ['divider', 'button', 'usercomp'];
   >
     <template #default="scope">
       <template v-if="item.batchFieldList?.length > 0">
-        <template v-for="(sitem,skey) in item.batchFieldList" :key="compKey(sitem,skey)">
+        <template v-for="(sitem) in item.batchFieldList" :key="_compKey(sitem,sitem.batchName)">
           <star-horse-form-list
               style="min-height: 100px; width: 100% !important"
               v-model:dataForm="scope.row"

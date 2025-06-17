@@ -18,7 +18,6 @@
         :fid="field.fieldName"
         v-bind="field.preps"
         type="textarea"
-
         @change="itemAction('change')"
         @input="itemAction('input')"
         @keydown.enter="itemAction('enter')"

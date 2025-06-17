@@ -68,8 +68,13 @@ const initData = async () => {
       props.field.preps['options'] = data;
     }
   } else {
+    props.field.preps['props'] = {
+      label: 'name',
+      value:"code"
+    };
     props.field.preps['options'] = areaData;
   }
+
   await nextTick();
   let data: any = formData.value[props.field.fieldName];
   if (data) {

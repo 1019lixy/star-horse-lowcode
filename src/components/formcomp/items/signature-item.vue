@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {nextTick, onMounted, onUpdated, ref, shallowRef, PropType} from 'vue';
+import {nextTick, onMounted, onUpdated, PropType, ref, shallowRef} from 'vue';
 import SmoothSignature from 'smooth-signature';
 import {warning} from '@/utils/message';
 import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
@@ -36,7 +36,8 @@ const emits = defineEmits(['selfFunc', 'selectItem']);
 // const formData = defineModel("formData");
 let previewDialog = shallowRef<boolean>(false);
 let signature = ref<SmoothSignature>(null);
-let canvas = ref();
+// 明确声明 ref 类型为 HTMLCanvasElement 或 null
+const signatureCanvas = ref<HTMLCanvasElement | null>(null);
 const options = {
   width: Math.min(window.innerWidth, 1000),
   height: 600,
@@ -47,9 +48,8 @@ const options = {
 };
 const init = async () => {
   await nextTick(() => {
-    let singatureCanvas = document.getElementById('singatureCanvas');
-    if (!signature.value && canvas.value && singatureCanvas) {
-      signature.value = new SmoothSignature(singatureCanvas, options);
+    if (!signature.value && signatureCanvas.value) {
+      signature.value = new SmoothSignature(signatureCanvas.value, options);
     }
   });
 };
@@ -92,7 +92,7 @@ onUpdated(() => {
       :self-func="true"
       @closeAction="previewDialog = false"
   >
-    <el-image :src="signature.getPNG()"/>
+    <el-image :src="signature?.getPNG()"/>
   </star-horse-dialog>
   <starhorse-form-item
       :isDesign="isDesign"
@@ -126,7 +126,7 @@ onUpdated(() => {
           </el-menu-item>
         </el-menu>
       </div>
-      <canvas ref="canvas" id="singatureCanvas"/>
+      <canvas ref="signatureCanvas"/>
     </div>
   </starhorse-form-item>
 </template>
@@ -149,6 +149,10 @@ onUpdated(() => {
   .tip {
     color: #108eff;
   }
+}
+
+li {
+  border: none;
 }
 
 .mbDemo {

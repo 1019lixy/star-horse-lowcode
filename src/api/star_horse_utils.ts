@@ -125,7 +125,7 @@ export function closeLoad() {
     if (loading) {
         loading.close();
         loading = null;
-        $('.el-loading-mask').remove();
+        document.querySelectorAll('.el-loading-mask').forEach((el) => el.remove());
     }
 }
 

@@ -26,7 +26,7 @@ const items = import.meta.glob([
 // 声明全局变量存储宿主应用的 router
 declare global {
     var __hostRouter__: Router | undefined;
-    var __hostApp__: App<Element> | undefined;
+    var __starHorseHostApp__: App<Element> | undefined;
 }
 // 插件安装方法
 const install = (app: App<Element>, options?: {
@@ -46,7 +46,7 @@ const install = (app: App<Element>, options?: {
     } else {
         app.use(ElementPlus, options.elementPlusOptions)
     }
-    window.__hostApp__ = app;
+    window.__starHorseHostApp__ = app;
     Object.entries(items).forEach(([path, component]) => {
         const name = path
             .split('/').pop()  // 获取文件名

@@ -131,7 +131,7 @@ defineExpose({
           />
         </el-form-item>
       </template>
-      <template v-for="(item,index) in formData?.fieldList"  v-else>
+      <template v-for="item in formData?.fieldList"  v-else>
         <el-form-item :size="compSize" :label="item.label" :prop="item.fieldName" >
           <template v-if="item.type == 'input' && !item.disabled " :span="6">
             <el-select

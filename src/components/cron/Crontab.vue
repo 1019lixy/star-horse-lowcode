@@ -79,9 +79,9 @@ import {copy} from '@/api/star_horse_utils';
 import {useVModel} from '@vueuse/core';
 
 export interface Crontab {
-    expression: string;
+    expression?: string;
     modelValue: string;
-    hideComponent: any;
+    hideComponent?: any;
   }
 
   const props = withDefaults(defineProps<Crontab>(), {});

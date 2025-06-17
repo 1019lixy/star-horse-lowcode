@@ -5,6 +5,7 @@ import piniaInstance from '@/store';
 import {compKey, uuid} from '@/api/system';
 import {Config} from '@/api/settings';
 import {checkVisible} from '@/api/form_utils';
+import Help from "@/components/help.vue";
 
 const props = defineProps({
   item: {type: Object as PropType<any>, required: true},
@@ -39,7 +40,7 @@ const bareStyle = computed(() => ({
   minWidth: props.isSearch ? '200px' : 'unset',
   maxHeight: props.isSearch ? '500px' : 'unset',
   width: props.isSearch ? dragWidth.value || props.item.minWidth || 'inherit' : '100%',
-  position: 'relative'
+  position: 'relative' as const
 }));
 /**
  * 组件派发事件
@@ -211,6 +212,7 @@ onMounted(() => {
         @mousedown.prevent="startDrag"
         v-if="itemType != 'button'&&isSearch"
     ></div>
+    <help :message="item.helpMsg" v-if="item.helpMsg"/>
     <component
         :key="item.id"
         :is="(dataForm&&dataForm['_' + item.fieldName + 'Type'] || itemType) + '-item'"

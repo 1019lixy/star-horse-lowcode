@@ -14,7 +14,6 @@ app.use(ElementPlus, { locale: zhCn })
 // 所以会在组件内部引入elementPlus
 app.use(StarHorseLowCode,{
   router: router,
-  
   elementPlusOptions: {
    locale: zhCn
    }
@@ -289,6 +288,8 @@ barcode        条形码组件
         :compUrl="dataUrl"
         :dataFormat="dataFormat"
     />
+16. 2025-06-17 框架内封装的element-plus组件,将穷举参数修改为v-bind，支持element-plus 最新版本的改变
+               同时优化了表单的属性分发的原子化，组件业务逻辑分解到具体的组件中(之前写在一个文件内),
 
 
 

@@ -76,6 +76,7 @@ const searchData = ref('');
 const treeDatas: ModelRef<any> = defineModel('treeDatas');
 let menuIcon = ref<string>('expand');
 let collapse = ref<boolean>(false);
+const _compKey = compKey;
 let pageInfo = reactive<PageProps>({
   pageSize: 100,
   currentPage: 1,
@@ -257,7 +258,7 @@ defineExpose({
                                            height: '100%',
                                            padding: 'unset' }">
     <div class="selected-data gap-2" v-if="showSelectData&&selectedDataList?.length > 0">
-      <template v-for="(item,index) in selectedDataList" :key="compKey(item,index)">
+      <template v-for="item in selectedDataList" :key="_compKey(item,item[preps.value])">
         <el-tag closable @close="operSelectData(item, false)">{{ item[preps.label] }}</el-tag>
       </template>
     </div>

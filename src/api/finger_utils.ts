@@ -27,7 +27,7 @@ function getLocalIp() {
 function getHardwareInfo() {
     const hardwareInfo = {
         cpuCores: navigator.hardwareConcurrency,
-        deviceMemory: navigator.deviceMemory,
+        deviceMemory: navigator['deviceMemory'] || "unknown",
         screenSize: {width: window.screen.width, height: window.screen.height},
         gpuInfo: {},
     };
@@ -56,7 +56,7 @@ export async function generateDeviceId(userIp: string) {
     if (!userIp) {
         userIp = window.location.hostname;
     }
-    const data = { hardwareInfo, userIp};
+    const data = {hardwareInfo, userIp};
     let deviceId = btoa(JSON.stringify(data));
     sessionStorage.setItem('deviceId', deviceId);
     return deviceId; // 使用 Base64 编码生成设备 ID

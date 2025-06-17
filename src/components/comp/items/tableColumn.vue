@@ -98,7 +98,7 @@ defineProps({
         :item="item"
     />
   </template>
-  <template v-if="showBatchField" v-for="(item,skey) in fieldList['batchFieldList']" :key="compKey(item,skey)">
+  <template v-if="showBatchField" v-for="item in fieldList['batchFieldList']" :key="compKey(item,item.batchName)">
     <star-horse-table-column
         :data-format="dataFormat"
         :compSize="compSize"

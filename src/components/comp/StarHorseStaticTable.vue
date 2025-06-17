@@ -286,7 +286,7 @@ const props = defineProps({
       border
     >
       <el-table-column type="selection" align="center" fixed="left" :reserve-selection="true"> </el-table-column>
-      <template v-for="(item,index) in fieldList['fieldList']" :Key="compKey(item,index)">
+      <template v-for="item in fieldList['fieldList']" :Key="compKey(item,item.id)">
         <template v-if="Array.isArray(item)">
           <star-horse-table-column
             :data-format="dataFormat"
@@ -312,7 +312,7 @@ const props = defineProps({
           :item="item"
         />
       </template>
-      <template v-if="showBatchField" v-for="(item,index) in fieldList['batchFieldList']"  :key="compKey(item,index)">
+      <template v-if="showBatchField" v-for="item in fieldList['batchFieldList']"  :key="compKey(item,item.batchName)">
         <star-horse-table-column :data-format="dataFormat" :item="item" />
       </template>
     </el-table>

@@ -31,6 +31,7 @@ const props = defineProps({
   compSize: {type: String, default: Config.compSize}
 });
 let windowsType = ref<boolean>(false);
+const _compKey = compKey;
 watch(
     () => props.dialogVisible,
     (val: boolean) => {
@@ -70,6 +71,16 @@ const beforeClose = () => {
     props.dialogProps!.bakeVisible3 = false;
   }
 };
+// 新增：安全调用函数的方法
+const callFunc = (func: any) => {
+  if (typeof func === 'function') {
+    func(); // 仅当 func 是函数时调用
+  } else if (typeof func === 'string') {
+    // 如果 func 是字符串（方法名），可根据需要映射到实际函数（示例）
+    // const method = getCurrentInstance()?.proxy?.[func];
+    // if (method) method();
+  }
+};
 const open = () => {
   emits('open');
 };
@@ -81,9 +92,9 @@ const fullScreen = () => {
   isFullScreen.value = !isFullScreen.value;
 };
 let clickFunction = reactive<any>({});
-const operation = (funcName: string, type: string) => {
+const operation = (funcName: any, type: string) => {
   if (props.selfFunc) {
-    emits(`${funcName}`, type);
+    emits(funcName, type);
   } else {
     clickFunction['funcName'] = funcName;
     clickFunction['type'] = type;
@@ -192,9 +203,9 @@ provide('dialogOperation', clickFunction);
             >
               <star-horse-icon icon-class="save" cursor="pointer"/>{{ i18n("dialog.saveContinue") }}</el-button
             >
-            <template v-for="(item,key) in userBtn" :key="compKey(item,key)">
+            <template v-for="item in userBtn" :key="_compKey(item,item.authority)">
               <el-button
-                  @click="item?.funcName?.()"
+                  @click="callFunc(item.funcName)"
                   :disabled="item.disabled??false"
                   :style="{
                   background: item.disabled  ? 'var(--star-horse-disable)' : 'var(--star-horse-style)',

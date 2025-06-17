@@ -15,7 +15,7 @@ const props = defineProps({
   commonFormat: {type: Function, required: true}
 });
 const dataForm: ModelRef<any> = defineModel('dataForm');
-
+const _compKey = compKey;
 const itemCommonFormat = (name: string, cellValue: any, row: any) => {
   cellValue = commonParseCodeToName(name, cellValue);
   if (name == 'isDel') {
@@ -40,7 +40,7 @@ const checkItemType = (item: any) => {
 }
 </script>
 <template>
-  <template v-for="(item,key) in fieldList.fieldList" :key="compKey(item,key)">
+  <template v-for="item in fieldList.fieldList" :key="_compKey(item,checkItemType(item))">
     <component :is="checkItemType(item)"  :item="item" v-model:dataForm="dataForm" :commonFormat="itemCommonFormat"/>
   </template>
   <view-table-item

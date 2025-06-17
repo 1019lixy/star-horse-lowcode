@@ -21,7 +21,6 @@ import {compKey, removeEmptyCondition, uuid} from '@/api/system';
 import {Config} from '@/api/settings';
 import Tablebtn from '@/components/comp/items/tablebtn.vue';
 import Help from '@/components/help.vue';
-import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 import {PreValid} from "@/components/types/BtnAuth";
 
 const dynamicForm = useDynamicFormStore(piniaInstance);
@@ -877,7 +876,7 @@ defineExpose({
                         :cell-style="{ height: '30px', 'font-size': '12px' }" border>
                 <el-table-column fixed="left" label="操作" :width="160" v-if="expandTable.showButton">
                   <template #default="innerScope">
-                    <template v-for="(epd,index) in expandTable.extendFuncs"  :key="compKey(epd,index)">
+                    <template v-for="epd in expandTable.extendFuncs" :key="compKey(epd,epd.authority)">
                       <el-tooltip :content="epd.btnName">
                         <star-horse-icon v-if="permissions[epd.authority!]"
                                          @click="expandCommonFun(epd.authority!, innerScope.row, scope.row)"
@@ -920,7 +919,8 @@ defineExpose({
               </div>
             </template>
 
-            <div class="card-item item" style="width: 99%; margin: 1px auto" :Key="compKey(item,key)" v-for="(item,key) in cardFieldList?.slice(1, 3)">
+            <div class="card-item item" style="width: 99%; margin: 1px auto" :Key="compKey(item,key)"
+                 v-for="(item,key) in cardFieldList?.slice(1, 3)">
               <label>{{ item.label }} :</label>
               <div class="content" @click="selectRow(data)" @dblclick="editData(data)">
                 <el-tooltip :content="dataFormat(item.fieldName, data[item.fieldName], data)">
@@ -936,12 +936,11 @@ defineExpose({
         </el-space>
       </el-scrollbar>
     </div>
-    <el-config-provider :locale="zhCn">
-      <el-pagination v-if="showPageBar" :total="pageInfo.totalData" @current-change="pageChangeClick"
-                     @size-change="pageSizeClick" :size="compSize" :page-sizes="[20, 50, 100, 200, 300, 400]"
-                     layout="total, sizes, prev, pager, next, jumper" v-model:currentPage="pageInfo.currentPage"
-                     v-model:page-size="pageInfo.pageSize" v-model:pageCount="pageInfo.totalPage"/>
-    </el-config-provider>
+
+    <el-pagination v-if="showPageBar" :total="pageInfo.totalData" @current-change="pageChangeClick"
+                   @size-change="pageSizeClick" :size="compSize" :page-sizes="[20, 50, 100, 200, 300, 400]"
+                   layout="total, sizes, prev, pager, next, jumper" v-model:currentPage="pageInfo.currentPage"
+                   v-model:page-size="pageInfo.pageSize" v-model:pageCount="pageInfo.totalPage"/>
   </div>
 </template>
 <style lang="scss" scoped>

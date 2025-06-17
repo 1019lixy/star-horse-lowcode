@@ -72,7 +72,9 @@ const cellClick = (row: any, column: any) => {
   nextTick(() => {
     setTimeout(() => {
       let obj = $('.' + column['id']).find('input');
-      obj.select().focus();
+      // const elements = document.querySelectorAll(`.${column['id']} input`);
+      // let obj = elements.length > 0 ? elements[0] : null;
+      obj?.select().focus();
       // obj.unbind().on("blur", () => {
       //   console.log(column);
       //   blurEvent(column);
@@ -165,7 +167,7 @@ const createPreps = (item: any) => {
                   data: { type: Object },
                   item: { type: Object }
                 }
-              },window.__hostApp__ )
+              },__starHorseHostApp__ )
             "
               :data="scope.row"
               :item="item"
