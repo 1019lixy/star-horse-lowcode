@@ -19,8 +19,6 @@
   >
     <el-input
         :fid="field.fieldName"
-
-        readonly
         @change="itemAction('change')"
         @input="itemAction('input')"
         @keydown.enter="itemAction('enter')"

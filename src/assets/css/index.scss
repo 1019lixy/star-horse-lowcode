@@ -493,6 +493,7 @@ hr {
     width: 80px;
   }
 }
+
 .el-card {
   height: 100% !important;
   display: flex;
@@ -874,4 +875,23 @@ button.el-collapse-item__header {
 
 .el-tabs {
   overflow: auto !important;
+}
+
+.cron-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+
+  .cron-item {
+    flex-direction: row;
+    margin-bottom: 5px;
+    align-items: center;
+    display: flex;
+    flex-wrap: nowrap;
+
+    span {
+      white-space: nowrap;
+    }
+  }
 }

@@ -42,7 +42,6 @@
       <div class="icon-items">
         <div class="search-box">
           <el-input
-
               v-model="searchName"
               @keydown.enter="dataSearch"
               clearable

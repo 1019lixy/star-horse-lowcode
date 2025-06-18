@@ -1,52 +1,45 @@
 <template>
-  <el-form>
-    <el-form-item>
+  <div class="cron-content">
+    <div class="cron-item">
       <el-radio v-model="radioValue" :label="1" border> 日，允许的通配符[, - * / L M]</el-radio>
-    </el-form-item>
-    <el-form-item>
+    </div>
+    <div class="cron-item">
       <el-radio v-model="radioValue" :label="2" border> 不指定</el-radio>
-    </el-form-item>
-    <el-form-item>
+    </div>
+    <div class="cron-item">
       <el-radio v-model="radioValue" :label="3" border> 周期</el-radio>
       <span style="margin-left: 10px; margin-right: 5px">从</span>
-      <el-input-number v-model="cycle01" :min="0" :max="31"/>
+      <el-input-number v-model="cycle01" :min="0" :max="31" controls-position="right"/>
       <span style="margin-left: 10px; margin-right: 5px">至</span>
-      <el-input-number v-model="cycle02" :min="0" :max="31"/>
+      <el-input-number v-model="cycle02" :min="0" :max="31" controls-position="right"/>
       <span style="margin-left: 10px; margin-right: 5px">日</span>
-    </el-form-item>
-    <el-form-item>
+    </div>
+    <div class="cron-item">
       <el-radio v-model="radioValue" :label="4" border>循环</el-radio>
       <span style="margin-left: 10px; margin-right: 5px">从</span>
-      <el-input-number v-model="average01" :min="0" :max="31"/>
+      <el-input-number v-model="average01" :min="0" :max="31" controls-position="right"/>
       <span style="margin-left: 10px; margin-right: 5px">号开始，每</span>
-      <el-input-number v-model="average02" :min="0" :max="31"/>
+      <el-input-number v-model="average02" :min="0" :max="31" controls-position="right"/>
       <span style="margin-left: 10px; margin-right: 5px">日执行一次</span>
-    </el-form-item>
-    <el-form-item>
+    </div>
+    <div class="cron-item">
       <el-radio v-model="radioValue" :label="5" border>工作日</el-radio>
       <span style="margin-left: 10px; margin-right: 5px">每月</span>
-      <el-input-number v-model="workday" :min="0" :max="31"/>
+      <el-input-number v-model="workday" :min="0" :max="31" controls-position="right"/>
       <span style="margin-left: 10px; margin-right: 5px">号最近的那个工作日</span>
-    </el-form-item>
-    <el-form-item>
+    </div>
+    <div class="cron-item">
       <el-radio v-model="radioValue" :label="6" border> 本月最后一天</el-radio>
-    </el-form-item>
-    <el-form-item>
+    </div>
+    <div class="cron-item">
       <el-radio v-model="radioValue" :label="7" border> 指定</el-radio>
       <el-select clearable filterable collapse-tags v-model="checkboxList" placeholder="请选择日期" multiple>
         <el-option v-for="item in 31" :key="item" :value="item" :label="item"/>
       </el-select>
-    </el-form-item>
-  </el-form>
+    </div>
+  </div>
 </template>
 <style lang="scss" scoped>
-.el-select {
-  width: 250px;
-}
-
-.el-input-number {
-  width: 150px;
-}
 </style>
 <script setup lang="ts" name="crontab-day">
 import {computed, ref, watch} from 'vue';
@@ -63,23 +56,23 @@ const props = defineProps({
   check: {type: Function},
   cron: {type: Object}
 });
-let checkNum = ref(props.check);
+
 const emits = defineEmits(['update']);
 // 计算两个周期值
 const cycleTotalFun = () => {
-  cycle01.value = checkNum.value?.(cycle01.value, 1, 31);
-  cycle02.value = checkNum.value?.(cycle02.value, 1, 31);
+  cycle01.value = props.check?.(cycle01.value, 1, 31);
+  cycle02.value = props.check?.(cycle02.value, 1, 31);
   return cycle01.value + '-' + cycle02.value;
 };
 // 计算平均用到的值
 const averageTotalFun = () => {
-  average01.value = checkNum.value?.(average01.value, 1, 31);
-  average02.value = checkNum.value?.(average02.value, 1, 31);
+  average01.value = props.check?.(average01.value, 1, 31);
+  average02.value = props.check?.(average02.value, 1, 31);
   return average01.value + '/' + average02.value;
 };
 // 计算工作日格式
 const workdayCheckFun = () => {
-  workday.value = checkNum.value?.(workday.value, 1, 31);
+  workday.value = props.check?.(workday.value, 1, 31);
   return workday.value;
 };
 // 计算勾选的checkbox值合集
@@ -165,42 +158,27 @@ const checkboxChange = () => {
 watch(
     () => radioValue.value,
     (_val) => radioChange(),
-    {
-      immediate: true,
-      deep: true
-    }
+
 );
 watch(
     () => cycleTotal.value,
     (_val) => cycleChange(),
-    {
-      immediate: true,
-      deep: true
-    }
+
 );
 watch(
     () => averageTotal.value,
     (_val) => averageChange(),
-    {
-      immediate: true,
-      deep: true
-    }
+
 );
 watch(
     () => workdayCheck.value,
     (_val) => workdayChange(),
-    {
-      immediate: true,
-      deep: true
-    }
+
 );
 watch(
     () => checkboxString.value,
     (_val) => checkboxChange(),
-    {
-      immediate: true,
-      deep: true
-    }
+
 );
 defineExpose({
   cycle01,

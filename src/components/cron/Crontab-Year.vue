@@ -1,42 +1,36 @@
 <template>
-  <el-form>
-    <el-form-item>
+  <div class="cron-content">
+    <div class="cron-item">
       <el-radio :label="1" v-model="radioValue" border> 不填，允许的通配符[, - * /]</el-radio>
-    </el-form-item>
-    <el-form-item>
+    </div>
+    <div class="cron-item">
       <el-radio :label="2" v-model="radioValue" border> 每年</el-radio>
-    </el-form-item>
-    <el-form-item>
+    </div>
+    <div class="cron-item">
       <el-radio :label="3" v-model="radioValue" border>周期</el-radio>
       <span style="margin-left: 10px; margin-right: 5px">从</span>
-      <el-input-number v-model="cycle01" :min="fullYear"/>
+      <el-input-number v-model="cycle01" :min="fullYear" controls-position="right"/>
       <span style="margin-left: 10px; margin-right: 5px">至</span>
-      <el-input-number v-model="cycle02" :min="fullYear"/>
-    </el-form-item>
-    <el-form-item>
+      <el-input-number v-model="cycle02" :min="fullYear" controls-position="right"/>
+    </div>
+    <div class="cron-item">
       <el-radio :label="4" v-model="radioValue" border>循环</el-radio>
       <span style="margin-left: 10px; margin-right: 5px">从</span>
-      <el-input-number v-model="average01" :min="fullYear"/>
+      <el-input-number v-model="average01" :min="fullYear" controls-position="right"/>
       <span style="margin-left: 10px; margin-right: 5px">年开始，每</span>
-      <el-input-number v-model="average02" :min="fullYear"/>
+      <el-input-number v-model="average02" :min="fullYear" controls-position="right"/>
       <span style="margin-left: 10px; margin-right: 5px">年执行一次</span>
-    </el-form-item>
-    <el-form-item>
+    </div>
+    <div class="cron-item">
       <el-radio :label="5" v-model="radioValue" border> 指定</el-radio>
       <el-select clearable filterable collapse-tags v-model="checkboxList" placeholder="请选择年" multiple>
         <el-option v-for="item in 20" :key="item" :value="item - 1 + fullYear" :label="item - 1 + fullYear"/>
       </el-select>
-    </el-form-item>
-  </el-form>
+    </div>
+  </div>
 </template>
 <style lang="scss" scoped>
-.el-select {
-  width: 250px;
-}
 
-.el-input-number {
-  width: 150px;
-}
 </style>
 <script lang="ts" setup name="crontab-year">
 import {computed, onMounted, ref, watch} from 'vue';
@@ -54,17 +48,16 @@ let cycle02 = ref(0);
 let average01 = ref(0);
 let average02 = ref(1);
 let checkboxList = ref([]);
-let checkNum = ref(props.check);
 // 计算两个周期值
 const cycleTotalFun = () => {
-  cycle01.value = checkNum.value?.(cycle01.value, fullYear.value, fullYear.value + 100);
-  cycle02.value = checkNum.value?.(cycle02.value, fullYear.value + 1, fullYear.value + 101);
+  cycle01.value = props.check?.(cycle01.value, fullYear.value, fullYear.value + 100);
+  cycle02.value = props.check?.(cycle02.value, fullYear.value + 1, fullYear.value + 101);
   return cycle01.value + '-' + cycle02.value;
 };
 // 计算平均用到的值
 const averageTotalFun = () => {
-  average01.value = checkNum.value?.(average01.value, fullYear.value, fullYear.value + 100);
-  average02.value = checkNum.value?.(average02.value, 1, 10);
+  average01.value = props.check?.(average01.value, fullYear.value, fullYear.value + 100);
+  average02.value = props.check?.(average02.value, 1, 10);
   return average01.value + '/' + average02.value;
 };
 // 计算勾选的checkbox值合集
@@ -130,34 +123,18 @@ const checkboxChange = () => {
 watch(
     () => radioValue.value,
     (_val) => radioChange(),
-    {
-      immediate: true,
-      deep: true
-    }
 );
 watch(
     () => cycleTotal.value,
     (_val) => cycleChange(),
-    {
-      immediate: true,
-      deep: true
-    }
 );
 watch(
     () => averageTotal.value,
     (_val) => averageChange(),
-    {
-      immediate: true,
-      deep: true
-    }
 );
 watch(
     () => checkboxString.value,
     (_val) => checkboxChange(),
-    {
-      immediate: true,
-      deep: true
-    }
 );
 
 onMounted(() => {

@@ -56,6 +56,7 @@ onMounted(() => {
   color: var(--star-horse-white);
   font-weight: bold;
   font-size: 16px;
+  align-items: center;
 }
 
 :deep(.el-sub-menu) {

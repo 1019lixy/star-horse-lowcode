@@ -1,12 +1,31 @@
 <template>
-  <datetime-item :field="{
+
+  <el-form :model="formData">
+    <el-form-item :rules="validMsg({type:'number-range',label:'数据范围',fieldName:'jsonArray',required:true},formData)"
+                  prop="jsonArray">
+      <number-range-item :field="{
    fieldName: 'jsonArray',
    label: 'jsonArray',
-  preps:preps
  }" :form-data="formData"/>
+    </el-form-item>
+    <el-form-item prop="cron">
+      <cron-item :field="{
+     fieldName: 'cron',
+   label: 'cron',
+}" :form-data="formData"/>
+
+    </el-form-item>
+
+  </el-form>
+<!--  <Crontab v-model="formData.cron"/>-->
 </template>
 
 <script setup>
+import NumberRangeItem from "@/components/formcomp/items/number-range-item.vue";
+import {validMsg} from "@/api/form_utils.js";
+import CronItem from "@/components/formcomp/items/cron-item.vue";
+import Crontab from "@/components/cron/Crontab.vue";
+
 const preps = {
   'type': 'daterange',
   'placeholder': '',
@@ -14,7 +33,7 @@ const preps = {
   'startPlaceholder': '',
   'endPlaceholder': '',
   'editable': false,
-  'disabledDate':'1,2,5',
+  'disabledDate': '1,2,5',
   'id': 'Idshe269ce8c-f644-408a-a477-c0c96c606d15',
   'label': '日期选择器',
   'itemNameLabel': '日期选择器',
@@ -28,7 +47,8 @@ const preps = {
   'listPrototypeDisplay': false
 };
 const formData = ref({
-  jsonArray: `2024-08-01`
+  jsonArray: [2, 3],
+  cron: '0 0 12 * * ?'
 });
 </script>
 

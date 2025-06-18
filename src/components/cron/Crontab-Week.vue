@@ -1,46 +1,39 @@
 <template>
-  <el-form>
-    <el-form-item>
+  <div class="cron-content">
+    <div class="cron-item">
       <el-radio v-model="radioValue" :label="1" border> 周，允许的通配符[, - * / L #]</el-radio>
-    </el-form-item>
-    <el-form-item>
+    </div>
+    <div class="cron-item">
       <el-radio v-model="radioValue" :label="2" border> 不指定</el-radio>
-    </el-form-item>
-    <el-form-item>
+    </div>
+    <div class="cron-item">
       <el-radio v-model="radioValue" :label="3" border> 周期</el-radio>
       <span style="margin-left: 10px; margin-right: 5px">从星期</span>
-      <el-input-number v-model="cycle01" :min="1" :max="7"/>
+      <el-input-number v-model="cycle01" :min="1" :max="7" controls-position="right"/>
       <span style="margin-left: 10px; margin-right: 5px">至</span>
-      <el-input-number v-model="cycle02" :min="1" :max="7"/>
-    </el-form-item>
-    <el-form-item>
+      <el-input-number v-model="cycle02" :min="1" :max="7" controls-position="right"/>
+    </div>
+    <div class="cron-item">
       <el-radio v-model="radioValue" :label="4" border> 循环</el-radio>
       <span style="margin-left: 10px; margin-right: 5px">第</span>
-      <el-input-number v-model="average01" :min="1" :max="4"/>
+      <el-input-number v-model="average01" :min="1" :max="4" controls-position="right"/>
       <span style="margin-left: 10px; margin-right: 5px">周的星期</span>
-      <el-input-number v-model="average02" :min="1" :max="7"/>
-    </el-form-item>
-    <el-form-item>
+      <el-input-number v-model="average02" :min="1" :max="7" controls-position="right"/>
+    </div>
+    <div class="cron-item">
       <el-radio v-model="radioValue" :label="5" border>本月最后一个</el-radio>
       <span style="margin-left: 10px; margin-right: 5px">星期</span>
-      <el-input-number v-model="weekday" :min="1" :max="7"/>
-    </el-form-item>
-    <el-form-item>
+      <el-input-number v-model="weekday" :min="1" :max="7" controls-position="right"/>
+    </div>
+    <div class="cron-item">
       <el-radio v-model="radioValue" :label="6" border> 指定</el-radio>
       <el-select clearable filterable collapse-tags v-model="checkboxList" placeholder="请选择星期几" multiple>
         <el-option v-for="(item, index) of weekList" :key="index" :value="index + 1" :label="item"/>
       </el-select>
-    </el-form-item>
-  </el-form>
+    </div>
+  </div>
 </template>
 <style lang="scss" scoped>
-.el-select {
-  width: 250px;
-}
-
-.el-input-number {
-  width: 150px;
-}
 </style>
 <script setup lang="ts" name="crontab-week">
 import {computed, ref, watch} from 'vue';
@@ -59,22 +52,22 @@ let average02 = ref(1);
 
 let checkboxList = ref([]);
 let weekList = ref(['周一', '周二', '周三', '周四', '周五', '周六', '周日']);
-let checkNum = ref(props.check);
+
 // 计算两个周期值
 const cycleTotalFun = () => {
-  cycle01.value = checkNum.value?.(cycle01.value, 1, 7);
-  cycle02.value = checkNum.value?.(cycle02.value, 1, 7);
+  cycle01.value = props.check?.(cycle01.value, 1, 7);
+  cycle02.value = props.check?.(cycle02.value, 1, 7);
   return cycle01.value + '-' + cycle02.value;
 };
 // 计算平均用到的值
 const averageTotalFun = () => {
-  average01.value = checkNum.value?.(average01.value, 1, 4);
-  average02.value = checkNum.value?.(average02.value, 1, 7);
+  average01.value = props.check?.(average01.value, 1, 4);
+  average02.value = props.check?.(average02.value, 1, 7);
   return average01.value + '#' + average02.value;
 };
 // 最近的工作日（格式）
 const weekdayCheckFun = () => {
-  weekday.value = checkNum.value?.(weekday.value, 1, 7);
+  weekday.value = props.check?.(weekday.value, 1, 7);
   return weekday.value;
 };
 // 计算勾选的checkbox值合集
@@ -154,42 +147,27 @@ const checkboxChange = () => {
 watch(
     () => radioValue.value,
     (_val) => radioChange(),
-    {
-      immediate: true,
-      deep: true
-    }
+
 );
 watch(
     () => cycleTotal.value,
     (_val) => cycleChange(),
-    {
-      immediate: true,
-      deep: true
-    }
+
 );
 watch(
     () => averageTotal.value,
     (_val) => averageChange(),
-    {
-      immediate: true,
-      deep: true
-    }
+
 );
 watch(
     () => weekdayCheck.value,
     (_val) => weekdayChange(),
-    {
-      immediate: true,
-      deep: true
-    }
+
 );
 watch(
     () => checkboxString.value,
     (_val) => checkboxChange(),
-    {
-      immediate: true,
-      deep: true
-    }
+
 );
 
 defineExpose({

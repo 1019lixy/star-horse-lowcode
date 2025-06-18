@@ -1,4 +1,5 @@
 import {getValidType} from '@/api/valid_utils';
+import {unref} from "vue";
 
 /**
  * 解析动态表单中的子节点数据是否需要合并到父节点中
@@ -40,36 +41,29 @@ export function validMsg(item: any, dataForm: any) {
     const rules = [];
     if (item.required && !item.disabled) {
         rules.push({required: true, message: `${item.label}不能为空`, trigger: 'blur'});
-        if (item.type == 'number-range') {
-            rules.push({
-                validator: (_rule: any, _value: any, callback: any) => {
-                    const fieldName = item.fieldName;
-                    if (dataForm[fieldName + 'Min'] + '' === '') {
-                        callback(new Error('必填项小值不能为空'));
-                    }
-                    if (dataForm[fieldName + 'Max'] + '' === '') {
-                        callback(new Error('必填项大值不能为空'));
-                    }
-                    if (dataForm[fieldName + 'Min'] > dataForm[fieldName + 'Max']) {
-                        callback(new Error('小值不能大于大值'));
-                    }
-                },
-                trigger: 'blur'
-            });
-        }
-    } else {
-        if (item.type == 'number-range') {
-            rules.push({
-                validator: (_rule: any, _value: any, callback: any) => {
-                    const fieldName = item.fieldName;
-                    if (parseFloat(dataForm[fieldName + 'Min']) > parseFloat(dataForm[fieldName + 'Max'])) {
-                        callback(new Error('小值不能大于大值'));
-                    }
-                },
-                trigger: 'blur'
-            });
-        }
     }
+    if (item.type == 'number-range') {
+        rules.push({pattern: /^\d+-\d+$/, message: '格式应为"最小值-最大值"（如：2-3）', trigger: 'blur'});
+        rules.push({
+            validator: (rule: any, value: string, callback: any) => {
+                // 从formData中获取min和max的实际数值（通过fieldName+Min/Max）
+                const minValue = unref(dataForm)[`${item.fieldName}Min`];
+                const maxValue = unref(dataForm)[`${item.fieldName}Max`];
+
+                if (minValue === undefined || maxValue === undefined) {
+                    callback(); // 由required规则处理空值
+                    return;
+                }
+                if (maxValue < minValue) {
+                    callback(new Error('最大值不能小于最小值'));
+                } else {
+                    callback();
+                }
+            },
+            trigger: 'blur' // 输入变化时触发验证
+        });
+    }
+
     const itemRules: any = item.rules || item.preps?.rules;
     const innerFun = (itemRules: any) => {
         if (itemRules?.length > 0) {
@@ -117,7 +111,7 @@ export function checkObject(dataForm: any, item: any, index: number, parentIndex
 
 
 export function getFormData(item: any, dataForm: any, prefix: string, parentIndex: number, index: number) {
-    if (item.subFormFlag=='Y') {
+    if (item.subFormFlag == 'Y') {
         if (item && item.objectName) {
             if (!Object.keys(dataForm).includes(item.objectName)) {
                 dataForm[item.objectName] = [{}];
@@ -144,12 +138,12 @@ export function getFormData(item: any, dataForm: any, prefix: string, parentInde
 export function getDataIndex(data: any, prefix: string, parentIndex: number, index: number) {
     let pronPrefix: number = 0;
     if (prefix?.length > 0) {
-        if (data.subFormFlag=='Y') {
+        if (data.subFormFlag == 'Y') {
             pronPrefix = (parentIndex > -1 ? 0 : index);
         } else {
             pronPrefix = parentIndex;
         }
-    } else if (data.subFormFlag=='Y') {
+    } else if (data.subFormFlag == 'Y') {
         //如果父表大于0,说明当前是父表的子表，应该用父表的索引
         pronPrefix = parentIndex > 0 ? parentIndex : index;
     } else {

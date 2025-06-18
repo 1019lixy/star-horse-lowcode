@@ -19,7 +19,7 @@
         }"
       >
         <el-input-number
-            :fid="field.preps?.minName"
+            :fid="minName"
             :controls="false"
             :disabled="checkIsDisabled(props)"
             v-bind="field.preps"
@@ -27,13 +27,13 @@
             @change="itemAction('change')"
             @blur="handleBlur"
             @focus="handleFocus"
-            v-model="formData[field.preps['minName']]"
+            v-model="formData[minName]"
         />
         <div class="to">
           <span>{{ field.preps?.to || "-" }}</span>
         </div>
         <el-input-number
-            :fid="field.preps?.maxName"
+            :fid="maxName"
             :controls="false"
             :disabled="checkIsDisabled(props)"
             v-bind="field.preps"
@@ -42,7 +42,7 @@
             @focus="handleFocus"
             :placeholder="field.preps?.maxPlaceholder"
             :step-strictly="field.preps?.stepStrictly"
-            v-model="formData[field.preps['maxName']]"
+            v-model="formData[maxName]"
         />
       </div>
       <div v-if="field.preps?.suffix" :class="{ 'slot-default': slotStyle === 'default', 'slot-pend ': true }">
@@ -52,9 +52,8 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, ref, shallowRef, watch, PropType} from 'vue';
+import {computed, onBeforeMount, onMounted, PropType, ref, shallowRef} from 'vue';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
-import {warning} from '@/utils/message';
 
 const props = defineProps({
   isDesign: {
@@ -89,8 +88,15 @@ const props = defineProps({
 });
 const emits = defineEmits(['selfFunc', 'selectItem']);
 const formData = defineModel("formData");
+const maxName = computed(() => {
+  return props.field.fieldName + 'Max'
+})
+const minName = computed(() => {
+  return props.field.fieldName + 'Min'
+})
 let actionName = shallowRef('normal');
 let slotStyle = shallowRef('');
+
 // input焦点事件
 const isFocus = ref();
 const handleFocus = () => {
@@ -108,36 +114,41 @@ const handleBlur = () => {
 // 无论template标签内是否插入了内容，均视为已使用该插槽
 
 const itemAction = (prep: string) => {
-  let min = formData.value[props.field.preps['minName']];
-  let max = formData.value[props.field.preps['maxName']];
-  if (max < min) {
-    warning('最大值不能小于最小值');
+  let min = formData.value[minName.value];
+  let max = formData.value[maxName.value];
+  if (
+      min === undefined || min === null || isNaN(min) || // 空值/非数值校验
+      max === undefined || max === null || isNaN(max) ||
+      max < min // 最大值小于最小值校验
+  ) {
+    // 校验失败时，清空主字段值（触发父组件required规则）
+    formData.value[props.field.fieldName] = `${min ?? ''}-${max ?? ''}`;
     return;
   }
   formData.value[props.field.fieldName] = `${min}-${max}`;
   allAction(props, emits, formData, prep);
 };
+onBeforeMount(() => {
+  if (!props.field.preps) {
+    props.field['preps'] = {};
+  }
+})
 onMounted(() => {
   actionName.value = props.field.actionName || 'normal';
-  props.field.preps['maxName'] = props.field.fieldName + 'Max';
-  props.field.preps['minName'] = props.field.fieldName + 'Min';
   let val: any = formData.value[props.field.fieldName];
-  if (val) {
+  if (typeof val === 'string') {
     let data = val.split('-');
-    formData.value[props.field.preps['minName']] = Number(data[0]);
-    formData.value[props.field.preps['maxName']] = Number(data[1]);
+    formData.value[minName.value] = Number(data[0]);
+    formData.value[maxName.value] = Number(data[1]);
+  } else if (Array.isArray(val)) {
+    formData.value[minName.value] = Number(val[0]);
+    formData.value[maxName.value] = Number(val[1]);
   }
   if (!props.isSearch) {
-    allAction(props, emits, formData, actionName.value, true);
+    allAction(props, emits, formData, "init", true);
   }
 });
-watch(
-    () => props.formFieldList,
-    () => {
-      itemAction('init');
-    },
-    {immediate: true, deep: true}
-);
+
 </script>
 <style lang="scss" scoped>
 .el-input-number {
