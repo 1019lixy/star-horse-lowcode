@@ -4,6 +4,7 @@ import {useDark, useToggle} from '@vueuse/core';
 import {v4 as uuidv4} from 'uuid';
 import {DyCompField} from '@/components/types/DyCompField';
 import {computed, Ref, ref, unref} from 'vue';
+import {error, success} from "@/utils/message";
 
 /**
  * UUID
@@ -12,6 +13,14 @@ export function uuid() {
     return 'sh' + uuidv4();
 }
 
+export async function copyText(text:any) {
+    try {
+        await navigator.clipboard.writeText(text);
+        success('复制成功');
+    } catch (err) {
+        error('复制失败:' + err);
+    }
+}
 
 /**
  * 调用Table组件查询数据

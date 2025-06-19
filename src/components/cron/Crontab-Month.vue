@@ -1,29 +1,29 @@
 <template>
   <div class="cron-content">
     <div class="cron-item">
-      <el-radio v-model="radioValue" :label="1" border> 月，允许的通配符[, - * /]</el-radio>
+      <el-radio size="small" v-model="radioValue" :label="1" border> 月，允许的通配符[, - * /]</el-radio>
     </div>
     <div class="cron-item">
-      <el-radio v-model="radioValue" :label="2"> 周期</el-radio>
+      <el-radio size="small" v-model="radioValue" border :label="2"> 周期</el-radio>
       <span style="margin-left: 10px; margin-right: 5px">从</span>
-      <el-input-number v-model="cycle01" :min="1" :max="12" controls-position="right"/>
+      <el-input-number size="small" v-model="cycle01" :min="1" :max="12" controls-position="right"/>
       <span style="margin-left: 10px; margin-right: 5px">至</span>
-      <el-input-number v-model="cycle02" :min="1" :max="12" controls-position="right"/>
+      <el-input-number size="small" v-model="cycle02" :min="1" :max="12" controls-position="right"/>
       <span style="margin-left: 10px; margin-right: 5px">月</span>
     </div>
     <div class="cron-item">
-      <el-radio v-model="radioValue" :label="3" border>循环</el-radio>
+      <el-radio size="small" v-model="radioValue" :label="3" border>循环</el-radio>
       <span style="margin-left: 10px; margin-right: 5px">从</span>
-      <el-input-number v-model="average01" :min="1" :max="12" controls-position="right"/>
+      <el-input-number size="small" v-model="average01" :min="1" :max="12" controls-position="right"/>
       <span style="margin-left: 10px; margin-right: 5px">月开始，每</span>
-      <el-input-number v-model="average02" :min="1" :max="12" controls-position="right"/>
+      <el-input-number size="small" v-model="average02" :min="1" :max="12" controls-position="right"/>
       <span style="margin-left: 10px; margin-right: 5px">月执行一次</span>
     </div>
-    <div class="cron-item">
-      <el-radio v-model="radioValue" :label="4" border> 指定</el-radio>
-      <el-select clearable collapse-tags filterable v-model="checkboxList" placeholder="请选择月份" multiple>
-        <el-option v-for="item in 12" :key="item" :value="item" :label="item"/>
-      </el-select>
+    <div class="cron-item ">
+      <el-radio size="small" v-model="radioValue" :label="4" border> 指定</el-radio>
+      <el-checkbox-group  size="small"  v-model="checkboxList"  >
+        <el-checkbox class="my-[5px]" :border="true" v-for="item in 12" :key="item" :value="item" :label="item<10?'0'+item:item"/>
+      </el-checkbox-group>
     </div>
   </div>
 </template>
@@ -61,31 +61,17 @@ const averageTotalFun = () => {
 // 计算勾选的checkbox值合集
 const checkboxStringFun = () => {
   let str = checkboxList.value.join();
-  return str == '' || str == '0' ? '*' : str;
+  return str == '' || str == '0' ? '?' : str;
 };
 let cycleTotal = computed(() => cycleTotalFun());
 let averageTotal = computed(() => averageTotalFun());
 let checkboxString = computed(() => checkboxStringFun());
 // 单选按钮值变化时
 const radioChange = () => {
-  if (radioValue.value === 1) {
-    emits('update', 'month', '*');
-    emits('update', 'year', '*');
-  } else {
-    if (props.cron?.day === '*') {
-      emits('update', 'day', '0', 'month');
-    }
-    if (props.cron?.hour === '*') {
-      emits('update', 'hour', '0', 'month');
-    }
-    if (props.cron?.min === '*') {
-      emits('update', 'min', '0', 'month');
-    }
-    if (props.cron?.second === '*') {
-      emits('update', 'second', '0', 'month');
-    }
-  }
   switch (radioValue.value) {
+    case 1:
+      emits('update', 'month', '*');
+      break;
     case 2:
       emits('update', 'month', cycle01.value + '-' + cycle02.value);
       break;
@@ -118,22 +104,18 @@ const checkboxChange = () => {
 watch(
     () => radioValue.value,
     (_val) => radioChange(),
-
 );
 watch(
     () => cycleTotal.value,
     (_val) => cycleChange(),
-
 );
 watch(
     () => averageTotal.value,
     (_val) => averageChange(),
-
 );
 watch(
     () => checkboxString.value,
     (_val) => checkboxChange(),
-
 );
 
 defineExpose({

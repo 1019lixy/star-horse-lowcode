@@ -889,9 +889,12 @@ button.el-collapse-item__header {
     align-items: center;
     display: flex;
     flex-wrap: nowrap;
-
     span {
+      font-size: 12px;
       white-space: nowrap;
+    }
+    label {
+      margin-right: 5px;
     }
   }
 }
