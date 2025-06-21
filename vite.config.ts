@@ -5,6 +5,7 @@ import {resolve} from 'path';
 import Components from 'unplugin-vue-components/vite';
 import {ElementPlusResolver} from 'unplugin-vue-components/resolvers';
 import AutoImport from 'unplugin-auto-import/vite';
+import ElementPlus from 'unplugin-element-plus/vite';
 import tailwindcss from '@tailwindcss/vite';
 // import {visualizer} from 'rollup-plugin-visualizer';
 //生产types文件插件
@@ -32,6 +33,10 @@ export default defineConfig((mode) => {
                     // 开启 defineModel
                     defineModel: true
                 }
+            }),
+            ElementPlus({
+                // 自动导入样式（无需手动 import 全量 CSS）
+                useSource: true
             }),
             dts({
                 entryRoot: './src',
