@@ -99,9 +99,13 @@ const fieldPlaceholder = () => {
   } else if (selectType.includes(itemType.value)) {
     props.item.preps['placeholder'] = "请选择" + props.item.label;
   }
-  if (props.item?.type?.includes("range") && itemType.value == 'datetime') {
-    props.item.preps['startPlaceholder'] = "请选择" + '开始日期';
-    props.item.preps['endPlaceholder'] = "请选择" + '结束日期';
+  if (itemType.value == 'datetime') {
+    if (props.item?.type?.includes("range")) {
+      props.item.preps['startPlaceholder'] = "请选择" + '开始日期';
+      props.item.preps['endPlaceholder'] = "请选择" + '结束日期';
+    } else {
+      props.item.preps['placeholder'] = "请选择" + props.item.label;
+    }
   } else if (itemType.value == "number-range") {
     props.item.preps['minPlaceholder'] = "请输入" + '最小值';
     props.item.preps['maxPlaceholder'] = "请输入" + '最大值';
