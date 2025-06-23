@@ -205,3 +205,15 @@ export function getPrefix(data: any, prefix: string, parentIndex: number, index:
 export function checkVisible(item: any, dataForm: any) {
     return item.formVisible || dataForm['_' + item.fieldName + 'Visible'];
 }
+
+/**
+ * 解析列表数据
+ * @param item
+ * @param val
+ */
+export function parseListData(item: any, val: any) {
+    return unref(item.preps?.values)?.find((temp: any) => temp.value == val)?.name
+        || unref(item.preps?.data)?.find((temp: any) => temp.value == val)?.name
+        || unref(item.optionList)?.find((temp: any) => temp.value == val)?.name
+        || val;
+}

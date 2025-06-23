@@ -1,8 +1,8 @@
 <script setup lang="ts" name="ShTableListColumn">
-import {inject, PropType, unref} from 'vue';
+import {inject, PropType} from 'vue';
 import {DialogProps} from '@/components/types/DialogProps';
 import {Config} from '@/api/settings';
-import {validMsg} from '@/api/form_utils';
+import {parseListData, validMsg} from '@/api/form_utils';
 import {createDatetime} from "@/api/date_utils";
 
 const props = defineProps({
@@ -23,12 +23,10 @@ const dataFormat = (val: any) => {
       return createDatetime(val);
     }
     if (type == "switch") {
-      return val == '1' || val == "Y" ? "是" : "否";
+      return val === true || val == '1' || val == "Y" ? "是" : "否";
     }
     if (type == "select" || type == "radio" || type == "checkbox" || type == "cascader" || type == "tselect") {
-      return props.item.preps?.values?.find((item: any) => item.value == val)?.name
-          || unref(props.item.optionList)?.find((item: any) => item.value == val)?.name
-          || val;
+      return parseListData(props.item, val);
     }
     return val;
   }
