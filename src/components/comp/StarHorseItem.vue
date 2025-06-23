@@ -226,7 +226,6 @@ onMounted(() => {
         :isSearch="isSearch"
         :bareFlag="bareFlag"
         :field="item"
-        :dataIndex="dataIndex"
         v-model:formData="dataForm"
     />
     <div v-if="item.brotherNodes" style="width: 15px"/>

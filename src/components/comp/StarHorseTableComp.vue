@@ -21,7 +21,7 @@ import {compKey, removeEmptyCondition, uuid} from '@/api/system';
 import {Config} from '@/api/settings';
 import Tablebtn from '@/components/comp/items/tablebtn.vue';
 import Help from '@/components/help.vue';
-import {PreValid} from "@/components/types/BtnAuth";
+import {BtnAuth, PreValid} from "@/components/types/BtnAuth";
 
 const dynamicForm = useDynamicFormStore(piniaInstance);
 const props = defineProps({
@@ -811,8 +811,7 @@ defineExpose({
           {{ title }}
         </div>
         <star-horse-button-list @tableCompFunc="(fun: any) => tableCompFunc(fun)" :compUrl="compUrl"
-                                :btnPermission="permissions" :extendBtns="extendBtns" :dialogProps="dialogProps"
-                                :showType="'dropdown'"
+                                :btnPermissions="permissions" :extendBtns="extendBtns" :dialogProps="dialogProps"
                                 :preValidFunc="preValidFunc"
                                 v-if="!hideButtonList"/>
       </div>

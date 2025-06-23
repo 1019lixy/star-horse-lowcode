@@ -13,7 +13,7 @@ export function uuid() {
     return 'sh' + uuidv4();
 }
 
-export async function copyText(text:any) {
+export async function copyText(text: any) {
     try {
         await navigator.clipboard.writeText(text);
         success('复制成功');
@@ -86,11 +86,16 @@ export const batchModifyAction = (items: Array<any>, val: any, fieldName: string
 /**
  * 动态创建组件
  * @param compInfo 组件信息
- * @param app 父组件
  */
-export function createComponent(compInfo: DyCompField, app: any) {
-    !app && console.log('app is null');
-    return app?.component(compInfo.name, {
+export function createComponent(compInfo: DyCompField) {
+    const app = __starHorseHostApp__;
+    !app && console.log('app is null,please define __starHorseHostApp__');
+    // 检查是否已存在同名组件
+    const existingComponent = app.component(compInfo.name);
+    if (existingComponent) {
+        return compInfo.name; // 存在同名组件，返回名称
+    }
+    app?.component(compInfo.name, {
         components: compInfo.components || {},
         template: compInfo.template,
         data: () => compInfo.data || {},
@@ -103,6 +108,7 @@ export function createComponent(compInfo: DyCompField, app: any) {
         onActivated: compInfo.onActivated,
         onDeactivated: compInfo.onDeactivated
     });
+    return compInfo.name;
 }
 
 /**

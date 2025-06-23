@@ -1,12 +1,13 @@
 <script setup lang="ts" name="StarHorseTableColumn">
 import StarHorseItem from '@/components/comp/StarHorseItem.vue';
-import {nextTick, PropType, ref} from 'vue';
+import {computed, ComputedRef, nextTick, PropType, ref, unref} from 'vue';
 import {postRequest} from '@/api/star_horse_apis';
 import {closeLoad, commonParseCodeToName} from '@/api/star_horse_utils';
 import {error, success, warning} from '@/utils/message';
 import {Config} from '@/api/settings';
 import {createComponent} from '@/api/system';
 import {dateTypes, parseDateByType} from "@/api/date_utils";
+import {DyCompField} from "@/components/types";
 
 const props = defineProps({
   compUrl: {type: Object},
@@ -23,6 +24,16 @@ const props = defineProps({
   compSize: {type: String, default: Config.compSize}
 });
 const emits = defineEmits(['focusEvent', 'blurEvent']);
+const compInfo: ComputedRef<DyCompField> = computed(() => {
+      return {
+        ...unref(props.item.preps?.compInfo),
+        props: {
+          data: {type: Object},
+          item: {type: Object}
+        }
+      }
+    }
+)
 const currentRow = ref();
 const focusEvent = (_column: any) => {
   // currentRow.value[column["property"]] = currentRow.value[column["property"]];
@@ -160,18 +171,10 @@ const createPreps = (item: any) => {
             />
           </template>
           <component
-              :is="
-              createComponent({
-                ...item.preps.compField,
-                props: {
-                  data: { type: Object },
-                  item: { type: Object }
-                }
-              },__starHorseHostApp__ )
-            "
-              :data="scope.row"
+              :is="createComponent(compInfo)"
               :item="item"
-              v-if="item.preps.compField"
+              :data="scope.row"
+              v-if="compInfo.name"
           />
         </el-popover>
         <star-horse-item
@@ -181,7 +184,7 @@ const createPreps = (item: any) => {
             :batchName="batchName"
             :compSize="compSize"
             :style="{ ...item.preps.styles }"
-            v-on:[item.preps.compAction]="item.preps.compFunc(scope.row)"
+            v-on:[item.preps?.compAction]="item.preps?.compFunc(scope.row)"
             v-else
         />
       </template>
