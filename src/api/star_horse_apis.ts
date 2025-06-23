@@ -35,7 +35,7 @@ service.interceptors.request.use(
 
 export function getMenuId() {
     //@ts-ignore
-    const router = useRouter() ?? window.__hostRouter__;
+    const router =window.__hostRouter__;
     const meta = router?.currentRoute?.value?.meta;
     let menuId = meta?.menuId as string;
     if (!menuId) {

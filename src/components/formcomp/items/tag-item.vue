@@ -57,6 +57,7 @@ const tagType = (val: any) => {
         v-bind="field.preps"
         :type="tagType(formData[field.fieldName])"
         @click="itemAction('click')"
+        class="relative"
     >
       {{
         (callBack && callBack()) ||

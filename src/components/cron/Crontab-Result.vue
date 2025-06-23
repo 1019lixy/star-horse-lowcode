@@ -1,14 +1,3 @@
-<template>
-  <div class="popup-result">
-    <p class="title">最近5次运行时间</p>
-    <div class="popup-result-scroll">
-      <template v-if="isShow">
-        <el-tag v-for="item in resultList" :key="item">{{ item }}</el-tag>
-      </template>
-      <el-tag v-else>计算结果中...</el-tag>
-    </div>
-  </div>
-</template>
 <script setup lang="ts" name="crontab-result">
 import {onMounted, PropType, ref, watch} from 'vue';
 
@@ -570,3 +559,27 @@ onMounted(() => {
   expressionChange();
 });
 </script>
+<template>
+  <div class="popup-result">
+    <p class="title">最近5次运行时间</p>
+    <div class="popup-result-scroll">
+      <template v-if="isShow">
+        <el-tag class="my-[5px]" v-for="item in resultList" :key="item">{{ item }}</el-tag>
+      </template>
+      <el-tag v-else>计算结果中...</el-tag>
+    </div>
+  </div>
+</template>
+<style lang="scss" scoped>
+.popup-result-scroll {
+  font-size: 12px;
+  line-height: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+
+  overflow-y: auto;
+}
+
+</style>

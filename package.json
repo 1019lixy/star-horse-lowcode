@@ -2,9 +2,9 @@
   "name": "star-horse-lowcode",
   "private": false,
   "author": "l_1019@163.com",
-  "version": "2.7.43",
+  "version": "2.7.45",
   "type": "module",
-  "description": "星马低代码平台",
+  "description": "星马低代码核心库，提供了低代码平台的基础功能和组件库。此库可引用到您的项目中，快速构建表单和列表。",
   "keywords": [
     "lowcode",
     "low-code",
@@ -13,8 +13,8 @@
     "star-horse-lowcode",
     "星马",
     "低代码",
-    "低代码平台",
-    "星马低代码平台"
+    "低代码库",
+    "星马低代码核心库"
   ],
   "license": "MIT",
   "homepage": "none",
@@ -23,7 +23,7 @@
     "url": "none"
   },
   "main": "dist/index.es.js",
-  "module": "dist/index.cjs.js",
+  "module": "dist/index.es.js",
   "types": "dist/types/index.d.ts",
   "files": [
     "dist"
@@ -31,8 +31,7 @@
   "exports": {
     ".": {
       "types": "./dist/types/index.d.ts",
-      "import": "./dist/index.es.js",
-      "require": "./dist/index.umd.js"
+      "import": "./dist/index.es.js"
     },
     "./*": "./dist/*"
   },
@@ -71,12 +70,13 @@
     "svgicons2svgfont": "^15.0.1",
     "tailwindcss": "^4.1.10",
     "unplugin-auto-import": "^19.3.0",
+    "unplugin-element-plus": "^0.10.0",
     "unplugin-vue-components": "^28.7.0",
     "uuid": "^11.1.0",
     "vite-plugin-dts": "^4.5.4",
     "vue": "^3.5.17",
     "vue-demi": "^0.14.10",
-    "vue-i18n": "^11.1.6",
+    "vue-i18n": "^11.1.7",
     "vue-m-message": "^4.0.2",
     "vue-router": "^4.5.1",
     "vue3-barcode": "^1.0.1",

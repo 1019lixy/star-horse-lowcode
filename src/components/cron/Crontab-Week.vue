@@ -1,35 +1,35 @@
 <template>
   <div class="cron-content">
     <div class="cron-item">
-      <el-radio v-model="radioValue" :label="1" border> 周，允许的通配符[, - * / L #]</el-radio>
+      <el-radio size="small" v-model="radioValue" :label="1" border> 周，允许的通配符[, - * / L #]</el-radio>
     </div>
     <div class="cron-item">
-      <el-radio v-model="radioValue" :label="2" border> 不指定</el-radio>
+      <el-radio size="small" v-model="radioValue" :label="2" border> 不指定</el-radio>
     </div>
     <div class="cron-item">
-      <el-radio v-model="radioValue" :label="3" border> 周期</el-radio>
+      <el-radio size="small" v-model="radioValue" :label="3" border> 周期</el-radio>
       <span style="margin-left: 10px; margin-right: 5px">从星期</span>
-      <el-input-number v-model="cycle01" :min="1" :max="7" controls-position="right"/>
+      <el-input-number size="small" v-model="cycle01" :min="1" :max="7" controls-position="right"/>
       <span style="margin-left: 10px; margin-right: 5px">至</span>
-      <el-input-number v-model="cycle02" :min="1" :max="7" controls-position="right"/>
+      <el-input-number size="small" v-model="cycle02" :min="1" :max="7" controls-position="right"/>
     </div>
     <div class="cron-item">
-      <el-radio v-model="radioValue" :label="4" border> 循环</el-radio>
+      <el-radio size="small" v-model="radioValue" :label="4" border> 循环</el-radio>
       <span style="margin-left: 10px; margin-right: 5px">第</span>
-      <el-input-number v-model="average01" :min="1" :max="4" controls-position="right"/>
+      <el-input-number size="small" v-model="average01" :min="1" :max="4" controls-position="right"/>
       <span style="margin-left: 10px; margin-right: 5px">周的星期</span>
-      <el-input-number v-model="average02" :min="1" :max="7" controls-position="right"/>
+      <el-input-number size="small" v-model="average02" :min="1" :max="7" controls-position="right"/>
     </div>
     <div class="cron-item">
-      <el-radio v-model="radioValue" :label="5" border>本月最后一个</el-radio>
+      <el-radio size="small" v-model="radioValue" :label="5" border>本月最后一个</el-radio>
       <span style="margin-left: 10px; margin-right: 5px">星期</span>
-      <el-input-number v-model="weekday" :min="1" :max="7" controls-position="right"/>
+      <el-input-number size="small" v-model="weekday" :min="1" :max="7" controls-position="right"/>
     </div>
     <div class="cron-item">
-      <el-radio v-model="radioValue" :label="6" border> 指定</el-radio>
-      <el-select clearable filterable collapse-tags v-model="checkboxList" placeholder="请选择星期几" multiple>
-        <el-option v-for="(item, index) of weekList" :key="index" :value="index + 1" :label="item"/>
-      </el-select>
+      <el-radio size="small" v-model="radioValue" :label="6" border> 指定</el-radio>
+      <el-checkbox-group  size="small"  v-model="checkboxList"  >
+        <el-checkbox class="my-[5px]" :border="true" v-for="(item, index) of weekList" :key="item" :value="item + 1" :label="item<10?'0'+item:item"/>
+      </el-checkbox-group>
     </div>
   </div>
 </template>
@@ -56,7 +56,7 @@ let weekList = ref(['周一', '周二', '周三', '周四', '周五', '周六', 
 // 计算两个周期值
 const cycleTotalFun = () => {
   cycle01.value = props.check?.(cycle01.value, 1, 7);
-  cycle02.value = props.check?.(cycle02.value, 1, 7);
+  cycle02.value = props.check?.(cycle02.value, 2, 7);
   return cycle01.value + '-' + cycle02.value;
 };
 // 计算平均用到的值
@@ -73,7 +73,7 @@ const weekdayCheckFun = () => {
 // 计算勾选的checkbox值合集
 const checkboxStringFun = () => {
   let str = checkboxList.value.join();
-  return str == '' ? '*' : str;
+  return str == '' ? '?' : str;
 };
 let cycleTotal = computed(() => cycleTotalFun());
 let averageTotal = computed(() => averageTotalFun());
@@ -81,27 +81,11 @@ let weekdayCheck = computed(() => weekdayCheckFun());
 let checkboxString = computed(() => checkboxStringFun());
 // 单选按钮值变化时
 const radioChange = () => {
-  if (radioValue.value === 1) {
-    emits('update', 'week', '*');
-    emits('update', 'year', '*');
-  } else {
-    if (props.cron?.month === '*') {
-      emits('update', 'month', '0', 'week');
-    }
-    if (props.cron?.day === '*') {
-      emits('update', 'day', '0', 'week');
-    }
-    if (props.cron?.hour === '*') {
-      emits('update', 'hour', '0', 'week');
-    }
-    if (props.cron?.min === '*') {
-      emits('update', 'min', '0', 'week');
-    }
-    if (props.cron?.second === '*') {
-      emits('update', 'second', '0', 'week');
-    }
-  }
+
   switch (radioValue.value) {
+    case 1:
+      emits('update', 'week', '*');
+      break;
     case 2:
       emits('update', 'week', '?');
       break;

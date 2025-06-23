@@ -2,7 +2,7 @@
   <EditDataDialog
       v-model="dialogInputVisible"
       :disabled="checkIsDisabled(props)"
-      :initial-content="formData[field.fieldName]"
+      :initial-content="String(formData[field.fieldName])"
       @confirm="handleContentConfirm"
   />
   <starhorse-form-item

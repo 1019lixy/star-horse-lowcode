@@ -25,6 +25,9 @@ export type SearchProps = {
      */
     params?: CompParams,
     preps?: any,
+    /**
+     * 废弃，请根据具体业务在preps 中添加 values 或者data
+     */
     optionList?: SelectOption[] | Ref<SelectOption[]>,
 }
 /**

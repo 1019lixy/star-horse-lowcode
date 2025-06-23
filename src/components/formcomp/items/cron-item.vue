@@ -1,14 +1,16 @@
 <template>
   <star-horse-dialog
       :title="'Crontab 配置器'"
-      box-width="45%"
+      box-width="50%"
       :self-func="true"
       @resetForm="resetForm"
       @closeAction="close"
       @merge="submit"
       :dialog-visible="cronVisible"
   >
-    <Crontab ref="cronTabRef" v-model="cronDataValue"/>
+    <el-scrollbar>
+      <Crontab ref="cronTabRef" v-model="cronDataValue"/>
+    </el-scrollbar>
   </star-horse-dialog>
   <starhorse-form-item
       :isDesign="isDesign"
@@ -37,7 +39,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, ref, shallowRef, PropType} from 'vue';
+import {onMounted, PropType, ref, shallowRef} from 'vue';
 import Crontab from '@/components/cron/Crontab.vue';
 import StarHorseDialog from '@/components/comp/StarHorseDialog.vue';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
