@@ -4,7 +4,7 @@
 </template>
 <script lang="ts" setup>
 
-import Test from "@/simple/test.vue";
+import Test from "@/sample/test.vue";
 </script>
 <style lang="scss">
 #app {

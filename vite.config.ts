@@ -44,7 +44,7 @@ export default defineConfig((mode) => {
                 insertTypesEntry: true,
                 rollupTypes: true,
                 tsconfigPath: './tsconfig.json',
-                exclude: ["**/*.svg"]
+                exclude: ["**/*.svg","./src/sample/test.vue"]
             }),
             AutoImport({
                 imports: ['vue', {
@@ -92,7 +92,7 @@ export default defineConfig((mode) => {
         build: {
             //  告诉打包工具 "vue-demi" 也是外部依赖项
             rollupOptions: {
-                external: ['vue', 'pinia', 'core-js', 'elementPlus',"simple/**/*"],
+                external: ['vue', 'pinia', 'core-js', 'elementPlus',"sample/**/*"],
                 output: {
                     exports: 'named',
                     assetFileNames: 'assets/[name][extname]', // 修正资源输出路径
