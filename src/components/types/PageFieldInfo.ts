@@ -142,6 +142,7 @@ export declare interface FieldInfo {
     minWidth?: number;
     /**
      * 备选数据列表，目前仅支持下拉
+     * 废弃，请根据具体业务在preps 中添加 values 或者data
      */
     optionList?: SelectOption[] | Ref<SelectOption[]>;
     /**

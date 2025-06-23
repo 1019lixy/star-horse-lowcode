@@ -525,6 +525,9 @@ export async function compDynamicData(field: any) {
     if (unref(field.preps?.values)?.length > 0) {
         return unref(field.preps?.values);
     }
+    if(unref(field.preps?.data)?.length>0){
+        return unref(field.preps?.data);
+    }
     if (unref(field?.optionList)?.length > 0) {
         return unref(field.optionList);
     }
@@ -538,7 +541,7 @@ export async function compDynamicData(field: any) {
             reDataList = dicts;
         }
     } else {
-        reDataList = unref(temp?.preps?.values) || unref(temp?.optionList) || [];
+        reDataList =  [];
     }
     return reDataList;
 }
