@@ -117,11 +117,13 @@ export default defineConfig((mode) => {
                     comments: false,
                 }
             },
+            // Vite项目 build打包后浏览器中可直接使用的方法 https://blog.csdn.net/weixin_54898878/article/details/129730628
             lib: {
                 entry: 'src/index.ts', //指定组件编译入口文件
                 name: 'star-horse-lowcode',
                 fileName: (format) => `index.${format}.js`,
-                formats: ['es', 'cjs', 'umd']
+                //'cjs', 'umd'
+                formats: ['es']
             }, //库编译模式配置
             // 开启并行压缩
             parallel: true,
@@ -143,8 +145,6 @@ export default defineConfig((mode) => {
             //@rollup/plugin-commonjs 插件的选项
             commonjsOptions: {},
             //构建的库
-            // Vite项目 build打包后浏览器中可直接使用的方法 https://blog.csdn.net/weixin_54898878/article/details/129730628
-            // lib: {},
             //当设置为 true，构建后将会生成 manifest.json 文件
             manifest: false,
             // 设置为 false 可以禁用最小化混淆，
