@@ -3,7 +3,7 @@ import {computed, onMounted, onUpdated, PropType, ref} from 'vue';
 import {ApiUrls} from '@/components/types/ApiUrls';
 import {download} from '@/api/star_horse_apis';
 import {error, warning} from '@/utils/message';
-import {DialogProps} from '../types/DialogProps';
+import {DialogProps} from '@/components/types/DialogProps';
 import {getToken} from '@/utils/auth';
 import {useGlobalConfigStore} from '@/store/GlobalConfig';
 import piniaInstance from '@/store';
