@@ -68,19 +68,7 @@ export declare interface CardFieldInfo extends TabFieldInfo {
 export declare interface CollapseList extends TabFieldInfo {
 }
 
-/**
- * 事件联动
- */
-export declare interface ActionRelation {
-    /**
-     * 事件名
-     */
-    eventName: string;
-    /**
-     * 事件方法
-     */
-    actionMethod: Function;
-}
+
 
 export declare interface FieldInfo {
     /**
@@ -142,7 +130,7 @@ export declare interface FieldInfo {
     minWidth?: number;
     /**
      * 备选数据列表，目前仅支持下拉
-     * 废弃，请根据具体业务在preps 中添加 values 或者data
+     * 废弃 在2.8.0 版本中删除，请根据具体业务在preps 中添加 values 或者data
      */
     optionList?: SelectOption[] | Ref<SelectOption[]>;
     /**
@@ -194,21 +182,14 @@ export declare interface FieldInfo {
      */
     precision?: number;
     /**
-     * 弹窗数据配置
+     * 弹窗数据配置,
+     * 废弃，请将所有弹窗配置都放在preps 中
      */
     params?: CompParams;
     /**
-     * 事件联动,鸡肋定义，后面会删除
-     */
-    actionRelation?: ActionRelation;
-    /**
-     * 参数
-     */
-    //  params?: Object;
-    /**
      * 组件个性化属性
      */
-    preps?: object;
+    preps?: any | CompParams;
     /**
      * 查询表前缀
      */
@@ -234,7 +215,7 @@ export declare interface FieldInfo {
      */
     searchVisible?: boolean;
     /**
-     * 校验规则
+     * 校验规则，废弃 在2.8.0 版本中删除 请在preps 中配置rules
      */
     rules?: RuleType[] | any;
     /**

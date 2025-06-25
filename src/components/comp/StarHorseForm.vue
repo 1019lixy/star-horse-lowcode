@@ -124,10 +124,7 @@ const checkActionRelation = () => {
   for (let key in formFields) {
     let temp = formFields[key];
     let preps = temp?.preps;
-    //有事件联动的方法
-    if (preps?.actionRelation) {
-      temp.preps['actionRelation'](dataForm.value[temp.preps['name']]);
-    }
+
     if (preps?.actions) {
       temp.preps['actions'](dataForm.value);
     }

@@ -630,7 +630,6 @@ hr {
 
   li {
     text-wrap: none;
-    border: 1px solid var(--star-horse-style);
     height: 25px;
     display: flex;
     cursor: pointer;
@@ -653,8 +652,6 @@ hr {
   }
 }
 
-.inner_button {
-}
 
 .custom-tabs-label {
   display: flex;

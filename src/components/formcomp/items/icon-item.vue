@@ -140,12 +140,6 @@ const dataSearch = () => {
   }
 };
 const itemAction = (prep: any) => {
-  if (prep == actionName.value && props.field?.actionRelation) {
-    props.field?.actionRelation(
-        formData.value[props.field.fieldName],
-        formData.value['xh']
-    );
-  }
   emits('selfFunc', prep, formData.value);
 };
 const init = async () => {

@@ -2,7 +2,7 @@
 import {computed, inject, ModelRef, onMounted, PropType, ref} from 'vue';
 import {useSelfOperationStore} from '@/store/SelfOperation';
 import piniaInstance from '@/store';
-import {compKey, uuid} from '@/api/system';
+import {compKey, fieldPlaceholder, uuid} from '@/api/system';
 import {Config} from '@/api/settings';
 import {checkVisible} from '@/api/form_utils';
 import Help from "@/components/help.vue";
@@ -88,29 +88,6 @@ const fieldType = () => {
     //日期默认以时间戳赋值
   }
 }
-const inputType = ["input", "textarea", "password", "number", "view-markdown", "json", "json-array"];
-const selectType = ["select", "tselect", "cascader", "autocomplete", "area", "cron", "transfer", "dialog-input", "page-select"];
-const fieldPlaceholder = () => {
-  if (!props.item.preps) {
-    props.item.preps = {};
-  }
-  if (inputType.includes(itemType.value)) {
-    props.item.preps['placeholder'] = "请输入" + props.item.label;
-  } else if (selectType.includes(itemType.value)) {
-    props.item.preps['placeholder'] = "请选择" + props.item.label;
-  }
-  if (itemType.value == 'datetime') {
-    if (props.item?.type?.includes("range")) {
-      props.item.preps['startPlaceholder'] = "请选择" + '开始日期';
-      props.item.preps['endPlaceholder'] = "请选择" + '结束日期';
-    } else {
-      props.item.preps['placeholder'] = "请选择" + props.item.label;
-    }
-  } else if (itemType.value == "number-range") {
-    props.item.preps['minPlaceholder'] = "请输入" + '最小值';
-    props.item.preps['maxPlaceholder'] = "请输入" + '最大值';
-  }
-}
 const init = () => {
   fieldType();
   if (!props.item['id']) {
@@ -118,9 +95,8 @@ const init = () => {
   }
   props.item["clearable"] = true;
   props.item["readonly"] = props.item?.readonly || props.isView;
-  fieldPlaceholder();
+  fieldPlaceholder(props.item, itemType.value);
   if (props.item.preps) {
-
     let keys = Object.keys(props.item.preps);
     for (let key in keys) {
       let val = props.item.preps[key];

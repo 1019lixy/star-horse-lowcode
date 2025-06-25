@@ -82,6 +82,36 @@ export const batchModifyAction = (items: Array<any>, val: any, fieldName: string
     }
 };
 
+const inputType = ["input", "textarea", "password", "number", "view-markdown", "json", "json-array"];
+const selectType = ["select", "tselect", "cascader", "autocomplete", "area", "cron", "transfer", "dialog-input", "page-select"];
+
+/**
+ * 给组件添加placeholder属性
+ * @param item
+ * @param itemType
+ */
+export function fieldPlaceholder(item: any, itemType: string) {
+    if (!item.preps) {
+        item.preps = {};
+    }
+    if (inputType.includes(itemType)) {
+        item.preps['placeholder'] = item.preps['placeholder'] || ("请输入" + item.label);
+    } else if (selectType.includes(itemType)) {
+        item.preps['placeholder'] = item.preps['placeholder'] || ("请选择" + item.label);
+    }
+    if (itemType == 'datetime') {
+        if (item?.type?.includes("range")) {
+            item.preps['startPlaceholder'] = item.preps['startPlaceholder'] || "请选择开始日期";
+            item.preps['endPlaceholder'] = item.preps['endPlaceholder'] || "请选择结束日期";
+        } else {
+            item.preps['placeholder'] = item.preps['placeholder'] || ("请选择" + item.label);
+        }
+    } else if (itemType == "number-range") {
+        item.preps['minPlaceholder'] = item.preps['minPlaceholder'] || ("请输入最小值");
+        item.preps['maxPlaceholder'] = item.preps['maxPlaceholder'] || ("请输入最大值");
+    }
+}
+
 /**
  * 校验组件
  * @param item
@@ -92,6 +122,21 @@ export function itemCheck(item: any) {
         item.label = item.label || item.preps?.label;
         item.fieldName = item.fieldName || item.preps?.fieldName;
         item.type = item.type || item.preps?.itemType;
+        item.actionName = item.actionName || item.preps?.actionName;
+        item.actions = item.actions || item.preps?.actions;
+        fieldPlaceholder(item, item.type);
+        // 新增：字符串转函数逻辑
+        if (typeof item.actions === 'string') {
+            try {
+                // 将字符串转换为函数（假设函数需要访问当前 item 上下文，可根据实际参数调整）
+                // item.actions = new Function('item', `return ${item.actions}`)(item);
+                // 或直接转换为函数体（无参数时）：
+                item.actions = new Function(item.actions);
+            } catch (e) {
+                console.error('actions 字符串转函数失败:', e);
+                item.actions = null; // 转换失败时置空避免错误
+            }
+        }
     }
     return item?.itemType + (item?.compType === 'container' ? '-container' : '-item');
 }

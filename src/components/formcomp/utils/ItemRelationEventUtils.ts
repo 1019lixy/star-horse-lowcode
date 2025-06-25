@@ -166,10 +166,7 @@ const allAction = (context: any, emits: any, formData: any, actionName: string, 
     if (actionName == 'input' && actionName != tempName) {
         return;
     }
-    //处理自定义响应事件
-    if (actionName == field.actionName && field.actionRelation) {
-        field.actionRelation(currentData[field.fieldName], currentData['xh']);
-    }
+
 };
 /**
  * Button 组件的点击事件
