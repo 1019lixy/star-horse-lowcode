@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, ref, shallowRef, watch, PropType} from 'vue';
+import {onMounted, ref, shallowRef, watch, PropType, nextTick} from 'vue';
 import {PageProps} from '@/components/types/PageProps';
 import {closeLoad, createCondition, load} from '@/api/star_horse_utils';
 import {postRequest} from '@/api/star_horse_apis';
@@ -86,7 +86,7 @@ const loadByPage = (isInit: boolean = false) => {
   if (orderBy.value?.length > 0) {
     orderByTemp = orderBy.value;
   }
-  if (!props.field.params['dataUrl']?.pageListUrl) {
+  if (!props.field.preps?.['dataUrl']?.pageListUrl) {
     return;
   }
   let params: any = {
@@ -95,16 +95,16 @@ const loadByPage = (isInit: boolean = false) => {
     fieldList: searchData.value,
     orderBy: orderByTemp
   };
-  let url: string = props.field.params.dataUrl?.pageListUrl;
-  if (props.field.params.dataUrl.redirect) {
+  let url: string = props.field.preps?.dataUrl?.pageListUrl;
+  if (props.field.preps?.dataUrl.redirect) {
     params = {
       url,
-      host: props.field.params.dataUrl?.host,
-      port: props.field.params.dataUrl?.port,
-      protocol: props.field.params.dataUrl?.protocol,
-      env: props.field.params.dataUrl?.env,
-      httpMethod: props.field.params.dataUrl?.httpMethod || 'POST',
-      dataType: props.field.params.dataUrl?.dataType || 'JSON',
+      host: props.field.preps?.dataUrl?.host,
+      port: props.field.preps?.dataUrl?.port,
+      protocol: props.field.preps?.dataUrl?.protocol,
+      env: props.field.preps?.dataUrl?.env,
+      httpMethod: props.field.preps?.dataUrl?.httpMethod || 'POST',
+      dataType: props.field.preps?.dataUrl?.dataType || 'JSON',
       searchInfo: params
     };
     url = '/system-config/redirect/pageList';
@@ -136,7 +136,7 @@ const searchDataFun = (data: any) => {
   loadByPage();
 };
 const getRowIdentity = (row: any) => {
-  return row[props.field.params.primaryKey];
+  return row[props.field.preps?.primaryKey];
 };
 const handleSelectionChange = (val: any) => {
   multipleSelection.value = val;
@@ -144,7 +144,7 @@ const handleSelectionChange = (val: any) => {
 };
 const selectRow = (row: any, _column: any, _evt: any) => {
   const selected = multipleSelection.value.some(
-      (item: any) => item[props.field.params.primaryKey] === row[props.field.params.primaryKey]
+      (item: any) => item[props.field.preps?.primaryKey] === row[props.field.preps?.primaryKey]
   );
   if (!selected) {
     multipleSelection.value.push(row);
@@ -155,12 +155,12 @@ const selectRow = (row: any, _column: any, _evt: any) => {
   assignVal();
 };
 const loadSourceField = (aliasFirst: boolean = true) => {
-  let fields: any = props.field.params['needField'];
-  let name = aliasFirst ? props.field.params['aliasName'] || props.field.fieldName : props.field.fieldName;
+  let fields: any = props.field.preps?.['needField'];
+  let name = aliasFirst ? props.field.preps?.['aliasName'] || props.field.fieldName : props.field.fieldName;
   return fields?.find((temp: FieldMapping) => temp.distField == name)?.sourceField || '';
 };
 const assignVal = () => {
-  let fields: any = props.field.params['needField'];
+  let fields: any = props.field.preps?.['needField'];
   let name = props.field.fieldName;
   if (fields) {
     fields.forEach((temp: FieldMapping) => {
@@ -177,18 +177,19 @@ const assignVal = () => {
   } else {
     formData.value[name] = multipleSelection.value.map((item) => item[name]);
   }
-  if (props.field.params['recall']) {
-    props.field.params['recall'](multipleSelection.value);
+  if (props.field.preps?.['recall']) {
+    props.field.preps?.['recall'](multipleSelection.value);
   }
 };
 watch(
-    () => props.field.params['dataUrl'],
+    () => props.field.preps?.['dataUrl'],
     () => {
       loadByPage();
     }
 );
-onMounted(() => {
-  let inputPreps = props.field?.params;
+onMounted(async () => {
+  await nextTick();
+  let inputPreps = props.field?.preps;
   if (!inputPreps) {
     warning('属性' + props.field?.label + '需要配置params 信息');
     return;
@@ -240,12 +241,11 @@ onMounted(() => {
     >
       <template #empty>
         <el-card class="inner_content" style="margin: 5px">
-          <!--          <div class="search_btn" :style="{'flex-direction':Config.buttonStyle.value=='line'?'column':'row'}">-->
           <star-horse-search-comp
-              :formData="field.params['searchFieldList']"
+              :formData="field.preps?.['searchFieldList']"
               @searchData="(data: any) => searchDataFun(data)"
               :mutComp="true"
-              :compUrl="field.params['dataUrl']"
+              :compUrl="field.preps?.['dataUrl']"
           />
           <el-table
               ref="starHorseTableCompRef"
@@ -267,22 +267,22 @@ onMounted(() => {
               border
           >
             <el-table-column type="selection" align="center" fixed="left" :reserve-selection="true"/>
-            <template v-for="(item,key) in field.params?.fieldList" :key="compKey(item,key)">
+            <template v-for="(item,key) in field.preps?.fieldList" :key="compKey(item,key)">
               <template v-if="Array.isArray(item)">
                 <star-horse-table-column
                     v-for="(sitem,skey) in item"
                     :key="compKey(sitem,skey)"
-                    :compUrl="field.params['dataUrl']"
+                    :compUrl="field.preps?.['dataUrl']"
                     :cellEditable="false"
-                    :data-format="field.params['dataFormat']"
+                    :data-format="field.preps?.['dataFormat']"
                     :item="sitem"
                 />
               </template>
               <star-horse-table-column
                   v-else
-                  :compUrl="field.params['dataUrl']"
+                  :compUrl="field.preps?.['dataUrl']"
                   :cellEditable="false"
-                  :data-format="field.params['dataFormat']"
+                  :data-format="field.preps?.['dataFormat']"
                   :item="item"
               />
             </template>

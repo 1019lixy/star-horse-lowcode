@@ -168,7 +168,6 @@ export const useDesignFormStore = defineStore('designForm', () => {
      * 如果要使用compListNoLayer 必须先调用loadCompNames 方法
      */
     const loadCompNames = () => {
-
         const innerFunc = (datas: Array<any>, tabName?: string) => {
             const selectList: Array<any> = [];
             const compList: Array<any> = [];

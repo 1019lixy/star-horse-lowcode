@@ -6,7 +6,7 @@ import piniaInstance from '@/store/index';
 import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
 import {tableAction, tableCellOperation} from '@/components/formcomp/container/dytableUtils';
 import {Config} from '@/api/settings';
-import {uuid} from "@/api/system";
+import {itemCheck, uuid} from "@/api/system";
 
 const props = defineProps({
   parentField: {type: Object as PropType<any>},
@@ -48,9 +48,6 @@ let buttonControl = reactive<any>({
   deleteWholeColDisabled: false,
   deleteWholeRowDisabled: false
 });
-const getComponentName = (data: any) => {
-  return data?.itemType + '-item';
-};
 
 const onDragAdd = (evt: Event|any, dataList: any) => {
   selectCurrentTd();
@@ -181,7 +178,7 @@ watch(
               :formInfo="formInfo"
               :isDesign="isDesign"
               :disabled="disabled"
-              :is="getComponentName(data)"
+              :is="itemCheck(data)"
               :parentField="parentField"
               v-model:formData="formData"
           />

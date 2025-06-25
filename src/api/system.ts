@@ -82,6 +82,19 @@ export const batchModifyAction = (items: Array<any>, val: any, fieldName: string
     }
 };
 
+/**
+ * 校验组件
+ * @param item
+ */
+export function itemCheck(item: any) {
+    //如果不是容器
+    if (item?.compType == "formItem") {
+        item.label = item.label || item.preps?.label;
+        item.fieldName = item.fieldName || item.preps?.fieldName;
+        item.type = item.type || item.preps?.itemType;
+    }
+    return item?.itemType + (item?.compType === 'container' ? '-container' : '-item');
+}
 
 /**
  * 动态创建组件

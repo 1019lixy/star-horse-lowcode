@@ -2,7 +2,7 @@
 import {computed, onMounted, PropType, ref, watch} from 'vue';
 import {useDesignFormStore} from '@/store/DesignForm';
 import piniaInstance from '@/store/index';
-import {compKey, uuid} from "@/api/system";
+import {compKey, itemCheck, uuid} from "@/api/system";
 
 const props = defineProps({
   parentField: {type: String},
@@ -15,9 +15,7 @@ let designForm = useDesignFormStore(piniaInstance);
 const isDragging = computed(() => designForm.isDragging);
 const formData = defineModel("formData");
 let containerType: Array<string> = ['tab', 'box', 'table', 'card', 'dytable', 'collapse'];
-const getComponentName = (data: any) => {
-  return containerType.includes(data.itemType) ? data.itemType + '-container' : data.itemType + '-item';
-};
+
 const isContainer = (data: any) => {
   return containerType.includes(data.itemType);
 };
@@ -120,7 +118,7 @@ const addTab = () => {
                     :isDesign="isDesign"
                     :disabled="disabled"
                     :formInfo="formInfo"
-                    :is="getComponentName(data)"
+                    :is="itemCheck(data)"
                     :parentField="field"
                     v-model:formData="formData"
                 />

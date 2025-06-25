@@ -63,7 +63,7 @@ const tagType = (val: any) => {
         (callBack && callBack()) ||
         formData[field.fieldName] ||
         field.preps?.placeholder ||
-        "请赋值" + field.label
+        "请赋值" +field.label
       }}
     </el-tag>
   </starhorse-form-item>

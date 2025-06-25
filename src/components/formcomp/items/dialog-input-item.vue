@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {nextTick, onMounted, ref, shallowRef, PropType} from 'vue';
+import {nextTick, onMounted, PropType, ref, shallowRef} from 'vue';
 import {warning} from '@/utils/message';
 import {FieldInfo, FieldMapping} from '@/components/types/PageFieldInfo';
 import {isJson} from '@/api/star_horse_utils';
@@ -43,7 +43,7 @@ const itemAction = (prep: any) => {
 };
 const selectItem = (row: any) => {
   let data = '';
-  let needField = props.field.params?.needField;
+  let needField = props.field.preps?.needField;
   if (!row || !isJson(row)) {
     let selectDatas = dialogInputTableRef.value.multipleSelection;
     if (!selectDatas) {
@@ -67,8 +67,8 @@ const selectItem = (row: any) => {
       }
     });
   }
-  if (props.field.params?.recall) {
-    props.field.params['recall'](row);
+  if (props.field.preps?.recall) {
+    props.field.preps?.['recall'](row);
   }
   closeAction();
 };
@@ -78,7 +78,7 @@ const closeAction = () => {
 const showVisible = () => {
   dialogInputVisible.value = true;
   nextTick(() => {
-    let fields = props.field.params.needField;
+    let fields = props.field.preps?.needField;
     let name = props.field.fieldName;
     let realName = name;
     if (props.field.aliasName) {
@@ -91,8 +91,9 @@ const showVisible = () => {
   });
 };
 
-onMounted(() => {
-  let inputPreps = props.field?.params;
+onMounted(async () => {
+  await nextTick();
+  let inputPreps = props.field?.preps;
   if (!inputPreps) {
     warning('属性' + props.field?.label + '需要配置params 信息');
     return;
@@ -130,27 +131,33 @@ onMounted(() => {
       @merge="selectItem"
       @closeAction="closeAction"
   >
-    <star-horse-search-comp
-        @searchData="(data: any) => dialogInputTableRef.createSearchParams(data)"
-        :formData="field.params['searchFieldList']"
-        :compUrl="field.params['dataUrl']"
-    />
-    <star-horse-table-comp
-        :fieldList="{
+    <el-card class="inner_content ">
+      <div class="search-content">
+        <div class="search_btn">
+          <star-horse-search-comp
+              @searchData="(data: any) => dialogInputTableRef.createSearchParams(data)"
+              :formData="field.preps?.['searchFieldList']"
+              :compUrl="field.preps?.['dataUrl']"
+          />
+        </div>
+      </div>
+      <star-horse-table-comp
+          :fieldList="{
           cellEditable: false,
-          fieldList: field.params['fieldList']
+          fieldList: field.preps?.['fieldList']
         }"
-        :primaryKey="field.params['primaryKey']"
-        :compUrl="field.params['dataUrl']"
-        ref="dialogInputTableRef"
-        :dialogInput="true"
-        height="400px"
-        :filterCondition="field.params['filterCondition']"
-        :orderBy="field.params['orderBy']"
-        @selectItem="selectItem"
-        :dataFormat="field.params['dataFormat']"
-        :disableAction="true"
-    />
+          :primaryKey="field.preps?.['primaryKey']"
+          :compUrl="field.preps?.['dataUrl']"
+          ref="dialogInputTableRef"
+          :dialogInput="true"
+          height="400px"
+          :filterCondition="field.preps?.['filterCondition']"
+          :orderBy="field.preps?.['orderBy']"
+          @selectItem="selectItem"
+          :dataFormat="field.preps?.['dataFormat']"
+          :disableAction="true"
+      />
+    </el-card>
   </star-horse-dialog>
   <starhorse-form-item
       :isDesign="isDesign"

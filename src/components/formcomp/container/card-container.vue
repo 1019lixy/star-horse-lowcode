@@ -2,7 +2,7 @@
 import {computed, onMounted, PropType, ref} from 'vue';
 import {useDesignFormStore} from '@/store/DesignForm';
 import piniaInstance from '@/store/index';
-import {uuid} from '@/api/system';
+import {itemCheck, uuid} from '@/api/system';
 
 const props = defineProps({
   parentField: {type: String},
@@ -15,9 +15,7 @@ let designForm = useDesignFormStore(piniaInstance);
 const isDragging = computed(() => designForm.isDragging);
 const formData = defineModel("formData");
 let containerType: Array<string> = ['tab', 'box', 'table', 'card', 'dytable', 'collapse'];
-const getComponentName = (data: any) => {
-  return containerType.includes(data.itemType) ? data.itemType + '-container' : data.itemType + '-item';
-};
+
 const isContainer = (data: any) => {
   return containerType.includes(data.itemType);
 };
@@ -94,7 +92,7 @@ onMounted(() => {
                       :isDesign="isDesign"
                       :disabled="disabled"
                       :formInfo="formInfo"
-                      :is="getComponentName(header)"
+                      :is="itemCheck(header)"
                       :parentField="field"
                       v-model:formData="formData"
                   />
@@ -124,7 +122,7 @@ onMounted(() => {
                   :isDesign="isDesign"
                   :disabled="disabled"
                   :formInfo="formInfo"
-                  :is="getComponentName(item)"
+                  :is="itemCheck(item)"
                   :parentField="field"
                   v-model:formData="formData"
               />

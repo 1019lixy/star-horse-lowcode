@@ -5,7 +5,7 @@ import {operationConfirm, warning} from '@/utils/message';
 import {useDesignFormStore} from '@/store/DesignForm';
 import piniaInstance from '@/store/index';
 import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
-import {uuid} from "@/api/system";
+import {itemCheck, uuid} from "@/api/system";
 
 let containerTableRef = ref(); // 强制刷新表格
 const props = defineProps({
@@ -21,9 +21,6 @@ let excludeContainerType: Array<string> = ['box', 'tab', 'table', 'dytable', 'co
 let isEdit = computed(() => designForm.isEdit);
 const isDragging = computed(() => designForm.isDragging);
 const formData = defineModel("formData");
-const getComponentName = (data: any) => {
-  return data?.itemType + '-item';
-};
 const onDragAdd = (evt: Event|any, dataList: any) => {
   let newIndex = evt.newIndex;
   if (excludeContainerType.includes(draggingItem.value.itemType)) {
@@ -146,7 +143,7 @@ const deleteCol = (index: number) => {
                       :isDesign="isDesign"
                       :disabled="disabled"
                       :formInfo="formInfo"
-                      :is="getComponentName(data)"
+                      :is="itemCheck(data)"
                       :parentField="field"
                       v-model:formData="formData"
                   />

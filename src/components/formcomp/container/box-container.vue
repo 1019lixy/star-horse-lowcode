@@ -3,6 +3,7 @@ import {computed, PropType} from 'vue';
 import {warning} from '@/utils/message';
 import {useDesignFormStore} from '@/store/DesignForm';
 import piniaInstance from '@/store/index';
+import {itemCheck} from "@/api/system";
 
 const props = defineProps({
   parentField: {type: String},
@@ -88,7 +89,7 @@ const onDragAdd = (evt: Event|any, dataList: any) => {
                   :formInfo="formInfo"
                   :isDesign="isDesign"
                   :disabled="disabled"
-                  :is="data.itemType + (data.compType === 'container' ? '-container' : '-item')"
+                  :is="itemCheck(data)"
                   :parentField="boxCompList"
                   v-model:formData="formData"
               />
@@ -109,7 +110,7 @@ const onDragAdd = (evt: Event|any, dataList: any) => {
               :field="data"
               :isDesign="isDesign"
               :disabled="disabled"
-              :is="data.itemType + (data.compType === 'container' ? '-container' : '-item')"
+              :is="itemCheck(data)"
               v-model:formData="formData"
               :formInfo="formInfo"
           />
