@@ -94,21 +94,29 @@ export function fieldPlaceholder(item: any, itemType: string) {
     if (!item.preps) {
         item.preps = {};
     }
+    if (item.preps['noPlaceholder']) {
+        delete item.preps['placeholder'];
+        delete item.preps['startPlaceholder'];
+        delete item.preps['endPlaceholder'];
+        delete item.preps['minPlaceholder'];
+        delete item.preps['maxPlaceholder'];
+        return;
+    }
     if (inputType.includes(itemType)) {
-        item.preps['placeholder'] = item.preps['placeholder'] || ("请输入" + item.label);
+        item.preps['placeholder'] = item.preps['placeholder']?.trim() || ("请输入" + item.label);
     } else if (selectType.includes(itemType)) {
-        item.preps['placeholder'] = item.preps['placeholder'] || ("请选择" + item.label);
+        item.preps['placeholder'] = item.preps['placeholder']?.trim() || ("请选择" + item.label);
     }
     if (itemType == 'datetime') {
         if (item?.type?.includes("range")) {
-            item.preps['startPlaceholder'] = item.preps['startPlaceholder'] || "请选择开始日期";
-            item.preps['endPlaceholder'] = item.preps['endPlaceholder'] || "请选择结束日期";
+            item.preps['startPlaceholder'] = item.preps['startPlaceholder']?.trim() || "请选择开始日期";
+            item.preps['endPlaceholder'] = item.preps['endPlaceholder']?.trim() || "请选择结束日期";
         } else {
-            item.preps['placeholder'] = item.preps['placeholder'] || ("请选择" + item.label);
+            item.preps['placeholder'] = item.preps['placeholder']?.trim() || ("请选择" + item.label);
         }
     } else if (itemType == "number-range") {
-        item.preps['minPlaceholder'] = item.preps['minPlaceholder'] || ("请输入最小值");
-        item.preps['maxPlaceholder'] = item.preps['maxPlaceholder'] || ("请输入最大值");
+        item.preps['minPlaceholder'] = item.preps['minPlaceholder']?.trim() || ("请输入最小值");
+        item.preps['maxPlaceholder'] = item.preps['maxPlaceholder']?.trim() || ("请输入最大值");
     }
 }
 
@@ -121,7 +129,7 @@ export function itemCheck(item: any) {
     if (item?.compType == "formItem") {
         item.label = item.label || item.preps?.label;
         item.fieldName = item.fieldName || item.preps?.fieldName;
-        item.type = item.type || item.preps?.itemType;
+        item.type = item.type || item.itemType;
         item.actionName = item.actionName || item.preps?.actionName;
         item.actions = item.actions || item.preps?.actions;
         fieldPlaceholder(item, item.type);

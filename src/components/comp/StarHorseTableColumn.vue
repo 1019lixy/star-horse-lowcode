@@ -1,5 +1,4 @@
 <script setup lang="ts" name="StarHorseTableColumn">
-import StarHorseItem from '@/components/comp/StarHorseItem.vue';
 import {computed, ComputedRef, nextTick, PropType, ref, unref} from 'vue';
 import {postRequest} from '@/api/star_horse_apis';
 import {closeLoad, commonParseCodeToName} from '@/api/star_horse_utils';

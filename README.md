@@ -293,4 +293,6 @@ barcode        条形码组件
 17. 2025-06-19 修复cron，number-range 组件的bug
 18. 2025-06-23 发布时去掉'cjs', 'umd'的支持,仅打包 es,以减小打包后的包体大小
 19. 2025-06-24 修复动态创建组件函数createComponent props 定义参数在模板中不生效问题，同时修复其它已知bug
-20. 2025-06-25 修复dialog-input,page-select 组件的bug
+20. 2025-06-25 修复dialog-input,page-select 组件的bug,在所有表单组件中新增noPlaceholder属性，默认为false,
+              为true时，不显示默认提示文字,
+              使用实例：{label:"xx",fieldName:"xx",type:"number",preps:{noPlaceholder:true} }

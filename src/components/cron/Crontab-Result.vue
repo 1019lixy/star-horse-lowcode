@@ -1,8 +1,8 @@
 <script setup lang="ts" name="crontab-result">
-import {onMounted, PropType, ref, watch} from 'vue';
+import {onMounted, ref, watch} from 'vue';
 
 const props = defineProps({
-  ex: {type: Object as PropType<any>}
+  ex: {type: String}
 });
 let dayRule = ref('');
 let dayRuleSup = ref<any | Array<any>>();
