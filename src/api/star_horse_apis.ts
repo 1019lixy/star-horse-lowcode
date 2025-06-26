@@ -92,7 +92,7 @@ export function download(url: string, param: any) {
         service
             .post(url, param, {responseType: 'blob'})
             .then((res) => {
-                downloadData(res.data, decodeURI(res.headers['content-disposition'].split('=')[1]));
+                downloadData(res.data, decodeURI(res.headers['content-disposition']?.split('=')[1]));
                 resolve(null);
             })
             .catch((err) => {
