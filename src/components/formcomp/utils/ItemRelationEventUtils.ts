@@ -1,10 +1,10 @@
-import {error} from '@/utils/message';
-import {userFunction} from '@/api/user_func';
-import {compDynamicData} from '@/api/star_horse_utils';
+import { error } from '@/utils/message';
+import { userFunction } from '@/api/user_func';
+import { compDynamicData } from '@/api/star_horse_utils';
 import piniaInstance from '@/store';
-import {useSelfOperationStore} from '@/store/SelfOperation';
-import {useDesignFormStore} from '@/store/DesignForm';
-import {computed, isRef} from 'vue';
+import { useSelfOperationStore } from '@/store/SelfOperation';
+import { useDesignFormStore } from '@/store/DesignForm';
+import { computed, isRef } from 'vue';
 
 const designForm = useDesignFormStore(piniaInstance);
 const userOperation = useSelfOperationStore(piniaInstance);
@@ -88,7 +88,7 @@ const operationRelation = async (relation: any, actionName: string, formData: an
         const params: any = temp.params;
         //数据联动
         if (conditon == 'dataLinkage') {
-            formData[fieldName + 'OptionList'] = await compDynamicData({preps:temp});
+            formData[fieldName + 'OptionList'] = await compDynamicData({ preps: temp });
         } else if (conditon == 'eqDisable' || conditon == 'eqDisableOrEditable') {
             //输入的值等于指定值隐藏否则显示
             formData['_' + fieldName + 'Editable'] = !(currentVal == params);
@@ -194,13 +194,13 @@ const buttonAction = (context: any, emits: any, formData: any, code: string) => 
  */
 const checkIsDisabled = (attrs: any) => {
     // const {attrs} = context;
-    const {field} = attrs;
+    const { field } = attrs;
     const fieldName = field.fieldName;
     const isExplicitlyDisabled = attrs?.disabled || attrs.editDisabled || field.disabled
         || field.preps?.disabled || field.editDisabled || field.preps?.editDisabled;
     const isImplicitlyDisabled = !attrs?.formData?.[`_${fieldName}Editable`] && field?.preps?.disabled === 'Y';
 
-    return isExplicitlyDisabled===true || isImplicitlyDisabled===true;
+    return isExplicitlyDisabled === true || isImplicitlyDisabled === true;
 };
 const useFormField = (context: any, field: any) => {
     const fieldName = computed(() => field.fieldName);
@@ -217,4 +217,4 @@ const useFormField = (context: any, field: any) => {
         })
     };
 }
-export {allAction, buttonAction, checkIsDisabled, useFormField};
+export { allAction, buttonAction, checkIsDisabled, useFormField };
