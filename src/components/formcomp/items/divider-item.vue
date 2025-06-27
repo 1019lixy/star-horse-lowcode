@@ -8,7 +8,7 @@
   >
     <el-divider
         :direction="field.preps?.direction || 'horizontal'"
-        @change="itemAction('change')"
+        v-on:[field.actionName]="itemAction(field.actionName)"
         :content-position="field.preps?.contentPosition || 'center'"
     >
       {{ field.preps?.content }}

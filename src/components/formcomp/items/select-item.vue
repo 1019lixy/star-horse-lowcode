@@ -11,11 +11,10 @@
         :disabled="checkIsDisabled(props)"
         v-bind="field.preps"
         :remote-method="remoteMethod"
-        @change="itemAction('change')"
-        @input="itemAction('input')"
-        @keydown.enter="itemAction('enter')"
-        @focus="itemAction('focus')"
-        @blur="itemAction('blur')"
+        v-on:[field.actionName]="itemAction(field.actionName)"
+        
+        
+        
         v-model="formData[field.fieldName]"
     >
       <el-option

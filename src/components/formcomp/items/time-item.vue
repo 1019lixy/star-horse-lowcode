@@ -14,11 +14,10 @@
         :end="field.preps?.end|| '24:00'"
         :step="field.preps?.step || '00:05'"
         v-bind="field.preps"
-        @change="itemAction('change')"
-        @input="itemAction('input')"
-        @keydown.enter="itemAction('enter')"
-        @focus="itemAction('focus')"
-        @blur="itemAction('blur')"
+        v-on:[field.actionName]="itemAction(field.actionName)"
+        
+        
+        
         v-model="formData[field.fieldName]"
     />
   </starhorse-form-item>

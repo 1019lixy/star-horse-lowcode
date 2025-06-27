@@ -19,11 +19,10 @@
         ref="inputItemRef"
         :fid="field.fieldName"
         class="input-with-select"
-        @change="itemAction('change')"
-        @input="itemAction('input')"
-        @keydown.enter="itemAction('enter')"
-        @focus="itemAction('focus')"
-        @blur="itemAction('blur')"
+        v-on:[field.actionName]="itemAction(field.actionName)"
+        
+        
+        
         @dblclick="editContent"
         v-model="formData[field.fieldName]"
     >

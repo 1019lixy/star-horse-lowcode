@@ -10,7 +10,7 @@
         :fid="field.fieldName"
         :disabled="checkIsDisabled(props)"
         v-bind="field.preps"
-        @change="itemAction('change')"
+        v-on:[field.actionName]="itemAction(field.actionName)"
         v-model="formData[field.fieldName]"
     />
   </starhorse-form-item>

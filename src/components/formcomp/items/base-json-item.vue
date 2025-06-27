@@ -30,10 +30,9 @@
             resize="vertical"
             readonly
             v-bind="field.preps"
-            @change="itemAction('change')"
-            @input="itemAction('input')"
-            @focus="itemAction('focus')"
-            @blur="itemAction('blur')"
+            v-on:[field.actionName]="itemAction(field.actionName)"
+            
+            
             v-model="formData[field.fieldName]"
         />
       </div>
