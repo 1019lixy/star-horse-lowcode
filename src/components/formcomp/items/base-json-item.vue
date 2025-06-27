@@ -1,67 +1,49 @@
 <template>
   <!-- 对话框部分（与原 json-item.vue 完全一致） -->
-  <star-horse-dialog
-      :title="field.label + 'JSON编辑'"
-      :self-func="true"
-      :dialog-visible="dialogInputVisible"
-      @merge="selectItem"
-      @resetForm="resetForm"
-      @closeAction="closeAction"
-  >
-    <star-horse-json-editor v-if="field.preps?.devType" v-model:modelValue="jsonData" style="height: 100vh"/>
-    <star-horse-form v-else :field-list="jsonTableField" ref="jsonFormRef"/>
+  <star-horse-dialog :title="field.label + 'JSON编辑'" :self-func="true" :dialog-visible="dialogInputVisible"
+    @merge="selectItem" @resetForm="resetForm" @closeAction="closeAction">
+    <star-horse-json-editor v-if="field.preps?.devType" v-model:modelValue="jsonData" style="height: 100vh" />
+    <star-horse-form v-else :field-list="jsonTableField" ref="jsonFormRef" />
   </star-horse-dialog>
 
   <!-- 输入框+按钮部分（与原 json-item.vue 完全一致） -->
-  <starhorse-form-item
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :formItem="field"
-      :parentField="parentField"
-  >
+  <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
+    :parentField="parentField">
     <div class="json-comp">
       <div class="json-box">
-        <el-input
-            :fid="field.fieldName"
-            :disabled="checkIsDisabled(props)"
-            :rows="field.preps?.rows || 3"
-            type="textarea"
-            resize="vertical"
-            readonly
-            v-on="getDynamicEvents(props, itemAction)"
-            v-model="formData[field.fieldName]"
-        />
+        <el-input :fid="field.fieldName" :disabled="checkIsDisabled(props)" :rows="field.preps?.rows || 3"
+          type="textarea" resize="vertical" readonly v-on="getDynamicEvents(props, itemAction)"
+          v-model="formData[field.fieldName]" />
       </div>
       <div class="json-btn">
         <star-horse-icon class="w-full" @click="editJsonData(false)" icon-class="edit" style="cursor: pointer"
-                         title="设计模式编辑"/>
-        <div class="h-[10px]"/>
-        <star-horse-icon @click="editJsonData(true)" icon-class="code" style="cursor: pointer;" title="开发模式编辑"/>
+          title="设计模式编辑" />
+        <div class="h-[10px]" />
+        <star-horse-icon @click="editJsonData(true)" icon-class="code" style="cursor: pointer;" title="开发模式编辑" />
       </div>
     </div>
   </starhorse-form-item>
 </template>
 
 <script setup lang="ts">
-import {nextTick, PropType, reactive, shallowRef} from 'vue';
-import {PageFieldInfo} from '@/components/types/PageFieldInfo';
-import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
-import {isJson} from "@/api/star_horse_utils";
+import { nextTick, PropType, reactive, shallowRef } from 'vue';
+import { PageFieldInfo } from '@/components/types/PageFieldInfo';
+import { allAction, checkIsDisabled } from '@/components/formcomp/utils/ItemRelationEventUtils';
+import { isJson } from "@/api/star_horse_utils";
 import { getDynamicEvents } from '@/api/system';
 import JSON5 from "json5";
 
 // 公共 props（两个组件原有的 props 完全一致）
 const props = defineProps({
-  isDesign: {type: Boolean, default: false},
-  disabled: {type: Boolean, default: false},
-  bareFlag: {type: Boolean, default: false},
-  isSearch: {type: Boolean, default: false},
-  field: {type: Object as PropType<any>, required: true},
-  parentField: {type: Object as PropType<any>},
-  formInfo: {type: Object as PropType<any>},
+  isDesign: { type: Boolean, default: false },
+  disabled: { type: Boolean, default: false },
+  bareFlag: { type: Boolean, default: false },
+  isSearch: { type: Boolean, default: false },
+  field: { type: Object as PropType<any>, required: true },
+  parentField: { type: Object as PropType<any> },
+  formInfo: { type: Object as PropType<any> },
   // 新增：区分 JSON 对象/数组的关键参数
-  dataType: {type: String, default: 'object', validator: v => ['object', 'array'].includes(v)}
+  dataType: { type: String, default: 'object', validator: v => ['object', 'array'].includes(v) }
 });
 
 const emits = defineEmits(['selfFunc', 'selectItem']);
@@ -76,8 +58,8 @@ const jsonTableField = reactive<PageFieldInfo>({
     {
       batchName: 'jsonDatas',
       fieldList: [
-        {label: 'Name/名称', fieldName: 'name', required: true, formVisible: true},
-        {label: 'Value/值', fieldName: 'value', required: true, formVisible: true}
+        { label: 'Name/名称', fieldName: 'name', required: true, formVisible: true },
+        { label: 'Value/值', fieldName: 'value', required: true, formVisible: true }
       ]
     }
   ]
@@ -99,8 +81,8 @@ const editJsonData = async (devType: boolean) => {
 
     // 对象需要转换为键值对数组，数组直接使用
     temp['jsonDatas'] = props.dataType === 'object'
-        ? Object.entries(parsedData).map(([name, value]) => ({name, value}))
-        : parsedData;
+      ? Object.entries(parsedData).map(([name, value]) => ({ name, value }))
+      : parsedData;
   } else {
     temp['jsonDatas'] = props.dataType === 'object' ? [{}] : [];
   }
@@ -125,14 +107,14 @@ const selectItem = async () => {
 
     // 数组直接使用，对象需要转换为键值对对象
     formData.value[props.field.fieldName] = props.dataType === 'object'
-        ? JSON5.stringify(Object.fromEntries(dataList.map(({name, value}) => [name, value])), null, 4)
-        : JSON5.stringify(dataList, null, 4);
+      ? JSON5.stringify(Object.fromEntries(dataList.map(({ name, value }) => [name, value])), null, 4)
+      : JSON5.stringify(dataList, null, 4);
   }
   closeAction();
 };
 
 // 公共方法（与原组件一致）
-const resetForm = () => jsonFormRef.value.setFormData({jsonDatas: [{}]});
+const resetForm = () => jsonFormRef.value.setFormData({ jsonDatas: [{}] });
 const closeAction = () => dialogInputVisible.value = false;
 </script>
 

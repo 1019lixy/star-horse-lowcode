@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import {PropType} from "vue";
-import {allAction} from '@/components/formcomp/utils/ItemRelationEventUtils';
+import { PropType } from "vue";
+import { allAction } from '@/components/formcomp/utils/ItemRelationEventUtils';
 
 const props = defineProps({
   isDesign: {
@@ -46,27 +46,17 @@ const tagType = (val: any) => {
 };
 </script>
 <template>
-  <starhorse-form-item
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :formItem="field"
-      :parentField="parentField"
-  >
-    <el-tag
-        v-bind="field.preps"
-        :type="tagType(formData[field.fieldName])"
-        @click="itemAction('click')"
-        class="relative"
-    >
+  <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
+    :parentField="parentField">
+    <el-tag v-bind="field.preps" :type="tagType(formData[field.fieldName])" @click="itemAction('click')"
+      class="relative">
       {{
         (callBack && callBack()) ||
         formData[field.fieldName] ||
         field.preps?.placeholder ||
-        "请赋值" +field.label
+        "请赋值" + field.label
       }}
     </el-tag>
   </starhorse-form-item>
 </template>
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

@@ -1,49 +1,30 @@
 <template>
-  <star-horse-dialog :title="field.preps?.dialogTitle||'配置按钮事件'"
-                     :selfFunc="true"
-                     @merge="operResultAction"
-                     :dialogVisible="btnDialogVisible"
-                     :boxWidth="field.preps?.boxWidth||'50%'"
-                     :isShowReset="field.preps?.isShowReset??false"
-                     @closeAction="close"
-                     :btnText="field.preps?.dialogBtn??'确定'">
+  <star-horse-dialog :title="field.preps?.dialogTitle || '配置按钮事件'" :selfFunc="true" @merge="operResultAction"
+    :dialogVisible="btnDialogVisible" :boxWidth="field.preps?.boxWidth || '50%'"
+    :isShowReset="field.preps?.isShowReset ?? false" @closeAction="close" :btnText="field.preps?.dialogBtn ?? '确定'">
     <star-horse-form ref="btnFormRef" :fieldList="{
       fieldList: field.preps?.fieldList,
-    }" v-if="field.preps?.viewType=='form'"/>
-    <component :is="field.preps?.componentName"
-               ref="btnCompRef"
-               v-else-if="field.preps?.viewType=='usercomp'"
-               :params="field.preps?.params"/>
+    }" v-if="field.preps?.viewType == 'form'" />
+    <component :is="field.preps?.componentName" ref="btnCompRef" v-else-if="field.preps?.viewType == 'usercomp'"
+      :params="field.preps?.params" />
   </star-horse-dialog>
-  <starhorse-form-item
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :formItem="field"
-      :parentField="parentField"
-  >
-    <el-button
-        :disabled="checkIsDisabled(props)"
-        v-bind="field.preps"
-        @click="dynamicFunc(field.preps?.code )"
-    >
-      <star-horse-icon
-          v-if="field.preps?.icon"
-          :icon-class="field.preps.icon"
-          style="vertical-align: middle; color: var(--star-horse-style)"
-      />
+  <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
+    :parentField="parentField">
+    <el-button :disabled="checkIsDisabled(props)" v-bind="field.preps" @click="dynamicFunc(field.preps?.code)">
+      <star-horse-icon v-if="field.preps?.icon" :icon-class="field.preps.icon"
+        style="vertical-align: middle; color: var(--star-horse-style)" />
       {{ field?.label }}
     </el-button>
   </starhorse-form-item>
 </template>
 <script setup lang="ts" name="buttonItem">
-import {onMounted, PropType, shallowRef, unref} from 'vue';
-import {buttonAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
-import {httpRequest} from '@/api/star_horse_apis';
-import {operationConfirm, warning} from '@/utils/message';
-import {BtnAction, DynamicParamField} from '@/components/types/BtnAction';
-import {SearchParams} from '@/components/types/Params';
-import {createCondition} from '@/api/star_horse_utils';
+import { onMounted, PropType, shallowRef, unref } from 'vue';
+import { buttonAction, checkIsDisabled } from '@/components/formcomp/utils/ItemRelationEventUtils';
+import { httpRequest } from '@/api/star_horse_apis';
+import { operationConfirm, warning } from '@/utils/message';
+import { BtnAction, DynamicParamField } from '@/components/types/BtnAction';
+import { SearchParams } from '@/components/types/Params';
+import { createCondition } from '@/api/star_horse_utils';
 
 const props = defineProps({
   isDesign: {
@@ -63,7 +44,7 @@ const props = defineProps({
   },
   field: {
     type: Object as PropType<any>,
-    required:true
+    required: true
   },
   parentField: {
     type: Object as PropType<any>,

@@ -1,49 +1,25 @@
 <template>
-  <starhorse-form-item
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :formItem="field"
-      :parentField="parentField"
-  >
+  <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
+    :parentField="parentField">
     <div class="number-range-container">
       <div v-if="field.preps?.prefix" :class="{ 'slot-default': slotStyle === 'default', 'slot-pend ': true }">
         {{ field.preps["prefix"] }}
       </div>
-      <div
-          class="number-range"
-          :class="{
-          'is-disabled': checkIsDisabled(props),
-          'is-focus': isFocus,
-          'number-range-border-radius': true
-        }"
-      >
-        <el-input-number
-            :fid="minName"
-            :controls="false"
-            :disabled="checkIsDisabled(props)"
-            v-bind="field.preps"
-            :placeholder="field.preps?.minPlaceholder"
-            @change="itemAction('change')"
-            @blur="handleBlur"
-            @focus="handleFocus"
-            v-model="formData[minName]"
-        />
+      <div class="number-range" :class="{
+        'is-disabled': checkIsDisabled(props),
+        'is-focus': isFocus,
+        'number-range-border-radius': true
+      }">
+        <el-input-number :fid="minName" :controls="false" :disabled="checkIsDisabled(props)" v-bind="field.preps"
+          :placeholder="field.preps?.minPlaceholder" @change="itemAction('change')" @blur="handleBlur"
+          @focus="handleFocus" v-model="formData[minName]" />
         <div class="to">
           <span>{{ field.preps?.to || "-" }}</span>
         </div>
-        <el-input-number
-            :fid="maxName"
-            :controls="false"
-            :disabled="checkIsDisabled(props)"
-            v-bind="field.preps"
-            @change="itemAction('change')"
-            @blur="handleBlur"
-            @focus="handleFocus"
-            :placeholder="field.preps?.maxPlaceholder"
-            :step-strictly="field.preps?.stepStrictly"
-            v-model="formData[maxName]"
-        />
+        <el-input-number :fid="maxName" :controls="false" :disabled="checkIsDisabled(props)" v-bind="field.preps"
+          @change="itemAction('change')" @blur="handleBlur" @focus="handleFocus"
+          :placeholder="field.preps?.maxPlaceholder" :step-strictly="field.preps?.stepStrictly"
+          v-model="formData[maxName]" />
       </div>
       <div v-if="field.preps?.suffix" :class="{ 'slot-default': slotStyle === 'default', 'slot-pend ': true }">
         {{ field.preps["suffix"] }}
@@ -52,8 +28,8 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {computed, onBeforeMount, onMounted, PropType, ref, shallowRef} from 'vue';
-import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
+import { computed, onBeforeMount, onMounted, PropType, ref, shallowRef } from 'vue';
+import { allAction, checkIsDisabled } from '@/components/formcomp/utils/ItemRelationEventUtils';
 
 const props = defineProps({
   isDesign: {
@@ -117,9 +93,9 @@ const itemAction = (prep: string) => {
   let min = formData.value[minName.value];
   let max = formData.value[maxName.value];
   if (
-      min === undefined || min === null || isNaN(min) || // 空值/非数值校验
-      max === undefined || max === null || isNaN(max) ||
-      max < min // 最大值小于最小值校验
+    min === undefined || min === null || isNaN(min) || // 空值/非数值校验
+    max === undefined || max === null || isNaN(max) ||
+    max < min // 最大值小于最小值校验
   ) {
     // 校验失败时，清空主字段值（触发父组件required规则）
     formData.value[props.field.fieldName] = `${min ?? ''}-${max ?? ''}`;
@@ -168,8 +144,8 @@ onMounted(() => {
   #prepend {
     padding: 0 20px;
     box-shadow: 1px 0 0 0 var(--el-input-border-color, var(--el-border-color)) inset,
-    0 1px 0 0 var(--el-input-border-color, var(--el-border-color)) inset,
-    0 -1px 0 0 var(--el-input-border-color, var(--el-border-color)) inset;
+      0 1px 0 0 var(--el-input-border-color, var(--el-border-color)) inset,
+      0 -1px 0 0 var(--el-input-border-color, var(--el-border-color)) inset;
     border-right: 0;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
@@ -178,8 +154,8 @@ onMounted(() => {
   #append {
     padding: 0 15px;
     box-shadow: 0 1px 0 0 var(--el-input-border-color, var(--el-border-color)) inset,
-    0 -1px 0 0 var(--el-input-border-color, var(--el-border-color)) inset,
-    -1px 0 0 0 var(--el-input-border-color, var(--el-border-color)) inset;
+      0 -1px 0 0 var(--el-input-border-color, var(--el-border-color)) inset,
+      -1px 0 0 0 var(--el-input-border-color, var(--el-border-color)) inset;
     border-left: 0;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;

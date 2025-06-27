@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import {onMounted, ref, shallowRef, watch, PropType, nextTick} from 'vue';
-import {PageProps} from '@/components/types/PageProps';
-import {closeLoad, createCondition, load} from '@/api/star_horse_utils';
-import {postRequest} from '@/api/star_horse_apis';
-import {FieldInfo, FieldMapping, OrderByInfo} from '@/components/types/PageFieldInfo';
-import {SearchParams} from '@/components/types/Params';
-import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
-import {compKey,getDynamicEvents} from "@/api/system";
-import {warning} from "@/utils/message";
-import {SearchFields} from "@/components/types";
+import { onMounted, ref, shallowRef, watch, PropType, nextTick } from 'vue';
+import { PageProps } from '@/components/types/PageProps';
+import { closeLoad, createCondition, load } from '@/api/star_horse_utils';
+import { postRequest } from '@/api/star_horse_apis';
+import { FieldInfo, FieldMapping, OrderByInfo } from '@/components/types/PageFieldInfo';
+import { SearchParams } from '@/components/types/Params';
+import { allAction, checkIsDisabled } from '@/components/formcomp/utils/ItemRelationEventUtils';
+import { compKey, getDynamicEvents } from "@/api/system";
+import { warning } from "@/utils/message";
+import { SearchFields } from "@/components/types";
 
 const props = defineProps({
   isDesign: {
@@ -111,22 +111,22 @@ const loadByPage = (isInit: boolean = false) => {
   }
   load('数据加载中');
   postRequest(url, params)
-      .then((res) => {
-        let redata = res.data?.data;
-        pageInfo.value.dataList = redata?.dataList;
-        pageInfo.value.totalPage = redata?.totalPages;
-        pageInfo.value.totalData = redata?.totalDatas;
-        // if (isInit) {
-        //   let name = loadSourceField(false);
-        //   formData[field.preps["name"]] = redata.dataList?.map((item: any) => item[name]);
-        // }
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => {
-        closeLoad();
-      });
+    .then((res) => {
+      let redata = res.data?.data;
+      pageInfo.value.dataList = redata?.dataList;
+      pageInfo.value.totalPage = redata?.totalPages;
+      pageInfo.value.totalData = redata?.totalDatas;
+      // if (isInit) {
+      //   let name = loadSourceField(false);
+      //   formData[field.preps["name"]] = redata.dataList?.map((item: any) => item[name]);
+      // }
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+    .finally(() => {
+      closeLoad();
+    });
 };
 const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
@@ -144,7 +144,7 @@ const handleSelectionChange = (val: any) => {
 };
 const selectRow = (row: any, _column: any, _evt: any) => {
   const selected = multipleSelection.value.some(
-      (item: any) => item[props.field.preps?.primaryKey] === row[props.field.preps?.primaryKey]
+    (item: any) => item[props.field.preps?.primaryKey] === row[props.field.preps?.primaryKey]
   );
   if (!selected) {
     multipleSelection.value.push(row);
@@ -182,10 +182,10 @@ const assignVal = () => {
   }
 };
 watch(
-    () => props.field.preps?.['dataUrl'],
-    () => {
-      loadByPage();
-    }
+  () => props.field.preps?.['dataUrl'],
+  () => {
+    loadByPage();
+  }
 );
 onMounted(async () => {
   await nextTick();
@@ -211,7 +211,7 @@ onMounted(async () => {
         searchFieldList.push(temp);
       }
     });
-    inputPreps.searchFieldList = {fieldList: searchFieldList};
+    inputPreps.searchFieldList = { fieldList: searchFieldList };
   }
   actionName.value = props.field.actionName || 'normal';
   loadByPage(true);
@@ -221,81 +221,40 @@ onMounted(async () => {
 });
 </script>
 <template>
-  <starhorse-form-item
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :formItem="field"
-      :parentField="parentField"
-  >
-    <el-select
-        :fid="field.fieldName"
-        v-bind="field.preps"
-        :disabled="checkIsDisabled(props)"
-        v-on="getDynamicEvents(props, itemAction)"
-        v-model="formData[field.fieldName]"
-    >
+  <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
+    :parentField="parentField">
+    <el-select :fid="field.fieldName" v-bind="field.preps" :disabled="checkIsDisabled(props)"
+      v-on="getDynamicEvents(props, itemAction)" v-model="formData[field.fieldName]">
       <template #empty>
         <el-card class="inner_content" style="margin: 5px">
-          <star-horse-search-comp
-              :formData="field.preps?.['searchFieldList']"
-              @searchData="(data: any) => searchDataFun(data)"
-              :mutComp="true"
-              :compUrl="field.preps?.['dataUrl']"
-          />
-          <el-table
-              ref="starHorseTableCompRef"
-              :data="pageInfo.dataList"
-              @selection-change="handleSelectionChange"
-              @row-click="selectRow"
-              :stripe="true"
-              :row-key="getRowIdentity"
-              :fit="true"
-              max-height="250px"
-              :highlight-current-row="true"
-              :header-cell-style="{
+          <star-horse-search-comp :formData="field.preps?.['searchFieldList']"
+            @searchData="(data: any) => searchDataFun(data)" :mutComp="true" :compUrl="field.preps?.['dataUrl']" />
+          <el-table ref="starHorseTableCompRef" :data="pageInfo.dataList" @selection-change="handleSelectionChange"
+            @row-click="selectRow" :stripe="true" :row-key="getRowIdentity" :fit="true" max-height="250px"
+            :highlight-current-row="true" :header-cell-style="{
               background: '#f2f2f2',
               color: '#707070',
               'font-size': '13px',
               'background-image': '-webkit-gradient(linear,left 0,left 100%,from(#f8f8f8),to(#ececec))'
-            }"
-              :cell-style="{ 'font-size': '12px' }"
-              border
-          >
-            <el-table-column type="selection" align="center" fixed="left" :reserve-selection="true"/>
-            <template v-for="(item,key) in field.preps?.fieldList" :key="compKey(item,key)">
+            }" :cell-style="{ 'font-size': '12px' }" border>
+            <el-table-column type="selection" align="center" fixed="left" :reserve-selection="true" />
+            <template v-for="(item, key) in field.preps?.fieldList" :key="compKey(item,key)">
               <template v-if="Array.isArray(item)">
-                <star-horse-table-column
-                    v-for="(sitem,skey) in item"
-                    :key="compKey(sitem,skey)"
-                    :compUrl="field.preps?.['dataUrl']"
-                    :cellEditable="false"
-                    :data-format="field.preps?.['dataFormat']"
-                    :item="sitem"
-                />
+                <star-horse-table-column v-for="(sitem, skey) in item" :key="compKey(sitem, skey)"
+                  :compUrl="field.preps?.['dataUrl']" :cellEditable="false" :data-format="field.preps?.['dataFormat']"
+                  :item="sitem" />
               </template>
-              <star-horse-table-column
-                  v-else
-                  :compUrl="field.preps?.['dataUrl']"
-                  :cellEditable="false"
-                  :data-format="field.preps?.['dataFormat']"
-                  :item="item"
-              />
+              <star-horse-table-column v-else :compUrl="field.preps?.['dataUrl']" :cellEditable="false"
+                :data-format="field.preps?.['dataFormat']" :item="item" />
             </template>
           </el-table>
         </el-card>
       </template>
       <template #footer>
-        <el-pagination
-            :size="'default'"
-            :total="pageInfo.totalData"
-            @current-change="pageChangeClick"
-            @size-change="pageSizeClick"
-            layout="total, sizes, prev, pager, next, jumper"
-            v-model:currentPage="pageInfo.currentPage"
-            v-model:page-size="pageInfo.pageSize"
-            v-model:pageCount="pageInfo.totalPage"
-        />
+        <el-pagination :size="'default'" :total="pageInfo.totalData" @current-change="pageChangeClick"
+          @size-change="pageSizeClick" layout="total, sizes, prev, pager, next, jumper"
+          v-model:currentPage="pageInfo.currentPage" v-model:page-size="pageInfo.pageSize"
+          v-model:pageCount="pageInfo.totalPage" />
       </template>
     </el-select>
   </starhorse-form-item>

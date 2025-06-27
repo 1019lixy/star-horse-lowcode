@@ -1,29 +1,16 @@
 <template>
-  <starhorse-form-item
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :formItem="field"
-      :parentField="parentField"
-  >
-    <el-cascader
-        :fid="field.fieldName"
-        v-bind="field.preps"
-        :disabled="checkIsDisabled(props)"
-        v-on:[field.actionName]="itemAction(field.actionName)"
-        
-        
-        
-        v-model="formData[field.fieldName]"
-    />
+  <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
+    :parentField="parentField">
+    <el-cascader :fid="field.fieldName" v-bind="field.preps" :disabled="checkIsDisabled(props)"
+      v-on="getDynamicEvents(props, itemAction)" v-model="formData[field.fieldName]" />
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {nextTick, onMounted, PropType, shallowRef, watch} from 'vue';
-import {compDynamicData} from '@/api/star_horse_utils';
+import { nextTick, onMounted, PropType, shallowRef, watch } from 'vue';
+import { compDynamicData } from '@/api/star_horse_utils';
 import areaData from '@/api/pcas-code.json';
-import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
-
+import { allAction, checkIsDisabled } from '@/components/formcomp/utils/ItemRelationEventUtils';
+import { getDynamicEvents } from '@/api/system';
 const props = defineProps({
   isDesign: {
     type: Boolean,
@@ -69,7 +56,7 @@ const initData = async () => {
   } else {
     props.field.preps['props'] = {
       label: 'name',
-      value:"code"
+      value: "code"
     };
     props.field.preps['options'] = areaData;
   }

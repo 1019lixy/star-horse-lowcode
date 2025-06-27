@@ -1,43 +1,23 @@
 <template>
-  <star-horse-dialog
-      :title="'Crontab 配置器'"
-      box-width="50%"
-      :self-func="true"
-      @resetForm="resetForm"
-      @closeAction="close"
-      @merge="submit"
-      :dialog-visible="cronVisible"
-  >
+  <star-horse-dialog :title="'Crontab 配置器'" box-width="50%" :self-func="true" @resetForm="resetForm"
+    @closeAction="close" @merge="submit" :dialog-visible="cronVisible">
     <el-scrollbar>
-      <Crontab ref="cronTabRef" v-model="cronDataValue"/>
+      <Crontab ref="cronTabRef" v-model="cronDataValue" />
     </el-scrollbar>
   </star-horse-dialog>
-  <starhorse-form-item
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :formItem="field"
-      :parentField="parentField"
-  >
-    <el-input
-        :fid="field.fieldName"
-        v-on="getDynamicEvents(props, itemAction)"
-        v-model="formData[field.fieldName]"
-    >
+  <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
+    :parentField="parentField">
+    <el-input :fid="field.fieldName" v-on="getDynamicEvents(props, itemAction)" v-model="formData[field.fieldName]">
       <template #append>
-        <el-button
-            icon="Clock"
-            @click="open"
-            :disabled="checkIsDisabled(props)"
-        />
+        <el-button icon="Clock" @click="open" :disabled="checkIsDisabled(props)" />
       </template>
     </el-input>
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, PropType, ref, shallowRef} from 'vue';
+import { onMounted, PropType, ref, shallowRef } from 'vue';
 import Crontab from '@/components/cron/Crontab.vue';
-import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
+import { allAction, checkIsDisabled } from '@/components/formcomp/utils/ItemRelationEventUtils';
 import { getDynamicEvents } from '@/api/system';
 
 const props = defineProps({

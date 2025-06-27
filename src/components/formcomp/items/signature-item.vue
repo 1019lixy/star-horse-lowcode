@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import {nextTick, onMounted, onUpdated, PropType, ref, shallowRef} from 'vue';
+import { nextTick, onMounted, onUpdated, PropType, ref, shallowRef } from 'vue';
 import SmoothSignature from 'smooth-signature';
-import {warning} from '@/utils/message';
+import { warning } from '@/utils/message';
 import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
 import StarHorseDialog from '@/components/comp/StarHorseDialog.vue';
 
@@ -86,47 +86,37 @@ onUpdated(() => {
 });
 </script>
 <template>
-  <star-horse-dialog
-      :dialog-visible="previewDialog"
-      :source="3"
-      :self-func="true"
-      @closeAction="previewDialog = false"
-  >
-    <el-image :src="signature?.getPNG()"/>
+  <star-horse-dialog :dialog-visible="previewDialog" :source="3" :self-func="true" @closeAction="previewDialog = false">
+    <el-image :src="signature?.getPNG()" />
   </star-horse-dialog>
-  <starhorse-form-item
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :formItem="field"
-      :parentField="parentField"
-  >
+  <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
+    :parentField="parentField">
     <div class="pcDemo">
       <div class="inner_button">
         <el-menu mode="horizontal" style="height: inherit; width: 100%">
           <el-menu-item @click="clear">
             <el-tooltip content="清除">
-              <star-horse-icon icon-class="reset"/>
+              <star-horse-icon icon-class="reset" />
             </el-tooltip>
           </el-menu-item>
           <el-menu-item @click="undo">
             <el-tooltip content="后退">
-              <star-horse-icon icon-class="undo"/>
+              <star-horse-icon icon-class="undo" />
             </el-tooltip>
           </el-menu-item>
           <el-menu-item @click="handleColor">
             <el-tooltip content="修改颜色">
-              <star-horse-icon icon-class="color"/>
+              <star-horse-icon icon-class="color" />
             </el-tooltip>
           </el-menu-item>
           <el-menu-item @click="handlePreview">
             <el-tooltip content="预览">
-              <star-horse-icon icon-class="preview"/>
+              <star-horse-icon icon-class="preview" />
             </el-tooltip>
           </el-menu-item>
         </el-menu>
       </div>
-      <canvas ref="signatureCanvas"/>
+      <canvas ref="signatureCanvas" />
     </div>
   </starhorse-form-item>
 </template>

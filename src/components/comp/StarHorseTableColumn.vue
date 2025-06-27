@@ -21,7 +21,7 @@ const props = defineProps({
   //是否显示排序
   sortable: { type: Boolean, default: true },
   compSize: { type: String, default: Config.compSize },
-  source:{type:Number,default:5},//调用来源1 表单新增 2 表单编辑 3 查看视图 4 查询 5 列表 6 表单设计 7 页面设计
+  source:{type:Number,default:5},
 });
 const emits = defineEmits(['focusEvent', 'blurEvent']);
 const compInfo: ComputedRef<DyCompField> = computed(() => {
@@ -36,26 +36,25 @@ const compInfo: ComputedRef<DyCompField> = computed(() => {
 )
 const currentRow = ref();
 const focusEvent = (_column: any) => {
-  // currentRow.value[column["property"]] = currentRow.value[column["property"]];
 };
-const blurEvent = (column: any) => {
-  currentRow.value['isSelected'] = false;
-  let bakeValue = currentRow.value['starHorseBakeValue'];
-  delete currentRow.value['selectName'];
-  delete currentRow.value['starHorseBakeValue'];
-  if ((!bakeValue && bakeValue != 0) || bakeValue == currentRow.value[column['property']]) {
+const blurEvent = (column: any,params:any) => {
+  const data=Array.isArray(params) ? params[0] : params;
+  let bakeValue = data['starHorseBakeValue'];
+  delete data['starHorseBakeValue'];
+  delete data['isSelected'];
+  if ((!bakeValue && bakeValue != 0) || bakeValue == data[column['property']]) {
     return;
   }
-  let params: any = {};
+  let reqParams: any = {};
   if (props.isDynamic) {
-    params = {
-      dataMap: currentRow.value,
+    reqParams = {
+      dataMap: data,
       relationTables: props.globalConfig
     };
   } else {
-    params = currentRow.value;
+    reqParams = data;
   }
-  postRequest(props.compUrl?.mergeUrl!, params)
+  postRequest(props.compUrl?.mergeUrl!, reqParams)
     .then((res) => {
       if (res.data.code != 0) {
         warning(res.data.cnMessage);

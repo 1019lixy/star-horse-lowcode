@@ -1,34 +1,19 @@
 <template>
-  <starhorse-form-item
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :formItem="field"
-      :parentField="parentField"
-  >
-    <el-select
-        :fid="field.fieldName"
-        :disabled="checkIsDisabled(props)"
-        v-bind="field.preps"
-        :remote-method="remoteMethod"
-        v-on="getDynamicEvents(props, itemAction)"
-        v-model="formData[field.fieldName]"
-    >
-      <el-option
-          :disabled="items['disabled']"
-          :label="items[field.preps?.props?.label || 'name']"
-          :value="items[field.preps?.props?.value || 'value']"
-          :key="items[field.preps?.props?.value || 'value']"
-          v-for="items in field.preps?.values"
-      />
+  <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
+    :parentField="parentField">
+    <el-select :fid="field.fieldName" :disabled="checkIsDisabled(props)" v-bind="field.preps"
+      :remote-method="remoteMethod" v-on="getDynamicEvents(props, itemAction)" v-model="formData[field.fieldName]">
+      <el-option :disabled="items['disabled']" :label="items[field.preps?.props?.label || 'name']"
+        :value="items[field.preps?.props?.value || 'value']" :key="items[field.preps?.props?.value || 'value']"
+        v-for="items in field.preps?.values" />
     </el-select>
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, PropType, shallowRef, watch} from 'vue';
-import {compDynamicData, createFilter, dynamicUrlOperation} from '@/api/star_horse_utils';
-import {SearchParams} from '@/components/types/Params';
-import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
+import { onMounted, PropType, shallowRef, watch } from 'vue';
+import { compDynamicData, createFilter, dynamicUrlOperation } from '@/api/star_horse_utils';
+import { SearchParams } from '@/components/types/Params';
+import { allAction, checkIsDisabled } from '@/components/formcomp/utils/ItemRelationEventUtils';
 import { getDynamicEvents } from '@/api/system';
 const props = defineProps({
   isDesign: {

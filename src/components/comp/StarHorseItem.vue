@@ -17,7 +17,7 @@ const props = defineProps({
   batchName: { type: String, default: '' },
   compSize: { type: String, default: Config.compSize },
   showLabel: { type: Boolean, default: true }, //是否显示标签
-  source: { type: Number, default: 1 },//调用来源1 表单新增 2 表单编辑 3 查看视图 4 查询 5 列表 6 表单设计 7 页面设计
+  source: { type: Number, default: 1 },
 
 });
 let userOperation = useSelfOperationStore(piniaInstance);
@@ -57,7 +57,7 @@ const actionDispatcher = (act: string, ...params: any[]) => {
     }
     if (act == 'focus') {
       emit('focus', props.column, params);
-    } else if (act == 'blur') {
+    } else if (act == 'blur'||(act== 'change'&&props.source == 5)) {
       emit('blur', props.column, params);
     }
   }

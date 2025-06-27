@@ -4,7 +4,7 @@ import { compDynamicData } from '@/api/star_horse_utils';
 import piniaInstance from '@/store';
 import { useSelfOperationStore } from '@/store/SelfOperation';
 import { useDesignFormStore } from '@/store/DesignForm';
-import { computed, isRef } from 'vue';
+import { computed, isRef, unref } from 'vue';
 
 const designForm = useDesignFormStore(piniaInstance);
 const userOperation = useSelfOperationStore(piniaInstance);
@@ -122,8 +122,7 @@ const operationRelation = async (relation: any, actionName: string, formData: an
  * @param isInit
  */
 const allAction = (context: any, emits: any, formData: any, actionName: string, isInit: boolean = false) => {
-    const currentData = isRef(formData) ? formData.value : formData;
-    console.log(currentData);
+    const currentData = unref(formData);
     //设计时的初始化不作处理
     const field = context.field as any;
     if (!isInit && actionName != 'normal') {

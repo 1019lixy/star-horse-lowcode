@@ -53,7 +53,7 @@ let userOperation = useSelfOperationStore(piniaInstance);
 const emits = defineEmits(['refresh', 'dataLoaded', 'exportData', 'removeRow', 'addRow', "inited"]);
 const starHorseFormRef = ref(null);
 const dataForm = ref<any>({});
-// source:{type:Number,default:1},//调用来源1 表单新增 2 表单编辑 3 查看视图 4 查询 5 列表 6 表单设计 7 页面设计
+// source:{type:Number,default:1},
 const source = ref<number>(1);
 //更新外面传进来的数据
 

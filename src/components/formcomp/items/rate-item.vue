@@ -1,23 +1,13 @@
 <template>
-  <starhorse-form-item
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :formItem="field"
-      :parentField="parentField"
-  >
-    <el-rate
-        :fid="field.fieldName"
-        v-bind="field.preps"
-        :disabled="checkIsDisabled(props)"
-        @change="itemAction"
-        v-model="formData[field.fieldName]"
-    />
+  <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
+    :parentField="parentField">
+    <el-rate :fid="field.fieldName" v-bind="field.preps" :disabled="checkIsDisabled(props)" @change="itemAction"
+      v-model="formData[field.fieldName]" />
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, PropType} from 'vue';
-import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
+import { onMounted, PropType } from 'vue';
+import { allAction, checkIsDisabled } from '@/components/formcomp/utils/ItemRelationEventUtils';
 
 const props = defineProps({
   isDesign: {

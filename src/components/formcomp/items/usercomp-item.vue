@@ -1,23 +1,12 @@
 <template>
-  <starhorse-form-item
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :formItem="field"
-      :parentField="parentField"
-  >
-    <component
-        :is="currentComponent"
-        :isDesign="isDesign"
-        :disabled="disabled"
-        :bareFlag="bareFlag"
-        v-bind="field['preps']"
-        v-model:dataForm="formData"
-    />
+  <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
+    :parentField="parentField">
+    <component :is="currentComponent" :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag"
+      v-bind="field['preps']" v-model:dataForm="formData" />
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, shallowRef, watch, PropType} from 'vue';
+import { onMounted, shallowRef, watch, PropType } from 'vue';
 
 const props = defineProps({
   isDesign: {
@@ -68,8 +57,8 @@ onMounted(() => {
   loadComponent();
 });
 watch(() => [props.field.preps?.compName, props.field.preps?.name],
-    () => {
-      loadComponent();
-    }, {immediate: false});
+  () => {
+    loadComponent();
+  }, { immediate: false });
 </script>
 <style scoped></style>

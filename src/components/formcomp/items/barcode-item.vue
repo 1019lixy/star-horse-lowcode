@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Vue3Barcode from 'vue3-barcode';
-import {computed, nextTick, onMounted, ref, watch,PropType} from "vue";
-import {allAction} from '../utils/ItemRelationEventUtils';
+import { computed, nextTick, onMounted, ref, watch, PropType } from "vue";
+import { allAction } from '../utils/ItemRelationEventUtils';
 
 const props = defineProps({
   isDesign: {
@@ -59,15 +59,15 @@ onMounted(() => {
   });
 });
 watch(() => [dataValue.value, props.field.preps],
-    () => {
-      createCode();
-      allAction(props, emits, formData, "change", false);
-    }, {immediate: false, deep: true});
+  () => {
+    createCode();
+    allAction(props, emits, formData, "change", false);
+  }, { immediate: false, deep: true });
 </script>
 <template>
   <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
-                       :parentField="parentField">
-    <Vue3Barcode :value="dataValue" :options="barcodeRef"/>
+    :parentField="parentField">
+    <Vue3Barcode :value="dataValue" :options="barcodeRef" />
   </starhorse-form-item>
 </template>
 <style scoped></style>

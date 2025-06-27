@@ -13,7 +13,7 @@ const props = defineProps({
   isShowReset: { type: Boolean, default: true },
   isShowSave: { type: Boolean, default: false },
   isShowBtnContinue: { type: Boolean, default: false },
-  source: { type: Number, default: 1 },//调用来源1 表单新增 2 表单编辑 3 查看视图 4 查询 5 列表 6 表单设计 7 页面设计
+  source: { type: Number, default: 1 },
   draggable: { type: Boolean, default: true },
   boxHeight: { type: String, default: '60%' },
   boxWidth: { type: String, default: '60%' },

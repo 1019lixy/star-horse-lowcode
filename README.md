@@ -299,4 +299,5 @@ barcode        条形码组件
               actions:{
                 click:()=>{},
                 change:()={}
-              },同时去掉了actionName 属性
+              },同时去掉了actionName 属性,
+              

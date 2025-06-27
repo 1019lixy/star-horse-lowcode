@@ -1,6 +1,6 @@
 <template>
 
-  <el-form :model="formData">
+ <!--  <el-form :model="formData">
     <el-form-item prop="jsonArray">
       <input-item :field="{
         fieldName: 'jsonArray',
@@ -16,12 +16,12 @@
 
     </el-form-item>
 
-  </el-form>
+  </el-form> -->
   <!--  <Crontab v-model="formData.cron"/>-->
 </template>
 
 <script setup>
-import NumberRangeItem from "@/components/formcomp/items/number-range-item.vue";
+/* import NumberRangeItem from "@/components/formcomp/items/number-range-item.vue";
 import { validMsg } from "@/api/form_utils.js";
 import CronItem from "@/components/formcomp/items/cron-item.vue";
 import Crontab from "@/components/cron/Crontab.vue";
@@ -49,7 +49,7 @@ const preps = {
 const formData = ref({
   jsonArray: "xx",
   cron: '0 0 12 * * ?'
-});
+}); */
 </script>
 
 <style lang="scss" scoped></style>

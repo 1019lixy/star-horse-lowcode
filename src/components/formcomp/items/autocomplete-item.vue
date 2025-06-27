@@ -1,30 +1,16 @@
 <template>
-  <starhorse-form-item
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :formItem="field"
-      :parentField="parentField"
-  >
-    <el-autocomplete
-        :fid="field.fieldName"
-        :disabled="checkIsDisabled(props)"
-        :fetch-suggestions="querySearch"
-        v-bind="field.preps"
-        v-on:[field.actionName]="itemAction(field.actionName)"
-        
-        
-        
-        v-model="formData[field.fieldName]"
-    />
+  <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
+    :parentField="parentField">
+    <el-autocomplete :fid="field.fieldName" :disabled="checkIsDisabled(props)" :fetch-suggestions="querySearch"
+      v-bind="field.preps" v-on="getDynamicEvents(props, itemAction)" v-model="formData[field.fieldName]" />
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, PropType, shallowRef, watch} from 'vue';
-import {compDynamicData, createFilter, dynamicUrlOperation} from '@/api/star_horse_utils';
-import {SearchParams} from '@/components/types/Params';
-import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
-
+import { onMounted, PropType, shallowRef, watch } from 'vue';
+import { compDynamicData, createFilter, dynamicUrlOperation } from '@/api/star_horse_utils';
+import { SearchParams } from '@/components/types/Params';
+import { allAction, checkIsDisabled } from '@/components/formcomp/utils/ItemRelationEventUtils';
+import { getDynamicEvents } from '@/api/system';
 const props = defineProps({
   isDesign: {
     type: Boolean,
@@ -99,6 +85,6 @@ watch(() => formData.value[props.field.fieldName + "OptionList"], (val) => {
   if (val?.length > 0) {
     props.field.preps['data'] = val;
   }
-}, {immediate: true})
+}, { immediate: true })
 </script>
 <style scoped></style>

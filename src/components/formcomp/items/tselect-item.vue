@@ -1,28 +1,16 @@
 <template>
-  <starhorse-form-item
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :formItem="field"
-      :parentField="parentField"
-  >
-    <el-tree-select
-        :fid="field.fieldName"
-        :disabled="checkIsDisabled(props)"
-        :default-expand-all="true"
-        v-bind="field.preps"
-        :filter-node-method="filterNodeMethod"
-        :render-content="renderContent"
-        v-on="getDynamicEvents(props, itemAction)"
-        v-model="formData[field.fieldName]"
-    >
+  <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
+    :parentField="parentField">
+    <el-tree-select :fid="field.fieldName" :disabled="checkIsDisabled(props)" :default-expand-all="true"
+      v-bind="field.preps" :filter-node-method="filterNodeMethod" :render-content="renderContent"
+      v-on="getDynamicEvents(props, itemAction)" v-model="formData[field.fieldName]">
     </el-tree-select>
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, PropType, shallowRef, watch} from 'vue';
-import {compDynamicData} from '@/api/star_horse_utils';
-import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
+import { onMounted, PropType, shallowRef, watch } from 'vue';
+import { compDynamicData } from '@/api/star_horse_utils';
+import { allAction, checkIsDisabled } from '@/components/formcomp/utils/ItemRelationEventUtils';
 import { getDynamicEvents } from '@/api/system';
 const props = defineProps({
   isDesign: {

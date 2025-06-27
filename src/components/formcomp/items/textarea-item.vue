@@ -1,31 +1,15 @@
 <template>
-  <EditDataDialog
-      v-model="editorDialogVisible"
-      :disabled="checkIsDisabled(props)"
-      :initial-content="formData[field.fieldName]"
-      @confirm="handleContentConfirm"
-  />
-  <starhorse-form-item
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :formItem="field"
-      :parentField="parentField"
-  >
-    <el-input
-        @dblclick="maxEdit"
-        :disabled="checkIsDisabled(props)"
-        :fid="field.fieldName"
-        v-bind="field.preps"
-        type="textarea"
-        v-on="getDynamicEvents(props, itemAction)"
-        v-model="formData[field.fieldName]"
-    />
+  <EditDataDialog v-model="editorDialogVisible" :disabled="checkIsDisabled(props)"
+    :initial-content="formData[field.fieldName]" @confirm="handleContentConfirm" />
+  <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
+    :parentField="parentField">
+    <el-input @dblclick="maxEdit" :disabled="checkIsDisabled(props)" :fid="field.fieldName" v-bind="field.preps"
+      type="textarea" v-on="getDynamicEvents(props, itemAction)" v-model="formData[field.fieldName]" />
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, shallowRef, PropType} from 'vue';
-import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
+import { onMounted, shallowRef, PropType } from 'vue';
+import { allAction, checkIsDisabled } from '@/components/formcomp/utils/ItemRelationEventUtils';
 import EditDataDialog from "@/components/formcomp/utils/EditDataDialog.vue";
 import { getDynamicEvents } from '@/api/system';
 const props = defineProps({

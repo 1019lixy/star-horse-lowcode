@@ -58,7 +58,7 @@ const install = (app: App<Element>, options?: {
     });
 
 };
-
+//表单组件增加调用参数source: { type: Number, default: 1 },//调用来源1 表单新增 2 表单编辑 3 查看视图 4 查询 5 列表 6 表单设计 7 页面设计
 // 导出所有组件用于按需引入
 export * from '@/components/comp';
 export * from '@/components/formcomp/container';

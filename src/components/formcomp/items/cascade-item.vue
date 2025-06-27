@@ -1,24 +1,14 @@
 <template>
-  <starhorse-form-item
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :formItem="field"
-      :parentField="parentField"
-  >
-    <el-cascader
-        :fid="field.fieldName"
-        v-bind="field.preps"
-        :disabled="checkIsDisabled(props)"
-        v-on="getDynamicEvents(props, itemAction)"
-        v-model="formData[field.fieldName]"
-    />
+  <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
+    :parentField="parentField">
+    <el-cascader :fid="field.fieldName" v-bind="field.preps" :disabled="checkIsDisabled(props)"
+      v-on="getDynamicEvents(props, itemAction)" v-model="formData[field.fieldName]" />
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {nextTick, onMounted, shallowRef, watch, PropType} from 'vue';
-import {compDynamicData, isJson} from '@/api/star_horse_utils';
-import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
+import { nextTick, onMounted, shallowRef, watch, PropType } from 'vue';
+import { compDynamicData, isJson } from '@/api/star_horse_utils';
+import { allAction, checkIsDisabled } from '@/components/formcomp/utils/ItemRelationEventUtils';
 import { getDynamicEvents } from '@/api/system';
 const props = defineProps({
   isDesign: {
@@ -89,7 +79,7 @@ watch(() => formData.value[props.field.fieldName + "OptionList"], (val) => {
   if (val?.length > 0) {
     props.field.preps['options'] = val;
   }
-},{
+}, {
   immediate: true,
 })
 </script>

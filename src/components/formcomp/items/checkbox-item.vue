@@ -1,34 +1,20 @@
 <template>
-  <starhorse-form-item
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :formItem="field"
-      :parentField="parentField"
-  >
-    <el-checkbox-group
-        :fid="field.fieldName"
-        :disabled="checkIsDisabled(props)"
-        :readonly="field.preps?.readonly??false"
-        @change="itemAction"
-        v-model="formData[field.fieldName]"
-    >
-      <el-checkbox
-          :border="item['border'] ??true"
-          :checked="item['checked']"
-          :disabled="item['disabled']??false"
-          :label="item[field.preps?.props?.label || 'name']"
-          :value="item[field.preps?.props?.value || 'value']"
-          v-for="item in field.preps?.values"
-      />
+  <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
+    :parentField="parentField">
+    <el-checkbox-group :fid="field.fieldName" :disabled="checkIsDisabled(props)"
+      :readonly="field.preps?.readonly ?? false" v-on="getDynamicEvents(props, itemAction)"
+      v-model="formData[field.fieldName]">
+      <el-checkbox :border="item['border'] ?? true" :checked="item['checked']" :disabled="item['disabled'] ?? false"
+        :label="item[field.preps?.props?.label || 'name']" :value="item[field.preps?.props?.value || 'value']"
+        v-for="item in field.preps?.values" />
     </el-checkbox-group>
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, watch, PropType} from 'vue';
-import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
-import {compDynamicData} from "@/api/star_horse_utils";
-
+import { onMounted, watch, PropType } from 'vue';
+import { allAction, checkIsDisabled } from '@/components/formcomp/utils/ItemRelationEventUtils';
+import { compDynamicData } from "@/api/star_horse_utils";
+import { getDynamicEvents } from '@/api/system';
 const props = defineProps({
   isDesign: {
     type: Boolean,
@@ -78,6 +64,6 @@ watch(() => formData.value[props.field.fieldName + "OptionList"], (val) => {
   if (val?.length > 0) {
     props.field.preps['values'] = val;
   }
-},{immediate:true})
+}, { immediate: true })
 </script>
 <style scoped></style>

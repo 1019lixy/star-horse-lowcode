@@ -1,88 +1,46 @@
 <template>
-  <starhorse-form-item
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :formItem="field"
-      :parentField="parentField"
-  >
-    <el-input
-        v-if="field.preps?.assignType == 'url'"
-        :placeholder="field.preps?.placeholder || ''"
-        v-model="formData[field.fieldName]"
-    >
+  <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
+    :parentField="parentField">
+    <el-input v-if="field.preps?.assignType == 'url'" :placeholder="field.preps?.placeholder || ''"
+      v-model="formData[field.fieldName]">
       <template #append>
-        <el-upload
-            :auto-upload="true"
-            :on-change="(uploadFile: any, uploadFiles: any) => selfAction('change', uploadFile, uploadFiles)"
-            :on-error="
-            (error: any, uploadFile: any, uploadFiles: any) => selfAction('error', uploadFile, uploadFiles, error)
-          "
-            :on-exceed="(files: any, uploadFiles: any) => selfAction('exceed', files, uploadFiles)"
-            :on-preview="(uploadFile: any) => selfAction('preview', uploadFile)"
-            :on-progress="
-            (evt: any, uploadFile: any, uploadFiles: any) => selfAction('progress', uploadFile, uploadFiles, evt)
-          "
-            :on-remove="(uploadFile: any, uploadFiles: any) => selfAction('remove', uploadFile, uploadFiles)"
-            :on-success="
-            (response: any, uploadFile: any, uploadFiles: any) =>
+        <el-upload :auto-upload="true"
+          :on-change="(uploadFile: any, uploadFiles: any) => selfAction('change', uploadFile, uploadFiles)" :on-error="(error: any, uploadFile: any, uploadFiles: any) => selfAction('error', uploadFile, uploadFiles, error)
+            " :on-exceed="(files: any, uploadFiles: any) => selfAction('exceed', files, uploadFiles)"
+          :on-preview="(uploadFile: any) => selfAction('preview', uploadFile)" :on-progress="(evt: any, uploadFile: any, uploadFiles: any) => selfAction('progress', uploadFile, uploadFiles, evt)
+            " :on-remove="(uploadFile: any, uploadFiles: any) => selfAction('remove', uploadFile, uploadFiles)"
+          :on-success="(response: any, uploadFile: any, uploadFiles: any) =>
               selfAction('success', uploadFile, uploadFiles, response)
-          "
-            :show-file-list="false"
-            accept=".jpg,.jpeg,.png,.gif,.bmp,.webp"
-            :action="field.action|| defaultAction"
-            :headers="{ token: getToken() }"
-            class="upload"
-            name="file"
-        >
+            " :show-file-list="false" accept=".jpg,.jpeg,.png,.gif,.bmp,.webp" :action="field.action || defaultAction"
+          :headers="{ token: getToken() }" class="upload" name="file">
           <el-tooltip content="上传图片">
-            <star-horse-icon icon-class="upload" color="var(--star-horse-style)"/>
+            <star-horse-icon icon-class="upload" color="var(--star-horse-style)" />
           </el-tooltip>
         </el-upload>
       </template>
     </el-input>
     <div class="image-area" v-else>
-      <el-image
-          :style="{
-          width: formData[field.fieldName] ? field.preps?.width || '100px' : '100%',
-          height: formData[field.fieldName] ? field.preps?.height || '100px' : '100%'
-        }"
-          :zoom-rate="field.preps?.zoomRate || 1.2"
-          :max-scale="field.preps?.maxScale || 2"
-          :min-scale="field.preps?.minScale || 0.2"
-          :preview-src-list="field.preps?.previewSrcList || defaultViewList"
-          :initial-index="field.preps?.initialIndex|| 5"
-          :fit="field.preps?.fit || 'contain'"
-          :fid="field.fieldName"
-          :src="formData[field.fieldName] || ''"
-      >
+      <el-image :style="{
+        width: formData[field.fieldName] ? field.preps?.width || '100px' : '100%',
+        height: formData[field.fieldName] ? field.preps?.height || '100px' : '100%'
+      }" :zoom-rate="field.preps?.zoomRate || 1.2" :max-scale="field.preps?.maxScale || 2"
+        :min-scale="field.preps?.minScale || 0.2" :preview-src-list="field.preps?.previewSrcList || defaultViewList"
+        :initial-index="field.preps?.initialIndex || 5" :fit="field.preps?.fit || 'contain'" :fid="field.fieldName"
+        :src="formData[field.fieldName] || ''">
         <template #error>
-          <el-upload
-              :auto-upload="true"
-              :on-change="(uploadFile: any, uploadFiles: any) => selfAction('change', uploadFile, uploadFiles)"
-              :on-error="
-              (error: any, uploadFile: any, uploadFiles: any) => selfAction('error', uploadFile, uploadFiles, error)
-            "
-              :on-exceed="(files: any, uploadFiles: any) => selfAction('exceed', files, uploadFiles)"
-              :on-preview="(uploadFile: any) => selfAction('preview', uploadFile)"
-              :on-progress="
-              (evt: any, uploadFile: any, uploadFiles: any) => selfAction('progress', uploadFile, uploadFiles, evt)
-            "
-              :on-remove="(uploadFile: any, uploadFiles: any) => selfAction('remove', uploadFile, uploadFiles)"
-              :on-success="
-              (response: any, uploadFile: any, uploadFiles: any) =>
+          <el-upload :auto-upload="true"
+            :on-change="(uploadFile: any, uploadFiles: any) => selfAction('change', uploadFile, uploadFiles)" :on-error="(error: any, uploadFile: any, uploadFiles: any) => selfAction('error', uploadFile, uploadFiles, error)
+              " :on-exceed="(files: any, uploadFiles: any) => selfAction('exceed', files, uploadFiles)"
+            :on-preview="(uploadFile: any) => selfAction('preview', uploadFile)" :on-progress="(evt: any, uploadFile: any, uploadFiles: any) => selfAction('progress', uploadFile, uploadFiles, evt)
+              " :on-remove="(uploadFile: any, uploadFiles: any) => selfAction('remove', uploadFile, uploadFiles)"
+            :on-success="(response: any, uploadFile: any, uploadFiles: any) =>
                 selfAction('success', uploadFile, uploadFiles, response)
-            "
-              :show-file-list="false"
-              accept=".jpg,.jpeg,.png,.gif,.bmp,.webp"
-              :action="field.preps['action'] || defaultAction"
-              :headers="{ token: getToken() }"
-              class="upload"
-              name="file"
-          >
+              " :show-file-list="false" accept=".jpg,.jpeg,.png,.gif,.bmp,.webp"
+            :action="field.preps['action'] || defaultAction" :headers="{ token: getToken() }" class="upload"
+            name="file">
             <el-button type="text" text size="small">
               <el-tooltip content="上传图片">
-                <star-horse-icon icon-class="upload"/>
+                <star-horse-icon icon-class="upload" />
                 上传图片
               </el-tooltip>
             </el-button>
@@ -91,15 +49,15 @@
         <template #placeholder>
           <div class="image-slot">
             <el-icon>
-              <icon-picture/>
+              <icon-picture />
             </el-icon>
           </div>
         </template>
       </el-image>
-      <div class="image-remove" v-if="formData[field.fieldName] &&isDesign">
+      <div class="image-remove" v-if="formData[field.fieldName] && isDesign">
         <el-tooltip content="删除图片">
           <el-button title="" size="small" type="text" @click="removeImage">
-            <star-horse-icon icon-class="delete" color="var(--el-color-danger)" cursor="pointer"/>
+            <star-horse-icon icon-class="delete" color="var(--el-color-danger)" cursor="pointer" />
           </el-button>
         </el-tooltip>
       </div>
@@ -107,9 +65,9 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, shallowRef, PropType} from 'vue';
-import {allAction} from '@/components/formcomp/utils/ItemRelationEventUtils';
-import {getToken} from '@/utils/auth';
+import { onMounted, shallowRef, PropType } from 'vue';
+import { allAction } from '@/components/formcomp/utils/ItemRelationEventUtils';
+import { getToken } from '@/utils/auth';
 
 const props = defineProps({
   isDesign: {

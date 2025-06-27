@@ -1,23 +1,13 @@
 <template>
-  <starhorse-form-item
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :formItem="field"
-      :parentField="parentField"
-  >
-    <el-time-picker
-        :fid="field.fieldName"
-        :disabled="checkIsDisabled(props)"
-        v-bind="field.preps"
-        v-on="getDynamicEvents(props, itemAction)"
-        v-model="formData[field.fieldName]"
-    />
+  <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
+    :parentField="parentField">
+    <el-time-picker :fid="field.fieldName" :disabled="checkIsDisabled(props)" v-bind="field.preps"
+      v-on="getDynamicEvents(props, itemAction)" v-model="formData[field.fieldName]" />
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, shallowRef, PropType} from 'vue';
-import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
+import { onMounted, shallowRef, PropType } from 'vue';
+import { allAction, checkIsDisabled } from '@/components/formcomp/utils/ItemRelationEventUtils';
 import { getDynamicEvents } from '@/api/system';
 const props = defineProps({
   isDesign: {

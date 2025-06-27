@@ -1,18 +1,8 @@
 <template>
-  <starhorse-form-item
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :formItem="field"
-      :parentField="parentField"
-  >
-    <el-input-number
-        :fid="field.fieldName"
-        :disabled="checkIsDisabled(props)"
-        v-bind="field.preps"
-        v-on="getDynamicEvents(props, itemAction)"
-        v-model="formData[field.fieldName]"
-    >
+  <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
+    :parentField="parentField">
+    <el-input-number :fid="field.fieldName" :disabled="checkIsDisabled(props)" v-bind="field.preps"
+      v-on="getDynamicEvents(props, itemAction)" v-model="formData[field.fieldName]">
       <template #prefix>
         <span v-if="field.preps?.prefix">{{ field.preps["prefix"] }}</span>
       </template>
@@ -23,8 +13,8 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {nextTick, onMounted, shallowRef, PropType} from 'vue';
-import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
+import { nextTick, onMounted, shallowRef, PropType } from 'vue';
+import { allAction, checkIsDisabled } from '@/components/formcomp/utils/ItemRelationEventUtils';
 import { getDynamicEvents } from '@/api/system';
 defineOptions({
   name: 'NumberItem'

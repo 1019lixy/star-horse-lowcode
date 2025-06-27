@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import {nextTick, onMounted, PropType, ref, shallowRef} from 'vue';
-import {warning} from '@/utils/message';
-import {FieldInfo, FieldMapping} from '@/components/types/PageFieldInfo';
-import {isJson} from '@/api/star_horse_utils';
-import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
-import {SearchFields} from "@/components/types";
+import { nextTick, onMounted, PropType, ref, shallowRef } from 'vue';
+import { warning } from '@/utils/message';
+import { FieldInfo, FieldMapping } from '@/components/types/PageFieldInfo';
+import { isJson } from '@/api/star_horse_utils';
+import { allAction, checkIsDisabled } from '@/components/formcomp/utils/ItemRelationEventUtils';
+import { SearchFields } from "@/components/types";
 import { getDynamicEvents } from '@/api/system';
 const props = defineProps({
   isDesign: {
@@ -115,7 +115,7 @@ onMounted(async () => {
         searchFieldList.push(temp);
       }
     });
-    inputPreps.searchFieldList = {fieldList: searchFieldList};
+    inputPreps.searchFieldList = { fieldList: searchFieldList };
   }
   actionName.value = props.field.actionName || 'normal';
   if (!props.isSearch) {
@@ -124,63 +124,30 @@ onMounted(async () => {
 });
 </script>
 <template>
-  <star-horse-dialog
-      :title="field.label + '数据选择'"
-      :self-func="true"
-      :dialog-visible="dialogInputVisible"
-      @merge="selectItem"
-      @closeAction="closeAction"
-  >
+  <star-horse-dialog :title="field.label + '数据选择'" :self-func="true" :dialog-visible="dialogInputVisible"
+    @merge="selectItem" @closeAction="closeAction">
     <el-card class="inner_content ">
       <div class="search-content">
         <div class="search_btn">
-          <star-horse-search-comp
-              @searchData="(data: any) => dialogInputTableRef.createSearchParams(data)"
-              :formData="field.preps?.['searchFieldList']"
-              :compUrl="field.preps?.['dataUrl']"
-          />
+          <star-horse-search-comp @searchData="(data: any) => dialogInputTableRef.createSearchParams(data)"
+            :formData="field.preps?.['searchFieldList']" :compUrl="field.preps?.['dataUrl']" />
         </div>
       </div>
-      <star-horse-table-comp
-          :fieldList="{
-          cellEditable: false,
-          fieldList: field.preps?.['fieldList']
-        }"
-          :primaryKey="field.preps?.['primaryKey']"
-          :compUrl="field.preps?.['dataUrl']"
-          ref="dialogInputTableRef"
-          :dialogInput="true"
-          height="400px"
-          :filterCondition="field.preps?.['filterCondition']"
-          :orderBy="field.preps?.['orderBy']"
-          @selectItem="selectItem"
-          :dataFormat="field.preps?.['dataFormat']"
-          :disableAction="true"
-      />
+      <star-horse-table-comp :fieldList="{
+        cellEditable: false,
+        fieldList: field.preps?.['fieldList']
+      }" :primaryKey="field.preps?.['primaryKey']" :compUrl="field.preps?.['dataUrl']" ref="dialogInputTableRef"
+        :dialogInput="true" height="400px" :filterCondition="field.preps?.['filterCondition']"
+        :orderBy="field.preps?.['orderBy']" @selectItem="selectItem" :dataFormat="field.preps?.['dataFormat']"
+        :disableAction="true" />
     </el-card>
   </star-horse-dialog>
-  <starhorse-form-item
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :formItem="field"
-      :parentField="parentField"
-  >
-    <el-input
-        :disabled="checkIsDisabled(props)"
-        type="text"
-        v-bind="field.preps"
-        :fid="field.fieldName"
-        v-on="getDynamicEvents(props, itemAction)"
-        
-        v-model="formData[field.fieldName]"
-    >
+  <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
+    :parentField="parentField">
+    <el-input :disabled="checkIsDisabled(props)" type="text" v-bind="field.preps" :fid="field.fieldName"
+      v-on="getDynamicEvents(props, itemAction)" v-model="formData[field.fieldName]">
       <template #append>
-        <el-button
-            icon="Search"
-            @click="showVisible"
-            :disabled="checkIsDisabled(props)"
-        />
+        <el-button icon="Search" @click="showVisible" :disabled="checkIsDisabled(props)" />
       </template>
     </el-input>
   </starhorse-form-item>

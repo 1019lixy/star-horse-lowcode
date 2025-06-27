@@ -30,7 +30,7 @@ const props = defineProps({
   rules: {type: Object},
   staticColumn: {type: String, default: 'Y'},
   size: {type: String, default: Config.compSize},
-  source:{type:Number,default:1},//调用来源1 表单新增 2 表单编辑 3 查看视图 4 查询 5 列表 6 表单设计 7 页面设计
+  source:{type:Number,default:1},
   showCheckBox: {type: Boolean, default: false},
   selectAll: {type: Boolean, default: false},
   subFlag: {type: Boolean, default: false}

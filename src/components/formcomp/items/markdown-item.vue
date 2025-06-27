@@ -1,24 +1,12 @@
 <template>
-  <starhorse-form-item
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :formItem="field"
-      :parentField="parentField"
-  >
-    <MdEditor
-        v-model="formData[field.fieldName]"
-        :theme="'light'"
-        :language=" 'zh-CN'"
-        :previewTheme=" 'default'"
-        :codeTheme="'github'"
-        v-bind="field.preps"
-        class="markdown-editor"
-    />
+  <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
+    :parentField="parentField">
+    <MdEditor v-model="formData[field.fieldName]" :theme="'light'" :language="'zh-CN'" :previewTheme="'default'"
+      :codeTheme="'github'" v-bind="field.preps" class="markdown-editor" />
   </starhorse-form-item>
 </template>
 <script setup lang="ts" name="markdown">
-import {onMounted, onUpdated, PropType} from 'vue';
+import { onMounted, onUpdated, PropType } from 'vue';
 import 'md-editor-v3/lib/style.css';
 
 defineProps({

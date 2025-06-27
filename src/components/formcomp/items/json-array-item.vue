@@ -1,19 +1,10 @@
 <template>
-  <base-json-item
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :field="field"
-      @selectItem="itemAction"
-      :formInfo="formInfo"
-      v-model:formData="formData"
-      @selfFunc="itemAction"
-      :parentField="parentField"
-      dataType="array"
-  />
+  <base-json-item :isDesign="isDesign" :disabled="disabled" :field="field" @selectItem="itemAction" :formInfo="formInfo"
+    v-model:formData="formData" @selfFunc="itemAction" :parentField="parentField" dataType="array" />
 </template>
 <script setup lang="ts">
-import {onMounted, PropType, shallowRef} from 'vue';
-import {allAction} from '@/components/formcomp/utils/ItemRelationEventUtils';
+import { onMounted, PropType, shallowRef } from 'vue';
+import { allAction } from '@/components/formcomp/utils/ItemRelationEventUtils';
 
 const props = defineProps({
   isDesign: {
@@ -59,6 +50,4 @@ onMounted(() => {
   }
 });
 </script>
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import {PropType} from "vue";
-import {allAction} from '@/components/formcomp/utils/ItemRelationEventUtils';
+import { PropType } from "vue";
+import { allAction } from '@/components/formcomp/utils/ItemRelationEventUtils';
 
 const props = defineProps({
   isDesign: {
@@ -37,28 +37,23 @@ const itemAction = (prep: any) => {
 
 </script>
 <template>
-  <starhorse-form-item
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :formItem="field"
-      :parentField="parentField"
-  >
+  <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
+    :parentField="parentField">
     <div class="cell-header" @click="itemAction('click')">
       <div :style="{
         display: 'flex',
-        verticalAlign: field.preps?.verticalAlign??'middle',
-        justifyContent: field.preps?.justifyContent??'left',
-        alignItems: field.preps?.alignItems??'left',
-        wordBreak: field.preps?.wordBreak??'normal',
-        width: field.preps?.width??'100%',
-        height:  field.preps?.height??'100%',
-        fontWeight: field.preps?.fontWeight??'600',
-        color: field.preps?.color??'inherit',
-        backgroundColor: field.preps?.backgroundColor??'none',
-        borderRadius: field.preps?.fontWeight??'none',
-        border: field.preps?.border??'none',
-        margin:' 0 5px'
+        verticalAlign: field.preps?.verticalAlign ?? 'middle',
+        justifyContent: field.preps?.justifyContent ?? 'left',
+        alignItems: field.preps?.alignItems ?? 'left',
+        wordBreak: field.preps?.wordBreak ?? 'normal',
+        width: field.preps?.width ?? '100%',
+        height: field.preps?.height ?? '100%',
+        fontWeight: field.preps?.fontWeight ?? '600',
+        color: field.preps?.color ?? 'inherit',
+        backgroundColor: field.preps?.backgroundColor ?? 'none',
+        borderRadius: field.preps?.fontWeight ?? 'none',
+        border: field.preps?.border ?? 'none',
+        margin: ' 0 5px'
       }">{{ field.preps?.textContent || field.preps?.placeholder }}
       </div>
     </div>

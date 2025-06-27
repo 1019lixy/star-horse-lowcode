@@ -1,44 +1,25 @@
 <template>
-  <star-horse-dialog
-      :title="field.label + '数据选择'"
-      :self-func="true"
-      :dialog-visible="dialogInputVisible"
-      @merge="selectItem"
-      :box-height="'500px'"
-      @closeAction="closeAction"
-  >
+  <star-horse-dialog :title="field.label + '数据选择'" :self-func="true" :dialog-visible="dialogInputVisible"
+    @merge="selectItem" :box-height="'500px'" @closeAction="closeAction">
     <div style="width: 100%">
-      <component :is="field.preps.compName" :params="field.preps" ref="userTableRef"
-                 style="flex: 1"/>
+      <component :is="field.preps.compName" :params="field.preps" ref="userTableRef" style="flex: 1" />
     </div>
   </star-horse-dialog>
-  <starhorse-form-item
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :formItem="field"
-      :parentField="parentField"
-  >
-    <el-mention
-        :disabled="checkIsDisabled(props)"
-        :options="userOptionList"
-        :whole="true"
-        :fid="field.fieldName"
-        v-bind="field.preps"
-        v-on="getDynamicEvents(props, itemAction)"
-        v-model="formData[field.fieldName]"
-    >
+  <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
+    :parentField="parentField">
+    <el-mention :disabled="checkIsDisabled(props)" :options="userOptionList" :whole="true" :fid="field.fieldName"
+      v-bind="field.preps" v-on="getDynamicEvents(props, itemAction)" v-model="formData[field.fieldName]">
       <template #append>
-        <star-horse-icon icon-class="user-add" @click="showVisible" :disabled="field.preps['disabled']"/>
+        <star-horse-icon icon-class="user-add" @click="showVisible" :disabled="field.preps['disabled']" />
       </template>
     </el-mention>
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {nextTick, shallowRef, PropType} from 'vue';
-import {FieldMapping} from '@/components/types/PageFieldInfo';
-import {warning} from '@/utils/message';
-import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
+import { nextTick, shallowRef, PropType } from 'vue';
+import { FieldMapping } from '@/components/types/PageFieldInfo';
+import { warning } from '@/utils/message';
+import { allAction, checkIsDisabled } from '@/components/formcomp/utils/ItemRelationEventUtils';
 import { getDynamicEvents } from '@/api/system';
 const props = defineProps({
   isDesign: {

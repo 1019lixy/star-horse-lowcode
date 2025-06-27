@@ -1,46 +1,29 @@
 <template>
-  <starhorse-form-item
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :formItem="field"
-      :parentField="parentField"
-  >
-    <el-upload
-        :fid="field.fieldName"
-        :disabled="checkIsDisabled(props)"
-        :headers="headers"
-        v-bind="field.preps"
-        :on-change="(uploadFile: any, uploadFiles: any) => selfAction('change', uploadFile, uploadFiles)"
-        :on-error="(error: any, uploadFile: any, uploadFiles: any) => selfAction('error', uploadFile, uploadFiles, error)"
-        :on-exceed="(files: any, uploadFiles: any) => selfAction('exceed', files, uploadFiles)"
-        :on-preview="(uploadFile: any) => selfAction('preview', uploadFile)"
-        :on-progress="
-        (evt: any, uploadFile: any, uploadFiles: any) => selfAction('progress', uploadFile, uploadFiles, evt)
-      "
-        :on-remove="(uploadFile: any, uploadFiles: any) => selfAction('remove', uploadFile, uploadFiles)"
-        :on-success="
-        (response: any, uploadFile: any, uploadFiles: any) => selfAction('success', uploadFile, uploadFiles, response)
-      "
-        style="width: 100% !important; display: flex; align-items: center; position: relative"
-
-        v-model:file-list="dataField"
-    >
-      <el-icon class="el-icon--upload" v-if="field.preps['drag'] ">
-        <upload-filled/>
+  <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
+    :parentField="parentField">
+    <el-upload :fid="field.fieldName" :disabled="checkIsDisabled(props)" :headers="headers" v-bind="field.preps"
+      :on-change="(uploadFile: any, uploadFiles: any) => selfAction('change', uploadFile, uploadFiles)"
+      :on-error="(error: any, uploadFile: any, uploadFiles: any) => selfAction('error', uploadFile, uploadFiles, error)"
+      :on-exceed="(files: any, uploadFiles: any) => selfAction('exceed', files, uploadFiles)"
+      :on-preview="(uploadFile: any) => selfAction('preview', uploadFile)" :on-progress="(evt: any, uploadFile: any, uploadFiles: any) => selfAction('progress', uploadFile, uploadFiles, evt)
+        " :on-remove="(uploadFile: any, uploadFiles: any) => selfAction('remove', uploadFile, uploadFiles)" :on-success="(response: any, uploadFile: any, uploadFiles: any) => selfAction('success', uploadFile, uploadFiles, response)
+        " style="width: 100% !important; display: flex; align-items: center; position: relative"
+      v-model:file-list="dataField">
+      <el-icon class="el-icon--upload" v-if="field.preps['drag']">
+        <upload-filled />
       </el-icon>
       <div class="el-upload__text" v-if="field.preps['drag']"> 将文件拖到此处 或 <em>点击上传</em></div>
       <template #tip v-if="field.preps['maxSize']">
         <div class="el-upload__tip"> 文件大小不能超过{{ field.preps["maxSize"] }}</div>
       </template>
-      <star-horse-icon v-if="field.preps['drag'] != 'Y'" icon-class="plus" color="var(--star-horse-style)"/>
+      <star-horse-icon v-if="field.preps['drag'] != 'Y'" icon-class="plus" color="var(--star-horse-style)" />
     </el-upload>
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {nextTick, onMounted, PropType, ref, shallowRef, watch} from 'vue';
-import {getToken} from '@/utils/auth';
-import {checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
+import { nextTick, onMounted, PropType, ref, shallowRef, watch } from 'vue';
+import { getToken } from '@/utils/auth';
+import { checkIsDisabled } from '@/components/formcomp/utils/ItemRelationEventUtils';
 
 const props = defineProps({
   isDesign: {
@@ -99,7 +82,7 @@ onMounted(async () => {
   await nextTick();
   let datas = formData.value[props.field.fieldName];
   if (datas) {
-    dataField.value.push({url: (props.field.preps['context'] || '/system-config') + datas});
+    dataField.value.push({ url: (props.field.preps['context'] || '/system-config') + datas });
   }
   let temp = props.field.preps?.headers;
   if (temp && Object.keys(temp).length > 0) {
@@ -108,13 +91,13 @@ onMounted(async () => {
   headers.value['token'] = getToken();
 });
 watch(
-    () => props.formFieldList,
-    (val: any) => {
-      if (val && Object.keys(val).includes(props.field.fieldName)) {
-        dataField.value = [{url: (props.field.preps['context'] || '/system-config') + val[props.field.fieldName]}];
-      }
-    },
-    {immediate: true, deep: true}
+  () => props.formFieldList,
+  (val: any) => {
+    if (val && Object.keys(val).includes(props.field.fieldName)) {
+      dataField.value = [{ url: (props.field.preps['context'] || '/system-config') + val[props.field.fieldName] }];
+    }
+  },
+  { immediate: true, deep: true }
 );
 </script>
 <style lang="scss" scoped>

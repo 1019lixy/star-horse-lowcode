@@ -1,23 +1,15 @@
 <template>
-  <starhorse-form-item
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :formItem="field"
-      :parentField="parentField"
-  >
-    <el-divider
-        :direction="field.preps?.direction || 'horizontal'"
-        v-on="getDynamicEvents(props, itemAction)"
-        :content-position="field.preps?.contentPosition || 'center'"
-    >
+  <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
+    :parentField="parentField">
+    <el-divider :direction="field.preps?.direction || 'horizontal'" v-on="getDynamicEvents(props, itemAction)"
+      :content-position="field.preps?.contentPosition || 'center'">
       {{ field.preps?.content }}
     </el-divider>
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, PropType} from 'vue';
-import {allAction} from '@/components/formcomp/utils/ItemRelationEventUtils';
+import { onMounted, PropType } from 'vue';
+import { allAction } from '@/components/formcomp/utils/ItemRelationEventUtils';
 import { getDynamicEvents } from '@/api/system';
 const props = defineProps({
   isDesign: {

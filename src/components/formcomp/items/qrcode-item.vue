@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type {ImageSettings} from 'qrcode.vue';
+import type { ImageSettings } from 'qrcode.vue';
 import QrcodeVue from 'qrcode.vue';
-import {computed, nextTick, onMounted, ref, watch,PropType} from "vue";
-import {allAction} from '@/components/formcomp/utils/ItemRelationEventUtils';
+import { computed, nextTick, onMounted, ref, watch, PropType } from "vue";
+import { allAction } from '@/components/formcomp/utils/ItemRelationEventUtils';
 
 const props = defineProps({
   isDesign: {
@@ -31,7 +31,7 @@ const props = defineProps({
     type: Object as PropType<any>,
   }
 });
-const imageSettings = ref<ImageSettings>({height: 0, src: "", width: 0});
+const imageSettings = ref<ImageSettings>({ height: 0, src: "", width: 0 });
 const emits = defineEmits(['selfFunc', 'selectItem']);
 const formData = defineModel("formData");
 const dataValue = computed(() => formData.value[props.field.fieldName]);
@@ -52,19 +52,15 @@ onMounted(() => {
   });
 });
 watch(() => [dataValue.value, props.field.preps],
-    () => {
-      createCode();
-      allAction(props, emits, formData, "change", false);
-    }, {immediate: false, deep: true});
+  () => {
+    createCode();
+    allAction(props, emits, formData, "change", false);
+  }, { immediate: false, deep: true });
 </script>
 <template>
   <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
-                       :parentField="parentField">
-    <qrcode-vue
-        :value="dataValue"
-        v-bind="field.preps"
-        :image-settings='imageSettings'
-    />
+    :parentField="parentField">
+    <qrcode-vue :value="dataValue" v-bind="field.preps" :image-settings='imageSettings' />
   </starhorse-form-item>
 </template>
 <style scoped></style>
