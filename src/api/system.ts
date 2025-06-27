@@ -1,10 +1,11 @@
-import {SearchParams} from '@/components/types/Params';
-import {isJson} from '@/api/star_horse_utils';
-import {useDark, useToggle} from '@vueuse/core';
-import {v4 as uuidv4} from 'uuid';
-import {DyCompField} from '@/components/types/DyCompField';
-import {computed, Ref, ref, unref} from 'vue';
-import {error, success} from "@/utils/message";
+import { SearchParams } from '@/components/types/Params';
+import { isJson } from '@/api/star_horse_utils';
+import { useDark, useToggle } from '@vueuse/core';
+import { v4 as uuidv4 } from 'uuid';
+import { DyCompField } from '@/components/types/DyCompField';
+import { computed, Ref, ref, unref } from 'vue';
+import { error, success } from "@/utils/message";
+import { allAction } from '@/components/formcomp/utils/ItemRelationEventUtils';
 
 /**
  * UUID
@@ -82,8 +83,30 @@ export const batchModifyAction = (items: Array<any>, val: any, fieldName: string
     }
 };
 
-const inputType = ["input", "textarea", "password", "number", "view-markdown", "json", "json-array"];
-const selectType = ["select", "tselect", "cascader", "autocomplete", "area", "cron", "transfer", "dialog-input", "page-select"];
+const inputType: Array<string> = ["input", "textarea", "password", "number", "view-markdown", "json", "json-array"];
+const selectType: Array<string> = ["select", "tselect", "cascader", "autocomplete", "area", "cron", "transfer", "dialog-input", "page-select"];
+const dateType: Array<string> = ['year', 'month', 'date', 'datetime', 'week', 'datetimerange', 'daterange'];
+/**
+ *下来组件
+ * @returns 
+ */
+export function selectCompList() {
+    return selectType;
+}
+/**
+ * 输入组件
+ * @returns 
+ */
+export function inputCompList() {
+    return inputType;
+}
+/**
+ * 日期组件
+ * @returns 
+ */
+export function dateCompList() {
+    return dateType;
+}
 
 /**
  * 给组件添加placeholder属性
@@ -130,20 +153,26 @@ export function itemCheck(item: any) {
         item.label = item.label || item.preps?.label;
         item.fieldName = item.fieldName || item.preps?.fieldName;
         item.type = item.type || item.itemType;
-        item.actionName = item.actionName || item.preps?.actionName;
         item.actions = item.actions || item.preps?.actions;
         fieldPlaceholder(item, item.type);
         // 新增：字符串转函数逻辑
+
         if (typeof item.actions === 'string') {
             try {
                 // 将字符串转换为函数（假设函数需要访问当前 item 上下文，可根据实际参数调整）
                 // item.actions = new Function('item', `return ${item.actions}`)(item);
                 // 或直接转换为函数体（无参数时）：
-                item.actions = new Function(item.actions);
+                item.actions ={
+                  "click":new Function(item.actions)
+                } ;
             } catch (e) {
                 console.error('actions 字符串转函数失败:', e);
                 item.actions = null; // 转换失败时置空避免错误
             }
+        }else if(Array.isArray(item.actions)){
+            item.actions.forEach((action:any)=>{
+                action.actions=new Function(action.actions);
+            })
         }
     }
     return item?.itemType + (item?.compType === 'container' ? '-container' : '-item');
@@ -231,4 +260,34 @@ export const useZIndex = (zIndexOverrides?: Ref<number>) => {
         currentZIndex,
         nextZIndex
     };
+};
+
+// 添加动态事件处理方法
+export function getDynamicEvents(props: any, recall: Function) {
+    const events: Record<string, any> = {};
+    const field = props.field;
+    // 统一处理带修饰符的事件
+    const handleEvent = (eventName: string, e: any) => {
+        if (eventName.includes('.')) {
+            const [baseEvent, modifier] = eventName.split('.');
+            if (modifier == e.key.toLowerCase()) {
+                console.log('成功触发事件:');
+                recall(modifier); // 传递完整事件名称
+            }
+        } else {
+            recall(eventName); // 传递完整事件名称
+        }
+    };
+    if (field.actionName) {
+        const actionNames: string[] = Array.isArray(field.actionName) ? field.actionName : [field.actionName];
+        for (let actionName of actionNames) {
+            if (actionName.includes('.')) {
+                const [baseEvent, modifier] = actionName.split('.');
+                events[baseEvent] = (e: Event) => handleEvent(actionName, e);
+            } else {
+                events[actionName] = (e: Event) => handleEvent(actionName, e);
+            }
+        }
+    }
+    return events;
 };

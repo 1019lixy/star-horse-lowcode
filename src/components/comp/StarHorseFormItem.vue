@@ -20,8 +20,7 @@ defineProps({
   primaryKey: {type: [String, Object] as PropType<string | any>},
   compSize: {type: String, default: Config.compSize},
   rules: {type: Object},
-  isView: {type: Boolean, default: false},
-  isEdit: {type: Boolean, default: true},
+  source:{type:Number,default:1},//调用来源1 表单新增 2 表单编辑 3 查看视图 4 查询 5 列表 6 表单设计 7 页面设计
 });
 const dataForm: ModelRef<any> = defineModel('dataForm');
 const dialogProps = inject<DialogProps>('dialogProps', {});
@@ -54,13 +53,12 @@ const checkItemType = (item: any) => {
         :compSize="compSize"
         :compUrl="compUrl"
         :subFormFlag="subFormFlag"
-        :isView="isView"
+        :source="source"
         :objectName="objectName"
         :dataIndex="dataIndex"
         :propPrefix="propPrefix"
         v-model:dataForm="dataForm"
         :parentPreps="fieldList.preps"
-        :isEdit="!isEdit||!dialogProps?.ids || dialogProps?.ids == -1"
     />
   </template>
   <table-item
@@ -72,13 +70,12 @@ const checkItemType = (item: any) => {
       :compSize="compSize"
       :compUrl="compUrl"
       :subFormFlag="subFormFlag"
-      :isView="isView"
+      :source="source"
       :objectName="objectName"
       :dataIndex="dataIndex"
       :propPrefix="propPrefix"
       v-model:dataForm="dataForm"
       :parentPreps="fieldList.preps"
-      :isEdit="!isEdit||!dialogProps?.ids || dialogProps?.ids == -1"
   />
 </template>
 <style lang="scss" scoped></style>

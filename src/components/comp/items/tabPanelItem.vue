@@ -15,7 +15,7 @@ const props = defineProps({
   propPrefix: {type: String, default: ''},
   rules: {type: Object},
   compSize: {type: String, default: Config.compSize},
-  isView: {type: Boolean, default: false},
+  source:{type:Number,default:1},//调用来源1 表单新增 2 表单编辑 3 查看视图 4 查询 5 列表 6 表单设计 7 页面设计
   parentType: {type: String, default: ''}
 });
 const emits = defineEmits(['addRow', 'removeRow']);
@@ -59,7 +59,7 @@ onMounted(() => {
     <template v-if="(parentType=='tab'&&item.tableFlag!='Y')||item.formFlag=='Y'">
       <el-scrollbar height="100%">
         <star-horse-form-item
-            :isView="isView"
+            :source="source"
             :compUrl="compUrl"
             :compSize="compSize"
             @addRow="addRow"

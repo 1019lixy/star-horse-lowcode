@@ -5,7 +5,7 @@ import {FieldInfo, FieldMapping} from '@/components/types/PageFieldInfo';
 import {isJson} from '@/api/star_horse_utils';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
 import {SearchFields} from "@/components/types";
-
+import { getDynamicEvents } from '@/api/system';
 const props = defineProps({
   isDesign: {
     type: Boolean,
@@ -171,9 +171,7 @@ onMounted(async () => {
         type="text"
         v-bind="field.preps"
         :fid="field.fieldName"
-        v-on:[field.actionName]="itemAction(field.actionName)"
-        
-        
+        v-on="getDynamicEvents(props, itemAction)"
         
         v-model="formData[field.fieldName]"
     >

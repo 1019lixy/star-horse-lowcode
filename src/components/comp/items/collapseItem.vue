@@ -22,8 +22,7 @@ const props=defineProps({
   primaryKey: {type: [String, Object] as PropType<string | any>},
   rules: {type: Object},
   compSize: {type: String, default: Config.compSize},
-  isView: {type: Boolean, default: false},
-  isEdit: {type: Boolean, default: false}
+  source:{type:Number,default:1},//调用来源1 表单新增 2 表单编辑 3 查看视图 4 查询 5 列表 6 表单设计 7 页面设计
 });
 const emits = defineEmits(['addRow', 'removeRow']);
 const dataForm: ModelRef<any> = defineModel('dataForm');
@@ -69,7 +68,7 @@ onMounted(() => {
               </div>
             </template>
             <star-horse-form-item
-                :isView="isView"
+                :source="source"
                 :compUrl="compUrl"
                 :compSize="compSize"
                 @addRow="addRow"

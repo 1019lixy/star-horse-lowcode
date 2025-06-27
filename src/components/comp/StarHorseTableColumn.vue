@@ -1,37 +1,38 @@
 <script setup lang="ts" name="StarHorseTableColumn">
-import {computed, ComputedRef, nextTick, PropType, ref, unref} from 'vue';
-import {postRequest} from '@/api/star_horse_apis';
-import {closeLoad, commonParseCodeToName} from '@/api/star_horse_utils';
-import {error, success, warning} from '@/utils/message';
-import {Config} from '@/api/settings';
-import {createComponent} from '@/api/system';
-import {dateTypes, parseDateByType} from "@/api/date_utils";
-import {DyCompField} from "@/components/types";
+import { computed, ComputedRef, nextTick, PropType, ref, unref } from 'vue';
+import { postRequest } from '@/api/star_horse_apis';
+import { closeLoad, commonParseCodeToName } from '@/api/star_horse_utils';
+import { error, success, warning } from '@/utils/message';
+import { Config } from '@/api/settings';
+import { createComponent } from '@/api/system';
+import { dateTypes, parseDateByType } from "@/api/date_utils";
+import { DyCompField } from "@/components/types";
 
 const props = defineProps({
-  compUrl: {type: Object},
-  batchName: {type: String, default: ''},
-  item: {type: Object as PropType<any>, required: true},
-  dataFormat: {type: Function, required: true},
-  cellEditable: {type: Boolean, default: true},
+  compUrl: { type: Object },
+  batchName: { type: String, default: '' },
+  item: { type: Object as PropType<any>, required: true },
+  dataFormat: { type: Function, required: true },
+  cellEditable: { type: Boolean, default: true },
   //全局配置，动态页面使用
-  globalConfig: {type: Object as PropType<any>, required: false},
+  globalConfig: { type: Object as PropType<any>, required: false },
   //是否动态页面
-  isDynamic: {type: Boolean, default: false},
+  isDynamic: { type: Boolean, default: false },
   //是否显示排序
-  sortable: {type: Boolean, default: true},
-  compSize: {type: String, default: Config.compSize}
+  sortable: { type: Boolean, default: true },
+  compSize: { type: String, default: Config.compSize },
+  source:{type:Number,default:5},//调用来源1 表单新增 2 表单编辑 3 查看视图 4 查询 5 列表 6 表单设计 7 页面设计
 });
 const emits = defineEmits(['focusEvent', 'blurEvent']);
 const compInfo: ComputedRef<DyCompField> = computed(() => {
-      return {
-        ...unref(props.item.preps?.compInfo),
-        props: {
-          data: {type: Object},
-          item: {type: Object}
-        }
-      }
+  return {
+    ...unref(props.item.preps?.compInfo),
+    props: {
+      data: { type: Object },
+      item: { type: Object }
     }
+  }
+}
 )
 const currentRow = ref();
 const focusEvent = (_column: any) => {
@@ -55,19 +56,19 @@ const blurEvent = (column: any) => {
     params = currentRow.value;
   }
   postRequest(props.compUrl?.mergeUrl!, params)
-      .then((res) => {
-        if (res.data.code != 0) {
-          warning(res.data.cnMessage);
-        } else {
-          success(res.data.cnMessage);
-        }
-      })
-      .catch((err) => {
-        error('接口调用异常' + err);
-      })
-      .finally(() => {
-        closeLoad();
-      });
+    .then((res) => {
+      if (res.data.code != 0) {
+        warning(res.data.cnMessage);
+      } else {
+        success(res.data.cnMessage);
+      }
+    })
+    .catch((err) => {
+      error('接口调用异常' + err);
+    })
+    .finally(() => {
+      closeLoad();
+    });
 };
 const cellClick = (row: any, column: any) => {
   if (!props.cellEditable || props.item['disabled'] || props.item['editDisabled']) {
@@ -141,78 +142,35 @@ const createPreps = (item: any) => {
 };
 </script>
 <template>
-  <el-table-column
-      :prop="item.hideName || item.fieldName"
-      :label="item.label"
-      :min-width="(item.minWidth || Config.defaultColumnWidth) + 'px'"
-      :formatter="dataFormat"
-      v-if="item.listVisible"
-      :sortable="sortable"
-      :show-overflow-tooltip="true"
-  >
+  <el-table-column :prop="item.hideName || item.fieldName" :label="item.label"
+    :min-width="(item.minWidth || Config.defaultColumnWidth) + 'px'" :formatter="dataFormat" v-if="item.listVisible"
+    :sortable="sortable" :show-overflow-tooltip="true">
     <template #default="scope">
       <template v-if="item.preps?.showComp">
-        <el-popover
-            ref="popover"
-            :placement="item.preps.placement || 'left'"
-            :width="'auto'"
-            v-if="item.preps.popover"
-            @show="showOperation"
-        >
+        <el-popover ref="popover" :placement="item.preps.placement || 'left'" :width="'auto'" v-if="item.preps.popover"
+          @show="showOperation">
           <template #reference>
-            <star-horse-item
-                :dataForm="scope.row"
-                :item="item"
-                :column="scope.column"
-                :batchName="batchName"
-                :bareFlag="true"
-                :compSize="compSize"
-            />
+            <star-horse-item :dataForm="scope.row" :item="item" :column="scope.column" :batchName="batchName"
+              :bareFlag="true" :compSize="compSize" />
           </template>
-          <component
-              :is="createComponent(compInfo)"
-              :item="item"
-              :data="scope.row"
-              v-if="compInfo.name"
-          />
+          <component :is="createComponent(compInfo)" :item="item" :data="scope.row" v-if="compInfo.name" />
         </el-popover>
-        <star-horse-item
-            :dataForm="scope.row"
-            :item="item"
-            :column="scope.column"
-            :batchName="batchName"
-            :compSize="compSize"
-            :style="{ ...item.preps.styles }"
-            v-on:[item.preps?.compAction]="item.preps?.compFunc(scope.row)"
-            v-else
-        />
+        <star-horse-item :dataForm="scope.row" :item="item" :column="scope.column" :batchName="batchName"
+          :compSize="compSize" :style="{ ...item.preps.styles }"
+          v-on:[item.preps?.compAction]="item.preps?.compFunc(scope.row)" v-else />
       </template>
       <template v-else-if="prototypeCheck(item)">
-        <component
-            :is="
-            (item.listPrototypeDisplay === true || item.preps?.listPrototypeDisplay === true
-              ? item.type || 'input'
-              : item.listPrototypeDisplay || item.preps?.listPrototypeDisplay) + '-item'
-          "
-            :bareFlag="true"
-            :callBack="() => currentDataFormat(scope)"
-            :field="createPreps(item)"
-            :formData="scope.row"
-        />
+        <component :is="(item.listPrototypeDisplay === true || item.preps?.listPrototypeDisplay === true
+            ? item.type || 'input'
+            : item.listPrototypeDisplay || item.preps?.listPrototypeDisplay) + '-item'
+          " :bareFlag="true" :callBack="() => currentDataFormat(scope)" :field="createPreps(item)"
+          :formData="scope.row" />
       </template>
       <template v-else>
-        <star-horse-item
-            :dataForm="scope.row"
-            :item="item"
-            :column="scope.column"
-            :batchName="batchName"
-            @focus="focusEvent"
-            :compSize="compSize"
-            @blur="blurEvent"
-            v-if="
+        <star-horse-item :dataForm="scope.row" :item="item" :column="scope.column" :batchName="batchName"
+          @focus="focusEvent" :compSize="compSize" @blur="blurEvent" :source="source" v-if="
             scope.row.isSelected && (scope.row.selectName == item.hideName || scope.row.selectName == item.fieldName)
-          "
-        />
+          " />
         <p @click="cellClick(scope.row, scope.column)" v-else> {{ currentDataFormat(scope) }}</p>
       </template>
     </template>

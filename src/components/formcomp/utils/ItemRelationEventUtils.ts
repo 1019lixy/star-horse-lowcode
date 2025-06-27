@@ -123,6 +123,7 @@ const operationRelation = async (relation: any, actionName: string, formData: an
  */
 const allAction = (context: any, emits: any, formData: any, actionName: string, isInit: boolean = false) => {
     const currentData = isRef(formData) ? formData.value : formData;
+    console.log(currentData);
     //设计时的初始化不作处理
     const field = context.field as any;
     if (!isInit && actionName != 'normal') {
@@ -132,14 +133,10 @@ const allAction = (context: any, emits: any, formData: any, actionName: string, 
             error('事件触发异常：' + e);
         }
     }
-    if ((isDesign.value && isInit) || actionName == 'normal') {
+    if (isDesign.value && isInit) {
         return;
     }
-    const tempName = field.preps?.actionName;
-    //如果没有设置事件则不处理
-    // if (actionName != tempName) {
-    //     return;
-    // }
+
     //处理连动
     switch (actionName) {
         case 'change':
@@ -161,10 +158,6 @@ const allAction = (context: any, emits: any, formData: any, actionName: string, 
         default:
             console.log('不支持的事件：' + actionName);
             return;
-    }
-
-    if (actionName == 'input' && actionName != tempName) {
-        return;
     }
 
 };

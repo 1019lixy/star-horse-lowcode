@@ -88,7 +88,7 @@ onUpdated(() => {
 <template>
   <star-horse-dialog
       :dialog-visible="previewDialog"
-      :is-view="true"
+      :source="3"
       :self-func="true"
       @closeAction="previewDialog = false"
   >

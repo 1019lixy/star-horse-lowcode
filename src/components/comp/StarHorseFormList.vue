@@ -30,7 +30,7 @@ const props = defineProps({
   rules: {type: Object},
   staticColumn: {type: String, default: 'Y'},
   size: {type: String, default: Config.compSize},
-  isView: {type: Boolean, default: false},
+  source:{type:Number,default:1},//调用来源1 表单新增 2 表单编辑 3 查看视图 4 查询 5 列表 6 表单设计 7 页面设计
   showCheckBox: {type: Boolean, default: false},
   selectAll: {type: Boolean, default: false},
   subFlag: {type: Boolean, default: false}
@@ -266,7 +266,7 @@ watch(
       :title="'导入文件'"
       :dialogVisible="importDialogVisible"
       :boxWidth="'30%'"
-      :isView="true"
+      :source="3"
       :draggable="false"
       @closeAction="importDialogVisible = false"
   >
@@ -310,7 +310,7 @@ watch(
         <help v-if="helpMsg" :message="helpMsg" :width="400"/>
       </div>
       <div class="flex items-center">
-        <ul class="inner_button" v-if="!isView">
+        <ul class="inner_button" v-if="source!=3">
           <li v-if="importInfo?.importDataUrl && !subFlag" @click="excelOperation">
             <el-tooltip content="导入Excel">
               <star-horse-icon icon-class="upload" color="var(--star-horse-style)" size="18px"/>
@@ -372,6 +372,7 @@ watch(
               v-for="(temp,skey) in item"
               :size="size"
               :rules="rules"
+              :source="source"
               :batchName="batchName"
               :primaryKey="primaryKey"
               :staticColumn="staticColumn"
@@ -382,6 +383,7 @@ watch(
               :item="item"
               :size="size"
               :rules="rules"
+              :source="source"
               :batchName="batchName"
               :primaryKey="primaryKey"
               :staticColumn="staticColumn"
@@ -389,7 +391,7 @@ watch(
         </template>
       </template>
       <el-table-column fixed="right" label="操作" width="80">
-        <template #default="scope" v-if="!isView">
+        <template #default="scope" v-if="source!=3">
           <star-horse-icon
               icon-class="edit"
               v-if="staticColumn == 'Y'"
@@ -405,7 +407,7 @@ watch(
         </template>
       </el-table-column>
     </el-table>
-    <div class="add-row" v-if="!isView" @click="handleAddDetails(null, 1)">
+    <div class="add-row" v-if="source!=3" @click="handleAddDetails(null, 1)">
       <star-horse-icon icon-class="plus" color="var(--star-horse-style)"/>
       {{ staticColumn == "Y" ? "添加数据" : "加一行" }}
     </div>

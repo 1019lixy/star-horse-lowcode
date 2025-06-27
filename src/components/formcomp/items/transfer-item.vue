@@ -9,10 +9,7 @@
     <el-transfer
         :fid="field?.preps['name']"
         v-bind="field.preps"
-        v-on:[field.actionName]="itemAction(field.actionName)"
-        
-        
-        
+        v-on="getDynamicEvents(props, itemAction)"
         v-model="formData[field.fieldName]"
     />
   </starhorse-form-item>
@@ -22,7 +19,7 @@ import {onMounted, shallowRef, watch, PropType} from 'vue';
 import {compDynamicData} from '@/api/star_horse_utils';
 import {SelectOption} from '@/components/types/SearchProps';
 import {allAction} from '@/components/formcomp/utils/ItemRelationEventUtils';
-
+import { getDynamicEvents } from '@/api/system';
 const props = defineProps({
   isDesign: {
     type: Boolean,

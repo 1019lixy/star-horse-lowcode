@@ -11,6 +11,7 @@ defineProps({
   size: {type: String, default: Config.compSize},
   batchName: {type: String, default: 'batchDataList'},
   primaryKey: {type: [String, Object] as PropType<string | any>},
+  source:{type:Number,default:1},//调用来源1 表单新增 2 表单编辑 3 查看视图 4 查询 5 列表 6 表单设计 7 页面设计
 });
 const _compKey = compKey;
 const exclusionFields: string[] = ['divider', 'button', 'usercomp'];
@@ -36,6 +37,7 @@ const exclusionFields: string[] = ['divider', 'button', 'usercomp'];
               :initRows="sitem['initRows']"
               :subFlag="true"
               :size="size"
+              :source="source"
               :defaultValues="batchFieldDefaultValues(sitem,scope.row)"
               :field-list="sitem['fieldList']"
               :rules="sitem['rules'] || rules"
@@ -48,6 +50,7 @@ const exclusionFields: string[] = ['divider', 'button', 'usercomp'];
             :batchName="batchName"
             :dataForm="scope.row"
             :size="size"
+            :source="source"
             :rules="rules"
             :staticColumn="staticColumn"
             :item="item"

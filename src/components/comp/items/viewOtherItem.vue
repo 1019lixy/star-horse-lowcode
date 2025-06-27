@@ -34,7 +34,7 @@ onMounted(() => {
         :primaryKey="'id'"
         v-model:dataForm="dataForm"
         :item="item"
-        :isView="true"
+        :source="3"
     />
   </template>
   <div class="item" v-if="item.formVisible || item.listVisible || item.viewVisible">

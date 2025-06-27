@@ -21,10 +21,7 @@
   >
     <el-input
         :fid="field.fieldName"
-        v-on:[field.actionName]="itemAction(field.actionName)"
-        
-        
-        
+        v-on="getDynamicEvents(props, itemAction)"
         v-model="formData[field.fieldName]"
     >
       <template #append>
@@ -40,9 +37,8 @@
 <script setup lang="ts">
 import {onMounted, PropType, ref, shallowRef} from 'vue';
 import Crontab from '@/components/cron/Crontab.vue';
-import StarHorseDialog from '@/components/comp/StarHorseDialog.vue';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
-
+import { getDynamicEvents } from '@/api/system';
 
 const props = defineProps({
   isDesign: {

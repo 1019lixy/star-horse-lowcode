@@ -14,10 +14,7 @@
         :end="field.preps?.end|| '24:00'"
         :step="field.preps?.step || '00:05'"
         v-bind="field.preps"
-        v-on:[field.actionName]="itemAction(field.actionName)"
-        
-        
-        
+        v-on="getDynamicEvents(props, itemAction)"
         v-model="formData[field.fieldName]"
     />
   </starhorse-form-item>
@@ -25,7 +22,7 @@
 <script setup lang="ts">
 import {onMounted, shallowRef, PropType} from 'vue';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
-
+import { getDynamicEvents } from '@/api/system';
 const props = defineProps({
   isDesign: {
     type: Boolean,

@@ -25,10 +25,7 @@
         :whole="true"
         :fid="field.fieldName"
         v-bind="field.preps"
-        v-on:[field.actionName]="itemAction(field.actionName)"
-        
-        
-        
+        v-on="getDynamicEvents(props, itemAction)"
         v-model="formData[field.fieldName]"
     >
       <template #append>
@@ -42,7 +39,7 @@ import {nextTick, shallowRef, PropType} from 'vue';
 import {FieldMapping} from '@/components/types/PageFieldInfo';
 import {warning} from '@/utils/message';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
-
+import { getDynamicEvents } from '@/api/system';
 const props = defineProps({
   isDesign: {
     type: Boolean,

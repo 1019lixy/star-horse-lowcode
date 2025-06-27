@@ -13,7 +13,7 @@
         v-bind="field.preps"
         :filter-node-method="filterNodeMethod"
         :render-content="renderContent"
-        v-on:[field.actionName]="itemAction(field.actionName)"
+        v-on="getDynamicEvents(props, itemAction)"
         v-model="formData[field.fieldName]"
     >
     </el-tree-select>
@@ -23,7 +23,7 @@
 import {onMounted, PropType, shallowRef, watch} from 'vue';
 import {compDynamicData} from '@/api/star_horse_utils';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
-
+import { getDynamicEvents } from '@/api/system';
 const props = defineProps({
   isDesign: {
     type: Boolean,

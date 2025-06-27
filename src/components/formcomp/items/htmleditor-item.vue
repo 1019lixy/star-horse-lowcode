@@ -11,10 +11,7 @@
       <QuillEditor
           :style="{ height: field.preps?.height || '300px', 'overflow-y': 'hidden' }"
           :modules="modules"
-          v-on:[field.actionName]="itemAction(field.actionName)"
-          
-          
-          
+          v-on="getDynamicEvents(props, itemAction)"
           v-model="formData[field.fieldName]"
           theme="snow"
           toolbar="full"
@@ -31,7 +28,7 @@ import '@vueup/vue-quill/dist/vue-quill.snow.css';
 import {allAction} from '@/components/formcomp/utils/ItemRelationEventUtils';
 import {postRequest} from '@/api/star_horse_apis';
 import ImageUploader from 'quill-image-uploader';
-
+import { getDynamicEvents } from '@/api/system';
 const props = defineProps({
   isDesign: {
     type: Boolean,

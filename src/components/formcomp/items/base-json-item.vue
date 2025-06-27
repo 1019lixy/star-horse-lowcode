@@ -29,10 +29,7 @@
             type="textarea"
             resize="vertical"
             readonly
-            v-bind="field.preps"
-            v-on:[field.actionName]="itemAction(field.actionName)"
-            
-            
+            v-on="getDynamicEvents(props, itemAction)"
             v-model="formData[field.fieldName]"
         />
       </div>
@@ -51,6 +48,7 @@ import {nextTick, PropType, reactive, shallowRef} from 'vue';
 import {PageFieldInfo} from '@/components/types/PageFieldInfo';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
 import {isJson} from "@/api/star_horse_utils";
+import { getDynamicEvents } from '@/api/system';
 import JSON5 from "json5";
 
 // 公共 props（两个组件原有的 props 完全一致）

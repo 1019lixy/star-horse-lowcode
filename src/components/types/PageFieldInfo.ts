@@ -1,8 +1,8 @@
-import {SearchFields, SelectOption} from '@/components/types/SearchProps';
-import {ApiUrls} from '@/components/types/ApiUrls';
-import {SearchParams} from '@/components/types/Params';
-import {RuleType} from '@/components/types/RuleType';
-import {Ref} from 'vue';
+import { SearchFields, SelectOption } from '@/components/types/SearchProps';
+import { ApiUrls } from '@/components/types/ApiUrls';
+import { SearchParams } from '@/components/types/Params';
+import { RuleType } from '@/components/types/RuleType';
+import { Ref } from 'vue';
 
 /**
  * Tab 表单数据
@@ -128,11 +128,7 @@ export declare interface FieldInfo {
      * 列表所在列最小宽度
      */
     minWidth?: number;
-    /**
-     * 备选数据列表，目前仅支持下拉
-     * 废弃 在2.8.0 版本中删除，请根据具体业务在preps 中添加 values 或者data
-     */
-    optionList?: SelectOption[] | Ref<SelectOption[]>;
+
     /**
      * 是否禁用,true 禁用 false 非禁用
      */
@@ -141,10 +137,6 @@ export declare interface FieldInfo {
      * 编辑时禁用，true 禁用 false 非禁用
      */
     editDisabled?: boolean | Ref<boolean>;
-    /**
-     * 是否允许多选,在类型为select时有效 Y 多选
-     */
-    multiple?: boolean | Ref<boolean>;
     /**
      * Tab容器数据
      */
@@ -170,26 +162,18 @@ export declare interface FieldInfo {
      */
     defaultValue?: any;
     /**
-     * 事件名称
-     */
-    actionName?: string;
-    /**
      * 事件内容
      */
-    actions?: Function;
+    actions?: Function | Record<string, Function>;
     /**
      * 小数点精度
      */
     precision?: number;
-    /**
-     * 弹窗数据配置,
-     * 废弃，请将所有弹窗配置都放在preps 中
-     */
-    params?: CompParams;
+
     /**
      * 组件个性化属性
      */
-    preps?: any | CompParams;
+    preps?: Record<string, any | CompParams>;
     /**
      * 查询表前缀
      */

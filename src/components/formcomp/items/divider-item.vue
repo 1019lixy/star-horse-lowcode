@@ -8,7 +8,7 @@
   >
     <el-divider
         :direction="field.preps?.direction || 'horizontal'"
-        v-on:[field.actionName]="itemAction(field.actionName)"
+        v-on="getDynamicEvents(props, itemAction)"
         :content-position="field.preps?.contentPosition || 'center'"
     >
       {{ field.preps?.content }}
@@ -18,7 +18,7 @@
 <script setup lang="ts">
 import {onMounted, PropType} from 'vue';
 import {allAction} from '@/components/formcomp/utils/ItemRelationEventUtils';
-
+import { getDynamicEvents } from '@/api/system';
 const props = defineProps({
   isDesign: {
     type: Boolean,

@@ -10,10 +10,7 @@
         :fid="field.fieldName"
         v-bind="field.preps"
         :disabled="checkIsDisabled(props)"
-        v-on:[field.actionName]="itemAction(field.actionName)"
-        
-        
-        
+        v-on="getDynamicEvents(props, itemAction)"
         v-model="formData[field.fieldName]"
     />
   </starhorse-form-item>
@@ -22,7 +19,7 @@
 import {nextTick, onMounted, shallowRef, watch, PropType} from 'vue';
 import {compDynamicData, isJson} from '@/api/star_horse_utils';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
-
+import { getDynamicEvents } from '@/api/system';
 const props = defineProps({
   isDesign: {
     type: Boolean,

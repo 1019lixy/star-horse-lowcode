@@ -22,8 +22,7 @@ const props = defineProps({
   primaryKey: {type: [String, Object] as PropType<string | any>},
   rules: {type: Object},
   compSize: {type: String, default: Config.compSize},
-  isView: {type: Boolean, default: false},
-  isEdit: {type: Boolean, default: false}
+  source:{type:Number,default:1},//调用来源1 表单新增 2 表单编辑 3 查看视图 4 查询 5 列表 6 表单设计 7 页面设计
 });
 const emits = defineEmits(['addRow', 'removeRow']);
 const dataForm: ModelRef<any> = defineModel('dataForm');
@@ -77,20 +76,19 @@ onMounted(() => {
                   style="flex: 1"
                   :compSize="compSize"
                   :bareFlag="true"
-                  :isView="isView"
+                  :source="source"
                   :primaryKey="primaryKey"
                   :item="headerItem"
                   :dataForm="getFormData(cardItem,dataForm,propPrefix,dataIndex,key)"
                   :dataIndex="getDataIndex(cardItem,propPrefix,dataIndex,key)"
                   :propPrefix="getPrefix(cardItem,propPrefix,dataIndex,key)"
-                  :isEdit="isEdit"
               />
               </el-form-item>
             </div>
           </div>
         </template>
         <star-horse-form-item
-            :isView="isView"
+            :source="source"
             :compUrl="compUrl"
             :compSize="compSize"
             :dataForm="getFormData(cardItem,dataForm,propPrefix,dataIndex,key)"

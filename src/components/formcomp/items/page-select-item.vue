@@ -6,7 +6,7 @@ import {postRequest} from '@/api/star_horse_apis';
 import {FieldInfo, FieldMapping, OrderByInfo} from '@/components/types/PageFieldInfo';
 import {SearchParams} from '@/components/types/Params';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
-import {compKey} from "@/api/system";
+import {compKey,getDynamicEvents} from "@/api/system";
 import {warning} from "@/utils/message";
 import {SearchFields} from "@/components/types";
 
@@ -232,10 +232,7 @@ onMounted(async () => {
         :fid="field.fieldName"
         v-bind="field.preps"
         :disabled="checkIsDisabled(props)"
-        v-on:[field.actionName]="itemAction(field.actionName)"
-        
-        
-        
+        v-on="getDynamicEvents(props, itemAction)"
         v-model="formData[field.fieldName]"
     >
       <template #empty>

@@ -18,10 +18,7 @@
         :fid="field.fieldName"
         v-bind="field.preps"
         type="textarea"
-        v-on:[field.actionName]="itemAction(field.actionName)"
-        
-        
-        
+        v-on="getDynamicEvents(props, itemAction)"
         v-model="formData[field.fieldName]"
     />
   </starhorse-form-item>
@@ -30,7 +27,7 @@
 import {onMounted, shallowRef, PropType} from 'vue';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
 import EditDataDialog from "@/components/formcomp/utils/EditDataDialog.vue";
-
+import { getDynamicEvents } from '@/api/system';
 const props = defineProps({
   isDesign: {
     type: Boolean,

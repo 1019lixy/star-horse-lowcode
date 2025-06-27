@@ -45,6 +45,8 @@ export default {
   'dialog.fullScreen': '最大化',
   'dialog.resize': '还原',
   'dialog.close': '关闭',
+  'dialog.editTitle': '编辑',
+  'dialog.viewTitle': '查看',
   /**
    * 流程设计器
    */

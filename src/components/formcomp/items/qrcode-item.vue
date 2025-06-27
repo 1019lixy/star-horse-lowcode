@@ -2,7 +2,7 @@
 import type {ImageSettings} from 'qrcode.vue';
 import QrcodeVue from 'qrcode.vue';
 import {computed, nextTick, onMounted, ref, watch,PropType} from "vue";
-import {allAction} from '../utils/ItemRelationEventUtils';
+import {allAction} from '@/components/formcomp/utils/ItemRelationEventUtils';
 
 const props = defineProps({
   isDesign: {

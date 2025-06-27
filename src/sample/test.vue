@@ -1,28 +1,28 @@
 <template>
 
   <el-form :model="formData">
-    <el-form-item :rules="validMsg({type:'number-range',label:'数据范围',fieldName:'jsonArray',required:true},formData)"
-                  prop="jsonArray">
-      <number-range-item :field="{
-   fieldName: 'jsonArray',
-   label: 'jsonArray',
- }" :form-data="formData"/>
+    <el-form-item prop="jsonArray">
+      <input-item :field="{
+        fieldName: 'jsonArray',
+        label: 'jsonArray',
+        actionName: 'keyup.enter'
+      }" :form-data="formData" />
     </el-form-item>
     <el-form-item prop="cron">
       <cron-item :field="{
-     fieldName: 'cron',
-   label: 'cron',
-}" :form-data="formData"/>
+        fieldName: 'cron',
+        label: 'cron',
+      }" :form-data="formData" />
 
     </el-form-item>
 
   </el-form>
-<!--  <Crontab v-model="formData.cron"/>-->
+  <!--  <Crontab v-model="formData.cron"/>-->
 </template>
 
 <script setup>
 import NumberRangeItem from "@/components/formcomp/items/number-range-item.vue";
-import {validMsg} from "@/api/form_utils.js";
+import { validMsg } from "@/api/form_utils.js";
 import CronItem from "@/components/formcomp/items/cron-item.vue";
 import Crontab from "@/components/cron/Crontab.vue";
 
@@ -47,12 +47,9 @@ const preps = {
   'listPrototypeDisplay': false
 };
 const formData = ref({
-  jsonArray: [2, 3],
+  jsonArray: "xx",
   cron: '0 0 12 * * ?'
 });
 </script>
 
-<style lang="scss" scoped>
-
-</style>
-
+<style lang="scss" scoped></style>

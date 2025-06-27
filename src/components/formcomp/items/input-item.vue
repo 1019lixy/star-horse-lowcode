@@ -1,72 +1,40 @@
 <template>
-  <EditDataDialog
-      v-model="dialogInputVisible"
-      :disabled="checkIsDisabled(props)"
-      :initial-content="String(formData[field.fieldName])"
-      @confirm="handleContentConfirm"
-  />
-  <starhorse-form-item
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :formItem="field"
-      :parentField="parentField"
-  >
-    <el-input
-        :disabled="checkIsDisabled(props)"
-        v-bind="field.preps"
-        type="text"
-        ref="inputItemRef"
-        :fid="field.fieldName"
-        class="input-with-select"
-        v-on:[field.actionName]="itemAction(field.actionName)"
-        
-        
-        
-        @dblclick="editContent"
-        v-model="formData[field.fieldName]"
-    >
+  <EditDataDialog v-model="dialogInputVisible" :disabled="checkIsDisabled(props)"
+    :initial-content="String(formData[field.fieldName])" @confirm="handleContentConfirm" />
+  <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
+    :parentField="parentField">
+    <el-input :disabled="checkIsDisabled(props)" v-bind="field.preps" type="text" ref="inputItemRef"
+      :fid="field.fieldName" class="input-with-select" v-on="getDynamicEvents(props, itemAction)" @dblclick="editContent"
+      v-model="formData[field.fieldName]">
       <template #prepend v-if="field.preps?.prependText">
         {{ field.preps?.prependText }}
       </template>
       <template #prepend v-if="field.preps?.prependList">
         <el-select v-model="formData['pre' + field.fieldName]">
-          <el-option
-              v-for="item in field.preps?.prependList"
-              :key="item.value"
-              :label="item.name"
-              :value="item.value"
-          />
+          <el-option v-for="item in field.preps?.prependList" :key="item.value" :label="item.name"
+            :value="item.value" />
         </el-select>
       </template>
       <template #append v-if="field.preps?.appendText">
         {{ field.preps?.appendText }}
       </template>
       <template #append v-if="field.preps?.appendAction">
-        <star-horse-icon
-            :title="field.preps?.appendAction?.actionTitle"
-            style="cursor: pointer"
-            :icon-class="field.preps?.appendAction?.icon || 'document'"
-            @click="field.preps?.appendAction?.actions(formData)"
-        />
+        <star-horse-icon :title="field.preps?.appendAction?.actionTitle" style="cursor: pointer"
+          :icon-class="field.preps?.appendAction?.icon || 'document'"
+          @click="field.preps?.appendAction?.actions(formData)" />
       </template>
       <template #append v-if="field.preps?.appendList">
         <el-select v-model="formData['app' + field.fieldName]">
-          <el-option
-              v-for="item in field.preps?.appendList"
-              :key="item.value"
-              :label="item.name"
-              :value="item.value"
-          />
+          <el-option v-for="item in field.preps?.appendList" :key="item.value" :label="item.name" :value="item.value" />
         </el-select>
       </template>
     </el-input>
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {nextTick, onMounted, ref, shallowRef, PropType} from 'vue';
-import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
-import EditDataDialog from "@/components/formcomp/utils/EditDataDialog.vue";
+import { nextTick, onMounted, ref, shallowRef, PropType, computed } from 'vue';
+import { allAction, checkIsDisabled } from '@/components/formcomp/utils/ItemRelationEventUtils';
+import { getDynamicEvents } from '@/api/system';
 
 defineOptions({
   name: 'InputItem'
@@ -106,6 +74,7 @@ const dialogInputVisible = ref<boolean>(false);
 const initEvent = async () => {
   await nextTick();
 };
+
 const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };

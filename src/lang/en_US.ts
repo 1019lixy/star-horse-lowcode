@@ -42,6 +42,8 @@ export default {
     'dialog.fullScreen': 'FullScreen',
     'dialog.resize': 'Restore',
     'dialog.close': 'Close',
+    'dialog.editTitle': 'Edit',
+    'dialog.viewTitle': 'View',
     /**
      * 流程设计器
      */

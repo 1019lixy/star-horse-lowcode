@@ -404,7 +404,6 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
                 if (item.actions) {
                     actions.push({
                         batchName: temp.batchName,
-                        actionNames: item.actionName,
                         actions: item.actions,
                         fieldName: item.fieldName
                     });
@@ -432,7 +431,6 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
                     }
                     if (item.actions) {
                         actions.push({
-                            actionNames: item.actionName,
                             actions: item.actions,
                             fieldName: item.fieldName
                         });
@@ -464,7 +462,6 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
                 }
                 if (temp.actions) {
                     actions.push({
-                        actionNames: temp.actionName,
                         actions: temp.actions,
                         fieldName: temp.fieldName
                     });

@@ -13,9 +13,9 @@ const props = defineProps({
   primaryKey: {type: [String, Object] as PropType<string | any>},
   batchName: {type: String, default: 'batchDataList'},
   rules: {type: Object},
-  size: {type: String, default: Config.compSize}
+  size: {type: String, default: Config.compSize},
+  source:{type:Number,default:1},//调用来源1 表单新增 2 表单编辑 3 查看视图 4 查询 5 列表 6 表单设计 7 页面设计
 });
-const dialogProps = inject<DialogProps>('dialogProps');
 const dataFormat = (val: any) => {
   const type: string = props.item.type;
   if (val) {
@@ -49,7 +49,7 @@ const dataFormat = (val: any) => {
         :batchName="batchName"
         :item="item"
         :data-form="dataForm"
-        :isEdit="dialogProps?.ids && dialogProps?.ids != -1"
+        :source="source"
     />
   </el-form-item>
 </template>

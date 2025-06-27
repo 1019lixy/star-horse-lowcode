@@ -22,6 +22,7 @@
             'font-size': field.preps?.listView ? '22px' : '24px',
             background: field.preps?.listView  ? 'unset' : 'var(--el-avatar-bg-color)'
           }"
+            v-on="getDynamicEvents(props, itemAction)"
             :icon="formData[field.fieldName]"
         />
         <star-horse-icon
@@ -88,7 +89,7 @@ import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelati
 import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
 import {compDynamicData} from "@/api/star_horse_utils";
-
+import { getDynamicEvents } from '@/api/system';
 const props = defineProps({
   isDesign: {
     type: Boolean,

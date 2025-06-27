@@ -125,9 +125,8 @@ defineExpose({
               v-model:data-form="searchForm"
               :compSize="compSize"
               :item="item"
-              :isSearch="true"
+              :source="4"
               @dataSearch="dataSearch"
-              :isEdit="true"
           />
         </el-form-item>
       </template>
@@ -154,9 +153,8 @@ defineExpose({
               v-model:data-form="searchForm"
               :compSize="compSize"
               :item="item"
-              :isSearch="true"
+              :source="4"
               @dataSearch="dataSearch"
-              :isEdit="true"
           >
           </star-horse-item>
         </el-form-item>

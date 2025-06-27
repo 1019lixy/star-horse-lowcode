@@ -10,10 +10,7 @@
         :fid="field.fieldName"
         :disabled="checkIsDisabled(props)"
         v-bind="field.preps"
-        v-on:[field.actionName]="itemAction(field.actionName)"
-        
-        
-        
+        v-on="getDynamicEvents(props, itemAction)"
         v-model="formData[field.fieldName]"
     >
       <template #prefix>
@@ -28,7 +25,7 @@
 <script setup lang="ts">
 import {nextTick, onMounted, shallowRef, PropType} from 'vue';
 import {allAction, checkIsDisabled} from '@/components/formcomp/utils/ItemRelationEventUtils';
-
+import { getDynamicEvents } from '@/api/system';
 defineOptions({
   name: 'NumberItem'
 })

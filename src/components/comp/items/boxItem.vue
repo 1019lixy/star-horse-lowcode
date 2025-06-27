@@ -21,8 +21,7 @@ const props = defineProps({
   primaryKey: {type: [String, Object] as PropType<string | any>},
   rules: {type: Object},
   compSize: {type: String, default: Config.compSize},
-  isView: {type: Boolean, default: false},
-  isEdit: {type: Boolean, default: false}
+  source:{type:Number,default:1},//调用来源1 表单新增 2 表单编辑 3 查看视图 4 查询 5 列表 6 表单设计 7 页面设计
 });
 const dataForm = defineModel('dataForm');
 
@@ -55,7 +54,7 @@ onMounted(() => {
               v-model:dataForm="dataForm"
               :item="sitem"
               :dataIndex="dataIndex"
-              :isEdit="isEdit"
+              :source="source"
           />
         </el-form-item>
         <star-horse-item
@@ -65,7 +64,7 @@ onMounted(() => {
             v-model:dataForm="dataForm"
             :item="sitem"
             :dataIndex="dataIndex"
-            :isEdit="isEdit"
+            :source="source"
         />
       </el-col>
       <el-col :span="sitem.colspan || sitem.preps?.colspan || 24 / item.length" v-else>
@@ -75,7 +74,7 @@ onMounted(() => {
             v-model:dataForm="dataForm"
             :item="sitem"
             :dataIndex="dataIndex"
-            :isEdit="isEdit"
+            :source="source"
         />
       </el-col>
     </template>

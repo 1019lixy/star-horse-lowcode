@@ -1,35 +1,31 @@
 <script setup lang="ts" name="StarHorseItem">
-import {computed, inject, ModelRef, onMounted, PropType, ref} from 'vue';
-import {useSelfOperationStore} from '@/store/SelfOperation';
+import { computed, inject, ModelRef, onMounted, PropType, ref } from 'vue';
+import { useSelfOperationStore } from '@/store/SelfOperation';
 import piniaInstance from '@/store';
-import {compKey, fieldPlaceholder, uuid} from '@/api/system';
-import {Config} from '@/api/settings';
-import {checkVisible} from '@/api/form_utils';
+import { compKey, fieldPlaceholder, uuid, dateCompList, inputCompList, selectCompList } from '@/api/system';
+import { Config } from '@/api/settings';
+import { checkVisible } from '@/api/form_utils';
 import Help from "@/components/help.vue";
 
 const props = defineProps({
-  item: {type: Object as PropType<any>, required: true},
-  column: {type: Object as PropType<any>},
-  primaryKey: {type: Object as PropType<any>},
+  item: { type: Object as PropType<any>, required: true },
+  column: { type: Object as PropType<any> },
+  primaryKey: { type: Object as PropType<any> },
   // 数据索引
-  dataIndex: {type: Number, default: -1},
-  bareFlag: {type: Boolean, default: false},
-  batchName: {type: String, default: ''},
-  compSize: {type: String, default: Config.compSize},
-  isSearch: {type: Boolean, default: false}, //是否查询数据
-  showLabel: {type: Boolean, default: true}, //是否显示标签
-  isEdit: {type: Boolean, default: false}, //是否编辑数据
-  isView: {type: Boolean, default: false}, //是否视图数据
-  isDesign: {type: Boolean, default: false}
+  dataIndex: { type: Number, default: -1 },
+  bareFlag: { type: Boolean, default: false },
+  batchName: { type: String, default: '' },
+  compSize: { type: String, default: Config.compSize },
+  showLabel: { type: Boolean, default: true }, //是否显示标签
+  source: { type: Number, default: 1 },//调用来源1 表单新增 2 表单编辑 3 查看视图 4 查询 5 列表 6 表单设计 7 页面设计
+
 });
 let userOperation = useSelfOperationStore(piniaInstance);
 const dataForm: ModelRef<any> = defineModel('dataForm');
 const itemType = ref<string>('input');
 const emit = defineEmits(['dataSearch', 'focus', 'blur']);
 const formFields: any = inject('formFields', {});
-const defaultAction = ref('normal');
-const typeList = ['select', 'tselect', 'date', 'daterange'];
-const actionName = ref();
+// const actionName = ref();
 const componentRef = ref();
 const isDragging = ref(false);
 const startX = ref(0);
@@ -37,9 +33,9 @@ const startWidth = ref(0);
 const dragWidth = ref<string | null>(null);
 const bareStyle = computed(() => ({
   height: itemType.value != 'button' ? '100%' : 'inherit',
-  minWidth: props.isSearch ? '200px' : 'unset',
-  maxHeight: props.isSearch ? '500px' : 'unset',
-  width: props.isSearch ? dragWidth.value || props.item.minWidth || 'inherit' : '100%',
+  minWidth: props.source == 4 ? '200px' : 'unset',
+  maxHeight: props.source == 4 ? '500px' : 'unset',
+  width: props.source == 4 ? dragWidth.value || props.item.minWidth || 'inherit' : '100%',
   position: 'relative' as const
 }));
 /**
@@ -48,15 +44,16 @@ const bareStyle = computed(() => ({
  * @param params
  */
 const actionDispatcher = (act: string, ...params: any[]) => {
-  if (props.isSearch) {
-    if (!act || act == 'focus' || act == 'blur') {
+  if (props.source == 4) {
+    if (!act) {
       return;
     }
     emit('dataSearch', params);
   } else {
-    let actionFun = props.item.actions;
-    if (actionFun && actionName.value == act) {
-      actionFun(dataForm.value, params);
+    let actions: Record<string, Function> = props.item.actions;
+    const eventNames: Array<string> = Object.keys(actions || {});
+    if (eventNames?.length > 0 && eventNames.includes(act)) {
+      actions[act](dataForm.value, params);
     }
     if (act == 'focus') {
       emit('focus', props.column, params);
@@ -65,27 +62,24 @@ const actionDispatcher = (act: string, ...params: any[]) => {
     }
   }
 };
-//页面属性改变，重新刷新数据
-// watch(
-//     () => [
-//       props.item,
-//       props.isEdit
-//     ],
-//     () => {
-//       console.log('组件属性改变', props.item);
-//       compPreps();
-//     },
-//     {
-//       immediate: false,
-//       deep: true
-//     }
-// );
-const dateType: Array<string> = ['year', 'month', 'date', 'datetime', 'week', 'datetimerange', 'daterange'];
+
 const fieldType = () => {
   itemType.value = props.item?.type || props.item?.fieldType || 'input';
-  if (dateType.includes(itemType.value)) {
+  if (dateCompList().includes(itemType.value)) {
     itemType.value = 'datetime';
     //日期默认以时间戳赋值
+  }
+  if (!props.item.actions) {
+    props.item.actions = {};
+  }
+  if (props.source == 4) {
+    const actionKey = inputCompList().includes(itemType.value) ? "keyup.enter" : "change";
+    props.item.actions.push({ actionKey });
+  } else {
+    const actionKey = inputCompList().includes(itemType.value) ? "blur" : selectCompList().includes(itemType.value) ? "change" : null;
+    if (actionKey) {
+      props.item.actions.push({ actionKey });
+    }
   }
 }
 const init = () => {
@@ -94,7 +88,7 @@ const init = () => {
     props.item['id'] = uuid();
   }
   props.item["clearable"] = true;
-  props.item["readonly"] = props.item?.readonly || props.isView;
+  props.item["readonly"] = props.item?.readonly || props.source == 3;
   fieldPlaceholder(props.item, itemType.value);
   if (props.item.preps) {
     let keys = Object.keys(props.item.preps);
@@ -110,7 +104,7 @@ const init = () => {
 const compPreps = () => {
   fieldType();
   //过滤掉查询表单的信息
-  if (!props.isSearch && formFields) {
+  if (props.source != 4 && formFields) {
     let fieldName = props.item.fieldName;
     //如果数据来源于列表
     if (props.batchName) {
@@ -129,7 +123,7 @@ const compPreps = () => {
     }
   }
   //将表单属性存储起来
-  if (!props.isSearch) {
+  if (props.source != 4) {
     userOperation.addFormItem(props.item);
   }
   /**
@@ -174,49 +168,20 @@ const checkClassName = () => {
   }
 }
 onMounted(() => {
-  if (typeList.includes(props.item?.type) || typeList.includes(props.item?.fieldType)) {
-    defaultAction.value = 'change';
-  }
-  actionName.value = props.item?.actionName ?? defaultAction.value;
   init();
 });
 </script>
 <template>
-  <div :class="checkClassName()" :style="bareStyle"
-       @mousemove="onDrag"
-       @mouseup="stopDrag"
-       @mouseleave="stopDrag"
-  >
-    <div
-        class="drag-handle"
-        @mousedown.prevent="startDrag"
-        v-if="itemType != 'button'&&isSearch"
-    ></div>
-    <help :message="item.helpMsg" v-if="item.helpMsg"/>
-    <component
-        :key="item.id"
-        :is="(dataForm&&dataForm['_' + item.fieldName + 'Type'] || itemType) + '-item'"
-        @selfFunc="actionDispatcher"
-        :isDesign="isDesign"
-        ref="componentRef"
-        :isSearch="isSearch"
-        :bareFlag="bareFlag"
-        :field="item"
-        v-model:formData="dataForm"
-    />
-    <div v-if="item.brotherNodes" style="width: 15px"/>
-    <template v-for="(temp,key) in item.brotherNodes" :key="compKey(temp,key)">
-      <star-horse-item
-          v-if="checkVisible(temp,dataForm)"
-          :primaryKey="primaryKey"
-          :compSize="compSize"
-          v-model:dataForm="dataForm"
-          :item="temp"
-          :isDesign="isDesign"
-          :dataIndex="dataIndex"
-          :bareFlag="true"
-          :isEdit="isEdit"
-      />
+  <div :class="checkClassName()" :style="bareStyle" @mousemove="onDrag" @mouseup="stopDrag" @mouseleave="stopDrag">
+    <div class="drag-handle" @mousedown.prevent="startDrag" v-if="itemType != 'button' && source == 4"></div>
+    <help :message="item.helpMsg" v-if="item.helpMsg" />
+    <component :key="item.id" :is="(dataForm && dataForm['_' + item.fieldName + 'Type'] || itemType) + '-item'"
+      @selfFunc="actionDispatcher" ref="componentRef" :isSearch="source == 4" :bareFlag="bareFlag" :field="item"
+      v-model:formData="dataForm" />
+    <div v-if="item.brotherNodes" style="width: 15px" />
+    <template v-for="(temp, key) in item.brotherNodes" :key="compKey(temp,key)">
+      <star-horse-item v-if="checkVisible(temp, dataForm)" :primaryKey="primaryKey" :compSize="compSize"
+        v-model:dataForm="dataForm" :item="temp" :dataIndex="dataIndex" :bareFlag="true" :source="source" />
     </template>
   </div>
 </template>
