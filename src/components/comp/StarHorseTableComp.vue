@@ -515,7 +515,6 @@ const createParams = () => {
  */
 const loadByPage = () => {
   let url: string = props.compUrl?.pageListUrl as string;
-  console.log('url', url);
   let params: any = createParams();
   if (props.compUrl?.redirect) {
     params = {

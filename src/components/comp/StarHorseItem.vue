@@ -52,7 +52,7 @@ const actionDispatcher = (act: string, ...params: any[]) => {
   } else {
     let actions: Record<string, Function> = props.item.actions;
     const eventNames: Array<string> = Object.keys(actions || {});
-    if (eventNames?.length > 0 && eventNames.includes(act)) {
+    if (eventNames?.length > 0 && eventNames.includes(act) && typeof actions[act] == "function") {
       actions[act](dataForm.value, params);
     }
     if (act == 'focus') {
@@ -70,15 +70,19 @@ const fieldType = () => {
     //日期默认以时间戳赋值
   }
   if (!props.item.actions) {
-    props.item.actions = {};
+    props.item['actions'] = {};
   }
+  const keys = Object.keys(props.item.actions);
   if (props.source == 4) {
     const actionKey = inputCompList().includes(itemType.value) ? "keyup.enter" : "change";
-    props.item.actions.push({ actionKey });
-  } else {
+    if (!keys.includes(actionKey)) {
+      props.item.actions[actionKey] = actionKey;
+    }
+  } else if (props.source == 5) {
+    //列表组件动态增加blur 和change 事件
     const actionKey = inputCompList().includes(itemType.value) ? "blur" : selectCompList().includes(itemType.value) ? "change" : null;
-    if (actionKey) {
-      props.item.actions.push({ actionKey });
+    if (actionKey && !keys.includes(actionKey)) {
+      props.item.actions[actionKey] = actionKey;
     }
   }
 }

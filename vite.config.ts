@@ -1,9 +1,9 @@
-import {defineConfig} from 'vite';
+import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import inject from '@rollup/plugin-inject';
-import {resolve} from 'path';
+import { resolve } from 'path';
 import Components from 'unplugin-vue-components/vite';
-import {ElementPlusResolver} from 'unplugin-vue-components/resolvers';
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
 import AutoImport from 'unplugin-auto-import/vite';
 import ElementPlus from 'unplugin-element-plus/vite';
 import tailwindcss from '@tailwindcss/vite';
@@ -44,7 +44,7 @@ export default defineConfig((mode) => {
                 insertTypesEntry: true,
                 rollupTypes: true,
                 tsconfigPath: './tsconfig.json',
-                exclude: ["**/*.svg","./src/sample/test.vue"]
+                exclude: ["**/*.svg", "./src/sample/test.vue"]
             }),
             AutoImport({
                 imports: ['vue', {
@@ -64,7 +64,7 @@ export default defineConfig((mode) => {
             Components({
                 dirs: ['src/components', 'src/views'],
                 // 这里就是相关ui库的解析工具, 里面的选项有是否使用自动导入样式 如果需要通过 var 变量改变主题 需要注意一下
-                resolvers: [ElementPlusResolver({importStyle: 'sass'})]
+                resolvers: [ElementPlusResolver({ importStyle: 'sass' })]
             }),
             // viteCommonjs(),
             inject({
@@ -92,7 +92,7 @@ export default defineConfig((mode) => {
         build: {
             //  告诉打包工具 "vue-demi" 也是外部依赖项
             rollupOptions: {
-                external: ['vue', 'pinia', 'core-js', 'elementPlus',"sample/**/*"],
+                external: ['vue', 'pinia', 'core-js', 'elementPlus', "sample/**/*"],
                 output: {
                     exports: 'named',
                     assetFileNames: 'assets/[name][extname]', // 修正资源输出路径
@@ -117,7 +117,6 @@ export default defineConfig((mode) => {
                     comments: false,
                 }
             },
-            // Vite项目 build打包后浏览器中可直接使用的方法 https://blog.csdn.net/weixin_54898878/article/details/129730628
             lib: {
                 entry: 'src/index.ts', //指定组件编译入口文件
                 name: 'star-horse-lowcode',

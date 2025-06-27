@@ -162,17 +162,19 @@ export function itemCheck(item: any) {
                 // 将字符串转换为函数（假设函数需要访问当前 item 上下文，可根据实际参数调整）
                 // item.actions = new Function('item', `return ${item.actions}`)(item);
                 // 或直接转换为函数体（无参数时）：
-                item.actions ={
-                  "click":new Function(item.actions)
-                } ;
+                item.actions = {
+                    "click": new Function(item.actions)
+                };
             } catch (e) {
                 console.error('actions 字符串转函数失败:', e);
                 item.actions = null; // 转换失败时置空避免错误
             }
-        }else if(Array.isArray(item.actions)){
-            item.actions.forEach((action:any)=>{
-                action.actions=new Function(action.actions);
-            })
+        } else if (isJson(item.actions)) {
+            let tempRecord: Record<string, Function> = {};
+            Object.entries(item.actions).forEach(([key, value]) => {
+                tempRecord[key] = new Function(value);
+            });
+            item.actions = tempRecord;
         }
     }
     return item?.itemType + (item?.compType === 'container' ? '-container' : '-item');
@@ -265,7 +267,8 @@ export const useZIndex = (zIndexOverrides?: Ref<number>) => {
 // 添加动态事件处理方法
 export function getDynamicEvents(props: any, recall: Function) {
     const events: Record<string, any> = {};
-    const field = props.field;
+    const actions = props.field.actions;
+    const actionNames: string[] = Object.keys(actions || {});
     // 统一处理带修饰符的事件
     const handleEvent = (eventName: string, e: any) => {
         if (eventName.includes('.')) {
@@ -278,16 +281,13 @@ export function getDynamicEvents(props: any, recall: Function) {
             recall(eventName); // 传递完整事件名称
         }
     };
-    if (field.actionName) {
-        const actionNames: string[] = Array.isArray(field.actionName) ? field.actionName : [field.actionName];
-        for (let actionName of actionNames) {
-            if (actionName.includes('.')) {
-                const [baseEvent, modifier] = actionName.split('.');
-                events[baseEvent] = (e: Event) => handleEvent(actionName, e);
-            } else {
-                events[actionName] = (e: Event) => handleEvent(actionName, e);
-            }
+    actionNames?.forEach((actionName: string) => {
+        if (actionName.includes('.')) {
+            const [baseEvent, modifier] = actionName.split('.');
+            events[baseEvent] = (e: Event) => handleEvent(actionName, e);
+        } else {
+            events[actionName] = (e: Event) => handleEvent(actionName, e);
         }
-    }
+    });
     return events;
 };

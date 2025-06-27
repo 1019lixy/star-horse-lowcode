@@ -295,3 +295,8 @@ barcode        条形码组件
 20. 2025-06-25 修复dialog-input,page-select 组件的bug,在所有表单组件中新增noPlaceholder属性，默认为false,
               为true时，不显示默认提示文字,
               使用实例：{label:"xx",fieldName:"xx",type:"number",preps:{noPlaceholder:true} }
+21. 2025-06-27 优化事件绑定 由之前的一个属性只允许绑定一个事件改为多个事件，方法为 
+              actions:{
+                click:()=>{},
+                change:()={}
+              },同时去掉了actionName 属性
