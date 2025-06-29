@@ -7,6 +7,7 @@
     }" v-if="field.preps?.viewType == 'form'" />
     <component :is="field.preps?.componentName" ref="btnCompRef" v-else-if="field.preps?.viewType == 'usercomp'"
       :params="field.preps?.params" />
+      <star-horse-editor v-else-if="field.preps?.viewType == 'code'" ref="btnCompRef"/>
   </star-horse-dialog>
   <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
     :parentField="parentField">

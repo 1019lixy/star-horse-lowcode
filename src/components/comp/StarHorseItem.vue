@@ -57,7 +57,7 @@ const actionDispatcher = (act: string, ...params: any[]) => {
     }
     if (act == 'focus') {
       emit('focus', props.column, params);
-    } else if (act == 'blur'||(act== 'change'&&props.source == 5)) {
+    } else if (act == 'blur' || (act == 'change' && props.source == 5)) {
       emit('blur', props.column, params);
     }
   }
@@ -91,10 +91,9 @@ const init = () => {
   if (!props.item['id']) {
     props.item['id'] = uuid();
   }
-  props.item["clearable"] = true;
-  props.item["readonly"] = props.item?.readonly || props.source == 3;
   fieldPlaceholder(props.item, itemType.value);
   if (props.item.preps) {
+    props.item.preps["readonly"] = props.item?.readonly || props.source == 3;
     let keys = Object.keys(props.item.preps);
     for (let key in keys) {
       let val = props.item.preps[key];

@@ -117,17 +117,14 @@ export function fieldPlaceholder(item: any, itemType: string) {
     if (!item.preps) {
         item.preps = {};
     }
-    if (item.preps['noPlaceholder']) {
-        delete item.preps['placeholder'];
-        delete item.preps['startPlaceholder'];
-        delete item.preps['endPlaceholder'];
-        delete item.preps['minPlaceholder'];
-        delete item.preps['maxPlaceholder'];
-        return;
-    }
+    item.preps['clearable'] = item.preps['clearable'] ?? true;
+    item.preps['readonly'] = item?.readonly || item.preps['readonly'] || false;
     if (inputType.includes(itemType)) {
         item.preps['placeholder'] = item.preps['placeholder']?.trim() || ("请输入" + item.label);
     } else if (selectType.includes(itemType)) {
+        item.preps['filterable'] = true;
+        item.preps['collapseTags'] = true;
+        item.preps['collapseTagsTooltip'] = true;
         item.preps['placeholder'] = item.preps['placeholder']?.trim() || ("请选择" + item.label);
     }
     if (itemType == 'datetime') {
@@ -140,6 +137,14 @@ export function fieldPlaceholder(item: any, itemType: string) {
     } else if (itemType == "number-range") {
         item.preps['minPlaceholder'] = item.preps['minPlaceholder']?.trim() || ("请输入最小值");
         item.preps['maxPlaceholder'] = item.preps['maxPlaceholder']?.trim() || ("请输入最大值");
+    }
+    if (item.preps['noPlaceholder']) {
+        delete item.preps['placeholder'];
+        delete item.preps['startPlaceholder'];
+        delete item.preps['endPlaceholder'];
+        delete item.preps['minPlaceholder'];
+        delete item.preps['maxPlaceholder'];
+        return;
     }
 }
 

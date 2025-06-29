@@ -175,7 +175,7 @@ const buttonAction = (context: any, emits: any, formData: any, code: string) => 
         const field = context.field as any;
         currentData['starHorseBtnName'] = field.fieldName;
         if (field.actions) {
-            field.actions(currentData);
+            field.actions[field.starHorseBtnName] = () => { };
         }
         emits('selfFunc', currentData);
     }
