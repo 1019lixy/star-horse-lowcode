@@ -4,13 +4,13 @@
   <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
     :parentField="parentField">
     <el-input :disabled="checkIsDisabled(props)" v-bind="field.preps" type="text" ref="inputItemRef"
-      :fid="field.fieldName" class="input-with-select" v-on="getDynamicEvents(props, itemAction)" @dblclick="editContent"
-      v-model="formData[field.fieldName]">
+      :fid="field.fieldName" class="input-with-select" v-on="getDynamicEvents(props, itemAction)"
+      @dblclick="editContent" v-model="formData[field.fieldName]">
       <template #prepend v-if="field.preps?.prependText">
         {{ field.preps?.prependText }}
       </template>
       <template #prepend v-if="field.preps?.prependList">
-        <el-select v-model="formData['pre' + field.fieldName]">
+        <el-select v-model="formData[preName]">
           <el-option v-for="item in field.preps?.prependList" :key="item.value" :label="item.name"
             :value="item.value" />
         </el-select>
@@ -24,7 +24,7 @@
           @click="field.preps?.appendAction?.actions(formData)" />
       </template>
       <template #append v-if="field.preps?.appendList">
-        <el-select v-model="formData['app' + field.fieldName]">
+        <el-select v-model="formData[appName]">
           <el-option v-for="item in field.preps?.appendList" :key="item.value" :label="item.name" :value="item.value" />
         </el-select>
       </template>
@@ -32,9 +32,9 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { nextTick, onMounted, ref, shallowRef, PropType, computed } from 'vue';
-import { allAction, checkIsDisabled } from '@/components/formcomp/utils/ItemRelationEventUtils';
 import { getDynamicEvents } from '@/api/system';
+import { allAction, checkIsDisabled } from '@/components/formcomp/utils/ItemRelationEventUtils';
+import { PropType, computed, nextTick, onMounted, ref, shallowRef } from 'vue';
 
 defineOptions({
   name: 'InputItem'
@@ -74,7 +74,12 @@ const dialogInputVisible = ref<boolean>(false);
 const initEvent = async () => {
   await nextTick();
 };
-
+const preName = computed(() => {
+  return props.field?.preps.preName ?? 'pre' + props.field.fieldName
+});
+const appName = computed(() => {
+  return props.field?.preps.appName ?? 'app' + props.field.fieldName
+});
 const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
@@ -92,14 +97,20 @@ onMounted(() => {
   }
   initEvent();
 });
+
 </script>
 <style lang="scss" scoped>
-.input-with-select .el-input-group__prepend {
+.input-with-select .el-input-group__prepend,
+.input-with-select .el-input-group__append {
   background-color: var(--el-fill-color-blank);
 }
 
-:deep(.el-input-group__prepend) {
-  min-width: 100px;
-  padding: 0;
+:deep {
+
+  .el-input-group__prepend,
+  .el-input-group__append {
+    min-width: 100px;
+    padding: 0;
+  }
 }
 </style>

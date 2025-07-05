@@ -37,7 +37,7 @@ body {
   height: 100%;
   font-size: 12px;
   font-family: "PingFang SC", "Lantinghei SC", "Microsoft YaHei", "HanHei SC", "Helvetica Neue", "Open Sans", Arial,
-  "Hiragino Sans GB", "微软雅黑", STHeiti, "WenQuanYi Micro Hei", SimSun, sans-serif;
+    "Hiragino Sans GB", "微软雅黑", STHeiti, "WenQuanYi Micro Hei", SimSun, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   margin: 0;
@@ -78,6 +78,7 @@ a {
 }
 
 .el-menu--horizontal {
+
   .el-menu,
   .el-sub-menu__title {
     border-bottom: unset !important;
@@ -157,8 +158,7 @@ a {
     border: 1px solid var(--star-horse-style);
   }
 
-  li:hover {
-  }
+  li:hover {}
 
   .icon-active {
     background: var(--star-horse-background);
@@ -177,12 +177,12 @@ a {
 }
 
 /* 水平样式 */
-.el-menu--horizontal > div > .el-submenu {
+.el-menu--horizontal>div>.el-submenu {
   float: left;
 }
 
 /* 一级菜单的样式 */
-.el-menu--horizontal > .el-menu-item {
+.el-menu--horizontal>.el-menu-item {
   float: left;
   line-height: 60px;
   margin: 0;
@@ -190,7 +190,7 @@ a {
 }
 
 /* 解决下图1 下拉三角图标 */
-.el-menu--horizontal > .el-submenu .el-submenu__icon-arrow {
+.el-menu--horizontal>.el-submenu .el-submenu__icon-arrow {
   position: static;
   vertical-align: middle;
   margin-left: 8px;
@@ -198,7 +198,7 @@ a {
 }
 
 /* 解决下图2 无下拉菜单时 不对齐问题 */
-.el-menu--horizontal > .el-submenu .el-submenu__title {
+.el-menu--horizontal>.el-submenu .el-submenu__title {
   height: 60px;
   line-height: 60px;
   border-bottom: 2px solid transparent;
@@ -602,6 +602,7 @@ hr {
   .el-form-item {
     width: 100%;
     align-items: center;
+
     /* margin-bottom: 3px;*/
     .el-form-item__label {
       padding: 0 12px;
@@ -688,13 +689,27 @@ hr {
   .field-action {
     position: absolute;
     top: 0;
-    transform: translate(0, -50%);
+    transform: translate(0, -50%) translateZ(0);
     right: 0;
     align-items: center;
     background: var(--star-horse-style);
     z-index: 99;
     display: flex;
     vertical-align: middle;
+    /* 新增修复代码 */
+    white-space: nowrap; // 防止操作项换行
+    overflow: visible; // 允许内容溢出
+    flex-shrink: 0; // 禁止压缩
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15); // 添加阴影增强可视性
+
+    // 新增高度补偿
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      height: 100%;
+      width: 100%;
+    }
 
     .svg-icon {
       font-size: 18px;
@@ -832,7 +847,7 @@ button.el-collapse-item__header {
   }
 }
 
-.el-table th > .cell {
+.el-table th>.cell {
   display: inline-block;
   white-space: nowrap;
   word-break: keep-all;
@@ -886,10 +901,12 @@ button.el-collapse-item__header {
     align-items: center;
     display: flex;
     flex-wrap: nowrap;
+
     span {
       font-size: 12px;
       white-space: nowrap;
     }
+
     label {
       margin-right: 5px;
     }
