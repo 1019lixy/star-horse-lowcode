@@ -1,10 +1,9 @@
-import axios, {AxiosResponse, InternalAxiosRequestConfig} from 'axios';
-import {getToken} from '@/utils/auth';
-import {error} from '@/utils/message';
+import { getFingerId } from '@/api/finger_utils';
 import piniaInstance from '@/store';
-import {useUserInfoStore} from '@/store/UserInfo';
-import {getFingerId} from '@/api/finger_utils';
-import {useRouter} from 'vue-router';
+import { useUserInfoStore } from '@/store/UserInfo';
+import { getToken } from '@/utils/auth';
+import { error } from '@/utils/message';
+import axios, { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 
 const userStore = useUserInfoStore(piniaInstance);
 const service = axios.create({
@@ -35,7 +34,7 @@ service.interceptors.request.use(
 
 export function getMenuId() {
     //@ts-ignore
-    const router =window.__hostRouter__;
+    const router = window.__hostRouter__;
     const meta = router?.currentRoute?.value?.meta;
     let menuId = meta?.menuId as string;
     if (!menuId) {
@@ -47,13 +46,6 @@ export function getMenuId() {
 
 const forceLoginOut = () => {
     userStore.showLoginDialog();
-    // console.log("系统超时，请登录后再操出");
-    // removeToken();
-    // navBarListStore.clearAll();
-    // userStore.logout();
-    // router.push({path: "/login", query: {redirect: router.currentRoute.value.fullPath}}).then((r) => {
-    //     console.log(r);
-    // });
 };
 // 添加响应拦截器
 service.interceptors.response.use(
@@ -90,7 +82,7 @@ service.interceptors.response.use(
 export function download(url: string, param: any) {
     return new Promise((resolve, reject) => {
         service
-            .post(url, param, {responseType: 'blob'})
+            .post(url, param, { responseType: 'blob' })
             .then((res) => {
                 downloadData(res.data, decodeURI(res.headers['content-disposition']?.split('=')[1]));
                 resolve(null);
@@ -127,11 +119,11 @@ export function downloadData(data: any, name: string) {
 export async function blobData(url: string, method: string = 'post') {
     let redata: any = null;
     if (method == 'get') {
-        await service.get(url, {responseType: 'blob'}).then((res) => {
+        await service.get(url, { responseType: 'blob' }).then((res) => {
             redata = new Blob([res.data]);
         });
     } else {
-        await service.post(url, [], {responseType: 'blob'}).then((res) => {
+        await service.post(url, [], { responseType: 'blob' }).then((res) => {
             redata = new Blob([res.data]);
         });
     }
@@ -176,7 +168,7 @@ export function httpRequest(url: string, method: string, data: any) {
  * @param data
  */
 export function uploadRequest(url: string, data: Array<any>) {
-    return service.post(url, data, {headers: {'Content-Type': 'multipart/form-data'}});
+    return service.post(url, data, { headers: { 'Content-Type': 'multipart/form-data' } });
 }
 
 /**
