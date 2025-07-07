@@ -18,7 +18,6 @@ const dataForm = defineModel("dataForm");
     </el-scrollbar>
     <slot v-else></slot>
   </el-form>
-
   <slot name="button"></slot>
 </template>
 <style lang="scss" scoped>

@@ -701,16 +701,7 @@ hr {
     overflow: visible; // 允许内容溢出
     flex-shrink: 0; // 禁止压缩
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15); // 添加阴影增强可视性
-
-    // 新增高度补偿
-    &::before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      height: 100%;
-      width: 100%;
-    }
-
+    
     .svg-icon {
       font-size: 18px;
       color: var(--star-horse-white);
