@@ -65,10 +65,13 @@ const props = defineProps({
 const emits = defineEmits(['selfFunc', 'selectItem']);
 const formData = defineModel("formData");
 const maxName = computed(() => {
-  return props.field.fieldName + 'Max'
+  return props.field.preps?.maxName ?? props.field.fieldName + 'Max'
 })
 const minName = computed(() => {
-  return props.field.fieldName + 'Min'
+  return props.field.preps?.minName ?? props.field.fieldName + 'Min'
+});
+const splitName=computed(()=>{
+  return props.field.preps?.splitName??'-';
 })
 let actionName = shallowRef('normal');
 let slotStyle = shallowRef('');
@@ -98,10 +101,10 @@ const itemAction = (prep: string) => {
     max < min // 最大值小于最小值校验
   ) {
     // 校验失败时，清空主字段值（触发父组件required规则）
-    formData.value[props.field.fieldName] = `${min ?? ''}-${max ?? ''}`;
+    formData.value[props.field.fieldName] = `${min ?? ''}${splitName.value}${max ?? ''}`;
     return;
   }
-  formData.value[props.field.fieldName] = `${min}-${max}`;
+  formData.value[props.field.fieldName] = `${min}${splitName.value}${max}`;
   allAction(props, emits, formData, prep);
 };
 onBeforeMount(() => {
@@ -113,7 +116,7 @@ onMounted(() => {
   actionName.value = props.field.actionName || 'normal';
   let val: any = formData.value[props.field.fieldName];
   if (typeof val === 'string') {
-    let data = val.split('-');
+    let data = val.split(splitName.value);
     formData.value[minName.value] = Number(data[0]);
     formData.value[maxName.value] = Number(data[1]);
   } else if (Array.isArray(val)) {
