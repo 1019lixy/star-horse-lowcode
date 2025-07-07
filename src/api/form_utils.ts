@@ -48,7 +48,7 @@ export function validMsg(item: any, dataForm: any) {
         rules.push({ pattern: new RegExp(`^\\d+${escapedSplit}\\d+$`), message: '格式应为"最小值-最大值"（如：2-3）', trigger: 'blur' });
         rules.push({
             validator: (rule: any, value: string, callback: any) => {
-                const minName = item.preps?.maxName ?? item.fieldName + 'Min';
+                const minName = item.preps?.minName ?? item.fieldName + 'Min';
                 const maxName = item.preps?.maxName ?? item.fieldName + 'Max';
                 // 从formData中获取min和max的实际数值（通过fieldName+Min/Max）
                 const minValue = unref(dataForm)[`${minName}`];
