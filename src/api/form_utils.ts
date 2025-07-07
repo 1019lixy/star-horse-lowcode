@@ -1,5 +1,5 @@
-import {getValidType} from '@/api/valid_utils';
-import {unref} from "vue";
+import { getValidType } from '@/api/valid_utils';
+import { unref } from "vue";
 
 /**
  * 解析动态表单中的子节点数据是否需要合并到父节点中
@@ -22,10 +22,10 @@ export function dynamicFormAnalysis(props: any, dataForm: any) {
             if (Array.isArray(data)) {
                 dataList = [];
                 data.forEach((item) => {
-                    dataList.push({...item, ...dataForm});
+                    dataList.push({ ...item, ...dataForm });
                 });
             } else {
-                dataList = {...dataList, ...data, ...dataForm};
+                dataList = { ...dataList, ...data, ...dataForm };
             }
         }
     }
@@ -40,14 +40,16 @@ export function dynamicFormAnalysis(props: any, dataForm: any) {
 export function validMsg(item: any, dataForm: any) {
     const rules = [];
     if (item.required && !item.disabled) {
-        rules.push({required: true, message: `${item.label}不能为空`, trigger: 'blur'});
+        rules.push({ required: true, message: `${item.label}不能为空`, trigger: 'blur' });
     }
     if (item.type == 'number-range') {
-        rules.push({pattern: /^\d+-\d+$/, message: '格式应为"最小值-最大值"（如：2-3）', trigger: 'blur'});
+        const splitName = item.preps?.splitName ?? '-';
+        const escapedSplit = splitName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        rules.push({ pattern: new RegExp(`^\\d+${escapedSplit}\\d+$`), message: '格式应为"最小值-最大值"（如：2-3）', trigger: 'blur' });
         rules.push({
             validator: (rule: any, value: string, callback: any) => {
-                const minName=item.preps?.maxName ?? item.fieldName + 'Min';
-                const maxName=item.preps?.maxName ?? item.fieldName + 'Max';
+                const minName = item.preps?.maxName ?? item.fieldName + 'Min';
+                const maxName = item.preps?.maxName ?? item.fieldName + 'Max';
                 // 从formData中获取min和max的实际数值（通过fieldName+Min/Max）
                 const minValue = unref(dataForm)[`${minName}`];
                 const maxValue = unref(dataForm)[`${maxName}`];

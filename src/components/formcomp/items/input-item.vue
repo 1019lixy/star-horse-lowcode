@@ -108,7 +108,7 @@ onMounted(() => {
 :deep {
   .el-input-group__prepend,
   .el-input-group__append {
-    min-width: 20%;
+    min-width: 25%;
     max-width: 100px;
     padding: 0;
   }
