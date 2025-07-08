@@ -300,4 +300,4 @@ barcode        条形码组件
                 click:()=>{},
                 change:()={}
               },同时去掉了actionName 属性,
-              
+22. 2025-07-08 修复已知Bug

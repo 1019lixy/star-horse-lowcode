@@ -1,14 +1,14 @@
 <script lang="ts" setup name="StarHorsePopover">
-import {onMounted, ref} from 'vue';
-import {postRequest} from "@/api/star_horse_apis";
-import {warning} from "@/utils/message";
-import {compKey} from "@/api/system";
+import { onMounted, ref } from 'vue';
+import { postRequest } from "@/api/star_horse_apis";
+import { warning } from "@/utils/message";
+import { compKey } from "@/api/system";
 
 const props = defineProps({
-  menuIcon: {type: String},
-  iconUrl: {type: String},
-  iconSize: {type: Number, default: 48},
-  icons: {type: Array, default: () => []}
+  menuIcon: { type: String },
+  iconUrl: { type: String },
+  iconSize: { type: Number, default: 48 },
+  icons: { type: Array, default: () => [] }
 });
 const emits = defineEmits(['selectIcon']);
 let iconList = ref<Array<any>>([]);
@@ -39,17 +39,11 @@ onMounted(() => {
       <slot></slot>
     </template>
     <ul class="system-icon">
-      <li
-          v-for="(sdata,key) in iconList"
-          :key="compKey(sdata,key)"
-          @click="menuIconSelect(sdata.menuIcon)"
-          :class="menuIcon == sdata.menuIcon ? 'icon-active' : ''"
-      >
+      <li v-for="(sdata, key) in iconList" :key="compKey(sdata, key)" @click="menuIconSelect(sdata.menuIcon)"
+        :class="menuIcon == sdata.menuIcon ? 'icon-active' : ''">
         <el-tooltip :content="sdata.label">
-          <star-horse-icon
-              :icon-class="sdata.menuIcon"
-              style="color: var(--star-horse-style); vertical-align: middle; font-size: 48px"
-          />
+          <star-horse-icon :icon-class="sdata.menuIcon"
+            style="color: var(--star-horse-style); vertical-align: middle; font-size: 48px" />
         </el-tooltip>
       </li>
     </ul>

@@ -1,4 +1,4 @@
-import {ElMessageBox} from 'element-plus';
+import { ElMessageBox } from 'element-plus';
 import Message from 'vue-m-message';
 import 'vue-m-message/dist/style.css';
 

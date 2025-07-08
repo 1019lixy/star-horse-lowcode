@@ -6,7 +6,8 @@
       :on-error="(error: any, uploadFile: any, uploadFiles: any) => selfAction('error', uploadFile, uploadFiles, error)"
       :on-exceed="(files: any, uploadFiles: any) => selfAction('exceed', files, uploadFiles)"
       :on-preview="(uploadFile: any) => selfAction('preview', uploadFile)" :on-progress="(evt: any, uploadFile: any, uploadFiles: any) => selfAction('progress', uploadFile, uploadFiles, evt)
-        " :on-remove="(uploadFile: any, uploadFiles: any) => selfAction('remove', uploadFile, uploadFiles)" :on-success="(response: any, uploadFile: any, uploadFiles: any) => selfAction('success', uploadFile, uploadFiles, response)
+        " :on-remove="(uploadFile: any, uploadFiles: any) => selfAction('remove', uploadFile, uploadFiles)"
+      :on-success="(response: any, uploadFile: any, uploadFiles: any) => selfAction('success', uploadFile, uploadFiles, response)
         " style="width: 100% !important; display: flex; align-items: center; position: relative"
       v-model:file-list="dataField">
       <el-icon class="el-icon--upload" v-if="field.preps['drag']">
@@ -16,7 +17,7 @@
       <template #tip v-if="field.preps['maxSize']">
         <div class="el-upload__tip"> 文件大小不能超过{{ field.preps["maxSize"] }}</div>
       </template>
-      <star-horse-icon v-if="field.preps['drag'] != 'Y'" icon-class="plus" color="var(--star-horse-style)" />
+      <star-horse-icon v-if="!field.preps['drag']" icon-class="plus" color="var(--star-horse-style)" />
     </el-upload>
   </starhorse-form-item>
 </template>

@@ -1,26 +1,26 @@
 <script setup lang="ts" name="box-container">
-import {computed, onMounted, PropType, reactive, ref, watch} from 'vue';
-import {warning} from '@/utils/message';
-import {useDesignFormStore} from '@/store/DesignForm';
+import { computed, onMounted, PropType, reactive, ref, watch } from 'vue';
+import { warning } from '@/utils/message';
+import { useDesignFormStore } from '@/store/DesignForm';
 import piniaInstance from '@/store/index';
 import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
-import {tableAction, tableCellOperation} from '@/components/formcomp/container/dytableUtils';
-import {Config} from '@/api/settings';
-import {itemCheck, uuid} from "@/api/system";
+import { tableAction, tableCellOperation } from '@/components/formcomp/container/dytableUtils';
+import { Config } from '@/api/settings';
+import { itemCheck, uuid } from "@/api/system";
 
 const props = defineProps({
-  parentField: {type: Object as PropType<any>},
-  formInfo: {type: Object as PropType<any>},
-  parentComp: {type: Object as PropType<any>},
-  isDesign: {type: Boolean,default: false},
-  disabled: {type: Object as PropType<Boolean | String>},
-  field: {type: Object as PropType<any>},
-  isFirstRow: {type: Boolean, default: false},
-  isLastRow: {type: Boolean, default: false},
-  isFirstCol: {type: Boolean, default: false},
-  isLastCol: {type: Boolean, default: false},
-  rowIndex: {type: Number, default: -1},
-  colIndex: {type: Number, default: -1}
+  parentField: { type: Object as PropType<any> },
+  formInfo: { type: Object as PropType<any> },
+  parentComp: { type: Object as PropType<any> },
+  isDesign: { type: Boolean, default: false },
+  disabled: { type: Object as PropType<Boolean | String> },
+  field: { type: Object as PropType<any> },
+  isFirstRow: { type: Boolean, default: false },
+  isLastRow: { type: Boolean, default: false },
+  isFirstCol: { type: Boolean, default: false },
+  isLastCol: { type: Boolean, default: false },
+  rowIndex: { type: Number, default: -1 },
+  colIndex: { type: Number, default: -1 }
 });
 let designForm = useDesignFormStore(piniaInstance);
 let draggingItem = computed(() => designForm.draggingItem);
@@ -49,7 +49,7 @@ let buttonControl = reactive<any>({
   deleteWholeRowDisabled: false
 });
 
-const onDragAdd = (evt: Event|any, dataList: any) => {
+const onDragAdd = (evt: Event | any, dataList: any) => {
   selectCurrentTd();
   let newIndex = evt.newIndex;
   if (excludeContainerType.includes(draggingItem.value.itemType)) {
@@ -135,59 +135,36 @@ onMounted(() => {
 });
 //监控数据
 watch(
-    () => props.parentField,
-    () => tableAction(props, buttonControl),
-    {
-      immediate: false,
-      deep: true
-    }
+  () => props.parentField,
+  () => tableAction(props, buttonControl),
+  {
+    immediate: false,
+    deep: true
+  }
 );
 </script>
 <template>
-  <td
-      class="edit_col"
-      :class="{'dragging-area':isDragging,
-        'no-drag': !isEdit
-      }"
-      :colspan="field.colspan || 1"
-      :rowspan="field.rowspan || 1"
-      :style="{
-      width: field.colWidth  || '100%',
-      height: field.colHeight  || '40px',
-      'word-break': !!field.wordBreak ? 'break-all' : 'normal'
-    }"
-      @click="selectCurrentTd"
-      @mousedown="handleResizeStart"
-  >
+  <td class="edit_col" :class="{
+    'dragging-area': isDragging,
+    'no-drag': !isEdit
+  }" :colspan="field.colspan || 1" :rowspan="field.rowspan || 1" :style="{
+        width: field.colWidth || '100%',
+        height: field.colHeight || '40px',
+        'word-break': !!field.wordBreak ? 'break-all' : 'normal'
+      }" @click="selectCurrentTd" @mousedown="handleResizeStart">
 
-    <draggable
-        @add="(evt: Event) => onDragAdd(evt, field.items)"
-        class="smain-design"
-        tag="div"
-        :item-key="uuid()"
-        group="starHorseGroup"
-        ghostClass="ghost"
-        animation="200"
-        :list="field.items"
-    >
+    <draggable @add="(evt: Event) => onDragAdd(evt, field.items)" class="smain-design" tag="div" :item-key="uuid()"
+      group="starHorseGroup" ghostClass="ghost" animation="200" :list="field.items">
       <template #item="{ element: data }">
         <div :class="{ 'comp-item': data?.preps['headerFlag'] != 'Y', 'bare-item': data?.preps['headerFlag'] }">
-          <component
-              :key="data?.id"
-              :field="data"
-              :formInfo="formInfo"
-              :isDesign="isDesign"
-              :disabled="disabled"
-              :is="itemCheck(data)"
-              :parentField="parentField"
-              v-model:formData="formData"
-          />
+          <component :key="data?.id" :field="data" :formInfo="formInfo" :isDesign="isDesign" :disabled="disabled"
+            :is="itemCheck(data)" :parentField="parentField" v-model:formData="formData" />
         </div>
       </template>
     </draggable>
-    <div class="table-cell-action" v-if="isEdit&&isDesign && currentSubItemId == field._uuid">
+    <div class="table-cell-action" v-if="isEdit && isDesign && currentSubItemId == field._uuid">
       <el-dropdown trigger="click" @command="handleTableCellCommand" :size="Config.compSize">
-        <star-horse-icon icon-class="menu" style="color:var(--star-horse-white)"/>
+        <star-horse-icon icon-class="menu" style="color:var(--star-horse-white)" />
         <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item command="insertLeftCol">左边插入列</el-dropdown-item>
@@ -195,38 +172,28 @@ watch(
             <el-dropdown-item command="insertAboveRow">插入上方行</el-dropdown-item>
             <el-dropdown-item command="insertBelowRow">插入下方行</el-dropdown-item>
 
-            <el-dropdown-item command="mergeLeftCol" :disabled="buttonControl.mergeLeftColDisabled" divided
-            >合并左边单元格
+            <el-dropdown-item command="mergeLeftCol" :disabled="buttonControl.mergeLeftColDisabled" divided>合并左边单元格
             </el-dropdown-item>
-            <el-dropdown-item command="mergeRightCol" :disabled="buttonControl.mergeRightColDisabled"
-            >合并右单元格
+            <el-dropdown-item command="mergeRightCol" :disabled="buttonControl.mergeRightColDisabled">合并右单元格
             </el-dropdown-item>
-            <el-dropdown-item command="mergeWholeRow" :disabled="buttonControl.mergeWholeRowDisabled"
-            >合并整行
+            <el-dropdown-item command="mergeWholeRow" :disabled="buttonControl.mergeWholeRowDisabled">合并整行
             </el-dropdown-item>
 
-            <el-dropdown-item command="mergeAboveRow" :disabled="buttonControl.mergeAboveRowDisabled" divided
-            >合并上边单元格
+            <el-dropdown-item command="mergeAboveRow" :disabled="buttonControl.mergeAboveRowDisabled" divided>合并上边单元格
             </el-dropdown-item>
-            <el-dropdown-item command="mergeBelowRow" :disabled="buttonControl.mergeBelowRowDisabled"
-            >合并下边单元格
+            <el-dropdown-item command="mergeBelowRow" :disabled="buttonControl.mergeBelowRowDisabled">合并下边单元格
             </el-dropdown-item>
-            <el-dropdown-item command="mergeWholeCol" :disabled="buttonControl.mergeWholeColDisabled"
-            >合并整列
+            <el-dropdown-item command="mergeWholeCol" :disabled="buttonControl.mergeWholeColDisabled">合并整列
             </el-dropdown-item>
 
-            <el-dropdown-item command="undoMergeRow" :disabled="buttonControl.undoMergeRowDisabled" divided
-            >撤销行合并
+            <el-dropdown-item command="undoMergeRow" :disabled="buttonControl.undoMergeRowDisabled" divided>撤销行合并
             </el-dropdown-item>
-            <el-dropdown-item command="undoMergeCol" :disabled="buttonControl.undoMergeColDisabled"
-            >撤销列合并
+            <el-dropdown-item command="undoMergeCol" :disabled="buttonControl.undoMergeColDisabled">撤销列合并
             </el-dropdown-item>
 
-            <el-dropdown-item command="deleteWholeCol" :disabled="buttonControl.deleteWholeColDisabled" divided
-            >删除整列
+            <el-dropdown-item command="deleteWholeCol" :disabled="buttonControl.deleteWholeColDisabled" divided>删除整列
             </el-dropdown-item>
-            <el-dropdown-item command="deleteWholeRow" :disabled="buttonControl.deleteWholeRowDisabled"
-            >删除整行
+            <el-dropdown-item command="deleteWholeRow" :disabled="buttonControl.deleteWholeRowDisabled">删除整行
             </el-dropdown-item>
             <el-dropdown-item command="colConfig" divided>列设置</el-dropdown-item>
           </el-dropdown-menu>
@@ -247,18 +214,22 @@ watch(
   vertical-align: middle;
   justify-content: center;
   align-items: center;
+
   .comp-item {
     margin: unset;
   }
+
   .bare-item {
     width: 100%;
     height: 100%;
+
     div {
       width: 100%;
       height: 100%;
     }
   }
 }
+
 .edit_col {
   display: table-cell;
   min-height: 50px;
@@ -266,6 +237,7 @@ watch(
   user-select: none;
   transition: width 0.2s, height 0.2s;
   border: 1px solid var(--star-horse-border—color);
+
   .table-cell-action {
     position: absolute;
     //bottom: -30px;
@@ -288,7 +260,8 @@ watch(
     }
   }
 
-  &::after, &::before {
+  &::after,
+  &::before {
     z-index: 1000; // 提升到最高层级
     pointer-events: none; // 允许穿透点击
   }
@@ -313,7 +286,9 @@ watch(
   }
 
   &:hover {
-    &::after, &::before {
+
+    &::after,
+    &::before {
       opacity: 1; // 提高可见度
       transition-delay: 0.1s; // 添加悬停延迟避免误触发
     }
@@ -322,12 +297,12 @@ watch(
 
   // 修正事件处理逻辑
   &[colspan]::after {
-    top:10%;
+    top: 10%;
     height: 80%; // 跨行合并时保持拖拽区域
   }
 
   // 保证后续列可操作
-  &[colspan] + .edit_col::after {
+  &[colspan]+.edit_col::after {
     z-index: 1002;
   }
 
@@ -347,7 +322,9 @@ watch(
   }
 
   &:hover {
-    &::after, &::before {
+
+    &::after,
+    &::before {
       opacity: 0.5;
     }
   }
@@ -355,14 +332,19 @@ watch(
   &.is-resizing {
     background: rgba(64, 158, 255, 0.1);
   }
+
   &.no-drag {
-    &::after, &::before {
-      display: none !important;  // 禁用拖拽手柄
+
+    &::after,
+    &::before {
+      display: none !important; // 禁用拖拽手柄
       pointer-events: none !important;
     }
 
     &:hover {
-      &::after, &::before {
+
+      &::after,
+      &::before {
         opacity: 0 !important;
       }
     }

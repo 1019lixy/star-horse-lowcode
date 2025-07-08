@@ -7,8 +7,9 @@
       <el-radio-button v-if="field.preps?.radioType == 'button'" :border="item['border'] ?? true"
         :checked="item['checked']" :disabled="item['disabled'] ?? false" :label="item['name']" :value="item['value']"
         v-for="item in field.preps?.values" />
-      <el-radio v-else :border="item['border'] ?? false" :checked="item['checked']" :disabled="item['disabled'] ?? false"
-        :label="item['name']" :value="item['value']" v-for="item in field.preps?.values">
+      <el-radio v-else :border="item['border'] ?? false" :checked="item['checked']"
+        :disabled="item['disabled'] ?? false" :label="item['name']" :value="item['value']"
+        v-for="item in field.preps?.values">
       </el-radio>
     </el-radio-group>
   </starhorse-form-item>

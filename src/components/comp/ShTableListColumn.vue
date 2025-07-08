@@ -1,20 +1,20 @@
 <script setup lang="ts" name="ShTableListColumn">
-import {inject, PropType} from 'vue';
-import {DialogProps} from '@/components/types/DialogProps';
-import {Config} from '@/api/settings';
-import {parseListData, validMsg} from '@/api/form_utils';
-import {createDatetime} from "@/api/date_utils";
+import { inject, PropType } from 'vue';
+import { DialogProps } from '@/components/types/DialogProps';
+import { Config } from '@/api/settings';
+import { parseListData, validMsg } from '@/api/form_utils';
+import { createDatetime } from "@/api/date_utils";
 
 const props = defineProps({
-  dataForm: {type: Object, required: true},
-  index: {type: Object, required: true},
-  item: {type: Object as PropType<any>, required: true},
-  staticColumn: {type: String, default: 'Y'},
-  primaryKey: {type: [String, Object] as PropType<string | any>},
-  batchName: {type: String, default: 'batchDataList'},
-  rules: {type: Object},
-  size: {type: String, default: Config.compSize},
-  source:{type:Number,default:1},
+  dataForm: { type: Object, required: true },
+  index: { type: Object, required: true },
+  item: { type: Object as PropType<any>, required: true },
+  staticColumn: { type: String, default: 'Y' },
+  primaryKey: { type: [String, Object] as PropType<string | any> },
+  batchName: { type: String, default: 'batchDataList' },
+  rules: { type: Object },
+  size: { type: String, default: Config.compSize },
+  source: { type: Number, default: 1 },
 });
 const dataFormat = (val: any) => {
   const type: string = props.item.type;
@@ -37,20 +37,9 @@ const dataFormat = (val: any) => {
   <template v-if="staticColumn == 'Y'">
     {{ dataFormat(dataForm[item.fieldName]) }}
   </template>
-  <el-form-item
-      v-else
-      :size="size"
-      :rules="validMsg(item, dataForm)"
-      :prop="`${batchName}.${index}.${item.fieldName}`"
-  >
-    <star-horse-item
-        :primaryKey="primaryKey"
-        :compSize="size"
-        :batchName="batchName"
-        :item="item"
-        :data-form="dataForm"
-        :source="source"
-    />
+  <el-form-item v-else :size="size" :rules="validMsg(item, dataForm)" :prop="`${batchName}.${index}.${item.fieldName}`">
+    <star-horse-item :primaryKey="primaryKey" :compSize="size" :batchName="batchName" :item="item" :data-form="dataForm"
+      :source="source" />
   </el-form-item>
 </template>
 <style scoped></style>

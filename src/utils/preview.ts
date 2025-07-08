@@ -1,4 +1,4 @@
-import {SearchParams} from '@/components/types/Params';
+import { SearchParams } from '@/components/types/Params';
 
 
 /**
@@ -119,5 +119,5 @@ export function analysisFields(compList: Array<any>) {
         }
     };
     normalAnalysis(compList);
-    return {fieldList, tabNames, objectNames, batchNames};
+    return { fieldList, tabNames, objectNames, batchNames };
 }

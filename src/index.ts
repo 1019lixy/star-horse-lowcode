@@ -1,11 +1,11 @@
 // 在文件最顶部添加以下代码
-import {App, defineAsyncComponent} from 'vue';
+import { App, defineAsyncComponent } from 'vue';
 import 'tailwindcss/index.css';
 import '@/assets/css/index.scss';
 // import 'element-plus/theme-chalk/index.css';
 import '@/assets/icons.css';
 import piniaInstance from '@/store';
-import type {Router} from 'vue-router';
+import type { Router } from 'vue-router';
 import ElementPlus from "element-plus";
 import zhCn from "element-plus/dist/locale/zh-cn.mjs";
 
@@ -38,7 +38,7 @@ const install = (app: App<Element>, options?: {
         app.provide('starHorseRouter', options.router);
         window.__hostRouter__ = options.router;
     }
-// 只在没有配置时才设置中文
+    // 只在没有配置时才设置中文
     if (!options?.elementPlusOptions?.locale) {
         app.use(ElementPlus, {
             locale: zhCn
@@ -78,7 +78,7 @@ export * from '@/store/SelfOperation';
 export * from '@/store/UserInfo';
 
 //将pinia的实例导出，否则会导致在设计表单时数据不一致
-export {piniaInstance};
+export { piniaInstance };
 
 export default {
     install,

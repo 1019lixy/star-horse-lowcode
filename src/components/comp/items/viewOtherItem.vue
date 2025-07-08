@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import {ModelRef, onMounted, PropType, unref} from 'vue';
-import {FieldInfo} from '@/components/types/PageFieldInfo';
+import { ModelRef, onMounted, PropType, unref } from 'vue';
+import { FieldInfo } from '@/components/types/PageFieldInfo';
 
 const props = defineProps({
-  item: {type: Object as PropType<FieldInfo>, required: true},
-  commonFormat: {type: Function, required: true}
+  item: { type: Object as PropType<FieldInfo>, required: true },
+  commonFormat: { type: Function, required: true }
 });
 const dataForm: ModelRef<any> = defineModel('dataForm');
 const dataFormat = (item: any) => {
@@ -28,14 +28,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <template v-if="item.type == 'usercomp'||item.type=='button'">
-    <star-horse-item
-        v-if="item.formVisible || item.listVisible || item.viewVisible"
-        :primaryKey="'id'"
-        v-model:dataForm="dataForm"
-        :item="item"
-        :source="3"
-    />
+  <template v-if="item.type == 'usercomp' || item.type == 'button'">
+    <star-horse-item v-if="item.formVisible || item.listVisible || item.viewVisible" :primaryKey="'id'"
+      v-model:dataForm="dataForm" :item="item" :source="3" />
   </template>
   <div class="item" v-if="item.formVisible || item.listVisible || item.viewVisible">
     <label>{{ item.label }} :</label>

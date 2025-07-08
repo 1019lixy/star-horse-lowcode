@@ -1,19 +1,19 @@
 <script setup lang="ts" name="GroupBoxContainer">
-import {operationConfirm, warning} from '@/utils/message';
+import { operationConfirm, warning } from '@/utils/message';
 import piniaInstance from '@/store/index';
-import {useDesignFormStore} from '@/store/DesignForm';
-import {computed, PropType, ref} from 'vue';
-import {colDataInfo} from '@/components/formcomp/container/dytableUtils';
-import {dynamicFormContextMenuData} from '@/plugins/AblesPlugin';
+import { useDesignFormStore } from '@/store/DesignForm';
+import { computed, PropType, ref } from 'vue';
+import { colDataInfo } from '@/components/formcomp/container/dytableUtils';
+import { dynamicFormContextMenuData } from '@/plugins/AblesPlugin';
 import FieldList from '@/components/formcomp/utils/FieldList.vue';
 import StarHorseDialog from '@/components/comp/StarHorseDialog.vue';
-import {fieldCopy} from '@/utils/FieldOperationUtils';
+import { fieldCopy } from '@/utils/FieldOperationUtils';
 
 const props = defineProps({
-  isDesign: {type: Boolean, default: false},
-  disabled: {type: Object as PropType<Boolean | String>},
-  parentField: {type: Object},
-  formItem: {type: Object, required: true}
+  isDesign: { type: Boolean, default: false },
+  disabled: { type: Object as PropType<Boolean | String> },
+  parentField: { type: Object },
+  formItem: { type: Object, required: true }
 });
 let designForm = useDesignFormStore(piniaInstance);
 let compList = computed(() => designForm.compList);
@@ -160,77 +160,49 @@ const tableOperation = (actonName: string, _preps: any) => {
 };
 </script>
 <template>
-  <star-horse-dialog
-      box-width="450px"
-      :is-view="true"
-      :full-screen="false"
-      title="添加组件"
-      :self-func="true"
-      :dialog-visible="componentVisible"
-      @closeAction="close"
-  >
+  <star-horse-dialog box-width="450px" :is-view="true" :full-screen="false" title="添加组件" :self-func="true"
+    :dialog-visible="componentVisible" @closeAction="close">
     <template #footer>
       <el-button type="primary" size="default" @click="close">确定</el-button>
     </template>
-    <field-list @selectData="addItem"/>
+    <field-list @selectData="addItem" />
   </star-horse-dialog>
-  <div class="field-item" v-if="isEdit&&isDesign" @contextmenu="containerContextMenu">
+  <div class="field-item" v-if="isEdit && isDesign" @contextmenu="containerContextMenu">
     <slot></slot>
-    <div class="drag-handler"  v-if="isEdit&&isDesign && currentItemId == formItem.id">
+    <div class="drag-handler" v-if="isEdit && isDesign && currentItemId == formItem.id">
       <el-tooltip content="拖动">
-        <star-horse-icon  icon-class="drag" size="18px" style="color: var(--star-horse-white)"/>
+        <star-horse-icon icon-class="drag" size="18px" style="color: var(--star-horse-white)" />
       </el-tooltip>
       <el-tooltip content="选中容器">
-        <star-horse-icon
-            cursor="pointer"
-            @click.stop="selectData"
-            icon-class="select-parent"
-            style="color: var(--star-horse-white)"
-        />
+        <star-horse-icon cursor="pointer" @click.stop="selectData" icon-class="select-parent"
+          style="color: var(--star-horse-white)" />
       </el-tooltip>
       <el-tooltip content="删除容器">
-        <star-horse-icon
-            cursor="pointer"
-            @click.stop="removeData"
-            icon-class="clear-all"
-            style="color: var(--star-horse-white)"
-        />
+        <star-horse-icon cursor="pointer" @click.stop="removeData" icon-class="clear-all"
+          style="color: var(--star-horse-white)" />
       </el-tooltip>
     </div>
-    <div class="field-action" v-if="isEdit&&isDesign && currentItemId == formItem.id">
+    <div class="field-action" v-if="isEdit && isDesign && currentItemId == formItem.id">
       <template v-if="formItem.itemType == 'dytable' || formItem.itemType == 'box'">
         <el-tooltip content="插入行">
-          <star-horse-icon
-              @click.stop="tableOperation('insertRow', formItem?.preps)"
-              icon-class="insert_row"
-              cursor="pointer"
-              style="color: var(--star-horse-white)"
-          />
+          <star-horse-icon @click.stop="tableOperation('insertRow', formItem?.preps)" icon-class="insert_row"
+            cursor="pointer" style="color: var(--star-horse-white)" />
         </el-tooltip>
       </template>
       <template v-if="formItem.itemType == 'dytable' || formItem.itemType == 'box' || formItem.itemType == 'table'">
         <el-tooltip content="插入列">
-          <star-horse-icon
-              @click.stop="tableOperation('insertCol', formItem?.preps)"
-              icon-class="insert_col"
-              cursor="pointer"
-              style="color: var(--star-horse-white)"
-          />
+          <star-horse-icon @click.stop="tableOperation('insertCol', formItem?.preps)" icon-class="insert_col"
+            cursor="pointer" style="color: var(--star-horse-white)" />
         </el-tooltip>
       </template>
       <el-tooltip content="复制容器">
-        <star-horse-icon
-            @click.stop="tableOperation('copy',formItem?.preps)"
-            icon-class="copy"
-            style="color: var(--star-horse-white)"
-        />
+        <star-horse-icon @click.stop="tableOperation('copy', formItem?.preps)" icon-class="copy"
+          style="color: var(--star-horse-white)" />
       </el-tooltip>
     </div>
     <Teleport to="body">
-      <ContentMenu
-          ref="containerContextMenuRef"
-          :menu-data="dynamicFormContextMenuData(formItem, parentField, 'container')"
-      />
+      <ContentMenu ref="containerContextMenuRef"
+        :menu-data="dynamicFormContextMenuData(formItem, parentField, 'container')" />
     </Teleport>
   </div>
   <div class="field-item" style="border: unset" v-else>
@@ -244,6 +216,7 @@ const tableOperation = (actonName: string, _preps: any) => {
 
 .el-form-item {
   position: relative;
+
   :deep(.el-form-item__label) {
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -271,8 +244,11 @@ const tableOperation = (actonName: string, _preps: any) => {
 
 .static-content-item {
   min-height: 20px;
-  display: flex; /* 垂直居中 */
-  align-items: center; /* 垂直居中 */
+  display: flex;
+  /* 垂直居中 */
+  align-items: center;
+
+  /* 垂直居中 */
   :deep(.el-divider--horizontal) {
     margin: 0;
   }

@@ -114,7 +114,7 @@ export function checkObject(dataForm: any, item: any, index: number, parentIndex
 }
 
 
-export function getFormData(item: any, dataForm: any, prefix: string, parentIndex: number, index: number) {
+export function getFormData(item: any, dataForm: any, prefix: string, parentIndex: any, index: any) {
     if (item.subFormFlag == 'Y') {
         if (item && item.objectName) {
             if (!Object.keys(dataForm).includes(item.objectName)) {
@@ -139,7 +139,7 @@ export function getFormData(item: any, dataForm: any, prefix: string, parentInde
  * @param parentIndex
  * @param index
  */
-export function getDataIndex(data: any, prefix: string, parentIndex: number, index: number) {
+export function getDataIndex(data: any, prefix: string, parentIndex: any, index: any) {
     let pronPrefix: number = 0;
     if (prefix?.length > 0) {
         if (data.subFormFlag == 'Y') {
@@ -184,7 +184,7 @@ export function loadProp(prefix: string, fieldName: string, parentIndex: number,
  * @param parentIndex
  * @param index
  */
-export function getPrefix(data: any, prefix: string, parentIndex: number, index: number) {
+export function getPrefix(data: any, prefix: string, parentIndex: any, index: any) {
     let pronPrefix = '';
     if (prefix && prefix.length > 0) {
         if (data.subFormFlag == 'Y') {

@@ -21,7 +21,7 @@ const props = defineProps({
   //是否显示排序
   sortable: { type: Boolean, default: true },
   compSize: { type: String, default: Config.compSize },
-  source:{type:Number,default:5},
+  source: { type: Number, default: 5 },
 });
 const emits = defineEmits(['focusEvent', 'blurEvent']);
 const compInfo: ComputedRef<DyCompField> = computed(() => {
@@ -37,8 +37,8 @@ const compInfo: ComputedRef<DyCompField> = computed(() => {
 const currentRow = ref();
 const focusEvent = (_column: any) => {
 };
-const blurEvent = (column: any,params:any) => {
-  const data=Array.isArray(params) ? params[0] : params;
+const blurEvent = (column: any, params: any) => {
+  const data = Array.isArray(params) ? params[0] : params;
   let bakeValue = data['starHorseBakeValue'];
   delete data['starHorseBakeValue'];
   delete data['isSelected'];
@@ -82,13 +82,7 @@ const cellClick = (row: any, column: any) => {
   nextTick(() => {
     setTimeout(() => {
       let obj = $('.' + column['id']).find('input');
-      // const elements = document.querySelectorAll(`.${column['id']} input`);
-      // let obj = elements.length > 0 ? elements[0] : null;
       obj?.select().focus();
-      // obj.unbind().on("blur", () => {
-      //   console.log(column);
-      //   blurEvent(column);
-      // });
     }, 300);
   });
 };
@@ -160,8 +154,8 @@ const createPreps = (item: any) => {
       </template>
       <template v-else-if="prototypeCheck(item)">
         <component :is="(item.listPrototypeDisplay === true || item.preps?.listPrototypeDisplay === true
-            ? item.type || 'input'
-            : item.listPrototypeDisplay || item.preps?.listPrototypeDisplay) + '-item'
+          ? item.type || 'input'
+          : item.listPrototypeDisplay || item.preps?.listPrototypeDisplay) + '-item'
           " :bareFlag="true" :callBack="() => currentDataFormat(scope)" :field="createPreps(item)"
           :formData="scope.row" />
       </template>

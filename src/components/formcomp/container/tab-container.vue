@@ -1,15 +1,15 @@
 <script setup lang="ts" name="tab-container">
-import {computed, onMounted, PropType, ref, watch} from 'vue';
-import {useDesignFormStore} from '@/store/DesignForm';
+import { computed, onMounted, PropType, ref, watch } from 'vue';
+import { useDesignFormStore } from '@/store/DesignForm';
 import piniaInstance from '@/store/index';
-import {compKey, itemCheck, uuid} from "@/api/system";
+import { compKey, itemCheck, uuid } from "@/api/system";
 
 const props = defineProps({
-  parentField: {type: String},
-  isDesign: {type: Boolean,default: false},
-  disabled: {type: Object as PropType<Boolean | String>},
-  formInfo: {type: Object as PropType<any>},
-  field: {type: Object as PropType<any>}
+  parentField: { type: String },
+  isDesign: { type: Boolean, default: false },
+  disabled: { type: Object as PropType<Boolean | String> },
+  formInfo: { type: Object as PropType<any> },
+  field: { type: Object as PropType<any> }
 });
 let designForm = useDesignFormStore(piniaInstance);
 const isDragging = computed(() => designForm.isDragging);
@@ -28,7 +28,7 @@ const checkItem = (adata: any) => {
     adata['items'] = [];
   }
 };
-const onDragAdd = (evt: Event|any, dataList: any) => {
+const onDragAdd = (evt: Event | any, dataList: any) => {
   let newIndex = evt.newIndex;
   if (newIndex != null && newIndex != 'undefined') {
     let dataInfo = dataList[newIndex];
@@ -60,11 +60,11 @@ onMounted(() => {
   activeTabName.value = props.field.preps.elements[0].tabName;
 });
 watch(
-    () => activeTabName.value,
-    (val) => {
-      props.field['activeItemName'] = val;
-    },
-    {immediate: true, deep: true}
+  () => activeTabName.value,
+  (val) => {
+    props.field['activeItemName'] = val;
+  },
+  { immediate: true, deep: true }
 );
 const dynamicFunc = (funcType: string, funcCode: any) => {
   let func = new Function(funcCode);
@@ -74,54 +74,25 @@ const addTab = () => {
 };
 </script>
 <template>
-  <group-box-container class="star-horse-form-container"
-                       :isDesign="isDesign"
-                       :disabled="disabled"
-                       :parentField="parentField" :form-item="field">
-    <el-tabs
-        class="tab-container"
-        :tab-position="field.preps['tablePosition'] || 'top'"
-        :type="field.preps['type'] || ''"
-        :closable="field.preps['closable'] "
-        :addable="field.preps['addable'] "
-        :editable="field.preps['editable'] "
-        :stretch="field.preps['stretch'] "
-        v-model="activeTabName"
-        @tab-add="addTab()"
-        @tab-click="dynamicFunc('tabClick', field['tabClick'])"
-        @tab-change="dynamicFunc('tabChange', field['tabChange'])"
-        @tab-remove="dynamicFunc('tabRemove', field['tabRemove'])"
-    >
-      <el-tab-pane
-          v-for="(adata,key) in field['preps']['elements']"
-          :key="compKey(adata,key)"
-          :label="adata['label']"
-          :name="adata['tabName']"
-      >
-        <el-scrollbar height="100%" :class="{'dragging-area':isDragging}">
-          <draggable
-              @add="(evt: Event) => onDragAdd(evt, adata['items'])"
-              @dragover="checkItem(adata)"
-              class="tab-design"
-              group="starHorseGroup"
-              animation="100"
-              :item-key="uuid()"
-              ghostClass="ghost"
-              :list="adata['items']"
-          >
+  <group-box-container class="star-horse-form-container" :isDesign="isDesign" :disabled="disabled"
+    :parentField="parentField" :form-item="field">
+    <el-tabs class="tab-container" :tab-position="field.preps['tablePosition'] || 'top'"
+      :type="field.preps['type'] || ''" :closable="field.preps['closable']" :addable="field.preps['addable']"
+      :editable="field.preps['editable']" :stretch="field.preps['stretch']" v-model="activeTabName"
+      @tab-add="addTab()" @tab-click="dynamicFunc('tabClick', field['tabClick'])"
+      @tab-change="dynamicFunc('tabChange', field['tabChange'])"
+      @tab-remove="dynamicFunc('tabRemove', field['tabRemove'])">
+      <el-tab-pane v-for="(adata, key) in field['preps']['elements']" :key="compKey(adata, key)" :label="adata['label']"
+        :name="adata['tabName']">
+        <el-scrollbar height="100%" :class="{ 'dragging-area': isDragging }">
+          <draggable @add="(evt: Event) => onDragAdd(evt, adata['items'])" @dragover="checkItem(adata)"
+            class="tab-design" group="starHorseGroup" animation="100" :item-key="uuid()" ghostClass="ghost"
+            :list="adata['items']">
             <template #item="{ element: data }">
 
-              <div class="comp-item" :style="{marginTop:isContainer(data)?'25px':'10px'}">
-                <component
-                    :key="data.id"
-                    :field="data"
-                    :isDesign="isDesign"
-                    :disabled="disabled"
-                    :formInfo="formInfo"
-                    :is="itemCheck(data)"
-                    :parentField="field"
-                    v-model:formData="formData"
-                />
+              <div class="comp-item" :style="{ marginTop: isContainer(data) ? '25px' : '10px' }">
+                <component :key="data.id" :field="data" :isDesign="isDesign" :disabled="disabled" :formInfo="formInfo"
+                  :is="itemCheck(data)" :parentField="field" v-model:formData="formData" />
               </div>
             </template>
           </draggable>

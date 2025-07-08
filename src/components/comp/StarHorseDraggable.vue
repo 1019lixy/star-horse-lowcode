@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import {onMounted, PropType, ref} from 'vue';
-import {DynamicNode} from '@/components/types/DynamicNode';
-import {dynamicPageContextMenuData} from '@/plugins/AblesPlugin';
-import {compKey} from "@/api/system";
+import { onMounted, PropType, ref } from 'vue';
+import { DynamicNode } from '@/components/types/DynamicNode';
+import { dynamicPageContextMenuData } from '@/plugins/AblesPlugin';
+import { compKey } from "@/api/system";
 
 const props = defineProps({
   msg: {
@@ -194,48 +194,29 @@ onMounted(() => {
 </script>
 
 <template>
-  <div
-      class="node"
-      :class="{ active: isActive }"
-      :style="{
-      width: node.width + 'px !important',
-      height: node.height + 'px !important',
-      left: node.left + 'px!important',
-      top: node.top + 'px!important',
-      cursor: isActive ? 'move' : 'default',
-      zIndex: node.zIndex
-    }"
-      @contextmenu="contextmenu"
-      @mousedown="dragStart"
-      @click.stop="selectItem"
-      @mouseup="endAction"
-      @mousemove="dragAction"
-  >
+  <div class="node" :class="{ active: isActive }" :style="{
+    width: node.width + 'px !important',
+    height: node.height + 'px !important',
+    left: node.left + 'px!important',
+    top: node.top + 'px!important',
+    cursor: isActive ? 'move' : 'default',
+    zIndex: node.zIndex
+  }" @contextmenu="contextmenu" @mousedown="dragStart" @click.stop="selectItem" @mouseup="endAction"
+    @mousemove="dragAction">
     <div class="node__wrapper">
-      <div
-          v-if="isActive"
-          class="node-line node-line-left"
-          :style="{ 'border-width': '1px', 'border-color': 'red' }"
-      ></div>
-      <div v-if="isActive" class="node-line node-line-top" style="{'border-width': '3px', 'border-color': 'red'}"></div>
-      <!--        <div class="node-line node-line&#45;&#45;label" style="font-size: 64.8px;"><h3>{{ item.name }}</h3></div>-->
-      <div
-          class="node-point"
-          :class="'node-point-' + item"
-          v-for="(item,key) in pointList"
-          :key="compKey(item,key)"
-          @mousedown="rangeMove($event, item)"
-          v-if="isActive"
-      ></div>
-      <!--      <div class="node-menu" :style="{'transform-origin': '0px 0px',transform: 'scale(3.6)'}"></div>-->
+      <div v-if="isActive" class="node-line node-line-left" :style="{ 'border-width': '1px', 'border-color': 'red' }">
+      </div>
+      <div v-if="isActive" class="node-line node-line-top" :style="{ 'border-width': '3px', 'border-color': 'red' }">
+      </div>
+      <div class="node-point" :class="'node-point-' + item" v-for="(item, key) in pointList" :key="compKey(item, key)"
+        @mousedown="rangeMove($event, item)" v-if="isActive"></div>
       <div class="node-item node-content">
         <h3>{{ node.name }}</h3>
       </div>
-      <!--      <div class="node-mask"></div>-->
     </div>
   </div>
   <Teleport to="body">
-    <ContentMenu ref="contentMenuRef" :menu-data="dynamicPageContextMenuData(node)"/>
+    <ContentMenu ref="contentMenuRef" :menu-data="dynamicPageContextMenuData(node)" />
   </Teleport>
 </template>
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted} from 'vue';
+import { onMounted } from 'vue';
 
 export interface DataTagProps {
   data: any;

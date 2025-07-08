@@ -1,22 +1,22 @@
 <script setup lang="ts" name="StarHorseIcon">
-import {computed} from 'vue';
+import { computed } from 'vue';
 
 const props = defineProps({
-  iconClass: {type: String, required: true},
-  className: {type: String},
-  title: {type: String, default: ''},
-  size: {type: String, default: '20px'},
-  width: {type: String, default: '24px'},
-  height: {type: String, default: '22px'},
-  marginLeft: {type: String, default: '0.1em'},
-  marginRight: {type: String, default: '0.1em'},
-  borderRadius: {type: String, default: '5px'},
-  boorderPadding: {type: String, default: '3px'},
+  iconClass: { type: String, required: true },
+  className: { type: String },
+  title: { type: String, default: '' },
+  size: { type: String, default: '20px' },
+  width: { type: String, default: '24px' },
+  height: { type: String, default: '22px' },
+  marginLeft: { type: String, default: '0.1em' },
+  marginRight: { type: String, default: '0.1em' },
+  borderRadius: { type: String, default: '5px' },
+  boorderPadding: { type: String, default: '3px' },
   // 图标是否有边框
-  boxShow: {type: Boolean, default: false},
-  border: {type: Boolean, default: false},
-  color: {type: String, default: 'var(--star-horse-style)'},
-  cursor: {type: String, default: 'default'}
+  boxShow: { type: Boolean, default: false },
+  border: { type: Boolean, default: false },
+  color: { type: String, default: 'var(--star-horse-style)' },
+  cursor: { type: String, default: 'default' }
 });
 const iconName = computed(() => `sh-${props.iconClass}`);
 const svgClass = computed(() => {
@@ -60,5 +60,5 @@ const svgClass = computed(() => {
 }
 </style>
 <template>
-  <i aria-hidden="false" :class="[svgClass,iconName]" :title="title"/>
+  <i aria-hidden="false" :class="[svgClass, iconName]" :title="title" />
 </template>

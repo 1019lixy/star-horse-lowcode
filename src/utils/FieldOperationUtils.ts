@@ -1,6 +1,6 @@
-import {uuid} from '@/api/system';
-import {computed} from 'vue';
-import {useDesignFormStore} from '@/store/DesignForm';
+import { uuid } from '@/api/system';
+import { computed } from 'vue';
+import { useDesignFormStore } from '@/store/DesignForm';
 import piniaInstance from '@/store';
 
 const designForm = useDesignFormStore(piniaInstance);
@@ -74,11 +74,11 @@ export function fieldCopy(data: any, type: string) {
     mvData['compType'] = type;
     mvData['itemType'] = reData.itemType;
     if (reData.itemType == 'box') {
-        mvData.preps['elements'] = [{rowIndex: 1, columns: [{colIndex: 1, colspan: 24, items: []}]}];
+        mvData.preps['elements'] = [{ rowIndex: 1, columns: [{ colIndex: 1, colspan: 24, items: [] }] }];
     } else if (reData.itemType == 'table') {
-        mvData.preps['elements'] = [{colIndex: 1, columns: 1, items: []}];
+        mvData.preps['elements'] = [{ colIndex: 1, columns: 1, items: [] }];
     } else if (reData.itemType == 'dytable') {
-        mvData.preps['elements'] = [{colIndex: 1, columns: [{colIndex: 1, colspan: 1, rowspan: 1, items: []}]}];
+        mvData.preps['elements'] = [{ colIndex: 1, columns: [{ colIndex: 1, colspan: 1, rowspan: 1, items: [] }] }];
     }
     return mvData;
 }

@@ -1,5 +1,5 @@
-import {Config} from '@/api/settings';
-import {SearchParams} from '@/components/types/Params';
+import { Config } from '@/api/settings';
+import { SearchParams } from '@/components/types/Params';
 
 export function getToken() {
     return sessionStorage.getItem(Config.TokenKey);
@@ -47,7 +47,7 @@ export function getCustomerParam(propertyName: string = ''): SearchParams | null
     if (!customerInfo || !propertyName) {
         return null;
     }
-    return {propertyName: propertyName, value: customerInfo.dataNo};
+    return { propertyName: propertyName, value: customerInfo.dataNo };
 }
 
 export function getUserInfo() {

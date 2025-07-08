@@ -39,9 +39,8 @@ const itemAction = (prep: any) => {
 <template>
   <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
     :parentField="parentField">
-    <div class="cell-header" @click="itemAction('click')">
-      <div :style="{
-        display: 'flex',
+    <div class="h-full w-full" @click="itemAction('click')">
+      <div class="flex" :style="{
         verticalAlign: field.preps?.verticalAlign ?? 'middle',
         justifyContent: field.preps?.justifyContent ?? 'left',
         alignItems: field.preps?.alignItems ?? 'left',
@@ -59,9 +58,4 @@ const itemAction = (prep: any) => {
     </div>
   </starhorse-form-item>
 </template>
-<style lang="scss" scoped>
-.cell-header {
-  width: 100%;
-  height: 100%;
-}
-</style>
+<style lang="scss" scoped></style>

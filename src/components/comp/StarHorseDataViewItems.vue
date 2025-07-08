@@ -1,18 +1,18 @@
 <script setup lang="ts" name="StarHorseDataViewObject">
-import {ModelRef, PropType} from 'vue';
-import {PageFieldInfo} from '@/components/types/PageFieldInfo';
-import {commonParseCodeToName} from '@/api/star_horse_utils';
-import {compKey} from "@/api/system";
+import { ModelRef, PropType } from 'vue';
+import { PageFieldInfo } from '@/components/types/PageFieldInfo';
+import { commonParseCodeToName } from '@/api/star_horse_utils';
+import { compKey } from "@/api/system";
 
 const props = defineProps({
   // compUrl: {type: Object as PropType<ApiUrls>},
-  fieldList: {type: Object as PropType<PageFieldInfo>, required: true},
-  objectName: {type: String},
-  subFormFlag: {type: String, default: 'N'},
-  batchName: {type: String, default: 'batchDataList'},
-  batchFieldName: {type: String, default: 'batchFieldList'},
-  primaryKey: {type: [String, Object] as PropType<string | any>},
-  commonFormat: {type: Function, required: true}
+  fieldList: { type: Object as PropType<PageFieldInfo>, required: true },
+  objectName: { type: String },
+  subFormFlag: { type: String, default: 'N' },
+  batchName: { type: String, default: 'batchDataList' },
+  batchFieldName: { type: String, default: 'batchFieldList' },
+  primaryKey: { type: [String, Object] as PropType<string | any> },
+  commonFormat: { type: Function, required: true }
 });
 const dataForm: ModelRef<any> = defineModel('dataForm');
 const _compKey = compKey;
@@ -41,18 +41,10 @@ const checkItemType = (item: any) => {
 </script>
 <template>
   <template v-for="item in fieldList.fieldList" :key="_compKey(item,checkItemType(item))">
-    <component :is="checkItemType(item)"  :item="item" v-model:dataForm="dataForm" :commonFormat="itemCommonFormat"/>
+    <component :is="checkItemType(item)" :item="item" v-model:dataForm="dataForm" :commonFormat="itemCommonFormat" />
   </template>
-  <view-table-item
-      :item="fieldList"
-      :batch-field-name="batchFieldName"
-      v-model:dataForm="dataForm"
-      :commonFormat="itemCommonFormat"
-  />
-  <div class="view-footer"></div>
+  <view-table-item :item="fieldList" :batch-field-name="batchFieldName" v-model:dataForm="dataForm"
+    :commonFormat="itemCommonFormat" />
+  <div class="h-[30px]"></div>
 </template>
-<style lang="scss" scoped>
-.view-footer {
-  height: 30px;
-}
-</style>
+<style lang="scss" scoped></style>
