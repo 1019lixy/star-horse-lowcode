@@ -1,5 +1,7 @@
 <template>
 
+<star-horse-icon icon-class="flexable-alignCenter" size="80px" width="80px" height="80px"/>
+<star-horse-icon icon-class="delete" size="80px" width="80px" height="80px"/>
  <!--  <el-form :model="formData">
     <el-form-item prop="jsonArray">
       <input-item :field="{
