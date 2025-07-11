@@ -57,6 +57,9 @@ let currentRow = ref<any>({});
 const dynamicHandleAddForm = async (row: any, type: string) => {
   currentRow.value = row;
   rowDialogVisible.value = true;
+  if (!dataForm.value[props.batchName]) {
+    dataForm.value[props.batchName] = [];
+  }
   await nextTick();
   rowDataFormRef.value.setFormData(row);
 };
@@ -104,7 +107,7 @@ const dynamicHandleAddRow = (row: any, type: number) => {
   let fieldList = props.fieldList;
   for (let ind in fieldList) {
     let temp = fieldList[ind];
-    if (temp.actions) {
+    if (typeof temp.actions == "function") {
       temp.actions(dataForm, 'oper');
     }
   }
@@ -227,7 +230,6 @@ const init = async () => {
       }
     }
   }
-  console.log(dataForm.value[props.batchName]);
   moveColumn();
   await nextTick();
   emits('inited');
@@ -308,11 +310,11 @@ watch(
         scrollSensitivity: 60,
         scrollDebounce: 20
       }" :use-virtual="dataForm[batchName]?.length > 10" :header-cell-style="{
-          background: '#f2f2f2',
-          color: '#707070',
-          'font-size': '12px',
-          'background-image': '-webkit-gradient(linear,left 0,left 100%,from(#f8f8f8),to(#ececec))'
-        }" :cell-style="{ 'font-size': '12px' }">
+        background: '#f2f2f2',
+        color: '#707070',
+        'font-size': '12px',
+        'background-image': '-webkit-gradient(linear,left 0,left 100%,from(#f8f8f8),to(#ececec))'
+      }" :cell-style="{ 'font-size': '12px' }">
       <el-table-column type="selection" fixed="left" width="50" align="center" v-if="showCheckBox" />
       <el-table-column label="序号" align="center" prop="xh" width="50" />
       <el-table-column prop="" label="排序" width="60">

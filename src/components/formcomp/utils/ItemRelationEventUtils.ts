@@ -166,8 +166,9 @@ const allAction = (context: any, emits: any, formData: any, actionName: string, 
  * @param emits
  * @param formData
  * @param code
+ * @param evtName 时间名称
  */
-const buttonAction = (context: any, emits: any, formData: any, code: string) => {
+const buttonAction = (context: any, emits: any, formData: any, code: string, evtName: string = "click") => {
     const currentData = isRef(formData) ? formData.value : formData;
     if (code) {
         userFunction(code, context, currentData);
@@ -175,9 +176,11 @@ const buttonAction = (context: any, emits: any, formData: any, code: string) => 
         const field = context.field as any;
         currentData['starHorseBtnName'] = field.fieldName;
         if (field.actions) {
-            field.actions[field.starHorseBtnName] = () => { };
+            field.actions[evtName](formData);
+        } else {
+            emits('selfFunc', currentData);
         }
-        emits('selfFunc', currentData);
+
     }
 };
 /**
