@@ -75,7 +75,7 @@ const loadByPage = (isInit: boolean = false) => {
     let fieldName = loadSourceField();
     let value: any = formData.value[props.field.aliasName || props.field.fieldName];
     if (fieldName && value) {
-      if ('Y' == props.field.preps?.multiple) {
+      if (props.field.preps?.multiple) {
         searchData.value.push(createCondition(fieldName, Array.isArray(value) ? value : value.split(';'), 'in'));
       } else {
         searchData.value.push(createCondition(fieldName, value));

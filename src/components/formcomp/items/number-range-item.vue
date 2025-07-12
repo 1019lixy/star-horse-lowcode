@@ -14,7 +14,7 @@
           :placeholder="field.preps?.minPlaceholder" @change="itemAction('change')" @blur="handleBlur"
           @focus="handleFocus" v-model="formData[minName]" />
         <div class="to">
-          <span>{{ field.preps?.to || "-" }}</span>
+          <span>{{ splitName }}</span>
         </div>
         <el-input-number :fid="maxName" :controls="false" :disabled="checkIsDisabled(props)" v-bind="field.preps"
           @change="itemAction('change')" @blur="handleBlur" @focus="handleFocus"
@@ -70,8 +70,8 @@ const maxName = computed(() => {
 const minName = computed(() => {
   return props.field.preps?.minName ?? props.field.fieldName + 'Min'
 });
-const splitName=computed(()=>{
-  return props.field.preps?.splitName??'-';
+const splitName = computed(() => {
+  return props.field.preps?.splitName ?? '-';
 })
 let actionName = shallowRef('normal');
 let slotStyle = shallowRef('');

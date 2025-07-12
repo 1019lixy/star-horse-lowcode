@@ -51,7 +51,7 @@
     "@vitejs/plugin-vue-jsx": "^5.0.1",
     "@vueup/vue-quill": "^1.2.0",
     "axios": "^1.10.0",
-    "element-plus": "^2.10.3",
+    "element-plus": "^2.10.4",
     "glob": "^11.0.3",
     "jquery": "^3.7.1",
     "json5": "^2.2.3",

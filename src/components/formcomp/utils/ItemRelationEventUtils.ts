@@ -175,8 +175,13 @@ const buttonAction = (context: any, emits: any, formData: any, code: string, evt
     } else {
         const field = context.field as any;
         currentData['starHorseBtnName'] = field.fieldName;
-        if (field.actions) {
-            field.actions[evtName](formData);
+        const actions = field.actions;
+        if (actions) {
+            if (typeof actions === "function") {
+                actions(formData);
+            } else {
+                actions[evtName]?.(formData);
+            }
         } else {
             emits('selfFunc', currentData);
         }
