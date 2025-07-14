@@ -14,9 +14,17 @@ const dataForm = defineModel("dataForm");
   <slot name="header"></slot>
   <el-form :model="dataForm" v-bind="$attrs" class="data-form" ref="shFormRef">
     <el-scrollbar height="100%" v-if="needScroller">
-      <slot></slot>
+      <template v-if="$slots.default">
+        <slot></slot>
+      </template>
+      <slot v-else name="empty"></slot>
     </el-scrollbar>
-    <slot v-else></slot>
+    <template v-else>
+      <template v-if="$slots.default">
+        <slot></slot>
+      </template>
+      <slot v-else name="empty"></slot>
+    </template>
   </el-form>
   <slot name="button"></slot>
 </template>

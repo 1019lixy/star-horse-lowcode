@@ -1,21 +1,37 @@
 <script setup lang="ts" name="StarHorseHmenu">
-import { ModelRef, onMounted } from 'vue';
-import SystemSubMenu from '@/components/menu/SystemSubMenu.vue';
+import { ModelRef, onMounted, PropType } from 'vue';
+import MenuItem from '@/components/menu/MenuItem.vue';
 import { compKey } from "@/api/system";
-
+defineProps({
+  preps: {
+    type: Object as PropType<any>,
+    default: () => {
+      return {
+        id: "id",
+        value: 'value',
+        icon: "icon",
+        label: 'name',
+        children: 'children'
+      };
+    }
+  },
+});
+const emits = defineEmits(['selectItem']);
 let dataList: ModelRef<any> = defineModel("dataList");
 const initData = async () => {
 
 };
-
+const selectItem = (item: any) => {
+  emits('selectItem', item);
+}
 onMounted(() => {
   initData();
 });
 </script>
 <template>
-  <el-menu class="system-menu" mode="horizontal" v-bind="$attrs">
+  <el-menu class="system-menu" v-bind="$attrs">
     <template v-for="(sitem, key) in dataList" :key="compKey(sitem,key)">
-      <SystemSubMenu :item="sitem" />
+      <MenuItem :item="sitem" @selectItem="selectItem" :preps="preps" />
     </template>
   </el-menu>
 </template>
