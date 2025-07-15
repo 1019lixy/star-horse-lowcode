@@ -4,7 +4,7 @@ import { useSelfOperationStore } from '@/store/SelfOperation';
 import piniaInstance from '@/store';
 import { compKey, fieldPlaceholder, uuid, dateCompList, inputCompList, selectCompList } from '@/api/system';
 import { Config } from '@/api/settings';
-import { checkVisible } from '@/api/form_utils';
+import { checkVisible, filterProperties } from '@/api/form_utils';
 import Help from "@/components/help.vue";
 
 const props = defineProps({
@@ -64,8 +64,11 @@ const actionDispatcher = (act: string, ...params: any[]) => {
 };
 
 const fieldType = () => {
+  const inputList = inputCompList();
+  const dateNameList = dateCompList();
+  const selectNameList = selectCompList();
   itemType.value = props.item?.type || props.item?.fieldType || 'input';
-  if (dateCompList().includes(itemType.value)) {
+  if (dateNameList.includes(itemType.value)) {
     itemType.value = 'datetime';
     //日期默认以时间戳赋值
   }
@@ -74,25 +77,28 @@ const fieldType = () => {
   }
   const keys = Object.keys(props.item.actions);
   if (props.source == 4) {
-    const actionKey = inputCompList().includes(itemType.value) ? "keyup.enter" : "change";
+    const actionKey = inputList.includes(itemType.value) ? "keyup.enter" : "change";
     if (!keys.includes(actionKey)) {
       props.item.actions[actionKey] = actionKey;
     }
   } else if (props.source == 5) {
     //列表组件动态增加blur 和change 事件
-    const actionKey = inputCompList().includes(itemType.value) ? "blur" : selectCompList().includes(itemType.value) ? "change" : null;
+    const actionKey = inputList.includes(itemType.value) ? "blur" : selectNameList.includes(itemType.value) ? "change" : null;
     if (actionKey && !keys.includes(actionKey)) {
       props.item.actions[actionKey] = actionKey;
     }
   }
 }
+const exclusions = ["name", "id", "label", "itemNameLabel", "autocomplete", "maxLength"];
 const init = () => {
   fieldType();
   if (!props.item['id']) {
-    props.item['id'] = uuid();
+    props.item['id'] = props.item.preps?.id ?? uuid();
   }
   fieldPlaceholder(props.item, itemType.value);
   if (props.item.preps) {
+    //防止name 与Vue重名,导致渲染异常
+    props.item.preps = { ...filterProperties(props.item.preps, exclusions) }
     props.item.preps["readonly"] = props.item?.readonly || props.source == 3;
     let keys = Object.keys(props.item.preps);
     for (let key in keys) {

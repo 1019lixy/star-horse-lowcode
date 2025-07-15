@@ -1,14 +1,13 @@
 <script setup lang="ts" name="StarHorseSearchComp">
-import { computed, nextTick, onMounted, PropType, ref } from 'vue';
-import { ApiUrls } from '@/components/types/ApiUrls';
-import { SearchFields, SelectOption } from '@/components/types/SearchProps';
-import { isJson, searchMatchList } from '@/api/star_horse_utils';
-import { useGlobalConfigStore } from '@/store/GlobalConfig';
-import piniaInstance from '@/store';
-import { analysisSearchData } from '@/utils/preview';
-import { SearchParams } from '@/components/types/Params';
 import { Config } from '@/api/settings';
-import { compKey } from "@/api/system";
+import { isJson, searchMatchList } from '@/api/star_horse_utils';
+import { ApiUrls } from '@/components/types/ApiUrls';
+import { SearchParams } from '@/components/types/Params';
+import { SearchFields, SelectOption } from '@/components/types/SearchProps';
+import piniaInstance from '@/store';
+import { useGlobalConfigStore } from '@/store/GlobalConfig';
+import { analysisSearchData } from '@/utils/preview';
+import { computed, nextTick, onMounted, PropType, ref } from 'vue';
 
 let matchTypeList = ref<SelectOption[]>();
 let sarchIcon = ref<string>('search_down');
@@ -102,7 +101,7 @@ defineExpose({
 <template>
   <div class="search_content">
     <el-form class="search_area" :size="compSize" v-if="formData?.fieldList">
-      <template v-for="(item, index) in formData.fieldList" :key="compKey(item,index)" v-if="defaultSearch">
+      <template v-for="(item, index) in formData.fieldList" v-if="defaultSearch">
         <el-form-item :size="compSize" :label="item.label" v-if="item.defaultVisible" :prop="item.fieldName">
           <template v-if="(!item.type || item.type == 'input') && !item.disabled" :span="6">
             <el-select :size="compSize" style="width: 90px !important; height: 100%; padding-top: 2px"

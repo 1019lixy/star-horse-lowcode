@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { computed, PropType } from 'vue';
 import { compKey } from "@/api/system";
+defineOptions({
+  name: 'MenuItem',
+})
 const props = defineProps({
   item: { type: Object as PropType<any>, required: true },
   preps: {
@@ -18,14 +21,14 @@ const props = defineProps({
   level: { type: Number, default: 1 }
 });
 const emits = defineEmits(['selectItem']);
-const loadMenuFun = (item: any) => {
+const selectItem = (item: any) => {
   emits('selectItem', item);
 }
 let menuColor = computed(() => (props.level > 1 ? 'var(--star-horse-shadow)' : 'var(--star-horse-background)'));
 </script>
 <template>
   <el-sub-menu popper-class="popper-class" v-if="item[preps.children??'children']?.length > 0" :index="item[preps.id]"
-    @click="loadMenuFun(item)">
+    @click="selectItem(item)">
     <template #title>
       <el-icon class="star-icon">
         <component :is="item[preps.icon] || 'document'" />
@@ -33,10 +36,10 @@ let menuColor = computed(() => (props.level > 1 ? 'var(--star-horse-shadow)' : '
       <span>{{ item[preps.label] }} </span>
     </template>
     <template v-for="(sitem, key) in item[preps.children??'children']" :key="compKey(sitem,key)">
-      <MenuItem :item="sitem" :level="level + 1" :preps="preps" />
+      <MenuItem :item="sitem" :level="level + 1" :preps="preps" @selectItem="selectItem" />
     </template>
   </el-sub-menu>
-  <el-menu-item popper-class="popper-class" v-else :index="item[preps.id]" @click="loadMenuFun(item)">
+  <el-menu-item popper-class="popper-class" v-else :index="item[preps.id]" @click="selectItem(item)">
     <el-icon class="star-icon">
       <component :is="item[preps.icon] || 'document'" />
     </el-icon>

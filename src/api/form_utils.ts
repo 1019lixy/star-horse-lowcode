@@ -221,3 +221,17 @@ export function parseListData(item: any, val: any) {
         || unref(item.optionList)?.find((temp: any) => temp.value == val)?.name
         || val;
 }
+
+/**
+ * 过滤对象属性
+ * @param obj 要过滤的对象
+ * @param keysToRemove 要移除的属性键数组
+ */
+export function filterProperties(obj: any, keysToRemove: string[]) {
+    return Object.entries(obj).reduce((acc, [key, value]) => {
+        if (!keysToRemove.includes(key)) {
+            acc[key] = value;
+        }
+        return acc;
+    }, {} as Record<string, any>);
+}
