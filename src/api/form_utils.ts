@@ -228,10 +228,10 @@ export function parseListData(item: any, val: any) {
  * @param keysToRemove 要移除的属性键数组
  */
 export function filterProperties(obj: any, keysToRemove: string[]) {
-    return Object.entries(obj).reduce((acc, [key, value]) => {
-        if (!keysToRemove.includes(key)) {
-            acc[key] = value;
+    Object.keys(obj).forEach(key => {
+        if (keysToRemove.includes(key)) {
+            delete obj[key];
         }
-        return acc;
-    }, {} as Record<string, any>);
+    });
+
 }

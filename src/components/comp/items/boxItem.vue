@@ -34,7 +34,7 @@ onMounted(() => {
 <template>
   <el-row v-if="Array.isArray(item)" :gutter="10">
     <template v-for="(sitem, index) in item" :key="compKey(sitem,index)">
-      <el-col :span="sitem.colspan || sitem.preps?.colspan || 24 / item.length"
+      <el-col :span="sitem.colspan || sitem.preps?.colspan || 24 / item.filter(temp=>temp.formVisible).length"
         v-if="sitem.type != 'button' && sitem.type != 'usercomp'">
         <el-form-item :size="compSize" :label="sitem.preps?.hideLabel ? '' : sitem.label" :required="sitem.required"
           :prop="loadProp(propPrefix, sitem.fieldName, -1, -1)" :labelPosition="parentPreps?.labelPosition"
@@ -46,7 +46,7 @@ onMounted(() => {
         <star-horse-item v-else-if="sitem.viewVisible || checkVisible(sitem, dataForm)" :compSize="compSize"
           :primaryKey="primaryKey" v-model:dataForm="dataForm" :item="sitem" :dataIndex="dataIndex" :source="source" />
       </el-col>
-      <el-col :span="sitem.colspan || sitem.preps?.colspan || 24 / item.length" v-else>
+      <el-col :span="sitem.colspan || sitem.preps?.colspan || 24 /  item.filter(temp=>temp.formVisible).length" v-else>
         <star-horse-item :primaryKey="primaryKey" :compSize="compSize" v-model:dataForm="dataForm" :item="sitem"
           :dataIndex="dataIndex" :source="source" />
       </el-col>
