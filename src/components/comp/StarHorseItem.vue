@@ -98,8 +98,9 @@ const init = () => {
   fieldPlaceholder(props.item, itemType.value);
   if (props.item.preps) {
     //防止name 与Vue重名,导致渲染异常
-    filterProperties(props.item.preps, exclusions) ;
+    filterProperties(props.item.preps, exclusions);
     props.item.preps["readonly"] = props.item?.readonly || props.source == 3;
+    props.item.preps["starHorseFieldSource"] = props.source;
     let keys = Object.keys(props.item.preps);
     for (let key in keys) {
       let val = props.item.preps[key];
@@ -107,6 +108,7 @@ const init = () => {
         props.item.preps[key] = val == 'Y';
       }
     }
+
   }
   compPreps();
 }

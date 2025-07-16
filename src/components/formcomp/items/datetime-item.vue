@@ -3,7 +3,7 @@
     :parentField="parentField">
     <el-date-picker :fid="field.fieldName" :disabled="checkIsDisabled(props)" v-bind="field.preps"
       :format="field.preps?.format || 'YYYY-MM-DD HH:mm:ss'" :value-format="field.preps?.valueFormat"
-      date-format="YYYY-MM-DD" time-format="HH:mm" v-on="getDynamicEvents(props, itemAction)"
+      date-format="YYYY-MM-DD" time-format="HH:mm" v-on="getDynamicEvents(props, itemAction)" @change="itemAction('change')"
       v-model="formData[field.fieldName]"></el-date-picker>
   </starhorse-form-item>
 </template>

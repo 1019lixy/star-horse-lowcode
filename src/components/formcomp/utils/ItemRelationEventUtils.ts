@@ -196,11 +196,10 @@ const checkIsDisabled = (attrs: any) => {
     // const {attrs} = context;
     const { field } = attrs;
     const fieldName = field.fieldName;
-    const isExplicitlyDisabled = attrs?.disabled || attrs.editDisabled || field.disabled
-        || field.preps?.disabled || field.editDisabled || field.preps?.editDisabled;
-    const isImplicitlyDisabled = !attrs?.formData?.[`_${fieldName}Editable`] && field?.preps?.disabled === 'Y';
-
-    return isExplicitlyDisabled === true || isImplicitlyDisabled === true;
+    const isExplicitlyDisabled = attrs?.disabled || field.disabled || field.preps?.disabled;
+    const eidtDidsabled = (attrs.editDisabled || field.editDisabled || field.preps?.editDisabled) && field.preps?.starHorseFieldSource != 1;
+    const isImplicitlyDisabled = !attrs?.formData?.[`_${fieldName}Editable`] && field?.preps?.disabled;
+    return eidtDidsabled === true || isExplicitlyDisabled === true || isImplicitlyDisabled === true;
 };
 const useFormField = (context: any, field: any) => {
     const fieldName = computed(() => field.fieldName);
