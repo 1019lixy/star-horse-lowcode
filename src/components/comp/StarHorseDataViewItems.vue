@@ -40,9 +40,8 @@ const checkItemType = (item: any) => {
 }
 </script>
 <template>
-  <template v-for="item in fieldList.fieldList" :key="_compKey(item,checkItemType(item))">
-    <component :is="checkItemType(item)" :item="item" v-model:dataForm="dataForm" :commonFormat="itemCommonFormat" />
-  </template>
+  <component v-for="item in fieldList.fieldList" :key="_compKey(item, checkItemType(item))" :is="checkItemType(item)"
+    :item="item" v-model:dataForm="dataForm" :commonFormat="itemCommonFormat" />
   <view-table-item :item="fieldList" :batch-field-name="batchFieldName" v-model:dataForm="dataForm"
     :commonFormat="itemCommonFormat" />
   <div class="h-[30px]"></div>

@@ -110,7 +110,8 @@ provide('dialogOperation', clickFunction);
         :show-close="false" :draggable="draggable" :align-center="true" v-model="windowsType" @close="beforeClose"
         @open="open" :width="boxWidth" :style="dialogStyle">
         <template #header="{ close }">
-          <h3 @dblclick="fullScreen">{{ title || (source == 3 ? i18n("dialog.viewTitle") : i18n("dialog.editTitle")) }}</h3>
+          <h3 @dblclick="fullScreen">{{ title || (source == 3 ? i18n("dialog.viewTitle") : i18n("dialog.editTitle")) }}
+          </h3>
           <div class="my-header">
             <template v-if="!hideFullScreenIcon">
               <el-button style="background: var(--star-horse-style); color: var(--star-horse-white)" :size="compSize"
@@ -154,15 +155,14 @@ provide('dialogOperation', clickFunction);
               style="background: var(--star-horse-style); color: var(--star-horse-white)"
               v-if="isShowSave && isShowBtnContinue">
               <star-horse-icon icon-class="save" cursor="pointer" />{{ i18n("dialog.saveContinue") }}</el-button>
-            <template v-for="item in userBtn" :key="_compKey(item,item.authority)">
-              <el-button @click="callFunc(item.funcName)" :disabled="item.disabled ?? false" :style="{
+            <el-button v-for="item in userBtn" :key="_compKey(item, item.authority)" @click="callFunc(item.funcName)"
+              :disabled="item.disabled ?? false" :style="{
                 background: item.disabled ? 'var(--star-horse-disable)' : 'var(--star-horse-style)',
                 color: 'var(--star-horse-white)'
               }" :size="compSize">
-                <star-horse-icon :icon-class="item.icon" cursor="pointer" style="color: var(--star-horse-white)" />
-                {{ item.btnName }}
-              </el-button>
-            </template>
+              <star-horse-icon :icon-class="item.icon" cursor="pointer" style="color: var(--star-horse-white)" />
+              {{ item.btnName }}
+            </el-button>
             <el-button @click="operation('resetForm', 'reset')" :size="compSize" link v-if="isShowReset">
               <star-horse-icon icon-class="undo" cursor="pointer" style="color: var(--star-horse-style)" />
               {{ i18n("dialog.reset") }}</el-button>

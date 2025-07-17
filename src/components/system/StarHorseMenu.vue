@@ -30,9 +30,8 @@ onMounted(() => {
 </script>
 <template>
   <el-menu class="system-menu" v-bind="$attrs">
-    <template v-for="(sitem, key) in dataList" :key="compKey(sitem,key)">
-      <MenuItem :item="sitem" @selectItem="selectItem" :preps="preps" />
-    </template>
+    <MenuItem v-for="(sitem, key) in dataList" :key="compKey(sitem, key)" :item="sitem" @selectItem="selectItem"
+      :preps="preps" />
   </el-menu>
 </template>
 <style lang="scss" scoped>

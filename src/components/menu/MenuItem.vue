@@ -27,7 +27,7 @@ const selectItem = (item: any) => {
 let menuColor = computed(() => (props.level > 1 ? 'var(--star-horse-shadow)' : 'var(--star-horse-background)'));
 </script>
 <template>
-  <el-sub-menu popper-class="popper-class" v-if="item[preps.children??'children']?.length > 0" :index="item[preps.id]"
+  <el-sub-menu popper-class="popper-class" v-if="item[preps.children ?? 'children']?.length > 0" :index="item[preps.id]"
     @click="selectItem(item)">
     <template #title>
       <el-icon class="star-icon">
@@ -35,9 +35,8 @@ let menuColor = computed(() => (props.level > 1 ? 'var(--star-horse-shadow)' : '
       </el-icon>
       <span>{{ item[preps.label] }} </span>
     </template>
-    <template v-for="(sitem, key) in item[preps.children??'children']" :key="compKey(sitem,key)">
-      <MenuItem :item="sitem" :level="level + 1" :preps="preps" @selectItem="selectItem" />
-    </template>
+    <MenuItem :item="sitem" :level="level + 1" :preps="preps" @selectItem="selectItem"
+      v-for="(sitem, key) in item[preps.children ?? 'children']" :key="compKey(sitem, key)" />
   </el-sub-menu>
   <el-menu-item popper-class="popper-class" v-else :index="item[preps.id]" @click="selectItem(item)">
     <el-icon class="star-icon">

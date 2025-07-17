@@ -28,7 +28,7 @@
     <div class="cron-item">
       <el-radio size="small" v-model="radioValue" :label="6" border> 指定</el-radio>
       <el-checkbox-group  size="small"  v-model="checkboxList"  >
-        <el-checkbox class="my-[5px]" :border="true" v-for="(item, index) of weekList" :key="item" :value="item + 1" :label="item<10?'0'+item:item"/>
+        <el-checkbox class="my-[5px]" :border="true" v-for="item of weekList" :key="item" :value="item + 1" :label="Number(item) < 10 ? '0' + item : item"/>
       </el-checkbox-group>
     </div>
   </div>

@@ -21,6 +21,10 @@ export type SearchProps = {
     helpMsg?: string,
     minWidth?: string,
     /**
+     * 表的别名
+     */
+    prefix?: string,
+    /**
      * 弹窗数据配置
      */
     params?: CompParams,

@@ -118,9 +118,8 @@ defineExpose({
     :scroll-to-error="formInfo['scrollToError'] ?? true" :show-message="formInfo['showMessage'] ?? true"
     :size="formInfo['size']" :status-icon="formInfo['statusIcon'] ?? true"
     :validate-on-rule-change="formInfo['validateOnRuleChange'] ?? true">
-    <template v-for="(data, key) in fieldList" :key="compKey(data,key,false,'dyform')">
-      <component :field="data" :formData="dataForm" :is="itemCheck(data)" />
-    </template>
+    <component v-for="(data, key) in fieldList" :key="compKey(data, key, false, 'dyform')" :field="data"
+      :formData="dataForm" :is="itemCheck(data)" />
     <el-form-item v-if="typeModel == 'tab'">
       <el-button @click="merge" style="background: var(--star-horse-style); color: var(--star-horse-white)">
         <star-horse-icon icon-class="save" style="color: var(--star-horse-white)" />

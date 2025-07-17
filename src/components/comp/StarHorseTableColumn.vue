@@ -7,7 +7,7 @@ import { Config } from '@/api/settings';
 import { createComponent } from '@/api/system';
 import { dateTypes, parseDateByType } from "@/api/date_utils";
 import { DyCompField } from "@/components/types";
-
+import $ from 'jquery';
 const props = defineProps({
   compUrl: { type: Object },
   batchName: { type: String, default: '' },

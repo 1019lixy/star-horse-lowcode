@@ -101,7 +101,7 @@ defineExpose({
 <template>
   <div class="search_content">
     <el-form class="search_area" :size="compSize" v-if="formData?.fieldList">
-      <template v-for="(item, index) in formData.fieldList" v-if="defaultSearch">
+      <template v-for="item in formData.fieldList" v-if="defaultSearch">
         <el-form-item :size="compSize" :label="item.label" v-if="item.defaultVisible" :prop="item.fieldName">
           <template v-if="(!item.type || item.type == 'input') && !item.disabled" :span="6">
             <el-select :size="compSize" style="width: 90px !important; height: 100%; padding-top: 2px"

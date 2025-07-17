@@ -1,27 +1,27 @@
 <script lang="ts" setup name="StarHorseTableComp">
-import { ApiUrls } from '@/components/types/ApiUrls';
-import { computed, inject, onMounted, onUpdated, PropType, reactive, ref, unref, watch } from 'vue';
-import { download, postRequest } from '@/api/star_horse_apis';
-import { PageProps } from '@/components/types/PageProps';
-import { closeLoad, createCondition, deleteByIds, isJson, load, loadData } from '@/api/star_horse_utils';
-import { BtnHideCondition, SearchParams } from '@/components/types/Params';
-import Sortable from 'sortablejs';
-import { DialogProps } from '@/components/types/DialogProps';
-import { error, warning } from '@/utils/message';
-import { ExpandTable, FieldInfo, OrderByInfo, PageFieldInfo, UserFuncInfo } from '@/components/types/PageFieldInfo';
-import { useDynamicFormStore } from '@/store/DynamicForm';
-import piniaInstance from '@/store';
-import { useRoute } from 'vue-router';
-import { useButtonPermissionStore } from '@/store/ButtonPermission';
-import TableColumn from '@/components/comp/items/tableColumn.vue';
-import { useGlobalConfigStore } from '@/store/GlobalConfig';
-import { analysisFields } from '@/utils/preview';
-import { isSystemManage } from '@/utils/auth';
-import { compKey, removeEmptyCondition, uuid } from '@/api/system';
 import { Config } from '@/api/settings';
+import { download, postRequest } from '@/api/star_horse_apis';
+import { closeLoad, createCondition, deleteByIds, isJson, load, loadData } from '@/api/star_horse_utils';
+import { compKey, removeEmptyCondition, uuid } from '@/api/system';
 import Tablebtn from '@/components/comp/items/tablebtn.vue';
+import TableColumn from '@/components/comp/items/tableColumn.vue';
 import Help from '@/components/help.vue';
-import { BtnAuth, PreValid } from "@/components/types/BtnAuth";
+import { ApiUrls } from '@/components/types/ApiUrls';
+import { PreValid } from "@/components/types/BtnAuth";
+import { DialogProps } from '@/components/types/DialogProps';
+import { ExpandTable, FieldInfo, OrderByInfo, PageFieldInfo, UserFuncInfo } from '@/components/types/PageFieldInfo';
+import { PageProps } from '@/components/types/PageProps';
+import { BtnHideCondition, SearchParams } from '@/components/types/Params';
+import piniaInstance from '@/store';
+import { useButtonPermissionStore } from '@/store/ButtonPermission';
+import { useDynamicFormStore } from '@/store/DynamicForm';
+import { useGlobalConfigStore } from '@/store/GlobalConfig';
+import { isSystemManage } from '@/utils/auth';
+import { error, warning } from '@/utils/message';
+import { analysisFields } from '@/utils/preview';
+import Sortable from 'sortablejs';
+import { computed, inject, onMounted, onUpdated, PropType, reactive, ref, unref, watch } from 'vue';
+import { useRoute } from 'vue-router';
 
 const dynamicForm = useDynamicFormStore(piniaInstance);
 const props = defineProps({

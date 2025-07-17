@@ -176,7 +176,7 @@ export function itemCheck(item: any) {
         } else if (isJson(item.actions)) {
             let tempRecord: Record<string, Function> = {};
             Object.entries(item.actions).forEach(([key, value]) => {
-                tempRecord[key] = new Function(value);
+                tempRecord[key] = new Function(value as any);
             });
             item.actions = tempRecord;
         }
@@ -276,7 +276,7 @@ export function getDynamicEvents(props: any, recall: Function) {
     // 统一处理带修饰符的事件
     const handleEvent = (eventName: string, e: any) => {
         if (eventName.includes('.')) {
-            const [baseEvent, modifier] = eventName.split('.');
+            const  modifier = eventName.split('.')[1];
             if (modifier == e.key.toLowerCase()) {
                 console.log('成功触发事件:');
                 recall(modifier); // 传递完整事件名称
@@ -287,7 +287,7 @@ export function getDynamicEvents(props: any, recall: Function) {
     };
     actionNames?.forEach((actionName: string) => {
         if (actionName.includes('.')) {
-            const [baseEvent, modifier] = actionName.split('.');
+            const baseEvent = actionName.split('.')[0];
             events[baseEvent] = (e: Event) => handleEvent(actionName, e);
         } else {
             events[actionName] = (e: Event) => handleEvent(actionName, e);

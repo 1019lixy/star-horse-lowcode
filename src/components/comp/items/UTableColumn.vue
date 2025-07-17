@@ -23,13 +23,11 @@ const exclusionFields: string[] = ['divider', 'button', 'usercomp'];
     v-if="item.formVisible && !exclusionFields.includes(item.type)">
     <template #default="scope">
       <template v-if="item.batchFieldList?.length > 0">
-        <template v-for="(sitem) in item.batchFieldList" :key="_compKey(sitem,sitem.batchName)">
-          <star-horse-form-list style="min-height: 100px; width: 100% !important" v-model:dataForm="scope.row"
-            :compUrl="sitem['compUrl']" :primaryKey="sitem['primaryKey']" :batchName="sitem['batchName']"
-            :initRows="sitem['initRows']" :subFlag="true" :size="size" :source="source"
-            :defaultValues="batchFieldDefaultValues(sitem, scope.row)" :field-list="sitem['fieldList']"
-            :rules="sitem['rules'] || rules" />
-        </template>
+        <star-horse-form-list v-for="(sitem) in item.batchFieldList" :key="_compKey(sitem, sitem.batchName)"
+          style="min-height: 100px; width: 100% !important" v-model:dataForm="scope.row" :compUrl="sitem['compUrl']"
+          :primaryKey="sitem['primaryKey']" :batchName="sitem['batchName']" :initRows="sitem['initRows']"
+          :subFlag="true" :size="size" :source="source" :defaultValues="batchFieldDefaultValues(sitem, scope.row)"
+          :field-list="sitem['fieldList']" :rules="sitem['rules'] || rules" />
       </template>
       <template v-else>
         <sh-table-list-column :primaryKey="primaryKey" :batchName="batchName" :dataForm="scope.row" :size="size"

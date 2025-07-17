@@ -124,7 +124,7 @@ const operationRelation = async (relation: any, actionName: string, formData: an
 const allAction = (context: any, emits: any, formData: any, actionName: string, isInit: boolean = false) => {
     const currentData = unref(formData);
     //设计时的初始化不作处理
-    const field = context.field as any;
+    // const field = context.field as any;
     if (!isInit && actionName != 'normal') {
         try {
             emits('selfFunc', actionName, currentData);

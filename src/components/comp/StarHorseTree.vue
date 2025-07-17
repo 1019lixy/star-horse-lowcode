@@ -259,9 +259,8 @@ defineExpose({
     padding: 'unset'
   }">
     <div class="selected-data gap-2" v-if="showSelectData && selectedDataList?.length > 0">
-      <template v-for="item in selectedDataList" :key="_compKey(item,item[preps.value])">
-        <el-tag closable @close="operSelectData(item, false)">{{ item[preps.label] }}</el-tag>
-      </template>
+      <el-tag closable @close="operSelectData(item, false)" v-for="item in selectedDataList"
+        :key="_compKey(item, item[preps.value])">{{ item[preps.label] }}</el-tag>
     </div>
     <div class="tree-title">
       <div class="title flex items-center">{{ treeTitle }}&nbsp;
