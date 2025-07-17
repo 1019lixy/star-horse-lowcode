@@ -254,9 +254,8 @@ defineExpose({
 </script>
 
 <template>
-  <el-card class="inner_content" :style="{
+  <el-card class="inner_content h-full" :style="{
     width: collapse ? '60px' : 'unset',
-    height: '100%',
     padding: 'unset'
   }">
     <div class="selected-data gap-2" v-if="showSelectData && selectedDataList?.length > 0">
@@ -286,7 +285,6 @@ defineExpose({
             <el-dropdown-item v-if="btnVisible" command="add">添加数据</el-dropdown-item>
             <el-dropdown-item command="expand">展开全部</el-dropdown-item>
             <el-dropdown-item command="collapse">折叠全部</el-dropdown-item>
-
           </el-dropdown-menu>
         </template>
       </el-dropdown>
@@ -299,7 +297,8 @@ defineExpose({
           highlight-current @nodeClick="treeChange" @checkChange="treeChange">
           <template #default="{ node, data }">
             <div class="menu-title">
-              <div class="name">{{ node.label }}
+              <div class="name flex items-center"><star-horse-icon
+                  :icon-class="data.children?.length > 0 ? 'folder' : 'document'" />{{ node.label }}
                 <template v-if="showCode">
                   ({{ data["code"] || data[preps.code || preps.value || "value"] || "" }})
                 </template>

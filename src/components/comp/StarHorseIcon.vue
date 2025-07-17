@@ -9,7 +9,7 @@ const props = defineProps({
   width: { type: String, default: '24px' },
   height: { type: String, default: '22px' },
   marginLeft: { type: String, default: '0.1em' },
-  marginRight: { type: String, default: '0.1em' },
+  marginRight: { type: String, default: '0.2em' },
   borderRadius: { type: String, default: '5px' },
   boorderPadding: { type: String, default: '3px' },
   // 图标是否有边框
