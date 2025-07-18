@@ -1,29 +1,31 @@
 <script setup lang="ts" name="StarHorseSearchComp">
-import { Config } from '@/api/settings';
-import { isJson, searchMatchList } from '@/api/star_horse_utils';
-import { ApiUrls } from '@/components/types/ApiUrls';
-import { SearchParams } from '@/components/types/Params';
-import { SearchFields, SelectOption } from '@/components/types/SearchProps';
-import piniaInstance from '@/store';
-import { useGlobalConfigStore } from '@/store/GlobalConfig';
-import { analysisSearchData } from '@/utils/preview';
-import { computed, nextTick, onMounted, PropType, ref } from 'vue';
+import { Config } from "@/api/settings";
+import { isJson, searchMatchList } from "@/api/star_horse_utils";
+import { ApiUrls } from "@/components/types/ApiUrls";
+import { SearchParams } from "@/components/types/Params";
+import { SearchFields, SelectOption } from "@/components/types/SearchProps";
+import piniaInstance from "@/store";
+import { useGlobalConfigStore } from "@/store/GlobalConfig";
+import { analysisSearchData } from "@/utils/preview";
+import { computed, nextTick, onMounted, PropType, ref } from "vue";
 
 let matchTypeList = ref<SelectOption[]>();
-let sarchIcon = ref<string>('search_down');
+let sarchIcon = ref<string>("search_down");
 let defaultSearch = ref<boolean>(true);
-let tips = ref<string>('更多查询');
+let tips = ref<string>("更多查询");
 let showTips = ref<boolean>(true);
-const emits = defineEmits(['searchData']);
+const emits = defineEmits(["searchData"]);
 const props = defineProps({
   dialogInput: { type: Boolean, default: false },
   mutComp: { type: Boolean, default: false },
   compUrl: { type: Object as PropType<ApiUrls> },
   formData: { type: Object as PropType<SearchFields>, required: true },
-  defaultCondition: { type: Array<SearchParams> }
+  defaultCondition: { type: Array<SearchParams> },
 });
 let configStore = useGlobalConfigStore(piniaInstance);
-let compSize = computed(() => configStore.configFormInfo?.inputSize || Config.compSize);
+let compSize = computed(
+  () => configStore.configFormInfo?.inputSize || Config.compSize,
+);
 let searchForm = ref<any>({});
 
 const createSearchParams = (formData: any) => {
@@ -48,7 +50,7 @@ const analysisDefaultValue = () => {
   return defaultDatas;
 };
 const dataSearch = (val: string | null) => {
-  if (val === 'reset') {
+  if (val === "reset") {
     searchForm.value = { ...analysisDefaultValue() };
   }
   let searchDatas = createSearchParams(props.formData?.fieldList);
@@ -57,15 +59,15 @@ const dataSearch = (val: string | null) => {
   if (props.defaultCondition) {
     searchDatas.push(...props.defaultCondition);
   }
-  emits('searchData', searchDatas);
+  emits("searchData", searchDatas);
 };
 const searchArea = () => {
   if (defaultSearch.value) {
-    tips.value = '更多查询';
-    sarchIcon.value = 'search_up';
+    tips.value = "更多查询";
+    sarchIcon.value = "search_up";
   } else {
-    tips.value = '收起';
-    sarchIcon.value = 'search_down';
+    tips.value = "收起";
+    sarchIcon.value = "search_down";
   }
   defaultSearch.value = !defaultSearch.value;
 };
@@ -95,51 +97,111 @@ onMounted(() => {
 defineExpose({
   searchForm,
   setData,
-  createSearchParams
+  createSearchParams,
 });
 </script>
 <template>
   <div class="search_content">
     <el-form class="search_area" :size="compSize" v-if="formData?.fieldList">
       <template v-for="item in formData.fieldList" v-if="defaultSearch">
-        <el-form-item :size="compSize" :label="item.label" v-if="item.defaultVisible" :prop="item.fieldName">
-          <template v-if="(!item.type || item.type == 'input') && !item.disabled" :span="6">
-            <el-select :size="compSize" style="width: 90px !important; height: 100%; padding-top: 2px"
-              v-model="item['matchType']" clearable filterable>
-              <el-option v-for="sitem in matchTypeList" :value="sitem.value" :label="sitem.name" :key="sitem.value" />
-            </el-select>&nbsp;&nbsp;
+        <el-form-item
+          :size="compSize"
+          :label="item.label"
+          v-if="item.defaultVisible"
+          :prop="item.fieldName"
+        >
+          <template
+            v-if="(!item.type || item.type == 'input') && !item.disabled"
+            :span="6"
+          >
+            <el-select
+              :size="compSize"
+              style="width: 90px !important; height: 100%; padding-top: 2px"
+              v-model="item['matchType']"
+              clearable
+              filterable
+            >
+              <el-option
+                v-for="sitem in matchTypeList"
+                :value="sitem.value"
+                :label="sitem.name"
+                :key="sitem.value"
+              /> </el-select
+            >&nbsp;&nbsp;
           </template>
-          <star-horse-item v-model:data-form="searchForm" :compSize="compSize" :item="item" :source="4"
-            @dataSearch="dataSearch" />
+          <star-horse-item
+            v-model:data-form="searchForm"
+            :compSize="compSize"
+            :item="item"
+            :source="4"
+            @dataSearch="dataSearch"
+          />
         </el-form-item>
       </template>
       <template v-for="item in formData?.fieldList" v-else>
-        <el-form-item :size="compSize" :label="item.label" :prop="item.fieldName">
+        <el-form-item
+          :size="compSize"
+          :label="item.label"
+          :prop="item.fieldName"
+        >
           <template v-if="item.type == 'input' && !item.disabled" :span="6">
-            <el-select :size="compSize" style="width: 90px !important; height: 100%; padding-top: 2px"
-              v-model="item['matchType']" clearable filterable>
-              <el-option v-for="sitem in matchTypeList" :value="sitem.value" :label="sitem.name" :key="sitem.value" />
-            </el-select>&nbsp;&nbsp;
+            <el-select
+              :size="compSize"
+              style="width: 90px !important; height: 100%; padding-top: 2px"
+              v-model="item['matchType']"
+              clearable
+              filterable
+            >
+              <el-option
+                v-for="sitem in matchTypeList"
+                :value="sitem.value"
+                :label="sitem.name"
+                :key="sitem.value"
+              /> </el-select
+            >&nbsp;&nbsp;
           </template>
-          <star-horse-item v-model:data-form="searchForm" :compSize="compSize" :item="item" :source="4"
-            @dataSearch="dataSearch">
+          <star-horse-item
+            v-model:data-form="searchForm"
+            :compSize="compSize"
+            :item="item"
+            :source="4"
+            @dataSearch="dataSearch"
+          >
           </star-horse-item>
         </el-form-item>
       </template>
       <el-form-item style="vertical-align: middle; align-items: center">
         <div class="search_btn">
-          <el-button @click="dataSearch" style="background: var(--star-horse-style); color: var(--star-horse-white)"
-            :size="compSize">
-            <star-horse-icon icon-class="search" size="16px" color="var(--star-horse-white)" />
+          <el-button
+            @click="dataSearch"
+            style="
+              background: var(--star-horse-style);
+              color: var(--star-horse-white);
+            "
+            :size="compSize"
+          >
+            <star-horse-icon
+              icon-class="search"
+              size="16px"
+              color="var(--star-horse-white)"
+            />
             查询
           </el-button>
           <el-button @click="dataSearch('reset')" link :size="compSize">
-            <star-horse-icon icon-class="reset" size="16px" color="var(--star-horse-disable)" />
+            <star-horse-icon
+              icon-class="reset"
+              size="16px"
+              color="var(--star-horse-disable)"
+            />
             重置
           </el-button>
           <el-tooltip :content="tips" v-if="showTips">
             <el-button text @click="searchArea" :size="compSize">
-              <star-horse-icon :icon-class="sarchIcon" size="20px" color="var(--star-horse-style)" />
+              <star-horse-icon
+                :icon-class="sarchIcon"
+                size="20px"
+                color="var(--star-horse-style)"
+              />
             </el-button>
           </el-tooltip>
         </div>
@@ -159,7 +221,6 @@ defineExpose({
 .el-form-item-small {
   margin-bottom: 0 !important;
 }
-
 
 :deep(.el-form-item__label):last-child {
   max-width: 5px;

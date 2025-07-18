@@ -1,10 +1,17 @@
 <script setup lang="ts" name="StarHorseItem">
-import { computed, inject, ModelRef, onMounted, PropType, ref } from 'vue';
-import { useSelfOperationStore } from '@/store/SelfOperation';
-import piniaInstance from '@/store';
-import { compKey, fieldPlaceholder, uuid, dateCompList, inputCompList, selectCompList } from '@/api/system';
-import { Config } from '@/api/settings';
-import { checkVisible, filterProperties } from '@/api/form_utils';
+import { computed, inject, ModelRef, onMounted, PropType, ref } from "vue";
+import { useSelfOperationStore } from "@/store/SelfOperation";
+import piniaInstance from "@/store";
+import {
+  compKey,
+  fieldPlaceholder,
+  uuid,
+  dateCompList,
+  inputCompList,
+  selectCompList,
+} from "@/api/system";
+import { Config } from "@/api/settings";
+import { checkVisible, filterProperties } from "@/api/form_utils";
 import Help from "@/components/help.vue";
 
 const props = defineProps({
@@ -14,17 +21,16 @@ const props = defineProps({
   // 数据索引
   dataIndex: { type: Number, default: -1 },
   bareFlag: { type: Boolean, default: false },
-  batchName: { type: String, default: '' },
+  batchName: { type: String, default: "" },
   compSize: { type: String, default: Config.compSize },
   showLabel: { type: Boolean, default: true }, //是否显示标签
   source: { type: Number, default: 1 },
-
 });
 let userOperation = useSelfOperationStore(piniaInstance);
-const dataForm: ModelRef<any> = defineModel('dataForm');
-const itemType = ref<string>('input');
-const emit = defineEmits(['dataSearch', 'focus', 'blur']);
-const formFields: any = inject('formFields', {});
+const dataForm: ModelRef<any> = defineModel("dataForm");
+const itemType = ref<string>("input");
+const emit = defineEmits(["dataSearch", "focus", "blur"]);
+const formFields: any = inject("formFields", {});
 // const actionName = ref();
 const componentRef = ref();
 const isDragging = ref(false);
@@ -32,11 +38,14 @@ const startX = ref(0);
 const startWidth = ref(0);
 const dragWidth = ref<string | null>(null);
 const bareStyle = computed(() => ({
-  height: itemType.value != 'button' ? '100%' : 'inherit',
-  minWidth: props.source == 4 ? '200px' : 'unset',
-  maxHeight: props.source == 4 ? '500px' : 'unset',
-  width: props.source == 4 ? dragWidth.value || props.item.minWidth || 'inherit' : '100%',
-  position: 'relative' as const
+  height: itemType.value != "button" ? "100%" : "inherit",
+  minWidth: props.source == 4 ? "200px" : "unset",
+  maxHeight: props.source == 4 ? "500px" : "unset",
+  width:
+    props.source == 4
+      ? dragWidth.value || props.item.minWidth || "inherit"
+      : "100%",
+  position: "relative" as const,
 }));
 /**
  * 组件派发事件
@@ -48,17 +57,21 @@ const actionDispatcher = (act: string, ...params: any[]) => {
     if (!act) {
       return;
     }
-    emit('dataSearch', params);
+    emit("dataSearch", params);
   } else {
     let actions: Record<string, Function> = props.item.actions;
     const eventNames: Array<string> = Object.keys(actions || {});
-    if (eventNames?.length > 0 && eventNames.includes(act) && typeof actions[act] == "function") {
+    if (
+      eventNames?.length > 0 &&
+      eventNames.includes(act) &&
+      typeof actions[act] == "function"
+    ) {
       actions[act](dataForm.value, params);
     }
-    if (act == 'focus') {
-      emit('focus', props.column, params);
-    } else if (act == 'blur' || (act == 'change' && props.source == 5)) {
-      emit('blur', props.column, params);
+    if (act == "focus") {
+      emit("focus", props.column, params);
+    } else if (act == "blur" || (act == "change" && props.source == 5)) {
+      emit("blur", props.column, params);
     }
   }
 };
@@ -67,33 +80,46 @@ const fieldType = () => {
   const inputList = inputCompList();
   const dateNameList = dateCompList();
   const selectNameList = selectCompList();
-  itemType.value = props.item?.type || props.item?.fieldType || 'input';
+  itemType.value = props.item?.type || props.item?.fieldType || "input";
   if (dateNameList.includes(itemType.value)) {
-    itemType.value = 'datetime';
+    itemType.value = "datetime";
     //日期默认以时间戳赋值
   }
   if (!props.item.actions) {
-    props.item['actions'] = {};
+    props.item["actions"] = {};
   }
   const keys = Object.keys(props.item.actions);
   if (props.source == 4) {
-    const actionKey = inputList.includes(itemType.value) ? "keyup.enter" : "change";
+    const actionKey = inputList.includes(itemType.value)
+      ? "keyup.enter"
+      : "change";
     if (!keys.includes(actionKey)) {
       props.item.actions[actionKey] = actionKey;
     }
   } else if (props.source == 5) {
     //列表组件动态增加blur 和change 事件
-    const actionKey = inputList.includes(itemType.value) ? "blur" : selectNameList.includes(itemType.value) ? "change" : null;
+    const actionKey = inputList.includes(itemType.value)
+      ? "blur"
+      : selectNameList.includes(itemType.value)
+        ? "change"
+        : null;
     if (actionKey && !keys.includes(actionKey)) {
       props.item.actions[actionKey] = actionKey;
     }
   }
-}
-const exclusions = ["name", "id", "label", "itemNameLabel", "autocomplete", "maxLength"];
+};
+const exclusions = [
+  "name",
+  "id",
+  "label",
+  "itemNameLabel",
+  "autocomplete",
+  "maxLength",
+];
 const init = () => {
   fieldType();
-  if (!props.item['id']) {
-    props.item['id'] = props.item.preps?.id ?? uuid();
+  if (!props.item["id"]) {
+    props.item["id"] = props.item.preps?.id ?? uuid();
   }
   fieldPlaceholder(props.item, itemType.value);
   if (props.item.preps) {
@@ -104,14 +130,13 @@ const init = () => {
     let keys = Object.keys(props.item.preps);
     for (let key in keys) {
       let val = props.item.preps[key];
-      if (val == 'Y' || val == 'N') {
-        props.item.preps[key] = val == 'Y';
+      if (val == "Y" || val == "N") {
+        props.item.preps[key] = val == "Y";
       }
     }
-
   }
   compPreps();
-}
+};
 const compPreps = () => {
   fieldType();
   //过滤掉查询表单的信息
@@ -123,7 +148,7 @@ const compPreps = () => {
       if (!batchFields) {
         formFields[props.batchName] = [];
       }
-      let row = formFields[props.batchName][dataForm.value['xh'] - 1];
+      let row = formFields[props.batchName][dataForm.value["xh"] - 1];
       if (!row) {
         formFields[props.batchName].push([]);
       } else {
@@ -153,14 +178,15 @@ const startDrag = (e: MouseEvent) => {
   if (compInfo) {
     startWidth.value = compInfo.offsetWidth;
   }
-  document.body.style.userSelect = 'none';
+  document.body.style.userSelect = "none";
 };
 
 const onDrag = (e: MouseEvent) => {
   if (!isDragging.value) return;
   const delta = e.clientX - startX.value;
   const newWidth = startWidth.value + delta;
-  if (newWidth > 100) { // 最小宽度限制
+  if (newWidth > 100) {
+    // 最小宽度限制
     dragWidth.value = `${newWidth}px`;
   }
 };
@@ -168,31 +194,62 @@ const onDrag = (e: MouseEvent) => {
 const stopDrag = () => {
   if (isDragging.value) {
     isDragging.value = false;
-    document.body.style.userSelect = '';
+    document.body.style.userSelect = "";
   }
 };
 const checkClassName = () => {
   if (props.bareFlag || props.item.preps?.headerFlag) {
-    return 'bare-comp';
+    return "bare-comp";
   } else {
-    return 'comp-info';
+    return "comp-info";
   }
-}
+};
 onMounted(() => {
   init();
 });
 </script>
 <template>
-  <div :class="checkClassName()" :style="bareStyle" @mousemove="onDrag" @mouseup="stopDrag" @mouseleave="stopDrag">
-    <div class="drag-handle" @mousedown.prevent="startDrag" v-if="itemType != 'button' && source == 4"></div>
+  <div
+    :class="checkClassName()"
+    :style="bareStyle"
+    @mousemove="onDrag"
+    @mouseup="stopDrag"
+    @mouseleave="stopDrag"
+  >
+    <div
+      class="drag-handle"
+      @mousedown.prevent="startDrag"
+      v-if="itemType != 'button' && source == 4"
+    ></div>
     <help :message="item.helpMsg" v-if="item.helpMsg" />
-    <component :key="item.id" :is="(dataForm && dataForm['_' + item.fieldName + 'Type'] || itemType) + '-item'"
-      @selfFunc="actionDispatcher" ref="componentRef" :isSearch="source == 4" :bareFlag="bareFlag" :field="item"
-      v-model:formData="dataForm" />
+    <component
+      :key="item.id"
+      :is="
+        ((dataForm && dataForm['_' + item.fieldName + 'Type']) || itemType) +
+        '-item'
+      "
+      @selfFunc="actionDispatcher"
+      ref="componentRef"
+      :isSearch="source == 4"
+      :bareFlag="bareFlag"
+      :field="item"
+      v-model:formData="dataForm"
+    />
     <div v-if="item.brotherNodes" style="width: 15px" />
-    <template v-for="(temp, key) in item.brotherNodes" :key="compKey(temp,key)">
-      <star-horse-item v-if="checkVisible(temp, dataForm)" :primaryKey="primaryKey" :compSize="compSize"
-        v-model:dataForm="dataForm" :item="temp" :dataIndex="dataIndex" :bareFlag="true" :source="source" />
+    <template
+      v-for="(temp, key) in item.brotherNodes"
+      :key="compKey(temp, key)"
+    >
+      <star-horse-item
+        v-if="checkVisible(temp, dataForm)"
+        :primaryKey="primaryKey"
+        :compSize="compSize"
+        v-model:dataForm="dataForm"
+        :item="temp"
+        :dataIndex="dataIndex"
+        :bareFlag="true"
+        :source="source"
+      />
     </template>
   </div>
 </template>

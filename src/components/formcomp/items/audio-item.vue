@@ -1,45 +1,51 @@
 <template>
-  <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
-    :parentField="parentField">
+  <starhorse-form-item
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :bareFlag="bareFlag"
+    :formItem="field"
+    :parentField="parentField"
+  >
     <audio :fid="field.fieldName" ref="audio" controls></audio>
   </starhorse-form-item>
 </template>
 <script setup lang="ts" name="audioItem">
-import { onMounted, ref, PropType } from 'vue';
-import { blobData } from '@/api/star_horse_apis';
+import { onMounted, ref, PropType } from "vue";
+import { blobData } from "@/api/star_horse_apis";
 
 const props = defineProps({
   isDesign: {
     type: Boolean,
-    default: false
+    default: false,
   },
   disabled: {
     type: Boolean,
-    default: false
+    default: false,
   },
   bareFlag: {
     type: Boolean,
-    default: false
-  }, isSearch: {
+    default: false,
+  },
+  isSearch: {
     type: Boolean,
-    default: false
+    default: false,
   },
   field: {
     type: Object as PropType<any>,
-    required: true
+    required: true,
   },
   parentField: {
     type: Object as PropType<any>,
   },
   formInfo: {
     type: Object as PropType<any>,
-  }
+  },
 });
-const emits = defineEmits(['selfFunc', 'selectItem']);
+const emits = defineEmits(["selfFunc", "selectItem"]);
 // const formData = defineModel("formData");
 let audio = ref();
 const init = async () => {
-  let file = await blobData(props.field['audioUrl']);
+  let file = await blobData(props.field["audioUrl"]);
   if (!file) {
     return;
   }
@@ -58,7 +64,11 @@ const init = async () => {
       let endOffset = rate * 3;
       let frameCount = endOffset - startOffset;
       let newAudioBuffer;
-      newAudioBuffer = new AudioContext().createBuffer(channels, endOffset - startOffset, rate);
+      newAudioBuffer = new AudioContext().createBuffer(
+        channels,
+        endOffset - startOffset,
+        rate,
+      );
       let anotherArray = new Float32Array(frameCount);
       let offset = 0;
       for (let channel = 0; channel < channels; channel++) {
@@ -139,11 +149,10 @@ const bufferToWave = (abuffer: any, len: number) => {
     offset++; // next source sample
   }
   // create Blob
-  return new Blob([buffer], { type: 'audio/wav' });
+  return new Blob([buffer], { type: "audio/wav" });
 };
 onMounted(() => {
   init();
 });
-
 </script>
 <style scoped></style>

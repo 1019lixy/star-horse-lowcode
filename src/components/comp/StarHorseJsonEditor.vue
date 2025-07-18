@@ -1,39 +1,42 @@
 <script setup lang="ts">
-import { ModelRef, onBeforeUnmount, onMounted, PropType, ref } from 'vue';
-import JsonEditor from 'vue3-ts-jsoneditor';
+import { ModelRef, onBeforeUnmount, onMounted, PropType, ref } from "vue";
+import JsonEditor from "vue3-ts-jsoneditor";
 
 defineProps({
   options: { type: Object as PropType<any> },
   currentMode: {
     type: String,
-    default: 'code'
+    default: "code",
   },
   modeList: {
     type: Array,
-    default: () => ['tree', 'code', 'form', 'text', 'view']
+    default: () => ["tree", "code", "form", "text", "view"],
   },
   // en, es zh-CN, pt-BR, tr, ja, fr-FR, de, ru, ko
   language: {
     type: String,
-    default: 'zh-CN'
-  }
+    default: "zh-CN",
+  },
 });
 
-const json: ModelRef<any> = defineModel('modelValue', {
-  default: {}
+const json: ModelRef<any> = defineModel("modelValue", {
+  default: {},
 });
 // const jsonEditorRef = ref();
 // 'javascript' | 'lodash' | 'jmespath' | 'jsonquery' | 'jsonpath'
-const queryLanguages: Array<any> = ['javascript', 'lodash', 'jmespath', 'jsonquery', 'jsonpath'];
+const queryLanguages: Array<any> = [
+  "javascript",
+  "lodash",
+  "jmespath",
+  "jsonquery",
+  "jsonpath",
+];
 
 // 全屏处理
 let editor = ref(null);
 
-const setEditorContent = (value) => {
-
-};
-const init = () => {
-};
+const setEditorContent = (value) => {};
+const init = () => {};
 onMounted(() => {
   init();
   setEditorContent(json.value);
@@ -43,11 +46,17 @@ onBeforeUnmount(() => {
 });
 defineExpose({
   editor,
-  setEditorContent
+  setEditorContent,
 });
 </script>
 <template>
-  <json-editor ref="editor" mode="text" v-model:json="json" :queryLanguagesIds="queryLanguages" class="json-editor" />
+  <json-editor
+    ref="editor"
+    mode="text"
+    v-model:json="json"
+    :queryLanguagesIds="queryLanguages"
+    class="json-editor"
+  />
 </template>
 
 <style scoped lang="scss">

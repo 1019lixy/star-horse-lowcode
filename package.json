@@ -36,12 +36,25 @@
     "./*": "./dist/*"
   },
   "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write \"./**/*.{jsx,ts,tsx,vue,css,scss,html}\"",
     "serve": " vite --mode development",
     "build": "vite build --mode production",
     "preview": "vite preview --mode production",
     "clean": "rimraf node_modules/.vite && rimraf node_modules/.cache",
     "svgToFont": "node ./src/script/svgToFont.js",
     "createNodeImageList": "node ./script/createNodeImageList.js"
+  },
+  "prettier": {
+    "overrides": [
+      {
+        "files": "*.ts",
+        "options": {
+          "parser": "typescript"
+        }
+      }
+    ]
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
@@ -81,7 +94,13 @@
     "@types/prismjs": "^1.26.5",
     "@types/sortablejs": "^1.15.8",
     "@types/uuid": "^10.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.37.0",
+    "@typescript-eslint/parser": "^8.37.0",
     "@vitejs/plugin-vue": "^6.0.0",
+    "eslint": "^9.31.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-prettier": "^5.5.1",
+    "eslint-plugin-vue": "^10.3.0",
     "sass-embedded": "^1.89.2",
     "terser": "^5.43.1",
     "vite": "^7.0.5"

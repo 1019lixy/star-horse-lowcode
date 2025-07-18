@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref } from "vue";
 defineProps({
-
   needScroller: {
     type: Boolean,
-    default: true
-  }
-})
+    default: true,
+  },
+});
 const shFormRef = ref();
 const dataForm = defineModel("dataForm");
 </script>
@@ -28,8 +27,4 @@ const dataForm = defineModel("dataForm");
   </el-form>
   <slot name="button"></slot>
 </template>
-<style lang="scss" scoped>
-:deep(.el-scrollbar__view) {
-  height: 100% !important;
-}
-</style>
+<style lang="scss" scoped></style>

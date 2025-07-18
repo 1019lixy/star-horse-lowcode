@@ -1,38 +1,39 @@
 <script setup lang="ts">
-import { nextTick, onMounted, onUpdated, PropType, ref, shallowRef } from 'vue';
-import SmoothSignature from 'smooth-signature';
-import { warning } from '@/utils/message';
-import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
-import StarHorseDialog from '@/components/comp/StarHorseDialog.vue';
+import { nextTick, onMounted, onUpdated, PropType, ref, shallowRef } from "vue";
+import SmoothSignature from "smooth-signature";
+import { warning } from "@/utils/message";
+import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
+import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 
 defineProps({
   isDesign: {
     type: Boolean,
-    default: false
+    default: false,
   },
   disabled: {
     type: Boolean,
-    default: false
+    default: false,
   },
   bareFlag: {
     type: Boolean,
-    default: false
-  }, isSearch: {
+    default: false,
+  },
+  isSearch: {
     type: Boolean,
-    default: false
+    default: false,
   },
   field: {
     type: Object as PropType<any>,
-    required: true
+    required: true,
   },
   parentField: {
     type: Object as PropType<any>,
   },
   formInfo: {
     type: Object as PropType<any>,
-  }
+  },
 });
-const emits = defineEmits(['selfFunc', 'selectItem']);
+const emits = defineEmits(["selfFunc", "selectItem"]);
 // const formData = defineModel("formData");
 let previewDialog = shallowRef<boolean>(false);
 let signature = ref<SmoothSignature>(null);
@@ -44,7 +45,7 @@ const options = {
   minWidth: 4,
   maxWidth: 12,
   // color: '#1890ff',
-  bgColor: '#f6f6f6'
+  bgColor: "#f6f6f6",
 };
 const init = async () => {
   await nextTick(() => {
@@ -64,13 +65,13 @@ const undo = (evt: MouseEvent) => {
 
 const handleColor = (evt: MouseEvent) => {
   evt && evt.defaultPrevented;
-  signature.value.color = '#' + Math.random().toString(16).slice(-6);
+  signature.value.color = "#" + Math.random().toString(16).slice(-6);
 };
 const handlePreview = (evt: MouseEvent) => {
   evt && evt.defaultPrevented;
   const isEmpty = signature.value.isEmpty();
   if (isEmpty) {
-    warning('请先签名');
+    warning("请先签名");
     return;
   }
   previewDialog.value = true;
@@ -86,11 +87,21 @@ onUpdated(() => {
 });
 </script>
 <template>
-  <star-horse-dialog :dialog-visible="previewDialog" :source="3" :self-func="true" @closeAction="previewDialog = false">
+  <star-horse-dialog
+    :dialog-visible="previewDialog"
+    :source="3"
+    :self-func="true"
+    @closeAction="previewDialog = false"
+  >
     <el-image :src="signature?.getPNG()" />
   </star-horse-dialog>
-  <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
-    :parentField="parentField">
+  <starhorse-form-item
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :bareFlag="bareFlag"
+    :formItem="field"
+    :parentField="parentField"
+  >
     <div class="pcDemo">
       <div class="inner_button">
         <el-menu mode="horizontal" style="height: inherit; width: 100%">

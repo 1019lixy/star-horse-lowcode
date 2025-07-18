@@ -1,6 +1,6 @@
 <script setup lang="ts" name="StarHorseHmenu">
-import { ModelRef, onMounted, PropType } from 'vue';
-import MenuItem from '@/components/menu/MenuItem.vue';
+import { ModelRef, onMounted, PropType } from "vue";
+import MenuItem from "@/components/menu/MenuItem.vue";
 import { compKey } from "@/api/system";
 defineProps({
   preps: {
@@ -8,30 +8,33 @@ defineProps({
     default: () => {
       return {
         id: "id",
-        value: 'value',
+        value: "value",
         icon: "icon",
-        label: 'name',
-        children: 'children'
+        label: "name",
+        children: "children",
       };
-    }
+    },
   },
 });
-const emits = defineEmits(['selectItem']);
+const emits = defineEmits(["selectItem"]);
 let dataList: ModelRef<any> = defineModel("dataList");
-const initData = async () => {
-
-};
+const initData = async () => {};
 const selectItem = (item: any) => {
-  emits('selectItem', item);
-}
+  emits("selectItem", item);
+};
 onMounted(() => {
   initData();
 });
 </script>
 <template>
   <el-menu class="system-menu" v-bind="$attrs">
-    <MenuItem v-for="(sitem, key) in dataList" :key="compKey(sitem, key)" :item="sitem" @selectItem="selectItem"
-      :preps="preps" />
+    <MenuItem
+      v-for="(sitem, key) in dataList"
+      :key="compKey(sitem, key)"
+      :item="sitem"
+      @selectItem="selectItem"
+      :preps="preps"
+    />
   </el-menu>
 </template>
 <style lang="scss" scoped>

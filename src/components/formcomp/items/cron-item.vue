@@ -1,60 +1,83 @@
 <template>
-  <star-horse-dialog :title="'Crontab 配置器'" box-width="50%" :self-func="true" @resetForm="resetForm"
-    @closeAction="close" @merge="submit" :dialog-visible="cronVisible">
+  <star-horse-dialog
+    :title="'Crontab 配置器'"
+    box-width="50%"
+    :self-func="true"
+    @resetForm="resetForm"
+    @closeAction="close"
+    @merge="submit"
+    :dialog-visible="cronVisible"
+  >
     <el-scrollbar>
       <Crontab ref="cronTabRef" v-model="cronDataValue" />
     </el-scrollbar>
   </star-horse-dialog>
-  <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
-    :parentField="parentField">
-    <el-input :fid="field.fieldName" v-on="getDynamicEvents(props, itemAction)" v-model="formData[field.fieldName]">
+  <starhorse-form-item
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :bareFlag="bareFlag"
+    :formItem="field"
+    :parentField="parentField"
+  >
+    <el-input
+      :fid="field.fieldName"
+      v-on="getDynamicEvents(props, itemAction)"
+      v-model="formData[field.fieldName]"
+    >
       <template #append>
-        <el-button icon="Clock" @click="open" :disabled="checkIsDisabled(props)" />
+        <el-button
+          icon="Clock"
+          @click="open"
+          :disabled="checkIsDisabled(props)"
+        />
       </template>
     </el-input>
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { onMounted, PropType, ref, shallowRef } from 'vue';
-import Crontab from '@/components/cron/Crontab.vue';
-import { allAction, checkIsDisabled } from '@/components/formcomp/utils/ItemRelationEventUtils';
-import { getDynamicEvents } from '@/api/system';
+import { onMounted, PropType, ref, shallowRef } from "vue";
+import Crontab from "@/components/cron/Crontab.vue";
+import {
+  allAction,
+  checkIsDisabled,
+} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import { getDynamicEvents } from "@/api/system";
 
 const props = defineProps({
   isDesign: {
     type: Boolean,
-    default: false
+    default: false,
   },
   disabled: {
     type: Boolean,
-    default: false
+    default: false,
   },
   bareFlag: {
     type: Boolean,
-    default: false
-  }, isSearch: {
+    default: false,
+  },
+  isSearch: {
     type: Boolean,
-    default: false
+    default: false,
   },
   field: {
     type: Object as PropType<any>,
-    required: true
+    required: true,
   },
   parentField: {
     type: Object as PropType<any>,
   },
   formInfo: {
     type: Object as PropType<any>,
-  }
+  },
 });
-const emits = defineEmits(['selfFunc', 'selectItem']);
+const emits = defineEmits(["selfFunc", "selectItem"]);
 const formData = defineModel("formData");
 
-
-let cronDataValue = ref<any>('');
+let cronDataValue = ref<any>("");
 let cronVisible = ref(false);
 const cronTabRef = ref();
-let actionName = shallowRef('change');
+let actionName = shallowRef("change");
 const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
@@ -77,12 +100,11 @@ const submit = () => {
 };
 resetForm();
 onMounted(() => {
-  actionName.value = props.field.actionName || 'normal';
+  actionName.value = props.field.actionName || "normal";
   if (!props.isSearch) {
     allAction(props, emits, formData, actionName.value, true);
   }
 });
-
 </script>
 <style lang="scss" scoped>
 :deep(.el-input-group__append) {

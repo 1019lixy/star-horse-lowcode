@@ -1,18 +1,27 @@
 <script setup lang="ts">
-import { computed, ModelRef, nextTick, onMounted, PropType, reactive, ref, unref } from 'vue';
-import SubSystemMenu from '@/components/menu/SubSystemMenu.vue';
-import { useGlobalConfigStore } from '@/store/GlobalConfig';
-import piniaInstance from '@/store';
-import { PageProps } from '@/components/types/PageProps';
-import { ApiUrls } from '@/components/types/ApiUrls';
-import { warning } from '@/utils/message';
-import { SearchParams } from '@/components/types/Params';
-import { OrderByInfo } from '@/components/types/PageFieldInfo';
-import { postRequest } from '@/api/star_horse_apis';
-import { closeLoad, createCondition } from '@/api/star_horse_utils';
-import { isSystemManage } from '@/utils/auth';
-import { Config } from '@/api/settings';
-import Help from '@/components/help.vue';
+import {
+  computed,
+  ModelRef,
+  nextTick,
+  onMounted,
+  PropType,
+  reactive,
+  ref,
+  unref,
+} from "vue";
+import SubSystemMenu from "@/components/menu/SubSystemMenu.vue";
+import { useGlobalConfigStore } from "@/store/GlobalConfig";
+import piniaInstance from "@/store";
+import { PageProps } from "@/components/types/PageProps";
+import { ApiUrls } from "@/components/types/ApiUrls";
+import { warning } from "@/utils/message";
+import { SearchParams } from "@/components/types/Params";
+import { OrderByInfo } from "@/components/types/PageFieldInfo";
+import { postRequest } from "@/api/star_horse_apis";
+import { closeLoad, createCondition } from "@/api/star_horse_utils";
+import { isSystemManage } from "@/utils/auth";
+import { Config } from "@/api/settings";
+import Help from "@/components/help.vue";
 import { compKey } from "@/api/system";
 
 const props = defineProps({
@@ -20,15 +29,15 @@ const props = defineProps({
     type: Object as PropType<any>,
     default: () => {
       return {
-        value: 'value',
-        label: 'name',
-        children: 'children'
+        value: "value",
+        label: "name",
+        children: "children",
       };
-    }
+    },
   },
   helpMsg: { type: String },
   showCollapse: { type: Boolean, default: false },
-  treeTitle: { type: String, default: '树形菜单' },
+  treeTitle: { type: String, default: "树形菜单" },
   expand: { type: Boolean, default: false },
   height: { type: Number, default: 600 },
   //是否显示复选框
@@ -39,7 +48,7 @@ const props = defineProps({
   //是否显示搜索框
   showSearch: { type: Boolean, default: true },
   checkOnClickNode: { type: Boolean, default: true },
-  treeType: { type: String, default: 'tree' },
+  treeType: { type: String, default: "tree" },
   //在标签上显示值
   showCode: { type: Boolean, default: false },
   //是否显示分页
@@ -51,10 +60,10 @@ const props = defineProps({
   //接口地址
   compUrl: { type: Object as PropType<ApiUrls> },
   //按钮名称
-  btnTitle: { type: String, default: '添加数据' },
+  btnTitle: { type: String, default: "添加数据" },
   //按钮是否可见
   btnVisible: { type: Boolean, default: false },
-  rmvTitle: { type: String, default: '删除数据' },
+  rmvTitle: { type: String, default: "删除数据" },
   rmvVisible: { type: Boolean, default: false },
   //是否显示下拉按钮
   showDropdown: { type: Boolean, default: true },
@@ -65,16 +74,23 @@ const props = defineProps({
    *   上面接口主要返回共享人的账号
    *   commonPersons.value = resultData?.data;
    */
-  commonPersons: { type: Array as PropType<any>, default: [] }
+  commonPersons: { type: Array as PropType<any>, default: [] },
 });
-const emits = defineEmits(['selectData', 'changeCollapse', 'addData', 'removeData']);
+const emits = defineEmits([
+  "selectData",
+  "changeCollapse",
+  "addData",
+  "removeData",
+]);
 let configStore = useGlobalConfigStore(piniaInstance);
-let compSize = computed(() => configStore.configFormInfo?.inputSize || Config.compSize);
+let compSize = computed(
+  () => configStore.configFormInfo?.inputSize || Config.compSize,
+);
 const treeRef = ref<any>();
 const menuTreeRef = ref<any>();
-const searchData = ref('');
-const treeDatas: ModelRef<any> = defineModel('treeDatas');
-let menuIcon = ref<string>('expand');
+const searchData = ref("");
+const treeDatas: ModelRef<any> = defineModel("treeDatas");
+let menuIcon = ref<string>("expand");
 let collapse = ref<boolean>(false);
 const _compKey = compKey;
 let pageInfo = reactive<PageProps>({
@@ -82,7 +98,7 @@ let pageInfo = reactive<PageProps>({
   currentPage: 1,
   totalData: 0,
   totalPage: 0,
-  dataList: []
+  dataList: [],
 });
 const onQueryChanged = (query: string) => {
   treeRef.value!.filter(query);
@@ -96,25 +112,29 @@ const changeArrow = (evt: MouseEvent) => {
     evt.stopPropagation();
   }
   collapse.value = !collapse.value;
-  menuIcon.value = unref(menuIcon) == 'expand' ? 'collapse' : 'expand';
-  emits('changeCollapse', collapse.value);
+  menuIcon.value = unref(menuIcon) == "expand" ? "collapse" : "expand";
+  emits("changeCollapse", collapse.value);
 };
 const treeOperation = (cmd: string) => {
-  if (props.treeType == 'tree') {
+  if (props.treeType == "tree") {
     if (cmd == "add") {
-      emits('addData', {});
-    } else if (cmd == 'collapse') {
-      Object.values(treeRef.value!.store.nodesMap).forEach((v: any) => v.collapse());
+      emits("addData", {});
+    } else if (cmd == "collapse") {
+      Object.values(treeRef.value!.store.nodesMap).forEach((v: any) =>
+        v.collapse(),
+      );
     } else {
-      Object.values(treeRef.value!.store.nodesMap).forEach((v: any) => v.expand());
+      Object.values(treeRef.value!.store.nodesMap).forEach((v: any) =>
+        v.expand(),
+      );
     }
   } else {
     const getAllSubNodeIndex = (datas: any) => {
       datas.forEach((item: any) => {
         if (item.children && item.children.length > 0) {
           if (cmd == "add") {
-            emits('addData', {});
-          } else if (cmd == 'collapse') {
+            emits("addData", {});
+          } else if (cmd == "collapse") {
             menuTreeRef.value.close(item[props.preps.value]);
           } else {
             menuTreeRef.value!.open(item[props.preps.value]);
@@ -129,7 +149,9 @@ const treeOperation = (cmd: string) => {
 let selectedDataList = ref<Array<any>>([]);
 const operSelectData = (data: any, checked: boolean) => {
   if (checked) {
-    let hasData = selectedDataList.value.find((item) => item[props.preps.value] == data[props.preps.value]);
+    let hasData = selectedDataList.value.find(
+      (item) => item[props.preps.value] == data[props.preps.value],
+    );
     if (!hasData) {
       selectedDataList.value.push(data);
     }
@@ -162,16 +184,16 @@ const getSelectData = () => {
  */
 const treeChange = (data: any, checked: boolean) => {
   operSelectData(data, checked);
-  emits('selectData', data, checked);
+  emits("selectData", data, checked);
 };
 const menuChange = (data: any) => {
-  emits('selectData', data);
+  emits("selectData", data);
 };
 const addData = (item: any) => {
-  emits('addData', item);
+  emits("addData", item);
 };
 const removeData = (item: any) => {
-  emits('removeData', item);
+  emits("removeData", item);
 };
 const pageSizeClick = (pageSize: number) => {
   pageInfo.pageSize = pageSize;
@@ -183,7 +205,10 @@ const pageChangeClick = (currentPage: number) => {
 };
 let searchParams: SearchParams[] = [];
 let orderBys: OrderByInfo[] = [];
-const createSearchParams = (params: SearchParams[] = [], orderBy: OrderByInfo[] = []) => {
+const createSearchParams = (
+  params: SearchParams[] = [],
+  orderBy: OrderByInfo[] = [],
+) => {
   searchParams = params;
   orderBys = orderBy;
   loadByPage();
@@ -191,25 +216,27 @@ const createSearchParams = (params: SearchParams[] = [], orderBy: OrderByInfo[] 
 const expandData = () => {
   if (props.expand) {
     setTimeout(() => {
-      treeOperation('expand');
+      treeOperation("expand");
     }, 800);
   }
 };
 const loadByPage = async () => {
   //加入共享人的信息
   if (props.commonPersons?.length && !isSystemManage()) {
-    searchParams.push(createCondition('a.createdBy', props.commonPersons, 'in'));
+    searchParams.push(
+      createCondition("a.createdBy", props.commonPersons, "in"),
+    );
   }
   let params: any = {
     currentPage: pageInfo.currentPage,
     pageSize: pageInfo.pageSize,
     fieldList: searchParams,
-    orderBy: orderBys
+    orderBy: orderBys,
   };
   postRequest(props.compUrl?.pageListUrl!, params)
     .then((res: any) => {
       if (!res || res.data.code != 0) {
-        console.error(res?.data?.cnMessage || '接口异常');
+        console.error(res?.data?.cnMessage || "接口异常");
         return;
       }
       let redata = res.data.data;
@@ -231,7 +258,7 @@ const loadByPage = async () => {
 const init = async () => {
   if (props.isDynamicData) {
     if (!props.compUrl) {
-      warning('动态数据须配置数据获取接口');
+      warning("动态数据须配置数据获取接口");
       return;
     }
     if (props.autoLoad) {
@@ -249,21 +276,33 @@ onMounted(() => {
 defineExpose({
   getSelectData,
   setSelectData,
-  createSearchParams
+  createSearchParams,
 });
 </script>
 
 <template>
-  <el-card class="inner_content h-full" :style="{
-    width: collapse ? '60px' : 'unset',
-    padding: 'unset'
-  }">
-    <div class="selected-data gap-2" v-if="showSelectData && selectedDataList?.length > 0">
-      <el-tag closable @close="operSelectData(item, false)" v-for="item in selectedDataList"
-        :key="_compKey(item, item[preps.value])">{{ item[preps.label] }}</el-tag>
+  <el-card
+    class="inner_content h-full"
+    :style="{
+      width: collapse ? '60px' : 'unset',
+      padding: 'unset',
+    }"
+  >
+    <div
+      class="selected-data gap-2"
+      v-if="showSelectData && selectedDataList?.length > 0"
+    >
+      <el-tag
+        closable
+        @close="operSelectData(item, false)"
+        v-for="item in selectedDataList"
+        :key="_compKey(item, item[preps.value])"
+        >{{ item[preps.label] }}</el-tag
+      >
     </div>
     <div class="tree-title">
-      <div class="title flex items-center">{{ treeTitle }}&nbsp;
+      <div class="title flex items-center">
+        {{ treeTitle }}&nbsp;
         <help v-if="helpMsg" :message="helpMsg" />
       </div>
       <div class="btn" v-if="showCollapse">
@@ -271,17 +310,38 @@ defineExpose({
       </div>
     </div>
     <div class="search-input" v-if="showSearch">
-      <el-input v-model="searchData" :size="compSize" clearable
-        :style="{ 'margin-right': showDropdown ? 'unset' : '10px' }" placeholder="请输入关键字" @input="onQueryChanged">
+      <el-input
+        v-model="searchData"
+        :size="compSize"
+        clearable
+        :style="{ 'margin-right': showDropdown ? 'unset' : '10px' }"
+        placeholder="请输入关键字"
+        @input="onQueryChanged"
+      >
         <template #append>
-          <star-horse-icon @click="onQueryChanged" icon-class="search" color="var(--star-horse-style)" size="18px" />
+          <star-horse-icon
+            @click="onQueryChanged"
+            icon-class="search"
+            color="var(--star-horse-style)"
+            size="18px"
+          />
         </template>
       </el-input>
-      <el-dropdown placement="bottom" @command="treeOperation" v-if="showDropdown">
-        <star-horse-icon icon-class="v-dot" color="var(--star-horse-style)" size="20px" />
+      <el-dropdown
+        placement="bottom"
+        @command="treeOperation"
+        v-if="showDropdown"
+      >
+        <star-horse-icon
+          icon-class="v-dot"
+          color="var(--star-horse-style)"
+          size="20px"
+        />
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item v-if="btnVisible" command="add">添加数据</el-dropdown-item>
+            <el-dropdown-item v-if="btnVisible" command="add"
+              >添加数据</el-dropdown-item
+            >
             <el-dropdown-item command="expand">展开全部</el-dropdown-item>
             <el-dropdown-item command="collapse">折叠全部</el-dropdown-item>
           </el-dropdown-menu>
@@ -291,39 +351,83 @@ defineExpose({
     <el-divider v-if="showSearch" />
     <div class="tree-content">
       <el-scrollbar height="100%">
-        <el-tree ref="treeRef" :data="treeDatas" :props="preps" :node-key="preps.value" v-if="treeType == 'tree'"
-          :filter-node-method="filterMethod" :check-strictly="checkStrictly" :show-checkbox="showCheckBox"
-          highlight-current @nodeClick="treeChange" @checkChange="treeChange">
+        <el-tree
+          ref="treeRef"
+          :data="treeDatas"
+          :props="preps"
+          :node-key="preps.value"
+          v-if="treeType == 'tree'"
+          :filter-node-method="filterMethod"
+          :check-strictly="checkStrictly"
+          :show-checkbox="showCheckBox"
+          highlight-current
+          @nodeClick="treeChange"
+          @checkChange="treeChange"
+        >
           <template #default="{ node, data }">
             <div class="menu-title">
-              <div class="name flex items-center"><star-horse-icon
-                  :icon-class="data.children?.length > 0 ? 'folder' : 'document'" />{{ node.label }}
+              <div class="name flex items-center">
+                <star-horse-icon
+                  :icon-class="
+                    data.children?.length > 0 ? 'folder' : 'document'
+                  "
+                />{{ node.label }}
                 <template v-if="showCode">
-                  ({{ data["code"] || data[preps.code || preps.value || "value"] || "" }})
+                  ({{
+                    data["code"] ||
+                    data[preps.code || preps.value || "value"] ||
+                    ""
+                  }})
                 </template>
               </div>
               <div v-if="btnVisible || rmvVisible" class="btn">
                 <el-tooltip :content="btnTitle">
-                  <star-horse-icon cursor="pointer" v-if="btnVisible" @click.stop="addData(data)" icon-class="plus" />
+                  <star-horse-icon
+                    cursor="pointer"
+                    v-if="btnVisible"
+                    @click.stop="addData(data)"
+                    icon-class="plus"
+                  />
                 </el-tooltip>
                 <el-tooltip :content="rmvTitle">
-                  <star-horse-icon cursor="pointer" v-if="rmvVisible" @click.stop="removeData(data)"
-                    color="var(--el-color-danger)" icon-class="minus" />
+                  <star-horse-icon
+                    cursor="pointer"
+                    v-if="rmvVisible"
+                    @click.stop="removeData(data)"
+                    color="var(--el-color-danger)"
+                    icon-class="minus"
+                  />
                 </el-tooltip>
               </div>
             </div>
           </template>
         </el-tree>
-        <el-menu v-if="treeType == 'menu'" ref="menuTreeRef" :unique-opened="false">
-          <SubSystemMenu :dataList="treeDatas" :preps="preps" @addData="addData" @removeData="removeData"
-            @selectData="menuChange" />
+        <el-menu
+          v-if="treeType == 'menu'"
+          ref="menuTreeRef"
+          :unique-opened="false"
+        >
+          <SubSystemMenu
+            :dataList="treeDatas"
+            :preps="preps"
+            @addData="addData"
+            @removeData="removeData"
+            @selectData="menuChange"
+          />
         </el-menu>
       </el-scrollbar>
     </div>
     <div class="tree-footer" v-if="showPageBar">
-      <el-pagination :total="pageInfo.totalData" @current-change="pageChangeClick" @size-change="pageSizeClick"
-        :size="compSize" layout="prev, pager, next" v-model:currentPage="pageInfo.currentPage"
-        v-model:page-size="pageInfo.pageSize" v-model:pageCount="pageInfo.totalPage" />
+      <el-pagination
+        :total="pageInfo.totalData"
+        @current-change="pageChangeClick"
+        @size-change="pageSizeClick"
+        :size="compSize"
+        layout="prev, pager, next"
+        v-model:currentPage="pageInfo.currentPage"
+        v-model:page-size="pageInfo.pageSize"
+        v-model:pageCount="pageInfo.totalPage"
+      />
     </div>
   </el-card>
 </template>

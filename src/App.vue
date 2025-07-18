@@ -1,9 +1,7 @@
 <template>
-
-  <test/>
+  <test />
 </template>
 <script lang="ts" setup>
-
 import Test from "@/sample/test.vue";
 </script>
 <style lang="scss">

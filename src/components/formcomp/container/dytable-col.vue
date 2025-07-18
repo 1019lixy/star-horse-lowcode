@@ -1,11 +1,14 @@
 <script setup lang="ts" name="box-container">
-import { computed, onMounted, PropType, reactive, ref, watch } from 'vue';
-import { warning } from '@/utils/message';
-import { useDesignFormStore } from '@/store/DesignForm';
-import piniaInstance from '@/store/index';
-import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
-import { tableAction, tableCellOperation } from '@/components/formcomp/container/dytableUtils';
-import { Config } from '@/api/settings';
+import { computed, onMounted, PropType, reactive, ref, watch } from "vue";
+import { warning } from "@/utils/message";
+import { useDesignFormStore } from "@/store/DesignForm";
+import piniaInstance from "@/store/index";
+import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
+import {
+  tableAction,
+  tableCellOperation,
+} from "@/components/formcomp/container/dytableUtils";
+import { Config } from "@/api/settings";
 import { itemCheck, uuid } from "@/api/system";
 
 const props = defineProps({
@@ -20,17 +23,24 @@ const props = defineProps({
   isFirstCol: { type: Boolean, default: false },
   isLastCol: { type: Boolean, default: false },
   rowIndex: { type: Number, default: -1 },
-  colIndex: { type: Number, default: -1 }
+  colIndex: { type: Number, default: -1 },
 });
 let designForm = useDesignFormStore(piniaInstance);
 let draggingItem = computed(() => designForm.draggingItem);
-let excludeContainerType: Array<string> = ['box', 'tab', 'table', 'dytable', 'collapse', 'card'];
+let excludeContainerType: Array<string> = [
+  "box",
+  "tab",
+  "table",
+  "dytable",
+  "collapse",
+  "card",
+];
 let currentSubItemId = computed(() => designForm.currentSubItemId);
 let isEdit = computed(() => designForm.isEdit);
 const isDragging = computed(() => designForm.isDragging);
 const formData = defineModel("formData");
 const isResizing = ref(false);
-const resizeDirection = ref<'width' | 'height' | null>(null);
+const resizeDirection = ref<"width" | "height" | null>(null);
 const startX = ref(0);
 const startY = ref(0);
 const startWidth = ref(0);
@@ -46,14 +56,14 @@ let buttonControl = reactive<any>({
   undoMergeRowDisabled: props.field.rowspan == 1,
   undoMergeColDisabled: props.field.colspan == 1,
   deleteWholeColDisabled: false,
-  deleteWholeRowDisabled: false
+  deleteWholeRowDisabled: false,
 });
 
 const onDragAdd = (evt: Event | any, dataList: any) => {
   selectCurrentTd();
   let newIndex = evt.newIndex;
   if (excludeContainerType.includes(draggingItem.value.itemType)) {
-    warning('动态表格容器不允许嵌套其他容器');
+    warning("动态表格容器不允许嵌套其他容器");
     let columns = props.field?.columns;
     for (let sind in columns) {
       let column = columns[sind];
@@ -66,9 +76,9 @@ const onDragAdd = (evt: Event | any, dataList: any) => {
     }
     return false;
   }
-  if (newIndex != null && newIndex != 'undefined') {
+  if (newIndex != null && newIndex != "undefined") {
     let dataInfo = dataList[newIndex];
-    designForm.selectItem(dataInfo, dataInfo.itemType, '');
+    designForm.selectItem(dataInfo, dataInfo.itemType, "");
   }
 };
 
@@ -90,25 +100,25 @@ const handleResizeStart = (e: MouseEvent) => {
   if (isWidthResize || isHeightResize) {
     e.preventDefault();
     isResizing.value = true;
-    resizeDirection.value = isWidthResize ? 'width' : 'height';
+    resizeDirection.value = isWidthResize ? "width" : "height";
     startX.value = e.clientX;
     startY.value = e.clientY;
     startWidth.value = rect.width;
     startHeight.value = rect.height;
 
-    document.addEventListener('mousemove', handleResizeMove);
-    document.addEventListener('mouseup', handleResizeEnd);
+    document.addEventListener("mousemove", handleResizeMove);
+    document.addEventListener("mouseup", handleResizeEnd);
   }
 };
 
 const handleResizeMove = (e: MouseEvent) => {
   if (!isResizing.value) return;
 
-  if (resizeDirection.value === 'width') {
+  if (resizeDirection.value === "width") {
     const delta = e.clientX - startX.value;
     const newWidth = startWidth.value + delta;
     // 同步更新所有关联行中相同列索引的宽度
-    props.parentField?.preps.elements.forEach(row => {
+    props.parentField?.preps.elements.forEach((row) => {
       const targetCol = row.columns[props.colIndex];
       if (targetCol) {
         targetCol.colWidth = `${Math.max(20, newWidth)}px`;
@@ -124,8 +134,8 @@ const handleResizeMove = (e: MouseEvent) => {
 const handleResizeEnd = () => {
   isResizing.value = false;
   resizeDirection.value = null;
-  document.removeEventListener('mousemove', handleResizeMove);
-  document.removeEventListener('mouseup', handleResizeEnd);
+  document.removeEventListener("mousemove", handleResizeMove);
+  document.removeEventListener("mouseup", handleResizeEnd);
 };
 const init = () => {
   tableAction(props, buttonControl);
@@ -139,63 +149,145 @@ watch(
   () => tableAction(props, buttonControl),
   {
     immediate: false,
-    deep: true
-  }
+    deep: true,
+  },
 );
 </script>
 <template>
-  <td class="edit_col" :class="{
-    'dragging-area': isDragging,
-    'no-drag': !isEdit
-  }" :colspan="field.colspan || 1" :rowspan="field.rowspan || 1" :style="{
-        width: field.colWidth || '100%',
-        height: field.colHeight || '40px',
-        'word-break': !!field.wordBreak ? 'break-all' : 'normal'
-      }" @click="selectCurrentTd" @mousedown="handleResizeStart">
-
-    <draggable @add="(evt: Event) => onDragAdd(evt, field.items)" class="smain-design" tag="div" :item-key="uuid()"
-      group="starHorseGroup" ghostClass="ghost" animation="200" :list="field.items">
+  <td
+    class="edit_col"
+    :class="{
+      'dragging-area': isDragging,
+      'no-drag': !isEdit,
+    }"
+    :colspan="field.colspan || 1"
+    :rowspan="field.rowspan || 1"
+    :style="{
+      width: field.colWidth || '100%',
+      height: field.colHeight || '40px',
+      'word-break': !!field.wordBreak ? 'break-all' : 'normal',
+    }"
+    @click="selectCurrentTd"
+    @mousedown="handleResizeStart"
+  >
+    <draggable
+      @add="(evt: Event) => onDragAdd(evt, field.items)"
+      class="smain-design"
+      tag="div"
+      :item-key="uuid()"
+      group="starHorseGroup"
+      ghostClass="ghost"
+      animation="200"
+      :list="field.items"
+    >
       <template #item="{ element: data }">
-        <div :class="{ 'comp-item': data?.preps['headerFlag'] != 'Y', 'bare-item': data?.preps['headerFlag'] }">
-          <component :key="data?.id" :field="data" :formInfo="formInfo" :isDesign="isDesign" :disabled="disabled"
-            :is="itemCheck(data)" :parentField="parentField" v-model:formData="formData" />
+        <div
+          :class="{
+            'comp-item': data?.preps['headerFlag'] != 'Y',
+            'bare-item': data?.preps['headerFlag'],
+          }"
+        >
+          <component
+            :key="data?.id"
+            :field="data"
+            :formInfo="formInfo"
+            :isDesign="isDesign"
+            :disabled="disabled"
+            :is="itemCheck(data)"
+            :parentField="parentField"
+            v-model:formData="formData"
+          />
         </div>
       </template>
     </draggable>
-    <div class="table-cell-action" v-if="isEdit && isDesign && currentSubItemId == field._uuid">
-      <el-dropdown trigger="click" @command="handleTableCellCommand" :size="Config.compSize">
-        <star-horse-icon icon-class="menu" style="color:var(--star-horse-white)" />
+    <div
+      class="table-cell-action"
+      v-if="isEdit && isDesign && currentSubItemId == field._uuid"
+    >
+      <el-dropdown
+        trigger="click"
+        @command="handleTableCellCommand"
+        :size="Config.compSize"
+      >
+        <star-horse-icon
+          icon-class="menu"
+          style="color: var(--star-horse-white)"
+        />
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item command="insertLeftCol">左边插入列</el-dropdown-item>
-            <el-dropdown-item command="insertRightCol">右边插入列</el-dropdown-item>
-            <el-dropdown-item command="insertAboveRow">插入上方行</el-dropdown-item>
-            <el-dropdown-item command="insertBelowRow">插入下方行</el-dropdown-item>
+            <el-dropdown-item command="insertLeftCol"
+              >左边插入列</el-dropdown-item
+            >
+            <el-dropdown-item command="insertRightCol"
+              >右边插入列</el-dropdown-item
+            >
+            <el-dropdown-item command="insertAboveRow"
+              >插入上方行</el-dropdown-item
+            >
+            <el-dropdown-item command="insertBelowRow"
+              >插入下方行</el-dropdown-item
+            >
 
-            <el-dropdown-item command="mergeLeftCol" :disabled="buttonControl.mergeLeftColDisabled" divided>合并左边单元格
+            <el-dropdown-item
+              command="mergeLeftCol"
+              :disabled="buttonControl.mergeLeftColDisabled"
+              divided
+              >合并左边单元格
             </el-dropdown-item>
-            <el-dropdown-item command="mergeRightCol" :disabled="buttonControl.mergeRightColDisabled">合并右单元格
+            <el-dropdown-item
+              command="mergeRightCol"
+              :disabled="buttonControl.mergeRightColDisabled"
+              >合并右单元格
             </el-dropdown-item>
-            <el-dropdown-item command="mergeWholeRow" :disabled="buttonControl.mergeWholeRowDisabled">合并整行
-            </el-dropdown-item>
-
-            <el-dropdown-item command="mergeAboveRow" :disabled="buttonControl.mergeAboveRowDisabled" divided>合并上边单元格
-            </el-dropdown-item>
-            <el-dropdown-item command="mergeBelowRow" :disabled="buttonControl.mergeBelowRowDisabled">合并下边单元格
-            </el-dropdown-item>
-            <el-dropdown-item command="mergeWholeCol" :disabled="buttonControl.mergeWholeColDisabled">合并整列
-            </el-dropdown-item>
-
-            <el-dropdown-item command="undoMergeRow" :disabled="buttonControl.undoMergeRowDisabled" divided>撤销行合并
-            </el-dropdown-item>
-            <el-dropdown-item command="undoMergeCol" :disabled="buttonControl.undoMergeColDisabled">撤销列合并
+            <el-dropdown-item
+              command="mergeWholeRow"
+              :disabled="buttonControl.mergeWholeRowDisabled"
+              >合并整行
             </el-dropdown-item>
 
-            <el-dropdown-item command="deleteWholeCol" :disabled="buttonControl.deleteWholeColDisabled" divided>删除整列
+            <el-dropdown-item
+              command="mergeAboveRow"
+              :disabled="buttonControl.mergeAboveRowDisabled"
+              divided
+              >合并上边单元格
             </el-dropdown-item>
-            <el-dropdown-item command="deleteWholeRow" :disabled="buttonControl.deleteWholeRowDisabled">删除整行
+            <el-dropdown-item
+              command="mergeBelowRow"
+              :disabled="buttonControl.mergeBelowRowDisabled"
+              >合并下边单元格
             </el-dropdown-item>
-            <el-dropdown-item command="colConfig" divided>列设置</el-dropdown-item>
+            <el-dropdown-item
+              command="mergeWholeCol"
+              :disabled="buttonControl.mergeWholeColDisabled"
+              >合并整列
+            </el-dropdown-item>
+
+            <el-dropdown-item
+              command="undoMergeRow"
+              :disabled="buttonControl.undoMergeRowDisabled"
+              divided
+              >撤销行合并
+            </el-dropdown-item>
+            <el-dropdown-item
+              command="undoMergeCol"
+              :disabled="buttonControl.undoMergeColDisabled"
+              >撤销列合并
+            </el-dropdown-item>
+
+            <el-dropdown-item
+              command="deleteWholeCol"
+              :disabled="buttonControl.deleteWholeColDisabled"
+              divided
+              >删除整列
+            </el-dropdown-item>
+            <el-dropdown-item
+              command="deleteWholeRow"
+              :disabled="buttonControl.deleteWholeRowDisabled"
+              >删除整行
+            </el-dropdown-item>
+            <el-dropdown-item command="colConfig" divided
+              >列设置</el-dropdown-item
+            >
           </el-dropdown-menu>
         </template>
       </el-dropdown>
@@ -235,7 +327,9 @@ watch(
   min-height: 50px;
   position: relative;
   user-select: none;
-  transition: width 0.2s, height 0.2s;
+  transition:
+    width 0.2s,
+    height 0.2s;
   border: 1px solid var(--star-horse-border—color);
 
   .table-cell-action {
@@ -267,7 +361,7 @@ watch(
   }
 
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     bottom: 0;
@@ -278,7 +372,9 @@ watch(
     background: var(--star-horse-style);
     opacity: 0;
     z-index: 1001;
-    transition: opacity 0.3s, right 0.1s; // 添加手柄位置过渡
+    transition:
+      opacity 0.3s,
+      right 0.1s; // 添加手柄位置过渡
   }
 
   &.no-transition {
@@ -286,14 +382,12 @@ watch(
   }
 
   &:hover {
-
     &::after,
     &::before {
       opacity: 1; // 提高可见度
       transition-delay: 0.1s; // 添加悬停延迟避免误触发
     }
   }
-
 
   // 修正事件处理逻辑
   &[colspan]::after {
@@ -302,12 +396,12 @@ watch(
   }
 
   // 保证后续列可操作
-  &[colspan]+.edit_col::after {
+  &[colspan] + .edit_col::after {
     z-index: 1002;
   }
 
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     left: 10%;
     right: 0;
@@ -318,11 +412,12 @@ watch(
     width: 80%;
     background: var(--star-horse-style);
     opacity: 0;
-    transition: opacity 0.3s, bottom 0.1s;
+    transition:
+      opacity 0.3s,
+      bottom 0.1s;
   }
 
   &:hover {
-
     &::after,
     &::before {
       opacity: 0.5;
@@ -334,7 +429,6 @@ watch(
   }
 
   &.no-drag {
-
     &::after,
     &::before {
       display: none !important; // 禁用拖拽手柄
@@ -342,7 +436,6 @@ watch(
     }
 
     &:hover {
-
       &::after,
       &::before {
         opacity: 0 !important;

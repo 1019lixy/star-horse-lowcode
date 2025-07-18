@@ -1,4 +1,4 @@
-import {uuid} from '@/api/system';
+import { uuid } from "@/api/system";
 
 /**
  * 定义td 数据
@@ -187,49 +187,49 @@ const deleteWholeRow = (props: any) => {
  */
 export const tableCellOperation = (command: string, props: any) => {
   switch (command) {
-    case 'insertLeftCol':
+    case "insertLeftCol":
       insertLeftCol(props);
       break;
-    case 'insertRightCol':
+    case "insertRightCol":
       insertRightCol(props);
       break;
-    case 'insertAboveRow':
+    case "insertAboveRow":
       insertAboveRow(props);
       break;
-    case 'insertBelowRow':
+    case "insertBelowRow":
       insertBelowRow(props);
       break;
-    case 'mergeLeftCol':
+    case "mergeLeftCol":
       mergeLeftCol(props);
       break;
-    case 'mergeRightCol':
+    case "mergeRightCol":
       mergeRightCol(props);
       break;
-    case 'mergeWholeCol':
+    case "mergeWholeCol":
       mergeWholeCol(props);
       break;
-    case 'mergeAboveRow':
+    case "mergeAboveRow":
       mergeAboveRow(props);
       break;
-    case 'mergeBelowRow':
+    case "mergeBelowRow":
       mergeBelowRow(props);
       break;
-    case 'mergeWholeRow':
+    case "mergeWholeRow":
       mergeWholeRow(props);
       break;
-    case 'undoMergeRow':
+    case "undoMergeRow":
       undoMergeRow(props);
       break;
-    case 'undoMergeCol':
+    case "undoMergeCol":
       undoMergeCol(props);
       break;
-    case 'deleteWholeCol':
+    case "deleteWholeCol":
       deleteWholeCol(props);
       break;
-    case 'deleteWholeRow':
+    case "deleteWholeRow":
       deleteWholeRow(props);
       break;
-    case 'colConfig':
+    case "colConfig":
       console.log();
   }
   //操作单元格后再次调用控制按钮函数
@@ -241,7 +241,9 @@ const mergeLeftColAction = (props: any) => {
     return true;
   }
   const leftCol = row.columns[props.colIndex - 1];
-  return col.rowspan > 1 && leftCol ? leftCol.rowspan != col.rowspan : props.isFirstCol;
+  return col.rowspan > 1 && leftCol
+    ? leftCol.rowspan != col.rowspan
+    : props.isFirstCol;
 };
 const mergeRightColAction = (props: any) => {
   const { row, col } = tableCellInfo(props);
@@ -249,7 +251,9 @@ const mergeRightColAction = (props: any) => {
     return true;
   }
   const rightCol = row.columns[props.colIndex + 1];
-  return col.rowspan > 1 && rightCol ? rightCol.rowspan != col.rowspan : props.isLastCol;
+  return col.rowspan > 1 && rightCol
+    ? rightCol.rowspan != col.rowspan
+    : props.isLastCol;
 };
 const mergeWholeColAction = (props: any) => {
   return colCommonAction(props);

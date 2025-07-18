@@ -1,20 +1,27 @@
 <script setup lang="ts" name="card-container">
-import { computed, onMounted, PropType, ref } from 'vue';
-import { useDesignFormStore } from '@/store/DesignForm';
-import piniaInstance from '@/store/index';
-import { itemCheck, uuid } from '@/api/system';
+import { computed, onMounted, PropType, ref } from "vue";
+import { useDesignFormStore } from "@/store/DesignForm";
+import piniaInstance from "@/store/index";
+import { itemCheck, uuid } from "@/api/system";
 
 const props = defineProps({
   parentField: { type: String },
   isDesign: { type: Boolean, default: false },
   disabled: { type: Object as PropType<Boolean | String> },
   formInfo: { type: Object as PropType<any> },
-  field: { type: Object as PropType<any> }
+  field: { type: Object as PropType<any> },
 });
 let designForm = useDesignFormStore(piniaInstance);
 const isDragging = computed(() => designForm.isDragging);
 const formData = defineModel("formData");
-let containerType: Array<string> = ['tab', 'box', 'table', 'card', 'dytable', 'collapse'];
+let containerType: Array<string> = [
+  "tab",
+  "box",
+  "table",
+  "card",
+  "dytable",
+  "collapse",
+];
 
 const isContainer = (data: any) => {
   return containerType.includes(data.itemType);
@@ -25,60 +32,90 @@ const isContainer = (data: any) => {
  * @param type
  */
 const checkItem = (adata: any, type: string) => {
-  if (type == 'header') {
-    if (!adata['headerFieldList']) {
-      adata['headerFieldList'] = [];
+  if (type == "header") {
+    if (!adata["headerFieldList"]) {
+      adata["headerFieldList"] = [];
     }
   } else {
-    if (!adata['items']) {
-      adata['items'] = [];
+    if (!adata["items"]) {
+      adata["items"] = [];
     }
   }
 };
 const onDragAdd = (evt: Event | any, dataList: any) => {
   console.log(evt, dataList);
   let newIndex = evt.newIndex;
-  if (newIndex != null && newIndex != 'undefined') {
+  if (newIndex != null && newIndex != "undefined") {
     let dataInfo = dataList[newIndex];
-    designForm.selectItem(dataInfo, dataInfo.itemType, '');
+    designForm.selectItem(dataInfo, dataInfo.itemType, "");
   }
 };
 const activeTabName = ref();
 onMounted(() => {
-  if (!props.field['preps']['elements']) {
-    props.field['preps']['elements'] = [
+  if (!props.field["preps"]["elements"]) {
+    props.field["preps"]["elements"] = [
       {
-        label: 'Card',
-        tabName: 'card',
-        objectName: 'card',
-        subFormFlag: 'Y',
+        label: "Card",
+        tabName: "card",
+        objectName: "card",
+        subFormFlag: "Y",
         headerFieldList: [],
-        items: []
-      }
+        items: [],
+      },
     ];
-    props.field['stretch'] = 'N';
+    props.field["stretch"] = "N";
   }
-  activeTabName.value = 0; 
+  activeTabName.value = 0;
 });
 </script>
 <template>
-  <group-box-container class="star-horse-form-container" :isDesign="isDesign" :disabled="disabled"
-    :parentField="parentField" :form-item="field">
-    <el-card class="card-container" :shadow="field.preps['shadow']" v-for="adata in field['preps']['elements']">
+  <group-box-container
+    class="star-horse-form-container"
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :parentField="parentField"
+    :form-item="field"
+  >
+    <el-card
+      class="card-container"
+      :shadow="field.preps['shadow']"
+      v-for="adata in field['preps']['elements']"
+    >
       <template #header>
-        <div class="card-header flex items-center justify-between ">
+        <div class="card-header flex items-center justify-between">
           <div class="w-[60%]">
             {{ adata.title || adata.tabName }}
             <help v-if="adata.helpMsg" :message="adata.helpMsg" />
           </div>
-          <div class="flex-1  min-h-[40px]" :class="{ 'dragging-area': isDragging }">
-            <draggable @add="(evt: Event) => onDragAdd(evt, adata['headerFieldList'])"
-              @dragover="checkItem(adata, 'header')" class="card-design" group="starHorseGroup" animation="100"
-              :item-key="uuid()" ghostClass="ghost" v-model="adata['headerFieldList']">
+          <div
+            class="flex-1 min-h-[40px]"
+            :class="{ 'dragging-area': isDragging }"
+          >
+            <draggable
+              @add="(evt: Event) => onDragAdd(evt, adata['headerFieldList'])"
+              @dragover="checkItem(adata, 'header')"
+              class="card-design"
+              group="starHorseGroup"
+              animation="100"
+              :item-key="uuid()"
+              ghostClass="ghost"
+              v-model="adata['headerFieldList']"
+            >
               <template #item="{ element: header }">
-                <div class="comp-item" :style="{ marginTop: isContainer(header) ? '25px' : '10px' }">
-                  <component :key="header.id" :field="header" :isDesign="isDesign" :disabled="disabled"
-                    :formInfo="formInfo" :is="itemCheck(header)" :parentField="field" v-model:formData="formData" />
+                <div
+                  class="comp-item"
+                  :style="{ marginTop: isContainer(header) ? '25px' : '10px' }"
+                >
+                  <component
+                    :key="header.id"
+                    :field="header"
+                    :isDesign="isDesign"
+                    :disabled="disabled"
+                    :formInfo="formInfo"
+                    :is="itemCheck(header)"
+                    :parentField="field"
+                    v-model:formData="formData"
+                  />
                 </div>
               </template>
             </draggable>
@@ -86,14 +123,33 @@ onMounted(() => {
         </div>
       </template>
 
-      <el-scrollbar height="100%" class="min-h-20" :class="{ 'dragging-area': isDragging }">
-        <draggable @add="(evt: Event) => onDragAdd(evt, adata['items'])" @dragover="checkItem(adata, 'body')"
-          class="card-design" group="starHorseGroup" animation="100" :item-key="uuid()" ghostClass="ghost"
-          v-model="adata['items']">
+      <el-scrollbar
+        height="100%"
+        class="min-h-20"
+        :class="{ 'dragging-area': isDragging }"
+      >
+        <draggable
+          @add="(evt: Event) => onDragAdd(evt, adata['items'])"
+          @dragover="checkItem(adata, 'body')"
+          class="card-design"
+          group="starHorseGroup"
+          animation="100"
+          :item-key="uuid()"
+          ghostClass="ghost"
+          v-model="adata['items']"
+        >
           <template #item="{ element: item }">
             <div class="comp-item">
-              <component :key="item.id" :field="item" :isDesign="isDesign" :disabled="disabled" :formInfo="formInfo"
-                :is="itemCheck(item)" :parentField="field" v-model:formData="formData" />
+              <component
+                :key="item.id"
+                :field="item"
+                :isDesign="isDesign"
+                :disabled="disabled"
+                :formInfo="formInfo"
+                :is="itemCheck(item)"
+                :parentField="field"
+                v-model:formData="formData"
+              />
             </div>
           </template>
         </draggable>

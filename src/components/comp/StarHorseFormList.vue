@@ -1,17 +1,26 @@
 <script lang="ts" setup name="StarHorseFormList">
-import { inject, ModelRef, nextTick, onMounted, PropType, ref, ShallowReactive, watch } from 'vue';
-import { ApiUrls } from '@/components/types/ApiUrls';
-import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
-import { rowClassName } from '@/api/star_horse_utils';
-import { error, operationConfirm, success, warning } from '@/utils/message';
-import { download } from '@/api/star_horse_apis';
-import { getToken } from '@/utils/auth';
-import Sortable from 'sortablejs';
-import Help from '@/components/help.vue';
-import { compKey, uuid } from '@/api/system';
-import UTableColumn from '@/components/comp/items/UTableColumn.vue';
-import StarHorseForm from '@/components/comp/StarHorseForm.vue';
-import { Config } from '@/api/settings';
+import {
+  inject,
+  ModelRef,
+  nextTick,
+  onMounted,
+  PropType,
+  ref,
+  ShallowReactive,
+  watch,
+} from "vue";
+import { ApiUrls } from "@/components/types/ApiUrls";
+import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
+import { rowClassName } from "@/api/star_horse_utils";
+import { error, operationConfirm, success, warning } from "@/utils/message";
+import { download } from "@/api/star_horse_apis";
+import { getToken } from "@/utils/auth";
+import Sortable from "sortablejs";
+import Help from "@/components/help.vue";
+import { compKey, uuid } from "@/api/system";
+import UTableColumn from "@/components/comp/items/UTableColumn.vue";
+import StarHorseForm from "@/components/comp/StarHorseForm.vue";
+import { Config } from "@/api/settings";
 import { FieldInfo } from "@/components/types";
 
 let importDialogVisible = ref<boolean>(false);
@@ -21,29 +30,29 @@ const props = defineProps({
   compUrl: { type: Object as PropType<ApiUrls> },
   fieldList: { type: Object as PropType<FieldInfo[]>, required: true },
   defaultValues: { type: Object, default: {} },
-  batchName: { type: String, default: 'batchDataList' },
+  batchName: { type: String, default: "batchDataList" },
   primaryKey: { type: [String, Object] as PropType<string | any> },
   initRows: { type: Number, default: 0 },
   importInfo: { type: Object as PropType<any> },
-  title: { type: String, default: '' },
-  helpMsg: { type: String, default: '' },
+  title: { type: String, default: "" },
+  helpMsg: { type: String, default: "" },
   rules: { type: Object },
-  staticColumn: { type: String, default: 'Y' },
+  staticColumn: { type: String, default: "Y" },
   size: { type: String, default: Config.compSize },
   source: { type: Number, default: 1 },
   showCheckBox: { type: Boolean, default: false },
   selectAll: { type: Boolean, default: false },
-  subFlag: { type: Boolean, default: false }
+  subFlag: { type: Boolean, default: false },
 });
-const emits = defineEmits(['addRow', 'removeRow', "inited"]);
-const dataForm: ModelRef<any> = defineModel('dataForm');
-const formFields = inject('formFields', {}) as ShallowReactive<any>;
+const emits = defineEmits(["addRow", "removeRow", "inited"]);
+const dataForm: ModelRef<any> = defineModel("dataForm");
+const formFields = inject("formFields", {}) as ShallowReactive<any>;
 const loading = ref(null);
 const starHorseFormListRef = ref(null);
 
 const handleAddDetails = (row: any, type: number) => {
-  if (props.staticColumn == 'Y' && type != 2) {
-    dynamicHandleAddForm(row, 'add');
+  if (props.staticColumn == "Y" && type != 2) {
+    dynamicHandleAddForm(row, "add");
   } else {
     dynamicHandleAddRow(row, type);
   }
@@ -82,7 +91,6 @@ const closeAction = () => {
   rowDialogVisible.value = false;
 };
 
-
 /**
  * 动态添加行
  * @param row
@@ -94,41 +102,44 @@ const dynamicHandleAddRow = (row: any, type: number) => {
   }
   if (type === 1) {
     let obj = JSON.parse(JSON.stringify(props.defaultValues || {}));
-    obj['_uuid'] = uuid();
+    obj["_uuid"] = uuid();
     dataForm.value[props.batchName].push(obj);
-    emits('addRow', row);
+    emits("addRow", row);
   } else {
     let index = row.xh - 1;
     formFields && formFields[props.batchName]?.splice(index, 1);
     dataForm.value[props.batchName].splice(index, 1);
-    emits('removeRow', row);
+    emits("removeRow", row);
   }
   //将事件传出去
   let fieldList = props.fieldList;
   for (let ind in fieldList) {
     let temp = fieldList[ind];
     if (typeof temp.actions == "function") {
-      temp.actions(dataForm, 'oper');
+      temp.actions(dataForm, "oper");
     }
   }
   // 修改后的滚动逻辑：
   nextTick(() => {
     const tryScroll = (attempt = 0) => {
-      const tableEl = starHorseFormListRef.value?.$el
-      const scrollContainer = tableEl?.querySelector('.el-table--scrollable-y .el-scrollbar__wrap')
+      const tableEl = starHorseFormListRef.value?.$el;
+      const scrollContainer = tableEl?.querySelector(
+        ".el-table--scrollable-y .el-scrollbar__wrap",
+      );
       if (scrollContainer) {
         // 仅在新行添加时滚动（type=1）
         if (type === 1) {
-          scrollContainer.scrollTop = scrollContainer.scrollHeight - scrollContainer.clientHeight
+          scrollContainer.scrollTop =
+            scrollContainer.scrollHeight - scrollContainer.clientHeight;
         }
-      } else if (attempt < 3) { // 最多重试3次
-        setTimeout(() => tryScroll(attempt + 1), 50)
+      } else if (attempt < 3) {
+        // 最多重试3次
+        setTimeout(() => tryScroll(attempt + 1), 50);
       }
-    }
+    };
 
-    tryScroll()
-  })
-
+    tryScroll();
+  });
 };
 const getRowIdentity = (row: any) => {
   return (row.xh || 0) + 1;
@@ -142,7 +153,7 @@ const excelOperation = () => {
  */
 const downloadTemplate = () => {
   download(props.importInfo!.downloadTemplateUrl, {}).catch((err) => {
-    error('接口不存在或网络异常:' + err);
+    error("接口不存在或网络异常:" + err);
   });
 };
 /**
@@ -152,17 +163,17 @@ const downloadTemplate = () => {
  * @param _fileList fileList
  */
 const uploadError = (_err: any, _file: any, _fileList: any) => {
-  warning('导入数据失败');
+  warning("导入数据失败");
 };
 /**
  * 上传成功
  */
 const uploadSuccess = (response: any, _file: any, _fileList: any) => {
   if (response.code != 0) {
-    warning('数据解析异常');
+    warning("数据解析异常");
     return;
   }
-  success('导入成功');
+  success("导入成功");
   dataForm.value[props.batchName] = response.data;
   importDialogVisible.value = false;
 };
@@ -172,19 +183,19 @@ const selectData = (item: any) => {
 };
 const moveColumn = () => {
   const tableEl = starHorseFormListRef.value?.$el;
-  const tbody = tableEl?.querySelector('.el-table__body tbody');
+  const tbody = tableEl?.querySelector(".el-table__body tbody");
   if (tbody) {
     // 强制清除旧实例
     const oldInstance = Sortable.get(tbody);
     oldInstance?.destroy();
     Sortable.create(tbody, {
-      handle: '.move',
+      handle: ".move",
       animation: 200,
-      ghostClass: 'ghost',
+      ghostClass: "ghost",
       forceFallback: true,
       onStart: () => {
-        console.log('开始拖动');
-        tbody.style.cursor = 'move'; // 拖动时改变光标
+        console.log("开始拖动");
+        tbody.style.cursor = "move"; // 拖动时改变光标
       },
       onEnd(event: any) {
         const { oldIndex, newIndex } = event;
@@ -203,7 +214,7 @@ const moveColumn = () => {
             if (fieldItem) fieldItem.xh = index + 1; // 同步更新表单字段
           }
         });
-      }
+      },
     });
   }
 };
@@ -211,7 +222,7 @@ const clearAll = () => {
   if (dataForm.value[props.batchName].length == 0) {
     return;
   }
-  operationConfirm('确定要清空吗?').then(() => {
+  operationConfirm("确定要清空吗?").then(() => {
     dataForm.value[props.batchName] = [];
   });
 };
@@ -223,7 +234,7 @@ const init = async () => {
   /**
    * 如果列表为空的情况才初始化行数
    */
-  if (props.staticColumn == 'N') {
+  if (props.staticColumn == "N") {
     if (dataForm.value[props.batchName]?.length == 0) {
       for (let i = 0; i < props.initRows; i++) {
         handleAddDetails(null, 1);
@@ -232,7 +243,7 @@ const init = async () => {
   }
   moveColumn();
   await nextTick();
-  emits('inited');
+  emits("inited");
 };
 onMounted(async () => {
   await init();
@@ -244,25 +255,51 @@ watch(
       nextTick(() => {
         // 改用原生全选方法
         starHorseFormListRef.value?.toggleAllSelection(true);
-      })
+      });
     }
-  }, {
-  immediate: false,
-  deep: true
-}
-)
+  },
+  {
+    immediate: false,
+    deep: true,
+  },
+);
 </script>
 <template>
-  <star-horse-dialog :title="'编辑数据'" :dialogVisible="rowDialogVisible" :boxWidth="'50%'" :selfFunc="true"
-    @merge="mergeData" @closeAction="closeAction">
-    <star-horse-form :fieldList="{ fieldList: fieldList }" ref="rowDataFormRef" />
+  <star-horse-dialog
+    :title="'编辑数据'"
+    :dialogVisible="rowDialogVisible"
+    :boxWidth="'50%'"
+    :selfFunc="true"
+    @merge="mergeData"
+    @closeAction="closeAction"
+  >
+    <star-horse-form
+      :fieldList="{ fieldList: fieldList }"
+      ref="rowDataFormRef"
+    />
   </star-horse-dialog>
-  <star-horse-dialog v-if="!subFlag" :title="'导入文件'" :dialogVisible="importDialogVisible" :boxWidth="'30%'" :source="3"
-    :draggable="false" @closeAction="importDialogVisible = false">
+  <star-horse-dialog
+    v-if="!subFlag"
+    :title="'导入文件'"
+    :dialogVisible="importDialogVisible"
+    :boxWidth="'30%'"
+    :source="3"
+    :draggable="false"
+    @closeAction="importDialogVisible = false"
+  >
     <el-card>
-      <el-upload :auto-upload="true" :on-error="uploadError" :on-success="uploadSuccess" :show-file-list="false"
-        accept=".xls,.xlsx" :action="importInfo!.importDataUrl" :headers="{ token: getToken() }" class="upload"
-        name="file" drag>
+      <el-upload
+        :auto-upload="true"
+        :on-error="uploadError"
+        :on-success="uploadSuccess"
+        :show-file-list="false"
+        accept=".xls,.xlsx"
+        :action="importInfo!.importDataUrl"
+        :headers="{ token: getToken() }"
+        class="upload"
+        name="file"
+        drag
+      >
         <el-icon class="el-icon--upload">
           <upload-filled />
         </el-icon>
@@ -273,8 +310,18 @@ watch(
         <template #tip>
           <div class="el-upload__tip">
             只能上传 xls/xlsx 文件类型
-            <el-button @click="downloadTemplate" title="" :size="size" link v-if="importInfo?.downloadTemplateUrl">
-              <star-horse-icon icon-class="download" color="var(--star-horse-white)" size="12px" />
+            <el-button
+              @click="downloadTemplate"
+              title=""
+              :size="size"
+              link
+              v-if="importInfo?.downloadTemplateUrl"
+            >
+              <star-horse-icon
+                icon-class="download"
+                color="var(--star-horse-white)"
+                size="12px"
+              />
               <el-tooltip content="下载模板">下载模板</el-tooltip>
             </el-button>
           </div>
@@ -291,56 +338,121 @@ watch(
       </div>
       <div class="flex items-center">
         <ul class="inner_button" v-if="source != 3">
-          <li v-if="importInfo?.importDataUrl && !subFlag" @click="excelOperation">
+          <li
+            v-if="importInfo?.importDataUrl && !subFlag"
+            @click="excelOperation"
+          >
             <el-tooltip content="导入Excel">
-              <star-horse-icon icon-class="upload" color="var(--star-horse-style)" size="18px" />
+              <star-horse-icon
+                icon-class="upload"
+                color="var(--star-horse-style)"
+                size="18px"
+              />
             </el-tooltip>
           </li>
           <li @click="clearAll">
             <el-tooltip content="清空列表">
-              <star-horse-icon icon-class="dustbin" color="var(--el-color-danger)" size="18px" />
+              <star-horse-icon
+                icon-class="dustbin"
+                color="var(--el-color-danger)"
+                size="18px"
+              />
             </el-tooltip>
           </li>
         </ul>
       </div>
     </div>
-    <el-table v-loading="loading" :data="dataForm[batchName]" fit border sortable :size="size" :strip="true"
-      :row-key="getRowIdentity" :highlight-current-row="true" :row-class-name="rowClassName" ref="starHorseFormListRef"
-      class="sh-columns" :stripe="true" :virtual="true" :virtual-scroll-threshold="10" :virtual-scroll-options="{
+    <el-table
+      v-loading="loading"
+      :data="dataForm[batchName]"
+      fit
+      border
+      sortable
+      :size="size"
+      :strip="true"
+      :row-key="getRowIdentity"
+      :highlight-current-row="true"
+      :row-class-name="rowClassName"
+      ref="starHorseFormListRef"
+      class="sh-columns"
+      :stripe="true"
+      :virtual="true"
+      :virtual-scroll-threshold="10"
+      :virtual-scroll-options="{
         scrollSensitivity: 60,
-        scrollDebounce: 20
-      }" :use-virtual="dataForm[batchName]?.length > 10" :header-cell-style="{
+        scrollDebounce: 20,
+      }"
+      :use-virtual="dataForm[batchName]?.length > 10"
+      :header-cell-style="{
         background: '#f2f2f2',
         color: '#707070',
         'font-size': '12px',
-        'background-image': '-webkit-gradient(linear,left 0,left 100%,from(#f8f8f8),to(#ececec))'
-      }" :cell-style="{ 'font-size': '12px' }">
-      <el-table-column type="selection" fixed="left" width="50" align="center" v-if="showCheckBox" />
+        'background-image':
+          '-webkit-gradient(linear,left 0,left 100%,from(#f8f8f8),to(#ececec))',
+      }"
+      :cell-style="{ 'font-size': '12px' }"
+    >
+      <el-table-column
+        type="selection"
+        fixed="left"
+        width="50"
+        align="center"
+        v-if="showCheckBox"
+      />
       <el-table-column label="序号" align="center" prop="xh" width="50" />
       <el-table-column prop="" label="排序" width="60">
         <template #default="scope">
-          <el-tag class="move" style="cursor: move" @mousedown="selectData(scope)">
+          <el-tag
+            class="move"
+            style="cursor: move"
+            @mousedown="selectData(scope)"
+          >
             <el-icon style="cursor: move">
               <Sort />
             </el-icon>
           </el-tag>
         </template>
       </el-table-column>
-      <template v-for="(item, key) in fieldList" :key="compKey(item,key)">
+      <template v-for="(item, key) in fieldList" :key="compKey(item, key)">
         <template v-if="Array.isArray(item)">
-          <UTableColumn :item="temp" :key="compKey(temp, skey)" v-for="(temp, skey) in item" :size="size" :rules="rules"
-            :source="source" :batchName="batchName" :primaryKey="primaryKey" :staticColumn="staticColumn" />
+          <UTableColumn
+            :item="temp"
+            :key="compKey(temp, skey)"
+            v-for="(temp, skey) in item"
+            :size="size"
+            :rules="rules"
+            :source="source"
+            :batchName="batchName"
+            :primaryKey="primaryKey"
+            :staticColumn="staticColumn"
+          />
         </template>
         <template v-else-if="item.formVisible">
-          <UTableColumn :item="item" :size="size" :rules="rules" :source="source" :batchName="batchName"
-            :primaryKey="primaryKey" :staticColumn="staticColumn" />
+          <UTableColumn
+            :item="item"
+            :size="size"
+            :rules="rules"
+            :source="source"
+            :batchName="batchName"
+            :primaryKey="primaryKey"
+            :staticColumn="staticColumn"
+          />
         </template>
       </template>
       <el-table-column fixed="right" label="操作" width="80">
         <template #default="scope" v-if="source != 3">
-          <star-horse-icon icon-class="edit" v-if="staticColumn == 'Y'" @click="dynamicHandleAddForm(scope.row, 'edit')"
-            title="编辑" />
-          <star-horse-icon icon-class="delete" @click="handleAddDetails(scope.row, 2)" title="删除当前行" color="#f56c6c" />
+          <star-horse-icon
+            icon-class="edit"
+            v-if="staticColumn == 'Y'"
+            @click="dynamicHandleAddForm(scope.row, 'edit')"
+            title="编辑"
+          />
+          <star-horse-icon
+            icon-class="delete"
+            @click="handleAddDetails(scope.row, 2)"
+            title="删除当前行"
+            color="#f56c6c"
+          />
         </template>
       </el-table-column>
     </el-table>

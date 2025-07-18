@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { useVModel } from '@vueuse/core';
-import DataTag from '@/components/comp/utils/DataTag.vue';
-import DataPicker, { type ModelValueType } from '@/components/comp/utils/DataPicker.vue';
-import { useFormDisabled } from 'element-plus';
-import type { CSSProperties } from 'vue';
-import { computed, ref } from 'vue';
-import StarHorseIcon from '@/components/comp/StarHorseIcon.vue';
+import { useVModel } from "@vueuse/core";
+import DataTag from "@/components/comp/utils/DataTag.vue";
+import DataPicker, {
+  type ModelValueType,
+} from "@/components/comp/utils/DataPicker.vue";
+import { useFormDisabled } from "element-plus";
+import type { CSSProperties } from "vue";
+import { computed, ref } from "vue";
+import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
 import { compKey } from "@/api/system";
 
 export interface DataSelectorProps {
@@ -28,19 +30,19 @@ export interface DataSelectorProps {
 const props = withDefaults(defineProps<DataSelectorProps>(), {
   multiple: false,
   disabled: false,
-  compSize: 'small',
+  compSize: "small",
   pageSize: 0,
-  displayName: 'name',
-  displayValue: 'value',
+  displayName: "name",
+  displayValue: "value",
   checkStrictly: true,
-  placeholder: '请选择数据'
+  placeholder: "请选择数据",
 });
 const emits = defineEmits<{
-  (e: 'update:modelValue', modelValue: ModelValueType): void;
-  (e: 'selectedData', selectData: any): void;
+  (e: "update:modelValue", modelValue: ModelValueType): void;
+  (e: "selectedData", selectData: any): void;
 }>();
-const value: any = useVModel(props, 'modelValue', emits);
-const emitData: any = useVModel(props, 'selectedData', emits);
+const value: any = useVModel(props, "modelValue", emits);
+const emitData: any = useVModel(props, "selectedData", emits);
 const selectData: any = ref<any>();
 const valueArr = computed<string[]>(() => {
   emitData.value = selectData.value;
@@ -71,18 +73,39 @@ const onClose = (data: any) => {
     selectData.value = null;
     value.value = null;
   }
-  emits('selectedData', selectData.value);
+  emits("selectedData", selectData.value);
 };
 </script>
 
 <template>
-  <data-picker ref="dataPickerRef" :title="title" :datas="datas" :data-url="dataUrl" :page-size="pageSize"
-    :display-name="displayName" :display-value="displayValue" :checkStrictly="checkStrictly" :multiple="multiple"
-    v-model="selectData" />
+  <data-picker
+    ref="dataPickerRef"
+    :title="title"
+    :datas="datas"
+    :data-url="dataUrl"
+    :page-size="pageSize"
+    :display-name="displayName"
+    :display-value="displayValue"
+    :checkStrictly="checkStrictly"
+    :multiple="multiple"
+    v-model="selectData"
+  />
   <div class="data-wrapper">
-    <star-horse-icon @click="openDataPicker" cursor="pointer" icon-class="select-data" :border="true" />
-    <DataTag v-for="(item, key) in valueArr" :key="compKey(item, key)" :closable="!disabled" :data="item"
-      :display-name="displayName" :display-value="displayValue" @close="onClose" />
+    <star-horse-icon
+      @click="openDataPicker"
+      cursor="pointer"
+      icon-class="select-data"
+      :border="true"
+    />
+    <DataTag
+      v-for="(item, key) in valueArr"
+      :key="compKey(item, key)"
+      :closable="!disabled"
+      :data="item"
+      :display-name="displayName"
+      :display-value="displayValue"
+      @close="onClose"
+    />
     <el-text v-show="!value || value.length === 0" class="placeholder">
       {{ placeholder }}
     </el-text>

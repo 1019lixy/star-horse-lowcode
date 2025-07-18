@@ -1,53 +1,104 @@
 <template>
   <div class="cron-content">
     <div class="cron-item">
-      <el-radio size="small" v-model="radioValue" :label="1" border> 日，允许的通配符[, - * / L M]</el-radio>
+      <el-radio size="small" v-model="radioValue" :label="1" border>
+        日，允许的通配符[, - * / L M]</el-radio
+      >
     </div>
     <div class="cron-item">
-      <el-radio size="small" v-model="radioValue" :label="2" border> 不指定</el-radio>
+      <el-radio size="small" v-model="radioValue" :label="2" border>
+        不指定</el-radio
+      >
     </div>
     <div class="cron-item">
-      <el-radio size="small" v-model="radioValue" :label="3" border> 周期</el-radio>
+      <el-radio size="small" v-model="radioValue" :label="3" border>
+        周期</el-radio
+      >
       <span style="margin-left: 10px; margin-right: 5px">从</span>
-      <el-input-number size="small" v-model="cycle01" :min="0" :max="31" controls-position="right"/>
+      <el-input-number
+        size="small"
+        v-model="cycle01"
+        :min="0"
+        :max="31"
+        controls-position="right"
+      />
       <span style="margin-left: 10px; margin-right: 5px">至</span>
-      <el-input-number size="small" v-model="cycle02" :min="0" :max="31" controls-position="right"/>
+      <el-input-number
+        size="small"
+        v-model="cycle02"
+        :min="0"
+        :max="31"
+        controls-position="right"
+      />
       <span style="margin-left: 10px; margin-right: 5px">日</span>
     </div>
     <div class="cron-item">
-      <el-radio size="small" v-model="radioValue" :label="4" border>循环</el-radio>
+      <el-radio size="small" v-model="radioValue" :label="4" border
+        >循环</el-radio
+      >
       <span style="margin-left: 10px; margin-right: 5px">从</span>
-      <el-input-number size="small" v-model="average01" :min="0" :max="31" controls-position="right"/>
+      <el-input-number
+        size="small"
+        v-model="average01"
+        :min="0"
+        :max="31"
+        controls-position="right"
+      />
       <span style="margin-left: 10px; margin-right: 5px">号开始，每</span>
-      <el-input-number size="small" v-model="average02" :min="0" :max="31" controls-position="right"/>
+      <el-input-number
+        size="small"
+        v-model="average02"
+        :min="0"
+        :max="31"
+        controls-position="right"
+      />
       <span style="margin-left: 10px; margin-right: 5px">日执行一次</span>
     </div>
     <div class="cron-item">
-      <el-radio size="small" v-model="radioValue" :label="5" border>工作日</el-radio>
+      <el-radio size="small" v-model="radioValue" :label="5" border
+        >工作日</el-radio
+      >
       <span style="margin-left: 10px; margin-right: 5px">每月</span>
-      <el-input-number size="small" v-model="workday" :min="0" :max="31" controls-position="right"/>
-      <span style="margin-left: 10px; margin-right: 5px">号最近的那个工作日</span>
+      <el-input-number
+        size="small"
+        v-model="workday"
+        :min="0"
+        :max="31"
+        controls-position="right"
+      />
+      <span style="margin-left: 10px; margin-right: 5px"
+        >号最近的那个工作日</span
+      >
     </div>
     <div class="cron-item">
-      <el-radio size="small" v-model="radioValue" :label="6" border> 本月最后一天</el-radio>
+      <el-radio size="small" v-model="radioValue" :label="6" border>
+        本月最后一天</el-radio
+      >
     </div>
     <div class="cron-item">
-      <el-radio size="small" v-model="radioValue" :label="7" border> 指定</el-radio>
+      <el-radio size="small" v-model="radioValue" :label="7" border>
+        指定</el-radio
+      >
       <el-checkbox-group size="small" v-model="checkboxList">
-        <el-checkbox class="my-[5px]" :border="true" v-for="item in 31" :key="item" :value="item - 1"
-                     :label="item<11?'0'+(item-1):(item-1)"/>
+        <el-checkbox
+          class="my-[5px]"
+          :border="true"
+          v-for="item in 31"
+          :key="item"
+          :value="item - 1"
+          :label="item < 11 ? '0' + (item - 1) : item - 1"
+        />
       </el-checkbox-group>
     </div>
   </div>
 </template>
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>
 <script setup lang="ts">
-import {computed, ref, watch} from 'vue';
+import { computed, ref, watch } from "vue";
 
 defineOptions({
-  name: 'crontab-day'
-})
+  name: "crontab-day",
+});
 let radioValue = ref(1);
 let workday = ref(1);
 let cycle01 = ref(1);
@@ -57,22 +108,22 @@ let average02 = ref(1);
 
 let checkboxList = ref([]);
 const props = defineProps({
-  check: {type: Function},
-  cron: {type: Object}
+  check: { type: Function },
+  cron: { type: Object },
 });
 
-const emits = defineEmits(['update']);
+const emits = defineEmits(["update"]);
 // 计算两个周期值
 const cycleTotalFun = () => {
   cycle01.value = props.check?.(cycle01.value, 1, 31);
   cycle02.value = props.check?.(cycle02.value, 1, 31);
-  return cycle01.value + '-' + cycle02.value;
+  return cycle01.value + "-" + cycle02.value;
 };
 // 计算平均用到的值
 const averageTotalFun = () => {
   average01.value = props.check?.(average01.value, 1, 31);
   average02.value = props.check?.(average02.value, 1, 31);
-  return average01.value + '/' + average02.value;
+  return average01.value + "/" + average02.value;
 };
 // 计算工作日格式
 const workdayCheckFun = () => {
@@ -82,7 +133,7 @@ const workdayCheckFun = () => {
 // 计算勾选的checkbox值合集
 const checkboxStringFun = () => {
   let str = checkboxList.value.join();
-  return str == '' ? '?' : str;
+  return str == "" ? "?" : str;
 };
 let cycleTotal = computed(() => cycleTotalFun());
 let averageTotal = computed(() => averageTotalFun());
@@ -92,50 +143,50 @@ let checkboxString = computed(() => checkboxStringFun());
 const radioChange = () => {
   switch (radioValue.value) {
     case 1:
-      emits('update', 'day', '*', 'day');
+      emits("update", "day", "*", "day");
       break;
     case 2:
-      emits('update', 'day', '?');
+      emits("update", "day", "?");
       break;
     case 3:
-      emits('update', 'day', cycle01.value + '-' + cycle02.value);
+      emits("update", "day", cycle01.value + "-" + cycle02.value);
       break;
     case 4:
-      emits('update', 'day', average01.value + '/' + average02.value);
+      emits("update", "day", average01.value + "/" + average02.value);
       break;
     case 5:
-      emits('update', 'day', workday.value + 'W');
+      emits("update", "day", workday.value + "W");
       break;
     case 6:
-      emits('update', 'day', 'L');
+      emits("update", "day", "L");
       break;
     case 7:
-      emits('update', 'day', checkboxString.value);
+      emits("update", "day", checkboxString.value);
       break;
   }
 };
 // 周期两个值变化时
 const cycleChange = () => {
   if (radioValue.value == 3) {
-    emits('update', 'day', cycleTotal.value);
+    emits("update", "day", cycleTotal.value);
   }
 };
 // 平均两个值变化时
 const averageChange = () => {
   if (radioValue.value == 4) {
-    emits('update', 'day', averageTotal.value);
+    emits("update", "day", averageTotal.value);
   }
 };
 // 最近工作日值变化时
 const workdayChange = () => {
   if (radioValue.value == 5) {
-    emits('update', 'day', workday.value + 'W');
+    emits("update", "day", workday.value + "W");
   }
 };
 // checkbox值变化时
 const checkboxChange = () => {
   if (radioValue.value == 7) {
-    emits('update', 'day', checkboxString.value);
+    emits("update", "day", checkboxString.value);
   }
 };
 // // 父组件传递的week发生变化触发
@@ -148,24 +199,24 @@ const checkboxChange = () => {
 //   }
 // };
 watch(
-    () => radioValue.value,
-    (_val) => radioChange(),
+  () => radioValue.value,
+  (_val) => radioChange(),
 );
 watch(
-    () => cycleTotal.value,
-    (_val) => cycleChange(),
+  () => cycleTotal.value,
+  (_val) => cycleChange(),
 );
 watch(
-    () => averageTotal.value,
-    (_val) => averageChange(),
+  () => averageTotal.value,
+  (_val) => averageChange(),
 );
 watch(
-    () => workdayCheck.value,
-    (_val) => workdayChange(),
+  () => workdayCheck.value,
+  (_val) => workdayChange(),
 );
 watch(
-    () => checkboxString.value,
-    (_val) => checkboxChange(),
+  () => checkboxString.value,
+  (_val) => checkboxChange(),
 );
 defineExpose({
   cycle01,
@@ -174,6 +225,6 @@ defineExpose({
   average02,
   checkboxList,
   workday,
-  radioValue
+  radioValue,
 });
 </script>

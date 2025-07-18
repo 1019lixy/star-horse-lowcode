@@ -1,14 +1,14 @@
-import {defineStore} from 'pinia';
-import {ref} from 'vue';
-import {ModuleEnums} from '@/components/enums/ModuleEnums';
-import {message} from '@/utils/message';
+import { defineStore } from "pinia";
+import { ref } from "vue";
+import { ModuleEnums } from "@/components/enums/ModuleEnums";
+import { message } from "@/utils/message";
 
 /**
  * 用户自定义方法处理逻辑
  */
-export const useCopyerOperationStore = defineStore('copyerOperation', () => {
+export const useCopyerOperationStore = defineStore("copyerOperation", () => {
   //执行的动作
-  const action = ref<string>('');
+  const action = ref<string>("");
   //模块
   const module = ref<ModuleEnums>();
   //父级容器
@@ -16,7 +16,12 @@ export const useCopyerOperationStore = defineStore('copyerOperation', () => {
   //拷贝数据
   const copyerData = ref<any>({});
 
-  const keyboardOperation = (act: string, m: ModuleEnums, container: any, data: any) => {
+  const keyboardOperation = (
+    act: string,
+    m: ModuleEnums,
+    container: any,
+    data: any,
+  ) => {
     operation(act, container, data);
     module.value = m;
   };
@@ -30,10 +35,10 @@ export const useCopyerOperationStore = defineStore('copyerOperation', () => {
     action.value = act;
     parentContainer.value = container;
     copyerData.value = data;
-    if (act == 'copy') {
-      message('复制成功');
-    } else if (act == 'cut') {
-      message('剪切成功');
+    if (act == "copy") {
+      message("复制成功");
+    } else if (act == "cut") {
+      message("剪切成功");
     }
   };
   //设置动作
@@ -50,7 +55,7 @@ export const useCopyerOperationStore = defineStore('copyerOperation', () => {
   };
   //清除所有数据
   const clearAll = () => {
-    action.value = '';
+    action.value = "";
     parentContainer.value = {};
     copyerData.value = {};
   };
@@ -64,6 +69,6 @@ export const useCopyerOperationStore = defineStore('copyerOperation', () => {
     setAction,
     setParentContainer,
     setCopyerData,
-    clearAll
+    clearAll,
   };
 });

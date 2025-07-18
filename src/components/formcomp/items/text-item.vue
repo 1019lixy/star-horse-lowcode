@@ -1,59 +1,68 @@
 <script setup lang="ts">
 import { PropType } from "vue";
-import { allAction } from '@/components/formcomp/utils/ItemRelationEventUtils';
+import { allAction } from "@/components/formcomp/utils/ItemRelationEventUtils";
 
 const props = defineProps({
   isDesign: {
     type: Boolean,
-    default: false
+    default: false,
   },
   disabled: {
     type: Boolean,
-    default: false
+    default: false,
   },
   bareFlag: {
     type: Boolean,
-    default: false
-  }, isSearch: {
+    default: false,
+  },
+  isSearch: {
     type: Boolean,
-    default: false
+    default: false,
   },
   field: {
     type: Object as PropType<any>,
-    required: true
+    required: true,
   },
   parentField: {
     type: Object as PropType<any>,
   },
   formInfo: {
     type: Object as PropType<any>,
-  }
+  },
 });
-const emits = defineEmits(['selfFunc', 'selectItem']);
+const emits = defineEmits(["selfFunc", "selectItem"]);
 const formData = defineModel<any>("formData");
 const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
-
 </script>
 <template>
-  <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
-    :parentField="parentField">
+  <starhorse-form-item
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :bareFlag="bareFlag"
+    :formItem="field"
+    :parentField="parentField"
+  >
     <div class="h-full w-full" @click="itemAction('click')">
-      <div class="flex" :style="{
-        verticalAlign: field.preps?.verticalAlign ?? 'middle',
-        justifyContent: field.preps?.justifyContent ?? 'left',
-        alignItems: field.preps?.alignItems ?? 'left',
-        wordBreak: field.preps?.wordBreak ?? 'normal',
-        width: field.preps?.width ?? '100%',
-        height: field.preps?.height ?? '100%',
-        fontWeight: field.preps?.fontWeight ?? '600',
-        color: field.preps?.color ?? 'inherit',
-        backgroundColor: field.preps?.backgroundColor ?? 'none',
-        borderRadius: field.preps?.fontWeight ?? 'none',
-        border: field.preps?.border ?? 'none',
-        margin: ' 0 5px'
-      }">{{ field.preps?.textContent || field.preps?.placeholder }}
+      <div
+        class="flex"
+        :style="{
+          verticalAlign: field.preps?.verticalAlign ?? 'middle',
+          justifyContent: field.preps?.justifyContent ?? 'left',
+          alignItems: field.preps?.alignItems ?? 'left',
+          wordBreak: field.preps?.wordBreak ?? 'normal',
+          width: field.preps?.width ?? '100%',
+          height: field.preps?.height ?? '100%',
+          fontWeight: field.preps?.fontWeight ?? '600',
+          color: field.preps?.color ?? 'inherit',
+          backgroundColor: field.preps?.backgroundColor ?? 'none',
+          borderRadius: field.preps?.fontWeight ?? 'none',
+          border: field.preps?.border ?? 'none',
+          margin: ' 0 5px',
+        }"
+      >
+        {{ field.preps?.textContent || field.preps?.placeholder }}
       </div>
     </div>
   </starhorse-form-item>

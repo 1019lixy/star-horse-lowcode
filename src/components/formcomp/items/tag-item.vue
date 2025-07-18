@@ -1,26 +1,27 @@
 <script setup lang="ts">
 import { PropType } from "vue";
-import { allAction } from '@/components/formcomp/utils/ItemRelationEventUtils';
+import { allAction } from "@/components/formcomp/utils/ItemRelationEventUtils";
 
 const props = defineProps({
   isDesign: {
     type: Boolean,
-    default: false
+    default: false,
   },
   disabled: {
     type: Boolean,
-    default: false
+    default: false,
   },
   bareFlag: {
     type: Boolean,
-    default: false
-  }, isSearch: {
+    default: false,
+  },
+  isSearch: {
     type: Boolean,
-    default: false
+    default: false,
   },
   field: {
     type: Object as PropType<any>,
-    required: true
+    required: true,
   },
   parentField: {
     type: Object as PropType<any>,
@@ -30,9 +31,9 @@ const props = defineProps({
   },
   callBack: {
     type: Function,
-  }
+  },
 });
-const emits = defineEmits(['selfFunc', 'selectItem']);
+const emits = defineEmits(["selfFunc", "selectItem"]);
 const formData = defineModel("formData");
 const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
@@ -40,16 +41,25 @@ const itemAction = (prep: any) => {
 const tagType = (val: any) => {
   let tagMap = props.field?.preps?.tagMap;
   if (tagMap && Object.keys(tagMap).length > 0) {
-    return tagMap[val] || 'primary';
+    return tagMap[val] || "primary";
   }
-  return props.field?.preps?.tagType || 'primary';
+  return props.field?.preps?.tagType || "primary";
 };
 </script>
 <template>
-  <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
-    :parentField="parentField">
-    <el-tag v-bind="field.preps" :type="tagType(formData[field.fieldName])" @click="itemAction('click')"
-      class="relative">
+  <starhorse-form-item
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :bareFlag="bareFlag"
+    :formItem="field"
+    :parentField="parentField"
+  >
+    <el-tag
+      v-bind="field.preps"
+      :type="tagType(formData[field.fieldName])"
+      @click="itemAction('click')"
+      class="relative"
+    >
       {{
         (callBack && callBack()) ||
         formData[field.fieldName] ||

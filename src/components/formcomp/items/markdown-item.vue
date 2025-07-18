@@ -1,46 +1,58 @@
 <template>
-  <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
-    :parentField="parentField">
-    <MdEditor v-model="formData[field.fieldName]" :theme="'light'" :language="'zh-CN'" :previewTheme="'default'"
-      :codeTheme="'github'" v-bind="field.preps" class="markdown-editor" />
+  <starhorse-form-item
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :bareFlag="bareFlag"
+    :formItem="field"
+    :parentField="parentField"
+  >
+    <MdEditor
+      v-model="formData[field.fieldName]"
+      :theme="'light'"
+      :language="'zh-CN'"
+      :previewTheme="'default'"
+      :codeTheme="'github'"
+      v-bind="field.preps"
+      class="markdown-editor"
+    />
   </starhorse-form-item>
 </template>
 <script setup lang="ts" name="markdown">
-import { onMounted, onUpdated, PropType } from 'vue';
-import 'md-editor-v3/lib/style.css';
+import { onMounted, onUpdated, PropType } from "vue";
+import "md-editor-v3/lib/style.css";
 
 defineProps({
   isDesign: {
     type: Boolean,
-    default: false
+    default: false,
   },
   disabled: {
     type: Boolean,
-    default: false
+    default: false,
   },
   bareFlag: {
     type: Boolean,
-    default: false
-  }, isSearch: {
+    default: false,
+  },
+  isSearch: {
     type: Boolean,
-    default: false
+    default: false,
   },
   field: {
     type: Object as PropType<any>,
-    required: true
+    required: true,
   },
   parentField: {
     type: Object as PropType<any>,
   },
   formInfo: {
     type: Object as PropType<any>,
-  }
+  },
 });
-const emits = defineEmits(['selfFunc', 'selectItem']);
+const emits = defineEmits(["selfFunc", "selectItem"]);
 const formData = defineModel("formData");
 
-const init = async () => {
-};
+const init = async () => {};
 onMounted(() => {
   init();
 });

@@ -1,33 +1,33 @@
 <script lang="ts" setup>
-import { onMounted, PropType, ref } from 'vue';
-import { DynamicNode } from '@/components/types/DynamicNode';
-import { dynamicPageContextMenuData } from '@/plugins/AblesPlugin';
+import { onMounted, PropType, ref } from "vue";
+import { DynamicNode } from "@/components/types/DynamicNode";
+import { dynamicPageContextMenuData } from "@/plugins/AblesPlugin";
 import { compKey } from "@/api/system";
 
 const props = defineProps({
   msg: {
     type: String,
-    required: true
+    required: true,
   },
   node: {
     type: Object as PropType<DynamicNode>,
-    required: true
+    required: true,
   },
   isActive: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 });
-const emits = defineEmits(['selectNode']);
+const emits = defineEmits(["selectNode"]);
 const pointList = ref<Array<string>>([
-  'left',
-  'right',
-  'top',
-  'bottom',
-  'bottom-right',
-  'bottom-left',
-  'top-right',
-  'top-left'
+  "left",
+  "right",
+  "top",
+  "bottom",
+  "bottom-right",
+  "bottom-left",
+  "top-right",
+  "top-left",
 ]);
 
 const init = async () => {
@@ -52,7 +52,7 @@ const handleClear = () => {
   };
 };
 const selectItem = () => {
-  emits('selectNode', props.node);
+  emits("selectNode", props.node);
 };
 /**
  * 改变div的大小
@@ -81,39 +81,39 @@ const rangeMove = (evt: MouseEvent, direction: string) => {
     moveActive.value = true;
     // 根据方向设置调整逻辑
     switch (direction) {
-      case 'right':
+      case "right":
         shouldAdjustWidth = true;
         break;
-      case 'left':
+      case "left":
         shouldAdjustWidth = true;
         adjustLeft = true;
         invertWidthDirection = true;
         break;
-      case 'top':
+      case "top":
         shouldAdjustHeight = true;
         adjustTop = true;
         invertHeightDirection = true;
         break;
-      case 'bottom':
+      case "bottom":
         shouldAdjustHeight = true;
         break;
-      case 'bottom-right':
+      case "bottom-right":
         shouldAdjustWidth = true;
         shouldAdjustHeight = true;
         break;
-      case 'bottom-left':
+      case "bottom-left":
         shouldAdjustWidth = true;
         shouldAdjustHeight = true;
         adjustLeft = true;
         invertWidthDirection = true;
         break;
-      case 'top-right':
+      case "top-right":
         shouldAdjustWidth = true;
         shouldAdjustHeight = true;
         adjustTop = true;
         invertHeightDirection = true;
         break;
-      case 'top-left':
+      case "top-left":
         shouldAdjustWidth = true;
         shouldAdjustHeight = true;
         adjustLeft = true;
@@ -142,7 +142,9 @@ const rangeMove = (evt: MouseEvent, direction: string) => {
     // 高度调整逻辑
     if (shouldAdjustHeight) {
       const heightDelta = deltaY * step.value;
-      const finalHeightDelta = invertHeightDirection ? -heightDelta : heightDelta;
+      const finalHeightDelta = invertHeightDirection
+        ? -heightDelta
+        : heightDelta;
 
       if (adjustTop) {
         props.node.top = (props.node.top || 0) - finalHeightDelta;
@@ -168,11 +170,11 @@ const dragStart = (evt: MouseEvent) => {
   nodeStartX.value = props.node.left || 0;
   nodeStartY.value = props.node.top || 0;
   // 锁定鼠标样式
-  document.body.style.cursor = 'grabbing';
+  document.body.style.cursor = "grabbing";
 };
 const dragAction = (evt: MouseEvent) => {
   if (isDragging.value && props.isActive) {
-    console.log('dragAction');
+    console.log("dragAction");
     const deltaX = evt.clientX - initialX.value;
     const deltaY = evt.clientY - initialY.value;
     props.node.left = nodeStartX.value + deltaX;
@@ -181,7 +183,7 @@ const dragAction = (evt: MouseEvent) => {
 };
 const endAction = (evt: MouseEvent) => {
   isDragging.value = false;
-  document.body.style.cursor = ''; // 恢复默认鼠标样式
+  document.body.style.cursor = ""; // 恢复默认鼠标样式
 };
 const contentMenuRef = ref();
 const contextmenu = (e: MouseEvent) => {
@@ -194,29 +196,52 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="node" :class="{ active: isActive }" :style="{
-    width: node.width + 'px !important',
-    height: node.height + 'px !important',
-    left: node.left + 'px!important',
-    top: node.top + 'px!important',
-    cursor: isActive ? 'move' : 'default',
-    zIndex: node.zIndex
-  }" @contextmenu="contextmenu" @mousedown="dragStart" @click.stop="selectItem" @mouseup="endAction"
-    @mousemove="dragAction">
+  <div
+    class="node"
+    :class="{ active: isActive }"
+    :style="{
+      width: node.width + 'px !important',
+      height: node.height + 'px !important',
+      left: node.left + 'px!important',
+      top: node.top + 'px!important',
+      cursor: isActive ? 'move' : 'default',
+      zIndex: node.zIndex,
+    }"
+    @contextmenu="contextmenu"
+    @mousedown="dragStart"
+    @click.stop="selectItem"
+    @mouseup="endAction"
+    @mousemove="dragAction"
+  >
     <div class="node__wrapper">
-      <div v-if="isActive" class="node-line node-line-left" :style="{ 'border-width': '1px', 'border-color': 'red' }">
-      </div>
-      <div v-if="isActive" class="node-line node-line-top" :style="{ 'border-width': '3px', 'border-color': 'red' }">
-      </div>
-      <div class="node-point" :class="'node-point-' + item" v-for="(item, key) in pointList" :key="compKey(item, key)"
-        @mousedown="rangeMove($event, item)" v-if="isActive"></div>
+      <div
+        v-if="isActive"
+        class="node-line node-line-left"
+        :style="{ 'border-width': '1px', 'border-color': 'red' }"
+      ></div>
+      <div
+        v-if="isActive"
+        class="node-line node-line-top"
+        :style="{ 'border-width': '3px', 'border-color': 'red' }"
+      ></div>
+      <div
+        class="node-point"
+        :class="'node-point-' + item"
+        v-for="(item, key) in pointList"
+        :key="compKey(item, key)"
+        @mousedown="rangeMove($event, item)"
+        v-if="isActive"
+      ></div>
       <div class="node-item node-content">
         <h3>{{ node.name }}</h3>
       </div>
     </div>
   </div>
   <Teleport to="body">
-    <ContentMenu ref="contentMenuRef" :menu-data="dynamicPageContextMenuData(node)" />
+    <ContentMenu
+      ref="contentMenuRef"
+      :menu-data="dynamicPageContextMenuData(node)"
+    />
   </Teleport>
 </template>
 

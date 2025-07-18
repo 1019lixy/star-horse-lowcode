@@ -1,45 +1,59 @@
 <template>
-  <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
-    :parentField="parentField">
-    <el-cascader :fid="field.fieldName" v-bind="field.preps" :disabled="checkIsDisabled(props)"
-      v-on="getDynamicEvents(props, itemAction)" v-model="formData[field.fieldName]" />
+  <starhorse-form-item
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :bareFlag="bareFlag"
+    :formItem="field"
+    :parentField="parentField"
+  >
+    <el-cascader
+      :fid="field.fieldName"
+      v-bind="field.preps"
+      :disabled="checkIsDisabled(props)"
+      v-on="getDynamicEvents(props, itemAction)"
+      v-model="formData[field.fieldName]"
+    />
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { nextTick, onMounted, shallowRef, watch, PropType } from 'vue';
-import { compDynamicData, isJson } from '@/api/star_horse_utils';
-import { allAction, checkIsDisabled } from '@/components/formcomp/utils/ItemRelationEventUtils';
-import { getDynamicEvents } from '@/api/system';
+import { nextTick, onMounted, shallowRef, watch, PropType } from "vue";
+import { compDynamicData, isJson } from "@/api/star_horse_utils";
+import {
+  allAction,
+  checkIsDisabled,
+} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import { getDynamicEvents } from "@/api/system";
 const props = defineProps({
   isDesign: {
     type: Boolean,
-    default: false
+    default: false,
   },
   disabled: {
     type: Boolean,
-    default: false
+    default: false,
   },
   bareFlag: {
     type: Boolean,
-    default: false
-  }, isSearch: {
+    default: false,
+  },
+  isSearch: {
     type: Boolean,
-    default: false
+    default: false,
   },
   field: {
     type: Object as PropType<any>,
-    required: true
+    required: true,
   },
   parentField: {
     type: Object as PropType<any>,
   },
   formInfo: {
     type: Object as PropType<any>,
-  }
+  },
 });
-const emits = defineEmits(['selfFunc', 'selectItem']);
+const emits = defineEmits(["selfFunc", "selectItem"]);
 const formData = defineModel("formData");
-let actionName = shallowRef('normal');
+let actionName = shallowRef("normal");
 const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
@@ -47,7 +61,7 @@ const initData = async () => {
   await nextTick();
   const dataa = await compDynamicData(props.field);
   if (dataa?.length) {
-    props.field.preps['options'] = dataa;
+    props.field.preps["options"] = dataa;
   }
   let data: any = formData.value[props.field.fieldName];
   if (isJson(data)) {
@@ -56,32 +70,38 @@ const initData = async () => {
     //解决加载慢问题，导致数据没法回显
     setTimeout(() => {
       let data: any = formData.value[props.field.fieldName];
-      formData.value[props.field.fieldName] = isJson(data) ? JSON.parse(data) : [];
+      formData.value[props.field.fieldName] = isJson(data)
+        ? JSON.parse(data)
+        : [];
     }, 200);
   }
 };
 onMounted(() => {
   if (!props.field.preps) {
-    props.field.preps = {}
+    props.field.preps = {};
   }
-  props.field.preps['props'] = {
-    label: 'name',
+  props.field.preps["props"] = {
+    label: "name",
     multiple: props.field?.multiple,
-    checkStrictly: true
+    checkStrictly: true,
   };
   initData();
-  actionName.value = props.field.actionName || 'normal';
+  actionName.value = props.field.actionName || "normal";
   if (!props.isSearch) {
     allAction(props, emits, formData, actionName.value, true);
   }
 });
-watch(() => formData.value[props.field.fieldName + "OptionList"], (val) => {
-  if (val?.length > 0) {
-    props.field.preps['options'] = val;
-  }
-}, {
-  immediate: true,
-})
+watch(
+  () => formData.value[props.field.fieldName + "OptionList"],
+  (val) => {
+    if (val?.length > 0) {
+      props.field.preps["options"] = val;
+    }
+  },
+  {
+    immediate: true,
+  },
+);
 </script>
 <style lang="scss" scoped>
 :deep(.el-cascader) {

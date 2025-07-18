@@ -1,55 +1,96 @@
 <template>
-  <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
-    :parentField="parentField">
+  <starhorse-form-item
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :bareFlag="bareFlag"
+    :formItem="field"
+    :parentField="parentField"
+  >
     <div class="number-range-container">
-      <div v-if="field.preps?.prefix" :class="{ 'slot-default': slotStyle === 'default', 'slot-pend ': true }">
+      <div
+        v-if="field.preps?.prefix"
+        :class="{ 'slot-default': slotStyle === 'default', 'slot-pend ': true }"
+      >
         {{ field.preps["prefix"] }}
       </div>
-      <div class="number-range" :class="{
-        'is-disabled': checkIsDisabled(props),
-        'is-focus': isFocus,
-        'number-range-border-radius': true
-      }">
-        <el-input-number :fid="minName" :controls="false" :disabled="checkIsDisabled(props)" v-bind="field.preps"
-          :placeholder="field.preps?.minPlaceholder" @change="itemAction('change')" @blur="handleBlur"
-          @focus="handleFocus" v-model="formData[minName]" />
+      <div
+        class="number-range"
+        :class="{
+          'is-disabled': checkIsDisabled(props),
+          'is-focus': isFocus,
+          'number-range-border-radius': true,
+        }"
+      >
+        <el-input-number
+          :fid="minName"
+          :controls="false"
+          :disabled="checkIsDisabled(props)"
+          v-bind="field.preps"
+          :placeholder="field.preps?.minPlaceholder"
+          @change="itemAction('change')"
+          @blur="handleBlur"
+          @focus="handleFocus"
+          v-model="formData[minName]"
+        />
         <div class="to">
           <span>{{ splitName }}</span>
         </div>
-        <el-input-number :fid="maxName" :controls="false" :disabled="checkIsDisabled(props)" v-bind="field.preps"
-          @change="itemAction('change')" @blur="handleBlur" @focus="handleFocus"
-          :placeholder="field.preps?.maxPlaceholder" :step-strictly="field.preps?.stepStrictly"
-          v-model="formData[maxName]" />
+        <el-input-number
+          :fid="maxName"
+          :controls="false"
+          :disabled="checkIsDisabled(props)"
+          v-bind="field.preps"
+          @change="itemAction('change')"
+          @blur="handleBlur"
+          @focus="handleFocus"
+          :placeholder="field.preps?.maxPlaceholder"
+          :step-strictly="field.preps?.stepStrictly"
+          v-model="formData[maxName]"
+        />
       </div>
-      <div v-if="field.preps?.suffix" :class="{ 'slot-default': slotStyle === 'default', 'slot-pend ': true }">
+      <div
+        v-if="field.preps?.suffix"
+        :class="{ 'slot-default': slotStyle === 'default', 'slot-pend ': true }"
+      >
         {{ field.preps["suffix"] }}
       </div>
     </div>
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { computed, onBeforeMount, onMounted, PropType, ref, shallowRef } from 'vue';
-import { allAction, checkIsDisabled } from '@/components/formcomp/utils/ItemRelationEventUtils';
+import {
+  computed,
+  onBeforeMount,
+  onMounted,
+  PropType,
+  ref,
+  shallowRef,
+} from "vue";
+import {
+  allAction,
+  checkIsDisabled,
+} from "@/components/formcomp/utils/ItemRelationEventUtils";
 
 const props = defineProps({
   isDesign: {
     type: Boolean,
-    default: false
+    default: false,
   },
   disabled: {
     type: Boolean,
-    default: false
+    default: false,
   },
   bareFlag: {
     type: Boolean,
-    default: false
-  }, isSearch: {
+    default: false,
+  },
+  isSearch: {
     type: Boolean,
-    default: false
+    default: false,
   },
   field: {
     type: Object as PropType<any>,
-    required: true
+    required: true,
   },
   parentField: {
     type: Object as PropType<any>,
@@ -59,22 +100,22 @@ const props = defineProps({
   },
   formFieldList: {
     type: Array,
-    default: () => []
-  }
+    default: () => [],
+  },
 });
-const emits = defineEmits(['selfFunc', 'selectItem']);
+const emits = defineEmits(["selfFunc", "selectItem"]);
 const formData = defineModel("formData");
 const maxName = computed(() => {
-  return props.field.preps?.maxName ?? props.field.fieldName + 'Max'
-})
+  return props.field.preps?.maxName ?? props.field.fieldName + "Max";
+});
 const minName = computed(() => {
-  return props.field.preps?.minName ?? props.field.fieldName + 'Min'
+  return props.field.preps?.minName ?? props.field.fieldName + "Min";
 });
 const splitName = computed(() => {
-  return props.field.preps?.splitName ?? '-';
-})
-let actionName = shallowRef('normal');
-let slotStyle = shallowRef('');
+  return props.field.preps?.splitName ?? "-";
+});
+let actionName = shallowRef("normal");
+let slotStyle = shallowRef("");
 
 // input焦点事件
 const isFocus = ref();
@@ -96,12 +137,17 @@ const itemAction = (prep: string) => {
   let min = formData.value[minName.value];
   let max = formData.value[maxName.value];
   if (
-    min === undefined || min === null || isNaN(min) || // 空值/非数值校验
-    max === undefined || max === null || isNaN(max) ||
+    min === undefined ||
+    min === null ||
+    isNaN(min) || // 空值/非数值校验
+    max === undefined ||
+    max === null ||
+    isNaN(max) ||
     max < min // 最大值小于最小值校验
   ) {
     // 校验失败时，清空主字段值（触发父组件required规则）
-    formData.value[props.field.fieldName] = `${min ?? ''}${splitName.value}${max ?? ''}`;
+    formData.value[props.field.fieldName] =
+      `${min ?? ""}${splitName.value}${max ?? ""}`;
     return;
   }
   formData.value[props.field.fieldName] = `${min}${splitName.value}${max}`;
@@ -109,13 +155,13 @@ const itemAction = (prep: string) => {
 };
 onBeforeMount(() => {
   if (!props.field.preps) {
-    props.field['preps'] = {};
+    props.field["preps"] = {};
   }
-})
+});
 onMounted(() => {
-  actionName.value = props.field.actionName || 'normal';
+  actionName.value = props.field.actionName || "normal";
   let val: any = formData.value[props.field.fieldName];
-  if (typeof val === 'string') {
+  if (typeof val === "string") {
     let data = val.split(splitName.value);
     formData.value[minName.value] = Number(data[0]);
     formData.value[maxName.value] = Number(data[1]);
@@ -127,7 +173,6 @@ onMounted(() => {
     allAction(props, emits, formData, "init", true);
   }
 });
-
 </script>
 <style lang="scss" scoped>
 .el-input-number {
@@ -146,7 +191,8 @@ onMounted(() => {
 
   #prepend {
     padding: 0 20px;
-    box-shadow: 1px 0 0 0 var(--el-input-border-color, var(--el-border-color)) inset,
+    box-shadow:
+      1px 0 0 0 var(--el-input-border-color, var(--el-border-color)) inset,
       0 1px 0 0 var(--el-input-border-color, var(--el-border-color)) inset,
       0 -1px 0 0 var(--el-input-border-color, var(--el-border-color)) inset;
     border-right: 0;
@@ -156,7 +202,8 @@ onMounted(() => {
 
   #append {
     padding: 0 15px;
-    box-shadow: 0 1px 0 0 var(--el-input-border-color, var(--el-border-color)) inset,
+    box-shadow:
+      0 1px 0 0 var(--el-input-border-color, var(--el-border-color)) inset,
       0 -1px 0 0 var(--el-input-border-color, var(--el-border-color)) inset,
       -1px 0 0 0 var(--el-input-border-color, var(--el-border-color)) inset;
     border-left: 0;
@@ -174,7 +221,8 @@ onMounted(() => {
 
   .number-range {
     background-color: var(--el-bg-color) !important;
-    box-shadow: 0 0 0 1px var(--el-input-border-color, var(--el-border-color)) inset;
+    box-shadow: 0 0 0 1px var(--el-input-border-color, var(--el-border-color))
+      inset;
     border-radius: var(--el-input-border-radius, var(--el-border-radius-base));
     padding: 0 2px;
     display: flex;

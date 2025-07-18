@@ -1,38 +1,67 @@
 <script lang="ts" setup name="StarHorseTableComp">
-import { Config } from '@/api/settings';
-import { download, postRequest } from '@/api/star_horse_apis';
-import { closeLoad, createCondition, deleteByIds, isJson, load, loadData } from '@/api/star_horse_utils';
-import { compKey, removeEmptyCondition, uuid } from '@/api/system';
-import Tablebtn from '@/components/comp/items/tablebtn.vue';
-import TableColumn from '@/components/comp/items/tableColumn.vue';
-import Help from '@/components/help.vue';
-import { ApiUrls } from '@/components/types/ApiUrls';
+import { Config } from "@/api/settings";
+import { download, postRequest } from "@/api/star_horse_apis";
+import {
+  closeLoad,
+  createCondition,
+  deleteByIds,
+  isJson,
+  load,
+  loadData,
+} from "@/api/star_horse_utils";
+import { compKey, removeEmptyCondition, uuid } from "@/api/system";
+import Tablebtn from "@/components/comp/items/tablebtn.vue";
+import TableColumn from "@/components/comp/items/tableColumn.vue";
+import Help from "@/components/help.vue";
+import { ApiUrls } from "@/components/types/ApiUrls";
 import { PreValid } from "@/components/types/BtnAuth";
-import { DialogProps } from '@/components/types/DialogProps';
-import { ExpandTable, FieldInfo, OrderByInfo, PageFieldInfo, UserFuncInfo } from '@/components/types/PageFieldInfo';
-import { PageProps } from '@/components/types/PageProps';
-import { BtnHideCondition, SearchParams } from '@/components/types/Params';
-import piniaInstance from '@/store';
-import { useButtonPermissionStore } from '@/store/ButtonPermission';
-import { useDynamicFormStore } from '@/store/DynamicForm';
-import { useGlobalConfigStore } from '@/store/GlobalConfig';
-import { isSystemManage } from '@/utils/auth';
-import { error, warning } from '@/utils/message';
-import { analysisFields } from '@/utils/preview';
-import Sortable from 'sortablejs';
-import { computed, inject, onMounted, onUpdated, PropType, reactive, ref, unref, watch } from 'vue';
-import { useRoute } from 'vue-router';
+import { DialogProps } from "@/components/types/DialogProps";
+import {
+  ExpandTable,
+  FieldInfo,
+  OrderByInfo,
+  PageFieldInfo,
+  UserFuncInfo,
+} from "@/components/types/PageFieldInfo";
+import { PageProps } from "@/components/types/PageProps";
+import { BtnHideCondition, SearchParams } from "@/components/types/Params";
+import piniaInstance from "@/store";
+import { useButtonPermissionStore } from "@/store/ButtonPermission";
+import { useDynamicFormStore } from "@/store/DynamicForm";
+import { useGlobalConfigStore } from "@/store/GlobalConfig";
+import { isSystemManage } from "@/utils/auth";
+import { error, warning } from "@/utils/message";
+import { analysisFields } from "@/utils/preview";
+import Sortable from "sortablejs";
+import {
+  computed,
+  inject,
+  onMounted,
+  onUpdated,
+  PropType,
+  reactive,
+  ref,
+  unref,
+  watch,
+} from "vue";
+import { useRoute } from "vue-router";
 
 const dynamicForm = useDynamicFormStore(piniaInstance);
 const props = defineProps({
   //url地址
   compUrl: { type: Object as PropType<ApiUrls | any>, required: true },
   //主键
-  primaryKey: { type: [String, Object] as PropType<string | any>, required: true },
+  primaryKey: {
+    type: [String, Object] as PropType<string | any>,
+    required: true,
+  },
   //列名
   fieldList: { type: Object as PropType<PageFieldInfo>, required: true },
   //按钮隐藏条件
-  hideBtnCondition: { type: Array as PropType<BtnHideCondition[]>, default: [] },
+  hideBtnCondition: {
+    type: Array as PropType<BtnHideCondition[]>,
+    default: [],
+  },
   //是否显示批量属性
   showBatchField: { type: Boolean, default: false },
   //格式化方法
@@ -42,7 +71,7 @@ const props = defineProps({
   //弹窗模式
   dialogInput: { type: Boolean, default: false },
   //默认表格高度
-  height: { type: String, default: '400' },
+  height: { type: String, default: "400" },
   //过滤条件
   filterCondition: { type: Array as PropType<SearchParams[]> },
   orderBy: { type: Array as PropType<OrderByInfo[]> },
@@ -67,7 +96,7 @@ const props = defineProps({
   //多选
   multipleSelect: { type: Boolean, default: false },
   //行高
-  lineHeight: { type: String, default: '30px' },
+  lineHeight: { type: String, default: "30px" },
   //显示多选框
   showSelection: { type: Boolean, default: true },
   //扩展表格属性
@@ -91,17 +120,19 @@ const props = defineProps({
   //按钮权限
   btnPermissions: { type: Object as PropType<any>, required: false },
 });
-const emits = defineEmits(['selectItem']);
+const emits = defineEmits(["selectItem"]);
 const route = useRoute();
 let pagePermission = useButtonPermissionStore(piniaInstance);
 let configStore = useGlobalConfigStore(piniaInstance);
 let permissions = ref<any>({});
 const configInfo = computed(() => {
   let data = configStore.configFormInfo;
-  showType(data.tableType == 'card' ? 'list' : 'card');
+  showType(data.tableType == "card" ? "list" : "card");
   return data;
 });
-let compSize = computed(() => configStore.configFormInfo?.inputSize || Config.compSize);
+let compSize = computed(
+  () => configStore.configFormInfo?.inputSize || Config.compSize,
+);
 const multipleSelection = ref<any>([]);
 const starHorseTableCompRef = ref();
 let pageInfo = reactive<PageProps>({
@@ -109,12 +140,12 @@ let pageInfo = reactive<PageProps>({
   currentPage: 1,
   totalData: 0,
   totalPage: 0,
-  dataList: []
+  dataList: [],
 });
 let searchFields = reactive<Array<SearchParams>>([]);
 let orderBys = reactive<Array<OrderByInfo>>([]);
 let fieldVisible = ref<boolean>(false);
-let dialogProps = inject('dialogProps') as DialogProps;
+let dialogProps = inject("dialogProps") as DialogProps;
 let toolFields = reactive<Array<any>>([]);
 const exportOperationVisible = ref<boolean>(false);
 /**
@@ -122,14 +153,14 @@ const exportOperationVisible = ref<boolean>(false);
  * @param authority 权限编码
  */
 const tableCompFunc = (authority: any) => {
-  if (authority == 'refresh') {
+  if (authority == "refresh") {
     loadByPage();
-  } else if (authority == 'batchDelete') {
+  } else if (authority == "batchDelete") {
     batchDelete();
-  } else if (authority == 'export') {
+  } else if (authority == "export") {
     exportOperationVisible.value = true;
-  } else if (authority == 'execution') {
-    console.log('你点击了执行按钮');
+  } else if (authority == "execution") {
+    console.log("你点击了执行按钮");
   }
 };
 
@@ -138,7 +169,7 @@ const selectedFields = () => {
   exportOperationVisible.value = false;
 };
 const exportData = () => {
-  load('数据处理中');
+  load("数据处理中");
   let ids: any = getIds();
   let params = [];
   let keys: any = props.primaryKey;
@@ -150,10 +181,10 @@ const exportData = () => {
         for (let id in ids) {
           temp.push(id[key]);
         }
-        params.push(createCondition(key, temp, 'in'));
+        params.push(createCondition(key, temp, "in"));
       }
     } else {
-      params.push(createCondition(keys, ids, 'in'));
+      params.push(createCondition(keys, ids, "in"));
     }
   } else {
     params = searchFields;
@@ -163,14 +194,14 @@ const exportData = () => {
     params.push(...defaultcond);
   }
   let condition: any = {
-    fieldList: params
+    fieldList: params,
   };
   if (props.fieldList?.orderBy) {
-    condition['orderBy'] = props.fieldList.orderBy;
+    condition["orderBy"] = props.fieldList.orderBy;
   }
   download(props.compUrl!.exportAllUrl!, condition)
     .catch((err: any) => {
-      error('接口不存在或网络异常:' + err);
+      error("接口不存在或网络异常:" + err);
     })
     .finally(() => {
       closeLoad();
@@ -196,7 +227,10 @@ const batchDelete = async () => {
  * @param formData
  * @param orderBy 排序
  */
-const createSearchParams = (formData: SearchParams[], orderBy: OrderByInfo[] = []) => {
+const createSearchParams = (
+  formData: SearchParams[],
+  orderBy: OrderByInfo[] = [],
+) => {
   searchFields = formData;
   orderBys = orderBy;
   loadByPage();
@@ -239,7 +273,7 @@ watch(
       pageInfo.dataList = val;
     }
   },
-  { deep: true, immediate: false }
+  { deep: true, immediate: false },
 );
 const assignData = (dataList: Array<any>) => {
   for (let key in dataList) {
@@ -273,12 +307,14 @@ const reCreateData = () => {
   }
 };
 const moveColumn = () => {
-  const tbody = document.querySelector('.sh-columns .el-table__body-wrapper tbody') as HTMLElement | null;
+  const tbody = document.querySelector(
+    ".sh-columns .el-table__body-wrapper tbody",
+  ) as HTMLElement | null;
   if (tbody) {
     Sortable.create(tbody, {
-      handle: '.move',
+      handle: ".move",
       animation: 200,
-      ghostClass: 'ghost',
+      ghostClass: "ghost",
       onEnd(event: any) {
         const { oldIndex, newIndex } = event;
         if (oldIndex === newIndex) {
@@ -290,7 +326,7 @@ const moveColumn = () => {
         let nitem = props.fieldList?.fieldList[newIndex];
         props.fieldList.fieldList[newIndex] = oitem;
         props.fieldList.fieldList[oldIndex] = nitem;
-      }
+      },
     });
   }
 };
@@ -305,7 +341,7 @@ const editData = (row: any, _column?: any, evt?: Event) => {
   if (!props.dialogInput) {
     viewById(id);
   } else {
-    emits('selectItem', row);
+    emits("selectItem", row);
   }
 };
 /**
@@ -319,13 +355,13 @@ const checkParent = (val: any) => {
   let flag = false;
   for (let i in val) {
     let item = val[i];
-    if (item['children'] && item['children'].length > 0) {
+    if (item["children"] && item["children"].length > 0) {
       flag = true;
       starHorseTableCompRef.value.toggleRowSelection(item, false);
     }
   }
   if (flag) {
-    warning('非叶子节点不能选择');
+    warning("非叶子节点不能选择");
     return false;
   }
   return true;
@@ -369,8 +405,12 @@ const handleSelectionChange = (val: any) => {
         }
         multipleSelection.value = filters;
       } else {
-        let ids = multipleSelection.value.map((item: any) => item[keys]) as Array<any>;
-        multipleSelection.value = val.filter((item: any) => !ids.includes(item[keys]));
+        let ids = multipleSelection.value.map(
+          (item: any) => item[keys],
+        ) as Array<any>;
+        multipleSelection.value = val.filter(
+          (item: any) => !ids.includes(item[keys]),
+        );
       }
       let data = multipleSelection.value[0];
       starHorseTableCompRef.value.toggleRowSelection(data, true);
@@ -380,19 +420,19 @@ const handleSelectionChange = (val: any) => {
   }
 };
 const getRowIdentity = (row: any) => {
-  return analysisPrimaryKeys(props.primaryKey, row) || '';
+  return analysisPrimaryKeys(props.primaryKey, row) || "";
 };
 
 const tbCommonFun = (name: string | undefined, param: any) => {
   let id = analysisPrimaryKeys(props.primaryKey, param);
-  if (name == 'view') {
+  if (name == "view") {
     viewById(id);
-  } else if (name == 'edit') {
+  } else if (name == "edit") {
     editById(id);
-  } else if (name == 'delete' || name == 'batchDelete') {
+  } else if (name == "delete" || name == "batchDelete") {
     deleteById(id);
   } else {
-    console.log('未定义的功能', name);
+    console.log("未定义的功能", name);
   }
   return false;
 };
@@ -417,7 +457,7 @@ const analysisPrimaryKeys = (keys: any, row: any) => {
   }
 };
 const splitKey = (key: string, row: any) => {
-  let arr = key?.split('.');
+  let arr = key?.split(".");
   if (arr?.length > 1) {
     let temp = row;
     for (let i in arr) {
@@ -473,7 +513,7 @@ const pageChangeClick = (currentPage: number) => {
   loadByPage();
 };
 //弹出选择框属性名称
-const inputFieldName = ref<string>('');
+const inputFieldName = ref<string>("");
 //弹窗选择框属性值
 const inputFieldVal = ref<any>();
 const createParams = () => {
@@ -497,7 +537,7 @@ const createParams = () => {
   }
   //加入共享人的信息
   if (props.commonPersons?.length && !isSystemManage()) {
-    searchTemp.push(createCondition('a.createdBy', props.commonPersons, 'in'));
+    searchTemp.push(createCondition("a.createdBy", props.commonPersons, "in"));
   }
   if (!props.compUrl?.pageListUrl) {
     return;
@@ -506,7 +546,7 @@ const createParams = () => {
     currentPage: pageInfo.currentPage,
     pageSize: pageInfo.pageSize,
     fieldList: searchTemp,
-    orderBy: orderByTemp
+    orderBy: orderByTemp,
   };
   return params;
 };
@@ -523,14 +563,14 @@ const loadByPage = () => {
       port: props.compUrl?.port,
       protocol: props.compUrl?.protocol,
       env: props.compUrl?.env,
-      httpMethod: props.compUrl?.httpMethod || 'POST',
-      dataType: props.compUrl?.dataType || 'JSON',
-      searchInfo: params
+      httpMethod: props.compUrl?.httpMethod || "POST",
+      dataType: props.compUrl?.dataType || "JSON",
+      searchInfo: params,
     };
-    url = '/system-config/redirect/pageList';
+    url = "/system-config/redirect/pageList";
   }
   if (props.needLoad) {
-    load('数据加载中');
+    load("数据加载中");
   }
   postRequest(url, params)
     .then((res: any) => {
@@ -549,14 +589,17 @@ const loadByPage = () => {
     })
     .catch((err: any) => {
       console.log(err);
-    }).finally(() => {
+    })
+    .finally(() => {
       closeLoad();
     });
 };
 const filterData = () => {
   let name = unref(inputFieldName) as string;
   if (pageInfo.dataList && name && inputFieldVal.value) {
-    let row = pageInfo.dataList.find((item: any) => item[name] == inputFieldVal.value);
+    let row = pageInfo.dataList.find(
+      (item: any) => item[name] == inputFieldVal.value,
+    );
     if (row) {
       multipleSelection.value.push(row);
       starHorseTableCompRef.value.toggleRowSelection(row, true);
@@ -578,7 +621,7 @@ const setDataInfo = (fieldName: string, val: any) => {
 const selectRow = (row: any, _column?: any, evt?: Event) => {
   if (!evt) {
     dynamicForm.setSelectData(row);
-    emits('selectItem', row);
+    emits("selectItem", row);
     return;
   }
   evt.stopPropagation();
@@ -594,7 +637,9 @@ const selectRow = (row: any, _column?: any, evt?: Event) => {
       starHorseTableCompRef.value.toggleRowSelection(valueElement);
     }
   }
-  const selected = multipleSelection.value?.some((item: any) => item[props.primaryKey] === row[props.primaryKey]);
+  const selected = multipleSelection.value?.some(
+    (item: any) => item[props.primaryKey] === row[props.primaryKey],
+  );
   if (!selected) {
     multipleSelection.value.push(row);
     starHorseTableCompRef.value.toggleRowSelection(row, true);
@@ -605,7 +650,7 @@ const selectRow = (row: any, _column?: any, evt?: Event) => {
     starHorseTableCompRef.value.toggleRowSelection(row, false);
   }
   dynamicForm.setSelectData(row);
-  emits('selectItem', row);
+  emits("selectItem", row);
 };
 
 let buttonList = ref<UserFuncInfo[]>([]);
@@ -619,7 +664,7 @@ const extendBtnFunction = (): Array<UserFuncInfo> => {
 
   //单独定义的按钮
   extendBtnsCopy?.forEach((item: UserFuncInfo) => {
-    if (item.position != 'toolbar') {
+    if (item.position != "toolbar") {
       if (!item.funcName) {
         item.funcName = (row: any) => tbCommonFun(item.authority, row);
       }
@@ -627,8 +672,8 @@ const extendBtnFunction = (): Array<UserFuncInfo> => {
     }
   });
   //在定义字段时定义的按钮
-  props.fieldList['userTableFuncs']?.forEach((item: UserFuncInfo) => {
-    if (item.position != 'toolbar') {
+  props.fieldList["userTableFuncs"]?.forEach((item: UserFuncInfo) => {
+    if (item.position != "toolbar") {
       if (!item.funcName) {
         item.funcName = (row: any) => tbCommonFun(item.authority, row);
       }
@@ -636,39 +681,42 @@ const extendBtnFunction = (): Array<UserFuncInfo> => {
     }
   });
   if (!props.disableAction) {
-    let edit = arr.filter((item) => item.authority == 'edit')?.length;
+    let edit = arr.filter((item) => item.authority == "edit")?.length;
     if (!edit) {
       arr.push({
-        authority: 'edit',
-        btnName: '编辑',
-        icon: 'edit',
+        authority: "edit",
+        btnName: "编辑",
+        icon: "edit",
         priority: 10,
-        funcName: (row: any) => tbCommonFun('edit', row)
+        funcName: (row: any) => tbCommonFun("edit", row),
       });
     }
-    let view = arr.filter((item) => item.authority == 'view')?.length;
+    let view = arr.filter((item) => item.authority == "view")?.length;
     if (!view) {
       arr.push({
-        authority: 'view',
-        btnName: '查看',
+        authority: "view",
+        btnName: "查看",
         priority: 20,
-        icon: 'data-view',
-        funcName: (row: any) => tbCommonFun('view', row)
+        icon: "data-view",
+        funcName: (row: any) => tbCommonFun("view", row),
       });
     }
-    let del = arr.filter((item) => item.authority == 'delete')?.length;
+    let del = arr.filter((item) => item.authority == "delete")?.length;
     if (!del) {
       arr.push({
-        authority: 'delete',
-        btnName: '删除',
+        authority: "delete",
+        btnName: "删除",
         priority: 30,
-        icon: 'delete',
-        funcName: (row: any) => tbCommonFun('delete', row)
+        icon: "delete",
+        funcName: (row: any) => tbCommonFun("delete", row),
       });
     }
   }
   //如果没有指定优先级，排序时就按照默认累加方式处理
-  arr.sort((a: UserFuncInfo, b: UserFuncInfo) => (a.priority || 40) - (b.priority || 40));
+  arr.sort(
+    (a: UserFuncInfo, b: UserFuncInfo) =>
+      (a.priority || 40) - (b.priority || 40),
+  );
   return arr;
 };
 
@@ -686,11 +734,11 @@ const expandCommonFun = (name: string, row: any, parentRow: any) => {
     }
   }
   //如果在当前行数据没有找到对应的字段，再从父级进行查找
-  if (name == 'view') {
+  if (name == "view") {
     viewById(id, true);
-  } else if (name == 'edit') {
+  } else if (name == "edit") {
     editById(id, true);
-  } else if (name == 'delete') {
+  } else if (name == "delete") {
     deleteById(id, true);
   }
 };
@@ -706,8 +754,8 @@ const getDatas = async (
   limitSize: number = 0,
   params: SearchParams[] = [],
   orderBys: OrderByInfo[] = [],
-  url: string = '',
-  usePageCondition: boolean = true
+  url: string = "",
+  usePageCondition: boolean = true,
 ) => {
   let tempSearchParams: SearchParams[] = [];
   if (usePageCondition) {
@@ -721,43 +769,45 @@ const getDatas = async (
   let result = await loadData(url || props.compUrl?.listConditionUrl!, {
     limits: limitSize,
     fieldList: tempSearchParams,
-    orderBy: orderBys
+    orderBy: orderBys,
   });
   if (result.error) {
-    warning('数据加载异常：' + result.error);
+    warning("数据加载异常：" + result.error);
   }
   return result.data;
 };
 
-let dataShowType = ref<string>('list');
+let dataShowType = ref<string>("list");
 let cardFieldList = ref<FieldInfo[]>([]);
 const loadField = (): FieldInfo[] => {
   let { fieldList } = analysisFields(props.fieldList?.fieldList);
   if (fieldList) {
-    fieldList.sort((a: FieldInfo, b: FieldInfo) => (a.priority || 100) - (b.priority || 100));
+    fieldList.sort(
+      (a: FieldInfo, b: FieldInfo) => (a.priority || 100) - (b.priority || 100),
+    );
     return fieldList.filter((item) => item.listVisible)?.slice(0, 3);
   }
   return [];
 };
-let typeTitle = ref<string>('切换为卡片模式');
-let typeIcon = ref<string>('card1');
+let typeTitle = ref<string>("切换为卡片模式");
+let typeIcon = ref<string>("card1");
 
 /**
  * 数据展示风格
  * @param type
  */
 const showType = (type: string) => {
-  type = type == 'card' ? 'list' : 'card';
+  type = type == "card" ? "list" : "card";
   dataShowType.value = type;
-  if (type == 'card' && cardFieldList.value.length == 0) {
+  if (type == "card" && cardFieldList.value.length == 0) {
     cardFieldList.value = loadField();
   }
-  if (type == 'card') {
-    typeTitle.value = '切换为列表模式';
-    typeIcon.value = 'list';
+  if (type == "card") {
+    typeTitle.value = "切换为列表模式";
+    typeIcon.value = "list";
   } else {
-    typeTitle.value = '切换为卡片模式';
-    typeIcon.value = 'card1';
+    typeTitle.value = "切换为卡片模式";
+    typeIcon.value = "card1";
   }
 };
 const getSelectedDatas = () => {
@@ -767,9 +817,12 @@ onMounted(() => {
   init();
 });
 onUpdated(() => {
-  if (JSON.stringify(buttonList.value) !== JSON.stringify(extendBtnFunction())) {
+  if (
+    JSON.stringify(buttonList.value) !== JSON.stringify(extendBtnFunction())
+  ) {
     buttonList.value = extendBtnFunction();
-    toolbarButtonList.value = buttonList.value.filter((item) => item.position == 'toolbar') || [];
+    toolbarButtonList.value =
+      buttonList.value.filter((item) => item.position == "toolbar") || [];
   }
 });
 //导出方法和变量
@@ -785,40 +838,81 @@ defineExpose({
   //按钮事件
   tableCompFunc,
   getDatas,
-  permissionList
+  permissionList,
 });
 </script>
 <template>
   <!--导出数据指定字段-->
-  <star-horse-dialog :isShowBtnContinue="false" :selfFunc="true" @merge="selectedFields"
-    :dialogVisible="exportOperationVisible" @closeAction="exportOperationVisible = false">
+  <star-horse-dialog
+    :isShowBtnContinue="false"
+    :selfFunc="true"
+    @merge="selectedFields"
+    :dialogVisible="exportOperationVisible"
+    @closeAction="exportOperationVisible = false"
+  >
     功能开发中，现在点击提交按钮导出所有数据
   </star-horse-dialog>
   <div class="star-horse-table">
-    <div class="flex w-full justify-between" style="border-bottom: var(--star-horse-style) 1px solid;"
-      v-if="!dialogInput">
+    <div
+      class="flex w-full justify-between"
+      style="border-bottom: var(--star-horse-style) 1px solid"
+      v-if="!dialogInput"
+    >
       <div class="tb_title">
-        <div v-if="(title || helpMsg)">
+        <div v-if="title || helpMsg">
           <help :message="helpMsg" v-if="helpMsg" />
-          <star-horse-icon icon-class="info" v-else size="14px"
-            style="font-weight: bold; color: var(--star-horse-style)" />
+          <star-horse-icon
+            icon-class="info"
+            v-else
+            size="14px"
+            style="font-weight: bold; color: var(--star-horse-style)"
+          />
           {{ title }}
         </div>
-        <star-horse-button-list @tableCompFunc="(fun: any) => tableCompFunc(fun)" :compUrl="compUrl"
-          :btnPermissions="permissions" :extendBtns="extendBtns" :dialogProps="dialogProps" :preValidFunc="preValidFunc"
-          v-if="!hideButtonList" />
+        <star-horse-button-list
+          @tableCompFunc="(fun: any) => tableCompFunc(fun)"
+          :compUrl="compUrl"
+          :btnPermissions="permissions"
+          :extendBtns="extendBtns"
+          :dialogProps="dialogProps"
+          :preValidFunc="preValidFunc"
+          v-if="!hideButtonList"
+        />
       </div>
       <div class="flex items-center flex-row-reverse">
-        <star-horse-icon title="刷新" @click="loadByPage" icon-class="refresh"
-          style="cursor: pointer; color: var(--star-horse-style)" />
-        <el-popover v-if="dataShowType == 'list'" trigger="click" :popper-style="{ width: 'unset !important' }"
-          placement="left-end">
+        <star-horse-icon
+          title="刷新"
+          @click="loadByPage"
+          icon-class="refresh"
+          style="cursor: pointer; color: var(--star-horse-style)"
+        />
+        <el-popover
+          v-if="dataShowType == 'list'"
+          trigger="click"
+          :popper-style="{ width: 'unset !important' }"
+          placement="left-end"
+        >
           <template #reference>
-            <star-horse-icon @click="fieldVisible = !fieldVisible" title="显示/隐藏列" icon-class="setting"
-              style="color: var(--star-horse-style); cursor: pointer" />
+            <star-horse-icon
+              @click="fieldVisible = !fieldVisible"
+              title="显示/隐藏列"
+              icon-class="setting"
+              style="color: var(--star-horse-style); cursor: pointer"
+            />
           </template>
-          <el-table class="sh-columns" ref="table" :data="toolFields" :strip="true" :fit="true"
-            :highlight-current-row="true" max-height="400px" row-key="prop" style="width: 100%" :size="compSize" border>
+          <el-table
+            class="sh-columns"
+            ref="table"
+            :data="toolFields"
+            :strip="true"
+            :fit="true"
+            :highlight-current-row="true"
+            max-height="400px"
+            row-key="prop"
+            style="width: 100%"
+            :size="compSize"
+            border
+          >
             <el-table-column prop="" label="排序" width="60">
               <el-tag class="move" style="cursor: move">
                 <el-icon style="cursor: move">
@@ -826,73 +920,165 @@ defineExpose({
                 </el-icon>
               </el-tag>
             </el-table-column>
-            <el-table-column prop="label" label="列名" :show-overflow-tooltip="true">
+            <el-table-column
+              prop="label"
+              label="列名"
+              :show-overflow-tooltip="true"
+            >
               <template #default="scope">
-                <el-tag round :effect="scope.row.listVisible ? 'dark' : 'light'" :size="compSize">
+                <el-tag
+                  round
+                  :effect="scope.row.listVisible ? 'dark' : 'light'"
+                  :size="compSize"
+                >
                   {{ scope.row.label }}
                 </el-tag>
               </template>
             </el-table-column>
             <el-table-column prop="listVisible" label="显示/隐藏" width="100">
               <template #default="scope">
-                <el-switch v-model="scope.row.listVisible" :size="compSize" :active-value="true"
-                  :inactive-value="false" />
+                <el-switch
+                  v-model="scope.row.listVisible"
+                  :size="compSize"
+                  :active-value="true"
+                  :inactive-value="false"
+                />
               </template>
             </el-table-column>
           </el-table>
         </el-popover>
-        <star-horse-icon @click="showType(dataShowType)" :title="typeTitle" :icon-class="typeIcon"
-          style="cursor: pointer; color: var(--star-horse-style)" />
+        <star-horse-icon
+          @click="showType(dataShowType)"
+          :title="typeTitle"
+          :icon-class="typeIcon"
+          style="cursor: pointer; color: var(--star-horse-style)"
+        />
       </div>
     </div>
     <div class="data-list-area" v-if="dataShowType == 'list'">
-      <el-table ref="starHorseTableCompRef" :data="pageInfo.dataList" @selection-change="handleSelectionChange"
-        @row-click="selectRow" @row-dblclick="editData" :row-key="getRowIdentity" :stripe="true" :fit="true"
-        :size="compSize" :min-height="height" :highlight-current-row="true" :default-expand-all="expand"
-        :row-style="{ height: lineHeight }" :cell-style="{ height: lineHeight, 'font-size': '12px' }"
+      <el-table
+        ref="starHorseTableCompRef"
+        :data="pageInfo.dataList"
+        @selection-change="handleSelectionChange"
+        @row-click="selectRow"
+        @row-dblclick="editData"
+        :row-key="getRowIdentity"
+        :stripe="true"
+        :fit="true"
+        :size="compSize"
+        :min-height="height"
+        :highlight-current-row="true"
+        :default-expand-all="expand"
+        :row-style="{ height: lineHeight }"
+        :cell-style="{ height: lineHeight, 'font-size': '12px' }"
         :header-cell-style="{
           background: '#f2f2f2',
           color: '#707070',
           'font-size': '13px',
-          'background-image': '-webkit-gradient(linear,left 0,left 100%,from(#f8f8f8),to(#ececec))'
-        }" border>
-        <el-table-column type="selection" align="center" fixed="left" :reserve-selection="true" v-if="showSelection" />
+          'background-image':
+            '-webkit-gradient(linear,left 0,left 100%,from(#f8f8f8),to(#ececec))',
+        }"
+        border
+      >
+        <el-table-column
+          type="selection"
+          align="center"
+          fixed="left"
+          :reserve-selection="true"
+          v-if="showSelection"
+        />
         <el-table-column type="expand" v-if="expandTable">
           <template #default="scope">
             <div class="expand-table">
               <h4>{{ expandTable.title }}</h4>
-              <el-table :data="scope.row[expandTable.dataField]" :row-key="getRowIdentity" :stripe="true" :fit="true"
-                :size="compSize" :highlight-current-row="true" :max-height="'400px'" :row-style="{ height: '30px' }"
-                :cell-style="{ height: '30px', 'font-size': '12px' }" border>
-                <el-table-column fixed="left" label="操作" :width="160" v-if="expandTable.showButton">
+              <el-table
+                :data="scope.row[expandTable.dataField]"
+                :row-key="getRowIdentity"
+                :stripe="true"
+                :fit="true"
+                :size="compSize"
+                :highlight-current-row="true"
+                :max-height="'400px'"
+                :row-style="{ height: '30px' }"
+                :cell-style="{ height: '30px', 'font-size': '12px' }"
+                border
+              >
+                <el-table-column
+                  fixed="left"
+                  label="操作"
+                  :width="160"
+                  v-if="expandTable.showButton"
+                >
                   <template #default="innerScope">
-                    <template v-for="epd in expandTable.extendFuncs" :key="compKey(epd,epd.authority)">
+                    <template
+                      v-for="epd in expandTable.extendFuncs"
+                      :key="compKey(epd, epd.authority)"
+                    >
                       <el-tooltip :content="epd.btnName">
-                        <star-horse-icon v-if="permissions[epd.authority!]"
-                          @click="expandCommonFun(epd.authority!, innerScope.row, scope.row)"
-                          :icon-class="epd.icon || 'edit'" style="cursor: pointer"
-                          :color="epd.authority == 'delete' ? 'var(--el-color-danger)' : 'var(--star-horse-style)'" />
+                        <star-horse-icon
+                          v-if="permissions[epd.authority!]"
+                          @click="
+                            expandCommonFun(
+                              epd.authority!,
+                              innerScope.row,
+                              scope.row,
+                            )
+                          "
+                          :icon-class="epd.icon || 'edit'"
+                          style="cursor: pointer"
+                          :color="
+                            epd.authority == 'delete'
+                              ? 'var(--el-color-danger)'
+                              : 'var(--star-horse-style)'
+                          "
+                        />
                       </el-tooltip>
                     </template>
                   </template>
                 </el-table-column>
-                <table-column :fieldList="expandTable" :compSize="configInfo.inputSize" :compUrl="compUrl"
-                  :dataFormat="dataFormat" :sortable="false" :globalConfig="globalConfig" :isDynamic="isDynamic"
-                  :showBatchField="showBatchField" />
+                <table-column
+                  :fieldList="expandTable"
+                  :compSize="configInfo.inputSize"
+                  :compUrl="compUrl"
+                  :dataFormat="dataFormat"
+                  :sortable="false"
+                  :globalConfig="globalConfig"
+                  :isDynamic="isDynamic"
+                  :showBatchField="showBatchField"
+                />
               </el-table>
             </div>
           </template>
         </el-table-column>
-        <table-column :fieldList="fieldList" :compSize="configInfo.inputSize" :compUrl="compUrl"
-          :dataFormat="dataFormat" :globalConfig="globalConfig" :isDynamic="isDynamic"
-          :showBatchField="showBatchField" />
-        <el-table-column v-if="
-          (!disableAction || (disableAction && extendBtns?.filter(item => item.position != 'toolbar')?.length > 0))
-          && Object.keys(permissions || {}).length > 0
-        " fixed="right" label="操作" :width="buttonList.length > 3 ? 160 : 110">
+        <table-column
+          :fieldList="fieldList"
+          :compSize="configInfo.inputSize"
+          :compUrl="compUrl"
+          :dataFormat="dataFormat"
+          :globalConfig="globalConfig"
+          :isDynamic="isDynamic"
+          :showBatchField="showBatchField"
+        />
+        <el-table-column
+          v-if="
+            (!disableAction ||
+              (disableAction &&
+                extendBtns?.filter((item) => item.position != 'toolbar')
+                  ?.length > 0)) &&
+            Object.keys(permissions || {}).length > 0
+          "
+          fixed="right"
+          label="操作"
+          :width="buttonList.length > 3 ? 160 : 110"
+        >
           <template #default="scope">
-            <tablebtn :row="scope.row" :permissions="permissions" :buttonList="buttonList"
-              :hideBtnCondition="hideBtnCondition" :compSize="compSize" />
+            <tablebtn
+              :row="scope.row"
+              :permissions="permissions"
+              :buttonList="buttonList"
+              :hideBtnCondition="hideBtnCondition"
+              :compSize="compSize"
+            />
           </template>
         </el-table-column>
       </el-table>
@@ -900,36 +1086,77 @@ defineExpose({
     <div class="data-card-area" v-else>
       <el-scrollbar height="100%">
         <el-space wrap>
-          <el-card v-for="(data, key) in pageInfo.dataList" :key="compKey(data, key)" class="box-card"
-            style="width: 250px !important; height: 180px !important" shadow="hover">
+          <el-card
+            v-for="(data, key) in pageInfo.dataList"
+            :key="compKey(data, key)"
+            class="box-card"
+            style="width: 250px !important; height: 180px !important"
+            shadow="hover"
+          >
             <template #header>
-              <div class="card-header" @click="selectRow(data)" @dblclick="editData(data)">
-                <span>{{ dataFormat(cardFieldList[0]?.fieldName, data[cardFieldList[0]?.fieldName], data) }}</span>
+              <div
+                class="card-header"
+                @click="selectRow(data)"
+                @dblclick="editData(data)"
+              >
+                <span>{{
+                  dataFormat(
+                    cardFieldList[0]?.fieldName,
+                    data[cardFieldList[0]?.fieldName],
+                    data,
+                  )
+                }}</span>
               </div>
             </template>
 
-            <div class="card-item item" style="width: 99%; margin: 1px auto" :Key="compKey(item, key)"
-              v-for="(item, key) in cardFieldList?.slice(1, 3)">
+            <div
+              class="card-item item"
+              style="width: 99%; margin: 1px auto"
+              :Key="compKey(item, key)"
+              v-for="(item, key) in cardFieldList?.slice(1, 3)"
+            >
               <label>{{ item.label }} :</label>
-              <div class="content" @click="selectRow(data)" @dblclick="editData(data)">
-                <el-tooltip :content="dataFormat(item.fieldName, data[item.fieldName], data)">
+              <div
+                class="content"
+                @click="selectRow(data)"
+                @dblclick="editData(data)"
+              >
+                <el-tooltip
+                  :content="
+                    dataFormat(item.fieldName, data[item.fieldName], data)
+                  "
+                >
                   {{ dataFormat(item.fieldName, data[item.fieldName], data) }}
                 </el-tooltip>
               </div>
             </div>
             <template #footer>
-              <tablebtn :row="data" :permissions="permissions" :buttonList="buttonList" :showLimit="6"
-                :hideBtnCondition="hideBtnCondition" :compSize="compSize" />
+              <tablebtn
+                :row="data"
+                :permissions="permissions"
+                :buttonList="buttonList"
+                :showLimit="6"
+                :hideBtnCondition="hideBtnCondition"
+                :compSize="compSize"
+              />
             </template>
           </el-card>
         </el-space>
       </el-scrollbar>
     </div>
 
-    <el-pagination v-if="showPageBar" :total="pageInfo.totalData" @current-change="pageChangeClick"
-      @size-change="pageSizeClick" :size="compSize" :page-sizes="[20, 50, 100, 200, 300, 400]"
-      layout="total, sizes, prev, pager, next, jumper" v-model:currentPage="pageInfo.currentPage"
-      v-model:page-size="pageInfo.pageSize" v-model:pageCount="pageInfo.totalPage" />
+    <el-pagination
+      v-if="showPageBar"
+      :total="pageInfo.totalData"
+      @current-change="pageChangeClick"
+      @size-change="pageSizeClick"
+      :size="compSize"
+      :page-sizes="[20, 50, 100, 200, 300, 400]"
+      layout="total, sizes, prev, pager, next, jumper"
+      v-model:currentPage="pageInfo.currentPage"
+      v-model:page-size="pageInfo.pageSize"
+      v-model:pageCount="pageInfo.totalPage"
+    />
   </div>
 </template>
 <style lang="scss" scoped>

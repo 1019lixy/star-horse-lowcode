@@ -1,8 +1,18 @@
 <template>
-  <starhorse-form-item :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag" :formItem="field"
-    :parentField="parentField">
-    <el-input-number :fid="field.fieldName" :disabled="checkIsDisabled(props)" v-bind="field.preps"
-      v-on="getDynamicEvents(props, itemAction)" v-model="formData[field.fieldName]">
+  <starhorse-form-item
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :bareFlag="bareFlag"
+    :formItem="field"
+    :parentField="parentField"
+  >
+    <el-input-number
+      :fid="field.fieldName"
+      :disabled="checkIsDisabled(props)"
+      v-bind="field.preps"
+      v-on="getDynamicEvents(props, itemAction)"
+      v-model="formData[field.fieldName]"
+    >
       <template #prefix>
         <span v-if="field.preps?.prefix">{{ field.preps["prefix"] }}</span>
       </template>
@@ -13,42 +23,46 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { nextTick, onMounted, shallowRef, PropType } from 'vue';
-import { allAction, checkIsDisabled } from '@/components/formcomp/utils/ItemRelationEventUtils';
-import { getDynamicEvents } from '@/api/system';
+import { nextTick, onMounted, shallowRef, PropType } from "vue";
+import {
+  allAction,
+  checkIsDisabled,
+} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import { getDynamicEvents } from "@/api/system";
 defineOptions({
-  name: 'NumberItem'
-})
+  name: "NumberItem",
+});
 const props = defineProps({
   isDesign: {
     type: Boolean,
-    default: false
+    default: false,
   },
   disabled: {
     type: Boolean,
-    default: false
+    default: false,
   },
   bareFlag: {
     type: Boolean,
-    default: false
-  }, isSearch: {
+    default: false,
+  },
+  isSearch: {
     type: Boolean,
-    default: false
+    default: false,
   },
   field: {
     type: Object as PropType<any>,
-    required: true
+    required: true,
   },
   parentField: {
     type: Object as PropType<any>,
   },
   formInfo: {
     type: Object as PropType<any>,
-  }
+  },
 });
-const emits = defineEmits(['selfFunc', 'selectItem']);
+const emits = defineEmits(["selfFunc", "selectItem"]);
 const formData = defineModel("formData");
-let actionName = shallowRef('normal');
+let actionName = shallowRef("normal");
 const initEvent = async () => {
   await nextTick();
 };
@@ -57,19 +71,18 @@ const itemAction = (prep: any) => {
 };
 onMounted(() => {
   if (!props.field.preps) {
-    props.field.preps = {}
+    props.field.preps = {};
   }
-  props.field.preps['step'] = props.field.preps['step'] || 1;
-  props.field.preps['min'] = props.field.preps['min'] || 0;
-  props.field.preps['precision'] = props.field.preps['precision'] || 0;
-  actionName.value = props.field.actionName || 'normal';
+  props.field.preps["step"] = props.field.preps["step"] || 1;
+  props.field.preps["min"] = props.field.preps["min"] || 0;
+  props.field.preps["precision"] = props.field.preps["precision"] || 0;
+  actionName.value = props.field.actionName || "normal";
   if (!props.isSearch) {
     allAction(props, emits, formData, actionName.value, true);
   }
 
   initEvent();
 });
-
 </script>
 <style lang="scss" scoped>
 :deep(.el-input-number) {

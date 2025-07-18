@@ -1,27 +1,27 @@
 <script setup lang="ts" name="StarHorseFormItem">
-import { Config } from '@/api/settings';
+import { Config } from "@/api/settings";
 import { compKey } from "@/api/system";
-import { ApiUrls } from '@/components/types/ApiUrls';
-import { PageFieldInfo } from '@/components/types/PageFieldInfo';
-import { ModelRef, PropType } from 'vue';
+import { ApiUrls } from "@/components/types/ApiUrls";
+import { PageFieldInfo } from "@/components/types/PageFieldInfo";
+import { ModelRef, PropType } from "vue";
 
 defineProps({
   compUrl: { type: Object as PropType<ApiUrls> },
   fieldList: { type: Object as PropType<PageFieldInfo | any>, required: true },
   objectName: { type: String },
-  subFormFlag: { type: String, default: 'N' },
+  subFormFlag: { type: String, default: "N" },
   // 数据索引
   dataIndex: { type: Number, default: -1 },
   // 父节点名称
-  propPrefix: { type: String, default: '' },
-  batchName: { type: String, default: 'batchDataList' },
-  batchFieldName: { type: String, default: 'batchFieldList' },
+  propPrefix: { type: String, default: "" },
+  batchName: { type: String, default: "batchDataList" },
+  batchFieldName: { type: String, default: "batchFieldList" },
   primaryKey: { type: [String, Object] as PropType<string | any> },
   compSize: { type: String, default: Config.compSize },
   rules: { type: Object },
   source: { type: Number, default: 1 },
 });
-const dataForm: ModelRef<any> = defineModel('dataForm');
+const dataForm: ModelRef<any> = defineModel("dataForm");
 const checkItemType = (item: any) => {
   if (Array.isArray(item)) {
     return "box-item";
@@ -36,18 +36,47 @@ const checkItemType = (item: any) => {
   } else {
     return "other-item";
   }
-}
+};
 </script>
 <template>
-  <template v-for="(item, index) in fieldList.fieldList" :key="compKey(item,index,false,'form')">
-    <component :Key="compKey(item, index, true)" :is="checkItemType(item)" :primary-key="primaryKey" :item="item"
-      :rules="rules" :batchFieldName="batchFieldName" :batchName="batchName" :compSize="compSize" :compUrl="compUrl"
-      :subFormFlag="subFormFlag" :source="source" :objectName="objectName" :dataIndex="dataIndex"
-      :propPrefix="propPrefix" v-model:dataForm="dataForm" :parentPreps="fieldList.preps" />
+  <template
+    v-for="(item, index) in fieldList.fieldList"
+    :key="compKey(item, index, false, 'form')"
+  >
+    <component
+      :Key="compKey(item, index, true)"
+      :is="checkItemType(item)"
+      :primary-key="primaryKey"
+      :item="item"
+      :rules="rules"
+      :batchFieldName="batchFieldName"
+      :batchName="batchName"
+      :compSize="compSize"
+      :compUrl="compUrl"
+      :subFormFlag="subFormFlag"
+      :source="source"
+      :objectName="objectName"
+      :dataIndex="dataIndex"
+      :propPrefix="propPrefix"
+      v-model:dataForm="dataForm"
+      :parentPreps="fieldList.preps"
+    />
   </template>
-  <table-item :primary-key="primaryKey" :item="fieldList" :rules="rules" :batchFieldName="batchFieldName"
-    :batchName="batchName" :compSize="compSize" :compUrl="compUrl" :subFormFlag="subFormFlag" :source="source"
-    :objectName="objectName" :dataIndex="dataIndex" :propPrefix="propPrefix" v-model:dataForm="dataForm"
-    :parentPreps="fieldList.preps" />
+  <table-item
+    :primary-key="primaryKey"
+    :item="fieldList"
+    :rules="rules"
+    :batchFieldName="batchFieldName"
+    :batchName="batchName"
+    :compSize="compSize"
+    :compUrl="compUrl"
+    :subFormFlag="subFormFlag"
+    :source="source"
+    :objectName="objectName"
+    :dataIndex="dataIndex"
+    :propPrefix="propPrefix"
+    v-model:dataForm="dataForm"
+    :parentPreps="fieldList.preps"
+  />
 </template>
 <style lang="scss" scoped></style>

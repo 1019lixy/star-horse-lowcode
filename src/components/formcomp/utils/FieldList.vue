@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import { useDesignFormStore } from '@/store/DesignForm';
-import piniaInstance from '@/store';
-import { computed, ComputedRef, ref } from 'vue';
+import { useDesignFormStore } from "@/store/DesignForm";
+import piniaInstance from "@/store";
+import { computed, ComputedRef, ref } from "vue";
 
 defineOptions({
-  name: 'FieldList'
+  name: "FieldList",
 });
 const containerRef = ref();
-const emits = defineEmits(['selectData']);
+const emits = defineEmits(["selectData"]);
 let designForm = useDesignFormStore(piniaInstance);
 let formDataList: ComputedRef = computed(() => designForm.formDataList);
 let containerList: ComputedRef = computed(() => designForm.containerList);
 let selfFormDataList: ComputedRef = computed(() => designForm.selfFormDataList);
 const selectData = (item: any) => {
-  emits('selectData', item);
+  emits("selectData", item);
 };
 </script>
 
@@ -31,24 +31,39 @@ const selectData = (item: any) => {
         <el-divider content-position="left">容器</el-divider>
         <ul id="container">
           <template v-for="item in containerList">
-            <li class="field-item" @click="selectData(item)">&nbsp;&nbsp;
-              <div><star-horse-icon :icon-class="item.itemIcon" /> &nbsp;{{ item.itemName }}</div>
+            <li class="field-item" @click="selectData(item)">
+              &nbsp;&nbsp;
+              <div>
+                <star-horse-icon :icon-class="item.itemIcon" /> &nbsp;{{
+                  item.itemName
+                }}
+              </div>
             </li>
           </template>
         </ul>
         <el-divider content-position="left">基础组件</el-divider>
         <ul id="basic">
           <template v-for="item in formDataList">
-            <li class="field-item" @click="selectData(item)">&nbsp;&nbsp;
-              <div><star-horse-icon :icon-class="item.itemIcon" /> &nbsp;{{ item.itemName }}</div>
+            <li class="field-item" @click="selectData(item)">
+              &nbsp;&nbsp;
+              <div>
+                <star-horse-icon :icon-class="item.itemIcon" /> &nbsp;{{
+                  item.itemName
+                }}
+              </div>
             </li>
           </template>
         </ul>
         <el-divider content-position="left">自定义组件</el-divider>
         <ul id="self">
           <template v-for="item in selfFormDataList">
-            <li class="field-item" @click="selectData(item)">&nbsp;&nbsp;
-              <div><star-horse-icon :icon-class="item.itemIcon" /> &nbsp;{{ item.itemName }}</div>
+            <li class="field-item" @click="selectData(item)">
+              &nbsp;&nbsp;
+              <div>
+                <star-horse-icon :icon-class="item.itemIcon" /> &nbsp;{{
+                  item.itemName
+                }}
+              </div>
             </li>
           </template>
         </ul>

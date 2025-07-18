@@ -1,28 +1,27 @@
 <script setup lang="ts">
-import { ModelRef, onMounted, PropType, unref } from 'vue';
-import { FieldInfo } from '@/components/types/PageFieldInfo';
+import { ModelRef, onMounted, PropType, unref } from "vue";
+import { FieldInfo } from "@/components/types/PageFieldInfo";
 import { compKey } from "@/api/system";
 
 const props = defineProps({
   item: { type: Array as PropType<Array<FieldInfo> | any>, required: true },
-  commonFormat: { type: Function, required: true }
+  commonFormat: { type: Function, required: true },
 });
-const dataForm: ModelRef<any> = defineModel('dataForm');
+const dataForm: ModelRef<any> = defineModel("dataForm");
 const dataFormat = (item: any) => {
-  let name = item['hideName'] || item['fieldName'];
+  let name = item["hideName"] || item["fieldName"];
   let tempForm = unref(dataForm);
   if (!tempForm) {
-    return '--';
+    return "--";
   }
   let val = tempForm[name];
   try {
     return props.commonFormat(name, val, tempForm);
   } catch (e) {
-    return val || '--';
+    return val || "--";
   }
 };
-const init = () => {
-};
+const init = () => {};
 onMounted(() => {
   init();
 });
@@ -30,12 +29,20 @@ onMounted(() => {
 
 <template>
   <el-row v-if="Array.isArray(item)" :gutter="0">
-    <el-col :span="sitem.colspan || sitem.preps?.colspan || 24 / item.length" v-for="(sitem, ind) in item"
-      :key="compKey(sitem, ind)">
-      <div class="item" v-if="sitem.formVisible || sitem.listVisible || sitem.viewVisible">
+    <el-col
+      :span="sitem.colspan || sitem.preps?.colspan || 24 / item.length"
+      v-for="(sitem, ind) in item"
+      :key="compKey(sitem, ind)"
+    >
+      <div
+        class="item"
+        v-if="sitem.formVisible || sitem.listVisible || sitem.viewVisible"
+      >
         <label>{{ sitem.label }} :</label>
         <div class="content">
-          <pre v-if="sitem.type == 'textarea' || sitem.type == 'markdown'">{{ dataFormat(sitem) }}</pre>
+          <pre v-if="sitem.type == 'textarea' || sitem.type == 'markdown'">{{
+            dataFormat(sitem)
+          }}</pre>
           <el-tooltip :content="dataFormat(sitem)" v-else>
             {{ dataFormat(sitem) }}
           </el-tooltip>

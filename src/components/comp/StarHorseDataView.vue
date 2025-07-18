@@ -1,24 +1,27 @@
 <script setup lang="ts" name="StarHorseDataView">
-import { ApiUrls } from '@/components/types/ApiUrls';
-import { inject, nextTick, onMounted, PropType, ref, watch } from 'vue';
-import { DialogProps } from '@/components/types/DialogProps';
-import { formFieldMapping, isJson, loadById } from '@/api/star_horse_utils';
+import { ApiUrls } from "@/components/types/ApiUrls";
+import { inject, nextTick, onMounted, PropType, ref, watch } from "vue";
+import { DialogProps } from "@/components/types/DialogProps";
+import { formFieldMapping, isJson, loadById } from "@/api/star_horse_utils";
 
 const dataForm = ref<any>({});
 const props = defineProps({
   compUrl: { type: Object as PropType<ApiUrls> },
   objectName: { type: String },
-  subFormFlag: { type: String, default: 'N' },
+  subFormFlag: { type: String, default: "N" },
   fieldList: { type: Object, required: true },
   globalCondition: { type: Object },
   outerData: { type: Object },
   dynamicForm: { type: Boolean, default: false },
-  primaryKey: { type: [String, Object] as PropType<string | any>, default: 'id' },
-  batchFieldName: { type: String, default: 'batchFieldList' },
-  dataFormat: { type: Function, default: null }
+  primaryKey: {
+    type: [String, Object] as PropType<string | any>,
+    default: "id",
+  },
+  batchFieldName: { type: String, default: "batchFieldList" },
+  dataFormat: { type: Function, default: null },
 });
-const emits = defineEmits(['dataLoaded']);
-const dialogProps = inject<DialogProps>('dialogProps');
+const emits = defineEmits(["dataLoaded"]);
+const dialogProps = inject<DialogProps>("dialogProps");
 watch(
   () => dialogProps?.ids,
   (val) => {
@@ -31,8 +34,8 @@ watch(
   },
   {
     // immediate: true,
-    deep: true
-  }
+    deep: true,
+  },
 );
 onMounted(() => {
   if (dialogProps?.ids) {
@@ -41,7 +44,9 @@ onMounted(() => {
 });
 const loadData = async () => {
   await nextTick();
-  let id = Array.isArray(dialogProps?.ids) ? dialogProps.ids[0] : dialogProps?.ids;
+  let id = Array.isArray(dialogProps?.ids)
+    ? dialogProps.ids[0]
+    : dialogProps?.ids;
   if (!props.compUrl) {
     return;
   }
@@ -50,7 +55,7 @@ const loadData = async () => {
   //如果是Json 对象
   if (isJson(id)) {
     params = { ...params, ...id };
-    objData = await loadById(props.compUrl?.loadByIdForViewUrl!, '', params);
+    objData = await loadById(props.compUrl?.loadByIdForViewUrl!, "", params);
   } else {
     objData = await loadById(props.compUrl?.loadByIdForViewUrl!, id, params);
   }
@@ -73,7 +78,7 @@ const loadData = async () => {
     }
   }
   await nextTick(() => {
-    emits('dataLoaded', objData, true);
+    emits("dataLoaded", objData, true);
   });
 };
 const setData = (data: any) => {
@@ -87,15 +92,19 @@ watch(
       dataForm.value = { ...dataForm.value, ...val };
     }
   },
-  { immediate: true, deep: true }
+  { immediate: true, deep: true },
 );
 defineExpose({
-  setData
+  setData,
 });
 </script>
 <template>
   <div class="flex h-full w-full flex-col">
-    <star-horse-data-view-items :commonFormat="dataFormat" :field-list="fieldList" v-model:data-form="dataForm" />
+    <star-horse-data-view-items
+      :commonFormat="dataFormat"
+      :field-list="fieldList"
+      v-model:data-form="dataForm"
+    />
   </div>
 </template>
 <style lang="scss" scoped></style>
