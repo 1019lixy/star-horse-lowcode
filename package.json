@@ -67,7 +67,7 @@
     "element-plus": "^2.10.4",
     "jquery": "^3.7.1",
     "json5": "^2.2.3",
-    "md-editor-v3": "^5.8.1",
+    "md-editor-v3": "^5.8.2",
     "path": "^0.12.7",
     "pinia": "^3.0.3",
     "pinia-plugin-persistedstate": "^4.4.1",
