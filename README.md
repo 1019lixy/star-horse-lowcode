@@ -245,7 +245,7 @@ barcode        条形码组件
 
 ```
 5.示例图片
-![输入图片说明](images/img.png)
+![输入图片说明](dist/images/img.png)
 
 6.BUG 修改记录
 ```
