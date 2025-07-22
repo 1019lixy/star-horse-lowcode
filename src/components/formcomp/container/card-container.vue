@@ -7,6 +7,7 @@ import { itemCheck, uuid } from "@/api/system";
 const props = defineProps({
   parentField: { type: String },
   isDesign: { type: Boolean, default: false },
+  showFormItem: { type: Boolean, default: false },
   disabled: { type: Object as PropType<Boolean | String> },
   formInfo: { type: Object as PropType<any> },
   field: { type: Object as PropType<any> },
@@ -71,6 +72,7 @@ onMounted(() => {
 <template>
   <group-box-container
     class="star-horse-form-container"
+    :showFormItem="showFormItem"
     :isDesign="isDesign"
     :disabled="disabled"
     :parentField="parentField"
@@ -110,6 +112,7 @@ onMounted(() => {
                     :key="header.id"
                     :field="header"
                     :isDesign="isDesign"
+                    :showFormItem="showFormItem"
                     :disabled="disabled"
                     :formInfo="formInfo"
                     :is="itemCheck(header)"
@@ -145,6 +148,7 @@ onMounted(() => {
                 :field="item"
                 :isDesign="isDesign"
                 :disabled="disabled"
+                :showFormItem="showFormItem"
                 :formInfo="formInfo"
                 :is="itemCheck(item)"
                 :parentField="field"

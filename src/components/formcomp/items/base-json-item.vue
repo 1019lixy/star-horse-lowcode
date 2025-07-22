@@ -20,6 +20,7 @@
   <starhorse-form-item
     :isDesign="isDesign"
     :disabled="disabled"
+    :showFormItem="showFormItem"
     :bareFlag="bareFlag"
     :formItem="field"
     :parentField="parentField"
@@ -71,6 +72,7 @@ import JSON5 from "json5";
 // 公共 props（两个组件原有的 props 完全一致）
 const props = defineProps({
   isDesign: { type: Boolean, default: false },
+  showFormItem: { type: Boolean, default: false },
   disabled: { type: Boolean, default: false },
   bareFlag: { type: Boolean, default: false },
   isSearch: { type: Boolean, default: false },

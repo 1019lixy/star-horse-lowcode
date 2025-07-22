@@ -16,6 +16,7 @@ const props = defineProps({
   formInfo: { type: Object as PropType<any> },
   parentComp: { type: Object as PropType<any> },
   isDesign: { type: Boolean, default: false },
+  showFormItem: { type: Boolean, default: false },
   disabled: { type: Object as PropType<Boolean | String> },
   field: { type: Object as PropType<any> },
   isFirstRow: { type: Boolean, default: false },
@@ -192,6 +193,7 @@ watch(
             :field="data"
             :formInfo="formInfo"
             :isDesign="isDesign"
+            :showFormItem="showFormItem"
             :disabled="disabled"
             :is="itemCheck(data)"
             :parentField="parentField"

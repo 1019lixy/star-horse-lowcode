@@ -1,5 +1,6 @@
 <template>
   <starhorse-form-item
+    :showFormItem="showFormItem"
     :isDesign="isDesign"
     :disabled="disabled"
     :bareFlag="bareFlag"
@@ -37,6 +38,10 @@ const props = defineProps({
     default: false,
   },
   disabled: {
+    type: Boolean,
+    default: false,
+  },
+  showFormItem: {
     type: Boolean,
     default: false,
   },

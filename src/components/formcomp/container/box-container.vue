@@ -8,6 +8,7 @@ import { itemCheck } from "@/api/system";
 const props = defineProps({
   parentField: { type: String },
   isDesign: { type: Boolean, default: false },
+  showFormItem: { type: Boolean, default: false },
   disabled: { type: Object as PropType<Boolean | String> },
   formInfo: { type: Object as PropType<any> },
   field: { type: Object as PropType<any> },
@@ -15,7 +16,7 @@ const props = defineProps({
 let designForm = useDesignFormStore(piniaInstance);
 let draggingItem = computed(() => designForm.draggingItem);
 const formData = defineModel("formData");
-let isEdit = computed(() => designForm.isEdit);
+let isEdit = computed(() => props.isDesign);
 const isDragging = computed(() => designForm.isDragging);
 let boxCompList = computed(() => props.field);
 let excludeContainerType: Array<string> = [
@@ -60,6 +61,7 @@ const onDragAdd = (evt: Event | any, dataList: any) => {
 <template>
   <group-box-container
     class="star-horse-form-container"
+    :showFormItem="showFormItem"
     :isDesign="isDesign"
     :disabled="disabled"
     :parentField="parentField"
@@ -96,6 +98,7 @@ const onDragAdd = (evt: Event | any, dataList: any) => {
                 :key="data.id"
                 :field="data"
                 :formInfo="formInfo"
+                :showFormItem="showFormItem"
                 :isDesign="isDesign"
                 :disabled="disabled"
                 :is="itemCheck(data)"
@@ -119,6 +122,7 @@ const onDragAdd = (evt: Event | any, dataList: any) => {
             :field="data"
             :isDesign="isDesign"
             :disabled="disabled"
+            :showFormItem="showFormItem"
             :is="itemCheck(data)"
             v-model:formData="formData"
             :formInfo="formInfo"

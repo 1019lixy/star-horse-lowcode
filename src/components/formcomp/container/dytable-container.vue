@@ -7,6 +7,7 @@ let containerTableRef = ref(); // 强制刷新表格
 defineProps({
   parentField: { type: String },
   isDesign: { type: Boolean, default: false },
+  showFormItem: { type: Boolean, default: false },
   disabled: { type: Object as PropType<Boolean | String> },
   formInfo: { type: Object as PropType<any> },
   field: { type: Object as PropType<any> },
@@ -16,6 +17,7 @@ const formData = defineModel("formData");
 <template>
   <group-box-container
     class="star-horse-form-container"
+    :showFormItem="showFormItem"
     :isDesign="isDesign"
     :disabled="disabled"
     :parentField="parentField"
@@ -30,6 +32,7 @@ const formData = defineModel("formData");
               :formInfo="formInfo"
               v-model:formData="formData"
               :isDesign="isDesign"
+              :showFormItem="showFormItem"
               :disabled="disabled"
               :isFirstRow="rowIndex == 0"
               :parentField="field"

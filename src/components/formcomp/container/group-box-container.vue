@@ -2,7 +2,7 @@
 import { operationConfirm, warning } from "@/utils/message";
 import piniaInstance from "@/store/index";
 import { useDesignFormStore } from "@/store/DesignForm";
-import { computed, PropType, ref } from "vue";
+import { computed, ref } from "vue";
 import { colDataInfo } from "@/components/formcomp/container/dytableUtils";
 import { dynamicFormContextMenuData } from "@/plugins/AblesPlugin";
 import FieldList from "@/components/formcomp/utils/FieldList.vue";
@@ -11,7 +11,7 @@ import { fieldCopy } from "@/utils/FieldOperationUtils";
 
 const props = defineProps({
   isDesign: { type: Boolean, default: false },
-  disabled: { type: Object as PropType<Boolean | String> },
+  disabled: { type: Boolean, default: false },
   parentField: { type: Object },
   formItem: { type: Object, required: true },
 });
@@ -24,7 +24,7 @@ let componentVisible = computed(() => {
     currentItemId.value == props.formItem?.preps.id
   );
 });
-let isEdit = computed(() => designForm.isEdit);
+let isEdit = computed(() => props.isDesign);
 const selectData = () => {
   let container = props.formItem;
   designForm.selectItem(container, container?.itemType, "");

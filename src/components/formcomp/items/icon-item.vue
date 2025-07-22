@@ -1,5 +1,6 @@
 <template>
   <starhorse-form-item
+    :showFormItem="showFormItem"
     :isDesign="isDesign"
     :disabled="disabled"
     :bareFlag="bareFlag"
@@ -31,10 +32,7 @@
           :icon-class="formData[field.fieldName]"
           v-else
           size="30px"
-          width="30px"
-          height="30px"
           style="
-            font-size: 50px;
             color: var(--star-horse-style);
             border-radius: 3px;
             border: 1px solid var(--star-horse-light-gray);
@@ -101,6 +99,10 @@ const props = defineProps({
     default: false,
   },
   disabled: {
+    type: Boolean,
+    default: false,
+  },
+  showFormItem: {
     type: Boolean,
     default: false,
   },

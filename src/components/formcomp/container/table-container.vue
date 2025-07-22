@@ -11,6 +11,7 @@ let containerTableRef = ref(); // 强制刷新表格
 const props = defineProps({
   parentField: { type: String },
   isDesign: { type: Boolean, default: false },
+  showFormItem: { type: Boolean, default: false },
   disabled: { type: Object as PropType<Boolean | String> },
   formInfo: { type: Object as PropType<any> },
   field: { type: Object as PropType<any> },
@@ -25,7 +26,7 @@ let excludeContainerType: Array<string> = [
   "collapse",
   "card",
 ];
-let isEdit = computed(() => designForm.isEdit);
+let isEdit = computed(() => props.isDesign);
 const isDragging = computed(() => designForm.isDragging);
 const formData = defineModel("formData");
 const onDragAdd = (evt: Event | any, dataList: any) => {
@@ -99,6 +100,7 @@ const deleteCol = (index: number) => {
 <template>
   <group-box-container
     class="star-horse-form-container"
+    :showFormItem="showFormItem"
     :isDesign="isDesign"
     :disabled="disabled"
     :parentField="parentField"
@@ -118,10 +120,7 @@ const deleteCol = (index: number) => {
             @mouseenter="(evt) => tdOver(evt, td)"
             @mouseleave="(evt) => tdOut(evt, td)"
           >
-            <div
-              class="td-operator"
-              v-if="currentIndex == td && isEdit && isDesign"
-            >
+            <div class="td-operator" v-if="currentIndex == td && isDesign">
               <el-tooltip content="删除列">
                 <star-horse-icon
                   icon-class="delete"
@@ -165,6 +164,7 @@ const deleteCol = (index: number) => {
                     <component
                       :key="data?.id"
                       :field="data"
+                      :showFormItem="showFormItem"
                       :isDesign="isDesign"
                       :disabled="disabled"
                       :formInfo="formInfo"

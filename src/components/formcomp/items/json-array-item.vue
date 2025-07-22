@@ -2,6 +2,7 @@
   <base-json-item
     :isDesign="isDesign"
     :disabled="disabled"
+    :showFormItem="showFormItem"
     :field="field"
     @selectItem="itemAction"
     :formInfo="formInfo"
@@ -21,6 +22,10 @@ const props = defineProps({
     default: false,
   },
   disabled: {
+    type: Boolean,
+    default: false,
+  },
+  showFormItem: {
     type: Boolean,
     default: false,
   },

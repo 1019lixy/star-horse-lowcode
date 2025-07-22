@@ -11,6 +11,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  showFormItem: {
+    type: Boolean,
+    default: false,
+  },
   bareFlag: {
     type: Boolean,
     default: false,
@@ -38,6 +42,7 @@ const itemAction = (prep: any) => {
 </script>
 <template>
   <starhorse-form-item
+    :showFormItem="showFormItem"
     :isDesign="isDesign"
     :disabled="disabled"
     :bareFlag="bareFlag"

@@ -4,11 +4,11 @@ import { useSelfOperationStore } from "@/store/SelfOperation";
 import piniaInstance from "@/store";
 import {
   compKey,
-  fieldPlaceholder,
-  uuid,
   dateCompList,
+  fieldPlaceholder,
   inputCompList,
   selectCompList,
+  uuid,
 } from "@/api/system";
 import { Config } from "@/api/settings";
 import { checkVisible, filterProperties } from "@/api/form_utils";
@@ -120,6 +120,9 @@ const init = () => {
   fieldType();
   if (!props.item["id"]) {
     props.item["id"] = props.item.preps?.id ?? uuid();
+  }
+  if (!props.item.fieldName) {
+    props.item["fieldName"] = props.item.preps?.name ?? props.item.id;
   }
   fieldPlaceholder(props.item, itemType.value);
   if (props.item.preps) {

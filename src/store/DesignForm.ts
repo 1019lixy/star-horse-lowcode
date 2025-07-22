@@ -161,7 +161,7 @@ export const useDesignFormStore = defineStore("designForm", () => {
     if (compListNoLayer.value?.length == 0) {
       loadCompNames();
     }
-    return compListNoLayer.value?.find((item) => item.id == itemId);
+    return compListNoLayer.value?.find((item: any) => item.id == itemId);
   };
   /**
    * 获取属性列表，

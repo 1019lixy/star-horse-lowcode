@@ -38,6 +38,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  showFormItem: {
+    type: Boolean,
+    default: false,
+  },
   placeholder: String,
   initialContent: String,
 });
