@@ -43,7 +43,7 @@ const removeRow = (row: any) => {
     @removeRow="removeRow"
     v-if="Object.keys(item).includes('disVisible') ? item['disVisible'] : true"
     :helpMsg="item['helpMsg']"
-    :staticColumn="item.staticData ?? 'Y'"
+    :staticColumn="item.staticColumn ?? 'Y'"
     :downloadTemplateUrl="item['downloadTemplateUrl']"
     :importInfo="item['importInfo']"
     :defaultValues="batchFieldDefaultValues(item, dataForm)"

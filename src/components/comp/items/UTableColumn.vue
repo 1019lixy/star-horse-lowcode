@@ -39,6 +39,7 @@ const exclusionFields: string[] = ["divider", "button", "usercomp"];
           :subFlag="true"
           :size="size"
           :source="source"
+          :staticColumn="sitem.staticColumn ?? 'Y'"
           :defaultValues="batchFieldDefaultValues(sitem, scope.row)"
           :field-list="sitem['fieldList']"
           :rules="sitem['rules'] || rules"

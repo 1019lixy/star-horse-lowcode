@@ -245,10 +245,7 @@ barcode        条形码组件
 
 ```
 5.示例图片
-通过上述配置，即可实现一个简单的表格组件，
-![输入图片说明](star-horse-lowcode/dist/images/img.png)
-基于该组件库开发的表单设计组件，
-![输入图片说明](star-horse-lowcode/dist/images/img2.png)
+ 请到gitee 查看示例图片
 6.BUG 修改记录
 ```
 1. 2025-03-31 修复动态表单Store piniaInstance 对象共享数据问题
@@ -309,3 +306,4 @@ barcode        条形码组件
 26. 2025-07-19 修复表单超长不滚动问题
 27. 2025-07-22 修复动态表单设计时,属性undefined 的Bug
                更新示例图片
+               修复StarHorseFormList 组件staticColumn(控制在批量添加数据时，时弹窗添加还是直接在列表中添加) 为N 时不生效问题
