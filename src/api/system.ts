@@ -116,7 +116,7 @@ const dateType: Array<string> = [
   "daterange",
 ];
 /**
- *下来组件
+ *下拉组件
  * @returns
  */
 export function selectCompList() {
