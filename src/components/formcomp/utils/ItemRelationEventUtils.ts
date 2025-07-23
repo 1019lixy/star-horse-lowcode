@@ -242,7 +242,7 @@ const useFormField = (context: any, field: any) => {
 const initCompCallEvent = (props: any, emits: any, formData: any) => {
     const events: string[] = Object.keys(props.field.actions || {});
     // 新增数据检查
-    if (!props.isSearch && !props.field.preps["stopInitCallAction"] && events?.length > 0) {
+    if (!props.isSearch && !props.field.preps?.["stopInitCallAction"] && events?.length > 0) {
         if (Object.keys(formData.value || {}).length == 0 || !formData.value[props.field.fieldName]) {
             const stop = watch(
                 () => formData.value[props.field.fieldName],

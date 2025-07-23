@@ -308,4 +308,5 @@ barcode        条形码组件
                更新示例图片
                修复StarHorseFormList 组件staticColumn(控制在批量添加数据时，时弹窗添加还是直接在列表中添加) 为N 时不生效问题
 28. 2025-07-23 修复编辑数据时,组件初始化时不触发actions定义的事件问题,如果要阻止在初始化时触发事件(默认初始化时触发自定义事件),需在preps 中增加 stopInitCallAction:true
+               修复动态菜单，页面按钮权限控制问题
                
