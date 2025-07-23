@@ -1,21 +1,14 @@
 <script setup lang="ts">
-import { onMounted, ref, shallowRef, watch, PropType, nextTick } from "vue";
-import { PageProps } from "@/components/types/PageProps";
-import { closeLoad, createCondition, load } from "@/api/star_horse_utils";
-import { postRequest } from "@/api/star_horse_apis";
-import {
-  FieldInfo,
-  FieldMapping,
-  OrderByInfo,
-} from "@/components/types/PageFieldInfo";
-import { SearchParams } from "@/components/types/Params";
-import {
-  allAction,
-  checkIsDisabled,
-} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import { compKey, getDynamicEvents } from "@/api/system";
-import { warning } from "@/utils/message";
-import { SearchFields } from "@/components/types";
+import {nextTick, onMounted, PropType, ref, shallowRef, watch} from "vue";
+import {PageProps} from "@/components/types/PageProps";
+import {closeLoad, createCondition, load} from "@/api/star_horse_utils";
+import {postRequest} from "@/api/star_horse_apis";
+import {FieldInfo, FieldMapping, OrderByInfo,} from "@/components/types/PageFieldInfo";
+import {SearchParams} from "@/components/types/Params";
+import {allAction, checkIsDisabled, initCompCallEvent,} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {compKey, getDynamicEvents} from "@/api/system";
+import {warning} from "@/utils/message";
+import {SearchFields} from "@/components/types";
 
 const props = defineProps({
   isDesign: {
@@ -60,7 +53,6 @@ const filterCondition = ref<Array<SearchParams>>([]);
 const orderBy = ref<Array<OrderByInfo>>([]);
 
 let multipleSelection = shallowRef<Array<any>>([]);
-let actionName = shallowRef("normal");
 let pageInfo = ref<PageProps>({
   pageSize: 20,
   currentPage: 1,
@@ -241,11 +233,8 @@ onMounted(async () => {
     });
     inputPreps.searchFieldList = { fieldList: searchFieldList };
   }
-  actionName.value = props.field.actionName || "normal";
   loadByPage(true);
-  if (!props.isSearch) {
-    allAction(props, emits, formData, actionName.value, true);
-  }
+  initCompCallEvent(props,emits,formData);
 });
 </script>
 <template>

@@ -11,7 +11,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { PropType } from "vue";
+import {PropType} from "vue";
 
 defineProps({
   isDesign: {

@@ -141,9 +141,9 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { onMounted, shallowRef, PropType } from "vue";
-import { allAction } from "@/components/formcomp/utils/ItemRelationEventUtils";
-import { getToken } from "@/utils/auth";
+import {onMounted, PropType, shallowRef} from "vue";
+import {initCompCallEvent} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {getToken} from "@/utils/auth";
 
 const props = defineProps({
   isDesign: {
@@ -180,7 +180,6 @@ const props = defineProps({
 const emits = defineEmits(["selfFunc", "selectItem"]);
 const formData = defineModel("formData");
 
-let actionName = shallowRef("change");
 let defaultAction = "/system-config/annex/upload/common";
 let defaultViewList = shallowRef([]);
 
@@ -208,10 +207,7 @@ const selfAction = (
   emits("selfFunc", prep, uploadFile, uploadFiles, param);
 };
 onMounted(() => {
-  actionName.value = props.field.actionName || "normal";
-  if (!props.isSearch) {
-    allAction(props, emits, formData, actionName.value, true);
-  }
+  initCompCallEvent(props,emits,formData);
 });
 </script>
 <style lang="scss" scoped>

@@ -17,12 +17,10 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { onMounted, shallowRef, PropType } from "vue";
-import {
-  allAction,
-  checkIsDisabled,
-} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import { getDynamicEvents } from "@/api/system";
+import {onMounted, PropType} from "vue";
+import {allAction, checkIsDisabled, initCompCallEvent,} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {getDynamicEvents} from "@/api/system";
+
 const props = defineProps({
   isDesign: {
     type: Boolean,
@@ -57,8 +55,6 @@ const props = defineProps({
 });
 const emits = defineEmits(["selfFunc", "selectItem"]);
 const formData = defineModel("formData");
-
-let actionName = shallowRef("change");
 const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
@@ -71,10 +67,7 @@ onMounted(() => {
   props.field.preps["activeValue"] = props.field.preps["activeValue"] ?? true;
   props.field.preps["inactiveValue"] =
     props.field.preps["inactiveValue"] ?? false;
-  actionName.value = props.field.actionName || "normal";
-  if (!props.isSearch) {
-    allAction(props, emits, formData, actionName.value, false);
-  }
+  initCompCallEvent(props,emits,formData);
 });
 </script>
 <style scoped></style>

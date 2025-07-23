@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { PropType } from "vue";
-import { allAction } from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {PropType} from "vue";
+import {allAction} from "@/components/formcomp/utils/ItemRelationEventUtils";
 
 const props = defineProps({
   isDesign: {

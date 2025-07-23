@@ -84,15 +84,13 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { onMounted, PropType, ref, shallowRef, unref } from "vue";
-import {
-  allAction,
-  checkIsDisabled,
-} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {onMounted, PropType, ref, shallowRef, unref} from "vue";
+import {checkIsDisabled, initCompCallEvent,} from "@/components/formcomp/utils/ItemRelationEventUtils";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
-import { compDynamicData } from "@/api/star_horse_utils";
-import { getDynamicEvents } from "@/api/system";
+import {compDynamicData} from "@/api/star_horse_utils";
+import {getDynamicEvents} from "@/api/system";
+
 const props = defineProps({
   isDesign: {
     type: Boolean,
@@ -133,7 +131,6 @@ let iconList = ref<any>([]);
 let allIconList = ref<any>([]);
 let iconType = ref<string>("system");
 const popoverRef = shallowRef();
-let actionName = shallowRef("normal");
 const assignIcon = (iconName: string) => {
   formData.value[props.field.fieldName] = iconName;
   unref(popoverRef).popperRef?.delayHide?.();
@@ -162,11 +159,8 @@ const init = async () => {
   iconList.value = allIconList.value;
 };
 onMounted(() => {
-  actionName.value = props.field.actionName || "normal";
   init();
-  if (!props.isSearch) {
-    allAction(props, emits, formData, actionName.value, true);
-  }
+  initCompCallEvent(props,emits,formData);
 });
 </script>
 <style scoped>

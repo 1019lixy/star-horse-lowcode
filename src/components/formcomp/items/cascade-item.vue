@@ -17,13 +17,11 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { nextTick, onMounted, shallowRef, watch, PropType } from "vue";
-import { compDynamicData, isJson } from "@/api/star_horse_utils";
-import {
-  allAction,
-  checkIsDisabled,
-} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import { getDynamicEvents } from "@/api/system";
+import {nextTick, onMounted, PropType, watch} from "vue";
+import {compDynamicData, isJson} from "@/api/star_horse_utils";
+import {allAction, checkIsDisabled, initCompCallEvent,} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {getDynamicEvents} from "@/api/system";
+
 const props = defineProps({
   isDesign: {
     type: Boolean,
@@ -58,7 +56,6 @@ const props = defineProps({
 });
 const emits = defineEmits(["selfFunc", "selectItem"]);
 const formData = defineModel("formData");
-let actionName = shallowRef("normal");
 const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
@@ -91,10 +88,7 @@ onMounted(() => {
     checkStrictly: true,
   };
   initData();
-  actionName.value = props.field.actionName || "normal";
-  if (!props.isSearch) {
-    allAction(props, emits, formData, actionName.value, true);
-  }
+  initCompCallEvent(props,emits,formData);
 });
 watch(
   () => formData.value[props.field.fieldName + "OptionList"],

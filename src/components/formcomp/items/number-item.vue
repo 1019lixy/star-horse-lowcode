@@ -24,12 +24,10 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { nextTick, onMounted, shallowRef, PropType } from "vue";
-import {
-  allAction,
-  checkIsDisabled,
-} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import { getDynamicEvents } from "@/api/system";
+import {nextTick, onMounted, PropType} from "vue";
+import {allAction, checkIsDisabled, initCompCallEvent,} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {getDynamicEvents} from "@/api/system";
+
 defineOptions({
   name: "NumberItem",
 });
@@ -67,7 +65,6 @@ const props = defineProps({
 });
 const emits = defineEmits(["selfFunc", "selectItem"]);
 const formData = defineModel("formData");
-let actionName = shallowRef("normal");
 const initEvent = async () => {
   await nextTick();
 };
@@ -81,10 +78,7 @@ onMounted(() => {
   props.field.preps["step"] = props.field.preps["step"] || 1;
   props.field.preps["min"] = props.field.preps["min"] || 0;
   props.field.preps["precision"] = props.field.preps["precision"] || 0;
-  actionName.value = props.field.actionName || "normal";
-  if (!props.isSearch) {
-    allAction(props, emits, formData, actionName.value, true);
-  }
+  initCompCallEvent(props,emits,formData);
 
   initEvent();
 });

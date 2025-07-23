@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { ImageSettings } from "qrcode.vue";
+import type {ImageSettings} from "qrcode.vue";
 import QrcodeVue from "qrcode.vue";
-import { computed, nextTick, onMounted, ref, watch, PropType } from "vue";
-import { allAction } from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {computed, nextTick, onMounted, PropType, ref, watch} from "vue";
+import {allAction} from "@/components/formcomp/utils/ItemRelationEventUtils";
 
 const props = defineProps({
   isDesign: {

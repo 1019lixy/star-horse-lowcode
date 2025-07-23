@@ -38,13 +38,11 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { onMounted, PropType, watch } from "vue";
-import {
-  allAction,
-  checkIsDisabled,
-} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import { compDynamicData } from "@/api/star_horse_utils";
-import { getDynamicEvents } from "@/api/system";
+import {onMounted, PropType, watch} from "vue";
+import {allAction, checkIsDisabled,} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {compDynamicData} from "@/api/star_horse_utils";
+import {getDynamicEvents} from "@/api/system";
+
 const props = defineProps({
   isDesign: {
     type: Boolean,

@@ -18,18 +18,12 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { onMounted, PropType, shallowRef, watch } from "vue";
-import {
-  compDynamicData,
-  createFilter,
-  dynamicUrlOperation,
-} from "@/api/star_horse_utils";
-import { SearchParams } from "@/components/types/Params";
-import {
-  allAction,
-  checkIsDisabled,
-} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import { getDynamicEvents } from "@/api/system";
+import {onMounted, PropType, watch} from "vue";
+import {compDynamicData, createFilter, dynamicUrlOperation,} from "@/api/star_horse_utils";
+import {SearchParams} from "@/components/types/Params";
+import {allAction, checkIsDisabled, initCompCallEvent,} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {getDynamicEvents} from "@/api/system";
+
 const props = defineProps({
   isDesign: {
     type: Boolean,
@@ -65,7 +59,6 @@ const props = defineProps({
 const emits = defineEmits(["selfFunc", "selectItem"]);
 const formData = defineModel("formData");
 
-let actionName = shallowRef("normal");
 const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
@@ -83,10 +76,7 @@ onMounted(() => {
     props.field.preps = {};
   }
   initData();
-  actionName.value = props.field.actionName || "normal";
-  if (!props.isSearch) {
-    allAction(props, emits, formData, actionName.value, true);
-  }
+  initCompCallEvent(props,emits,formData);
 });
 const querySearch = async (queryString: string, cb: (arg: any) => void) => {
   let temp = props.field.preps;

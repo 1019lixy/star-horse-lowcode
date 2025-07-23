@@ -62,12 +62,9 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { getDynamicEvents } from "@/api/system";
-import {
-  allAction,
-  checkIsDisabled,
-} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import { PropType, computed, nextTick, onMounted, ref, shallowRef } from "vue";
+import {getDynamicEvents} from "@/api/system";
+import {allAction, checkIsDisabled, initCompCallEvent,} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {computed, nextTick, onMounted, PropType, ref} from "vue";
 
 defineOptions({
   name: "InputItem",
@@ -107,7 +104,6 @@ const props = defineProps({
 const emits = defineEmits(["selfFunc", "selectItem"]);
 const formData = defineModel("formData");
 const inputItemRef = ref();
-let actionName = shallowRef("normal");
 const dialogInputVisible = ref<boolean>(false);
 const initEvent = async () => {
   await nextTick();
@@ -129,10 +125,7 @@ const editContent = () => {
   dialogInputVisible.value = true;
 };
 onMounted(() => {
-  actionName.value = props.field.actionName || "normal";
-  if (!props.isSearch) {
-    allAction(props, emits, formData, actionName.value, true);
-  }
+  initCompCallEvent(props,emits,formData);
   initEvent();
 });
 </script>

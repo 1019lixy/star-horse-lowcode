@@ -59,14 +59,11 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, PropType, reactive, shallowRef } from "vue";
-import { PageFieldInfo } from "@/components/types/PageFieldInfo";
-import {
-  allAction,
-  checkIsDisabled,
-} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import { isJson } from "@/api/star_horse_utils";
-import { getDynamicEvents } from "@/api/system";
+import {nextTick, PropType, reactive, shallowRef} from "vue";
+import {PageFieldInfo} from "@/components/types/PageFieldInfo";
+import {allAction, checkIsDisabled,} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {isJson} from "@/api/star_horse_utils";
+import {getDynamicEvents} from "@/api/system";
 import JSON5 from "json5";
 
 // 公共 props（两个组件原有的 props 完全一致）

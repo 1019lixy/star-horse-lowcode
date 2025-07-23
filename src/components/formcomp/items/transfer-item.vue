@@ -16,11 +16,12 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { onMounted, shallowRef, watch, PropType } from "vue";
-import { compDynamicData } from "@/api/star_horse_utils";
-import { SelectOption } from "@/components/types/SearchProps";
-import { allAction } from "@/components/formcomp/utils/ItemRelationEventUtils";
-import { getDynamicEvents } from "@/api/system";
+import {onMounted, PropType, shallowRef, watch} from "vue";
+import {compDynamicData} from "@/api/star_horse_utils";
+import {SelectOption} from "@/components/types/SearchProps";
+import {allAction, initCompCallEvent} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {getDynamicEvents} from "@/api/system";
+
 const props = defineProps({
   isDesign: {
     type: Boolean,
@@ -55,8 +56,6 @@ const props = defineProps({
 });
 const emits = defineEmits(["selfFunc", "selectItem"]);
 const formData = defineModel("formData");
-
-let actionName = shallowRef("normal");
 let bakeData = shallowRef<SelectOption[]>([]);
 const itemAction = (prep: string) => {
   allAction(props, emits, formData, prep);
@@ -74,10 +73,7 @@ onMounted(() => {
     props.field.preps = {};
   }
   initData();
-  actionName.value = props.field.actionName || "normal";
-  if (!props.isSearch) {
-    allAction(props, emits, formData, actionName.value, true);
-  }
+  initCompCallEvent(props,emits,formData);
 });
 watch(
   () => formData.value[props.field.fieldName + "OptionList"],

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Vue3Barcode from "vue3-barcode";
-import { computed, nextTick, onMounted, ref, watch, PropType } from "vue";
-import { allAction } from "../utils/ItemRelationEventUtils";
+import {computed, nextTick, onMounted, PropType, ref, watch} from "vue";
+import {allAction} from "../utils/ItemRelationEventUtils";
 
 const props = defineProps({
   isDesign: {

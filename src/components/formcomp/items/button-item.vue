@@ -50,16 +50,13 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts" name="buttonItem">
-import { onMounted, PropType, shallowRef, unref } from "vue";
-import {
-  buttonAction,
-  checkIsDisabled,
-} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import { httpRequest } from "@/api/star_horse_apis";
-import { operationConfirm, warning } from "@/utils/message";
-import { BtnAction, DynamicParamField } from "@/components/types/BtnAction";
-import { SearchParams } from "@/components/types/Params";
-import { createCondition } from "@/api/star_horse_utils";
+import {onMounted, PropType, shallowRef, unref} from "vue";
+import {buttonAction, checkIsDisabled, initCompCallEvent,} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {httpRequest} from "@/api/star_horse_apis";
+import {operationConfirm, warning} from "@/utils/message";
+import {BtnAction, DynamicParamField} from "@/components/types/BtnAction";
+import {SearchParams} from "@/components/types/Params";
+import {createCondition} from "@/api/star_horse_utils";
 
 const props = defineProps({
   isDesign: {
@@ -96,7 +93,6 @@ const props = defineProps({
 const emits = defineEmits(["selfFunc", "selectItem"]);
 const formData = defineModel("formData");
 
-let actionName = shallowRef("click");
 let btnDialogVisible = shallowRef<boolean>(false);
 const btnCompRef = shallowRef();
 
@@ -218,7 +214,7 @@ const dynamicFunc = (code: any) => {
   }
 };
 onMounted(() => {
-  actionName.value = props.field.actionName || "normal";
+  initCompCallEvent(props,emits,formData);
 });
 </script>
 <style lang="scss" scoped>

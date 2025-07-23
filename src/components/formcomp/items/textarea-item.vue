@@ -25,13 +25,11 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { onMounted, shallowRef, PropType } from "vue";
-import {
-  allAction,
-  checkIsDisabled,
-} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {onMounted, PropType, shallowRef} from "vue";
+import {allAction, checkIsDisabled, initCompCallEvent,} from "@/components/formcomp/utils/ItemRelationEventUtils";
 import EditDataDialog from "@/components/formcomp/utils/EditDataDialog.vue";
-import { getDynamicEvents } from "@/api/system";
+import {getDynamicEvents} from "@/api/system";
+
 const props = defineProps({
   isDesign: {
     type: Boolean,
@@ -67,8 +65,6 @@ const props = defineProps({
 const emits = defineEmits(["selfFunc", "selectItem"]);
 const formData = defineModel("formData");
 const editorDialogVisible = shallowRef(false);
-
-let actionName = shallowRef("normal");
 const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
@@ -79,10 +75,7 @@ const handleContentConfirm = (newContent: string) => {
   formData.value[props.field.fieldName] = newContent;
 };
 onMounted(() => {
-  actionName.value = props.field.actionName || "normal";
-  if (!props.isSearch) {
-    allAction(props, emits, formData, actionName.value, true);
-  }
+  initCompCallEvent(props,emits,formData);
 });
 </script>
 <style scoped></style>

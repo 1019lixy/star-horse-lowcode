@@ -13,8 +13,8 @@
   />
 </template>
 <script setup lang="ts">
-import { onMounted, PropType, shallowRef } from "vue";
-import { allAction } from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {onMounted, PropType} from "vue";
+import {allAction, initCompCallEvent} from "@/components/formcomp/utils/ItemRelationEventUtils";
 
 const props = defineProps({
   isDesign: {
@@ -50,7 +50,6 @@ const props = defineProps({
 });
 const emits = defineEmits(["selfFunc", "selectItem"]);
 const formData = defineModel("formData");
-let actionName = shallowRef("normal");
 const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
@@ -58,10 +57,7 @@ onMounted(() => {
   if (!props.field.preps) {
     props.field.preps = {};
   }
-  actionName.value = props.field.actionName || "normal";
-  if (!props.isSearch) {
-    allAction(props, emits, formData, actionName.value, true);
-  }
+  initCompCallEvent(props,emits,formData);
 });
 </script>
 <style lang="scss" scoped></style>

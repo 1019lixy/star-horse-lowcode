@@ -15,7 +15,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts" name="view-markdown">
-import { nextTick, onMounted, onUpdated, ref, PropType } from "vue";
+import {nextTick, onMounted, onUpdated, PropType, ref} from "vue";
 import MarkdownIt from "markdown-it";
 
 defineProps({

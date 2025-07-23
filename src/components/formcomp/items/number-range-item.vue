@@ -59,18 +59,8 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {
-  computed,
-  onBeforeMount,
-  onMounted,
-  PropType,
-  ref,
-  shallowRef,
-} from "vue";
-import {
-  allAction,
-  checkIsDisabled,
-} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {computed, onBeforeMount, onMounted, PropType, ref, shallowRef,} from "vue";
+import {allAction, checkIsDisabled, initCompCallEvent,} from "@/components/formcomp/utils/ItemRelationEventUtils";
 
 const props = defineProps({
   isDesign: {
@@ -119,7 +109,6 @@ const minName = computed(() => {
 const splitName = computed(() => {
   return props.field.preps?.splitName ?? "-";
 });
-let actionName = shallowRef("normal");
 let slotStyle = shallowRef("");
 
 // input焦点事件
@@ -164,7 +153,7 @@ onBeforeMount(() => {
   }
 });
 onMounted(() => {
-  actionName.value = props.field.actionName || "normal";
+
   let val: any = formData.value[props.field.fieldName];
   if (typeof val === "string") {
     let data = val.split(splitName.value);
@@ -174,9 +163,7 @@ onMounted(() => {
     formData.value[minName.value] = Number(val[0]);
     formData.value[maxName.value] = Number(val[1]);
   }
-  if (!props.isSearch) {
-    allAction(props, emits, formData, "init", true);
-  }
+  initCompCallEvent(props,emits,formData);
 });
 </script>
 <style lang="scss" scoped>
