@@ -42,7 +42,7 @@ const emits = defineEmits(["selfFunc", "selectItem"]);
 let previewDialog = shallowRef<boolean>(false);
 let signature = ref<SmoothSignature>(null);
 // 明确声明 ref 类型为 HTMLCanvasElement 或 null
-const signatureCanvas = ref<HTMLCanvasElement | null>(null);
+const signatureCanvas = ref<any>(null);
 const options = {
   width: Math.min(window.innerWidth, 1000),
   height: 600,
