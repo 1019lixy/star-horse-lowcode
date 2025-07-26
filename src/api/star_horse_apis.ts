@@ -6,7 +6,7 @@ import { error } from "@/utils/message";
 import axios, { AxiosResponse, InternalAxiosRequestConfig } from "axios";
 
 const userStore = useUserInfoStore(piniaInstance);
-const service = axios.create({
+const starHorseAxios = axios.create({
   baseURL: "/",
   timeout: 50000,
   headers: {
@@ -14,7 +14,7 @@ const service = axios.create({
   },
 });
 // 添加请求拦截器
-service.interceptors.request.use(
+starHorseAxios.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = getToken();
     const fingerToken = getFingerId();
@@ -31,7 +31,7 @@ service.interceptors.request.use(
     return Promise.reject(error);
   },
 );
-
+export { starHorseAxios };
 export function getMenuId() {
   //@ts-ignore
   const router = window.__hostRouter__;
@@ -48,7 +48,7 @@ const forceLoginOut = () => {
   userStore.showLoginDialog();
 };
 // 添加响应拦截器
-service.interceptors.response.use(
+starHorseAxios.interceptors.response.use(
   (response: AxiosResponse) => {
     const code = response.data?.code;
     // 401 未登录
@@ -74,13 +74,20 @@ service.interceptors.response.use(
 );
 
 /**
+ * 获取axios实例
+ */
+export function getAxiosInstance() {
+  return window.__hostAxios__ ?? starHorseAxios;
+}
+/**
  * 下载文件,
  * @param url 路径
  * @param param 参数
  */
 export function download(url: string, param: any) {
+
   return new Promise((resolve, reject) => {
-    service
+    getAxiosInstance()
       .post(url, param, { responseType: "blob" })
       .then((res) => {
         downloadData(
@@ -121,11 +128,11 @@ export function downloadData(data: any, name: string) {
 export async function blobData(url: string, method: string = "post") {
   let redata: any = null;
   if (method == "get") {
-    await service.get(url, { responseType: "blob" }).then((res) => {
+    await getAxiosInstance().get(url, { responseType: "blob" }).then((res) => {
       redata = new Blob([res.data]);
     });
   } else {
-    await service.post(url, [], { responseType: "blob" }).then((res) => {
+    await getAxiosInstance().post(url, [], { responseType: "blob" }).then((res) => {
       redata = new Blob([res.data]);
     });
   }
@@ -138,7 +145,7 @@ export async function blobData(url: string, method: string = "post") {
  * @param data
  */
 export function postRequest(url: string, data: Array<any> | any) {
-  return service.post(url, data);
+  return getAxiosInstance().post(url, data);
 }
 
 /**
@@ -146,7 +153,7 @@ export function postRequest(url: string, data: Array<any> | any) {
  * @param url
  */
 export function getRequest(url: string) {
-  return service.get(url);
+  return getAxiosInstance().get(url);
 }
 
 /**
@@ -156,7 +163,7 @@ export function getRequest(url: string) {
  * @param method 请求方法
  */
 export function httpRequest(url: string, method: string, data: any) {
-  return service.request({
+  return getAxiosInstance().request({
     url: url,
     method: method,
     data: data,
@@ -169,7 +176,7 @@ export function httpRequest(url: string, method: string, data: any) {
  * @param data
  */
 export function uploadRequest(url: string, data: Array<any>) {
-  return service.post(url, data, {
+  return getAxiosInstance().post(url, data, {
     headers: { "Content-Type": "multipart/form-data" },
   });
 }
