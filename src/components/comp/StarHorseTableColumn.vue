@@ -70,8 +70,8 @@ const blurEvent = (column: any, params: any) => {
 const cellClick = (row: any, column: any) => {
   if (
     !props.cellEditable ||
-    props.item["disabled"] ||
-    props.item["editDisabled"]
+    props.item.preps?.["disabled"] ||
+    props.item.preps?.["editDisabled"]
   ) {
     return;
   }
@@ -219,9 +219,7 @@ const createPreps = (item: any) => {
           @blur="blurEvent"
           :source="source"
           v-if="
-            scope.row.isSelected &&
-            (scope.row.selectName == item.hideName ||
-              scope.row.selectName == item.fieldName)
+            scope.row.isSelected && (scope.row.selectName ==scope.column.property)
           "
         />
         <p @click="cellClick(scope.row, scope.column)" v-else>
