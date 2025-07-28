@@ -25,7 +25,6 @@
               ? 'unset'
               : 'var(--el-avatar-bg-color)',
           }"
-          v-on="getDynamicEvents(props, itemAction)"
           :icon="formData[field.fieldName]"
         />
         <star-horse-icon
@@ -84,7 +83,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, PropType, ref, shallowRef, unref} from "vue";
+import {onMounted, PropType, ref, shallowRef, unref, watch} from "vue";
 import {checkIsDisabled, initCompCallEvent,} from "@/components/formcomp/utils/ItemRelationEventUtils";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
@@ -162,6 +161,12 @@ onMounted(() => {
   init();
   initCompCallEvent(props,emits,formData);
 });
+watch(
+  () => formData.value[props.field.fieldName],
+  (newVal, oldVal) => {
+   itemAction("change");
+  }
+);
 </script>
 <style scoped>
 .icon-items {

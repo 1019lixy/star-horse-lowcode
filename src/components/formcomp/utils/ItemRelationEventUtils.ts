@@ -261,16 +261,17 @@ const initCompCallEvent = (props: any, emits: any, formData: any) => {
 };
 const doInitCallEvent = (props: any, emits: any, formData: any) => {
     const events: string[] = Object.keys(props.field.actions || {});
+    if (props.field.preps?.["starHorseFieldSource"] == 5) {
+        return;
+    }
     events?.forEach(event => {
-        if (props.field.preps?.starHorseFieldSource != 5) {
-            allAction(
-                props,
-                emits,
-                formData,
-                event,
-                true
-            );
-        }
+        allAction(
+            props,
+            emits,
+            formData,
+            event,
+            true
+        );
     });
 }
 export {allAction, buttonAction, checkIsDisabled, useFormField, initCompCallEvent};
