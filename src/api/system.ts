@@ -103,6 +103,7 @@ const selectType: Array<string> = [
   "area",
   "cron",
   "transfer",
+    "icon",
   "dialog-input",
   "page-select",
 ];

@@ -316,3 +316,4 @@ barcode        条形码组件
 29. 2025-07-26 增加接口传入引用项目axiosInstance 和对外导出插件内的starHorseAxios(axiosInstance),如果传入axiosInstance 
                则屏蔽插件内的和对外导出插件内的starHorseAxios,以解决引用项目axios 和插件内axios 配置不一致问题(历史遗留)，
                以满足使用者自定义接口需配置的header参数
+30. 2025-07-28 修复StarHorseTableColumn 组件在点击单元格编辑数据时(需要在PageFieldInfo中将cellEditable设置为true)，不切换为对应的组件问题
