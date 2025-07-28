@@ -6,14 +6,16 @@
 import StarHorseLowCode from "star-horse-lowcode";
 import "star-horse-lowcode/assets/index.css"
 import "router" from "@/router";
-import ElementPlus from 'element-plus'
-import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
+import ElementPlus from 'element-plus';
+import zhCn from 'element-plus/dist/locale/zh-cn.mjs';
 const app = createApp(App);
 app.use(ElementPlus, { locale: zhCn })
 //没有配置elementPlusOptions,组件认为没有用elementPlus,
 // 所以会在组件内部引入elementPlus
 app.use(StarHorseLowCode,{
   router: router,
+  //不传此参数则使用插件内部的axios header配置参数
+  //axiosInstance:axiosInstance,
   elementPlusOptions: {
    locale: zhCn
    }
@@ -307,6 +309,10 @@ barcode        条形码组件
 27. 2025-07-22 修复动态表单设计时,属性undefined 的Bug
                更新示例图片
                修复StarHorseFormList 组件staticColumn(控制在批量添加数据时，时弹窗添加还是直接在列表中添加) 为N 时不生效问题
-28. 2025-07-23 修复编辑数据时,组件初始化时不触发actions定义的事件问题,如果要阻止在初始化时触发事件(默认初始化时触发自定义事件),需在preps 中增加 stopInitCallAction:true
+28. 2025-07-23 修复编辑数据时,组件初始化时不触发actions定义的事件问题,如果要阻止在初始化时触发事件(默认初始化时触发自定义事件),
+               需在preps 中增加 stopInitCallAction:true
                修复动态菜单，页面按钮权限控制问题
                
+29. 2025-07-26 增加接口传入引用项目axiosInstance 和对外导出插件内的starHorseAxios(axiosInstance),如果传入axiosInstance 
+               则屏蔽插件内的和对外导出插件内的starHorseAxios,以解决引用项目axios 和插件内axios 配置不一致问题(历史遗留)，
+               以满足使用者自定义接口需配置的header参数
