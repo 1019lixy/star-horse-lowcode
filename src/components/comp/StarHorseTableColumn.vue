@@ -7,7 +7,7 @@ import {Config} from "@/api/settings";
 import {createComponent} from "@/api/system";
 import {dateTypes, parseDateByType} from "@/api/date_utils";
 import {DyCompField} from "@/components/types";
-import $ from "jquery";
+import StarHorseItem from "@/components/comp/StarHorseItem.vue";
 
 const props = defineProps({
   compUrl: {type: Object},
@@ -83,12 +83,13 @@ const cellClick = (row: any, column: any) => {
   //解决空值不能提交问题
   row["starHorseBakeValue"] = bakeValue ? bakeValue : "_";
   currentRow.value = row;
-  nextTick(() => {
-    setTimeout(() => {
-      let obj = $("." + column["id"]).find("input");
-      obj?.select().focus();
-    }, 300);
-  });
+  if (!props.item.preps) {
+    props.item.preps = {
+      autoFocus: true,
+    };
+  } else {
+    props.item.preps.autoFocus = true;
+  }
 };
 const currentDataFormat = (scope: any) => {
   let item = props.item;
@@ -218,6 +219,7 @@ const createPreps = (item: any) => {
             :compSize="compSize"
             @blur="blurEvent"
             :source="source"
+            :autofocus="true"
             v-if="
             scope.row.isSelected && (scope.row.selectName == scope.column.property)
           "
