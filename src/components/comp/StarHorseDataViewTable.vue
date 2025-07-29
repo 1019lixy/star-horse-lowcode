@@ -18,7 +18,7 @@ const dataForm: ModelRef<any> = defineModel("dataForm");
     class="flex justify-between w-full"
     style="border-bottom: var(--star-horse-style) 1px solid"
   >
-    <div class="tb_title">
+    <div class="tb_title flex flex-row items-center">
       <star-horse-icon icon-class="info" size="14px" />
       {{ item.title }}
     </div>
