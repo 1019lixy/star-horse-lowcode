@@ -17,9 +17,13 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, PropType} from "vue";
-import {allAction, checkIsDisabled, initCompCallEvent,} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import {getDynamicEvents} from "@/api/system";
+import { onMounted, PropType } from "vue";
+import {
+  allAction,
+  checkIsDisabled,
+  initCompCallEvent,
+} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import { getDynamicEvents } from "@/api/system";
 
 const props = defineProps({
   isDesign: {
@@ -60,7 +64,7 @@ const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
 onMounted(() => {
-  initCompCallEvent(props,emits,formData);
+  initCompCallEvent(props, emits, formData);
 });
 </script>
 <style scoped></style>

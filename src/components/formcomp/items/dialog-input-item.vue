@@ -1,11 +1,15 @@
 <script setup lang="ts">
-import {nextTick, onMounted, PropType, ref, shallowRef} from "vue";
-import {warning} from "@/utils/message";
-import {FieldInfo, FieldMapping} from "@/components/types/PageFieldInfo";
-import {isJson} from "@/api/star_horse_utils";
-import {allAction, checkIsDisabled, initCompCallEvent,} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import {SearchFields} from "@/components/types";
-import {getDynamicEvents} from "@/api/system";
+import { nextTick, onMounted, PropType, ref, shallowRef } from "vue";
+import { warning } from "@/utils/message";
+import { FieldInfo, FieldMapping } from "@/components/types/PageFieldInfo";
+import { isJson } from "@/api/star_horse_utils";
+import {
+  allAction,
+  checkIsDisabled,
+  initCompCallEvent,
+} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import { SearchFields } from "@/components/types";
+import { getDynamicEvents } from "@/api/system";
 
 const props = defineProps({
   isDesign: {
@@ -122,7 +126,7 @@ onMounted(async () => {
     });
     inputPreps.searchFieldList = { fieldList: searchFieldList };
   }
-  initCompCallEvent(props,emits,formData);
+  initCompCallEvent(props, emits, formData);
 });
 </script>
 <template>

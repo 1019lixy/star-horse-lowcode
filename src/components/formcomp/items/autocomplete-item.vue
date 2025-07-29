@@ -18,11 +18,19 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, PropType, watch} from "vue";
-import {compDynamicData, createFilter, dynamicUrlOperation,} from "@/api/star_horse_utils";
-import {SearchParams} from "@/components/types/Params";
-import {allAction, checkIsDisabled, initCompCallEvent,} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import {getDynamicEvents} from "@/api/system";
+import { onMounted, PropType, watch } from "vue";
+import {
+  compDynamicData,
+  createFilter,
+  dynamicUrlOperation,
+} from "@/api/star_horse_utils";
+import { SearchParams } from "@/components/types/Params";
+import {
+  allAction,
+  checkIsDisabled,
+  initCompCallEvent,
+} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import { getDynamicEvents } from "@/api/system";
 
 const props = defineProps({
   isDesign: {
@@ -76,7 +84,7 @@ onMounted(() => {
     props.field.preps = {};
   }
   initData();
-  initCompCallEvent(props,emits,formData);
+  initCompCallEvent(props, emits, formData);
 });
 const querySearch = async (queryString: string, cb: (arg: any) => void) => {
   let temp = props.field.preps;

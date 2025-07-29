@@ -59,8 +59,19 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {computed, onBeforeMount, onMounted, PropType, ref, shallowRef,} from "vue";
-import {allAction, checkIsDisabled, initCompCallEvent,} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {
+  computed,
+  onBeforeMount,
+  onMounted,
+  PropType,
+  ref,
+  shallowRef,
+} from "vue";
+import {
+  allAction,
+  checkIsDisabled,
+  initCompCallEvent,
+} from "@/components/formcomp/utils/ItemRelationEventUtils";
 
 const props = defineProps({
   isDesign: {
@@ -153,7 +164,6 @@ onBeforeMount(() => {
   }
 });
 onMounted(() => {
-
   let val: any = formData.value[props.field.fieldName];
   if (typeof val === "string") {
     let data = val.split(splitName.value);
@@ -163,7 +173,7 @@ onMounted(() => {
     formData.value[minName.value] = Number(val[0]);
     formData.value[maxName.value] = Number(val[1]);
   }
-  initCompCallEvent(props,emits,formData);
+  initCompCallEvent(props, emits, formData);
 });
 </script>
 <style lang="scss" scoped>

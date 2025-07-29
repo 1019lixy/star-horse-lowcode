@@ -16,11 +16,14 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, PropType, shallowRef, watch} from "vue";
-import {compDynamicData} from "@/api/star_horse_utils";
-import {SelectOption} from "@/components/types/SearchProps";
-import {allAction, initCompCallEvent} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import {getDynamicEvents} from "@/api/system";
+import { onMounted, PropType, shallowRef, watch } from "vue";
+import { compDynamicData } from "@/api/star_horse_utils";
+import { SelectOption } from "@/components/types/SearchProps";
+import {
+  allAction,
+  initCompCallEvent,
+} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import { getDynamicEvents } from "@/api/system";
 
 const props = defineProps({
   isDesign: {
@@ -73,7 +76,7 @@ onMounted(() => {
     props.field.preps = {};
   }
   initData();
-  initCompCallEvent(props,emits,formData);
+  initCompCallEvent(props, emits, formData);
 });
 watch(
   () => formData.value[props.field.fieldName + "OptionList"],

@@ -44,11 +44,14 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {nextTick, PropType, shallowRef} from "vue";
-import {FieldMapping} from "@/components/types/PageFieldInfo";
-import {warning} from "@/utils/message";
-import {allAction, checkIsDisabled,} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import {getDynamicEvents} from "@/api/system";
+import { nextTick, PropType, shallowRef } from "vue";
+import { FieldMapping } from "@/components/types/PageFieldInfo";
+import { warning } from "@/utils/message";
+import {
+  allAction,
+  checkIsDisabled,
+} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import { getDynamicEvents } from "@/api/system";
 
 const props = defineProps({
   isDesign: {

@@ -36,10 +36,14 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, PropType, ref} from "vue";
+import { onMounted, PropType, ref } from "vue";
 import Crontab from "@/components/cron/Crontab.vue";
-import {allAction, checkIsDisabled, initCompCallEvent,} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import {getDynamicEvents} from "@/api/system";
+import {
+  allAction,
+  checkIsDisabled,
+  initCompCallEvent,
+} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import { getDynamicEvents } from "@/api/system";
 
 const props = defineProps({
   isDesign: {
@@ -101,7 +105,7 @@ const submit = () => {
 };
 resetForm();
 onMounted(() => {
-  initCompCallEvent(props,emits,formData);
+  initCompCallEvent(props, emits, formData);
 });
 </script>
 <style lang="scss" scoped>

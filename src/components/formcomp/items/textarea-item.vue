@@ -25,10 +25,14 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, PropType, shallowRef} from "vue";
-import {allAction, checkIsDisabled, initCompCallEvent,} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import { onMounted, PropType, shallowRef } from "vue";
+import {
+  allAction,
+  checkIsDisabled,
+  initCompCallEvent,
+} from "@/components/formcomp/utils/ItemRelationEventUtils";
 import EditDataDialog from "@/components/formcomp/utils/EditDataDialog.vue";
-import {getDynamicEvents} from "@/api/system";
+import { getDynamicEvents } from "@/api/system";
 
 const props = defineProps({
   isDesign: {
@@ -75,7 +79,7 @@ const handleContentConfirm = (newContent: string) => {
   formData.value[props.field.fieldName] = newContent;
 };
 onMounted(() => {
-  initCompCallEvent(props,emits,formData);
+  initCompCallEvent(props, emits, formData);
 });
 </script>
 <style scoped></style>

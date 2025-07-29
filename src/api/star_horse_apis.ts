@@ -85,7 +85,6 @@ export function getAxiosInstance() {
  * @param param 参数
  */
 export function download(url: string, param: any) {
-
   return new Promise((resolve, reject) => {
     getAxiosInstance()
       .post(url, param, { responseType: "blob" })
@@ -128,13 +127,17 @@ export function downloadData(data: any, name: string) {
 export async function blobData(url: string, method: string = "post") {
   let redata: any = null;
   if (method == "get") {
-    await getAxiosInstance().get(url, { responseType: "blob" }).then((res) => {
-      redata = new Blob([res.data]);
-    });
+    await getAxiosInstance()
+      .get(url, { responseType: "blob" })
+      .then((res) => {
+        redata = new Blob([res.data]);
+      });
   } else {
-    await getAxiosInstance().post(url, [], { responseType: "blob" }).then((res) => {
-      redata = new Blob([res.data]);
-    });
+    await getAxiosInstance()
+      .post(url, [], { responseType: "blob" })
+      .then((res) => {
+        redata = new Blob([res.data]);
+      });
   }
   return redata;
 }

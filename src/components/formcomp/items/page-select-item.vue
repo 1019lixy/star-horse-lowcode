@@ -1,14 +1,22 @@
 <script setup lang="ts">
-import {nextTick, onMounted, PropType, ref, shallowRef, watch} from "vue";
-import {PageProps} from "@/components/types/PageProps";
-import {closeLoad, createCondition, load} from "@/api/star_horse_utils";
-import {postRequest} from "@/api/star_horse_apis";
-import {FieldInfo, FieldMapping, OrderByInfo,} from "@/components/types/PageFieldInfo";
-import {SearchParams} from "@/components/types/Params";
-import {allAction, checkIsDisabled, initCompCallEvent,} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import {compKey, getDynamicEvents} from "@/api/system";
-import {warning} from "@/utils/message";
-import {SearchFields} from "@/components/types";
+import { nextTick, onMounted, PropType, ref, shallowRef, watch } from "vue";
+import { PageProps } from "@/components/types/PageProps";
+import { closeLoad, createCondition, load } from "@/api/star_horse_utils";
+import { postRequest } from "@/api/star_horse_apis";
+import {
+  FieldInfo,
+  FieldMapping,
+  OrderByInfo,
+} from "@/components/types/PageFieldInfo";
+import { SearchParams } from "@/components/types/Params";
+import {
+  allAction,
+  checkIsDisabled,
+  initCompCallEvent,
+} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import { compKey, getDynamicEvents } from "@/api/system";
+import { warning } from "@/utils/message";
+import { SearchFields } from "@/components/types";
 
 const props = defineProps({
   isDesign: {
@@ -234,7 +242,7 @@ onMounted(async () => {
     inputPreps.searchFieldList = { fieldList: searchFieldList };
   }
   loadByPage(true);
-  initCompCallEvent(props,emits,formData);
+  initCompCallEvent(props, emits, formData);
 });
 </script>
 <template>

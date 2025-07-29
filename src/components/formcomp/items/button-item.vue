@@ -50,13 +50,17 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts" name="buttonItem">
-import {onMounted, PropType, shallowRef, unref} from "vue";
-import {buttonAction, checkIsDisabled, initCompCallEvent,} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import {httpRequest} from "@/api/star_horse_apis";
-import {operationConfirm, warning} from "@/utils/message";
-import {BtnAction, DynamicParamField} from "@/components/types/BtnAction";
-import {SearchParams} from "@/components/types/Params";
-import {createCondition} from "@/api/star_horse_utils";
+import { onMounted, PropType, shallowRef, unref } from "vue";
+import {
+  buttonAction,
+  checkIsDisabled,
+  initCompCallEvent,
+} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import { httpRequest } from "@/api/star_horse_apis";
+import { operationConfirm, warning } from "@/utils/message";
+import { BtnAction, DynamicParamField } from "@/components/types/BtnAction";
+import { SearchParams } from "@/components/types/Params";
+import { createCondition } from "@/api/star_horse_utils";
 
 const props = defineProps({
   isDesign: {
@@ -214,7 +218,7 @@ const dynamicFunc = (code: any) => {
   }
 };
 onMounted(() => {
-  initCompCallEvent(props,emits,formData);
+  initCompCallEvent(props, emits, formData);
 });
 </script>
 <style lang="scss" scoped>

@@ -1,36 +1,44 @@
 <template>
   <starhorse-form-item
-      :showFormItem="showFormItem"
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :formItem="field"
-      :parentField="parentField"
+    :showFormItem="showFormItem"
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :bareFlag="bareFlag"
+    :formItem="field"
+    :parentField="parentField"
   >
     <el-select
-        :fid="field.fieldName"
-        :disabled="checkIsDisabled(props)"
-        v-bind="field.preps"
-        :remote-method="remoteMethod"
-        v-on="getDynamicEvents(props, itemAction)"
-        v-model="formData[field.fieldName]"
+      :fid="field.fieldName"
+      :disabled="checkIsDisabled(props)"
+      v-bind="field.preps"
+      :remote-method="remoteMethod"
+      v-on="getDynamicEvents(props, itemAction)"
+      v-model="formData[field.fieldName]"
     >
       <el-option
-          :disabled="items['disabled']"
-          :label="items[field.preps?.props?.label || 'name']"
-          :value="items[field.preps?.props?.value || 'value']"
-          :key="items[field.preps?.props?.value || 'value']"
-          v-for="items in field.preps?.values"
+        :disabled="items['disabled']"
+        :label="items[field.preps?.props?.label || 'name']"
+        :value="items[field.preps?.props?.value || 'value']"
+        :key="items[field.preps?.props?.value || 'value']"
+        v-for="items in field.preps?.values"
       />
     </el-select>
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, PropType, watch} from "vue";
-import {compDynamicData, createFilter, dynamicUrlOperation,} from "@/api/star_horse_utils";
-import {SearchParams} from "@/components/types/Params";
-import {allAction, checkIsDisabled, initCompCallEvent,} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import {getDynamicEvents} from "@/api/system";
+import { onMounted, PropType, watch } from "vue";
+import {
+  compDynamicData,
+  createFilter,
+  dynamicUrlOperation,
+} from "@/api/star_horse_utils";
+import { SearchParams } from "@/components/types/Params";
+import {
+  allAction,
+  checkIsDisabled,
+  initCompCallEvent,
+} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import { getDynamicEvents } from "@/api/system";
 
 const props = defineProps({
   isDesign: {
@@ -91,8 +99,8 @@ const remoteMethod = async (queryString: string) => {
     temp["values"] = await dynamicUrlOperation(temp, searchParams);
   } else {
     temp["values"] = queryString
-        ? temp["values"]?.filter(createFilter(queryString))
-        : temp["values"];
+      ? temp["values"]?.filter(createFilter(queryString))
+      : temp["values"];
   }
 };
 onMounted(() => {
@@ -100,22 +108,22 @@ onMounted(() => {
     props.field.preps = {};
   }
   props.field.preps["remote"] =
-      props.field.preps["remote"] || props.field.preps["dataSource"] == "url";
+    props.field.preps["remote"] || props.field.preps["dataSource"] == "url";
   props.field.preps["filterable"] = true;
   props.field.preps["collapseTags"] = true;
   initData();
   initCompCallEvent(props, emits, formData);
 });
 watch(
-    () => formData.value[props.field.fieldName + "OptionList"],
-    (val) => {
-      if (val?.length > 0) {
-        props.field.preps["values"] = val;
-      }
-    },
-    {
-      immediate: true,
-    },
+  () => formData.value[props.field.fieldName + "OptionList"],
+  (val) => {
+    if (val?.length > 0) {
+      props.field.preps["values"] = val;
+    }
+  },
+  {
+    immediate: true,
+  },
 );
 </script>
 <style lang="scss" scoped>

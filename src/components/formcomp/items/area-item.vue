@@ -17,11 +17,15 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {nextTick, onMounted, PropType, watch} from "vue";
-import {compDynamicData} from "@/api/star_horse_utils";
+import { nextTick, onMounted, PropType, watch } from "vue";
+import { compDynamicData } from "@/api/star_horse_utils";
 import areaData from "@/api/pcas-code.json";
-import {allAction, checkIsDisabled, initCompCallEvent,} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import {getDynamicEvents} from "@/api/system";
+import {
+  allAction,
+  checkIsDisabled,
+  initCompCallEvent,
+} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import { getDynamicEvents } from "@/api/system";
 
 const props = defineProps({
   isDesign: {
@@ -91,7 +95,7 @@ const initData = async () => {
 };
 onMounted(() => {
   initData();
-  initCompCallEvent(props,emits,formData);
+  initCompCallEvent(props, emits, formData);
 });
 watch(
   () => formData.value[props.field.fieldName + "OptionList"],

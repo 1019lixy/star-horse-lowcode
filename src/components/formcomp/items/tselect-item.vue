@@ -21,10 +21,14 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, PropType, watch} from "vue";
-import {compDynamicData} from "@/api/star_horse_utils";
-import {allAction, checkIsDisabled, initCompCallEvent,} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import {getDynamicEvents} from "@/api/system";
+import { onMounted, PropType, watch } from "vue";
+import { compDynamicData } from "@/api/star_horse_utils";
+import {
+  allAction,
+  checkIsDisabled,
+  initCompCallEvent,
+} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import { getDynamicEvents } from "@/api/system";
 
 const props = defineProps({
   isDesign: {
@@ -100,7 +104,7 @@ onMounted(() => {
     value: "value",
   };
   initData();
-  initCompCallEvent(props,emits,formData);
+  initCompCallEvent(props, emits, formData);
 });
 watch(
   () => formData.value[props.field.fieldName + "OptionList"],

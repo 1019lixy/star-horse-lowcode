@@ -19,7 +19,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, PropType, shallowRef, watch} from "vue";
+import { onMounted, PropType, shallowRef, watch } from "vue";
 
 const props = defineProps({
   isDesign: {

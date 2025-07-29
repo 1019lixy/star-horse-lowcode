@@ -1,80 +1,80 @@
 <template>
   <starhorse-form-item
-      :showFormItem="showFormItem"
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :formItem="field"
-      :parentField="parentField"
+    :showFormItem="showFormItem"
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :bareFlag="bareFlag"
+    :formItem="field"
+    :parentField="parentField"
   >
     <el-popover
-        :popper-style="{ width: 'inherit !important' }"
-        ref="popoverRef"
-        :placement="field.preps?.placement ?? 'bottom-start'"
-        :disabled="checkIsDisabled(props) || field.preps?.listView"
-        trigger="click"
+      :popper-style="{ width: 'inherit !important' }"
+      ref="popoverRef"
+      :placement="field.preps?.placement ?? 'bottom-start'"
+      :disabled="checkIsDisabled(props) || field.preps?.listView"
+      trigger="click"
     >
       <template #reference>
         <el-avatar
-            v-if="iconType == 'system'"
-            fit="fill"
-            shape="square"
-            :style="{
+          v-if="iconType == 'system'"
+          fit="fill"
+          shape="square"
+          :style="{
             'font-size': field.preps?.listView ? '22px' : '24px',
             background: field.preps?.listView
               ? 'unset'
               : 'var(--el-avatar-bg-color)',
           }"
-            :icon="formData[field.fieldName]"
+          :icon="formData[field.fieldName]"
         />
         <star-horse-icon
-            :icon-class="formData[field.fieldName]"
-            v-else
-            size="30px"
-            style="
+          :icon-class="formData[field.fieldName]"
+          v-else
+          size="30px"
+          style="
             color: var(--star-horse-style);
             border-radius: 3px;
             border: 1px solid var(--star-horse-light-gray);
           "
-            cursor="pointer"
+          cursor="pointer"
         />
       </template>
       <div class="icon-items">
         <div class="search-box">
           <el-input
-              v-model="searchName"
-              @keydown.enter="dataSearch"
-              clearable
-              placeholder="请输入要搜索的图标"
+            v-model="searchName"
+            @keydown.enter="dataSearch"
+            clearable
+            placeholder="请输入要搜索的图标"
           >
             <template #prefix>
-              <star-horse-icon icon-class="search" @click="dataSearch"/>
+              <star-horse-icon icon-class="search" @click="dataSearch" />
             </template>
           </el-input>
         </div>
         <ul class="system-icon">
           <li
-              v-for="sdata in iconList"
-              @click="assignIcon(sdata.value)"
-              :title="sdata.name"
-              :key="sdata.value"
-              :class="{ 'icon-active': sdata.value == formData[field.fieldName] }"
+            v-for="sdata in iconList"
+            @click="assignIcon(sdata.value)"
+            :title="sdata.name"
+            :key="sdata.value"
+            :class="{ 'icon-active': sdata.value == formData[field.fieldName] }"
           >
             <el-icon
-                class="star-icon"
-                style="font-size: 35px; color: var(--star-horse-style)"
-                v-if="iconType == 'system'"
+              class="star-icon"
+              style="font-size: 35px; color: var(--star-horse-style)"
+              v-if="iconType == 'system'"
             >
-              <component :is="sdata.value" :key="sdata.value + '_comp'"/>
+              <component :is="sdata.value" :key="sdata.value + '_comp'" />
             </el-icon>
             <star-horse-icon
-                :icon-class="sdata.value"
-                v-else
-                size="30px"
-                width="30px"
-                height="30px"
-                style="color: var(--star-horse-style)"
-                cursor="pointer"
+              :icon-class="sdata.value"
+              v-else
+              size="30px"
+              width="30px"
+              height="30px"
+              style="color: var(--star-horse-style)"
+              cursor="pointer"
             />
           </li>
         </ul>
@@ -83,11 +83,14 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, PropType, ref, shallowRef, unref, watch} from "vue";
-import {checkIsDisabled, initCompCallEvent,} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import { onMounted, PropType, ref, shallowRef, unref, watch } from "vue";
+import {
+  checkIsDisabled,
+  initCompCallEvent,
+} from "@/components/formcomp/utils/ItemRelationEventUtils";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
-import {compDynamicData} from "@/api/star_horse_utils";
+import { compDynamicData } from "@/api/star_horse_utils";
 
 const props = defineProps({
   isDesign: {
@@ -140,7 +143,7 @@ const dataSearch = () => {
   } else {
     iconList.value = allIconList.value.filter((item: any) => {
       return (
-          item.name.toLowerCase().indexOf(searchName.value.toLowerCase()) > -1
+        item.name.toLowerCase().indexOf(searchName.value.toLowerCase()) > -1
       );
     });
   }
@@ -163,10 +166,10 @@ onMounted(() => {
   initCompCallEvent(props, emits, formData);
 });
 watch(
-    () => formData.value[props.field.fieldName],
-    (newVal, oldVal) => {
-      itemAction("change");
-    }
+  () => formData.value[props.field.fieldName],
+  (newVal, oldVal) => {
+    itemAction("change");
+  },
 );
 </script>
 <style scoped>

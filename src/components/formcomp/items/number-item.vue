@@ -24,9 +24,13 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {nextTick, onMounted, PropType} from "vue";
-import {allAction, checkIsDisabled, initCompCallEvent,} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import {getDynamicEvents} from "@/api/system";
+import { nextTick, onMounted, PropType } from "vue";
+import {
+  allAction,
+  checkIsDisabled,
+  initCompCallEvent,
+} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import { getDynamicEvents } from "@/api/system";
 
 defineOptions({
   name: "NumberItem",
@@ -78,7 +82,7 @@ onMounted(() => {
   props.field.preps["step"] = props.field.preps["step"] || 1;
   props.field.preps["min"] = props.field.preps["min"] || 0;
   props.field.preps["precision"] = props.field.preps["precision"] || 0;
-  initCompCallEvent(props,emits,formData);
+  initCompCallEvent(props, emits, formData);
 
   initEvent();
 });

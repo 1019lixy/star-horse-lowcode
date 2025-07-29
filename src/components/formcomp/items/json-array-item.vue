@@ -13,8 +13,11 @@
   />
 </template>
 <script setup lang="ts">
-import {onMounted, PropType} from "vue";
-import {allAction, initCompCallEvent} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import { onMounted, PropType } from "vue";
+import {
+  allAction,
+  initCompCallEvent,
+} from "@/components/formcomp/utils/ItemRelationEventUtils";
 
 const props = defineProps({
   isDesign: {
@@ -58,7 +61,7 @@ onMounted(() => {
   if (!props.field.preps) {
     props.field.preps = {};
   }
-  initCompCallEvent(props,emits,formData);
+  initCompCallEvent(props, emits, formData);
 });
 </script>
 <style lang="scss" scoped></style>

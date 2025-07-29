@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import {nextTick, onMounted, onUpdated, PropType, ref, shallowRef} from "vue";
+import { nextTick, onMounted, onUpdated, PropType, ref, shallowRef } from "vue";
 import SmoothSignature from "smooth-signature";
-import {warning} from "@/utils/message";
+import { warning } from "@/utils/message";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 

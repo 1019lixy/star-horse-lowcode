@@ -11,8 +11,8 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts" name="audioItem">
-import {onMounted, PropType, ref} from "vue";
-import {blobData} from "@/api/star_horse_apis";
+import { onMounted, PropType, ref } from "vue";
+import { blobData } from "@/api/star_horse_apis";
 
 const props = defineProps({
   isDesign: {

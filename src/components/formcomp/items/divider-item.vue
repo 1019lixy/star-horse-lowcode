@@ -17,9 +17,9 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, PropType} from "vue";
-import {allAction} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import {getDynamicEvents} from "@/api/system";
+import { onMounted, PropType } from "vue";
+import { allAction } from "@/components/formcomp/utils/ItemRelationEventUtils";
+import { getDynamicEvents } from "@/api/system";
 
 const props = defineProps({
   isDesign: {

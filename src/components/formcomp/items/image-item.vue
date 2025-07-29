@@ -141,9 +141,9 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, PropType, shallowRef} from "vue";
-import {initCompCallEvent} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import {getToken} from "@/utils/auth";
+import { onMounted, PropType, shallowRef } from "vue";
+import { initCompCallEvent } from "@/components/formcomp/utils/ItemRelationEventUtils";
+import { getToken } from "@/utils/auth";
 
 const props = defineProps({
   isDesign: {
@@ -207,7 +207,7 @@ const selfAction = (
   emits("selfFunc", prep, uploadFile, uploadFiles, param);
 };
 onMounted(() => {
-  initCompCallEvent(props,emits,formData);
+  initCompCallEvent(props, emits, formData);
 });
 </script>
 <style lang="scss" scoped>

@@ -131,7 +131,7 @@ export function load(msg: string, defaultTarget?: string) {
     lock: true,
     target: defaultTarget ?? "#app",
     text: msg || "Loading...",
-    customClass:"star-horse-loading",
+    customClass: "star-horse-loading",
     background: "rgba(0, 0, 0, 0.7)",
   });
 }

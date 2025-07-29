@@ -62,9 +62,13 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {getDynamicEvents} from "@/api/system";
-import {allAction, checkIsDisabled, initCompCallEvent,} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import {computed, nextTick, onMounted, PropType, ref} from "vue";
+import { getDynamicEvents } from "@/api/system";
+import {
+  allAction,
+  checkIsDisabled,
+  initCompCallEvent,
+} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import { computed, nextTick, onMounted, PropType, ref } from "vue";
 
 defineOptions({
   name: "InputItem",
@@ -125,7 +129,7 @@ const editContent = () => {
   dialogInputVisible.value = true;
 };
 onMounted(() => {
-  initCompCallEvent(props,emits,formData);
+  initCompCallEvent(props, emits, formData);
   initEvent();
 });
 </script>
