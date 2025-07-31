@@ -11,7 +11,6 @@ import { Ref } from "vue";
 import { createCondition } from "@/api/star_horse_utils";
 import { success, warning } from "@/utils/message";
 import { UserFuncInfo } from "@/components/types/PageFieldInfo";
-import { useRouter } from "vue-router";
 
 /**
  * 动态表单用户自定义驱动
@@ -118,7 +117,7 @@ export function userAction(
         warning("暂未实现");
       } else if (item["eventType"] == "page") {
         //打开页面
-        let router = useRouter() && window.__hostRouter__;
+        let router = window.__hostRouter__;
         item["funcName"] = (row: any) => {
           router.push({
             path: content,

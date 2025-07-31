@@ -44,7 +44,6 @@ import {
   unref,
   watch,
 } from "vue";
-import { useRoute } from "vue-router";
 
 const dynamicForm = useDynamicFormStore(piniaInstance);
 const props = defineProps({
@@ -121,7 +120,6 @@ const props = defineProps({
   btnPermissions: { type: Object as PropType<any>, required: false },
 });
 const emits = defineEmits(["selectItem"]);
-const route = useRoute();
 let pagePermission = useButtonPermissionStore(piniaInstance);
 let configStore = useGlobalConfigStore(piniaInstance);
 let permissions = ref<any>({});
@@ -251,7 +249,7 @@ const init = async () => {
   if (props.btnPermissions && Object.keys(props.btnPermissions).length > 0) {
     permissions.value = props.btnPermissions;
   } else {
-    permissions.value = await pagePermission.addRoute(route);
+    permissions.value = await pagePermission.addRoute(window.__hostRouter__?.currentRoute.value);
   }
 
   //是否初始化时自动加载列表数据开关
