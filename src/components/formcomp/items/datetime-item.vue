@@ -87,7 +87,6 @@ onBeforeMount(() => {
 onMounted(() => {
   //后面增加判断规则
   props.field.preps["disabledDate"] = (date: Date) => {
-    console.log(disabledDate.value, date.getDate());
     return disabledDate.value.includes(date.getDate().toString());
   };
   initCompCallEvent(props, emits, formData);
