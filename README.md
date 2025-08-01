@@ -318,3 +318,4 @@ barcode        条形码组件
                以满足使用者自定义接口需配置的header参数
 30. 2025-07-28 修复StarHorseTableColumn 组件在点击单元格编辑数据时(需要在PageFieldInfo中将cellEditable设置为true)，不切换为对应的组件问题
 31. 2025-07-29 修复StarHorseSearchComp 更多查询时,输入框 没有匹配模式异常
+32. 2025-08-01 修复page-select-item 显示问题，优化StarHorseFormList 组件弹窗模式添加行时增加提交并继续按钮

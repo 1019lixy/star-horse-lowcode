@@ -150,21 +150,87 @@ const getRowIdentity = (row: any) => {
   return row[props.field.preps?.primaryKey];
 };
 const handleSelectionChange = (val: any) => {
-  multipleSelection.value = val;
+  //multipleSelection.value = val;
+  if (!props.field.preps?.multiple) {
+    if (val.length <= 1) {
+      multipleSelection.value = val;
+    } else {
+      let keys: any = props.field.preps?.primaryKey;
+      if (Array.isArray(keys)) {
+        let arr: any = [];
+        for (let index in multipleSelection.value) {
+          let temp = multipleSelection.value[index];
+          let temp1: any = {};
+          for (let key of keys) {
+            temp1[key] = temp[key];
+          }
+          arr.push(temp1);
+        }
+        let filters: Array<any> = [];
+        for (let index in val) {
+          let temp = val[index];
+          for (let sindex in arr) {
+            let stemp = arr[sindex];
+            let bflag: number = 0;
+            for (let skey in stemp) {
+              if (temp.hasOwnProperty(skey) && stemp[skey] == temp[skey]) {
+                bflag++;
+              }
+            }
+            //如果不相等说明没有相同数据了
+            if (bflag != Object.keys(stemp).length) {
+              filters.push(temp);
+            }
+          }
+        }
+        multipleSelection.value = filters;
+      } else {
+        let ids = multipleSelection.value.map(
+            (item: any) => item[keys],
+        ) as Array<any>;
+        multipleSelection.value = val.filter(
+            (item: any) => !ids.includes(item[keys]),
+        );
+      }
+      let data = multipleSelection.value[0];
+      starHorseTableCompRef.value.toggleRowSelection(data, true);
+    }
+  } else {
+    multipleSelection.value = val;
+  }
   assignVal();
 };
 const selectRow = (row: any, _column: any, _evt: any) => {
+  if (multipleSelection.value?.length > 0) {
+    for (let valueElement of multipleSelection.value) {
+      starHorseTableCompRef.value.toggleRowSelection(valueElement);
+    }
+  }
   const selected = multipleSelection.value.some(
       (item: any) =>
           item[props.field.preps?.primaryKey] ===
           row[props.field.preps?.primaryKey],
   );
   if (!selected) {
-    multipleSelection.value.push(row);
+    // 单选模式下替换选中项
+    if (!props.field.preps?.multiple) {
+      multipleSelection.value = [row];
+    } else {
+      multipleSelection.value.push(row);
+    }
     starHorseTableCompRef.value.toggleRowSelection(row);
   } else {
+    multipleSelection.value = multipleSelection.value.filter(
+        (item: any) =>
+            item[props.field.preps?.primaryKey] !==
+            row[props.field.preps?.primaryKey]
+    );
     starHorseTableCompRef.value.toggleRowSelection(row, false);
   }
+
+  //如果是弹出选择，没有指定多选 只能选择一条数据
+
+
   assignVal();
 };
 const loadSourceField = (aliasFirst: boolean = true) => {
@@ -253,6 +319,15 @@ onMounted(async () => {
         v-on="getDynamicEvents(props, itemAction)"
         v-model="formData[field.fieldName]"
     >
+      <!-- 新增显示选中项标签 -->
+      <template v-if="!field.preps?.multiple&&field.preps?.displayField" #label>
+        {{ multipleSelection[0]?.[`${field.preps?.displayField}`]??formData[field.fieldName]}}
+      </template>
+      <template v-if="field.preps?.multiple&&field.preps?.displayField" #tag>
+        <span v-for="item in multipleSelection" :key="item[field.preps?.primaryKey]">
+          {{ item[field.preps?.displayField] }}
+        </span>
+      </template>
       <template #empty>
         <el-card class="inner_content" style="margin: 5px">
           <star-horse-search-comp

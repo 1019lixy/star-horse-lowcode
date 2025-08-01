@@ -154,6 +154,7 @@ onMounted(async () => {
           cellEditable: false,
           fieldList: field.preps?.['fieldList'],
         }"
+
         :primaryKey="field.preps?.['primaryKey']"
         :compUrl="field.preps?.['dataUrl']"
         ref="dialogInputTableRef"
