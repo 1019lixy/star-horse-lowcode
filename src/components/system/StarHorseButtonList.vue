@@ -11,7 +11,7 @@ import piniaInstance from "@/store";
 import {useGlobalConfigStore} from "@/store/GlobalConfig";
 import {getToken} from "@/utils/auth";
 import {error, warning} from "@/utils/message";
-import {computed, onMounted, onUpdated, PropType, ref} from "vue";
+import {computed, onMounted, PropType, ref} from "vue";
 
 const props = defineProps({
   dialogProps: {type: Object as PropType<DialogProps>, required: true},
@@ -113,11 +113,13 @@ const uploadSuccess = (_response: any, _file: any, _fileList: any) => {
   //closeLoad();
   tableCompFunc("refresh");
 };
-let buttonList = ref<UserFuncInfo[] | any>([]);
+const buttonList = computed(() => {
+  return extendBtnFunction();
+});
 /**
  * 扩展按钮
  */
-const extendBtnFunction = (): Array<UserFuncInfo> => {
+const extendBtnFunction = (): Array<UserFuncInfo> | any => {
   let arr: Array<UserFuncInfo | any> = [];
   if (props.viewFlag) {
     return arr;
@@ -201,119 +203,126 @@ const extendBtnFunction = (): Array<UserFuncInfo> => {
 const setFormData = (val: any) => {
   dataForm.value = {...val};
 };
+/**
+ * 获取授权按钮长度
+ */
+const authBtnLength = () => {
+  const result = buttonList.value.filter((item) => permissions.value[item.authority]) || [];
+  return result.length;
+};
 const init = async () => {
 };
 onMounted(() => {
   init();
-});
-onUpdated(() => {
-  buttonList.value = extendBtnFunction();
 });
 defineExpose({
   setFormData,
 });
 </script>
 <template>
-  <ul class="inner_button" v-if="showType == 'line' && Object.keys(permissions || {}).length > 0">
-    <template v-for="(item, key) in buttonList" :key="compKey(item, key)">
-      <template v-if="item.children?.length > 0">
-        <el-dropdown :size="compSize" split-button style="
-            background: var(--star-horse-style);
-            color: var(--star-horse-white);
-          " placement="top-start" v-if="permissions[item.authority]">
-          <star-horse-icon :icon-class="item.icon" size="18px"/>
-          {{ item.btnName }}
-          <template #dropdown>
-            <el-dropdown-menu>
-              <template v-for="(sitem, skey) in item.children" :key="compKey(sitem, skey)">
-                <el-dropdown-item v-if="permissions[sitem.authority]" @click="sitem.funcName(sitem.btnName)">
-                  <star-horse-icon :icon-class="item.icon || 'edit'" size="18px" :color="item.authority == 'delete' ||
-                    item.authority == 'batchDelete'
-                    ? '#f56c6c'
-                    : 'var(--star-horse-style)'
-                    "/>
-                  {{ sitem.btnName }}
-                  <help :message="sitem.helpMsg" v-if="sitem.helpMsg"/>
-                </el-dropdown-item>
+  <template v-if="showType == 'dropdown' && Object.keys(permissions || {}).length > 0&&authBtnLength()>3">
+    <el-menu mode="horizontal" :ellipsis="false">
+      <el-sub-menu index="1">
+        <template #title>
+          <el-tooltip content="操作" placement="top">
+            <star-horse-icon icon-class="operation" size="16px" cursor="pointer"/>
+          </el-tooltip>
+        </template>
+        <template v-for="(item, index) in buttonList" :key="compKey(item, index)">
+          <template v-if="item.children?.length > 0">
+            <el-sub-menu :index="'2-' + index" v-if="permissions[item.authority]">
+              <template #title>
+                {{ item.btnName }}
               </template>
-            </el-dropdown-menu>
-          </template>
-        </el-dropdown>
-      </template>
-      <template v-else>
-        <li v-if="permissions[item.authority] && item.authority == 'upload'">
-          <el-upload :auto-upload="true" :on-change="upload" :on-error="uploadError" :on-progress="uploadProcess"
-                     :on-success="uploadSuccess" :show-file-list="false" accept=".xls,.xlsx"
-                     :before-upload="beforeUpload"
-                     :action="compUrl?.importUrl" :headers="{ token: getToken() }" class="upload" name="file"
-                     title="导入">
-            <star-horse-icon title="导入" width="27px" size="18px" icon-class="excel-upload"/>
-          </el-upload>
-        </li>
-        <li v-else @click="item.funcName(item.authority)" :title="item.btnName">
-          <star-horse-icon :icon-class="item.icon || 'edit'" :title="item.btnName" size="18px" width="27px" :color="item.authority == 'delete' || item.authority == 'batchDelete'
-            ? '#f56c6c'
-            : 'var(--star-horse-style)'
-            "/>
-          <help :message="item.helpMsg" v-if="item.helpMsg"/>
-        </li>
-      </template>
-    </template>
-  </ul>
-  <el-menu mode="horizontal" :ellipsis="false"
-           v-if="showType == 'dropdown' && Object.keys(permissions || {}).length > 0">
-    <el-sub-menu index="1">
-      <template #title>
-        <el-tooltip content="操作" placement="top">
-          <star-horse-icon icon-class="operation" size="16px" cursor="pointer"/>
-        </el-tooltip>
-      </template>
-      <template v-for="(item, index) in buttonList" :key="compKey(item, index)">
-        <template v-if="item.children?.length > 0">
-          <el-sub-menu :index="'2-' + index" v-if="permissions[item.authority]">
-            <template #title>
-              {{ item.btnName }}
-            </template>
-            <template v-for="(sitem, sindex) in item.children" :key="compKey(sitem, sindex)">
-              <el-menu-item :index="'3-' + index + '-' + sindex" @click="sitem.funcName(sitem.authority)"
-                            v-if="permissions[sitem.authority]">
-                <star-horse-icon :icon-class="item.icon || 'edit'" :color="item.authority == 'delete' ||
+              <template v-for="(sitem, sindex) in item.children" :key="compKey(sitem, sindex)">
+                <el-menu-item :index="'3-' + index + '-' + sindex" @click="sitem.funcName(sitem.authority)"
+                              v-if="permissions[sitem.authority]">
+                  <star-horse-icon :icon-class="item.icon || 'edit'" :color="item.authority == 'delete' ||
                   item.authority == 'batchDelete'
                   ? 'var(--el-style-danger)'
                   : 'var(--star-horse-style)'
                   " size="14px"/>
-                {{ sitem.btnName }}
-                <help :message="sitem.helpMsg" v-if="sitem.helpMsg"/>
-              </el-menu-item>
-            </template>
-          </el-sub-menu>
-        </template>
-        <template v-else>
-          <el-menu-item :index="'1-' + index" v-if="permissions[item.authority]">
-            <el-upload :auto-upload="true" :on-change="upload" :on-error="uploadError" :on-progress="uploadProcess"
-                       :on-success="uploadSuccess" :show-file-list="false" accept=".xls,.xlsx"
-                       :before-upload="beforeUpload"
-                       :action="compUrl?.importUrl" :headers="{ token: getToken() }"
-                       class="upload flex items-center w-[100%]"
-                       name="file" v-if="item.authority == 'upload'">
-              <div class="flex items-center w-[100%]">
-                <star-horse-icon icon-class="excel-upload" size="14px"/>
-                {{ item.btnName }}
-              </div>
-            </el-upload>
-            <div class="flex items-center w-[100%]" @click="item.funcName(item.authority)" v-else>
-              <star-horse-icon :icon-class="item.icon || 'edit'" :color="item.authority == 'delete' || item.authority == 'batchDelete'
+                  {{ sitem.btnName }}
+                  <help :message="sitem.helpMsg" v-if="sitem.helpMsg"/>
+                </el-menu-item>
+              </template>
+            </el-sub-menu>
+          </template>
+          <template v-else>
+            <el-menu-item :index="'1-' + index" v-if="permissions[item.authority]">
+              <el-upload :auto-upload="true" :on-change="upload" :on-error="uploadError" :on-progress="uploadProcess"
+                         :on-success="uploadSuccess" :show-file-list="false" accept=".xls,.xlsx"
+                         :before-upload="beforeUpload"
+                         :action="compUrl?.importUrl" :headers="{ token: getToken() }"
+                         class="upload flex items-center w-[100%]"
+                         name="file" v-if="item.authority == 'upload'">
+                <div class="flex items-center w-[100%]">
+                  <star-horse-icon icon-class="excel-upload" size="14px"/>
+                  {{ item.btnName }}
+                </div>
+              </el-upload>
+              <div class="flex items-center w-[100%]" @click="item.funcName(item.authority)" v-else>
+                <star-horse-icon :icon-class="item.icon || 'edit'" :color="item.authority == 'delete' || item.authority == 'batchDelete'
                 ? 'var(--el-color-danger)'
                 : 'var(--star-horse-style)'
                 " size="14px"/>
-              {{ item.btnName }}
-              <help :message="item.helpMsg" v-if="item.helpMsg"/>
-            </div>
-          </el-menu-item>
+                {{ item.btnName }}
+                <help :message="item.helpMsg" v-if="item.helpMsg"/>
+              </div>
+            </el-menu-item>
+          </template>
+        </template>
+      </el-sub-menu>
+    </el-menu>
+  </template>
+  <template v-else-if="Object.keys(permissions || {}).length > 0">
+    <ul class="inner_button">
+      <template v-for="(item, key) in buttonList" :key="compKey(item, key)">
+        <template v-if="item.children?.length > 0">
+          <el-dropdown :size="compSize" split-button style="
+            background: var(--star-horse-style);
+            color: var(--star-horse-white);
+          " placement="top-start" v-if="permissions[item.authority]">
+            <star-horse-icon :icon-class="item.icon" size="18px"/>
+            {{ item.btnName }}
+            <template #dropdown>
+              <el-dropdown-menu>
+                <template v-for="(sitem, skey) in item.children" :key="compKey(sitem, skey)">
+                  <el-dropdown-item v-if="permissions[sitem.authority]" @click="sitem.funcName(sitem.btnName)">
+                    <star-horse-icon :icon-class="item.icon || 'edit'" size="18px" :color="item.authority == 'delete' ||
+                    item.authority == 'batchDelete'
+                    ? '#f56c6c'
+                    : 'var(--star-horse-style)'
+                    "/>
+                    {{ sitem.btnName }}
+                    <help :message="sitem.helpMsg" v-if="sitem.helpMsg"/>
+                  </el-dropdown-item>
+                </template>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+        </template>
+        <template v-else>
+          <li v-if="permissions[item.authority] && item.authority == 'upload'">
+            <el-upload :auto-upload="true" :on-change="upload" :on-error="uploadError" :on-progress="uploadProcess"
+                       :on-success="uploadSuccess" :show-file-list="false" accept=".xls,.xlsx"
+                       :before-upload="beforeUpload"
+                       :action="compUrl?.importUrl" :headers="{ token: getToken() }" class="upload" name="file"
+                       title="导入">
+              <star-horse-icon title="导入" width="27px" size="18px" icon-class="excel-upload"/>
+            </el-upload>
+          </li>
+          <li v-else-if="permissions[item.authority]" @click="item.funcName(item.authority)" :title="item.btnName">
+            <star-horse-icon :icon-class="item.icon || 'edit'" :title="item.btnName" size="18px" width="27px" :color="item.authority == 'delete' || item.authority == 'batchDelete'
+            ? '#f56c6c'
+            : 'var(--star-horse-style)'
+            "/>
+            <help :message="item.helpMsg" v-if="item.helpMsg"/>
+          </li>
         </template>
       </template>
-    </el-sub-menu>
-  </el-menu>
+    </ul>
+  </template>
 </template>
 <style lang="scss" scoped>
 :deep(.el-tooltip__trigger:focus-visible) {

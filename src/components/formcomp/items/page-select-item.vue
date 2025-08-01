@@ -44,9 +44,6 @@ const props = defineProps({
 });
 const emits = defineEmits(["selfFunc", "selectItem"]);
 const formData = defineModel("formData");
-
-// let formData = context.attrs["formData"] as any;
-
 const starHorseTableCompRef = ref();
 const filterCondition = ref<Array<SearchParams>>([]);
 
@@ -127,10 +124,6 @@ const loadByPage = (isInit: boolean = false) => {
         pageInfo.value.dataList = redata?.dataList;
         pageInfo.value.totalPage = redata?.totalPages;
         pageInfo.value.totalData = redata?.totalDatas;
-        // if (isInit) {
-        //   let name = loadSourceField(false);
-        //   formData[field.preps["name"]] = redata.dataList?.map((item: any) => item[name]);
-        // }
       })
       .catch((err) => {
         console.log(err);
