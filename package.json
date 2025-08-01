@@ -71,7 +71,7 @@
     "element-plus": "^2.10.4",
     "jquery": "^3.7.1",
     "json5": "^2.2.3",
-    "md-editor-v3": "^5.8.3",
+    "md-editor-v3": "^5.8.4",
     "path": "^0.12.7",
     "pinia": "^3.0.3",
     "eslint-config-prettier": "^10.1.8",

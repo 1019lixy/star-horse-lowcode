@@ -701,9 +701,6 @@ const extendBtnFunction = (): Array<UserFuncInfo> => {
 };
 // 修改后
 const buttonList = computed(() => extendBtnFunction());
-// const toolbarButtonList = computed(() =>
-//     buttonList.value.filter((item) => item.position === "toolbar") || []
-// );
 /**
  * 扩展表的操作
  * @param name 事件条件
@@ -800,15 +797,7 @@ const getSelectedDatas = () => {
 onMounted(() => {
   init();
 });
-// onUpdated(() => {
-//   if (
-//       JSON.stringify(buttonList.value) !== JSON.stringify(extendBtnFunction())
-//   ) {
-//     buttonList.value = extendBtnFunction();
-//     toolbarButtonList.value =
-//         buttonList.value.filter((item) => item.position == "toolbar") || [];
-//   }
-// });
+
 //导出方法和变量
 defineExpose({
   init,
