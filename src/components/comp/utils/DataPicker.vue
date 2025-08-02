@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { useVModel } from "@vueuse/core";
-import { reactive, ref, watch } from "vue";
-import { postRequest } from "@/api/star_horse_apis";
+import {useVModel} from "@vueuse/core";
+import {reactive, ref, watch} from "vue";
+import {postRequest} from "@/api/star_horse_apis";
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
-import { closeLoad } from "@/api/star_horse_utils";
-import { PageProps } from "@/components/types/PageProps";
+import {closeLoad} from "@/api/star_horse_utils";
+import {PageProps} from "@/components/types/PageProps";
 
 export type ModelValueType = any;
 
@@ -48,12 +48,12 @@ const orgTreeRef = ref<InstanceType<any>>();
 const expandedKeys = ref<string[]>([]);
 
 const renderClass = (
-  data: any,
+    data: any,
 ):
-  | string
-  | {
-      [key: string]: boolean;
-    } => {
+    | string
+    | {
+  [key: string]: boolean;
+} => {
   let value = props.displayValue || "value";
   const val = dataOptions.value.find((e) => e[value] === data[value]);
   if (val) {
@@ -89,10 +89,10 @@ const queryForm = reactive({
 });
 
 watch(
-  () => queryForm.name,
-  (val) => {
-    orgTreeRef.value?.filter(val);
-  },
+    () => queryForm.name,
+    (val) => {
+      orgTreeRef.value?.filter(val);
+    },
 );
 const filterNode = (value: string, data: any): boolean => {
   if (!value) return true;
@@ -113,23 +113,23 @@ const loadData = () => {
     orderBy: [],
   };
   postRequest(props.dataUrl!, params)
-    .then((res) => {
-      if (res?.data?.code) {
-        res && console.error(res?.data?.cnMessage);
-        return;
-      }
-      let redata = res?.data?.data;
-      //如果不是分页之间显示返回的所有数据
-      dataOrgOptions.value = redata?.dataList || redata;
-      pageInfo.totalPage = redata?.totalPages;
-      pageInfo.totalData = redata?.totalDatas;
-    })
-    .catch((err: any) => {
-      console.log(err);
-    })
-    .finally(() => {
-      closeLoad();
-    });
+      .then((res) => {
+        if (res?.data?.code) {
+          res && console.error(res?.data?.cnMessage);
+          return;
+        }
+        let redata = res?.data?.data;
+        //如果不是分页之间显示返回的所有数据
+        dataOrgOptions.value = redata?.dataList || redata;
+        pageInfo.totalPage = redata?.totalPages;
+        pageInfo.totalData = redata?.totalDatas;
+      })
+      .catch((err: any) => {
+        console.log(err);
+      })
+      .finally(() => {
+        closeLoad();
+      });
 };
 const open = () => {
   dialogVisible.value = true;
@@ -183,65 +183,69 @@ defineExpose({
 
 <template>
   <star-horse-dialog
-    :self-func="true"
-    :dialog-visible="dialogVisible"
-    :hideFullScreenIcon="true"
-    @open="onOpen"
-    @merge="handelConfirm"
-    @resetForm="resetData"
-    @closeAction="dialogVisible = false"
-    draggable
-    :title="title || '选择数据'"
-    boxWidth="30%"
+      :self-func="true"
+      :dialog-visible="dialogVisible"
+      :hideFullScreenIcon="true"
+      @open="onOpen"
+      @merge="handelConfirm"
+      @resetForm="resetData"
+      @closeAction="dialogVisible = false"
+      draggable
+      :title="title || '选择数据'"
+      boxWidth="30%"
   >
     <el-card shadow="never" class="org-card dialog-body">
       <template #header>
         <el-input
-          v-model="queryForm.name"
-          placeholder="输入关键字进行查询"
-          :style="{ width: '100%' }"
-          suffix-icon="search"
-          clearable
+            v-model="queryForm.name"
+            placeholder="输入关键字进行查询"
+            :style="{ width: '100%' }"
+            suffix-icon="search"
+            clearable
         >
         </el-input>
       </template>
 
       <el-scrollbar tag="div" class="org-tree">
         <el-tree
-          ref="orgTreeRef"
-          :node-key="displayValue"
-          :data="dataOrgOptions"
-          :default-expanded-keys="expandedKeys"
-          :props="treeProps"
-          :check-strictly="checkStrictly"
-          :filter-node-method="filterNode"
-          @node-click="onNodeClick"
+            ref="orgTreeRef"
+            :node-key="displayValue"
+            :data="dataOrgOptions"
+            :default-expanded-keys="expandedKeys"
+            :props="treeProps"
+            :check-strictly="checkStrictly"
+            :filter-node-method="filterNode"
+            @node-click="onNodeClick"
         >
           <template #default="{ data }">
             <div class="data-line">
-              <div class="flex-center">
-                <el-icon :size="16">
-                  <School />
-                </el-icon>
-                &nbsp;{{ data[displayName] }}
+              <div class="menu-title">
+                <div class=" flex flex-row items-center">
+                  <star-horse-icon
+                      :icon-class="
+                    data.children?.length > 0 ? 'folder' : 'document'
+                  "
+                  />
+                  &nbsp;{{ data[displayName] }}
+                </div>
               </div>
               <el-icon class="is-selected">
-                <Check />
+                <Check/>
               </el-icon>
             </div>
           </template>
         </el-tree>
       </el-scrollbar>
       <el-pagination
-        v-if="pageSize > 0"
-        :total="pageInfo.totalData"
-        @current-change="pageChangeClick"
-        @size-change="pageSizeClick"
-        :size="compSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        v-model:currentPage="pageInfo.currentPage"
-        v-model:page-size="pageInfo.pageSize"
-        v-model:pageCount="pageInfo.totalPage"
+          v-if="pageSize > 0"
+          :total="pageInfo.totalData"
+          @current-change="pageChangeClick"
+          @size-change="pageSizeClick"
+          :size="compSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          v-model:currentPage="pageInfo.currentPage"
+          v-model:page-size="pageInfo.pageSize"
+          v-model:pageCount="pageInfo.totalPage"
       />
     </el-card>
   </star-horse-dialog>
