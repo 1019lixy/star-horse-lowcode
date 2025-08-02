@@ -244,8 +244,6 @@ const init = async () => {
   }
   moveColumn();
   reCreateData();
-  // await nextTick();
-  // showType("list");
 };
 //监听外面传入数据的变化
 watch(
@@ -534,8 +532,12 @@ const createParams = () => {
 };
 /**
  * 分页显示数据
+ * @param initPageInfo 是否初始化分页信息
  */
-const loadByPage = () => {
+const loadByPage = (initPageInfo?: boolean) => {
+  if (initPageInfo) {
+    pageInfo.value = {...baseInfo};
+  }
   let url: string = props.compUrl?.pageListUrl as string;
   let params: any = createParams();
   if (props.compUrl?.redirect) {
