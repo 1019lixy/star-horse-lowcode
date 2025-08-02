@@ -110,13 +110,14 @@ let compSize = computed(
 );
 const multipleSelection = ref<any>([]);
 const starHorseTableCompRef = ref();
-let pageInfo = reactive<PageProps>({
+const baseInfo: PageProps = {
   pageSize: 20,
   currentPage: 1,
   totalData: 0,
   totalPage: 0,
   dataList: [],
-});
+}
+let pageInfo = ref<PageProps>({});
 let searchFields = reactive<Array<SearchParams>>([]);
 let orderBys = reactive<Array<OrderByInfo>>([]);
 let fieldVisible = ref<boolean>(false);
@@ -223,17 +224,17 @@ const permissionList = () => {
   return permissions.value;
 };
 const init = async () => {
+  pageInfo.value = {...baseInfo};
   if (props.btnPermissions && Object.keys(props.btnPermissions).length > 0) {
     permissions.value = props.btnPermissions;
   } else {
     permissions.value = await pagePermission.addRoute(window.__hostRouter__?.currentRoute.value);
   }
-
   //是否初始化时自动加载列表数据开关
   if (!props.fieldList?.stopAutoLoad) {
     loadByPage();
   } else {
-    pageInfo.dataList = props.tableDataList || [];
+    pageInfo.value.dataList = props.tableDataList || [];
     starHorseTableCompRef.value!.clearSelection();
     //如果有需要回显的数据则需要选中
     //在手动设置选中前,一定要先做清除选中,否则会出现很多重复被选中的情况
@@ -251,7 +252,7 @@ watch(
     () => props.tableDataList,
     (val) => {
       if (props.fieldList?.stopAutoLoad) {
-        pageInfo.dataList = val;
+        pageInfo.value.dataList = val;
       }
     },
     {deep: true, immediate: false},
@@ -486,11 +487,11 @@ const deleteById = async (id: any, isExpand: boolean = false) => {
   }
 };
 const pageSizeClick = (pageSize: number) => {
-  pageInfo.pageSize = pageSize;
+  pageInfo.value.pageSize = pageSize;
   loadByPage();
 };
 const pageChangeClick = (currentPage: number) => {
-  pageInfo.currentPage = currentPage;
+  pageInfo.value.currentPage = currentPage;
   loadByPage();
 };
 //弹出选择框属性名称
@@ -524,8 +525,8 @@ const createParams = () => {
     return;
   }
   let params: any = {
-    currentPage: pageInfo.currentPage,
-    pageSize: pageInfo.pageSize,
+    currentPage: pageInfo.value.currentPage,
+    pageSize: pageInfo.value.pageSize,
     fieldList: searchTemp,
     orderBy: orderByTemp,
   };
@@ -561,12 +562,12 @@ const loadByPage = () => {
         }
         let redata = res?.data?.data;
         //如果不是分页之间显示返回的所有数据
-        pageInfo.dataList = redata?.dataList || redata;
+        pageInfo.value.dataList = redata?.dataList || redata;
         if (props.dialogInput) {
           filterData();
         }
-        pageInfo.totalPage = redata?.totalPages;
-        pageInfo.totalData = redata?.totalDatas;
+        pageInfo.value.totalPage = redata?.totalPages;
+        pageInfo.value.totalData = redata?.totalDatas;
       })
       .catch((err: any) => {
         console.log(err);
@@ -577,8 +578,8 @@ const loadByPage = () => {
 };
 const filterData = () => {
   let name = unref(inputFieldName) as string;
-  if (pageInfo.dataList && name && inputFieldVal.value) {
-    let row = pageInfo.dataList.find(
+  if (pageInfo.value.dataList && name && inputFieldVal.value) {
+    let row = pageInfo.value.dataList.find(
         (item: any) => item[name] == inputFieldVal.value,
     );
     if (row) {
@@ -797,7 +798,6 @@ const getSelectedDatas = () => {
 onMounted(() => {
   init();
 });
-
 //导出方法和变量
 defineExpose({
   init,
