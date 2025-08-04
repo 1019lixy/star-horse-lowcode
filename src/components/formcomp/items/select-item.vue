@@ -36,16 +36,20 @@
           添加选项
         </el-button>
         <template v-else>
-          <el-input
-              v-model="optionName"
-              class="option-input"
-              placeholder="请输入选项名称"
-              size="small"
-          />
-          <el-button type="primary" icon="add" size="small" @click="onConfirm">
-            添加
-          </el-button>
-          <el-button size="small" icon="cancel" @click="clear">取消</el-button>
+          <div class="flex-row flex w-full justify-between ">
+            <el-input
+                v-model="optionName"
+                class="option-input flex-1"
+                placeholder="请输入选项名称"
+                size="small"
+            />
+            <div class="flex-row flex justify-center  w-[35%] mx-auto my-0">
+              <el-button type="primary" icon="add" size="small" @click="onConfirm">
+                添加
+              </el-button>
+              <el-button size="small" icon="cancel" @click="clear">取消</el-button>
+            </div>
+          </div>
         </template>
       </template>
     </el-select>

@@ -27,20 +27,25 @@
         </el-checkbox>
       </template>
       <template v-if="field.preps?.showFooter" #footer>
+
         <el-button v-if="!isAdding" text bg size="small" @click="onAddOption">
           添加选项
         </el-button>
         <template v-else>
-          <el-input
-              v-model="optionName"
-              class="option-input"
-              placeholder="请输入选项名称"
-              size="small"
-          />
-          <el-button type="primary" icon="add" size="small" @click="onConfirm">
-            添加
-          </el-button>
-          <el-button size="small" icon="cancel" @click="clear">取消</el-button>
+          <div class="flex-row flex w-full justify-between ">
+            <el-input
+                v-model="optionName"
+                class="option-input flex-1"
+                placeholder="请输入选项名称"
+                size="small"
+            />
+            <div class="flex-row flex justify-center  w-[35%] mx-auto my-0">
+              <el-button type="primary" icon="add" size="small" @click="onConfirm">
+                添加
+              </el-button>
+              <el-button size="small" icon="cancel" @click="clear">取消</el-button>
+            </div>
+          </div>
         </template>
       </template>
     </el-tree-select>
@@ -103,15 +108,18 @@ const onConfirm = () => {
     warning("请输入选项名称");
     return;
   }
+
+  const labelName = props.field.preps.props?.label || "label";
+  const codeName = props.field.preps.props?.code || props.field.preps.props?.value || "value";
   // 校验重复
-  if (props.field.preps.data.find((_) => _.key == optionName.value)) {
+  if (props.field.preps.data.find((item:any) => item[codeName] == optionName.value)) {
     warning("选项名称重复");
     return;
   }
-  props.field.preps.data.push({
-    label: optionName.value,
-    key: optionName.value,
-  });
+  const temp = {};
+  temp[labelName] = optionName.value;
+  temp[codeName] = optionName.value;
+  props.field.preps.data.push(temp);
   isAdding.value = false;
 }
 const clear = () => {
@@ -172,7 +180,7 @@ onMounted(() => {
   props.field.preps["collapseTags"] = true;
   props.field.preps["props"] = props.field.preps["props"] || {
     label: "name",
-    value: "value",
+    value: "value"
   };
   initData();
   initCompCallEvent(props, emits, formData);
