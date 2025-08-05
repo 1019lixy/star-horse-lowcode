@@ -95,7 +95,6 @@ const indeterminate = ref(false);
 const isAdding = ref(false);
 const optionName = ref("");
 const getAllValuePaths = computed(() => {
-  const labelName = props.field.preps.props?.label || "label";
   const codeName = props.field.preps.props?.code || props.field.preps.props?.value || "value";
   const result: string[][] = []
   const queue: { node: any; path: string[] }[] = props.field.preps.options.map(
