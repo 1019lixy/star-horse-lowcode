@@ -58,7 +58,7 @@ watch(
 );
 let isFullScreen = ref(props.fullScreen);
 const dialogStyle = computed(() => {
-  return { "max-height": isFullScreen.value ? "100%" : props.boxHeight };
+  return { "min-height": isFullScreen.value ? "100%" : props.boxHeight };
 });
 const beforeClose = () => {
   emits("closeAction");

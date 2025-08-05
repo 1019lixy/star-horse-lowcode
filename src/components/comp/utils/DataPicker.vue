@@ -9,16 +9,50 @@ import {PageProps} from "@/components/types/PageProps";
 export type ModelValueType = any;
 
 export interface DataDropdownProps {
+  /**
+   * 模型值
+   */
   modelValue: ModelValueType;
+  /**
+   * 接口地址
+   */
   dataUrl?: string;
+  /**
+   * 页码
+   */
   pageSize?: number;
+  /**
+   * 数据
+   */
   datas?: Array<any>;
+  /**
+   * 标题
+   */
   title?: string;
+  /**
+   * 组件大小
+   */
   compSize?: string;
+  /**
+   * 显示名称
+   */
   displayName?: string;
+  /**
+   * 显示值
+   */
   displayValue?: string;
+  /**
+   * 是否多选
+   */
   multiple?: boolean;
+  /**
+   * 是否严格选择
+   */
   checkStrictly?: boolean;
+  /**
+   * 是否只选叶子节点
+   */
+  selectLeaf?: boolean;
 }
 
 const props = withDefaults(defineProps<DataDropdownProps>(), {
@@ -28,6 +62,7 @@ const props = withDefaults(defineProps<DataDropdownProps>(), {
   pageSize: 0,
   multiple: false,
   checkStrictly: true,
+  selectLeaf: false,
 });
 
 const emits = defineEmits<{
@@ -46,7 +81,17 @@ const dataOptions = ref<Array<any>>([]);
 const dataOrgOptions = ref<Array<any>>([]);
 const orgTreeRef = ref<InstanceType<any>>();
 const expandedKeys = ref<string[]>([]);
-
+const checkAll = ref<boolean>(false);
+const indeterminate = ref<boolean>(false);
+const handleCheckAll = () => {
+  if (!checkAll.value) {
+    dataOptions.value = [];
+  } else {
+    dataOrgOptions.value?.forEach(item => {
+      onNodeClick(item);
+    })
+  }
+}
 const renderClass = (
     data: any,
 ):
@@ -63,19 +108,54 @@ const renderClass = (
   }
 };
 
-const onNodeClick = (data: any) => {
+const onNodeClick = (node: any) => {
   let value = props.displayValue || "value";
+  const data = JSON.parse(JSON.stringify(node));
+  // 新增处理父子节点逻辑
+  const processChildren = (node: any, add: boolean) => {
+    if (node.children) {
+      //非叶子节点也需要选中
+      if (!props.selectLeaf) {
+        const temp = JSON.parse(JSON.stringify(node));
+        delete temp["children"];
+        dataOptions.value.push(temp);
+      }
+      //只选所有叶子节点
+      node.children.forEach((child: any) => {
+        const childIndex = dataOptions.value.findIndex((e) => e[value] === child[value]);
+        if (add && childIndex === -1) {
+          const temp = JSON.parse(JSON.stringify(child));
+          delete temp["children"];
+          dataOptions.value.push(temp);
+        } else if (!add && childIndex !== -1) {
+          dataOptions.value.splice(childIndex, 1);
+        }
+        processChildren(child, add); // 递归处理子节点
+      });
+    } else {
+      dataOptions.value.push(node);
+    }
+  };
   if (props.multiple) {
     const index = dataOptions.value.findIndex((e) => e[value] === data[value]);
     if (index === -1) {
-      dataOptions.value.push(data);
-      dataOptions.value.sort((a, b) => a[value].localeCompare(b[value]));
+      debugger;
+      if (props.checkStrictly) {
+        delete data.children;
+        dataOptions.value.push(data);
+      } else {
+        processChildren(data, false);
+      }
+      // 当非严格模式时处理子节点
+      // console.log(data);
     } else {
       dataOptions.value.splice(index, 1);
     }
+    dataOptions.value.sort((a, b) => a[value].localeCompare(b[value]));
   } else {
     const index = dataOptions.value.findIndex((e) => e[value] === data[value]);
     if (index === -1) {
+      delete data.children;
       dataOptions.value = [data];
     } else {
       dataOptions.value.splice(index, 1);
@@ -135,7 +215,7 @@ const open = () => {
   dialogVisible.value = true;
 };
 const onOpen = () => {
-  if (props.datas && props.datas.length > 0) {
+  if (props.datas?.length > 0) {
     dataOrgOptions.value = props.datas;
   } else {
     loadData();
@@ -150,7 +230,7 @@ const onOpen = () => {
   } else {
     dataOptions.value = [];
   }
-  console.log("onOpen", dataOrgOptions);
+  // console.log("onOpen", dataOrgOptions);
 };
 const handelConfirm = () => {
   if (props.multiple) {
@@ -185,69 +265,124 @@ defineExpose({
   <star-horse-dialog
       :self-func="true"
       :dialog-visible="dialogVisible"
-      :hideFullScreenIcon="true"
       @open="onOpen"
       @merge="handelConfirm"
       @resetForm="resetData"
       @closeAction="dialogVisible = false"
       draggable
       :title="title || '选择数据'"
-      boxWidth="30%"
+      boxWidth="60%"
+      boxHeight="70%"
   >
-    <el-card shadow="never" class="org-card dialog-body">
-      <template #header>
-        <el-input
-            v-model="queryForm.name"
-            placeholder="输入关键字进行查询"
-            :style="{ width: '100%' }"
-            suffix-icon="search"
-            clearable
-        >
-        </el-input>
-      </template>
-
-      <el-scrollbar tag="div" class="org-tree">
-        <el-tree
-            ref="orgTreeRef"
-            :node-key="displayValue"
-            :data="dataOrgOptions"
-            :default-expanded-keys="expandedKeys"
-            :props="treeProps"
-            :check-strictly="checkStrictly"
-            :filter-node-method="filterNode"
-            @node-click="onNodeClick"
-        >
-          <template #default="{ data }">
-            <div class="data-line">
-              <div class="menu-title">
-                <div class=" flex flex-row items-center">
-                  <star-horse-icon
-                      :icon-class="
-                    data.children?.length > 0 ? 'folder' : 'document'
-                  "
-                  />
-                  &nbsp;{{ data[displayName] }}
-                </div>
-              </div>
-              <el-icon class="is-selected">
-                <Check/>
-              </el-icon>
+    <el-splitter>
+      <el-splitter-panel collapsible min="50%">
+        <el-card shadow="never" class="org-card dialog-body">
+          <template #header>
+            <div class="flex flex-row items-center w-full justify-between">
+              <el-checkbox
+                  v-model="checkAll"
+                  class="!w-[30%]"
+                  v-if="multiple"
+                  :indeterminate="indeterminate"
+                  @change="handleCheckAll"
+              >
+                全部
+              </el-checkbox>
+              <div class="flex flex-row flex-1 items-center justify-center">待选数据区</div>
             </div>
           </template>
-        </el-tree>
-      </el-scrollbar>
-      <el-pagination
-          v-if="pageSize > 0"
-          :total="pageInfo.totalData"
-          @current-change="pageChangeClick"
-          @size-change="pageSizeClick"
-          :size="compSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          v-model:currentPage="pageInfo.currentPage"
-          v-model:page-size="pageInfo.pageSize"
-          v-model:pageCount="pageInfo.totalPage"
-      />
-    </el-card>
+          <div class="my-[5px] w-[95%] mx-auto">
+            <el-input
+                v-model="queryForm.name"
+                placeholder="输入关键字进行查询"
+                :style="{ width: '100%' }"
+                suffix-icon="search"
+                clearable
+            />
+          </div>
+          <el-scrollbar tag="div" class="org-tree">
+            <el-tree
+                ref="orgTreeRef"
+                :node-key="displayValue"
+                :data="dataOrgOptions"
+                :default-expanded-keys="expandedKeys"
+                :props="treeProps"
+                :check-strictly="checkStrictly"
+                :filter-node-method="filterNode"
+                @node-click="onNodeClick"
+            >
+              <template #default="{ data }">
+                <div class="data-line">
+                  <div class="menu-title">
+                    <div class=" flex flex-row items-center">
+                      <star-horse-icon
+                          :icon-class="
+                    data.children?.length > 0 ? 'folder' : 'document'
+                  "
+                      />
+                      &nbsp;{{ data[displayName] }}
+                    </div>
+                  </div>
+                  <el-icon class="is-selected">
+                    <Check/>
+                  </el-icon>
+                </div>
+              </template>
+            </el-tree>
+          </el-scrollbar>
+          <el-pagination
+              v-if="pageSize > 0"
+              :total="pageInfo.totalData"
+              @current-change="pageChangeClick"
+              @size-change="pageSizeClick"
+              :size="compSize"
+              layout="total, sizes, prev, pager, next, jumper"
+              v-model:currentPage="pageInfo.currentPage"
+              v-model:page-size="pageInfo.pageSize"
+              v-model:pageCount="pageInfo.totalPage"
+          />
+        </el-card>
+      </el-splitter-panel>
+      <el-splitter-panel size="40%" min="20%" collapsible>
+        <el-card shadow="never" class="org-card dialog-body">
+          <template #header>
+            <div class="flex flex-row flex-1 items-center justify-center h-[32px]">
+              已选数据区[{{ dataOptions.length }}]
+            </div>
+          </template>
+          <el-scrollbar tag="div" class="org-tree">
+            <el-tree
+                ref="orgTreeRef"
+                :node-key="displayValue"
+                :data="dataOptions"
+                :default-expanded-keys="expandedKeys"
+                :props="treeProps"
+                :check-strictly="checkStrictly"
+                :filter-node-method="filterNode"
+                @node-click="onNodeClick"
+            >
+              <template #default="{ data }">
+                <div class="data-line">
+                  <div class="menu-title">
+                    <div class=" flex flex-row items-center">
+                      <star-horse-icon
+                          :icon-class="
+                    data.children?.length > 0 ? 'folder' : 'document'
+                  "
+                      />
+                      &nbsp;{{ data[displayName] }}
+                    </div>
+                    <el-icon class="is-selected">
+                      <Check/>
+                    </el-icon>
+                  </div>
+                </div>
+              </template>
+            </el-tree>
+          </el-scrollbar>
+        </el-card>
+      </el-splitter-panel>
+    </el-splitter>
   </star-horse-dialog>
 </template>
 
@@ -263,7 +398,6 @@ defineExpose({
 
     .is-active {
       color: var(--el-color-primary);
-
       .is-selected {
         display: block;
       }
@@ -284,7 +418,7 @@ defineExpose({
 }
 
 .org-tree {
-  height: 270px;
+  height: 100%;
   padding: 5px;
 }
 

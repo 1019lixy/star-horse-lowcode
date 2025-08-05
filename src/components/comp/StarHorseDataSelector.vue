@@ -1,14 +1,12 @@
 <script setup lang="ts">
-import { useVModel } from "@vueuse/core";
+import {useVModel} from "@vueuse/core";
 import DataTag from "@/components/comp/utils/DataTag.vue";
-import DataPicker, {
-  type ModelValueType,
-} from "@/components/comp/utils/DataPicker.vue";
-import { useFormDisabled } from "element-plus";
-import type { CSSProperties } from "vue";
-import { computed, ref } from "vue";
+import DataPicker, {type ModelValueType,} from "@/components/comp/utils/DataPicker.vue";
+import {useFormDisabled} from "element-plus";
+import type {CSSProperties} from "vue";
+import {computed, ref} from "vue";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
-import { compKey } from "@/api/system";
+import {compKey} from "@/api/system";
 
 export interface DataSelectorProps {
   modelValue: ModelValueType;
@@ -79,33 +77,61 @@ const onClose = (data: any) => {
 
 <template>
   <data-picker
-    ref="dataPickerRef"
-    :title="title"
-    :datas="datas"
-    :data-url="dataUrl"
-    :page-size="pageSize"
-    :display-name="displayName"
-    :display-value="displayValue"
-    :checkStrictly="checkStrictly"
-    :multiple="multiple"
-    v-model="selectData"
+      ref="dataPickerRef"
+      :title="title"
+      :datas="datas"
+      :data-url="dataUrl"
+      :page-size="pageSize"
+      :display-name="displayName"
+      :display-value="displayValue"
+      :checkStrictly="checkStrictly"
+      :multiple="multiple"
+      v-model="selectData"
   />
   <div class="data-wrapper">
     <star-horse-icon
-      @click="openDataPicker"
-      cursor="pointer"
-      icon-class="select-data"
-      :border="true"
+        @click="openDataPicker"
+        cursor="pointer"
+        icon-class="select-data"
+        :border="true"
     />
     <DataTag
-      v-for="(item, key) in valueArr"
-      :key="compKey(item, key)"
-      :closable="!disabled"
-      :data="item"
-      :display-name="displayName"
-      :display-value="displayValue"
-      @close="onClose"
+        v-for="(item, key) in valueArr.slice(0,3)"
+        :key="compKey(item, key)"
+        :closable="!disabled"
+        :data="item"
+        :display-name="displayName"
+        :display-value="displayValue"
+        @close="onClose"
     />
+    <el-text
+        v-if="valueArr.length > 3"
+        type="info"
+        class="placeholder"
+    >
+      <el-tooltip
+          v-if="valueArr.length > 3"
+          placement="top"
+          effect="light"
+          :disabled="disabled"
+      >
+        <template #content>
+          <div class="tooltip-content">
+            <DataTag
+                v-for="(item, index) in valueArr.slice(3)"
+                :key="compKey(item, index)"
+                :closable="!disabled"
+                :data="item"
+                :display-name="displayName"
+                :display-value="displayValue"
+                @close="onClose"
+                class="tooltip-item my-[5px]"
+            />
+          </div>
+        </template>
+        <span class="more-text">+{{ valueArr.length - 3 }} more</span>
+      </el-tooltip>
+    </el-text>
     <el-text v-show="!value || value.length === 0" class="placeholder">
       {{ placeholder }}
     </el-text>
@@ -133,6 +159,25 @@ const onClose = (data: any) => {
 
     &:hover {
       border-style: solid;
+    }
+  }
+}
+.tooltip-content {
+  max-height: 200px;
+  overflow-y: auto;
+
+  .tooltip-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 0;
+
+    .close-icon {
+      margin-left: 8px;
+      cursor: pointer;
+      &:hover {
+        color: var(--el-color-primary);
+      }
     }
   }
 }
