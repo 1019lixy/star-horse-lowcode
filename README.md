@@ -322,3 +322,5 @@ barcode        条形码组件
 33. 2025-08-02 修复StarHorseFormList 在同实例不同表单数据渲染时，上一个表单的数据不清空问题
 34. 2025-08-04 修复StarHorseForm 批量添加数据异常
                 select-item,tselect-item 组件增加增加header(全选) 和footer (动态增加选项)，开关 showHeader,showFooter
+35. 2025-08-05  select-item,tselect-item  将 showHeader 去掉当配置多选multiple 为true 是自动显示，减少参数维护,同时新增cascade组件的header
+                和footer

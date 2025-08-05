@@ -15,7 +15,7 @@
         v-on="getDynamicEvents(props, itemAction)"
         v-model="formData[field.fieldName]"
     >
-      <template v-if="field.preps.showHeader" #header>
+      <template v-if="field.preps.multiple" #header>
         <el-checkbox
             v-model="checkAll"
             :indeterminate="indeterminate"
