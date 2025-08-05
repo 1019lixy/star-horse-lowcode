@@ -4,7 +4,7 @@ import DataTag from "@/components/comp/utils/DataTag.vue";
 import DataPicker, {type ModelValueType,} from "@/components/comp/utils/DataPicker.vue";
 import {useFormDisabled} from "element-plus";
 import type {CSSProperties} from "vue";
-import {computed, ref} from "vue";
+import {computed, ref,watch} from "vue";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
 import {compKey} from "@/api/system";
 
@@ -22,6 +22,7 @@ export interface DataSelectorProps {
   multiple?: boolean;
   disabled?: boolean;
   checkStrictly?: boolean;
+  selectLeaf?: boolean;
   style?: CSSProperties;
 }
 
@@ -33,26 +34,33 @@ const props = withDefaults(defineProps<DataSelectorProps>(), {
   displayName: "name",
   displayValue: "value",
   checkStrictly: true,
+  selectLeaf: false,
   placeholder: "请选择数据",
 });
 const emits = defineEmits<{
   (e: "update:modelValue", modelValue: ModelValueType): void;
+  (e: "update:selectedData", selectData: any): void;
   (e: "selectedData", selectData: any): void;
 }>();
 const value: any = useVModel(props, "modelValue", emits);
 const emitData: any = useVModel(props, "selectedData", emits);
 const selectData: any = ref<any>();
 const valueArr = computed<string[]>(() => {
-  emitData.value = selectData.value;
+  // emitData.value = selectData.value;
   if (!selectData.value) return [];
-  if (Array.isArray(selectData.value)) {
-    value.value = selectData.value.map((v: any) => v[props.displayValue]);
-    return selectData.value;
-  } else {
-    value.value = selectData.value[props.displayValue];
-    return [selectData.value];
-  }
+  return Array.isArray(selectData.value)
+      ? selectData.value
+      : [selectData.value];
 });
+// 新增 watch 监听 selectData 变化
+watch(selectData, (newVal) => {
+  // 同步modelValue
+  value.value = Array.isArray(newVal)
+      ? newVal.map(v => v[props.displayValue])
+      : newVal?.[props.displayValue];
+  // 同步selectedData
+  emitData.value = newVal;
+}, { deep: true });
 const dataPickerRef = ref<InstanceType<typeof DataPicker>>();
 const formDisabled = useFormDisabled();
 const disabled = computed<boolean>(() => {
@@ -85,6 +93,7 @@ const onClose = (data: any) => {
       :display-name="displayName"
       :display-value="displayValue"
       :checkStrictly="checkStrictly"
+      :select-leaf="selectLeaf"
       :multiple="multiple"
       v-model="selectData"
   />
@@ -93,6 +102,7 @@ const onClose = (data: any) => {
         @click="openDataPicker"
         cursor="pointer"
         icon-class="select-data"
+        size="22px"
         :border="true"
     />
     <DataTag
@@ -162,6 +172,7 @@ const onClose = (data: any) => {
     }
   }
 }
+
 .tooltip-content {
   max-height: 200px;
   overflow-y: auto;
@@ -175,6 +186,7 @@ const onClose = (data: any) => {
     .close-icon {
       margin-left: 8px;
       cursor: pointer;
+
       &:hover {
         color: var(--el-color-primary);
       }

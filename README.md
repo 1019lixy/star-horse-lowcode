@@ -324,3 +324,4 @@ barcode        条形码组件
                 select-item,tselect-item 组件增加增加header(全选) 和footer (动态增加选项)，开关 showHeader,showFooter
 35. 2025-08-05  select-item,tselect-item  将 showHeader 去掉当配置多选multiple 为true 是自动显示，减少参数维护,同时新增cascade组件的header
                 和footer
+                修复StarHorseDataSelector 数据选择及显示的Bug

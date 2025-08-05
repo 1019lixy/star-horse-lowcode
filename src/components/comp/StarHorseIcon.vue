@@ -22,10 +22,10 @@ const sizeNumber = computed(() => {
   return numberMatch ? Number(numberMatch[0]) : 0; // 转换为数值，无匹配时返回0
 });
 const width = computed(() =>
-  sizeNumber.value ? `${sizeNumber.value + 2}px` : props.size,
+  sizeNumber.value ? `${sizeNumber.value + 3}px` : props.size,
 );
 const height = computed(() =>
-  sizeNumber.value ? `${sizeNumber.value + 2}px` : props.size,
+  sizeNumber.value ? `${sizeNumber.value + 3}px` : props.size,
 );
 const svgClass = computed(() => {
   let cls = props.border

@@ -139,7 +139,6 @@ const onNodeClick = (node: any) => {
   if (props.multiple) {
     const index = dataOptions.value.findIndex((e) => e[value] === data[value]);
     if (index === -1) {
-      debugger;
       if (props.checkStrictly) {
         delete data.children;
         dataOptions.value.push(data);
