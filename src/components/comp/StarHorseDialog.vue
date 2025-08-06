@@ -29,7 +29,7 @@ const props = defineProps({
   isShowBtnContinue: { type: Boolean, default: false },
   source: { type: Number, default: 1 },
   draggable: { type: Boolean, default: true },
-  boxHeight: { type: String, default: "60%" },
+  boxHeight: { type: String, default: "auto" },
   boxWidth: { type: String, default: "60%" },
   isBatch: { type: Boolean, default: false },
   fullScreen: { type: Boolean, default: false },
