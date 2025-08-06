@@ -1,5 +1,5 @@
 <template>
-<!--  <StarHorseDataSelector v-model="test" :datas="datas" :multiple="true" :checkStrictly="false"/>
+  <StarHorseDataSelector v-model="test" :datas="datas" :multiple="true" :checkStrictly="false"/>
 
   {{formData}}
   <data-picker-item :field="{
@@ -14,16 +14,16 @@
       displayName:'name',
       displayValue:'value',
     }
-  }" :formData="formData" />-->
+  }" :formData="formData" />
 </template>
 
 <script lang="ts" setup>
-/*// import StarHorseJsonEditor from '@/components/comp/StarHorseJsonEditor.vue';
+// import StarHorseJsonEditor from '@/components/comp/StarHorseJsonEditor.vue';
 import StarHorseDataSelector from "@/components/comp/StarHorseDataSelector.vue";
 import {ref} from "vue";
 import DataPickerItem from "@/components/formcomp/items/datapicker-item.vue";
 const formData=ref<any>({
-  test:"1-2-2"
+  test:"1-2-1",
 })
 const test = ref("1-2-1");
 const datas = ref([{
@@ -61,7 +61,7 @@ const datas = ref([{
     name:"测试3-1",
     value:"3-1",
   }]
-}]);*/
+}]);
 </script>
 
 <style lang="scss" scoped></style>

@@ -26,7 +26,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { onMounted, PropType, watch } from "vue";
+import {nextTick, onMounted, PropType, watch} from "vue";
 import {
   allAction,
   checkIsDisabled,
@@ -82,7 +82,9 @@ onMounted(() => {
     props.field.preps = {};
   }
   initData();
-  allAction(props, emits, formData, "change", true);
+  nextTick(() => {
+    allAction(props, emits, formData, "change", true);
+  });
 });
 watch(
   () => formData.value[props.field.fieldName + "OptionList"],

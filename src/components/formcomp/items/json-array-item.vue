@@ -13,7 +13,7 @@
   />
 </template>
 <script setup lang="ts">
-import { onMounted, PropType } from "vue";
+import {nextTick, onMounted, PropType} from "vue";
 import {
   allAction,
   initCompCallEvent,
@@ -61,7 +61,9 @@ onMounted(() => {
   if (!props.field.preps) {
     props.field.preps = {};
   }
-  initCompCallEvent(props, emits, formData);
+  nextTick(() => {
+    initCompCallEvent(props, emits, formData);
+  });
 });
 </script>
 <style lang="scss" scoped></style>

@@ -56,7 +56,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, PropType, ref, watch} from "vue";
+import {nextTick, onMounted, PropType, ref, watch} from "vue";
 import {compDynamicData, createFilter, dynamicUrlOperation,} from "@/api/star_horse_utils";
 import {SearchParams} from "@/components/types/Params";
 import {allAction, checkIsDisabled, initCompCallEvent,} from "@/components/formcomp/utils/ItemRelationEventUtils";
@@ -171,7 +171,9 @@ onMounted(() => {
   props.field.preps["filterable"] = true;
   props.field.preps["collapseTags"] = true;
   initData();
-  initCompCallEvent(props, emits, formData);
+  nextTick(() => {
+    initCompCallEvent(props, emits, formData);
+  });
 });
 watch(
     () => formData.value[props.field.fieldName + "OptionList"],

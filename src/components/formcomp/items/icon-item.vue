@@ -83,7 +83,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { onMounted, PropType, ref, shallowRef, unref, watch } from "vue";
+import {nextTick, onMounted, PropType, ref, shallowRef, unref, watch} from "vue";
 import {
   checkIsDisabled,
   initCompCallEvent,
@@ -163,7 +163,9 @@ const init = async () => {
 };
 onMounted(() => {
   init();
-  initCompCallEvent(props, emits, formData);
+  nextTick(() => {
+    initCompCallEvent(props, emits, formData);
+  });
 });
 watch(
   () => formData.value[props.field.fieldName],

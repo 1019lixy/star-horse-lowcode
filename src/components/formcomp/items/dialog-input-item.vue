@@ -126,7 +126,9 @@ onMounted(async () => {
     });
     inputPreps.searchFieldList = { fieldList: searchFieldList };
   }
-  initCompCallEvent(props, emits, formData);
+  nextTick(() => {
+    initCompCallEvent(props, emits, formData);
+  });
 });
 </script>
 <template>

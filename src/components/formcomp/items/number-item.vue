@@ -82,7 +82,9 @@ onMounted(() => {
   props.field.preps["step"] = props.field.preps["step"] || 1;
   props.field.preps["min"] = props.field.preps["min"] || 0;
   props.field.preps["precision"] = props.field.preps["precision"] || 0;
-  initCompCallEvent(props, emits, formData);
+  nextTick(() => {
+    initCompCallEvent(props, emits, formData);
+  });
 
   initEvent();
 });

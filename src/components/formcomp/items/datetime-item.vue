@@ -22,7 +22,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { onBeforeMount, onMounted, PropType, shallowRef } from "vue";
+import {nextTick, onBeforeMount, onMounted, PropType, shallowRef} from "vue";
 import {
   allAction,
   checkIsDisabled,
@@ -89,7 +89,9 @@ onMounted(() => {
   props.field.preps["disabledDate"] = (date: Date) => {
     return disabledDate.value.includes(date.getDate().toString());
   };
-  initCompCallEvent(props, emits, formData);
+  nextTick(() => {
+    initCompCallEvent(props, emits, formData);
+  });
 });
 </script>
 <style lang="scss" scoped>

@@ -17,7 +17,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { onMounted, PropType } from "vue";
+import {nextTick, onMounted, PropType} from "vue";
 import {
   allAction,
   checkIsDisabled,
@@ -63,7 +63,9 @@ const itemAction = (prep: string) => {
   allAction(props, emits, formData, prep);
 };
 onMounted(() => {
-  initCompCallEvent(props, emits, formData);
+  nextTick(() => {
+    initCompCallEvent(props, emits, formData);
+  });
 });
 </script>
 <style lang="scss" scoped>

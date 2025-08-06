@@ -36,7 +36,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { onMounted, PropType, ref } from "vue";
+import {nextTick, onMounted, PropType, ref} from "vue";
 import Crontab from "@/components/cron/Crontab.vue";
 import {
   allAction,
@@ -105,7 +105,9 @@ const submit = () => {
 };
 resetForm();
 onMounted(() => {
-  initCompCallEvent(props, emits, formData);
+  nextTick(() => {
+    initCompCallEvent(props, emits, formData);
+  });
 });
 </script>
 <style lang="scss" scoped>

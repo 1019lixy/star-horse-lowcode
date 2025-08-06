@@ -18,7 +18,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { onMounted, PropType, watch } from "vue";
+import {nextTick, onMounted, PropType, watch} from "vue";
 import {
   compDynamicData,
   createFilter,
@@ -84,7 +84,9 @@ onMounted(() => {
     props.field.preps = {};
   }
   initData();
-  initCompCallEvent(props, emits, formData);
+  nextTick(() => {
+    initCompCallEvent(props, emits, formData);
+  });
 });
 const querySearch = async (queryString: string, cb: (arg: any) => void) => {
   let temp = props.field.preps;

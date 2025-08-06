@@ -73,10 +73,9 @@ const treeProps = {
   children: "children",
   value: props.displayValue,
   isLeaf: "leaf",
-  class: (data: any,node:any) => renderClass(data,node),
+  class: (data: any, node: any) => renderClass(data, node),
 };
 const value: any = useVModel(props, "modelValue", emits);
-
 const dataOptions = ref<Array<any>>([]);
 const dataOrgOptions = ref<Array<any>>([]);
 const orgTreeRef = ref<InstanceType<any>>();
@@ -99,15 +98,10 @@ const handleCheckAll = () => {
     processAllNodes(dataOrgOptions.value);
   }
 }
-const renderClass = (data: any,node:any): string => {
-  // 获取当前节点的选中状态（独立于父子关联）
-  const isSelected = node.checked && !node.indeterminate
+const renderClass = (data: any, node: any): string => {
   let value = props.displayValue || "value";
-  const isCustomSelected  = dataOptions.value.find((e) => e[value] === data[value]);
-  return [
-    isSelected ? 'is-selected' : '',
-    isCustomSelected ? 'is-active' : ''
-  ].join(' ').trim()
+  const isSelected = dataOptions.value?.find((e) => e[value] === data[value]);
+  return isSelected ? 'is-active' : '';
 };
 
 const onNodeClick = (treeNode: any) => {
@@ -124,7 +118,7 @@ const onNodeClick = (treeNode: any) => {
       }
       //只选所有叶子节点
       node.children.forEach((child: any) => {
-        const childIndex = dataOptions.value.findIndex((e) => e[value] === child[value]);
+        const childIndex = dataOptions.value?.findIndex((e) => e[value] === child[value]);
         if (add && childIndex === -1) {
           const temp = {...child}
           delete temp["children"];
@@ -139,7 +133,7 @@ const onNodeClick = (treeNode: any) => {
     }
   };
   if (props.multiple) {
-    const index = dataOptions.value.findIndex((e) => e[value] === data[value]);
+    const index = dataOptions.value?.findIndex((e) => e[value] === data[value]);
     if (index === -1) {
       if (props.checkStrictly) {
         const tempNode = {...data};
@@ -151,11 +145,11 @@ const onNodeClick = (treeNode: any) => {
       // 当非严格模式时处理子节点
       // console.log(data);
     } else {
-      dataOptions.value.splice(index, 1);
+      dataOptions.value?.splice(index, 1);
     }
-    dataOptions.value.sort((a, b) => a[value].localeCompare(b[value]));
+    dataOptions.value?.sort((a, b) => a[value].localeCompare(b[value]));
   } else {
-    const index = dataOptions.value.findIndex((e) => e[value] === data[value]);
+    const index = dataOptions.value?.findIndex((e) => e[value] === data[value]);
     if (index === -1) {
       delete data.children;
       dataOptions.value = [data];
@@ -187,7 +181,7 @@ let pageInfo = reactive<PageProps>({
   totalPage: 0,
   dataList: [],
 });
-const loadData = () => {
+const loadData = async () => {
   if (!props.dataUrl) return;
   let params: any = {
     currentPage: pageInfo.currentPage,
@@ -195,7 +189,7 @@ const loadData = () => {
     fieldList: [],
     orderBy: [],
   };
-  postRequest(props.dataUrl!, params)
+  await postRequest(props.dataUrl!, params)
       .then((res) => {
         if (res?.data?.code) {
           res && console.error(res?.data?.cnMessage);
@@ -217,23 +211,23 @@ const loadData = () => {
 const open = () => {
   dialogVisible.value = true;
 };
-const onOpen = () => {
+const onOpen = async () => {
   dataOrgOptions.value = [];
   if (props.datas?.length > 0) {
     dataOrgOptions.value = props.datas;
   } else {
-    loadData();
+    await loadData();
   }
-  dataOptions.value = value.value;
+  dataOptions.value = Array.isArray(value.value) ? value.value : value.value ? [value.value] : [];
 };
 const handelConfirm = () => {
   if (props.multiple) {
     value.value = dataOptions.value;
   } else {
-    if (dataOptions.value.length > 0) {
-      value.value = dataOptions.value[0];
+    if (dataOptions.value?.length > 0) {
+      value.value = [dataOptions.value[0]];
     } else {
-      value.value = null;
+      value.value = [];
     }
   }
   dialogVisible.value = false;
@@ -340,7 +334,7 @@ defineExpose({
         <el-card shadow="never" class="org-card dialog-body">
           <template #header>
             <div class="flex flex-row flex-1 items-center justify-center h-[32px]">
-              已选数据区[{{ dataOptions.length }}]
+              已选数据区[{{ dataOptions?.length }}]
             </div>
           </template>
           <el-scrollbar tag="div" class="org-tree">

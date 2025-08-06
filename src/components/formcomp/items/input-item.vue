@@ -129,7 +129,9 @@ const editContent = () => {
   dialogInputVisible.value = true;
 };
 onMounted(() => {
-  initCompCallEvent(props, emits, formData);
+  nextTick(() => {
+    initCompCallEvent(props, emits, formData);
+  });
   initEvent();
 });
 </script>

@@ -197,7 +197,9 @@ onMounted(() => {
   }
 
   initData();
-  initCompCallEvent(props, emits, formData);
+  nextTick(() => {
+    initCompCallEvent(props, emits, formData);
+  });
 });
 watch(formData.value[props.field.fieldName], (val) => {
   if (val.length === 0) {

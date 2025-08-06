@@ -52,7 +52,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onMounted, PropType, ref, watch} from "vue";
+import {nextTick, onMounted, PropType, ref, watch} from "vue";
 import {compDynamicData} from "@/api/star_horse_utils";
 import {allAction, checkIsDisabled, initCompCallEvent,} from "@/components/formcomp/utils/ItemRelationEventUtils";
 import {getDynamicEvents} from "@/api/system";
@@ -112,7 +112,7 @@ const onConfirm = () => {
   const labelName = props.field.preps.props?.label || "label";
   const codeName = props.field.preps.props?.code || props.field.preps.props?.value || "value";
   // 校验重复
-  if (props.field.preps.data.find((item:any) => item[codeName] == optionName.value)) {
+  if (props.field.preps.data.find((item: any) => item[codeName] == optionName.value)) {
     warning("选项名称重复");
     return;
   }
@@ -183,7 +183,9 @@ onMounted(() => {
     value: "value"
   };
   initData();
-  initCompCallEvent(props, emits, formData);
+  nextTick(() => {
+    initCompCallEvent(props, emits, formData);
+  });
 });
 watch(
     () => formData.value[props.field.fieldName + "OptionList"],

@@ -50,7 +50,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts" name="buttonItem">
-import { onMounted, PropType, shallowRef, unref } from "vue";
+import {nextTick, onMounted, PropType, shallowRef, unref} from "vue";
 import {
   buttonAction,
   checkIsDisabled,
@@ -218,7 +218,9 @@ const dynamicFunc = (code: any) => {
   }
 };
 onMounted(() => {
-  initCompCallEvent(props, emits, formData);
+  nextTick(() => {
+    initCompCallEvent(props, emits, formData);
+  });
 });
 </script>
 <style lang="scss" scoped>

@@ -293,7 +293,9 @@ onMounted(async () => {
     inputPreps.searchFieldList = {fieldList: searchFieldList};
   }
   loadByPage(true);
-  initCompCallEvent(props, emits, formData);
+  nextTick(() => {
+    initCompCallEvent(props, emits, formData);
+  });
 });
 </script>
 <template>

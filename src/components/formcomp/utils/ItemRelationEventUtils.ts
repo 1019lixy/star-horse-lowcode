@@ -272,7 +272,7 @@ const doInitCallEvent = (props: any, emits: any, formData: any) => {
     return;
   }
   events?.forEach((event) => {
-    allAction(props, emits, formData, event, true);
+    allAction(props, emits, unref(formData), event, true);
   });
 };
 export {

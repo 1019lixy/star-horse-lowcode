@@ -60,7 +60,7 @@
 </template>
 <script setup lang="ts">
 import {
-  computed,
+  computed, nextTick,
   onBeforeMount,
   onMounted,
   PropType,
@@ -173,7 +173,9 @@ onMounted(() => {
     formData.value[minName.value] = Number(val[0]);
     formData.value[maxName.value] = Number(val[1]);
   }
-  initCompCallEvent(props, emits, formData);
+  nextTick(() => {
+    initCompCallEvent(props, emits, formData);
+  });
 });
 </script>
 <style lang="scss" scoped>

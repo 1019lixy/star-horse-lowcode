@@ -25,7 +25,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { onMounted, PropType, shallowRef } from "vue";
+import {nextTick, onMounted, PropType, shallowRef} from "vue";
 import {
   allAction,
   checkIsDisabled,
@@ -79,7 +79,9 @@ const handleContentConfirm = (newContent: string) => {
   formData.value[props.field.fieldName] = newContent;
 };
 onMounted(() => {
-  initCompCallEvent(props, emits, formData);
+  nextTick(() => {
+    initCompCallEvent(props, emits, formData);
+  });
 });
 </script>
 <style scoped></style>

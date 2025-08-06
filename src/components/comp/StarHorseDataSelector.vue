@@ -44,7 +44,7 @@ const emits = defineEmits<{
 }>();
 const value: any = useVModel(props, "modelValue", emits);
 const emitData: any = useVModel(props, "selectedData", emits);
-const selectData: any = ref<any>();
+const selectData: any = ref<any>(props.multiple ? [] : "");
 const valueArr = computed<string[]>(() => {
   if (selectData.value) {
     return Array.isArray(selectData.value)
@@ -67,8 +67,8 @@ const onClose = (data: any) => {
     selectData.value.splice(selectData.value.indexOf(data), 1);
     value.value.splice(selectData.value.indexOf(data[props.displayValue]), 1);
   } else {
-    selectData.value = null;
-    value.value = null;
+    selectData.value = [];
+    value.value = props.multiple ? [] : "";
   }
   emits("selectedData", selectData.value);
 };
@@ -105,12 +105,12 @@ const findInTree = (nodes: any[], result: any[]) => {
 const init = () => {
   if (props.datas) {
     selectData.value = findInTree(props.datas, []);
-  } else if (props.dataUrl) {
+  } else if (props.dataUrl && value.value) {
     let params: any = {
       currentPage: 0,
       pageSize: 100,
       fieldList: [
-        createCondition(props.displayValue, value.value, "in")
+        createCondition(props.displayValue, Array.isArray(value.value) ? value.value : [value.value], "in")
       ],
       orderBy: [],
     };
@@ -136,9 +136,12 @@ const addTag = (val: any) => {
   if (props.multiple && Array.isArray(selectData.value)) {
     selectData.value.push(temp);
   } else {
-    selectData.value = temp;
+    selectData.value = [temp];
   }
 }
+const tagVisible = (val: any) => {
+  return selectData?.value?.find((item: any) => item[props.displayValue] === val)?.[props.displayName]??val;
+};
 onMounted(() => {
   init();
 });
@@ -167,7 +170,7 @@ watch(selectData, (newVal) => {
       :multiple="multiple"
       v-model="selectData"
   />
-  <el-input-tag v-model="valueArr"  v-bind="{...props,...$attrs}"
+  <el-input-tag v-model="valueArr" v-bind="{...props,...$attrs}"
                 @clear="selectData=[]"
                 @addTag="addTag"
                 @removeTag="(val)=>{
@@ -184,65 +187,10 @@ watch(selectData, (newVal) => {
     </template>
     <template #tag="{ value }">
       <div class="flex items-center">
-        <span>{{ value[displayName] ?? value }}</span>
+        <span>{{ tagVisible(value) }}</span>
       </div>
     </template>
   </el-input-tag>
-  <!--  <div class="data-wrapper ">
-      <star-horse-icon
-          @click="openDataPicker"
-          cursor="pointer"
-          icon-class="select-data"
-          size="22px"
-          :border="true"
-      />
-      <template v-if="valueArr.length>1">
-        <DataTag
-            v-for="(item, key) in valueArr.slice(0,showTagLength)"
-            :key="compKey(item, key)"
-            :closable="!disabled"
-            :data="item"
-            :display-name="displayName"
-            :display-value="displayValue"
-            @close="onClose"
-        />
-        <el-text
-            v-if="valueArr.length > showTagLength"
-            type="info"
-            class="placeholder"
-        >
-          <el-tooltip
-              v-if="valueArr.length > showTagLength"
-              placement="top"
-              effect="light"
-              :disabled="disabled"
-          >
-            <template #content>
-              <div class="tooltip-content">
-                <DataTag
-                    v-for="(item, index) in valueArr.slice(showTagLength)"
-                    :key="compKey(item, index)"
-                    :closable="!disabled"
-                    :data="item"
-                    :display-name="displayName"
-                    :display-value="displayValue"
-                    @close="onClose"
-                    class="tooltip-item my-[5px]"
-                />
-              </div>
-            </template>
-            <span class="more-text">+{{ valueArr.length - showTagLength }} more</span>
-          </el-tooltip>
-        </el-text>
-      </template>
-      <el-text v-else>
-        {{ valueArr[0]?.[displayName] ?? valueArr[0] }}
-      </el-text>
-
-      <el-text v-show="!value || value.length === 0" class="placeholder">
-        {{ placeholder }}
-      </el-text>
-    </div>-->
 </template>
 
 <style scoped lang="scss">
@@ -250,51 +198,5 @@ watch(selectData, (newVal) => {
   padding: 0 3px;
 }
 
-.data-wrapper {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  grid-gap: 7px;
-  gap: 7px;
-  justify-content: start;
-  width: 100%;
-  border: 1px solid var(--el-border-color);
 
-  .placeholder {
-    color: var(--el-text-color-placeholder);
-  }
-
-  &:focus {
-    border-color: var(--el-color-primary);
-  }
-
-  .data-but-item {
-    border-style: dashed;
-
-    &:hover {
-      border-style: solid;
-    }
-  }
-}
-
-.tooltip-content {
-  max-height: 200px;
-  overflow-y: auto;
-
-  .tooltip-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 5px 0;
-
-    .close-icon {
-      margin-left: 8px;
-      cursor: pointer;
-
-      &:hover {
-        color: var(--el-color-primary);
-      }
-    }
-  }
-}
 </style>
