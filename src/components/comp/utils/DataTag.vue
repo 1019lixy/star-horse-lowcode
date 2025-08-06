@@ -37,7 +37,7 @@ const onClose = () => {
     @close="onClose"
   >
     <div class="flex-center" style="gap: 4px; grid-gap: 4px">
-      <span>{{ data[displayName] }}</span>
+      <span>{{ data[displayName]??data }}</span>
     </div>
   </el-tag>
 </template>

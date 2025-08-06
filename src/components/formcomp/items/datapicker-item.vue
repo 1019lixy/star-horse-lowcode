@@ -53,6 +53,7 @@ const itemAction = (prep: any) => {
       :formItem="field"
       :parentField="parentField"
   >
+    <!--里面用的el-input-tag -->
     <star-horse-data-selector v-model="formData[field.fieldName]"
                               v-bind="field.preps"
                               @selectedData="(data)=>itemAction('change')"

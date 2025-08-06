@@ -325,3 +325,4 @@ barcode        条形码组件
 35. 2025-08-05  select-item,tselect-item  将 showHeader 去掉当配置多选multiple 为true 是自动显示，减少参数维护,同时新增cascade组件的header
                 和footer
                 修复StarHorseDataSelector 数据选择及显示的Bug
+36. 2025-08-06  修复StarHorseDataSelector 数据回显Bug

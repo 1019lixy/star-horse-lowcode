@@ -73,7 +73,7 @@ const treeProps = {
   children: "children",
   value: props.displayValue,
   isLeaf: "leaf",
-  class: (data: any) => renderClass(data),
+  class: (data: any,node:any) => renderClass(data,node),
 };
 const value: any = useVModel(props, "modelValue", emits);
 
@@ -87,36 +87,38 @@ const handleCheckAll = () => {
   if (!checkAll.value) {
     dataOptions.value = [];
   } else {
-    dataOrgOptions.value?.forEach(item => {
-      onNodeClick(item);
-    })
+    // 递归处理所有节点
+    const processAllNodes = (nodes: any[]) => {
+      nodes.forEach(node => {
+        onNodeClick(node); // 触发节点点击事件
+        if (node.children) {
+          processAllNodes(node.children);
+        }
+      });
+    };
+    processAllNodes(dataOrgOptions.value);
   }
 }
-const renderClass = (
-    data: any,
-):
-    | string
-    | {
-  [key: string]: boolean;
-} => {
+const renderClass = (data: any,node:any): string => {
+  // 获取当前节点的选中状态（独立于父子关联）
+  const isSelected = node.checked && !node.indeterminate
   let value = props.displayValue || "value";
-  const val = dataOptions.value.find((e) => e[value] === data[value]);
-  if (val) {
-    return "is-active";
-  } else {
-    return "";
-  }
+  const isCustomSelected  = dataOptions.value.find((e) => e[value] === data[value]);
+  return [
+    isSelected ? 'is-selected' : '',
+    isCustomSelected ? 'is-active' : ''
+  ].join(' ').trim()
 };
 
-const onNodeClick = (node: any) => {
+const onNodeClick = (treeNode: any) => {
   let value = props.displayValue || "value";
-  const data = JSON.parse(JSON.stringify(node));
+  const data = JSON.parse(JSON.stringify(treeNode));
   // 新增处理父子节点逻辑
   const processChildren = (node: any, add: boolean) => {
     if (node.children) {
       //非叶子节点也需要选中
       if (!props.selectLeaf) {
-        const temp = JSON.parse(JSON.stringify(node));
+        const temp = {...node};
         delete temp["children"];
         dataOptions.value.push(temp);
       }
@@ -124,7 +126,7 @@ const onNodeClick = (node: any) => {
       node.children.forEach((child: any) => {
         const childIndex = dataOptions.value.findIndex((e) => e[value] === child[value]);
         if (add && childIndex === -1) {
-          const temp = JSON.parse(JSON.stringify(child));
+          const temp = {...child}
           delete temp["children"];
           dataOptions.value.push(temp);
         } else if (!add && childIndex !== -1) {
@@ -140,8 +142,9 @@ const onNodeClick = (node: any) => {
     const index = dataOptions.value.findIndex((e) => e[value] === data[value]);
     if (index === -1) {
       if (props.checkStrictly) {
-        delete data.children;
-        dataOptions.value.push(data);
+        const tempNode = {...data};
+        delete tempNode.children;
+        dataOptions.value.push(tempNode);
       } else {
         processChildren(data, false);
       }
@@ -185,6 +188,7 @@ let pageInfo = reactive<PageProps>({
   dataList: [],
 });
 const loadData = () => {
+  if (!props.dataUrl) return;
   let params: any = {
     currentPage: pageInfo.currentPage,
     pageSize: props.pageSize || 0,
@@ -214,22 +218,13 @@ const open = () => {
   dialogVisible.value = true;
 };
 const onOpen = () => {
+  dataOrgOptions.value = [];
   if (props.datas?.length > 0) {
     dataOrgOptions.value = props.datas;
   } else {
     loadData();
   }
-  let dataIds: string[] = [];
-  if (Array.isArray(value.value)) {
-    dataIds.push(...value.value);
-  } else if (value.value) {
-    dataIds.push(value.value);
-  }
-  if (dataIds.length > 0) {
-  } else {
-    dataOptions.value = [];
-  }
-  // console.log("onOpen", dataOrgOptions);
+  dataOptions.value = value.value;
 };
 const handelConfirm = () => {
   if (props.multiple) {
@@ -317,8 +312,7 @@ defineExpose({
                       <star-horse-icon
                           :icon-class="
                     data.children?.length > 0 ? 'folder' : 'document'
-                  "
-                      />
+                  "/>
                       &nbsp;{{ data[displayName] }}
                     </div>
                   </div>
@@ -397,6 +391,7 @@ defineExpose({
 
     .is-active {
       color: var(--el-color-primary);
+
       .is-selected {
         display: block;
       }
