@@ -20,6 +20,7 @@
 </template>
 <script setup lang="ts" name="markdown">
 import { onMounted, onUpdated, PropType } from "vue";
+import {MdEditor} from "md-editor-v3";
 import "md-editor-v3/lib/style.css";
 
 defineProps({
