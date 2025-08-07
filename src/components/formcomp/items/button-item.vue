@@ -1,66 +1,62 @@
 <template>
   <star-horse-dialog
-    :title="field.preps?.dialogTitle || '配置按钮事件'"
-    :selfFunc="true"
-    @merge="operResultAction"
-    :dialogVisible="btnDialogVisible"
-    :boxWidth="field.preps?.boxWidth || '50%'"
-    :isShowReset="field.preps?.isShowReset ?? false"
-    @closeAction="close"
-    :btnText="field.preps?.dialogBtn ?? '确定'"
+      :title="field.preps?.dialogTitle || '配置按钮事件'"
+      :selfFunc="true"
+      @merge="operResultAction"
+      :dialogVisible="btnDialogVisible"
+      :boxWidth="field.preps?.boxWidth || '50%'"
+      :isShowReset="field.preps?.isShowReset ?? false"
+      @closeAction="close"
+      :btnText="field.preps?.dialogBtn ?? '确定'"
   >
     <star-horse-form
-      ref="btnFormRef"
-      :fieldList="{
+        ref="btnFormRef"
+        :fieldList="{
         fieldList: field.preps?.fieldList,
       }"
-      v-if="field.preps?.viewType == 'form'"
+        v-if="field.preps?.viewType == 'form'"
     />
     <component
-      :is="field.preps?.componentName"
-      ref="btnCompRef"
-      v-else-if="field.preps?.viewType == 'usercomp'"
-      :params="field.preps?.params"
+        :is="field.preps?.componentName"
+        ref="btnCompRef"
+        v-else-if="field.preps?.viewType == 'usercomp'"
+        :params="field.preps?.params"
     />
     <star-horse-editor
-      v-else-if="field.preps?.viewType == 'code'"
-      ref="btnCompRef"
+        v-else-if="field.preps?.viewType == 'code'"
+        ref="btnCompRef"
     />
   </star-horse-dialog>
   <starhorse-form-item
-    :showFormItem="showFormItem"
-    :isDesign="isDesign"
-    :disabled="disabled"
-    :bareFlag="bareFlag"
-    :formItem="field"
-    :parentField="parentField"
+      :showFormItem="showFormItem"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      :formItem="field"
+      :parentField="parentField"
   >
     <el-button
-      :disabled="checkIsDisabled(props)"
-      v-bind="field.preps"
-      @click="dynamicFunc(field.preps?.code)"
+        :disabled="checkIsDisabled(props)"
+        v-bind="field.preps"
+        @click="dynamicFunc(field.preps?.code)"
     >
       <star-horse-icon
-        v-if="field.preps?.icon"
-        :icon-class="field.preps.icon"
-        style="vertical-align: middle; color: var(--star-horse-style)"
+          v-if="field.preps?.icon"
+          :icon-class="field.preps.icon"
+          style="vertical-align: middle; color: var(--star-horse-style)"
       />
       {{ field?.label }}
     </el-button>
   </starhorse-form-item>
 </template>
 <script setup lang="ts" name="buttonItem">
-import {nextTick, onMounted, PropType, shallowRef, unref} from "vue";
-import {
-  buttonAction,
-  checkIsDisabled,
-  initCompCallEvent,
-} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import { httpRequest } from "@/api/star_horse_apis";
-import { operationConfirm, warning } from "@/utils/message";
-import { BtnAction, DynamicParamField } from "@/components/types/BtnAction";
-import { SearchParams } from "@/components/types/Params";
-import { createCondition } from "@/api/star_horse_utils";
+import {onMounted, PropType, shallowRef, unref} from "vue";
+import {buttonAction, checkIsDisabled,} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {httpRequest} from "@/api/star_horse_apis";
+import {operationConfirm, warning} from "@/utils/message";
+import {BtnAction, DynamicParamField} from "@/components/types/BtnAction";
+import {SearchParams} from "@/components/types/Params";
+import {createCondition} from "@/api/star_horse_utils";
 
 const props = defineProps({
   isDesign: {
@@ -137,17 +133,17 @@ const openDialog = async () => {
     let urlParam: any = {};
     if (action.isDynamicParam == "Y") {
       let dynamicParams: SearchParams[] | DynamicParamField[] | any =
-        action.params;
+          action.params;
       let params: SearchParams[] = [];
       dynamicParams?.forEach((dynamicParam: any) => {
         let value =
-          formData.value[dynamicParam.paramName] ?? dynamicParam.defaultValue;
+            formData.value[dynamicParam.paramName] ?? dynamicParam.defaultValue;
         params.push(
-          createCondition(
-            dynamicParam.paramName,
-            value,
-            dynamicParam.matchType,
-          ),
+            createCondition(
+                dynamicParam.paramName,
+                value,
+                dynamicParam.matchType,
+            ),
         );
       });
       urlParam["fieldList"] = params;
@@ -159,35 +155,35 @@ const openDialog = async () => {
       return;
     }
     httpRequest(action.url!, action.method ?? "POST", urlParam).then(
-      (res: any) => {
-        //仅仅执行，则直接调用接口
-        console.log(res);
-        let reData = res.data;
-        if (reData.code) {
-          warning(reData.cnMessage);
-          return;
-        }
-        let datas = reData?.data;
-        if (action?.afterAction) {
-          if (!datas) {
-            warning("返回数据为空，无法赋值");
+        (res: any) => {
+          //仅仅执行，则直接调用接口
+          console.log(res);
+          let reData = res.data;
+          if (reData.code) {
+            warning(reData.cnMessage);
             return;
           }
-          if (Array.isArray(datas)) {
-            warning("返回数据为数组，无法赋值");
-            return;
+          let datas = reData?.data;
+          if (action?.afterAction) {
+            if (!datas) {
+              warning("返回数据为空，无法赋值");
+              return;
+            }
+            if (Array.isArray(datas)) {
+              warning("返回数据为数组，无法赋值");
+              return;
+            }
+            //执行后搜集返回结果
+            if (action?.afterAction == "assignCurrentName") {
+              formData.value[props.field.fieldName] = datas;
+            } else if (action?.afterAction == "assignForm") {
+              let entries = Object.entries(datas);
+              entries.forEach(([key, value]) => {
+                formData.value[key] = value;
+              });
+            }
           }
-          //执行后搜集返回结果
-          if (action?.afterAction == "assignCurrentName") {
-            formData.value[props.field.fieldName] = datas;
-          } else if (action?.afterAction == "assignForm") {
-            let entries = Object.entries(datas);
-            entries.forEach(([key, value]) => {
-              formData.value[key] = value;
-            });
-          }
-        }
-      },
+        },
     );
   } else if (action?.viewType == "code") {
     if (!action.code) {
@@ -218,9 +214,10 @@ const dynamicFunc = (code: any) => {
   }
 };
 onMounted(() => {
-  nextTick(() => {
-    initCompCallEvent(props, emits, formData);
-  });
+  // 按钮没有初始化事件
+  // nextTick(() => {
+  //   initCompCallEvent(props, emits, formData);
+  // });
 });
 </script>
 <style lang="scss" scoped>

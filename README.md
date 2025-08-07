@@ -326,3 +326,4 @@ barcode        条形码组件
                 和footer
                 修复StarHorseDataSelector 数据选择及显示的Bug
 36. 2025-08-06  修复StarHorseDataSelector 数据回显Bug
+                修复表单组件初始化时，button 组件被默认初始化点击问题
