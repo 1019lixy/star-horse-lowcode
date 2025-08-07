@@ -1,19 +1,28 @@
 <script setup lang="ts">
-import {computed, ModelRef, nextTick, onMounted, PropType, reactive, ref, unref,} from "vue";
+import {
+  computed,
+  ModelRef,
+  nextTick,
+  onMounted,
+  PropType,
+  reactive,
+  ref,
+  unref,
+} from "vue";
 import SubSystemMenu from "@/components/menu/SubSystemMenu.vue";
-import {useGlobalConfigStore} from "@/store/GlobalConfig";
+import { useGlobalConfigStore } from "@/store/GlobalConfig";
 import piniaInstance from "@/store";
-import {PageProps} from "@/components/types/PageProps";
-import {ApiUrls} from "@/components/types/ApiUrls";
-import {warning} from "@/utils/message";
-import {SearchParams} from "@/components/types/Params";
-import {OrderByInfo} from "@/components/types/PageFieldInfo";
-import {postRequest} from "@/api/star_horse_apis";
-import {closeLoad, createCondition} from "@/api/star_horse_utils";
-import {isSystemManage} from "@/utils/auth";
-import {Config} from "@/api/settings";
+import { PageProps } from "@/components/types/PageProps";
+import { ApiUrls } from "@/components/types/ApiUrls";
+import { warning } from "@/utils/message";
+import { SearchParams } from "@/components/types/Params";
+import { OrderByInfo } from "@/components/types/PageFieldInfo";
+import { postRequest } from "@/api/star_horse_apis";
+import { closeLoad, createCondition } from "@/api/star_horse_utils";
+import { isSystemManage } from "@/utils/auth";
+import { Config } from "@/api/settings";
 import Help from "@/components/help.vue";
-import {compKey} from "@/api/system";
+import { compKey } from "@/api/system";
 
 const props = defineProps({
   preps: {
@@ -26,38 +35,38 @@ const props = defineProps({
       };
     },
   },
-  helpMsg: {type: String},
-  showCollapse: {type: Boolean, default: false},
-  treeTitle: {type: String, default: "树形菜单"},
-  expand: {type: Boolean, default: false},
-  height: {type: Number, default: 600},
+  helpMsg: { type: String },
+  showCollapse: { type: Boolean, default: false },
+  treeTitle: { type: String, default: "树形菜单" },
+  expand: { type: Boolean, default: false },
+  height: { type: Number, default: 600 },
   //是否显示复选框
-  showCheckBox: {type: Boolean, default: false},
+  showCheckBox: { type: Boolean, default: false },
   //是否显示已选中的数据
-  showSelectData: {type: Boolean, default: false},
-  checkStrictly: {type: Boolean, default: true},
+  showSelectData: { type: Boolean, default: false },
+  checkStrictly: { type: Boolean, default: true },
   //是否显示搜索框
-  showSearch: {type: Boolean, default: true},
-  checkOnClickNode: {type: Boolean, default: true},
-  treeType: {type: String, default: "tree"},
+  showSearch: { type: Boolean, default: true },
+  checkOnClickNode: { type: Boolean, default: true },
+  treeType: { type: String, default: "tree" },
   //在标签上显示值
-  showCode: {type: Boolean, default: false},
+  showCode: { type: Boolean, default: false },
   //是否显示分页
-  showPageBar: {type: Boolean, default: false},
+  showPageBar: { type: Boolean, default: false },
   //是否动态数据
-  isDynamicData: {type: Boolean, default: false},
+  isDynamicData: { type: Boolean, default: false },
   //是否自动加载数据
-  autoLoad: {type: Boolean, default: true},
+  autoLoad: { type: Boolean, default: true },
   //接口地址
-  compUrl: {type: Object as PropType<ApiUrls>},
+  compUrl: { type: Object as PropType<ApiUrls> },
   //按钮名称
-  btnTitle: {type: String, default: "添加数据"},
+  btnTitle: { type: String, default: "添加数据" },
   //按钮是否可见
-  btnVisible: {type: Boolean, default: false},
-  rmvTitle: {type: String, default: "删除数据"},
-  rmvVisible: {type: Boolean, default: false},
+  btnVisible: { type: Boolean, default: false },
+  rmvTitle: { type: String, default: "删除数据" },
+  rmvVisible: { type: Boolean, default: false },
   //是否显示下拉按钮
-  showDropdown: {type: Boolean, default: true},
+  showDropdown: { type: Boolean, default: true },
   /**
    * 数据共享人
    *   拿到别人共享的信息
@@ -65,7 +74,7 @@ const props = defineProps({
    *   上面接口主要返回共享人的账号
    *   commonPersons.value = resultData?.data;
    */
-  commonPersons: {type: Array as PropType<any>, default: []},
+  commonPersons: { type: Array as PropType<any>, default: [] },
 });
 const emits = defineEmits([
   "selectData",
@@ -75,7 +84,7 @@ const emits = defineEmits([
 ]);
 let configStore = useGlobalConfigStore(piniaInstance);
 let compSize = computed(
-    () => configStore.configFormInfo?.inputSize || Config.compSize,
+  () => configStore.configFormInfo?.inputSize || Config.compSize,
 );
 const treeRef = ref<any>();
 const menuTreeRef = ref<any>();
@@ -112,11 +121,11 @@ const treeOperation = (cmd: string) => {
       emits("addData", {});
     } else if (cmd == "collapse") {
       Object.values(treeRef.value!.store.nodesMap).forEach((v: any) =>
-          v.collapse(),
+        v.collapse(),
       );
     } else {
       Object.values(treeRef.value!.store.nodesMap).forEach((v: any) =>
-          v.expand(),
+        v.expand(),
       );
     }
   } else {
@@ -141,7 +150,7 @@ let selectedDataList = ref<Array<any>>([]);
 const operSelectData = (data: any, checked: boolean) => {
   if (checked) {
     let hasData = selectedDataList.value.find(
-        (item) => item[props.preps.value] == data[props.preps.value],
+      (item) => item[props.preps.value] == data[props.preps.value],
     );
     if (!hasData) {
       selectedDataList.value.push(data);
@@ -197,8 +206,8 @@ const pageChangeClick = (currentPage: number) => {
 let searchParams: SearchParams[] = [];
 let orderBys: OrderByInfo[] = [];
 const createSearchParams = (
-    params: SearchParams[] = [],
-    orderBy: OrderByInfo[] = [],
+  params: SearchParams[] = [],
+  orderBy: OrderByInfo[] = [],
 ) => {
   searchParams = params;
   orderBys = orderBy;
@@ -215,7 +224,7 @@ const loadByPage = async () => {
   //加入共享人的信息
   if (props.commonPersons?.length && !isSystemManage()) {
     searchParams.push(
-        createCondition("a.createdBy", props.commonPersons, "in"),
+      createCondition("a.createdBy", props.commonPersons, "in"),
     );
   }
   let params: any = {
@@ -225,23 +234,23 @@ const loadByPage = async () => {
     orderBy: orderBys,
   };
   postRequest(props.compUrl?.pageListUrl!, params)
-      .then((res: any) => {
-        if (!res || res.data.code != 0) {
-          console.error(res?.data?.cnMessage || "接口异常");
-          return;
-        }
-        let redata = res.data.data;
-        //如果不是分页之间显示返回的所有数据
-        treeDatas.value = redata?.dataList || redata;
-        pageInfo.totalPage = redata.totalPages;
-        pageInfo.totalData = redata.totalDatas;
-      })
-      .catch((err: any) => {
-        console.log(err);
-      })
-      .finally(() => {
-        closeLoad();
-      });
+    .then((res: any) => {
+      if (!res || res.data.code != 0) {
+        console.error(res?.data?.cnMessage || "接口异常");
+        return;
+      }
+      let redata = res.data.data;
+      //如果不是分页之间显示返回的所有数据
+      treeDatas.value = redata?.dataList || redata;
+      pageInfo.totalPage = redata.totalPages;
+      pageInfo.totalData = redata.totalDatas;
+    })
+    .catch((err: any) => {
+      console.log(err);
+    })
+    .finally(() => {
+      closeLoad();
+    });
   await nextTick();
   expandData();
 };
@@ -273,95 +282,93 @@ defineExpose({
 
 <template>
   <el-card
-      class="inner_content h-full"
-      :style="{
+    class="inner_content h-full"
+    :style="{
       width: collapse ? '60px' : 'unset',
       padding: 'unset',
     }"
   >
     <div
-        class="selected-data gap-2"
-        v-if="showSelectData && selectedDataList?.length > 0"
+      class="selected-data gap-2"
+      v-if="showSelectData && selectedDataList?.length > 0"
     >
       <el-tag
-          closable
-          @close="operSelectData(item, false)"
-          v-for="item in selectedDataList"
-          :key="_compKey(item, item[preps.value])"
-      >{{ item[preps.label] }}
-      </el-tag
-      >
+        closable
+        @close="operSelectData(item, false)"
+        v-for="item in selectedDataList"
+        :key="_compKey(item, item[preps.value])"
+        >{{ item[preps.label] }}
+      </el-tag>
     </div>
     <div class="tree-title">
       <div class="title flex items-center">
         {{ treeTitle }}&nbsp;
-        <help v-if="helpMsg" :message="helpMsg"/>
+        <help v-if="helpMsg" :message="helpMsg" />
       </div>
       <div class="btn" v-if="showCollapse">
-        <star-horse-icon :icon-class="menuIcon" @click="changeArrow"/>
+        <star-horse-icon :icon-class="menuIcon" @click="changeArrow" />
       </div>
     </div>
     <div class="search-input" v-if="showSearch">
       <el-input
-          v-model="searchData"
-          :size="compSize"
-          clearable
-          :style="{ 'margin-right': showDropdown ? 'unset' : '10px' }"
-          placeholder="请输入关键字"
-          @input="onQueryChanged"
+        v-model="searchData"
+        :size="compSize"
+        clearable
+        :style="{ 'margin-right': showDropdown ? 'unset' : '10px' }"
+        placeholder="请输入关键字"
+        @input="onQueryChanged"
       >
         <template #append>
           <star-horse-icon
-              @click="onQueryChanged"
-              icon-class="search"
-              color="var(--star-horse-style)"
-              size="18px"
+            @click="onQueryChanged"
+            icon-class="search"
+            color="var(--star-horse-style)"
+            size="18px"
           />
         </template>
       </el-input>
       <el-dropdown
-          placement="bottom"
-          @command="treeOperation"
-          v-if="showDropdown"
+        placement="bottom"
+        @command="treeOperation"
+        v-if="showDropdown"
       >
         <star-horse-icon
-            icon-class="v-dot"
-            color="var(--star-horse-style)"
-            size="20px"
+          icon-class="v-dot"
+          color="var(--star-horse-style)"
+          size="20px"
         />
         <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item v-if="btnVisible" command="add"
-            >添加数据
-            </el-dropdown-item
-            >
+              >添加数据
+            </el-dropdown-item>
             <el-dropdown-item command="expand">展开全部</el-dropdown-item>
             <el-dropdown-item command="collapse">折叠全部</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
     </div>
-    <el-divider v-if="showSearch"/>
+    <el-divider v-if="showSearch" />
     <div class="tree-content">
       <el-scrollbar height="100%">
         <el-tree
-            ref="treeRef"
-            :data="treeDatas"
-            :props="preps"
-            :node-key="preps.value"
-            v-if="treeType == 'tree'"
-            :filter-node-method="filterMethod"
-            :check-strictly="checkStrictly"
-            :show-checkbox="showCheckBox"
-            highlight-current
-            @nodeClick="treeChange"
-            @checkChange="treeChange"
+          ref="treeRef"
+          :data="treeDatas"
+          :props="preps"
+          :node-key="preps.value"
+          v-if="treeType == 'tree'"
+          :filter-node-method="filterMethod"
+          :check-strictly="checkStrictly"
+          :show-checkbox="showCheckBox"
+          highlight-current
+          @nodeClick="treeChange"
+          @checkChange="treeChange"
         >
           <template #default="{ node, data }">
             <div class="menu-title">
               <div class="name flex items-center">
                 <star-horse-icon
-                    :icon-class="
+                  :icon-class="
                     data.children?.length > 0 ? 'folder' : 'document'
                   "
                 />
@@ -377,19 +384,19 @@ defineExpose({
               <div v-if="btnVisible || rmvVisible" class="btn">
                 <el-tooltip :content="btnTitle">
                   <star-horse-icon
-                      cursor="pointer"
-                      v-if="btnVisible"
-                      @click.stop="addData(data)"
-                      icon-class="plus"
+                    cursor="pointer"
+                    v-if="btnVisible"
+                    @click.stop="addData(data)"
+                    icon-class="plus"
                   />
                 </el-tooltip>
                 <el-tooltip :content="rmvTitle">
                   <star-horse-icon
-                      cursor="pointer"
-                      v-if="rmvVisible"
-                      @click.stop="removeData(data)"
-                      color="var(--el-color-danger)"
-                      icon-class="minus"
+                    cursor="pointer"
+                    v-if="rmvVisible"
+                    @click.stop="removeData(data)"
+                    color="var(--el-color-danger)"
+                    icon-class="minus"
                   />
                 </el-tooltip>
               </div>
@@ -397,33 +404,39 @@ defineExpose({
           </template>
         </el-tree>
         <el-menu
-            v-if="treeType == 'menu'"
-            ref="menuTreeRef"
-            :unique-opened="false"
+          v-if="treeType == 'menu'"
+          ref="menuTreeRef"
+          :unique-opened="false"
         >
           <SubSystemMenu
-              :dataList="treeDatas"
-              :preps="preps"
-              @addData="addData"
-              @removeData="removeData"
-              @selectData="menuChange"
+            :dataList="treeDatas"
+            :preps="preps"
+            @addData="addData"
+            @removeData="removeData"
+            @selectData="menuChange"
           />
         </el-menu>
       </el-scrollbar>
     </div>
     <div class="tree-footer" v-if="showPageBar">
       <el-pagination
-          :total="pageInfo.totalData"
-          @current-change="pageChangeClick"
-          @size-change="pageSizeClick"
-          :size="compSize"
-          :page-sizes="[10,20,30,50]"
-          layout=" prev, pager, next,slot,sizes"
-          v-model:currentPage="pageInfo.currentPage"
-          v-model:page-size="pageInfo.pageSize"
-          v-model:pageCount="pageInfo.totalPage"
+        :total="pageInfo.totalData"
+        @current-change="pageChangeClick"
+        @size-change="pageSizeClick"
+        :size="compSize"
+        :page-sizes="[10, 20, 30, 50]"
+        layout=" prev, pager, next,slot,sizes"
+        v-model:currentPage="pageInfo.currentPage"
+        v-model:page-size="pageInfo.pageSize"
+        v-model:pageCount="pageInfo.totalPage"
       >
-        <el-button text icon="refresh" :size="compSize" @click="loadByPage" title="刷新"/>
+        <el-button
+          text
+          icon="refresh"
+          :size="compSize"
+          @click="loadByPage"
+          title="刷新"
+        />
       </el-pagination>
     </div>
   </el-card>

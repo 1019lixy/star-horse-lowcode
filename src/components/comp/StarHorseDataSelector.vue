@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import {useVModel} from "@vueuse/core";
-import DataPicker, {type ModelValueType,} from "@/components/comp/utils/DataPicker.vue";
-import {computed, CSSProperties, onMounted, ref, watch} from "vue";
+import { useVModel } from "@vueuse/core";
+import DataPicker, {
+  type ModelValueType,
+} from "@/components/comp/utils/DataPicker.vue";
+import { computed, CSSProperties, onMounted, ref, watch } from "vue";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
-import {postRequest} from "@/api/star_horse_apis";
-import {createCondition} from "@/api/star_horse_utils";
+import { postRequest } from "@/api/star_horse_apis";
+import { createCondition } from "@/api/star_horse_utils";
 
 export interface DataSelectorProps {
   modelValue: ModelValueType;
@@ -48,12 +50,11 @@ const selectData: any = ref<any>(props.multiple ? [] : "");
 const valueArr = computed<string[]>(() => {
   if (selectData.value) {
     return Array.isArray(selectData.value)
-        ? selectData.value
-        : [selectData.value];
+      ? selectData.value
+      : [selectData.value];
   }
   return [];
 });
-
 
 const dataPickerRef = ref<InstanceType<typeof DataPicker>>();
 
@@ -79,16 +80,16 @@ const onClose = (data: any) => {
  * @returns 符合条件的节点结果数组
  */
 const findInTree = (nodes: any[], result: any[]) => {
-  nodes.forEach(node => {
+  nodes.forEach((node) => {
     // 检查当前节点是否匹配
     if (Array.isArray(value.value)) {
       if (value.value.includes(node[props.displayValue])) {
-        const temp = {...node};
+        const temp = { ...node };
         delete temp.children;
         result.push(temp);
       }
     } else if (node[props.displayValue] === value.value) {
-      const temp = {...node};
+      const temp = { ...node };
       delete temp.children;
       result.push(temp);
     }
@@ -110,79 +111,96 @@ const init = () => {
       currentPage: 0,
       pageSize: 100,
       fieldList: [
-        createCondition(props.displayValue, Array.isArray(value.value) ? value.value : [value.value], "in")
+        createCondition(
+          props.displayValue,
+          Array.isArray(value.value) ? value.value : [value.value],
+          "in",
+        ),
       ],
       orderBy: [],
     };
     postRequest(props.dataUrl!, params)
-        .then((res) => {
-          if (res?.data?.code) {
-            console.error(res?.data?.cnMessage);
-            return;
-          }
-          let redata = res?.data?.data;
-          selectData.value = findInTree(redata?.dataList || redata, []);
-        })
-        .catch((err: any) => {
-          console.log(err);
-        });
+      .then((res) => {
+        if (res?.data?.code) {
+          console.error(res?.data?.cnMessage);
+          return;
+        }
+        let redata = res?.data?.data;
+        selectData.value = findInTree(redata?.dataList || redata, []);
+      })
+      .catch((err: any) => {
+        console.log(err);
+      });
   }
-}
+};
 const addTag = (val: any) => {
   const temp = {
     [props.displayName]: val,
     [props.displayValue]: val,
-  }
+  };
   if (props.multiple && Array.isArray(selectData.value)) {
     selectData.value.push(temp);
   } else {
     selectData.value = [temp];
   }
-}
+};
 const tagVisible = (val: any) => {
-  return selectData?.value?.find((item: any) => item[props.displayValue] === val)?.[props.displayName]??val;
+  return (
+    selectData?.value?.find((item: any) => item[props.displayValue] === val)?.[
+      props.displayName
+    ] ?? val
+  );
 };
 onMounted(() => {
   init();
 });
 // 新增 watch 监听 selectData 变化
-watch(selectData, (newVal) => {
-  // 同步modelValue
-  value.value = Array.isArray(newVal)
-      ? newVal.map(v => v[props.displayValue])
+watch(
+  selectData,
+  (newVal) => {
+    // 同步modelValue
+    value.value = Array.isArray(newVal)
+      ? newVal.map((v) => v[props.displayValue])
       : newVal?.[props.displayValue];
-  // 同步selectedData
-  emitData.value = newVal;
-}, {deep: true});
+    // 同步selectedData
+    emitData.value = newVal;
+  },
+  { deep: true },
+);
 </script>
 
 <template>
   <data-picker
-      ref="dataPickerRef"
-      :title="title"
-      :datas="datas"
-      :data-url="dataUrl"
-      :page-size="pageSize"
-      :display-name="displayName"
-      :display-value="displayValue"
-      :checkStrictly="checkStrictly"
-      :select-leaf="selectLeaf"
-      :multiple="multiple"
-      v-model="selectData"
+    ref="dataPickerRef"
+    :title="title"
+    :datas="datas"
+    :data-url="dataUrl"
+    :page-size="pageSize"
+    :display-name="displayName"
+    :display-value="displayValue"
+    :checkStrictly="checkStrictly"
+    :select-leaf="selectLeaf"
+    :multiple="multiple"
+    v-model="selectData"
   />
-  <el-input-tag v-model="valueArr" v-bind="{...props,...$attrs}"
-                @clear="selectData=[]"
-                @addTag="addTag"
-                @removeTag="(val)=>{
-    onClose(val);
-  }">
+  <el-input-tag
+    v-model="valueArr"
+    v-bind="{ ...props, ...$attrs }"
+    @clear="selectData = []"
+    @addTag="addTag"
+    @removeTag="
+      (val) => {
+        onClose(val);
+      }
+    "
+  >
     <template #prefix>
       <star-horse-icon
-          @click="openDataPicker"
-          cursor="pointer"
-          icon-class="select-data"
-          size="22px"
-          :border="true"
+        @click="openDataPicker"
+        cursor="pointer"
+        icon-class="select-data"
+        size="22px"
+        :border="true"
       />
     </template>
     <template #tag="{ value }">
@@ -197,6 +215,4 @@ watch(selectData, (newVal) => {
 .el-tag {
   padding: 0 3px;
 }
-
-
 </style>

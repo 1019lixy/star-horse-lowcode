@@ -36,7 +36,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {nextTick, onMounted, PropType, ref} from "vue";
+import { nextTick, onMounted, PropType, ref } from "vue";
 import Crontab from "@/components/cron/Crontab.vue";
 import {
   allAction,

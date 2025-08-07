@@ -144,7 +144,10 @@ defineExpose({
           :label="item.label"
           :prop="item.fieldName"
         >
-          <template v-if="(!item.type || item.type == 'input') && !item.disabled" :span="6">
+          <template
+            v-if="(!item.type || item.type == 'input') && !item.disabled"
+            :span="6"
+          >
             <el-select
               :size="compSize"
               style="width: 90px !important; height: 100%; padding-top: 2px"

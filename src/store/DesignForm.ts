@@ -180,7 +180,7 @@ export const useDesignFormStore = defineStore("designForm", () => {
             const columns = elements[sindex].columns;
             for (const ssindex in columns) {
               const column = columns[ssindex];
-              if (column.items && column.items.length > 0) {
+              if (column?.items?.length > 0) {
                 children.push(
                   ...column.items
                     ?.map((item: any) => ({

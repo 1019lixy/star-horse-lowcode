@@ -1,7 +1,8 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import inject from "@rollup/plugin-inject";
-import { resolve } from "path";
+import { fileURLToPath } from "url";
+import { dirname, resolve } from "path";
 import Components from "unplugin-vue-components/vite";
 import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
 import AutoImport from "unplugin-auto-import/vite";
@@ -86,7 +87,7 @@ export default defineConfig((mode) => {
     },
     resolve: {
       alias: {
-        "@": resolve(__dirname, "./src"),
+        "@": resolve(dirname(fileURLToPath(import.meta.url)), "./src"),
       },
       extensions: [".js", ".vue", ".json", ".ts", ".jsx"],
     },

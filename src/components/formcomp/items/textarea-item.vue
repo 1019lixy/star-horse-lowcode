@@ -25,7 +25,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {nextTick, onMounted, PropType, shallowRef} from "vue";
+import { nextTick, onMounted, PropType, shallowRef } from "vue";
 import {
   allAction,
   checkIsDisabled,

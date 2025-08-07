@@ -13,7 +13,7 @@
   />
 </template>
 <script setup lang="ts">
-import {nextTick, onMounted, PropType} from "vue";
+import { nextTick, onMounted, PropType } from "vue";
 import {
   allAction,
   initCompCallEvent,

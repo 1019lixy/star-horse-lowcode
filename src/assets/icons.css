@@ -1,10 +1,10 @@
 @font-face {
-  font-family: 'star-horse-icons';
-  src: url('./star-horse-icons.woff') format('woff');
+  font-family: "star-horse-icons";
+  src: url("./star-horse-icons.woff") format("woff");
   font-display: block;
 }
 .sh_icon {
-  font-family: 'star-horse-icons' ;
+  font-family: "star-horse-icons";
   speak: none;
   font-style: normal;
   font-weight: normal;
@@ -13,562 +13,1680 @@
   -webkit-font-smoothing: antialiased;
 }
 
-.sh-add-dept::before { content: "\e000"; }
-.sh-add::before { content: "\e001"; }
-.sh-advanced_template::before { content: "\e002"; }
-.sh-advance_preps::before { content: "\e003"; }
-.sh-alert::before { content: "\e004"; }
-.sh-align_bottom::before { content: "\e005"; }
-.sh-align_left::before { content: "\e006"; }
-.sh-align_right::before { content: "\e007"; }
-.sh-align_top::before { content: "\e008"; }
-.sh-alipay::before { content: "\e009"; }
-.sh-amplify::before { content: "\e00a"; }
-.sh-arrow-double-down::before { content: "\e00b"; }
-.sh-arrow-double-left::before { content: "\e00c"; }
-.sh-arrow-double-right::before { content: "\e00d"; }
-.sh-arrow-double-up::before { content: "\e00e"; }
-.sh-arrow-down::before { content: "\e00f"; }
-.sh-arrow-left::before { content: "\e010"; }
-.sh-arrow-right::before { content: "\e011"; }
-.sh-ashbin::before { content: "\e012"; }
-.sh-audio::before { content: "\e013"; }
-.sh-auditor::before { content: "\e014"; }
-.sh-audit_node::before { content: "\e015"; }
-.sh-autocomplete::before { content: "\e016"; }
-.sh-auto_fit::before { content: "\e017"; }
-.sh-back::before { content: "\e018"; }
-.sh-backup::before { content: "\e019"; }
-.sh-base_preps::before { content: "\e01a"; }
-.sh-base_setting::before { content: "\e01b"; }
-.sh-batch-add::before { content: "\e01c"; }
-.sh-batch_delete1::before { content: "\e01d"; }
-.sh-batch_delete2::before { content: "\e01e"; }
-.sh-batch_delete3::before { content: "\e01f"; }
-.sh-batch_download::before { content: "\e020"; }
-.sh-box::before { content: "\e021"; }
-.sh-branch_node::before { content: "\e022"; }
-.sh-btn-upload::before { content: "\e023"; }
-.sh-button::before { content: "\e024"; }
-.sh-calendar::before { content: "\e025"; }
-.sh-cancel::before { content: "\e026"; }
-.sh-carbon-copy::before { content: "\e027"; }
-.sh-card::before { content: "\e028"; }
-.sh-card1::before { content: "\e029"; }
-.sh-cascade::before { content: "\e02a"; }
-.sh-cascader-field::before { content: "\e02b"; }
-.sh-center::before { content: "\e02c"; }
-.sh-charts::before { content: "\e02d"; }
-.sh-check::before { content: "\e02e"; }
-.sh-checkbox-field::before { content: "\e02f"; }
-.sh-checkbox::before { content: "\e030"; }
-.sh-clear-all::before { content: "\e031"; }
-.sh-clone::before { content: "\e032"; }
-.sh-close-all::before { content: "\e033"; }
-.sh-close::before { content: "\e034"; }
-.sh-code::before { content: "\e035"; }
-.sh-collapse::before { content: "\e036"; }
-.sh-color-field::before { content: "\e037"; }
-.sh-color::before { content: "\e038"; }
-.sh-component::before { content: "\e039"; }
-.sh-condition::before { content: "\e03a"; }
-.sh-config::before { content: "\e03b"; }
-.sh-config1::before { content: "\e03c"; }
-.sh-console_manage::before { content: "\e03d"; }
-.sh-container::before { content: "\e03e"; }
-.sh-content_manag::before { content: "\e03f"; }
-.sh-continus-ai::before { content: "\e040"; }
-.sh-continus-android::before { content: "\e041"; }
-.sh-continus-api::before { content: "\e042"; }
-.sh-continus-app-deploy::before { content: "\e043"; }
-.sh-continus-app-sql-audit::before { content: "\e044"; }
-.sh-continus-archive::before { content: "\e045"; }
-.sh-continus-audit-compliance::before { content: "\e046"; }
-.sh-continus-caas::before { content: "\e047"; }
-.sh-continus-caasd::before { content: "\e048"; }
-.sh-continus-compile::before { content: "\e049"; }
-.sh-continus-consistence-check::before { content: "\e04a"; }
-.sh-continus-cpp::before { content: "\e04b"; }
-.sh-continus-db-audit::before { content: "\e04c"; }
-.sh-continus-deploy::before { content: "\e04d"; }
-.sh-continus-docker::before { content: "\e04e"; }
-.sh-continus-elasticsearch::before { content: "\e04f"; }
-.sh-continus-fortify::before { content: "\e050"; }
-.sh-continus-golang::before { content: "\e051"; }
-.sh-continus-http::before { content: "\e052"; }
-.sh-continus-increment::before { content: "\e053"; }
-.sh-continus-ios::before { content: "\e054"; }
-.sh-continus-java::before { content: "\e055"; }
-.sh-continus-jenkins::before { content: "\e056"; }
-.sh-continus-junit::before { content: "\e057"; }
-.sh-continus-k8s::before { content: "\e058"; }
-.sh-continus-nodejs::before { content: "\e059"; }
-.sh-continus-python::before { content: "\e05a"; }
-.sh-continus-quality-gates::before { content: "\e05b"; }
-.sh-continus-safe::before { content: "\e05c"; }
-.sh-continus-script-task::before { content: "\e05d"; }
-.sh-continus-sonar::before { content: "\e05e"; }
-.sh-continus-windows::before { content: "\e05f"; }
-.sh-copy::before { content: "\e060"; }
-.sh-copy_node::before { content: "\e061"; }
-.sh-crontab::before { content: "\e062"; }
-.sh-cursor-move::before { content: "\e063"; }
-.sh-custom_component::before { content: "\e064"; }
-.sh-cut::before { content: "\e065"; }
-.sh-data-card::before { content: "\e066"; }
-.sh-data-syn::before { content: "\e067"; }
-.sh-data-table::before { content: "\e068"; }
-.sh-data-view::before { content: "\e069"; }
-.sh-database::before { content: "\e06a"; }
-.sh-data_center::before { content: "\e06b"; }
-.sh-data_db::before { content: "\e06c"; }
-.sh-data_edit::before { content: "\e06d"; }
-.sh-date-field::before { content: "\e06e"; }
-.sh-date-range-field::before { content: "\e06f"; }
-.sh-datetime::before { content: "\e070"; }
-.sh-default::before { content: "\e071"; }
-.sh-delete-comp::before { content: "\e072"; }
-.sh-delete-fill::before { content: "\e073"; }
-.sh-delete::before { content: "\e074"; }
-.sh-dept::before { content: "\e075"; }
-.sh-diagram::before { content: "\e076"; }
-.sh-direction-down::before { content: "\e077"; }
-.sh-direction-left::before { content: "\e078"; }
-.sh-direction-right::before { content: "\e079"; }
-.sh-direction-up::before { content: "\e07a"; }
-.sh-divider::before { content: "\e07b"; }
-.sh-document::before { content: "\e07c"; }
-.sh-document_download::before { content: "\e07d"; }
-.sh-down-layer::before { content: "\e07e"; }
-.sh-download-svg::before { content: "\e07f"; }
-.sh-download::before { content: "\e080"; }
-.sh-drag-move::before { content: "\e081"; }
-.sh-drag::before { content: "\e082"; }
-.sh-dustbin::before { content: "\e083"; }
-.sh-edit::before { content: "\e084"; }
-.sh-edit_node::before { content: "\e085"; }
-.sh-ellipsis::before { content: "\e086"; }
-.sh-email::before { content: "\e087"; }
-.sh-empty_image::before { content: "\e088"; }
-.sh-empty_setting::before { content: "\e089"; }
-.sh-equal::before { content: "\e08a"; }
-.sh-event-action::before { content: "\e08b"; }
-.sh-event::before { content: "\e08c"; }
-.sh-event_node::before { content: "\e08d"; }
-.sh-excel-export::before { content: "\e08e"; }
-.sh-excel-upload::before { content: "\e08f"; }
-.sh-exchange::before { content: "\e090"; }
-.sh-exclamation-circle::before { content: "\e091"; }
-.sh-exec1::before { content: "\e092"; }
-.sh-expand::before { content: "\e093"; }
-.sh-export::before { content: "\e094"; }
-.sh-eye-close::before { content: "\e095"; }
-.sh-eye-open::before { content: "\e096"; }
-.sh-eye::before { content: "\e097"; }
-.sh-fcswitch::before { content: "\e098"; }
-.sh-file-add::before { content: "\e099"; }
-.sh-file-export::before { content: "\e09a"; }
-.sh-file-upload-field::before { content: "\e09b"; }
-.sh-file_download::before { content: "\e09c"; }
-.sh-file_transfer::before { content: "\e09d"; }
-.sh-filter::before { content: "\e09e"; }
-.sh-flow-add-user::before { content: "\e09f"; }
-.sh-flow-agree::before { content: "\e0a0"; }
-.sh-flow-back::before { content: "\e0a1"; }
-.sh-flow-cc::before { content: "\e0a2"; }
-.sh-flow-reduce-user::before { content: "\e0a3"; }
-.sh-flow-reject::before { content: "\e0a4"; }
-.sh-flow-revoke::before { content: "\e0a5"; }
-.sh-flow-trace::before { content: "\e0a6"; }
-.sh-flow-turn::before { content: "\e0a7"; }
-.sh-flow_setting::before { content: "\e0a8"; }
-.sh-flow_temp_icon::before { content: "\e0a9"; }
-.sh-folder::before { content: "\e0aa"; }
-.sh-form-template::before { content: "\e0ab"; }
-.sh-form::before { content: "\e0ac"; }
-.sh-format::before { content: "\e0ad"; }
-.sh-friend_add::before { content: "\e0ae"; }
-.sh-fullscreen-expand::before { content: "\e0af"; }
-.sh-fullscreen-shrink::before { content: "\e0b0"; }
-.sh-github::before { content: "\e0b1"; }
-.sh-gitlab::before { content: "\e0b2"; }
-.sh-grid::before { content: "\e0b3"; }
-.sh-handle_node::before { content: "\e0b4"; }
-.sh-help::before { content: "\e0b5"; }
-.sh-hide::before { content: "\e0b6"; }
-.sh-home::before { content: "\e0b7"; }
-.sh-horizontal-align::before { content: "\e0b8"; }
-.sh-html-text::before { content: "\e0b9"; }
-.sh-icon-app::before { content: "\e0ba"; }
-.sh-icon::before { content: "\e0bb"; }
-.sh-image::before { content: "\e0bc"; }
-.sh-info::before { content: "\e0bd"; }
-.sh-input::before { content: "\e0be"; }
-.sh-insert-column::before { content: "\e0bf"; }
-.sh-insert-row::before { content: "\e0c0"; }
-.sh-insert_col::before { content: "\e0c1"; }
-.sh-insert_row::before { content: "\e0c2"; }
-.sh-json_file::before { content: "\e0c3"; }
-.sh-layout::before { content: "\e0c4"; }
-.sh-left_panel::before { content: "\e0c5"; }
-.sh-line_arrow::before { content: "\e0c6"; }
-.sh-link::before { content: "\e0c7"; }
-.sh-list-left::before { content: "\e0c8"; }
-.sh-list-right::before { content: "\e0c9"; }
-.sh-list::before { content: "\e0ca"; }
-.sh-login_in::before { content: "\e0cb"; }
-.sh-login_out::before { content: "\e0cc"; }
-.sh-logo::before { content: "\e0cd"; }
-.sh-map::before { content: "\e0ce"; }
-.sh-meeting::before { content: "\e0cf"; }
-.sh-menu::before { content: "\e0d0"; }
-.sh-message::before { content: "\e0d1"; }
-.sh-messages::before { content: "\e0d2"; }
-.sh-minus-circle-fill::before { content: "\e0d3"; }
-.sh-minus-circle::before { content: "\e0d4"; }
-.sh-minus::before { content: "\e0d5"; }
-.sh-more::before { content: "\e0d6"; }
-.sh-move-down::before { content: "\e0d7"; }
-.sh-move-up::before { content: "\e0d8"; }
-.sh-move::before { content: "\e0d9"; }
-.sh-new-file::before { content: "\e0da"; }
-.sh-new::before { content: "\e0db"; }
-.sh-node-tree::before { content: "\e0dc"; }
-.sh-notice_node::before { content: "\e0dd"; }
-.sh-no_eye::before { content: "\e0de"; }
-.sh-number-field::before { content: "\e0df"; }
-.sh-number::before { content: "\e0e0"; }
-.sh-open-file::before { content: "\e0e1"; }
-.sh-operation::before { content: "\e0e2"; }
-.sh-ops_manage::before { content: "\e0e3"; }
-.sh-other::before { content: "\e0e4"; }
-.sh-other_system::before { content: "\e0e5"; }
-.sh-pad::before { content: "\e0e6"; }
-.sh-parallel_node::before { content: "\e0e7"; }
-.sh-password::before { content: "\e0e8"; }
-.sh-paste::before { content: "\e0e9"; }
-.sh-pc::before { content: "\e0ea"; }
-.sh-pdf::before { content: "\e0eb"; }
-.sh-phone::before { content: "\e0ec"; }
-.sh-picture-upload-field::before { content: "\e0ed"; }
-.sh-plus::before { content: "\e0ee"; }
-.sh-plus_circle::before { content: "\e0ef"; }
-.sh-plus_diamond::before { content: "\e0f0"; }
-.sh-position::before { content: "\e0f1"; }
-.sh-prep::before { content: "\e0f2"; }
-.sh-preps::before { content: "\e0f3"; }
-.sh-preview::before { content: "\e0f4"; }
-.sh-publish::before { content: "\e0f5"; }
-.sh-qrcode::before { content: "\e0f6"; }
-.sh-question-circle::before { content: "\e0f7"; }
-.sh-radio-field::before { content: "\e0f8"; }
-.sh-radio::before { content: "\e0f9"; }
-.sh-rate-field::before { content: "\e0fa"; }
-.sh-rate::before { content: "\e0fb"; }
-.sh-rectangle::before { content: "\e0fc"; }
-.sh-redo::before { content: "\e0fd"; }
-.sh-reduce::before { content: "\e0fe"; }
-.sh-refresh::before { content: "\e0ff"; }
-.sh-reset::before { content: "\e100"; }
-.sh-return::before { content: "\e101"; }
-.sh-rich-editor-field::before { content: "\e102"; }
-.sh-right_panel::before { content: "\e103"; }
-.sh-role::before { content: "\e104"; }
-.sh-ruler::before { content: "\e105"; }
-.sh-run-in::before { content: "\e106"; }
-.sh-run-up::before { content: "\e107"; }
-.sh-run::before { content: "\e108"; }
-.sh-runing::before { content: "\e109"; }
-.sh-save::before { content: "\e10a"; }
-.sh-save_continue::before { content: "\e10b"; }
-.sh-scale::before { content: "\e10c"; }
-.sh-scroll::before { content: "\e10d"; }
-.sh-search-minus::before { content: "\e10e"; }
-.sh-search::before { content: "\e10f"; }
-.sh-search_down::before { content: "\e110"; }
-.sh-search_up::before { content: "\e111"; }
-.sh-section::before { content: "\e112"; }
-.sh-select-all::before { content: "\e113"; }
-.sh-select-data::before { content: "\e114"; }
-.sh-select-field::before { content: "\e115"; }
-.sh-select-parent::before { content: "\e116"; }
-.sh-select::before { content: "\e117"; }
-.sh-select_mode::before { content: "\e118"; }
-.sh-self_template::before { content: "\e119"; }
-.sh-set-up::before { content: "\e11a"; }
-.sh-setting::before { content: "\e11b"; }
-.sh-shapes::before { content: "\e11c"; }
-.sh-share::before { content: "\e11d"; }
-.sh-short_save::before { content: "\e11e"; }
-.sh-sign::before { content: "\e11f"; }
-.sh-slider-field::before { content: "\e120"; }
-.sh-slider::before { content: "\e121"; }
-.sh-slot-component::before { content: "\e122"; }
-.sh-slot-field::before { content: "\e123"; }
-.sh-static-text::before { content: "\e124"; }
-.sh-stop::before { content: "\e125"; }
-.sh-style::before { content: "\e126"; }
-.sh-sub-form::before { content: "\e127"; }
-.sh-switch-field::before { content: "\e128"; }
-.sh-switch::before { content: "\e129"; }
-.sh-sys-authority::before { content: "\e12a"; }
-.sh-system_manage::before { content: "\e12b"; }
-.sh-tab::before { content: "\e12c"; }
-.sh-table::before { content: "\e12d"; }
-.sh-task::before { content: "\e12e"; }
-.sh-template::before { content: "\e12f"; }
-.sh-template_download::before { content: "\e130"; }
-.sh-text-field::before { content: "\e131"; }
-.sh-text::before { content: "\e132"; }
-.sh-textarea-field::before { content: "\e133"; }
-.sh-textarea::before { content: "\e134"; }
-.sh-time-field::before { content: "\e135"; }
-.sh-time-range-field::before { content: "\e136"; }
-.sh-timer::before { content: "\e137"; }
-.sh-to-bottom::before { content: "\e138"; }
-.sh-to-top::before { content: "\e139"; }
-.sh-today::before { content: "\e13a"; }
-.sh-transfer::before { content: "\e13b"; }
-.sh-tselect::before { content: "\e13c"; }
-.sh-undo::before { content: "\e13d"; }
-.sh-up-layer::before { content: "\e13e"; }
-.sh-upload::before { content: "\e13f"; }
-.sh-user-add::before { content: "\e140"; }
-.sh-user-circle::before { content: "\e141"; }
-.sh-user-edit::before { content: "\e142"; }
-.sh-usual_setting::before { content: "\e143"; }
-.sh-v-dot::before { content: "\e144"; }
-.sh-valid::before { content: "\e145"; }
-.sh-vedio::before { content: "\e146"; }
-.sh-vertical-align::before { content: "\e147"; }
-.sh-vertical_arrow::before { content: "\e148"; }
-.sh-video::before { content: "\e149"; }
-.sh-view::before { content: "\e14a"; }
-.sh-vip_template::before { content: "\e14b"; }
-.sh-vue-sfc::before { content: "\e14c"; }
-.sh-warning::before { content: "\e14d"; }
-.sh-wechat::before { content: "\e14e"; }
-.sh-weibo::before { content: "\e14f"; }
-.sh-workstation_setting::before { content: "\e150"; }
-.sh-xitong::before { content: "\e151"; }
-.sh-xitong13::before { content: "\e152"; }
-.sh-xtcsh::before { content: "\e153"; }
-.sh-xtgl::before { content: "\e154"; }
-.sh-zoom-in::before { content: "\e155"; }
-.sh-zoom_in::before { content: "\e156"; }
-.sh-zoom_out::before { content: "\e157"; }
-.sh-business--::before { content: "\e158"; }
-.sh-business--_1::before { content: "\e159"; }
-.sh-business--_10::before { content: "\e15a"; }
-.sh-business--_11::before { content: "\e15b"; }
-.sh-business--_12::before { content: "\e15c"; }
-.sh-business--_13::before { content: "\e15d"; }
-.sh-business--_14::before { content: "\e15e"; }
-.sh-business--_15::before { content: "\e15f"; }
-.sh-business--_16::before { content: "\e160"; }
-.sh-business--_17::before { content: "\e161"; }
-.sh-business--_18::before { content: "\e162"; }
-.sh-business--_2::before { content: "\e163"; }
-.sh-business--_3::before { content: "\e164"; }
-.sh-business--_4::before { content: "\e165"; }
-.sh-business--_5::before { content: "\e166"; }
-.sh-business--_6::before { content: "\e167"; }
-.sh-business--_7::before { content: "\e168"; }
-.sh-business--_8::before { content: "\e169"; }
-.sh-business--_9::before { content: "\e16a"; }
-.sh-business-changyongziyuan::before { content: "\e16b"; }
-.sh-business-chuchashenpi::before { content: "\e16c"; }
-.sh-business-fanwendengji::before { content: "\e16d"; }
-.sh-business-feizhengshiwendengji::before { content: "\e16e"; }
-.sh-business-gongwenjiaohuan::before { content: "\e16f"; }
-.sh-business-gongzuohuibao::before { content: "\e170"; }
-.sh-business-gudingzichan::before { content: "\e171"; }
-.sh-business-huiyiguanli::before { content: "\e172"; }
-.sh-business-huiyiyuding::before { content: "\e173"; }
-.sh-business-kaoqinguanli::before { content: "\e174"; }
-.sh-business-OAxitong::before { content: "\e175"; }
-.sh-business-qingxiujiashenqing::before { content: "\e176"; }
-.sh-business-sannianjihua::before { content: "\e177"; }
-.sh-business-tongzhifabu::before { content: "\e178"; }
-.sh-business-xiangmuguanli::before { content: "\e179"; }
-.sh-business-xinxitougao::before { content: "\e17a"; }
-.sh-business-zhishichanquan::before { content: "\e17b"; }
-.sh-business-zhongxindongtaifabu::before { content: "\e17c"; }
-.sh-business-zongheshenpi::before { content: "\e17d"; }
-.sh-education-a-1-shilibiao::before { content: "\e17e"; }
-.sh-education-a-10-yiliaoxiang::before { content: "\e17f"; }
-.sh-education-a-11-yiyongweishengzhi::before { content: "\e180"; }
-.sh-education-a-12-huxi::before { content: "\e181"; }
-.sh-education-a-13-xiguan::before { content: "\e182"; }
-.sh-education-a-14-zhutingqi::before { content: "\e183"; }
-.sh-education-a-15-bingdu::before { content: "\e184"; }
-.sh-education-a-16-yiyuan::before { content: "\e185"; }
-.sh-education-a-17-zhusheqi::before { content: "\e186"; }
-.sh-education-a-18-xiguan::before { content: "\e187"; }
-.sh-education-a-19guaizhang::before { content: "\e188"; }
-.sh-education-a-2-kouzhao::before { content: "\e189"; }
-.sh-education-a-20-shuye::before { content: "\e18a"; }
-.sh-education-a-3-chuangkoutie::before { content: "\e18b"; }
-.sh-education-a-4-lunyi::before { content: "\e18c"; }
-.sh-education-a-5-mianqian::before { content: "\e18d"; }
-.sh-education-a-6-jiancebi::before { content: "\e18e"; }
-.sh-education-a-7-xinzang::before { content: "\e18f"; }
-.sh-education-a-8-DNA::before { content: "\e190"; }
-.sh-education-a-9-tizhongcheng::before { content: "\e191"; }
-.sh-education-a-bitong1::before { content: "\e192"; }
-.sh-education-a-shu2::before { content: "\e193"; }
-.sh-education-a-shu4::before { content: "\e194"; }
-.sh-education-a-shu5::before { content: "\e195"; }
-.sh-education-a-shuben2::before { content: "\e196"; }
-.sh-education-a-shuben3::before { content: "\e197"; }
-.sh-education-a-shuben4::before { content: "\e198"; }
-.sh-education-a-xueshimao1::before { content: "\e199"; }
-.sh-education-baichui::before { content: "\e19a"; }
-.sh-education-bijiben::before { content: "\e19b"; }
-.sh-education-bitong::before { content: "\e19c"; }
-.sh-education-chizi::before { content: "\e19d"; }
-.sh-education-chongdian::before { content: "\e19e"; }
-.sh-education-citie::before { content: "\e19f"; }
-.sh-education-daima::before { content: "\e1a0"; }
-.sh-education-deng::before { content: "\e1a1"; }
-.sh-education-dianliushiyan::before { content: "\e1a2"; }
-.sh-education-diqiu::before { content: "\e1a3"; }
-.sh-education-diqiuyi::before { content: "\e1a4"; }
-.sh-education-DNA::before { content: "\e1a5"; }
-.sh-education-fanyi::before { content: "\e1a6"; }
-.sh-education-gongwenbao::before { content: "\e1a7"; }
-.sh-education-heiban::before { content: "\e1a8"; }
-.sh-education-huiyi::before { content: "\e1a9"; }
-.sh-education-jiangbei::before { content: "\e1aa"; }
-.sh-education-jiaoxuelou::before { content: "\e1ab"; }
-.sh-education-jinpai::before { content: "\e1ac"; }
-.sh-education-jisuan::before { content: "\e1ad"; }
-.sh-education-jisuanqi::before { content: "\e1ae"; }
-.sh-education-naozhong::before { content: "\e1af"; }
-.sh-education-qianbi::before { content: "\e1b0"; }
-.sh-education-sepan::before { content: "\e1b1"; }
-.sh-education-shiyan::before { content: "\e1b2"; }
-.sh-education-shouji::before { content: "\e1b3"; }
-.sh-education-shuben::before { content: "\e1b4"; }
-.sh-education-shuxie::before { content: "\e1b5"; }
-.sh-education-sousuo::before { content: "\e1b6"; }
-.sh-education-suanpan::before { content: "\e1b7"; }
-.sh-education-tianping::before { content: "\e1b8"; }
-.sh-education-tingzhenqi::before { content: "\e1b9"; }
-.sh-education-tiyu::before { content: "\e1ba"; }
-.sh-education-wenjian::before { content: "\e1bb"; }
-.sh-education-xianweijing::before { content: "\e1bc"; }
-.sh-education-xiaoheiban::before { content: "\e1bd"; }
-.sh-education-xiezizhuo::before { content: "\e1be"; }
-.sh-education-xueshimao::before { content: "\e1bf"; }
-.sh-education-yuanpan::before { content: "\e1c0"; }
-.sh-festival-celianggongju::before { content: "\e1c1"; }
-.sh-festival-chunjie::before { content: "\e1c2"; }
-.sh-festival-duanwujie::before { content: "\e1c3"; }
-.sh-festival-ertongjie::before { content: "\e1c4"; }
-.sh-festival-fuqinjie::before { content: "\e1c5"; }
-.sh-festival-ganenjie::before { content: "\e1c6"; }
-.sh-festival-gongju::before { content: "\e1c7"; }
-.sh-festival-hushijie::before { content: "\e1c8"; }
-.sh-festival-jiaoshijie::before { content: "\e1c9"; }
-.sh-festival-laodongjie::before { content: "\e1ca"; }
-.sh-festival-muqinjie::before { content: "\e1cb"; }
-.sh-festival-nvshengjie::before { content: "\e1cc"; }
-.sh-festival-qingrenjie::before { content: "\e1cd"; }
-.sh-festival-qixi::before { content: "\e1ce"; }
-.sh-festival-shengdanjie::before { content: "\e1cf"; }
-.sh-festival-shuang::before { content: "\e1d0"; }
-.sh-festival-yuandan::before { content: "\e1d1"; }
-.sh-festival-yuanxiaojie::before { content: "\e1d2"; }
-.sh-festival-zhongqiujie::before { content: "\e1d3"; }
-.sh-festival-zhongyangjie::before { content: "\e1d4"; }
-.sh-food-binggan::before { content: "\e1d5"; }
-.sh-food-binggun::before { content: "\e1d6"; }
-.sh-food-bingqilin::before { content: "\e1d7"; }
-.sh-food-boluo::before { content: "\e1d8"; }
-.sh-food-caomei::before { content: "\e1d9"; }
-.sh-food-celianggongju::before { content: "\e1da"; }
-.sh-food-chengzi::before { content: "\e1db"; }
-.sh-food-dangao::before { content: "\e1dc"; }
-.sh-food-fanqiejiang::before { content: "\e1dd"; }
-.sh-food-gongju::before { content: "\e1de"; }
-.sh-food-hanbao::before { content: "\e1df"; }
-.sh-food-jiandan::before { content: "\e1e0"; }
-.sh-food-kafeibei::before { content: "\e1e1"; }
-.sh-food-lajiao::before { content: "\e1e2"; }
-.sh-food-naixi::before { content: "\e1e3"; }
-.sh-food-niunai::before { content: "\e1e4"; }
-.sh-food-pingguo::before { content: "\e1e5"; }
-.sh-food-pisa::before { content: "\e1e6"; }
-.sh-food-putao::before { content: "\e1e7"; }
-.sh-food-quqi::before { content: "\e1e8"; }
-.sh-food-regou::before { content: "\e1e9"; }
-.sh-food-shutiao::before { content: "\e1ea"; }
-.sh-food-sudaqishui::before { content: "\e1eb"; }
-.sh-food-taozi::before { content: "\e1ec"; }
-.sh-food-tiantianquan::before { content: "\e1ed"; }
-.sh-food-xiangjiao::before { content: "\e1ee"; }
-.sh-food-xigua::before { content: "\e1ef"; }
-.sh-food-xilanhua::before { content: "\e1f0"; }
-.sh-food-yingtao::before { content: "\e1f1"; }
-.sh-food-yumi::before { content: "\e1f2"; }
-.sh-medicine-a-1-shilibiao::before { content: "\e1f3"; }
-.sh-medicine-a-10-yiliaoxiang::before { content: "\e1f4"; }
-.sh-medicine-a-11-yiyongweishengzhi::before { content: "\e1f5"; }
-.sh-medicine-a-12-huxi::before { content: "\e1f6"; }
-.sh-medicine-a-13-xiguan::before { content: "\e1f7"; }
-.sh-medicine-a-14-zhutingqi::before { content: "\e1f8"; }
-.sh-medicine-a-15-bingdu::before { content: "\e1f9"; }
-.sh-medicine-a-16-yiyuan::before { content: "\e1fa"; }
-.sh-medicine-a-17-zhusheqi::before { content: "\e1fb"; }
-.sh-medicine-a-18-xiguan::before { content: "\e1fc"; }
-.sh-medicine-a-19guaizhang::before { content: "\e1fd"; }
-.sh-medicine-a-2-kouzhao::before { content: "\e1fe"; }
-.sh-medicine-a-20-shuye::before { content: "\e1ff"; }
-.sh-medicine-a-3-chuangkoutie::before { content: "\e200"; }
-.sh-medicine-a-4-lunyi::before { content: "\e201"; }
-.sh-medicine-a-5-mianqian::before { content: "\e202"; }
-.sh-medicine-a-6-jiancebi::before { content: "\e203"; }
-.sh-medicine-a-7-xinzang::before { content: "\e204"; }
-.sh-medicine-a-8-DNA::before { content: "\e205"; }
-.sh-medicine-a-9-tizhongcheng::before { content: "\e206"; }
-.sh-tools-gaizhui::before { content: "\e207"; }
-.sh-tools-ziyuan::before { content: "\e208"; }
-.sh-tools-ziyuan_1::before { content: "\e209"; }
-.sh-tools-ziyuan_10::before { content: "\e20a"; }
-.sh-tools-ziyuan_11::before { content: "\e20b"; }
-.sh-tools-ziyuan_12::before { content: "\e20c"; }
-.sh-tools-ziyuan_13::before { content: "\e20d"; }
-.sh-tools-ziyuan_14::before { content: "\e20e"; }
-.sh-tools-ziyuan_15::before { content: "\e20f"; }
-.sh-tools-ziyuan_16::before { content: "\e210"; }
-.sh-tools-ziyuan_17::before { content: "\e211"; }
-.sh-tools-ziyuan_18::before { content: "\e212"; }
-.sh-tools-ziyuan_2::before { content: "\e213"; }
-.sh-tools-ziyuan_3::before { content: "\e214"; }
-.sh-tools-ziyuan_4::before { content: "\e215"; }
-.sh-tools-ziyuan_5::before { content: "\e216"; }
-.sh-tools-ziyuan_6::before { content: "\e217"; }
-.sh-tools-ziyuan_7::before { content: "\e218"; }
-.sh-tools-ziyuan_8::before { content: "\e219"; }
-.sh-tools-ziyuan_9::before { content: "\e21a"; }
-.sh-travel-banshouli::before { content: "\e21b"; }
-.sh-travel-chuhangshijian::before { content: "\e21c"; }
-.sh-travel-ditu::before { content: "\e21d"; }
-.sh-travel-fengjing::before { content: "\e21e"; }
-.sh-travel-gonglve::before { content: "\e21f"; }
-.sh-travel-hangli::before { content: "\e220"; }
-.sh-travel-huafei::before { content: "\e221"; }
-.sh-travel-jipiao::before { content: "\e222"; }
-.sh-travel-jiudian::before { content: "\e223"; }
-.sh-travel-lvban::before { content: "\e224"; }
-.sh-travel-meishi::before { content: "\e225"; }
-.sh-travel-menpiao::before { content: "\e226"; }
-.sh-travel-paishe::before { content: "\e227"; }
-.sh-travel-qianzheng::before { content: "\e228"; }
-.sh-travel-shangdian::before { content: "\e229"; }
-.sh-travel-tianqi::before { content: "\e22a"; }
-.sh-travel-youlechangsuo::before { content: "\e22b"; }
-.sh-travel-yuyanfanyi::before { content: "\e22c"; }
-.sh-travel-zhuyishixiang::before { content: "\e22d"; }
-.sh-travel-zuche::before { content: "\e22e"; }
+.sh-add-dept::before {
+  content: "\e000";
+}
+.sh-add::before {
+  content: "\e001";
+}
+.sh-advanced_template::before {
+  content: "\e002";
+}
+.sh-advance_preps::before {
+  content: "\e003";
+}
+.sh-alert::before {
+  content: "\e004";
+}
+.sh-align_bottom::before {
+  content: "\e005";
+}
+.sh-align_left::before {
+  content: "\e006";
+}
+.sh-align_right::before {
+  content: "\e007";
+}
+.sh-align_top::before {
+  content: "\e008";
+}
+.sh-alipay::before {
+  content: "\e009";
+}
+.sh-amplify::before {
+  content: "\e00a";
+}
+.sh-arrow-double-down::before {
+  content: "\e00b";
+}
+.sh-arrow-double-left::before {
+  content: "\e00c";
+}
+.sh-arrow-double-right::before {
+  content: "\e00d";
+}
+.sh-arrow-double-up::before {
+  content: "\e00e";
+}
+.sh-arrow-down::before {
+  content: "\e00f";
+}
+.sh-arrow-left::before {
+  content: "\e010";
+}
+.sh-arrow-right::before {
+  content: "\e011";
+}
+.sh-ashbin::before {
+  content: "\e012";
+}
+.sh-audio::before {
+  content: "\e013";
+}
+.sh-auditor::before {
+  content: "\e014";
+}
+.sh-audit_node::before {
+  content: "\e015";
+}
+.sh-autocomplete::before {
+  content: "\e016";
+}
+.sh-auto_fit::before {
+  content: "\e017";
+}
+.sh-back::before {
+  content: "\e018";
+}
+.sh-backup::before {
+  content: "\e019";
+}
+.sh-base_preps::before {
+  content: "\e01a";
+}
+.sh-base_setting::before {
+  content: "\e01b";
+}
+.sh-batch-add::before {
+  content: "\e01c";
+}
+.sh-batch_delete1::before {
+  content: "\e01d";
+}
+.sh-batch_delete2::before {
+  content: "\e01e";
+}
+.sh-batch_delete3::before {
+  content: "\e01f";
+}
+.sh-batch_download::before {
+  content: "\e020";
+}
+.sh-box::before {
+  content: "\e021";
+}
+.sh-branch_node::before {
+  content: "\e022";
+}
+.sh-btn-upload::before {
+  content: "\e023";
+}
+.sh-button::before {
+  content: "\e024";
+}
+.sh-calendar::before {
+  content: "\e025";
+}
+.sh-cancel::before {
+  content: "\e026";
+}
+.sh-carbon-copy::before {
+  content: "\e027";
+}
+.sh-card::before {
+  content: "\e028";
+}
+.sh-card1::before {
+  content: "\e029";
+}
+.sh-cascade::before {
+  content: "\e02a";
+}
+.sh-cascader-field::before {
+  content: "\e02b";
+}
+.sh-center::before {
+  content: "\e02c";
+}
+.sh-charts::before {
+  content: "\e02d";
+}
+.sh-check::before {
+  content: "\e02e";
+}
+.sh-checkbox-field::before {
+  content: "\e02f";
+}
+.sh-checkbox::before {
+  content: "\e030";
+}
+.sh-clear-all::before {
+  content: "\e031";
+}
+.sh-clone::before {
+  content: "\e032";
+}
+.sh-close-all::before {
+  content: "\e033";
+}
+.sh-close::before {
+  content: "\e034";
+}
+.sh-code::before {
+  content: "\e035";
+}
+.sh-collapse::before {
+  content: "\e036";
+}
+.sh-color-field::before {
+  content: "\e037";
+}
+.sh-color::before {
+  content: "\e038";
+}
+.sh-component::before {
+  content: "\e039";
+}
+.sh-condition::before {
+  content: "\e03a";
+}
+.sh-config::before {
+  content: "\e03b";
+}
+.sh-config1::before {
+  content: "\e03c";
+}
+.sh-console_manage::before {
+  content: "\e03d";
+}
+.sh-container::before {
+  content: "\e03e";
+}
+.sh-content_manag::before {
+  content: "\e03f";
+}
+.sh-continus-ai::before {
+  content: "\e040";
+}
+.sh-continus-android::before {
+  content: "\e041";
+}
+.sh-continus-api::before {
+  content: "\e042";
+}
+.sh-continus-app-deploy::before {
+  content: "\e043";
+}
+.sh-continus-app-sql-audit::before {
+  content: "\e044";
+}
+.sh-continus-archive::before {
+  content: "\e045";
+}
+.sh-continus-audit-compliance::before {
+  content: "\e046";
+}
+.sh-continus-caas::before {
+  content: "\e047";
+}
+.sh-continus-caasd::before {
+  content: "\e048";
+}
+.sh-continus-compile::before {
+  content: "\e049";
+}
+.sh-continus-consistence-check::before {
+  content: "\e04a";
+}
+.sh-continus-cpp::before {
+  content: "\e04b";
+}
+.sh-continus-db-audit::before {
+  content: "\e04c";
+}
+.sh-continus-deploy::before {
+  content: "\e04d";
+}
+.sh-continus-docker::before {
+  content: "\e04e";
+}
+.sh-continus-elasticsearch::before {
+  content: "\e04f";
+}
+.sh-continus-fortify::before {
+  content: "\e050";
+}
+.sh-continus-golang::before {
+  content: "\e051";
+}
+.sh-continus-http::before {
+  content: "\e052";
+}
+.sh-continus-increment::before {
+  content: "\e053";
+}
+.sh-continus-ios::before {
+  content: "\e054";
+}
+.sh-continus-java::before {
+  content: "\e055";
+}
+.sh-continus-jenkins::before {
+  content: "\e056";
+}
+.sh-continus-junit::before {
+  content: "\e057";
+}
+.sh-continus-k8s::before {
+  content: "\e058";
+}
+.sh-continus-nodejs::before {
+  content: "\e059";
+}
+.sh-continus-python::before {
+  content: "\e05a";
+}
+.sh-continus-quality-gates::before {
+  content: "\e05b";
+}
+.sh-continus-safe::before {
+  content: "\e05c";
+}
+.sh-continus-script-task::before {
+  content: "\e05d";
+}
+.sh-continus-sonar::before {
+  content: "\e05e";
+}
+.sh-continus-windows::before {
+  content: "\e05f";
+}
+.sh-copy::before {
+  content: "\e060";
+}
+.sh-copy_node::before {
+  content: "\e061";
+}
+.sh-crontab::before {
+  content: "\e062";
+}
+.sh-cursor-move::before {
+  content: "\e063";
+}
+.sh-custom_component::before {
+  content: "\e064";
+}
+.sh-cut::before {
+  content: "\e065";
+}
+.sh-data-card::before {
+  content: "\e066";
+}
+.sh-data-syn::before {
+  content: "\e067";
+}
+.sh-data-table::before {
+  content: "\e068";
+}
+.sh-data-view::before {
+  content: "\e069";
+}
+.sh-database::before {
+  content: "\e06a";
+}
+.sh-data_center::before {
+  content: "\e06b";
+}
+.sh-data_db::before {
+  content: "\e06c";
+}
+.sh-data_edit::before {
+  content: "\e06d";
+}
+.sh-date-field::before {
+  content: "\e06e";
+}
+.sh-date-range-field::before {
+  content: "\e06f";
+}
+.sh-datetime::before {
+  content: "\e070";
+}
+.sh-default::before {
+  content: "\e071";
+}
+.sh-delete-comp::before {
+  content: "\e072";
+}
+.sh-delete-fill::before {
+  content: "\e073";
+}
+.sh-delete::before {
+  content: "\e074";
+}
+.sh-dept::before {
+  content: "\e075";
+}
+.sh-diagram::before {
+  content: "\e076";
+}
+.sh-direction-down::before {
+  content: "\e077";
+}
+.sh-direction-left::before {
+  content: "\e078";
+}
+.sh-direction-right::before {
+  content: "\e079";
+}
+.sh-direction-up::before {
+  content: "\e07a";
+}
+.sh-divider::before {
+  content: "\e07b";
+}
+.sh-document::before {
+  content: "\e07c";
+}
+.sh-document_download::before {
+  content: "\e07d";
+}
+.sh-down-layer::before {
+  content: "\e07e";
+}
+.sh-download-svg::before {
+  content: "\e07f";
+}
+.sh-download::before {
+  content: "\e080";
+}
+.sh-drag-move::before {
+  content: "\e081";
+}
+.sh-drag::before {
+  content: "\e082";
+}
+.sh-dustbin::before {
+  content: "\e083";
+}
+.sh-edit::before {
+  content: "\e084";
+}
+.sh-edit_node::before {
+  content: "\e085";
+}
+.sh-ellipsis::before {
+  content: "\e086";
+}
+.sh-email::before {
+  content: "\e087";
+}
+.sh-empty_image::before {
+  content: "\e088";
+}
+.sh-empty_setting::before {
+  content: "\e089";
+}
+.sh-equal::before {
+  content: "\e08a";
+}
+.sh-event-action::before {
+  content: "\e08b";
+}
+.sh-event::before {
+  content: "\e08c";
+}
+.sh-event_node::before {
+  content: "\e08d";
+}
+.sh-excel-export::before {
+  content: "\e08e";
+}
+.sh-excel-upload::before {
+  content: "\e08f";
+}
+.sh-exchange::before {
+  content: "\e090";
+}
+.sh-exclamation-circle::before {
+  content: "\e091";
+}
+.sh-exec1::before {
+  content: "\e092";
+}
+.sh-expand::before {
+  content: "\e093";
+}
+.sh-export::before {
+  content: "\e094";
+}
+.sh-eye-close::before {
+  content: "\e095";
+}
+.sh-eye-open::before {
+  content: "\e096";
+}
+.sh-eye::before {
+  content: "\e097";
+}
+.sh-fcswitch::before {
+  content: "\e098";
+}
+.sh-file-add::before {
+  content: "\e099";
+}
+.sh-file-export::before {
+  content: "\e09a";
+}
+.sh-file-upload-field::before {
+  content: "\e09b";
+}
+.sh-file_download::before {
+  content: "\e09c";
+}
+.sh-file_transfer::before {
+  content: "\e09d";
+}
+.sh-filter::before {
+  content: "\e09e";
+}
+.sh-flow-add-user::before {
+  content: "\e09f";
+}
+.sh-flow-agree::before {
+  content: "\e0a0";
+}
+.sh-flow-back::before {
+  content: "\e0a1";
+}
+.sh-flow-cc::before {
+  content: "\e0a2";
+}
+.sh-flow-reduce-user::before {
+  content: "\e0a3";
+}
+.sh-flow-reject::before {
+  content: "\e0a4";
+}
+.sh-flow-revoke::before {
+  content: "\e0a5";
+}
+.sh-flow-trace::before {
+  content: "\e0a6";
+}
+.sh-flow-turn::before {
+  content: "\e0a7";
+}
+.sh-flow_setting::before {
+  content: "\e0a8";
+}
+.sh-flow_temp_icon::before {
+  content: "\e0a9";
+}
+.sh-folder::before {
+  content: "\e0aa";
+}
+.sh-form-template::before {
+  content: "\e0ab";
+}
+.sh-form::before {
+  content: "\e0ac";
+}
+.sh-format::before {
+  content: "\e0ad";
+}
+.sh-friend_add::before {
+  content: "\e0ae";
+}
+.sh-fullscreen-expand::before {
+  content: "\e0af";
+}
+.sh-fullscreen-shrink::before {
+  content: "\e0b0";
+}
+.sh-github::before {
+  content: "\e0b1";
+}
+.sh-gitlab::before {
+  content: "\e0b2";
+}
+.sh-grid::before {
+  content: "\e0b3";
+}
+.sh-handle_node::before {
+  content: "\e0b4";
+}
+.sh-help::before {
+  content: "\e0b5";
+}
+.sh-hide::before {
+  content: "\e0b6";
+}
+.sh-home::before {
+  content: "\e0b7";
+}
+.sh-horizontal-align::before {
+  content: "\e0b8";
+}
+.sh-html-text::before {
+  content: "\e0b9";
+}
+.sh-icon-app::before {
+  content: "\e0ba";
+}
+.sh-icon::before {
+  content: "\e0bb";
+}
+.sh-image::before {
+  content: "\e0bc";
+}
+.sh-info::before {
+  content: "\e0bd";
+}
+.sh-input::before {
+  content: "\e0be";
+}
+.sh-insert-column::before {
+  content: "\e0bf";
+}
+.sh-insert-row::before {
+  content: "\e0c0";
+}
+.sh-insert_col::before {
+  content: "\e0c1";
+}
+.sh-insert_row::before {
+  content: "\e0c2";
+}
+.sh-json_file::before {
+  content: "\e0c3";
+}
+.sh-layout::before {
+  content: "\e0c4";
+}
+.sh-left_panel::before {
+  content: "\e0c5";
+}
+.sh-line_arrow::before {
+  content: "\e0c6";
+}
+.sh-link::before {
+  content: "\e0c7";
+}
+.sh-list-left::before {
+  content: "\e0c8";
+}
+.sh-list-right::before {
+  content: "\e0c9";
+}
+.sh-list::before {
+  content: "\e0ca";
+}
+.sh-login_in::before {
+  content: "\e0cb";
+}
+.sh-login_out::before {
+  content: "\e0cc";
+}
+.sh-logo::before {
+  content: "\e0cd";
+}
+.sh-map::before {
+  content: "\e0ce";
+}
+.sh-meeting::before {
+  content: "\e0cf";
+}
+.sh-menu::before {
+  content: "\e0d0";
+}
+.sh-message::before {
+  content: "\e0d1";
+}
+.sh-messages::before {
+  content: "\e0d2";
+}
+.sh-minus-circle-fill::before {
+  content: "\e0d3";
+}
+.sh-minus-circle::before {
+  content: "\e0d4";
+}
+.sh-minus::before {
+  content: "\e0d5";
+}
+.sh-more::before {
+  content: "\e0d6";
+}
+.sh-move-down::before {
+  content: "\e0d7";
+}
+.sh-move-up::before {
+  content: "\e0d8";
+}
+.sh-move::before {
+  content: "\e0d9";
+}
+.sh-new-file::before {
+  content: "\e0da";
+}
+.sh-new::before {
+  content: "\e0db";
+}
+.sh-node-tree::before {
+  content: "\e0dc";
+}
+.sh-notice_node::before {
+  content: "\e0dd";
+}
+.sh-no_eye::before {
+  content: "\e0de";
+}
+.sh-number-field::before {
+  content: "\e0df";
+}
+.sh-number::before {
+  content: "\e0e0";
+}
+.sh-open-file::before {
+  content: "\e0e1";
+}
+.sh-operation::before {
+  content: "\e0e2";
+}
+.sh-ops_manage::before {
+  content: "\e0e3";
+}
+.sh-other::before {
+  content: "\e0e4";
+}
+.sh-other_system::before {
+  content: "\e0e5";
+}
+.sh-pad::before {
+  content: "\e0e6";
+}
+.sh-parallel_node::before {
+  content: "\e0e7";
+}
+.sh-password::before {
+  content: "\e0e8";
+}
+.sh-paste::before {
+  content: "\e0e9";
+}
+.sh-pc::before {
+  content: "\e0ea";
+}
+.sh-pdf::before {
+  content: "\e0eb";
+}
+.sh-phone::before {
+  content: "\e0ec";
+}
+.sh-picture-upload-field::before {
+  content: "\e0ed";
+}
+.sh-plus::before {
+  content: "\e0ee";
+}
+.sh-plus_circle::before {
+  content: "\e0ef";
+}
+.sh-plus_diamond::before {
+  content: "\e0f0";
+}
+.sh-position::before {
+  content: "\e0f1";
+}
+.sh-prep::before {
+  content: "\e0f2";
+}
+.sh-preps::before {
+  content: "\e0f3";
+}
+.sh-preview::before {
+  content: "\e0f4";
+}
+.sh-publish::before {
+  content: "\e0f5";
+}
+.sh-qrcode::before {
+  content: "\e0f6";
+}
+.sh-question-circle::before {
+  content: "\e0f7";
+}
+.sh-radio-field::before {
+  content: "\e0f8";
+}
+.sh-radio::before {
+  content: "\e0f9";
+}
+.sh-rate-field::before {
+  content: "\e0fa";
+}
+.sh-rate::before {
+  content: "\e0fb";
+}
+.sh-rectangle::before {
+  content: "\e0fc";
+}
+.sh-redo::before {
+  content: "\e0fd";
+}
+.sh-reduce::before {
+  content: "\e0fe";
+}
+.sh-refresh::before {
+  content: "\e0ff";
+}
+.sh-reset::before {
+  content: "\e100";
+}
+.sh-return::before {
+  content: "\e101";
+}
+.sh-rich-editor-field::before {
+  content: "\e102";
+}
+.sh-right_panel::before {
+  content: "\e103";
+}
+.sh-role::before {
+  content: "\e104";
+}
+.sh-ruler::before {
+  content: "\e105";
+}
+.sh-run-in::before {
+  content: "\e106";
+}
+.sh-run-up::before {
+  content: "\e107";
+}
+.sh-run::before {
+  content: "\e108";
+}
+.sh-runing::before {
+  content: "\e109";
+}
+.sh-save::before {
+  content: "\e10a";
+}
+.sh-save_continue::before {
+  content: "\e10b";
+}
+.sh-scale::before {
+  content: "\e10c";
+}
+.sh-scroll::before {
+  content: "\e10d";
+}
+.sh-search-minus::before {
+  content: "\e10e";
+}
+.sh-search::before {
+  content: "\e10f";
+}
+.sh-search_down::before {
+  content: "\e110";
+}
+.sh-search_up::before {
+  content: "\e111";
+}
+.sh-section::before {
+  content: "\e112";
+}
+.sh-select-all::before {
+  content: "\e113";
+}
+.sh-select-data::before {
+  content: "\e114";
+}
+.sh-select-field::before {
+  content: "\e115";
+}
+.sh-select-parent::before {
+  content: "\e116";
+}
+.sh-select::before {
+  content: "\e117";
+}
+.sh-select_mode::before {
+  content: "\e118";
+}
+.sh-self_template::before {
+  content: "\e119";
+}
+.sh-set-up::before {
+  content: "\e11a";
+}
+.sh-setting::before {
+  content: "\e11b";
+}
+.sh-shapes::before {
+  content: "\e11c";
+}
+.sh-share::before {
+  content: "\e11d";
+}
+.sh-short_save::before {
+  content: "\e11e";
+}
+.sh-sign::before {
+  content: "\e11f";
+}
+.sh-slider-field::before {
+  content: "\e120";
+}
+.sh-slider::before {
+  content: "\e121";
+}
+.sh-slot-component::before {
+  content: "\e122";
+}
+.sh-slot-field::before {
+  content: "\e123";
+}
+.sh-static-text::before {
+  content: "\e124";
+}
+.sh-stop::before {
+  content: "\e125";
+}
+.sh-style::before {
+  content: "\e126";
+}
+.sh-sub-form::before {
+  content: "\e127";
+}
+.sh-switch-field::before {
+  content: "\e128";
+}
+.sh-switch::before {
+  content: "\e129";
+}
+.sh-sys-authority::before {
+  content: "\e12a";
+}
+.sh-system_manage::before {
+  content: "\e12b";
+}
+.sh-tab::before {
+  content: "\e12c";
+}
+.sh-table::before {
+  content: "\e12d";
+}
+.sh-task::before {
+  content: "\e12e";
+}
+.sh-template::before {
+  content: "\e12f";
+}
+.sh-template_download::before {
+  content: "\e130";
+}
+.sh-text-field::before {
+  content: "\e131";
+}
+.sh-text::before {
+  content: "\e132";
+}
+.sh-textarea-field::before {
+  content: "\e133";
+}
+.sh-textarea::before {
+  content: "\e134";
+}
+.sh-time-field::before {
+  content: "\e135";
+}
+.sh-time-range-field::before {
+  content: "\e136";
+}
+.sh-timer::before {
+  content: "\e137";
+}
+.sh-to-bottom::before {
+  content: "\e138";
+}
+.sh-to-top::before {
+  content: "\e139";
+}
+.sh-today::before {
+  content: "\e13a";
+}
+.sh-transfer::before {
+  content: "\e13b";
+}
+.sh-tselect::before {
+  content: "\e13c";
+}
+.sh-undo::before {
+  content: "\e13d";
+}
+.sh-up-layer::before {
+  content: "\e13e";
+}
+.sh-upload::before {
+  content: "\e13f";
+}
+.sh-user-add::before {
+  content: "\e140";
+}
+.sh-user-circle::before {
+  content: "\e141";
+}
+.sh-user-edit::before {
+  content: "\e142";
+}
+.sh-usual_setting::before {
+  content: "\e143";
+}
+.sh-v-dot::before {
+  content: "\e144";
+}
+.sh-valid::before {
+  content: "\e145";
+}
+.sh-vedio::before {
+  content: "\e146";
+}
+.sh-vertical-align::before {
+  content: "\e147";
+}
+.sh-vertical_arrow::before {
+  content: "\e148";
+}
+.sh-video::before {
+  content: "\e149";
+}
+.sh-view::before {
+  content: "\e14a";
+}
+.sh-vip_template::before {
+  content: "\e14b";
+}
+.sh-vue-sfc::before {
+  content: "\e14c";
+}
+.sh-warning::before {
+  content: "\e14d";
+}
+.sh-wechat::before {
+  content: "\e14e";
+}
+.sh-weibo::before {
+  content: "\e14f";
+}
+.sh-workstation_setting::before {
+  content: "\e150";
+}
+.sh-xitong::before {
+  content: "\e151";
+}
+.sh-xitong13::before {
+  content: "\e152";
+}
+.sh-xtcsh::before {
+  content: "\e153";
+}
+.sh-xtgl::before {
+  content: "\e154";
+}
+.sh-zoom-in::before {
+  content: "\e155";
+}
+.sh-zoom_in::before {
+  content: "\e156";
+}
+.sh-zoom_out::before {
+  content: "\e157";
+}
+.sh-business--::before {
+  content: "\e158";
+}
+.sh-business--_1::before {
+  content: "\e159";
+}
+.sh-business--_10::before {
+  content: "\e15a";
+}
+.sh-business--_11::before {
+  content: "\e15b";
+}
+.sh-business--_12::before {
+  content: "\e15c";
+}
+.sh-business--_13::before {
+  content: "\e15d";
+}
+.sh-business--_14::before {
+  content: "\e15e";
+}
+.sh-business--_15::before {
+  content: "\e15f";
+}
+.sh-business--_16::before {
+  content: "\e160";
+}
+.sh-business--_17::before {
+  content: "\e161";
+}
+.sh-business--_18::before {
+  content: "\e162";
+}
+.sh-business--_2::before {
+  content: "\e163";
+}
+.sh-business--_3::before {
+  content: "\e164";
+}
+.sh-business--_4::before {
+  content: "\e165";
+}
+.sh-business--_5::before {
+  content: "\e166";
+}
+.sh-business--_6::before {
+  content: "\e167";
+}
+.sh-business--_7::before {
+  content: "\e168";
+}
+.sh-business--_8::before {
+  content: "\e169";
+}
+.sh-business--_9::before {
+  content: "\e16a";
+}
+.sh-business-changyongziyuan::before {
+  content: "\e16b";
+}
+.sh-business-chuchashenpi::before {
+  content: "\e16c";
+}
+.sh-business-fanwendengji::before {
+  content: "\e16d";
+}
+.sh-business-feizhengshiwendengji::before {
+  content: "\e16e";
+}
+.sh-business-gongwenjiaohuan::before {
+  content: "\e16f";
+}
+.sh-business-gongzuohuibao::before {
+  content: "\e170";
+}
+.sh-business-gudingzichan::before {
+  content: "\e171";
+}
+.sh-business-huiyiguanli::before {
+  content: "\e172";
+}
+.sh-business-huiyiyuding::before {
+  content: "\e173";
+}
+.sh-business-kaoqinguanli::before {
+  content: "\e174";
+}
+.sh-business-OAxitong::before {
+  content: "\e175";
+}
+.sh-business-qingxiujiashenqing::before {
+  content: "\e176";
+}
+.sh-business-sannianjihua::before {
+  content: "\e177";
+}
+.sh-business-tongzhifabu::before {
+  content: "\e178";
+}
+.sh-business-xiangmuguanli::before {
+  content: "\e179";
+}
+.sh-business-xinxitougao::before {
+  content: "\e17a";
+}
+.sh-business-zhishichanquan::before {
+  content: "\e17b";
+}
+.sh-business-zhongxindongtaifabu::before {
+  content: "\e17c";
+}
+.sh-business-zongheshenpi::before {
+  content: "\e17d";
+}
+.sh-education-a-1-shilibiao::before {
+  content: "\e17e";
+}
+.sh-education-a-10-yiliaoxiang::before {
+  content: "\e17f";
+}
+.sh-education-a-11-yiyongweishengzhi::before {
+  content: "\e180";
+}
+.sh-education-a-12-huxi::before {
+  content: "\e181";
+}
+.sh-education-a-13-xiguan::before {
+  content: "\e182";
+}
+.sh-education-a-14-zhutingqi::before {
+  content: "\e183";
+}
+.sh-education-a-15-bingdu::before {
+  content: "\e184";
+}
+.sh-education-a-16-yiyuan::before {
+  content: "\e185";
+}
+.sh-education-a-17-zhusheqi::before {
+  content: "\e186";
+}
+.sh-education-a-18-xiguan::before {
+  content: "\e187";
+}
+.sh-education-a-19guaizhang::before {
+  content: "\e188";
+}
+.sh-education-a-2-kouzhao::before {
+  content: "\e189";
+}
+.sh-education-a-20-shuye::before {
+  content: "\e18a";
+}
+.sh-education-a-3-chuangkoutie::before {
+  content: "\e18b";
+}
+.sh-education-a-4-lunyi::before {
+  content: "\e18c";
+}
+.sh-education-a-5-mianqian::before {
+  content: "\e18d";
+}
+.sh-education-a-6-jiancebi::before {
+  content: "\e18e";
+}
+.sh-education-a-7-xinzang::before {
+  content: "\e18f";
+}
+.sh-education-a-8-DNA::before {
+  content: "\e190";
+}
+.sh-education-a-9-tizhongcheng::before {
+  content: "\e191";
+}
+.sh-education-a-bitong1::before {
+  content: "\e192";
+}
+.sh-education-a-shu2::before {
+  content: "\e193";
+}
+.sh-education-a-shu4::before {
+  content: "\e194";
+}
+.sh-education-a-shu5::before {
+  content: "\e195";
+}
+.sh-education-a-shuben2::before {
+  content: "\e196";
+}
+.sh-education-a-shuben3::before {
+  content: "\e197";
+}
+.sh-education-a-shuben4::before {
+  content: "\e198";
+}
+.sh-education-a-xueshimao1::before {
+  content: "\e199";
+}
+.sh-education-baichui::before {
+  content: "\e19a";
+}
+.sh-education-bijiben::before {
+  content: "\e19b";
+}
+.sh-education-bitong::before {
+  content: "\e19c";
+}
+.sh-education-chizi::before {
+  content: "\e19d";
+}
+.sh-education-chongdian::before {
+  content: "\e19e";
+}
+.sh-education-citie::before {
+  content: "\e19f";
+}
+.sh-education-daima::before {
+  content: "\e1a0";
+}
+.sh-education-deng::before {
+  content: "\e1a1";
+}
+.sh-education-dianliushiyan::before {
+  content: "\e1a2";
+}
+.sh-education-diqiu::before {
+  content: "\e1a3";
+}
+.sh-education-diqiuyi::before {
+  content: "\e1a4";
+}
+.sh-education-DNA::before {
+  content: "\e1a5";
+}
+.sh-education-fanyi::before {
+  content: "\e1a6";
+}
+.sh-education-gongwenbao::before {
+  content: "\e1a7";
+}
+.sh-education-heiban::before {
+  content: "\e1a8";
+}
+.sh-education-huiyi::before {
+  content: "\e1a9";
+}
+.sh-education-jiangbei::before {
+  content: "\e1aa";
+}
+.sh-education-jiaoxuelou::before {
+  content: "\e1ab";
+}
+.sh-education-jinpai::before {
+  content: "\e1ac";
+}
+.sh-education-jisuan::before {
+  content: "\e1ad";
+}
+.sh-education-jisuanqi::before {
+  content: "\e1ae";
+}
+.sh-education-naozhong::before {
+  content: "\e1af";
+}
+.sh-education-qianbi::before {
+  content: "\e1b0";
+}
+.sh-education-sepan::before {
+  content: "\e1b1";
+}
+.sh-education-shiyan::before {
+  content: "\e1b2";
+}
+.sh-education-shouji::before {
+  content: "\e1b3";
+}
+.sh-education-shuben::before {
+  content: "\e1b4";
+}
+.sh-education-shuxie::before {
+  content: "\e1b5";
+}
+.sh-education-sousuo::before {
+  content: "\e1b6";
+}
+.sh-education-suanpan::before {
+  content: "\e1b7";
+}
+.sh-education-tianping::before {
+  content: "\e1b8";
+}
+.sh-education-tingzhenqi::before {
+  content: "\e1b9";
+}
+.sh-education-tiyu::before {
+  content: "\e1ba";
+}
+.sh-education-wenjian::before {
+  content: "\e1bb";
+}
+.sh-education-xianweijing::before {
+  content: "\e1bc";
+}
+.sh-education-xiaoheiban::before {
+  content: "\e1bd";
+}
+.sh-education-xiezizhuo::before {
+  content: "\e1be";
+}
+.sh-education-xueshimao::before {
+  content: "\e1bf";
+}
+.sh-education-yuanpan::before {
+  content: "\e1c0";
+}
+.sh-festival-celianggongju::before {
+  content: "\e1c1";
+}
+.sh-festival-chunjie::before {
+  content: "\e1c2";
+}
+.sh-festival-duanwujie::before {
+  content: "\e1c3";
+}
+.sh-festival-ertongjie::before {
+  content: "\e1c4";
+}
+.sh-festival-fuqinjie::before {
+  content: "\e1c5";
+}
+.sh-festival-ganenjie::before {
+  content: "\e1c6";
+}
+.sh-festival-gongju::before {
+  content: "\e1c7";
+}
+.sh-festival-hushijie::before {
+  content: "\e1c8";
+}
+.sh-festival-jiaoshijie::before {
+  content: "\e1c9";
+}
+.sh-festival-laodongjie::before {
+  content: "\e1ca";
+}
+.sh-festival-muqinjie::before {
+  content: "\e1cb";
+}
+.sh-festival-nvshengjie::before {
+  content: "\e1cc";
+}
+.sh-festival-qingrenjie::before {
+  content: "\e1cd";
+}
+.sh-festival-qixi::before {
+  content: "\e1ce";
+}
+.sh-festival-shengdanjie::before {
+  content: "\e1cf";
+}
+.sh-festival-shuang::before {
+  content: "\e1d0";
+}
+.sh-festival-yuandan::before {
+  content: "\e1d1";
+}
+.sh-festival-yuanxiaojie::before {
+  content: "\e1d2";
+}
+.sh-festival-zhongqiujie::before {
+  content: "\e1d3";
+}
+.sh-festival-zhongyangjie::before {
+  content: "\e1d4";
+}
+.sh-food-binggan::before {
+  content: "\e1d5";
+}
+.sh-food-binggun::before {
+  content: "\e1d6";
+}
+.sh-food-bingqilin::before {
+  content: "\e1d7";
+}
+.sh-food-boluo::before {
+  content: "\e1d8";
+}
+.sh-food-caomei::before {
+  content: "\e1d9";
+}
+.sh-food-celianggongju::before {
+  content: "\e1da";
+}
+.sh-food-chengzi::before {
+  content: "\e1db";
+}
+.sh-food-dangao::before {
+  content: "\e1dc";
+}
+.sh-food-fanqiejiang::before {
+  content: "\e1dd";
+}
+.sh-food-gongju::before {
+  content: "\e1de";
+}
+.sh-food-hanbao::before {
+  content: "\e1df";
+}
+.sh-food-jiandan::before {
+  content: "\e1e0";
+}
+.sh-food-kafeibei::before {
+  content: "\e1e1";
+}
+.sh-food-lajiao::before {
+  content: "\e1e2";
+}
+.sh-food-naixi::before {
+  content: "\e1e3";
+}
+.sh-food-niunai::before {
+  content: "\e1e4";
+}
+.sh-food-pingguo::before {
+  content: "\e1e5";
+}
+.sh-food-pisa::before {
+  content: "\e1e6";
+}
+.sh-food-putao::before {
+  content: "\e1e7";
+}
+.sh-food-quqi::before {
+  content: "\e1e8";
+}
+.sh-food-regou::before {
+  content: "\e1e9";
+}
+.sh-food-shutiao::before {
+  content: "\e1ea";
+}
+.sh-food-sudaqishui::before {
+  content: "\e1eb";
+}
+.sh-food-taozi::before {
+  content: "\e1ec";
+}
+.sh-food-tiantianquan::before {
+  content: "\e1ed";
+}
+.sh-food-xiangjiao::before {
+  content: "\e1ee";
+}
+.sh-food-xigua::before {
+  content: "\e1ef";
+}
+.sh-food-xilanhua::before {
+  content: "\e1f0";
+}
+.sh-food-yingtao::before {
+  content: "\e1f1";
+}
+.sh-food-yumi::before {
+  content: "\e1f2";
+}
+.sh-medicine-a-1-shilibiao::before {
+  content: "\e1f3";
+}
+.sh-medicine-a-10-yiliaoxiang::before {
+  content: "\e1f4";
+}
+.sh-medicine-a-11-yiyongweishengzhi::before {
+  content: "\e1f5";
+}
+.sh-medicine-a-12-huxi::before {
+  content: "\e1f6";
+}
+.sh-medicine-a-13-xiguan::before {
+  content: "\e1f7";
+}
+.sh-medicine-a-14-zhutingqi::before {
+  content: "\e1f8";
+}
+.sh-medicine-a-15-bingdu::before {
+  content: "\e1f9";
+}
+.sh-medicine-a-16-yiyuan::before {
+  content: "\e1fa";
+}
+.sh-medicine-a-17-zhusheqi::before {
+  content: "\e1fb";
+}
+.sh-medicine-a-18-xiguan::before {
+  content: "\e1fc";
+}
+.sh-medicine-a-19guaizhang::before {
+  content: "\e1fd";
+}
+.sh-medicine-a-2-kouzhao::before {
+  content: "\e1fe";
+}
+.sh-medicine-a-20-shuye::before {
+  content: "\e1ff";
+}
+.sh-medicine-a-3-chuangkoutie::before {
+  content: "\e200";
+}
+.sh-medicine-a-4-lunyi::before {
+  content: "\e201";
+}
+.sh-medicine-a-5-mianqian::before {
+  content: "\e202";
+}
+.sh-medicine-a-6-jiancebi::before {
+  content: "\e203";
+}
+.sh-medicine-a-7-xinzang::before {
+  content: "\e204";
+}
+.sh-medicine-a-8-DNA::before {
+  content: "\e205";
+}
+.sh-medicine-a-9-tizhongcheng::before {
+  content: "\e206";
+}
+.sh-tools-gaizhui::before {
+  content: "\e207";
+}
+.sh-tools-ziyuan::before {
+  content: "\e208";
+}
+.sh-tools-ziyuan_1::before {
+  content: "\e209";
+}
+.sh-tools-ziyuan_10::before {
+  content: "\e20a";
+}
+.sh-tools-ziyuan_11::before {
+  content: "\e20b";
+}
+.sh-tools-ziyuan_12::before {
+  content: "\e20c";
+}
+.sh-tools-ziyuan_13::before {
+  content: "\e20d";
+}
+.sh-tools-ziyuan_14::before {
+  content: "\e20e";
+}
+.sh-tools-ziyuan_15::before {
+  content: "\e20f";
+}
+.sh-tools-ziyuan_16::before {
+  content: "\e210";
+}
+.sh-tools-ziyuan_17::before {
+  content: "\e211";
+}
+.sh-tools-ziyuan_18::before {
+  content: "\e212";
+}
+.sh-tools-ziyuan_2::before {
+  content: "\e213";
+}
+.sh-tools-ziyuan_3::before {
+  content: "\e214";
+}
+.sh-tools-ziyuan_4::before {
+  content: "\e215";
+}
+.sh-tools-ziyuan_5::before {
+  content: "\e216";
+}
+.sh-tools-ziyuan_6::before {
+  content: "\e217";
+}
+.sh-tools-ziyuan_7::before {
+  content: "\e218";
+}
+.sh-tools-ziyuan_8::before {
+  content: "\e219";
+}
+.sh-tools-ziyuan_9::before {
+  content: "\e21a";
+}
+.sh-travel-banshouli::before {
+  content: "\e21b";
+}
+.sh-travel-chuhangshijian::before {
+  content: "\e21c";
+}
+.sh-travel-ditu::before {
+  content: "\e21d";
+}
+.sh-travel-fengjing::before {
+  content: "\e21e";
+}
+.sh-travel-gonglve::before {
+  content: "\e21f";
+}
+.sh-travel-hangli::before {
+  content: "\e220";
+}
+.sh-travel-huafei::before {
+  content: "\e221";
+}
+.sh-travel-jipiao::before {
+  content: "\e222";
+}
+.sh-travel-jiudian::before {
+  content: "\e223";
+}
+.sh-travel-lvban::before {
+  content: "\e224";
+}
+.sh-travel-meishi::before {
+  content: "\e225";
+}
+.sh-travel-menpiao::before {
+  content: "\e226";
+}
+.sh-travel-paishe::before {
+  content: "\e227";
+}
+.sh-travel-qianzheng::before {
+  content: "\e228";
+}
+.sh-travel-shangdian::before {
+  content: "\e229";
+}
+.sh-travel-tianqi::before {
+  content: "\e22a";
+}
+.sh-travel-youlechangsuo::before {
+  content: "\e22b";
+}
+.sh-travel-yuyanfanyi::before {
+  content: "\e22c";
+}
+.sh-travel-zhuyishixiang::before {
+  content: "\e22d";
+}
+.sh-travel-zuche::before {
+  content: "\e22e";
+}
