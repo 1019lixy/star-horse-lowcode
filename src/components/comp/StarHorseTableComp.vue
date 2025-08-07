@@ -250,6 +250,7 @@ const init = async () => {
   if (props.btnPermissions && Object.keys(props.btnPermissions).length > 0) {
     permissions.value = props.btnPermissions;
   } else {
+    pagePermission.setPermissionUrl(props.compUrl?.permissionsUrl);
     permissions.value = await pagePermission.addRoute(
       window.__hostRouter__?.currentRoute.value,
     );

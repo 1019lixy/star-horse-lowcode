@@ -27,7 +27,7 @@ let loading: any = null;
 /**
  * 字典接口
  */
-const dictUrl: string = `${ServiceEnums.SYSTEM_PREFIX}dictinfoEntity/getAllByCondition`;
+const dictUrl: string = `${ServiceEnums.SYSTEM_PREFIX}dictinfo/getAllByCondition`;
 
 /**
  * 加载Post 数据

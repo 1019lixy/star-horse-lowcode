@@ -327,3 +327,5 @@ barcode        条形码组件
                 修复StarHorseDataSelector 数据选择及显示的Bug
 36. 2025-08-06  修复StarHorseDataSelector 数据回显Bug
 37. 2025-08-07  修复markdown-item 组件不能正常显示Bug,修复了button-item 组件初始化时触发了点击事件
+                在ApiUrls对外暴露权限接口变量permissionsUrl,用户可以自定义权限接口
+                在函数dictData 用户可自定义字典接口
