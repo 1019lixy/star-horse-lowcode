@@ -19,6 +19,10 @@ export interface DataDropdownProps {
    */
   dataUrl?: string;
   /**
+   * 是否使用代理
+   */
+  proxy?: boolean;
+  /**
    * 代理地址
    */
   proxyUrl?: string;
@@ -181,11 +185,12 @@ const dialogVisible = ref(false);
 const queryName = ref(null);
 
 const dataSearch = () => {
-  if (!queryName.value) return;
+
   //如果是静态数据则直接查询，如果是接口则调用接口查询
   if (props.dataUrl) {
-    loadData([createCondition(props.displayValue, queryName.value)]);
+    loadData(queryName.value?[createCondition(props.displayValue, queryName.value,"lk")]:[]);
   } else {
+    if (!queryName.value) return;
     orgTreeRef.value?.filter(queryName.value);
   }
 
@@ -218,8 +223,8 @@ const loadData = async (condition?: SearchParams[]) => {
   };
   let params: any = {};
   let tempUrl = props.dataUrl;
-  if (props.proxyUrl) {
-    tempUrl = props.proxyUrl;
+  if (props.proxy) {
+    tempUrl = props.proxyUrl??"/system-config/redirect/execute";
     params = {
       url: props.dataUrl,
       httpMethod: "POST",

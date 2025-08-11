@@ -25,6 +25,10 @@ export interface DataSelectorProps {
    */
   dataUrl?: string;
   /**
+   * 是否使用代理
+   */
+  proxy?: boolean;
+  /**
    * 代理地址
    */
   proxyUrl?: string;
@@ -166,7 +170,7 @@ const init = () => {
         props.displayValue,
         Array.isArray(value.value) ? value.value : [value.value],
         "in")];
-    if (props.params?.length>0) {
+    if (props.params?.length > 0) {
       queryParams.push(...props.params);
     }
     let baseParams: any = {
@@ -177,8 +181,8 @@ const init = () => {
     };
     let params: any = {};
     let tempUrl = props.dataUrl;
-    if (props.proxyUrl) {
-      tempUrl = props.proxyUrl;
+    if (props.proxy) {
+      tempUrl = props.proxyUrl??"/system-config/redirect/execute";
       params = {
         url: props.dataUrl,
         httpMethod: "POST",
@@ -188,16 +192,16 @@ const init = () => {
     } else {
       params = baseParams;
     }
-    postRequest(tempUrl!, params) .then((res) => {
-          if (res?.data?.code) {
-            console.error(res?.data?.cnMessage);
-            return;
-          }
-          let redata = res?.data?.data;
-          selectData.value = findInTree(redata?.dataList || redata, []);
-        }) .catch((err: any) => {
-          console.log(err);
-        });
+    postRequest(tempUrl!, params).then((res) => {
+      if (res?.data?.code) {
+        console.error(res?.data?.cnMessage);
+        return;
+      }
+      let redata = res?.data?.data;
+      selectData.value = findInTree(redata?.dataList || redata, []);
+    }).catch((err: any) => {
+      console.log(err);
+    });
   }
 };
 const addTag = (val: any) => {
@@ -242,6 +246,7 @@ watch(
       :title="title"
       :datas="datas"
       :data-url="dataUrl"
+      :proxy="proxy"
       :proxy-url="proxyUrl"
       :params="params"
       :page-size="pageSize"

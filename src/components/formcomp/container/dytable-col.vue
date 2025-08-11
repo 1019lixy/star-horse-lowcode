@@ -197,64 +197,7 @@ onMounted(() => {
   </td>
 </template>
 <style lang="scss" scoped>
-.smain-design {
-  width: 100%;
-  background: var(--star-horse-background);
-  border-radius: 3px;
-  height: 100%;
-  display: flex;
-  //pointer-events: none; // 禁止内部元素拦截事件
-  flex-direction: column;
-  vertical-align: middle;
-  justify-content: center;
-  align-items: center;
-
-  .comp-item {
-    margin: unset;
-  }
-
-  .bare-item {
-    width: 100%;
-    height: 100%;
-
-    div {
-      width: 100%;
-      height: 100%;
-    }
-  }
-}
-
 .edit_col {
-  display: table-cell;
-  min-height: 50px;
-  position: relative;
-  user-select: none;
-  transition: width 0.2s,
-  height 0.2s;
-  border: 1px solid var(--star-horse-border—color);
-
-  .table-cell-action {
-    position: absolute;
-    //bottom: -30px;
-    pointer-events: auto; // 恢复操作按钮的点击
-    bottom: 0;
-    right: -2px;
-    height: 28px;
-    line-height: 28px;
-    background: var(--star-horse-style);
-    z-index: 999;
-
-    display: flex;
-    align-items: center;
-
-    svg {
-      font-size: 14px;
-      color: #fff;
-      margin: 0 5px;
-      cursor: pointer;
-    }
-  }
-
   &::after,
   &::before {
     z-index: 1000; // 提升到最高层级

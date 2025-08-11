@@ -329,3 +329,4 @@ barcode        条形码组件
 37. 2025-08-07  修复markdown-item 组件不能正常显示Bug,修复了button-item 组件初始化时触发了点击事件
                 在ApiUrls对外暴露权限接口变量permissionsUrl,用户可以自定义权限接口
                 在函数dictData 用户可自定义字典接口
+38. 2025-08-11  修复表单容器拖拽及切换bug

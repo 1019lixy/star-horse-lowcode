@@ -287,8 +287,12 @@ export const copyContainer = (
     }
     if (Array.isArray(parentComp)) {
         parentComp.push(container);
-    } else {
+    } else if(parentComp) {
         parentComp.items?.push(container);
+    }else{
+        //将拷贝的新数据添加到当前容器的下一个下标
+        const index = compList.value.indexOf(currentContainer);
+        compList.value.splice(index + 1, 0, container);
     }
     designForm.selectItem(container, containerType, "");
 };

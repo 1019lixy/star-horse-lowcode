@@ -125,9 +125,5 @@ watch(
   margin-top: 5px;
 }
 
-.card-design {
-  height: 100%;
-  min-height: 200px;
-  overflow-y: auto;
-}
+
 </style>

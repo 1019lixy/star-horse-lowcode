@@ -162,9 +162,4 @@ onMounted(() => {
   </group-container>
 </template>
 <style lang="scss" scoped>
-.card-design {
-  height: 100%;
-  min-height: 200px;
-  overflow-y: auto;
-}
 </style>
