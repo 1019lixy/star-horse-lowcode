@@ -62,7 +62,7 @@ watch(
 );
 </script>
 <template>
-  <group-box-container
+  <group-container
     class="star-horse-form-container"
     :showFormItem="showFormItem"
     :isDesign="isDesign"
@@ -114,7 +114,7 @@ watch(
         </el-scrollbar>
       </el-collapse-item>
     </el-collapse>
-  </group-box-container>
+  </group-container>
 </template>
 <style lang="scss" scoped>
 :deep(.el-card) {

@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import {useVModel} from "@vueuse/core";
-import {reactive, ref, watch} from "vue";
+import {reactive, ref} from "vue";
 import {postRequest} from "@/api/star_horse_apis";
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
-import {closeLoad} from "@/api/star_horse_utils";
+import {closeLoad, createCondition} from "@/api/star_horse_utils";
 import {PageProps} from "@/components/types/PageProps";
+import {SearchParams} from "@/components/types";
 
 export type ModelValueType = any;
 
@@ -17,6 +18,14 @@ export interface DataDropdownProps {
    * 接口地址
    */
   dataUrl?: string;
+  /**
+   * 代理地址
+   */
+  proxyUrl?: string;
+  /**
+   * 接口参数
+   */
+  params?: SearchParams[];
   /**
    * 页码
    */
@@ -169,16 +178,18 @@ const onNodeClick = (treeNode: any) => {
   // console.log("onNodeClick", dataOptions.value);
 };
 const dialogVisible = ref(false);
-const queryForm = reactive({
-  name: null,
-});
+const queryName = ref(null);
 
-watch(
-    () => queryForm.name,
-    (val) => {
-      orgTreeRef.value?.filter(val);
-    },
-);
+const dataSearch = () => {
+  if (!queryName.value) return;
+  //如果是静态数据则直接查询，如果是接口则调用接口查询
+  if (props.dataUrl) {
+    loadData([createCondition(props.displayValue, queryName.value)]);
+  } else {
+    orgTreeRef.value?.filter(queryName.value);
+  }
+
+};
 const filterNode = (value: string, data: any): boolean => {
   if (!value) return true;
   return data[props.displayName].includes(value);
@@ -190,18 +201,38 @@ let pageInfo = reactive<PageProps>({
   totalPage: 0,
   dataList: [],
 });
-const loadData = async () => {
+const loadData = async (condition?: SearchParams[]) => {
   if (!props.dataUrl) return;
-  let params: any = {
+  const queryParams: SearchParams[] = [];
+  if (condition?.length > 0) {
+    queryParams.push(...condition);
+  }
+  if (props.params?.length > 0) {
+    queryParams.push(...props.params);
+  }
+  const baseParams: any = {
     currentPage: pageInfo.currentPage,
     pageSize: props.pageSize || 0,
-    fieldList: [],
+    fieldList: queryParams,
     orderBy: [],
   };
-  await postRequest(props.dataUrl!, params)
+  let params: any = {};
+  let tempUrl = props.dataUrl;
+  if (props.proxyUrl) {
+    tempUrl = props.proxyUrl;
+    params = {
+      url: props.dataUrl,
+      httpMethod: "POST",
+      dataType: "JSON",
+      searchInfo: baseParams
+    };
+  } else {
+    params = baseParams;
+  }
+  await postRequest(tempUrl!, params)
       .then((res) => {
         if (res?.data?.code) {
-          res && console.error(res?.data?.cnMessage);
+          console.error(res?.data?.cnMessage);
           return;
         }
         let redata = res?.data?.data;
@@ -302,11 +333,12 @@ defineExpose({
           </template>
           <div class="my-[5px] w-[95%] mx-auto">
             <el-input
-                v-model="queryForm.name"
+                v-model="queryName"
                 placeholder="输入关键字进行查询"
                 :style="{ width: '100%' }"
                 suffix-icon="search"
                 clearable
+                @keyup.enter="dataSearch"
             />
           </div>
           <el-scrollbar tag="div" class="org-tree">

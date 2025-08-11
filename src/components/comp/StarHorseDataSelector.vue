@@ -1,29 +1,84 @@
 <script setup lang="ts">
-import { useVModel } from "@vueuse/core";
-import DataPicker, {
-  type ModelValueType,
-} from "@/components/comp/utils/DataPicker.vue";
-import { computed, CSSProperties, onMounted, ref, watch } from "vue";
+import {useVModel} from "@vueuse/core";
+import DataPicker, {type ModelValueType,} from "@/components/comp/utils/DataPicker.vue";
+import {computed, CSSProperties, onMounted, ref, watch} from "vue";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
-import { postRequest } from "@/api/star_horse_apis";
-import { createCondition } from "@/api/star_horse_utils";
+import {postRequest} from "@/api/star_horse_apis";
+import {createCondition} from "@/api/star_horse_utils";
+import {SearchParams} from "@/components/types";
 
 export interface DataSelectorProps {
+  /**
+   * 选中数据
+   */
   modelValue: ModelValueType;
+  /**
+   * 选中数据
+   */
   selectedData?: any;
+  /**
+   * 占位符
+   */
   placeholder?: string;
+  /**
+   * 接口地址
+   */
   dataUrl?: string;
+  /**
+   * 代理地址
+   */
+  proxyUrl?: string;
+  /**
+   * 接口参数
+   */
+  params?: SearchParams[];
+  /**
+   * 数据
+   */
   datas?: Array<any>;
+  /**
+   * 页码
+   */
   pageSize?: number;
+  /**
+   * 标题
+   */
   title?: string;
+  /**
+   * 组件大小
+   */
   compSize?: string;
+  /**
+   * 显示名称
+   */
   displayName?: string;
+  /**
+   * 显示值
+   */
   displayValue?: string;
+  /**
+   * 是否多选
+   */
   multiple?: boolean;
+  /**
+   * 是否禁用
+   */
   disabled?: boolean;
+  /**
+   * 严格模式
+   */
   checkStrictly?: boolean;
+  /**
+   * 选择叶子节点
+   */
   selectLeaf?: boolean;
+  /**
+   * 显示标签长度
+   */
   showTagLength?: number;
+  /**
+   * 样式
+   */
   style?: CSSProperties;
 }
 
@@ -50,8 +105,8 @@ const selectData: any = ref<any>(props.multiple ? [] : "");
 const valueArr = computed<string[]>(() => {
   if (selectData.value) {
     return Array.isArray(selectData.value)
-      ? selectData.value
-      : [selectData.value];
+        ? selectData.value
+        : [selectData.value];
   }
   return [];
 });
@@ -84,12 +139,12 @@ const findInTree = (nodes: any[], result: any[]) => {
     // 检查当前节点是否匹配
     if (Array.isArray(value.value)) {
       if (value.value.includes(node[props.displayValue])) {
-        const temp = { ...node };
+        const temp = {...node};
         delete temp.children;
         result.push(temp);
       }
     } else if (node[props.displayValue] === value.value) {
-      const temp = { ...node };
+      const temp = {...node};
       delete temp.children;
       result.push(temp);
     }
@@ -107,30 +162,42 @@ const init = () => {
   if (props.datas) {
     selectData.value = findInTree(props.datas, []);
   } else if (props.dataUrl && value.value) {
-    let params: any = {
+    const queryParams: SearchParams[] = [createCondition(
+        props.displayValue,
+        Array.isArray(value.value) ? value.value : [value.value],
+        "in")];
+    if (props.params?.length>0) {
+      queryParams.push(...props.params);
+    }
+    let baseParams: any = {
       currentPage: 0,
       pageSize: 100,
-      fieldList: [
-        createCondition(
-          props.displayValue,
-          Array.isArray(value.value) ? value.value : [value.value],
-          "in",
-        ),
-      ],
+      fieldList: queryParams,
       orderBy: [],
     };
-    postRequest(props.dataUrl!, params)
-      .then((res) => {
-        if (res?.data?.code) {
-          console.error(res?.data?.cnMessage);
-          return;
-        }
-        let redata = res?.data?.data;
-        selectData.value = findInTree(redata?.dataList || redata, []);
-      })
-      .catch((err: any) => {
-        console.log(err);
-      });
+    let params: any = {};
+    let tempUrl = props.dataUrl;
+    if (props.proxyUrl) {
+      tempUrl = props.proxyUrl;
+      params = {
+        url: props.dataUrl,
+        httpMethod: "POST",
+        dataType: "JSON",
+        searchInfo: baseParams
+      };
+    } else {
+      params = baseParams;
+    }
+    postRequest(tempUrl!, params) .then((res) => {
+          if (res?.data?.code) {
+            console.error(res?.data?.cnMessage);
+            return;
+          }
+          let redata = res?.data?.data;
+          selectData.value = findInTree(redata?.dataList || redata, []);
+        }) .catch((err: any) => {
+          console.log(err);
+        });
   }
 };
 const addTag = (val: any) => {
@@ -146,9 +213,9 @@ const addTag = (val: any) => {
 };
 const tagVisible = (val: any) => {
   return (
-    selectData?.value?.find((item: any) => item[props.displayValue] === val)?.[
-      props.displayName
-    ] ?? val
+      selectData?.value?.find((item: any) => item[props.displayValue] === val)?.[
+          props.displayName
+          ] ?? val
   );
 };
 onMounted(() => {
@@ -156,39 +223,41 @@ onMounted(() => {
 });
 // 新增 watch 监听 selectData 变化
 watch(
-  selectData,
-  (newVal) => {
-    // 同步modelValue
-    value.value = Array.isArray(newVal)
-      ? newVal.map((v) => v[props.displayValue])
-      : newVal?.[props.displayValue];
-    // 同步selectedData
-    emitData.value = newVal;
-  },
-  { deep: true },
+    selectData,
+    (newVal) => {
+      // 同步modelValue
+      value.value = Array.isArray(newVal)
+          ? newVal.map((v) => v[props.displayValue])
+          : newVal?.[props.displayValue];
+      // 同步selectedData
+      emitData.value = newVal;
+    },
+    {deep: true},
 );
 </script>
 
 <template>
   <data-picker
-    ref="dataPickerRef"
-    :title="title"
-    :datas="datas"
-    :data-url="dataUrl"
-    :page-size="pageSize"
-    :display-name="displayName"
-    :display-value="displayValue"
-    :checkStrictly="checkStrictly"
-    :select-leaf="selectLeaf"
-    :multiple="multiple"
-    v-model="selectData"
+      ref="dataPickerRef"
+      :title="title"
+      :datas="datas"
+      :data-url="dataUrl"
+      :proxy-url="proxyUrl"
+      :params="params"
+      :page-size="pageSize"
+      :display-name="displayName"
+      :display-value="displayValue"
+      :checkStrictly="checkStrictly"
+      :select-leaf="selectLeaf"
+      :multiple="multiple"
+      v-model="selectData"
   />
   <el-input-tag
-    v-model="valueArr"
-    v-bind="{ ...props, ...$attrs }"
-    @clear="selectData = []"
-    @addTag="addTag"
-    @removeTag="
+      v-model="valueArr"
+      v-bind="{ ...props, ...$attrs }"
+      @clear="selectData = []"
+      @addTag="addTag"
+      @removeTag="
       (val) => {
         onClose(val);
       }
@@ -196,11 +265,11 @@ watch(
   >
     <template #prefix>
       <star-horse-icon
-        @click="openDataPicker"
-        cursor="pointer"
-        icon-class="select-data"
-        size="22px"
-        :border="true"
+          @click="openDataPicker"
+          cursor="pointer"
+          icon-class="select-data"
+          size="22px"
+          :border="true"
       />
     </template>
     <template #tag="{ value }">

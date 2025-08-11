@@ -70,7 +70,7 @@ onMounted(() => {
 });
 </script>
 <template>
-  <group-box-container
+  <group-container
     class="star-horse-form-container"
     :showFormItem="showFormItem"
     :isDesign="isDesign"
@@ -159,7 +159,7 @@ onMounted(() => {
         </draggable>
       </el-scrollbar>
     </el-card>
-  </group-box-container>
+  </group-container>
 </template>
 <style lang="scss" scoped>
 .card-design {

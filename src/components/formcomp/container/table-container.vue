@@ -98,7 +98,7 @@ const deleteCol = (index: number) => {
 };
 </script>
 <template>
-  <group-box-container
+  <group-container
     class="star-horse-form-container"
     :showFormItem="showFormItem"
     :isDesign="isDesign"
@@ -180,7 +180,7 @@ const deleteCol = (index: number) => {
         </tr>
       </tbody>
     </table>
-  </group-box-container>
+  </group-container>
 </template>
 <style lang="scss" scoped>
 table {

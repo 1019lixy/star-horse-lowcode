@@ -77,6 +77,7 @@ onMounted(() => {});
 <template>
   <star-horse-dialog
     box-width="450px"
+    box-height="60%"
     :source="3"
     :full-screen="false"
     title="更换组件"
