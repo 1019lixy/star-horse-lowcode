@@ -81,7 +81,7 @@ const dynamicFunc = (funcType: string, funcCode: any) => {
 const addTab = () => {};
 </script>
 <template>
-  <group-box-container
+  <group-container
     class="star-horse-form-container"
     :showFormItem="showFormItem"
     :isDesign="isDesign"
@@ -142,12 +142,7 @@ const addTab = () => {};
         </el-scrollbar>
       </el-tab-pane>
     </el-tabs>
-  </group-box-container>
+  </group-container>
 </template>
 <style lang="scss" scoped>
-.tab-design {
-  height: 100%;
-  min-height: 200px;
-  overflow-y: auto;
-}
 </style>

@@ -15,7 +15,7 @@ defineProps({
 const formData = defineModel("formData");
 </script>
 <template>
-  <group-box-container
+  <group-container
     class="star-horse-form-container"
     :showFormItem="showFormItem"
     :isDesign="isDesign"
@@ -47,7 +47,7 @@ const formData = defineModel("formData");
         </tr>
       </tbody>
     </table>
-  </group-box-container>
+  </group-container>
 </template>
 <style lang="scss" scoped>
 .dynamic-table {

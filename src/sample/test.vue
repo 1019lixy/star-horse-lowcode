@@ -1,91 +1,75 @@
 <template>
-  <StarHorseDataSelector
-    v-model="test"
-    :datas="datas"
-    :multiple="true"
-    :checkStrictly="false"
+  {{ fields }}
+  <box-container
+      :formData="formData"
+      :field="fields"
+      :is-design="true"
+      :formInfo="{}"
   />
 
-  {{ formData }}
-  <data-picker-item
-    :field="{
-      label: '测试',
-      fieldName: 'test',
-      preps: {
-        datas,
-        collapseTags: true,
-        collapseTagsTooltip: true,
-        multiple: true,
-        disabled: false,
-        displayName: 'name',
-        displayValue: 'value',
-      },
-    }"
-    :formData="formData"
-  />
 </template>
 
 <script lang="ts" setup>
-// import StarHorseJsonEditor from '@/components/comp/StarHorseJsonEditor.vue';
-import StarHorseDataSelector from "@/components/comp/StarHorseDataSelector.vue";
-import { ref } from "vue";
-import DataPickerItem from "@/components/formcomp/items/datapicker-item.vue";
+import {onMounted, ref} from "vue";
+import piniaInstance from "@/store";
+import {useDesignFormStore} from "@/store/DesignForm";
+
+let designForm = useDesignFormStore(piniaInstance);
 const formData = ref<any>({
   test: "1-2-1",
 });
-const test = ref("1-2-1");
-const datas = ref([
-  {
-    name: "测试1",
-    value: "1",
-    children: [
-      {
-        name: "测试1-1",
-        value: "1-1",
-      },
-      {
-        name: "测试1-2",
-        value: "1-2",
-        children: [
-          {
-            name: "测试1-2-1",
-            value: "1-2-1",
-          },
-          {
-            name: "测试1-2-2",
-            value: "1-2-2",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    name: "测试2",
-    value: "2",
-    children: [
-      {
-        name: "测试2-1",
-        value: "2-1",
-        children: [
-          {
-            name: "测试2-1-1",
-            value: "2-1-1",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    name: "测试3",
-    value: "3",
-    children: [
-      {
-        name: "测试3-1",
-        value: "3-1",
-      },
-    ],
-  },
-]);
+const fields = ref<any>({
+  "id": "shb5d00449-56ee-47a6-a7af-54aec2715b98",
+  "name": "测试",
+  "itemNameLabel": "测试",
+  "compType": "container",
+  "itemType": "box",
+  "preps": {
+    "elements": [{
+      "columns": [{
+        "_uuid": "sh80d2269a-849d-498c-b386-cdba601f70af",
+        "colspan": 8,
+        "rowspan": 1,
+        "items": []
+      }, {
+        "_uuid": "sh7a347a46-37bd-4082-8c10-98981024b850",
+        "colspan": 8,
+        "rowspan": 1,
+        "items": []
+      }, {
+        "_uuid": "sh7235d4a7-613e-42c1-9b11-9c0e15ffccaf",
+        "colspan": 8,
+        "rowspan": 1,
+        "items": [{itemType: "switch", type: "item", preps: {fieldName: "test2", label: "Switch"}}]
+      }]
+    }, {
+      "columns": [{
+        "_uuid": "sh0aacfdf0-a223-463d-9b9b-140e2276d608",
+        "colspan": 8,
+        "rowspan": 1,
+        "items": []
+      }, {
+        "colspan": 8,
+        "items": [{itemType: "input", type: "item", id: "xxx", preps: {fieldName: "test", label: "test"}}]
+      }, {"_uuid": "sh4c4bf53f-d936-42da-b87e-243e1620a613", "colspan": 8, "rowspan": 1, "items": []}]
+    }, {
+      "columns": [{
+        "_uuid": "sh4302ee34-f984-4e7b-a1a3-589ae7b1ef56",
+        "colspan": 8,
+        "rowspan": 1,
+        "items": []
+      }, {
+        "_uuid": "sh3e39747f-ea0f-4398-98b4-dbd68f606709",
+        "colspan": 8,
+        "rowspan": 1,
+        "items": []
+      }, {"_uuid": "sh3ba4267a-340d-4d6a-9ae7-d19524101065", "colspan": 8, "rowspan": 1, "items": []}]
+    }]
+  }
+});
+onMounted(() => {
+  designForm.clearAll(true);
+});
 </script>
 
 <style lang="scss" scoped></style>

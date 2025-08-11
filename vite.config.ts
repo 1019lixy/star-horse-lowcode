@@ -42,7 +42,7 @@ export default defineConfig((mode) => {
         insertTypesEntry: true,
         rollupTypes: true,
         tsconfigPath: "./tsconfig.json",
-        exclude: ["**/*.svg", "./src/sample/test.vue"],
+        exclude: ["**/*.svg", "**/sample/*.vue"],
       }),
       AutoImport({
         imports: [
