@@ -4,7 +4,7 @@
     :isDesign="isDesign"
     :disabled="disabled"
     :bareFlag="bareFlag"
-    :formItem="field"
+    :field="field"
     :parentField="parentField"
   >
     <div style="border: 1px solid #ccc">

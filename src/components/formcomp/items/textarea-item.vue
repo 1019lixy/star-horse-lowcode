@@ -10,7 +10,7 @@
     :isDesign="isDesign"
     :disabled="disabled"
     :bareFlag="bareFlag"
-    :formItem="field"
+    :field="field"
     :parentField="parentField"
   >
     <el-input
