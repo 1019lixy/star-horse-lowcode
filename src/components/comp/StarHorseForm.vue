@@ -12,48 +12,37 @@ import {
   unref,
   watch,
 } from "vue";
-import { ApiUrls } from "@/components/types/ApiUrls";
-import { error, success, warning } from "@/utils/message";
-import { postRequest } from "@/api/star_horse_apis";
-import {
-  closeLoad,
-  formFieldMapping,
-  isJson,
-  load,
-  loadById,
-} from "@/api/star_horse_utils";
-import { DialogProps } from "@/components/types/DialogProps";
-import {
-  BatchFieldInfo,
-  FieldInfo,
-  PageFieldInfo,
-} from "@/components/types/PageFieldInfo";
+import {ApiUrls} from "@/components/types/ApiUrls";
+import {error, success, warning} from "@/utils/message";
+import {postRequest} from "@/api/star_horse_apis";
+import {closeLoad, formFieldMapping, isJson, load, loadById,} from "@/api/star_horse_utils";
+import {DialogProps} from "@/components/types/DialogProps";
+import {BatchFieldInfo, FieldInfo, PageFieldInfo,} from "@/components/types/PageFieldInfo";
 import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
 import piniaInstance from "@/store";
-import { useSelfOperationStore } from "@/store/SelfOperation";
-import { SelectOption } from "@/components/types/SearchProps";
-import { Config } from "@/api/settings";
+import {useSelfOperationStore} from "@/store/SelfOperation";
+import {SelectOption} from "@/components/types/SearchProps";
+import {Config} from "@/api/settings";
 
 const props = defineProps({
-  compUrl: { type: Object as PropType<ApiUrls> },
-  fieldList: { type: Object as PropType<PageFieldInfo>, required: true },
-  batchName: { type: String, default: "batchDataList" },
-  batchFieldName: { type: String, default: "batchFieldList" },
-  outerFormData: { type: Object as PropType<any> },
-  primaryKey: { type: [String, Object] as PropType<string | any> },
-  globalCondition: { type: Object },
-  rules: { type: Object },
-  formSize: { type: String, default: Config.compSize },
-  labelPosition: { type: String, default: "left" },
-  typeModel: { type: String },
-  dynamicForm: { type: Boolean, default: false },
-
+  compUrl: {type: Object as PropType<ApiUrls>},
+  fieldList: {type: Object as PropType<PageFieldInfo>, required: true},
+  batchName: {type: String, default: "batchDataList"},
+  batchFieldName: {type: String, default: "batchFieldList"},
+  outerFormData: {type: Object as PropType<any>},
+  primaryKey: {type: [String, Object] as PropType<string | any>},
+  globalCondition: {type: Object},
+  rules: {type: Object},
+  formSize: {type: String, default: Config.compSize},
+  labelPosition: {type: String, default: "left"},
+  typeModel: {type: String},
+  dynamicForm: {type: Boolean, default: false},
   selectData: {
     type: Array<SelectOption>,
     default: () => {
       return [
-        { name: "正常", value: "1" },
-        { name: "禁用", value: "2" },
+        {name: "正常", value: "1"},
+        {name: "禁用", value: "2"},
       ];
     },
   },
@@ -90,13 +79,13 @@ const loadData = async () => {
   }
   await nextTick();
   let id = Array.isArray(dialogProps?.ids)
-    ? dialogProps.ids[0]
-    : dialogProps?.ids;
+      ? dialogProps.ids[0]
+      : dialogProps?.ids;
   let objData;
   let params = props.globalCondition || {};
   //如果是Json 对象
   if (isJson(id)) {
-    params = { ...params, ...id };
+    params = {...params, ...id};
     objData = await loadById(props.compUrl?.loadByIdUrl!, "", params);
   } else {
     objData = await loadById(props.compUrl?.loadByIdUrl!, id, params);
@@ -108,7 +97,7 @@ const loadData = async () => {
     for (let i in params) {
       let temp = params[i];
       if (!temp.subTabFlag) {
-        let subTemp = { ...objData };
+        let subTemp = {...objData};
         delete subTemp[temp.tableName];
         dataForm.value[temp.tableName] = [subTemp];
       }
@@ -165,7 +154,7 @@ const merge = (type: string) => {
 const assignStatusName = () => {
   if (dataForm.value.statusCode) {
     let sData = props.selectData.find(
-      (item: any) => item.value === dataForm.value.statusCode,
+        (item: any) => item.value === dataForm.value.statusCode,
     );
     if (sData) {
       dataForm.value["statusName"] = sData.name;
@@ -175,13 +164,13 @@ const assignStatusName = () => {
   batchFields?.forEach((item: BatchFieldInfo) => {
     if (dataForm.value[item.batchName]) {
       for (
-        let index = 0;
-        index < dataForm.value[item.batchName]?.length;
-        index++
+          let index = 0;
+          index < dataForm.value[item.batchName]?.length;
+          index++
       ) {
         let temp = dataForm.value[item.batchName][index];
         let sData = props.selectData.find(
-          (sitem: any) => sitem.value === temp.statusCode,
+            (sitem: any) => sitem.value === temp.statusCode,
         );
         if (sData) {
           dataForm.value[item.batchName][index]["statusName"] = sData.name;
@@ -243,7 +232,7 @@ const doMerge = (type: string) => {
         if (parseInt(i) > 0) {
           delete tempDatas[props.primaryKey];
         }
-        let temp = { ...tempDatas, ...batchDatas[i] };
+        let temp = {...tempDatas, ...batchDatas[i]};
         tempForm.push(temp);
       }
     });
@@ -264,34 +253,34 @@ const doMerge = (type: string) => {
   //dynamicForm 如果为true 表示动态表单，动态表单需额外封装数据对象
   let formData = props.dynamicForm ? dydata : tempForm;
   postRequest(mergeUrl!, formData)
-    .then((res) => {
-      closeLoad();
-      if (res.data.code != 0) {
-        warning(res.data.cnMessage);
-        return;
-      } else {
-        success(res.data.cnMessage);
-      }
-      emits("refresh", formData, res.data);
-      resetForm();
-      if (type == "close") {
-        closeDialog();
-      }
-      dialogProps.ids = -1;
-      //关闭弹窗
-    })
-    .catch((err) => {
-      error("接口调用异常" + err);
-    })
-    .finally(() => {
-      closeLoad();
-    });
+      .then((res) => {
+        closeLoad();
+        if (res.data.code != 0) {
+          warning(res.data.cnMessage);
+          return;
+        } else {
+          success(res.data.cnMessage);
+        }
+        emits("refresh", formData, res.data);
+        resetForm();
+        if (type == "close") {
+          closeDialog();
+        }
+        dialogProps.ids = -1;
+        //关闭弹窗
+      })
+      .catch((err) => {
+        error("接口调用异常" + err);
+      })
+      .finally(() => {
+        closeLoad();
+      });
 };
 const resetForm = () => {
   dataForm.value = formFieldMapping(props.fieldList)?.defaultDatas;
   let data = unref(props.outerFormData);
   if (Object.keys(data || {}).length > 0) {
-    dataForm.value = { ...dataForm.value, ...data };
+    dataForm.value = {...dataForm.value, ...data};
   }
 };
 /**
@@ -300,6 +289,12 @@ const resetForm = () => {
 const getFormData = () => {
   return dataForm;
 };
+const getFields = () => {
+  return starHorseFormRef.value?.fields;
+};
+const validate = async () => {
+  return await starHorseFormRef.value?.validate();
+};
 /**
  * 设置表单数据
  * @param data
@@ -307,14 +302,14 @@ const getFormData = () => {
 const setFormData = (data: any) => {
   let mappingData = formFieldMapping(props.fieldList);
   let defaultDatas = mappingData.defaultDatas;
-  dataForm.value = { ...defaultDatas, ...data };
+  dataForm.value = {...defaultDatas, ...data};
 };
 /**
  * 更新数据
  * @param data
  */
 const updateFormData = (data: any) => {
-  dataForm.value = { ...dataForm.value, ...data };
+  dataForm.value = {...dataForm.value, ...data};
 };
 /**
  * 列表添加行数据
@@ -353,54 +348,54 @@ onMounted(() => {
   recordFieldInfo();
 });
 watch(
-  () => dataForm.value,
-  () => {
-    exportData();
-  },
-  { immediate: false, deep: true },
+    () => dataForm.value,
+    () => {
+      exportData();
+    },
+    {immediate: false, deep: true},
 );
 watch(
-  () => props.outerFormData,
-  (val: any) => {
-    if (val) {
-      resetForm();
-    }
-  },
-  { immediate: true, deep: true },
+    () => props.outerFormData,
+    (val: any) => {
+      if (val) {
+        resetForm();
+      }
+    },
+    {immediate: true, deep: true},
 );
 watch(
-  () => dialogOperation,
-  (val: any) => {
-    const handlers: any = {
-      merge: () => merge(val.type),
-      mergeDraft: () => mergeDraft(val.type),
-      resetForm: () => resetForm(),
-    };
-    handlers[val.funcName]?.();
-    dialogOperation.funcName = "";
-    dialogOperation["type"] = "";
-  },
-  {
-    immediate: false,
-    deep: true,
-  },
+    () => dialogOperation,
+    (val: any) => {
+      const handlers: any = {
+        merge: () => merge(val.type),
+        mergeDraft: () => mergeDraft(val.type),
+        resetForm: () => resetForm(),
+      };
+      handlers[val.funcName]?.();
+      dialogOperation.funcName = "";
+      dialogOperation["type"] = "";
+    },
+    {
+      immediate: false,
+      deep: true,
+    },
 );
 watch(
-  () => dialogProps.ids,
-  (val) => {
-    console.log("ids", val);
-    if (!val || val == -1) {
-      source.value = 1;
-      setFormData(dataForm.value);
-    } else {
-      source.value = 2;
-      loadData();
-    }
-  },
-  {
-    immediate: true,
-    deep: true,
-  },
+    () => dialogProps.ids,
+    (val) => {
+      console.log("ids", val);
+      if (!val || val == -1) {
+        source.value = 1;
+        setFormData(dataForm.value);
+      } else {
+        source.value = 2;
+        loadData();
+      }
+    },
+    {
+      immediate: true,
+      deep: true,
+    },
 );
 
 defineExpose({
@@ -412,55 +407,57 @@ defineExpose({
   updateFormData,
   starHorseFormRef,
   tableListRef,
+  getFields,
+  validate
 });
 </script>
 <template>
   <el-scrollbar height="100%">
     <el-form
-      :model="dataForm"
-      :size="formSize"
-      :rules="rules"
-      :scroll-to-error="true"
-      :scroll-into-view-options="true"
-      :inline-message="false"
-      :status-icon="true"
-      :label-position="labelPosition"
-      require-asterisk-position="right"
-      label-width="auto"
-      class="data-form"
-      ref="starHorseFormRef"
+        :model="dataForm"
+        :size="formSize"
+        :rules="rules"
+        :scroll-to-error="true"
+        :scroll-into-view-options="true"
+        :inline-message="false"
+        :status-icon="true"
+        :label-position="labelPosition"
+        require-asterisk-position="right"
+        label-width="auto"
+        class="data-form"
+        ref="starHorseFormRef"
     >
       <star-horse-form-item
-        :primaryKey="primaryKey"
-        :compUrl="compUrl"
-        :fieldList="fieldList"
-        :rules="rules"
-        :compSize="formSize"
-        v-model:dataForm="dataForm"
-        :source="source"
-        @addRow="addRow"
-        @removeRow="removeRow"
-        :batchName="batchName"
-        :batchFieldName="batchFieldName"
+          :primaryKey="primaryKey"
+          :compUrl="compUrl"
+          :fieldList="fieldList"
+          :rules="rules"
+          :compSize="formSize"
+          v-model:dataForm="dataForm"
+          :source="source"
+          @addRow="addRow"
+          @removeRow="removeRow"
+          :batchName="batchName"
+          :batchFieldName="batchFieldName"
       />
     </el-form>
   </el-scrollbar>
   <el-form-item v-if="typeModel == 'form'" :size="formSize">
     <el-button
-      @click="merge"
-      style="
+        @click="merge"
+        style="
         background: var(--star-horse-style);
         color: var(--star-horse-white);
       "
     >
       <star-horse-icon
-        icon-class="save"
-        style="color: var(--star-horse-white)"
+          icon-class="save"
+          style="color: var(--star-horse-white)"
       />
       提交
     </el-button>
     <el-button @click="resetForm" link>
-      <star-horse-icon icon-class="undo" />
+      <star-horse-icon icon-class="undo"/>
       重置
     </el-button>
   </el-form-item>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import {ref} from "vue";
 
 defineProps({
   needScroller: {
@@ -9,6 +9,16 @@ defineProps({
 });
 const shFormRef = ref();
 const dataForm = defineModel("dataForm");
+const getFields = () => {
+  return shFormRef.value?.fields;
+};
+const validate = async () => {
+  return await shFormRef.value?.validate();
+};
+defineExpose({
+  getFields,
+  validate,
+});
 </script>
 <template>
   <slot name="header"></slot>
