@@ -124,12 +124,12 @@ const loadData = async () => {
     }
   }
   let actions = data.actions;
-  if (actions && actions.length > 0) {
+  if (actions?.length > 0) {
     for (let index in actions) {
       let temp = actions[index];
       // let tempFunc: any = objData;
       if (temp.actionNames == "change") {
-        temp.actions(objData);
+        temp.actions["change"]?.(objData);
       }
     }
   }

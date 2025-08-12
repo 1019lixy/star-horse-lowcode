@@ -38,7 +38,7 @@ const closeOperation = (tabName: any) => {
     if (item.tabName == tabName) {
       props.item.tabList.splice(index, 1);
       props.item.fieldName = props.item.tabList[0]?.tabName;
-      let closeAction = props.item.closeAction;
+      let closeAction = props.item.actions['close'];
       closeAction && closeAction(item);
       return false;
     }
@@ -65,8 +65,8 @@ onMounted(() => {
       @tabRemove="closeOperation"
       :closable="item.closable"
       :addable="item.addable"
-      @tabChange="item.actions"
-      @tabAdd="item.addActions"
+      @tabChange="(data)=>item.actions['change']?.(data)"
+      @tabAdd="(data)=>item.actions['add']?.(data)"
     >
       <template
         v-for="(tabItem, key) in item.tabList"

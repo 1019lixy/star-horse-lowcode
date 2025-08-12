@@ -57,16 +57,14 @@ onMounted(() => {
       <el-collapse
         v-model="item.fieldName"
         :accordion="item.preps?.accordion"
-        v-on:change="item.actions"
+        v-on:change="(data)=>item.actions['change']?.(data)"
       >
         <template
           v-for="(collapseItem, key) in item.collapseList"
           :key="compKey(collapseItem, key)"
         >
           <el-collapse-item
-            v-if="
-              collapseItem['disVisible'] ?? Object.keys(collapseItem).length > 0
-            "
+            v-if=" Object.keys(collapseItem).length > 0"
             :name="collapseItem.tabName || key"
             :disabled="collapseItem.disabled"
             :index="
