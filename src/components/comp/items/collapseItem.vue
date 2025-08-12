@@ -1,33 +1,27 @@
 <script setup lang="ts">
-import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
-import { ModelRef, onMounted, PropType } from "vue";
-import { ApiUrls } from "@/components/types/ApiUrls";
-import { FieldInfo } from "@/components/types/PageFieldInfo";
-import { Config } from "@/api/settings";
 import {
   checkObject,
   getDataIndex,
   getFormData,
   getPrefix,
 } from "@/api/form_utils";
+import { Config } from "@/api/settings";
 import { compKey } from "@/api/system";
+import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
+import { ContainerPreps } from "@/components/types/ItemPreps";
+import { ModelRef, onMounted } from "vue";
 
-const props = defineProps({
-  compUrl: { type: Object as PropType<ApiUrls> },
-  item: { type: Array as PropType<any>, required: true },
-  objectName: { type: String },
+const props = withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
-  dataIndex: { type: Number, default: -1 },
+  dataIndex: -1,
   // 父节点名称
-  propPrefix: { type: String, default: "" },
-  parentPreps: { type: Object, default: {} },
-  subFormFlag: { type: String, default: "N" },
-  batchName: { type: String, default: "batchDataList" },
-  batchFieldName: { type: String, default: "batchFieldList" },
-  primaryKey: { type: [String, Object] as PropType<string | any> },
-  rules: { type: Object },
-  compSize: { type: String, default: Config.compSize },
-  source: { type: Number, default: 1 },
+  propPrefix: "",
+  parentPreps: {},
+  subFormFlag: "N",
+  batchName: "batchDataList",
+  batchFieldName: "batchFieldList",
+  compSize: Config.compSize,
+  source: 1,
 });
 const emits = defineEmits(["addRow", "removeRow"]);
 const dataForm: ModelRef<any> = defineModel("dataForm");
@@ -57,14 +51,14 @@ onMounted(() => {
       <el-collapse
         v-model="item.fieldName"
         :accordion="item.preps?.accordion"
-        v-on:change="(data)=>item.actions['change']?.(data)"
+        v-on:change="(data) => item.actions['change']?.(data)"
       >
         <template
           v-for="(collapseItem, key) in item.collapseList"
           :key="compKey(collapseItem, key)"
         >
           <el-collapse-item
-            v-if=" Object.keys(collapseItem).length > 0"
+            v-if="Object.keys(collapseItem).length > 0"
             :name="collapseItem.tabName || key"
             :disabled="collapseItem.disabled"
             :index="

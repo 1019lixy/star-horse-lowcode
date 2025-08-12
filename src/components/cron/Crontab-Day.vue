@@ -2,18 +2,18 @@
   <div class="cron-content">
     <div class="cron-item">
       <el-radio size="small" v-model="radioValue" :label="1" border>
-        日，允许的通配符[, - * / L M]</el-radio
-      >
+        日，允许的通配符[, - * / L M]
+      </el-radio>
     </div>
     <div class="cron-item">
       <el-radio size="small" v-model="radioValue" :label="2" border>
-        不指定</el-radio
-      >
+        不指定
+      </el-radio>
     </div>
     <div class="cron-item">
       <el-radio size="small" v-model="radioValue" :label="3" border>
-        周期</el-radio
-      >
+        周期
+      </el-radio>
       <span style="margin-left: 10px; margin-right: 5px">从</span>
       <el-input-number
         size="small"
@@ -34,8 +34,8 @@
     </div>
     <div class="cron-item">
       <el-radio size="small" v-model="radioValue" :label="4" border
-        >循环</el-radio
-      >
+        >循环
+      </el-radio>
       <span style="margin-left: 10px; margin-right: 5px">从</span>
       <el-input-number
         size="small"
@@ -56,8 +56,8 @@
     </div>
     <div class="cron-item">
       <el-radio size="small" v-model="radioValue" :label="5" border
-        >工作日</el-radio
-      >
+        >工作日
+      </el-radio>
       <span style="margin-left: 10px; margin-right: 5px">每月</span>
       <el-input-number
         size="small"
@@ -72,13 +72,13 @@
     </div>
     <div class="cron-item">
       <el-radio size="small" v-model="radioValue" :label="6" border>
-        本月最后一天</el-radio
-      >
+        本月最后一天
+      </el-radio>
     </div>
     <div class="cron-item">
       <el-radio size="small" v-model="radioValue" :label="7" border>
-        指定</el-radio
-      >
+        指定
+      </el-radio>
       <el-checkbox-group size="small" v-model="checkboxList">
         <el-checkbox
           class="my-[5px]"

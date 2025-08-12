@@ -1,27 +1,21 @@
 <script setup lang="ts">
-import { ModelRef, onMounted, PropType } from "vue";
-import { ApiUrls } from "@/components/types/ApiUrls";
-import { FieldInfo } from "@/components/types/PageFieldInfo";
-import StarHorseFormTable from "@/components/comp/StarHorseFormTable.vue";
 import { Config } from "@/api/settings";
 import { compKey } from "@/api/system";
+import StarHorseFormTable from "@/components/comp/StarHorseFormTable.vue";
+import { ContainerPreps } from "@/components/types/ItemPreps";
+import { ModelRef, onMounted } from "vue";
 
-const props = defineProps({
-  compUrl: { type: Object as PropType<ApiUrls> },
-  item: { type: Array as PropType<any>, required: true },
-  objectName: { type: String },
+const props = withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
-  dataIndex: { type: Number, default: -1 },
+  dataIndex: -1,
   // 父节点名称
-  propPrefix: { type: String, default: "" },
-  parentPreps: { type: Object, default: {} },
-  subFormFlag: { type: String, default: "N" },
-  batchName: { type: String, default: "batchDataList" },
-  batchFieldName: { type: String, default: "batchFieldList" },
-  primaryKey: { type: [String, Object] as PropType<string | any> },
-  rules: { type: Object },
-  compSize: { type: String, default: Config.compSize },
-  source: { type: Number, default: 1 },
+  propPrefix: "",
+  parentPreps: {},
+  subFormFlag: "N",
+  batchName: "batchDataList",
+  batchFieldName: "batchFieldList",
+  compSize: Config.compSize,
+  source: 1,
 });
 const emits = defineEmits(["addRow", "removeRow"]);
 const dataForm: ModelRef<any> = defineModel("dataForm");
@@ -38,7 +32,7 @@ const closeOperation = (tabName: any) => {
     if (item.tabName == tabName) {
       props.item.tabList.splice(index, 1);
       props.item.fieldName = props.item.tabList[0]?.tabName;
-      let closeAction = props.item.actions['close'];
+      let closeAction = props.item.actions["close"];
       closeAction && closeAction(item);
       return false;
     }
@@ -65,8 +59,8 @@ onMounted(() => {
       @tabRemove="closeOperation"
       :closable="item.closable"
       :addable="item.addable"
-      @tabChange="(data)=>item.actions['change']?.(data)"
-      @tabAdd="(data)=>item.actions['add']?.(data)"
+      @tabChange="(data) => item.actions['change']?.(data)"
+      @tabAdd="(data) => item.actions['add']?.(data)"
     >
       <template
         v-for="(tabItem, key) in item.tabList"

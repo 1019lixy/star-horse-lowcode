@@ -2,6 +2,7 @@
 import { ModelRef, onMounted, PropType } from "vue";
 import MenuItem from "@/components/menu/MenuItem.vue";
 import { compKey } from "@/api/system";
+
 defineProps({
   preps: {
     type: Object as PropType<any>,

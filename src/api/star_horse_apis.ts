@@ -32,6 +32,7 @@ starHorseAxios.interceptors.request.use(
   },
 );
 export { starHorseAxios };
+
 export function getMenuId() {
   //@ts-ignore
   const router = window.__hostRouter__;
@@ -79,6 +80,7 @@ starHorseAxios.interceptors.response.use(
 export function getAxiosInstance() {
   return window.__hostAxios__ ?? starHorseAxios;
 }
+
 /**
  * 下载文件,
  * @param url 路径

@@ -116,6 +116,7 @@ const dateType: Array<string> = [
   "datetimerange",
   "daterange",
 ];
+
 /**
  *下拉组件
  * @returns
@@ -123,6 +124,7 @@ const dateType: Array<string> = [
 export function selectCompList() {
   return selectType;
 }
+
 /**
  * 输入组件
  * @returns
@@ -130,6 +132,7 @@ export function selectCompList() {
 export function inputCompList() {
   return inputType;
 }
+
 /**
  * 日期组件
  * @returns

@@ -1,41 +1,18 @@
 <script setup lang="ts">
-import { nextTick, onMounted, onUpdated, PropType, ref, shallowRef } from "vue";
+import { nextTick, onMounted, onUpdated, 
+ ref, shallowRef } from "vue";
 import SmoothSignature from "smooth-signature";
 import { warning } from "@/utils/message";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 
-defineProps({
-  isDesign: {
-    type: Boolean,
-    default: false,
-  },
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
-  showFormItem: {
-    type: Boolean,
-    default: false,
-  },
-  bareFlag: {
-    type: Boolean,
-    default: false,
-  },
-  isSearch: {
-    type: Boolean,
-    default: false,
-  },
-  field: {
-    type: Object as PropType<any>,
-    required: true,
-  },
-  parentField: {
-    type: Object as PropType<any>,
-  },
-  formInfo: {
-    type: Object as PropType<any>,
-  },
+import { ItemPreps } from "@/components/types/ItemPreps";
+withDefaults(defineProps<ItemPreps>(), {
+  isDesign: false,
+  disabled: false,
+  showFormItem: false,
+  bareFlag: false,
+  isSearch: false,
 });
 const emits = defineEmits(["selfFunc", "selectItem"]);
 // const formData = defineModel("formData");
@@ -104,7 +81,7 @@ onUpdated(() => {
     :isDesign="isDesign"
     :disabled="disabled"
     :bareFlag="bareFlag"
-    :formItem="field"
+    :field="field"
     :parentField="parentField"
   >
     <div class="pcDemo">

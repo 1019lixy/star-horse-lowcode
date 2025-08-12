@@ -124,6 +124,4 @@ watch(
 :deep(.el-card__body) {
   margin-top: 5px;
 }
-
-
 </style>

@@ -1,5 +1,6 @@
 <script setup lang="ts" name="starhorse-form-item">
-import { computed, onMounted, PropType, ref } from "vue";
+import { computed, onMounted, 
+ ref } from "vue";
 import { useDesignFormStore } from "@/store/DesignForm";
 import piniaInstance from "@/store/index";
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
@@ -11,16 +12,14 @@ import {
   moveUpItem,
   removeItem,
 } from "@/plugins/AblesPlugin";
+import { ItemPreps } from "@/components/types/ItemPreps";
 
-const props = defineProps({
-  parentField: { type: Object as PropType<any> },
-  parentId: { type: Object as PropType<any> },
-  formItem: { type: Object as PropType<any>, required: true },
-  isDesign: { type: Boolean, default: false },
-  showFormItem: { type: Boolean, default: false },
-  disabled: { type: Boolean, default: false },
+const props = withDefaults( defineProps<ItemPreps>(), {
+  isDesign: false,
+  showFormItem: false,
+  disabled: false,
   //是否需要css 修饰
-  bareFlag: { type: Boolean, default: false },
+  bareFlag: false,
 });
 let designForm = useDesignFormStore(piniaInstance);
 let isEdit = computed(() => props.isDesign);
@@ -30,7 +29,7 @@ const isDisabled = computed(() => props.disabled);
 let componentVisible = computed(() => {
   return (
     designForm.componentVisible &&
-    currentItemId.value == props.formItem?.preps.id
+    currentItemId.value == props.field?.preps.id
   );
 });
 const selectParentContainer = () => {
@@ -40,7 +39,7 @@ const selectParentContainer = () => {
 const selectData = (data: any) => {
   if (!isEdit.value || isDisabled.value) return;
   designForm.selectItem(
-    props.formItem,
+    props.field,
     data.itemType,
     getParentComp(props.parentField),
   );
@@ -53,16 +52,16 @@ const close = () => {
   designForm.setComponentVisible(false);
 };
 const changeItem = (item: any) => {
-  props.formItem["itemType"] = item["itemType"];
+  props.field["itemType"] = item["itemType"];
   if (item.category == 2) {
-    props.formItem["compType"] = "container";
+    props.field["compType"] = "container";
   }
-  props.formItem["preps"] = {
-    ...props.formItem["preps"],
+  props.field["preps"] = {
+    ...props.field["preps"],
     itemNameLabel: item.itemName,
   };
   close();
-  selectData(props.formItem);
+  selectData(props.field);
 };
 const itemContextMenuRef = ref();
 const itemContextMenu = (evt: MouseEvent | any) => {
@@ -92,13 +91,13 @@ onMounted(() => {});
   </star-horse-dialog>
   <div
     class="w-fill"
-    :class="{ 'item-info': formItem.preps?.itemType != 'usercomp' }"
+    :class="{ 'item-info': field.preps?.itemType != 'usercomp' }"
     :style="{
-      margin: formItem.preps?.itemType == 'button' ? '5px auto' : 'unset',
+      margin: field.preps?.itemType == 'button' ? '5px auto' : 'unset',
     }"
     v-if="bareFlag === true"
   >
-    <help :message="formItem.preps?.helpMsg" v-if="formItem.preps?.helpMsg" />
+    <help :message="field.preps?.helpMsg" v-if="field.preps?.helpMsg" />
     <slot></slot>
   </div>
   <div v-else class="form-item-operation">
@@ -108,34 +107,34 @@ onMounted(() => {});
         'design-star-horse': isEdit && !disabled,
         'field-item': true,
         'active-item':
-          currentItemId == formItem?.preps.id && isEdit && !disabled,
+          currentItemId == field?.preps.id && isEdit && !disabled,
       }"
       v-if="showFormItem"
-      @click="selectData(formItem)"
+      @click="selectData(field)"
       @contextmenu="itemContextMenu"
     >
       <el-form-item
-        :size="formItem?.preps['size'] || 'default'"
+        :size="field?.preps['size'] || 'default'"
         v-if="
           parentField?.itemType != 'table' &&
-          formItem.preps?.itemType != 'divider' &&
-          formItem?.preps['headerFlag'] != 'Y'
+          field.preps?.itemType != 'divider' &&
+          field?.preps['headerFlag'] != 'Y'
         "
         :style="{
           marginBottom: isEdit && !disabled ? '1px' : '18px',
         }"
-        :label="formItem?.preps['hideLabel'] ? '' : formItem?.preps['label']"
-        :prop="formItem?.preps['name']"
-        :required="formItem?.preps['required']"
+        :label="field?.preps['hideLabel'] ? '' : field?.preps['label']"
+        :prop="field?.preps['name']"
+        :required="field?.preps['required']"
         :rules="
-          formItem?.preps['required']
+          field?.preps['required']
             ? [{ required: true, trigger: 'blur', message: '必须项不能为空' }]
             : []
         "
       >
         <help
-          :message="formItem.preps?.helpMsg"
-          v-if="formItem.preps?.helpMsg"
+          :message="field.preps?.helpMsg"
+          v-if="field.preps?.helpMsg"
         />
         <slot></slot>
       </el-form-item>
@@ -144,22 +143,22 @@ onMounted(() => {});
         v-else
         :class="{
           'bare-item': true,
-          'item-info': formItem.preps?.itemType != 'usercomp',
+          'item-info': field.preps?.itemType != 'usercomp',
         }"
         :style="{
-          margin: formItem?.itemType == 'button' ? '5px auto' : 'unset',
+          margin: field?.itemType == 'button' ? '5px auto' : 'unset',
         }"
-        @click.stop="selectData(formItem)"
+        @click.stop="selectData(field)"
       >
         <help
-          :message="formItem.preps?.helpMsg"
-          v-if="formItem.preps?.helpMsg"
+          :message="field.preps?.helpMsg"
+          v-if="field.preps?.helpMsg"
         />
         <slot></slot>
       </div>
       <div
         class="field-action"
-        v-if="isEdit && !disabled && currentItemId == formItem?.preps.id"
+        v-if="isEdit && !disabled && currentItemId == field?.preps.id"
       >
         <el-tooltip content="选择父容器" v-if="parentField?.itemType">
           <star-horse-icon
@@ -179,7 +178,7 @@ onMounted(() => {});
         </el-tooltip>
         <el-tooltip content="上移" v-if="parentField?.itemType != 'table'">
           <star-horse-icon
-            @click.stop="moveUpItem(isEdit, formItem?.preps, parentField)"
+            @click.stop="moveUpItem(isEdit, field?.preps, parentField)"
             icon-class="move-up"
             cursor="pointer"
             style="color: var(--star-horse-white)"
@@ -187,7 +186,7 @@ onMounted(() => {});
         </el-tooltip>
         <el-tooltip content="下移" v-if="parentField?.itemType != 'table'">
           <star-horse-icon
-            @click.stop="moveDownItem(isEdit, formItem?.preps, parentField)"
+            @click.stop="moveDownItem(isEdit, field?.preps, parentField)"
             icon-class="move-down"
             cursor="pointer"
             style="color: var(--star-horse-white)"
@@ -195,7 +194,7 @@ onMounted(() => {});
         </el-tooltip>
         <el-tooltip content="删除组件">
           <star-horse-icon
-            @click.stop="removeItem(isEdit, formItem?.preps, parentField)"
+            @click.stop="removeItem(isEdit, field?.preps, parentField)"
             icon-class="clear-all"
             cursor="pointer"
             style="color: var(--star-horse-white)"
@@ -204,7 +203,7 @@ onMounted(() => {});
       </div>
       <div
         class="drag-handler"
-        v-if="isEdit && currentItemId == formItem?.preps.id"
+        v-if="isEdit && currentItemId == field?.preps.id"
       >
         <el-tooltip content="拖动">
           <star-horse-icon
@@ -213,11 +212,11 @@ onMounted(() => {});
           />
         </el-tooltip>
 
-        <el-tooltip :content="formItem?.preps['itemNameLabel']">
+        <el-tooltip :content="field?.preps['itemNameLabel']">
           <span
             style="color: var(--star-horse-white); cursor: pointer"
-            @click="selectData(formItem)"
-            >{{ formItem?.preps["itemNameLabel"] }}</span
+            @click="selectData(field)"
+            >{{ field?.preps["itemNameLabel"] }}</span
           >
         </el-tooltip>
       </div>
@@ -225,17 +224,17 @@ onMounted(() => {});
     <div
       class="item-info"
       :style="{
-        margin: formItem.preps?.itemType == 'button' ? '5px auto' : 'unset',
+        margin: field.preps?.itemType == 'button' ? '5px auto' : 'unset',
       }"
       v-else
     >
-      <help :message="formItem.preps?.helpMsg" v-if="formItem.preps?.helpMsg" />
+      <help :message="field.preps?.helpMsg" v-if="field.preps?.helpMsg" />
       <slot></slot>
     </div>
     <Teleport to="body">
       <ContentMenu
         ref="itemContextMenuRef"
-        :menu-data="dynamicFormContextMenuData(formItem, parentField, 'item')"
+        :menu-data="dynamicFormContextMenuData(field, parentField, 'item')"
       />
     </Teleport>
   </div>

@@ -2,25 +2,20 @@
 import { checkVisible, loadProp, validMsg } from "@/api/form_utils";
 import { Config } from "@/api/settings";
 import { compKey } from "@/api/system";
-import { ApiUrls } from "@/components/types/ApiUrls";
-import { onMounted, PropType } from "vue";
+import { ContainerPreps } from "@/components/types/ItemPreps";
+import { onMounted } from "vue";
 
-const props = defineProps({
-  compUrl: { type: Object as PropType<ApiUrls> },
-  item: { type: Array as PropType<any>, required: true },
-  objectName: { type: String },
+const props = withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
-  dataIndex: { type: Number, default: -1 },
+  dataIndex: -1,
   // 父节点名称
-  propPrefix: { type: String, default: "" },
-  parentPreps: { type: Object, default: {} },
-  subFormFlag: { type: String, default: "N" },
-  batchName: { type: String, default: "batchDataList" },
-  batchFieldName: { type: String, default: "batchFieldList" },
-  primaryKey: { type: [String, Object] as PropType<string | any> },
-  rules: { type: Object },
-  compSize: { type: String, default: Config.compSize },
-  source: { type: Number, default: 1 },
+  propPrefix: "",
+  parentPreps: {},
+  subFormFlag: "N",
+  batchName: "batchDataList",
+  batchFieldName: "batchFieldList",
+  compSize: Config.compSize,
+  source: 1,
 });
 const dataForm = defineModel("dataForm");
 

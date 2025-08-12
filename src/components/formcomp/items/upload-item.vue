@@ -4,7 +4,7 @@
     :isDesign="isDesign"
     :disabled="disabled"
     :bareFlag="bareFlag"
-    :formItem="field"
+    :field="field"
     :parentField="parentField"
   >
     <el-upload
@@ -65,47 +65,17 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { nextTick, onMounted, PropType, ref, shallowRef, watch } from "vue";
-import { getToken } from "@/utils/auth";
 import { checkIsDisabled } from "@/components/formcomp/utils/ItemRelationEventUtils";
+import { getToken } from "@/utils/auth";
+import { nextTick, onMounted, ref, shallowRef } from "vue";
 
-const props = defineProps({
-  isDesign: {
-    type: Boolean,
-    default: false,
-  },
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
-  showFormItem: {
-    type: Boolean,
-    default: false,
-  },
-  bareFlag: {
-    type: Boolean,
-    default: false,
-  },
-  isSearch: {
-    type: Boolean,
-    default: false,
-  },
-  field: {
-    type: Object as PropType<any>,
-    default: {},
-  },
-  formFieldList: {
-    type: Object,
-    default: {},
-  },
-  parentField: {
-    type: Object,
-    default: {},
-  },
-  formInfo: {
-    type: Object,
-    default: {},
-  },
+import { ItemPreps } from "@/components/types/ItemPreps";
+const props = withDefaults(defineProps<ItemPreps>(), {
+  isDesign: false,
+  disabled: false,
+  showFormItem: false,
+  bareFlag: false,
+  isSearch: false,
 });
 const emits = defineEmits(["selfFunc", "selectItem"]);
 const formData = defineModel("formData");
@@ -147,21 +117,6 @@ onMounted(async () => {
   }
   headers.value["token"] = getToken();
 });
-watch(
-  () => props.formFieldList,
-  (val: any) => {
-    if (val && Object.keys(val).includes(props.field.fieldName)) {
-      dataField.value = [
-        {
-          url:
-            (props.field.preps["context"] || "/system-config") +
-            val[props.field.fieldName],
-        },
-      ];
-    }
-  },
-  { immediate: true, deep: true },
-);
 </script>
 <style lang="scss" scoped>
 :deep(.el-upload) {

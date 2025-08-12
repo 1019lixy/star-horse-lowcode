@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, PropType } from "vue";
 import { compKey } from "@/api/system";
+
 defineOptions({
   name: "MenuItem",
 });

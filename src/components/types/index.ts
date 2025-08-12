@@ -13,3 +13,4 @@ export * from "./SearchProps";
 export * from "./ShortKey";
 export * from "./StarHorseType";
 export * from "./BtnAuth";
+export * from "./ItemPreps";

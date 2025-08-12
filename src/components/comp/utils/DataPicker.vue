@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import {useVModel} from "@vueuse/core";
-import {reactive, ref} from "vue";
-import {postRequest} from "@/api/star_horse_apis";
+import { useVModel } from "@vueuse/core";
+import { reactive, ref } from "vue";
+import { postRequest } from "@/api/star_horse_apis";
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
-import {closeLoad, createCondition} from "@/api/star_horse_utils";
-import {PageProps} from "@/components/types/PageProps";
-import {SearchParams} from "@/components/types";
+import { closeLoad, createCondition } from "@/api/star_horse_utils";
+import { PageProps } from "@/components/types/PageProps";
+import { SearchParams } from "@/components/types";
 
 export type ModelValueType = any;
 
@@ -70,7 +70,6 @@ export interface DataDropdownProps {
    * 自动关闭弹窗
    */
   autoClose?: boolean;
-
 }
 
 const props = withDefaults(defineProps<DataDropdownProps>(), {
@@ -132,17 +131,17 @@ const onNodeClick = (treeNode: any) => {
     if (node.children) {
       //非叶子节点也需要选中
       if (!props.selectLeaf) {
-        const temp = {...node};
+        const temp = { ...node };
         delete temp["children"];
         dataOptions.value.push(temp);
       }
       //只选所有叶子节点
       node.children.forEach((child: any) => {
         const childIndex = dataOptions.value?.findIndex(
-            (e) => e[value] === child[value],
+          (e) => e[value] === child[value],
         );
         if (add && childIndex === -1) {
-          const temp = {...child};
+          const temp = { ...child };
           delete temp["children"];
           dataOptions.value.push(temp);
         } else if (!add && childIndex !== -1) {
@@ -158,7 +157,7 @@ const onNodeClick = (treeNode: any) => {
     const index = dataOptions.value?.findIndex((e) => e[value] === data[value]);
     if (index === -1) {
       if (props.checkStrictly) {
-        const tempNode = {...data};
+        const tempNode = { ...data };
         delete tempNode.children;
         dataOptions.value.push(tempNode);
       } else {
@@ -185,15 +184,17 @@ const dialogVisible = ref(false);
 const queryName = ref(null);
 
 const dataSearch = () => {
-
   //如果是静态数据则直接查询，如果是接口则调用接口查询
   if (props.dataUrl) {
-    loadData(queryName.value?[createCondition(props.displayValue, queryName.value,"lk")]:[]);
+    loadData(
+      queryName.value
+        ? [createCondition(props.displayValue, queryName.value, "lk")]
+        : [],
+    );
   } else {
     if (!queryName.value) return;
     orgTreeRef.value?.filter(queryName.value);
   }
-
 };
 const filterNode = (value: string, data: any): boolean => {
   if (!value) return true;
@@ -224,34 +225,34 @@ const loadData = async (condition?: SearchParams[]) => {
   let params: any = {};
   let tempUrl = props.dataUrl;
   if (props.proxy) {
-    tempUrl = props.proxyUrl??"/system-config/redirect/execute";
+    tempUrl = props.proxyUrl ?? "/system-config/redirect/execute";
     params = {
       url: props.dataUrl,
       httpMethod: "POST",
       dataType: "JSON",
-      searchInfo: baseParams
+      searchInfo: baseParams,
     };
   } else {
     params = baseParams;
   }
   await postRequest(tempUrl!, params)
-      .then((res) => {
-        if (res?.data?.code) {
-          console.error(res?.data?.cnMessage);
-          return;
-        }
-        let redata = res?.data?.data;
-        //如果不是分页之间显示返回的所有数据
-        dataOrgOptions.value = redata?.dataList || redata;
-        pageInfo.totalPage = redata?.totalPages;
-        pageInfo.totalData = redata?.totalDatas;
-      })
-      .catch((err: any) => {
-        console.log(err);
-      })
-      .finally(() => {
-        closeLoad();
-      });
+    .then((res) => {
+      if (res?.data?.code) {
+        console.error(res?.data?.cnMessage);
+        return;
+      }
+      let redata = res?.data?.data;
+      //如果不是分页之间显示返回的所有数据
+      dataOrgOptions.value = redata?.dataList || redata;
+      pageInfo.totalPage = redata?.totalPages;
+      pageInfo.totalData = redata?.totalDatas;
+    })
+    .catch((err: any) => {
+      console.log(err);
+    })
+    .finally(() => {
+      closeLoad();
+    });
 };
 const open = () => {
   dialogVisible.value = true;
@@ -267,10 +268,10 @@ const onOpen = async () => {
     await loadData();
   }
   dataOptions.value = Array.isArray(value.value)
-      ? value.value
-      : value.value
-          ? [value.value]
-          : [];
+    ? value.value
+    : value.value
+      ? [value.value]
+      : [];
 };
 const handelConfirm = () => {
   if (props.multiple) {
@@ -300,22 +301,23 @@ const pageSizeClick = (val: number) => {
   loadData();
 };
 defineExpose({
-  open, close
+  open,
+  close,
 });
 </script>
 
 <template>
   <star-horse-dialog
-      :self-func="true"
-      :dialog-visible="dialogVisible"
-      @open="onOpen"
-      @merge="handelConfirm"
-      @resetForm="resetData"
-      @closeAction="dialogVisible = false"
-      draggable
-      :title="title || '选择数据'"
-      boxWidth="60%"
-      boxHeight="70%"
+    :self-func="true"
+    :dialog-visible="dialogVisible"
+    @open="onOpen"
+    @merge="handelConfirm"
+    @resetForm="resetData"
+    @closeAction="dialogVisible = false"
+    draggable
+    :title="title || '选择数据'"
+    boxWidth="60%"
+    boxHeight="70%"
   >
     <el-splitter>
       <el-splitter-panel collapsible min="50%">
@@ -323,11 +325,11 @@ defineExpose({
           <template #header>
             <div class="flex flex-row items-center w-full justify-between">
               <el-checkbox
-                  v-model="checkAll"
-                  class="!w-[30%]"
-                  v-if="multiple"
-                  :indeterminate="indeterminate"
-                  @change="handleCheckAll"
+                v-model="checkAll"
+                class="!w-[30%]"
+                v-if="multiple"
+                :indeterminate="indeterminate"
+                @change="handleCheckAll"
               >
                 全部
               </el-checkbox>
@@ -338,31 +340,31 @@ defineExpose({
           </template>
           <div class="my-[5px] w-[95%] mx-auto">
             <el-input
-                v-model="queryName"
-                placeholder="输入关键字进行查询"
-                :style="{ width: '100%' }"
-                suffix-icon="search"
-                clearable
-                @keyup.enter="dataSearch"
+              v-model="queryName"
+              placeholder="输入关键字进行查询"
+              :style="{ width: '100%' }"
+              suffix-icon="search"
+              clearable
+              @keyup.enter="dataSearch"
             />
           </div>
           <el-scrollbar tag="div" class="org-tree">
             <el-tree
-                ref="orgTreeRef"
-                :node-key="displayValue"
-                :data="dataOrgOptions"
-                :default-expanded-keys="expandedKeys"
-                :props="treeProps"
-                :check-strictly="checkStrictly"
-                :filter-node-method="filterNode"
-                @node-click="onNodeClick"
+              ref="orgTreeRef"
+              :node-key="displayValue"
+              :data="dataOrgOptions"
+              :default-expanded-keys="expandedKeys"
+              :props="treeProps"
+              :check-strictly="checkStrictly"
+              :filter-node-method="filterNode"
+              @node-click="onNodeClick"
             >
               <template #default="{ data }">
                 <div class="data-line">
                   <div class="menu-title">
                     <div class="flex flex-row items-center">
                       <star-horse-icon
-                          :icon-class="
+                        :icon-class="
                           data.children?.length > 0 ? 'folder' : 'document'
                         "
                       />
@@ -370,22 +372,22 @@ defineExpose({
                     </div>
                   </div>
                   <el-icon class="is-selected">
-                    <Check/>
+                    <Check />
                   </el-icon>
                 </div>
               </template>
             </el-tree>
           </el-scrollbar>
           <el-pagination
-              v-if="pageSize > 0"
-              :total="pageInfo.totalData"
-              @current-change="pageChangeClick"
-              @size-change="pageSizeClick"
-              :size="compSize"
-              layout="total, sizes, prev, pager, next, jumper"
-              v-model:currentPage="pageInfo.currentPage"
-              v-model:page-size="pageInfo.pageSize"
-              v-model:pageCount="pageInfo.totalPage"
+            v-if="pageSize > 0"
+            :total="pageInfo.totalData"
+            @current-change="pageChangeClick"
+            @size-change="pageSizeClick"
+            :size="compSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            v-model:currentPage="pageInfo.currentPage"
+            v-model:page-size="pageInfo.pageSize"
+            v-model:pageCount="pageInfo.totalPage"
           />
         </el-card>
       </el-splitter-panel>
@@ -393,35 +395,35 @@ defineExpose({
         <el-card shadow="never" class="org-card dialog-body">
           <template #header>
             <div
-                class="flex flex-row flex-1 items-center justify-center h-[32px]"
+              class="flex flex-row flex-1 items-center justify-center h-[32px]"
             >
               已选数据区[{{ dataOptions?.length }}]
             </div>
           </template>
           <el-scrollbar tag="div" class="org-tree">
             <el-tree
-                ref="orgTreeRef"
-                :node-key="displayValue"
-                :data="dataOptions"
-                :default-expanded-keys="expandedKeys"
-                :props="treeProps"
-                :check-strictly="checkStrictly"
-                :filter-node-method="filterNode"
-                @node-click="onNodeClick"
+              ref="orgTreeRef"
+              :node-key="displayValue"
+              :data="dataOptions"
+              :default-expanded-keys="expandedKeys"
+              :props="treeProps"
+              :check-strictly="checkStrictly"
+              :filter-node-method="filterNode"
+              @node-click="onNodeClick"
             >
               <template #default="{ data }">
                 <div class="data-line">
                   <div class="menu-title">
                     <div class="flex flex-row items-center">
                       <star-horse-icon
-                          :icon-class="
+                        :icon-class="
                           data.children?.length > 0 ? 'folder' : 'document'
                         "
                       />
                       &nbsp;{{ data[displayName] }}
                     </div>
                     <el-icon class="is-selected">
-                      <Check/>
+                      <Check />
                     </el-icon>
                   </div>
                 </div>

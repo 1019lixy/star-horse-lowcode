@@ -240,6 +240,7 @@ defineExpose({
         margin: 0;
       }
     }
+
     &.button {
       &:hover {
         background-color: #6b778c;
@@ -248,8 +249,10 @@ defineExpose({
           color: var(--star-horse-style);
         }
       }
+
       &.active {
         background-color: #6b778c;
+
         &.menu-item i {
           color: #fff;
         }

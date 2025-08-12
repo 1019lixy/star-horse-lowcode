@@ -10,7 +10,7 @@
     :isDesign="isDesign"
     :disabled="disabled"
     :bareFlag="bareFlag"
-    :formItem="field"
+    :field="field"
     :parentField="parentField"
   >
     <el-input
@@ -68,43 +68,14 @@ import {
   checkIsDisabled,
   initCompCallEvent,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
-import { computed, nextTick, onMounted, PropType, ref } from "vue";
+import { ItemPreps } from "@/components/types/ItemPreps";
+import { computed, nextTick, onMounted, 
+ ref } from "vue";
 
 defineOptions({
   name: "InputItem",
 });
-const props = defineProps({
-  isDesign: {
-    type: Boolean,
-    default: false,
-  },
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
-  showFormItem: {
-    type: Boolean,
-    default: false,
-  },
-  bareFlag: {
-    type: Boolean,
-    default: false,
-  },
-  isSearch: {
-    type: Boolean,
-    default: false,
-  },
-  field: {
-    type: Object as PropType<any>,
-    required: true,
-  },
-  parentField: {
-    type: Object as PropType<any>,
-  },
-  formInfo: {
-    type: Object as PropType<any>,
-  },
-});
+const props = defineProps<ItemPreps>();
 const emits = defineEmits(["selfFunc", "selectItem"]);
 const formData = defineModel("formData");
 const inputItemRef = ref();

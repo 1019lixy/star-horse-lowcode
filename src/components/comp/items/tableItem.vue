@@ -1,27 +1,21 @@
 <script setup lang="ts">
-import { ModelRef, onMounted, PropType } from "vue";
-import { ApiUrls } from "@/components/types/ApiUrls";
-import { PageFieldInfo } from "@/components/types/PageFieldInfo";
-import StarHorseFormTable from "@/components/comp/StarHorseFormTable.vue";
 import { Config } from "@/api/settings";
 import { compKey } from "@/api/system";
+import StarHorseFormTable from "@/components/comp/StarHorseFormTable.vue";
+import { ContainerPreps } from "@/components/types/ItemPreps";
+import { ModelRef, onMounted } from "vue";
 
-const props = defineProps({
-  compUrl: { type: Object as PropType<ApiUrls> },
-  item: { type: Object as PropType<PageFieldInfo | any>, required: true },
-  objectName: { type: String },
+const props = withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
-  dataIndex: { type: Number, default: -1 },
-  subFormFlag: { type: String, default: "N" },
-  batchName: { type: String, default: "batchDataList" },
-  batchFieldName: { type: String, default: "batchFieldList" },
-  primaryKey: {
-    type: [String, Object] as PropType<string | any>,
-    required: true,
-  },
-  rules: { type: Object },
-  compSize: { type: String, default: Config.compSize },
-  source: { type: Number, default: 1 },
+  dataIndex: -1,
+  // 父节点名称
+  propPrefix: "",
+  parentPreps: {},
+  subFormFlag: "N",
+  batchName: "batchDataList",
+  batchFieldName: "batchFieldList",
+  compSize: Config.compSize,
+  source: 1,
 });
 const emits = defineEmits(["addRow", "removeRow"]);
 const dataForm: ModelRef<any> = defineModel("dataForm");

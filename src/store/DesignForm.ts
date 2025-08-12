@@ -1,6 +1,6 @@
-import { defineStore } from "pinia";
-import { SelectOption } from "@/components/types/SearchProps";
 import { Config } from "@/api/settings";
+import { SelectOption } from "@/components/types/SearchProps";
+import { defineStore } from "pinia";
 import { ref, unref } from "vue";
 
 export const useDesignFormStore = defineStore("designForm", () => {
@@ -13,6 +13,11 @@ export const useDesignFormStore = defineStore("designForm", () => {
   const compListNoLayer = ref<any>([]);
   const formData = ref<any>({});
   const currentComp = ref<Array<any> | any>();
+  // 添加缓存状态标记和缓存结果
+  const isCompListUpdated = ref<boolean>(true);
+  const cachedCompListNoLayer = ref<any>([]);
+  const cachedSelectList = ref<any>([]);
+
   const currentItemType = ref<string>("");
   const currentCompCategory = ref<string>("");
   const parentCompType = ref<string>("");
@@ -151,6 +156,8 @@ export const useDesignFormStore = defineStore("designForm", () => {
   };
   const setCompList = (comps: Array<any>) => {
     compList.value = comps;
+    // 标记数据已更新，需要重新计算
+    isCompListUpdated.value = true;
   };
   /**
    * 通过组件Id查找数据
@@ -158,7 +165,7 @@ export const useDesignFormStore = defineStore("designForm", () => {
    * @returns
    */
   const selectItemById = (itemId: string) => {
-    if (compListNoLayer.value?.length == 0) {
+    if (isCompListUpdated.value || compListNoLayer.value?.length == 0) {
       loadCompNames();
     }
     return compListNoLayer.value?.find((item: any) => item.id == itemId);
@@ -168,36 +175,53 @@ export const useDesignFormStore = defineStore("designForm", () => {
    * 如果要使用compListNoLayer 必须先调用loadCompNames 方法
    */
   const loadCompNames = () => {
-    const innerFunc = (datas: Array<any>, tabName?: string) => {
-      const selectList: Array<any> = [];
-      const compList: Array<any> = [];
+    // 如果数据未更新且有缓存结果，直接返回缓存
+    if (!isCompListUpdated.value && cachedSelectList.value.length > 0) {
+      compListNoLayer.value = cachedCompListNoLayer.value;
+      return cachedSelectList.value;
+    }
+    const selectList: Array<any> = [];
+    const compListResult: Array<any> = [];
+    const stack: Array<{ datas: Array<any>; tabName?: string }> = [];
+
+    // 使用栈代替递归，初始化栈
+    stack.push({ datas: compList.value, tabName: undefined });
+    while (stack.length > 0) {
+      const { datas, tabName } = stack.pop()!;
+      const currentSelectList: Array<any> = [];
+      const currentCompList: Array<any> = [];
+
       for (const index in datas) {
-        const temp: any = datas[index];
-        if (temp.itemType == "box" || temp.itemType == "dytable") {
+        const temp = datas[index];
+        if (temp.itemType === "box" || temp.itemType === "dytable") {
           const elements = temp.preps.elements;
           const children: SelectOption[] = [];
+          const childItems: Array<any> = [];
+
           for (const sindex in elements) {
             const columns = elements[sindex].columns;
             for (const ssindex in columns) {
               const column = columns[ssindex];
               if (column?.items?.length > 0) {
-                children.push(
-                  ...column.items
-                    ?.map((item: any) => ({
-                      name: item.preps?.label,
-                      id: item.preps?.id,
-                      compType: "item",
-                      tabName,
-                      type: item.preps?.itemType,
-                      value: item.preps?.name,
-                    }))
-                    .filter((item: SelectOption) => item.name),
+                // 收集子项
+                const items = column.items.filter(
+                  (item: any) => item.preps?.label,
                 );
-                compList.push(...column.items);
+                children.push(
+                  ...items.map((item: any) => ({
+                    name: item.preps?.label,
+                    id: item.preps?.id,
+                    compType: "item",
+                    tabName,
+                    type: item.preps?.itemType,
+                    value: item.preps?.name,
+                  })),
+                );
+                childItems.push(...column.items);
               }
             }
           }
-          selectList.push({
+          currentSelectList.push({
             name: temp.preps?.label ?? temp.preps?.itemNameLabel,
             value: temp.preps?.name,
             id: temp.preps?.id,
@@ -206,28 +230,33 @@ export const useDesignFormStore = defineStore("designForm", () => {
             compType: "container",
             children: children,
           });
-        } else if (temp.itemType == "table") {
+          currentCompList.push(temp, ...childItems);
+        } else if (temp.itemType === "table") {
           const elements = temp.preps.elements;
           const children: SelectOption[] = [];
+          const childItems: Array<any> = [];
+
           for (const index in elements) {
             const element = elements[index];
             if (element.items?.length > 0) {
-              children.push(
-                ...element.items
-                  ?.map((item: any) => ({
-                    name: item.preps?.label,
-                    id: item.preps?.id,
-                    compType: "item",
-                    tabName,
-                    type: item.itemType ?? item.preps?.itemType,
-                    value: item.preps?.name,
-                  }))
-                  .filter((item: SelectOption) => item.name),
+              const items = element.items.filter(
+                (item: any) => item.preps?.label,
               );
-              compList.push(...element.items);
+              children.push(
+                ...items.map((item: any) => ({
+                  name: item.preps?.label,
+                  id: item.preps?.id,
+                  compType: "item",
+                  tabName,
+                  type: item.itemType ?? item.preps?.itemType,
+                  value: item.preps?.name,
+                })),
+              );
+              childItems.push(...element.items);
             }
           }
-          selectList.push({
+
+          currentSelectList.push({
             name: temp.preps?.label,
             value: temp.preps?.batchFieldName,
             tabName,
@@ -236,31 +265,33 @@ export const useDesignFormStore = defineStore("designForm", () => {
             compType: "container",
             children: children,
           });
-        } else if (
-          temp.itemType == "tab" ||
-          temp.itemType == "collapse" ||
-          temp.itemType == "card"
-        ) {
-          const elements = temp.preps?.elements;
+          currentCompList.push(temp, ...childItems);
+        } else if (["tab", "collapse", "card"].includes(temp.itemType)) {
+          const elements = temp.preps?.elements || [];
           for (const index in elements) {
             const element = elements[index];
             const tempTabName = tabName
-              ? tabName + "__" + element.tabName
-              : tabName;
-            const subItems = innerFunc(element.items, tempTabName);
-            selectList.push({
+              ? `${tabName}__${element.tabName}`
+              : element.tabName;
+            // 将子元素推入栈中处理
+            stack.push({
+              datas: element.items || [],
+              tabName: tempTabName,
+            });
+
+            currentSelectList.push({
               name: element.label,
               value: element.objectName,
               tabName: tempTabName,
               id: temp.id,
               type: temp.itemType,
               compType: "container",
-              children: subItems.selectList,
+              children: [], // 后续会被栈处理结果填充
             });
-            compList.push(...subItems.compList);
           }
+          currentCompList.push(temp);
         } else {
-          selectList.push({
+          currentSelectList.push({
             name: temp.preps?.label,
             value: temp.preps?.name,
             tabName,
@@ -268,15 +299,22 @@ export const useDesignFormStore = defineStore("designForm", () => {
             id: temp.preps?.id,
             type: temp.itemType ?? temp.preps?.itemType,
           });
+          currentCompList.push(temp);
         }
-        compList.push(temp);
       }
-      return { selectList, compList };
-    };
 
-    const resultDatas = innerFunc(compList.value);
-    compListNoLayer.value = resultDatas.compList;
-    return resultDatas.selectList;
+      // 批量添加结果，减少数组操作次数
+      selectList.push(...currentSelectList);
+      compListResult.push(...currentCompList);
+    }
+
+    // 更新缓存
+    compListNoLayer.value = compListResult;
+    cachedCompListNoLayer.value = compListResult;
+    cachedSelectList.value = selectList;
+    isCompListUpdated.value = false;
+
+    return selectList;
   };
 
   /**

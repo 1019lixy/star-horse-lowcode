@@ -21,9 +21,9 @@ const selectData = (item: any) => {
   <div class="component-list">
     <div class="title">
       <el-anchor type="underline" :container="containerRef" :offset="70">
-        <el-anchor-link :href="`#container`"> 容器 </el-anchor-link>
-        <el-anchor-link :href="`#basic`"> 基础组件 </el-anchor-link>
-        <el-anchor-link :href="`#self`"> 自定义组件 </el-anchor-link>
+        <el-anchor-link :href="`#container`"> 容器</el-anchor-link>
+        <el-anchor-link :href="`#basic`"> 基础组件</el-anchor-link>
+        <el-anchor-link :href="`#self`"> 自定义组件</el-anchor-link>
       </el-anchor>
     </div>
     <div class="content" ref="containerRef">

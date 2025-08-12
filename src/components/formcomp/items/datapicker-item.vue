@@ -6,37 +6,13 @@ import { StarHorseDataSelector } from "@/components/comp";
 defineOptions({
   name: "DataPickerItem",
 });
-const props = defineProps({
-  isDesign: {
-    type: Boolean,
-    default: false,
-  },
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
-  showFormItem: {
-    type: Boolean,
-    default: false,
-  },
-  bareFlag: {
-    type: Boolean,
-    default: false,
-  },
-  isSearch: {
-    type: Boolean,
-    default: false,
-  },
-  field: {
-    type: Object as PropType<any>,
-    required: true,
-  },
-  parentField: {
-    type: Object as PropType<any>,
-  },
-  formInfo: {
-    type: Object as PropType<any>,
-  },
+import { ItemPreps } from "@/components/types/ItemPreps";
+const props = withDefaults(defineProps<ItemPreps>(), {
+  isDesign: false,
+  disabled: false,
+  showFormItem: false,
+  bareFlag: false,
+  isSearch: false,
 });
 const emits = defineEmits(["selfFunc", "selectItem"]);
 const formData = defineModel<any>("formData");

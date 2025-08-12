@@ -67,6 +67,9 @@ export declare interface CardFieldInfo extends TabFieldInfo {
  */
 export declare interface CollapseList extends TabFieldInfo {}
 
+/**
+ * 表单属性
+ */
 export declare interface FieldInfo {
   /**
    * 标签名称

@@ -392,8 +392,8 @@ defineExpose({
                 <el-tag
                   style="cursor: pointer"
                   @click="copyText(contabValueString)"
-                  >{{ contabValueString }}</el-tag
-                >
+                  >{{ contabValueString }}
+                </el-tag>
               </td>
             </tr>
           </tbody>

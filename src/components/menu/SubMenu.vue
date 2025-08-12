@@ -30,9 +30,9 @@ let menuColor = computed(() =>
         <component :is="item.meta.menuIcon || 'document'" />
       </el-icon>
       <template #title>
-        <router-link :to="{ path: item.path }">{{
-          item.meta.title
-        }}</router-link>
+        <router-link :to="{ path: item.path }"
+          >{{ item.meta.title }}
+        </router-link>
       </template>
     </el-menu-item>
   </template>

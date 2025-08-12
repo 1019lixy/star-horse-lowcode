@@ -2,18 +2,18 @@
   <div class="cron-content">
     <div class="cron-item">
       <el-radio size="small" :label="1" v-model="radioValue" border>
-        不填，允许的通配符[, - * /]</el-radio
-      >
+        不填，允许的通配符[, - * /]
+      </el-radio>
     </div>
     <div class="cron-item">
       <el-radio size="small" :label="2" v-model="radioValue" border>
-        每年</el-radio
-      >
+        每年
+      </el-radio>
     </div>
     <div class="cron-item">
       <el-radio size="small" :label="3" v-model="radioValue" border
-        >周期</el-radio
-      >
+        >周期
+      </el-radio>
       <span style="margin-left: 10px; margin-right: 5px">从</span>
       <el-input-number
         size="small"
@@ -31,8 +31,8 @@
     </div>
     <div class="cron-item">
       <el-radio size="small" :label="4" v-model="radioValue" border
-        >循环</el-radio
-      >
+        >循环
+      </el-radio>
       <span style="margin-left: 10px; margin-right: 5px">从</span>
       <el-input-number
         size="small"
@@ -51,8 +51,8 @@
     </div>
     <div class="cron-item">
       <el-radio size="small" :label="5" v-model="radioValue" border>
-        指定</el-radio
-      >
+        指定
+      </el-radio>
       <el-checkbox-group size="small" v-model="checkboxList">
         <el-checkbox
           class="my-[5px]"

@@ -593,9 +593,9 @@ onMounted(() => {
     <p class="title">最近5次运行时间</p>
     <div class="popup-result-scroll">
       <template v-if="isShow">
-        <el-tag class="my-[5px]" v-for="item in resultList" :key="item">{{
-          item
-        }}</el-tag>
+        <el-tag class="my-[5px]" v-for="item in resultList" :key="item"
+          >{{ item }}
+        </el-tag>
       </template>
       <el-tag v-else>计算结果中...</el-tag>
     </div>

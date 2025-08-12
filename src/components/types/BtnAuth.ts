@@ -27,6 +27,7 @@ export declare interface BtnAuth {
    */
   children?: BtnAuth[];
 }
+
 /**
  * 按钮响应事件前置校验
  */

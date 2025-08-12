@@ -4,6 +4,7 @@ import { ApiUrls } from "@/components/types/ApiUrls";
 import { FieldInfo } from "@/components/types/PageFieldInfo";
 import { Config } from "@/api/settings";
 import { getDataIndex, getFormData, getPrefix } from "@/api/form_utils";
+
 defineProps({
   compUrl: { type: Object as PropType<ApiUrls> },
   item: { type: Array as PropType<Array<FieldInfo> | any>, required: true },
