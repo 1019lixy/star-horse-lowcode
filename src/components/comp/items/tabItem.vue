@@ -59,8 +59,8 @@ onMounted(() => {
       @tabRemove="closeOperation"
       :closable="item.closable"
       :addable="item.addable"
-      @tabChange="(data) => item.actions['change']?.(data)"
-      @tabAdd="(data) => item.actions['add']?.(data)"
+      @tabChange="(data) => item.actions['tabChange']?.(data)"
+      @tabAdd="(data) => item.actions['tabAdd']?.(data)"
     >
       <template
         v-for="(tabItem, key) in item.tabList"
