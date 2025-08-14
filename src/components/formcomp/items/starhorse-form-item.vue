@@ -91,13 +91,13 @@ onMounted(() => {});
   </star-horse-dialog>
   <div
     class="w-fill"
-    :class="{ 'item-info': field.preps?.itemType != 'usercomp' }"
+    :class="{ 'item-info': field?.preps?.itemType != 'usercomp' }"
     :style="{
-      margin: field.preps?.itemType == 'button' ? '5px auto' : 'unset',
+      margin: field?.preps?.itemType == 'button' ? '5px auto' : 'unset',
     }"
     v-if="bareFlag === true"
   >
-    <help :message="field.preps?.helpMsg" v-if="field.preps?.helpMsg" />
+    <help :message="field?.preps?.helpMsg" v-if="field?.preps?.helpMsg" />
     <slot></slot>
   </div>
   <div v-else class="form-item-operation">

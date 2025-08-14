@@ -22,7 +22,7 @@
     :disabled="disabled"
     :showFormItem="showFormItem"
     :bareFlag="bareFlag"
-    :formItem="field"
+    :field="field"
     :parentField="parentField"
   >
     <div class="json-comp">

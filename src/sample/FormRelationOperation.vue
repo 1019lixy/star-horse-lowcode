@@ -55,6 +55,7 @@ const tableFieldList = reactive<PageFieldInfo>({
       label: "数据字典类型",
       fieldName: "dictType",
       type: "select",
+      defaultValue:"white_name_filter_type",
       formVisible: true,
       listVisible: true,
       preps: {
@@ -63,7 +64,7 @@ const tableFieldList = reactive<PageFieldInfo>({
         "dataRelation": {
           "actionName": "change",
           "relationDetails": [{
-            "matchType": "eq", "controlCondition": "eqDisableOrEditable", "relationFields": "areaCode",
+            "matchType": "eq", "controlCondition": "eqEditableOrDisable", "relationFields": "areaCode",
             "params": "button_authority",
             "xh": 1
           },{
@@ -118,7 +119,7 @@ onMounted(() => {
   <div class="flex flex-col h-full overflow-hidden">
     <star-horse-dialog :isShowBtnContinue="true" :dialogVisible="dialogProps.editVisible" :dialogProps="dialogProps">
       <star-horse-form ref="areaFormRef" @refresh="areainfoRef?.loadByPage()" :compUrl="dataUrl"
-        :fieldList="tableFieldList" :rules="rules" />
+                       :fieldList="tableFieldList" :rules="rules" />
     </star-horse-dialog>
     <star-horse-dialog :dialog-visible="dialogProps.viewVisible" :dialogProps="dialogProps" :source="3">
       <star-horse-data-view :dataFormat="dataFormat" :field-list="tableFieldList" :compUrl="dataUrl" />
@@ -126,12 +127,12 @@ onMounted(() => {
     <div class="search-content">
       <div class="search_btn">
         <star-horse-search-comp @searchData="(data: any) => areainfoRef?.createSearchParams(data)"
-          :formData="searchFormData" :compUrl="dataUrl" />
+                                :formData="searchFormData" :compUrl="dataUrl" />
       </div>
     </div>
     <el-card class="inner_content">
       <star-horse-table-comp ref="areainfoRef" :fieldList="tableFieldList" :btnPermissions="btnPermissions"
-        :primaryKey="primaryKey" :compUrl="dataUrl" :dataFormat="dataFormat" :showPageBar="false" />
+                             :primaryKey="primaryKey" :compUrl="dataUrl" :dataFormat="dataFormat" :showPageBar="false" />
     </el-card>
   </div>
 </template>
