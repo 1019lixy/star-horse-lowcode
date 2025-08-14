@@ -51,27 +51,27 @@ export declare interface SearchInfo {
   /**
    * 每页数据量大小
    */
-  pageSize: number;
+  pageSize?: number;
   /**
    * 页码
    */
-  currentPage: number;
+  currentPage?: number;
   /**
    * 总数据量
    */
-  totalDatas: number;
+  totalDatas?: number;
   /**
    * 总页数
    */
-  totalPages: number;
+  totalPages?: number;
   /**
    * 查询条件
    */
-  fieldList: SearchParams[];
+  fieldList?: SearchParams[];
   /**
    * 排序条件
    */
-  orderBy: OrderByInfo[];
+  orderBy?: OrderByInfo[];
 }
 
 /**
@@ -90,4 +90,41 @@ export declare interface BtnHideCondition {
    * 值
    */
   value: any;
+}
+/**
+ * 接口重定向参数
+ */
+export declare interface RedirectParams {
+  /**
+   * 接口地址
+   */
+  url: string;
+  /**
+   * 主机或者域名
+   */
+  host?: string;
+  /**
+   * 端口
+   */
+  port?: string;
+  /**
+   * 协议
+   */
+  protocol?: string;
+  /**
+   * 环境
+   */
+  env?: string;
+  /**
+   * http方法
+   */
+  httpMethod?: string;
+  /**
+   * 数据类型
+   */
+  dataType?: string;
+  /**
+   * 查询条件
+   */
+  searchInfo?: SearchInfo;
 }

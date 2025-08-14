@@ -1,5 +1,6 @@
 import { ApiUrls } from "./ApiUrls";
 import { FieldInfo, PageFieldInfo } from "./PageFieldInfo";
+import { SelectOption } from "./SearchProps";
 
 export interface ItemPreps {
   /**
@@ -31,7 +32,7 @@ export interface ItemPreps {
    * 组件属性
    */
 
-  field: FieldInfo|any; // 建议替换为实际的Field接口
+  field: FieldInfo | any; // 建议替换为实际的Field接口
   /**
    * 父组件属性
    */
@@ -47,7 +48,7 @@ export interface ItemPreps {
   /**
    * 回调函数
    */
-  callBack?:Function;
+  callBack?: Function;
 }
 
 export interface ContainerPreps {
@@ -58,7 +59,7 @@ export interface ContainerPreps {
   /**
    * 组件属性
    */
-  fieldList?: PageFieldInfo|any;
+  fieldList?: PageFieldInfo | any;
   /**
    * 组件属性
    */
@@ -105,4 +106,37 @@ export interface ContainerPreps {
    * 组件来源
    */
   source: number;
+}
+
+export interface RelationDetail {
+  /**
+   * 控制条件
+   */
+  controlCondition: string;
+  /**
+   * 关联字段
+   */
+  relationFields: string | Array<string>;
+  /**
+   * 匹配类型
+   */
+  matchType: string;
+  /**
+   * 关联参数
+   */
+  params: any;
+  /**
+   * 关联参数默认值
+   */
+  relationDetailsDefaultValue: SelectOption[];
+}
+export interface ItemRelation {
+  /**
+   * 关联事件名称
+   */
+  actionName: string;
+  /**
+   * 关联关系详情
+   */
+  relationDetails: RelationDetail[];
 }

@@ -5,6 +5,7 @@ import piniaInstance from "@/store";
 import { useSelfOperationStore } from "@/store/SelfOperation";
 import { useDesignFormStore } from "@/store/DesignForm";
 import { computed, isRef, unref, watch } from "vue";
+import { RelationDetail } from "@/components/types";
 
 const designForm = useDesignFormStore(piniaInstance);
 const userOperation = useSelfOperationStore(piniaInstance);
@@ -77,7 +78,7 @@ const operationRelation = async (
   if (!relation || actionName != relation.actionName) {
     return;
   }
-  const relations: Array<any> = relation?.relationDetails;
+  const relations: Array<RelationDetail> = relation?.relationDetails;
   const currentVal = formData[currentName];
   if (!relations || relations.length == 0) {
     return;
@@ -85,7 +86,7 @@ const operationRelation = async (
   for (const index in relations) {
     const temp = relations[index];
     const conditon: string = temp.controlCondition;
-    const fieldName: string = temp.relationFields;
+    const fieldName: string | Array<string> = temp.relationFields;
     if (!conditon || !fieldName) {
       continue;
     }
@@ -120,6 +121,79 @@ const operationRelation = async (
     }
   }
 };
+
+const dataLinkage =async (
+  props: any,
+  relationFields: string | Array<string>,
+  matchType: string,
+  params: any,
+  relationDetailsDefaultValue: any,
+  e: any,
+) => {
+  if (!relationFields) {
+    return;
+  }
+  if (!Array.isArray(relationFields)) {
+    relationFields = [relationFields];
+  }
+  relationFields?.forEach((item: string) => {
+    const field = props.formInfo?.find((field: any) => field.fieldName == item);
+    if (field) {
+      field.preps["values"] = [
+        { name: "静态1", value: "1" },
+        { name: "静态2", value: "2" },
+      ];
+      field.preps["disabled"] = params == e;
+    }
+  });
+};
+
+const relationEvent = (
+  props: any,
+  relationDetails: RelationDetail[],
+  e: any,
+  actionName: string,
+) => {
+  relationDetails?.forEach((item: RelationDetail) => {
+    const {
+      controlCondition,
+      relationFields,
+      matchType,
+      params,
+      relationDetailsDefaultValue,
+    } = item;
+    //处理连动
+    switch (controlCondition) {
+      //数据联动
+      case "dataLinkage":
+        dataLinkage(
+          props,
+          relationFields,
+          matchType,
+          params,
+          relationDetailsDefaultValue,
+          e,
+        );
+        break;
+      case "eqDisable":
+      case "eqDisableOrEditable":
+        //输入的值等于指定值隐藏否则显示
+        break;
+      case "eqEditable":
+      case "eqEditableOrDisable":
+        //编辑时输入的值等于指定值显示否则隐藏
+        break;
+      case "assignValue":
+        //赋值
+        break;
+      case "changeType":
+         //输入的值等于指定值时改变字段类型
+         break;
+         default:
+
+    }
+  });
+};
 /**
  * 所有触发的事件
  * @param context
@@ -145,29 +219,6 @@ const allAction = (
   }
   if (isDesign.value && isInit) {
     return;
-  }
-
-  //处理连动
-  switch (actionName) {
-    case "change":
-      change(context, currentData);
-      break;
-    case "input":
-      input(context, currentData);
-      break;
-    case "focus":
-      focus(context, currentData);
-      break;
-    case "blur":
-      blur(context, currentData);
-      break;
-    case "enter":
-    case "keydown.enter":
-      mouseEnter(context, currentData);
-      break;
-    default:
-      console.log("不支持的事件：" + actionName);
-      return;
   }
 };
 /**
@@ -275,10 +326,27 @@ const doInitCallEvent = (props: any, emits: any, formData: any) => {
     allAction(props, emits, unref(formData), event, true);
   });
 };
+
+const prepsFilter = (preps: any) => {
+  if (!preps || Object.keys(preps).length == 0) return {};
+  //删除undefined,null,空字符串
+  Object.keys(preps).forEach((key) => {
+    if (preps[key] === undefined || preps[key] === null || preps[key] === "") {
+      delete preps[key];
+    }
+    if (preps[key] == "false" || preps[key] == "true") {
+      preps[key] = Boolean(preps[key]);
+    }
+  });
+
+  return preps;
+};
 export {
   allAction,
   buttonAction,
   checkIsDisabled,
   useFormField,
   initCompCallEvent,
+  prepsFilter,
+  relationEvent,
 };

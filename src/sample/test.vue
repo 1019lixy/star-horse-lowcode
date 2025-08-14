@@ -1,11 +1,14 @@
 <template>
-  {{ fields }}
-  <box-container
-    :formData="formData"
-    :field="fields"
-    :is-design="true"
-    :formInfo="{}"
-  />
+ <template v-for="data in fields">
+          <component
+            :field="data"
+            v-model:formData="formData"
+            :isDesign="false"
+            :formInfo="fields"
+            :showFormItem="true"
+            :is="data.itemType + '-item'"
+          />
+        </template>
 </template>
 
 <script lang="ts" setup>
@@ -17,94 +20,7 @@ let designForm = useDesignFormStore(piniaInstance);
 const formData = ref<any>({
   test: "1-2-1",
 });
-const fields = ref<any>({
-  id: "shb5d00449-56ee-47a6-a7af-54aec2715b98",
-  name: "测试",
-  itemNameLabel: "测试",
-  compType: "container",
-  itemType: "box",
-  preps: {
-    elements: [
-      {
-        columns: [
-          {
-            _uuid: "sh80d2269a-849d-498c-b386-cdba601f70af",
-            colspan: 8,
-            rowspan: 1,
-            items: [],
-          },
-          {
-            _uuid: "sh7a347a46-37bd-4082-8c10-98981024b850",
-            colspan: 8,
-            rowspan: 1,
-            items: [],
-          },
-          {
-            _uuid: "sh7235d4a7-613e-42c1-9b11-9c0e15ffccaf",
-            colspan: 8,
-            rowspan: 1,
-            items: [
-              {
-                itemType: "switch",
-                type: "item",
-                preps: { fieldName: "test2", label: "Switch" },
-              },
-            ],
-          },
-        ],
-      },
-      {
-        columns: [
-          {
-            _uuid: "sh0aacfdf0-a223-463d-9b9b-140e2276d608",
-            colspan: 8,
-            rowspan: 1,
-            items: [],
-          },
-          {
-            colspan: 8,
-            items: [
-              {
-                itemType: "input",
-                type: "item",
-                id: "xxx",
-                preps: { fieldName: "test", label: "test" },
-              },
-            ],
-          },
-          {
-            _uuid: "sh4c4bf53f-d936-42da-b87e-243e1620a613",
-            colspan: 8,
-            rowspan: 1,
-            items: [],
-          },
-        ],
-      },
-      {
-        columns: [
-          {
-            _uuid: "sh4302ee34-f984-4e7b-a1a3-589ae7b1ef56",
-            colspan: 8,
-            rowspan: 1,
-            items: [],
-          },
-          {
-            _uuid: "sh3e39747f-ea0f-4398-98b4-dbd68f606709",
-            colspan: 8,
-            rowspan: 1,
-            items: [],
-          },
-          {
-            _uuid: "sh3ba4267a-340d-4d6a-9ae7-d19524101065",
-            colspan: 8,
-            rowspan: 1,
-            items: [],
-          },
-        ],
-      },
-    ],
-  },
-});
+const fields = ref<Array<any>>([{ "id": "Idshf8ab7060-129e-4321-9118-b72738fbc734", "preps": { "showArrow": false, "placeholder": "请选择验证1", "multipleLimit": null, "noMatchText": "", "valueType": "", "remoteMethod": "", "remote": false, "loading": "", "multiple": "", "reserveKeyword": "", "noDataText": "", "filterable": true, "collapseTags": true, "allowCreate": "", "defaultFirstOption": "", "collapseTagsTooltip": true, "automaticDropdown": "", "tagType": "", "placement": "", "valueKey": "", "filterMethod": "", "loadingText": "", "autocomplete": "", "fitInputWidth": "", "popperClass": "", "effect": "", "id": "Idshf8ab7060-129e-4321-9118-b72738fbc734", "label": "验证1", "itemNameLabel": "选择器", "name": "valid1", "clearable": true, "readonly": false, "maxLength": 255, "rules": [], "formVisible": true, "listVisible": true, "viewVisible": true, "starHorseBtnName": "dataRelation", "dataSource": "data", "analysisType": "func", "httpMethod": "POST", "protocol": "http", "values": [{ "name": "AA", "value": "a", "xh": 1 }, { "name": "BB", "value": "b", "xh": 2 }], "queryParams": [], "dataRelation": { "actionName": "change", "relationDetails": [{ "matchType": "eq", "controlCondition": "dataLinkage", "relationFields": "valid2", "params": "a", "xh": 1 }], "relationDetailsDefaultValue": [{}] } }, "compType": "formItem", "fieldName": "valid1", "itemType": "select", "label": "选择器", "type": "select" }, { "id": "Idsh8e8d7ecb-6cb7-4656-909f-23c4899fa85b", "preps": { "showArrow": false, "placeholder": "请选择验证2", "multipleLimit": null, "noMatchText": "", "valueType": "", "remoteMethod": "", "remote": false, "loading": "", "multiple": "", "reserveKeyword": "", "noDataText": "", "filterable": true, "collapseTags": true, "allowCreate": "", "defaultFirstOption": "", "collapseTagsTooltip": true, "automaticDropdown": "", "tagType": "", "placement": "", "valueKey": "", "filterMethod": "", "loadingText": "", "autocomplete": "", "fitInputWidth": "", "popperClass": "", "effect": "", "id": "Idsh8e8d7ecb-6cb7-4656-909f-23c4899fa85b", "label": "验证2", "itemNameLabel": "选择器", "name": "valid2", "clearable": true, "readonly": false, "maxLength": 255, "rules": [], "formVisible": true, "listVisible": true, "viewVisible": true, "starHorseBtnName": "dataSource", "dataSource": "data", "analysisType": "func", "httpMethod": "POST", "protocol": "http", "values": [{ "name": "CC", "value": "c", "xh": 1 }] }, "compType": "formItem", "fieldName": "valid2", "itemType": "select", "label": "选择器", "type": "select" }]);
 onMounted(() => {
   designForm.clearAll(true);
 });

@@ -1,4 +1,4 @@
-import { SearchInfo, SearchParams } from "@/components/types/Params";
+import { RedirectParams, SearchInfo, SearchParams } from "@/components/types/Params";
 import { reactive, Reactive, unref } from "vue";
 import { ElLoading } from "element-plus";
 import JSON5 from "json5";
@@ -606,7 +606,7 @@ export async function dynamicUrlOperation(
 ) {
   const temp = preps.preps || preps;
   const reDataList: SelectOption[] = [];
-  const requestParams: any = [];
+  const requestParams: SearchParams[] = [];
   const queryParams = temp?.queryParams;
   queryParams?.forEach((item: any) => {
     if (!item.name) {
@@ -623,7 +623,7 @@ export async function dynamicUrlOperation(
     requestParams.push(...queryInfo);
   }
   let url = temp["preinterfaceUrl"] + temp["interfaceUrl"];
-  const params: any = {
+  const params: RedirectParams = {
     url: temp["interfaceUrl"],
     host: temp["host"],
     port: temp["port"],
@@ -647,7 +647,7 @@ export async function dynamicUrlOperation(
           name: item[temp["selectLabel"]],
           value: item[temp["selectValue"]],
         };
-        if (item.children && item.children.length > 0) {
+        if (item.children?.length > 0) {
           option.children = childrenOperation(item.children);
         }
         options.push(option);
@@ -659,7 +659,7 @@ export async function dynamicUrlOperation(
         name: item[temp["selectLabel"]],
         value: item[temp["selectValue"]],
       };
-      if (item.children && item.children.length > 0) {
+      if (item.children?.length > 0) {
         option.children = childrenOperation(item.children);
       }
       reDataList.push(option);

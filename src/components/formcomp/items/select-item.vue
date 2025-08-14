@@ -7,10 +7,11 @@
     :field="field"
     :parentField="parentField"
   >
+  {{ field.preps }}
     <el-select
       :fid="field.fieldName"
       :disabled="checkIsDisabled(props)"
-      v-bind="field.preps"
+      v-bind="prepsFilter(field.preps)"
       :remote-method="remoteMethod"
       v-on="getDynamicEvents(props, itemAction)"
       v-model="formData[field.fieldName]"
@@ -24,13 +25,13 @@
           全部
         </el-checkbox>
       </template>
-      <el-option
-        :disabled="items['disabled']"
-        :label="items[field.preps?.props?.label || 'name']"
-        :value="items[field.preps?.props?.value || 'value']"
-        :key="items[field.preps?.props?.value || 'value']"
-        v-for="items in field.preps?.values"
-      />
+      <template v-for="item in field.preps.values"  :key="item[field.preps?.props?.value??'value']">
+        <el-option
+          :disabled="item['disabled']"
+          :label="item[field.preps?.props?.label??'name']"
+          :value="item[field.preps?.props?.value??'value']"
+        />
+      </template>
       <template v-if="field.preps?.showFooter" #footer>
         <el-button v-if="!isAdding" text bg size="small" @click="onAddOption">
           添加选项
@@ -73,6 +74,7 @@ import {
   allAction,
   checkIsDisabled,
   initCompCallEvent,
+  prepsFilter
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { ItemPreps } from "@/components/types/ItemPreps";
 import { SearchParams } from "@/components/types/Params";
