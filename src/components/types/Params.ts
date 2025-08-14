@@ -126,5 +126,21 @@ export declare interface RedirectParams {
   /**
    * 查询条件
    */
+  queryParams?: SearchParams[];
+  /**
+   * 分页信息
+   */
   searchInfo?: SearchInfo;
+  /**
+   * 主键
+   */
+  primaryKey?: any;
+  /**
+   * 标签名称
+   */
+  labelName?: string;
+  /**
+   * 值名称
+   */
+  valueName?: string;
 }

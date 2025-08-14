@@ -1,4 +1,8 @@
-import { RedirectParams, SearchInfo, SearchParams } from "@/components/types/Params";
+import {
+  RedirectParams,
+  SearchInfo,
+  SearchParams,
+} from "@/components/types/Params";
 import { reactive, Reactive, unref } from "vue";
 import { ElLoading } from "element-plus";
 import JSON5 from "json5";
@@ -408,12 +412,13 @@ export function isJson(v: any) {
 export function formFieldMapping(fieldList: PageFieldInfo) {
   let defaultDatas: any = {};
   const actions: Array<any> = [];
+  const formFields: Array<FieldInfo> = [];
   //解析出字段之间的映射关系
   const mappingFields: Array<any> = [];
   const tempList = fieldList?.fieldList;
   const batchDefaultValues: any = {};
   const tabOperation = (data: TabFieldInfo) => {
-    const fieldList = data.fieldList as Array<FieldInfo>;
+    const fieldList: Array<FieldInfo> = data.fieldList;
     if ("Y" == data.subFormFlag) {
       defaultDatas[data.tabName] = {};
       //如果是子表
@@ -431,7 +436,7 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
       if (!batchDefaultValues[temp.batchName + "DefaultValue"]) {
         batchDefaultValues[temp.batchName + "DefaultValue"] = [];
       }
-      const fieldList = temp.fieldList as Array<FieldInfo>;
+      const fieldList: Array<FieldInfo> = temp.fieldList;
       let tempData: any = {};
       fieldList?.forEach((item) => {
         if (item.defaultValue) {
@@ -459,6 +464,7 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
         }
       });
       batchDefaultValues[temp.batchName + "DefaultValue"].push(tempData);
+      formFields.push(...fieldList);
     }
   };
   const fieldsOperation = (dataList: any, defaultData: any) => {
@@ -485,9 +491,10 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
             });
           }
         });
+        formFields.push(...temp);
       } else if (temp["tabList"] || temp["collapseList"] || temp["cardList"]) {
         //如果是tabList
-        const tabList =
+        const tabList: Array<TabFieldInfo> =
           temp["tabList"] || temp["collapseList"] || temp["cardList"];
         for (const index in tabList) {
           const temp = tabList[index];
@@ -495,7 +502,7 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
         }
       } else if (temp["batchFieldList"]) {
         //如果是tableList
-        const tableList = temp["batchFieldList"] as Array<BatchFieldInfo>;
+        const tableList: Array<BatchFieldInfo> = temp["batchFieldList"];
         tableOperation(tableList);
       } else {
         if (temp.defaultValue) {
@@ -516,6 +523,7 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
             fieldName: temp.fieldName,
           });
         }
+        formFields.push(temp);
       }
     }
   };
@@ -523,8 +531,13 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
   const batchTempList = fieldList?.batchFieldList!;
   tableOperation(batchTempList);
   defaultDatas = { ...defaultDatas, ...batchDefaultValues };
-  // debugger;
-  return { defaultDatas, mappingFields, batchDefaultValues, actions };
+  return {
+    defaultDatas,
+    mappingFields,
+    batchDefaultValues,
+    actions,
+    formFields,
+  };
 }
 
 /**
@@ -568,7 +581,19 @@ export async function compDynamicData(field: any) {
   let reDataList: SelectOption[] = [];
   const dataSource = temp.preps?.dataSource;
   const urlOrDictName = temp.preps?.urlOrDictName;
-  //如果已经有数据了，就不再请求
+  if (dataSource == "url") {
+    reDataList = await dynamicUrlOperation(field);
+  } else if (dataSource == "dict") {
+    const dicts = await dictData(urlOrDictName);
+    if (Object.keys(dicts).length == 0) {
+      error(`数据字典:【${urlOrDictName}】可能未配置`);
+    } else {
+      reDataList = dicts;
+    }
+  } else {
+    reDataList = [];
+  }
+  //前面没有满足条件的数据，则判断静态数据是否存在
   if (unref(field.preps?.values)?.length > 0) {
     return unref(field.preps?.values);
   }
@@ -577,18 +602,6 @@ export async function compDynamicData(field: any) {
   }
   if (unref(field?.optionList)?.length > 0) {
     return unref(field.optionList);
-  }
-  if (dataSource == "url") {
-    reDataList = await dynamicUrlOperation(field);
-  } else if (dataSource == "dict") {
-    const dicts = await dictData(urlOrDictName);
-    if (Object.keys(dicts).length == 0) {
-      error("数据字典可能未配置");
-    } else {
-      reDataList = dicts;
-    }
-  } else {
-    reDataList = [];
   }
   return reDataList;
 }
@@ -609,11 +622,11 @@ export async function dynamicUrlOperation(
   const requestParams: SearchParams[] = [];
   const queryParams = temp?.queryParams;
   queryParams?.forEach((item: any) => {
-    if (!item.name) {
+    if (!item.name && !item.propertyName) {
       return;
     }
     requestParams.push({
-      propertyName: item.name,
+      propertyName: item.name ?? item.propertyName,
       value: item.value,
       operation: item.matchType,
     });
@@ -624,7 +637,7 @@ export async function dynamicUrlOperation(
   }
   let url = temp["preinterfaceUrl"] + temp["interfaceUrl"];
   const params: RedirectParams = {
-    url: temp["interfaceUrl"],
+    url: temp["url"] ?? temp["interfaceUrl"],
     host: temp["host"],
     port: temp["port"],
     protocol: temp["protocol"],
@@ -640,12 +653,14 @@ export async function dynamicUrlOperation(
   if (validResult.error) {
     error(validResult.error);
   } else {
+    const labelName = temp["selectLabel"] ?? temp["labelName"] ?? "name";
+    const valueName = temp["selectValue"] ?? temp["valueName"] ?? "value";
     const childrenOperation = (list: Array<any>) => {
       const options: SelectOption[] = [];
       list?.forEach((item: any) => {
         const option: SelectOption = {
-          name: item[temp["selectLabel"]],
-          value: item[temp["selectValue"]],
+          name: item[labelName],
+          value: item[valueName],
         };
         if (item.children?.length > 0) {
           option.children = childrenOperation(item.children);
@@ -656,8 +671,8 @@ export async function dynamicUrlOperation(
     };
     validResult.data.forEach((item: any) => {
       const option: SelectOption = {
-        name: item[temp["selectLabel"]],
-        value: item[temp["selectValue"]],
+        name: item[labelName],
+        value: item[valueName],
       };
       if (item.children?.length > 0) {
         option.children = childrenOperation(item.children);

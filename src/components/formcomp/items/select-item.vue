@@ -7,7 +7,6 @@
     :field="field"
     :parentField="parentField"
   >
-  {{ field.preps }}
     <el-select
       :fid="field.fieldName"
       :disabled="checkIsDisabled(props)"

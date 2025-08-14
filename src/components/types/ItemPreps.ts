@@ -1,5 +1,6 @@
 import { ApiUrls } from "./ApiUrls";
 import { FieldInfo, PageFieldInfo } from "./PageFieldInfo";
+import { RedirectParams } from "./Params";
 import { SelectOption } from "./SearchProps";
 
 export interface ItemPreps {
@@ -117,18 +118,23 @@ export interface RelationDetail {
    * 关联字段
    */
   relationFields: string | Array<string>;
+
   /**
    * 匹配类型
    */
   matchType: string;
   /**
+   * 匹配字段名称
+   */
+  matchFieldName: string;
+  /**
    * 关联参数
    */
-  params: any;
+  params: RedirectParams | any;
   /**
    * 关联参数默认值
    */
-  relationDetailsDefaultValue: SelectOption[];
+  relationDetailsDefaultValue: SelectOption[] | any;
 }
 export interface ItemRelation {
   /**

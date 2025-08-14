@@ -332,5 +332,7 @@ barcode        条形码组件
                 导出DataPicker组件
 38. 2025-08-11  修复表单容器拖拽及切换bug
 39. 2025-08-12  修复容器组件tabItem和collapseItem 面板切换自定义事件不响应bug
-40. 2025-08-13  在动态表单设计时starhorse-form-item 选中组件时响应性能。同时将表单组件的props参数抽成接口
+40. 2025-08-13  优化在动态表单设计时starhorse-form-item 选中组件时响应性能。同时将表单组件的props参数抽成接口
+41. 2025-08-14  增加表单设计时组件联动，通过dataRelation 配置项实现
+
 

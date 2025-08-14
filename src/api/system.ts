@@ -1,7 +1,6 @@
 import { isJson } from "@/api/star_horse_utils";
 import { relationEvent } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { DyCompField } from "@/components/types/DyCompField";
-import { RelationDetail } from "@/components/types/ItemPreps";
 import { SearchParams } from "@/components/types/Params";
 import { error, success } from "@/utils/message";
 import { useDark, useToggle } from "@vueuse/core";
@@ -357,9 +356,10 @@ export function getDynamicEvents(props: any, recall: Function) {
   const dataRelation = props.field.preps?.dataRelation;
   const actionName = dataRelation?.actionName;
   if (actionName) {
-    events[actionName] = (e: Event) => handleEvent(actionName, e, (actionName) => {
-      relationEvent(props, dataRelation?.relationDetails, e, actionName);
-    });
+    events[actionName] = (e: Event) =>
+      handleEvent(actionName, e, (actionName) => {
+        relationEvent(props, dataRelation?.relationDetails, e, actionName);
+      });
   }
   return events;
 }

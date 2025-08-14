@@ -12,6 +12,8 @@ import tailwindcss from "@tailwindcss/vite";
 //生产types文件插件
 import dts from "vite-plugin-dts";
 // https://vitejs.dev/config/
+const systemHost: string = "http://localhost:8749/";
+const userDbHost: string = "http://localhost:7758/";
 /**
  * 此配置文件，非必需不要随便做修改，特别是打包相关的参数
  */
@@ -19,6 +21,30 @@ export default defineConfig((mode) => {
   let optimizeDepsList: string[] = ["vue", "vue-router", "pinia", "axios"];
   return {
     base: "/",
+    server: {
+      port: 8880,
+      host: true,
+      open: true,
+      hmr: true,
+      proxy: {
+        "/system-config": {
+          target: systemHost,
+          changeOrigin: true,
+          rewrite: (path: string) =>
+            path.replace(/^\/system-config/, "/system-config-dev"),
+          ws: true,
+        },
+       
+
+        "/userdb-manage": {
+          target: userDbHost,
+          changeOrigin: true,
+          rewrite: (path: string) =>
+            path.replace(/^\/userdb-manage/, "/userdb-manage-dev"),
+          ws: true,
+        },
+      },
+    },
     optimizeDeps: {
       // force: true,
       include: optimizeDepsList,

@@ -1,153 +1,114 @@
-import { error } from "@/utils/message";
+import { createCondition, dynamicUrlOperation } from "@/api/star_horse_utils";
 import { userFunction } from "@/api/user_func";
-import { compDynamicData } from "@/api/star_horse_utils";
-import piniaInstance from "@/store";
-import { useSelfOperationStore } from "@/store/SelfOperation";
-import { useDesignFormStore } from "@/store/DesignForm";
-import { computed, isRef, unref, watch } from "vue";
 import { RelationDetail } from "@/components/types";
+import piniaInstance from "@/store";
+import { useDesignFormStore } from "@/store/DesignForm";
+import { error } from "@/utils/message";
+import { computed, unref, watch } from "vue";
 
 const designForm = useDesignFormStore(piniaInstance);
-const userOperation = useSelfOperationStore(piniaInstance);
 
 const isDesign = computed(() => designForm.isEdit);
-/**
- * Change 事件
- * @param context
- * @param formData
- */
-const change = (context: any, formData: any) => {
-  const field = context.field as any;
-  const relation = field.preps?.dataRelation;
-  operationRelation(relation, "change", formData, field.fieldName);
-};
-/**
- * Input 事件
- * @param context
- * @param formData
- */
-const input = (context: any, formData: any) => {
-  const field = context.field as any;
-  const relation = field.preps?.dataRelation;
-  operationRelation(relation, "input", formData, field.fieldName);
-};
-/**
- * Focus 事件
- * @param context
- * @param formData
- */
-const focus = (context: any, formData: any) => {
-  const field = context.field as any;
-  const relation = field.preps?.dataRelation;
-  operationRelation(relation, "focus", formData, field.fieldName);
-};
-/**
- * Blur 事件
- * @param context
- * @param formData
- */
-const blur = (context: any, formData: any) => {
-  const field = context.field as any;
-  const relation = field.preps?.dataRelation;
-  operationRelation(relation, "blur", formData, field.fieldName);
-};
-/**
- * Enter 事件
- * @param context
- * @param formData
- */
-const mouseEnter = (context: any, formData: any) => {
-  const field = context.field as any;
-  const relation = field.preps?.dataRelation;
-  operationRelation(relation, "enter", formData, field.fieldName);
-};
 
-/**
- * 操作关联关系
- * @param relation
- * @param actionName
- * @param formData
- * @param currentName
- */
-const operationRelation = async (
-  relation: any,
-  actionName: string,
-  formData: any,
-  currentName: string,
-) => {
-  if (!relation || actionName != relation.actionName) {
-    return;
-  }
-  const relations: Array<RelationDetail> = relation?.relationDetails;
-  const currentVal = formData[currentName];
-  if (!relations || relations.length == 0) {
-    return;
-  }
-  for (const index in relations) {
-    const temp = relations[index];
-    const conditon: string = temp.controlCondition;
-    const fieldName: string | Array<string> = temp.relationFields;
-    if (!conditon || !fieldName) {
-      continue;
-    }
-    const field = userOperation.getFormItem(fieldName);
-    const params: any = temp.params;
-    //数据联动
-    if (conditon == "dataLinkage") {
-      formData[fieldName + "OptionList"] = await compDynamicData({
-        preps: temp,
-      });
-    } else if (conditon == "eqDisable" || conditon == "eqDisableOrEditable") {
-      //输入的值等于指定值隐藏否则显示
-      formData["_" + fieldName + "Editable"] = !(currentVal == params);
-    } else if (conditon == "eqEditable" || conditon == "eqEditableOrDisable") {
-      //输入的值等于指定值显示否则隐藏
-      formData["_" + fieldName + "Editable"] = currentVal == params;
-    } else if (conditon == "assignValue") {
-      //输入的值等于指定值时赋予新值
-      if (
-        field.itemType == "select" ||
-        field.itemType == "tselect" ||
-        field.itemType == "autocomplete" ||
-        field.itemType == "cascade"
-      ) {
-        field.preps.values = JSON.parse(params);
-      } else {
-        formData[field.fieldName] = params;
-      }
-    } else if (conditon == "changeType") {
-      //输入的值等于指定值时改变字段类型
-      field.itemType = params;
-    }
-  }
-};
-
-const dataLinkage =async (
+const fieldAssign = (
   props: any,
-  relationFields: string | Array<string>,
-  matchType: string,
-  params: any,
-  relationDetailsDefaultValue: any,
-  e: any,
+  relationFields: Array<string>,
+  values: any,
 ) => {
+  const record: Record<string, Array<string>> = {
+    values: ["select", "autocomplete", "radio", "checkbox"],
+    data: ["tselect", "transfer"],
+    options: ["cascade"],
+  };
+  relationFields?.forEach(async (item: string) => {
+    const field = props.formInfo?.find((field: any) => field.fieldName == item);
+    if (field) {
+      let flag = false;
+      Object.entries(record).forEach(([key, value]) => {
+        if (value.includes(field.itemType ?? field.type)) {
+          field.preps[key] = values;
+          flag = true;
+          return false;
+        }
+      });
+      if (!flag) {
+        field.defaultValue = values;
+      }
+    }
+  });
+};
+/**
+ * 数据关联
+ * @param props 组件属性
+ * @param item 关联关系详情
+ * @param e 事件参数
+ * @returns
+ */
+const dataLinkage = async (props: any, item: RelationDetail, e: any) => {
+  let { relationFields, params } = item;
   if (!relationFields) {
     return;
   }
   if (!Array.isArray(relationFields)) {
     relationFields = [relationFields];
   }
-  relationFields?.forEach((item: string) => {
+  const tempParams = { ...params };
+  tempParams.queryParams = tempParams.queryParams || [];
+  tempParams.queryParams.push(
+    createCondition(item.matchFieldName, e, item.matchType),
+  );
+  const resultData = await dynamicUrlOperation({
+    preps: {
+      ...tempParams,
+    },
+  });
+  fieldAssign(props, relationFields, resultData);
+};
+const eqDisableOrEditable = (
+  props: any,
+  item: RelationDetail,
+  e: any,
+  isEq: boolean,
+) => {
+  let { relationFields, params } = item;
+  if (!relationFields) {
+    return;
+  }
+  if (!Array.isArray(relationFields)) {
+    relationFields = [relationFields];
+  }
+  relationFields?.forEach(async (item: string) => {
     const field = props.formInfo?.find((field: any) => field.fieldName == item);
     if (field) {
-      field.preps["values"] = [
-        { name: "静态1", value: "1" },
-        { name: "静态2", value: "2" },
-      ];
-      field.preps["disabled"] = params == e;
+      field.formVisible = isEq ? params != e : params == e;
     }
   });
 };
-
+const assignValue = (props: any, item: RelationDetail, e: any) => {
+  let { relationFields, relationDetailsDefaultValue } = item;
+  if (!relationFields) {
+    return;
+  }
+  if (!Array.isArray(relationFields)) {
+    relationFields = [relationFields];
+  }
+  fieldAssign(props, relationFields, relationDetailsDefaultValue);
+};
+const changeType = (props: any, item: RelationDetail, e: any) => {
+  let { relationFields, params } = item;
+  if (!relationFields) {
+    return;
+  }
+  if (!Array.isArray(relationFields)) {
+    relationFields = [relationFields];
+  }
+  relationFields?.forEach(async (item: string) => {
+    const field = props.formInfo?.find((field: any) => field.fieldName == item);
+    if (field) {
+      field.itemType = params;
+    }
+  });
+};
 const relationEvent = (
   props: any,
   relationDetails: RelationDetail[],
@@ -155,42 +116,33 @@ const relationEvent = (
   actionName: string,
 ) => {
   relationDetails?.forEach((item: RelationDetail) => {
-    const {
-      controlCondition,
-      relationFields,
-      matchType,
-      params,
-      relationDetailsDefaultValue,
-    } = item;
+    const { controlCondition } = item;
     //处理连动
     switch (controlCondition) {
       //数据联动
       case "dataLinkage":
-        dataLinkage(
-          props,
-          relationFields,
-          matchType,
-          params,
-          relationDetailsDefaultValue,
-          e,
-        );
+        dataLinkage(props, item, e);
         break;
       case "eqDisable":
       case "eqDisableOrEditable":
         //输入的值等于指定值隐藏否则显示
+        eqDisableOrEditable(props, item, e, true);
         break;
       case "eqEditable":
       case "eqEditableOrDisable":
         //编辑时输入的值等于指定值显示否则隐藏
+        eqDisableOrEditable(props, item, e, false);
         break;
       case "assignValue":
         //赋值
+        assignValue(props, item, e);
         break;
       case "changeType":
-         //输入的值等于指定值时改变字段类型
-         break;
-         default:
-
+        //输入的值等于指定值时改变字段类型
+        changeType(props, item, e);
+        break;
+      default:
+        console.log("未处理的事件：" + controlCondition);
     }
   });
 };
@@ -236,7 +188,7 @@ const buttonAction = (
   code: string,
   evtName: string = "click",
 ) => {
-  const currentData = isRef(formData) ? formData.value : formData;
+  const currentData = unref(formData);
   if (code) {
     userFunction(code, context, currentData);
   } else {
@@ -290,6 +242,41 @@ const useFormField = (context: any, field: any) => {
     }),
   };
 };
+const initRelationEvent = (props: any, formData: any) => {
+  //联动事件
+  const dataRelation = props.field.preps?.dataRelation;
+  const actionName = dataRelation?.actionName;
+
+  if (actionName) {
+    if (
+      Object.keys(formData.value || {}).length == 0 ||
+      !formData.value[props.field.fieldName]
+    ) {
+      const stop = watch(
+        () => formData.value[props.field.fieldName],
+        (val) => {
+          if (val) {
+            relationEvent(
+              props,
+              dataRelation?.relationDetails,
+              val,
+              actionName,
+            );
+            stop();
+          }
+        },
+        { immediate: true },
+      );
+      return;
+    }
+    relationEvent(
+      props,
+      dataRelation?.relationDetails,
+      formData.value[props.field.fieldName],
+      actionName,
+    );
+  }
+};
 const initCompCallEvent = (props: any, emits: any, formData: any) => {
   const events: string[] = Object.keys(props.field.actions || {});
   // 新增数据检查
@@ -307,6 +294,7 @@ const initCompCallEvent = (props: any, emits: any, formData: any) => {
         (val) => {
           if (val) {
             doInitCallEvent(props, emits, formData);
+            initRelationEvent(props, val);
             stop();
           }
         },
@@ -316,6 +304,7 @@ const initCompCallEvent = (props: any, emits: any, formData: any) => {
     }
     doInitCallEvent(props, emits, formData);
   }
+  initRelationEvent(props, formData);
 };
 const doInitCallEvent = (props: any, emits: any, formData: any) => {
   const events: string[] = Object.keys(props.field.actions || {});
@@ -345,8 +334,8 @@ export {
   allAction,
   buttonAction,
   checkIsDisabled,
-  useFormField,
   initCompCallEvent,
   prepsFilter,
   relationEvent,
+  useFormField,
 };

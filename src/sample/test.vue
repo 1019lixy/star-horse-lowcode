@@ -1,29 +1,139 @@
-<template>
- <template v-for="data in fields">
-          <component
-            :field="data"
-            v-model:formData="formData"
-            :isDesign="false"
-            :formInfo="fields"
-            :showFormItem="true"
-            :is="data.itemType + '-item'"
-          />
-        </template>
-</template>
+<script setup lang="ts" name="Areainfo">
 
-<script lang="ts" setup>
-import { onMounted, ref } from "vue";
-import piniaInstance from "@/store";
-import { useDesignFormStore } from "@/store/DesignForm";
+import { apiInstance, dialogPreps } from "@/api/star_horse_utils";
+import { ApiUrls } from "@/components/types/ApiUrls";
+import { PageFieldInfo } from "@/components/types/PageFieldInfo";
+import { SearchFields } from "@/components/types/SearchProps";
+import { onMounted, provide, reactive, ref } from "vue";
 
-let designForm = useDesignFormStore(piniaInstance);
-const formData = ref<any>({
-  test: "1-2-1",
+const dataUrl: ApiUrls = apiInstance("system-config", "system/areainfo");
+const searchFormData = reactive<SearchFields>({
+  fieldList: [
+    {
+      label: "区域名称",
+      defaultVisible: true,
+      matchType: "lk",
+      fieldName: "areaName",
+    },
+    {
+      label: "区域编码",
+      defaultVisible: true,
+      matchType: "lk",
+      fieldName: "areaCode",
+    },
+  ],
 });
-const fields = ref<Array<any>>([{ "id": "Idshf8ab7060-129e-4321-9118-b72738fbc734", "preps": { "showArrow": false, "placeholder": "请选择验证1", "multipleLimit": null, "noMatchText": "", "valueType": "", "remoteMethod": "", "remote": false, "loading": "", "multiple": "", "reserveKeyword": "", "noDataText": "", "filterable": true, "collapseTags": true, "allowCreate": "", "defaultFirstOption": "", "collapseTagsTooltip": true, "automaticDropdown": "", "tagType": "", "placement": "", "valueKey": "", "filterMethod": "", "loadingText": "", "autocomplete": "", "fitInputWidth": "", "popperClass": "", "effect": "", "id": "Idshf8ab7060-129e-4321-9118-b72738fbc734", "label": "验证1", "itemNameLabel": "选择器", "name": "valid1", "clearable": true, "readonly": false, "maxLength": 255, "rules": [], "formVisible": true, "listVisible": true, "viewVisible": true, "starHorseBtnName": "dataRelation", "dataSource": "data", "analysisType": "func", "httpMethod": "POST", "protocol": "http", "values": [{ "name": "AA", "value": "a", "xh": 1 }, { "name": "BB", "value": "b", "xh": 2 }], "queryParams": [], "dataRelation": { "actionName": "change", "relationDetails": [{ "matchType": "eq", "controlCondition": "dataLinkage", "relationFields": "valid2", "params": "a", "xh": 1 }], "relationDetailsDefaultValue": [{}] } }, "compType": "formItem", "fieldName": "valid1", "itemType": "select", "label": "选择器", "type": "select" }, { "id": "Idsh8e8d7ecb-6cb7-4656-909f-23c4899fa85b", "preps": { "showArrow": false, "placeholder": "请选择验证2", "multipleLimit": null, "noMatchText": "", "valueType": "", "remoteMethod": "", "remote": false, "loading": "", "multiple": "", "reserveKeyword": "", "noDataText": "", "filterable": true, "collapseTags": true, "allowCreate": "", "defaultFirstOption": "", "collapseTagsTooltip": true, "automaticDropdown": "", "tagType": "", "placement": "", "valueKey": "", "filterMethod": "", "loadingText": "", "autocomplete": "", "fitInputWidth": "", "popperClass": "", "effect": "", "id": "Idsh8e8d7ecb-6cb7-4656-909f-23c4899fa85b", "label": "验证2", "itemNameLabel": "选择器", "name": "valid2", "clearable": true, "readonly": false, "maxLength": 255, "rules": [], "formVisible": true, "listVisible": true, "viewVisible": true, "starHorseBtnName": "dataSource", "dataSource": "data", "analysisType": "func", "httpMethod": "POST", "protocol": "http", "values": [{ "name": "CC", "value": "c", "xh": 1 }] }, "compType": "formItem", "fieldName": "valid2", "itemType": "select", "label": "选择器", "type": "select" }]);
+const tableFieldList = reactive<PageFieldInfo>({
+  fieldList: [
+    {
+      label: "区域主键",
+      fieldName: "idAreainfo",
+      type: "long",
+    },
+    {
+      label: "父节点编号",
+      fieldName: "parentNo",
+      type: "select",
+      formVisible: true,
+      listVisible: true,
+    },
+    {
+      label: "区域名称",
+      fieldName: "areaName",
+
+      formVisible: true,
+      listVisible: true,
+    },
+    {
+      label: "区域编码",
+      fieldName: "areaCode",
+
+      formVisible: true,
+      listVisible: true,
+    },
+    {
+      label: "数据字典类型",
+      fieldName: "dictType",
+      type: "select",
+      defaultValue:"white_name_filter_type",
+      formVisible: true,
+      listVisible: true,
+      preps: {
+        "values": [{ "name": "按钮权限", "value": "button_authority", "xh": 1 }, { "name": "白名单过滤类型", "value": "white_name_filter_type", "xh": 2 }],
+        "queryParams": [],
+        "dataRelation": {
+          "actionName": "change",
+          "relationDetails": [{
+            "matchType": "eq", "controlCondition": "eqEditableOrDisable", "relationFields": "areaCode",
+            "params": "button_authority",
+            "xh": 1
+          },{
+            "matchType": "eq", "controlCondition": "dataLinkage", "relationFields": "dictName",
+            "matchFieldName": "dictType",
+            "params": {
+              url: "http://127.0.0.1:8749/system-config-dev/system/dictinfo/getAllByCondition",
+              httpMethod: "POST",
+              primaryKey: "idDictType",
+              labelName: "dictName",
+              valueName: "dictType"
+            },
+            "xh": 1
+          }],
+          "relationDetailsDefaultValue": [{}]
+        }
+      }
+    },
+    {
+      label: "数据字典",
+      fieldName: "dictName",
+      type: "select",
+      formVisible: true,
+      listVisible: true,
+
+    },
+  ],
+  batchFieldList: [],
+});
+const primaryKey = "idAreainfo";
+const areainfoRef = ref();
+const areaFormRef = ref();
+const rules = {};
+const dialogProps = dialogPreps();
+provide("dialogProps", dialogProps);
+//手动赋值权限
+const btnPermissions = {
+  add: true,
+  edit: true,
+  delete: true,
+  view: true,
+};
+const dataFormat = (_name: string, cellValue: object): any => {
+  return cellValue;
+};
+const initData = async () => { };
 onMounted(() => {
-  designForm.clearAll(true);
+  initData();
 });
 </script>
-
+<template>
+  <div class="flex flex-col h-full overflow-hidden">
+    <star-horse-dialog :isShowBtnContinue="true" :dialogVisible="dialogProps.editVisible" :dialogProps="dialogProps">
+      <star-horse-form ref="areaFormRef" @refresh="areainfoRef?.loadByPage()" :compUrl="dataUrl"
+        :fieldList="tableFieldList" :rules="rules" />
+    </star-horse-dialog>
+    <star-horse-dialog :dialog-visible="dialogProps.viewVisible" :dialogProps="dialogProps" :source="3">
+      <star-horse-data-view :dataFormat="dataFormat" :field-list="tableFieldList" :compUrl="dataUrl" />
+    </star-horse-dialog>
+    <div class="search-content">
+      <div class="search_btn">
+        <star-horse-search-comp @searchData="(data: any) => areainfoRef?.createSearchParams(data)"
+          :formData="searchFormData" :compUrl="dataUrl" />
+      </div>
+    </div>
+    <el-card class="inner_content">
+      <star-horse-table-comp ref="areainfoRef" :fieldList="tableFieldList" :btnPermissions="btnPermissions"
+        :primaryKey="primaryKey" :compUrl="dataUrl" :dataFormat="dataFormat" :showPageBar="false" />
+    </el-card>
+  </div>
+</template>
 <style lang="scss" scoped></style>

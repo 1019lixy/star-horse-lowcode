@@ -233,6 +233,7 @@ onMounted(() => {
         ((dataForm && dataForm['_' + item.fieldName + 'Type']) || itemType) +
         '-item'
       "
+      :formInfo="formFields"
       @selfFunc="actionDispatcher"
       ref="componentRef"
       :isSearch="source == 4"
