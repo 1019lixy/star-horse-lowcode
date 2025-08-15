@@ -60,7 +60,7 @@ const tableFieldList = reactive<PageFieldInfo | any>({
                 label: "控制条件",
                 fieldName: "controlCondition",
                 type: "select",
-                required: true,
+                required: false,
                 formVisible: true,
                 listVisible: true,
                 preps: {
@@ -95,7 +95,7 @@ const tableFieldList = reactive<PageFieldInfo | any>({
                 label: "被控制属性",
                 fieldName: "relationFields",
                 type: "tselect",
-                required: true,
+                required: false,
                 formVisible: true,
                 listVisible: true,
                 preps: {

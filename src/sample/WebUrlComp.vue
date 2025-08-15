@@ -27,7 +27,7 @@ const props = defineProps({
 const dataSourceFormRef = ref();
 const dataForm: ModelRef<any> = defineModel("dataForm");
 const matchTypeList = [];
-const disableUrl = ref<boolean>(true);
+const disableUrl = ref<boolean>(false);
 const currentTabName = ref<string>("data");
 const fieldList = ref<SelectOption[]>([]);
 let envList = ref<Array<SelectOption>>([]);
@@ -39,7 +39,7 @@ const dataSourceField = reactive<PageFieldInfo | any>({
         label: "系统环境",
         fieldName: "env",
         type: "select",
-        required: true,
+        required: false,
         defaultValue: "",
         formVisible: true,
         listVisible: true,
@@ -79,7 +79,7 @@ const dataSourceField = reactive<PageFieldInfo | any>({
       {
         label: "IP/域名/服务名",
         fieldName: "host",
-        required: true,
+        required: false,
         formVisible: true,
         listVisible: true,
         preps: {
@@ -103,7 +103,7 @@ const dataSourceField = reactive<PageFieldInfo | any>({
       {
         label: "接口地址",
         fieldName: "interfaceUrl",
-        required: true,
+        required: false,
         formVisible: true,
         preps: {
           colspan: 20
@@ -129,7 +129,7 @@ const dataSourceField = reactive<PageFieldInfo | any>({
         label: "标签名字段",
         fieldName: "selectLabel",
         type: "select",
-        required: true,
+        required: false,
         formVisible: true,
         listVisible: true,
         preps: {
@@ -143,7 +143,7 @@ const dataSourceField = reactive<PageFieldInfo | any>({
         preps: {
           values: fieldList
         },
-        required: true,
+        required: false,
         formVisible: true,
         listVisible: true
       }
@@ -163,7 +163,7 @@ const dataSourceField = reactive<PageFieldInfo | any>({
                   label: "参数名",
                   fieldName: "name",
                   type: "select",
-                  required: true,
+                  required: false,
                   formVisible: true,
                   listVisible: true,
                   preps: {
@@ -174,7 +174,7 @@ const dataSourceField = reactive<PageFieldInfo | any>({
                 {
                   label: "参数值",
                   fieldName: "value",
-                  required: true,
+                  required: false,
                   formVisible: true,
                   listVisible: true
                 },
@@ -205,7 +205,7 @@ const dataSourceField = reactive<PageFieldInfo | any>({
               type: "json",
               formVisible: true,
               listVisible: true,
-              required: true,
+              required: false,
               defaultValue: "",
               preps: {
                 devType: "Y"
