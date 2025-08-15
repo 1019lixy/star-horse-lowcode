@@ -336,6 +336,7 @@ barcode        条形码组件
 41. 2025-08-14  增加表单设计时组件联动，通过dataRelation 配置项实现
                 修复usercomp-item 组件名字冲突问题
                 修复datapicker-item,base-json-item 组件的bug
+42. 2025-08-15  修复组件b-bind 参数出现脏数据导致组件不能正常显示问题
 
 
 

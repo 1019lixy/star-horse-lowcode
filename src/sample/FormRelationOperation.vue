@@ -68,14 +68,14 @@ const tableFieldList = reactive<PageFieldInfo>({
           relationDetails: [
             {
               matchType: "eq",
-              controlCondition: "eqEditableOrDisable",
+              controlCondition: "eqDisable",
               relationFields: "areaCode",
               params: "button_authority",
               xh: 1,
             },
             {
               matchType: "eq",
-              controlCondition: "dataLinkage",
+              controlCondition: "asParamDataLinkage",
               relationFields: "dictName",
               matchFieldName: "dictType",
               params: {

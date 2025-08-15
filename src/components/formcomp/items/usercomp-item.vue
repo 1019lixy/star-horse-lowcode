@@ -53,7 +53,7 @@ onMounted(() => {
   loadComponent();
 });
 watch(
-  () => [props.field.preps?.compName, props.field.preps?.name],
+  () => props.field.preps?.compName,
   () => {
     loadComponent();
   },

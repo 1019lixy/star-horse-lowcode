@@ -113,7 +113,16 @@ export interface RelationDetail {
   /**
    * 控制条件
    */
-  controlCondition: string;
+  controlCondition:
+    | "eqConditionDataLinkage"
+    | "asParamDataLinkage"
+    | "eqDisable"
+    | "eqEditable"
+    | "eqHide"
+    | "eqVisible"
+    | "assignValue"
+    | "changeType"
+    | string;
   /**
    * 关联字段
    */
@@ -128,13 +137,17 @@ export interface RelationDetail {
    */
   matchFieldName: string;
   /**
+   * 匹配字段值
+   */
+  matchFieldValue: string;
+  /**
    * 关联参数
    */
-  params: RedirectParams | any;
+  params: RedirectParams;
   /**
-   * 关联参数默认值
+   * 关联静态数据,根据不同类型赋值
    */
-  relationDetailsDefaultValue: SelectOption[] | any;
+  staticDatas: SelectOption[] | any;
 }
 export interface ItemRelation {
   /**
