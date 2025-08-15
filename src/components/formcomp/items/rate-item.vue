@@ -9,7 +9,7 @@
   >
     <el-rate
       :fid="field.fieldName"
-      v-bind="field.preps"
+       v-bind="prepsFilter(field.preps)"
       :disabled="checkIsDisabled(props)"
       @change="itemAction"
       v-model="formData[field.fieldName]"
@@ -21,7 +21,7 @@ import { nextTick, onMounted,
  } from "vue";
 import {
   allAction,
-  checkIsDisabled,
+  checkIsDisabled,prepsFilter
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 
 import { ItemPreps } from "@/components/types/ItemPreps";

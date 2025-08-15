@@ -9,7 +9,7 @@
   >
     <el-cascader
       :fid="field.fieldName"
-      v-bind="field.preps"
+      v-bind="prepsFilter(field.preps)"
       :disabled="checkIsDisabled(props)"
       v-on="getDynamicEvents(props, itemAction)"
       v-model="formData[field.fieldName]"
@@ -23,7 +23,7 @@ import { getDynamicEvents } from "@/api/system";
 import {
   allAction,
   checkIsDisabled,
-  initCompCallEvent,
+  initCompCallEvent,prepsFilter
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { ItemPreps } from "@/components/types/ItemPreps";
 import { nextTick, onMounted, watch } from "vue";

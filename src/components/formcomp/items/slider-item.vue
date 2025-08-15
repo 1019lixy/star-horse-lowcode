@@ -10,7 +10,7 @@
     <el-slider
       :fid="field.fieldName"
       :disabled="checkIsDisabled(props)"
-      v-bind="field.preps"
+       v-bind="prepsFilter(field.preps)"
       :step="field.preps?.step ?? 1"
       @change="itemAction"
       v-model="formData[field.fieldName]"
@@ -21,7 +21,7 @@
 import { ModelRef, nextTick, onMounted } from "vue";
 import {
   allAction,
-  checkIsDisabled,
+  checkIsDisabled,prepsFilter
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 
 import { ItemPreps } from "@/components/types/ItemPreps";

@@ -12,7 +12,7 @@ import { SearchParams } from "@/components/types/Params";
 import {
   allAction,
   checkIsDisabled,
-  initCompCallEvent,
+  initCompCallEvent,prepsFilter
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { compKey, getDynamicEvents } from "@/api/system";
 import { warning } from "@/utils/message";
@@ -292,7 +292,7 @@ onMounted(async () => {
   >
     <el-select
       :fid="field.fieldName"
-      v-bind="field.preps"
+       v-bind="prepsFilter(field.preps)"
       :disabled="checkIsDisabled(props)"
       v-on="getDynamicEvents(props, itemAction)"
       v-model="formData[field.fieldName]"

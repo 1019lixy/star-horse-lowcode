@@ -67,7 +67,6 @@ const handleTableCellCommand = (command: string) => {
   tableCellOperation(command, props, "box");
 };
 const selectCurrentTd = () => {
-  console.log(props.field);
   designForm.setSubItemId(props.field._uuid);
 };
 const checkItem = (items: any) => {

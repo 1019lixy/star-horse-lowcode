@@ -26,7 +26,7 @@
           :fid="minName"
           :controls="false"
           :disabled="checkIsDisabled(props)"
-          v-bind="field.preps"
+           v-bind="prepsFilter(field.preps)"
           :placeholder="field.preps?.minPlaceholder"
           @change="itemAction('change')"
           @blur="handleBlur"
@@ -40,7 +40,7 @@
           :fid="maxName"
           :controls="false"
           :disabled="checkIsDisabled(props)"
-          v-bind="field.preps"
+           v-bind="prepsFilter(field.preps)"
           @change="itemAction('change')"
           @blur="handleBlur"
           @focus="handleFocus"
@@ -72,7 +72,7 @@ import {
 import {
   allAction,
   checkIsDisabled,
-  initCompCallEvent,
+  initCompCallEvent,prepsFilter
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 
 import { ItemPreps } from "@/components/types/ItemPreps";

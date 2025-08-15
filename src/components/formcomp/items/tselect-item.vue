@@ -11,7 +11,7 @@
       :fid="field.fieldName"
       :disabled="checkIsDisabled(props)"
       :default-expand-all="true"
-      v-bind="field.preps"
+       v-bind="prepsFilter(field.preps)"
       :filter-node-method="filterNodeMethod"
       :render-content="renderContent"
       v-on="getDynamicEvents(props, itemAction)"
@@ -64,7 +64,7 @@ import { compDynamicData } from "@/api/star_horse_utils";
 import {
   allAction,
   checkIsDisabled,
-  initCompCallEvent,
+  initCompCallEvent,prepsFilter
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { getDynamicEvents } from "@/api/system";
 import { warning } from "@/utils/message";

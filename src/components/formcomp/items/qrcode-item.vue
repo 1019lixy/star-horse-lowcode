@@ -2,7 +2,7 @@
 import type { ImageSettings } from "qrcode.vue";
 import QrcodeVue from "qrcode.vue";
 import { computed, nextTick, onMounted,  ref, watch } from "vue";
-import { allAction } from "@/components/formcomp/utils/ItemRelationEventUtils";
+import { allAction,prepsFilter } from "@/components/formcomp/utils/ItemRelationEventUtils";
 
 import { ItemPreps } from "@/components/types/ItemPreps";
 const props = withDefaults(defineProps<ItemPreps>(), {
@@ -52,7 +52,7 @@ watch(
   >
     <qrcode-vue
       :value="dataValue"
-      v-bind="field.preps"
+       v-bind="prepsFilter(field.preps)"
       :image-settings="imageSettings"
     />
   </starhorse-form-item>

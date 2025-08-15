@@ -10,7 +10,7 @@
     <el-input
       :fid="field.fieldName"
       :disabled="checkIsDisabled(props)"
-      v-bind="field.preps"
+       v-bind="prepsFilter(field.preps)"
       type="password"
       v-on="getDynamicEvents(props, itemAction)"
       v-model="formData[field.fieldName]"
@@ -23,7 +23,7 @@ import { nextTick, onMounted,
 import {
   allAction,
   checkIsDisabled,
-  initCompCallEvent,
+  initCompCallEvent,prepsFilter
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { getDynamicEvents } from "@/api/system";
 

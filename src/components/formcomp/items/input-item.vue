@@ -15,7 +15,7 @@
   >
     <el-input
       :disabled="checkIsDisabled(props)"
-      v-bind="field.preps"
+       v-bind="prepsFilter(field.preps)"
       type="text"
       ref="inputItemRef"
       :fid="field.fieldName"
@@ -66,7 +66,7 @@ import { getDynamicEvents } from "@/api/system";
 import {
   allAction,
   checkIsDisabled,
-  initCompCallEvent,
+  initCompCallEvent,prepsFilter
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { ItemPreps } from "@/components/types/ItemPreps";
 import { computed, nextTick, onMounted, 

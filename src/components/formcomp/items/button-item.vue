@@ -37,7 +37,7 @@
   >
     <el-button
       :disabled="checkIsDisabled(props)"
-      v-bind="field.preps"
+       v-bind="prepsFilter(field.preps)"
       @click="dynamicFunc(field.preps?.code)"
     >
       <star-horse-icon
@@ -53,7 +53,7 @@
 import { onMounted,  shallowRef, unref } from "vue";
 import {
   buttonAction,
-  checkIsDisabled,
+  checkIsDisabled,prepsFilter
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { httpRequest } from "@/api/star_horse_apis";
 import { operationConfirm, warning } from "@/utils/message";

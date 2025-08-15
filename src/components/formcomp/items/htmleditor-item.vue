@@ -14,6 +14,7 @@
           'overflow-y': 'hidden',
         }"
         :modules="modules"
+        v-bind="prepsFilter(props)"
         v-on="getDynamicEvents(props, itemAction)"
         v-model="formData[field.fieldName]"
         theme="snow"
@@ -28,7 +29,7 @@
 import { onMounted,  shallowRef } from "vue";
 import { QuillEditor } from "@vueup/vue-quill";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
-import { allAction } from "@/components/formcomp/utils/ItemRelationEventUtils";
+import { allAction,prepsFilter } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { postRequest } from "@/api/star_horse_apis";
 import ImageUploader from "quill-image-uploader";
 import { getDynamicEvents } from "@/api/system";

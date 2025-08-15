@@ -11,7 +11,7 @@
       :fid="field.fieldName"
       :disabled="checkIsDisabled(props)"
       :fetch-suggestions="querySearch"
-      v-bind="field.preps"
+       v-bind="prepsFilter(field.preps)"
       v-on="getDynamicEvents(props, itemAction)"
       v-model="formData[field.fieldName]"
     />
@@ -29,7 +29,7 @@ import { SearchParams } from "@/components/types/Params";
 import {
   allAction,
   checkIsDisabled,
-  initCompCallEvent,
+  initCompCallEvent,prepsFilter
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { getDynamicEvents } from "@/api/system";
 

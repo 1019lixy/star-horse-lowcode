@@ -10,7 +10,7 @@
     <el-checkbox-group
       :fid="field.fieldName"
       :disabled="checkIsDisabled(props)"
-      :readonly="field.preps?.readonly ?? false"
+      v-bind="prepsFilter(props)"
       v-on="getDynamicEvents(props, itemAction)"
       v-model="formData[field.fieldName]"
     >
@@ -29,7 +29,7 @@
 import { nextTick, onMounted,  watch } from "vue";
 import {
   allAction,
-  checkIsDisabled,
+  checkIsDisabled,prepsFilter
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { compDynamicData } from "@/api/star_horse_utils";
 import { getDynamicEvents } from "@/api/system";

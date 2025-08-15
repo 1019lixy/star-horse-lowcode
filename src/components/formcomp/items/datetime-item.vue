@@ -10,7 +10,7 @@
     <el-date-picker
       :fid="field.fieldName"
       :disabled="checkIsDisabled(props)"
-      v-bind="field.preps"
+       v-bind="prepsFilter(field.preps)"
       :format="field.preps?.format || 'YYYY-MM-DD HH:mm:ss'"
       :value-format="field.preps?.valueFormat"
       date-format="YYYY-MM-DD"
@@ -27,7 +27,7 @@ import { nextTick, onBeforeMount, onMounted,
 import {
   allAction,
   checkIsDisabled,
-  initCompCallEvent,
+  initCompCallEvent,prepsFilter
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { getDynamicEvents } from "@/api/system";
 

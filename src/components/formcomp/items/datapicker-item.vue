@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {onMounted, ref, watch} from "vue";
-import {allAction} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {allAction,prepsFilter} from "@/components/formcomp/utils/ItemRelationEventUtils";
+
 import {StarHorseDataSelector} from "@/components/comp";
 import {ItemPreps} from "@/components/types/ItemPreps";
 
@@ -63,7 +64,7 @@ watch(
     <!--里面用的el-input-tag -->
     <star-horse-data-selector
         v-model="pickerData"
-        v-bind="field.preps"
+         v-bind="prepsFilter(field.preps)"
         @update:selectedData="(data) => itemAction('change')"
         @selectedData="(data) => itemAction('change')"
     />

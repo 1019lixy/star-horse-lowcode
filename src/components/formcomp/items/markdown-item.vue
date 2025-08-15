@@ -13,7 +13,7 @@
       :language="'zh-CN'"
       :previewTheme="'default'"
       :codeTheme="'github'"
-      v-bind="field.preps"
+       v-bind="prepsFilter(field.preps)"
       class="markdown-editor"
     />
   </starhorse-form-item>
@@ -23,7 +23,7 @@ import { onMounted, onUpdated,
  } from "vue";
 import { MdEditor } from "md-editor-v3";
 import "md-editor-v3/lib/style.css";
-
+import {prepsFilter} from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { ItemPreps } from "@/components/types/ItemPreps";
 withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,

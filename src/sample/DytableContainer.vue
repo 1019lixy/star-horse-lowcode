@@ -1,18 +1,12 @@
 <template>
   {{ fields }}
-  <dytable-container
-    :formData="formData"
-    :field="fields"
-    :is-design="true"
-    :formInfo="{}"
-  />
+  <dytable-container :formData="formData" :field="fields" :is-design="true" :formInfo="{}" />
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from "vue";
 import piniaInstance from "@/store";
 import { useDesignFormStore } from "@/store/designForm";
-import { uuid } from "@/api/system";
+import { onMounted, ref } from "vue";
 
 let designForm = useDesignFormStore(piniaInstance);
 const formData = ref<any>({

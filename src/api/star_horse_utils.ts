@@ -462,9 +462,9 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
             fieldName: item.fieldName,
           });
         }
+        formFields.push(item);
       });
       batchDefaultValues[temp.batchName + "DefaultValue"].push(tempData);
-      formFields.push(...fieldList);
     }
   };
   const fieldsOperation = (dataList: any, defaultData: any) => {
@@ -490,8 +490,8 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
               fieldName: item.fieldName,
             });
           }
+          formFields.push(item);
         });
-        formFields.push(...temp);
       } else if (temp["tabList"] || temp["collapseList"] || temp["cardList"]) {
         //如果是tabList
         const tabList: Array<TabFieldInfo> =

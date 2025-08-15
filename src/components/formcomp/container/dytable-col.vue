@@ -188,6 +188,7 @@ onMounted(() => {});
         :disabled="disabled"
         :rowIndex="rowIndex"
         :colIndex="colIndex"
+        :type="'dytable'"
         @command="handleTableCellCommand"
       />
     </div>

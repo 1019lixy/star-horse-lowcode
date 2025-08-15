@@ -29,7 +29,7 @@
       :options="userOptionList"
       :whole="true"
       :fid="field.fieldName"
-      v-bind="field.preps"
+       v-bind="prepsFilter(field.preps)"
       v-on="getDynamicEvents(props, itemAction)"
       v-model="formData[field.fieldName]"
     >
@@ -49,7 +49,7 @@ import { FieldMapping } from "@/components/types/PageFieldInfo";
 import { warning } from "@/utils/message";
 import {
   allAction,
-  checkIsDisabled,
+  checkIsDisabled,prepsFilter
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { getDynamicEvents } from "@/api/system";
 

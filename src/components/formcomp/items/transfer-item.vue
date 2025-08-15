@@ -9,7 +9,7 @@
   >
     <el-transfer
       :fid="field?.preps['name']"
-      v-bind="field.preps"
+       v-bind="prepsFilter(field.preps)"
       v-on="getDynamicEvents(props, itemAction)"
       v-model="formData[field.fieldName]"
     />
@@ -22,7 +22,7 @@ import { compDynamicData } from "@/api/star_horse_utils";
 import { SelectOption } from "@/components/types/SearchProps";
 import {
   allAction,
-  initCompCallEvent,
+  initCompCallEvent,prepsFilter
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { getDynamicEvents } from "@/api/system";
 

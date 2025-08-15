@@ -6,7 +6,7 @@ import { isJson } from "@/api/star_horse_utils";
 import {
   allAction,
   checkIsDisabled,
-  initCompCallEvent,
+  initCompCallEvent,prepsFilter
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { SearchFields } from "@/components/types";
 import { getDynamicEvents } from "@/api/system";
@@ -156,7 +156,7 @@ onMounted(async () => {
     <el-input
       :disabled="checkIsDisabled(props)"
       type="text"
-      v-bind="field.preps"
+       v-bind="prepsFilter(field.preps)"
       :fid="field.fieldName"
       v-on="getDynamicEvents(props, itemAction)"
       v-model="formData[field.fieldName]"
