@@ -139,7 +139,7 @@ export interface RelationDetail {
   /**
    * 匹配字段值
    */
-  matchFieldValue: string;
+  matchFieldValue: Array<string>|string;
   /**
    * 关联参数
    */
@@ -148,6 +148,10 @@ export interface RelationDetail {
    * 关联静态数据,根据不同类型赋值
    */
   staticDatas: SelectOption[] | any;
+  /**
+   * 多次事件是否 working
+   */
+  isWorking: boolean;
 }
 export interface ItemRelation {
   /**

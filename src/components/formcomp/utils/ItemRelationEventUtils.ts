@@ -28,6 +28,7 @@ const fieldAssign = (
     const field = props.formInfo?.find((field: any) => field.fieldName == item);
     if (field) {
       let flag = false;
+      field.formVisible = true;
       Object.entries(record).forEach(([key, value]) => {
         if (value.includes(field.itemType ?? field.type)) {
           field.preps[key] = values;
@@ -55,66 +56,81 @@ const fieldAssign = (
  * @returns
  */
 const dataLinkage = async (props: any, item: RelationDetail, e: any) => {
-  let { relationFields, params } = item;
-  if (!relationFields) {
+  if (item.isWorking) {
     return;
   }
-  if (!Array.isArray(relationFields)) {
-    relationFields = [relationFields];
-  }
-  const tempParams = { ...params };
-  if (item.controlCondition == "eqConditionDataLinkage") {
-    //等于某个值，触发接口调用
-    if (e != item.matchFieldValue) {
+  item.isWorking = true;
+  try {
+    let { relationFields, params, matchFieldValue } = item;
+    
+    if (!Array.isArray(matchFieldValue)) {
+      matchFieldValue = matchFieldValue ? [matchFieldValue] : [];
+    }
+    if (
+      matchFieldValue.length > 0 &&
+      !matchFieldValue.includes(item.controlCondition)
+    ) {
       return;
     }
-  } else if (item.controlCondition == "asParamDataLinkage") {
-    //输入值作为查询条件
-    tempParams.queryParams = tempParams.queryParams || [];
-    tempParams.queryParams.push(
-      createCondition(item.matchFieldName, e, item.matchType),
-    );
+    if (!Array.isArray(relationFields)) {
+      relationFields = [relationFields];
+    }
+    const tempParams = { ...params };
+    if (item.controlCondition == "asParamDataLinkage") {
+      //输入值作为查询条件
+      tempParams.queryParams = tempParams.queryParams || [];
+      tempParams.queryParams.push(
+        createCondition(item.matchFieldName, e, item.matchType),
+      );
+    }
+    const resultData = await dynamicUrlOperation({
+      preps: {
+        ...tempParams,
+      },
+    });
+    fieldAssign(props, relationFields, resultData);
+  } finally {
+    item.isWorking = false;
   }
-  const resultData = await dynamicUrlOperation({
-    preps: {
-      ...tempParams,
-    },
-  });
-  fieldAssign(props, relationFields, resultData);
 };
 const eqDisableOrEditable = (props: any, item: RelationDetail, e: any) => {
-  let { relationFields } = item;
-  if (!relationFields) {
+  let { relationFields, matchFieldValue } = item;
+  if (item.isWorking) {
     return;
   }
-  if (!Array.isArray(relationFields)) {
-    relationFields = [relationFields];
+  if (!Array.isArray(matchFieldValue)) {
+    matchFieldValue = matchFieldValue ? [matchFieldValue] : [];
   }
-  relationFields?.forEach(async (sitem: string) => {
-    const field = props.formInfo?.find(
-      (field: any) => field.fieldName == sitem,
-    );
-    if (field) {
-      if (!field.preps) {
-        field.preps = {};
-      }
-      if (item.controlCondition == "eqHide") {
-        field.formVisible = item.matchFieldValue != e;
-      } else if (item.controlCondition == "eqVisible") {
-        field.formVisible = item.matchFieldValue == e;
-      } else if (item.controlCondition == "eqEditable") {
-        field.preps["disabled"] = item.matchFieldValue != e;
-      } else if (item.controlCondition == "eqDisable") {
-        field.preps["disabled"] = item.matchFieldValue == e;
-      }
+  try {
+    item.isWorking = true;
+    if (!Array.isArray(relationFields)) {
+      relationFields = [relationFields];
     }
-  });
+    relationFields?.forEach(async (sitem: string) => {
+      const field = props.formInfo?.find(
+        (field: any) => field.fieldName == sitem,
+      );
+      if (field) {
+        if (!field.preps) {
+          field.preps = {};
+        }
+        if (item.controlCondition == "eqHide") {
+          field.formVisible = !matchFieldValue.includes(e);
+        } else if (item.controlCondition == "eqVisible") {
+          field.formVisible = matchFieldValue.includes(e);
+        } else if (item.controlCondition == "eqEditable") {
+          field.preps["disabled"] = !matchFieldValue.includes(e);
+        } else if (item.controlCondition == "eqDisable") {
+          field.preps["disabled"] = matchFieldValue.includes(e);
+        }
+      }
+    });
+  } finally {
+    item.isWorking = false;
+  }
 };
 const assignValue = (props: any, item: RelationDetail, e: any) => {
   let { relationFields, staticDatas } = item;
-  if (!relationFields) {
-    return;
-  }
   if (!Array.isArray(relationFields)) {
     relationFields = [relationFields];
   }
@@ -129,22 +145,17 @@ const assignValue = (props: any, item: RelationDetail, e: any) => {
  */
 const changeType = (props: any, item: RelationDetail, e: any) => {
   let { relationFields } = item;
-  if (!relationFields) {
-    return;
-  }
   if (!Array.isArray(relationFields)) {
     relationFields = [relationFields];
   }
-  if (e == item.matchFieldValue) {
-    relationFields?.forEach(async (sitem: string) => {
-      const field = props.formInfo?.find(
-        (field: any) => field.fieldName == sitem,
-      );
-      if (field) {
-        field.itemType = item.staticDatas;
-      }
-    });
-  }
+  relationFields?.forEach(async (sitem: string) => {
+    const field = props.formInfo?.find(
+      (field: any) => field.fieldName == sitem,
+    );
+    if (field) {
+      field.itemType = item.staticDatas;
+    }
+  });
 };
 const relationEvent = (
   props: any,
@@ -153,7 +164,14 @@ const relationEvent = (
   actionName: string,
 ) => {
   relationDetails?.forEach((item: RelationDetail) => {
-    const { controlCondition } = item;
+    let { controlCondition, relationFields, matchFieldValue } = item;
+    if (!Array.isArray(matchFieldValue)) {
+      matchFieldValue = matchFieldValue ? [matchFieldValue] : [];
+    }
+  
+    if (!relationFields) {
+      return;
+    }
     //处理连动
     switch (controlCondition) {
       //数据联动

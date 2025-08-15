@@ -1,6 +1,7 @@
 import { isJson } from "@/api/star_horse_utils";
 import { relationEvent } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { DyCompField } from "@/components/types/DyCompField";
+import { RelationDetail } from "@/components/types/ItemPreps";
 import { SearchParams } from "@/components/types/Params";
 import { error, success } from "@/utils/message";
 import { useDark, useToggle } from "@vueuse/core";
@@ -325,41 +326,59 @@ export const useZIndex = (zIndexOverrides?: Ref<number>) => {
     nextZIndex,
   };
 };
+// 统一处理带修饰符的事件
+const handleEvent = (eventName: string, e: any, recall?: Function) => {
+  if (eventName.includes(".")) {
+    const modifier = eventName.split(".")[1];
+    if (modifier == e.key.toLowerCase()) {
+      console.log("成功触发事件:", eventName);
+      recall && recall(modifier); // 传递完整事件名称
+    }
+  } else {
+    recall && recall(eventName); // 传递完整事件名称
+  }
+};
+const baseEvent = (eventName: string, recall?: Function) => {
+  return function handler(e: Event) {
+    handleEvent(eventName, e, recall);
+  };
+};
+const baseRelationEvent = (
+  props: any,
+  relationDetails: RelationDetail[],
+  actionName: string,
+) => {
+  return function handler(e: Event) {
+    handleEvent(actionName, e, (tempName) => {
+      relationEvent(props, relationDetails, e, tempName);
+    });
+  };
+};
+
+
 // 添加动态事件处理方法
 export function getDynamicEvents(props: any, recall: Function) {
+ 
   const events: Record<string, any> = {};
   const actions = props.field.actions;
   const actionNames: string[] = Object.keys(actions || {});
-  // 统一处理带修饰符的事件
-  const handleEvent = (eventName: string, e: any, subReCall?: Function) => {
-    if (eventName.includes(".")) {
-      const modifier = eventName.split(".")[1];
-      if (modifier == e.key.toLowerCase()) {
-        console.log("成功触发事件:", eventName);
-        recall && recall(modifier); // 传递完整事件名称
-        subReCall && subReCall(modifier);
-      }
-    } else {
-      recall && recall(eventName); // 传递完整事件名称
-      subReCall && subReCall(eventName);
-    }
-  };
   actionNames?.forEach((actionName: string) => {
     if (actionName.includes(".")) {
-      const baseEvent = actionName.split(".")[0];
-      events[baseEvent] = (e: Event) => handleEvent(actionName, e);
+      const baseEventName = actionName.split(".")[0];
+      events[baseEventName] = baseEvent(actionName, recall);
     } else {
-      events[actionName] = (e: Event) => handleEvent(actionName, e);
+      events[actionName] = baseEvent(actionName, recall);
     }
   });
   //联动事件
   const dataRelation = props.field.preps?.dataRelation;
   const actionName = dataRelation?.actionName;
   if (actionName) {
-    events[actionName] = (e: Event) =>
-      handleEvent(actionName, e, (actionName) => {
-        relationEvent(props, dataRelation?.relationDetails, e, actionName);
-      });
+    events[actionName] = baseRelationEvent(
+      props,
+      dataRelation?.relationDetails,
+      actionName,
+    );
   }
   return events;
 }
