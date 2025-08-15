@@ -9,7 +9,7 @@
   >
     <el-cascader
       :fid="field.fieldName"
-       v-bind="prepsFilter(field.preps)"
+      v-bind="prepsFilter(field.preps)"
       :disabled="checkIsDisabled(props)"
       v-on="getDynamicEvents(props, itemAction)"
       v-model="formData[field.fieldName]"
@@ -55,12 +55,13 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { computed, nextTick, onMounted,  ref, watch } from "vue";
+import { computed, nextTick, onMounted, ref, watch } from "vue";
 import { compDynamicData, isJson } from "@/api/star_horse_utils";
 import {
   allAction,
   checkIsDisabled,
-  initCompCallEvent,prepsFilter
+  initCompCallEvent,
+  prepsFilter,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { getDynamicEvents } from "@/api/system";
 import { warning } from "@/utils/message";

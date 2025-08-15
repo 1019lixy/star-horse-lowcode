@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { nextTick, onMounted,  ref, shallowRef, watch } from "vue";
+import { nextTick, onMounted, ref, shallowRef, watch } from "vue";
 import { PageProps } from "@/components/types/PageProps";
 import { closeLoad, createCondition, load } from "@/api/star_horse_utils";
 import { postRequest } from "@/api/star_horse_apis";
@@ -12,7 +12,8 @@ import { SearchParams } from "@/components/types/Params";
 import {
   allAction,
   checkIsDisabled,
-  initCompCallEvent,prepsFilter
+  initCompCallEvent,
+  prepsFilter,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { compKey, getDynamicEvents } from "@/api/system";
 import { warning } from "@/utils/message";
@@ -292,7 +293,7 @@ onMounted(async () => {
   >
     <el-select
       :fid="field.fieldName"
-       v-bind="prepsFilter(field.preps)"
+      v-bind="prepsFilter(field.preps)"
       :disabled="checkIsDisabled(props)"
       v-on="getDynamicEvents(props, itemAction)"
       v-model="formData[field.fieldName]"

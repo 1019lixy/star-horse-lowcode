@@ -13,7 +13,7 @@
       :start="field.preps?.start || '00:00'"
       :end="field.preps?.end || '24:00'"
       :step="field.preps?.step || '00:05'"
-       v-bind="prepsFilter(field.preps)"
+      v-bind="prepsFilter(field.preps)"
       v-on="getDynamicEvents(props, itemAction)"
       v-model="formData[field.fieldName]"
     />
@@ -24,7 +24,8 @@ import { nextTick, onMounted } from "vue";
 import {
   allAction,
   checkIsDisabled,
-  initCompCallEvent,prepsFilter
+  initCompCallEvent,
+  prepsFilter,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { getDynamicEvents } from "@/api/system";
 

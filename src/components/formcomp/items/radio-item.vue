@@ -38,7 +38,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { nextTick, onMounted,  watch } from "vue";
+import { nextTick, onMounted, watch } from "vue";
 import {
   allAction,
   checkIsDisabled,

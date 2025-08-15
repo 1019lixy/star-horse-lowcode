@@ -15,12 +15,11 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts" name="view-markdown">
-import { nextTick, onMounted, onUpdated, 
- ref } from "vue";
+import { nextTick, onMounted, onUpdated, ref } from "vue";
 import MarkdownIt from "markdown-it";
 
 import { ItemPreps } from "@/components/types/ItemPreps";
- withDefaults(defineProps<ItemPreps>(), {
+withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
   disabled: false,
   showFormItem: false,

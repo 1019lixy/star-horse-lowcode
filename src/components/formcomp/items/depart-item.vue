@@ -11,7 +11,6 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-
 import { ItemPreps } from "@/components/types/ItemPreps";
 withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,

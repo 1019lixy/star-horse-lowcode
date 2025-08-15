@@ -11,7 +11,7 @@
       :fid="field.fieldName"
       :disabled="checkIsDisabled(props)"
       :headers="headers"
-       v-bind="prepsFilter(field.preps)"
+      v-bind="prepsFilter(field.preps)"
       :on-change="
         (uploadFile: any, uploadFiles: any) =>
           selfAction('change', uploadFile, uploadFiles)
@@ -65,7 +65,10 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { checkIsDisabled,prepsFilter } from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {
+  checkIsDisabled,
+  prepsFilter,
+} from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { getToken } from "@/utils/auth";
 import { nextTick, onMounted, ref, shallowRef } from "vue";
 

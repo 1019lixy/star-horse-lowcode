@@ -34,7 +34,6 @@ export default defineConfig((mode) => {
             path.replace(/^\/system-config/, "/system-config-dev"),
           ws: true,
         },
-       
 
         "/userdb-manage": {
           target: userDbHost,

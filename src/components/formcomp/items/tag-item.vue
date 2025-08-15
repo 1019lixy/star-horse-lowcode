@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import { allAction,prepsFilter } from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {
+  allAction,
+  prepsFilter,
+} from "@/components/formcomp/utils/ItemRelationEventUtils";
 
 import { ItemPreps } from "@/components/types/ItemPreps";
 const props = withDefaults(defineProps<ItemPreps>(), {
@@ -32,7 +35,7 @@ const tagType = (val: any) => {
     :parentField="parentField"
   >
     <el-tag
-       v-bind="prepsFilter(field.preps)"
+      v-bind="prepsFilter(field.preps)"
       :type="tagType(formData[field.fieldName])"
       @click="itemAction('click')"
       class="relative"

@@ -1,5 +1,4 @@
 <script setup lang="ts" name="Areainfo">
-
 import { apiInstance, dialogPreps } from "@/api/star_horse_utils";
 import { ApiUrls } from "@/components/types/ApiUrls";
 import { PageFieldInfo } from "@/components/types/PageFieldInfo";
@@ -55,33 +54,43 @@ const tableFieldList = reactive<PageFieldInfo>({
       label: "数据字典类型",
       fieldName: "dictType",
       type: "select",
-      defaultValue:"white_name_filter_type",
+      defaultValue: "white_name_filter_type",
       formVisible: true,
       listVisible: true,
       preps: {
-        "values": [{ "name": "按钮权限", "value": "button_authority", "xh": 1 }, { "name": "白名单过滤类型", "value": "white_name_filter_type", "xh": 2 }],
-        "queryParams": [],
-        "dataRelation": {
-          "actionName": "change",
-          "relationDetails": [{
-            "matchType": "eq", "controlCondition": "eqEditableOrDisable", "relationFields": "areaCode",
-            "params": "button_authority",
-            "xh": 1
-          },{
-            "matchType": "eq", "controlCondition": "dataLinkage", "relationFields": "dictName",
-            "matchFieldName": "dictType",
-            "params": {
-              url: "http://127.0.0.1:8749/system-config-dev/system/dictinfo/getAllByCondition",
-              httpMethod: "POST",
-              primaryKey: "idDictType",
-              labelName: "dictName",
-              valueName: "dictType"
+        values: [
+          { name: "按钮权限", value: "button_authority", xh: 1 },
+          { name: "白名单过滤类型", value: "white_name_filter_type", xh: 2 },
+        ],
+        queryParams: [],
+        dataRelation: {
+          actionName: "change",
+          relationDetails: [
+            {
+              matchType: "eq",
+              controlCondition: "eqEditableOrDisable",
+              relationFields: "areaCode",
+              params: "button_authority",
+              xh: 1,
             },
-            "xh": 1
-          }],
-          "relationDetailsDefaultValue": [{}]
-        }
-      }
+            {
+              matchType: "eq",
+              controlCondition: "dataLinkage",
+              relationFields: "dictName",
+              matchFieldName: "dictType",
+              params: {
+                url: "http://127.0.0.1:8749/system-config-dev/system/dictinfo/getAllByCondition",
+                httpMethod: "POST",
+                primaryKey: "idDictType",
+                labelName: "dictName",
+                valueName: "dictType",
+              },
+              xh: 1,
+            },
+          ],
+          relationDetailsDefaultValue: [{}],
+        },
+      },
     },
     {
       label: "数据字典",
@@ -89,7 +98,6 @@ const tableFieldList = reactive<PageFieldInfo>({
       type: "select",
       formVisible: true,
       listVisible: true,
-
     },
   ],
   batchFieldList: [],
@@ -110,29 +118,56 @@ const btnPermissions = {
 const dataFormat = (_name: string, cellValue: object): any => {
   return cellValue;
 };
-const initData = async () => { };
+const initData = async () => {};
 onMounted(() => {
   initData();
 });
 </script>
 <template>
   <div class="flex flex-col h-full overflow-hidden">
-    <star-horse-dialog :isShowBtnContinue="true" :dialogVisible="dialogProps.editVisible" :dialogProps="dialogProps">
-      <star-horse-form ref="areaFormRef" @refresh="areainfoRef?.loadByPage()" :compUrl="dataUrl"
-                       :fieldList="tableFieldList" :rules="rules" />
+    <star-horse-dialog
+      :isShowBtnContinue="true"
+      :dialogVisible="dialogProps.editVisible"
+      :dialogProps="dialogProps"
+    >
+      <star-horse-form
+        ref="areaFormRef"
+        @refresh="areainfoRef?.loadByPage()"
+        :compUrl="dataUrl"
+        :fieldList="tableFieldList"
+        :rules="rules"
+      />
     </star-horse-dialog>
-    <star-horse-dialog :dialog-visible="dialogProps.viewVisible" :dialogProps="dialogProps" :source="3">
-      <star-horse-data-view :dataFormat="dataFormat" :field-list="tableFieldList" :compUrl="dataUrl" />
+    <star-horse-dialog
+      :dialog-visible="dialogProps.viewVisible"
+      :dialogProps="dialogProps"
+      :source="3"
+    >
+      <star-horse-data-view
+        :dataFormat="dataFormat"
+        :field-list="tableFieldList"
+        :compUrl="dataUrl"
+      />
     </star-horse-dialog>
     <div class="search-content">
       <div class="search_btn">
-        <star-horse-search-comp @searchData="(data: any) => areainfoRef?.createSearchParams(data)"
-                                :formData="searchFormData" :compUrl="dataUrl" />
+        <star-horse-search-comp
+          @searchData="(data: any) => areainfoRef?.createSearchParams(data)"
+          :formData="searchFormData"
+          :compUrl="dataUrl"
+        />
       </div>
     </div>
     <el-card class="inner_content">
-      <star-horse-table-comp ref="areainfoRef" :fieldList="tableFieldList" :btnPermissions="btnPermissions"
-                             :primaryKey="primaryKey" :compUrl="dataUrl" :dataFormat="dataFormat" :showPageBar="false" />
+      <star-horse-table-comp
+        ref="areainfoRef"
+        :fieldList="tableFieldList"
+        :btnPermissions="btnPermissions"
+        :primaryKey="primaryKey"
+        :compUrl="dataUrl"
+        :dataFormat="dataFormat"
+        :showPageBar="false"
+      />
     </el-card>
   </div>
 </template>

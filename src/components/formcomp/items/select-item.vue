@@ -24,11 +24,14 @@
           全部
         </el-checkbox>
       </template>
-      <template v-for="item in field.preps.values"  :key="item[field.preps?.props?.value??'value']">
+      <template
+        v-for="item in field.preps.values"
+        :key="item[field.preps?.props?.value ?? 'value']"
+      >
         <el-option
           :disabled="item['disabled']"
-          :label="item[field.preps?.props?.label??'name']"
-          :value="item[field.preps?.props?.value??'value']"
+          :label="item[field.preps?.props?.label ?? 'name']"
+          :value="item[field.preps?.props?.value ?? 'value']"
         />
       </template>
       <template v-if="field.preps?.showFooter" #footer>
@@ -72,7 +75,8 @@ import { getDynamicEvents } from "@/api/system";
 import {
   allAction,
   checkIsDisabled,
-  initCompCallEvent,prepsFilter
+  initCompCallEvent,
+  prepsFilter,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { ItemPreps } from "@/components/types/ItemPreps";
 import { SearchParams } from "@/components/types/Params";

@@ -29,7 +29,7 @@
       :options="userOptionList"
       :whole="true"
       :fid="field.fieldName"
-       v-bind="prepsFilter(field.preps)"
+      v-bind="prepsFilter(field.preps)"
       v-on="getDynamicEvents(props, itemAction)"
       v-model="formData[field.fieldName]"
     >
@@ -44,12 +44,13 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { nextTick,  shallowRef } from "vue";
+import { nextTick, shallowRef } from "vue";
 import { FieldMapping } from "@/components/types/PageFieldInfo";
 import { warning } from "@/utils/message";
 import {
   allAction,
-  checkIsDisabled,prepsFilter
+  checkIsDisabled,
+  prepsFilter,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { getDynamicEvents } from "@/api/system";
 

@@ -10,7 +10,7 @@
     <el-input-number
       :fid="field.fieldName"
       :disabled="checkIsDisabled(props)"
-       v-bind="prepsFilter(field.preps)"
+      v-bind="prepsFilter(field.preps)"
       v-on="getDynamicEvents(props, itemAction)"
       v-model="formData[field.fieldName]"
     >
@@ -28,7 +28,8 @@ import { nextTick, onMounted } from "vue";
 import {
   allAction,
   checkIsDisabled,
-  initCompCallEvent,prepsFilter
+  initCompCallEvent,
+  prepsFilter,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { getDynamicEvents } from "@/api/system";
 

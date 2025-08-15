@@ -1,6 +1,5 @@
 <script setup lang="ts" name="starhorse-form-item">
-import { computed, onMounted, 
- ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useDesignFormStore } from "@/store/DesignForm";
 import piniaInstance from "@/store/index";
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
@@ -14,7 +13,7 @@ import {
 } from "@/plugins/AblesPlugin";
 import { ItemPreps } from "@/components/types/ItemPreps";
 
-const props = withDefaults( defineProps<ItemPreps>(), {
+const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
   showFormItem: false,
   disabled: false,
@@ -28,8 +27,7 @@ const isDisabled = computed(() => props.disabled);
 
 let componentVisible = computed(() => {
   return (
-    designForm.componentVisible &&
-    currentItemId.value == props.field?.preps.id
+    designForm.componentVisible && currentItemId.value == props.field?.preps.id
   );
 });
 const selectParentContainer = () => {
@@ -106,8 +104,7 @@ onMounted(() => {});
       :class="{
         'design-star-horse': isEdit && !disabled,
         'field-item': true,
-        'active-item':
-          currentItemId == field?.preps.id && isEdit && !disabled,
+        'active-item': currentItemId == field?.preps.id && isEdit && !disabled,
       }"
       v-if="showFormItem"
       @click="selectData(field)"
@@ -132,10 +129,7 @@ onMounted(() => {});
             : []
         "
       >
-        <help
-          :message="field.preps?.helpMsg"
-          v-if="field.preps?.helpMsg"
-        />
+        <help :message="field.preps?.helpMsg" v-if="field.preps?.helpMsg" />
         <slot></slot>
       </el-form-item>
       <div
@@ -150,10 +144,7 @@ onMounted(() => {});
         }"
         @click.stop="selectData(field)"
       >
-        <help
-          :message="field.preps?.helpMsg"
-          v-if="field.preps?.helpMsg"
-        />
+        <help :message="field.preps?.helpMsg" v-if="field.preps?.helpMsg" />
         <slot></slot>
       </div>
       <div

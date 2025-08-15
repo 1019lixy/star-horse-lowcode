@@ -26,10 +26,13 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { onMounted,  shallowRef } from "vue";
+import { onMounted, shallowRef } from "vue";
 import { QuillEditor } from "@vueup/vue-quill";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
-import { allAction,prepsFilter } from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {
+  allAction,
+  prepsFilter,
+} from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { postRequest } from "@/api/star_horse_apis";
 import ImageUploader from "quill-image-uploader";
 import { getDynamicEvents } from "@/api/system";

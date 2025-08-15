@@ -1,8 +1,21 @@
 <template>
-  <starhorse-form-item :showFormItem="showFormItem" :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag"
-    :field="field" :parentField="parentField">
-    <component :is="currentComponent" :showFormItem="showFormItem" :isDesign="isDesign" :disabled="disabled"
-      :bareFlag="bareFlag" v-bind="field['preps']" v-model:dataForm="formData" />
+  <starhorse-form-item
+    :showFormItem="showFormItem"
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :bareFlag="bareFlag"
+    :field="field"
+    :parentField="parentField"
+  >
+    <component
+      :is="currentComponent"
+      :showFormItem="showFormItem"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      v-bind="field['preps']"
+      v-model:dataForm="formData"
+    />
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
@@ -22,9 +35,9 @@ const formData = defineModel("formData");
 const currentComponent = shallowRef(null);
 const loadComponent = async () => {
   let compOption = props.field["preps"].compName;
-  if (typeof compOption === 'object' && compOption?.__name) {
+  if (typeof compOption === "object" && compOption?.__name) {
     currentComponent.value = compOption;
-  } else if (typeof compOption === 'string') {
+  } else if (typeof compOption === "string") {
     try {
       let comp = await import(`@/components/${compOption}.vue`);
       currentComponent.value = comp.default;

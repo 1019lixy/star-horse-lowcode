@@ -83,16 +83,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {
-  nextTick,
-  onMounted,
-  
-
-  ref,
-  shallowRef,
-  unref,
-  watch,
-} from "vue";
+import { nextTick, onMounted, ref, shallowRef, unref, watch } from "vue";
 import {
   checkIsDisabled,
   initCompCallEvent,

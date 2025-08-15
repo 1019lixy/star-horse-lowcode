@@ -13,8 +13,7 @@
   />
 </template>
 <script setup lang="ts">
-import { nextTick, onMounted, 
- } from "vue";
+import { nextTick, onMounted } from "vue";
 import {
   allAction,
   initCompCallEvent,

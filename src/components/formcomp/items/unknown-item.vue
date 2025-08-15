@@ -11,10 +11,9 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { 
- } from "vue";
+import {} from "vue";
 import { ItemPreps } from "@/components/types/ItemPreps";
- withDefaults(defineProps<ItemPreps>(), {
+withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
   disabled: false,
   showFormItem: false,

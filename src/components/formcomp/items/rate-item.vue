@@ -9,7 +9,7 @@
   >
     <el-rate
       :fid="field.fieldName"
-       v-bind="prepsFilter(field.preps)"
+      v-bind="prepsFilter(field.preps)"
       :disabled="checkIsDisabled(props)"
       @change="itemAction"
       v-model="formData[field.fieldName]"
@@ -17,11 +17,11 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { nextTick, onMounted, 
- } from "vue";
+import { nextTick, onMounted } from "vue";
 import {
   allAction,
-  checkIsDisabled,prepsFilter
+  checkIsDisabled,
+  prepsFilter,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 
 import { ItemPreps } from "@/components/types/ItemPreps";

@@ -17,7 +17,7 @@
       @dblclick="maxEdit"
       :disabled="checkIsDisabled(props)"
       :fid="field.fieldName"
-       v-bind="prepsFilter(field.preps)"
+      v-bind="prepsFilter(field.preps)"
       type="textarea"
       v-on="getDynamicEvents(props, itemAction)"
       v-model="formData[field.fieldName]"
@@ -25,11 +25,12 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { nextTick, onMounted,  shallowRef } from "vue";
+import { nextTick, onMounted, shallowRef } from "vue";
 import {
   allAction,
   checkIsDisabled,
-  initCompCallEvent,prepsFilter
+  initCompCallEvent,
+  prepsFilter,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import EditDataDialog from "@/components/formcomp/utils/EditDataDialog.vue";
 import { getDynamicEvents } from "@/api/system";

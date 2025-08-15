@@ -28,7 +28,9 @@ const checkMenuStatus = () => {
   const nextRow = props.isLastRow
     ? null
     : elements[props.rowIndex + 1]?.columns.length;
-  const isFullColumn = props.type == "dytable" && elements?.length == parseInt(props.field.rowspan);
+  const isFullColumn =
+    props.type == "dytable" &&
+    elements?.length == parseInt(props.field.rowspan);
   return {
     mergeLeftColDisabled: props.isFirstCol,
     mergeRightColDisabled: props.isLastCol,
@@ -50,7 +52,7 @@ const checkMenuStatus = () => {
     deleteWholeColDisabled: false,
     deleteWholeRowDisabled: false,
   };
-}
+};
 let buttonControl = computed(() => checkMenuStatus());
 const configDialog = ref<boolean>(false);
 const handleTableCellCommand = (command: string) => {
@@ -72,9 +74,13 @@ const init = () => {
 onMounted(() => {
   init();
 });
-watch(() => props.field, () => {
-  checkMenuStatus();
-}, { deep: true, immediate: true });
+watch(
+  () => props.field,
+  () => {
+    checkMenuStatus();
+  },
+  { deep: true, immediate: true },
+);
 watch(
   () => props.parentField,
   () => tableAction(props, buttonControl.value, props.type),
@@ -86,63 +92,137 @@ watch(
 </script>
 
 <template>
-  <star-horse-dialog title="操作" :self-func="true" :hide-full-screen-icon="true" @merge="submitAction"
-    @closeAction="close" :dialog-visible="configDialog" box-width="40%">
+  <star-horse-dialog
+    title="操作"
+    :self-func="true"
+    :hide-full-screen-icon="true"
+    @merge="submitAction"
+    @closeAction="close"
+    :dialog-visible="configDialog"
+    box-width="40%"
+  >
     待涉及业务时添加
   </star-horse-dialog>
-  <el-dropdown trigger="click" :disabled="disabled" @command="handleTableCellCommand" :size="size">
+  <el-dropdown
+    trigger="click"
+    :disabled="disabled"
+    @command="handleTableCellCommand"
+    :size="size"
+  >
     <star-horse-icon icon-class="menu" style="color: var(--star-horse-white)" />
     <template #dropdown>
       <el-dropdown-menu>
         <el-dropdown-item command="insertLeftCol">左边插入列 </el-dropdown-item>
-        <el-dropdown-item command="insertRightCol">右边插入列
+        <el-dropdown-item command="insertRightCol"
+          >右边插入列
         </el-dropdown-item>
-        <el-dropdown-item command="insertAboveRow">插入上方行
+        <el-dropdown-item command="insertAboveRow"
+          >插入上方行
         </el-dropdown-item>
-        <el-dropdown-item command="insertBelowRow">插入下方行
-        </el-dropdown-item>
-
-        <el-dropdown-item command="mergeLeftCol" :disabled="buttonControl.mergeLeftColDisabled" divided>合并左边单元格
-        </el-dropdown-item>
-        <el-dropdown-item command="mergeRightCol" :disabled="buttonControl.mergeRightColDisabled">合并右单元格
-        </el-dropdown-item>
-        <el-dropdown-item command="mergeWholeRow" :disabled="buttonControl.mergeWholeRowDisabled">合并整行
-        </el-dropdown-item>
-        <el-dropdown-item command="mergeAboveRow" v-if="type != 'box'" :disabled="buttonControl.mergeAboveRowDisabled"
-          divided>合并上边单元格
-        </el-dropdown-item>
-        <el-dropdown-item command="mergeBelowRow" v-if="type != 'box'"
-          :disabled="buttonControl.mergeBelowRowDisabled">合并下边单元格
-        </el-dropdown-item>
-        <el-dropdown-item command="mergeWholeCol" v-if="type != 'box'"
-          :disabled="buttonControl.mergeWholeColDisabled">合并整列
+        <el-dropdown-item command="insertBelowRow"
+          >插入下方行
         </el-dropdown-item>
 
-        <el-dropdown-item command="undoMergeRow" v-if="type != 'box'" :disabled="buttonControl.undoMergeRowDisabled"
-          divided>撤销行合并
+        <el-dropdown-item
+          command="mergeLeftCol"
+          :disabled="buttonControl.mergeLeftColDisabled"
+          divided
+          >合并左边单元格
         </el-dropdown-item>
-        <el-dropdown-item command="undoMergeCol" :disabled="buttonControl.undoMergeColDisabled">撤销列合并
+        <el-dropdown-item
+          command="mergeRightCol"
+          :disabled="buttonControl.mergeRightColDisabled"
+          >合并右单元格
         </el-dropdown-item>
-        <el-dropdown-item command="moveRowUp" :disabled="buttonControl.moveRowUpDisabled" divided>上移一行
+        <el-dropdown-item
+          command="mergeWholeRow"
+          :disabled="buttonControl.mergeWholeRowDisabled"
+          >合并整行
         </el-dropdown-item>
-        <el-dropdown-item command="moveRowDown" :disabled="buttonControl.moveRowDownDisabled">下移一行
+        <el-dropdown-item
+          command="mergeAboveRow"
+          v-if="type != 'box'"
+          :disabled="buttonControl.mergeAboveRowDisabled"
+          divided
+          >合并上边单元格
         </el-dropdown-item>
-        <el-dropdown-item command="moveColLeft" :disabled="buttonControl.moveColLeftDisabled">左移一列
+        <el-dropdown-item
+          command="mergeBelowRow"
+          v-if="type != 'box'"
+          :disabled="buttonControl.mergeBelowRowDisabled"
+          >合并下边单元格
         </el-dropdown-item>
-        <el-dropdown-item command="moveColRight" :disabled="buttonControl.moveColRightDisabled">右移一列
+        <el-dropdown-item
+          command="mergeWholeCol"
+          v-if="type != 'box'"
+          :disabled="buttonControl.mergeWholeColDisabled"
+          >合并整列
         </el-dropdown-item>
-        <el-dropdown-item command="moveRowUpFirst" :disabled="buttonControl.moveRowUpFirstDisabled">上移到最上面
+
+        <el-dropdown-item
+          command="undoMergeRow"
+          v-if="type != 'box'"
+          :disabled="buttonControl.undoMergeRowDisabled"
+          divided
+          >撤销行合并
         </el-dropdown-item>
-        <el-dropdown-item command="moveRowDownLast" :disabled="buttonControl.moveRowDownLastDisabled">下移到最下面
+        <el-dropdown-item
+          command="undoMergeCol"
+          :disabled="buttonControl.undoMergeColDisabled"
+          >撤销列合并
         </el-dropdown-item>
-        <el-dropdown-item command="moveColLeftFirst" :disabled="buttonControl.moveColLeftFirstDisabled">左移到最左边
+        <el-dropdown-item
+          command="moveRowUp"
+          :disabled="buttonControl.moveRowUpDisabled"
+          divided
+          >上移一行
         </el-dropdown-item>
-        <el-dropdown-item command="moveColRightLast" :disabled="buttonControl.moveColRightLastDisabled">右移到最右边
+        <el-dropdown-item
+          command="moveRowDown"
+          :disabled="buttonControl.moveRowDownDisabled"
+          >下移一行
         </el-dropdown-item>
-        <el-dropdown-item command="deleteWholeCol" v-if="type != 'box'" :disabled="buttonControl.deleteWholeColDisabled"
-          divided>删除整列
+        <el-dropdown-item
+          command="moveColLeft"
+          :disabled="buttonControl.moveColLeftDisabled"
+          >左移一列
         </el-dropdown-item>
-        <el-dropdown-item command="deleteWholeRow" :disabled="buttonControl.deleteWholeRowDisabled">删除整行
+        <el-dropdown-item
+          command="moveColRight"
+          :disabled="buttonControl.moveColRightDisabled"
+          >右移一列
+        </el-dropdown-item>
+        <el-dropdown-item
+          command="moveRowUpFirst"
+          :disabled="buttonControl.moveRowUpFirstDisabled"
+          >上移到最上面
+        </el-dropdown-item>
+        <el-dropdown-item
+          command="moveRowDownLast"
+          :disabled="buttonControl.moveRowDownLastDisabled"
+          >下移到最下面
+        </el-dropdown-item>
+        <el-dropdown-item
+          command="moveColLeftFirst"
+          :disabled="buttonControl.moveColLeftFirstDisabled"
+          >左移到最左边
+        </el-dropdown-item>
+        <el-dropdown-item
+          command="moveColRightLast"
+          :disabled="buttonControl.moveColRightLastDisabled"
+          >右移到最右边
+        </el-dropdown-item>
+        <el-dropdown-item
+          command="deleteWholeCol"
+          v-if="type != 'box'"
+          :disabled="buttonControl.deleteWholeColDisabled"
+          divided
+          >删除整列
+        </el-dropdown-item>
+        <el-dropdown-item
+          command="deleteWholeRow"
+          :disabled="buttonControl.deleteWholeRowDisabled"
+          >删除整行
         </el-dropdown-item>
         <el-dropdown-item command="colConfig" divided>
           列设置

@@ -1,6 +1,11 @@
 <template>
   {{ fields }}
-  <dytable-container :formData="formData" :field="fields" :is-design="true" :formInfo="{}" />
+  <dytable-container
+    :formData="formData"
+    :field="fields"
+    :is-design="true"
+    :formInfo="{}"
+  />
 </template>
 
 <script lang="ts" setup>

@@ -26,10 +26,11 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { nextTick, onMounted,  watch } from "vue";
+import { nextTick, onMounted, watch } from "vue";
 import {
   allAction,
-  checkIsDisabled,prepsFilter
+  checkIsDisabled,
+  prepsFilter,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { compDynamicData } from "@/api/star_horse_utils";
 import { getDynamicEvents } from "@/api/system";

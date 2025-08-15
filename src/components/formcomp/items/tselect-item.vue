@@ -11,7 +11,7 @@
       :fid="field.fieldName"
       :disabled="checkIsDisabled(props)"
       :default-expand-all="true"
-       v-bind="prepsFilter(field.preps)"
+      v-bind="prepsFilter(field.preps)"
       :filter-node-method="filterNodeMethod"
       :render-content="renderContent"
       v-on="getDynamicEvents(props, itemAction)"
@@ -58,13 +58,13 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { nextTick, onMounted, 
- ref, watch } from "vue";
+import { nextTick, onMounted, ref, watch } from "vue";
 import { compDynamicData } from "@/api/star_horse_utils";
 import {
   allAction,
   checkIsDisabled,
-  initCompCallEvent,prepsFilter
+  initCompCallEvent,
+  prepsFilter,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { getDynamicEvents } from "@/api/system";
 import { warning } from "@/utils/message";

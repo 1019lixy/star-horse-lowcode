@@ -1,11 +1,21 @@
 <script setup lang="ts" name="StarHorseForm">
 import { Config } from "@/api/settings";
 import { postRequest } from "@/api/star_horse_apis";
-import { closeLoad, formFieldMapping, isJson, load, loadById, } from "@/api/star_horse_utils";
+import {
+  closeLoad,
+  formFieldMapping,
+  isJson,
+  load,
+  loadById,
+} from "@/api/star_horse_utils";
 import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
 import { ApiUrls } from "@/components/types/ApiUrls";
 import { DialogProps } from "@/components/types/DialogProps";
-import { BatchFieldInfo, FieldInfo, PageFieldInfo, } from "@/components/types/PageFieldInfo";
+import {
+  BatchFieldInfo,
+  FieldInfo,
+  PageFieldInfo,
+} from "@/components/types/PageFieldInfo";
 import { SelectOption } from "@/components/types/SearchProps";
 import { error, success, warning } from "@/utils/message";
 import {
@@ -292,9 +302,9 @@ const getFormData = () => {
 const getFormFields = () => {
   return starHorseFormRef.value?.fields;
 };
-const getFields=()=>{
+const getFields = () => {
   return formFields.value;
-}
+};
 const validate = async () => {
   return await starHorseFormRef.value?.validate();
 };
@@ -340,10 +350,8 @@ const tableListRef = ref<any>([]);
 onActivated(() => {
   recordFieldInfo();
 });
-onDeactivated(() => {
-});
-onBeforeUnmount(() => {
-});
+onDeactivated(() => {});
+onBeforeUnmount(() => {});
 onMounted(() => {
   recordFieldInfo();
 });
@@ -409,25 +417,52 @@ defineExpose({
   tableListRef,
   getFields,
   getFormFields,
-  validate
+  validate,
 });
 </script>
 <template>
   <el-scrollbar height="100%">
-    <el-form :model="dataForm" :size="formSize" :rules="rules" :scroll-to-error="true" :scroll-into-view-options="true"
-      :inline-message="false" :status-icon="true" :label-position="labelPosition" require-asterisk-position="right"
-      label-width="auto" class="data-form" ref="starHorseFormRef">
-      <star-horse-form-item :primaryKey="primaryKey" :compUrl="compUrl" :fieldList="fieldList" :rules="rules"
-        :compSize="formSize" v-model:dataForm="dataForm" :source="source" @addRow="addRow" @removeRow="removeRow"
-        :batchName="batchName" :batchFieldName="batchFieldName" />
+    <el-form
+      :model="dataForm"
+      :size="formSize"
+      :rules="rules"
+      :scroll-to-error="true"
+      :scroll-into-view-options="true"
+      :inline-message="false"
+      :status-icon="true"
+      :label-position="labelPosition"
+      require-asterisk-position="right"
+      label-width="auto"
+      class="data-form"
+      ref="starHorseFormRef"
+    >
+      <star-horse-form-item
+        :primaryKey="primaryKey"
+        :compUrl="compUrl"
+        :fieldList="fieldList"
+        :rules="rules"
+        :compSize="formSize"
+        v-model:dataForm="dataForm"
+        :source="source"
+        @addRow="addRow"
+        @removeRow="removeRow"
+        :batchName="batchName"
+        :batchFieldName="batchFieldName"
+      />
     </el-form>
   </el-scrollbar>
   <el-form-item v-if="typeModel == 'form'" :size="formSize">
-    <el-button @click="merge" style="
+    <el-button
+      @click="merge"
+      style="
         background: var(--star-horse-style);
         color: var(--star-horse-white);
-      ">
-      <star-horse-icon icon-class="save" style="color: var(--star-horse-white)" />
+      "
+    >
+      <star-horse-icon
+        icon-class="save"
+        style="color: var(--star-horse-white)"
+      />
       提交
     </el-button>
     <el-button @click="resetForm" link>

@@ -141,7 +141,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { nextTick, onMounted,  shallowRef } from "vue";
+import { nextTick, onMounted, shallowRef } from "vue";
 import { initCompCallEvent } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { getToken } from "@/utils/auth";
 

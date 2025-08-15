@@ -9,20 +9,20 @@
   >
     <el-transfer
       :fid="field?.preps['name']"
-       v-bind="prepsFilter(field.preps)"
+      v-bind="prepsFilter(field.preps)"
       v-on="getDynamicEvents(props, itemAction)"
       v-model="formData[field.fieldName]"
     />
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { nextTick, onMounted, 
- shallowRef, watch } from "vue";
+import { nextTick, onMounted, shallowRef, watch } from "vue";
 import { compDynamicData } from "@/api/star_horse_utils";
 import { SelectOption } from "@/components/types/SearchProps";
 import {
   allAction,
-  initCompCallEvent,prepsFilter
+  initCompCallEvent,
+  prepsFilter,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { getDynamicEvents } from "@/api/system";
 

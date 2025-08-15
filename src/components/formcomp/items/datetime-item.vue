@@ -10,7 +10,7 @@
     <el-date-picker
       :fid="field.fieldName"
       :disabled="checkIsDisabled(props)"
-       v-bind="prepsFilter(field.preps)"
+      v-bind="prepsFilter(field.preps)"
       :format="field.preps?.format || 'YYYY-MM-DD HH:mm:ss'"
       :value-format="field.preps?.valueFormat"
       date-format="YYYY-MM-DD"
@@ -22,12 +22,12 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { nextTick, onBeforeMount, onMounted, 
- shallowRef } from "vue";
+import { nextTick, onBeforeMount, onMounted, shallowRef } from "vue";
 import {
   allAction,
   checkIsDisabled,
-  initCompCallEvent,prepsFilter
+  initCompCallEvent,
+  prepsFilter,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { getDynamicEvents } from "@/api/system";
 

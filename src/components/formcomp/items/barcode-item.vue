@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import Vue3Barcode from "vue3-barcode";
-import { computed, nextTick, onMounted, 
-
- ref, watch } from "vue";
+import { computed, nextTick, onMounted, ref, watch } from "vue";
 import { allAction } from "../utils/ItemRelationEventUtils";
 
 import { ItemPreps } from "@/components/types/ItemPreps";
