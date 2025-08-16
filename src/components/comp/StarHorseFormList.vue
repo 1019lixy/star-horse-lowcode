@@ -70,6 +70,7 @@ const dynamicHandleAddForm = async (row: any, type: string) => {
     dataForm.value[props.batchName] = [];
   }
   await nextTick();
+  rowDataFormRef.value.setSource("edit"==type?2:1);
   rowDataFormRef.value.setFormData(row);
 };
 const mergeData = async (type: string) => {

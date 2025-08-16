@@ -8,7 +8,7 @@ import { RelationDetail, SelectOption } from "@/components/types";
 import piniaInstance from "@/store";
 import { useDesignFormStore } from "@/store/DesignForm";
 import { error } from "@/utils/message";
-import { computed, unref, watch } from "vue";
+import { computed, nextTick, unref, watch } from "vue";
 
 const designForm = useDesignFormStore(piniaInstance);
 
@@ -56,78 +56,64 @@ const fieldAssign = (
  * @returns
  */
 const dataLinkage = async (props: any, item: RelationDetail, e: any) => {
-  if (item.isWorking) {
-    return;
-  }
-  item.isWorking = true;
-  try {
-    let { relationFields, params, matchFieldValue } = item;
-    
-    if (!Array.isArray(matchFieldValue)) {
-      matchFieldValue = matchFieldValue ? [matchFieldValue] : [];
-    }
-    if (
-      matchFieldValue.length > 0 &&
-      !matchFieldValue.includes(item.controlCondition)
-    ) {
-      return;
-    }
-    if (!Array.isArray(relationFields)) {
-      relationFields = [relationFields];
-    }
-    const tempParams = { ...params };
-    if (item.controlCondition == "asParamDataLinkage") {
-      //输入值作为查询条件
-      tempParams.queryParams = tempParams.queryParams || [];
-      tempParams.queryParams.push(
-        createCondition(item.matchFieldName, e, item.matchType),
-      );
-    }
-    const resultData = await dynamicUrlOperation({
-      preps: {
-        ...tempParams,
-      },
-    });
-    fieldAssign(props, relationFields, resultData);
-  } finally {
-    item.isWorking = false;
-  }
-};
-const eqDisableOrEditable = (props: any, item: RelationDetail, e: any) => {
-  let { relationFields, matchFieldValue } = item;
-  if (item.isWorking) {
-    return;
-  }
+  let { relationFields, params, matchFieldValue } = item;
+
   if (!Array.isArray(matchFieldValue)) {
     matchFieldValue = matchFieldValue ? [matchFieldValue] : [];
   }
-  try {
-    item.isWorking = true;
-    if (!Array.isArray(relationFields)) {
-      relationFields = [relationFields];
-    }
-    relationFields?.forEach(async (sitem: string) => {
-      const field = props.formInfo?.find(
-        (field: any) => field.fieldName == sitem,
-      );
-      if (field) {
-        if (!field.preps) {
-          field.preps = {};
-        }
-        if (item.controlCondition == "eqHide") {
-          field.formVisible = !matchFieldValue.includes(e);
-        } else if (item.controlCondition == "eqVisible") {
-          field.formVisible = matchFieldValue.includes(e);
-        } else if (item.controlCondition == "eqEditable") {
-          field.preps["disabled"] = !matchFieldValue.includes(e);
-        } else if (item.controlCondition == "eqDisable") {
-          field.preps["disabled"] = matchFieldValue.includes(e);
-        }
-      }
-    });
-  } finally {
-    item.isWorking = false;
+  if (
+    matchFieldValue.length > 0 &&
+    !matchFieldValue.includes(item.controlCondition)
+  ) {
+    return;
   }
+  if (!Array.isArray(relationFields)) {
+    relationFields = [relationFields];
+  }
+  const tempParams = { ...params };
+  if (item.controlCondition == "asParamDataLinkage") {
+    //输入值作为查询条件
+    tempParams.queryParams = tempParams.queryParams || [];
+    tempParams.queryParams.push(
+      createCondition(item.matchFieldName, e, item.matchType),
+    );
+  }
+  const resultData = await dynamicUrlOperation({
+    preps: {
+      ...tempParams,
+    },
+  });
+  fieldAssign(props, relationFields, resultData);
+};
+const eqDisableOrEditable = (props: any, item: RelationDetail, e: any) => {
+  let { relationFields, matchFieldValue } = item;
+  if (!Array.isArray(matchFieldValue)) {
+    matchFieldValue = matchFieldValue ? [matchFieldValue] : [];
+  }
+  if (!Array.isArray(relationFields)) {
+    relationFields = [relationFields];
+  }
+  relationFields?.forEach(async (sitem: string) => {
+    const field = props.formInfo?.find(
+      (field: any) => field.fieldName == sitem,
+    );
+    if (field) {
+      if (!field.preps) {
+        field.preps = {};
+      }
+      if (item.controlCondition == "eqHide") {
+        field.formVisible = !matchFieldValue.includes(e);
+      } else if (item.controlCondition == "eqVisible") {
+        field.formVisible = matchFieldValue.includes(e);
+      } else if (item.controlCondition == "eqEditable") {
+        field.preps["disabled"] = !matchFieldValue.includes(e);
+      } else if (item.controlCondition == "eqDisable") {
+        field.preps["disabled"] = matchFieldValue.includes(e);
+      } else if (item.controlCondition == "eqRequired") {
+        field.required = matchFieldValue.includes(e);
+      }
+    }
+  });
 };
 const assignValue = (props: any, item: RelationDetail, e: any) => {
   let { relationFields, staticDatas } = item;
@@ -163,15 +149,15 @@ const relationEvent = (
   e: any,
   actionName: string,
 ) => {
-  relationDetails?.forEach((item: RelationDetail) => {
+  relationDetails?.forEach(async (item: RelationDetail) => {
     let { controlCondition, relationFields, matchFieldValue } = item;
     if (!Array.isArray(matchFieldValue)) {
       matchFieldValue = matchFieldValue ? [matchFieldValue] : [];
     }
-  
-    if (!relationFields) {
+    if (!relationFields || item.isWorking) {
       return;
     }
+    // item.isWorking = true;
     //处理连动
     switch (controlCondition) {
       //数据联动
@@ -183,6 +169,7 @@ const relationEvent = (
       case "eqHide":
       case "eqEditable":
       case "eqVisible":
+      case "eqRequired":
         //输入的值等于指定值可编辑否则不可编辑
         eqDisableOrEditable(props, item, e);
         break;
@@ -197,6 +184,8 @@ const relationEvent = (
       default:
         console.log("未处理的事件：" + controlCondition);
     }
+    await nextTick();
+    item.isWorking = false;
   });
 };
 /**
