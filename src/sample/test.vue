@@ -110,6 +110,7 @@ const tableFieldList = reactive<PageFieldInfo | any>({
                 fieldName: "relationFields",
                 type: "tselect",
                 required: false,
+                defaultValue: ["abc","bbb"],
                 formVisible: true,
                 listVisible: true,
                 preps: {

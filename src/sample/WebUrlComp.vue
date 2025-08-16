@@ -51,7 +51,7 @@ const dataSourceField = reactive<PageFieldInfo | any>({
         fieldName: "env",
         type: "select",
         required: false,
-        defaultValue: "",
+        defaultValue: "dev",
         formVisible: true,
         listVisible: true,
         preps: {
@@ -140,6 +140,7 @@ const dataSourceField = reactive<PageFieldInfo | any>({
         label: "标签名字段",
         fieldName: "selectLabel",
         type: "select",
+        defaultValue:"afdksjf",
         required: false,
         formVisible: true,
         listVisible: true,
@@ -151,6 +152,7 @@ const dataSourceField = reactive<PageFieldInfo | any>({
         label: "标签值字段",
         fieldName: "selectValue",
         type: "select",
+        defaultValue:"xxx",
         preps: {
           values: fieldList
         },
