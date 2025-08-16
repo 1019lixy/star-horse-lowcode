@@ -238,6 +238,7 @@ onMounted(() => {
       ref="componentRef"
       :isSearch="source == 4"
       :bareFlag="bareFlag"
+      :source="source"
       :field="item"
       v-model:formData="dataForm"
     />

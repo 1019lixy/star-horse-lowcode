@@ -1,25 +1,12 @@
 <template>
-  <starhorse-form-item
-    :showFormItem="showFormItem"
-    :isDesign="isDesign"
-    :disabled="disabled"
-    :bareFlag="bareFlag"
-    :field="field"
-    :parentField="parentField"
-  >
-    <component
-      :is="currentComponent"
-      :showFormItem="showFormItem"
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      v-bind="field['preps']"
-      v-model:dataForm="formData"
-    />
+  <starhorse-form-item :showFormItem="showFormItem" :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag"
+    :field="field" :parentField="parentField">
+    <component :is="currentComponent" :showFormItem="showFormItem" :isDesign="isDesign" :disabled="disabled"
+      :bareFlag="bareFlag" v-bind="field['preps']" v-model:dataForm="formData" :source="dataSource" />
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { onMounted, shallowRef, watch } from "vue";
+import { computed, onMounted, ref } from "vue";
 
 import { ItemPreps } from "@/components/types/ItemPreps";
 const props = withDefaults(defineProps<ItemPreps>(), {
@@ -28,36 +15,35 @@ const props = withDefaults(defineProps<ItemPreps>(), {
   showFormItem: false,
   bareFlag: false,
   isSearch: false,
+  source: 0,
 });
 const emits = defineEmits(["selfFunc", "selectItem"]);
 const formData = defineModel("formData");
-
-const currentComponent = shallowRef(null);
-const loadComponent = async () => {
-  let compOption = props.field["preps"].compName;
-  if (typeof compOption === "object" && compOption?.__name) {
-    currentComponent.value = compOption;
-  } else if (typeof compOption === "string") {
-    try {
-      let comp = await import(`@/components/${compOption}.vue`);
-      currentComponent.value = comp.default;
-    } catch (e) {
-      console.log(e.message);
-      currentComponent.value = null;
+const subDataInfo = ref<any>({});
+const currentComponent = computed(() => props.field["preps"].compName);
+/* const dataSource = computed(() => {
+  let subFormFlag = props.field?.preps?.subFormFlag;
+  if (subFormFlag) {
+    if (props.source == 2) {
+      const stop = watch(() => formData.value[props.field.fieldName], (newVal) => {
+        if (newVal) {
+          subDataInfo.value = formData.value[props.field.fieldName];
+          stop();
+        }
+      }, { immediate: true, deep: true });
+    } else if (props.source == 1) {
+      formData.value[props.field.fieldName] = subDataInfo.value;
     }
   } else {
-    currentComponent.value = null;
+    subDataInfo.value = formData.value;
   }
+  return props.source
+}); */
+const loadComponent = async () => {
+
 };
 onMounted(() => {
   loadComponent();
 });
-watch(
-  () => props.field.preps?.compName,
-  () => {
-    loadComponent();
-  },
-  { immediate: false },
-);
 </script>
 <style scoped></style>

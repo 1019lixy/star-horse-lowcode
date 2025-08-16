@@ -1,4 +1,5 @@
 <template>
+  {{ areaFormRef?.getFormData() }}
   <star-horse-form ref="areaFormRef" :compUrl="{
     pageUrl:'xxx'
   }" :fieldList="tableFieldList" />
@@ -27,6 +28,7 @@ const controlConditionList: SelectOption[] = [
   { name: "等于指定值时可编辑被关联字段", value: "eqEditable" },
   { name: "等于指定值时隐藏被关联字段", value: "eqHide" },
   { name: "等于指定值时显示被关联字段", value: "eqVisible" },
+  { name: "等于指定值时被关联字段必填", value: "eqRequired" },
   { name: "等于指定值时被关联字段赋予新值", value: "assignValue" },
   { name: "数据等于指定值时被关联字段改变字段类型", value: "changeType" },
   { name: "测试数据", value: "button_authority" },
@@ -71,7 +73,7 @@ const tableFieldList = reactive<PageFieldInfo | any>({
                       {
                         matchType: "eq",
                         controlCondition: "eqVisible",
-                        relationFields: ["dataLinkage", "dataSourceDivider"],
+                        relationFields: ["params", "dataSourceDivider"],
                         matchFieldValue: ["eqConditionDataLinkage","asParamDataLinkage"]
                       },
                       {
@@ -87,6 +89,18 @@ const tableFieldList = reactive<PageFieldInfo | any>({
                         matchFieldValue: "changeType",
                         staticDatas: "input"
                       },
+                      {
+                          matchType: "eq",
+                          controlCondition: "eqRequired",
+                          relationFields: ["matchFieldValue"],
+                          matchFieldValue: ["eqDisable","eqVisible","eqEditable","eqRequired","eqHide","eqConditionDataLinkage","asParamDataLinkage"]
+                        },
+                        {
+                          matchType: "eq",
+                          controlCondition: "eqRequired",
+                          relationFields: ["matchFieldName"],
+                          matchFieldValue: ["asParamDataLinkage"]
+                        },
                     ],
                   },
                 },
@@ -96,6 +110,7 @@ const tableFieldList = reactive<PageFieldInfo | any>({
                 fieldName: "relationFields",
                 type: "tselect",
                 required: false,
+                defaultValue: ["abc","bbb"],
                 formVisible: true,
                 listVisible: true,
                 preps: {
@@ -156,10 +171,12 @@ const tableFieldList = reactive<PageFieldInfo | any>({
             {
               label: "联动数据源",
               type: "usercomp",
-              fieldName: "dataLinkage",
+              fieldName: "params",
               formVisible: false,
               preps: {
                 bareFlag: "Y",
+                subFormFlag: true,
+                batchName:"params",
                 compName: WebUrlComp,
               },
             },

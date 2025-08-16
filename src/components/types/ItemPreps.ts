@@ -50,6 +50,10 @@ export interface ItemPreps {
    * 回调函数
    */
   callBack?: Function;
+  /**
+   * 组件来源
+   */
+  source?: number;
 }
 
 export interface ContainerPreps {
@@ -120,6 +124,7 @@ export interface RelationDetail {
     | "eqEditable"
     | "eqHide"
     | "eqVisible"
+    | "eqRequired"
     | "assignValue"
     | "changeType"
     | string;
@@ -139,7 +144,7 @@ export interface RelationDetail {
   /**
    * 匹配字段值
    */
-  matchFieldValue: Array<string>|string;
+  matchFieldValue: Array<string> | string;
   /**
    * 关联参数
    */

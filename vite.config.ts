@@ -22,7 +22,7 @@ export default defineConfig((mode) => {
   return {
     base: "/",
     server: {
-      port: 8880,
+      port: 4000,
       host: true,
       open: true,
       hmr: true,
