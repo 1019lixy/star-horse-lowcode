@@ -175,6 +175,7 @@ const tableFieldList = reactive<PageFieldInfo | any>({
               preps: {
                 bareFlag: "Y",
                 subFormFlag: true,
+                batchName:"params",
                 compName: WebUrlComp,
               },
             },

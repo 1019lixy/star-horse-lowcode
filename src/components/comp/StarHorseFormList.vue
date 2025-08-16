@@ -69,8 +69,11 @@ const dynamicHandleAddForm = async (row: any, type: string) => {
   if (!dataForm.value[props.batchName]) {
     dataForm.value[props.batchName] = [];
   }
+  if (type == "edit") {
+    row["starHorseEditing"] = "yes";
+  }
   await nextTick();
-  rowDataFormRef.value.setSource("edit"==type?2:1);
+  rowDataFormRef.value.setSource("edit" == type ? 2 : 1);
   rowDataFormRef.value.setFormData(row);
 };
 const mergeData = async (type: string) => {
@@ -80,11 +83,20 @@ const mergeData = async (type: string) => {
   if (!flag) {
     return;
   }
+  const batchArray = dataForm.value[props.batchName];
   let formData = rowDataFormRef.value.getFormData().value;
-  if (formData.xh) {
-    dataForm.value[props.batchName][formData.xh - 1] = formData;
+  //有xh表示数据编辑
+  if (formData.starHorseEditing == "yes") {
+    batchArray.forEach((item: any, index: number) => {
+      if (item.xh == formData.xh) {
+        formData.starHorseEditing = "no";
+        batchArray[index] = { ...formData };
+      }
+    });
+    console.log(batchArray);
+    // dataForm.value[props.batchName].splice(parseInt(formData.xh) - 1, 1, {...formData});
   } else {
-    dataForm.value[props.batchName].push(formData);
+    dataForm.value[props.batchName].push({ ...formData });
   }
   if (type == "close") {
     closeAction();
@@ -270,42 +282,16 @@ watch(
 );
 </script>
 <template>
-  <star-horse-dialog
-    :title="'编辑数据'"
-    :dialogVisible="rowDialogVisible"
-    :boxWidth="'50%'"
-    :is-show-btn-continue="true"
-    :selfFunc="true"
-    @merge="mergeData"
-    @closeAction="closeAction"
-  >
-    <star-horse-form
-      :fieldList="{ fieldList: fieldList }"
-      ref="rowDataFormRef"
-    />
+  <star-horse-dialog :title="'编辑数据'" :dialogVisible="rowDialogVisible" :boxWidth="'50%'" :is-show-btn-continue="true"
+    :selfFunc="true" @merge="mergeData" @closeAction="closeAction">
+    <star-horse-form :fieldList="{ fieldList: fieldList }" ref="rowDataFormRef" />
   </star-horse-dialog>
-  <star-horse-dialog
-    v-if="!subFlag"
-    :title="'导入文件'"
-    :dialogVisible="importDialogVisible"
-    :boxWidth="'30%'"
-    :source="3"
-    :draggable="false"
-    @closeAction="importDialogVisible = false"
-  >
+  <star-horse-dialog v-if="!subFlag" :title="'导入文件'" :dialogVisible="importDialogVisible" :boxWidth="'30%'" :source="3"
+    :draggable="false" @closeAction="importDialogVisible = false">
     <el-card>
-      <el-upload
-        :auto-upload="true"
-        :on-error="uploadError"
-        :on-success="uploadSuccess"
-        :show-file-list="false"
-        accept=".xls,.xlsx"
-        :action="importInfo!.importDataUrl"
-        :headers="{ token: getToken() }"
-        class="upload"
-        name="file"
-        drag
-      >
+      <el-upload :auto-upload="true" :on-error="uploadError" :on-success="uploadSuccess" :show-file-list="false"
+        accept=".xls,.xlsx" :action="importInfo!.importDataUrl" :headers="{ token: getToken() }" class="upload"
+        name="file" drag>
         <el-icon class="el-icon--upload">
           <upload-filled />
         </el-icon>
@@ -316,18 +302,8 @@ watch(
         <template #tip>
           <div class="el-upload__tip">
             只能上传 xls/xlsx 文件类型
-            <el-button
-              @click="downloadTemplate"
-              title=""
-              :size="size"
-              link
-              v-if="importInfo?.downloadTemplateUrl"
-            >
-              <star-horse-icon
-                icon-class="download"
-                color="var(--star-horse-white)"
-                size="12px"
-              />
+            <el-button @click="downloadTemplate" title="" :size="size" link v-if="importInfo?.downloadTemplateUrl">
+              <star-horse-icon icon-class="download" color="var(--star-horse-white)" size="12px" />
               <el-tooltip content="下载模板">下载模板</el-tooltip>
             </el-button>
           </div>
@@ -344,75 +320,36 @@ watch(
       </div>
       <div class="flex items-center">
         <ul class="inner_button" v-if="source != 3">
-          <li
-            v-if="importInfo?.importDataUrl && !subFlag"
-            @click="excelOperation"
-          >
+          <li v-if="importInfo?.importDataUrl && !subFlag" @click="excelOperation">
             <el-tooltip content="导入Excel">
-              <star-horse-icon
-                icon-class="upload"
-                color="var(--star-horse-style)"
-                size="18px"
-              />
+              <star-horse-icon icon-class="upload" color="var(--star-horse-style)" size="18px" />
             </el-tooltip>
           </li>
           <li @click="clearAll">
             <el-tooltip content="清空列表">
-              <star-horse-icon
-                icon-class="dustbin"
-                color="var(--el-color-danger)"
-                size="18px"
-              />
+              <star-horse-icon icon-class="dustbin" color="var(--el-color-danger)" size="18px" />
             </el-tooltip>
           </li>
         </ul>
       </div>
     </div>
-    <el-table
-      v-loading="loading"
-      :data="dataForm[batchName]"
-      fit
-      border
-      sortable
-      :size="size"
-      :strip="true"
-      :row-key="getRowIdentity"
-      :highlight-current-row="true"
-      :row-class-name="rowClassName"
-      ref="starHorseFormListRef"
-      class="sh-columns"
-      :stripe="true"
-      :virtual="true"
-      :virtual-scroll-threshold="10"
-      :virtual-scroll-options="{
+    <el-table v-loading="loading" :data="dataForm[batchName]" fit border sortable :size="size" :strip="true"
+      :row-key="getRowIdentity" :highlight-current-row="true" :row-class-name="rowClassName" ref="starHorseFormListRef"
+      class="sh-columns" :stripe="true" :virtual="true" :virtual-scroll-threshold="10" :virtual-scroll-options="{
         scrollSensitivity: 60,
         scrollDebounce: 20,
-      }"
-      :use-virtual="dataForm[batchName]?.length > 10"
-      :header-cell-style="{
+      }" :use-virtual="dataForm[batchName]?.length > 10" :header-cell-style="{
         background: '#f2f2f2',
         color: '#707070',
         'font-size': '12px',
         'background-image':
           '-webkit-gradient(linear,left 0,left 100%,from(#f8f8f8),to(#ececec))',
-      }"
-      :cell-style="{ 'font-size': '12px' }"
-    >
-      <el-table-column
-        type="selection"
-        fixed="left"
-        width="50"
-        align="center"
-        v-if="showCheckBox"
-      />
+      }" :cell-style="{ 'font-size': '12px' }">
+      <el-table-column type="selection" fixed="left" width="50" align="center" v-if="showCheckBox" />
       <el-table-column label="序号" align="center" prop="xh" width="50" />
       <el-table-column prop="" label="排序" width="60">
         <template #default="scope">
-          <el-tag
-            class="move"
-            style="cursor: move"
-            @mousedown="selectData(scope)"
-          >
+          <el-tag class="move" style="cursor: move" @mousedown="selectData(scope)">
             <el-icon style="cursor: move">
               <Sort />
             </el-icon>
@@ -421,44 +358,19 @@ watch(
       </el-table-column>
       <template v-for="(item, key) in fieldList" :key="compKey(item, key)">
         <template v-if="Array.isArray(item)">
-          <UTableColumn
-            :item="temp"
-            :key="compKey(temp, skey)"
-            v-for="(temp, skey) in item"
-            :size="size"
-            :rules="rules"
-            :source="source"
-            :batchName="batchName"
-            :primaryKey="primaryKey"
-            :staticColumn="staticColumn"
-          />
+          <UTableColumn :item="temp" :key="compKey(temp, skey)" v-for="(temp, skey) in item" :size="size" :rules="rules"
+            :source="source" :batchName="batchName" :primaryKey="primaryKey" :staticColumn="staticColumn" />
         </template>
         <template v-else-if="item.formVisible">
-          <UTableColumn
-            :item="item"
-            :size="size"
-            :rules="rules"
-            :source="source"
-            :batchName="batchName"
-            :primaryKey="primaryKey"
-            :staticColumn="staticColumn"
-          />
+          <UTableColumn :item="item" :size="size" :rules="rules" :source="source" :batchName="batchName"
+            :primaryKey="primaryKey" :staticColumn="staticColumn" />
         </template>
       </template>
       <el-table-column fixed="right" label="操作" width="80">
         <template #default="scope" v-if="source != 3">
-          <star-horse-icon
-            icon-class="edit"
-            v-if="staticColumn == 'Y'"
-            @click="dynamicHandleAddForm(scope.row, 'edit')"
-            title="编辑"
-          />
-          <star-horse-icon
-            icon-class="delete"
-            @click="handleAddDetails(scope.row, 2)"
-            title="删除当前行"
-            color="#f56c6c"
-          />
+          <star-horse-icon icon-class="edit" v-if="staticColumn == 'Y'" @click="dynamicHandleAddForm(scope.row, 'edit')"
+            title="编辑" />
+          <star-horse-icon icon-class="delete" @click="handleAddDetails(scope.row, 2)" title="删除当前行" color="#f56c6c" />
         </template>
       </el-table-column>
     </el-table>

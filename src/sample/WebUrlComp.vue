@@ -21,6 +21,17 @@ const props = defineProps({
   item: {
     type: Object as PropType<PageFieldInfo>, default: () => {
     }
+  },
+  source: {
+    type: Number, default: 0
+  },
+  batchName: {
+    type: String,
+    default: ""
+  },
+  subFormFlag: {
+    type: Boolean,
+    default: false
   }
 });
 
@@ -103,7 +114,7 @@ const dataSourceField = reactive<PageFieldInfo | any>({
       {
         label: "接口地址",
         fieldName: "interfaceUrl",
-        required: false,
+        required: true,
         formVisible: true,
         preps: {
           colspan: 20
@@ -219,16 +230,19 @@ const dataSourceField = reactive<PageFieldInfo | any>({
 });
 const submitValid = async () => {
   let flag: boolean = false;
-
   return flag;
 };
 const isInited = ref<boolean>(false);
+const createSubForm = () => {
+  if (props.subFormFlag && !dataForm.value[props.batchName]) {
+    dataForm.value[props.batchName] = {};
+  }
+  return props.batchName;
+}
 const init = () => {
-
   nextTick(() => {
     if (props.preps?.objectName && dataForm.value) {
       let temp = dataForm.value;
-
       setFormData(temp);
       currentTabName.value = temp.dataSource || "data";
       isInited.value = true;
@@ -262,8 +276,9 @@ defineExpose({
   <el-scrollbar height="100%">
     <star-horse-form :fieldList="dataSourceField" ref="dataSourceFormRef" v-if="!dataForm" />
     <star-horse-form-item v-else ref="dataSourceFormRef" :fieldList="dataSourceField"
-      :dataIndex="(props.preps?.params?.totalTab || 1) - 1" :subFormFlag="'Y'" :objectName="'dataSource'"
-      v-model:dataForm="dataForm" />
+      :subFormFlag="subFormFlag ? 'Y' : 'N'" :propPrefix="batchName" :key="createSubForm()" :batchName="batchName"
+      :source="source" v-model:dataForm="dataForm[batchName]" />
+
   </el-scrollbar>
 </template>
 

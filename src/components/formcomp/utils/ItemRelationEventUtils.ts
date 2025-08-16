@@ -70,7 +70,7 @@ const dataLinkage = async (props: any, item: RelationDetail, e: any) => {
   if (!Array.isArray(relationFields)) {
     relationFields = [relationFields];
   }
-  const tempParams = { ...params };
+  const tempParams: any = JSON.parse(JSON.stringify(params));
   if (item.controlCondition == "asParamDataLinkage") {
     //输入值作为查询条件
     tempParams.queryParams = tempParams.queryParams || [];

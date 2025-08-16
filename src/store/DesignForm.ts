@@ -171,15 +171,9 @@ export const useDesignFormStore = defineStore("designForm", () => {
     return compListNoLayer.value?.find((item: any) => item.id == itemId);
   };
   /**
-   * 获取属性列表，
-   * 如果要使用compListNoLayer 必须先调用loadCompNames 方法
+   * 强制刷新组件列表
    */
-  const loadCompNames = () => {
-    // 如果数据未更新且有缓存结果，直接返回缓存
-    if (!isCompListUpdated.value && cachedSelectList.value.length > 0) {
-      compListNoLayer.value = cachedCompListNoLayer.value;
-      return cachedSelectList.value;
-    }
+  const forceLoadCompNames = () => {
     const selectList: Array<any> = [];
     const compListResult: Array<any> = [];
     const stack: Array<{ datas: Array<any>; tabName?: string }> = [];
@@ -315,6 +309,18 @@ export const useDesignFormStore = defineStore("designForm", () => {
     isCompListUpdated.value = false;
 
     return selectList;
+  };
+  /**
+   * 获取属性列表，
+   * 如果要使用compListNoLayer 必须先调用loadCompNames 方法
+   */
+  const loadCompNames = () => {
+    // 如果数据未更新且有缓存结果，直接返回缓存
+    if (!isCompListUpdated.value && cachedSelectList.value.length > 0) {
+      compListNoLayer.value = cachedCompListNoLayer.value;
+      return cachedSelectList.value;
+    }
+    return forceLoadCompNames();
   };
 
   /**
@@ -497,6 +503,7 @@ export const useDesignFormStore = defineStore("designForm", () => {
     setSubItemId,
     setFormInfo,
     setCompList,
+    forceLoadCompNames,
     loadCompNames,
     addComp,
     setIsDragging,

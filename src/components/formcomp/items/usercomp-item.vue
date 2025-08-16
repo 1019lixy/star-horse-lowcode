@@ -2,11 +2,11 @@
   <starhorse-form-item :showFormItem="showFormItem" :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag"
     :field="field" :parentField="parentField">
     <component :is="currentComponent" :showFormItem="showFormItem" :isDesign="isDesign" :disabled="disabled"
-      :bareFlag="bareFlag" v-bind="field['preps']" v-model:dataForm="subDataInfo" :source="dataSource" />
+      :bareFlag="bareFlag" v-bind="field['preps']" v-model:dataForm="formData" :source="dataSource" />
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, onMounted, ref } from "vue";
 
 import { ItemPreps } from "@/components/types/ItemPreps";
 const props = withDefaults(defineProps<ItemPreps>(), {
@@ -21,7 +21,7 @@ const emits = defineEmits(["selfFunc", "selectItem"]);
 const formData = defineModel("formData");
 const subDataInfo = ref<any>({});
 const currentComponent = computed(() => props.field["preps"].compName);
-const dataSource = computed(() => {
+/* const dataSource = computed(() => {
   let subFormFlag = props.field?.preps?.subFormFlag;
   if (subFormFlag) {
     if (props.source == 2) {
@@ -38,9 +38,9 @@ const dataSource = computed(() => {
     subDataInfo.value = formData.value;
   }
   return props.source
-});
+}); */
 const loadComponent = async () => {
-  
+
 };
 onMounted(() => {
   loadComponent();
