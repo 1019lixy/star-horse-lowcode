@@ -338,6 +338,8 @@ barcode        条形码组件
                 修复datapicker-item,base-json-item 组件的bug
 42. 2025-08-15  修复组件b-bind 参数出现脏数据导致组件不能正常显示问题
                 修改表单联动事件多次触发问题
+                优化表单联动事件Bug
+
 
 
 
