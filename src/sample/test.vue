@@ -1,191 +1,175 @@
-<template>
-  {{ areaFormRef?.getFormData() }}
-  <star-horse-form ref="areaFormRef" :compUrl="{
-    pageUrl:'xxx'
-  }" :fieldList="tableFieldList" />
+<script setup lang="ts" name="Areainfo">
+import { apiInstance, dialogPreps } from "@/api/star_horse_utils";
+import { ApiUrls } from "@/components/types/ApiUrls";
+import { PageFieldInfo } from "@/components/types/PageFieldInfo";
+import { SearchFields } from "@/components/types/SearchProps";
+import { onMounted, provide, reactive, ref } from "vue";
 
-</template>
-
-<script lang="ts" setup>
-import { searchMatchList } from '@/api/star_horse_utils';
-import { PageFieldInfo } from '@/components/types/PageFieldInfo';
-import { SelectOption } from '@/components/types/SearchProps';
-import { reactive, ref } from 'vue';
-import WebUrlComp from './WebUrlComp.vue';
-const areaFormRef = ref();
-/**
- * 关联
- */
-const fields: SelectOption[] = [];
-const eventList: SelectOption[] = [
-  { name: "Change", value: "change" },
-  { name: "Input", value: "input" },
-];
-const controlConditionList: SelectOption[] = [
-  { name: "满足条件触发数据联动", value: "eqConditionDataLinkage" },
-  { name: "数据作为参数触发数据联动", value: "asParamDataLinkage" },
-  { name: "等于指定值时禁用被关联字段", value: "eqDisable" },
-  { name: "等于指定值时可编辑被关联字段", value: "eqEditable" },
-  { name: "等于指定值时隐藏被关联字段", value: "eqHide" },
-  { name: "等于指定值时显示被关联字段", value: "eqVisible" },
-  { name: "等于指定值时被关联字段必填", value: "eqRequired" },
-  { name: "等于指定值时被关联字段赋予新值", value: "assignValue" },
-  { name: "数据等于指定值时被关联字段改变字段类型", value: "changeType" },
-  { name: "测试数据", value: "button_authority" },
-];
-const fieldType = ref<string>("input");
-const fieldLinkVisible = ref<boolean>(false);
-// let matchType = ref<boolean>(false);
-const tableFieldList = reactive<PageFieldInfo | any>({
+const dataUrl: ApiUrls = apiInstance("system-config", "system/areainfo");
+const searchFormData = reactive<SearchFields>({
   fieldList: [
     {
-      label: "触发事件",
-      fieldName: "actionName",
-      type: "select",
-      defaultValue: "change",
-      required: true,
-      formVisible: true,
-      listVisible: true,
-      preps: {
-        values: eventList,
-      },
+      label: "区域名称",
+      defaultVisible: true,
+      matchType: "lk",
+      fieldName: "areaName",
     },
     {
-      batchFieldList: [
-        {
-          staticData: "Y",
-          subFormFlag: "Y",
-          batchName: "relationDetails",
-          fieldList: [
-            [
-              {
-                label: "控制条件",
-                fieldName: "controlCondition",
-                type: "select",
-                required: false,
-                formVisible: true,
-                listVisible: true,
-                preps: {
-                  values: controlConditionList,
-                  dataRelation: {
-                    actionName: "change",
-                    relationDetails: [
-                      {
-                        matchType: "eq",
-                        controlCondition: "eqVisible",
-                        relationFields: ["params", "dataSourceDivider"],
-                        matchFieldValue: ["eqConditionDataLinkage","asParamDataLinkage"]
-                      },
-                      {
-                        matchType: "eq",
-                        controlCondition: "eqVisible",
-                        relationFields: ["dictinfo"],
-                        matchFieldValue: "assignValue",
-                      },
-                      {
-                        matchType: "eq",
-                        controlCondition: "eqVisible",
-                        relationFields: ["newValues"],
-                        matchFieldValue: "changeType",
-                        staticDatas: "input"
-                      },
-                      {
-                          matchType: "eq",
-                          controlCondition: "eqRequired",
-                          relationFields: ["matchFieldValue"],
-                          matchFieldValue: ["eqDisable","eqVisible","eqEditable","eqRequired","eqHide","eqConditionDataLinkage","asParamDataLinkage"]
-                        },
-                        {
-                          matchType: "eq",
-                          controlCondition: "eqRequired",
-                          relationFields: ["matchFieldName"],
-                          matchFieldValue: ["asParamDataLinkage"]
-                        },
-                    ],
-                  },
-                },
-              },
-              {
-                label: "被控制属性",
-                fieldName: "relationFields",
-                type: "tselect",
-                required: false,
-                defaultValue: ["abc","bbb"],
-                formVisible: true,
-                listVisible: true,
-                preps: {
-                  data: fields,
-                  multiple: true,
-                  checkStrictly: true,
-                },
-              },
-            ],
-            [
-              {
-                label: "匹配条件",
-                fieldName: "matchType",
-                type: "select",
-                defaultValue: "eq",
-                required: false,
-                disabled: "Y",
-                formVisible: true,
-                listVisible: true,
-                preps: {
-                  values: searchMatchList(),
-                },
-              },
-              {
-                label: "参数",
-                fieldName: "matchFieldValue",
-                type: fieldType,
-                required: false,
-                helpMsg:
-                  "1、如果是作为查询条件，则填写参数名称；\n2、如果是等于某个值，则填写具体的值；",
-                formVisible: true,
-                listVisible: true,
-              },
-            ],
-            {
-              type: "divider",
-              formVisible: false,
-              fieldName: "dataSourceDivider",
-              preps: {
-                bareFlag: "Y",
-                content: "数据源",
-              },
-            },
-            {
-              label: "赋新值",
-              type: "input",
-              fieldName: "dictinfo",
-              formVisible: false,
-              preps: {},
-            },
-            {
-              label: "修改字段类型",
-              type: "select",
-              fieldName: "newValues",
-              formVisible: false,
-              preps: {},
-            },
-            {
-              label: "联动数据源",
-              type: "usercomp",
-              fieldName: "params",
-              formVisible: false,
-              preps: {
-                bareFlag: "Y",
-                subFormFlag: true,
-                batchName:"params",
-                compName: WebUrlComp,
-              },
-            },
-          ],
-        },
-      ],
+      label: "区域编码",
+      defaultVisible: true,
+      matchType: "lk",
+      fieldName: "areaCode",
     },
   ],
 });
-</script>
+const tableFieldList = reactive<PageFieldInfo>({
+  fieldList: [
+    {
+      label: "区域主键",
+      fieldName: "idAreainfo",
+      type: "long",
+    },
+    {
+      label: "父节点编号",
+      fieldName: "parentNo",
+      type: "select",
+      formVisible: true,
+      listVisible: true,
+    },
+    {
+      label: "区域名称",
+      fieldName: "areaName",
 
+      formVisible: true,
+      listVisible: true,
+    },
+    {
+      label: "区域编码",
+      fieldName: "areaCode",
+
+      formVisible: true,
+      listVisible: true,
+    },
+    {
+      label: "数据字典类型",
+      fieldName: "dictType",
+      type: "select",
+      defaultValue: "white_name_filter_type",
+      formVisible: true,
+      listVisible: true,
+      preps: {
+        values: [
+          { name: "按钮权限", value: "button_authority", xh: 1 },
+          { name: "白名单过滤类型", value: "white_name_filter_type", xh: 2 },
+        ],
+        queryParams: [],
+        dataRelation: {
+          actionName: "change",
+          relationDetails: [
+            {
+              matchType: "eq",
+              controlCondition: "eqDisable",
+              relationFields: "areaCode",
+              matchFieldValue: "white_name_filter_type",
+              xh: 1,
+            },
+            {
+              matchType: "eq",
+              controlCondition: "asParamDataLinkage",
+              relationFields: "dictName",
+              matchFieldName: "dictType",
+              matchFieldValue:["button_authority"],
+              params: {
+                url: "http://127.0.0.1:8749/system-config-dev/system/dictinfo/getAllByCondition",
+                httpMethod: "POST",
+                primaryKey: "idDictType",
+                labelName: "dictName",
+                valueName: "dictType",
+              },
+              xh: 1,
+            },
+          ],
+          relationDetailsDefaultValue: [{}],
+        },
+      },
+    },
+    {
+      label: "数据字典",
+      fieldName: "dictName",
+      type: "select",
+      formVisible: true,
+      listVisible: true,
+    },
+  ],
+  batchFieldList: [],
+});
+const primaryKey = "idAreainfo";
+const areainfoRef = ref();
+const areaFormRef = ref();
+const rules = {};
+const dialogProps = dialogPreps();
+provide("dialogProps", dialogProps);
+//手动赋值权限
+const btnPermissions = {
+  add: true,
+  edit: true,
+  delete: true,
+  view: true,
+};
+const dataFormat = (_name: string, cellValue: object): any => {
+  return cellValue;
+};
+const initData = async () => {};
+onMounted(() => {
+  initData();
+});
+</script>
+<template>
+  <div class="flex flex-col h-full overflow-hidden">
+    <star-horse-dialog
+      :isShowBtnContinue="true"
+      :dialogVisible="dialogProps.editVisible"
+      :dialogProps="dialogProps"
+    >
+      <star-horse-form
+        ref="areaFormRef"
+        @refresh="areainfoRef?.loadByPage()"
+        :compUrl="dataUrl"
+        :fieldList="tableFieldList"
+        :rules="rules"
+      />
+    </star-horse-dialog>
+    <star-horse-dialog
+      :dialog-visible="dialogProps.viewVisible"
+      :dialogProps="dialogProps"
+      :source="3"
+    >
+      <star-horse-data-view
+        :dataFormat="dataFormat"
+        :field-list="tableFieldList"
+        :compUrl="dataUrl"
+      />
+    </star-horse-dialog>
+    <div class="search-content">
+      <div class="search_btn">
+        <star-horse-search-comp
+          @searchData="(data: any) => areainfoRef?.createSearchParams(data)"
+          :formData="searchFormData"
+          :compUrl="dataUrl"
+        />
+      </div>
+    </div>
+    <el-card class="inner_content">
+      <star-horse-table-comp
+        ref="areainfoRef"
+        :fieldList="tableFieldList"
+        :btnPermissions="btnPermissions"
+        :primaryKey="primaryKey"
+        :compUrl="dataUrl"
+        :dataFormat="dataFormat"
+        :showPageBar="false"
+      />
+    </el-card>
+  </div>
+</template>
 <style lang="scss" scoped></style>

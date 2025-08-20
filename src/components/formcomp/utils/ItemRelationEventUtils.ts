@@ -62,14 +62,14 @@ const dataLinkage = async (props: any, item: RelationDetail, e: any) => {
     matchFieldValue = matchFieldValue ? [matchFieldValue] : [];
   }
   if (
-    matchFieldValue.length > 0 &&
-    !matchFieldValue.includes(item.controlCondition)
+    matchFieldValue.length > 0 && !matchFieldValue.includes(e)
   ) {
     return;
   }
   if (!Array.isArray(relationFields)) {
     relationFields = [relationFields];
   }
+
   const tempParams: any = JSON.parse(JSON.stringify(params));
   if (item.controlCondition == "asParamDataLinkage") {
     //输入值作为查询条件

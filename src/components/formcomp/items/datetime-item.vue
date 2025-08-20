@@ -58,8 +58,8 @@ onBeforeMount(() => {
   }
   props.field.preps["type"] =
     props.field.preps["type"] || props.field.type || "date";
-  disabledDate.value = props.field.preps["disabledDate"]?.split(";") || [];
-  delete props.field.preps["disabledDate"];
+  disabledDate.value = props.field.preps?.disabledDate?.split(";") || [];
+  delete props.field.preps?.disabledDate;
 });
 onMounted(() => {
   //后面增加判断规则
