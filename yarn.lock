@@ -4729,7 +4729,7 @@ vue3-ts-jsoneditor@^3.0.3:
     vanilla-jsoneditor "^3.3.1"
     vue "^3.5.13"
 
-vue@^3.0.4, vue@^3.5.13, vue@^3.5.18:
+vue@^3.0.4, vue@^3.5.13, vue@^3.5.19:
   version "3.5.19"
   resolved "https://registry.npmjs.org/vue/-/vue-3.5.19.tgz#973ba643a331bd35578eec2a27fa115f500eb25b"
   integrity sha512-ZRh0HTmw6KChRYWgN8Ox/wi7VhpuGlvMPrHjIsdRbzKNgECFLzy+dKL5z9yGaBSjCpmcfJCbh3I1tNSRmBz2tg==
