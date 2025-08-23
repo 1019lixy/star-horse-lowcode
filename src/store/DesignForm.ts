@@ -1,7 +1,7 @@
 import { Config } from "@/api/settings";
 import { SelectOption } from "@/components/types/SearchProps";
 import { defineStore } from "pinia";
-import { ref, unref } from "vue";
+import { ref, unref, shallowRef } from "vue";
 
 export const useDesignFormStore = defineStore("designForm", () => {
   const containerList = ref<Array<any>>([]);
@@ -10,13 +10,13 @@ export const useDesignFormStore = defineStore("designForm", () => {
   const allFormDataList = ref<Array<any>>([]);
   const formInfo = ref<any>({});
   const compList = ref<Array<any>>([]);
-  const compListNoLayer = ref<any>([]);
+  const compListNoLayer = shallowRef<any>([]);
   const formData = ref<any>({});
-  const currentComp = ref<Array<any> | any>();
+  const currentComp = shallowRef<Array<any> | any>();
   // 添加缓存状态标记和缓存结果
   const isCompListUpdated = ref<boolean>(true);
-  const cachedCompListNoLayer = ref<any>([]);
-  const cachedSelectList = ref<any>([]);
+  const cachedCompListNoLayer = shallowRef<any>([]);
+  const cachedSelectList = shallowRef<any>([]);
 
   const currentItemType = ref<string>("");
   const currentCompCategory = ref<string>("");
@@ -120,6 +120,11 @@ export const useDesignFormStore = defineStore("designForm", () => {
    * @param parentType 父组件类型
    */
   const selectItem = (data: any, itemType: string, parentType: string) => {
+    // Check for duplicate selection to avoid unnecessary updates
+    if (currentItemId.value === data?.id) {
+      return;
+    }
+    
     currentCompCategory.value = data.compType;
     currentItemId.value = data?.id;
     parentCompType.value = parentType;

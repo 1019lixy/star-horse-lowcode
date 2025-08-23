@@ -1,5 +1,5 @@
 <script setup lang="ts" name="starhorse-form-item">
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, nextTick, onBeforeUnmount, shallowRef } from "vue";
 import { useDesignFormStore } from "@/store/DesignForm";
 import piniaInstance from "@/store/index";
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
@@ -22,7 +22,8 @@ const props = withDefaults(defineProps<ItemPreps>(), {
 });
 let designForm = useDesignFormStore(piniaInstance);
 let isEdit = computed(() => props.isDesign);
-let currentItemId = computed(() => designForm.currentItemId);
+// Use shallowRef for better performance 
+let currentItemId = shallowRef(designForm.currentItemId);
 const isDisabled = computed(() => props.disabled);
 
 let componentVisible = computed(() => {
@@ -30,17 +31,42 @@ let componentVisible = computed(() => {
     designForm.componentVisible && currentItemId.value == props.field?.preps.id
   );
 });
+
+// Update currentItemId when store changes
+designForm.$subscribe(() => {
+  currentItemId.value = designForm.currentItemId;
+});
 const selectParentContainer = () => {
   if (!isEdit.value || isDisabled.value) return;
   designForm.selectItem(props.parentField, "", "container");
 };
+// Add debounce control
+let selectDebounceTimer: NodeJS.Timeout | null = null;
+
 const selectData = (data: any) => {
   if (!isEdit.value || isDisabled.value) return;
-  designForm.selectItem(
-    props.field,
-    data.itemType,
-    getParentComp(props.parentField),
-  );
+  
+  // Check for duplicate selection to avoid unnecessary updates
+  if (currentItemId.value === props.field?.preps?.id) {
+    return;
+  }
+  
+  // Clear previous timer
+  if (selectDebounceTimer) {
+    clearTimeout(selectDebounceTimer);
+  }
+  
+  // Debounce mechanism with 100ms delay
+  selectDebounceTimer = setTimeout(() => {
+    // Use nextTick for batch processing
+    nextTick(() => {
+      designForm.selectItem(
+        props.field,
+        data.itemType,
+        getParentComp(props.parentField),
+      );
+    });
+  }, 100);
 };
 
 const exchangeItem = () => {
@@ -69,6 +95,15 @@ const itemContextMenu = (evt: MouseEvent | any) => {
   evt.props = props;
   itemContextMenuRef.value?.show(evt);
 };
+
+// Cleanup debounce timer on unmount
+onBeforeUnmount(() => {
+  if (selectDebounceTimer) {
+    clearTimeout(selectDebounceTimer);
+    selectDebounceTimer = null;
+  }
+});
+
 onMounted(() => {});
 </script>
 <template>
@@ -104,7 +139,7 @@ onMounted(() => {});
       :class="{
         'design-star-horse': isEdit && !disabled,
         'field-item': true,
-        'active-item': currentItemId == field?.preps.id && isEdit && !disabled,
+        'active-item': currentItemId == field?.preps?.id && isEdit && !disabled,
       }"
       v-if="showFormItem"
       @click="selectData(field)"
@@ -149,7 +184,7 @@ onMounted(() => {});
       </div>
       <div
         class="field-action"
-        v-if="isEdit && !disabled && currentItemId == field?.preps.id"
+        v-if="isEdit && !disabled && currentItemId == field?.preps?.id"
       >
         <el-tooltip content="选择父容器" v-if="parentField?.itemType">
           <star-horse-icon
@@ -194,7 +229,7 @@ onMounted(() => {});
       </div>
       <div
         class="drag-handler"
-        v-if="isEdit && currentItemId == field?.preps.id"
+        v-if="isEdit && currentItemId == field?.preps?.id"
       >
         <el-tooltip content="拖动">
           <star-horse-icon
