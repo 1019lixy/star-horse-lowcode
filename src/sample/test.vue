@@ -1,14 +1,14 @@
 <template>
-  {{test}}
+  {{ test }}
   <StarHorseDataSelector
-      v-model="test"
-      :datas="datas"
-      :multiple="false"
-      :checkStrictly="false"
+    v-model="test"
+    :datas="datas"
+    :multiple="false"
+    :checkStrictly="false"
   />
 
   {{ formData }}
-<!--  <data-picker-item
+  <!--  <data-picker-item
       :field="{
       label: '测试',
       fieldName: 'test',

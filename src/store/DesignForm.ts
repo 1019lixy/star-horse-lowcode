@@ -124,7 +124,7 @@ export const useDesignFormStore = defineStore("designForm", () => {
     if (currentItemId.value === data?.id) {
       return;
     }
-    
+
     currentCompCategory.value = data.compType;
     currentItemId.value = data?.id;
     parentCompType.value = parentType;

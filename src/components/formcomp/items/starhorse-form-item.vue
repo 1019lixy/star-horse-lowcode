@@ -1,5 +1,12 @@
 <script setup lang="ts" name="starhorse-form-item">
-import { computed, onMounted, ref, nextTick, onBeforeUnmount, shallowRef } from "vue";
+import {
+  computed,
+  onMounted,
+  ref,
+  nextTick,
+  onBeforeUnmount,
+  shallowRef,
+} from "vue";
 import { useDesignFormStore } from "@/store/DesignForm";
 import piniaInstance from "@/store/index";
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
@@ -22,7 +29,7 @@ const props = withDefaults(defineProps<ItemPreps>(), {
 });
 let designForm = useDesignFormStore(piniaInstance);
 let isEdit = computed(() => props.isDesign);
-// Use shallowRef for better performance 
+// Use shallowRef for better performance
 let currentItemId = shallowRef(designForm.currentItemId);
 const isDisabled = computed(() => props.disabled);
 
@@ -45,17 +52,17 @@ let selectDebounceTimer: NodeJS.Timeout | null = null;
 
 const selectData = (data: any) => {
   if (!isEdit.value || isDisabled.value) return;
-  
+
   // Check for duplicate selection to avoid unnecessary updates
   if (currentItemId.value === props.field?.preps?.id) {
     return;
   }
-  
+
   // Clear previous timer
   if (selectDebounceTimer) {
     clearTimeout(selectDebounceTimer);
   }
-  
+
   // Debounce mechanism with 100ms delay
   selectDebounceTimer = setTimeout(() => {
     // Use nextTick for batch processing
@@ -356,6 +363,5 @@ onMounted(() => {});
 :deep(.label-right-align) .el-form-item__label {
   text-align: right;
   justify-content: flex-end !important;
-
 }
 </style>

@@ -1,8 +1,22 @@
 <template>
-  <starhorse-form-item :showFormItem="showFormItem" :isDesign="isDesign" :disabled="disabled" :bareFlag="bareFlag"
-    :field="field" :parentField="parentField">
-    <component :is="currentComponent" :showFormItem="showFormItem" :isDesign="isDesign" :disabled="disabled"
-      :bareFlag="bareFlag" v-bind="field['preps']" v-model:dataForm="formData" :source="source" />
+  <starhorse-form-item
+    :showFormItem="showFormItem"
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :bareFlag="bareFlag"
+    :field="field"
+    :parentField="parentField"
+  >
+    <component
+      :is="currentComponent"
+      :showFormItem="showFormItem"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      v-bind="field['preps']"
+      v-model:dataForm="formData"
+      :source="source"
+    />
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
@@ -38,9 +52,7 @@ const currentComponent = computed(() => props.field["preps"].compName);
   }
   return props.source
 }); */
-const loadComponent = async () => {
-
-};
+const loadComponent = async () => {};
 onMounted(() => {
   loadComponent();
 });

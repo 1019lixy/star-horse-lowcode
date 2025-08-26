@@ -428,7 +428,7 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
   const mappingFields: Array<any> = [];
   const tempList = fieldList.fieldList || [];
   const batchDefaultValues: any = {};
-  
+
   const tabOperation = (data: TabFieldInfo) => {
     const fieldList: Array<FieldInfo> = data.fieldList || [];
     if ("Y" == data.subFormFlag) {
@@ -439,10 +439,10 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
       fieldsOperation(fieldList, defaultDatas);
     }
   };
-  
+
   const tableOperation = (batchTempList: Array<BatchFieldInfo>) => {
     if (!batchTempList || batchTempList.length === 0) return;
-    
+
     for (let i = 0; i < batchTempList.length; i++) {
       const temp = batchTempList[i];
       if (!defaultDatas[temp.batchName]) {
@@ -453,7 +453,7 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
       }
       const fieldList: Array<FieldInfo> = temp.fieldList || [];
       let tempData: any = {};
-      
+
       for (let j = 0; j < fieldList.length; j++) {
         const item = fieldList[j];
         if (item.defaultValue) {
@@ -479,10 +479,10 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
       batchDefaultValues[temp.batchName + "DefaultValue"].push(tempData);
     }
   };
-  
+
   const fieldsOperation = (dataList: any, defaultData: any) => {
     if (!dataList || dataList.length === 0) return;
-    
+
     for (let i = 0; i < dataList.length; i++) {
       const temp = dataList[i];
       if (Array.isArray(temp)) {
@@ -507,7 +507,10 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
           }
           formFields.push(item);
         }
-      } else if (temp && (temp["tabList"] || temp["collapseList"] || temp["cardList"])) {
+      } else if (
+        temp &&
+        (temp["tabList"] || temp["collapseList"] || temp["cardList"])
+      ) {
         //如果是tabList
         const tabList: Array<TabFieldInfo> =
           temp["tabList"] || temp["collapseList"] || temp["cardList"] || [];
@@ -541,12 +544,12 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
       }
     }
   };
-  
+
   fieldsOperation(tempList, defaultDatas);
   const batchTempList = fieldList.batchFieldList || [];
   tableOperation(batchTempList);
   Object.assign(defaultDatas, batchDefaultValues);
-  
+
   return {
     defaultDatas,
     mappingFields,

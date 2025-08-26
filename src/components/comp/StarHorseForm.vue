@@ -319,7 +319,7 @@ const setFormData = (data: any) => {
 };
 const setSource = (dataSource: number) => {
   source.value = dataSource;
-}
+};
 /**
  * 更新数据
  * @param data
@@ -353,8 +353,8 @@ const tableListRef = ref<any>([]);
 onActivated(() => {
   recordFieldInfo();
 });
-onDeactivated(() => { });
-onBeforeUnmount(() => { });
+onDeactivated(() => {});
+onBeforeUnmount(() => {});
 onMounted(() => {
   recordFieldInfo();
 });
@@ -394,7 +394,7 @@ watch(
 watch(
   () => dialogProps.ids,
   (val) => {
-    if (val === undefined || val == null || val == '') {
+    if (val === undefined || val == null || val == "") {
       console.log("ids 未定义", val);
       return;
     } else {
@@ -425,25 +425,52 @@ defineExpose({
   getFields,
   getFormFields,
   validate,
-  setSource
+  setSource,
 });
 </script>
 <template>
   <el-scrollbar height="100%">
-    <el-form :model="dataForm" :size="formSize" :rules="rules" :scroll-to-error="true" :scroll-into-view-options="true"
-      :inline-message="false" :status-icon="true" :label-position="labelPosition" require-asterisk-position="right"
-      label-width="auto" class="data-form" ref="starHorseFormRef">
-      <star-horse-form-item :primaryKey="primaryKey" :compUrl="compUrl" :fieldList="fieldList" :rules="rules"
-        :compSize="formSize" v-model:dataForm="dataForm" :source="source" @addRow="addRow" @removeRow="removeRow"
-        :batchName="batchName" :batchFieldName="batchFieldName" />
+    <el-form
+      :model="dataForm"
+      :size="formSize"
+      :rules="rules"
+      :scroll-to-error="true"
+      :scroll-into-view-options="true"
+      :inline-message="false"
+      :status-icon="true"
+      :label-position="labelPosition"
+      require-asterisk-position="right"
+      label-width="auto"
+      class="data-form"
+      ref="starHorseFormRef"
+    >
+      <star-horse-form-item
+        :primaryKey="primaryKey"
+        :compUrl="compUrl"
+        :fieldList="fieldList"
+        :rules="rules"
+        :compSize="formSize"
+        v-model:dataForm="dataForm"
+        :source="source"
+        @addRow="addRow"
+        @removeRow="removeRow"
+        :batchName="batchName"
+        :batchFieldName="batchFieldName"
+      />
     </el-form>
   </el-scrollbar>
   <el-form-item v-if="typeModel == 'form'" :size="formSize">
-    <el-button @click="merge" style="
+    <el-button
+      @click="merge"
+      style="
         background: var(--star-horse-style);
         color: var(--star-horse-white);
-      ">
-      <star-horse-icon icon-class="save" style="color: var(--star-horse-white)" />
+      "
+    >
+      <star-horse-icon
+        icon-class="save"
+        style="color: var(--star-horse-white)"
+      />
       提交
     </el-button>
     <el-button @click="resetForm" link>
