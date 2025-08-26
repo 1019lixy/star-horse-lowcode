@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { PropType, ref } from "vue";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
+import { i18n } from "@/lang";
 import { compKey } from "@/api/system";
 
 defineProps({
@@ -15,8 +16,8 @@ defineProps({
       };
     },
   },
-  btnTitle: { type: String, default: "添加数据" },
-  rmvTitle: { type: String, default: "删除数据" },
+  btnTitle: { type: String, default: i18n("menu.addData") },
+  rmvTitle: { type: String, default: i18n("menu.removeData") },
   btnVisible: { type: Boolean, default: false },
   rmvVisible: { type: Boolean, default: false },
 });

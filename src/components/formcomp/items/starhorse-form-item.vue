@@ -18,6 +18,7 @@ import {
   moveUpItem,
   removeItem,
 } from "@/plugins/AblesPlugin";
+import { i18n } from "@/lang";
 import { ItemPreps } from "@/components/types/ItemPreps";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
@@ -167,7 +168,7 @@ onMounted(() => {});
         :required="field?.preps['required']"
         :rules="
           field?.preps['required']
-            ? [{ required: true, trigger: 'blur', message: '必须项不能为空' }]
+            ? [{ required: true, trigger: 'blur', message: i18n('form.requiredField') }]
             : []
         "
       >

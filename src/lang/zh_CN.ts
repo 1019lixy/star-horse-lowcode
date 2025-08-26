@@ -81,4 +81,54 @@ export default {
   "flow.designer.delNode.confirm": "确认删除节点？",
   "flow.designer.delNode.confirm.tips":
     "删除节点后，该节点的所有子节点将被删除，确认删除？",
+  /**
+   * 表单--------------
+   */
+  "form.submit": "提交",
+  "form.reset": "重置",
+  /**
+   * 搜索--------------
+   */
+  "search.moreQuery": "更多查询",
+  "search.collapse": "收起",
+  "search.query": "查询",
+  "search.reset": "重置",
+  /**
+   * 表格--------------
+   */
+  "table.operation": "操作",
+  "table.refresh": "刷新",
+  /**
+   * 数据选择器--------------
+   */
+  "datapicker.selectData": "选择数据",
+  "datapicker.selectAll": "全部",
+  "datapicker.pendingDataArea": "待选数据区",
+  "datapicker.enterKeywords": "输入关键字进行查询",
+  "datapicker.selectedDataArea": "已选数据区",
+  /**
+   * 数据选择器--------------
+   */
+  "dataselector.placeholder": "请选择数据",
+  /**
+   * 表单验证--------------
+   */
+  "form.requiredField": "必须项不能为空",
+  /**
+   * 菜单--------------
+   */
+  "menu.addData": "添加数据",
+  "menu.removeData": "删除数据",
+  /**
+   * Cron表达式--------------
+   */
+  "cron.second": "秒",
+  "cron.minute": "分钟",
+  "cron.hour": "小时",
+  "cron.day": "日",
+  "cron.month": "月",
+  "cron.week": "周",
+  "cron.year": "年",
+  "cron.timeExpression": "时间表达式",
+  "cron.completeExpression": "crontab完整表达式",
 };

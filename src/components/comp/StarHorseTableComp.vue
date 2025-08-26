@@ -33,6 +33,7 @@ import { isSystemManage } from "@/utils/auth";
 import { error, warning } from "@/utils/message";
 import { analysisFields } from "@/utils/preview";
 import Sortable from "sortablejs";
+import { i18n } from "@/lang";
 import {
   computed,
   inject,
@@ -1004,7 +1005,7 @@ defineExpose({
               >
                 <el-table-column
                   fixed="left"
-                  label="操作"
+                  :label="i18n('table.operation')"
                   :width="160"
                   v-if="
                     expandTable.showButton && expandTable.extendFuncs.length > 0
@@ -1065,7 +1066,7 @@ defineExpose({
             buttonList.length > 0 && Object.keys(permissions || {}).length > 0
           "
           fixed="right"
-          label="操作"
+          :label="i18n('table.operation')"
           :width="buttonList.length > 3 ? 160 : 110"
         >
           <template #default="scope">
@@ -1159,7 +1160,7 @@ defineExpose({
         icon="refresh"
         :size="compSize"
         @click="loadByPage"
-        title="刷新"
+        :title="i18n('table.refresh')"
       />
     </el-pagination>
   </div>

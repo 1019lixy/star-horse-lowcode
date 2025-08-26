@@ -8,6 +8,7 @@ import Crontabmonth from "@/components/cron/Crontab-Month.vue";
 import CrontabWeek from "@/components/cron/Crontab-Week.vue";
 import CrontabYear from "@/components/cron/Crontab-Year.vue";
 import { useVModel } from "@vueuse/core";
+import { i18n } from "@/lang";
 import { copyText } from "@/api/system";
 
 defineOptions({
@@ -24,13 +25,13 @@ const props = withDefaults(defineProps<Crontab>(), {});
 const emits = defineEmits(["update:modelValue"]);
 let dataValue = useVModel(props, "modelValue", emits);
 let tabTitles = ref<Array<string>>([
-  "秒",
-  "分钟",
-  "小时",
-  "日",
-  "月",
-  "周",
-  "年",
+  i18n("cron.second"),
+  i18n("cron.minute"),
+  i18n("cron.hour"),
+  i18n("cron.day"),
+  i18n("cron.month"),
+  i18n("cron.week"),
+  i18n("cron.year"),
 ]);
 let tabActive = ref<string>("0");
 const cronsecond = ref();
@@ -295,7 +296,7 @@ defineExpose({
   <div class="flex flex-col h-full">
     <div class="flex-grow-1 flex-1 overflow-auto min-h-0">
       <el-tabs type="border-card" v-model="tabActive">
-        <el-tab-pane label="秒" name="0" v-if="shouldHide('second')">
+        <el-tab-pane :label="i18n('cron.second')" name="0" v-if="shouldHide('second')">
           <CrontabSecond
             @update="updateContabValue"
             :cron="contabValueObj"
@@ -303,7 +304,7 @@ defineExpose({
             ref="cronsecond"
           />
         </el-tab-pane>
-        <el-tab-pane label="分钟" name="1" v-if="shouldHide('min')">
+        <el-tab-pane :label="i18n('cron.minute')" name="1" v-if="shouldHide('min')">
           <CrontabMin
             @update="updateContabValue"
             :check="checkNumber"
@@ -311,7 +312,7 @@ defineExpose({
             ref="cronmin"
           />
         </el-tab-pane>
-        <el-tab-pane label="小时" name="2" v-if="shouldHide('hour')">
+        <el-tab-pane :label="i18n('cron.hour')" name="2" v-if="shouldHide('hour')">
           <CrontabHour
             @update="updateContabValue"
             :check="checkNumber"
@@ -319,7 +320,7 @@ defineExpose({
             ref="cronhour"
           />
         </el-tab-pane>
-        <el-tab-pane label="日" name="3" v-if="shouldHide('day')">
+        <el-tab-pane :label="i18n('cron.day')" name="3" v-if="shouldHide('day')">
           <CrontabDay
             @update="updateContabValue"
             :check="checkNumber"
@@ -327,7 +328,7 @@ defineExpose({
             ref="cronday"
           />
         </el-tab-pane>
-        <el-tab-pane label="月" name="4" v-if="shouldHide('month')">
+        <el-tab-pane :label="i18n('cron.month')" name="4" v-if="shouldHide('month')">
           <Crontabmonth
             @update="updateContabValue"
             :check="checkNumber"
@@ -335,7 +336,7 @@ defineExpose({
             ref="cronmonth"
           />
         </el-tab-pane>
-        <el-tab-pane label="周" name="5" v-if="shouldHide('week')">
+        <el-tab-pane :label="i18n('cron.week')" name="5" v-if="shouldHide('week')">
           <CrontabWeek
             @update="updateContabValue"
             :check="checkNumber"
@@ -343,7 +344,7 @@ defineExpose({
             ref="cronweek"
           />
         </el-tab-pane>
-        <el-tab-pane label="年" name="6" v-if="shouldHide('year')">
+        <el-tab-pane :label="i18n('cron.year')" name="6" v-if="shouldHide('year')">
           <CrontabYear
             @update="updateContabValue"
             :check="checkNumber"
@@ -355,14 +356,14 @@ defineExpose({
     </div>
     <div class="popup-main">
       <div class="popup-result">
-        <p class="title">时间表达式</p>
+        <p class="title">{{ i18n("cron.timeExpression") }}</p>
         <table>
           <thead>
             <tr>
               <th v-for="item of tabTitles" width="40" :key="item">
                 {{ item }}
               </th>
-              <th>crontab完整表达式</th>
+              <th>{{ i18n("cron.completeExpression") }}</th>
             </tr>
           </thead>
           <tbody>

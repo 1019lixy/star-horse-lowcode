@@ -18,6 +18,7 @@ import {
 } from "@/components/types/PageFieldInfo";
 import { SelectOption } from "@/components/types/SearchProps";
 import { error, success, warning } from "@/utils/message";
+import { i18n } from "@/lang";
 import {
   inject,
   nextTick,
@@ -471,11 +472,11 @@ defineExpose({
         icon-class="save"
         style="color: var(--star-horse-white)"
       />
-      提交
+      {{ i18n("form.submit") }}
     </el-button>
     <el-button @click="resetForm" link>
       <star-horse-icon icon-class="undo" />
-      重置
+      {{ i18n("form.reset") }}
     </el-button>
   </el-form-item>
 </template>
