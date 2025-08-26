@@ -3,6 +3,7 @@ import { createDatetime } from "@/api/date_utils";
 import { parseListData, validMsg } from "@/api/form_utils";
 import { Config } from "@/api/settings";
 import { PropType } from "vue";
+import { i18n } from "@/lang";
 
 const props = defineProps({
   dataForm: { type: Object, required: true },
@@ -22,7 +23,7 @@ const dataFormat = (val: any) => {
       return createDatetime(val);
     }
     if (type == "switch") {
-      return val === true || val == "1" || val == "Y" ? "是" : "否";
+      return val === true || val == "1" || val == "Y" ? i18n("common.yes") : i18n("common.no");
     }
     if (
       type == "select" ||

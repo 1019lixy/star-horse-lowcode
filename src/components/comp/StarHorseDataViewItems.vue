@@ -3,6 +3,7 @@ import { ModelRef, PropType } from "vue";
 import { PageFieldInfo } from "@/components/types/PageFieldInfo";
 import { commonParseCodeToName } from "@/api/star_horse_utils";
 import { compKey } from "@/api/system";
+import { i18n } from "@/lang";
 
 const props = defineProps({
   // compUrl: {type: Object as PropType<ApiUrls>},
@@ -19,7 +20,7 @@ const _compKey = compKey;
 const itemCommonFormat = (name: string, cellValue: any, row: any) => {
   cellValue = commonParseCodeToName(name, cellValue);
   if (name == "isDel") {
-    return cellValue == 1 ? "是" : "否";
+    return cellValue == 1 ? i18n("common.yes") : i18n("common.no");
   }
   return null == props.commonFormat
     ? cellValue

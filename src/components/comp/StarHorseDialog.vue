@@ -40,7 +40,7 @@ const props = defineProps({
   selfClose: { type: Boolean, default: false },
   btnText: { type: String },
   userBtn: { type: Array<UserFuncInfo>, default: [] },
-  btnTextContinue: { type: String, default: "提交并继续" },
+  btnTextContinue: { type: String, default: i18n("common.submitAndContinue") },
   title: { type: String, default: "" },
   compSize: { type: String, default: Config.compSize },
 });

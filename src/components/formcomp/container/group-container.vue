@@ -1,16 +1,11 @@
-<script setup lang="ts" name="GroupContainer">
+<script setup lang="ts">
+import { computed, getCurrentInstance, nextTick, onMounted, ref, watch } from "vue";
+import { copyContainer, insertBelowRow, insertRightCol } from "@/components/formcomp/utils/tableAction";
+import { dynamicFormContextMenuData } from "@/components/formcomp/utils/contextMenuData";
+import { i18n } from "@/lang";
 import { operationConfirm } from "@/utils/message";
 import piniaInstance from "@/store/index";
 import { useDesignFormStore } from "@/store/DesignForm";
-import { computed, ref } from "vue";
-import {
-  insertBelowRow,
-  insertRightCol,
-} from "@/components/formcomp/container/dytableUtils";
-import {
-  copyContainer,
-  dynamicFormContextMenuData,
-} from "@/plugins/AblesPlugin";
 import FieldList from "@/components/formcomp/utils/FieldList.vue";
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import { fieldCopy } from "@/utils/FieldOperationUtils";
@@ -144,13 +139,13 @@ const tableOperation = (actonName: string, _preps: any) => {
     box-width="450px"
     :is-view="true"
     :full-screen="false"
-    title="添加组件"
+    :title="i18n('form.addComponent')"
     :self-func="true"
     :dialog-visible="componentVisible"
     @closeAction="close"
   >
     <template #footer>
-      <el-button type="primary" size="default" @click="close">确定</el-button>
+      <el-button type="primary" size="default" @click="close">{{ i18n("form.confirm") }}</el-button>
     </template>
     <field-list @selectData="addItem" />
   </star-horse-dialog>
@@ -164,14 +159,14 @@ const tableOperation = (actonName: string, _preps: any) => {
       class="drag-handler"
       v-if="isEdit && isDesign && currentItemId == formItem.id"
     >
-      <el-tooltip content="拖动">
+      <el-tooltip :content="i18n('form.drag')">
         <star-horse-icon
           icon-class="drag"
           size="18px"
           style="color: var(--star-horse-white)"
         />
       </el-tooltip>
-      <el-tooltip content="选中容器">
+      <el-tooltip :content="i18n('form.selectContainer')">
         <star-horse-icon
           cursor="pointer"
           @click.stop="selectData"
@@ -179,7 +174,7 @@ const tableOperation = (actonName: string, _preps: any) => {
           style="color: var(--star-horse-white)"
         />
       </el-tooltip>
-      <el-tooltip content="删除容器">
+      <el-tooltip :content="i18n('form.deleteContainer')">
         <star-horse-icon
           cursor="pointer"
           @click.stop="removeData"
@@ -195,7 +190,7 @@ const tableOperation = (actonName: string, _preps: any) => {
       <template
         v-if="formItem.itemType == 'dytable' || formItem.itemType == 'box'"
       >
-        <el-tooltip content="插入行">
+        <el-tooltip :content="i18n('form.insertRow')">
           <star-horse-icon
             @click.stop="tableOperation('insertRow', formItem?.preps)"
             icon-class="insert_row"
@@ -211,7 +206,7 @@ const tableOperation = (actonName: string, _preps: any) => {
           formItem.itemType == 'table'
         "
       >
-        <el-tooltip content="插入列">
+        <el-tooltip :content="i18n('form.insertCol')">
           <star-horse-icon
             @click.stop="tableOperation('insertCol', formItem?.preps)"
             icon-class="insert_col"
@@ -220,7 +215,7 @@ const tableOperation = (actonName: string, _preps: any) => {
           />
         </el-tooltip>
       </template>
-      <el-tooltip content="复制容器">
+      <el-tooltip :content="i18n('form.copyContainer')">
         <star-horse-icon
           @click.stop="tableOperation('copy', formItem?.preps)"
           icon-class="copy"

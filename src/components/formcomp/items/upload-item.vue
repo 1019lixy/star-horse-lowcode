@@ -49,11 +49,11 @@
         <upload-filled />
       </el-icon>
       <div class="el-upload__text" v-if="field.preps['drag']">
-        将文件拖到此处 或 <em>点击上传</em>
+        {{ i18n("form.dragFileHereOr") }} <em>{{ i18n("form.clickToUpload") }}</em>
       </div>
       <template #tip v-if="field.preps['maxSize']">
         <div class="el-upload__tip">
-          文件大小不能超过{{ field.preps["maxSize"] }}
+          {{ i18n("form.fileSizeLimit") }}{{ field.preps["maxSize"] }}
         </div>
       </template>
       <star-horse-icon
@@ -71,6 +71,7 @@ import {
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { getToken } from "@/utils/auth";
 import { nextTick, onMounted, ref, shallowRef } from "vue";
+import { i18n } from "@/lang";
 
 import { ItemPreps } from "@/components/types/ItemPreps";
 const props = withDefaults(defineProps<ItemPreps>(), {

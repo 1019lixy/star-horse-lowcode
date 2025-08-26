@@ -148,6 +148,8 @@ function getWeek(date: Date) {
  * @param needSecond
  * @param split
  */
+import { i18n } from "@/lang";
+
 export function parseDateByType(
   val: any,
   type: string,
@@ -174,7 +176,7 @@ export function parseDateByType(
         needSecond,
         split,
       );
-      return `${formatStart} 至 ${formatEnd}`;
+      return `${formatStart} ${i18n("api.to")} ${formatEnd}`;
     }
     // 统一转换日期对象
     let date = val;
@@ -203,7 +205,7 @@ export function parseDateByType(
       case "datetime":
         return dateParse(date, true, split, needSecond); // 日期+时间
       case "week":
-        return `${date.getFullYear()}年第${getWeek(date)}周`; // 年份和周数
+        return `${date.getFullYear()}${i18n("api.weekPrefix")}${getWeek(date)}${i18n("api.weekSuffix")}`; // 年份和周数
       case "datetimerange":
         return dateParse(date, true, split, needSecond); // 时间范围返回完整时间
       case "daterange":

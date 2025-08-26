@@ -6,6 +6,7 @@ import { postRequest } from "@/api/star_horse_apis";
 import { closeLoad, load, loadById } from "@/api/star_horse_utils";
 import { DialogProps } from "@/components/types/DialogProps";
 import { compKey, itemCheck } from "@/api/system";
+import { i18n } from "@/lang";
 
 const props = defineProps({
   compUrl: { type: Object as PropType<ApiUrls>, required: true },
@@ -42,7 +43,7 @@ const mergeDraft = (type: string) => {
   doMerge();
 };
 const doMerge = () => {
-  load("数据处理中");
+  load(i18n("common.dataProcessing"));
   postRequest(props.compUrl.mergeUrl!, dataForm.value)
     .then((res) => {
       closeLoad();
@@ -58,7 +59,7 @@ const doMerge = () => {
       //关闭弹窗
     })
     .catch((err) => {
-      error("接口调用异常" + err);
+      error(i18n("common.interfaceCallError") + err);
     })
     .finally(() => {
       closeLoad();
@@ -148,11 +149,11 @@ defineExpose({
           icon-class="save"
           style="color: var(--star-horse-white)"
         />
-        提交
+        {{ i18n("common.submit") }}
       </el-button>
       <el-button @click="resetForm" link>
         <star-horse-icon icon-class="undo" />
-        重置
+        {{ i18n("common.reset") }}
       </el-button>
     </el-form-item>
   </el-form>

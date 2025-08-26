@@ -2,19 +2,19 @@
   <div class="cron-content">
     <div class="cron-item">
       <el-radio size="small" v-model="radioValue" :label="1" border>
-        周，允许的通配符[, - * / L #]
+        {{ i18n("cron.week") }}{{ i18n("cron.wildcardsWithLHash") }}
       </el-radio>
     </div>
     <div class="cron-item">
       <el-radio size="small" v-model="radioValue" :label="2" border>
-        不指定
+        {{ i18n("cron.notSpecified") }}
       </el-radio>
     </div>
     <div class="cron-item">
       <el-radio size="small" v-model="radioValue" :label="3" border>
-        周期
+        {{ i18n("cron.period") }}
       </el-radio>
-      <span style="margin-left: 10px; margin-right: 5px">从星期</span>
+      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.from") }}{{ i18n("cron.week") }}</span>
       <el-input-number
         size="small"
         v-model="cycle01"
@@ -22,7 +22,7 @@
         :max="7"
         controls-position="right"
       />
-      <span style="margin-left: 10px; margin-right: 5px">至</span>
+      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.to") }}</span>
       <el-input-number
         size="small"
         v-model="cycle02"
@@ -33,9 +33,9 @@
     </div>
     <div class="cron-item">
       <el-radio size="small" v-model="radioValue" :label="4" border>
-        循环
+        {{ i18n("cron.loop") }}
       </el-radio>
-      <span style="margin-left: 10px; margin-right: 5px">第</span>
+      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.every") }}</span>
       <el-input-number
         size="small"
         v-model="average01"
@@ -43,7 +43,7 @@
         :max="4"
         controls-position="right"
       />
-      <span style="margin-left: 10px; margin-right: 5px">周的星期</span>
+      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.week") }}{{ i18n("cron.day") }}{{ i18n("cron.weekDay") }}</span>
       <el-input-number
         size="small"
         v-model="average02"
@@ -53,10 +53,10 @@
       />
     </div>
     <div class="cron-item">
-      <el-radio size="small" v-model="radioValue" :label="5" border
-        >本月最后一个
+      <el-radio size="small" v-model="radioValue" :label="5" border>
+        {{ i18n("cron.lastWeekday") }}
       </el-radio>
-      <span style="margin-left: 10px; margin-right: 5px">星期</span>
+      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.weekDay") }}</span>
       <el-input-number
         size="small"
         v-model="weekday"
@@ -67,7 +67,7 @@
     </div>
     <div class="cron-item">
       <el-radio size="small" v-model="radioValue" :label="6" border>
-        指定
+        {{ i18n("cron.specify") }}
       </el-radio>
       <el-checkbox-group size="small" v-model="checkboxList">
         <el-checkbox
@@ -85,6 +85,7 @@
 <style lang="scss" scoped></style>
 <script setup lang="ts" name="crontab-week">
 import { computed, ref, watch } from "vue";
+import { i18n } from "@/lang";
 
 const props = defineProps({
   check: { type: Function },
@@ -99,7 +100,15 @@ let average01 = ref(0);
 let average02 = ref(1);
 
 let checkboxList = ref([]);
-let weekList = ref(["周一", "周二", "周三", "周四", "周五", "周六", "周日"]);
+let weekList = ref([
+  i18n("cron.monday"),
+  i18n("cron.tuesday"),
+  i18n("cron.wednesday"),
+  i18n("cron.thursday"),
+  i18n("cron.friday"),
+  i18n("cron.saturday"),
+  i18n("cron.sunday")
+]);
 
 // 计算两个周期值
 const cycleTotalFun = () => {

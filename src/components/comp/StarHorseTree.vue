@@ -1,28 +1,15 @@
-<script setup lang="ts">
-import {
-  computed,
-  ModelRef,
-  nextTick,
-  onMounted,
-  PropType,
-  reactive,
-  ref,
-  unref,
-} from "vue";
-import SubSystemMenu from "@/components/menu/SubSystemMenu.vue";
-import { useGlobalConfigStore } from "@/store/GlobalConfig";
-import piniaInstance from "@/store";
-import { PageProps } from "@/components/types/PageProps";
-import { ApiUrls } from "@/components/types/ApiUrls";
-import { warning } from "@/utils/message";
-import { SearchParams } from "@/components/types/Params";
-import { OrderByInfo } from "@/components/types/PageFieldInfo";
+<script setup lang="ts" name="StarHorseTree">
+import { ModelRef, PropType, ref, reactive, computed, inject, nextTick } from "vue";
+import { useGlobalConfigStore } from "@/store";
+import { piniaInstance } from "@/store";
+import { isSystemManage, createCondition } from "@/api/star_horse_utils";
 import { postRequest } from "@/api/star_horse_apis";
-import { closeLoad, createCondition } from "@/api/star_horse_utils";
-import { isSystemManage } from "@/utils/auth";
-import { Config } from "@/api/settings";
-import Help from "@/components/help.vue";
+import { error, warning } from "@/utils/message";
+import { SearchParams, OrderByInfo, PageProps } from "@/components/types/Params";
+import { ApiUrls } from "@/components/types/ApiUrls";
 import { compKey } from "@/api/system";
+import { Config } from "@/api/settings";
+import { i18n } from "@/lang";
 
 const props = defineProps({
   preps: {
@@ -37,7 +24,7 @@ const props = defineProps({
   },
   helpMsg: { type: String },
   showCollapse: { type: Boolean, default: false },
-  treeTitle: { type: String, default: "树形菜单" },
+  treeTitle: { type: String, default: () => i18n("comp.treeMenu") },
   expand: { type: Boolean, default: false },
   height: { type: Number, default: 600 },
   //是否显示复选框
@@ -60,10 +47,10 @@ const props = defineProps({
   //接口地址
   compUrl: { type: Object as PropType<ApiUrls> },
   //按钮名称
-  btnTitle: { type: String, default: "添加数据" },
+  btnTitle: { type: String, default: () => i18n("comp.addData") },
   //按钮是否可见
   btnVisible: { type: Boolean, default: false },
-  rmvTitle: { type: String, default: "删除数据" },
+  rmvTitle: { type: String, default: () => i18n("comp.deleteData") },
   rmvVisible: { type: Boolean, default: false },
   //是否显示下拉按钮
   showDropdown: { type: Boolean, default: true },
@@ -315,7 +302,7 @@ defineExpose({
         :size="compSize"
         clearable
         :style="{ 'margin-right': showDropdown ? 'unset' : '10px' }"
-        placeholder="请输入关键字"
+        :placeholder="i18n('ui.pleaseInputKeyword')"
         @input="onQueryChanged"
       >
         <template #append>
@@ -340,10 +327,10 @@ defineExpose({
         <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item v-if="btnVisible" command="add"
-              >添加数据
+              >{{ i18n("ui.addData") }}
             </el-dropdown-item>
-            <el-dropdown-item command="expand">展开全部</el-dropdown-item>
-            <el-dropdown-item command="collapse">折叠全部</el-dropdown-item>
+            <el-dropdown-item command="expand">{{ i18n("ui.expandAll") }}</el-dropdown-item>
+            <el-dropdown-item command="collapse">{{ i18n("ui.collapseAll") }}</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
@@ -435,7 +422,7 @@ defineExpose({
           icon="refresh"
           :size="compSize"
           @click="loadByPage"
-          title="刷新"
+          :title="i18n('ui.refresh')"
         />
       </el-pagination>
     </div>

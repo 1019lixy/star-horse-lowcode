@@ -590,14 +590,14 @@ onMounted(() => {
 </script>
 <template>
   <div class="popup-result">
-    <p class="title">最近5次运行时间</p>
+    <p class="title">{{ i18n("cron.recentRuns") }}</p>
     <div class="popup-result-scroll">
       <template v-if="isShow">
         <el-tag class="my-[5px]" v-for="item in resultList" :key="item"
           >{{ item }}
         </el-tag>
       </template>
-      <el-tag v-else>计算结果中...</el-tag>
+      <el-tag v-else>{{ i18n("cron.calculating") }}</el-tag>
     </div>
   </div>
 </template>

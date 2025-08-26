@@ -21,7 +21,7 @@
           :indeterminate="indeterminate"
           @change="handleCheckAll"
         >
-          全部
+          {{ i18n("common.selectAll") }}
         </el-checkbox>
       </template>
       <template
@@ -43,7 +43,7 @@
             <el-input
               v-model="optionName"
               class="option-input flex-1"
-              placeholder="请输入选项名称"
+              :placeholder="i18n('form.enterOptionName')"
               size="small"
             />
             <div class="flex-row flex justify-center w-[35%] mx-auto my-0">
@@ -53,10 +53,10 @@
                 size="small"
                 @click="onConfirm"
               >
-                添加
+                {{ i18n("form.add") }}
               </el-button>
               <el-button size="small" icon="cancel" @click="clear"
-                >取消</el-button
+                >{{ i18n("form.cancel") }}</el-button
               >
             </div>
           </div>
@@ -82,6 +82,8 @@ import { ItemPreps } from "@/components/types/ItemPreps";
 import { SearchParams } from "@/components/types/Params";
 import { warning } from "@/utils/message";
 import { nextTick, onMounted, ref, watch } from "vue";
+import { i18n } from "@/lang";
+
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
   disabled: false,

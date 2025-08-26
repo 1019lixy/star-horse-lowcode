@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, onMounted, PropType, ref, watch } from "vue";
-import { tableAction } from "@/components/formcomp/container/dytableUtils";
-import { StarHorseDialog } from "@/components/comp";
+import { computed, onMounted, ref, watch } from "vue";
+import { tableAction } from "@/components/formcomp/utils/tableAction";
+import { i18n } from "@/lang";
 
 const props = defineProps({
   parentField: { type: Object as PropType<any> },
@@ -93,7 +93,7 @@ watch(
 
 <template>
   <star-horse-dialog
-    title="操作"
+    :title="i18n('ui.operation')"
     :self-func="true"
     :hide-full-screen-icon="true"
     @merge="submitAction"
@@ -101,7 +101,7 @@ watch(
     :dialog-visible="configDialog"
     box-width="40%"
   >
-    待涉及业务时添加
+    {{ i18n("common.toBeAdded") }}
   </star-horse-dialog>
   <el-dropdown
     trigger="click"
@@ -112,51 +112,51 @@ watch(
     <star-horse-icon icon-class="menu" style="color: var(--star-horse-white)" />
     <template #dropdown>
       <el-dropdown-menu>
-        <el-dropdown-item command="insertLeftCol">左边插入列 </el-dropdown-item>
+        <el-dropdown-item command="insertLeftCol">{{ i18n("ui.insertLeftCol") }}</el-dropdown-item>
         <el-dropdown-item command="insertRightCol"
-          >右边插入列
+          >{{ i18n("ui.insertRightCol") }}
         </el-dropdown-item>
         <el-dropdown-item command="insertAboveRow"
-          >插入上方行
+          >{{ i18n("ui.insertAboveRow") }}
         </el-dropdown-item>
         <el-dropdown-item command="insertBelowRow"
-          >插入下方行
+          >{{ i18n("ui.insertBelowRow") }}
         </el-dropdown-item>
 
         <el-dropdown-item
           command="mergeLeftCol"
           :disabled="buttonControl.mergeLeftColDisabled"
           divided
-          >合并左边单元格
+          >{{ i18n("ui.mergeLeftCell") }}
         </el-dropdown-item>
         <el-dropdown-item
           command="mergeRightCol"
           :disabled="buttonControl.mergeRightColDisabled"
-          >合并右单元格
+          >{{ i18n("ui.mergeRightCell") }}
         </el-dropdown-item>
         <el-dropdown-item
           command="mergeWholeRow"
           :disabled="buttonControl.mergeWholeRowDisabled"
-          >合并整行
+          >{{ i18n("ui.mergeWholeRow") }}
         </el-dropdown-item>
         <el-dropdown-item
           command="mergeAboveRow"
           v-if="type != 'box'"
           :disabled="buttonControl.mergeAboveRowDisabled"
           divided
-          >合并上边单元格
+          >{{ i18n("ui.mergeAboveCell") }}
         </el-dropdown-item>
         <el-dropdown-item
           command="mergeBelowRow"
           v-if="type != 'box'"
           :disabled="buttonControl.mergeBelowRowDisabled"
-          >合并下边单元格
+          >{{ i18n("ui.mergeBelowCell") }}
         </el-dropdown-item>
         <el-dropdown-item
           command="mergeWholeCol"
           v-if="type != 'box'"
           :disabled="buttonControl.mergeWholeColDisabled"
-          >合并整列
+          >{{ i18n("ui.mergeWholeCol") }}
         </el-dropdown-item>
 
         <el-dropdown-item
@@ -164,71 +164,71 @@ watch(
           v-if="type != 'box'"
           :disabled="buttonControl.undoMergeRowDisabled"
           divided
-          >撤销行合并
+          >{{ i18n("ui.undoMergeRow") }}
         </el-dropdown-item>
         <el-dropdown-item
           command="undoMergeCol"
           :disabled="buttonControl.undoMergeColDisabled"
-          >撤销列合并
+          >{{ i18n("ui.undoMergeCol") }}
         </el-dropdown-item>
         <el-dropdown-item
           command="moveRowUp"
           :disabled="buttonControl.moveRowUpDisabled"
           divided
-          >上移一行
+          >{{ i18n("ui.moveRowUp") }}
         </el-dropdown-item>
         <el-dropdown-item
           command="moveRowDown"
           :disabled="buttonControl.moveRowDownDisabled"
-          >下移一行
+          >{{ i18n("ui.moveRowDown") }}
         </el-dropdown-item>
         <el-dropdown-item
           command="moveColLeft"
           :disabled="buttonControl.moveColLeftDisabled"
-          >左移一列
+          >{{ i18n("ui.moveColLeft") }}
         </el-dropdown-item>
         <el-dropdown-item
           command="moveColRight"
           :disabled="buttonControl.moveColRightDisabled"
-          >右移一列
+          >{{ i18n("ui.moveColRight") }}
         </el-dropdown-item>
         <el-dropdown-item
           command="moveRowUpFirst"
           :disabled="buttonControl.moveRowUpFirstDisabled"
-          >上移到最上面
+          >{{ i18n("ui.moveRowUpFirst") }}
         </el-dropdown-item>
         <el-dropdown-item
           command="moveRowDownLast"
           :disabled="buttonControl.moveRowDownLastDisabled"
-          >下移到最下面
+          >{{ i18n("ui.moveRowDownLast") }}
         </el-dropdown-item>
         <el-dropdown-item
           command="moveColLeftFirst"
           :disabled="buttonControl.moveColLeftFirstDisabled"
-          >左移到最左边
+          >{{ i18n("ui.moveColLeftFirst") }}
         </el-dropdown-item>
         <el-dropdown-item
           command="moveColRightLast"
           :disabled="buttonControl.moveColRightLastDisabled"
-          >右移到最右边
+          >{{ i18n("ui.moveColRightLast") }}
         </el-dropdown-item>
         <el-dropdown-item
           command="deleteWholeCol"
           v-if="type != 'box'"
           :disabled="buttonControl.deleteWholeColDisabled"
           divided
-          >删除整列
+          >{{ i18n("ui.deleteWholeCol") }}
         </el-dropdown-item>
         <el-dropdown-item
           command="deleteWholeRow"
           :disabled="buttonControl.deleteWholeRowDisabled"
-          >删除整行
+          >{{ i18n("ui.deleteWholeRow") }}
         </el-dropdown-item>
         <el-dropdown-item command="colConfig" divided>
-          列设置
+          {{ i18n("ui.colConfig") }}
         </el-dropdown-item>
-        <el-dropdown-item command="rowConfig"> 行设置 </el-dropdown-item>
-        <el-dropdown-item command="cellConfig"> 单元格设置 </el-dropdown-item>
+        <el-dropdown-item command="rowConfig"> {{ i18n("ui.rowConfig") }} </el-dropdown-item>
+        <el-dropdown-item command="cellConfig"> {{ i18n("ui.cellConfig") }} </el-dropdown-item>
       </el-dropdown-menu>
     </template>
   </el-dropdown>

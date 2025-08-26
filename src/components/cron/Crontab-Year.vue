@@ -2,26 +2,26 @@
   <div class="cron-content">
     <div class="cron-item">
       <el-radio size="small" :label="1" v-model="radioValue" border>
-        不填，允许的通配符[, - * /]
+        {{ i18n("cron.fillIn") }}{{ i18n("cron.wildcards") }}
       </el-radio>
     </div>
     <div class="cron-item">
       <el-radio size="small" :label="2" v-model="radioValue" border>
-        每年
+        {{ i18n("cron.everyYear") }}
       </el-radio>
     </div>
     <div class="cron-item">
-      <el-radio size="small" :label="3" v-model="radioValue" border
-        >周期
+      <el-radio size="small" :label="3" v-model="radioValue" border>
+        {{ i18n("cron.period") }}
       </el-radio>
-      <span style="margin-left: 10px; margin-right: 5px">从</span>
+      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.from") }}</span>
       <el-input-number
         size="small"
         v-model="cycle01"
         :min="fullYear"
         controls-position="right"
       />
-      <span style="margin-left: 10px; margin-right: 5px">至</span>
+      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.to") }}</span>
       <el-input-number
         size="small"
         v-model="cycle02"
@@ -30,28 +30,28 @@
       />
     </div>
     <div class="cron-item">
-      <el-radio size="small" :label="4" v-model="radioValue" border
-        >循环
+      <el-radio size="small" :label="4" v-model="radioValue" border>
+        {{ i18n("cron.loop") }}
       </el-radio>
-      <span style="margin-left: 10px; margin-right: 5px">从</span>
+      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.from") }}</span>
       <el-input-number
         size="small"
         v-model="average01"
         :min="fullYear"
         controls-position="right"
       />
-      <span style="margin-left: 10px; margin-right: 5px">年开始，每</span>
+      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.year") }}{{ i18n("cron.start") }}，{{ i18n("cron.every") }}</span>
       <el-input-number
         size="small"
         v-model="average02"
         :min="fullYear"
         controls-position="right"
       />
-      <span style="margin-left: 10px; margin-right: 5px">年执行一次</span>
+      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.year") }}{{ i18n("cron.executeOnce") }}</span>
     </div>
     <div class="cron-item">
       <el-radio size="small" :label="5" v-model="radioValue" border>
-        指定
+        {{ i18n("cron.specify") }}
       </el-radio>
       <el-checkbox-group size="small" v-model="checkboxList">
         <el-checkbox
@@ -69,6 +69,7 @@
 <style lang="scss" scoped></style>
 <script lang="ts" setup name="crontab-year">
 import { computed, onMounted, ref, watch } from "vue";
+import { i18n } from "@/lang";
 
 const props = defineProps({
   check: { type: Function },

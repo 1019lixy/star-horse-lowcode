@@ -2,19 +2,19 @@
   <div class="cron-content">
     <div class="cron-item">
       <el-radio size="small" v-model="radioValue" :label="1" border>
-        日，允许的通配符[, - * / L M]
+        {{ i18n("cron.day") }}{{ i18n("cron.wildcardsWithL") }}
       </el-radio>
     </div>
     <div class="cron-item">
       <el-radio size="small" v-model="radioValue" :label="2" border>
-        不指定
+        {{ i18n("cron.notSpecified") }}
       </el-radio>
     </div>
     <div class="cron-item">
       <el-radio size="small" v-model="radioValue" :label="3" border>
-        周期
+        {{ i18n("cron.period") }}
       </el-radio>
-      <span style="margin-left: 10px; margin-right: 5px">从</span>
+      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.from") }}</span>
       <el-input-number
         size="small"
         v-model="cycle01"
@@ -22,7 +22,7 @@
         :max="31"
         controls-position="right"
       />
-      <span style="margin-left: 10px; margin-right: 5px">至</span>
+      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.to") }}</span>
       <el-input-number
         size="small"
         v-model="cycle02"
@@ -30,13 +30,13 @@
         :max="31"
         controls-position="right"
       />
-      <span style="margin-left: 10px; margin-right: 5px">日</span>
+      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.day") }}</span>
     </div>
     <div class="cron-item">
-      <el-radio size="small" v-model="radioValue" :label="4" border
-        >循环
+      <el-radio size="small" v-model="radioValue" :label="4" border>
+        {{ i18n("cron.loop") }}
       </el-radio>
-      <span style="margin-left: 10px; margin-right: 5px">从</span>
+      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.from") }}</span>
       <el-input-number
         size="small"
         v-model="average01"
@@ -44,7 +44,7 @@
         :max="31"
         controls-position="right"
       />
-      <span style="margin-left: 10px; margin-right: 5px">号开始，每</span>
+      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.day") }}{{ i18n("cron.start") }}，{{ i18n("cron.every") }}</span>
       <el-input-number
         size="small"
         v-model="average02"
@@ -52,13 +52,13 @@
         :max="31"
         controls-position="right"
       />
-      <span style="margin-left: 10px; margin-right: 5px">日执行一次</span>
+      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.day") }}{{ i18n("cron.executeOnce") }}</span>
     </div>
     <div class="cron-item">
-      <el-radio size="small" v-model="radioValue" :label="5" border
-        >工作日
+      <el-radio size="small" v-model="radioValue" :label="5" border>
+        {{ i18n("cron.workDay") }}
       </el-radio>
-      <span style="margin-left: 10px; margin-right: 5px">每月</span>
+      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.every") }}</span>
       <el-input-number
         size="small"
         v-model="workday"
@@ -66,18 +66,16 @@
         :max="31"
         controls-position="right"
       />
-      <span style="margin-left: 10px; margin-right: 5px"
-        >号最近的那个工作日</span
-      >
+      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.day") }}{{ i18n("cron.nearestWorkDay") }}</span>
     </div>
     <div class="cron-item">
       <el-radio size="small" v-model="radioValue" :label="6" border>
-        本月最后一天
+        {{ i18n("cron.lastDayOfMonth") }}
       </el-radio>
     </div>
     <div class="cron-item">
       <el-radio size="small" v-model="radioValue" :label="7" border>
-        指定
+        {{ i18n("cron.specify") }}
       </el-radio>
       <el-checkbox-group size="small" v-model="checkboxList">
         <el-checkbox
@@ -95,6 +93,7 @@
 <style lang="scss" scoped></style>
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
+import { i18n } from "@/lang";
 
 defineOptions({
   name: "crontab-day",

@@ -1,5 +1,6 @@
 import { getValidType } from "@/api/valid_utils";
 import { unref } from "vue";
+import { i18n } from "@/lang";
 
 /**
  * 解析动态表单中的子节点数据是否需要合并到父节点中
@@ -42,7 +43,7 @@ export function validMsg(item: any, dataForm: any) {
   if (item.required && !item.disabled) {
     rules.push({
       required: true,
-      message: `${item.label}不能为空`,
+      message: `${item.label}${i18n("api.cannotBeEmpty")}`,
       trigger: "blur",
     });
   }
@@ -51,7 +52,7 @@ export function validMsg(item: any, dataForm: any) {
     const escapedSplit = splitName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     rules.push({
       pattern: new RegExp(`^\\d+${escapedSplit}\\d+$`),
-      message: '格式应为"最小值-最大值"（如：2-3）',
+      message: i18n("api.numberRangeFormat"),
       trigger: "blur",
     });
     rules.push({
@@ -67,7 +68,7 @@ export function validMsg(item: any, dataForm: any) {
           return;
         }
         if (maxValue < minValue) {
-          callback(new Error("最大值不能小于最小值"));
+          callback(new Error(i18n("api.maxValueCannotBeLessThanMinValue")));
         } else {
           callback();
         }

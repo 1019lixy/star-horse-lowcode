@@ -25,14 +25,14 @@
       </template>
       <template v-if="field.preps?.showFooter" #footer>
         <el-button v-if="!isAdding" text bg size="small" @click="onAddOption">
-          添加选项
+          {{ i18n("form.addComponentOption") }}
         </el-button>
         <template v-else>
           <div class="flex-row flex w-full justify-between">
             <el-input
               v-model="optionName"
               class="option-input flex-1"
-              placeholder="请输入选项名称"
+              :placeholder="i18n('form.enterOptionName')"
               size="small"
             />
             <div class="flex-row flex justify-center w-[35%] mx-auto my-0">
@@ -42,10 +42,10 @@
                 size="small"
                 @click="onConfirm"
               >
-                添加
+                {{ i18n("form.add") }}
               </el-button>
               <el-button size="small" icon="cancel" @click="clear"
-                >取消</el-button
+                >{{ i18n("form.cancel") }}</el-button
               >
             </div>
           </div>
@@ -65,6 +65,7 @@ import {
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { getDynamicEvents } from "@/api/system";
 import { warning } from "@/utils/message";
+import { i18n } from "@/lang";
 
 import { ItemPreps } from "@/components/types/ItemPreps";
 const props = withDefaults(defineProps<ItemPreps>(), {

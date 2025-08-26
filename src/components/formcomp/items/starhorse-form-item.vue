@@ -1,14 +1,6 @@
-<script setup lang="ts" name="starhorse-form-item">
-import {
-  computed,
-  onMounted,
-  ref,
-  nextTick,
-  onBeforeUnmount,
-  shallowRef,
-} from "vue";
-import { useDesignFormStore } from "@/store/DesignForm";
-import piniaInstance from "@/store/index";
+<script setup lang="ts" name="StarHorseFormItem">
+import { computed, getCurrentInstance, nextTick, onMounted, ref, watch } from "vue";
+import { i18n } from "@/lang";
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import FieldList from "@/components/formcomp/utils/FieldList.vue";
 import {
@@ -18,7 +10,6 @@ import {
   moveUpItem,
   removeItem,
 } from "@/plugins/AblesPlugin";
-import { i18n } from "@/lang";
 import { ItemPreps } from "@/components/types/ItemPreps";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
@@ -117,16 +108,16 @@ onMounted(() => {});
 <template>
   <star-horse-dialog
     box-width="450px"
-    box-height="60%"
+    :is-view="true"
     :source="3"
     :full-screen="false"
-    title="更换组件"
+    :title="i18n('form.changeComponent')"
     :self-func="true"
     :dialog-visible="componentVisible"
     @closeAction="close"
   >
     <template #footer>
-      <el-button type="primary" size="default" @click="close">确定</el-button>
+      <el-button type="primary" size="default" @click="close">{{ i18n("form.confirm") }}</el-button>
     </template>
     <field-list @selectData="changeItem" />
   </star-horse-dialog>
@@ -194,7 +185,7 @@ onMounted(() => {});
         class="field-action"
         v-if="isEdit && !disabled && currentItemId == field?.preps?.id"
       >
-        <el-tooltip content="选择父容器" v-if="parentField?.itemType">
+        <el-tooltip :content="i18n('form.selectParentContainer')" v-if="parentField?.itemType">
           <star-horse-icon
             @click.stop="selectParentContainer()"
             icon-class="select-parent"
@@ -202,7 +193,7 @@ onMounted(() => {});
             style="color: var(--star-horse-white)"
           />
         </el-tooltip>
-        <el-tooltip content="更换组件">
+        <el-tooltip :content="i18n('form.changeComponent')">
           <star-horse-icon
             @click.stop="exchangeItem"
             icon-class="exchange"
@@ -210,7 +201,7 @@ onMounted(() => {});
             style="color: var(--star-horse-white)"
           />
         </el-tooltip>
-        <el-tooltip content="上移" v-if="parentField?.itemType != 'table'">
+        <el-tooltip :content="i18n('form.moveUp')">
           <star-horse-icon
             @click.stop="moveUpItem(isEdit, field?.preps, parentField)"
             icon-class="move-up"
@@ -218,7 +209,7 @@ onMounted(() => {});
             style="color: var(--star-horse-white)"
           />
         </el-tooltip>
-        <el-tooltip content="下移" v-if="parentField?.itemType != 'table'">
+        <el-tooltip :content="i18n('form.moveDown')">
           <star-horse-icon
             @click.stop="moveDownItem(isEdit, field?.preps, parentField)"
             icon-class="move-down"
@@ -226,7 +217,7 @@ onMounted(() => {});
             style="color: var(--star-horse-white)"
           />
         </el-tooltip>
-        <el-tooltip content="删除组件">
+        <el-tooltip :content="i18n('form.deleteComponent')">
           <star-horse-icon
             @click.stop="removeItem(isEdit, field?.preps, parentField)"
             icon-class="clear-all"
@@ -239,7 +230,7 @@ onMounted(() => {});
         class="drag-handler"
         v-if="isEdit && currentItemId == field?.preps?.id"
       >
-        <el-tooltip content="拖动">
+        <el-tooltip :content="i18n('form.drag')">
           <star-horse-icon
             icon-class="drag"
             style="cursor: move; color: var(--star-horse-white)"

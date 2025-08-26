@@ -1,48 +1,18 @@
-<script lang="ts" setup name="StarHorseTableComp">
-import { Config } from "@/api/settings";
-import { download, postRequest } from "@/api/star_horse_apis";
-import {
-  closeLoad,
-  createCondition,
-  deleteByIds,
-  isJson,
-  load,
-  loadData,
-} from "@/api/star_horse_utils";
-import { compKey, removeEmptyCondition, uuid } from "@/api/system";
-import Tablebtn from "@/components/comp/items/tablebtn.vue";
-import TableColumn from "@/components/comp/items/tableColumn.vue";
-import Help from "@/components/help.vue";
-import { ApiUrls } from "@/components/types/ApiUrls";
-import { PreValid } from "@/components/types/BtnAuth";
-import { DialogProps } from "@/components/types/DialogProps";
-import {
-  ExpandTable,
-  FieldInfo,
-  OrderByInfo,
-  PageFieldInfo,
-  UserFuncInfo,
-} from "@/components/types/PageFieldInfo";
-import { PageProps } from "@/components/types/PageProps";
-import { BtnHideCondition, SearchParams } from "@/components/types/Params";
-import piniaInstance from "@/store";
-import { useButtonPermissionStore } from "@/store/ButtonPermission";
-import { useDynamicFormStore } from "@/store/DynamicForm";
-import { useGlobalConfigStore } from "@/store/GlobalConfig";
-import { isSystemManage } from "@/utils/auth";
-import { error, warning } from "@/utils/message";
-import { analysisFields } from "@/utils/preview";
+<script setup lang="ts" name="StarHorseTableComp">
 import Sortable from "sortablejs";
+import { ElMessage, ElMessageBox } from "element-plus";
 import { i18n } from "@/lang";
 import {
-  computed,
   inject,
+  ModelRef,
+  nextTick,
   onMounted,
   PropType,
   reactive,
   ref,
-  unref,
+  ShallowReactive,
   watch,
+  computed,
 } from "vue";
 
 const dynamicForm = useDynamicFormStore(piniaInstance);
@@ -850,7 +820,7 @@ defineExpose({
     :dialogVisible="exportOperationVisible"
     @closeAction="exportOperationVisible = false"
   >
-    功能开发中，现在点击提交按钮导出所有数据
+    {{ i18n("comp.underDevelopment") }}
   </star-horse-dialog>
   <div class="star-horse-table">
     <div
@@ -881,7 +851,7 @@ defineExpose({
       </div>
       <div class="flex items-center flex-row-reverse">
         <star-horse-icon
-          title="刷新"
+          :title="i18n('comp.refresh')"
           @click="loadByPage"
           icon-class="refresh"
           style="cursor: pointer; color: var(--star-horse-style)"
@@ -895,7 +865,7 @@ defineExpose({
           <template #reference>
             <star-horse-icon
               @click="fieldVisible = !fieldVisible"
-              title="显示/隐藏列"
+              :title="i18n('comp.showHideColumns')"
               icon-class="setting"
               style="color: var(--star-horse-style); cursor: pointer"
             />
@@ -913,7 +883,7 @@ defineExpose({
             :size="compSize"
             border
           >
-            <el-table-column prop="" label="排序" width="60">
+            <el-table-column prop="" :label="i18n('comp.sort')" width="60">
               <el-tag class="move" style="cursor: move">
                 <el-icon style="cursor: move">
                   <Sort />
@@ -922,7 +892,7 @@ defineExpose({
             </el-table-column>
             <el-table-column
               prop="label"
-              label="列名"
+              :label="i18n('comp.columnName')"
               :show-overflow-tooltip="true"
             >
               <template #default="scope">
@@ -935,7 +905,7 @@ defineExpose({
                 </el-tag>
               </template>
             </el-table-column>
-            <el-table-column prop="listVisible" label="显示/隐藏" width="100">
+            <el-table-column prop="listVisible" :label="i18n('comp.showHide')" width="100">
               <template #default="scope">
                 <el-switch
                   v-model="scope.row.listVisible"

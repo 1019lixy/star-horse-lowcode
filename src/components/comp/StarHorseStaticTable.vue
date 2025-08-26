@@ -1,10 +1,15 @@
-<script lang="ts" setup name="StarHorseStaticTable">
-import { onMounted, PropType, reactive, ref, unref } from "vue";
-import { commonParseCodeToName } from "@/api/star_horse_utils";
-import Sortable from "sortablejs";
-import { warning } from "@/utils/message";
-import { Config } from "@/api/settings";
+<script setup lang="ts" name="StarHorseStaticTable">
+import { ModelRef, PropType, ref, reactive, inject, nextTick } from "vue";
+import { useGlobalConfigStore } from "@/store";
+import { piniaInstance } from "@/store";
+import { isSystemManage, createCondition } from "@/api/star_horse_utils";
+import { postRequest } from "@/api/star_horse_apis";
+import { error, warning } from "@/utils/message";
+import { SearchParams, OrderByInfo, PageProps } from "@/components/types/Params";
+import { ApiUrls } from "@/components/types/ApiUrls";
 import { compKey } from "@/api/system";
+import { Config } from "@/api/settings";
+import { i18n } from "@/lang";
 
 const props = defineProps({
   //主键
@@ -233,7 +238,7 @@ defineExpose({
         >
           <template #reference>
             <el-icon class="star-page-icon" style="cursor: pointer">
-              <el-tooltip content="显示/隐藏列">
+              <el-tooltip :content="i18n('comp.showHideColumns')">
                 <Tools />
               </el-tooltip>
             </el-icon>
@@ -251,7 +256,7 @@ defineExpose({
             :size="compSize"
             border
           >
-            <el-table-column prop="" label="排序" width="60">
+            <el-table-column prop="" :label="i18n('comp.sort')" width="60">
               <el-tag class="move" style="cursor: move" :size="compSize">
                 <el-icon style="cursor: move">
                   <Sort />
@@ -260,7 +265,7 @@ defineExpose({
             </el-table-column>
             <el-table-column
               prop="label"
-              label="列名"
+              :label="i18n('comp.columnName')"
               :show-overflow-tooltip="true"
             >
               <template #default="scope">
@@ -272,7 +277,7 @@ defineExpose({
                 </el-tag>
               </template>
             </el-table-column>
-            <el-table-column prop="listVisible" label="显示/隐藏" width="100">
+            <el-table-column prop="listVisible" :label="i18n('comp.showHide')" width="100">
               <template #default="scope">
                 <el-switch
                   v-model="scope.row.listVisible"

@@ -4,6 +4,7 @@ import { FieldInfo } from "@/components/types/PageFieldInfo";
 import { rowClassName } from "@/api/star_horse_utils";
 import { Config } from "@/api/settings";
 import { compKey } from "@/api/system";
+import { i18n } from "@/lang";
 
 defineProps({
   item: { type: Array as PropType<Array<FieldInfo> | any>, required: true },
@@ -47,7 +48,7 @@ const dataForm: ModelRef<any> = defineModel("dataForm");
         '-webkit-gradient(linear,left 0,left 100%,from(#f8f8f8),to(#ececec))',
     }"
   >
-    <el-table-column label="序号" fixed align="center" prop="xh" width="60" />
+    <el-table-column :label="i18n('comp.serialNumber')" fixed align="center" prop="xh" width="60" />
     <template
       v-for="(aitem, index) in item?.fieldList"
       :key="compKey(aitem, index)"

@@ -7,6 +7,7 @@ import { error, success } from "@/utils/message";
 import { useDark, useToggle } from "@vueuse/core";
 import { v4 as uuidv4 } from "uuid";
 import { computed, Ref, ref, unref } from "vue";
+import { i18n } from "@/lang";
 
 /**
  * UUID
@@ -18,9 +19,9 @@ export function uuid() {
 export async function copyText(text: any) {
   try {
     await navigator.clipboard.writeText(text);
-    success("复制成功");
+    success(i18n("api.copySuccess"));
   } catch (err) {
-    error("复制失败:" + err);
+    error(i18n("api.copyFailed") + err);
   }
 }
 
@@ -156,29 +157,29 @@ export function fieldPlaceholder(item: any, itemType: string) {
   item.preps["readonly"] = item?.readonly || item.preps["readonly"] || false;
   if (inputType.includes(itemType)) {
     item.preps["placeholder"] =
-      item.preps["placeholder"]?.trim() || "请输入" + item.label;
+      item.preps["placeholder"]?.trim() || i18n("api.pleaseInput") + item.label;
   } else if (selectType.includes(itemType)) {
     item.preps["filterable"] = true;
     item.preps["collapseTags"] = true;
     item.preps["collapseTagsTooltip"] = true;
     item.preps["placeholder"] =
-      item.preps["placeholder"]?.trim() || "请选择" + item.label;
+      item.preps["placeholder"]?.trim() || i18n("api.pleaseSelect") + item.label;
   }
   if (itemType == "datetime") {
     if (item?.type?.includes("range")) {
       item.preps["startPlaceholder"] =
-        item.preps["startPlaceholder"]?.trim() || "请选择开始日期";
+        item.preps["startPlaceholder"]?.trim() || i18n("api.pleaseSelectStartDate");
       item.preps["endPlaceholder"] =
-        item.preps["endPlaceholder"]?.trim() || "请选择结束日期";
+        item.preps["endPlaceholder"]?.trim() || i18n("api.pleaseSelectEndDate");
     } else {
       item.preps["placeholder"] =
-        item.preps["placeholder"]?.trim() || "请选择" + item.label;
+        item.preps["placeholder"]?.trim() || i18n("api.pleaseSelect") + item.label;
     }
   } else if (itemType == "number-range") {
     item.preps["minPlaceholder"] =
-      item.preps["minPlaceholder"]?.trim() || "请输入最小值";
+      item.preps["minPlaceholder"]?.trim() || i18n("api.pleaseInputMinValue");
     item.preps["maxPlaceholder"] =
-      item.preps["maxPlaceholder"]?.trim() || "请输入最大值";
+      item.preps["maxPlaceholder"]?.trim() || i18n("api.pleaseInputMaxValue");
   }
   if (item.preps["noPlaceholder"]) {
     delete item.preps["placeholder"];

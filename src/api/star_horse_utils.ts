@@ -25,6 +25,7 @@ import { ApiUrls } from "@/components/types/ApiUrls";
 import { DialogProps } from "@/components/types/DialogProps";
 import { createDatetime } from "@/api/date_utils";
 import { ServiceEnums } from "@/components/enums/ServiceEnums";
+import { i18n } from "@/lang";
 
 let loading: any = null;
 
@@ -188,10 +189,10 @@ export function commonParseCodeToName(name: string, cellValue: any) {
     return "-";
   }
   if (name == "isDel" || name.includes("&isDel")) {
-    return cellValue == 1 ? "是" : "否";
+    return cellValue == 1 ? i18n("api.yes") : i18n("api.no");
   }
   if (name == "state" || name.includes("&state")) {
-    return cellValue == 1 ? "正常" : "异常";
+    return cellValue == 1 ? i18n("api.normal") : i18n("api.abnormal");
   }
   const preps: Array<string> = [
     "createdTime",

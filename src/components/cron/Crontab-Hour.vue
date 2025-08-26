@@ -2,14 +2,14 @@
   <div class="cron-content">
     <div class="cron-item">
       <el-radio size="small" v-model="radioValue" :label="1" border>
-        小时，允许的通配符[, - * /]
+        {{ i18n("cron.hour") }}{{ i18n("cron.wildcards") }}
       </el-radio>
     </div>
     <div class="cron-item">
       <el-radio size="small" v-model="radioValue" :label="2" border>
-        周期
+        {{ i18n("cron.period") }}
       </el-radio>
-      <span style="margin-left: 10px; margin-right: 5px">从</span>
+      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.from") }}</span>
       <el-input-number
         size="small"
         v-model="cycle01"
@@ -17,7 +17,7 @@
         :max="60"
         controls-position="right"
       />
-      <span style="margin-left: 10px; margin-right: 5px">至</span>
+      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.to") }}</span>
       <el-input-number
         size="small"
         v-model="cycle02"
@@ -25,13 +25,13 @@
         :max="60"
         controls-position="right"
       />
-      <span style="margin-left: 10px; margin-right: 5px">小时</span>
+      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.hour") }}</span>
     </div>
     <div class="cron-item">
-      <el-radio size="small" v-model="radioValue" :label="3" border
-        >循环
+      <el-radio size="small" v-model="radioValue" :label="3" border>
+        {{ i18n("cron.loop") }}
       </el-radio>
-      <span style="margin-left: 10px; margin-right: 5px">从</span>
+      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.from") }}</span>
       <el-input-number
         size="small"
         v-model="average01"
@@ -39,7 +39,7 @@
         :max="60"
         controls-position="right"
       />
-      <span style="margin-left: 10px; margin-right: 5px">小时开始，每</span>
+      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.hour") }}{{ i18n("cron.start") }}，{{ i18n("cron.every") }}</span>
       <el-input-number
         size="small"
         v-model="average02"
@@ -47,11 +47,11 @@
         :max="60"
         controls-position="right"
       />
-      <span style="margin-left: 10px; margin-right: 5px">小时执行一次</span>
+      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.hour") }}{{ i18n("cron.executeOnce") }}</span>
     </div>
     <div class="cron-item">
       <el-radio size="small" v-model="radioValue" :label="4" border>
-        指定
+        {{ i18n("cron.specify") }}
       </el-radio>
       <el-checkbox-group size="small" v-model="checkboxList">
         <el-checkbox
@@ -69,6 +69,7 @@
 <style lang="scss" scoped></style>
 <script lang="ts" setup name="crontab-hour">
 import { computed, ref, watch } from "vue";
+import { i18n } from "@/lang";
 
 let radioValue = ref(1);
 let cycle01 = ref(1);

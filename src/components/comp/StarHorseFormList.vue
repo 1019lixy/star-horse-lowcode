@@ -1,4 +1,7 @@
-<script lang="ts" setup name="StarHorseFormList">
+<script setup lang="ts" name="StarHorseFormList">
+import Sortable from "sortablejs";
+import { ElMessage, ElMessageBox } from "element-plus";
+import { i18n } from "@/lang";
 import {
   inject,
   ModelRef,
@@ -15,7 +18,6 @@ import { rowClassName } from "@/api/star_horse_utils";
 import { error, operationConfirm, success, warning } from "@/utils/message";
 import { download } from "@/api/star_horse_apis";
 import { getToken } from "@/utils/auth";
-import Sortable from "sortablejs";
 import Help from "@/components/help.vue";
 import { compKey, uuid } from "@/api/system";
 import UTableColumn from "@/components/comp/items/UTableColumn.vue";
@@ -322,12 +324,11 @@ watch(
           <upload-filled />
         </el-icon>
         <div class="el-upload__text">
-          拖拽文件到这里 or
-          <em>点击上传</em>
+          {{ i18n("ui.uploadText") }}
         </div>
         <template #tip>
           <div class="el-upload__tip">
-            只能上传 xls/xlsx 文件类型
+            {{ i18n("ui.uploadTip") }}
             <el-button
               @click="downloadTemplate"
               title=""
@@ -340,7 +341,7 @@ watch(
                 color="var(--star-horse-white)"
                 size="12px"
               />
-              <el-tooltip content="下载模板">下载模板</el-tooltip>
+              <el-tooltip :content="i18n('ui.downloadTemplate')">{{ i18n("ui.downloadTemplate") }}</el-tooltip>
             </el-button>
           </div>
         </template>
@@ -360,7 +361,7 @@ watch(
             v-if="importInfo?.importDataUrl && !subFlag"
             @click="excelOperation"
           >
-            <el-tooltip content="导入Excel">
+            <el-tooltip :content="i18n('ui.importExcel')">
               <star-horse-icon
                 icon-class="upload"
                 color="var(--star-horse-style)"
@@ -369,7 +370,7 @@ watch(
             </el-tooltip>
           </li>
           <li @click="clearAll">
-            <el-tooltip content="清空列表">
+            <el-tooltip :content="i18n('ui.clearList')">
               <star-horse-icon
                 icon-class="dustbin"
                 color="var(--el-color-danger)"
@@ -417,8 +418,8 @@ watch(
         align="center"
         v-if="showCheckBox"
       />
-      <el-table-column label="序号" align="center" prop="xh" width="50" />
-      <el-table-column prop="" label="排序" width="60">
+      <el-table-column :label="i18n('ui.serialNumber')" align="center" prop="xh" width="50" />
+      <el-table-column prop="" :label="i18n('ui.sort')" width="60">
         <template #default="scope">
           <el-tag
             class="move"
@@ -463,12 +464,12 @@ watch(
             icon-class="edit"
             v-if="staticColumn == 'Y'"
             @click="dynamicHandleAddForm(scope.row, 'edit')"
-            title="编辑"
+            :title="i18n('ui.edit')"
           />
           <star-horse-icon
             icon-class="delete"
             @click="handleAddDetails(scope.row, 2)"
-            title="删除当前行"
+            :title="i18n('ui.deleteRow')"
             color="#f56c6c"
           />
         </template>
@@ -476,7 +477,7 @@ watch(
     </el-table>
     <div class="add-row" v-if="source != 3" @click="handleAddDetails(null, 1)">
       <star-horse-icon icon-class="plus" color="var(--star-horse-style)" />
-      {{ staticColumn == "Y" ? "添加数据" : "加一行" }}
+      {{ staticColumn == "Y" ? i18n("ui.addData") : i18n("ui.addRow") }}
     </div>
   </div>
 </template>

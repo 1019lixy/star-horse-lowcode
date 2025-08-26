@@ -2,6 +2,7 @@
 import { useDesignFormStore } from "@/store/DesignForm";
 import piniaInstance from "@/store";
 import { computed, ComputedRef, ref } from "vue";
+import { i18n } from "@/lang";
 
 defineOptions({
   name: "FieldList",
@@ -21,14 +22,14 @@ const selectData = (item: any) => {
   <div class="component-list">
     <div class="title">
       <el-anchor type="underline" :container="containerRef" :offset="70">
-        <el-anchor-link :href="`#container`"> 容器</el-anchor-link>
-        <el-anchor-link :href="`#basic`"> 基础组件</el-anchor-link>
-        <el-anchor-link :href="`#self`"> 自定义组件</el-anchor-link>
+        <el-anchor-link :href="`#container`"> {{ i18n("form.container") }}</el-anchor-link>
+        <el-anchor-link :href="`#basic`"> {{ i18n("form.basicComponents") }}</el-anchor-link>
+        <el-anchor-link :href="`#self`"> {{ i18n("form.customComponents") }}</el-anchor-link>
       </el-anchor>
     </div>
     <div class="content" ref="containerRef">
       <el-scrollbar>
-        <el-divider content-position="left">容器</el-divider>
+        <el-divider content-position="left">{{ i18n("form.container") }}</el-divider>
         <ul id="container">
           <template v-for="item in containerList">
             <li class="field-item" @click="selectData(item)">
@@ -41,7 +42,7 @@ const selectData = (item: any) => {
             </li>
           </template>
         </ul>
-        <el-divider content-position="left">基础组件</el-divider>
+        <el-divider content-position="left">{{ i18n("form.basicComponents") }}</el-divider>
         <ul id="basic">
           <template v-for="item in formDataList">
             <li class="field-item" @click="selectData(item)">
@@ -54,7 +55,7 @@ const selectData = (item: any) => {
             </li>
           </template>
         </ul>
-        <el-divider content-position="left">自定义组件</el-divider>
+        <el-divider content-position="left">{{ i18n("form.customComponents") }}</el-divider>
         <ul id="self">
           <template v-for="item in selfFormDataList">
             <li class="field-item" @click="selectData(item)">
