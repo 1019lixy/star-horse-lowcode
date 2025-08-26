@@ -23,7 +23,9 @@ const dataFormat = (val: any) => {
       return createDatetime(val);
     }
     if (type == "switch") {
-      return val === true || val == "1" || val == "Y" ? i18n("common.yes") : i18n("common.no");
+      return val === true || val == "1" || val == "Y"
+        ? i18n("common.yes")
+        : i18n("common.no");
     }
     if (
       type == "select" ||

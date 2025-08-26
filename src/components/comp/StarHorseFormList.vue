@@ -1,6 +1,5 @@
 <script setup lang="ts" name="StarHorseFormList">
 import Sortable from "sortablejs";
-import { ElMessage, ElMessageBox } from "element-plus";
 import { i18n } from "@/lang";
 import {
   inject,
@@ -341,7 +340,9 @@ watch(
                 color="var(--star-horse-white)"
                 size="12px"
               />
-              <el-tooltip :content="i18n('ui.downloadTemplate')">{{ i18n("ui.downloadTemplate") }}</el-tooltip>
+              <el-tooltip :content="i18n('ui.downloadTemplate')">{{
+                i18n("ui.downloadTemplate")
+              }}</el-tooltip>
             </el-button>
           </div>
         </template>
@@ -418,7 +419,12 @@ watch(
         align="center"
         v-if="showCheckBox"
       />
-      <el-table-column :label="i18n('ui.serialNumber')" align="center" prop="xh" width="50" />
+      <el-table-column
+        :label="i18n('ui.serialNumber')"
+        align="center"
+        prop="xh"
+        width="50"
+      />
       <el-table-column prop="" :label="i18n('ui.sort')" width="60">
         <template #default="scope">
           <el-tag

@@ -1,11 +1,6 @@
 <template>
   {{ test }}
-  <StarHorseDataSelector
-    v-model="test"
-    :datas="datas"
-    :multiple="false"
-    :checkStrictly="false"
-  />
+  <StarHorseDataSelector v-model="test" :datas="datas" :multiple="false" :checkStrictly="false" />
 
   {{ formData }}
   <!--  <data-picker-item
@@ -30,7 +25,6 @@
 // import StarHorseJsonEditor from '@/components/comp/StarHorseJsonEditor.vue';
 import StarHorseDataSelector from "@/components/comp/StarHorseDataSelector.vue";
 import { ref } from "vue";
-import DataPickerItem from "@/components/formcomp/items/datapicker-item.vue";
 
 const formData = ref<any>({
   test: "1-2-1",

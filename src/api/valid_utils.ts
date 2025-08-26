@@ -8,7 +8,11 @@ const validTypes: any = [
     pattern:
       /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/,
   },
-  { message: i18n("api.phoneFormatIncorrect"), value: "phone", pattern: /^1[3456789]\d{9}$/ },
+  {
+    message: i18n("api.phoneFormatIncorrect"),
+    value: "phone",
+    pattern: /^1[3456789]\d{9}$/,
+  },
   {
     message: i18n("api.landlinePhoneFormatIncorrect"),
     value: "landlinePhone",
@@ -131,7 +135,10 @@ export const validRulesList: Array<SelectOption> = [
   { name: i18n("api.domain"), value: "domain" },
   { name: i18n("api.letterDigit"), value: "letterDigit" },
   { name: i18n("api.letterDigitUnderline"), value: "letterDigitUnderline" },
-  { name: i18n("api.letterDigitUnderlineHyphen"), value: "letterDigitUnderlineHyphen" },
+  {
+    name: i18n("api.letterDigitUnderlineHyphen"),
+    value: "letterDigitUnderlineHyphen",
+  },
   { name: i18n("api.dataLength"), value: "dataLength" },
   { name: i18n("api.strongPasswordRule"), value: "strongPassword" },
   { name: i18n("api.dateFormatRule"), value: "dateFormat" },

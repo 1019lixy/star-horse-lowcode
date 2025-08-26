@@ -41,7 +41,7 @@ const removeRow = (row: any) => {
     :size="size"
     @addRow="addRow"
     @removeRow="removeRow"
-    v-if="item['disVisible']?? true"
+    v-if="item['disVisible'] ?? true"
     :helpMsg="item['helpMsg']"
     :staticColumn="item.staticColumn ?? 'Y'"
     :downloadTemplateUrl="item['downloadTemplateUrl']"

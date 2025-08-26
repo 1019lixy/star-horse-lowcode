@@ -398,7 +398,9 @@ defineExpose({
             <div
               class="flex flex-row flex-1 items-center justify-center h-[32px]"
             >
-              {{ i18n("datapicker.selectedDataArea") }}[{{ dataOptions?.length }}]
+              {{ i18n("datapicker.selectedDataArea") }}[{{
+                dataOptions?.length
+              }}]
             </div>
           </template>
           <el-scrollbar tag="div" class="org-tree">

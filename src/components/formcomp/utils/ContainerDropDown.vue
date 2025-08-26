@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from "vue";
-import { tableAction } from "@/components/formcomp/utils/tableAction";
+import { computed, onMounted, ref, watch, PropType } from "vue";
+import { tableAction } from "@/components/formcomp/container/dytableUtils";
 import { i18n } from "@/lang";
 
 const props = defineProps({
@@ -112,7 +112,9 @@ watch(
     <star-horse-icon icon-class="menu" style="color: var(--star-horse-white)" />
     <template #dropdown>
       <el-dropdown-menu>
-        <el-dropdown-item command="insertLeftCol">{{ i18n("ui.insertLeftCol") }}</el-dropdown-item>
+        <el-dropdown-item command="insertLeftCol">{{
+          i18n("ui.insertLeftCol")
+        }}</el-dropdown-item>
         <el-dropdown-item command="insertRightCol"
           >{{ i18n("ui.insertRightCol") }}
         </el-dropdown-item>
@@ -227,8 +229,12 @@ watch(
         <el-dropdown-item command="colConfig" divided>
           {{ i18n("ui.colConfig") }}
         </el-dropdown-item>
-        <el-dropdown-item command="rowConfig"> {{ i18n("ui.rowConfig") }} </el-dropdown-item>
-        <el-dropdown-item command="cellConfig"> {{ i18n("ui.cellConfig") }} </el-dropdown-item>
+        <el-dropdown-item command="rowConfig">
+          {{ i18n("ui.rowConfig") }}
+        </el-dropdown-item>
+        <el-dropdown-item command="cellConfig">
+          {{ i18n("ui.cellConfig") }}
+        </el-dropdown-item>
       </el-dropdown-menu>
     </template>
   </el-dropdown>

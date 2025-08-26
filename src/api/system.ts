@@ -163,17 +163,20 @@ export function fieldPlaceholder(item: any, itemType: string) {
     item.preps["collapseTags"] = true;
     item.preps["collapseTagsTooltip"] = true;
     item.preps["placeholder"] =
-      item.preps["placeholder"]?.trim() || i18n("api.pleaseSelect") + item.label;
+      item.preps["placeholder"]?.trim() ||
+      i18n("api.pleaseSelect") + item.label;
   }
   if (itemType == "datetime") {
     if (item?.type?.includes("range")) {
       item.preps["startPlaceholder"] =
-        item.preps["startPlaceholder"]?.trim() || i18n("api.pleaseSelectStartDate");
+        item.preps["startPlaceholder"]?.trim() ||
+        i18n("api.pleaseSelectStartDate");
       item.preps["endPlaceholder"] =
         item.preps["endPlaceholder"]?.trim() || i18n("api.pleaseSelectEndDate");
     } else {
       item.preps["placeholder"] =
-        item.preps["placeholder"]?.trim() || i18n("api.pleaseSelect") + item.label;
+        item.preps["placeholder"]?.trim() ||
+        i18n("api.pleaseSelect") + item.label;
     }
   } else if (itemType == "number-range") {
     item.preps["minPlaceholder"] =

@@ -1,18 +1,48 @@
 <script setup lang="ts" name="StarHorseTableComp">
+import { Config } from "@/api/settings";
+import { download, postRequest } from "@/api/star_horse_apis";
+import {
+  closeLoad,
+  createCondition,
+  deleteByIds,
+  isJson,
+  load,
+  loadData,
+} from "@/api/star_horse_utils";
+import { compKey, removeEmptyCondition, uuid } from "@/api/system";
+import Tablebtn from "@/components/comp/items/tablebtn.vue";
+import TableColumn from "@/components/comp/items/tableColumn.vue";
+import Help from "@/components/help.vue";
+import { ApiUrls } from "@/components/types/ApiUrls";
+import { PreValid } from "@/components/types/BtnAuth";
+import { DialogProps } from "@/components/types/DialogProps";
+import {
+  ExpandTable,
+  FieldInfo,
+  OrderByInfo,
+  PageFieldInfo,
+  UserFuncInfo,
+} from "@/components/types/PageFieldInfo";
+import { PageProps } from "@/components/types/PageProps";
+import { BtnHideCondition, SearchParams } from "@/components/types/Params";
+import piniaInstance from "@/store";
+import { useButtonPermissionStore } from "@/store/ButtonPermission";
+import { useDynamicFormStore } from "@/store/DynamicForm";
+import { useGlobalConfigStore } from "@/store/GlobalConfig";
+import { isSystemManage } from "@/utils/auth";
+import { error, warning } from "@/utils/message";
+import { analysisFields } from "@/utils/preview";
 import Sortable from "sortablejs";
-import { ElMessage, ElMessageBox } from "element-plus";
 import { i18n } from "@/lang";
 import {
+  computed,
   inject,
-  ModelRef,
-  nextTick,
   onMounted,
   PropType,
   reactive,
   ref,
-  ShallowReactive,
+  unref,
   watch,
-  computed,
 } from "vue";
 
 const dynamicForm = useDynamicFormStore(piniaInstance);
@@ -129,7 +159,7 @@ const tableCompFunc = (authority: any) => {
   } else if (authority == "export") {
     exportOperationVisible.value = true;
   } else if (authority == "execution") {
-    console.log("你点击了执行按钮");
+    console.log(i18n("comp.youClickedExecuteButton"));
   }
 };
 
@@ -138,7 +168,7 @@ const selectedFields = () => {
   exportOperationVisible.value = false;
 };
 const exportData = () => {
-  load("数据处理中");
+  load(i18n("comp.dataProcessing"));
   let ids: any = getIds();
   let params = [];
   let keys: any = props.primaryKey;
@@ -176,7 +206,7 @@ const exportData = () => {
   }
   download(props.compUrl!.exportAllUrl!, condition)
     .catch((err: any) => {
-      error("接口不存在或网络异常:" + err);
+      error(i18n("comp.interfaceNotFoundOrNetworkError") + err);
     })
     .finally(() => {
       closeLoad();
@@ -337,7 +367,7 @@ const checkParent = (val: any) => {
     }
   }
   if (flag) {
-    warning("非叶子节点不能选择");
+    warning(i18n("comp.nonLeafNodeCannotBeSelected"));
     return false;
   }
   return true;
@@ -905,7 +935,11 @@ defineExpose({
                 </el-tag>
               </template>
             </el-table-column>
-            <el-table-column prop="listVisible" :label="i18n('comp.showHide')" width="100">
+            <el-table-column
+              prop="listVisible"
+              :label="i18n('comp.showHide')"
+              width="100"
+            >
               <template #default="scope">
                 <el-switch
                   v-model="scope.row.listVisible"

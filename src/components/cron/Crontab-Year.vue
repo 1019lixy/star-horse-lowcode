@@ -14,14 +14,18 @@
       <el-radio size="small" :label="3" v-model="radioValue" border>
         {{ i18n("cron.period") }}
       </el-radio>
-      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.from") }}</span>
+      <span style="margin-left: 10px; margin-right: 5px">{{
+        i18n("cron.from")
+      }}</span>
       <el-input-number
         size="small"
         v-model="cycle01"
         :min="fullYear"
         controls-position="right"
       />
-      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.to") }}</span>
+      <span style="margin-left: 10px; margin-right: 5px">{{
+        i18n("cron.to")
+      }}</span>
       <el-input-number
         size="small"
         v-model="cycle02"
@@ -33,21 +37,29 @@
       <el-radio size="small" :label="4" v-model="radioValue" border>
         {{ i18n("cron.loop") }}
       </el-radio>
-      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.from") }}</span>
+      <span style="margin-left: 10px; margin-right: 5px">{{
+        i18n("cron.from")
+      }}</span>
       <el-input-number
         size="small"
         v-model="average01"
         :min="fullYear"
         controls-position="right"
       />
-      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.year") }}{{ i18n("cron.start") }}，{{ i18n("cron.every") }}</span>
+      <span style="margin-left: 10px; margin-right: 5px"
+        >{{ i18n("cron.year") }}{{ i18n("cron.start") }}，{{
+          i18n("cron.every")
+        }}</span
+      >
       <el-input-number
         size="small"
         v-model="average02"
         :min="fullYear"
         controls-position="right"
       />
-      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.year") }}{{ i18n("cron.executeOnce") }}</span>
+      <span style="margin-left: 10px; margin-right: 5px"
+        >{{ i18n("cron.year") }}{{ i18n("cron.executeOnce") }}</span
+      >
     </div>
     <div class="cron-item">
       <el-radio size="small" :label="5" v-model="radioValue" border>

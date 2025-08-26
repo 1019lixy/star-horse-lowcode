@@ -14,7 +14,9 @@
       <el-radio size="small" v-model="radioValue" :label="3" border>
         {{ i18n("cron.period") }}
       </el-radio>
-      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.from") }}</span>
+      <span style="margin-left: 10px; margin-right: 5px">{{
+        i18n("cron.from")
+      }}</span>
       <el-input-number
         size="small"
         v-model="cycle01"
@@ -22,7 +24,9 @@
         :max="31"
         controls-position="right"
       />
-      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.to") }}</span>
+      <span style="margin-left: 10px; margin-right: 5px">{{
+        i18n("cron.to")
+      }}</span>
       <el-input-number
         size="small"
         v-model="cycle02"
@@ -30,13 +34,17 @@
         :max="31"
         controls-position="right"
       />
-      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.day") }}</span>
+      <span style="margin-left: 10px; margin-right: 5px">{{
+        i18n("cron.day")
+      }}</span>
     </div>
     <div class="cron-item">
       <el-radio size="small" v-model="radioValue" :label="4" border>
         {{ i18n("cron.loop") }}
       </el-radio>
-      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.from") }}</span>
+      <span style="margin-left: 10px; margin-right: 5px">{{
+        i18n("cron.from")
+      }}</span>
       <el-input-number
         size="small"
         v-model="average01"
@@ -44,7 +52,11 @@
         :max="31"
         controls-position="right"
       />
-      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.day") }}{{ i18n("cron.start") }}，{{ i18n("cron.every") }}</span>
+      <span style="margin-left: 10px; margin-right: 5px"
+        >{{ i18n("cron.day") }}{{ i18n("cron.start") }}，{{
+          i18n("cron.every")
+        }}</span
+      >
       <el-input-number
         size="small"
         v-model="average02"
@@ -52,13 +64,17 @@
         :max="31"
         controls-position="right"
       />
-      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.day") }}{{ i18n("cron.executeOnce") }}</span>
+      <span style="margin-left: 10px; margin-right: 5px"
+        >{{ i18n("cron.day") }}{{ i18n("cron.executeOnce") }}</span
+      >
     </div>
     <div class="cron-item">
       <el-radio size="small" v-model="radioValue" :label="5" border>
         {{ i18n("cron.workDay") }}
       </el-radio>
-      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.every") }}</span>
+      <span style="margin-left: 10px; margin-right: 5px">{{
+        i18n("cron.every")
+      }}</span>
       <el-input-number
         size="small"
         v-model="workday"
@@ -66,7 +82,9 @@
         :max="31"
         controls-position="right"
       />
-      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.day") }}{{ i18n("cron.nearestWorkDay") }}</span>
+      <span style="margin-left: 10px; margin-right: 5px"
+        >{{ i18n("cron.day") }}{{ i18n("cron.nearestWorkDay") }}</span
+      >
     </div>
     <div class="cron-item">
       <el-radio size="small" v-model="radioValue" :label="6" border>

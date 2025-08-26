@@ -296,7 +296,11 @@ defineExpose({
   <div class="flex flex-col h-full">
     <div class="flex-grow-1 flex-1 overflow-auto min-h-0">
       <el-tabs type="border-card" v-model="tabActive">
-        <el-tab-pane :label="i18n('cron.second')" name="0" v-if="shouldHide('second')">
+        <el-tab-pane
+          :label="i18n('cron.second')"
+          name="0"
+          v-if="shouldHide('second')"
+        >
           <CrontabSecond
             @update="updateContabValue"
             :cron="contabValueObj"
@@ -304,7 +308,11 @@ defineExpose({
             ref="cronsecond"
           />
         </el-tab-pane>
-        <el-tab-pane :label="i18n('cron.minute')" name="1" v-if="shouldHide('min')">
+        <el-tab-pane
+          :label="i18n('cron.minute')"
+          name="1"
+          v-if="shouldHide('min')"
+        >
           <CrontabMin
             @update="updateContabValue"
             :check="checkNumber"
@@ -312,7 +320,11 @@ defineExpose({
             ref="cronmin"
           />
         </el-tab-pane>
-        <el-tab-pane :label="i18n('cron.hour')" name="2" v-if="shouldHide('hour')">
+        <el-tab-pane
+          :label="i18n('cron.hour')"
+          name="2"
+          v-if="shouldHide('hour')"
+        >
           <CrontabHour
             @update="updateContabValue"
             :check="checkNumber"
@@ -320,7 +332,11 @@ defineExpose({
             ref="cronhour"
           />
         </el-tab-pane>
-        <el-tab-pane :label="i18n('cron.day')" name="3" v-if="shouldHide('day')">
+        <el-tab-pane
+          :label="i18n('cron.day')"
+          name="3"
+          v-if="shouldHide('day')"
+        >
           <CrontabDay
             @update="updateContabValue"
             :check="checkNumber"
@@ -328,7 +344,11 @@ defineExpose({
             ref="cronday"
           />
         </el-tab-pane>
-        <el-tab-pane :label="i18n('cron.month')" name="4" v-if="shouldHide('month')">
+        <el-tab-pane
+          :label="i18n('cron.month')"
+          name="4"
+          v-if="shouldHide('month')"
+        >
           <Crontabmonth
             @update="updateContabValue"
             :check="checkNumber"
@@ -336,7 +356,11 @@ defineExpose({
             ref="cronmonth"
           />
         </el-tab-pane>
-        <el-tab-pane :label="i18n('cron.week')" name="5" v-if="shouldHide('week')">
+        <el-tab-pane
+          :label="i18n('cron.week')"
+          name="5"
+          v-if="shouldHide('week')"
+        >
           <CrontabWeek
             @update="updateContabValue"
             :check="checkNumber"
@@ -344,7 +368,11 @@ defineExpose({
             ref="cronweek"
           />
         </el-tab-pane>
-        <el-tab-pane :label="i18n('cron.year')" name="6" v-if="shouldHide('year')">
+        <el-tab-pane
+          :label="i18n('cron.year')"
+          name="6"
+          v-if="shouldHide('year')"
+        >
           <CrontabYear
             @update="updateContabValue"
             :check="checkNumber"

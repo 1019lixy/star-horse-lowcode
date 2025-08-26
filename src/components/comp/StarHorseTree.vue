@@ -1,15 +1,30 @@
 <script setup lang="ts" name="StarHorseTree">
-import { ModelRef, PropType, ref, reactive, computed, inject, nextTick } from "vue";
-import { useGlobalConfigStore } from "@/store";
-import { piniaInstance } from "@/store";
-import { isSystemManage, createCondition } from "@/api/star_horse_utils";
-import { postRequest } from "@/api/star_horse_apis";
-import { error, warning } from "@/utils/message";
-import { SearchParams, OrderByInfo, PageProps } from "@/components/types/Params";
-import { ApiUrls } from "@/components/types/ApiUrls";
-import { compKey } from "@/api/system";
 import { Config } from "@/api/settings";
+import { postRequest } from "@/api/star_horse_apis";
+import { closeLoad, createCondition } from "@/api/star_horse_utils";
+import { compKey } from "@/api/system";
+import { ApiUrls } from "@/components/types/ApiUrls";
+import {
+  
+  SearchParams,
+} from "@/components/types/Params";
+import { PageProps } from "@/components/types/PageProps";
+import { OrderByInfo } from "@/components/types/PageFieldInfo";
 import { i18n } from "@/lang";
+import { useGlobalConfigStore } from "@/store/GlobalConfig";
+import piniaInstance from "@/store/index";
+import { isSystemManage } from "@/utils/auth";
+import { warning } from "@/utils/message";
+import {
+  computed,
+  ModelRef,
+  nextTick,
+  onMounted,
+  PropType,
+  reactive,
+  ref,
+  unref
+} from "vue";
 
 const props = defineProps({
   preps: {
@@ -268,23 +283,13 @@ defineExpose({
 </script>
 
 <template>
-  <el-card
-    class="inner_content h-full"
-    :style="{
-      width: collapse ? '60px' : 'unset',
-      padding: 'unset',
-    }"
-  >
-    <div
-      class="selected-data gap-2"
-      v-if="showSelectData && selectedDataList?.length > 0"
-    >
-      <el-tag
-        closable
-        @close="operSelectData(item, false)"
-        v-for="item in selectedDataList"
-        :key="_compKey(item, item[preps.value])"
-        >{{ item[preps.label] }}
+  <el-card class="inner_content h-full" :style="{
+    width: collapse ? '60px' : 'unset',
+    padding: 'unset',
+  }">
+    <div class="selected-data gap-2" v-if="showSelectData && selectedDataList?.length > 0">
+      <el-tag closable @close="operSelectData(item, false)" v-for="item in selectedDataList"
+        :key="_compKey(item, item[preps.value])">{{ item[preps.label] }}
       </el-tag>
     </div>
     <div class="tree-title">
@@ -297,40 +302,25 @@ defineExpose({
       </div>
     </div>
     <div class="search-input" v-if="showSearch">
-      <el-input
-        v-model="searchData"
-        :size="compSize"
-        clearable
-        :style="{ 'margin-right': showDropdown ? 'unset' : '10px' }"
-        :placeholder="i18n('ui.pleaseInputKeyword')"
-        @input="onQueryChanged"
-      >
+      <el-input v-model="searchData" :size="compSize" clearable
+        :style="{ 'margin-right': showDropdown ? 'unset' : '10px' }" :placeholder="i18n('ui.pleaseInputKeyword')"
+        @input="onQueryChanged">
         <template #append>
-          <star-horse-icon
-            @click="onQueryChanged"
-            icon-class="search"
-            color="var(--star-horse-style)"
-            size="18px"
-          />
+          <star-horse-icon @click="onQueryChanged" icon-class="search" color="var(--star-horse-style)" size="18px" />
         </template>
       </el-input>
-      <el-dropdown
-        placement="bottom"
-        @command="treeOperation"
-        v-if="showDropdown"
-      >
-        <star-horse-icon
-          icon-class="v-dot"
-          color="var(--star-horse-style)"
-          size="20px"
-        />
+      <el-dropdown placement="bottom" @command="treeOperation" v-if="showDropdown">
+        <star-horse-icon icon-class="v-dot" color="var(--star-horse-style)" size="20px" />
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item v-if="btnVisible" command="add"
-              >{{ i18n("ui.addData") }}
+            <el-dropdown-item v-if="btnVisible" command="add">{{ i18n("ui.addData") }}
             </el-dropdown-item>
-            <el-dropdown-item command="expand">{{ i18n("ui.expandAll") }}</el-dropdown-item>
-            <el-dropdown-item command="collapse">{{ i18n("ui.collapseAll") }}</el-dropdown-item>
+            <el-dropdown-item command="expand">{{
+              i18n("ui.expandAll")
+              }}</el-dropdown-item>
+            <el-dropdown-item command="collapse">{{
+              i18n("ui.collapseAll")
+              }}</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
@@ -338,27 +328,14 @@ defineExpose({
     <el-divider v-if="showSearch" />
     <div class="tree-content">
       <el-scrollbar height="100%">
-        <el-tree
-          ref="treeRef"
-          :data="treeDatas"
-          :props="preps"
-          :node-key="preps.value"
-          v-if="treeType == 'tree'"
-          :filter-node-method="filterMethod"
-          :check-strictly="checkStrictly"
-          :show-checkbox="showCheckBox"
-          highlight-current
-          @nodeClick="treeChange"
-          @checkChange="treeChange"
-        >
+        <el-tree ref="treeRef" :data="treeDatas" :props="preps" :node-key="preps.value" v-if="treeType == 'tree'"
+          :filter-node-method="filterMethod" :check-strictly="checkStrictly" :show-checkbox="showCheckBox"
+          highlight-current @nodeClick="treeChange" @checkChange="treeChange">
           <template #default="{ node, data }">
             <div class="menu-title">
               <div class="name flex items-center">
-                <star-horse-icon
-                  :icon-class="
-                    data.children?.length > 0 ? 'folder' : 'document'
-                  "
-                />
+                <star-horse-icon :icon-class="data.children?.length > 0 ? 'folder' : 'document'
+                  " />
                 {{ node.label }}
                 <template v-if="showCode">
                   ({{
@@ -370,60 +347,28 @@ defineExpose({
               </div>
               <div v-if="btnVisible || rmvVisible" class="btn">
                 <el-tooltip :content="btnTitle">
-                  <star-horse-icon
-                    cursor="pointer"
-                    v-if="btnVisible"
-                    @click.stop="addData(data)"
-                    icon-class="plus"
-                  />
+                  <star-horse-icon cursor="pointer" v-if="btnVisible" @click.stop="addData(data)" icon-class="plus" />
                 </el-tooltip>
                 <el-tooltip :content="rmvTitle">
-                  <star-horse-icon
-                    cursor="pointer"
-                    v-if="rmvVisible"
-                    @click.stop="removeData(data)"
-                    color="var(--el-color-danger)"
-                    icon-class="minus"
-                  />
+                  <star-horse-icon cursor="pointer" v-if="rmvVisible" @click.stop="removeData(data)"
+                    color="var(--el-color-danger)" icon-class="minus" />
                 </el-tooltip>
               </div>
             </div>
           </template>
         </el-tree>
-        <el-menu
-          v-if="treeType == 'menu'"
-          ref="menuTreeRef"
-          :unique-opened="false"
-        >
-          <SubSystemMenu
-            :dataList="treeDatas"
-            :preps="preps"
-            @addData="addData"
-            @removeData="removeData"
-            @selectData="menuChange"
-          />
+        <el-menu v-if="treeType == 'menu'" ref="menuTreeRef" :unique-opened="false">
+          <SubSystemMenu :dataList="treeDatas" :preps="preps" @addData="addData" @removeData="removeData"
+            @selectData="menuChange" />
         </el-menu>
       </el-scrollbar>
     </div>
     <div class="tree-footer" v-if="showPageBar">
-      <el-pagination
-        :total="pageInfo.totalData"
-        @current-change="pageChangeClick"
-        @size-change="pageSizeClick"
-        :size="compSize"
-        :page-sizes="[10, 20, 30, 50]"
-        layout=" prev, pager, next,slot,sizes"
-        v-model:currentPage="pageInfo.currentPage"
-        v-model:page-size="pageInfo.pageSize"
-        v-model:pageCount="pageInfo.totalPage"
-      >
-        <el-button
-          text
-          icon="refresh"
-          :size="compSize"
-          @click="loadByPage"
-          :title="i18n('ui.refresh')"
-        />
+      <el-pagination :total="pageInfo.totalData" @current-change="pageChangeClick" @size-change="pageSizeClick"
+        :size="compSize" :page-sizes="[10, 20, 30, 50]" layout=" prev, pager, next,slot,sizes"
+        v-model:currentPage="pageInfo.currentPage" v-model:page-size="pageInfo.pageSize"
+        v-model:pageCount="pageInfo.totalPage">
+        <el-button text icon="refresh" :size="compSize" @click="loadByPage" :title="i18n('ui.refresh')" />
       </el-pagination>
     </div>
   </el-card>

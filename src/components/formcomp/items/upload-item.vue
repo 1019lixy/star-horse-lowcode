@@ -49,7 +49,8 @@
         <upload-filled />
       </el-icon>
       <div class="el-upload__text" v-if="field.preps['drag']">
-        {{ i18n("form.dragFileHereOr") }} <em>{{ i18n("form.clickToUpload") }}</em>
+        {{ i18n("form.dragFileHereOr") }}
+        <em>{{ i18n("form.clickToUpload") }}</em>
       </div>
       <template #tip v-if="field.preps['maxSize']">
         <div class="el-upload__tip">

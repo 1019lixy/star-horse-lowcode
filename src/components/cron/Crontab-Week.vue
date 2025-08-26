@@ -14,7 +14,9 @@
       <el-radio size="small" v-model="radioValue" :label="3" border>
         {{ i18n("cron.period") }}
       </el-radio>
-      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.from") }}{{ i18n("cron.week") }}</span>
+      <span style="margin-left: 10px; margin-right: 5px"
+        >{{ i18n("cron.from") }}{{ i18n("cron.week") }}</span
+      >
       <el-input-number
         size="small"
         v-model="cycle01"
@@ -22,7 +24,9 @@
         :max="7"
         controls-position="right"
       />
-      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.to") }}</span>
+      <span style="margin-left: 10px; margin-right: 5px">{{
+        i18n("cron.to")
+      }}</span>
       <el-input-number
         size="small"
         v-model="cycle02"
@@ -35,7 +39,9 @@
       <el-radio size="small" v-model="radioValue" :label="4" border>
         {{ i18n("cron.loop") }}
       </el-radio>
-      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.every") }}</span>
+      <span style="margin-left: 10px; margin-right: 5px">{{
+        i18n("cron.every")
+      }}</span>
       <el-input-number
         size="small"
         v-model="average01"
@@ -43,7 +49,10 @@
         :max="4"
         controls-position="right"
       />
-      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.week") }}{{ i18n("cron.day") }}{{ i18n("cron.weekDay") }}</span>
+      <span style="margin-left: 10px; margin-right: 5px"
+        >{{ i18n("cron.week") }}{{ i18n("cron.day")
+        }}{{ i18n("cron.weekDay") }}</span
+      >
       <el-input-number
         size="small"
         v-model="average02"
@@ -56,7 +65,9 @@
       <el-radio size="small" v-model="radioValue" :label="5" border>
         {{ i18n("cron.lastWeekday") }}
       </el-radio>
-      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.weekDay") }}</span>
+      <span style="margin-left: 10px; margin-right: 5px">{{
+        i18n("cron.weekDay")
+      }}</span>
       <el-input-number
         size="small"
         v-model="weekday"
@@ -107,7 +118,7 @@ let weekList = ref([
   i18n("cron.thursday"),
   i18n("cron.friday"),
   i18n("cron.saturday"),
-  i18n("cron.sunday")
+  i18n("cron.sunday"),
 ]);
 
 // 计算两个周期值

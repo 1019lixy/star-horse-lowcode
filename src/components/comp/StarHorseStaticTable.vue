@@ -1,16 +1,17 @@
 <script setup lang="ts" name="StarHorseStaticTable">
-import { ModelRef, PropType, ref, reactive, inject, nextTick } from "vue";
-import { useGlobalConfigStore } from "@/store";
-import { piniaInstance } from "@/store";
-import { isSystemManage, createCondition } from "@/api/star_horse_utils";
-import { postRequest } from "@/api/star_horse_apis";
-import { error, warning } from "@/utils/message";
-import { SearchParams, OrderByInfo, PageProps } from "@/components/types/Params";
-import { ApiUrls } from "@/components/types/ApiUrls";
-import { compKey } from "@/api/system";
 import { Config } from "@/api/settings";
+import { commonParseCodeToName } from "@/api/star_horse_utils";
+import { compKey } from "@/api/system";
 import { i18n } from "@/lang";
-
+import { warning } from "@/utils/message";
+import Sortable from "sortablejs";
+import {
+  onMounted,
+  PropType,
+  reactive,
+  ref,
+  unref
+} from "vue";
 const props = defineProps({
   //主键
   primaryKey: {
@@ -121,7 +122,7 @@ const checkParent = (val: any) => {
     }
   }
   if (flag) {
-    warning("非叶子节点不能选择");
+    warning(i18n("comp.nonLeafNodeCannotBeSelected"));
     return false;
   }
   return true;
@@ -213,29 +214,18 @@ defineExpose({
 </script>
 <template>
   <div class="table-comp">
-    <div
-      style="
+    <div style="
         display: flex;
         justify-content: space-between;
         width: 100%;
         border-bottom: var(--star-horse-style) 1px solid;
-      "
-      v-if="!dialogInput"
-    >
+      " v-if="!dialogInput">
       <div class="tb_title">
-        <star-horse-icon
-          icon-class="info"
-          size="14px"
-          style="font-weight: bold; color: var(--star-horse-style)"
-        />
+        <star-horse-icon icon-class="info" size="14px" style="font-weight: bold; color: var(--star-horse-style)" />
         {{ title }}
       </div>
       <div class="flex items-center flex-row-reverse">
-        <el-popover
-          trigger="click"
-          :popper-style="{ width: 'unset !important' }"
-          placement="left-end"
-        >
+        <el-popover trigger="click" :popper-style="{ width: 'unset !important' }" placement="left-end">
           <template #reference>
             <el-icon class="star-page-icon" style="cursor: pointer">
               <el-tooltip :content="i18n('comp.showHideColumns')">
@@ -243,19 +233,8 @@ defineExpose({
               </el-tooltip>
             </el-icon>
           </template>
-          <el-table
-            class="sh-columns"
-            ref="table"
-            :data="toolFields"
-            :strip="true"
-            :fit="true"
-            :highlight-current-row="true"
-            max-height="400px"
-            row-key="prop"
-            style="width: 100%"
-            :size="compSize"
-            border
-          >
+          <el-table class="sh-columns" ref="table" :data="toolFields" :strip="true" :fit="true"
+            :highlight-current-row="true" max-height="400px" row-key="prop" style="width: 100%" :size="compSize" border>
             <el-table-column prop="" :label="i18n('comp.sort')" width="60">
               <el-tag class="move" style="cursor: move" :size="compSize">
                 <el-icon style="cursor: move">
@@ -263,28 +242,17 @@ defineExpose({
                 </el-icon>
               </el-tag>
             </el-table-column>
-            <el-table-column
-              prop="label"
-              :label="i18n('comp.columnName')"
-              :show-overflow-tooltip="true"
-            >
+            <el-table-column prop="label" :label="i18n('comp.columnName')" :show-overflow-tooltip="true">
               <template #default="scope">
-                <el-tag
-                  round
-                  :effect="scope.row.listVisible ? 'dark' : 'light'"
-                >
+                <el-tag round :effect="scope.row.listVisible ? 'dark' : 'light'">
                   {{ scope.row.label }}
                 </el-tag>
               </template>
             </el-table-column>
             <el-table-column prop="listVisible" :label="i18n('comp.showHide')" width="100">
               <template #default="scope">
-                <el-switch
-                  v-model="scope.row.listVisible"
-                  :size="compSize"
-                  :active-value="true"
-                  :inactive-value="false"
-                />
+                <el-switch v-model="scope.row.listVisible" :size="compSize" :active-value="true"
+                  :inactive-value="false" />
               </template>
             </el-table-column>
           </el-table>
@@ -292,74 +260,35 @@ defineExpose({
       </div>
     </div>
 
-    <el-table
-      ref="shStaticTableCompRef"
-      :data="staticDataList"
-      @selection-change="handleSelectionChange"
-      @row-click="selectRow"
-      :row-key="getRowIdentity"
-      :stripe="true"
-      :fit="true"
-      :max-height="height"
-      :highlight-current-row="true"
-      :default-expand-all="expand"
-      :row-style="{
+    <el-table ref="shStaticTableCompRef" :data="staticDataList" @selection-change="handleSelectionChange"
+      @row-click="selectRow" :row-key="getRowIdentity" :stripe="true" :fit="true" :max-height="height"
+      :highlight-current-row="true" :default-expand-all="expand" :row-style="{
         height: '30px',
-      }"
-      :cell-style="{
+      }" :cell-style="{
         height: '30px',
         'font-size': '12px',
-      }"
-      :header-cell-style="{
+      }" :header-cell-style="{
         background: '#f2f2f2',
         color: '#707070',
         'font-size': '13px',
         'background-image':
           '-webkit-gradient(linear,left 0,left 100%,from(#f8f8f8),to(#ececec))',
-      }"
-      border
-    >
-      <el-table-column
-        type="selection"
-        align="center"
-        fixed="left"
-        :reserve-selection="true"
-      >
+      }" border>
+      <el-table-column type="selection" align="center" fixed="left" :reserve-selection="true">
       </el-table-column>
-      <template
-        v-for="item in fieldList['fieldList']"
-        :Key="compKey(item, item.id)"
-      >
+      <template v-for="item in fieldList['fieldList']" :Key="compKey(item, item.id)">
         <template v-if="Array.isArray(item)">
-          <star-horse-table-column
-            :data-format="dataFormat"
-            :cellEditable="fieldList['tableCellEditabled']"
-            :item="sitem"
-            :key="compKey(sitem, key)"
-            v-for="(sitem, key) in item"
-          />
+          <star-horse-table-column :data-format="dataFormat" :cellEditable="fieldList['tableCellEditabled']"
+            :item="sitem" :key="compKey(sitem, key)" v-for="(sitem, key) in item" />
         </template>
         <template v-else-if="item.tabList?.length > 0">
-          <star-horse-table-column
-            :data-format="dataFormat"
-            :cellEditable="fieldList['tableCellEditabled']"
-            :item="sitem"
-            :key="compKey(sitem, key)"
-            v-for="(sitem, key) in item.tabList.fieldList"
-          />
+          <star-horse-table-column :data-format="dataFormat" :cellEditable="fieldList['tableCellEditabled']"
+            :item="sitem" :key="compKey(sitem, key)" v-for="(sitem, key) in item.tabList.fieldList" />
         </template>
-        <star-horse-table-column
-          v-else
-          :cellEditable="fieldList['tableCellEditabled']"
-          :data-format="dataFormat"
-          :item="item"
-        />
+        <star-horse-table-column v-else :cellEditable="fieldList['tableCellEditabled']" :data-format="dataFormat"
+          :item="item" />
       </template>
-      <template
-        v-if="showBatchField"
-        v-for="item in fieldList['batchFieldList']"
-        :key="compKey(item, item.batchName)"
-      >
+      <template v-if="showBatchField" v-for="item in fieldList['batchFieldList']" :key="compKey(item, item.batchName)">
         <star-horse-table-column :data-format="dataFormat" :item="item" />
       </template>
     </el-table>

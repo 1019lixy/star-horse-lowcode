@@ -9,7 +9,9 @@
       <el-radio size="small" v-model="radioValue" border :label="2">
         {{ i18n("cron.period") }}
       </el-radio>
-      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.from") }}</span>
+      <span style="margin-left: 10px; margin-right: 5px">{{
+        i18n("cron.from")
+      }}</span>
       <el-input-number
         size="small"
         v-model="cycle01"
@@ -17,7 +19,9 @@
         :max="12"
         controls-position="right"
       />
-      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.to") }}</span>
+      <span style="margin-left: 10px; margin-right: 5px">{{
+        i18n("cron.to")
+      }}</span>
       <el-input-number
         size="small"
         v-model="cycle02"
@@ -25,13 +29,17 @@
         :max="12"
         controls-position="right"
       />
-      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.month") }}</span>
+      <span style="margin-left: 10px; margin-right: 5px">{{
+        i18n("cron.month")
+      }}</span>
     </div>
     <div class="cron-item">
       <el-radio size="small" v-model="radioValue" :label="3" border>
         {{ i18n("cron.loop") }}
       </el-radio>
-      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.from") }}</span>
+      <span style="margin-left: 10px; margin-right: 5px">{{
+        i18n("cron.from")
+      }}</span>
       <el-input-number
         size="small"
         v-model="average01"
@@ -39,7 +47,11 @@
         :max="12"
         controls-position="right"
       />
-      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.month") }}{{ i18n("cron.start") }}，{{ i18n("cron.every") }}</span>
+      <span style="margin-left: 10px; margin-right: 5px"
+        >{{ i18n("cron.month") }}{{ i18n("cron.start") }}，{{
+          i18n("cron.every")
+        }}</span
+      >
       <el-input-number
         size="small"
         v-model="average02"
@@ -47,7 +59,9 @@
         :max="12"
         controls-position="right"
       />
-      <span style="margin-left: 10px; margin-right: 5px">{{ i18n("cron.month") }}{{ i18n("cron.executeOnce") }}</span>
+      <span style="margin-left: 10px; margin-right: 5px"
+        >{{ i18n("cron.month") }}{{ i18n("cron.executeOnce") }}</span
+      >
     </div>
     <div class="cron-item">
       <el-radio size="small" v-model="radioValue" :label="4" border>

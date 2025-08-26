@@ -47,9 +47,9 @@
               >
                 {{ i18n("form.add") }}
               </el-button>
-              <el-button size="small" icon="cancel" @click="clear"
-                >{{ i18n("form.cancel") }}</el-button
-              >
+              <el-button size="small" icon="cancel" @click="clear">{{
+                i18n("form.cancel")
+              }}</el-button>
             </div>
           </div>
         </template>

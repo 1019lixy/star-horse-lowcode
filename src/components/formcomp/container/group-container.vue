@@ -1,14 +1,23 @@
 <script setup lang="ts">
-import { computed, getCurrentInstance, nextTick, onMounted, ref, watch } from "vue";
-import { copyContainer, insertBelowRow, insertRightCol } from "@/components/formcomp/utils/tableAction";
-import { dynamicFormContextMenuData } from "@/components/formcomp/utils/contextMenuData";
-import { i18n } from "@/lang";
-import { operationConfirm } from "@/utils/message";
-import piniaInstance from "@/store/index";
-import { useDesignFormStore } from "@/store/DesignForm";
-import FieldList from "@/components/formcomp/utils/FieldList.vue";
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
+import {
+  insertBelowRow,
+  insertRightCol,
+} from "@/components/formcomp/container/dytableUtils";
+import FieldList from "@/components/formcomp/utils/FieldList.vue";
+import { i18n } from "@/lang";
+import {
+  copyContainer,
+  dynamicFormContextMenuData,
+} from "@/plugins/AblesPlugin";
+import { useDesignFormStore } from "@/store/DesignForm";
+import piniaInstance from "@/store/index";
 import { fieldCopy } from "@/utils/FieldOperationUtils";
+import { operationConfirm } from "@/utils/message";
+import {
+  computed,
+  ref
+} from "vue";
 
 const props = defineProps({
   isDesign: { type: Boolean, default: false },
@@ -135,101 +144,55 @@ const tableOperation = (actonName: string, _preps: any) => {
 };
 </script>
 <template>
-  <star-horse-dialog
-    box-width="450px"
-    :is-view="true"
-    :full-screen="false"
-    :title="i18n('form.addComponent')"
-    :self-func="true"
-    :dialog-visible="componentVisible"
-    @closeAction="close"
-  >
+  <star-horse-dialog box-width="450px" :is-view="true" :full-screen="false" :title="i18n('form.addComponent')"
+    :self-func="true" :dialog-visible="componentVisible" @closeAction="close">
     <template #footer>
-      <el-button type="primary" size="default" @click="close">{{ i18n("form.confirm") }}</el-button>
+      <el-button type="primary" size="default" @click="close">{{
+        i18n("form.confirm")
+        }}</el-button>
     </template>
     <field-list @selectData="addItem" />
   </star-horse-dialog>
-  <div
-    class="field-item"
-    v-if="isEdit && isDesign"
-    @contextmenu="containerContextMenu"
-  >
+  <div class="field-item" v-if="isEdit && isDesign" @contextmenu="containerContextMenu">
     <slot></slot>
-    <div
-      class="drag-handler"
-      v-if="isEdit && isDesign && currentItemId == formItem.id"
-    >
+    <div class="drag-handler" v-if="isEdit && isDesign && currentItemId == formItem.id">
       <el-tooltip :content="i18n('form.drag')">
-        <star-horse-icon
-          icon-class="drag"
-          size="18px"
-          style="color: var(--star-horse-white)"
-        />
+        <star-horse-icon icon-class="drag" size="18px" style="color: var(--star-horse-white)" />
       </el-tooltip>
       <el-tooltip :content="i18n('form.selectContainer')">
-        <star-horse-icon
-          cursor="pointer"
-          @click.stop="selectData"
-          icon-class="select-parent"
-          style="color: var(--star-horse-white)"
-        />
+        <star-horse-icon cursor="pointer" @click.stop="selectData" icon-class="select-parent"
+          style="color: var(--star-horse-white)" />
       </el-tooltip>
       <el-tooltip :content="i18n('form.deleteContainer')">
-        <star-horse-icon
-          cursor="pointer"
-          @click.stop="removeData"
-          icon-class="clear-all"
-          style="color: var(--star-horse-white)"
-        />
+        <star-horse-icon cursor="pointer" @click.stop="removeData" icon-class="clear-all"
+          style="color: var(--star-horse-white)" />
       </el-tooltip>
     </div>
-    <div
-      class="field-action"
-      v-if="isEdit && isDesign && currentItemId == formItem.id"
-    >
-      <template
-        v-if="formItem.itemType == 'dytable' || formItem.itemType == 'box'"
-      >
+    <div class="field-action" v-if="isEdit && isDesign && currentItemId == formItem.id">
+      <template v-if="formItem.itemType == 'dytable' || formItem.itemType == 'box'">
         <el-tooltip :content="i18n('form.insertRow')">
-          <star-horse-icon
-            @click.stop="tableOperation('insertRow', formItem?.preps)"
-            icon-class="insert_row"
-            cursor="pointer"
-            style="color: var(--star-horse-white)"
-          />
+          <star-horse-icon @click.stop="tableOperation('insertRow', formItem?.preps)" icon-class="insert_row"
+            cursor="pointer" style="color: var(--star-horse-white)" />
         </el-tooltip>
       </template>
-      <template
-        v-if="
-          formItem.itemType == 'dytable' ||
-          formItem.itemType == 'box' ||
-          formItem.itemType == 'table'
-        "
-      >
+      <template v-if="
+        formItem.itemType == 'dytable' ||
+        formItem.itemType == 'box' ||
+        formItem.itemType == 'table'
+      ">
         <el-tooltip :content="i18n('form.insertCol')">
-          <star-horse-icon
-            @click.stop="tableOperation('insertCol', formItem?.preps)"
-            icon-class="insert_col"
-            cursor="pointer"
-            style="color: var(--star-horse-white)"
-          />
+          <star-horse-icon @click.stop="tableOperation('insertCol', formItem?.preps)" icon-class="insert_col"
+            cursor="pointer" style="color: var(--star-horse-white)" />
         </el-tooltip>
       </template>
       <el-tooltip :content="i18n('form.copyContainer')">
-        <star-horse-icon
-          @click.stop="tableOperation('copy', formItem?.preps)"
-          icon-class="copy"
-          style="color: var(--star-horse-white)"
-        />
+        <star-horse-icon @click.stop="tableOperation('copy', formItem?.preps)" icon-class="copy"
+          style="color: var(--star-horse-white)" />
       </el-tooltip>
     </div>
     <Teleport to="body">
-      <ContentMenu
-        ref="containerContextMenuRef"
-        :menu-data="
-          dynamicFormContextMenuData(formItem, parentField, 'container')
-        "
-      />
+      <ContentMenu ref="containerContextMenuRef" :menu-data="dynamicFormContextMenuData(formItem, parentField, 'container')
+        " />
     </Teleport>
   </div>
   <div class="field-item" style="border: unset" v-else>

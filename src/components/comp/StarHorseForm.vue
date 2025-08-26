@@ -52,8 +52,8 @@ const props = defineProps({
     type: Array<SelectOption>,
     default: () => {
       return [
-        { name: "正常", value: "1" },
-        { name: "禁用", value: "2" },
+        { name: i18n("comp.normal"), value: "1" },
+        { name: i18n("comp.disabled"), value: "2" },
       ];
     },
   },
@@ -260,7 +260,7 @@ const doMerge = (type: string) => {
     dydata["dataListsMap"] = tempForm;
   }
   // console.log(sameBatchNames, tempForm, dydata);
-  load("数据处理中");
+  load(i18n("comp.dataProcessing"));
   //dynamicForm 如果为true 表示动态表单，动态表单需额外封装数据对象
   let formData = props.dynamicForm ? dydata : tempForm;
   postRequest(mergeUrl!, formData)
@@ -281,7 +281,7 @@ const doMerge = (type: string) => {
       //关闭弹窗
     })
     .catch((err) => {
-      error("接口调用异常" + err);
+      error(i18n("comp.interfaceCallException") + err);
     })
     .finally(() => {
       closeLoad();
@@ -396,7 +396,7 @@ watch(
   () => dialogProps.ids,
   (val) => {
     if (val === undefined || val == null || val == "") {
-      console.log("ids 未定义", val);
+      console.log(i18n("comp.idsUndefined"), val);
       return;
     } else {
       if (val == -1) {
