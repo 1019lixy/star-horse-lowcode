@@ -356,5 +356,6 @@ onMounted(() => {});
 :deep(.label-right-align) .el-form-item__label {
   text-align: right;
   justify-content: flex-end !important;
+
 }
 </style>
