@@ -10,6 +10,7 @@ import { compKey } from "@/api/system";
 import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
 import { ContainerPreps } from "@/components/types/ItemPreps";
 import { ModelRef, onMounted } from "vue";
+import { prepsFilter } from "@/components/formcomp/utils/ItemRelationEventUtils";
 
 const props = withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
@@ -50,8 +51,8 @@ onMounted(() => {
     <el-scrollbar style="margin-top: 10px">
       <el-collapse
         v-model="item.fieldName"
-        :accordion="item.preps?.accordion"
-        v-on:change="(data) => item.actions['change']?.(data)"
+        v-bind="prepsFilter(item.preps)"
+        v-on:change="(data) => item.actions?.['change']?.(data)"
       >
         <template
           v-for="(collapseItem, key) in item.collapseList"

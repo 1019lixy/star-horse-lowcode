@@ -45,7 +45,7 @@
           :title="field.preps?.appendAction?.actionTitle"
           style="cursor: pointer"
           :icon-class="field.preps?.appendAction?.icon || 'document'"
-          @click="field.preps?.appendAction?.actions(formData)"
+          @click="field.preps?.appendAction?.actions?.(formData)"
         />
       </template>
       <template #append v-if="field.preps?.appendList">

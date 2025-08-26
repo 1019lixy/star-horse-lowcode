@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Test</title>
+</head>
+<body>
+    <h1>Performance Test for formFieldMapping</h1>
+    <button id="runTest">Run Performance Test</button>
+    <div id="results"></div>
+
+    <script type="module">
+        import { runPerformanceTest } from './src/api/performance_test.ts';
+        
+        document.getElementById('runTest').addEventListener('click', async () => {
+            const results = runPerformanceTest();
+            document.getElementById('results').innerHTML = `
+                <h2>Test Results:</h2>
+                <p>Duration: ${results.duration.toFixed(2)} ms</p>
+                <p>Form Fields Processed: ${results.formFieldsCount}</p>
+                <p>Field Mappings Found: ${results.mappingFieldsCount}</p>
+                <p>Actions Found: ${results.actionsCount}</p>
+            `;
+        });
+    </script>
+</body>
+</html>

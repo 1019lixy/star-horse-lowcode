@@ -8,11 +8,12 @@ import piniaInstance from "@/store";
 import { useGlobalConfigStore } from "@/store/GlobalConfig";
 import { analysisSearchData } from "@/utils/preview";
 import { computed, nextTick, onMounted, PropType, ref } from "vue";
+import { i18n } from "@/lang";
 
 let matchTypeList = ref<SelectOption[]>();
 let sarchIcon = ref<string>("search_down");
 let defaultSearch = ref<boolean>(true);
-let tips = ref<string>("更多查询");
+let tips = ref<string>(i18n("search.moreQuery"));
 let showTips = ref<boolean>(true);
 const emits = defineEmits(["searchData"]);
 const props = defineProps({
@@ -63,10 +64,10 @@ const dataSearch = (val: string | null) => {
 };
 const searchArea = () => {
   if (defaultSearch.value) {
-    tips.value = "更多查询";
+    tips.value = i18n("search.moreQuery");
     sarchIcon.value = "search_up";
   } else {
-    tips.value = "收起";
+    tips.value = i18n("search.collapse");
     sarchIcon.value = "search_down";
   }
   defaultSearch.value = !defaultSearch.value;
@@ -188,7 +189,7 @@ defineExpose({
               size="16px"
               color="var(--star-horse-white)"
             />
-            查询
+            {{ i18n("search.query") }}
           </el-button>
           <el-button @click="dataSearch('reset')" link :size="compSize">
             <star-horse-icon
@@ -196,7 +197,7 @@ defineExpose({
               size="16px"
               color="var(--star-horse-disable)"
             />
-            重置
+            {{ i18n("search.reset") }}
           </el-button>
           <el-tooltip :content="tips" v-if="showTips">
             <el-button text @click="searchArea" :size="compSize">

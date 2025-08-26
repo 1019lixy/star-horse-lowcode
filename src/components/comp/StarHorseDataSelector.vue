@@ -8,6 +8,7 @@ import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
 import { postRequest } from "@/api/star_horse_apis";
 import { createCondition } from "@/api/star_horse_utils";
 import { SearchParams } from "@/components/types";
+import { i18n } from "@/lang";
 
 export interface DataSelectorProps {
   /**
@@ -98,7 +99,7 @@ const props = withDefaults(defineProps<DataSelectorProps>(), {
   checkStrictly: true,
   selectLeaf: false,
   showTagLength: 3,
-  placeholder: "请选择数据",
+  placeholder: i18n("dataselector.placeholder"),
 });
 const emits = defineEmits<{
   (e: "update:modelValue", modelValue: ModelValueType): void;

@@ -1,31 +1,123 @@
 <template>
   {{ areaFormRef?.getFormData() }}
-  <star-horse-dialog :dialogVisible="dataRelationDialogVisible" :title="'数据联动策略配置'" :isBatch="false"
-    @merge="dataRelationMerge" @closeAction="closeAction" @resetForm="dataRelationReset" :selfFunc="true">
-    <star-horse-form :outerFormData="formProps" primary-key="" ref="areaFormRef" :fieldList="tableFieldList" />
+  <star-horse-dialog
+    :dialogVisible="dataRelationDialogVisible"
+    :title="'数据联动策略配置'"
+    :isBatch="false"
+    @merge="dataRelationMerge"
+    @closeAction="closeAction"
+    @resetForm="dataRelationReset"
+    :selfFunc="true"
+  >
+    <star-horse-form
+      :outerFormData="formProps"
+      primary-key=""
+      ref="areaFormRef"
+      :fieldList="tableFieldList"
+    />
   </star-horse-dialog>
   <el-button @click="editData">Test</el-button>
-
 </template>
 
 <script lang="ts" setup>
-import { searchMatchList } from '@/api/star_horse_utils';
-import { PageFieldInfo } from '@/components/types/PageFieldInfo';
-import { SelectOption } from '@/components/types/SearchProps';
-import { reactive, ref, nextTick } from 'vue';
-import WebUrlComp from './WebUrlComp.vue';
+import { searchMatchList } from "@/api/star_horse_utils";
+import { PageFieldInfo } from "@/components/types/PageFieldInfo";
+import { SelectOption } from "@/components/types/SearchProps";
+import { reactive, ref, nextTick } from "vue";
+import WebUrlComp from "./WebUrlComp.vue";
 const areaFormRef = ref();
 const dataRelationDialogVisible = ref<boolean>(false);
-const formData = ref<any>({ "showArrow": true, "placeholder": "请选择选择器1", "multipleLimit": null, "filterable": true, "collapseTags": true, "collapseTagsTooltip": true, "id": "Idshb9d78cef-2edd-4e48-be68-f6ffec734983", "label": "选择器1", "itemNameLabel": "选择器", "name": "select2", "clearable": true, "readonly": false, "remote": false, "maxLength": 255, "rules": [], "formVisible": true, "listVisible": true, "viewVisible": true, "starHorseBtnName": "dataRelation", "dataRelation": { "actionName": "change", "relationDetails": [{ "matchType": "eq", "matchFieldName": "select2", "controlCondition": "asParamDataLinkage", "params": { "httpMethod": "POST", "protocol": "http", "queryParams": [], "env": "-dev", "host": "system-config", "interfaceUrl": "system-config/system/dictinfo/getAllByCondition", "starHorseBtnName": "sh2563a6cb-f7b3-4e13-a133-31d5e229254c", "selectLabel": "dictName", "selectValue": "dictCode" }, "dataSourceDivider": "数据源", "relationFields": ["select1"], "xh": 1 }, { "matchType": "eq", "matchFieldName": "select2", "params": {}, "controlCondition": "eqDisable", "relationFields": ["select1"], "matchFieldValue": ["test"], "xh": 2 }], "relationDetailsDefaultValue": [{}], "showArrow": true, "placeholder": "请选择选择器1", "multipleLimit": null, "filterable": true, "collapseTags": true, "collapseTagsTooltip": true, "id": "Idshb9d78cef-2edd-4e48-be68-f6ffec734983", "label": "选择器1", "itemNameLabel": "选择器", "name": "select2", "clearable": true, "readonly": false, "remote": false, "maxLength": 255, "rules": [], "formVisible": true, "listVisible": true, "viewVisible": true, "starHorseBtnName": "dataRelation" }, "dataSource": "data", "analysisType": "func", "httpMethod": "POST", "protocol": "http", "values": [{ "name": "Test", "value": "battery", "xh": 1 }, { "name": "Test-visible", "value": "visible", "xh": 2, "starHorseEditing": "no" }] });
+const formData = ref<any>({
+  showArrow: true,
+  placeholder: "请选择选择器1",
+  multipleLimit: null,
+  filterable: true,
+  collapseTags: true,
+  collapseTagsTooltip: true,
+  id: "Idshb9d78cef-2edd-4e48-be68-f6ffec734983",
+  label: "选择器1",
+  itemNameLabel: "选择器",
+  name: "select2",
+  clearable: true,
+  readonly: false,
+  remote: false,
+  maxLength: 255,
+  rules: [],
+  formVisible: true,
+  listVisible: true,
+  viewVisible: true,
+  starHorseBtnName: "dataRelation",
+  dataRelation: {
+    actionName: "change",
+    relationDetails: [
+      {
+        matchType: "eq",
+        matchFieldName: "select2",
+        controlCondition: "asParamDataLinkage",
+        params: {
+          httpMethod: "POST",
+          protocol: "http",
+          queryParams: [],
+          env: "-dev",
+          host: "system-config",
+          interfaceUrl: "system-config/system/dictinfo/getAllByCondition",
+          starHorseBtnName: "sh2563a6cb-f7b3-4e13-a133-31d5e229254c",
+          selectLabel: "dictName",
+          selectValue: "dictCode",
+        },
+        dataSourceDivider: "数据源",
+        relationFields: ["select1"],
+        xh: 1,
+      },
+      {
+        matchType: "eq",
+        matchFieldName: "select2",
+        params: {},
+        controlCondition: "eqDisable",
+        relationFields: ["select1"],
+        matchFieldValue: ["test"],
+        xh: 2,
+      },
+    ],
+    relationDetailsDefaultValue: [{}],
+    showArrow: true,
+    placeholder: "请选择选择器1",
+    multipleLimit: null,
+    filterable: true,
+    collapseTags: true,
+    collapseTagsTooltip: true,
+    id: "Idshb9d78cef-2edd-4e48-be68-f6ffec734983",
+    label: "选择器1",
+    itemNameLabel: "选择器",
+    name: "select2",
+    clearable: true,
+    readonly: false,
+    remote: false,
+    maxLength: 255,
+    rules: [],
+    formVisible: true,
+    listVisible: true,
+    viewVisible: true,
+    starHorseBtnName: "dataRelation",
+  },
+  dataSource: "data",
+  analysisType: "func",
+  httpMethod: "POST",
+  protocol: "http",
+  values: [
+    { name: "Test", value: "battery", xh: 1 },
+    { name: "Test-visible", value: "visible", xh: 2, starHorseEditing: "no" },
+  ],
+});
 
 const editData = async () => {
   dataRelationDialogVisible.value = true;
   let temp = formData.value["dataRelation"] ?? {};
-  console.log(temp)
+  console.log(temp);
   await nextTick(() => {
     temp && areaFormRef.value?.setFormData(temp);
   });
-}
+};
 const dataRelationMerge = async () => {
   let flag: boolean = false;
   let formRef = areaFormRef?.value?.$refs.starHorseFormRef;
@@ -43,7 +135,7 @@ const dataRelationMerge = async () => {
 };
 const closeAction = () => {
   dataRelationDialogVisible.value = false;
-}
+};
 /**
  * 关联
  */
@@ -88,55 +180,66 @@ const tableFieldList = reactive<PageFieldInfo | any>({
           subFormFlag: "Y",
           batchName: "relationDetails",
           fieldList: [
-           
-              {
-                label: "控制条件",
-                fieldName: "controlCondition",
-                type: "select",
-                required: false,
-                formVisible: true,
-                listVisible: true,
-                preps: {
-                  values: controlConditionList,
-                  dataRelation: {
-                    actionName: "change",
-                    relationDetails: [
-                      {
-                        matchType: "eq",
-                        controlCondition: "eqVisible",
-                        relationFields: ["params", "dataSourceDivider"],
-                        matchFieldValue: ["eqConditionDataLinkage", "asParamDataLinkage"]
-                      },
-                      {
-                        matchType: "eq",
-                        controlCondition: "eqVisible",
-                        relationFields: ["dictinfo"],
-                        matchFieldValue: "assignValue",
-                      },
-                      {
-                        matchType: "eq",
-                        controlCondition: "eqVisible",
-                        relationFields: ["newValues"],
-                        matchFieldValue: "changeType",
-                        staticDatas: "input"
-                      },
-                      {
-                        matchType: "eq",
-                        controlCondition: "eqRequired",
-                        relationFields: ["matchFieldValue"],
-                        matchFieldValue: ["eqDisable", "eqVisible", "eqEditable", "eqRequired", "eqHide", "eqConditionDataLinkage", "asParamDataLinkage"]
-                      },
-                      {
-                        matchType: "eq",
-                        controlCondition: "eqRequired",
-                        relationFields: ["matchFieldName"],
-                        matchFieldValue: ["asParamDataLinkage"]
-                      },
-                    ],
-                  },
+            {
+              label: "控制条件",
+              fieldName: "controlCondition",
+              type: "select",
+              required: false,
+              formVisible: true,
+              listVisible: true,
+              preps: {
+                values: controlConditionList,
+                dataRelation: {
+                  actionName: "change",
+                  relationDetails: [
+                    {
+                      matchType: "eq",
+                      controlCondition: "eqVisible",
+                      relationFields: ["params", "dataSourceDivider"],
+                      matchFieldValue: [
+                        "eqConditionDataLinkage",
+                        "asParamDataLinkage",
+                      ],
+                    },
+                    {
+                      matchType: "eq",
+                      controlCondition: "eqVisible",
+                      relationFields: ["dictinfo"],
+                      matchFieldValue: "assignValue",
+                    },
+                    {
+                      matchType: "eq",
+                      controlCondition: "eqVisible",
+                      relationFields: ["newValues"],
+                      matchFieldValue: "changeType",
+                      staticDatas: "input",
+                    },
+                    {
+                      matchType: "eq",
+                      controlCondition: "eqRequired",
+                      relationFields: ["matchFieldValue"],
+                      matchFieldValue: [
+                        "eqDisable",
+                        "eqVisible",
+                        "eqEditable",
+                        "eqRequired",
+                        "eqHide",
+                        "eqConditionDataLinkage",
+                        "asParamDataLinkage",
+                      ],
+                    },
+                    {
+                      matchType: "eq",
+                      controlCondition: "eqRequired",
+                      relationFields: ["matchFieldName"],
+                      matchFieldValue: ["asParamDataLinkage"],
+                    },
+                  ],
                 },
               },
-              [{
+            },
+            [
+              {
                 label: "被控制属性",
                 fieldName: "relationFields",
                 type: "tselect",
@@ -144,18 +247,21 @@ const tableFieldList = reactive<PageFieldInfo | any>({
                 formVisible: true,
                 listVisible: true,
                 preps: {
-                  data:  [{
-                    label: "字段1",
-                    value: "field1"
-                  },{
-                    label: "字段2",
-                    value: "field2"
-                  }],
+                  data: [
+                    {
+                      label: "字段1",
+                      value: "field1",
+                    },
+                    {
+                      label: "字段2",
+                      value: "field2",
+                    },
+                  ],
                   multiple: true,
                   checkStrictly: true,
                 },
               },
-            
+
               {
                 label: "匹配条件",
                 fieldName: "matchType",
@@ -169,16 +275,18 @@ const tableFieldList = reactive<PageFieldInfo | any>({
                   values: searchMatchList(),
                 },
               },
-              ],
-            [{
+            ],
+            [
+              {
                 label: "参数名",
                 fieldName: "matchFieldName",
                 type: "input",
                 required: false,
-               
+
                 formVisible: true,
                 listVisible: true,
-              },{
+              },
+              {
                 label: "参数",
                 fieldName: "matchFieldValue",
                 type: "select",
@@ -187,15 +295,18 @@ const tableFieldList = reactive<PageFieldInfo | any>({
                   "1、如果是作为查询条件，则填写参数名称；\n2、如果是等于某个值，则填写具体的值；",
                 formVisible: true,
                 listVisible: true,
-                preps:{
-                  values: [{
-                    label: "参数1",
-                    value: "param1"
-                  },{
-                    label: "参数2",
-                    value: "param2"
-                  }]
-                }
+                preps: {
+                  values: [
+                    {
+                      label: "参数1",
+                      value: "param1",
+                    },
+                    {
+                      label: "参数2",
+                      value: "param2",
+                    },
+                  ],
+                },
               },
             ],
             {

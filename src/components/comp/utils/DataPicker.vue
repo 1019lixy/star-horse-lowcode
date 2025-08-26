@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useVModel } from "@vueuse/core";
 import { reactive, ref } from "vue";
+import { i18n } from "@/lang";
 import { postRequest } from "@/api/star_horse_apis";
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import { closeLoad, createCondition } from "@/api/star_horse_utils";
@@ -315,7 +316,7 @@ defineExpose({
     @resetForm="resetData"
     @closeAction="dialogVisible = false"
     draggable
-    :title="title || '选择数据'"
+    :title="title || i18n('datapicker.selectData')"
     boxWidth="60%"
     boxHeight="70%"
   >
@@ -331,17 +332,17 @@ defineExpose({
                 :indeterminate="indeterminate"
                 @change="handleCheckAll"
               >
-                全部
+                {{ i18n("datapicker.selectAll") }}
               </el-checkbox>
               <div class="flex flex-row flex-1 items-center justify-center">
-                待选数据区
+                {{ i18n("datapicker.pendingDataArea") }}
               </div>
             </div>
           </template>
           <div class="my-[5px] w-[95%] mx-auto">
             <el-input
               v-model="queryName"
-              placeholder="输入关键字进行查询"
+              :placeholder="i18n('datapicker.enterKeywords')"
               :style="{ width: '100%' }"
               suffix-icon="search"
               clearable
@@ -397,7 +398,7 @@ defineExpose({
             <div
               class="flex flex-row flex-1 items-center justify-center h-[32px]"
             >
-              已选数据区[{{ dataOptions?.length }}]
+              {{ i18n("datapicker.selectedDataArea") }}[{{ dataOptions?.length }}]
             </div>
           </template>
           <el-scrollbar tag="div" class="org-tree">

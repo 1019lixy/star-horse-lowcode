@@ -234,7 +234,7 @@ export function itemCheck(item: any) {
  * @param compInfo 组件信息
  */
 export function createComponent(compInfo: DyCompField) {
-  const app = __starHorseHostApp__;
+  const app = window.__starHorseHostApp__;
   !app && console.log("app is null,please define __starHorseHostApp__");
   // 检查是否已存在同名组件
   const existingComponent = app.component(compInfo.name);
@@ -355,10 +355,8 @@ const baseRelationEvent = (
   };
 };
 
-
 // 添加动态事件处理方法
 export function getDynamicEvents(props: any, recall: Function) {
- 
   const events: Record<string, any> = {};
   const actions = props.field.actions;
   const actionNames: string[] = Object.keys(actions || {});

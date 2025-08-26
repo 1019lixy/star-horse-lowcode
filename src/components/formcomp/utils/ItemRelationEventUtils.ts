@@ -61,9 +61,7 @@ const dataLinkage = async (props: any, item: RelationDetail, e: any) => {
   if (!Array.isArray(matchFieldValue)) {
     matchFieldValue = matchFieldValue ? [matchFieldValue] : [];
   }
-  if (
-    matchFieldValue.length > 0 && !matchFieldValue.includes(e)
-  ) {
+  if (matchFieldValue.length > 0 && !matchFieldValue.includes(e)) {
     return;
   }
   if (!Array.isArray(relationFields)) {

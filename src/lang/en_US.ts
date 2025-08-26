@@ -78,4 +78,54 @@ export default {
   "flow.designer.delNode.confirm": "Are you sure to delete?",
   "flow.designer.delNode.confirm.tips":
     "Delete this node will delete all the child nodes",
+  /**
+   * Form--------------
+   */
+  "form.submit": "Submit",
+  "form.reset": "Reset",
+  /**
+   * Search--------------
+   */
+  "search.moreQuery": "More Query",
+  "search.collapse": "Collapse",
+  "search.query": "Query",
+  "search.reset": "Reset",
+  /**
+   * Table--------------
+   */
+  "table.operation": "Operation",
+  "table.refresh": "Refresh",
+  /**
+   * Data Picker--------------
+   */
+  "datapicker.selectData": "Select Data",
+  "datapicker.selectAll": "Select All",
+  "datapicker.pendingDataArea": "Pending Data Area",
+  "datapicker.enterKeywords": "Enter keywords to search",
+  "datapicker.selectedDataArea": "Selected Data Area",
+  /**
+   * Data Selector--------------
+   */
+  "dataselector.placeholder": "Please select data",
+  /**
+   * Form Validation--------------
+   */
+  "form.requiredField": "Required field cannot be empty",
+  /**
+   * Menu--------------
+   */
+  "menu.addData": "Add Data",
+  "menu.removeData": "Remove Data",
+  /**
+   * Cron Expression--------------
+   */
+  "cron.second": "Second",
+  "cron.minute": "Minute",
+  "cron.hour": "Hour",
+  "cron.day": "Day",
+  "cron.month": "Month",
+  "cron.week": "Week",
+  "cron.year": "Year",
+  "cron.timeExpression": "Time Expression",
+  "cron.completeExpression": "Complete Crontab Expression",
 };

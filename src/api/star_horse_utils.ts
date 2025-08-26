@@ -410,15 +410,27 @@ export function isJson(v: any) {
  * @param fieldList
  */
 export function formFieldMapping(fieldList: PageFieldInfo) {
+  // Early exit for invalid data
+  if (!fieldList) {
+    return {
+      defaultDatas: {},
+      mappingFields: [],
+      batchDefaultValues: {},
+      actions: [],
+      formFields: [],
+    };
+  }
+
   let defaultDatas: any = {};
   const actions: Array<any> = [];
   const formFields: Array<FieldInfo> = [];
   //解析出字段之间的映射关系
   const mappingFields: Array<any> = [];
-  const tempList = fieldList?.fieldList;
+  const tempList = fieldList.fieldList || [];
   const batchDefaultValues: any = {};
+
   const tabOperation = (data: TabFieldInfo) => {
-    const fieldList: Array<FieldInfo> = data.fieldList;
+    const fieldList: Array<FieldInfo> = data.fieldList || [];
     if ("Y" == data.subFormFlag) {
       defaultDatas[data.tabName] = {};
       //如果是子表
@@ -427,27 +439,27 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
       fieldsOperation(fieldList, defaultDatas);
     }
   };
+
   const tableOperation = (batchTempList: Array<BatchFieldInfo>) => {
-    for (const key in batchTempList) {
-      const temp = batchTempList[key];
+    if (!batchTempList || batchTempList.length === 0) return;
+
+    for (let i = 0; i < batchTempList.length; i++) {
+      const temp = batchTempList[i];
       if (!defaultDatas[temp.batchName]) {
         defaultDatas[temp.batchName] = [];
       }
       if (!batchDefaultValues[temp.batchName + "DefaultValue"]) {
         batchDefaultValues[temp.batchName + "DefaultValue"] = [];
       }
-      const fieldList: Array<FieldInfo> = temp.fieldList;
+      const fieldList: Array<FieldInfo> = temp.fieldList || [];
       let tempData: any = {};
-      fieldList?.forEach((item) => {
+
+      for (let j = 0; j < fieldList.length; j++) {
+        const item = fieldList[j];
         if (item.defaultValue) {
           if (isJson(item.defaultValue)) {
-            let subTemp = {
-              ...batchDefaultValues[temp.batchName],
-              ...item.defaultValue,
-            };
-            Object.entries(subTemp).forEach(([key, value]) => {
-              tempData[key] = value;
-            });
+            // Use Object.assign for better performance than object spreading
+            Object.assign(tempData, item.defaultValue);
           } else {
             tempData[item.fieldName] = item.defaultValue;
           }
@@ -463,20 +475,23 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
           });
         }
         formFields.push(item);
-      });
+      }
       batchDefaultValues[temp.batchName + "DefaultValue"].push(tempData);
     }
   };
+
   const fieldsOperation = (dataList: any, defaultData: any) => {
-    for (const key in dataList) {
-      const temp = dataList[key];
-      if (temp instanceof Array) {
-        temp.forEach((item: FieldInfo) => {
+    if (!dataList || dataList.length === 0) return;
+
+    for (let i = 0; i < dataList.length; i++) {
+      const temp = dataList[i];
+      if (Array.isArray(temp)) {
+        for (let j = 0; j < temp.length; j++) {
+          const item = temp[j];
           if (item.defaultValue) {
             if (isJson(item.defaultValue)) {
-              for (const key in item.defaultValue) {
-                defaultData[key] = item.defaultValue[key];
-              }
+              // Use Object.assign for better performance
+              Object.assign(defaultData, item.defaultValue);
             } else {
               defaultData[item.fieldName] = item.defaultValue;
             }
@@ -491,25 +506,27 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
             });
           }
           formFields.push(item);
-        });
-      } else if (temp["tabList"] || temp["collapseList"] || temp["cardList"]) {
+        }
+      } else if (
+        temp &&
+        (temp["tabList"] || temp["collapseList"] || temp["cardList"])
+      ) {
         //如果是tabList
         const tabList: Array<TabFieldInfo> =
-          temp["tabList"] || temp["collapseList"] || temp["cardList"];
-        for (const index in tabList) {
-          const temp = tabList[index];
-          tabOperation(temp);
+          temp["tabList"] || temp["collapseList"] || temp["cardList"] || [];
+        for (let j = 0; j < tabList.length; j++) {
+          const tabItem = tabList[j];
+          tabOperation(tabItem);
         }
-      } else if (temp["batchFieldList"]) {
+      } else if (temp && temp["batchFieldList"]) {
         //如果是tableList
         const tableList: Array<BatchFieldInfo> = temp["batchFieldList"];
         tableOperation(tableList);
-      } else {
+      } else if (temp) {
         if (temp.defaultValue) {
           if (isJson(temp.defaultValue)) {
-            for (const key in temp.defaultValue) {
-              defaultData[key] = temp.defaultValue[key];
-            }
+            // Use Object.assign for better performance
+            Object.assign(defaultData, temp.defaultValue);
           } else {
             defaultData[temp.fieldName] = temp.defaultValue;
           }
@@ -527,10 +544,12 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
       }
     }
   };
+
   fieldsOperation(tempList, defaultDatas);
-  const batchTempList = fieldList?.batchFieldList!;
+  const batchTempList = fieldList.batchFieldList || [];
   tableOperation(batchTempList);
-  defaultDatas = { ...defaultDatas, ...batchDefaultValues };
+  Object.assign(defaultDatas, batchDefaultValues);
+
   return {
     defaultDatas,
     mappingFields,
