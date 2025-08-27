@@ -5,7 +5,7 @@ import { closeLoad, createCondition } from "@/api/star_horse_utils";
 import { compKey } from "@/api/system";
 import { ApiUrls } from "@/components/types/ApiUrls";
 import {
-  
+
   SearchParams,
 } from "@/components/types/Params";
 import { PageProps } from "@/components/types/PageProps";
@@ -260,7 +260,7 @@ const loadByPage = async () => {
 const init = async () => {
   if (props.isDynamicData) {
     if (!props.compUrl) {
-      warning("动态数据须配置数据获取接口");
+      warning(i18n("ui.dynamicInterfaceError"));
       return;
     }
     if (props.autoLoad) {

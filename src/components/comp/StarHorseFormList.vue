@@ -171,7 +171,7 @@ const excelOperation = () => {
  */
 const downloadTemplate = () => {
   download(props.importInfo!.downloadTemplateUrl, {}).catch((err) => {
-    error("接口不存在或网络异常:" + err);
+    error(i18n("comp.interfaceNotFoundOrNetworkError") + err);
   });
 };
 /**
@@ -181,17 +181,17 @@ const downloadTemplate = () => {
  * @param _fileList fileList
  */
 const uploadError = (_err: any, _file: any, _fileList: any) => {
-  warning("导入数据失败");
+  warning(i18n("ui.importFailure"));
 };
 /**
  * 上传成功
  */
 const uploadSuccess = (response: any, _file: any, _fileList: any) => {
   if (response.code != 0) {
-    warning("数据解析异常");
+    warning(i18n("ui.dataAnalysisError"));
     return;
   }
-  success("导入成功");
+  success(i18n("ui.importSuccess"));
   dataForm.value[props.batchName] = response.data;
   importDialogVisible.value = false;
 };
@@ -240,7 +240,7 @@ const clearAll = () => {
   if (dataForm.value[props.batchName].length == 0) {
     return;
   }
-  operationConfirm("确定要清空吗?").then(() => {
+  operationConfirm(i18n("ui.confirm")).then(() => {
     dataForm.value[props.batchName] = [];
   });
 };
@@ -284,7 +284,7 @@ watch(
 </script>
 <template>
   <star-horse-dialog
-    :title="'编辑数据'"
+    :title="i18n('dialog.editTitle')"
     :dialogVisible="rowDialogVisible"
     :boxWidth="'50%'"
     :is-show-btn-continue="true"
@@ -299,7 +299,7 @@ watch(
   </star-horse-dialog>
   <star-horse-dialog
     v-if="!subFlag"
-    :title="'导入文件'"
+    :title="i18n('ui.importFile')"
     :dialogVisible="importDialogVisible"
     :boxWidth="'30%'"
     :source="3"
