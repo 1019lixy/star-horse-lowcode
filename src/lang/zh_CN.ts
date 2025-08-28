@@ -131,6 +131,9 @@ export default {
   "btn.batchDelete": "批量删除",
   "btn.operation": "操作",
   "btn.import": "导入",
+  "btn.view": "查看",
+  "btn.edit": "编辑",
+  "btn.delete": "删除",
   "btn.exportHelpMsg": "如果选择了数据，则按选择数据导出;\n没有选择数据，则根据查询条件导出",
   /**
    * Cron表达式--------------
@@ -156,6 +159,9 @@ export default {
   "common.submitAndContinue": "提交并继续",
   "common.selectAll": "全部",
   "common.toBeAdded": "待涉及业务时添加",
+  "common.edit": "编辑",
+  "common.view": "查看",
+  "common.delete": "删除",
   /**
    * Cron组件--------------
    */
@@ -491,4 +497,45 @@ export default {
    */
   "userFunc.operationSuccess": "操作成功",
   "userFunc.notImplemented": "暂未实现",
+  /**
+   * StarHorseTableComp Messages
+   */
+  "table.switchToListMode": "切换为列表模式",
+  "table.switchToCardMode": "切换为卡片模式",
+  /**
+   * 批量删除
+   */
+  "table.batchDelete": "批量删除",
+  /**
+   * 创建查询条件
+   */
+  "table.createSearchCondition": "创建查询条件",
+  /**
+   * 对外导出权限
+   */
+  "table.exportPermission": "对外导出权限",
+  /**
+   * 检查是否可以选择父节点
+   */
+  "table.checkParentNode": "检查是否可以选择父节点",
+  /**
+   * 单选选择行
+   */
+  "table.selectRow": "单选选择行",
+  /**
+   * 扩展按钮
+   */
+  "table.extendButton": "扩展按钮",
+  /**
+   * 扩展表的操作
+   */
+  "table.expandTableOperation": "扩展表的操作",
+  /**
+   * 借助列表组件获取需要的数据
+   */
+  "table.getDatas": "借助列表组件获取需要的数据",
+  /**
+   * 数据展示风格
+   */
+  "table.dataDisplayStyle": "数据展示风格",
 };

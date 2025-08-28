@@ -128,6 +128,9 @@ export default {
   "btn.batchDelete": "Batch Delete",
   "btn.operation": "Operation",
   "btn.import": "Import",
+  "btn.view": "View",
+  "btn.edit": "Edit",
+  "btn.delete": "Delete",
   /**
    * Cron Expression--------------
    */
@@ -152,6 +155,9 @@ export default {
   "common.submitAndContinue": "Submit and continue",
   "common.selectAll": "Select all",
   "common.toBeAdded": "To be added when business is involved",
+  "common.edit": "Edit",
+  "common.view": "View",
+  "common.delete": "Delete",
   /**
    * Cron Components--------------
    */
@@ -491,4 +497,45 @@ export default {
    */
   "userFunc.operationSuccess": "Operation successful",
   "userFunc.notImplemented": "Not implemented yet",
+  /**
+   * StarHorseTableComp Messages
+   */
+  "table.switchToListMode": "Switch to list mode",
+  "table.switchToCardMode": "Switch to card mode",
+  /**
+   * Batch Delete
+   */
+  "table.batchDelete": "Batch Delete",
+  /**
+   * Create Search Condition
+   */
+  "table.createSearchCondition": "Create Search Condition",
+  /**
+   * Export Permission
+   */
+  "table.exportPermission": "Export Permission",
+  /**
+   * Check Parent Node
+   */
+  "table.checkParentNode": "Check Parent Node",
+  /**
+   * Select Row
+   */
+  "table.selectRow": "Select Row",
+  /**
+   * Extend Button
+   */
+  "table.extendButton": "Extend Button",
+  /**
+   * Expand Table Operation
+   */
+  "table.expandTableOperation": "Expand Table Operation",
+  /**
+   * Get Datas
+   */
+  "table.getDatas": "Get Datas",
+  /**
+   * Data Display Style
+   */
+  "table.dataDisplayStyle": "Data Display Style",
 };

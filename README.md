@@ -1,4 +1,7 @@
 # 星马低代码核心组件库(star-horse-lowcode)
+
+[English](README_EN.md) | [中文](README.md)
+
 ## 使用说明
 1. 安装依赖
 ```shell
@@ -16,8 +19,11 @@ app.use(StarHorseLowCode,{
   router: router,
   //不传此参数则使用插件内部的axios header配置参数
   //axiosInstance:axiosInstance,
+  //增加国际化配置
+  //lang:'zh_cn'||'en_us' //默认为zh_cn
   elementPlusOptions: {
-   locale: zhCn
+   locale: zhCn,
+   //...其它配置
    }
 });
 app.mount('#app')
@@ -340,6 +346,7 @@ barcode        条形码组件
                 修改表单联动事件多次触发问题
                 优化表单联动事件Bug
 43. 2025-08-21  修复collapseItem组件的change事件报错问题
+44. 2025-08-28  增加国际化语言包
                 
 
 

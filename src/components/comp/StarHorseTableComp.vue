@@ -47,76 +47,76 @@ import {
 
 const dynamicForm = useDynamicFormStore(piniaInstance);
 const props = defineProps({
-  //url地址
+  // URL address
   compUrl: { type: Object as PropType<ApiUrls | any>, required: true },
-  //主键
+  // Primary key
   primaryKey: {
     type: [String, Object] as PropType<string | any>,
     required: true,
   },
-  //列名
+  // Column name
   fieldList: { type: Object as PropType<PageFieldInfo>, required: true },
-  //按钮隐藏条件
+  // Button hidden condition
   hideBtnCondition: {
     type: Array as PropType<BtnHideCondition[]>,
     default: [],
   },
-  //是否显示批量属性
+  // Whether to show batch properties
   showBatchField: { type: Boolean, default: false },
-  //格式化方法
+  // Format method
   dataFormat: { type: Function, default: null },
-  //禁用事件
+  // Disable event
   disableAction: { type: Boolean, default: false },
-  //弹窗模式
+  // Dialog mode
   dialogInput: { type: Boolean, default: false },
-  //默认表格高度
+  // Default table height
   height: { type: String, default: "400" },
-  //过滤条件
+  // Filter condition
   filterCondition: { type: Array as PropType<SearchParams[]> },
   orderBy: { type: Array as PropType<OrderByInfo[]> },
-  //是否显示分页条
+  // Whether to show pagination
   showPageBar: { type: Boolean, default: true },
-  //数据列表
+  // Data list
   tableDataList: { type: Array },
-  //回显数据列表
+  // Echo data list
   reverseDataList: { type: Array },
-  //是否运行选择父级节点
+  // Whether to allow selecting parent node
   allowSelectParent: { type: Boolean, default: true },
-  //默认是否展开所有子节点
+  // Default whether to expand all child nodes
   expand: { type: Boolean, default: false },
-  //是否需要加载框
+  // Whether loading box is needed
   needLoad: { type: Boolean, default: true },
-  //标题
+  // Title
   title: { type: String },
-  //自定义按钮
+  // Custom button
   extendBtns: { type: Array as PropType<UserFuncInfo[]> },
-  //预检查方法,如果设置了预检查方法，必须要检查通过后，按钮事件才能继续往下执行
+  // Pre-check method. If a pre-check method is set, the button event can only continue after passing the check.
   preValidFunc: { type: Object as PropType<Array<PreValid>>, default: {} },
-  //多选
+  // Multiple selection
   multipleSelect: { type: Boolean, default: false },
-  //行高
+  // Row height
   lineHeight: { type: String, default: "30px" },
-  //显示多选框
+  // Show checkbox
   showSelection: { type: Boolean, default: true },
-  //扩展表格属性
+  // Expand table properties
   expandTable: { type: Object as PropType<ExpandTable> },
-  //帮助提示
+  // Help tooltip
   helpMsg: { type: String },
-  //全局配置，动态页面使用
+  // Global config, used by dynamic page
   globalConfig: { type: Object as PropType<any>, required: false },
-  //是否动态页面
+  // Is dynamic page
   isDynamic: { type: Boolean, default: false },
-  //隐藏按钮列表
+  // Hide button list
   hideButtonList: { type: Boolean, default: false },
   /**
-   * 数据共享人
-   *   拿到别人共享的信息
+   * Data sharer
+   *   Get information shared by others
    *   let resultData = await loadData('/system-config/system/dataPermission/currentMenuPermissionPerson', {});
-   *   上面接口主要返回共享人的账号
+   *   The above interface mainly returns the account of the sharer
    *   commonPersons.value = resultData?.data;
    */
   commonPersons: { type: Array as PropType<any>, default: [] },
-  //按钮权限
+  // Button permission
   btnPermissions: { type: Object as PropType<any>, required: false },
 });
 const emits = defineEmits(["selectItem"]);
@@ -148,8 +148,8 @@ let dialogProps = inject("dialogProps") as DialogProps;
 let toolFields = reactive<Array<any>>([]);
 const exportOperationVisible = ref<boolean>(false);
 /**
- * 按钮区域派发过来的事件
- * @param authority 权限编码
+ * Button area event
+ * @param authority Permission code
  */
 const tableCompFunc = (authority: any) => {
   if (authority == "refresh") {
@@ -222,15 +222,15 @@ const getIds = () => {
   return ids;
 };
 /**
- * 批量删除
+ * Batch delete
  */
 const batchDelete = async () => {
   await deleteById(getIds());
 };
 /**
- * 创建查询条件
+ * Create search conditions
  * @param formData
- * @param orderBy 排序
+ * @param orderBy Sorting
  */
 const createSearchParams = (
   formData: SearchParams[],
@@ -241,7 +241,7 @@ const createSearchParams = (
   loadByPage();
 };
 /**
- * 对外导出权限
+ * Export permissions
  */
 const permissionList = () => {
   return permissions.value;
@@ -256,14 +256,14 @@ const init = async () => {
       window.__hostRouter__?.currentRoute.value,
     );
   }
-  //是否初始化时自动加载列表数据开关
+  // Whether to automatically load list data when initializing
   if (!props.fieldList?.stopAutoLoad) {
     loadByPage();
   } else {
     pageInfo.value.dataList = props.tableDataList || [];
     starHorseTableCompRef.value!.clearSelection();
-    //如果有需要回显的数据则需要选中
-    //在手动设置选中前,一定要先做清除选中,否则会出现很多重复被选中的情况
+    // If there is data that needs to be echoed, it needs to be selected
+    // Before manually setting the selection, you must first clear the selection, otherwise there will be many duplicate selections
     props.reverseDataList?.forEach((item: any) => {
       starHorseTableCompRef.value!.toggleRowSelection(item, true);
     });
@@ -271,7 +271,7 @@ const init = async () => {
   moveColumn();
   reCreateData();
 };
-//监听外面传入数据的变化
+// Listen for changes in data passed in from outside
 watch(
   () => props.tableDataList,
   (val) => {
@@ -326,7 +326,7 @@ const moveColumn = () => {
         if (oldIndex === newIndex) {
           return;
         }
-        //再拖动结束位置插入当前行
+        // Insert current row at drag end position
         //  props.fieldList?.fieldList.splice(newIndex, 0, currRow);
         let oitem = props.fieldList?.fieldList[oldIndex];
         let nitem = props.fieldList?.fieldList[newIndex];
@@ -351,7 +351,7 @@ const editData = (row: any, _column?: any, evt?: Event) => {
   }
 };
 /**
- * 检查是否可以选择父节点
+ * Check if parent node can be selected
  * @param val
  */
 const checkParent = (val: any) => {
@@ -376,7 +376,7 @@ const handleSelectionChange = (val: any) => {
   if (!checkParent(val)) {
     return;
   }
-  //如果是弹出选择，没有指定多选 只能选择一条数据
+  // If it is a popup selection, without specifying multiple selection, only one data can be selected
   if (props.dialogInput && !props.multipleSelect) {
     if (val.length <= 1) {
       multipleSelection.value = val;
@@ -403,7 +403,7 @@ const handleSelectionChange = (val: any) => {
                 bflag++;
               }
             }
-            //如果不相等说明没有相同数据了
+            // If not equal, it means there is no same data
             if (bflag != Object.keys(stemp).length) {
               filters.push(temp);
             }
@@ -438,13 +438,13 @@ const tbCommonFun = (name: string | undefined, param: any) => {
   } else if (name == "delete" || name == "batchDelete") {
     deleteById(id);
   } else {
-    console.log("未定义的功能", name);
+    console.log(i18n("comp.undefinedFunction"), name);
   }
   return false;
 };
 /**
- * 解析主键
- * @param keys 主键
+ * Parse primary key
+ * @param keys Primary key
  * @param row
  */
 const analysisPrimaryKeys = (keys: any, row: any) => {
@@ -483,7 +483,7 @@ const viewById = (id: any, isExpand: boolean = false) => {
   }
 };
 /**
- * 编辑数据
+ * Edit data
  * @param id
  * @param isExpand
  */
@@ -496,7 +496,7 @@ const editById = (id: any, isExpand: boolean = false) => {
   }
 };
 /**
- * 删除数据
+ * Delete data
  * @param id
  * @param isExpand
  */
@@ -518,9 +518,9 @@ const pageChangeClick = (currentPage: number) => {
   pageInfo.value.currentPage = currentPage;
   loadByPage();
 };
-//弹出选择框属性名称
+// Popup selector property name
 const inputFieldName = ref<string>("");
-//弹窗选择框属性值
+// Popup selector property value
 const inputFieldVal = ref<any>();
 const createParams = () => {
   let searchTemp = [];
@@ -541,7 +541,7 @@ const createParams = () => {
   if (condition && condition.length > 0) {
     searchTemp.push(...condition);
   }
-  //加入共享人的信息
+  // Add shared person information
   if (props.commonPersons?.length && !isSystemManage()) {
     searchTemp.push(createCondition("a.createdBy", props.commonPersons, "in"));
   }
@@ -557,8 +557,8 @@ const createParams = () => {
   return params;
 };
 /**
- * 分页显示数据
- * @param initPageInfo 是否初始化分页信息
+ * Display data by pagination
+ * @param initPageInfo Whether to initialize pagination information
  */
 const loadByPage = (initPageInfo?: boolean) => {
   if (initPageInfo) {
@@ -580,16 +580,16 @@ const loadByPage = (initPageInfo?: boolean) => {
     url = "/system-config/redirect/pageList";
   }
   if (props.needLoad) {
-    load("数据加载中");
+    load(i18n("comp.dataLoading"));
   }
   postRequest(url, params)
     .then((res: any) => {
       if (res?.data?.code != 0) {
-        res && console.error(res?.data?.cnMessage);
+        res && console.error(res?.data?.cnMessage || res?.data?.enMessage);
         return;
       }
       let redata = res?.data?.data;
-      //如果不是分页之间显示返回的所有数据
+      // If not paginated, display all returned data
       pageInfo.value.dataList = redata?.dataList || redata;
       if (props.dialogInput) {
         filterData();
@@ -623,7 +623,7 @@ const setDataInfo = (fieldName: string, val: any) => {
   filterData();
 };
 /**
- * 单选选择行
+ * Select row
  * @param row
  * @param column
  * @param evt
@@ -638,7 +638,7 @@ const selectRow = (row: any, _column?: any, evt?: Event) => {
   if (!checkParent(row)) {
     return;
   }
-  //展开/折叠
+  // Expand/Collapse
   if (props.expandTable) {
     starHorseTableCompRef.value.toggleRowExpansion(row);
   }
@@ -664,13 +664,13 @@ const selectRow = (row: any, _column?: any, evt?: Event) => {
 };
 
 /**
- * 扩展按钮
+ * Extend button
  */
 const extendBtnFunction = (): Array<UserFuncInfo> => {
   let arr: Array<UserFuncInfo> = [];
   const extendBtnsCopy: UserFuncInfo[] = props.extendBtns ?? [];
 
-  //单独定义的按钮
+  // Separately defined buttons
   extendBtnsCopy?.forEach((item: UserFuncInfo) => {
     if (item.position != "toolbar") {
       if (!item.funcName) {
@@ -679,7 +679,7 @@ const extendBtnFunction = (): Array<UserFuncInfo> => {
       arr.push(item);
     }
   });
-  //在定义字段时定义的按钮
+  // Buttons defined when defining fields
   props.fieldList["userTableFuncs"]?.forEach((item: UserFuncInfo) => {
     if (item.position != "toolbar") {
       if (!item.funcName) {
@@ -693,7 +693,7 @@ const extendBtnFunction = (): Array<UserFuncInfo> => {
     if (!edit) {
       arr.push({
         authority: "edit",
-        btnName: "编辑",
+        btnName: i18n("common.edit"),
         icon: "edit",
         priority: 10,
         funcName: (row: any) => tbCommonFun("edit", row),
@@ -703,7 +703,7 @@ const extendBtnFunction = (): Array<UserFuncInfo> => {
     if (!view) {
       arr.push({
         authority: "view",
-        btnName: "查看",
+        btnName: i18n("common.view"),
         priority: 20,
         icon: "data-view",
         funcName: (row: any) => tbCommonFun("view", row),
@@ -713,27 +713,27 @@ const extendBtnFunction = (): Array<UserFuncInfo> => {
     if (!del) {
       arr.push({
         authority: "delete",
-        btnName: "删除",
+        btnName: i18n("common.delete"),
         priority: 30,
         icon: "delete",
         funcName: (row: any) => tbCommonFun("delete", row),
       });
     }
   }
-  //如果没有指定优先级，排序时就按照默认累加方式处理
+  // If no priority is specified, sort by default addition method
   arr.sort(
     (a: UserFuncInfo, b: UserFuncInfo) =>
       (a.priority || 40) - (b.priority || 40),
   );
   return arr;
 };
-// 修改后
+// After modification
 const buttonList = computed(() => extendBtnFunction());
 /**
- * 扩展表的操作
- * @param name 事件条件
- * @param row 当前节点的数据
- * @param parentRow 父节点的数据
+ * Expand table operation
+ * @param name Event condition
+ * @param row Current node data
+ * @param parentRow Parent node data
  */
 const expandCommonFun = (name: string, row: any, parentRow: any) => {
   let id = analysisPrimaryKeys(props.expandTable?.primaryKey, row);
@@ -742,7 +742,7 @@ const expandCommonFun = (name: string, row: any, parentRow: any) => {
       id[key] = parentRow[key];
     }
   }
-  //如果在当前行数据没有找到对应的字段，再从父级进行查找
+  // If the corresponding field is not found in the current row data, search from the parent level
   if (name == "view") {
     viewById(id, true);
   } else if (name == "edit") {
@@ -752,12 +752,12 @@ const expandCommonFun = (name: string, row: any, parentRow: any) => {
   }
 };
 /**
- * 借助列表组件获取需要的数据
- * @param limitSize 需要加载的数据
- * @param url 请求的Url,如果为空，则使用getAllByCondition接口
- * @param usePageCondition 是否使用分页查询的条件
- * @param params 查询参数
- * @param orderBys 排序
+ * Get required data with the help of list component
+ * @param limitSize Data to load
+ * @param url Request URL, if empty, use getAllByCondition interface
+ * @param usePageCondition Whether to use pagination query conditions
+ * @param params Query parameters
+ * @param orderBys Sorting
  */
 const getDatas = async (
   limitSize: number = 0,
@@ -781,7 +781,7 @@ const getDatas = async (
     orderBy: orderBys,
   });
   if (result.error) {
-    warning("数据加载异常：" + result.error);
+    warning(i18n("comp.dataLoadingException") + result.error);
   }
   return result.data;
 };
@@ -798,11 +798,11 @@ const loadField = (): FieldInfo[] => {
   }
   return [];
 };
-let typeTitle = ref<string>("切换为卡片模式");
+let typeTitle = ref<string>(i18n("table.switchToCardMode"));
 let typeIcon = ref<string>("card1");
 
 /**
- * 数据展示风格
+ * Data display style
  * @param type
  */
 const showType = (type: string) => {
@@ -812,10 +812,10 @@ const showType = (type: string) => {
     cardFieldList.value = loadField();
   }
   if (type == "card") {
-    typeTitle.value = "切换为列表模式";
+    typeTitle.value = i18n("table.switchToListMode");
     typeIcon.value = "list";
   } else {
-    typeTitle.value = "切换为卡片模式";
+    typeTitle.value = i18n("table.switchToCardMode");
     typeIcon.value = "card1";
   }
 };
@@ -825,10 +825,10 @@ const getSelectedDatas = () => {
 onMounted(() => {
   init();
 });
-//导出方法和变量
+// Export methods and variables
 defineExpose({
   init,
-  //查询
+  // Query
   createSearchParams,
   loadByPage,
   getIds,
@@ -836,14 +836,14 @@ defineExpose({
   multipleSelection,
   setDataInfo,
 
-  //按钮事件
+  // Button event
   tableCompFunc,
   getDatas,
   permissionList,
 });
 </script>
 <template>
-  <!--导出数据指定字段-->
+  <!-- Export data specified fields -->
   <star-horse-dialog
     :isShowBtnContinue="false"
     :selfFunc="true"

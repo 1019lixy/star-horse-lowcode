@@ -5,6 +5,7 @@ import { getToken } from "@/utils/auth";
 import { error } from "@/utils/message";
 import { i18n } from "@/lang";
 import axios, { AxiosResponse, InternalAxiosRequestConfig } from "axios";
+import { getLang } from "@/theme/localStorge";
 
 const userStore = useUserInfoStore(piniaInstance);
 const starHorseAxios = axios.create({
@@ -24,6 +25,7 @@ starHorseAxios.interceptors.request.use(
       config.headers.token = token;
       config.headers["Finger-Token"] = fingerToken;
       config.headers["menuPosition"] = getMenuId();
+      config.headers["lang"] = window.__starHorseHostLang__ || getLang();
     }
     return config;
   },
