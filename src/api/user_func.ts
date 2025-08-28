@@ -10,6 +10,7 @@ import { getUserInfo } from "@/utils/auth";
 import { Ref } from "vue";
 import { createCondition } from "@/api/star_horse_utils";
 import { success, warning } from "@/utils/message";
+import { i18n } from "@/lang";
 import { UserFuncInfo } from "@/components/types/PageFieldInfo";
 
 /**
@@ -107,14 +108,14 @@ export function userAction(
                 warning(res.data.cnMessage);
                 return;
               }
-              success("操作成功");
+              success(i18n("userFunc.operationSuccess"));
               tableRef.value?.loadByPage();
             });
           };
         }
       } else if (item["eventType"] == "dialog") {
         //弹出对话框
-        warning("暂未实现");
+        warning(i18n("userFunc.notImplemented"));
       } else if (item["eventType"] == "page") {
         //打开页面
         let router = window.__hostRouter__;

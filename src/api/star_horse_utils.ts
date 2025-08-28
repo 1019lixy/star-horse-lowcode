@@ -222,7 +222,7 @@ export function commonParseCodeToName(name: string, cellValue: any) {
  */
 export async function loadById(url: string, id: any, params: any = {}) {
   if (!url || "undefined" == id) {
-    warning("请提供正确的数据");
+    warning(i18n("utils.provideCorrectData"));
     return;
   }
   let objData: any = {};
@@ -230,7 +230,7 @@ export async function loadById(url: string, id: any, params: any = {}) {
   await postRequest(url + suffix, params).then((res) => {
     const redata = res.data.data;
     if (!redata) {
-      warning("未找到对应数据");
+      warning(i18n("utils.dataNotFound"));
     } else {
       objData = redata;
     }
@@ -247,14 +247,14 @@ export async function loadById(url: string, id: any, params: any = {}) {
 export async function deleteByIds(
   url: string,
   ids: any,
-  msg: string = "确认需要删除选择的数据吗？",
+  msg: string = i18n("utils.confirmDelete"),
 ) {
   if (!url) {
-    warning("请提供正确的数据");
+    warning(i18n("utils.provideCorrectData"));
     return;
   }
   if (!ids || ids.length == 0) {
-    warning("请选择要删除的数据");
+    warning(i18n("utils.selectDataToDelete"));
     return;
   }
   let objData: boolean = false;
@@ -273,7 +273,7 @@ export async function deleteByIds(
       objData = true;
     })
     .catch((err) => {
-      error("接口不存在或网络异常:" + err);
+      error(i18n("dialog.interfaceError") + err);
       objData = false;
     })
     .finally(() => {
@@ -322,19 +322,19 @@ export async function dictData(
  */
 export function searchMatchList(): SelectOption[] {
   const data: SelectOption[] = [];
-  data.push({ name: "等于", value: "eq" });
-  data.push({ name: "不等于", value: "ne" });
-  data.push({ name: "模糊", value: "lk" });
-  data.push({ name: "为空", value: "ul" });
-  data.push({ name: "不为空", value: "nu" });
-  data.push({ name: "左模糊", value: "llk" });
-  data.push({ name: "右模糊", value: "rlk" });
-  data.push({ name: "不匹配", value: "nlk" });
-  data.push({ name: "小于", value: "lt" });
-  data.push({ name: "小于或等于", value: "lte" });
-  data.push({ name: "大于", value: "gt" });
-  data.push({ name: "大于或等于", value: "gte" });
-  data.push({ name: "范围", value: "bt" });
+  data.push({ name: i18n("utils.searchMatch.equal"), value: "eq" });
+  data.push({ name: i18n("utils.searchMatch.notEqual"), value: "ne" });
+  data.push({ name: i18n("utils.searchMatch.fuzzy"), value: "lk" });
+  data.push({ name: i18n("utils.searchMatch.empty"), value: "ul" });
+  data.push({ name: i18n("utils.searchMatch.notEmpty"), value: "nu" });
+  data.push({ name: i18n("utils.searchMatch.leftFuzzy"), value: "llk" });
+  data.push({ name: i18n("utils.searchMatch.rightFuzzy"), value: "rlk" });
+  data.push({ name: i18n("utils.searchMatch.notMatch"), value: "nlk" });
+  data.push({ name: i18n("utils.searchMatch.lessThan"), value: "lt" });
+  data.push({ name: i18n("utils.searchMatch.lessThanOrEqual"), value: "lte" });
+  data.push({ name: i18n("utils.searchMatch.greaterThan"), value: "gt" });
+  data.push({ name: i18n("utils.searchMatch.greaterThanOrEqual"), value: "gte" });
+  data.push({ name: i18n("utils.searchMatch.range"), value: "bt" });
   return data;
 }
 
@@ -346,10 +346,10 @@ export function copy(msg: string) {
   navigator.clipboard
     .writeText(msg)
     .then(() => {
-      success("已复制");
+      success(i18n("utils.copied"));
     })
     .catch(() => {
-      error("复制失败");
+      error(i18n("utils.copyFailed"));
     });
 }
 

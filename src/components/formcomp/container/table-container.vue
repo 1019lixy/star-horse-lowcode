@@ -6,6 +6,7 @@ import { useDesignFormStore } from "@/store/DesignForm";
 import piniaInstance from "@/store/index";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
 import { itemCheck, uuid } from "@/api/system";
+import { i18n } from "@/lang";
 
 let containerTableRef = ref(); // 强制刷新表格
 const props = defineProps({
@@ -32,7 +33,7 @@ const formData = defineModel("formData");
 const onDragAdd = (evt: Event | any, dataList: any) => {
   let newIndex = evt.newIndex;
   if (excludeContainerType.includes(draggingItem.value.itemType)) {
-    warning("容器不能嵌套容器");
+    warning(i18n("table.containerCannotNest"));
     let elements = props.field.preps.elements;
     for (let inde in elements) {
       let element = elements[inde];
@@ -82,7 +83,7 @@ const tdOut = (evt: MouseEvent, _index: number) => {
   currentIndex.value = 0;
 };
 const deleteCol = (index: number) => {
-  operationConfirm("列删除后，对应的组件也会删除，确认删除吗？").then(
+  operationConfirm(i18n("table.confirmDeleteColumn")).then(
     (res: boolean) => {
       if (res) {
         let elements = props.field.preps.elements;

@@ -28,7 +28,7 @@
       </template>
       <template v-if="field.preps?.showFooter" #footer>
         <el-button v-if="!isAdding" text bg size="small" @click="onAddOption">
-          添加选项
+          {{ i18n("form.addComponentOption") }}
         </el-button>
         <template v-else>
           <div class="flex-row flex w-full justify-between">
@@ -93,7 +93,7 @@ const onAddOption = () => {
 const onConfirm = () => {
   // 校验输入
   if (!optionName.value) {
-    warning("请输入选项名称");
+    warning(i18n("form.enterOptionName"));
     return;
   }
 
@@ -106,7 +106,7 @@ const onConfirm = () => {
       (item: any) => item[codeName] == optionName.value,
     )
   ) {
-    warning("选项名称重复");
+    warning(i18n("form.optionNameDuplicate"));
     return;
   }
   const temp = {};

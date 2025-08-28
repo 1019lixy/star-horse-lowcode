@@ -1,60 +1,57 @@
 <template>
   <star-horse-dialog
-    :title="field.label + '数据选择'"
-    :self-func="true"
-    :dialog-visible="dialogInputVisible"
-    @merge="selectItem"
-    :box-height="'500px'"
-    @closeAction="closeAction"
+      :title="field.label + '数据选择'"
+      :self-func="true"
+      :dialog-visible="dialogInputVisible"
+      @merge="selectItem"
+      :box-height="'500px'"
+      @closeAction="closeAction"
   >
     <div style="width: 100%">
       <component
-        :is="field.preps.compName"
-        :params="field.preps"
-        ref="userTableRef"
-        style="flex: 1"
+          :is="field.preps.compName"
+          v-bind="field.preps"
+          ref="userTableRef"
+          style="flex: 1"
       />
     </div>
   </star-horse-dialog>
   <starhorse-form-item
-    :showFormItem="showFormItem"
-    :isDesign="isDesign"
-    :disabled="disabled"
-    :bareFlag="bareFlag"
-    :field="field"
-    :parentField="parentField"
+      :showFormItem="showFormItem"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      :field="field"
+      :parentField="parentField"
   >
     <el-mention
-      :disabled="checkIsDisabled(props)"
-      :options="userOptionList"
-      :whole="true"
-      :fid="field.fieldName"
-      v-bind="prepsFilter(field.preps)"
-      v-on="getDynamicEvents(props, itemAction)"
-      v-model="formData[field.fieldName]"
+        :disabled="checkIsDisabled(props)"
+        :options="userOptionList"
+        :whole="true"
+        :fid="field.fieldName"
+        v-bind="prepsFilter(field.preps)"
+        v-on="getDynamicEvents(props, itemAction)"
+        v-model="formData[field.fieldName]"
     >
       <template #append>
         <star-horse-icon
-          icon-class="user-add"
-          @click="showVisible"
-          :disabled="field.preps['disabled']"
+            icon-class="user-add"
+            @click="showVisible"
+            :disabled="field.preps['disabled']"
         />
       </template>
     </el-mention>
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { nextTick, shallowRef } from "vue";
-import { FieldMapping } from "@/components/types/PageFieldInfo";
-import { warning } from "@/utils/message";
-import {
-  allAction,
-  checkIsDisabled,
-  prepsFilter,
-} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import { getDynamicEvents } from "@/api/system";
+import {nextTick, shallowRef} from "vue";
+import {FieldMapping} from "@/components/types/PageFieldInfo";
+import {warning} from "@/utils/message";
+import {allAction, checkIsDisabled, prepsFilter,} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {getDynamicEvents} from "@/api/system";
 
-import { ItemPreps } from "@/components/types/ItemPreps";
+import {ItemPreps} from "@/components/types/ItemPreps";
+
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
   disabled: false,
@@ -73,7 +70,7 @@ const itemAction = (prep: any) => {
 const selectItem = (_row: any) => {
   userOptionList.value = [];
   let needField = props.field.preps["needField"];
-  let selectDatas = userTableRef.value.$refs.employeeInfoRef.multipleSelection;
+  let selectDatas = userTableRef.value?.$refs?.employeeInfoRef?.getSelectedDatas();
   if (!selectDatas) {
     warning("请选择数据");
     return;
@@ -87,14 +84,14 @@ const selectItem = (_row: any) => {
     if (!needField) {
       if (!Object.keys(temp).includes(name)) {
         temp[name] = [];
-        temp[aliasName] = [];
+        aliasName && (temp[aliasName] = []);
       }
       userOptionList.value.push({
         label: data["name"],
         value: data["employeeNo"],
       });
       temp[name].push(data["name"]);
-      temp[aliasName].push(data["employeeNo"]);
+      aliasName && (temp[aliasName].push(data["employeeNo"]));
     } else {
       needField.forEach((item: FieldMapping) => {
         if (needField.length == 1) {
@@ -113,14 +110,14 @@ const selectItem = (_row: any) => {
   }
 
   if (!needField) {
-    formData.value[name] = temp[name].join(" ");
-    formData.value[aliasName] = temp[aliasName].join(" ");
+    formData.value[name] = arrayToString(temp[name]);
+    aliasName && (formData.value[aliasName] = arrayToString(temp[aliasName]));
   } else {
     needField.forEach((item: FieldMapping) => {
       if (needField.length == 1) {
-        formData.value[name] = temp[item.sourceField].join(" ");
+        formData.value[name] = arrayToString(temp[item.sourceField]);
       } else {
-        formData.value[item.distField] = temp[item.distField].join(" ");
+        formData.value[item.distField] =arrayToString(temp[item.distField]);
       }
     });
   }
@@ -128,6 +125,9 @@ const selectItem = (_row: any) => {
     props.field.preps["recall"](selectDatas);
   }
   closeAction();
+};
+const arrayToString = (data: any) => {
+  return Array.isArray(data) ? data.join("") : data;
 };
 const closeAction = () => {
   dialogInputVisible.value = false;
@@ -144,9 +144,9 @@ const showVisible = () => {
     if (fields) {
       name = fields.map((item: FieldMapping) => item.sourceField)[0];
     }
-    userTableRef.value.$refs.employeeInfoRef.setDataInfo(
-      name,
-      formData.value[realName],
+    userTableRef.value?.$refs?.employeeInfoRef?.setDataInfo(
+        name,
+        formData.value[realName],
     );
   });
 };

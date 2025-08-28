@@ -361,7 +361,7 @@ const checkParent = (val: any) => {
   let flag = false;
   for (let i in val) {
     let item = val[i];
-    if (item["children"] && item["children"].length > 0) {
+    if (item["children"]?.length > 0) {
       flag = true;
       starHorseTableCompRef.value.toggleRowSelection(item, false);
     }
@@ -835,6 +835,7 @@ defineExpose({
   getSelectedDatas,
   multipleSelection,
   setDataInfo,
+
   //按钮事件
   tableCompFunc,
   getDatas,

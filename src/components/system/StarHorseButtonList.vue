@@ -12,6 +12,7 @@ import { useGlobalConfigStore } from "@/store/GlobalConfig";
 import { getToken } from "@/utils/auth";
 import { error, warning } from "@/utils/message";
 import { computed, onMounted, PropType, ref } from "vue";
+import { i18n } from "@/lang";
 
 const props = defineProps({
   dialogProps: { type: Object as PropType<DialogProps>, required: true },
@@ -68,10 +69,10 @@ const btnOperation = (funcName: string) => {
     //  dataForm.value = {};
     props.dialogProps!.ids = -1;
     props.dialogProps!.editVisible = true;
-    props.dialogProps!.dialogTitle = "新增数据";
+    props.dialogProps!.dialogTitle = i18n("dialog.addTitle");
   } else if (funcName == "batchAdd") {
     props.dialogProps!.batchEditVisible = true;
-    props.dialogProps!.batchDialogTitle = "批量新增数据";
+    props.dialogProps!.batchDialogTitle = i18n("dialog.batchAddTitle");
   } else if (funcName == "download") {
     downloadTemplate();
   } else {
@@ -85,7 +86,7 @@ const btnOperation = (funcName: string) => {
  */
 const downloadTemplate = () => {
   download(props.compUrl?.downloadTemplateUrl!, {}).catch((err) => {
-    error("接口不存在或网络异常:" + err);
+    error(i18n("dialog.interfaceError") + err);
   });
 };
 const upload = (file: any, fileList: any) => {
@@ -124,51 +125,51 @@ const extendBtnFunction = (): Array<UserFuncInfo> | any => {
     return arr;
   }
   arr.push({
-    btnName: "新增",
+    btnName: i18n("btn.add"),
     icon: "add",
     authority: "add",
     priority: 100,
     funcName: (actionName: string) => btnOperation(actionName),
   });
   arr.push({
-    btnName: "批量新增",
+    btnName: i18n("btn.batchAdd"),
     icon: "batch-add",
     authority: "batchAdd",
     priority: 110,
     funcName: (actionName: string) => btnOperation(actionName),
   });
   arr.push({
-    btnName: "下载模板",
+    btnName: i18n("btn.download"),
     icon: "download",
     authority: "download",
     priority: 120,
     funcName: (actionName: string) => btnOperation(actionName),
   });
   arr.push({
-    btnName: "执行",
+    btnName: i18n("btn.execution"),
     icon: "run",
     authority: "execution",
     priority: 130,
     funcName: (actionName: string) => btnOperation(actionName),
   });
   arr.push({
-    btnName: "导入数据",
+    btnName: i18n("btn.importData"),
     icon: "excel-upload",
     authority: "upload",
     priority: 140,
     funcName: (actionName: string) => btnOperation(actionName),
   });
   arr.push({
-    btnName: "导出数据",
+    btnName: i18n("btn.exportData"),
     icon: "excel-export",
     authority: "export",
     helpMsg:
-      "如果选择了数据，则按选择数据导出;\n没有选择数据，则根据查询条件导出",
+      i18n("btn.exportHelpMsg"),
     priority: 150,
     funcName: (actionName: string) => btnOperation(actionName),
   });
   arr.push({
-    btnName: "批量删除",
+    btnName: i18n("btn.batchDelete"),
     icon: "batch_delete1",
     authority: "batchDelete",
     priority: 160,
@@ -229,7 +230,7 @@ defineExpose({
     <el-menu mode="horizontal" :ellipsis="false">
       <el-sub-menu index="1">
         <template #title>
-          <el-tooltip content="操作" placement="top">
+          <el-tooltip :content="i18n('btn.operation')" placement="top">
             <star-horse-icon
               icon-class="operation"
               size="16px"
@@ -382,10 +383,10 @@ defineExpose({
               :headers="{ token: getToken() }"
               class="upload"
               name="file"
-              title="导入"
+              :title="i18n('btn.import')"
             >
               <star-horse-icon
-                title="导入"
+                :title="i18n('btn.import')"
                 width="27px"
                 size="18px"
                 icon-class="excel-upload"

@@ -3,6 +3,7 @@ import piniaInstance from "@/store";
 import { useUserInfoStore } from "@/store/UserInfo";
 import { getToken } from "@/utils/auth";
 import { error } from "@/utils/message";
+import { i18n } from "@/lang";
 import axios, { AxiosResponse, InternalAxiosRequestConfig } from "axios";
 
 const userStore = useUserInfoStore(piniaInstance);
@@ -64,7 +65,7 @@ starHorseAxios.interceptors.response.use(
     if (data?.includes("status code 401")) {
       forceLoginOut();
     } else if (data?.includes("status code 500")) {
-      error("服务接口异常，请联系管理员");
+      error(i18n("api.serviceError"));
       return Promise.reject(err);
     } else {
       console.log(err);

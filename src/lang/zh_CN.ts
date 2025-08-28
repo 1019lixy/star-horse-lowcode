@@ -120,6 +120,19 @@ export default {
   "menu.addData": "添加数据",
   "menu.removeData": "删除数据",
   /**
+   * Button List Strings
+   */
+  "btn.add": "新增",
+  "btn.batchAdd": "批量新增",
+  "btn.download": "下载模板",
+  "btn.execution": "执行",
+  "btn.importData": "导入数据",
+  "btn.exportData": "导出数据",
+  "btn.batchDelete": "批量删除",
+  "btn.operation": "操作",
+  "btn.import": "导入",
+  "btn.exportHelpMsg": "如果选择了数据，则按选择数据导出;\n没有选择数据，则根据查询条件导出",
+  /**
    * Cron表达式--------------
    */
   "cron.second": "秒",
@@ -244,6 +257,18 @@ export default {
   /**
    * Additional Form Component Strings
    */
+  "message.warning": "警告",
+  "message.confirm": "确认",
+  "message.cancel": "取消",
+  "message.prompt": "提示",
+  "message.success": "成功",
+  "message.error": "错误",
+  /**
+   * Dialog Titles
+   */
+  "dialog.addTitle": "新增数据",
+  "dialog.batchAddTitle": "批量新增数据",
+  "dialog.interfaceError": "接口不存在或网络异常:",
   "form.addComponent": "添加组件",
   "form.confirm": "确定",
   "form.cancel": "取消",
@@ -430,4 +455,40 @@ export default {
   "comp.undefinedFunction": "未定义的功能",
   "comp.dataLoadingException": "数据加载异常：",
   "comp.dataLoading": "数据加载中",
+  /**
+   * Star Horse Utils Messages
+   */
+  "utils.provideCorrectData": "请提供正确的数据",
+  "utils.dataNotFound": "未找到对应数据",
+  "utils.selectDataToDelete": "请选择要删除的数据",
+  "utils.confirmDelete": "确认需要删除选择的数据吗？",
+  "utils.copied": "已复制",
+  "utils.copyFailed": "复制失败",
+  "utils.searchMatch.equal": "等于",
+  "utils.searchMatch.notEqual": "不等于",
+  "utils.searchMatch.fuzzy": "模糊",
+  "utils.searchMatch.empty": "为空",
+  "utils.searchMatch.notEmpty": "不为空",
+  "utils.searchMatch.leftFuzzy": "左模糊",
+  "utils.searchMatch.rightFuzzy": "右模糊",
+  "utils.searchMatch.notMatch": "不匹配",
+  "utils.searchMatch.lessThan": "小于",
+  "utils.searchMatch.lessThanOrEqual": "小于或等于",
+  "utils.searchMatch.greaterThan": "大于",
+  "utils.searchMatch.greaterThanOrEqual": "大于或等于",
+  "utils.searchMatch.range": "范围",
+  /**
+   * Table Container Messages
+   */
+  "table.containerCannotNest": "容器不能嵌套容器",
+  "table.confirmDeleteColumn": "列删除后，对应的组件也会删除，确认删除吗？",
+  /**
+   * API Error Messages
+   */
+  "api.serviceError": "服务接口异常，请联系管理员",
+  /**
+   * User Function Messages
+   */
+  "userFunc.operationSuccess": "操作成功",
+  "userFunc.notImplemented": "暂未实现",
 };

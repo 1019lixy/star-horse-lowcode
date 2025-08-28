@@ -117,6 +117,18 @@ export default {
   "menu.addData": "Add Data",
   "menu.removeData": "Remove Data",
   /**
+   * Button List Strings
+   */
+  "btn.add": "Add",
+  "btn.batchAdd": "Batch Add",
+  "btn.download": "Download Template",
+  "btn.execution": "Execute",
+  "btn.importData": "Import Data",
+  "btn.exportData": "Export Data",
+  "btn.batchDelete": "Batch Delete",
+  "btn.operation": "Operation",
+  "btn.import": "Import",
+  /**
    * Cron Expression--------------
    */
   "cron.second": "Second",
@@ -195,6 +207,7 @@ export default {
   "ui.uploadTip": "Only xls/xlsx file types can be uploaded",
   "ui.downloadTemplate": "Download template",
   "ui.importExcel": "Import Excel",
+  "ui.importFile":"Import File",
   "ui.importSuccess":"Import Success",
   "ui.importFailure":"Import Failure",
   "ui.dataAnalysisError":"Data Analysis Error",
@@ -240,6 +253,18 @@ export default {
   /**
    * Additional Form Component Strings
    */
+  "message.warning": "Warning",
+  "message.confirm": "Confirm",
+  "message.cancel": "Cancel",
+  "message.prompt": "Prompt",
+  "message.success": "Success",
+  "message.error": "Error",
+  /**
+   * Dialog Titles
+   */
+  "dialog.addTitle": "Add Data",
+  "dialog.batchAddTitle": "Batch Add Data",
+  "dialog.interfaceError": "Interface not found or network error:",
   "form.addComponent": "Add component",
   "form.confirm": "Confirm",
   "form.cancel": "Cancel",
@@ -430,4 +455,40 @@ export default {
   "comp.undefinedFunction": "Undefined function",
   "comp.dataLoadingException": "Data loading exception:",
   "comp.dataLoading": "Data loading",
+  /**
+   * Star Horse Utils Messages
+   */
+  "utils.provideCorrectData": "Please provide correct data",
+  "utils.dataNotFound": "Data not found",
+  "utils.selectDataToDelete": "Please select data to delete",
+  "utils.confirmDelete": "Confirm to delete selected data?",
+  "utils.copied": "Copied",
+  "utils.copyFailed": "Copy failed",
+  "utils.searchMatch.equal": "Equal",
+  "utils.searchMatch.notEqual": "Not equal",
+  "utils.searchMatch.fuzzy": "Fuzzy",
+  "utils.searchMatch.empty": "Empty",
+  "utils.searchMatch.notEmpty": "Not empty",
+  "utils.searchMatch.leftFuzzy": "Left fuzzy",
+  "utils.searchMatch.rightFuzzy": "Right fuzzy",
+  "utils.searchMatch.notMatch": "Not match",
+  "utils.searchMatch.lessThan": "Less than",
+  "utils.searchMatch.lessThanOrEqual": "Less than or equal",
+  "utils.searchMatch.greaterThan": "Greater than",
+  "utils.searchMatch.greaterThanOrEqual": "Greater than or equal",
+  "utils.searchMatch.range": "Range",
+  /**
+   * Table Container Messages
+   */
+  "table.containerCannotNest": "Container cannot nest container",
+  "table.confirmDeleteColumn": "After deleting the column, the corresponding components will also be deleted. Confirm deletion?",
+  /**
+   * API Error Messages
+   */
+  "api.serviceError": "Service interface exception, please contact administrator",
+  /**
+   * User Function Messages
+   */
+  "userFunc.operationSuccess": "Operation successful",
+  "userFunc.notImplemented": "Not implemented yet",
 };
