@@ -103,7 +103,7 @@ onMounted(() => {
 });
 </script>
 <template>
-  <star-horse-dialog box-width="450px" box-height="70%" :is-view="true" :source="3" :full-screen="false"
+  <star-horse-dialog box-width="450px" box-height="70%"  :source="3" :full-screen="false"
                      :title="i18n('form.changeComponent')" :self-func="true" :dialog-visible="componentVisible"
                      @closeAction="close">
     <template #footer>
@@ -133,7 +133,7 @@ onMounted(() => {
       " :style="{
         marginBottom: isEdit && !disabled ? '1px' : '18px',
       }" :label="field?.preps['hideLabel'] ? '' : field?.preps['label']" :prop="field?.preps['name']"
-                    :required="field?.preps['required']" :rules="field?.preps['required']
+                     :rules="field?.preps['required']
           ? [
             {
               required: true,

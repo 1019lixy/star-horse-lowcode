@@ -53,7 +53,6 @@ onMounted(() => {
             <el-form-item
               :size="compSize"
               :label="sitem.label"
-              :required="sitem.required"
               style="width: 100%; height: 100%"
               :prop="loadProp(propPrefix, sitem.fieldName, -1, -1)"
               :labelPosition="parentPreps?.labelPosition"
@@ -93,7 +92,6 @@ onMounted(() => {
 <style scoped lang="scss">
 .title-style {
   font-weight: 700;
-
   background: #f5f7fa;
   color: #606266;
 }

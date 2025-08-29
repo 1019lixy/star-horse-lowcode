@@ -39,7 +39,6 @@ onMounted(() => {
         <el-form-item
           :size="compSize"
           :label="sitem.preps?.hideLabel ? '' : sitem.label"
-          :required="sitem.required"
           :prop="loadProp(propPrefix, sitem.fieldName, -1, -1)"
           :labelPosition="parentPreps?.labelPosition"
           :rules="validMsg(sitem, dataForm)"

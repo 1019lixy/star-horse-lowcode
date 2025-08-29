@@ -27,7 +27,6 @@ const props = defineProps({
   isShowReset: { type: Boolean, default: true },
   isShowSave: { type: Boolean, default: false },
   isShowBtnContinue: { type: Boolean, default: false },
-  source: { type: Number, default: 1 },
   draggable: { type: Boolean, default: true },
   boxHeight: { type: String, default: "auto" },
   boxWidth: { type: String, default: "60%" },

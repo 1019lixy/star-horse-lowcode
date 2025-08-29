@@ -144,7 +144,7 @@ const tableOperation = (actonName: string, _preps: any) => {
 };
 </script>
 <template>
-  <star-horse-dialog box-width="450px" box-height="70%" :is-view="true" :source="3" :full-screen="false" :title="i18n('form.addComponent')"
+  <star-horse-dialog box-width="450px" box-height="70%"  :source="3" :full-screen="false" :title="i18n('form.addComponent')"
     :self-func="true" :dialog-visible="componentVisible" @closeAction="close">
     <template #footer>
       <el-button type="primary" size="default" @click="close">{{

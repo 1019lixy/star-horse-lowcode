@@ -75,7 +75,6 @@ onMounted(() => {
               <el-form-item
                 :size="compSize"
                 :label="headerItem.preps?.hideLabel ? '' : headerItem.label"
-                :required="headerItem.required"
                 :prop="
                   loadProp(
                     getPrefix(cardItem, propPrefix, dataIndex, key),
