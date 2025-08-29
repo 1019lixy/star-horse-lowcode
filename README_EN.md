@@ -354,3 +354,4 @@ barcode     Barcode component
                 Optimized form linkage event Bug
 43. 2025-08-21 Fixed collapseItem component change event error issue
 44. 2025-08-28 Added internationalization language pack
+45. 2025-08-29  Fixed form design component replacement popup height issue

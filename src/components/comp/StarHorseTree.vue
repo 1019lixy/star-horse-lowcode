@@ -397,7 +397,7 @@ defineExpose({
   font-size: 13px;
   font-weight: 800;
   background: rgb(229, 230, 235);
-  border: 1px solid #33272729;
+  border: 1px solid #ebeef5;
   justify-content: space-between;
 
   .title {
