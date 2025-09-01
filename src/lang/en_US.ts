@@ -213,12 +213,12 @@ export default {
   "ui.uploadTip": "Only xls/xlsx file types can be uploaded",
   "ui.downloadTemplate": "Download template",
   "ui.importExcel": "Import Excel",
-  "ui.importFile":"Import File",
-  "ui.importSuccess":"Import Success",
-  "ui.importFailure":"Import Failure",
-  "ui.dataAnalysisError":"Data Analysis Error",
-  "ui.confirm":"Are you sure to clear?",
-  "ui.dynamicInterfaceError":"url must be configured",
+  "ui.importFile": "Import File",
+  "ui.importSuccess": "Import Success",
+  "ui.importFailure": "Import Failure",
+  "ui.dataAnalysisError": "Data Analysis Error",
+  "ui.confirm": "Are you sure to clear?",
+  "ui.dynamicInterfaceError": "url must be configured",
   "ui.clearList": "Clear list",
   "ui.serialNumber": "Serial number",
   "ui.sort": "Sort",
@@ -487,11 +487,13 @@ export default {
    * Table Container Messages
    */
   "table.containerCannotNest": "Container cannot nest container",
-  "table.confirmDeleteColumn": "After deleting the column, the corresponding components will also be deleted. Confirm deletion?",
+  "table.confirmDeleteColumn":
+    "After deleting the column, the corresponding components will also be deleted. Confirm deletion?",
   /**
    * API Error Messages
    */
-  "api.serviceError": "Service interface exception, please contact administrator",
+  "api.serviceError":
+    "Service interface exception, please contact administrator",
   /**
    * User Function Messages
    */

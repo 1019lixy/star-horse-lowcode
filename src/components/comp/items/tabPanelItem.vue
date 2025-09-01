@@ -73,7 +73,7 @@ onMounted(() => {
           "
           :dataIndex="getDataIndex(item, propPrefix, dataIndex, itemKey)"
           :propPrefix="getPrefix(item, propPrefix, dataIndex, itemKey)"
-          :fieldList="{ ...item }"
+          :fieldList="item"
           :rules="rules"
           :subFormFlag="item.subFormFlag"
           :primaryKey="item.primaryKey"

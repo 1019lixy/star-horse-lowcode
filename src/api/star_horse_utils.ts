@@ -333,7 +333,10 @@ export function searchMatchList(): SelectOption[] {
   data.push({ name: i18n("utils.searchMatch.lessThan"), value: "lt" });
   data.push({ name: i18n("utils.searchMatch.lessThanOrEqual"), value: "lte" });
   data.push({ name: i18n("utils.searchMatch.greaterThan"), value: "gt" });
-  data.push({ name: i18n("utils.searchMatch.greaterThanOrEqual"), value: "gte" });
+  data.push({
+    name: i18n("utils.searchMatch.greaterThanOrEqual"),
+    value: "gte",
+  });
   data.push({ name: i18n("utils.searchMatch.range"), value: "bt" });
   return data;
 }
@@ -568,7 +571,7 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
 export function batchFieldDefaultValues(datas: BatchFieldInfo, dataForm: any) {
   let defaultValues: any = {};
   if (datas["batchDefaultData"]) {
-    defaultValues = { ...datas["batchDefaultData"] };
+    defaultValues = Object.assign({}, datas["batchDefaultData"]);
   }
   const fieldList = datas["fieldList"];
   for (const inde in fieldList) {
@@ -586,7 +589,7 @@ export function batchFieldDefaultValues(datas: BatchFieldInfo, dataForm: any) {
   if (dataForm) {
     let temp = unref(dataForm)[datas.batchName];
     if (temp) {
-      defaultValues = { ...temp, ...defaultValues };
+      defaultValues = Object.assign({}, temp, defaultValues);
     }
   }
   return defaultValues;

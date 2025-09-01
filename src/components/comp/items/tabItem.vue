@@ -62,10 +62,7 @@ onMounted(() => {
       @tabChange="(data) => item.actions?.['tabChange']?.(data)"
       @tabAdd="(data) => item.actions?.['tabAdd']?.(data)"
     >
-      <template
-        v-for="(tabItem, key) in item.tabList"
-        :key="compKey(tabItem, key)"
-      >
+      <template v-for="(tabItem, key) in item.tabList">
         <tabPanelItem
           :item="tabItem"
           :dataIndex="dataIndex"
@@ -91,10 +88,7 @@ onMounted(() => {
       "
     >
       <el-tabs v-model="item.fieldName" :type="item.type || ''">
-        <template
-          v-for="(sitem, key) in item.batchFieldList"
-          :key="compKey(sitem, key)"
-        >
+        <template v-for="(sitem, key) in item.batchFieldList">
           <tabPanelItem
             :item="sitem"
             :dataIndex="dataIndex"
@@ -112,11 +106,7 @@ onMounted(() => {
         </template>
       </el-tabs>
     </template>
-    <template
-      v-else
-      v-for="(temp, key) in item.batchFieldList"
-      :key="compKey(temp, key)"
-    >
+    <template v-else v-for="temp in item.batchFieldList">
       <star-horse-form-table
         :rules="rules"
         :size="compSize"

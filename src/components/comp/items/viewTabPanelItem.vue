@@ -32,9 +32,7 @@ onMounted(() => {
         v-model:dataForm="dataForm[item.objectName]"
         :commonFormat="commonFormat"
         primaryKey="id"
-        :fieldList="{
-          ...item,
-        }"
+        :fieldList="item"
       />
     </template>
     <star-horse-data-view-table

@@ -1,7 +1,7 @@
 import { Config } from "@/api/settings";
 import { SelectOption } from "@/components/types/SearchProps";
 import { defineStore } from "pinia";
-import { ref, unref, shallowRef } from "vue";
+import { ref, shallowRef, unref } from "vue";
 
 export const useDesignFormStore = defineStore("designForm", () => {
   const containerList = ref<Array<any>>([]);
@@ -154,10 +154,7 @@ export const useDesignFormStore = defineStore("designForm", () => {
    * @param formData
    */
   const setFormInfo = (formData: any) => {
-    formInfo.value = {
-      ...unref(formInfo),
-      ...formData,
-    };
+    Object.assign(formInfo.value, formData);
   };
   const setCompList = (comps: Array<any>) => {
     compList.value = comps;

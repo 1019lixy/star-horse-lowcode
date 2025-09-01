@@ -47,10 +47,7 @@ onMounted(() => {
     "
   >
     <el-tabs v-model="item.fieldName">
-      <template
-        v-for="(temp, key) in item[batchFieldName]"
-        :key="compKey(temp, key)"
-      >
+      <template v-for="(temp, key) in item[batchFieldName]">
         <el-tab-pane
           :label="temp['title']"
           v-if="

@@ -77,9 +77,7 @@ const dataLinkage = async (props: any, item: RelationDetail, e: any) => {
     );
   }
   const resultData = await dynamicUrlOperation({
-    preps: {
-      ...tempParams,
-    },
+    preps: Object.assign({}, tempParams),
   });
   fieldAssign(props, relationFields, resultData);
 };

@@ -163,8 +163,7 @@ const extendBtnFunction = (): Array<UserFuncInfo> | any => {
     btnName: i18n("btn.exportData"),
     icon: "excel-export",
     authority: "export",
-    helpMsg:
-      i18n("btn.exportHelpMsg"),
+    helpMsg: i18n("btn.exportHelpMsg"),
     priority: 150,
     funcName: (actionName: string) => btnOperation(actionName),
   });
@@ -201,7 +200,7 @@ const extendBtnFunction = (): Array<UserFuncInfo> | any => {
   return arr;
 };
 const setFormData = (val: any) => {
-  dataForm.value = { ...val };
+  Object.assign(dataForm.value, val);
 };
 /**
  * 获取授权按钮长度

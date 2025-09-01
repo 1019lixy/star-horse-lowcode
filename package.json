@@ -95,7 +95,7 @@
     "vue-m-message": "^4.0.2",
     "vue-router": "^4.5.1",
     "vue3-barcode": "^1.0.1",
-    "vue3-ts-jsoneditor": "^3.0.3",
+    "vue3-ts-jsoneditor": "^3.0.4",
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {

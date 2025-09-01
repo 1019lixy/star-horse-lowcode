@@ -51,13 +51,11 @@ onMounted(() => {
 
 <template>
   <template v-if="item.cardList?.length > 0">
-    <template
-      v-for="(cardItem, key) in item.cardList"
-      :key="compKey(cardItem, key)"
-    >
+    <template v-for="(cardItem, key) in item.cardList">
       <el-card
         shadow="hover"
         style="margin-bottom: 10px"
+        :key="compKey(cardItem, key)"
         v-if="Object.keys(cardItem).length > 0"
         :index="checkObject(dataForm, cardItem, key, dataIndex, propPrefix)"
       >
@@ -118,9 +116,7 @@ onMounted(() => {
           :objectName="cardItem.objectName"
           @addRow="addRow"
           @removeRow="removeRow"
-          :fieldList="{
-            ...cardItem,
-          }"
+          :fieldList="cardItem"
           :rules="rules"
           :subFormFlag="cardItem.subFormFlag"
           :primaryKey="primaryKey"

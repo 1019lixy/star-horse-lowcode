@@ -26,7 +26,7 @@ export const useDynamicFormStore = defineStore("dynamicForm", () => {
    * @param data
    */
   const setFormData = (data: object) => {
-    dataForm.value = { ...data };
+    Object.assign(dataForm.value, data);
   };
   /**
    * 向集合添加数据

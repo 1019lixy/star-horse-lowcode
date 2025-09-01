@@ -38,9 +38,7 @@ onMounted(() => {
               v-model:dataForm="dataForm[collapseItem.objectName]"
               :objectName="collapseItem.objectName"
               :commonFormat="commonFormat"
-              :fieldList="{
-                ...collapseItem,
-              }"
+              :fieldList="collapseItem"
               :subFormFlag="collapseItem.subFormFlag"
             />
           </el-scrollbar>

@@ -146,12 +146,12 @@ const findInTree = (nodes: any[], result: any[]) => {
     // 检查当前节点是否匹配
     if (Array.isArray(value.value)) {
       if (value.value.includes(node[props.displayValue])) {
-        const temp = { ...node };
+        const temp = Object.assign({}, node);
         delete temp.children;
         result.push(temp);
       }
     } else if (node[props.displayValue] === value.value) {
-      const temp = { ...node };
+      const temp = Object.assign({}, node);
       delete temp.children;
       result.push(temp);
     }
@@ -267,7 +267,7 @@ watch(
   />
   <el-input-tag
     v-model="valueArr"
-    v-bind="{ ...props, ...$attrs }"
+    v-bind="Object.assign({}, props, $attrs)"
     @clear="selectData = []"
     @addTag="addTag"
     @removeTag="

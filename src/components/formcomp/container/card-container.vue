@@ -84,7 +84,7 @@ onMounted(() => {
       v-for="adata in field['preps']['elements']"
     >
       <template #header>
-        <div class="card-header flex items-center justify-between">
+        <div class="card-header flex items-center justify-between max-h-[50px]">
           <div class="w-[60%]">
             {{ adata.title || adata.tabName }}
             <help v-if="adata.helpMsg" :message="adata.helpMsg" />

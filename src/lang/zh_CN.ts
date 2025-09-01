@@ -134,7 +134,8 @@ export default {
   "btn.view": "查看",
   "btn.edit": "编辑",
   "btn.delete": "删除",
-  "btn.exportHelpMsg": "如果选择了数据，则按选择数据导出;\n没有选择数据，则根据查询条件导出",
+  "btn.exportHelpMsg":
+    "如果选择了数据，则按选择数据导出;\n没有选择数据，则根据查询条件导出",
   /**
    * Cron表达式--------------
    */
@@ -215,12 +216,12 @@ export default {
    */
   "ui.uploadText": "拖拽文件到这里 or 点击上传",
   "ui.uploadTip": "只能上传 xls/xlsx 文件类型",
-  "ui.importFile":"导入文件",
-  "ui.importSuccess":"导入成功",
-  "ui.importFailure":"导入失败",
-  "ui.dataAnalysisError":"数据解析异常",
-  "ui.confirm":"确定要清空吗?",
-  "ui.dynamicInterfaceError":"动态数据须配置数据获取接口",
+  "ui.importFile": "导入文件",
+  "ui.importSuccess": "导入成功",
+  "ui.importFailure": "导入失败",
+  "ui.dataAnalysisError": "数据解析异常",
+  "ui.confirm": "确定要清空吗?",
+  "ui.dynamicInterfaceError": "动态数据须配置数据获取接口",
   "ui.downloadTemplate": "下载模板",
   "ui.importExcel": "导入Excel",
   "ui.clearList": "清空列表",

@@ -23,10 +23,7 @@ defineProps({
 });
 </script>
 <template>
-  <template
-    v-for="(item, index) in fieldList?.fieldList"
-    :key="compKey(item, index)"
-  >
+  <template v-for="item in fieldList?.fieldList">
     <template v-if="Array.isArray(item)">
       <star-horse-table-column
         :data-format="dataFormat"
@@ -42,10 +39,7 @@ defineProps({
       />
     </template>
     <template v-else-if="item.tabList?.length > 0">
-      <template
-        v-for="(tabItems, key) in item.tabList"
-        :key="compKey(tabItems, key)"
-      >
+      <template v-for="tabItems in item.tabList">
         <star-horse-table-column
           :data-format="dataFormat"
           :cellEditable="fieldList['cellEditable']"
@@ -61,10 +55,7 @@ defineProps({
       </template>
     </template>
     <template v-else-if="item.dytableList?.length > 0">
-      <template
-        v-for="(tabItems, key) in item.dytableList"
-        :key="compKey(tabItems, key)"
-      >
+      <template v-for="tabItems in item.dytableList">
         <star-horse-table-column
           :data-format="dataFormat"
           :cellEditable="fieldList['cellEditable']"
@@ -110,11 +101,7 @@ defineProps({
       :item="item"
     />
   </template>
-  <template
-    v-if="showBatchField"
-    v-for="item in fieldList['batchFieldList']"
-    :key="compKey(item, item.batchName)"
-  >
+  <template v-if="showBatchField" v-for="item in fieldList['batchFieldList']">
     <star-horse-table-column
       :data-format="dataFormat"
       :compSize="compSize"

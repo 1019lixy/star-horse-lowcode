@@ -33,12 +33,12 @@ onMounted(() => {
       <tbody>
         <tr
           v-for="(row, rowIndex) in item.dytableList"
-          :key="compKey(row, rowIndex)"
+          :key="rowIndex"
           class="dy-tr"
         >
           <td
             v-for="(sitem, colIndex) in row"
-            :key="compKey(sitem, colIndex)"
+            :key="colIndex * rowIndex"
             :colspan="sitem.preps?.colspan || 1"
             :rowspan="sitem.preps?.rowspan || 1"
             :class="{ 'title-style': sitem.preps?.labelFlag == 'Y' }"
@@ -53,7 +53,7 @@ onMounted(() => {
             <el-form-item
               :size="compSize"
               :label="sitem.label"
-              style="width: 100%; height: 100%"
+              class="h-full w-full"
               :prop="loadProp(propPrefix, sitem.fieldName, -1, -1)"
               :labelPosition="parentPreps?.labelPosition"
               :rules="validMsg(sitem, dataForm)"
@@ -78,7 +78,7 @@ onMounted(() => {
               :primaryKey="primaryKey"
               v-model:dataForm="dataForm"
               :item="sitem"
-              style="width: 100%; height: 100%"
+              class="h-full w-full"
               :dataIndex="dataIndex"
               :source="source"
             />

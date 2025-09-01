@@ -28,7 +28,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <el-row v-if="Array.isArray(item)" :gutter="0">
+  <el-row v-if="Array.isArray(item)" :gutter="5">
     <el-col
       :span="sitem.colspan || sitem.preps?.colspan || 24 / item.length"
       v-for="(sitem, ind) in item"

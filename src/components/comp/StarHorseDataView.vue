@@ -26,6 +26,7 @@ watch(
   () => dialogProps?.ids,
   (val) => {
     if (val == -2) {
+      console.log("nothing");
     } else if (!val || val == -1) {
       dataForm.value = {};
     } else {
@@ -89,10 +90,10 @@ watch(
   () => props.outerData,
   (val: any) => {
     if (val) {
-      dataForm.value = { ...dataForm.value, ...val };
+      Object.assign(dataForm.value, val);
     }
   },
-  { immediate: true, deep: true },
+  { immediate: true, deep: false },
 );
 defineExpose({
   setData,

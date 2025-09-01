@@ -23,8 +23,9 @@
 import { searchMatchList } from "@/api/star_horse_utils";
 import { PageFieldInfo } from "@/components/types/PageFieldInfo";
 import { SelectOption } from "@/components/types/SearchProps";
-import { reactive, ref, nextTick } from "vue";
+import { nextTick, reactive, ref } from "vue";
 import WebUrlComp from "./WebUrlComp.vue";
+
 const areaFormRef = ref();
 const dataRelationDialogVisible = ref<boolean>(false);
 const formData = ref<any>({
@@ -127,10 +128,8 @@ const dataRelationMerge = async () => {
   if (!flag) {
     return;
   }
-  const relationData = areaFormRef?.value.getFormData().value;
-
-  formData.value["dataRelation"] = relationData;
-  console.log(JSON.stringify({ ...formData.value }));
+  formData.value["dataRelation"] = areaFormRef?.value.getFormData().value;
+  // console.log(JSON.stringify({ ...formData.value }));
   closeAction();
 };
 const closeAction = () => {

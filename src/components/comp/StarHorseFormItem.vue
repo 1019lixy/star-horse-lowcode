@@ -33,10 +33,7 @@ const checkItemType = (item: any) => {
 };
 </script>
 <template>
-  <template
-    v-for="(item, index) in fieldList.fieldList"
-    :key="compKey(item, index, false, 'form')"
-  >
+  <template v-for="(item, index) in fieldList.fieldList">
     <component
       :Key="compKey(item, index, true)"
       :is="checkItemType(item)"

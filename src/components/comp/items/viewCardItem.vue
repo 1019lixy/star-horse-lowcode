@@ -32,9 +32,7 @@ onMounted(() => {
         v-model:data-form="dataForm"
         :commonFormat="commonFormat"
         :primaryKey="primaryKey"
-        :fieldList="{
-          ...cardItem,
-        }"
+        :fieldList="cardItem"
       />
     </el-card>
   </template>

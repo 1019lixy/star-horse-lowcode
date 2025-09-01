@@ -91,13 +91,13 @@ const mergeData = async (type: string) => {
     batchArray.forEach((item: any, index: number) => {
       if (item.xh == formData.xh) {
         formData.starHorseEditing = "no";
-        batchArray[index] = { ...formData };
+        batchArray[index] = Object.assign({}, formData);
       }
     });
     console.log(batchArray);
     // dataForm.value[props.batchName].splice(parseInt(formData.xh) - 1, 1, {...formData});
   } else {
-    dataForm.value[props.batchName].push({ ...formData });
+    dataForm.value[props.batchName].push(Object.assign({}, formData));
   }
   if (type == "close") {
     closeAction();

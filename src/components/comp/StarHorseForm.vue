@@ -108,7 +108,7 @@ const loadData = async () => {
     for (let i in params) {
       let temp = params[i];
       if (!temp.subTabFlag) {
-        let subTemp = { ...objData };
+        let subTemp = Object.assign({}, objData);
         delete subTemp[temp.tableName];
         dataForm.value[temp.tableName] = [subTemp];
       }
@@ -225,7 +225,7 @@ const analysisSameToParentField = (): Array<string> => {
 const doMerge = (type: string) => {
   assignStatusName();
   let tempForm: any = [];
-  let tempDatas: any = JSON.parse(JSON.stringify(dataForm.value));
+  let tempDatas = Object.assign({}, dataForm.value);
   let mergeUrl = props.compUrl?.mergeUrl;
   let flag = true;
   //单独批量数据和嵌入fieldList 里的批量数据
@@ -243,8 +243,7 @@ const doMerge = (type: string) => {
         if (parseInt(i) > 0) {
           delete tempDatas[props.primaryKey];
         }
-        let temp = { ...tempDatas, ...batchDatas[i] };
-        tempForm.push(temp);
+        tempForm.push(Object.assign({}, tempDatas, batchDatas[i]));
       }
     });
   }
@@ -291,7 +290,7 @@ const resetForm = () => {
   dataForm.value = formFieldMapping(props.fieldList)?.defaultDatas;
   let data = unref(props.outerFormData);
   if (Object.keys(data || {}).length > 0) {
-    dataForm.value = { ...dataForm.value, ...data };
+    Object.assign(dataForm.value, data);
   }
 };
 /**
@@ -316,7 +315,7 @@ const validate = async () => {
 const setFormData = (data: any) => {
   let mappingData = formFieldMapping(props.fieldList);
   let defaultDatas = mappingData.defaultDatas;
-  dataForm.value = { ...defaultDatas, ...data };
+  Object.assign(dataForm.value, defaultDatas, data);
 };
 const setSource = (dataSource: number) => {
   source.value = dataSource;
@@ -326,7 +325,7 @@ const setSource = (dataSource: number) => {
  * @param data
  */
 const updateFormData = (data: any) => {
-  dataForm.value = { ...dataForm.value, ...data };
+  Object.assign(dataForm.value, data);
 };
 /**
  * 列表添加行数据
@@ -364,7 +363,7 @@ watch(
   () => {
     exportData();
   },
-  { immediate: false, deep: true },
+  { immediate: false },
 );
 watch(
   () => props.outerFormData,
@@ -410,7 +409,7 @@ watch(
   },
   {
     immediate: true,
-    deep: true,
+    deep: false,
   },
 );
 

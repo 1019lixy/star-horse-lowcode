@@ -83,19 +83,17 @@ const tdOut = (evt: MouseEvent, _index: number) => {
   currentIndex.value = 0;
 };
 const deleteCol = (index: number) => {
-  operationConfirm(i18n("table.confirmDeleteColumn")).then(
-    (res: boolean) => {
-      if (res) {
-        let elements = props.field.preps.elements;
-        elements.splice(index - 1, 1);
-        for (let index in elements) {
-          elements[index].colIndex = parseInt(index) + 1;
-        }
-        props.field.preps.columns = props.field.preps.columns - 1;
-        currentIndex.value = 0;
+  operationConfirm(i18n("table.confirmDeleteColumn")).then((res: boolean) => {
+    if (res) {
+      let elements = props.field.preps.elements;
+      elements.splice(index - 1, 1);
+      for (let index in elements) {
+        elements[index].colIndex = parseInt(index) + 1;
       }
-    },
-  );
+      props.field.preps.columns = props.field.preps.columns - 1;
+      currentIndex.value = 0;
+    }
+  });
 };
 </script>
 <template>

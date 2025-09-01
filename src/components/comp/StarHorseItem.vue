@@ -61,11 +61,7 @@ const actionDispatcher = (act: string, ...params: any[]) => {
   } else {
     let actions: Record<string, Function> = props.item.actions;
     const eventNames: Array<string> = Object.keys(actions || {});
-    if (
-      eventNames?.length > 0 &&
-      eventNames.includes(act) &&
-      typeof actions[act] == "function"
-    ) {
+    if (eventNames?.includes(act) && typeof actions[act] == "function") {
       actions[act](dataForm.value, params);
     }
     if (act == "focus") {

@@ -195,7 +195,7 @@ const exportData = () => {
     params = searchFields;
   }
   let defaultcond: any = removeEmptyCondition(props.compUrl?.condition!);
-  if (defaultcond && defaultcond.length > 0) {
+  if (defaultcond?.length > 0) {
     params.push(...defaultcond);
   }
   let condition: any = {
@@ -247,7 +247,7 @@ const permissionList = () => {
   return permissions.value;
 };
 const init = async () => {
-  pageInfo.value = { ...baseInfo };
+  Object.assign(pageInfo.value, baseInfo);
   if (props.btnPermissions && Object.keys(props.btnPermissions).length > 0) {
     permissions.value = props.btnPermissions;
   } else {
@@ -562,7 +562,7 @@ const createParams = () => {
  */
 const loadByPage = (initPageInfo?: boolean) => {
   if (initPageInfo) {
-    pageInfo.value = { ...baseInfo };
+    Object.assign(pageInfo.value, baseInfo);
   }
   let url: string = props.compUrl?.pageListUrl as string;
   let params: any = createParams();

@@ -1,6 +1,11 @@
 <template>
   {{ test }}
-  <StarHorseDataSelector v-model="test" :datas="datas" :multiple="false" :checkStrictly="false" />
+  <StarHorseDataSelector
+    v-model="test"
+    :datas="datas"
+    :multiple="false"
+    :checkStrictly="false"
+  />
 
   {{ formData }}
   <!--  <data-picker-item

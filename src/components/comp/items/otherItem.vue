@@ -3,8 +3,7 @@ import { checkVisible, loadProp, validMsg } from "@/api/form_utils";
 import { Config } from "@/api/settings";
 import { ContainerPreps } from "@/components/types/ItemPreps";
 import { ModelRef, onMounted } from "vue";
-
-const props = withDefaults(defineProps<ContainerPreps>(), {
+withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
   dataIndex: -1,
   // 父节点名称

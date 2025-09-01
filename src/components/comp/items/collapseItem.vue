@@ -6,13 +6,12 @@ import {
   getPrefix,
 } from "@/api/form_utils";
 import { Config } from "@/api/settings";
-import { compKey } from "@/api/system";
 import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
 import { ContainerPreps } from "@/components/types/ItemPreps";
 import { ModelRef, onMounted } from "vue";
 import { prepsFilter } from "@/components/formcomp/utils/ItemRelationEventUtils";
 
-const props = withDefaults(defineProps<ContainerPreps>(), {
+withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
   dataIndex: -1,
   // 父节点名称
@@ -54,10 +53,7 @@ onMounted(() => {
         v-bind="prepsFilter(item.preps)"
         v-on:change="(data) => item.actions?.['change']?.(data)"
       >
-        <template
-          v-for="(collapseItem, key) in item.collapseList"
-          :key="compKey(collapseItem, key)"
-        >
+        <template v-for="(collapseItem, key) in item.collapseList">
           <el-collapse-item
             v-if="Object.keys(collapseItem).length > 0"
             :name="collapseItem.tabName || key"
@@ -95,9 +91,7 @@ onMounted(() => {
                 getDataIndex(collapseItem, propPrefix, dataIndex, key)
               "
               :propPrefix="getPrefix(collapseItem, propPrefix, dataIndex, key)"
-              :fieldList="{
-                ...collapseItem,
-              }"
+              :fieldList="collapseItem"
               :rules="rules"
               :subFormFlag="collapseItem.subFormFlag"
               :primaryKey="primaryKey"

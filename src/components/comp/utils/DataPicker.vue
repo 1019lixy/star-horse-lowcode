@@ -132,7 +132,7 @@ const onNodeClick = (treeNode: any) => {
     if (node.children) {
       //非叶子节点也需要选中
       if (!props.selectLeaf) {
-        const temp = { ...node };
+        const temp = Object.assign({}, node);
         delete temp["children"];
         dataOptions.value.push(temp);
       }
@@ -142,7 +142,7 @@ const onNodeClick = (treeNode: any) => {
           (e) => e[value] === child[value],
         );
         if (add && childIndex === -1) {
-          const temp = { ...child };
+          const temp = Object.assign({}, child);
           delete temp["children"];
           dataOptions.value.push(temp);
         } else if (!add && childIndex !== -1) {

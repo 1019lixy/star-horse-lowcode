@@ -88,9 +88,7 @@ onMounted(async () => {
     let searchFieldList: Array<SearchFields> = [];
     inputPreps.fieldList?.forEach((item: FieldInfo) => {
       if (item.searchVisible) {
-        let temp: any = {
-          ...item,
-        };
+        let temp: any = Object.assign({}, item);
         if (item.prefix) {
           temp["fieldName"] = item.prefix + "." + temp["fieldName"];
         }

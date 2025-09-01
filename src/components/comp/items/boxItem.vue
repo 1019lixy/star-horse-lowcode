@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { checkVisible, loadProp, validMsg } from "@/api/form_utils";
 import { Config } from "@/api/settings";
-import { compKey } from "@/api/system";
 import { ContainerPreps } from "@/components/types/ItemPreps";
 import { onMounted } from "vue";
-
-const props = withDefaults(defineProps<ContainerPreps>(), {
+withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
   dataIndex: -1,
   // 父节点名称
@@ -27,7 +25,7 @@ onMounted(() => {
 
 <template>
   <el-row v-if="Array.isArray(item)" :gutter="10">
-    <template v-for="(sitem, index) in item" :key="compKey(sitem, index)">
+    <template v-for="sitem in item">
       <el-col
         :span="
           sitem.colspan ||
