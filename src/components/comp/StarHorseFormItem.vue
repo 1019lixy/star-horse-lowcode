@@ -1,8 +1,9 @@
 <script setup lang="ts" name="StarHorseFormItem">
-import { Config } from "@/api/settings";
-import { compKey } from "@/api/system";
-import { ModelRef } from "vue";
-import { ContainerPreps } from "../types/ItemPreps";
+import {Config} from "@/api/settings";
+import {compKey} from "@/api/system";
+import {ModelRef} from "vue";
+import {ContainerPreps} from "../types/ItemPreps";
+
 withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
   dataIndex: -1,
@@ -15,6 +16,7 @@ withDefaults(defineProps<ContainerPreps>(), {
   compSize: Config.compSize,
   source: 1,
 });
+const emits = defineEmits(["addRow", "removeRow"]);
 const dataForm: ModelRef<any> = defineModel("dataForm");
 const checkItemType = (item: any) => {
   if (Array.isArray(item)) {
@@ -31,14 +33,37 @@ const checkItemType = (item: any) => {
     return "other-item";
   }
 };
+const addRow = (row: any) => {
+  emits("addRow", row);
+};
+const removeRow = (row: any) => {
+  emits("removeRow", row);
+};
 </script>
 <template>
   <template v-for="(item, index) in fieldList.fieldList">
     <component
-      :Key="compKey(item, index, true)"
-      :is="checkItemType(item)"
+        :Key="compKey(item, index, true)"
+        :is="checkItemType(item)"
+        :primary-key="primaryKey"
+        :item="item"
+        :rules="rules"
+        :batchFieldName="batchFieldName"
+        :batchName="batchName"
+        :compSize="compSize"
+        :compUrl="compUrl"
+        :subFormFlag="subFormFlag"
+        :source="source"
+        :objectName="objectName"
+        :dataIndex="dataIndex"
+        :propPrefix="propPrefix"
+        v-model:dataForm="dataForm"
+        :parentPreps="fieldList.preps"
+    />
+  </template>
+  <table-item
       :primary-key="primaryKey"
-      :item="item"
+      :item="fieldList"
       :rules="rules"
       :batchFieldName="batchFieldName"
       :batchName="batchName"
@@ -50,24 +75,9 @@ const checkItemType = (item: any) => {
       :dataIndex="dataIndex"
       :propPrefix="propPrefix"
       v-model:dataForm="dataForm"
+      @addRow="addRow"
+      @removeRow="removeRow"
       :parentPreps="fieldList.preps"
-    />
-  </template>
-  <table-item
-    :primary-key="primaryKey"
-    :item="fieldList"
-    :rules="rules"
-    :batchFieldName="batchFieldName"
-    :batchName="batchName"
-    :compSize="compSize"
-    :compUrl="compUrl"
-    :subFormFlag="subFormFlag"
-    :source="source"
-    :objectName="objectName"
-    :dataIndex="dataIndex"
-    :propPrefix="propPrefix"
-    v-model:dataForm="dataForm"
-    :parentPreps="fieldList.preps"
   />
 </template>
 <style lang="scss" scoped></style>

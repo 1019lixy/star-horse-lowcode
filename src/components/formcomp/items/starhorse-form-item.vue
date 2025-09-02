@@ -165,6 +165,7 @@ onMounted(() => {});
         :style="{
           marginBottom: isEdit && !disabled ? '1px' : '18px',
         }"
+        class="flex items-center w-full"
         :label="field?.preps['hideLabel'] ? '' : field?.preps['label']"
         :prop="field?.preps['name']"
         :rules="
