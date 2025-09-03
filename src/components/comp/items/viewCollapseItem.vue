@@ -33,7 +33,6 @@ onMounted(() => {
           :name="collapseItem.tabName || key"
           :index="checkObject(dataForm, collapseItem, key, dataIndex, '')"
         >
-          <el-scrollbar height="95%">
             <star-horse-data-view-items
               v-model:dataForm="dataForm[collapseItem.objectName]"
               :objectName="collapseItem.objectName"
@@ -41,7 +40,6 @@ onMounted(() => {
               :fieldList="collapseItem"
               :subFormFlag="collapseItem.subFormFlag"
             />
-          </el-scrollbar>
         </el-collapse-item>
       </template>
     </el-collapse>

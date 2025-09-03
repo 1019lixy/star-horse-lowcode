@@ -84,11 +84,11 @@ watch(
             <div>{{ adata.label || adata.objectName }}</div>
           </div>
         </template>
-        <el-scrollbar height="100%" :class="{ 'dragging-area': isDragging }">
           <draggable
             @add="(evt: Event) => onDragAdd(evt, adata['items'])"
             @dragover="checkItem(adata)"
             class="card-design"
+            :class="{ 'dragging-area': isDragging }"
             group="starHorseGroup"
             animation="100"
             :item-key="uuid()"
@@ -111,7 +111,6 @@ watch(
               </div>
             </template>
           </draggable>
-        </el-scrollbar>
       </el-collapse-item>
     </el-collapse>
   </group-container>

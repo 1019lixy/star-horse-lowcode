@@ -47,7 +47,6 @@ onMounted(() => {
 
 <template>
   <template v-if="item.collapseList?.length > 0">
-    <el-scrollbar style="margin-top: 10px">
       <el-collapse
         v-model="item.fieldName"
         v-bind="prepsFilter(item.preps)"
@@ -99,7 +98,6 @@ onMounted(() => {
           </el-collapse-item>
         </template>
       </el-collapse>
-    </el-scrollbar>
   </template>
 </template>
 

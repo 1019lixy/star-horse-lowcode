@@ -126,15 +126,12 @@ onMounted(() => {
         </div>
       </template>
 
-      <el-scrollbar
-        height="100%"
-        class="min-h-20"
-        :class="{ 'dragging-area': isDragging }"
-      >
+
         <draggable
           @add="(evt: Event) => onDragAdd(evt, adata['items'])"
           @dragover="checkItem(adata, 'body')"
           class="card-design"
+          :class="{ 'dragging-area': isDragging }"
           group="starHorseGroup"
           animation="100"
           :item-key="uuid()"
@@ -157,7 +154,6 @@ onMounted(() => {
             </div>
           </template>
         </draggable>
-      </el-scrollbar>
     </el-card>
   </group-container>
 </template>

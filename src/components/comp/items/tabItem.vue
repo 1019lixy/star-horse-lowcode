@@ -127,12 +127,6 @@ onMounted(() => {
   overflow: auto;
 }
 
-:deep(.el-scrollbar__view) {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
 :deep(.el-tabs) {
   overflow: auto !important;
 }

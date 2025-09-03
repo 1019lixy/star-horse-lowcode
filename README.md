@@ -349,7 +349,7 @@ barcode        条形码组件
 44. 2025-08-28  增加国际化语言包
 45. 2025-08-29  修复表单设计更换组件弹窗高度问题
 46. 2025-09-02  修复StarHorseDataSelector 组件加载数据问题
-                
+47. 2025-09-03  优化StarHorseFormList，collapseItem,tabItem,tabPanelItem等组件的css样式                
 
 
 

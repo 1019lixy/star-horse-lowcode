@@ -83,7 +83,7 @@ export const batchModifyAction = (
     } else {
       // 排除数字类型
       if (!exclusionItems.includes(item.itemType) || fieldName == "precision") {
-        item.preps[fieldName] = val;
+          item.preps[fieldName] = val;
       }
     }
   }

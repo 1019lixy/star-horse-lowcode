@@ -109,11 +109,11 @@ const addTab = () => {};
         :label="adata['label']"
         :name="adata['tabName']"
       >
-        <el-scrollbar height="100%" :class="{ 'dragging-area': isDragging }">
           <draggable
             @add="(evt: Event) => onDragAdd(evt, adata['items'])"
             @dragover="checkItem(adata)"
             class="tab-design"
+            :class="{ 'dragging-area': isDragging }"
             group="starHorseGroup"
             animation="100"
             :item-key="uuid()"
@@ -139,7 +139,6 @@ const addTab = () => {};
               </div>
             </template>
           </draggable>
-        </el-scrollbar>
       </el-tab-pane>
     </el-tabs>
   </group-container>
