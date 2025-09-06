@@ -5,15 +5,19 @@ import vuePlugin from "eslint-plugin-vue";
 
 export default [
     {
-        files: ["**/*.vue", "**/*.js", "**/*.ts"],
-        ignores: ["**/node_modules/*", "dist/*"],
+        ignores: ["**/dist/**", "**/node_modules/**"],
+    },
+    {
+        files: ["**/*.vue", "**/*.ts"],
         languageOptions: {
             ecmaVersion: "latest",
             sourceType: "module",
             globals: {
                 ...globals.browser,
                 ...globals.node,
-                process: "readonly"
+                process: "readonly",
+                $: "readonly",
+                jQuery: "readonly"
             },
             parser: vueParser,
             parserOptions: {
@@ -30,7 +34,7 @@ export default [
             "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
             "no-unused-vars": "off",
             "@typescript-eslint/no-unused-vars": "off",
-            "quotes": ["error", "double", { "avoidEscape": true }],
+            "quotes": ["error", "double", {"avoidEscape": true}],
             "semi": ["error", "always"]
         }
     }

@@ -389,6 +389,25 @@ export default {
   "comp.underDevelopment":
     "Function under development, now click submit button to export all data",
   /**
+   * JSON Editor Strings
+   */
+  "jsonEditor.validationError": "JSON validation error",
+  "jsonEditor.parseError": "JSON parse error",
+  "jsonEditor.compact": "Compact",
+  "jsonEditor.form": "Form",
+  "jsonEditor.text": "Text",
+  "jsonEditor.tree": "Tree",
+  "jsonEditor.undo": "Undo",
+  "jsonEditor.redo": "Redo",
+  "jsonEditor.fix": "Fix",
+  "jsonEditor.autoFix": "Auto fix",
+  "jsonEditor.filter": "Filter",
+  "jsonEditor.sort": "Sort",
+  "jsonEditor.transform": "Transform",
+  "jsonEditor.query": "Query",
+  "jsonEditor.structure": "Structure",
+  "jsonEditor.preview": "Preview",
+  /**
    * Additional Component Strings
    */
   "comp.youClickedExecuteButton": "You clicked the execute button",

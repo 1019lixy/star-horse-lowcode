@@ -47,57 +47,55 @@ onMounted(() => {
 
 <template>
   <template v-if="item.collapseList?.length > 0">
-      <el-collapse
-        v-model="item.fieldName"
-        v-bind="prepsFilter(item.preps)"
-        v-on:change="(data) => item.actions?.['change']?.(data)"
-      >
-        <template v-for="(collapseItem, key) in item.collapseList">
-          <el-collapse-item
-            v-if="Object.keys(collapseItem).length > 0"
-            :name="collapseItem.tabName || key"
-            :disabled="collapseItem.disabled"
-            :index="
-              checkObject(dataForm, collapseItem, key, dataIndex, propPrefix)
-            "
-          >
-            <template #title>
-              <div class="collapse-item-title title">
-                <div style="width: 80%">
-                  {{ collapseItem.title }}
-                  <help
-                    v-if="collapseItem.helpMsg"
-                    :message="collapseItem.helpMsg"
-                  />
-                </div>
-                <star-horse-icon
-                  v-if="collapseItem.icon"
-                  :icon-class="collapseItem.icon"
+    <el-collapse
+      v-model="item.fieldName"
+      v-bind="prepsFilter(item.preps)"
+      v-on:change="(data) => item.actions?.['change']?.(data)"
+    >
+      <template v-for="(collapseItem, key) in item.collapseList">
+        <el-collapse-item
+          v-if="Object.keys(collapseItem).length > 0"
+          :name="collapseItem.tabName || key"
+          :disabled="collapseItem.disabled"
+          :index="
+            checkObject(dataForm, collapseItem, key, dataIndex, propPrefix)
+          "
+        >
+          <template #title>
+            <div class="collapse-item-title title">
+              <div style="width: 80%">
+                {{ collapseItem.title }}
+                <help
+                  v-if="collapseItem.helpMsg"
+                  :message="collapseItem.helpMsg"
                 />
               </div>
-            </template>
-            <star-horse-form-item
-              :source="source"
-              :compUrl="compUrl"
-              :compSize="compSize"
-              @addRow="addRow"
-              @removeRow="removeRow"
-              :objectName="collapseItem.objectName"
-              :dataForm="
-                getFormData(collapseItem, dataForm, propPrefix, dataIndex, key)
-              "
-              :dataIndex="
-                getDataIndex(collapseItem, propPrefix, dataIndex, key)
-              "
-              :propPrefix="getPrefix(collapseItem, propPrefix, dataIndex, key)"
-              :fieldList="collapseItem"
-              :rules="rules"
-              :subFormFlag="collapseItem.subFormFlag"
-              :primaryKey="primaryKey"
-            />
-          </el-collapse-item>
-        </template>
-      </el-collapse>
+              <star-horse-icon
+                v-if="collapseItem.icon"
+                :icon-class="collapseItem.icon"
+              />
+            </div>
+          </template>
+          <star-horse-form-item
+            :source="source"
+            :compUrl="compUrl"
+            :compSize="compSize"
+            @addRow="addRow"
+            @removeRow="removeRow"
+            :objectName="collapseItem.objectName"
+            :dataForm="
+              getFormData(collapseItem, dataForm, propPrefix, dataIndex, key)
+            "
+            :dataIndex="getDataIndex(collapseItem, propPrefix, dataIndex, key)"
+            :propPrefix="getPrefix(collapseItem, propPrefix, dataIndex, key)"
+            :fieldList="collapseItem"
+            :rules="rules"
+            :subFormFlag="collapseItem.subFormFlag"
+            :primaryKey="primaryKey"
+          />
+        </el-collapse-item>
+      </template>
+    </el-collapse>
   </template>
 </template>
 

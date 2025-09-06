@@ -1,28 +1,40 @@
 <script setup lang="ts">
-import { ModelRef, onBeforeUnmount, onMounted, PropType, ref } from "vue";
+import {
+  computed,
+  ModelRef,
+  onBeforeUnmount,
+  onMounted,
+  PropType,
+  ref,
+} from "vue";
 import JsonEditor from "vue3-ts-jsoneditor";
+import { isEn, isZH } from "@/lang";
+
+// Map project language codes to JSON editor supported languages
+const editorLanguage = computed(() => {
+  if (isEn) return "en";
+  if (isZH) return "zh-CN";
+  // Default to English for any other language
+  return "en";
+});
 
 defineProps({
   options: { type: Object as PropType<any> },
   currentMode: {
-    type: String,
-    default: "code",
+    type: Object as PropType<any>,
+    default: "text",
   },
   modeList: {
     type: Array,
-    default: () => ["tree", "code", "form", "text", "view"],
-  },
-  // en, es zh-CN, pt-BR, tr, ja, fr-FR, de, ru, ko
-  language: {
-    type: String,
-    default: "zh-CN",
+    default: () => ["tree", "text", "form", "preview"],
   },
 });
 
-const json: ModelRef<any> = defineModel("modelValue", {
+// Fix: Use the correct model name that matches what's being passed from parent
+const json: ModelRef<any> = defineModel({
   default: {},
 });
-// const jsonEditorRef = ref();
+
 // 'javascript' | 'lodash' | 'jmespath' | 'jsonquery' | 'jsonpath'
 const queryLanguages: Array<any> = [
   "javascript",
@@ -52,7 +64,9 @@ defineExpose({
 <template>
   <json-editor
     ref="editor"
-    mode="text"
+    :mode="currentMode"
+    :language="editorLanguage"
+    :modes="modeList"
     v-model:json="json"
     :queryLanguagesIds="queryLanguages"
     class="json-editor"

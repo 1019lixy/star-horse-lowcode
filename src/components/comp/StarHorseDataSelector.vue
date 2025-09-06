@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import {useVModel} from "@vueuse/core";
-import DataPicker, {type ModelValueType,} from "@/components/comp/utils/DataPicker.vue";
-import {computed, CSSProperties, onMounted, ref, watch} from "vue";
+import { useVModel } from "@vueuse/core";
+import DataPicker, {
+  type ModelValueType,
+} from "@/components/comp/utils/DataPicker.vue";
+import { computed, CSSProperties, onMounted, ref, watch } from "vue";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
-import {postRequest} from "@/api/star_horse_apis";
-import {createCondition} from "@/api/star_horse_utils";
-import {SearchParams} from "@/components/types";
-import {i18n} from "@/lang";
+import { postRequest } from "@/api/star_horse_apis";
+import { createCondition } from "@/api/star_horse_utils";
+import { SearchParams } from "@/components/types";
+import { i18n } from "@/lang";
 
 export interface DataSelectorProps {
   /**
@@ -110,8 +112,8 @@ const selectData: any = ref<any>(props.multiple ? [] : "");
 const valueArr = computed<string[]>(() => {
   if (selectData.value) {
     return Array.isArray(selectData.value)
-        ? selectData.value
-        : [selectData.value];
+      ? selectData.value
+      : [selectData.value];
   }
   return [];
 });
@@ -168,11 +170,13 @@ const init = () => {
     selectData.value = findInTree(props.datas, []);
   } else if (props.dataUrl && value.value?.length > 0) {
     const queryParams: SearchParams[] = [];
-    queryParams.push(createCondition(
+    queryParams.push(
+      createCondition(
         props.displayValue,
         Array.isArray(value.value) ? value.value : [value.value],
         "in",
-    ));
+      ),
+    );
     if (props.params?.length > 0) {
       queryParams.push(...props.params);
     }
@@ -196,17 +200,17 @@ const init = () => {
       params = baseParams;
     }
     postRequest(tempUrl!, params)
-        .then((res) => {
-          if (res?.data?.code) {
-            console.error(res?.data?.cnMessage);
-            return;
-          }
-          let redata = res?.data?.data;
-          selectData.value = findInTree(redata?.dataList || redata, []);
-        })
-        .catch((err: any) => {
-          console.log(err);
-        });
+      .then((res) => {
+        if (res?.data?.code) {
+          console.error(res?.data?.cnMessage);
+          return;
+        }
+        let redata = res?.data?.data;
+        selectData.value = findInTree(redata?.dataList || redata, []);
+      })
+      .catch((err: any) => {
+        console.log(err);
+      });
   }
 };
 const addTag = (val: any) => {
@@ -222,9 +226,9 @@ const addTag = (val: any) => {
 };
 const tagVisible = (val: any) => {
   return (
-      selectData?.value?.find((item: any) => item[props.displayValue] === val)?.[
-          props.displayName
-          ] ?? val
+    selectData?.value?.find((item: any) => item[props.displayValue] === val)?.[
+      props.displayName
+    ] ?? val
   );
 };
 onMounted(() => {
@@ -232,42 +236,42 @@ onMounted(() => {
 });
 // 新增 watch 监听 selectData 变化
 watch(
-    selectData,
-    (newVal) => {
-      // 同步modelValue
-      value.value = Array.isArray(newVal)
-          ? newVal.map((v) => v[props.displayValue])
-          : newVal?.[props.displayValue];
-      // 同步selectedData
-      emitData.value = newVal;
-    },
-    {deep: true},
+  selectData,
+  (newVal) => {
+    // 同步modelValue
+    value.value = Array.isArray(newVal)
+      ? newVal.map((v) => v[props.displayValue])
+      : newVal?.[props.displayValue];
+    // 同步selectedData
+    emitData.value = newVal;
+  },
+  { deep: true },
 );
 </script>
 
 <template>
   <data-picker
-      ref="dataPickerRef"
-      :title="title"
-      :datas="datas"
-      :data-url="dataUrl"
-      :proxy="proxy"
-      :proxy-url="proxyUrl"
-      :params="params"
-      :page-size="pageSize"
-      :display-name="displayName"
-      :display-value="displayValue"
-      :checkStrictly="checkStrictly"
-      :select-leaf="selectLeaf"
-      :multiple="multiple"
-      v-model="selectData"
+    ref="dataPickerRef"
+    :title="title"
+    :datas="datas"
+    :data-url="dataUrl"
+    :proxy="proxy"
+    :proxy-url="proxyUrl"
+    :params="params"
+    :page-size="pageSize"
+    :display-name="displayName"
+    :display-value="displayValue"
+    :checkStrictly="checkStrictly"
+    :select-leaf="selectLeaf"
+    :multiple="multiple"
+    v-model="selectData"
   />
   <el-input-tag
-      v-model="valueArr"
-      v-bind="Object.assign({}, props, $attrs)"
-      @clear="selectData = []"
-      @addTag="addTag"
-      @removeTag="
+    v-model="valueArr"
+    v-bind="Object.assign({}, props, $attrs)"
+    @clear="selectData = []"
+    @addTag="addTag"
+    @removeTag="
       (val) => {
         onClose(val);
       }
@@ -275,11 +279,11 @@ watch(
   >
     <template #prefix>
       <star-horse-icon
-          @click="openDataPicker"
-          cursor="pointer"
-          icon-class="select-data"
-          size="22px"
-          :border="true"
+        @click="openDataPicker"
+        cursor="pointer"
+        icon-class="select-data"
+        size="22px"
+        :border="true"
       />
     </template>
     <template #tag="{ value }">

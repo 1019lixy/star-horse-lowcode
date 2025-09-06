@@ -388,6 +388,25 @@ export default {
   "comp.treeMenu": "树形菜单",
   "comp.addData": "添加数据",
   "comp.deleteData": "删除数据",
+  /**
+   * JSON Editor Strings
+   */
+  "jsonEditor.validationError": "JSON格式错误",
+  "jsonEditor.parseError": "JSON解析错误",
+  "jsonEditor.compact": "紧凑",
+  "jsonEditor.form": "表单",
+  "jsonEditor.text": "文本",
+  "jsonEditor.tree": "树形",
+  "jsonEditor.undo": "撤销",
+  "jsonEditor.redo": "重做",
+  "jsonEditor.fix": "修复",
+  "jsonEditor.autoFix": "自动修复",
+  "jsonEditor.filter": "过滤",
+  "jsonEditor.sort": "排序",
+  "jsonEditor.transform": "转换",
+  "jsonEditor.query": "查询",
+  "jsonEditor.structure": "结构",
+  "jsonEditor.preview": "预览",
   "comp.underDevelopment": "功能开发中，现在点击提交按钮导出所有数据",
   /**
    * Additional Component Strings

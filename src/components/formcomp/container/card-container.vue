@@ -126,34 +126,33 @@ onMounted(() => {
         </div>
       </template>
 
-
-        <draggable
-          @add="(evt: Event) => onDragAdd(evt, adata['items'])"
-          @dragover="checkItem(adata, 'body')"
-          class="card-design"
-          :class="{ 'dragging-area': isDragging }"
-          group="starHorseGroup"
-          animation="100"
-          :item-key="uuid()"
-          ghostClass="ghost"
-          v-model="adata['items']"
-        >
-          <template #item="{ element: item }">
-            <div class="comp-item">
-              <component
-                :key="item.id"
-                :field="item"
-                :isDesign="isDesign"
-                :disabled="disabled"
-                :showFormItem="showFormItem"
-                :formInfo="formInfo"
-                :is="itemCheck(item)"
-                :parentField="field"
-                v-model:formData="formData"
-              />
-            </div>
-          </template>
-        </draggable>
+      <draggable
+        @add="(evt: Event) => onDragAdd(evt, adata['items'])"
+        @dragover="checkItem(adata, 'body')"
+        class="card-design"
+        :class="{ 'dragging-area': isDragging }"
+        group="starHorseGroup"
+        animation="100"
+        :item-key="uuid()"
+        ghostClass="ghost"
+        v-model="adata['items']"
+      >
+        <template #item="{ element: item }">
+          <div class="comp-item">
+            <component
+              :key="item.id"
+              :field="item"
+              :isDesign="isDesign"
+              :disabled="disabled"
+              :showFormItem="showFormItem"
+              :formInfo="formInfo"
+              :is="itemCheck(item)"
+              :parentField="field"
+              v-model:formData="formData"
+            />
+          </div>
+        </template>
+      </draggable>
     </el-card>
   </group-container>
 </template>

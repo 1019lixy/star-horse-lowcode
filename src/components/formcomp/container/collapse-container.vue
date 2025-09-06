@@ -84,33 +84,33 @@ watch(
             <div>{{ adata.label || adata.objectName }}</div>
           </div>
         </template>
-          <draggable
-            @add="(evt: Event) => onDragAdd(evt, adata['items'])"
-            @dragover="checkItem(adata)"
-            class="card-design"
-            :class="{ 'dragging-area': isDragging }"
-            group="starHorseGroup"
-            animation="100"
-            :item-key="uuid()"
-            ghostClass="ghost"
-            :list="adata['items']"
-          >
-            <template #item="{ element: data }">
-              <div class="comp-item">
-                <component
-                  :key="data.id"
-                  :field="data"
-                  :isDesign="isDesign"
-                  :disabled="disabled"
-                  :showFormItem="showFormItem"
-                  :formInfo="formInfo"
-                  :is="itemCheck(data)"
-                  :parentField="field"
-                  v-model:formData="formData"
-                />
-              </div>
-            </template>
-          </draggable>
+        <draggable
+          @add="(evt: Event) => onDragAdd(evt, adata['items'])"
+          @dragover="checkItem(adata)"
+          class="card-design"
+          :class="{ 'dragging-area': isDragging }"
+          group="starHorseGroup"
+          animation="100"
+          :item-key="uuid()"
+          ghostClass="ghost"
+          :list="adata['items']"
+        >
+          <template #item="{ element: data }">
+            <div class="comp-item">
+              <component
+                :key="data.id"
+                :field="data"
+                :isDesign="isDesign"
+                :disabled="disabled"
+                :showFormItem="showFormItem"
+                :formInfo="formInfo"
+                :is="itemCheck(data)"
+                :parentField="field"
+                v-model:formData="formData"
+              />
+            </div>
+          </template>
+        </draggable>
       </el-collapse-item>
     </el-collapse>
   </group-container>

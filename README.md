@@ -350,6 +350,8 @@ barcode        条形码组件
 45. 2025-08-29  修复表单设计更换组件弹窗高度问题
 46. 2025-09-02  修复StarHorseDataSelector 组件加载数据问题
 47. 2025-09-03  优化StarHorseFormList，collapseItem,tabItem,tabPanelItem等组件的css样式                
+                修复StarHorseJsonEditor 双向数据绑定时，修改数据不响应问题
+48. 2025-09-06  升级依赖插件
 
 
 

@@ -33,13 +33,13 @@ onMounted(() => {
           :name="collapseItem.tabName || key"
           :index="checkObject(dataForm, collapseItem, key, dataIndex, '')"
         >
-            <star-horse-data-view-items
-              v-model:dataForm="dataForm[collapseItem.objectName]"
-              :objectName="collapseItem.objectName"
-              :commonFormat="commonFormat"
-              :fieldList="collapseItem"
-              :subFormFlag="collapseItem.subFormFlag"
-            />
+          <star-horse-data-view-items
+            v-model:dataForm="dataForm[collapseItem.objectName]"
+            :objectName="collapseItem.objectName"
+            :commonFormat="commonFormat"
+            :fieldList="collapseItem"
+            :subFormFlag="collapseItem.subFormFlag"
+          />
         </el-collapse-item>
       </template>
     </el-collapse>

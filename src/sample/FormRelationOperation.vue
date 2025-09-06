@@ -70,7 +70,7 @@ const tableFieldList = reactive<PageFieldInfo>({
               matchType: "eq",
               controlCondition: "eqDisable",
               relationFields: "areaCode",
-              params: "button_authority",
+              matchFieldValue: "button_authority",
               xh: 1,
             },
             {

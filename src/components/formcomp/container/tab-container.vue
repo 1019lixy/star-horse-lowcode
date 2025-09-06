@@ -109,36 +109,36 @@ const addTab = () => {};
         :label="adata['label']"
         :name="adata['tabName']"
       >
-          <draggable
-            @add="(evt: Event) => onDragAdd(evt, adata['items'])"
-            @dragover="checkItem(adata)"
-            class="tab-design"
-            :class="{ 'dragging-area': isDragging }"
-            group="starHorseGroup"
-            animation="100"
-            :item-key="uuid()"
-            ghostClass="ghost"
-            :list="adata['items']"
-          >
-            <template #item="{ element: data }">
-              <div
-                class="comp-item"
-                :style="{ marginTop: isContainer(data) ? '25px' : '10px' }"
-              >
-                <component
-                  :key="data.id"
-                  :field="data"
-                  :isDesign="isDesign"
-                  :disabled="disabled"
-                  :showFormItem="showFormItem"
-                  :formInfo="formInfo"
-                  :is="itemCheck(data)"
-                  :parentField="field"
-                  v-model:formData="formData"
-                />
-              </div>
-            </template>
-          </draggable>
+        <draggable
+          @add="(evt: Event) => onDragAdd(evt, adata['items'])"
+          @dragover="checkItem(adata)"
+          class="tab-design"
+          :class="{ 'dragging-area': isDragging }"
+          group="starHorseGroup"
+          animation="100"
+          :item-key="uuid()"
+          ghostClass="ghost"
+          :list="adata['items']"
+        >
+          <template #item="{ element: data }">
+            <div
+              class="comp-item"
+              :style="{ marginTop: isContainer(data) ? '25px' : '10px' }"
+            >
+              <component
+                :key="data.id"
+                :field="data"
+                :isDesign="isDesign"
+                :disabled="disabled"
+                :showFormItem="showFormItem"
+                :formInfo="formInfo"
+                :is="itemCheck(data)"
+                :parentField="field"
+                v-model:formData="formData"
+              />
+            </div>
+          </template>
+        </draggable>
       </el-tab-pane>
     </el-tabs>
   </group-container>
