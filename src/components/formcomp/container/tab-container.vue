@@ -5,12 +5,12 @@ import piniaInstance from "@/store/index";
 import { compKey, itemCheck, uuid } from "@/api/system";
 
 const props = defineProps({
-  parentField: { type: String },
-  isDesign: { type: Boolean, default: false },
-  showFormItem: { type: Boolean, default: false },
-  disabled: { type: Object as PropType<Boolean | String> },
-  formInfo: { type: Object as PropType<any> },
-  field: { type: Object as PropType<any> },
+  parentField: {type: Object as PropType<any>},
+  isDesign: {type: Boolean, default: false},
+  showFormItem: {type: Boolean, default: false},
+  disabled: {type: Boolean, default: false},
+  formInfo: {type: Object as PropType<any>},
+  field: {type: Object as PropType<any>},
 });
 let designForm = useDesignFormStore(piniaInstance);
 const isDragging = computed(() => designForm.isDragging);

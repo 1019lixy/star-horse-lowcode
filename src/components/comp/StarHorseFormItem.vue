@@ -25,6 +25,8 @@ const checkItemType = (item: any) => {
     return "card-item";
   } else if (item.collapseList?.length > 0) {
     return "collapse-item";
+  }else if (item.splitterList?.length > 0) {
+    return "splitter-item";
   } else if (item.dytableList?.length > 0) {
     return "dytable-item";
   } else if (item.tabList?.length > 0 || item.batchFieldList?.length > 0) {

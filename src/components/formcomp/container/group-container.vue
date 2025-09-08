@@ -1,34 +1,28 @@
 <script setup lang="ts">
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
-import {
-  insertBelowRow,
-  insertRightCol,
-} from "@/components/formcomp/container/dytableUtils";
+import {insertBelowRow, insertRightCol,} from "@/components/formcomp/container/dytableUtils";
 import FieldList from "@/components/formcomp/utils/FieldList.vue";
-import { i18n } from "@/lang";
-import {
-  copyContainer,
-  dynamicFormContextMenuData,
-} from "@/plugins/AblesPlugin";
-import { useDesignFormStore } from "@/store/DesignForm";
+import {i18n} from "@/lang";
+import {copyContainer, dynamicFormContextMenuData,} from "@/plugins/AblesPlugin";
+import {useDesignFormStore} from "@/store/DesignForm";
 import piniaInstance from "@/store/index";
-import { fieldCopy } from "@/utils/FieldOperationUtils";
-import { operationConfirm } from "@/utils/message";
-import { computed, ref } from "vue";
+import {fieldCopy} from "@/utils/FieldOperationUtils";
+import {operationConfirm} from "@/utils/message";
+import {computed, PropType, ref} from "vue";
 
 const props = defineProps({
-  isDesign: { type: Boolean, default: false },
-  disabled: { type: Boolean, default: false },
-  parentField: { type: Object },
-  formItem: { type: Object, required: true },
+  isDesign: {type: Boolean, default: false},
+  disabled: {type: Boolean, default: false},
+  parentField: {type: Object as PropType<any>},
+  formItem: {type: Object, required: true},
 });
 let designForm = useDesignFormStore(piniaInstance);
 let compList = computed(() => designForm.compList);
 let currentItemId = computed(() => designForm.currentItemId);
 let componentVisible = computed(() => {
   return (
-    designForm.componentVisible &&
-    currentItemId.value == props.formItem?.preps.id
+      designForm.componentVisible &&
+      currentItemId.value == props.formItem?.preps.id
   );
 });
 let isEdit = computed(() => props.isDesign);
@@ -115,11 +109,11 @@ const tableOperation = (actonName: string, _preps: any) => {
   const itemType = props.formItem.itemType;
   if (actonName == "insertRow") {
     insertBelowRow(
-      {
-        parentField: props.formItem,
-        rowIndex: preps.elements.length,
-      },
-      itemType,
+        {
+          parentField: props.formItem,
+          rowIndex: preps.elements.length,
+        },
+        itemType,
     );
   } else if (actonName == "insertCol") {
     if (props.formItem.itemType == "table") {
@@ -127,12 +121,12 @@ const tableOperation = (actonName: string, _preps: any) => {
       return;
     }
     insertRightCol(
-      {
-        parentField: props.formItem,
-        colIndex: preps.elements[0].columns.length,
-      },
-      itemType,
-      true,
+        {
+          parentField: props.formItem,
+          colIndex: preps.elements[0].columns.length,
+        },
+        itemType,
+        true,
     );
   } else if (actonName == "copy") {
     //拷贝容器
@@ -142,74 +136,75 @@ const tableOperation = (actonName: string, _preps: any) => {
 </script>
 <template>
   <star-horse-dialog
-    box-width="450px"
-    box-height="70%"
-    :source="3"
-    :full-screen="false"
-    :title="i18n('form.addComponent')"
-    :self-func="true"
-    :dialog-visible="componentVisible"
-    @closeAction="close"
+      box-width="450px"
+      box-height="70%"
+      :source="3"
+      :full-screen="false"
+      :title="i18n('form.addComponent')"
+      :self-func="true"
+      :dialog-visible="componentVisible"
+      @closeAction="close"
   >
     <template #footer>
       <el-button type="primary" size="default" @click="close">{{
-        i18n("form.confirm")
-      }}</el-button>
+          i18n("form.confirm")
+        }}
+      </el-button>
     </template>
-    <field-list @selectData="addItem" />
+    <field-list @selectData="addItem"/>
   </star-horse-dialog>
   <div
-    class="field-item"
-    v-if="isEdit && isDesign"
-    @contextmenu="containerContextMenu"
+      class="field-item"
+      v-if="isEdit && isDesign"
+      @contextmenu="containerContextMenu"
   >
     <slot></slot>
     <div
-      class="drag-handler"
-      v-if="isEdit && isDesign && currentItemId == formItem.id"
+        class="drag-handler"
+        v-if="isEdit && isDesign && currentItemId == formItem.id"
     >
       <el-tooltip :content="i18n('form.drag')">
         <star-horse-icon
-          icon-class="drag"
-          size="18px"
-          style="color: var(--star-horse-white)"
+            icon-class="drag"
+            size="18px"
+            style="color: var(--star-horse-white)"
         />
       </el-tooltip>
       <el-tooltip :content="i18n('form.selectContainer')">
         <star-horse-icon
-          cursor="pointer"
-          @click.stop="selectData"
-          icon-class="select-parent"
-          style="color: var(--star-horse-white)"
+            cursor="pointer"
+            @click.stop="selectData"
+            icon-class="select-parent"
+            style="color: var(--star-horse-white)"
         />
       </el-tooltip>
       <el-tooltip :content="i18n('form.deleteContainer')">
         <star-horse-icon
-          cursor="pointer"
-          @click.stop="removeData"
-          icon-class="clear-all"
-          style="color: var(--star-horse-white)"
+            cursor="pointer"
+            @click.stop="removeData"
+            icon-class="clear-all"
+            style="color: var(--star-horse-white)"
         />
       </el-tooltip>
     </div>
     <div
-      class="field-action"
-      v-if="isEdit && isDesign && currentItemId == formItem.id"
+        class="field-action"
+        v-if="isEdit && isDesign && currentItemId == formItem.id"
     >
       <template
-        v-if="formItem.itemType == 'dytable' || formItem.itemType == 'box'"
+          v-if="formItem.itemType == 'dytable' || formItem.itemType == 'box'"
       >
         <el-tooltip :content="i18n('form.insertRow')">
           <star-horse-icon
-            @click.stop="tableOperation('insertRow', formItem?.preps)"
-            icon-class="insert_row"
-            cursor="pointer"
-            style="color: var(--star-horse-white)"
+              @click.stop="tableOperation('insertRow', formItem?.preps)"
+              icon-class="insert_row"
+              cursor="pointer"
+              style="color: var(--star-horse-white)"
           />
         </el-tooltip>
       </template>
       <template
-        v-if="
+          v-if="
           formItem.itemType == 'dytable' ||
           formItem.itemType == 'box' ||
           formItem.itemType == 'table'
@@ -217,25 +212,25 @@ const tableOperation = (actonName: string, _preps: any) => {
       >
         <el-tooltip :content="i18n('form.insertCol')">
           <star-horse-icon
-            @click.stop="tableOperation('insertCol', formItem?.preps)"
-            icon-class="insert_col"
-            cursor="pointer"
-            style="color: var(--star-horse-white)"
+              @click.stop="tableOperation('insertCol', formItem?.preps)"
+              icon-class="insert_col"
+              cursor="pointer"
+              style="color: var(--star-horse-white)"
           />
         </el-tooltip>
       </template>
       <el-tooltip :content="i18n('form.copyContainer')">
         <star-horse-icon
-          @click.stop="tableOperation('copy', formItem?.preps)"
-          icon-class="copy"
-          style="color: var(--star-horse-white)"
+            @click.stop="tableOperation('copy', formItem?.preps)"
+            icon-class="copy"
+            style="color: var(--star-horse-white)"
         />
       </el-tooltip>
     </div>
     <Teleport to="body">
       <ContentMenu
-        ref="containerContextMenuRef"
-        :menu-data="
+          ref="containerContextMenuRef"
+          :menu-data="
           dynamicFormContextMenuData(formItem, parentField, 'container')
         "
       />

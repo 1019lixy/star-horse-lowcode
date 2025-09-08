@@ -33,7 +33,9 @@ const checkItemType = (item: any) => {
     return "view-card-item";
   } else if (item.collapseList?.length > 0) {
     return "view-collapse-item";
-  } else if (item.tabList?.length > 0 || item.batchFieldList?.length > 0) {
+  }else if (item.splitterList?.length > 0) {
+    return "view-splitter-item";
+  }  else if (item.tabList?.length > 0 || item.batchFieldList?.length > 0) {
     return "view-tab-item";
   } else if (item.dytableList?.length > 0) {
     return "view-dytable-item";

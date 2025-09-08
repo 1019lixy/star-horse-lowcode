@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { onMounted, PropType, ref } from "vue";
-import { DynamicNode } from "@/components/types/DynamicNode";
-import { dynamicPageContextMenuData } from "@/plugins/AblesPlugin";
-import { compKey } from "@/api/system";
+import {onMounted, PropType, ref} from "vue";
+import {DynamicNode} from "@/components/types/DynamicNode";
+import {dynamicPageContextMenuData} from "@/plugins/AblesPlugin";
+import {compKey} from "@/api/system";
 
 const props = defineProps({
   msg: {
@@ -14,6 +14,19 @@ const props = defineProps({
     required: true,
   },
   isActive: {
+    type: Boolean,
+    default: false,
+  },
+  showLine: {
+    type: Boolean,
+    default: false,
+  },
+  styles: {
+    type: Object,
+    default: () => {
+    },
+  },
+  isDesign: {
     type: Boolean,
     default: false,
   },
@@ -143,8 +156,8 @@ const rangeMove = (evt: MouseEvent, direction: string) => {
     if (shouldAdjustHeight) {
       const heightDelta = deltaY * step.value;
       const finalHeightDelta = invertHeightDirection
-        ? -heightDelta
-        : heightDelta;
+          ? -heightDelta
+          : heightDelta;
 
       if (adjustTop) {
         props.node.top = (props.node.top || 0) - finalHeightDelta;
@@ -174,7 +187,6 @@ const dragStart = (evt: MouseEvent) => {
 };
 const dragAction = (evt: MouseEvent) => {
   if (isDragging.value && props.isActive) {
-    console.log("dragAction");
     const deltaX = evt.clientX - initialX.value;
     const deltaY = evt.clientY - initialY.value;
     props.node.left = nodeStartX.value + deltaX;
@@ -197,60 +209,73 @@ onMounted(() => {
 
 <template>
   <div
-    class="node"
-    :class="{ active: isActive }"
-    :style="{
+      class="node"
+      :class="{ active: isActive }"
+      :style="{
       width: node.width + 'px !important',
       height: node.height + 'px !important',
       left: node.left + 'px!important',
       top: node.top + 'px!important',
       cursor: isActive ? 'move' : 'default',
       zIndex: node.zIndex,
+       ...styles
     }"
-    @contextmenu="contextmenu"
-    @mousedown="dragStart"
-    @click.stop="selectItem"
-    @mouseup="endAction"
-    @mousemove="dragAction"
+      @contextmenu="contextmenu"
+      @mousedown="dragStart"
+      @click.stop="selectItem"
+      @mouseup="endAction"
+      @mousemove="dragAction"
+      v-if="isDesign"
   >
     <div class="node__wrapper">
+
       <div
-        v-if="isActive"
-        class="node-line node-line-left"
-        :style="{ 'border-width': '1px', 'border-color': 'red' }"
+          v-if="isActive&&showLine"
+          class="node-line node-line-left"
+          :style="{ 'border-width': '1px', 'border-color': 'red' }"
       ></div>
       <div
-        v-if="isActive"
-        class="node-line node-line-top"
-        :style="{ 'border-width': '3px', 'border-color': 'red' }"
+          v-if="isActive&&showLine"
+          class="node-line node-line-top"
+          :style="{ 'border-width': '3px', 'border-color': 'red' }"
       ></div>
       <div
-        class="node-point"
-        :class="'node-point-' + item"
-        v-for="(item, key) in pointList"
-        :key="compKey(item, key)"
-        @mousedown="rangeMove($event, item)"
-        v-if="isActive"
+          class="node-point"
+          :class="'node-point-' + item"
+          v-for="(item, key) in pointList"
+          :key="compKey(item, key)"
+          @mousedown="rangeMove($event, item)"
+          v-if="isActive"
       ></div>
       <div class="node-item node-content">
-        <h3>{{ node.name }}</h3>
+        <slot></slot>
       </div>
     </div>
   </div>
+  <div
+      class="node"
+      :class="{ active: isActive }"
+      :style="{
+      width: node.width + 'px !important',
+      height: node.height + 'px !important',
+      left: node.left + 'px!important',
+      top: node.top + 'px!important',
+      cursor: isActive ? 'move' : 'default',
+      zIndex: node.zIndex,
+      ...styles
+    }" v-else>
+    <slot></slot>
+  </div>
   <Teleport to="body">
     <ContentMenu
-      ref="contentMenuRef"
-      :menu-data="dynamicPageContextMenuData(node)"
+        ref="contentMenuRef"
+        :menu-data="dynamicPageContextMenuData(node)"
     />
   </Teleport>
 </template>
 
 <style scoped lang="scss">
 .node {
-  width: 100px;
-  height: 100px;
-  background: #ccc;
-  margin: 10px;
   position: relative;
   border: 1px solid #cecece;
   cursor: move;

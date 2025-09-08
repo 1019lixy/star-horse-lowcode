@@ -3,7 +3,9 @@
 [English](README_EN.md) | [中文](README.md)
 
 ## 使用说明
+
 1. 安装依赖
+
 ```shell
 在main.js中引入
 import StarHorseLowCode from "star-horse-lowcode";
@@ -28,10 +30,14 @@ app.use(StarHorseLowCode,{
 });
 app.mount('#app')
 ```
+
 2. 启动项目
+
 ```shell
 ```
+
 3. 说明
+
 ```
 Node 版本 >20
 该组件库基于vue3+ts+pinia+vue-router+element-plus开发，
@@ -69,7 +75,9 @@ Node 版本 >20
  使用过程中遇到问题或提出你的宝贵意见可邮件至：l_1019@163.com
  
 ```
+
 4. 完整示例（将此代码拷贝到新建.vue空文件）
+
 ```
 <script setup lang="ts">
 import {onMounted, provide, reactive, ref} from "vue";
@@ -252,9 +260,11 @@ qrcode         二维码组件
 barcode        条形码组件
 
 ```
+
 5.示例图片
- 请到gitee 查看示例图片
+请到gitee 查看示例图片
 6.BUG 修改记录
+
 ```
 1. 2025-03-31 修复动态表单Store piniaInstance 对象共享数据问题
               修复列表操作按钮不显示问题
@@ -352,7 +362,7 @@ barcode        条形码组件
 47. 2025-09-03  优化StarHorseFormList，collapseItem,tabItem,tabPanelItem等组件的css样式                
                 修复StarHorseJsonEditor 双向数据绑定时，修改数据不响应问题
 48. 2025-09-06  升级依赖插件
-
+49. 2025-09-08  修复StarHorseDraggable 组件插槽和设计与非设计模式时的数据控制问题
 
 
 
