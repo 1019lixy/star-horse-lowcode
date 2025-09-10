@@ -7,7 +7,7 @@ import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import { closeLoad, createCondition } from "@/api/star_horse_utils";
 import { PageProps } from "@/components/types/PageProps";
 import { SearchParams } from "@/components/types";
-
+import JSON5 from "json5";
 export type ModelValueType = any;
 
 export interface DataDropdownProps {
@@ -126,7 +126,7 @@ const renderClass = (data: any, node: any): string => {
 
 const onNodeClick = (treeNode: any) => {
   let value = props.displayValue || "value";
-  const data = JSON.parse(JSON.stringify(treeNode));
+  const data = JSON5.parse(JSON5.stringify(treeNode));
   // 新增处理父子节点逻辑
   const processChildren = (node: any, add: boolean) => {
     if (node.children) {

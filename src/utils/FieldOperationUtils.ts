@@ -2,6 +2,7 @@ import { uuid } from "@/api/system";
 import { computed } from "vue";
 import { useDesignFormStore } from "@/store/DesignForm";
 import piniaInstance from "@/store";
+import JSON5 from "json5";
 
 const designForm = useDesignFormStore(piniaInstance);
 const formData = computed(() => designForm.formData);
@@ -43,7 +44,7 @@ const getDefaultVal = (type: string) => {
  * @param type
  */
 export function fieldCopy(data: any, type: string) {
-  const reData = JSON.parse(JSON.stringify(data));
+  const reData = JSON5.parse(JSON5.stringify(data));
   //如果数据没有索引，则初始化索引
   const ms = designForm.getFieldDataIndex();
   const mvData: any = {};

@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { Config } from "@/api/settings";
 import { ref } from "vue";
+import JSON5 from "json5";
 
 export const useGlobalConfigStore = defineStore(
   "globalConfig",
@@ -12,7 +13,7 @@ export const useGlobalConfigStore = defineStore(
      */
     const setConfigFormInfo = (data: any) => {
       configFormInfo.value = data;
-      localStorage.setItem("starHorseConfigInfo", JSON.stringify(data));
+      localStorage.setItem("starHorseConfigInfo", JSON5.stringify(data));
       Config.buttonStyle.value = data.buttonShowType || "dropdown";
       if (data.themeColor) {
         document.documentElement.style.setProperty(
@@ -74,7 +75,7 @@ export const useGlobalConfigStore = defineStore(
       };
       const starHorseConfigInfo = localStorage.getItem("starHorseConfigInfo");
       if (starHorseConfigInfo) {
-        setConfigFormInfo(JSON.parse(starHorseConfigInfo));
+        setConfigFormInfo(JSON5.parse(starHorseConfigInfo));
       }
     };
 

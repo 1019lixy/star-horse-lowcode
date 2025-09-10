@@ -66,7 +66,7 @@ import {
 import { getDynamicEvents } from "@/api/system";
 import { warning } from "@/utils/message";
 import { i18n } from "@/lang";
-
+import JSON5 from "json5";
 import { ItemPreps } from "@/components/types/ItemPreps";
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -167,13 +167,13 @@ const initData = async () => {
   }
   let data: any = formData.value[props.field.fieldName];
   if (isJson(data)) {
-    formData.value[props.field.fieldName] = JSON.parse(data);
+    formData.value[props.field.fieldName] = JSON5.parse(data);
   } else {
     //解决加载慢问题，导致数据没法回显
     setTimeout(() => {
       let data: any = formData.value[props.field.fieldName];
       formData.value[props.field.fieldName] = isJson(data)
-        ? JSON.parse(data)
+        ? JSON5.parse(data)
         : [];
     }, 200);
   }

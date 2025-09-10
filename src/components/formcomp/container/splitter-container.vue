@@ -1,20 +1,21 @@
 <script setup lang="ts">
-import { computed, onMounted, PropType, ref, watch } from "vue";
-import { useDesignFormStore } from "@/store/DesignForm";
+import {computed, onMounted, PropType} from "vue";
+import {useDesignFormStore} from "@/store/DesignForm";
 import piniaInstance from "@/store/index";
-import { itemCheck, uuid } from "@/api/system";
+import {itemCheck, uuid} from "@/api/system";
 import GroupContainer from "@/components/formcomp/container/group-container.vue";
+import JSON5 from "json5";
 
 defineOptions({
   name: "SplitterContainer",
 });
 const props = defineProps({
-  parentField: { type: Object as PropType<any> },
-  isDesign: { type: Boolean, default: false },
-  showFormItem: { type: Boolean, default: false },
-  disabled: { type: Boolean, default: false },
-  formInfo: { type: Object as PropType<any> },
-  field: { type: Object as PropType<any> },
+  parentField: {type: Object as PropType<any>},
+  isDesign: {type: Boolean, default: false},
+  showFormItem: {type: Boolean, default: false},
+  disabled: {type: Boolean, default: false},
+  formInfo: {type: Object as PropType<any>},
+  field: {type: Object as PropType<any>},
 });
 let designForm = useDesignFormStore(piniaInstance);
 const isDragging = computed(() => designForm.isDragging);
@@ -41,7 +42,11 @@ const checkData = (adata: any) => {
   if (adata.preps) {
     let temp = adata.preps;
     if (typeof temp == "string") {
-      temp = JSON.parse(adata.preps);
+      try {
+        temp = JSON5.parse(adata.preps);
+      } catch (e) {
+        console.log(e);
+      }
     }
     return {
       size: temp.size,
@@ -49,12 +54,15 @@ const checkData = (adata: any) => {
       max: temp.max,
       resizable: temp.resizable,
       collapsible: temp.collapsible
-    }
+    };
   }
   return {};
-}
+};
 onMounted(() => {
-  if (!props.field["preps"]["elements"]) {
+  if (!props.field["preps"]) {
+    props.field["preps"] = {};
+  }
+  if (!props.field["preps"]?.["elements"]) {
     props.field["preps"]["elements"] = [
       {
         label: "Splitter1",
@@ -78,17 +86,17 @@ onMounted(() => {
 </script>
 <template>
   <group-container class="star-horse-form-container" :showFormItem="showFormItem" :isDesign="isDesign"
-    :disabled="disabled" :parentField="parentField" :form-item="field">
+                   :disabled="disabled" :parentField="parentField" :form-item="field">
     <el-splitter :layout="field?.preps?.layout ?? 'horizontal'" :lazy="field?.preps?.lazy">
       <el-splitter-panel v-for="adata in field['preps']['elements']" v-bind="checkData(adata)">
         <draggable @add="(evt: Event) => onDragAdd(evt, adata['items'])" @dragover="checkItem(adata)"
-          class="card-design" :class="{ 'dragging-area': isDragging }" group="starHorseGroup" animation="100"
-          :item-key="uuid()" ghostClass="ghost" :list="adata['items']">
+                   class="card-design" :class="{ 'dragging-area': isDragging }" group="starHorseGroup" animation="100"
+                   :item-key="uuid()" ghostClass="ghost" :list="adata['items']">
           <template #item="{ element: data }">
             <div class="comp-item">
               <component :key="data.id" :field="data" :isDesign="isDesign" :disabled="disabled"
-                :showFormItem="showFormItem" :formInfo="formInfo" :is="itemCheck(data)" :parentField="field"
-                v-model:formData="formData" />
+                         :showFormItem="showFormItem" :formInfo="formInfo" :is="itemCheck(data)" :parentField="field"
+                         v-model:formData="formData"/>
             </div>
           </template>
         </draggable>

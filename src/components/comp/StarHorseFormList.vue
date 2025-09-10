@@ -23,6 +23,7 @@ import UTableColumn from "@/components/comp/items/UTableColumn.vue";
 import StarHorseForm from "@/components/comp/StarHorseForm.vue";
 import { Config } from "@/api/settings";
 import { FieldInfo } from "@/components/types";
+import JSON5 from "json5";
 
 let importDialogVisible = ref<boolean>(false);
 let rowDialogVisible = ref<boolean>(false);
@@ -124,7 +125,7 @@ const dynamicHandleAddRow = (row: any, type: number) => {
     dataForm.value[props.batchName] = [];
   }
   if (type === 1) {
-    let obj = JSON.parse(JSON.stringify(props.defaultValues || {}));
+    let obj = JSON5.parse(JSON5.stringify(props.defaultValues || {}));
     obj["_uuid"] = uuid();
     dataForm.value[props.batchName].push(obj);
     emits("addRow", row);

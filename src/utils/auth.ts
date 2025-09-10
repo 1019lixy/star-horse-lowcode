@@ -1,12 +1,13 @@
 import { Config } from "@/api/settings";
 import { SearchParams } from "@/components/types/Params";
+import JSON5 from "json5";
 
 export function getToken() {
   return sessionStorage.getItem(Config.TokenKey);
 }
 
 export function setUserInfo(userInfo: any) {
-  const s = JSON.stringify(userInfo);
+  const s = JSON5.stringify(userInfo);
   sessionStorage.setItem(Config.loginInfo, s);
 }
 
@@ -23,7 +24,7 @@ export function getPublicKey() {
  * @param customerInfo
  */
 export function setCustomerInfo(customerInfo: any) {
-  const s = JSON.stringify(customerInfo);
+  const s = JSON5.stringify(customerInfo);
   sessionStorage.setItem(Config.customerInfo, s);
 }
 
@@ -36,7 +37,7 @@ export function getCustomerInfo() {
   if (!str || str == "undefined") {
     return null;
   }
-  return JSON.parse(str);
+  return JSON5.parse(str);
 }
 
 /**
@@ -58,7 +59,7 @@ export function getUserInfo() {
   if (!userInfo) {
     return null;
   }
-  return JSON.parse(userInfo);
+  return JSON5.parse(userInfo);
 }
 
 /**

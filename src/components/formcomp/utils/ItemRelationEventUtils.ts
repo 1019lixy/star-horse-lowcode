@@ -9,7 +9,7 @@ import piniaInstance from "@/store";
 import { useDesignFormStore } from "@/store/DesignForm";
 import { error } from "@/utils/message";
 import { computed, nextTick, unref, watch } from "vue";
-
+import JSON5 from "json5";
 const designForm = useDesignFormStore(piniaInstance);
 
 const isDesign = computed(() => designForm.isEdit);
@@ -68,7 +68,7 @@ const dataLinkage = async (props: any, item: RelationDetail, e: any) => {
     relationFields = [relationFields];
   }
 
-  const tempParams: any = JSON.parse(JSON.stringify(params));
+  const tempParams: any = JSON5.parse(JSON5.stringify(params));
   if (item.controlCondition == "asParamDataLinkage") {
     //输入值作为查询条件
     tempParams.queryParams = tempParams.queryParams || [];

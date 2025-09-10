@@ -44,7 +44,7 @@ import {
   unref,
   watch,
 } from "vue";
-
+import JSON5 from "json5";
 const dynamicForm = useDynamicFormStore(piniaInstance);
 const props = defineProps({
   // URL address
@@ -524,7 +524,7 @@ const inputFieldName = ref<string>("");
 const inputFieldVal = ref<any>();
 const createParams = () => {
   let searchTemp = [];
-  let orderByTemp = JSON.parse(JSON.stringify(orderBys)) || [];
+  let orderByTemp = JSON5.parse(JSON5.stringify(orderBys)) || [];
   if (props.filterCondition) {
     searchTemp.push(...props.filterCondition);
   }

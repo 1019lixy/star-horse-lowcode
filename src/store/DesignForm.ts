@@ -2,6 +2,7 @@ import { Config } from "@/api/settings";
 import { SelectOption } from "@/components/types/SearchProps";
 import { defineStore } from "pinia";
 import { ref, shallowRef, unref } from "vue";
+import JSON5 from "json5";
 
 export const useDesignFormStore = defineStore("designForm", () => {
   const containerList = ref<Array<any>>([]);
@@ -58,7 +59,7 @@ export const useDesignFormStore = defineStore("designForm", () => {
       currentFormPreps: unref(currentFormPreps),
     };
     record.value.index = -1;
-    record.value.datas.splice(0, 0, JSON.stringify(recordData));
+    record.value.datas.splice(0, 0, JSON5.stringify(recordData));
     //数据只存20条，当大于20条时，删除最旧的一条
     if (record.value.datas.length > record.value.maxStep) {
       record.value.datas.splice(record.value.datas.length - 1, 1);
@@ -87,7 +88,7 @@ export const useDesignFormStore = defineStore("designForm", () => {
       currentCompCategory.value = "";
       compList.value = [];
     } else {
-      const data = JSON.parse(record.datas[record.index]);
+      const data = JSON5.parse(record.datas[record.index]);
       setCompList(data.complist);
       currentCompCategory.value = data.currentCompCategory;
       currentItemId.value = data.currentItemId;

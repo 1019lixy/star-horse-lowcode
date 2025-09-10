@@ -53,7 +53,10 @@ const onDragAdd = (evt: Event | any, dataList: any) => {
 };
 const activeTabName = ref();
 onMounted(() => {
-  if (!props.field["preps"]["elements"]) {
+  if(!props.field["preps"]){
+    props.field["preps"]={};
+  }
+  if (!props.field["preps"]?.["elements"]) {
     props.field["preps"]["elements"] = [
       {
         label: "Card",

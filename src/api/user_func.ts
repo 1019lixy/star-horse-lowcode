@@ -12,7 +12,7 @@ import { createCondition } from "@/api/star_horse_utils";
 import { success, warning } from "@/utils/message";
 import { i18n } from "@/lang";
 import { UserFuncInfo } from "@/components/types/PageFieldInfo";
-
+import JSON5 from "json5";
 /**
  * 动态表单用户自定义驱动
  */
@@ -123,7 +123,7 @@ export function userAction(
           router.push({
             path: content,
             query: {
-              param: JSON.stringify(row),
+              param: JSON5.stringify(row),
             },
           });
         };

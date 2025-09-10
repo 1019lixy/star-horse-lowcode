@@ -1,6 +1,7 @@
 /**
  * 客户端生成唯一指纹
  */
+import JSON5 from "json5";
 
 function getLocalIp() {
   return new Promise((resolve) => {
@@ -58,7 +59,7 @@ export async function generateDeviceId(userIp: string) {
     userIp = window.location.hostname;
   }
   const data = { hardwareInfo, userIp };
-  let deviceId = btoa(JSON.stringify(data));
+  let deviceId = btoa(JSON5.stringify(data));
   sessionStorage.setItem("deviceId", deviceId);
   return deviceId; // 使用 Base64 编码生成设备 ID
 }

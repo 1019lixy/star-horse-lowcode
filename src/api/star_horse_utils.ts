@@ -587,7 +587,7 @@ export function batchFieldDefaultValues(datas: BatchFieldInfo, dataForm: any) {
     }
   }
   if (dataForm) {
-    let temp = unref(dataForm)[datas.batchName];
+    let temp = unref(dataForm)?.[datas.batchName];
     if (temp) {
       defaultValues = Object.assign({}, temp, defaultValues);
     }
