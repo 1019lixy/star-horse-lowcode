@@ -9,7 +9,10 @@ import { AxiosInstance } from "axios";
 import type { Router } from "vue-router";
 import ElementPlus from "element-plus";
 import zhCn from "element-plus/dist/locale/zh-cn.mjs";
-import en_US from "element-plus/dist/locale/en.mjs";
+import zhTw from "element-plus/dist/locale/zh-tw.mjs";
+import ja from "element-plus/dist/locale/ja.mjs";
+import de from "element-plus/dist/locale/de.mjs";
+import en from "element-plus/dist/locale/en.mjs";
 import { starHorseAxios } from "@/api/star_horse_apis";
 import { LangType } from "@/theme/theme";
 
@@ -54,7 +57,7 @@ const install = (
     window.__hostAxios__ = options.axiosInstance;
   }
   if (options?.lang) {
-    window.__starHorseHostLang__ == options.lang;
+    window.__starHorseHostLang__ = options.lang;
   }
   // 只在没有配置时才设置中文
   if (!options?.elementPlusOptions?.locale) {
@@ -63,7 +66,13 @@ const install = (
         ? zhCn
         : options?.lang == LangType.ZH_CN
           ? zhCn
-          : en_US,
+          : options?.lang == LangType.ZH_TW
+            ? zhTw
+            : options?.lang == LangType.JA_JP
+              ? ja
+              : options?.lang == LangType.DE_DE
+                ? de
+                : en,
     });
   } else {
     app.use(ElementPlus, options.elementPlusOptions);

@@ -22,7 +22,7 @@ app.use(StarHorseLowCode,{
   //不传此参数则使用插件内部的axios header配置参数
   //axiosInstance:axiosInstance,
   //增加国际化配置
-  //lang:'zh_cn'||'en_us' //默认为zh_cn
+  //lang:'zh_CN'||'en_US'||'zh_TW'||'ja_JP'||'de_DE' //默认为zh_CN
   elementPlusOptions: {
    locale: zhCn,
    //...其它配置
@@ -363,6 +363,6 @@ barcode        条形码组件
                 修复StarHorseJsonEditor 双向数据绑定时，修改数据不响应问题
 48. 2025-09-06  升级依赖插件
 49. 2025-09-08  修复StarHorseDraggable 组件插槽和设计与非设计模式时的数据控制问题
-
+50. 2025-09-12  增加国际化语言包，中文（zh_CN）英文（en_US），繁体中文（zh_TW），日文（ja_JP），德文（de_DE）
 
 
