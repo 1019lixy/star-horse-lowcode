@@ -75,7 +75,7 @@ const selectItem = () => {
 const rangeMove = (evt: MouseEvent, direction: string) => {
   evt.preventDefault();
   evt.stopPropagation();
-  if (!props.isActive) {
+  if (!props.isActive||!props.isDesign) {
     return;
   }
   // 声明有意义的变量名
@@ -174,7 +174,7 @@ let initialY = ref(0);
 let nodeStartX = ref(0);
 let nodeStartY = ref(0);
 const dragStart = (evt: MouseEvent) => {
-  if (!props.isActive) {
+  if (!props.isActive||!props.isDesign) {
     return;
   }
   isDragging.value = true;
@@ -210,13 +210,13 @@ onMounted(() => {
 <template>
   <div
       class="node"
-      :class="{ active: isActive }"
+      :class="{ active: isActive&&isDesign }"
       :style="{
       width: node.width + 'px !important',
       height: node.height + 'px !important',
       left: node.left + 'px!important',
       top: node.top + 'px!important',
-      cursor: isActive ? 'move' : 'default',
+      cursor: isActive&&isDesign ? 'move' : 'default',
       zIndex: node.zIndex,
        ...styles
     }"
@@ -227,8 +227,7 @@ onMounted(() => {
       @mousemove="dragAction"
       v-if="isDesign"
   >
-    <div class="node__wrapper">
-
+    <div class="w-full h-full">
       <div
           v-if="isActive&&showLine"
           class="node-line node-line-left"
@@ -247,7 +246,7 @@ onMounted(() => {
           @mousedown="rangeMove($event, item)"
           v-if="isActive"
       ></div>
-      <div class="node-item node-content">
+      <div class="w-full h-full">
         <slot></slot>
       </div>
     </div>
