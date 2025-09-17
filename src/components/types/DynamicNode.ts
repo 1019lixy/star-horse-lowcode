@@ -4,37 +4,30 @@ export declare interface DynamicNode {
    */
   id: string;
   /**
-   * 层级
+   * 节点标签
    */
-  zIndex?: number;
-  /**
-   * 节点的宽度
-   */
-  width: number;
-  /**
-   * 节点的高度
-   */
-  height: number;
-  /**
-   * 节点的left位置
-   */
-  left: number;
-  /**
-   * 节点的Top位置
-   */
-  top: number;
+  label:string;
   /**
    * 节点名称
    */
   name: string;
   /**
+   * 节点图标
+   */
+  icon?: string;
+  /**
    * 节点类型
    */
   type?: string;
+
   /**
    * 节点属性
    */
-  properties?: any;
+  preps?: Record<string, any>;
+  /**
+   * 节点样式
+   */
+  styles?: Record<string, any>;
   /**
    * 子节点
    */

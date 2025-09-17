@@ -1,114 +1,51 @@
 <script setup lang="ts" name="Areainfo">
-import StarHorseJsonEditor from "@/components/comp/StarHorseJsonEditor.vue";
-import { ref } from "vue";
-let json = ref<Array<any>>([
-  {
-    id: "Idshb884094c-00b8-4c96-8c73-d483a7cde78c",
-    preps: {
-      showArrow: true,
-      placeholder: "请选择选择器",
-      multipleLimit: null,
-      filterable: true,
-      collapseTags: true,
-      collapseTagsTooltip: true,
-      id: "Idshb884094c-00b8-4c96-8c73-d483a7cde78c",
-      label: "选择器",
-      itemNameLabel: "选择器",
-      name: "select1",
-      clearable: true,
-      readonly: false,
-      maxLength: 255,
-      rules: [],
+import {ref} from "vue";
+import {DynamicNode} from "@/components/types";
+import {StarHorseDraggable} from "@/components/comp";
 
-      viewVisible: true,
-      remote: false,
-      dataSource: "data",
-      analysisType: "func",
-      values: [{ name: "abc", value: "abc", xh: 1 }],
-      httpMethod: "POST",
-      protocol: "http",
-      queryParams: [],
-      dataRelation: {
-        actionName: "change",
-        relationDetails: [
-          {
-            matchType: "eq",
-            matchFieldName: "select1",
-            controlCondition: "eqHide",
-            relationFields: ["input2"],
-            matchFieldValue: ["abc"],
-            xh: 1,
-            starHorseEditing: "no",
-            isWorking: false,
-          },
-        ],
-        relationDetailsDefaultValue: [{}],
-        showArrow: true,
-        placeholder: "请选择选择器",
-        multipleLimit: null,
-        filterable: true,
-        collapseTags: true,
-        collapseTagsTooltip: true,
-        id: "Idshb884094c-00b8-4c96-8c73-d483a7cde78c",
-        label: "选择器",
-        itemNameLabel: "选择器",
-        name: "select1",
-        clearable: true,
-        readonly: false,
-        maxLength: 255,
-        rules: [],
-        formVisible: true,
-        listVisible: true,
-        viewVisible: true,
-        remote: false,
-        dataSource: "data",
-        analysisType: "func",
-        values: [{ name: "abc", value: "abc", xh: 1 }],
-        httpMethod: "POST",
-        protocol: "http",
-        queryParams: [],
-      },
+let json = ref<Array<DynamicNode>>([
+  {
+    id: "a",
+    label: "节点1",
+    name: "nondea",
+    styles: {
+      left: 0,
+      top: 0,
     },
-    compType: "formItem",
-    fieldName: "select1",
-    itemType: "select",
-    label: "选择器",
-    type: "select",
-    formVisible: true,
-    listVisible: true,
-    viewVisible: true,
+    preps: {}
   },
   {
-    id: "Idshcef5cda5-0545-494b-9574-24a33da941dc",
-    preps: {
-      placeholder: "请输入单行文本框",
-      minlength: null,
-      rows: null,
-      min: null,
-      max: null,
-      resize: "none",
-      id: "Idshcef5cda5-0545-494b-9574-24a33da941dc",
-      label: "单行文本框",
-      itemNameLabel: "单行文本框",
-      name: "input2",
-      clearable: true,
-      readonly: false,
-      maxLength: 255,
-      rules: [],
-      formVisible: true,
-      listVisible: true,
-      viewVisible: true,
-    },
-    compType: "formItem",
-    fieldName: "input2",
-    itemType: "input",
-    label: "单行文本框",
-    type: "input",
-    formVisible: true,
-    listVisible: true,
-    viewVisible: true,
+    id: "b",
+    label: "节点2",
+    name: "node",
+    preps: {}
   },
 ]);
+const editorData = ref<any>({});
+const activeOperation = (item: DynamicNode) => {
+  console.log(item);
+  editorData.value = item;
+};
 </script>
-<template><StarHorseJsonEditor v-model="json" ref="editor" />"</template>
-<style lang="scss" scoped></style>
+<template>
+  <div class="module-grid w-full overflow-y-auto h-full">
+    <div></div>
+    <StarHorseDraggable :isDesign="true" ref="editor" :isActive="editorData.id==item.id" :showLine="editorData.id==item.id"
+                        :node="item" v-for="item in json" :key="item.id">
+      <div @click="activeOperation(item)" class="w-full h-full border">{{ item.label }} {{ editorData }}</div>
+    </StarHorseDraggable>
+  </div>
+</template>
+<style lang="scss" scoped>
+
+.module-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, auto));
+  gap: 20px;
+  background: #f5f5f5;
+  align-items: start;
+  padding: 20px;
+  border-radius: 8px;
+  position: relative;
+}
+</style>

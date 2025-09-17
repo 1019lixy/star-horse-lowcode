@@ -534,6 +534,9 @@ export function dynamicFormContextMenuData(
 
 export function dynamicPageContextMenuData(node: DynamicNode) {
   let contentMenuData: Array<any> = [];
+  if (!node.styles) {
+    node.styles = {};
+  }
   contentMenuData = [
     {
       type: "button",
@@ -565,16 +568,16 @@ export function dynamicPageContextMenuData(node: DynamicNode) {
       icon: "up-layer",
       display: true,
       handler: () => {
-        node.zIndex = (node.zIndex || 100) + 1;
+        node.styles.zIndex = (node.styles.zIndex || 100) + 1;
       },
     },
     {
       type: "button",
       text: "下移一层",
       icon: "down-layer",
-      display: node.zIndex && node.zIndex > 100,
+      display: node.styles.zIndex && node.styles.zIndex > 100,
       handler: () => {
-        node.zIndex = node.zIndex && node.zIndex > 100 ? node.zIndex - 1 : 100;
+        node.styles.zIndex = node.styles.zIndex && node.styles.zIndex > 100 ? node.styles.zIndex - 1 : 100;
       },
     },
     {
@@ -583,16 +586,16 @@ export function dynamicPageContextMenuData(node: DynamicNode) {
       icon: "to-top",
       display: true,
       handler: () => {
-        node.zIndex = designPage.maxZIndex() + 1;
+        node.styles.zIndex = designPage.maxZIndex() + 1;
       },
     },
     {
       type: "button",
       text: "置底",
       icon: "to-bottom",
-      display: node.zIndex && node.zIndex > 100,
+      display: node.styles.zIndex && node.styles.zIndex > 100,
       handler: () => {
-        node.zIndex = 100;
+        node.styles.zIndex = 100;
       },
     },
 

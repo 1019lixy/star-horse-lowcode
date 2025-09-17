@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {onMounted, PropType, ref} from "vue";
+import {computed, onMounted, PropType, ref} from "vue";
 import {DynamicNode} from "@/components/types/DynamicNode";
 import {dynamicPageContextMenuData} from "@/plugins/AblesPlugin";
 import {compKey} from "@/api/system";
@@ -21,15 +21,37 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  styles: {
-    type: Object,
-    default: () => {
-    },
-  },
   isDesign: {
     type: Boolean,
     default: false,
   },
+});
+const nodeRef = ref<HTMLDivElement>();
+const nodeStyles = computed(() => {
+  let styles = props.node.styles;
+  if (!styles) {
+    props.node.styles = {};
+    styles = {};
+  }
+  if (props.isActive && props.isDesign) {
+    styles["cursor"] = "move";
+  }
+  let temp = {...styles};
+  if (!styles["width"]) {
+    //获取节点宽度
+    styles["width"] = nodeRef.value?.offsetWidth || nodeRef.value?.clientWidth ;
+  }
+  if (!styles["height"]) {
+    //获取节点高度
+    styles["height"] = nodeRef.value?.offsetHeight || nodeRef.value?.clientHeight;
+  }
+  //将所有数字转换为px
+  for (let key in temp) {
+    if (typeof temp[key] === "number") {
+      temp[key] = temp[key] + "px";
+    }
+  }
+  return temp;
 });
 const emits = defineEmits(["selectNode"]);
 const pointList = ref<Array<string>>([
@@ -75,8 +97,11 @@ const selectItem = () => {
 const rangeMove = (evt: MouseEvent, direction: string) => {
   evt.preventDefault();
   evt.stopPropagation();
-  if (!props.isActive||!props.isDesign) {
+  if (!props.isActive || !props.isDesign) {
     return;
+  }
+  if (!props.node.styles) {
+    props.node.styles = {};
   }
   // 声明有意义的变量名
   let shouldAdjustWidth = false;
@@ -147,9 +172,9 @@ const rangeMove = (evt: MouseEvent, direction: string) => {
       const finalWidthDelta = invertWidthDirection ? -widthDelta : widthDelta;
 
       if (adjustLeft) {
-        props.node.left = (props.node.left || 0) - finalWidthDelta;
+        props.node.styles.left = (props.node.styles.left || 0) - finalWidthDelta;
       }
-      props.node.width = (props.node.width || 100) + finalWidthDelta;
+      props.node.styles.width = (props.node.styles.width || 100) + finalWidthDelta;
     }
 
     // 高度调整逻辑
@@ -160,9 +185,10 @@ const rangeMove = (evt: MouseEvent, direction: string) => {
           : heightDelta;
 
       if (adjustTop) {
-        props.node.top = (props.node.top || 0) - finalHeightDelta;
+        props.node.styles.top = (props.node.styles.top || 0) - finalHeightDelta;
       }
-      props.node.height = (props.node.height || 50) + finalHeightDelta;
+
+      props.node.styles.height = (props.node.styles.height || 50) + finalHeightDelta;
     }
   };
 
@@ -174,23 +200,29 @@ let initialY = ref(0);
 let nodeStartX = ref(0);
 let nodeStartY = ref(0);
 const dragStart = (evt: MouseEvent) => {
-  if (!props.isActive||!props.isDesign) {
+  if (!props.isActive || !props.isDesign) {
     return;
+  }
+  if (!props.node.styles) {
+    props.node.styles = {};
   }
   isDragging.value = true;
   initialX.value = evt.clientX;
   initialY.value = evt.clientY;
-  nodeStartX.value = props.node.left || 0;
-  nodeStartY.value = props.node.top || 0;
+  nodeStartX.value = props.node.styles.left || 0;
+  nodeStartY.value = props.node.styles.top || 0;
   // 锁定鼠标样式
   document.body.style.cursor = "grabbing";
 };
 const dragAction = (evt: MouseEvent) => {
+  if (!props.node.styles) {
+    props.node.styles = {};
+  }
   if (isDragging.value && props.isActive) {
     const deltaX = evt.clientX - initialX.value;
     const deltaY = evt.clientY - initialY.value;
-    props.node.left = nodeStartX.value + deltaX;
-    props.node.top = nodeStartY.value + deltaY;
+    props.node.styles.left = nodeStartX.value + deltaX;
+    props.node.styles.top = nodeStartY.value + deltaY;
   }
 };
 const endAction = (evt: MouseEvent) => {
@@ -211,22 +243,16 @@ onMounted(() => {
   <div
       class="node"
       :class="{ active: isActive&&isDesign }"
-      :style="{
-      width: node.width + 'px !important',
-      height: node.height + 'px !important',
-      left: node.left + 'px!important',
-      top: node.top + 'px!important',
-      cursor: isActive&&isDesign ? 'move' : 'default',
-      zIndex: node.zIndex,
-       ...styles
-    }"
+      :style="nodeStyles"
       @contextmenu="contextmenu"
       @mousedown="dragStart"
       @click.stop="selectItem"
       @mouseup="endAction"
       @mousemove="dragAction"
       v-if="isDesign"
+      ref="nodeRef"
   >
+
     <div class="w-full h-full">
       <div
           v-if="isActive&&showLine"
@@ -253,16 +279,7 @@ onMounted(() => {
   </div>
   <div
       class="node"
-      :class="{ active: isActive }"
-      :style="{
-      width: node.width + 'px !important',
-      height: node.height + 'px !important',
-      left: node.left + 'px!important',
-      top: node.top + 'px!important',
-      cursor: isActive ? 'move' : 'default',
-      zIndex: node.zIndex,
-      ...styles
-    }" v-else>
+      :style="nodeStyles" v-else>
     <slot></slot>
   </div>
   <Teleport to="body">
@@ -277,10 +294,10 @@ onMounted(() => {
 .node {
   position: relative;
   border: 1px solid #cecece;
-  cursor: move;
   -webkit-tap-highlight-color: transparent;
   -moz-user-select: none;
   user-select: none;
+  height: 100%;
 }
 
 .node.active {
