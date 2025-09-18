@@ -30,7 +30,6 @@ defineProps({
   },
 });
 
-// Fix: Use the correct model name that matches what's being passed from parent
 const json: ModelRef<any> = defineModel({
   default: {},
 });
@@ -67,7 +66,7 @@ defineExpose({
     :mode="currentMode"
     :language="editorLanguage"
     :modes="modeList"
-    v-model:json="json"
+    v-model="json"
     :queryLanguagesIds="queryLanguages"
     class="json-editor"
   />

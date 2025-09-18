@@ -21,6 +21,13 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  /**
+   * 大小控制类型，percent：百分比，px：像素
+   */
+  sizeControlType: {
+    type: String,
+    default: "percent",
+  },
   isDesign: {
     type: Boolean,
     default: false,
@@ -33,22 +40,34 @@ const nodeStyles = computed(() => {
     props.node.styles = {};
     styles = {};
   }
-  if (props.isActive && props.isDesign) {
-    styles["cursor"] = "move";
-  }
   let temp = {...styles};
+  if (props.isActive && props.isDesign) {
+    temp["cursor"] = "move";
+    temp["position"] = "relative";
+  }
   if (!styles["width"]) {
     //获取节点宽度
-    styles["width"] = nodeRef.value?.offsetWidth || nodeRef.value?.clientWidth ;
+    const parentWidth = nodeRef.value?.parentElement?.clientWidth || 1;
+    styles["width"] = props.sizeControlType === "percent"
+        ? (100 * (nodeRef.value?.offsetWidth || 0) / parentWidth)
+        : nodeRef.value?.offsetWidth || nodeRef.value?.clientWidth;
   }
   if (!styles["height"]) {
     //获取节点高度
-    styles["height"] = nodeRef.value?.offsetHeight || nodeRef.value?.clientHeight;
+    const parentHeight = nodeRef.value?.parentElement?.clientHeight || 1;
+    styles["height"] = props.sizeControlType === "percent"
+        ? (100 * (nodeRef.value?.offsetHeight || 0) / parentHeight)
+        : nodeRef.value?.offsetHeight || nodeRef.value?.clientHeight;
   }
   //将所有数字转换为px
   for (let key in temp) {
-    if (typeof temp[key] === "number") {
-      temp[key] = temp[key] + "px";
+    //在css 中哪些属性值是数字，但不需要转换为px
+    if (typeof temp[key] === "number" && !["flex", "zIndex"].includes(key)) {
+      if (props.sizeControlType === "percent" && ["width", "height"].includes(key)) {
+        temp[key] = temp[key] + "%";
+      } else {
+        temp[key] = temp[key] + "px";
+      }
     }
   }
   return temp;
@@ -115,6 +134,8 @@ const rangeMove = (evt: MouseEvent, direction: string) => {
   // 初始化鼠标起始坐标
   let startX = evt.clientX;
   let startY = evt.clientY;
+  const parentWidth = nodeRef.value?.parentElement?.clientWidth || 1;
+  const parentHeight = nodeRef.value?.parentElement?.clientHeight || 1;
   document.onmousemove = (e: MouseEvent) => {
     moveActive.value = true;
     // 根据方向设置调整逻辑
@@ -124,7 +145,6 @@ const rangeMove = (evt: MouseEvent, direction: string) => {
         break;
       case "left":
         shouldAdjustWidth = true;
-        adjustLeft = true;
         invertWidthDirection = true;
         break;
       case "top":
@@ -142,7 +162,6 @@ const rangeMove = (evt: MouseEvent, direction: string) => {
       case "bottom-left":
         shouldAdjustWidth = true;
         shouldAdjustHeight = true;
-        adjustLeft = true;
         invertWidthDirection = true;
         break;
       case "top-right":
@@ -154,9 +173,7 @@ const rangeMove = (evt: MouseEvent, direction: string) => {
       case "top-left":
         shouldAdjustWidth = true;
         shouldAdjustHeight = true;
-        adjustLeft = true;
         invertWidthDirection = true;
-        adjustTop = true;
         invertHeightDirection = true;
         break;
     }
@@ -165,33 +182,61 @@ const rangeMove = (evt: MouseEvent, direction: string) => {
     const deltaY = e.clientY - startY;
     startX = e.clientX;
     startY = e.clientY;
-
+    // 新增灵敏度系数（可根据需要调整）
+    const sensitivity = 3.55;
     // 宽度调整逻辑
-    if (shouldAdjustWidth) {
-      const widthDelta = deltaX * step.value;
-      const finalWidthDelta = invertWidthDirection ? -widthDelta : widthDelta;
+    if (props.sizeControlType === "percent") {
+      // 修改后的百分比计算（增加灵敏度系数）
+      if (shouldAdjustWidth) {
+        const widthDelta = (deltaX / parentWidth) * 100 * step.value * sensitivity;
+        const finalWidthDelta = invertWidthDirection ? -widthDelta : widthDelta;
 
-      if (adjustLeft) {
-        props.node.styles.left = (props.node.styles.left || 0) - finalWidthDelta;
-      }
-      props.node.styles.width = (props.node.styles.width || 100) + finalWidthDelta;
-    }
-
-    // 高度调整逻辑
-    if (shouldAdjustHeight) {
-      const heightDelta = deltaY * step.value;
-      const finalHeightDelta = invertHeightDirection
-          ? -heightDelta
-          : heightDelta;
-
-      if (adjustTop) {
-        props.node.styles.top = (props.node.styles.top || 0) - finalHeightDelta;
+        if (adjustLeft) {
+          props.node.styles.left = (props.node.styles.left || 0) - (finalWidthDelta * parentWidth / 100);
+        }
+        // 强制更新元素尺寸
+        const currentWidth = nodeRef.value?.offsetWidth || 0;
+        props.node.styles.width = (parseFloat(props.node.styles.width) || (100 * currentWidth / parentWidth)) + finalWidthDelta;
       }
 
-      props.node.styles.height = (props.node.styles.height || 50) + finalHeightDelta;
+      // 修改后的高度计算（增加灵敏度系数）
+      if (shouldAdjustHeight) {
+        const heightDelta = (deltaY / parentHeight) * 100 * step.value;
+        const finalHeightDelta = invertHeightDirection ? -heightDelta : heightDelta;
+
+        if (adjustTop) {
+          props.node.styles.top = (props.node.styles.top || 0) - (finalHeightDelta * parentHeight / 100);
+        }
+        // 强制更新元素尺寸
+        const currentHeight = nodeRef.value?.offsetHeight || 0;
+        props.node.styles.height = (parseFloat(props.node.styles.height) || (100 * currentHeight / parentHeight)) + finalHeightDelta;
+      }
+    } else {
+      if (shouldAdjustWidth) {
+        const widthDelta = deltaX * step.value;
+        const finalWidthDelta = invertWidthDirection ? -widthDelta : widthDelta;
+
+        if (adjustLeft) {
+          props.node.styles.left = (props.node.styles.left || 0) - finalWidthDelta;
+        }
+        props.node.styles.width = (props.node.styles.width || 100) + finalWidthDelta;
+      }
+
+      // 高度调整逻辑
+      if (shouldAdjustHeight) {
+        const heightDelta = deltaY * step.value;
+        const finalHeightDelta = invertHeightDirection
+            ? -heightDelta
+            : heightDelta;
+
+        if (adjustTop) {
+          props.node.styles.top = (props.node.styles.top || 0) - finalHeightDelta;
+        }
+
+        props.node.styles.height = (props.node.styles.height || 50) + finalHeightDelta;
+      }
     }
   };
-
   handleClear();
 };
 let isDragging = ref(false);
@@ -244,6 +289,7 @@ onMounted(() => {
       class="node"
       :class="{ active: isActive&&isDesign }"
       :style="nodeStyles"
+
       @contextmenu="contextmenu"
       @mousedown="dragStart"
       @click.stop="selectItem"
@@ -292,7 +338,6 @@ onMounted(() => {
 
 <style scoped lang="scss">
 .node {
-  position: relative;
   border: 1px solid #cecece;
   -webkit-tap-highlight-color: transparent;
   -moz-user-select: none;
