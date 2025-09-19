@@ -14,20 +14,21 @@ import "router" from "@/router";
 import ElementPlus from 'element-plus';
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs';
 const app = createApp(App);
+//如果项目初始化了element-plus,后面的插件initElementPlus 需要设置为false,否则会重复引入element-plus，可能导致组件冲突
 app.use(ElementPlus, { locale: zhCn })
-//没有配置elementPlusOptions,组件认为没有用elementPlus,
-// 所以会在组件内部引入elementPlus
 app.use(StarHorseLowCode,{
   router: router,
   //不传此参数则使用插件内部的axios header配置参数
   //axiosInstance:axiosInstance,
   //增加国际化配置
   //lang:'zh_CN'||'en_US'||'zh_TW'||'ja_JP'||'de_DE' //默认为zh_CN
-  elementPlusOptions: {
+  elementPlusOptions: { //element-plus 配置选项,如果不配置,组件内部会引入element-plus
    locale: zhCn,
    //...其它配置
    }
-});
+},
+initElementPlus: true,//新增插件是否初始化element-plus开关,默认初始化
+);
 app.mount('#app')
 ```
 
