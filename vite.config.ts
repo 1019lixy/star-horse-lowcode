@@ -113,8 +113,13 @@ export default defineConfig((mode) => {
         resolve: {
             alias: {
                 "@": resolve(dirname(fileURLToPath(import.meta.url)), "./src"),
+                "jquery":"jquery/dist/jquery.min.js",
             },
             extensions: [".js", ".vue", ".json", ".ts", ".jsx"],
+        },
+        define: {
+            "window.jQuery": "jquery",
+            "window.$": "jquery"
         },
         cacheDir: "node_modules/.vite",
         build: {
@@ -130,6 +135,7 @@ export default defineConfig((mode) => {
                     "vue3-ts-jsoneditor",
                     "@element-plus/icons-vue",
                     "@vueup/vue-quill",
+                    "jquery",
                     "sample/**/*"
                 ],
                 output: {

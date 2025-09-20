@@ -92,16 +92,6 @@ const fieldType = () => {
     if (!keys.includes(actionKey)) {
       props.item.actions[actionKey] = actionKey;
     }
-  } else if (props.source == 5) {
-    //列表组件动态增加blur 和change 事件
-    const actionKey = inputList.includes(itemType.value)
-      ? "blur"
-      : selectNameList.includes(itemType.value)
-        ? "change"
-        : null;
-    if (actionKey && !keys.includes(actionKey)) {
-      props.item.actions[actionKey] = actionKey;
-    }
   }
 };
 const exclusions = [
