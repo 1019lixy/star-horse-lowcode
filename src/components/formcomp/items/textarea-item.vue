@@ -14,7 +14,7 @@
     :parentField="parentField"
   >
     <el-input
-      @dblclick="maxEdit"
+      @dblclick.stop="maxEdit"
       :disabled="checkIsDisabled(props)"
       :fid="field.fieldName"
       v-bind="prepsFilter(field.preps)"

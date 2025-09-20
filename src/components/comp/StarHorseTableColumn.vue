@@ -87,12 +87,10 @@ const changeStyle = (type: string) => {
 
   nextTick(() => {
     $(".edit-container")?.parent(".cell").css("overflow", type);
+    //所有输入框，下拉框，自动聚焦
+    $("input,select,textarea").first().select().focus();
   });
-  // document.querySelectorAll(".cell").forEach(cell => {
-  //   cell.style.overflow = type;
-  //   // 如果需要更高优先级，可以添加 !important
-  //   // cell.style.overflow = "visible !important";
-  // });
+
 };
 const cellClick = (row: any, column: any) => {
   if (
@@ -251,8 +249,8 @@ onMounted(() => {
              :id="columnId"
              v-if="scope.row.isSelected && scope.row.selectName == scope.column.property">
           <div class="action-buttons">
-            <el-button type="primary" size="small" @click="blurEvent(scope.column, scope.row)">✔</el-button>
-            <el-button size="small" @click="cancelEdit(scope.row)">✖</el-button>
+            <el-button type="primary" size="small" @click.stop="blurEvent(scope.column, scope.row)">✔</el-button>
+            <el-button size="small" @click.stop="cancelEdit(scope.row)">✖</el-button>
           </div>
           <star-horse-item
               v-model:dataForm="scope.row"
@@ -267,7 +265,7 @@ onMounted(() => {
 
           />
         </div>
-        <p @click="cellClick(scope.row, scope.column)" v-else>
+        <p @click.stop="cellClick(scope.row, scope.column)" v-else>
           {{ currentDataFormat(scope) }}
         </p>
       </template>

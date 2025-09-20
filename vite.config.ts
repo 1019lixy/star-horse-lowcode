@@ -112,15 +112,11 @@ export default defineConfig((mode) => {
         },
         resolve: {
             alias: {
-                "@": resolve(dirname(fileURLToPath(import.meta.url)), "./src"),
-                "jquery":"jquery/dist/jquery.min.js",
+                "@": resolve(dirname(fileURLToPath(import.meta.url)), "./src")
             },
             extensions: [".js", ".vue", ".json", ".ts", ".jsx"],
         },
-        define: {
-            "window.jQuery": "jquery",
-            "window.$": "jquery"
-        },
+
         cacheDir: "node_modules/.vite",
         build: {
             //  告诉打包工具 "vue-demi" 也是外部依赖项

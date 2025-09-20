@@ -366,5 +366,6 @@ barcode        条形码组件
 49. 2025-09-08  修复StarHorseDraggable 组件插槽和设计与非设计模式时的数据控制问题
 50. 2025-09-12  增加国际化语言包，中文（zh_CN）英文（en_US），繁体中文（zh_TW），日文（ja_JP），德文（de_DE）
 51. 2025-09-15  修复StarHorseDraggable 组件插槽和设计与非设计模式时宽度与高度控制问题
-
+52. 2025-09-20  修复StarHorseTableColumn 组件在点击单元格编辑数据，由之前的blur事件触发保存，改为click事件触发保存
+                修复其他组件的一系列bug
 

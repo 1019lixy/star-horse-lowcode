@@ -21,7 +21,7 @@
       :fid="field.fieldName"
       class="input-with-select"
       v-on="getDynamicEvents(props, itemAction)"
-      @dblclick="editContent"
+      @dblclick.stop="editContent"
       v-model="formData[field.fieldName]"
     >
       <template #prepend v-if="field.preps?.prependText">
