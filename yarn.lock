@@ -2407,7 +2407,7 @@ de-indent@^1.0.2:
   resolved "https://registry.npmjs.org/de-indent/-/de-indent-1.0.2.tgz#b2038e846dc33baa5796128d0804b455b8c1e21d"
   integrity sha512-e/1zu3xH5MQryN2zdVaF0OrdNLUbvWxzMbi+iNA6Bky7l1RoP8a2fIbRocyHclXt/arDrrR6lL3TqFD9pMQTsg==
 
-debug@^4.1.0, debug@^4.3.1, debug@^4.3.2, debug@^4.3.4, debug@^4.4.0, debug@^4.4.1:
+debug@^4.1.0, debug@^4.3.1, debug@^4.3.2, debug@^4.3.4, debug@^4.4.0, debug@^4.4.3:
   version "4.4.3"
   resolved "https://registry.npmjs.org/debug/-/debug-4.4.3.tgz#c6ae432d9bd9662582fce08709b038c58e9e3d6a"
   integrity sha512-RGwwWnwQvkVfavKVt22FGLw+xYSdzARwm0ru6DhTVA3umU5hZc28V3kO4stgYryrTlLpuvgI9GiijltAjNbcqA==
@@ -3458,7 +3458,7 @@ linkify-it@^5.0.0:
   dependencies:
     uc.micro "^2.0.0"
 
-local-pkg@^1.0.0, local-pkg@^1.1.1, local-pkg@^1.1.2:
+local-pkg@^1.0.0, local-pkg@^1.1.2:
   version "1.1.2"
   resolved "https://registry.npmjs.org/local-pkg/-/local-pkg-1.1.2.tgz#c03d208787126445303f8161619dc701afa4abb5"
   integrity sha512-arhlxbFRmoQHl33a0Zkle/YWlmNwoyt6QNZEIJcqNbdrsix5Lvc4HyyI3EnwxTYlZYc32EbYrQ8SzEZ7dqgg9A==
@@ -4440,7 +4440,7 @@ terser@^5.44.0:
     commander "^2.20.0"
     source-map-support "~0.5.20"
 
-tinyglobby@^0.2.14, tinyglobby@^0.2.15:
+tinyglobby@^0.2.15:
   version "0.2.15"
   resolved "https://registry.npmjs.org/tinyglobby/-/tinyglobby-0.2.15.tgz#e228dd1e638cea993d2fdb4fcd2d4602a79951c2"
   integrity sha512-j2Zq4NyQYG5XMST4cbs02Ak8iJUdxRM0XI5QyxXuZOzKOINmWurp3smXu3y5wDcJrptwpSjgXHzIQxR0omXljQ==
@@ -4555,21 +4555,21 @@ unplugin-utils@^0.3.0:
     pathe "^2.0.3"
     picomatch "^4.0.3"
 
-unplugin-vue-components@^29.0.0:
-  version "29.0.0"
-  resolved "https://registry.npmjs.org/unplugin-vue-components/-/unplugin-vue-components-29.0.0.tgz#dae0354d11ceeef5a873119b7d570df4c84e0f8d"
-  integrity sha512-M2DX44g4/jvBkB0V6uwqTbkTd5DMRHpeGoi/cIKwGG4HPuNxLbe8zoTStB2n12hoDiWc9I1PIRQruRWExNXHlQ==
+unplugin-vue-components@^29.1.0:
+  version "29.1.0"
+  resolved "https://registry.npmjs.org/unplugin-vue-components/-/unplugin-vue-components-29.1.0.tgz#6064dfd43ebfc2d54fc04d6c391d30c9f66d3360"
+  integrity sha512-z/9ACPXth199s9aCTCdKZAhe5QGOpvzJYP+Hkd0GN1/PpAmsu+W3UlRY3BJAewPqQxh5xi56+Og6mfiCV1Jzpg==
   dependencies:
     chokidar "^3.6.0"
-    debug "^4.4.1"
-    local-pkg "^1.1.1"
-    magic-string "^0.30.17"
-    mlly "^1.7.4"
-    tinyglobby "^0.2.14"
-    unplugin "^2.3.5"
-    unplugin-utils "^0.2.4"
+    debug "^4.4.3"
+    local-pkg "^1.1.2"
+    magic-string "^0.30.19"
+    mlly "^1.8.0"
+    tinyglobby "^0.2.15"
+    unplugin "^2.3.10"
+    unplugin-utils "^0.3.0"
 
-unplugin@^2.3.10, unplugin@^2.3.2, unplugin@^2.3.5, unplugin@^2.3.8:
+unplugin@^2.3.10, unplugin@^2.3.2, unplugin@^2.3.8:
   version "2.3.10"
   resolved "https://registry.npmjs.org/unplugin/-/unplugin-2.3.10.tgz#15e75fec9384743335be7e54e5c88b5c187a3e94"
   integrity sha512-6NCPkv1ClwH+/BGE9QeoTIl09nuiAt0gS28nn1PvYXsGKRwM2TCbFA2QiilmehPDTXIe684k4rZI1yl3A1PCUw==
@@ -4670,10 +4670,10 @@ vite-plugin-dts@^4.5.4:
     local-pkg "^1.0.0"
     magic-string "^0.30.17"
 
-vite@^7.1.6:
-  version "7.1.6"
-  resolved "https://registry.npmjs.org/vite/-/vite-7.1.6.tgz#336806d29983135677f498a05efb0fd46c5eef2d"
-  integrity sha512-SRYIB8t/isTwNn8vMB3MR6E+EQZM/WG1aKmmIUCfDXfVvKfc20ZpamngWHKzAmmu9ppsgxsg4b2I7c90JZudIQ==
+vite@^7.1.7:
+  version "7.1.7"
+  resolved "https://registry.npmjs.org/vite/-/vite-7.1.7.tgz#ed3f9f06e21d6574fe1ad425f6b0912d027ffc13"
+  integrity sha512-VbA8ScMvAISJNJVbRDTJdCwqQoAareR/wutevKanhR2/1EkoXVZVkkORaYm/tNVCjP/UDTKtcw3bAkwOUdedmA==
   dependencies:
     esbuild "^0.25.0"
     fdir "^6.5.0"
