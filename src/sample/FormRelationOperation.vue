@@ -46,7 +46,6 @@ const tableFieldList = reactive<PageFieldInfo>({
     {
       label: "区域编码",
       fieldName: "areaCode",
-
       formVisible: true,
       listVisible: true,
     },

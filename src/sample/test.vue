@@ -1,110 +1,233 @@
-<script setup lang="ts" name="SystemParams">
-import {onActivated, onDeactivated, onMounted, provide, reactive, ref,} from "vue";
-import {getCustomerParam} from "@/utils/auth";
-import {ApiUrls, PageFieldInfo, SearchFields} from "@/components/types";
-import {apiInstance, dialogPreps} from "@/api/star_horse_utils";
-//后端交互接口地址
-const dataUrl: ApiUrls = apiInstance("system-config", "system/systemParams");
-//主键
-const primaryKey = "idSystemParams";
-const systemParamsRef = ref();
-//定义表单的所有属性
-const formFields = reactive<object>({});
-provide("formFields", formFields);
-//查询属性
+<script setup lang="ts" name="Areainfo">
+import { apiInstance, dialogPreps } from "@/api/star_horse_utils";
+import { ApiUrls } from "@/components/types/ApiUrls";
+import { PageFieldInfo } from "@/components/types/PageFieldInfo";
+import {SearchFields, SelectOption} from "@/components/types/SearchProps";
+import { onMounted, provide, reactive, ref } from "vue";
+
+const dataUrl: ApiUrls = apiInstance("system-config", "system/areainfo");
+const linkExecServerList = ref<SelectOption[]>([]);
+const codeCommitorList = ref<SelectOption[]>([]);
+
+const reportPersonList = ref<SelectOption[]>([]);
+const reportTypeList = ref<SelectOption[]>([]);
+
+
 const searchFormData = reactive<SearchFields>({
   fieldList: [
     {
-      label: "参数名",
-      fieldName: "paramName",
+      label: "区域名称",
       defaultVisible: true,
       matchType: "lk",
+      fieldName: "areaName",
     },
     {
-      label: "参数值",
-      fieldName: "paramValue",
+      label: "区域编码",
       defaultVisible: true,
       matchType: "lk",
+      fieldName: "areaCode",
     },
   ],
 });
-//页面属性
-const tableFieldList = reactive<PageFieldInfo | any>({
-  //属性列表
+const tableFieldList = reactive<PageFieldInfo>({
   fieldList: [
     {
-      label: "参数名",
-      fieldName: "paramName",
+      fieldName: "row1",
+      collapseList: [
+        {
+          title: "高级设置",
+          tabName: "row1",
+          subFormFlag: "N",
+          objectName: "advancedSetting",
+          fieldList: [[
+            {
+              label: "  ",
+              type: "checkbox",
+              formVisible: true,
+              fieldName: "singleImageFlag",
+              preps: {
+                values: [{name: "使用唯一镜像名称", value: "Y"}],
+                colspan: 6,
+                border: "Y",
+              },
+            },
+            {
+              label: "关联使用执行机",
+              type: "select",
+              formVisible: true,
+              fieldName: "linkExecServer",
+              preps: {
+                values: linkExecServerList,
+                colspan: 6,
+              },
+            },
+          ],
+          ],
+        },
+        {
+          title: "运行结果通知",
+          tabName: "result",
+          subFormFlag: "Y",
+          objectName: "resultReport",
+          fieldList: [
+            [
+              {
+                label: "失败时通知",
+                type: "switch",
+                defaultValue: "N",
+                fieldName: "errorReport",
+                formVisible: true,
 
-      required: true,
-      formVisible: true,
-      listVisible: true,
-      preps: {
-        editDisabled: true,
-      },
-    },
-    {
-      label: "参数值",
-      fieldName: "paramValue",
-      type: "textarea",
-      required: true,
-      formVisible: true,
-      listVisible: true,
-    },
-
-    {
-      label: "备注",
-      fieldName: "remark",
-      type: "textarea",
-      required: false,
-      formVisible: true,
-      listVisible: true,
-    },
+                preps: {
+                  dataRelation: {
+                    actionName: "change",
+                    relationDetails: [
+                      {
+                        matchType: "eq",
+                        controlCondition: "eqVisible",
+                        relationFields: ["errorReportPerson", "errorReportType"],
+                        matchFieldValue: "Y",
+                      },
+                    ]
+                  },
+                  activeValue: "Y",
+                  inactiveValue: "N",
+                  colspan: 6,
+                },
+              },
+            ],
+            {
+              label: "通知人",
+              type: "checkbox",
+              formVisible: false,
+              fieldName: "errorReportPerson",
+              preps: {
+                values: reportPersonList,
+                border: "Y",
+              },
+              brotherNodes: [
+                {
+                  type: "select",
+                  label: "  ",
+                  fieldName: "errorCodeCommitor",
+                  preps: {
+                    values: codeCommitorList,
+                    multiple: true,
+                  },
+                },
+              ],
+            },
+            {
+              label: "通知方式",
+              type: "checkbox",
+              formVisible: false,
+              fieldName: "errorReportType",
+              preps: {
+                values: reportTypeList,
+                border: "Y",
+              },
+            },
+            [
+              {
+                label: "成功时通知",
+                type: "switch",
+                defaultValue: "N",
+                fieldName: "successReport",
+                formVisible: true,
+                preps: {
+                  dataRelation: {
+                    actionName: "change",
+                    relationDetails: [
+                      {
+                        matchType: "eq",
+                        controlCondition: "eqVisible",
+                        relationFields: ["successReportPerson", "successReportType"],
+                        matchFieldValue: "Y",
+                      },
+                    ]
+                  },
+                  activeValue: "Y",
+                  inactiveValue: "N",
+                  colspan: 6,
+                },
+              },
+            ],
+            {
+              label: "通知人",
+              type: "checkbox",
+              formVisible: false,
+              fieldName: "successReportPerson",
+              preps: {
+                values: reportPersonList,
+                border: "Y",
+              },
+              brotherNodes: [
+                {
+                  type: "select",
+                  label: "  ",
+                  fieldName: "successCodeCommitorVisible",
+                  preps: {
+                    values: codeCommitorList,
+                    multiple: true,
+                  },
+                },
+              ],
+            },
+            {
+              label: "通知方式",
+              type: "checkbox",
+              formVisible: false,
+              fieldName: "successReportType",
+              preps: {
+                values: reportTypeList,
+              },
+            },
+          ],
+        },
+      ],
+    }
   ],
-  //默认查询条件
-  condition: [getCustomerParam()],
+  batchFieldList: [],
 });
-//校验
+const primaryKey = "idAreainfo";
+const areainfoRef = ref();
+const areaFormRef = ref();
 const rules = {};
-//控制弹窗相关设置
 const dialogProps = dialogPreps();
 provide("dialogProps", dialogProps);
-//初始化方法
-const initData = async () => {
+//手动赋值权限
+const btnPermissions = {
+  add: true,
+  edit: true,
+  delete: true,
+  view: true,
 };
-const activated = () => {
-};
-const deactivated = () => {
-};
-/**
- * 列表，查看数据时数据转换
- * @param name 名称
- * @param cellValue 值
- * @param row 列表行数据
- */
-const dataFormat = (name: string, cellValue: any, row: any): any => {
-  //转换显示信息
+const dataFormat = (_name: string, cellValue: object): any => {
   return cellValue;
 };
-onMounted(async () => {
-  await initData();
-});
-onActivated(() => {
-  activated();
-});
-onDeactivated(() => {
-  deactivated();
+const initData = async () => {
+  // loadDict("message_tools").then((res: any) => {
+  //   reportTypeList.value = res;
+  // });
+  // loadDict("CONTINUS_JOB_REPORT_PERSON").then((res: any) => {
+  //   console.log(res);
+  //   reportPersonList.value = res;
+  // });
+};
+onMounted(() => {
+  initData();
 });
 </script>
 <template>
   <div class="flex flex-col h-full overflow-hidden">
     <star-horse-dialog
         :isShowBtnContinue="true"
-        :dialog-visible="dialogProps.editVisible"
+        :dialogVisible="dialogProps.editVisible"
         :dialogProps="dialogProps"
     >
       <star-horse-form
-          @refresh="systemParamsRef?.loadByPage()"
+          ref="areaFormRef"
+          @refresh="areainfoRef?.loadByPage()"
           :compUrl="dataUrl"
           :fieldList="tableFieldList"
           :rules="rules"
@@ -124,7 +247,7 @@ onDeactivated(() => {
     <div class="search-content">
       <div class="search_btn">
         <star-horse-search-comp
-            @searchData="(data: any) => systemParamsRef?.createSearchParams(data)"
+            @searchData="(data: any) => areainfoRef?.createSearchParams(data)"
             :formData="searchFormData"
             :compUrl="dataUrl"
         />
@@ -132,16 +255,15 @@ onDeactivated(() => {
     </div>
     <el-card class="inner_content">
       <star-horse-table-comp
-          ref="systemParamsRef"
+          ref="areainfoRef"
           :fieldList="tableFieldList"
+          :btnPermissions="btnPermissions"
           :primaryKey="primaryKey"
           :compUrl="dataUrl"
-          :help-msg="`系统参数创建后，请不要随便删除或者修改，\n否则可能导致系统功能异常`"
           :dataFormat="dataFormat"
+          :showPageBar="false"
       />
     </el-card>
   </div>
 </template>
-<style lang="scss" scoped>
-//todo
-</style>
+<style lang="scss" scoped></style>

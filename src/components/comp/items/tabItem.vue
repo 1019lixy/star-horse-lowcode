@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { Config } from "@/api/settings";
-import { compKey } from "@/api/system";
+import {Config} from "@/api/settings";
 import StarHorseFormTable from "@/components/comp/StarHorseFormTable.vue";
-import { ContainerPreps } from "@/components/types/ItemPreps";
-import { ModelRef, onMounted } from "vue";
+import {ContainerPreps} from "@/components/types/ItemPreps";
+import {ModelRef, onMounted} from "vue";
 
 const props = withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
@@ -39,13 +38,27 @@ const closeOperation = (tabName: any) => {
   });
 };
 /**
+ * 切换tab校验
+ * @param activeName 切换到的tabName
+ * @param oldActiveName 切换前的tabName
+ */
+const beforeLeave = (activeName: string, oldActiveName: string) => {
+  let beforeLeaveAction = props.item.actions?.["beforeLeave"];
+  if (beforeLeaveAction) {
+    return beforeLeaveAction(activeName, oldActiveName);
+  }
+  return true;
+};
+/**
  * 列表删除行数据
  * @param row
  */
 const removeRow = (row: any) => {
   emits("removeRow", row);
 };
-const init = () => {};
+
+const init = () => {
+};
 onMounted(() => {
   init();
 });
@@ -54,67 +67,76 @@ onMounted(() => {
 <template>
   <template v-if="item.tabList?.length > 0">
     <el-tabs
-      v-model="item.fieldName"
-      :type="item.type || ''"
-      @tabRemove="closeOperation"
-      :closable="item.closable"
-      :addable="item.addable"
-      @tabChange="(data) => item.actions?.['tabChange']?.(data)"
-      @tabAdd="(data) => item.actions?.['tabAdd']?.(data)"
+        v-model="item.fieldName"
+        :type="item.type || ''"
+        @tabRemove="closeOperation"
+        :closable="item.closable"
+        :addable="item.addable"
+        @tabChange="(data) => item.actions?.['tabChange']?.(data)"
+        @tabAdd="(data) => item.actions?.['tabAdd']?.(data)"
+        :before-leave="beforeLeave"
     >
       <template v-for="(tabItem, key) in item.tabList">
         <tabPanelItem
-          :item="tabItem"
-          :dataIndex="dataIndex"
-          :itemKey="key"
-          :source="source"
-          parentType="tab"
-          :compUrl="compUrl"
-          :compSize="compSize"
-          :propPrefix="propPrefix"
-          @addRow="addRow"
-          v-model:dataForm="dataForm"
-          @removeRow="removeRow"
-          :rules="rules"
+            :item="tabItem"
+            :dataIndex="dataIndex"
+            :itemKey="key"
+            :source="source"
+            parentType="tab"
+            :compUrl="compUrl"
+            :compSize="compSize"
+            :propPrefix="propPrefix"
+            @addRow="addRow"
+            v-model:dataForm="dataForm"
+            @removeRow="removeRow"
+            :rules="rules"
         />
       </template>
     </el-tabs>
   </template>
   <template v-else-if="item.batchFieldList?.length > 0">
     <template
-      v-if="
+        v-if="
         item.batchFieldList.length > 1 &&
         (!item.displayStyle || item.displayStyle == 'tab')
       "
     >
-      <el-tabs v-model="item.fieldName" :type="item.type || ''">
+      <el-tabs v-model="item.fieldName"
+               :type="item.type || ''"
+               @tabRemove="closeOperation"
+               :closable="item.closable"
+               :addable="item.addable"
+               @tabChange="(data) => item.actions?.['tabChange']?.(data)"
+               @tabAdd="(data) => item.actions?.['tabAdd']?.(data)"
+               :before-leave="beforeLeave"
+      >
         <template v-for="(sitem, key) in item.batchFieldList">
           <tabPanelItem
-            :item="sitem"
-            :dataIndex="dataIndex"
-            :itemKey="key"
-            :source="source"
-            :compUrl="compUrl"
-            :compSize="compSize"
-            parentType="batch"
-            :propPrefix="propPrefix"
-            @addRow="addRow"
-            v-model:dataForm="dataForm"
-            @removeRow="removeRow"
-            :rules="rules"
+              :item="sitem"
+              :dataIndex="dataIndex"
+              :itemKey="key"
+              :source="source"
+              :compUrl="compUrl"
+              :compSize="compSize"
+              parentType="batch"
+              :propPrefix="propPrefix"
+              @addRow="addRow"
+              v-model:dataForm="dataForm"
+              @removeRow="removeRow"
+              :rules="rules"
           />
         </template>
       </el-tabs>
     </template>
     <template v-else v-for="temp in item.batchFieldList">
       <star-horse-form-table
-        :rules="rules"
-        :size="compSize"
-        :item="temp"
-        @addRow="addRow"
-        @removeRow="removeRow"
-        v-if="Object.keys(temp).length > 0"
-        v-model:dataForm="dataForm"
+          :rules="rules"
+          :size="compSize"
+          :item="temp"
+          @addRow="addRow"
+          @removeRow="removeRow"
+          v-if="Object.keys(temp).length > 0"
+          v-model:dataForm="dataForm"
       />
     </template>
   </template>

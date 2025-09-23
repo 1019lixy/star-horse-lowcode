@@ -1,31 +1,16 @@
-import {
-  RedirectParams,
-  SearchInfo,
-  SearchParams,
-} from "@/components/types/Params";
-import { reactive, Reactive, unref } from "vue";
-import { ElLoading } from "element-plus";
+import {RedirectParams, SearchInfo, SearchParams,} from "@/components/types/Params";
+import {reactive, Reactive, unref} from "vue";
+import {ElLoading} from "element-plus";
 import JSON5 from "json5";
-import {
-  download,
-  getRequest,
-  postRequest,
-  uploadRequest,
-} from "@/api/star_horse_apis";
-import { error, operationConfirm, success, warning } from "@/utils/message";
-import { SelectOption } from "@/components/types/SearchProps";
-import {
-  BatchFieldInfo,
-  FieldInfo,
-  OrderByInfo,
-  PageFieldInfo,
-  TabFieldInfo,
-} from "@/components/types/PageFieldInfo";
-import { ApiUrls } from "@/components/types/ApiUrls";
-import { DialogProps } from "@/components/types/DialogProps";
-import { createDatetime } from "@/api/date_utils";
-import { ServiceEnums } from "@/components/enums/ServiceEnums";
-import { i18n } from "@/lang";
+import {download, getRequest, postRequest, uploadRequest,} from "@/api/star_horse_apis";
+import {error, operationConfirm, success, warning} from "@/utils/message";
+import {SelectOption} from "@/components/types/SearchProps";
+import {BatchFieldInfo, FieldInfo, OrderByInfo, PageFieldInfo, TabFieldInfo,} from "@/components/types/PageFieldInfo";
+import {ApiUrls} from "@/components/types/ApiUrls";
+import {DialogProps} from "@/components/types/DialogProps";
+import {createDatetime} from "@/api/date_utils";
+import {ServiceEnums} from "@/components/enums/ServiceEnums";
+import {i18n} from "@/lang";
 
 let loading: any = null;
 
@@ -41,36 +26,36 @@ const dictUrl: string = `${ServiceEnums.SYSTEM_PREFIX}dictinfo/getAllByCondition
  * @param orderBy 排序
  */
 export async function loadData(
-  url: string,
-  params: SearchParams[] | any,
-  orderBy: OrderByInfo[] = [],
+    url: string,
+    params: SearchParams[] | any,
+    orderBy: OrderByInfo[] = [],
 ) {
-  let data: any = null;
-  let error = "";
-  let cond = params;
-  if (Array.isArray(params)) {
-    cond = {
-      fieldList: params,
-      orderBy: orderBy,
+    let data: any = null;
+    let error = "";
+    let cond = params;
+    if (Array.isArray(params)) {
+        cond = {
+            fieldList: params,
+            orderBy: orderBy,
+        };
+    }
+    await postRequest(url, cond)
+        .then((res: any) => {
+            const redata = res.data;
+            if (redata.code) {
+                error = redata.cnMessage;
+            } else {
+                //先去分页数据，没有再去非分页数据
+                data = redata.data.dataList || redata.data;
+            }
+        })
+        .catch((err) => {
+            error = err;
+        });
+    return {
+        data,
+        error,
     };
-  }
-  await postRequest(url, cond)
-    .then((res: any) => {
-      const redata = res.data;
-      if (redata.code) {
-        error = redata.cnMessage;
-      } else {
-        //先去分页数据，没有再去非分页数据
-        data = redata.data.dataList || redata.data;
-      }
-    })
-    .catch((err) => {
-      error = err;
-    });
-  return {
-    data,
-    error,
-  };
 }
 
 /**
@@ -79,24 +64,24 @@ export async function loadData(
  * @param params 参数
  */
 export async function loadGetData(url: string) {
-  let data = reactive<any>([]);
-  let error: string = "";
-  await getRequest(url)
-    .then((res) => {
-      const redata = res.data;
-      if (redata.code != 0) {
-        error = redata.cnMessage;
-      } else {
-        data = redata.data;
-      }
-    })
-    .catch((err) => {
-      error = err;
-    });
-  return {
-    data,
-    error,
-  };
+    let data = reactive<any>([]);
+    let error: string = "";
+    await getRequest(url)
+        .then((res) => {
+            const redata = res.data;
+            if (redata.code != 0) {
+                error = redata.cnMessage;
+            } else {
+                data = redata.data;
+            }
+        })
+        .catch((err) => {
+            error = err;
+        });
+    return {
+        data,
+        error,
+    };
 }
 
 /**
@@ -107,22 +92,22 @@ export async function loadGetData(url: string) {
  * @param val 数字值
  */
 export function createTree(
-  data: any,
-  valField: string,
-  name: string,
-  val: string,
+    data: any,
+    valField: string,
+    name: string,
+    val: string,
 ) {
-  const list: SelectOption[] = [];
-  data.forEach((item: any) => {
-    const temp: any = {};
-    temp["value"] = valField ? item[valField] : parseInt(item[val]);
-    temp["name"] = item[name];
-    if (item.children && item.children.length > 0) {
-      temp["children"] = createTree(item.children, valField, name, val);
-    }
-    list.push(temp);
-  });
-  return list;
+    const list: SelectOption[] = [];
+    data.forEach((item: any) => {
+        const temp: any = {};
+        temp["value"] = valField ? item[valField] : parseInt(item[val]);
+        temp["name"] = item[name];
+        if (item.children && item.children.length > 0) {
+            temp["children"] = createTree(item.children, valField, name, val);
+        }
+        list.push(temp);
+    });
+    return list;
 }
 
 /**
@@ -131,25 +116,25 @@ export function createTree(
  * @param defaultTarget
  */
 export function load(msg: string, defaultTarget?: string) {
-  closeLoad();
-  loading = ElLoading.service({
-    lock: true,
-    target: defaultTarget ?? "#app",
-    text: msg || "Loading...",
-    customClass: "star-horse-loading",
-    background: "rgba(0, 0, 0, 0.7)",
-  });
+    closeLoad();
+    loading = ElLoading.service({
+        lock: true,
+        target: defaultTarget ?? "#app",
+        text: msg || "Loading...",
+        customClass: "star-horse-loading",
+        background: "rgba(0, 0, 0, 0.7)",
+    });
 }
 
 /**
  * 关闭加载框
  */
 export function closeLoad() {
-  if (loading) {
-    loading.close();
-    loading = null;
-    document.querySelectorAll(".el-loading-mask").forEach((el) => el.remove());
-  }
+    if (loading) {
+        loading.close();
+        loading = null;
+        document.querySelectorAll(".el-loading-mask").forEach((el) => el.remove());
+    }
 }
 
 /**
@@ -157,13 +142,13 @@ export function closeLoad() {
  * @param str
  */
 export function convertToCamelCase(str: string) {
-  if (!str) {
-    return undefined;
-  }
-  str = str.toLowerCase();
-  return str.replace(/_(\w)/g, (_match, p1) => {
-    return p1.toUpperCase();
-  });
+    if (!str) {
+        return undefined;
+    }
+    str = str.toLowerCase();
+    return str.replace(/_(\w)/g, (_match, p1) => {
+        return p1.toUpperCase();
+    });
 }
 
 /**
@@ -171,12 +156,12 @@ export function convertToCamelCase(str: string) {
  * @param str
  */
 export function camelCaseToUnderline(str: string) {
-  if (!str) {
-    return undefined;
-  }
-  return str.replace(/[A-Z]/g, (match, _p1) => {
-    return "_" + match.toLowerCase();
-  });
+    if (!str) {
+        return undefined;
+    }
+    return str.replace(/[A-Z]/g, (match, _p1) => {
+        return "_" + match.toLowerCase();
+    });
 }
 
 /**
@@ -185,33 +170,33 @@ export function camelCaseToUnderline(str: string) {
  * @param cellValue
  */
 export function commonParseCodeToName(name: string, cellValue: any) {
-  if (!cellValue && cellValue != 0) {
-    return "-";
-  }
-  if (name == "isDel" || name.includes("&isDel")) {
-    return cellValue == 1 ? i18n("api.yes") : i18n("api.no");
-  }
-  if (name == "state" || name.includes("&state")) {
-    return cellValue == 1 ? i18n("api.normal") : i18n("api.abnormal");
-  }
-  const preps: Array<string> = [
-    "createdTime",
-    "updatedTime",
-    "createdTime",
-    "updatedTime",
-    "createTime",
-    "editTime",
-  ];
-  const result = preps.find(
-    (item) =>
-      name?.includes("&" + item) ||
-      convertToCamelCase(name)?.toLowerCase() === item.toLowerCase(),
-  );
-  if (result) {
-    return createDatetime(cellValue);
-  } else {
-    return cellValue;
-  }
+    if (!cellValue && cellValue != 0) {
+        return "-";
+    }
+    if (name == "isDel" || name.includes("&isDel")) {
+        return cellValue == 1 ? i18n("api.yes") : i18n("api.no");
+    }
+    if (name == "state" || name.includes("&state")) {
+        return cellValue == 1 ? i18n("api.normal") : i18n("api.abnormal");
+    }
+    const preps: Array<string> = [
+        "createdTime",
+        "updatedTime",
+        "createdTime",
+        "updatedTime",
+        "createTime",
+        "editTime",
+    ];
+    const result = preps.find(
+        (item) =>
+            name?.includes("&" + item) ||
+            convertToCamelCase(name)?.toLowerCase() === item.toLowerCase(),
+    );
+    if (result) {
+        return createDatetime(cellValue);
+    } else {
+        return cellValue;
+    }
 }
 
 /**
@@ -221,21 +206,21 @@ export function commonParseCodeToName(name: string, cellValue: any) {
  * @param params
  */
 export async function loadById(url: string, id: any, params: any = {}) {
-  if (!url || "undefined" == id) {
-    warning(i18n("utils.provideCorrectData"));
-    return;
-  }
-  let objData: any = {};
-  const suffix: string = id ? "/" + id : "";
-  await postRequest(url + suffix, params).then((res) => {
-    const redata = res.data.data;
-    if (!redata) {
-      warning(i18n("utils.dataNotFound"));
-    } else {
-      objData = redata;
+    if (!url || "undefined" == id) {
+        warning(i18n("utils.provideCorrectData"));
+        return;
     }
-  });
-  return objData;
+    let objData: any = {};
+    const suffix: string = id ? "/" + id : "";
+    await postRequest(url + suffix, params).then((res) => {
+        const redata = res.data.data;
+        if (!redata) {
+            warning(i18n("utils.dataNotFound"));
+        } else {
+            objData = redata;
+        }
+    });
+    return objData;
 }
 
 /**
@@ -245,41 +230,41 @@ export async function loadById(url: string, id: any, params: any = {}) {
  * @param msg 删除提示
  */
 export async function deleteByIds(
-  url: string,
-  ids: any,
-  msg: string = i18n("utils.confirmDelete"),
+    url: string,
+    ids: any,
+    msg: string = i18n("utils.confirmDelete"),
 ) {
-  if (!url) {
-    warning(i18n("utils.provideCorrectData"));
-    return;
-  }
-  if (!ids || ids.length == 0) {
-    warning(i18n("utils.selectDataToDelete"));
-    return;
-  }
-  let objData: boolean = false;
-  const confirmFlag: boolean = await operationConfirm(msg);
-  if (!confirmFlag) {
-    return;
-  }
-  await postRequest(url, ids)
-    .then((res) => {
-      if (res.data.code == 0) {
-        success(res.data.cnMessage);
-      } else {
-        warning(res.data.cnMessage);
-      }
-      closeLoad();
-      objData = true;
-    })
-    .catch((err) => {
-      error(i18n("dialog.interfaceError") + err);
-      objData = false;
-    })
-    .finally(() => {
-      closeLoad();
-    });
-  return objData;
+    if (!url) {
+        warning(i18n("utils.provideCorrectData"));
+        return;
+    }
+    if (!ids || ids.length == 0) {
+        warning(i18n("utils.selectDataToDelete"));
+        return;
+    }
+    let objData: boolean = false;
+    const confirmFlag: boolean = await operationConfirm(msg);
+    if (!confirmFlag) {
+        return;
+    }
+    await postRequest(url, ids)
+        .then((res) => {
+            if (res.data.code == 0) {
+                success(res.data.cnMessage);
+            } else {
+                warning(res.data.cnMessage);
+            }
+            closeLoad();
+            objData = true;
+        })
+        .catch((err) => {
+            error(i18n("dialog.interfaceError") + err);
+            objData = false;
+        })
+        .finally(() => {
+            closeLoad();
+        });
+    return objData;
 }
 
 /**
@@ -289,56 +274,56 @@ export async function deleteByIds(
  * @param userUrl 用户自定义接口
  */
 export async function dictData(
-  dictType: string,
-  exclusion: Array<string> = [],
-  userUrl?: string,
+    dictType: string,
+    exclusion: Array<string> = [],
+    userUrl?: string,
 ) {
-  const query = [];
-  query.push({
-    propertyName: "dictType",
-    value: dictType,
-  });
-  const dicts: SelectOption[] = [];
-  await postRequest(userUrl ?? dictUrl, { fieldList: query })
-    .then((res) => {
-      const redata = res.data;
-      if (redata.code == 0) {
-        redata.data?.forEach((item: any) => {
-          if (exclusion?.includes(item.dictCode)) {
-            return;
-          }
-          dicts.push({ name: item.dictName, value: item.dictCode });
-        });
-      }
-    })
-    .catch((err: any) => {
-      console.log("接口不存在或网络异常", err);
+    const query = [];
+    query.push({
+        propertyName: "dictType",
+        value: dictType,
     });
-  return dicts;
+    const dicts: SelectOption[] = [];
+    await postRequest(userUrl ?? dictUrl, {fieldList: query})
+        .then((res) => {
+            const redata = res.data;
+            if (redata.code == 0) {
+                redata.data?.forEach((item: any) => {
+                    if (exclusion?.includes(item.dictCode)) {
+                        return;
+                    }
+                    dicts.push({name: item.dictName, value: item.dictCode});
+                });
+            }
+        })
+        .catch((err: any) => {
+            console.log("接口不存在或网络异常", err);
+        });
+    return dicts;
 }
 
 /**
  * 数据匹配方式
  */
 export function searchMatchList(): SelectOption[] {
-  const data: SelectOption[] = [];
-  data.push({ name: i18n("utils.searchMatch.equal"), value: "eq" });
-  data.push({ name: i18n("utils.searchMatch.notEqual"), value: "ne" });
-  data.push({ name: i18n("utils.searchMatch.fuzzy"), value: "lk" });
-  data.push({ name: i18n("utils.searchMatch.empty"), value: "ul" });
-  data.push({ name: i18n("utils.searchMatch.notEmpty"), value: "nu" });
-  data.push({ name: i18n("utils.searchMatch.leftFuzzy"), value: "llk" });
-  data.push({ name: i18n("utils.searchMatch.rightFuzzy"), value: "rlk" });
-  data.push({ name: i18n("utils.searchMatch.notMatch"), value: "nlk" });
-  data.push({ name: i18n("utils.searchMatch.lessThan"), value: "lt" });
-  data.push({ name: i18n("utils.searchMatch.lessThanOrEqual"), value: "lte" });
-  data.push({ name: i18n("utils.searchMatch.greaterThan"), value: "gt" });
-  data.push({
-    name: i18n("utils.searchMatch.greaterThanOrEqual"),
-    value: "gte",
-  });
-  data.push({ name: i18n("utils.searchMatch.range"), value: "bt" });
-  return data;
+    const data: SelectOption[] = [];
+    data.push({name: i18n("utils.searchMatch.equal"), value: "eq"});
+    data.push({name: i18n("utils.searchMatch.notEqual"), value: "ne"});
+    data.push({name: i18n("utils.searchMatch.fuzzy"), value: "lk"});
+    data.push({name: i18n("utils.searchMatch.empty"), value: "ul"});
+    data.push({name: i18n("utils.searchMatch.notEmpty"), value: "nu"});
+    data.push({name: i18n("utils.searchMatch.leftFuzzy"), value: "llk"});
+    data.push({name: i18n("utils.searchMatch.rightFuzzy"), value: "rlk"});
+    data.push({name: i18n("utils.searchMatch.notMatch"), value: "nlk"});
+    data.push({name: i18n("utils.searchMatch.lessThan"), value: "lt"});
+    data.push({name: i18n("utils.searchMatch.lessThanOrEqual"), value: "lte"});
+    data.push({name: i18n("utils.searchMatch.greaterThan"), value: "gt"});
+    data.push({
+        name: i18n("utils.searchMatch.greaterThanOrEqual"),
+        value: "gte",
+    });
+    data.push({name: i18n("utils.searchMatch.range"), value: "bt"});
+    return data;
 }
 
 /**
@@ -346,14 +331,14 @@ export function searchMatchList(): SelectOption[] {
  * @param msg
  */
 export function copy(msg: string) {
-  navigator.clipboard
-    .writeText(msg)
-    .then(() => {
-      success(i18n("utils.copied"));
-    })
-    .catch(() => {
-      error(i18n("utils.copyFailed"));
-    });
+    navigator.clipboard
+        .writeText(msg)
+        .then(() => {
+            success(i18n("utils.copied"));
+        })
+        .catch(() => {
+            error(i18n("utils.copyFailed"));
+        });
 }
 
 /**
@@ -361,21 +346,21 @@ export function copy(msg: string) {
  * @param row
  * @param rowIndex
  */
-export function rowClassName({ row, rowIndex }: any) {
-  if (row) {
-    row.xh = rowIndex + 1;
-  }
+export function rowClassName({row, rowIndex}: any) {
+    if (row) {
+        row.xh = rowIndex + 1;
+    }
 }
 
 /**
  * 创建条件
  */
 export function createCondition(
-  name: string,
-  val: any,
-  matchType: string = "eq",
+    name: string,
+    val: any,
+    matchType: string = "eq",
 ): SearchParams {
-  return { propertyName: name, value: val, operation: matchType };
+    return {propertyName: name, value: val, operation: matchType};
 }
 
 /**
@@ -383,30 +368,30 @@ export function createCondition(
  * @param v
  */
 export function isJson(v: any) {
-  if (!v) {
-    return false;
-  }
-  if (
-    v &&
-    typeof v === "string" &&
-    (/^\{[\s\S]*\}$/.test(v) || /^\[[\s\S]*\]$/.test(v))
-  ) {
-    try {
-      JSON5.parse(v);
-      return true;
-    } catch (e) {
-      console.log(e);
-      return false;
+    if (!v) {
+        return false;
     }
-  }
-  if (
-    typeof v === "object" &&
-    Object.prototype.toString.call(v).toLowerCase() === "[object object]" &&
-    !v.length
-  ) {
-    return true;
-  }
-  return false;
+    if (
+        v &&
+        typeof v === "string" &&
+        (/^\{[\s\S]*\}$/.test(v) || /^\[[\s\S]*\]$/.test(v))
+    ) {
+        try {
+            JSON5.parse(v);
+            return true;
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    }
+    if (
+        typeof v === "object" &&
+        Object.prototype.toString.call(v).toLowerCase() === "[object object]" &&
+        !v.length
+    ) {
+        return true;
+    }
+    return false;
 }
 
 /**
@@ -414,153 +399,156 @@ export function isJson(v: any) {
  * @param fieldList
  */
 export function formFieldMapping(fieldList: PageFieldInfo) {
-  // Early exit for invalid data
-  if (!fieldList) {
-    return {
-      defaultDatas: {},
-      mappingFields: [],
-      batchDefaultValues: {},
-      actions: [],
-      formFields: [],
+    // Early exit for invalid data
+    if (!fieldList) {
+        return {
+            defaultDatas: {},
+            mappingFields: [],
+            batchDefaultValues: {},
+            actions: [],
+            formFields: [],
+        };
+    }
+
+    let defaultDatas: any = {};
+    const actions: Array<any> = [];
+    const formFields: Array<FieldInfo> = [];
+    //解析出字段之间的映射关系
+    const mappingFields: Array<any> = [];
+    const tempList = fieldList.fieldList || [];
+    const batchDefaultValues: any = {};
+    const brotherNodes = (fields: Array<FieldInfo>) => {
+        fields?.forEach((field: FieldInfo) => {
+            formFields.push(field);
+        })
     };
-  }
-
-  let defaultDatas: any = {};
-  const actions: Array<any> = [];
-  const formFields: Array<FieldInfo> = [];
-  //解析出字段之间的映射关系
-  const mappingFields: Array<any> = [];
-  const tempList = fieldList.fieldList || [];
-  const batchDefaultValues: any = {};
-
-  const tabOperation = (data: TabFieldInfo) => {
-    const fieldList: Array<FieldInfo> = data.fieldList || [];
-    if ("Y" == data.subFormFlag) {
-      defaultDatas[data.tabName] = {};
-      //如果是子表
-      fieldsOperation(fieldList, defaultDatas[data.tabName]);
-    } else {
-      fieldsOperation(fieldList, defaultDatas);
-    }
-  };
-
-  const tableOperation = (batchTempList: Array<BatchFieldInfo>) => {
-    if (!batchTempList || batchTempList.length === 0) return;
-
-    for (let i = 0; i < batchTempList.length; i++) {
-      const temp = batchTempList[i];
-      if (!defaultDatas[temp.batchName]) {
-        defaultDatas[temp.batchName] = [];
-      }
-      if (!batchDefaultValues[temp.batchName + "DefaultValue"]) {
-        batchDefaultValues[temp.batchName + "DefaultValue"] = [];
-      }
-      const fieldList: Array<FieldInfo> = temp.fieldList || [];
-      let tempData: any = {};
-
-      for (let j = 0; j < fieldList.length; j++) {
-        const item = fieldList[j];
-        if (item.defaultValue) {
-          if (isJson(item.defaultValue)) {
-            // Use Object.assign for better performance than object spreading
-            Object.assign(tempData, item.defaultValue);
-          } else {
-            tempData[item.fieldName] = item.defaultValue;
-          }
+    const tabOperation = (data: TabFieldInfo) => {
+        const fieldList: Array<FieldInfo> = data.fieldList || [];
+        if ("Y" == data.subFormFlag) {
+            defaultDatas[data.tabName] = {};
+            //如果是子表
+            fieldsOperation(fieldList, defaultDatas[data.tabName]);
+        } else {
+            fieldsOperation(fieldList, defaultDatas);
         }
-        if (item.aliasName) {
-          mappingFields.push({ name: item.fieldName, alias: item.aliasName });
-        }
-        if (item.actions) {
-          actions.push({
-            batchName: temp.batchName,
-            actions: item.actions,
-            fieldName: item.fieldName,
-          });
-        }
-        formFields.push(item);
-      }
-      batchDefaultValues[temp.batchName + "DefaultValue"].push(tempData);
-    }
-  };
+    };
 
-  const fieldsOperation = (dataList: any, defaultData: any) => {
-    if (!dataList || dataList.length === 0) return;
+    const tableOperation = (batchTempList: Array<BatchFieldInfo>) => {
+        if (!batchTempList || batchTempList.length === 0) return;
 
-    for (let i = 0; i < dataList.length; i++) {
-      const temp = dataList[i];
-      if (Array.isArray(temp)) {
-        for (let j = 0; j < temp.length; j++) {
-          const item = temp[j];
-          if (item.defaultValue) {
-            if (isJson(item.defaultValue)) {
-              // Use Object.assign for better performance
-              Object.assign(defaultData, item.defaultValue);
-            } else {
-              defaultData[item.fieldName] = item.defaultValue;
+        for (const element of batchTempList) {
+            const temp = element;
+            if (!defaultDatas[temp.batchName]) {
+                defaultDatas[temp.batchName] = [];
             }
-          }
-          if (item.aliasName) {
-            mappingFields.push({ name: item.fieldName, alias: item.aliasName });
-          }
-          if (item.actions) {
-            actions.push({
-              actions: item.actions,
-              fieldName: item.fieldName,
-            });
-          }
-          formFields.push(item);
-        }
-      } else if (
-        temp &&
-        (temp["tabList"] || temp["collapseList"] || temp["cardList"])
-      ) {
-        //如果是tabList
-        const tabList: Array<TabFieldInfo> =
-          temp["tabList"] || temp["collapseList"] || temp["cardList"] || [];
-        for (let j = 0; j < tabList.length; j++) {
-          const tabItem = tabList[j];
-          tabOperation(tabItem);
-        }
-      } else if (temp && temp["batchFieldList"]) {
-        //如果是tableList
-        const tableList: Array<BatchFieldInfo> = temp["batchFieldList"];
-        tableOperation(tableList);
-      } else if (temp) {
-        if (temp.defaultValue) {
-          if (isJson(temp.defaultValue)) {
-            // Use Object.assign for better performance
-            Object.assign(defaultData, temp.defaultValue);
-          } else {
-            defaultData[temp.fieldName] = temp.defaultValue;
-          }
-        }
-        if (temp.aliasName) {
-          mappingFields.push({ name: temp.fieldName, alias: temp.aliasName });
-        }
-        if (temp.actions) {
-          actions.push({
-            actions: temp.actions,
-            fieldName: temp.fieldName,
-          });
-        }
-        formFields.push(temp);
-      }
-    }
-  };
+            if (!batchDefaultValues[temp.batchName + "DefaultValue"]) {
+                batchDefaultValues[temp.batchName + "DefaultValue"] = [];
+            }
+            const fieldList: Array<FieldInfo> = temp.fieldList || [];
+            let tempData: any = {};
 
-  fieldsOperation(tempList, defaultDatas);
-  const batchTempList = fieldList.batchFieldList || [];
-  tableOperation(batchTempList);
-  Object.assign(defaultDatas, batchDefaultValues);
+            for (const element of fieldList) {
+                const item = element;
+                if (item.defaultValue) {
+                    if (isJson(item.defaultValue)) {
+                        Object.assign(tempData, item.defaultValue);
+                    } else {
+                        tempData[item.fieldName] = item.defaultValue;
+                    }
+                }
+                if (item.aliasName) {
+                    mappingFields.push({name: item.fieldName, alias: item.aliasName});
+                }
+                if (item.actions) {
+                    actions.push({
+                        batchName: temp.batchName,
+                        actions: item.actions,
+                        fieldName: item.fieldName,
+                    });
+                }
+                formFields.push(item);
+                brotherNodes(item.brotherNodes);
+            }
+            batchDefaultValues[temp.batchName + "DefaultValue"].push(tempData);
+        }
+    };
 
-  return {
-    defaultDatas,
-    mappingFields,
-    batchDefaultValues,
-    actions,
-    formFields,
-  };
+    const fieldsOperation = (dataList: any, defaultData: any) => {
+        if (!dataList || dataList.length === 0) return;
+
+        for (const element of dataList) {
+            const temp = element;
+            if (Array.isArray(temp)) {
+                for (const element of temp) {
+                    const item = element;
+                    if (item.defaultValue) {
+                        if (isJson(item.defaultValue)) {
+                            Object.assign(defaultData, item.defaultValue);
+                        } else {
+                            defaultData[item.fieldName] = item.defaultValue;
+                        }
+                    }
+                    if (item.aliasName) {
+                        mappingFields.push({name: item.fieldName, alias: item.aliasName});
+                    }
+                    if (item.actions) {
+                        actions.push({
+                            actions: item.actions,
+                            fieldName: item.fieldName,
+                        });
+                    }
+                    formFields.push(item);
+                    brotherNodes(item.brotherNodes);
+                }
+            } else if (
+                temp &&
+                (temp["tabList"] || temp["collapseList"] || temp["cardList"])
+            ) {
+                //如果是tabList
+                const tabList: Array<TabFieldInfo> =
+                    temp["tabList"] || temp["collapseList"] || temp["cardList"] || [];
+                for (const element of tabList) {
+                    tabOperation(element);
+                }
+            } else if (temp?.batchFieldList) {
+                //如果是tableList
+                const tableList: Array<BatchFieldInfo> = temp["batchFieldList"];
+                tableOperation(tableList);
+            } else if (temp) {
+                if (temp.defaultValue) {
+                    if (isJson(temp.defaultValue)) {
+                        Object.assign(defaultData, temp.defaultValue);
+                    } else {
+                        defaultData[temp.fieldName] = temp.defaultValue;
+                    }
+                }
+                if (temp.aliasName) {
+                    mappingFields.push({name: temp.fieldName, alias: temp.aliasName});
+                }
+                if (temp.actions) {
+                    actions.push({
+                        actions: temp.actions,
+                        fieldName: temp.fieldName,
+                    });
+                }
+                formFields.push(temp);
+                brotherNodes(temp.brotherNodes);
+            }
+        }
+    };
+
+    fieldsOperation(tempList, defaultDatas);
+    const batchTempList = fieldList.batchFieldList || [];
+    tableOperation(batchTempList);
+    Object.assign(defaultDatas, batchDefaultValues);
+
+    return {
+        defaultDatas,
+        mappingFields,
+        batchDefaultValues,
+        actions,
+        formFields,
+    };
 }
 
 /**
@@ -569,30 +557,30 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
  * @param dataForm
  */
 export function batchFieldDefaultValues(datas: BatchFieldInfo, dataForm: any) {
-  let defaultValues: any = {};
-  if (datas["batchDefaultData"]) {
-    defaultValues = Object.assign({}, datas["batchDefaultData"]);
-  }
-  const fieldList = datas["fieldList"];
-  for (const inde in fieldList) {
-    const temp = fieldList[inde];
-    if (temp.defaultValue) {
-      if (isJson(temp.defaultValue)) {
-        for (const key in temp.defaultValue) {
-          defaultValues[key] = temp.defaultValue[key];
+    let defaultValues: any = {};
+    if (datas["batchDefaultData"]) {
+        defaultValues ={...datas["batchDefaultData"]} ;
+    }
+    const fieldList = datas["fieldList"];
+    for (const inde in fieldList) {
+        const temp = fieldList[inde];
+        if (temp.defaultValue) {
+            if (isJson(temp.defaultValue)) {
+                for (const key in temp.defaultValue) {
+                    defaultValues[key] = temp.defaultValue[key];
+                }
+            } else {
+                defaultValues[temp.fieldName] = temp.defaultValue;
+            }
         }
-      } else {
-        defaultValues[temp.fieldName] = temp.defaultValue;
-      }
     }
-  }
-  if (dataForm) {
-    let temp = unref(dataForm)?.[datas.batchName];
-    if (temp) {
-      defaultValues = Object.assign({}, temp, defaultValues);
+    if (dataForm) {
+        let temp = unref(dataForm)?.[datas.batchName];
+        if (temp) {
+            defaultValues = {...temp, ...defaultValues};
+        }
     }
-  }
-  return defaultValues;
+    return defaultValues;
 }
 
 /**
@@ -600,33 +588,33 @@ export function batchFieldDefaultValues(datas: BatchFieldInfo, dataForm: any) {
  * @param field 组件参数信息
  */
 export async function compDynamicData(field: any) {
-  const temp = field;
-  let reDataList: SelectOption[] = [];
-  const dataSource = temp.preps?.dataSource;
-  const urlOrDictName = temp.preps?.urlOrDictName;
-  if (dataSource == "url") {
-    reDataList = await dynamicUrlOperation(field);
-  } else if (dataSource == "dict") {
-    const dicts = await dictData(urlOrDictName);
-    if (Object.keys(dicts).length == 0) {
-      error(`数据字典:【${urlOrDictName}】可能未配置`);
+    const temp = field;
+    let reDataList: SelectOption[] = [];
+    const dataSource = temp.preps?.dataSource;
+    const urlOrDictName = temp.preps?.urlOrDictName;
+    if (dataSource == "url") {
+        reDataList = await dynamicUrlOperation(field);
+    } else if (dataSource == "dict") {
+        const dicts = await dictData(urlOrDictName);
+        if (Object.keys(dicts).length == 0) {
+            error(`数据字典:【${urlOrDictName}】可能未配置`);
+        } else {
+            reDataList = dicts;
+        }
     } else {
-      reDataList = dicts;
+        reDataList = [];
     }
-  } else {
-    reDataList = [];
-  }
-  //前面没有满足条件的数据，则判断静态数据是否存在
-  if (unref(field.preps?.values)?.length > 0) {
-    return unref(field.preps?.values);
-  }
-  if (unref(field.preps?.data)?.length > 0) {
-    return unref(field.preps?.data);
-  }
-  if (unref(field?.optionList)?.length > 0) {
-    return unref(field.optionList);
-  }
-  return reDataList;
+    //前面没有满足条件的数据，则判断静态数据是否存在
+    if (unref(field.preps?.values)?.length > 0) {
+        return unref(field.preps?.values);
+    }
+    if (unref(field.preps?.data)?.length > 0) {
+        return unref(field.preps?.data);
+    }
+    if (unref(field?.optionList)?.length > 0) {
+        return unref(field.optionList);
+    }
+    return reDataList;
 }
 
 /**
@@ -636,74 +624,74 @@ export async function compDynamicData(field: any) {
  * @param proxyUrl 代理接口,为空时，默认使用/system-config/redirect/execute
  */
 export async function dynamicUrlOperation(
-  preps: any,
-  queryInfo?: SearchParams[],
-  proxyUrl?: string,
+    preps: any,
+    queryInfo?: SearchParams[],
+    proxyUrl?: string,
 ) {
-  const temp = preps.preps || preps;
-  const reDataList: SelectOption[] = [];
-  const requestParams: SearchParams[] = [];
-  const queryParams = temp?.queryParams;
-  queryParams?.forEach((item: any) => {
-    if (!item.name && !item.propertyName) {
-      return;
-    }
-    requestParams.push({
-      propertyName: item.name ?? item.propertyName,
-      value: item.value,
-      operation: item.matchType,
-    });
-  });
-  //自定义查询
-  if (queryInfo) {
-    requestParams.push(...queryInfo);
-  }
-  let url = temp["preinterfaceUrl"] + temp["interfaceUrl"];
-  const params: RedirectParams = {
-    url: temp["url"] ?? temp["interfaceUrl"],
-    host: temp["host"],
-    port: temp["port"],
-    protocol: temp["protocol"],
-    env: temp["env"],
-    httpMethod: temp.httpMethod || "POST",
-    dataType: temp.dataType || "JSON",
-    searchInfo: {
-      fieldList: requestParams,
-    },
-  };
-  url = proxyUrl ?? "/system-config/redirect/execute";
-  const validResult = await loadData(url, params);
-  if (validResult.error) {
-    error(validResult.error);
-  } else {
-    const labelName = temp["selectLabel"] ?? temp["labelName"] ?? "name";
-    const valueName = temp["selectValue"] ?? temp["valueName"] ?? "value";
-    const childrenOperation = (list: Array<any>) => {
-      const options: SelectOption[] = [];
-      list?.forEach((item: any) => {
-        const option: SelectOption = {
-          name: item[labelName],
-          value: item[valueName],
-        };
-        if (item.children?.length > 0) {
-          option.children = childrenOperation(item.children);
+    const temp = preps.preps || preps;
+    const reDataList: SelectOption[] = [];
+    const requestParams: SearchParams[] = [];
+    const queryParams = temp?.queryParams;
+    queryParams?.forEach((item: any) => {
+        if (!item.name && !item.propertyName) {
+            return;
         }
-        options.push(option);
-      });
-      return options;
-    };
-    validResult.data.forEach((item: any) => {
-      const option: SelectOption = {
-        name: item[labelName],
-        value: item[valueName],
-      };
-      if (item.children?.length > 0) {
-        option.children = childrenOperation(item.children);
-      }
-      reDataList.push(option);
+        requestParams.push({
+            propertyName: item.name ?? item.propertyName,
+            value: item.value,
+            operation: item.matchType,
+        });
     });
-  }
-  return reDataList;
+    //自定义查询
+    if (queryInfo) {
+        requestParams.push(...queryInfo);
+    }
+    let url = temp["preinterfaceUrl"] + temp["interfaceUrl"];
+    const params: RedirectParams = {
+        url: temp["url"] ?? temp["interfaceUrl"],
+        host: temp["host"],
+        port: temp["port"],
+        protocol: temp["protocol"],
+        env: temp["env"],
+        httpMethod: temp.httpMethod || "POST",
+        dataType: temp.dataType || "JSON",
+        searchInfo: {
+            fieldList: requestParams,
+        },
+    };
+    url = proxyUrl ?? "/system-config/redirect/execute";
+    const validResult = await loadData(url, params);
+    if (validResult.error) {
+        error(validResult.error);
+    } else {
+        const labelName = temp["selectLabel"] ?? temp["labelName"] ?? "name";
+        const valueName = temp["selectValue"] ?? temp["valueName"] ?? "value";
+        const childrenOperation = (list: Array<any>) => {
+            const options: SelectOption[] = [];
+            list?.forEach((item: any) => {
+                const option: SelectOption = {
+                    name: item[labelName],
+                    value: item[valueName],
+                };
+                if (item.children?.length > 0) {
+                    option.children = childrenOperation(item.children);
+                }
+                options.push(option);
+            });
+            return options;
+        };
+        validResult.data.forEach((item: any) => {
+            const option: SelectOption = {
+                name: item[labelName],
+                value: item[valueName],
+            };
+            if (item.children?.length > 0) {
+                option.children = childrenOperation(item.children);
+            }
+            reDataList.push(option);
+        });
+    }
+    return reDataList;
 }
 
 /**
@@ -711,12 +699,12 @@ export async function dynamicUrlOperation(
  * @param queryString 查询参数
  */
 export async function createFilter(queryString: string) {
-  return (data: SelectOption) => {
-    return (
-      data?.name?.toLowerCase().search(queryString?.toLowerCase()) ||
-      data?.value?.toString()?.toLowerCase().search(queryString?.toLowerCase())
-    );
-  };
+    return (data: SelectOption) => {
+        return (
+            data?.name?.toLowerCase().search(queryString?.toLowerCase()) ||
+            data?.value?.toString()?.toLowerCase().search(queryString?.toLowerCase())
+        );
+    };
 }
 
 /**
@@ -726,112 +714,112 @@ export async function createFilter(queryString: string) {
  * @param condition 条件
  */
 export function apiInstance(
-  appName: string,
-  urlPrefix: string,
-  condition: Array<any> = [],
+    appName: string,
+    urlPrefix: string,
+    condition: Array<any> = [],
 ): ApiUrls {
-  const prefix: string = `/${appName}/${urlPrefix}`;
-  const apiUrls: ApiUrls = {
-    basePrefix: prefix,
-    appName: appName,
-    pageListUrl: `${prefix}/pageList`,
-    mergeUrl: `${prefix}/merge`,
-    mergeDraftUrl: `${prefix}/mergeDraft`,
-    batchMergeUrl: `${prefix}/mergeBatch`,
-    batchMergeDraftUrl: `${prefix}/mergeBatchDraft`,
-    loadByIdUrl: `${prefix}/getById`,
-    loadByIdForViewUrl: `${prefix}/getByIdForView`,
-    deleteUrl: `${prefix}/batchDeleteById`,
-    deleteByConditionUrl: `${prefix}/deleteByCondition`,
-    exportAllUrl: `${prefix}/exportData`,
-    downloadTemplateUrl: `${prefix}/downloadTemplate`,
-    listConditionUrl: `${prefix}/getAllByCondition`,
-    oneConditionUrl: `${prefix}/getOneByCondition`,
-    importUrl: `${prefix}/importData`,
-    uploadUrl: `${appName}/annex/upload/common`,
-    modifyColumnsUrl: `${prefix}/modifyColumns`,
-    condition: condition,
-  };
-  apiUrls.pageAction = (params: SearchInfo) => {
-    return postRequest(apiUrls.pageListUrl!, params);
-  };
-  apiUrls.mergeAction = (param: any) => {
-    return postRequest(apiUrls.mergeUrl!, param);
-  };
-  apiUrls.mergeDraftAction = (param: any) => {
-    return postRequest(apiUrls.mergeDraftUrl!, param);
-  };
-  apiUrls.batchMergeAction = (param: any) => {
-    return postRequest(apiUrls.batchMergeUrl!, param);
-  };
-  apiUrls.batchMergeDraftAction = (param: any) => {
-    return postRequest(apiUrls.batchMergeDraftUrl!, param);
-  };
-  apiUrls.loadByIdAction = (id: any, isView: boolean, params: any = {}) => {
-    return loadById(
-      isView ? apiUrls.loadByIdForViewUrl! : apiUrls.loadByIdUrl!,
-      id,
-      params,
-    );
-  };
-  apiUrls.deleteAction = (params: any) => {
-    return deleteByIds(apiUrls.deleteUrl!, params);
-  };
-  apiUrls.deleteByConditionAction = (params: any) => {
-    return postRequest(apiUrls.deleteByConditionUrl!, params);
-  };
-  apiUrls.exportDataAction = async (param: any) => {
-    return await download(apiUrls.exportAllUrl!, param);
-  };
-  apiUrls.downloadTemplateAction = async (param: any) => {
-    return await download(apiUrls.downloadTemplateUrl!, param || {});
-  };
-  apiUrls.queryConditionAction = (
-    params: SearchParams[] | any,
-    orderBy: OrderByInfo[] = [],
-  ) => {
-    return loadData(apiUrls.listConditionUrl!, params, orderBy);
-  };
-  apiUrls.queryOneByConditionAction = (
-    params: SearchParams[] | any,
-    orderBy: OrderByInfo[] = [],
-  ) => {
-    return loadData(apiUrls.oneConditionUrl!, params, orderBy);
-  };
-  apiUrls.importAction = (param: any) => {
-    return uploadRequest(apiUrls.importUrl!, param);
-  };
-  apiUrls.uploadAction = (param: any) => {
-    return uploadRequest(apiUrls.uploadUrl!, param);
-  };
-  apiUrls.executeAction = (param: any) => {
-    return postRequest(apiUrls.executeUrl!, param);
-  };
-  apiUrls.modifyColumnsAction = (param: any) => {
-    return postRequest(apiUrls.modifyColumnsUrl!, param);
-  };
-  return apiUrls;
+    const prefix: string = `/${appName}/${urlPrefix}`;
+    const apiUrls: ApiUrls = {
+        basePrefix: prefix,
+        appName: appName,
+        pageListUrl: `${prefix}/pageList`,
+        mergeUrl: `${prefix}/merge`,
+        mergeDraftUrl: `${prefix}/mergeDraft`,
+        batchMergeUrl: `${prefix}/mergeBatch`,
+        batchMergeDraftUrl: `${prefix}/mergeBatchDraft`,
+        loadByIdUrl: `${prefix}/getById`,
+        loadByIdForViewUrl: `${prefix}/getByIdForView`,
+        deleteUrl: `${prefix}/batchDeleteById`,
+        deleteByConditionUrl: `${prefix}/deleteByCondition`,
+        exportAllUrl: `${prefix}/exportData`,
+        downloadTemplateUrl: `${prefix}/downloadTemplate`,
+        listConditionUrl: `${prefix}/getAllByCondition`,
+        oneConditionUrl: `${prefix}/getOneByCondition`,
+        importUrl: `${prefix}/importData`,
+        uploadUrl: `${appName}/annex/upload/common`,
+        modifyColumnsUrl: `${prefix}/modifyColumns`,
+        condition: condition,
+    };
+    apiUrls.pageAction = (params: SearchInfo) => {
+        return postRequest(apiUrls.pageListUrl!, params);
+    };
+    apiUrls.mergeAction = (param: any) => {
+        return postRequest(apiUrls.mergeUrl!, param);
+    };
+    apiUrls.mergeDraftAction = (param: any) => {
+        return postRequest(apiUrls.mergeDraftUrl!, param);
+    };
+    apiUrls.batchMergeAction = (param: any) => {
+        return postRequest(apiUrls.batchMergeUrl!, param);
+    };
+    apiUrls.batchMergeDraftAction = (param: any) => {
+        return postRequest(apiUrls.batchMergeDraftUrl!, param);
+    };
+    apiUrls.loadByIdAction = (id: any, isView: boolean, params: any = {}) => {
+        return loadById(
+            isView ? apiUrls.loadByIdForViewUrl! : apiUrls.loadByIdUrl!,
+            id,
+            params,
+        );
+    };
+    apiUrls.deleteAction = (params: any) => {
+        return deleteByIds(apiUrls.deleteUrl!, params);
+    };
+    apiUrls.deleteByConditionAction = (params: any) => {
+        return postRequest(apiUrls.deleteByConditionUrl!, params);
+    };
+    apiUrls.exportDataAction = async (param: any) => {
+        return await download(apiUrls.exportAllUrl!, param);
+    };
+    apiUrls.downloadTemplateAction = async (param: any) => {
+        return await download(apiUrls.downloadTemplateUrl!, param || {});
+    };
+    apiUrls.queryConditionAction = (
+        params: SearchParams[] | any,
+        orderBy: OrderByInfo[] = [],
+    ) => {
+        return loadData(apiUrls.listConditionUrl!, params, orderBy);
+    };
+    apiUrls.queryOneByConditionAction = (
+        params: SearchParams[] | any,
+        orderBy: OrderByInfo[] = [],
+    ) => {
+        return loadData(apiUrls.oneConditionUrl!, params, orderBy);
+    };
+    apiUrls.importAction = (param: any) => {
+        return uploadRequest(apiUrls.importUrl!, param);
+    };
+    apiUrls.uploadAction = (param: any) => {
+        return uploadRequest(apiUrls.uploadUrl!, param);
+    };
+    apiUrls.executeAction = (param: any) => {
+        return postRequest(apiUrls.executeUrl!, param);
+    };
+    apiUrls.modifyColumnsAction = (param: any) => {
+        return postRequest(apiUrls.modifyColumnsUrl!, param);
+    };
+    return apiUrls;
 }
 
 /**
  * 模态窗口相关属性
  */
 export function dialogPreps(
-  title: string = "编辑",
-  batchTitle: string = "批量编辑",
+    title: string = "编辑",
+    batchTitle: string = "批量编辑",
 ): Reactive<DialogProps> {
-  return reactive<DialogProps>({
-    bakeVisible1: false,
-    bakeVisible2: false,
-    bakeVisible3: false,
-    ids: 0,
-    batchDialogTitle: batchTitle,
-    dialogTitle: title,
-    batchEditVisible: false,
-    editVisible: false,
-    uploadVisible: false,
-    viewVisible: false,
-  });
+    return reactive<DialogProps>({
+        bakeVisible1: false,
+        bakeVisible2: false,
+        bakeVisible3: false,
+        ids: 0,
+        batchDialogTitle: batchTitle,
+        dialogTitle: title,
+        batchEditVisible: false,
+        editVisible: false,
+        uploadVisible: false,
+        viewVisible: false,
+    });
 }
 
 /**
@@ -839,7 +827,7 @@ export function dialogPreps(
  * @param param
  */
 export function uriEncode(param: string | number | boolean) {
-  return encodeURIComponent(param);
+    return encodeURIComponent(param);
 }
 
 /**
@@ -847,7 +835,7 @@ export function uriEncode(param: string | number | boolean) {
  * @param param
  */
 export function uriDecode(param: string) {
-  return decodeURIComponent(param);
+    return decodeURIComponent(param);
 }
 
 /**
@@ -855,7 +843,7 @@ export function uriDecode(param: string) {
  * @param param
  */
 export function base64Encode(param: string) {
-  return btoa(param);
+    return btoa(param);
 }
 
 /**
@@ -863,7 +851,7 @@ export function base64Encode(param: string) {
  * @param object
  */
 export function objectToBase64(object: any) {
-  return base64Encode(JSON.stringify(object));
+    return base64Encode(JSON.stringify(object));
 }
 
 /**
@@ -871,5 +859,5 @@ export function objectToBase64(object: any) {
  * @param param
  */
 export function base64Decode(param: string) {
-  return atob(param);
+    return atob(param);
 }

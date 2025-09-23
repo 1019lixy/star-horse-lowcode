@@ -89,6 +89,19 @@ const eqDisableOrEditable = (props: any, item: RelationDetail, e: any) => {
   if (!Array.isArray(relationFields)) {
     relationFields = [relationFields];
   }
+  
+  // 判断e是否匹配matchFieldValue，支持e为数组的情况
+  const isMatch = () => {
+    // 如果e是数组，检查数组中是否有任何元素与matchFieldValue中的元素匹配
+    if (Array.isArray(e)) {
+      return e.some(item => matchFieldValue.includes(item));
+    }
+    // 如果e是基本类型，直接检查是否包含
+    return matchFieldValue.includes(e);
+  };
+  
+  const matchResult = isMatch();
+  
   relationFields?.forEach(async (sitem: string) => {
     const field = props.formInfo?.find(
       (field: any) => field.fieldName == sitem,
@@ -98,15 +111,15 @@ const eqDisableOrEditable = (props: any, item: RelationDetail, e: any) => {
         field.preps = {};
       }
       if (item.controlCondition == "eqHide") {
-        field.formVisible = !matchFieldValue.includes(e);
+        field.formVisible = !matchResult;
       } else if (item.controlCondition == "eqVisible") {
-        field.formVisible = matchFieldValue.includes(e);
+        field.formVisible = matchResult;
       } else if (item.controlCondition == "eqEditable") {
-        field.preps["disabled"] = !matchFieldValue.includes(e);
+        field.preps["disabled"] = !matchResult;
       } else if (item.controlCondition == "eqDisable") {
-        field.preps["disabled"] = matchFieldValue.includes(e);
+        field.preps["disabled"] = matchResult;
       } else if (item.controlCondition == "eqRequired") {
-        field.required = matchFieldValue.includes(e);
+        field.required = matchResult;
       }
     }
   });
