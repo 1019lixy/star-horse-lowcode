@@ -103,7 +103,6 @@ export * from "@/components/types";
 // 导出所有store
 export * from "@/store/ButtonPermission";
 export * from "@/store/ConsumerView";
-export * from "@/store/ContinusConfig";
 export * from "@/store/CopyerOperation";
 export * from "@/store/DesignForm";
 export * from "@/store/DesignPage";

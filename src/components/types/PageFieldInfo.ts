@@ -19,7 +19,7 @@ export declare interface TabFieldInfo {
     /**
      * 是否默认禁用
      */
-    disabled: string;
+    disabled?: boolean;
     /**
      * fieldList 是否是子表单
      */
@@ -27,7 +27,7 @@ export declare interface TabFieldInfo {
     /**
      * 如果要列表显示则该属性需要设置为Y
      */
-    tableFlag: string;
+    tableFlag?: string;
     /**
      * 子集合Key 名称，如果配置了此名字，所有tab 下组件的数据将存入该名字下
      * 该属性的使用场景是 1对1 或者1 对多关系时，tab里组件是另外一个表的情况
