@@ -22,12 +22,12 @@ app.use(StarHorseLowCode,{
   //axiosInstance:axiosInstance,
   //增加国际化配置
   //lang:'zh_CN'||'en_US'||'zh_TW'||'ja_JP'||'de_DE' //默认为zh_CN
+  initElementPlus: true,//新增插件是否初始化element-plus开关,默认初始化
   elementPlusOptions: { //element-plus 配置选项,如果不配置,组件内部会引入element-plus
    locale: zhCn,
    //...其它配置
    }
-},
-initElementPlus: true,//新增插件是否初始化element-plus开关,默认初始化
+}
 );
 app.mount('#app')
 ```
@@ -367,5 +367,5 @@ barcode        条形码组件
 50. 2025-09-12  增加国际化语言包，中文（zh_CN）英文（en_US），繁体中文（zh_TW），日文（ja_JP），德文（de_DE）
 51. 2025-09-15  修复StarHorseDraggable 组件插槽和设计与非设计模式时宽度与高度控制问题
 52. 2025-09-20  修复StarHorseTableColumn 组件在点击单元格编辑数据，由之前的blur事件触发保存，改为click事件触发保存
-                修复其他组件的一系列bug
+53. 2025-09-26  修复国际化第一次加载异常bug,修复其他组件一系列已知bug
 

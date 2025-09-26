@@ -1,20 +1,20 @@
 // 在文件最顶部添加以下代码
-import {App, defineAsyncComponent} from "vue";
+import { App, defineAsyncComponent } from "vue";
 import "tailwindcss/index.css";
 import "@/assets/css/index.scss";
 import "element-plus/theme-chalk/index.css";
 import "@/assets/icons.css";
 import piniaInstance from "@/store";
-import {AxiosInstance} from "axios";
-import type {Router} from "vue-router";
+import { AxiosInstance } from "axios";
+import type { Router } from "vue-router";
 import ElementPlus from "element-plus";
 import zhCn from "element-plus/dist/locale/zh-cn.mjs";
 import zhTw from "element-plus/dist/locale/zh-tw.mjs";
 import ja from "element-plus/dist/locale/ja.mjs";
 import de from "element-plus/dist/locale/de.mjs";
 import en from "element-plus/dist/locale/en.mjs";
-import {starHorseAxios} from "@/api/star_horse_apis";
-import {LangType} from "@/theme/theme";
+import { starHorseAxios } from "@/api/star_horse_apis";
+import { LangType } from "@/theme/theme";
 
 export * from "@/api/star_horse_apis";
 export * from "@/api/star_horse_utils";
@@ -42,13 +42,13 @@ declare global {
 const install = (
     app: App<Element>,
     options?: {
-        router?: Router;
-        axiosInstance?: AxiosInstance; //如果外部传入axios实例，就使用外部传入的，否则使用默认的
-        elementPlusOptions?: any; // 添加Element Plus配置选项
-        lang?: LangType; //国际化语音
-
+        router?: Router,
+        axiosInstance?: AxiosInstance,//如果外部传入axios实例，就使用外部传入的，否则使用默认的
+        elementPlusOptions?: any,// 添加Element Plus配置选项
+        lang?: LangType, //国际化语音
+        initElementPlus?: boolean   // 是否初始化element-plus
     },
-    initElementPlus: boolean = true // 是否初始化element-plus
+
 ) => {
     // 注入宿主应用的 router 实例
     if (options?.router) {
@@ -61,7 +61,7 @@ const install = (
     if (options?.lang) {
         window.__starHorseHostLang__ = options.lang;
     }
-    if (initElementPlus) {
+    if (options?.initElementPlus??true) {
         // 只在没有配置时才设置中文
         if (!options?.elementPlusOptions?.locale) {
             app.use(ElementPlus, {
@@ -112,7 +112,7 @@ export * from "@/store/SelfOperation";
 export * from "@/store/UserInfo";
 
 //将pinia的实例导出，否则会导致在设计表单时数据不一致
-export {piniaInstance, starHorseAxios};
+export { piniaInstance, starHorseAxios };
 
 export default {
     install,
