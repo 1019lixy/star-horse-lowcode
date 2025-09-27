@@ -1,30 +1,23 @@
 <script setup lang="ts" name="StarHorseItem">
-import { computed, inject, ModelRef, onMounted, PropType, ref } from "vue";
-import { useSelfOperationStore } from "@/store/SelfOperation";
+import {computed, inject, ModelRef, onMounted, PropType, ref} from "vue";
+import {useSelfOperationStore} from "@/store/SelfOperation";
 import piniaInstance from "@/store";
-import {
-  compKey,
-  dateCompList,
-  fieldPlaceholder,
-  inputCompList,
-  selectCompList,
-  uuid,
-} from "@/api/system";
-import { Config } from "@/api/settings";
-import { checkVisible, filterProperties } from "@/api/form_utils";
+import {compKey, dateCompList, fieldPlaceholder, inputCompList, uuid,} from "@/api/system";
+import {Config} from "@/api/settings";
+import {checkVisible, filterProperties} from "@/api/form_utils";
 import Help from "@/components/help.vue";
 
 const props = defineProps({
-  item: { type: Object as PropType<any>, required: true },
-  column: { type: Object as PropType<any> },
-  primaryKey: { type: Object as PropType<any> },
+  item: {type: Object as PropType<any>, required: true},
+  column: {type: Object as PropType<any>},
+  primaryKey: {type: Object as PropType<any>},
   // 数据索引
-  dataIndex: { type: Number, default: -1 },
-  bareFlag: { type: Boolean, default: false },
-  batchName: { type: String, default: "" },
-  compSize: { type: String, default: Config.compSize },
-  showLabel: { type: Boolean, default: true }, //是否显示标签
-  source: { type: Number, default: 1 },
+  dataIndex: {type: Number, default: -1},
+  bareFlag: {type: Boolean, default: false},
+  batchName: {type: String, default: ""},
+  compSize: {type: String, default: Config.compSize},
+  showLabel: {type: Boolean, default: true}, //是否显示标签
+  source: {type: Number, default: 1},
 });
 let userOperation = useSelfOperationStore(piniaInstance);
 const dataForm: ModelRef<any> = defineModel("dataForm");
@@ -42,9 +35,9 @@ const bareStyle = computed(() => ({
   minWidth: props.source == 4 ? "200px" : "unset",
   maxHeight: props.source == 4 ? "500px" : "unset",
   width:
-    props.source == 4
-      ? dragWidth.value || props.item.minWidth || "inherit"
-      : "100%",
+      props.source == 4
+          ? dragWidth.value || props.item.minWidth || "inherit"
+          : "100%",
   position: "relative" as const,
 }));
 /**
@@ -75,7 +68,7 @@ const actionDispatcher = (act: string, ...params: any[]) => {
 const fieldType = () => {
   const inputList = inputCompList();
   const dateNameList = dateCompList();
-  const selectNameList = selectCompList();
+  // const selectNameList = selectCompList();
   itemType.value = props.item?.type || props.item?.fieldType || "input";
   if (dateNameList.includes(itemType.value)) {
     itemType.value = "datetime";
@@ -87,8 +80,8 @@ const fieldType = () => {
   const keys = Object.keys(props.item.actions);
   if (props.source == 4) {
     const actionKey = inputList.includes(itemType.value)
-      ? "keyup.enter"
-      : "change";
+        ? "keyup.enter"
+        : "change";
     if (!keys.includes(actionKey)) {
       props.item.actions[actionKey] = actionKey;
     }
@@ -201,47 +194,47 @@ onMounted(() => {
 </script>
 <template>
   <div
-    :class="checkClassName()"
-    :style="bareStyle"
-    @mousemove="onDrag"
-    @mouseup="stopDrag"
-    @mouseleave="stopDrag"
+      :class="checkClassName()"
+      :style="bareStyle"
+      @mousemove="onDrag"
+      @mouseup="stopDrag"
+      @mouseleave="stopDrag"
   >
     <div
-      class="drag-handle"
-      @mousedown.prevent="startDrag"
-      v-if="itemType != 'button' && source == 4"
+        class="drag-handle"
+        @mousedown.prevent="startDrag"
+        v-if="itemType != 'button' && source == 4"
     ></div>
-    <help :message="item.helpMsg" v-if="item.helpMsg" />
+    <help :message="item.helpMsg" v-if="item.helpMsg"/>
     <component
-      :key="item.id"
-      :is="
+        :key="item.id"
+        :is="
         ((dataForm && dataForm['_' + item.fieldName + 'Type']) || itemType) +
         '-item'
       "
-      :formInfo="formFields"
-      @selfFunc="actionDispatcher"
-      ref="componentRef"
-      :isSearch="source == 4"
-      :bareFlag="bareFlag"
-      :source="source"
-      :field="item"
-      v-model:formData="dataForm"
+        :formInfo="formFields"
+        @selfFunc="actionDispatcher"
+        ref="componentRef"
+        :isSearch="source == 4"
+        :bareFlag="bareFlag"
+        :source="source"
+        :field="item"
+        v-model:formData="dataForm"
     />
-    <div v-if="item.brotherNodes" style="width: 15px" />
+    <div v-if="item.brotherNodes" style="width: 15px"/>
     <template
-      v-for="(temp, key) in item.brotherNodes"
-      :key="compKey(temp, key)"
+        v-for="(temp, key) in item.brotherNodes"
+        :key="compKey(temp, key)"
     >
       <star-horse-item
-        v-if="checkVisible(temp, dataForm)"
-        :primaryKey="primaryKey"
-        :compSize="compSize"
-        v-model:dataForm="dataForm"
-        :item="temp"
-        :dataIndex="dataIndex"
-        :bareFlag="true"
-        :source="source"
+          v-if="checkVisible(temp, dataForm)"
+          :primaryKey="primaryKey"
+          :compSize="compSize"
+          v-model:dataForm="dataForm"
+          :item="temp"
+          :dataIndex="dataIndex"
+          :bareFlag="true"
+          :source="source"
       />
     </template>
   </div>

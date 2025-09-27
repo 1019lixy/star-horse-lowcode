@@ -25,7 +25,6 @@ const props = defineProps({
   source: {type: Number, default: 5},
 });
 const emits = defineEmits(["focusEvent", "blurEvent"]);
-const editItemRef = ref();
 const compInfo: ComputedRef<DyCompField> = computed(() => {
   return {
     ...unref(props.item.preps?.compInfo),
