@@ -1,4 +1,4 @@
-import {RedirectParams, SearchInfo, SearchParams,} from "@/components/types/Params";
+import {SearchInfo, SearchParams,} from "@/components/types/Params";
 import {reactive, Reactive, unref} from "vue";
 import {ElLoading} from "element-plus";
 import JSON5 from "json5";
@@ -559,7 +559,7 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
 export function batchFieldDefaultValues(datas: BatchFieldInfo, dataForm: any) {
     let defaultValues: any = {};
     if (datas["batchDefaultData"]) {
-        defaultValues ={...datas["batchDefaultData"]} ;
+        defaultValues = {...datas["batchDefaultData"]};
     }
     const fieldList = datas["fieldList"];
     for (const inde in fieldList) {
@@ -629,6 +629,7 @@ export async function dynamicUrlOperation(
     proxyUrl?: string,
 ) {
     const temp = preps.preps || preps;
+    const redirect = temp.redirect ?? true;
     const reDataList: SelectOption[] = [];
     const requestParams: SearchParams[] = [];
     const queryParams = temp?.queryParams;
@@ -646,21 +647,34 @@ export async function dynamicUrlOperation(
     if (queryInfo) {
         requestParams.push(...queryInfo);
     }
-    let url = temp["preinterfaceUrl"] + temp["interfaceUrl"];
-    const params: RedirectParams = {
-        url: temp["url"] ?? temp["interfaceUrl"],
-        host: temp["host"],
-        port: temp["port"],
-        protocol: temp["protocol"],
-        env: temp["env"],
-        httpMethod: temp.httpMethod || "POST",
-        dataType: temp.dataType || "JSON",
-        searchInfo: {
-            fieldList: requestParams,
-        },
+    let url = temp.url;
+    let params: any = {
+        fieldList: requestParams
     };
-    url = proxyUrl ?? "/system-config/redirect/execute";
-    const validResult = await loadData(url, params);
+    let validResult: any = {};
+    //是否重定向
+    if (redirect) {
+        params = {
+            url: temp["url"] ?? temp["interfaceUrl"],
+            host: temp["host"],
+            port: temp["port"],
+            protocol: temp["protocol"],
+            env: temp["env"],
+            httpMethod: temp.httpMethod || "POST",
+            dataType: temp.dataType || "JSON",
+            searchInfo: {
+                fieldList: requestParams,
+            },
+        };
+        url = proxyUrl ?? "/system-config/redirect/execute";
+        validResult = await loadData(url, params);
+    } else {
+        if (temp.httpMethod && temp.httpMethod.toUpperCase() === "GET") {
+            validResult = await loadGetData(url);
+        } else {
+            validResult = await loadData(url, params);
+        }
+    }
     if (validResult.error) {
         error(validResult.error);
     } else {
