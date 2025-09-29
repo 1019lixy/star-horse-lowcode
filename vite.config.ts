@@ -47,7 +47,7 @@ export default defineConfig((mode) => {
         optimizeDeps: {
             // force: true,
             include: optimizeDepsList,
-            exclude: [],
+            exclude: ["**/sample/*.vue"],
         },
         plugins: [
             tailwindcss(),

@@ -76,7 +76,7 @@ export interface DataDropdownProps {
 const props = withDefaults(defineProps<DataDropdownProps>(), {
   displayName: "name",
   displayValue: "value",
-  compSize: "small",
+  compSize: "default",
   pageSize: 0,
   multiple: false,
   autoClose: true,

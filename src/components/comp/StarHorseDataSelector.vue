@@ -92,7 +92,7 @@ export interface DataSelectorProps {
 const props = withDefaults(defineProps<DataSelectorProps>(), {
   multiple: false,
   disabled: false,
-  compSize: "small",
+  compSize: "default",
   pageSize: 0,
   displayName: "name",
   displayValue: "value",

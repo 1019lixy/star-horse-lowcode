@@ -77,5 +77,5 @@ export const Config: any = {
   /**
    * 组件大小
    */
-  compSize: "small",
+  compSize: "default",
 };
