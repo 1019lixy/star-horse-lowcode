@@ -93,12 +93,12 @@ onMounted(() => {
                   :primaryKey="primaryKey"
                   :item="headerItem"
                   :dataForm="
-                    getFormData(cardItem, dataForm, propPrefix, dataIndex, key)
+                    getFormData(cardItem, dataForm, propPrefix, dataIndex, 0)
                   "
                   :dataIndex="
-                    getDataIndex(cardItem, propPrefix, dataIndex, key)
+                    getDataIndex(cardItem, propPrefix, dataIndex, 0)
                   "
-                  :propPrefix="getPrefix(cardItem, propPrefix, dataIndex, key)"
+                  :propPrefix="getPrefix(cardItem, propPrefix, dataIndex, 0)"
                 />
               </el-form-item>
             </div>
@@ -109,10 +109,10 @@ onMounted(() => {
           :compUrl="compUrl"
           :compSize="compSize"
           :dataForm="
-            getFormData(cardItem, dataForm, propPrefix, dataIndex, key)
+            getFormData(cardItem, dataForm, propPrefix, dataIndex, 0)
           "
-          :dataIndex="getDataIndex(cardItem, propPrefix, dataIndex, key)"
-          :propPrefix="getPrefix(cardItem, propPrefix, dataIndex, key)"
+          :dataIndex="getDataIndex(cardItem, propPrefix, dataIndex, 0)"
+          :propPrefix="getPrefix(cardItem, propPrefix, dataIndex, 0)"
           :objectName="cardItem.objectName"
           @addRow="addRow"
           @removeRow="removeRow"

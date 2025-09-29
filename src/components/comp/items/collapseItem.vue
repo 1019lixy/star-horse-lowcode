@@ -84,10 +84,10 @@ onMounted(() => {
             @removeRow="removeRow"
             :objectName="collapseItem.objectName"
             :dataForm="
-              getFormData(collapseItem, dataForm, propPrefix, dataIndex, key)
+              getFormData(collapseItem, dataForm, propPrefix, dataIndex, 0)
             "
-            :dataIndex="getDataIndex(collapseItem, propPrefix, dataIndex, key)"
-            :propPrefix="getPrefix(collapseItem, propPrefix, dataIndex, key)"
+            :dataIndex="getDataIndex(collapseItem, propPrefix, dataIndex, 0)"
+            :propPrefix="getPrefix(collapseItem, propPrefix, dataIndex, 0)"
             :fieldList="collapseItem"
             :rules="rules"
             :subFormFlag="collapseItem.subFormFlag"

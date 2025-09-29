@@ -214,7 +214,6 @@ const allAction = (
     isInit: boolean = false,
 ) => {
     const currentData = unref(formData);
-    console.log("currentData allAction", currentData);
     try {
         emits("selfFunc", actionName, currentData);
     } catch (e) {

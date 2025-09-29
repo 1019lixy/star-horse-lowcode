@@ -218,7 +218,6 @@ const moveColumn = () => {
       ghostClass: "ghost",
       forceFallback: true,
       onStart: () => {
-        console.log("开始拖动");
         tbody.style.cursor = "move"; // 拖动时改变光标
       },
       onEnd(event: any) {
