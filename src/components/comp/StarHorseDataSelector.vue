@@ -146,12 +146,12 @@ const findInTree = (nodes: any[], result: any[]) => {
     // 检查当前节点是否匹配
     if (Array.isArray(value.value)) {
       if (value.value.includes(node[props.displayValue])) {
-        const temp = Object.assign({}, node);
+        const temp = {...node};
         delete temp.children;
         result.push(temp);
       }
     } else if (node[props.displayValue] === value.value) {
-      const temp = Object.assign({}, node);
+      const temp = {...node};
       delete temp.children;
       result.push(temp);
     }
