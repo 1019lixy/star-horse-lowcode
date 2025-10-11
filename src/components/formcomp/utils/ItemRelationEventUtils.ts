@@ -332,7 +332,7 @@ const initCompCallEvent = (props: any, emits: any, formData: any) => {
     // 新增数据检查
     if (
         !props.isSearch &&
-        !props.field.preps?.["stopInitCallAction"] &&
+        !props.field?.preps?.["stopInitCallAction"] &&
         events?.length > 0
     ) {
         if (
@@ -358,7 +358,7 @@ const initCompCallEvent = (props: any, emits: any, formData: any) => {
 };
 const doInitCallEvent = (props: any, emits: any, formData: any) => {
     const events: string[] = Object.keys(props.field.actions || {});
-    if (props.field.preps?.["starHorseFieldSource"] == 5) {
+    if (props.field?.preps?.["starHorseFieldSource"] == 5) {
         return;
     }
     events?.forEach((event) => {
