@@ -368,4 +368,6 @@ barcode        条形码组件
 51. 2025-09-15  修复StarHorseDraggable 组件插槽和设计与非设计模式时宽度与高度控制问题
 52. 2025-09-20  修复StarHorseTableColumn 组件在点击单元格编辑数据，由之前的blur事件触发保存，改为click事件触发保存
 53. 2025-09-26  修复国际化第一次加载异常bug,修复其他组件一系列已知bug
+54. 2025-10-11  修复input-item ,number-item 组件prefix,suffix 显示问题
+                修复容器组件collapse-container 在表单中校验失效问题
 

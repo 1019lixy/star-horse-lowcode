@@ -87,7 +87,4 @@ onMounted(() => {
 });
 </script>
 <style lang="scss" scoped>
-:deep(.el-input-group__append) {
-  padding: 0 20px !important;
-}
 </style>

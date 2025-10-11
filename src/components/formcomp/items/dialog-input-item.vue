@@ -171,10 +171,6 @@ onMounted(async () => {
   </starhorse-form-item>
 </template>
 <style lang="scss" scoped>
-:deep(.el-input-group__append) {
-  padding: 0 20px !important;
-}
-
 .cell.el-tooltip {
   display: flex;
   align-items: center;

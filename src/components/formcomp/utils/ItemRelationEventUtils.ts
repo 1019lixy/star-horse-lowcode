@@ -394,6 +394,16 @@ const prepsFilter = (preps: any) => {
 
     return preps;
 };
+const convertData = (data: any) => {
+    if (typeof data === "string") {
+        try {
+            return JSON5.parse(data);
+        } catch (error) {
+            return [];
+        }
+    }
+    return data;
+};
 export {
     allAction,
     buttonAction,
@@ -402,4 +412,5 @@ export {
     prepsFilter,
     relationEvent,
     useFormField,
+    convertData
 };

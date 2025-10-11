@@ -37,10 +37,9 @@ body {
   width: 100%;
   height: 100%;
   font-size: 12px;
-  font-family:
-    "PingFang SC", "Lantinghei SC", "Microsoft YaHei", "HanHei SC",
-    "Helvetica Neue", "Open Sans", Arial, "Hiragino Sans GB", "微软雅黑",
-    STHeiti, "WenQuanYi Micro Hei", SimSun, sans-serif;
+  font-family: "PingFang SC", "Lantinghei SC", "Microsoft YaHei", "HanHei SC",
+  "Helvetica Neue", "Open Sans", Arial, "Hiragino Sans GB", "微软雅黑",
+  STHeiti, "WenQuanYi Micro Hei", SimSun, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   margin: 0;
@@ -161,7 +160,8 @@ a {
     border: 1px solid var(--star-horse-style);
   }
 
-  li:hover {}
+  li:hover {
+  }
 
   .icon-active {
     background: var(--star-horse-background);
@@ -180,12 +180,12 @@ a {
 }
 
 /* 水平样式 */
-.el-menu--horizontal>div>.el-submenu {
+.el-menu--horizontal > div > .el-submenu {
   float: left;
 }
 
 /* 一级菜单的样式 */
-.el-menu--horizontal>.el-menu-item {
+.el-menu--horizontal > .el-menu-item {
   float: left;
   line-height: 60px;
   margin: 0;
@@ -193,7 +193,7 @@ a {
 }
 
 /* 解决下图1 下拉三角图标 */
-.el-menu--horizontal>.el-submenu .el-submenu__icon-arrow {
+.el-menu--horizontal > .el-submenu .el-submenu__icon-arrow {
   position: static;
   vertical-align: middle;
   margin-left: 8px;
@@ -201,15 +201,10 @@ a {
 }
 
 /* 解决下图2 无下拉菜单时 不对齐问题 */
-.el-menu--horizontal>.el-submenu .el-submenu__title {
+.el-menu--horizontal > .el-submenu .el-submenu__title {
   height: 60px;
   line-height: 60px;
   border-bottom: 2px solid transparent;
-}
-
-.el-input-group__append,
-.el-input-group__prepend {
-  padding: 0 2px !important;
 }
 
 .el-menu--vertical .el-menu-item a {
@@ -840,7 +835,7 @@ button.el-collapse-item__header {
   }
 }
 
-.el-table th>.cell {
+.el-table th > .cell {
   display: inline-block;
   white-space: nowrap;
   word-break: keep-all;
@@ -952,9 +947,8 @@ button.el-collapse-item__header {
   -ms-user-select: none;
   -webkit-user-select: none;
   user-select: none;
-  transition:
-    width 0.2s,
-    height 0.2s;
+  transition: width 0.2s,
+  height 0.2s;
   border: 1px solid var(--star-horse-border—color);
 
   .table-cell-action {
@@ -987,4 +981,10 @@ button.el-collapse-item__header {
   overflow-y: auto;
   padding-top: 10px;
   scrollbar-width: thin;
+}
+
+.el-input-group__prepend,
+.el-input-group__append {
+  min-width: 30%;
+  max-width: 100px;
 }
