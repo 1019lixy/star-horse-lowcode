@@ -809,24 +809,24 @@
   resolved "https://registry.npmjs.org/@floating-ui/utils/-/utils-0.2.10.tgz#a2a1e3812d14525f725d011a73eceb41fef5bc1c"
   integrity sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==
 
-"@fortawesome/fontawesome-common-types@6.7.2":
-  version "6.7.2"
-  resolved "https://registry.npmjs.org/@fortawesome/fontawesome-common-types/-/fontawesome-common-types-6.7.2.tgz#7123d74b0c1e726794aed1184795dbce12186470"
-  integrity sha512-Zs+YeHUC5fkt7Mg1l6XTniei3k4bwG/yo3iFUtZWd/pMx9g3fdvkSK9E0FOC+++phXOka78uJcYb8JaFkW52Xg==
+"@fortawesome/fontawesome-common-types@7.1.0":
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-common-types/-/fontawesome-common-types-7.1.0.tgz#a4e0b7e40073d5fdef41182da1bc216a05875659"
+  integrity sha512-l/BQM7fYntsCI//du+6sEnHOP6a74UixFyOYUyz2DLMXKx+6DEhfR3F2NYGE45XH1JJuIamacb4IZs9S0ZOWLA==
 
-"@fortawesome/free-regular-svg-icons@^6.6.0":
-  version "6.7.2"
-  resolved "https://registry.npmjs.org/@fortawesome/free-regular-svg-icons/-/free-regular-svg-icons-6.7.2.tgz#f1651e55e6651a15589b0569516208f9c65f96db"
-  integrity sha512-7Z/ur0gvCMW8G93dXIQOkQqHo2M5HLhYrRVC0//fakJXxcF1VmMPsxnG6Ee8qEylA8b8Q3peQXWMNZ62lYF28g==
+"@fortawesome/free-regular-svg-icons@^6.6.0 || ^7.0.1":
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/@fortawesome/free-regular-svg-icons/-/free-regular-svg-icons-7.1.0.tgz#e57c5eb63e6a30bb4fe2276aba851e3470452680"
+  integrity sha512-0e2fdEyB4AR+e6kU4yxwA/MonnYcw/CsMEP9lH82ORFi9svA6/RhDyhxIv5mlJaldmaHLLYVTb+3iEr+PDSZuQ==
   dependencies:
-    "@fortawesome/fontawesome-common-types" "6.7.2"
+    "@fortawesome/fontawesome-common-types" "7.1.0"
 
-"@fortawesome/free-solid-svg-icons@^6.6.0":
-  version "6.7.2"
-  resolved "https://registry.npmjs.org/@fortawesome/free-solid-svg-icons/-/free-solid-svg-icons-6.7.2.tgz#fe25883b5eb8464a82918599950d283c465b57f6"
-  integrity sha512-GsBrnOzU8uj0LECDfD5zomZJIjrPhIlWU82AHwa2s40FKH+kcxQaBvBo3Z4TxyZHIyX8XTDxsyA33/Vx9eFuQA==
+"@fortawesome/free-solid-svg-icons@^6.6.0 || ^7.0.1":
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/@fortawesome/free-solid-svg-icons/-/free-solid-svg-icons-7.1.0.tgz#cb9d149cefd3419a7a3fd041106e3a2315463e3e"
+  integrity sha512-Udu3K7SzAo9N013qt7qmm22/wo2hADdheXtBfxFTecp+ogsc0caQNRKEb7pkvvagUGOpG9wJC1ViH6WXs8oXIA==
   dependencies:
-    "@fortawesome/fontawesome-common-types" "6.7.2"
+    "@fortawesome/fontawesome-common-types" "7.1.0"
 
 "@humanfs/core@^0.19.1":
   version "0.19.1"
@@ -1638,10 +1638,10 @@
   resolved "https://registry.npmjs.org/@types/mdurl/-/mdurl-2.0.0.tgz#d43878b5b20222682163ae6f897b20447233bdfd"
   integrity sha512-RGdgjQUZba5p6QEFAVx2OGb8rQDL/cPRG7GiedRzMcJ1tYnUANBncjbSB1NRGwbvjcPeikRABz2nshyPk1bhWg==
 
-"@types/node@^24.7.0":
-  version "24.7.0"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-24.7.0.tgz#a34c9f0d3401db396782e440317dd5d8373c286f"
-  integrity sha512-IbKooQVqUBrlzWTi79E8Fw78l8k1RNtlDDNWsFZs7XonuQSJ8oNYfEeclhprUldXISRMLzBpILuKgPlIxm+/Yw==
+"@types/node@^24.7.2":
+  version "24.7.2"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-24.7.2.tgz#5adf66b6e2ac5cab1d10a2ad3682e359cb652f4a"
+  integrity sha512-/NbVmcGTP+lj5oa4yiYxxeBjRivKQ5Ns1eSZeB99ExsEQ6rX5XYU1Zy/gGxY/ilqtD4Etx9mKyrPxZRetiahhA==
   dependencies:
     undici-types "~7.14.0"
 
@@ -3654,10 +3654,10 @@ math-intrinsics@^1.1.0:
   resolved "https://registry.npmjs.org/math-intrinsics/-/math-intrinsics-1.1.0.tgz#a0dd74be81e2aa5c2f27e65ce283605ee4e2b7f9"
   integrity sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==
 
-md-editor-v3@^6.0.1:
-  version "6.0.1"
-  resolved "https://registry.npmjs.org/md-editor-v3/-/md-editor-v3-6.0.1.tgz#d4011e6449aab9ec502a6924d73d363d3d224524"
-  integrity sha512-ZZQpUsC6DkKYfFsDMck0kJabP/vYSDfNkB6Zmb6+v50orKOO7KG2SGgm6yGv78YWxh8ehqJL4IpZwhWneQzg1w==
+md-editor-v3@^6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/md-editor-v3/-/md-editor-v3-6.1.0.tgz#60dee91108c89e59ef38fcb88cf8893171b1eb45"
+  integrity sha512-8/3cNyAt2CfMhu3PiQZqpOmCKmBXa7uJzWHnATVwkv61TOgUBuho4IFQPougmM4J7qZhZ0sldXQHDVf1BjABxg==
   dependencies:
     "@codemirror/autocomplete" "^6.18.7"
     "@codemirror/commands" "^6.8.1"
@@ -4687,10 +4687,10 @@ uuid@*, uuid@^13.0.0:
   resolved "https://registry.npmjs.org/uuid/-/uuid-13.0.0.tgz#263dc341b19b4d755eb8fe36b78d95a6b65707e8"
   integrity sha512-XQegIaBTVUjSHliKqcnFqYypAd4S+WCYt5NIeRs6w/UAry7z8Y9j5ZwRRL4kzq9U3sD6v+85er9FvkEaBpji2w==
 
-vanilla-jsoneditor@^3.3.1:
-  version "3.9.0"
-  resolved "https://registry.npmjs.org/vanilla-jsoneditor/-/vanilla-jsoneditor-3.9.0.tgz#f2397956b1a1840121c6f12bbe4de4d53cfc714a"
-  integrity sha512-T8wjArNM4s3ja9flOzuRLP+kb1YA474J3RudWW63p12QBMHtCQDjbhXn9OoBRm1/taZoP81mmlm03Nl50XR7bA==
+vanilla-jsoneditor@^3.10.0:
+  version "3.10.0"
+  resolved "https://registry.yarnpkg.com/vanilla-jsoneditor/-/vanilla-jsoneditor-3.10.0.tgz#fb9b7ab5da8284d781a0ef7b1ccf7d03d431774c"
+  integrity sha512-AiI8vDEqUhc63rA8JykuhyOBse5xu/yZXL1B3iij59Y0zWb53Z5cOBgiFwh4pa4fAqOfDsp9flezqNZdDWk9lQ==
   dependencies:
     "@codemirror/autocomplete" "^6.18.1"
     "@codemirror/commands" "^6.7.1"
@@ -4700,8 +4700,8 @@ vanilla-jsoneditor@^3.3.1:
     "@codemirror/search" "^6.5.6"
     "@codemirror/state" "^6.4.1"
     "@codemirror/view" "^6.34.1"
-    "@fortawesome/free-regular-svg-icons" "^6.6.0"
-    "@fortawesome/free-solid-svg-icons" "^6.6.0"
+    "@fortawesome/free-regular-svg-icons" "^6.6.0 || ^7.0.1"
+    "@fortawesome/free-solid-svg-icons" "^6.6.0 || ^7.0.1"
     "@jsonquerylang/jsonquery" "^3.1.1 || ^4.0.0 || ^5.0.0"
     "@lezer/highlight" "^1.2.1"
     "@replit/codemirror-indentation-markers" "^6.5.3"
@@ -4812,13 +4812,13 @@ vue3-barcode@^1.0.1:
     jsbarcode "^3.11.5"
     vue "^3.0.4"
 
-vue3-ts-jsoneditor@^3.0.4:
-  version "3.0.4"
-  resolved "https://registry.npmjs.org/vue3-ts-jsoneditor/-/vue3-ts-jsoneditor-3.0.4.tgz#b63c98f3620ef25b2061b0c9e8c22ed6183bc708"
-  integrity sha512-rn6QcVSpE/+HgXNvNG4w6xQVx66S0sjuvIWV84dl3pXKLCAQxb3k8TOATxxuDXQvIgdmJUwGO8bSuEWtCTQwrg==
+vue3-ts-jsoneditor@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/vue3-ts-jsoneditor/-/vue3-ts-jsoneditor-3.1.0.tgz#54f74724a0092d030e0c7bbbbae3aa8a2bfba81c"
+  integrity sha512-25fY8mlW5P7CbN0vzQgwvMdPhtA8w3w10hDEq30otD8LI2GxyPAuIQ6SU0H4eTtGvPn7LdFofDydTE0KZBsgSg==
   dependencies:
     immutable-json-patch "^6.0.1"
-    vanilla-jsoneditor "^3.3.1"
+    vanilla-jsoneditor "^3.10.0"
     vue "^3.5.13"
 
 vue@^3.0.4, vue@^3.5.13:
