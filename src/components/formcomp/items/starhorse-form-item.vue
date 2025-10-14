@@ -188,7 +188,7 @@ onMounted(() => {});
         v-else
         :class="{
           'bare-item': true,
-          'item-info': field.preps?.itemType != 'usercomp',
+          'item-info': field?.preps?.itemType != 'usercomp',
         }"
         :style="{
           margin: field?.itemType == 'button' ? '5px auto' : 'unset',
@@ -269,11 +269,11 @@ onMounted(() => {});
     <div
       class="item-info"
       :style="{
-        margin: field.preps?.itemType == 'button' ? '5px auto' : 'unset',
+        margin: field?.preps?.itemType == 'button' ? '5px auto' : 'unset',
       }"
       v-else
     >
-      <help :message="field.preps?.helpMsg" v-if="field.preps?.helpMsg" />
+      <help :message="field?.preps?.helpMsg" v-if="field?.preps?.helpMsg" />
       <slot></slot>
     </div>
     <Teleport to="body">
