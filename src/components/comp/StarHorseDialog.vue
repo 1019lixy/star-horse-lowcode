@@ -317,9 +317,9 @@ provide("dialogOperation", clickFunction);
 
     .el-dialog__header {
       flex-shrink: 0;
-      height: 40px;
+      height: 50px;
       box-sizing: border-box;
-      padding: 10px;
+      padding: 12px;
       background-color: var(--star-horse-style);
       margin: 0;
       border-bottom: var(--star-horse-shadow) 4px solid;
@@ -329,6 +329,7 @@ provide("dialogOperation", clickFunction);
 
       h3 {
         flex: 1;
+        font-size:14px
       }
 
       .my-header {

@@ -15,7 +15,6 @@ import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 import piniaInstance from "@/store";
 import ElementPlus from "element-plus";
 import zhCn from "element-plus/es/locale/lang/zh-cn";
-
 const app = createApp(App);
 // window.app = app;
 app.component("draggable", draggable);

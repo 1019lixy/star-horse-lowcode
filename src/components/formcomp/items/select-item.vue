@@ -1,37 +1,38 @@
 <template>
   <starhorse-form-item
-    :showFormItem="showFormItem"
-    :isDesign="isDesign"
-    :disabled="disabled"
-    :bareFlag="bareFlag"
-    :field="field"
-    :parentField="parentField"
+      :showFormItem="showFormItem"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      :field="field"
+      :parentField="parentField"
   >
     <el-select
-      :fid="field.fieldName"
-      :disabled="checkIsDisabled(props)"
-      v-bind="prepsFilter(field.preps)"
-      :remote-method="remoteMethod"
-      v-on="getDynamicEvents(props, itemAction)"
-      v-model="formData[field.fieldName]"
+        :fid="field.fieldName"
+        :remote="remote"
+        :disabled="checkIsDisabled(props)"
+        v-bind="prepsFilter(field.preps)"
+        :remote-method="remoteMethod"
+        v-on="getDynamicEvents(props, itemAction)"
+        v-model="formData[field.fieldName]"
     >
       <template v-if="field.preps.multiple" #header>
         <el-checkbox
-          v-model="checkAll"
-          :indeterminate="indeterminate"
-          @change="handleCheckAll"
+            v-model="checkAll"
+            :indeterminate="indeterminate"
+            @change="handleCheckAll"
         >
           {{ i18n("common.selectAll") }}
         </el-checkbox>
       </template>
       <template
-        v-for="item in field.preps.values"
-        :key="item[field.preps?.props?.value ?? 'value']"
+          v-for="item in field.preps.values"
+          :key="item[field.preps?.props?.value ?? 'value']"
       >
         <el-option
-          :disabled="item['disabled']"
-          :label="item[field.preps?.props?.label ?? 'name']"
-          :value="item[field.preps?.props?.value ?? 'value']"
+            :disabled="item['disabled']"
+            :label="item[field.preps?.props?.label ?? 'name']"
+            :value="item[field.preps?.props?.value ?? 'value']"
         />
       </template>
       <template v-if="field.preps?.showFooter" #footer>
@@ -41,23 +42,24 @@
         <template v-else>
           <div class="flex-row flex w-full justify-between">
             <el-input
-              v-model="optionName"
-              class="option-input flex-1"
-              :placeholder="i18n('form.enterOptionName')"
-              size="small"
+                v-model="optionName"
+                class="option-input flex-1"
+                :placeholder="i18n('form.enterOptionName')"
+                size="small"
             />
             <div class="flex-row flex justify-center w-[35%] mx-auto my-0">
               <el-button
-                type="primary"
-                icon="add"
-                size="small"
-                @click="onConfirm"
+                  type="primary"
+                  icon="add"
+                  size="small"
+                  @click="onConfirm"
               >
                 {{ i18n("form.add") }}
               </el-button>
               <el-button size="small" icon="cancel" @click="clear">{{
-                i18n("form.cancel")
-              }}</el-button>
+                  i18n("form.cancel")
+                }}
+              </el-button>
             </div>
           </div>
         </template>
@@ -66,23 +68,19 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {
-  compDynamicData,
-  createFilter,
-  dynamicUrlOperation,
-} from "@/api/star_horse_utils";
-import { getDynamicEvents } from "@/api/system";
+import {compDynamicData, createFilter, dynamicUrlOperation,} from "@/api/star_horse_utils";
+import {getDynamicEvents} from "@/api/system";
 import {
   allAction,
   checkIsDisabled,
   initCompCallEvent,
   prepsFilter,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
-import { ItemPreps } from "@/components/types/ItemPreps";
-import { SearchParams } from "@/components/types/Params";
-import { warning } from "@/utils/message";
-import { nextTick, onMounted, ref, watch } from "vue";
-import { i18n } from "@/lang";
+import {ItemPreps} from "@/components/types/ItemPreps";
+import {SearchParams} from "@/components/types/Params";
+import {warning} from "@/utils/message";
+import {computed, nextTick, onMounted, ref, watch} from "vue";
+import {i18n} from "@/lang";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -97,6 +95,13 @@ const checkAll = ref(false);
 const indeterminate = ref(false);
 const isAdding = ref(false);
 const optionName = ref("");
+const remote = computed(() => {
+  let temp = props.field.preps.remote;
+  if (typeof temp == "string") {
+    return ["true", "yes", "t"].includes(temp.toLowerCase());
+  }
+  return false;
+});
 const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
@@ -137,13 +142,16 @@ const handleCheckAll = (val: any) => {
   indeterminate.value = false;
   if (val) {
     formData.value[props.field.fieldName] = props.field.preps.values.map(
-      (_) => _.value,
+        (_) => _.value,
     );
   } else {
     formData.value[props.field.fieldName] = [];
   }
 };
 const remoteMethod = async (queryString: string) => {
+  if (!remote.value) {
+    return;
+  }
   let temp = props.field.preps;
   let dataSource = temp["dataSource"];
   if (dataSource == "url") {
@@ -156,8 +164,8 @@ const remoteMethod = async (queryString: string) => {
     temp["values"] = await dynamicUrlOperation(temp, searchParams);
   } else {
     temp["values"] = queryString
-      ? temp["values"]?.filter(createFilter(queryString))
-      : temp["values"];
+        ? temp["values"]?.filter(createFilter(queryString))
+        : temp["values"];
   }
 };
 onMounted(() => {
@@ -165,7 +173,7 @@ onMounted(() => {
     props.field.preps = {};
   }
   props.field.preps["remote"] =
-    props.field.preps["remote"] || props.field.preps["dataSource"] == "url";
+      props.field.preps["remote"] || props.field.preps["dataSource"] == "url";
   props.field.preps["filterable"] = true;
   props.field.preps["collapseTags"] = true;
   initData();
@@ -174,15 +182,15 @@ onMounted(() => {
   });
 });
 watch(
-  () => formData.value[props.field.fieldName + "OptionList"],
-  (val) => {
-    if (val?.length > 0) {
-      props.field.preps["values"] = val;
-    }
-  },
-  {
-    immediate: true,
-  },
+    () => formData.value[props.field.fieldName + "OptionList"],
+    (val) => {
+      if (val?.length > 0) {
+        props.field.preps["values"] = val;
+      }
+    },
+    {
+      immediate: true,
+    },
 );
 </script>
 <style lang="scss" scoped>

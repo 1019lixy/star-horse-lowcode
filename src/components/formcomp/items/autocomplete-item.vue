@@ -27,7 +27,7 @@
         {{ field.preps?.prependText }}
       </template>
       <template #prepend v-if="prependList?.length>0">
-        <el-select v-model="formData[preName]">
+        <el-select v-model="formData[preName]" style="width: 115px !important;">
           <el-option
               v-for="item in prependList"
               :key="item.value"
@@ -48,7 +48,7 @@
         />
       </template>
       <template #append v-if="appendList?.length>0">
-        <el-select v-model="formData[appName]">
+        <el-select v-model="formData[appName]" style="width: 115px !important;">
           <el-option
               v-for="item in appendList"
               :key="item.value"

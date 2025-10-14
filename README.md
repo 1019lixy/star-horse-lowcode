@@ -370,4 +370,4 @@ barcode        条形码组件
 53. 2025-09-26  修复国际化第一次加载异常bug,修复其他组件一系列已知bug
 54. 2025-10-11  修复input-item ,number-item 组件prefix,suffix 显示问题
                 修复容器组件collapse-container 在表单中校验失效问题
-
+55. 2025-10-13  更新不兼容的第三方插件版本
