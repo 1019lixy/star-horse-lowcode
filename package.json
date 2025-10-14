@@ -96,11 +96,7 @@
     "vue-m-message": "^4.0.2",
     "vue-router": "^4.5.1",
     "vue3-barcode": "^1.0.1",
-<<<<<<< HEAD
-    "vue3-ts-jsoneditor": "^2.4.11",
-=======
     "vue3-ts-jsoneditor": "2.11.4",
->>>>>>> 4b39d1f12f1253f10810dc829755550819702056
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
