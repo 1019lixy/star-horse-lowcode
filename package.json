@@ -2,7 +2,7 @@
   "name": "star-horse-lowcode",
   "private": false,
   "author": "l_1019@163.com",
-  "version": "2.8.20",
+  "version": "2.8.22",
   "type": "module",
   "description": "星马低代码核心库，提供了低代码平台的基础功能和组件库。此库可引用到您的项目中，快速构建表单和列表。",
   "keywords": [
@@ -88,6 +88,7 @@
     "unplugin-element-plus": "^0.10.0",
     "unplugin-vue-components": "^29.1.0",
     "uuid": "^13.0.0",
+    "vanilla-jsoneditor": "^3.10.0",
     "vite-plugin-dts": "^4.5.4",
     "vue": "^3.5.22",
     "vue-eslint-parser": "^10.2.0",
@@ -95,12 +96,13 @@
     "vue-m-message": "^4.0.2",
     "vue-router": "^4.5.1",
     "vue3-barcode": "^1.0.1",
-    "vue3-ts-jsoneditor": "^3.0.4",
+    "vue3-ts-jsoneditor": "2.11.4",
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^28.0.6",
     "@types/jquery": "^3.5.33",
-    "@types/node": "^24.7.1",
+    "@types/node": "^24.7.2",
     "@types/prismjs": "^1.26.5",
     "@types/sortablejs": "^1.15.8",
     "@types/uuid": "^11.0.0",
@@ -118,6 +120,5 @@
   },
   "engines": {
     "node": ">=20.13.0"
-  },
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+  }
 }

@@ -101,7 +101,7 @@ export default defineConfig((mode) => {
                 "windows.$": "jquery",
             }),
         ],
-        css: {
+            css: {
             //解决 Deprecation Warning: The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0.
             preprocessorOptions: {
                 scss: {
