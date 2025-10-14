@@ -1,10 +1,10 @@
-import {createCondition, dynamicUrlOperation, isJson,} from "@/api/star_horse_utils";
-import {userFunction} from "@/api/user_func";
-import {RelationDetail, SelectOption} from "@/components/types";
+import { createCondition, dynamicUrlOperation, isJson, } from "@/api/star_horse_utils";
+import { userFunction } from "@/api/user_func";
+import { RelationDetail, SelectOption } from "@/components/types";
 import piniaInstance from "@/store";
-import {useDesignFormStore} from "@/store/DesignForm";
-import {error} from "@/utils/message";
-import {computed, nextTick, unref, watch} from "vue";
+import { useDesignFormStore } from "@/store/DesignForm";
+import { error } from "@/utils/message";
+import { computed, nextTick, unref, watch } from "vue";
 import JSON5 from "json5";
 
 const designForm = useDesignFormStore(piniaInstance);
@@ -53,7 +53,7 @@ const fieldAssign = (
  * @returns
  */
 const dataLinkage = async (props: any, item: RelationDetail, e: any) => {
-    let {relationFields, params, matchFieldValue} = item;
+    let { relationFields, params, matchFieldValue } = item;
 
     if (!Array.isArray(matchFieldValue)) {
         matchFieldValue = matchFieldValue ? [matchFieldValue] : [];
@@ -79,7 +79,7 @@ const dataLinkage = async (props: any, item: RelationDetail, e: any) => {
     fieldAssign(props, relationFields, resultData);
 };
 const eqDisableOrEditable = (props: any, item: RelationDetail, e: any) => {
-    let {relationFields, matchFieldValue} = item;
+    let { relationFields, matchFieldValue } = item;
     if (!Array.isArray(matchFieldValue)) {
         matchFieldValue = matchFieldValue ? [matchFieldValue] : [];
     }
@@ -117,12 +117,14 @@ const eqDisableOrEditable = (props: any, item: RelationDetail, e: any) => {
                 field.preps["disabled"] = matchResult;
             } else if (item.controlCondition == "eqRequired") {
                 field.required = matchResult;
+            } else if (item.controlCondition == "eqUnRequired") {
+                field.required = !matchResult;
             }
         }
     });
 };
 const assignValue = (props: any, item: RelationDetail, e: any) => {
-    let {relationFields, staticDatas} = item;
+    let { relationFields, staticDatas } = item;
     if (!Array.isArray(relationFields)) {
         relationFields = [relationFields];
     }
@@ -136,7 +138,7 @@ const assignValue = (props: any, item: RelationDetail, e: any) => {
  * @returns
  */
 const changeType = (props: any, item: RelationDetail, e: any) => {
-    let {relationFields} = item;
+    let { relationFields } = item;
     if (!Array.isArray(relationFields)) {
         relationFields = [relationFields];
     }
@@ -160,7 +162,7 @@ const relationEvent = (
         return;
     }
     relationDetails?.forEach(async (item: RelationDetail) => {
-        let {controlCondition, relationFields, matchFieldValue} = item;
+        let { controlCondition, relationFields, matchFieldValue } = item;
         if (!Array.isArray(matchFieldValue)) {
             matchFieldValue = matchFieldValue ? [matchFieldValue] : [];
         }
@@ -180,6 +182,7 @@ const relationEvent = (
             case "eqEditable":
             case "eqVisible":
             case "eqRequired":
+            case "eqUnRequired":
                 //输入的值等于指定值可编辑否则不可编辑
                 eqDisableOrEditable(props, item, e);
                 break;
@@ -262,7 +265,7 @@ const buttonAction = (
  */
 const checkIsDisabled = (attrs: any) => {
     // const {attrs} = context;
-    const {field} = attrs;
+    const { field } = attrs;
     const fieldName = field.fieldName;
     const isExplicitlyDisabled =
         attrs?.disabled || field.disabled || field.preps?.disabled;
@@ -315,7 +318,7 @@ const initRelationEvent = (props: any, formData: any, needWatch?: boolean) => {
                         stop();
                     }
                 },
-                {immediate: true},
+                { immediate: true },
             );
             return;
         }
@@ -348,7 +351,7 @@ const initCompCallEvent = (props: any, emits: any, formData: any) => {
                         stop();
                     }
                 },
-                {immediate: true},
+                { immediate: true },
             );
             return;
         }

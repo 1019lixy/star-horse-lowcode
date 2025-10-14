@@ -308,7 +308,7 @@ export async function dictData(
 export function searchMatchList(): SelectOption[] {
     const data: SelectOption[] = [];
     data.push({name: i18n("utils.searchMatch.equal"), value: "eq"});
-    data.push({name: i18n("utils.searchMatch.notEqual"), value: "ne"});
+    data.push({name: i18n("utils.searchMatch.notEqual"), value: "neq"});
     data.push({name: i18n("utils.searchMatch.fuzzy"), value: "lk"});
     data.push({name: i18n("utils.searchMatch.empty"), value: "isnull"});
     data.push({name: i18n("utils.searchMatch.notEmpty"), value: "notnull"});
