@@ -387,7 +387,7 @@ const prepsFilter = (preps: any) => {
         if ((prep === undefined || prep === null || prep === "" || isNaN(prep)) && !isReadOnly(preps, key)) {
             delete preps[key];
         }
-        if (prep == "false" || prep == "true") {
+        if (prep === "false" || prep === "true") {
             preps[key] = Boolean(prep);
         }
     });

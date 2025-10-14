@@ -112,9 +112,9 @@ const init = () => {
     let keys = Object.keys(props.item.preps);
     for (let key in keys) {
       let val = props.item.preps[key];
-      if (val == "Y" || val == "N") {
-        props.item.preps[key] = val == "Y";
-      } else if (val == "true" || val == "false") {
+      if (["Y", "N","y","n"].includes(val)) {
+        props.item.preps[key] = ["Y","y"].includes(val);
+      } else if (val === "true" || val === "false") {
         props.item.preps[key] = val == "true";
       }
     }

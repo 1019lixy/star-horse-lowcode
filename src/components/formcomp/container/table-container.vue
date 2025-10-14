@@ -146,10 +146,7 @@ const deleteCol = (index: number) => {
               @mouseleave="(evt) => tdOut(evt, td)"
             >
               <draggable
-                @add="
-                  (evt: Event) =>
-                    onDragAdd(evt, field.preps.elements[td - 1].items)
-                "
+                @add=" (evt: Event) =>onDragAdd(evt, field.preps.elements[td - 1].items)"
                 class="smain-design"
                 tag="div"
                 group="starHorseGroup"
@@ -168,7 +165,7 @@ const deleteCol = (index: number) => {
                       :disabled="disabled"
                       :formInfo="formInfo"
                       :is="itemCheck(data)"
-                      :parentField="field"
+                      :parentField="parentField"
                       v-model:formData="formData"
                     />
                   </div>

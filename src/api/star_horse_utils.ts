@@ -310,8 +310,8 @@ export function searchMatchList(): SelectOption[] {
     data.push({name: i18n("utils.searchMatch.equal"), value: "eq"});
     data.push({name: i18n("utils.searchMatch.notEqual"), value: "ne"});
     data.push({name: i18n("utils.searchMatch.fuzzy"), value: "lk"});
-    data.push({name: i18n("utils.searchMatch.empty"), value: "ul"});
-    data.push({name: i18n("utils.searchMatch.notEmpty"), value: "nu"});
+    data.push({name: i18n("utils.searchMatch.empty"), value: "isnull"});
+    data.push({name: i18n("utils.searchMatch.notEmpty"), value: "notnull"});
     data.push({name: i18n("utils.searchMatch.leftFuzzy"), value: "llk"});
     data.push({name: i18n("utils.searchMatch.rightFuzzy"), value: "rlk"});
     data.push({name: i18n("utils.searchMatch.notMatch"), value: "nlk"});
