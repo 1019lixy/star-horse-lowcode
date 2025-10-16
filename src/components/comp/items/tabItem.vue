@@ -56,7 +56,6 @@ const beforeLeave = (activeName: string, oldActiveName: string) => {
 const removeRow = (row: any) => {
   emits("removeRow", row);
 };
-
 const init = () => {
 };
 onMounted(() => {
@@ -80,7 +79,7 @@ onMounted(() => {
         <tabPanelItem
             :item="tabItem"
             :dataIndex="dataIndex"
-            :itemKey="key"
+            :itemKey="item.groupData?key:0"
             :source="source"
             parentType="tab"
             :compUrl="compUrl"

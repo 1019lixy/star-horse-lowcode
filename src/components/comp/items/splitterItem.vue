@@ -66,10 +66,10 @@ onMounted(() => {
               @removeRow="removeRow"
               :objectName="splitterItem.objectName"
               :dataForm="
-              getFormData(splitterItem, dataForm, propPrefix, dataIndex, key)
+              getFormData(splitterItem, dataForm, propPrefix, dataIndex, item.groupData?key:0)
             "
-              :dataIndex="getDataIndex(splitterItem, propPrefix, dataIndex, key)"
-              :propPrefix="getPrefix(splitterItem, propPrefix, dataIndex, key)"
+              :dataIndex="getDataIndex(splitterItem, propPrefix, dataIndex, item.groupData?key:0)"
+              :propPrefix="getPrefix(splitterItem, propPrefix, dataIndex, item.groupData?key:0)"
               :fieldList="splitterItem"
               :rules="rules"
               :subFormFlag="splitterItem.subFormFlag"

@@ -639,7 +639,7 @@ export async function dynamicUrlOperation(
         }
         requestParams.push({
             propertyName: item.name ?? item.propertyName,
-            value: item.value,
+            value: item.value||"",
             operation: item.matchType,
         });
     });
