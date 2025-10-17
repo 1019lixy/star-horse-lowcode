@@ -48,7 +48,7 @@ const props = defineProps({
 });
 const emits = defineEmits(["addRow", "removeRow", "inited"]);
 const dataForm: ModelRef<any> = defineModel("dataForm");
-const formFields = inject("formFields", {}) as ShallowReactive<any>;
+const formFields = inject("formFields", []) as ShallowReactive<any>;
 const loading = ref(null);
 const starHorseFormListRef = ref(null);
 const enterEvent = (event: KeyboardEvent) => {
