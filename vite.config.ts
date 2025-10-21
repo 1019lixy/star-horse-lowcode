@@ -126,6 +126,8 @@ export default defineConfig((mode) => {
                     "quill-image-uploader",
                     "smooth-signature",
                     "qrcode.vue",
+                    "smooth-signature",
+                    "vanilla-jsoneditor",
                     "vue3-barcode",
                     "vue3-ts-jsoneditor",
                     "@element-plus/icons-vue",
