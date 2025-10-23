@@ -11,7 +11,6 @@ import systemComponent from "@/components/system/SystemComp";
 import App from "@/App.vue";
 import { createApp } from "vue";
 import draggable from "vuedraggable";
-import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 import piniaInstance from "@/store";
 import ElementPlus from "element-plus";
 import zhCn from "element-plus/es/locale/lang/zh-cn";
@@ -21,9 +20,9 @@ app.component("draggable", draggable);
 /**
  * 加载elementplus 自己提供的图标
  */
-for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
-  app.component(key, component);
-}
+// for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+//   app.component(key, component);
+// }
 app.use(userComponent);
 app.use(itemComponent);
 app.use(userContainerComponent);

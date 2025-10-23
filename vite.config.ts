@@ -130,7 +130,6 @@ export default defineConfig((mode) => {
                     "vanilla-jsoneditor",
                     "vue3-barcode",
                     "vue3-ts-jsoneditor",
-                    "@element-plus/icons-vue",
                     "@vueup/vue-quill",
                     "jquery",
                     "sample/**/*"
