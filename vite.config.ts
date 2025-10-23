@@ -8,7 +8,6 @@ import {ElementPlusResolver} from "unplugin-vue-components/resolvers";
 import AutoImport from "unplugin-auto-import/vite";
 import ElementPlus from "unplugin-element-plus/vite";
 import tailwindcss from "@tailwindcss/vite";
-// import {visualizer} from 'rollup-plugin-visualizer';
 //生产types文件插件
 import dts from "vite-plugin-dts";
 // https://vitejs.dev/config/
