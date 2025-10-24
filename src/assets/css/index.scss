@@ -49,7 +49,6 @@ body {
 * {
   scrollbar-color: var(--star-horse-white) var(--star-horse-shadow);
   scrollbar-width: thin;
-  offset-width: 0px;
 }
 
 a {
@@ -93,7 +92,7 @@ a {
 
 .el-select,
 .el-input,
-.el-date-editor.el-input,
+.el-date-editor .el-input,
 .el-autocomplete,
 .el-input-number,
 .el-input-number--small {
@@ -151,16 +150,12 @@ a {
   display: flex;
   max-width: 500px;
   flex: 1;
-  flex-direction: row;
   flex-flow: row wrap;
   overflow: auto;
 
   li {
     padding: 10px;
     border: 1px solid var(--star-horse-style);
-  }
-
-  li:hover {
   }
 
   .icon-active {
@@ -406,10 +401,11 @@ button:visited {
 
 .el-drawer__header {
   background: var(--star-horse-style);
-  margin-bottom: unset;
-  color: var(--star-horse-white);
   border-bottom: 1px solid #eee;
-  padding: 10px;
+  margin: unset !important;
+  padding: 0 10px 0 20px !important;
+  height: 50px !important;
+  color: var(--star-horse-white) !important;
 }
 
 hr {
@@ -567,8 +563,8 @@ hr {
 }
 
 .el-tabs {
+  overflow: auto !important;
   display: flex;
-  /*flex-direction: column;*/
   height: 100%;
 
   .el-tabs__header {
@@ -600,7 +596,6 @@ hr {
     width: 100%;
     align-items: center;
 
-    /* margin-bottom: 3px;*/
     .el-form-item__label {
       padding: 0 12px;
       white-space: nowrap;
@@ -624,11 +619,10 @@ hr {
   -moz-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
-  -webkit-user-select: none;
   user-select: none;
 
   li {
-    text-wrap: none;
+    text-wrap: unset;
     height: 25px;
     display: flex;
     cursor: pointer;
@@ -762,12 +756,6 @@ hr {
   table-layout: fixed;
 }
 
-.el-drawer__header {
-  margin: unset !important;
-  padding: 0 10px 0 20px !important;
-  height: 50px !important;
-  color: var(--star-horse-white) !important;
-}
 
 .el-drawer__body {
   padding: 5px !important;
@@ -880,9 +868,6 @@ button.el-collapse-item__header {
   border: 1px dashed var(--star-horse-style);
 }
 
-.el-tabs {
-  overflow: auto !important;
-}
 
 .cron-content {
   display: flex;
@@ -953,7 +938,6 @@ button.el-collapse-item__header {
   -moz-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
-  -webkit-user-select: none;
   user-select: none;
   transition: width 0.2s,
   height 0.2s;
@@ -961,7 +945,6 @@ button.el-collapse-item__header {
 
   .table-cell-action {
     position: absolute;
-    //bottom: -30px;
     pointer-events: auto; // 恢复操作按钮的点击
     bottom: 0;
     right: -2px;
@@ -990,9 +973,3 @@ button.el-collapse-item__header {
   padding-top: 10px;
   scrollbar-width: thin;
 }
-
-/*.el-input-group__prepend,
-.el-input-group__append {
-  min-width: 30%;
-  max-width: 100px;
-}*/
