@@ -1284,10 +1284,10 @@
   resolved "https://registry.npmjs.org/@rolldown/pluginutils/-/pluginutils-1.0.0-beta.44.tgz#ac8dcf86c50b177f7849a0a21df7e78b08eda2dc"
   integrity sha512-g6eW7Zwnr2c5RADIoqziHoVs6b3W5QTQ4+qbpfjbkMJ9x+8Og211VW/oot2dj9dVwaK/UyC6Yo+02gV+wWQVNg==
 
-"@rollup/plugin-commonjs@^28.0.8":
-  version "28.0.8"
-  resolved "https://registry.npmjs.org/@rollup/plugin-commonjs/-/plugin-commonjs-28.0.8.tgz#ba125055ebbb8375d2d2e465a3bedf434f5b2929"
-  integrity sha512-o1Ug9PxYsF61R7/NXO/GgMZZproLd/WH2XA53Tp9ppf6bU1lMlTtC/gUM6zM3mesi2E0rypk+PNtVrELREyWEQ==
+"@rollup/plugin-commonjs@^28.0.9":
+  version "28.0.9"
+  resolved "https://registry.npmjs.org/@rollup/plugin-commonjs/-/plugin-commonjs-28.0.9.tgz#b875cd1590617a40c4916d561d75761c6ca3c6d1"
+  integrity sha512-PIR4/OHZ79romx0BVVll/PkwWpJ7e5lsqFa3gFfcrFPWwLXLV39JVUzQV9RKjWerE7B845Hqjj9VYlQeieZ2dA==
   dependencies:
     "@rollup/pluginutils" "^5.0.1"
     commondir "^1.0.1"
@@ -1664,10 +1664,10 @@
   resolved "https://registry.npmjs.org/@types/sizzle/-/sizzle-2.3.10.tgz#277a542aff6776d8a9b15f2ac682a663e3e94bbd"
   integrity sha512-TC0dmN0K8YcWEAEfiPi5gJP14eJe30TTGjkvek3iM/1NdHHsdCA/Td6GvNndMOo/iSnIsZ4HuuhrYPDAmbxzww==
 
-"@types/sortablejs@^1.15.8":
-  version "1.15.8"
-  resolved "https://registry.npmjs.org/@types/sortablejs/-/sortablejs-1.15.8.tgz#11ed555076046e00869a5ef85d1e7651e7a66ef6"
-  integrity sha512-b79830lW+RZfwaztgs1aVPgbasJ8e7AXtZYHTELNXZPsERt4ymJdjV4OccDbHQAvHrCcFpbF78jkm0R6h/pZVg==
+"@types/sortablejs@^1.15.9":
+  version "1.15.9"
+  resolved "https://registry.npmjs.org/@types/sortablejs/-/sortablejs-1.15.9.tgz#82d2337f54d4db827914d80dee5cf65539ae3c8b"
+  integrity sha512-7HP+rZGE2p886PKV9c9OJzLBI6BBJu1O7lJGYnPyG3fS4/duUCcngkNCjsLwIMV+WMqANe3tt4irrXHSIe68OQ==
 
 "@types/uuid@^11.0.0":
   version "11.0.0"
@@ -2129,10 +2129,10 @@ asynckit@^0.4.0:
   resolved "https://registry.npmjs.org/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
   integrity sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==
 
-axios@^1.12.2:
-  version "1.12.2"
-  resolved "https://registry.npmjs.org/axios/-/axios-1.12.2.tgz#6c307390136cf7a2278d09cec63b136dfc6e6da7"
-  integrity sha512-vMJzPewAlRyOgxV2dU0Cuz2O8zzzx9VYtbJOaBgXFeLc4IV/Eg50n4LowmehOOR61S8ZMpc2K5Sa7g6A4jfkUw==
+axios@^1.13.0:
+  version "1.13.0"
+  resolved "https://registry.npmjs.org/axios/-/axios-1.13.0.tgz#ead6f495f41f9c8869dcf7b0f24f5a4ab89707f0"
+  integrity sha512-zt40Pz4zcRXra9CVV31KeyofwiNvAbJ5B6YPz9pMJ+yOSLikvPT4Yi5LjfgjRa9CawVYBaD1JQzIVcIvBejKeA==
   dependencies:
     follow-redirects "^1.15.6"
     form-data "^4.0.4"
