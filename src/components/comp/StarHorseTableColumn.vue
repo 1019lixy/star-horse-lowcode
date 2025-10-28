@@ -277,15 +277,6 @@ onMounted(() => {
   z-index: 50000;
 
   .action-buttons {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 50000;
-    background: white;
-    transform: translateX(-100%);
-    padding: 4px;
-    border-radius: 4px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 
     .el-button {
       padding: 4px 8px;
@@ -297,6 +288,9 @@ onMounted(() => {
   }
 }
 
+:deep(.comp-info) {
+  display: unset !important;
+}
 
 tbody {
   .cell {
