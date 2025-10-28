@@ -81,8 +81,6 @@ const cancelEdit = (row: any) => {
   changeStyle("hidden");
 };
 const changeStyle = (type: string) => {
-  // console.log(editItemRef.value.$el);
-  console.log("changeStyle", type);
 
   nextTick(() => {
     $(".edit-container")?.parent(".cell").css("overflow", type);

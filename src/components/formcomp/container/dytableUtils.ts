@@ -56,7 +56,6 @@ export const insertRightCol = (props: any, type: any, allCol?: boolean) => {
 };
 const insertAboveRow = (props: any, type: any) => {
   const position = props.rowIndex;
-  console.log("insertAboveRow", position);
   addRow(props, position, type);
 };
 const addRow = (props: any, position: number, type: any) => {
@@ -88,7 +87,6 @@ const addRow = (props: any, position: number, type: any) => {
 };
 export const insertBelowRow = (props: any, type: any) => {
   const position = props.rowIndex + 1;
-  console.log("insertBelowRow", position);
   addRow(props, position, type);
 };
 const tableCellInfo = (props: any, type: any) => {

@@ -129,7 +129,6 @@ const dataRelationMerge = async () => {
     return;
   }
   formData.value["dataRelation"] = areaFormRef?.value.getFormData().value;
-  // console.log(JSON.stringify({ ...formData.value }));
   closeAction();
 };
 const closeAction = () => {
