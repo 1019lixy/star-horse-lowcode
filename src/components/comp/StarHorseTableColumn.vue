@@ -85,7 +85,7 @@ const changeStyle = (type: string) => {
   nextTick(() => {
     $(".edit-container")?.parent(".cell").css("overflow", type);
     //所有输入框，下拉框，自动聚焦
-    $("input,select,textarea").first().select().focus();
+    $(".edit-container")?.find("input,select,textarea").first().select().focus();
   });
 
 };
