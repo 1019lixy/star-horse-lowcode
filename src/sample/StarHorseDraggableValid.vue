@@ -26,11 +26,15 @@ const activeOperation = (item: DynamicNode) => {
   console.log(item);
   editorData.value = item;
 };
+const contextAction = (actionName: string, item: DynamicNode) => {
+  console.log(actionName, item);
+};
 </script>
 <template>
   <div class="module-grid w-full overflow-y-auto h-full">
     <div></div>
     <StarHorseDraggable :isDesign="true" ref="editor" :isActive="editorData.id==item.id"
+                        @contextAction="contextAction"
                         :node="item" v-for="item in json" :key="item.id">
       <div @click="activeOperation(item)" class="w-full h-full border">{{ item.label }} {{ editorData }}</div>
     </StarHorseDraggable>

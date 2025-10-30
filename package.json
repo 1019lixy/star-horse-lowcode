@@ -67,7 +67,7 @@
     "@tailwindcss/vite": "^4.1.16",
     "@vitejs/plugin-vue-jsx": "^5.1.1",
     "@vueup/vue-quill": "^1.2.0",
-    "axios": "^1.13.0",
+    "axios": "^1.13.1",
     "element-plus": "^2.11.5",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
@@ -101,7 +101,7 @@
   "devDependencies": {
     "@rollup/plugin-commonjs": "^28.0.9",
     "@types/jquery": "^3.5.33",
-    "@types/node": "^24.9.1",
+    "@types/node": "^24.9.2",
     "@types/prismjs": "^1.26.5",
     "@types/sortablejs": "^1.15.9",
     "@types/uuid": "^11.0.0",
