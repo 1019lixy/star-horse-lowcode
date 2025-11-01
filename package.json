@@ -69,7 +69,7 @@
     "@vitejs/plugin-vue-jsx": "^5.1.1",
     "@vueup/vue-quill": "^1.2.0",
     "axios": "^1.12.2",
-    "element-plus": "^2.11.4",
+    "element-plus": "^2.11.5",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
     "globals": "^16.4.0",
