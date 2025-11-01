@@ -81,13 +81,11 @@ const cancelEdit = (row: any) => {
   changeStyle("hidden");
 };
 const changeStyle = (type: string) => {
-  // console.log(editItemRef.value.$el);
-  console.log("changeStyle", type);
 
   nextTick(() => {
     $(".edit-container")?.parent(".cell").css("overflow", type);
     //所有输入框，下拉框，自动聚焦
-    $("input,select,textarea").first().select().focus();
+    $(".edit-container")?.find("input,select,textarea").first().select().focus();
   });
 
 };
@@ -277,15 +275,6 @@ onMounted(() => {
   z-index: 50000;
 
   .action-buttons {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 50000;
-    background: white;
-    transform: translateX(-100%);
-    padding: 4px;
-    border-radius: 4px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 
     .el-button {
       padding: 4px 8px;
@@ -297,6 +286,9 @@ onMounted(() => {
   }
 }
 
+:deep(.comp-info) {
+  display: unset !important;
+}
 
 tbody {
   .cell {

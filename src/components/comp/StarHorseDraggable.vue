@@ -31,7 +31,7 @@ const props = defineProps({
   isDesign: {
     type: Boolean,
     default: false,
-  },
+  }
 });
 const nodeRef = ref<HTMLDivElement>();
 const nodeStyles = computed(() => {
@@ -41,9 +41,14 @@ const nodeStyles = computed(() => {
     styles = {};
   }
   let temp = {...styles};
-  if (props.isActive && props.isDesign) {
-    temp["cursor"] = "move";
-    temp["position"] = "relative";
+  // 设计态统一使用 absolute，避免相对定位造成边界和基线混乱
+  if (props.isDesign) {
+    temp["position"] = "absolute";
+    if (props.isActive) {
+      temp["cursor"] = "move";
+    }
+    if (typeof styles.left !== "number") styles.left = 50;
+    if (typeof styles.top !== "number") styles.top = 50;
   }
   if (!styles["width"]) {
     //获取节点宽度
@@ -51,6 +56,9 @@ const nodeStyles = computed(() => {
     styles["width"] = props.sizeControlType === "percent"
         ? (100 * (nodeRef.value?.offsetWidth || 0) / parentWidth)
         : nodeRef.value?.offsetWidth || nodeRef.value?.clientWidth;
+    if (!styles["width"]) {
+      styles["width"] = 20;
+    }
   }
   if (!styles["height"]) {
     //获取节点高度
@@ -58,10 +66,12 @@ const nodeStyles = computed(() => {
     styles["height"] = props.sizeControlType === "percent"
         ? (100 * (nodeRef.value?.offsetHeight || 0) / parentHeight)
         : nodeRef.value?.offsetHeight || nodeRef.value?.clientHeight;
+    if (!styles["height"]) {
+      styles["height"] = 15;
+    }
   }
-  //将所有数字转换为px
+  //将所有数字转换为px或百分比
   for (let key in temp) {
-    //在css 中哪些属性值是数字，但不需要转换为px
     if (typeof temp[key] === "number" && !["flex", "zIndex"].includes(key)) {
       if (props.sizeControlType === "percent" && ["width", "height"].includes(key)) {
         temp[key] = temp[key] + "%";
@@ -72,7 +82,7 @@ const nodeStyles = computed(() => {
   }
   return temp;
 });
-const emits = defineEmits(["selectNode"]);
+const emits = defineEmits(["contextAction","selectNode"]);
 const pointList = ref<Array<string>>([
   "left",
   "right",
@@ -97,7 +107,6 @@ const handleMouseUp = () => {
   rangeActive.value = false;
   isDragging.value = false;
 };
-let step = ref(1);
 const handleClear = () => {
   window.onmouseup = function () {
     document.onmousemove = null;
@@ -122,119 +131,161 @@ const rangeMove = (evt: MouseEvent, direction: string) => {
   if (!props.node.styles) {
     props.node.styles = {};
   }
-  // 声明有意义的变量名
-  let shouldAdjustWidth = false;
-  let shouldAdjustHeight = false;
-  let adjustLeft = false;
-  let adjustTop = false;
-  let invertWidthDirection = false;
-  let invertHeightDirection = false;
   rangeActive.value = true;
   handleMouseDown(evt);
-  // 初始化鼠标起始坐标
-  let startX = evt.clientX;
-  let startY = evt.clientY;
-  const parentWidth = nodeRef.value?.parentElement?.clientWidth || 1;
-  const parentHeight = nodeRef.value?.parentElement?.clientHeight || 1;
+
+  const parentEl = nodeRef.value?.parentElement as HTMLElement | null;
+  const parentRect = parentEl?.getBoundingClientRect();
+  const nodeRect = nodeRef.value?.getBoundingClientRect();
+  const parentWidth = parentEl?.clientWidth || 1;
+  const parentHeight = parentEl?.clientHeight || 1;
+
+  // 元素起始边缘（相对父容器坐标）
+  const initialLeftEdge = (nodeRect?.left || 0) - (parentRect?.left || 0);
+  const initialTopEdge = (nodeRect?.top || 0) - (parentRect?.top || 0);
+  const initialWidthPx = nodeRect?.width || 0;
+  const initialHeightPx = nodeRect?.height || 0;
+  const initialRightEdge = initialLeftEdge + initialWidthPx;
+  const initialBottomEdge = initialTopEdge + initialHeightPx;
+
+  // 当前样式偏移（relative 模式下，left/top 是相对正常流位置的偏移量）
+  const initialLeftOffset = props.node.styles.left || 0;
+  const initialTopOffset = props.node.styles.top || 0;
+  // baseline：正常流位置坐标 = 当前边缘坐标 - 当前偏移量
+  const baselineLeft = initialLeftEdge - initialLeftOffset;
+  const baselineTop = initialTopEdge - initialTopOffset;
+
+  const clamp = (v: number, min: number, max: number) => Math.min(Math.max(v, min), max);
+
   document.onmousemove = (e: MouseEvent) => {
     moveActive.value = true;
-    // 根据方向设置调整逻辑
+    const pointerX = e.clientX - (parentRect?.left || 0);
+    const pointerY = e.clientY - (parentRect?.top || 0);
+
+    // 基于起始边缘的位移量（dx/dy），更直观稳定
+    const dxLeft = pointerX - initialLeftEdge;
+    const dxRight = pointerX - initialRightEdge;
+    const dyTop = pointerY - initialTopEdge;
+    const dyBottom = pointerY - initialBottomEdge;
+
+    // 结果值初始化为起始值
+    let newLeftOffset = initialLeftOffset;
+    let newTopOffset = initialTopOffset;
+    let newWidth = initialWidthPx;
+    let newHeight = initialHeightPx;
+
     switch (direction) {
-      case "right":
-        shouldAdjustWidth = true;
+      case "right": {
+        // 右边缘随鼠标，宽度=初始宽度+右侧位移
+        const targetRight = clamp(initialRightEdge + dxRight, initialLeftEdge + 1, parentWidth);
+        newWidth = Math.max(1, targetRight - initialLeftEdge);
         break;
-      case "left":
-        shouldAdjustWidth = true;
-        invertWidthDirection = true;
+      }
+      case "left": {
+        // 左边缘随鼠标
+        let targetLeft = initialLeftEdge + dxLeft; // = pointerX
+        targetLeft = clamp(targetLeft, 0, initialRightEdge - 1);
+        // 更新left偏移量，使边缘=baselineLeft+offset
+        newLeftOffset = targetLeft - baselineLeft;
+        // 宽度=右边缘-左边缘
+        newWidth = Math.max(1, initialRightEdge - targetLeft);
         break;
-      case "top":
-        shouldAdjustHeight = true;
-        adjustTop = true;
-        invertHeightDirection = true;
+      }
+      case "bottom": {
+        const targetBottom = clamp(initialBottomEdge + dyBottom, initialTopEdge + 1, parentHeight);
+        newHeight = Math.max(1, targetBottom - initialTopEdge);
         break;
-      case "bottom":
-        shouldAdjustHeight = true;
+      }
+      case "top": {
+        let targetTop = initialTopEdge + dyTop; // = pointerY
+        targetTop = clamp(targetTop, 0, initialBottomEdge - 1);
+        newTopOffset = targetTop - baselineTop;
+        newHeight = Math.max(1, initialBottomEdge - targetTop);
         break;
-      case "bottom-right":
-        shouldAdjustWidth = true;
-        shouldAdjustHeight = true;
+      }
+      case "bottom-right": {
+        const targetRight = clamp(initialRightEdge + dxRight, initialLeftEdge + 1, parentWidth);
+        const targetBottom = clamp(initialBottomEdge + dyBottom, initialTopEdge + 1, parentHeight);
+        newWidth = Math.max(1, targetRight - initialLeftEdge);
+        newHeight = Math.max(1, targetBottom - initialTopEdge);
         break;
-      case "bottom-left":
-        shouldAdjustWidth = true;
-        shouldAdjustHeight = true;
-        invertWidthDirection = true;
+      }
+      case "bottom-left": {
+        let targetLeft = initialLeftEdge + dxLeft;
+        targetLeft = clamp(targetLeft, 0, initialRightEdge - 1);
+        newLeftOffset = targetLeft - baselineLeft;
+        newWidth = Math.max(1, initialRightEdge - targetLeft);
+
+        const targetBottom = clamp(initialBottomEdge + dyBottom, initialTopEdge + 1, parentHeight);
+        newHeight = Math.max(1, targetBottom - initialTopEdge);
         break;
-      case "top-right":
-        shouldAdjustWidth = true;
-        shouldAdjustHeight = true;
-        adjustTop = true;
-        invertHeightDirection = true;
+      }
+      case "top-right": {
+        const targetRight = clamp(initialRightEdge + dxRight, initialLeftEdge + 1, parentWidth);
+        newWidth = Math.max(1, targetRight - initialLeftEdge);
+
+        let targetTop = initialTopEdge + dyTop;
+        targetTop = clamp(targetTop, 0, initialBottomEdge - 1);
+        newTopOffset = targetTop - baselineTop;
+        newHeight = Math.max(1, initialBottomEdge - targetTop);
         break;
-      case "top-left":
-        shouldAdjustWidth = true;
-        shouldAdjustHeight = true;
-        invertWidthDirection = true;
-        invertHeightDirection = true;
+      }
+      case "top-left": {
+        let targetLeft = initialLeftEdge + dxLeft;
+        targetLeft = clamp(targetLeft, 0, initialRightEdge - 1);
+        newLeftOffset = targetLeft - baselineLeft;
+        newWidth = Math.max(1, initialRightEdge - targetLeft);
+
+        let targetTop = initialTopEdge + dyTop;
+        targetTop = clamp(targetTop, 0, initialBottomEdge - 1);
+        newTopOffset = targetTop - baselineTop;
+        newHeight = Math.max(1, initialBottomEdge - targetTop);
         break;
+      }
     }
-    // 计算鼠标移动增量
-    const deltaX = e.clientX - startX;
-    const deltaY = e.clientY - startY;
-    startX = e.clientX;
-    startY = e.clientY;
-    // 新增灵敏度系数（可根据需要调整）
-    const sensitivity = 3.55;
-    // 宽度调整逻辑
-    if (props.sizeControlType === "percent") {
-      // 修改后的百分比计算（增加灵敏度系数）
-      if (shouldAdjustWidth) {
-        const widthDelta = (deltaX / parentWidth) * 100 * step.value * sensitivity;
-        const finalWidthDelta = invertWidthDirection ? -widthDelta : widthDelta;
 
-        if (adjustLeft) {
-          props.node.styles.left = (props.node.styles.left || 0) - (finalWidthDelta * parentWidth / 100);
-        }
-        // 强制更新元素尺寸
-        const currentWidth = nodeRef.value?.offsetWidth || 0;
-        props.node.styles.width = (parseFloat(props.node.styles.width) || (100 * currentWidth / parentWidth)) + finalWidthDelta;
+    // 仅更新被拖拽轴向
+    const setWidth = (wPx: number) => {
+      if (props.sizeControlType === "percent") {
+        props.node.styles.width = (wPx / parentWidth) * 100;
+      } else {
+        props.node.styles.width = wPx;
       }
-
-      // 修改后的高度计算（增加灵敏度系数）
-      if (shouldAdjustHeight) {
-        const heightDelta = (deltaY / parentHeight) * 100 * step.value;
-        const finalHeightDelta = invertHeightDirection ? -heightDelta : heightDelta;
-
-        if (adjustTop) {
-          props.node.styles.top = (props.node.styles.top || 0) - (finalHeightDelta * parentHeight / 100);
-        }
-        // 强制更新元素尺寸
-        const currentHeight = nodeRef.value?.offsetHeight || 0;
-        props.node.styles.height = (parseFloat(props.node.styles.height) || (100 * currentHeight / parentHeight)) + finalHeightDelta;
+    };
+    const setHeight = (hPx: number) => {
+      if (props.sizeControlType === "percent") {
+        props.node.styles.height = (hPx / parentHeight) * 100;
+      } else {
+        props.node.styles.height = hPx;
       }
-    } else {
-      if (shouldAdjustWidth) {
-        const widthDelta = deltaX * step.value;
-        const finalWidthDelta = invertWidthDirection ? -widthDelta : widthDelta;
+    };
 
-        if (adjustLeft) {
-          props.node.styles.left = (props.node.styles.left || 0) - finalWidthDelta;
-        }
-        props.node.styles.width = (props.node.styles.width || 100) + finalWidthDelta;
-      }
-
-      // 高度调整逻辑
-      if (shouldAdjustHeight) {
-        const heightDelta = deltaY * step.value;
-        const finalHeightDelta = invertHeightDirection
-            ? -heightDelta
-            : heightDelta;
-
-        if (adjustTop) {
-          props.node.styles.top = (props.node.styles.top || 0) - finalHeightDelta;
-        }
-
-        props.node.styles.height = (props.node.styles.height || 50) + finalHeightDelta;
-      }
+    if (direction === "right") {
+      setWidth(newWidth);
+    } else if (direction === "left") {
+      props.node.styles.left = newLeftOffset;
+      setWidth(newWidth);
+    } else if (direction === "bottom") {
+      setHeight(newHeight);
+    } else if (direction === "top") {
+      props.node.styles.top = newTopOffset;
+      setHeight(newHeight);
+    } else if (direction === "bottom-right") {
+      setWidth(newWidth);
+      setHeight(newHeight);
+    } else if (direction === "bottom-left") {
+      props.node.styles.left = newLeftOffset;
+      setWidth(newWidth);
+      setHeight(newHeight);
+    } else if (direction === "top-right") {
+      setWidth(newWidth);
+      props.node.styles.top = newTopOffset;
+      setHeight(newHeight);
+    } else if (direction === "top-left") {
+      props.node.styles.left = newLeftOffset;
+      setWidth(newWidth);
+      props.node.styles.top = newTopOffset;
+      setHeight(newHeight);
     }
   };
   handleClear();
@@ -279,6 +330,9 @@ const contextmenu = (e: MouseEvent) => {
   e.preventDefault();
   contentMenuRef.value?.show(e);
 };
+const recallFunction=(actionName:string,nodeInfo:DynamicNode)=>{
+  emits("contextAction",actionName,nodeInfo);
+};
 onMounted(() => {
   init();
 });
@@ -289,7 +343,6 @@ onMounted(() => {
       class="node"
       :class="{ active: isActive&&isDesign }"
       :style="nodeStyles"
-
       @contextmenu="contextmenu"
       @mousedown="dragStart"
       @click.stop="selectItem"
@@ -331,7 +384,7 @@ onMounted(() => {
   <Teleport to="body">
     <ContentMenu
         ref="contentMenuRef"
-        :menu-data="dynamicPageContextMenuData(node)"
+        :menu-data="dynamicPageContextMenuData(node,recallFunction)"
     />
   </Teleport>
 </template>

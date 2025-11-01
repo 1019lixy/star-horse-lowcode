@@ -371,3 +371,5 @@ barcode        条形码组件
 54. 2025-10-11  修复input-item ,number-item 组件prefix,suffix 显示问题
                 修复容器组件collapse-container 在表单中校验失效问题
 55. 2025-10-13  更新不兼容的第三方插件版本
+56. 2025-10-23  去除不必要且可能导致依赖冲突的插件
+57. 2025-10-28  修复列表编辑时，提交按钮被遮挡问题，修复dialog-input,page-select组件搜索框不显示问题

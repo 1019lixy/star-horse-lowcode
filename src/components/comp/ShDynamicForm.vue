@@ -39,7 +39,6 @@ const merge = (_type: string) => {
   });
 };
 const mergeDraft = (type: string) => {
-  console.log("mergeDraft", type);
   doMerge();
 };
 const doMerge = () => {

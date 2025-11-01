@@ -165,7 +165,6 @@ const onNodeClick = (treeNode: any) => {
         processChildren(data, false);
       }
       // 当非严格模式时处理子节点
-      // console.log(data);
     } else {
       dataOptions.value?.splice(index, 1);
     }
@@ -179,7 +178,6 @@ const onNodeClick = (treeNode: any) => {
       dataOptions.value.splice(index, 1);
     }
   }
-  // console.log("onNodeClick", dataOptions.value);
 };
 const dialogVisible = ref(false);
 const queryName = ref(null);
