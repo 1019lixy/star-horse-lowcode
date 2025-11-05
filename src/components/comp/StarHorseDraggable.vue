@@ -6,8 +6,7 @@ import {compKey} from "@/api/system";
 
 const props = defineProps({
   msg: {
-    type: String,
-    required: true,
+    type: String
   },
   node: {
     type: Object as PropType<DynamicNode>,
@@ -351,7 +350,6 @@ onMounted(() => {
       v-if="isDesign"
       ref="nodeRef"
   >
-
     <div class="w-full h-full">
       <div
           v-if="isActive&&showLine"
