@@ -15,6 +15,7 @@ const props = defineProps({
   border: { type: Boolean, default: false },
   color: { type: String, default: "var(--star-horse-style)" },
   cursor: { type: String, default: "default" },
+  svgIconName: { type: String, default: "sh_icon" },
 });
 const iconName = computed(() => `sh-${props.iconClass}`);
 const sizeNumber = computed(() => {
@@ -29,10 +30,10 @@ const height = computed(() =>
 );
 const svgClass = computed(() => {
   let cls = props.border
-    ? "sh_icon svg-icon icon-border"
+    ? `${props.svgIconName} svg-icon icon-border`
     : props.boxShow
-      ? "sh_icon svg-icon icon-cls"
-      : "sh_icon svg-icon";
+      ? `${props.svgIconName} svg-icon icon-cls`
+      : `${props.svgIconName} svg-icon`;
   if (props.className) {
     return cls + " " + props.className;
   } else {
