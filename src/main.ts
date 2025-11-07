@@ -9,7 +9,7 @@ import systemComponent from "@/components/system/SystemComp";
 // @ts-ignore
 import App from "@/App.vue";
 import { createApp } from "vue";
-import draggable from "vuedraggable";
+import draggable from "vuedraggable-es";
 import piniaInstance from "@/store";
 import ElementPlus from "element-plus";
 import zhCn from "element-plus/es/locale/lang/zh-cn";

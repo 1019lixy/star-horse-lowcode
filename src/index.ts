@@ -15,7 +15,7 @@ import de from "element-plus/dist/locale/de.mjs";
 import en from "element-plus/dist/locale/en.mjs";
 import { starHorseAxios } from "@/api/star_horse_apis";
 import { LangType } from "@/theme/theme";
-
+import draggable from "vuedraggable-es";
 export * from "@/api/star_horse_apis";
 export * from "@/api/star_horse_utils";
 
@@ -50,6 +50,10 @@ const install = (
     },
 
 ) => {
+    // 2. 然后使用star-horse-lowcode导出的piniaInstance来初始化其内部的store
+    // 这是关键步骤，确保star-horse-lowcode组件内部的store能正确初始化
+    app.use(piniaInstance);
+    app.component("draggable", draggable);
     // 注入宿主应用的 router 实例
     if (options?.router) {
         window.__hostRouter__ = options.router;
