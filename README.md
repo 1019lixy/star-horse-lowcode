@@ -375,3 +375,4 @@ barcode        条形码组件
 57. 2025-10-28  修复列表编辑时，提交按钮被遮挡问题，修复dialog-input,page-select组件搜索框不显示问题
 58. 2025-11-05  修复DesignForm 提取动态表单层级时，展示层级错误问题
                 广告：近期将发布一个基于此核心组件的动态表单设计器(StarHorseForm)，敬请期待
+59. 2025-11-07  优化StarHorseIcon组件，增加svgIconName 属性，可传入除系统自带的sh_icon 以外的字体图标
