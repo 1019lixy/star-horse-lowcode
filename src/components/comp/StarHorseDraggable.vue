@@ -81,7 +81,7 @@ const nodeStyles = computed(() => {
   }
   return temp;
 });
-const emits = defineEmits(["contextAction","selectNode"]);
+const emits = defineEmits(["contextAction", "selectNode"]);
 const pointList = ref<Array<string>>([
   "left",
   "right",
@@ -329,8 +329,8 @@ const contextmenu = (e: MouseEvent) => {
   e.preventDefault();
   contentMenuRef.value?.show(e);
 };
-const recallFunction=(actionName:string,nodeInfo:DynamicNode)=>{
-  emits("contextAction",actionName,nodeInfo);
+const recallFunction = (actionName: string, nodeInfo: DynamicNode) => {
+  emits("contextAction", actionName, nodeInfo);
 };
 onMounted(() => {
   init();
@@ -375,9 +375,11 @@ onMounted(() => {
     </div>
   </div>
   <div
-      class="node"
+      class="node-preview"
       :style="nodeStyles" v-else>
-    <slot></slot>
+    <div class="w-full h-full">
+      <slot></slot>
+    </div>
   </div>
   <Teleport to="body">
     <ContentMenu
@@ -388,12 +390,15 @@ onMounted(() => {
 </template>
 
 <style scoped lang="scss">
-.node {
-  border: 1px solid #cecece;
+.node, .node-preview {
   -webkit-tap-highlight-color: transparent;
   -moz-user-select: none;
   user-select: none;
   height: 100%;
+}
+
+.node {
+  border: 1px solid #cecece;
 }
 
 .node.active {
