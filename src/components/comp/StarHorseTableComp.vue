@@ -117,12 +117,12 @@ const props = defineProps({
    */
   commonPersons: { type: Array as PropType<any>, default: [] },
   // Button permission
-  btnPermissions: { type: Object as PropType<any>, required: false },
+  btnPermissions: { type: Object as PropType<Record<string, string>>, required: false },
 });
 const emits = defineEmits(["selectItem"]);
 let pagePermission = useButtonPermissionStore(piniaInstance);
 let configStore = useGlobalConfigStore(piniaInstance);
-let permissions = ref<any>({});
+let permissions = ref<Record<string, string>>({});
 const configInfo = computed(() => {
   let data = configStore.configFormInfo;
   showType(data.tableType == "card" ? "list" : "card");

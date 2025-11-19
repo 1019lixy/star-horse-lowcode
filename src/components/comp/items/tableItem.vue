@@ -50,9 +50,7 @@ onMounted(() => {
       <template v-for="(temp, key) in item[batchFieldName]">
         <el-tab-pane
           :label="temp['title']"
-          v-if="
-            Object.keys(temp).includes('disVisible') ? temp['disVisible'] : true
-          "
+          v-if="!temp['disVisible']"
           :name="temp.tabName || 'sub_tab' + key"
           :disabled="temp.disabled"
           class="h-full flex flex-col"

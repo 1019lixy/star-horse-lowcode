@@ -44,7 +44,7 @@ onMounted(() => {
 
 <template>
   <el-tab-pane
-      v-if="item['disVisible'] ?? Object.keys(item).length > 0"
+      v-if="!item['disVisible']"
       :label="item['title']"
       :name="item.tabName || 'tab' + itemKey"
       :disabled="item.disabled"
@@ -62,7 +62,6 @@ onMounted(() => {
         (parentType == 'tab' && item.tableFlag != 'Y') || item.formFlag == 'Y'
       "
     >
-      <!-- Removed el-scrollbar wrapper to prevent unnecessary horizontal scrollbar -->
       <star-horse-form-item
           :source="source"
           :compUrl="compUrl"

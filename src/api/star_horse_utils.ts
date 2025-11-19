@@ -420,7 +420,7 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
     const brotherNodes = (fields: Array<FieldInfo>) => {
         fields?.forEach((field: FieldInfo) => {
             formFields.push(field);
-        })
+        });
     };
     const tabOperation = (data: TabFieldInfo) => {
         const fieldList: Array<FieldInfo> = data.fieldList || [];
