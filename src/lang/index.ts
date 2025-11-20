@@ -20,8 +20,6 @@ const langImporters: Record<LangType, () => Promise<any>> = {
   [LangType.ZH_CN]: () => import("@/lang/zh_CN"),
   [LangType.EN_US]: () => import("@/lang/en_US"),
   [LangType.ZH_TW]: () => import("@/lang/zh_TW"),
-  [LangType.JA_JP]: () => import("@/lang/ja_JP"),
-  [LangType.DE_DE]: () => import("@/lang/de_DE"),
 };
 
 // 加载语言包（异步）

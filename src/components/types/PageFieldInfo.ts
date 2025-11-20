@@ -50,6 +50,8 @@ export declare interface TabFieldInfo {
      * 批量表单属性,该属性对应的数据默认是其它表的数据，
      */
     batchFieldList?: Array<BatchFieldInfo>;
+    //属性
+    preps?: Record<string, any>;
 }
 
 /**
@@ -72,6 +74,8 @@ export declare interface CollapseList extends TabFieldInfo {
  * Splitter 容器信息
  */
 export declare interface SplitterList extends TabFieldInfo {
+
+
 }
 
 /**

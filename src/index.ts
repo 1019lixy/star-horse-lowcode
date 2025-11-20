@@ -1,21 +1,20 @@
 // 在文件最顶部添加以下代码
-import { App, defineAsyncComponent } from "vue";
+import {App, defineAsyncComponent} from "vue";
 import "tailwindcss/index.css";
 import "@/assets/css/index.scss";
 import "element-plus/theme-chalk/index.css";
 import "@/assets/icons.css";
 import piniaInstance from "@/store";
-import { AxiosInstance } from "axios";
-import type { Router } from "vue-router";
+import {AxiosInstance} from "axios";
+import type {Router} from "vue-router";
 import ElementPlus from "element-plus";
 import zhCn from "element-plus/dist/locale/zh-cn.mjs";
 import zhTw from "element-plus/dist/locale/zh-tw.mjs";
-import ja from "element-plus/dist/locale/ja.mjs";
-import de from "element-plus/dist/locale/de.mjs";
 import en from "element-plus/dist/locale/en.mjs";
-import { starHorseAxios } from "@/api/star_horse_apis";
-import { LangType } from "@/theme/theme";
+import {starHorseAxios} from "@/api/star_horse_apis";
+import {LangType} from "@/theme/theme";
 import draggable from "vuedraggable-es";
+
 export * from "@/api/star_horse_apis";
 export * from "@/api/star_horse_utils";
 
@@ -24,6 +23,8 @@ export * from "@/api/system";
 export * from "@/api/user_func";
 export * from "@/utils/message";
 export * from "@/api/finger_utils";
+export * from "@/api/form_utils";
+export * from "@/api/valid_utils";
 const items = import.meta.glob([
     "@/components/comp/*.vue",
     "@/components/comp/items/*.vue",
@@ -48,7 +49,6 @@ const install = (
         lang?: LangType, //国际化语音
         initElementPlus?: boolean   // 是否初始化element-plus
     },
-
 ) => {
     // 2. 然后使用star-horse-lowcode导出的piniaInstance来初始化其内部的store
     // 这是关键步骤，确保star-horse-lowcode组件内部的store能正确初始化
@@ -65,7 +65,7 @@ const install = (
     if (options?.lang) {
         window.__starHorseHostLang__ = options.lang;
     }
-    if (options?.initElementPlus??true) {
+    if (options?.initElementPlus ?? true) {
         // 只在没有配置时才设置中文
         if (!options?.elementPlusOptions?.locale) {
             app.use(ElementPlus, {
@@ -75,11 +75,7 @@ const install = (
                         ? zhCn
                         : options?.lang == LangType.ZH_TW
                             ? zhTw
-                            : options?.lang == LangType.JA_JP
-                                ? ja
-                                : options?.lang == LangType.DE_DE
-                                    ? de
-                                    : en,
+                            : en,
             });
         } else {
             app.use(ElementPlus, options.elementPlusOptions);
@@ -116,7 +112,7 @@ export * from "@/store/SelfOperation";
 export * from "@/store/UserInfo";
 
 //将pinia的实例导出，否则会导致在设计表单时数据不一致
-export { piniaInstance, starHorseAxios };
+export {piniaInstance, starHorseAxios};
 
 export default {
     install,

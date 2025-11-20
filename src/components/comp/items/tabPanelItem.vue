@@ -49,12 +49,13 @@ onMounted(() => {
       :name="item.tabName || 'tab' + itemKey"
       :disabled="item.disabled"
       :closable="item.closable"
+      v-bind="item.preps"
       class="h-full flex flex-col w-[99%] mx-auto"
   >
     <template #label>
       <div class="custom-tabs-label">
         <star-horse-icon :icon-class="item.icon" v-if="item.icon"/>
-        <span>{{ item.title }}</span>
+        <span>{{ item.title || item.label }}</span>
       </div>
     </template>
     <template

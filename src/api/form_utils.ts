@@ -2,18 +2,19 @@ import {getValidType} from "@/api/valid_utils";
 import {unref} from "vue";
 import {i18n} from "@/lang";
 import {BatchFieldInfo, FieldInfo, SearchProps} from "@/components/types";
+import {uuid} from "@/api/system";
 // 定义已显式列出的属性
 const listedFields: string[] = [
     "label", "name", "itemType", "formVisible", "listVisible", "searchVisible",
     "required", "actions", "helpMsg", "listPrototypeDisplay",
-    "defaultValue", "prefix", "disabled", "editDisabled", "id"
+    "defaultValue", "prefix", "disabled", "editDisabled", "id", "itemNameLabel"
 ];
 const createContainer = (item: any, children: any) => {
     //构建当前层级容器信息
     return {
-        name: item.preps?.label ?? item.preps?.itemNameLabel,
-        value: item.preps?.name,
-        id: item.preps?.id,
+        name: item.label ?? item.preps?.label ?? item.preps?.itemNameLabel,
+        value: item.preps?.name ?? item.tabName ?? item.objectName,
+        id: item.id ?? item.preps?.id ?? uuid(),
         type: item.itemType,
         compType: "container",
         children: children,
@@ -58,6 +59,7 @@ const boxDytableAnalysis = (item: any) => {
         fieldList.push(columnItems);
     }
     const currentLayerContainer = createContainer(item, children);
+    boxItems[currentLayerContainer.id] = item;
     return {currentLayerContainer, boxItems, fieldList, searchItemList};
 };
 /**
@@ -95,6 +97,7 @@ const tableAnalysis = (item: any) => {
         batchFieldList: batchFieldInfos
     };
     const currentLayerContainer = createContainer(item, children);
+    boxItems[currentLayerContainer.id] = item;
     return {currentLayerContainer, boxItems, fieldList, searchItemList};
 };
 /**
@@ -103,7 +106,7 @@ const tableAnalysis = (item: any) => {
  */
 const tabColapseCardAnalysis = (item: any) => {
     const elements = item.preps.elements;
-    const currentLayerContainer: Array<any> = [];
+    const currentLayerContainerList: Array<any> = [];
     let boxItems: Record<string, any> = {};
     let fieldInfo: FieldInfo | any = {};
     const searchItemList2: SearchProps[] | any = [];
@@ -114,7 +117,8 @@ const tabColapseCardAnalysis = (item: any) => {
         let {selectList, compListResult, fieldList, searchItemList} = analysisCompDatas(element.items);
         boxItems = {...boxItems, ...compListResult};
         const innerLayer = createContainer(element, selectList);
-        currentLayerContainer.push(innerLayer);
+        boxItems[innerLayer.id] = element;
+        currentLayerContainerList.push(innerLayer);
         dataList.push({
             tabName: element.tabName,
             objectName: element.objectName,
@@ -138,6 +142,8 @@ const tabColapseCardAnalysis = (item: any) => {
     } else {
         console.error("Unknown itemType: ", item.itemType);
     }
+    const currentLayerContainer = createContainer(item, currentLayerContainerList);
+    boxItems[currentLayerContainer.id] = item;
     return {currentLayerContainer, boxItems, fieldList: fieldInfo, searchItemList: searchItemList2};
 };
 /**
@@ -192,7 +198,7 @@ const itemAnalysis = (item: any) => {
     return {item: record, fieldInfo, layerItem, searchItem};
 };
 /**
- * 强制刷新组件列表
+ * 解析表单字段信息及层级
  */
 export const analysisCompDatas = (dataList: any) => {
     const selectList: Array<any> = [];

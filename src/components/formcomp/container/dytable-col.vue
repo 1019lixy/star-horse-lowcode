@@ -33,7 +33,6 @@ let excludeContainerType: Array<string> = [
   "card",
 ];
 let currentSubItemId = computed(() => designForm.currentSubItemId);
-let isEdit = computed(() => designForm.isEdit);
 const isDragging = computed(() => designForm.isDragging);
 const formData = defineModel("formData");
 const isResizing = ref(false);
@@ -131,7 +130,7 @@ onMounted(() => {});
     class="edit_col"
     :class="{
       'dragging-area': isDragging,
-      'no-drag': !isEdit,
+      'no-drag': !isDesign,
     }"
     :colspan="field.colspan || 1"
     :rowspan="field.rowspan || 1"
@@ -176,7 +175,7 @@ onMounted(() => {});
     </draggable>
     <div
       class="table-cell-action"
-      v-if="isEdit && isDesign && currentSubItemId == field._uuid"
+      v-if="isDesign && currentSubItemId == field._uuid"
     >
       <ContainerDropDown
         :field="field"

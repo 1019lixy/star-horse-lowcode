@@ -161,7 +161,7 @@ const tableOperation = (actonName: string, _preps: any) => {
     <slot></slot>
     <div
         class="drag-handler"
-        v-if="isEdit && isDesign && currentItemId == formItem.id"
+        v-if="isEdit && currentItemId == formItem.id"
     >
       <el-tooltip :content="i18n('form.drag')">
         <star-horse-icon
@@ -189,7 +189,7 @@ const tableOperation = (actonName: string, _preps: any) => {
     </div>
     <div
         class="field-action"
-        v-if="isEdit && isDesign && currentItemId == formItem.id"
+        v-if="isEdit && currentItemId == formItem.id"
     >
       <template
           v-if="formItem.itemType == 'dytable' || formItem.itemType == 'box'"

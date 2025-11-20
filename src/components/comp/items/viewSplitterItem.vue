@@ -29,9 +29,7 @@ onMounted(() => {
       >
         <el-splitter-panel
             v-if="Object.keys(splitterItem).length > 0"
-            :collapsible="false"
-            :resizable="false"
-            :size="splitterItem.size"
+            v-bind="splitterItem.preps"
         >
           <star-horse-data-view-items
               v-model:dataForm="dataForm[splitterItem.objectName]"

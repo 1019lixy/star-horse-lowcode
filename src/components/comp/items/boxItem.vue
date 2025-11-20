@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { checkVisible, loadProp, validMsg } from "@/api/form_utils";
-import { Config } from "@/api/settings";
-import { ContainerPreps } from "@/components/types/ItemPreps";
-import { onMounted } from "vue";
+import {checkVisible, loadProp, validMsg} from "@/api/form_utils";
+import {Config} from "@/api/settings";
+import {ContainerPreps} from "@/components/types/ItemPreps";
+import {onMounted} from "vue";
+
 withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
   dataIndex: -1,
@@ -17,30 +18,32 @@ withDefaults(defineProps<ContainerPreps>(), {
 });
 const dataForm = defineModel("dataForm");
 
-const init = () => {};
+const init = () => {
+};
 onMounted(() => {
   init();
 });
 </script>
 
 <template>
-  <el-row v-if="Array.isArray(item)" :gutter="10">
+  <el-row v-if="Array.isArray(item)" :gutter="5">
     <template v-for="sitem in item">
       <el-col
-        :span="
+          :span="
           sitem.colspan ||
           sitem.preps?.colspan ||
           24 / item.filter((temp) => temp.formVisible).length
         "
-        v-if="sitem.type != 'button' && sitem.type != 'usercomp'"
+          v-bind="sitem.preps"
+          v-if="sitem.type != 'button' && sitem.type != 'usercomp'"
       >
         <el-form-item
-          :size="compSize"
-          :label="sitem.preps?.hideLabel ? '' : sitem.label"
-          :prop="loadProp(propPrefix, sitem.fieldName, -1, -1)"
-          :labelPosition="parentPreps?.labelPosition"
-          :rules="validMsg(sitem, dataForm)"
-          v-if="
+            :size="compSize"
+            :label="sitem.preps?.hideLabel ? '' : sitem.label"
+            :prop="loadProp(propPrefix, sitem.fieldName, -1, -1)"
+            :labelPosition="parentPreps?.labelPosition"
+            :rules="validMsg(sitem, dataForm)"
+            v-if="
             (sitem.formVisible &&
               sitem.label &&
               sitem.preps?.headerFlag != 'Y') ||
@@ -48,39 +51,40 @@ onMounted(() => {
           "
         >
           <star-horse-item
+              :primaryKey="primaryKey"
+              :compSize="compSize"
+              v-model:dataForm="dataForm"
+              :item="sitem"
+              :dataIndex="dataIndex"
+              :source="source"
+          />
+        </el-form-item>
+        <star-horse-item
+            v-else-if="sitem.viewVisible || checkVisible(sitem, dataForm)"
+            :compSize="compSize"
+            :primaryKey="primaryKey"
+            v-model:dataForm="dataForm"
+            :item="sitem"
+            :dataIndex="dataIndex"
+            :source="source"
+        />
+      </el-col>
+      <el-col
+          v-bind="sitem.preps"
+          :span="
+          sitem.colspan ||
+          sitem.preps?.colspan ||
+          24 / item.filter((temp) => temp.formVisible).length
+        "
+          v-else
+      >
+        <star-horse-item
             :primaryKey="primaryKey"
             :compSize="compSize"
             v-model:dataForm="dataForm"
             :item="sitem"
             :dataIndex="dataIndex"
             :source="source"
-          />
-        </el-form-item>
-        <star-horse-item
-          v-else-if="sitem.viewVisible || checkVisible(sitem, dataForm)"
-          :compSize="compSize"
-          :primaryKey="primaryKey"
-          v-model:dataForm="dataForm"
-          :item="sitem"
-          :dataIndex="dataIndex"
-          :source="source"
-        />
-      </el-col>
-      <el-col
-        :span="
-          sitem.colspan ||
-          sitem.preps?.colspan ||
-          24 / item.filter((temp) => temp.formVisible).length
-        "
-        v-else
-      >
-        <star-horse-item
-          :primaryKey="primaryKey"
-          :compSize="compSize"
-          v-model:dataForm="dataForm"
-          :item="sitem"
-          :dataIndex="dataIndex"
-          :source="source"
         />
       </el-col>
     </template>

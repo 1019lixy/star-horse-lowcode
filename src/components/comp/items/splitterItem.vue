@@ -49,11 +49,7 @@ onMounted(() => {
       <template v-for="(splitterItem, key) in item.splitterList">
         <el-splitter-panel
             v-if="Object.keys(splitterItem).length > 0"
-            :size="splitterItem.size"
-            :min="splitterItem.min"
-            :max="splitterItem.max"
-            :resizable="splitterItem.resizable"
-            :collapsible="splitterItem.collapsible"
+            v-bind="splitterItem.preps"
             :index="
             checkObject(dataForm, splitterItem, key, dataIndex, propPrefix)
           "
