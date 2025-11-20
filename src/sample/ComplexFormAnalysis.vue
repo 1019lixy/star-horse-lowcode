@@ -1,0 +1,700 @@
+<template>
+
+</template>
+
+<script lang="ts" setup>
+import {onMounted, ref} from "vue";
+import piniaInstance from "@/store";
+import {useDesignFormStore} from "@/store/DesignForm";
+import {analysisCompDatas} from "@/api/form_utils";
+
+let designForm = useDesignFormStore(piniaInstance);
+const formData = ref<any>({
+  test: "1-2-1",
+});
+const fields = ref<Array<any>>([{
+  "id": "Id1", "preps": {
+    "align": "top",
+    "justify": "start",
+    "gutter": 0,
+    "tag": "div",
+    "comment": "",
+    "id": "Id1",
+    "label": "栅格",
+    "itemNameLabel": "栅格",
+    "name": "box1",
+    "elements": [{
+      "rowIndex": 1,
+      "columns": [{
+        "colIndex": 1,
+        "colspan": 12,
+        "items": [{
+          "id": "Id2",
+          "preps": {
+            "name": "input2",
+            "placeholder": "",
+            "label": "单行文本框",
+            "required": false,
+            "prefixIcon": "",
+            "minlength": 0,
+            "formVisible": true,
+            "searchVisible": true,
+            "rows": 2,
+            "listVisible": true,
+            "maxLength": 100,
+            "showWordLimit": false,
+            "min": 0,
+            "readonly": false,
+            "disabled": false,
+            "max": null,
+            "formatter": "",
+            "clearable": false,
+            "suffixIcon": "",
+            "resize": "none",
+            "autocomplete": false,
+            "comment": "",
+            "id": "Id2",
+            "itemNameLabel": "单行文本框"
+          },
+          "compType": "formItem",
+          "itemType": "input"
+        }]
+      }, {
+        "_uuid": "bd268607-301d-471d-aa3d-9d8036e3741d",
+        "colspan": 12,
+        "rowspan": 1,
+        "items": [{
+          "id": "Id4",
+          "preps": {
+            "name": "input4",
+            "placeholder": "",
+            "label": "单行文本框",
+            "required": false,
+            "prefixIcon": "",
+            "minlength": 0,
+            "formVisible": true,
+            "searchVisible": true,
+            "rows": 2,
+            "listVisible": true,
+            "maxLength": 100,
+            "showWordLimit": false,
+            "min": 0,
+            "readonly": false,
+            "disabled": false,
+            "max": null,
+            "formatter": "",
+            "clearable": false,
+            "suffixIcon": "",
+            "resize": "none",
+            "autocomplete": false,
+            "comment": "",
+            "id": "Id4",
+            "itemNameLabel": "单行文本框"
+          },
+          "compType": "formItem",
+          "itemType": "input"
+        }]
+      }]
+    }, {
+      "columns": [{
+        "_uuid": "ebd12943-e7ec-4594-9165-55801a5b5ce3",
+        "colspan": 12,
+        "rowspan": 1,
+        "items": [{
+          "id": "Id3",
+          "preps": {
+            "name": "input3",
+            "placeholder": "",
+            "label": "单行文本框",
+            "required": false,
+            "prefixIcon": "",
+            "minlength": 0,
+            "formVisible": true,
+            "searchVisible": true,
+            "rows": 2,
+            "listVisible": true,
+            "maxLength": 100,
+            "showWordLimit": false,
+            "min": 0,
+            "readonly": false,
+            "disabled": false,
+            "max": null,
+            "formatter": "",
+            "clearable": false,
+            "suffixIcon": "",
+            "resize": "none",
+            "autocomplete": false,
+            "comment": "",
+            "id": "Id3",
+            "itemNameLabel": "单行文本框"
+          },
+          "compType": "formItem",
+          "itemType": "input"
+        }]
+      }, {
+        "_uuid": "c3611aa0-b50a-467f-a138-52a831c7c4c6",
+        "colspan": 12,
+        "rowspan": 1,
+        "items": [{
+          "id": "Id5",
+          "preps": {
+            "name": "input5",
+            "placeholder": "",
+            "label": "单行文本框",
+            "required": false,
+            "prefixIcon": "",
+            "minlength": 0,
+            "formVisible": true,
+            "searchVisible": true,
+            "rows": 2,
+            "listVisible": true,
+            "maxLength": 100,
+            "showWordLimit": false,
+            "min": 0,
+            "readonly": false,
+            "disabled": false,
+            "max": null,
+            "formatter": "",
+            "clearable": false,
+            "suffixIcon": "",
+            "resize": "none",
+            "autocomplete": false,
+            "comment": "",
+            "id": "Id5",
+            "itemNameLabel": "单行文本框"
+          },
+          "compType": "formItem",
+          "itemType": "input"
+        }]
+      }]
+    }],
+    "maxLength": 100,
+    "rules": [],
+    "formVisible": true,
+    "searchVisible": false,
+    "listVisible": true,
+    "viewVisible": true,
+    "hideLabel": false,
+    "required": false,
+    "disabled": false,
+    "editDisabled": false,
+    "clearable": true,
+    "readonly": false,
+    "prototypeDisplay": false,
+    "uniqueValid": false,
+    "showWordLimit": false,
+    "autocomplete": false,
+    "listPrototypeDisplay": false
+  }, "compType": "container", "itemType": "box"
+}, {
+  "id": "Id6", "preps": {
+    "type": "—",
+    "formVisible": false,
+    "disabled": false,
+    "searchVisible": false,
+    "listVisible": false,
+    "tablePosition": "top",
+    "closable": false,
+    "addable": false,
+    "editable": false,
+    "stretch": false,
+    "comment": "",
+    "id": "Id6",
+    "label": "Tab",
+    "itemNameLabel": "Tab",
+    "name": "tab6",
+    "required": false,
+    "clearable": false,
+    "elements": [{
+      "label": "Tab1", "tabName": "tab1", "objectName": "tab1", "subFormFlag": true, "items": [{
+        "id": "Id7", "preps": {
+          "align": "top",
+          "justify": "start",
+          "gutter": 0,
+          "tag": "div",
+          "comment": "",
+          "id": "Id7",
+          "label": "栅格",
+          "itemNameLabel": "栅格",
+          "name": "box7",
+          "elements": [{
+            "rowIndex": 1,
+            "columns": [{
+              "colIndex": 1,
+              "colspan": 12,
+              "items": [{
+                "id": "Id8",
+                "preps": {
+                  "name": "input8",
+                  "placeholder": "",
+                  "label": "单行文本框",
+                  "required": false,
+                  "prefixIcon": "",
+                  "minlength": 0,
+                  "formVisible": true,
+                  "searchVisible": true,
+                  "rows": 2,
+                  "listVisible": true,
+                  "maxLength": 100,
+                  "showWordLimit": false,
+                  "min": 0,
+                  "readonly": false,
+                  "disabled": false,
+                  "max": null,
+                  "formatter": "",
+                  "clearable": false,
+                  "suffixIcon": "",
+                  "resize": "none",
+                  "autocomplete": false,
+                  "comment": "",
+                  "id": "Id8",
+                  "itemNameLabel": "单行文本框"
+                },
+                "compType": "formItem",
+                "itemType": "input"
+              }]
+            }, {
+              "_uuid": "11890392-d8f7-4046-92a7-8cbe00644a69",
+              "colspan": 12,
+              "rowspan": 1,
+              "items": [{
+                "id": "Id9",
+                "preps": {
+                  "name": "input9",
+                  "placeholder": "",
+                  "label": "单行文本框",
+                  "required": false,
+                  "prefixIcon": "",
+                  "minlength": 0,
+                  "formVisible": true,
+                  "searchVisible": true,
+                  "rows": 2,
+                  "listVisible": true,
+                  "maxLength": 100,
+                  "showWordLimit": false,
+                  "min": 0,
+                  "readonly": false,
+                  "disabled": false,
+                  "max": null,
+                  "formatter": "",
+                  "clearable": false,
+                  "suffixIcon": "",
+                  "resize": "none",
+                  "autocomplete": false,
+                  "comment": "",
+                  "id": "Id9",
+                  "itemNameLabel": "单行文本框"
+                },
+                "compType": "formItem",
+                "itemType": "input"
+              }]
+            }]
+          }]
+        }, "compType": "container", "itemType": "box"
+      }, {
+        "id": "Id10", "preps": {
+          "gutter": 0,
+          "columns": 3,
+          "align": "top",
+          "primaryKeyName": "id",
+          "batchFieldName": "batchFieldName",
+          "templateDownFlag": false,
+          "importFlag": false,
+          "comment": "",
+          "id": "Id10",
+          "label": "动态列表",
+          "itemNameLabel": "动态列表",
+          "name": "table10",
+          "elements": [{
+            "colIndex": 1,
+            "items": [{
+              "id": "Id11",
+              "preps": {
+                "name": "input11",
+                "placeholder": "",
+                "label": "单行文本框",
+                "required": false,
+                "prefixIcon": "",
+                "minlength": 0,
+                "formVisible": true,
+                "searchVisible": true,
+                "rows": 2,
+                "listVisible": true,
+                "maxLength": 100,
+                "showWordLimit": false,
+                "min": 0,
+                "readonly": false,
+                "disabled": false,
+                "max": null,
+                "formatter": "",
+                "clearable": false,
+                "suffixIcon": "",
+                "resize": "none",
+                "autocomplete": false,
+                "comment": "",
+                "id": "Id11",
+                "itemNameLabel": "单行文本框"
+              },
+              "compType": "formItem",
+              "itemType": "input"
+            }]
+          }, {
+            "colIndex": 2,
+            "items": [{
+              "id": "Id12",
+              "preps": {
+                "name": "input12",
+                "placeholder": "",
+                "label": "单行文本框",
+                "required": false,
+                "prefixIcon": "",
+                "minlength": 0,
+                "formVisible": true,
+                "searchVisible": true,
+                "rows": 2,
+                "listVisible": true,
+                "maxLength": 100,
+                "showWordLimit": false,
+                "min": 0,
+                "readonly": false,
+                "disabled": false,
+                "max": null,
+                "formatter": "",
+                "clearable": false,
+                "suffixIcon": "",
+                "resize": "none",
+                "autocomplete": false,
+                "comment": "",
+                "id": "Id12",
+                "itemNameLabel": "单行文本框"
+              },
+              "compType": "formItem",
+              "itemType": "input"
+            }]
+          }, {
+            "colIndex": 3,
+            "items": [{
+              "id": "Id13",
+              "preps": {
+                "name": "input13",
+                "placeholder": "",
+                "label": "单行文本框",
+                "required": false,
+                "prefixIcon": "",
+                "minlength": 0,
+                "formVisible": true,
+                "searchVisible": true,
+                "rows": 2,
+                "listVisible": true,
+                "maxLength": 100,
+                "showWordLimit": false,
+                "min": 0,
+                "readonly": false,
+                "disabled": false,
+                "max": null,
+                "formatter": "",
+                "clearable": false,
+                "suffixIcon": "",
+                "resize": "none",
+                "autocomplete": false,
+                "comment": "",
+                "id": "Id13",
+                "itemNameLabel": "单行文本框"
+              },
+              "compType": "formItem",
+              "itemType": "input"
+            }]
+          }]
+        }, "compType": "container", "itemType": "table"
+      }]
+    }, {
+      "label": "Tab2",
+      "tabName": "tab2",
+      "objectName": "tab2",
+      "subFormFlag": true,
+      "items": [{
+        "id": "Id14",
+        "preps": {
+          "name": "input14",
+          "placeholder": "",
+          "label": "单行文本框",
+          "required": false,
+          "prefixIcon": "",
+          "minlength": 0,
+          "formVisible": true,
+          "searchVisible": true,
+          "rows": 2,
+          "listVisible": true,
+          "maxLength": 100,
+          "showWordLimit": false,
+          "min": 0,
+          "readonly": false,
+          "disabled": false,
+          "max": null,
+          "formatter": "",
+          "clearable": false,
+          "suffixIcon": "",
+          "resize": "none",
+          "autocomplete": false,
+          "comment": "",
+          "id": "Id14",
+          "itemNameLabel": "单行文本框"
+        },
+        "compType": "formItem",
+        "itemType": "input"
+      }, {
+        "id": "Id15",
+        "preps": {
+          "name": "input15",
+          "placeholder": "",
+          "label": "单行文本框",
+          "required": false,
+          "prefixIcon": "",
+          "minlength": 0,
+          "formVisible": true,
+          "searchVisible": true,
+          "rows": 2,
+          "listVisible": true,
+          "maxLength": 100,
+          "showWordLimit": false,
+          "min": 0,
+          "readonly": false,
+          "disabled": false,
+          "max": null,
+          "formatter": "",
+          "clearable": false,
+          "suffixIcon": "",
+          "resize": "none",
+          "autocomplete": false,
+          "comment": "",
+          "id": "Id15",
+          "itemNameLabel": "单行文本框"
+        },
+        "compType": "formItem",
+        "itemType": "input"
+      }, {
+        "id": "Id16", "preps": {
+          "remark": "",
+          "id": "Id16",
+          "label": "折叠面板",
+          "itemNameLabel": "折叠面板",
+          "name": "collapse16",
+          "required": false,
+          "formVisible": false,
+          "searchVisible": false,
+          "listVisible": false,
+          "clearable": false,
+          "elements": [{
+            "label": "Collapse1",
+            "tabName": "collapse1",
+            "objectName": "collapse1",
+            "subFormFlag": true,
+            "items": [{
+              "id": "Id17",
+              "preps": {
+                "name": "input17",
+                "placeholder": "",
+                "label": "单行文本框",
+                "required": false,
+                "prefixIcon": "",
+                "minlength": 0,
+                "formVisible": true,
+                "searchVisible": true,
+                "rows": 2,
+                "listVisible": true,
+                "maxLength": 100,
+                "showWordLimit": false,
+                "min": 0,
+                "readonly": false,
+                "disabled": false,
+                "max": null,
+                "formatter": "",
+                "clearable": false,
+                "suffixIcon": "",
+                "resize": "none",
+                "autocomplete": false,
+                "comment": "",
+                "id": "Id17",
+                "itemNameLabel": "单行文本框"
+              },
+              "compType": "formItem",
+              "itemType": "input"
+            }]
+          }, {
+            "label": "Collapse2",
+            "tabName": "collapse2",
+            "objectName": "collapse2",
+            "subFormFlag": true,
+            "items": [{
+              "id": "Id18",
+              "preps": {
+                "name": "input18",
+                "placeholder": "",
+                "label": "单行文本框",
+                "required": false,
+                "prefixIcon": "",
+                "minlength": 0,
+                "formVisible": true,
+                "searchVisible": true,
+                "rows": 2,
+                "listVisible": true,
+                "maxLength": 100,
+                "showWordLimit": false,
+                "min": 0,
+                "readonly": false,
+                "disabled": false,
+                "max": null,
+                "formatter": "",
+                "clearable": false,
+                "suffixIcon": "",
+                "resize": "none",
+                "autocomplete": false,
+                "comment": "",
+                "id": "Id18",
+                "itemNameLabel": "单行文本框"
+              },
+              "compType": "formItem",
+              "itemType": "input"
+            }]
+          }]
+        }, "compType": "container", "itemType": "collapse", "activeItemName": "collapse1"
+      }]
+    }]
+  }, "compType": "container", "itemType": "tab", "stretch": false, "activeItemName": "tab1"
+}, {
+  "id": "Id19", "preps": {
+    "rowSpan": "0px",
+    "colSpan": "0px",
+    "remark": "",
+    "id": "Id19",
+    "label": "动态表格",
+    "itemNameLabel": "动态表格",
+    "name": "dytable19",
+    "elements": [{
+      "colIndex": 1,
+      "columns": [{
+        "colIndex": 1,
+        "colspan": 1,
+        "rowspan": 1,
+        "items": [{
+          "id": "Id20copy",
+          "preps": {
+            "name": "input20",
+            "placeholder": "",
+            "label": "单行文本框",
+            "required": false,
+            "prefixIcon": "",
+            "minlength": 0,
+            "formVisible": true,
+            "searchVisible": true,
+            "rows": 2,
+            "listVisible": true,
+            "maxLength": 100,
+            "showWordLimit": false,
+            "min": 0,
+            "readonly": false,
+            "disabled": false,
+            "max": null,
+            "formatter": "",
+            "clearable": false,
+            "suffixIcon": "",
+            "resize": "none",
+            "autocomplete": false,
+            "comment": "",
+            "id": "Id20",
+            "itemNameLabel": "单行文本框"
+          },
+          "compType": "formItem",
+          "itemType": "input"
+        }]
+      }, {
+        "_uuid": "f98affcb-be49-4d9b-b816-8675856ec3bb",
+        "colspan": 1,
+        "rowspan": 2,
+        "items": [{
+          "id": "Id21copy",
+          "preps": {
+            "controlsPosition": "",
+            "name": "number21",
+            "label": "数字输入框",
+            "controls": true,
+            "placeholder": "",
+            "required": false,
+            "valueOnClear": "min",
+            "formVisible": true,
+            "searchVisible": true,
+            "listVisible": true,
+            "maxLength": 10,
+            "step": 1,
+            "precision": 0,
+            "clearable": false,
+            "disabled": false,
+            "readonly": false,
+            "min": 0,
+            "max": null,
+            "comment": "",
+            "id": "Id21",
+            "itemNameLabel": "数字输入框"
+          },
+          "compType": "formItem",
+          "itemType": "number"
+        }]
+      }]
+    }, {
+      "columns": [{
+        "_uuid": "f48ca367-0197-4afd-88c2-e70db7ec9973",
+        "colspan": 1,
+        "rowspan": 1,
+        "items": [{
+          "id": "Id22copy",
+          "preps": {
+            "name": "input22",
+            "placeholder": "",
+            "label": "单行文本框",
+            "required": false,
+            "prefixIcon": "",
+            "minlength": 0,
+            "formVisible": true,
+            "searchVisible": true,
+            "rows": 2,
+            "listVisible": true,
+            "maxLength": 100,
+            "showWordLimit": false,
+            "min": 0,
+            "readonly": false,
+            "disabled": false,
+            "max": null,
+            "formatter": "",
+            "clearable": false,
+            "suffixIcon": "",
+            "resize": "none",
+            "autocomplete": false,
+            "comment": "",
+            "id": "Id22",
+            "itemNameLabel": "单行文本框"
+          },
+          "compType": "formItem",
+          "itemType": "input"
+        }]
+      }]
+    }],
+    "required": false,
+    "formVisible": false,
+    "searchVisible": false,
+    "listVisible": false,
+    "clearable": false
+  }, "compType": "container", "itemType": "dytable"
+}]);
+const init = () => {
+  const {selectList, compListResult, fieldList, searchItemList} = analysisCompDatas(fields);
+  console.log(selectList);
+  console.log(compListResult);
+  console.log(fieldList);
+  console.log(searchItemList);
+};
+onMounted(() => {
+  init();
+});
+</script>
+
+<style lang="scss" scoped></style>

@@ -3,7 +3,7 @@ import {defineStore} from "pinia";
 import {ref, shallowRef, unref} from "vue";
 import JSON5 from "json5";
 import {CompType} from "@/components/types/FormType";
-import {analysisCompNames} from "@/api/form_utils";
+import {analysisCompDatas} from "@/api/form_utils";
 
 export const useDesignFormStore = defineStore("designForm", () => {
     const containerList = ref<CompType[]>([]);
@@ -188,7 +188,7 @@ export const useDesignFormStore = defineStore("designForm", () => {
             compListNoLayer.value = cachedCompListNoLayer.value;
             return cachedSelectList.value;
         }
-        let {compListResult, selectList} = analysisCompNames(compList);
+        let {compListResult, selectList} = analysisCompDatas(compList);
         compListNoLayer.value = compListResult;
         cachedCompListNoLayer.value = compListResult;
         cachedSelectList.value = selectList;

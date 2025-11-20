@@ -99,6 +99,10 @@ export declare interface FieldInfo {
      */
     helpMsg?: string;
     /**
+     * ID
+     */
+    id?: string;
+    /**
      * 类型名称,支持
      * date 日期,
      * daterange 日期范围,
