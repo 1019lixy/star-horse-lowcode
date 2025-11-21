@@ -1,6 +1,6 @@
 <script setup lang="ts" name="Areainfo">
 import {onMounted} from 'vue';
-import ComplexFormAnalysis from "@/sample/ComplexFormAnalysis.vue";
+import DialogValid from "@/sample/DialogValid.vue";
 
 const initData = async () => {
 };
@@ -13,7 +13,7 @@ onMounted(() => {
   <div class="flex flex-col h-full overflow-hidden">
     <!--    <FormValid/>-->
     <!--    <StarHorseDraggableValid/>-->
-    <complex-form-analysis/>
+    <dialog-valid/>
   </div>
 </template>
 <style lang="scss" scoped></style>

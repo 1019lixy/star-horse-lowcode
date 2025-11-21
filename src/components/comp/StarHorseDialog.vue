@@ -329,7 +329,7 @@ provide("dialogOperation", clickFunction);
 
       h3 {
         flex: 1;
-        font-size:14px
+        font-size: 14px
       }
 
       .my-header {
@@ -345,14 +345,15 @@ provide("dialogOperation", clickFunction);
       flex: 1;
       display: flex;
       flex-direction: column;
+      overflow: hidden;
     }
   }
 }
 
 .shdialog {
   flex: 1;
-  display: inline-flex;
-  overflow-y: auto;
+  display: flex;
+  /* overflow-y: auto;*/
   padding: 0 10px;
   box-sizing: border-box;
 

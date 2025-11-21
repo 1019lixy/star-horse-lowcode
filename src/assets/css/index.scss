@@ -132,6 +132,7 @@ a {
   flex: 1;
   flex-direction: column;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .el-form-item__label-wrap {
@@ -280,8 +281,7 @@ a {
 
 .el-dialog__body {
   max-height: calc(100% - 10px);
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 .split-line {
