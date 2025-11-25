@@ -1,17 +1,17 @@
 <template>
   <div class="lang-test-container">
     <h1>{{ i18n('test.langTestTitle') }}</h1>
-    
+
     <div class="lang-switcher">
       <h3>{{ i18n('test.currentLanguage') }}: {{ currentLang }}</h3>
       <div class="lang-buttons">
-        <button v-for="lang in languages" :key="lang.value" @click="switchToLanguage(lang.value)" 
+        <button v-for="lang in languages" :key="lang.value" @click="switchToLanguage(lang.value)"
                 :class="{ active: currentLang === lang.value }">
           {{ lang.label }}
         </button>
       </div>
     </div>
-    
+
     <div class="lang-content">
       <p>{{ i18n('login.userName') }}</p>
       <p>{{ i18n('login.password') }}</p>
@@ -19,7 +19,7 @@
       <p>{{ i18n('dialog.cancel') }}</p>
       <p>{{ i18n('form.submit') }}</p>
     </div>
-    
+
     <div class="lang-info">
       <h3>{{ i18n('test.loadedLanguages') }}</h3>
       <ul>
@@ -38,9 +38,6 @@ import { LangType } from '@/theme/theme';
 const languages = ref([
   { value: LangType.ZH_CN, label: '简体中文' },
   { value: LangType.EN_US, label: 'English' },
-  { value: LangType.ZH_TW, label: '繁體中文' },
-  { value: LangType.JA_JP, label: '日本語' },
-  { value: LangType.DE_DE, label: 'Deutsch' }
 ]);
 
 // 已加载的语言
@@ -51,7 +48,7 @@ const switchToLanguage = async (lang: LangType) => {
   try {
     console.log(`Switching to language: ${lang}`);
     await changeLanguage(lang);
-    
+
     // 模拟获取已加载的语言（实际应用中可能需要从其他地方获取）
     // 这里仅作为演示，实际项目中应根据实际情况修改
     updateLoadedLanguages();
@@ -80,7 +77,7 @@ onMounted(() => {
     console.log('Language changed:', currentLang);
     // 可以在这里更新组件状态或执行其他操作
   });
-  
+
   // 初始化已加载的语言列表
   updateLoadedLanguages();
 });

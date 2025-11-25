@@ -1,6 +1,5 @@
 import {defineConfig} from "vite";
 import vue from "@vitejs/plugin-vue";
-import inject from "@rollup/plugin-inject";
 import tailwindcss from "@tailwindcss/vite";
 import {fileURLToPath} from "url";
 import {dirname, resolve} from "path";
@@ -88,15 +87,8 @@ export default defineConfig((mode) => {
                 // 这里就是相关ui库的解析工具, 里面的选项有是否使用自动导入样式 如果需要通过 var 变量改变主题 需要注意一下
                 resolvers: [ElementPlusResolver({importStyle: "sass"})],
             }),
-            // viteCommonjs(),
-            inject({
-                $: "jquery", // 这里会自动载入 node_modules 中的 jquery
-                jQuery: "jquery",
-                "windows.jQuery": "jquery",
-                "windows.$": "jquery",
-            }),
         ],
-            css: {
+        css: {
             //解决 Deprecation Warning: The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0.
             preprocessorOptions: {
                 scss: {
@@ -106,7 +98,8 @@ export default defineConfig((mode) => {
         },
         resolve: {
             alias: {
-                "@": resolve(dirname(fileURLToPath(import.meta.url)), "./src")
+                "@": resolve(dirname(fileURLToPath(import.meta.url)), "./src"),
+                "jquery": fileURLToPath(new URL("./src/jquery-shim.js", import.meta.url))
             },
             extensions: [".js", ".vue", ".json", ".ts", ".jsx"],
         },
@@ -127,6 +120,28 @@ export default defineConfig((mode) => {
                     "vue3-ts-jsoneditor",
                     "@vueup/vue-quill",
                     "jquery",
+                    "json5",
+                    "vue-m-message",
+                    "sql-formatter",
+                    "tailwindcss",
+                    "uuid",
+                    "vuedraggable-es",
+                    "preview-image-js",
+                    "@codemirror/lang-cpp",
+                    "@codemirror/lang-css",
+                    "@codemirror/lang-go",
+                    "@codemirror/lang-java",
+                    "@codemirror/lang-javascript",
+                    "@codemirror/lang-json",
+                    "@codemirror/lang-markdown",
+                    "@codemirror/lang-python",
+                    "@codemirror/lang-sql",
+                    "@codemirror/lang-vue",
+                    "@codemirror/lang-xml",
+                    "@codemirror/lang-yaml",
+                    "@codemirror/theme-one-dark",
+                    "@replit/codemirror-minimap",
+                    "codemirror",
                     "sample/**/*"
                 ],
                 output: {

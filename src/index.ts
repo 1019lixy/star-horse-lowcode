@@ -9,7 +9,6 @@ import {AxiosInstance} from "axios";
 import type {Router} from "vue-router";
 import ElementPlus from "element-plus";
 import zhCn from "element-plus/dist/locale/zh-cn.mjs";
-import zhTw from "element-plus/dist/locale/zh-tw.mjs";
 import en from "element-plus/dist/locale/en.mjs";
 import {starHorseAxios} from "@/api/star_horse_apis";
 import {LangType} from "@/theme/theme";
@@ -25,12 +24,14 @@ export * from "@/utils/message";
 export * from "@/api/finger_utils";
 export * from "@/api/form_utils";
 export * from "@/api/valid_utils";
+export * from "@/plugins/AblesPlugin";
 const items = import.meta.glob([
     "@/components/comp/*.vue",
     "@/components/comp/items/*.vue",
     "@/components/system/*.vue",
     "@/components/formcomp/items/*.vue",
     "@/components/formcomp/container/*.vue",
+    "@/components/*.vue"
 ]);
 // 声明全局变量存储宿主应用的 router
 declare global {
@@ -64,21 +65,19 @@ const install = (
     }
     if (options?.lang) {
         window.__starHorseHostLang__ = options.lang;
+    } else {
+        window.__starHorseHostLang__ = LangType.ZH_CN;
     }
     if (options?.initElementPlus ?? true) {
         // 只在没有配置时才设置中文
-        if (!options?.elementPlusOptions?.locale) {
-            app.use(ElementPlus, {
-                locale: !options?.lang
-                    ? zhCn
-                    : options?.lang == LangType.ZH_CN
-                        ? zhCn
-                        : options?.lang == LangType.ZH_TW
-                            ? zhTw
-                            : en,
-            });
-        } else {
+        if (Object.keys(options?.elementPlusOptions || {}).length > 0) {
             app.use(ElementPlus, options.elementPlusOptions);
+        } else {
+            const locale = !options?.lang || options?.lang == LangType.ZH_CN ? zhCn : en;
+            app.use(ElementPlus, {
+                locale: locale
+            });
+            console.log("star-horse-lowcode:", locale);
         }
     }
     window.__starHorseHostApp__ = app;

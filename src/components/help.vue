@@ -9,7 +9,7 @@ defineProps({
 <template>
   <el-popover
     trigger="hover"
-    :popper-style="{ width: 'unset !important' }"
+    :popper-style="{ width: 'unset !important' ,'z-index': 10000}"
     placement="bottom-start"
   >
     <template #reference>
@@ -21,10 +21,7 @@ defineProps({
       />
     </template>
     <div style="font-size: 12px">
-      <pre
-        >{{ message }}
-  </pre
-      >
+      <pre>{{ message }}</pre>
     </div>
   </el-popover>
 </template>
