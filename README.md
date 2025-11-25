@@ -377,3 +377,4 @@ barcode        条形码组件
                 广告：近期将发布一个基于此核心组件的动态表单设计器(StarHorseForm)，敬请期待
 59. 2025-11-07  优化StarHorseIcon组件，增加svgIconName 属性，可传入除系统自带的sh_icon 以外的字体图标
 60. 2025-11-19  修复transfer-item 组件，在静态数据配置下不能显示问题，同时升级依赖插件
+61. 2025-11-21  增加表单解析接口analysisCompDatas

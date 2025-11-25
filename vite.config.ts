@@ -1,12 +1,13 @@
 import {defineConfig} from "vite";
 import vue from "@vitejs/plugin-vue";
 import inject from "@rollup/plugin-inject";
+import tailwindcss from "@tailwindcss/vite";
 import {fileURLToPath} from "url";
 import {dirname, resolve} from "path";
 import Components from "unplugin-vue-components/vite";
 import {ElementPlusResolver} from "unplugin-vue-components/resolvers";
 import AutoImport from "unplugin-auto-import/vite";
-import tailwindcss from "@tailwindcss/vite";
+
 //生产types文件插件
 import dts from "vite-plugin-dts";
 // https://vitejs.dev/config/
