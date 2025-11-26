@@ -2,7 +2,6 @@
 import { ModelRef, PropType } from "vue";
 import { FieldInfo } from "@/components/types/PageFieldInfo";
 import { rowClassName } from "@/api/star_horse_utils";
-import { Config } from "@/api/settings";
 import { compKey } from "@/api/system";
 import { i18n } from "@/lang";
 

@@ -1,5 +1,4 @@
 <script setup lang="ts" name="StarHorseFormItem">
-import { Config } from "@/api/settings";
 import { compKey } from "@/api/system";
 import { ModelRef } from "vue";
 import { ContainerPreps } from "../types/ItemPreps";

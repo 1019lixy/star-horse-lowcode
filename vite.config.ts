@@ -142,6 +142,12 @@ export default defineConfig((mode) => {
                     "@codemirror/theme-one-dark",
                     "@replit/codemirror-minimap",
                     "codemirror",
+                    "@codemirror/view",
+                    "@codemirror/state",
+                    "@codemirror/commands",
+                    "@codemirror/autocomplete",
+                    "@codemirror/*",
+                    "thememirror",
                     "sample/**/*"
                 ],
                 output: {

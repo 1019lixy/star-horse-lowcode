@@ -267,5 +267,10 @@ barcode        条形码组件
 6.BUG 修改记录
 #### v2.8.29
 ```
-
+- 增加StarHorseEditor 系统组件
+- api 接口增加loadData，loadGetData函数
+```
+#### v2.8.30
+```
+- Fix StarHorseEditor 不能正常显示问题
 ```

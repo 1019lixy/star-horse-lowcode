@@ -21,7 +21,6 @@ import Help from "@/components/help.vue";
 import { compKey, uuid } from "@/api/system";
 import UTableColumn from "@/components/comp/items/UTableColumn.vue";
 import StarHorseForm from "@/components/comp/StarHorseForm.vue";
-import { Config } from "@/api/settings";
 import { FieldInfo } from "@/components/types";
 import JSON5 from "json5";
 

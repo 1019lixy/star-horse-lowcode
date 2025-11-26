@@ -1,7 +1,6 @@
 <script setup lang="ts" name="ShTableListColumn">
 import { createDatetime } from "@/api/date_utils";
 import { parseListData, validMsg } from "@/api/form_utils";
-import { Config } from "@/api/settings";
 import { PropType } from "vue";
 import { i18n } from "@/lang";
 

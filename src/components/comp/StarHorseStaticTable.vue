@@ -1,5 +1,4 @@
 <script setup lang="ts" name="StarHorseStaticTable">
-import { Config } from "@/api/settings";
 import { commonParseCodeToName } from "@/api/star_horse_utils";
 import { compKey } from "@/api/system";
 import { i18n } from "@/lang";

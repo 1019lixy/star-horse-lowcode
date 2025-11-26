@@ -3,7 +3,7 @@ import {computed, ComputedRef, nextTick, onMounted, PropType, ref, unref} from "
 import {postRequest} from "@/api/star_horse_apis";
 import {closeLoad, commonParseCodeToName} from "@/api/star_horse_utils";
 import {error, success, warning} from "@/utils/message";
-
+import { Config } from "@/api/settings";
 import {createComponent, uuid} from "@/api/system";
 import {dateTypes, parseDateByType} from "@/api/date_utils";
 import {DyCompField} from "@/components/types";

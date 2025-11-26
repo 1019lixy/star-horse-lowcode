@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { PropType, computed } from "vue";
 import { ApiUrls } from "@/components/types/ApiUrls";
-import { Config } from "@/api/settings";
 import { compKey } from "@/api/system";
 
 const props = defineProps({
