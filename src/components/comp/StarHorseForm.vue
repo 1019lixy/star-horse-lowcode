@@ -1,7 +1,7 @@
 <script setup lang="ts" name="StarHorseForm">
-import {Config} from "@/api/settings";
-import {postRequest} from "@/api/star_horse_apis";
-import {closeLoad, formFieldMapping, isJson, load, loadById,} from "@/api/star_horse_utils";
+
+import {postRequest,loadById} from "@/api/star_horse_apis";
+import {closeLoad, formFieldMapping, isJson, load, } from "@/api/star_horse_utils";
 import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
 import {ApiUrls} from "@/components/types/ApiUrls";
 import {DialogProps} from "@/components/types/DialogProps";
@@ -34,7 +34,7 @@ const props = defineProps({
   primaryKey: {type: [String, Object] as PropType<string | any>},
   globalCondition: {type: Object},
   rules: {type: Object},
-  formSize: {type: String, default: Config.compSize},
+  formSize: {type: String, default: "default"},
   labelPosition: {type: String, default: "left"},
   typeModel: {type: String},
   dynamicForm: {type: Boolean, default: false},

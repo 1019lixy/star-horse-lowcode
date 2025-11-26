@@ -1,5 +1,5 @@
 <script setup lang="ts" name="StarHorseTree">
-import {Config} from "@/api/settings";
+
 import {postRequest} from "@/api/star_horse_apis";
 import {closeLoad, createCondition} from "@/api/star_horse_utils";
 import {compKey} from "@/api/system";
@@ -76,7 +76,7 @@ const emits = defineEmits([
 ]);
 let configStore = useGlobalConfigStore(piniaInstance);
 let compSize = computed(
-    () => configStore.configFormInfo?.inputSize || Config.compSize,
+    () => configStore.configFormInfo?.inputSize || "default",
 );
 const treeRef = ref<any>();
 const menuTreeRef = ref<any>();

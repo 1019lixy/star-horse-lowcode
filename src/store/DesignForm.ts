@@ -1,4 +1,4 @@
-import {Config} from "@/api/settings";
+
 import {defineStore} from "pinia";
 import {ref, shallowRef, unref} from "vue";
 import JSON5 from "json5";
@@ -325,7 +325,7 @@ export const useDesignFormStore = defineStore("designForm", () => {
             primaryKeyPolicy: "manual",
             createTable: "Y",
             validateOnRuleChange: "Y",
-            size: Config.compSize,
+            size: "default",
             disabled: "N",
             dataIndex: 1,
             scrollToError: "N",

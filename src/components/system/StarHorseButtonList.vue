@@ -1,5 +1,4 @@
 <script setup lang="ts" name="StarHorseButtonList">
-import { Config } from "@/api/settings";
 import { download } from "@/api/star_horse_apis";
 import { compKey } from "@/api/system";
 import Help from "@/components/help.vue";
@@ -34,7 +33,7 @@ const emits = defineEmits([
 ]);
 let configStore = useGlobalConfigStore(piniaInstance);
 let compSize = computed(
-  () => configStore.configFormInfo?.buttonSize || Config.compSize,
+  () => configStore.configFormInfo?.buttonSize || "default",
 );
 let showType = computed(
   () => configStore.configFormInfo?.buttonShowType || "dropdown",

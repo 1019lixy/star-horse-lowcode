@@ -13,7 +13,7 @@ withDefaults(defineProps<ContainerPreps>(), {
   subFormFlag: "N",
   batchName: "batchDataList",
   batchFieldName: "batchFieldList",
-  compSize: Config.compSize,
+  compSize: "default",
   source: 1,
 });
 const emits = defineEmits(["addRow", "removeRow"]);

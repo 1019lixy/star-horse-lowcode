@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {checkObject, getDataIndex, getFormData, getPrefix,} from "@/api/form_utils";
-import {Config} from "@/api/settings";
+
 import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
 import {ContainerPreps} from "@/components/types/ItemPreps";
 import {ModelRef, onMounted} from "vue";
@@ -15,7 +15,7 @@ withDefaults(defineProps<ContainerPreps>(), {
   subFormFlag: "N",
   batchName: "batchDataList",
   batchFieldName: "batchFieldList",
-  compSize: Config.compSize,
+  compSize: "default",
   source: 1,
 });
 const emits = defineEmits(["addRow", "removeRow"]);

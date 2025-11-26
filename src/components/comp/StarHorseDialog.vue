@@ -3,7 +3,7 @@ import {computed, onMounted, PropType, provide, reactive, ref, watch,} from "vue
 import {DialogProps} from "@/components/types/DialogProps";
 import {i18n} from "@/lang";
 import {UserFuncInfo} from "@/components/types/PageFieldInfo";
-import {Config} from "@/api/settings";
+
 import {compKey} from "@/api/system";
 
 const emits = defineEmits([
@@ -34,7 +34,7 @@ const props = defineProps({
   btnTextContinue: {type: String, default: i18n("common.submitAndContinue")},
   title: {type: String, default: ""},
   source: {type: Number, default: 1},
-  compSize: {type: String, default: Config.compSize},
+  compSize: {type: String, default: "default"},
 });
 let windowsType = ref<boolean>(false);
 const _compKey = compKey;

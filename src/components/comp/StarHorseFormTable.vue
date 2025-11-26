@@ -7,7 +7,7 @@ defineProps({
   item: { type: Object as PropType<any>, required: true },
   rules: { type: Object },
   initRows: { type: Number, default: 0 },
-  size: { type: String, default: Config.compSize },
+  size: { type: String, default: "default" },
   source: { type: Number, default: 1 },
 });
 const emits = defineEmits(["addRow", "removeRow"]);

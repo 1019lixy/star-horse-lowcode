@@ -17,7 +17,7 @@ const props = defineProps({
   //格式化方法
   dataFormat: { type: Function, default: null },
   //按钮大小
-  compSize: { type: String, default: Config.compSize },
+  compSize: { type: String, default: "default" },
   //弹窗模式
   dialogInput: { type: Boolean, default: false },
   //默认表格高度

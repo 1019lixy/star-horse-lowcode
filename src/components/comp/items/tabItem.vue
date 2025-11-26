@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {Config} from "@/api/settings";
+
 import StarHorseFormTable from "@/components/comp/StarHorseFormTable.vue";
 import {ContainerPreps} from "@/components/types/ItemPreps";
 import {ModelRef, onMounted} from "vue";
@@ -13,7 +13,7 @@ const props = withDefaults(defineProps<ContainerPreps>(), {
   subFormFlag: "N",
   batchName: "batchDataList",
   batchFieldName: "batchFieldList",
-  compSize: Config.compSize,
+  compSize: "default",
   source: 1,
 });
 const emits = defineEmits(["addRow", "removeRow"]);

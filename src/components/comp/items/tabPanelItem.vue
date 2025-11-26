@@ -2,7 +2,7 @@
 import {ModelRef, onMounted, PropType} from "vue";
 import {ApiUrls} from "@/components/types/ApiUrls";
 import {FieldInfo} from "@/components/types/PageFieldInfo";
-import {Config} from "@/api/settings";
+
 import {getDataIndex, getFormData, getPrefix} from "@/api/form_utils";
 
 defineProps({
@@ -14,7 +14,7 @@ defineProps({
   // 父节点名称
   propPrefix: {type: String, default: ""},
   rules: {type: Object},
-  compSize: {type: String, default: Config.compSize},
+  compSize: {type: String, default: "default"},
   source: {type: Number, default: 1},
   parentType: {type: String, default: ""},
 });

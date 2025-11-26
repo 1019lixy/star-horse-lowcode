@@ -2,7 +2,7 @@
 import {nextTick, onMounted, PropType, ref} from "vue";
 import {UserFuncInfo} from "@/components/types/PageFieldInfo";
 import {BtnHideCondition} from "@/components/types/Params";
-import {Config} from "@/api/settings";
+
 import {compKey} from "@/api/system";
 
 const props = defineProps({
@@ -18,7 +18,7 @@ const props = defineProps({
     default: [],
   },
   //按钮大小
-  compSize: {type: String, default: Config.compSize},
+  compSize: {type: String, default: "default"},
   //按钮默认显示限制，超出按钮个数则折叠显示
   showLimit: {type: Number, default: 3},
 });

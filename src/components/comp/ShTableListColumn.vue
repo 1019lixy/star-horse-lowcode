@@ -13,7 +13,7 @@ const props = defineProps({
   primaryKey: { type: [String, Object] as PropType<string | any> },
   batchName: { type: String, default: "batchDataList" },
   rules: { type: Object },
-  size: { type: String, default: Config.compSize },
+  size: { type: String, default: "default" },
   source: { type: Number, default: 1 },
 });
 const dataFormat = (val: any) => {

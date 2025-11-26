@@ -3,7 +3,7 @@ import {computed, ComputedRef, nextTick, onMounted, PropType, ref, unref} from "
 import {postRequest} from "@/api/star_horse_apis";
 import {closeLoad, commonParseCodeToName} from "@/api/star_horse_utils";
 import {error, success, warning} from "@/utils/message";
-import {Config} from "@/api/settings";
+
 import {createComponent, uuid} from "@/api/system";
 import {dateTypes, parseDateByType} from "@/api/date_utils";
 import {DyCompField} from "@/components/types";
@@ -21,7 +21,7 @@ const props = defineProps({
   isDynamic: {type: Boolean, default: false},
   //是否显示排序
   sortable: {type: Boolean, default: true},
-  compSize: {type: String, default: Config.compSize},
+  compSize: {type: String, default: "default"},
   source: {type: Number, default: 5},
 });
 const emits = defineEmits(["focusEvent", "blurEvent"]);

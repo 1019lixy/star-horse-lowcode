@@ -1,13 +1,10 @@
 <script setup lang="ts" name="StarHorseTableComp">
-import { Config } from "@/api/settings";
-import { download, postRequest } from "@/api/star_horse_apis";
+import { download, postRequest,deleteByIds,loadData, } from "@/api/star_horse_apis";
 import {
   closeLoad,
   createCondition,
-  deleteByIds,
   isJson,
   load,
-  loadData,
 } from "@/api/star_horse_utils";
 import { compKey, removeEmptyCondition, uuid } from "@/api/system";
 import Tablebtn from "@/components/comp/items/tablebtn.vue";
@@ -129,7 +126,7 @@ const configInfo = computed(() => {
   return data;
 });
 let compSize = computed(
-  () => configStore.configFormInfo?.inputSize || Config.compSize,
+  () => configStore.configFormInfo?.inputSize || "default",
 );
 const multipleSelection = ref<any>([]);
 const starHorseTableCompRef = ref();
