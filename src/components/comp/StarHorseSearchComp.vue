@@ -52,7 +52,7 @@ const analysisDefaultValue = () => {
 };
 const dataSearch = (val: string | null) => {
   if (val === "reset") {
-    searchForm.value = Object.assign({}, analysisDefaultValue());
+    searchForm.value ={...analysisDefaultValue()};
   }
   let searchDatas = createSearchParams(props.formData?.fieldList);
   //如果一个页面（包括引入的页面）出现多个此组件,不能走消息总线，
@@ -83,7 +83,7 @@ const setData = (data: any) => {
 };
 const init = async () => {
   matchTypeList.value = searchMatchList();
-  searchForm.value = Object.assign({}, analysisDefaultValue());
+  searchForm.value = {...analysisDefaultValue()};
   await nextTick();
   //没有隐藏的查询属性，则隐藏掉展开图标
   let fdata = props.formData?.fieldList?.find((item) => !item.defaultVisible);

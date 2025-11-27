@@ -353,10 +353,9 @@ provide("dialogOperation", clickFunction);
 .shdialog {
   flex: 1;
   display: flex;
-  /* overflow-y: auto;*/
   padding: 0 10px;
   box-sizing: border-box;
-
+  height: 100%;
   &::-webkit-scrollbar {
     width: 6px;
   }

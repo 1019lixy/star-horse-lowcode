@@ -248,7 +248,7 @@ defineExpose({
             row-key="prop"
             style="width: 100%"
             :size="compSize"
-            border
+            :border="true"
           >
             <el-table-column prop="" :label="i18n('comp.sort')" width="60">
               <el-tag class="move" style="cursor: move" :size="compSize">
@@ -315,11 +315,11 @@ defineExpose({
         'background-image':
           '-webkit-gradient(linear,left 0,left 100%,from(#f8f8f8),to(#ececec))',
       }"
-      border
+      :border="true"
     >
       <el-table-column
         type="selection"
-        align="center"
+        :align="'center'"
         fixed="left"
         :reserve-selection="true"
       >

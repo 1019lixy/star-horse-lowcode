@@ -274,3 +274,7 @@ barcode        条形码组件
 ```
 - Fix StarHorseEditor 不能正常显示问题
 ```
+#### v2.8.31
+```
+- Fix StarHorseDialog 超出高度显示异常
+```
