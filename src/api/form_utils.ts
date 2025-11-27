@@ -5,8 +5,8 @@ import {BatchFieldInfo, FieldInfo, SearchProps} from "@/components/types";
 import {uuid} from "@/api/system";
 // 定义已显式列出的属性
 const listedFields: string[] = [
-    "label", "name", "itemType", "formVisible", "listVisible", "searchVisible",
-    "required", "actions", "helpMsg", "listPrototypeDisplay",
+    "label", "name", "itemType", "formVisible", "listVisible", "viewVisible", "searchVisible",
+    "required", "actions", "helpMsg", "listPrototypeDisplay","defaultVisible",
     "defaultValue", "prefix", "disabled", "editDisabled", "id", "itemNameLabel"
 ];
 const createContainer = (item: any, children: any) => {
@@ -165,6 +165,7 @@ const itemAnalysis = (item: any) => {
         type: item.itemType,
         formVisible: preps.formVisible,
         listVisible: preps.listVisible,
+        viewVisible: preps.viewVisible,
         required: preps.required,
         actions: preps.actions,
         helpMsg: preps.helpMsg,
