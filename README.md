@@ -278,3 +278,7 @@ barcode        条形码组件
 ```
 - Fix StarHorseDialog 超出高度显示异常
 ```
+#### v2.8.32
+```
+- Fix StarHorseDraggable 样式显示异常
+```
