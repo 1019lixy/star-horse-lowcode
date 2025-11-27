@@ -2,90 +2,18 @@ import {SearchInfo, SearchParams,} from "@/components/types/Params";
 import {reactive, Reactive, unref} from "vue";
 import {ElLoading} from "element-plus";
 import JSON5 from "json5";
-import {download, getRequest, postRequest, uploadRequest,} from "@/api/star_horse_apis";
-import {error, operationConfirm, success, warning} from "@/utils/message";
+import {deleteByIds, dictData, download, loadById, loadData, loadGetData, postRequest, uploadRequest,} from "@/api/star_horse_apis";
+import {error, success} from "@/utils/message";
 import {SelectOption} from "@/components/types/SearchProps";
 import {BatchFieldInfo, FieldInfo, OrderByInfo, PageFieldInfo, TabFieldInfo,} from "@/components/types/PageFieldInfo";
 import {ApiUrls} from "@/components/types/ApiUrls";
 import {DialogProps} from "@/components/types/DialogProps";
 import {createDatetime} from "@/api/date_utils";
-import {ServiceEnums} from "@/components/enums/ServiceEnums";
 import {i18n} from "@/lang";
 import {JoinSearchParams} from "@/components/types/Params";
 import previewImage from "preview-image-js";
 import "preview-image-js/icon.js";
 let loading: any = null;
-
-/**
- * 字典接口
- */
-const dictUrl: string = `${ServiceEnums.SYSTEM_PREFIX}dictinfo/getAllByCondition`;
-
-/**
- * 加载Post 数据
- * @param url 接口地址
- * @param params 参数
- * @param orderBy 排序
- */
-export async function loadData(
-    url: string,
-    params: SearchParams[] | any,
-    orderBy: OrderByInfo[] = [],
-) {
-    let data: any = null;
-    let error = "";
-    let cond = params;
-    if (Array.isArray(params)) {
-        cond = {
-            fieldList: params,
-            orderBy: orderBy,
-        };
-    }
-    await postRequest(url, cond)
-        .then((res: any) => {
-            const redata = res.data;
-            if (redata.code) {
-                error = redata.cnMessage;
-            } else {
-                //先去分页数据，没有再去非分页数据
-                data = redata.data.dataList || redata.data;
-            }
-        })
-        .catch((err) => {
-            error = err;
-        });
-    return {
-        data,
-        error,
-    };
-}
-
-/**
- * 加载Get 数据
- * @param url 接口地址
- * @param params 参数
- */
-export async function loadGetData(url: string) {
-    let data = reactive<any>([]);
-    let error: string = "";
-    await getRequest(url)
-        .then((res) => {
-            const redata = res.data;
-            if (redata.code != 0) {
-                error = redata.cnMessage;
-            } else {
-                data = redata.data;
-            }
-        })
-        .catch((err) => {
-            error = err;
-        });
-    return {
-        data,
-        error,
-    };
-}
-
 /**
  * 构建菜单树
  * @param data
@@ -201,108 +129,7 @@ export function commonParseCodeToName(name: string, cellValue: any) {
     }
 }
 
-/**
- * 加载Id数据
- * @param url
- * @param id
- * @param params
- */
-export async function loadById(url: string, id: any, params: any = {}) {
-    if (!url || "undefined" == id) {
-        warning(i18n("utils.provideCorrectData"));
-        return;
-    }
-    let objData: any = {};
-    const suffix: string = id ? "/" + id : "";
-    await postRequest(url + suffix, params).then((res) => {
-        const redata = res.data.data;
-        if (!redata) {
-            warning(i18n("utils.dataNotFound"));
-        } else {
-            objData = redata;
-        }
-    });
-    return objData;
-}
 
-/**
- * 根据Id删除数据
- * @param url
- * @param ids
- * @param msg 删除提示
- */
-export async function deleteByIds(
-    url: string,
-    ids: any,
-    msg: string = i18n("utils.confirmDelete"),
-) {
-    if (!url) {
-        warning(i18n("utils.provideCorrectData"));
-        return;
-    }
-    if (!ids || ids.length == 0) {
-        warning(i18n("utils.selectDataToDelete"));
-        return;
-    }
-    let objData: boolean = false;
-    const confirmFlag: boolean = await operationConfirm(msg);
-    if (!confirmFlag) {
-        return;
-    }
-    await postRequest(url, ids)
-        .then((res) => {
-            if (res.data.code == 0) {
-                success(res.data.cnMessage);
-            } else {
-                warning(res.data.cnMessage);
-            }
-            closeLoad();
-            objData = true;
-        })
-        .catch((err) => {
-            error(i18n("dialog.interfaceError") + err);
-            objData = false;
-        })
-        .finally(() => {
-            closeLoad();
-        });
-    return objData;
-}
-
-/**
- * 根据字典类别获取字典数据
- * @param dictType 字典类别
- * @param exclusion 排除字典项
- * @param userUrl 用户自定义接口
- */
-export async function dictData(
-    dictType: string,
-    exclusion: Array<string> = [],
-    userUrl?: string,
-) {
-    const query = [];
-    query.push({
-        propertyName: "dictType",
-        value: dictType,
-    });
-    const dicts: SelectOption[] = [];
-    await postRequest(userUrl ?? dictUrl, {fieldList: query})
-        .then((res) => {
-            const redata = res.data;
-            if (redata.code == 0) {
-                redata.data?.forEach((item: any) => {
-                    if (exclusion?.includes(item.dictCode)) {
-                        return;
-                    }
-                    dicts.push({name: item.dictName, value: item.dictCode});
-                });
-            }
-        })
-        .catch((err: any) => {
-            console.log("接口不存在或网络异常", err);
-        });
-    return dicts;
-}
 
 /**
  * 数据匹配方式
@@ -1064,3 +891,14 @@ export function setCssVar(
 ) {
     dom.style.setProperty(name, val);
 }
+/**
+ * 去除空格
+ * @param data
+ */
+export function trim(data: string) {
+    if (!data) {
+      return data;
+    }
+    return data.replace(/(^\s*)|(\s*$)/g, "");
+  }
+  

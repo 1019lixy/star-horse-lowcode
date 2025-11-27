@@ -1,7 +1,7 @@
 <script setup lang="ts" name="StarHorseForm">
-import {Config} from "@/api/settings";
-import {postRequest} from "@/api/star_horse_apis";
-import {closeLoad, formFieldMapping, isJson, load, loadById,} from "@/api/star_horse_utils";
+
+import {postRequest,loadById} from "@/api/star_horse_apis";
+import {closeLoad, formFieldMapping, isJson, load, } from "@/api/star_horse_utils";
 import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
 import {ApiUrls} from "@/components/types/ApiUrls";
 import {DialogProps} from "@/components/types/DialogProps";
@@ -34,7 +34,7 @@ const props = defineProps({
   primaryKey: {type: [String, Object] as PropType<string | any>},
   globalCondition: {type: Object},
   rules: {type: Object},
-  formSize: {type: String, default: Config.compSize},
+  formSize: {type: String, default: "default"},
   labelPosition: {type: String, default: "left"},
   typeModel: {type: String},
   dynamicForm: {type: Boolean, default: false},
@@ -98,7 +98,7 @@ const loadData = async () => {
     for (let i in params) {
       let temp = params[i];
       if (!temp.subTabFlag) {
-        let subTemp = Object.assign({}, objData);
+        let subTemp = {...objData};
         delete subTemp[temp.tableName];
         dataForm.value[temp.tableName] = [subTemp];
       }
@@ -189,7 +189,7 @@ const analysisSameToParentField = (): Array<string> => {
   let batchFields = props.fieldList?.batchFieldList || [];
   const analysis = (batchFields: BatchFieldInfo[]) => {
     batchFields?.forEach((item: BatchFieldInfo) => {
-      if (false === item.subFormFlag || "N" == item.subFormFlag) {
+      if (false === item.subFormFlag || "n" == item.subFormFlag?.toString()?.toLowerCase()) {
         batchName.push(item.batchName);
       }
     });
@@ -215,7 +215,7 @@ const analysisSameToParentField = (): Array<string> => {
 const doMerge = (type: string) => {
   assignStatusName();
   let tempForm: any = [];
-  let tempDatas = Object.assign({}, dataForm.value);
+  let tempDatas ={...dataForm.value};
   let mergeUrl = props.compUrl?.mergeUrl;
   let flag = true;
   //单独批量数据和嵌入fieldList 里的批量数据

@@ -3,7 +3,7 @@ import {computed, inject, ModelRef, onMounted, PropType, ref} from "vue";
 import {useSelfOperationStore} from "@/store/SelfOperation";
 import piniaInstance from "@/store";
 import {compKey, dateCompList, fieldPlaceholder, inputCompList, uuid,} from "@/api/system";
-import {Config} from "@/api/settings";
+
 import {checkVisible, filterProperties} from "@/api/form_utils";
 import Help from "@/components/help.vue";
 
@@ -15,7 +15,7 @@ const props = defineProps({
   dataIndex: {type: Number, default: -1},
   bareFlag: {type: Boolean, default: false},
   batchName: {type: String, default: ""},
-  compSize: {type: String, default: Config.compSize},
+  compSize: {type: String, default: "default"},
   showLabel: {type: Boolean, default: true}, //是否显示标签
   source: {type: Number, default: 1},
 });

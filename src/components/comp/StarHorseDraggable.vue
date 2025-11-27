@@ -18,7 +18,7 @@ const props = defineProps({
   },
   showLine: {
     type: Boolean,
-    default: false,
+    default: true,
   },
   /**
    * 大小控制类型，percent：百分比，px：像素
@@ -37,38 +37,44 @@ const nodeStyles = computed(() => {
   let styles = props.node.styles;
   if (!styles) {
     props.node.styles = {};
-    styles = {};
+    styles = props.node.styles;
   }
+  styles["position"] = "absolute";
   let temp = {...styles};
   // 设计态统一使用 absolute，避免相对定位造成边界和基线混乱
+  const parentWidth = nodeRef.value?.parentElement?.clientWidth || 1;
+  const parentHeight = nodeRef.value?.parentElement?.clientHeight || 1;
   if (props.isDesign) {
-    temp["position"] = "absolute";
     if (props.isActive) {
       temp["cursor"] = "move";
     }
-    if (typeof styles.left !== "number") styles.left = 50;
-    if (typeof styles.top !== "number") styles.top = 50;
+    if (typeof styles.left !== "number") styles.left = props.sizeControlType === "percent" ? 50 : parentWidth / 2;
+    if (typeof styles.top !== "number") styles.top = props.sizeControlType === "percent" ? 50 : parentHeight / 2;
+    temp["left"] = styles.left;
+    temp["top"] = styles.top;
   }
+  // if (!styles["width"]) {
+  //获取节点宽度
+  // const parentWidth = nodeRef.value?.parentElement?.clientWidth || 1;
+  // styles["width"] = props.sizeControlType === "percent"
+  //     ? (100 * (nodeRef.value?.offsetWidth || 0) / parentWidth)
+  //     : nodeRef.value?.offsetWidth || nodeRef.value?.clientWidth;
   if (!styles["width"]) {
-    //获取节点宽度
-    const parentWidth = nodeRef.value?.parentElement?.clientWidth || 1;
-    styles["width"] = props.sizeControlType === "percent"
-        ? (100 * (nodeRef.value?.offsetWidth || 0) / parentWidth)
-        : nodeRef.value?.offsetWidth || nodeRef.value?.clientWidth;
-    if (!styles["width"]) {
-      styles["width"] = 20;
-    }
+    styles["width"] = props.sizeControlType === "percent" ? 20 : 120;
+    temp["width"] = styles["width"];
   }
+  // }
+  // if (!styles["height"]) {
+  // //获取节点高度
+  // const parentHeight = nodeRef.value?.parentElement?.clientHeight || 1;
+  // styles["height"] = props.sizeControlType === "percent"
+  //     ? (100 * (nodeRef.value?.offsetHeight || 0) / parentHeight)
+  //     : nodeRef.value?.offsetHeight || nodeRef.value?.clientHeight;
   if (!styles["height"]) {
-    //获取节点高度
-    const parentHeight = nodeRef.value?.parentElement?.clientHeight || 1;
-    styles["height"] = props.sizeControlType === "percent"
-        ? (100 * (nodeRef.value?.offsetHeight || 0) / parentHeight)
-        : nodeRef.value?.offsetHeight || nodeRef.value?.clientHeight;
-    if (!styles["height"]) {
-      styles["height"] = 15;
-    }
+    styles["height"] = props.sizeControlType === "percent" ? 15 : 100;
+    temp["height"] = styles["height"];
   }
+  // }
   //将所有数字转换为px或百分比
   for (let key in temp) {
     if (typeof temp[key] === "number" && !["flex", "zIndex"].includes(key)) {
@@ -351,16 +357,10 @@ onMounted(() => {
       ref="nodeRef"
   >
     <div class="w-full h-full">
-      <div
-          v-if="isActive&&showLine"
-          class="node-line node-line-left"
-          :style="{ 'border-width': '1px', 'border-color': 'red' }"
-      ></div>
-      <div
-          v-if="isActive&&showLine"
-          class="node-line node-line-top"
-          :style="{ 'border-width': '3px', 'border-color': 'red' }"
-      ></div>
+      <div v-if="isActive&&showLine"
+           style="position: fixed;border-top: 1px dashed var(--star-horse-style);width: 100%;left:0"/><!--顶部辅助线-->
+      <div v-if="isActive&&showLine"
+           style="position: fixed;border-right: 1px dashed var(--star-horse-style);height:100%;top:0"/><!--左侧辅助线-->
       <div
           class="node-point"
           :class="'node-point-' + item"
@@ -402,73 +402,17 @@ onMounted(() => {
 }
 
 .node.active {
-  border: 1px dotted #09f;
-  box-shadow: 0 0 10px #09f;
+  border: 1px solid var(--star-horse-style);
+  box-shadow: 0 0 10px var(--star-horse-style);
 }
 
 .node-point {
   position: absolute;
-  width: 10px;
-  height: 10px;
-  border-radius: 100%;
-  z-index: 100;
-  background-color: #09f;
-}
-
-.node-line-left {
-  position: absolute;
-  border-top: 1px dashed #09f;
-  width: 10000px;
-  height: 0;
-  top: 0;
-  -webkit-transform: translateX(-100%);
-  transform: translateX(-100%);
-}
-
-.node-line-top {
-  position: absolute;
-  border-left: 1px dashed #09f;
-  width: 0;
-  height: 10000px;
-  left: 0;
-  -webkit-transform: translateY(-100%);
-  transform: translateY(-100%);
-}
-
-.node-line-label {
-  top: -5px;
-  left: -8px;
-  position: absolute;
-  padding: 5px;
-  -webkit-transform: translate(-100%, -100%);
-  transform: translate(-100%, -100%);
-  color: #09f;
-  font-size: 18px;
-  white-space: nowrap;
-  cursor: move;
-}
-
-.node-menu {
-  position: absolute;
-  top: 0;
-  left: 0;
-  background-color: #409eff;
-  font-size: 25px;
-  color: #fff;
-  z-index: 9999;
-  cursor: pointer;
-}
-
-.node-mask {
-  width: 100%;
-  height: 100%;
-  border: 0;
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 1;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  z-index: 2000;
+  background-color: var(--star-horse-style);
 }
 
 .node-point-left,
@@ -484,11 +428,11 @@ onMounted(() => {
 }
 
 .node-point-left {
-  left: -6px;
+  left: -4px;
 }
 
 .node-point-right {
-  right: -6px;
+  right: -4px;
 }
 
 .node-point-bottom,
@@ -504,11 +448,11 @@ onMounted(() => {
 }
 
 .node-point-top {
-  top: -6px;
+  top: -4px;
 }
 
 .node-point-bottom {
-  bottom: -6px;
+  bottom: -4px;
 }
 
 .node-point-bottom-right:hover,
@@ -522,22 +466,22 @@ onMounted(() => {
 }
 
 .node-point-top-right {
-  top: -6px;
-  right: -6px;
+  top: -4px;
+  right: -4px;
 }
 
 .node-point-top-left {
-  top: -6px;
-  left: -6px;
+  top: -4px;
+  left: -4px;
 }
 
 .node-point-bottom-right {
-  bottom: -6px;
-  right: -6px;
+  bottom: -4px;
+  right: -4px;
 }
 
 .node-point-bottom-left {
-  bottom: -6px;
-  left: -6px;
+  bottom: -4px;
+  left: -4px;
 }
 </style>

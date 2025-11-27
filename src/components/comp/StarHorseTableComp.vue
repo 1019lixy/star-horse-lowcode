@@ -1,13 +1,10 @@
 <script setup lang="ts" name="StarHorseTableComp">
-import { Config } from "@/api/settings";
-import { download, postRequest } from "@/api/star_horse_apis";
+import { download, postRequest,deleteByIds,loadData, } from "@/api/star_horse_apis";
 import {
   closeLoad,
   createCondition,
-  deleteByIds,
   isJson,
   load,
-  loadData,
 } from "@/api/star_horse_utils";
 import { compKey, removeEmptyCondition, uuid } from "@/api/system";
 import Tablebtn from "@/components/comp/items/tablebtn.vue";
@@ -119,7 +116,7 @@ const props = defineProps({
   // Button permission
   btnPermissions: { type: Object as PropType<Record<string, string>>, required: false },
 });
-const emits = defineEmits(["selectItem"]);
+const emits = defineEmits(["selectItem","permission"]);
 let pagePermission = useButtonPermissionStore(piniaInstance);
 let configStore = useGlobalConfigStore(piniaInstance);
 let permissions = ref<Record<string, string>>({});
@@ -129,7 +126,7 @@ const configInfo = computed(() => {
   return data;
 });
 let compSize = computed(
-  () => configStore.configFormInfo?.inputSize || Config.compSize,
+  () => configStore.configFormInfo?.inputSize || "default",
 );
 const multipleSelection = ref<any>([]);
 const starHorseTableCompRef = ref();
@@ -256,6 +253,7 @@ const init = async () => {
       window.__hostRouter__?.currentRoute.value,
     );
   }
+  emits("permission",permissions.value);
   // Whether to automatically load list data when initializing
   if (!props.fieldList?.stopAutoLoad) {
     loadByPage();
@@ -488,6 +486,7 @@ const viewById = (id: any, isExpand: boolean = false) => {
  * @param isExpand
  */
 const editById = (id: any, isExpand: boolean = false) => {
+  if(!permissions?.value["edit"])return;
   dialogProps!.editVisible = true;
   dialogProps!.ids = id;
   if (isExpand) {
@@ -501,6 +500,7 @@ const editById = (id: any, isExpand: boolean = false) => {
  * @param isExpand
  */
 const deleteById = async (id: any, isExpand: boolean = false) => {
+  if(!permissions?.value["delete"])return;
   let deleteUrl = props.compUrl?.deleteUrl!;
   if (isExpand) {
     deleteUrl = props.expandTable?.expandUrls?.deleteUrl!;
@@ -835,7 +835,8 @@ defineExpose({
   getSelectedDatas,
   multipleSelection,
   setDataInfo,
-
+  deleteById,
+  editById,
   // Button event
   tableCompFunc,
   getDatas,
@@ -912,7 +913,7 @@ defineExpose({
             row-key="prop"
             style="width: 100%"
             :size="compSize"
-            border
+            :border="true"
           >
             <el-table-column prop="" :label="i18n('comp.sort')" width="60">
               <el-tag class="move" style="cursor: move">
@@ -983,11 +984,11 @@ defineExpose({
           'background-image':
             '-webkit-gradient(linear,left 0,left 100%,from(#f8f8f8),to(#ececec))',
         }"
-        border
+        :border="true"
       >
         <el-table-column
           type="selection"
-          align="center"
+          :align="'center'"
           fixed="left"
           :reserve-selection="true"
           v-if="showSelection"
@@ -1006,7 +1007,7 @@ defineExpose({
                 :max-height="'400px'"
                 :row-style="{ height: '30px' }"
                 :cell-style="{ height: '30px', 'font-size': '12px' }"
-                border
+                :border="true"
               >
                 <el-table-column
                   fixed="left"

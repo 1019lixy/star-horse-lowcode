@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import {checkVisible, loadProp, validMsg} from "@/api/form_utils";
-import {Config} from "@/api/settings";
 import {ContainerPreps} from "@/components/types/ItemPreps";
 import {onMounted} from "vue";
 
@@ -13,7 +12,7 @@ withDefaults(defineProps<ContainerPreps>(), {
   subFormFlag: "N",
   batchName: "batchDataList",
   batchFieldName: "batchFieldList",
-  compSize: Config.compSize,
+  compSize: "default",
   source: 1,
 });
 const dataForm = defineModel("dataForm");

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { PropType, computed } from "vue";
 import { ApiUrls } from "@/components/types/ApiUrls";
-import { Config } from "@/api/settings";
 import { compKey } from "@/api/system";
 
 const props = defineProps({
@@ -15,7 +14,7 @@ const props = defineProps({
   sortable: { type: Boolean, default: true },
   //是否显示批量属性
   showBatchField: { type: Boolean, default: false },
-  compSize: { type: String, default: Config.compSize },
+  compSize: { type: String, default: "default" },
   //全局配置，动态页面使用
   globalConfig: { type: Object as PropType<any>, required: false },
   //是否动态页面

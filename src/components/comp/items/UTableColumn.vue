@@ -8,7 +8,7 @@ defineProps({
   item: { type: Object as PropType<any>, required: true },
   rules: { type: Object },
   staticColumn: { type: String, default: "Y" },
-  size: { type: String, default: Config.compSize },
+  size: { type: String, default: "default" },
   batchName: { type: String, default: "batchDataList" },
   primaryKey: { type: [String, Object] as PropType<string | any> },
   source: { type: Number, default: 1 },

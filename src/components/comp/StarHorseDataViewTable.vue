@@ -2,14 +2,13 @@
 import { ModelRef, PropType } from "vue";
 import { FieldInfo } from "@/components/types/PageFieldInfo";
 import { rowClassName } from "@/api/star_horse_utils";
-import { Config } from "@/api/settings";
 import { compKey } from "@/api/system";
 import { i18n } from "@/lang";
 
 defineProps({
   item: { type: Array as PropType<Array<FieldInfo> | any>, required: true },
   batchName: { type: String, required: true },
-  compSize: { type: String, default: Config.compSize },
+  compSize: { type: String, default: "default" },
   commonFormat: { type: Function, required: true },
 });
 const dataForm: ModelRef<any> = defineModel("dataForm");

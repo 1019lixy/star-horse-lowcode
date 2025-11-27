@@ -10,6 +10,8 @@ let json = ref<Array<DynamicNode>>([
     name: "nondea",
     styles: {
       left: 0,
+      width:200,
+      height:200,
       top: 0,
     },
     preps: {}
@@ -18,7 +20,10 @@ let json = ref<Array<DynamicNode>>([
     id: "b",
     label: "节点2",
     name: "node",
-    preps: {}
+    preps: {
+      width:200,
+      height:200,
+    }
   },
 ]);
 const editorData = ref<any>({});
@@ -35,6 +40,7 @@ const contextAction = (actionName: string, item: DynamicNode) => {
     <div></div>
     <StarHorseDraggable :isDesign="true" ref="editor" :isActive="editorData.id==item.id"
                         @contextAction="contextAction"
+                        sizeControlType="px"
                         :node="item" v-for="item in json" :key="item.id">
       <div @click="activeOperation(item)" class="w-full h-full border">{{ item.label }} {{ editorData }}</div>
     </StarHorseDraggable>

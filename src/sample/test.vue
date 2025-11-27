@@ -2,6 +2,7 @@
 import {onMounted} from 'vue';
 import LangTest from "@/sample/LangTest.vue";
 import FormRelationOperation from "@/sample/FormRelationOperation.vue";
+import StarHorseDraggableValid from "@/sample/StarHorseDraggableValid.vue";
 
 const initData = async () => {
 };
@@ -13,9 +14,9 @@ onMounted(() => {
 <template>
   <div class="flex flex-col h-full overflow-hidden">
     <!--    <FormValid/>-->
-    <!--    <StarHorseDraggableValid/>-->
+        <StarHorseDraggableValid/>
     <!--    <dialog-valid/>-->
-    <FormRelationOperation/>
+<!--    <FormRelationOperation/>-->
   </div>
 </template>
 <style lang="scss" scoped></style>

@@ -1,7 +1,6 @@
 <script setup lang="ts" name="ShTableListColumn">
 import { createDatetime } from "@/api/date_utils";
 import { parseListData, validMsg } from "@/api/form_utils";
-import { Config } from "@/api/settings";
 import { PropType } from "vue";
 import { i18n } from "@/lang";
 
@@ -13,7 +12,7 @@ const props = defineProps({
   primaryKey: { type: [String, Object] as PropType<string | any> },
   batchName: { type: String, default: "batchDataList" },
   rules: { type: Object },
-  size: { type: String, default: Config.compSize },
+  size: { type: String, default: "default" },
   source: { type: Number, default: 1 },
 });
 const dataFormat = (val: any) => {

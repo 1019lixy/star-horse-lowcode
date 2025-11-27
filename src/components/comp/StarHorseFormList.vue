@@ -21,7 +21,6 @@ import Help from "@/components/help.vue";
 import { compKey, uuid } from "@/api/system";
 import UTableColumn from "@/components/comp/items/UTableColumn.vue";
 import StarHorseForm from "@/components/comp/StarHorseForm.vue";
-import { Config } from "@/api/settings";
 import { FieldInfo } from "@/components/types";
 import JSON5 from "json5";
 
@@ -40,7 +39,7 @@ const props = defineProps({
   helpMsg: { type: String, default: "" },
   rules: { type: Object },
   staticColumn: { type: String, default: "Y" },
-  size: { type: String, default: Config.compSize },
+  size: { type: String, default: "default" },
   source: { type: Number, default: 1 },
   showCheckBox: { type: Boolean, default: false },
   selectAll: { type: Boolean, default: false },

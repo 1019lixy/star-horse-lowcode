@@ -2,8 +2,8 @@
 import {ApiUrls} from "@/components/types/ApiUrls";
 import {inject, nextTick, onMounted, PropType, ref, watch} from "vue";
 import {DialogProps} from "@/components/types/DialogProps";
-import {formFieldMapping, isJson, loadById} from "@/api/star_horse_utils";
-
+import {formFieldMapping, isJson} from "@/api/star_horse_utils";
+import {loadById} from "@/api/star_horse_apis";
 const dataForm = ref<any>({});
 const props = defineProps({
   compUrl: {type: Object as PropType<ApiUrls>},

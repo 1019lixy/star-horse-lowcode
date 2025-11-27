@@ -2,8 +2,8 @@
 import { inject, PropType, ref, ShallowReactive, watch } from "vue";
 import { ApiUrls } from "@/components/types/ApiUrls";
 import { error, success, warning } from "@/utils/message";
-import { postRequest } from "@/api/star_horse_apis";
-import { closeLoad, load, loadById } from "@/api/star_horse_utils";
+import { postRequest,loadById } from "@/api/star_horse_apis";
+import { closeLoad, load } from "@/api/star_horse_utils";
 import { DialogProps } from "@/components/types/DialogProps";
 import { compKey, itemCheck } from "@/api/system";
 import { i18n } from "@/lang";

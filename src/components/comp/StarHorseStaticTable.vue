@@ -1,5 +1,4 @@
 <script setup lang="ts" name="StarHorseStaticTable">
-import { Config } from "@/api/settings";
 import { commonParseCodeToName } from "@/api/star_horse_utils";
 import { compKey } from "@/api/system";
 import { i18n } from "@/lang";
@@ -17,7 +16,7 @@ const props = defineProps({
   //格式化方法
   dataFormat: { type: Function, default: null },
   //按钮大小
-  compSize: { type: String, default: Config.compSize },
+  compSize: { type: String, default: "default" },
   //弹窗模式
   dialogInput: { type: Boolean, default: false },
   //默认表格高度
@@ -249,7 +248,7 @@ defineExpose({
             row-key="prop"
             style="width: 100%"
             :size="compSize"
-            border
+            :border="true"
           >
             <el-table-column prop="" :label="i18n('comp.sort')" width="60">
               <el-tag class="move" style="cursor: move" :size="compSize">
@@ -316,11 +315,11 @@ defineExpose({
         'background-image':
           '-webkit-gradient(linear,left 0,left 100%,from(#f8f8f8),to(#ececec))',
       }"
-      border
+      :border="true"
     >
       <el-table-column
         type="selection"
-        align="center"
+        :align="'center'"
         fixed="left"
         :reserve-selection="true"
       >
