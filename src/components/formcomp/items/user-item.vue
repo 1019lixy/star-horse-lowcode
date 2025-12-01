@@ -1,60 +1,57 @@
 <template>
   <star-horse-dialog
-    :title="field.label + '数据选择'"
-    :self-func="true"
-    :dialog-visible="dialogInputVisible"
-    @merge="selectItem"
-    :box-height="'500px'"
-    @closeAction="closeAction"
+      :title="field.label + '数据选择'"
+      :self-func="true"
+      :dialog-visible="dialogInputVisible"
+      @merge="selectItem"
+      :box-height="'500px'"
+      @closeAction="closeAction"
   >
-    <div style="width: 100%">
+    <div class="w-full h-full overflow-hidden ">
       <component
-        :is="field.preps.compName"
-        v-bind="field.preps"
-        ref="userTableRef"
-        style="flex: 1"
+          :is="field.preps.compName"
+          v-bind="field.preps"
+          ref="userTableRef"
+          style="flex: 1"
       />
     </div>
   </star-horse-dialog>
   <starhorse-form-item
-    :showFormItem="showFormItem"
-    :isDesign="isDesign"
-    :disabled="disabled"
-    :bareFlag="bareFlag"
-    :field="field"
-    :parentField="parentField"
+      :showFormItem="showFormItem"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      :field="field"
+      :parentField="parentField"
   >
     <el-mention
-      :disabled="checkIsDisabled(props)"
-      :options="userOptionList"
-      :whole="true"
-      :fid="field.fieldName"
-      v-bind="prepsFilter(field.preps)"
-      v-on="getDynamicEvents(props, itemAction)"
-      v-model="formData[field.fieldName]"
+        :disabled="checkIsDisabled(props)"
+        :options="userOptionList"
+        :whole="true"
+        :fid="field.fieldName"
+        v-bind="prepsFilter(field.preps)"
+        v-on="getDynamicEvents(props, itemAction)"
+        v-model="formData[field.fieldName]"
     >
       <template #append>
         <star-horse-icon
-          icon-class="user-add"
-          @click="showVisible"
-          :disabled="field.preps['disabled']"
+            icon-class="user-add"
+            @click="showVisible"
+            :disabled="field.preps['disabled']"
         />
       </template>
     </el-mention>
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { nextTick, shallowRef } from "vue";
-import { FieldMapping } from "@/components/types/PageFieldInfo";
-import { warning } from "@/utils/message";
-import {
-  allAction,
-  checkIsDisabled,
-  prepsFilter,
-} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import { getDynamicEvents } from "@/api/system";
+import {nextTick, shallowRef} from "vue";
+import {FieldMapping} from "@/components/types/PageFieldInfo";
+import {warning} from "@/utils/message";
+import {allAction, checkIsDisabled, prepsFilter,} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {getDynamicEvents} from "@/api/system";
 
-import { ItemPreps } from "@/components/types/ItemPreps";
+import {ItemPreps} from "@/components/types/ItemPreps";
+import {StarHorseDialog} from "@/components/comp";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -75,7 +72,7 @@ const selectItem = (_row: any) => {
   userOptionList.value = [];
   let needField = props.field.preps["needField"];
   let selectDatas =
-    userTableRef.value?.$refs?.employeeInfoRef?.getSelectedDatas();
+      userTableRef.value?.$refs?.employeeInfoRef?.getSelectedDatas();
   if (!selectDatas) {
     warning("请选择数据");
     return;
@@ -150,8 +147,8 @@ const showVisible = () => {
       name = fields.map((item: FieldMapping) => item.sourceField)[0];
     }
     userTableRef.value?.$refs?.employeeInfoRef?.setDataInfo(
-      name,
-      formData.value[realName],
+        name,
+        formData.value[realName],
     );
   });
 };
