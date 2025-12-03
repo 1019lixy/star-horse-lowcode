@@ -282,3 +282,7 @@ barcode        条形码组件
 ```
 - Fix StarHorseDraggable 样式显示异常
 ```
+#### v2.8.33
+```
+- 优化transfer-item 组件为自适应宽度
+```
