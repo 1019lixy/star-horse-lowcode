@@ -32,6 +32,11 @@ const props = defineProps({
     default: false,
   }
 });
+
+// 用于显示宽高信息的ref
+const sizeInfoRef = ref<HTMLElement | null>(null);
+const sizeInfoContent = ref<string>("");
+const sizeInfoPosition = ref<any>({ x: 0, y: 0 });
 const nodeRef = ref<HTMLDivElement>();
 const nodeStyles = computed(() => {
   let styles = props.node.styles;
@@ -279,11 +284,17 @@ const rangeMove = (evt: MouseEvent, direction: string) => {
       props.node.styles.top = newTopOffset;
       setHeight(newHeight);
     }
+
+    // 更新宽高信息
+    sizeInfoContent.value = `${Math.round(newWidth)}px × ${Math.round(newHeight)}px`;
+    sizeInfoPosition.value = { x: e.clientX + 10, y: e.clientY + 10 };
   };
 
   const handleMouseUp = () => {
     document.removeEventListener("mousemove", handleMouseMove);
     document.removeEventListener("mouseup", handleMouseUp);
+    // 隐藏宽高信息
+    sizeInfoContent.value = "";
   };
 
   // 添加事件监听器
@@ -416,6 +427,18 @@ onMounted(() => {
         ref="contentMenuRef"
         :menu-data="dynamicPageContextMenuData(node,recallFunction)"
     />
+    <!-- 显示宽高信息的元素 -->
+    <div
+      v-if="sizeInfoContent"
+      ref="sizeInfoRef"
+      class="size-info-tooltip"
+      :style="{
+        left: `${sizeInfoPosition.x}px`,
+        top: `${sizeInfoPosition.y}px`
+      }"
+    >
+      {{ sizeInfoContent }}
+    </div>
   </Teleport>
 </template>
 
@@ -550,5 +573,20 @@ onMounted(() => {
   border-right: none;
   border-top: none;
   border-radius: 0 0 1px 0;
+}
+
+/* 宽高信息提示框样式 */
+.size-info-tooltip {
+  position: fixed;
+  background-color: var(--star-horse-style);
+  color: white;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: Arial, sans-serif;
+  z-index: 9999;
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
 }
 </style>
