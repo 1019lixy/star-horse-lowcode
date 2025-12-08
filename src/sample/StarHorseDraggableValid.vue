@@ -42,7 +42,7 @@ const contextAction = (actionName: string, item: DynamicNode) => {
                         @contextAction="contextAction"
                         sizeControlType="px"
                         :node="item" v-for="item in json" :key="item.id">
-      <div @click="activeOperation(item)" class="w-full h-full border">{{ item.label }} {{ editorData }}</div>
+      <div @click="activeOperation(item)" class="w-full h-full ">{{ item.label }} {{ editorData }}</div>
     </StarHorseDraggable>
   </div>
 </template>

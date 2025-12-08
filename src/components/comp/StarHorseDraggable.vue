@@ -85,6 +85,9 @@ const nodeStyles = computed(() => {
       }
     }
   }
+  if(props.isDesign){
+    temp["border"]="1px solid var(--star-horse-style)";
+  }
   return temp;
 });
 const emits = defineEmits(["contextAction", "selectNode"]);
@@ -100,25 +103,11 @@ const pointList = ref<Array<string>>([
 ]);
 
 const init = async () => {
-  handleClear();
+  // handleClear();
 };
-const handleMouseDown = (e: MouseEvent) => {
-  moveActive.value = true;
-};
-let moveActive = ref(false);
-let rangeActive = ref(false);
-const handleMouseUp = () => {
-  moveActive.value = false;
-  rangeActive.value = false;
-  isDragging.value = false;
-};
-const handleClear = () => {
-  window.onmouseup = function () {
-    document.onmousemove = null;
-    document.onmouseup = null;
-    handleMouseUp();
-  };
-};
+// 移除不必要的全局状态变量
+// let moveActive = ref(false);
+// let rangeActive = ref(false);
 const selectItem = () => {
   emits("selectNode", props.node);
 };
@@ -136,8 +125,6 @@ const rangeMove = (evt: MouseEvent, direction: string) => {
   if (!props.node.styles) {
     props.node.styles = {};
   }
-  rangeActive.value = true;
-  handleMouseDown(evt);
 
   const parentEl = nodeRef.value?.parentElement as HTMLElement | null;
   const parentRect = parentEl?.getBoundingClientRect();
@@ -162,8 +149,8 @@ const rangeMove = (evt: MouseEvent, direction: string) => {
 
   const clamp = (v: number, min: number, max: number) => Math.min(Math.max(v, min), max);
 
-  document.onmousemove = (e: MouseEvent) => {
-    moveActive.value = true;
+  // 使用事件监听器替代直接赋值，避免覆盖其他实例的事件
+  const handleMouseMove = (e: MouseEvent) => {
     const pointerX = e.clientX - (parentRect?.left || 0);
     const pointerY = e.clientY - (parentRect?.top || 0);
 
@@ -293,7 +280,15 @@ const rangeMove = (evt: MouseEvent, direction: string) => {
       setHeight(newHeight);
     }
   };
-  handleClear();
+
+  const handleMouseUp = () => {
+    document.removeEventListener("mousemove", handleMouseMove);
+    document.removeEventListener("mouseup", handleMouseUp);
+  };
+
+  // 添加事件监听器
+  document.addEventListener("mousemove", handleMouseMove);
+  document.addEventListener("mouseup", handleMouseUp);
 };
 let isDragging = ref(false);
 let initialX = ref(0);
@@ -301,12 +296,21 @@ let initialY = ref(0);
 let nodeStartX = ref(0);
 let nodeStartY = ref(0);
 const dragStart = (evt: MouseEvent) => {
-  if (!props.isActive || !props.isDesign) {
+  // 确保在设计模式下才允许拖动
+  if (!props.isDesign) {
     return;
   }
   if (!props.node.styles) {
     props.node.styles = {};
   }
+  // 阻止事件冒泡，避免多个实例同时响应
+  evt.stopPropagation();
+
+  // 自动激活节点（如果未激活）
+  if (!props.isActive) {
+    selectItem();
+  }
+
   isDragging.value = true;
   initialX.value = evt.clientX;
   initialY.value = evt.clientY;
@@ -314,22 +318,50 @@ const dragStart = (evt: MouseEvent) => {
   nodeStartY.value = props.node.styles.top || 0;
   // 锁定鼠标样式
   document.body.style.cursor = "grabbing";
+
+  // 使用document级别的事件监听器
+  const handleMouseMove = (e: MouseEvent) => {
+    e.preventDefault();
+    if (!props.node.styles) {
+      props.node.styles = {};
+    }
+    if (isDragging.value) {
+      const deltaX = e.clientX - initialX.value;
+      const deltaY = e.clientY - initialY.value;
+      // 直接更新样式
+      props.node.styles.left = nodeStartX.value + deltaX;
+      props.node.styles.top = nodeStartY.value + deltaY;
+    }
+  };
+
+  const handleMouseUp = (e: MouseEvent) => {
+    e.preventDefault();
+    isDragging.value = false;
+    document.body.style.cursor = "";
+    // 确保移除事件监听器
+    document.removeEventListener("mousemove", handleMouseMove);
+    document.removeEventListener("mouseup", handleMouseUp);
+  };
+
+  // 添加事件监听器
+  document.addEventListener("mousemove", handleMouseMove);
+  document.addEventListener("mouseup", handleMouseUp);
 };
-const dragAction = (evt: MouseEvent) => {
-  if (!props.node.styles) {
-    props.node.styles = {};
-  }
-  if (isDragging.value && props.isActive) {
-    const deltaX = evt.clientX - initialX.value;
-    const deltaY = evt.clientY - initialY.value;
-    props.node.styles.left = nodeStartX.value + deltaX;
-    props.node.styles.top = nodeStartY.value + deltaY;
-  }
-};
-const endAction = (evt: MouseEvent) => {
-  isDragging.value = false;
-  document.body.style.cursor = ""; // 恢复默认鼠标样式
-};
+// const dragAction = (evt: MouseEvent) => {
+//   if (!props.node.styles) {
+//     props.node.styles = {};
+//   }
+//   if (isDragging.value && props.isActive) {
+//     const deltaX = evt.clientX - initialX.value;
+//     const deltaY = evt.clientY - initialY.value;
+//     props.node.styles.left = nodeStartX.value + deltaX;
+//     props.node.styles.top = nodeStartY.value + deltaY;
+//   }
+// };
+// const endAction = (evt: MouseEvent) => {
+//   isDragging.value = false;
+//   document.body.style.cursor = ""; // 恢复默认鼠标样式
+// };
 const contentMenuRef = ref();
 const contextmenu = (e: MouseEvent) => {
   e.preventDefault();
@@ -351,8 +383,6 @@ onMounted(() => {
       @contextmenu="contextmenu"
       @mousedown="dragStart"
       @click.stop="selectItem"
-      @mouseup="endAction"
-      @mousemove="dragAction"
       v-if="isDesign"
       ref="nodeRef"
   >
@@ -398,21 +428,21 @@ onMounted(() => {
 }
 
 .node {
-  border: 1px solid #cecece;
+  border: none;
 }
 
 .node.active {
-  border: 1px solid var(--star-horse-style);
-  box-shadow: 0 0 10px var(--star-horse-style);
+  border: 1px dotted var(--star-horse-style);
 }
 
 .node-point {
   position: absolute;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
+
+  border-radius: 1px;
   z-index: 2000;
   background-color: var(--star-horse-style);
+  //border: 1px solid white; /* 添加白色边框以增强对比度 */
+  //box-shadow: 0 0 2px rgba(0, 0, 0, 0.3); /* 添加轻微阴影 */
 }
 
 .node-point-left,
@@ -420,6 +450,8 @@ onMounted(() => {
   top: 50%;
   -webkit-transform: translateY(-50%);
   transform: translateY(-50%);
+  width: 6px;
+  height: 12px;
 }
 
 .node-point-left:hover,
@@ -428,11 +460,11 @@ onMounted(() => {
 }
 
 .node-point-left {
-  left: -4px;
+  left: -3px;
 }
 
 .node-point-right {
-  right: -4px;
+  right: -3px;
 }
 
 .node-point-bottom,
@@ -440,6 +472,9 @@ onMounted(() => {
   left: 50%;
   -webkit-transform: translateX(-50%);
   transform: translateX(-50%);
+  border: solid 3px var(--star-horse-style);
+  width: 12px;
+  height: 6px;
 }
 
 .node-point-bottom:hover,
@@ -448,11 +483,11 @@ onMounted(() => {
 }
 
 .node-point-top {
-  top: -4px;
+  top: -3px;
 }
 
 .node-point-bottom {
-  bottom: -4px;
+  bottom: -3px;
 }
 
 .node-point-bottom-right:hover,
@@ -465,23 +500,55 @@ onMounted(() => {
   cursor: nesw-resize;
 }
 
+/* 右上角转角 - 只显示上边框和右边框 */
 .node-point-top-right {
-  top: -4px;
-  right: -4px;
+  top: -2px;
+  right: -1px;
+  width: 8px;
+  height: 8px;
+  background: transparent;
+  border: 3px solid var(--star-horse-style);
+  border-left: none;
+  border-bottom: none;
+  border-radius: 0 0 1px 0;
 }
 
+/* 左上角转角 - 只显示上边框和左边框 */
 .node-point-top-left {
-  top: -4px;
-  left: -4px;
+  top: -2px;
+  left: -1px;
+  width: 8px;
+  height: 8px;
+  background: transparent;
+  border: 3px solid var(--star-horse-style);
+  border-right: none;
+  border-bottom: none;
+  border-radius: 0 0 1px 0;
 }
 
+/* 右下角转角 - 只显示下边框和右边框 */
 .node-point-bottom-right {
-  bottom: -4px;
-  right: -4px;
+  bottom: -2px;
+  right: -1px;
+  width: 8px;
+  height: 8px;
+  background: transparent;
+  border: 3px solid var(--star-horse-style);
+  border-left: none;
+  border-top: none;
+  border-radius: 0 0 1px 0;
 }
 
+/* 左下角转角 - 只显示下边框和左边框 */
 .node-point-bottom-left {
-  bottom: -4px;
-  left: -4px;
+  bottom: -2px;
+  left: -1px;
+  width: 8px;
+  height: 8px;
+  background: transparent;
+  border: 3px solid var(--star-horse-style);
+  border-right: none;
+  border-top: none;
+  border-radius: 0 0 1px 0;
 }
 </style>

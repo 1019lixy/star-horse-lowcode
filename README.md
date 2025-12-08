@@ -286,3 +286,7 @@ barcode        条形码组件
 ```
 - 优化transfer-item 组件为自适应宽度
 ```
+#### v2.8.34
+```
+- 优化StarHorseDraggable 组件拖拽的新能问题
+```

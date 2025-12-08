@@ -15,8 +15,8 @@ onMounted(() => {
 <template>
   <div class="flex flex-col h-full overflow-hidden">
     <!--    <FormValid/>-->
-<!--        <StarHorseDraggableValid/>-->
-    <TransferItem/>
+        <StarHorseDraggableValid/>
+<!--    <TransferItem/>-->
     <!--    <dialog-valid/>-->
 <!--    <FormRelationOperation/>-->
   </div>
