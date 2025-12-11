@@ -146,7 +146,7 @@ const editJsonData = async (devType: boolean) => {
 const selectItem = async () => {
   if (props.field.preps["devType"]) {
     // 开发模式直接序列化当前 jsonData
-    formData.value[props.field.fieldName] = JSON5.stringify(jsonData.value);
+    formData.value[props.field.fieldName] = typeof jsonData.value == "string" ? jsonData.value : JSON.stringify(jsonData.value);
   } else {
     // 设计模式根据 dataType 转换数据
     let flag = false;

@@ -7,6 +7,7 @@
         :isDesign="false"
         :formInfo="fields"
         :showFormItem="true"
+        :bareFlag="false"
         :is="data.itemType + '-item'"
     />
   </template>
