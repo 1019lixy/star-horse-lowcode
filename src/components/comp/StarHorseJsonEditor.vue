@@ -30,7 +30,6 @@ defineProps({
   },
 });
 
-// Fix: Use the correct model name that matches what's being passed from parent
 const json: ModelRef<any> = defineModel({
   default: {},
 });

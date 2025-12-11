@@ -60,7 +60,7 @@ export interface ContainerPreps {
   /**
    * 组件url
    */
-  compUrl: ApiUrls;
+  compUrl?: ApiUrls;
   /**
    * 组件属性
    */
@@ -98,7 +98,7 @@ export interface ContainerPreps {
   /**
    * 主键
    */
-  primaryKey: string | any;
+  primaryKey?: string | any;
   /**
    * 校验规则
    */

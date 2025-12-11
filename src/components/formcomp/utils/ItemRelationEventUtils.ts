@@ -402,6 +402,7 @@ const convertData = (data: any) => {
         try {
             return JSON5.parse(data);
         } catch (error) {
+            console.error(error);
             return [];
         }
     }

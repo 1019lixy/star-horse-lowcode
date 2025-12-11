@@ -93,7 +93,11 @@ const selfAction = (
 ) => {
   if (prep == "success") {
     let result = param.data;
-    formData.value[props.field.fieldName] = result.path;
+    if (props.field.preps["multiple"]) {
+      formData.value[props.field.fieldName].push(result.path);
+    } else {
+      formData.value[props.field.fieldName] = result.path;
+    }
     //默认将上传成功的属性存入数据对象
     Object.entries(result).forEach(([key, value]) => {
       formData.value[key] = value;
@@ -108,12 +112,24 @@ onMounted(async () => {
   }
   props.field.preps["action"] =
       props.field.preps["action"] || "/system-config/annex/upload/commonFiles";
+  if (props.field.preps["multiple"] && !formData.value[props.field.fieldName]) {
+    formData.value[props.field.fieldName] = [];
+  }
   await nextTick();
   let datas = formData.value[props.field.fieldName];
-  if (datas) {
-    dataField.value.push({
-      url: (props.field.preps["context"] || "/system-config") + datas,
-    });
+  const baseUrl: string = props.field.preps["context"] || "/system-config";
+  if (datas && datas.length > 0) {
+    if (Array.isArray(datas)) {
+      datas.forEach(item => {
+        dataField.value.push({
+          url: baseUrl + item,
+        });
+      });
+    } else {
+      dataField.value.push({
+        url: baseUrl + datas,
+      });
+    }
   }
   let temp = props.field.preps?.headers;
   try {

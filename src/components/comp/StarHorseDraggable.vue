@@ -36,7 +36,7 @@ const props = defineProps({
 // 用于显示宽高信息的ref
 const sizeInfoRef = ref<HTMLElement | null>(null);
 const sizeInfoContent = ref<string>("");
-const sizeInfoPosition = ref<any>({ x: 0, y: 0 });
+const sizeInfoPosition = ref<any>({x: 0, y: 0});
 const nodeRef = ref<HTMLDivElement>();
 const nodeStyles = computed(() => {
   let styles = props.node.styles;
@@ -44,7 +44,9 @@ const nodeStyles = computed(() => {
     props.node.styles = {};
     styles = props.node.styles;
   }
-  styles["position"] = "absolute";
+  if (props.isDesign) {
+    styles["position"] = "absolute";
+  }
   let temp = {...styles};
   // 设计态统一使用 absolute，避免相对定位造成边界和基线混乱
   const parentWidth = nodeRef.value?.parentElement?.clientWidth || 1;
@@ -90,8 +92,8 @@ const nodeStyles = computed(() => {
       }
     }
   }
-  if(props.isDesign){
-    temp["border"]="1px solid var(--star-horse-style)";
+  if (props.isDesign) {
+    temp["border"] = "1px solid var(--star-horse-style)";
   }
   return temp;
 });
@@ -287,7 +289,7 @@ const rangeMove = (evt: MouseEvent, direction: string) => {
 
     // 更新宽高信息
     sizeInfoContent.value = `${Math.round(newWidth)}px × ${Math.round(newHeight)}px`;
-    sizeInfoPosition.value = { x: e.clientX + 10, y: e.clientY + 10 };
+    sizeInfoPosition.value = {x: e.clientX + 10, y: e.clientY + 10};
   };
 
   const handleMouseUp = () => {
@@ -429,10 +431,10 @@ onMounted(() => {
     />
     <!-- 显示宽高信息的元素 -->
     <div
-      v-if="sizeInfoContent"
-      ref="sizeInfoRef"
-      class="size-info-tooltip"
-      :style="{
+        v-if="sizeInfoContent"
+        ref="sizeInfoRef"
+        class="size-info-tooltip"
+        :style="{
         left: `${sizeInfoPosition.x}px`,
         top: `${sizeInfoPosition.y}px`
       }"
