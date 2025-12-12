@@ -155,8 +155,8 @@ onMounted(() => {});
       <template #item="{ element: data }">
         <div
           :class="{
-            'comp-item': data?.preps['headerFlag'] != 'Y',
-            'bare-item': data?.preps['headerFlag'],
+            'comp-item': data?.preps?.headerFlag!= 'Y',
+            'bare-item': data?.preps?.headerFlag,
           }"
         >
           <component

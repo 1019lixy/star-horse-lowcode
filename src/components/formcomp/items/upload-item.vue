@@ -48,17 +48,17 @@
       <el-icon class="el-icon--upload" v-if="field.preps['drag']">
         <upload-filled/>
       </el-icon>
-      <div class="el-upload__text" v-if="field.preps['drag']">
+      <div class="el-upload__text" v-if="field.preps?.drag">
         {{ i18n("form.dragFileHereOr") }}
         <em>{{ i18n("form.clickToUpload") }}</em>
       </div>
-      <template #tip v-if="field.preps['maxSize']">
+      <template #tip v-if="field.preps?.maxSize">
         <div class="el-upload__tip">
           {{ i18n("form.fileSizeLimit") }}{{ field.preps["maxSize"] }}
         </div>
       </template>
       <star-horse-icon
-          v-if="!field.preps['drag']"
+          v-if="!field.preps?.drag"
           icon-class="plus"
           color="var(--star-horse-style)"
       />
@@ -94,14 +94,14 @@ const selfAction = (
   if (prep == "success") {
     let result = param.data;
     if (props.field.preps["multiple"]) {
-      formData.value[props.field.fieldName].push(result.path);
+      formData.value[props.field.fieldName].push(result);
     } else {
       formData.value[props.field.fieldName] = result.path;
+      Object.entries(result).forEach(([key, value]) => {
+        formData.value[key] = value;
+      });
     }
     //默认将上传成功的属性存入数据对象
-    Object.entries(result).forEach(([key, value]) => {
-      formData.value[key] = value;
-    });
   }
   console.log(prep, uploadFile, uploadFiles, param);
   emits("selfFunc", prep, uploadFile, uploadFiles, param);
@@ -150,10 +150,11 @@ onMounted(async () => {
   width: 100% !important;
 }
 
+/*
 :deep(.el-upload--text) {
   justify-content: left !important;
 }
-
+*/
 :deep(.el-upload-list--picture-card) {
   width: 100% !important;
 
@@ -163,9 +164,10 @@ onMounted(async () => {
   }
 }
 
-:deep(.el-upload-list) {
+
+/*:deep(.el-upload-list) {
   position: absolute;
   top: 0;
   right: 0;
-}
+}*/
 </style>

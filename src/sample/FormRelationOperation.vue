@@ -22,6 +22,73 @@ const searchFormData = reactive<SearchFields>({
     },
   ],
 });
+const batchFieldList = reactive<PageFieldInfo>({
+  batchFieldList: [
+    {
+      batchName: "imageInfo",
+      fieldList: [
+        {
+          fieldName: "imageType",
+          label: "获取图片方式",
+          type: "select",
+          formVisible: true,
+          defaultValue: "upload",
+          preps: {
+            values: [
+              {name: "上传", value: "upload"},
+              {name: "手动输入", value: "manual"},
+              {name: "图库选择", value: "select"},
+            ],
+            dataRelation: {
+              actionName: "change",
+              relationDetails: [
+                {
+                  matchType: "eq",
+                  controlCondition: "eqVisible",
+                  relationFields: "path",
+                  matchFieldValue: "upload",
+                },
+                {
+                  matchType: "eq",
+                  controlCondition: "eqVisible",
+                  relationFields: "picUrl",
+                  matchFieldValue: "manual",
+                },
+                {
+                  matchType: "eq",
+                  controlCondition: "eqVisible",
+                  relationFields: "pic",
+                  matchFieldValue: "select",
+                }
+              ],
+              relationDetailsDefaultValue: [{}],
+            }
+          }
+        },
+        {
+          fieldName: "picUrl",
+          label: "图片地址",
+          type: "input",
+          formVisible: false,
+          defaultValue: "/system-config",
+          helpMsg: "例如: http://localhost:8080/system-config",
+        },
+        {
+          fieldName: "pic",
+          label: "图片地址",
+          type: "dialog-input",
+          formVisible: false,
+          defaultValue: "/system-config",
+          helpMsg: "从图库选择图片",
+        },
+        {label: "图片地址", type: "upload", fieldName: "path", formVisible: true},
+        {label: "标题", type: "input", fieldName: "title", formVisible: true},
+        {label: "描述", type: "input", fieldName: "description", formVisible: true},
+        {label: "连接地址", type: "input", fieldName: "linkUrl", formVisible: true},
+      ]
+    }
+  ]
+});
 const tableFieldList = reactive<PageFieldInfo>({
   fieldList: [
     {
@@ -133,7 +200,7 @@ onMounted(() => {
         ref="areaFormRef"
         @refresh="areainfoRef?.loadByPage()"
         :compUrl="dataUrl"
-        :fieldList="tableFieldList"
+        :fieldList="batchFieldList"
         :rules="rules"
       />
     </star-horse-dialog>
@@ -160,7 +227,7 @@ onMounted(() => {
     <el-card class="inner_content">
       <star-horse-table-comp
         ref="areainfoRef"
-        :fieldList="tableFieldList"
+        :fieldList="batchFieldList"
         :btnPermissions="btnPermissions"
         :primaryKey="primaryKey"
         :compUrl="dataUrl"

@@ -160,7 +160,7 @@ onMounted(() => {});
         v-if="
           parentField?.itemType != 'table' &&
           field.preps?.itemType != 'divider' &&
-          field?.preps['headerFlag'] != 'Y'
+          field?.preps?.headerFlag != 'Y'
         "
         :style="{
           marginBottom: isEdit && !disabled ? '1px' : '18px',

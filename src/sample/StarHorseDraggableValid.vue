@@ -9,10 +9,10 @@ let json = ref<Array<DynamicNode>>([
     label: "节点1",
     name: "nondea",
     styles: {
-      left: 0,
+      left: 100,
       width:200,
       height:200,
-      top: 0,
+      top: 200,
     },
     preps: {}
   },

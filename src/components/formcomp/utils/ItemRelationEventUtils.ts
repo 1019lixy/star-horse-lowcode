@@ -1,10 +1,10 @@
-import { createCondition, dynamicUrlOperation, isJson, } from "@/api/star_horse_utils";
-import { userFunction } from "@/api/user_func";
-import { RelationDetail, SelectOption } from "@/components/types";
+import {createCondition, dynamicUrlOperation, isJson,} from "@/api/star_horse_utils";
+import {userFunction} from "@/api/user_func";
+import {RelationDetail, SelectOption} from "@/components/types";
 import piniaInstance from "@/store";
-import { useDesignFormStore } from "@/store/DesignForm";
-import { error } from "@/utils/message";
-import { computed, nextTick, unref, watch } from "vue";
+import {useDesignFormStore} from "@/store/DesignForm";
+import {error} from "@/utils/message";
+import {computed, nextTick, unref, watch} from "vue";
 import JSON5 from "json5";
 
 const designForm = useDesignFormStore(piniaInstance);
@@ -53,7 +53,7 @@ const fieldAssign = (
  * @returns
  */
 const dataLinkage = async (props: any, item: RelationDetail, e: any) => {
-    let { relationFields, params, matchFieldValue } = item;
+    let {relationFields, params, matchFieldValue} = item;
 
     if (!Array.isArray(matchFieldValue)) {
         matchFieldValue = matchFieldValue ? [matchFieldValue] : [];
@@ -78,26 +78,45 @@ const dataLinkage = async (props: any, item: RelationDetail, e: any) => {
     });
     fieldAssign(props, relationFields, resultData);
 };
+// 判断e是否匹配matchFieldValue，支持e为数组的情况
+const isMatch = (matchType: string, matchFieldValue: any, e: any) => {
+    // 如果e是数组，检查数组中是否有任何元素与matchFieldValue中的元素匹配
+    if (Array.isArray(e)) {
+        return e.some(item => matchFieldValue.includes(item));
+    }
+    if (matchType == "llk") {
+        return matchFieldValue.startsWith(e);
+    } else if (matchType == "rlk") {
+        return matchFieldValue.endsWith(e);
+    } else if (["neq", "nlk"].includes(matchType)) {
+        return !matchFieldValue.includes(e);
+    } else if (matchType == "lt") {
+        return matchFieldValue < e;
+    } else if (matchType == "lte") {
+        return matchFieldValue <= e;
+    } else if (matchType == "gt") {
+        return matchFieldValue > e;
+    } else if (matchType == "gte") {
+        return matchFieldValue >= e;
+    } else if (matchType == "isnull") {
+        return !e;
+    } else if (matchType == "notnull") {
+        return !!e;
+    } else if (matchType == "bt") {
+        return (matchFieldValue[0] <= e) && (e <= matchFieldValue[1]);
+    }
+    // 如果e是基本类型，直接检查是否包含
+    return matchFieldValue.includes(e);
+};
 const eqDisableOrEditable = (props: any, item: RelationDetail, e: any) => {
-    let { relationFields, matchFieldValue } = item;
+    let {relationFields, matchFieldValue, matchType} = item;
     if (!Array.isArray(matchFieldValue)) {
         matchFieldValue = matchFieldValue ? [matchFieldValue] : [];
     }
     if (!Array.isArray(relationFields)) {
         relationFields = [relationFields];
     }
-
-    // 判断e是否匹配matchFieldValue，支持e为数组的情况
-    const isMatch = () => {
-        // 如果e是数组，检查数组中是否有任何元素与matchFieldValue中的元素匹配
-        if (Array.isArray(e)) {
-            return e.some(item => matchFieldValue.includes(item));
-        }
-        // 如果e是基本类型，直接检查是否包含
-        return matchFieldValue.includes(e);
-    };
-
-    const matchResult = isMatch();
+    const matchResult = isMatch(matchType, matchFieldValue, e);
 
     relationFields?.forEach(async (sitem: string) => {
         const field = props.formInfo?.find(
@@ -124,7 +143,7 @@ const eqDisableOrEditable = (props: any, item: RelationDetail, e: any) => {
     });
 };
 const assignValue = (props: any, item: RelationDetail, e: any) => {
-    let { relationFields, staticDatas } = item;
+    let {relationFields, staticDatas} = item;
     if (!Array.isArray(relationFields)) {
         relationFields = [relationFields];
     }
@@ -138,16 +157,18 @@ const assignValue = (props: any, item: RelationDetail, e: any) => {
  * @returns
  */
 const changeType = (props: any, item: RelationDetail, e: any) => {
-    let { relationFields } = item;
+    let {relationFields, matchFieldValue, matchType} = item;
     if (!Array.isArray(relationFields)) {
         relationFields = [relationFields];
     }
+    const matchResult = isMatch(matchType, matchFieldValue, e);
     relationFields?.forEach(async (sitem: string) => {
         const field = props.formInfo?.find(
             (field: any) => field.fieldName == sitem,
         );
-        if (field) {
+        if (field && matchResult) {
             field.itemType = item.staticDatas;
+            field.type = item.staticDatas;
         }
     });
 };
@@ -162,7 +183,7 @@ const relationEvent = (
         return;
     }
     relationDetails?.forEach(async (item: RelationDetail) => {
-        let { controlCondition, relationFields, matchFieldValue } = item;
+        let {controlCondition, relationFields, matchFieldValue} = item;
         if (!Array.isArray(matchFieldValue)) {
             matchFieldValue = matchFieldValue ? [matchFieldValue] : [];
         }
@@ -265,7 +286,7 @@ const buttonAction = (
  */
 const checkIsDisabled = (attrs: any) => {
     // const {attrs} = context;
-    const { field } = attrs;
+    const {field} = attrs;
     const fieldName = field.fieldName;
     const isExplicitlyDisabled =
         attrs?.disabled || field.disabled || field.preps?.disabled;
@@ -318,7 +339,7 @@ const initRelationEvent = (props: any, formData: any, needWatch?: boolean) => {
                         stop();
                     }
                 },
-                { immediate: true },
+                {immediate: true},
             );
             return;
         }
@@ -351,7 +372,7 @@ const initCompCallEvent = (props: any, emits: any, formData: any) => {
                         stop();
                     }
                 },
-                { immediate: true },
+                {immediate: true},
             );
             return;
         }

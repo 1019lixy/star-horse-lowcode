@@ -5,6 +5,7 @@ import FormRelationOperation from "@/sample/FormRelationOperation.vue";
 import StarHorseDraggableValid from "@/sample/StarHorseDraggableValid.vue";
 import TransferItem from "@/sample/TransferItem.vue";
 import DialogItem from "@/sample/DialogItem.vue";
+import FormValid from "@/sample/FormValid.vue";
 
 const initData = async () => {
 };
@@ -15,10 +16,10 @@ onMounted(() => {
 </script>
 <template>
   <div class="flex flex-col h-full overflow-hidden">
-    <!--    <FormValid/>-->
+        <FormValid/>
 <!--        <StarHorseDraggableValid/>-->
-    <DialogItem/>
-<!--    <TransferItem/>-->
+<!--    <DialogItem/>
+    <TransferItem/>-->
     <!--    <dialog-valid/>-->
 <!--    <FormRelationOperation/>-->
   </div>

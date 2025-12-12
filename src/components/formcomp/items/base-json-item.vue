@@ -3,7 +3,7 @@
   <star-horse-dialog
       :title="field.label + 'JSON编辑'"
       :self-func="true"
-      :boxHeight="field.preps?.boxHeight??'60%'"
+      :boxHeight="field.preps?.boxHeight??'65%'"
       :boxWidth="field.preps?.boxWidth??'40%'"
       :dialog-visible="dialogInputVisible"
       @merge="selectItem"

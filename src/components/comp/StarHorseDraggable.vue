@@ -49,39 +49,30 @@ const nodeStyles = computed(() => {
   }
   let temp = {...styles};
   // 设计态统一使用 absolute，避免相对定位造成边界和基线混乱
-  const parentWidth = nodeRef.value?.parentElement?.clientWidth || 1;
-  const parentHeight = nodeRef.value?.parentElement?.clientHeight || 1;
+  const parentWidth = nodeRef.value?.parentElement?.clientWidth || 200;
+  const parentHeight = nodeRef.value?.parentElement?.clientHeight || 200;
   if (props.isDesign) {
     if (props.isActive) {
       temp["cursor"] = "move";
     }
-    if (typeof styles.left !== "number") styles.left = props.sizeControlType === "percent" ? 50 : parentWidth / 2;
-    if (typeof styles.top !== "number") styles.top = props.sizeControlType === "percent" ? 50 : parentHeight / 2;
+    if (typeof styles.left !== "number" || !styles.left) styles.left = props.sizeControlType === "percent" ? 50 : parentWidth / 2;
+    if (typeof styles.top !== "number" || !styles.top) styles.top = props.sizeControlType === "percent" ? 50 : parentHeight / 2;
+    //获取当前鼠标所在位置
+
     temp["left"] = styles.left;
     temp["top"] = styles.top;
   }
-  // if (!styles["width"]) {
-  //获取节点宽度
-  // const parentWidth = nodeRef.value?.parentElement?.clientWidth || 1;
-  // styles["width"] = props.sizeControlType === "percent"
-  //     ? (100 * (nodeRef.value?.offsetWidth || 0) / parentWidth)
-  //     : nodeRef.value?.offsetWidth || nodeRef.value?.clientWidth;
+
   if (!styles["width"]) {
     styles["width"] = props.sizeControlType === "percent" ? 20 : 120;
     temp["width"] = styles["width"];
   }
-  // }
-  // if (!styles["height"]) {
-  // //获取节点高度
-  // const parentHeight = nodeRef.value?.parentElement?.clientHeight || 1;
-  // styles["height"] = props.sizeControlType === "percent"
-  //     ? (100 * (nodeRef.value?.offsetHeight || 0) / parentHeight)
-  //     : nodeRef.value?.offsetHeight || nodeRef.value?.clientHeight;
+
   if (!styles["height"]) {
     styles["height"] = props.sizeControlType === "percent" ? 15 : 100;
     temp["height"] = styles["height"];
   }
-  // }
+
   //将所有数字转换为px或百分比
   for (let key in temp) {
     if (typeof temp[key] === "number" && !["flex", "zIndex"].includes(key)) {
@@ -94,6 +85,7 @@ const nodeStyles = computed(() => {
   }
   if (props.isDesign) {
     temp["border"] = "1px solid var(--star-horse-style)";
+    temp["overflow"] = "hidden";
   }
   return temp;
 });

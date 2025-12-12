@@ -21,7 +21,19 @@ const props = defineProps({
 });
 let userOperation = useSelfOperationStore(piniaInstance);
 const dataForm: ModelRef<any> = defineModel("dataForm");
-const itemType = ref<string>("input");
+const inputList = inputCompList();
+const dateNameList = dateCompList();
+const itemType = computed(() => {
+  let type: string = props.item?.type || props.item?.fieldType || "input";
+  if (dateNameList.includes(itemType.value)) {
+    type = "datetime";
+    //日期默认以时间戳赋值
+  }
+  type = ((dataForm.value && dataForm.value["_" + props.item.fieldName + "Type"]) || type);
+  console.log("type", props.item);
+  console.log(type);
+  return type;
+});
 const emit = defineEmits(["dataSearch", "focus", "blur"]);
 const formFields: any = inject("formFields", []);
 // const actionName = ref();
@@ -66,14 +78,9 @@ const actionDispatcher = (act: string, ...params: any[]) => {
 };
 
 const fieldType = () => {
-  const inputList = inputCompList();
-  const dateNameList = dateCompList();
+
   // const selectNameList = selectCompList();
-  itemType.value = props.item?.type || props.item?.fieldType || "input";
-  if (dateNameList.includes(itemType.value)) {
-    itemType.value = "datetime";
-    //日期默认以时间戳赋值
-  }
+
   if (!props.item.actions) {
     props.item["actions"] = {};
   }
@@ -112,8 +119,8 @@ const init = () => {
     let keys = Object.keys(props.item.preps);
     for (let key in keys) {
       let val = props.item.preps[key];
-      if (["Y", "N","y","n"].includes(val)) {
-        props.item.preps[key] = ["Y","y"].includes(val);
+      if (["Y", "N", "y", "n"].includes(val)) {
+        props.item.preps[key] = ["Y", "y"].includes(val);
       } else if (val === "true" || val === "false") {
         props.item.preps[key] = val == "true";
       }
@@ -208,10 +215,7 @@ onMounted(() => {
     <help :message="item.helpMsg" v-if="item.helpMsg"/>
     <component
         :key="item.id"
-        :is="
-        ((dataForm && dataForm['_' + item.fieldName + 'Type']) || itemType) +
-        '-item'
-      "
+        :is="itemType +'-item'"
         :formInfo="formFields"
         @selfFunc="actionDispatcher"
         ref="componentRef"
