@@ -3,7 +3,6 @@ import {computed, onMounted, PropType, ref} from "vue";
 import {DynamicNode} from "@/components/types/DynamicNode";
 import {dynamicPageContextMenuData} from "@/plugins/AblesPlugin";
 import {compKey} from "@/api/system";
-
 const props = defineProps({
   msg: {
     type: String
@@ -44,35 +43,7 @@ const nodeStyles = computed(() => {
     props.node.styles = {};
     styles = props.node.styles;
   }
-  if (props.isDesign) {
-    styles["position"] = "absolute";
-  }
   let temp = {...styles};
-  // 设计态统一使用 absolute，避免相对定位造成边界和基线混乱
-  const parentWidth = nodeRef.value?.parentElement?.clientWidth || 200;
-  const parentHeight = nodeRef.value?.parentElement?.clientHeight || 200;
-  if (props.isDesign) {
-    if (props.isActive) {
-      temp["cursor"] = "move";
-    }
-    if (typeof styles.left !== "number" || !styles.left) styles.left = props.sizeControlType === "percent" ? 50 : parentWidth / 2;
-    if (typeof styles.top !== "number" || !styles.top) styles.top = props.sizeControlType === "percent" ? 50 : parentHeight / 2;
-    //获取当前鼠标所在位置
-
-    temp["left"] = styles.left;
-    temp["top"] = styles.top;
-  }
-
-  if (!styles["width"]) {
-    styles["width"] = props.sizeControlType === "percent" ? 20 : 120;
-    temp["width"] = styles["width"];
-  }
-
-  if (!styles["height"]) {
-    styles["height"] = props.sizeControlType === "percent" ? 15 : 100;
-    temp["height"] = styles["height"];
-  }
-
   //将所有数字转换为px或百分比
   for (let key in temp) {
     if (typeof temp[key] === "number" && !["flex", "zIndex"].includes(key)) {
@@ -86,6 +57,12 @@ const nodeStyles = computed(() => {
   if (props.isDesign) {
     temp["border"] = "1px solid var(--star-horse-style)";
     temp["overflow"] = "hidden";
+    if (props.isActive) {
+      temp["cursor"] = "move";
+    }
+    temp["position"] = "absolute";
+    // 直接使用left/top定位以确保内部元素布局正常
+    // 同时在拖动时使用transform进行优化
   }
   return temp;
 });
@@ -125,6 +102,7 @@ const rangeMove = (evt: MouseEvent, direction: string) => {
     props.node.styles = {};
   }
 
+  // 只在开始时获取一次位置信息，避免在鼠标移动时频繁调用
   const parentEl = nodeRef.value?.parentElement as HTMLElement | null;
   const parentRect = parentEl?.getBoundingClientRect();
   const nodeRect = nodeRef.value?.getBoundingClientRect();
@@ -235,53 +213,60 @@ const rangeMove = (evt: MouseEvent, direction: string) => {
       }
     }
 
-    // 仅更新被拖拽轴向
-    const setWidth = (wPx: number) => {
-      if (props.sizeControlType === "percent") {
-        props.node.styles.width = (wPx / parentWidth) * 100;
-      } else {
-        props.node.styles.width = wPx;
-      }
-    };
-    const setHeight = (hPx: number) => {
-      if (props.sizeControlType === "percent") {
-        props.node.styles.height = (hPx / parentHeight) * 100;
-      } else {
-        props.node.styles.height = hPx;
-      }
-    };
+    // 使用requestAnimationFrame优化性能，减少回流
+    requestAnimationFrame(() => {
+      // 仅更新被拖拽轴向
+      const setWidth = (wPx: number) => {
+        if (props.sizeControlType === "percent") {
+          props.node.styles.width = (wPx / parentWidth) * 100;
+        } else {
+          props.node.styles.width = wPx;
+        }
+      };
+      const setHeight = (hPx: number) => {
+        if (props.sizeControlType === "percent") {
+          props.node.styles.height = (hPx / parentHeight) * 100;
+        } else {
+          props.node.styles.height = hPx;
+        }
+      };
 
-    if (direction === "right") {
-      setWidth(newWidth);
-    } else if (direction === "left") {
-      props.node.styles.left = newLeftOffset;
-      setWidth(newWidth);
-    } else if (direction === "bottom") {
-      setHeight(newHeight);
-    } else if (direction === "top") {
-      props.node.styles.top = newTopOffset;
-      setHeight(newHeight);
-    } else if (direction === "bottom-right") {
-      setWidth(newWidth);
-      setHeight(newHeight);
-    } else if (direction === "bottom-left") {
-      props.node.styles.left = newLeftOffset;
-      setWidth(newWidth);
-      setHeight(newHeight);
-    } else if (direction === "top-right") {
-      setWidth(newWidth);
-      props.node.styles.top = newTopOffset;
-      setHeight(newHeight);
-    } else if (direction === "top-left") {
-      props.node.styles.left = newLeftOffset;
-      setWidth(newWidth);
-      props.node.styles.top = newTopOffset;
-      setHeight(newHeight);
-    }
+      // 更新位置和大小
+      if (direction === "right") {
+        setWidth(newWidth);
+      } else if (direction === "left") {
+        props.node.styles.left = newLeftOffset;
+        setWidth(newWidth);
+      } else if (direction === "bottom") {
+        setHeight(newHeight);
+      } else if (direction === "top") {
+        props.node.styles.top = newTopOffset;
+        setHeight(newHeight);
+      } else if (direction === "bottom-right") {
+        setWidth(newWidth);
+        setHeight(newHeight);
+      } else if (direction === "bottom-left") {
+        props.node.styles.left = newLeftOffset;
+        setWidth(newWidth);
+        setHeight(newHeight);
+      } else if (direction === "top-right") {
+        setWidth(newWidth);
+        props.node.styles.top = newTopOffset;
+        setHeight(newHeight);
+      } else if (direction === "top-left") {
+        props.node.styles.left = newLeftOffset;
+        setWidth(newWidth);
+        props.node.styles.top = newTopOffset;
+        setHeight(newHeight);
+      }
 
-    // 更新宽高信息
-    sizeInfoContent.value = `${Math.round(newWidth)}px × ${Math.round(newHeight)}px`;
-    sizeInfoPosition.value = {x: e.clientX + 10, y: e.clientY + 10};
+      // 移除transform属性，避免影响内部元素布局
+      delete props.node.styles.transform;
+
+      // 更新宽高信息
+      sizeInfoContent.value = `${Math.round(newWidth)}px × ${Math.round(newHeight)}px`;
+      sizeInfoPosition.value = {x: e.clientX + 10, y: e.clientY + 10};
+    });
   };
 
   const handleMouseUp = () => {
@@ -325,7 +310,7 @@ const dragStart = (evt: MouseEvent) => {
   document.body.style.cursor = "grabbing";
 
   // 使用document级别的事件监听器
-  const handleMouseMove = (e: MouseEvent) => {
+  const handlePositionMouseMove = (e: MouseEvent) => {
     e.preventDefault();
     if (!props.node.styles) {
       props.node.styles = {};
@@ -333,40 +318,30 @@ const dragStart = (evt: MouseEvent) => {
     if (isDragging.value) {
       const deltaX = e.clientX - initialX.value;
       const deltaY = e.clientY - initialY.value;
-      // 直接更新样式
-      props.node.styles.left = nodeStartX.value + deltaX;
-      props.node.styles.top = nodeStartY.value + deltaY;
+      // 使用requestAnimationFrame优化性能，减少回流
+      requestAnimationFrame(() => {
+        // 直接更新left/top属性，确保slot内容布局正常
+        props.node.styles.left = nodeStartX.value + deltaX;
+        props.node.styles.top = nodeStartY.value + deltaY;
+        // 移除transform属性，避免影响内部元素布局
+        delete props.node.styles.transform;
+      });
     }
   };
 
-  const handleMouseUp = (e: MouseEvent) => {
+  const handlePositionMouseUp = (e: MouseEvent) => {
     e.preventDefault();
     isDragging.value = false;
     document.body.style.cursor = "";
     // 确保移除事件监听器
-    document.removeEventListener("mousemove", handleMouseMove);
-    document.removeEventListener("mouseup", handleMouseUp);
+    document.removeEventListener("mousemove", handlePositionMouseMove);
+    document.removeEventListener("mouseup", handlePositionMouseUp);
   };
-
   // 添加事件监听器
-  document.addEventListener("mousemove", handleMouseMove);
-  document.addEventListener("mouseup", handleMouseUp);
+  document.addEventListener("mousemove", handlePositionMouseMove);
+  document.addEventListener("mouseup", handlePositionMouseUp);
 };
-// const dragAction = (evt: MouseEvent) => {
-//   if (!props.node.styles) {
-//     props.node.styles = {};
-//   }
-//   if (isDragging.value && props.isActive) {
-//     const deltaX = evt.clientX - initialX.value;
-//     const deltaY = evt.clientY - initialY.value;
-//     props.node.styles.left = nodeStartX.value + deltaX;
-//     props.node.styles.top = nodeStartY.value + deltaY;
-//   }
-// };
-// const endAction = (evt: MouseEvent) => {
-//   isDragging.value = false;
-//   document.body.style.cursor = ""; // 恢复默认鼠标样式
-// };
+
 const contentMenuRef = ref();
 const contextmenu = (e: MouseEvent) => {
   e.preventDefault();

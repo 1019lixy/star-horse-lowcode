@@ -6,7 +6,7 @@ import {uuid} from "@/api/system";
 // 定义已显式列出的属性
 const listedFields: string[] = [
     "label", "name", "itemType", "formVisible", "listVisible", "viewVisible", "searchVisible",
-    "required", "actions", "helpMsg", "listPrototypeDisplay","defaultVisible",
+    "required", "actions", "helpMsg", "listPrototypeDisplay", "defaultVisible",
     "defaultValue", "prefix", "disabled", "editDisabled", "id", "itemNameLabel"
 ];
 const createContainer = (item: any, children: any) => {
@@ -503,6 +503,8 @@ export function getPrefix(
  * @param dataForm
  */
 export function checkVisible(item: any, dataForm: any) {
+    //如果没有配置此属性，则默认显示
+    item["formVisible"] = item.formVisible ?? true;
     return item.formVisible || dataForm["_" + item.fieldName + "Visible"];
 }
 
