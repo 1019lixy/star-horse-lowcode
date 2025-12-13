@@ -2,11 +2,11 @@
 import {onMounted, ref} from "vue";
 import {PageFieldInfo} from "@/components/types/PageFieldInfo";
 import {StarHorseForm} from "@/components/comp";
-
+const testFormValidRef=ref();
 const fieldList = ref<PageFieldInfo>({
   fieldList: [
     {
-      label: "背景颜色", type: "color", fieldName: "backgroundColor",
+      label: "背景颜色", type: "htmleditor", fieldName: "backgroundColor",
       formVisible: true,
       preps: {
         colorFormat: "rgb"
@@ -50,7 +50,8 @@ onMounted(() => {
 </script>
 <template>
   <div class="flex flex-col h-full overflow-hidden">
-    <star-horse-form :fieldList="fieldList"/>
+    {{testFormValidRef?.getFormData()}}
+    <star-horse-form ref="testFormValidRef" :fieldList="fieldList"/>
   </div>
 </template>
 <style lang="scss" scoped></style>

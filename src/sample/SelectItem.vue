@@ -1,20 +1,21 @@
 <template>
+  {{formData}}
   <template v-for="data in fields">
     <component
-      :field="data"
-      v-model:formData="formData"
-      :isDesign="false"
-      :formInfo="fields"
-      :showFormItem="true"
-      :is="data.itemType + '-item'"
+        :field="data"
+        v-model:formData="formData"
+        :isDesign="false"
+        :formInfo="fields"
+        :showFormItem="true"
+        :is="data.itemType + '-item'"
     />
   </template>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from "vue";
+import {onMounted, ref} from "vue";
 import piniaInstance from "@/store";
-import { useDesignFormStore } from "@/store/DesignForm";
+import {useDesignFormStore} from "@/store/DesignForm";
 
 let designForm = useDesignFormStore(piniaInstance);
 const formData = ref<any>({
@@ -67,8 +68,8 @@ const fields = ref<Array<any>>([
       httpMethod: "POST",
       protocol: "http",
       values: [
-        { name: "按钮权限", value: "button_authority", xh: 1 },
-        { name: "白名单过滤类型", value: "white_name_filter_type", xh: 2 },
+        {name: "按钮权限", value: "button_authority", xh: 1},
+        {name: "白名单过滤类型", value: "white_name_filter_type", xh: 2},
       ],
       queryParams: [],
       dataRelation: {
@@ -143,13 +144,21 @@ const fields = ref<Array<any>>([
       analysisType: "func",
       httpMethod: "POST",
       protocol: "http",
-      values: [{ name: "CC", value: "c", xh: 1 }],
+      values: [{name: "CC", value: "c", xh: 1}],
     },
     compType: "formItem",
     fieldName: "valid2",
     itemType: "select",
     label: "选择器",
     type: "select",
+  },
+  {
+    preps: {},
+    compType: "formItem",
+    fieldName: "valid3",
+    itemType: "htmleditor",
+    label: "选择器",
+    type: "htmleditor",
   },
 ]);
 onMounted(() => {

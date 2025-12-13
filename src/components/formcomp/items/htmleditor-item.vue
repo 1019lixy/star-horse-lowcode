@@ -1,43 +1,43 @@
 <template>
   <starhorse-form-item
-    :showFormItem="showFormItem"
-    :isDesign="isDesign"
-    :disabled="disabled"
-    :bareFlag="bareFlag"
-    :field="field"
-    :parentField="parentField"
+      :showFormItem="showFormItem"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      :field="field"
+      :parentField="parentField"
   >
     <div style="border: 1px solid #ccc">
       <QuillEditor
-        :style="{
+          :style="{
           height: field.preps?.height || '300px',
           'overflow-y': 'hidden',
         }"
-        :modules="modules"
-        v-bind="prepsFilter(props)"
-        v-on="getDynamicEvents(props, itemAction)"
-        v-model="formData[field.fieldName]"
-        theme="snow"
-        toolbar="full"
-        :fid="field.fieldName"
-        @onCreated="handleCreated"
+          :modules="modules"
+          v-bind="prepsFilter(props)"
+          v-on="getDynamicEvents(props, itemAction)"
+          v-model:content="formData[field.fieldName]"
+          theme="snow"
+          content-type="html"
+          @onTextChange="dataChange"
+          toolbar="full"
+          :fid="field.fieldName"
+          @onCreated="handleCreated"
       />
     </div>
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { onMounted, shallowRef } from "vue";
-import { QuillEditor } from "@vueup/vue-quill";
+import {onMounted, shallowRef} from "vue";
+import {QuillEditor} from "@vueup/vue-quill";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
-import {
-  allAction,
-  prepsFilter,
-} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import { postRequest } from "@/api/star_horse_apis";
+import {allAction, prepsFilter,} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {postRequest} from "@/api/star_horse_apis";
 import ImageUploader from "quill-image-uploader";
-import { getDynamicEvents } from "@/api/system";
+import {getDynamicEvents} from "@/api/system";
 
-import { ItemPreps } from "@/components/types/ItemPreps";
+import {ItemPreps} from "@/components/types/ItemPreps";
+
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
   disabled: false,
@@ -49,7 +49,9 @@ const emits = defineEmits(["selfFunc", "selectItem"]);
 const formData = defineModel("formData");
 
 const editorRef = shallowRef(); // 编辑器实例，必须用 shallowRef
-
+const dataChange = (data: any) => {
+  console.log("dataChange", data);
+};
 const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
@@ -67,18 +69,19 @@ const modules: any = {
         formData.append("image", file);
 
         postRequest("/upload-image", formData)
-          .then((res) => {
-            console.log(res);
-            resolve(res.data.url);
-          })
-          .catch((err) => {
-            reject("Upload failed");
-            console.error("Error:", err);
-          });
+            .then((res) => {
+              console.log(res);
+              resolve(res.data.url);
+            })
+            .catch((err) => {
+              reject("Upload failed");
+              console.error("Error:", err);
+            });
       });
     },
   },
 };
-onMounted(() => {});
+onMounted(() => {
+});
 </script>
 <style scoped></style>
