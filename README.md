@@ -314,3 +314,8 @@ barcode        条形码组件
 ```
 - 切换htmleditor 插件，原htmleditor 插件没法调整图片大小
 ```
+#### v2.8.46
+```
+- input组件 增加属性是否将前缀(mergePrefix:boolean)或者后缀内容(margeAppend:boolean)合并到当前属性中去
+```
+

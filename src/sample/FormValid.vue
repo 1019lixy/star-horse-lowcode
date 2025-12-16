@@ -3,6 +3,7 @@ import {onMounted, ref} from "vue";
 import {PageFieldInfo} from "@/components/types/PageFieldInfo";
 import {StarHorseForm} from "@/components/comp";
 const testFormValidRef=ref();
+const outerData:any={ "backgroundSize": "http你好%" };
 const fieldList = ref<PageFieldInfo>({
   fieldList: [
     {
@@ -23,7 +24,19 @@ const fieldList = ref<PageFieldInfo>({
     },
     {
       label: "背景大小", type: "input", fieldName: "backgroundSize",
-      formVisible: true
+      formVisible: true,
+      preps: {
+        mergePrefix:true,
+        mergeAppend: true,
+        appendList:[
+            {name:"%",value:"%"},
+            {name:"px",value:"px"},
+        ],
+        prependList:[
+          {name:"http",value:"http"},
+          {name:"https",value:"https"},
+        ]
+      }
     },
     {
       label: "背景重复", type: "radio", fieldName: "backgroundRepeat",
@@ -51,7 +64,7 @@ onMounted(() => {
 <template>
   <div class="flex flex-col h-full overflow-hidden">
     {{testFormValidRef?.getFormData()}}
-    <star-horse-form ref="testFormValidRef" :fieldList="fieldList"/>
+    <star-horse-form ref="testFormValidRef" :outerFormData="outerData" :fieldList="fieldList"/>
   </div>
 </template>
 <style lang="scss" scoped></style>

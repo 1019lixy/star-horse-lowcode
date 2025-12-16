@@ -6,6 +6,7 @@ import StarHorseDraggableValid from "@/sample/StarHorseDraggableValid.vue";
 import TransferItem from "@/sample/TransferItem.vue";
 import DialogItem from "@/sample/DialogItem.vue";
 import FormValid from "@/sample/FormValid.vue";
+import ValidStyle from "@/sample/ValidStyle.vue";
 
 const initData = async () => {
 };
@@ -17,11 +18,17 @@ onMounted(() => {
 <template>
   <div class="flex flex-col h-full overflow-hidden">
         <FormValid/>
+
 <!--        <StarHorseDraggableValid/>-->
 <!--    <DialogItem/>
     <TransferItem/>-->
     <!--    <dialog-valid/>-->
 <!--    <FormRelationOperation/>-->
   </div>
+
 </template>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+svg {
+  border: 1px solid blue;
+}
+</style>
