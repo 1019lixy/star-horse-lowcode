@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { nextTick, onMounted, onUpdated, ref, shallowRef } from "vue";
+import {nextTick, onMounted, onUpdated, ref, shallowRef} from "vue";
 import SmoothSignature from "smooth-signature";
-import { warning } from "@/utils/message";
+import {warning} from "@/utils/message";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 
-import { ItemPreps } from "@/components/types/ItemPreps";
-withDefaults(defineProps<ItemPreps>(), {
+import {ItemPreps} from "@/components/types/ItemPreps";
+import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
+
+const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
   disabled: false,
   showFormItem: false,
@@ -14,20 +16,23 @@ withDefaults(defineProps<ItemPreps>(), {
   isSearch: false,
 });
 const emits = defineEmits(["selfFunc", "selectItem"]);
-// const formData = defineModel("formData");
+const formData = defineModel("formData");
 let previewDialog = shallowRef<boolean>(false);
 let signature = ref<SmoothSignature>(null);
 // 明确声明 ref 类型为 HTMLCanvasElement 或 null
 const signatureCanvas = ref<any>(null);
-const options = {
-  width: Math.min(window.innerWidth, 1000),
-  height: 600,
-  minWidth: 4,
-  maxWidth: 12,
-  // color: '#1890ff',
+let options = {
+  width: Math.min(window.innerWidth, 350),
+  height: 100,
+  minWidth: 2,
+  maxWidth: 6,
   bgColor: "#f6f6f6",
+  onEnd: (val) => {
+    formData.value[props.field.fieldName] = props.field.preps?.imageType == "jpg" ? signature.value?.getJPG() : signature.value?.getPNG();
+  }
 };
 const init = async () => {
+  options = {...options, ...props.field?.preps};
   await nextTick(() => {
     if (!signature.value && signatureCanvas.value) {
       signature.value = new SmoothSignature(signatureCanvas.value, options);
@@ -42,11 +47,6 @@ const undo = (evt: MouseEvent) => {
   evt && evt.defaultPrevented;
   signature.value && signature.value.undo();
 };
-
-const handleColor = (evt: MouseEvent) => {
-  evt && evt.defaultPrevented;
-  signature.value.color = "#" + Math.random().toString(16).slice(-6);
-};
 const handlePreview = (evt: MouseEvent) => {
   evt && evt.defaultPrevented;
   const isEmpty = signature.value.isEmpty();
@@ -55,9 +55,6 @@ const handlePreview = (evt: MouseEvent) => {
     return;
   }
   previewDialog.value = true;
-  // const pngUrl = signature.value.getPNG();
-  // imagesPreview(pngUrl);
-  // window.previewImage(pngUrl);
 };
 onMounted(() => {
   init();
@@ -65,50 +62,48 @@ onMounted(() => {
 onUpdated(() => {
   init();
 });
+
 </script>
 <template>
   <star-horse-dialog
-    :dialog-visible="previewDialog"
-    :source="3"
-    :self-func="true"
-    @closeAction="previewDialog = false"
+      :dialog-visible="previewDialog"
+      :source="3"
+      :self-func="true"
+      @closeAction="previewDialog = false"
   >
-    <el-image :src="signature?.getPNG()" />
+    <el-image :src="signature?.getPNG()"/>
   </star-horse-dialog>
+
   <starhorse-form-item
-    :showFormItem="showFormItem"
-    :isDesign="isDesign"
-    :disabled="disabled"
-    :bareFlag="bareFlag"
-    :field="field"
-    :parentField="parentField"
+      :showFormItem="showFormItem"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      :field="field"
+      :parentField="parentField"
   >
     <div class="pcDemo">
       <div class="inner_button">
         <el-menu mode="horizontal" style="height: inherit; width: 100%">
           <el-menu-item @click="clear">
             <el-tooltip content="清除">
-              <star-horse-icon icon-class="reset" />
+              <star-horse-icon icon-class="reset"/>
             </el-tooltip>
           </el-menu-item>
           <el-menu-item @click="undo">
             <el-tooltip content="后退">
-              <star-horse-icon icon-class="undo" />
-            </el-tooltip>
-          </el-menu-item>
-          <el-menu-item @click="handleColor">
-            <el-tooltip content="修改颜色">
-              <star-horse-icon icon-class="color" />
+              <star-horse-icon icon-class="undo"/>
             </el-tooltip>
           </el-menu-item>
           <el-menu-item @click="handlePreview">
             <el-tooltip content="预览">
-              <star-horse-icon icon-class="preview" />
+              <star-horse-icon icon-class="preview"/>
             </el-tooltip>
           </el-menu-item>
         </el-menu>
       </div>
-      <canvas ref="signatureCanvas" />
+      <canvas ref="signatureCanvas"/>
+      <el-image :src="formData[field.fieldName]"/>
     </div>
   </starhorse-form-item>
 </template>
@@ -133,60 +128,4 @@ onUpdated(() => {
   }
 }
 
-li {
-  border: none;
-}
-
-.mbDemo {
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-
-  button {
-    font-size: 18px;
-  }
-
-  canvas {
-    border-radius: 10px;
-    border: 2px dashed #ccc;
-  }
-
-  .wrap1 {
-    margin-top: 100px;
-
-    .actions {
-      margin-bottom: 20px;
-    }
-  }
-
-  .wrap2 {
-    position: fixed;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    padding: 15px;
-    display: flex;
-    justify-content: center;
-
-    .actionsWrap {
-      width: 50px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .canvas {
-      flex: 1;
-    }
-
-    .actions {
-      margin-right: 10px;
-      white-space: nowrap;
-      transform: rotate(90deg);
-    }
-  }
-}
 </style>

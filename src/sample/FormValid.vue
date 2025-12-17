@@ -2,8 +2,9 @@
 import {onMounted, ref} from "vue";
 import {PageFieldInfo} from "@/components/types/PageFieldInfo";
 import {StarHorseForm} from "@/components/comp";
-const testFormValidRef=ref();
-const outerData:any={ "backgroundSize": "http你好%" };
+
+const testFormValidRef = ref();
+const outerData: any = {"backgroundSize": "http你好%",qrcode:"http://www.baidu.com",barcode:"22222223333"};
 const fieldList = ref<PageFieldInfo>({
   fieldList: [
     {
@@ -26,15 +27,15 @@ const fieldList = ref<PageFieldInfo>({
       label: "背景大小", type: "input", fieldName: "backgroundSize",
       formVisible: true,
       preps: {
-        mergePrefix:true,
+        mergePrefix: true,
         mergeAppend: true,
-        appendList:[
-            {name:"%",value:"%"},
-            {name:"px",value:"px"},
+        appendList: [
+          {name: "%", value: "%"},
+          {name: "px", value: "px"},
         ],
-        prependList:[
-          {name:"http",value:"http"},
-          {name:"https",value:"https"},
+        prependList: [
+          {name: "http", value: "http"},
+          {name: "https", value: "https"},
         ]
       }
     },
@@ -51,6 +52,25 @@ const fieldList = ref<PageFieldInfo>({
         ]
       }
     },
+    {
+      label: "签名",
+      type: "signature",
+      fieldName: "signature",
+      preps: {
+        imageType: "jpg"
+      }
+    },
+    {
+      label: "二维码",
+      type: "qrcode",
+      fieldName: "qrcode"
+    }
+    ,
+    {
+      label: "条形码",
+      type: "barcode",
+      fieldName: "barcode"
+    }
   ]
 });
 const initData = async () => {
@@ -63,7 +83,7 @@ onMounted(() => {
 </script>
 <template>
   <div class="flex flex-col h-full overflow-hidden">
-    {{testFormValidRef?.getFormData()}}
+    {{ testFormValidRef?.getFormData() }}
     <star-horse-form ref="testFormValidRef" :outerFormData="outerData" :fieldList="fieldList"/>
   </div>
 </template>

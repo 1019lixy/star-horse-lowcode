@@ -45,11 +45,10 @@ onMounted(() => {
   if (!props.field.preps) {
     props.field.preps = {};
   }
-  props.field.preps["activeText"] = props.field.preps["activeText"] ?? "是";
-  props.field.preps["inactiveText"] = props.field.preps["inactiveText"] ?? "否";
-  props.field.preps["activeValue"] = props.field.preps["activeValue"] ?? true;
-  props.field.preps["inactiveValue"] =
-      props.field.preps["inactiveValue"] ?? false;
+  props.field.preps["activeText"] = props.field.preps?.activeText ?? "是";
+  props.field.preps["inactiveText"] = props.field.preps?.inactiveText ?? "否";
+  props.field.preps["activeValue"] = props.field.preps?.activeValue ?? true;
+  props.field.preps["inactiveValue"] = props.field.preps?.inactiveValue ?? false;
   nextTick(() => {
     initCompCallEvent(props, emits, formData);
   });

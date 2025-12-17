@@ -11,7 +11,7 @@ import { compKey, useZIndex } from "@/api/system";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
 
 defineOptions({
-  name: "PageEditorContentMenu",
+  name: "ContentMenu",
 });
 
 const props = defineProps({

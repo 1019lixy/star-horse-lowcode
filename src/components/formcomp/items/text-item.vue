@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import {} from "vue";
-import { allAction } from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {allAction} from "@/components/formcomp/utils/ItemRelationEventUtils";
 
-import { ItemPreps } from "@/components/types/ItemPreps";
+import {ItemPreps} from "@/components/types/ItemPreps";
+
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
   disabled: false,
@@ -18,28 +18,24 @@ const itemAction = (prep: any) => {
 </script>
 <template>
   <starhorse-form-item
-    :showFormItem="showFormItem"
-    :isDesign="isDesign"
-    :disabled="disabled"
-    :bareFlag="bareFlag"
-    :field="field"
-    :parentField="parentField"
+      :showFormItem="showFormItem"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      :field="field"
+      :parentField="parentField"
   >
     <div class="h-full w-full" @click="itemAction('click')">
       <div
-        class="flex"
-        :style="{
-          verticalAlign: field.preps?.verticalAlign ?? 'middle',
-          justifyContent: field.preps?.justifyContent ?? 'left',
-          alignItems: field.preps?.alignItems ?? 'left',
-          wordBreak: field.preps?.wordBreak ?? 'normal',
-          width: field.preps?.width ?? '100%',
-          height: field.preps?.height ?? '100%',
-          fontWeight: field.preps?.fontWeight ?? '600',
-          color: field.preps?.color ?? 'inherit',
-          backgroundColor: field.preps?.backgroundColor ?? 'none',
-          borderRadius: field.preps?.fontWeight ?? 'none',
-          border: field.preps?.border ?? 'none',
+          class="flex"
+          :style="field.preps?.styles??{
+          verticalAlign:  'middle',
+          justifyContent: 'left',
+          alignItems:  'left',
+          wordBreak: 'normal',
+          width:  '100%',
+          height:  '100%',
+          fontWeight:  '600',
           margin: ' 0 5px',
         }"
       >

@@ -1,33 +1,36 @@
 <template>
   <starhorse-form-item
-    :showFormItem="showFormItem"
-    :isDesign="isDesign"
-    :disabled="disabled"
-    :bareFlag="bareFlag"
-    :field="field"
-    :parentField="parentField"
+      :showFormItem="showFormItem"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      :field="field"
+      :parentField="parentField"
   >
     <el-cascader
-      :fid="field.fieldName"
-      v-bind="prepsFilter(field.preps)"
-      :disabled="checkIsDisabled(props)"
-      v-on="getDynamicEvents(props, itemAction)"
-      v-model="formData[field.fieldName]"
+        :fid="field.fieldName"
+        v-bind="prepsFilter(field.preps)"
+        :options="field.preps?.options??areaData"
+        :disabled="checkIsDisabled(props)"
+        v-on="getDynamicEvents(props, itemAction)"
+        v-model="formData[field.fieldName]"
     />
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
 import areaData from "@/api/pcas-code.json";
-import { compDynamicData } from "@/api/star_horse_utils";
-import { getDynamicEvents } from "@/api/system";
+import {compDynamicData} from "@/api/star_horse_utils";
+import {getDynamicEvents} from "@/api/system";
 import {
   allAction,
   checkIsDisabled,
   initCompCallEvent,
   prepsFilter,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
-import { ItemPreps } from "@/components/types/ItemPreps";
-import { nextTick, onMounted, watch } from "vue";
+import {ItemPreps} from "@/components/types/ItemPreps";
+import {nextTick, onMounted, watch} from "vue";
+import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
+
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
   disabled: false,
@@ -54,9 +57,7 @@ const initData = async () => {
       label: "name",
       value: "code",
     };
-    props.field.preps["options"] = areaData;
   }
-
   await nextTick();
   let data: any = formData.value[props.field.fieldName];
   if (data) {
@@ -74,15 +75,15 @@ onMounted(() => {
   initCompCallEvent(props, emits, formData);
 });
 watch(
-  () => formData.value[props.field.fieldName + "OptionList"],
-  (val) => {
-    if (val?.length > 0) {
-      props.field.preps["options"] = val;
-    }
-  },
-  {
-    immediate: true,
-  },
+    () => formData.value[props.field.fieldName + "OptionList"],
+    (val) => {
+      if (val?.length > 0) {
+        props.field.preps["options"] = val;
+      }
+    },
+    {
+      immediate: true,
+    },
 );
 </script>
 <style lang="scss" scoped>

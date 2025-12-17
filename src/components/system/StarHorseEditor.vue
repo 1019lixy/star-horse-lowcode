@@ -214,7 +214,10 @@ const init = async () => {
           {key: "Tab", run: insertTab},
         ]),
         languageConf.of(editorLang.value),
-        autocompletion({activateOnTyping: true}),
+        autocompletion({
+          activateOnTyping: true,
+          maxRenderedOptions: 20,
+        }),
         EditorView.updateListener.of((v) => {
           if (v.docChanged) {
             model.value = v.state.doc.toString();

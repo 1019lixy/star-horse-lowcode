@@ -1,51 +1,48 @@
 <template>
   <star-horse-dialog
-    :title="'Crontab 配置器'"
-    box-width="50%"
-    :self-func="true"
-    @resetForm="resetForm"
-    @closeAction="close"
-    @merge="submit"
-    :dialog-visible="cronVisible"
+      :title="'Crontab 配置器'"
+      box-width="50%"
+      :self-func="true"
+      @resetForm="resetForm"
+      @closeAction="close"
+      @merge="submit"
+      :dialog-visible="cronVisible"
   >
     <el-scrollbar>
-      <Crontab ref="cronTabRef" v-model="cronDataValue" />
+      <Crontab ref="cronTabRef" v-model="cronDataValue"/>
     </el-scrollbar>
   </star-horse-dialog>
   <starhorse-form-item
-    :showFormItem="showFormItem"
-    :isDesign="isDesign"
-    :disabled="disabled"
-    :bareFlag="bareFlag"
-    :field="field"
-    :parentField="parentField"
+      :showFormItem="showFormItem"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      :field="field"
+      :parentField="parentField"
   >
     <el-input
-      :fid="field.fieldName"
-      v-on="getDynamicEvents(props, itemAction)"
-      v-model="formData[field.fieldName]"
+        :fid="field.fieldName"
+        v-on="getDynamicEvents(props, itemAction)"
+        v-model="formData[field.fieldName]"
     >
       <template #append>
         <el-button
-          icon="Clock"
-          @click="open"
-          :disabled="checkIsDisabled(props)"
+            icon="Clock"
+            @click="open"
+            :disabled="checkIsDisabled(props)"
         />
       </template>
     </el-input>
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { nextTick, onMounted, ref } from "vue";
+import {nextTick, onMounted, ref} from "vue";
 import Crontab from "@/components/cron/Crontab.vue";
-import {
-  allAction,
-  checkIsDisabled,
-  initCompCallEvent,
-} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import { getDynamicEvents } from "@/api/system";
+import {allAction, checkIsDisabled, initCompCallEvent,} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {getDynamicEvents} from "@/api/system";
 
-import { ItemPreps } from "@/components/types/ItemPreps";
+import {ItemPreps} from "@/components/types/ItemPreps";
+
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
   disabled: false,
@@ -79,8 +76,8 @@ const submit = () => {
   formData.value[props.field.fieldName] = cronDataValue.value;
   close();
 };
-resetForm();
 onMounted(() => {
+  resetForm();
   nextTick(() => {
     initCompCallEvent(props, emits, formData);
   });

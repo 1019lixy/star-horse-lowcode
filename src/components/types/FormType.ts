@@ -15,11 +15,11 @@ export interface ItemType {
     /**
      * 字段类型
      */
-    fieldType: string;
+    fieldType?: string;
     /**
      * 是否必填
      */
-    required: boolean;
+    required?: boolean;
     /**
      * 分类
      */
@@ -36,6 +36,10 @@ export interface ItemType {
      * 备注
      */
     remark?: string;
+    /**
+     * 帮助
+     */
+    helpMsg?: string;
     /**
      * 配置参数
      */

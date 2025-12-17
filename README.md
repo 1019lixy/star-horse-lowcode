@@ -322,4 +322,8 @@ barcode        条形码组件
 ```
 - 修复因新增input属性导致的bug,优化starhorsedraggable组件拖拽时卡顿问题
 ```
+#### v2.8.48
+```
+- 修复barcode,qrcode，signature 组件bug
+```
 
