@@ -25,7 +25,10 @@ const fieldAssign = (
         const field = props.formInfo?.find((field: any) => field.fieldName == item);
         if (field) {
             let flag = false;
-            field.formVisible = true;
+            field["formVisible"] = true;
+            if (!field.preps) {
+                field["preps"] = {};
+            }
             Object.entries(record).forEach(([key, value]) => {
                 if (value.includes(field.itemType ?? field.type)) {
                     field.preps[key] = values;
@@ -39,7 +42,7 @@ const fieldAssign = (
                         field.preps[key] = value;
                     });
                 } else if (!Array.isArray(values)) {
-                    field.defaultValue = values;
+                    field["defaultValue"] = values;
                 }
             }
         }
@@ -68,7 +71,7 @@ const dataLinkage = async (props: any, item: RelationDetail, e: any) => {
     const tempParams: any = JSON5.parse(JSON5.stringify(params));
     if (item.controlCondition == "asParamDataLinkage") {
         //输入值作为查询条件
-        tempParams.queryParams = tempParams.queryParams || [];
+        tempParams["queryParams"] = tempParams.queryParams || [];
         tempParams.queryParams.push(
             createCondition(item.matchFieldName, e, item.matchType),
         );
@@ -127,17 +130,17 @@ const eqDisableOrEditable = (props: any, item: RelationDetail, e: any) => {
                 field.preps = {};
             }
             if (item.controlCondition == "eqHide") {
-                field.formVisible = !matchResult;
+                field["formVisible"] = !matchResult;
             } else if (item.controlCondition == "eqVisible") {
-                field.formVisible = matchResult;
+                field["formVisible"] = matchResult;
             } else if (item.controlCondition == "eqEditable") {
                 field.preps["disabled"] = !matchResult;
             } else if (item.controlCondition == "eqDisable") {
                 field.preps["disabled"] = matchResult;
             } else if (item.controlCondition == "eqRequired") {
-                field.required = matchResult;
+                field["required"] = matchResult;
             } else if (item.controlCondition == "eqUnRequired") {
-                field.required = !matchResult;
+                field["required"] = !matchResult;
             }
         }
     });
@@ -167,8 +170,8 @@ const changeType = (props: any, item: RelationDetail, e: any) => {
             (field: any) => field.fieldName == sitem,
         );
         if (field && matchResult) {
-            field.itemType = item.staticDatas;
-            field.type = item.staticDatas;
+            field["itemType"] = item.staticDatas;
+            field["type"] = item.staticDatas;
         }
     });
 };

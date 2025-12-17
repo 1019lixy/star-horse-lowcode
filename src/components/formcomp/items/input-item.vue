@@ -220,6 +220,13 @@ const mergeData = (isParsing = false) => {
   if (formData.value[props.field.fieldName] !== mergedValue) {
     formData.value[props.field.fieldName] = mergedValue;
   }
+  //提取配置的浅醉或者后缀的默认值
+  if (!formData.value[appName.value] && props.field?.preps?.appendDefaultValue) {
+    formData.value[appName.value] = props.field?.preps?.appendDefaultValue;
+  }
+  if (!formData.value[preName.value] && props.field?.preps?.prependDefaultValue) {
+    formData.value[preName.value] = props.field?.preps?.prependDefaultValue;
+  }
 };
 
 // 初始化数据解析
