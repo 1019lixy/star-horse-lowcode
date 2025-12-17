@@ -96,10 +96,10 @@ const initEvent = async () => {
   await nextTick();
 };
 const preName = computed(() => {
-  return props.field?.preps.preName ?? "pre" + props.field.fieldName;
+  return props.field?.preps?.preName ?? "pre" + props.field.fieldName;
 });
 const appName = computed(() => {
-  return props.field?.preps.appName ?? "app" + props.field.fieldName;
+  return props.field?.preps?.appName ?? "app" + props.field.fieldName;
 });
 const appendList = computed(() => convertData(props.field?.preps?.appendList));
 const prependList = computed(() => convertData(props.field?.preps?.prependList));
@@ -120,11 +120,11 @@ const findMatchingPrefix = (mainValue: string) => {
   if (formData.value[preName.value]) {
     return formData.value[preName.value];
   }
-  
+
   // 遍历前缀列表，找到与主字段值开头匹配的前缀
   if (prependList.value && prependList.value.length > 0) {
     for (const item of prependList.value) {
-      const itemValue = item.value || '';
+      const itemValue = item.value || "";
       if (mainValue.startsWith(itemValue)) {
         // 找到匹配的前缀，设置到formData中
         formData.value[preName.value] = itemValue;
@@ -132,8 +132,8 @@ const findMatchingPrefix = (mainValue: string) => {
       }
     }
   }
-  
-  return '';
+
+  return "";
 };
 
 // 根据主字段值查找匹配的后缀
@@ -142,11 +142,11 @@ const findMatchingSuffix = (mainValue: string) => {
   if (formData.value[appName.value]) {
     return formData.value[appName.value];
   }
-  
+
   // 遍历后缀列表，找到与主字段值结尾匹配的后缀
   if (appendList.value && appendList.value.length > 0) {
     for (const item of appendList.value) {
-      const itemValue = item.value || '';
+      const itemValue = item.value || "";
       if (mainValue.endsWith(itemValue)) {
         // 找到匹配的后缀，设置到formData中
         formData.value[appName.value] = itemValue;
@@ -154,15 +154,15 @@ const findMatchingSuffix = (mainValue: string) => {
       }
     }
   }
-  
-  return '';
+
+  return "";
 };
 
 // 解析主字段值，分离前缀和后缀部分
 const parseMainValue = () => {
-  const mainValue = formData.value[props.field.fieldName] || '';
+  const mainValue = formData.value[props.field.fieldName] || "";
   let parsedValue = String(mainValue);
-  
+
   // 如果需要合并前缀，尝试分离前缀值
   if (props.field?.preps?.mergePrefix) {
     // 根据主字段值查找匹配的前缀
@@ -171,7 +171,7 @@ const parseMainValue = () => {
       parsedValue = parsedValue.slice(prefixValue.length);
     }
   }
-  
+
   // 如果需要合并后缀，尝试分离后缀值
   if (props.field?.preps?.mergeAppend) {
     // 根据主字段值查找匹配的后缀
@@ -180,14 +180,14 @@ const parseMainValue = () => {
       parsedValue = parsedValue.slice(0, -suffixValue.length);
     }
   }
-  
+
   return parsedValue;
 };
 
 // 统一的合并逻辑函数
 const mergeData = (isParsing = false) => {
   // 确保值的类型安全
-  let baseValue = isParsing ? parseMainValue() : (normalData.value || '');
+  let baseValue = isParsing ? parseMainValue() : (normalData.value || "");
 
   // 如果是解析模式，设置normalData并返回
   if (isParsing) {

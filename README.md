@@ -318,4 +318,8 @@ barcode        条形码组件
 ```
 - input组件 增加属性是否将前缀(mergePrefix:boolean)或者后缀内容(margeAppend:boolean)合并到当前属性中去
 ```
+#### v2.8.47
+```
+- 修复因新增input属性导致的bug,优化starhorsedraggable组件拖拽时卡顿问题
+```
 

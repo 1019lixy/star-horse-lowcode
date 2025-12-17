@@ -3,6 +3,10 @@ import {computed, onMounted, PropType, ref} from "vue";
 import {DynamicNode} from "@/components/types/DynamicNode";
 import {dynamicPageContextMenuData} from "@/plugins/AblesPlugin";
 import {compKey} from "@/api/system";
+
+defineOptions({
+  name: "StarHorseDraggable",
+});
 const props = defineProps({
   msg: {
     type: String
@@ -56,7 +60,7 @@ const nodeStyles = computed(() => {
   }
   if (props.isDesign) {
     temp["border"] = "1px solid var(--star-horse-style)";
-    temp["overflow"] = "hidden";
+    // temp["overflow"] = "hidden";
     if (props.isActive) {
       temp["cursor"] = "move";
     }
@@ -86,6 +90,82 @@ const init = async () => {
 // let rangeActive = ref(false);
 const selectItem = () => {
   emits("selectNode", props.node);
+};
+
+// 旋转功能相关变量
+const rotateAngle = ref(0);
+let isRotating = false;
+let startAngle = 0;
+let currentAngle = 0;
+
+// 初始化旋转角度
+if (props.node.styles?.transform?.includes("rotate")) {
+  const match = props.node.styles.transform.match(/rotate\(([^)]+)\)/);
+  if (match) {
+    rotateAngle.value = parseInt(match[1]) || 0;
+  }
+}
+
+// 开始旋转
+const startRotate = (evt: MouseEvent) => {
+  evt.preventDefault();
+  evt.stopPropagation();
+
+  if (!props.isActive || !props.isDesign) {
+    return;
+  }
+
+  isRotating = true;
+  currentAngle = rotateAngle.value;
+
+  // 计算鼠标相对于组件中心的初始角度
+  const nodeRect = nodeRef.value?.getBoundingClientRect();
+  if (!nodeRect) return;
+
+  const centerX = nodeRect.left + nodeRect.width / 2;
+  const centerY = nodeRect.top + nodeRect.height / 2;
+
+  startAngle = Math.atan2(evt.clientY - centerY, evt.clientX - centerX) * 180 / Math.PI;
+
+  // 添加鼠标移动和释放事件监听器
+  document.addEventListener("mousemove", handleRotate);
+  document.addEventListener("mouseup", stopRotate);
+};
+
+// 处理旋转
+const handleRotate = (evt: MouseEvent) => {
+  if (!isRotating || !nodeRef.value) return;
+
+  const nodeRect = nodeRef.value.getBoundingClientRect();
+  const centerX = nodeRect.left + nodeRect.width / 2;
+  const centerY = nodeRect.top + nodeRect.height / 2;
+  requestAnimationFrame(() => {
+    // 计算当前鼠标相对于组件中心的角度
+    const currentMouseAngle = Math.atan2(evt.clientY - centerY, evt.clientX - centerX) * 180 / Math.PI;
+
+    // 计算旋转角度
+    const deltaAngle = currentMouseAngle - startAngle;
+    rotateAngle.value = currentAngle + deltaAngle;
+    // 更新组件样式
+    if (!props.node.styles) {
+      props.node.styles = {};
+    }
+
+    // // 保留其他transform属性
+    // let transform = "";
+    // if (props.node.styles.transform) {
+    //   transform = props.node.styles.transform.replace(/rotate\([^)]+\)/g, "");
+    // }
+    props.node.styles["rotate"] = rotateAngle.value + "deg";
+  });
+
+};
+
+// 停止旋转
+const stopRotate = () => {
+  isRotating = false;
+  document.removeEventListener("mousemove", handleRotate);
+  document.removeEventListener("mouseup", stopRotate);
 };
 /**
  * 改变div的大小
@@ -118,8 +198,16 @@ const rangeMove = (evt: MouseEvent, direction: string) => {
   const initialBottomEdge = initialTopEdge + initialHeightPx;
 
   // 当前样式偏移（relative 模式下，left/top 是相对正常流位置的偏移量）
-  const initialLeftOffset = props.node.styles.left || 0;
-  const initialTopOffset = props.node.styles.top || 0;
+
+  let initialLeftOffset = props.node.styles.left || 0;
+  let initialTopOffset = props.node.styles.top || 0;
+  //如果left 或者 top 带有单位，提取其数字
+  if (typeof initialLeftOffset !== "number") {
+    initialLeftOffset = parseFloat(initialLeftOffset);
+  }
+  if (typeof initialTopOffset !== "number") {
+    initialTopOffset = parseFloat(initialTopOffset);
+  }
   // baseline：正常流位置坐标 = 当前边缘坐标 - 当前偏移量
   const baselineLeft = initialLeftEdge - initialLeftOffset;
   const baselineTop = initialTopEdge - initialTopOffset;
@@ -306,6 +394,12 @@ const dragStart = (evt: MouseEvent) => {
   initialY.value = evt.clientY;
   nodeStartX.value = props.node.styles.left || 0;
   nodeStartY.value = props.node.styles.top || 0;
+  if (typeof nodeStartX.value !== "number") {
+    nodeStartX.value = parseFloat(nodeStartX.value);
+  }
+  if (typeof nodeStartY.value !== "number") {
+    nodeStartY.value = parseFloat(nodeStartY.value);
+  }
   // 锁定鼠标样式
   document.body.style.cursor = "grabbing";
 
@@ -366,6 +460,10 @@ onMounted(() => {
       v-if="isDesign"
       ref="nodeRef"
   >
+    <div v-if="isActive" class="node-rotate" @mousedown="startRotate">
+      <!-- 使用简单的旋转箭头符号代替图标组件 -->
+      <div class="rotate-icon">↻</div>
+    </div>
     <div class="w-full h-full">
       <div v-if="isActive&&showLine"
            style="position: fixed;border-top: 1px dashed var(--star-horse-style);width: 100%;left:0"/><!--顶部辅助线-->
@@ -379,17 +477,13 @@ onMounted(() => {
           @mousedown="rangeMove($event, item)"
           v-if="isActive"
       ></div>
-      <div class="w-full h-full">
-        <slot></slot>
-      </div>
+      <slot></slot>
     </div>
   </div>
   <div
       class="node-preview"
       :style="nodeStyles" v-else>
-    <div class="w-full h-full">
-      <slot></slot>
-    </div>
+    <slot></slot>
   </div>
   <Teleport to="body">
     <ContentMenu
@@ -421,6 +515,7 @@ onMounted(() => {
 
 .node {
   border: none;
+  position: relative;
 }
 
 .node.active {
@@ -435,6 +530,47 @@ onMounted(() => {
   background-color: var(--star-horse-style);
   //border: 1px solid white; /* 添加白色边框以增强对比度 */
   //box-shadow: 0 0 2px rgba(0, 0, 0, 0.3); /* 添加轻微阴影 */
+}
+
+.node-rotate {
+  position: absolute;
+  left: 50%;
+  transform: translateY(-150%);
+  cursor: pointer;
+  background: var(--star-horse-style);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s;
+  visibility: visible !important;
+  opacity: 1 !important;
+
+  &:hover {
+    transform: translateY(-150%) scale(1.1);
+  }
+
+  &:active {
+    cursor: grabbing;
+    transform: translateY(-150%) scale(1.05);
+  }
+
+  .rotate-icon {
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    transition: transform 0.1s ease;
+    line-height: 1;
+    display: inline-block;
+  }
+
+  &:active .rotate-icon {
+    transform: scale(1.1) rotate(15deg);
+  }
 }
 
 .node-point-left,
