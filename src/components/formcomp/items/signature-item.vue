@@ -103,7 +103,6 @@ onUpdated(() => {
         </el-menu>
       </div>
       <canvas ref="signatureCanvas"/>
-      <el-image :src="formData[field.fieldName]"/>
     </div>
   </starhorse-form-item>
 </template>
