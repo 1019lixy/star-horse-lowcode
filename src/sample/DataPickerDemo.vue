@@ -2,7 +2,7 @@
   <StarHorseDataSelector
     v-model="test"
     :datas="datas"
-    :multiple="true"
+    :multiple="false"
     :checkStrictly="false"
   />
 
@@ -23,6 +23,23 @@
     }"
     :formData="formData"
   />
+  <data-picker-item
+      :field="{
+      label: '测试2',
+      fieldName: 'test2',
+      preps: {
+        datas,
+        collapseTags: true,
+        collapseTagsTooltip: true,
+        multiple: false,
+        disabled: false,
+        displayName: 'name',
+        displayValue: 'value',
+      },
+    }"
+      :formData="formData"
+  />
+
 </template>
 
 <script lang="ts" setup>
@@ -32,29 +49,29 @@ import { ref } from "vue";
 import DataPickerItem from "@/components/formcomp/items/datapicker-item.vue";
 
 const formData = ref<any>({
-  test: "1-2-1",
+  test: "121",
 });
-const test = ref("1-2-1");
+const test = ref("121");
 const datas = ref([
   {
     name: "测试1",
     value: "1",
     children: [
       {
-        name: "测试1-1",
-        value: "1-1",
+        name: "测试11",
+        value: "11",
       },
       {
-        name: "测试1-2",
-        value: "1-2",
+        name: "测试12",
+        value: "12",
         children: [
           {
-            name: "测试1-2-1",
-            value: "1-2-1",
+            name: "测试121",
+            value: "121",
           },
           {
-            name: "测试1-2-2",
-            value: "1-2-2",
+            name: "测试122",
+            value: "122",
           },
         ],
       },
@@ -65,12 +82,12 @@ const datas = ref([
     value: "2",
     children: [
       {
-        name: "测试2-1",
-        value: "2-1",
+        name: "测试21",
+        value: "21",
         children: [
           {
-            name: "测试2-1-1",
-            value: "2-1-1",
+            name: "测试211",
+            value: "211",
           },
         ],
       },
@@ -81,8 +98,8 @@ const datas = ref([
     value: "3",
     children: [
       {
-        name: "测试3-1",
-        value: "3-1",
+        name: "测试31",
+        value: "31",
       },
     ],
   },

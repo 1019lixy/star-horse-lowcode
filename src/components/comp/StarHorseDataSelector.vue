@@ -1,14 +1,11 @@
 <script setup lang="ts">
-import { useVModel } from "@vueuse/core";
-import DataPicker, {
-  type ModelValueType,
-} from "@/components/comp/utils/DataPicker.vue";
-import { computed, CSSProperties, onMounted, ref, watch } from "vue";
+import {useVModel} from "@vueuse/core";
+import DataPicker, {type ModelValueType,} from "@/components/comp/utils/DataPicker.vue";
+import {computed, CSSProperties, onMounted, ref, watch} from "vue";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
-import { postRequest } from "@/api/star_horse_apis";
-import { createCondition } from "@/api/star_horse_utils";
-import { SearchParams } from "@/components/types";
-import { i18n } from "@/lang";
+import {postRequest} from "@/api/star_horse_apis";
+import {createCondition} from "@/api/star_horse_utils";
+import {SearchParams} from "@/components/types";
 
 export interface DataSelectorProps {
   /**
@@ -87,6 +84,9 @@ export interface DataSelectorProps {
    * 样式
    */
   style?: CSSProperties;
+  tagType: "" | "primary" | "secondary" | "success" | "info" | "warning",
+
+  tagEffect: "" | "light" | "dark" | "plain"
 }
 
 const props = withDefaults(defineProps<DataSelectorProps>(), {
@@ -99,7 +99,7 @@ const props = withDefaults(defineProps<DataSelectorProps>(), {
   checkStrictly: true,
   selectLeaf: false,
   showTagLength: 3,
-  placeholder: i18n("dataselector.placeholder"),
+  placeholder: "请选择数据",
 });
 const emits = defineEmits<{
   (e: "update:modelValue", modelValue: ModelValueType): void;
@@ -111,9 +111,10 @@ const emitData: any = useVModel(props, "selectedData", emits);
 const selectData: any = ref<any>(props.multiple ? [] : "");
 const valueArr = computed<string[]>(() => {
   if (selectData.value) {
-    return Array.isArray(selectData.value)
-      ? selectData.value
-      : [selectData.value];
+    const temp = Array.isArray(selectData.value)
+        ? selectData.value
+        : [selectData.value];
+    return temp.map((item: any) => item?.[props.displayValue]);
   }
   return [];
 });
@@ -171,11 +172,11 @@ const init = () => {
   } else if (props.dataUrl && value.value?.length > 0) {
     const queryParams: SearchParams[] = [];
     queryParams.push(
-      createCondition(
-        props.displayValue,
-        Array.isArray(value.value) ? value.value : [value.value],
-        "in",
-      ),
+        createCondition(
+            props.displayValue,
+            Array.isArray(value.value) ? value.value : [value.value],
+            "in",
+        ),
     );
     if (props.params?.length > 0) {
       queryParams.push(...props.params);
@@ -200,17 +201,17 @@ const init = () => {
       params = baseParams;
     }
     postRequest(tempUrl!, params)
-      .then((res) => {
-        if (res?.data?.code) {
-          console.error(res?.data?.cnMessage);
-          return;
-        }
-        let redata = res?.data?.data;
-        selectData.value = findInTree(redata?.dataList || redata, []);
-      })
-      .catch((err: any) => {
-        console.log(err);
-      });
+        .then((res) => {
+          if (res?.data?.code) {
+            console.error(res?.data?.cnMessage);
+            return;
+          }
+          let redata = res?.data?.data;
+          selectData.value = findInTree(redata?.dataList || redata, []);
+        })
+        .catch((err: any) => {
+          console.log(err);
+        });
   }
 };
 const addTag = (val: any) => {
@@ -225,72 +226,77 @@ const addTag = (val: any) => {
   }
 };
 const tagVisible = (val: any) => {
-  return (
-    selectData?.value?.find((item: any) => item[props.displayValue] === val)?.[
-      props.displayName
-    ] ?? val
+
+  const result = (
+      (Array.isArray(selectData?.value) && selectData?.value?.find((item: any) => item[props.displayValue] === val)?.[
+          props.displayName
+          ]) ?? val
   );
+  console.log("-----------", val, selectData?.value, result);
+  return result;
 };
 onMounted(() => {
   init();
 });
 // 新增 watch 监听 selectData 变化
 watch(
-  selectData,
-  (newVal) => {
-    // 同步modelValue
-    value.value = Array.isArray(newVal)
-      ? newVal.map((v) => v[props.displayValue])
-      : newVal?.[props.displayValue];
-    // 同步selectedData
-    emitData.value = newVal;
-  },
-  { deep: true },
+    selectData,
+    (newVal) => {
+      // 同步modelValue
+      const tempNewValue = Array.isArray(newVal)
+          ? newVal.map((v) => v[props.displayValue])
+          : newVal?.[props.displayValue];
+      value.value = props.multiple ? tempNewValue : tempNewValue[0];
+      // 同步selectedData
+      emitData.value = newVal;
+    },
+    {deep: true},
 );
 </script>
 
 <template>
   <data-picker
-    ref="dataPickerRef"
-    :title="title"
-    :datas="datas"
-    :data-url="dataUrl"
-    :proxy="proxy"
-    :proxy-url="proxyUrl"
-    :params="params"
-    :page-size="pageSize"
-    :display-name="displayName"
-    :display-value="displayValue"
-    :checkStrictly="checkStrictly"
-    :select-leaf="selectLeaf"
-    :multiple="multiple"
-    v-model="selectData"
+      ref="dataPickerRef"
+      :title="title"
+      :datas="datas"
+      :data-url="dataUrl"
+      :proxy="proxy"
+      :proxy-url="proxyUrl"
+      :params="params"
+      :page-size="pageSize"
+      :display-name="displayName"
+      :display-value="displayValue"
+      :checkStrictly="checkStrictly"
+      :select-leaf="selectLeaf"
+      :multiple="multiple"
+      v-model="selectData"
   />
   <el-input-tag
-    v-model="valueArr"
-    v-bind="Object.assign({}, props, $attrs)"
-    @clear="selectData = []"
-    @addTag="addTag"
-    @removeTag="
-      (val) => {
+      v-model="valueArr"
+      :tag-type="tagType"
+      :tagEffect="tagEffect"
+      @clear="selectData = []"
+      @addTag="addTag"
+      @removeTag="(val) => {
         onClose(val);
       }
     "
   >
-    <template #prefix>
-      <star-horse-icon
-        @click="openDataPicker"
-        cursor="pointer"
-        icon-class="select-data"
-        size="22px"
-        :border="true"
-      />
-    </template>
-    <template #tag="{ value }">
+    <template #tag="{value}">
       <div class="flex items-center">
         <span>{{ tagVisible(value) }}</span>
       </div>
     </template>
+    <template #prefix>
+      <star-horse-icon
+          @click="openDataPicker"
+          cursor="pointer"
+          icon-class="select-data"
+          size="22px"
+          :border="true"
+      />
+    </template>
+
   </el-input-tag>
 </template>
 

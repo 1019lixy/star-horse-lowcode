@@ -1,6 +1,7 @@
 <script setup lang="ts" name="Areainfo">
 import {onMounted} from 'vue';
 import SignatureTest from "@/sample/SignatureTest.vue";
+import DataPickerDemo from "@/sample/DataPickerDemo.vue";
 
 const initData = async () => {
 };
@@ -12,13 +13,14 @@ onMounted(() => {
 <template>
   <div class="flex flex-col h-full overflow-hidden">
     <!--        <FormValid/>-->
-    <SignatureTest/>
+<!--    <SignatureTest/>-->
 
     <!--        <StarHorseDraggableValid/>-->
     <!--    <DialogItem/>
         <TransferItem/>-->
     <!--    <dialog-valid/>-->
     <!--    <FormRelationOperation/>-->
+    <DataPickerDemo/>
   </div>
 
 </template>
