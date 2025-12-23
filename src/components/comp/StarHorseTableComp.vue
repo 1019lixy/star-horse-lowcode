@@ -1,110 +1,91 @@
 <script setup lang="ts" name="StarHorseTableComp">
-import { download, postRequest,deleteByIds,loadData, } from "@/api/star_horse_apis";
-import {
-  closeLoad,
-  createCondition,
-  isJson,
-  load,
-} from "@/api/star_horse_utils";
-import { compKey, removeEmptyCondition, uuid } from "@/api/system";
+import {deleteByIds, download, loadData, postRequest,} from "@/api/star_horse_apis";
+import {closeLoad, createCondition, isJson, load,} from "@/api/star_horse_utils";
+import {compKey, removeEmptyCondition, uuid} from "@/api/system";
 import Tablebtn from "@/components/comp/items/tablebtn.vue";
 import TableColumn from "@/components/comp/items/tableColumn.vue";
 import Help from "@/components/help.vue";
-import { ApiUrls } from "@/components/types/ApiUrls";
-import { PreValid } from "@/components/types/BtnAuth";
-import { DialogProps } from "@/components/types/DialogProps";
-import {
-  ExpandTable,
-  FieldInfo,
-  OrderByInfo,
-  PageFieldInfo,
-  UserFuncInfo,
-} from "@/components/types/PageFieldInfo";
-import { PageProps } from "@/components/types/PageProps";
-import { BtnHideCondition, SearchParams } from "@/components/types/Params";
+import {ApiUrls} from "@/components/types/ApiUrls";
+import {PreValid} from "@/components/types/BtnAuth";
+import {DialogProps} from "@/components/types/DialogProps";
+import {ExpandTable, FieldInfo, OrderByInfo, PageFieldInfo, UserFuncInfo,} from "@/components/types/PageFieldInfo";
+import {PageProps} from "@/components/types/PageProps";
+import {BtnHideCondition, SearchParams} from "@/components/types/Params";
 import piniaInstance from "@/store";
-import { useButtonPermissionStore } from "@/store/ButtonPermission";
-import { useDynamicFormStore } from "@/store/DynamicForm";
-import { useGlobalConfigStore } from "@/store/GlobalConfig";
-import { isSystemManage } from "@/utils/auth";
-import { error, warning } from "@/utils/message";
-import { analysisFields } from "@/utils/preview";
+import {useButtonPermissionStore} from "@/store/ButtonPermission";
+import {useDynamicFormStore} from "@/store/DynamicForm";
+import {useGlobalConfigStore} from "@/store/GlobalConfig";
+import {isSystemManage} from "@/utils/auth";
+import {error, warning} from "@/utils/message";
+import {analysisFields} from "@/utils/preview";
 import Sortable from "sortablejs";
-import { i18n } from "@/lang";
-import {
-  computed,
-  inject,
-  onMounted,
-  PropType,
-  reactive,
-  ref,
-  unref,
-  watch,
-} from "vue";
+import {i18n} from "@/lang";
+import {computed, inject, onMounted, PropType, reactive, ref, unref, watch,} from "vue";
 import JSON5 from "json5";
+
 const dynamicForm = useDynamicFormStore(piniaInstance);
 const props = defineProps({
   // URL address
-  compUrl: { type: Object as PropType<ApiUrls | any>, required: true },
+  compUrl: {type: Object as PropType<ApiUrls | any>, required: true},
   // Primary key
   primaryKey: {
     type: [String, Object] as PropType<string | any>,
     required: true,
   },
   // Column name
-  fieldList: { type: Object as PropType<PageFieldInfo>, required: true },
+  fieldList: {type: Object as PropType<PageFieldInfo>, required: true},
   // Button hidden condition
   hideBtnCondition: {
     type: Array as PropType<BtnHideCondition[]>,
     default: [],
   },
   // Whether to show batch properties
-  showBatchField: { type: Boolean, default: false },
+  showBatchField: {type: Boolean, default: false},
   // Format method
-  dataFormat: { type: Function, default: null },
+  dataFormat: {type: Function, default: null},
   // Disable event
-  disableAction: { type: Boolean, default: false },
+  disableAction: {type: Boolean, default: false},
   // Dialog mode
-  dialogInput: { type: Boolean, default: false },
+  dialogInput: {type: Boolean, default: false},
   // Default table height
-  height: { type: String, default: "400" },
+  height: {type: String, default: "400"},
   // Filter condition
-  filterCondition: { type: Array as PropType<SearchParams[]> },
-  orderBy: { type: Array as PropType<OrderByInfo[]> },
+  filterCondition: {type: Array as PropType<SearchParams[]>},
+  orderBy: {type: Array as PropType<OrderByInfo[]>},
   // Whether to show pagination
-  showPageBar: { type: Boolean, default: true },
+  showPageBar: {type: Boolean, default: true},
   // Data list
-  tableDataList: { type: Array },
+  tableDataList: {type: Array},
   // Echo data list
-  reverseDataList: { type: Array },
+  reverseDataList: {type: Array},
   // Whether to allow selecting parent node
-  allowSelectParent: { type: Boolean, default: true },
+  allowSelectParent: {type: Boolean, default: true},
   // Default whether to expand all child nodes
-  expand: { type: Boolean, default: false },
+  expand: {type: Boolean, default: false},
   // Whether loading box is needed
-  needLoad: { type: Boolean, default: true },
+  needLoad: {type: Boolean, default: true},
   // Title
-  title: { type: String },
+  title: {type: String},
   // Custom button
-  extendBtns: { type: Array as PropType<UserFuncInfo[]> },
+  extendBtns: {type: Array as PropType<UserFuncInfo[]>},
   // Pre-check method. If a pre-check method is set, the button event can only continue after passing the check.
-  preValidFunc: { type: Object as PropType<Array<PreValid>>, default: {} },
+  preValidFunc: {type: Object as PropType<Array<PreValid>>, default: {}},
   // Multiple selection
-  multipleSelect: { type: Boolean, default: false },
+  multipleSelect: {type: Boolean, default: false},
   // Row height
-  lineHeight: { type: String, default: "30px" },
+  lineHeight: {type: String, default: "30px"},
   // Show checkbox
-  showSelection: { type: Boolean, default: true },
+  showSelection: {type: Boolean, default: true},
   // Expand table properties
-  expandTable: { type: Object as PropType<ExpandTable> },
+  expandTable: {type: Object as PropType<ExpandTable>},
   // Help tooltip
-  helpMsg: { type: String },
+  helpMsg: {type: String},
   // Global config, used by dynamic page
-  globalConfig: { type: Object as PropType<any>, required: false },
+  globalConfig: {type: Object as PropType<any>, required: false},
   // Is dynamic page
-  isDynamic: { type: Boolean, default: false },
+  isDynamic: {type: Boolean, default: false},
   // Hide button list
-  hideButtonList: { type: Boolean, default: false },
+  hideButtonList: {type: Boolean, default: false},
   /**
    * Data sharer
    *   Get information shared by others
@@ -112,11 +93,11 @@ const props = defineProps({
    *   The above interface mainly returns the account of the sharer
    *   commonPersons.value = resultData?.data;
    */
-  commonPersons: { type: Array as PropType<any>, default: [] },
+  commonPersons: {type: Array as PropType<any>, default: []},
   // Button permission
-  btnPermissions: { type: Object as PropType<Record<string, string>>, required: false },
+  btnPermissions: {type: Object as PropType<Record<string, string>>, required: false,default:{}},
 });
-const emits = defineEmits(["selectItem","permission"]);
+const emits = defineEmits(["selectItem", "permission"]);
 let pagePermission = useButtonPermissionStore(piniaInstance);
 let configStore = useGlobalConfigStore(piniaInstance);
 let permissions = ref<Record<string, string>>({});
@@ -126,7 +107,7 @@ const configInfo = computed(() => {
   return data;
 });
 let compSize = computed(
-  () => configStore.configFormInfo?.inputSize || "default",
+    () => configStore.configFormInfo?.inputSize || "default",
 );
 const multipleSelection = ref<any>([]);
 const starHorseTableCompRef = ref();
@@ -202,12 +183,12 @@ const exportData = () => {
     condition["orderBy"] = props.fieldList.orderBy;
   }
   download(props.compUrl!.exportAllUrl!, condition)
-    .catch((err: any) => {
-      error(i18n("comp.interfaceNotFoundOrNetworkError") + err);
-    })
-    .finally(() => {
-      closeLoad();
-    });
+      .catch((err: any) => {
+        error(i18n("comp.interfaceNotFoundOrNetworkError") + err);
+      })
+      .finally(() => {
+        closeLoad();
+      });
 };
 const getIds = () => {
   let selectDatas = unref(multipleSelection);
@@ -230,8 +211,8 @@ const batchDelete = async () => {
  * @param orderBy Sorting
  */
 const createSearchParams = (
-  formData: SearchParams[],
-  orderBy: OrderByInfo[] = [],
+    formData: SearchParams[],
+    orderBy: OrderByInfo[] = [],
 ) => {
   searchFields = formData;
   orderBys = orderBy;
@@ -245,15 +226,16 @@ const permissionList = () => {
 };
 const init = async () => {
   Object.assign(pageInfo.value, baseInfo);
-  if (props.btnPermissions && Object.keys(props.btnPermissions).length > 0) {
-    permissions.value = props.btnPermissions;
-  } else {
-    pagePermission.setPermissionUrl(props.compUrl?.permissionsUrl);
-    permissions.value = await pagePermission.addRoute(
+  // if (props.btnPermissions && Object.keys(props.btnPermissions).length > 0) {
+  //
+  // } else {
+  pagePermission.setPermissionUrl(props.compUrl?.permissionsUrl);
+  permissions.value = await pagePermission.addRoute(
       window.__hostRouter__?.currentRoute.value,
-    );
-  }
-  emits("permission",permissions.value);
+  );
+  // }
+  permissions.value = {...permissions.value, ...props.btnPermissions};
+  emits("permission", permissions.value);
   // Whether to automatically load list data when initializing
   if (!props.fieldList?.stopAutoLoad) {
     loadByPage();
@@ -271,18 +253,18 @@ const init = async () => {
 };
 // Listen for changes in data passed in from outside
 watch(
-  () => props.tableDataList,
-  (val) => {
-    if (props.fieldList?.stopAutoLoad) {
-      pageInfo.value.dataList = val;
-    }
-  },
-  { deep: true, immediate: false },
+    () => props.tableDataList,
+    (val) => {
+      if (props.fieldList?.stopAutoLoad) {
+        pageInfo.value.dataList = val;
+      }
+    },
+    {deep: true, immediate: false},
 );
 const assignData = (dataList: Array<any>) => {
   for (let key in dataList) {
     let temp: any = dataList[key];
-    if (temp instanceof Array) {
+    if (Array.isArray(temp)) {
       toolFields.push(...temp);
     } else if (temp.tabList?.length > 0) {
       for (let skey in temp.tabList) {
@@ -312,7 +294,7 @@ const reCreateData = () => {
 };
 const moveColumn = () => {
   const tbody = document.querySelector(
-    ".sh-columns .el-table__body-wrapper tbody",
+      ".sh-columns .el-table__body-wrapper tbody",
   ) as HTMLElement | null;
   if (tbody) {
     Sortable.create(tbody, {
@@ -320,7 +302,7 @@ const moveColumn = () => {
       animation: 200,
       ghostClass: "ghost",
       onEnd(event: any) {
-        const { oldIndex, newIndex } = event;
+        const {oldIndex, newIndex} = event;
         if (oldIndex === newIndex) {
           return;
         }
@@ -410,10 +392,10 @@ const handleSelectionChange = (val: any) => {
         multipleSelection.value = filters;
       } else {
         let ids = multipleSelection.value.map(
-          (item: any) => item[keys],
+            (item: any) => item[keys],
         ) as Array<any>;
         multipleSelection.value = val.filter(
-          (item: any) => !ids.includes(item[keys]),
+            (item: any) => !ids.includes(item[keys]),
         );
       }
       let data = multipleSelection.value[0];
@@ -486,7 +468,7 @@ const viewById = (id: any, isExpand: boolean = false) => {
  * @param isExpand
  */
 const editById = (id: any, isExpand: boolean = false) => {
-  if(!permissions?.value["edit"])return;
+  if (!permissions?.value["edit"]) return;
   dialogProps!.editVisible = true;
   dialogProps!.ids = id;
   if (isExpand) {
@@ -500,7 +482,7 @@ const editById = (id: any, isExpand: boolean = false) => {
  * @param isExpand
  */
 const deleteById = async (id: any, isExpand: boolean = false) => {
-  if(!permissions?.value["delete"])return;
+  if (!permissions?.value["delete"]) return;
   let deleteUrl = props.compUrl?.deleteUrl!;
   if (isExpand) {
     deleteUrl = props.expandTable?.expandUrls?.deleteUrl!;
@@ -583,32 +565,32 @@ const loadByPage = (initPageInfo?: boolean) => {
     load(i18n("comp.dataLoading"));
   }
   postRequest(url, params)
-    .then((res: any) => {
-      if (res?.data?.code != 0) {
-        res && console.error(res?.data?.cnMessage || res?.data?.enMessage);
-        return;
-      }
-      let redata = res?.data?.data;
-      // If not paginated, display all returned data
-      pageInfo.value.dataList = redata?.dataList || redata;
-      if (props.dialogInput) {
-        filterData();
-      }
-      pageInfo.value.totalPage = redata?.totalPages;
-      pageInfo.value.totalData = redata?.totalDatas;
-    })
-    .catch((err: any) => {
-      console.log(err);
-    })
-    .finally(() => {
-      closeLoad();
-    });
+      .then((res: any) => {
+        if (res?.data?.code != 0) {
+          res && console.error(res?.data?.cnMessage || res?.data?.enMessage);
+          return;
+        }
+        let redata = res?.data?.data;
+        // If not paginated, display all returned data
+        pageInfo.value.dataList = redata?.dataList || redata;
+        if (props.dialogInput) {
+          filterData();
+        }
+        pageInfo.value.totalPage = redata?.totalPages;
+        pageInfo.value.totalData = redata?.totalDatas;
+      })
+      .catch((err: any) => {
+        console.log(err);
+      })
+      .finally(() => {
+        closeLoad();
+      });
 };
 const filterData = () => {
   let name = unref(inputFieldName) as string;
   if (pageInfo.value.dataList && name && inputFieldVal.value) {
     let row = pageInfo.value.dataList.find(
-      (item: any) => item[name] == inputFieldVal.value,
+        (item: any) => item[name] == inputFieldVal.value,
     );
     if (row) {
       multipleSelection.value.push(row);
@@ -648,7 +630,7 @@ const selectRow = (row: any, _column?: any, evt?: Event) => {
     }
   }
   const selected = multipleSelection.value?.some(
-    (item: any) => item[props.primaryKey] === row[props.primaryKey],
+      (item: any) => item[props.primaryKey] === row[props.primaryKey],
   );
   if (!selected) {
     multipleSelection.value.push(row);
@@ -722,8 +704,8 @@ const extendBtnFunction = (): Array<UserFuncInfo> => {
   }
   // If no priority is specified, sort by default addition method
   arr.sort(
-    (a: UserFuncInfo, b: UserFuncInfo) =>
-      (a.priority || 40) - (b.priority || 40),
+      (a: UserFuncInfo, b: UserFuncInfo) =>
+          (a.priority || 40) - (b.priority || 40),
   );
   return arr;
 };
@@ -760,11 +742,11 @@ const expandCommonFun = (name: string, row: any, parentRow: any) => {
  * @param orderBys Sorting
  */
 const getDatas = async (
-  limitSize: number = 0,
-  params: SearchParams[] = [],
-  orderBys: OrderByInfo[] = [],
-  url: string = "",
-  usePageCondition: boolean = true,
+    limitSize: number = 0,
+    params: SearchParams[] = [],
+    orderBys: OrderByInfo[] = [],
+    url: string = "",
+    usePageCondition: boolean = true,
 ) => {
   let tempSearchParams: SearchParams[] = [];
   if (usePageCondition) {
@@ -789,10 +771,10 @@ const getDatas = async (
 let dataShowType = ref<string>("list");
 let cardFieldList = ref<FieldInfo[]>([]);
 const loadField = (): FieldInfo[] => {
-  let { fieldList } = analysisFields(props.fieldList?.fieldList);
+  let {fieldList} = analysisFields(props.fieldList?.fieldList);
   if (fieldList) {
     fieldList.sort(
-      (a: FieldInfo, b: FieldInfo) => (a.priority || 100) - (b.priority || 100),
+        (a: FieldInfo, b: FieldInfo) => (a.priority || 100) - (b.priority || 100),
     );
     return fieldList.filter((item) => item.listVisible)?.slice(0, 3);
   }
@@ -846,195 +828,195 @@ defineExpose({
 <template>
   <!-- Export data specified fields -->
   <star-horse-dialog
-    :isShowBtnContinue="false"
-    :selfFunc="true"
-    @merge="selectedFields"
-    :dialogVisible="exportOperationVisible"
-    @closeAction="exportOperationVisible = false"
+      :isShowBtnContinue="false"
+      :selfFunc="true"
+      @merge="selectedFields"
+      :dialogVisible="exportOperationVisible"
+      @closeAction="exportOperationVisible = false"
   >
     {{ i18n("comp.underDevelopment") }}
   </star-horse-dialog>
   <div class="star-horse-table">
     <div
-      class="flex w-full justify-between"
-      style="border-bottom: var(--star-horse-style) 1px solid"
-      v-if="!dialogInput"
+        class="flex w-full justify-between"
+        style="border-bottom: var(--star-horse-style) 1px solid"
+        v-if="!dialogInput"
     >
       <div class="tb_title">
         <div v-if="title || helpMsg">
-          <help :message="helpMsg" v-if="helpMsg" />
+          <help :message="helpMsg" v-if="helpMsg"/>
           <star-horse-icon
-            icon-class="info"
-            v-else
-            size="14px"
-            style="font-weight: bold; color: var(--star-horse-style)"
+              icon-class="info"
+              v-else
+              size="14px"
+              style="font-weight: bold; color: var(--star-horse-style)"
           />
           {{ title }}
         </div>
         <star-horse-button-list
-          @tableCompFunc="(fun: any) => tableCompFunc(fun)"
-          :compUrl="compUrl"
-          :btnPermissions="permissions"
-          :extendBtns="extendBtns"
-          :dialogProps="dialogProps"
-          :preValidFunc="preValidFunc"
-          v-if="!hideButtonList"
+            @tableCompFunc="(fun: any) => tableCompFunc(fun)"
+            :compUrl="compUrl"
+            :btnPermissions="permissions"
+            :extendBtns="extendBtns"
+            :dialogProps="dialogProps"
+            :preValidFunc="preValidFunc"
+            v-if="!hideButtonList"
         />
       </div>
       <div class="flex items-center flex-row-reverse">
         <star-horse-icon
-          :title="i18n('comp.refresh')"
-          @click="loadByPage"
-          icon-class="refresh"
-          style="cursor: pointer; color: var(--star-horse-style)"
+            :title="i18n('comp.refresh')"
+            @click="loadByPage"
+            icon-class="refresh"
+            style="cursor: pointer; color: var(--star-horse-style)"
         />
         <el-popover
-          v-if="dataShowType == 'list'"
-          trigger="click"
-          :popper-style="{ width: 'unset !important' }"
-          placement="left-end"
+            v-if="dataShowType == 'list'"
+            trigger="click"
+            :popper-style="{ width: 'unset !important' }"
+            placement="left-end"
         >
           <template #reference>
             <star-horse-icon
-              @click="fieldVisible = !fieldVisible"
-              :title="i18n('comp.showHideColumns')"
-              icon-class="setting"
-              style="color: var(--star-horse-style); cursor: pointer"
+                @click="fieldVisible = !fieldVisible"
+                :title="i18n('comp.showHideColumns')"
+                icon-class="setting"
+                style="color: var(--star-horse-style); cursor: pointer"
             />
           </template>
           <el-table
-            class="sh-columns"
-            ref="table"
-            :data="toolFields"
-            :strip="true"
-            :fit="true"
-            :highlight-current-row="true"
-            max-height="400px"
-            row-key="prop"
-            style="width: 100%"
-            :size="compSize"
-            :border="true"
+              class="sh-columns"
+              ref="table"
+              :data="toolFields"
+              :strip="true"
+              :fit="true"
+              :highlight-current-row="true"
+              max-height="400px"
+              row-key="prop"
+              style="width: 100%"
+              :size="compSize"
+              :border="true"
           >
             <el-table-column prop="" :label="i18n('comp.sort')" width="60">
               <el-tag class="move" style="cursor: move">
                 <el-icon style="cursor: move">
-                  <Sort />
+                  <Sort/>
                 </el-icon>
               </el-tag>
             </el-table-column>
             <el-table-column
-              prop="label"
-              :label="i18n('comp.columnName')"
-              :show-overflow-tooltip="true"
+                prop="label"
+                :label="i18n('comp.columnName')"
+                :show-overflow-tooltip="true"
             >
               <template #default="scope">
                 <el-tag
-                  round
-                  :effect="scope.row.listVisible ? 'dark' : 'light'"
-                  :size="compSize"
+                    round
+                    :effect="scope.row.listVisible ? 'dark' : 'light'"
+                    :size="compSize"
                 >
                   {{ scope.row.label }}
                 </el-tag>
               </template>
             </el-table-column>
             <el-table-column
-              prop="listVisible"
-              :label="i18n('comp.showHide')"
-              width="100"
+                prop="listVisible"
+                :label="i18n('comp.showHide')"
+                width="100"
             >
               <template #default="scope">
                 <el-switch
-                  v-model="scope.row.listVisible"
-                  :size="compSize"
-                  :active-value="true"
-                  :inactive-value="false"
+                    v-model="scope.row.listVisible"
+                    :size="compSize"
+                    :active-value="true"
+                    :inactive-value="false"
                 />
               </template>
             </el-table-column>
           </el-table>
         </el-popover>
         <star-horse-icon
-          @click="showType(dataShowType)"
-          :title="typeTitle"
-          :icon-class="typeIcon"
-          style="cursor: pointer; color: var(--star-horse-style)"
+            @click="showType(dataShowType)"
+            :title="typeTitle"
+            :icon-class="typeIcon"
+            style="cursor: pointer; color: var(--star-horse-style)"
         />
       </div>
     </div>
     <div class="data-list-area" v-if="dataShowType == 'list'">
       <el-table
-        ref="starHorseTableCompRef"
-        :data="pageInfo.dataList"
-        @selection-change="handleSelectionChange"
-        @row-click="selectRow"
-        @row-dblclick="editData"
-        :row-key="getRowIdentity"
-        :stripe="true"
-        :fit="true"
-        :size="compSize"
-        :min-height="height"
-        :highlight-current-row="true"
-        :default-expand-all="expand"
-        :row-style="{ height: lineHeight }"
-        :cell-style="{ height: lineHeight, 'font-size': '12px' }"
-        :header-cell-style="{
+          ref="starHorseTableCompRef"
+          :data="pageInfo.dataList"
+          @selection-change="handleSelectionChange"
+          @row-click="selectRow"
+          @row-dblclick="editData"
+          :row-key="getRowIdentity"
+          :stripe="true"
+          :fit="true"
+          :size="compSize"
+          :min-height="height"
+          :highlight-current-row="true"
+          :default-expand-all="expand"
+          :row-style="{ height: lineHeight }"
+          :cell-style="{ height: lineHeight, 'font-size': '12px' }"
+          :header-cell-style="{
           background: '#f2f2f2',
           color: '#707070',
           'font-size': '13px',
           'background-image':
             '-webkit-gradient(linear,left 0,left 100%,from(#f8f8f8),to(#ececec))',
         }"
-        :border="true"
+          :border="true"
       >
         <el-table-column
-          type="selection"
-          :align="'center'"
-          fixed="left"
-          :reserve-selection="true"
-          v-if="showSelection"
+            type="selection"
+            :align="'center'"
+            fixed="left"
+            :reserve-selection="true"
+            v-if="showSelection"
         />
         <el-table-column type="expand" v-if="expandTable">
           <template #default="scope">
             <div class="expand-table">
               <h4>{{ expandTable.title }}</h4>
               <el-table
-                :data="scope.row[expandTable.dataField]"
-                :row-key="getRowIdentity"
-                :stripe="true"
-                :fit="true"
-                :size="compSize"
-                :highlight-current-row="true"
-                :max-height="'400px'"
-                :row-style="{ height: '30px' }"
-                :cell-style="{ height: '30px', 'font-size': '12px' }"
-                :border="true"
+                  :data="scope.row[expandTable.dataField]"
+                  :row-key="getRowIdentity"
+                  :stripe="true"
+                  :fit="true"
+                  :size="compSize"
+                  :highlight-current-row="true"
+                  :max-height="'400px'"
+                  :row-style="{ height: '30px' }"
+                  :cell-style="{ height: '30px', 'font-size': '12px' }"
+                  :border="true"
               >
                 <el-table-column
-                  fixed="left"
-                  :label="i18n('table.operation')"
-                  :width="160"
-                  v-if="
+                    fixed="left"
+                    :label="i18n('table.operation')"
+                    :width="160"
+                    v-if="
                     expandTable.showButton && expandTable.extendFuncs.length > 0
                   "
                 >
                   <template #default="innerScope">
                     <template
-                      v-for="epd in expandTable.extendFuncs"
-                      :key="compKey(epd, epd.authority)"
+                        v-for="epd in expandTable.extendFuncs"
+                        :key="compKey(epd, epd.authority)"
                     >
                       <el-tooltip :content="epd.btnName">
                         <star-horse-icon
-                          v-if="permissions[epd.authority!]"
-                          @click="
+                            v-if="permissions[epd.authority!]"
+                            @click="
                             expandCommonFun(
                               epd.authority!,
                               innerScope.row,
                               scope.row,
                             )
                           "
-                          :icon-class="epd.icon || 'edit'"
-                          style="cursor: pointer"
-                          :color="
+                            :icon-class="epd.icon || 'edit'"
+                            style="cursor: pointer"
+                            :color="
                             epd.authority == 'delete'
                               ? 'var(--el-color-danger)'
                               : 'var(--star-horse-style)'
@@ -1045,43 +1027,43 @@ defineExpose({
                   </template>
                 </el-table-column>
                 <table-column
-                  :fieldList="expandTable"
-                  :compSize="configInfo.inputSize"
-                  :compUrl="compUrl"
-                  :dataFormat="dataFormat"
-                  :sortable="false"
-                  :globalConfig="globalConfig"
-                  :isDynamic="isDynamic"
-                  :showBatchField="showBatchField"
+                    :fieldList="expandTable"
+                    :compSize="configInfo.inputSize"
+                    :compUrl="compUrl"
+                    :dataFormat="dataFormat"
+                    :sortable="false"
+                    :globalConfig="globalConfig"
+                    :isDynamic="isDynamic"
+                    :showBatchField="showBatchField"
                 />
               </el-table>
             </div>
           </template>
         </el-table-column>
         <table-column
-          :fieldList="fieldList"
-          :compSize="configInfo.inputSize"
-          :compUrl="compUrl"
-          :dataFormat="dataFormat"
-          :globalConfig="globalConfig"
-          :isDynamic="isDynamic"
-          :showBatchField="showBatchField"
+            :fieldList="fieldList"
+            :compSize="configInfo.inputSize"
+            :compUrl="compUrl"
+            :dataFormat="dataFormat"
+            :globalConfig="globalConfig"
+            :isDynamic="isDynamic"
+            :showBatchField="showBatchField"
         />
         <el-table-column
-          v-if="
+            v-if="
             buttonList.length > 0 && Object.keys(permissions || {}).length > 0
           "
-          fixed="right"
-          :label="i18n('table.operation')"
-          :width="buttonList.length > 3 ? 160 : 110"
+            fixed="right"
+            :label="i18n('table.operation')"
+            :width="buttonList.length > 3 ? 160 : 110"
         >
           <template #default="scope">
             <tablebtn
-              :row="scope.row"
-              :permissions="permissions"
-              :buttonList="buttonList"
-              :hideBtnCondition="hideBtnCondition"
-              :compSize="compSize"
+                :row="scope.row"
+                :permissions="permissions"
+                :buttonList="buttonList"
+                :hideBtnCondition="hideBtnCondition"
+                :compSize="compSize"
             />
           </template>
         </el-table-column>
@@ -1091,42 +1073,42 @@ defineExpose({
       <el-scrollbar height="100%">
         <el-space wrap>
           <el-card
-            v-for="(data, key) in pageInfo.dataList"
-            :key="compKey(data, key)"
-            class="box-card"
-            style="width: 250px !important; height: 180px !important"
-            shadow="hover"
+              v-for="(data, key) in pageInfo.dataList"
+              :key="compKey(data, key)"
+              class="box-card"
+              style="width: 250px !important; height: 180px !important"
+              shadow="hover"
           >
             <template #header>
               <div
-                class="card-header"
-                @click="selectRow(data)"
-                @dblclick="editData(data)"
+                  class="card-header"
+                  @click="selectRow(data)"
+                  @dblclick="editData(data)"
               >
                 <span>{{
-                  dataFormat(
-                    cardFieldList[0]?.fieldName,
-                    data[cardFieldList[0]?.fieldName],
-                    data,
-                  )
-                }}</span>
+                    dataFormat(
+                        cardFieldList[0]?.fieldName,
+                        data[cardFieldList[0]?.fieldName],
+                        data,
+                    )
+                  }}</span>
               </div>
             </template>
 
             <div
-              class="card-item item"
-              style="width: 99%; margin: 1px auto"
-              :Key="compKey(item, key)"
-              v-for="(item, key) in cardFieldList?.slice(1, 3)"
+                class="card-item item"
+                style="width: 99%; margin: 1px auto"
+                :Key="compKey(item, key)"
+                v-for="(item, key) in cardFieldList?.slice(1, 3)"
             >
               <label>{{ item.label }} :</label>
               <div
-                class="content"
-                @click="selectRow(data)"
-                @dblclick="editData(data)"
+                  class="content"
+                  @click="selectRow(data)"
+                  @dblclick="editData(data)"
               >
                 <el-tooltip
-                  :content="
+                    :content="
                     dataFormat(item.fieldName, data[item.fieldName], data)
                   "
                 >
@@ -1136,12 +1118,12 @@ defineExpose({
             </div>
             <template #footer>
               <tablebtn
-                :row="data"
-                :permissions="permissions"
-                :buttonList="buttonList"
-                :showLimit="6"
-                :hideBtnCondition="hideBtnCondition"
-                :compSize="compSize"
+                  :row="data"
+                  :permissions="permissions"
+                  :buttonList="buttonList"
+                  :showLimit="6"
+                  :hideBtnCondition="hideBtnCondition"
+                  :compSize="compSize"
               />
             </template>
           </el-card>
@@ -1150,23 +1132,23 @@ defineExpose({
     </div>
 
     <el-pagination
-      v-if="showPageBar"
-      :total="pageInfo.totalData"
-      @current-change="pageChangeClick"
-      @size-change="pageSizeClick"
-      :size="compSize"
-      :page-sizes="[20, 50, 100, 200, 300, 400]"
-      layout="total, sizes, prev, pager, next, jumper,slot"
-      v-model:currentPage="pageInfo.currentPage"
-      v-model:page-size="pageInfo.pageSize"
-      v-model:pageCount="pageInfo.totalPage"
+        v-if="showPageBar"
+        :total="pageInfo.totalData"
+        @current-change="pageChangeClick"
+        @size-change="pageSizeClick"
+        :size="compSize"
+        :page-sizes="[20, 50, 100, 200, 300, 400]"
+        layout="total, sizes, prev, pager, next, jumper,slot"
+        v-model:currentPage="pageInfo.currentPage"
+        v-model:page-size="pageInfo.pageSize"
+        v-model:pageCount="pageInfo.totalPage"
     >
       <el-button
-        text
-        icon="refresh"
-        :size="compSize"
-        @click="loadByPage"
-        :title="i18n('table.refresh')"
+          text
+          icon="refresh"
+          :size="compSize"
+          @click="loadByPage"
+          :title="i18n('table.refresh')"
       />
     </el-pagination>
   </div>
