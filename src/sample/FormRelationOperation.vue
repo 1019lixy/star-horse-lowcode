@@ -231,6 +231,7 @@ onMounted(() => {
         :btnPermissions="btnPermissions"
         :primaryKey="primaryKey"
         :compUrl="dataUrl"
+
         :dataFormat="dataFormat"
         :showPageBar="false"
       />

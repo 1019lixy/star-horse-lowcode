@@ -265,65 +265,106 @@ barcode        条形码组件
 5.示例图片
 请到gitee 查看示例图片
 6.BUG 修改记录
+
 #### v2.8.29
+
 ```
 - 增加StarHorseEditor 系统组件
 - api 接口增加loadData，loadGetData函数
 ```
+
 #### v2.8.30
+
 ```
 - Fix StarHorseEditor 不能正常显示问题
 ```
+
 #### v2.8.31
+
 ```
 - Fix StarHorseDialog 超出高度显示异常
 ```
+
 #### v2.8.32
+
 ```
 - Fix StarHorseDraggable 样式显示异常
 ```
+
 #### v2.8.33
+
 ```
 - 优化transfer-item 组件为自适应宽度
 ```
+
 #### v2.8.34
+
 ```
 - 优化StarHorseDraggable 组件拖拽的新能问题
 ```
+
 #### v2.8.40
+
 ```
 - 增加dialog 模态窗组件
 ```
+
 #### v2.8.41
+
 ```
 - 修复bug
 ```
+
 #### v2.8.42
+
 ```
 - 修复json 组件 bug
 ```
+
 #### v2.8.43
+
 ```
 - 修复json 组件 bug,移除测试代码
 ```
+
 #### v2.8.44
+
 ```
 - 修复联动更改类型不响应，修复upload 支持多文件上传不能记录所有文件名问题
 ```
+
 #### v2.8.45
+
 ```
 - 切换htmleditor 插件，原htmleditor 插件没法调整图片大小
 ```
+
 #### v2.8.46
+
 ```
 - input组件 增加属性是否将前缀(mergePrefix:boolean)或者后缀内容(margeAppend:boolean)合并到当前属性中去
 ```
+
 #### v2.8.47
+
 ```
 - 修复因新增input属性导致的bug,优化starhorsedraggable组件拖拽时卡顿问题
 ```
+
 #### v2.8.48
+
 ```
 - 修复barcode,qrcode，signature 组件bug
+```
+
+#### v2.8.49
+
+```
+- 优化StarHorseTableComp组件，增加自定义按钮可覆盖默认按钮功能逻辑,优化分页条可根据业务配置layout(参照element-plus）,以及自定义配置每页多少数据备选项
+```
+#### v2.8.50
+
+```
+- 新增页面风格操作习惯PageConfig组件
 ```
 

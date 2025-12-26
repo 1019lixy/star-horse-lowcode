@@ -1,8 +1,9 @@
 <script setup lang="ts" name="Areainfo">
-import {onMounted} from 'vue';
-import SignatureTest from "@/sample/SignatureTest.vue";
-import DataPickerDemo from "@/sample/DataPickerDemo.vue";
+import {onMounted, ref} from 'vue';
+import FormRelationOperation from "@/sample/FormRelationOperation.vue";
+import {PageConfig} from "@/components/system";
 
+const visible = ref<boolean>(false);
 const initData = async () => {
 };
 onMounted(() => {
@@ -13,14 +14,16 @@ onMounted(() => {
 <template>
   <div class="flex flex-col h-full overflow-hidden">
     <!--        <FormValid/>-->
-<!--    <SignatureTest/>-->
+    <!--    <SignatureTest/>-->
 
     <!--        <StarHorseDraggableValid/>-->
     <!--    <DialogItem/>
         <TransferItem/>-->
     <!--    <dialog-valid/>-->
-    <!--    <FormRelationOperation/>-->
-    <DataPickerDemo/>
+    <FormRelationOperation/>
+    <!--    <DataPickerDemo/>-->
+    <el-button @click="visible=true">验证</el-button>
+    <PageConfig v-model="visible"/>
   </div>
 
 </template>

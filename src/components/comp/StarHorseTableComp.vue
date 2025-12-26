@@ -94,8 +94,20 @@ const props = defineProps({
    *   commonPersons.value = resultData?.data;
    */
   commonPersons: {type: Array as PropType<any>, default: []},
+  /**
+   * 在数据提权的时候需要指定通过那个字段做关联条件
+   */
+  userColumnName: {type: String, default: "a.createdBy"},
   // Button permission
-  btnPermissions: {type: Object as PropType<Record<string, string>>, required: false,default:{}},
+  btnPermissions: {type: Object as PropType<Record<string, string>>, required: false, default: {}},
+  /**
+   * 每页数据备选项
+   */
+  pageCombList: {type: Array, default: [20, 50, 100, 200, 300, 400]},
+  /**
+   * 分页条布局
+   */
+  pageBarLayout: {type: String, default: "total, sizes, prev, pager, next, jumper,slot"}
 });
 const emits = defineEmits(["selectItem", "permission"]);
 let pagePermission = useButtonPermissionStore(piniaInstance);
@@ -145,9 +157,30 @@ const selectedFields = () => {
   exportData();
   exportOperationVisible.value = false;
 };
+/**
+ * 检查是否有操作权限和自定函数需要覆盖原有的逻辑
+ * @param authCode 权限码
+ * @param params 参数
+ */
+const overrideOperation = (authCode: string, params: any) => {
+  if (!permissions?.value[authCode]) return true;
+  const viewBtn = props.extendBtns?.find(item => item.authority == authCode);
+  if (viewBtn && viewBtn.funcName && viewBtn.override) {
+    if (typeof viewBtn.funcName === "function") {
+      viewBtn.funcName(params);
+    } else {
+      console.log("overrideOperation:", viewBtn.funcName);
+    }
+    return true;
+  }
+  return false;
+};
 const exportData = () => {
-  load(i18n("comp.dataProcessing"));
   let ids: any = getIds();
+  if (overrideOperation("export", ids)) {
+    return;
+  }
+  load(i18n("comp.dataProcessing"));
   let params = [];
   let keys: any = props.primaryKey;
   if (ids.length > 0) {
@@ -203,7 +236,11 @@ const getIds = () => {
  * Batch delete
  */
 const batchDelete = async () => {
-  await deleteById(getIds());
+  const ids: any = getIds();
+  if (overrideOperation("batchDelete", ids)) {
+    return;
+  }
+  await deleteById(ids);
 };
 /**
  * Create search conditions
@@ -236,14 +273,11 @@ const init = async () => {
   // }
   permissions.value = {...permissions.value, ...props.btnPermissions};
   emits("permission", permissions.value);
-  // Whether to automatically load list data when initializing
   if (!props.fieldList?.stopAutoLoad) {
     loadByPage();
   } else {
     pageInfo.value.dataList = props.tableDataList || [];
     starHorseTableCompRef.value!.clearSelection();
-    // If there is data that needs to be echoed, it needs to be selected
-    // Before manually setting the selection, you must first clear the selection, otherwise there will be many duplicate selections
     props.reverseDataList?.forEach((item: any) => {
       starHorseTableCompRef.value!.toggleRowSelection(item, true);
     });
@@ -356,7 +390,6 @@ const handleSelectionChange = (val: any) => {
   if (!checkParent(val)) {
     return;
   }
-  // If it is a popup selection, without specifying multiple selection, only one data can be selected
   if (props.dialogInput && !props.multipleSelect) {
     if (val.length <= 1) {
       multipleSelection.value = val;
@@ -379,11 +412,10 @@ const handleSelectionChange = (val: any) => {
             let stemp = arr[sindex];
             let bflag: number = 0;
             for (let skey in stemp) {
-              if (temp.hasOwnProperty(skey) && stemp[skey] == temp[skey]) {
+              if (Object.prototype.hasOwnProperty.call(temp, skey) && stemp[skey] == temp[skey]) {
                 bflag++;
               }
             }
-            // If not equal, it means there is no same data
             if (bflag != Object.keys(stemp).length) {
               filters.push(temp);
             }
@@ -455,12 +487,16 @@ const splitKey = (key: string, row: any) => {
   }
 };
 const viewById = (id: any, isExpand: boolean = false) => {
+  if (overrideOperation("view", id)) {
+    return;
+  }
   dialogProps!.viewVisible = true;
   dialogProps!.ids = id;
   if (isExpand) {
     dialogProps.isExpand = isExpand;
     dialogProps.expandUrl = props.expandTable?.expandUrls;
   }
+
 };
 /**
  * Edit data
@@ -468,7 +504,9 @@ const viewById = (id: any, isExpand: boolean = false) => {
  * @param isExpand
  */
 const editById = (id: any, isExpand: boolean = false) => {
-  if (!permissions?.value["edit"]) return;
+  if (overrideOperation("edit", id)) {
+    return;
+  }
   dialogProps!.editVisible = true;
   dialogProps!.ids = id;
   if (isExpand) {
@@ -482,7 +520,9 @@ const editById = (id: any, isExpand: boolean = false) => {
  * @param isExpand
  */
 const deleteById = async (id: any, isExpand: boolean = false) => {
-  if (!permissions?.value["delete"]) return;
+  if (overrideOperation("delete", id)) {
+    return;
+  }
   let deleteUrl = props.compUrl?.deleteUrl!;
   if (isExpand) {
     deleteUrl = props.expandTable?.expandUrls?.deleteUrl!;
@@ -500,9 +540,7 @@ const pageChangeClick = (currentPage: number) => {
   pageInfo.value.currentPage = currentPage;
   loadByPage();
 };
-// Popup selector property name
 const inputFieldName = ref<string>("");
-// Popup selector property value
 const inputFieldVal = ref<any>();
 const createParams = () => {
   let searchTemp = [];
@@ -516,7 +554,7 @@ const createParams = () => {
   if (props.fieldList?.orderBy) {
     orderByTemp.push(...props.fieldList.orderBy);
   }
-  if (searchFields.length > 0) {
+  if (searchFields?.length > 0) {
     searchTemp.push(...searchFields);
   }
   let condition: any = removeEmptyCondition(props.compUrl?.condition!);
@@ -525,7 +563,7 @@ const createParams = () => {
   }
   // Add shared person information
   if (props.commonPersons?.length && !isSystemManage()) {
-    searchTemp.push(createCondition("a.createdBy", props.commonPersons, "in"));
+    searchTemp.push(createCondition(props.userColumnName, props.commonPersons, "in"));
   }
   if (!props.compUrl?.pageListUrl) {
     return;
@@ -724,7 +762,6 @@ const expandCommonFun = (name: string, row: any, parentRow: any) => {
       id[key] = parentRow[key];
     }
   }
-  // If the corresponding field is not found in the current row data, search from the parent level
   if (name == "view") {
     viewById(id, true);
   } else if (name == "edit") {
@@ -826,7 +863,6 @@ defineExpose({
 });
 </script>
 <template>
-  <!-- Export data specified fields -->
   <star-horse-dialog
       :isShowBtnContinue="false"
       :selfFunc="true"
@@ -1137,8 +1173,8 @@ defineExpose({
         @current-change="pageChangeClick"
         @size-change="pageSizeClick"
         :size="compSize"
-        :page-sizes="[20, 50, 100, 200, 300, 400]"
-        layout="total, sizes, prev, pager, next, jumper,slot"
+        :page-sizes="pageCombList"
+        :layout="pageBarLayout"
         v-model:currentPage="pageInfo.currentPage"
         v-model:page-size="pageInfo.pageSize"
         v-model:pageCount="pageInfo.totalPage"

@@ -334,6 +334,10 @@ export declare interface UserFuncInfo {
      */
     position?: "table" | "toolbar";
     /**
+     * 是否覆盖原来的方法
+     */
+    override?: boolean;
+    /**
      * 子节点
      */
     children?: UserFuncInfo[];
