@@ -2,7 +2,13 @@ import zh_CN from "@/lang/zh_CN";
 // 仅导入必要的类型和工具函数
 import {LangType} from "@/theme/theme";
 import {getLang, setLang} from "@/theme/localStorge";
+import {SelectOption} from "@/components/types";
 
+export const langList:SelectOption[]=[
+    {name:"中文",value:"zh_CN"},
+    {name:"English",value:"en_US"},
+
+];
 // 当前语言包缓存
 let langCache: Record<LangType, Record<string, string | Function>> = {};
 

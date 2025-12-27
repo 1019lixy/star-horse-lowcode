@@ -367,4 +367,9 @@ barcode        条形码组件
 ```
 - 新增页面风格操作习惯PageConfig组件
 ```
+#### v2.8.51
+
+```
+-优化ShForm 组件 在slot 中增加form 参数
+```
 

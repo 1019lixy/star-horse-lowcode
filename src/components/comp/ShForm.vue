@@ -25,17 +25,17 @@ defineExpose({
   <el-form :model="dataForm" v-bind="$attrs" class="data-form" ref="shFormRef">
     <el-scrollbar height="100%" v-if="needScroller">
       <template v-if="$slots.default">
-        <slot></slot>
+        <slot :form="dataForm"></slot>
       </template>
-      <slot v-else name="empty"></slot>
+      <slot v-else name="empty" :form="dataForm"></slot>
     </el-scrollbar>
     <template v-else>
       <template v-if="$slots.default">
-        <slot></slot>
+        <slot :form="dataForm"></slot>
       </template>
-      <slot v-else name="empty"></slot>
+      <slot v-else name="empty" :form="dataForm"></slot>
     </template>
   </el-form>
-  <slot name="button"></slot>
+  <slot name="button" :form="dataForm"></slot>
 </template>
 <style lang="scss" scoped></style>

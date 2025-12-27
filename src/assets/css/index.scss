@@ -406,6 +406,11 @@ button:visited {
   padding: 0 10px 0 20px !important;
   height: 50px !important;
   color: var(--star-horse-white) !important;
+  font-weight: 800 !important;
+  font-size: 15px;
+  svg {
+    color: #fff !important;
+  }
 }
 
 hr {

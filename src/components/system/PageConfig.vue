@@ -6,6 +6,7 @@ import piniaInstance from "@/store";
 import {useDark, useToggle, useVModel} from "@vueuse/core";
 import {Config} from "@/api/settings";
 import {i18n} from "@/lang";
+import {StarHorseIcon} from "@/components/comp";
 
 const props = withDefaults(defineProps<{
   hideDefaultConfig?: boolean,
@@ -19,10 +20,10 @@ const props = withDefaults(defineProps<{
   modelValue: false,
   direction: "rtl",
   resizable: false,
-  title: i18n("dashboard.operationHabitsConfig"),
+  title: () => i18n("dashboard.operationHabitsConfig"),
   compSize: "default",
 });
-const emits = defineEmits(["update:modelValue"]);
+const emits = defineEmits(["update:modelValue", "saveData"]);
 const visible: any = useVModel(props, "modelValue", emits);
 const configStore = useGlobalConfigStore(piniaInstance);
 const sizeList = ref<Array<SelectOption>>([
@@ -221,7 +222,7 @@ const toggle = () => {
   console.log(isDark);
   useToggle(isDark);
 };
-const changeOperation = (_val: any) => {
+const changeOperation = (_val?: any) => {
   configStore.setConfigFormInfo(configInfo.value);
 };
 const resetDefault = () => {
@@ -236,6 +237,11 @@ const resetDefault = () => {
     shortCutMenus: "Y",
   };
   configStore.setConfigFormInfo(defaultConfig);
+};
+const saveData = () => {
+  changeOperation();
+  emits("saveData", configInfo.value);
+  visible.value = false;
 };
 const classicsTheme = (color: string) => {
   configInfo.value.themeColor = color;
@@ -255,7 +261,9 @@ defineExpose({
 });
 </script>
 <template>
-  <el-drawer v-model="visible" :direction="direction" :resizable="resizable">
+  <el-drawer v-model="visible" :direction="direction" header-class="hstyle" :close-on-click-modal="false"
+             :close-on-press-escape="false"
+             :resizable="resizable">
     <template #header>
       <h3>{{ title }}</h3>
     </template>
@@ -268,13 +276,13 @@ defineExpose({
               :size="compSize"
               label-position="top"
           >
-            <slot name="header"></slot>
-<!--            <el-divider content-position="left">
-              {{i18n('pageConfig.pageStyle')}}
-            </el-divider>
-            <el-select v-model="configInfo.pageStyle" :options="pageStyleList" :props="{
-              label:'name'
-            }"/>-->
+            <slot name="header" :form="configInfo"></slot>
+            <!--            <el-divider content-position="left">
+                          {{i18n('pageConfig.pageStyle')}}
+                        </el-divider>
+                        <el-select v-model="configInfo.pageStyle" :options="pageStyleList" :props="{
+                          label:'name'
+                        }"/>-->
             <el-divider content-position="left">
               <el-form-item
                   prop="themeColor"
@@ -399,8 +407,8 @@ defineExpose({
                 </el-form-item>
               </el-col>
             </el-row>
-            <slot name="content"></slot>
-            <slot></slot>
+            <slot name="content" :form="configInfo"></slot>
+            <slot :form="configInfo"></slot>
             <el-divider content-position="left">
               <h4>{{ i18n("pageConfig.otherConfig") }}</h4>
             </el-divider>
@@ -449,24 +457,30 @@ defineExpose({
                 </el-form-item>
               </el-col>
             </el-row>
-            <slot name="footer"></slot>
+            <slot name="footer" :form="configInfo"></slot>
           </el-form>
-          <div class="reset-button">
-            <el-button :size="Config.compSize" @click="resetDefault">
-              <star-horse-icon icon-class="reset"/>
-              {{ i18n("pageConfig.resetDefaultConfig") }}
-            </el-button>
-          </div>
+
         </el-scrollbar>
         <div class="flex flex-col w-full h-full" v-else>
-          <slot name="header"></slot>
-          <slot name="content"></slot>
-          <slot></slot>
-          <slot name="footer"></slot>
+          <slot name="header" :form="configInfo"></slot>
+          <slot name="content" :form="configInfo"></slot>
+          <slot :form="configInfo"></slot>
+          <slot name="footer" :form="configInfo"></slot>
         </div>
       </el-card>
     </template>
-    <template #footer></template>
+    <template #footer>
+      <div class="footer-button">
+        <el-button :size="compSize" @click="saveData" type="primary">
+          <star-horse-icon icon-class="save" color="#fff"/>
+          {{ i18n("form.confirm") }}
+        </el-button>
+        <el-button :size="compSize" type="text" @click="resetDefault">
+          <star-horse-icon icon-class="reset"/>
+          {{ i18n("pageConfig.resetDefaultConfig") }}
+        </el-button>
+      </div>
+    </template>
   </el-drawer>
 </template>
 <style scoped lang="scss">
@@ -477,12 +491,11 @@ defineExpose({
   margin: 10px auto;
 }
 
-.reset-button {
-  margin-top: 15px;
+.footer-button {
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: start;
 }
 
 .theme-item {
