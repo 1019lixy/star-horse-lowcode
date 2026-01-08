@@ -379,4 +379,8 @@ barcode        条形码组件
 -优化commonField 函数 可指定属性显示规则
 -修改 ascOrDesc 函数 为 orderBy
 ```
+#### v2.8.53
 
+```
+-修复国际化显示异常
+```
