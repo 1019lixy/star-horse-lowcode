@@ -9,6 +9,8 @@ import {useGlobalConfigStore} from "@/store/GlobalConfig";
 import {analysisSearchData} from "@/utils/preview";
 import {computed, nextTick, onMounted, PropType, ref} from "vue";
 import {i18n} from "@/lang";
+import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
+import Help from "@/components/help.vue";
 
 let matchTypeList = ref<SelectOption[]>();
 let sarchIcon = ref<string>("search_down");
@@ -52,7 +54,7 @@ const analysisDefaultValue = () => {
 };
 const dataSearch = (val: string | null) => {
   if (val === "reset") {
-    searchForm.value ={...analysisDefaultValue()};
+    searchForm.value = {...analysisDefaultValue()};
   }
   let searchDatas = createSearchParams(props.formData?.fieldList);
   //如果一个页面（包括引入的页面）出现多个此组件,不能走消息总线，
@@ -127,7 +129,12 @@ defineExpose({
                   :value="sitem.value"
                   :label="sitem.name"
                   :key="sitem.value"
-              />
+              >
+                <div class="flex items-center">
+                  <span>{{ sitem.name }}</span>
+                  <span style="margin-left: 10px; " v-if="sitem?.helpMsg"><help :message="sitem?.helpMsg"/></span>
+                </div>
+              </el-option>
             </el-select
             >&nbsp;&nbsp;
           </template>

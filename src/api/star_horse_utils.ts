@@ -1,8 +1,17 @@
-import {SearchInfo, SearchParams,} from "@/components/types/Params";
+import {JoinSearchParams, SearchInfo, SearchParams,} from "@/components/types/Params";
 import {reactive, Reactive, unref} from "vue";
 import {ElLoading} from "element-plus";
 import JSON5 from "json5";
-import {deleteByIds, dictData, download, loadById, loadData, loadGetData, postRequest, uploadRequest,} from "@/api/star_horse_apis";
+import {
+    deleteByIds,
+    dictData,
+    download,
+    loadById,
+    loadData,
+    loadGetData,
+    postRequest,
+    uploadRequest,
+} from "@/api/star_horse_apis";
 import {error, success} from "@/utils/message";
 import {SelectOption} from "@/components/types/SearchProps";
 import {BatchFieldInfo, FieldInfo, OrderByInfo, PageFieldInfo, TabFieldInfo,} from "@/components/types/PageFieldInfo";
@@ -10,10 +19,11 @@ import {ApiUrls} from "@/components/types/ApiUrls";
 import {DialogProps} from "@/components/types/DialogProps";
 import {createDatetime} from "@/api/date_utils";
 import {i18n} from "@/lang";
-import {JoinSearchParams} from "@/components/types/Params";
 import previewImage from "preview-image-js";
 import "preview-image-js/icon.js";
+
 let loading: any = null;
+
 /**
  * 构建菜单树
  * @param data
@@ -50,7 +60,7 @@ export function load(msg: string, defaultTarget?: string) {
     loading = ElLoading.service({
         lock: true,
         target: defaultTarget ?? "#app",
-        text: msg || "Loading...",
+        text: msg || i18n("utils.loading"),
         customClass: "star-horse-loading",
         background: "rgba(0, 0, 0, 0.7)",
     });
@@ -130,7 +140,6 @@ export function commonParseCodeToName(name: string, cellValue: any) {
 }
 
 
-
 /**
  * 数据匹配方式
  */
@@ -152,103 +161,169 @@ export function searchMatchList(): SelectOption[] {
         value: "gte",
     });
     data.push({name: i18n("utils.searchMatch.range"), value: "bt"});
+    data.push({name: i18n("utils.searchMatch.in_digit"), value: "ini", helpMsg: i18n("utils.searchMatch.helpMsg.digit")});
+    data.push({
+        name: i18n("utils.searchMatch.in_character"),
+        value: "ins",
+        helpMsg: i18n("utils.searchMatch.helpMsg.character")
+    });
     return data;
 }
-/**
- * 升序或者降序
- */
-export function ascOrDesc(): SelectOption[] {
-    const options: SelectOption[] = [];
-    options.push({ name: "Asc", value: "asc" });
-    options.push({ name: "Desc", value: "desc" });
-    return options;
-  }
 
-  /**
-   * 请求方式
-   */
-  export function httpMethod(): SelectOption[] {
-    const options: SelectOption[] = [];
-    options.push({ name: "GET", value: "GET" });
-    options.push({ name: "HEAD", value: "HEAD" });
-    options.push({ name: "POST", value: "POST" });
-    options.push({ name: "PUT", value: "PUT" });
-    options.push({ name: "PATCH", value: "PATCH" });
-    options.push({ name: "DELETE", value: "DELETE" });
-    options.push({ name: "OPTIONS", value: "OPTIONS" });
-    options.push({ name: "TRACE", value: "TRACE" });
-    return options;
-  }
-  /**
- * 公共字段
+/**
+ * 排序方式
  */
-export function commonField() {
+export function orderBy(): SelectOption[] {
+    const options: SelectOption[] = [];
+    options.push({name: i18n("utils.asc"), value: "asc"});
+    options.push({name: i18n("utils.desc"), value: "desc"});
+    return options;
+}
+
+/**
+ * 请求方式
+ */
+export function httpMethod(): SelectOption[] {
+    const options: SelectOption[] = [];
+    options.push({name: "GET", value: "GET"});
+    options.push({name: "HEAD", value: "HEAD"});
+    options.push({name: "POST", value: "POST"});
+    options.push({name: "PUT", value: "PUT"});
+    options.push({name: "PATCH", value: "PATCH"});
+    options.push({name: "DELETE", value: "DELETE"});
+    options.push({name: "OPTIONS", value: "OPTIONS"});
+    options.push({name: "TRACE", value: "TRACE"});
+    return options;
+}
+/**
+ * 辅助函数 创建属性对象
+ * @param label 字段标签
+ * @param fieldName 字段名称
+ * @param type 字段类型
+ * @param defaultVisible 默认可见
+ * @param matchType 匹配方式
+ */
+export function createSearchField(label: string, fieldName: string, defaultVisible?: boolean, matchType?: string,type: string="input") {
+    return {
+        label, fieldName, type,
+        defaultVisible, matchType,
+    };
+}
+/**
+ * 辅助函数 创建属性对象
+ * @param label 字段标签
+ * @param fieldName 字段名称
+ * @param type 字段类型
+ * @param formVisible 表单可见
+ * @param listVisible 表格可见
+ */
+export function createField(label: string, fieldName: string, type: string="input", formVisible?: boolean, listVisible?: boolean) {
+    return {
+        label, fieldName, type,
+        formVisible,  listVisible,
+    };
+}
+/**
+ * 公共字段
+ * @param formVisibleFields 表单可见字段
+ * @param tableVisibleFields 表格可见字段
+ */
+export function commonField(formVisibleFields?: Array<string>,tableVisibleFields?: Array<string>) {
     const fields: FieldInfo[] = [];
     fields.push({
-      label: "创建人",
-      fieldName: "createdBy",
+        label: i18n("utils.field.createdBy"),
+        fieldName: "createdBy",
+        formVisible:false,
+        listVisible:false,
     });
     fields.push({
-      label: "创建日期",
-      fieldName: "createdDate",
-      type: "date",
+        label: i18n("utils.field.createdDate"),
+        fieldName: "createdDate",
+        type: "date",
+        formVisible:false,
+        listVisible:false,
     });
     fields.push({
-      label: "修改人",
-      fieldName: "updatedBy",
+        label: i18n("utils.field.updatedBy"),
+        fieldName: "updatedBy",
+        formVisible:false,
+        listVisible:false,
     });
     fields.push({
-      label: "修改日期",
-      fieldName: "updatedDate",
-      type: "date",
+        label: i18n("utils.field.updatedDate"),
+        fieldName: "updatedDate",
+        type: "date",
+        formVisible:false,
+        listVisible:false,
     });
     fields.push({
-      label: "备注",
-      fieldName: "remark",
-      type: "textarea",
+        label: i18n("utils.field.remark"),
+        fieldName: "remark",
+        type: "textarea",
+        formVisible:false,
+        listVisible:false,
     });
     fields.push({
-      label: "数据编号",
-      fieldName: "dataNo",
+        label: i18n("utils.field.dataNo"),
+        fieldName: "dataNo",
+        formVisible:false,
+        listVisible:false,
     });
     fields.push({
-      label: "数据版本号",
-      fieldName: "version",
-      type: "number",
+        label: i18n("utils.field.version"),
+        fieldName: "version",
+        type: "number",
+        formVisible:false,
+        listVisible:false,
     });
 
     fields.push({
-      label: "状态",
-      fieldName: "statusName",
+        label: i18n("utils.field.statusName"),
+        fieldName: "statusName",
+        formVisible:false,
+        listVisible:false,
     });
     fields.push({
-      label: "状态码",
-      fieldName: "statusCode",
+        label: i18n("utils.field.statusCode"),
+        fieldName: "statusCode",
+        formVisible:false,
+        listVisible:false,
     });
 
     fields.push({
-      label: "国际码",
-      fieldName: "local",
+        label: i18n("utils.field.local"),
+        fieldName: "local",
+        formVisible:false,
+        listVisible:false,
     });
     fields.push({
-      label: "是否已逻辑",
-      fieldName: "isDel",
-      type: "number",
+        label: i18n("utils.field.isDel"),
+        fieldName: "isDel",
+        type: "number",
+        formVisible:false,
+        listVisible:false,
     });
-
+    fields.forEach((item) => {
+        if (formVisibleFields?.includes(item.fieldName)) {
+            item.formVisible = true;
+        }
+        if (tableVisibleFields?.includes(item.fieldName)) {
+            item.listVisible = true;
+        }
+    });
     return fields;
-  }
+}
 
-  /**
-   * 数据格式
-   */
-  export function dataType(): SelectOption[] {
+/**
+ * 数据格式
+ */
+export function dataType(): SelectOption[] {
     const options: SelectOption[] = [];
-    options.push({ name: "FORM", value: "FORM" });
-    options.push({ name: "JSON", value: "JSON" });
-    options.push({ name: "BINARY", value: "BINARY" });
+    options.push({name: "FORM", value: "FORM"});
+    options.push({name: "JSON", value: "JSON"});
+    options.push({name: "BINARY", value: "BINARY"});
     return options;
-  }
+}
 
 /**
  * 复制数据
@@ -286,6 +361,7 @@ export function createCondition(
 ): SearchParams {
     return {propertyName: name, value: val, operation: matchType};
 }
+
 /**
  * 创建关联条件
  * @param leftFieldName 左表字段名称
@@ -308,6 +384,7 @@ export function createJoinCondition(
 export function analysisField(conditions: SearchParams[], name: string) {
     return conditions.find((item) => item.propertyName?.endsWith(name)) || {};
 }
+
 /**
  * 判断是不是Json
  * @param v
@@ -584,7 +661,7 @@ export async function dynamicUrlOperation(
         }
         requestParams.push({
             propertyName: item.name ?? item.propertyName,
-            value: item.value||"",
+            value: item.value || "",
             operation: item.matchType,
         });
     });
@@ -828,55 +905,55 @@ export function base64Decode(param: string) {
 export function imagesPreview(images: Array<string> | string) {
     const imagesUrl = Array.isArray(images) ? images : [images];
     previewImage({
-      images: imagesUrl, // 该属性是必填项，其他属性都是非必填。images表示图片地址数组, 也可以是一个object[], object格式为{url: '', name: '', type: '', id: ''}
-      index: 1, // 初始状态显示图片的索引，默认为0
-      fileType: "image", // 文件类型，默认为image，可选项为image, auto。image表示将所有文件都显示为图片；auto表示自动判断文件类型，图片用img标签展示，其他类型文件只展示图标和名称，图标类型有audio、video、word、ppt、excel、pdf、other
-      loop: true, // 是否循环，默认为true
-      thumbnail: true, // 是否显示缩略图预览，默认为true
-      thumbnailDraggable: true, // 是否允许拖拽缩以更改略图位置，默认为true
-      toolbar: true, // 是否显示工具栏，包括放大缩小、旋转、适应窗口、实际尺寸、删除、下载，默认为true
-      delete: true, // 是否显示删除按钮，默认为false，当toolbar为true时生效
-      onDelete: (_index: number, _url: string, _id: string | number) => {
-        // 删除回调，默认为空函数，若不允许删除或者删除失败，返回Promise.reject即可（throw Error也可以）
-        console.log("删除", _index);
-        // return Promise.reject('无权限')
-      },
-      download: true, // 是否显示下载按钮，默认为false, 当toolbar为true时生效
-      onDownload: (_index: number, _url: string, _id: any) => {
-        // 下载回调，不传的话会用内置的下载方法来下载图片到本地
-        console.log("下载", _index);
-      },
-      onClose: () => {
-        // 关闭回调，默认为空，可以在此处做一些清理工作，比如在移动端解除对返回键的拦截
-        console.log("关闭");
-      },
-      onFileClick: (_index: number, _url: string, _id: any) => {
-        // 点击非图片格式文件的回调，可以在此处做跳转等操作
-        window.open("preview url"); // 可以打开预览链接
-      },
-      clickableFileTypes: ["pdf"], // 点击非图片格式文件时，只允许点击这些文件类型，会设置hover样式，当onFileClick不为空时生效，默认为all，即所有类型都可以点击
-      buttonTooltip: true, // 是否显示按钮提示，默认为true，若设为false，则不会显示按钮提示
-      // 以下是语言配置，可以自定义，默认为中文
-      thumbnailTitleText: "overview", // 缩略图标题，默认为’缩略图‘
-      maxZoomText: "It's already the maximum size", // 放大到最大时提示，默认为’已放到最大‘
-      minZoomText: "It's already the smallest", // 缩小到最小时提示，默认为’已缩到最小‘
-      fitText: "fit to screen", // 适应屏幕提示，默认为’适应屏幕‘
-      actualSizeText: "actual size", // 实际尺寸提示，默认为’实际尺寸‘
-      zoomInText: "zoom in", // 放大提示，默认为’放大‘
-      zoomOutText: "zoom out", // 缩小提示，默认为’缩小‘
-      rotateLeftText: "rotate left", // 逆时针旋转提示，默认为’左转‘
-      rotateRightText: "rotate right", // 顺时针旋转提示，默认为’右转‘
-      downloadText: "download", // 下载提示，默认为’下载‘
-      deleteText: "delete", // 删除提示，默认为’删除‘
-      nextText: "next", // 下一张提示，默认为’下一张‘
-      prevText: "prev", // 上一张提示，默认为’上一张‘
-      firstText: "It's already the first one", // 第一张提示，默认为’已到第一个‘
-      lastText: "It's already the last one", // 最后一张提示，默认为’已到最后一个‘
-      closeText: "Close", // 关闭提示，默认为’关闭‘
+        images: imagesUrl, // 该属性是必填项，其他属性都是非必填。images表示图片地址数组, 也可以是一个object[], object格式为{url: '', name: '', type: '', id: ''}
+        index: 1, // 初始状态显示图片的索引，默认为0
+        fileType: "image", // 文件类型，默认为image，可选项为image, auto。image表示将所有文件都显示为图片；auto表示自动判断文件类型，图片用img标签展示，其他类型文件只展示图标和名称，图标类型有audio、video、word、ppt、excel、pdf、other
+        loop: true, // 是否循环，默认为true
+        thumbnail: true, // 是否显示缩略图预览，默认为true
+        thumbnailDraggable: true, // 是否允许拖拽缩以更改略图位置，默认为true
+        toolbar: true, // 是否显示工具栏，包括放大缩小、旋转、适应窗口、实际尺寸、删除、下载，默认为true
+        delete: true, // 是否显示删除按钮，默认为false，当toolbar为true时生效
+        onDelete: (_index: number, _url: string, _id: string | number) => {
+            // 删除回调，默认为空函数，若不允许删除或者删除失败，返回Promise.reject即可（throw Error也可以）
+            console.log("删除", _index);
+            // return Promise.reject('无权限')
+        },
+        download: true, // 是否显示下载按钮，默认为false, 当toolbar为true时生效
+        onDownload: (_index: number, _url: string, _id: any) => {
+            // 下载回调，不传的话会用内置的下载方法来下载图片到本地
+            console.log("下载", _index);
+        },
+        onClose: () => {
+            // 关闭回调，默认为空，可以在此处做一些清理工作，比如在移动端解除对返回键的拦截
+            console.log("关闭");
+        },
+        onFileClick: (_index: number, _url: string, _id: any) => {
+            // 点击非图片格式文件的回调，可以在此处做跳转等操作
+            window.open("preview url"); // 可以打开预览链接
+        },
+        clickableFileTypes: ["pdf"], // 点击非图片格式文件时，只允许点击这些文件类型，会设置hover样式，当onFileClick不为空时生效，默认为all，即所有类型都可以点击
+        buttonTooltip: true, // 是否显示按钮提示，默认为true，若设为false，则不会显示按钮提示
+        // 以下是语言配置，可以自定义，默认为中文
+        thumbnailTitleText: "overview", // 缩略图标题，默认为’缩略图‘
+        maxZoomText: "It's already the maximum size", // 放大到最大时提示，默认为’已放到最大‘
+        minZoomText: "It's already the smallest", // 缩小到最小时提示，默认为’已缩到最小‘
+        fitText: "fit to screen", // 适应屏幕提示，默认为’适应屏幕‘
+        actualSizeText: "actual size", // 实际尺寸提示，默认为’实际尺寸‘
+        zoomInText: "zoom in", // 放大提示，默认为’放大‘
+        zoomOutText: "zoom out", // 缩小提示，默认为’缩小‘
+        rotateLeftText: "rotate left", // 逆时针旋转提示，默认为’左转‘
+        rotateRightText: "rotate right", // 顺时针旋转提示，默认为’右转‘
+        downloadText: "download", // 下载提示，默认为’下载‘
+        deleteText: "delete", // 删除提示，默认为’删除‘
+        nextText: "next", // 下一张提示，默认为’下一张‘
+        prevText: "prev", // 上一张提示，默认为’上一张‘
+        firstText: "It's already the first one", // 第一张提示，默认为’已到第一个‘
+        lastText: "It's already the last one", // 最后一张提示，默认为’已到最后一个‘
+        closeText: "Close", // 关闭提示，默认为’关闭‘
     });
 
     // closeDialog() // 该方法可以关闭预览窗口，比如在移动端监听返回键，在返回键拦截的情况下，点击返回键可以调用该方法关闭预览窗口
-  }
+}
 
 /**
  * 设置css 全局变量
@@ -891,14 +968,15 @@ export function setCssVar(
 ) {
     dom.style.setProperty(name, val);
 }
+
 /**
  * 去除空格
  * @param data
  */
 export function trim(data: string) {
     if (!data) {
-      return data;
+        return data;
     }
     return data.replace(/(^\s*)|(\s*$)/g, "");
-  }
-  
+}
+

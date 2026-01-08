@@ -354,7 +354,7 @@ export declare interface OrderByInfo {
     /**
      * 升降序 asc 升序 desc 降序
      */
-    ascOrDesc: string;
+    orderBy: string;
 }
 
 /**

@@ -372,4 +372,11 @@ barcode        条形码组件
 ```
 -优化ShForm 组件 在slot 中增加form 参数
 ```
+#### v2.8.52
+
+```
+-增加查询条件in查询选项,增加创建查询属性函数createSearchField和创建表单属性createField函数
+-优化commonField 函数 可指定属性显示规则
+-修改 ascOrDesc 函数 为 orderBy
+```
 

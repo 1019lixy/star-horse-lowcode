@@ -1,5 +1,5 @@
 <script setup lang="ts" name="Areainfo">
-import { apiInstance, dialogPreps } from "@/api/star_horse_utils";
+import {apiInstance, createSearchField, dialogPreps} from "@/api/star_horse_utils";
 import { ApiUrls } from "@/components/types/ApiUrls";
 import { PageFieldInfo } from "@/components/types/PageFieldInfo";
 import { SearchFields } from "@/components/types/SearchProps";
@@ -8,18 +8,8 @@ import { onMounted, provide, reactive, ref } from "vue";
 const dataUrl: ApiUrls = apiInstance("system-config", "system/areainfo");
 const searchFormData = reactive<SearchFields>({
   fieldList: [
-    {
-      label: "区域名称",
-      defaultVisible: true,
-      matchType: "lk",
-      fieldName: "areaName",
-    },
-    {
-      label: "区域编码",
-      defaultVisible: true,
-      matchType: "lk",
-      fieldName: "areaCode",
-    },
+      createSearchField("区域名称","areaName",true,"lk"),
+      createSearchField("区域编码","areaCode",true,"lk"),
   ],
 });
 const batchFieldList = reactive<PageFieldInfo>({
@@ -66,7 +56,7 @@ const batchFieldList = reactive<PageFieldInfo>({
           }
         },
         {
-          fieldName: "picUrl",
+          fieldName: "picUrl2",
           label: "图片地址",
           type: "input",
           formVisible: false,
