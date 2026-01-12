@@ -3,6 +3,7 @@ import {onMounted, ref} from 'vue';
 import FormRelationOperation from "@/sample/FormRelationOperation.vue";
 import {PageConfig} from "@/components/system";
 import {langList} from "@/lang";
+import SpeakDemo from "@/sample/SpeakDemo.vue";
 
 const visible = ref<boolean>(false);
 const initData = async () => {
@@ -21,8 +22,8 @@ onMounted(() => {
     <!--    <DialogItem/>
         <TransferItem/>-->
     <!--    <dialog-valid/>-->
-    <FormRelationOperation/>
-    <!--    <DataPickerDemo/>-->
+<!--    <FormRelationOperation/>
+    &lt;!&ndash;    <DataPickerDemo/>&ndash;&gt;
     <el-button @click="visible=true">验证</el-button>
     <PageConfig v-model="visible">
       <template #header="{form}">
@@ -34,7 +35,8 @@ onMounted(() => {
           </el-select>
         </el-form-item>
       </template>
-    </PageConfig>
+    </PageConfig>-->
+    <SpeakDemo/>
   </div>
 
 </template>

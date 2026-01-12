@@ -16,7 +16,7 @@ import draggable from "vuedraggable-es";
 
 export * from "@/api/star_horse_apis";
 export * from "@/api/star_horse_utils";
-
+export * from "@/api/WebSocketUtils";
 export * from "@/api/date_utils";
 export * from "@/api/system";
 export * from "@/api/user_func";
