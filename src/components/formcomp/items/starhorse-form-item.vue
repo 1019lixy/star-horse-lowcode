@@ -1,25 +1,12 @@
 <script setup lang="ts" name="StarHorseFormItem">
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import FieldList from "@/components/formcomp/utils/FieldList.vue";
-import { ItemPreps } from "@/components/types/ItemPreps";
-import { i18n } from "@/lang";
-import {
-  dynamicFormContextMenuData,
-  getParentComp,
-  moveDownItem,
-  moveUpItem,
-  removeItem,
-} from "@/plugins/AblesPlugin";
+import {ItemPreps} from "@/components/types/ItemPreps";
+import {i18n} from "@/lang";
+import {dynamicFormContextMenuData, getParentComp, moveDownItem, moveUpItem, removeItem,} from "@/plugins/AblesPlugin";
 import piniaInstance from "@/store";
-import { useDesignFormStore } from "@/store/DesignForm";
-import {
-  computed,
-  nextTick,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  shallowRef,
-} from "vue";
+import {useDesignFormStore} from "@/store/DesignForm";
+import {computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef,} from "vue";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -30,19 +17,19 @@ const props = withDefaults(defineProps<ItemPreps>(), {
 });
 let designForm = useDesignFormStore(piniaInstance);
 let isEdit = computed(() => props.isDesign);
+let editUserInfo = computed(() => {
+  let userInfo = designForm.getCurrentCompEditUserInfo(props.field?.id || props.field?.preps.id);
+  return userInfo ? userInfo.name + "正在编辑中" : "";
+});
 // Use shallowRef for better performance
-let currentItemId = shallowRef(designForm.currentItemId);
+let currentItemId = computed(()=>designForm.currentItemId);
+const itemId=computed(()=>props.field?.id || props.field?.preps.id);
 const isDisabled = computed(() => props.disabled);
 
 let componentVisible = computed(() => {
   return (
-    designForm.componentVisible && currentItemId.value == props.field?.preps.id
+      designForm.componentVisible && currentItemId.value == itemId.value
   );
-});
-
-// Update currentItemId when store changes
-designForm.$subscribe(() => {
-  currentItemId.value = designForm.currentItemId;
 });
 const selectParentContainer = () => {
   if (!isEdit.value || isDisabled.value) return;
@@ -53,9 +40,11 @@ let selectDebounceTimer: any = null;
 
 const selectData = (data: any) => {
   if (!isEdit.value || isDisabled.value) return;
-
+  if (editUserInfo.value.length > 0) {
+    return;
+  }
   // Check for duplicate selection to avoid unnecessary updates
-  if (currentItemId.value === props.field?.preps?.id) {
+  if (currentItemId.value === itemId.value) {
     return;
   }
 
@@ -66,12 +55,11 @@ const selectData = (data: any) => {
 
   // Debounce mechanism with 100ms delay
   selectDebounceTimer = setTimeout(() => {
-    // Use nextTick for batch processing
     nextTick(() => {
       designForm.selectItem(
-        props.field,
-        data.itemType,
-        getParentComp(props.parentField),
+          props.field,
+          data.itemType,
+          getParentComp(props.parentField),
       );
     });
   }, 100);
@@ -112,63 +100,64 @@ onBeforeUnmount(() => {
   }
 });
 
-onMounted(() => {});
+onMounted(() => {
+});
 </script>
 <template>
   <star-horse-dialog
-    box-width="450px"
-    box-height="70%"
-    :source="3"
-    :full-screen="false"
-    :title="i18n('form.changeComponent')"
-    :self-func="true"
-    :dialog-visible="componentVisible"
-    @closeAction="close"
+      box-width="450px"
+      box-height="70%"
+      :source="3"
+      :full-screen="false"
+      :title="i18n('form.changeComponent')"
+      :self-func="true"
+      :dialog-visible="componentVisible"
+      @closeAction="close"
   >
     <template #footer>
       <el-button type="primary" size="default" @click="close"
-        >{{ i18n("form.confirm") }}
+      >{{ i18n("form.confirm") }}
       </el-button>
     </template>
-    <field-list @selectData="changeItem" />
+    <field-list @selectData="changeItem"/>
   </star-horse-dialog>
   <div
-    class="w-fill"
-    :class="{ 'item-info': field?.preps?.itemType != 'usercomp' }"
-    :style="{
+      class="w-fill"
+      :class="{ 'item-info': field?.preps?.itemType != 'usercomp' }"
+      :style="{
       margin: field?.preps?.itemType == 'button' ? '5px auto' : 'unset',
     }"
-    v-if="bareFlag === true"
+      v-if="bareFlag === true"
   >
-    <help :message="field?.preps?.helpMsg" v-if="field?.preps?.helpMsg" />
+    <help :message="field?.preps?.helpMsg" v-if="field?.preps?.helpMsg"/>
     <slot></slot>
   </div>
   <div v-else class="form-item-operation">
     <div
-      class="w-fill"
-      :class="{
+        class="w-fill"
+        :class="{
         'design-star-horse': isEdit && !disabled,
         'field-item': true,
-        'active-item': currentItemId == field?.preps?.id && isEdit && !disabled,
+        'active-item': currentItemId == itemId && isEdit && !disabled,
       }"
-      v-if="showFormItem"
-      @click="selectData(field)"
-      @contextmenu="itemContextMenu"
+        @click="selectData(field)"
+        @contextmenu="itemContextMenu"
     >
       <el-form-item
-        :size="field?.preps['size'] || 'default'"
-        v-if="
+          :size="field?.preps['size'] || 'default'"
+          v-if="
+          showFormItem&&
           parentField?.itemType != 'table' &&
           field.preps?.itemType != 'divider' &&
           field?.preps?.headerFlag != 'Y'
         "
-        :style="{
+          :style="{
           marginBottom: isEdit && !disabled ? '1px' : '18px',
         }"
-        class="flex items-center w-full"
-        :label="field?.preps['hideLabel'] ? '' : field?.preps['label']"
-        :prop="field?.preps['name']"
-        :rules="
+          class="flex items-center w-full"
+          :label="field?.preps['hideLabel'] ? '' : field?.preps['label']"
+          :prop="field?.preps['name']"
+          :rules="
           field?.preps['required']
             ? [
                 {
@@ -180,106 +169,96 @@ onMounted(() => {});
             : []
         "
       >
-        <help :message="field.preps?.helpMsg" v-if="field.preps?.helpMsg" />
+        <help :message="field.preps?.helpMsg" v-if="field.preps?.helpMsg"/>
         <slot></slot>
       </el-form-item>
       <div
-        class="w-fill"
-        v-else
-        :class="{
-          'bare-item': true,
+          v-else
+          :class="{
           'item-info': field?.preps?.itemType != 'usercomp',
         }"
-        :style="{
+          :style="{
           margin: field?.itemType == 'button' ? '5px auto' : 'unset',
         }"
-        @click.stop="selectData(field)"
+          @click.stop="selectData(field)"
       >
-        <help :message="field.preps?.helpMsg" v-if="field.preps?.helpMsg" />
+        <help :message="field.preps?.helpMsg" v-if="field.preps?.helpMsg"/>
         <slot></slot>
       </div>
+      <div v-if="isEdit&&editUserInfo.length>0" class="field-action ">{{ editUserInfo }}</div>
       <div
-        class="field-action"
-        v-if="isEdit && !disabled && currentItemId == field?.preps?.id"
+          class="field-action"
+          v-else-if="isEdit && !disabled && currentItemId == itemId"
       >
         <el-tooltip
-          :content="i18n('form.selectParentContainer')"
-          v-if="parentField?.itemType"
+            :content="i18n('form.selectParentContainer')"
+            v-if="parentField?.itemType"
         >
           <star-horse-icon
-            @click.stop="selectParentContainer()"
-            icon-class="select-parent"
-            cursor="pointer"
-            style="color: var(--star-horse-white)"
+              @click.stop="selectParentContainer()"
+              icon-class="select-parent"
+              cursor="pointer"
+              style="color: var(--star-horse-white)"
           />
         </el-tooltip>
         <el-tooltip :content="i18n('form.changeComponent')">
           <star-horse-icon
-            @click.stop="exchangeItem"
-            icon-class="exchange"
-            cursor="pointer"
-            style="color: var(--star-horse-white)"
+              @click.stop="exchangeItem"
+              icon-class="exchange"
+              cursor="pointer"
+              style="color: var(--star-horse-white)"
           />
         </el-tooltip>
         <el-tooltip :content="i18n('form.moveUp')">
           <star-horse-icon
-            @click.stop="moveUpItem(isEdit, field?.preps, parentField)"
-            icon-class="move-up"
-            cursor="pointer"
-            style="color: var(--star-horse-white)"
+              @click.stop="moveUpItem(isEdit, field?.preps, parentField)"
+              icon-class="move-up"
+              cursor="pointer"
+              style="color: var(--star-horse-white)"
           />
         </el-tooltip>
         <el-tooltip :content="i18n('form.moveDown')">
           <star-horse-icon
-            @click.stop="moveDownItem(isEdit, field?.preps, parentField)"
-            icon-class="move-down"
-            cursor="pointer"
-            style="color: var(--star-horse-white)"
+              @click.stop="moveDownItem(isEdit, field?.preps, parentField)"
+              icon-class="move-down"
+              cursor="pointer"
+              style="color: var(--star-horse-white)"
           />
         </el-tooltip>
         <el-tooltip :content="i18n('form.deleteComponent')">
           <star-horse-icon
-            @click.stop="removeItem(isEdit, field?.preps, parentField)"
-            icon-class="clear-all"
-            cursor="pointer"
-            style="color: var(--star-horse-white)"
+              @click.stop="removeItem(isEdit, field?.preps, parentField)"
+              icon-class="clear-all"
+              cursor="pointer"
+              style="color: var(--star-horse-white)"
           />
         </el-tooltip>
       </div>
       <div
-        class="drag-handler"
-        v-if="isEdit && currentItemId == field?.preps?.id"
+          class="drag-handler"
+          v-if="isEdit && currentItemId == itemId"
       >
         <el-tooltip :content="i18n('form.drag')">
           <star-horse-icon
-            icon-class="drag"
-            style="cursor: move; color: var(--star-horse-white)"
+              icon-class="drag"
+              style="cursor: move; color: var(--star-horse-white)"
           />
         </el-tooltip>
 
         <el-tooltip :content="field?.preps['itemNameLabel']">
           <span
-            style="color: var(--star-horse-white); cursor: pointer"
-            @click="selectData(field)"
-            >{{ field?.preps["itemNameLabel"] }}</span
+              style="color: var(--star-horse-white); cursor: pointer"
+              @click="selectData(field)"
+          >{{ field?.preps["itemNameLabel"] }}</span
           >
         </el-tooltip>
       </div>
     </div>
-    <div
-      class="item-info"
-      :style="{
-        margin: field?.preps?.itemType == 'button' ? '5px auto' : 'unset',
-      }"
-      v-else
-    >
-      <help :message="field?.preps?.helpMsg" v-if="field?.preps?.helpMsg" />
-      <slot></slot>
-    </div>
+
     <Teleport to="body">
       <ContentMenu
-        ref="itemContextMenuRef"
-        :menu-data="dynamicFormContextMenuData(field, parentField, 'item')"
+          ref="itemContextMenuRef"
+          :menu-data="dynamicFormContextMenuData(field, parentField, 'item')"
       />
     </Teleport>
   </div>

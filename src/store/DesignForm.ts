@@ -1,9 +1,10 @@
-
 import {defineStore} from "pinia";
 import {ref, shallowRef, unref} from "vue";
 import JSON5 from "json5";
 import {CompType} from "@/components/types/FormType";
 import {analysisCompDatas} from "@/api/form_utils";
+import {warning} from "@/utils/message";
+import {UserInfo} from "@/components/types";
 
 export const useDesignFormStore = defineStore("designForm", () => {
     const containerList = ref<CompType[]>([]);
@@ -13,6 +14,7 @@ export const useDesignFormStore = defineStore("designForm", () => {
     const formInfo = ref<any>({});
     const compList = ref<Array<any>>([]);
     const compListNoLayer = shallowRef<Record<string, any>>({});
+    const editUserList = shallowRef<Record<string, UserInfo>>({});
     const formData = ref<any>({});
     const currentComp = shallowRef<Array<any> | any>();
     // 添加缓存状态标记和缓存结果
@@ -116,19 +118,19 @@ export const useDesignFormStore = defineStore("designForm", () => {
         reAndUnDo();
     };
     /**
-     * 激活组件的数下
+     * 激活组件的
      * @param data 数据
      * @param itemType 数据类型
      * @param parentType 父组件类型
      */
     const selectItem = (data: any, itemType: string, parentType: string) => {
         // Check for duplicate selection to avoid unnecessary updates
-        if (currentItemId.value === data?.id) {
+        const itemId = data?.id || data?.preps.id;
+        if (currentItemId.value === itemId) {
             return;
         }
-
         currentCompCategory.value = data.compType;
-        currentItemId.value = data?.id;
+        currentItemId.value = itemId;
         parentCompType.value = parentType;
         currentComp.value = data;
         currentItemType.value = itemType || data.itemType;
@@ -311,6 +313,7 @@ export const useDesignFormStore = defineStore("designForm", () => {
         currentItemType.value = "";
         parentCompType.value = "";
         currentCompCategory.value = "";
+        editUserList.value = {};
         formInfo.value = {
             rules: "",
             inline: "N",
@@ -360,6 +363,30 @@ export const useDesignFormStore = defineStore("designForm", () => {
             formInfo.value["dataIndex"] = 1;
         }
         return formInfo.value["dataIndex"]++;
+    };
+    /**
+     * 获取当前组件编辑用户的信息
+     * @param compId 组件Id
+     */
+    const getCurrentCompEditUserInfo = (compId: string): UserInfo => {
+        return editUserList.value && editUserList.value[compId];
+    };
+    /**
+     * 添加当前编辑组件的用户
+     * @param compId 组件Id
+     * @param userinfo 用户信息
+     */
+    const addCurrentCompEditUserInfo = (compId: string, userinfo: UserInfo) => {
+        if (editUserList.value && editUserList.value[compId]) {
+            warning("其它人正在编辑该组件");
+            return;
+        }
+        Object.entries(editUserList.value).forEach(([key, value]) => {
+            if (value.userId == userinfo.userId) {
+                delete editUserList.value[key];
+            }
+        });
+        editUserList.value[compId] = userinfo;
     };
     return {
         formData,
@@ -420,5 +447,7 @@ export const useDesignFormStore = defineStore("designForm", () => {
         setPreviewVisible,
         setShortKeyDisabled,
         getFieldDataIndex,
+        getCurrentCompEditUserInfo,
+        addCurrentCompEditUserInfo,
     };
 });

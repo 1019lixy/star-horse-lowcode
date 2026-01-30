@@ -1,19 +1,21 @@
 <template>
   {{ fields }}
   <box-container
-    :formData="formData"
-    :field="fields"
-    :is-design="true"
-    :formInfo="{}"
+      :formData="formData"
+      :field="fields"
+      :isDesign="true"
+      :formInfo="{}"
   />
+  {{currenetId}}
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from "vue";
+import {computed, onMounted, ref} from "vue";
 import piniaInstance from "@/store";
-import { useDesignFormStore } from "@/store/designForm";
+import {useDesignFormStore} from "@/store/designForm";
 
 let designForm = useDesignFormStore(piniaInstance);
+let currenetId=computed(()=>designForm.currentItemId);
 const formData = ref<any>({
   test: "1-2-1",
 });
@@ -47,7 +49,8 @@ const fields = ref<any>({
               {
                 itemType: "switch",
                 type: "item",
-                preps: { fieldName: "test2", label: "Switch" },
+                id: "sh0aacfdf0-a223-463d-9b9b-2",
+                preps: {fieldName: "test2", label: "Switch"},
               },
             ],
           },
@@ -67,8 +70,8 @@ const fields = ref<any>({
               {
                 itemType: "input",
                 type: "item",
-                id: "xxx",
-                preps: { fieldName: "test", label: "test" },
+                id: "sh0aacfdf0-a223-463d-9b9b-xxx",
+                preps: {fieldName: "test", label: "test"},
               },
             ],
           },
@@ -107,6 +110,11 @@ const fields = ref<any>({
 });
 onMounted(() => {
   designForm.clearAll(true);
+  designForm.addCurrentCompEditUserInfo("sh0aacfdf0-a223-463d-9b9b-xxx", {
+    userId: "测试",
+    name: "测试",
+    username: "测试"
+  });
 });
 </script>
 

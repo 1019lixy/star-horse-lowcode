@@ -263,7 +263,7 @@ onMounted(async () => {
           temp["fieldName"] = item.prefix + "." + temp["fieldName"];
         }
         temp["defaultVisible"] = true;
-        if (item?.type == "input" && !item["matchType"]) {
+        if ((!item?.type || item?.type == "input") && !item["matchType"]) {
           temp["matchType"] = "lk";
         }
         searchFieldList.push(temp);

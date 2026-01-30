@@ -15,3 +15,4 @@ export * from "./StarHorseType";
 export * from "./BtnAuth";
 export * from "./ItemPreps";
 export * from "./FormType";
+export * from "./UserinfoType";

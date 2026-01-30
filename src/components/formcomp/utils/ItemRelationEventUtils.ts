@@ -1,15 +1,13 @@
 import {createCondition, dynamicUrlOperation, isJson,} from "@/api/star_horse_utils";
 import {userFunction} from "@/api/user_func";
 import {RelationDetail, SelectOption} from "@/components/types";
-import piniaInstance from "@/store";
-import {useDesignFormStore} from "@/store/DesignForm";
 import {error} from "@/utils/message";
 import {computed, nextTick, unref, watch} from "vue";
 import JSON5 from "json5";
 
-const designForm = useDesignFormStore(piniaInstance);
-
-const isDesign = computed(() => designForm.isEdit);
+// const designForm = useDesignFormStore(piniaInstance);
+//
+// const isDesign = computed(() => designForm.isEdit);
 
 const fieldAssign = (
     props: any,
@@ -246,9 +244,9 @@ const allAction = (
     } catch (e) {
         error("事件触发异常：" + e);
     }
-    if (isDesign.value && isInit) {
-        return;
-    }
+    // if (isDesign.value && isInit) {
+    //     return;
+    // }
 };
 /**
  * Button 组件的点击事件
