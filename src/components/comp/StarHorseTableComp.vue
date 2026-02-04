@@ -22,6 +22,7 @@ import Sortable from "sortablejs";
 import {i18n} from "@/lang";
 import {computed, inject, onMounted, PropType, reactive, ref, unref, watch,} from "vue";
 import JSON5 from "json5";
+import {EditCondition} from "@/components/types";
 
 const dynamicForm = useDynamicFormStore(piniaInstance);
 const props = defineProps({
@@ -107,7 +108,11 @@ const props = defineProps({
   /**
    * 分页条布局
    */
-  pageBarLayout: {type: String, default: "total, sizes, prev, pager, next, jumper,slot"}
+  pageBarLayout: {type: String, default: "total, sizes, prev, pager, next, jumper,slot"},
+  /**
+   * 编辑条件
+   */
+  editCondition: {type: Object as PropType<EditCondition[]>},
 });
 const emits = defineEmits(["selectItem", "permission"]);
 let pagePermission = useButtonPermissionStore(piniaInstance);
@@ -205,9 +210,9 @@ const exportData = () => {
   if (params.length == 0) {
     params = searchFields;
   }
-  let defaultcond: any = removeEmptyCondition(props.compUrl?.condition!);
-  if (defaultcond?.length > 0) {
-    params.push(...defaultcond);
+  let defaultCond: any = removeEmptyCondition(props.compUrl?.condition!);
+  if (defaultCond?.length > 0) {
+    params.push(...defaultCond);
   }
   let condition: any = {
     fieldList: params,
@@ -447,7 +452,7 @@ const tbCommonFun = (name: string | undefined, param: any) => {
     viewById(id);
   } else if (name == "edit") {
     editById(id);
-  } else if (name == "delete" || name == "batchDelete") {
+  } else if (["delete", "batchDelete"].includes(name)) {
     deleteById(id);
   } else {
     console.log(i18n("comp.undefinedFunction"), name);

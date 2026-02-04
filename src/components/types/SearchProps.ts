@@ -41,3 +41,17 @@ export type SearchProps = {
 export type SearchFields = {
     fieldList: SearchProps[];
 };
+
+/**
+ * 编辑条件
+ */
+export interface EditCondition {
+    /**
+     * 属性名字
+     */
+    fieldName: string;
+    /**
+     * 配置条件
+     */
+    matchType?: string;
+}

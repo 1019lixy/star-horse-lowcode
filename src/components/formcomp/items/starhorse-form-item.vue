@@ -6,7 +6,8 @@ import {i18n} from "@/lang";
 import {dynamicFormContextMenuData, getParentComp, moveDownItem, moveUpItem, removeItem,} from "@/plugins/AblesPlugin";
 import piniaInstance from "@/store";
 import {useDesignFormStore} from "@/store/DesignForm";
-import {computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef,} from "vue";
+import {computed, nextTick, onBeforeUnmount, onMounted, ref,} from "vue";
+import {warning} from "@/utils/message";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -22,8 +23,8 @@ let editUserInfo = computed(() => {
   return userInfo ? userInfo.name + "正在编辑中" : "";
 });
 // Use shallowRef for better performance
-let currentItemId = computed(()=>designForm.currentItemId);
-const itemId=computed(()=>props.field?.id || props.field?.preps.id);
+let currentItemId = computed(() => designForm.currentItemId);
+const itemId = computed(() => props.field?.id || props.field?.preps.id);
 const isDisabled = computed(() => props.disabled);
 
 let componentVisible = computed(() => {
@@ -37,10 +38,13 @@ const selectParentContainer = () => {
 };
 // Add debounce control
 let selectDebounceTimer: any = null;
+// Add refresh flag for component
+const refreshFlag = ref(0);
 
 const selectData = (data: any) => {
   if (!isEdit.value || isDisabled.value) return;
   if (editUserInfo.value.length > 0) {
+    warning("该属性正被他人编辑中...");
     return;
   }
   // Check for duplicate selection to avoid unnecessary updates
@@ -53,16 +57,18 @@ const selectData = (data: any) => {
     clearTimeout(selectDebounceTimer);
   }
 
-  // Debounce mechanism with 100ms delay
+  // Debounce mechanism with reduced delay
   selectDebounceTimer = setTimeout(() => {
+    designForm.selectItem(
+        props.field,
+        data.itemType,
+        getParentComp(props.parentField),
+    );
+    // Force component refresh after selection
     nextTick(() => {
-      designForm.selectItem(
-          props.field,
-          data.itemType,
-          getParentComp(props.parentField),
-      );
+      refreshFlag.value++;
     });
-  }, 100);
+  }, 50); // Reduced delay for better responsiveness
 };
 
 const exchangeItem = () => {
@@ -189,6 +195,7 @@ onMounted(() => {
       <div
           class="field-action"
           v-else-if="isEdit && !disabled && currentItemId == itemId"
+          :key="`field-action-${currentItemId}-${refreshFlag}`"
       >
         <el-tooltip
             :content="i18n('form.selectParentContainer')"
@@ -237,6 +244,7 @@ onMounted(() => {
       <div
           class="drag-handler"
           v-if="isEdit && currentItemId == itemId"
+          :key="`drag-handler-${currentItemId}-${refreshFlag}`"
       >
         <el-tooltip :content="i18n('form.drag')">
           <star-horse-icon

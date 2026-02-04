@@ -33,16 +33,30 @@ const boxDytableAnalysis = (item: any) => {
     for (const sindex in elements) {
         //获取当前行的列数
         const columns = elements[sindex].columns;
+        let colHeight;
+        columns.forEach(column => {
+            if (column.colHeight) {
+                colHeight = column.colHeight;
+                return false;
+            }
+        });
         const columnItems: FieldInfo[] | any = [];
         for (const ssindex in columns) {
             //获取第几列
             const column = columns[ssindex];
+
             //判断当前列有没有组件,每列支持一个或者多个组件
             const currentColumnItems: FieldInfo[] | any = [];
             column?.items?.forEach((temp: any) => {
                 let {item, fieldInfo, layerItem, searchItem} = itemAnalysis(temp);
                 boxItems = {...boxItems, ...item};
                 children.push(layerItem);
+                if (!fieldInfo.preps) {
+                    fieldInfo.preps = {};
+                }
+                if (colHeight) {
+                    fieldInfo.preps["colHeight"] = colHeight;
+                }
                 currentColumnItems.push(fieldInfo);
                 if (Object.keys(searchItem).length > 0) {
                     searchItemList.push(searchItem);
@@ -229,10 +243,17 @@ export const analysisCompDatas = (dataList: any) => {
                 selectList.push(currentLayerContainer);
             }
             compListResult = {...compListResult, ...boxItems};
-            if (Array.isArray(fieldList)) {
-                compFieldList.push(...fieldList);
+            if (comp.itemType === "dytable") {
+                compFieldList.push({
+                    fieldName: "",
+                    dytableList: fieldList
+                });
             } else {
-                compFieldList.push(fieldList);
+                if (Array.isArray(fieldList)) {
+                    compFieldList.push(...fieldList);
+                } else {
+                    compFieldList.push(fieldList);
+                }
             }
             if (searchItemList.length > 0) {
                 searchFieldList.push(...searchItemList);

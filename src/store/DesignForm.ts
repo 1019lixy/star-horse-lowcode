@@ -3,7 +3,6 @@ import {ref, shallowRef, unref} from "vue";
 import JSON5 from "json5";
 import {CompType} from "@/components/types/FormType";
 import {analysisCompDatas} from "@/api/form_utils";
-import {warning} from "@/utils/message";
 import {UserInfo} from "@/components/types";
 
 export const useDesignFormStore = defineStore("designForm", () => {
@@ -377,16 +376,23 @@ export const useDesignFormStore = defineStore("designForm", () => {
      * @param userinfo 用户信息
      */
     const addCurrentCompEditUserInfo = (compId: string, userinfo: UserInfo) => {
-        if (editUserList.value && editUserList.value[compId]) {
-            warning("其它人正在编辑该组件");
-            return;
-        }
+        // if (editUserList.value && editUserList.value[compId]) {
+        //     warning("其它人正在编辑该组件");
+        //     return;
+        // }
         Object.entries(editUserList.value).forEach(([key, value]) => {
             if (value.userId == userinfo.userId) {
                 delete editUserList.value[key];
             }
         });
         editUserList.value[compId] = userinfo;
+    };
+    /**
+     * 删除当前编辑的组件
+     * @param compId
+     */
+    const removeCurrentCompEditUserInfo = (compId: string) => {
+        editUserList.value && delete editUserList.value[compId];
     };
     return {
         formData,
@@ -449,5 +455,6 @@ export const useDesignFormStore = defineStore("designForm", () => {
         getFieldDataIndex,
         getCurrentCompEditUserInfo,
         addCurrentCompEditUserInfo,
+        removeCurrentCompEditUserInfo
     };
 });
