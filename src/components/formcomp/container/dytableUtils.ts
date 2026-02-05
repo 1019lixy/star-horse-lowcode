@@ -5,13 +5,13 @@ import { uuid } from "@/api/system";
  */
 export const colDataInfo = (type: any) => {
   if (type == "dytable") {
-    return { _uuid: uuid(), colspan: 1, rowspan: 1, items: [] };
+    return { id: uuid(), colspan: 1, rowspan: 1, items: [] };
   } else if (type == "box") {
-    return { _uuid: uuid(), columns: [boxCol(8)] };
+    return { id: uuid(), columns: [boxCol(8)] };
   }
 };
 const boxCol = (colspan: number) => {
-  return { _uuid: uuid(), colspan: colspan, items: [] };
+  return { id: uuid(), colspan: colspan, items: [] };
 };
 /**
  * 左方插入列

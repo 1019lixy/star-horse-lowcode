@@ -9,7 +9,8 @@
   >
     <div
         class="user_html"
-        v-html="formData[field.fieldName]"
+        :style="field.preps?.styles"
+        v-html="field.preps?.staticData?field.preps?.textContent:formData[field.fieldName]"
     />
   </starhorse-form-item>
 </template>
@@ -38,5 +39,9 @@ onMounted(() => {
   width: 100%;
   min-height: 30px;
   height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 </style>

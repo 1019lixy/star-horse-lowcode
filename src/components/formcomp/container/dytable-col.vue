@@ -1,26 +1,26 @@
 <script setup lang="ts" name="box-container">
-import { computed, onMounted, PropType, ref } from "vue";
-import { warning } from "@/utils/message";
-import { useDesignFormStore } from "@/store/DesignForm";
+import {computed, onMounted, PropType, ref} from "vue";
+import {warning} from "@/utils/message";
+import {useDesignFormStore} from "@/store/DesignForm";
 import piniaInstance from "@/store/index";
-import { tableCellOperation } from "@/components/formcomp/container/dytableUtils";
-import { itemCheck, uuid } from "@/api/system";
+import {tableCellOperation} from "@/components/formcomp/container/dytableUtils";
+import {itemCheck, uuid} from "@/api/system";
 import ContainerDropDown from "@/components/formcomp/utils/ContainerDropDown.vue";
 
 const props = defineProps({
-  parentField: { type: Object as PropType<any> },
-  formInfo: { type: Object as PropType<any> },
-  parentComp: { type: Object as PropType<any> },
-  isDesign: { type: Boolean, default: false },
-  showFormItem: { type: Boolean, default: false },
-  disabled: { type: Object as PropType<Boolean | String> },
-  field: { type: Object as PropType<any> },
-  isFirstRow: { type: Boolean, default: false },
-  isLastRow: { type: Boolean, default: false },
-  isFirstCol: { type: Boolean, default: false },
-  isLastCol: { type: Boolean, default: false },
-  rowIndex: { type: Number, default: -1 },
-  colIndex: { type: Number, default: -1 },
+  parentField: {type: Object as PropType<any>},
+  formInfo: {type: Object as PropType<any>},
+  parentComp: {type: Object as PropType<any>},
+  isDesign: {type: Boolean, default: false},
+  showFormItem: {type: Boolean, default: false},
+  disabled: {type: Object as PropType<Boolean | String>},
+  field: {type: Object as PropType<any>},
+  isFirstRow: {type: Boolean, default: false},
+  isLastRow: {type: Boolean, default: false},
+  isFirstCol: {type: Boolean, default: false},
+  isLastCol: {type: Boolean, default: false},
+  rowIndex: {type: Number, default: -1},
+  colIndex: {type: Number, default: -1},
 });
 let designForm = useDesignFormStore(piniaInstance);
 let draggingItem = computed(() => designForm.draggingItem);
@@ -70,7 +70,7 @@ const handleTableCellCommand = (command: string) => {
   tableCellOperation(command, props, "dytable");
 };
 const selectCurrentTd = () => {
-  designForm.setSubItemId(props.field._uuid);
+  designForm.setSubItemId(props.field.id);
 };
 // 修正事件处理逻辑
 const handleResizeStart = (e: MouseEvent) => {
@@ -122,73 +122,75 @@ const handleResizeEnd = () => {
   document.removeEventListener("mouseup", handleResizeEnd);
 };
 
-onMounted(() => {});
+onMounted(() => {
+});
 //监控数据
 </script>
 <template>
   <td
-    class="edit_col"
-    :class="{
+      class="edit_col"
+      :class="{
       'dragging-area': isDragging,
       'no-drag': !isDesign,
     }"
-    :colspan="field.colspan || 1"
-    :rowspan="field.rowspan || 1"
-    :style="{
+      :colspan="field.colspan || 1"
+      :rowspan="field.rowspan || 1"
+      :style="{
       width: field.colWidth || '100%',
       height: field.colHeight || '40px',
-      'word-break': !!field.wordBreak ? 'break-all' : 'normal',
+      'word-break': !!field.wordBreak ? 'break-all' : 'normal'
     }"
-    @click="selectCurrentTd"
-    @mousedown="handleResizeStart"
+      @click="selectCurrentTd"
+      @mousedown="handleResizeStart"
   >
     <draggable
-      @add="(evt: Event) => onDragAdd(evt, field.items)"
-      class="smain-design"
-      tag="div"
-      :item-key="uuid()"
-      group="starHorseGroup"
-      ghostClass="ghost"
-      animation="200"
-      :list="field.items"
+        @add="(evt: Event) => onDragAdd(evt, field.items)"
+        class="smain-design"
+        tag="div"
+        :item-key="uuid()"
+        group="starHorseGroup"
+        ghostClass="ghost"
+        animation="200"
+        :list="field.items"
     >
       <template #item="{ element: data }">
         <div
-          :class="{
+            :class="{
             'comp-item': data?.preps?.headerFlag!= 'Y',
             'bare-item': data?.preps?.headerFlag,
           }"
+            style="height: 100%"
         >
           <component
-            :key="data?.id"
-            :field="data"
-            :formInfo="formInfo"
-            :isDesign="isDesign"
-            :showFormItem="showFormItem"
-            :disabled="disabled"
-            :is="itemCheck(data)"
-            :parentField="parentField"
-            v-model:formData="formData"
+              :key="data?.id"
+              :field="data"
+              :formInfo="formInfo"
+              :isDesign="isDesign"
+              :showFormItem="showFormItem"
+              :disabled="disabled"
+              :is="itemCheck(data)"
+              :parentField="parentField"
+              v-model:formData="formData"
           />
         </div>
       </template>
     </draggable>
     <div
-      class="table-cell-action"
-      v-if="isDesign && currentSubItemId == field._uuid"
+        class="table-cell-action"
+        v-if="isDesign && currentSubItemId == field.id"
     >
       <ContainerDropDown
-        :field="field"
-        :parentField="parentField"
-        :isFirstCol="isFirstCol"
-        :isLastCol="isLastCol"
-        :isFirstRow="isFirstRow"
-        :isLastRow="isLastRow"
-        :disabled="disabled"
-        :rowIndex="rowIndex"
-        :colIndex="colIndex"
-        :type="'dytable'"
-        @command="handleTableCellCommand"
+          :field="field"
+          :parentField="parentField"
+          :isFirstCol="isFirstCol"
+          :isLastCol="isLastCol"
+          :isFirstRow="isFirstRow"
+          :isLastRow="isLastRow"
+          :disabled="disabled"
+          :rowIndex="rowIndex"
+          :colIndex="colIndex"
+          :type="'dytable'"
+          @command="handleTableCellCommand"
       />
     </div>
   </td>
@@ -213,9 +215,8 @@ onMounted(() => {});
     background: var(--star-horse-style);
     opacity: 0;
     z-index: 1001;
-    transition:
-      opacity 0.3s,
-      right 0.1s; // 添加手柄位置过渡
+    transition: opacity 0.3s,
+    right 0.1s; // 添加手柄位置过渡
   }
 
   &.no-transition {
@@ -253,9 +254,8 @@ onMounted(() => {});
     width: 80%;
     background: var(--star-horse-style);
     opacity: 0;
-    transition:
-      opacity 0.3s,
-      bottom 0.1s;
+    transition: opacity 0.3s,
+    bottom 0.1s;
   }
 
   &:hover {

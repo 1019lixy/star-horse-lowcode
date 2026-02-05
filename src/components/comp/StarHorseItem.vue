@@ -30,8 +30,8 @@ const itemType = computed(() => {
     //日期默认以时间戳赋值
   }
   type = ((dataForm.value && dataForm.value["_" + props.item.fieldName + "Type"]) || type);
-  console.log("type", props.item);
-  console.log(type);
+  // console.log("type", props.item);
+  // console.log(type);
   return type;
 });
 const emit = defineEmits(["dataSearch", "focus", "blur"]);
@@ -210,7 +210,7 @@ onMounted(() => {
     <div
         class="drag-handle"
         @mousedown.prevent="startDrag"
-        v-if="itemType != 'button' && source == 4"
+        v-if="itemType != 'button' &&item.fieldName && source == 4"
     ></div>
     <help :message="item.helpMsg" v-if="item.helpMsg"/>
     <component
@@ -266,6 +266,7 @@ onMounted(() => {
   display: flex;
   justify-content: left;
   flex: 1;
+  height: 100%;
   align-items: center;
   margin: 0 auto;
 }

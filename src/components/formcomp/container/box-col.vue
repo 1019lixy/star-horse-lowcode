@@ -67,7 +67,7 @@ const handleTableCellCommand = (command: string) => {
   tableCellOperation(command, props, "box");
 };
 const selectCurrentTd = () => {
-  designForm.setSubItemId(props.field._uuid);
+  designForm.setSubItemId(props.field.id);
 };
 const checkItem = (items: any) => {
   if (!items["items"]) {
@@ -114,7 +114,7 @@ onMounted(() => {});
     </draggable>
     <div
       class="table-cell-action"
-      v-if="isEdit && isDesign && currentSubItemId == field._uuid"
+      v-if="isEdit && isDesign && currentSubItemId == field.id"
     >
       <ContainerDropDown
         :field="field"

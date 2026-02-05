@@ -156,6 +156,7 @@ onMounted(() => {
           parentField?.itemType != 'table' &&
           field.preps?.itemType != 'divider' &&
           field?.preps?.headerFlag != 'Y'
+          &&!field.preps?.statusData
         "
           :style="{
           marginBottom: isEdit && !disabled ? '1px' : '18px',

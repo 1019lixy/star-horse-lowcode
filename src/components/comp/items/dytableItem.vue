@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { loadProp, validMsg } from "@/api/form_utils";
-import { Config } from "@/api/settings";
-import { compKey } from "@/api/system";
-import { ContainerPreps } from "@/components/types/ItemPreps";
-import { ModelRef, onMounted } from "vue";
+import {loadProp, validMsg} from "@/api/form_utils";
+import {ContainerPreps} from "@/components/types/ItemPreps";
+import {ModelRef, onMounted} from "vue";
 
 const props = withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
@@ -18,7 +16,8 @@ const props = withDefaults(defineProps<ContainerPreps>(), {
   source: 1,
 });
 const dataForm: ModelRef<any> = defineModel("dataForm");
-const init = () => {};
+const init = () => {
+};
 onMounted(() => {
   init();
 });
@@ -27,63 +26,84 @@ onMounted(() => {
 <template>
   <template v-if="item.dytableList?.length > 0">
     <table
-      ref="containerTableRef"
-      :class="{ 'dynamic-table': true, 'instance-table': true }"
+        ref="containerTableRef"
+        :style="{
+          width:item.preps?.styles?.width??'100%',
+          height:item.preps?.styles?.height??'100%',
+          overflow:item.preps?.styles?.overflow??'auto',
+          }"
+        :class="{
+         'dynamic-table': true,
+         'instance-table': true
+    }"
     >
       <tbody>
-        <tr
+      <tr
           v-for="(row, rowIndex) in item.dytableList"
           :key="rowIndex"
           class="dy-tr"
-        >
-          <td
+      >
+        <td
             v-for="(sitem, colIndex) in row"
             :key="colIndex * rowIndex"
             :colspan="sitem.preps?.colspan || 1"
             :rowspan="sitem.preps?.rowspan || 1"
             :class="{ 'title-style': sitem.preps?.labelFlag == 'Y' }"
             :style="{
-              width: sitem.preps?.colWidth + '% !important' || '',
-              height: sitem.preps?.colHeight + '% !important' || '',
+              width: sitem.preps?.colWidth + ' !important' || '',
+              height: sitem.preps?.colHeight + ' !important' || '',
               'text-align': sitem.preps?.textAlign ?? 'left',
               'white-space': 'nowrap',
               'word-break': !!sitem.preps?.wordBreak ? 'break-all' : 'keep-all',
             }"
-          >
+        >
+          <template v-if="sitem.type != 'button' && sitem.type != 'usercomp'&&!sitem.preps?.staticData">
             <el-form-item
-              :size="compSize"
-              :label="sitem.label"
-              class="h-full w-full"
-              :prop="loadProp(propPrefix, sitem.fieldName, -1, -1)"
-              :labelPosition="parentPreps?.labelPosition"
-              :rules="validMsg(sitem, dataForm)"
-              v-if="
+                :size="compSize"
+                :label="sitem.preps?.hideLabel?'': sitem.label"
+                class="h-full w-full"
+                :prop="loadProp(propPrefix, sitem.fieldName, -1, -1)"
+                :labelPosition="parentPreps?.labelPosition"
+                :rules="validMsg(sitem, dataForm)"
+                v-if="
                 sitem.formVisible &&
                 sitem.label &&
                 sitem.preps?.labelFlag != 'Y'
               "
             >
               <star-horse-item
+                  :primaryKey="primaryKey"
+                  :compSize="compSize"
+                  v-model:dataForm="dataForm"
+                  :item="sitem"
+                  :dataIndex="dataIndex"
+                  :source="source"
+              />
+            </el-form-item>
+            <star-horse-item
+                v-else-if="sitem.formVisible || sitem.viewVisible"
+                :compSize="compSize"
+                :primaryKey="primaryKey"
+                v-model:dataForm="dataForm"
+                :item="sitem"
+                class="h-full w-full"
+                :dataIndex="dataIndex"
+                :source="source"
+            />
+          </template>
+          <template v-else>
+            <star-horse-item
                 :primaryKey="primaryKey"
                 :compSize="compSize"
                 v-model:dataForm="dataForm"
                 :item="sitem"
                 :dataIndex="dataIndex"
                 :source="source"
-              />
-            </el-form-item>
-            <star-horse-item
-              v-else-if="sitem.formVisible || sitem.viewVisible"
-              :compSize="compSize"
-              :primaryKey="primaryKey"
-              v-model:dataForm="dataForm"
-              :item="sitem"
-              class="h-full w-full"
-              :dataIndex="dataIndex"
-              :source="source"
             />
-          </td>
-        </tr>
+          </template>
+        </td>
+
+      </tr>
       </tbody>
     </table>
   </template>

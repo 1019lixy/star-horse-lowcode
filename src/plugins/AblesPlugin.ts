@@ -272,10 +272,10 @@ export const copyContainer = (
         const rows = container.preps.elements;
         for (const index in rows) {
             const row = rows[index];
-            row._uuid = uuid();
+            row.id = uuid();
             for (const cIndex in row.columns) {
                 const col = row.columns[cIndex];
-                col._uuid = uuid();
+                col.id = uuid();
                 complexFields(col.items, isCut);
             }
         }
@@ -283,7 +283,7 @@ export const copyContainer = (
         const rows = container.preps.elements;
         for (const index in rows) {
             const row = rows[index];
-            row._uuid = uuid();
+            row.id = uuid();
             complexFields(row.items, isCut);
         }
     }

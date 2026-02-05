@@ -60,7 +60,7 @@ const fields = ref<Array<any>>([{
           "itemType": "input"
         }]
       }, {
-        "_uuid": "bd268607-301d-471d-aa3d-9d8036e3741d",
+        "id": "bd268607-301d-471d-aa3d-9d8036e3741d",
         "colspan": 12,
         "rowspan": 1,
         "items": [{
@@ -97,7 +97,7 @@ const fields = ref<Array<any>>([{
       }]
     }, {
       "columns": [{
-        "_uuid": "ebd12943-e7ec-4594-9165-55801a5b5ce3",
+        "id": "ebd12943-e7ec-4594-9165-55801a5b5ce3",
         "colspan": 12,
         "rowspan": 1,
         "items": [{
@@ -132,7 +132,7 @@ const fields = ref<Array<any>>([{
           "itemType": "input"
         }]
       }, {
-        "_uuid": "c3611aa0-b50a-467f-a138-52a831c7c4c6",
+        "id": "c3611aa0-b50a-467f-a138-52a831c7c4c6",
         "colspan": 12,
         "rowspan": 1,
         "items": [{
@@ -254,7 +254,7 @@ const fields = ref<Array<any>>([{
                 "itemType": "input"
               }]
             }, {
-              "_uuid": "11890392-d8f7-4046-92a7-8cbe00644a69",
+              "id": "11890392-d8f7-4046-92a7-8cbe00644a69",
               "colspan": 12,
               "rowspan": 1,
               "items": [{
@@ -608,7 +608,7 @@ const fields = ref<Array<any>>([{
           "itemType": "input"
         }]
       }, {
-        "_uuid": "f98affcb-be49-4d9b-b816-8675856ec3bb",
+        "id": "f98affcb-be49-4d9b-b816-8675856ec3bb",
         "colspan": 1,
         "rowspan": 2,
         "items": [{
@@ -642,7 +642,7 @@ const fields = ref<Array<any>>([{
       }]
     }, {
       "columns": [{
-        "_uuid": "f48ca367-0197-4afd-88c2-e70db7ec9973",
+        "id": "f48ca367-0197-4afd-88c2-e70db7ec9973",
         "colspan": 1,
         "rowspan": 1,
         "items": [{

@@ -12,6 +12,7 @@
           style="border-bottom: 1px solid #ccc"
           :editor="editorRef"
           :defaultConfig="toolbarConfig"
+          v-if="!field.preps?.hideToolbar"
           :mode="field.preps?.mode??'default'"
       />
       <Editor

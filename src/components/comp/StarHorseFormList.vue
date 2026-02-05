@@ -125,7 +125,7 @@ const dynamicHandleAddRow = (row: any, type: number) => {
   }
   if (type === 1) {
     let obj = JSON5.parse(JSON5.stringify(props.defaultValues || {}));
-    obj["_uuid"] = uuid();
+    obj["id"] = uuid();
     dataForm.value[props.batchName].push(obj);
     emits("addRow", row);
   } else {

@@ -155,16 +155,17 @@ export function fieldPlaceholder(item: any, itemType: string) {
     }
     item.preps["clearable"] = item.preps["clearable"] ?? true;
     item.preps["readonly"] = item?.readonly || item.preps["readonly"] || false;
+    const label=item.label??"";
     if (inputType.includes(itemType)) {
         item.preps["placeholder"] =
-            item.preps["placeholder"]?.trim() || i18n("api.pleaseInput") + item.label;
+            item.preps["placeholder"]?.trim() || i18n("api.pleaseInput") + label;
     } else if (selectType.includes(itemType)) {
         item.preps["filterable"] = true;
         item.preps["collapseTags"] = true;
         item.preps["collapseTagsTooltip"] = true;
         item.preps["placeholder"] =
             item.preps["placeholder"]?.trim() ||
-            i18n("api.pleaseSelect") + item.label;
+            i18n("api.pleaseSelect") + label;
     }
     if (itemType == "datetime") {
         if (item?.type?.includes("range")) {
@@ -176,7 +177,7 @@ export function fieldPlaceholder(item: any, itemType: string) {
         } else {
             item.preps["placeholder"] =
                 item.preps["placeholder"]?.trim() ||
-                i18n("api.pleaseSelect") + item.label;
+                i18n("api.pleaseSelect") + label;
         }
     } else if (itemType == "number-range") {
         item.preps["minPlaceholder"] =
@@ -298,7 +299,7 @@ export function compKey(
 ) {
     let name = "";
     if (item) {
-        name = item.id || item._uuid || item.fieldName || item.tabName;
+        name = item.id ||  item.fieldName || item.tabName;
     }
     return (
         (prefix ?? "") +

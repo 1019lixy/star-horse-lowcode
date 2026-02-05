@@ -1,11 +1,12 @@
 <script setup lang="ts" name="Areainfo">
 import {onMounted, ref} from 'vue';
-import FormRelationOperation from "@/sample/FormRelationOperation.vue";
-import {PageConfig} from "@/components/system";
-import {langList} from "@/lang";
-import SpeakDemo from "@/sample/SpeakDemo.vue";
+import DytableContainerValid from "@/sample/DytableContainerValid.vue";
+import DytableContainerInstanceValid from "@/sample/DytableContainerInstanceValid.vue";
 import BoxContainerDemo from "@/sample/BoxContainerDemo.vue";
+import BoxContainerInstanceDemo from "@/sample/BoxContainerInstanceDemo.vue";
+
 const visible = ref<boolean>(false);
+const actName = ref<string>("a");
 const initData = async () => {
 };
 onMounted(() => {
@@ -14,7 +15,7 @@ onMounted(() => {
 
 </script>
 <template>
-  <div class="flex flex-col h-full overflow-hidden">
+  <div class="flex flex-col h-full overflow-auto">
     <!--        <FormValid/>-->
     <!--    <SignatureTest/>-->
 
@@ -37,7 +38,24 @@ onMounted(() => {
           </template>
         </PageConfig>-->
     <!--    <SpeakDemo/>-->
-    <BoxContainerDemo/>
+    <!--    <BoxContainerDemo/>-->
+    <el-tabs v-model="actName">
+      <el-tab-pane name="a" label="设计">
+        <DytableContainerValid/>
+      </el-tab-pane>
+      <el-tab-pane name="b" label="实例">
+        <DytableContainerInstanceValid/>
+      </el-tab-pane>
+    </el-tabs>
+<!--    <el-tabs v-model="actName">
+      <el-tab-pane name="a" label="设计">
+        <BoxContainerDemo/>
+      </el-tab-pane>
+      <el-tab-pane name="b" label="实例">
+        <BoxContainerInstanceDemo/>
+      </el-tab-pane>
+    </el-tabs>-->
+
   </div>
 
 </template>

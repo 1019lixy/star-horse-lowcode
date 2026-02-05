@@ -30,13 +30,12 @@ const itemAction = (prep: any) => {
           class="flex"
           :style="field.preps?.styles??{
           verticalAlign:  'middle',
-          justifyContent: 'left',
-          alignItems:  'left',
+          justifyContent: 'center',
+          alignItems:  'center',
           wordBreak: 'normal',
           width:  '100%',
           height:  '100%',
-          fontWeight:  '600',
-          margin: ' 0 5px',
+          margin: ' 0 5px'
         }"
       >
         {{ field.preps?.textContent || field.preps?.placeholder }}
