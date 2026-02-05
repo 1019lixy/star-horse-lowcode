@@ -131,7 +131,7 @@ onMounted(() => {
       class="w-fill"
       :class="{ 'item-info': field?.preps?.itemType != 'usercomp' }"
       :style="{
-      margin: field?.preps?.itemType == 'button' ? '5px auto' : 'unset',
+      margin: field?.preps?.itemType === 'button' ? '5px auto' : 'unset',
     }"
       v-if="bareFlag === true"
   >
@@ -159,10 +159,10 @@ onMounted(() => {
           &&!field.preps?.statusData
         "
           :style="{
-          marginBottom: isEdit && !disabled ? '1px' : '18px',
+          marginBottom: isEdit && !disabled ? '1px' : '18px'
         }"
           class="flex items-center w-full"
-          :label="field?.preps['hideLabel'] ? '' : field?.preps['label']"
+          :label="field?.preps['hideLabel']? '' : field?.preps['label']"
           :prop="field?.preps['name']"
           :rules="
           field?.preps['required']
@@ -170,7 +170,7 @@ onMounted(() => {
                 {
                   required: true,
                   trigger: 'blur',
-                  message: i18n('form.requiredField'),
+                  message: i18n('form.requiredField')
                 },
               ]
             : []
@@ -185,7 +185,7 @@ onMounted(() => {
           'item-info': field?.preps?.itemType != 'usercomp',
         }"
           :style="{
-          margin: field?.itemType == 'button' ? '5px auto' : 'unset',
+          margin: field?.itemType === 'button' ? '5px auto' : 'unset'
         }"
           @click.stop="selectData(field)"
       >
