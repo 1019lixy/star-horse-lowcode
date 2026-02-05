@@ -17,9 +17,9 @@
       />
       <Editor
           :style="{
-          width: '100%',
-          height: field.preps?.height || '300px',
-          'overflow-y': 'hidden',
+          width: field.preps?.width??'100%',
+          height: field.preps?.height??'100%',
+          'overflow': field.preps?.overflow??'auto',
         }"
           v-bind="prepsFilter(props)"
           v-on="getDynamicEvents(props, itemAction)"
