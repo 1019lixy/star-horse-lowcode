@@ -43,7 +43,7 @@ onMounted(() => {
           :span="sitem.preps?.colspan ||
           24 / item.filter((temp) => temp.formVisible).length
         "
-          class="edit_col h-full"
+          class="h-full"
           v-bind="sitem.preps"
 
       >

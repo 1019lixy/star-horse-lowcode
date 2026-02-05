@@ -7,7 +7,7 @@
       :field="field"
       :parentField="parentField"
   >
-    <div style="border: 1px solid #ccc;width: 100%">
+    <div style="border: 1px solid #ccc;width: 100%;height: 100%;">
       <Toolbar
           style="border-bottom: 1px solid #ccc"
           :editor="editorRef"

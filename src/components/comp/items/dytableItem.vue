@@ -50,8 +50,8 @@ onMounted(() => {
             :rowspan="sitem.preps?.rowspan || 1"
             :class="{ 'title-style': sitem.preps?.labelFlag == 'Y' }"
             :style="{
-              width: sitem.preps?.colWidth + ' !important' || '',
-              height: sitem.preps?.colHeight + ' !important' || '',
+              width: sitem.preps?.colWidth  || 'unset',
+              height: sitem.preps?.colHeight || 'unset',
               'text-align': sitem.preps?.textAlign ?? 'left',
               'white-space': 'nowrap',
               'word-break': !!sitem.preps?.wordBreak ? 'break-all' : 'keep-all',
@@ -138,10 +138,10 @@ tr {
     height: inherit;*/
 
   td {
-    line-height: 40px;
+    line-height: 35px;
     border: 1px solid #ebeef5;
-    height: 40px;
-    padding: 0 10px 0 0;
+    height: 35px;
+    padding: 1px;
   }
 }
 </style>

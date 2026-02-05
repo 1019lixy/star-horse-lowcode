@@ -101,6 +101,7 @@ a {
 
 .el-form-item__content {
   min-width: 120px !important;
+  height: 100%;
 }
 
 .dialog-settings {
@@ -408,6 +409,7 @@ button:visited {
   color: var(--star-horse-white) !important;
   font-weight: 800 !important;
   font-size: 15px;
+
   svg {
     color: #fff !important;
   }
@@ -750,13 +752,13 @@ hr {
 }
 
 .dy-tr {
-  min-height: 40px;
+  min-height: 35px;
 }
 
 .dynamic-table {
   width: 100%;
   text-align: center;
-  min-height: 40px;
+  min-height: 35px;
   border-collapse: collapse;
   table-layout: fixed;
 }
@@ -938,7 +940,7 @@ button.el-collapse-item__header {
 
 .edit_col {
   display: table-cell;
-  min-height: 50px !important;
+  min-height: 45px;
   position: relative;
   -moz-user-select: none;
   -webkit-user-select: none;

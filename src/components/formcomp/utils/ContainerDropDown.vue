@@ -3,6 +3,7 @@ import {computed, onMounted, PropType, ref, watch} from "vue";
 import {tableAction} from "@/components/formcomp/container/dytableUtils";
 import {i18n} from "@/lang";
 import {StarHorseDialog} from "@/components/comp";
+import Help from "@/components/help.vue";
 
 const props = defineProps({
   parentField: {type: Object as PropType<any>},
@@ -18,7 +19,7 @@ const props = defineProps({
   type: {type: String},
 });
 const emits = defineEmits(["command"]);
-// const buttonControl = ref<Record<string, boolean>>({});
+const fieldForm = ref<Record<string, any>>({});
 const checkMenuStatus = () => {
   const moveFlag = !props.field.items?.length;
   const elements = props.parentField.preps.elements;
@@ -56,9 +57,15 @@ const checkMenuStatus = () => {
 };
 let buttonControl = computed(() => checkMenuStatus());
 const configDialog = ref<boolean>(false);
+const currentCommand = ref<string>("");
 const handleTableCellCommand = (command: string) => {
+  currentCommand.value = command;
   if (command.includes("Config")) {
     configDialog.value = true;
+    fieldForm.value["colHeight"] = props.field.colHeight;
+    fieldForm.value["colWidth"] = props.field.colWidth;
+    fieldForm.value["rowspan"] = props.field.rowspan;
+    fieldForm.value["colspan"] = props.field.colspan;
   } else {
     emits("command", command);
   }
@@ -67,6 +74,26 @@ const close = () => {
   configDialog.value = false;
 };
 const submitAction = () => {
+  const elements = props.parentField.preps.elements;
+  for (let i = 0; i < elements.length; i++) {
+    const element = elements[i];
+    const columns = element.columns;
+    for (let j = 0; j < columns.length; j++) {
+      const column = columns[j];
+      if (currentCommand.value === "rowConfig" && i == props.rowIndex) {
+        column["colHeight"] = fieldForm.value["colHeight"];
+      } else if (currentCommand.value === "colConfig" && j == props.colIndex) {
+        column["colWidth"] = fieldForm.value["colWidth"];
+      } else if (currentCommand.value === "cellConfig" && i == props.rowIndex && j == props.colIndex) {
+        column["rowspan"] = fieldForm.value["rowspan"];
+        column["colspan"] = fieldForm.value["colspan"];
+      }
+    }
+  }
+
+  Object.entries(fieldForm.value ?? {}).forEach(([key, value]) => {
+    props.field[key] = value;
+  });
   close();
 };
 const init = () => {
@@ -102,12 +129,20 @@ watch(
       :dialog-visible="configDialog"
       box-width="40%"
   >
-    <el-form v-model="field">
-      <el-form-item label="行高" prop="colHeight">
-        <el-input v-model="field.colHeight"/>
+    <el-form v-model="fieldForm">
+      <el-form-item label="行高" prop="colHeight" v-if="currentCommand=='rowConfig'">
+        <el-input v-model="fieldForm.colHeight"/>
       </el-form-item>
-      <el-form-item label="列宽" prop="colWidth">
-        <el-input v-model="field.colWidth"/>
+      <el-form-item label="列宽" prop="colWidth" v-if="currentCommand=='colConfig'">
+        <el-input v-model="fieldForm.colWidth"/>
+      </el-form-item>
+      <el-form-item label="跨行数" prop="rowspan" v-if="type=='dytable' &&currentCommand=='cellConfig'">
+        <el-input-number min="1" step="1" v-model="fieldForm.rowspan"/>
+        <help message="大于1的行数,需要手动删除所在行下一行的列数"/>
+      </el-form-item>
+      <el-form-item label="跨列数" prop="colspan" v-if="currentCommand=='cellConfig'">
+        <el-input-number min="1" step="1" :max="type=='dytable'?100:24" v-model="fieldForm.colspan"/>
+        <help message="大于1的列数,需要手动删除所在行的列数" v-if="type=='dytable'"/>
       </el-form-item>
     </el-form>
   </star-horse-dialog>

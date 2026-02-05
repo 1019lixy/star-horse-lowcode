@@ -161,7 +161,7 @@ onMounted(() => {
           :style="{
           marginBottom: isEdit && !disabled ? '1px' : '18px'
         }"
-          class="flex items-center w-full"
+          class="flex items-center w-full h-full"
           :label="field?.preps['hideLabel']? '' : field?.preps['label']"
           :prop="field?.preps['name']"
           :rules="
@@ -277,12 +277,14 @@ onMounted(() => {
   display: flex;
   width: 100%;
   flex: 1;
+  height: 100%;
 }
 
 .item-info {
   display: flex;
   width: 100%;
   flex: 1;
+  height: 100%;
   justify-content: start;
 }
 
