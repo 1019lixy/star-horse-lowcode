@@ -20,7 +20,7 @@
           width: field.preps?.width??'100%',
           height: field.preps?.height??'100%',
           'overflow': field.preps?.overflow??'auto',
-          'border-radius': field.preps?.borderRadius??'4px'
+          'border-radius': '4px'
         }"
           v-bind="prepsFilter(props)"
           v-on="getDynamicEvents(props, itemAction)"
