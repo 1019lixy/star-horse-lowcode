@@ -142,6 +142,27 @@ tr {
     border: 1px solid #ebeef5;
     height: 35px;
     padding: 1px;
+
+    :deep(.el-form-item--default) {
+      margin-bottom: 0 !important;
+    }
+
+    :deep(.el-form-item--large) {
+      margin-bottom: 0 !important;
+    }
+
+    :deep(.el-form-item--small) {
+      margin-bottom: 0 !important;
+    }
+
+    :deep(.el-form-item) {
+      margin-bottom: 0 !important;
+    }
+
+    :deep(.el-form-item__error) {
+      top: 0 !important;
+      transform: translateY(-10%);
+    }
   }
 }
 </style>

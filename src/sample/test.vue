@@ -39,22 +39,22 @@ onMounted(() => {
         </PageConfig>-->
     <!--    <SpeakDemo/>-->
     <!--    <BoxContainerDemo/>-->
-    <el-tabs v-model="actName">
+<!--    <el-tabs v-model="actName">
       <el-tab-pane name="a" label="设计">
         <DytableContainerValid/>
       </el-tab-pane>
       <el-tab-pane name="b" label="实例">
         <DytableContainerInstanceValid/>
       </el-tab-pane>
-    </el-tabs>
-<!--    <el-tabs v-model="actName">
+    </el-tabs>-->
+    <el-tabs v-model="actName">
       <el-tab-pane name="a" label="设计">
         <BoxContainerDemo/>
       </el-tab-pane>
       <el-tab-pane name="b" label="实例">
         <BoxContainerInstanceDemo/>
       </el-tab-pane>
-    </el-tabs>-->
+    </el-tabs>
 
   </div>
 

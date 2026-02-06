@@ -445,13 +445,15 @@ const fields = [{
             "colspan": 21,
             "rowspan": 1,
             "items": [{
-              type:"textarea",
+              type:"htmleditor",
               staticData:true,
-              "itemType": "textarea",
+              "itemType": "htmleditor",
               "formVisible": true,
               "listVisible": true,
               "viewVisible": true,
               preps:{
+                hideLabel: true,
+                hideToolbar:true,
                 autosize:true
               }
             }]

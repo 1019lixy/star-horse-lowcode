@@ -53,6 +53,9 @@ const checkMenuStatus = () => {
     moveColRightLastDisabled: isFullColumn || props.isLastCol || moveFlag,
     deleteWholeColDisabled: false,
     deleteWholeRowDisabled: false,
+    deleteCurrentColDisabled: false,
+    addCellAfterDisabled: false,
+    addCellBeforeDisabled: false,
   };
 };
 let buttonControl = computed(() => checkMenuStatus());
@@ -259,6 +262,17 @@ watch(
         >{{ i18n("ui.moveColRightLast") }}
         </el-dropdown-item>
         <el-dropdown-item
+            command="addCellAfter"
+            :disabled="buttonControl.addCellAfterDisabled"
+            divided
+        >{{ i18n("ui.addCellAfter") }}
+        </el-dropdown-item>
+        <el-dropdown-item
+            command="addCellBefore"
+            :disabled="buttonControl.addCellBeforeDisabled"
+        >{{ i18n("ui.addCellBefore") }}
+        </el-dropdown-item>
+        <el-dropdown-item
             command="deleteWholeCol"
             v-if="type != 'box'"
             :disabled="buttonControl.deleteWholeColDisabled"
@@ -269,6 +283,11 @@ watch(
             command="deleteWholeRow"
             :disabled="buttonControl.deleteWholeRowDisabled"
         >{{ i18n("ui.deleteWholeRow") }}
+        </el-dropdown-item>
+        <el-dropdown-item
+            command="deleteCurrentCol"
+            :disabled="buttonControl.deleteWholeColDisabled"
+        >{{ i18n("ui.deleteCurrentCol") }}
         </el-dropdown-item>
         <el-dropdown-item command="colConfig" divided>
           {{ i18n("ui.colConfig") }}

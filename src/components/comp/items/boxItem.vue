@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import {checkVisible, loadProp, validMsg} from "@/api/form_utils";
 import {ContainerPreps} from "@/components/types/ItemPreps";
-import {computed, onMounted} from "vue";
+import {onMounted} from "vue";
 
-const props = withDefaults(defineProps<ContainerPreps>(), {
+withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
   dataIndex: -1,
   // 父节点名称
@@ -16,13 +16,6 @@ const props = withDefaults(defineProps<ContainerPreps>(), {
   source: 1,
 });
 const dataForm = defineModel("dataForm");
-const colHeight = computed(() => {
-  const temp = props.item.find(item => item.preps?.colHeight);
-  if (!temp) {
-    return "unset";
-  }
-  return temp.preps?.colHeight;
-});
 const init = () => {
 };
 onMounted(() => {
@@ -36,7 +29,7 @@ onMounted(() => {
           :justify="'start'"
           :align="'top'"
           :tag="'div'"
-          :style="{height: colHeight,minHeight: '40px'}"
+
   >
     <template v-for="sitem in item">
       <el-col
@@ -45,7 +38,7 @@ onMounted(() => {
         "
           class="h-full"
           v-bind="sitem.preps"
-
+          :style="{height: sitem.preps.colHeight}"
       >
         <template v-if="sitem.type != 'button' && sitem.type != 'usercomp'&&!sitem.preps?.staticData">
           <!--需解决只需要标签内容的情况-->
