@@ -38,7 +38,7 @@ onMounted(() => {
         "
           class="h-full"
           v-bind="sitem.preps"
-          :style="{height: sitem.preps.colHeight}"
+          :style="{height: sitem.preps?.colHeight}"
       >
         <template v-if="sitem.type != 'button' && sitem.type != 'usercomp'&&!sitem.preps?.staticData">
           <!--需解决只需要标签内容的情况-->

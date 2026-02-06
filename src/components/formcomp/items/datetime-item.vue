@@ -43,9 +43,9 @@ const emits = defineEmits(["selfFunc", "selectItem"]);
 const formData = defineModel("formData");
 const disabledDate = shallowRef<any>([]);
 const itemAction = (prep: any) => {
-  if (prep == "change" && props.field.preps["type"]?.includes("range")) {
+  if (prep == "change" && props.field.preps?.type?.includes("range")) {
     let val = formData.value[props.field.fieldName];
-    if (props.field.preps["needSplitName"]) {
+    if (props.field.preps?.needSplitName) {
       formData.value[props.field.fieldName + "Start"] = val[0];
       formData.value[props.field.fieldName + "End"] = val[1];
     }

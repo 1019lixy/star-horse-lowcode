@@ -127,9 +127,9 @@ const treeOperation = (cmd: string) => {
           if (cmd == "add") {
             emits("addData", {});
           } else if (cmd == "collapse") {
-            menuTreeRef.value.close(item[props.preps.value]);
+            menuTreeRef.value.close(item[props.preps?.value]);
           } else {
-            menuTreeRef.value!.open(item[props.preps.value]);
+            menuTreeRef.value!.open(item[props.preps?.value]);
           }
           getAllSubNodeIndex(item.children);
         }
@@ -142,7 +142,7 @@ let selectedDataList = ref<Array<any>>([]);
 const operSelectData = (data: any, checked: boolean) => {
   if (checked) {
     let hasData = selectedDataList.value.find(
-        (item) => item[props.preps.value] == data[props.preps.value],
+        (item) => item[props.preps?.value] == data[props.preps?.value],
     );
     if (!hasData) {
       selectedDataList.value.push(data);

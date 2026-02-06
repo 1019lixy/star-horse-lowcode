@@ -45,7 +45,7 @@
       "
         v-model:file-list="dataField"
     >
-      <el-icon class="el-icon--upload" v-if="field.preps['drag']">
+      <el-icon class="el-icon--upload" v-if="field.preps?.drag">
         <upload-filled/>
       </el-icon>
       <div class="el-upload__text" v-if="field.preps?.drag">

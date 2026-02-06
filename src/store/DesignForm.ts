@@ -124,7 +124,7 @@ export const useDesignFormStore = defineStore("designForm", () => {
      */
     const selectItem = (data: any, itemType: string, parentType: string) => {
         // Check for duplicate selection to avoid unnecessary updates
-        const itemId = data?.id || data?.preps.id;
+        const itemId = data?.id || data?.preps?.id;
         if (currentItemId.value === itemId) {
             return;
         }

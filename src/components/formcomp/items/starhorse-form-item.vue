@@ -24,7 +24,7 @@ let editUserInfo = computed(() => {
 });
 // Use shallowRef for better performance
 let currentItemId = computed(() => designForm.currentItemId);
-const itemId = computed(() => props.field?.id || props.field?.preps.id);
+const itemId = computed(() => props.field?.id || props.field?.preps?.id);
 const isDisabled = computed(() => props.disabled);
 
 let componentVisible = computed(() => {
@@ -150,7 +150,7 @@ onMounted(() => {
         @contextmenu="itemContextMenu"
     >
       <el-form-item
-          :size="field?.preps['size'] || 'default'"
+          :size="field?.preps?.size || 'default'"
           v-if="
           showFormItem&&
           parentField?.itemType != 'table' &&
