@@ -608,13 +608,14 @@ export function batchFieldDefaultValues(datas: BatchFieldInfo, dataForm: any) {
 /**
  * 动态组件数据
  * @param field 组件参数信息
+ * @param analysisUrl 是否解析Url
  */
-export async function compDynamicData(field: any) {
+export async function compDynamicData(field: any,analysisUrl?:false) {
     const temp = field;
     let reDataList: SelectOption[] = [];
     const dataSource = temp.preps?.dataSource;
     const urlOrDictName = temp.preps?.urlOrDictName;
-    if (dataSource == "url") {
+    if (dataSource == "url"&&!analysisUrl) {
         reDataList = await dynamicUrlOperation(field);
     } else if (dataSource == "dict") {
         const dicts = await dictData(urlOrDictName);

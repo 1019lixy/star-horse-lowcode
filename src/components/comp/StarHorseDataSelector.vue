@@ -39,7 +39,7 @@ export interface DataSelectorProps {
   /**
    * 数据
    */
-  datas?: Array<any>;
+  data?: Array<any>;
   /**
    * 页码
    */
@@ -167,8 +167,8 @@ const findInTree = (nodes: any[], result: any[]) => {
  * 初始化数据选择器
  */
 const init = () => {
-  if (props.datas) {
-    selectData.value = findInTree(props.datas, []);
+  if (props.data) {
+    selectData.value = findInTree(props.data, []);
   } else if (props.dataUrl && value.value?.length > 0) {
     const queryParams: SearchParams[] = [];
     queryParams.push(
@@ -258,7 +258,7 @@ watch(
   <data-picker
       ref="dataPickerRef"
       :title="title"
-      :datas="datas"
+      :data="data"
       :data-url="dataUrl"
       :proxy="proxy"
       :proxy-url="proxyUrl"

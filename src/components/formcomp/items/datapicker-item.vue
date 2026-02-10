@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from "vue";
-import {
-  allAction,
-  prepsFilter,
-} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {computed, nextTick, onMounted, ref, watch} from "vue";
+import {allAction, initCompCallEvent, prepsFilter,} from "@/components/formcomp/utils/ItemRelationEventUtils";
 
-import { StarHorseDataSelector } from "@/components/comp";
-import { ItemPreps } from "@/components/types/ItemPreps";
+import {StarHorseDataSelector} from "@/components/comp";
+import {ItemPreps} from "@/components/types/ItemPreps";
+import {compDynamicData} from "@/api/star_horse_utils";
+import {SearchParams} from "@/components/types";
 
 defineOptions({
   name: "DataPickerItem",
@@ -22,53 +21,99 @@ const props = withDefaults(defineProps<ItemPreps>(), {
 const emits = defineEmits(["selfFunc", "selectItem"]);
 const formData = defineModel<any>("formData");
 const pickerData = ref<any>([]);
+const preps = computed(() => {
+  const temp = props.field.preps??{};
+  let preps = {...temp};
+  if (preps.dataSource !== "url") {
+    delete preps.urlOrDictName;
+  } else {
+    preps.dataUrl = preps.urlOrDictName;
+    delete preps.urlOrDictName;
+  }
+  const requestParams: SearchParams[] = [];
+  const queryParams = temp?.queryParams;
+  queryParams?.forEach((item: any) => {
+    if (!item.name && !item.propertyName) {
+      return;
+    }
+    requestParams.push({
+      propertyName: item.name ?? item.propertyName,
+      value: item.value || "",
+      operation: item.matchType,
+    });
+  });
+  preps.params = requestParams;
+  return preps;
+});
 const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
-onMounted(() => {});
+const initData = async () => {
+  const dataa = await compDynamicData(props.field, false);
+  if (dataa?.length) {
+    props.field.preps["data"] = dataa;
+  }
+};
+onMounted(() => {
+  if (!props.field.preps) {
+    props.field.preps = {};
+  }
+  props.field.preps["remote"] =
+      props.field.preps["remote"] || props.field.preps["dataSource"] == "url";
+  props.field.preps["filterable"] = true;
+  props.field.preps["collapseTags"] = true;
+  props.field.preps["props"] = props.field.preps["props"] || {
+    label: "name",
+    value: "value",
+  };
+  initData();
+  nextTick(() => {
+    initCompCallEvent(props, emits, formData);
+  });
+});
 watch(
-  () => formData.value[props.field.fieldName],
-  (val) => {
-    if (val) {
-      // 优化数组转换逻辑
-      pickerData.value = props.field.preps?.multiple
-        ? Array.isArray(val)
-          ? val
-          : [val]
-        : val !== undefined
-          ? [val]
-          : [];
-    }
-  },
-  { immediate: true, deep: true },
+    () => formData.value[props.field.fieldName],
+    (val) => {
+      if (val) {
+        // 优化数组转换逻辑
+        pickerData.value = props.field.preps?.multiple
+            ? Array.isArray(val)
+                ? val
+                : [val]
+            : val !== undefined
+                ? [val]
+                : [];
+      }
+    },
+    {immediate: true, deep: true},
 );
 watch(
-  () => pickerData.value,
-  (val) => {
-    if (props.field.preps?.multiple) {
-      formData.value[props.field.fieldName] = val;
-    } else {
-      formData.value[props.field.fieldName] = val[0];
-    }
-  },
-  { deep: true },
+    () => pickerData.value,
+    (val) => {
+      if (props.field.preps?.multiple) {
+        formData.value[props.field.fieldName] = val;
+      } else {
+        formData.value[props.field.fieldName] = val[0];
+      }
+    },
+    {deep: true},
 );
 </script>
 <template>
   <starhorse-form-item
-    :showFormItem="showFormItem"
-    :isDesign="isDesign"
-    :disabled="disabled"
-    :bareFlag="bareFlag"
-    :field="field"
-    :parentField="parentField"
+      :showFormItem="showFormItem"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      :field="field"
+      :parentField="parentField"
   >
     <!--里面用的el-input-tag -->
     <star-horse-data-selector
-      v-model="pickerData"
-      v-bind="prepsFilter(field.preps)"
-      @update:selectedData="(data) => itemAction('change')"
-      @selectedData="(data) => itemAction('change')"
+        v-model="pickerData"
+        v-bind="prepsFilter(preps)"
+        @update:selectedData="(data) => itemAction('change')"
+        @selectedData="(data) => itemAction('change')"
     />
   </starhorse-form-item>
 </template>

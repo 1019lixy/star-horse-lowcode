@@ -38,7 +38,7 @@ export interface DataDropdownProps {
   /**
    * 数据
    */
-  datas?: Array<any>;
+  data?: Array<any>;
   /**
    * 标题
    */
@@ -261,8 +261,8 @@ const close = () => {
 };
 const onOpen = async () => {
   dataOrgOptions.value = [];
-  if (props.datas?.length > 0) {
-    dataOrgOptions.value = props.datas;
+  if (props.data?.length > 0) {
+    dataOrgOptions.value = props.data;
   } else {
     await loadData();
   }
