@@ -40,6 +40,23 @@ const fieldList = ref<PageFieldInfo>({
       }
     },
     {
+      label: "验证数字", type: "number", fieldName: "validNumber",
+      formVisible: true,
+      preps: {
+        mergePrefix: true,
+        mergeAppend: true,
+        appendList: [
+          {name: "%", value: "%"},
+          {name: "px", value: "px"},
+          {name: "fr", value: "fr"},
+        ],
+        prependList: [
+          {name: "http", value: "http"},
+          {name: "https", value: "https"},
+        ]
+      }
+    },
+    {
       label: "背景重复", type: "radio", fieldName: "backgroundRepeat",
       formVisible: true,
       preps: {

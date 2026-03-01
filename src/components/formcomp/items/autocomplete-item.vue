@@ -13,7 +13,7 @@
         :fetch-suggestions="querySearch"
         v-bind="prepsFilter(field.preps)"
         v-on="getDynamicEvents(props, itemAction)"
-        v-model="formData[field.fieldName]"
+        v-model="normalData"
     >
       <template #prefix>
         <star-horse-icon :icon-class="field.preps?.prefixIcon" v-if="field.preps?.prefixIcon"/>
@@ -61,13 +61,12 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {computed, nextTick, onMounted, watch} from "vue";
+import {nextTick, onMounted, watch} from "vue";
 import {compDynamicData, createFilter, dynamicUrlOperation,} from "@/api/star_horse_utils";
 import {SearchParams} from "@/components/types/Params";
 import {
   allAction,
   checkIsDisabled,
-  convertData,
   initCompCallEvent,
   prepsFilter,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
@@ -76,6 +75,7 @@ import {getDynamicEvents} from "@/api/system";
 import {ItemPreps} from "@/components/types/ItemPreps";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
 import {StarHorseIcon} from "@/components/comp";
+import {usePrefixSuffix} from "@/components/formcomp/utils/prefixSuffixUtils";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -86,14 +86,18 @@ const props = withDefaults(defineProps<ItemPreps>(), {
 });
 const emits = defineEmits(["selfFunc", "selectItem"]);
 const formData = defineModel("formData");
-const preName = computed(() => {
-  return props.field?.preps.preName ?? "pre" + props.field.fieldName;
+const {
+  preName,
+  appName,
+  prependList,
+  appendList,
+  normalData,
+  mergeData,
+  setupWatchers,
+} = usePrefixSuffix({
+  field: props.field,
+  formData: formData as any,
 });
-const appName = computed(() => {
-  return props.field?.preps.appName ?? "app" + props.field.fieldName;
-});
-const appendList = computed(() => convertData(props.field?.preps?.appendList));
-const prependList = computed(() => convertData(props.field?.preps?.prependList));
 const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
@@ -113,8 +117,10 @@ onMounted(() => {
   initData();
   nextTick(() => {
     initCompCallEvent(props, emits, formData);
+    mergeData(true);
   });
 });
+setupWatchers();
 const querySearch = async (queryString: string, cb: (arg: any) => void) => {
   let temp = props.field.preps;
   let dataSource = temp["dataSource"];

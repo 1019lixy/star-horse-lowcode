@@ -18,7 +18,7 @@
       v-on="getDynamicEvents(props, itemAction)"
       @change="itemAction('change')"
       v-model="formData[field.fieldName]"
-    ></el-date-picker>
+    />
   </starhorse-form-item>
 </template>
 <script setup lang="ts">

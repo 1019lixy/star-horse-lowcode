@@ -6,7 +6,7 @@ import {dirname, resolve} from "path";
 import Components from "unplugin-vue-components/vite";
 import {ElementPlusResolver} from "unplugin-vue-components/resolvers";
 import AutoImport from "unplugin-auto-import/vite";
-
+import fs from "fs";
 //生产types文件插件
 import dts from "vite-plugin-dts";
 // https://vitejs.dev/config/
@@ -17,6 +17,39 @@ const userDbHost: string = "http://localhost:7758/";
  */
 export default defineConfig((mode) => {
     let optimizeDepsList: string[] = ["vue", "vue-router", "pinia", "axios"];
+    if (mode.mode === "development") {
+    //
+    optimizeDepsList = [
+      
+    ];
+    fs.readdirSync("node_modules/element-plus/es/components").map(
+      async (dirname) => {
+        try {
+          fs.accessSync(
+            `node_modules/element-plus/es/components/${dirname}/style/css.mjs`,
+            fs.constants.F_OK,
+          );
+          optimizeDepsList.push(
+            `element-plus/es/components/${dirname}/style/css`,
+          );
+        } catch (e) {
+          console.log(`1,将强制对${dirname}进行依赖预构建异常`);
+        }
+        //注意，一定要包含下面这部分
+        try {
+          fs.accessSync(
+            `node_modules/element-plus/es/components/${dirname}/style/index.mjs`,
+            fs.constants.F_OK,
+          );
+          optimizeDepsList.push(
+            `element-plus/es/components/${dirname}/style/index`,
+          );
+        } catch (e) {
+          console.log(`2,将强制对${dirname}进行依赖预构建异常`);
+        }
+      },
+    );
+  }
     return {
         base: "/",
         server: {
