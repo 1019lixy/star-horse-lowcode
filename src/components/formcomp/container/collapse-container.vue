@@ -5,12 +5,12 @@ import piniaInstance from "@/store/index";
 import { itemCheck, uuid } from "@/api/system";
 
 const props = defineProps({
-  parentField: {type: Object as PropType<any>},
-  isDesign: {type: Boolean, default: false},
-  showFormItem: {type: Boolean, default: false},
-  disabled: {type: Boolean, default: false},
-  formInfo: {type: Object as PropType<any>},
-  field: {type: Object as PropType<any>},
+  parentField: { type: Object as PropType<any> },
+  isDesign: { type: Boolean, default: false },
+  showFormItem: { type: Boolean, default: false },
+  disabled: { type: Boolean, default: false },
+  formInfo: { type: Object as PropType<any> },
+  field: { type: Object as PropType<any> },
 });
 let designForm = useDesignFormStore(piniaInstance);
 const isDragging = computed(() => designForm.isDragging);
@@ -33,8 +33,8 @@ const onDragAdd = (evt: Event | any, dataList: any) => {
 };
 const activeTabName = ref();
 onMounted(() => {
-  if(!props.field["preps"]){
-    props.field["preps"]={};
+  if (!props.field["preps"]) {
+    props.field["preps"] = {};
   }
   if (!props.field["preps"]?.["elements"]) {
     props.field["preps"]["elements"] = [

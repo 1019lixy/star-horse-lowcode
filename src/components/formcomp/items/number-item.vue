@@ -16,11 +16,17 @@
     >
       <template #prefix>
         <span v-if="field.preps?.prefix">{{ field.preps["prefix"] }}</span>
-        <star-horse-icon :icon-class="field.preps?.prefixIcon" v-if="field.preps?.prefixIcon"/>
+        <star-horse-icon
+          :icon-class="field.preps?.prefixIcon"
+          v-if="field.preps?.prefixIcon"
+        />
       </template>
       <template #suffix>
         <span v-if="field.preps?.suffix">{{ field.preps["suffix"] }}</span>
-        <star-horse-icon :icon-class="field.preps?.suffixIcon" v-if="field.preps?.suffixIcon"/>
+        <star-horse-icon
+          :icon-class="field.preps?.suffixIcon"
+          v-if="field.preps?.suffixIcon"
+        />
       </template>
     </el-input-number>
   </starhorse-form-item>
@@ -39,7 +45,7 @@ defineOptions({
   name: "NumberItem",
 });
 import { ItemPreps } from "@/components/types/ItemPreps";
-import {StarHorseIcon} from "@/components/comp";
+import { StarHorseIcon } from "@/components/comp";
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
   disabled: false,

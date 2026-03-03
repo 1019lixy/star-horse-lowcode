@@ -6,7 +6,7 @@ export declare interface DynamicNode {
   /**
    * 节点标签
    */
-  label:string;
+  label: string;
   /**
    * 节点名称
    */

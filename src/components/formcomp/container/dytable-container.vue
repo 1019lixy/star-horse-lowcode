@@ -5,12 +5,12 @@ import DytableCol from "@/components/formcomp/container/dytable-col.vue";
 
 let containerTableRef = ref(); // 强制刷新表格
 defineProps({
-  parentField: {type: Object as PropType<any>},
-  isDesign: {type: Boolean, default: false},
-  showFormItem: {type: Boolean, default: false},
-  disabled: {type: Boolean, default: false},
-  formInfo: {type: Object as PropType<any>},
-  field: {type: Object as PropType<any>},
+  parentField: { type: Object as PropType<any> },
+  isDesign: { type: Boolean, default: false },
+  showFormItem: { type: Boolean, default: false },
+  disabled: { type: Boolean, default: false },
+  formInfo: { type: Object as PropType<any> },
+  field: { type: Object as PropType<any> },
 });
 const formData = defineModel("formData");
 </script>

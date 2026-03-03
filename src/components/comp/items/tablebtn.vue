@@ -1,26 +1,29 @@
 <script setup lang="ts">
-import {nextTick, onMounted, PropType, ref} from "vue";
-import {UserFuncInfo} from "@/components/types/PageFieldInfo";
-import {BtnHideCondition} from "@/components/types/Params";
+import { nextTick, onMounted, PropType, ref } from "vue";
+import { UserFuncInfo } from "@/components/types/PageFieldInfo";
+import { BtnHideCondition } from "@/components/types/Params";
 
-import {compKey} from "@/api/system";
+import { compKey } from "@/api/system";
 
 const props = defineProps({
   //按钮列表
-  buttonList: {type: Array as PropType<UserFuncInfo[]>, required: true},
+  buttonList: { type: Array as PropType<UserFuncInfo[]>, required: true },
   //权限
-  permissions: {type: Object as PropType<Record<string, string>>, required: true},
+  permissions: {
+    type: Object as PropType<Record<string, string>>,
+    required: true,
+  },
   //数据
-  row: {type: Object, required: true},
+  row: { type: Object, required: true },
   //按钮隐藏条件
   hideBtnCondition: {
     type: Array as PropType<BtnHideCondition[]>,
     default: [],
   },
   //按钮大小
-  compSize: {type: String, default: "default"},
+  compSize: { type: String, default: "default" },
   //按钮默认显示限制，超出按钮个数则折叠显示
-  showLimit: {type: Number, default: 3},
+  showLimit: { type: Number, default: 3 },
 });
 let validButtonList = ref<UserFuncInfo[] | any>([]);
 /**
@@ -32,8 +35,8 @@ const init = () => {
   for (let i in btnList) {
     let temp: UserFuncInfo = btnList[i];
     if (
-        btnHideCheck(temp.authority, props.row) &&
-        Object.keys(props.permissions).includes(temp.authority!)
+      btnHideCheck(temp.authority, props.row) &&
+      Object.keys(props.permissions).includes(temp.authority!)
     ) {
       validButtonList.value.push(temp);
     }
@@ -51,7 +54,7 @@ const btnHideCheck = (btn: string, row: any) => {
     return true;
   }
   let flag = false,
-      hasBtn = false;
+    hasBtn = false;
   for (let i in cond) {
     let temp = cond[i];
     if (temp.btnName.includes(btn)) {
@@ -79,16 +82,16 @@ onMounted(() => {
 <template>
   <template v-if="validButtonList.length > 3">
     <el-tooltip
-        :content="item.btnName"
-        v-for="(item, key) in validButtonList.slice(0, 3)"
-        :key="compKey(item, key)"
+      :content="item.btnName"
+      v-for="(item, key) in validButtonList.slice(0, 3)"
+      :key="compKey(item, key)"
     >
       <star-horse-icon
-          v-if="permissions[item.authority!]"
-          @click="item.funcName!(row)"
-          :icon-class="item.icon || 'edit'"
-          style="cursor: pointer"
-          :color="
+        v-if="permissions[item.authority!]"
+        @click="item.funcName!(row)"
+        :icon-class="item.icon || 'edit'"
+        style="cursor: pointer"
+        :color="
           item.authority == 'delete'
             ? 'var(--el-color-danger)'
             : 'var(--star-horse-style)'
@@ -98,30 +101,30 @@ onMounted(() => {
     <el-dropdown>
       <span class="el-dropdown-link">
         <star-horse-icon
-            icon-class="ellipsis"
-            style="color: var(--star-horse-style)"
+          icon-class="ellipsis"
+          style="color: var(--star-horse-style)"
         />
       </span>
       <template #dropdown>
         <el-dropdown-menu>
           <el-dropdown-item
-              v-for="(auth, key) in validButtonList.slice(
+            v-for="(auth, key) in validButtonList.slice(
               3,
               validButtonList.length,
             )"
-              :key="compKey(auth, key)"
-              :v-if="permissions[auth.authority!]"
+            :key="compKey(auth, key)"
+            :v-if="permissions[auth.authority!]"
           >
             <el-button
-                @click="auth.funcName(row)"
-                link
-                title=""
-                style="cursor: pointer; color: var(--star-horse-style)"
-                :size="compSize"
+              @click="auth.funcName(row)"
+              link
+              title=""
+              style="cursor: pointer; color: var(--star-horse-style)"
+              :size="compSize"
             >
               <star-horse-icon
-                  :icon-class="auth.icon || 'edit'"
-                  :color="
+                :icon-class="auth.icon || 'edit'"
+                :color="
                   auth.authority == 'delete'
                     ? 'var(--el-color-danger)'
                     : 'var(--star-horse-style)'
@@ -136,16 +139,16 @@ onMounted(() => {
   </template>
   <template v-else>
     <el-tooltip
-        :content="item.btnName"
-        v-for="(item, key) in validButtonList"
-        :key="compKey(item, key)"
+      :content="item.btnName"
+      v-for="(item, key) in validButtonList"
+      :key="compKey(item, key)"
     >
       <star-horse-icon
-          v-if="permissions[item.authority]"
-          @click="item.funcName(row)"
-          :icon-class="item.icon || 'edit'"
-          style="cursor: pointer"
-          :color="
+        v-if="permissions[item.authority]"
+        @click="item.funcName(row)"
+        :icon-class="item.icon || 'edit'"
+        style="cursor: pointer"
+        :color="
           item.authority == 'delete'
             ? 'var(--el-color-danger)'
             : 'var(--star-horse-style)'

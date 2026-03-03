@@ -1,47 +1,50 @@
 <template>
   <starhorse-form-item
-      :showFormItem="showFormItem"
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :field="field"
-      :parentField="parentField"
+    :showFormItem="showFormItem"
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :bareFlag="bareFlag"
+    :field="field"
+    :parentField="parentField"
   >
-    <div style="border: 1px solid #ccc;width: 100%;height: 100%;">
+    <div style="border: 1px solid #ccc; width: 100%; height: 100%">
       <Toolbar
-          style="border-bottom: 1px solid #ccc"
-          :editor="editorRef"
-          :defaultConfig="toolbarConfig"
-          v-if="!field.preps?.hideToolbar"
-          :mode="field.preps?.mode??'default'"
+        style="border-bottom: 1px solid #ccc"
+        :editor="editorRef"
+        :defaultConfig="toolbarConfig"
+        v-if="!field.preps?.hideToolbar"
+        :mode="field.preps?.mode ?? 'default'"
       />
       <Editor
-          :style="{
-          width: field.preps?.width??'100%',
-          height: field.preps?.height??'100%',
-          'overflow': field.preps?.overflow??'auto',
-          'border-radius': '4px'
+        :style="{
+          width: field.preps?.width ?? '100%',
+          height: field.preps?.height ?? '100%',
+          overflow: field.preps?.overflow ?? 'auto',
+          'border-radius': '4px',
         }"
-          v-bind="prepsFilter(props)"
-          v-on="getDynamicEvents(props, itemAction)"
-          v-model="formData[field.fieldName]"
-          :defaultConfig="editorConfig"
-          :mode="field.preps?.mode??'default'"
-          @onCreated="handleCreated"
+        v-bind="prepsFilter(props)"
+        v-on="getDynamicEvents(props, itemAction)"
+        v-model="formData[field.fieldName]"
+        :defaultConfig="editorConfig"
+        :mode="field.preps?.mode ?? 'default'"
+        @onCreated="handleCreated"
       />
     </div>
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {onBeforeUnmount, onMounted, shallowRef} from "vue";
+import { onBeforeUnmount, onMounted, shallowRef } from "vue";
 import "@wangeditor/editor/dist/css/style.css"; // 引入 css
-import {allAction, prepsFilter,} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import {getDynamicEvents} from "@/api/system";
-import {Editor, Toolbar} from "@wangeditor/editor-for-vue";
-import {ItemPreps} from "@/components/types/ItemPreps";
+import {
+  allAction,
+  prepsFilter,
+} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import { getDynamicEvents } from "@/api/system";
+import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
+import { ItemPreps } from "@/components/types/ItemPreps";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
-import {uploadRequest} from "@/api/star_horse_apis";
-import {warning} from "@/utils/message";
+import { uploadRequest } from "@/api/star_horse_apis";
+import { warning } from "@/utils/message";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -58,20 +61,22 @@ const toolbarConfig = {};
 const editorConfig = {
   placeholder: "请输入内容...",
   MENU_CONF: {
-    "uploadImage": {
+    uploadImage: {
       base64LimitSize: 0,
       async customUpload(file: File, insertFn: any) {
         const formData: any = new FormData();
         formData.append("file", file);
-        const url: string = props.field.preps?.uploadUrl ?? "/system-config/annex/upload/images";
+        const url: string =
+          props.field.preps?.uploadUrl ?? "/system-config/annex/upload/images";
         uploadRequest(url, formData)
-            .then((res) => {
-              const result = res.data;
-              console.log(result);
-              insertFn(result.data[props.field.preps?.["fieldName"] ?? "path"]);
-            }).catch((err) => {
-          console.error("Error:", err);
-        });
+          .then((res) => {
+            const result = res.data;
+            console.log(result);
+            insertFn(result.data[props.field.preps?.["fieldName"] ?? "path"]);
+          })
+          .catch((err) => {
+            console.error("Error:", err);
+          });
       },
       beforeUpload(file) {
         // 校验文件类型
@@ -89,20 +94,22 @@ const editorConfig = {
         return true;
       },
     },
-    "uploadVideo": {
+    uploadVideo: {
       base64LimitSize: 0,
       async customUpload(file: File, insertFn: any) {
         const formData: any = new FormData();
         formData.append("file", file);
-        const url: string = props.field.preps?.uploadUrl ?? "/system-config/annex/upload/videos";
+        const url: string =
+          props.field.preps?.uploadUrl ?? "/system-config/annex/upload/videos";
         uploadRequest(url, formData)
-            .then((res) => {
-              const result = res.data;
-              console.log(result);
-              insertFn(result.data[props.field.preps?.["fieldName"] ?? "path"]);
-            }).catch((err) => {
-          console.error("Error:", err);
-        });
+          .then((res) => {
+            const result = res.data;
+            console.log(result);
+            insertFn(result.data[props.field.preps?.["fieldName"] ?? "path"]);
+          })
+          .catch((err) => {
+            console.error("Error:", err);
+          });
       },
       beforeUpload(file) {
         // 校验文件类型
@@ -119,8 +126,8 @@ const editorConfig = {
         }
         return true;
       },
-    }
-  }
+    },
+  },
 };
 
 const dataChange = (data: any) => {
@@ -134,8 +141,7 @@ const handleCreated = (editor: any) => {
   editorRef.value = editor; // 记录 editor 实例，重要！
 };
 
-onMounted(() => {
-});
+onMounted(() => {});
 onBeforeUnmount(() => {
   const editor = editorRef.value;
   if (editor == null) return;

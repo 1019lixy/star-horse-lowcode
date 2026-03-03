@@ -42,16 +42,29 @@ const normalizedFieldList = computed(() => {
           processFieldList(cardItems.fieldList, `${key}_card_${cardIndex}`);
         });
       } else if (item.collapseList?.length > 0) {
-        item.collapseList.forEach((collapseItems: any, collapseIndex: number) => {
-          processFieldList(collapseItems.fieldList, `${key}_collapse_${collapseIndex}`);
-        });
+        item.collapseList.forEach(
+          (collapseItems: any, collapseIndex: number) => {
+            processFieldList(
+              collapseItems.fieldList,
+              `${key}_collapse_${collapseIndex}`,
+            );
+          },
+        );
       } else if (item.splitterList?.length > 0) {
-        item.splitterList.forEach((splitterItems: any, splitterIndex: number) => {
-          processFieldList(splitterItems.fieldList, `${key}_splitter_${splitterIndex}`);
-        });
+        item.splitterList.forEach(
+          (splitterItems: any, splitterIndex: number) => {
+            processFieldList(
+              splitterItems.fieldList,
+              `${key}_splitter_${splitterIndex}`,
+            );
+          },
+        );
       } else if (item.dytableList?.length > 0) {
         item.dytableList.forEach((tabItems: any, dytableIndex: number) => {
-          processFieldList(Array.isArray(tabItems) ? tabItems : [tabItems], `${key}_dytable_${dytableIndex}`);
+          processFieldList(
+            Array.isArray(tabItems) ? tabItems : [tabItems],
+            `${key}_dytable_${dytableIndex}`,
+          );
         });
       } else if (item.batchFieldList?.length > 0) {
         item.batchFieldList.forEach((batchItems: any, batchIndex: number) => {
@@ -60,7 +73,7 @@ const normalizedFieldList = computed(() => {
       } else {
         result.push({
           item,
-          key: compKey(item, key)
+          key: compKey(item, key),
         });
       }
     }
@@ -77,7 +90,7 @@ const normalizedFieldList = computed(() => {
       } else {
         result.push({
           item,
-          key: compKey(item, `batch_${index}`)
+          key: compKey(item, `batch_${index}`),
         });
       }
     });

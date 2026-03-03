@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import Vue3Barcode from "vue3-barcode";
-import {nextTick, onMounted, ref, watch} from "vue";
-import {allAction} from "../utils/ItemRelationEventUtils";
+import { nextTick, onMounted, ref, watch } from "vue";
+import { allAction } from "../utils/ItemRelationEventUtils";
 
-import {ItemPreps} from "@/components/types/ItemPreps";
+import { ItemPreps } from "@/components/types/ItemPreps";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -18,7 +18,8 @@ const formData = defineModel("formData");
 const dataValue = ref<string>("");
 const createCode = () => {
   if (!dataValue.value) {
-    dataValue.value = props.field?.preps.value ?? formData.value[props.field.fieldName];
+    dataValue.value =
+      props.field?.preps.value ?? formData.value[props.field.fieldName];
   }
   barcodeRef.value = {
     format: props.field.preps?.format ?? "CODE39", //选择要使用的条形码类型
@@ -43,30 +44,34 @@ onMounted(() => {
     allAction(props, emits, formData, "change", true);
   });
 });
-watch(() => dataValue.value, (newValue) => {
-  if (newValue) {
-    formData.value[props.field.fieldName] = newValue;
-  }
-}, {immediate: true, deep: true});
 watch(
-    () => props.field.preps,
-    () => {
-      createCode();
-      allAction(props, emits, formData, "change", false);
-    },
-    {immediate: false, deep: true},
+  () => dataValue.value,
+  (newValue) => {
+    if (newValue) {
+      formData.value[props.field.fieldName] = newValue;
+    }
+  },
+  { immediate: true, deep: true },
+);
+watch(
+  () => props.field.preps,
+  () => {
+    createCode();
+    allAction(props, emits, formData, "change", false);
+  },
+  { immediate: false, deep: true },
 );
 </script>
 <template>
   <starhorse-form-item
-      :showFormItem="showFormItem"
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :field="field"
-      :parentField="parentField"
+    :showFormItem="showFormItem"
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :bareFlag="bareFlag"
+    :field="field"
+    :parentField="parentField"
   >
-    <Vue3Barcode :value="dataValue" :options="barcodeRef"/>
+    <Vue3Barcode :value="dataValue" :options="barcodeRef" />
   </starhorse-form-item>
 </template>
 <style scoped></style>

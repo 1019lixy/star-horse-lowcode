@@ -52,17 +52,19 @@ function handleUndo() {
     <div class="flex flex-col items-center space-y-4">
       <div class="bg-gray-100 p-6">
         <VueSignaturePad
-            ref="signature"
-            height="400px"
-            width="1280px"
-
-            :max-width="2"
-            :min-width="2"
-            :disabled="state.disabled"
+          ref="signature"
+          height="400px"
+          width="1280px"
+          :max-width="2"
+          :min-width="2"
+          :disabled="state.disabled"
         />
       </div>
 
-      <button type="button" @click="handleSave('image/jpeg', 'signature-pad.jpg')">
+      <button
+        type="button"
+        @click="handleSave('image/jpeg', 'signature-pad.jpg')"
+      >
         Save
       </button>
       <button type="button" @click="handleClear">Clear</button>

@@ -1,29 +1,33 @@
 <template>
   <starhorse-form-item
-      :showFormItem="showFormItem"
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :field="field"
-      :parentField="parentField"
+    :showFormItem="showFormItem"
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :bareFlag="bareFlag"
+    :field="field"
+    :parentField="parentField"
   >
     <el-transfer
-        :fid="field?.preps['name']"
-        v-bind="prepsFilter(field.preps)"
-        :props="field?.preps.props??{key:'value',label:'name'}"
-        v-on="getDynamicEvents(props, itemAction)"
-        v-model="formData[field.fieldName]"
+      :fid="field?.preps['name']"
+      v-bind="prepsFilter(field.preps)"
+      :props="field?.preps.props ?? { key: 'value', label: 'name' }"
+      v-on="getDynamicEvents(props, itemAction)"
+      v-model="formData[field.fieldName]"
     />
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {nextTick, onMounted, shallowRef, watch} from "vue";
-import {compDynamicData} from "@/api/star_horse_utils";
-import {SelectOption} from "@/components/types/SearchProps";
-import {allAction, initCompCallEvent, prepsFilter,} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import {getDynamicEvents} from "@/api/system";
+import { nextTick, onMounted, shallowRef, watch } from "vue";
+import { compDynamicData } from "@/api/star_horse_utils";
+import { SelectOption } from "@/components/types/SearchProps";
+import {
+  allAction,
+  initCompCallEvent,
+  prepsFilter,
+} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import { getDynamicEvents } from "@/api/system";
 
-import {ItemPreps} from "@/components/types/ItemPreps";
+import { ItemPreps } from "@/components/types/ItemPreps";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
@@ -57,17 +61,15 @@ onMounted(() => {
   });
 });
 watch(
-    () => formData.value[props.field.fieldName + "OptionList"],
-    (val) => {
-      if (val?.length > 0) {
-        props.field.preps["data"] = val;
-      }
-    },
-    {
-      immediate: true,
-    },
+  () => formData.value[props.field.fieldName + "OptionList"],
+  (val) => {
+    if (val?.length > 0) {
+      props.field.preps["data"] = val;
+    }
+  },
+  {
+    immediate: true,
+  },
 );
 </script>
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

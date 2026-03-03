@@ -43,3 +43,4 @@ export { default as viewMarkdownItem } from "./view-markdown-item.vue";
 export { default as qrcodeItem } from "./qrcode-item.vue";
 export { default as barcodeItem } from "./barcode-item.vue";
 export { default as dialogItem } from "./dialog-item.vue";
+export { default as drawerItem } from "./drawer-item.vue";

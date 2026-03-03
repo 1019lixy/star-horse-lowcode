@@ -2,7 +2,7 @@
 import { inject, PropType, ref, ShallowReactive, watch } from "vue";
 import { ApiUrls } from "@/components/types/ApiUrls";
 import { error, success, warning } from "@/utils/message";
-import { postRequest,loadById } from "@/api/star_horse_apis";
+import { postRequest, loadById } from "@/api/star_horse_apis";
 import { closeLoad, load } from "@/api/star_horse_utils";
 import { DialogProps } from "@/components/types/DialogProps";
 import { compKey, itemCheck } from "@/api/system";
@@ -90,6 +90,7 @@ watch(
   () => dialogProps.ids,
   (val) => {
     if (val == -2) {
+      console.log("val == -2 不予处理");
     } else if (!val || val == -1) {
       assignDefault();
     } else {

@@ -2,16 +2,16 @@
   <div class="tts-demo">
     <!-- 输入框 -->
     <textarea
-        v-model="textToSpeak"
-        placeholder="请输入要转换为语音的文字..."
-        rows="5"
-        class="text-input"
+      v-model="textToSpeak"
+      placeholder="请输入要转换为语音的文字..."
+      rows="5"
+      class="text-input"
     ></textarea>
 
     <!-- 控制按钮 -->
     <div class="btn-group">
       <button @click="startSpeak" :disabled="!textToSpeak || isSpeaking">
-        {{ isSpeaking ? '正在播放' : '开始朗读' }}
+        {{ isSpeaking ? "正在播放" : "开始朗读" }}
       </button>
       <button @click="pauseSpeak" :disabled="!isSpeaking">暂停</button>
       <button @click="resumeSpeak" :disabled="!isPaused">继续</button>
@@ -23,34 +23,28 @@
       <label>
         语速：
         <input
-            type="range"
-            v-model.number="rate"
-            min="0.5"
-            max="2"
-            step="0.1"
-        >
+          type="range"
+          v-model.number="rate"
+          min="0.5"
+          max="2"
+          step="0.1"
+        />
         {{ rate }}
       </label>
       <label>
         音量：
         <input
-            type="range"
-            v-model.number="volume"
-            min="0"
-            max="1"
-            step="0.1"
-        >
+          type="range"
+          v-model.number="volume"
+          min="0"
+          max="1"
+          step="0.1"
+        />
         {{ volume }}
       </label>
       <label>
         音调：
-        <input
-            type="range"
-            v-model.number="pitch"
-            min="0"
-            max="2"
-            step="0.1"
-        >
+        <input type="range" v-model.number="pitch" min="0" max="2" step="0.1" />
         {{ pitch }}
       </label>
     </div>

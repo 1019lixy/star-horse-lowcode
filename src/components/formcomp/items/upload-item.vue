@@ -1,52 +1,52 @@
 <template>
   <starhorse-form-item
-      :showFormItem="showFormItem"
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :field="field"
-      :parentField="parentField"
+    :showFormItem="showFormItem"
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :bareFlag="bareFlag"
+    :field="field"
+    :parentField="parentField"
   >
     <el-upload
-        :fid="field.fieldName"
-        :disabled="checkIsDisabled(props)"
-        :headers="headers"
-        v-bind="prepsFilter(field.preps)"
-        :on-change="
+      :fid="field.fieldName"
+      :disabled="checkIsDisabled(props)"
+      :headers="headers"
+      v-bind="prepsFilter(field.preps)"
+      :on-change="
         (uploadFile: any, uploadFiles: any) =>
           selfAction('change', uploadFile, uploadFiles)
       "
-        :on-error="
+      :on-error="
         (error: any, uploadFile: any, uploadFiles: any) =>
           selfAction('error', uploadFile, uploadFiles, error)
       "
-        :on-exceed="
+      :on-exceed="
         (files: any, uploadFiles: any) =>
           selfAction('exceed', files, uploadFiles)
       "
-        :on-preview="(uploadFile: any) => selfAction('preview', uploadFile)"
-        :on-progress="
+      :on-preview="(uploadFile: any) => selfAction('preview', uploadFile)"
+      :on-progress="
         (evt: any, uploadFile: any, uploadFiles: any) =>
           selfAction('progress', uploadFile, uploadFiles, evt)
       "
-        :on-remove="
+      :on-remove="
         (uploadFile: any, uploadFiles: any) =>
           selfAction('remove', uploadFile, uploadFiles)
       "
-        :on-success="
+      :on-success="
         (response: any, uploadFile: any, uploadFiles: any) =>
           selfAction('success', uploadFile, uploadFiles, response)
       "
-        style="
+      style="
         width: 100% !important;
         display: flex;
         align-items: center;
         position: relative;
       "
-        v-model:file-list="dataField"
+      v-model:file-list="dataField"
     >
       <el-icon class="el-icon--upload" v-if="field.preps?.drag">
-        <upload-filled/>
+        <upload-filled />
       </el-icon>
       <div class="el-upload__text" v-if="field.preps?.drag">
         {{ i18n("form.dragFileHereOr") }}
@@ -58,20 +58,23 @@
         </div>
       </template>
       <star-horse-icon
-          v-if="!field.preps?.drag"
-          icon-class="plus"
-          color="var(--star-horse-style)"
+        v-if="!field.preps?.drag"
+        icon-class="plus"
+        color="var(--star-horse-style)"
       />
     </el-upload>
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {checkIsDisabled, prepsFilter,} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import {getToken} from "@/utils/auth";
-import {nextTick, onMounted, ref, shallowRef} from "vue";
-import {i18n} from "@/lang";
+import {
+  checkIsDisabled,
+  prepsFilter,
+} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import { getToken } from "@/utils/auth";
+import { nextTick, onMounted, ref, shallowRef } from "vue";
+import { i18n } from "@/lang";
 
-import {ItemPreps} from "@/components/types/ItemPreps";
+import { ItemPreps } from "@/components/types/ItemPreps";
 import JSON5 from "json5";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
@@ -86,10 +89,10 @@ const formData = defineModel("formData");
 let dataField = shallowRef([]);
 let headers = ref<any>({});
 const selfAction = (
-    prep: any,
-    uploadFile: any,
-    uploadFiles: any = [],
-    param: any = {},
+  prep: any,
+  uploadFile: any,
+  uploadFiles: any = [],
+  param: any = {},
 ) => {
   if (prep == "success") {
     let result = param.data;
@@ -111,7 +114,7 @@ onMounted(async () => {
     props.field.preps = {};
   }
   props.field.preps["action"] =
-      props.field.preps["action"] || "/system-config/annex/upload/commonFiles";
+    props.field.preps["action"] || "/system-config/annex/upload/commonFiles";
   if (props.field.preps["multiple"] && !formData.value[props.field.fieldName]) {
     formData.value[props.field.fieldName] = [];
   }
@@ -120,7 +123,7 @@ onMounted(async () => {
   const baseUrl: string = props.field.preps["context"] || "/system-config";
   if (datas && datas.length > 0) {
     if (Array.isArray(datas)) {
-      datas.forEach(item => {
+      datas.forEach((item) => {
         dataField.value.push({
           url: baseUrl + item,
         });
@@ -163,7 +166,6 @@ onMounted(async () => {
     width: 100% !important;
   }
 }
-
 
 /*:deep(.el-upload-list) {
   position: absolute;

@@ -10,12 +10,12 @@ import { i18n } from "@/lang";
 
 let containerTableRef = ref(); // 强制刷新表格
 const props = defineProps({
-  parentField: {type: Object as PropType<any>},
-  isDesign: {type: Boolean, default: false},
-  showFormItem: {type: Boolean, default: false},
-  disabled: {type: Boolean, default: false},
-  formInfo: {type: Object as PropType<any>},
-  field: {type: Object as PropType<any>},
+  parentField: { type: Object as PropType<any> },
+  isDesign: { type: Boolean, default: false },
+  showFormItem: { type: Boolean, default: false },
+  disabled: { type: Boolean, default: false },
+  formInfo: { type: Object as PropType<any> },
+  field: { type: Object as PropType<any> },
 });
 let designForm = useDesignFormStore(piniaInstance);
 let draggingItem = computed(() => designForm.draggingItem);
@@ -146,7 +146,10 @@ const deleteCol = (index: number) => {
               @mouseleave="(evt) => tdOut(evt, td)"
             >
               <draggable
-                @add=" (evt: Event) =>onDragAdd(evt, field.preps.elements[td - 1].items)"
+                @add="
+                  (evt: Event) =>
+                    onDragAdd(evt, field.preps.elements[td - 1].items)
+                "
                 class="smain-design"
                 tag="div"
                 group="starHorseGroup"

@@ -4,12 +4,12 @@ import GroupContainer from "@/components/formcomp/container/group-container.vue"
 import BoxCol from "@/components/formcomp/container/box-col.vue";
 
 defineProps({
-  parentField: {type: Object as PropType<any>},
-  isDesign: {type: Boolean, default: false},
-  showFormItem: {type: Boolean, default: false},
-  disabled: {type: Boolean, default: false},
-  formInfo: {type: Object as PropType<any>},
-  field: {type: Object as PropType<any>},
+  parentField: { type: Object as PropType<any> },
+  isDesign: { type: Boolean, default: false },
+  showFormItem: { type: Boolean, default: false },
+  disabled: { type: Boolean, default: false },
+  formInfo: { type: Object as PropType<any> },
+  field: { type: Object as PropType<any> },
 });
 const formData = defineModel("formData");
 </script>

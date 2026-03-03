@@ -1,43 +1,50 @@
 <script setup lang="ts" name="StarHorseTableColumn">
-import {computed, ComputedRef, nextTick, onMounted, PropType, ref, unref} from "vue";
-import {postRequest} from "@/api/star_horse_apis";
-import {closeLoad, commonParseCodeToName} from "@/api/star_horse_utils";
-import {error, success, warning} from "@/utils/message";
-import {Config} from "@/api/settings";
-import {createComponent, uuid} from "@/api/system";
-import {dateTypes, parseDateByType} from "@/api/date_utils";
-import {DyCompField} from "@/components/types";
+import {
+  computed,
+  ComputedRef,
+  nextTick,
+  onMounted,
+  PropType,
+  ref,
+  unref,
+} from "vue";
+import { postRequest } from "@/api/star_horse_apis";
+import { closeLoad, commonParseCodeToName } from "@/api/star_horse_utils";
+import { error, success, warning } from "@/utils/message";
+import { Config } from "@/api/settings";
+import { createComponent, uuid } from "@/api/system";
+import { dateTypes, parseDateByType } from "@/api/date_utils";
+import { DyCompField } from "@/components/types";
 import StarHorseItem from "@/components/comp/StarHorseItem.vue";
 
 const props = defineProps({
-  compUrl: {type: Object},
-  batchName: {type: String, default: ""},
-  item: {type: Object as PropType<any>, required: true},
-  dataFormat: {type: Function, required: true},
-  cellEditable: {type: Boolean, default: true},
+  compUrl: { type: Object },
+  batchName: { type: String, default: "" },
+  item: { type: Object as PropType<any>, required: true },
+  dataFormat: { type: Function, required: true },
+  cellEditable: { type: Boolean, default: true },
   //全局配置，动态页面使用
-  globalConfig: {type: Object as PropType<any>, required: false},
+  globalConfig: { type: Object as PropType<any>, required: false },
   //是否动态页面
-  isDynamic: {type: Boolean, default: false},
+  isDynamic: { type: Boolean, default: false },
   //是否显示排序
-  sortable: {type: Boolean, default: true},
-  compSize: {type: String, default: "default"},
-  source: {type: Number, default: 5},
+  sortable: { type: Boolean, default: true },
+  compSize: { type: String, default: "default" },
+  source: { type: Number, default: 5 },
 });
 const emits = defineEmits(["focusEvent", "blurEvent"]);
 const compInfo: ComputedRef<DyCompField> = computed(() => {
   return {
     ...unref(props.item.preps?.compInfo),
     props: {
-      data: {type: Object},
-      item: {type: Object},
+      data: { type: Object },
+      item: { type: Object },
     },
   };
 });
 const currentRow = ref<any>({});
 const columnId = ref<string>(uuid());
-const focusEvent = (_column: any) => {
-};
+const focusEvent = (_column: any) => {};
 const blurEvent = (column: any, params: any) => {
   const data = Array.isArray(params) ? params[0] : params;
   let bakeValue = data["starHorseBakeValue"];
@@ -57,23 +64,24 @@ const blurEvent = (column: any, params: any) => {
     reqParams = data;
   }
   postRequest(props.compUrl?.mergeUrl!, reqParams)
-      .then((res) => {
-        if (res.data.code != 0) {
-          warning(res.data.cnMessage);
-        } else {
-          success(res.data.cnMessage);
-        }
-      })
-      .catch((err) => {
-        error("接口调用异常" + err);
-      })
-      .finally(() => {
-        closeLoad();
-      });
+    .then((res) => {
+      if (res.data.code != 0) {
+        warning(res.data.cnMessage);
+      } else {
+        success(res.data.cnMessage);
+      }
+    })
+    .catch((err) => {
+      error("接口调用异常" + err);
+    })
+    .finally(() => {
+      closeLoad();
+    });
 };
 // 在script部分添加取消方法
 const cancelEdit = (row: any) => {
-  const originalValue = row.starHorseBakeValue === "_" ? null : row.starHorseBakeValue;
+  const originalValue =
+    row.starHorseBakeValue === "_" ? null : row.starHorseBakeValue;
   row[row.selectName] = originalValue;
   delete row.isSelected;
   delete row.selectName;
@@ -81,19 +89,21 @@ const cancelEdit = (row: any) => {
   changeStyle("hidden");
 };
 const changeStyle = (type: string) => {
-
   nextTick(() => {
     $(".edit-container")?.parent(".cell").css("overflow", type);
     //所有输入框，下拉框，自动聚焦
-    $(".edit-container")?.find("input,select,textarea").first().select().focus();
+    $(".edit-container")
+      ?.find("input,select,textarea")
+      .first()
+      .select()
+      .focus();
   });
-
 };
 const cellClick = (row: any, column: any) => {
   if (
-      !props.cellEditable ||
-      props.item.preps?.["disabled"] ||
-      props.item.preps?.["editDisabled"]
+    !props.cellEditable ||
+    props.item.preps?.["disabled"] ||
+    props.item.preps?.["editDisabled"]
   ) {
     warning("当前列不允许编辑");
     return;
@@ -129,12 +139,12 @@ const currentDataFormat = (scope: any) => {
     return parseDateByType(val, item.type);
   }
   if (
-      item.type == "select" ||
-      item.type == "checkbox" ||
-      item.type == "radio"
+    item.type == "select" ||
+    item.type == "checkbox" ||
+    item.type == "radio"
   ) {
     fname = item.preps?.values?.find(
-        (temp: any) => String(temp.value) == val,
+      (temp: any) => String(temp.value) == val,
     )?.name;
   }
   if (fname) {
@@ -154,14 +164,14 @@ const prototypeCheck = (item: any) => {
   let flag = Object.keys(item).includes("listPrototypeDisplay");
   if (flag) {
     return typeof item.listPrototypeDisplay == "boolean"
-        ? item.listPrototypeDisplay
-        : true;
+      ? item.listPrototypeDisplay
+      : true;
   } else {
     flag = Object.keys(item.preps || {}).includes("listPrototypeDisplay");
     if (flag) {
       return typeof item.preps?.listPrototypeDisplay == "boolean"
-          ? item.preps?.listPrototypeDisplay
-          : true;
+        ? item.preps?.listPrototypeDisplay
+        : true;
     }
   }
   return false;
@@ -182,84 +192,94 @@ onMounted(() => {
 </script>
 <template>
   <el-table-column
-      :prop="item.hideName || item.fieldName"
-      :label="item.label"
-      :min-width="(item.minWidth || Config.defaultColumnWidth) + 'px'"
-      :formatter="dataFormat"
-      v-if="item.listVisible&&!item.preps?.staticData"
-      :sortable="sortable"
-
-      :show-overflow-tooltip="!currentRow.isSelected"
+    :prop="item.hideName || item.fieldName"
+    :label="item.label"
+    :min-width="(item.minWidth || Config.defaultColumnWidth) + 'px'"
+    :formatter="dataFormat"
+    v-if="item.listVisible && !item.preps?.staticData"
+    :sortable="sortable"
+    :show-overflow-tooltip="!currentRow.isSelected"
   >
     <template #default="scope">
       <template v-if="item.preps?.showComp">
         <el-popover
-            ref="popover"
-            :placement="item.preps.placement || 'left'"
-            :width="'auto'"
-            v-if="item.preps.popover"
-            @show="showOperation"
+          ref="popover"
+          :placement="item.preps.placement || 'left'"
+          :width="'auto'"
+          v-if="item.preps.popover"
+          @show="showOperation"
         >
           <template #reference>
             <star-horse-item
-                v-model:dataForm="scope.row"
-                :item="item"
-                :column="scope.column"
-                :batchName="batchName"
-                :bareFlag="true"
-                :compSize="compSize"
+              v-model:dataForm="scope.row"
+              :item="item"
+              :column="scope.column"
+              :batchName="batchName"
+              :bareFlag="true"
+              :compSize="compSize"
             />
           </template>
           <component
-              :is="createComponent(compInfo)"
-              :item="item"
-              :data="scope.row"
-              v-if="compInfo.name"
+            :is="createComponent(compInfo)"
+            :item="item"
+            :data="scope.row"
+            v-if="compInfo.name"
           />
         </el-popover>
         <star-horse-item
-            v-model:dataForm="scope.row"
-            :item="item"
-            :column="scope.column"
-            :batchName="batchName"
-            :compSize="compSize"
-            v-else
+          v-model:dataForm="scope.row"
+          :item="item"
+          :column="scope.column"
+          :batchName="batchName"
+          :compSize="compSize"
+          v-else
         />
       </template>
       <template v-else-if="prototypeCheck(item)">
         <component
-            :is="
+          :is="
             (item.listPrototypeDisplay === true ||
             item.preps?.listPrototypeDisplay === true
               ? item.type || 'input'
               : item.listPrototypeDisplay || item.preps?.listPrototypeDisplay) +
             '-item'
           "
-            :bareFlag="true"
-            :callBack="() => currentDataFormat(scope)"
-            :field="createPreps(item)"
-            :formData="scope.row"
+          :bareFlag="true"
+          :callBack="() => currentDataFormat(scope)"
+          :field="createPreps(item)"
+          :formData="scope.row"
         />
       </template>
       <template v-else>
-        <div class="edit-container"
-             :id="columnId"
-             v-if="scope.row.isSelected && scope.row.selectName == scope.column.property">
+        <div
+          class="edit-container"
+          :id="columnId"
+          v-if="
+            scope.row.isSelected &&
+            scope.row.selectName == scope.column.property
+          "
+        >
           <div class="action-buttons">
-            <el-button type="primary" size="small" @click.stop="blurEvent(scope.column, scope.row)">✔</el-button>
-            <el-button size="small" @click.stop="cancelEdit(scope.row)">✖</el-button>
+            <el-button
+              type="primary"
+              size="small"
+              @click.stop="blurEvent(scope.column, scope.row)"
+              >✔</el-button
+            >
+            <el-button size="small" @click.stop="cancelEdit(scope.row)"
+              >✖</el-button
+            >
           </div>
           <star-horse-item
-              v-model:dataForm="scope.row"
-              :item="item"
-              :column="scope.column"
-              :batchName="batchName"
-              @focus="focusEvent"
-              :compSize="compSize"
-              @blur="blurEvent"
-              :source="source"
-              :autofocus="true"
-
+            v-model:dataForm="scope.row"
+            :item="item"
+            :column="scope.column"
+            :batchName="batchName"
+            @focus="focusEvent"
+            :compSize="compSize"
+            @blur="blurEvent"
+            :source="source"
+            :autofocus="true"
           />
         </div>
         <p @click.stop="cellClick(scope.row, scope.column)" v-else>
@@ -275,7 +295,6 @@ onMounted(() => {
   z-index: 50000;
 
   .action-buttons {
-
     .el-button {
       padding: 4px 8px;
 

@@ -35,11 +35,12 @@ export const useDesignPageStore = defineStore("designPage", () => {
   };
   const maxZIndex = () => {
     nodeList.value.sort((a: DynamicNode, b: DynamicNode) => {
-      if(!a.styles){
-        a["styles"]={};
+      if (!a.styles) {
+        a["styles"] = {};
       }
       return (
-        (a.styles.zIndex || defaultZindex.value) - (b.styles.zIndex || defaultZindex.value)
+        (a.styles.zIndex || defaultZindex.value) -
+        (b.styles.zIndex || defaultZindex.value)
       );
     });
     return nodeList.value[0].styles?.zIndex || defaultZindex.value;

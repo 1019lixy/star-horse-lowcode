@@ -1,8 +1,15 @@
 <script setup lang="ts" name="SystemParams">
-import {onActivated, onDeactivated, onMounted, provide, reactive, ref,} from "vue";
-import {getCustomerParam} from "@/utils/auth";
-import {ApiUrls, PageFieldInfo, SearchFields} from "@/components/types";
-import {apiInstance, dialogPreps} from "@/api/star_horse_utils";
+import {
+  onActivated,
+  onDeactivated,
+  onMounted,
+  provide,
+  reactive,
+  ref,
+} from "vue";
+import { getCustomerParam } from "@/utils/auth";
+import { ApiUrls, PageFieldInfo, SearchFields } from "@/components/types";
+import { apiInstance, dialogPreps } from "@/api/star_horse_utils";
 //后端交互接口地址
 const dataUrl: ApiUrls = apiInstance("system-config", "system/systemParams");
 //主键
@@ -70,12 +77,9 @@ const rules = {};
 const dialogProps = dialogPreps();
 provide("dialogProps", dialogProps);
 //初始化方法
-const initData = async () => {
-};
-const activated = () => {
-};
-const deactivated = () => {
-};
+const initData = async () => {};
+const activated = () => {};
+const deactivated = () => {};
 /**
  * 列表，查看数据时数据转换
  * @param name 名称
@@ -99,45 +103,45 @@ onDeactivated(() => {
 <template>
   <div class="flex flex-col h-full overflow-hidden">
     <star-horse-dialog
-        :isShowBtnContinue="true"
-        :dialog-visible="dialogProps.editVisible"
-        :dialogProps="dialogProps"
+      :isShowBtnContinue="true"
+      :dialog-visible="dialogProps.editVisible"
+      :dialogProps="dialogProps"
     >
       <star-horse-form
-          @refresh="systemParamsRef?.loadByPage()"
-          :compUrl="dataUrl"
-          :fieldList="tableFieldList"
-          :rules="rules"
+        @refresh="systemParamsRef?.loadByPage()"
+        :compUrl="dataUrl"
+        :fieldList="tableFieldList"
+        :rules="rules"
       />
     </star-horse-dialog>
     <star-horse-dialog
-        :dialog-visible="dialogProps.viewVisible"
-        :dialogProps="dialogProps"
-        :source="3"
+      :dialog-visible="dialogProps.viewVisible"
+      :dialogProps="dialogProps"
+      :source="3"
     >
       <star-horse-data-view
-          :dataFormat="dataFormat"
-          :field-list="tableFieldList"
-          :compUrl="dataUrl"
+        :dataFormat="dataFormat"
+        :field-list="tableFieldList"
+        :compUrl="dataUrl"
       />
     </star-horse-dialog>
     <div class="search-content">
       <div class="search_btn">
         <star-horse-search-comp
-            @searchData="(data: any) => systemParamsRef?.createSearchParams(data)"
-            :formData="searchFormData"
-            :compUrl="dataUrl"
+          @searchData="(data: any) => systemParamsRef?.createSearchParams(data)"
+          :formData="searchFormData"
+          :compUrl="dataUrl"
         />
       </div>
     </div>
     <el-card class="inner_content">
       <star-horse-table-comp
-          ref="systemParamsRef"
-          :fieldList="tableFieldList"
-          :primaryKey="primaryKey"
-          :compUrl="dataUrl"
-          :help-msg="`系统参数创建后，请不要随便删除或者修改，\n否则可能导致系统功能异常`"
-          :dataFormat="dataFormat"
+        ref="systemParamsRef"
+        :fieldList="tableFieldList"
+        :primaryKey="primaryKey"
+        :compUrl="dataUrl"
+        :help-msg="`系统参数创建后，请不要随便删除或者修改，\n否则可能导致系统功能异常`"
+        :dataFormat="dataFormat"
       />
     </el-card>
   </div>

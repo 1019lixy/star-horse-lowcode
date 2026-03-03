@@ -17,13 +17,21 @@ export interface PrefixSuffixResult {
   findMatchingPrefix: (mainValue: string) => string;
   findMatchingSuffix: (mainValue: string) => string;
   parseMainValue: () => string;
-  extractPrefixFromInput: (inputValue: string) => { prefix: string; remaining: string };
-  extractSuffixFromInput: (inputValue: string) => { suffix: string; remaining: string };
+  extractPrefixFromInput: (inputValue: string) => {
+    prefix: string;
+    remaining: string;
+  };
+  extractSuffixFromInput: (inputValue: string) => {
+    suffix: string;
+    remaining: string;
+  };
   mergeData: (isParsing?: boolean) => void;
   setupWatchers: () => void;
 }
 
-export const usePrefixSuffix = (options: PrefixSuffixOptions): PrefixSuffixResult => {
+export const usePrefixSuffix = (
+  options: PrefixSuffixOptions,
+): PrefixSuffixResult => {
   const { field, formData, mergePrefix, mergeAppend } = options;
 
   const normalData = ref<string>("");
@@ -39,8 +47,12 @@ export const usePrefixSuffix = (options: PrefixSuffixOptions): PrefixSuffixResul
   const appendList = computed(() => convertData(field?.preps?.appendList));
   const prependList = computed(() => convertData(field?.preps?.prependList));
 
-  const shouldMergePrefix = computed(() => mergePrefix ?? field?.preps?.mergePrefix);
-  const shouldMergeAppend = computed(() => mergeAppend ?? field?.preps?.mergeAppend);
+  const shouldMergePrefix = computed(
+    () => mergePrefix ?? field?.preps?.mergePrefix,
+  );
+  const shouldMergeAppend = computed(
+    () => mergeAppend ?? field?.preps?.mergeAppend,
+  );
 
   const findMatchingPrefix = (mainValue: string): string => {
     if (formData.value[preName.value]) {
@@ -99,24 +111,42 @@ export const usePrefixSuffix = (options: PrefixSuffixOptions): PrefixSuffixResul
     return parsedValue;
   };
 
-  const extractPrefixFromInput = (inputValue: string): { prefix: string; remaining: string } => {
-    if (shouldMergePrefix.value && prependList.value && prependList.value.length > 0) {
+  const extractPrefixFromInput = (
+    inputValue: string,
+  ): { prefix: string; remaining: string } => {
+    if (
+      shouldMergePrefix.value &&
+      prependList.value &&
+      prependList.value.length > 0
+    ) {
       for (const item of prependList.value) {
         const itemValue = item.value || "";
         if (itemValue && inputValue.startsWith(itemValue)) {
-          return { prefix: itemValue, remaining: inputValue.slice(itemValue.length) };
+          return {
+            prefix: itemValue,
+            remaining: inputValue.slice(itemValue.length),
+          };
         }
       }
     }
     return { prefix: "", remaining: inputValue };
   };
 
-  const extractSuffixFromInput = (inputValue: string): { suffix: string; remaining: string } => {
-    if (shouldMergeAppend.value && appendList.value && appendList.value.length > 0) {
+  const extractSuffixFromInput = (
+    inputValue: string,
+  ): { suffix: string; remaining: string } => {
+    if (
+      shouldMergeAppend.value &&
+      appendList.value &&
+      appendList.value.length > 0
+    ) {
       for (const item of appendList.value) {
         const itemValue = item.value || "";
         if (itemValue && inputValue.endsWith(itemValue)) {
-          return { suffix: itemValue, remaining: inputValue.slice(0, -itemValue.length) };
+          return {
+            suffix: itemValue,
+            remaining: inputValue.slice(0, -itemValue.length),
+          };
         }
       }
     }
@@ -124,7 +154,7 @@ export const usePrefixSuffix = (options: PrefixSuffixOptions): PrefixSuffixResul
   };
 
   const mergeData = (isParsing = false) => {
-    let baseValue = isParsing ? parseMainValue() : (normalData.value || "");
+    let baseValue = isParsing ? parseMainValue() : normalData.value || "";
 
     if (isParsing) {
       normalData.value = baseValue;
@@ -133,7 +163,11 @@ export const usePrefixSuffix = (options: PrefixSuffixOptions): PrefixSuffixResul
 
     let cleanValue = baseValue;
 
-    if (shouldMergePrefix.value && prependList.value && prependList.value.length > 0) {
+    if (
+      shouldMergePrefix.value &&
+      prependList.value &&
+      prependList.value.length > 0
+    ) {
       const { prefix, remaining } = extractPrefixFromInput(cleanValue);
       if (prefix) {
         formData.value[preName.value] = prefix;
@@ -141,7 +175,11 @@ export const usePrefixSuffix = (options: PrefixSuffixOptions): PrefixSuffixResul
       }
     }
 
-    if (shouldMergeAppend.value && appendList.value && appendList.value.length > 0) {
+    if (
+      shouldMergeAppend.value &&
+      appendList.value &&
+      appendList.value.length > 0
+    ) {
       const { suffix, remaining } = extractSuffixFromInput(cleanValue);
       if (suffix) {
         formData.value[appName.value] = suffix;
@@ -183,25 +221,41 @@ export const usePrefixSuffix = (options: PrefixSuffixOptions): PrefixSuffixResul
   };
 
   const setupWatchers = () => {
-    watch(() => normalData.value, () => {
-      mergeData();
-    }, { immediate: false });
+    watch(
+      () => normalData.value,
+      () => {
+        mergeData();
+      },
+      { immediate: false },
+    );
 
-    watch(() => formData.value[preName.value], () => {
-      mergeData();
-    });
+    watch(
+      () => formData.value[preName.value],
+      () => {
+        mergeData();
+      },
+    );
 
-    watch(() => formData.value[appName.value], () => {
-      mergeData();
-    });
+    watch(
+      () => formData.value[appName.value],
+      () => {
+        mergeData();
+      },
+    );
 
-    watch(() => formData.value[field.fieldName], () => {
-      mergeData(true);
-    }, { immediate: true });
+    watch(
+      () => formData.value[field.fieldName],
+      () => {
+        mergeData(true);
+      },
+      { immediate: true },
+    );
 
     watch([prependList, appendList], () => {
-      if ((shouldMergePrefix.value && prependList.value.length > 0) ||
-          (shouldMergeAppend.value && appendList.value.length > 0)) {
+      if (
+        (shouldMergePrefix.value && prependList.value.length > 0) ||
+        (shouldMergeAppend.value && appendList.value.length > 0)
+      ) {
         if (shouldMergePrefix.value) {
           formData.value[preName.value] = undefined;
         }

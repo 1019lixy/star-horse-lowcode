@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import {ModelRef, onMounted, PropType, unref} from "vue";
-import {FieldInfo} from "@/components/types/PageFieldInfo";
-import {compKey} from "@/api/system";
+import { ModelRef, onMounted, PropType, unref } from "vue";
+import { FieldInfo } from "@/components/types/PageFieldInfo";
+import { compKey } from "@/api/system";
 
 const props = defineProps({
-  item: {type: Array as PropType<Array<FieldInfo> | any>, required: true},
-  commonFormat: {type: Function, required: true},
+  item: { type: Array as PropType<Array<FieldInfo> | any>, required: true },
+  commonFormat: { type: Function, required: true },
 });
 const dataForm: ModelRef<any> = defineModel("dataForm");
 const dataFormat = (item: any) => {
@@ -21,8 +21,7 @@ const dataFormat = (item: any) => {
     return val || "--";
   }
 };
-const init = () => {
-};
+const init = () => {};
 onMounted(() => {
   init();
 });
@@ -31,20 +30,20 @@ onMounted(() => {
 <template>
   <el-row v-if="Array.isArray(item)" :gutter="5">
     <el-col
-        :span="sitem.colspan || sitem.preps?.colspan || 24 / item.length"
-        v-for="(sitem, ind) in item"
-        :key="compKey(sitem, ind)"
-        v-bind="sitem.preps"
+      :span="sitem.colspan || sitem.preps?.colspan || 24 / item.length"
+      v-for="(sitem, ind) in item"
+      :key="compKey(sitem, ind)"
+      v-bind="sitem.preps"
     >
       <div
-          class="item"
-          v-if="sitem.formVisible || sitem.listVisible || sitem.viewVisible"
+        class="item"
+        v-if="sitem.formVisible || sitem.listVisible || sitem.viewVisible"
       >
         <label>{{ sitem.label }} :</label>
         <div class="content">
           <pre v-if="sitem.type == 'textarea' || sitem.type == 'markdown'">{{
-              dataFormat(sitem)
-            }}</pre>
+            dataFormat(sitem)
+          }}</pre>
           <el-tooltip :content="dataFormat(sitem)" v-else>
             {{ dataFormat(sitem) }}
           </el-tooltip>

@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import {nextTick, onMounted, ref, shallowRef} from "vue";
-import {warning} from "@/utils/message";
-import {FieldInfo, FieldMapping} from "@/components/types/PageFieldInfo";
-import {isJson} from "@/api/star_horse_utils";
+import { nextTick, onMounted, ref, shallowRef } from "vue";
+import { warning } from "@/utils/message";
+import { FieldInfo, FieldMapping } from "@/components/types/PageFieldInfo";
+import { isJson } from "@/api/star_horse_utils";
 import {
   allAction,
   checkIsDisabled,
   initCompCallEvent,
   prepsFilter,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
-import {SearchFields} from "@/components/types";
-import {getDynamicEvents} from "@/api/system";
+import { SearchFields } from "@/components/types";
+import { getDynamicEvents } from "@/api/system";
 
-import {ItemPreps} from "@/components/types/ItemPreps";
+import { ItemPreps } from "@/components/types/ItemPreps";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -89,18 +89,18 @@ onMounted(async () => {
     let searchFieldList: Array<SearchFields> = [];
     inputPreps.fieldList?.forEach((item: FieldInfo) => {
       if (item.searchVisible) {
-        let temp: any = {...item};
+        let temp: any = { ...item };
         if (item.prefix) {
           temp["fieldName"] = item.prefix + "." + temp["fieldName"];
         }
         temp["defaultVisible"] = true;
-        if ((!item?.type||item?.type == "input") && !item["matchType"]) {
+        if ((!item?.type || item?.type == "input") && !item["matchType"]) {
           temp["matchType"] = "lk";
         }
         searchFieldList.push(temp);
       }
     });
-    inputPreps.searchFieldList = {fieldList: searchFieldList};
+    inputPreps.searchFieldList = { fieldList: searchFieldList };
   }
   nextTick(() => {
     initCompCallEvent(props, emits, formData);
@@ -109,71 +109,70 @@ onMounted(async () => {
 </script>
 <template>
   <star-horse-dialog
-      :title="field.label + '数据选择'"
-      :self-func="true"
-      boxHeight="80%"
-      :dialog-visible="dialogInputVisible"
-      @merge="selectItem"
-      @closeAction="closeAction"
+    :title="field.label + '数据选择'"
+    :self-func="true"
+    boxHeight="80%"
+    :dialog-visible="dialogInputVisible"
+    @merge="selectItem"
+    @closeAction="closeAction"
   >
     <div class="flex flex-col h-full overflow-hidden">
       <div class="search-content">
         <div class="search_btn">
           <star-horse-search-comp
-              @searchData="
+            @searchData="
               (data: any) => dialogInputTableRef.createSearchParams(data)
             "
-              :formData="field.preps?.['searchFieldList']"
-              :compUrl="field.preps?.['dataUrl']"
+            :formData="field.preps?.['searchFieldList']"
+            :compUrl="field.preps?.['dataUrl']"
           />
         </div>
       </div>
       <el-card class="inner_content">
         <star-horse-table-comp
-            :fieldList="{
-          cellEditable: false,
-          fieldList: field.preps?.['fieldList'],
-        }"
-            :primaryKey="field.preps?.['primaryKey']"
-            :compUrl="field.preps?.['dataUrl']"
-            ref="dialogInputTableRef"
-            :dialogInput="true"
-            height="400px"
-            :filterCondition="field.preps?.['filterCondition']"
-            :orderBy="field.preps?.['orderBy']"
-            @selectItem="selectItem"
-            :dataFormat="field.preps?.['dataFormat']"
-            :disableAction="true"
+          :fieldList="{
+            cellEditable: false,
+            fieldList: field.preps?.['fieldList'],
+          }"
+          :primaryKey="field.preps?.['primaryKey']"
+          :compUrl="field.preps?.['dataUrl']"
+          ref="dialogInputTableRef"
+          :dialogInput="true"
+          height="400px"
+          :filterCondition="field.preps?.['filterCondition']"
+          :orderBy="field.preps?.['orderBy']"
+          @selectItem="selectItem"
+          :dataFormat="field.preps?.['dataFormat']"
+          :disableAction="true"
         />
       </el-card>
     </div>
   </star-horse-dialog>
   <starhorse-form-item
-      :showFormItem="showFormItem"
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :field="field"
-      :parentField="parentField"
+    :showFormItem="showFormItem"
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :bareFlag="bareFlag"
+    :field="field"
+    :parentField="parentField"
   >
     <el-input
-        :disabled="checkIsDisabled(props)"
-        type="text"
-        v-bind="prepsFilter(field.preps)"
-        :fid="field.fieldName"
-        v-on="getDynamicEvents(props, itemAction)"
-        v-model="formData[field.fieldName]"
+      :disabled="checkIsDisabled(props)"
+      type="text"
+      v-bind="prepsFilter(field.preps)"
+      :fid="field.fieldName"
+      v-on="getDynamicEvents(props, itemAction)"
+      v-model="formData[field.fieldName]"
     >
       <template #append>
         <el-button
-            icon="Search"
-            @click="showVisible"
-            :disabled="checkIsDisabled(props)"
+          icon="Search"
+          @click="showVisible"
+          :disabled="checkIsDisabled(props)"
         />
       </template>
     </el-input>
   </starhorse-form-item>
-
 </template>
 <style lang="scss" scoped>
 .cell.el-tooltip {

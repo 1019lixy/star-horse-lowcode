@@ -1,10 +1,18 @@
 <script setup lang="ts">
-import {checkObject, checkVisible, getDataIndex, getFormData, getPrefix, loadProp, validMsg,} from "@/api/form_utils";
+import {
+  checkObject,
+  checkVisible,
+  getDataIndex,
+  getFormData,
+  getPrefix,
+  loadProp,
+  validMsg,
+} from "@/api/form_utils";
 
-import {compKey} from "@/api/system";
+import { compKey } from "@/api/system";
 import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
-import {ContainerPreps} from "@/components/types/ItemPreps";
-import {ModelRef, onMounted} from "vue";
+import { ContainerPreps } from "@/components/types/ItemPreps";
+import { ModelRef, onMounted } from "vue";
 
 const props = withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
@@ -35,8 +43,7 @@ const removeRow = (row: any) => {
   emits("removeRow", row);
 };
 
-const init = () => {
-};
+const init = () => {};
 onMounted(() => {
   init();
 });
@@ -46,28 +53,28 @@ onMounted(() => {
   <template v-if="item.cardList?.length > 0">
     <template v-for="(cardItem, key) in item.cardList">
       <el-card
-          shadow="hover"
-          style="margin-bottom: 10px"
-          :key="compKey(cardItem, key)"
-          v-bind="cardItem.preps"
-          v-if="Object.keys(cardItem).length > 0"
-          :index="checkObject(dataForm, cardItem, key, dataIndex, propPrefix)"
+        shadow="hover"
+        style="margin-bottom: 10px"
+        :key="compKey(cardItem, key)"
+        v-bind="cardItem.preps"
+        v-if="Object.keys(cardItem).length > 0"
+        :index="checkObject(dataForm, cardItem, key, dataIndex, propPrefix)"
       >
         <template #header>
           <div class="card-header flex items-center justify-between">
             <div class="w-[60%]">
               {{ cardItem.title || cardItem.label || cardItem.tabName }}
-              <help v-if="cardItem.helpMsg" :message="cardItem.helpMsg"/>
+              <help v-if="cardItem.helpMsg" :message="cardItem.helpMsg" />
             </div>
             <div
-                class="flex-1"
-                v-for="(headerItem, key) in cardItem.headerFieldList"
-                :key="compKey(headerItem, key)"
+              class="flex-1"
+              v-for="(headerItem, key) in cardItem.headerFieldList"
+              :key="compKey(headerItem, key)"
             >
               <el-form-item
-                  :size="compSize"
-                  :label="headerItem.preps?.hideLabel ? '' : headerItem.label"
-                  :prop="
+                :size="compSize"
+                :label="headerItem.preps?.hideLabel ? '' : headerItem.label"
+                :prop="
                   loadProp(
                     getPrefix(cardItem, propPrefix, dataIndex, key),
                     headerItem.fieldName,
@@ -75,45 +82,78 @@ onMounted(() => {
                     -1,
                   )
                 "
-                  :labelPosition="parentPreps?.labelPosition"
-                  :rules="validMsg(headerItem, dataForm)"
-                  v-if="checkVisible(headerItem, dataForm)"
+                :labelPosition="parentPreps?.labelPosition"
+                :rules="validMsg(headerItem, dataForm)"
+                v-if="checkVisible(headerItem, dataForm)"
               >
                 <star-horse-item
-                    style="flex: 1"
-                    :compSize="compSize"
-                    :bareFlag="true"
-                    :source="source"
-                    :primaryKey="primaryKey"
-                    :item="headerItem"
-                    :dataForm="
-                    getFormData(cardItem, dataForm, propPrefix, dataIndex, item.groupData?key:0)
+                  style="flex: 1"
+                  :compSize="compSize"
+                  :bareFlag="true"
+                  :source="source"
+                  :primaryKey="primaryKey"
+                  :item="headerItem"
+                  :dataForm="
+                    getFormData(
+                      cardItem,
+                      dataForm,
+                      propPrefix,
+                      dataIndex,
+                      item.groupData ? key : 0,
+                    )
                   "
-                    :dataIndex="
-                    getDataIndex(cardItem, propPrefix, dataIndex, item.groupData?key:0)
+                  :dataIndex="
+                    getDataIndex(
+                      cardItem,
+                      propPrefix,
+                      dataIndex,
+                      item.groupData ? key : 0,
+                    )
                   "
-                    :propPrefix="getPrefix(cardItem, propPrefix, dataIndex, item.groupData?key:0)"
+                  :propPrefix="
+                    getPrefix(
+                      cardItem,
+                      propPrefix,
+                      dataIndex,
+                      item.groupData ? key : 0,
+                    )
+                  "
                 />
               </el-form-item>
             </div>
           </div>
         </template>
         <star-horse-form-item
-            :source="source"
-            :compUrl="compUrl"
-            :compSize="compSize"
-            :dataForm="
-            getFormData(cardItem, dataForm, propPrefix, dataIndex, item.groupData?key:0)
+          :source="source"
+          :compUrl="compUrl"
+          :compSize="compSize"
+          :dataForm="
+            getFormData(
+              cardItem,
+              dataForm,
+              propPrefix,
+              dataIndex,
+              item.groupData ? key : 0,
+            )
           "
-            :dataIndex="getDataIndex(cardItem, propPrefix, dataIndex, item.groupData?key:0)"
-            :propPrefix="getPrefix(cardItem, propPrefix, dataIndex, item.groupData?key:0)"
-            :objectName="cardItem.objectName"
-            @addRow="addRow"
-            @removeRow="removeRow"
-            :fieldList="cardItem"
-            :rules="rules"
-            :subFormFlag="cardItem.subFormFlag"
-            :primaryKey="primaryKey"
+          :dataIndex="
+            getDataIndex(
+              cardItem,
+              propPrefix,
+              dataIndex,
+              item.groupData ? key : 0,
+            )
+          "
+          :propPrefix="
+            getPrefix(cardItem, propPrefix, dataIndex, item.groupData ? key : 0)
+          "
+          :objectName="cardItem.objectName"
+          @addRow="addRow"
+          @removeRow="removeRow"
+          :fieldList="cardItem"
+          :rules="rules"
+          :subFormFlag="cardItem.subFormFlag"
+          :primaryKey="primaryKey"
         />
       </el-card>
     </template>

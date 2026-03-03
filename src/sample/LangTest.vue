@@ -1,27 +1,31 @@
 <template>
   <div class="lang-test-container">
-    <h1>{{ i18n('test.langTestTitle') }}</h1>
+    <h1>{{ i18n("test.langTestTitle") }}</h1>
 
     <div class="lang-switcher">
-      <h3>{{ i18n('test.currentLanguage') }}: {{ currentLang }}</h3>
+      <h3>{{ i18n("test.currentLanguage") }}: {{ currentLang }}</h3>
       <div class="lang-buttons">
-        <button v-for="lang in languages" :key="lang.value" @click="switchToLanguage(lang.value)"
-                :class="{ active: currentLang === lang.value }">
+        <button
+          v-for="lang in languages"
+          :key="lang.value"
+          @click="switchToLanguage(lang.value)"
+          :class="{ active: currentLang === lang.value }"
+        >
           {{ lang.label }}
         </button>
       </div>
     </div>
 
     <div class="lang-content">
-      <p>{{ i18n('login.userName') }}</p>
-      <p>{{ i18n('login.password') }}</p>
-      <p>{{ i18n('dialog.submit') }}</p>
-      <p>{{ i18n('dialog.cancel') }}</p>
-      <p>{{ i18n('form.submit') }}</p>
+      <p>{{ i18n("login.userName") }}</p>
+      <p>{{ i18n("login.password") }}</p>
+      <p>{{ i18n("dialog.submit") }}</p>
+      <p>{{ i18n("dialog.cancel") }}</p>
+      <p>{{ i18n("form.submit") }}</p>
     </div>
 
     <div class="lang-info">
-      <h3>{{ i18n('test.loadedLanguages') }}</h3>
+      <h3>{{ i18n("test.loadedLanguages") }}</h3>
       <ul>
         <li v-for="lang in loadedLanguages" :key="lang">{{ lang }}</li>
       </ul>
@@ -30,14 +34,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue';
-import { i18n, currentLang, changeLanguage, onLanguageChange } from '@/lang';
-import { LangType } from '@/theme/theme';
+import { ref, computed, onMounted, onUnmounted } from "vue";
+import { i18n, currentLang, changeLanguage, onLanguageChange } from "@/lang";
+import { LangType } from "@/theme/theme";
 
 // 语言选项
 const languages = ref([
-  { value: LangType.ZH_CN, label: '简体中文' },
-  { value: LangType.EN_US, label: 'English' },
+  { value: LangType.ZH_CN, label: "简体中文" },
+  { value: LangType.EN_US, label: "English" },
 ]);
 
 // 已加载的语言
@@ -53,7 +57,7 @@ const switchToLanguage = async (lang: LangType) => {
     // 这里仅作为演示，实际项目中应根据实际情况修改
     updateLoadedLanguages();
   } catch (error) {
-    console.error('Failed to switch language:', error);
+    console.error("Failed to switch language:", error);
   }
 };
 
@@ -74,7 +78,7 @@ let unregisterCallback: (() => void) | null = null;
 onMounted(() => {
   // 注册语言变化监听器
   unregisterCallback = onLanguageChange(() => {
-    console.log('Language changed:', currentLang);
+    console.log("Language changed:", currentLang);
     // 可以在这里更新组件状态或执行其他操作
   });
 

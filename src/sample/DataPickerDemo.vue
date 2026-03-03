@@ -24,7 +24,7 @@
     :formData="formData"
   />
   <data-picker-item
-      :field="{
+    :field="{
       label: '测试2',
       fieldName: 'test2',
       preps: {
@@ -37,9 +37,8 @@
         displayValue: 'value',
       },
     }"
-      :formData="formData"
+    :formData="formData"
   />
-
 </template>
 
 <script lang="ts" setup>

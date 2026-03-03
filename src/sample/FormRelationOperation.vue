@@ -1,5 +1,9 @@
 <script setup lang="ts" name="Areainfo">
-import {apiInstance, createSearchField, dialogPreps} from "@/api/star_horse_utils";
+import {
+  apiInstance,
+  createSearchField,
+  dialogPreps,
+} from "@/api/star_horse_utils";
 import { ApiUrls } from "@/components/types/ApiUrls";
 import { PageFieldInfo } from "@/components/types/PageFieldInfo";
 import { SearchFields } from "@/components/types/SearchProps";
@@ -8,8 +12,8 @@ import { onMounted, provide, reactive, ref } from "vue";
 const dataUrl: ApiUrls = apiInstance("system-config", "system/areainfo");
 const searchFormData = reactive<SearchFields>({
   fieldList: [
-      createSearchField("区域名称","areaName",true,"lk"),
-      createSearchField("区域编码","areaCode",true,"lk"),
+    createSearchField("区域名称", "areaName", true, "lk"),
+    createSearchField("区域编码", "areaCode", true, "lk"),
   ],
 });
 const batchFieldList = reactive<PageFieldInfo>({
@@ -25,9 +29,9 @@ const batchFieldList = reactive<PageFieldInfo>({
           defaultValue: "upload",
           preps: {
             values: [
-              {name: "上传", value: "upload"},
-              {name: "手动输入", value: "manual"},
-              {name: "图库选择", value: "select"},
+              { name: "上传", value: "upload" },
+              { name: "手动输入", value: "manual" },
+              { name: "图库选择", value: "select" },
             ],
             dataRelation: {
               actionName: "change",
@@ -49,11 +53,11 @@ const batchFieldList = reactive<PageFieldInfo>({
                   controlCondition: "eqVisible",
                   relationFields: "pic",
                   matchFieldValue: "select",
-                }
+                },
               ],
               relationDetailsDefaultValue: [{}],
-            }
-          }
+            },
+          },
         },
         {
           fieldName: "picUrl2",
@@ -71,13 +75,28 @@ const batchFieldList = reactive<PageFieldInfo>({
           defaultValue: "/system-config",
           helpMsg: "从图库选择图片",
         },
-        {label: "图片地址", type: "upload", fieldName: "path", formVisible: true},
-        {label: "标题", type: "input", fieldName: "title", formVisible: true},
-        {label: "描述", type: "input", fieldName: "description", formVisible: true},
-        {label: "连接地址", type: "input", fieldName: "linkUrl", formVisible: true},
-      ]
-    }
-  ]
+        {
+          label: "图片地址",
+          type: "upload",
+          fieldName: "path",
+          formVisible: true,
+        },
+        { label: "标题", type: "input", fieldName: "title", formVisible: true },
+        {
+          label: "描述",
+          type: "input",
+          fieldName: "description",
+          formVisible: true,
+        },
+        {
+          label: "连接地址",
+          type: "input",
+          fieldName: "linkUrl",
+          formVisible: true,
+        },
+      ],
+    },
+  ],
 });
 const tableFieldList = reactive<PageFieldInfo>({
   fieldList: [
@@ -221,7 +240,6 @@ onMounted(() => {
         :btnPermissions="btnPermissions"
         :primaryKey="primaryKey"
         :compUrl="dataUrl"
-
         :dataFormat="dataFormat"
         :showPageBar="false"
       />

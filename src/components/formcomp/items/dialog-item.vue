@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, shallowRef} from "vue";
+import { onMounted, shallowRef } from "vue";
 import {
   allAction,
   checkIsDisabled,
@@ -7,8 +7,12 @@ import {
   prepsFilter,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 
-import {ItemPreps} from "@/components/types/ItemPreps";
-import {StarHorseDialog, StarHorseFormItem, StarHorseIcon} from "@/components/comp";
+import { ItemPreps } from "@/components/types/ItemPreps";
+import {
+  StarHorseDialog,
+  StarHorseFormItem,
+  StarHorseIcon,
+} from "@/components/comp";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
@@ -25,6 +29,7 @@ const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
 const selectItem = (row: any) => {
+  itemAction("merge");
   closeAction();
 };
 const closeAction = () => {
@@ -43,55 +48,49 @@ onMounted(() => {
 </script>
 <template>
   <star-horse-dialog
-      :title="field.label"
-      :self-func="true"
-      :boxHeight="field.preps?.boxHeight??'60%'"
-      :boxWidth="field.preps?.boxWidth??'50%'"
-      :dialog-visible="dialogInputVisible"
-      @merge="selectItem"
-      @closeAction="closeAction"
+    :title="field.label"
+    :self-func="true"
+    :boxHeight="field.preps?.boxHeight ?? '60%'"
+    :boxWidth="field.preps?.boxWidth ?? '50%'"
+    :dialog-visible="dialogInputVisible"
+    @merge="selectItem"
+    @closeAction="closeAction"
   >
     <div class="flex flex-col h-full overflow-hidden">
-
-      <template v-if="field.preps?.compName||field.preps?.fieldList">
+      <template v-if="field.preps?.compName || field.preps?.fieldList">
         <Component
-            v-if="field.preps?.compName"
-            :is="field.preps?.compName"
-            v-bind="prepsFilter(convertData(field.preps?.params))"
-            v-model="formData[field.fieldName]"
-            v-model:dataForm="formData[field.fieldName]"
+          v-if="field.preps?.compName"
+          :is="field.preps?.compName"
+          v-bind="prepsFilter(convertData(field.preps?.params))"
+          v-model="formData[field.fieldName]"
+          v-model:dataForm="formData[field.fieldName]"
         />
         <template v-if="field.preps?.fieldList">
           <star-horse-form-item
-              :field-list="convertData(field.preps?.fieldList)"
-              :compSize="field.preps?.compSize??'default'"
-              v-bind="prepsFilter(convertData(field.preps?.params))"
-              :source="1"
-              v-model:dataForm="formData[field.fieldName]"
+            :field-list="{ fieldList: convertData(field.preps?.fieldList) }"
+            :compSize="field.preps?.compSize ?? 'default'"
+            v-bind="prepsFilter(convertData(field.preps?.params))"
+            :source="1"
+            v-model:dataForm="formData[field.fieldName]"
           />
         </template>
       </template>
-      <el-empty v-else description="未设置内容"/>
+      <el-empty v-else description="未设置内容" />
     </div>
   </star-horse-dialog>
   <starhorse-form-item
-      :showFormItem="showFormItem"
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :field="field"
-      :parentField="parentField"
+    :showFormItem="showFormItem"
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :bareFlag="bareFlag"
+    :field="field"
+    :parentField="parentField"
   >
-    <el-button
-        @click="showVisible"
-        :disabled="checkIsDisabled(props)"
-    >
-      <star-horse-icon icon-class="setting"/>
+    <el-button @click="showVisible" :disabled="checkIsDisabled(props)">
+      <star-horse-icon icon-class="setting" />
       {{ field.label }}
     </el-button>
-
   </starhorse-form-item>
-
 </template>
 <style lang="scss" scoped>
 .cell.el-tooltip {

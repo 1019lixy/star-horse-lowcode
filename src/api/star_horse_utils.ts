@@ -1,24 +1,34 @@
-import {JoinSearchParams, SearchInfo, SearchParams,} from "@/components/types/Params";
-import {reactive, Reactive, unref} from "vue";
-import {ElLoading} from "element-plus";
+import {
+  JoinSearchParams,
+  SearchInfo,
+  SearchParams,
+} from "@/components/types/Params";
+import { reactive, Reactive, unref } from "vue";
+import { ElLoading } from "element-plus";
 import JSON5 from "json5";
 import {
-    deleteByIds,
-    dictData,
-    download,
-    loadById,
-    loadData,
-    loadGetData,
-    postRequest,
-    uploadRequest,
+  deleteByIds,
+  dictData,
+  download,
+  loadById,
+  loadData,
+  loadGetData,
+  postRequest,
+  uploadRequest,
 } from "@/api/star_horse_apis";
-import {error, success} from "@/utils/message";
-import {SelectOption} from "@/components/types/SearchProps";
-import {BatchFieldInfo, FieldInfo, OrderByInfo, PageFieldInfo, TabFieldInfo,} from "@/components/types/PageFieldInfo";
-import {ApiUrls} from "@/components/types/ApiUrls";
-import {DialogProps} from "@/components/types/DialogProps";
-import {createDatetime} from "@/api/date_utils";
-import {i18n} from "@/lang";
+import { error, success } from "@/utils/message";
+import { SelectOption } from "@/components/types/SearchProps";
+import {
+  BatchFieldInfo,
+  FieldInfo,
+  OrderByInfo,
+  PageFieldInfo,
+  TabFieldInfo,
+} from "@/components/types/PageFieldInfo";
+import { ApiUrls } from "@/components/types/ApiUrls";
+import { DialogProps } from "@/components/types/DialogProps";
+import { createDatetime } from "@/api/date_utils";
+import { i18n } from "@/lang";
 import previewImage from "preview-image-js";
 import "preview-image-js/icon.js";
 
@@ -32,22 +42,22 @@ let loading: any = null;
  * @param val 数字值
  */
 export function createTree(
-    data: any,
-    valField: string,
-    name: string,
-    val: string,
+  data: any,
+  valField: string,
+  name: string,
+  val: string,
 ) {
-    const list: SelectOption[] = [];
-    data.forEach((item: any) => {
-        const temp: any = {};
-        temp["value"] = valField ? item[valField] : parseInt(item[val]);
-        temp["name"] = item[name];
-        if (item.children && item.children.length > 0) {
-            temp["children"] = createTree(item.children, valField, name, val);
-        }
-        list.push(temp);
-    });
-    return list;
+  const list: SelectOption[] = [];
+  data.forEach((item: any) => {
+    const temp: any = {};
+    temp["value"] = valField ? item[valField] : parseInt(item[val]);
+    temp["name"] = item[name];
+    if (item.children && item.children.length > 0) {
+      temp["children"] = createTree(item.children, valField, name, val);
+    }
+    list.push(temp);
+  });
+  return list;
 }
 
 /**
@@ -56,25 +66,25 @@ export function createTree(
  * @param defaultTarget
  */
 export function load(msg: string, defaultTarget?: string) {
-    closeLoad();
-    loading = ElLoading.service({
-        lock: true,
-        target: defaultTarget ?? "#app",
-        text: msg || i18n("utils.loading"),
-        customClass: "star-horse-loading",
-        background: "rgba(0, 0, 0, 0.7)",
-    });
+  closeLoad();
+  loading = ElLoading.service({
+    lock: true,
+    target: defaultTarget ?? "#app",
+    text: msg || i18n("utils.loading"),
+    customClass: "star-horse-loading",
+    background: "rgba(0, 0, 0, 0.7)",
+  });
 }
 
 /**
  * 关闭加载框
  */
 export function closeLoad() {
-    if (loading) {
-        loading.close();
-        loading = null;
-        document.querySelectorAll(".el-loading-mask").forEach((el) => el.remove());
-    }
+  if (loading) {
+    loading.close();
+    loading = null;
+    document.querySelectorAll(".el-loading-mask").forEach((el) => el.remove());
+  }
 }
 
 /**
@@ -82,13 +92,13 @@ export function closeLoad() {
  * @param str
  */
 export function convertToCamelCase(str: string) {
-    if (!str) {
-        return undefined;
-    }
-    str = str.toLowerCase();
-    return str.replace(/_(\w)/g, (_match, p1) => {
-        return p1.toUpperCase();
-    });
+  if (!str) {
+    return undefined;
+  }
+  str = str.toLowerCase();
+  return str.replace(/_(\w)/g, (_match, p1) => {
+    return p1.toUpperCase();
+  });
 }
 
 /**
@@ -96,12 +106,12 @@ export function convertToCamelCase(str: string) {
  * @param str
  */
 export function camelCaseToUnderline(str: string) {
-    if (!str) {
-        return undefined;
-    }
-    return str.replace(/[A-Z]/g, (match, _p1) => {
-        return "_" + match.toLowerCase();
-    });
+  if (!str) {
+    return undefined;
+  }
+  return str.replace(/[A-Z]/g, (match, _p1) => {
+    return "_" + match.toLowerCase();
+  });
 }
 
 /**
@@ -110,90 +120,93 @@ export function camelCaseToUnderline(str: string) {
  * @param cellValue
  */
 export function commonParseCodeToName(name: string, cellValue: any) {
-    if (!cellValue && cellValue != 0) {
-        return "-";
-    }
-    if (name == "isDel" || name.includes("&isDel")) {
-        return cellValue == 1 ? i18n("api.yes") : i18n("api.no");
-    }
-    if (name == "state" || name.includes("&state")) {
-        return cellValue == 1 ? i18n("api.normal") : i18n("api.abnormal");
-    }
-    const preps: Array<string> = [
-        "createdTime",
-        "updatedTime",
-        "createdTime",
-        "updatedTime",
-        "createTime",
-        "editTime",
-    ];
-    const result = preps.find(
-        (item) =>
-            name?.includes("&" + item) ||
-            convertToCamelCase(name)?.toLowerCase() === item.toLowerCase(),
-    );
-    if (result) {
-        return createDatetime(cellValue);
-    } else {
-        return cellValue;
-    }
+  if (!cellValue && cellValue != 0) {
+    return "-";
+  }
+  if (name == "isDel" || name.includes("&isDel")) {
+    return cellValue == 1 ? i18n("api.yes") : i18n("api.no");
+  }
+  if (name == "state" || name.includes("&state")) {
+    return cellValue == 1 ? i18n("api.normal") : i18n("api.abnormal");
+  }
+  const preps: Array<string> = [
+    "createdTime",
+    "updatedTime",
+    "createdTime",
+    "updatedTime",
+    "createTime",
+    "editTime",
+  ];
+  const result = preps.find(
+    (item) =>
+      name?.includes("&" + item) ||
+      convertToCamelCase(name)?.toLowerCase() === item.toLowerCase(),
+  );
+  if (result) {
+    return createDatetime(cellValue);
+  } else {
+    return cellValue;
+  }
 }
-
 
 /**
  * 数据匹配方式
  */
 export function searchMatchList(): SelectOption[] {
-    const data: SelectOption[] = [];
-    data.push({name: i18n("utils.searchMatch.equal"), value: "eq"});
-    data.push({name: i18n("utils.searchMatch.notEqual"), value: "neq"});
-    data.push({name: i18n("utils.searchMatch.fuzzy"), value: "lk"});
-    data.push({name: i18n("utils.searchMatch.empty"), value: "isnull"});
-    data.push({name: i18n("utils.searchMatch.notEmpty"), value: "notnull"});
-    data.push({name: i18n("utils.searchMatch.leftFuzzy"), value: "llk"});
-    data.push({name: i18n("utils.searchMatch.rightFuzzy"), value: "rlk"});
-    data.push({name: i18n("utils.searchMatch.notMatch"), value: "nlk"});
-    data.push({name: i18n("utils.searchMatch.lessThan"), value: "lt"});
-    data.push({name: i18n("utils.searchMatch.lessThanOrEqual"), value: "lte"});
-    data.push({name: i18n("utils.searchMatch.greaterThan"), value: "gt"});
-    data.push({
-        name: i18n("utils.searchMatch.greaterThanOrEqual"),
-        value: "gte",
-    });
-    data.push({name: i18n("utils.searchMatch.range"), value: "bt"});
-    data.push({name: i18n("utils.searchMatch.in_digit"), value: "ini", helpMsg: i18n("utils.searchMatch.helpMsg.digit")});
-    data.push({
-        name: i18n("utils.searchMatch.in_character"),
-        value: "ins",
-        helpMsg: i18n("utils.searchMatch.helpMsg.character")
-    });
-    return data;
+  const data: SelectOption[] = [];
+  data.push({ name: i18n("utils.searchMatch.equal"), value: "eq" });
+  data.push({ name: i18n("utils.searchMatch.notEqual"), value: "neq" });
+  data.push({ name: i18n("utils.searchMatch.fuzzy"), value: "lk" });
+  data.push({ name: i18n("utils.searchMatch.empty"), value: "isnull" });
+  data.push({ name: i18n("utils.searchMatch.notEmpty"), value: "notnull" });
+  data.push({ name: i18n("utils.searchMatch.leftFuzzy"), value: "llk" });
+  data.push({ name: i18n("utils.searchMatch.rightFuzzy"), value: "rlk" });
+  data.push({ name: i18n("utils.searchMatch.notMatch"), value: "nlk" });
+  data.push({ name: i18n("utils.searchMatch.lessThan"), value: "lt" });
+  data.push({ name: i18n("utils.searchMatch.lessThanOrEqual"), value: "lte" });
+  data.push({ name: i18n("utils.searchMatch.greaterThan"), value: "gt" });
+  data.push({
+    name: i18n("utils.searchMatch.greaterThanOrEqual"),
+    value: "gte",
+  });
+  data.push({ name: i18n("utils.searchMatch.range"), value: "bt" });
+  data.push({
+    name: i18n("utils.searchMatch.in_digit"),
+    value: "ini",
+    helpMsg: i18n("utils.searchMatch.helpMsg.digit"),
+  });
+  data.push({
+    name: i18n("utils.searchMatch.in_character"),
+    value: "ins",
+    helpMsg: i18n("utils.searchMatch.helpMsg.character"),
+  });
+  return data;
 }
 
 /**
  * 排序方式
  */
 export function orderBy(): SelectOption[] {
-    const options: SelectOption[] = [];
-    options.push({name: i18n("utils.asc"), value: "asc"});
-    options.push({name: i18n("utils.desc"), value: "desc"});
-    return options;
+  const options: SelectOption[] = [];
+  options.push({ name: i18n("utils.asc"), value: "asc" });
+  options.push({ name: i18n("utils.desc"), value: "desc" });
+  return options;
 }
 
 /**
  * 请求方式
  */
 export function httpMethod(): SelectOption[] {
-    const options: SelectOption[] = [];
-    options.push({name: "GET", value: "GET"});
-    options.push({name: "HEAD", value: "HEAD"});
-    options.push({name: "POST", value: "POST"});
-    options.push({name: "PUT", value: "PUT"});
-    options.push({name: "PATCH", value: "PATCH"});
-    options.push({name: "DELETE", value: "DELETE"});
-    options.push({name: "OPTIONS", value: "OPTIONS"});
-    options.push({name: "TRACE", value: "TRACE"});
-    return options;
+  const options: SelectOption[] = [];
+  options.push({ name: "GET", value: "GET" });
+  options.push({ name: "HEAD", value: "HEAD" });
+  options.push({ name: "POST", value: "POST" });
+  options.push({ name: "PUT", value: "PUT" });
+  options.push({ name: "PATCH", value: "PATCH" });
+  options.push({ name: "DELETE", value: "DELETE" });
+  options.push({ name: "OPTIONS", value: "OPTIONS" });
+  options.push({ name: "TRACE", value: "TRACE" });
+  return options;
 }
 /**
  * 辅助函数 创建属性对象
@@ -203,11 +216,20 @@ export function httpMethod(): SelectOption[] {
  * @param defaultVisible 默认可见
  * @param matchType 匹配方式
  */
-export function createSearchField(label: string, fieldName: string, defaultVisible?: boolean, matchType?: string,type: string="input") {
-    return {
-        label, fieldName, type,
-        defaultVisible, matchType,
-    };
+export function createSearchField(
+  label: string,
+  fieldName: string,
+  defaultVisible?: boolean,
+  matchType?: string,
+  type: string = "input",
+) {
+  return {
+    label,
+    fieldName,
+    type,
+    defaultVisible,
+    matchType,
+  };
 }
 /**
  * 辅助函数 创建属性对象
@@ -217,112 +239,124 @@ export function createSearchField(label: string, fieldName: string, defaultVisib
  * @param formVisible 表单可见
  * @param listVisible 表格可见
  */
-export function createField(label: string, fieldName: string, type: string="input", formVisible?: boolean, listVisible?: boolean) {
-    return {
-        label, fieldName, type,
-        formVisible,  listVisible,
-    };
+export function createField(
+  label: string,
+  fieldName: string,
+  type: string = "input",
+  formVisible?: boolean,
+  listVisible?: boolean,
+) {
+  return {
+    label,
+    fieldName,
+    type,
+    formVisible,
+    listVisible,
+  };
 }
 /**
  * 公共字段
  * @param formVisibleFields 表单可见字段
  * @param tableVisibleFields 表格可见字段
  */
-export function commonField(formVisibleFields?: Array<string>,tableVisibleFields?: Array<string>) {
-    const fields: FieldInfo[] = [];
-    fields.push({
-        label: i18n("utils.field.createdBy"),
-        fieldName: "createdBy",
-        formVisible:false,
-        listVisible:false,
-    });
-    fields.push({
-        label: i18n("utils.field.createdDate"),
-        fieldName: "createdDate",
-        type: "date",
-        formVisible:false,
-        listVisible:false,
-    });
-    fields.push({
-        label: i18n("utils.field.updatedBy"),
-        fieldName: "updatedBy",
-        formVisible:false,
-        listVisible:false,
-    });
-    fields.push({
-        label: i18n("utils.field.updatedDate"),
-        fieldName: "updatedDate",
-        type: "date",
-        formVisible:false,
-        listVisible:false,
-    });
-    fields.push({
-        label: i18n("utils.field.remark"),
-        fieldName: "remark",
-        type: "textarea",
-        formVisible:false,
-        listVisible:false,
-    });
-    fields.push({
-        label: i18n("utils.field.dataNo"),
-        fieldName: "dataNo",
-        formVisible:false,
-        listVisible:false,
-    });
-    fields.push({
-        label: i18n("utils.field.version"),
-        fieldName: "version",
-        type: "number",
-        formVisible:false,
-        listVisible:false,
-    });
+export function commonField(
+  formVisibleFields?: Array<string>,
+  tableVisibleFields?: Array<string>,
+) {
+  const fields: FieldInfo[] = [];
+  fields.push({
+    label: i18n("utils.field.createdBy"),
+    fieldName: "createdBy",
+    formVisible: false,
+    listVisible: false,
+  });
+  fields.push({
+    label: i18n("utils.field.createdDate"),
+    fieldName: "createdDate",
+    type: "date",
+    formVisible: false,
+    listVisible: false,
+  });
+  fields.push({
+    label: i18n("utils.field.updatedBy"),
+    fieldName: "updatedBy",
+    formVisible: false,
+    listVisible: false,
+  });
+  fields.push({
+    label: i18n("utils.field.updatedDate"),
+    fieldName: "updatedDate",
+    type: "date",
+    formVisible: false,
+    listVisible: false,
+  });
+  fields.push({
+    label: i18n("utils.field.remark"),
+    fieldName: "remark",
+    type: "textarea",
+    formVisible: false,
+    listVisible: false,
+  });
+  fields.push({
+    label: i18n("utils.field.dataNo"),
+    fieldName: "dataNo",
+    formVisible: false,
+    listVisible: false,
+  });
+  fields.push({
+    label: i18n("utils.field.version"),
+    fieldName: "version",
+    type: "number",
+    formVisible: false,
+    listVisible: false,
+  });
 
-    fields.push({
-        label: i18n("utils.field.statusName"),
-        fieldName: "statusName",
-        formVisible:false,
-        listVisible:false,
-    });
-    fields.push({
-        label: i18n("utils.field.statusCode"),
-        fieldName: "statusCode",
-        formVisible:false,
-        listVisible:false,
-    });
+  fields.push({
+    label: i18n("utils.field.statusName"),
+    fieldName: "statusName",
+    formVisible: false,
+    listVisible: false,
+  });
+  fields.push({
+    label: i18n("utils.field.statusCode"),
+    fieldName: "statusCode",
+    formVisible: false,
+    listVisible: false,
+  });
 
-    fields.push({
-        label: i18n("utils.field.local"),
-        fieldName: "local",
-        formVisible:false,
-        listVisible:false,
-    });
-    fields.push({
-        label: i18n("utils.field.isDel"),
-        fieldName: "isDel",
-        type: "number",
-        formVisible:false,
-        listVisible:false,
-    });
-    fields.forEach((item) => {
-        if (formVisibleFields?.includes(item.fieldName)) {
-            item.formVisible = true;
-        }
-        if (tableVisibleFields?.includes(item.fieldName)) {
-            item.listVisible = true;
-        }
-    });
-    return fields;
+  fields.push({
+    label: i18n("utils.field.local"),
+    fieldName: "local",
+    formVisible: false,
+    listVisible: false,
+  });
+  fields.push({
+    label: i18n("utils.field.isDel"),
+    fieldName: "isDel",
+    type: "number",
+    formVisible: false,
+    listVisible: false,
+  });
+  fields.forEach((item) => {
+    if (formVisibleFields?.includes(item.fieldName)) {
+      item.formVisible = true;
+    }
+    if (tableVisibleFields?.includes(item.fieldName)) {
+      item.listVisible = true;
+    }
+  });
+  return fields;
 }
 
 /**
  * 数据格式
  */
 export function dataType(): SelectOption[] {
-    const options: SelectOption[] = [];
-    options.push({name: "FORM", value: "FORM"});
-    options.push({name: "JSON", value: "JSON"});
-    options.push({name: "BINARY", value: "BINARY"});
-    return options;
+  const options: SelectOption[] = [];
+  options.push({ name: "FORM", value: "FORM" });
+  options.push({ name: "JSON", value: "JSON" });
+  options.push({ name: "BINARY", value: "BINARY" });
+  return options;
 }
 
 /**
@@ -330,14 +364,14 @@ export function dataType(): SelectOption[] {
  * @param msg
  */
 export function copyTxt(msg: string) {
-    navigator.clipboard
-        .writeText(msg)
-        .then(() => {
-            success(i18n("utils.copied"));
-        })
-        .catch(() => {
-            error(i18n("utils.copyFailed"));
-        });
+  navigator.clipboard
+    .writeText(msg)
+    .then(() => {
+      success(i18n("utils.copied"));
+    })
+    .catch(() => {
+      error(i18n("utils.copyFailed"));
+    });
 }
 
 /**
@@ -345,21 +379,21 @@ export function copyTxt(msg: string) {
  * @param row
  * @param rowIndex
  */
-export function rowClassName({row, rowIndex}: any) {
-    if (row) {
-        row.xh = rowIndex + 1;
-    }
+export function rowClassName({ row, rowIndex }: any) {
+  if (row) {
+    row.xh = rowIndex + 1;
+  }
 }
 
 /**
  * 创建条件
  */
 export function createCondition(
-    name: string,
-    val: any,
-    matchType: string = "eq",
+  name: string,
+  val: any,
+  matchType: string = "eq",
 ): SearchParams {
-    return {propertyName: name, value: val, operation: matchType};
+  return { propertyName: name, value: val, operation: matchType };
 }
 
 /**
@@ -369,11 +403,11 @@ export function createCondition(
  * @param matchType 匹配方式
  */
 export function createJoinCondition(
-    leftFieldName: string,
-    rightFieldName: string,
-    matchType: string = "eq",
+  leftFieldName: string,
+  rightFieldName: string,
+  matchType: string = "eq",
 ): JoinSearchParams {
-    return {leftFieldName, rightFieldName, operation: matchType};
+  return { leftFieldName, rightFieldName, operation: matchType };
 }
 
 /**
@@ -382,7 +416,7 @@ export function createJoinCondition(
  * @param name
  */
 export function analysisField(conditions: SearchParams[], name: string) {
-    return conditions.find((item) => item.propertyName?.endsWith(name)) || {};
+  return conditions.find((item) => item.propertyName?.endsWith(name)) || {};
 }
 
 /**
@@ -390,30 +424,30 @@ export function analysisField(conditions: SearchParams[], name: string) {
  * @param v
  */
 export function isJson(v: any) {
-    if (!v) {
-        return false;
-    }
-    if (
-        v &&
-        typeof v === "string" &&
-        (/^\{[\s\S]*\}$/.test(v) || /^\[[\s\S]*\]$/.test(v))
-    ) {
-        try {
-            JSON5.parse(v);
-            return true;
-        } catch (e) {
-            console.log(e);
-            return false;
-        }
-    }
-    if (
-        typeof v === "object" &&
-        Object.prototype.toString.call(v).toLowerCase() === "[object object]" &&
-        !v.length
-    ) {
-        return true;
-    }
+  if (!v) {
     return false;
+  }
+  if (
+    v &&
+    typeof v === "string" &&
+    (/^\{[\s\S]*\}$/.test(v) || /^\[[\s\S]*\]$/.test(v))
+  ) {
+    try {
+      JSON5.parse(v);
+      return true;
+    } catch (e) {
+      console.log(e);
+      return false;
+    }
+  }
+  if (
+    typeof v === "object" &&
+    Object.prototype.toString.call(v).toLowerCase() === "[object object]" &&
+    !v.length
+  ) {
+    return true;
+  }
+  return false;
 }
 
 /**
@@ -421,156 +455,156 @@ export function isJson(v: any) {
  * @param fieldList
  */
 export function formFieldMapping(fieldList: PageFieldInfo) {
-    // Early exit for invalid data
-    if (!fieldList) {
-        return {
-            defaultDatas: {},
-            mappingFields: [],
-            batchDefaultValues: {},
-            actions: [],
-            formFields: [],
-        };
-    }
-
-    let defaultDatas: any = {};
-    const actions: Array<any> = [];
-    const formFields: Array<FieldInfo> = [];
-    //解析出字段之间的映射关系
-    const mappingFields: Array<any> = [];
-    const tempList = fieldList.fieldList || [];
-    const batchDefaultValues: any = {};
-    const brotherNodes = (fields: Array<FieldInfo>) => {
-        fields?.forEach((field: FieldInfo) => {
-            formFields.push(field);
-        });
-    };
-    const tabOperation = (data: TabFieldInfo) => {
-        const fieldList: Array<FieldInfo> = data.fieldList || [];
-        if ("Y" == data.subFormFlag) {
-            defaultDatas[data.tabName] = {};
-            //如果是子表
-            fieldsOperation(fieldList, defaultDatas[data.tabName]);
-        } else {
-            fieldsOperation(fieldList, defaultDatas);
-        }
-    };
-
-    const tableOperation = (batchTempList: Array<BatchFieldInfo>) => {
-        if (!batchTempList || batchTempList.length === 0) return;
-
-        for (const element of batchTempList) {
-            const temp = element;
-            if (!defaultDatas[temp.batchName]) {
-                defaultDatas[temp.batchName] = [];
-            }
-            if (!batchDefaultValues[temp.batchName + "DefaultValue"]) {
-                batchDefaultValues[temp.batchName + "DefaultValue"] = [];
-            }
-            const fieldList: Array<FieldInfo> = temp.fieldList || [];
-            let tempData: any = {};
-
-            for (const element of fieldList) {
-                const item = element;
-                if (item.defaultValue) {
-                    if (isJson(item.defaultValue)) {
-                        Object.assign(tempData, item.defaultValue);
-                    } else {
-                        tempData[item.fieldName] = item.defaultValue;
-                    }
-                }
-                if (item.aliasName) {
-                    mappingFields.push({name: item.fieldName, alias: item.aliasName});
-                }
-                if (item.actions) {
-                    actions.push({
-                        batchName: temp.batchName,
-                        actions: item.actions,
-                        fieldName: item.fieldName,
-                    });
-                }
-                formFields.push(item);
-                brotherNodes(item.brotherNodes);
-            }
-            batchDefaultValues[temp.batchName + "DefaultValue"].push(tempData);
-        }
-    };
-
-    const fieldsOperation = (dataList: any, defaultData: any) => {
-        if (!dataList || dataList.length === 0) return;
-
-        for (const element of dataList) {
-            const temp = element;
-            if (Array.isArray(temp)) {
-                for (const element of temp) {
-                    const item = element;
-                    if (item.defaultValue) {
-                        if (isJson(item.defaultValue)) {
-                            Object.assign(defaultData, item.defaultValue);
-                        } else {
-                            defaultData[item.fieldName] = item.defaultValue;
-                        }
-                    }
-                    if (item.aliasName) {
-                        mappingFields.push({name: item.fieldName, alias: item.aliasName});
-                    }
-                    if (item.actions) {
-                        actions.push({
-                            actions: item.actions,
-                            fieldName: item.fieldName,
-                        });
-                    }
-                    formFields.push(item);
-                    brotherNodes(item.brotherNodes);
-                }
-            } else if (
-                temp &&
-                (temp["tabList"] || temp["collapseList"] || temp["cardList"])
-            ) {
-                //如果是tabList
-                const tabList: Array<TabFieldInfo> =
-                    temp["tabList"] || temp["collapseList"] || temp["cardList"] || [];
-                for (const element of tabList) {
-                    tabOperation(element);
-                }
-            } else if (temp?.batchFieldList) {
-                //如果是tableList
-                const tableList: Array<BatchFieldInfo> = temp["batchFieldList"];
-                tableOperation(tableList);
-            } else if (temp) {
-                if (temp.defaultValue) {
-                    if (isJson(temp.defaultValue)) {
-                        Object.assign(defaultData, temp.defaultValue);
-                    } else {
-                        defaultData[temp.fieldName] = temp.defaultValue;
-                    }
-                }
-                if (temp.aliasName) {
-                    mappingFields.push({name: temp.fieldName, alias: temp.aliasName});
-                }
-                if (temp.actions) {
-                    actions.push({
-                        actions: temp.actions,
-                        fieldName: temp.fieldName,
-                    });
-                }
-                formFields.push(temp);
-                brotherNodes(temp.brotherNodes);
-            }
-        }
-    };
-
-    fieldsOperation(tempList, defaultDatas);
-    const batchTempList = fieldList.batchFieldList || [];
-    tableOperation(batchTempList);
-    Object.assign(defaultDatas, batchDefaultValues);
-
+  // Early exit for invalid data
+  if (!fieldList) {
     return {
-        defaultDatas,
-        mappingFields,
-        batchDefaultValues,
-        actions,
-        formFields,
+      defaultDatas: {},
+      mappingFields: [],
+      batchDefaultValues: {},
+      actions: [],
+      formFields: [],
     };
+  }
+
+  let defaultDatas: any = {};
+  const actions: Array<any> = [];
+  const formFields: Array<FieldInfo> = [];
+  //解析出字段之间的映射关系
+  const mappingFields: Array<any> = [];
+  const tempList = fieldList.fieldList || [];
+  const batchDefaultValues: any = {};
+  const brotherNodes = (fields: Array<FieldInfo>) => {
+    fields?.forEach((field: FieldInfo) => {
+      formFields.push(field);
+    });
+  };
+  const tabOperation = (data: TabFieldInfo) => {
+    const fieldList: Array<FieldInfo> = data.fieldList || [];
+    if ("Y" == data.subFormFlag) {
+      defaultDatas[data.tabName] = {};
+      //如果是子表
+      fieldsOperation(fieldList, defaultDatas[data.tabName]);
+    } else {
+      fieldsOperation(fieldList, defaultDatas);
+    }
+  };
+
+  const tableOperation = (batchTempList: Array<BatchFieldInfo>) => {
+    if (!batchTempList || batchTempList.length === 0) return;
+
+    for (const element of batchTempList) {
+      const temp = element;
+      if (!defaultDatas[temp.batchName]) {
+        defaultDatas[temp.batchName] = [];
+      }
+      if (!batchDefaultValues[temp.batchName + "DefaultValue"]) {
+        batchDefaultValues[temp.batchName + "DefaultValue"] = [];
+      }
+      const fieldList: Array<FieldInfo> = temp.fieldList || [];
+      let tempData: any = {};
+
+      for (const element of fieldList) {
+        const item = element;
+        if (item.defaultValue) {
+          if (isJson(item.defaultValue)) {
+            Object.assign(tempData, item.defaultValue);
+          } else {
+            tempData[item.fieldName] = item.defaultValue;
+          }
+        }
+        if (item.aliasName) {
+          mappingFields.push({ name: item.fieldName, alias: item.aliasName });
+        }
+        if (item.actions) {
+          actions.push({
+            batchName: temp.batchName,
+            actions: item.actions,
+            fieldName: item.fieldName,
+          });
+        }
+        formFields.push(item);
+        brotherNodes(item.brotherNodes);
+      }
+      batchDefaultValues[temp.batchName + "DefaultValue"].push(tempData);
+    }
+  };
+
+  const fieldsOperation = (dataList: any, defaultData: any) => {
+    if (!dataList || dataList.length === 0) return;
+
+    for (const element of dataList) {
+      const temp = element;
+      if (Array.isArray(temp)) {
+        for (const element of temp) {
+          const item = element;
+          if (item.defaultValue) {
+            if (isJson(item.defaultValue)) {
+              Object.assign(defaultData, item.defaultValue);
+            } else {
+              defaultData[item.fieldName] = item.defaultValue;
+            }
+          }
+          if (item.aliasName) {
+            mappingFields.push({ name: item.fieldName, alias: item.aliasName });
+          }
+          if (item.actions) {
+            actions.push({
+              actions: item.actions,
+              fieldName: item.fieldName,
+            });
+          }
+          formFields.push(item);
+          brotherNodes(item.brotherNodes);
+        }
+      } else if (
+        temp &&
+        (temp["tabList"] || temp["collapseList"] || temp["cardList"])
+      ) {
+        //如果是tabList
+        const tabList: Array<TabFieldInfo> =
+          temp["tabList"] || temp["collapseList"] || temp["cardList"] || [];
+        for (const element of tabList) {
+          tabOperation(element);
+        }
+      } else if (temp?.batchFieldList) {
+        //如果是tableList
+        const tableList: Array<BatchFieldInfo> = temp["batchFieldList"];
+        tableOperation(tableList);
+      } else if (temp) {
+        if (temp.defaultValue) {
+          if (isJson(temp.defaultValue)) {
+            Object.assign(defaultData, temp.defaultValue);
+          } else {
+            defaultData[temp.fieldName] = temp.defaultValue;
+          }
+        }
+        if (temp.aliasName) {
+          mappingFields.push({ name: temp.fieldName, alias: temp.aliasName });
+        }
+        if (temp.actions) {
+          actions.push({
+            actions: temp.actions,
+            fieldName: temp.fieldName,
+          });
+        }
+        formFields.push(temp);
+        brotherNodes(temp.brotherNodes);
+      }
+    }
+  };
+
+  fieldsOperation(tempList, defaultDatas);
+  const batchTempList = fieldList.batchFieldList || [];
+  tableOperation(batchTempList);
+  Object.assign(defaultDatas, batchDefaultValues);
+
+  return {
+    defaultDatas,
+    mappingFields,
+    batchDefaultValues,
+    actions,
+    formFields,
+  };
 }
 
 /**
@@ -579,30 +613,30 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
  * @param dataForm
  */
 export function batchFieldDefaultValues(datas: BatchFieldInfo, dataForm: any) {
-    let defaultValues: any = {};
-    if (datas["batchDefaultData"]) {
-        defaultValues = {...datas["batchDefaultData"]};
-    }
-    const fieldList = datas["fieldList"];
-    for (const inde in fieldList) {
-        const temp = fieldList[inde];
-        if (temp.defaultValue) {
-            if (isJson(temp.defaultValue)) {
-                for (const key in temp.defaultValue) {
-                    defaultValues[key] = temp.defaultValue[key];
-                }
-            } else {
-                defaultValues[temp.fieldName] = temp.defaultValue;
-            }
+  let defaultValues: any = {};
+  if (datas["batchDefaultData"]) {
+    defaultValues = { ...datas["batchDefaultData"] };
+  }
+  const fieldList = datas["fieldList"];
+  for (const inde in fieldList) {
+    const temp = fieldList[inde];
+    if (temp.defaultValue) {
+      if (isJson(temp.defaultValue)) {
+        for (const key in temp.defaultValue) {
+          defaultValues[key] = temp.defaultValue[key];
         }
+      } else {
+        defaultValues[temp.fieldName] = temp.defaultValue;
+      }
     }
-    if (dataForm) {
-        let temp = unref(dataForm)?.[datas.batchName];
-        if (temp) {
-            defaultValues = {...temp, ...defaultValues};
-        }
+  }
+  if (dataForm) {
+    let temp = unref(dataForm)?.[datas.batchName];
+    if (temp) {
+      defaultValues = { ...temp, ...defaultValues };
     }
-    return defaultValues;
+  }
+  return defaultValues;
 }
 
 /**
@@ -610,34 +644,34 @@ export function batchFieldDefaultValues(datas: BatchFieldInfo, dataForm: any) {
  * @param field 组件参数信息
  * @param analysisUrl 是否解析Url
  */
-export async function compDynamicData(field: any,analysisUrl?:false) {
-    const temp = field;
-    let reDataList: SelectOption[] = [];
-    const dataSource = temp.preps?.dataSource;
-    const urlOrDictName = temp.preps?.urlOrDictName;
-    if (dataSource == "url"&&!analysisUrl) {
-        reDataList = await dynamicUrlOperation(field);
-    } else if (dataSource == "dict") {
-        const dicts = await dictData(urlOrDictName);
-        if (Object.keys(dicts).length == 0) {
-            error(`数据字典:【${urlOrDictName}】可能未配置`);
-        } else {
-            reDataList = dicts;
-        }
+export async function compDynamicData(field: any, analysisUrl?: false) {
+  const temp = field;
+  let reDataList: SelectOption[] = [];
+  const dataSource = temp.preps?.dataSource;
+  const urlOrDictName = temp.preps?.urlOrDictName;
+  if (dataSource == "url" && !analysisUrl) {
+    reDataList = await dynamicUrlOperation(field);
+  } else if (dataSource == "dict") {
+    const dicts = await dictData(urlOrDictName);
+    if (Object.keys(dicts).length == 0) {
+      error(`数据字典:【${urlOrDictName}】可能未配置`);
     } else {
-        reDataList = [];
+      reDataList = dicts;
     }
-    //前面没有满足条件的数据，则判断静态数据是否存在
-    if (unref(field.preps?.values)?.length > 0) {
-        return unref(field.preps?.values);
-    }
-    if (unref(field.preps?.data)?.length > 0) {
-        return unref(field.preps?.data);
-    }
-    if (unref(field?.optionList)?.length > 0) {
-        return unref(field.optionList);
-    }
-    return reDataList;
+  } else {
+    reDataList = [];
+  }
+  //前面没有满足条件的数据，则判断静态数据是否存在
+  if (unref(field.preps?.values)?.length > 0) {
+    return unref(field.preps?.values);
+  }
+  if (unref(field.preps?.data)?.length > 0) {
+    return unref(field.preps?.data);
+  }
+  if (unref(field?.optionList)?.length > 0) {
+    return unref(field.optionList);
+  }
+  return reDataList;
 }
 
 /**
@@ -647,88 +681,88 @@ export async function compDynamicData(field: any,analysisUrl?:false) {
  * @param proxyUrl 代理接口,为空时，默认使用/system-config/redirect/execute
  */
 export async function dynamicUrlOperation(
-    preps: any,
-    queryInfo?: SearchParams[],
-    proxyUrl?: string,
+  preps: any,
+  queryInfo?: SearchParams[],
+  proxyUrl?: string,
 ) {
-    const temp = preps.preps || preps;
-    const redirect = temp.redirect ?? true;
-    const reDataList: SelectOption[] = [];
-    const requestParams: SearchParams[] = [];
-    const queryParams = temp?.queryParams;
-    queryParams?.forEach((item: any) => {
-        if (!item.name && !item.propertyName) {
-            return;
-        }
-        requestParams.push({
-            propertyName: item.name ?? item.propertyName,
-            value: item.value || "",
-            operation: item.matchType,
-        });
+  const temp = preps.preps || preps;
+  const redirect = temp.redirect ?? true;
+  const reDataList: SelectOption[] = [];
+  const requestParams: SearchParams[] = [];
+  const queryParams = temp?.queryParams;
+  queryParams?.forEach((item: any) => {
+    if (!item.name && !item.propertyName) {
+      return;
+    }
+    requestParams.push({
+      propertyName: item.name ?? item.propertyName,
+      value: item.value || "",
+      operation: item.matchType,
     });
-    //自定义查询
-    if (queryInfo) {
-        requestParams.push(...queryInfo);
-    }
-    let url = temp.url;
-    let params: any = {
-        fieldList: requestParams
+  });
+  //自定义查询
+  if (queryInfo) {
+    requestParams.push(...queryInfo);
+  }
+  let url = temp.url;
+  let params: any = {
+    fieldList: requestParams,
+  };
+  let validResult: any = {};
+  //是否重定向
+  if (redirect) {
+    params = {
+      url: temp["url"] ?? temp["interfaceUrl"],
+      host: temp["host"],
+      port: temp["port"],
+      protocol: temp["protocol"],
+      env: temp["env"],
+      httpMethod: temp.httpMethod || "POST",
+      dataType: temp.dataType || "JSON",
+      searchInfo: {
+        fieldList: requestParams,
+      },
     };
-    let validResult: any = {};
-    //是否重定向
-    if (redirect) {
-        params = {
-            url: temp["url"] ?? temp["interfaceUrl"],
-            host: temp["host"],
-            port: temp["port"],
-            protocol: temp["protocol"],
-            env: temp["env"],
-            httpMethod: temp.httpMethod || "POST",
-            dataType: temp.dataType || "JSON",
-            searchInfo: {
-                fieldList: requestParams,
-            },
-        };
-        url = proxyUrl ?? "/system-config/redirect/execute";
-        validResult = await loadData(url, params);
+    url = proxyUrl ?? "/system-config/redirect/execute";
+    validResult = await loadData(url, params);
+  } else {
+    if (temp.httpMethod && temp.httpMethod.toUpperCase() === "GET") {
+      validResult = await loadGetData(url);
     } else {
-        if (temp.httpMethod && temp.httpMethod.toUpperCase() === "GET") {
-            validResult = await loadGetData(url);
-        } else {
-            validResult = await loadData(url, params);
+      validResult = await loadData(url, params);
+    }
+  }
+  if (validResult.error) {
+    error(validResult.error);
+  } else {
+    const labelName = temp["selectLabel"] ?? temp["labelName"] ?? "name";
+    const valueName = temp["selectValue"] ?? temp["valueName"] ?? "value";
+    const childrenOperation = (list: Array<any>) => {
+      const options: SelectOption[] = [];
+      list?.forEach((item: any) => {
+        const option: SelectOption = {
+          name: item[labelName],
+          value: item[valueName],
+        };
+        if (item.children?.length > 0) {
+          option.children = childrenOperation(item.children);
         }
-    }
-    if (validResult.error) {
-        error(validResult.error);
-    } else {
-        const labelName = temp["selectLabel"] ?? temp["labelName"] ?? "name";
-        const valueName = temp["selectValue"] ?? temp["valueName"] ?? "value";
-        const childrenOperation = (list: Array<any>) => {
-            const options: SelectOption[] = [];
-            list?.forEach((item: any) => {
-                const option: SelectOption = {
-                    name: item[labelName],
-                    value: item[valueName],
-                };
-                if (item.children?.length > 0) {
-                    option.children = childrenOperation(item.children);
-                }
-                options.push(option);
-            });
-            return options;
-        };
-        validResult.data.forEach((item: any) => {
-            const option: SelectOption = {
-                name: item[labelName],
-                value: item[valueName],
-            };
-            if (item.children?.length > 0) {
-                option.children = childrenOperation(item.children);
-            }
-            reDataList.push(option);
-        });
-    }
-    return reDataList;
+        options.push(option);
+      });
+      return options;
+    };
+    validResult.data.forEach((item: any) => {
+      const option: SelectOption = {
+        name: item[labelName],
+        value: item[valueName],
+      };
+      if (item.children?.length > 0) {
+        option.children = childrenOperation(item.children);
+      }
+      reDataList.push(option);
+    });
+  }
+  return reDataList;
 }
 
 /**
@@ -736,12 +770,12 @@ export async function dynamicUrlOperation(
  * @param queryString 查询参数
  */
 export async function createFilter(queryString: string) {
-    return (data: SelectOption) => {
-        return (
-            data?.name?.toLowerCase().search(queryString?.toLowerCase()) ||
-            data?.value?.toString()?.toLowerCase().search(queryString?.toLowerCase())
-        );
-    };
+  return (data: SelectOption) => {
+    return (
+      data?.name?.toLowerCase().search(queryString?.toLowerCase()) ||
+      data?.value?.toString()?.toLowerCase().search(queryString?.toLowerCase())
+    );
+  };
 }
 
 /**
@@ -751,112 +785,112 @@ export async function createFilter(queryString: string) {
  * @param condition 条件
  */
 export function apiInstance(
-    appName: string,
-    urlPrefix: string,
-    condition: Array<any> = [],
+  appName: string,
+  urlPrefix: string,
+  condition: Array<any> = [],
 ): ApiUrls {
-    const prefix: string = `/${appName}/${urlPrefix}`;
-    const apiUrls: ApiUrls = {
-        basePrefix: prefix,
-        appName: appName,
-        pageListUrl: `${prefix}/pageList`,
-        mergeUrl: `${prefix}/merge`,
-        mergeDraftUrl: `${prefix}/mergeDraft`,
-        batchMergeUrl: `${prefix}/mergeBatch`,
-        batchMergeDraftUrl: `${prefix}/mergeBatchDraft`,
-        loadByIdUrl: `${prefix}/getById`,
-        loadByIdForViewUrl: `${prefix}/getByIdForView`,
-        deleteUrl: `${prefix}/batchDeleteById`,
-        deleteByConditionUrl: `${prefix}/deleteByCondition`,
-        exportAllUrl: `${prefix}/exportData`,
-        downloadTemplateUrl: `${prefix}/downloadTemplate`,
-        listConditionUrl: `${prefix}/getAllByCondition`,
-        oneConditionUrl: `${prefix}/getOneByCondition`,
-        importUrl: `${prefix}/importData`,
-        uploadUrl: `${appName}/annex/upload/common`,
-        modifyColumnsUrl: `${prefix}/modifyColumns`,
-        condition: condition,
-    };
-    apiUrls.pageAction = (params: SearchInfo) => {
-        return postRequest(apiUrls.pageListUrl!, params);
-    };
-    apiUrls.mergeAction = (param: any) => {
-        return postRequest(apiUrls.mergeUrl!, param);
-    };
-    apiUrls.mergeDraftAction = (param: any) => {
-        return postRequest(apiUrls.mergeDraftUrl!, param);
-    };
-    apiUrls.batchMergeAction = (param: any) => {
-        return postRequest(apiUrls.batchMergeUrl!, param);
-    };
-    apiUrls.batchMergeDraftAction = (param: any) => {
-        return postRequest(apiUrls.batchMergeDraftUrl!, param);
-    };
-    apiUrls.loadByIdAction = (id: any, isView: boolean, params: any = {}) => {
-        return loadById(
-            isView ? apiUrls.loadByIdForViewUrl! : apiUrls.loadByIdUrl!,
-            id,
-            params,
-        );
-    };
-    apiUrls.deleteAction = (params: any) => {
-        return deleteByIds(apiUrls.deleteUrl!, params);
-    };
-    apiUrls.deleteByConditionAction = (params: any) => {
-        return postRequest(apiUrls.deleteByConditionUrl!, params);
-    };
-    apiUrls.exportDataAction = async (param: any) => {
-        return await download(apiUrls.exportAllUrl!, param);
-    };
-    apiUrls.downloadTemplateAction = async (param: any) => {
-        return await download(apiUrls.downloadTemplateUrl!, param || {});
-    };
-    apiUrls.queryConditionAction = (
-        params: SearchParams[] | any,
-        orderBy: OrderByInfo[] = [],
-    ) => {
-        return loadData(apiUrls.listConditionUrl!, params, orderBy);
-    };
-    apiUrls.queryOneByConditionAction = (
-        params: SearchParams[] | any,
-        orderBy: OrderByInfo[] = [],
-    ) => {
-        return loadData(apiUrls.oneConditionUrl!, params, orderBy);
-    };
-    apiUrls.importAction = (param: any) => {
-        return uploadRequest(apiUrls.importUrl!, param);
-    };
-    apiUrls.uploadAction = (param: any) => {
-        return uploadRequest(apiUrls.uploadUrl!, param);
-    };
-    apiUrls.executeAction = (param: any) => {
-        return postRequest(apiUrls.executeUrl!, param);
-    };
-    apiUrls.modifyColumnsAction = (param: any) => {
-        return postRequest(apiUrls.modifyColumnsUrl!, param);
-    };
-    return apiUrls;
+  const prefix: string = `/${appName}/${urlPrefix}`;
+  const apiUrls: ApiUrls = {
+    basePrefix: prefix,
+    appName: appName,
+    pageListUrl: `${prefix}/pageList`,
+    mergeUrl: `${prefix}/merge`,
+    mergeDraftUrl: `${prefix}/mergeDraft`,
+    batchMergeUrl: `${prefix}/mergeBatch`,
+    batchMergeDraftUrl: `${prefix}/mergeBatchDraft`,
+    loadByIdUrl: `${prefix}/getById`,
+    loadByIdForViewUrl: `${prefix}/getByIdForView`,
+    deleteUrl: `${prefix}/batchDeleteById`,
+    deleteByConditionUrl: `${prefix}/deleteByCondition`,
+    exportAllUrl: `${prefix}/exportData`,
+    downloadTemplateUrl: `${prefix}/downloadTemplate`,
+    listConditionUrl: `${prefix}/getAllByCondition`,
+    oneConditionUrl: `${prefix}/getOneByCondition`,
+    importUrl: `${prefix}/importData`,
+    uploadUrl: `${appName}/annex/upload/common`,
+    modifyColumnsUrl: `${prefix}/modifyColumns`,
+    condition: condition,
+  };
+  apiUrls.pageAction = (params: SearchInfo) => {
+    return postRequest(apiUrls.pageListUrl!, params);
+  };
+  apiUrls.mergeAction = (param: any) => {
+    return postRequest(apiUrls.mergeUrl!, param);
+  };
+  apiUrls.mergeDraftAction = (param: any) => {
+    return postRequest(apiUrls.mergeDraftUrl!, param);
+  };
+  apiUrls.batchMergeAction = (param: any) => {
+    return postRequest(apiUrls.batchMergeUrl!, param);
+  };
+  apiUrls.batchMergeDraftAction = (param: any) => {
+    return postRequest(apiUrls.batchMergeDraftUrl!, param);
+  };
+  apiUrls.loadByIdAction = (id: any, isView: boolean, params: any = {}) => {
+    return loadById(
+      isView ? apiUrls.loadByIdForViewUrl! : apiUrls.loadByIdUrl!,
+      id,
+      params,
+    );
+  };
+  apiUrls.deleteAction = (params: any) => {
+    return deleteByIds(apiUrls.deleteUrl!, params);
+  };
+  apiUrls.deleteByConditionAction = (params: any) => {
+    return postRequest(apiUrls.deleteByConditionUrl!, params);
+  };
+  apiUrls.exportDataAction = async (param: any) => {
+    return await download(apiUrls.exportAllUrl!, param);
+  };
+  apiUrls.downloadTemplateAction = async (param: any) => {
+    return await download(apiUrls.downloadTemplateUrl!, param || {});
+  };
+  apiUrls.queryConditionAction = (
+    params: SearchParams[] | any,
+    orderBy: OrderByInfo[] = [],
+  ) => {
+    return loadData(apiUrls.listConditionUrl!, params, orderBy);
+  };
+  apiUrls.queryOneByConditionAction = (
+    params: SearchParams[] | any,
+    orderBy: OrderByInfo[] = [],
+  ) => {
+    return loadData(apiUrls.oneConditionUrl!, params, orderBy);
+  };
+  apiUrls.importAction = (param: any) => {
+    return uploadRequest(apiUrls.importUrl!, param);
+  };
+  apiUrls.uploadAction = (param: any) => {
+    return uploadRequest(apiUrls.uploadUrl!, param);
+  };
+  apiUrls.executeAction = (param: any) => {
+    return postRequest(apiUrls.executeUrl!, param);
+  };
+  apiUrls.modifyColumnsAction = (param: any) => {
+    return postRequest(apiUrls.modifyColumnsUrl!, param);
+  };
+  return apiUrls;
 }
 
 /**
  * 模态窗口相关属性
  */
 export function dialogPreps(
-    title: string = "编辑",
-    batchTitle: string = "批量编辑",
+  title: string = "编辑",
+  batchTitle: string = "批量编辑",
 ): Reactive<DialogProps> {
-    return reactive<DialogProps>({
-        bakeVisible1: false,
-        bakeVisible2: false,
-        bakeVisible3: false,
-        ids: 0,
-        batchDialogTitle: batchTitle,
-        dialogTitle: title,
-        batchEditVisible: false,
-        editVisible: false,
-        uploadVisible: false,
-        viewVisible: false,
-    });
+  return reactive<DialogProps>({
+    bakeVisible1: false,
+    bakeVisible2: false,
+    bakeVisible3: false,
+    ids: 0,
+    batchDialogTitle: batchTitle,
+    dialogTitle: title,
+    batchEditVisible: false,
+    editVisible: false,
+    uploadVisible: false,
+    viewVisible: false,
+  });
 }
 
 /**
@@ -864,7 +898,7 @@ export function dialogPreps(
  * @param param
  */
 export function uriEncode(param: string | number | boolean) {
-    return encodeURIComponent(param);
+  return encodeURIComponent(param);
 }
 
 /**
@@ -872,7 +906,7 @@ export function uriEncode(param: string | number | boolean) {
  * @param param
  */
 export function uriDecode(param: string) {
-    return decodeURIComponent(param);
+  return decodeURIComponent(param);
 }
 
 /**
@@ -880,7 +914,7 @@ export function uriDecode(param: string) {
  * @param param
  */
 export function base64Encode(param: string) {
-    return btoa(param);
+  return btoa(param);
 }
 
 /**
@@ -888,7 +922,7 @@ export function base64Encode(param: string) {
  * @param object
  */
 export function objectToBase64(object: any) {
-    return base64Encode(JSON.stringify(object));
+  return base64Encode(JSON.stringify(object));
 }
 
 /**
@@ -896,7 +930,7 @@ export function objectToBase64(object: any) {
  * @param param
  */
 export function base64Decode(param: string) {
-    return atob(param);
+  return atob(param);
 }
 
 /**
@@ -904,56 +938,56 @@ export function base64Decode(param: string) {
  * @param images
  */
 export function imagesPreview(images: Array<string> | string) {
-    const imagesUrl = Array.isArray(images) ? images : [images];
-    previewImage({
-        images: imagesUrl, // 该属性是必填项，其他属性都是非必填。images表示图片地址数组, 也可以是一个object[], object格式为{url: '', name: '', type: '', id: ''}
-        index: 1, // 初始状态显示图片的索引，默认为0
-        fileType: "image", // 文件类型，默认为image，可选项为image, auto。image表示将所有文件都显示为图片；auto表示自动判断文件类型，图片用img标签展示，其他类型文件只展示图标和名称，图标类型有audio、video、word、ppt、excel、pdf、other
-        loop: true, // 是否循环，默认为true
-        thumbnail: true, // 是否显示缩略图预览，默认为true
-        thumbnailDraggable: true, // 是否允许拖拽缩以更改略图位置，默认为true
-        toolbar: true, // 是否显示工具栏，包括放大缩小、旋转、适应窗口、实际尺寸、删除、下载，默认为true
-        delete: true, // 是否显示删除按钮，默认为false，当toolbar为true时生效
-        onDelete: (_index: number, _url: string, _id: string | number) => {
-            // 删除回调，默认为空函数，若不允许删除或者删除失败，返回Promise.reject即可（throw Error也可以）
-            console.log("删除", _index);
-            // return Promise.reject('无权限')
-        },
-        download: true, // 是否显示下载按钮，默认为false, 当toolbar为true时生效
-        onDownload: (_index: number, _url: string, _id: any) => {
-            // 下载回调，不传的话会用内置的下载方法来下载图片到本地
-            console.log("下载", _index);
-        },
-        onClose: () => {
-            // 关闭回调，默认为空，可以在此处做一些清理工作，比如在移动端解除对返回键的拦截
-            console.log("关闭");
-        },
-        onFileClick: (_index: number, _url: string, _id: any) => {
-            // 点击非图片格式文件的回调，可以在此处做跳转等操作
-            window.open("preview url"); // 可以打开预览链接
-        },
-        clickableFileTypes: ["pdf"], // 点击非图片格式文件时，只允许点击这些文件类型，会设置hover样式，当onFileClick不为空时生效，默认为all，即所有类型都可以点击
-        buttonTooltip: true, // 是否显示按钮提示，默认为true，若设为false，则不会显示按钮提示
-        // 以下是语言配置，可以自定义，默认为中文
-        thumbnailTitleText: "overview", // 缩略图标题，默认为’缩略图‘
-        maxZoomText: "It's already the maximum size", // 放大到最大时提示，默认为’已放到最大‘
-        minZoomText: "It's already the smallest", // 缩小到最小时提示，默认为’已缩到最小‘
-        fitText: "fit to screen", // 适应屏幕提示，默认为’适应屏幕‘
-        actualSizeText: "actual size", // 实际尺寸提示，默认为’实际尺寸‘
-        zoomInText: "zoom in", // 放大提示，默认为’放大‘
-        zoomOutText: "zoom out", // 缩小提示，默认为’缩小‘
-        rotateLeftText: "rotate left", // 逆时针旋转提示，默认为’左转‘
-        rotateRightText: "rotate right", // 顺时针旋转提示，默认为’右转‘
-        downloadText: "download", // 下载提示，默认为’下载‘
-        deleteText: "delete", // 删除提示，默认为’删除‘
-        nextText: "next", // 下一张提示，默认为’下一张‘
-        prevText: "prev", // 上一张提示，默认为’上一张‘
-        firstText: "It's already the first one", // 第一张提示，默认为’已到第一个‘
-        lastText: "It's already the last one", // 最后一张提示，默认为’已到最后一个‘
-        closeText: "Close", // 关闭提示，默认为’关闭‘
-    });
+  const imagesUrl = Array.isArray(images) ? images : [images];
+  previewImage({
+    images: imagesUrl, // 该属性是必填项，其他属性都是非必填。images表示图片地址数组, 也可以是一个object[], object格式为{url: '', name: '', type: '', id: ''}
+    index: 1, // 初始状态显示图片的索引，默认为0
+    fileType: "image", // 文件类型，默认为image，可选项为image, auto。image表示将所有文件都显示为图片；auto表示自动判断文件类型，图片用img标签展示，其他类型文件只展示图标和名称，图标类型有audio、video、word、ppt、excel、pdf、other
+    loop: true, // 是否循环，默认为true
+    thumbnail: true, // 是否显示缩略图预览，默认为true
+    thumbnailDraggable: true, // 是否允许拖拽缩以更改略图位置，默认为true
+    toolbar: true, // 是否显示工具栏，包括放大缩小、旋转、适应窗口、实际尺寸、删除、下载，默认为true
+    delete: true, // 是否显示删除按钮，默认为false，当toolbar为true时生效
+    onDelete: (_index: number, _url: string, _id: string | number) => {
+      // 删除回调，默认为空函数，若不允许删除或者删除失败，返回Promise.reject即可（throw Error也可以）
+      console.log("删除", _index);
+      // return Promise.reject('无权限')
+    },
+    download: true, // 是否显示下载按钮，默认为false, 当toolbar为true时生效
+    onDownload: (_index: number, _url: string, _id: any) => {
+      // 下载回调，不传的话会用内置的下载方法来下载图片到本地
+      console.log("下载", _index);
+    },
+    onClose: () => {
+      // 关闭回调，默认为空，可以在此处做一些清理工作，比如在移动端解除对返回键的拦截
+      console.log("关闭");
+    },
+    onFileClick: (_index: number, _url: string, _id: any) => {
+      // 点击非图片格式文件的回调，可以在此处做跳转等操作
+      window.open("preview url"); // 可以打开预览链接
+    },
+    clickableFileTypes: ["pdf"], // 点击非图片格式文件时，只允许点击这些文件类型，会设置hover样式，当onFileClick不为空时生效，默认为all，即所有类型都可以点击
+    buttonTooltip: true, // 是否显示按钮提示，默认为true，若设为false，则不会显示按钮提示
+    // 以下是语言配置，可以自定义，默认为中文
+    thumbnailTitleText: "overview", // 缩略图标题，默认为’缩略图‘
+    maxZoomText: "It's already the maximum size", // 放大到最大时提示，默认为’已放到最大‘
+    minZoomText: "It's already the smallest", // 缩小到最小时提示，默认为’已缩到最小‘
+    fitText: "fit to screen", // 适应屏幕提示，默认为’适应屏幕‘
+    actualSizeText: "actual size", // 实际尺寸提示，默认为’实际尺寸‘
+    zoomInText: "zoom in", // 放大提示，默认为’放大‘
+    zoomOutText: "zoom out", // 缩小提示，默认为’缩小‘
+    rotateLeftText: "rotate left", // 逆时针旋转提示，默认为’左转‘
+    rotateRightText: "rotate right", // 顺时针旋转提示，默认为’右转‘
+    downloadText: "download", // 下载提示，默认为’下载‘
+    deleteText: "delete", // 删除提示，默认为’删除‘
+    nextText: "next", // 下一张提示，默认为’下一张‘
+    prevText: "prev", // 上一张提示，默认为’上一张‘
+    firstText: "It's already the first one", // 第一张提示，默认为’已到第一个‘
+    lastText: "It's already the last one", // 最后一张提示，默认为’已到最后一个‘
+    closeText: "Close", // 关闭提示，默认为’关闭‘
+  });
 
-    // closeDialog() // 该方法可以关闭预览窗口，比如在移动端监听返回键，在返回键拦截的情况下，点击返回键可以调用该方法关闭预览窗口
+  // closeDialog() // 该方法可以关闭预览窗口，比如在移动端监听返回键，在返回键拦截的情况下，点击返回键可以调用该方法关闭预览窗口
 }
 
 /**
@@ -963,11 +997,11 @@ export function imagesPreview(images: Array<string> | string) {
  * @param dom
  */
 export function setCssVar(
-    name: string,
-    val: any,
-    dom = document.documentElement,
+  name: string,
+  val: any,
+  dom = document.documentElement,
 ) {
-    dom.style.setProperty(name, val);
+  dom.style.setProperty(name, val);
 }
 
 /**
@@ -975,9 +1009,8 @@ export function setCssVar(
  * @param data
  */
 export function trim(data: string) {
-    if (!data) {
-        return data;
-    }
-    return data.replace(/(^\s*)|(\s*$)/g, "");
+  if (!data) {
+    return data;
+  }
+  return data.replace(/(^\s*)|(\s*$)/g, "");
 }
-
