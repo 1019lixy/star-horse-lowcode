@@ -17,6 +17,7 @@ const props = defineProps({
   rowIndex: { type: Number, default: -1 },
   colIndex: { type: Number, default: -1 },
   type: { type: String },
+  validBox: { type: Boolean, default: false },
 });
 const emits = defineEmits(["command"]);
 const fieldForm = ref<Record<string, any>>({});
@@ -236,27 +237,27 @@ watch(
         </el-dropdown-item>
         <el-dropdown-item
           command="mergeAboveRow"
-          v-if="type != 'box'"
+          v-if="type != 'box' || validBox"
           :disabled="buttonControl.mergeAboveRowDisabled"
           divided
           >{{ i18n("ui.mergeAboveCell") }}
         </el-dropdown-item>
         <el-dropdown-item
           command="mergeBelowRow"
-          v-if="type != 'box'"
+          v-if="type != 'box' || validBox"
           :disabled="buttonControl.mergeBelowRowDisabled"
           >{{ i18n("ui.mergeBelowCell") }}
         </el-dropdown-item>
         <el-dropdown-item
           command="mergeWholeCol"
-          v-if="type != 'box'"
+          v-if="type != 'box' || validBox"
           :disabled="buttonControl.mergeWholeColDisabled"
           >{{ i18n("ui.mergeWholeCol") }}
         </el-dropdown-item>
 
         <el-dropdown-item
           command="undoMergeRow"
-          v-if="type != 'box'"
+          v-if="type != 'box' || validBox"
           :disabled="buttonControl.undoMergeRowDisabled"
           divided
           >{{ i18n("ui.undoMergeRow") }}

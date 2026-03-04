@@ -23,16 +23,38 @@ const columnStructure = computed(() => {
   
   // 找到最大列数的行
   let maxColsRow = props.item.dytableList[0];
+  // props.item.dytableList.forEach((row: any) => {
+  //   if (row && row.length > maxColsRow.length) {
+  //     maxColsRow = row;
+  //   }
+  // });
+   let hasMergeColFlag = false;
   props.item.dytableList.forEach((row: any) => {
-    if (row && row.length > maxColsRow.length) {
-      maxColsRow = row;
+    let hasMergeCol= row.columns.find((col: any) => col.colspan>1);
+    if(hasMergeCol&&row.columns.length>1) {
+      hasMergeColFlag = true;
+      return false;
     }
   });
-  
+  if(!hasMergeColFlag) {
+    maxColsRow = props.item.dytableList.reduce((maxRow: any, row: any) => {
+      return (row.columns?.length || 0) > (maxRow.columns?.length || 0) ? row : maxRow;
+    }, props.item.dytableList[0]);
+  }else{   
+     maxColsRow = props.item.dytableList.reduce((maxRow: any, row: any) => {
+      const hasMergeCol= row.columns.find((col: any) => col.colspan>1);
+      if(hasMergeCol && row.columns && row.columns.length >= (maxRow.columns?.length || 0)) {
+        return row;
+      }
+      return maxRow;
+    }, props.item.dytableList[0]);
+  }
+   let totalCols = 0;
   // 构建列结构，包含宽度信息
-  return maxColsRow.map((sitem: any, index: number) => {
+  const colStructure =  maxColsRow.map((sitem: any, index: number) => {
     // 从所有行中查找该列的宽度信息
     let width = sitem.preps?.colWidth;
+    let colspan = sitem.preps?.colspan || 1;
     if (!width) {
       for (const row of props.item.dytableList) {
         if (row && row[index] && row[index].preps?.colWidth) {
@@ -41,8 +63,15 @@ const columnStructure = computed(() => {
         }
       }
     }
+    totalCols += colspan;
     return { width };
   });
+  const addCol = Math.abs(maxColsRow.length - totalCols);
+  console.log('addCol', addCol);
+  for (let i = 0; i < addCol; i++) {
+    colStructure.push({ width: '100%' });
+  }
+  return colStructure;
 });
 
 const init = () => {};

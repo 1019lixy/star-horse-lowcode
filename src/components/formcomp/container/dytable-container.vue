@@ -14,6 +14,47 @@ const props = defineProps({
 });
 const formData = defineModel("formData");
 
+// 列宽调整相关状态
+const resizingColIndex = ref(-1);
+const startX = ref(0);
+const startWidth = ref(0);
+
+// 处理列宽调整开始
+const handleColResizeStart = (e: MouseEvent, index: number) => {
+  e.preventDefault();
+  resizingColIndex.value = index;
+  startX.value = e.clientX;
+  const colElement = e.currentTarget as HTMLElement;
+  startWidth.value = colElement.offsetWidth;
+
+  document.addEventListener("mousemove", handleColResizeMove);
+  document.addEventListener("mouseup", handleColResizeEnd);
+};
+
+// 处理列宽调整移动
+const handleColResizeMove = (e: MouseEvent) => {
+  if (resizingColIndex.value === -1) return;
+
+  const delta = e.clientX - startX.value;
+  const newWidth = Math.max(20, startWidth.value + delta);
+  const newWidthStr = `${newWidth}px`;
+
+  // 更新所有行中对应列的宽度
+  const elements = props.field.preps.elements;
+  elements?.forEach((row: any) => {
+    if (row.columns && row.columns[resizingColIndex.value]) {
+      row.columns[resizingColIndex.value].colWidth = newWidthStr;
+    }
+  });
+};
+
+// 处理列宽调整结束
+const handleColResizeEnd = () => {
+  resizingColIndex.value = -1;
+  document.removeEventListener("mousemove", handleColResizeMove);
+  document.removeEventListener("mouseup", handleColResizeEnd);
+};
+
 // 计算表格的列结构
 const columnStructure = computed(() => {
   const elements: any = props.field.preps?.elements;
@@ -21,13 +62,34 @@ const columnStructure = computed(() => {
 
   // 找到最大列数的行
   let maxColsRow = elements[0];
+  let hasMergeColFlag = false;
   elements.forEach((row: any) => {
     let hasMergeCol= row.columns.find((col: any) => col.colspan>1);
-    console.log('hasMergeCol', hasMergeCol,row.columns);
-    if (hasMergeCol && row.columns && row.columns.length >= maxColsRow.columns.length) {
-      maxColsRow = row;
+    if(hasMergeCol&&row.columns.length>1) {
+      hasMergeColFlag = true;
+      return false;
     }
   });
+  if(!hasMergeColFlag) {
+    maxColsRow = elements.reduce((maxRow: any, row: any) => {
+      return (row.columns?.length || 0) > (maxRow.columns?.length || 0) ? row : maxRow;
+    }, elements[0]);
+  }else{   
+     maxColsRow = elements.reduce((maxRow: any, row: any) => {
+      const hasMergeCol= row.columns.find((col: any) => col.colspan>1);
+      if(hasMergeCol && row.columns && row.columns.length >= (maxRow.columns?.length || 0)) {
+        return row;
+      }
+      return maxRow;
+    }, elements[0]);
+  }
+  // elements.forEach((row: any) => {
+  //   let hasMergeCol= row.columns.find((col: any) => col.colspan>1);
+  //   console.log('hasMergeCol', hasMergeCol,row.columns);
+  //   if (hasMergeCol && row.columns && row.columns.length >= maxColsRow.columns.length) {
+  //     maxColsRow = row;
+  //   }
+  // });
 
   // 构建列结构，包含宽度信息
   let totalCols = 0;
@@ -176,12 +238,16 @@ const getColIndex = (rowIndex: number, colIndex: number, col: any) => {
             :colspan="col.colspan"
             :style="{
               width: col.width || '100%',
-              height: '1px',
+              height: '10px',
               padding: '0',
-              border: 'none',
-              visibility: 'hidden'
+              border: '1px'
             }"
-        />
+        >
+          <div
+              class="col-resize-handle"
+              @mousedown="(e) => handleColResizeStart(e, index)"
+          />
+        </td>
       </tr>
       </thead>
       <tbody>
@@ -214,5 +280,36 @@ const getColIndex = (rowIndex: number, colIndex: number, col: any) => {
 .dynamic-table {
   width: 100% !important;
   border-collapse: collapse;
+}
+
+.hidden-header {
+  visibility: hidden;
+  position: relative;
+}
+
+.hidden-header td {
+  position: relative;
+}
+
+.col-resize-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: -3px;
+  width: 6px;
+  cursor: col-resize;
+  background: var(--star-horse-style);
+  opacity: 0.5;
+  transition: opacity 0.3s;
+  z-index: 1000;
+  visibility: visible;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.hidden-header:hover .col-resize-handle {
+  opacity: 0.5;
 }
 </style>

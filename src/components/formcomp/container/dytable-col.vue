@@ -37,10 +37,8 @@ let currentSubItemId = computed(() => designForm.currentSubItemId);
 const isDragging = computed(() => designForm.isDragging);
 const formData = defineModel("formData");
 const isResizing = ref(false);
-const resizeDirection = ref<"width" | "height" | null>(null);
-const startX = ref(0);
+const resizeDirection = ref<"height" | null>(null);
 const startY = ref(0);
-const startWidth = ref(0);
 const startHeight = ref(0);
 
 const onDragAdd = (evt: Event | any, dataList: any) => {
@@ -73,22 +71,18 @@ const handleTableCellCommand = (command: string) => {
 const selectCurrentTd = () => {
   designForm.setSubItemId(props.field.id);
 };
-// 修正事件处理逻辑
+// 修正事件处理逻辑，只处理高度调整
 const handleResizeStart = (e: MouseEvent) => {
-  const target = e.currentTarget as HTMLElement; // 使用 currentTarget 替代 target
+  const target = e.currentTarget as HTMLElement;
   const rect = target.getBoundingClientRect();
 
-  // 计算相对位置时考虑边框
-  const isWidthResize = e.clientX > rect.right - 8;
   const isHeightResize = e.clientY > rect.bottom - 8;
 
-  if (isWidthResize || isHeightResize) {
+  if (isHeightResize) {
     e.preventDefault();
     isResizing.value = true;
-    resizeDirection.value = isWidthResize ? "width" : "height";
-    startX.value = e.clientX;
+    resizeDirection.value = "height";
     startY.value = e.clientY;
-    startWidth.value = rect.width;
     startHeight.value = rect.height;
 
     document.addEventListener("mousemove", handleResizeMove);
@@ -97,36 +91,11 @@ const handleResizeStart = (e: MouseEvent) => {
 };
 
 const handleResizeMove = (e: MouseEvent) => {
-  if (!isResizing.value) return;
+  if (!isResizing.value || resizeDirection.value !== "height") return;
 
-  if (resizeDirection.value === "width") {
-    const delta = e.clientX - startX.value;
-    const newWidth = startWidth.value + delta;
-    const newWidthStr = `${Math.max(20, newWidth)}px`;
-
-    const elements: any = props.parentField?.preps.elements;
-    elements?.forEach((el: any) => {
-      const targetCol = el.columns[props.actionColIndex];
-      if (targetCol && targetCol.colspan == 1) {
-        targetCol.colWidth = newWidthStr;
-      }
-    });
-    // 只更新第一行的宽度，因为列宽是以第一行为准
-    // if (props.parentField?.preps.elements?.[0]) {
-    //   const firstRow = props.parentField.preps.elements[0];
-    //   const targetCol = firstRow.columns[props.colIndex];
-    //   if (targetCol) {
-    //     targetCol.colWidth = newWidthStr;
-    //   }
-    // }
-
-    // 同时更新当前单元格的宽度，确保拖拽时的视觉效果
-    props.field.colWidth = newWidthStr;
-  } else {
-    const delta = e.clientY - startY.value;
-    const newHeight = startHeight.value + delta;
-    props.field.colHeight = `${Math.max(20, newHeight)}px`; // 最小20px
-  }
+  const delta = e.clientY - startY.value;
+  const newHeight = startHeight.value + delta;
+  props.field.colHeight = `${Math.max(20, newHeight)}px`;
 };
 
 const handleResizeEnd = () => {
@@ -213,49 +182,9 @@ onMounted(() => {
 </template>
 <style lang="scss" scoped>
 .edit_col {
-  &::after,
   &::before {
-    z-index: 1000; // 提升到最高层级
-    pointer-events: none; // 允许穿透点击
-  }
-
-  &::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: -3px !important; // 扩展右侧触发区域
-    width: 6px; // 加宽触发范围
-    pointer-events: auto !important; // 允许响应鼠标事件
-    cursor: col-resize;
-    background: var(--star-horse-style);
-    opacity: 0;
-    z-index: 1001;
-    transition: opacity 0.3s,
-    right 0.1s; // 添加手柄位置过渡
-  }
-
-  &.no-transition {
-    transition: none !important;
-  }
-
-  &:hover {
-    &::after,
-    &::before {
-      opacity: 1; // 提高可见度
-      transition-delay: 0.1s; // 添加悬停延迟避免误触发
-    }
-  }
-
-  // 修正事件处理逻辑
-  &[colspan]::after {
-    top: 10%;
-    height: 80%; // 跨行合并时保持拖拽区域
-  }
-
-  // 保证后续列可操作
-  &[colspan] + .edit_col::after {
-    z-index: 1002;
+    z-index: 1000;
+    pointer-events: none;
   }
 
   &::before {
@@ -263,9 +192,9 @@ onMounted(() => {
     position: absolute;
     left: 10%;
     right: 0;
-    bottom: -3px; // 扩展底部触发区域
-    height: 6px; // 加高触发范围
-    pointer-events: auto; // 允许响应鼠标事件
+    bottom: -3px;
+    height: 6px;
+    pointer-events: auto;
     cursor: row-resize;
     width: 80%;
     background: var(--star-horse-style);
@@ -275,7 +204,6 @@ onMounted(() => {
   }
 
   &:hover {
-    &::after,
     &::before {
       opacity: 0.5;
     }
@@ -286,14 +214,12 @@ onMounted(() => {
   }
 
   &.no-drag {
-    &::after,
     &::before {
-      display: none !important; // 禁用拖拽手柄
+      display: none !important;
       pointer-events: none !important;
     }
 
     &:hover {
-      &::after,
       &::before {
         opacity: 0 !important;
       }
