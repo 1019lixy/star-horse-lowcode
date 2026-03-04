@@ -17,7 +17,7 @@ let currenetId = computed(() => designForm.currentItemId);
 const formData = ref<any>({
   test: "1-2-1",
 });
-const fields = ref<any>({
+/*const fields = ref<any>({
   id: "Idsh8daf59c9-bc67-4dc7-ab01-ca0f661e42d7",
   preps: {
     id: "Idsh8daf59c9-bc67-4dc7-ab01-ca0f661e42d7",
@@ -723,6 +723,318 @@ const fields = ref<any>({
     ],
     rowSpan: "",
     colSpan: "",
+  },
+  compType: "container",
+  fieldName: "box1",
+  itemType: "box",
+  type: "box",
+});*/
+
+const fields=ref<any>({
+  "id": "Idsh5d0dae94-d250-4e19-b655-04dc860f722d",
+  "preps": {
+    "id": "Idsh5d0dae94-d250-4e19-b655-04dc860f722d",
+    "label": "动态表格",
+    "itemNameLabel": "动态表格",
+    "name": "dytable1",
+    "elements": [
+      {
+        "id": "r1",
+        "colIndex": 1,
+        "columns": [
+          {
+            "id": "r1c1",
+            "colIndex": 1,
+            "colspan": 1,
+            "rowspan": 1,
+            "items": [],
+            "colWidth": "40.95833396911621px"
+          },
+          {
+            "id": "r1c2",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": [],
+            "colWidth": "35.47917175292969px"
+          },
+          {
+            "id": "r1c3",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": []
+          },
+          {
+            "id": "r1c4",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": []
+          },
+          {
+            "id": "r1c5",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": []
+          },
+          {
+            "id": "r1c6",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": []
+          },
+          {
+            "id": "r1c7",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": []
+          }
+        ]
+      },
+      {
+        "id": "r2",
+        "colIndex": 1,
+        "columns": [
+          {
+            "id": "r2c1",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": [],
+            "colWidth": "40.95833396911621px"
+          },
+          {
+            "id": "r2c2",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": [],
+            "colWidth": "35.47917175292969px"
+          },
+          {
+            "id": "r2c3",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": []
+          },
+          {
+            "id": "r2c4",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": []
+          },
+          {
+            "id": "r2c5",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": []
+          },
+          {
+            "id": "r2c6",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": [
+              {
+                "id": "Idsh6ef71f47-2050-4960-af45-f8303c6996f9",
+                "preps": {
+                  "id": "Idsh6ef71f47-2050-4960-af45-f8303c6996f9",
+                  "label": "静态文本",
+                  "itemNameLabel": "静态文本",
+                  "name": "text3",
+                  "clearable": true,
+                  "readonly": false,
+                  "rules": [],
+                  "maxLength": 255,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true,
+                  "hideLabel": true,
+                  "staticData": true,
+                  "textContent": "生产工单号",
+                  "placeholder": ""
+                },
+                "compType": "formItem",
+                "fieldName": "text3",
+                "itemType": "text",
+                "label": "静态文本",
+                "type": "text"
+              }
+            ],
+            "colHeight": "22.666667938232422px"
+          },
+          {
+            "id": "r2c7",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": [
+              {
+                "id": "Idsh7b11f3b7-4aaf-41ce-a1b8-1763d6b1ad78",
+                "preps": {
+                  "id": "Idsh7b11f3b7-4aaf-41ce-a1b8-1763d6b1ad78",
+                  "label": "单行文本框",
+                  "itemNameLabel": "单行文本框",
+                  "name": "input2",
+                  "clearable": true,
+                  "readonly": false,
+                  "placeholder": "请输入单行文本框",
+                  "rules": [],
+                  "maxLength": 255,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true,
+                  "hideLabel": true
+                },
+                "compType": "formItem",
+                "fieldName": "input2",
+                "itemType": "input",
+                "label": "单行文本框",
+                "type": "input"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "r3",
+        "colIndex": 1,
+        "columns": [
+          {
+            "id": "r3c1",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": []
+          },
+          {
+            "id": "r3c2",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": []
+          },
+          {
+            "id": "r3c3",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": []
+          },
+          {
+            "id": "r3c4",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": []
+          },
+          {
+            "id": "r3c5",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": []
+          },
+          {
+            "id": "r3c6",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": []
+          },
+          {
+            "id": "r3c7",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": []
+          }
+        ]
+      },
+      {
+        "id": "r4",
+        "colIndex": 1,
+        "columns": [
+          {
+            "id": "r4c1",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": []
+          },
+          {
+            "id": "r4c2",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": []
+          },
+          {
+            "id": "r4c3",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": []
+          },
+          {
+            "id": "r4c4",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": []
+          },
+          {
+            "id": "r4c5",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": []
+          },
+          {
+            "id": "r4c6",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": []
+          },
+          {
+            "id": "r4c7",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": []
+          }
+        ]
+      },
+      {
+        "id": "r5",
+        "colIndex": 1,
+        "columns": [
+          {
+            "id": "r5c1",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": []
+          },
+          {
+            "id": "r5c2",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": []
+          },
+          {
+            "id": "r5c3",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": []
+          },
+          {
+            "id": "r5c4",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": []
+          },
+          {
+            "id": "r5c5",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": []
+          },
+          {
+            "id": "r5c6",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": []
+          },
+          {
+            "id": "r5c7",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": []
+          }
+        ]
+      }
+    ]
   },
   compType: "container",
   fieldName: "box1",
