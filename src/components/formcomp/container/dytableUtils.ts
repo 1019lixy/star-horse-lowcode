@@ -102,7 +102,6 @@ const mergeLeftCol = (props: any, type: any) => {
 const mergeCol = (props: any, position: number, type: any) => {
   const { row, col } = tableCellInfo(props, type);
   const colInfo = row.columns.splice(position, 1);
-  debugger;
   col.colspan =col.colspan + colInfo[0].colspan;
 };
 const mergeRightCol = (props: any, type: any) => {
