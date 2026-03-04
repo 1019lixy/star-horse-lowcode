@@ -24,7 +24,8 @@ const handleColResizeStart = (e: MouseEvent, index: number) => {
   e.preventDefault();
   resizingColIndex.value = index;
   startX.value = e.clientX;
-  const colElement = e.currentTarget as HTMLElement;
+  const colElement = e.target.parentElement as HTMLElement;
+  // console.log('colElement',e, colElement);
   startWidth.value = colElement.offsetWidth;
 
   document.addEventListener("mousemove", handleColResizeMove);
