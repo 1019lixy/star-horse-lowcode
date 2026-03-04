@@ -94,6 +94,25 @@ const submitAction = () => {
       ) {
         column["rowspan"] = fieldForm.value["rowspan"];
         column["colspan"] = fieldForm.value["colspan"];
+        if(fieldForm.value["rowspan"]>1){
+          //1,4 2
+          let len=props.rowIndex + fieldForm.value["rowspan"];
+          if(len>elements.length){
+            len=elements.length;
+          }
+        elements.slice(props.rowIndex+1, len).forEach((item) => {
+          item.columns.splice(props.colIndex, 1);
+        });
+        }
+        if(fieldForm.value["colspan"]>1){
+        
+         let len=props.colIndex + fieldForm.value["colspan"];
+          if(len>columns.length){
+            len=columns.length;
+          }
+          let rightColumns=columns.slice(props.colIndex+1, len);
+          columns.splice(props.colIndex+1, rightColumns?.length??0);
+        }
       }
     }
   }

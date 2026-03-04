@@ -93,7 +93,7 @@ onMounted(() => {});
       :disabled="!isEdit"
       :item-key="uuid()"
       group="starHorseGroup"
-      ghostClass="ghost"
+      ghostClass="container_ghost"
       animation="200"
       :list="field.items"
     >

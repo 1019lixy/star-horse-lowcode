@@ -102,8 +102,8 @@ const mergeLeftCol = (props: any, type: any) => {
 const mergeCol = (props: any, position: number, type: any) => {
   const { row, col } = tableCellInfo(props, type);
   const colInfo = row.columns.splice(position, 1);
-  col.colspan =
-    type == "box" ? col.colspan + colInfo[0].colspan : col.colspan + 1;
+  debugger;
+  col.colspan =col.colspan + colInfo[0].colspan;
 };
 const mergeRightCol = (props: any, type: any) => {
   const position = props.colIndex + 1;
@@ -111,47 +111,32 @@ const mergeRightCol = (props: any, type: any) => {
 };
 const mergeWholeCol = (props: any, type: any) => {
   const { rows, col } = tableCellInfo(props, type);
-  // let currentCol: any = {};
-  for (const index in rows) {
-    const row1 = rows[index];
+  // 遍历所有行，删除对应的列
+  for (let i = 0; i < rows.length; i++) {
+    const row1 = rows[i];
     const cols = row1.columns;
-    for (const cIndex in cols) {
-      if (cIndex == props.colIndex) {
-        cols.splice(cIndex, 1);
-      }
+    // 确保索引存在
+    if (cols[props.colIndex]) {
+      cols.splice(props.colIndex, 1);
     }
   }
   col.rowspan = rows.length;
   rows[0].columns.splice(props.colIndex, 0, col);
 };
 const mergeAboveRow = (props: any, type: any) => {
-  const { rows, row, col } = tableCellInfo(props, type);
+  const { rows, row,col } = tableCellInfo(props, type);
   const aboveRow = rows[props.rowIndex - 1];
-  col.rowspan = col.rowspan + 1;
-  for (const index in aboveRow.columns) {
-    //如果colspan 大于1 则需要合并
-
-    if (index == props.colIndex) {
-      aboveRow.columns.splice(index, 1, col);
-      break;
-    }
-  }
-  for (const index in row.columns) {
-    if (index == props.colIndex) {
-      row.columns.splice(index, 1);
-      break;
-    }
-  }
+  const aboveCol=aboveRow.columns[props.colIndex];
+  aboveCol.rowspan = aboveCol.rowspan + col.rowspan;
+  row.columns.splice(props.colIndex, 1);
 };
 const mergeBelowRow = (props: any, type: any) => {
   const { rows, col } = tableCellInfo(props, type);
+   const belowRow = rows[props.rowIndex + col.rowspan];
   col.rowspan = col.rowspan + 1;
-  const belowRow = rows[props.rowIndex + 1];
-  for (const index in belowRow.columns) {
-    if (index == props.colIndex) {
-      belowRow.columns.splice(index, 1);
-      break;
-    }
+  // 检查下方行的对应列是否存在
+  if (belowRow.columns[props.colIndex]) {
+    belowRow.columns.splice(props.colIndex, 1);
   }
 };
 const mergeWholeRow = (props: any, type: any) => {
@@ -244,12 +229,11 @@ const undoMergeCol = (props: any, type: any) => {
  */
 const deleteWholeCol = (props: any, type: any) => {
   const rows = props.parentField.preps.elements;
-  for (const index in rows) {
-    const cols = rows[index].columns;
-    for (const sIndex in cols) {
-      if (props.colIndex == sIndex) {
-        cols.splice(sIndex, 1);
-      }
+  for (let i = 0; i < rows.length; i++) {
+    const cols = rows[i].columns;
+    // 确保索引存在
+    if (cols[props.colIndex]) {
+      cols.splice(props.colIndex, 1);
     }
   }
 };

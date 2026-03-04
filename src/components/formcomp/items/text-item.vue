@@ -2,6 +2,7 @@
 import { allAction } from "@/components/formcomp/utils/ItemRelationEventUtils";
 
 import { ItemPreps } from "@/components/types/ItemPreps";
+import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -36,7 +37,7 @@ const itemAction = (prep: any) => {
             wordBreak: 'normal',
             width: '100%',
             height: '100%',
-            margin: ' 0 5px',
+            padding: '0 10px',
           }
         "
       >

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { loadProp, validMsg } from "@/api/form_utils";
 import { ContainerPreps } from "@/components/types/ItemPreps";
-import { ModelRef, onMounted } from "vue";
+import { ModelRef, onMounted, computed } from "vue";
 
 const props = withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
@@ -16,6 +16,35 @@ const props = withDefaults(defineProps<ContainerPreps>(), {
   source: 1,
 });
 const dataForm: ModelRef<any> = defineModel("dataForm");
+
+// 计算表格的列结构
+const columnStructure = computed(() => {
+  if (!props.item?.dytableList?.length) return [];
+  
+  // 找到最大列数的行
+  let maxColsRow = props.item.dytableList[0];
+  props.item.dytableList.forEach((row: any) => {
+    if (row && row.length > maxColsRow.length) {
+      maxColsRow = row;
+    }
+  });
+  
+  // 构建列结构，包含宽度信息
+  return maxColsRow.map((sitem: any, index: number) => {
+    // 从所有行中查找该列的宽度信息
+    let width = sitem.preps?.colWidth;
+    if (!width) {
+      for (const row of props.item.dytableList) {
+        if (row && row[index] && row[index].preps?.colWidth) {
+          width = row[index].preps.colWidth;
+          break;
+        }
+      }
+    }
+    return { width };
+  });
+});
+
 const init = () => {};
 onMounted(() => {
   init();
@@ -36,6 +65,22 @@ onMounted(() => {
         'instance-table': true,
       }"
     >
+      <!-- 隐藏的表头行，用于保持列结构和宽度 -->
+      <thead v-if="item.dytableList?.length > 0">
+        <tr class="hidden-header">
+          <td
+            v-for="(col, index) in columnStructure"
+            :key="index"
+            :style="{
+              width: col.width || '100%',
+              height: '1px',
+              padding: '0',
+              border: 'none',
+              visibility: 'hidden'
+            }"
+          />
+        </tr>
+      </thead>
       <tbody>
         <tr
           v-for="(row, rowIndex) in item.dytableList"

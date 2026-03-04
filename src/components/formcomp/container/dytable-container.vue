@@ -1,33 +1,193 @@
 <script setup lang="ts" name="dytable-container">
 // 右键菜单组件
-import { PropType, ref } from "vue";
+import {computed, PropType, ref} from "vue";
 import DytableCol from "@/components/formcomp/container/dytable-col.vue";
 
 let containerTableRef = ref(); // 强制刷新表格
-defineProps({
-  parentField: { type: Object as PropType<any> },
-  isDesign: { type: Boolean, default: false },
-  showFormItem: { type: Boolean, default: false },
-  disabled: { type: Boolean, default: false },
-  formInfo: { type: Object as PropType<any> },
-  field: { type: Object as PropType<any> },
+const props = defineProps({
+  parentField: {type: Object as PropType<any>},
+  isDesign: {type: Boolean, default: false},
+  showFormItem: {type: Boolean, default: false},
+  disabled: {type: Boolean, default: false},
+  formInfo: {type: Object as PropType<any>},
+  field: {type: Object as PropType<any>},
 });
 const formData = defineModel("formData");
+
+// 计算表格的列结构
+const columnStructure = computed(() => {
+  const elements: any = props.field.preps?.elements;
+  if (!elements?.length) return [];
+
+  // 找到最大列数的行
+  let maxColsRow = elements[0];
+  elements.forEach((row: any) => {
+    let hasMergeCol= row.columns.find((col: any) => col.colspan>1);
+    console.log('hasMergeCol', hasMergeCol,row.columns);
+    if (hasMergeCol && row.columns && row.columns.length >= maxColsRow.columns.length) {
+      maxColsRow = row;
+    }
+  });
+
+  // 构建列结构，包含宽度信息
+  let totalCols = 0;
+  console.log('maxColsRow.columns', maxColsRow.columns);
+  const colStructure = maxColsRow.columns.map((col: any, index: number) => {
+    // 从所有行中查找该列的宽度信息
+    let width = col.colWidth;
+    let colspan = col.colspan || 1;
+    if (!width) {
+      for (const row of elements) {
+        if (row.columns && row.columns[index] && row.columns[index].colWidth) {
+          width = row.columns[index].colWidth;
+          break;
+        }
+      }
+    }
+    console.log('colspan', colspan);
+    totalCols += colspan;
+    return {width};
+  });
+  const addCol = Math.abs(maxColsRow.columns.length - totalCols);
+  console.log('addCol', addCol);
+  if(addCol > 0) {
+    for(let i = 0; i < addCol; i++) {
+      colStructure.push({width: '100%'});
+    }
+  }
+  return colStructure;
+});
+/**
+ * 动态计算列的索引
+ * 计算当前列在原始表格布局中的真实索引（考虑跨行合并后的列位置）
+ * @param rowIndex 当前行索引
+ * @param colIndex 当前列在当前行中的索引
+ * @param col 当前列的数据
+ */
+const getColIndex = (rowIndex: number, colIndex: number, col: any) => {
+  const elements = props.field.preps.elements;
+
+  if (rowIndex === 0) {
+    return colIndex;
+  }
+
+  // 计算表格的总列数（考虑 colspan）
+  let totalCols = 0;
+  elements.forEach((row: any) => {
+    if (row.columns) {
+      let rowCols = 0;
+      row.columns.forEach((c: any) => {
+        rowCols += c.colspan || 1;
+      });
+      totalCols = Math.max(totalCols, rowCols);
+    }
+  });
+
+  // 构建一个占用集合，记录哪些列位置被占用（使用 Set 去重）
+  const occupied = new Set<number>();
+
+  // 遍历前面所有行，找出占用的列位置
+  for (let r = 0; r < rowIndex; r++) {
+    const row = elements[r];
+    if (!row.columns) continue;
+
+    let colPos = 0;
+    for (let c = 0; c < row.columns.length; c++) {
+      const checkCol = row.columns[c];
+      const colspan = checkCol.colspan || 1;
+      const rowspan = checkCol.rowspan || 1;
+
+      // 如果该单元格跨行且覆盖到当前行
+      if (rowspan > 1 && r + rowspan > rowIndex) {
+        // 标记该单元格占用的所有列位置
+        for (let i = 0; i < colspan; i++) {
+          occupied.add(colPos + i);
+        }
+      }
+
+      colPos += colspan;
+    }
+  }
+
+  // 现在需要重新构建当前行的完整列结构
+  // 从第一行开始，模拟表格的完整布局
+  const fullRowCols: boolean[] = new Array(totalCols).fill(false);
+
+  // 标记被前面行跨行占用的位置
+  for (let r = 0; r < rowIndex; r++) {
+    const row = elements[r];
+    if (!row.columns) continue;
+
+    let colPos = 0;
+    for (let c = 0; c < row.columns.length; c++) {
+      const checkCol = row.columns[c];
+      const colspan = checkCol.colspan || 1;
+      const rowspan = checkCol.rowspan || 1;
+
+      if (rowspan > 1 && r + rowspan > rowIndex) {
+        for (let i = 0; i < colspan; i++) {
+          fullRowCols[colPos + i] = true; // true 表示被占用
+        }
+      }
+
+      colPos += colspan;
+    }
+  }
+
+  // 现在找到第 colIndex 个未被占用的位置
+  let currentColPosition = 0;
+  for (let refColIdx = 0; refColIdx < totalCols; refColIdx++) {
+    if (!fullRowCols[refColIdx]) {
+      if (currentColPosition === colIndex) {
+        // console.log('getColIndex:', {
+        //   rowIndex,
+        //   colIndex,
+        //   totalCols,
+        //   occupied: Array.from(occupied),
+        //   fullRowCols,
+        //   result: refColIdx
+        // });
+        return refColIdx;
+      }
+      currentColPosition++;
+    }
+  }
+
+  // console.log('getColIndex fallback:', { rowIndex, colIndex, totalCols, occupied: Array.from(occupied) });
+  return colIndex;
+};
 </script>
 <template>
   <group-container
-    class="star-horse-form-container"
-    :showFormItem="showFormItem"
-    :isDesign="isDesign"
-    :disabled="disabled"
-    :parentField="parentField"
-    :form-item="field"
+      class="star-horse-form-container"
+      :showFormItem="showFormItem"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :parentField="parentField"
+      :form-item="field"
   >
     <table ref="containerTableRef" class="dynamic-table">
+      <!-- 隐藏的表头行，用于保持列结构和宽度 -->
+      <thead v-if="field.preps.elements.length > 0">
+      <tr class="hidden-header">
+        <td
+            v-for="(col, index) in columnStructure"
+            :key="index"
+            :colspan="col.colspan"
+            :style="{
+              width: col.width || '100%',
+              height: '1px',
+              padding: '0',
+              border: 'none',
+              visibility: 'hidden'
+            }"
+        />
+      </tr>
+      </thead>
       <tbody>
-        <tr v-for="(row, rowIndex) in field.preps.elements" class="dy-tr">
-          <template v-for="(td, colIndex) in row.columns">
-            <dytable-col
+      <tr v-for="(row, rowIndex) in field.preps.elements" class="dy-tr">
+        <template v-for="(td, colIndex) in row.columns">
+          <dytable-col
               :field="td"
               :formInfo="formInfo"
               v-model:formData="formData"
@@ -41,10 +201,11 @@ const formData = defineModel("formData");
               :isLastCol="colIndex == row.columns.length - 1"
               :rowIndex="rowIndex"
               :colIndex="colIndex"
+              :actionColIndex="getColIndex(rowIndex,colIndex,td)"
               class="dy-cell"
-            />
-          </template>
-        </tr>
+          />
+        </template>
+      </tr>
       </tbody>
     </table>
   </group-container>
