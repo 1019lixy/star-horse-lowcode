@@ -24,7 +24,7 @@ const formData = defineModel("formData");
   >
     <el-row
       v-for="(element, rowIndex) in field.preps.elements"
-      :gutter="field.preps?.gutter || 10"
+      :gutter="field.preps?.gutter || 1"
       :justify="field.preps?.justify || 'start'"
       :align="field.preps?.align || 'top'"
       :tag="field.preps?.tag || 'div'"

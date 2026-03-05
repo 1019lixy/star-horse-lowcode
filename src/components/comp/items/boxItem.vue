@@ -31,6 +31,7 @@ onMounted(() => {
     :tag="'div'"
   >
     <template v-for="sitem in item">
+
       <el-col
         :span="
           sitem.preps?.colspan ||
@@ -71,6 +72,7 @@ onMounted(() => {
               :source="source"
             />
           </el-form-item>
+
           <star-horse-item
             v-else-if="sitem.viewVisible || checkVisible(sitem, dataForm)"
             :compSize="compSize"
@@ -81,7 +83,7 @@ onMounted(() => {
             :source="source"
           />
         </template>
-        <template v-else>
+        <template v-else-if="sitem.fieldName">
           <star-horse-item
             :primaryKey="primaryKey"
             :compSize="compSize"

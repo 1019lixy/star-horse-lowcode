@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { loadProp, validMsg } from "@/api/form_utils";
+import {checkVisible, loadProp, validMsg} from "@/api/form_utils";
 import { ContainerPreps } from "@/components/types/ItemPreps";
 import { ModelRef, onMounted, computed } from "vue";
 
@@ -20,7 +20,7 @@ const dataForm: ModelRef<any> = defineModel("dataForm");
 // 计算表格的列结构
 const columnStructure = computed(() => {
   if (!props.item?.dytableList?.length) return [];
-  
+
   // 找到最大列数的行
   let maxColsRow = props.item.dytableList[0];
   // props.item.dytableList.forEach((row: any) => {
@@ -30,20 +30,20 @@ const columnStructure = computed(() => {
   // });
    let hasMergeColFlag = false;
   props.item.dytableList.forEach((row: any) => {
-    let hasMergeCol= row.columns.find((col: any) => col.colspan>1);
-    if(hasMergeCol&&row.columns.length>1) {
+    let hasMergeCol= row.find((col: any) => col.preps.colspan>1);
+    if(hasMergeCol&&row.length>1) {
       hasMergeColFlag = true;
       return false;
     }
   });
   if(!hasMergeColFlag) {
     maxColsRow = props.item.dytableList.reduce((maxRow: any, row: any) => {
-      return (row.columns?.length || 0) > (maxRow.columns?.length || 0) ? row : maxRow;
+      return (row?.length || 0) > (maxRow?.length || 0) ? row : maxRow;
     }, props.item.dytableList[0]);
-  }else{   
+  }else{
      maxColsRow = props.item.dytableList.reduce((maxRow: any, row: any) => {
-      const hasMergeCol= row.columns.find((col: any) => col.colspan>1);
-      if(hasMergeCol && row.columns && row.columns.length >= (maxRow.columns?.length || 0)) {
+      const hasMergeCol= row.find((col: any) => col.preps.colspan>1);
+      if(hasMergeCol && row && row.length >= (maxRow?.length || 0)) {
         return row;
       }
       return maxRow;
@@ -67,9 +67,8 @@ const columnStructure = computed(() => {
     return { width };
   });
   const addCol = Math.abs(maxColsRow.length - totalCols);
-  console.log('addCol', addCol);
   for (let i = 0; i < addCol; i++) {
-    colStructure.push({ width: '100%' });
+    colStructure.push({ width: "100%" });
   }
   return colStructure;
 });
@@ -123,8 +122,8 @@ onMounted(() => {
             :rowspan="sitem.preps?.rowspan || 1"
             :class="{ 'title-style': sitem.preps?.labelFlag == 'Y' }"
             :style="{
-              width: sitem.preps?.colWidth || 'unset',
-              height: sitem.preps?.colHeight || 'unset',
+              width: sitem.preps?.colWidth || 'auto',
+              height: sitem.preps?.colHeight || '30px',
               'text-align': sitem.preps?.textAlign ?? 'left',
               'white-space': 'nowrap',
               'word-break': !!sitem.preps?.wordBreak ? 'break-all' : 'keep-all',
@@ -145,9 +144,10 @@ onMounted(() => {
                 :labelPosition="parentPreps?.labelPosition"
                 :rules="validMsg(sitem, dataForm)"
                 v-if="
-                  sitem.formVisible &&
+                  (sitem.formVisible &&
                   sitem.label &&
-                  sitem.preps?.labelFlag != 'Y'
+                  sitem.preps?.labelFlag != 'Y')||
+                  checkVisible(sitem, dataForm)
                 "
               >
                 <star-horse-item
@@ -160,7 +160,7 @@ onMounted(() => {
                 />
               </el-form-item>
               <star-horse-item
-                v-else-if="sitem.formVisible || sitem.viewVisible"
+                v-else-if="sitem.viewVisible || checkVisible(sitem, dataForm)"
                 :compSize="compSize"
                 :primaryKey="primaryKey"
                 v-model:dataForm="dataForm"
@@ -170,7 +170,7 @@ onMounted(() => {
                 :source="source"
               />
             </template>
-            <template v-else>
+            <template v-else-if="sitem.fieldName">
               <star-horse-item
                 :primaryKey="primaryKey"
                 :compSize="compSize"

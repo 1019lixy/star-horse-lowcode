@@ -307,6 +307,7 @@ export default {
   "form.moveUp": "上移",
   "form.moveDown": "下移",
   "form.deleteComponent": "删除组件",
+  "form.empty": "未设置",
   /**
    * API Strings
    */

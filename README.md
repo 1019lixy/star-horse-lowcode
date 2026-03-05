@@ -415,3 +415,8 @@ barcode        条形码组件
 ```
 -修复dialog-item数据绑定bug,增加drawer-item 组件
 ```
+#### v2.8.62
+
+```
+-修复解析函数,出现未设置组件情况，修复dytable-container 容器已知bug；
+```

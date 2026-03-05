@@ -2,6 +2,7 @@
 // 右键菜单组件
 import {computed, PropType, ref} from "vue";
 import DytableCol from "@/components/formcomp/container/dytable-col.vue";
+import GroupContainer from "@/components/formcomp/container/group-container.vue";
 
 let containerTableRef = ref(); // 强制刷新表格
 const props = defineProps({
@@ -75,7 +76,7 @@ const columnStructure = computed(() => {
     maxColsRow = elements.reduce((maxRow: any, row: any) => {
       return (row.columns?.length || 0) > (maxRow.columns?.length || 0) ? row : maxRow;
     }, elements[0]);
-  }else{   
+  }else{
      maxColsRow = elements.reduce((maxRow: any, row: any) => {
       const hasMergeCol= row.columns.find((col: any) => col.colspan>1);
       if(hasMergeCol && row.columns && row.columns.length >= (maxRow.columns?.length || 0)) {
@@ -94,7 +95,7 @@ const columnStructure = computed(() => {
 
   // 构建列结构，包含宽度信息
   let totalCols = 0;
-  console.log('maxColsRow.columns', maxColsRow.columns);
+  console.log("maxColsRow.columns", maxColsRow.columns);
   const colStructure = maxColsRow.columns.map((col: any, index: number) => {
     // 从所有行中查找该列的宽度信息
     let width = col.colWidth;
@@ -107,15 +108,15 @@ const columnStructure = computed(() => {
         }
       }
     }
-    console.log('colspan', colspan);
+    console.log("colspan", colspan);
     totalCols += colspan;
     return {width};
   });
   const addCol = Math.abs(maxColsRow.columns.length - totalCols);
-  console.log('addCol', addCol);
+  console.log("addCol", addCol);
   if(addCol > 0) {
     for(let i = 0; i < addCol; i++) {
-      colStructure.push({width: '100%'});
+      colStructure.push({width: "100%"});
     }
   }
   return colStructure;
@@ -229,6 +230,7 @@ const getColIndex = (rowIndex: number, colIndex: number, col: any) => {
       :parentField="parentField"
       :form-item="field"
   >
+<!--    {{field.preps.elements}}-->
     <table ref="containerTableRef" class="dynamic-table">
       <!-- 隐藏的表头行，用于保持列结构和宽度 -->
       <thead v-if="field.preps.elements.length > 0">
@@ -241,7 +243,8 @@ const getColIndex = (rowIndex: number, colIndex: number, col: any) => {
               width: col.width || '100%',
               height: '10px',
               padding: '0',
-              border: '1px'
+              border: '1px',
+              background:'rgba(247,250,250,0.8)'
             }"
         >
           <div

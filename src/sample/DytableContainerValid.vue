@@ -1,16 +1,18 @@
 <template>
-  <dytable-container
-    :formData="formData"
-    :field="fields"
-    :is-design="true"
-    :formInfo="{}"
-  />
+  <el-scrollbar>
+    <dytable-container
+        :formData="formData"
+        :field="fields"
+        :is-design="true"
+        :formInfo="{}"
+    />
+  </el-scrollbar>
 </template>
 
 <script lang="ts" setup>
 import piniaInstance from "@/store";
-import { useDesignFormStore } from "@/store/designForm";
-import { onMounted, ref } from "vue";
+import {useDesignFormStore} from "@/store/designForm";
+import {onMounted, ref} from "vue";
 
 let designForm = useDesignFormStore(piniaInstance);
 const formData = ref<any>({
@@ -725,7 +727,7 @@ const formData = ref<any>({
   itemType: "dytable",
   type: "dytable",
 });*/
-const fields=ref<any>({
+const fields = ref<any>({
   "id": "Idsh5d0dae94-d250-4e19-b655-04dc860f722d",
   "preps": {
     "id": "Idsh5d0dae94-d250-4e19-b655-04dc860f722d",
@@ -778,6 +780,12 @@ const fields=ref<any>({
           },
           {
             "id": "r1c7",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": []
+          },
+          {
+            "id": "r1c8",
             "colspan": 1,
             "rowspan": 1,
             "items": []
@@ -882,6 +890,12 @@ const fields=ref<any>({
                 "type": "input"
               }
             ]
+          },
+          {
+            "id": "r2c8",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": []
           }
         ]
       },
@@ -927,6 +941,12 @@ const fields=ref<any>({
           },
           {
             "id": "r3c7",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": []
+          },
+          {
+            "id": "r3c8",
             "colspan": 1,
             "rowspan": 1,
             "items": []
@@ -978,6 +998,12 @@ const fields=ref<any>({
             "colspan": 1,
             "rowspan": 1,
             "items": []
+          },
+          {
+            "id": "r4c8",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": []
           }
         ]
       },
@@ -1026,6 +1052,12 @@ const fields=ref<any>({
             "colspan": 1,
             "rowspan": 1,
             "items": []
+          },
+          {
+            "id": "r5c8",
+            "colspan": 1,
+            "rowspan": 1,
+            "items": []
           }
         ]
       }
@@ -1038,6 +1070,24 @@ const fields=ref<any>({
 });
 onMounted(() => {
   designForm.clearAll(true);
+  const elements = fields.value.preps.elements;
+  for (let i = 0; i < 35; i++) {
+    const columns: any = [];
+    const id = "r" + (i + 5);
+    for (let j = 1; j <= 8; j++) {
+      columns.push({
+        "id": `${id + ("c" + j)}`,
+        "colspan": 1,
+        "rowspan": 1,
+        "items": []
+      });
+    }
+    elements.push({
+      id: id,
+      colIndex: 1,
+      columns: columns,
+    });
+  }
 });
 </script>
 

@@ -294,6 +294,7 @@ export default {
   "form.dragFileHereOr": "Drag file here or",
   "form.clickToUpload": "click to upload",
   "form.fileSizeLimit": "File size cannot exceed",
+  "form.empty": "Not set",
   /**
    * Additional Form Item Strings
    */

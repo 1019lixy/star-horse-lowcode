@@ -22,13 +22,16 @@ onMounted(() => {
         <ComponentTester />
       </el-tab-pane>
       <el-tab-pane name="a" label="动态列表实例">
-        <DytableContainerInstanceValid />
+<!--        <DytableContainerInstanceValid />-->
       </el-tab-pane>
       <el-tab-pane name="b" label="动态列表">
         <DytableContainerValid />
       </el-tab-pane>
       <el-tab-pane name="c" label="动态Box">
         <BoxContainerDemo />
+      </el-tab-pane>
+      <el-tab-pane name="d" label="动态实例Box">
+        <BoxContainerInstanceDemo />
       </el-tab-pane>
     </el-tabs>
   </div>
