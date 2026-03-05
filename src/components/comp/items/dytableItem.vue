@@ -146,7 +146,7 @@ onMounted(() => {
                 v-if="
                   (sitem.formVisible &&
                   sitem.label &&
-                  sitem.preps?.labelFlag != 'Y')||
+                  sitem.preps?.headerFlag != 'Y')||
                   checkVisible(sitem, dataForm)
                 "
               >
