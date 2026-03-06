@@ -16,7 +16,15 @@ const props = withDefaults(defineProps<ContainerPreps>(), {
   source: 1,
 });
 const dataForm: ModelRef<any> = defineModel("dataForm");
-
+const rowHeight = computed(() => {
+  if(props.compSize=="large"){
+    return "45px";
+  }else if(props.compSize=="small"){
+    return "35px";
+  }else{
+    return "40px";
+  }
+});
 // 计算表格的列结构
 const columnStructure = computed(() => {
   if (!props.item?.dytableList?.length) return [];
@@ -88,10 +96,7 @@ onMounted(() => {
         height: item.preps?.styles?.height ?? '100%',
         overflow: item.preps?.styles?.overflow ?? 'auto',
       }"
-      :class="{
-        'dynamic-table': true,
-        'instance-table': true,
-      }"
+      class="dynamic-table instance-table"
     >
       <!-- 隐藏的表头行，用于保持列结构和宽度 -->
       <thead v-if="item.dytableList?.length > 0">
@@ -123,10 +128,11 @@ onMounted(() => {
             :class="{ 'title-style': sitem.preps?.labelFlag == 'Y' }"
             :style="{
               width: sitem.preps?.colWidth || 'auto',
-              height: sitem.preps?.colHeight || '30px',
+              height: sitem.preps?.colHeight || rowHeight,
               'text-align': sitem.preps?.textAlign ?? 'left',
               'white-space': 'nowrap',
               'word-break': !!sitem.preps?.wordBreak ? 'break-all' : 'keep-all',
+              'text-overflow': 'ellipsis'
             }"
           >
             <template

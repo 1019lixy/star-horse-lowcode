@@ -1,26 +1,27 @@
 <script setup lang="ts" name="box-container">
-import { computed, onMounted, PropType } from "vue";
-import { warning } from "@/utils/message";
-import { useDesignFormStore } from "@/store/DesignForm";
+import {computed, onMounted, PropType} from "vue";
+import {warning} from "@/utils/message";
+import {useDesignFormStore} from "@/store/DesignForm";
 import piniaInstance from "@/store/index";
-import { tableCellOperation } from "@/components/formcomp/container/dytableUtils";
-import { itemCheck, uuid } from "@/api/system";
+import {tableCellOperation} from "@/components/formcomp/container/dytableUtils";
+import {itemCheck, uuid} from "@/api/system";
 import ContainerDropDown from "@/components/formcomp/utils/ContainerDropDown.vue";
 
 const props = defineProps({
-  parentField: { type: Object as PropType<any> },
-  formInfo: { type: Object as PropType<any> },
-  parentComp: { type: Object as PropType<any> },
-  isDesign: { type: Boolean, default: false },
-  showFormItem: { type: Boolean, default: false },
-  disabled: { type: Object as PropType<Boolean | String> },
-  field: { type: Object as PropType<any> },
-  isFirstRow: { type: Boolean, default: false },
-  isLastRow: { type: Boolean, default: false },
-  isFirstCol: { type: Boolean, default: false },
-  isLastCol: { type: Boolean, default: false },
-  rowIndex: { type: Number, default: -1 },
-  colIndex: { type: Number, default: -1 },
+  parentField: {type: Object as PropType<any>},
+  formInfo: {type: Object as PropType<any>},
+  parentComp: {type: Object as PropType<any>},
+  isDesign: {type: Boolean, default: false},
+  showFormItem: {type: Boolean, default: false},
+  disabled: {type: Object as PropType<Boolean | String>},
+  field: {type: Object as PropType<any>},
+  isFirstRow: {type: Boolean, default: false},
+  isLastRow: {type: Boolean, default: false},
+  isFirstCol: {type: Boolean, default: false},
+  isLastCol: {type: Boolean, default: false},
+  rowIndex: {type: Number, default: -1},
+  colIndex: {type: Number, default: -1},
+  compSize: {type: String, default: "default"},
 });
 let designForm = useDesignFormStore(piniaInstance);
 let draggingItem = computed(() => designForm.draggingItem);
@@ -36,7 +37,15 @@ let excludeContainerType: Array<string> = [
 let currentSubItemId = computed(() => designForm.currentSubItemId);
 let isEdit = computed(() => designForm.isEdit);
 const formData = defineModel("formData");
-
+const rowHeight = computed(() => {
+  if (props.compSize == "large") {
+    return "45px";
+  } else if (props.compSize == "small") {
+    return "35px";
+  } else {
+    return "40px";
+  }
+});
 const onDragAdd = (evt: Event | any, dataList: any) => {
   selectCurrentTd();
   let newIndex = evt.newIndex;
@@ -74,61 +83,62 @@ const checkItem = (items: any) => {
     items["items"] = [];
   }
 };
-onMounted(() => {});
+onMounted(() => {
+});
 //监控数据
 </script>
 <template>
   <el-col
-    :span="field.colspan || 24"
-    :class="{ 'dragging-area': isDragging }"
-    class="edit_col flex! items-center justify-center"
-    :style="{ height: field.colHeight || 'unset' }"
-    @click="selectCurrentTd"
+      :span="field.colspan || 24"
+      :class="{ 'dragging-area': isDragging }"
+      class="edit_col flex! items-center justify-center"
+      :style="{ height: field.colHeight || 'auto' }"
+      @click="selectCurrentTd"
   >
     <draggable
-      @add="(evt: Event) => onDragAdd(evt, field.items)"
-      @dragover="checkItem(field)"
-      class="smain-design"
-      tag="div"
-      :disabled="!isEdit"
-      :item-key="uuid()"
-      group="starHorseGroup"
-      ghostClass="container_ghost"
-      animation="200"
-      :list="field.items"
+        @add="(evt: Event) => onDragAdd(evt, field.items)"
+        @dragover="checkItem(field)"
+        class="smain-design"
+        tag="div"
+        :disabled="!isEdit"
+        :item-key="uuid()"
+        group="starHorseGroup"
+        ghostClass="container_ghost"
+        animation="200"
+        :list="field.items"
     >
       <template #item="{ element: data }">
         <div class="comp-item">
           <component
-            :key="data?.id"
-            :field="data"
-            :formInfo="formInfo"
-            :isDesign="isDesign"
-            :showFormItem="showFormItem"
-            :disabled="disabled"
-            :is="itemCheck(data)"
-            :parentField="parentField"
-            v-model:formData="formData"
+              :key="data?.id"
+              :field="data"
+              :formInfo="formInfo"
+              :isDesign="isDesign"
+              :showFormItem="showFormItem"
+              :disabled="disabled"
+              :is="itemCheck(data)"
+              :parentField="parentField"
+              v-model:formData="formData"
           />
         </div>
       </template>
     </draggable>
     <div
-      class="table-cell-action"
-      v-if="isEdit && isDesign && currentSubItemId == field.id"
+        class="table-cell-action"
+        v-if="isEdit && isDesign && currentSubItemId == field.id"
     >
       <ContainerDropDown
-        :field="field"
-        :parentField="parentField"
-        :isFirstCol="isFirstCol"
-        :isLastCol="isLastCol"
-        :isFirstRow="isFirstRow"
-        :isLastRow="isLastRow"
-        :disabled="disabled"
-        :rowIndex="rowIndex"
-        :colIndex="colIndex"
-        :type="'box'"
-        @command="handleTableCellCommand"
+          :field="field"
+          :parentField="parentField"
+          :isFirstCol="isFirstCol"
+          :isLastCol="isLastCol"
+          :isFirstRow="isFirstRow"
+          :isLastRow="isLastRow"
+          :disabled="disabled"
+          :rowIndex="rowIndex"
+          :colIndex="colIndex"
+          :type="'box'"
+          @command="handleTableCellCommand"
       />
     </div>
   </el-col>

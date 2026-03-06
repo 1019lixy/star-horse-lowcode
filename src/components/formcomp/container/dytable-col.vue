@@ -22,6 +22,7 @@ const props = defineProps({
   rowIndex: {type: Number, default: -1},
   colIndex: {type: Number, default: -1},
   actionColIndex: {type: Number, default: -1},
+  compSize: {type: String, default: "default"},
 });
 let designForm = useDesignFormStore(piniaInstance);
 let draggingItem = computed(() => designForm.draggingItem);
@@ -36,6 +37,15 @@ let excludeContainerType: Array<string> = [
 let currentSubItemId = computed(() => designForm.currentSubItemId);
 const isDragging = computed(() => designForm.isDragging);
 const formData = defineModel("formData");
+const rowHeight = computed(() => {
+  if (props.compSize == "large") {
+    return "45px";
+  } else if (props.compSize == "small") {
+    return "35px";
+  } else {
+    return "40px";
+  }
+});
 const isResizing = ref(false);
 const resizeDirection = ref<"height" | null>(null);
 const startY = ref(0);
@@ -120,14 +130,15 @@ onMounted(() => {
       :rowspan="field.rowspan || 1"
       :style="{
       width: field.colWidth || '100%',
-      height: field.colHeight || '40px',
+      height: field.colHeight || rowHeight,
       'word-break': !!field.wordBreak ? 'break-all' : 'normal',
+      'text-overflow': 'ellipsis'
     }"
       @click="selectCurrentTd"
       @mousedown="handleResizeStart"
   >
-<!--    {{field.id}}-->
-   <!--{{actionColIndex}},{{rowIndex}}-->
+    <!--    {{field.id}}-->
+    <!--{{actionColIndex}},{{rowIndex}}-->
     <draggable
         @add="(evt: Event) => onDragAdd(evt, field.items)"
         class="smain-design"

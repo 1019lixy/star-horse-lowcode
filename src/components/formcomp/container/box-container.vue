@@ -28,6 +28,7 @@ const formData = defineModel("formData");
       :justify="field.preps?.justify || 'start'"
       :align="field.preps?.align || 'top'"
       :tag="field.preps?.tag || 'div'"
+
     >
       <template v-for="(col, colIndex) in element.columns">
         <box-col

@@ -40,7 +40,7 @@ onMounted(() => {
     class="item"
     v-if="item.formVisible || item.listVisible || item.viewVisible"
   >
-    <label>{{ item.label }} :</label>
+    <label>{{ item.label }} </label>
     <div class="content">
       <pre v-if="item.type == 'textarea' || item.type == 'markdown'">{{
         dataFormat(item)
