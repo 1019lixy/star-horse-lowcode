@@ -9,6 +9,7 @@ import ComponentTester from "@/sample/ComponentTester.vue";
 import DytableContainer from "@/components/formcomp/container/dytable-container.vue";
 import DytableContainerViewValid from "@/sample/DytableContainerViewValid.vue";
 import BoxContainerViewDemo from "@/sample/BoxContainerViewDemo.vue";
+import TableContainerValid from "@/sample/TableContainerValid.vue";
 
 const visible = ref<boolean>(false);
 const actName = ref<string>("component");
@@ -40,6 +41,9 @@ onMounted(() => {
       </el-tab-pane>
       <el-tab-pane name="f" label="动态栅格查看视图">
         <BoxContainerViewDemo />
+      </el-tab-pane>
+      <el-tab-pane name="g" label="动态列表">
+        <TableContainerValid />
       </el-tab-pane>
     </el-tabs>
   </div>

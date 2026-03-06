@@ -328,19 +328,21 @@ a {
     background: #f5f7fa;
   }
 
-  .content {
-    padding-left: 10px;
-    font-size: 12px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    word-break: break-all;
-    white-space: nowrap;
-    text-align: left;
-    width: 100%;
-    flex: 1;
-  }
-}
 
+}
+.content {
+  padding: 5px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  text-overflow: ellipsis;
+  word-break: break-all;
+  white-space: nowrap;
+  text-align: left;
+  width: 100%;
+  height: 100%;
+  flex: 1;
+}
 .card-item {
   margin-top: 5px;
 
@@ -683,6 +685,65 @@ hr {
     height: 100%;
   }
 
+  .component-header-actions {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    transform: translate(0, -100%) translateZ(0);
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 99;
+    background: transparent;
+    pointer-events: none;
+
+    .drag-handler,
+    .field-action {
+      position: relative;
+      top: auto;
+      left: auto;
+      right: auto;
+      transform: none;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-items: center;
+      background: var(--star-horse-style);
+      z-index: 99;
+      pointer-events: auto;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+
+      .svg-icon {
+        font-size: 18px;
+        color: var(--star-horse-white);
+        margin: 3px 4px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+      }
+    }
+
+    .drag-handler {
+      padding-right: 10px;
+      border-radius: 4px;
+      white-space: nowrap;
+
+      span {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 150px;
+      }
+    }
+
+    .field-action {
+      border-radius: 4px;
+    }
+  }
+
   .field-action {
     position: absolute;
     top: 0;
@@ -902,11 +963,15 @@ button.el-collapse-item__header {
 }
 
 .ghost {
-  opacity: 0.8;
   background-color: #e5e5e5 !important;
   border: 1px solid var(--star-horse-style);
   margin-top: 3px !important;
-  height: 15px !important;
+  opacity: 0.7;
+  height: 8px !important;
+  border-radius: 1px !important;
+  transform: scale(0.4) !important;
+  transform-origin: center !important;
+  pointer-events: none !important;
 }
 
 .container_ghost {
@@ -985,4 +1050,18 @@ button.el-collapse-item__header {
   overflow-y: auto;
   padding-top: 10px;
   scrollbar-width: thin;
+}
+.user_html {
+  width: 100%;
+  min-height: 30px;
+  height: 100%;
+  flex:1;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  word-break: break-all;
+  white-space: break-spaces;
+  text-align: left;
 }

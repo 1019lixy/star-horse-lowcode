@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { allAction } from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {allAction} from "@/components/formcomp/utils/ItemRelationEventUtils";
 
-import { ItemPreps } from "@/components/types/ItemPreps";
+import {ItemPreps} from "@/components/types/ItemPreps";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
+import {computed} from "vue";
+import JSON5 from "json5";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -10,6 +12,14 @@ const props = withDefaults(defineProps<ItemPreps>(), {
   showFormItem: false,
   bareFlag: false,
   isSearch: false,
+});
+const styles = computed(() => {
+  const style = props.field.preps?.styles;
+  if (!style) return {};
+  if (typeof style == "string") {
+    return JSON5.parse(style);
+  }
+  return style;
 });
 const emits = defineEmits(["selfFunc", "selectItem"]);
 const formData = defineModel<any>("formData");
@@ -19,29 +29,22 @@ const itemAction = (prep: any) => {
 </script>
 <template>
   <starhorse-form-item
-    :showFormItem="showFormItem"
-    :isDesign="isDesign"
-    :disabled="disabled"
-    :bareFlag="bareFlag"
-    :field="field"
-    :parentField="parentField"
+      :showFormItem="showFormItem"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      :field="field"
+      :parentField="parentField"
   >
     <div class="h-full w-full" @click="itemAction('click')">
-      <div
-        class="flex"
-        :style="
-          field.preps?.styles ?? {
-            verticalAlign: 'middle',
-            justifyContent: 'center',
-            alignItems: 'center',
-            wordBreak: 'normal',
-            width: '100%',
-            height: '100%',
-            padding: '0 10px',
-          }
-        "
+      <div class="user_html"
+           :style="styles"
       >
-        {{ field.preps?.textContent || field.preps?.placeholder }}
+        {{
+          field.preps?.staticData
+              ? field.preps?.textContent
+              : formData[field.fieldName]
+        }}
       </div>
     </div>
   </starhorse-form-item>

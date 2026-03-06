@@ -197,77 +197,74 @@ onMounted(() => {});
         <help :message="field.preps?.helpMsg" v-if="field.preps?.helpMsg" />
         <slot></slot>
       </div>
-      <div v-if="isEdit && editUserInfo.length > 0" class="field-action">
-        {{ editUserInfo }}
-      </div>
       <div
-        class="field-action"
-        v-else-if="isEdit && !disabled && currentItemId == itemId"
-        :key="`field-action-${currentItemId}-${refreshFlag}`"
-      >
-        <el-tooltip
-          :content="i18n('form.selectParentContainer')"
-          v-if="parentField?.itemType"
-        >
-          <star-horse-icon
-            @click.stop="selectParentContainer()"
-            icon-class="select-parent"
-            cursor="pointer"
-            style="color: var(--star-horse-white)"
-          />
-        </el-tooltip>
-        <el-tooltip :content="i18n('form.changeComponent')">
-          <star-horse-icon
-            @click.stop="exchangeItem"
-            icon-class="exchange"
-            cursor="pointer"
-            style="color: var(--star-horse-white)"
-          />
-        </el-tooltip>
-        <el-tooltip :content="i18n('form.moveUp')">
-          <star-horse-icon
-            @click.stop="moveUpItem(isEdit, field?.preps, parentField)"
-            icon-class="move-up"
-            cursor="pointer"
-            style="color: var(--star-horse-white)"
-          />
-        </el-tooltip>
-        <el-tooltip :content="i18n('form.moveDown')">
-          <star-horse-icon
-            @click.stop="moveDownItem(isEdit, field?.preps, parentField)"
-            icon-class="move-down"
-            cursor="pointer"
-            style="color: var(--star-horse-white)"
-          />
-        </el-tooltip>
-        <el-tooltip :content="i18n('form.deleteComponent')">
-          <star-horse-icon
-            @click.stop="removeItem(isEdit, field?.preps, parentField)"
-            icon-class="clear-all"
-            cursor="pointer"
-            style="color: var(--star-horse-white)"
-          />
-        </el-tooltip>
-      </div>
-      <div
-        class="drag-handler"
+        class="component-header-actions"
         v-if="isEdit && currentItemId == itemId"
-        :key="`drag-handler-${currentItemId}-${refreshFlag}`"
+        :key="`header-actions-${currentItemId}-${refreshFlag}`"
       >
-        <el-tooltip :content="i18n('form.drag')">
-          <star-horse-icon
-            icon-class="drag"
-            style="cursor: move; color: var(--star-horse-white)"
-          />
-        </el-tooltip>
-
-        <el-tooltip :content="field?.preps['itemNameLabel']">
-          <span
-            style="color: var(--star-horse-white); cursor: pointer"
-            @click="selectData(field)"
-            >{{ field?.preps["itemNameLabel"] }}</span
+        <div class="drag-handler">
+          <el-tooltip :content="i18n('form.drag')">
+            <star-horse-icon
+              icon-class="drag"
+              style="cursor: move; color: var(--star-horse-white)"
+            />
+          </el-tooltip>
+          <el-tooltip :content="field?.preps['itemNameLabel']">
+            <span
+              style="color: var(--star-horse-white); cursor: pointer"
+              @click="selectData(field)"
+              >{{ field?.preps["itemNameLabel"] }}</span
+            >
+          </el-tooltip>
+        </div>
+        <div v-if="editUserInfo.length > 0" class="field-action">
+          {{ editUserInfo }}
+        </div>
+        <div class="field-action" v-else-if="!disabled">
+          <el-tooltip
+            :content="i18n('form.selectParentContainer')"
+            v-if="parentField?.itemType"
           >
-        </el-tooltip>
+            <star-horse-icon
+              @click.stop="selectParentContainer()"
+              icon-class="select-parent"
+              cursor="pointer"
+              style="color: var(--star-horse-white)"
+            />
+          </el-tooltip>
+          <el-tooltip :content="i18n('form.changeComponent')">
+            <star-horse-icon
+              @click.stop="exchangeItem"
+              icon-class="exchange"
+              cursor="pointer"
+              style="color: var(--star-horse-white)"
+            />
+          </el-tooltip>
+          <el-tooltip :content="i18n('form.moveUp')">
+            <star-horse-icon
+              @click.stop="moveUpItem(isEdit, field?.preps, parentField)"
+              icon-class="move-up"
+              cursor="pointer"
+              style="color: var(--star-horse-white)"
+            />
+          </el-tooltip>
+          <el-tooltip :content="i18n('form.moveDown')">
+            <star-horse-icon
+              @click.stop="moveDownItem(isEdit, field?.preps, parentField)"
+              icon-class="move-down"
+              cursor="pointer"
+              style="color: var(--star-horse-white)"
+            />
+          </el-tooltip>
+          <el-tooltip :content="i18n('form.deleteComponent')">
+            <star-horse-icon
+              @click.stop="removeItem(isEdit, field?.preps, parentField)"
+              icon-class="clear-all"
+              cursor="pointer"
+              style="color: var(--star-horse-white)"
+            />
+          </el-tooltip>
+        </div>
       </div>
     </div>
 

@@ -168,7 +168,7 @@ const deleteCol = (index: number) => {
                       :disabled="disabled"
                       :formInfo="formInfo"
                       :is="itemCheck(data)"
-                      :parentField="parentField"
+                      :parentField="field"
                       v-model:formData="formData"
                     />
                   </div>

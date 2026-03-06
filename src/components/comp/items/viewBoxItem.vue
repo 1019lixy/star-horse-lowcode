@@ -51,6 +51,9 @@ onMounted(() => {
               height: sitem.preps?.colHeight || rowHeight,
               'text-align': sitem.preps?.textAlign ?? 'left',
               'white-space': 'nowrap',
+              display: 'flex',
+              'align-items': 'center',
+              'justify-content': 'center',
               'word-break': !!sitem.preps?.wordBreak ? 'break-all' : 'keep-all',
             }"
     >
