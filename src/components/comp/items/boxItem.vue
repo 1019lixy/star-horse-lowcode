@@ -26,9 +26,10 @@ onMounted(() => {
   <el-row
     v-if="Array.isArray(item)"
     :gutter="5"
-    :justify="'start'"
-    :align="'top'"
+    :justify="'center'"
+    :align="'middle'"
     :tag="'div'"
+    style="margin: 8px auto !important"
   >
     <template v-for="sitem in item">
 
@@ -39,7 +40,9 @@ onMounted(() => {
         "
         class="h-full"
         v-bind="sitem.preps"
-        :style="{ height: sitem.preps?.colHeight }"
+        :style="{ height: sitem.preps?.colHeight||'auto' ,
+          
+        }"
       >
         <template
           v-if="

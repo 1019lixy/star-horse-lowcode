@@ -22,7 +22,7 @@ onMounted(() => {
         <ComponentTester />
       </el-tab-pane>
       <el-tab-pane name="a" label="动态列表实例">
-<!--        <DytableContainerInstanceValid />-->
+       <DytableContainerInstanceValid />
       </el-tab-pane>
       <el-tab-pane name="b" label="动态列表">
         <DytableContainerValid />

@@ -82,6 +82,8 @@ const boxDytableAnalysis = (item: any) => {
                 //为空的情况,则提示用户此位置没有设置对应的组件
                 columnItems.push({
                     type: "empty",
+                    viewVisible: true,
+                    formVisible: false,
                     preps: {
                         colspan: colspan,
                         rowspan: rowspan,

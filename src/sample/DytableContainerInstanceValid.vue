@@ -1,5 +1,7 @@
 <template>
-  <dytable-item :dataForm="formData" :item="dataItem" :formInfo="{}" />
+  <el-scrollbar>
+    <dytable-item :dataForm="formData" :item="dataItem" :formInfo="{}" />
+  </el-scrollbar>
 </template>
 
 <script lang="ts" setup>
@@ -32,6 +34,7 @@ const fields = [
               colIndex: 1,
               colspan: 1,
               rowspan: 1,
+              colWidth: "40px",
               items: [
                 {
                   id: "Idsh67d46b76-adcf-482b-99c4-6ebd8a3b5a4f",
@@ -62,6 +65,7 @@ const fields = [
               id: "sh78f6b62a-e394-4195-90d5-989c75fb0fb2",
               colspan: 1,
               rowspan: 1,
+              colWidth: "40px",
               items: [
                 {
                   id: "Idsh67d46b76-adcf-482b-99c4-6ebd8a3b5a42",
@@ -789,7 +793,7 @@ const fields = [
 onMounted(() => {
   const result = analysisCompDatas(fields);
   dataItem.value = result.fieldList[0];
-  console.log(result);
+  console.log("xxx",result);
 });
 </script>
 
