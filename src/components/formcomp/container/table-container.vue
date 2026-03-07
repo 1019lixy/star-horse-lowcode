@@ -114,7 +114,7 @@ const deleteCol = (index: number) => {
     >
       <thead class="container-thead">
       <tr>
-        <td
+        <th
             v-for="td of parseInt(field.preps.columns || 1)"
             @mouseenter="(evt) => tdOver(evt, td)"
             @mouseleave="(evt) => tdOut(evt, td)"
@@ -129,7 +129,7 @@ const deleteCol = (index: number) => {
             </el-tooltip>
           </div>
           {{ analysisData(td) }}
-        </td>
+        </th>
       </tr>
       </thead>
       <tbody>
