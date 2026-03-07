@@ -481,7 +481,7 @@ watch(
             icon-class="delete"
             @click="handleAddDetails(scope.row, 2)"
             :title="i18n('ui.deleteRow')"
-            color="#f56c6c"
+            color="var(--el-color-danger)"
           />
         </template>
       </el-table-column>

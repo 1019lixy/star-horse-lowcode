@@ -7,6 +7,7 @@ import piniaInstance from "@/store/index";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
 import {itemCheck, uuid} from "@/api/system";
 import {i18n} from "@/lang";
+import GroupContainer from "@/components/formcomp/container/group-container.vue";
 
 let containerTableRef = ref(); // 强制刷新表格
 const props = defineProps({
@@ -124,6 +125,7 @@ const deleteCol = (index: number) => {
               <star-horse-icon
                   icon-class="delete"
                   cursor="pointer"
+                  color="var(--el-color-danger)"
                   @click="deleteCol(td)"
               />
             </el-tooltip>
