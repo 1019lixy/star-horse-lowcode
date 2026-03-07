@@ -1,21 +1,21 @@
 <script setup lang="ts" name="table-container">
 // 右键菜单组件
-import { computed, PropType, ref } from "vue";
-import { operationConfirm, warning } from "@/utils/message";
-import { useDesignFormStore } from "@/store/DesignForm";
+import {computed, PropType, ref} from "vue";
+import {operationConfirm, warning} from "@/utils/message";
+import {useDesignFormStore} from "@/store/DesignForm";
 import piniaInstance from "@/store/index";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
-import { itemCheck, uuid } from "@/api/system";
-import { i18n } from "@/lang";
+import {itemCheck, uuid} from "@/api/system";
+import {i18n} from "@/lang";
 
 let containerTableRef = ref(); // 强制刷新表格
 const props = defineProps({
-  parentField: { type: Object as PropType<any> },
-  isDesign: { type: Boolean, default: false },
-  showFormItem: { type: Boolean, default: false },
-  disabled: { type: Boolean, default: false },
-  formInfo: { type: Object as PropType<any> },
-  field: { type: Object as PropType<any> },
+  parentField: {type: Object as PropType<any>},
+  isDesign: {type: Boolean, default: false},
+  showFormItem: {type: Boolean, default: false},
+  disabled: {type: Boolean, default: false},
+  formInfo: {type: Object as PropType<any>},
+  field: {type: Object as PropType<any>},
 });
 let designForm = useDesignFormStore(piniaInstance);
 let draggingItem = computed(() => designForm.draggingItem);
@@ -98,54 +98,57 @@ const deleteCol = (index: number) => {
 </script>
 <template>
   <group-container
-    class="star-horse-form-container"
-    :showFormItem="showFormItem"
-    :isDesign="isDesign"
-    :disabled="disabled"
-    :parentField="parentField"
-    :form-item="field"
+      class="star-horse-form-container"
+      :showFormItem="showFormItem"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :parentField="parentField"
+      :form-item="field"
   >
     <table
-      ref="containerTableRef"
-      class="dynamic-table"
-      :style="{
+        ref="containerTableRef"
+        class="dynamic-table"
+        :style="{
         border: isEdit && isDesign ? '1px solid #dfe6ec' : 'none',
       }"
     >
       <thead class="container-thead">
-        <tr>
-          <th
+      <tr>
+        <td
             v-for="td of parseInt(field.preps.columns || 1)"
             @mouseenter="(evt) => tdOver(evt, td)"
             @mouseleave="(evt) => tdOut(evt, td)"
-          >
-            <div class="td-operator" v-if="currentIndex == td && isDesign">
-              <el-tooltip content="删除列">
-                <star-horse-icon
+        >
+          <div class="td-operator" v-if="currentIndex == td && isDesign">
+            <el-tooltip content="删除列">
+              <star-horse-icon
                   icon-class="delete"
                   cursor="pointer"
                   @click="deleteCol(td)"
-                />
-              </el-tooltip>
-            </div>
-            {{ analysisData(td) }}
-          </th>
-        </tr>
+              />
+            </el-tooltip>
+          </div>
+          {{ analysisData(td) }}
+        </td>
+      </tr>
       </thead>
       <tbody>
-        <tr>
-          <template v-for="td of parseInt(field.preps.columns || 1)">
-            <td
+      <tr>
+        <template v-for="td of parseInt(field.preps.columns || 1)">
+          <td
               :style="{
                 width: 100 / parseInt(field.preps.columns || 1) + '%',
                 'margin-top': '5px',
               }"
-              class="td-clz"
-              :class="{ 'dragging-area': isDragging }"
+              class="edit_col"
+              :class="{
+                'dragging-area': isDragging,
+                'no-drag': !isDesign,
+              }"
               @mouseenter="(evt) => tdOver(evt, td)"
               @mouseleave="(evt) => tdOut(evt, td)"
-            >
-              <draggable
+          >
+            <draggable
                 @add="
                   (evt: Event) =>
                     onDragAdd(evt, field.preps.elements[td - 1].items)
@@ -153,14 +156,20 @@ const deleteCol = (index: number) => {
                 class="smain-design"
                 tag="div"
                 group="starHorseGroup"
-                ghostClass="ghost"
+                ghostClass="container_ghost"
                 animation="200"
                 :item-key="uuid()"
                 :list="field.preps.elements[td - 1].items"
-              >
-                <template #item="{ element: data }">
-                  <div class="comp-item">
-                    <component
+            >
+              <template #item="{ element: data }">
+                <div
+                    :class="{
+            'comp-item': data?.preps?.headerFlag != 'Y',
+            'bare-item': data?.preps?.headerFlag,
+          }"
+                    style="height: 100%"
+                >
+                  <component
                       :key="data?.id"
                       :field="data"
                       :showFormItem="showFormItem"
@@ -170,13 +179,13 @@ const deleteCol = (index: number) => {
                       :is="itemCheck(data)"
                       :parentField="field"
                       v-model:formData="formData"
-                    />
-                  </div>
-                </template>
-              </draggable>
-            </td>
-          </template>
-        </tr>
+                  />
+                </div>
+              </template>
+            </draggable>
+          </td>
+        </template>
+      </tr>
       </tbody>
     </table>
   </group-container>
