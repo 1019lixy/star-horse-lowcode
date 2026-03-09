@@ -330,6 +330,7 @@ a {
 
 
 }
+
 .content {
   padding: 5px;
   overflow: hidden;
@@ -343,6 +344,7 @@ a {
   height: 100%;
   flex: 1;
 }
+
 .card-item {
   margin-top: 5px;
 
@@ -670,6 +672,7 @@ hr {
 
 .comp-item {
   width: 100%;
+  padding: 2px 5px;
   margin-top: 10px;
 }
 
@@ -1051,11 +1054,12 @@ button.el-collapse-item__header {
   padding-top: 10px;
   scrollbar-width: thin;
 }
+
 .user_html {
   width: 100%;
   min-height: 30px;
   height: 100%;
-  flex:1;
+  flex: 1;
   padding: 5px;
   display: flex;
   flex-direction: column;

@@ -17,6 +17,7 @@ const props = defineProps({
   disabled: {type: Boolean, default: false},
   formInfo: {type: Object as PropType<any>},
   field: {type: Object as PropType<any>},
+  compSize: {type: String, default: "default"},
 });
 let designForm = useDesignFormStore(piniaInstance);
 let draggingItem = computed(() => designForm.draggingItem);
@@ -31,6 +32,15 @@ let excludeContainerType: Array<string> = [
 let isEdit = computed(() => props.isDesign);
 const isDragging = computed(() => designForm.isDragging);
 const formData = defineModel("formData");
+const rowHeight = computed(() => {
+  if (props.compSize == "large") {
+    return "45px";
+  } else if (props.compSize == "small") {
+    return "35px";
+  } else {
+    return "40px";
+  }
+});
 const onDragAdd = (evt: Event | any, dataList: any) => {
   let newIndex = evt.newIndex;
   if (excludeContainerType.includes(draggingItem.value.itemType)) {
@@ -135,14 +145,16 @@ const deleteCol = (index: number) => {
       </tr>
       </thead>
       <tbody>
-      <tr>
+      <tr class="dy-tr">
         <template v-for="td of parseInt(field.preps.columns || 1)">
           <td
               :style="{
-                width: 100 / parseInt(field.preps.columns || 1) + '%',
-                'margin-top': '5px',
+               width: field.colWidth || '100%',
+              height: field.colHeight || rowHeight,
+              'word-break': !!field.wordBreak ? 'break-all' : 'normal',
+              'text-overflow': 'ellipsis'
               }"
-              class="edit_col"
+              class="edit_col dy-cell"
               :class="{
                 'dragging-area': isDragging,
                 'no-drag': !isDesign,
@@ -193,7 +205,7 @@ const deleteCol = (index: number) => {
   </group-container>
 </template>
 <style lang="scss" scoped>
-table {
+/*table {
   display: table;
   border-collapse: separate;
   box-sizing: border-box;
@@ -208,10 +220,13 @@ tr {
   vertical-align: inherit;
   unicode-bidi: isolate;
   border-color: inherit;
-}
+}*/
 
 .container-thead tr {
   background: var(--star-horse-shadow);
+  display: table-row;
+  vertical-align: inherit;
+  unicode-bidi: isolate;
   height: 35px;
   border-radius: 3px;
   margin-bottom: 5px;

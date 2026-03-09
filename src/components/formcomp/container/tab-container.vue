@@ -125,7 +125,7 @@ const addTab = () => {};
         >
           <template #item="{ element: data }">
             <div
-              class="comp-item"
+              class="comp-item  my-[5px]"
               :style="{ marginTop: isContainer(data) ? '25px' : '10px' }"
             >
               <component

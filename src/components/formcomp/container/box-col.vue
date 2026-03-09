@@ -92,7 +92,7 @@ onMounted(() => {
       :span="field.colspan || 24"
       :class="{ 'dragging-area': isDragging }"
       class="edit_col flex! items-center justify-center"
-      :style="{ height: field.colHeight || 'auto' }"
+      :style="{ height: field.colHeight || '100%' }"
       @click="selectCurrentTd"
   >
     <draggable

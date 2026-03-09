@@ -108,7 +108,7 @@ onMounted(() => {
             >
               <template #item="{ element: header }">
                 <div
-                  class="comp-item"
+                  class="comp-item my-[5px]"
                   :style="{ marginTop: isContainer(header) ? '25px' : '10px' }"
                 >
                   <component

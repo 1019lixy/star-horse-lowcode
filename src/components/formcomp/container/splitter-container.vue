@@ -113,7 +113,7 @@ onMounted(() => {
           :list="adata['items']"
         >
           <template #item="{ element: data }">
-            <div class="comp-item">
+            <div class="comp-item  my-[5px]">
               <component
                 :key="data.id"
                 :field="data"
