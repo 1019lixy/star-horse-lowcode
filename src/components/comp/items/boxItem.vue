@@ -29,7 +29,7 @@ onMounted(() => {
     :justify="'center'"
     :align="'middle'"
     :tag="'div'"
-    style="margin: 8px auto !important"
+    style="padding-bottom: 5px;padding-top: 5px;"
   >
     <template v-for="sitem in item">
 
@@ -41,7 +41,7 @@ onMounted(() => {
         class="h-full"
         v-bind="sitem.preps"
         :style="{ height: sitem.preps?.colHeight||'auto' ,
-          
+
         }"
       >
         <template
