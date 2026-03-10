@@ -67,11 +67,11 @@ onMounted(() => {
         />
       </div>
       <div
-          class=" h-full w-full "
+          class=" h-full w-full item"
           v-else-if="sitem.formVisible || sitem.listVisible || sitem.viewVisible"
       >
-        <label v-if="!sitem.preps.hideLabel&&sitem.label">{{ sitem.label }} :</label>
-        <div :class="{content:!sitem.preps.hideLabel}">
+        <label v-if="!sitem.preps?.hideLabel&&sitem.label">{{ sitem.label }} :</label>
+        <div :class="{content:!sitem.preps?.hideLabel}">
            <pre v-if="sitem.type == 'textarea' || sitem.type == 'markdown'">{{
                dataFormat(sitem)
              }}</pre>

@@ -31,7 +31,7 @@ const columnStructure = computed(() => {
   // });
   let hasMergeColFlag = false;
   props.item.dytableList.forEach((row: any) => {
-    let hasMergeCol = row.find((col: any) => col.preps.colspan > 1);
+    let hasMergeCol = row.find((col: any) => col.preps?.colspan > 1);
     if (hasMergeCol && row.length > 1) {
       hasMergeColFlag = true;
       return false;
@@ -43,7 +43,7 @@ const columnStructure = computed(() => {
     }, props.item.dytableList[0]);
   } else {
     maxColsRow = props.item.dytableList.reduce((maxRow: any, row: any) => {
-      const hasMergeCol = row.find((col: any) => col.preps.colspan > 1);
+      const hasMergeCol = row.find((col: any) => col.preps?.colspan > 1);
       if (hasMergeCol && row && row.length >= (maxRow?.length || 0)) {
         return row;
       }
@@ -148,11 +148,11 @@ onMounted(() => {
             />
           </div>
           <div
-              class=" h-full w-full "
+              class=" h-full w-full item"
               v-else-if="sitem.formVisible || sitem.listVisible || sitem.viewVisible"
           >
-            <label v-if="!sitem.preps.hideLabel&&sitem.label">{{ sitem.label }} :</label>
-            <div :class="{content:!sitem.preps.hideLabel}">
+            <label v-if="!sitem.preps?.hideLabel&&sitem.label">{{ sitem.label }} :</label>
+            <div :class="{content:!sitem.preps?.hideLabel}">
               <pre v-if="sitem.type == 'textarea' || sitem.type == 'markdown'">{{
                   dataFormat(sitem)
                 }}</pre>

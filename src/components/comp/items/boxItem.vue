@@ -29,7 +29,7 @@ onMounted(() => {
     :justify="'center'"
     :align="'middle'"
     :tag="'div'"
-    style="padding-bottom: 5px;padding-top: 5px;"
+    style=""
   >
     <template v-for="sitem in item">
 
@@ -38,7 +38,7 @@ onMounted(() => {
           sitem.preps?.colspan ||
           24 / item.filter((temp) => temp.formVisible).length
         "
-        class="h-full"
+        class="h-full flex items-center justify-center"
         v-bind="sitem.preps"
         :style="{ height: sitem.preps?.colHeight||'auto' ,
 

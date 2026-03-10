@@ -187,7 +187,7 @@ const dataSearch = () => {
   if (props.dataUrl) {
     loadData(
       queryName.value
-        ? [createCondition(props.displayValue, queryName.value, "lk")]
+        ? [createCondition(props.displayName, queryName.value, "lk")]
         : [],
     );
   } else {
@@ -292,12 +292,12 @@ const resetData = () => {
 };
 const pageChangeClick = (val: number) => {
   pageInfo.currentPage = val;
-  loadData();
+  dataSearch();
 };
 const pageSizeClick = (val: number) => {
   pageInfo.pageSize = val;
   pageInfo.currentPage = 1;
-  loadData();
+  dataSearch();
 };
 defineExpose({
   open,

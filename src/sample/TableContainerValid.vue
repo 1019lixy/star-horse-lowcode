@@ -176,7 +176,7 @@ const fields = {
 };
 onMounted(() => {
   const result = analysisCompDatas(fields);
-  dataItem.value = result.fieldList[0];
+  dataItem.value = result?.fieldList?.[0];
   console.log("xxx", result);
 });
 </script>

@@ -10,6 +10,8 @@ import DytableContainer from "@/components/formcomp/container/dytable-container.
 import DytableContainerViewValid from "@/sample/DytableContainerViewValid.vue";
 import BoxContainerViewDemo from "@/sample/BoxContainerViewDemo.vue";
 import TableContainerValid from "@/sample/TableContainerValid.vue";
+import DataPickerDemo from "@/sample/DataPickerDemo.vue";
+import InformationsUi from "@/sample/InformationsUi.vue";
 
 const visible = ref<boolean>(false);
 const actName = ref<string>("component");
@@ -45,6 +47,10 @@ onMounted(() => {
       <el-tab-pane name="g" label="动态列表">
         <TableContainerValid />
       </el-tab-pane>
+    <el-tab-pane name="h" label="数据选择器">
+<!--      <DataPickerDemo />-->
+      <InformationsUi/>
+    </el-tab-pane>
     </el-tabs>
   </div>
 </template>

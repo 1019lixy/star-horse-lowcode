@@ -234,7 +234,6 @@ const tagVisible = (val: any) => {
         (item: any) => item[props.displayValue] === val,
       )?.[props.displayName]) ??
     val;
-  console.log("-----------", val, selectData?.value, result);
   return result;
 };
 onMounted(() => {

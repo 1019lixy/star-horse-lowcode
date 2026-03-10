@@ -1,30 +1,28 @@
 <template>
   <StarHorseDataSelector
-    v-model="test"
-    :datas="datas"
-    :multiple="false"
-    :checkStrictly="false"
+      v-model="test"
+      :datas="datas"
+      :multiple="false"
+      :checkStrictly="false"
   />
 
   {{ formData }}
   <data-picker-item
-    :field="{
+      :field="{
       label: '测试',
       fieldName: 'test',
       preps: {
-        datas,
-        collapseTags: true,
-        collapseTagsTooltip: true,
-        multiple: true,
-        disabled: false,
-        displayName: 'name',
-        displayValue: 'value',
-      },
-    }"
-    :formData="formData"
+      dataUrl: '/system-config/system/dictinfoType/pageList',
+      displayName: 'dictTypeName',
+      multiple:true,
+      displayValue: 'dictTypeCode',
+      pageSize: 100,
+      colspan: 16,
+  }}"
+  :formData="formData"
   />
   <data-picker-item
-    :field="{
+      :field="{
       label: '测试2',
       fieldName: 'test2',
       preps: {
@@ -37,14 +35,14 @@
         displayValue: 'value',
       },
     }"
-    :formData="formData"
+      :formData="formData"
   />
 </template>
 
 <script lang="ts" setup>
 // import StarHorseJsonEditor from '@/components/comp/StarHorseJsonEditor.vue';
 import StarHorseDataSelector from "@/components/comp/StarHorseDataSelector.vue";
-import { ref } from "vue";
+import {ref} from "vue";
 import DataPickerItem from "@/components/formcomp/items/datapicker-item.vue";
 
 const formData = ref<any>({
