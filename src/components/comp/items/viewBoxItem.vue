@@ -9,13 +9,17 @@ const props = defineProps({
   compSize: {type: String, default: "default"},
 });
 const rowHeight = computed(() => {
-  if(props.compSize=="large"){
+  if (props.compSize == "large") {
     return "45px";
-  }else if(props.compSize=="small"){
+  } else if (props.compSize == "small") {
     return "35px";
-  }else{
+  } else {
     return "40px";
   }
+});
+const hasVisible = computed(() => {
+  return !!(Array.isArray(props.item) && props.item.find(temp => temp.formVisible || temp.listVisible || temp.viewVisible));
+
 });
 const dataForm: ModelRef<any> = defineModel("dataForm");
 const dataFormat = (item: any) => {
@@ -39,14 +43,13 @@ onMounted(() => {
 </script>
 
 <template>
-  <el-row v-if="Array.isArray(item)" :gutter="5">
+  <el-row v-if="hasVisible" :gutter="5">
     <el-col
         :span="sitem.colspan || sitem.preps?.colspan || 24 / item.length"
         v-for="(sitem, ind) in item"
         :key="compKey(sitem, ind)"
         v-bind="sitem.preps"
         :style="{
-              border: '1px solid var(--star-horse-border—color',
               width: sitem.preps?.colWidth || 'auto',
               height: sitem.preps?.colHeight || rowHeight,
               'text-align': sitem.preps?.textAlign ?? 'left',
@@ -70,7 +73,7 @@ onMounted(() => {
           class=" h-full w-full item"
           v-else-if="sitem.formVisible || sitem.listVisible || sitem.viewVisible"
       >
-        <label v-if="!sitem.preps?.hideLabel&&sitem.label">{{ sitem.label }} :</label>
+        <label v-if="!sitem.preps?.hideLabel&&sitem.label">{{ sitem.label }} </label>
         <div :class="{content:!sitem.preps?.hideLabel}">
            <pre v-if="sitem.type == 'textarea' || sitem.type == 'markdown'">{{
                dataFormat(sitem)

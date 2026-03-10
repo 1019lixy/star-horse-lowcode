@@ -7,10 +7,19 @@
 export {}
 declare global {
   const EffectScope: typeof import('vue').EffectScope
+  const ElButton: typeof import('element-plus/es').ElButton
   const ElButtonGroup: typeof import('element-plus/es')['ElButtonGroup']
+  const ElCheckbox: typeof import('element-plus/es').ElCheckbox
   const ElCheckboxGroup: typeof import('element-plus/es')['ElCheckboxGroup']
+  const ElCollapseTransition: typeof import('element-plus/es').ElCollapseTransition
   const ElCollection$1: typeof import('element-plus/es')['ElCollection$1']
   const ElCollectionItem$1: typeof import('element-plus/es')['ElCollectionItem$1']
+  const ElFocusGroupCollection: typeof import('element-plus/es').ElFocusGroupCollection
+  const ElIcon: typeof import('element-plus/es').ElIcon
+  const ElRovingFocusCollectionItem: typeof import('element-plus/es').ElRovingFocusCollectionItem
+  const ElRovingFocusItem: typeof import('element-plus/es').ElRovingFocusItem
+  const ElSelectMenu: typeof import('element-plus/es').ElSelectMenu
+  const ElTreeNode: typeof import('element-plus/es').ElTreeNode
   const computed: typeof import('vue').computed
   const createApp: typeof import('vue').createApp
   const customRef: typeof import('vue').customRef
@@ -83,6 +92,15 @@ declare module 'vue' {
   interface GlobalComponents {}
   interface ComponentCustomProperties {
     readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
+    readonly ElButton: UnwrapRef<typeof import('element-plus/es')['ElButton']>
+    readonly ElCheckbox: UnwrapRef<typeof import('element-plus/es')['ElCheckbox']>
+    readonly ElCollapseTransition: UnwrapRef<typeof import('element-plus/es')['ElCollapseTransition']>
+    readonly ElFocusGroupCollection: UnwrapRef<typeof import('element-plus/es')['ElFocusGroupCollection']>
+    readonly ElIcon: UnwrapRef<typeof import('element-plus/es')['ElIcon']>
+    readonly ElRovingFocusCollectionItem: UnwrapRef<typeof import('element-plus/es')['ElRovingFocusCollectionItem']>
+    readonly ElRovingFocusItem: UnwrapRef<typeof import('element-plus/es')['ElRovingFocusItem']>
+    readonly ElSelectMenu: UnwrapRef<typeof import('element-plus/es')['ElSelectMenu']>
+    readonly ElTreeNode: UnwrapRef<typeof import('element-plus/es')['ElTreeNode']>
     readonly computed: UnwrapRef<typeof import('vue')['computed']>
     readonly createApp: UnwrapRef<typeof import('vue')['createApp']>
     readonly customRef: UnwrapRef<typeof import('vue')['customRef']>

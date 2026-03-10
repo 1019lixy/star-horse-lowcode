@@ -52,7 +52,9 @@ const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
 const maxEdit = () => {
-  editorDialogVisible.value = true;
+  if (!props.field.preps?.readonly && !props.field.preps?.disabled && !props.field.disabled) {
+    editorDialogVisible.value = true;
+  }
 };
 const handleContentConfirm = (newContent: string) => {
   formData.value[props.field.fieldName] = newContent;

@@ -119,7 +119,9 @@ const handleContentConfirm = (newContent: string) => {
 };
 
 const editContent = () => {
-  dialogInputVisible.value = true;
+  if (!props.field.preps?.readonly && !props.field.preps?.disabled && !props.field.disabled) {
+    dialogInputVisible.value = true;
+  }
 };
 
 onMounted(() => {

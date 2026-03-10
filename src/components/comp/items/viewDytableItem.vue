@@ -130,7 +130,7 @@ onMounted(() => {
             :rowspan="sitem.preps?.rowspan || 1"
             :class="{ 'title-style': sitem.preps?.labelFlag == 'Y' }"
             :style="{
-              border: '1px solid var(--star-horse-border—color',
+              border: '1px solid var(--star-horse-border—color)',
               width: sitem.preps?.colWidth || 'auto',
               height: sitem.preps?.colHeight || rowHeight,
               'text-align': sitem.preps?.textAlign ?? 'left',
@@ -151,7 +151,7 @@ onMounted(() => {
               class=" h-full w-full item"
               v-else-if="sitem.formVisible || sitem.listVisible || sitem.viewVisible"
           >
-            <label v-if="!sitem.preps?.hideLabel&&sitem.label">{{ sitem.label }} :</label>
+            <label v-if="!sitem.preps?.hideLabel&&sitem.label">{{ sitem.label }} </label>
             <div :class="{content:!sitem.preps?.hideLabel}">
               <pre v-if="sitem.type == 'textarea' || sitem.type == 'markdown'">{{
                   dataFormat(sitem)
