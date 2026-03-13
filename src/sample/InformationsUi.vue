@@ -15,28 +15,28 @@ let selfBtnFunc = ref<UserFuncInfo[]>([]);
 const starHorseTableCompRef = ref();
 // 0 普通角色 1高级角色 2普通管理员 3 超级管理员 默认 0
 const roleTypes = ref<SelectOption[]>([
-  { name: i18n("system.normal.user.group"), value: 0 },
-  { name: i18n("system.advanced.user.group"), value: 1 },
-  { name: i18n("system.super.user.group"), value: 2 },
+  { name: "普通管理员", value: 0 },
+  { name: "高级管理员", value: 1 },
+  { name: "超级管理员", value: 2 },
 ]);
 const sessionTimeOut = [
-  { name: i18n("system.15.minutes"), value: 15 },
-  { name: i18n("system.30.minutes"), value: 30 },
-  { name: i18n("system.60.minutes"), value: 60 },
-  { name: i18n("system.180.minutes"), value: 180 },
-  { name: i18n("system.unlimited"), value: 0 },
+  { name: "15分钟", value: 15 },
+  { name: "30分钟", value: 30 },
+  { name: "60分钟", value: 60 },
+  { name: "180分钟", value: 180 },
+  { name: "无限制", value: 0 },
 ];
 const searchFormData = reactive<SearchFields>({
   fieldList: [
     {
-      label: i18n("system.user.group.name"),
+      label: "分组名称",
       fieldName: "roleName",
       defaultVisible: true,
       matchType: "lk",
     },
     /* {label: i18n("system.role.code"), fieldName: "roleCode",  matchType: "lk"},*/
     {
-      label: i18n("system.user.group.type"),
+      label: "分组类型",
       fieldName: "roleType",
       defaultVisible: true,
       type: "select",
@@ -54,7 +54,7 @@ const tableFieldList = reactive<PageFieldInfo | any>({
       formVisible: false,
     },
     {
-      label: i18n("system.user.group.name"),
+      label: "分组名称",
       fieldName: "roleName",
 
       required: true,
@@ -63,7 +63,7 @@ const tableFieldList = reactive<PageFieldInfo | any>({
     },
 
     {
-      label: i18n("system.user.group.code"),
+      label: "分组编码",
       fieldName: "roleCode",
       listVisible: true,
       required: true,
@@ -72,7 +72,7 @@ const tableFieldList = reactive<PageFieldInfo | any>({
       },
     },
     {
-      label: i18n("system.user.group.type"),
+      label: "分组类型",
       fieldName: "roleType",
       type: "select",
       required: true,
@@ -84,7 +84,7 @@ const tableFieldList = reactive<PageFieldInfo | any>({
       },
     },
     {
-      label: i18n("system.session.timeout"),
+      label: "超时时间（分）",
       fieldName: "sessionTimeOut",
       type: "select",
       required: true,
@@ -97,7 +97,7 @@ const tableFieldList = reactive<PageFieldInfo | any>({
     },
     [
       {
-        label: i18n("system.system.permissions"),
+        label: "应用权限",
         fieldName: "appsList",
         type: "select",
         required: true,
@@ -107,7 +107,7 @@ const tableFieldList = reactive<PageFieldInfo | any>({
         },
       },
       {
-        label: i18n("system.menu.permissions"),
+        label: "菜单权限",
         fieldName: "menusList",
         type: "tselect",
         required: true,
@@ -118,14 +118,14 @@ const tableFieldList = reactive<PageFieldInfo | any>({
       },
     ],
     {
-      label: i18n("system.user.group.responsibility"),
+      label: "责任描述",
       fieldName: "roleDesc",
       type: "textarea",
       formVisible: true,
       listVisible: true,
     },
     {
-      label: i18n("system.created.by"),
+      label: "创建人",
       disabled: true,
       fieldName: "createdBy",
       formVisible: false,
@@ -139,7 +139,7 @@ const tableFieldList = reactive<PageFieldInfo | any>({
       formVisible: false,
     },
     {
-      label: i18n("system.created.date"),
+      label: "创建时间",
       disabled: true,
       fieldName: "createdTime",
       formVisible: false,

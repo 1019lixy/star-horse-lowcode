@@ -11,7 +11,7 @@
 
 <script lang="ts" setup>
 import piniaInstance from "@/store";
-import {useDesignFormStore} from "@/store/designForm";
+import {useDesignFormStore} from "@/store/DesignForm";
 import {onMounted, ref} from "vue";
 import {analysisCompDatas} from "@/api/form_utils";
 import TableContainer from "@/components/formcomp/container/table-container.vue";

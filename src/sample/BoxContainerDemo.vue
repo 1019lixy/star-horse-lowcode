@@ -10,7 +10,7 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref } from "vue";
 import piniaInstance from "@/store";
-import { useDesignFormStore } from "@/store/designForm";
+import { useDesignFormStore } from "@/store/DesignForm";
 
 let designForm = useDesignFormStore(piniaInstance);
 let currenetId = computed(() => designForm.currentItemId);
