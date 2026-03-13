@@ -12,6 +12,15 @@ import dts from "vite-plugin-dts";
 // https://vitejs.dev/config/
 const systemHost: string = "http://localhost:8749/";
 const userDbHost: string = "http://localhost:7758/";
+const gatewayHost: string = "http://localhost:7780/";
+const isGateway: boolean = true;
+const env: string = "-dev";
+const rewrite = (path: string, name: string) => {
+  if (isGateway) {
+    return path.replace(new RegExp(`^\/${name}`), `/${name}${env}/${name}`);
+  }
+  return path;
+};
 /**
  * 此配置文件，非必需不要随便做修改，特别是打包相关的参数
  */
@@ -57,18 +66,16 @@ export default defineConfig((mode) => {
       hmr: true,
       proxy: {
         "/system-config": {
-          target: systemHost,
+          target: isGateway?gatewayHost:systemHost,
           changeOrigin: true,
-          rewrite: (path: string) =>
-            path.replace(/^\/system-config/, "/system-config-dev"),
+          rewrite: (path: string) =>rewrite(path,"system-config"),
           ws: true,
         },
 
         "/userdb-manage": {
-          target: userDbHost,
+          target: isGateway?gatewayHost:userDbHost,
           changeOrigin: true,
-          rewrite: (path: string) =>
-            path.replace(/^\/userdb-manage/, "/userdb-manage-dev"),
+          rewrite: (path: string) =>rewrite(path,"userdb-manage"),
           ws: true,
         },
       },
