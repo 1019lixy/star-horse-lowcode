@@ -46,7 +46,7 @@ onMounted(() => {
       (!item.displayStyle || item.displayStyle == 'tab')
     "
   >
-    <el-tabs v-model="item.fieldName">
+    <el-tabs v-model="item.fieldName" :type="item.preps?.type??'border-card'">
       <template v-for="(temp, key) in item[batchFieldName]">
         <el-tab-pane
           :label="temp['title']"

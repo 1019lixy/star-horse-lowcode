@@ -65,10 +65,10 @@ onMounted(() => {
   <template v-if="item.tabList?.length > 0">
     <el-tabs
       v-model="item.fieldName"
-      :type="item.type || ''"
+      :type="item.preps?.type || ''"
       @tabRemove="closeOperation"
-      :closable="item.closable"
-      :addable="item.addable"
+      :closable="item.preps?.closable"
+      :addable="item.preps?.addable"
       @tabChange="(data) => item.actions?.['tabChange']?.(data)"
       @tabAdd="(data) => item.actions?.['tabAdd']?.(data)"
       :before-leave="beforeLeave"
@@ -100,10 +100,10 @@ onMounted(() => {
     >
       <el-tabs
         v-model="item.fieldName"
-        :type="item.type || ''"
+        :type="item.preps?.type || ''"
         @tabRemove="closeOperation"
-        :closable="item.closable"
-        :addable="item.addable"
+        :closable="item.preps?.closable"
+        :addable="item.preps?.addable"
         @tabChange="(data) => item.actions?.['tabChange']?.(data)"
         @tabAdd="(data) => item.actions?.['tabAdd']?.(data)"
         :before-leave="beforeLeave"
