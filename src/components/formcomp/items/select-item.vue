@@ -16,7 +16,7 @@
       v-on="getDynamicEvents(props, itemAction)"
       v-model="formData[field.fieldName]"
     >
-      <template v-if="field.preps.multiple" #header>
+      <template v-if="field.preps?.multiple" #header>
         <el-checkbox
           v-model="checkAll"
           :indeterminate="indeterminate"
@@ -26,7 +26,7 @@
         </el-checkbox>
       </template>
       <template
-        v-for="item in field.preps.values"
+        v-for="item in field.preps?.values"
         :key="item[field.preps?.props?.value ?? 'value']"
       >
         <el-option
@@ -99,7 +99,7 @@ const indeterminate = ref(false);
 const isAdding = ref(false);
 const optionName = ref("");
 const remote = computed(() => {
-  let temp = props.field.preps.remote;
+  let temp = props.field.preps?.remote;
   if (typeof temp == "string") {
     return ["true", "yes", "t"].includes(temp.toLowerCase());
   }
@@ -131,7 +131,7 @@ const onConfirm = () => {
     warning(i18n("form.optionNameDuplicate"));
     return;
   }
-  props.field.preps.values.push({
+  props.field.preps?.values.push({
     name: optionName.value,
     value: optionName.value,
   });

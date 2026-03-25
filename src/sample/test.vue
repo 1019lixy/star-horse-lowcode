@@ -12,6 +12,7 @@ import BoxContainerViewDemo from "@/sample/BoxContainerViewDemo.vue";
 import TableContainerValid from "@/sample/TableContainerValid.vue";
 import DataPickerDemo from "@/sample/DataPickerDemo.vue";
 import InformationsUi from "@/sample/InformationsUi.vue";
+import ComplexFormValid from "@/sample/ComplexFormValid.vue";
 
 const visible = ref<boolean>(false);
 const actName = ref<string>("component");
@@ -49,7 +50,8 @@ onMounted(() => {
       </el-tab-pane>
     <el-tab-pane name="h" label="数据选择器">
 <!--      <DataPickerDemo />-->
-      <InformationsUi/>
+<!--      <InformationsUi/>-->
+      <ComplexFormValid/>
     </el-tab-pane>
     </el-tabs>
   </div>

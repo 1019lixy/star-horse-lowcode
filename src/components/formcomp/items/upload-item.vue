@@ -96,7 +96,7 @@ const selfAction = (
 ) => {
   if (prep == "success") {
     let result = param.data;
-    if (props.field.preps["multiple"]) {
+    if (props.field.preps?.multiple) {
       formData.value[props.field.fieldName].push(result);
     } else {
       formData.value[props.field.fieldName] = result.path;

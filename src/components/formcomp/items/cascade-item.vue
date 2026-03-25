@@ -14,7 +14,7 @@
       v-on="getDynamicEvents(props, itemAction)"
       v-model="formData[field.fieldName]"
     >
-      <template v-if="field.preps.multiple" #header>
+      <template v-if="field.preps?.multiple" #header>
         <el-checkbox
           v-model="checkAll"
           :indeterminate="indeterminate"
@@ -83,7 +83,7 @@ const isAdding = ref(false);
 const optionName = ref("");
 const getAllValuePaths = computed(() => {
   const codeName =
-    props.field.preps.props?.code || props.field.preps.props?.value || "value";
+    props.field.preps?.props?.code || props.field.preps?.props?.value || "value";
   const result: string[][] = [];
   const queue: { node: any; path: string[] }[] = props.field.preps.options.map(
     (node) => ({ node, path: [node[codeName]] }),

@@ -17,7 +17,7 @@
       v-on="getDynamicEvents(props, itemAction)"
       v-model="formData[field.fieldName]"
     >
-      <template v-if="field.preps.multiple" #header>
+      <template v-if="field.preps?.multiple" #header>
         <el-checkbox
           v-model="checkAll"
           :indeterminate="indeterminate"
@@ -97,9 +97,9 @@ const onConfirm = () => {
     return;
   }
 
-  const labelName = props.field.preps.props?.label || "label";
+  const labelName = props.field.preps?.props?.label || "label";
   const codeName =
-    props.field.preps.props?.code || props.field.preps.props?.value || "value";
+    props.field.preps?.props?.code || props.field.preps?.props?.value || "value";
   // 校验重复
   if (
     props.field.preps.data.find(

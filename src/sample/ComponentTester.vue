@@ -50,6 +50,7 @@ const componentTypes = [
   {name: "page-select", label: "页面选择"},
   {name: "area", label: "地区选择"},
   {name: "usercomp", label: "自定义组件"},
+  {name: "input-tag", label: "标签输入组件"},
 ];
 
 const selectedType = ref<string>("");

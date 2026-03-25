@@ -195,6 +195,7 @@ const relationEvent = (
     if (!relationFields || item.isWorking) {
       return;
     }
+    console.log("relationEvent---",matchFieldValue);
     // item.isWorking = true;
     //处理连动
     switch (controlCondition) {
