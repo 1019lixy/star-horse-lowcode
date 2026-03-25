@@ -92,15 +92,6 @@ declare module 'vue' {
   interface GlobalComponents {}
   interface ComponentCustomProperties {
     readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
-    readonly ElButton: UnwrapRef<typeof import('element-plus/es')['ElButton']>
-    readonly ElCheckbox: UnwrapRef<typeof import('element-plus/es')['ElCheckbox']>
-    readonly ElCollapseTransition: UnwrapRef<typeof import('element-plus/es')['ElCollapseTransition']>
-    readonly ElFocusGroupCollection: UnwrapRef<typeof import('element-plus/es')['ElFocusGroupCollection']>
-    readonly ElIcon: UnwrapRef<typeof import('element-plus/es')['ElIcon']>
-    readonly ElRovingFocusCollectionItem: UnwrapRef<typeof import('element-plus/es')['ElRovingFocusCollectionItem']>
-    readonly ElRovingFocusItem: UnwrapRef<typeof import('element-plus/es')['ElRovingFocusItem']>
-    readonly ElSelectMenu: UnwrapRef<typeof import('element-plus/es')['ElSelectMenu']>
-    readonly ElTreeNode: UnwrapRef<typeof import('element-plus/es')['ElTreeNode']>
     readonly computed: UnwrapRef<typeof import('vue')['computed']>
     readonly createApp: UnwrapRef<typeof import('vue')['createApp']>
     readonly customRef: UnwrapRef<typeof import('vue')['customRef']>

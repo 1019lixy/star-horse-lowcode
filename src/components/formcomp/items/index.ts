@@ -45,3 +45,4 @@ export { default as barcodeItem } from "./barcode-item.vue";
 export { default as dialogItem } from "./dialog-item.vue";
 export { default as drawerItem } from "./drawer-item.vue";
 export { default as emptyItem } from "./empty-item.vue";
+export { default as inputTagItem } from "./input-tag-item.vue";
