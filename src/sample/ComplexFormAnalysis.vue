@@ -1,15 +1,75 @@
-<template></template>
+<template>
+ {{formPageRef?.getFormData()}}
+  <star-horse-form
+      :dynamicForm="true"
+      ref="formPageRef"
+      :fieldList="tabList"
+      :typeModel="'form'"
+  />
+</template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from "vue";
+import {onMounted, ref} from "vue";
 import piniaInstance from "@/store";
-import { useDesignFormStore } from "@/store/DesignForm";
-import { analysisCompDatas } from "@/api/form_utils";
+import {useDesignFormStore} from "@/store/DesignForm";
+import {analysisCompDatas} from "@/api/form_utils";
 
 let designForm = useDesignFormStore(piniaInstance);
 const formData = ref<any>({
   test: "1-2-1",
 });
+const formPageRef=ref();
+const tabList = {
+  "fieldList": [{
+    fieldName:"tab1",
+    "tabList": [{
+      "tabName": "tab1",
+      "objectName": "tab1",
+      "subFormFlag": "Y",
+      "title": "Tab1",
+      "fieldList": [{
+        "label": "单行文本框",
+        "fieldName": "input2",
+        "type": "input",
+        "formVisible": true,
+        "listVisible": true,
+        "viewVisible": true,
+        "actions": {},
+        "id": "Idsh860cde2c-f08d-4205-bdd5-9ba3b6809b84",
+        "preps": {
+          "clearable": true,
+          "placeholder": "请输入单行文本框",
+          "rules": [],
+          "readonly": false,
+          "starHorseFieldSource": 1
+        }
+      }]
+    }, {
+      "tabName": "tab2",
+      "objectName": "tab2",
+      "subFormFlag": "Y",
+      "title": "Tab2",
+      "fieldList": [{
+        "label": "单行文本框",
+        "fieldName": "input3",
+        "type": "input",
+        "formVisible": true,
+        "listVisible": true,
+        "viewVisible": true,
+        "actions": {},
+        "id": "Idsh761b8609-f999-4acc-8cee-e17d5021b15b",
+        "preps": {
+          "clearable": true,
+          "placeholder": "请输入单行文本框",
+          "rules": [],
+          "readonly": false,
+          "starHorseFieldSource": 1
+        }
+      }],
+      "mapping": "n"
+    }]
+  }], "stopAutoLoad": true
+};
 const fields = ref<Array<any>>([
   {
     id: "Id1",
@@ -780,8 +840,8 @@ const fields = ref<Array<any>>([
   },
 ]);
 const init = () => {
-  const { selectList, compListResult, fieldList, searchItemList } =
-    analysisCompDatas(fields);
+  const {selectList, compListResult, fieldList, searchItemList} =
+      analysisCompDatas(fields);
   console.log(selectList);
   console.log(compListResult);
   console.log(fieldList);

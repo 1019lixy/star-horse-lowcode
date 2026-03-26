@@ -163,6 +163,7 @@ const tabColapseCardAnalysis = (item: any) => {
             tabName: element.tabName,
             objectName: element.objectName,
             subFormFlag: element.subFormFlag,
+            mapping: element.mapping,
             title: element.label || element.title,
             id: element.id,
             height: element.height,
@@ -171,6 +172,9 @@ const tabColapseCardAnalysis = (item: any) => {
         if (searchItemList?.length > 0) {
             searchItemList2.push(...searchItemList);
         }
+    }
+    if (dataList?.length > 0) {
+        fieldInfo.fieldName = dataList[0].tabName;
     }
     if (item.itemType == "tab") {
         fieldInfo.tabList = dataList;

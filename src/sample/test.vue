@@ -13,6 +13,7 @@ import TableContainerValid from "@/sample/TableContainerValid.vue";
 import DataPickerDemo from "@/sample/DataPickerDemo.vue";
 import InformationsUi from "@/sample/InformationsUi.vue";
 import ComplexFormValid from "@/sample/ComplexFormValid.vue";
+import ComplexFormAnalysis from "@/sample/ComplexFormAnalysis.vue";
 
 const visible = ref<boolean>(false);
 const actName = ref<string>("component");
@@ -53,6 +54,10 @@ onMounted(() => {
 <!--      <InformationsUi/>-->
       <ComplexFormValid/>
     </el-tab-pane>
+      <el-tab-pane name="i" label="验证容器">
+
+        <ComplexFormAnalysis/>
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
