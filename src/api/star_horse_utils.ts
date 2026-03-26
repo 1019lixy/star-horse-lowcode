@@ -310,6 +310,18 @@ export function commonField(
     formVisible: false,
     listVisible: false,
   });
+  fields.push({
+    label: i18n("utils.field.tenantId"),
+    fieldName: "tenantId",
+    formVisible: false,
+    listVisible: false,
+  });
+  fields.push({
+    label: i18n("utils.field.roleId"),
+    fieldName: "createdRoleId",
+    formVisible: false,
+    listVisible: false,
+  });
 
   fields.push({
     label: i18n("utils.field.statusName"),

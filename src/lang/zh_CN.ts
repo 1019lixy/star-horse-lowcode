@@ -522,6 +522,8 @@ export default {
   "utils.field.remark": "备注",
   "utils.field.dataNo": "数据编号",
   "utils.field.version": "版本",
+  "utils.field.tenantId": "租户Id",
+  "utils.field.roleId": "用户组Id",
   "utils.field.statusName": "状态",
   "utils.field.statusCode": "状态编码",
   "utils.field.local": "本地",

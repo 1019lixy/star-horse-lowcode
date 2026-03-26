@@ -3,6 +3,7 @@ import {unref} from "vue";
 import {i18n} from "@/lang";
 import {BatchFieldInfo, FieldInfo, SearchProps} from "@/components/types";
 import {uuid} from "@/api/system";
+import {commonField} from "@/api/star_horse_utils";
 // 定义已显式列出的属性
 const listedFields: string[] = [
     "label",
@@ -24,6 +25,7 @@ const listedFields: string[] = [
     "id",
     "itemNameLabel",
 ];
+const commonFields: FieldInfo[] = commonField();
 const createContainer = (item: any, children: any) => {
     //构建当前层级容器信息
     return {
@@ -328,7 +330,7 @@ export function dynamicFormAnalysis(props: any, dataForm: any) {
     for (const key in globalCondition) {
         const temp = globalCondition[key];
         //如果非子表
-        if ("N" == temp.subFormFlag) {
+        if ("Y" != temp.subFormFlag) {
             const data = dataForm[temp.tableName];
             delete dataForm[temp.tableName];
             if (Array.isArray(data)) {
@@ -442,6 +444,14 @@ export function checkObject(
     return index + 1;
 }
 
+/**
+ * 存在映射关系时的校验函数
+ * @param item
+ * @param dataForm
+ * @param prefix
+ * @param parentIndex
+ * @param index
+ */
 export function getFormData(
     item: any,
     dataForm: any,
@@ -452,16 +462,21 @@ export function getFormData(
     if (item.subFormFlag == "Y") {
         if (item && item.objectName) {
             if (!Object.keys(dataForm).includes(item.objectName)) {
-                dataForm[item.objectName] = [{}];
+                dataForm[item.objectName] = (!item.mapping || item.mapping == "1") ? {} : [{}];
             }
         }
-        let dataIndex = getDataIndex(item, prefix, parentIndex, index);
-        let len = dataForm[item.objectName].length;
-        if (dataIndex >= len) {
-            dataForm[item.objectName].push({});
-            dataIndex = len - 1;
+        //如果映射关系是1对多
+        if (item.mapping == "n") {
+            let dataIndex = getDataIndex(item, prefix, parentIndex, index);
+            let len = dataForm[item.objectName].length;
+            if (dataIndex >= len) {
+                dataForm[item.objectName].push({});
+                dataIndex = len - 1;
+            }
+            return dataForm[item.objectName][dataIndex];
+        } else {
+            return dataForm[item.objectName];
         }
-        return dataForm[item.objectName][dataIndex];
     }
     return dataForm;
 }
@@ -545,14 +560,20 @@ export function getPrefix(
     if (prefix && prefix.length > 0) {
         if (data.subFormFlag == "Y") {
             pronPrefix =
-                prefix + "." + data.objectName + "." + (parentIndex > -1 ? 0 : index);
+                prefix + "." + data.objectName;
+            if (data.mapping == "n") {
+                pronPrefix = +"." + (parentIndex > -1 ? 0 : index);
+            }
+
         } else {
             pronPrefix = prefix;
         }
     } else if (data.subFormFlag == "Y") {
         //如果父表大于0,说明当前是父表的子表，应该用父表的索引
-        pronPrefix =
-            data.objectName + "." + (parentIndex > 0 ? parentIndex : index);
+        pronPrefix = data.objectName;
+        if (data.mapping == "n") {
+            pronPrefix = +"." + (parentIndex > 0 ? parentIndex : index);
+        }
     } else {
         pronPrefix = "";
     }
@@ -565,8 +586,10 @@ export function getPrefix(
  * @param dataForm
  */
 export function checkVisible(item: any, dataForm: any) {
-    //如果没有配置此属性，则默认显示
-    item["formVisible"] = item.formVisible ?? true;
+    if (!commonFields.find((temp: any) => temp.fieldName == item.fieldName)) {
+        //如果没有配置此属性，则默认显示
+        item["formVisible"] = item.formVisible ?? true;
+    }
     return item.formVisible || dataForm["_" + item.fieldName + "Visible"];
 }
 

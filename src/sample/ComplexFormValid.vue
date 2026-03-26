@@ -474,6 +474,7 @@ const tableFieldList = reactive<PageFieldInfo>({
                   {
                     label: "部署类型",
                     type: "select",
+                    required:true,
                     fieldName: "deployType",
                     formVisible: true,
                     preps: {
@@ -484,6 +485,7 @@ const tableFieldList = reactive<PageFieldInfo>({
                     label: "Os类型",
                     fieldName: "osType",
                     formVisible: true,
+                    required:true,
                     type: "select",
                     preps: {
                       values: osTypeList,
@@ -545,6 +547,7 @@ const tableFieldList = reactive<PageFieldInfo>({
                   label: "服务器认证方式",
                   fieldName: "loginType",
                   type: "select",
+                  required:true,
                   formVisible: true,
                   preps: {
                     values: [
@@ -742,6 +745,7 @@ let extendBtns = ref<UserFuncInfo[]>([
 ]);
 const generateFormRef = ref();
 const generateMerge = (type: string) => {
+  console.log(generateFormRef.value.getFormData()?.value)
   generateFormRef.value.$refs.starHorseFormRef.validate((res: boolean) => {
     let dataForm: any = generateFormRef.value.getFormData()?.value;
     if (res) {
@@ -801,14 +805,35 @@ const closeAction = () => {
     </star-horse-dialog>
     <el-tabs v-model="codeGener" type="border-card">
       <el-tab-pane label="代码配置单" name="form">
-        <star-horse-form
-            ref="generateFormRef"
-            @refresh="codeGeneratorRef?.loadByPage()"
-            :compUrl="dataUrl"
-            formSize="default"
-            :fieldList="tableFieldList"
-            :rules="rules"
-        />
+        <div class="flex flex-col h-full overflow-hidden">
+          <div class="flex items-center justify-end">
+            <el-button type="primary" @click="generateMerge">
+              <star-horse-icon
+                  iconClass="export"
+                  color="var(--star-horse-white)"
+              />
+              导出代码
+            </el-button>
+            <el-button type="warning" >
+              <star-horse-icon
+                  iconClass="publish"
+                  color="var(--star-horse-white)"
+              />
+              发起部署
+            </el-button>
+          </div>
+          <el-divider />
+          <div class="flex-1 overflow-hidden">
+            <star-horse-form
+                ref="generateFormRef"
+                @refresh="codeGeneratorRef?.loadByPage()"
+                :compUrl="dataUrl"
+                formSize="default"
+                :fieldList="tableFieldList"
+                :rules="rules"
+            />
+          </div>
+        </div>
       </el-tab-pane>
       <el-tab-pane label="操作记录" name="list">
         <div class="flex flex-col h-full overflow-hidden">
