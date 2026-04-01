@@ -19,13 +19,26 @@ const dataForm = defineModel("dataForm");
 const noVisibleData = computed(() => {
   const temp = props.item;
   const datas = Array.isArray(temp) && temp.filter(item => item.formVisible === false);
-  return temp.length==datas.length;
+  return temp.length == datas.length;
 });
 const init = () => {
+};
+const checkItem = (item: any) => {
+  if (Array.isArray(item)) {
+    return item[0];
+  }
+  return item;
+};
+const createArray = (item: any) => {
+  if (Array.isArray(item)) {
+    return item;
+  }
+  return [item];
 };
 onMounted(() => {
   init();
 });
+
 </script>
 
 <template>
@@ -41,66 +54,68 @@ onMounted(() => {
 
       <el-col
           :span="
-          sitem.preps?.colspan ||
+          checkItem(sitem).preps?.colspan ||
           24 / item.filter((temp) => temp.formVisible).length
         "
           class="h-full flex items-center justify-center"
-          v-bind="sitem.preps"
-          :style="{ height: sitem.preps?.colHeight||'auto' ,
+          v-bind="checkItem(sitem).preps"
+          :style="{ height: checkItem(sitem).preps?.colHeight||'auto' ,
 
         }"
       >
-        <template
-            v-if="
-            sitem.type != 'button' &&
-            sitem.type != 'usercomp' &&
-            !sitem.preps?.staticData
-          "
-        >
-          <!--需解决只需要标签内容的情况-->
-          <el-form-item
-              :size="compSize"
-              class="h-full w-full"
-              :label="sitem.preps?.hideLabel ? '' : sitem.label"
-              :prop="loadProp(propPrefix, sitem.fieldName, -1, -1)"
-              :labelPosition="parentPreps?.labelPosition"
-              :rules="validMsg(sitem, dataForm)"
+        <template v-for="tempData in createArray(sitem)">
+          <template
               v-if="
-              (sitem.formVisible &&
-                sitem.label &&
-                sitem.preps?.headerFlag != 'Y') ||
-              checkVisible(sitem, dataForm)
-            "
+            tempData.type != 'button' &&
+            tempData.type != 'usercomp' &&
+            !tempData.preps?.staticData
+          "
           >
+            <!--需解决只需要标签内容的情况-->
+            <el-form-item
+                :size="compSize"
+                class="flex w-full flex-1 my-5"
+                :label="tempData.preps?.hideLabel ? '' : tempData.label"
+                :prop="loadProp(propPrefix, tempData.fieldName, -1, -1)"
+                :labelPosition="tempData.preps?.labelPosition??parentPreps?.labelPosition"
+                :rules="validMsg(tempData, dataForm)"
+                v-if="
+              (tempData.formVisible &&
+                tempData.label &&
+                tempData.preps?.headerFlag != 'Y') ||
+              checkVisible(tempData, dataForm)
+            "
+            >
+              <star-horse-item
+                  :primaryKey="primaryKey"
+                  :compSize="compSize"
+                  v-model:dataForm="dataForm"
+                  :item="tempData"
+                  :dataIndex="dataIndex"
+                  :source="source"
+              />
+            </el-form-item>
+
+            <star-horse-item
+                v-else-if="tempData.viewVisible || checkVisible(tempData, dataForm)"
+                :compSize="compSize"
+                :primaryKey="primaryKey"
+                v-model:dataForm="dataForm"
+                :item="tempData"
+                :dataIndex="dataIndex"
+                :source="source"
+            />
+          </template>
+          <template v-else-if="tempData.fieldName">
             <star-horse-item
                 :primaryKey="primaryKey"
                 :compSize="compSize"
                 v-model:dataForm="dataForm"
-                :item="sitem"
+                :item="tempData"
                 :dataIndex="dataIndex"
                 :source="source"
             />
-          </el-form-item>
-
-          <star-horse-item
-              v-else-if="sitem.viewVisible || checkVisible(sitem, dataForm)"
-              :compSize="compSize"
-              :primaryKey="primaryKey"
-              v-model:dataForm="dataForm"
-              :item="sitem"
-              :dataIndex="dataIndex"
-              :source="source"
-          />
-        </template>
-        <template v-else-if="sitem.fieldName">
-          <star-horse-item
-              :primaryKey="primaryKey"
-              :compSize="compSize"
-              v-model:dataForm="dataForm"
-              :item="sitem"
-              :dataIndex="dataIndex"
-              :source="source"
-          />
+          </template>
         </template>
       </el-col>
     </template>

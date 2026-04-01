@@ -64,6 +64,15 @@ const columnStructure = computed(() => {
 
   // 找到最大列数的行
   let maxColsRow = elements[0];
+  // let colStructure=[];
+  let columns=0;
+  maxColsRow.columns.forEach((col: any) => {
+    columns+=col.colspan;
+  });
+  // for(let i=0;i<columns;i++){
+  //   colStructure.push({width: "auto"});
+  // }
+
   let hasMergeColFlag = false;
   elements.forEach((row: any) => {
     let hasMergeCol= row.columns.find((col: any) => col.colspan>1);
@@ -85,13 +94,7 @@ const columnStructure = computed(() => {
       return maxRow;
     }, elements[0]);
   }
-  // elements.forEach((row: any) => {
-  //   let hasMergeCol= row.columns.find((col: any) => col.colspan>1);
-  //   console.log('hasMergeCol', hasMergeCol,row.columns);
-  //   if (hasMergeCol && row.columns && row.columns.length >= maxColsRow.columns.length) {
-  //     maxColsRow = row;
-  //   }
-  // });
+
 
   // 构建列结构，包含宽度信息
   let totalCols = 0;
@@ -112,7 +115,7 @@ const columnStructure = computed(() => {
     totalCols += colspan;
     return {width};
   });
-  const addCol = Math.abs(maxColsRow.columns.length - totalCols);
+  const addCol = Math.abs(maxColsRow.columns.length - columns);
   console.log("addCol", addCol);
   if(addCol > 0) {
     for(let i = 0; i < addCol; i++) {
@@ -230,7 +233,6 @@ const getColIndex = (rowIndex: number, colIndex: number, col: any) => {
       :parentField="parentField"
       :form-item="field"
   >
-<!--    {{field.preps.elements}}-->
     <table ref="containerTableRef" class="dynamic-table">
       <!-- 隐藏的表头行，用于保持列结构和宽度 -->
       <thead v-if="field.preps.elements.length > 0">

@@ -24,11 +24,10 @@ const columnStructure = computed(() => {
 
   // 找到最大列数的行
   let maxColsRow = props.item.dytableList[0];
-  // props.item.dytableList.forEach((row: any) => {
-  //   if (row && row.length > maxColsRow.length) {
-  //     maxColsRow = row;
-  //   }
-  // });
+  let columns = 0;
+  maxColsRow.forEach((col: any) => {
+    columns += col.preps?.colspan || 1;
+  });
   let hasMergeColFlag = false;
   props.item.dytableList.forEach((row: any) => {
     let hasMergeCol = row.find((col: any) => col.preps?.colspan > 1);
@@ -67,7 +66,7 @@ const columnStructure = computed(() => {
     totalCols += colspan;
     return {width};
   });
-  const addCol = Math.abs(maxColsRow.length - totalCols);
+  const addCol = Math.abs(maxColsRow.length - columns);
   for (let i = 0; i < addCol; i++) {
     colStructure.push({width: "100%"});
   }
