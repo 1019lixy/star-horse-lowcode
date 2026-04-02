@@ -236,7 +236,7 @@ tr {
 th {
   position: relative;
   border: 1px solid #dfe6ec;
-
+  table-layout: fixed;
   .td-operator {
     position: absolute;
     right: 0;

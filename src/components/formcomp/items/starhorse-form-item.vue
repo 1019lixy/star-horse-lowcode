@@ -156,7 +156,7 @@ onMounted(() => {
           parentField?.itemType != 'table' &&
           field.preps?.itemType != 'divider' &&
           field?.preps?.headerFlag != 'Y' &&
-          !field.preps?.statusData
+          !field.preps?.staticData
         "
           :style="{
           marginBottom: isEdit && !disabled ? '1px' : '18px',
@@ -164,6 +164,7 @@ onMounted(() => {
           class="flex items-center w-full h-full"
           :label="field?.preps['hideLabel'] ? '' : field?.preps['label']"
           :prop="field?.preps['name']"
+          :labelPosition="field?.preps['labelPosition']"
           :rules="
           field?.preps['required']
             ? [
@@ -176,6 +177,7 @@ onMounted(() => {
             : []
         "
       >
+
         <help :message="field.preps?.helpMsg" v-if="field.preps?.helpMsg"/>
         <slot></slot>
       </el-form-item>

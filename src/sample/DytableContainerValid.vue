@@ -951,21 +951,6 @@ const fields = ref<any>({
                   "formVisible": true,
                   "listVisible": true,
                   "viewVisible": true,
-                  "elements": [
-                    {
-                      "id": "sh6097f231-d047-42f9-a132-92c2b37330e8",
-                      "colIndex": 1,
-                      "columns": [
-                        {
-                          "id": "sh9840e116-1a06-49e2-b376-64dc07cc2ba8",
-                          "colIndex": 1,
-                          "rowspan": 1,
-                          "colspan": 1,
-                          "items": []
-                        }
-                      ]
-                    }
-                  ],
                   "rowNums": 1,
                   "columnNums": 1,
                   "type": "datetime"
@@ -1344,7 +1329,8 @@ const fields = ref<any>({
                 "listVisible": true,
                 "viewVisible": true,
                 "placeholder": "请输入不良原因及临时措施实施情况",
-                "label": "不良原因及临时措施实施情况"
+                "label": "不良原因及临时措施实施情况",
+                labelPosition: "top"
               },
               "compType": "formItem",
               "fieldName": "text27",
@@ -1366,7 +1352,8 @@ const fields = ref<any>({
                   "formVisible": true,
                   "listVisible": true,
                   "viewVisible": true,
-                  "label": "出货交付影响"
+                  "label": "出货交付影响",
+                  labelPosition: "top"
                 },
                 "compType": "formItem",
                 "fieldName": "input28",
@@ -1387,147 +1374,654 @@ const fields = ref<any>({
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 2,
-            "items": []
+            "items": [{
+              "id": "Idshe83a64aa-1407-4ad3-9d4e-1f7c5181",
+              "preps": {
+                "id": "Idshe83a64aa-1407-4ad3-9d4e-1f7c5181",
+                "itemNameLabel": "单行文本框",
+                "name": "input29",
+                "clearable": true,
+                "readonly": false,
+                "placeholder": "请输入工程确认",
+                "rules": [],
+                "maxLength": 255,
+                "formVisible": true,
+                "listVisible": true,
+                "viewVisible": true,
+                "label": "工程确认"
+              },
+              "compType": "formItem",
+              "fieldName": "input29",
+              "itemType": "input",
+              "label": "单行文本框",
+              "type": "input"
+            }]
           },
 
           {
             "id": "sh821cb553-f8e6-4e37-9a68-40906d9491d0",
-            "colspan": 1,
+            "colspan": 2,
             "rowspan": 1,
-            "items": []
+            "items": [{
+              "id": "Idshe83a64aa-1407-4ad3-9d4e-1f7c51822",
+              "preps": {
+                "id": "Idshe83a64aa-1407-4ad3-9d4e-1f7c51822",
+                "itemNameLabel": "单行文本框",
+                "name": "input30",
+                "clearable": true,
+                "readonly": false,
+                "placeholder": "请输入QE确认",
+                "rules": [],
+                "maxLength": 255,
+                "formVisible": true,
+                "listVisible": true,
+                "viewVisible": true,
+                "label": "EQ确认"
+              },
+              "compType": "formItem",
+              "fieldName": "input30",
+              "itemType": "input",
+              "label": "单行文本框",
+              "type": "input"
+            }]
           },
-          {
-            "id": "sh6f2c322e-dbd7-4bf9-98c0-285fffb3d390",
-            "colspan": 1,
-            "rowspan": 1,
-            "items": []
-          }
+
         ]
       },
       {
         "id": "sh27517fcc-f8b9-40ce-b2bc-ccaddad6945c",
         "colIndex": 1,
+
         "columns": [
           {
             "id": "sh972a559e-4345-4cb0-a5d2-6f049f50e06f",
             "colIndex": 1,
-            "rowspan": 1,
+            "rowspan": 5,
             "colspan": 1,
-            "items": [],
+            "items": [{
+              "id": "Idsh8953336f-8d54-4bb4-a0c3-e3356c943",
+              "preps": {
+                "id": "Idsh8953336f-8d54-4bb4-a0c3-e3356c943",
+                "label": "静态文本",
+                "itemNameLabel": "静态文本",
+                "name": "text26",
+                "clearable": true,
+                "readonly": false,
+                "rules": [],
+                "maxLength": 255,
+                "formVisible": true,
+                "listVisible": true,
+                "viewVisible": true,
+                "placeholder": "",
+                "staticData": true,
+                "textContent": "审批栏",
+                "hideLabel": true
+              },
+              "compType": "formItem",
+              "fieldName": "text26",
+              "itemType": "text",
+              "label": "静态文本",
+              "type": "text"
+            }],
             "colWidth": "61px"
           },
           {
-            "id": "shaeb77a2c-ff67-4ace-b82a-1637019d57bc",
+            "id": "shaeb77a2c-ff67-4ace-b82a-16370194",
             "colIndex": 1,
             "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "colHeight": "43px"
-          },
-          {
-            "id": "sh82606dac-ea01-4941-8b0e-1c4d543e8508",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": []
-          },
-          {
-            "id": "sh1094a993-d438-42a7-aa3e-4bc454cb3a6c",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": []
-          },
-          {
-            "id": "shbd885cda-5a0e-424e-8bf2-58bde893cf84",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": []
+            "colspan": 4,
+            "items": [{
+              "id": "Idsh8953336f-8d54-4bb4-a0c3-e3356c94",
+              "preps": {
+                "id": "Idsh8953336f-8d54-4bb4-a0c3-e3356c94",
+                "label": "静态文本",
+                "itemNameLabel": "静态文本",
+                "name": "text26",
+                "clearable": true,
+                "readonly": false,
+                "rules": [],
+                "maxLength": 255,
+                "formVisible": true,
+                "listVisible": true,
+                "viewVisible": true,
+                "placeholder": "",
+                "staticData": true,
+                "textContent": "停线审批意见：",
+                "hideLabel": true,
+                styles:{
+                  "textAlign": "left",
+                  "alignItems": "start"
+                }
+              },
+              "compType": "formItem",
+              "fieldName": "text26",
+              "itemType": "text",
+              "label": "静态文本",
+              "type": "text"
+            }],
           }
         ]
       },
       {
-        "id": "shad3f2336-e6fb-4f7a-93bd-34ec9a9e8ccf",
+        "id": "sh27517fcc-f8b9-40ce-b2bc-ccaddad65",
         "colIndex": 1,
+
         "columns": [
+
           {
-            "id": "sh1ffd8ff7-e0f9-45fe-a7aa-fd48303f4732",
+            "id": "shaeb77a2c-ff67-4ace-b82a-1637019d5",
             "colIndex": 1,
             "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "colWidth": "61px"
+            "colspan": 3,
+            "items": [{
+              "id": "Idsh8953336f-8d54-4bb4-a0c3-e3356c95",
+              "preps": {
+                "id": "Idsh8953336f-8d54-4bb4-a0c3-e3356c95",
+                "label": "财资部:",
+                "itemNameLabel": "静态文本",
+                "name": "text26",
+                "clearable": true,
+                "readonly": false,
+                "rules": [],
+                "maxLength": 255,
+                "formVisible": true,
+                "listVisible": true,
+                "viewVisible": true,
+                "placeholder": "",
+                "staticData": false,
+                "textContent": "xxx",
+                "hideLabel": false,
+                styles:{
+                  "textAlign": "left",
+                  "alignItems": "start"
+                }
+              },
+              "compType": "formItem",
+              "fieldName": "text26",
+              "itemType": "text",
+              "label": "财资部",
+              "type": "text"
+            }],
           },
+
           {
-            "id": "she851f8fd-31dd-45d1-95af-e8fc22dcf0b5",
+            "id": "shbd885cda-5a0e-424e-8bf2-58bde896",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 1,
-            "items": []
-          },
-          {
-            "id": "shbe000394-ce04-4efb-ba5d-22391d29f2c7",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": []
-          },
-          {
-            "id": "sh6e275ba0-1859-4ddd-9b3f-562778e8d1fe",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": []
-          },
-          {
-            "id": "sh5454f2ea-0811-4866-907e-2348f3a3c6ce",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": []
+            "items": [{
+              "id": "Idsh8953336f-8d54-4bb4-a0c3-e3356c96",
+              "preps": {
+                "id": "Idsh8953336f-8d54-4bb4-a0c3-e3356c96",
+                "label": "签名/时间:",
+                "itemNameLabel": "静态文本",
+                "name": "text26",
+                "clearable": true,
+                "readonly": false,
+                "rules": [],
+                "maxLength": 255,
+                "formVisible": true,
+                "listVisible": true,
+                "viewVisible": true,
+                "placeholder": "",
+                "staticData": false,
+                "textContent": "xxx",
+                "hideLabel": false,
+                styles:{
+                  "textAlign": "left",
+                  "alignItems": "start"
+                }
+              },
+              "compType": "formItem",
+              "fieldName": "text26",
+              "itemType": "text",
+              "label": "财资部",
+              "type": "text"
+            }]
           }
         ]
       },
       {
-        "id": "sh0e0ff5db-836e-4317-ad28-e001833fe871",
+        "id": "sh27517fcc-f8b9-40ce-b2bc-ccaddad7",
+        "colIndex": 1,
+
+        "columns": [
+
+          {
+            "id": "shaeb77a2c-ff67-4ace-b82a-16370197",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 3,
+            "items": [{
+              "id": "Idsh8953336f-8d54-4bb4-a0c3-e3356c97",
+              "preps": {
+                "id": "Idsh8953336f-8d54-4bb4-a0c3-e3356c97",
+                "label": "质量管理中心:",
+                "itemNameLabel": "静态文本",
+                "name": "text26",
+                "clearable": true,
+                "readonly": false,
+                "rules": [],
+                "maxLength": 255,
+                "formVisible": true,
+                "listVisible": true,
+                "viewVisible": true,
+                "placeholder": "",
+                "staticData": false,
+                "textContent": "xxx",
+                "hideLabel": false,
+                styles:{
+                  "textAlign": "left",
+                  "alignItems": "start"
+                }
+              },
+              "compType": "formItem",
+              "fieldName": "text26",
+              "itemType": "text",
+              "label": "财资部",
+              "type": "text"
+            }],
+          },
+
+          {
+            "id": "shbd885cda-5a0e-424e-8bf2-58bde898",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "items": [{
+              "id": "Idsh8953336f-8d54-4bb4-a0c3-e3356c98",
+              "preps": {
+                "id": "Idsh8953336f-8d54-4bb4-a0c3-e3356c98",
+                "label": "签名/时间:",
+                "itemNameLabel": "静态文本",
+                "name": "text26",
+                "clearable": true,
+                "readonly": false,
+                "rules": [],
+                "maxLength": 255,
+                "formVisible": true,
+                "listVisible": true,
+                "viewVisible": true,
+                "placeholder": "",
+                "staticData": false,
+                "textContent": "xxx",
+                "hideLabel": false,
+                styles:{
+                  "textAlign": "left",
+                  "alignItems": "start"
+                }
+              },
+              "compType": "formItem",
+              "fieldName": "text26",
+              "itemType": "text",
+              "label": "财资部",
+              "type": "text"
+            }]
+          }
+        ]
+      },{
+        "id": "sh27517fcc-f8b9-40ce-b2bc-ccaddad9",
+        "colIndex": 1,
+
+        "columns": [
+
+          {
+            "id": "shaeb77a2c-ff67-4ace-b82a-16370199",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 3,
+            "items": [{
+              "id": "Idsh8953336f-8d54-4bb4-a0c3-e3356c99",
+              "preps": {
+                "id": "Idsh8953336f-8d54-4bb4-a0c3-e3356c99",
+                "label": "生产总监:",
+                "itemNameLabel": "静态文本",
+                "name": "text26",
+                "clearable": true,
+                "readonly": false,
+                "rules": [],
+                "maxLength": 255,
+                "formVisible": true,
+                "listVisible": true,
+                "viewVisible": true,
+                "placeholder": "",
+                "staticData": false,
+                "textContent": "xxx",
+                "hideLabel": false,
+                styles:{
+                  "textAlign": "left",
+                  "alignItems": "start"
+                }
+              },
+              "compType": "formItem",
+              "fieldName": "text26",
+              "itemType": "text",
+              "label": "财资部",
+              "type": "text"
+            }],
+          },
+
+          {
+            "id": "shbd885cda-5a0e-424e-8bf2-58bde89a",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "items": [{
+              "id": "Idsh8953336f-8d54-4bb4-a0c3-e3356c9a",
+              "preps": {
+                "id": "Idsh8953336f-8d54-4bb4-a0c3-e3356c9a",
+                "label": "签名/时间:",
+                "itemNameLabel": "静态文本",
+                "name": "text26",
+                "clearable": true,
+                "readonly": false,
+                "rules": [],
+                "maxLength": 255,
+                "formVisible": true,
+                "listVisible": true,
+                "viewVisible": true,
+                "placeholder": "",
+                "staticData": false,
+                "textContent": "xxx",
+                "hideLabel": false,
+                styles:{
+                  "textAlign": "left",
+                  "alignItems": "start"
+                }
+              },
+              "compType": "formItem",
+              "fieldName": "text26",
+              "itemType": "text",
+              "label": "财资部",
+              "type": "text"
+            }]
+          }
+        ]
+      },{
+        "id": "sh27517fcc-f8b9-40ce-b2bc-ccaddad6b",
+        "colIndex": 1,
+
+        "columns": [
+
+          {
+            "id": "shaeb77a2c-ff67-4ace-b82a-1637019b",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 3,
+            "items": [{
+              "id": "Idsh8953336f-8d54-4bb4-a0c3-e3356c9b",
+              "preps": {
+                "id": "Idsh8953336f-8d54-4bb4-a0c3-e3356c9b",
+                "label": "客户意见:",
+                "itemNameLabel": "静态文本",
+                "name": "text26",
+                "clearable": true,
+                "readonly": false,
+                "rules": [],
+                "maxLength": 255,
+                "formVisible": true,
+                "listVisible": true,
+                "viewVisible": true,
+                "placeholder": "",
+                "staticData": false,
+                "textContent": "xxx",
+                "hideLabel": false,
+                styles:{
+                  "textAlign": "left",
+                  "alignItems": "start"
+                }
+              },
+              "compType": "formItem",
+              "fieldName": "text26",
+              "itemType": "text",
+              "label": "财资部",
+              "type": "text"
+            }],
+          },
+
+          {
+            "id": "shbd885cda-5a0e-424e-8bf2-58bde89c",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "items": [{
+              "id": "Idsh8953336f-8d54-4bb4-a0c3-e3356c9c",
+              "preps": {
+                "id": "Idsh8953336f-8d54-4bb4-a0c3-e3356c9c",
+                "label": "签名/时间:",
+                "itemNameLabel": "静态文本",
+                "name": "text26",
+                "clearable": true,
+                "readonly": false,
+                "rules": [],
+                "maxLength": 255,
+                "formVisible": true,
+                "listVisible": true,
+                "viewVisible": true,
+                "placeholder": "",
+                "staticData": false,
+                "textContent": "xxx",
+                "hideLabel": false,
+                styles:{
+                  "textAlign": "left",
+                  "alignItems": "start"
+                }
+              },
+              "compType": "formItem",
+              "fieldName": "text26",
+              "itemType": "text",
+              "label": "财资部",
+              "type": "text"
+            }]
+          }
+        ]
+      },
+      {
+        "id": "shad3f2336-e6fb-4f7a-93bd-34ec9a9d",
         "colIndex": 1,
         "columns": [
+
           {
-            "id": "shc8948a53-401f-46c7-84c1-55b1089177dd",
+            "id": "she851f8fd-31dd-45d1-95af-e8fc22d",
             "colIndex": 1,
-            "rowspan": 1,
+            "rowspan": 2,
             "colspan": 1,
-            "items": [],
-            "colWidth": "61px"
+            "items": [{
+              "id": "Idsh8953336f-8d54-4bb4-a0c3-e3356c9d",
+              "preps": {
+                "id": "Idsh8953336f-8d54-4bb4-a0c3-e3356c9d",
+                "label": "签名/时间:",
+                "itemNameLabel": "静态文本",
+                "name": "text26",
+                "clearable": true,
+                "readonly": false,
+                "rules": [],
+                "maxLength": 255,
+                "formVisible": true,
+                "listVisible": true,
+                "viewVisible": true,
+                "placeholder": "",
+                "staticData": true,
+                "textContent": "质量管理中心填写",
+                "hideLabel": true,
+                styles:{
+                  "textAlign": "left",
+                  "alignItems": "start"
+                }
+              },
+              "compType": "formItem",
+              "fieldName": "text26",
+              "itemType": "text",
+              "label": "财资部",
+              "type": "text"
+            }]
           },
           {
-            "id": "sh32dc4460-8f91-42ef-a03b-76411ca76c78",
+            "id": "shbe000394-ce04-4efb-ba5d-22391d2e",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 4,
+            "items": [{
+              "id": "Idsh2ab87a1a-c12e-4463-8c6c-9b2be96e",
+              "preps": {
+                "id": "Idsh2ab87a1a-c12e-4463-8c6c-9b2be96e",
+                "itemNameLabel": "多行文本框",
+                "name": "text27",
+                "clearable": true,
+                "readonly": false,
+                "rules": [],
+                "maxLength": 255,
+                "formVisible": true,
+                "listVisible": true,
+                "viewVisible": true,
+                "placeholder": "请输入整改措施及效果确认",
+                "label": "整改措施及效果确认",
+                labelPosition: "top"
+              },
+              "compType": "formItem",
+              "fieldName": "text27",
+              "itemType": "textarea",
+              "label": "静态文本",
+              "type": "textarea"
+            },{
+              "id": "Idsh2ab87a1a-c12e-4463-8c6c-9b2be96f",
+              "preps": {
+                "id": "Idsh2ab87a1a-c12e-4463-8c6c-9b2be96f",
+                "itemNameLabel": "多行文本框",
+                "name": "text27",
+                "clearable": true,
+                "readonly": false,
+                "rules": [],
+                "maxLength": 255,
+                "formVisible": true,
+                "listVisible": true,
+                "viewVisible": true,
+                "label": "恢复生产意见",
+                labelPosition: "top",
+                values:[{name:"整改措施有效，可恢复生产",value:"ok"},
+                  {name:"措施无效，继续停线整改",value:"ng"}
+                ]
+              },
+              "compType": "formItem",
+              "fieldName": "text27",
+              "itemType": "radio",
+              "label": "静态文本",
+              "type": "radio"
+            }]
+          },
+
+        ]
+      },
+      {
+        "id": "sh0e0ff5db-836e-4317-ad28-e001833g",
+        "colIndex": 1,
+        "columns": [
+
+          {
+            "id": "sh32dc4460-8f91-42ef-a03b-76411cag",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 2,
+            "items": [{
+              "id": "Idsh8953336f-8d54-4bb4-a0c3-e3356c9g",
+              "preps": {
+                "id": "Idsh8953336f-8d54-4bb4-a0c3-e3356c9g",
+                "label": "生产总监批准/时间:",
+                "itemNameLabel": "静态文本",
+                "name": "text26",
+                "clearable": true,
+                "readonly": false,
+                "rules": [],
+                "maxLength": 255,
+                "formVisible": true,
+                "listVisible": true,
+                "viewVisible": true,
+                "placeholder": "",
+                "staticData": false,
+                "textContent": "xxx",
+                "hideLabel": false,
+                styles:{
+                  "textAlign": "left",
+                  "alignItems": "start"
+                }
+              },
+              "compType": "formItem",
+              "fieldName": "text26",
+              "itemType": "text",
+              "label": "财资部",
+              "type": "text"
+            }]
+          },
+
+          {
+            "id": "sh0b6a5c8e-8e17-43e8-bcc7-6add1fbh",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 1,
-            "items": []
+            "items": [{
+              "id": "Idsh8953336f-8d54-4bb4-a0c3-e3356c9h",
+              "preps": {
+                "id": "Idsh8953336f-8d54-4bb4-a0c3-e3356c9h",
+                "label": "品质主管审核/时间:",
+                "itemNameLabel": "静态文本",
+                "name": "text26",
+                "clearable": true,
+                "readonly": false,
+                "rules": [],
+                "maxLength": 255,
+                "formVisible": true,
+                "listVisible": true,
+                "viewVisible": true,
+                "placeholder": "",
+                "staticData": false,
+                "textContent": "xxx",
+                "hideLabel": false,
+                styles:{
+                  "textAlign": "left",
+                  "alignItems": "start"
+                }
+              },
+              "compType": "formItem",
+              "fieldName": "text26",
+              "itemType": "text",
+              "label": "财资部",
+              "type": "text"
+            }]
           },
           {
-            "id": "sh12fd81d9-68c9-41fb-b643-c8624388bc9e",
+            "id": "she028a637-8149-4fb0-8ee7-89f389i",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 1,
-            "items": []
-          },
-          {
-            "id": "sh0b6a5c8e-8e17-43e8-bcc7-6add1fb9b8f6",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": []
-          },
-          {
-            "id": "she028a637-8149-4fb0-8ee7-89f389ad0d4b",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": []
+            "items": [{
+              "id": "Idsh8953336f-8d54-4bb4-a0c3-e3356c9i",
+              "preps": {
+                "id": "Idsh8953336f-8d54-4bb4-a0c3-e3356c9i",
+                "label": "QE作成/时间:",
+                "itemNameLabel": "静态文本",
+                "name": "text26",
+                "clearable": true,
+                "readonly": false,
+                "rules": [],
+                "maxLength": 255,
+                "formVisible": true,
+                "listVisible": true,
+                "viewVisible": true,
+                "placeholder": "",
+                "staticData": false,
+                "textContent": "xxx",
+                "hideLabel": false,
+                styles:{
+                  "textAlign": "left",
+                  "alignItems": "start"
+                }
+              },
+              "compType": "formItem",
+              "fieldName": "text26",
+              "itemType": "text",
+              "label": "财资部",
+              "type": "text"
+            }]
           }
         ]
       }
