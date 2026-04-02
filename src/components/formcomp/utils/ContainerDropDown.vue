@@ -93,26 +93,35 @@ const submitAction = () => {
         i == props.rowIndex &&
         j == props.colIndex
       ) {
+        const oldRowspan = column["rowspan"] || 1;
+        const oldColspan = column["colspan"] || 1;
         column["rowspan"] = fieldForm.value["rowspan"];
         column["colspan"] = fieldForm.value["colspan"];
-        if(fieldForm.value["rowspan"]>1){
-          //1,4 2
-          let len=props.rowIndex + fieldForm.value["rowspan"];
-          if(len>elements.length){
-            len=elements.length;
+        const newRowspan = fieldForm.value["rowspan"] || 1;
+        const newColspan = fieldForm.value["colspan"] || 1;
+        const startRow = props.rowIndex;
+        const endRow = startRow + newRowspan;
+        const startCol = props.colIndex;
+        for (let r = startRow; r < endRow; r++) {
+          if (r < elements.length) {
+            const row = elements[r];
+            if (r === startRow) {
+              const colsToRemove = newColspan - 1;
+              for (let c = 0; c < colsToRemove; c++) {
+                if (startCol + 1 < row.columns.length) {
+                  row.columns.splice(startCol + 1, 1);
+                }
+              }
+            } else {
+              const rowsToAdd = r - startRow;
+              const colsToRemove = rowsToAdd >= oldRowspan ? newColspan : 0;
+              for (let c = 0; c < colsToRemove; c++) {
+                if (startCol < row.columns.length) {
+                  row.columns.splice(startCol, 1);
+                }
+              }
+            }
           }
-        elements.slice(props.rowIndex+1, len).forEach((item) => {
-          item.columns.splice(props.colIndex, 1);
-        });
-        }
-        if(fieldForm.value["colspan"]>1){
-        
-         let len=props.colIndex + fieldForm.value["colspan"];
-          if(len>columns.length){
-            len=columns.length;
-          }
-          let rightColumns=columns.slice(props.colIndex+1, len);
-          columns.splice(props.colIndex+1, rightColumns?.length??0);
         }
       }
     }
@@ -205,7 +214,7 @@ watch(
   >
     <star-horse-icon icon-class="menu" style="color: var(--star-horse-white)" />
     <template #dropdown>
-      <el-dropdown-menu>
+      <el-dropdown-menu style="max-height: 400px; overflow-y: auto;">
         <el-dropdown-item command="insertLeftCol"
           >{{ i18n("ui.insertLeftCol") }}
         </el-dropdown-item>

@@ -241,7 +241,7 @@ export default {
   "ui.insertAboveRow": "插入上方行",
   "ui.insertBelowRow": "插入下方行",
   "ui.mergeLeftCell": "合并左边单元格",
-  "ui.mergeRightCell": "合并右单元格",
+  "ui.mergeRightCell": "合并右边单元格",
   "ui.mergeWholeRow": "合并整行",
   "ui.mergeAboveCell": "合并上边单元格",
   "ui.mergeBelowCell": "合并下边单元格",
