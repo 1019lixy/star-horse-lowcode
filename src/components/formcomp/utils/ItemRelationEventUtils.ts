@@ -420,11 +420,11 @@ const prepsFilter = (preps: any) => {
     ) {
       delete preps[key];
     }
+
     if (prep === "false" || prep === "true") {
       preps[key] = Boolean(prep);
     }
   });
-
   return preps;
 };
 const convertData = (data: any) => {

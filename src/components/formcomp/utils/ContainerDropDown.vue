@@ -137,14 +137,14 @@ const submitAction = () => {
     //将当前行合并的单元格的可见改为false
     console.log((props.colIndex + 1) + "," + endCol, column);
     for (let col = props.colIndex + 1; col < endCol; col++) {
-      columns[col].visible = false;
+      columns[col].cellVisible = false;
     }
     //将跨行合并的单元格的可见改为false
     for (let row = props.rowIndex + 1; row < endRow; row++) {
       const tempRow = elements[row];
       const tempRows = tempRow.columns;
       for (let col = props.colIndex; col < endCol; col++) {
-        tempRows[col].visible = false;
+        tempRows[col].cellVisible = false;
       }
     }
   }

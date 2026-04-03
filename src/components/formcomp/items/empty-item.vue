@@ -7,9 +7,9 @@
       :field="field"
       :parentField="parentField"
   >
-    <div class="empty_comp">
+<!--    <div class="empty_comp">
       <span class="empty_text">{{ i18n('form.empty') }}</span>
-    </div>
+    </div>-->
   </starhorse-form-item>
 </template>
 <script setup lang="ts">

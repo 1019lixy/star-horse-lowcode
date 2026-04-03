@@ -5,13 +5,13 @@ import {uuid} from "@/api/system";
  */
 export const colDataInfo = (type: any) => {
     if (type == "dytable") {
-        return {id: uuid(), colspan: 1, rowspan: 1, items: [], visible: true};
+        return {id: uuid(), colspan: 1, rowspan: 1, items: [], cellVisible: true};
     } else if (type == "box") {
         return {id: uuid(), columns: [boxCol(8)]};
     }
 };
 const boxCol = (colspan: number) => {
-    return {id: uuid(), colspan: colspan, items: [], visible: true};
+    return {id: uuid(), colspan: colspan, items: [], cellVisible: true};
 };
 /**
  * 左方插入列
@@ -48,10 +48,28 @@ const insertCol = (
                 cols.splice(position, 0, newCol);
             } else {
                 const newCol = colDataInfo(type);
-                newCol.visible = true;
+                newCol.cellVisible = true;
+                //如果有整行合并的需要把合并的列+1
+                if (cols[0].colspan == cols.length) {
+                    cols[0].colspan = cols[0].colspan + 1;
+                    newCol.cellVisible = false;
+                }
                 cols.splice(position, 0, newCol);
             }
         }
+    }
+};
+/**
+ * 更新表格有多少行和多少列
+ * @param props
+ * @param type
+ */
+const changeRowAndColNums = (props: any, type: string) => {
+    const rows = props.parentField.preps.elements;
+    const cols = rows[0].columns;
+    if (type == "dytable") {
+        props.parentField.preps["rowNums"] = rows.length;
+        props.parentField.preps["columnNums"] = cols.length;
     }
 };
 export const insertRightCol = (props: any, type: any, allCol?: boolean) => {
@@ -82,7 +100,7 @@ const addRow = (props: any, position: number, type: any) => {
         const colspan = parseInt(String(24 / len));
         for (let i = 0; i < len; i++) {
             const newCol = boxCol(colspan);
-            newCol.visible = true;
+            newCol.cellVisible = true;
             items.push(newCol);
         }
         cols.columns = items;
@@ -90,14 +108,14 @@ const addRow = (props: any, position: number, type: any) => {
         const items = [];
         for (let i = 0; i < len; i++) {
             const newCol = colDataInfo(type);
-            newCol.visible = true;
+            newCol.cellVisible = true;
             items.push(newCol);
         }
         //还需要判断哪些列是需要隐藏
         //如果有整列合并，则获取到当前的列进行隐藏
         for (let index = 0; index < len; index++) {
             if (columns[index].rowspan == rows.length) {
-                items[index].visible = false;
+                items[index].cellVisible = false;
                 columns[index].rowspan = columns[index].rowspan + 1;
                 break;
             }
@@ -128,7 +146,7 @@ const mergeCol = (props: any, position: number, type: any) => {
     if (type == "box") {
         row.columns.splice(position, 1);
     } else {
-        colInfo.visible = false;
+        colInfo.cellVisible = false;
     }
 };
 const mergeRightCol = (props: any, type: any) => {
@@ -144,7 +162,7 @@ const mergeWholeCol = (props: any, type: any) => {
         const row1 = rows[i];
         const cols = row1.columns;
         if (cols[props.colIndex] && i > 0) {
-            cols[props.colIndex].visible = false;
+            cols[props.colIndex].cellVisible = false;
         }
     }
     rows[0].columns[props.colIndex].rowspan = rows.length;
@@ -155,14 +173,14 @@ const mergeAboveRow = (props: any, type: any) => {
     const aboveRow = rows[props.rowIndex - 1];
     const aboveCol = aboveRow.columns[props.colIndex];
     aboveCol.rowspan = aboveCol.rowspan + col.rowspan;
-    col.visible = false;
+    col.cellVisible = false;
 };
 const mergeBelowRow = (props: any, type: any) => {
     const {rows, col} = tableCellInfo(props, type);
     const belowRow = rows[props.rowIndex + col.rowspan];
     col.rowspan = col.rowspan + 1;
     if (belowRow.columns[props.colIndex]) {
-        belowRow.columns[props.colIndex].visible = false;
+        belowRow.columns[props.colIndex].cellVisible = false;
     }
 };
 const mergeWholeRow = (props: any, type: any) => {
@@ -171,7 +189,7 @@ const mergeWholeRow = (props: any, type: any) => {
     for (const index in row.columns) {
         const col = row.columns[index];
         totalCols += col.colspan;
-        col.visible = index == 0;
+        col.cellVisible = index == 0;
     }
     row.columns[0].colspan = totalCols;
     // row.columns = [col];
@@ -186,12 +204,12 @@ const undoMergeRow = (props: any, type: any) => {
     if (row.columns.length == 1) {
         col.colspan = col.colspan - 1;
         const newCol = colDataInfo(type);
-        newCol.visible = true;
+        newCol.cellVisible = true;
         row.columns.splice(props.colIndex, 0, newCol);
     } else {
         col.rowspan = col.rowspan - 1;
         const newCol = colDataInfo(type);
-        newCol.visible = true;
+        newCol.cellVisible = true;
         row.columns.splice(props.colIndex, 1, newCol);
         rows[props.rowIndex + 1].columns.splice(props.colIndex, 0, col);
     }
@@ -233,25 +251,25 @@ const undoMergeCol = (props: any, type: any) => {
                 ele.colspan = maxColspan;
             });
             const newCol = boxCol(maxColspan);
-            newCol.visible = true;
+            newCol.cellVisible = true;
             row.columns.splice(position, 0, newCol);
         } else {
             maxColspan = maxColspan / 2;
             const newCol = boxCol(type);
-            newCol.visible = true;
+            newCol.cellVisible = true;
             row.columns.splice(props.colIndex, 0, newCol);
         }
     } else {
         if (col.rowspan == rows.length) {
             col.rowspan = col.rowspan - 1;
             const newCol = colDataInfo(type);
-            newCol.visible = true;
+            newCol.cellVisible = true;
             row.columns.splice(props.colIndex, 1, newCol);
             rows[props.rowIndex + 1].columns.splice(props.colIndex, 0, col);
         } else {
             col.colspan = col.colspan - 1;
             const newCol = colDataInfo(type);
-            newCol.visible = true;
+            newCol.cellVisible = true;
             row.columns.splice(props.colIndex, 0, newCol);
         }
     }
@@ -265,7 +283,7 @@ const deleteWholeCol = (props: any, type: any) => {
     for (let i = 0; i < rows.length; i++) {
         const cols = rows[i].columns;
         if (cols[props.colIndex]) {
-            cols[props.colIndex].visible = false;
+            cols[props.colIndex].cellVisible = false;
         }
     }
 };
@@ -286,7 +304,7 @@ const addCell = (props: any, type: any, isBefore: boolean) => {
                     tempIndex = parseInt(sIndex) + 1;
                 }
                 const newCol = colDataInfo(type);
-                newCol.visible = true;
+                newCol.cellVisible = true;
                 cols.splice(tempIndex, 0, newCol);
                 break;
             }
@@ -304,7 +322,7 @@ const deleteCurrentCol = (props: any, type: any) => {
         const cols = rows[index].columns;
         for (const sIndex in cols) {
             if (props.colIndex == sIndex && props.rowIndex == index) {
-                cols[sIndex].visible = false;
+                cols[sIndex].cellVisible = false;
                 break;
             }
         }
@@ -314,7 +332,7 @@ const deleteWholeRow = (props: any, type: any) => {
     const row = props.parentField.preps.elements[props.rowIndex];
     if (row?.columns) {
         row.columns.forEach((col: any) => {
-            col.visible = false;
+            col.cellVisible = false;
         });
     }
 };
@@ -476,6 +494,7 @@ export const tableCellOperation = (
         case "colConfig":
             console.log();
     }
+    changeRowAndColNums(props, type);
     //操作单元格后再次调用控制按钮函数
     // tableAction(props, buttonControl);
 };

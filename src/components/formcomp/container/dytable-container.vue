@@ -208,7 +208,7 @@ const getColIndex = (rowIndex: number, colIndex: number, col: any) => {
         <template v-for="(td, colIndex) in row.columns">
           <dytable-col
               :field="td"
-              v-if="td.visible"
+              v-if="td.cellVisible"
               :formInfo="formInfo"
               v-model:formData="formData"
               :isDesign="isDesign"

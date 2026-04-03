@@ -6,15 +6,15 @@ import {compKey} from "@/api/system";
 const props = defineProps({
   item: {type: Array as PropType<Array<FieldInfo> | any>, required: true},
   commonFormat: {type: Function, required: true},
-  compSize:{type:String,default:"default"},
+  compSize: {type: String, default: "default"},
 });
 const dataForm: ModelRef<any> = defineModel("dataForm");
 const rowHeight = computed(() => {
-  if(props.compSize=="large"){
+  if (props.compSize == "large") {
     return "45px";
-  }else if(props.compSize=="small"){
+  } else if (props.compSize == "small") {
     return "35px";
-  }else{
+  } else {
     return "40px";
   }
 });
@@ -84,6 +84,18 @@ const dataFormat = (item: any) => {
 };
 const init = () => {
 };
+const checkItem = (item: any) => {
+  if (Array.isArray(item)) {
+    return item[0];
+  }
+  return item;
+};
+const createArray = (item: any) => {
+  if (Array.isArray(item)) {
+    return item;
+  }
+  return [item];
+};
 onMounted(() => {
   init();
 });
@@ -122,45 +134,49 @@ onMounted(() => {
           :key="compKey(row, rowIndex)"
           class="dy-tr"
       >
-        <td
-            v-for="(sitem, colIndex) in row"
-            :key="compKey(sitem, colIndex)"
-            :colspan="sitem.preps?.colspan || 1"
-            :rowspan="sitem.preps?.rowspan || 1"
-            :class="{ 'title-style': sitem.preps?.labelFlag == 'Y' }"
-            :style="{
+        <template v-for="(sitem, colIndex) in row">
+          <td
+              v-if="checkItem(sitem).preps.cellVisible"
+              :key="compKey(sitem, colIndex)"
+              :colspan="checkItem(sitem).preps?.colspan || 1"
+              :rowspan="checkItem(sitem).preps?.rowspan || 1"
+              :class="{ 'title-style': checkItem(sitem).preps?.labelFlag == 'Y' }"
+              :style="{
               border: '1px solid var(--star-horse-border—color)',
-              width: sitem.preps?.colWidth || 'auto',
-              height: sitem.preps?.colHeight || rowHeight,
-              'text-align': sitem.preps?.textAlign ?? 'left',
+              width: checkItem(sitem).preps?.colWidth || 'auto',
+              height: checkItem(sitem).preps?.colHeight || rowHeight,
+              'text-align': checkItem(sitem).preps?.textAlign ?? 'left',
               'white-space': 'nowrap',
-              'word-break': !!sitem.preps?.wordBreak ? 'break-all' : 'keep-all',
+              'word-break': !!checkItem(sitem).preps?.wordBreak ? 'break-all' : 'keep-all',
             }"
-        >
-          <div class=" w-full h-full  overflow-hidden" v-if="sitem.type=='html'||sitem.type=='text'">
-            <star-horse-item
-                :compSize="compSize"
-                v-model:dataForm="dataForm"
-                :item="sitem"
-                :dataIndex="1"
-                :source="5"
-            />
-          </div>
-          <div
-              class=" h-full w-full item"
-              v-else-if="sitem.formVisible || sitem.listVisible || sitem.viewVisible"
           >
-            <label v-if="!sitem.preps?.hideLabel&&sitem.label">{{ sitem.label }} </label>
-            <div :class="{content:!sitem.preps?.hideLabel}">
-              <pre v-if="sitem.type == 'textarea' || sitem.type == 'markdown'">{{
-                  dataFormat(sitem)
+            <template v-for="tempData in createArray(sitem)">
+              <div class=" w-full h-full  overflow-hidden" v-if="tempData.type=='html'||tempData.type=='text'">
+                <star-horse-item
+                    :compSize="compSize"
+                    v-model:dataForm="dataForm"
+                    :item="tempData"
+                    :dataIndex="1"
+                    :source="5"
+                />
+              </div>
+              <div
+                  class=" h-full w-full item"
+                  v-else-if="tempData.formVisible || tempData.listVisible || tempData.viewVisible"
+              >
+                <label v-if="!tempData.preps?.hideLabel&&tempData.label">{{ tempData.label }} </label>
+                <div :class="{content:!tempData.preps?.hideLabel}">
+              <pre v-if="tempData.type == 'textarea' || tempData.type == 'markdown'">{{
+                  dataFormat(tempData)
                 }}</pre>
-              <el-tooltip :content="dataFormat(sitem)" v-else>
-                {{ dataFormat(sitem) }}
-              </el-tooltip>
-            </div>
-          </div>
-        </td>
+                  <el-tooltip :content="dataFormat(tempData)" v-else>
+                    {{ dataFormat(tempData) }}
+                  </el-tooltip>
+                </div>
+              </div>
+            </template>
+          </td>
+        </template>
       </tr>
       </tbody>
     </table>

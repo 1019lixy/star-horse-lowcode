@@ -30,12 +30,15 @@ const rowHeight = computed(() => {
 const columnStructure = computed(() => {
   if (!props.item?.dytableList?.length) return [];
 
+  const rows=props.item.dytableList;
+  console.log(rows);
   // 找到最大列数的行
   let maxColsRow = props.item.dytableList[0];
   let columns = maxColsRow.length;
   const colStructure = [];
   for (let i = 0; i < columns; i++) {
-    colStructure.push({width: checkItem(maxColsRow[i]).colWidth});
+    console.log(checkItem(maxColsRow[i]));
+    colStructure.push({width: checkItem(maxColsRow[i]).preps?.colWidth||"100%"});
   }
   return colStructure;
 });
@@ -94,7 +97,7 @@ const createArray = (item: any) => {
       >
         <template v-for="(sitem, colIndex) in row">
           <td
-              v-if="checkItem(sitem).preps.visible"
+              v-if="checkItem(sitem).preps.cellVisible"
               :key="colIndex * rowIndex"
               :colspan="checkItem(sitem).preps?.colspan || 1"
               :rowspan="checkItem(sitem).preps?.rowspan || 1"

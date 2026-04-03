@@ -24,6 +24,7 @@ const listedFields: string[] = [
     "editDisabled",
     "id",
     "itemNameLabel",
+    "elements"
 ];
 const commonFields: FieldInfo[] = commonField();
 const createContainer = (item: any, children: any) => {
@@ -56,7 +57,7 @@ const boxDytableAnalysis = (item: any) => {
             let colWidth = column.colWidth;
             let colspan = column.colspan;
             let rowspan = column.rowspan;
-            let visible = column.visible;
+            let cellVisible = column.cellVisible;
             //判断当前列有没有组件,每列支持一个或者多个组件
             const currentColumnItems: FieldInfo[] | any = [];
             column?.items?.forEach((temp: any) => {
@@ -70,7 +71,7 @@ const boxDytableAnalysis = (item: any) => {
                 fieldInfo.preps["colWidth"] = colWidth;
                 fieldInfo.preps["colspan"] = colspan;
                 fieldInfo.preps["rowspan"] = rowspan;
-                fieldInfo.preps["visible"] = visible;
+                fieldInfo.preps["cellVisible"] = cellVisible;
                 currentColumnItems.push(fieldInfo);
                 if (Object.keys(searchItem).length > 0) {
                     searchItemList.push(searchItem);
@@ -93,7 +94,7 @@ const boxDytableAnalysis = (item: any) => {
                         rowspan: rowspan,
                         colHeight: colHeight,
                         colWidth: colWidth,
-                        visible: visible,
+                        cellVisible: cellVisible,
                     },
                 });
             }
