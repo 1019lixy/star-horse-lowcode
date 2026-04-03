@@ -79,7 +79,7 @@ const addRow = (props: any, position: number, type: any) => {
             }
         }
         const items = [];
-        const colspan = parseInt(String(24 / len)) ;
+        const colspan = parseInt(String(24 / len));
         for (let i = 0; i < len; i++) {
             const newCol = boxCol(colspan);
             newCol.visible = true;
@@ -166,15 +166,15 @@ const mergeBelowRow = (props: any, type: any) => {
     }
 };
 const mergeWholeRow = (props: any, type: any) => {
-    const {row, col} = tableCellInfo(props, type);
+    const {row} = tableCellInfo(props, type);
     let totalCols: number = 0;
     for (const index in row.columns) {
         const col = row.columns[index];
         totalCols += col.colspan;
-        col.visible = false;
+        col.visible = index == 0;
     }
-    col.colspan = totalCols;
-    row.columns = [col];
+    row.columns[0].colspan = totalCols;
+    // row.columns = [col];
 };
 /**
  * 需要判断需要还原的周边数据

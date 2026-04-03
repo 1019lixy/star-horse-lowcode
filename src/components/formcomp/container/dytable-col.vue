@@ -137,8 +137,8 @@ onMounted(() => {
       @click="selectCurrentTd"
       @mousedown="handleResizeStart"
   >
-    {{rowIndex}},{{colIndex}}
-    <!--    {{field.id}}-->
+
+    <!--    {{rowIndex}},{{colIndex}}  {{field.id}}-->
     <!--{{actionColIndex}},{{rowIndex}}-->
     <draggable
         @add="(evt: Event) => onDragAdd(evt, field.items)"
