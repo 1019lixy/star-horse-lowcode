@@ -5,13 +5,13 @@ import {uuid} from "@/api/system";
  */
 export const colDataInfo = (type: any) => {
     if (type == "dytable") {
-        return {id: uuid(), colspan: 1, rowspan: 1, items: []};
+        return {id: uuid(), colspan: 1, rowspan: 1, items: [], visible: true};
     } else if (type == "box") {
         return {id: uuid(), columns: [boxCol(8)]};
     }
 };
 const boxCol = (colspan: number) => {
-    return {id: uuid(), colspan: colspan, items: []};
+    return {id: uuid(), colspan: colspan, items: [], visible: true};
 };
 /**
  * 左方插入列
@@ -34,7 +34,8 @@ const insertCol = (
         cols?.forEach((item: any) => {
             item.colspan = colspan;
         });
-        cols.splice(position, 0, boxCol(colspan));
+        const newCol = boxCol(colspan);
+        cols.splice(position, 0, newCol);
     } else {
         for (let index = 0; index < rows.length; index++) {
             const cols = rows[index].columns;
@@ -43,9 +44,12 @@ const insertCol = (
                 cols.forEach((item: any) => {
                     item.colspan = colspan;
                 });
-                cols.splice(position, 0, boxCol(colspan));
+                const newCol = boxCol(colspan);
+                cols.splice(position, 0, newCol);
             } else {
-                cols.splice(position, 0, colDataInfo(type));
+                const newCol = colDataInfo(type);
+                newCol.visible = true;
+                cols.splice(position, 0, newCol);
             }
         }
     }
@@ -60,27 +64,45 @@ const insertAboveRow = (props: any, type: any) => {
 };
 const addRow = (props: any, position: number, type: any) => {
     const rows = props.parentField.preps.elements;
-    let len = 1;
+    const columns = rows[0].columns;
+    let len = columns.length;
     let cols: any;
-    for (let index = 0; index < rows.length; index++) {
-        const colLen = rows[index].columns.length;
-        if (colLen > len) {
-            len = colLen;
-        }
-    }
-    cols = {columns: []};
+    cols = {
+        id: uuid(),
+        columns: []
+    };
     if (type == "box") {
+        for (let index = 0; index < rows.length; index++) {
+            const colLen = rows[index].columns.length;
+            if (colLen > len) {
+                len = colLen;
+            }
+        }
         const items = [];
-        const colspan = 24 / len;
+        const colspan = parseInt(String(24 / len)) ;
         for (let i = 0; i < len; i++) {
-            items.push(boxCol(colspan));
+            const newCol = boxCol(colspan);
+            newCol.visible = true;
+            items.push(newCol);
         }
         cols.columns = items;
     } else {
         const items = [];
         for (let i = 0; i < len; i++) {
-            items.push(colDataInfo(type));
+            const newCol = colDataInfo(type);
+            newCol.visible = true;
+            items.push(newCol);
         }
+        //还需要判断哪些列是需要隐藏
+        //如果有整列合并，则获取到当前的列进行隐藏
+        for (let index = 0; index < len; index++) {
+            if (columns[index].rowspan == rows.length) {
+                items[index].visible = false;
+                columns[index].rowspan = columns[index].rowspan + 1;
+                break;
+            }
+        }
+        console.log(items);
         cols.columns = items;
     }
     rows.splice(position, 0, cols);
@@ -101,8 +123,13 @@ const mergeLeftCol = (props: any, type: any) => {
 };
 const mergeCol = (props: any, position: number, type: any) => {
     const {row, col} = tableCellInfo(props, type);
-    const colInfo = row.columns.splice(position, 1);
-    col.colspan = col.colspan + colInfo[0].colspan;
+    const colInfo = row.columns[position];
+    col.colspan = col.colspan + colInfo.colspan;
+    if (type == "box") {
+        row.columns.splice(position, 1);
+    } else {
+        colInfo.visible = false;
+    }
 };
 const mergeRightCol = (props: any, type: any) => {
     const position = props.colIndex + 1;
@@ -110,40 +137,32 @@ const mergeRightCol = (props: any, type: any) => {
 };
 const mergeWholeCol = (props: any, type: any) => {
     const {rows, col} = tableCellInfo(props, type);
-    // 遍历所有行，删除对应的列
+    if (col.rowspan === rows.length) {
+        return;
+    }
     for (let i = 0; i < rows.length; i++) {
         const row1 = rows[i];
-        console.log(row1);
         const cols = row1.columns;
-        const rowspan = cols[props.colIndex].rowspan;
-        if (rowspan > 1) {
-            i = i + rowspan-1;
-            console.log("mergeWholeCol=>",i);
-            continue;
-        }
-
-        // 确保索引存在
-        if (cols[props.colIndex]) {
-            cols.splice(props.colIndex, 1);
+        if (cols[props.colIndex] && i > 0) {
+            cols[props.colIndex].visible = false;
         }
     }
-    col.rowspan = rows.length;
-    rows[0].columns.splice(props.colIndex, 1, col);
+    rows[0].columns[props.colIndex].rowspan = rows.length;
+
 };
 const mergeAboveRow = (props: any, type: any) => {
     const {rows, row, col} = tableCellInfo(props, type);
     const aboveRow = rows[props.rowIndex - 1];
     const aboveCol = aboveRow.columns[props.colIndex];
     aboveCol.rowspan = aboveCol.rowspan + col.rowspan;
-    row.columns.splice(props.colIndex, 1);
+    col.visible = false;
 };
 const mergeBelowRow = (props: any, type: any) => {
     const {rows, col} = tableCellInfo(props, type);
     const belowRow = rows[props.rowIndex + col.rowspan];
     col.rowspan = col.rowspan + 1;
-    // 检查下方行的对应列是否存在
     if (belowRow.columns[props.colIndex]) {
-        belowRow.columns.splice(props.colIndex, 1);
+        belowRow.columns[props.colIndex].visible = false;
     }
 };
 const mergeWholeRow = (props: any, type: any) => {
@@ -152,6 +171,7 @@ const mergeWholeRow = (props: any, type: any) => {
     for (const index in row.columns) {
         const col = row.columns[index];
         totalCols += col.colspan;
+        col.visible = false;
     }
     col.colspan = totalCols;
     row.columns = [col];
@@ -164,12 +184,15 @@ const mergeWholeRow = (props: any, type: any) => {
 const undoMergeRow = (props: any, type: any) => {
     const {rows, row, col} = tableCellInfo(props, type);
     if (row.columns.length == 1) {
-        //说明是合并了整行
         col.colspan = col.colspan - 1;
-        row.columns.splice(props.colIndex, 0, colDataInfo(type));
+        const newCol = colDataInfo(type);
+        newCol.visible = true;
+        row.columns.splice(props.colIndex, 0, newCol);
     } else {
         col.rowspan = col.rowspan - 1;
-        row.columns.splice(props.colIndex, 1, colDataInfo(type));
+        const newCol = colDataInfo(type);
+        newCol.visible = true;
+        row.columns.splice(props.colIndex, 1, newCol);
         rows[props.rowIndex + 1].columns.splice(props.colIndex, 0, col);
     }
 };
@@ -205,28 +228,31 @@ const undoMergeCol = (props: any, type: any) => {
         }
 
         if (isSame) {
-            //将colspan/2,然后插入新的数据
             maxColspan = 24 / (row.columns.length + 1);
             row.columns.forEach((ele) => {
                 ele.colspan = maxColspan;
             });
-            row.columns.splice(position, 0, boxCol(maxColspan));
+            const newCol = boxCol(maxColspan);
+            newCol.visible = true;
+            row.columns.splice(position, 0, newCol);
         } else {
-            //说明合并了整列
             maxColspan = maxColspan / 2;
-            row.columns.splice(props.colIndex, 0, boxCol(type));
+            const newCol = boxCol(type);
+            newCol.visible = true;
+            row.columns.splice(props.colIndex, 0, newCol);
         }
     } else {
         if (col.rowspan == rows.length) {
             col.rowspan = col.rowspan - 1;
-            //在当前位置插入新的单元格
-            row.columns.splice(props.colIndex, 1, colDataInfo(type));
-            //将数据移入下一行
+            const newCol = colDataInfo(type);
+            newCol.visible = true;
+            row.columns.splice(props.colIndex, 1, newCol);
             rows[props.rowIndex + 1].columns.splice(props.colIndex, 0, col);
         } else {
-            //在同一行合并了单元格
             col.colspan = col.colspan - 1;
-            row.columns.splice(props.colIndex, 0, colDataInfo(type));
+            const newCol = colDataInfo(type);
+            newCol.visible = true;
+            row.columns.splice(props.colIndex, 0, newCol);
         }
     }
 };
@@ -238,9 +264,8 @@ const deleteWholeCol = (props: any, type: any) => {
     const rows = props.parentField.preps.elements;
     for (let i = 0; i < rows.length; i++) {
         const cols = rows[i].columns;
-        // 确保索引存在
         if (cols[props.colIndex]) {
-            cols.splice(props.colIndex, 1);
+            cols[props.colIndex].visible = false;
         }
     }
 };
@@ -256,12 +281,13 @@ const addCell = (props: any, type: any, isBefore: boolean) => {
         const cols = rows[index].columns;
         for (const sIndex in cols) {
             if (props.colIndex == sIndex && props.rowIndex == index) {
-                console.log("addCell", sIndex, index);
                 let tempIndex = parseInt(sIndex);
                 if (!isBefore) {
                     tempIndex = parseInt(sIndex) + 1;
                 }
-                cols.splice(tempIndex, 0, colDataInfo(type));
+                const newCol = colDataInfo(type);
+                newCol.visible = true;
+                cols.splice(tempIndex, 0, newCol);
                 break;
             }
         }
@@ -278,15 +304,19 @@ const deleteCurrentCol = (props: any, type: any) => {
         const cols = rows[index].columns;
         for (const sIndex in cols) {
             if (props.colIndex == sIndex && props.rowIndex == index) {
-                console.log("deleteCurrentCol", sIndex, index);
-                cols.splice(sIndex, 1);
+                cols[sIndex].visible = false;
                 break;
             }
         }
     }
 };
 const deleteWholeRow = (props: any, type: any) => {
-    props.parentField.preps.elements.splice(props.rowIndex, 1);
+    const row = props.parentField.preps.elements[props.rowIndex];
+    if (row?.columns) {
+        row.columns.forEach((col: any) => {
+            col.visible = false;
+        });
+    }
 };
 
 const moveRowUp = (props: any, type: any) => {

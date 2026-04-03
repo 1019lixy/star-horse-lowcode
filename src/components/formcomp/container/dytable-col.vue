@@ -137,6 +137,7 @@ onMounted(() => {
       @click="selectCurrentTd"
       @mousedown="handleResizeStart"
   >
+    {{rowIndex}},{{colIndex}}
     <!--    {{field.id}}-->
     <!--{{actionColIndex}},{{rowIndex}}-->
     <draggable
@@ -157,6 +158,7 @@ onMounted(() => {
           }"
             style="height: 100%"
         >
+
           <component
               :key="data?.id"
               :field="data"

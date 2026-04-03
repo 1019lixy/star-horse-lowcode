@@ -26,7 +26,7 @@ const handleColResizeStart = (e: MouseEvent, index: number) => {
   resizingColIndex.value = index;
   startX.value = e.clientX;
   const colElement = e.target.parentElement as HTMLElement;
-  // console.log('colElement',e, colElement);
+  console.log("colElement",e, colElement);
   startWidth.value = colElement.offsetWidth;
 
   document.addEventListener("mousemove", handleColResizeMove);
@@ -40,12 +40,13 @@ const handleColResizeMove = (e: MouseEvent) => {
   const delta = e.clientX - startX.value;
   const newWidth = Math.max(20, startWidth.value + delta);
   const newWidthStr = `${newWidth}px`;
-
+  console.log("resizingColIndex.value", resizingColIndex.value,newWidthStr);
   // 更新所有行中对应列的宽度
   const elements = props.field.preps.elements;
   elements?.forEach((row: any) => {
     if (row.columns && row.columns[resizingColIndex.value]) {
       row.columns[resizingColIndex.value].colWidth = newWidthStr;
+      console.log("resizingColIndex.value", resizingColIndex.value,newWidthStr,row.columns[resizingColIndex.value]);
     }
   });
 };
@@ -61,66 +62,12 @@ const handleColResizeEnd = () => {
 const columnStructure = computed(() => {
   const elements: any = props.field.preps?.elements;
   if (!elements?.length) return [];
-
   // 找到最大列数的行
   let maxColsRow = elements[0];
-  // let colStructure=[];
-  let columns=0;
-  maxColsRow.columns.forEach((col: any) => {
-    columns+=col.colspan;
-  });
-  // for(let i=0;i<columns;i++){
-  //   colStructure.push({width: "auto"});
-  // }
-
-  let hasMergeColFlag = false;
-  elements.forEach((row: any) => {
-    let hasMergeCol= row.columns.find((col: any) => col.colspan>1);
-    if(hasMergeCol&&row.columns.length>1) {
-      hasMergeColFlag = true;
-      return false;
-    }
-  });
-  if(!hasMergeColFlag) {
-    maxColsRow = elements.reduce((maxRow: any, row: any) => {
-      return (row.columns?.length || 0) > (maxRow.columns?.length || 0) ? row : maxRow;
-    }, elements[0]);
-  }else{
-     maxColsRow = elements.reduce((maxRow: any, row: any) => {
-      const hasMergeCol= row.columns.find((col: any) => col.colspan>1);
-      if(hasMergeCol && row.columns && row.columns.length >= (maxRow.columns?.length || 0)) {
-        return row;
-      }
-      return maxRow;
-    }, elements[0]);
-  }
-
-
-  // 构建列结构，包含宽度信息
-  let totalCols = 0;
-  console.log("maxColsRow.columns", maxColsRow.columns);
-  const colStructure = maxColsRow.columns.map((col: any, index: number) => {
-    // 从所有行中查找该列的宽度信息
-    let width = col.colWidth;
-    let colspan = col.colspan || 1;
-    if (!width) {
-      for (const row of elements) {
-        if (row.columns && row.columns[index] && row.columns[index].colWidth) {
-          width = row.columns[index].colWidth;
-          break;
-        }
-      }
-    }
-    console.log("colspan", colspan);
-    totalCols += colspan;
-    return {width};
-  });
-  const addCol = Math.abs(maxColsRow.columns.length - columns);
-  console.log("addCol", addCol);
-  if(addCol > 0) {
-    for(let i = 0; i < addCol; i++) {
-      colStructure.push({width: "100%"});
-    }
+  let columns = maxColsRow.columns.length;
+  const colStructure =[];
+  for (let i = 0; i < columns; i++) {
+    colStructure.push({width: maxColsRow.columns[i].colWidth});
   }
   return colStructure;
 });
@@ -261,6 +208,7 @@ const getColIndex = (rowIndex: number, colIndex: number, col: any) => {
         <template v-for="(td, colIndex) in row.columns">
           <dytable-col
               :field="td"
+              v-if="td.visible"
               :formInfo="formInfo"
               v-model:formData="formData"
               :isDesign="isDesign"

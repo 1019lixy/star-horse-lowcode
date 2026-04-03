@@ -32,53 +32,10 @@ const columnStructure = computed(() => {
 
   // 找到最大列数的行
   let maxColsRow = props.item.dytableList[0];
-  // 找到最大列数的行
-  // let colStructure=[];
-  let columns = 0;
-  maxColsRow.forEach((col: any) => {
-    columns += col.preps?.colspan || 1;
-  });
-  let hasMergeColFlag = false;
-  props.item.dytableList.forEach((row: any) => {
-    let hasMergeCol = row.find((col: any) => col.preps?.colspan > 1);
-    if (hasMergeCol && row.length > 1) {
-      hasMergeColFlag = true;
-      return false;
-    }
-  });
-  if (!hasMergeColFlag) {
-    maxColsRow = props.item.dytableList.reduce((maxRow: any, row: any) => {
-      return (row?.length || 0) > (maxRow?.length || 0) ? row : maxRow;
-    }, props.item.dytableList[0]);
-  } else {
-    maxColsRow = props.item.dytableList.reduce((maxRow: any, row: any) => {
-      const hasMergeCol = row.find((col: any) => col.preps?.colspan > 1);
-      if (hasMergeCol && row && row.length >= (maxRow?.length || 0)) {
-        return row;
-      }
-      return maxRow;
-    }, props.item.dytableList[0]);
-  }
-  let totalCols = 0;
-  // 构建列结构，包含宽度信息
-  const colStructure = maxColsRow.map((sitem: any, index: number) => {
-    // 从所有行中查找该列的宽度信息
-    let width = sitem.preps?.colWidth;
-    let colspan = sitem.preps?.colspan || 1;
-    if (!width) {
-      for (const row of props.item.dytableList) {
-        if (row && row[index] && row[index].preps?.colWidth) {
-          width = row[index].preps.colWidth;
-          break;
-        }
-      }
-    }
-    totalCols += colspan;
-    return {width};
-  });
-  const addCol = Math.abs(maxColsRow.length - columns);
-  for (let i = 0; i < addCol; i++) {
-    colStructure.push({width: "100%"});
+  let columns = maxColsRow.length;
+  const colStructure = [];
+  for (let i = 0; i < columns; i++) {
+    colStructure.push({width: checkItem(maxColsRow[i]).colWidth});
   }
   return colStructure;
 });
@@ -135,13 +92,14 @@ const createArray = (item: any) => {
           :key="rowIndex"
           class="dy-tr"
       >
-        <td
-            v-for="(sitem, colIndex) in row"
-            :key="colIndex * rowIndex"
-            :colspan="checkItem(sitem).preps?.colspan || 1"
-            :rowspan="checkItem(sitem).preps?.rowspan || 1"
-            :class="{ 'title-style': checkItem(sitem).preps?.labelFlag == 'Y' }"
-            :style="{
+        <template v-for="(sitem, colIndex) in row">
+          <td
+              v-if="checkItem(sitem).preps.visible"
+              :key="colIndex * rowIndex"
+              :colspan="checkItem(sitem).preps?.colspan || 1"
+              :rowspan="checkItem(sitem).preps?.rowspan || 1"
+              :class="{ 'title-style': checkItem(sitem).preps?.labelFlag == 'Y' }"
+              :style="{
               width: checkItem(sitem).preps?.colWidth || '100%',
               height: checkItem(sitem).preps?.colHeight || rowHeight,
               'text-align': checkItem(sitem).preps?.textAlign ?? 'left',
@@ -149,29 +107,50 @@ const createArray = (item: any) => {
               'word-break': !!checkItem(sitem).preps?.wordBreak ? 'break-all' : 'normal',
               'text-overflow': 'ellipsis'
             }"
-        >
-          <template v-for="tempData in createArray(sitem)">
-            <template
-                v-if="
+          >
+            <template v-for="tempData in createArray(sitem)">
+              <template
+                  v-if="
                 tempData.type != 'button' &&
                 tempData.type != 'usercomp' &&
                 !tempData.preps?.staticData
               "
-            >
-              <el-form-item
-                  :size="compSize"
-                  :label="tempData.preps?.hideLabel ? '' : tempData.label"
-                  class="flex w-full flex-1 my-5"
-                  :prop="loadProp(propPrefix, tempData.fieldName, -1, -1)"
-                  :labelPosition="tempData.preps?.labelPosition??parentPreps?.labelPosition"
-                  :rules="validMsg(tempData, dataForm)"
-                  v-if="
+              >
+                <el-form-item
+                    :size="compSize"
+                    :label="tempData.preps?.hideLabel ? '' : tempData.label"
+                    class="flex w-full flex-1 my-5"
+                    :prop="loadProp(propPrefix, tempData.fieldName, -1, -1)"
+                    :labelPosition="tempData.preps?.labelPosition??parentPreps?.labelPosition"
+                    :rules="validMsg(tempData, dataForm)"
+                    v-if="
                   (tempData.formVisible &&
                   tempData.label &&
                   tempData.preps?.headerFlag != 'Y')||
                   checkVisible(tempData, dataForm)
                 "
-              >
+                >
+                  <star-horse-item
+                      :primaryKey="primaryKey"
+                      :compSize="compSize"
+                      v-model:dataForm="dataForm"
+                      :item="tempData"
+                      :dataIndex="dataIndex"
+                      :source="source"
+                  />
+                </el-form-item>
+                <star-horse-item
+                    v-else-if="tempData.viewVisible || checkVisible(tempData, dataForm)"
+                    :compSize="compSize"
+                    :primaryKey="primaryKey"
+                    v-model:dataForm="dataForm"
+                    :item="tempData"
+                    class="flex w-full flex-1"
+                    :dataIndex="dataIndex"
+                    :source="source"
+                />
+              </template>
+              <template v-else-if="tempData.fieldName">
                 <star-horse-item
                     :primaryKey="primaryKey"
                     :compSize="compSize"
@@ -180,30 +159,10 @@ const createArray = (item: any) => {
                     :dataIndex="dataIndex"
                     :source="source"
                 />
-              </el-form-item>
-              <star-horse-item
-                  v-else-if="tempData.viewVisible || checkVisible(tempData, dataForm)"
-                  :compSize="compSize"
-                  :primaryKey="primaryKey"
-                  v-model:dataForm="dataForm"
-                  :item="tempData"
-                  class="flex w-full flex-1"
-                  :dataIndex="dataIndex"
-                  :source="source"
-              />
+              </template>
             </template>
-            <template v-else-if="tempData.fieldName">
-              <star-horse-item
-                  :primaryKey="primaryKey"
-                  :compSize="compSize"
-                  v-model:dataForm="dataForm"
-                  :item="tempData"
-                  :dataIndex="dataIndex"
-                  :source="source"
-              />
-            </template>
-          </template>
-        </td>
+          </td>
+        </template>
       </tr>
       </tbody>
     </table>
