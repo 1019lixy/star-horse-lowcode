@@ -75,7 +75,7 @@ const onDragAdd = (evt: Event | any, dataList: any) => {
 };
 
 const handleTableCellCommand = (command: string) => {
-  console.log("command", command, props);
+  // console.log("command", command, props);
   tableCellOperation(command, props, "dytable");
 };
 const selectCurrentTd = () => {

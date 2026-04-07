@@ -31,13 +31,11 @@ const columnStructure = computed(() => {
   if (!props.item?.dytableList?.length) return [];
 
   const rows=props.item.dytableList;
-  console.log(rows);
   // 找到最大列数的行
   let maxColsRow = props.item.dytableList[0];
   let columns = maxColsRow.length;
   const colStructure = [];
   for (let i = 0; i < columns; i++) {
-    console.log(checkItem(maxColsRow[i]));
     colStructure.push({width: checkItem(maxColsRow[i]).preps?.colWidth||"100%"});
   }
   return colStructure;

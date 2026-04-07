@@ -1,13 +1,25 @@
 <template>
   <el-scrollbar>
-    <dytable-container
-        :formData="formData"
-        :field="fields"
-        :is-design="true"
-        :show-form-item="true"
-        :formInfo="{}"
-    />
-    <pre> {{ JSON.stringify(fields, null, 2) }}</pre>
+    <el-tabs>
+      <el-tab-pane label="Basic Tab">
+        <dytable-container
+            :formData="formData"
+            :field="(typeof fields=='string')?JSON5.parse(fields):fields"
+            :is-design="true"
+            :show-form-item="true"
+            :formInfo="{}"
+        />
+      </el-tab-pane>
+      <el-tab-pane label="Basic Tab2">
+
+        <StarHorseJsonEditor current-mode="json" v-model="fields"/>
+      </el-tab-pane>
+      <el-tab-pane label="Basic Tab3">
+        <pre> {{ JSON.stringify(fields, null, 2) }}</pre>
+      </el-tab-pane>
+    </el-tabs>
+
+
   </el-scrollbar>
 </template>
 
@@ -15,6 +27,8 @@
 import piniaInstance from "@/store";
 import {useDesignFormStore} from "@/store/DesignForm";
 import {onMounted, ref} from "vue";
+import {StarHorseJsonEditor} from "@/components/comp";
+import JSON5 from "json5";
 
 let designForm = useDesignFormStore(piniaInstance);
 const formData = ref<any>({
@@ -729,28 +743,28 @@ const formData = ref<any>({
   itemType: "dytable",
   type: "dytable",
 });*/
-const fields = ref<any>({
-  "id": "Idsh341da812-46d1-489f-ae94-7a261d97b623",
+/*const fields = ref<any>({
+  "id": "Idsh8e6b6691-6f32-432b-8d83-3e8614460389",
   "preps": {
-    "id": "Idsh341da812-46d1-489f-ae94-7a261d97b623",
+    "id": "Idsh8e6b6691-6f32-432b-8d83-3e8614460389",
     "label": "动态表格",
     "itemNameLabel": "动态表格",
     "name": "dytable1",
     "elements": [
       {
-        "id": "sh4cca87b6-1c7e-4d9f-adeb-46329027da5d",
+        "id": "sha3d3beb8-790b-4fe4-941a-a2cdd0e85449",
         "colIndex": 1,
         "columns": [
           {
-            "id": "sh56088469-bbca-4637-9539-ac852a12d1b0",
+            "id": "shdb288f86-bede-4d0a-b634-27be9280f3bb",
             "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 9,
+            "rowspan": 3,
+            "colspan": 5,
             "items": [
               {
-                "id": "Idsh6b32b7be-4b1b-4939-8c49-add30692e5c8",
+                "id": "Idsh197ec804-3f1f-4afd-9971-fd17319a81e0",
                 "preps": {
-                  "id": "Idsh6b32b7be-4b1b-4939-8c49-add30692e5c8",
+                  "id": "Idsh197ec804-3f1f-4afd-9971-fd17319a81e0",
                   "label": "Html组件",
                   "itemNameLabel": "Html组件",
                   "name": "html2",
@@ -763,11 +777,11 @@ const fields = ref<any>({
                   "viewVisible": true,
                   "elements": [
                     {
-                      "id": "sh5ffd89c6-9eaa-445f-b2f7-7f17790b129b",
+                      "id": "sh4e7f9873-960c-4fbe-bfda-febc1108da17",
                       "colIndex": 1,
                       "columns": [
                         {
-                          "id": "she4d85a76-2431-45e7-a17b-9a6e3d623e5e",
+                          "id": "she2d30714-d681-48e8-be06-c4e1093f765a",
                           "colIndex": 1,
                           "rowspan": 1,
                           "colspan": 1,
@@ -780,8 +794,7 @@ const fields = ref<any>({
                   "rowNums": 1,
                   "columnNums": 1,
                   "staticData": true,
-                  "textContent": "<p style=\"text-align: center;\"><span style=\"font-size: 19px;\">惠州朵唯通信设备有限公司 </span></p><p style=\"text-align: center;\"><span style=\"font-size: 19px;\">返工通知书</span></p>",
-                  "placeholder": ""
+                  "textContent": "<p style=\"text-align: center;\"><span style=\"font-size: 19px;\">惠州朵唯通信设备有限公司</span></p><p style=\"text-align: center;\"><span style=\"font-size: 19px;\">异常反馈单</span></p>"
                 },
                 "compType": "formItem",
                 "fieldName": "html2",
@@ -790,51 +803,10 @@ const fields = ref<any>({
                 "type": "html"
               }
             ],
-            "cellVisible": true,
-            "colHeight": "122px",
-            "colWidth": "44px"
-          },
-          {
-            "id": "shadfe72d0-d32c-4ab0-8843-f288a3b31d6b",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "cellVisible": false,
-            "items": []
-          },
-          {
-            "id": "sh8e9fa501-828e-4080-9d46-4806ec2d576f",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "cellVisible": false,
-            "items": []
-          },
-          {
-            "id": "shc7c2544a-3351-4a2f-8f3c-69ffd3eec465",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "cellVisible": false,
-            "items": []
-          },
-          {
-            "id": "sha858f110-8de9-405f-8212-4dcbe60670ad",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "cellVisible": false,
-            "items": []
-          },
-          {
-            "id": "sh442827c4-4faa-44f4-9b03-8369f43226d7",
-            "colspan": 1,
-            "rowspan": 1,
-            "items": [],
             "cellVisible": true
           },
           {
-            "id": "sh88ef2add-904d-46c2-a182-876680bd34cd",
+            "id": "shc7e0f485-5f98-4a78-bbfe-a666bb539c2e",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 1,
@@ -842,40 +814,46 @@ const fields = ref<any>({
             "items": []
           },
           {
-            "id": "shf24a0bbe-502a-485d-8618-6f1f0e76e112",
+            "id": "sh7a933260-3369-4bdf-82be-3718674e2030",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 1,
             "cellVisible": false,
-            "items": []
+            "items": [],
+            "colWidth": "186px"
           },
           {
-            "id": "sh501635b8-bcc5-40af-a79c-989a26f7e39f",
+            "id": "sh3a0a7cbe-18c3-41ac-b891-178bee5f4baa",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 1,
             "cellVisible": false,
-            "items": []
-          }
-        ]
-      },
-      {
-        "id": "sh5621a35b-dc9c-4995-a83e-b1d453293f4d",
-        "colIndex": 1,
-        "columns": [
+            "items": [],
+            "colWidth": "62px"
+          },
           {
-            "id": "sh01541a52-f586-4c49-a02f-623cc9e2d1e7",
+            "id": "sh29a99eca-3da8-433a-8e8c-d88209e83375",
             "colIndex": 1,
             "rowspan": 1,
-            "colspan": 6,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "172px"
+          },
+          {
+            "id": "sh272263b2-64ee-49e0-8f03-081f4befe3ea",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": true,
             "items": [
               {
-                "id": "Idshd80b6321-80b1-47bd-a46d-f52479ee4e85",
+                "id": "Idsh18795e21-bcbd-44e7-9b45-3d57737b91ca",
                 "preps": {
-                  "id": "Idshd80b6321-80b1-47bd-a46d-f52479ee4e85",
-                  "label": "类别",
-                  "itemNameLabel": "单选框",
-                  "name": "radio3",
+                  "id": "Idsh18795e21-bcbd-44e7-9b45-3d57737b91ca",
+                  "label": "静态文本",
+                  "itemNameLabel": "静态文本",
+                  "name": "text3",
                   "clearable": true,
                   "readonly": false,
                   "rules": [],
@@ -883,146 +861,61 @@ const fields = ref<any>({
                   "formVisible": true,
                   "listVisible": true,
                   "viewVisible": true,
-                  "dataSource": "data",
-                  "analysisType": "func",
-                  "values": [
-                    {
-                      "name": "FQC检验不良",
-                      "value": "fqc_ng",
-                      "xh": 1
-                    },
-                    {
-                      "name": "OQC检验不良",
-                      "value": "oqc_ng",
-                      "xh": 2
-                    },
-                    {
-                      "name": "客退品",
-                      "value": "customer_return",
-                      "xh": 3
-                    },
-                    {
-                      "name": "其它",
-                      "value": "other",
-                      "xh": 4
-                    }
-                  ],
-                  "valuesDefaultValue": [
-                    {}
-                  ]
+                  "staticData": true,
+                  "textContent": "批准"
                 },
                 "compType": "formItem",
-                "fieldName": "radio3",
-                "itemType": "radio",
-                "label": "单选框",
-                "type": "radio"
+                "fieldName": "text3",
+                "itemType": "text",
+                "label": "静态文本",
+                "type": "text"
               }
             ],
-            "cellVisible": true,
-            "colWidth": "44px"
+            "colWidth": "185px"
           },
           {
-            "id": "sh123ec19d-4df3-4f01-8bca-13b93a1f5823",
+            "id": "sh623fdb70-b314-4ab8-8243-6004f382c6b8",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 1,
-            "cellVisible": false,
-            "items": []
-          },
-          {
-            "id": "sh70b7887d-0928-4333-8cd0-7bdd43f6d767",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "cellVisible": false,
-            "items": []
-          },
-          {
-            "id": "shec0387fe-9ea8-4e13-a3ce-e55379f52e6a",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "cellVisible": false,
-            "items": []
-          },
-          {
-            "id": "sh8c1890cc-67fd-441e-9870-1f3f8a43a467",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "cellVisible": false,
-            "items": []
-          },
-          {
-            "id": "sh92ad1ae0-7be9-42f1-a082-03506f6db46b",
-            "colspan": 1,
-            "rowspan": 1,
-            "items": [],
-            "cellVisible": true
-          },
-          {
-            "id": "sh50bc5966-ce90-496b-a6a2-8b665e17b949",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "cellVisible": false,
-            "items": []
-          },
-          {
-            "id": "sh37a19f18-2a1d-4f5c-afa8-79e54e420095",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 2,
             "cellVisible": true,
             "items": [
               {
-                "id": "Idshe549e143-4c8f-49ce-b868-ceac692cf800",
+                "id": "Idshc1d7bf99-1c2f-4ec2-94a3-137197276301",
                 "preps": {
-                  "id": "Idshe549e143-4c8f-49ce-b868-ceac692cf800",
-                  "label": "编号",
-                  "itemNameLabel": "单行文本框",
-                  "name": "formNo",
+                  "id": "Idshc1d7bf99-1c2f-4ec2-94a3-137197276301",
+                  "label": "静态文本",
+                  "itemNameLabel": "静态文本",
+                  "name": "text4",
                   "clearable": true,
                   "readonly": false,
-                  "placeholder": "请输入编号",
                   "rules": [],
                   "maxLength": 255,
                   "formVisible": true,
                   "listVisible": true,
-                  "viewVisible": true
+                  "viewVisible": true,
+                  "staticData": true,
+                  "textContent": "审核"
                 },
                 "compType": "formItem",
-                "fieldName": "formNo",
-                "itemType": "input",
-                "label": "单行文本框",
-                "type": "input"
+                "fieldName": "text4",
+                "itemType": "text",
+                "label": "静态文本",
+                "type": "text"
               }
             ]
           },
           {
-            "id": "sh4940a9ba-acde-4c1d-ac06-b872d7ed6d87",
+            "id": "sh78e007ac-fa43-4cf9-81e9-80e527dddcc1",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 1,
-            "cellVisible": false,
-            "items": []
-          }
-        ]
-      },
-      {
-        "id": "shfcbec140-fecc-48b7-afeb-0ffa9e37374f",
-        "colIndex": 1,
-        "columns": [
-          {
-            "id": "sha25c87dd-a815-40d3-88fb-2427710bfd4d",
-            "colIndex": 1,
-            "rowspan": 5,
-            "colspan": 1,
+            "cellVisible": true,
             "items": [
               {
-                "id": "Idsh4a6401d8-04c8-437f-aa1f-9f7cbae49b29",
+                "id": "Idsh6a11f58c-1779-4e81-9014-442c54236ca5",
                 "preps": {
-                  "id": "Idsh4a6401d8-04c8-437f-aa1f-9f7cbae49b29",
+                  "id": "Idsh6a11f58c-1779-4e81-9014-442c54236ca5",
                   "label": "静态文本",
                   "itemNameLabel": "静态文本",
                   "name": "text5",
@@ -1034,7 +927,7 @@ const fields = ref<any>({
                   "listVisible": true,
                   "viewVisible": true,
                   "staticData": true,
-                  "textContent": "产品信息"
+                  "textContent": "作成"
                 },
                 "compType": "formItem",
                 "fieldName": "text5",
@@ -1042,24 +935,465 @@ const fields = ref<any>({
                 "label": "静态文本",
                 "type": "text"
               }
-            ],
-            "cellVisible": true,
-            "colWidth": "44px"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "she082dce0-ceed-49d3-92e8-ad0bd92be377",
+        "colIndex": 1,
+        "columns": [
+          {
+            "id": "sh5eb69288-c3df-4ef0-9242-6ec52e0ecb84",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "items": [],
+            "cellVisible": false
           },
           {
-            "id": "shb9361f56-3370-497d-81e9-20aaff665328",
+            "id": "sh0b41f4fe-b1cd-439a-8188-f21af057b9d7",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": []
+          },
+          {
+            "id": "sh93fcd205-ced0-4372-9ef7-df4da5fd99d8",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "186px"
+          },
+          {
+            "id": "sh7c931d88-4db2-4f2e-9f90-4ec5a2c1fca3",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "62px"
+          },
+          {
+            "id": "sh947310d0-1d41-4d19-b30f-9edf3ab0abd0",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "172px"
+          },
+          {
+            "id": "shac0fc43c-9515-4c7c-bc72-8e8befb155e9",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": true,
+            "items": [
+              {
+                "id": "Idshdc09b85c-e7af-4326-a796-89dd8c2ebf84",
+                "preps": {
+                  "id": "Idshdc09b85c-e7af-4326-a796-89dd8c2ebf84",
+                  "label": "单行文本框",
+                  "itemNameLabel": "单行文本框",
+                  "name": "pizhun",
+                  "clearable": true,
+                  "readonly": false,
+                  "placeholder": "请输入单行文本框",
+                  "rules": [],
+                  "maxLength": 255,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true,
+                  "hideLabel": true
+                },
+                "compType": "formItem",
+                "fieldName": "pizhun",
+                "itemType": "input",
+                "label": "单行文本框",
+                "type": "input"
+              }
+            ],
+            "colWidth": "185px"
+          },
+          {
+            "id": "sh0d1abe78-a0b2-48fe-a2ab-b6f429816a06",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": true,
+            "items": [
+              {
+                "id": "Idshd1928ea5-97ef-439e-9ac4-692cd604db99",
+                "preps": {
+                  "id": "Idshd1928ea5-97ef-439e-9ac4-692cd604db99",
+                  "label": "单行文本框",
+                  "itemNameLabel": "单行文本框",
+                  "name": "shenhe",
+                  "clearable": true,
+                  "readonly": false,
+                  "placeholder": "请输入单行文本框",
+                  "rules": [],
+                  "maxLength": 255,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true,
+                  "hideLabel": true
+                },
+                "compType": "formItem",
+                "fieldName": "shenhe",
+                "itemType": "input",
+                "label": "单行文本框",
+                "type": "input"
+              }
+            ]
+          },
+          {
+            "id": "sh7aa26678-4e58-4cde-8359-3ac1383a1544",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": true,
+            "items": [
+              {
+                "id": "Idshfea92049-d199-465f-9a31-3497d3424203",
+                "preps": {
+                  "id": "Idshfea92049-d199-465f-9a31-3497d3424203",
+                  "label": "单行文本框",
+                  "itemNameLabel": "单行文本框",
+                  "name": "zuocheng",
+                  "clearable": true,
+                  "readonly": false,
+                  "placeholder": "请输入单行文本框",
+                  "rules": [],
+                  "maxLength": 255,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true,
+                  "hideLabel": true
+                },
+                "compType": "formItem",
+                "fieldName": "zuocheng",
+                "itemType": "input",
+                "label": "单行文本框",
+                "type": "input"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "shaba7621d-826f-441f-9750-4f5258ca67ef",
+        "colIndex": 1,
+        "columns": [
+          {
+            "id": "shfe7b5fcd-6fd5-4c15-9a70-2e480840c0db",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "items": [],
+            "cellVisible": false
+          },
+          {
+            "id": "sh5c19db94-7757-4caa-a69b-2fe01c7bfe0e",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": []
+          },
+          {
+            "id": "sh3b94e38d-6cef-4799-96b8-a560ec3632d3",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "186px"
+          },
+          {
+            "id": "sh7e9e2682-e41b-439d-a266-4e3bb649f211",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "62px"
+          },
+          {
+            "id": "shaf566f28-16df-43bb-ab5c-b175b24b4387",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "172px"
+          },
+          {
+            "id": "sh5513989e-d01d-493f-919c-5ce15a262d75",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": true,
+            "items": [
+              {
+                "id": "Idsha1f24d10-1703-463f-ba45-0d8dfbe6f95c",
+                "preps": {
+                  "id": "Idsha1f24d10-1703-463f-ba45-0d8dfbe6f95c",
+                  "label": "日期选择器",
+                  "itemNameLabel": "日期选择器",
+                  "name": "pizhunshijian",
+                  "clearable": true,
+                  "readonly": false,
+                  "placeholder": "请选择日期选择器",
+                  "type": "datetime",
+                  "rules": [],
+                  "maxLength": 255,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true,
+                  "hideLabel": true
+                },
+                "compType": "formItem",
+                "fieldName": "pizhunshijian",
+                "itemType": "datetime",
+                "label": "日期选择器",
+                "type": "datetime"
+              }
+            ],
+            "colWidth": "185px"
+          },
+          {
+            "id": "sh1d77c0c8-7df2-46e8-addc-e6c8db504da0",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": true,
+            "items": [
+              {
+                "id": "Idsh467b8801-0c3b-4293-aada-7df4dc4c90b0",
+                "preps": {
+                  "id": "Idsh467b8801-0c3b-4293-aada-7df4dc4c90b0",
+                  "label": "日期选择器",
+                  "itemNameLabel": "日期选择器",
+                  "name": "shenheshijian",
+                  "clearable": true,
+                  "readonly": false,
+                  "placeholder": "请选择日期选择器",
+                  "type": "datetime",
+                  "rules": [],
+                  "maxLength": 255,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true,
+                  "hideLabel": true
+                },
+                "compType": "formItem",
+                "fieldName": "shenheshijian",
+                "itemType": "datetime",
+                "label": "日期选择器",
+                "type": "datetime"
+              }
+            ]
+          },
+          {
+            "id": "sh9a8987c4-1106-4ec6-b5a9-28b741a710f8",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": true,
+            "items": [
+              {
+                "id": "Idsh35ad4ebf-7fde-4b80-ab3a-5442e495d493",
+                "preps": {
+                  "id": "Idsh35ad4ebf-7fde-4b80-ab3a-5442e495d493",
+                  "label": "日期选择器",
+                  "itemNameLabel": "日期选择器",
+                  "name": "zuochengshijian",
+                  "clearable": true,
+                  "readonly": false,
+                  "placeholder": "请选择日期选择器",
+                  "type": "datetime",
+                  "rules": [],
+                  "maxLength": 255,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true,
+                  "hideLabel": true
+                },
+                "compType": "formItem",
+                "fieldName": "zuochengshijian",
+                "itemType": "datetime",
+                "label": "日期选择器",
+                "type": "datetime"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "sh24548c33-eb3a-4dd4-9a42-482ed1a39f65",
+        "colIndex": 1,
+        "columns": [
+          {
+            "id": "sh828e9be4-d111-4f6c-82a3-21a12d7865d9",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 2,
+            "items": [
+              {
+                "id": "Idsh454a068f-ef1f-422d-84b9-fcbe5d7710d4",
+                "preps": {
+                  "id": "Idsh454a068f-ef1f-422d-84b9-fcbe5d7710d4",
+                  "label": "TO",
+                  "itemNameLabel": "单行文本框",
+                  "clearable": true,
+                  "readonly": false,
+                  "placeholder": "请输入TO",
+                  "rules": [],
+                  "maxLength": 255,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true,
+                  "name": "formTo"
+                },
+                "compType": "formItem",
+                "fieldName": "formTo",
+                "itemType": "input",
+                "label": "单行文本框",
+                "type": "input"
+              }
+            ],
+            "cellVisible": true
+          },
+          {
+            "id": "sh0a470bc8-3c23-4e47-9b8c-74c32b35710c",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": []
+          },
+          {
+            "id": "shb043dcff-f307-4ca0-9396-bde2709450f4",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 4,
+            "cellVisible": true,
+            "items": [
+              {
+                "id": "Idsha18deb8e-30a7-4b6c-9bc8-7695a6860322",
+                "preps": {
+                  "id": "Idsha18deb8e-30a7-4b6c-9bc8-7695a6860322",
+                  "label": "CC",
+                  "itemNameLabel": "单行文本框",
+                  "name": "chaosong",
+                  "clearable": true,
+                  "readonly": false,
+                  "placeholder": "请输入CC",
+                  "rules": [],
+                  "maxLength": 255,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true
+                },
+                "compType": "formItem",
+                "fieldName": "chaosong",
+                "itemType": "input",
+                "label": "单行文本框",
+                "type": "input"
+              }
+            ],
+            "colWidth": "186px"
+          },
+          {
+            "id": "sheedb2b29-ac3c-44d5-b426-746b4b7713b7",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "62px"
+          },
+          {
+            "id": "sh353e8cc7-6ee1-4a1c-87df-9cc955d0899d",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "172px"
+          },
+          {
+            "id": "shab30f31b-a4f0-4e97-b3d9-b3bab137ec43",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "185px"
+          },
+          {
+            "id": "sh43355758-0f59-4c58-999e-dba032b13c41",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 2,
             "cellVisible": true,
             "items": [
               {
-                "id": "Idsh409dd3f7-f62b-488f-94a7-6fedefa18d54",
+                "id": "Idsheab30e19-eef4-4cce-93f4-c5355d15ccf6",
                 "preps": {
-                  "id": "Idsh409dd3f7-f62b-488f-94a7-6fedefa18d54",
+                  "id": "Idsheab30e19-eef4-4cce-93f4-c5355d15ccf6",
+                  "itemNameLabel": "单行文本框",
+                  "clearable": true,
+                  "readonly": false,
+                  "placeholder": "请输入编号",
+                  "rules": [],
+                  "maxLength": 255,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true,
+                  "label": "编号",
+                  "name": "bianhao"
+                },
+                "compType": "formItem",
+                "fieldName": "bianhao",
+                "itemType": "input",
+                "label": "单行文本框",
+                "type": "input"
+              }
+            ]
+          },
+          {
+            "id": "sh5faa898a-9c79-4037-bb4a-264cd445cc41",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": []
+          }
+        ]
+      },
+      {
+        "id": "shf469f1fc-5e41-4696-976d-59e91d5b2595",
+        "colIndex": 1,
+        "columns": [
+          {
+            "id": "sh95fde466-3c98-482b-9617-8cf5a49ca10e",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 2,
+            "items": [
+              {
+                "id": "Idsh361a5101-3f66-43ce-844e-f817beef4e5a",
+                "preps": {
+                  "id": "Idsh361a5101-3f66-43ce-844e-f817beef4e5a",
                   "label": "机型",
                   "itemNameLabel": "单行文本框",
-                  "name": "deviceModel",
+                  "name": "jixing",
                   "clearable": true,
                   "readonly": false,
                   "placeholder": "请输入机型",
@@ -1070,83 +1404,7 @@ const fields = ref<any>({
                   "viewVisible": true
                 },
                 "compType": "formItem",
-                "fieldName": "deviceModel",
-                "itemType": "input",
-                "label": "单行文本框",
-                "type": "input"
-              }
-            ]
-          },
-          {
-            "id": "sha207669e-1e74-45d7-87d8-8bd720d09f9c",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "cellVisible": false,
-            "items": []
-          },
-          {
-            "id": "sh97db1da6-fd04-48a1-b96d-eec993943458",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 2,
-            "cellVisible": true,
-            "items": [
-              {
-                "id": "Idsh5a77a00d-a7b9-46fb-b90b-d404bfcf439f",
-                "preps": {
-                  "id": "Idsh5a77a00d-a7b9-46fb-b90b-d404bfcf439f",
-                  "itemNameLabel": "单行文本框",
-                  "name": "lineName",
-                  "clearable": true,
-                  "readonly": false,
-                  "placeholder": "请输入线别",
-                  "rules": [],
-                  "maxLength": 255,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "label": "线别"
-                },
-                "compType": "formItem",
-                "fieldName": "lineName",
-                "itemType": "input",
-                "label": "单行文本框",
-                "type": "input"
-              }
-            ]
-          },
-          {
-            "id": "sh9555509f-412a-47d8-8e66-708c413c5f42",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "cellVisible": false,
-            "items": []
-          },
-          {
-            "id": "sh41e5ec1f-8e19-4609-ba3c-5d6c7e8f6f14",
-            "colspan": 2,
-            "rowspan": 1,
-            "items": [
-              {
-                "id": "Idsh23bca35c-cb1a-495a-b6db-ad3cc6e5661e",
-                "preps": {
-                  "id": "Idsh23bca35c-cb1a-495a-b6db-ad3cc6e5661e",
-                  "label": "LOT NO.",
-                  "itemNameLabel": "单行文本框",
-                  "name": "logNo",
-                  "clearable": true,
-                  "readonly": false,
-                  "placeholder": "请输入LOT NO.",
-                  "rules": [],
-                  "maxLength": 255,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true
-                },
-                "compType": "formItem",
-                "fieldName": "logNo",
+                "fieldName": "jixing",
                 "itemType": "input",
                 "label": "单行文本框",
                 "type": "input"
@@ -1155,7 +1413,7 @@ const fields = ref<any>({
             "cellVisible": true
           },
           {
-            "id": "sh89df86dd-9efb-4448-86c2-73aeb4ad5c74",
+            "id": "shf763f014-36a8-444a-867d-c849d23b619e",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 1,
@@ -1163,41 +1421,121 @@ const fields = ref<any>({
             "items": []
           },
           {
-            "id": "sh3aaf7946-3b34-4913-9adc-4bb9f241d8d0",
+            "id": "shc89eabf2-6ddf-42d1-afbc-a2c6d3abf689",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 2,
             "cellVisible": true,
             "items": [
               {
-                "id": "Idshd4b2f772-c914-4178-b77c-0b51a29da4b9",
+                "id": "Idsh1b8f16d6-98cc-4b7b-beb8-4aa9ff371a44",
                 "preps": {
-                  "id": "Idshd4b2f772-c914-4178-b77c-0b51a29da4b9",
-                  "itemNameLabel": "数字输入框",
+                  "id": "Idsh1b8f16d6-98cc-4b7b-beb8-4aa9ff371a44",
+                  "itemNameLabel": "单行文本框",
+                  "name": "shengchanpihao",
                   "clearable": true,
                   "readonly": false,
-                  "placeholder": "请输入数量",
-                  "step": 1,
-                  "min": 0,
-                  "precision": 0,
+                  "placeholder": "请输入生产批号",
                   "rules": [],
-                  "maxLength": 10,
+                  "maxLength": 255,
                   "formVisible": true,
                   "listVisible": true,
                   "viewVisible": true,
-                  "label": "数量",
-                  "name": "totalNums"
+                  "label": "生产批号"
                 },
                 "compType": "formItem",
-                "fieldName": "totalNums",
-                "itemType": "number",
-                "label": "数字输入框",
-                "type": "number"
+                "fieldName": "shengchanpihao",
+                "itemType": "input",
+                "label": "单行文本框",
+                "type": "input"
+              }
+            ],
+            "colWidth": "186px"
+          },
+          {
+            "id": "sh821a62f7-a584-46e2-9d29-9eb7fab9b97c",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "62px"
+          },
+          {
+            "id": "she382caae-53b3-4193-bb40-978526db89c1",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 2,
+            "cellVisible": true,
+            "items": [
+              {
+                "id": "Idsh8bb371fe-713b-4279-890b-fb832bd5aa01",
+                "preps": {
+                  "id": "Idsh8bb371fe-713b-4279-890b-fb832bd5aa01",
+                  "label": "批量",
+                  "itemNameLabel": "单行文本框",
+                  "name": "piliang",
+                  "clearable": true,
+                  "readonly": false,
+                  "placeholder": "请输入批量",
+                  "rules": [],
+                  "maxLength": 255,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true
+                },
+                "compType": "formItem",
+                "fieldName": "piliang",
+                "itemType": "input",
+                "label": "单行文本框",
+                "type": "input"
+              }
+            ],
+            "colWidth": "172px"
+          },
+          {
+            "id": "sh117b2e3d-2bf3-4aa4-869d-ace763c9c34e",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "185px"
+          },
+          {
+            "id": "sh7802503a-0fab-4a79-b7ab-bf7e132e8470",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 2,
+            "cellVisible": true,
+            "items": [
+              {
+                "id": "Idsh686baee1-d03b-45c5-98d8-8312bf92eb8a",
+                "preps": {
+                  "id": "Idsh686baee1-d03b-45c5-98d8-8312bf92eb8a",
+                  "itemNameLabel": "日期选择器",
+                  "name": "fashengshijian",
+                  "clearable": true,
+                  "readonly": false,
+                  "placeholder": "请输入发生时间",
+                  "rules": [],
+                  "maxLength": 255,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true,
+                  "label": "发生时间",
+                  "type": "datetime"
+                },
+                "compType": "formItem",
+                "fieldName": "fashengshijian",
+                "itemType": "datetime",
+                "label": "单行文本框",
+                "type": "datetime"
               }
             ]
           },
           {
-            "id": "sh082c3a51-312f-41d9-bc38-be71d09fc8d3",
+            "id": "sh6babbacc-d725-4e67-9954-2c7b23329008",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 1,
@@ -1207,93 +1545,45 @@ const fields = ref<any>({
         ]
       },
       {
-        "id": "sh8fc71511-a510-45d0-8fb7-8813b7635c38",
+        "id": "sh27993272-8ddb-47ca-a125-cc31c52bc021",
         "colIndex": 1,
         "columns": [
           {
-            "id": "sh1ccbeb46-3d59-4773-96fd-c679ad34feb8",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false,
-            "colWidth": "44px"
-          },
-          {
-            "id": "sh158d9d5c-e929-4f43-9eac-375b454feb6a",
+            "id": "sh041b920a-8e1b-40ca-be27-c7cd0759eba3",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 2,
-            "cellVisible": true,
             "items": [
               {
-                "id": "Idshd0dd79b2-6a8e-4efc-b09e-d683b674f0a6",
+                "id": "Idsh9bc552ab-1c2f-4464-bee8-9bfe27403dee",
                 "preps": {
-                  "id": "Idshd0dd79b2-6a8e-4efc-b09e-d683b674f0a6",
-                  "itemNameLabel": "单行文本框",
-                  "name": "itemCode",
-                  "clearable": true,
-                  "readonly": false,
-                  "placeholder": "请输入物料编码",
-                  "rules": [],
-                  "maxLength": 255,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "label": "物料编码"
-                },
-                "compType": "formItem",
-                "fieldName": "itemCode",
-                "itemType": "input",
-                "label": "单行文本框",
-                "type": "input"
-              }
-            ]
-          },
-          {
-            "id": "shb3303bbc-7550-4001-924a-fd98acfd3cf6",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "cellVisible": false,
-            "items": []
-          },
-          {
-            "id": "shf6467f6d-5129-464e-b167-b9dede7b561b",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 2,
-            "cellVisible": true,
-            "items": [
-              {
-                "id": "Idsh3dca2834-66d1-46c3-a851-7a0ff5d7774a",
-                "preps": {
-                  "id": "Idsh3dca2834-66d1-46c3-a851-7a0ff5d7774a",
-                  "label": "抽样数",
+                  "id": "Idsh9bc552ab-1c2f-4464-bee8-9bfe27403dee",
                   "itemNameLabel": "数字输入框",
-                  "name": "simpleNums",
+                  "name": "tourushu",
                   "clearable": true,
                   "readonly": false,
-                  "placeholder": "请输入抽样数",
-                  "rules": [],
-                  "maxLength": 255,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
+                  "placeholder": "请输入投入数",
                   "step": 1,
                   "min": 0,
-                  "precision": 0
+                  "precision": 0,
+                  "rules": [],
+                  "maxLength": 10,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true,
+                  "label": "投入数"
                 },
                 "compType": "formItem",
-                "fieldName": "simpleNums",
+                "fieldName": "tourushu",
                 "itemType": "number",
-                "label": "单行文本框",
+                "label": "数字输入框",
                 "type": "number"
               }
-            ]
+            ],
+            "cellVisible": true
           },
           {
-            "id": "sh9b610541-bf6c-44c0-90fa-e487e8178e99",
+            "id": "sh683180c3-f982-4a25-99e7-539622d295f2",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 1,
@@ -1301,17 +1591,19 @@ const fields = ref<any>({
             "items": []
           },
           {
-            "id": "sh4f253223-009c-435f-a766-df41a17b5213",
-            "colspan": 2,
+            "id": "sh1776fa92-fbe5-439c-890b-57041f83a636",
+            "colIndex": 1,
             "rowspan": 1,
+            "colspan": 2,
+            "cellVisible": true,
             "items": [
               {
-                "id": "Idsh2edf0345-d080-4939-8842-efa79a9257a7",
+                "id": "Idshaa73789d-c3fc-406c-a6d0-845abadaeb28",
                 "preps": {
-                  "id": "Idsh2edf0345-d080-4939-8842-efa79a9257a7",
+                  "id": "Idshaa73789d-c3fc-406c-a6d0-845abadaeb28",
                   "label": "不良数",
                   "itemNameLabel": "数字输入框",
-                  "name": "ngNums",
+                  "name": "buliangshu",
                   "clearable": true,
                   "readonly": false,
                   "placeholder": "请输入不良数",
@@ -1325,36 +1617,36 @@ const fields = ref<any>({
                   "viewVisible": true
                 },
                 "compType": "formItem",
-                "fieldName": "ngNums",
+                "fieldName": "buliangshu",
                 "itemType": "number",
                 "label": "数字输入框",
                 "type": "number"
               }
             ],
-            "cellVisible": true
+            "colWidth": "186px"
           },
           {
-            "id": "shadb926b7-6f70-4bb9-92c5-fab4ac23662e",
+            "id": "sh7cc5abbb-12c2-494e-9955-096f3a787df1",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 1,
             "cellVisible": false,
-            "items": []
+            "items": [],
+            "colWidth": "62px"
           },
           {
-            "id": "sh2c53c942-cb90-44f1-a650-eb1effb47205",
+            "id": "sh207680a2-2a3b-471e-84da-55d82b3c122a",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 2,
             "cellVisible": true,
             "items": [
               {
-                "id": "Idshf5844e43-79f1-4d09-a615-45f1a79d3656",
+                "id": "Idshfff326d9-04b3-473f-9b8d-40dff3e8a005",
                 "preps": {
-                  "id": "Idshf5844e43-79f1-4d09-a615-45f1a79d3656",
-                  "label": "不良率",
+                  "id": "Idshfff326d9-04b3-473f-9b8d-40dff3e8a005",
                   "itemNameLabel": "数字输入框",
-                  "name": "ngPercent",
+                  "name": "bulianglv",
                   "clearable": true,
                   "readonly": false,
                   "placeholder": "请输入不良率",
@@ -1365,18 +1657,61 @@ const fields = ref<any>({
                   "maxLength": 10,
                   "formVisible": true,
                   "listVisible": true,
-                  "viewVisible": true
+                  "viewVisible": true,
+                  "label": "不良率"
                 },
                 "compType": "formItem",
-                "fieldName": "ngPercent",
+                "fieldName": "bulianglv",
                 "itemType": "number",
                 "label": "数字输入框",
                 "type": "number"
               }
+            ],
+            "colWidth": "172px"
+          },
+          {
+            "id": "sh22ece42f-810b-4807-922e-74ec1458eb79",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "185px"
+          },
+          {
+            "id": "sh7ae3cc32-3cba-4e10-82f9-6edae73fd632",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 2,
+            "cellVisible": true,
+            "items": [
+              {
+                "id": "Idsh26a933ab-59c1-4e70-85ce-2aea9a392c46",
+                "preps": {
+                  "id": "Idsh26a933ab-59c1-4e70-85ce-2aea9a392c46",
+                  "label": "反馈时间",
+                  "itemNameLabel": "日期选择器",
+                  "name": "fankuishijian",
+                  "clearable": true,
+                  "readonly": false,
+                  "placeholder": "请选择反馈时间",
+                  "type": "datetime",
+                  "rules": [],
+                  "maxLength": 255,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true
+                },
+                "compType": "formItem",
+                "fieldName": "fankuishijian",
+                "itemType": "datetime",
+                "label": "日期选择器",
+                "type": "datetime"
+              }
             ]
           },
           {
-            "id": "sh16f22a04-ec3e-46ca-9798-3748fa5b836a",
+            "id": "sh6714b888-c066-479c-a4f1-1df4379ca055",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 1,
@@ -1386,54 +1721,819 @@ const fields = ref<any>({
         ]
       },
       {
-        "id": "sh3c360109-6646-46cb-bf35-4e637fa21037",
+        "id": "shf7e93c59-c2b1-4484-bbd7-d319ff3789c0",
         "colIndex": 1,
         "columns": [
           {
-            "id": "sh77832131-37b0-4c24-a350-e868f9bcb6fe",
+            "id": "shebddaed2-9e1b-4283-874c-fab336375418",
             "colIndex": 1,
             "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false,
-            "colWidth": "44px"
-          },
-          {
-            "id": "sha845a55a-f7d0-4333-bb16-a79ca71bc2b9",
-            "colIndex": 1,
-            "rowspan": 3,
             "colspan": 6,
-            "cellVisible": true,
             "items": [
               {
-                "id": "Idshe5411034-f0ad-4d4e-9c5e-ffb2ffdc6d3e",
+                "id": "Idsh2f50ee3f-9ca9-49e3-9d16-278e9780ea23",
                 "preps": {
-                  "id": "Idshe5411034-f0ad-4d4e-9c5e-ffb2ffdc6d3e",
-                  "label": "不良内容",
+                  "id": "Idsh2f50ee3f-9ca9-49e3-9d16-278e9780ea23",
+                  "label": "异常内容描述",
                   "itemNameLabel": "多行文本框",
-                  "name": "ngContent",
+                  "name": "ycnrms",
                   "clearable": true,
                   "readonly": false,
-                  "placeholder": "请输入不良内容",
+                  "placeholder": "请输入异常内容描述",
                   "rules": [],
                   "maxLength": 1000,
                   "formVisible": true,
                   "listVisible": true,
-                  "viewVisible": true
+                  "viewVisible": true,
+                  "labelPosition": "top"
                 },
                 "compType": "formItem",
-                "fieldName": "ngContent",
+                "fieldName": "ycnrms",
+                "itemType": "textarea",
+                "label": "多行文本框",
+                "type": "textarea"
+              }
+            ],
+            "cellVisible": true,
+            "colHeight": "127px"
+          },
+          {
+            "id": "sh2ab8a344-756b-4c44-b0d9-cf1a06aaab6a",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colHeight": "175px"
+          },
+          {
+            "id": "sh794ff7dc-655a-4ed2-b765-3166980aa20e",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "186px"
+          },
+          {
+            "id": "shd0543201-7e7b-49e2-931e-1e0eb664852c",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "62px"
+          },
+          {
+            "id": "she64847d9-1b73-4268-9aa7-3166c89ddaba",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "172px"
+          },
+          {
+            "id": "sh42376ceb-9bbe-4dbc-8eb1-2fb548e70319",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "185px"
+          },
+          {
+            "id": "sh86605876-ebf5-43cf-a6ad-5718d93f9505",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": true,
+            "items": [
+              {
+                "id": "Idshab1be8da-f314-4070-8958-dfd16cf606a4",
+                "preps": {
+                  "id": "Idshab1be8da-f314-4070-8958-dfd16cf606a4",
+                  "label": "静态文本",
+                  "itemNameLabel": "静态文本",
+                  "name": "text24",
+                  "clearable": true,
+                  "readonly": false,
+                  "rules": [],
+                  "maxLength": 255,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true,
+                  "placeholder": "",
+                  "staticData": true,
+                  "textContent": "开出部门"
+                },
+                "compType": "formItem",
+                "fieldName": "text24",
+                "itemType": "text",
+                "label": "静态文本",
+                "type": "text"
+              }
+            ]
+          },
+          {
+            "id": "sh31195e04-1718-41cb-9a13-cd2ec14856e8",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": true,
+            "items": [
+              {
+                "id": "Idsh747f2743-61ea-4fe2-9a74-daa676b53df9",
+                "preps": {
+                  "id": "Idsh747f2743-61ea-4fe2-9a74-daa676b53df9",
+                  "label": "单选框",
+                  "itemNameLabel": "单选框",
+                  "name": "kaichubumen",
+                  "clearable": true,
+                  "readonly": false,
+                  "rules": [],
+                  "maxLength": 255,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true,
+                  "hideLabel": true,
+                  "dataSource": "data",
+                  "analysisType": "func",
+                  "values": [
+                    {
+                      "name": "IPQC",
+                      "value": "ipqc",
+                      "xh": 1
+                    },
+                    {
+                      "name": "FQC",
+                      "value": "fqc",
+                      "xh": 2
+                    },
+                    {
+                      "name": "工程",
+                      "value": "gongcheng",
+                      "xh": 3
+                    },
+                    {
+                      "name": "产线",
+                      "value": "chanxian",
+                      "xh": 4
+                    },
+                    {
+                      "name": "其它",
+                      "value": "qita",
+                      "xh": 5
+                    }
+                  ],
+                  "valuesDefaultValue": [
+                    {}
+                  ]
+                },
+                "compType": "formItem",
+                "fieldName": "kaichubumen",
+                "itemType": "radio",
+                "label": "单选框",
+                "type": "radio"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "sh2517487a-e38d-4d19-b52e-17aa9eb1c8d2",
+        "colIndex": 1,
+        "columns": [
+          {
+            "id": "sh23b6a0c8-c148-401c-ab9e-23394df58d95",
+            "colIndex": 1,
+            "rowspan": 3,
+            "colspan": 6,
+            "items": [
+              {
+                "id": "Idsh52d0e7f7-1c03-45cb-95bb-01f102af62f0",
+                "preps": {
+                  "id": "Idsh52d0e7f7-1c03-45cb-95bb-01f102af62f0",
+                  "label": "根本原因分析（工程填写）",
+                  "itemNameLabel": "多行文本框",
+                  "name": "gbyyfxgctx",
+                  "clearable": true,
+                  "readonly": false,
+                  "placeholder": "请输入根本原因分析（工程填写）",
+                  "rules": [],
+                  "maxLength": 1000,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true,
+                  "labelPosition": "top"
+                },
+                "compType": "formItem",
+                "fieldName": "gbyyfxgctx",
                 "itemType": "textarea",
                 "label": "多行文本框",
                 "type": "textarea"
               },
               {
-                "id": "Idsh1aa6bdbd-ac95-4129-b652-6896c87a358d",
+                "id": "Idsh0dbc8c98-b7d3-4e01-90f9-fe571acfbafb",
                 "preps": {
-                  "id": "Idsh1aa6bdbd-ac95-4129-b652-6896c87a358d",
-                  "label": "处置方式",
+                  "id": "Idsh0dbc8c98-b7d3-4e01-90f9-fe571acfbafb",
+                  "label": "责任判定",
                   "itemNameLabel": "单选框",
-                  "name": "operationType",
+                  "name": "zherenpanding",
+                  "clearable": true,
+                  "readonly": false,
+                  "rules": [],
+                  "maxLength": 255,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true,
+                  "dataSource": "data",
+                  "analysisType": "func",
+                  "values": [
+                    {
+                      "name": "设计不良",
+                      "value": "sjbl",
+                      "xh": 1
+                    },
+                    {
+                      "name": "物料不良",
+                      "value": "wlbl",
+                      "xh": 2
+                    },
+                    {
+                      "name": "制程不良",
+                      "value": "zcbl",
+                      "xh": 3
+                    },
+                    {
+                      "name": "其它",
+                      "value": "qita",
+                      "xh": 4
+                    }
+                  ],
+                  "valuesDefaultValue": [
+                    {}
+                  ]
+                },
+                "compType": "formItem",
+                "fieldName": "zherenpanding",
+                "itemType": "radio",
+                "label": "单选框",
+                "type": "radio"
+              }
+            ],
+            "cellVisible": true,
+            "colHeight": "171px"
+          },
+          {
+            "id": "sh668f8c13-c792-4d9c-99df-920fa78d32bb",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": []
+          },
+          {
+            "id": "shf91186c9-ba49-4bc5-a2aa-4ab579d6925c",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "186px"
+          },
+          {
+            "id": "sh8ec832fc-aa46-41f2-9f2c-724b1d577a1f",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "62px"
+          },
+          {
+            "id": "sh1253077b-1150-426a-9972-8161beb8bf02",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "172px"
+          },
+          {
+            "id": "sha46ec3f1-f24e-4eab-bb26-bafa185e4f05",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "185px"
+          },
+          {
+            "id": "sha9a88708-4bba-4e88-9788-934624e31f5d",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 2,
+            "cellVisible": true,
+            "items": [
+              {
+                "id": "Idshb7f55085-8729-4c68-92e9-7bc5bc380eae",
+                "preps": {
+                  "id": "Idshb7f55085-8729-4c68-92e9-7bc5bc380eae",
+                  "label": "分析人",
+                  "itemNameLabel": "单行文本框",
+                  "name": "fenxiren",
+                  "clearable": true,
+                  "readonly": false,
+                  "placeholder": "请输入分析人",
+                  "rules": [],
+                  "maxLength": 255,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true
+                },
+                "compType": "formItem",
+                "fieldName": "fenxiren",
+                "itemType": "input",
+                "label": "单行文本框",
+                "type": "input"
+              }
+            ]
+          },
+          {
+            "id": "sh3820890f-eb8e-4185-8f8e-0b86ebdcce6f",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": []
+          }
+        ]
+      },
+      {
+        "id": "shdec8f71c-deaa-4233-8a4a-12205eed82ad",
+        "colIndex": 1,
+        "columns": [
+          {
+            "id": "sh8b7418bf-af2d-486e-a397-3ce4bde1d683",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "items": [],
+            "cellVisible": false
+          },
+          {
+            "id": "shf224a7d3-2251-48a9-9f79-e1526b366426",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": []
+          },
+          {
+            "id": "shd2561a4a-fb4c-4d6d-a1b5-5cdec59d246b",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "186px"
+          },
+          {
+            "id": "sh06ffb16f-1cf8-45ab-be9b-7293139e9982",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "62px"
+          },
+          {
+            "id": "sha69fe1cf-4739-4dfa-ad21-365d24d444f9",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "172px"
+          },
+          {
+            "id": "sh5a964a88-417b-4646-9e93-8100875a7c0b",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "185px"
+          },
+          {
+            "id": "sh1a647fd5-536b-4255-9d3e-262e02b8e106",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 2,
+            "cellVisible": true,
+            "items": [
+              {
+                "id": "Idshba0ce742-cf0f-4d61-8b8c-8576c88f3956",
+                "preps": {
+                  "id": "Idshba0ce742-cf0f-4d61-8b8c-8576c88f3956",
+                  "label": "QE确认",
+                  "itemNameLabel": "单行文本框",
+                  "name": "qequeren",
+                  "clearable": true,
+                  "readonly": false,
+                  "placeholder": "请输入QE确认",
+                  "rules": [],
+                  "maxLength": 255,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true
+                },
+                "compType": "formItem",
+                "fieldName": "qequeren",
+                "itemType": "input",
+                "label": "单行文本框",
+                "type": "input"
+              }
+            ]
+          },
+          {
+            "id": "sh27dfdf22-bad5-4c85-b69e-f039ade668af",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": []
+          }
+        ]
+      },
+      {
+        "id": "sha93e5a22-84f0-4770-94cb-32fdc72d5a4f",
+        "colIndex": 1,
+        "columns": [
+          {
+            "id": "sh9e472243-dfd3-4292-9d56-2d98eb90f976",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "items": [],
+            "cellVisible": false
+          },
+          {
+            "id": "sh0e306f16-caa0-491c-8fcb-47e644ba468c",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": []
+          },
+          {
+            "id": "sh133a94d2-e77f-4202-abfb-67d602ba2b6e",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "186px"
+          },
+          {
+            "id": "sh62f55c02-1edf-4d46-bdc4-8b81f9d7383f",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "62px"
+          },
+          {
+            "id": "sh633c06c3-b905-46f2-b4b5-b6751e638dce",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "172px"
+          },
+          {
+            "id": "sh6b877e82-7bba-445b-b843-e124a1288d00",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "185px"
+          },
+          {
+            "id": "sh49253a3a-9b4d-477c-b2c9-a2e797102ad0",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 2,
+            "cellVisible": true,
+            "items": [
+              {
+                "id": "Idsh11501c13-abc1-4881-9a55-82c80bff3519",
+                "preps": {
+                  "id": "Idsh11501c13-abc1-4881-9a55-82c80bff3519",
+                  "label": "工程经理",
+                  "itemNameLabel": "单行文本框",
+                  "name": "gongchengjingli",
+                  "clearable": true,
+                  "readonly": false,
+                  "placeholder": "请输入工程经理",
+                  "rules": [],
+                  "maxLength": 255,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true
+                },
+                "compType": "formItem",
+                "fieldName": "gongchengjingli",
+                "itemType": "input",
+                "label": "单行文本框",
+                "type": "input"
+              }
+            ]
+          },
+          {
+            "id": "sh49b08e2b-2452-4ef2-b65e-1ef17300aaca",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": []
+          }
+        ]
+      },
+      {
+        "id": "shc417b1b7-cde4-411e-be90-9a85f7a871be",
+        "colIndex": 1,
+        "columns": [
+          {
+            "id": "shf1f22cd1-a43d-48c4-9e1a-5ddde5ff51db",
+            "colIndex": 1,
+            "rowspan": 2,
+            "colspan": 6,
+            "items": [
+              {
+                "id": "Idsh08e3b3c0-6422-40d1-b07f-ea0d615d4bc3",
+                "preps": {
+                  "id": "Idsh08e3b3c0-6422-40d1-b07f-ea0d615d4bc3",
+                  "label": "临时措施（责任部门填写）",
+                  "itemNameLabel": "多行文本框",
+                  "name": "lscszrbmtx",
+                  "clearable": true,
+                  "readonly": false,
+                  "placeholder": "请输入临时措施（责任部门填写）",
+                  "rules": [],
+                  "maxLength": 255,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true,
+                  "labelPosition": "top"
+                },
+                "compType": "formItem",
+                "fieldName": "lscszrbmtx",
+                "itemType": "textarea",
+                "label": "多行文本框",
+                "type": "textarea"
+              }
+            ],
+            "cellVisible": true,
+            "colHeight": "125px"
+          },
+          {
+            "id": "sha07ede78-1db2-4d55-bff1-7ce92ba46a45",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": []
+          },
+          {
+            "id": "shbeec7cf3-6133-42d1-a0bf-cbc24e3814b8",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "186px"
+          },
+          {
+            "id": "sha29bc3b9-86a3-41e8-9d5c-357b9ee622dc",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "62px"
+          },
+          {
+            "id": "shb5e6e210-89cb-4fa0-a4fe-c22bbed8a974",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "172px"
+          },
+          {
+            "id": "she135b82a-1a4f-42cf-82a5-ce47bf5814c2",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "185px"
+          },
+          {
+            "id": "sh956c7896-4cbc-4a84-ac6f-867f41c1309d",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 2,
+            "cellVisible": true,
+            "items": [
+              {
+                "id": "Idshd7ace679-1f85-4143-9d8d-90603569f2cf",
+                "preps": {
+                  "id": "Idshd7ace679-1f85-4143-9d8d-90603569f2cf",
+                  "label": "制订人",
+                  "itemNameLabel": "单行文本框",
+                  "name": "zhidingren",
+                  "clearable": true,
+                  "readonly": false,
+                  "placeholder": "请输入制订人",
+                  "rules": [],
+                  "maxLength": 255,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true
+                },
+                "compType": "formItem",
+                "fieldName": "zhidingren",
+                "itemType": "input",
+                "label": "单行文本框",
+                "type": "input"
+              }
+            ]
+          },
+          {
+            "id": "sh248ee88e-74c8-440f-9116-9c873100baae",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": []
+          }
+        ]
+      },
+      {
+        "id": "shc0bedc35-3dc0-4c0e-9bc3-8a8fb6d326a7",
+        "colIndex": 1,
+        "columns": [
+          {
+            "id": "she3a78973-404b-4571-b808-70ebee92b36e",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "items": [],
+            "cellVisible": false
+          },
+          {
+            "id": "sh5ef1c601-603b-4530-b988-6b397fae57e9",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": []
+          },
+          {
+            "id": "sh448e381d-9022-4492-b232-a75c791a8220",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "186px"
+          },
+          {
+            "id": "sh681332af-d3c9-4312-b84e-38354b86dbf1",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "62px"
+          },
+          {
+            "id": "sh78d1e926-c6b8-44f7-9457-05de399144cd",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "172px"
+          },
+          {
+            "id": "shc2ffa945-11d9-44e9-a07b-a202aa39273d",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "185px"
+          },
+          {
+            "id": "sh932221c7-eb17-4722-a8c4-c2b72fe4807a",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 2,
+            "cellVisible": true,
+            "items": [
+              {
+                "id": "Idsh1723dc19-e0d3-4312-8d22-a5d60505cead",
+                "preps": {
+                  "id": "Idsh1723dc19-e0d3-4312-8d22-a5d60505cead",
+                  "itemNameLabel": "日期选择器",
+                  "name": "shidingshijian",
+                  "clearable": true,
+                  "readonly": false,
+                  "placeholder": "请输入制定时间",
+                  "rules": [],
+                  "maxLength": 255,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true,
+                  "label": "制定时间",
+                  "type": "datetime"
+                },
+                "compType": "formItem",
+                "fieldName": "shidingshijian",
+                "itemType": "datetime",
+                "label": "单行文本框",
+                "type": "datetime"
+              }
+            ]
+          },
+          {
+            "id": "sh125efa33-85c4-452d-8ff3-20077b562165",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": []
+          }
+        ]
+      },
+      {
+        "id": "sh88437ddd-330b-44ba-b653-d50f459f1d50",
+        "colIndex": 1,
+        "columns": [
+          {
+            "id": "sh9679151e-ecfa-47d1-a3b5-5145605290fb",
+            "colIndex": 1,
+            "rowspan": 2,
+            "colspan": 1,
+            "items": [
+              {
+                "id": "Idsh65e6d328-d099-4138-82be-309c594144fb",
+                "preps": {
+                  "id": "Idsh65e6d328-d099-4138-82be-309c594144fb",
+                  "label": "静态文本",
+                  "itemNameLabel": "静态文本",
+                  "name": "text34",
+                  "clearable": true,
+                  "readonly": false,
+                  "rules": [],
+                  "maxLength": 255,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true,
+                  "staticData": true,
+                  "textContent": "不良排查"
+                },
+                "compType": "formItem",
+                "fieldName": "text34",
+                "itemType": "text",
+                "label": "静态文本",
+                "type": "text"
+              }
+            ],
+            "cellVisible": true
+          },
+          {
+            "id": "shccb2fe0d-3b8f-42a5-80a9-e9b6939f5138",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 2,
+            "cellVisible": true,
+            "items": [
+              {
+                "id": "Idsh3a09a128-facd-4e3a-8cc9-69dcbc8a3d6b",
+                "preps": {
+                  "id": "Idsh3a09a128-facd-4e3a-8cc9-69dcbc8a3d6b",
+                  "label": "1.原材料",
+                  "itemNameLabel": "单选框",
+                  "name": "yuancailiao",
                   "clearable": true,
                   "readonly": false,
                   "rules": [],
@@ -1446,18 +2546,360 @@ const fields = ref<any>({
                   "analysisType": "func",
                   "values": [
                     {
-                      "name": "挑选",
-                      "value": "select",
+                      "name": "需要",
+                      "value": "xuyao",
                       "xh": 1
                     },
                     {
-                      "name": "返修",
-                      "value": "repair",
+                      "name": "不需要",
+                      "value": "buxuyao",
+                      "xh": 2
+                    }
+                  ],
+                  "valuesDefaultValue": [
+                    {}
+                  ]
+                },
+                "compType": "formItem",
+                "fieldName": "yuancailiao",
+                "itemType": "radio",
+                "label": "单选框",
+                "type": "radio"
+              }
+            ]
+          },
+          {
+            "id": "sh129eeb8f-eefd-46a3-9e06-57e68d4df8a7",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "186px"
+          },
+          {
+            "id": "sh23b4c925-dd12-4e4a-a000-a28811654d06",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": true,
+            "items": [],
+            "colWidth": "62px"
+          },
+          {
+            "id": "shfeb9c678-5b89-4706-b05a-4a80cdc5fbda",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 2,
+            "cellVisible": true,
+            "items": [
+              {
+                "id": "Idsh344c9455-7660-471f-8733-244d5cde96e7",
+                "preps": {
+                  "id": "Idsh344c9455-7660-471f-8733-244d5cde96e7",
+                  "label": "2.在制半成品",
+                  "itemNameLabel": "单选框",
+                  "name": "zzbcp",
+                  "clearable": true,
+                  "readonly": false,
+                  "rules": [],
+                  "maxLength": 255,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true,
+                  "dataSource": "data",
+                  "analysisType": "func",
+                  "values": [
+                    {
+                      "name": "需要",
+                      "value": "xuyao",
+                      "xh": 1
+                    },
+                    {
+                      "name": "不需要",
+                      "value": "buxuyao",
+                      "xh": 2
+                    }
+                  ],
+                  "valuesDefaultValue": [
+                    {}
+                  ]
+                },
+                "compType": "formItem",
+                "fieldName": "zzbcp",
+                "itemType": "radio",
+                "label": "单选框",
+                "type": "radio"
+              }
+            ],
+            "colWidth": "172px"
+          },
+          {
+            "id": "shbd0362a4-8e3d-4185-b6a7-4415fccc6436",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "185px"
+          },
+          {
+            "id": "sh35329b71-f884-4640-b668-9077092ecff3",
+            "colIndex": 1,
+            "rowspan": 2,
+            "colspan": 2,
+            "cellVisible": true,
+            "items": [
+              {
+                "id": "Idsh154e253b-2d9a-4854-a71f-c46ba041b89b",
+                "preps": {
+                  "id": "Idsh154e253b-2d9a-4854-a71f-c46ba041b89b",
+                  "itemNameLabel": "单行文本框",
+                  "name": "paicharenyuan",
+                  "clearable": true,
+                  "readonly": false,
+                  "placeholder": "请输入排查人员",
+                  "rules": [],
+                  "maxLength": 255,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true,
+                  "label": "排查人员"
+                },
+                "compType": "formItem",
+                "fieldName": "paicharenyuan",
+                "itemType": "input",
+                "label": "单行文本框",
+                "type": "input"
+              }
+            ]
+          },
+          {
+            "id": "sh794c2235-f1eb-4e1d-a1c7-f18ba1d7d060",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": []
+          }
+        ]
+      },
+      {
+        "id": "shd1641dc0-9106-4568-931f-f7e520dad164",
+        "colIndex": 1,
+        "columns": [
+          {
+            "id": "sh55381a5c-f311-4cee-9dea-1ad6c6aeba06",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "items": [],
+            "cellVisible": false
+          },
+          {
+            "id": "shf0dc5955-36d1-4841-a0f9-94b2e137ab46",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 2,
+            "cellVisible": true,
+            "items": [
+              {
+                "id": "Idshb437f53a-1e5e-484f-afaa-aa67b2d2340a",
+                "preps": {
+                  "id": "Idshb437f53a-1e5e-484f-afaa-aa67b2d2340a",
+                  "label": " 3.成品库存",
+                  "itemNameLabel": "单选框",
+                  "name": "chengpinkucun",
+                  "clearable": true,
+                  "readonly": false,
+                  "rules": [],
+                  "maxLength": 255,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true,
+                  "dataSource": "data",
+                  "analysisType": "func",
+                  "values": [
+                    {
+                      "name": "需要",
+                      "value": "xuyao",
+                      "xh": 1
+                    },
+                    {
+                      "name": "不需要",
+                      "value": "buxuyao",
+                      "xh": 2
+                    }
+                  ],
+                  "valuesDefaultValue": [
+                    {}
+                  ]
+                },
+                "compType": "formItem",
+                "fieldName": "chengpinkucun",
+                "itemType": "radio",
+                "label": "单选框",
+                "type": "radio"
+              }
+            ]
+          },
+          {
+            "id": "shd81d41e6-4bb9-4efc-9789-b683f69db7b0",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "186px"
+          },
+          {
+            "id": "sh5333dc9a-6a9e-456c-ba61-488232840b24",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": true,
+            "items": [],
+            "colWidth": "62px"
+          },
+          {
+            "id": "shb47c7d86-8bea-4fbd-b221-489d84928ddc",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 2,
+            "cellVisible": true,
+            "items": [
+              {
+                "id": "Idsh09ba73f5-003a-44ac-80dc-7ebe1cb3824a",
+                "preps": {
+                  "id": "Idsh09ba73f5-003a-44ac-80dc-7ebe1cb3824a",
+                  "label": "4.已出货品",
+                  "itemNameLabel": "单选框",
+                  "name": "yichuhuopin",
+                  "clearable": true,
+                  "readonly": false,
+                  "rules": [],
+                  "maxLength": 255,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true,
+                  "dataSource": "data",
+                  "analysisType": "func",
+                  "values": [
+                    {
+                      "name": "需要",
+                      "value": "xuyao",
+                      "xh": 1
+                    },
+                    {
+                      "name": "不需要",
+                      "value": "buxuyao",
+                      "xh": 2
+                    }
+                  ],
+                  "valuesDefaultValue": [
+                    {}
+                  ]
+                },
+                "compType": "formItem",
+                "fieldName": "yichuhuopin",
+                "itemType": "radio",
+                "label": "单选框",
+                "type": "radio"
+              }
+            ],
+            "colWidth": "172px"
+          },
+          {
+            "id": "shcdd8eec4-bc51-446d-a4a6-ed01d33d06e4",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "185px"
+          },
+          {
+            "id": "shca78dd7a-7c05-4606-aeae-0348f2ce1cd1",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": []
+          },
+          {
+            "id": "sha4ba0889-fd31-4716-ba63-856d1be9473c",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": []
+          }
+        ]
+      },
+      {
+        "id": "sha9fc18fa-6fa1-4996-b776-59e9ae4c87b0",
+        "colIndex": 1,
+        "columns": [
+          {
+            "id": "sh22a619c6-91e0-4649-8998-815428aae05d",
+            "colIndex": 1,
+            "rowspan": 3,
+            "colspan": 6,
+            "items": [
+              {
+                "id": "Idsh5cdfe3cf-0aaa-4220-8f3f-588da962d07f",
+                "preps": {
+                  "id": "Idsh5cdfe3cf-0aaa-4220-8f3f-588da962d07f",
+                  "label": "长期预防措施",
+                  "itemNameLabel": "多行文本框",
+                  "name": "cqyfcs",
+                  "clearable": true,
+                  "readonly": false,
+                  "placeholder": "请输入长期预防措施",
+                  "rules": [],
+                  "maxLength": 1000,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true,
+                  "labelPosition": "top"
+                },
+                "compType": "formItem",
+                "fieldName": "cqyfcs",
+                "itemType": "textarea",
+                "label": "多行文本框",
+                "type": "textarea"
+              },
+              {
+                "id": "Idshe6b1d024-6ab9-4b11-a1eb-47d68a703c82",
+                "preps": {
+                  "id": "Idshe6b1d024-6ab9-4b11-a1eb-47d68a703c82",
+                  "label": "标准化",
+                  "itemNameLabel": "单选框",
+                  "name": "biaozhunhua",
+                  "clearable": true,
+                  "readonly": false,
+                  "rules": [],
+                  "maxLength": 255,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true,
+                  "placeholder": "",
+                  "dataSource": "data",
+                  "analysisType": "func",
+                  "values": [
+                    {
+                      "name": "作业标准修订",
+                      "value": "zybzxd",
+                      "xh": 1
+                    },
+                    {
+                      "name": "图纸修订",
+                      "value": "tuzhixiuding",
                       "xh": 2
                     },
                     {
-                      "name": "特采",
-                      "value": "special_select",
+                      "name": "研发/技术更改，ECN号",
+                      "value": "yf_jsgg",
                       "xh": 3
                     },
                     {
@@ -1471,15 +2913,17 @@ const fields = ref<any>({
                   ]
                 },
                 "compType": "formItem",
-                "fieldName": "operationType",
+                "fieldName": "biaozhunhua",
                 "itemType": "radio",
                 "label": "单选框",
                 "type": "radio"
               }
-            ]
+            ],
+            "cellVisible": true,
+            "colHeight": "150px"
           },
           {
-            "id": "sh821f379b-f95c-4732-8594-0b3e38d9ca05",
+            "id": "sha2e3ced8-0536-4192-8de9-dbaf05c013d3",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 1,
@@ -1487,53 +2931,58 @@ const fields = ref<any>({
             "items": []
           },
           {
-            "id": "shfe68ac89-419a-43e5-90a4-115cd658fe41",
+            "id": "shb5aab7b9-aba4-48cb-9ba4-e1129957e9f6",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 1,
             "cellVisible": false,
-            "items": []
-          },
-          {
-            "id": "sh0f14c462-0642-42dc-929b-9320960b0598",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "cellVisible": false,
-            "items": []
-          },
-          {
-            "id": "sh886fa65d-3897-4b79-a46b-59d7aaf9d121",
-            "colspan": 1,
-            "rowspan": 1,
             "items": [],
-            "cellVisible": false
+            "colWidth": "186px"
           },
           {
-            "id": "sh71dc17dd-68e7-4537-9319-f2e2b5a43e48",
+            "id": "sh34dc4b22-b49a-40c8-9598-035303aec955",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 1,
             "cellVisible": false,
-            "items": []
+            "items": [],
+            "colWidth": "62px"
           },
           {
-            "id": "sh5836c532-3899-4d39-9f36-8cbfde27b0e6",
+            "id": "sh3cb69fd3-9131-4731-bf65-c714783b2b70",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "172px"
+          },
+          {
+            "id": "sh1be28d0c-9b55-476b-bc8a-f7ccad45394e",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "185px"
+          },
+          {
+            "id": "sh0372f8a5-6433-4ad4-9179-6c78088862b0",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 2,
             "cellVisible": true,
             "items": [
               {
-                "id": "Idsh39a29a1f-1351-4901-a200-345b19f78583",
+                "id": "Idsh2f96a796-d79c-4555-aac1-e029f164b463",
                 "preps": {
-                  "id": "Idsh39a29a1f-1351-4901-a200-345b19f78583",
-                  "label": "开出人",
+                  "id": "Idsh2f96a796-d79c-4555-aac1-e029f164b463",
+                  "label": "制定人",
                   "itemNameLabel": "单行文本框",
-                  "name": "operator",
+                  "name": "zhidingren2",
                   "clearable": true,
                   "readonly": false,
-                  "placeholder": "请输入开出人",
+                  "placeholder": "请输入制定人",
                   "rules": [],
                   "maxLength": 255,
                   "formVisible": true,
@@ -1541,7 +2990,7 @@ const fields = ref<any>({
                   "viewVisible": true
                 },
                 "compType": "formItem",
-                "fieldName": "operator",
+                "fieldName": "zhidingren2",
                 "itemType": "input",
                 "label": "单行文本框",
                 "type": "input"
@@ -1549,7 +2998,7 @@ const fields = ref<any>({
             ]
           },
           {
-            "id": "sh811f46ed-86cb-45fa-9143-3c2de50b32f0",
+            "id": "sh8d092de1-f85f-4bee-a1d3-5db9c592f657",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 1,
@@ -1559,59 +3008,19 @@ const fields = ref<any>({
         ]
       },
       {
-        "id": "shf9ae6db8-5938-4d29-91ba-0136d0589f72",
+        "id": "shcfd0cfcc-53b6-4d00-b609-bf22d3ffcb3d",
         "colIndex": 1,
         "columns": [
           {
-            "id": "sh510c3bbe-0434-44f2-b06a-b5bddb3bd15a",
+            "id": "sh738066ac-354c-454c-91cc-733032a42616",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 1,
-            "items": [],
-            "cellVisible": false,
-            "colWidth": "44px"
-          },
-          {
-            "id": "sh0b9539c7-6666-4cff-aa5b-b8a29c573b04",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "cellVisible": false,
-            "items": []
-          },
-          {
-            "id": "sh99abc2a9-f6b4-41d3-b227-3ed55b8be680",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "cellVisible": false,
-            "items": []
-          },
-          {
-            "id": "shb42fc758-f734-482e-9efe-c652945bee98",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "cellVisible": false,
-            "items": []
-          },
-          {
-            "id": "sh1cfe6739-5976-4160-85f1-cc7c76bcef96",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "cellVisible": false,
-            "items": []
-          },
-          {
-            "id": "sha4f45ace-e31a-47fa-8789-5be1cbedbe00",
-            "colspan": 1,
-            "rowspan": 1,
             "items": [],
             "cellVisible": false
           },
           {
-            "id": "sh3d53a089-67eb-41f6-ba53-ef9b3fd85bca",
+            "id": "sh668fb4b3-a8f3-4bf4-9537-9f1f0adb9a9d",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 1,
@@ -1619,30 +3028,66 @@ const fields = ref<any>({
             "items": []
           },
           {
-            "id": "sh0a40ecbb-7d20-48bd-9bfa-844a33efe301",
+            "id": "sh1f39de72-5407-42fe-a8c5-9ec8dea6e499",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "186px"
+          },
+          {
+            "id": "sh6bfa5e24-fee6-4700-94a2-7c26a688cb67",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "62px"
+          },
+          {
+            "id": "shc14367c4-3100-47af-b128-3f200add452f",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "172px"
+          },
+          {
+            "id": "sh472e8495-25b0-47ce-9e82-9af0f39f443d",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "185px"
+          },
+          {
+            "id": "sh632737a0-4027-48a7-a957-d2c69e009fa1",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 2,
             "cellVisible": true,
             "items": [
               {
-                "id": "Idsh2bb6fa55-998c-4aad-839c-d041333b3e3b",
+                "id": "Idshe3b28106-4dac-40ef-889d-770b227928fa",
                 "preps": {
-                  "id": "Idsh2bb6fa55-998c-4aad-839c-d041333b3e3b",
-                  "label": "审核",
+                  "id": "Idshe3b28106-4dac-40ef-889d-770b227928fa",
                   "itemNameLabel": "单行文本框",
                   "clearable": true,
                   "readonly": false,
-                  "placeholder": "请输入审核",
+                  "placeholder": "请输入制定时间",
                   "rules": [],
                   "maxLength": 255,
                   "formVisible": true,
                   "listVisible": true,
                   "viewVisible": true,
-                  "name": "auditor"
+                  "label": "制定时间",
+                  "name": "zhidingshijian2"
                 },
                 "compType": "formItem",
-                "fieldName": "auditor",
+                "fieldName": "zhidingshijian2",
                 "itemType": "input",
                 "label": "单行文本框",
                 "type": "input"
@@ -1650,7 +3095,7 @@ const fields = ref<any>({
             ]
           },
           {
-            "id": "sh0e3d62ca-d4d1-4cea-86e4-5284731dc0c5",
+            "id": "sh39038907-7910-450b-b310-5d3a5f31f39a",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 1,
@@ -1660,59 +3105,19 @@ const fields = ref<any>({
         ]
       },
       {
-        "id": "sh72109a6e-deb3-4d73-99fd-ecdc0a503e9f",
+        "id": "shefc46ca0-0cf7-463d-a012-accc956197b5",
         "colIndex": 1,
         "columns": [
           {
-            "id": "sha0fb6644-64af-42f6-ae3d-1b0dcac9fce5",
+            "id": "sh274b3b0f-b8e8-4505-bfa4-e17439a730ee",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 1,
-            "items": [],
-            "cellVisible": false,
-            "colWidth": "44px"
-          },
-          {
-            "id": "shebd7a59c-123d-4b75-952d-f6c3f6bcf32a",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "cellVisible": false,
-            "items": []
-          },
-          {
-            "id": "sh1d51cb39-097d-40d9-8a5d-8d7d9b2a223a",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "cellVisible": false,
-            "items": []
-          },
-          {
-            "id": "sh19620983-9be1-4a29-acbe-4b2d2cff39de",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "cellVisible": false,
-            "items": []
-          },
-          {
-            "id": "sh791adfdb-a53e-4ba9-b6f4-a98682552b4c",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "cellVisible": false,
-            "items": []
-          },
-          {
-            "id": "shee32b3ad-5d2a-4553-87e0-e45e3e4e99de",
-            "colspan": 1,
-            "rowspan": 1,
             "items": [],
             "cellVisible": false
           },
           {
-            "id": "shdbe99f79-988a-49e2-b4e6-c9d765f61bd8",
+            "id": "sha2d1e056-3d00-4745-9ca1-b7316b0d02b3",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 1,
@@ -1720,30 +3125,66 @@ const fields = ref<any>({
             "items": []
           },
           {
-            "id": "sh0f5ccbc2-972f-4750-beca-d70eea12884a",
+            "id": "sh5d94c329-4d8a-4ad0-8257-3a2ae8dca156",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "186px"
+          },
+          {
+            "id": "sh965d04aa-e053-4be1-8109-f83dfbf43e83",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "62px"
+          },
+          {
+            "id": "sh6d3c66e4-5159-4fd8-8ffa-eb578fce1362",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "172px"
+          },
+          {
+            "id": "sh257dc298-1c62-44c4-afa0-f4f9cffbe8bf",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": [],
+            "colWidth": "185px"
+          },
+          {
+            "id": "sh0475571e-5528-44f4-8d1f-dbf6c8fc56e5",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 2,
             "cellVisible": true,
             "items": [
               {
-                "id": "Idsh2b4a44f9-f0b7-4463-8acc-0716f5b3e177",
+                "id": "Idsh92d3692e-9214-4998-be14-9cab4572388c",
                 "preps": {
-                  "id": "Idsh2b4a44f9-f0b7-4463-8acc-0716f5b3e177",
-                  "label": "批准",
+                  "id": "Idsh92d3692e-9214-4998-be14-9cab4572388c",
                   "itemNameLabel": "单行文本框",
-                  "name": "agree",
+                  "name": "bumenjingli",
                   "clearable": true,
                   "readonly": false,
-                  "placeholder": "请输入批准",
+                  "placeholder": "请输入部门经理",
                   "rules": [],
                   "maxLength": 255,
                   "formVisible": true,
                   "listVisible": true,
-                  "viewVisible": true
+                  "viewVisible": true,
+                  "label": "部门经理"
                 },
                 "compType": "formItem",
-                "fieldName": "agree",
+                "fieldName": "bumenjingli",
                 "itemType": "input",
                 "label": "单行文本框",
                 "type": "input"
@@ -1751,7 +3192,7 @@ const fields = ref<any>({
             ]
           },
           {
-            "id": "sha5f0253b-75f9-4f1f-a2b9-dbbd67b02fde",
+            "id": "she016ec37-483d-4d7c-a2f4-8b6e531dc3b9",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 1,
@@ -1761,892 +3202,22 @@ const fields = ref<any>({
         ]
       },
       {
-        "id": "sh8f6c56c2-2f0f-4782-8cbb-b8cfa6372d31",
+        "id": "sh2a7f79cf-659c-44ab-81b3-769d0a2f35eb",
         "colIndex": 1,
         "columns": [
           {
-            "id": "sh7a59d4ce-30b5-4ba8-a2d6-eadec79ba1c3",
-            "colIndex": 1,
-            "rowspan": 2,
-            "colspan": 1,
-            "items": [
-              {
-                "id": "Idshf9f97c02-57fb-480b-8c4b-faaa32dd2395",
-                "preps": {
-                  "id": "Idshf9f97c02-57fb-480b-8c4b-faaa32dd2395",
-                  "label": "静态文本",
-                  "itemNameLabel": "静态文本",
-                  "name": "text19",
-                  "clearable": true,
-                  "readonly": false,
-                  "rules": [],
-                  "maxLength": 255,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "elements": [
-                    {
-                      "id": "sh089ca567-5b51-40cd-9c4d-0f89d3aaa0ef",
-                      "colIndex": 1,
-                      "columns": [
-                        {
-                          "id": "shd36190ea-34f2-46be-9a20-9afc556a40ac",
-                          "colIndex": 1,
-                          "rowspan": 1,
-                          "colspan": 1,
-                          "items": [],
-                          "cellVisible": true
-                        }
-                      ]
-                    }
-                  ],
-                  "rowNums": 1,
-                  "columnNums": 1,
-                  "staticData": true,
-                  "textContent": "原因分析对策"
-                },
-                "compType": "formItem",
-                "fieldName": "text19",
-                "itemType": "text",
-                "label": "静态文本",
-                "type": "text"
-              }
-            ],
-            "cellVisible": true,
-            "colWidth": "44px"
-          },
-          {
-            "id": "sheec79d01-1523-4c1a-b550-ce89eef67c2f",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 4,
-            "cellVisible": true,
-            "items": [
-              {
-                "id": "Idsh327d48da-80ca-4763-a8d2-35cf17f1bc60",
-                "preps": {
-                  "id": "Idsh327d48da-80ca-4763-a8d2-35cf17f1bc60",
-                  "label": "发生原因",
-                  "itemNameLabel": "多行文本框",
-                  "name": "eventReason",
-                  "clearable": true,
-                  "readonly": false,
-                  "placeholder": "请输入发生原因",
-                  "rules": [],
-                  "maxLength": 1000,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "labelPosition": "top"
-                },
-                "compType": "formItem",
-                "fieldName": "eventReason",
-                "itemType": "textarea",
-                "label": "多行文本框",
-                "type": "textarea"
-              },
-              {
-                "id": "Idsh7ece20e8-de13-4c7f-9cce-7914d2630d45",
-                "preps": {
-                  "id": "Idsh7ece20e8-de13-4c7f-9cce-7914d2630d45",
-                  "itemNameLabel": "多行文本框",
-                  "name": "outReason",
-                  "clearable": true,
-                  "readonly": false,
-                  "placeholder": "请输入流出原因",
-                  "rules": [],
-                  "maxLength": 1000,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "labelPosition": "top",
-                  "label": "流出原因"
-                },
-                "compType": "formItem",
-                "fieldName": "outReason",
-                "itemType": "textarea",
-                "label": "多行文本框",
-                "type": "textarea"
-              }
-            ],
-            "colHeight": "204px"
-          },
-          {
-            "id": "shdd23e79b-e069-4a03-90ad-c4ee922cab7f",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "cellVisible": false,
-            "items": []
-          },
-          {
-            "id": "sh293c075e-aac1-4781-aa3b-357ae629ffe4",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "cellVisible": false,
-            "items": []
-          },
-          {
-            "id": "sh498557ac-02e7-4d97-9b1a-cd52f0d17b3e",
-            "colspan": 1,
-            "rowspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "shf34a5bea-92c0-4a3f-9c3a-c6f1058918b6",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 4,
-            "cellVisible": true,
-            "items": [
-              {
-                "id": "Idshc6d2e194-4359-4719-94fb-8c8f3972ecf1",
-                "preps": {
-                  "id": "Idshc6d2e194-4359-4719-94fb-8c8f3972ecf1",
-                  "itemNameLabel": "多行文本框",
-                  "name": "tempPolicy",
-                  "clearable": true,
-                  "readonly": false,
-                  "placeholder": "请输入临时对策",
-                  "rules": [],
-                  "maxLength": 1000,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "labelPosition": "top",
-                  "label": "临时对策"
-                },
-                "compType": "formItem",
-                "fieldName": "tempPolicy",
-                "itemType": "textarea",
-                "label": "多行文本框",
-                "type": "textarea"
-              },
-              {
-                "id": "Idsh41546a9c-7907-41f5-936d-61514ff08b36",
-                "preps": {
-                  "id": "Idsh41546a9c-7907-41f5-936d-61514ff08b36",
-                  "label": "长期对策",
-                  "itemNameLabel": "多行文本框",
-                  "name": "forEverPolicy",
-                  "clearable": true,
-                  "readonly": false,
-                  "placeholder": "请输入长期对策",
-                  "rules": [],
-                  "maxLength": 1000,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "labelPosition": "top"
-                },
-                "compType": "formItem",
-                "fieldName": "forEverPolicy",
-                "itemType": "textarea",
-                "label": "多行文本框",
-                "type": "textarea"
-              }
-            ]
-          },
-          {
-            "id": "sh25cf4e8e-efda-4eb9-b991-f0adcd420860",
-            "colspan": 1,
-            "rowspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "sh06b401d9-f812-459d-ac0d-4273ca68f6be",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "cellVisible": false,
-            "items": []
-          },
-          {
-            "id": "shefb0e612-2abc-41a1-86e4-8dd8141359c0",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "cellVisible": false,
-            "items": []
-          },
-          {
-            "id": "shb1cfd1d0-8372-4517-9d7b-a7837ed473e2",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "cellVisible": true,
-            "items": []
-          }
-        ]
-      },
-      {
-        "id": "shacef7dc4-4730-48f0-b61d-deb56e05fc08",
-        "colIndex": 1,
-        "columns": [
-          {
-            "id": "shfff993fe-6bae-4d56-ab34-a6efde130d9e",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "sh0685a549-f6ac-4f6e-859e-e4d12837d852",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 2,
-            "items": [
-              {
-                "id": "Idshe0a446d4-e06c-4a76-89af-8cd2b5c9ff8e",
-                "preps": {
-                  "id": "Idshe0a446d4-e06c-4a76-89af-8cd2b5c9ff8e",
-                  "itemNameLabel": "单行文本框",
-                  "name": "reasonConfirm",
-                  "clearable": true,
-                  "readonly": false,
-                  "placeholder": "请输入确认",
-                  "rules": [],
-                  "maxLength": 255,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "label": "确认"
-                },
-                "compType": "formItem",
-                "fieldName": "reasonConfirm",
-                "itemType": "input",
-                "label": "单行文本框",
-                "type": "input"
-              }
-            ],
-            "cellVisible": true
-          },
-          {
-            "id": "shbcc208b2-eefa-4043-84fb-5b71b4e6f59d",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "shdc7d13bb-8efa-4440-a9b3-46964a615c65",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 2,
-            "items": [
-              {
-                "id": "Idsh1246b710-3951-4d36-bfe0-6f55cc3d6e86",
-                "preps": {
-                  "id": "Idsh1246b710-3951-4d36-bfe0-6f55cc3d6e86",
-                  "itemNameLabel": "单行文本框",
-                  "clearable": true,
-                  "readonly": false,
-                  "placeholder": "请输入作成",
-                  "rules": [],
-                  "maxLength": 255,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "label": "作成",
-                  "name": "reasonOperator"
-                },
-                "compType": "formItem",
-                "fieldName": "reasonOperator",
-                "itemType": "input",
-                "label": "单行文本框",
-                "type": "input"
-              }
-            ],
-            "cellVisible": true
-          },
-          {
-            "id": "shb5a89a2b-04be-47c7-8fff-5af21306c155",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "sh5135e5e5-ff10-4a81-9070-4a6809d94c47",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 2,
-            "items": [
-              {
-                "id": "Idshdd81ef46-53ef-40be-a406-52503a3574bf",
-                "preps": {
-                  "id": "Idshdd81ef46-53ef-40be-a406-52503a3574bf",
-                  "itemNameLabel": "单行文本框",
-                  "name": "policyConfirm",
-                  "clearable": true,
-                  "readonly": false,
-                  "placeholder": "请输入确认",
-                  "rules": [],
-                  "maxLength": 255,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "label": "确认"
-                },
-                "compType": "formItem",
-                "fieldName": "policyConfirm",
-                "itemType": "input",
-                "label": "单行文本框",
-                "type": "input"
-              }
-            ],
-            "cellVisible": true
-          },
-          {
-            "id": "sh6692a9f6-69a1-4c7c-9e57-b7cda81983da",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "she6133fcb-2a53-4844-a427-5604751004fc",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 2,
-            "items": [
-              {
-                "id": "Idsh20ad9121-e95b-4869-8b29-3240031b9e2d",
-                "preps": {
-                  "id": "Idsh20ad9121-e95b-4869-8b29-3240031b9e2d",
-                  "itemNameLabel": "单行文本框",
-                  "name": "policyOperator",
-                  "clearable": true,
-                  "readonly": false,
-                  "placeholder": "请输入作成",
-                  "rules": [],
-                  "maxLength": 255,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "label": "作成"
-                },
-                "compType": "formItem",
-                "fieldName": "policyOperator",
-                "itemType": "input",
-                "label": "单行文本框",
-                "type": "input"
-              }
-            ],
-            "cellVisible": true
-          },
-          {
-            "id": "shb035befc-006d-42f3-b358-f65d94395d78",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          }
-        ]
-      },
-      {
-        "id": "shd9089af8-45bd-4a9d-ad7b-168b5fa524b8",
-        "colIndex": 1,
-        "columns": [
-          {
-            "id": "shc1f1deaa-4022-4892-a61a-fdacfa09045e",
-            "colIndex": 1,
-            "rowspan": 2,
-            "colspan": 1,
-            "items": [
-              {
-                "id": "Idshf461d46d-bc14-4144-8a8d-a49fd68b53c0",
-                "preps": {
-                  "id": "Idshf461d46d-bc14-4144-8a8d-a49fd68b53c0",
-                  "label": "静态文本",
-                  "itemNameLabel": "静态文本",
-                  "name": "text29",
-                  "clearable": true,
-                  "readonly": false,
-                  "rules": [],
-                  "maxLength": 255,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "placeholder": "",
-                  "staticData": true,
-                  "textContent": "处置要求"
-                },
-                "compType": "formItem",
-                "fieldName": "text29",
-                "itemType": "text",
-                "label": "静态文本",
-                "type": "text"
-              }
-            ],
-            "cellVisible": true
-          },
-          {
-            "id": "sh953be4d4-f1d2-4e3e-9949-b0fc5ebf9ef9",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 8,
-            "items": [
-              {
-                "id": "Idshe524ec6a-f243-4672-9209-21418440fb8d",
-                "preps": {
-                  "id": "Idshe524ec6a-f243-4672-9209-21418440fb8d",
-                  "label": "1.返工/处置流程及注意事项（技术员制订",
-                  "itemNameLabel": "多行文本框",
-                  "name": "reworkNoticeItems",
-                  "clearable": true,
-                  "readonly": false,
-                  "placeholder": "请输入1.返工/处置流程及注意事项（技术员制订",
-                  "rules": [],
-                  "maxLength": 1000,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "labelPosition": "top"
-                },
-                "compType": "formItem",
-                "fieldName": "reworkNoticeItems",
-                "itemType": "textarea",
-                "label": "多行文本框",
-                "type": "textarea"
-              },
-              {
-                "id": "Idshd1d730f5-775b-488e-a9fb-99eec32a84be",
-                "preps": {
-                  "id": "Idshd1d730f5-775b-488e-a9fb-99eec32a84be",
-                  "label": "2.返工注意事项",
-                  "itemNameLabel": "多行文本框",
-                  "name": "reworkNoticeItem2",
-                  "clearable": true,
-                  "readonly": false,
-                  "placeholder": "请输入2.返工注意事项",
-                  "rules": [],
-                  "maxLength": 1000,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "labelPosition": "top"
-                },
-                "compType": "formItem",
-                "fieldName": "reworkNoticeItem2",
-                "itemType": "textarea",
-                "label": "多行文本框",
-                "type": "textarea"
-              }
-            ],
-            "cellVisible": true,
-            "colHeight": "197px"
-          },
-          {
-            "id": "sha2d6299f-205f-4e7b-8378-5f22a2eddd86",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "sha1915dc2-9dcf-41f2-a3e1-91c850ca9b86",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "sh19702d9c-d694-4d39-a069-1c903a63441e",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "sh8e36485e-6dbe-4d57-bc84-396829e5947d",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "sh090943c7-0bdf-415d-9787-9fdd141acc8d",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "sh406451c5-ff7a-4d20-ae2f-7984b3e7d388",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "sh4efd7ea3-ec27-4ee7-9a2c-3450cf2183c4",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          }
-        ]
-      },
-      {
-        "id": "sh9796968e-bc9d-4f4e-960e-c5d8db55d730",
-        "colIndex": 1,
-        "columns": [
-          {
-            "id": "shb8d1147a-c50e-4737-8878-e937ca68af30",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "sh4b8de36a-037a-4e69-bc72-1dc9c8a99033",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 3,
-            "items": [
-              {
-                "id": "Idsh411aedea-c213-47a8-aadf-96e80fbdc9de",
-                "preps": {
-                  "id": "Idsh411aedea-c213-47a8-aadf-96e80fbdc9de",
-                  "itemNameLabel": "单行文本框",
-                  "name": "projectAudit",
-                  "clearable": true,
-                  "readonly": false,
-                  "placeholder": "请输入工程审批",
-                  "rules": [],
-                  "maxLength": 255,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "label": "工程审批"
-                },
-                "compType": "formItem",
-                "fieldName": "projectAudit",
-                "itemType": "input",
-                "label": "单行文本框",
-                "type": "input"
-              }
-            ],
-            "cellVisible": true
-          },
-          {
-            "id": "sh4a7991fe-e00c-4b2b-aab5-aa139746e9d7",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "sh36afcdbf-ae39-447e-bae1-772d09cecdd6",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "sha72b2fa2-0d86-40e5-905d-0e4fd94be291",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 3,
-            "items": [
-              {
-                "id": "Idshe053ea52-e0f0-4085-907a-325ad6393480",
-                "preps": {
-                  "id": "Idshe053ea52-e0f0-4085-907a-325ad6393480",
-                  "itemNameLabel": "单行文本框",
-                  "name": "quantityConfirm",
-                  "clearable": true,
-                  "readonly": false,
-                  "placeholder": "请输入品质确认",
-                  "rules": [],
-                  "maxLength": 255,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "label": "品质确认"
-                },
-                "compType": "formItem",
-                "fieldName": "quantityConfirm",
-                "itemType": "input",
-                "label": "单行文本框",
-                "type": "input"
-              }
-            ],
-            "cellVisible": true
-          },
-          {
-            "id": "sh6c8d5ba7-e085-4a54-bd01-ebbbd6d3c804",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "sh07a50ef4-5751-4f87-98f1-c7fd2181dae9",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "sh7b8c1743-8b93-4b16-856a-bbdf47df3479",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 2,
-            "items": [
-              {
-                "id": "Idsh63cf29e6-0ac8-44b9-a42e-62d9a5ebc2fe",
-                "preps": {
-                  "id": "Idsh63cf29e6-0ac8-44b9-a42e-62d9a5ebc2fe",
-                  "itemNameLabel": "单行文本框",
-                  "name": "requirementOperator",
-                  "clearable": true,
-                  "readonly": false,
-                  "placeholder": "请输入作成",
-                  "rules": [],
-                  "maxLength": 255,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "label": "作成"
-                },
-                "compType": "formItem",
-                "fieldName": "requirementOperator",
-                "itemType": "input",
-                "label": "单行文本框",
-                "type": "input"
-              }
-            ],
-            "cellVisible": true
-          },
-          {
-            "id": "shc3b38e52-285a-45c9-ad54-68f11d411f65",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          }
-        ]
-      },
-      {
-        "id": "sh77e8a629-df08-44a8-a721-9a083286637f",
-        "colIndex": 1,
-        "columns": [
-          {
-            "id": "sh10f64cbe-8ca1-462d-bc72-1b5e0f5ea7c7",
-            "colIndex": 1,
-            "rowspan": 4,
-            "colspan": 1,
-            "items": [
-              {
-                "id": "Idsh8bae4b34-98d8-4a60-90fb-f8d119f871a3",
-                "preps": {
-                  "id": "Idsh8bae4b34-98d8-4a60-90fb-f8d119f871a3",
-                  "label": "静态文本",
-                  "itemNameLabel": "静态文本",
-                  "name": "text35",
-                  "clearable": true,
-                  "readonly": false,
-                  "rules": [],
-                  "maxLength": 255,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "elements": [
-                    {
-                      "id": "shdba25e57-22cb-4d13-879b-e32732ce445f",
-                      "colIndex": 1,
-                      "columns": [
-                        {
-                          "id": "sh796b2037-2fed-4f5b-a10c-7789a87031fd",
-                          "colIndex": 1,
-                          "rowspan": 1,
-                          "colspan": 1,
-                          "items": [],
-                          "cellVisible": true
-                        }
-                      ]
-                    }
-                  ],
-                  "rowNums": 1,
-                  "columnNums": 1,
-                  "staticData": true,
-                  "textContent": "处置结果"
-                },
-                "compType": "formItem",
-                "fieldName": "text35",
-                "itemType": "text",
-                "label": "静态文本",
-                "type": "text"
-              }
-            ],
-            "cellVisible": true
-          },
-          {
-            "id": "sh8f58ea78-f852-49fa-b32c-73d7573e3d64",
+            "id": "sh633d02b5-feb9-4199-a178-694b9e728e5c",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 6,
             "items": [
               {
-                "id": "Idshf0f14fc2-4d8f-4ca8-bec9-1000249faf80",
+                "id": "Idsha650e633-4423-4791-ae89-c8c5f905babd",
                 "preps": {
-                  "id": "Idshf0f14fc2-4d8f-4ca8-bec9-1000249faf80",
-                  "label": "处置时间",
-                  "itemNameLabel": "日期选择器",
-                  "clearable": true,
-                  "readonly": false,
-                  "placeholder": "请选择处置时间",
-                  "rules": [],
-                  "maxLength": 255,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "type": "datetimerange",
-                  "disabledDate": "(e20) => t16.value.includes(e20.getDate().toString())",
-                  "name": "closeTime",
-                  "startPlaceholder": "请选择开始日期",
-                  "endPlaceholder": "请选择结束日期",
-                  "valueFormat": "YYYY-MM-DD HH:mm:ss",
-                  "format": "YYYY-MM-DD HH:mm:ss"
-                },
-                "compType": "formItem",
-                "fieldName": "closeTime",
-                "itemType": "datetime",
-                "label": "日期选择器",
-                "type": "datetime"
-              }
-            ],
-            "cellVisible": true
-          },
-          {
-            "id": "sh183a31af-68a6-4486-8adc-4f66755333be",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "sh69872966-969a-4feb-ac48-46994bc0ba88",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "sha793a721-9ef7-4694-bea2-4f6d62edef94",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "sh5415dd31-54b0-4418-8dff-ff9abe3ff67d",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "sh013c35c2-82f7-46b3-968c-8268e8c6787a",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "shdc5b74c2-f2ed-4822-ae9f-1f2e2302fbc3",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 2,
-            "items": [
-              {
-                "id": "Idsh26835f81-c2ff-4a1f-a27b-7791803b7b27",
-                "preps": {
-                  "id": "Idsh26835f81-c2ff-4a1f-a27b-7791803b7b27",
-                  "label": "处置部门",
-                  "itemNameLabel": "单行文本框",
-                  "name": "closeDeptName",
-                  "clearable": true,
-                  "readonly": false,
-                  "placeholder": "请输入线别和班次",
-                  "rules": [],
-                  "maxLength": 255,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true
-                },
-                "compType": "formItem",
-                "fieldName": "closeDeptName",
-                "itemType": "input",
-                "label": "单行文本框",
-                "type": "input"
-              }
-            ],
-            "cellVisible": true
-          },
-          {
-            "id": "sh05b05c99-8913-4b03-9262-c0b1ed5bbb86",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          }
-        ]
-      },
-      {
-        "id": "sh777b49e3-785f-4188-bc84-4fb0d60056e5",
-        "colIndex": 1,
-        "columns": [
-          {
-            "id": "sh5d771a8d-ee3b-4e50-a3ef-3e4142c428cd",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "sh04a80ed5-559e-4d52-bfd3-7c26e05e7969",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [
-              {
-                "id": "Idsh2bde12e9-d426-4d9d-a9e0-2f78d05ebe39",
-                "preps": {
-                  "id": "Idsh2bde12e9-d426-4d9d-a9e0-2f78d05ebe39",
-                  "label": "静态文本",
-                  "itemNameLabel": "静态文本",
-                  "name": "text38",
+                  "id": "Idsha650e633-4423-4791-ae89-c8c5f905babd",
+                  "label": "Html组件",
+                  "itemNameLabel": "Html组件",
+                  "name": "html46",
                   "clearable": true,
                   "readonly": false,
                   "rules": [],
@@ -2655,293 +3226,15 @@ const fields = ref<any>({
                   "listVisible": true,
                   "viewVisible": true,
                   "placeholder": "",
-                  "startPlaceholder": "",
-                  "endPlaceholder": "",
-                  "disabledDate": "",
                   "staticData": true,
-                  "textContent": "返工总数pcs"
-                },
-                "compType": "formItem",
-                "fieldName": "text38",
-                "itemType": "text",
-                "label": "静态文本",
-                "type": "text"
-              }
-            ],
-            "cellVisible": true
-          },
-          {
-            "id": "sh34bce7c3-f8f2-4e2d-b798-51049285a450",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [
-              {
-                "id": "Idshe59010ae-e7a4-4da8-b85a-19fb935344b4",
-                "preps": {
-                  "id": "Idshe59010ae-e7a4-4da8-b85a-19fb935344b4",
-                  "label": "静态文本",
-                  "itemNameLabel": "静态文本",
-                  "name": "text39",
-                  "clearable": true,
-                  "readonly": false,
-                  "rules": [],
-                  "maxLength": 255,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "staticData": true,
-                  "textContent": "良品pcs"
-                },
-                "compType": "formItem",
-                "fieldName": "text39",
-                "itemType": "text",
-                "label": "静态文本",
-                "type": "text"
-              }
-            ],
-            "cellVisible": true
-          },
-          {
-            "id": "sh2cfa63e8-1486-4673-b330-bb31bc286cc6",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [
-              {
-                "id": "Idsh284efc86-4bc3-469d-ad98-a910009546c8",
-                "preps": {
-                  "id": "Idsh284efc86-4bc3-469d-ad98-a910009546c8",
-                  "label": "静态文本",
-                  "itemNameLabel": "静态文本",
-                  "name": "text40",
-                  "clearable": true,
-                  "readonly": false,
-                  "rules": [],
-                  "maxLength": 255,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "staticData": true,
-                  "textContent": "不良品pcs"
-                },
-                "compType": "formItem",
-                "fieldName": "text40",
-                "itemType": "text",
-                "label": "静态文本",
-                "type": "text"
-              }
-            ],
-            "cellVisible": true
-          },
-          {
-            "id": "sh41e015ce-f609-40a7-a248-dbd3c50198d9",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [
-              {
-                "id": "Idsh873e1add-0a31-49d1-8a9e-c183c2faa45c",
-                "preps": {
-                  "id": "Idsh873e1add-0a31-49d1-8a9e-c183c2faa45c",
-                  "label": "静态文本",
-                  "itemNameLabel": "静态文本",
-                  "name": "text41",
-                  "clearable": true,
-                  "readonly": false,
-                  "rules": [],
-                  "maxLength": 255,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "staticData": true,
-                  "textContent": "不良率%"
-                },
-                "compType": "formItem",
-                "fieldName": "text41",
-                "itemType": "text",
-                "label": "静态文本",
-                "type": "text"
-              }
-            ],
-            "cellVisible": true
-          },
-          {
-            "id": "she24cd78d-8c52-4c2f-877c-0e9d5da18017",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [
-              {
-                "id": "Idsh7ee64edb-4d99-4a50-8a08-65a4d483d0e9",
-                "preps": {
-                  "id": "Idsh7ee64edb-4d99-4a50-8a08-65a4d483d0e9",
-                  "label": "静态文本",
-                  "itemNameLabel": "静态文本",
-                  "name": "text42",
-                  "clearable": true,
-                  "readonly": false,
-                  "rules": [],
-                  "maxLength": 255,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "staticData": true,
-                  "textContent": "工时(小时)"
-                },
-                "compType": "formItem",
-                "fieldName": "text42",
-                "itemType": "text",
-                "label": "静态文本",
-                "type": "text"
-              }
-            ],
-            "cellVisible": true
-          },
-          {
-            "id": "shef9ad700-5af0-42ec-8efa-83e43cfee15b",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [
-              {
-                "id": "Idshf25af82b-d269-4e47-9098-f12e5288899d",
-                "preps": {
-                  "id": "Idshf25af82b-d269-4e47-9098-f12e5288899d",
-                  "label": "静态文本",
-                  "itemNameLabel": "静态文本",
-                  "name": "text43",
-                  "clearable": true,
-                  "readonly": false,
-                  "rules": [],
-                  "maxLength": 255,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "staticData": true,
-                  "textContent": "人数"
-                },
-                "compType": "formItem",
-                "fieldName": "text43",
-                "itemType": "text",
-                "label": "静态文本",
-                "type": "text"
-              }
-            ],
-            "cellVisible": true
-          },
-          {
-            "id": "sh364657f6-7651-4cfd-87a3-30b827f51dae",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [
-              {
-                "id": "Idsh08f6581b-fbcb-4bdb-9780-a6fb2906c581",
-                "preps": {
-                  "id": "Idsh08f6581b-fbcb-4bdb-9780-a6fb2906c581",
-                  "label": "静态文本",
-                  "itemNameLabel": "静态文本",
-                  "name": "text44",
-                  "clearable": true,
-                  "readonly": false,
-                  "rules": [],
-                  "maxLength": 255,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "staticData": true,
-                  "textContent": "班线"
-                },
-                "compType": "formItem",
-                "fieldName": "text44",
-                "itemType": "text",
-                "label": "静态文本",
-                "type": "text"
-              }
-            ],
-            "cellVisible": true
-          },
-          {
-            "id": "sh9f6bb0ee-a017-46d4-af21-1876a8c0ebcb",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [
-              {
-                "id": "Idsh722880a8-2648-4fc4-8295-ab650a9a8bb9",
-                "preps": {
-                  "id": "Idsh722880a8-2648-4fc4-8295-ab650a9a8bb9",
-                  "label": "静态文本",
-                  "itemNameLabel": "静态文本",
-                  "name": "text45",
-                  "clearable": true,
-                  "readonly": false,
-                  "rules": [],
-                  "maxLength": 255,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "staticData": true,
-                  "textContent": "选别不良内容及数量pcs",
-                  "step": "",
-                  "placeholder": ""
-                },
-                "compType": "formItem",
-                "fieldName": "text45",
-                "itemType": "text",
-                "label": "静态文本",
-                "type": "text"
-              }
-            ],
-            "cellVisible": true
-          }
-        ]
-      },
-      {
-        "id": "shfddbaac1-20af-432a-a3ee-4e73309a9f67",
-        "colIndex": 1,
-        "columns": [
-          {
-            "id": "shd110360d-b380-4d7d-be51-60504c060618",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "sh974e3584-556a-49ed-9514-d4d44bacbaa9",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [
-              {
-                "id": "Idsh5e9f4567-b3c6-4da4-921d-90d26255f0c9",
-                "preps": {
-                  "id": "Idsh5e9f4567-b3c6-4da4-921d-90d26255f0c9",
-                  "label": "数字输入框",
-                  "itemNameLabel": "数字输入框",
-                  "name": "reworkTotals",
-                  "clearable": true,
-                  "readonly": false,
-                  "placeholder": "请输入数字输入框",
-                  "step": "1",
-                  "min": 0,
-                  "precision": 0,
-                  "rules": [],
-                  "maxLength": 10,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "hideLabel": true,
+                  "textContent": "<p style=\"text-align: left;\">改善措施效果确认</p>",
                   "elements": [
                     {
-                      "id": "she1994dde-2b6b-44a5-9053-378f6e45343c",
+                      "id": "sh252b242f-43c2-4951-acbf-57444753e1d9",
                       "colIndex": 1,
                       "columns": [
                         {
-                          "id": "she4f850f6-11fe-44de-9250-5c7317061a3a",
+                          "id": "she33c19e0-72d4-4839-abf9-23b6efeb50bc",
                           "colIndex": 1,
                           "rowspan": 1,
                           "colspan": 1,
@@ -2953,825 +3246,78 @@ const fields = ref<any>({
                   ],
                   "rowNums": 1,
                   "columnNums": 1,
-                  "controlsPosition": "right"
+                  "styles": {
+                    "alignItems": "start"
+                  }
                 },
                 "compType": "formItem",
-                "fieldName": "reworkTotals",
-                "itemType": "number",
-                "label": "数字输入框",
-                "type": "number"
+                "fieldName": "html46",
+                "itemType": "html",
+                "label": "Html组件",
+                "type": "html"
               }
             ],
-            "cellVisible": true
+            "cellVisible": true,
+            "colHeight": "51px"
           },
           {
-            "id": "sh3141251f-247b-4783-93e8-dcbcded57171",
+            "id": "sh5d5ea5b2-75d3-4e98-95c6-d0adca9fffba",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 1,
-            "items": [
-              {
-                "id": "Idsh14cc8811-a296-4337-a799-2808db2113a1",
-                "preps": {
-                  "id": "Idsh14cc8811-a296-4337-a799-2808db2113a1",
-                  "label": "数字输入框",
-                  "itemNameLabel": "数字输入框",
-                  "name": "okNums",
-                  "clearable": true,
-                  "readonly": false,
-                  "placeholder": "请输入数字输入框",
-                  "step": "1",
-                  "min": 0,
-                  "precision": 0,
-                  "rules": [],
-                  "maxLength": 10,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "hideLabel": true,
-                  "controlsPosition": "right"
-                },
-                "compType": "formItem",
-                "fieldName": "okNums",
-                "itemType": "number",
-                "label": "数字输入框",
-                "type": "number"
-              }
-            ],
-            "cellVisible": true
+            "cellVisible": false,
+            "items": []
           },
           {
-            "id": "sh4d165462-1405-439b-bf6b-021fba347ca2",
+            "id": "sh6b94572c-9178-4f0c-9327-de1e5c631122",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 1,
-            "items": [
-              {
-                "id": "Idsh1793eead-585e-453d-8bbd-fd99939ddb78",
-                "preps": {
-                  "id": "Idsh1793eead-585e-453d-8bbd-fd99939ddb78",
-                  "label": "数字输入框",
-                  "itemNameLabel": "数字输入框",
-                  "name": "ngNums",
-                  "clearable": true,
-                  "readonly": false,
-                  "placeholder": "请输入数字输入框",
-                  "step": 1,
-                  "min": 0,
-                  "precision": 0,
-                  "rules": [],
-                  "maxLength": 10,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "hideLabel": true,
-                  "controlsPosition": "right"
-                },
-                "compType": "formItem",
-                "fieldName": "ngNums",
-                "itemType": "number",
-                "label": "数字输入框",
-                "type": "number"
-              }
-            ],
-            "cellVisible": true
-          },
-          {
-            "id": "sh474d25cf-4c17-4fd8-94cb-c268db4f415b",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [
-              {
-                "id": "Idsh07712163-a0a3-4160-b382-9456ac79a081",
-                "preps": {
-                  "id": "Idsh07712163-a0a3-4160-b382-9456ac79a081",
-                  "label": "数字输入框",
-                  "itemNameLabel": "数字输入框",
-                  "name": "ngPercent",
-                  "clearable": true,
-                  "readonly": false,
-                  "placeholder": "请输入数字输入框",
-                  "step": 1,
-                  "min": 0,
-                  "precision": 0,
-                  "rules": [],
-                  "maxLength": 10,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "hideLabel": true,
-                  "controlsPosition": "right"
-                },
-                "compType": "formItem",
-                "fieldName": "ngPercent",
-                "itemType": "number",
-                "label": "数字输入框",
-                "type": "number"
-              }
-            ],
-            "cellVisible": true
-          },
-          {
-            "id": "sh7dc6b1e7-5dcb-4591-b1f3-018b620eed24",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [
-              {
-                "id": "Idsh3cc32efb-592f-4adb-b362-b3b7d550ed29",
-                "preps": {
-                  "id": "Idsh3cc32efb-592f-4adb-b362-b3b7d550ed29",
-                  "label": "数字输入框",
-                  "itemNameLabel": "数字输入框",
-                  "name": "workHours",
-                  "clearable": true,
-                  "readonly": false,
-                  "placeholder": "请输入数字输入框",
-                  "step": 1,
-                  "min": 0,
-                  "precision": 0,
-                  "rules": [],
-                  "maxLength": 10,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "hideLabel": true,
-                  "controlsPosition": "right"
-                },
-                "compType": "formItem",
-                "fieldName": "workHours",
-                "itemType": "number",
-                "label": "数字输入框",
-                "type": "number"
-              }
-            ],
-            "cellVisible": true
-          },
-          {
-            "id": "sh3b7a276b-fc71-4d54-aeaa-e2416b6019a4",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [
-              {
-                "id": "Idsh80b22587-278b-4897-bfdf-54b8c6ea3321",
-                "preps": {
-                  "id": "Idsh80b22587-278b-4897-bfdf-54b8c6ea3321",
-                  "label": "数字输入框",
-                  "itemNameLabel": "数字输入框",
-                  "name": "persons",
-                  "clearable": true,
-                  "readonly": false,
-                  "placeholder": "请输入数字输入框",
-                  "step": 1,
-                  "min": 0,
-                  "precision": 0,
-                  "rules": [],
-                  "maxLength": 10,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "hideLabel": true,
-                  "controlsPosition": "right"
-                },
-                "compType": "formItem",
-                "fieldName": "persons",
-                "itemType": "number",
-                "label": "数字输入框",
-                "type": "number"
-              }
-            ],
-            "cellVisible": true
-          },
-          {
-            "id": "sh6ca3deb1-f659-4ad1-9942-238723eab960",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [
-              {
-                "id": "Idsh1bc7c814-05e7-4954-a879-951f9d7f5cd7",
-                "preps": {
-                  "id": "Idsh1bc7c814-05e7-4954-a879-951f9d7f5cd7",
-                  "label": "单行文本框",
-                  "itemNameLabel": "单行文本框",
-                  "name": "workLine",
-                  "clearable": true,
-                  "readonly": false,
-                  "placeholder": "请输入单行文本框",
-                  "rules": [],
-                  "maxLength": 255,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "hideLabel": true
-                },
-                "compType": "formItem",
-                "fieldName": "workLine",
-                "itemType": "input",
-                "label": "单行文本框",
-                "type": "input"
-              }
-            ],
-            "cellVisible": true
-          },
-          {
-            "id": "shcab5a441-0a9c-4327-8ff6-ec4c4ae77f5f",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [
-              {
-                "id": "Idshb9fce37d-9b67-4cb7-84ec-3b3d0d06ceda",
-                "preps": {
-                  "id": "Idshb9fce37d-9b67-4cb7-84ec-3b3d0d06ceda",
-                  "label": "单行文本框",
-                  "itemNameLabel": "单行文本框",
-                  "clearable": true,
-                  "readonly": false,
-                  "placeholder": "请输入单行文本框",
-                  "rules": [],
-                  "maxLength": 255,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "hideLabel": true,
-                  "name": "ngContentAndNums"
-                },
-                "compType": "formItem",
-                "fieldName": "ngContentAndNums",
-                "itemType": "input",
-                "label": "单行文本框",
-                "type": "input"
-              }
-            ],
-            "cellVisible": true
-          }
-        ]
-      },
-      {
-        "id": "sh540562ab-b0b5-45fd-89cd-a4380fc54679",
-        "colIndex": 1,
-        "columns": [
-          {
-            "id": "sh4bca0d98-9d94-4591-9e88-d108517f2ff4",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
+            "cellVisible": false,
             "items": [],
-            "cellVisible": false
+            "colWidth": "186px"
           },
           {
-            "id": "sh9fcea46b-8430-4625-acdc-cfe1f70137d1",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 4,
-            "items": [
-              {
-                "id": "Idsh217d84c2-383f-4616-a92e-1d0bbe008b3a",
-                "preps": {
-                  "id": "Idsh217d84c2-383f-4616-a92e-1d0bbe008b3a",
-                  "itemNameLabel": "单行文本框",
-                  "name": "resultOperator",
-                  "clearable": true,
-                  "readonly": false,
-                  "placeholder": "请输入作成",
-                  "rules": [],
-                  "maxLength": 255,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "label": "作成"
-                },
-                "compType": "formItem",
-                "fieldName": "resultOperator",
-                "itemType": "input",
-                "label": "单行文本框",
-                "type": "input"
-              }
-            ],
-            "cellVisible": true
-          },
-          {
-            "id": "sh05f7fb62-abe9-4ea3-a49f-f3798f2005bc",
+            "id": "sh6fa1a213-e1b4-4301-8b4d-3e2ac6518bab",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 1,
+            "cellVisible": false,
             "items": [],
-            "cellVisible": false
+            "colWidth": "62px"
           },
           {
-            "id": "she71a755b-10fe-424f-9536-3d1a1b3a5e22",
+            "id": "shf2ad8beb-1ac8-44cf-94f3-ac5989cccd0e",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 1,
+            "cellVisible": false,
             "items": [],
-            "cellVisible": false
+            "colWidth": "172px"
           },
           {
-            "id": "sh6d361b19-42da-433d-a8e1-5f00d18510a7",
+            "id": "shf6243353-da9e-47ba-bdf6-6105255d3ecb",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 1,
+            "cellVisible": false,
             "items": [],
-            "cellVisible": false
+            "colWidth": "185px"
           },
           {
-            "id": "sh2e238187-4e92-4d3c-b588-3f5de0c619f0",
+            "id": "sh47aad720-f646-4501-8f21-238910723e9a",
             "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 4,
-            "items": [
-              {
-                "id": "Idsh1d239c13-ac0d-4373-843e-8bf8c8997ae5",
-                "preps": {
-                  "id": "Idsh1d239c13-ac0d-4373-843e-8bf8c8997ae5",
-                  "itemNameLabel": "单行文本框",
-                  "name": "resultAuditor",
-                  "clearable": true,
-                  "readonly": false,
-                  "placeholder": "请输入审核",
-                  "rules": [],
-                  "maxLength": 255,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "label": "审核"
-                },
-                "compType": "formItem",
-                "fieldName": "resultAuditor",
-                "itemType": "input",
-                "label": "单行文本框",
-                "type": "input"
-              }
-            ],
-            "cellVisible": true
-          },
-          {
-            "id": "sh329bf95b-a950-47be-9ae1-7707e2720296",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "shc8360550-1706-4aa8-b8a3-c9ca7d40699c",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "sh69305ce6-4712-4851-95b8-0099e74baffd",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          }
-        ]
-      },
-      {
-        "id": "shd5d53034-03ab-4c39-a532-3af103e688f4",
-        "colIndex": 1,
-        "columns": [
-          {
-            "id": "shf099d96c-7b52-44a6-bc56-d1b1adcc4862",
-            "colIndex": 1,
-            "rowspan": 3,
-            "colspan": 1,
-            "items": [
-              {
-                "id": "Idsh2cb86c7a-2087-4b8f-a95a-24fc1aa7567b",
-                "preps": {
-                  "id": "Idsh2cb86c7a-2087-4b8f-a95a-24fc1aa7567b",
-                  "label": "静态文本",
-                  "itemNameLabel": "静态文本",
-                  "name": "text56",
-                  "clearable": true,
-                  "readonly": false,
-                  "rules": [],
-                  "maxLength": 255,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "placeholder": "",
-                  "staticData": true,
-                  "textContent": "检验结果"
-                },
-                "compType": "formItem",
-                "fieldName": "text56",
-                "itemType": "text",
-                "label": "静态文本",
-                "type": "text"
-              }
-            ],
-            "cellVisible": true
-          },
-          {
-            "id": "sh8263f8cf-b1cd-42b9-91d2-ab3b75e9f109",
-            "colIndex": 1,
-            "rowspan": 1,
+            "rowspan": 2,
             "colspan": 2,
+            "cellVisible": true,
             "items": [
               {
-                "id": "Idsh622b0843-2316-4bb8-b68e-1580477da9f2",
+                "id": "Idsh4f89e059-926c-4e6e-933b-64585ed5e1c0",
                 "preps": {
-                  "id": "Idsh622b0843-2316-4bb8-b68e-1580477da9f2",
-                  "label": "静态文本",
-                  "itemNameLabel": "静态文本",
-                  "name": "text57",
-                  "clearable": true,
-                  "readonly": false,
-                  "rules": [],
-                  "maxLength": 255,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "staticData": true,
-                  "textContent": "一次检验结果"
-                },
-                "compType": "formItem",
-                "fieldName": "text57",
-                "itemType": "text",
-                "label": "静态文本",
-                "type": "text"
-              }
-            ],
-            "cellVisible": true
-          },
-          {
-            "id": "sh29df46f1-a6a5-4b03-971c-1bf18a9ced4a",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "sh8fcaea0a-31d0-48de-9552-4df65a295ba1",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 3,
-            "items": [
-              {
-                "id": "Idsh8de8040f-9f31-4f48-919e-f5a18e4fdd24",
-                "preps": {
-                  "id": "Idsh8de8040f-9f31-4f48-919e-f5a18e4fdd24",
-                  "label": "检验日期",
-                  "itemNameLabel": "日期选择器",
-                  "name": "firstCheckTime",
-                  "clearable": true,
-                  "readonly": false,
-                  "placeholder": "请选择检验日期",
-                  "type": "datetime",
-                  "disabledDate": "(e20) => t16.value.includes(e20.getDate().toString())",
-                  "rules": [],
-                  "maxLength": 255,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true
-                },
-                "compType": "formItem",
-                "fieldName": "firstCheckTime",
-                "itemType": "datetime",
-                "label": "日期选择器",
-                "type": "datetime"
-              }
-            ],
-            "cellVisible": true
-          },
-          {
-            "id": "sh788437cf-2349-427d-a831-bd11659aeab7",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "sh29dbccb4-13fe-4fda-8114-f8f40a824fd5",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "shfa4ea33f-a344-4f5f-9e0d-a42f4e8a2c2d",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 3,
-            "items": [
-              {
-                "id": "Idsh2bc5d2f1-73c1-4f41-8a1a-7430c7225bae",
-                "preps": {
-                  "id": "Idsh2bc5d2f1-73c1-4f41-8a1a-7430c7225bae",
-                  "label": "检验结果",
-                  "itemNameLabel": "单选框",
-                  "name": "firstCheckResult",
-                  "clearable": true,
-                  "readonly": false,
-                  "rules": [],
-                  "maxLength": 255,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "placeholder": "",
-                  "disabledDate": "",
-                  "dataSource": "data",
-                  "analysisType": "func",
-                  "values": [
-                    {
-                      "name": "合格",
-                      "value": "ok",
-                      "xh": 1
-                    },
-                    {
-                      "name": "不合格",
-                      "value": "ng",
-                      "xh": 2
-                    }
-                  ],
-                  "valuesDefaultValue": [
-                    {}
-                  ]
-                },
-                "compType": "formItem",
-                "fieldName": "firstCheckResult",
-                "itemType": "radio",
-                "label": "单选框",
-                "type": "radio"
-              }
-            ],
-            "cellVisible": true
-          },
-          {
-            "id": "sh79b36bcb-d1cd-40e9-bcd9-b36b32f17a92",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "shd907ad71-dcbd-42cc-94bf-69e8acf683ab",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          }
-        ]
-      },
-      {
-        "id": "shbd672ba7-cad3-4613-b71b-334e0245a0da",
-        "colIndex": 1,
-        "columns": [
-          {
-            "id": "sh8b46b044-547f-41d5-b47e-28cf49dae68f",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "sha29ca26b-5721-4e63-b59b-345cc81cf97b",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 2,
-            "items": [
-              {
-                "id": "Idsh3c24dbee-5c79-4e6e-a875-ad7ebafe1385",
-                "preps": {
-                  "id": "Idsh3c24dbee-5c79-4e6e-a875-ad7ebafe1385",
-                  "label": "静态文本",
-                  "itemNameLabel": "静态文本",
-                  "name": "text58",
-                  "clearable": true,
-                  "readonly": false,
-                  "rules": [],
-                  "maxLength": 255,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "staticData": true,
-                  "textContent": "二次检验结果"
-                },
-                "compType": "formItem",
-                "fieldName": "text58",
-                "itemType": "text",
-                "label": "静态文本",
-                "type": "text"
-              }
-            ],
-            "cellVisible": true
-          },
-          {
-            "id": "sh356ec478-671b-400e-a385-999bd9e4dfa8",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "sh7c8f46d5-5987-491d-8656-9850790b7e09",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 3,
-            "items": [
-              {
-                "id": "Idshc018cd12-6491-4c5e-8b19-09b2b90c7aa3",
-                "preps": {
-                  "id": "Idshc018cd12-6491-4c5e-8b19-09b2b90c7aa3",
-                  "itemNameLabel": "日期选择器",
-                  "name": "secondCheckTime",
-                  "clearable": true,
-                  "readonly": false,
-                  "placeholder": "请选择检验日期",
-                  "type": "datetime",
-                  "rules": [],
-                  "maxLength": 255,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "label": "检验日期"
-                },
-                "compType": "formItem",
-                "fieldName": "secondCheckTime",
-                "itemType": "datetime",
-                "label": "日期选择器",
-                "type": "datetime"
-              }
-            ],
-            "cellVisible": true
-          },
-          {
-            "id": "shbb8f673d-53e7-474e-b71b-2247c09fc351",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "she1b042b7-9755-42e9-843d-0b0f56e6c1a9",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "shcfba7e71-fb33-49b8-95ec-2b2263e5a3b0",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 3,
-            "items": [
-              {
-                "id": "Idsh2593fcfc-d7bf-4b67-a62a-baa696190424",
-                "preps": {
-                  "id": "Idsh2593fcfc-d7bf-4b67-a62a-baa696190424",
-                  "label": "检验结果",
-                  "itemNameLabel": "单选框",
-                  "name": "secondCheckResult",
-                  "clearable": true,
-                  "readonly": false,
-                  "rules": [],
-                  "maxLength": 255,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true,
-                  "dataSource": "data",
-                  "analysisType": "func",
-                  "values": [
-                    {
-                      "name": "合格",
-                      "value": "ok",
-                      "xh": 1
-                    },
-                    {
-                      "name": "不合格",
-                      "value": "ng",
-                      "xh": 2
-                    }
-                  ],
-                  "valuesDefaultValue": [
-                    {}
-                  ]
-                },
-                "compType": "formItem",
-                "fieldName": "secondCheckResult",
-                "itemType": "radio",
-                "label": "单选框",
-                "type": "radio"
-              }
-            ],
-            "cellVisible": true
-          },
-          {
-            "id": "shd8976d06-f4ab-448c-b84a-58153ef7008c",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "sh62cadce0-b5ce-41fd-b4a9-11d792573bf0",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          }
-        ]
-      },
-      {
-        "id": "sh6fc7f091-d79e-4e1f-9b91-01ae65fe7b9f",
-        "colIndex": 1,
-        "columns": [
-          {
-            "id": "sh52d0e756-cbb0-4142-b12f-b6b53c0ca2fd",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "sh0fa11826-5edd-449d-9b39-8c50a7100a48",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 4,
-            "items": [
-              {
-                "id": "Idsh7b4cb969-38a3-409b-bc7a-14d96a98c1e0",
-                "preps": {
-                  "id": "Idsh7b4cb969-38a3-409b-bc7a-14d96a98c1e0",
-                  "label": "检验员",
-                  "itemNameLabel": "单行文本框",
-                  "name": "checkOperator",
-                  "clearable": true,
-                  "readonly": false,
-                  "placeholder": "请输入检验员",
-                  "rules": [],
-                  "maxLength": 255,
-                  "formVisible": true,
-                  "listVisible": true,
-                  "viewVisible": true
-                },
-                "compType": "formItem",
-                "fieldName": "checkOperator",
-                "itemType": "input",
-                "label": "单行文本框",
-                "type": "input"
-              }
-            ],
-            "cellVisible": true
-          },
-          {
-            "id": "she30d1202-7d35-4376-b755-b1d275730bb9",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "sh7ccbb57b-e373-46d8-b4a8-d237b87cde9c",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "sh0fa61463-f5f6-4cc9-870f-7c4e93a79373",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 1,
-            "items": [],
-            "cellVisible": false
-          },
-          {
-            "id": "sh3788e253-6423-4b29-a77a-2bf304ea022e",
-            "colIndex": 1,
-            "rowspan": 1,
-            "colspan": 4,
-            "items": [
-              {
-                "id": "Idsh63102a79-848c-4b9b-afd3-93f7ffb4c5ed",
-                "preps": {
-                  "id": "Idsh63102a79-848c-4b9b-afd3-93f7ffb4c5ed",
+                  "id": "Idsh4f89e059-926c-4e6e-933b-64585ed5e1c0",
                   "label": "QE确认",
                   "itemNameLabel": "单行文本框",
-                  "name": "qeConfirm",
+                  "name": "qequeren2",
                   "clearable": true,
                   "readonly": false,
                   "placeholder": "请输入QE确认",
@@ -3782,16 +3328,259 @@ const fields = ref<any>({
                   "viewVisible": true
                 },
                 "compType": "formItem",
-                "fieldName": "qeConfirm",
+                "fieldName": "qequeren2",
                 "itemType": "input",
                 "label": "单行文本框",
                 "type": "input"
+              }
+            ]
+          },
+          {
+            "id": "shdc3847c7-5498-43c8-b33d-73932eaa8ce1",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "cellVisible": false,
+            "items": []
+          }
+        ]
+      },
+      {
+        "id": "shb2f71d9b-268d-4c0a-b680-25fd89cb278a",
+        "colIndex": 1,
+        "columns": [
+          {
+            "id": "she671b08e-b043-48b7-90fd-27ae5034dbc4",
+            "colspan": 2,
+            "rowspan": 1,
+            "items": [
+              {
+                "id": "Idsh03692c12-5f4e-47eb-8f41-1ad8e309ce72",
+                "preps": {
+                  "id": "Idsh03692c12-5f4e-47eb-8f41-1ad8e309ce72",
+                  "itemNameLabel": "日期选择器",
+                  "name": "gzsd",
+                  "clearable": true,
+                  "readonly": false,
+                  "placeholder": "请选择跟踪时段",
+                  "type": "datetime",
+                  "disabledDate": "(e20) => t16.value.includes(e20.getDate().toString())",
+                  "rules": [],
+                  "maxLength": 255,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true,
+                  "label": "跟踪时段",
+                  "format": "HH",
+                  "valueFormat": "HH"
+                },
+                "compType": "formItem",
+                "fieldName": "gzsd",
+                "itemType": "datetime",
+                "label": "日期选择器",
+                "type": "datetime"
               }
             ],
             "cellVisible": true
           },
           {
-            "id": "sh4fab1e05-71e6-4622-a2b8-728f594d1dfe",
+            "id": "sh37b90368-a9db-4397-80c4-ed9340f39783",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "items": [],
+            "cellVisible": false
+          },
+
+          {
+            "id": "sh961e5ee0-4540-4e7a-a3f8-8c8bf0e63fef",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 2,
+            "items": [
+              {
+                "id": "Idsh247c25aa-4c24-40d5-a693-0841e1f878a4",
+                "preps": {
+                  "id": "Idsh247c25aa-4c24-40d5-a693-0841e1f878a4",
+                  "itemNameLabel": "数字输入框",
+                  "name": "tourushu2",
+                  "clearable": true,
+                  "readonly": false,
+                  "placeholder": "请输入投入数",
+                  "step": "1",
+                  "min": 0,
+                  "precision": 0,
+                  "rules": [],
+                  "maxLength": 10,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true,
+                  "label": "投入数",
+                  "controlsPosition": "right"
+                },
+                "compType": "formItem",
+                "fieldName": "tourushu2",
+                "itemType": "number",
+                "label": "数字输入框",
+                "type": "number"
+              }
+            ],
+            "cellVisible": true,
+            "colWidth": "62px"
+          },
+          {
+            "id": "shee4406a9-b8a7-4357-b73f-7148ca6d7ceb",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "items": [],
+            "cellVisible": false,
+            "colWidth": "172px"
+          },
+          {
+            "id": "shfd71552a-672f-4ad4-a6c0-d8e7fc025fa0",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "items": [
+              {
+                "id": "Idsh1b77618b-4d79-4ef9-b080-2e53c16d44ee",
+                "preps": {
+                  "id": "Idsh1b77618b-4d79-4ef9-b080-2e53c16d44ee",
+                  "itemNameLabel": "数字输入框",
+                  "name": "buliangshu2",
+                  "clearable": true,
+                  "readonly": false,
+                  "placeholder": "请输入不良数",
+                  "step": "1",
+                  "min": 0,
+                  "precision": 0,
+                  "rules": [],
+                  "maxLength": 10,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true,
+                  "label": "不良数",
+                  "controlsPosition": "right"
+                },
+                "compType": "formItem",
+                "fieldName": "buliangshu2",
+                "itemType": "number",
+                "label": "数字输入框",
+                "type": "number"
+              }
+            ],
+            "cellVisible": true,
+            "colWidth": "185px"
+          },
+          {
+            "id": "sh9c050143-3467-48cd-a0f2-3cb0ed729672",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "items": [
+              {
+                "id": "Idsha6fbc01c-27a9-474e-8d2e-f188e4cbc6f4",
+                "preps": {
+                  "id": "Idsha6fbc01c-27a9-474e-8d2e-f188e4cbc6f4",
+                  "itemNameLabel": "数字输入框",
+                  "name": "bulianglv2",
+                  "clearable": true,
+                  "readonly": false,
+                  "placeholder": "请输入不良率",
+                  "step": "1",
+                  "min": 0,
+                  "precision": 0,
+                  "rules": [],
+                  "maxLength": 10,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true,
+                  "label": "不良率"
+                },
+                "compType": "formItem",
+                "fieldName": "bulianglv2",
+                "itemType": "number",
+                "label": "数字输入框",
+                "type": "number"
+              }
+            ],
+            "cellVisible": true
+          },
+          {
+            "id": "sh05dec99e-908d-4f1c-b25a-23eb7586d71d",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "items": [],
+            "cellVisible": false,
+            "colWidth": "186px"
+          },
+          {
+            "id": "she20f4648-48a1-4755-b05d-f8788913833b",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "items": [],
+            "cellVisible": false
+          }
+        ]
+      },
+      {
+        "id": "shd809ccc9-41b0-4774-9f94-e66bda3ae65a",
+        "colIndex": 1,
+        "columns": [
+          {
+            "id": "shc983efcb-8281-44eb-8164-ff36da17c67f",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 6,
+            "items": [
+              {
+                "id": "Idshb6473bb0-8b0c-4ec7-bc26-e2d674bf5e37",
+                "preps": {
+                  "id": "Idshb6473bb0-8b0c-4ec7-bc26-e2d674bf5e37",
+                  "label": "单选框",
+                  "itemNameLabel": "单选框",
+                  "name": "radio54",
+                  "clearable": true,
+                  "readonly": false,
+                  "rules": [],
+                  "maxLength": 255,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true,
+                  "step": "",
+                  "placeholder": "",
+                  "dataSource": "data",
+                  "analysisType": "func",
+                  "values": [
+                    {
+                      "name": "措施有效，可继续生产，进一步跟进效果",
+                      "value": "ok",
+                      "xh": 1
+                    },
+                    {
+                      "name": "措施无效，需停线整改",
+                      "value": "ng",
+                      "xh": 2
+                    }
+                  ],
+                  "valuesDefaultValue": [
+                    {}
+                  ]
+                },
+                "compType": "formItem",
+                "fieldName": "radio54",
+                "itemType": "radio",
+                "label": "单选框",
+                "type": "radio"
+              }
+            ],
+            "cellVisible": true
+          },
+          {
+            "id": "shbbfebb9d-0a1f-436e-abb7-d3435183d89a",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 1,
@@ -3799,7 +3588,121 @@ const fields = ref<any>({
             "cellVisible": false
           },
           {
-            "id": "she082c2cf-3542-43f1-9bee-0faf65c8d327",
+            "id": "sh01bf9637-700e-4439-8985-29f19ad3ebf3",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "items": [],
+            "cellVisible": false,
+            "colWidth": "186px"
+          },
+          {
+            "id": "sh89a423e5-3e6e-44eb-8ed4-41076409e24c",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "items": [],
+            "cellVisible": false,
+            "colWidth": "62px"
+          },
+          {
+            "id": "sh0e493591-732e-41c8-a0a5-b5b9fa0668e0",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "items": [],
+            "cellVisible": false,
+            "colWidth": "172px"
+          },
+          {
+            "id": "sh1d38f053-a4e0-4fdf-a3f8-b81d1f048d6f",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "items": [],
+            "cellVisible": false,
+            "colWidth": "185px"
+          },
+          {
+            "id": "sh5935a9a0-a5ce-4365-9d81-c1f3f92a305b",
+            "colIndex": 1,
+            "rowspan": 2,
+            "colspan": 2,
+            "items": [
+              {
+                "id": "Idsh97cc1aad-ad64-4c46-823b-794be7c621e0",
+                "preps": {
+                  "id": "Idsh97cc1aad-ad64-4c46-823b-794be7c621e0",
+                  "itemNameLabel": "日期选择器",
+                  "name": "qurenshijian2",
+                  "clearable": true,
+                  "readonly": false,
+                  "placeholder": "请选择确认时间",
+                  "type": "datetime",
+                  "rules": [],
+                  "maxLength": 255,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true,
+                  "label": "确认时间"
+                },
+                "compType": "formItem",
+                "fieldName": "qurenshijian2",
+                "itemType": "datetime",
+                "label": "日期选择器",
+                "type": "datetime"
+              }
+            ],
+            "cellVisible": true
+          },
+          {
+            "id": "sh88b0147f-85d4-43f0-a995-e62d0b42e432",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "items": [],
+            "cellVisible": false
+          }
+        ]
+      },
+      {
+        "id": "shfc472521-e63d-4df1-b2dc-bce6cdf20e78",
+        "colIndex": 1,
+        "columns": [
+          {
+            "id": "shfb90bfe2-43e0-4bb6-8438-48caf9e01b04",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 6,
+            "items": [
+              {
+                "id": "Idsh26f35c22-cd27-445d-9b46-c28a8b257531",
+                "preps": {
+                  "id": "Idsh26f35c22-cd27-445d-9b46-c28a8b257531",
+                  "itemNameLabel": "多行文本框",
+                  "name": "formRemark",
+                  "clearable": true,
+                  "readonly": false,
+                  "placeholder": "请输入备注",
+                  "rules": [],
+                  "maxLength": 1000,
+                  "formVisible": true,
+                  "listVisible": true,
+                  "viewVisible": true,
+                  "label": "备注"
+                },
+                "compType": "formItem",
+                "fieldName": "formRemark",
+                "itemType": "textarea",
+                "label": "多行文本框",
+                "type": "textarea"
+              }
+            ],
+            "cellVisible": true,
+            "colHeight": "92px"
+          },
+          {
+            "id": "sh094b9943-dce2-4542-9dbf-2662fd0a93bb",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 1,
@@ -3807,7 +3710,51 @@ const fields = ref<any>({
             "cellVisible": false
           },
           {
-            "id": "sh1ef8716c-32ca-45cc-8d68-d7750c48b9ea",
+            "id": "sh55089891-c9c7-4d64-88b3-3528673f3755",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "items": [],
+            "cellVisible": false,
+            "colWidth": "186px"
+          },
+          {
+            "id": "shf92e141d-ea64-4f6e-a6b3-b00fee385cd1",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "items": [],
+            "cellVisible": false,
+            "colWidth": "62px"
+          },
+          {
+            "id": "sh36acbb54-ce72-4a3c-b1a8-86bb40db7fa4",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "items": [],
+            "cellVisible": false,
+            "colWidth": "172px"
+          },
+          {
+            "id": "sh22c73a55-dc1a-449d-affc-00cd69c681ed",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "items": [],
+            "cellVisible": false,
+            "colWidth": "185px"
+          },
+          {
+            "id": "sh75c310b4-fb14-4ea5-af4e-ce368fa11ee8",
+            "colIndex": 1,
+            "rowspan": 1,
+            "colspan": 1,
+            "items": [],
+            "cellVisible": false
+          },
+          {
+            "id": "sh026540d9-47c2-4a8e-b5f7-d04cdbe936cf",
             "colIndex": 1,
             "rowspan": 1,
             "colspan": 1,
@@ -3822,8 +3769,8 @@ const fields = ref<any>({
     "formVisible": true,
     "listVisible": true,
     "viewVisible": true,
-    "rowNums": 18,
-    "columnNums": 9,
+    "rowNums": 21,
+    "columnNums": 8,
     "placeholder": ""
   },
   "compType": "container",
@@ -3832,28 +3779,44 @@ const fields = ref<any>({
   "rowNums": 1,
   "columnNums": 1,
   "type": "dytable"
+});*/
+const fields = ref<any>({
+  "id": "Idsh8e6b6691-6f32-432b-8d83-3e8614460389",
+  "preps": {
+    "id": "Idsh8e6b6691-6f32-432b-8d83-3e8614460389",
+    "label": "动态表格",
+    "itemNameLabel": "动态表格",
+    "name": "dytable1",
+    "elements": [],
+    "compType": "container",
+    "fieldName": "dytable1",
+    "itemType": "dytable",
+    "rowNums": 1,
+    "columnNums": 1,
+    "type": "dytable"
+  }
 });
 onMounted(() => {
   designForm.clearAll(true);
   const elements = fields.value.preps.elements;
-  // for (let i = 1; i <= 12; i++) {
-  //   const columns: any = [];
-  //   const id = "r" + i;
-  //   for (let j = 1; j <= 12; j++) {
-  //     columns.push({
-  //       "id": `${id + ("c" + j)}`,
-  //       "colspan": 1,
-  //       "rowspan": 1,
-  //       "items": [],
-  //       cellVisible: true
-  //     });
-  //   }
-  //   elements.push({
-  //     id: id,
-  //     colIndex: 1,
-  //     columns: columns,
-  //   });
-  // }
+  for (let i = 1; i <= 12; i++) {
+    const columns: any = [];
+    const id = "r" + i;
+    for (let j = 1; j <= 12; j++) {
+      columns.push({
+        "id": `${id + ("c" + j)}`,
+        "colspan": 1,
+        "rowspan": 1,
+        "items": [],
+        cellVisible: true
+      });
+    }
+    elements.push({
+      id: id,
+      colIndex: 1,
+      columns: columns,
+    });
+  }
 });
 </script>
 

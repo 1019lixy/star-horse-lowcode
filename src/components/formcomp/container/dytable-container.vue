@@ -26,7 +26,7 @@ const handleColResizeStart = (e: MouseEvent, index: number) => {
   resizingColIndex.value = index;
   startX.value = e.clientX;
   const colElement = e.target.parentElement as HTMLElement;
-  console.log("colElement",e, colElement);
+  // console.log("colElement",e, colElement);
   startWidth.value = colElement.offsetWidth;
 
   document.addEventListener("mousemove", handleColResizeMove);
@@ -40,13 +40,13 @@ const handleColResizeMove = (e: MouseEvent) => {
   const delta = e.clientX - startX.value;
   const newWidth = Math.max(20, startWidth.value + delta);
   const newWidthStr = `${newWidth}px`;
-  console.log("resizingColIndex.value", resizingColIndex.value,newWidthStr);
+  // console.log("resizingColIndex.value", resizingColIndex.value,newWidthStr);
   // 更新所有行中对应列的宽度
   const elements = props.field.preps.elements;
   elements?.forEach((row: any) => {
     if (row.columns && row.columns[resizingColIndex.value]) {
       row.columns[resizingColIndex.value].colWidth = newWidthStr;
-      console.log("resizingColIndex.value", resizingColIndex.value,newWidthStr,row.columns[resizingColIndex.value]);
+      // console.log("resizingColIndex.value", resizingColIndex.value,newWidthStr,row.columns[resizingColIndex.value]);
     }
   });
 };

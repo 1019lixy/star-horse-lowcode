@@ -243,6 +243,7 @@ export default {
     "ui.mergeWholeCol": "Merge whole column",
     "ui.undoMergeRow": "Undo row merge",
     "ui.undoMergeCol": "Undo column merge",
+    "ui.resetMerge": "Reset merge",
     "ui.moveRowUp": "Move row up",
     "ui.moveRowDown": "Move row down",
     "ui.moveColLeft": "Move column left",

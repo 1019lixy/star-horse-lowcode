@@ -136,22 +136,47 @@ const tableCellInfo = (props: any, type: any) => {
     return {rows, row, col};
 };
 const mergeLeftCol = (props: any, type: any) => {
-    const position = props.colIndex - 1;
-    mergeCol(props, position, type);
-};
-const mergeCol = (props: any, position: number, type: any) => {
     const {row, col} = tableCellInfo(props, type);
+    const position = props.colIndex - 1;
     const colInfo = row.columns[position];
-    col.colspan = col.colspan + colInfo.colspan;
     if (type == "box") {
+        col.colspan = col.colspan + colInfo.colspan;
         row.columns.splice(position, 1);
     } else {
-        colInfo.cellVisible = false;
+        //需要解决 当前单元格和左边单元格存在已经合并的情况
+        //拿到左边倒数第一个visible =true 的单元格
+        for (let i = props.colIndex - 1; i >= 0; i--) {
+            const tempCol = row.columns[i];
+            if (tempCol.cellVisible) {
+                tempCol.colspan = col.colspan + tempCol.colspan;
+                col.cellVisible = false;
+                break;
+            }
+        }
+
     }
 };
 const mergeRightCol = (props: any, type: any) => {
+    const {row, col} = tableCellInfo(props, type);
     const position = props.colIndex + 1;
-    mergeCol(props, position, type);
+    const colInfo = row.columns[position];
+    if (type == "box") {
+        col.colspan = col.colspan + colInfo.colspan;
+        row.columns.splice(position, 1);
+    } else {
+        //需要解决 当前单元格和右边单元格存在已经合并的情况
+        //拿到右边边倒数第一个visible =true 的单元格
+        const columns = row.columns;
+        for (let i = props.colIndex + 1; i < columns.length; i++) {
+            const tempCol = columns[i];
+            if (tempCol.cellVisible) {
+                col.colspan = col.colspan + tempCol.colspan;
+                tempCol.cellVisible = false;
+                break;
+            }
+        }
+
+    }
 };
 const mergeWholeCol = (props: any, type: any) => {
     const {rows, col} = tableCellInfo(props, type);
@@ -203,15 +228,15 @@ const undoMergeRow = (props: any, type: any) => {
     const {rows, row, col} = tableCellInfo(props, type);
     if (row.columns.length == 1) {
         col.colspan = col.colspan - 1;
-        const newCol = colDataInfo(type);
-        newCol.cellVisible = true;
-        row.columns.splice(props.colIndex, 0, newCol);
+        row.columns[props.colIndex + 1].cellVisible = true;
     } else {
         col.rowspan = col.rowspan - 1;
-        const newCol = colDataInfo(type);
-        newCol.cellVisible = true;
-        row.columns.splice(props.colIndex, 1, newCol);
-        rows[props.rowIndex + 1].columns.splice(props.colIndex, 0, col);
+        const tempCols = rows[col.rowspan].columns;
+        // const tepCol = tempCols[props.colIndex];
+        for (let start = props.colIndex; start <= (props.colIndex + col.colspan); start++) {
+            tempCols[start].cellVisible = true;
+        }
+
     }
 };
 /**
@@ -262,15 +287,35 @@ const undoMergeCol = (props: any, type: any) => {
     } else {
         if (col.rowspan == rows.length) {
             col.rowspan = col.rowspan - 1;
-            const newCol = colDataInfo(type);
-            newCol.cellVisible = true;
-            row.columns.splice(props.colIndex, 1, newCol);
-            rows[props.rowIndex + 1].columns.splice(props.colIndex, 0, col);
+            const tempCols = rows[col.rowspan].columns;
+            // const tepCol = tempCols[props.colIndex];
+            for (let start = props.colIndex; start <= (props.colIndex + col.colspan); start++) {
+                tempCols[start].cellVisible = true;
+            }
+            // tepCol.cellVisible = true;
+            // tepCol.colspan = col.colspan;
         } else {
             col.colspan = col.colspan - 1;
-            const newCol = colDataInfo(type);
-            newCol.cellVisible = true;
-            row.columns.splice(props.colIndex, 0, newCol);
+            row.columns[props.colIndex + col.colspan].cellVisible = true;
+        }
+    }
+};
+
+/**
+ * 还原当前单元格所在行或列的所有合并操作
+ * @param props
+ * @param type
+ */
+const resetMerge = (props: any, type: any) => {
+    const {rows, col} = tableCellInfo(props, type);
+    const colspan = col.colspan;
+    const rowspan = col.rowspan;
+    for (let i = props.rowIndex; i < (props.rowIndex + rowspan); i++) {
+        const tempColumns = rows[i].columns;
+        for (let j = props.colIndex; j < (props.colIndex + colspan); j++) {
+            tempColumns[j].cellVisible = true;
+            tempColumns[j].colspan = 1;
+            tempColumns[j].rowspan = 1;
         }
     }
 };
@@ -281,10 +326,11 @@ const undoMergeCol = (props: any, type: any) => {
 const deleteWholeCol = (props: any, type: any) => {
     const rows = props.parentField.preps.elements;
     for (let i = 0; i < rows.length; i++) {
-        const cols = rows[i].columns;
-        if (cols[props.colIndex]) {
-            cols[props.colIndex].cellVisible = false;
-        }
+        // const cols = rows[i].columns;
+        rows[i].columns.splice(props.colIndex, 1);
+        // if (cols[props.colIndex]) {
+        //     cols[props.colIndex].cellVisible = false;
+        // }
     }
 };
 /**
@@ -322,89 +368,17 @@ const deleteCurrentCol = (props: any, type: any) => {
         const cols = rows[index].columns;
         for (const sIndex in cols) {
             if (props.colIndex == sIndex && props.rowIndex == index) {
-                cols[sIndex].cellVisible = false;
+                cols.splice(sIndex, 1);
                 break;
             }
         }
     }
 };
 const deleteWholeRow = (props: any, type: any) => {
-    const row = props.parentField.preps.elements[props.rowIndex];
-    if (row?.columns) {
-        row.columns.forEach((col: any) => {
-            col.cellVisible = false;
-        });
-    }
+    props.parentField.preps.elements.splice(props.rowIndex, 1);
 };
 
-const moveRowUp = (props: any, type: any) => {
-    const {rows, row} = tableCellInfo(props, type);
-    if (props.rowIndex == 0) {
-        return;
-    }
-    rows.splice(props.rowIndex - 1, 0, row);
-    rows.splice(props.rowIndex + 1, 1);
-};
-const moveRowDown = (props: any, type: any) => {
-    const {rows, row} = tableCellInfo(props, type);
-    if (props.isLastRow) {
-        return;
-    }
-    rows.splice(props.rowIndex + 2, 0, row);
-    rows.splice(props.rowIndex, 1);
-};
-const moveRowUpFirst = (props: any, type: any) => {
-    const {rows, row} = tableCellInfo(props, type);
-    if (props.isFirstRow) {
-        return;
-    }
-    rows.splice(0, 0, row);
-    rows.splice(props.rowIndex + 1, 1);
-};
-const moveRowDownLast = (props: any, type: any) => {
-    const {rows, row} = tableCellInfo(props, type);
-    if (props.isLastRow) {
-        return;
-    }
-    rows.splice(rows.length, 0, row);
-    rows.splice(props.rowIndex, 1);
-};
-const moveColLeft = (props: any, type: any) => {
-    const {rows, col} = tableCellInfo(props, type);
-    if (props.isFirstCol) {
-        return;
-    }
-    rows[props.rowIndex].columns.splice(props.colIndex - 1, 0, col);
-    rows[props.rowIndex].columns.splice(props.colIndex + 1, 1);
-};
-const moveColRight = (props: any, type: any) => {
-    const {rows, col} = tableCellInfo(props, type);
-    if (props.isLastCol) {
-        return;
-    }
-    rows[props.rowIndex].columns.splice(props.colIndex + 2, 0, col);
-    rows[props.rowIndex].columns.splice(props.colIndex, 1);
-};
-const moveColLeftFirst = (props: any, type: any) => {
-    const {rows, col} = tableCellInfo(props, type);
-    if (props.isFirstCol) {
-        return;
-    }
-    rows[props.rowIndex].columns.splice(0, 0, col);
-    rows[props.rowIndex].columns.splice(props.colIndex + 1, 1);
-};
-const moveColRightLast = (props: any, type: any) => {
-    const {rows, col} = tableCellInfo(props, type);
-    if (props.isLastCol) {
-        return;
-    }
-    rows[props.rowIndex].columns.splice(
-        rows[props.rowIndex].columns.length,
-        0,
-        col,
-    );
-    rows[props.rowIndex].columns.splice(props.colIndex, 1);
-};
+
 /**
  * 单元格操作方法
  * @param command
@@ -452,6 +426,9 @@ export const tableCellOperation = (
         case "undoMergeCol":
             undoMergeCol(props, type);
             break;
+        case "resetMerge":
+            resetMerge(props, type);
+            break;
         case "deleteWholeCol":
             deleteWholeCol(props, type);
             break;
@@ -461,30 +438,7 @@ export const tableCellOperation = (
         case "deleteCurrentCol":
             deleteCurrentCol(props, type);
             break;
-        case "moveRowUp":
-            moveRowUp(props, type);
-            break;
-        case "moveRowDown":
-            moveRowDown(props, type);
-            break;
-        case "moveColLeft":
-            moveColLeft(props, type);
-            break;
-        case "moveColRight":
-            moveColRight(props, type);
-            break;
-        case "moveRowUpFirst":
-            moveRowUpFirst(props, type);
-            break;
-        case "moveRowDownLast":
-            moveRowDownLast(props, type);
-            break;
-        case "moveColLeftFirst":
-            moveColLeftFirst(props, type);
-            break;
-        case "moveColRightLast":
-            moveColRightLast(props, type);
-            break;
+
         case "addCellAfter":
             addCell(props, type, false);
             break;
@@ -605,9 +559,7 @@ const undoMergeColAction = (props: any, type: any) => {
     }
     return props.field.colspan == 1;
 };
-const moveAction = (props: any, type: any) => {
-    return props.field.items?.length > 0;
-};
+
 /**
  * 单元格按钮是否可点击控制
  * @param props
@@ -625,12 +577,5 @@ export const tableAction = (props: any, buttonControl: any, type?: any) => {
     buttonControl.deleteWholeRowDisabled = deleteWholeRowAction(props, type);
     buttonControl.undoMergeRowDisabled = undoMergeRowAction(props, type);
     buttonControl.undoMergeColDisabled = undoMergeColAction(props, type);
-    buttonControl.moveRowUpDisabled = moveAction(props, type);
-    buttonControl.moveRowDownDisabled = moveAction(props, type);
-    buttonControl.moveColLeftDisabled = moveAction(props, type);
-    buttonControl.moveColRightDisabled = moveAction(props, type);
-    buttonControl.moveRowUpFirstDisabled = moveAction(props, type);
-    buttonControl.moveRowDownLastDisabled = moveAction(props, type);
-    buttonControl.moveColLeftFirstDisabled = moveAction(props, type);
-    buttonControl.moveColRightLastDisabled = moveAction(props, type);
+
 };

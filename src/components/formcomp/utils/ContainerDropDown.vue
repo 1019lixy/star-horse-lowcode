@@ -83,15 +83,16 @@ const checkMenuStatus = () => {
     mergeBelowRowDisabled: props.isLastRow || nextRow != currentRow,
     undoMergeRowDisabled: props.field.rowspan == 1,
     undoMergeColDisabled: props.field.colspan == 1,
+    resetMergeDisabled: !hasMergeCol() && !hasMergeRow(),
     //第一行,或者没有数据禁用
-    moveRowUpDisabled: isFullColumn || props.isFirstRow || moveFlag,
-    moveRowDownDisabled: isFullColumn || props.isLastRow || moveFlag,
-    moveColLeftDisabled: isFullColumn || props.isFirstCol || moveFlag,
-    moveColRightDisabled: isFullColumn || props.isLastCol || moveFlag,
-    moveRowUpFirstDisabled: isFullColumn || props.isFirstRow || moveFlag,
-    moveRowDownLastDisabled: isFullColumn || props.isLastRow || moveFlag,
-    moveColLeftFirstDisabled: isFullColumn || props.isFirstCol || moveFlag,
-    moveColRightLastDisabled: isFullColumn || props.isLastCol || moveFlag,
+ /*   moveRowUpDisabled: props.isFirstRow,
+    moveRowDownDisabled: props.isLastRow,
+    moveColLeftDisabled: props.isFirstCol,
+    moveColRightDisabled: props.isLastCol,
+    moveRowUpFirstDisabled: props.isFirstRow,
+    moveRowDownLastDisabled: props.isLastRow,
+    moveColLeftFirstDisabled: props.isFirstCol,
+    moveColRightLastDisabled: props.isLastCol,*/
     deleteWholeColDisabled: false,
     deleteWholeRowDisabled: false,
     deleteCurrentColDisabled: false,
@@ -298,54 +299,20 @@ watch(
         >{{ i18n("ui.undoMergeCol") }}
         </el-dropdown-item>
         <el-dropdown-item
-            command="moveRowUp"
-            :disabled="buttonControl.moveRowUpDisabled"
-            divided
-        >{{ i18n("ui.moveRowUp") }}
-        </el-dropdown-item>
-        <el-dropdown-item
-            command="moveRowDown"
-            :disabled="buttonControl.moveRowDownDisabled"
-        >{{ i18n("ui.moveRowDown") }}
-        </el-dropdown-item>
-        <el-dropdown-item
-            command="moveColLeft"
-            :disabled="buttonControl.moveColLeftDisabled"
-        >{{ i18n("ui.moveColLeft") }}
-        </el-dropdown-item>
-        <el-dropdown-item
-            command="moveColRight"
-            :disabled="buttonControl.moveColRightDisabled"
-        >{{ i18n("ui.moveColRight") }}
-        </el-dropdown-item>
-        <el-dropdown-item
-            command="moveRowUpFirst"
-            :disabled="buttonControl.moveRowUpFirstDisabled"
-        >{{ i18n("ui.moveRowUpFirst") }}
-        </el-dropdown-item>
-        <el-dropdown-item
-            command="moveRowDownLast"
-            :disabled="buttonControl.moveRowDownLastDisabled"
-        >{{ i18n("ui.moveRowDownLast") }}
-        </el-dropdown-item>
-        <el-dropdown-item
-            command="moveColLeftFirst"
-            :disabled="buttonControl.moveColLeftFirstDisabled"
-        >{{ i18n("ui.moveColLeftFirst") }}
-        </el-dropdown-item>
-        <el-dropdown-item
-            command="moveColRightLast"
-            :disabled="buttonControl.moveColRightLastDisabled"
-        >{{ i18n("ui.moveColRightLast") }}
+            command="resetMerge"
+            :disabled="buttonControl.resetMergeDisabled"
+        >{{ i18n("ui.resetMerge") }}
         </el-dropdown-item>
         <el-dropdown-item
             command="addCellAfter"
+            v-if="type == 'box'"
             :disabled="buttonControl.addCellAfterDisabled"
             divided
         >{{ i18n("ui.addCellAfter") }}
         </el-dropdown-item>
         <el-dropdown-item
             command="addCellBefore"
+            v-if="type == 'box'"
             :disabled="buttonControl.addCellBeforeDisabled"
         >{{ i18n("ui.addCellBefore") }}
         </el-dropdown-item>
@@ -362,6 +329,7 @@ watch(
         >{{ i18n("ui.deleteWholeRow") }}
         </el-dropdown-item>
         <el-dropdown-item
+            v-if="type == 'box'"
             command="deleteCurrentCol"
             :disabled="buttonControl.deleteWholeColDisabled"
         >{{ i18n("ui.deleteCurrentCol") }}
