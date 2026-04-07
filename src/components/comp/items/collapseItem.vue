@@ -10,6 +10,7 @@ import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
 import { ContainerPreps } from "@/components/types/ItemPreps";
 import { ModelRef, onMounted } from "vue";
 import { prepsFilter } from "@/components/formcomp/utils/ItemRelationEventUtils";
+import StarHorseItem from "@/components/comp/StarHorseItem.vue";
 
 withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
@@ -83,6 +84,7 @@ onMounted(() => {
             :compSize="compSize"
             @addRow="addRow"
             @removeRow="removeRow"
+            :commonFormat="commonFormat"
             :objectName="collapseItem.objectName"
             :dataForm="
               getFormData(

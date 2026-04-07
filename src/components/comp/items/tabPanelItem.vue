@@ -4,6 +4,8 @@ import { ApiUrls } from "@/components/types/ApiUrls";
 import { FieldInfo } from "@/components/types/PageFieldInfo";
 
 import { getDataIndex, getFormData, getPrefix } from "@/api/form_utils";
+import StarHorseItem from "@/components/comp/StarHorseItem.vue";
+import {StarHorseFormTable} from "@/components/comp";
 
 defineProps({
   compUrl: { type: Object as PropType<ApiUrls> },
@@ -17,6 +19,7 @@ defineProps({
   compSize: { type: String, default: "default" },
   source: { type: Number, default: 1 },
   parentType: { type: String, default: "" },
+  commonFormat: { type: Function, default: () => {} },
 });
 const emits = defineEmits(["addRow", "removeRow"]);
 const dataForm: ModelRef<any> = defineModel("dataForm");
@@ -69,6 +72,7 @@ onMounted(() => {
         @addRow="addRow"
         @removeRow="removeRow"
         :objectName="item.objectName"
+        :commonFormat="commonFormat"
         :dataForm="getFormData(item, dataForm, propPrefix, dataIndex, itemKey)"
         :dataIndex="getDataIndex(item, propPrefix, dataIndex, itemKey)"
         :propPrefix="getPrefix(item, propPrefix, dataIndex, itemKey)"
@@ -82,7 +86,9 @@ onMounted(() => {
       v-else-if="parentType == 'batch' || item.tableFlag == 'Y'"
       :size="compSize"
       @addRow="addRow"
+      :source="source"
       @removeRow="removeRow"
+      :commonFormat="commonFormat"
       :rules="rules"
       :item="item"
       v-model:dataForm="dataForm"

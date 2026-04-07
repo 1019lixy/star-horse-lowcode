@@ -31,6 +31,7 @@ const props = defineProps({
   sortable: { type: Boolean, default: true },
   compSize: { type: String, default: "default" },
   source: { type: Number, default: 5 },
+  commonFormat:{type:Function,default:()=>{}}
 });
 const emits = defineEmits(["focusEvent", "blurEvent"]);
 const compInfo: ComputedRef<DyCompField> = computed(() => {
@@ -277,6 +278,7 @@ onMounted(() => {
             :batchName="batchName"
             @focus="focusEvent"
             :compSize="compSize"
+            :commonFormat="commonFormat"
             @blur="blurEvent"
             :source="source"
             :autofocus="true"

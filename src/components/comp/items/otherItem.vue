@@ -3,6 +3,7 @@ import { checkVisible, loadProp, validMsg } from "@/api/form_utils";
 import { Config } from "@/api/settings";
 import { ContainerPreps } from "@/components/types/ItemPreps";
 import { ModelRef, onMounted } from "vue";
+import StarHorseItem from "@/components/comp/StarHorseItem.vue";
 withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
   dataIndex: -1,
@@ -29,6 +30,7 @@ onMounted(() => {
       :primaryKey="primaryKey"
       v-model:dataForm="dataForm"
       :item="item"
+      :commonFormat="commonFormat"
       :dataIndex="dataIndex"
       :bareFlag="true"
       :compSize="compSize"
@@ -48,6 +50,7 @@ onMounted(() => {
       :compSize="compSize"
       v-model:dataForm="dataForm"
       :item="item"
+      :commonFormat="commonFormat"
       :dataIndex="dataIndex"
       :source="source"
     />

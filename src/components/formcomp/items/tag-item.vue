@@ -36,6 +36,7 @@ const tagType = (val: any) => {
   >
     <el-tag
       v-bind="prepsFilter(field.preps)"
+      :disabled="checkIsDisabled(props)"
       :type="tagType(formData[field.fieldName])"
       @click="itemAction('click')"
       class="relative"

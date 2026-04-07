@@ -1,29 +1,27 @@
 <script setup lang="ts" name="StarHorseItem">
-import { computed, inject, ModelRef, onMounted, PropType, ref } from "vue";
-import { useSelfOperationStore } from "@/store/SelfOperation";
+import {computed, inject, ModelRef, onMounted, PropType, ref} from "vue";
+import {useSelfOperationStore} from "@/store/SelfOperation";
 import piniaInstance from "@/store";
-import {
-  compKey,
-  dateCompList,
-  fieldPlaceholder,
-  inputCompList,
-  uuid,
-} from "@/api/system";
+import {compKey, dateCompList, fieldPlaceholder, inputCompList, uuid,} from "@/api/system";
 
-import { checkVisible, filterProperties } from "@/api/form_utils";
+import {checkVisible, filterProperties} from "@/api/form_utils";
 import Help from "@/components/help.vue";
 
 const props = defineProps({
-  item: { type: Object as PropType<any>, required: true },
-  column: { type: Object as PropType<any> },
-  primaryKey: { type: Object as PropType<any> },
+  item: {type: Object as PropType<any>, required: true},
+  column: {type: Object as PropType<any>},
+  primaryKey: {type: Object as PropType<any>},
   // 数据索引
-  dataIndex: { type: Number, default: -1 },
-  bareFlag: { type: Boolean, default: false },
-  batchName: { type: String, default: "" },
-  compSize: { type: String, default: "default" },
-  showLabel: { type: Boolean, default: true }, //是否显示标签
-  source: { type: Number, default: 1 },
+  dataIndex: {type: Number, default: -1},
+  bareFlag: {type: Boolean, default: false},
+  batchName: {type: String, default: ""},
+  compSize: {type: String, default: "default"},
+  showLabel: {type: Boolean, default: true}, //是否显示标签
+  source: {type: Number, default: 1},
+  commonFormat: {
+    type: Function, default: () => {
+    }
+  },
 });
 let userOperation = useSelfOperationStore(piniaInstance);
 const dataForm: ModelRef<any> = defineModel("dataForm");
@@ -36,8 +34,8 @@ const itemType = computed(() => {
     //日期默认以时间戳赋值
   }
   type =
-    (dataForm.value && dataForm.value["_" + props.item.fieldName + "Type"]) ||
-    type;
+      (dataForm.value && dataForm.value["_" + props.item.fieldName + "Type"]) ||
+      type;
   // console.log("type", props.item);
   // console.log(type);
   return type;
@@ -55,9 +53,9 @@ const bareStyle = computed(() => ({
   minWidth: props.source == 4 ? "200px" : "unset",
   maxHeight: props.source == 4 ? "500px" : "unset",
   width:
-    props.source == 4
-      ? dragWidth.value || props.item.minWidth || "inherit"
-      : "100%",
+      props.source == 4
+          ? dragWidth.value || props.item.minWidth || "inherit"
+          : "100%",
   position: "relative" as const,
 }));
 /**
@@ -94,8 +92,8 @@ const fieldType = () => {
   const keys = Object.keys(props.item.actions);
   if (props.source == 4) {
     const actionKey = inputList.includes(itemType.value)
-      ? "keyup.enter"
-      : "change";
+        ? "keyup.enter"
+        : "change";
     if (!keys.includes(actionKey)) {
       props.item.actions[actionKey] = actionKey;
     }
@@ -117,7 +115,7 @@ const init = () => {
   if (!props.item.fieldName) {
     props.item["fieldName"] = props.item.preps?.name ?? props.item.id;
   }
-  fieldPlaceholder(props.item, itemType.value);
+  fieldPlaceholder(props.item, itemType.value,props.source);
   if (props.item.preps) {
     //防止name 与Vue重名,导致渲染异常
     filterProperties(props.item.preps, exclusions);
@@ -202,50 +200,80 @@ const checkClassName = () => {
     return "comp-info";
   }
 };
+const dataFormat = (item: any) => {
+  let name = props.item.fieldName;
+  let val = "";
+  try {
+    val = dataForm.value?.[name];
+    return props.commonFormat(name, val, dataForm.value) ?? "--";
+  } catch (e) {
+    return val || "--";
+  }
+};
 onMounted(() => {
   init();
 });
 </script>
 <template>
+<!--  <template v-if="source==3">
+    <template v-if="itemType=='html'||itemType=='text'">
+      <component
+          :key="item.id"
+          :is="itemType + '-item'"
+          :formInfo="formFields"
+          ref="componentRef"
+          :bareFlag="bareFlag"
+          :source="source"
+          :field="item"
+          v-model:formData="dataForm"
+      />
+    </template>
+    <pre v-else-if="itemType== 'textarea' || itemType== 'markdown'">{{
+        dataFormat()
+      }}</pre>
+    <el-tooltip :content="dataFormat()" v-else>
+      {{ dataFormat() }}
+    </el-tooltip>
+  </template>-->
   <div
-    :class="checkClassName()"
-    :style="bareStyle"
-    @mousemove="onDrag"
-    @mouseup="stopDrag"
-    @mouseleave="stopDrag"
+      :class="checkClassName()"
+      :style="bareStyle"
+      @mousemove="onDrag"
+      @mouseup="stopDrag"
+      @mouseleave="stopDrag"
   >
     <div
-      class="drag-handle"
-      @mousedown.prevent="startDrag"
-      v-if="itemType != 'button' && item.fieldName && source == 4"
+        class="drag-handle"
+        @mousedown.prevent="startDrag"
+        v-if="itemType != 'button' && item.fieldName && source == 4"
     ></div>
-    <help :message="item.helpMsg" v-if="item.helpMsg" />
+    <help :message="item.helpMsg" v-if="item.helpMsg"/>
     <component
-      :key="item.id"
-      :is="itemType + '-item'"
-      :formInfo="formFields"
-      @selfFunc="actionDispatcher"
-      ref="componentRef"
-      :isSearch="source == 4"
-      :bareFlag="bareFlag"
-      :source="source"
-      :field="item"
-      v-model:formData="dataForm"
+        :key="item.id"
+        :is="itemType + '-item'"
+        :formInfo="formFields"
+        @selfFunc="actionDispatcher"
+        ref="componentRef"
+        :isSearch="source == 4"
+        :bareFlag="bareFlag"
+        :source="source"
+        :field="item"
+        v-model:formData="dataForm"
     />
-    <div v-if="item.brotherNodes" style="width: 15px" />
+    <div v-if="item.brotherNodes" style="width: 15px"/>
     <template
-      v-for="(temp, key) in item.brotherNodes"
-      :key="compKey(temp, key)"
+        v-for="(temp, key) in item.brotherNodes"
+        :key="compKey(temp, key)"
     >
       <star-horse-item
-        v-if="checkVisible(temp, dataForm)"
-        :primaryKey="primaryKey"
-        :compSize="compSize"
-        v-model:dataForm="dataForm"
-        :item="temp"
-        :dataIndex="dataIndex"
-        :bareFlag="true"
-        :source="source"
+          v-if="checkVisible(temp, dataForm)"
+          :primaryKey="primaryKey"
+          :compSize="compSize"
+          v-model:dataForm="dataForm"
+          :item="temp"
+          :dataIndex="dataIndex"
+          :bareFlag="true"
+          :source="source"
       />
     </template>
   </div>

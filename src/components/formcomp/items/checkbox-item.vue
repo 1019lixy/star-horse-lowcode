@@ -17,7 +17,7 @@
       <el-checkbox
         :border="item['border'] ?? true"
         :checked="item['checked']"
-        :disabled="item['disabled'] ?? false"
+        :disabled="item['disabled']||source==3"
         :label="item[field.preps?.props?.label || 'name']"
         :value="item[field.preps?.props?.value || 'value']"
         v-for="item in field.preps?.values"

@@ -13,6 +13,7 @@ import { compKey } from "@/api/system";
 import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
 import { ContainerPreps } from "@/components/types/ItemPreps";
 import { ModelRef, onMounted } from "vue";
+import StarHorseItem from "@/components/comp/StarHorseItem.vue";
 
 const props = withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
@@ -91,6 +92,7 @@ onMounted(() => {
                   :compSize="compSize"
                   :bareFlag="true"
                   :source="source"
+                  :commonFormat="commonFormat"
                   :primaryKey="primaryKey"
                   :item="headerItem"
                   :dataForm="
@@ -127,6 +129,7 @@ onMounted(() => {
           :source="source"
           :compUrl="compUrl"
           :compSize="compSize"
+          :commonFormat="commonFormat"
           :dataForm="
             getFormData(
               cardItem,

@@ -149,7 +149,7 @@ export function dateCompList() {
  * @param item
  * @param itemType
  */
-export function fieldPlaceholder(item: any, itemType: string) {
+export function fieldPlaceholder(item: any, itemType: string,source?:number) {
   if (!item.preps) {
     item.preps = {};
   }
@@ -183,7 +183,7 @@ export function fieldPlaceholder(item: any, itemType: string) {
     item.preps["maxPlaceholder"] =
       item.preps["maxPlaceholder"]?.trim() || i18n("api.pleaseInputMaxValue");
   }
-  if (item.preps["noPlaceholder"]) {
+  if (item.preps["noPlaceholder"]||source==3) {
     delete item.preps["placeholder"];
     delete item.preps["startPlaceholder"];
     delete item.preps["endPlaceholder"];

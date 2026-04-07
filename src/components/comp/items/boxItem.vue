@@ -2,6 +2,7 @@
 import {checkVisible, loadProp, validMsg} from "@/api/form_utils";
 import {ContainerPreps} from "@/components/types/ItemPreps";
 import {computed, onMounted} from "vue";
+import StarHorseItem from "@/components/comp/StarHorseItem.vue";
 
 const props = withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
@@ -90,6 +91,7 @@ onMounted(() => {
                   :primaryKey="primaryKey"
                   :compSize="compSize"
                   v-model:dataForm="dataForm"
+                  :commonFormat="commonFormat"
                   :item="tempData"
                   :dataIndex="dataIndex"
                   :source="source"
@@ -101,6 +103,7 @@ onMounted(() => {
                 :compSize="compSize"
                 :primaryKey="primaryKey"
                 v-model:dataForm="dataForm"
+                :commonFormat="commonFormat"
                 :item="tempData"
                 :dataIndex="dataIndex"
                 :source="source"
@@ -111,6 +114,7 @@ onMounted(() => {
                 :primaryKey="primaryKey"
                 :compSize="compSize"
                 v-model:dataForm="dataForm"
+                :commonFormat="commonFormat"
                 :item="tempData"
                 :dataIndex="dataIndex"
                 :source="source"

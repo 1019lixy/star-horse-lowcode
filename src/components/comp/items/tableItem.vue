@@ -58,7 +58,9 @@ onMounted(() => {
           <star-horse-form-table
             :size="compSize"
             @addRow="addRow"
+            :source="source"
             @removeRow="removeRow"
+            :commonFormat="commonFormat"
             :rules="rules"
             :item="temp"
             v-model:dataForm="dataForm"
@@ -75,8 +77,10 @@ onMounted(() => {
     <star-horse-form-table
       :size="compSize"
       :rules="rules"
+      :source="source"
       @addRow="addRow"
       @removeRow="removeRow"
+      :commonFormat="commonFormat"
       :item="temp"
       v-model:dataForm="dataForm"
     />

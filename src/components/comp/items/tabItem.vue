@@ -2,6 +2,7 @@
 import StarHorseFormTable from "@/components/comp/StarHorseFormTable.vue";
 import { ContainerPreps } from "@/components/types/ItemPreps";
 import { ModelRef, onMounted } from "vue";
+import StarHorseItem from "@/components/comp/StarHorseItem.vue";
 
 const props = withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
@@ -80,6 +81,7 @@ onMounted(() => {
           :itemKey="item.groupData ? key : 0"
           :source="source"
           parentType="tab"
+          :commonFormat="commonFormat"
           :compUrl="compUrl"
           :compSize="compSize"
           :propPrefix="propPrefix"

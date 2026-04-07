@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { nextTick, onMounted, onUpdated, ref, shallowRef } from "vue";
+import {nextTick, onMounted, onUpdated, ref, shallowRef} from "vue";
 import SmoothSignature from "smooth-signature";
-import { warning } from "@/utils/message";
+import {warning} from "@/utils/message";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 
-import { ItemPreps } from "@/components/types/ItemPreps";
+import {ItemPreps} from "@/components/types/ItemPreps";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
@@ -29,13 +29,13 @@ let options = {
   bgColor: "#f6f6f6",
   onEnd: (val) => {
     formData.value[props.field.fieldName] =
-      props.field.preps?.imageType == "jpg"
-        ? signature.value?.getJPG()
-        : signature.value?.getPNG();
+        props.field.preps?.imageType == "jpg"
+            ? signature.value?.getJPG()
+            : signature.value?.getPNG();
   },
 };
 const init = async () => {
-  options = { ...options, ...props.field?.preps };
+  options = {...options, ...props.field?.preps};
   await nextTick(() => {
     if (!signature.value && signatureCanvas.value) {
       signature.value = new SmoothSignature(signatureCanvas.value, options);
@@ -68,43 +68,43 @@ onUpdated(() => {
 </script>
 <template>
   <star-horse-dialog
-    :dialog-visible="previewDialog"
-    :source="3"
-    :self-func="true"
-    @closeAction="previewDialog = false"
+      :dialog-visible="previewDialog"
+      :source="3"
+      :self-func="true"
+      @closeAction="previewDialog = false"
   >
-    <el-image :src="signature?.getPNG()" />
+    <el-image :src="signature?.getPNG()"/>
   </star-horse-dialog>
 
   <starhorse-form-item
-    :showFormItem="showFormItem"
-    :isDesign="isDesign"
-    :disabled="disabled"
-    :bareFlag="bareFlag"
-    :field="field"
-    :parentField="parentField"
+      :showFormItem="showFormItem"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      :field="field"
+      :parentField="parentField"
   >
     <div class="pcDemo">
-      <div class="inner_button">
+      <div class="inner_button" v-if="source!=3">
         <el-menu mode="horizontal" style="height: inherit; width: 100%">
           <el-menu-item @click="clear">
             <el-tooltip content="清除">
-              <star-horse-icon icon-class="reset" />
+              <star-horse-icon icon-class="reset"/>
             </el-tooltip>
           </el-menu-item>
           <el-menu-item @click="undo">
             <el-tooltip content="后退">
-              <star-horse-icon icon-class="undo" />
+              <star-horse-icon icon-class="undo"/>
             </el-tooltip>
           </el-menu-item>
           <el-menu-item @click="handlePreview">
             <el-tooltip content="预览">
-              <star-horse-icon icon-class="preview" />
+              <star-horse-icon icon-class="preview"/>
             </el-tooltip>
           </el-menu-item>
         </el-menu>
       </div>
-      <canvas ref="signatureCanvas" />
+      <canvas ref="signatureCanvas"/>
     </div>
   </starhorse-form-item>
 </template>

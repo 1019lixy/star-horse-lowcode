@@ -1,9 +1,9 @@
 <template>
   <el-scrollbar>
-  <view-box-item
-    v-for="item in dataItem"
+  <star-horse-data-view
+
     :dataForm="formData"
-    :item="item"
+    :fieldList="dataItem"
     :formInfo="{}"
   />
   </el-scrollbar>
@@ -17,6 +17,7 @@ import DytableItem from "@/components/comp/items/dytableItem.vue";
 import { analysisCompDatas } from "@/api/form_utils";
 import BoxItem from "@/components/comp/items/boxItem.vue";
 import ViewBoxItem from "@/components/comp/items/viewBoxItem.vue";
+import {StarHorseDataView} from "@/components/comp";
 
 let designForm = useDesignFormStore(piniaInstance);
 const formData = ref<any>({
@@ -502,7 +503,19 @@ const fields = [
               id: "sh7afb1640-5586-4cd6-bfa7-c4220ee893d0",
               colspan: 21,
               rowspan: 1,
-              items: [],
+              items: [ {
+                type: "datapicker",
+                staticData: false,
+                itemType: "datapicker",
+                formVisible: true,
+                listVisible: true,
+                viewVisible: true,
+                preps: {
+                  hideLabel: true,
+                  hideToolbar: true,
+                  autosize: true,
+                },
+              },],
               colHeight: "250.66666793823242px",
             },
           ],
@@ -543,7 +556,19 @@ const fields = [
               id: "shfa93a0f5-7b6f-43dd-8a18-693fc9a4e5b2",
               colspan: 21,
               rowspan: 1,
-              items: [],
+              items: [{
+                type: "time",
+                staticData: false,
+                itemType: "time",
+                formVisible: true,
+                listVisible: true,
+                viewVisible: true,
+                preps: {
+                  hideLabel: true,
+                  hideToolbar: true,
+                  autosize: true,
+                },
+              }],
               colHeight: "272.6666679382324px",
             },
           ],
@@ -753,8 +778,8 @@ const fields = [
 ];
 onMounted(() => {
   const result = analysisCompDatas(fields);
-  dataItem.value = result.fieldList;
-  console.log(result);
+  dataItem.value = result;
+  console.log("fffffffff",result);
 });
 </script>
 

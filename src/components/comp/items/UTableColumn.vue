@@ -12,6 +12,7 @@ defineProps({
   batchName: { type: String, default: "batchDataList" },
   primaryKey: { type: [String, Object] as PropType<string | any> },
   source: { type: Number, default: 1 },
+  commonFormat:{type:Function,default:()=>{}}
 });
 const _compKey = compKey;
 const exclusionFields: string[] = ["divider", "button", "usercomp"];

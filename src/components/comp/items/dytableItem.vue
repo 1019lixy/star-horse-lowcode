@@ -124,6 +124,7 @@ const createArray = (item: any) => {
                     :prop="loadProp(propPrefix, tempData.fieldName, -1, -1)"
                     :labelPosition="tempData.preps?.labelPosition??parentPreps?.labelPosition"
                     :rules="validMsg(tempData, dataForm)"
+                    :commonFormat="commonFormat"
                     v-if="
                   (tempData.formVisible &&
                   tempData.label &&

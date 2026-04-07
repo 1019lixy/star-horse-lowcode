@@ -8,6 +8,7 @@ defineProps({
   initRows: { type: Number, default: 0 },
   size: { type: String, default: "default" },
   source: { type: Number, default: 1 },
+  commonFormat: { type: Function,default:()=>{} },
 });
 const emits = defineEmits(["addRow", "removeRow"]);
 const dataForm: ModelRef<any> = defineModel("dataForm");
@@ -38,6 +39,7 @@ const removeRow = (row: any) => {
     :batchUrl="item['batchUrl']"
     :title="item['title']"
     :size="size"
+    :commonFormat="commonFormat"
     @addRow="addRow"
     @removeRow="removeRow"
     v-if="!item['disVisible']"

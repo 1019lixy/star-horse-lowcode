@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import {computed, nextTick, onMounted, ref, watch} from "vue";
-import {allAction, initCompCallEvent, prepsFilter,} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {
+  allAction,
+  checkIsDisabled,
+  initCompCallEvent,
+  prepsFilter,
+} from "@/components/formcomp/utils/ItemRelationEventUtils";
 
 import {StarHorseDataSelector} from "@/components/comp";
 import {ItemPreps} from "@/components/types/ItemPreps";
@@ -112,6 +117,7 @@ watch(
     <star-horse-data-selector
         v-model="pickerData"
         v-bind="prepsFilter(preps)"
+        :disabled="checkIsDisabled(props)"
         @update:selectedData="(data) => itemAction('change')"
         @selectedData="(data) => itemAction('change')"
     />

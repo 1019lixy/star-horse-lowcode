@@ -2,6 +2,7 @@
 import { PropType, computed } from "vue";
 import { ApiUrls } from "@/components/types/ApiUrls";
 import { compKey } from "@/api/system";
+import {StarHorseTableColumn} from "@/components/comp";
 
 const props = defineProps({
   //url地址
@@ -19,6 +20,7 @@ const props = defineProps({
   globalConfig: { type: Object as PropType<any>, required: false },
   //是否动态页面
   isDynamic: { type: Boolean, default: false },
+  commonFormat: { type: Function, default: ()=>{} },
 });
 
 // Normalize different field list structures into a consistent format
@@ -108,6 +110,7 @@ const normalizedFieldList = computed(() => {
       :globalConfig="globalConfig"
       :isDynamic="isDynamic"
       :data-format="dataFormat"
+      :commonFormat="commonFormat"
       :sortable="sortable"
       :compSize="compSize"
       :item="field.item"

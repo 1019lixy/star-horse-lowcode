@@ -35,6 +35,10 @@ const props = defineProps({
   showCheckBox: {type: Boolean, default: false},
   selectAll: {type: Boolean, default: false},
   subFlag: {type: Boolean, default: false},
+  commonFormat: {
+    type: Function, default: () => {
+    }
+  },
 });
 const emits = defineEmits(["addRow", "removeRow", "inited"]);
 const dataForm: ModelRef<any> = defineModel("dataForm");
@@ -442,6 +446,7 @@ watch(
                 :key="compKey(temp, skey)"
                 v-if="temp.listVisible||temp.formVisible"
                 :size="size"
+                :commonFormat="commonFormat"
                 :rules="rules"
                 :source="source"
                 :batchName="batchName"
@@ -456,6 +461,7 @@ watch(
               :size="size"
               :rules="rules"
               :source="source"
+              :commonFormat="commonFormat"
               :batchName="batchName"
               :primaryKey="primaryKey"
               :staticColumn="staticColumn"

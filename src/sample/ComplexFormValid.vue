@@ -1,7 +1,7 @@
 <script setup lang="ts" name="EnvInfo">
 import { i18n } from "@/lang";
 import { onMounted, provide, reactive, ref } from "vue";
-import {StarHorseTableComp} from "@/components/comp";
+import {StarHorseDataView, StarHorseTableComp} from "@/components/comp";
 import {ApiUrls, OrderByInfo, PageFieldInfo, SearchFields, SelectOption, UserFuncInfo} from "@/components/types";
 import {apiInstance, closeLoad, dialogPreps, load} from "@/api/star_horse_utils";
 import {dictData, download} from "@/api/star_horse_apis";
@@ -824,7 +824,7 @@ const closeAction = () => {
           </div>
           <el-divider />
           <div class="flex-1 overflow-hidden">
-            <star-horse-form
+            <star-horse-data-view
                 ref="generateFormRef"
                 @refresh="codeGeneratorRef?.loadByPage()"
                 :compUrl="dataUrl"

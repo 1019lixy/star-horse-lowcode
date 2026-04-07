@@ -1,52 +1,50 @@
 <template>
   <starhorse-form-item
-    :showFormItem="showFormItem"
-    :isDesign="isDesign"
-    :disabled="disabled"
-    :bareFlag="bareFlag"
-    :field="field"
-    :parentField="parentField"
+      :showFormItem="showFormItem"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      :field="field"
+      :parentField="parentField"
   >
     <el-radio-group
-      :fid="field.fieldName"
-      :disabled="checkIsDisabled(props)"
-      :readonly="field.preps?.readonly ?? false"
-      :text-color="field.preps?.textColor"
-      v-on="getDynamicEvents(props, itemAction)"
-      v-model="formData[field.fieldName]"
+        :fid="field.fieldName"
+        :disabled="checkIsDisabled(props)"
+        :readonly="field.preps?.readonly ?? false"
+        :text-color="field.preps?.textColor"
+        v-on="getDynamicEvents(props, itemAction)"
+        v-model="formData[field.fieldName]"
     >
       <el-radio-button
-        v-if="field.preps?.radioType == 'button'"
-        :border="item['border'] ?? true"
-        :checked="item['checked']"
-        :disabled="item['disabled'] ?? false"
-        :label="item['name']"
-        :value="item['value']"
-        v-for="item in field.preps?.values"
+          v-if="field.preps?.radioType == 'button'"
+          :border="item['border'] ?? true"
+          :checked="item['checked']"
+          :disabled="item['disabled']||source==3"
+          :label="item['name']"
+          :value="item['value']"
+          v-for="item in field.preps?.values"
       />
       <el-radio
-        v-else
-        :border="item['border'] ?? false"
-        :checked="item['checked']"
-        :disabled="item['disabled'] ?? false"
-        :label="item['name']"
-        :value="item['value']"
-        v-for="item in field.preps?.values"
+          v-else
+          :border="item['border'] ?? false"
+          :checked="item['checked']"
+          :disabled="item['disabled']||source==3"
+          :label="item['name']"
+          :value="item['value']"
+          v-for="item in field.preps?.values"
       >
       </el-radio>
     </el-radio-group>
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { nextTick, onMounted, watch } from "vue";
-import {
-  allAction,
-  checkIsDisabled,
-} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import { compDynamicData } from "@/api/star_horse_utils";
-import { getDynamicEvents } from "@/api/system";
+import {nextTick, onMounted, watch} from "vue";
+import {allAction, checkIsDisabled,} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {compDynamicData} from "@/api/star_horse_utils";
+import {getDynamicEvents} from "@/api/system";
 
-import { ItemPreps } from "@/components/types/ItemPreps";
+import {ItemPreps} from "@/components/types/ItemPreps";
+
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
   disabled: false,
@@ -76,15 +74,15 @@ onMounted(async () => {
   });
 });
 watch(
-  () => formData.value[props.field.fieldName + "OptionList"],
-  (val) => {
-    if (val?.length > 0) {
-      props.field.preps["values"] = val;
-    }
-  },
-  {
-    immediate: true,
-  },
+    () => formData.value[props.field.fieldName + "OptionList"],
+    (val) => {
+      if (val?.length > 0) {
+        props.field.preps["values"] = val;
+      }
+    },
+    {
+      immediate: true,
+    },
 );
 </script>
 <style scoped></style>

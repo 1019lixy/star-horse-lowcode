@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import { useVModel } from "@vueuse/core";
-import DataPicker, {
-  type ModelValueType,
-} from "@/components/comp/utils/DataPicker.vue";
-import { computed, CSSProperties, onMounted, ref, watch } from "vue";
+import {useVModel} from "@vueuse/core";
+import DataPicker, {type ModelValueType,} from "@/components/comp/utils/DataPicker.vue";
+import {computed, CSSProperties, onMounted, ref, watch} from "vue";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
-import { postRequest } from "@/api/star_horse_apis";
-import { createCondition } from "@/api/star_horse_utils";
-import { SearchParams } from "@/components/types";
+import {postRequest} from "@/api/star_horse_apis";
+import {createCondition} from "@/api/star_horse_utils";
+import {SearchParams} from "@/components/types";
 
 export interface DataSelectorProps {
   /**
@@ -114,8 +112,8 @@ const selectData: any = ref<any>(props.multiple ? [] : "");
 const valueArr = computed<string[]>(() => {
   if (selectData.value) {
     const temp = Array.isArray(selectData.value)
-      ? selectData.value
-      : [selectData.value];
+        ? selectData.value
+        : [selectData.value];
     return temp.map((item: any) => item?.[props.displayValue]);
   }
   return [];
@@ -149,12 +147,12 @@ const findInTree = (nodes: any[], result: any[]) => {
     // 检查当前节点是否匹配
     if (Array.isArray(value.value)) {
       if (value.value.includes(node[props.displayValue])) {
-        const temp = { ...node };
+        const temp = {...node};
         delete temp.children;
         result.push(temp);
       }
     } else if (node[props.displayValue] === value.value) {
-      const temp = { ...node };
+      const temp = {...node};
       delete temp.children;
       result.push(temp);
     }
@@ -174,11 +172,11 @@ const init = () => {
   } else if (props.dataUrl && value.value?.length > 0) {
     const queryParams: SearchParams[] = [];
     queryParams.push(
-      createCondition(
-        props.displayValue,
-        Array.isArray(value.value) ? value.value : [value.value],
-        "in",
-      ),
+        createCondition(
+            props.displayValue,
+            Array.isArray(value.value) ? value.value : [value.value],
+            "in",
+        ),
     );
     if (props.params?.length > 0) {
       queryParams.push(...props.params);
@@ -203,17 +201,17 @@ const init = () => {
       params = baseParams;
     }
     postRequest(tempUrl!, params)
-      .then((res) => {
-        if (res?.data?.code) {
-          console.error(res?.data?.cnMessage);
-          return;
-        }
-        let redata = res?.data?.data;
-        selectData.value = findInTree(redata?.dataList || redata, []);
-      })
-      .catch((err: any) => {
-        console.log(err);
-      });
+        .then((res) => {
+          if (res?.data?.code) {
+            console.error(res?.data?.cnMessage);
+            return;
+          }
+          let redata = res?.data?.data;
+          selectData.value = findInTree(redata?.dataList || redata, []);
+        })
+        .catch((err: any) => {
+          console.log(err);
+        });
   }
 };
 const addTag = (val: any) => {
@@ -229,11 +227,11 @@ const addTag = (val: any) => {
 };
 const tagVisible = (val: any) => {
   const result =
-    (Array.isArray(selectData?.value) &&
-      selectData?.value?.find(
-        (item: any) => item[props.displayValue] === val,
-      )?.[props.displayName]) ??
-    val;
+      (Array.isArray(selectData?.value) &&
+          selectData?.value?.find(
+              (item: any) => item[props.displayValue] === val,
+          )?.[props.displayName]) ??
+      val;
   return result;
 };
 onMounted(() => {
@@ -241,44 +239,45 @@ onMounted(() => {
 });
 // 新增 watch 监听 selectData 变化
 watch(
-  selectData,
-  (newVal) => {
-    // 同步modelValue
-    const tempNewValue = Array.isArray(newVal)
-      ? newVal.map((v) => v[props.displayValue])
-      : newVal?.[props.displayValue];
-    value.value = props.multiple ? tempNewValue : tempNewValue[0];
-    // 同步selectedData
-    emitData.value = newVal;
-  },
-  { deep: true },
+    selectData,
+    (newVal) => {
+      // 同步modelValue
+      const tempNewValue = Array.isArray(newVal)
+          ? newVal.map((v) => v[props.displayValue])
+          : newVal?.[props.displayValue];
+      value.value = props.multiple ? tempNewValue : tempNewValue[0];
+      // 同步selectedData
+      emitData.value = newVal;
+    },
+    {deep: true},
 );
 </script>
 
 <template>
   <data-picker
-    ref="dataPickerRef"
-    :title="title"
-    :data="data"
-    :data-url="dataUrl"
-    :proxy="proxy"
-    :proxy-url="proxyUrl"
-    :params="params"
-    :page-size="pageSize"
-    :display-name="displayName"
-    :display-value="displayValue"
-    :checkStrictly="checkStrictly"
-    :select-leaf="selectLeaf"
-    :multiple="multiple"
-    v-model="selectData"
+      ref="dataPickerRef"
+      :title="title"
+      :data="data"
+      :data-url="dataUrl"
+      :proxy="proxy"
+      :proxy-url="proxyUrl"
+      :params="params"
+      :page-size="pageSize"
+      :display-name="displayName"
+      :display-value="displayValue"
+      :checkStrictly="checkStrictly"
+      :select-leaf="selectLeaf"
+      :multiple="multiple"
+      v-model="selectData"
   />
   <el-input-tag
-    v-model="valueArr"
-    :tag-type="tagType"
-    :tagEffect="tagEffect"
-    @clear="selectData = []"
-    @addTag="addTag"
-    @removeTag="
+      v-model="valueArr"
+      :tag-type="tagType"
+      :disabled="disabled"
+      :tagEffect="tagEffect"
+      @clear="selectData = []"
+      @addTag="addTag"
+      @removeTag="
       (val) => {
         onClose(val);
       }
@@ -291,11 +290,12 @@ watch(
     </template>
     <template #prefix>
       <star-horse-icon
-        @click="openDataPicker"
-        cursor="pointer"
-        icon-class="select-data"
-        size="22px"
-        :border="true"
+          @click="openDataPicker"
+          cursor="pointer"
+          icon-class="select-data"
+          size="22px"
+          :color="!disabled?'var(--star-horse-style)':'var(--star-horse-disabled)'"
+          :border="!disabled"
       />
     </template>
   </el-input-tag>
