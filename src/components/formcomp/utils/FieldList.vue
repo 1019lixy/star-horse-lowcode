@@ -70,13 +70,13 @@ const selectData = (item: any) => {
             clearable
         />
       </div>
-      <div class="flex-1">
+      <div class="flex-1 overflow-hidden">
         <el-scrollbar>
           <el-divider content-position="left">{{
               i18n("form.container")
             }}
           </el-divider>
-          <ul id="container" class="my-2">
+          <ul id="container" class="my-2 min-h-[10px]">
             <template v-for="item in filteredContainerList">
               <li class="field-item" @click="selectData(item)">
                 &nbsp;&nbsp;
@@ -92,7 +92,7 @@ const selectData = (item: any) => {
               i18n("form.basicComponents")
             }}
           </el-divider>
-          <ul id="basic"  class="my-2">
+          <ul id="basic"  class="my-2 min-h-[10px]">
             <template v-for="item in filteredFormDataList">
               <li class="field-item" @click="selectData(item)">
                 &nbsp;&nbsp;
@@ -108,7 +108,7 @@ const selectData = (item: any) => {
               i18n("form.customComponents")
             }}
           </el-divider>
-          <ul id="self"  class="my-2">
+          <ul id="self"  class="my-2 min-h-[10px]">
             <template v-for="item in filteredSelfFormDataList">
               <li class="field-item" @click="selectData(item)">
                 &nbsp;&nbsp;
