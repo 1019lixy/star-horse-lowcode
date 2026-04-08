@@ -309,6 +309,7 @@ export default {
   "form.moveDown": "下移",
   "form.deleteComponent": "删除组件",
   "form.empty": "未设置",
+  "form.searchPlaceholder": "搜索组件...",
   /**
    * API Strings
    */

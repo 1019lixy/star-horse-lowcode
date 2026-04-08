@@ -23,29 +23,15 @@ const props = defineProps({
     type: [String, Object] as PropType<string | any>,
     default: "id",
   },
-  batchFieldName: {type: String, default: "batchFieldList"},
   dataFormat: {type: Function, default: null},
+  //是不是要用查看视图的接口
+  useViewUrl: {type: Boolean, default: false},
+  slotType: {type: String, default: "normal"},
 });
 const emits = defineEmits(["dataLoaded"]);
 const dialogProps = inject<DialogProps>("dialogProps");
 const source = ref<number>(3);
-watch(
-    () => dialogProps?.ids,
-    (val) => {
-      if (val != -2) {
-        if (!val || val == -1) {
-          dataForm.value = {};
-        } else {
-          source.value = 3;
-          loadData();
-        }
-      }
-    },
-    {
-      // immediate: true,
-      deep: true,
-    },
-);
+
 onMounted(() => {
   if (dialogProps?.ids) {
     loadData();
@@ -61,12 +47,13 @@ const loadData = async () => {
   }
   let objData;
   let params = props.globalCondition || {};
+  const url = props.useViewUrl ? props.compUrl?.loadByIdForViewUrl : props.compUrl?.loadByIdUrl;
   //如果是Json 对象
   if (isJson(id)) {
     params = {...params, ...id};
-    objData = await loadById(props.compUrl?.loadByIdForViewUrl!, "", params);
+    objData = await loadById(url, "", params);
   } else {
-    objData = await loadById(props.compUrl?.loadByIdForViewUrl!, id, params);
+    objData = await loadById(url, id, params);
   }
   let data = formFieldMapping(props.fieldList);
   dataForm.value = objData;
@@ -103,11 +90,29 @@ watch(
     },
     {immediate: true, deep: false},
 );
+watch(
+    () => dialogProps?.ids,
+    (val) => {
+      if (val != -2) {
+        if (!val || val == -1) {
+          dataForm.value = {};
+        } else {
+          source.value = 3;
+          loadData();
+        }
+      }
+    },
+    {
+      // immediate: true,
+      deep: true,
+    },
+);
 defineExpose({
   setData,
 });
 </script>
 <template>
+
   <el-scrollbar height="100%">
     <el-form
         :model="dataForm"
@@ -121,6 +126,7 @@ defineExpose({
         label-width="auto"
         class="data-form"
         ref="starHorseFormRef"
+        v-if="slotType!='user'"
     >
       <star-horse-form-item
           :primaryKey="primaryKey"
@@ -133,7 +139,9 @@ defineExpose({
           :commonFormat="dataFormat"
           :batchFieldName="batchFieldName"
       />
+      <slot name="ext" :dataForm="dataForm"></slot>
     </el-form>
+    <slot name="user" :dataForm="dataForm"></slot>
   </el-scrollbar>
 </template>
 <style lang="scss" scoped></style>

@@ -1,16 +1,16 @@
 <script setup lang="ts" name="card-container">
-import { computed, onMounted, PropType, ref } from "vue";
-import { useDesignFormStore } from "@/store/DesignForm";
+import {computed, onMounted, PropType, ref} from "vue";
+import {useDesignFormStore} from "@/store/DesignForm";
 import piniaInstance from "@/store/index";
-import { itemCheck, uuid } from "@/api/system";
+import {itemCheck, uuid} from "@/api/system";
 
 const props = defineProps({
-  parentField: { type: Object as PropType<any> },
-  isDesign: { type: Boolean, default: false },
-  showFormItem: { type: Boolean, default: false },
-  disabled: { type: Boolean, default: false },
-  formInfo: { type: Object as PropType<any> },
-  field: { type: Object as PropType<any> },
+  parentField: {type: Object as PropType<any>},
+  isDesign: {type: Boolean, default: false},
+  showFormItem: {type: Boolean, default: false},
+  disabled: {type: Boolean, default: false},
+  formInfo: {type: Object as PropType<any>},
+  field: {type: Object as PropType<any>},
 });
 let designForm = useDesignFormStore(piniaInstance);
 const isDragging = computed(() => designForm.isDragging);
@@ -70,57 +70,58 @@ onMounted(() => {
     props.field["stretch"] = "N";
   }
   activeTabName.value = 0;
+  designForm.setCurrentSubTabName(activeTabName.value);
 });
 </script>
 <template>
   <group-container
-    class="star-horse-form-container"
-    :showFormItem="showFormItem"
-    :isDesign="isDesign"
-    :disabled="disabled"
-    :parentField="parentField"
-    :form-item="field"
+      class="star-horse-form-container"
+      :showFormItem="showFormItem"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :parentField="parentField"
+      :form-item="field"
   >
     <el-card
-      class="card-container"
-      :shadow="field.preps['shadow']"
-      v-for="adata in field['preps']['elements']"
+        class="card-container"
+        :shadow="field.preps['shadow']"
+        v-for="adata in field['preps']['elements']"
     >
       <template #header>
         <div class="card-header flex items-center justify-between max-h-[50px]">
           <div class="w-[60%]">
             {{ adata.title || adata.label || adata.tabName }}
-            <help v-if="adata.helpMsg" :message="adata.helpMsg" />
+            <help v-if="adata.helpMsg" :message="adata.helpMsg"/>
           </div>
           <div
-            class="flex-1 min-h-[40px]"
-            :class="{ 'dragging-area': isDragging }"
+              class="flex-1 min-h-[40px]"
+              :class="{ 'dragging-area': isDragging }"
           >
             <draggable
-              @add="(evt: Event) => onDragAdd(evt, adata['headerFieldList'])"
-              @dragover="checkItem(adata, 'header')"
-              class="card-design"
-              group="starHorseGroup"
-              animation="100"
-              :item-key="uuid()"
-              ghostClass="ghost"
-              v-model="adata['headerFieldList']"
+                @add="(evt: Event) => onDragAdd(evt, adata['headerFieldList'])"
+                @dragover="checkItem(adata, 'header')"
+                class="card-design"
+                group="starHorseGroup"
+                animation="100"
+                :item-key="uuid()"
+                ghostClass="ghost"
+                v-model="adata['headerFieldList']"
             >
               <template #item="{ element: header }">
                 <div
-                  class="comp-item my-[5px]"
-                  :style="{ marginTop: isContainer(header) ? '25px' : '10px' }"
+                    class="comp-item my-[5px]"
+                    :style="{ marginTop: isContainer(header) ? '25px' : '10px' }"
                 >
                   <component
-                    :key="header.id"
-                    :field="header"
-                    :isDesign="isDesign"
-                    :showFormItem="showFormItem"
-                    :disabled="disabled"
-                    :formInfo="formInfo"
-                    :is="itemCheck(header)"
-                    :parentField="field"
-                    v-model:formData="formData"
+                      :key="header.id"
+                      :field="header"
+                      :isDesign="isDesign"
+                      :showFormItem="showFormItem"
+                      :disabled="disabled"
+                      :formInfo="formInfo"
+                      :is="itemCheck(header)"
+                      :parentField="field"
+                      v-model:formData="formData"
                   />
                 </div>
               </template>
@@ -130,28 +131,28 @@ onMounted(() => {
       </template>
 
       <draggable
-        @add="(evt: Event) => onDragAdd(evt, adata['items'])"
-        @dragover="checkItem(adata, 'body')"
-        class="card-design"
-        :class="{ 'dragging-area': isDragging }"
-        group="starHorseGroup"
-        animation="100"
-        :item-key="uuid()"
-        ghostClass="ghost"
-        v-model="adata['items']"
+          @add="(evt: Event) => onDragAdd(evt, adata['items'])"
+          @dragover="checkItem(adata, 'body')"
+          class="card-design"
+          :class="{ 'dragging-area': isDragging }"
+          group="starHorseGroup"
+          animation="100"
+          :item-key="uuid()"
+          ghostClass="ghost"
+          v-model="adata['items']"
       >
         <template #item="{ element: item }">
           <div class="comp-item">
             <component
-              :key="item.id"
-              :field="item"
-              :isDesign="isDesign"
-              :disabled="disabled"
-              :showFormItem="showFormItem"
-              :formInfo="formInfo"
-              :is="itemCheck(item)"
-              :parentField="field"
-              v-model:formData="formData"
+                :key="item.id"
+                :field="item"
+                :isDesign="isDesign"
+                :disabled="disabled"
+                :showFormItem="showFormItem"
+                :formInfo="formInfo"
+                :is="itemCheck(item)"
+                :parentField="field"
+                v-model:formData="formData"
             />
           </div>
         </template>

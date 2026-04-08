@@ -3799,7 +3799,7 @@ const fields = ref<any>({
 onMounted(() => {
   designForm.clearAll(true);
   const elements = fields.value.preps.elements;
-  for (let i = 1; i <= 12; i++) {
+  for (let i = 1; i <= 39; i++) {
     const columns: any = [];
     const id = "r" + i;
     for (let j = 1; j <= 12; j++) {

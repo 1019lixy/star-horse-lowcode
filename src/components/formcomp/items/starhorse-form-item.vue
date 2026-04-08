@@ -59,6 +59,7 @@ const selectData = (data: any) => {
 
   // Debounce mechanism with reduced delay
   selectDebounceTimer = setTimeout(() => {
+    designForm.setParentContainer(props.parentField);
     designForm.selectItem(
         props.field,
         data.itemType,

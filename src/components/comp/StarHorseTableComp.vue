@@ -1141,6 +1141,7 @@ defineExpose({
               :buttonList="buttonList"
               :hideBtnCondition="hideBtnCondition"
               :compSize="compSize"
+              class="flex"
             />
           </template>
         </el-table-column>
@@ -1273,7 +1274,9 @@ defineExpose({
 :deep(th.el-table__cell:first-child) {
   padding: 5px 0;
 }
-
+:deep(.cell){
+  display: flex;
+}
 .tb_title {
   display: flex;
   align-items: center;

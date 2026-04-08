@@ -25,21 +25,21 @@ onMounted(() => {
 <template>
   <div class="flex flex-col h-full overflow-auto">
     <el-tabs v-model="actName" class="h-full">
-      <el-tab-pane name="component" label="组件测试">
+     <el-tab-pane name="component" label="组件测试">
         <ComponentTester />
       </el-tab-pane>
-      <el-tab-pane name="a" label="动态列表实例">
-       <DytableContainerInstanceValid />
-      </el-tab-pane>
-      <el-tab-pane name="b" label="动态列表">
-        <DytableContainerValid />
-      </el-tab-pane>
-      <el-tab-pane name="c" label="动态Box">
-        <BoxContainerDemo />
-      </el-tab-pane>
-      <el-tab-pane name="d" label="动态实例Box">
-        <BoxContainerInstanceDemo />
-      </el-tab-pane>
+          <el-tab-pane name="a" label="动态列表实例">
+           <DytableContainerInstanceValid />
+          </el-tab-pane>
+        <el-tab-pane name="b" label="动态列表">
+         <DytableContainerValid />
+       </el-tab-pane>
+        <el-tab-pane name="c" label="动态Box">
+           <BoxContainerDemo />
+         </el-tab-pane>
+           <el-tab-pane name="d" label="动态实例Box">
+            <BoxContainerInstanceDemo />
+          </el-tab-pane>
       <el-tab-pane name="e" label="动态列表查看视图">
         <DytableContainerViewValid />
       </el-tab-pane>

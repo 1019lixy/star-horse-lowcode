@@ -304,6 +304,8 @@ export default {
     "form.moveUp": "Move up",
     "form.moveDown": "Move down",
     "form.deleteComponent": "Delete component",
+    "form.empty": "Not set",
+    "form.searchPlaceholder": "Search components...",
     /**
      * API Strings
      */

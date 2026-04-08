@@ -34,6 +34,7 @@ let componentVisible = computed(() => {
 let isEdit = computed(() => props.isDesign);
 const selectData = () => {
   let container = props.formItem;
+  designForm.setParentContainer(props.parentField);
   designForm.selectItem(container, container?.itemType, "");
 };
 const removeData = () => {

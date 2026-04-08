@@ -82,6 +82,7 @@ onMounted(() => {
       },
     ];
   }
+  designForm.setCurrentSubTabName("");
 });
 </script>
 <template>

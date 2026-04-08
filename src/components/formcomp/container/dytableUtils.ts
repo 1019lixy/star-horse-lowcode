@@ -231,8 +231,7 @@ const undoMergeRow = (props: any, type: any) => {
         row.columns[props.colIndex + 1].cellVisible = true;
     } else {
         col.rowspan = col.rowspan - 1;
-        const tempCols = rows[col.rowspan].columns;
-        // const tepCol = tempCols[props.colIndex];
+        const tempCols = rows[props.rowIndex+col.rowspan].columns;
         for (let start = props.colIndex; start <= (props.colIndex + col.colspan); start++) {
             tempCols[start].cellVisible = true;
         }

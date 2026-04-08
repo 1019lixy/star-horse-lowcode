@@ -74,6 +74,7 @@ watch(
   () => activeTabName.value,
   (val) => {
     props.field["activeItemName"] = val;
+    designForm.setCurrentSubTabName(val);
   },
   { immediate: true, deep: true },
 );

@@ -855,6 +855,12 @@ const closeAction = () => {
                 :primaryKey="primaryKey"
                 :compUrl="dataUrl"
                 :orderBy="orderBy"
+                :btn-permissions="{
+                  edit: 'edit',
+                  view: 'view',
+                  delete: 'delete',
+                  add:'add'
+                }"
                 :extendBtns="extendBtns"
                 :dataFormat="dataFormat"
                 @selectItem="selectItemFun"
@@ -865,4 +871,6 @@ const closeAction = () => {
     </el-tabs>
   </div>
 </template>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+
+</style>
