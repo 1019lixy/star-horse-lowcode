@@ -145,9 +145,9 @@ const querySearch = async (queryString: string, cb: (arg: any) => void) => {
     cb(temp["values"]);
   } else {
     const results = queryString
-      ? temp["values"].filter(createFilter(queryString))
+      ? temp["values"]?.filter(createFilter(queryString))
       : temp["values"];
-    cb(results);
+    cb(results??[]);
   }
 };
 watch(

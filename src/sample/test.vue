@@ -1,23 +1,17 @@
 <script setup lang="ts" name="Areainfo">
-import { onMounted, ref } from "vue";
-import DytableContainerValid from "@/sample/DytableContainerValid.vue";
+import {onMounted, ref} from "vue";
 import DytableContainerInstanceValid from "@/sample/DytableContainerInstanceValid.vue";
-import BoxContainerDemo from "@/sample/BoxContainerDemo.vue";
 import BoxContainerInstanceDemo from "@/sample/BoxContainerInstanceDemo.vue";
-import FormValid from "@/sample/FormValid.vue";
 import ComponentTester from "@/sample/ComponentTester.vue";
-import DytableContainer from "@/components/formcomp/container/dytable-container.vue";
 import DytableContainerViewValid from "@/sample/DytableContainerViewValid.vue";
 import BoxContainerViewDemo from "@/sample/BoxContainerViewDemo.vue";
-import TableContainerValid from "@/sample/TableContainerValid.vue";
-import DataPickerDemo from "@/sample/DataPickerDemo.vue";
-import InformationsUi from "@/sample/InformationsUi.vue";
 import ComplexFormValid from "@/sample/ComplexFormValid.vue";
 import ComplexFormAnalysis from "@/sample/ComplexFormAnalysis.vue";
 
 const visible = ref<boolean>(false);
 const actName = ref<string>("component");
-const initData = async () => {};
+const initData = async () => {
+};
 onMounted(() => {
   initData();
 });
@@ -25,35 +19,28 @@ onMounted(() => {
 <template>
   <div class="flex flex-col h-full overflow-auto">
     <el-tabs v-model="actName" class="h-full">
-     <el-tab-pane name="component" label="组件测试">
-        <ComponentTester />
+      <el-tab-pane name="component" label="组件测试">
+        <ComponentTester/>
       </el-tab-pane>
-          <el-tab-pane name="a" label="动态列表实例">
-           <DytableContainerInstanceValid />
-          </el-tab-pane>
-        <el-tab-pane name="b" label="动态列表">
-         <DytableContainerValid />
-       </el-tab-pane>
-        <el-tab-pane name="c" label="动态Box">
-           <BoxContainerDemo />
-         </el-tab-pane>
-           <el-tab-pane name="d" label="动态实例Box">
-            <BoxContainerInstanceDemo />
-          </el-tab-pane>
+      <el-tab-pane name="a" label="动态列表实例">
+        <DytableContainerInstanceValid/>
+      </el-tab-pane>
+
+      <el-tab-pane name="d" label="动态实例Box">
+        <BoxContainerInstanceDemo/>
+      </el-tab-pane>
       <el-tab-pane name="e" label="动态列表查看视图">
-        <DytableContainerViewValid />
+        <DytableContainerViewValid/>
       </el-tab-pane>
       <el-tab-pane name="f" label="动态栅格查看视图">
-        <BoxContainerViewDemo />
+        <BoxContainerViewDemo/>
       </el-tab-pane>
-      <el-tab-pane name="g" label="动态列表">
-        <TableContainerValid />
+
+      <el-tab-pane name="h" label="数据选择器">
+        <!--      <DataPickerDemo />-->
+        <!--      <InformationsUi/>-->
+        <ComplexFormValid/>
       </el-tab-pane>
-    <el-tab-pane name="h" label="数据选择器">
-<!--      <DataPickerDemo />-->
-<!--      <InformationsUi/>-->
-      <ComplexFormValid/>
-    </el-tab-pane>
       <el-tab-pane name="i" label="验证容器">
 
         <ComplexFormAnalysis/>

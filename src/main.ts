@@ -4,7 +4,6 @@ import "@/assets/icons.css";
 import userComponent from "@/components/comp/selfcomp";
 import userContainerComponent from "@/components/comp/items/callitem";
 import itemComponent from "@/components/formcomp/items/allitem";
-import containerComponent from "@/components/formcomp/container/callitem";
 import systemComponent from "@/components/system/SystemComp";
 // @ts-ignore
 import App from "@/App.vue";
@@ -20,7 +19,6 @@ app.use(userComponent);
 app.use(itemComponent);
 app.use(userContainerComponent);
 app.use(systemComponent);
-app.use(containerComponent);
 
 app.use(piniaInstance);
 
