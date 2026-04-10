@@ -1,37 +1,38 @@
 <template>
   <starhorse-form-item
-    :showFormItem="showFormItem"
-    :isDesign="isDesign"
-    :disabled="disabled"
-    :bareFlag="bareFlag"
-    :field="field"
-    :parentField="parentField"
+      :showFormItem="showFormItem"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      :field="field"
+      :parentField="parentField"
   >
     <el-date-picker
-      :fid="field.fieldName"
-      :disabled="checkIsDisabled(props)"
-      v-bind="prepsFilter(field.preps)"
-      :format="field.preps?.format || 'YYYY-MM-DD HH:mm:ss'"
-      :value-format="field.preps?.valueFormat"
-      date-format="YYYY-MM-DD"
-      time-format="HH:mm"
-      v-on="getDynamicEvents(props, itemAction)"
-      @change="itemAction('change')"
-      v-model="formData[field.fieldName]"
+        :fid="field.fieldName"
+        :disabled="checkIsDisabled(props)"
+        v-bind="prepsFilter(field.preps)"
+        :format="field.preps?.format || 'YYYY-MM-DD HH:mm:ss'"
+        :value-format="field.preps?.valueFormat"
+        date-format="YYYY-MM-DD"
+        time-format="HH:mm"
+        v-on="getDynamicEvents(props, itemAction)"
+        @change="itemAction('change')"
+        v-model="formData[field.fieldName]"
     />
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {computed, nextTick, onBeforeMount, onMounted, shallowRef} from "vue";
+import {nextTick, onBeforeMount, onMounted, shallowRef} from "vue";
 import {
   allAction,
   checkIsDisabled,
   initCompCallEvent,
   prepsFilter,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
-import { getDynamicEvents } from "@/api/system";
+import {getDynamicEvents} from "@/api/system";
 
-import { ItemPreps } from "@/components/types/ItemPreps";
+import {ItemPreps} from "@/components/types/ItemPreps";
+
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
   disabled: false,
@@ -57,8 +58,13 @@ onBeforeMount(() => {
     props.field.preps = {};
   }
   props.field.preps["type"] =
-    props.field.preps["type"] || props.field.type || "date";
-  disabledDate.value = props.field.preps?.disabledDate?.split(";") || [];
+      props.field.preps["type"] || props.field.type || "date";
+  const disableDate = props.field.preps?.disableDate;
+  if (typeof disableDate === "function") {
+    disabledDate.value = disableDate() || [];
+  } else if (typeof disableDate == "string") {
+    disabledDate.value = disableDate.split(";") || [];
+  }
   delete props.field.preps?.disabledDate;
 });
 onMounted(() => {

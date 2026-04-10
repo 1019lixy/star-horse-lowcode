@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {checkVisible, loadProp, validMsg} from "@/api/form_utils";
+import {checkVisible, labelVisibleCheck, loadProp, validMsg} from "@/api/form_utils";
 import {ContainerPreps} from "@/components/types/ItemPreps";
 import {computed, ModelRef, onMounted} from "vue";
 import StarHorseItem from "@/components/comp/StarHorseItem.vue";
@@ -119,7 +119,7 @@ const createArray = (item: any) => {
               >
                 <el-form-item
                     :size="compSize"
-                    :label="tempData.preps?.hideLabel ? '' : tempData.label"
+                    :label="labelVisibleCheck(tempData)"
                     class="flex w-full flex-1 my-5"
                     :prop="loadProp(propPrefix, tempData.fieldName, -1, -1)"
                     :labelPosition="tempData.preps?.labelPosition??parentPreps?.labelPosition"

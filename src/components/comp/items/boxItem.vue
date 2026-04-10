@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {checkVisible, loadProp, validMsg} from "@/api/form_utils";
+import {checkVisible, labelVisibleCheck, loadProp, validMsg} from "@/api/form_utils";
 import {ContainerPreps} from "@/components/types/ItemPreps";
 import {computed, onMounted} from "vue";
 import StarHorseItem from "@/components/comp/StarHorseItem.vue";
@@ -19,7 +19,7 @@ const props = withDefaults(defineProps<ContainerPreps>(), {
 const dataForm = defineModel("dataForm");
 const noVisibleData = computed(() => {
   const temp = props.item;
-  const datas = Array.isArray(temp) && temp.filter(item => item.formVisible === false);
+  const datas = Array.isArray(temp) && temp.filter(item => item?.formVisible === false);
   return temp.length == datas.length;
 });
 const init = () => {
@@ -29,6 +29,14 @@ const checkItem = (item: any) => {
     return item[0];
   }
   return item;
+};
+const countSpan = (item: any) => {
+  console.log(item);
+  let totalVisible =Array.isArray(item) && item.filter((temp) => temp && temp.formVisible).length || 24;
+  if (totalVisible != 24) {
+    totalVisible = 24 / totalVisible;
+  }
+  return item.preps?.colspan || totalVisible;
 };
 const createArray = (item: any) => {
   if (Array.isArray(item)) {
@@ -54,10 +62,8 @@ onMounted(() => {
     <template v-for="sitem in item">
 
       <el-col
-          :span="
-          checkItem(sitem).preps?.colspan ||
-          24 / item.filter((temp) => temp.formVisible).length
-        "
+          v-if="sitem"
+          :span="countSpan(checkItem(sitem))"
           class="h-full flex items-center justify-center"
           v-bind="checkItem(sitem).preps"
           :style="{ height: checkItem(sitem).preps?.colHeight||'auto' ,
@@ -76,7 +82,7 @@ onMounted(() => {
             <el-form-item
                 :size="compSize"
                 class="flex w-full flex-1 my-5"
-                :label="tempData.preps?.hideLabel ? '' : tempData.label"
+                :label="labelVisibleCheck(tempData)"
                 :prop="loadProp(propPrefix, tempData.fieldName, -1, -1)"
                 :labelPosition="tempData.preps?.labelPosition??parentPreps?.labelPosition"
                 :rules="validMsg(tempData, dataForm)"

@@ -1,12 +1,14 @@
 <script setup lang="ts" name="EnvInfo">
-import { i18n } from "@/lang";
-import { onMounted, provide, reactive, ref } from "vue";
+import {i18n} from "@/lang";
+import {onMounted, provide, reactive, ref} from "vue";
 import {StarHorseDataView, StarHorseTableComp} from "@/components/comp";
 import {ApiUrls, OrderByInfo, PageFieldInfo, SearchFields, SelectOption, UserFuncInfo} from "@/components/types";
 import {apiInstance, closeLoad, dialogPreps, load} from "@/api/star_horse_utils";
 import {dictData, download} from "@/api/star_horse_apis";
 import {warning} from "@/utils/message";
 import {createDatetime} from "@/api/date_utils";
+import {convertPcCompToAppComps} from "@/api/form_utils";
+
 const dataUrl: ApiUrls = apiInstance("userdb-manage", "generator/code");
 
 let dbInfoList = ref<Array<SelectOption>>([]);
@@ -33,7 +35,7 @@ const loadTabInfo = async (val: any) => {
   if (!dataId || dataId == "undefined") {
     return;
   }
-  tableInfoList.value =[];
+  tableInfoList.value = [];
 };
 const searchFormData = reactive<SearchFields>({
   fieldList: [
@@ -60,6 +62,9 @@ const searchFormData = reactive<SearchFields>({
     },
   ],
 });
+const appFieldList = reactive<PageFieldInfo>({
+  fieldList: []
+});
 const tableFieldList = reactive<PageFieldInfo>({
   fieldList: [
     {
@@ -74,7 +79,7 @@ const tableFieldList = reactive<PageFieldInfo>({
         type: "select",
         required: true,
         formVisible: true,
-        actions: { change: loadTabInfo },
+        actions: {change: loadTabInfo},
         listVisible: true,
         preps: {
           values: dbInfoList,
@@ -158,11 +163,11 @@ const tableFieldList = reactive<PageFieldInfo>({
               helpMsg: `选择了前端/后端项目后,选择的前端或者后端代码自动失效`,
               preps: {
                 values: [
-                  { name: "后端代码", value: "backendCode" },
-                  { name: "前端代码", value: "frontendCode" },
-                  { name: "后端项目", value: "backendProject" },
-                  { name: "前端项目", value: "frontendProject" },
-                  { name: "权限系统", value: "auth" },
+                  {name: "后端代码", value: "backendCode"},
+                  {name: "前端代码", value: "frontendCode"},
+                  {name: "后端项目", value: "backendProject"},
+                  {name: "前端项目", value: "frontendProject"},
+                  {name: "权限系统", value: "auth"},
                 ],
               },
               actions: {
@@ -170,12 +175,12 @@ const tableFieldList = reactive<PageFieldInfo>({
                   const modules = val["createModules"] ?? [];
                   if (modules.includes("backendProject")) {
                     val.createModules = modules.filter(
-                        (item:any) => item !== "backendCode",
+                        (item: any) => item !== "backendCode",
                     );
                   }
                   if (modules.includes("frontendProject")) {
                     val.createModules = modules.filter(
-                        (item:any) => item !== "frontendCode",
+                        (item: any) => item !== "frontendCode",
                     );
                   }
                   console.log(val);
@@ -189,7 +194,7 @@ const tableFieldList = reactive<PageFieldInfo>({
                   title: "后端配置",
                   tabName: "backendConfig",
                   objectName: "backendConfig",
-                  subFormFlag:"Y",
+                  subFormFlag: "Y",
                   fieldList: [
                     [
                       {
@@ -304,7 +309,7 @@ const tableFieldList = reactive<PageFieldInfo>({
                   title: "前端配置",
                   tabName: "frontendConfig",
                   objectName: "frontendConfig",
-                  subFormFlag:"Y",
+                  subFormFlag: "Y",
                   fieldList: [
                     {
                       label: i18n("codegen.group.condition"),
@@ -374,7 +379,7 @@ const tableFieldList = reactive<PageFieldInfo>({
                   title: "权限系统配置",
                   tabName: "authConfig",
                   objectName: "authConfig",
-                  subFormFlag:"Y",
+                  subFormFlag: "Y",
                   fieldList: [
                     {
                       label: "模块名称",
@@ -401,7 +406,7 @@ const tableFieldList = reactive<PageFieldInfo>({
                   title: "应用注册中心配置",
                   tabName: "registryConfig",
                   objectName: "registryConfig",
-                  subFormFlag:"Y",
+                  subFormFlag: "Y",
                   fieldList: [
                     {
                       label: "注册中心类型",
@@ -418,7 +423,7 @@ const tableFieldList = reactive<PageFieldInfo>({
                   title: "后端缓存配置",
                   tabName: "cacheConfig",
                   objectName: "cacheConfig",
-                  subFormFlag:"Y",
+                  subFormFlag: "Y",
                   fieldList: [
                     {
                       label: "缓存类型",
@@ -474,7 +479,7 @@ const tableFieldList = reactive<PageFieldInfo>({
                   {
                     label: "部署类型",
                     type: "select",
-                    required:true,
+                    required: true,
                     fieldName: "deployType",
                     formVisible: true,
                     preps: {
@@ -485,7 +490,7 @@ const tableFieldList = reactive<PageFieldInfo>({
                     label: "Os类型",
                     fieldName: "osType",
                     formVisible: true,
-                    required:true,
+                    required: true,
                     type: "select",
                     preps: {
                       values: osTypeList,
@@ -547,12 +552,12 @@ const tableFieldList = reactive<PageFieldInfo>({
                   label: "服务器认证方式",
                   fieldName: "loginType",
                   type: "select",
-                  required:true,
+                  required: true,
                   formVisible: true,
                   preps: {
                     values: [
-                      { name: "账号", value: "username" },
-                      { name: "证书", value: "authentication" },
+                      {name: "账号", value: "username"},
+                      {name: "证书", value: "authentication"},
                     ],
                     dataRelation: {
                       actionName: "change",
@@ -673,7 +678,8 @@ const orderBy = ref<OrderByInfo[]>([
   },
 ]);
 
-const selectItemFun = (_data: any) => {};
+const selectItemFun = (_data: any) => {
+};
 const dataFormat = (name: string, cellValue: any): any => {
   if (name == "datasourceConfigId") {
     return (
@@ -688,36 +694,37 @@ const dataFormat = (name: string, cellValue: any): any => {
 };
 const init = async () => {
   dbInfoList.value = [];
-  dictData("program_file_type").then(res=>{
-    fileTypeList.value=res;
+  dictData("program_file_type").then(res => {
+    fileTypeList.value = res;
   });
-  dictData("template_version").then(res=>{
-    templateVersionList.value =res;
+  dictData("template_version").then(res => {
+    templateVersionList.value = res;
   });
-  dictData("program_language").then(res=>{
-    languageList.value =res;
+  dictData("program_language").then(res => {
+    languageList.value = res;
   });
-  dictData("ui_type").then(res=>{
-    uiTypeList.value =res;
+  dictData("ui_type").then(res => {
+    uiTypeList.value = res;
   });
-  dictData("packaging_type").then(res=>{
-    packagingList.value =res;
+  dictData("packaging_type").then(res => {
+    packagingList.value = res;
   });
-  dictData("REGISTRY_TYPE").then(res=>{
-    registryTypeList.value =res;
+  dictData("REGISTRY_TYPE").then(res => {
+    registryTypeList.value = res;
   });
-  dictData("CACHE_TYPE").then(res=>{
-    cacheTypeList.value =res;
+  dictData("CACHE_TYPE").then(res => {
+    cacheTypeList.value = res;
   });
-  dictData("AUTH_MODULE_TYPE").then(res=>{
-    moduleNameList.value =res;
+  dictData("AUTH_MODULE_TYPE").then(res => {
+    moduleNameList.value = res;
   });
-  dictData("OS_TYPE").then(res=>{
-    osTypeList.value =res;
+  dictData("OS_TYPE").then(res => {
+    osTypeList.value = res;
   });
-  dictData("DEPLOY_TYPE").then(res=>{
-    deployTypeList.value =res;
+  dictData("DEPLOY_TYPE").then(res => {
+    deployTypeList.value = res;
   });
+  appFieldList.fieldList = convertPcCompToAppComps(tableFieldList).fieldList;
 };
 onMounted(async () => {
   await init();
@@ -814,7 +821,7 @@ const closeAction = () => {
               />
               导出代码
             </el-button>
-            <el-button type="warning" >
+            <el-button type="warning">
               <star-horse-icon
                   iconClass="publish"
                   color="var(--star-horse-white)"
@@ -822,14 +829,14 @@ const closeAction = () => {
               发起部署
             </el-button>
           </div>
-          <el-divider />
+          <el-divider/>
           <div class="flex-1 overflow-hidden">
-            <star-horse-data-view
+            <star-horse-form
                 ref="generateFormRef"
                 @refresh="codeGeneratorRef?.loadByPage()"
                 :compUrl="dataUrl"
                 formSize="default"
-                :fieldList="tableFieldList"
+                :fieldList="appFieldList"
                 :rules="rules"
             />
           </div>

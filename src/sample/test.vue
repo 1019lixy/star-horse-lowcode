@@ -19,7 +19,7 @@ onMounted(() => {
 <template>
   <div class="flex flex-col h-full overflow-auto">
     <el-tabs v-model="actName" class="h-full">
-      <el-tab-pane name="component" label="组件测试">
+<!--      <el-tab-pane name="component" label="组件测试">
         <ComponentTester/>
       </el-tab-pane>
       <el-tab-pane name="a" label="动态列表实例">
@@ -34,17 +34,17 @@ onMounted(() => {
       </el-tab-pane>
       <el-tab-pane name="f" label="动态栅格查看视图">
         <BoxContainerViewDemo/>
-      </el-tab-pane>
+      </el-tab-pane>-->
 
       <el-tab-pane name="h" label="数据选择器">
         <!--      <DataPickerDemo />-->
         <!--      <InformationsUi/>-->
         <ComplexFormValid/>
       </el-tab-pane>
-      <el-tab-pane name="i" label="验证容器">
+<!--      <el-tab-pane name="i" label="验证容器">
 
         <ComplexFormAnalysis/>
-      </el-tab-pane>
+      </el-tab-pane>-->
     </el-tabs>
   </div>
 </template>

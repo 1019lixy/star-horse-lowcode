@@ -1,7 +1,7 @@
 import {getValidType} from "@/api/valid_utils";
 import {unref} from "vue";
 import {i18n} from "@/lang";
-import {BatchFieldInfo, FieldInfo, SearchProps} from "@/components/types";
+import {BatchFieldInfo, FieldInfo, PageFieldInfo, SearchProps} from "@/components/types";
 import {uuid} from "@/api/system";
 import {commonField} from "@/api/star_horse_utils";
 // 定义已显式列出的属性
@@ -266,7 +266,7 @@ export const analysisCompDatas = (dataList: any) => {
     const searchFieldList: SearchProps[] = [];
     //判断数据是否为空,
     if (!compList?.length) {
-        return {selectList, compListResult, compFieldList};
+        return {selectList, compListResult, compFieldList, fieldList: [], searchFieldList};
     }
     for (const index in compList) {
         const comp = compList[index];
@@ -322,6 +322,105 @@ export const analysisCompDatas = (dataList: any) => {
         searchItemList: searchFieldList,
     };
 };
+
+export function analysisComps(fieldList: any) {
+    const tempFieldList = [];
+    if (Array.isArray(fieldList)) {
+        for (let i = 0; i < fieldList.length; i++) {
+            const filed = fieldList[i];
+            const commonList = filed.tabList || filed.cardList || filed.collapseList || filed.splitterList;
+            if (filed.dytableList) {
+                filed.dytableList.forEach((item, index) => {
+                    item.forEach((item, index) => {
+                        if (Array.isArray(item)) {
+                            tempFieldList.push(...item);
+                        } else {
+                            if (item.preps.cellVisible) {
+                                tempFieldList.push(item);
+                            }
+                        }
+                    });
+                });
+            } else if (commonList) {
+                //外层不变，把里面的数据去容器化，需要考虑在在组装数据的时候，主子关系
+                commonList.forEach((container, ind1) => {
+                    const subForm = container.subFormFlag == "Y";
+                    const commonFieldList = analysisComps(container.fieldList);
+                    if (subForm) {
+                        const newItem = {...container};
+                        newItem["fieldList"] = commonFieldList;
+                        tempFieldList.push({
+                            appList: [newItem],
+                        });
+                    } else {
+                        tempFieldList.push(...commonFieldList);
+                    }
+                });
+            } else if (filed.batchFieldList) {
+                //将表格去解析为表单,需要考虑在在组装数据的时候，主子关系
+                filed.batchFieldList.forEach((item, index) => {
+                    const batchFieldList = analysisComps(item.fieldList);
+                    const newItem = {...item};
+                    newItem["fieldList"] = batchFieldList;
+                    tempFieldList.push({
+                        appList: [newItem],
+                    });
+                });
+            } else {
+                if (Array.isArray(filed)) {
+                    tempFieldList.push(...filed);
+                } else {
+                    tempFieldList.push(filed);
+                }
+            }
+        }
+    } else {
+        if (fieldList) {
+            tempFieldList.push(fieldList);
+        }
+    }
+    return tempFieldList;
+}
+
+/**
+ * 解析所有组件按顺序排列，去掉所有容器布局，
+ * 需考虑如果是主子表单的情况需要怎么操作，
+ * 除了box,dytable，其它的是否只需要解析容器内部的子容器，
+ * 第一步，先将dytable容器的数据解析完成
+ * @param dataList
+ */
+export function analysisAppComps(dataList: any) {
+    const {selectList, compListResult, fieldList, searchItemList} = analysisCompDatas(dataList);
+    const tempFieldList = analysisComps(fieldList);
+    const result = convertPcCompToAppComps({fieldList: tempFieldList});
+    return {selectList, compListResult, fieldList: result.fieldList, searchItemList};
+}
+
+/**
+ * 将pc模型转为app模型
+ * @param pageInfo
+ */
+export function convertPcCompToAppComps(pageInfo: PageFieldInfo) {
+    const tempFieldList = analysisComps(pageInfo.fieldList);
+    const staticComps = tempFieldList.filter((item) => {
+        return item && (item.type == "html" || item.type == "text");
+    });
+    const labelForComps = staticComps.filter((item) => item?.preps?.labelFor);
+    const appVisibleComps = tempFieldList?.filter((item) => !item?.preps?.appCompVisible);
+    labelForComps.forEach((staticData) => {
+        const labelFors: string[] = staticData.preps?.labelFor;
+        appVisibleComps?.filter((item) => labelFors.includes(item.fieldName))?.forEach((item) => {
+            if (!item.preps) {
+                item.preps = {};
+            }
+            item.preps.hideLabel = false;
+            item.label = staticData.preps?.textContent;
+            item.preps.placeholder = "请输入" + item.label;
+        });
+    });
+    console.log(appVisibleComps);
+    return {fieldList: appVisibleComps};
+}
 
 /**
  * 解析动态表单中的子节点数据是否需要合并到父节点中
@@ -626,4 +725,15 @@ export function filterProperties(obj: any, keysToRemove: string[]) {
             delete obj[key];
         }
     });
+}
+
+/**
+ * 判断标签是否需要显示
+ * @param item
+ */
+export function labelVisibleCheck(item: any) {
+    if (item.preps?.hideLabel || item.preps?.staticData) {
+        return "";
+    }
+    return item.label;
 }

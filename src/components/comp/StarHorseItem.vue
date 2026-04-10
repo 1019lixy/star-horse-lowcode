@@ -215,26 +215,6 @@ onMounted(() => {
 });
 </script>
 <template>
-<!--  <template v-if="source==3">
-    <template v-if="itemType=='html'||itemType=='text'">
-      <component
-          :key="item.id"
-          :is="itemType + '-item'"
-          :formInfo="formFields"
-          ref="componentRef"
-          :bareFlag="bareFlag"
-          :source="source"
-          :field="item"
-          v-model:formData="dataForm"
-      />
-    </template>
-    <pre v-else-if="itemType== 'textarea' || itemType== 'markdown'">{{
-        dataFormat()
-      }}</pre>
-    <el-tooltip :content="dataFormat()" v-else>
-      {{ dataFormat() }}
-    </el-tooltip>
-  </template>-->
   <div
       :class="checkClassName()"
       :style="bareStyle"

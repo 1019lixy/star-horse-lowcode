@@ -4,7 +4,7 @@ import {
   checkVisible,
   getDataIndex,
   getFormData,
-  getPrefix,
+  getPrefix, labelVisibleCheck,
   loadProp,
   validMsg,
 } from "@/api/form_utils";
@@ -74,7 +74,7 @@ onMounted(() => {
             >
               <el-form-item
                 :size="compSize"
-                :label="headerItem.preps?.hideLabel ? '' : headerItem.label"
+                :label="labelVisibleCheck(headerItem)"
                 :prop="
                   loadProp(
                     getPrefix(cardItem, propPrefix, dataIndex, key),

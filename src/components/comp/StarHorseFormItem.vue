@@ -5,7 +5,7 @@ import {ContainerPreps} from "../types/ItemPreps";
 import {commonParseCodeToName} from "@/api/star_horse_utils";
 import {i18n} from "@/lang";
 
-const props=withDefaults(defineProps<ContainerPreps>(), {
+const props = withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
   dataIndex: -1,
   // 父节点名称
@@ -39,6 +39,9 @@ const checkItemType = (item: any) => {
     return "splitter-item";
   } else if (item.dytableList?.length > 0) {
     return "dytable-item";
+  } else if (item.appList?.length > 0) {
+    console.log("appList", item.appList);
+    return "app-item";
   } else if (item.tabList?.length > 0 || item.batchFieldList?.length > 0) {
     return "tab-item";
   } else {
@@ -53,7 +56,7 @@ const removeRow = (row: any) => {
 };
 </script>
 <template>
-  <template v-for="(item, index) in fieldList.fieldList">
+  <template v-for="(item, index) in fieldList?.fieldList">
     <component
         :Key="compKey(item, index, true)"
         :is="checkItemType(item)"
@@ -71,7 +74,7 @@ const removeRow = (row: any) => {
         :propPrefix="propPrefix"
         :commonFormat="itemCommonFormat"
         v-model:dataForm="dataForm"
-        :parentPreps="fieldList.preps"
+        :parentPreps="fieldList?.preps"
     />
   </template>
   <table-item
@@ -91,7 +94,7 @@ const removeRow = (row: any) => {
       v-model:dataForm="dataForm"
       @addRow="addRow"
       @removeRow="removeRow"
-      :parentPreps="fieldList.preps"
+      :parentPreps="fieldList?.preps"
   />
 </template>
 <style lang="scss" scoped></style>

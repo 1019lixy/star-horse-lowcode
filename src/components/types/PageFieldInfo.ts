@@ -71,13 +71,19 @@ export declare interface CardFieldInfo extends TabFieldInfo {
 /**
  * Collapse 容器信息
  */
-export declare interface CollapseList extends TabFieldInfo {
+export declare interface CollapseFieldInfo extends TabFieldInfo {
+}
+
+/**
+ * AppList App容器信息,专门处理有表单在app 中有主子表的情况
+ */
+export declare interface AppFieldInfo extends TabFieldInfo {
 }
 
 /**
  * Splitter 容器信息
  */
-export declare interface SplitterList extends TabFieldInfo {
+export declare interface SplitterFieldInfo extends TabFieldInfo {
 }
 
 /**
@@ -159,17 +165,21 @@ export declare interface FieldInfo {
      */
     tabList?: TabFieldInfo[];
     /**
+     * 专门处理app
+     */
+    appList?: AppFieldInfo[];
+    /**
      * Card 容器数据
      */
     cardList?: CardFieldInfo[];
     /**
      * 折叠容器(collapse)数据
      */
-    collapseList?: CollapseList[];
+    collapseList?: CollapseFieldInfo[];
     /**
      * 分栏容器(splitter)数据
      */
-    splitterList?: SplitterList[];
+    splitterList?: SplitterFieldInfo[];
     /**
      * 传统table布局表单，对应动态表格(dytable)容器
      */

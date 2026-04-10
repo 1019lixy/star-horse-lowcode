@@ -8,6 +8,7 @@ import piniaInstance from "@/store";
 import {useDesignFormStore} from "@/store/DesignForm";
 import {computed, nextTick, onBeforeUnmount, onMounted, ref} from "vue";
 import {warning} from "@/utils/message";
+import {labelVisibleCheck} from "@/api/form_utils";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -163,7 +164,7 @@ onMounted(() => {
           marginBottom: isEdit && !disabled ? '1px' : '18px',
         }"
           class="flex items-center w-full h-full"
-          :label="field?.preps['hideLabel'] ? '' : field?.preps['label']"
+          :label="labelVisibleCheck(field)"
           :prop="field?.preps['name']"
           :labelPosition="field?.preps['labelPosition']"
           :rules="
