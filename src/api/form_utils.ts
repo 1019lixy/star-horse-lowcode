@@ -424,7 +424,11 @@ export function convertPcCompToAppComps(pageInfo: PageFieldInfo) {
         item.preps.hideLabel = false;
     });
     //将数据进行排序显示
-    appVisibleComps = appVisibleComps?.sort((a, b) => (a.preps?.dataIndex || 0) >= (b.preps.dataIndex || 0) ? 1 : -1);
+    appVisibleComps = appVisibleComps?.sort((a, b) => {
+        const indexA = a.preps?.dataIndex ?? 0;
+        const indexB = b.preps?.dataIndex ?? 0;
+        return indexA - indexB;
+    });
     return {fieldList: appVisibleComps};
 }
 
