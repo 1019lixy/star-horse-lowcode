@@ -406,7 +406,7 @@ export function convertPcCompToAppComps(pageInfo: PageFieldInfo) {
         return item && (item.type == "html" || item.type == "text");
     });
     const labelForComps = staticComps.filter((item) => item?.preps?.labelFor);
-    const appVisibleComps = tempFieldList?.filter((item) => !item?.preps?.appCompVisible);
+    let appVisibleComps = tempFieldList?.filter((item) => !item?.preps?.appCompVisible);
     labelForComps.forEach((staticData) => {
         const labelFors: string[] = staticData.preps?.labelFor;
         appVisibleComps?.filter((item) => labelFors.includes(item.fieldName))?.forEach((item) => {
@@ -418,7 +418,13 @@ export function convertPcCompToAppComps(pageInfo: PageFieldInfo) {
             item.preps.placeholder = "请输入" + item.label;
         });
     });
-    console.log(appVisibleComps);
+    appVisibleComps?.filter((item) => {
+        return !["html", "text"].includes(item.type) && item.preps?.hideLabel && !item.preps.appCompVisible && !item.preps.appLabelVisible;
+    })?.forEach((item) => {
+        item.preps.hideLabel = false;
+    });
+    //将数据进行排序显示
+    appVisibleComps = appVisibleComps?.sort((a, b) => (a.preps?.dataIndex || 0) >= (b.preps.dataIndex || 0) ? 1 : -1);
     return {fieldList: appVisibleComps};
 }
 
@@ -735,5 +741,5 @@ export function labelVisibleCheck(item: any) {
     if (item.preps?.hideLabel || item.preps?.staticData) {
         return "";
     }
-    return item.label;
+    return item.preps?.label || item.label;
 }
