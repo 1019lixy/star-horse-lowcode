@@ -9,7 +9,7 @@
 import piniaInstance from "@/store";
 import {useDesignFormStore} from "@/store/DesignForm";
 import {onMounted, ref} from "vue";
-import {analysisAppComps} from "@/api/form_utils";
+import {analysisAppComps, analysisAutoFitOsCompDatas, analysisCompDatas, analysisComps} from "@/api/form_utils";
 import {StarHorseForm} from "@/components/comp";
 
 let designForm = useDesignFormStore(piniaInstance);
@@ -8453,8 +8453,8 @@ const fields = [
   }
 ];
 onMounted(() => {
-  // const result = analysisAppComps(fields);
-  dataItem.value["fieldList"] =[]// result.fieldList;
+  const result = analysisAutoFitOsCompDatas(fields);
+  dataItem.value["fieldList"] = result.fieldList;
 });
 </script>
 

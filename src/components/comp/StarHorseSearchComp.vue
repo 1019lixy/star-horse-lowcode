@@ -1,293 +1,63 @@
 <script setup lang="ts" name="StarHorseSearchComp">
-import {isJson, searchMatchList} from "@/api/star_horse_utils";
-import {ApiUrls} from "@/components/types/ApiUrls";
-import {SearchParams} from "@/components/types/Params";
-import {SearchFields, SelectOption} from "@/components/types/SearchProps";
-import piniaInstance from "@/store";
-import {useGlobalConfigStore} from "@/store/GlobalConfig";
-import {analysisSearchData} from "@/utils/preview";
-import {computed, nextTick, onMounted, PropType, ref} from "vue";
-import {i18n} from "@/lang";
+import {isMobile} from "@/api/device";
+import StarHorseSearchForm from "@/components/comp/StarHorseSearchForm.vue";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
-import Help from "@/components/help.vue";
+import {i18n} from "@/lang";
+import {ref} from "vue";
+import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 
-let matchTypeList = ref<SelectOption[]>();
-let sarchIcon = ref<string>("search_down");
-let defaultSearch = ref<boolean>(true);
-let tips = ref<string>(i18n("search.moreQuery"));
-let showTips = ref<boolean>(true);
+const searchFormRef = ref<InstanceType<typeof StarHorseSearchForm> | null>(null);
+const dialogVisible = ref(false);
+
 const emits = defineEmits(["searchData"]);
 const props = defineProps({
   dialogInput: {type: Boolean, default: false},
   mutComp: {type: Boolean, default: false},
-  compUrl: {type: Object as PropType<ApiUrls>},
-  formData: {type: Object as PropType<SearchFields>, required: true},
-  defaultCondition: {type: Array<SearchParams>},
+  compUrl: {type: Object},
+  formData: {type: Object, required: true},
+  defaultCondition: {type: Array},
 });
-let configStore = useGlobalConfigStore(piniaInstance);
-let compSize = computed(
-    () => configStore.configFormInfo?.inputSize || "default",
-);
-let searchForm = ref<any>({});
 
-const createSearchParams = (formData: any) => {
-  return analysisSearchData(searchForm.value, formData);
+const handleSearchData = (searchData: any) => {
+  emits("searchData", searchData);
 };
-/**
- * 解析默认值
- */
-const analysisDefaultValue = () => {
-  let defaultDatas: any = {};
-  props.formData?.fieldList?.forEach((item: any) => {
-    if (item.defaultValue) {
-      if (isJson(item.defaultValue)) {
-        for (let key in item.defaultValue) {
-          defaultDatas[key] = item.defaultValue[key];
-        }
-      } else {
-        defaultDatas[item.fieldName] = item.defaultValue;
-      }
-    }
-  });
-  return defaultDatas;
+
+const handleMobileSearch = () => {
+  dialogVisible.value = true;
 };
-const dataSearch = (val: string | null) => {
-  if (val === "reset") {
-    searchForm.value = {...analysisDefaultValue()};
-  }
-  let searchDatas = createSearchParams(props.formData?.fieldList);
-  //如果一个页面（包括引入的页面）出现多个此组件,不能走消息总线，
-  // 默认查询条件，如果设置，在每次的查询中都会带上
-  if (props.defaultCondition) {
-    searchDatas.push(...props.defaultCondition);
-  }
-  emits("searchData", searchDatas);
+
+const handleClose = () => {
+  dialogVisible.value = false;
 };
-const searchArea = () => {
-  if (defaultSearch.value) {
-    tips.value = i18n("search.moreQuery");
-    sarchIcon.value = "search_up";
-  } else {
-    tips.value = i18n("search.collapse");
-    sarchIcon.value = "search_down";
-  }
-  defaultSearch.value = !defaultSearch.value;
-};
-/**
- * 设置查询值
- * @param data
- */
-const setData = (data: any) => {
-  if (data) {
-    Object.assign(searchForm.value, data);
-  }
-};
-const init = async () => {
-  matchTypeList.value = searchMatchList();
-  searchForm.value = {...analysisDefaultValue()};
-  await nextTick();
-  //没有隐藏的查询属性，则隐藏掉展开图标
-  let fdata = props.formData?.fieldList?.find((item) => !item.defaultVisible);
-  if (!fdata && props.formData?.fieldList?.length > 0) {
-    showTips.value = false;
-  }
-};
-const matchTypeChange = (type: string, item: any) => {
-  if (!item.preps) {
-    item.preps = {};
-  }
-  item.preps.readonly = ["isnull", "notnull"].includes(type);
-  if ("llk" === type) {
-    item.preps.prefix = "%";
-    delete item.preps.suffix;
-  } else if ("rlk" === type) {
-    delete item.preps.prefix;
-    item.preps.suffix = "%";
-  } else if ("lk" === type) {
-    item.preps.prefix = "%";
-    item.preps.suffix = "%";
-  } else if (["ini", "ins", "in"].includes(type)) {
-    if (!item.oldType) {
-      item.oldType = item.type ?? "input";
-    }
-    item.type = "textarea";
-  } else {
-    delete item.preps.prefix;
-    delete item.preps.suffix;
-    item.type = item.oldType;
-  }
-};
-onMounted(() => {
-  init();
-});
-defineExpose({
-  searchForm,
-  setData,
-  createSearchParams,
-});
 </script>
 <template>
-  <div class="search_content">
-    <el-form class="search_area" :size="compSize" v-if="formData?.fieldList">
-      <template v-for="item in formData.fieldList" v-if="defaultSearch">
-        <el-form-item
-            :size="compSize"
-            :label="item.label"
-            v-if="item.defaultVisible"
-            :prop="item.fieldName"
-        >
-          <template
-              v-if="(!item.type || item.type == 'input'||item.type=='textarea') && !item.disabled"
-              :span="6"
-          >
-            <el-select
-                :size="compSize"
-                style="width: 90px !important; height: 100%; padding-top: 2px"
-                v-model="item['matchType']"
-                @change="(val)=>matchTypeChange(val,item)"
-                clearable
-                filterable
-            >
-              <el-option
-                  v-for="sitem in matchTypeList"
-                  :value="sitem.value"
-                  :label="sitem.name"
-                  :key="sitem.value"
-              >
-                <div class="flex items-center">
-                  <span>{{ sitem.name }}</span>
-                  <span style="margin-left: 10px" v-if="sitem?.helpMsg"
-                  ><help :message="sitem?.helpMsg"
-                  /></span>
-                </div>
-              </el-option>
-            </el-select
-            >&nbsp;&nbsp;
-          </template>
-          <star-horse-item
-              v-model:data-form="searchForm"
-              :compSize="compSize"
-              :item="item"
-              :source="4"
-              @dataSearch="dataSearch"
-          />
-        </el-form-item>
-      </template>
-      <template v-for="item in formData?.fieldList" v-else>
-        <el-form-item
-            :size="compSize"
-            :label="item.label"
-            :prop="item.fieldName"
-        >
-          <template
-              v-if="(!item.type || item.type == 'input') && !item.disabled"
-              :span="6"
-          >
-            <el-select
-                :size="compSize"
-                style="width: 90px !important; height: 100%; padding-top: 2px"
-                v-model="item['matchType']"
-                clearable
-                filterable
-            >
-              <el-option
-                  v-for="sitem in matchTypeList"
-                  :value="sitem.value"
-                  :label="sitem.name"
-                  :key="sitem.value"
-              />
-            </el-select
-            >&nbsp;&nbsp;
-          </template>
-          <star-horse-item
-              v-model:data-form="searchForm"
-              :compSize="compSize"
-              :item="item"
-              :source="4"
-              @dataSearch="dataSearch"
-          >
-          </star-horse-item>
-        </el-form-item>
-      </template>
-      <el-form-item style="vertical-align: middle; align-items: center">
-        <div class="search_btn">
-          <el-button
-              @click="dataSearch"
-              style="
-              background: var(--star-horse-style);
-              color: var(--star-horse-white);
-            "
-              :size="compSize"
-          >
-            <star-horse-icon
-                icon-class="search"
-                size="16px"
-                color="var(--star-horse-white)"
-            />
-            {{ i18n("search.query") }}
-          </el-button>
-          <el-button @click="dataSearch('reset')" link :size="compSize">
-            <star-horse-icon
-                icon-class="reset"
-                size="16px"
-                color="var(--star-horse-disable)"
-            />
-            {{ i18n("search.reset") }}
-          </el-button>
-          <el-tooltip :content="tips" v-if="showTips">
-            <el-button text @click="searchArea" :size="compSize">
-              <star-horse-icon
-                  :icon-class="sarchIcon"
-                  size="20px"
-                  color="var(--star-horse-style)"
-              />
-            </el-button>
-          </el-tooltip>
-        </div>
-      </el-form-item>
-    </el-form>
+  <div v-if="!isMobile">
+    <StarHorseSearchForm
+        ref="searchFormRef"
+        v-bind="props"
+        @searchData="handleSearchData"
+    />
   </div>
+  <div v-else class="absolute right-0 top-0 z-1000">
+    <star-horse-icon icon-class="search" cursor="pointer" @click="handleMobileSearch"/>
+  </div>
+  <star-horse-dialog
+      :dialog-visible="dialogVisible"
+      :title="i18n('search.query')"
+      :full-screen="false"
+      :source="3"
+      :box-height="'100%'"
+      :box-width="'100%'"
+      @closeAction="handleClose"
+      :hide-full-screen-icon="true"
+  >
+    <StarHorseSearchForm
+        ref="searchFormRef"
+        v-bind="props"
+        @searchData="handleSearchData"
+    />
+  </star-horse-dialog>
 </template>
 <style lang="scss" scoped>
-:deep(.el-form-item) {
-  width: auto; // 强制设置为自动宽度
-  margin-right: 8px !important; // 添加右侧间距
-  flex-shrink: 0; // 防止收缩
-  margin-bottom: 0 !important;
-}
-
-.el-form-item,
-.el-form-item-small {
-  margin-bottom: 0 !important;
-}
-
-:deep(.el-form-item__label):last-child {
-  max-width: 5px;
-}
-
-.search_content {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-
-  .search_area {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
-    flex: 1;
-    justify-content: left;
-    flex-shrink: 0;
-    gap: 12px; // 新增间隔控制
-    align-items: center; // 新增垂直对齐方式
-    padding: 5px 0;
-  }
-
-  .search_btn {
-    margin-left: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    vertical-align: middle;
-  }
-}
+// Styles are now handled by StarHorseSearchForm component
 </style>

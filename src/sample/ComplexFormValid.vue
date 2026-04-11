@@ -55,6 +55,36 @@ const searchFormData = reactive<SearchFields>({
       defaultVisible: true,
     },
     {
+      label: "项目名称x",
+      fieldName: "projectNamex",
+      matchType: "lk",
+      defaultVisible: true,
+    },
+    {
+      label: "项目名称y",
+      fieldName: "projectNamey",
+      matchType: "lk",
+      defaultVisible: true,
+    },
+    {
+      label: "项目名称z",
+      fieldName: "projectNamez",
+      matchType: "lk",
+      defaultVisible: false,
+    },
+    {
+      label: "项目名称a",
+      fieldName: "projectNamea",
+      matchType: "lk",
+      defaultVisible: true,
+    },
+    {
+      label: "项目名称b",
+      fieldName: "projectNameb",
+      matchType: "lk",
+      defaultVisible: false,
+    },
+    {
       label: "应用名称",
       fieldName: "applicationName",
       matchType: "lk",
@@ -690,7 +720,7 @@ const dataFormat = (name: string, cellValue: any): any => {
   if (name == "createdTime" || name == "updatedTime") {
     return createDatetime(cellValue);
   }
-  return cellValue;
+  return cellValue??"--";
 };
 const init = async () => {
   dbInfoList.value = [];

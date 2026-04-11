@@ -31,7 +31,6 @@ const checkItem = (item: any) => {
   return item;
 };
 const countSpan = (item: any) => {
-  console.log(item);
   let totalVisible =Array.isArray(item) && item.filter((temp) => temp && temp.formVisible).length || 24;
   if (totalVisible != 24) {
     totalVisible = 24 / totalVisible;

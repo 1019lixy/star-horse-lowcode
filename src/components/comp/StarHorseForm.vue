@@ -23,6 +23,7 @@ import {
   unref,
   watch,
 } from "vue";
+import {isMobile} from "@/api/device";
 
 const props = defineProps({
   compUrl: {type: Object as PropType<ApiUrls>},
@@ -428,7 +429,7 @@ defineExpose({
           :scroll-into-view-options="true"
           :inline-message="false"
           :status-icon="true"
-          :label-position="labelPosition"
+          :label-position="isMobile?'top':labelPosition"
           require-asterisk-position="right"
           label-width="auto"
           class="data-form"

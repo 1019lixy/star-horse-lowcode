@@ -4,6 +4,7 @@ import {i18n} from "@/lang";
 import {BatchFieldInfo, FieldInfo, PageFieldInfo, SearchProps} from "@/components/types";
 import {uuid} from "@/api/system";
 import {commonField} from "@/api/star_horse_utils";
+import {isMobile} from "@/api/device";
 // 定义已显式列出的属性
 const listedFields: string[] = [
     "label",
@@ -322,8 +323,19 @@ export const analysisCompDatas = (dataList: any) => {
         searchItemList: searchFieldList,
     };
 };
+/**
+ * 解析自动匹配平台格式的数据
+ * @param fieldList
+ */
+export const analysisAutoFitOsCompDatas = (fieldList: any) => {
+    if (isMobile) {
+        return analysisAppComps(fieldList);
+    } else {
+        return analysisCompDatas(fieldList);
+    }
+};
 
-export function analysisComps(fieldList: any) {
+function analysisComps(fieldList: any) {
     const tempFieldList = [];
     if (Array.isArray(fieldList)) {
         for (let i = 0; i < fieldList.length; i++) {
@@ -401,6 +413,10 @@ export function analysisAppComps(dataList: any) {
  * @param pageInfo
  */
 export function convertPcCompToAppComps(pageInfo: PageFieldInfo) {
+    //如果不是手机端，则直接返回
+    if (!isMobile) {
+        return pageInfo;
+    }
     const tempFieldList = analysisComps(pageInfo.fieldList);
     const staticComps = tempFieldList.filter((item) => {
         return item && (item.type == "html" || item.type == "text");

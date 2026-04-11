@@ -40,7 +40,6 @@ const checkItemType = (item: any) => {
   } else if (item.dytableList?.length > 0) {
     return "dytable-item";
   } else if (item.appList?.length > 0) {
-    console.log("appList", item.appList);
     return "app-item";
   } else if (item.tabList?.length > 0 || item.batchFieldList?.length > 0) {
     return "tab-item";
