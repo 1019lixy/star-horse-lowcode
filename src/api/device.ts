@@ -1,4 +1,4 @@
-const isTest: boolean = false;
+const isTest: boolean = true;
 
 /**
  * 获取当前设备类型

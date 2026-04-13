@@ -1,0 +1,79 @@
+<script setup lang="ts" name="MainContent">
+import {computed} from "vue";
+import {useRoute, useRouter} from "vue-router";
+
+interface MainBarItem {
+  id: string;
+  name: string;
+  icon: string;
+  route: string;
+}
+
+const props = defineProps<{
+  categories: Array<{
+    id: string;
+    label: string;
+    icon: string;
+    route?: string;
+  }>;
+  systemConfigName?: string;
+  position?: "top" | "bottom" | "left" | "right";
+}>();
+
+const emits = defineEmits<{
+  (e: "select", item: MainBarItem): void;
+  (e: "system-config"): void;
+}>();
+
+const router = useRouter();
+const route = useRoute();
+
+const computedCategories = computed(() => {
+  const systemConfigItem = {
+    id: "system-config",
+    name: props.systemConfigName || "系统配置",
+    icon: "setting",
+    route: "system-config",
+  };
+  return [...props.categories, systemConfigItem];
+});
+
+const handleSelect = (item: MainBarItem) => {
+  emits("select", item);
+  if (item.route) {
+    router.push(item.route);
+  }
+};
+
+const handleSystemConfig = () => {
+  emits("system-config");
+  router.push("system-config");
+};
+
+const isActive = (item: MainBarItem) => {
+  if (item.id === "system-config") {
+    return route.name === "system-config" || route.path.includes("system-config");
+  }
+  return route.path === item.route || route.name === item.id;
+};
+
+</script>
+
+<template>
+  <div class="flex flex-col w-full h-full overflow-hidden">
+    <div v-if="position=='top'" style="height:60px;width:100%"></div>
+    <div class="main-content flex-1">
+      <router-view/>
+    </div>
+    <div v-if="position=='bottom'" style="height:60px;width:100%"></div>
+  </div>
+</template>
+
+<style lang="scss" scoped>
+.main-content {
+  flex: 1;
+  overflow: auto;
+  background-color: #f5f7fa;
+  padding:5px 10px;
+}
+</style>

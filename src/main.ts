@@ -12,6 +12,7 @@ import draggable from "vuedraggable-es";
 import piniaInstance from "@/store";
 import ElementPlus from "element-plus";
 import zhCn from "element-plus/es/locale/lang/zh-cn";
+import router from "@/router";
 const app = createApp(App);
 app.component("draggable", draggable);
 
@@ -21,7 +22,7 @@ app.use(userContainerComponent);
 app.use(systemComponent);
 
 app.use(piniaInstance);
-
+app.use(router);
 app.use(ElementPlus, {
   locale: zhCn,
 });

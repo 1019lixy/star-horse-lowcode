@@ -1,7 +1,8 @@
 <script setup lang="ts" name="StarHorseHmenu">
-import { ModelRef, onMounted, PropType } from "vue";
+import {computed, ModelRef, onMounted, PropType} from "vue";
 import MenuItem from "@/components/menu/MenuItem.vue";
-import { compKey } from "@/api/system";
+import {compKey} from "@/api/system";
+import {isMobile} from "@/api/device";
 
 defineProps({
   preps: {
@@ -19,7 +20,11 @@ defineProps({
 });
 const emits = defineEmits(["selectItem"]);
 let dataList: ModelRef<any> = defineModel("dataList");
-const initData = async () => {};
+const fontColor = computed(() => {
+  return isMobile ? "var(--star-horse-white) !important" : "unset";
+});
+const initData = async () => {
+};
 const selectItem = (item: any) => {
   emits("selectItem", item);
 };
@@ -28,13 +33,13 @@ onMounted(() => {
 });
 </script>
 <template>
-  <el-menu class="system-menu" v-bind="$attrs">
+  <el-menu :class="{'system-menu':!isMobile,'system-app-menu':isMobile}" v-bind="$attrs">
     <MenuItem
-      v-for="(sitem, key) in dataList"
-      :key="compKey(sitem, key)"
-      :item="sitem"
-      @selectItem="selectItem"
-      :preps="preps"
+        v-for="(sitem, key) in dataList"
+        :key="compKey(sitem, key)"
+        :item="sitem"
+        @selectItem="selectItem"
+        :preps="preps"
     />
   </el-menu>
 </template>
@@ -70,7 +75,7 @@ onMounted(() => {
   --el-menu-hover-bg-color: rgb(245, 235, 255, 0.5);
   max-height: 50px;
   background-color: unset !important;
-  width: 100% !important;
+  width: 100%;
   border-bottom: unset !important;
   color: var(--star-horse-white);
   font-weight: bold;
@@ -92,7 +97,27 @@ onMounted(() => {
   svg {
     height: 1.5em;
     width: 1.5em;
-    color: var(--star-horse-white) !important;
+    color: v-bind(fontColor);
+  }
+}
+
+.system-app-menu {
+  max-height: 50px;
+  background-color: unset !important;
+  width: 100%;
+  border-bottom: unset !important;
+  color: var(--star-horse-white);
+  font-size: 16px;
+  align-items: center;
+
+  :deep(.el-menu-item) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 5px;
+  }
+
+  :deep(.el-sub-menu__title) {
   }
 }
 </style>

@@ -7,19 +7,33 @@ import DytableContainerViewValid from "@/sample/DytableContainerViewValid.vue";
 import BoxContainerViewDemo from "@/sample/BoxContainerViewDemo.vue";
 import ComplexFormValid from "@/sample/ComplexFormValid.vue";
 import ComplexFormAnalysis from "@/sample/ComplexFormAnalysis.vue";
-import {device} from "@/api/device";
+import {device, isMobile} from "@/api/device";
+import MainContainer from "@/components/comp/app/MainContainer.vue";
 
 const visible = ref<boolean>(false);
 const actName = ref<string>("component");
+const categories = ref<Array<any>>([
+   {id: 'dashboard', name: '首页', icon: 'home'},
+    {id: 'production', name: '生产管理', icon: 'production'},
+    {id: 'quality', name: '质量管理', icon: 'quality'},
+    ]);
 const initData = async () => {
 };
+
+const handleSelect = (item: any) => {
+  console.log(item);
+};
+
 onMounted(() => {
   initData();
 });
 </script>
 <template>
-  <div class="flex flex-col h-full overflow-auto">
-   2 {{ device}}
+<!--  <template v-if="isMobile">
+   <MainContainer :categories="categories" position="bottom" systemConfigName="系统配置" @select="handleSelect"/>
+  </template>-->
+  <div class="flex flex-col h-full overflow-auto" >
+   {{ device}}
     <el-tabs v-model="actName" class="h-full">
       <el-tab-pane name="component" label="组件测试">
         <ComponentTester/>
