@@ -9,6 +9,7 @@ import {SelectOption} from "@/components/types/SearchProps";
 import {error, success, warning} from "@/utils/message";
 import {i18n} from "@/lang";
 import {
+  computed,
   inject,
   nextTick,
   onActivated,
@@ -24,6 +25,7 @@ import {
   watch,
 } from "vue";
 import {isMobile} from "@/api/device";
+import {convertPcCompToAppComps} from "@/api/form_utils";
 
 const props = defineProps({
   compUrl: {type: Object as PropType<ApiUrls>},
@@ -62,6 +64,8 @@ const starHorseFormRef = ref(null);
 const dataForm = ref<any>({});
 // source:{type:Number,default:1},
 const source = ref<number>(1);
+const platformFields = computed(() => convertPcCompToAppComps(props.fieldList));
+const mappingFields = computed(() => formFieldMapping(unref(platformFields)));
 //更新外面传进来的数据
 
 const exportData = () => {
@@ -91,7 +95,7 @@ const loadData = async () => {
   } else {
     objData = await loadById(props.compUrl?.loadByIdUrl!, id, params);
   }
-  let data = formFieldMapping(props.fieldList);
+  let data = unref(mappingFields);
   dataForm.value = objData;
   //如果是动态表单
   if (props.dynamicForm) {
@@ -161,7 +165,7 @@ const assignStatusName = () => {
       dataForm.value["statusName"] = sData.name;
     }
   }
-  let batchFields = props.fieldList?.batchFieldList || [];
+  let batchFields = unref(platformFields)?.batchFieldList || [];
   batchFields?.forEach((item: BatchFieldInfo) => {
     if (dataForm.value[item.batchName]) {
       for (
@@ -186,7 +190,7 @@ const mergeDraft = (type: string) => {
 
 const analysisSameToParentField = (): Array<string> => {
   let batchName: Array<string> = [];
-  let batchFields = props.fieldList?.batchFieldList || [];
+  let batchFields = unref(platformFields)?.batchFieldList || [];
   const analysis = (batchFields: BatchFieldInfo[]) => {
     batchFields?.forEach((item: BatchFieldInfo) => {
       if (
@@ -200,14 +204,16 @@ const analysisSameToParentField = (): Array<string> => {
   //单独定义的批量属性
   analysis(batchFields);
   //嵌入fieldList里的批量属性
-  let fieldList = props.fieldList?.fieldList || [];
+  let fieldList = unref(platformFields)?.fieldList || [];
   const arrayFieldList = (fieldList: FieldInfo[]) => {
     for (let index in fieldList) {
       let temp: any = fieldList[index];
-      if (temp instanceof Array) {
+      if (Array.isArray(temp)) {
         arrayFieldList(temp);
       } else if (temp.batchFieldList) {
         analysis(temp.batchFieldList);
+      } else if (temp.appList) {
+        analysis(temp.appList);
       }
     }
   };
@@ -280,7 +286,7 @@ const doMerge = (type: string) => {
       });
 };
 const resetForm = () => {
-  dataForm.value = formFieldMapping(props.fieldList)?.defaultDatas;
+  dataForm.value = unref(mappingFields)?.defaultDatas;
   let data = unref(props.outerFormData);
   if (Object.keys(data || {}).length > 0) {
     Object.assign(dataForm.value, data);
@@ -306,8 +312,7 @@ const validate = async () => {
  * @param data
  */
 const setFormData = (data: any) => {
-  let mappingData = formFieldMapping(props.fieldList);
-  let defaultDatas = mappingData.defaultDatas;
+  let defaultDatas = unref(mappingFields)?.defaultDatas;
   Object.assign(dataForm.value, defaultDatas, data);
 };
 const setSource = (dataSource: number) => {
@@ -338,7 +343,7 @@ const removeRow = (row: any) => {
  * 记录当前表单的信息
  */
 const recordFieldInfo = async () => {
-  formFields.value = formFieldMapping(props.fieldList).formFields;
+  formFields.value = unref(mappingFields)?.formFields;
   await nextTick();
   emits("inited");
 };
@@ -438,7 +443,7 @@ defineExpose({
         <star-horse-form-item
             :primaryKey="primaryKey"
             :compUrl="compUrl"
-            :fieldList="fieldList"
+            :fieldList="platformFields"
             :rules="rules"
             :compSize="formSize"
             v-model:dataForm="dataForm"

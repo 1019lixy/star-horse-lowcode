@@ -8,9 +8,10 @@
 <script lang="ts" setup>
 import piniaInstance from "@/store";
 import {useDesignFormStore} from "@/store/DesignForm";
-import {onMounted, ref} from "vue";
-import {analysisAppComps, analysisAutoFitOsCompDatas, analysisCompDatas, analysisComps} from "@/api/form_utils";
+import {nextTick, onMounted, ref} from "vue";
+import {analysisAutoFitOsCompDatas, analysisComps} from "@/api/form_utils";
 import {StarHorseForm} from "@/components/comp";
+import {closeLoad, load} from "@/api/star_horse_utils";
 
 let designForm = useDesignFormStore(piniaInstance);
 const formData = ref<any>({});
@@ -8453,8 +8454,12 @@ const fields = [
   }
 ];
 onMounted(() => {
+  load("页面解析中");
   const result = analysisAutoFitOsCompDatas(fields);
   dataItem.value["fieldList"] = result.fieldList;
+  nextTick(()=>{
+    closeLoad();
+  })
 });
 </script>
 

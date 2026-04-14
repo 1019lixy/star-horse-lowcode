@@ -1,10 +1,12 @@
 <script setup lang="ts" name="StarHorseDataView">
 import {ApiUrls} from "@/components/types/ApiUrls";
-import {inject, nextTick, onMounted, PropType, ref, watch} from "vue";
+import {computed, inject, nextTick, onMounted, PropType, ref, unref, watch} from "vue";
 import {DialogProps} from "@/components/types/DialogProps";
 import {formFieldMapping, isJson} from "@/api/star_horse_utils";
 import {loadById} from "@/api/star_horse_apis";
 import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
+import {convertPcCompToAppComps} from "@/api/form_utils";
+import {isMobile} from "@/api/device";
 
 const dataForm = ref<any>({});
 const props = defineProps({
@@ -31,7 +33,8 @@ const props = defineProps({
 const emits = defineEmits(["dataLoaded"]);
 const dialogProps = inject<DialogProps>("dialogProps");
 const source = ref<number>(3);
-
+const platformFields = computed(() => convertPcCompToAppComps(props.fieldList));
+const mappingFields = computed(() => formFieldMapping(unref(platformFields)));
 onMounted(() => {
   if (dialogProps?.ids) {
     loadData();
@@ -55,7 +58,7 @@ const loadData = async () => {
   } else {
     objData = await loadById(url, id, params);
   }
-  let data = formFieldMapping(props.fieldList);
+  let data = unref(mappingFields);
   dataForm.value = objData;
   //如果是动态表单
   if (props.dynamicForm) {
@@ -121,7 +124,7 @@ defineExpose({
         :scroll-into-view-options="true"
         :inline-message="false"
         :status-icon="true"
-        :label-position="labelPosition"
+        :label-position="isMobile?'top':labelPosition"
         require-asterisk-position="right"
         label-width="auto"
         class="data-form"
@@ -131,7 +134,7 @@ defineExpose({
       <star-horse-form-item
           :primaryKey="primaryKey"
           :compUrl="compUrl"
-          :fieldList="fieldList"
+          :fieldList="platformFields"
           :compSize="formSize"
           v-model:dataForm="dataForm"
           :source="source"

@@ -7,7 +7,6 @@ import {apiInstance, closeLoad, dialogPreps, load} from "@/api/star_horse_utils"
 import {dictData, download} from "@/api/star_horse_apis";
 import {warning} from "@/utils/message";
 import {createDatetime} from "@/api/date_utils";
-import {convertPcCompToAppComps} from "@/api/form_utils";
 
 const dataUrl: ApiUrls = apiInstance("userdb-manage", "generator/code");
 
@@ -720,7 +719,7 @@ const dataFormat = (name: string, cellValue: any): any => {
   if (name == "createdTime" || name == "updatedTime") {
     return createDatetime(cellValue);
   }
-  return cellValue??"--";
+  return cellValue ?? "--";
 };
 const init = async () => {
   dbInfoList.value = [];
@@ -754,7 +753,7 @@ const init = async () => {
   dictData("DEPLOY_TYPE").then(res => {
     deployTypeList.value = res;
   });
-  appFieldList.fieldList = convertPcCompToAppComps(tableFieldList).fieldList;
+  // appFieldList.fieldList = convertPcCompToAppComps(tableFieldList).fieldList;
 };
 onMounted(async () => {
   await init();
@@ -866,7 +865,7 @@ const closeAction = () => {
                 @refresh="codeGeneratorRef?.loadByPage()"
                 :compUrl="dataUrl"
                 formSize="default"
-                :fieldList="appFieldList"
+                :fieldList="tableFieldList"
                 :rules="rules"
             />
           </div>

@@ -6,10 +6,10 @@
 import MainContainer from "@/components/comp/app/MainContainer.vue";
 
 const categories = [
-  {id: "dashboard", name: "首页", icon: "document", route: "/dashboard"},
+  {id: "dashboard", name: "首页", icon: "document", route: "/complex-form-valid"},
   {
     id: "production", name: "表单验证", icon: "document", route: "/complex-form-analysis",
-    children: [
+   /* children: [
       {
         id: "work-order",
         name: "工单管理",
@@ -24,14 +24,14 @@ const categories = [
           }
         ]
       }
-    ]
+    ]*/
   },
   {
     id: "quality", name: "动态表格", icon: "document", route: "/dytable-container-instance-valid",
    /* children: [{id: "equipment", name: "复杂表单", icon: "document", route: "/complex-form-analysis"},
       {id: "material", name: "容器视图", icon: "document", route: "/dytable-container-view-valid"},]*/
   },
-  {id: "config", name: "配置配置", icon: "config", route: "/config"},
+  {id: "config", name: "配置配置", icon: "config", route: "/dytable-container-view-valid"},
 ];
 
 </script>
