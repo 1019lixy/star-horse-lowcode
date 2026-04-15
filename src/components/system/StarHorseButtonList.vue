@@ -50,6 +50,10 @@ const dialogVisible = ref(false);
  * @param funcName
  */
 const tableCompFunc = (funcName: string) => {
+  if ((funcName == "upload" || funcName == "import") && isMobile) {
+    warning("App端不支持此操作,请到Pc端完成");
+    return;
+  }
   emits("tableCompFunc", funcName);
 };
 const btnOperation = (funcName: string) => {
@@ -119,7 +123,15 @@ const uploadSuccess = (_response: any, _file: any, _fileList: any) => {
   tableCompFunc("refresh");
 };
 const buttonList = computed(() => {
-  return extendBtnFunction();
+  const baseBtn = extendBtnFunction();
+  baseBtn.push({
+    btnName: i18n("comp.refresh"),
+    icon: "refresh",
+    authority: "view",
+    priority: 200,
+    funcName: (actionName: string) => tableCompFunc("refresh"),
+  });
+  return baseBtn;
 });
 /**
  * 扩展按钮

@@ -141,6 +141,7 @@ let compSize = computed(
     () => configStore.configFormInfo?.inputSize || "default",
 );
 const multipleSelection = ref<any>([]);
+const cardSelection = ref<any>([]);
 const starHorseTableCompRef = ref();
 const baseInfo: PageProps = {
   pageSize: 20,
@@ -162,6 +163,10 @@ const exportOperationVisible = ref<boolean>(false);
  */
 const tableCompFunc = (authority: any) => {
   if (authority == "refresh") {
+    if (isMobile) {
+      pageInfo.value.currentPage = 1;
+      searchFlag.value = true;
+    }
     loadByPage();
   } else if (authority == "batchDelete") {
     batchDelete();
@@ -256,9 +261,9 @@ const getIds = () => {
  */
 const batchDelete = async () => {
   const ids: any = getIds();
-  if (overrideOperation("batchDelete", ids)) {
-    return;
-  }
+  // if (overrideOperation("batchDelete", ids)) {
+  //   return;
+  // }
   await deleteById(ids);
 };
 /**
@@ -266,12 +271,14 @@ const batchDelete = async () => {
  * @param formData
  * @param orderBy Sorting
  */
+const searchFlag = ref<boolean>(false);
 const createSearchParams = (
     formData: SearchParams[],
     orderBy: OrderByInfo[] = [],
 ) => {
   searchFields = formData;
   orderBys = orderBy;
+  searchFlag.value = true;
   loadByPage();
 };
 /**
@@ -318,6 +325,9 @@ watch(
     },
     {deep: true, immediate: false},
 );
+watch(() => cardSelection.value, (val) => {
+  multipleSelection.value = Array.isArray(val) ? val : [val];
+}, {immediate: false});
 const assignData = (dataList: Array<any>) => {
   for (let key in dataList) {
     let temp: any = dataList[key];
@@ -554,6 +564,7 @@ const deleteById = async (id: any, isExpand: boolean = false) => {
   }
   let flag = await deleteByIds(deleteUrl, Array.isArray(id) ? id : [id]);
   if (flag) {
+    searchFlag.value = true;
     loadByPage();
   }
 };
@@ -637,7 +648,7 @@ const loadByPage = (initPageInfo?: boolean) => {
         }
         let redata = res?.data?.data;
         const newData = redata?.dataList || redata;
-        if (props.pageKeepOldData || isMobile) {
+        if ((props.pageKeepOldData || isMobile) && !searchFlag.value) {
           if (!pageInfo.value.dataList) {
             pageInfo.value.dataList = [];
           }
@@ -645,6 +656,7 @@ const loadByPage = (initPageInfo?: boolean) => {
         } else {
           pageInfo.value.dataList = newData;
         }
+        searchFlag.value = false;
 
         if (props.dialogInput) {
           filterData();
@@ -774,6 +786,7 @@ const extendBtnFunction = (): Array<UserFuncInfo> => {
         funcName: (row: any) => tbCommonFun("delete", row),
       });
     }
+
   }
   // If no priority is specified, sort by default addition method
   arr.sort(
@@ -1195,9 +1208,17 @@ defineExpose({
             <template #header>
               <div
                   class="card-header"
+                  style="justify-content: start;gap-3"
                   @click="selectRow(data)"
                   @dblclick="editData(data)"
               >
+                <template v-if="multipleSelect">
+                  <el-checkbox v-model="cardSelection" :value="data"/>
+                </template>
+                <template v-else>
+                  <el-radio v-model="cardSelection" :value="data"/>
+                </template>
+
                 <span>
                   {{
                     dataFormat?.(

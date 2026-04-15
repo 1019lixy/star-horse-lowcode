@@ -203,11 +203,11 @@ const operation = (funcName: any, type: string) => {
         <div class="shdialog">
           <div class="dialog-body">
             <slot></slot>
-            <div v-if="isMobile" class="w-full h-[80px]"></div>
+            <div v-if="false" class="w-full h-[80px]"></div>
           </div>
         </div>
         <template #footer>
-          <span class="dialog-footer" :class="{'app-btn': isMobile}" v-if="source != 3">
+          <span class="dialog-footer" :class="{'app-btn': false}" v-if="source != 3">
             <slot name="extend"></slot>
             <el-button
                 @click="operation('merge', 'close')"

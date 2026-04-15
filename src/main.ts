@@ -1,6 +1,7 @@
 import "tailwindcss/index.css";
 import "@/assets/css/index.scss";
 import "@/assets/icons.css";
+import "element-plus/dist/index.css";
 import userComponent from "@/components/comp/selfcomp";
 import userContainerComponent from "@/components/comp/items/callitem";
 import itemComponent from "@/components/formcomp/items/allitem";
@@ -13,7 +14,6 @@ import piniaInstance from "@/store";
 import ElementPlus from "element-plus";
 import zhCn from "element-plus/es/locale/lang/zh-cn";
 import router from "@/router";
-window._os_debug_=true;
 const app = createApp(App);
 app.component("draggable", draggable);
 

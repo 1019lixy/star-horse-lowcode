@@ -1,8 +1,8 @@
 <script setup lang="ts" name="MainContainer">
-import MainBar from "@/components/app/MainBar.vue";
-import MainContent from "@/components/app/MainContent.vue";
+import MainBar from "@/components/comp/app/MainBar.vue";
+import MainContent from "@/components/comp/app/MainContent.vue";
 import { ref } from "vue";
-import MainSubBar from "@/components/app/MainSubBar.vue";
+import MainSubBar from "@/components/comp/app/MainSubBar.vue";
 import { useRoute, useRouter } from "vue-router";
 
 interface MenuItem {

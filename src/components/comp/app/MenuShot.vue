@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import {nextTick, onMounted, PropType, ref, watch} from "vue";
-import {StarHorseIcon} from "@/components/comp";
 
 const props = defineProps({
   menus: {type: Array<any>, default: () => []},
