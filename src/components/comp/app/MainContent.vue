@@ -63,7 +63,7 @@ const isActive = (item: MainBarItem) => {
 <template>
   <div class="flex flex-col w-full h-full overflow-hidden">
     <div v-if="position=='top'" style="height:60px;width:100%"></div>
-    <div class="main-content flex-1">
+    <div class="main-content flex-1 relative">
       <keep-alive>
         <router-view/>
       </keep-alive>

@@ -1,8 +1,6 @@
 <script setup lang="ts" name="MainBar">
-import {computed, ref} from "vue";
-import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
-import {useRoute, useRouter} from "vue-router";
-import MainBar from "./MainBar.vue";
+import { computed, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
 
 interface MenuItem {
   component: any;
@@ -20,7 +18,7 @@ const props = defineProps<{
 }>();
 
 const emits = defineEmits<{
-  (e: "select", item: MenuItem): void;
+  (e: "select", isSubMenu: boolean, item: any): void;
 }>();
 
 const router = window.__hostRouter__ || useRouter();
@@ -35,13 +33,10 @@ const computedCategories = computed(() => {
 });
 
 const handleSelect = (item: MenuItem) => {
-  if (hasChildren(item)) {
-    expandedItem.value = expandedItem.value === item.meta?.menuId ? null : item.meta?.menuId;
+  if (item.path && item.path != "#") {
+    router.push(item.path);
   } else {
-    emits("select", item);
-    if (item.path && item.path != "#") {
-      router.push(item.path);
-    }
+    emits("select", true, item.children);
   }
 };
 
@@ -62,13 +57,13 @@ const getPositionClass = () => {
 const getPositionStyle = () => {
   switch (props.position) {
     case "top":
-      return {top: 0, bottom: "auto"};
+      return { top: 0, bottom: "auto" };
     case "bottom":
-      return {bottom: 0, top: "auto"};
+      return { bottom: 0, top: "auto" };
     case "left":
-      return {left: 0, right: "auto"};
+      return { left: 0, right: "auto" };
     case "right":
-      return {right: 0, left: "auto"};
+      return { right: 0, left: "auto" };
   }
 };
 
@@ -102,37 +97,32 @@ const isExpanded = (item: MenuItem) => {
   <div class="main-bar" :class="getPositionClass()" :style="getPositionStyle()">
     <template v-for="item in computedCategories" :key="item.meta?.menuId">
       <div
-          class="category-item"
-          :class="{active: isActive(item)}"
-          @click="handleSelect(item)"
+        class="category-item"
+        :class="{ active: isActive(item) }"
+        @click="handleSelect(item)"
       >
-        <div class="category-content">
+        <div class="category-content relative">
           <div class="flex flex-col items-center justify-center">
             <star-horse-icon
-                v-if="item.meta?.menuIcon"
-                :icon-class="item.meta?.menuIcon"
-                class="category-icon"
+              v-if="item.meta?.menuIcon"
+              :icon-class="item.meta?.menuIcon"
+              class="category-icon"
             />
             <span class="category-name">{{ item.meta?.title }}</span>
           </div>
           <star-horse-icon
-              v-if="hasChildren(item)"
-              icon-class="right"
-              class="arrow-icon"
-          />
-        </div>
-        <div
             v-if="hasChildren(item)"
-            class="submenu"
-            :class="getPositionClass() + '-submenu'"
-            :style="{display: isExpanded(item) ? 'block' : 'none'}"
-        >
-          <MainBar
-              :categories="item.children || []"
-              :position="getSubmenuPosition()"
-              class="submenu-bar"
+            icon-class="right"
+            class="arrow-icon"
           />
         </div>
+        <!--        <div v-if="hasChildren(item)">
+                  <MainSubBar
+                    :categories="item.children || []"
+                    :position="getSubmenuPosition()"
+                    class="submenu-bar"
+                  />
+                </div>-->
       </div>
     </template>
   </div>
@@ -143,205 +133,27 @@ const isExpanded = (item: MenuItem) => {
   background-color: #fff;
   border: 1px solid #e6e6e6;
   position: fixed;
-  z-index: 999999;
-
-  &.position-top,
-  &.position-bottom {
-    display: flex;
-    flex-direction: row;
-    height: 60px;
-    width: 100%;
-    padding: 0;
-  }
-
-  &.position-top {
-    border-bottom: 1px solid #e6e6e6;
-  }
-
-  &.position-bottom {
-    border-top: 1px solid #e6e6e6;
-  }
-
-  &.position-left,
-  &.position-right {
-    display: flex;
-    flex-direction: column;
-    width: 60px;
-    height: 100%;
-
-    .category-item {
-      flex: 1;
-      flex-direction: column;
-    }
-
-    .category-content {
-      flex-direction: column;
-      margin-top: 8px;
-
-      .category-icon {
-        margin-bottom: 0;
-        margin-right: 0;
-        flex-shrink: 0;
-      }
-
-      .category-name {
-        margin-top: 4px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 100%;
-        flex: 1;
-        min-width: 0;
-      }
-    }
-  }
-
-  &.position-left {
-    border-right: 1px solid #e6e6e6;
-  }
-
-  &.position-right {
-    border-left: 1px solid #e6e6e6;
-  }
+  width: 100%;
+  display: flex;
 
   .category-item {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: row;
+    width: 100%;
     cursor: pointer;
-    transition: background-color 0.3s;
-    flex: 1;
-    overflow: hidden;
+    position: relative;
+    justify-content: center;
+    border-bottom: 1px solid #e6e6e6;
+    align-items: center;
 
-    &.position-left,
-    &.position-right {
-      flex-direction: column;
-      flex: 1;
+    .submenu {
+      width: 100%;
+      position: absolute;
+      border: 1px solid #e6e6e6;
     }
 
     &:hover {
-      background-color: #f5f7fa;
-    }
-
-    .category-content {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      overflow: hidden;
-
-      .position-left &,
-      .position-right & {
-        flex-direction: column;
-        margin-top: 8px;
-
-        .category-icon {
-          margin-bottom: 0;
-          margin-right: 0;
-          flex-shrink: 0;
-        }
-
-        .category-name {
-          margin-top: 4px;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          max-width: 100%;
-          flex: 1;
-          min-width: 0;
-        }
-      }
-
-      .position-top &,
-      .position-bottom & {
-        flex-direction: column;
-        margin-top: 0;
-
-        .category-icon {
-          margin-bottom: 4px;
-          margin-right: 0;
-        }
-
-        .category-name {
-          margin-top: 0;
-        }
-      }
-
-      .category-icon {
-        font-size: 20px;
-        color: #606266;
-        flex-shrink: 0;
-      }
-
-      .category-name {
-        font-size: 12px;
-        color: #606266;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 100%;
-        flex: 1;
-        min-width: 0;
-      }
-
-      .arrow-icon {
-        font-size: 12px;
-        color: #999;
-        margin-left: 4px;
-        flex-shrink: 0;
-      }
-    }
-
-    &.active {
-      background-color: var(--star-horse-style);
-      border-color: var(--star-horse-style);
-
-      .category-content {
-        .category-icon {
-          color: #fff;
-        }
-
-        .category-name {
-          color: #fff;
-        }
-
-        .arrow-icon {
-          color: #fff;
-        }
-      }
-    }
-
-    .submenu {
-      position: absolute;
-      z-index: 1001;
-
-      &.position-top-submenu,
-      &.position-bottom-submenu {
-        top: 100%;
-        left: 0;
-        min-width: 150px;
-      }
-
-      &.position-bottom-submenu {
-        top: auto;
-        bottom: 100%;
-      }
-
-      &.position-left-submenu,
-      &.position-right-submenu {
-        left: 100%;
-        top: 0;
-        min-height: 100%;
-      }
-
-      &.position-right-submenu {
-        left: auto;
-        right: 100%;
-      }
-
-      .submenu-bar {
-        position: relative;
-      }
+      background-color: #e6e6e6;
     }
   }
 }
