@@ -1,10 +1,10 @@
 <script setup lang="ts" name="StarHorseSearchComp">
 import {isMobile} from "@/api/device";
 import StarHorseSearchForm from "@/components/comp/StarHorseSearchForm.vue";
-import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
 import {i18n} from "@/lang";
 import {ref} from "vue";
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
+import MenuShot from "@/components/comp/app/MenuShot.vue";
 
 const searchFormRef = ref<InstanceType<typeof StarHorseSearchForm> | null>(null);
 const dialogVisible = ref(false);
@@ -20,6 +20,9 @@ const props = defineProps({
 
 const handleSearchData = (searchData: any) => {
   emits("searchData", searchData);
+  if (isMobile) {
+    handleClose();
+  }
 };
 
 const handleMobileSearch = () => {
@@ -38,9 +41,11 @@ const handleClose = () => {
         @searchData="handleSearchData"
     />
   </div>
-  <div v-else class="absolute right-0 top-0 z-1000">
-    <star-horse-icon icon-class="search" cursor="pointer" @click="handleMobileSearch"/>
-  </div>
+  <MenuShot v-if="isMobile" icon="search" :position="{
+    top:'50px',
+    right:'20px',
+    bottom:'unset'
+  }" @change="handleMobileSearch"/>
   <star-horse-dialog
       :dialog-visible="dialogVisible"
       :title="i18n('search.query')"

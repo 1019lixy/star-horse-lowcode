@@ -11,10 +11,11 @@ interface MainBarItem {
 
 const props = defineProps<{
   categories: Array<{
-    id: string;
-    label: string;
-    icon: string;
-    route?: string;
+    component: any;
+    name: string;
+    menuIcon?: string;
+    path?: string;
+    meta?: Record<string, any>;
   }>;
   systemConfigName?: string;
   position?: "top" | "bottom" | "left" | "right";
@@ -63,7 +64,9 @@ const isActive = (item: MainBarItem) => {
   <div class="flex flex-col w-full h-full overflow-hidden">
     <div v-if="position=='top'" style="height:60px;width:100%"></div>
     <div class="main-content flex-1">
-      <router-view/>
+      <keep-alive>
+        <router-view/>
+      </keep-alive>
     </div>
     <div v-if="position=='bottom'" style="height:60px;width:100%"></div>
   </div>
@@ -73,7 +76,7 @@ const isActive = (item: MainBarItem) => {
 .main-content {
   flex: 1;
   overflow: auto;
-  background-color: #f5f7fa;
-  padding:5px 10px;
+  background-color: #fff;
+  padding: 5px 10px;
 }
 </style>

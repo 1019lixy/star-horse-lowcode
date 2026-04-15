@@ -19,13 +19,12 @@ import {
   PropType,
   provide,
   ref,
-  ShallowReactive,
   shallowRef,
   unref,
   watch,
 } from "vue";
 import {isMobile} from "@/api/device";
-import {convertPcCompToAppComps} from "@/api/form_utils";
+import {convertPcCompToFitPlatformComps} from "@/api/form_utils";
 
 const props = defineProps({
   compUrl: {type: Object as PropType<ApiUrls>},
@@ -64,7 +63,7 @@ const starHorseFormRef = ref(null);
 const dataForm = ref<any>({});
 // source:{type:Number,default:1},
 const source = ref<number>(1);
-const platformFields = computed(() => convertPcCompToAppComps(props.fieldList));
+const platformFields = computed(() => convertPcCompToFitPlatformComps(props.fieldList));
 const mappingFields = computed(() => formFieldMapping(unref(platformFields)));
 //更新外面传进来的数据
 
@@ -74,7 +73,7 @@ const exportData = () => {
 //向外实时导出数据
 
 const closeDialog = inject("closeDialog") as Function;
-let dialogOperation = inject("dialogOperation") as ShallowReactive<any>;
+let dialogOperation = inject("dialogOperation");
 const dialogProps = inject<DialogProps>("dialogProps", {});
 const formFields = shallowRef<Array<FieldInfo>>([]);
 provide("formFields", formFields);
@@ -286,7 +285,8 @@ const doMerge = (type: string) => {
       });
 };
 const resetForm = () => {
-  dataForm.value = unref(mappingFields)?.defaultDatas;
+  dataForm.value = {};
+  dataForm.value = {...unref(mappingFields)?.defaultDatas};
   let data = unref(props.outerFormData);
   if (Object.keys(data || {}).length > 0) {
     Object.assign(dataForm.value, data);
@@ -382,9 +382,11 @@ watch(
         mergeDraft: () => mergeDraft(val.type),
         resetForm: () => resetForm(),
       };
-      handlers[val.funcName]?.();
-      dialogOperation.funcName = "";
-      dialogOperation["type"] = "";
+      if (val.funcName) {
+        handlers[val.funcName]?.();
+        dialogOperation.funcName = "";
+        dialogOperation["type"] = "";
+      }
     },
     {
       immediate: false,

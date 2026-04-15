@@ -24,6 +24,7 @@ export * from "@/utils/message";
 export * from "@/api/finger_utils";
 export * from "@/api/form_utils";
 export * from "@/api/valid_utils";
+export * from "@/api/device";
 export * from "@/plugins/AblesPlugin";
 export * from "@/utils/FieldOperationUtils";
 export * from "@/components/formcomp/utils/ItemRelationEventUtils";

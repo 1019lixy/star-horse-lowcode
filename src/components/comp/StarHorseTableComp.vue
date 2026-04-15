@@ -17,13 +17,13 @@ import {useDynamicFormStore} from "@/store/DynamicForm";
 import {useGlobalConfigStore} from "@/store/GlobalConfig";
 import {isSystemManage} from "@/utils/auth";
 import {error, warning} from "@/utils/message";
-import {analysisFields} from "@/utils/preview";
 import Sortable from "sortablejs";
 import {i18n} from "@/lang";
 import {computed, inject, onMounted, PropType, reactive, ref, unref, watch,} from "vue";
 import JSON5 from "json5";
-import {EditCondition} from "@/components/types";
+import {EditCondition, SearchFields} from "@/components/types";
 import {isMobile} from "@/api/device";
+import {convertCompToAppComps} from "@/api/form_utils";
 
 const dynamicForm = useDynamicFormStore(piniaInstance);
 const props = defineProps({
@@ -88,6 +88,8 @@ const props = defineProps({
   isDynamic: {type: Boolean, default: false},
   // Hide button list
   hideButtonList: {type: Boolean, default: false},
+  //查询组件
+  searchParams: {type: Object as PropType<SearchFields>},
   /**
    * Data sharer
    *   Get information shared by others
@@ -121,6 +123,10 @@ const props = defineProps({
    * 编辑条件
    */
   editCondition: {type: Object as PropType<EditCondition[]>},
+  /**
+   * 翻页保留历史数据
+   */
+  pageKeepOldData: {type: Boolean, default: false},
 });
 const emits = defineEmits(["selectItem", "permission"]);
 let pagePermission = useButtonPermissionStore(piniaInstance);
@@ -630,8 +636,16 @@ const loadByPage = (initPageInfo?: boolean) => {
           return;
         }
         let redata = res?.data?.data;
-        // If not paginated, display all returned data
-        pageInfo.value.dataList = redata?.dataList || redata;
+        const newData = redata?.dataList || redata;
+        if (props.pageKeepOldData || isMobile) {
+          if (!pageInfo.value.dataList) {
+            pageInfo.value.dataList = [];
+          }
+          pageInfo.value.dataList.push(...newData);
+        } else {
+          pageInfo.value.dataList = newData;
+        }
+
         if (props.dialogInput) {
           filterData();
         }
@@ -828,26 +842,25 @@ const getDatas = async (
 
 let dataShowType = ref<string>("list");
 let cardFieldList = ref<FieldInfo[]>([]);
+const cacheAppCompList = ref<FieldInfo[]>([]);
 const loadField = (): FieldInfo[] => {
+  //同一个页面将数据缓存，而不是每次都去解析一遍
+  if (!cacheAppCompList.value.length) {
+    let {fieldList} = convertCompToAppComps(props.fieldList);
+    cacheAppCompList.value = fieldList;
+  }
+  if (!cacheAppCompList.value?.length) {
+    return [];
+  }
   if (isMobile) {
-    const appFields = props.fieldList?.fieldList.filter((item: FieldInfo) => item.preps?.appListVisible);
+    const appFields = cacheAppCompList.value.filter((item: FieldInfo) => item.preps?.appListVisible);
     if (appFields && appFields.length) {
       return appFields.sort(
           (a: FieldInfo, b: FieldInfo) => (a.preps?.dataIndex || 100) - (b.preps?.dataIndex || 100),
       );
     }
-
-    return props.fieldList?.fieldList.filter(item => item.listVisible).slice(0, 3);
-  } else {
-    let {fieldList} = analysisFields(props.fieldList?.fieldList);
-    if (fieldList&&fieldList.length) {
-      return fieldList.sort(
-          (a: FieldInfo, b: FieldInfo) => (a.preps?.dataIndex || 100) - (b.preps?.dataIndex || 100),
-      )?.filter((item) => item.listVisible)?.slice(0, 3);
-    }
   }
-  return [];
-
+  return cacheAppCompList.value.filter(item => item.listVisible).slice(0, 3);
 };
 let typeTitle = ref<string>(i18n("table.switchToCardMode"));
 let typeIcon = ref<string>("card1");
@@ -870,8 +883,24 @@ const showType = (type: string) => {
     typeIcon.value = "card1";
   }
 };
+
 const getSelectedDatas = () => {
   return multipleSelection.value;
+};
+/**
+ * 列表滚动到底部时自动翻译
+ * @param direction
+ */
+const endReached = (direction: string) => {
+  if (direction == "bottom" && isMobile) {
+    //滚动翻页需要自动累加
+    pageInfo.value.currentPage += 1;
+    //当前也大于总页数，就不再向后端发起请求了
+    if (pageInfo.value.currentPage > pageInfo.value.totalPage) {
+      return;
+    }
+    loadByPage();
+  }
 };
 onMounted(() => {
   init();
@@ -1139,7 +1168,17 @@ defineExpose({
       </el-table>
     </div>
     <div class="data-card-area" v-else>
-      <el-scrollbar height="100%" style="width:99%">
+      <star-horse-button-list
+          @tableCompFunc="(fun: any) => tableCompFunc(fun)"
+          :compUrl="compUrl"
+          :btnPermissions="permissions"
+          :searchParams="searchParams"
+          :extendBtns="extendBtns"
+          :dialogProps="dialogProps"
+          :preValidFunc="preValidFunc"
+          v-if="!hideButtonList&&isMobile"
+      />
+      <el-scrollbar height="100%" style="width:99%" @endReached="endReached">
         <el-space
             :style="{width:`${isMobile?'100%':'auto'}`}"
             :fill="isMobile"
@@ -1225,6 +1264,7 @@ defineExpose({
           :title="i18n('table.refresh')"
       />
     </el-pagination>
+
   </div>
 </template>
 <style lang="scss" scoped>

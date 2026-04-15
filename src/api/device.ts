@@ -1,4 +1,15 @@
-const isTest: boolean = true;
+let isTest: boolean = true;
+let deviceType: string;
+
+/**
+ * 设置测试
+ * @param testFlag
+ * @param type
+ */
+export function setTest(testFlag: boolean, type?: string): void {
+    isTest = testFlag;
+    deviceType = type;
+}
 
 /**
  * 获取当前设备类型
@@ -6,7 +17,7 @@ const isTest: boolean = true;
 export function getDeviceInfo() {
     const ua = navigator.userAgent.toLowerCase();
 
-    const info = {
+    const info: any = {
         type: "pc" as "mobile" | "tablet" | "pc",
         os: "unknown" as "windows" | "mac" | "linux" | "android" | "ios" | "harmony" | "openHarmony" | "unknown",
         isHuawei: false,
@@ -15,7 +26,7 @@ export function getDeviceInfo() {
     };
     if (isTest) {
         return {
-            type: "mobile",
+            type: deviceType ?? "mobile",
             os: "unknown",
         };
     }

@@ -477,7 +477,6 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
       formFields: [],
     };
   }
-
   let defaultDatas: any = {};
   const actions: Array<any> = [];
   const formFields: Array<FieldInfo> = [];

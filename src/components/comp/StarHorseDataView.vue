@@ -5,7 +5,7 @@ import {DialogProps} from "@/components/types/DialogProps";
 import {formFieldMapping, isJson} from "@/api/star_horse_utils";
 import {loadById} from "@/api/star_horse_apis";
 import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
-import {convertPcCompToAppComps} from "@/api/form_utils";
+import {convertPcCompToFitPlatformComps} from "@/api/form_utils";
 import {isMobile} from "@/api/device";
 
 const dataForm = ref<any>({});
@@ -33,7 +33,7 @@ const props = defineProps({
 const emits = defineEmits(["dataLoaded"]);
 const dialogProps = inject<DialogProps>("dialogProps");
 const source = ref<number>(3);
-const platformFields = computed(() => convertPcCompToAppComps(props.fieldList));
+const platformFields = computed(() => convertPcCompToFitPlatformComps(props.fieldList));
 const mappingFields = computed(() => formFieldMapping(unref(platformFields)));
 onMounted(() => {
   if (dialogProps?.ids) {

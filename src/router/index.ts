@@ -29,7 +29,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: "/complex-form-analysis",
         name: "complex-form-analysis",
-        component: () => import("@/sample/ComplexFormAnalysis.vue"),
+        component: () => import("@/sample/FormValid.vue"),
         meta: {title: "复杂表单分析"},
     },
     {

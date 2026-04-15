@@ -760,6 +760,12 @@ onMounted(async () => {
 });
 let extendBtns = ref<UserFuncInfo[]>([
   {
+    btnName: "菜单批量调整",
+    authority: "edit",
+    icon: "exchange",
+    priority: 100,
+    position: "toolbar"},
+  {
     btnName: "重新生成代码",
     authority: "add",
     icon: "code",

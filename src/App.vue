@@ -6,32 +6,44 @@
 import MainContainer from "@/components/comp/app/MainContainer.vue";
 
 const categories = [
-  {id: "dashboard", name: "首页", icon: "document", route: "/complex-form-valid"},
+  {id: "dashboard", meta:{
+      title: "首页",
+      menuIcon: "document",
+    },  path: "/complex-form-valid"},
   {
-    id: "production", name: "表单验证", icon: "document", route: "/complex-form-analysis",
+    id: "production",meta:{
+      title: "表单验证",
+      menuIcon: "document",
+    },  path: "/complex-form-analysis",
    /* children: [
       {
         id: "work-order",
         name: "工单管理",
-        route: "/work-order",
-        icon: "document",
+        path: "/work-order",
+        menuIcon: "document",
         children: [
           {
             id: "work-order-list",
             name: "工单列表",
-            icon: "document",
-            route: "/work-order/list"
+            menuIcon: "document",
+            path: "/work-order/list"
           }
         ]
       }
     ]*/
   },
   {
-    id: "quality", name: "动态表格", icon: "document", route: "/dytable-container-instance-valid",
-   /* children: [{id: "equipment", name: "复杂表单", icon: "document", route: "/complex-form-analysis"},
-      {id: "material", name: "容器视图", icon: "document", route: "/dytable-container-view-valid"},]*/
+    id: "quality",meta:{
+      title: "动态表格",
+      menuIcon: "document",
+    },   path: "/dytable-container-instance-valid",
+   /* children: [{id: "equipment", name: "复杂表单", menuIcon: "document", path: "/complex-form-analysis"},
+      {id: "material", name: "容器视图", menuIcon: "document", path: "/dytable-container-view-valid"},]*/
   },
-  {id: "config", name: "配置配置", icon: "config", route: "/dytable-container-view-valid"},
+  {id: "config", meta:{
+      title: "配置配置",
+      menuIcon: "config",
+    },  path: "/dytable-container-view-valid"},
 ];
 
 </script>

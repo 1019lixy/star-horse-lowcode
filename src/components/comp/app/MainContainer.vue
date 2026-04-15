@@ -3,10 +3,11 @@ import MainBar from "@/components/comp/app/MainBar.vue";
 import MainContent from "@/components/comp/app/MainContent.vue";
 
 interface MenuItem {
-  id: string;
-  label: string;
-  icon: string;
-  route?: string;
+  component: any;
+  name: string;
+  menuIcon?: string;
+  path?: string;
+  meta?: Record<string, any>;
   children?: MenuItem[];
 }
 

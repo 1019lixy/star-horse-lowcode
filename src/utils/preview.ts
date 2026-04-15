@@ -105,18 +105,18 @@ export function analysisFields(compList: Array<any>) {
                     if (Object.keys(temp).length > 0) {
                         if (Array.isArray(temp)) {
                             temp.forEach((item) => {
-                                item.priority = priority++;
+                                item.dataIndex = priority++;
                                 fieldList.push(item);
                             });
                         } else if (temp.batchFieldList) {
                             temp.batchFieldList.forEach((item: any) => {
                                 item.fieldList.forEach((sitem: any) => {
-                                    sitem.priority = priority++;
+                                    sitem.dataIndex = priority++;
                                     fieldList.push(sitem);
                                 });
                             });
                         } else {
-                            temp.priority = priority++;
+                            temp.dataIndex = priority++;
                             fieldList.push(temp);
                         }
                     }

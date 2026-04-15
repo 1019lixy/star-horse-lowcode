@@ -5,10 +5,11 @@ import {useRoute, useRouter} from "vue-router";
 import MainBar from "./MainBar.vue";
 
 interface MenuItem {
-  id: string;
+  component: any;
   name: string;
-  icon?: string;
-  route?: string;
+  menuIcon?: string;
+  path?: string;
+  meta?: Record<string, any>;
   children?: MenuItem[];
 }
 
@@ -22,7 +23,7 @@ const emits = defineEmits<{
   (e: "select", item: MenuItem): void;
 }>();
 
-const router = useRouter();
+const router = window.__hostRouter__ || useRouter();
 const route = useRoute();
 
 const expandedItem = ref<string | null>(null);
@@ -35,11 +36,11 @@ const computedCategories = computed(() => {
 
 const handleSelect = (item: MenuItem) => {
   if (hasChildren(item)) {
-    expandedItem.value = expandedItem.value === item.id ? null : item.id;
+    expandedItem.value = expandedItem.value === item.meta?.menuId ? null : item.meta?.menuId;
   } else {
     emits("select", item);
-    if (item.route) {
-      router.push(item.route);
+    if (item.path && item.path != "#") {
+      router.push(item.path);
     }
   }
 };
@@ -85,8 +86,7 @@ const getSubmenuPosition = () => {
 };
 
 const isActive = (item: MenuItem) => {
-
-  return route.path === item.route || route.name === item.id;
+  return route?.path === item.path;
 };
 
 const hasChildren = (item: MenuItem) => {
@@ -94,13 +94,13 @@ const hasChildren = (item: MenuItem) => {
 };
 
 const isExpanded = (item: MenuItem) => {
-  return expandedItem.value === item.id;
+  return expandedItem.value === item.meta?.menuId;
 };
 </script>
 
 <template>
   <div class="main-bar" :class="getPositionClass()" :style="getPositionStyle()">
-    <template v-for="item in computedCategories" :key="item.id">
+    <template v-for="item in computedCategories" :key="item.meta?.menuId">
       <div
           class="category-item"
           :class="{active: isActive(item)}"
@@ -109,11 +109,11 @@ const isExpanded = (item: MenuItem) => {
         <div class="category-content">
           <div class="flex flex-col items-center justify-center">
             <star-horse-icon
-                v-if="item.icon"
-                :icon-class="item.icon"
+                v-if="item.meta?.menuIcon"
+                :icon-class="item.meta?.menuIcon"
                 class="category-icon"
             />
-            <span class="category-name">{{ item.name }}</span>
+            <span class="category-name">{{ item.meta?.title }}</span>
           </div>
           <star-horse-icon
               v-if="hasChildren(item)"
@@ -144,6 +144,7 @@ const isExpanded = (item: MenuItem) => {
   border: 1px solid #e6e6e6;
   position: fixed;
   z-index: 999999;
+
   &.position-top,
   &.position-bottom {
     display: flex;

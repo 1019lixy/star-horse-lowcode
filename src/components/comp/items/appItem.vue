@@ -3,6 +3,7 @@ import {getDataIndex, getFormData, getPrefix,} from "@/api/form_utils";
 import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
 import {ContainerPreps} from "@/components/types/ItemPreps";
 import {ModelRef, onMounted} from "vue";
+import StarHorseItem from "@/components/comp/StarHorseItem.vue";
 
 const props = withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
@@ -32,7 +33,17 @@ const addRow = (row: any) => {
 const removeRow = (row: any) => {
   emits("removeRow", row);
 };
-
+const loadItem = (item: any) => {
+  return {
+    type: "text",
+    formVisible: true,
+    fieldName: "textTemp",
+    preps: {
+      staticData: true,
+      textContent: item.title
+    }
+  };
+};
 const init = () => {
 };
 onMounted(() => {
@@ -43,6 +54,17 @@ onMounted(() => {
 <template>
   <template v-if="item.appList?.length > 0">
     <template v-for="(appItem, key) in item.appList">
+      <template v-if="appItem.title">
+        <star-horse-item
+            :primaryKey="primaryKey"
+            :compSize="compSize"
+            v-model:dataForm="dataForm"
+            :commonFormat="commonFormat"
+            :item="loadItem(appItem)"
+            :dataIndex="dataIndex"
+            :source="source"
+        />
+      </template>
       <star-horse-form-item
           :source="source"
           :compUrl="compUrl"
