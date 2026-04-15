@@ -18,6 +18,7 @@ const props = defineProps<{
   categories: MenuItem[];
   systemConfigName?: string;
   position?: "top" | "bottom" | "left" | "right";
+  iconType?: "user" | "ele";
   preps?: Record<string, any>;
 }>();
 const subMenuFlag = ref<boolean>(false);
@@ -58,6 +59,7 @@ const getStyle = () => {
       :system-config-name="systemConfigName"
       :position="position"
       :preps="preps"
+      :iconType="iconType"
       @select="barHandleSelect"
       @system-config="handleSystemConfig"
     />

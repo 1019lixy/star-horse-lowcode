@@ -1,6 +1,7 @@
 <script setup lang="ts" name="MainBar">
-import { computed, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import {computed, ref} from "vue";
+import {useRoute, useRouter} from "vue-router";
+import {StarHorseIcon} from "@/components/comp";
 
 interface MenuItem {
   component: any;
@@ -13,7 +14,8 @@ interface MenuItem {
 
 const props = defineProps<{
   categories: MenuItem[];
-  systemConfigName?: string;
+  iconType?: "user" | "ele";
+
   position?: "top" | "bottom" | "left" | "right";
 }>();
 
@@ -57,13 +59,13 @@ const getPositionClass = () => {
 const getPositionStyle = () => {
   switch (props.position) {
     case "top":
-      return { top: 0, bottom: "auto" };
+      return {top: 0, bottom: "auto"};
     case "bottom":
-      return { bottom: 0, top: "auto" };
+      return {bottom: 0, top: "auto"};
     case "left":
-      return { left: 0, right: "auto" };
+      return {left: 0, right: "auto"};
     case "right":
-      return { right: 0, left: "auto" };
+      return {right: 0, left: "auto"};
   }
 };
 
@@ -97,32 +99,31 @@ const isExpanded = (item: MenuItem) => {
   <div class="main-bar" :class="getPositionClass()" :style="getPositionStyle()">
     <template v-for="item in computedCategories" :key="item.meta?.menuId">
       <div
-        class="category-item"
-        :class="{ active: isActive(item) }"
-        @click="handleSelect(item)"
+          class="category-item"
+          :class="{ active: isActive(item) }"
+          @click="handleSelect(item)"
       >
-        <div class="category-content relative">
+        <div class="category-content relative flex items-center justify-center">
           <div class="flex flex-col items-center justify-center">
-            <star-horse-icon
-              v-if="item.meta?.menuIcon"
-              :icon-class="item.meta?.menuIcon"
-              class="category-icon"
-            />
+            <template v-if="item.meta?.menuIcon">
+              <el-icon class="star-icon" v-if="iconType=='ele'">
+                <component :is="item.meta.menuIcon || 'document'"/>
+              </el-icon>
+              <star-horse-icon
+                  v-else
+                  :icon-class="item.meta?.menuIcon|| 'document'"
+                  class="category-icon"
+              />
+            </template>
             <span class="category-name">{{ item.meta?.title }}</span>
           </div>
           <star-horse-icon
-            v-if="hasChildren(item)"
-            icon-class="right"
-            class="arrow-icon"
+              v-if="hasChildren(item)"
+              icon-class="arrow-down"
+              size="14"
+              class="arrow-icon"
           />
         </div>
-        <!--        <div v-if="hasChildren(item)">
-                  <MainSubBar
-                    :categories="item.children || []"
-                    :position="getSubmenuPosition()"
-                    class="submenu-bar"
-                  />
-                </div>-->
       </div>
     </template>
   </div>

@@ -1,5 +1,5 @@
 <template>
-  <main-container :categories="categories" :position="'bottom'" system-config-name="系统配置"/>
+  <main-container :categories="categories" :position="'bottom'" iconType="ele" system-config-name="系统配置"/>
 </template>
 
 <script lang="ts" setup>
@@ -15,7 +15,7 @@ const categories = [
       title: "表单验证",
       menuIcon: "document",
     },  path: "/complex-form-analysis",
-   /* children: [
+    children: [
       {
         id: "work-order",
         name: "工单管理",
@@ -30,7 +30,7 @@ const categories = [
           }
         ]
       }
-    ]*/
+    ]
   },
   {
     id: "quality",meta:{
