@@ -21,3 +21,5 @@ export {default as DataPicker} from "./utils/DataPicker.vue";
 export {default as MainBar} from "./app/MainBar.vue";
 export {default as MainContent} from "./app/MainContent.vue";
 export {default as MainContainer} from "./app/MainContainer.vue";
+export {default as MainSubBar} from "./app/MainSubBar.vue";
+export {default as MenuShot} from "./app/MenuShot.vue";

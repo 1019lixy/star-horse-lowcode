@@ -1,4 +1,4 @@
-let isTest: boolean = true;
+let isTest: boolean = false;
 let deviceType: string;
 
 /**
