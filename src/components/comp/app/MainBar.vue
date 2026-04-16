@@ -1,5 +1,5 @@
 <script setup lang="ts" name="MainBar">
-import {computed, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {StarHorseIcon} from "@/components/comp";
 
@@ -61,7 +61,7 @@ const getPositionStyle = () => {
     case "top":
       return {top: 0, bottom: "auto"};
     case "bottom":
-      return {bottom: 0, top: "auto"};
+      return {bottom: "env(safe-area-inset-bottom)", top: "auto"};
     case "left":
       return {left: 0, right: "auto"};
     case "right":
@@ -69,18 +69,8 @@ const getPositionStyle = () => {
   }
 };
 
-const getSubmenuPosition = () => {
-  switch (props.position) {
-    case "top":
-      return "bottom";
-    case "bottom":
-      return "top";
-    case "left":
-      return "right";
-    case "right":
-      return "left";
-  }
-};
+
+
 
 const isActive = (item: MenuItem) => {
   return route?.path === item.path;
@@ -93,6 +83,9 @@ const hasChildren = (item: MenuItem) => {
 const isExpanded = (item: MenuItem) => {
   return expandedItem.value === item.meta?.menuId;
 };
+onMounted(() => {
+
+});
 </script>
 
 <template>

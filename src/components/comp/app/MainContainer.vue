@@ -90,10 +90,11 @@ const getStyle = () => {
 <style lang="scss" scoped>
 .main-container {
   display: flex;
-  height: 100vh;
+  height: 100%;
   overflow: hidden;
   position: relative;
-
+  bottom: env(safe-area-inset-bottom);
+  bottom: constant(safe-area-inset-bottom);
   .main-bar {
     &.position-top {
       height: 60px;
