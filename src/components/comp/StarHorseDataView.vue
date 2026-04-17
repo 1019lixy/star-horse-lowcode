@@ -21,6 +21,7 @@ const props = defineProps({
   globalCondition: {type: Object},
   outerData: {type: Object},
   dynamicForm: {type: Boolean, default: false},
+  preview: {type: Boolean, default: false},
   primaryKey: {
     type: [String, Object] as PropType<string | any>,
     default: "id",
@@ -42,6 +43,10 @@ onMounted(() => {
 });
 const loadData = async () => {
   await nextTick();
+  if (props.preview) {
+    setData({...dialogProps?.ids});
+    return;
+  }
   let id = Array.isArray(dialogProps?.ids)
       ? dialogProps.ids[0]
       : dialogProps?.ids;
@@ -50,6 +55,7 @@ const loadData = async () => {
   }
   let objData;
   let params = props.globalCondition || {};
+  //是使用查看数据接口，还是使用编辑数据接口，
   const url = props.useViewUrl ? props.compUrl?.loadByIdForViewUrl : props.compUrl?.loadByIdUrl;
   //如果是Json 对象
   if (isJson(id)) {
@@ -115,36 +121,37 @@ defineExpose({
 });
 </script>
 <template>
-
-  <el-scrollbar height="100%">
-    <el-form
-        :model="dataForm"
-        :size="formSize"
-        :scroll-to-error="true"
-        :scroll-into-view-options="true"
-        :inline-message="false"
-        :status-icon="true"
-        :label-position="isMobile?'top':labelPosition"
-        require-asterisk-position="right"
-        label-width="auto"
-        class="data-form"
-        ref="starHorseFormRef"
-        v-if="slotType!='user'"
-    >
-      <star-horse-form-item
-          :primaryKey="primaryKey"
-          :compUrl="compUrl"
-          :fieldList="platformFields"
-          :compSize="formSize"
-          v-model:dataForm="dataForm"
-          :source="source"
-          :batchName="batchName"
-          :commonFormat="dataFormat"
-          :batchFieldName="batchFieldName"
-      />
-      <slot name="ext" :dataForm="dataForm"></slot>
-    </el-form>
-    <slot name="user" :dataForm="dataForm"></slot>
-  </el-scrollbar>
+  <div class="w-full h-full flex flex-col overflow-hidden ">
+    <el-scrollbar height="100%" class="flex-1">
+      <el-form
+          :model="dataForm"
+          :size="formSize"
+          :scroll-to-error="true"
+          :scroll-into-view-options="true"
+          :inline-message="false"
+          :status-icon="true"
+          :label-position="isMobile?'top':labelPosition"
+          require-asterisk-position="right"
+          label-width="auto"
+          class="data-form"
+          ref="starHorseFormRef"
+          v-if="slotType!='user'"
+      >
+        <star-horse-form-item
+            :primaryKey="primaryKey"
+            :compUrl="compUrl"
+            :fieldList="platformFields"
+            :compSize="formSize"
+            v-model:dataForm="dataForm"
+            :source="source"
+            :batchName="batchName"
+            :commonFormat="dataFormat"
+            :batchFieldName="batchFieldName"
+        />
+        <slot name="ext" :dataForm="dataForm"></slot>
+      </el-form>
+      <slot name="user" :dataForm="dataForm"></slot>
+    </el-scrollbar>
+  </div>
 </template>
 <style lang="scss" scoped></style>

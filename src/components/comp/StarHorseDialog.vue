@@ -200,7 +200,7 @@ const operation = (funcName: any, type: string) => {
           </div>
         </template>
         <slot name="header"></slot>
-        <div class="shdialog">
+        <div class="shdialog" :class="{'overflow-hidden':source==3}">
           <div class="dialog-body">
             <slot></slot>
             <div v-if="false" class="w-full h-[80px]"></div>

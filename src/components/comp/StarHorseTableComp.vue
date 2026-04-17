@@ -5,11 +5,9 @@ import {compKey, removeEmptyCondition, uuid} from "@/api/system";
 import Tablebtn from "@/components/comp/items/tablebtn.vue";
 import TableColumn from "@/components/comp/items/tableColumn.vue";
 import Help from "@/components/help.vue";
-import {ApiUrls} from "@/components/types/ApiUrls";
-import {PreValid} from "@/components/types/BtnAuth";
 import {DialogProps} from "@/components/types/DialogProps";
-import {ExpandTable, FieldInfo, OrderByInfo, PageFieldInfo, UserFuncInfo,} from "@/components/types/PageFieldInfo";
-import {PageProps} from "@/components/types/PageProps";
+import {FieldInfo, OrderByInfo, UserFuncInfo,} from "@/components/types/PageFieldInfo";
+import {DataListProps, PageProps} from "@/components/types/PageProps";
 import {BtnHideCondition, SearchParams} from "@/components/types/Params";
 import piniaInstance from "@/store";
 import {useButtonPermissionStore} from "@/store/ButtonPermission";
@@ -19,114 +17,27 @@ import {isSystemManage} from "@/utils/auth";
 import {error, warning} from "@/utils/message";
 import Sortable from "sortablejs";
 import {i18n} from "@/lang";
-import {computed, inject, onMounted, PropType, reactive, ref, unref, watch,} from "vue";
+import {computed, inject, onMounted, reactive, ref, unref, watch,} from "vue";
 import JSON5 from "json5";
-import {EditCondition, SearchFields} from "@/components/types";
 import {isMobile} from "@/api/device";
 import {convertCompToAppComps} from "@/api/form_utils";
+import type {PreValid} from "@/components/types";
 
 const dynamicForm = useDynamicFormStore(piniaInstance);
-const props = defineProps({
-  // URL address
-  compUrl: {type: Object as PropType<ApiUrls | any>, required: true},
-  // Primary key
-  primaryKey: {
-    type: [String, Object] as PropType<string | any>,
-    required: true,
-  },
-  // Column name
-  fieldList: {type: Object as PropType<PageFieldInfo>, required: true},
-  // Button hidden condition
-  hideBtnCondition: {
-    type: Array as PropType<BtnHideCondition[]>,
-    default: [],
-  },
-  // Whether to show batch properties
-  showBatchField: {type: Boolean, default: false},
-  // Format method
-  dataFormat: {type: Function, default: null},
-  // Disable event
-  disableAction: {type: Boolean, default: false},
-  // Dialog mode
-  dialogInput: {type: Boolean, default: false},
-  // Default table height
-  height: {type: String, default: "400"},
-  // Filter condition
-  filterCondition: {type: Array as PropType<SearchParams[]>},
-  orderBy: {type: Array as PropType<OrderByInfo[]>},
-  // Whether to show pagination
-  showPageBar: {type: Boolean, default: true},
-  // Data list
-  tableDataList: {type: Array},
-  // Echo data list
-  reverseDataList: {type: Array},
-  // Whether to allow selecting parent node
-  allowSelectParent: {type: Boolean, default: true},
-  // Default whether to expand all child nodes
-  expand: {type: Boolean, default: false},
-  // Whether loading box is needed
-  needLoad: {type: Boolean, default: true},
-  // Title
-  title: {type: String},
-  // Custom button
-  extendBtns: {type: Array as PropType<UserFuncInfo[]>},
-  // Pre-check method. If a pre-check method is set, the button event can only continue after passing the check.
-  preValidFunc: {type: Object as PropType<Array<PreValid>>, default: {}},
-  // Multiple selection
-  multipleSelect: {type: Boolean, default: false},
-  // Row height
-  lineHeight: {type: String, default: "30px"},
-  // Show checkbox
-  showSelection: {type: Boolean, default: true},
-  // Expand table properties
-  expandTable: {type: Object as PropType<ExpandTable>},
-  // Help tooltip
-  helpMsg: {type: String},
-  // Global config, used by dynamic page
-  globalConfig: {type: Object as PropType<any>, required: false},
-  // Is dynamic page
-  isDynamic: {type: Boolean, default: false},
-  // Hide button list
-  hideButtonList: {type: Boolean, default: false},
-  //查询组件
-  searchParams: {type: Object as PropType<SearchFields>},
-  /**
-   * Data sharer
-   *   Get information shared by others
-   *   let resultData = await loadData('/system-config/system/dataPermission/currentMenuPermissionPerson', {});
-   *   The above interface mainly returns the account of the sharer
-   *   commonPersons.value = resultData?.data;
-   */
-  commonPersons: {type: Array as PropType<any>, default: []},
-  /**
-   * 在数据提权的时候需要指定通过那个字段做关联条件
-   */
-  userColumnName: {type: String, default: "a.createdBy"},
-  // Button permission
-  btnPermissions: {
-    type: Object as PropType<Record<string, string>>,
-    required: false,
-    default: {},
-  },
-  /**
-   * 每页数据备选项
-   */
-  pageCombList: {type: Array, default: [20, 50, 100, 200, 300, 400]},
-  /**
-   * 分页条布局
-   */
-  pageBarLayout: {
-    type: String,
-    default: "total, sizes, prev, pager, next, jumper,slot",
-  },
-  /**
-   * 编辑条件
-   */
-  editCondition: {type: Object as PropType<EditCondition[]>},
-  /**
-   * 翻页保留历史数据
-   */
-  pageKeepOldData: {type: Boolean, default: false},
+const props = withDefaults(defineProps<DataListProps>(), {
+  hideBtnCondition: (): BtnHideCondition[] => [],
+  height: "400",
+  showPageBar: true,
+  allowSelectParent: true,
+  needLoad: true,
+  preValidFunc: (): PreValid[] => [],
+  lineHeight: "30px",
+  showSelection: true,
+  commonPersons: (): Array<any> => [],
+  userColumnName: "a.createdBy",
+  btnPermissions: (): Record<string, string> => ({}),
+  pageCombList: (): number[] => [20, 50, 100, 200, 300, 400],
+  pageBarLayout: "total, sizes, prev, pager, next, jumper,slot"
 });
 const emits = defineEmits(["selectItem", "permission"]);
 let pagePermission = useButtonPermissionStore(piniaInstance);
@@ -477,12 +388,12 @@ const getRowIdentity = (row: any) => {
   return analysisPrimaryKeys(props.primaryKey, row) || "";
 };
 
-const tbCommonFun = (name: string | undefined, param: any) => {
-  let id = analysisPrimaryKeys(props.primaryKey, param);
+const tbCommonFun = (name: string | undefined, row: any) => {
+  let id = analysisPrimaryKeys(props.primaryKey, row);
   if (name == "view") {
-    viewById(id);
+    viewById(props.preview ? row : id);
   } else if (name == "edit") {
-    editById(id);
+    editById(props.preview ? row : id);
   } else if (["delete", "batchDelete"].includes(name)) {
     deleteById(id);
   } else {
@@ -915,6 +826,16 @@ const endReached = (direction: string) => {
     loadByPage();
   }
 };
+/**
+ * 动态从外面绑定数据
+ * @param data
+ */
+const assignStaticData = (data: any) => {
+  if (!pageInfo.value.dataList) {
+    pageInfo.value.dataList = [];
+  }
+  pageInfo.value.dataList.splice(0, 0, Array.isArray(data) ? [...data] : data);
+};
 onMounted(() => {
   init();
 });
@@ -925,6 +846,7 @@ defineExpose({
   createSearchParams,
   loadByPage,
   getIds,
+  assignStaticData,
   getSelectedDatas,
   multipleSelection,
   setDataInfo,
@@ -1185,7 +1107,6 @@ defineExpose({
           @tableCompFunc="(fun: any) => tableCompFunc(fun)"
           :compUrl="compUrl"
           :btnPermissions="permissions"
-          :searchParams="searchParams"
           :extendBtns="extendBtns"
           :dialogProps="dialogProps"
           :preValidFunc="preValidFunc"
@@ -1207,8 +1128,7 @@ defineExpose({
           >
             <template #header>
               <div
-                  class="card-header"
-                  style="justify-content: start;gap-3"
+                  class="card-header justify-start gap-3"
                   @click="selectRow(data)"
                   @dblclick="editData(data)"
               >

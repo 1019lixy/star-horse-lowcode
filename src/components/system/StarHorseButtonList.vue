@@ -14,7 +14,6 @@ import {computed, onMounted, PropType, ref} from "vue";
 import {i18n} from "@/lang";
 import {isMobile} from "@/api/device";
 import MenuShot from "@/components/comp/app/MenuShot.vue";
-import {SearchFields} from "@/components/types";
 
 const props = defineProps({
   dialogProps: {type: Object as PropType<DialogProps>, required: true},
@@ -25,7 +24,6 @@ const props = defineProps({
   //预检查方法,如果设置了预检查方法，必须要检查通过后，按钮事件才能继续往下执行
   preValidFunc: {type: Object as PropType<Array<PreValid>>},
   btnPermissions: {type: Object as PropType<any>, required: false},
-  searchParams: {type: Object as PropType<SearchFields>},
 });
 const emits = defineEmits([
   "upload",
@@ -44,7 +42,6 @@ let showType = computed(
 );
 let permissions = computed(() => props.btnPermissions);
 const dataForm = ref<any>({});
-const dialogVisible = ref(false);
 /**
  * 向往抛出事件
  * @param funcName

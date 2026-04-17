@@ -1,11 +1,12 @@
 <script setup lang="ts" name="Areainfo">
 import {onMounted, provide, ref} from "vue";
-import { PageFieldInfo } from "@/components/types/PageFieldInfo";
+import {PageFieldInfo} from "@/components/types/PageFieldInfo";
 import {StarHorseForm, StarHorseTableComp} from "@/components/comp";
 import {apiInstance, closeLoad, dialogPreps, load} from "@/api/star_horse_utils";
 import {download} from "@/api/star_horse_apis";
 import {warning} from "@/utils/message";
 import {ApiUrls} from "@/components/types";
+
 const dataUrl: ApiUrls = apiInstance("userdb-manage", "generator/code");
 
 const testFormValidRef = ref();
@@ -21,6 +22,7 @@ const fieldList = ref<PageFieldInfo>({
       type: "json",
       fieldName: "dataJson",
       formVisible: true,
+      listVisible:true,
       preps: {
         rows: 8,
       },
@@ -30,6 +32,7 @@ const fieldList = ref<PageFieldInfo>({
       type: "htmleditor",
       fieldName: "backgroundColor",
       formVisible: true,
+      listVisible:true,
       preps: {
         colorFormat: "rgb",
       },
@@ -39,6 +42,7 @@ const fieldList = ref<PageFieldInfo>({
       type: "upload",
       fieldName: "backgroundImage",
       formVisible: true,
+      listVisible:true,
       preps: {
         listType: "picture-card",
         drag: true,
@@ -50,16 +54,17 @@ const fieldList = ref<PageFieldInfo>({
       type: "input",
       fieldName: "backgroundSize",
       formVisible: true,
+      listVisible:true,
       preps: {
         mergePrefix: true,
         mergeAppend: true,
         appendList: [
-          { name: "%", value: "%" },
-          { name: "px", value: "px" },
+          {name: "%", value: "%"},
+          {name: "px", value: "px"},
         ],
         prependList: [
-          { name: "http", value: "http" },
-          { name: "https", value: "https" },
+          {name: "http", value: "http"},
+          {name: "https", value: "https"},
         ],
       },
     },
@@ -68,17 +73,18 @@ const fieldList = ref<PageFieldInfo>({
       type: "number",
       fieldName: "validNumber",
       formVisible: true,
+      listVisible:true,
       preps: {
         mergePrefix: true,
         mergeAppend: true,
         appendList: [
-          { name: "%", value: "%" },
-          { name: "px", value: "px" },
-          { name: "fr", value: "fr" },
+          {name: "%", value: "%"},
+          {name: "px", value: "px"},
+          {name: "fr", value: "fr"},
         ],
         prependList: [
-          { name: "http", value: "http" },
-          { name: "https", value: "https" },
+          {name: "http", value: "http"},
+          {name: "https", value: "https"},
         ],
       },
     },
@@ -87,13 +93,14 @@ const fieldList = ref<PageFieldInfo>({
       type: "radio",
       fieldName: "backgroundRepeat",
       formVisible: true,
+      listVisible:true,
       preps: {
         values: [
-          { name: "不重复", value: "no-repeat" },
-          { name: "重复", value: "repeat" },
-          { name: "水平方向重复", value: "repeat-x" },
-          { name: "垂直方向重复", value: "repeat-y" },
-          { name: "重复，空白区域填充", value: "space" },
+          {name: "不重复", value: "no-repeat"},
+          {name: "重复", value: "repeat"},
+          {name: "水平方向重复", value: "repeat-x"},
+          {name: "垂直方向重复", value: "repeat-y"},
+          {name: "重复，空白区域填充", value: "space"},
         ],
       },
     },
@@ -101,23 +108,30 @@ const fieldList = ref<PageFieldInfo>({
       label: "签名",
       type: "signature",
       fieldName: "signature",
+      formVisible: true,
+      listVisible:true,
       preps: {
         imageType: "jpg",
       },
     },
     {
       label: "二维码",
+      formVisible: true,
+      listVisible:true,
       type: "qrcode",
       fieldName: "qrcode",
     },
     {
       label: "条形码",
       type: "barcode",
+      formVisible: true,
+      listVisible:true,
       fieldName: "barcode",
     },
   ],
 });
-const initData = async () => {};
+const initData = async () => {
+};
 const primaryKey = "idCodeGenerator";
 const codeGeneratorRef = ref();
 const rules = {};
@@ -168,8 +182,9 @@ onMounted(() => {
     >
       <star-horse-form
           ref="generateFormRef"
-          @refresh="codeGeneratorRef?.loadByPage()"
+          @refresh="(formData,result)=>codeGeneratorRef?.assignStaticData(formData)"
           :compUrl="dataUrl"
+          :preview="true"
           formSize="default"
           :fieldList="fieldList"
           :rules="rules"
@@ -181,6 +196,7 @@ onMounted(() => {
         :source="3"
     >
       <star-horse-data-view
+          :preview="true"
           :field-list="fieldList"
           :compUrl="dataUrl"
       />
@@ -202,6 +218,7 @@ onMounted(() => {
           :fieldList="fieldList"
           :primaryKey="primaryKey"
           :compUrl="dataUrl"
+          :preview="true"
           :btn-permissions="{
                   edit: 'edit',
                   view: 'view',

@@ -39,6 +39,7 @@ const props = defineProps({
   labelPosition: {type: String, default: "left"},
   typeModel: {type: String},
   dynamicForm: {type: Boolean, default: false},
+  preview: {type: Boolean, default: false},
   selectData: {
     type: Array<SelectOption>,
     default: () => {
@@ -82,6 +83,10 @@ const loadData = async () => {
     return;
   }
   await nextTick();
+  if(props.preview){
+    dataForm.value ={...dialogProps?.ids};
+    return;
+  }
   let id = Array.isArray(dialogProps?.ids)
       ? dialogProps.ids[0]
       : dialogProps?.ids;
@@ -219,7 +224,20 @@ const analysisSameToParentField = (): Array<string> => {
   arrayFieldList(fieldList);
   return batchName;
 };
-
+/**
+ * 数据提交结果处理
+ * @param type
+ * @param formData
+ * @param res
+ */
+const mergeResult = (type: string, formData: any, res: any) => {
+  emits("refresh", formData, res.data);
+  resetForm();
+  if (type == "close") {
+    closeDialog();
+  }
+  dialogProps.ids = -1;
+};
 const doMerge = (type: string) => {
   assignStatusName();
   let tempForm: any = [];
@@ -260,29 +278,32 @@ const doMerge = (type: string) => {
   load(i18n("comp.dataProcessing"));
   //dynamicForm 如果为true 表示动态表单，动态表单需额外封装数据对象
   let formData = props.dynamicForm ? dydata : tempForm;
-  postRequest(mergeUrl!, formData)
-      .then((res) => {
-        closeLoad();
-        if (res.data.code != 0) {
-          warning(res.data.cnMessage);
-          return;
-        } else {
-          success(res.data.cnMessage);
-        }
-        emits("refresh", formData, res.data);
-        resetForm();
-        if (type == "close") {
-          closeDialog();
-        }
-        dialogProps.ids = -1;
-        //关闭弹窗
-      })
-      .catch((err) => {
-        error(i18n("comp.interfaceCallException") + err);
-      })
-      .finally(() => {
-        closeLoad();
-      });
+  if (props.preview) {
+    closeLoad();
+    mergeResult(type, formData, {
+      data: {
+        code: 0,
+        cnMessage: "Ok"
+      }
+    });
+  } else {
+    postRequest(mergeUrl!, formData).then((res) => {
+      closeLoad();
+      if (res.data.code != 0) {
+        warning(res.data.cnMessage);
+        return;
+      } else {
+        success(res.data.cnMessage);
+      }
+      mergeResult(type, formData, res);
+      //关闭弹窗
+    }).catch((err) => {
+      error(i18n("comp.interfaceCallException") + err);
+    }).finally(() => {
+      closeLoad();
+    });
+  }
+
 };
 const resetForm = () => {
   dataForm.value = {};
