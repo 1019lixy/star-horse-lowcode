@@ -31,11 +31,13 @@ const checkItem = (item: any) => {
   return item;
 };
 const countSpan = (item: any) => {
-  let totalVisible =Array.isArray(item) && item.filter((temp) => temp && temp.formVisible).length || 24;
-  if (totalVisible != 24) {
-    totalVisible = 24 / totalVisible;
-  }
-  return item.preps?.colspan || totalVisible;
+  const visibleDatas = Array.isArray(item) && item.filter((temp) => temp && temp.formVisible);
+  const hasAssigned = visibleDatas?.filter(item => item.preps?.colspan > 0);
+  const unAssigned = visibleDatas?.filter(item => !item.preps?.colspan);
+  const assignedSum = hasAssigned?.reduce((sum, item) => sum + (item.preps?.colspan || 0), 0);
+  let totalVisible = 24 - assignedSum;
+  let unAssignedSize = unAssigned?.length || 1;
+  return Math.floor(totalVisible / unAssignedSize);
 };
 const createArray = (item: any) => {
   if (Array.isArray(item)) {
@@ -59,14 +61,12 @@ onMounted(() => {
       style=""
   >
     <template v-for="sitem in item">
-
       <el-col
           v-if="sitem"
-          :span="countSpan(checkItem(sitem))"
+          :span="sitem.preps?.colspan||countSpan(item)"
           class="h-full flex items-center justify-center"
           v-bind="checkItem(sitem).preps"
           :style="{ height: checkItem(sitem).preps?.colHeight||'auto' ,
-
         }"
       >
         <template v-for="tempData in createArray(sitem)">

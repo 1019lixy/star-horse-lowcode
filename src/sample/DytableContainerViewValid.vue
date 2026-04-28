@@ -1,16 +1,14 @@
 <template>
   <el-scrollbar>
-    <star-horse-data-view :dataForm="formData" :fieldList="dataItem" :formInfo="{}" />
+    <star-horse-data-view :dataForm="formData" :fieldList="dataItem" :formInfo="{}"/>
   </el-scrollbar>
 </template>
 
 <script lang="ts" setup>
 import piniaInstance from "@/store";
-import { useDesignFormStore } from "@/store/DesignForm";
-import { onMounted, ref } from "vue";
-import DytableItem from "@/components/comp/items/dytableItem.vue";
-import { analysisCompDatas } from "@/api/form_utils";
-import ViewDytableItem from "@/components/comp/items/viewDytableItem.vue";
+import {useDesignFormStore} from "@/store/DesignForm";
+import {onMounted, ref} from "vue";
+import {analysisCompDatas} from "@/api/form_utils";
 import {StarHorseDataView} from "@/components/comp";
 
 let designForm = useDesignFormStore(piniaInstance);
@@ -3058,7 +3056,7 @@ const fields = [{
 onMounted(() => {
   const result = analysisCompDatas(fields);
   dataItem.value = result;
-  console.log("xxx",result);
+  console.log("xxx", result);
 });
 </script>
 

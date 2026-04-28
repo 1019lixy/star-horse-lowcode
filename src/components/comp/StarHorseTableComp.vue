@@ -34,6 +34,7 @@ const props = withDefaults(defineProps<DataListProps>(), {
   lineHeight: "30px",
   showSelection: true,
   commonPersons: (): Array<any> => [],
+  reverseDataList: (): Array<any> => [],
   userColumnName: "a.createdBy",
   btnPermissions: (): Record<string, string> => ({}),
   pageCombList: (): number[] => [20, 50, 100, 200, 300, 400],
@@ -214,9 +215,9 @@ const init = async () => {
     loadByPage();
   } else {
     pageInfo.value.dataList = props.tableDataList || [];
-    starHorseTableCompRef.value!.clearSelection();
+    starHorseTableCompRef.value?.clearSelection();
     props.reverseDataList?.forEach((item: any) => {
-      starHorseTableCompRef.value!.toggleRowSelection(item, true);
+      starHorseTableCompRef.value?.toggleRowSelection(item, true);
     });
   }
   moveColumn();
@@ -1144,7 +1145,7 @@ defineExpose({
                     dataFormat?.(
                         cardFieldList[0]?.fieldName,
                         data[cardFieldList[0]?.fieldName],
-                        data,
+                        data
                     )
                   }}</span>
               </div>
