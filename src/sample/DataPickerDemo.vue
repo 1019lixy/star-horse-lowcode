@@ -1,13 +1,30 @@
 <template>
+  <div class="h-[30px] my-5">
+    <cascade-item :formData="formData" :field="
+{
+     label: '验证',
+      fieldName: 'testValid',
+      preps: {
+        options:cascadeItem,
+        props:{
+          label:'name',
+          value:'code'
+
+        }
+      }
+}
+"/>
+  </div>
+
   <StarHorseDataSelector
       v-model="test"
-      :datas="datas"
-      :multiple="false"
+      :data="datas"
+      :multiple="true"
+      @change="(data)=>console.log(data)"
       :checkStrictly="false"
   />
 
-  {{ formData }}
-  <data-picker-item
+<!--  <data-picker-item
       :field="{
       label: '测试',
       fieldName: 'test',
@@ -36,7 +53,7 @@
       },
     }"
       :formData="formData"
-  />
+  />-->
 </template>
 
 <script lang="ts" setup>
@@ -44,11 +61,19 @@
 import StarHorseDataSelector from "@/components/comp/StarHorseDataSelector.vue";
 import {ref} from "vue";
 import DataPickerItem from "@/components/formcomp/items/datapicker-item.vue";
+import CascadeItem from "@/components/formcomp/items/cascade-item.vue";
 
 const formData = ref<any>({
   test: "121",
 });
 const test = ref("121");
+const cascadeItem = ref([{
+  name:"test1",
+  code:"123",
+  children:[
+    {name:"test11",code:"234",children:[]}
+  ]
+}])
 const datas = ref([
   {
     name: "测试1",

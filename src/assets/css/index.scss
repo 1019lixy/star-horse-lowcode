@@ -291,7 +291,9 @@ a {
   background-color: var(--star-horse-style);
   margin: 0 10px;
 }
-
+.el-cascader{
+  width: 100%;
+}
 .el-cascader-menu {
   width: 100px !important;
 }

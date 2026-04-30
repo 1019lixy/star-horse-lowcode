@@ -105,6 +105,7 @@ const emits = defineEmits<{
   (e: "update:modelValue", modelValue: ModelValueType): void;
   (e: "update:selectedData", selectData: any): void;
   (e: "selectedData", selectData: any): void;
+  (e: "change", selectData: any): void;
 }>();
 const value: any = useVModel(props, "modelValue", emits);
 const emitData: any = useVModel(props, "selectedData", emits);
@@ -126,7 +127,10 @@ const openDataPicker = () => {
   dataPickerRef.value?.open();
 };
 const onClose = (data: any) => {
-  if (!selectData.value) return;
+  if (!selectData.value) {
+    emits("change", selectData.value);
+    return;
+  }
   if (props.multiple && Array.isArray(selectData.value)) {
     selectData.value.splice(selectData.value.indexOf(data), 1);
     value.value.splice(selectData.value.indexOf(data[props.displayValue]), 1);
@@ -134,6 +138,7 @@ const onClose = (data: any) => {
     selectData.value = [];
     value.value = props.multiple ? [] : "";
   }
+  emits("change", selectData.value);
   emits("selectedData", selectData.value);
 };
 /**
@@ -239,7 +244,7 @@ onMounted(() => {
 });
 // 新增 watch 监听 selectData 变化
 watch(
-    selectData,
+    ()=>selectData,
     (newVal) => {
       // 同步modelValue
       const tempNewValue = Array.isArray(newVal)
@@ -248,6 +253,7 @@ watch(
       value.value = props.multiple ? tempNewValue : tempNewValue[0];
       // 同步selectedData
       emitData.value = newVal;
+      emits("change", newVal);
     },
     {deep: true},
 );

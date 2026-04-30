@@ -493,3 +493,13 @@ barcode        条形码组件
 ```
 -修复box容器布局失效问题
 ```
+#### v3.0.2
+
+```
+-修复StarHorseDataSelector 组件change  事件不响应问题
+```
+#### v3.0.3
+
+```
+-修复cascade-item 组件数据渲染异常bug
+```
