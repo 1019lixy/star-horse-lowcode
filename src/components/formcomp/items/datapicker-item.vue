@@ -54,10 +54,10 @@ const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
 const initData = async () => {
-  const dataa = await compDynamicData(props.field, false);
-  if (dataa?.length) {
-    props.field.preps["data"] = dataa;
-  }
+  // const dataa = await compDynamicData(props.field, false);
+  // if (dataa?.length) {
+  //   props.field.preps["data"] = dataa;
+  // }
 };
 onMounted(() => {
   if (!props.field.preps) {
@@ -67,12 +67,13 @@ onMounted(() => {
       props.field.preps["remote"] || props.field.preps["dataSource"] == "url";
   props.field.preps["filterable"] = true;
   props.field.preps["collapseTags"] = true;
-  props.field.preps["props"] = props.field.preps["props"] || {
-    label: "name",
-    value: "value",
-  };
-  initData();
+  const tempProps = props.field.preps["props"];
+  if (tempProps) {
+    props.field.preps["displayName"] = tempProps.label || "name";
+    props.field.preps["displayValue"] = tempProps.value || "value";
+  }
   nextTick(() => {
+    // initData();
     initCompCallEvent(props, emits, formData);
   });
 });
