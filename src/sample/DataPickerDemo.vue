@@ -15,11 +15,11 @@
 }
 "/>
   </div>
-
+{{test}}
   <StarHorseDataSelector
       v-model="test"
       :data="datas"
-      :multiple="true"
+      :multiple="false"
       @change="(data)=>console.log(data)"
       :checkStrictly="false"
   />

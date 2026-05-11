@@ -244,16 +244,20 @@ onMounted(() => {
 });
 // 新增 watch 监听 selectData 变化
 watch(
-    ()=>selectData,
+    () => selectData.value,
     (newVal) => {
-      // 同步modelValue
-      const tempNewValue = Array.isArray(newVal)
-          ? newVal.map((v) => v[props.displayValue])
-          : newVal?.[props.displayValue];
-      value.value = props.multiple ? tempNewValue : tempNewValue[0];
-      // 同步selectedData
-      emitData.value = newVal;
-      emits("change", newVal);
+      if (newVal) {
+        // 同步modelValue
+        const tempNewValue = Array.isArray(newVal)
+            ? newVal.map((v) => v[props.displayValue])
+            : newVal?.[props.displayValue];
+        value.value = props.multiple ? tempNewValue : tempNewValue[0];
+        // 同步selectedData
+        emitData.value = newVal;
+        emits("change", newVal);
+      }else{
+        console.error("dataselector 异常",newVal);
+      }
     },
     {deep: true},
 );

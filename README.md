@@ -503,3 +503,8 @@ barcode        条形码组件
 ```
 -修复cascade-item 组件数据渲染异常bug
 ```
+#### v3.0.4
+
+```
+-修复StarHorseDataSelector 组件bug
+```

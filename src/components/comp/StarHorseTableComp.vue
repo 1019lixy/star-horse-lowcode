@@ -906,6 +906,7 @@ defineExpose({
         <el-popover
             v-if="dataShowType == 'list'"
             trigger="click"
+            :title="i18n('comp.showHideColumns')"
             :popper-style="{ width: 'unset !important' }"
             placement="left-end"
         >

@@ -291,9 +291,11 @@ a {
   background-color: var(--star-horse-style);
   margin: 0 10px;
 }
-.el-cascader{
+
+.el-cascader {
   width: 100%;
 }
+
 .el-cascader-menu {
   width: 100px !important;
 }
@@ -1144,4 +1146,11 @@ button.el-collapse-item__header {
       opacity: 1 !important;
     }
   }
+}
+
+/**
+* 解决弹窗模态框遮挡下拉数据bug
+ */
+.el-modal-dialog {
+  z-index: 2000 !important;
 }
