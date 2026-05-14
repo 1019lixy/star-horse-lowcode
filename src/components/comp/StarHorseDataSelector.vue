@@ -127,13 +127,23 @@ const openDataPicker = () => {
   dataPickerRef.value?.open();
 };
 const onClose = (data: any) => {
+  console.log(data,selectData.value,);
   if (!selectData.value) {
     emits("change", selectData.value);
     return;
   }
   if (props.multiple && Array.isArray(selectData.value)) {
-    selectData.value.splice(selectData.value.indexOf(data), 1);
-    value.value.splice(selectData.value.indexOf(data[props.displayValue]), 1);
+    const targetValue = data?.[props.displayValue]??data;
+    const selectIndex = selectData.value.findIndex(
+      (item: any) => item?.[props.displayValue] === targetValue
+    );
+    const valueIndex = value.value.indexOf(targetValue);
+    if (selectIndex !== -1) {
+      selectData.value.splice(selectIndex, 1);
+    }
+    if (valueIndex !== -1) {
+      value.value.splice(valueIndex, 1);
+    }
   } else {
     selectData.value = [];
     value.value = props.multiple ? [] : "";
@@ -255,8 +265,8 @@ watch(
         // 同步selectedData
         emitData.value = newVal;
         emits("change", newVal);
-      }else{
-        console.error("dataselector 异常",newVal);
+      } else {
+        console.error("dataselector 异常", newVal);
       }
     },
     {deep: true},
@@ -285,13 +295,12 @@ watch(
       :tag-type="tagType"
       :disabled="disabled"
       :tagEffect="tagEffect"
+      :collapse-tags="true"
+      :max-collapse-tags="showTagLength??5"
+      :collapse-tags-tooltip="true"
       @clear="selectData = []"
       @addTag="addTag"
-      @removeTag="
-      (val) => {
-        onClose(val);
-      }
-    "
+      @removeTag="(val) =>onClose(val)"
   >
     <template #tag="{ value }">
       <div class="flex items-center">

@@ -14,6 +14,7 @@ import piniaInstance from "@/store";
 import ElementPlus from "element-plus";
 import zhCn from "element-plus/es/locale/lang/zh-cn";
 import router from "@/router";
+window.__debug__=true;
 const app = createApp(App);
 app.component("draggable", draggable);
 

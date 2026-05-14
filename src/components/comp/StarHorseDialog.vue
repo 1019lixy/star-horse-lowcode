@@ -49,7 +49,7 @@ watch(
       deep: true,
     },
 );
-let isFullScreen = computed(() => props.fullScreen || isMobile);
+let isFullScreen =ref<boolean>(false);
 const dialogStyle = computed(() => {
   return {
     height: isFullScreen.value ? "100%" : props.boxHeight,
@@ -112,7 +112,6 @@ const operation = (funcName: any, type: string) => {
   }
   console.log(clickFunction);
 };
-
 </script>
 <template>
   <Teleport to="body">
@@ -125,7 +124,7 @@ const operation = (funcName: any, type: string) => {
           :close-on-press-escape="false"
           :lock-scroll="true"
           class="dialog-settings"
-          :fullscreen="isFullScreen"
+          :fullscreen="isFullScreen||isMobile"
           :show-close="false"
           :draggable="draggable"
           :align-center="true"
@@ -361,21 +360,7 @@ const operation = (funcName: any, type: string) => {
   padding: 0 10px;
   box-sizing: border-box;
   height: 100%;
-
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: transparent;
-    border-radius: 10px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: #f2f2f2 !important;
-    z-index: 222;
-    border-radius: 8px;
-  }
+  overflow: hidden;
 }
 
 .dialog-footer {

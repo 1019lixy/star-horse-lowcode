@@ -9,6 +9,7 @@ import ComplexFormValid from "@/sample/ComplexFormValid.vue";
 import ComplexFormAnalysis from "@/sample/ComplexFormAnalysis.vue";
 import {device} from "@/api/device";
 import DataPickerDemo from "@/sample/DataPickerDemo.vue";
+import FormValid from "@/sample/FormValid.vue";
 
 const visible = ref<boolean>(false);
 const actName = ref<string>("component");
@@ -33,8 +34,8 @@ onMounted(() => {
      <MainContainer :categories="categories" position="bottom" systemConfigName="系统配置" @select="handleSelect"/>
     </template>-->
   <div class="flex flex-col h-full overflow-auto">
-    {{ device }}
-    <el-tabs v-model="actName" class="h-full">
+    <FormValid/>
+<!--    <el-tabs v-model="actName" class="h-full">
       <el-tab-pane name="component" label="组件测试">
         <ComponentTester/>
       </el-tab-pane>
@@ -53,18 +54,19 @@ onMounted(() => {
       </el-tab-pane>
 
       <el-tab-pane name="h" label="数据选择器">
-        <!--      <DataPickerDemo />-->
-        <!--      <InformationsUi/>-->
+        &lt;!&ndash;      <DataPickerDemo />&ndash;&gt;
+        &lt;!&ndash;      <InformationsUi/>&ndash;&gt;
         <ComplexFormValid/>
       </el-tab-pane>
-      <el-tab-pane name="h1" label="数据选择器">
+      <el-tab-pane name="h1" label="数据选择器2">
         <DataPickerDemo/>
+&lt;!&ndash;        <FormValid/>&ndash;&gt;
       </el-tab-pane>
       <el-tab-pane name="i" label="验证容器">
 
         <ComplexFormAnalysis/>
       </el-tab-pane>
-    </el-tabs>
+    </el-tabs>-->
   </div>
 </template>
 <style lang="scss" scoped>

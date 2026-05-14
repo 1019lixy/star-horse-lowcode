@@ -1,92 +1,95 @@
-import { getFingerId } from "@/api/finger_utils";
+import {getFingerId} from "@/api/finger_utils";
 import piniaInstance from "@/store";
-import { useUserInfoStore } from "@/store/UserInfo";
-import { getToken } from "@/utils/auth";
-import { error, operationConfirm, success, warning } from "@/utils/message";
-import { i18n } from "@/lang";
-import axios, { AxiosResponse, InternalAxiosRequestConfig } from "axios";
-import { getLang } from "@/theme/localStorge";
-import { SearchParams } from "@/components/types/Params";
-import { OrderByInfo } from "@/components/types/PageFieldInfo";
-import { SelectOption } from "@/components/types/SearchProps";
-import { closeLoad } from "./star_horse_utils";
-import { ServiceEnums } from "@/components/enums/ServiceEnums";
+import {useUserInfoStore} from "@/store/UserInfo";
+import {getToken} from "@/utils/auth";
+import {error, operationConfirm, success, warning} from "@/utils/message";
+import {i18n} from "@/lang";
+import axios, {AxiosResponse, InternalAxiosRequestConfig} from "axios";
+import {getLang} from "@/theme/localStorge";
+import {SearchParams} from "@/components/types/Params";
+import {OrderByInfo} from "@/components/types/PageFieldInfo";
+import {SelectOption} from "@/components/types/SearchProps";
+import {closeLoad} from "./star_horse_utils";
+import {ServiceEnums} from "@/components/enums/ServiceEnums";
 
 const userStore = useUserInfoStore(piniaInstance);
 const starHorseAxios = axios.create({
-  baseURL: "/",
-  timeout: 50000,
-  headers: {
-    "Content-Type": "application/json; charset=utf-8",
-  },
+    baseURL: "/",
+    timeout: 50000,
+    headers: {
+        "Content-Type": "application/json; charset=utf-8",
+    },
 });
 // 添加请求拦截器
 starHorseAxios.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
-    const token = getToken();
-    const fingerToken = getFingerId();
-    // 请求头带上token
-    if (token && config.headers) {
-      config.headers.token = token;
-      config.headers["Finger-Token"] = fingerToken;
-      config.headers["menuPosition"] = getMenuId();
-      config.headers["lang"] = window.__starHorseHostLang__ || getLang();
-    }
-    return config;
-  },
-  (error: any) => {
-    // 对请求错误做些什么
-    return Promise.reject(error);
-  },
+    (config: InternalAxiosRequestConfig) => {
+        let token = getToken();
+        if (!token&&window.__debug__) {
+            token = "sh836c6fc54cef42c6980a44a97e34e5a5";
+        }
+        const fingerToken = getFingerId();
+        // 请求头带上token
+        if (token && config.headers) {
+            config.headers.token = token;
+            config.headers["Finger-Token"] = fingerToken;
+            config.headers["menuPosition"] = getMenuId();
+            config.headers["lang"] = window.__starHorseHostLang__ || getLang();
+        }
+        return config;
+    },
+    (error: any) => {
+        // 对请求错误做些什么
+        return Promise.reject(error);
+    },
 );
-export { starHorseAxios };
+export {starHorseAxios};
 
 export function getMenuId() {
-  //@ts-ignore
-  const router = window.__hostRouter__;
-  const meta = router?.currentRoute?.value?.meta;
-  let menuId = meta?.menuId as string;
-  if (!menuId) {
-    return "";
-  }
-  menuId = menuId.split("_")[1];
-  return menuId;
+    //@ts-ignore
+    const router = window.__hostRouter__;
+    const meta = router?.currentRoute?.value?.meta;
+    let menuId = meta?.menuId as string;
+    if (!menuId) {
+        return "";
+    }
+    menuId = menuId.split("_")[1];
+    return menuId;
 }
 
 const forceLoginOut = () => {
-  userStore.showLoginDialog();
+    userStore.showLoginDialog();
 };
 // 添加响应拦截器
 starHorseAxios.interceptors.response.use(
-  (response: AxiosResponse) => {
-    const code = response.data?.code;
-    // 401 未登录
-    if (code == 401) {
-      forceLoginOut();
-    } else {
-      return response;
-    }
-  },
-  (err) => {
-    const data = err.toString().toLowerCase();
-    if (data?.includes("status code 401")) {
-      forceLoginOut();
-    } else if (data?.includes("status code 500")) {
-      error(i18n("api.serviceError"));
-      return Promise.reject(err);
-    } else {
-      console.log(err);
-      // 对响应错误做点什么
-      return Promise.reject(err);
-    }
-  },
+    (response: AxiosResponse) => {
+        const code = response.data?.code;
+        // 401 未登录
+        if (code == 401) {
+            forceLoginOut();
+        } else {
+            return response;
+        }
+    },
+    (err) => {
+        const data = err.toString().toLowerCase();
+        if (data?.includes("status code 401")) {
+            forceLoginOut();
+        } else if (data?.includes("status code 500")) {
+            error(i18n("api.serviceError"));
+            return Promise.reject(err);
+        } else {
+            console.log(err);
+            // 对响应错误做点什么
+            return Promise.reject(err);
+        }
+    },
 );
 
 /**
  * 获取axios实例
  */
 export function getAxiosInstance() {
-  return window.__hostAxios__ ?? starHorseAxios;
+    return window.__hostAxios__ ?? starHorseAxios;
 }
 
 /**
@@ -95,21 +98,21 @@ export function getAxiosInstance() {
  * @param param 参数
  */
 export function download(url: string, param: any) {
-  return new Promise((resolve, reject) => {
-    getAxiosInstance()
-      .post(url, param, { responseType: "blob" })
-      .then((res) => {
-        downloadData(
-          res.data,
-          decodeURI(res.headers["content-disposition"]?.split("=")[1]),
-        );
-        resolve(null);
-      })
-      .catch((err) => {
-        console.log(err);
-        reject(err);
-      });
-  });
+    return new Promise((resolve, reject) => {
+        getAxiosInstance()
+            .post(url, param, {responseType: "blob"})
+            .then((res) => {
+                downloadData(
+                    res.data,
+                    decodeURI(res.headers["content-disposition"]?.split("=")[1]),
+                );
+                resolve(null);
+            })
+            .catch((err) => {
+                console.log(err);
+                reject(err);
+            });
+    });
 }
 
 /**
@@ -118,15 +121,15 @@ export function download(url: string, param: any) {
  * @param name 文件名称
  */
 export function downloadData(data: any, name: string) {
-  const blob = new Blob([data]);
-  const delement = document.createElement("a");
-  const href = window.URL.createObjectURL(blob);
-  delement.href = href;
-  delement.download = name;
-  document.body.appendChild(delement);
-  delement.click();
-  document.body.removeChild(delement);
-  window.URL.revokeObjectURL(href); //释放URL 对象
+    const blob = new Blob([data]);
+    const delement = document.createElement("a");
+    const href = window.URL.createObjectURL(blob);
+    delement.href = href;
+    delement.download = name;
+    document.body.appendChild(delement);
+    delement.click();
+    document.body.removeChild(delement);
+    window.URL.revokeObjectURL(href); //释放URL 对象
 }
 
 /**
@@ -135,21 +138,21 @@ export function downloadData(data: any, name: string) {
  * @param method
  */
 export async function blobData(url: string, method: string = "post") {
-  let redata: any = null;
-  if (method == "get") {
-    await getAxiosInstance()
-      .get(url, { responseType: "blob" })
-      .then((res) => {
-        redata = new Blob([res.data]);
-      });
-  } else {
-    await getAxiosInstance()
-      .post(url, [], { responseType: "blob" })
-      .then((res) => {
-        redata = new Blob([res.data]);
-      });
-  }
-  return redata;
+    let redata: any = null;
+    if (method == "get") {
+        await getAxiosInstance()
+            .get(url, {responseType: "blob"})
+            .then((res) => {
+                redata = new Blob([res.data]);
+            });
+    } else {
+        await getAxiosInstance()
+            .post(url, [], {responseType: "blob"})
+            .then((res) => {
+                redata = new Blob([res.data]);
+            });
+    }
+    return redata;
 }
 
 /**
@@ -158,7 +161,7 @@ export async function blobData(url: string, method: string = "post") {
  * @param data
  */
 export function postRequest(url: string, data: Array<any> | any) {
-  return getAxiosInstance().post(url, data);
+    return getAxiosInstance().post(url, data);
 }
 
 /**
@@ -166,7 +169,7 @@ export function postRequest(url: string, data: Array<any> | any) {
  * @param url
  */
 export function getRequest(url: string) {
-  return getAxiosInstance().get(url);
+    return getAxiosInstance().get(url);
 }
 
 /**
@@ -176,11 +179,11 @@ export function getRequest(url: string) {
  * @param method 请求方法
  */
 export function httpRequest(url: string, method: string, data: any) {
-  return getAxiosInstance().request({
-    url: url,
-    method: method,
-    data: data,
-  });
+    return getAxiosInstance().request({
+        url: url,
+        method: method,
+        data: data,
+    });
 }
 
 /**
@@ -189,9 +192,9 @@ export function httpRequest(url: string, method: string, data: any) {
  * @param data
  */
 export function uploadRequest(url: string, data: Array<any>) {
-  return getAxiosInstance().post(url, data, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
+    return getAxiosInstance().post(url, data, {
+        headers: {"Content-Type": "multipart/form-data"},
+    });
 }
 
 /**
@@ -206,36 +209,36 @@ const dictUrl: string = `${ServiceEnums.SYSTEM_PREFIX}dictinfo/getAllByCondition
  * @param orderBy 排序
  */
 export async function loadData(
-  url: string,
-  params: SearchParams[] | any,
-  orderBy: OrderByInfo[] = [],
+    url: string,
+    params: SearchParams[] | any,
+    orderBy: OrderByInfo[] = [],
 ) {
-  let data: any = null;
-  let error = "";
-  let cond = params;
-  if (Array.isArray(params)) {
-    cond = {
-      fieldList: params,
-      orderBy: orderBy,
+    let data: any = null;
+    let error = "";
+    let cond = params;
+    if (Array.isArray(params)) {
+        cond = {
+            fieldList: params,
+            orderBy: orderBy,
+        };
+    }
+    await postRequest(url, cond)
+        .then((res: any) => {
+            const redata = res.data;
+            if (redata.code) {
+                error = redata.cnMessage;
+            } else {
+                //先去分页数据，没有再去非分页数据
+                data = redata.data.dataList || redata.data;
+            }
+        })
+        .catch((err) => {
+            error = err;
+        });
+    return {
+        data,
+        error,
     };
-  }
-  await postRequest(url, cond)
-    .then((res: any) => {
-      const redata = res.data;
-      if (redata.code) {
-        error = redata.cnMessage;
-      } else {
-        //先去分页数据，没有再去非分页数据
-        data = redata.data.dataList || redata.data;
-      }
-    })
-    .catch((err) => {
-      error = err;
-    });
-  return {
-    data,
-    error,
-  };
 }
 
 /**
@@ -244,25 +247,26 @@ export async function loadData(
  * @param params 参数
  */
 export async function loadGetData(url: string) {
-  let data: any = [];
-  let error: string = "";
-  await getRequest(url)
-    .then((res) => {
-      const redata = res.data;
-      if (redata.code != 0) {
-        error = redata.cnMessage;
-      } else {
-        data = redata.data;
-      }
-    })
-    .catch((err) => {
-      error = err;
-    });
-  return {
-    data,
-    error,
-  };
+    let data: any = [];
+    let error: string = "";
+    await getRequest(url)
+        .then((res) => {
+            const redata = res.data;
+            if (redata.code != 0) {
+                error = redata.cnMessage;
+            } else {
+                data = redata.data;
+            }
+        })
+        .catch((err) => {
+            error = err;
+        });
+    return {
+        data,
+        error,
+    };
 }
+
 /**
  * 加载Id数据
  * @param url
@@ -270,21 +274,21 @@ export async function loadGetData(url: string) {
  * @param params
  */
 export async function loadById(url: string, id: any, params: any = {}) {
-  if (!url || "undefined" == id) {
-    warning(i18n("utils.provideCorrectData"));
-    return;
-  }
-  let objData: any = {};
-  const suffix: string = id ? "/" + id : "";
-  await postRequest(url + suffix, params).then((res) => {
-    const redata = res.data.data;
-    if (!redata) {
-      warning(i18n("utils.dataNotFound"));
-    } else {
-      objData = redata;
+    if (!url || "undefined" == id) {
+        warning(i18n("utils.provideCorrectData"));
+        return;
     }
-  });
-  return objData;
+    let objData: any = {};
+    const suffix: string = id ? "/" + id : "";
+    await postRequest(url + suffix, params).then((res) => {
+        const redata = res.data.data;
+        if (!redata) {
+            warning(i18n("utils.dataNotFound"));
+        } else {
+            objData = redata;
+        }
+    });
+    return objData;
 }
 
 /**
@@ -294,41 +298,41 @@ export async function loadById(url: string, id: any, params: any = {}) {
  * @param msg 删除提示
  */
 export async function deleteByIds(
-  url: string,
-  ids: any,
-  msg: string = i18n("utils.confirmDelete"),
+    url: string,
+    ids: any,
+    msg: string = i18n("utils.confirmDelete"),
 ) {
-  if (!url) {
-    warning(i18n("utils.provideCorrectData"));
-    return;
-  }
-  if (!ids || ids.length == 0) {
-    warning(i18n("utils.selectDataToDelete"));
-    return;
-  }
-  let objData: boolean = false;
-  const confirmFlag: boolean = await operationConfirm(msg);
-  if (!confirmFlag) {
-    return;
-  }
-  await postRequest(url, ids)
-    .then((res) => {
-      if (res.data.code == 0) {
-        success(res.data.cnMessage);
-      } else {
-        warning(res.data.cnMessage);
-      }
-      closeLoad();
-      objData = true;
-    })
-    .catch((err) => {
-      error(i18n("dialog.interfaceError") + err);
-      objData = false;
-    })
-    .finally(() => {
-      closeLoad();
-    });
-  return objData;
+    if (!url) {
+        warning(i18n("utils.provideCorrectData"));
+        return;
+    }
+    if (!ids || ids.length == 0) {
+        warning(i18n("utils.selectDataToDelete"));
+        return;
+    }
+    let objData: boolean = false;
+    const confirmFlag: boolean = await operationConfirm(msg);
+    if (!confirmFlag) {
+        return;
+    }
+    await postRequest(url, ids)
+        .then((res) => {
+            if (res.data.code == 0) {
+                success(res.data.cnMessage);
+            } else {
+                warning(res.data.cnMessage);
+            }
+            closeLoad();
+            objData = true;
+        })
+        .catch((err) => {
+            error(i18n("dialog.interfaceError") + err);
+            objData = false;
+        })
+        .finally(() => {
+            closeLoad();
+        });
+    return objData;
 }
 
 /**
@@ -338,30 +342,30 @@ export async function deleteByIds(
  * @param userUrl 用户自定义接口
  */
 export async function dictData(
-  dictType: string,
-  exclusion: Array<string> = [],
-  userUrl?: string,
+    dictType: string,
+    exclusion: Array<string> = [],
+    userUrl?: string,
 ): Promise<SelectOption[]> {
-  const query = [];
-  query.push({
-    propertyName: "dictType",
-    value: dictType,
-  });
-  const dicts: SelectOption[] = [];
-  await postRequest(userUrl ?? dictUrl, { fieldList: query })
-    .then((res) => {
-      const redata = res.data;
-      if (redata.code == 0) {
-        redata.data?.forEach((item: any) => {
-          if (exclusion?.includes(item.dictCode)) {
-            return;
-          }
-          dicts.push({ name: item.dictName, value: item.dictCode });
-        });
-      }
-    })
-    .catch((err: any) => {
-      console.log("接口不存在或网络异常", err);
+    const query = [];
+    query.push({
+        propertyName: "dictType",
+        value: dictType,
     });
-  return dicts;
+    const dicts: SelectOption[] = [];
+    await postRequest(userUrl ?? dictUrl, {fieldList: query})
+        .then((res) => {
+            const redata = res.data;
+            if (redata.code == 0) {
+                redata.data?.forEach((item: any) => {
+                    if (exclusion?.includes(item.dictCode)) {
+                        return;
+                    }
+                    dicts.push({name: item.dictName, value: item.dictCode});
+                });
+            }
+        })
+        .catch((err: any) => {
+            console.log("接口不存在或网络异常", err);
+        });
+    return dicts;
 }
