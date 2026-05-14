@@ -32,7 +32,7 @@ const columnStructure = computed(() => {
 
   const rows=props.item.dytableList;
   // 找到最大列数的行
-  let maxColsRow = props.item.dytableList[0];
+  let maxColsRow = rows[0];
   let columns = maxColsRow.length;
   const colStructure = [];
   for (let i = 0; i < columns; i++) {
