@@ -7,8 +7,8 @@ import {download} from "@/api/star_horse_apis";
 import {warning} from "@/utils/message";
 import {ApiUrls} from "@/components/types";
 
-const dataUrl: ApiUrls = apiInstance("userdb-manage", "generator/code");
-
+const dataUrl: ApiUrls = apiInstance("http://userdb-manage", "////generator/code");
+console.log(dataUrl);
 const testFormValidRef = ref();
 const outerData: any = {
   backgroundSize: "http你好%",

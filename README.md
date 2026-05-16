@@ -548,3 +548,9 @@ barcode        条形码组件
 ```
 -修复StarHorseDialog 最大最小化和数据超过高度不滚动Bug,
 ```
+
+#### v3.0.7
+
+```
+-优化apiInstance 接口当appName 是url地址时,多出斜线问题,
+```

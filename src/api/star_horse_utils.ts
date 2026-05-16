@@ -787,9 +787,46 @@ export async function createFilter(queryString: string) {
 }
 
 /**
- * 公共Api接口
- * @param appName 应用名称
- * @param urlPrefix api接口前缀
+ * 规范化路径，移除多余的斜杠，确保路径格式正确
+ * @param path 需要规范化的路径
+ * @returns 规范化后的路径（不以斜杠开头和结尾，除非是根路径）
+ */
+function normalizePath(path: string): string {
+    if (!path) return "";
+
+    // 如果是 http/https 开头，直接返回
+    if (path.startsWith("http:") || path.startsWith("https:")) {
+        return path;
+    }
+
+    // 移除开头和结尾的所有斜杠（包括正斜杠和反斜杠）
+    let normalized = path.replace(/^[\/\\]+|[\/\\]+$/g, "");
+
+    // 将中间的反斜杠替换为正斜杠
+    normalized = normalized.replace(/\\/g, "/");
+
+    return normalized;
+}
+
+/**
+ * 拼接路径，确保路径分隔符正确
+ * @param segments 路径片段
+ * @returns 拼接后的路径
+ */
+function joinPath(...segments: string[]): string {
+    // 过滤空字符串并规范化每个片段
+    const normalizedSegments = segments
+        .filter(segment => segment !== undefined && segment !== null && segment !== "")
+        .map(normalizePath);
+
+    // 用正斜杠连接所有片段
+    return normalizedSegments.join("/");
+}
+
+/**
+ * 公共 Api 接口
+ * @param appName 应用名称或者接口前缀
+ * @param urlPrefix api 接口前缀
  * @param condition 条件
  */
 export function apiInstance(
@@ -797,10 +834,22 @@ export function apiInstance(
     urlPrefix: string,
     condition: Array<any> = [],
 ): ApiUrls {
-    const prefix: string = `/${appName}/${urlPrefix}`;
+
+    // 规范化路径参数
+    const normalizedAppName = normalizePath(appName);
+    const normalizedUrlPrefix = normalizePath(urlPrefix);
+
+    let prefix: string = joinPath(normalizedAppName, normalizedUrlPrefix);
+
+    // 如果是完整的 URL（http/https），则特殊处理
+    if (appName.startsWith("https:") || appName.startsWith("http:")) {
+        prefix = `${normalizedAppName}/${normalizedUrlPrefix}`;
+    }
+
     const apiUrls: ApiUrls = {
         basePrefix: prefix,
         appName: appName,
+        subPrefix: normalizedUrlPrefix,
         pageListUrl: `${prefix}/pageList`,
         mergeUrl: `${prefix}/merge`,
         mergeDraftUrl: `${prefix}/mergeDraft`,
@@ -815,7 +864,7 @@ export function apiInstance(
         listConditionUrl: `${prefix}/getAllByCondition`,
         oneConditionUrl: `${prefix}/getOneByCondition`,
         importUrl: `${prefix}/importData`,
-        uploadUrl: `${appName}/annex/upload/common`,
+        uploadUrl: `${normalizedAppName}/annex/upload/common`,
         modifyColumnsUrl: `${prefix}/modifyColumns`,
         condition: condition,
     };
