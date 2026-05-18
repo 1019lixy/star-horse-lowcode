@@ -1,17 +1,15 @@
-import {useCopyerOperationStore} from "@/store/CopyerOperation";
-import piniaInstance from "@/store";
+import {getCopyerOperationStore, getDesignFormStore} from "@/store/StoreManager";
 import {computed, reactive, ref} from "vue";
-import {useDesignFormStore} from "@/store/DesignForm";
 import {uuid} from "@/api/system";
 import {DynamicNode} from "@/components/types/DynamicNode";
 
-const copyerAction = useCopyerOperationStore(piniaInstance);
-const designForm = useDesignFormStore(piniaInstance);
+// const copyerAction = getCopyerOperationStore();
+// const designForm = getDesignFormStore();
 // const designPage = useDesignPageStore(piniaInstance);
-const compList = computed(() => designForm.compList);
-const currentItemId = computed(() => designForm.currentItemId);
+const compList = computed(() => getDesignFormStore().compList);
+const currentItemId = computed(() => getDesignFormStore().currentItemId);
 const pasteDisplay = computed(() => {
-    const action = copyerAction.action;
+    const action =  getCopyerOperationStore().action;
     return !!action;
 });
 
@@ -49,7 +47,7 @@ const selectItem = (
         item = element?.items[element.items?.length - 1];
     }
     if (item && Object.keys(item).length > 0) {
-        designForm.selectItem(item, item.itemType, parentType);
+        getDesignFormStore().selectItem(item, item.itemType, parentType);
     }
 };
 
@@ -106,7 +104,7 @@ export function removeItem(isEdit: boolean, formItem: any, parentField: any) {
                 const item = dataList[i - 1] || dataList[0];
                 dataList.splice(i, 1);
                 if (item && Object.keys(item).length > 0) {
-                    designForm.selectItem(item, item.itemType, parentItemType);
+                    getDesignFormStore().selectItem(item, item.itemType, parentItemType);
                 }
                 return;
             }
@@ -300,7 +298,7 @@ export const copyContainer = (
         const index = compList.value.indexOf(currentContainer);
         compList.value.splice(index + 1, 0, container);
     }
-    designForm.selectItem(container, containerType, "");
+    getDesignFormStore().selectItem(container, containerType, "");
 };
 
 /**
@@ -460,7 +458,7 @@ export function dynamicFormContextMenuData(
             icon: "new",
             display: true,
             handler: () => {
-                designForm.setComponentVisible(true);
+                getDesignFormStore().setComponentVisible(true);
             },
         });
         menus.push({
@@ -469,7 +467,7 @@ export function dynamicFormContextMenuData(
             icon: "select-parent",
             display: currentItemId.value != item.id,
             handler: () => {
-                designForm.selectItem(item, item?.itemType, "");
+                getDesignFormStore().selectItem(item, item?.itemType, "");
             },
         });
     }

@@ -5,13 +5,12 @@
 </template>
 
 <script lang="ts" setup>
-import piniaInstance from "@/store";
-import {useDesignFormStore} from "@/store/DesignForm";
 import {onMounted, ref} from "vue";
 import {analysisCompDatas} from "@/api/form_utils";
 import {StarHorseDataView} from "@/components/comp";
+import {getDesignFormStore} from "@/store/StoreManager";
 
-let designForm = useDesignFormStore(piniaInstance);
+let designForm = getDesignFormStore();
 const formData = ref<any>({
   test: "1-2-1",
 });

@@ -1,6 +1,5 @@
 import {getFingerId} from "@/api/finger_utils";
-import piniaInstance from "@/store";
-import {useUserInfoStore} from "@/store/UserInfo";
+import {getUserStore} from "@/store/StoreManager";
 import {getToken} from "@/utils/auth";
 import {error, operationConfirm, success, warning} from "@/utils/message";
 import {i18n} from "@/lang";
@@ -12,7 +11,6 @@ import {SelectOption} from "@/components/types/SearchProps";
 import {closeLoad} from "./star_horse_utils";
 import {ServiceEnums} from "@/components/enums/ServiceEnums";
 
-const userStore = useUserInfoStore(piniaInstance);
 const starHorseAxios = axios.create({
     baseURL: "/",
     timeout: 50000,
@@ -57,7 +55,7 @@ export function getMenuId() {
 }
 
 const forceLoginOut = () => {
-    userStore.showLoginDialog();
+    getUserStore().showLoginDialog();
 };
 // 添加响应拦截器
 starHorseAxios.interceptors.response.use(

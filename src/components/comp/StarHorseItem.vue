@@ -1,11 +1,10 @@
 <script setup lang="ts" name="StarHorseItem">
 import {computed, inject, ModelRef, onMounted, PropType, ref} from "vue";
-import {useSelfOperationStore} from "@/store/SelfOperation";
-import piniaInstance from "@/store";
 import {compKey, dateCompList, fieldPlaceholder, inputCompList, uuid,} from "@/api/system";
 
 import {checkVisible, filterProperties} from "@/api/form_utils";
 import Help from "@/components/help.vue";
+import {getSelfOperationStore} from "@/store/StoreManager";
 
 const props = defineProps({
   item: {type: Object as PropType<any>, required: true},
@@ -23,13 +22,11 @@ const props = defineProps({
     }
   },
 });
-let userOperation = useSelfOperationStore(piniaInstance);
 const dataForm: ModelRef<any> = defineModel("dataForm");
-const inputList = inputCompList();
-const dateNameList = dateCompList();
+
 const itemType = computed(() => {
   let type: string = props.item?.type || props.item?.fieldType || "input";
-  if (dateNameList.includes(itemType.value)) {
+  if (dateCompList().includes(itemType.value)) {
     type = "datetime";
     //日期默认以时间戳赋值
   }
@@ -91,7 +88,7 @@ const fieldType = () => {
   }
   const keys = Object.keys(props.item.actions);
   if (props.source == 4) {
-    const actionKey = inputList.includes(itemType.value)
+    const actionKey = inputCompList().includes(itemType.value)
         ? "keyup.enter"
         : "change";
     if (!keys.includes(actionKey)) {
@@ -115,7 +112,7 @@ const init = () => {
   if (!props.item.fieldName) {
     props.item["fieldName"] = props.item.preps?.name ?? props.item.id;
   }
-  fieldPlaceholder(props.item, itemType.value,props.source);
+  fieldPlaceholder(props.item, itemType.value, props.source);
   if (props.item.preps) {
     //防止name 与Vue重名,导致渲染异常
     filterProperties(props.item.preps, exclusions);
@@ -156,7 +153,7 @@ const compPreps = () => {
   }
   //将表单属性存储起来
   if (props.source != 4) {
-    userOperation.addFormItem(props.item);
+    getSelfOperationStore().addFormItem(props.item);
   }
   /**
    * 组件初始化时赋值默认值,

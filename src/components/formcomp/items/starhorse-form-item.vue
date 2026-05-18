@@ -4,11 +4,10 @@ import FieldList from "@/components/formcomp/utils/FieldList.vue";
 import {ItemPreps} from "@/components/types/ItemPreps";
 import {i18n} from "@/lang";
 import {dynamicFormContextMenuData, getParentComp, moveDownItem, moveUpItem, removeItem,} from "@/plugins/AblesPlugin";
-import piniaInstance from "@/store";
-import {useDesignFormStore} from "@/store/DesignForm";
 import {computed, nextTick, onBeforeUnmount, onMounted, ref} from "vue";
 import {warning} from "@/utils/message";
 import {labelVisibleCheck} from "@/api/form_utils";
+import {getDesignFormStore} from "@/store/StoreManager";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -17,7 +16,7 @@ const props = withDefaults(defineProps<ItemPreps>(), {
   //是否需要css 修饰
   bareFlag: false,
 });
-let designForm = useDesignFormStore(piniaInstance);
+let designForm = getDesignFormStore();
 let isEdit = computed(() => props.isDesign);
 let editUserInfo = computed(() => {
   let userInfo = designForm.getCurrentCompEditUserInfo(

@@ -2,14 +2,13 @@
 import {isJson, searchMatchList} from "@/api/star_horse_utils";
 import {SearchParams} from "@/components/types/Params";
 import {SearchFields, SelectOption} from "@/components/types/SearchProps";
-import piniaInstance from "@/store";
-import {useGlobalConfigStore} from "@/store/GlobalConfig";
 import {analysisSearchData} from "@/utils/preview";
 import {computed, nextTick, onMounted, PropType, ref} from "vue";
 import {i18n} from "@/lang";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
 import Help from "@/components/help.vue";
 import {isMobile} from "@/api/device";
+import {getGlobalConfigStore} from "@/store/StoreManager";
 
 let matchTypeList = ref<SelectOption[]>();
 const emits = defineEmits(["searchData", "initComplete"]);
@@ -19,10 +18,7 @@ const props = defineProps({
   dialogInput: {type: Boolean, default: false},
   mutComp: {type: Boolean, default: false},
 });
-let configStore = useGlobalConfigStore(piniaInstance);
-let compSize = computed(
-    () => configStore.configFormInfo?.inputSize || "default",
-);
+let compSize = computed(() => getGlobalConfigStore().configFormInfo?.inputSize || "default");
 let searchForm = ref<any>({});
 let showTips = ref<boolean>(true);
 let sarchIcon = ref<string>("search_down");

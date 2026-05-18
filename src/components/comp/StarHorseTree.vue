@@ -7,11 +7,10 @@ import {SearchParams} from "@/components/types/Params";
 import {PageProps} from "@/components/types/PageProps";
 import {OrderByInfo} from "@/components/types/PageFieldInfo";
 import {i18n} from "@/lang";
-import {useGlobalConfigStore} from "@/store/GlobalConfig";
-import piniaInstance from "@/store/index";
 import {isSystemManage} from "@/utils/auth";
 import {warning} from "@/utils/message";
 import {computed, ModelRef, nextTick, onMounted, PropType, reactive, ref, unref,} from "vue";
+import {getGlobalConfigStore} from "@/store/StoreManager";
 
 const props = defineProps({
   preps: {
@@ -73,9 +72,8 @@ const emits = defineEmits([
   "addData",
   "removeData",
 ]);
-let configStore = useGlobalConfigStore(piniaInstance);
 let compSize = computed(
-    () => configStore.configFormInfo?.inputSize || "default",
+    () => getGlobalConfigStore().configFormInfo?.inputSize || "default",
 );
 const treeRef = ref<any>();
 const menuTreeRef = ref<any>();

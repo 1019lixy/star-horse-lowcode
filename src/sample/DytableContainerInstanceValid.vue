@@ -6,13 +6,12 @@
 </template>
 
 <script lang="ts" setup>
-import piniaInstance from "@/store";
-import {useDesignFormStore} from "@/store/DesignForm";
 import {onMounted, ref} from "vue";
 import {analysisComps} from "@/api/form_utils";
 import {StarHorseForm} from "@/components/comp";
+import {getDesignFormStore} from "@/store/StoreManager";
 
-let designForm = useDesignFormStore(piniaInstance);
+let designForm = getDesignFormStore();
 const formData = ref<any>({});
 const dataItem = ref<any>({
   fieldList: []
