@@ -45,7 +45,7 @@
             v-model="searchName"
             @keydown.enter="dataSearch"
             clearable
-            placeholder="请输入要搜索的图标"
+            :placeholder="i18n('item.searchIconPlaceholder')"
           >
             <template #prefix>
               <star-horse-icon icon-class="search" @click="dataSearch" />
@@ -93,6 +93,7 @@ import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.v
 import { compDynamicData } from "@/api/star_horse_utils";
 
 import { ItemPreps } from "@/components/types/ItemPreps";
+import { i18n } from "@/lang";
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
   disabled: false,

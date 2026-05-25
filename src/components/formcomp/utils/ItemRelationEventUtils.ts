@@ -2,6 +2,7 @@ import {createCondition, dynamicUrlOperation, isJson,} from "@/api/star_horse_ut
 import {userFunction} from "@/api/user_func";
 import {RelationDetail, SelectOption} from "@/components/types";
 import {error} from "@/utils/message";
+import {i18n} from "@/lang";
 import {computed, nextTick, unref, watch} from "vue";
 import JSON5 from "json5";
 import {
@@ -10,9 +11,38 @@ import {
     setupFormulaWatchers,
 } from "@/components/formcomp/utils/FormulaEngine";
 
-// const designForm = useDesignFormStore(piniaInstance);
-//
-// const isDesign = computed(() => designForm.isEdit);
+// ==================== 公共工具函数 ====================
+
+/** 将值归一化为数组 */
+const ensureArray = (val: any): any[] => {
+    if (!Array.isArray(val)) {
+        return val ? [val] : [];
+    }
+    return val;
+};
+
+/** 查找字段并确保 preps 存在 */
+const findField = (props: any, fieldName: string) => {
+    const field = props.formInfo?.find((f: any) => f.fieldName === fieldName);
+    if (field && !field.preps) {
+        field.preps = {};
+    }
+    return field;
+};
+
+/** 遍历关联字段，对每个字段执行操作 */
+const forEachRelationField = (
+    props: any,
+    relationFields: string | string[],
+    callback: (field: any, fieldName: string) => void,
+) => {
+    ensureArray(relationFields).forEach((name: string) => {
+        const field = findField(props, name);
+        if (field) callback(field, name);
+    });
+};
+
+// ==================== 字段赋值 ====================
 
 const fieldAssign = (
     props: any,
@@ -24,56 +54,91 @@ const fieldAssign = (
         data: ["tselect", "transfer"],
         options: ["cascade"],
     };
-    relationFields?.forEach(async (item: string) => {
-        const field = props.formInfo?.find((field: any) => field.fieldName == item);
-        if (field) {
-            let flag = false;
-            field["formVisible"] = true;
-            if (!field.preps) {
-                field["preps"] = {};
+    forEachRelationField(props, relationFields, (field) => {
+        let flag = false;
+        field["formVisible"] = true;
+        Object.entries(record).forEach(([key, value]) => {
+            if (value.includes(field.itemType ?? field.type)) {
+                field.preps[key] = values;
+                flag = true;
+                return false;
             }
-            Object.entries(record).forEach(([key, value]) => {
-                if (value.includes(field.itemType ?? field.type)) {
-                    field.preps[key] = values;
-                    flag = true;
-                    return false;
-                }
-            });
-            if (!flag) {
-                if (isJson(values)) {
-                    Object.entries(values).forEach(([key, value]) => {
-                        field.preps[key] = value;
-                    });
-                } else if (!Array.isArray(values)) {
-                    field["defaultValue"] = values;
-                }
+        });
+        if (!flag) {
+            if (isJson(values)) {
+                Object.entries(values).forEach(([key, value]) => {
+                    field.preps[key] = value;
+                });
+            } else if (!Array.isArray(values)) {
+                field["defaultValue"] = values;
             }
         }
     });
 };
-/**
- * 数据关联
- * @param props 组件属性
- * @param item 关联关系详情
- * @param e 事件参数
- * @returns
- */
+
+// ==================== 匹配判断 ====================
+
+/** 判断 e 是否匹配 matchFieldValue，支持 e 为数组的情况 */
+const isMatch = (matchType: string, matchFieldValue: any, e: any) => {
+    if (Array.isArray(e)) {
+        return e.some((item) => matchFieldValue.includes(item));
+    }
+    switch (matchType) {
+        case "llk": return matchFieldValue.startsWith(e);
+        case "rlk": return matchFieldValue.endsWith(e);
+        case "neq":
+        case "nlk": return !matchFieldValue.includes(e);
+        case "lt": return matchFieldValue < e;
+        case "lte": return matchFieldValue <= e;
+        case "gt": return matchFieldValue > e;
+        case "gte": return matchFieldValue >= e;
+        case "isnull": return !e;
+        case "notnull": return !!e;
+        case "bt": return matchFieldValue[0] <= e && e <= matchFieldValue[1];
+        default: return matchFieldValue.includes(e);
+    }
+};
+
+// ==================== 联动处理器 ====================
+
+/** 属性控制映射表：controlCondition -> { 目标属性, 是否取反 } */
+const CONTROL_ACTION_MAP: Record<string, { targetProp: string; negate: boolean; isPreps: boolean }> = {
+    eqHide:      { targetProp: "formVisible", negate: true,  isPreps: false },
+    eqVisible:   { targetProp: "formVisible", negate: false, isPreps: false },
+    eqDisable:   { targetProp: "disabled",    negate: false, isPreps: true },
+    eqEditable:  { targetProp: "disabled",    negate: true,  isPreps: true },
+    eqRequired:  { targetProp: "required",    negate: false, isPreps: false },
+    eqUnRequired: { targetProp: "required",   negate: true,  isPreps: false },
+};
+
+/** 属性控制（显隐/禁用/必填） */
+const controlFieldProps = (props: any, item: RelationDetail, e: any) => {
+    const {matchFieldValue, matchType, controlCondition, relationFields} = item;
+    const matchResult = isMatch(matchType, ensureArray(matchFieldValue), e);
+    const action = CONTROL_ACTION_MAP[controlCondition];
+    if (!action) return;
+
+    const finalValue = action.negate ? !matchResult : matchResult;
+    forEachRelationField(props, relationFields, (field) => {
+        if (action.isPreps) {
+            field.preps[action.targetProp] = finalValue;
+        } else {
+            field[action.targetProp] = finalValue;
+        }
+    });
+};
+
+/** 数据关联 */
 const dataLinkage = async (props: any, item: RelationDetail, e: any) => {
     let {relationFields, params, matchFieldValue} = item;
 
-    if (!Array.isArray(matchFieldValue)) {
-        matchFieldValue = matchFieldValue ? [matchFieldValue] : [];
-    }
-    if (matchFieldValue.length > 0 && !matchFieldValue.includes(e)) {
+    const matchValues = ensureArray(matchFieldValue);
+    if (matchValues.length > 0 && !matchValues.includes(e)) {
         return;
-    }
-    if (!Array.isArray(relationFields)) {
-        relationFields = [relationFields];
     }
 
     const tempParams: any = JSON5.parse(JSON5.stringify(params));
     if (item.controlCondition == "asParamDataLinkage") {
-        //输入值作为查询条件
         tempParams["queryParams"] = tempParams.queryParams || [];
         tempParams.queryParams.push(
             createCondition(item.matchFieldName, e, item.matchType),
@@ -82,102 +147,28 @@ const dataLinkage = async (props: any, item: RelationDetail, e: any) => {
     const resultData = await dynamicUrlOperation({
         preps: Object.assign({}, tempParams),
     });
-    fieldAssign(props, relationFields, resultData);
+    fieldAssign(props, ensureArray(relationFields) as string[], resultData);
 };
-// 判断e是否匹配matchFieldValue，支持e为数组的情况
-const isMatch = (matchType: string, matchFieldValue: any, e: any) => {
-    // 如果e是数组，检查数组中是否有任何元素与matchFieldValue中的元素匹配
-    if (Array.isArray(e)) {
-        return e.some((item) => matchFieldValue.includes(item));
-    }
-    if (matchType == "llk") {
-        return matchFieldValue.startsWith(e);
-    } else if (matchType == "rlk") {
-        return matchFieldValue.endsWith(e);
-    } else if (["neq", "nlk"].includes(matchType)) {
-        return !matchFieldValue.includes(e);
-    } else if (matchType == "lt") {
-        return matchFieldValue < e;
-    } else if (matchType == "lte") {
-        return matchFieldValue <= e;
-    } else if (matchType == "gt") {
-        return matchFieldValue > e;
-    } else if (matchType == "gte") {
-        return matchFieldValue >= e;
-    } else if (matchType == "isnull") {
-        return !e;
-    } else if (matchType == "notnull") {
-        return !!e;
-    } else if (matchType == "bt") {
-        return matchFieldValue[0] <= e && e <= matchFieldValue[1];
-    }
-    // 如果e是基本类型，直接检查是否包含
-    return matchFieldValue.includes(e);
-};
-const eqDisableOrEditable = (props: any, item: RelationDetail, e: any) => {
-    let {relationFields, matchFieldValue, matchType} = item;
-    if (!Array.isArray(matchFieldValue)) {
-        matchFieldValue = matchFieldValue ? [matchFieldValue] : [];
-    }
-    if (!Array.isArray(relationFields)) {
-        relationFields = [relationFields];
-    }
-    const matchResult = isMatch(matchType, matchFieldValue, e);
 
-    relationFields?.forEach(async (sitem: string) => {
-        const field = props.formInfo?.find(
-            (field: any) => field.fieldName == sitem,
-        );
-        if (field) {
-            if (!field.preps) {
-                field.preps = {};
-            }
-            if (item.controlCondition == "eqHide") {
-                field["formVisible"] = !matchResult;
-            } else if (item.controlCondition == "eqVisible") {
-                field["formVisible"] = matchResult;
-            } else if (item.controlCondition == "eqEditable") {
-                field.preps["disabled"] = !matchResult;
-            } else if (item.controlCondition == "eqDisable") {
-                field.preps["disabled"] = matchResult;
-            } else if (item.controlCondition == "eqRequired") {
-                field["required"] = matchResult;
-            } else if (item.controlCondition == "eqUnRequired") {
-                field["required"] = !matchResult;
-            }
-        }
-    });
+/** 赋值 */
+const assignValue = (props: any, item: RelationDetail, _e: any) => {
+    fieldAssign(props, ensureArray(item.relationFields) as string[], item.staticDatas);
 };
-const assignValue = (props: any, item: RelationDetail, e: any) => {
-    let {relationFields, staticDatas} = item;
-    if (!Array.isArray(relationFields)) {
-        relationFields = [relationFields];
-    }
-    fieldAssign(props, relationFields, staticDatas);
-};
-/**
- * 输入的值等于指定值时改变字段类型
- * @param props 组件属性
- * @param item 关联关系详情
- * @param e 事件参数
- * @returns
- */
+
+/** 改变字段类型 */
 const changeType = (props: any, item: RelationDetail, e: any) => {
-    let {relationFields, matchFieldValue, matchType} = item;
-    if (!Array.isArray(relationFields)) {
-        relationFields = [relationFields];
-    }
-    const matchResult = isMatch(matchType, matchFieldValue, e);
-    relationFields?.forEach(async (sitem: string) => {
-        const field = props.formInfo?.find(
-            (field: any) => field.fieldName == sitem,
-        );
-        if (field && matchResult) {
-            field["itemType"] = item.staticDatas;
-            field["type"] = item.staticDatas;
-        }
+    const {matchFieldValue, matchType, relationFields, staticDatas} = item;
+    const matchResult = isMatch(matchType, ensureArray(matchFieldValue), e);
+    if (!matchResult) return;
+
+    forEachRelationField(props, relationFields, (field) => {
+        field["itemType"] = staticDatas;
+        field["type"] = staticDatas;
     });
 };
+
+// ==================== 联动事件分发 ====================
+
 const relationEvent = (
     props: any,
     relationDetails: RelationDetail[],
@@ -185,25 +176,19 @@ const relationEvent = (
     actionName: string,
 ) => {
     if (!Array.isArray(relationDetails)) {
-        console.error("relationDetails 必须是数组类型", relationDetails);
+        console.error(i18n("api.relationDetailsMustBeArray"), relationDetails);
         return;
     }
     relationDetails?.forEach(async (item: RelationDetail) => {
-        let {controlCondition, relationFields, matchFieldValue} = item;
-        if (!Array.isArray(matchFieldValue)) {
-            matchFieldValue = matchFieldValue ? [matchFieldValue] : [];
-        }
+        const {controlCondition, relationFields} = item;
         if (!relationFields || item.isWorking) {
             return;
         }
-        console.log("relationEvent---", matchFieldValue);
-        // item.isWorking = true;
-        //处理连动
+
         switch (controlCondition) {
-            //数据联动
             case "eqConditionDataLinkage":
             case "asParamDataLinkage":
-                dataLinkage(props, item, e);
+                await dataLinkage(props, item, e);
                 break;
             case "eqDisable":
             case "eqHide":
@@ -211,57 +196,41 @@ const relationEvent = (
             case "eqVisible":
             case "eqRequired":
             case "eqUnRequired":
-                //输入的值等于指定值可编辑否则不可编辑
-                eqDisableOrEditable(props, item, e);
+                controlFieldProps(props, item, e);
                 break;
             case "assignValue":
-                //赋值
                 assignValue(props, item, e);
                 break;
             case "changeType":
-                //输入的值等于指定值时改变字段类型
                 changeType(props, item, e);
                 break;
             default:
-                console.log("未处理的事件：" + controlCondition);
+                console.log(i18n("api.unhandledEvent") + controlCondition);
         }
         await nextTick();
         item.isWorking = false;
     });
 };
-/**
- * 所有触发的事件
- * @param context
- * @param emits
- * @param formData
- * @param actionName
- * @param isInit
- */
+
+// ==================== 事件触发 ====================
+
+/** 所有触发的事件 */
 const allAction = (
     context: any,
     emits: any,
     formData: any,
     actionName: string,
-    isInit: boolean = false,
+    _isInit: boolean = false,
 ) => {
     const currentData = unref(formData);
     try {
         emits("selfFunc", actionName, currentData);
     } catch (e) {
-        error("事件触发异常：" + e);
+        error(i18n("api.eventTriggerError") + e);
     }
-    // if (isDesign.value && isInit) {
-    //     return;
-    // }
 };
-/**
- * Button 组件的点击事件
- * @param context
- * @param emits
- * @param formData
- * @param code
- * @param evtName 时间名称
- */
+
+/** Button 组件的点击事件 */
 const buttonAction = (
     context: any,
     emits: any,
@@ -287,34 +256,35 @@ const buttonAction = (
         }
     }
 };
-/**
- * 检查是否禁用
- * @param attrs
- */
+
+// ==================== 禁用检查 ====================
+
+/** 检查是否禁用 */
 const checkIsDisabled = (attrs: any) => {
-    // const {attrs} = context;
     const {field} = attrs;
     const fieldName = field.fieldName;
     const isExplicitlyDisabled =
         attrs?.disabled || field.disabled || field.preps?.disabled;
-    const eidtDidsabled =
+    const editDisabled =
         (attrs.editDisabled || field.editDisabled || field.preps?.editDisabled) &&
         field.preps?.starHorseFieldSource != 1;
     const isImplicitlyDisabled =
         !attrs?.formData?.[`_${fieldName}Editable`] && field?.preps?.disabled;
     return (
-        eidtDidsabled === true ||
+        editDisabled === true ||
         isExplicitlyDisabled === true ||
         isImplicitlyDisabled === true ||
         attrs.source == 3
     );
 };
+
+// ==================== 表单字段绑定 ====================
+
 const useFormField = (context: any, field: any) => {
     const fieldName = computed(() => field.fieldName);
     const updateFormData = (value: any) => {
         const newData = context.attrs.formData;
         newData[fieldName.value] = value;
-        // context.emit('form-data-update', newData);
     };
 
     return {
@@ -324,8 +294,10 @@ const useFormField = (context: any, field: any) => {
         }),
     };
 };
+
+// ==================== 初始化事件 ====================
+
 const initRelationEvent = (props: any, formData: any, needWatch?: boolean) => {
-    //联动事件
     const dataRelation = props.field.preps?.dataRelation;
     const actionName = dataRelation?.actionName;
     if (actionName) {
@@ -359,9 +331,9 @@ const initRelationEvent = (props: any, formData: any, needWatch?: boolean) => {
         );
     }
 };
+
 const initCompCallEvent = (props: any, emits: any, formData: any) => {
     const events: string[] = Object.keys(props.field.actions || {});
-    // 新增数据检查
     if (
         !props.isSearch &&
         !props.field?.preps?.["stopInitCallAction"] &&
@@ -388,6 +360,7 @@ const initCompCallEvent = (props: any, emits: any, formData: any) => {
     }
     initRelationEvent(props, formData, true);
 };
+
 const doInitCallEvent = (props: any, emits: any, formData: any) => {
     const events: string[] = Object.keys(props.field.actions || {});
     if (props.field?.preps?.["starHorseFieldSource"] == 5) {
@@ -397,23 +370,22 @@ const doInitCallEvent = (props: any, emits: any, formData: any) => {
         allAction(props, emits, unref(formData), event, true);
     });
 };
+
+// ==================== 工具函数 ====================
+
 const isNaN = (value: any) => {
     return value !== value;
 };
-const isReadOnly = (obj, prop) => {
-    // 获取属性描述符
+
+const isReadOnly = (obj: any, prop: string) => {
     const descriptor = Object.getOwnPropertyDescriptor(obj, prop);
-
-    // 如果属性不存在，返回false
     if (!descriptor) return false;
-
-    // writable为false表示只读
     return descriptor.writable === false;
 };
+
 const prepsFilter = (preps: any) => {
     if (!preps || Object.keys(preps).length == 0) return {};
 
-    //删除undefined,null,空字符串
     Object.keys(preps).forEach((key) => {
         const prep = preps[key];
         if (
@@ -429,6 +401,7 @@ const prepsFilter = (preps: any) => {
     });
     return preps;
 };
+
 const convertData = (data: any) => {
     if (typeof data === "string") {
         try {
@@ -440,6 +413,9 @@ const convertData = (data: any) => {
     }
     return data;
 };
+
+// ==================== 导出 ====================
+
 export {
     allAction,
     buttonAction,

@@ -225,7 +225,7 @@ const loadByPage = async () => {
   postRequest(props.compUrl?.pageListUrl!, params)
       .then((res: any) => {
         if (!res || res?.data?.code != 0) {
-          console.error(res?.data?.cnMessage || "接口异常");
+          console.error(res?.data?.cnMessage || i18n("api.interfaceError"));
           return;
         }
         let redata = res?.data?.data;

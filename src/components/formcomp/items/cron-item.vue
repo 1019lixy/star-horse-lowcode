@@ -1,6 +1,6 @@
 <template>
   <star-horse-dialog
-    :title="'Crontab 配置器'"
+    :title="i18n('item.crontabConfig')"
     box-width="50%"
     :self-func="true"
     @resetForm="resetForm"
@@ -46,6 +46,7 @@ import {
 import { getDynamicEvents } from "@/api/system";
 
 import { ItemPreps } from "@/components/types/ItemPreps";
+import { i18n } from "@/lang";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,

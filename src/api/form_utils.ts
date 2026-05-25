@@ -482,7 +482,7 @@ export function convertCompToAppComps(pageInfo: PageFieldInfo) {
             }
             item.preps.hideLabel = false;
             item.label = staticData?.preps?.textContent;
-            item.preps.placeholder = "请输入" + item?.label;
+            item.preps.placeholder = i18n("api.pleaseInput2") + item?.label;
         });
     });
     appVisibleComps?.filter((item) => {
@@ -581,8 +581,9 @@ export function validMsg(item: any, dataForm: any) {
                 const minName = item.preps?.minName ?? item.fieldName + "Min";
                 const maxName = item.preps?.maxName ?? item.fieldName + "Max";
                 // 从formData中获取min和max的实际数值（通过fieldName+Min/Max）
-                const minValue = unref(dataForm)[`${minName}`];
-                const maxValue = unref(dataForm)[`${maxName}`];
+                const formData = unref(dataForm) || {};
+                const minValue = formData[`${minName}`];
+                const maxValue = formData[`${maxName}`];
                 if (minValue === undefined || maxValue === undefined) {
                     callback(); // 由required规则处理空值
                     return;

@@ -13,6 +13,7 @@ import { SearchFields } from "@/components/types";
 import { getDynamicEvents } from "@/api/system";
 
 import { ItemPreps } from "@/components/types/ItemPreps";
+import { i18n } from "@/lang";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -34,7 +35,7 @@ const selectItem = (row: any) => {
   if (!row || !isJson(row)) {
     let selectDatas = dialogInputTableRef.value.multipleSelection;
     if (!selectDatas) {
-      warning("请选择数据");
+      warning(i18n("item.pleaseSelectData2"));
       return;
     }
     data = selectDatas[0];
@@ -82,7 +83,7 @@ onMounted(async () => {
   await nextTick();
   let inputPreps = props.field?.preps;
   if (!inputPreps) {
-    warning("属性" + props.field?.label + "需要配置params 信息");
+    warning(i18n("item.propertyNeedsParams") + props.field?.label + i18n("item.propertyNeedsParamsSuffix"));
     return;
   }
   if (!inputPreps.searchFieldList || inputPreps.searchFieldList?.length == 0) {
@@ -109,7 +110,7 @@ onMounted(async () => {
 </script>
 <template>
   <star-horse-dialog
-    :title="field.label + '数据选择'"
+    :title="field.label + i18n('item.dataSelect')"
     :self-func="true"
     boxHeight="80%"
     :dialog-visible="dialogInputVisible"

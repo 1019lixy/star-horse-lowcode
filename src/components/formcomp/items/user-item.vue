@@ -1,6 +1,6 @@
 <template>
   <star-horse-dialog
-    :title="field.label + '数据选择'"
+    :title="field.label + i18n('item.dataSelect')"
     :self-func="true"
     :dialog-visible="dialogInputVisible"
     @merge="selectItem"
@@ -56,6 +56,7 @@ import { getDynamicEvents } from "@/api/system";
 
 import { ItemPreps } from "@/components/types/ItemPreps";
 import { StarHorseDialog } from "@/components/comp";
+import { i18n } from "@/lang";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -78,7 +79,7 @@ const selectItem = (_row: any) => {
   let selectDatas =
     userTableRef.value?.$refs?.employeeInfoRef?.getSelectedDatas();
   if (!selectDatas) {
-    warning("请选择数据");
+    warning(i18n("item.pleaseSelectData2"));
     return;
   }
   //如果没有指定属性，则默认取相同的属性

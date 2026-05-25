@@ -48,7 +48,7 @@ const dataForm = ref<any>({});
  */
 const tableCompFunc = (funcName: string) => {
   if ((funcName == "upload" || funcName == "import") && isMobile) {
-    warning("App端不支持此操作,请到Pc端完成");
+    warning(i18n("item.notSupportedOnApp"));
     return;
   }
   emits("tableCompFunc", funcName);

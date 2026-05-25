@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ModelRef } from "vue";
+import { i18n } from "@/lang";
 
 const props = defineProps({
   level: { type: Number, default: 1, required: true },
@@ -23,7 +24,7 @@ const selectMenu = (menu: any) => {
             <el-icon class="star-icon">
               <component :is="item.meta?.menuIcon || 'document'" />
             </el-icon>
-            <span @click="selectMenu(item)">{{ item.meta?.title||"未知" }} </span>
+            <span @click="selectMenu(item)">{{ item.meta?.title||i18n("item.unknown") }} </span>
           </div>
         </div>
         <div class="menu-children">
@@ -41,7 +42,7 @@ const selectMenu = (menu: any) => {
         <el-icon class="star-icon">
           <component :is="item.meta?.menuIcon || 'document'" />
         </el-icon>
-        <span @click="selectMenu(item)">{{ item.meta?.title||"未知" }} </span>
+        <span @click="selectMenu(item)">{{ item.meta?.title||i18n("item.unknown") }} </span>
       </div>
     </div>
   </template>

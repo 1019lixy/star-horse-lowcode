@@ -6,7 +6,7 @@ import {i18n} from "@/lang";
 import {dynamicFormContextMenuData, getParentComp, moveDownItem, moveUpItem, removeItem,} from "@/plugins/AblesPlugin";
 import {computed, nextTick, onBeforeUnmount, onMounted, ref} from "vue";
 import {warning} from "@/utils/message";
-import {labelVisibleCheck} from "@/api/form_utils";
+import {labelVisibleCheck, validMsg} from "@/api/form_utils";
 import {getDesignFormStore} from "@/store/StoreManager";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
@@ -22,7 +22,7 @@ let editUserInfo = computed(() => {
   let userInfo = designForm.getCurrentCompEditUserInfo(
       props.field?.id || props.field?.preps.id,
   );
-  return userInfo ? userInfo.name + "正在编辑中" : "";
+  return userInfo ? userInfo.name + i18n("api.editingByOthers") : "";
 });
 // Use shallowRef for better performance
 let currentItemId = computed(() => designForm.currentItemId);
@@ -44,7 +44,7 @@ const refreshFlag = ref(0);
 const selectData = (data: any) => {
   if (!isEdit.value || isDisabled.value) return;
   if (editUserInfo.value.length > 0) {
-    warning("该属性正被他人编辑中...");
+    warning(i18n("api.fieldEditingByOthers"));
     return;
   }
   // Check for duplicate selection to avoid unnecessary updates
@@ -166,17 +166,7 @@ onMounted(() => {
           :label="labelVisibleCheck(field)"
           :prop="field?.preps['name']"
           :labelPosition="field?.preps['labelPosition']"
-          :rules="
-          field?.preps['required']
-            ? [
-                {
-                  required: true,
-                  trigger: 'blur',
-                  message: i18n('form.requiredField'),
-                },
-              ]
-            : []
-        "
+          :rules="validMsg(field, null)"
       >
 
         <help :message="field.preps?.helpMsg" v-if="field.preps?.helpMsg"/>

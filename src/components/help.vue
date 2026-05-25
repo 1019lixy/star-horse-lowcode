@@ -1,9 +1,10 @@
 <script setup lang="ts" name="help">
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
+import { i18n } from "@/lang";
 
 defineProps({
   width: { type: Number, default: 340 },
-  message: { type: String, required: true, default: "帮助" },
+  message: { type: String, required: true, default: i18n("common.help") },
 });
 </script>
 <template>

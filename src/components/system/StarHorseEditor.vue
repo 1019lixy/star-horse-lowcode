@@ -34,6 +34,7 @@ import {
   dracula,
 } from "thememirror";
 import StarHorseSidebar from "@/components/system/StarHorseSidebar.vue";
+import { i18n } from "@/lang";
 
 const model = defineModel("value", { default: "" });
 const editorLang = ref<any>(javascript());
@@ -126,27 +127,27 @@ const jsHint = (context: CompletionContext) => {
     options: [
       {
         label: "currentField",
-        detail: "当前属性",
+        detail: i18n("item.currentProperty"),
         apply: "currentField",
       },
       {
         label: "formInstance",
-        detail: "表单实例",
+        detail: i18n("item.formInstance"),
         apply: "formInstance",
       },
       {
         label: "formData",
-        detail: "表单数据",
+        detail: i18n("item.formData"),
         apply: "formData",
       },
       {
         label: "formFields",
-        detail: "表单字段",
+        detail: i18n("item.formFields"),
         apply: "formFields",
       },
       {
         label: "userInfo",
-        detail: "用户信息",
+        detail: i18n("item.userInfo"),
         apply: "userInfo",
       },
       {
@@ -161,12 +162,12 @@ const jsHint = (context: CompletionContext) => {
       },
       {
         label: "download",
-        detail: "下载",
+        detail: i18n("item.download"),
         apply: "download(url)",
       },
       {
         label: "upload",
-        detail: "上传",
+        detail: i18n("item.upload"),
         apply: "upload(url,params)",
       },
     ],
@@ -354,7 +355,7 @@ defineExpose({
         <div class="w-[20%] h-full items-center">
           <el-dropdown>
             <span class="el-dropdown-link">
-              主题
+              {{ i18n("item.theme") }}
               <el-icon class="el-icon--right">
                 <arrow-down />
               </el-icon>
@@ -380,7 +381,7 @@ defineExpose({
         <div class="w-[20%] h-full items-center">
           <el-dropdown v-if="!lang">
             <span class="el-dropdown-link">
-              语言
+              {{ i18n("item.language") }}
               <el-icon class="el-icon--right">
                 <arrow-down />
               </el-icon>

@@ -27,6 +27,7 @@ import {
 import { nextTick, onMounted } from "vue";
 
 import { ItemPreps } from "@/components/types/ItemPreps";
+import { i18n } from "@/lang";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -44,8 +45,8 @@ onMounted(() => {
   if (!props.field.preps) {
     props.field.preps = {};
   }
-  props.field.preps["activeText"] = props.field.preps?.activeText ?? "是";
-  props.field.preps["inactiveText"] = props.field.preps?.inactiveText ?? "否";
+  props.field.preps["activeText"] = props.field.preps?.activeText ?? i18n("common.yes");
+  props.field.preps["inactiveText"] = props.field.preps?.inactiveText ?? i18n("common.no");
   props.field.preps["activeValue"] = props.field.preps?.activeValue ?? true;
   props.field.preps["inactiveValue"] =
     props.field.preps?.inactiveValue ?? false;

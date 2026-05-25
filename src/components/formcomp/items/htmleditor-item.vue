@@ -43,6 +43,7 @@ import {ItemPreps} from "@/components/types/ItemPreps";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
 import {uploadRequest} from "@/api/star_horse_apis";
 import {warning} from "@/utils/message";
+import {i18n} from "@/lang";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -57,7 +58,7 @@ const formData = defineModel("formData");
 const editorRef = shallowRef(); // 编辑器实例，必须用 shallowRef
 const toolbarConfig = {};
 const editorConfig = {
-  placeholder: "请输入内容...",
+  placeholder: i18n("item.pleaseInputContent"),
   MENU_CONF: {
     uploadImage: {
       base64LimitSize: 0,
@@ -80,13 +81,13 @@ const editorConfig = {
         // 校验文件类型
         const isImage = file.type.startsWith("image/");
         if (!isImage) {
-          warning("请上传图片格式的文件！");
+          warning(i18n("item.pleaseUploadImage"));
           return false;
         }
         // 校验文件大小（5MB）
         const maxSize = 5 * 1024 * 1024;
         if (file.size > maxSize) {
-          warning("图片大小不能超过 5MB！");
+          warning(i18n("item.imageSizeLimit"));
           return false;
         }
         return true;
@@ -113,13 +114,13 @@ const editorConfig = {
         // 校验文件类型
         const isImage = file.type.startsWith("video/");
         if (!isImage) {
-          warning("请上传图片格式的文件！");
+          warning(i18n("item.pleaseUploadImage"));
           return false;
         }
         // 校验文件大小（5MB）
         const maxSize = 100 * 1024 * 1024;
         if (file.size > maxSize) {
-          warning("视频大小不能超过 100MB！");
+          warning(i18n("item.videoSizeLimit"));
           return false;
         }
         return true;

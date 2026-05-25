@@ -1,6 +1,7 @@
 <script setup lang="ts" name="MainContent">
 import {computed} from "vue";
 import {useRoute, useRouter} from "vue-router";
+import {i18n} from "@/lang";
 
 interface MainBarItem {
   id: string;
@@ -32,7 +33,7 @@ const route = useRoute();
 const computedCategories = computed(() => {
   const systemConfigItem = {
     id: "system-config",
-    name: props.systemConfigName || "系统配置",
+    name: props.systemConfigName || i18n("item.systemConfig"),
     icon: "setting",
     route: "system-config",
   };

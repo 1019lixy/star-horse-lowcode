@@ -468,7 +468,7 @@ watch(
           />
         </template>
       </template>
-      <el-table-column fixed="right" label="操作" width="80">
+      <el-table-column fixed="right" :label="i18n('table.operation')" width="80">
         <template #default="scope" v-if="source != 3">
           <star-horse-icon
               icon-class="edit"

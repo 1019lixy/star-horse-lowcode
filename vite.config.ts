@@ -14,6 +14,7 @@ const baseHost: string = "http://localhost:7719/";
 const systemHost: string = "http://localhost:8749/";
 const userDbHost: string = "http://localhost:7758/";
 const gatewayHost: string = "http://localhost:7780/";
+const workflowHost: string = "http://localhost:8999/";
 const isGateway: boolean = true;
 const env: string = "-dev";
 const rewrite = (path: string, name: string) => {
@@ -83,6 +84,12 @@ export default defineConfig((mode) => {
           target: isGateway ? gatewayHost : baseHost,
           changeOrigin: true,
           rewrite: (path: string) => rewrite(path, "quantity-manage"),
+          ws: true,
+        },
+        "/flow-engine": {
+          target: isGateway ? gatewayHost : workflowHost,
+          changeOrigin: true,
+          rewrite: (path: string) => rewrite(path, "flow-engine"),
           ws: true,
         },
       },

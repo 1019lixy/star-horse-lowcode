@@ -709,7 +709,7 @@ export async function dynamicUrlOperation(
     }
     let url = temp.url;
     if (!url) {
-        console.error("未提供接口地址");
+        console.error(i18n("api.noUrlProvided"));
         return;
     }
     let params: any = {
@@ -933,8 +933,8 @@ export function apiInstance(
  * 模态窗口相关属性
  */
 export function dialogPreps(
-    title: string = "编辑",
-    batchTitle: string = "批量编辑",
+    title: string = i18n("dialog.editTitle"),
+    batchTitle: string = i18n("dialog.batchAddTitle"),
 ): Reactive<DialogProps> {
     return reactive<DialogProps>({
         bakeVisible1: false,

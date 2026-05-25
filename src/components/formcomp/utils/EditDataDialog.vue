@@ -23,12 +23,13 @@
 
 <script setup lang="ts">
 import { ref, watch } from "vue";
+import { i18n } from "@/lang";
 
 const props = defineProps({
   modelValue: Boolean,
   title: {
     type: String,
-    default: "编辑数据",
+    default: i18n("item.editData"),
   },
   boxWidth: {
     type: String,

@@ -11,6 +11,7 @@ import {
 import { postRequest } from "@/api/star_horse_apis";
 import { closeLoad, commonParseCodeToName } from "@/api/star_horse_utils";
 import { error, success, warning } from "@/utils/message";
+import { i18n } from "@/lang";
 import { Config } from "@/api/settings";
 import { createComponent, uuid } from "@/api/system";
 import { dateTypes, parseDateByType } from "@/api/date_utils";
@@ -73,7 +74,7 @@ const blurEvent = (column: any, params: any) => {
       }
     })
     .catch((err) => {
-      error("接口调用异常" + err);
+      error(i18n("api.interfaceCallError2") + err);
     })
     .finally(() => {
       closeLoad();
@@ -106,7 +107,7 @@ const cellClick = (row: any, column: any) => {
     props.item.preps?.["disabled"] ||
     props.item.preps?.["editDisabled"]
   ) {
-    warning("当前列不允许编辑");
+    warning(i18n("api.columnNotEditable"));
     return;
   }
   let flag = false;

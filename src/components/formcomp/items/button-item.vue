@@ -1,13 +1,13 @@
 <template>
   <star-horse-dialog
-    :title="field.preps?.dialogTitle || '配置按钮事件'"
+    :title="field.preps?.dialogTitle || i18n('item.configureButtonEvent')"
     :selfFunc="true"
     @merge="operResultAction"
     :dialogVisible="btnDialogVisible"
     :boxWidth="field.preps?.boxWidth || '50%'"
     :isShowReset="field.preps?.isShowReset ?? false"
     @closeAction="close"
-    :btnText="field.preps?.dialogBtn ?? '确定'"
+    :btnText="field.preps?.dialogBtn ?? i18n('item.confirm')"
   >
     <star-horse-form
       ref="btnFormRef"
@@ -63,6 +63,7 @@ import { SearchParams } from "@/components/types/Params";
 import { createCondition } from "@/api/star_horse_utils";
 
 import { ItemPreps } from "@/components/types/ItemPreps";
+import { i18n } from "@/lang";
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
   disabled: false,
@@ -80,7 +81,7 @@ const operResultAction = async () => {
   let action: BtnAction = props.field.preps;
   let formData: any = {};
   if (action?.viewType == "comp") {
-    formData = await btnCompRef.value?.getFormData("请先填写表单数据");
+    formData = await btnCompRef.value?.getFormData(i18n("item.pleaseFillFormData"));
     if (!formData) {
       return;
     }
@@ -103,7 +104,7 @@ const openDialog = async () => {
   let action: BtnAction = props.field.preps;
   //执行代码块
   if (action?.needConfirm) {
-    let result = operationConfirm(action.confirmMsg ?? "确定要执行此操作吗");
+    let result = operationConfirm(action.confirmMsg ?? i18n("item.confirmToExecute"));
     if (!result) {
       return;
     }
@@ -131,7 +132,7 @@ const openDialog = async () => {
       urlParam = action.params;
     }
     if (!action.url) {
-      warning("请提供需要调用的接口");
+      warning(i18n("item.pleaseProvideApiUrl"));
       return;
     }
     httpRequest(action.url!, action.method ?? "POST", urlParam).then(
@@ -146,11 +147,11 @@ const openDialog = async () => {
         let datas = reData?.data;
         if (action?.afterAction) {
           if (!datas) {
-            warning("返回数据为空，无法赋值");
+            warning(i18n("item.returnDataEmpty"));
             return;
           }
           if (Array.isArray(datas)) {
-            warning("返回数据为数组，无法赋值");
+            warning(i18n("item.returnDataIsArray"));
             return;
           }
           //执行后搜集返回结果
@@ -167,13 +168,13 @@ const openDialog = async () => {
     );
   } else if (action?.viewType == "code") {
     if (!action.code) {
-      warning("请提供需要执行的代码");
+      warning(i18n("item.pleaseProvideCode"));
       return;
     }
     buttonAction(props, emits, formData, action.code);
   } else if (action?.viewType == "method") {
     if (!action.actions) {
-      warning("请提供需要执行的函数");
+      warning(i18n("item.pleaseProvideFunction"));
       return;
     }
     action.actions(formData);

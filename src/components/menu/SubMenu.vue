@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ModelRef } from "vue";
 import { compKey } from "@/api/system";
+import { i18n } from "@/lang";
 
 const props = defineProps({
   level: { type: Number, default: 1 },
@@ -21,7 +22,7 @@ let menuColor = computed(() =>
         <el-icon class="star-icon">
           <component :is="item.meta?.menuIcon || 'document'" />
         </el-icon>
-        <span>{{ item.meta?.title||"未知" }} </span>
+        <span>{{ item.meta?.title||i18n("item.unknown") }} </span>
       </template>
       <SubMenu v-model:dataList="item.children" :level="level + 1"></SubMenu>
     </el-sub-menu>
@@ -31,7 +32,7 @@ let menuColor = computed(() =>
       </el-icon>
       <template #title>
         <router-link :to="{ path: item.path }"
-          >{{ item.meta?.title||"未知" }}
+          >{{ item.meta?.title||i18n("item.unknown") }}
         </router-link>
       </template>
     </el-menu-item>

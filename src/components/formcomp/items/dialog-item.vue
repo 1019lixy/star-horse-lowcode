@@ -14,6 +14,7 @@ import {
   StarHorseIcon,
 } from "@/components/comp";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
+import { i18n } from "@/lang";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -75,7 +76,7 @@ onMounted(() => {
           />
         </template>
       </template>
-      <el-empty v-else description="未设置内容" />
+      <el-empty v-else :description="i18n('item.noContentSet')" />
     </div>
   </star-horse-dialog>
   <starhorse-form-item
