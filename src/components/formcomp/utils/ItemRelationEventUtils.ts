@@ -4,6 +4,11 @@ import {RelationDetail, SelectOption} from "@/components/types";
 import {error} from "@/utils/message";
 import {computed, nextTick, unref, watch} from "vue";
 import JSON5 from "json5";
+import {
+    executeFormulaWithFill,
+    initFormFormulaWatchers,
+    setupFormulaWatchers,
+} from "@/components/formcomp/utils/FormulaEngine";
 
 // const designForm = useDesignFormStore(piniaInstance);
 //
@@ -444,4 +449,7 @@ export {
     relationEvent,
     useFormField,
     convertData,
+    executeFormulaWithFill,
+    initFormFormulaWatchers,
+    setupFormulaWatchers,
 };

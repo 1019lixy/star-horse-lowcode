@@ -76,10 +76,11 @@ import {
   checkIsDisabled,
   initCompCallEvent,
   prepsFilter,
+  setupFormulaWatchers,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import {usePrefixSuffix} from "@/components/formcomp/utils/prefixSuffixUtils";
 import {ItemPreps} from "@/components/types/ItemPreps";
-import {nextTick, onMounted, ref} from "vue";
+import {nextTick, onBeforeUnmount, onMounted, ref, watch} from "vue";
 import {StarHorseIcon} from "@/components/comp";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
 
@@ -124,12 +125,22 @@ const editContent = () => {
   }
 };
 
+// 公式计算 watch 清理
+let formulaStops: (() => void)[] = [];
+
 onMounted(() => {
   nextTick(() => {
     initCompCallEvent(props, emits, formData);
     mergeData(true);
+    // 初始化公式计算监听
+    formulaStops = setupFormulaWatchers(props.field, props.formInfo, formData, watch);
   });
   initEvent();
+});
+
+onBeforeUnmount(() => {
+  formulaStops.forEach(stop => stop());
+  formulaStops = [];
 });
 
 setupWatchers();

@@ -7,10 +7,9 @@ import DytableContainerViewValid from "@/sample/DytableContainerViewValid.vue";
 import BoxContainerViewDemo from "@/sample/BoxContainerViewDemo.vue";
 import ComplexFormValid from "@/sample/ComplexFormValid.vue";
 import ComplexFormAnalysis from "@/sample/ComplexFormAnalysis.vue";
-import {device} from "@/api/device";
 import DataPickerDemo from "@/sample/DataPickerDemo.vue";
 import FormValid from "@/sample/FormValid.vue";
-import Dashboard from "@/sample/Dashboard.vue";
+import NormalFormValid from "@/sample/NormalFormValid.vue";
 
 const visible = ref<boolean>(false);
 const actName = ref<string>("component");
@@ -35,8 +34,8 @@ onMounted(() => {
      <MainContainer :categories="categories" position="bottom" systemConfigName="系统配置" @select="handleSelect"/>
     </template>-->
   <div class="flex flex-col h-full overflow-auto">
-<!--    <Dashboard/>-->
-<!--    <FormValid/>-->
+    <!--    <Dashboard/>-->
+    <!--    <FormValid/>-->
     <el-tabs v-model="actName" class="h-full">
       <el-tab-pane name="component" label="组件测试">
         <ComponentTester/>
@@ -62,7 +61,10 @@ onMounted(() => {
       </el-tab-pane>
       <el-tab-pane name="h1" label="数据选择器2">
         <DataPickerDemo/>
-<!--        <FormValid/>-->
+
+      </el-tab-pane>
+      <el-tab-pane name="h2" label="正常表单">
+        <NormalFormValid/>
       </el-tab-pane>
       <el-tab-pane name="i" label="验证容器">
 
