@@ -67,7 +67,7 @@ const actionDispatcher = (act: string, ...params: any[]) => {
     }
     emit("dataSearch", params);
   } else {
-    let actions: Record<string, Function> = props.item.actions;
+    let actions: Record<string, Function> = props.item?.actions;
     const eventNames: Array<string> = Object.keys(actions || {});
     if (eventNames?.includes(act) && typeof actions[act] == "function") {
       actions[act](dataForm.value, params);
@@ -83,10 +83,10 @@ const actionDispatcher = (act: string, ...params: any[]) => {
 const fieldType = () => {
   // const selectNameList = selectCompList();
 
-  if (!props.item.actions) {
+  if (!props.item?.actions) {
     props.item["actions"] = {};
   }
-  const keys = Object.keys(props.item.actions);
+  const keys = Object.keys(props.item?.actions || {});
   if (props.source == 4) {
     const actionKey = inputCompList().includes(itemType.value)
         ? "keyup.enter"
@@ -109,18 +109,18 @@ const init = () => {
   if (!props.item["id"]) {
     props.item["id"] = props.item.preps?.id ?? uuid();
   }
-  if (!props.item.fieldName) {
-    props.item["fieldName"] = props.item.preps?.name ?? props.item.id;
+  if (!props.item?.fieldName) {
+    props.item["fieldName"] = props.item?.preps?.name ?? props.item?.id;
   }
   fieldPlaceholder(props.item, itemType.value, props.source);
-  if (props.item.preps) {
+  if (props.item?.preps) {
     //防止name 与Vue重名,导致渲染异常
-    filterProperties(props.item.preps, exclusions);
+    filterProperties(props.item?.preps, exclusions);
     props.item.preps["readonly"] = props.item?.readonly || props.source == 3;
     props.item.preps["starHorseFieldSource"] = props.source;
-    let keys = Object.keys(props.item.preps);
+    let keys = Object.keys(props.item?.preps || {});
     for (let key in keys) {
-      let val = props.item.preps[key];
+      let val = props.item?.preps?.[key];
       if (["Y", "N", "y", "n"].includes(val)) {
         props.item.preps[key] = ["Y", "y"].includes(val);
       } else if (val === "true" || val === "false") {
@@ -198,7 +198,7 @@ const checkClassName = () => {
   }
 };
 const dataFormat = (item: any) => {
-  let name = props.item.fieldName;
+  let name = props.item?.fieldName;
   let val = "";
   try {
     val = dataForm.value?.[name];

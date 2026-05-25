@@ -21,9 +21,9 @@ const selectMenu = (menu: any) => {
         <div class="menu-item-content">
           <div class="flex flex-row items-center gap-3">
             <el-icon class="star-icon">
-              <component :is="item.meta.menuIcon || 'document'" />
+              <component :is="item.meta?.menuIcon || 'document'" />
             </el-icon>
-            <span @click="selectMenu(item)">{{ item.meta.title }} </span>
+            <span @click="selectMenu(item)">{{ item.meta?.title||"未知" }} </span>
           </div>
         </div>
         <div class="menu-children">
@@ -39,9 +39,9 @@ const selectMenu = (menu: any) => {
     <div v-else class="menu-item leaf-menu-item">
       <div class="flex flex-row items-center h-[35px] gap-1 cursor-pointer">
         <el-icon class="star-icon">
-          <component :is="item.meta.menuIcon || 'document'" />
+          <component :is="item.meta?.menuIcon || 'document'" />
         </el-icon>
-        <span @click="selectMenu(item)">{{ item.meta.title }} </span>
+        <span @click="selectMenu(item)">{{ item.meta?.title||"未知" }} </span>
       </div>
     </div>
   </template>

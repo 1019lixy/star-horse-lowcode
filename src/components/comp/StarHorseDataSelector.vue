@@ -137,11 +137,11 @@ const onClose = (data: any) => {
     const selectIndex = selectData.value.findIndex(
       (item: any) => item?.[props.displayValue] === targetValue
     );
-    const valueIndex = value.value.indexOf(targetValue);
+    const valueIndex = value.value?.indexOf(targetValue);
     if (selectIndex !== -1) {
       selectData.value.splice(selectIndex, 1);
     }
-    if (valueIndex !== -1) {
+    if (valueIndex !== -1 && value.value) {
       value.value.splice(valueIndex, 1);
     }
   } else {
@@ -244,7 +244,7 @@ const tagVisible = (val: any) => {
   const result =
       (Array.isArray(selectData?.value) &&
           selectData?.value?.find(
-              (item: any) => item[props.displayValue] === val,
+              (item: any) => item?.[props.displayValue] === val,
           )?.[props.displayName]) ??
       val;
   return result;

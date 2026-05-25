@@ -10,6 +10,7 @@ import fs from "fs";
 //生产types文件插件
 import dts from "vite-plugin-dts";
 // https://vitejs.dev/config/
+const baseHost: string = "http://localhost:7719/";
 const systemHost: string = "http://localhost:8749/";
 const userDbHost: string = "http://localhost:7758/";
 const gatewayHost: string = "http://localhost:7780/";
@@ -76,6 +77,12 @@ export default defineConfig((mode) => {
           target: isGateway?gatewayHost:userDbHost,
           changeOrigin: true,
           rewrite: (path: string) =>rewrite(path,"userdb-manage"),
+          ws: true,
+        },
+        "/quantity-manage": {
+          target: isGateway ? gatewayHost : baseHost,
+          changeOrigin: true,
+          rewrite: (path: string) => rewrite(path, "quantity-manage"),
           ws: true,
         },
       },

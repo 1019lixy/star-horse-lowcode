@@ -13,6 +13,19 @@ const routes: RouteRecordRaw[] = [
         name: "dashboard",
         component: () => import("@/sample/Dashboard.vue"),
         meta: {title: "首页"},
+        children: [
+            {
+                path: "/general/page/:param",
+                name: "NormalPage",
+                component: () => import("@/sample/commonpage/NormalPage.vue"),
+                props: true,
+                meta: {
+                    title: "动态表单实例",
+                    menuIcon: "position",
+                    keepAlive: "N",
+                },
+            },
+        ]
     },
     {
         path: "/complex-form-valid",

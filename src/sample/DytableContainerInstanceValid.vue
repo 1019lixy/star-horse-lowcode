@@ -1,7 +1,7 @@
 <template>
   <el-scrollbar>
     <!--    <dytable-item :dataForm="formData" :item="dataItem"  :formInfo="{}" />-->
-    <star-horse-form :fieldList="{fieldList:fieldList}" labelPosition="top"/>
+    <star-horse-form :fieldList="fieldList" labelPosition="top"/>
   </el-scrollbar>
 </template>
 
@@ -8451,4415 +8451,5990 @@ const fields = [
     "type": "dytable"
   }
 ];
-const fieldList = [{
-  "fieldName": "",
-  "dytableList": [[{
-    "label": "Html组件",
-    "fieldName": "html2",
-    "type": "html",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh8b2f5c84-b037-41f2-baa6-7c35bcf9ebdb",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "rowNums": 1,
-      "columnNums": 1,
-      "staticData": true,
-      "textContent": "<p style=\"text-align: center;\"><span style=\"font-size: 19px;\">四川华平通讯设备有限公司</span></p><p style=\"text-align: center;\"><span style=\"font-size: 19px;\">SMT首件确认表</span></p>",
-      "colHeight": "117px",
-      "colWidth": "43px",
-      "colspan": 12,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "39px", "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }], [{
-    "label": "静态文本",
-    "fieldName": "text13",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idshdc1638f0-135f-4d46-8b5a-5d83c0f41575",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "基本信息",
-      "colWidth": "43px",
-      "colspan": 1,
-      "rowspan": 4,
-      "cellVisible": true
-    }
-  }, {
-    "label": "线别",
-    "fieldName": "xianbie",
-    "type": "input",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh8ec80e87-e88f-4c97-805d-c96019ada3f8",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入线别",
-      "rules": [],
-      "maxLength": 255,
-      "colWidth": "39px",
-      "colspan": 4,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "日期/班别",
-    "fieldName": "riqibanbie",
-    "type": "input",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh65a619f1-cbba-4b37-81a3-35e1625074ea",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入日期/班别",
-      "rules": [],
-      "maxLength": 255,
-      "colspan": 3,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "生产工单号",
-    "fieldName": "scgd",
-    "type": "input",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh6b1ca9c9-4852-4531-8853-3d47fc176b7d",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入生产工单号",
-      "rules": [],
-      "maxLength": 255,
-      "colspan": 4,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }], [{
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "43px", "cellVisible": false}
-  }, {
-    "label": "产品名称",
-    "fieldName": "cpmc",
-    "type": "input",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh5f62a6a8-9cc7-4f52-9e21-0fd39b415e91",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入产品名称",
-      "rules": [],
-      "maxLength": 255,
-      "colWidth": "39px",
-      "colspan": 4,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "软件版本",
-    "fieldName": "rjbb",
-    "type": "input",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh9727bfe0-830d-4c61-94cb-9315c8de8a9b",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入软件版本",
-      "rules": [],
-      "maxLength": 255,
-      "colspan": 3,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "BOM",
-    "fieldName": "bom",
-    "type": "input",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh89a24631-d0bf-430a-b4ce-749605fb6c70",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入BOM",
-      "rules": [],
-      "maxLength": 255,
-      "colspan": 4,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }], [{
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "43px", "cellVisible": false}
-  }, {
-    "label": "批量/样本数",
-    "fieldName": "plybs",
-    "type": "number",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh8ebdd884-7b35-4e1f-b8a6-49fe4d3b6ba3",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入批量/样本数",
-      "step": 1,
-      "rules": [],
-      "maxLength": 10,
-      "colWidth": "39px",
-      "colspan": 4,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "PCB版本/周期",
-    "fieldName": "pcbbbzq",
-    "type": "input",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh9f4ddc78-2d90-4917-8895-612cecc0f885",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入PCB版本/周期",
-      "rules": [],
-      "maxLength": 255,
-      "colspan": 3,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "类别",
-    "fieldName": "leibie",
-    "type": "radio",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idshc1bd2d32-5113-406b-a20c-f28cb41ec033",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入单行文本框",
-      "rules": [],
-      "maxLength": 255,
-      "dataSource": "data",
-      "analysisType": "func",
-      "values": [{"name": "有铅", "value": "youqian", "xh": 1}, {
-        "name": "无铅",
-        "value": "wuqian",
-        "xh": 2
-      }, {"name": "混合工艺", "value": "hhgy", "xh": 3}],
-      "valuesDefaultValue": [{}],
-      "hideLabel": true,
-      "colspan": 4,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }], [{
-    "label": "首件类型",
-    "fieldName": "shoujianleixing",
-    "type": "radio",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idshb8f4512a-e6f9-4078-a21e-8e00d289f7df",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "dataSource": "data",
-      "analysisType": "func",
-      "values": [{"name": "每班首检", "value": "mbsj", "xh": 1}, {
-        "name": "重大工艺更改",
-        "value": "zdgygg",
-        "xh": 2
-      }, {"name": "转线（机型）", "value": "zxjx", "xh": 3}, {
-        "name": "新机型试产",
-        "value": "xjxsc",
-        "xh": 4
-      }, {"name": "软件变更", "value": "rjbg", "xh": 5}, {
-        "name": "返工",
-        "value": "fangong",
-        "xh": 6
-      }, {"name": "调机（印刷、贴片）", "value": "tjystp", "xh": 7}, {
-        "name": "机台设备程序变更",
-        "value": "jtsbcxbg",
-        "xh": 8
-      }, {"name": "回流曲线变更", "value": "hlqxbg", "xh": 9}, {
-        "name": "物料变更（主/辅料）",
-        "value": "wlbgzfl",
-        "xh": 10
-      }, {"name": "设计变更", "value": "sjbg", "xh": 11}],
-      "valuesDefaultValue": [{}],
-      "colHeight": "64px",
-      "colWidth": "43px",
-      "colspan": 11,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "39px", "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": true}
-  }], [{
-    "label": "静态文本",
-    "fieldName": "text17",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idshf5f1b938-4b40-482b-af9c-1c10e53f27be",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "检验及分析内容",
-      "colWidth": "43px",
-      "colspan": 1,
-      "rowspan": 28,
-      "cellVisible": true
-    }
-  }, {
-    "label": "静态文本",
-    "fieldName": "text18",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh2b00ee97-5e42-4303-8594-020779470d53",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "胶纸板首检确认",
-      "colWidth": "39px",
-      "colspan": 1,
-      "rowspan": 6,
-      "cellVisible": true
-    }
-  }, {
-    "label": "静态文本",
-    "fieldName": "text19",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh7420055c-a15f-48f0-8a51-4afca4d42057",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "检验项目",
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "静态文本",
-    "fieldName": "text20",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh9d9fab64-5490-4da2-8640-159f15ac0f02",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "起始时间",
-      "appCompVisible": true,
-      "labelFor": ["qssj1", "qssj70", "qssj71", "qssj72", "qssj73", "qssj74", "qssj75", "qssj76", "qssj77", "qssj78", "qssj79", "qssj80", "qssj81", "qssj82", "qssj83", "qssj84", "qssj85", "qssj86", "qssj87", "qssj88", "qssj89", "qssj90", "qssj91", "qssj92", "qssj93", "qssj94", "qssj95"],
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "静态文本",
-    "fieldName": "text21",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh84e6658f-d537-4eb1-af96-599051921934",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "数据记录",
-      "labelFor": ["sjjl96", "sjjl97", "sjjl98", "sjjl99", "sjjl100", "sjjl101", "sjjl102", "sjjl103", "sjjl104", "sjjl105", "sjjl106", "sjjl107", "sjjl108", "sjjl109", "sjjl110", "sjjl111", "sjjl112", "sjjl113", "sjjl114", "sjjl115", "sjjl116", "sjjl117", "sjjl118", "sjjl119", "sjjl120", "sjjl121"],
-      "appCompVisible": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "静态文本",
-    "fieldName": "text22",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsha3e9a2de-a5aa-4246-8137-c758272ec7da",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "异常原因/对策",
-      "appCompVisible": true,
-      "labelFor": ["ycyydc1", "ycyydc122", "ycyydc123", "ycyydc124", "ycyydc125", "ycyydc126", "ycyydc127", "ycyydc128", "ycyydc129", "ycyydc130", "ycyydc131", "ycyydc132", "ycyydc133", "ycyydc134", "ycyydc135", "ycyydc136", "ycyydc137", "ycyydc138", "ycyydc139", "ycyydc140", "ycyydc141", "ycyydc142", "ycyydc143", "ycyydc144", "ycyydc145", "ycyydc146", "ycyydc147"],
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "确认人",
-    "fieldName": "text23",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsha232a70e-81d7-4d64-a637-b47f9b0a579c",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "确认人",
-      "appCompVisible": true,
-      "labelFor": ["qurenren1", "qurenren148", "qurenren149", "qurenren150", "qurenren151", "qurenren152", "qurenren153", "qurenren154", "qurenren155", "qurenren156", "qurenren157", "qurenren158", "qurenren159", "qurenren160", "qurenren161", "qurenren162", "qurenren163", "qurenren164", "qurenren165", "qurenren166", "qurenren167", "qurenren168", "qurenren169", "qurenren170", "qurenren171", "qurenren172", "qurenren173"],
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }], [{
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "43px", "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "39px", "cellVisible": false}
-  }, {
-    "label": "静态文本",
-    "fieldName": "text24",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh6469eddd-f23d-4b3d-adfd-2744173935ad",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "根据生产计划核对机型配置信息（生产/工程/品质）",
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "时间选择器",
-    "fieldName": "qssj1",
-    "type": "time-picker",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh791e3f89-8c33-409c-952f-b06b514efd8b",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "isRange": true,
-      "rowNums": 1,
-      "columnNums": 1,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "数据记录",
-    "fieldName": "sjjl1",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh8035d585-3798-45ec-b201-816ac485f136",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入数据记录",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "异常原因/对策",
-    "fieldName": "ycyydc1",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh44db429a-edfa-4305-abaf-4c056bc6966e",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入异常原因/对策",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "确认人",
-    "fieldName": "qurenren1",
-    "type": "input",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh62aad525-229b-4f94-be26-9f4ce59ad3d8",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入确认人",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }], [{
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "43px", "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "39px", "cellVisible": false}
-  }, {
-    "label": "静态文本",
-    "fieldName": "text25",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idshb84d6c98-3be6-4b91-bcdb-c564bcc7c258",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "PCB检查（PCB外观、丝印、版本等）（生产/品质确认）",
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "时间选择器(复制)",
-    "fieldName": "qssj70",
-    "type": "time-picker",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "shbfd62986-c8c9-47c1-9748-f2fde2e682d8",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "isRange": true,
-      "rowNums": 1,
-      "columnNums": 1,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "数据记录(复制)",
-    "fieldName": "sjjl96",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "shc152bd1f-2392-4cac-85c0-a8147651e4b1",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入数据记录(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "异常原因/对策(复制)",
-    "fieldName": "ycyydc122",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh01bb15d1-f322-40da-812b-9f69afc3ce8c",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入异常原因/对策(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "确认人(复制)",
-    "fieldName": "qurenren148",
-    "type": "input",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh4fa967e9-a1f6-4593-a8e6-102117c20eef",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入确认人(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }], [{
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "43px", "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "39px", "cellVisible": false}
-  }, {
-    "label": "静态文本",
-    "fieldName": "text26",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh24fbad63-9c18-45cc-9827-cc0545e2d00c",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "物料核对（物料编码、描述、规格与BOM是否一致及阻容件相关参数等）（生产/品质确认）",
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "时间选择器(复制)",
-    "fieldName": "qssj71",
-    "type": "time-picker",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh3a44265b-5bd1-4468-957f-39639f425983",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "isRange": true,
-      "rowNums": 1,
-      "columnNums": 1,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "数据记录(复制)",
-    "fieldName": "sjjl97",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "shdf917f61-7386-4e65-909b-2a9a6fd1c93b",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入数据记录(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "异常原因/对策(复制)",
-    "fieldName": "ycyydc123",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh64a501a2-4e4d-42c1-8407-211d04c2f208",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入异常原因/对策(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "确认人(复制)",
-    "fieldName": "qurenren149",
-    "type": "input",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "shcd402b68-8de0-4135-a732-97f7839f7f44",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入确认人(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }], [{
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "43px", "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "39px", "cellVisible": false}
-  }, {
-    "label": "静态文本",
-    "fieldName": "text27",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idshc069e605-e7c5-47ce-ad44-92b8a694d827",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "贴片程序及版本核对（工程/品质确认）",
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "时间选择器(复制)",
-    "fieldName": "qssj72",
-    "type": "time-picker",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "shdc624d94-e019-4115-848f-8575fe3d4950",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "isRange": true,
-      "rowNums": 1,
-      "columnNums": 1,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "数据记录(复制)",
-    "fieldName": "sjjl98",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh6f033bb4-6e40-4b84-8f4c-3e1be1ef62f0",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入数据记录(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "异常原因/对策(复制)",
-    "fieldName": "ycyydc124",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh46a0ee49-6b8a-44fe-a7f3-a624511972e0",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入异常原因/对策(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "确认人(复制)",
-    "fieldName": "qurenren150",
-    "type": "input",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sha1b50626-41ef-47be-83bb-966c5a76d6a5",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入确认人(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }], [{
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "43px", "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "39px", "cellVisible": false}
-  }, {
-    "label": "静态文本",
-    "fieldName": "text28",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idshd945da96-1021-4049-b418-da63b861a701",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "极性方向确认，注意结构件位置和方向（生产/工程/品质确认）",
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "时间选择器(复制)",
-    "fieldName": "qssj73",
-    "type": "time-picker",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "shfca5ef0f-1394-4b4c-951f-81d7a3ef2236",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "isRange": true,
-      "rowNums": 1,
-      "columnNums": 1,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "数据记录(复制)",
-    "fieldName": "sjjl99",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh91a45080-9977-4dd6-b5a1-0947395dbed3",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入数据记录(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "异常原因/对策(复制)",
-    "fieldName": "ycyydc125",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sha444f6ee-1c82-49c3-a108-ff32e815b733",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入异常原因/对策(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "确认人(复制)",
-    "fieldName": "qurenren151",
-    "type": "input",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh7ea37f66-b1e7-455b-981d-a5e4ee18ea73",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入确认人(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }], [{
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "43px", "cellVisible": false}
-  }, {
-    "label": "静态文本",
-    "fieldName": "text33",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh9067dc5f-72b1-4c73-bf49-8c30328b4469",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "贴片段首件确认",
-      "colWidth": "39px",
-      "colspan": 1,
-      "rowspan": 13,
-      "cellVisible": true
-    }
-  }, {
-    "label": "静态文本",
-    "fieldName": "text34",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh9548e053-b64a-4e8e-a122-a0b700772f31",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "锡膏型号（生产/品质确认）",
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "时间选择器(复制)",
-    "fieldName": "qssj74",
-    "type": "time-picker",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh68c318a6-a613-4020-99ff-1123dc701f36",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "isRange": true,
-      "rowNums": 1,
-      "columnNums": 1,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "数据记录(复制)",
-    "fieldName": "sjjl100",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "shfc970858-e7c7-4d77-806b-e33191188291",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入数据记录(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "异常原因/对策(复制)",
-    "fieldName": "ycyydc126",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh9df1a97c-0db3-40e1-9eca-9162397f68b7",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入异常原因/对策(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "确认人(复制)",
-    "fieldName": "qurenren152",
-    "type": "input",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh62a3218d-ead6-47a0-9980-753a80744a39",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入确认人(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }], [{
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "43px", "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "39px", "cellVisible": false}
-  }, {
-    "label": "静态文本",
-    "fieldName": "text35",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idshed3c63de-8588-4100-8ab7-c6a8a3efbbb2",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "印刷参数确认（需记载数据由工程/品质填写）",
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "时间选择器(复制)",
-    "fieldName": "qssj75",
-    "type": "time-picker",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "shffc5973d-3b0f-4f45-a012-0afe386a9bd4",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "isRange": true,
-      "rowNums": 1,
-      "columnNums": 1,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "数据记录(复制)",
-    "fieldName": "sjjl101",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "shb77fd7dd-9a1e-4c9a-8c70-1666202b3581",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入数据记录(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "异常原因/对策(复制)",
-    "fieldName": "ycyydc127",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh5d4fbaba-ec4e-47d5-b418-9149b5f3ce60",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入异常原因/对策(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "确认人(复制)",
-    "fieldName": "qurenren153",
-    "type": "input",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh0218bbde-f216-4d9e-a5a0-b92b57cb14b1",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入确认人(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }], [{
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "43px", "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "39px", "cellVisible": false}
-  }, {
-    "label": "静态文本",
-    "fieldName": "text36",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh253c9f5a-5f68-4c87-a82b-b7b074f872b6",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "锡膏厚度测试（需记数据由品质填写）",
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "时间选择器(复制)",
-    "fieldName": "qssj76",
-    "type": "time-picker",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh4262be46-3d9f-4d5d-b609-7c7dbbe5ff76",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "isRange": true,
-      "rowNums": 1,
-      "columnNums": 1,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "数据记录(复制)",
-    "fieldName": "sjjl102",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh818f0773-3c97-40a4-9e5d-395681434f46",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入数据记录(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "异常原因/对策(复制)",
-    "fieldName": "ycyydc128",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh66254ee5-27dc-40e0-8eb3-762a27423212",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入异常原因/对策(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "确认人(复制)",
-    "fieldName": "qurenren154",
-    "type": "input",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh9d090543-0f41-4bfd-bfca-89e726f6d3d5",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入确认人(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }], [{
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "43px", "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "39px", "cellVisible": false}
-  }, {
-    "label": "静态文本",
-    "fieldName": "text37",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh8ea5f176-0327-4270-8030-9d65511799fa",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "贴片程序及版本核对（工程/品质确认）",
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "时间选择器(复制)",
-    "fieldName": "qssj77",
-    "type": "time-picker",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh1323ac93-98ce-4345-bc95-fa633c19a3df",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "isRange": true,
-      "rowNums": 1,
-      "columnNums": 1,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "数据记录(复制)",
-    "fieldName": "sjjl103",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh83a90c20-d8c1-4511-b487-b1fe1a68f2b7",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入数据记录(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "异常原因/对策(复制)",
-    "fieldName": "ycyydc129",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh5c4d1dbb-167d-414d-a7d6-fedcec14cc01",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入异常原因/对策(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "确认人(复制)",
-    "fieldName": "qurenren155",
-    "type": "input",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "shcd8abb86-dadc-4f54-ab5f-63667419d21b",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入确认人(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }], [{
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "43px", "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "39px", "cellVisible": false}
-  }, {
-    "label": "静态文本",
-    "fieldName": "text38",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh31a1c469-24b9-4224-b1e6-9eb50451856e",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "物料核对（物料编码、描述、规格与BOM是否一致及阻容件相关参数等）（生产/品质确认）",
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "时间选择器(复制)",
-    "fieldName": "qssj78",
-    "type": "time-picker",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh40359459-cac3-4167-9dee-c0b047885f58",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "isRange": true,
-      "rowNums": 1,
-      "columnNums": 1,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "数据记录(复制)",
-    "fieldName": "sjjl104",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh86cd8b0a-e292-4608-94b7-86187bbc3c42",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入数据记录(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "异常原因/对策(复制)",
-    "fieldName": "ycyydc130",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh05ebabf8-6e51-49ad-8dfc-fef6094f3fd5",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入异常原因/对策(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "确认人(复制)",
-    "fieldName": "qurenren156",
-    "type": "input",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "shb6d7f60a-b20e-4258-8ae6-b2284e0402f0",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入确认人(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }], [{
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "43px", "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "39px", "cellVisible": false}
-  }, {
-    "label": "静态文本",
-    "fieldName": "text39",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh2e85e15f-558e-4f1d-8871-2ee2ba0d1a4b",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "极性方向确认，注意结构件位置和方向（生产/工程/品质确认）",
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "时间选择器(复制)",
-    "fieldName": "qssj79",
-    "type": "time-picker",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh80967fd5-0c33-4658-9056-93e060e52d40",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "isRange": true,
-      "rowNums": 1,
-      "columnNums": 1,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "数据记录(复制)",
-    "fieldName": "sjjl105",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh5f941e99-8e1b-4a45-aded-3d7606371333",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入数据记录(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "异常原因/对策(复制)",
-    "fieldName": "ycyydc131",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh65a752da-8f24-45a7-a179-df2c37831a3d",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入异常原因/对策(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "确认人(复制)",
-    "fieldName": "qurenren157",
-    "type": "input",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh3369ec66-ee7a-45b5-bdc0-cd93fd30869d",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入确认人(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }], [{
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "43px", "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "39px", "cellVisible": false}
-  }, {
-    "label": "静态文本",
-    "fieldName": "text40",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh54899edd-2294-4266-9270-21faa37498f1",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "参照样板确认（品质/工程确认）",
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "时间选择器(复制)",
-    "fieldName": "qssj80",
-    "type": "time-picker",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh7fa09de5-e2d9-4309-b657-2a819bf64014",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "isRange": true,
-      "rowNums": 1,
-      "columnNums": 1,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "数据记录(复制)",
-    "fieldName": "sjjl106",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "shf7f67eac-0073-4c5d-9a6a-c899348d4bbf",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入数据记录(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "异常原因/对策(复制)",
-    "fieldName": "ycyydc132",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh9066dd7e-8fa0-46c8-a71e-3a0c2f71844f",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入异常原因/对策(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "确认人(复制)",
-    "fieldName": "qurenren158",
-    "type": "input",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh74004d2d-2960-411a-9c65-42d048b0af40",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入确认人(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }], [{
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "43px", "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "39px", "cellVisible": false}
-  }, {
-    "label": "静态文本",
-    "fieldName": "text41",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh50f2691d-b68a-41a8-a91b-0f6a29aebb54",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "炉前X-Ray/AOI检查（工程确认）",
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "时间选择器(复制)",
-    "fieldName": "qssj81",
-    "type": "time-picker",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "shfdd8c0ef-a1c7-412d-b812-ba727f56c5a9",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "isRange": true,
-      "rowNums": 1,
-      "columnNums": 1,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "数据记录(复制)",
-    "fieldName": "sjjl107",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh32042028-d931-4247-9b56-bb56a06b8b3f",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入数据记录(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "异常原因/对策(复制)",
-    "fieldName": "ycyydc133",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "shdb0728d5-7cd5-4b89-991c-060d5d692e55",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入异常原因/对策(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "确认人(复制)",
-    "fieldName": "qurenren159",
-    "type": "input",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh0f25d235-e0ef-4ad6-854b-c1d86da6e77e",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入确认人(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }], [{
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "43px", "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "39px", "cellVisible": false}
-  }, {
-    "label": "静态文本",
-    "fieldName": "text42",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh6e6b28ed-7f95-4868-8b4b-144a9c6d2299",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "回流曲线测试（需记录回流程序，工程确认）",
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "时间选择器(复制)",
-    "fieldName": "qssj82",
-    "type": "time-picker",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "shf3946eb4-f8ae-422c-bcae-4ef348fc45c6",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "isRange": true,
-      "rowNums": 1,
-      "columnNums": 1,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "数据记录(复制)",
-    "fieldName": "sjjl108",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh5d11a9c4-adbe-4d9a-ad16-9d5506754e5c",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入数据记录(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "异常原因/对策(复制)",
-    "fieldName": "ycyydc134",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "shf47dc3cc-b383-4696-aac7-aa05234b310d",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入异常原因/对策(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "确认人(复制)",
-    "fieldName": "qurenren160",
-    "type": "input",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sha022fd0a-a9ae-4823-9543-04933a77fa32",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入确认人(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }], [{
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "43px", "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "39px", "cellVisible": false}
-  }, {
-    "label": "静态文本",
-    "fieldName": "text43",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh90e6566f-abc7-4b39-a815-0eeff5fcbc7d",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "炉后X-Ray/AOI检查（生产/工程/品质）",
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "时间选择器(复制)",
-    "fieldName": "qssj83",
-    "type": "time-picker",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh78d56966-3480-4bef-b74f-2e68fa3e04aa",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "isRange": true,
-      "rowNums": 1,
-      "columnNums": 1,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "数据记录(复制)",
-    "fieldName": "sjjl109",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "shb758f060-4de1-4c6d-9875-2a950446538b",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入数据记录(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "异常原因/对策(复制)",
-    "fieldName": "ycyydc135",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh796f6172-58ab-4b74-b7a2-63211cea97bd",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入异常原因/对策(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "确认人(复制)",
-    "fieldName": "qurenren161",
-    "type": "input",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh4fa465a1-3174-46fa-8fb7-3d11e50468f1",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入确认人(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }], [{
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "43px", "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "39px", "cellVisible": false}
-  }, {
-    "label": "静态文本",
-    "fieldName": "text44",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsha450ae99-170b-47b7-a6ba-426c392fafd3",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "USB和耳机的插孔底部锡凸出高度≤0.4mm（品质确认）",
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "时间选择器(复制)",
-    "fieldName": "qssj84",
-    "type": "time-picker",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh56fb6867-287b-48ea-8ff6-878811998131",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "isRange": true,
-      "rowNums": 1,
-      "columnNums": 1,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "数据记录(复制)",
-    "fieldName": "sjjl110",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh78f539c3-24d9-43f5-844b-012fce2c8fa1",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入数据记录(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "异常原因/对策(复制)",
-    "fieldName": "ycyydc136",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "shaaccd5a9-38cd-49d1-af39-fa30b114121b",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入异常原因/对策(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "确认人(复制)",
-    "fieldName": "qurenren162",
-    "type": "input",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh7b7350b9-8bfb-4d8c-82fb-13f23fb4087d",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入确认人(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }], [{
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "43px", "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "39px", "cellVisible": false}
-  }, {
-    "label": "静态文本",
-    "fieldName": "text45",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh1858f680-0e47-4cb4-944e-c611720691c8",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "分板尺寸和外观检查（生产/品质确认）",
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "时间选择器(复制)",
-    "fieldName": "qssj85",
-    "type": "time-picker",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh961daf6f-1054-44a5-a5b1-34f8dd15760a",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "isRange": true,
-      "rowNums": 1,
-      "columnNums": 1,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "数据记录(复制)",
-    "fieldName": "sjjl111",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh17875aca-e6eb-4378-8b2a-271bc8aa963e",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入数据记录(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "异常原因/对策(复制)",
-    "fieldName": "ycyydc137",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "shb7cada83-11db-494c-b0f6-2fe51c2b9d0d",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入异常原因/对策(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "确认人(复制)",
-    "fieldName": "qurenren163",
-    "type": "input",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "she9d51714-e616-48ab-8512-b959f7ce366e",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入确认人(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }], [{
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "43px", "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "39px", "cellVisible": false}
-  }, {
-    "label": "静态文本",
-    "fieldName": "text46",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh9e905484-d021-4119-9a7a-a8fc6d599c78",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "条码贴纸/镭雕SN确认（品质确认）",
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "时间选择器(复制)",
-    "fieldName": "qssj86",
-    "type": "time-picker",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh4c021d5a-00e9-46a8-a9a3-62285c3786ac",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "isRange": true,
-      "rowNums": 1,
-      "columnNums": 1,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "数据记录(复制)",
-    "fieldName": "sjjl112",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh5b6493f7-6ddc-4612-908e-e423a98a4e85",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入数据记录(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "异常原因/对策(复制)",
-    "fieldName": "ycyydc138",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "shf0290eb8-9d63-41f7-9d01-d4ac63a05c3c",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入异常原因/对策(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "确认人(复制)",
-    "fieldName": "qurenren164",
-    "type": "input",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh5c86f6b1-4baa-4a36-bc9d-90a16cff0338",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入确认人(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }], [{
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "43px", "cellVisible": false}
-  }, {
-    "label": "静态文本",
-    "fieldName": "text47",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh61f65660-8e51-4f0d-a4fa-9312eac05aaa",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "测试段首件确认",
-      "colWidth": "39px",
-      "colspan": 1,
-      "rowspan": 9,
-      "cellVisible": true
-    }
-  }, {
-    "label": "静态文本",
-    "fieldName": "text48",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh62005284-3106-4723-84a0-a0da551fa55a",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "测试各工序工程需检查测试夹具所有物料有无避空到位（工程确认）",
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "时间选择器(复制)",
-    "fieldName": "qssj87",
-    "type": "time-picker",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "shb3e0e502-e988-4732-9817-38502fb9e386",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "isRange": true,
-      "rowNums": 1,
-      "columnNums": 1,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "数据记录(复制)",
-    "fieldName": "sjjl113",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh4b6ae212-6c38-4727-9066-8922725f6d3f",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入数据记录(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "异常原因/对策(复制)",
-    "fieldName": "ycyydc139",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "shc0d500b7-5bf7-402f-aded-382f2d39fd42",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入异常原因/对策(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "确认人(复制)",
-    "fieldName": "qurenren165",
-    "type": "input",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh42385e1d-cef9-4fa5-81e0-cad6c4a21ded",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入确认人(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }], [{
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "43px", "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "39px", "cellVisible": false}
-  }, {
-    "label": "静态文本",
-    "fieldName": "text49",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh040950de-9039-4761-94eb-80fa7d36c7b2",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "下载（烧录）测试软件版本确认（工程/品质确认）",
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "时间选择器(复制)",
-    "fieldName": "qssj88",
-    "type": "time-picker",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh8d2be8c3-e0c3-4358-a8ca-f8869767155c",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "isRange": true,
-      "rowNums": 1,
-      "columnNums": 1,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "数据记录(复制)",
-    "fieldName": "sjjl114",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh01ea8345-b5af-4b4f-9b21-9c9d37b56a47",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入数据记录(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "异常原因/对策(复制)",
-    "fieldName": "ycyydc140",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh65f50921-3409-4b9e-91b0-e6e7ad105fb4",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入异常原因/对策(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "确认人(复制)",
-    "fieldName": "qurenren166",
-    "type": "input",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh12633a4f-f210-45d3-8393-a3405ceefd81",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入确认人(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }], [{
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "43px", "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "39px", "cellVisible": false}
-  }, {
-    "label": "静态文本",
-    "fieldName": "text50",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idshaca82d9d-7e33-4062-830d-5d550dc272c2",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "开检测试脚本及工具（工程/品质确认）",
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "时间选择器(复制)",
-    "fieldName": "qssj89",
-    "type": "time-picker",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh23426ddb-9753-49e9-9f4a-1155d599d55c",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "isRange": true,
-      "rowNums": 1,
-      "columnNums": 1,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "数据记录(复制)",
-    "fieldName": "sjjl115",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh3d2ae7bb-e982-42c4-bf69-7a729e613c0a",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入数据记录(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "异常原因/对策(复制)",
-    "fieldName": "ycyydc141",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "shdde6cec8-86d9-44d7-8df7-38a14551b221",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入异常原因/对策(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "确认人(复制)",
-    "fieldName": "qurenren167",
-    "type": "input",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh04e059dd-c0ed-4368-8d50-9f9a2354e268",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入确认人(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }], [{
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "43px", "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "39px", "cellVisible": false}
-  }, {
-    "label": "静态文本",
-    "fieldName": "text51",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh5b59da20-71f0-42e4-8b59-4a39561bfac5",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "校准测试配置文件、脚本及工具（工程/品质确认）",
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "时间选择器(复制)",
-    "fieldName": "qssj90",
-    "type": "time-picker",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "shc5ddaaa6-771b-4d42-a956-c656fe6a624e",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "isRange": true,
-      "rowNums": 1,
-      "columnNums": 1,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "数据记录(复制)",
-    "fieldName": "sjjl116",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh8ebb8f06-e64c-4721-8ab4-e9b564906360",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入数据记录(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "异常原因/对策(复制)",
-    "fieldName": "ycyydc142",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh4c3f391a-f064-4705-bf11-f60458e424df",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入异常原因/对策(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "确认人(复制)",
-    "fieldName": "qurenren168",
-    "type": "input",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh81a42d96-999c-49f6-96f4-6bc881132dfe",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入确认人(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }], [{
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "43px", "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "39px", "cellVisible": false}
-  }, {
-    "label": "静态文本",
-    "fieldName": "text52",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh2d6c8054-b2b6-4b46-9d77-6f54ebbf5706",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "综测测试脚本（工程/品质确认）",
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "时间选择器(复制)",
-    "fieldName": "qssj91",
-    "type": "time-picker",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh78261f90-6a40-4b92-9a4f-dfb0697f6346",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "isRange": true,
-      "rowNums": 1,
-      "columnNums": 1,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "数据记录(复制)",
-    "fieldName": "sjjl117",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "shc1a7de8c-ba97-468f-b345-5779695e0e9a",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入数据记录(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "异常原因/对策(复制)",
-    "fieldName": "ycyydc143",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh13454452-9f48-46e0-8cbf-1ee7c4137120",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入异常原因/对策(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "确认人(复制)",
-    "fieldName": "qurenren169",
-    "type": "input",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "shfd2f2d46-9e9b-46de-884a-291421f9670b",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入确认人(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }], [{
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "43px", "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "39px", "cellVisible": false}
-  }, {
-    "label": "静态文本",
-    "fieldName": "text53",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh4b1bacd3-ecbe-46ad-b947-5017824a5078",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "传导测试脚本（工程/品质确认）",
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "时间选择器(复制)",
-    "fieldName": "qssj92",
-    "type": "time-picker",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "shbc2c55a0-8a37-406f-b264-0f7f97147bda",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "isRange": true,
-      "rowNums": 1,
-      "columnNums": 1,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "数据记录(复制)",
-    "fieldName": "sjjl118",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "she290cde9-259d-458c-b386-4c693adab389",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入数据记录(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "异常原因/对策(复制)",
-    "fieldName": "ycyydc144",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh0fee1f9e-0095-441c-9bc4-b5cb8c9262fc",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入异常原因/对策(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "确认人(复制)",
-    "fieldName": "qurenren170",
-    "type": "input",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh62693c56-8a99-4662-a2e3-be8fae620050",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入确认人(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }], [{
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "43px", "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "39px", "cellVisible": false}
-  }, {
-    "label": "静态文本",
-    "fieldName": "text54",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh4d0d0900-7080-4400-b038-9ab234764c8c",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "功能测试脚本（工程/品质确认）",
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "时间选择器(复制)",
-    "fieldName": "qssj93",
-    "type": "time-picker",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "shcb93a647-e076-44c9-939a-d2ffc45a6d85",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "isRange": true,
-      "rowNums": 1,
-      "columnNums": 1,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "数据记录(复制)",
-    "fieldName": "sjjl119",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sha3fe7676-3b79-44a6-a39c-975739f21854",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入数据记录(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "异常原因/对策(复制)",
-    "fieldName": "ycyydc145",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh573e990c-e16b-4a59-a97f-a6e655a483a9",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入异常原因/对策(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "确认人(复制)",
-    "fieldName": "qurenren171",
-    "type": "input",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh11037c49-3f92-4378-9fcd-46c02e063376",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入确认人(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }], [{
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "43px", "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "39px", "cellVisible": false}
-  }, {
-    "label": "静态文本",
-    "fieldName": "text55",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsha0b43aff-4e42-4c9f-945b-9a8d9d8d92ff",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "暗电流测试脚本（工程/品质确认）",
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "时间选择器(复制)",
-    "fieldName": "qssj94",
-    "type": "time-picker",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "shf6280be4-494e-4ef7-814b-9fad72cbdfba",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "isRange": true,
-      "rowNums": 1,
-      "columnNums": 1,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "数据记录(复制)",
-    "fieldName": "sjjl120",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh2244c170-bc58-4e89-b9e6-0f3368d87850",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入数据记录(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "异常原因/对策(复制)",
-    "fieldName": "ycyydc146",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh9a35ff98-36f1-43cb-80f0-df14a06d1ab7",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入异常原因/对策(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "确认人(复制)",
-    "fieldName": "qurenren172",
-    "type": "input",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh9b8dae07-95d6-42bd-aa7a-16fd3f6ffe68",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入确认人(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }], [{
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "43px", "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "colWidth": "39px", "cellVisible": false}
-  }, {
-    "label": "静态文本",
-    "fieldName": "text56",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh1184f382-2866-499c-81af-babebdad6706",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "外观检查：检查 弹片、屏蔽盖、BTB、LED、光感、SIM卡盖子是否有焊接不良，BTB、LED、光感等目视无法看清焊接情况的器件需要CCD检验；板边小料是否有损件。（品质确认）",
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "时间选择器(复制)",
-    "fieldName": "qssj95",
-    "type": "time-picker",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh1ce70ac3-2e76-48d8-bd6b-6e224daf5b3f",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "isRange": true,
-      "rowNums": 1,
-      "columnNums": 1,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "数据记录(复制)",
-    "fieldName": "sjjl121",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh6912d07b-aa2a-438a-b8bb-cd764c244d06",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入数据记录(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "异常原因/对策(复制)",
-    "fieldName": "ycyydc147",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh9e41c5fe-0355-44b7-adbe-a8e691403b14",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入异常原因/对策(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "确认人(复制)",
-    "fieldName": "qurenren173",
-    "type": "input",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "sh9643383c-72a4-4764-8a99-40cbbfd191bb",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入确认人(复制)",
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "colspan": 2,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }], [{
-    "label": "静态文本",
-    "fieldName": "text57",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idshb10e953e-146a-4982-ad79-93dd2ded16cb",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "判定结果",
-      "appCompVisible": true,
-      "labelFor": ["pandingjieguo"],
-      "colWidth": "43px",
-      "colspan": 1,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "label": "判定结果",
-    "fieldName": "pandingjieguo",
-    "type": "radio",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh4cce6e71-6f73-4f28-83c3-69c5fe064d80",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "hideLabel": true,
-      "dataSource": "data",
-      "analysisType": "func",
-      "values": [{"name": "A:合格，可以生产", "value": "A", "xh": 1}, {
-        "name": "B:不合格，暂停生产",
-        "value": "B",
-        "xh": 2
-      }],
-      "valuesDefaultValue": [{}],
-      "colWidth": "39px",
-      "colspan": 11,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }], [{
-    "label": "静态文本",
-    "fieldName": "text59",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idshb923795e-4c4c-46a0-b306-eba0cd78f0fa",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "备注",
-      "labelFor": ["beizhu"],
-      "appCompVisible": true,
-      "colWidth": "43px",
-      "colspan": 1,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "label": "多行文本框",
-    "fieldName": "beizhu",
-    "type": "textarea",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh07998ce6-e7cc-4679-96d7-b591e7324bae",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入多行文本框",
-      "rules": [],
-      "maxLength": 1000,
-      "hideLabel": true,
-      "colWidth": "39px",
-      "colspan": 11,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }], [{
-    "label": "静态文本",
-    "fieldName": "text61",
-    "type": "text",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idshe5eda564-e00b-4c46-9466-05e36799b453",
-    "preps": {
-      "clearable": true,
-      "rules": [],
-      "maxLength": 255,
-      "staticData": true,
-      "textContent": "会签",
-      "colWidth": "43px",
-      "colspan": 1,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "label": "生产部",
-    "fieldName": "shengchanbu",
-    "type": "input",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idshd383cded-414d-45ab-85db-247ce22fe5e4",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入生产部",
-      "rules": [],
-      "maxLength": 255,
-      "colWidth": "39px",
-      "colspan": 4,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "工程部",
-    "fieldName": "gongchengbu",
-    "type": "input",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idsh362bdd94-9a12-4720-beb1-d1ede38bd093",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入工程部",
-      "rules": [],
-      "maxLength": 255,
-      "colspan": 3,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "label": "质量部",
-    "fieldName": "zhiliangbu",
-    "type": "input",
-    "formVisible": true,
-    "listVisible": true,
-    "viewVisible": true,
-    "id": "Idshcaf244ea-3342-48fa-acf4-b6da4a6e029b",
-    "preps": {
-      "clearable": true,
-      "placeholder": "请输入质量部",
-      "rules": [],
-      "maxLength": 255,
-      "colspan": 4,
-      "rowspan": 1,
-      "cellVisible": true
-    }
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }, {
-    "type": "empty",
-    "viewVisible": true,
-    "formVisible": false,
-    "preps": {"colspan": 1, "rowspan": 1, "cellVisible": false}
-  }]]
-}];
+const fieldList = {
+  "fieldList" : [ {
+    "dytableList" : [
+        [ {
+      "label" : "Html组件",
+      "fieldName" : "html2",
+      "type" : "html",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "rowNums" : 1,
+        "textContent" : "<p style=\"text-align: center;\"><span style=\"font-size: 19px;\">惠州朵唯通信设备有限公司</span></p><p style=\"text-align: center;\"><span style=\"font-size: 19px;\">异常反馈单</span></p>",
+        "label" : "Html组件",
+        "colspan" : 5,
+        "viewVisible" : true,
+        "itemNameLabel" : "Html组件",
+        "readonly" : false,
+        "formVisible" : true,
+        "elements" : [ {
+          "id" : "sh4e7f9873-960c-4fbe-bfda-febc1108da17",
+          "colIndex" : 1,
+          "columns" : [ {
+            "id" : "she2d30714-d681-48e8-be06-c4e1093f765a",
+            "colIndex" : 1,
+            "rowspan" : 1,
+            "colspan" : 1,
+            "items" : [ ],
+            "cellVisible" : true
+          } ]
+        } ],
+        "rowspan" : 3,
+        "name" : "html2",
+        "id" : "shdb288f86-bede-4d0a-b634-27be9280f3bb",
+        "columnNums" : 1,
+        "staticData" : true,
+        "maxLength" : 255,
+        "listVisible" : true
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "shc7e0f485-5f98-4a78-bbfe-a666bb539c2e"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "186px",
+        "id" : "sh7a933260-3369-4bdf-82be-3718674e2030"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "62px",
+        "id" : "sh3a0a7cbe-18c3-41ac-b891-178bee5f4baa"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "172px",
+        "id" : "sh29a99eca-3da8-433a-8e8c-d88209e83375"
+      }
+    }, {
+      "label" : "静态文本",
+      "fieldName" : "text3",
+      "type" : "text",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "colWidth" : "185px",
+        "textContent" : "批准",
+        "label" : "静态文本",
+        "colspan" : 1,
+        "viewVisible" : true,
+        "itemNameLabel" : "静态文本",
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 1,
+        "name" : "text3",
+        "appCompVisible" : true,
+        "id" : "sh272263b2-64ee-49e0-8f03-081f4befe3ea",
+        "staticData" : true,
+        "maxLength" : 255,
+        "listVisible" : true
+      }
+    }, {
+      "label" : "静态文本",
+      "fieldName" : "text4",
+      "type" : "text",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "textContent" : "审核",
+        "label" : "静态文本",
+        "colspan" : 1,
+        "viewVisible" : true,
+        "itemNameLabel" : "静态文本",
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 1,
+        "name" : "text4",
+        "appCompVisible" : true,
+        "id" : "sh623fdb70-b314-4ab8-8243-6004f382c6b8",
+        "staticData" : true,
+        "maxLength" : 255,
+        "listVisible" : true
+      }
+    }, {
+      "label" : "静态文本",
+      "fieldName" : "text5",
+      "type" : "text",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "textContent" : "作成",
+        "label" : "静态文本",
+        "colspan" : 1,
+        "viewVisible" : true,
+        "itemNameLabel" : "静态文本",
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 1,
+        "name" : "text5",
+        "appCompVisible" : true,
+        "id" : "sh78e007ac-fa43-4cf9-81e9-80e527dddcc1",
+        "staticData" : true,
+        "maxLength" : 255,
+        "listVisible" : true
+      }
+    } ], [ {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "sh5eb69288-c3df-4ef0-9242-6ec52e0ecb84"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "sh0b41f4fe-b1cd-439a-8188-f21af057b9d7"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "186px",
+        "id" : "sh93fcd205-ced0-4372-9ef7-df4da5fd99d8"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "62px",
+        "id" : "sh7c931d88-4db2-4f2e-9f90-4ec5a2c1fca3"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "172px",
+        "id" : "sh947310d0-1d41-4d19-b30f-9edf3ab0abd0"
+      }
+    }, {
+      "label" : "批准",
+      "fieldName" : "pizhun",
+      "type" : "input",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "rowNums" : 1,
+        "colWidth" : "185px",
+        "label" : "批准",
+        "colspan" : 1,
+        "viewVisible" : true,
+        "itemNameLabel" : "单行文本框",
+        "readonly" : false,
+        "formVisible" : true,
+        "elements" : [ {
+          "id" : "sh92de17dc-2c75-438a-ae0d-f75fc78efec2",
+          "colIndex" : 1,
+          "columns" : [ {
+            "id" : "sh4a57cafb-8301-4737-909d-c53c44d945c9",
+            "colIndex" : 1,
+            "rowspan" : 1,
+            "colspan" : 1,
+            "items" : [ ],
+            "cellVisible" : true
+          } ]
+        } ],
+        "rowspan" : 1,
+        "name" : "pizhun",
+        "id" : "shac0fc43c-9515-4c7c-bc72-8e8befb155e9",
+        "placeholder" : "请输入批准",
+        "columnNums" : 1,
+        "maxLength" : 255,
+        "listVisible" : true,
+        "hideLabel" : true
+      }
+    }, {
+      "label" : "审核",
+      "fieldName" : "shenhe",
+      "type" : "input",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "label" : "审核",
+        "colspan" : 1,
+        "viewVisible" : true,
+        "itemNameLabel" : "单行文本框",
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 1,
+        "name" : "shenhe",
+        "id" : "sh0d1abe78-a0b2-48fe-a2ab-b6f429816a06",
+        "placeholder" : "请输入审核",
+        "maxLength" : 255,
+        "listVisible" : true,
+        "hideLabel" : true
+      }
+    }, {
+      "label" : "作成",
+      "fieldName" : "zuocheng",
+      "type" : "input",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "label" : "作成",
+        "colspan" : 1,
+        "viewVisible" : true,
+        "itemNameLabel" : "单行文本框",
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 1,
+        "name" : "zuocheng",
+        "id" : "sh7aa26678-4e58-4cde-8359-3ac1383a1544",
+        "placeholder" : "请输入作成",
+        "maxLength" : 255,
+        "listVisible" : true,
+        "hideLabel" : true
+      }
+    } ], [ {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "shfe7b5fcd-6fd5-4c15-9a70-2e480840c0db"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "sh5c19db94-7757-4caa-a69b-2fe01c7bfe0e"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "186px",
+        "id" : "sh3b94e38d-6cef-4799-96b8-a560ec3632d3"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "62px",
+        "id" : "sh7e9e2682-e41b-439d-a266-4e3bb649f211"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "172px",
+        "id" : "shaf566f28-16df-43bb-ab5c-b175b24b4387"
+      }
+    }, {
+      "label" : "批准时间",
+      "fieldName" : "pizhunshijian",
+      "type" : "datetime",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "colWidth" : "185px",
+        "label" : "批准时间",
+        "type" : "datetime",
+        "colspan" : 1,
+        "viewVisible" : true,
+        "itemNameLabel" : "日期选择器",
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 1,
+        "name" : "pizhunshijian",
+        "id" : "sh5513989e-d01d-493f-919c-5ce15a262d75",
+        "placeholder" : "请选择批准时间",
+        "maxLength" : 255,
+        "listVisible" : true,
+        "hideLabel" : true
+      }
+    }, {
+      "label" : "审核时间",
+      "fieldName" : "shenheshijian",
+      "type" : "datetime",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "label" : "审核时间",
+        "type" : "datetime",
+        "colspan" : 1,
+        "viewVisible" : true,
+        "itemNameLabel" : "日期选择器",
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 1,
+        "name" : "shenheshijian",
+        "id" : "sh1d77c0c8-7df2-46e8-addc-e6c8db504da0",
+        "placeholder" : "请选择审核时间",
+        "maxLength" : 255,
+        "listVisible" : true,
+        "hideLabel" : true
+      }
+    }, {
+      "label" : "作成时间",
+      "fieldName" : "zuochengshijian",
+      "type" : "datetime",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "label" : "作成时间",
+        "type" : "datetime",
+        "colspan" : 1,
+        "viewVisible" : true,
+        "itemNameLabel" : "日期选择器",
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 1,
+        "name" : "zuochengshijian",
+        "id" : "sh9a8987c4-1106-4ec6-b5a9-28b741a710f8",
+        "placeholder" : "请选择作成时间",
+        "maxLength" : 255,
+        "listVisible" : true,
+        "hideLabel" : true
+      }
+    } ], [ {
+      "label" : "TO",
+      "fieldName" : "formTo",
+      "type" : "input",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "label" : "TO",
+        "colspan" : 2,
+        "viewVisible" : true,
+        "itemNameLabel" : "单行文本框",
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 1,
+        "name" : "formTo",
+        "id" : "sh828e9be4-d111-4f6c-82a3-21a12d7865d9",
+        "placeholder" : "请输入TO",
+        "maxLength" : 255,
+        "listVisible" : true
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "sh0a470bc8-3c23-4e47-9b8c-74c32b35710c"
+      }
+    }, {
+      "label" : "CC",
+      "fieldName" : "chaosong",
+      "type" : "input",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "colWidth" : "186px",
+        "label" : "CC",
+        "colspan" : 4,
+        "viewVisible" : true,
+        "itemNameLabel" : "单行文本框",
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 1,
+        "name" : "chaosong",
+        "id" : "shb043dcff-f307-4ca0-9396-bde2709450f4",
+        "placeholder" : "请输入CC",
+        "maxLength" : 255,
+        "listVisible" : true
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "62px",
+        "id" : "sheedb2b29-ac3c-44d5-b426-746b4b7713b7"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "172px",
+        "id" : "sh353e8cc7-6ee1-4a1c-87df-9cc955d0899d"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "185px",
+        "id" : "shab30f31b-a4f0-4e97-b3d9-b3bab137ec43"
+      }
+    }, {
+      "label" : "编号",
+      "fieldName" : "bianhao",
+      "type" : "input",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "searchVisible" : true,
+        "cellVisible" : true,
+        "label" : "编号",
+        "colspan" : 2,
+        "viewVisible" : true,
+        "itemNameLabel" : "单行文本框",
+        "readonly" : false,
+        "formVisible" : true,
+        "defaultVisible" : true,
+        "rowspan" : 1,
+        "name" : "bianhao",
+        "id" : "sh43355758-0f59-4c58-999e-dba032b13c41",
+        "placeholder" : "请输入编号",
+        "maxLength" : 255,
+        "listVisible" : true
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "sh5faa898a-9c79-4037-bb4a-264cd445cc41"
+      }
+    } ], [ {
+      "label" : "机型",
+      "fieldName" : "jixing",
+      "type" : "input",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "searchVisible" : true,
+        "cellVisible" : true,
+        "label" : "机型",
+        "colspan" : 2,
+        "viewVisible" : true,
+        "itemNameLabel" : "单行文本框",
+        "readonly" : false,
+        "formVisible" : true,
+        "defaultVisible" : true,
+        "rowspan" : 1,
+        "name" : "jixing",
+        "id" : "sh95fde466-3c98-482b-9617-8cf5a49ca10e",
+        "placeholder" : "请输入机型",
+        "maxLength" : 255,
+        "listVisible" : true
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "shf763f014-36a8-444a-867d-c849d23b619e"
+      }
+    }, {
+      "label" : "生产批号",
+      "fieldName" : "shengchanpihao",
+      "type" : "input",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "searchVisible" : true,
+        "cellVisible" : true,
+        "colWidth" : "186px",
+        "label" : "生产批号",
+        "colspan" : 2,
+        "viewVisible" : true,
+        "itemNameLabel" : "单行文本框",
+        "readonly" : false,
+        "formVisible" : true,
+        "defaultVisible" : true,
+        "rowspan" : 1,
+        "name" : "shengchanpihao",
+        "id" : "shc89eabf2-6ddf-42d1-afbc-a2c6d3abf689",
+        "placeholder" : "请输入生产批号",
+        "maxLength" : 255,
+        "listVisible" : true
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "62px",
+        "id" : "sh821a62f7-a584-46e2-9d29-9eb7fab9b97c"
+      }
+    }, {
+      "label" : "批量",
+      "fieldName" : "piliang",
+      "type" : "input",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "colWidth" : "172px",
+        "label" : "批量",
+        "colspan" : 2,
+        "viewVisible" : true,
+        "itemNameLabel" : "单行文本框",
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 1,
+        "name" : "piliang",
+        "id" : "she382caae-53b3-4193-bb40-978526db89c1",
+        "placeholder" : "请输入批量",
+        "maxLength" : 255,
+        "listVisible" : true
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "185px",
+        "id" : "sh117b2e3d-2bf3-4aa4-869d-ace763c9c34e"
+      }
+    }, {
+      "label" : "发生时间",
+      "fieldName" : "fashengshijian",
+      "type" : "datetime",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "label" : "发生时间",
+        "type" : "datetime",
+        "colspan" : 2,
+        "viewVisible" : true,
+        "itemNameLabel" : "日期选择器",
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 1,
+        "name" : "fashengshijian",
+        "id" : "sh7802503a-0fab-4a79-b7ab-bf7e132e8470",
+        "placeholder" : "请输入发生时间",
+        "maxLength" : 255,
+        "listVisible" : true
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "sh6babbacc-d725-4e67-9954-2c7b23329008"
+      }
+    } ], [ {
+      "label" : "投入数",
+      "fieldName" : "tourushu",
+      "type" : "number",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "precision" : 0,
+        "label" : "投入数",
+        "colspan" : 2,
+        "viewVisible" : true,
+        "itemNameLabel" : "数字输入框",
+        "min" : 0,
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 1,
+        "name" : "tourushu",
+        "step" : 1,
+        "id" : "sh041b920a-8e1b-40ca-be27-c7cd0759eba3",
+        "placeholder" : "请输入投入数",
+        "maxLength" : 10,
+        "listVisible" : true
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "sh683180c3-f982-4a25-99e7-539622d295f2"
+      }
+    }, {
+      "label" : "不良数",
+      "fieldName" : "buliangshu",
+      "type" : "number",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "precision" : 0,
+        "colWidth" : "186px",
+        "label" : "不良数",
+        "colspan" : 2,
+        "viewVisible" : true,
+        "itemNameLabel" : "数字输入框",
+        "min" : 0,
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 1,
+        "name" : "buliangshu",
+        "step" : 1,
+        "id" : "sh1776fa92-fbe5-439c-890b-57041f83a636",
+        "placeholder" : "请输入不良数",
+        "maxLength" : 10,
+        "listVisible" : true
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "62px",
+        "id" : "sh7cc5abbb-12c2-494e-9955-096f3a787df1"
+      }
+    }, {
+      "label" : "不良率",
+      "fieldName" : "bulianglv",
+      "type" : "number",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "precision" : 0,
+        "colWidth" : "172px",
+        "label" : "不良率",
+        "colspan" : 2,
+        "viewVisible" : true,
+        "itemNameLabel" : "数字输入框",
+        "min" : 0,
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 1,
+        "name" : "bulianglv",
+        "step" : 1,
+        "id" : "sh207680a2-2a3b-471e-84da-55d82b3c122a",
+        "placeholder" : "请输入不良率",
+        "maxLength" : 10,
+        "listVisible" : true
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "185px",
+        "id" : "sh22ece42f-810b-4807-922e-74ec1458eb79"
+      }
+    }, {
+      "label" : "反馈时间",
+      "fieldName" : "fankuishijian",
+      "type" : "datetime",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "label" : "反馈时间",
+        "type" : "datetime",
+        "colspan" : 2,
+        "viewVisible" : true,
+        "itemNameLabel" : "日期选择器",
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 1,
+        "name" : "fankuishijian",
+        "id" : "sh7ae3cc32-3cba-4e10-82f9-6edae73fd632",
+        "placeholder" : "请选择反馈时间",
+        "maxLength" : 255,
+        "listVisible" : true
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "sh6714b888-c066-479c-a4f1-1df4379ca055"
+      }
+    } ], [ {
+      "label" : "异常内容描述",
+      "fieldName" : "ycnrms",
+      "type" : "textarea",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "label" : "异常内容描述",
+        "colspan" : 6,
+        "colHeight" : "127px",
+        "viewVisible" : true,
+        "itemNameLabel" : "多行文本框",
+        "readonly" : false,
+        "formVisible" : true,
+        "labelPosition" : "top",
+        "rowspan" : 1,
+        "name" : "ycnrms",
+        "id" : "shebddaed2-9e1b-4283-874c-fab336375418",
+        "placeholder" : "请输入异常内容描述",
+        "maxLength" : 1000,
+        "listVisible" : true
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : "175px",
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "sh2ab8a344-756b-4c44-b0d9-cf1a06aaab6a"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "186px",
+        "id" : "sh794ff7dc-655a-4ed2-b765-3166980aa20e"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "62px",
+        "id" : "shd0543201-7e7b-49e2-931e-1e0eb664852c"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "172px",
+        "id" : "she64847d9-1b73-4268-9aa7-3166c89ddaba"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "185px",
+        "id" : "sh42376ceb-9bbe-4dbc-8eb1-2fb548e70319"
+      }
+    }, {
+      "label" : "静态文本",
+      "fieldName" : "text24",
+      "type" : "text",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "textContent" : "开出部门",
+        "label" : "静态文本",
+        "colspan" : 1,
+        "viewVisible" : true,
+        "itemNameLabel" : "静态文本",
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 1,
+        "name" : "text24",
+        "id" : "sh86605876-ebf5-43cf-a6ad-5718d93f9505",
+        "staticData" : true,
+        "maxLength" : 255,
+        "listVisible" : true
+      }
+    }, {
+      "label" : "开出部门",
+      "fieldName" : "kaichubumen",
+      "type" : "radio",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "values" : [ {
+          "name" : "IPQC",
+          "value" : "ipqc"
+        }, {
+          "name" : "FQC",
+          "value" : "fqc"
+        }, {
+          "name" : "工程",
+          "value" : "gongcheng"
+        }, {
+          "name" : "产线",
+          "value" : "chanxian"
+        }, {
+          "name" : "其它",
+          "value" : "qita"
+        } ],
+        "label" : "开出部门",
+        "colspan" : 1,
+        "viewVisible" : true,
+        "itemNameLabel" : "单选框",
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 1,
+        "name" : "kaichubumen",
+        "valuesDefaultValue" : [ { } ],
+        "id" : "sh31195e04-1718-41cb-9a13-cd2ec14856e8",
+        "dataSource" : "data",
+        "analysisType" : "func",
+        "maxLength" : 255,
+        "listVisible" : true,
+        "hideLabel" : true
+      }
+    } ], [ {
+      "label" : "根本原因分析（工程填写）",
+      "fieldName" : "gbyyfxgctx",
+      "type" : "textarea",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "label" : "根本原因分析（工程填写）",
+        "colspan" : 6,
+        "colHeight" : "171px",
+        "viewVisible" : true,
+        "itemNameLabel" : "多行文本框",
+        "readonly" : false,
+        "formVisible" : true,
+        "labelPosition" : "top",
+        "rowspan" : 3,
+        "name" : "gbyyfxgctx",
+        "id" : "sh23b6a0c8-c148-401c-ab9e-23394df58d95",
+        "placeholder" : "请输入根本原因分析（工程填写）",
+        "maxLength" : 1000,
+        "listVisible" : true
+      }
+    }, {
+      "label" : "责任判定",
+      "fieldName" : "zherenpanding",
+      "type" : "radio",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "values" : [ {
+          "name" : "设计不良",
+          "value" : "sjbl"
+        }, {
+          "name" : "物料不良",
+          "value" : "wlbl"
+        }, {
+          "name" : "制程不良",
+          "value" : "zcbl"
+        }, {
+          "name" : "其它",
+          "value" : "qita"
+        } ],
+        "label" : "责任判定",
+        "colspan" : 6,
+        "colHeight" : "171px",
+        "viewVisible" : true,
+        "itemNameLabel" : "单选框",
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 3,
+        "name" : "zherenpanding",
+        "valuesDefaultValue" : [ { } ],
+        "id" : "sh23b6a0c8-c148-401c-ab9e-23394df58d95",
+        "dataSource" : "data",
+        "analysisType" : "func",
+        "maxLength" : 255,
+        "listVisible" : true
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "sh668f8c13-c792-4d9c-99df-920fa78d32bb"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "186px",
+        "id" : "shf91186c9-ba49-4bc5-a2aa-4ab579d6925c"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "62px",
+        "id" : "sh8ec832fc-aa46-41f2-9f2c-724b1d577a1f"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "172px",
+        "id" : "sh1253077b-1150-426a-9972-8161beb8bf02"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "185px",
+        "id" : "sha46ec3f1-f24e-4eab-bb26-bafa185e4f05"
+      }
+    }, {
+      "label" : "分析人",
+      "fieldName" : "fenxiren",
+      "type" : "input",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "label" : "分析人",
+        "colspan" : 2,
+        "viewVisible" : true,
+        "itemNameLabel" : "单行文本框",
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 1,
+        "name" : "fenxiren",
+        "id" : "sha9a88708-4bba-4e88-9788-934624e31f5d",
+        "placeholder" : "请输入分析人",
+        "maxLength" : 255,
+        "listVisible" : true
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "sh3820890f-eb8e-4185-8f8e-0b86ebdcce6f"
+      }
+    } ], [ {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "sh8b7418bf-af2d-486e-a397-3ce4bde1d683"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "shf224a7d3-2251-48a9-9f79-e1526b366426"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "186px",
+        "id" : "shd2561a4a-fb4c-4d6d-a1b5-5cdec59d246b"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "62px",
+        "id" : "sh06ffb16f-1cf8-45ab-be9b-7293139e9982"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "172px",
+        "id" : "sha69fe1cf-4739-4dfa-ad21-365d24d444f9"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "185px",
+        "id" : "sh5a964a88-417b-4646-9e93-8100875a7c0b"
+      }
+    }, {
+      "label" : "QE确认",
+      "fieldName" : "qequeren",
+      "type" : "input",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "label" : "QE确认",
+        "colspan" : 2,
+        "viewVisible" : true,
+        "itemNameLabel" : "单行文本框",
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 1,
+        "name" : "qequeren",
+        "id" : "sh1a647fd5-536b-4255-9d3e-262e02b8e106",
+        "placeholder" : "请输入QE确认",
+        "maxLength" : 255,
+        "listVisible" : true
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "sh27dfdf22-bad5-4c85-b69e-f039ade668af"
+      }
+    } ], [ {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "sh9e472243-dfd3-4292-9d56-2d98eb90f976"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "sh0e306f16-caa0-491c-8fcb-47e644ba468c"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "186px",
+        "id" : "sh133a94d2-e77f-4202-abfb-67d602ba2b6e"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "62px",
+        "id" : "sh62f55c02-1edf-4d46-bdc4-8b81f9d7383f"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "172px",
+        "id" : "sh633c06c3-b905-46f2-b4b5-b6751e638dce"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "185px",
+        "id" : "sh6b877e82-7bba-445b-b843-e124a1288d00"
+      }
+    }, {
+      "label" : "工程经理",
+      "fieldName" : "gongchengjingli",
+      "type" : "input",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "label" : "工程经理",
+        "colspan" : 2,
+        "viewVisible" : true,
+        "itemNameLabel" : "单行文本框",
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 1,
+        "name" : "gongchengjingli",
+        "id" : "sh49253a3a-9b4d-477c-b2c9-a2e797102ad0",
+        "placeholder" : "请输入工程经理",
+        "maxLength" : 255,
+        "listVisible" : true
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "sh49b08e2b-2452-4ef2-b65e-1ef17300aaca"
+      }
+    } ], [ {
+      "label" : "临时措施（责任部门填写）",
+      "fieldName" : "lscszrbmtx",
+      "type" : "textarea",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "label" : "临时措施（责任部门填写）",
+        "colspan" : 6,
+        "colHeight" : "125px",
+        "viewVisible" : true,
+        "itemNameLabel" : "多行文本框",
+        "readonly" : false,
+        "formVisible" : true,
+        "labelPosition" : "top",
+        "rowspan" : 2,
+        "name" : "lscszrbmtx",
+        "id" : "shf1f22cd1-a43d-48c4-9e1a-5ddde5ff51db",
+        "placeholder" : "请输入临时措施（责任部门填写）",
+        "maxLength" : 255,
+        "listVisible" : true
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "sha07ede78-1db2-4d55-bff1-7ce92ba46a45"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "186px",
+        "id" : "shbeec7cf3-6133-42d1-a0bf-cbc24e3814b8"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "62px",
+        "id" : "sha29bc3b9-86a3-41e8-9d5c-357b9ee622dc"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "172px",
+        "id" : "shb5e6e210-89cb-4fa0-a4fe-c22bbed8a974"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "185px",
+        "id" : "she135b82a-1a4f-42cf-82a5-ce47bf5814c2"
+      }
+    }, {
+      "label" : "制订人",
+      "fieldName" : "zhidingren",
+      "type" : "input",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "label" : "制订人",
+        "colspan" : 2,
+        "viewVisible" : true,
+        "itemNameLabel" : "单行文本框",
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 1,
+        "name" : "zhidingren",
+        "id" : "sh956c7896-4cbc-4a84-ac6f-867f41c1309d",
+        "placeholder" : "请输入制订人",
+        "maxLength" : 255,
+        "listVisible" : true
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "sh248ee88e-74c8-440f-9116-9c873100baae"
+      }
+    } ], [ {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "she3a78973-404b-4571-b808-70ebee92b36e"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "sh5ef1c601-603b-4530-b988-6b397fae57e9"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "186px",
+        "id" : "sh448e381d-9022-4492-b232-a75c791a8220"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "62px",
+        "id" : "sh681332af-d3c9-4312-b84e-38354b86dbf1"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "172px",
+        "id" : "sh78d1e926-c6b8-44f7-9457-05de399144cd"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "185px",
+        "id" : "shc2ffa945-11d9-44e9-a07b-a202aa39273d"
+      }
+    }, {
+      "label" : "制定时间",
+      "fieldName" : "shidingshijian",
+      "type" : "datetime",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "label" : "制定时间",
+        "type" : "datetime",
+        "colspan" : 2,
+        "viewVisible" : true,
+        "itemNameLabel" : "日期选择器",
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 1,
+        "name" : "shidingshijian",
+        "id" : "sh932221c7-eb17-4722-a8c4-c2b72fe4807a",
+        "placeholder" : "请输入制定时间",
+        "maxLength" : 255,
+        "listVisible" : true
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "sh125efa33-85c4-452d-8ff3-20077b562165"
+      }
+    } ], [ {
+      "label" : "静态文本",
+      "fieldName" : "text34",
+      "type" : "text",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "textContent" : "不良排查",
+        "label" : "静态文本",
+        "colspan" : 1,
+        "viewVisible" : true,
+        "itemNameLabel" : "静态文本",
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 2,
+        "name" : "text34",
+        "id" : "sh9679151e-ecfa-47d1-a3b5-5145605290fb",
+        "staticData" : true,
+        "maxLength" : 255,
+        "listVisible" : true
+      }
+    }, {
+      "label" : "1.原材料",
+      "fieldName" : "yuancailiao",
+      "type" : "radio",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "values" : [ {
+          "name" : "需要",
+          "value" : "xuyao"
+        }, {
+          "name" : "不需要",
+          "value" : "buxuyao"
+        } ],
+        "label" : "1.原材料",
+        "colspan" : 2,
+        "viewVisible" : true,
+        "itemNameLabel" : "单选框",
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 1,
+        "name" : "yuancailiao",
+        "valuesDefaultValue" : [ { } ],
+        "id" : "shccb2fe0d-3b8f-42a5-80a9-e9b6939f5138",
+        "dataSource" : "data",
+        "analysisType" : "func",
+        "maxLength" : 255,
+        "listVisible" : true
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "186px",
+        "id" : "sh129eeb8f-eefd-46a3-9e06-57e68d4df8a7"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : true,
+        "rowspan" : 1,
+        "colWidth" : "62px",
+        "id" : "sh23b4c925-dd12-4e4a-a000-a28811654d06"
+      }
+    }, {
+      "label" : "2.在制半成品",
+      "fieldName" : "zzbcp",
+      "type" : "radio",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "values" : [ {
+          "name" : "需要",
+          "value" : "xuyao"
+        }, {
+          "name" : "不需要",
+          "value" : "buxuyao"
+        } ],
+        "colWidth" : "172px",
+        "label" : "2.在制半成品",
+        "colspan" : 2,
+        "viewVisible" : true,
+        "itemNameLabel" : "单选框",
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 1,
+        "name" : "zzbcp",
+        "valuesDefaultValue" : [ { } ],
+        "id" : "shfeb9c678-5b89-4706-b05a-4a80cdc5fbda",
+        "dataSource" : "data",
+        "analysisType" : "func",
+        "maxLength" : 255,
+        "listVisible" : true
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "185px",
+        "id" : "shbd0362a4-8e3d-4185-b6a7-4415fccc6436"
+      }
+    }, {
+      "label" : "排查人员",
+      "fieldName" : "paicharenyuan",
+      "type" : "input",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "label" : "排查人员",
+        "colspan" : 2,
+        "viewVisible" : true,
+        "itemNameLabel" : "单行文本框",
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 2,
+        "name" : "paicharenyuan",
+        "id" : "sh35329b71-f884-4640-b668-9077092ecff3",
+        "placeholder" : "请输入排查人员",
+        "maxLength" : 255,
+        "listVisible" : true
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "sh794c2235-f1eb-4e1d-a1c7-f18ba1d7d060"
+      }
+    } ], [ {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "sh55381a5c-f311-4cee-9dea-1ad6c6aeba06"
+      }
+    }, {
+      "label" : " 3.成品库存",
+      "fieldName" : "chengpinkucun",
+      "type" : "radio",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "values" : [ {
+          "name" : "需要",
+          "value" : "xuyao"
+        }, {
+          "name" : "不需要",
+          "value" : "buxuyao"
+        } ],
+        "label" : " 3.成品库存",
+        "colspan" : 2,
+        "viewVisible" : true,
+        "itemNameLabel" : "单选框",
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 1,
+        "name" : "chengpinkucun",
+        "valuesDefaultValue" : [ { } ],
+        "id" : "shf0dc5955-36d1-4841-a0f9-94b2e137ab46",
+        "dataSource" : "data",
+        "analysisType" : "func",
+        "maxLength" : 255,
+        "listVisible" : true
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "186px",
+        "id" : "shd81d41e6-4bb9-4efc-9789-b683f69db7b0"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : true,
+        "rowspan" : 1,
+        "colWidth" : "62px",
+        "id" : "sh5333dc9a-6a9e-456c-ba61-488232840b24"
+      }
+    }, {
+      "label" : "4.已出货品",
+      "fieldName" : "yichuhuopin",
+      "type" : "radio",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "values" : [ {
+          "name" : "需要",
+          "value" : "xuyao"
+        }, {
+          "name" : "不需要",
+          "value" : "buxuyao"
+        } ],
+        "colWidth" : "172px",
+        "label" : "4.已出货品",
+        "colspan" : 2,
+        "viewVisible" : true,
+        "itemNameLabel" : "单选框",
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 1,
+        "name" : "yichuhuopin",
+        "valuesDefaultValue" : [ { } ],
+        "id" : "shb47c7d86-8bea-4fbd-b221-489d84928ddc",
+        "dataSource" : "data",
+        "analysisType" : "func",
+        "maxLength" : 255,
+        "listVisible" : true
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "185px",
+        "id" : "shcdd8eec4-bc51-446d-a4a6-ed01d33d06e4"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "shca78dd7a-7c05-4606-aeae-0348f2ce1cd1"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "sha4ba0889-fd31-4716-ba63-856d1be9473c"
+      }
+    } ], [ {
+      "label" : "长期预防措施",
+      "fieldName" : "cqyfcs",
+      "type" : "textarea",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "label" : "长期预防措施",
+        "colspan" : 6,
+        "colHeight" : "150px",
+        "viewVisible" : true,
+        "itemNameLabel" : "多行文本框",
+        "readonly" : false,
+        "formVisible" : true,
+        "labelPosition" : "top",
+        "rowspan" : 3,
+        "name" : "cqyfcs",
+        "id" : "sh22a619c6-91e0-4649-8998-815428aae05d",
+        "placeholder" : "请输入长期预防措施",
+        "maxLength" : 1000,
+        "listVisible" : true
+      }
+    }, {
+      "label" : "标准化",
+      "fieldName" : "biaozhunhua",
+      "type" : "radio",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "values" : [ {
+          "name" : "作业标准修订",
+          "value" : "zybzxd"
+        }, {
+          "name" : "图纸修订",
+          "value" : "tuzhixiuding"
+        }, {
+          "name" : "研发/技术更改，ECN号",
+          "value" : "yf_jsgg"
+        }, {
+          "name" : "其它",
+          "value" : "other"
+        } ],
+        "label" : "标准化",
+        "colspan" : 6,
+        "colHeight" : "150px",
+        "viewVisible" : true,
+        "itemNameLabel" : "单选框",
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 3,
+        "name" : "biaozhunhua",
+        "valuesDefaultValue" : [ { } ],
+        "id" : "sh22a619c6-91e0-4649-8998-815428aae05d",
+        "dataSource" : "data",
+        "analysisType" : "func",
+        "maxLength" : 255,
+        "listVisible" : true
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "sha2e3ced8-0536-4192-8de9-dbaf05c013d3"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "186px",
+        "id" : "shb5aab7b9-aba4-48cb-9ba4-e1129957e9f6"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "62px",
+        "id" : "sh34dc4b22-b49a-40c8-9598-035303aec955"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "172px",
+        "id" : "sh3cb69fd3-9131-4731-bf65-c714783b2b70"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "185px",
+        "id" : "sh1be28d0c-9b55-476b-bc8a-f7ccad45394e"
+      }
+    }, {
+      "label" : "制定人",
+      "fieldName" : "zhidingren2",
+      "type" : "input",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "label" : "制定人",
+        "colspan" : 2,
+        "viewVisible" : true,
+        "itemNameLabel" : "单行文本框",
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 1,
+        "name" : "zhidingren2",
+        "id" : "sh0372f8a5-6433-4ad4-9179-6c78088862b0",
+        "placeholder" : "请输入制定人",
+        "maxLength" : 255,
+        "listVisible" : true
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "sh8d092de1-f85f-4bee-a1d3-5db9c592f657"
+      }
+    } ], [ {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "sh738066ac-354c-454c-91cc-733032a42616"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "sh668fb4b3-a8f3-4bf4-9537-9f1f0adb9a9d"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "186px",
+        "id" : "sh1f39de72-5407-42fe-a8c5-9ec8dea6e499"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "62px",
+        "id" : "sh6bfa5e24-fee6-4700-94a2-7c26a688cb67"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "172px",
+        "id" : "shc14367c4-3100-47af-b128-3f200add452f"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "185px",
+        "id" : "sh472e8495-25b0-47ce-9e82-9af0f39f443d"
+      }
+    }, {
+      "label" : "制定时间",
+      "fieldName" : "zhidingshijian2",
+      "type" : "input",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "label" : "制定时间",
+        "colspan" : 2,
+        "viewVisible" : true,
+        "itemNameLabel" : "单行文本框",
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 1,
+        "name" : "zhidingshijian2",
+        "id" : "sh632737a0-4027-48a7-a957-d2c69e009fa1",
+        "placeholder" : "请输入制定时间",
+        "maxLength" : 255,
+        "listVisible" : true
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "sh39038907-7910-450b-b310-5d3a5f31f39a"
+      }
+    } ], [ {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "sh274b3b0f-b8e8-4505-bfa4-e17439a730ee"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "sha2d1e056-3d00-4745-9ca1-b7316b0d02b3"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "186px",
+        "id" : "sh5d94c329-4d8a-4ad0-8257-3a2ae8dca156"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "62px",
+        "id" : "sh965d04aa-e053-4be1-8109-f83dfbf43e83"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "172px",
+        "id" : "sh6d3c66e4-5159-4fd8-8ffa-eb578fce1362"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "185px",
+        "id" : "sh257dc298-1c62-44c4-afa0-f4f9cffbe8bf"
+      }
+    }, {
+      "label" : "部门经理",
+      "fieldName" : "bumenjingli",
+      "type" : "input",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "label" : "部门经理",
+        "colspan" : 2,
+        "viewVisible" : true,
+        "itemNameLabel" : "单行文本框",
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 1,
+        "name" : "bumenjingli",
+        "id" : "sh0475571e-5528-44f4-8d1f-dbf6c8fc56e5",
+        "placeholder" : "请输入部门经理",
+        "maxLength" : 255,
+        "listVisible" : true
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "she016ec37-483d-4d7c-a2f4-8b6e531dc3b9"
+      }
+    } ], [ {
+      "label" : "Html组件",
+      "fieldName" : "html46",
+      "type" : "html",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "rowNums" : 1,
+        "textContent" : "<p style=\"text-align: left;\">改善措施效果确认</p>",
+        "label" : "Html组件",
+        "colspan" : 6,
+        "colHeight" : "51px",
+        "viewVisible" : true,
+        "itemNameLabel" : "Html组件",
+        "readonly" : false,
+        "formVisible" : true,
+        "elements" : [ {
+          "id" : "sh252b242f-43c2-4951-acbf-57444753e1d9",
+          "colIndex" : 1,
+          "columns" : [ {
+            "id" : "she33c19e0-72d4-4839-abf9-23b6efeb50bc",
+            "colIndex" : 1,
+            "rowspan" : 1,
+            "colspan" : 1,
+            "items" : [ ],
+            "cellVisible" : true
+          } ]
+        } ],
+        "rowspan" : 1,
+        "name" : "html46",
+        "styles" : {
+          "alignItems" : "start"
+        },
+        "id" : "sh633d02b5-feb9-4199-a178-694b9e728e5c",
+        "staticData" : true,
+        "columnNums" : 1,
+        "maxLength" : 255,
+        "listVisible" : true
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "sh5d5ea5b2-75d3-4e98-95c6-d0adca9fffba"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "186px",
+        "id" : "sh6b94572c-9178-4f0c-9327-de1e5c631122"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "62px",
+        "id" : "sh6fa1a213-e1b4-4301-8b4d-3e2ac6518bab"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "172px",
+        "id" : "shf2ad8beb-1ac8-44cf-94f3-ac5989cccd0e"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "185px",
+        "id" : "shf6243353-da9e-47ba-bdf6-6105255d3ecb"
+      }
+    }, {
+      "label" : "QE确认",
+      "fieldName" : "qequeren2",
+      "type" : "input",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "label" : "QE确认",
+        "colspan" : 2,
+        "viewVisible" : true,
+        "itemNameLabel" : "单行文本框",
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 2,
+        "name" : "qequeren2",
+        "id" : "sh47aad720-f646-4501-8f21-238910723e9a",
+        "placeholder" : "请输入QE确认",
+        "maxLength" : 255,
+        "listVisible" : true
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "shdc3847c7-5498-43c8-b33d-73932eaa8ce1"
+      }
+    } ], [ {
+      "label" : "跟踪时段",
+      "fieldName" : "gzsd",
+      "type" : "datetime",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "format" : "HH",
+        "valueFormat" : "HH",
+        "label" : "跟踪时段",
+        "type" : "datetime",
+        "colspan" : 2,
+        "viewVisible" : true,
+        "itemNameLabel" : "日期选择器",
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 1,
+        "name" : "gzsd",
+        "id" : "she671b08e-b043-48b7-90fd-27ae5034dbc4",
+        "placeholder" : "请选择跟踪时段",
+        "maxLength" : 255,
+        "listVisible" : true
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "sh37b90368-a9db-4397-80c4-ed9340f39783"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "186px",
+        "id" : "sh05dec99e-908d-4f1c-b25a-23eb7586d71d"
+      }
+    }, {
+      "label" : "投入数",
+      "fieldName" : "tourushu2",
+      "type" : "number",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "precision" : 0,
+        "colWidth" : "62px",
+        "label" : "投入数",
+        "colspan" : 2,
+        "viewVisible" : true,
+        "itemNameLabel" : "数字输入框",
+        "min" : 0,
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 1,
+        "name" : "tourushu2",
+        "step" : "1",
+        "id" : "sh961e5ee0-4540-4e7a-a3f8-8c8bf0e63fef",
+        "placeholder" : "请输入投入数",
+        "controlsPosition" : "right",
+        "maxLength" : 10,
+        "listVisible" : true
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "172px",
+        "id" : "shee4406a9-b8a7-4357-b73f-7148ca6d7ceb"
+      }
+    }, {
+      "label" : "不良数",
+      "fieldName" : "buliangshu2",
+      "type" : "number",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "precision" : 0,
+        "colWidth" : "185px",
+        "label" : "不良数",
+        "colspan" : 1,
+        "viewVisible" : true,
+        "itemNameLabel" : "数字输入框",
+        "min" : 0,
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 1,
+        "name" : "buliangshu2",
+        "step" : "1",
+        "id" : "shfd71552a-672f-4ad4-a6c0-d8e7fc025fa0",
+        "placeholder" : "请输入不良数",
+        "controlsPosition" : "right",
+        "maxLength" : 10,
+        "listVisible" : true
+      }
+    }, {
+      "label" : "不良率",
+      "fieldName" : "bulianglv2",
+      "type" : "number",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : false,
+        "precision" : 0,
+        "label" : "不良率",
+        "colspan" : 1,
+        "viewVisible" : true,
+        "itemNameLabel" : "数字输入框",
+        "min" : 0,
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 1,
+        "name" : "bulianglv2",
+        "step" : "1",
+        "id" : "sh9c050143-3467-48cd-a0f2-3cb0ed729672",
+        "placeholder" : "请输入不良率",
+        "maxLength" : 10,
+        "listVisible" : true
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "sh702863b5-024a-4465-9877-a5e946dbb17f"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : true,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "she20f4648-48a1-4755-b05d-f8788913833b"
+      }
+    } ], [ {
+      "label" : "判定",
+      "fieldName" : "panding",
+      "type" : "radio",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "values" : [ {
+          "name" : "措施有效，可继续生产，进一步跟进效果",
+          "value" : "ok"
+        }, {
+          "name" : "措施无效，需停线整改",
+          "value" : "ng"
+        } ],
+        "label" : "判定",
+        "colspan" : 6,
+        "viewVisible" : true,
+        "itemNameLabel" : "单选框",
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 1,
+        "name" : "panding",
+        "valuesDefaultValue" : [ { } ],
+        "id" : "shc983efcb-8281-44eb-8164-ff36da17c67f",
+        "dataSource" : "data",
+        "analysisType" : "func",
+        "maxLength" : 255,
+        "listVisible" : true
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "shbbfebb9d-0a1f-436e-abb7-d3435183d89a"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "186px",
+        "id" : "sh01bf9637-700e-4439-8985-29f19ad3ebf3"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "62px",
+        "id" : "sh89a423e5-3e6e-44eb-8ed4-41076409e24c"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "172px",
+        "id" : "sh0e493591-732e-41c8-a0a5-b5b9fa0668e0"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "185px",
+        "id" : "sh1d38f053-a4e0-4fdf-a3f8-b81d1f048d6f"
+      }
+    }, {
+      "label" : "确认时间",
+      "fieldName" : "qurenshijian2",
+      "type" : "datetime",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "label" : "确认时间",
+        "type" : "datetime",
+        "colspan" : 2,
+        "viewVisible" : true,
+        "itemNameLabel" : "日期选择器",
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 2,
+        "name" : "qurenshijian2",
+        "id" : "sh5935a9a0-a5ce-4365-9d81-c1f3f92a305b",
+        "placeholder" : "请选择确认时间",
+        "maxLength" : 255,
+        "listVisible" : true
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "sh88b0147f-85d4-43f0-a995-e62d0b42e432"
+      }
+    } ], [ {
+      "label" : "备注",
+      "fieldName" : "formRemark",
+      "type" : "textarea",
+      "required" : false,
+      "formVisible" : true,
+      "listVisible" : true,
+      "defaultValue" : false,
+      "preps" : {
+        "clearable" : true,
+        "cellVisible" : true,
+        "label" : "备注",
+        "colspan" : 6,
+        "colHeight" : "92px",
+        "viewVisible" : true,
+        "itemNameLabel" : "多行文本框",
+        "readonly" : false,
+        "formVisible" : true,
+        "rowspan" : 1,
+        "name" : "formRemark",
+        "id" : "shfb90bfe2-43e0-4bb6-8438-48caf9e01b04",
+        "placeholder" : "请输入备注",
+        "maxLength" : 1000,
+        "listVisible" : true
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "sh094b9943-dce2-4542-9dbf-2662fd0a93bb"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "186px",
+        "id" : "sh55089891-c9c7-4d64-88b3-3528673f3755"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "62px",
+        "id" : "shf92e141d-ea64-4f6e-a6b3-b00fee385cd1"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "172px",
+        "id" : "sh36acbb54-ce72-4a3c-b1a8-86bb40db7fa4"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : "185px",
+        "id" : "sh22c73a55-dc1a-449d-affc-00cd69c681ed"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "sh75c310b4-fb14-4ea5-af4e-ce368fa11ee8"
+      }
+    }, {
+      "type" : "empty",
+      "formVisible" : false,
+      "viewVisible" : true,
+      "preps" : {
+        "colspan" : 1,
+        "colHeight" : null,
+        "cellVisible" : false,
+        "rowspan" : 1,
+        "colWidth" : null,
+        "id" : "sh026540d9-47c2-4a8e-b5f7-d04cdbe936cf"
+      }
+    } ] ]
+  }, {
+    "label" : "角色Id",
+    "fieldName" : "createdRoleId",
+    "type" : "input",
+    "formVisible" : false,
+    "listVisible" : false,
+    "preps" : { },
+    "commonFlag" : "Y"
+  }, {
+    "label" : "创建人",
+    "fieldName" : "createdBy",
+    "type" : "input",
+    "formVisible" : false,
+    "listVisible" : false,
+    "preps" : { },
+    "commonFlag" : "Y"
+  }, {
+    "label" : "修改人",
+    "fieldName" : "updatedBy",
+    "type" : "input",
+    "formVisible" : false,
+    "listVisible" : false,
+    "preps" : { },
+    "commonFlag" : "Y"
+  }, {
+    "label" : "版本号",
+    "fieldName" : "version",
+    "type" : "number",
+    "formVisible" : false,
+    "listVisible" : false,
+    "preps" : { },
+    "commonFlag" : "Y"
+  }, {
+    "label" : "是否删除",
+    "fieldName" : "isDel",
+    "type" : "number",
+    "formVisible" : false,
+    "listVisible" : false,
+    "preps" : { },
+    "commonFlag" : "Y"
+  }, {
+    "label" : "数据编号",
+    "fieldName" : "dataNo",
+    "type" : "input",
+    "formVisible" : false,
+    "listVisible" : false,
+    "preps" : { },
+    "commonFlag" : "Y"
+  }, {
+    "label" : "状态",
+    "fieldName" : "statusCode",
+    "type" : "select",
+    "formVisible" : false,
+    "listVisible" : false,
+    "preps" : {
+      "urlOrDictName" : "common",
+      "name" : "statusCode",
+      "dataSource" : "dict"
+    },
+    "commonFlag" : "Y"
+  }, {
+    "label" : "状态名称",
+    "fieldName" : "statusName",
+    "type" : "input",
+    "formVisible" : false,
+    "listVisible" : false,
+    "preps" : { },
+    "commonFlag" : "Y"
+  }, {
+    "label" : "国际编码",
+    "fieldName" : "local",
+    "type" : "input",
+    "formVisible" : false,
+    "listVisible" : false,
+    "preps" : { },
+    "commonFlag" : "Y"
+  }, {
+    "label" : "备注",
+    "fieldName" : "remark",
+    "type" : "textarea",
+    "formVisible" : false,
+    "listVisible" : false,
+    "preps" : { },
+    "commonFlag" : "Y"
+  }, {
+    "label" : "租户",
+    "fieldName" : "tenantId",
+    "type" : "select",
+    "formVisible" : false,
+    "listVisible" : false,
+    "preps" : { },
+    "commonFlag" : "Y"
+  } ],
+  "batchFieldList" : [ ],
+  "userTableFuncs" : [ ],
+  "dynamicFormas" : [ {
+    "id" : "Idsh8e6b6691-6f32-432b-8d83-3e8614460389",
+    "preps" : {
+      "id" : "Idsh8e6b6691-6f32-432b-8d83-3e8614460389",
+      "label" : "动态表格",
+      "itemNameLabel" : "动态表格",
+      "name" : "dytable1",
+      "elements" : [ {
+        "id" : "sha3d3beb8-790b-4fe4-941a-a2cdd0e85449",
+        "colIndex" : 1,
+        "columns" : [ {
+          "id" : "shdb288f86-bede-4d0a-b634-27be9280f3bb",
+          "colIndex" : 1,
+          "rowspan" : 3,
+          "colspan" : 5,
+          "items" : [ {
+            "id" : "Idsh197ec804-3f1f-4afd-9971-fd17319a81e0",
+            "preps" : {
+              "id" : "shdb288f86-bede-4d0a-b634-27be9280f3bb",
+              "label" : "Html组件",
+              "itemNameLabel" : "Html组件",
+              "name" : "html2",
+              "clearable" : true,
+              "readonly" : false,
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "elements" : [ {
+                "id" : "sh4e7f9873-960c-4fbe-bfda-febc1108da17",
+                "colIndex" : 1,
+                "columns" : [ {
+                  "id" : "she2d30714-d681-48e8-be06-c4e1093f765a",
+                  "colIndex" : 1,
+                  "rowspan" : 1,
+                  "colspan" : 1,
+                  "items" : [ ],
+                  "cellVisible" : true
+                } ]
+              } ],
+              "rowNums" : 1,
+              "columnNums" : 1,
+              "staticData" : true,
+              "textContent" : "<p style=\"text-align: center;\"><span style=\"font-size: 19px;\">惠州朵唯通信设备有限公司</span></p><p style=\"text-align: center;\"><span style=\"font-size: 19px;\">异常反馈单</span></p>",
+              "colspan" : 5,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 3,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "html2",
+            "itemType" : "html",
+            "label" : "Html组件",
+            "type" : "html",
+            "priority" : 1
+          } ],
+          "cellVisible" : true
+        }, {
+          "id" : "shc7e0f485-5f98-4a78-bbfe-a666bb539c2e",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ]
+        }, {
+          "id" : "sh7a933260-3369-4bdf-82be-3718674e2030",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "186px"
+        }, {
+          "id" : "sh3a0a7cbe-18c3-41ac-b891-178bee5f4baa",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "62px"
+        }, {
+          "id" : "sh29a99eca-3da8-433a-8e8c-d88209e83375",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "172px"
+        }, {
+          "id" : "sh272263b2-64ee-49e0-8f03-081f4befe3ea",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : true,
+          "items" : [ {
+            "id" : "Idsh18795e21-bcbd-44e7-9b45-3d57737b91ca",
+            "preps" : {
+              "id" : "sh272263b2-64ee-49e0-8f03-081f4befe3ea",
+              "label" : "静态文本",
+              "itemNameLabel" : "静态文本",
+              "name" : "text3",
+              "clearable" : true,
+              "readonly" : false,
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "staticData" : true,
+              "textContent" : "批准",
+              "appCompVisible" : true,
+              "colspan" : 1,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : "185px"
+            },
+            "compType" : "formItem",
+            "fieldName" : "text3",
+            "itemType" : "text",
+            "label" : "静态文本",
+            "type" : "text",
+            "priority" : 2
+          } ],
+          "colWidth" : "185px"
+        }, {
+          "id" : "sh623fdb70-b314-4ab8-8243-6004f382c6b8",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : true,
+          "items" : [ {
+            "id" : "Idshc1d7bf99-1c2f-4ec2-94a3-137197276301",
+            "preps" : {
+              "id" : "sh623fdb70-b314-4ab8-8243-6004f382c6b8",
+              "label" : "静态文本",
+              "itemNameLabel" : "静态文本",
+              "name" : "text4",
+              "clearable" : true,
+              "readonly" : false,
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "staticData" : true,
+              "textContent" : "审核",
+              "appCompVisible" : true,
+              "colspan" : 1,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "text4",
+            "itemType" : "text",
+            "label" : "静态文本",
+            "type" : "text",
+            "priority" : 3
+          } ]
+        }, {
+          "id" : "sh78e007ac-fa43-4cf9-81e9-80e527dddcc1",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : true,
+          "items" : [ {
+            "id" : "Idsh6a11f58c-1779-4e81-9014-442c54236ca5",
+            "preps" : {
+              "id" : "sh78e007ac-fa43-4cf9-81e9-80e527dddcc1",
+              "label" : "静态文本",
+              "itemNameLabel" : "静态文本",
+              "name" : "text5",
+              "clearable" : true,
+              "readonly" : false,
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "staticData" : true,
+              "textContent" : "作成",
+              "appCompVisible" : true,
+              "colspan" : 1,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "text5",
+            "itemType" : "text",
+            "label" : "静态文本",
+            "type" : "text",
+            "priority" : 4
+          } ]
+        } ]
+      }, {
+        "id" : "she082dce0-ceed-49d3-92e8-ad0bd92be377",
+        "colIndex" : 1,
+        "columns" : [ {
+          "id" : "sh5eb69288-c3df-4ef0-9242-6ec52e0ecb84",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "items" : [ ],
+          "cellVisible" : false
+        }, {
+          "id" : "sh0b41f4fe-b1cd-439a-8188-f21af057b9d7",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ]
+        }, {
+          "id" : "sh93fcd205-ced0-4372-9ef7-df4da5fd99d8",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "186px"
+        }, {
+          "id" : "sh7c931d88-4db2-4f2e-9f90-4ec5a2c1fca3",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "62px"
+        }, {
+          "id" : "sh947310d0-1d41-4d19-b30f-9edf3ab0abd0",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "172px"
+        }, {
+          "id" : "shac0fc43c-9515-4c7c-bc72-8e8befb155e9",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : true,
+          "items" : [ {
+            "id" : "Idshdc09b85c-e7af-4326-a796-89dd8c2ebf84",
+            "preps" : {
+              "id" : "shac0fc43c-9515-4c7c-bc72-8e8befb155e9",
+              "itemNameLabel" : "单行文本框",
+              "name" : "pizhun",
+              "clearable" : true,
+              "readonly" : false,
+              "placeholder" : "请输入批准",
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "hideLabel" : true,
+              "label" : "批准",
+              "elements" : [ {
+                "id" : "sh92de17dc-2c75-438a-ae0d-f75fc78efec2",
+                "colIndex" : 1,
+                "columns" : [ {
+                  "id" : "sh4a57cafb-8301-4737-909d-c53c44d945c9",
+                  "colIndex" : 1,
+                  "rowspan" : 1,
+                  "colspan" : 1,
+                  "items" : [ ],
+                  "cellVisible" : true
+                } ]
+              } ],
+              "rowNums" : 1,
+              "columnNums" : 1,
+              "colspan" : 1,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : "185px"
+            },
+            "compType" : "formItem",
+            "fieldName" : "pizhun",
+            "itemType" : "input",
+            "label" : "单行文本框",
+            "type" : "input",
+            "priority" : 5
+          } ],
+          "colWidth" : "185px"
+        }, {
+          "id" : "sh0d1abe78-a0b2-48fe-a2ab-b6f429816a06",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : true,
+          "items" : [ {
+            "id" : "Idshd1928ea5-97ef-439e-9ac4-692cd604db99",
+            "preps" : {
+              "id" : "sh0d1abe78-a0b2-48fe-a2ab-b6f429816a06",
+              "itemNameLabel" : "单行文本框",
+              "name" : "shenhe",
+              "clearable" : true,
+              "readonly" : false,
+              "placeholder" : "请输入审核",
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "hideLabel" : true,
+              "label" : "审核",
+              "colspan" : 1,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "shenhe",
+            "itemType" : "input",
+            "label" : "单行文本框",
+            "type" : "input",
+            "priority" : 6
+          } ]
+        }, {
+          "id" : "sh7aa26678-4e58-4cde-8359-3ac1383a1544",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : true,
+          "items" : [ {
+            "id" : "Idshfea92049-d199-465f-9a31-3497d3424203",
+            "preps" : {
+              "id" : "sh7aa26678-4e58-4cde-8359-3ac1383a1544",
+              "label" : "作成",
+              "itemNameLabel" : "单行文本框",
+              "name" : "zuocheng",
+              "clearable" : true,
+              "readonly" : false,
+              "placeholder" : "请输入作成",
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "hideLabel" : true,
+              "colspan" : 1,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "zuocheng",
+            "itemType" : "input",
+            "label" : "单行文本框",
+            "type" : "input",
+            "priority" : 7
+          } ]
+        } ]
+      }, {
+        "id" : "shaba7621d-826f-441f-9750-4f5258ca67ef",
+        "colIndex" : 1,
+        "columns" : [ {
+          "id" : "shfe7b5fcd-6fd5-4c15-9a70-2e480840c0db",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "items" : [ ],
+          "cellVisible" : false
+        }, {
+          "id" : "sh5c19db94-7757-4caa-a69b-2fe01c7bfe0e",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ]
+        }, {
+          "id" : "sh3b94e38d-6cef-4799-96b8-a560ec3632d3",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "186px"
+        }, {
+          "id" : "sh7e9e2682-e41b-439d-a266-4e3bb649f211",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "62px"
+        }, {
+          "id" : "shaf566f28-16df-43bb-ab5c-b175b24b4387",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "172px"
+        }, {
+          "id" : "sh5513989e-d01d-493f-919c-5ce15a262d75",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : true,
+          "items" : [ {
+            "id" : "Idsha1f24d10-1703-463f-ba45-0d8dfbe6f95c",
+            "preps" : {
+              "id" : "sh5513989e-d01d-493f-919c-5ce15a262d75",
+              "label" : "批准时间",
+              "itemNameLabel" : "日期选择器",
+              "name" : "pizhunshijian",
+              "clearable" : true,
+              "readonly" : false,
+              "placeholder" : "请选择批准时间",
+              "type" : "datetime",
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "hideLabel" : true,
+              "colspan" : 1,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : "185px"
+            },
+            "compType" : "formItem",
+            "fieldName" : "pizhunshijian",
+            "itemType" : "datetime",
+            "label" : "日期选择器",
+            "type" : "datetime",
+            "priority" : 8
+          } ],
+          "colWidth" : "185px"
+        }, {
+          "id" : "sh1d77c0c8-7df2-46e8-addc-e6c8db504da0",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : true,
+          "items" : [ {
+            "id" : "Idsh467b8801-0c3b-4293-aada-7df4dc4c90b0",
+            "preps" : {
+              "id" : "sh1d77c0c8-7df2-46e8-addc-e6c8db504da0",
+              "itemNameLabel" : "日期选择器",
+              "name" : "shenheshijian",
+              "clearable" : true,
+              "readonly" : false,
+              "placeholder" : "请选择审核时间",
+              "type" : "datetime",
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "hideLabel" : true,
+              "label" : "审核时间",
+              "colspan" : 1,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "shenheshijian",
+            "itemType" : "datetime",
+            "label" : "日期选择器",
+            "type" : "datetime",
+            "priority" : 9
+          } ]
+        }, {
+          "id" : "sh9a8987c4-1106-4ec6-b5a9-28b741a710f8",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : true,
+          "items" : [ {
+            "id" : "Idsh35ad4ebf-7fde-4b80-ab3a-5442e495d493",
+            "preps" : {
+              "id" : "sh9a8987c4-1106-4ec6-b5a9-28b741a710f8",
+              "itemNameLabel" : "日期选择器",
+              "name" : "zuochengshijian",
+              "clearable" : true,
+              "readonly" : false,
+              "placeholder" : "请选择作成时间",
+              "type" : "datetime",
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "hideLabel" : true,
+              "label" : "作成时间",
+              "colspan" : 1,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "zuochengshijian",
+            "itemType" : "datetime",
+            "label" : "日期选择器",
+            "type" : "datetime",
+            "priority" : 10
+          } ]
+        } ]
+      }, {
+        "id" : "sh24548c33-eb3a-4dd4-9a42-482ed1a39f65",
+        "colIndex" : 1,
+        "columns" : [ {
+          "id" : "sh828e9be4-d111-4f6c-82a3-21a12d7865d9",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 2,
+          "items" : [ {
+            "id" : "Idsh454a068f-ef1f-422d-84b9-fcbe5d7710d4",
+            "preps" : {
+              "id" : "sh828e9be4-d111-4f6c-82a3-21a12d7865d9",
+              "label" : "TO",
+              "itemNameLabel" : "单行文本框",
+              "clearable" : true,
+              "readonly" : false,
+              "placeholder" : "请输入TO",
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "name" : "formTo",
+              "colspan" : 2,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "formTo",
+            "itemType" : "input",
+            "label" : "单行文本框",
+            "type" : "input",
+            "priority" : 11
+          } ],
+          "cellVisible" : true
+        }, {
+          "id" : "sh0a470bc8-3c23-4e47-9b8c-74c32b35710c",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ]
+        }, {
+          "id" : "shb043dcff-f307-4ca0-9396-bde2709450f4",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 4,
+          "cellVisible" : true,
+          "items" : [ {
+            "id" : "Idsha18deb8e-30a7-4b6c-9bc8-7695a6860322",
+            "preps" : {
+              "id" : "shb043dcff-f307-4ca0-9396-bde2709450f4",
+              "label" : "CC",
+              "itemNameLabel" : "单行文本框",
+              "name" : "chaosong",
+              "clearable" : true,
+              "readonly" : false,
+              "placeholder" : "请输入CC",
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "colspan" : 4,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : "186px"
+            },
+            "compType" : "formItem",
+            "fieldName" : "chaosong",
+            "itemType" : "input",
+            "label" : "单行文本框",
+            "type" : "input",
+            "priority" : 12
+          } ],
+          "colWidth" : "186px"
+        }, {
+          "id" : "sheedb2b29-ac3c-44d5-b426-746b4b7713b7",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "62px"
+        }, {
+          "id" : "sh353e8cc7-6ee1-4a1c-87df-9cc955d0899d",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "172px"
+        }, {
+          "id" : "shab30f31b-a4f0-4e97-b3d9-b3bab137ec43",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "185px"
+        }, {
+          "id" : "sh43355758-0f59-4c58-999e-dba032b13c41",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 2,
+          "cellVisible" : true,
+          "items" : [ {
+            "id" : "Idsheab30e19-eef4-4cce-93f4-c5355d15ccf6",
+            "preps" : {
+              "id" : "sh43355758-0f59-4c58-999e-dba032b13c41",
+              "itemNameLabel" : "单行文本框",
+              "clearable" : true,
+              "readonly" : false,
+              "placeholder" : "请输入编号",
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "label" : "编号",
+              "name" : "bianhao",
+              "searchVisible" : true,
+              "defaultVisible" : true,
+              "colspan" : 2,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "bianhao",
+            "itemType" : "input",
+            "label" : "单行文本框",
+            "type" : "input",
+            "priority" : 13
+          } ]
+        }, {
+          "id" : "sh5faa898a-9c79-4037-bb4a-264cd445cc41",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ]
+        } ]
+      }, {
+        "id" : "shf469f1fc-5e41-4696-976d-59e91d5b2595",
+        "colIndex" : 1,
+        "columns" : [ {
+          "id" : "sh95fde466-3c98-482b-9617-8cf5a49ca10e",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 2,
+          "items" : [ {
+            "id" : "Idsh361a5101-3f66-43ce-844e-f817beef4e5a",
+            "preps" : {
+              "id" : "sh95fde466-3c98-482b-9617-8cf5a49ca10e",
+              "label" : "机型",
+              "itemNameLabel" : "单行文本框",
+              "name" : "jixing",
+              "clearable" : true,
+              "readonly" : false,
+              "placeholder" : "请输入机型",
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "searchVisible" : true,
+              "defaultVisible" : true,
+              "colspan" : 2,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "jixing",
+            "itemType" : "input",
+            "label" : "单行文本框",
+            "type" : "input",
+            "priority" : 14
+          } ],
+          "cellVisible" : true
+        }, {
+          "id" : "shf763f014-36a8-444a-867d-c849d23b619e",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ]
+        }, {
+          "id" : "shc89eabf2-6ddf-42d1-afbc-a2c6d3abf689",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 2,
+          "cellVisible" : true,
+          "items" : [ {
+            "id" : "Idsh1b8f16d6-98cc-4b7b-beb8-4aa9ff371a44",
+            "preps" : {
+              "id" : "shc89eabf2-6ddf-42d1-afbc-a2c6d3abf689",
+              "itemNameLabel" : "单行文本框",
+              "name" : "shengchanpihao",
+              "clearable" : true,
+              "readonly" : false,
+              "placeholder" : "请输入生产批号",
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "label" : "生产批号",
+              "searchVisible" : true,
+              "defaultVisible" : true,
+              "colspan" : 2,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : "186px"
+            },
+            "compType" : "formItem",
+            "fieldName" : "shengchanpihao",
+            "itemType" : "input",
+            "label" : "单行文本框",
+            "type" : "input",
+            "priority" : 15
+          } ],
+          "colWidth" : "186px"
+        }, {
+          "id" : "sh821a62f7-a584-46e2-9d29-9eb7fab9b97c",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "62px"
+        }, {
+          "id" : "she382caae-53b3-4193-bb40-978526db89c1",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 2,
+          "cellVisible" : true,
+          "items" : [ {
+            "id" : "Idsh8bb371fe-713b-4279-890b-fb832bd5aa01",
+            "preps" : {
+              "id" : "she382caae-53b3-4193-bb40-978526db89c1",
+              "label" : "批量",
+              "itemNameLabel" : "单行文本框",
+              "name" : "piliang",
+              "clearable" : true,
+              "readonly" : false,
+              "placeholder" : "请输入批量",
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "colspan" : 2,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : "172px"
+            },
+            "compType" : "formItem",
+            "fieldName" : "piliang",
+            "itemType" : "input",
+            "label" : "单行文本框",
+            "type" : "input",
+            "priority" : 16
+          } ],
+          "colWidth" : "172px"
+        }, {
+          "id" : "sh117b2e3d-2bf3-4aa4-869d-ace763c9c34e",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "185px"
+        }, {
+          "id" : "sh7802503a-0fab-4a79-b7ab-bf7e132e8470",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 2,
+          "cellVisible" : true,
+          "items" : [ {
+            "id" : "Idsh686baee1-d03b-45c5-98d8-8312bf92eb8a",
+            "preps" : {
+              "id" : "sh7802503a-0fab-4a79-b7ab-bf7e132e8470",
+              "itemNameLabel" : "日期选择器",
+              "name" : "fashengshijian",
+              "clearable" : true,
+              "readonly" : false,
+              "placeholder" : "请输入发生时间",
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "label" : "发生时间",
+              "type" : "datetime",
+              "colspan" : 2,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "fashengshijian",
+            "itemType" : "datetime",
+            "label" : "单行文本框",
+            "type" : "datetime",
+            "priority" : 17
+          } ]
+        }, {
+          "id" : "sh6babbacc-d725-4e67-9954-2c7b23329008",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ]
+        } ]
+      }, {
+        "id" : "sh27993272-8ddb-47ca-a125-cc31c52bc021",
+        "colIndex" : 1,
+        "columns" : [ {
+          "id" : "sh041b920a-8e1b-40ca-be27-c7cd0759eba3",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 2,
+          "items" : [ {
+            "id" : "Idsh9bc552ab-1c2f-4464-bee8-9bfe27403dee",
+            "preps" : {
+              "id" : "sh041b920a-8e1b-40ca-be27-c7cd0759eba3",
+              "itemNameLabel" : "数字输入框",
+              "name" : "tourushu",
+              "clearable" : true,
+              "readonly" : false,
+              "placeholder" : "请输入投入数",
+              "step" : 1,
+              "min" : 0,
+              "precision" : 0,
+              "rules" : [ ],
+              "maxLength" : 10,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "label" : "投入数",
+              "colspan" : 2,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "tourushu",
+            "itemType" : "number",
+            "label" : "数字输入框",
+            "type" : "number",
+            "priority" : 18
+          } ],
+          "cellVisible" : true
+        }, {
+          "id" : "sh683180c3-f982-4a25-99e7-539622d295f2",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ]
+        }, {
+          "id" : "sh1776fa92-fbe5-439c-890b-57041f83a636",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 2,
+          "cellVisible" : true,
+          "items" : [ {
+            "id" : "Idshaa73789d-c3fc-406c-a6d0-845abadaeb28",
+            "preps" : {
+              "id" : "sh1776fa92-fbe5-439c-890b-57041f83a636",
+              "label" : "不良数",
+              "itemNameLabel" : "数字输入框",
+              "name" : "buliangshu",
+              "clearable" : true,
+              "readonly" : false,
+              "placeholder" : "请输入不良数",
+              "step" : 1,
+              "min" : 0,
+              "precision" : 0,
+              "rules" : [ ],
+              "maxLength" : 10,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "colspan" : 2,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : "186px"
+            },
+            "compType" : "formItem",
+            "fieldName" : "buliangshu",
+            "itemType" : "number",
+            "label" : "数字输入框",
+            "type" : "number",
+            "priority" : 19
+          } ],
+          "colWidth" : "186px"
+        }, {
+          "id" : "sh7cc5abbb-12c2-494e-9955-096f3a787df1",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "62px"
+        }, {
+          "id" : "sh207680a2-2a3b-471e-84da-55d82b3c122a",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 2,
+          "cellVisible" : true,
+          "items" : [ {
+            "id" : "Idshfff326d9-04b3-473f-9b8d-40dff3e8a005",
+            "preps" : {
+              "id" : "sh207680a2-2a3b-471e-84da-55d82b3c122a",
+              "itemNameLabel" : "数字输入框",
+              "name" : "bulianglv",
+              "clearable" : true,
+              "readonly" : false,
+              "placeholder" : "请输入不良率",
+              "step" : 1,
+              "min" : 0,
+              "precision" : 0,
+              "rules" : [ ],
+              "maxLength" : 10,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "label" : "不良率",
+              "colspan" : 2,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : "172px"
+            },
+            "compType" : "formItem",
+            "fieldName" : "bulianglv",
+            "itemType" : "number",
+            "label" : "数字输入框",
+            "type" : "number",
+            "priority" : 20
+          } ],
+          "colWidth" : "172px"
+        }, {
+          "id" : "sh22ece42f-810b-4807-922e-74ec1458eb79",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "185px"
+        }, {
+          "id" : "sh7ae3cc32-3cba-4e10-82f9-6edae73fd632",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 2,
+          "cellVisible" : true,
+          "items" : [ {
+            "id" : "Idsh26a933ab-59c1-4e70-85ce-2aea9a392c46",
+            "preps" : {
+              "id" : "sh7ae3cc32-3cba-4e10-82f9-6edae73fd632",
+              "label" : "反馈时间",
+              "itemNameLabel" : "日期选择器",
+              "name" : "fankuishijian",
+              "clearable" : true,
+              "readonly" : false,
+              "placeholder" : "请选择反馈时间",
+              "type" : "datetime",
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "colspan" : 2,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "fankuishijian",
+            "itemType" : "datetime",
+            "label" : "日期选择器",
+            "type" : "datetime",
+            "priority" : 21
+          } ]
+        }, {
+          "id" : "sh6714b888-c066-479c-a4f1-1df4379ca055",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ]
+        } ]
+      }, {
+        "id" : "shf7e93c59-c2b1-4484-bbd7-d319ff3789c0",
+        "colIndex" : 1,
+        "columns" : [ {
+          "id" : "shebddaed2-9e1b-4283-874c-fab336375418",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 6,
+          "items" : [ {
+            "id" : "Idsh2f50ee3f-9ca9-49e3-9d16-278e9780ea23",
+            "preps" : {
+              "id" : "shebddaed2-9e1b-4283-874c-fab336375418",
+              "label" : "异常内容描述",
+              "itemNameLabel" : "多行文本框",
+              "name" : "ycnrms",
+              "clearable" : true,
+              "readonly" : false,
+              "placeholder" : "请输入异常内容描述",
+              "rules" : [ ],
+              "maxLength" : 1000,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "labelPosition" : "top",
+              "colspan" : 6,
+              "colHeight" : "127px",
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "ycnrms",
+            "itemType" : "textarea",
+            "label" : "多行文本框",
+            "type" : "textarea",
+            "priority" : 22
+          } ],
+          "cellVisible" : true,
+          "colHeight" : "127px"
+        }, {
+          "id" : "sh2ab8a344-756b-4c44-b0d9-cf1a06aaab6a",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colHeight" : "175px"
+        }, {
+          "id" : "sh794ff7dc-655a-4ed2-b765-3166980aa20e",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "186px"
+        }, {
+          "id" : "shd0543201-7e7b-49e2-931e-1e0eb664852c",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "62px"
+        }, {
+          "id" : "she64847d9-1b73-4268-9aa7-3166c89ddaba",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "172px"
+        }, {
+          "id" : "sh42376ceb-9bbe-4dbc-8eb1-2fb548e70319",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "185px"
+        }, {
+          "id" : "sh86605876-ebf5-43cf-a6ad-5718d93f9505",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : true,
+          "items" : [ {
+            "id" : "Idshab1be8da-f314-4070-8958-dfd16cf606a4",
+            "preps" : {
+              "id" : "sh86605876-ebf5-43cf-a6ad-5718d93f9505",
+              "label" : "静态文本",
+              "itemNameLabel" : "静态文本",
+              "name" : "text24",
+              "clearable" : true,
+              "readonly" : false,
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "placeholder" : "",
+              "staticData" : true,
+              "textContent" : "开出部门",
+              "colspan" : 1,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "text24",
+            "itemType" : "text",
+            "label" : "静态文本",
+            "type" : "text",
+            "priority" : 23
+          } ]
+        }, {
+          "id" : "sh31195e04-1718-41cb-9a13-cd2ec14856e8",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : true,
+          "items" : [ {
+            "id" : "Idsh747f2743-61ea-4fe2-9a74-daa676b53df9",
+            "preps" : {
+              "id" : "sh31195e04-1718-41cb-9a13-cd2ec14856e8",
+              "label" : "开出部门",
+              "itemNameLabel" : "单选框",
+              "name" : "kaichubumen",
+              "clearable" : true,
+              "readonly" : false,
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "hideLabel" : true,
+              "dataSource" : "data",
+              "analysisType" : "func",
+              "values" : [ {
+                "name" : "IPQC",
+                "value" : "ipqc"
+              }, {
+                "name" : "FQC",
+                "value" : "fqc"
+              }, {
+                "name" : "工程",
+                "value" : "gongcheng"
+              }, {
+                "name" : "产线",
+                "value" : "chanxian"
+              }, {
+                "name" : "其它",
+                "value" : "qita"
+              } ],
+              "valuesDefaultValue" : [ { } ],
+              "colspan" : 1,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "kaichubumen",
+            "itemType" : "radio",
+            "label" : "单选框",
+            "type" : "radio",
+            "priority" : 24
+          } ]
+        } ]
+      }, {
+        "id" : "sh2517487a-e38d-4d19-b52e-17aa9eb1c8d2",
+        "colIndex" : 1,
+        "columns" : [ {
+          "id" : "sh23b6a0c8-c148-401c-ab9e-23394df58d95",
+          "colIndex" : 1,
+          "rowspan" : 3,
+          "colspan" : 6,
+          "items" : [ {
+            "id" : "Idsh52d0e7f7-1c03-45cb-95bb-01f102af62f0",
+            "preps" : {
+              "id" : "sh23b6a0c8-c148-401c-ab9e-23394df58d95",
+              "label" : "根本原因分析（工程填写）",
+              "itemNameLabel" : "多行文本框",
+              "name" : "gbyyfxgctx",
+              "clearable" : true,
+              "readonly" : false,
+              "placeholder" : "请输入根本原因分析（工程填写）",
+              "rules" : [ ],
+              "maxLength" : 1000,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "labelPosition" : "top",
+              "colspan" : 6,
+              "colHeight" : "171px",
+              "cellVisible" : true,
+              "rowspan" : 3,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "gbyyfxgctx",
+            "itemType" : "textarea",
+            "label" : "多行文本框",
+            "type" : "textarea",
+            "priority" : 25
+          }, {
+            "id" : "Idsh0dbc8c98-b7d3-4e01-90f9-fe571acfbafb",
+            "preps" : {
+              "id" : "sh23b6a0c8-c148-401c-ab9e-23394df58d95",
+              "label" : "责任判定",
+              "itemNameLabel" : "单选框",
+              "name" : "zherenpanding",
+              "clearable" : true,
+              "readonly" : false,
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "dataSource" : "data",
+              "analysisType" : "func",
+              "values" : [ {
+                "name" : "设计不良",
+                "value" : "sjbl"
+              }, {
+                "name" : "物料不良",
+                "value" : "wlbl"
+              }, {
+                "name" : "制程不良",
+                "value" : "zcbl"
+              }, {
+                "name" : "其它",
+                "value" : "qita"
+              } ],
+              "valuesDefaultValue" : [ { } ],
+              "colspan" : 6,
+              "colHeight" : "171px",
+              "cellVisible" : true,
+              "rowspan" : 3,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "zherenpanding",
+            "itemType" : "radio",
+            "label" : "单选框",
+            "type" : "radio",
+            "priority" : 26
+          } ],
+          "cellVisible" : true,
+          "colHeight" : "171px"
+        }, {
+          "id" : "sh668f8c13-c792-4d9c-99df-920fa78d32bb",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ]
+        }, {
+          "id" : "shf91186c9-ba49-4bc5-a2aa-4ab579d6925c",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "186px"
+        }, {
+          "id" : "sh8ec832fc-aa46-41f2-9f2c-724b1d577a1f",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "62px"
+        }, {
+          "id" : "sh1253077b-1150-426a-9972-8161beb8bf02",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "172px"
+        }, {
+          "id" : "sha46ec3f1-f24e-4eab-bb26-bafa185e4f05",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "185px"
+        }, {
+          "id" : "sha9a88708-4bba-4e88-9788-934624e31f5d",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 2,
+          "cellVisible" : true,
+          "items" : [ {
+            "id" : "Idshb7f55085-8729-4c68-92e9-7bc5bc380eae",
+            "preps" : {
+              "id" : "sha9a88708-4bba-4e88-9788-934624e31f5d",
+              "label" : "分析人",
+              "itemNameLabel" : "单行文本框",
+              "name" : "fenxiren",
+              "clearable" : true,
+              "readonly" : false,
+              "placeholder" : "请输入分析人",
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "colspan" : 2,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "fenxiren",
+            "itemType" : "input",
+            "label" : "单行文本框",
+            "type" : "input",
+            "priority" : 27
+          } ]
+        }, {
+          "id" : "sh3820890f-eb8e-4185-8f8e-0b86ebdcce6f",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ]
+        } ]
+      }, {
+        "id" : "shdec8f71c-deaa-4233-8a4a-12205eed82ad",
+        "colIndex" : 1,
+        "columns" : [ {
+          "id" : "sh8b7418bf-af2d-486e-a397-3ce4bde1d683",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "items" : [ ],
+          "cellVisible" : false
+        }, {
+          "id" : "shf224a7d3-2251-48a9-9f79-e1526b366426",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ]
+        }, {
+          "id" : "shd2561a4a-fb4c-4d6d-a1b5-5cdec59d246b",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "186px"
+        }, {
+          "id" : "sh06ffb16f-1cf8-45ab-be9b-7293139e9982",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "62px"
+        }, {
+          "id" : "sha69fe1cf-4739-4dfa-ad21-365d24d444f9",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "172px"
+        }, {
+          "id" : "sh5a964a88-417b-4646-9e93-8100875a7c0b",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "185px"
+        }, {
+          "id" : "sh1a647fd5-536b-4255-9d3e-262e02b8e106",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 2,
+          "cellVisible" : true,
+          "items" : [ {
+            "id" : "Idshba0ce742-cf0f-4d61-8b8c-8576c88f3956",
+            "preps" : {
+              "id" : "sh1a647fd5-536b-4255-9d3e-262e02b8e106",
+              "label" : "QE确认",
+              "itemNameLabel" : "单行文本框",
+              "name" : "qequeren",
+              "clearable" : true,
+              "readonly" : false,
+              "placeholder" : "请输入QE确认",
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "colspan" : 2,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "qequeren",
+            "itemType" : "input",
+            "label" : "单行文本框",
+            "type" : "input",
+            "priority" : 28
+          } ]
+        }, {
+          "id" : "sh27dfdf22-bad5-4c85-b69e-f039ade668af",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ]
+        } ]
+      }, {
+        "id" : "sha93e5a22-84f0-4770-94cb-32fdc72d5a4f",
+        "colIndex" : 1,
+        "columns" : [ {
+          "id" : "sh9e472243-dfd3-4292-9d56-2d98eb90f976",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "items" : [ ],
+          "cellVisible" : false
+        }, {
+          "id" : "sh0e306f16-caa0-491c-8fcb-47e644ba468c",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ]
+        }, {
+          "id" : "sh133a94d2-e77f-4202-abfb-67d602ba2b6e",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "186px"
+        }, {
+          "id" : "sh62f55c02-1edf-4d46-bdc4-8b81f9d7383f",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "62px"
+        }, {
+          "id" : "sh633c06c3-b905-46f2-b4b5-b6751e638dce",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "172px"
+        }, {
+          "id" : "sh6b877e82-7bba-445b-b843-e124a1288d00",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "185px"
+        }, {
+          "id" : "sh49253a3a-9b4d-477c-b2c9-a2e797102ad0",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 2,
+          "cellVisible" : true,
+          "items" : [ {
+            "id" : "Idsh11501c13-abc1-4881-9a55-82c80bff3519",
+            "preps" : {
+              "id" : "sh49253a3a-9b4d-477c-b2c9-a2e797102ad0",
+              "label" : "工程经理",
+              "itemNameLabel" : "单行文本框",
+              "name" : "gongchengjingli",
+              "clearable" : true,
+              "readonly" : false,
+              "placeholder" : "请输入工程经理",
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "colspan" : 2,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "gongchengjingli",
+            "itemType" : "input",
+            "label" : "单行文本框",
+            "type" : "input",
+            "priority" : 29
+          } ]
+        }, {
+          "id" : "sh49b08e2b-2452-4ef2-b65e-1ef17300aaca",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ]
+        } ]
+      }, {
+        "id" : "shc417b1b7-cde4-411e-be90-9a85f7a871be",
+        "colIndex" : 1,
+        "columns" : [ {
+          "id" : "shf1f22cd1-a43d-48c4-9e1a-5ddde5ff51db",
+          "colIndex" : 1,
+          "rowspan" : 2,
+          "colspan" : 6,
+          "items" : [ {
+            "id" : "Idsh08e3b3c0-6422-40d1-b07f-ea0d615d4bc3",
+            "preps" : {
+              "id" : "shf1f22cd1-a43d-48c4-9e1a-5ddde5ff51db",
+              "label" : "临时措施（责任部门填写）",
+              "itemNameLabel" : "多行文本框",
+              "name" : "lscszrbmtx",
+              "clearable" : true,
+              "readonly" : false,
+              "placeholder" : "请输入临时措施（责任部门填写）",
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "labelPosition" : "top",
+              "colspan" : 6,
+              "colHeight" : "125px",
+              "cellVisible" : true,
+              "rowspan" : 2,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "lscszrbmtx",
+            "itemType" : "textarea",
+            "label" : "多行文本框",
+            "type" : "textarea",
+            "priority" : 30
+          } ],
+          "cellVisible" : true,
+          "colHeight" : "125px"
+        }, {
+          "id" : "sha07ede78-1db2-4d55-bff1-7ce92ba46a45",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ]
+        }, {
+          "id" : "shbeec7cf3-6133-42d1-a0bf-cbc24e3814b8",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "186px"
+        }, {
+          "id" : "sha29bc3b9-86a3-41e8-9d5c-357b9ee622dc",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "62px"
+        }, {
+          "id" : "shb5e6e210-89cb-4fa0-a4fe-c22bbed8a974",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "172px"
+        }, {
+          "id" : "she135b82a-1a4f-42cf-82a5-ce47bf5814c2",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "185px"
+        }, {
+          "id" : "sh956c7896-4cbc-4a84-ac6f-867f41c1309d",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 2,
+          "cellVisible" : true,
+          "items" : [ {
+            "id" : "Idshd7ace679-1f85-4143-9d8d-90603569f2cf",
+            "preps" : {
+              "id" : "sh956c7896-4cbc-4a84-ac6f-867f41c1309d",
+              "label" : "制订人",
+              "itemNameLabel" : "单行文本框",
+              "name" : "zhidingren",
+              "clearable" : true,
+              "readonly" : false,
+              "placeholder" : "请输入制订人",
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "colspan" : 2,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "zhidingren",
+            "itemType" : "input",
+            "label" : "单行文本框",
+            "type" : "input",
+            "priority" : 31
+          } ]
+        }, {
+          "id" : "sh248ee88e-74c8-440f-9116-9c873100baae",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ]
+        } ]
+      }, {
+        "id" : "shc0bedc35-3dc0-4c0e-9bc3-8a8fb6d326a7",
+        "colIndex" : 1,
+        "columns" : [ {
+          "id" : "she3a78973-404b-4571-b808-70ebee92b36e",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "items" : [ ],
+          "cellVisible" : false
+        }, {
+          "id" : "sh5ef1c601-603b-4530-b988-6b397fae57e9",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ]
+        }, {
+          "id" : "sh448e381d-9022-4492-b232-a75c791a8220",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "186px"
+        }, {
+          "id" : "sh681332af-d3c9-4312-b84e-38354b86dbf1",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "62px"
+        }, {
+          "id" : "sh78d1e926-c6b8-44f7-9457-05de399144cd",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "172px"
+        }, {
+          "id" : "shc2ffa945-11d9-44e9-a07b-a202aa39273d",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "185px"
+        }, {
+          "id" : "sh932221c7-eb17-4722-a8c4-c2b72fe4807a",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 2,
+          "cellVisible" : true,
+          "items" : [ {
+            "id" : "Idsh1723dc19-e0d3-4312-8d22-a5d60505cead",
+            "preps" : {
+              "id" : "sh932221c7-eb17-4722-a8c4-c2b72fe4807a",
+              "itemNameLabel" : "日期选择器",
+              "name" : "shidingshijian",
+              "clearable" : true,
+              "readonly" : false,
+              "placeholder" : "请输入制定时间",
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "label" : "制定时间",
+              "type" : "datetime",
+              "colspan" : 2,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "shidingshijian",
+            "itemType" : "datetime",
+            "label" : "单行文本框",
+            "type" : "datetime",
+            "priority" : 32
+          } ]
+        }, {
+          "id" : "sh125efa33-85c4-452d-8ff3-20077b562165",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ]
+        } ]
+      }, {
+        "id" : "sh88437ddd-330b-44ba-b653-d50f459f1d50",
+        "colIndex" : 1,
+        "columns" : [ {
+          "id" : "sh9679151e-ecfa-47d1-a3b5-5145605290fb",
+          "colIndex" : 1,
+          "rowspan" : 2,
+          "colspan" : 1,
+          "items" : [ {
+            "id" : "Idsh65e6d328-d099-4138-82be-309c594144fb",
+            "preps" : {
+              "id" : "sh9679151e-ecfa-47d1-a3b5-5145605290fb",
+              "label" : "静态文本",
+              "itemNameLabel" : "静态文本",
+              "name" : "text34",
+              "clearable" : true,
+              "readonly" : false,
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "staticData" : true,
+              "textContent" : "不良排查",
+              "colspan" : 1,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 2,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "text34",
+            "itemType" : "text",
+            "label" : "静态文本",
+            "type" : "text",
+            "priority" : 33
+          } ],
+          "cellVisible" : true
+        }, {
+          "id" : "shccb2fe0d-3b8f-42a5-80a9-e9b6939f5138",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 2,
+          "cellVisible" : true,
+          "items" : [ {
+            "id" : "Idsh3a09a128-facd-4e3a-8cc9-69dcbc8a3d6b",
+            "preps" : {
+              "id" : "shccb2fe0d-3b8f-42a5-80a9-e9b6939f5138",
+              "label" : "1.原材料",
+              "itemNameLabel" : "单选框",
+              "name" : "yuancailiao",
+              "clearable" : true,
+              "readonly" : false,
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "placeholder" : "",
+              "dataSource" : "data",
+              "analysisType" : "func",
+              "values" : [ {
+                "name" : "需要",
+                "value" : "xuyao"
+              }, {
+                "name" : "不需要",
+                "value" : "buxuyao"
+              } ],
+              "valuesDefaultValue" : [ { } ],
+              "colspan" : 2,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "yuancailiao",
+            "itemType" : "radio",
+            "label" : "单选框",
+            "type" : "radio",
+            "priority" : 34
+          } ]
+        }, {
+          "id" : "sh129eeb8f-eefd-46a3-9e06-57e68d4df8a7",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "186px"
+        }, {
+          "id" : "sh23b4c925-dd12-4e4a-a000-a28811654d06",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : true,
+          "items" : [ ],
+          "colWidth" : "62px"
+        }, {
+          "id" : "shfeb9c678-5b89-4706-b05a-4a80cdc5fbda",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 2,
+          "cellVisible" : true,
+          "items" : [ {
+            "id" : "Idsh344c9455-7660-471f-8733-244d5cde96e7",
+            "preps" : {
+              "id" : "shfeb9c678-5b89-4706-b05a-4a80cdc5fbda",
+              "label" : "2.在制半成品",
+              "itemNameLabel" : "单选框",
+              "name" : "zzbcp",
+              "clearable" : true,
+              "readonly" : false,
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "dataSource" : "data",
+              "analysisType" : "func",
+              "values" : [ {
+                "name" : "需要",
+                "value" : "xuyao"
+              }, {
+                "name" : "不需要",
+                "value" : "buxuyao"
+              } ],
+              "valuesDefaultValue" : [ { } ],
+              "colspan" : 2,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : "172px"
+            },
+            "compType" : "formItem",
+            "fieldName" : "zzbcp",
+            "itemType" : "radio",
+            "label" : "单选框",
+            "type" : "radio",
+            "priority" : 35
+          } ],
+          "colWidth" : "172px"
+        }, {
+          "id" : "shbd0362a4-8e3d-4185-b6a7-4415fccc6436",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "185px"
+        }, {
+          "id" : "sh35329b71-f884-4640-b668-9077092ecff3",
+          "colIndex" : 1,
+          "rowspan" : 2,
+          "colspan" : 2,
+          "cellVisible" : true,
+          "items" : [ {
+            "id" : "Idsh154e253b-2d9a-4854-a71f-c46ba041b89b",
+            "preps" : {
+              "id" : "sh35329b71-f884-4640-b668-9077092ecff3",
+              "itemNameLabel" : "单行文本框",
+              "name" : "paicharenyuan",
+              "clearable" : true,
+              "readonly" : false,
+              "placeholder" : "请输入排查人员",
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "label" : "排查人员",
+              "colspan" : 2,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 2,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "paicharenyuan",
+            "itemType" : "input",
+            "label" : "单行文本框",
+            "type" : "input",
+            "priority" : 36
+          } ]
+        }, {
+          "id" : "sh794c2235-f1eb-4e1d-a1c7-f18ba1d7d060",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ]
+        } ]
+      }, {
+        "id" : "shd1641dc0-9106-4568-931f-f7e520dad164",
+        "colIndex" : 1,
+        "columns" : [ {
+          "id" : "sh55381a5c-f311-4cee-9dea-1ad6c6aeba06",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "items" : [ ],
+          "cellVisible" : false
+        }, {
+          "id" : "shf0dc5955-36d1-4841-a0f9-94b2e137ab46",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 2,
+          "cellVisible" : true,
+          "items" : [ {
+            "id" : "Idshb437f53a-1e5e-484f-afaa-aa67b2d2340a",
+            "preps" : {
+              "id" : "shf0dc5955-36d1-4841-a0f9-94b2e137ab46",
+              "label" : " 3.成品库存",
+              "itemNameLabel" : "单选框",
+              "name" : "chengpinkucun",
+              "clearable" : true,
+              "readonly" : false,
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "dataSource" : "data",
+              "analysisType" : "func",
+              "values" : [ {
+                "name" : "需要",
+                "value" : "xuyao"
+              }, {
+                "name" : "不需要",
+                "value" : "buxuyao"
+              } ],
+              "valuesDefaultValue" : [ { } ],
+              "colspan" : 2,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "chengpinkucun",
+            "itemType" : "radio",
+            "label" : "单选框",
+            "type" : "radio",
+            "priority" : 37
+          } ]
+        }, {
+          "id" : "shd81d41e6-4bb9-4efc-9789-b683f69db7b0",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "186px"
+        }, {
+          "id" : "sh5333dc9a-6a9e-456c-ba61-488232840b24",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : true,
+          "items" : [ ],
+          "colWidth" : "62px"
+        }, {
+          "id" : "shb47c7d86-8bea-4fbd-b221-489d84928ddc",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 2,
+          "cellVisible" : true,
+          "items" : [ {
+            "id" : "Idsh09ba73f5-003a-44ac-80dc-7ebe1cb3824a",
+            "preps" : {
+              "id" : "shb47c7d86-8bea-4fbd-b221-489d84928ddc",
+              "label" : "4.已出货品",
+              "itemNameLabel" : "单选框",
+              "name" : "yichuhuopin",
+              "clearable" : true,
+              "readonly" : false,
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "dataSource" : "data",
+              "analysisType" : "func",
+              "values" : [ {
+                "name" : "需要",
+                "value" : "xuyao"
+              }, {
+                "name" : "不需要",
+                "value" : "buxuyao"
+              } ],
+              "valuesDefaultValue" : [ { } ],
+              "colspan" : 2,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : "172px"
+            },
+            "compType" : "formItem",
+            "fieldName" : "yichuhuopin",
+            "itemType" : "radio",
+            "label" : "单选框",
+            "type" : "radio",
+            "priority" : 38
+          } ],
+          "colWidth" : "172px"
+        }, {
+          "id" : "shcdd8eec4-bc51-446d-a4a6-ed01d33d06e4",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "185px"
+        }, {
+          "id" : "shca78dd7a-7c05-4606-aeae-0348f2ce1cd1",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ]
+        }, {
+          "id" : "sha4ba0889-fd31-4716-ba63-856d1be9473c",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ]
+        } ]
+      }, {
+        "id" : "sha9fc18fa-6fa1-4996-b776-59e9ae4c87b0",
+        "colIndex" : 1,
+        "columns" : [ {
+          "id" : "sh22a619c6-91e0-4649-8998-815428aae05d",
+          "colIndex" : 1,
+          "rowspan" : 3,
+          "colspan" : 6,
+          "items" : [ {
+            "id" : "Idsh5cdfe3cf-0aaa-4220-8f3f-588da962d07f",
+            "preps" : {
+              "id" : "sh22a619c6-91e0-4649-8998-815428aae05d",
+              "label" : "长期预防措施",
+              "itemNameLabel" : "多行文本框",
+              "name" : "cqyfcs",
+              "clearable" : true,
+              "readonly" : false,
+              "placeholder" : "请输入长期预防措施",
+              "rules" : [ ],
+              "maxLength" : 1000,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "labelPosition" : "top",
+              "colspan" : 6,
+              "colHeight" : "150px",
+              "cellVisible" : true,
+              "rowspan" : 3,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "cqyfcs",
+            "itemType" : "textarea",
+            "label" : "多行文本框",
+            "type" : "textarea",
+            "priority" : 39
+          }, {
+            "id" : "Idshe6b1d024-6ab9-4b11-a1eb-47d68a703c82",
+            "preps" : {
+              "id" : "sh22a619c6-91e0-4649-8998-815428aae05d",
+              "label" : "标准化",
+              "itemNameLabel" : "单选框",
+              "name" : "biaozhunhua",
+              "clearable" : true,
+              "readonly" : false,
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "placeholder" : "",
+              "dataSource" : "data",
+              "analysisType" : "func",
+              "values" : [ {
+                "name" : "作业标准修订",
+                "value" : "zybzxd"
+              }, {
+                "name" : "图纸修订",
+                "value" : "tuzhixiuding"
+              }, {
+                "name" : "研发/技术更改，ECN号",
+                "value" : "yf_jsgg"
+              }, {
+                "name" : "其它",
+                "value" : "other"
+              } ],
+              "valuesDefaultValue" : [ { } ],
+              "colspan" : 6,
+              "colHeight" : "150px",
+              "cellVisible" : true,
+              "rowspan" : 3,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "biaozhunhua",
+            "itemType" : "radio",
+            "label" : "单选框",
+            "type" : "radio",
+            "priority" : 40
+          } ],
+          "cellVisible" : true,
+          "colHeight" : "150px"
+        }, {
+          "id" : "sha2e3ced8-0536-4192-8de9-dbaf05c013d3",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ]
+        }, {
+          "id" : "shb5aab7b9-aba4-48cb-9ba4-e1129957e9f6",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "186px"
+        }, {
+          "id" : "sh34dc4b22-b49a-40c8-9598-035303aec955",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "62px"
+        }, {
+          "id" : "sh3cb69fd3-9131-4731-bf65-c714783b2b70",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "172px"
+        }, {
+          "id" : "sh1be28d0c-9b55-476b-bc8a-f7ccad45394e",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "185px"
+        }, {
+          "id" : "sh0372f8a5-6433-4ad4-9179-6c78088862b0",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 2,
+          "cellVisible" : true,
+          "items" : [ {
+            "id" : "Idsh2f96a796-d79c-4555-aac1-e029f164b463",
+            "preps" : {
+              "id" : "sh0372f8a5-6433-4ad4-9179-6c78088862b0",
+              "label" : "制定人",
+              "itemNameLabel" : "单行文本框",
+              "name" : "zhidingren2",
+              "clearable" : true,
+              "readonly" : false,
+              "placeholder" : "请输入制定人",
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "colspan" : 2,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "zhidingren2",
+            "itemType" : "input",
+            "label" : "单行文本框",
+            "type" : "input",
+            "priority" : 41
+          } ]
+        }, {
+          "id" : "sh8d092de1-f85f-4bee-a1d3-5db9c592f657",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ]
+        } ]
+      }, {
+        "id" : "shcfd0cfcc-53b6-4d00-b609-bf22d3ffcb3d",
+        "colIndex" : 1,
+        "columns" : [ {
+          "id" : "sh738066ac-354c-454c-91cc-733032a42616",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "items" : [ ],
+          "cellVisible" : false
+        }, {
+          "id" : "sh668fb4b3-a8f3-4bf4-9537-9f1f0adb9a9d",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ]
+        }, {
+          "id" : "sh1f39de72-5407-42fe-a8c5-9ec8dea6e499",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "186px"
+        }, {
+          "id" : "sh6bfa5e24-fee6-4700-94a2-7c26a688cb67",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "62px"
+        }, {
+          "id" : "shc14367c4-3100-47af-b128-3f200add452f",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "172px"
+        }, {
+          "id" : "sh472e8495-25b0-47ce-9e82-9af0f39f443d",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "185px"
+        }, {
+          "id" : "sh632737a0-4027-48a7-a957-d2c69e009fa1",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 2,
+          "cellVisible" : true,
+          "items" : [ {
+            "id" : "Idshe3b28106-4dac-40ef-889d-770b227928fa",
+            "preps" : {
+              "id" : "sh632737a0-4027-48a7-a957-d2c69e009fa1",
+              "itemNameLabel" : "单行文本框",
+              "clearable" : true,
+              "readonly" : false,
+              "placeholder" : "请输入制定时间",
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "label" : "制定时间",
+              "name" : "zhidingshijian2",
+              "colspan" : 2,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "zhidingshijian2",
+            "itemType" : "input",
+            "label" : "单行文本框",
+            "type" : "input",
+            "priority" : 42
+          } ]
+        }, {
+          "id" : "sh39038907-7910-450b-b310-5d3a5f31f39a",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ]
+        } ]
+      }, {
+        "id" : "shefc46ca0-0cf7-463d-a012-accc956197b5",
+        "colIndex" : 1,
+        "columns" : [ {
+          "id" : "sh274b3b0f-b8e8-4505-bfa4-e17439a730ee",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "items" : [ ],
+          "cellVisible" : false
+        }, {
+          "id" : "sha2d1e056-3d00-4745-9ca1-b7316b0d02b3",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ]
+        }, {
+          "id" : "sh5d94c329-4d8a-4ad0-8257-3a2ae8dca156",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "186px"
+        }, {
+          "id" : "sh965d04aa-e053-4be1-8109-f83dfbf43e83",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "62px"
+        }, {
+          "id" : "sh6d3c66e4-5159-4fd8-8ffa-eb578fce1362",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "172px"
+        }, {
+          "id" : "sh257dc298-1c62-44c4-afa0-f4f9cffbe8bf",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "185px"
+        }, {
+          "id" : "sh0475571e-5528-44f4-8d1f-dbf6c8fc56e5",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 2,
+          "cellVisible" : true,
+          "items" : [ {
+            "id" : "Idsh92d3692e-9214-4998-be14-9cab4572388c",
+            "preps" : {
+              "id" : "sh0475571e-5528-44f4-8d1f-dbf6c8fc56e5",
+              "itemNameLabel" : "单行文本框",
+              "name" : "bumenjingli",
+              "clearable" : true,
+              "readonly" : false,
+              "placeholder" : "请输入部门经理",
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "label" : "部门经理",
+              "colspan" : 2,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "bumenjingli",
+            "itemType" : "input",
+            "label" : "单行文本框",
+            "type" : "input",
+            "priority" : 43
+          } ]
+        }, {
+          "id" : "she016ec37-483d-4d7c-a2f4-8b6e531dc3b9",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ]
+        } ]
+      }, {
+        "id" : "sh2a7f79cf-659c-44ab-81b3-769d0a2f35eb",
+        "colIndex" : 1,
+        "columns" : [ {
+          "id" : "sh633d02b5-feb9-4199-a178-694b9e728e5c",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 6,
+          "items" : [ {
+            "id" : "Idsha650e633-4423-4791-ae89-c8c5f905babd",
+            "preps" : {
+              "id" : "sh633d02b5-feb9-4199-a178-694b9e728e5c",
+              "label" : "Html组件",
+              "itemNameLabel" : "Html组件",
+              "name" : "html46",
+              "clearable" : true,
+              "readonly" : false,
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "placeholder" : "",
+              "staticData" : true,
+              "textContent" : "<p style=\"text-align: left;\">改善措施效果确认</p>",
+              "elements" : [ {
+                "id" : "sh252b242f-43c2-4951-acbf-57444753e1d9",
+                "colIndex" : 1,
+                "columns" : [ {
+                  "id" : "she33c19e0-72d4-4839-abf9-23b6efeb50bc",
+                  "colIndex" : 1,
+                  "rowspan" : 1,
+                  "colspan" : 1,
+                  "items" : [ ],
+                  "cellVisible" : true
+                } ]
+              } ],
+              "rowNums" : 1,
+              "columnNums" : 1,
+              "styles" : {
+                "alignItems" : "start"
+              },
+              "colspan" : 6,
+              "colHeight" : "51px",
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "html46",
+            "itemType" : "html",
+            "label" : "Html组件",
+            "type" : "html",
+            "priority" : 44
+          } ],
+          "cellVisible" : true,
+          "colHeight" : "51px"
+        }, {
+          "id" : "sh5d5ea5b2-75d3-4e98-95c6-d0adca9fffba",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ]
+        }, {
+          "id" : "sh6b94572c-9178-4f0c-9327-de1e5c631122",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "186px"
+        }, {
+          "id" : "sh6fa1a213-e1b4-4301-8b4d-3e2ac6518bab",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "62px"
+        }, {
+          "id" : "shf2ad8beb-1ac8-44cf-94f3-ac5989cccd0e",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "172px"
+        }, {
+          "id" : "shf6243353-da9e-47ba-bdf6-6105255d3ecb",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ],
+          "colWidth" : "185px"
+        }, {
+          "id" : "sh47aad720-f646-4501-8f21-238910723e9a",
+          "colIndex" : 1,
+          "rowspan" : 2,
+          "colspan" : 2,
+          "cellVisible" : true,
+          "items" : [ {
+            "id" : "Idsh4f89e059-926c-4e6e-933b-64585ed5e1c0",
+            "preps" : {
+              "id" : "sh47aad720-f646-4501-8f21-238910723e9a",
+              "label" : "QE确认",
+              "itemNameLabel" : "单行文本框",
+              "name" : "qequeren2",
+              "clearable" : true,
+              "readonly" : false,
+              "placeholder" : "请输入QE确认",
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "colspan" : 2,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 2,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "qequeren2",
+            "itemType" : "input",
+            "label" : "单行文本框",
+            "type" : "input",
+            "priority" : 45
+          } ]
+        }, {
+          "id" : "shdc3847c7-5498-43c8-b33d-73932eaa8ce1",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "cellVisible" : false,
+          "items" : [ ]
+        } ]
+      }, {
+        "id" : "shb2f71d9b-268d-4c0a-b680-25fd89cb278a",
+        "colIndex" : 1,
+        "columns" : [ {
+          "id" : "she671b08e-b043-48b7-90fd-27ae5034dbc4",
+          "colspan" : 2,
+          "rowspan" : 1,
+          "items" : [ {
+            "id" : "Idsh03692c12-5f4e-47eb-8f41-1ad8e309ce72",
+            "preps" : {
+              "id" : "she671b08e-b043-48b7-90fd-27ae5034dbc4",
+              "itemNameLabel" : "日期选择器",
+              "name" : "gzsd",
+              "clearable" : true,
+              "readonly" : false,
+              "placeholder" : "请选择跟踪时段",
+              "type" : "datetime",
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "label" : "跟踪时段",
+              "format" : "HH",
+              "valueFormat" : "HH",
+              "colspan" : 2,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "gzsd",
+            "itemType" : "datetime",
+            "label" : "日期选择器",
+            "type" : "datetime",
+            "priority" : 46
+          } ],
+          "cellVisible" : true
+        }, {
+          "id" : "sh37b90368-a9db-4397-80c4-ed9340f39783",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "items" : [ ],
+          "cellVisible" : false
+        }, {
+          "id" : "sh05dec99e-908d-4f1c-b25a-23eb7586d71d",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "items" : [ ],
+          "cellVisible" : false,
+          "colWidth" : "186px"
+        }, {
+          "id" : "sh961e5ee0-4540-4e7a-a3f8-8c8bf0e63fef",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 2,
+          "items" : [ {
+            "id" : "Idsh247c25aa-4c24-40d5-a693-0841e1f878a4",
+            "preps" : {
+              "id" : "sh961e5ee0-4540-4e7a-a3f8-8c8bf0e63fef",
+              "itemNameLabel" : "数字输入框",
+              "name" : "tourushu2",
+              "clearable" : true,
+              "readonly" : false,
+              "placeholder" : "请输入投入数",
+              "step" : "1",
+              "min" : 0,
+              "precision" : 0,
+              "rules" : [ ],
+              "maxLength" : 10,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "label" : "投入数",
+              "controlsPosition" : "right",
+              "colspan" : 2,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : "62px"
+            },
+            "compType" : "formItem",
+            "fieldName" : "tourushu2",
+            "itemType" : "number",
+            "label" : "数字输入框",
+            "type" : "number",
+            "priority" : 47
+          } ],
+          "cellVisible" : true,
+          "colWidth" : "62px"
+        }, {
+          "id" : "shee4406a9-b8a7-4357-b73f-7148ca6d7ceb",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "items" : [ ],
+          "cellVisible" : false,
+          "colWidth" : "172px"
+        }, {
+          "id" : "shfd71552a-672f-4ad4-a6c0-d8e7fc025fa0",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "items" : [ {
+            "id" : "Idsh1b77618b-4d79-4ef9-b080-2e53c16d44ee",
+            "preps" : {
+              "id" : "shfd71552a-672f-4ad4-a6c0-d8e7fc025fa0",
+              "itemNameLabel" : "数字输入框",
+              "name" : "buliangshu2",
+              "clearable" : true,
+              "readonly" : false,
+              "placeholder" : "请输入不良数",
+              "step" : "1",
+              "min" : 0,
+              "precision" : 0,
+              "rules" : [ ],
+              "maxLength" : 10,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "label" : "不良数",
+              "controlsPosition" : "right",
+              "colspan" : 1,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : "185px"
+            },
+            "compType" : "formItem",
+            "fieldName" : "buliangshu2",
+            "itemType" : "number",
+            "label" : "数字输入框",
+            "type" : "number",
+            "priority" : 48
+          } ],
+          "cellVisible" : true,
+          "colWidth" : "185px"
+        }, {
+          "id" : "sh9c050143-3467-48cd-a0f2-3cb0ed729672",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "items" : [ {
+            "id" : "Idsha6fbc01c-27a9-474e-8d2e-f188e4cbc6f4",
+            "preps" : {
+              "id" : "sh9c050143-3467-48cd-a0f2-3cb0ed729672",
+              "itemNameLabel" : "数字输入框",
+              "name" : "bulianglv2",
+              "clearable" : true,
+              "readonly" : false,
+              "placeholder" : "请输入不良率",
+              "step" : "1",
+              "min" : 0,
+              "precision" : 0,
+              "rules" : [ ],
+              "maxLength" : 10,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "label" : "不良率",
+              "colspan" : 1,
+              "colHeight" : null,
+              "cellVisible" : false,
+              "rowspan" : 1,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "bulianglv2",
+            "itemType" : "number",
+            "label" : "数字输入框",
+            "type" : "number",
+            "priority" : 49
+          } ],
+          "cellVisible" : false
+        }, {
+          "id" : "sh702863b5-024a-4465-9877-a5e946dbb17f",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "items" : [ ],
+          "cellVisible" : false
+        }, {
+          "id" : "she20f4648-48a1-4755-b05d-f8788913833b",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "items" : [ ],
+          "cellVisible" : true
+        } ]
+      }, {
+        "id" : "shd809ccc9-41b0-4774-9f94-e66bda3ae65a",
+        "colIndex" : 1,
+        "columns" : [ {
+          "id" : "shc983efcb-8281-44eb-8164-ff36da17c67f",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 6,
+          "items" : [ {
+            "id" : "Idshb6473bb0-8b0c-4ec7-bc26-e2d674bf5e37",
+            "preps" : {
+              "id" : "shc983efcb-8281-44eb-8164-ff36da17c67f",
+              "label" : "判定",
+              "itemNameLabel" : "单选框",
+              "name" : "panding",
+              "clearable" : true,
+              "readonly" : false,
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "step" : "",
+              "placeholder" : "",
+              "dataSource" : "data",
+              "analysisType" : "func",
+              "values" : [ {
+                "name" : "措施有效，可继续生产，进一步跟进效果",
+                "value" : "ok"
+              }, {
+                "name" : "措施无效，需停线整改",
+                "value" : "ng"
+              } ],
+              "valuesDefaultValue" : [ { } ],
+              "colspan" : 6,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "panding",
+            "itemType" : "radio",
+            "label" : "单选框",
+            "type" : "radio",
+            "priority" : 50
+          } ],
+          "cellVisible" : true
+        }, {
+          "id" : "shbbfebb9d-0a1f-436e-abb7-d3435183d89a",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "items" : [ ],
+          "cellVisible" : false
+        }, {
+          "id" : "sh01bf9637-700e-4439-8985-29f19ad3ebf3",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "items" : [ ],
+          "cellVisible" : false,
+          "colWidth" : "186px"
+        }, {
+          "id" : "sh89a423e5-3e6e-44eb-8ed4-41076409e24c",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "items" : [ ],
+          "cellVisible" : false,
+          "colWidth" : "62px"
+        }, {
+          "id" : "sh0e493591-732e-41c8-a0a5-b5b9fa0668e0",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "items" : [ ],
+          "cellVisible" : false,
+          "colWidth" : "172px"
+        }, {
+          "id" : "sh1d38f053-a4e0-4fdf-a3f8-b81d1f048d6f",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "items" : [ ],
+          "cellVisible" : false,
+          "colWidth" : "185px"
+        }, {
+          "id" : "sh5935a9a0-a5ce-4365-9d81-c1f3f92a305b",
+          "colIndex" : 1,
+          "rowspan" : 2,
+          "colspan" : 2,
+          "items" : [ {
+            "id" : "Idsh97cc1aad-ad64-4c46-823b-794be7c621e0",
+            "preps" : {
+              "id" : "sh5935a9a0-a5ce-4365-9d81-c1f3f92a305b",
+              "itemNameLabel" : "日期选择器",
+              "name" : "qurenshijian2",
+              "clearable" : true,
+              "readonly" : false,
+              "placeholder" : "请选择确认时间",
+              "type" : "datetime",
+              "rules" : [ ],
+              "maxLength" : 255,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "label" : "确认时间",
+              "colspan" : 2,
+              "colHeight" : null,
+              "cellVisible" : true,
+              "rowspan" : 2,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "qurenshijian2",
+            "itemType" : "datetime",
+            "label" : "日期选择器",
+            "type" : "datetime",
+            "priority" : 51
+          } ],
+          "cellVisible" : true
+        }, {
+          "id" : "sh88b0147f-85d4-43f0-a995-e62d0b42e432",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "items" : [ ],
+          "cellVisible" : false
+        } ]
+      }, {
+        "id" : "shfc472521-e63d-4df1-b2dc-bce6cdf20e78",
+        "colIndex" : 1,
+        "columns" : [ {
+          "id" : "shfb90bfe2-43e0-4bb6-8438-48caf9e01b04",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 6,
+          "items" : [ {
+            "id" : "Idsh26f35c22-cd27-445d-9b46-c28a8b257531",
+            "preps" : {
+              "id" : "shfb90bfe2-43e0-4bb6-8438-48caf9e01b04",
+              "itemNameLabel" : "多行文本框",
+              "name" : "formRemark",
+              "clearable" : true,
+              "readonly" : false,
+              "placeholder" : "请输入备注",
+              "rules" : [ ],
+              "maxLength" : 1000,
+              "formVisible" : true,
+              "listVisible" : true,
+              "viewVisible" : true,
+              "label" : "备注",
+              "colspan" : 6,
+              "colHeight" : "92px",
+              "cellVisible" : true,
+              "rowspan" : 1,
+              "colWidth" : null
+            },
+            "compType" : "formItem",
+            "fieldName" : "formRemark",
+            "itemType" : "textarea",
+            "label" : "多行文本框",
+            "type" : "textarea",
+            "priority" : 52
+          } ],
+          "cellVisible" : true,
+          "colHeight" : "92px"
+        }, {
+          "id" : "sh094b9943-dce2-4542-9dbf-2662fd0a93bb",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "items" : [ ],
+          "cellVisible" : false
+        }, {
+          "id" : "sh55089891-c9c7-4d64-88b3-3528673f3755",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "items" : [ ],
+          "cellVisible" : false,
+          "colWidth" : "186px"
+        }, {
+          "id" : "shf92e141d-ea64-4f6e-a6b3-b00fee385cd1",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "items" : [ ],
+          "cellVisible" : false,
+          "colWidth" : "62px"
+        }, {
+          "id" : "sh36acbb54-ce72-4a3c-b1a8-86bb40db7fa4",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "items" : [ ],
+          "cellVisible" : false,
+          "colWidth" : "172px"
+        }, {
+          "id" : "sh22c73a55-dc1a-449d-affc-00cd69c681ed",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "items" : [ ],
+          "cellVisible" : false,
+          "colWidth" : "185px"
+        }, {
+          "id" : "sh75c310b4-fb14-4ea5-af4e-ce368fa11ee8",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "items" : [ ],
+          "cellVisible" : false
+        }, {
+          "id" : "sh026540d9-47c2-4a8e-b5f7-d04cdbe936cf",
+          "colIndex" : 1,
+          "rowspan" : 1,
+          "colspan" : 1,
+          "items" : [ ],
+          "cellVisible" : false
+        } ]
+      } ],
+      "rules" : [ ],
+      "maxLength" : 255,
+      "formVisible" : true,
+      "listVisible" : true,
+      "viewVisible" : true,
+      "rowNums" : 21,
+      "columnNums" : 8,
+      "placeholder" : ""
+    },
+    "compType" : "container",
+    "fieldName" : "dytable1",
+    "itemType" : "dytable",
+    "rowNums" : 1,
+    "columnNums" : 1,
+    "type" : "dytable"
+  } ],
+  "orderBy" : [ {
+    "fieldName" : "idExceptionFeedbacks",
+    "orderBy" : "desc"
+  } ],
+  "batchName" : "batchDataList",
+  "cellEditable" : false,
+  "stopAutoLoad" : false
+};
 onMounted(() => {
   // const result = analysisCompDatas(fields);
   // console.log(JSON.stringify(result.fieldList));

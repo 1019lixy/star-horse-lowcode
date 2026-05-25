@@ -8,6 +8,7 @@ import {useCopyerOperationStore} from "@/store/CopyerOperation";
 import {useConsumerViewStore} from "@/store/ConsumerView";
 import {useButtonPermissionStore} from "@/store/ButtonPermission";
 import {useDesignFormStore} from "@/store/DesignForm";
+import {useFormDataCacheStore} from "@/store/FormDataCache";
 
 /**
  * Store 管理器 - 提供统一的 Store 获取函数
@@ -58,7 +59,10 @@ export const getButtonPermissionStore = () => useButtonPermissionStore(piniaInst
  * 获取设计表单 Store
  */
 export const getDesignFormStore = () => useDesignFormStore(piniaInstance);
-
+/**
+ * 动态表单缓存
+ */
+export const getFormDataCacheStore = () => useFormDataCacheStore(piniaInstance);
 export default {
     getUserStore,
     getSelfOperationStore,
@@ -69,4 +73,5 @@ export default {
     getConsumerViewStore,
     getButtonPermissionStore,
     getDesignFormStore,
+    getFormDataCacheStore
 };

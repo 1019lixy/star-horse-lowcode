@@ -1,9 +1,9 @@
 <script setup lang="ts" name="MainContainer">
 import MainBar from "@/components/comp/app/MainBar.vue";
 import MainContent from "@/components/comp/app/MainContent.vue";
-import { ref } from "vue";
+import {ref} from "vue";
 import MainSubBar from "@/components/comp/app/MainSubBar.vue";
-import { useRoute, useRouter } from "vue-router";
+import {useRouter} from "vue-router";
 
 interface MenuItem {
   component: any;
@@ -24,7 +24,6 @@ const props = defineProps<{
 const subMenuFlag = ref<boolean>(false);
 const menuList = ref<any>([]);
 const router = window.__hostRouter__ || useRouter();
-const route = useRoute();
 const handleSelect = (item: any) => {
   console.log("Selected:", item);
 };
@@ -55,32 +54,32 @@ const getStyle = () => {
 <template>
   <div class="main-container">
     <MainBar
-      :categories="categories"
-      :system-config-name="systemConfigName"
-      :position="position"
-      :preps="preps"
-      :iconType="iconType"
-      @select="barHandleSelect"
-      @system-config="handleSystemConfig"
+        :categories="categories"
+        :system-config-name="systemConfigName"
+        :position="position"
+        :preps="preps"
+        :iconType="iconType"
+        @select="barHandleSelect"
+        @system-config="handleSystemConfig"
     />
     <MainContent
-      :categories="categories"
-      v-if="!subMenuFlag"
-      :system-config-name="systemConfigName"
-      :position="position"
-      @select="handleSelect"
-      @system-config="handleSystemConfig"
+        :categories="categories"
+        v-if="!subMenuFlag"
+        :system-config-name="systemConfigName"
+        :position="position"
+        @select="handleSelect"
+        @system-config="handleSystemConfig"
     />
     <div
-      v-else
-      :style="getStyle()"
-      class="w-[99%] justify-center mx-auto overflow-hidden relative"
+        v-else
+        :style="getStyle()"
+        class="w-[99%] justify-center mx-auto overflow-hidden relative"
     >
       <el-scrollbar>
         <MainSubBar
-          v-model:dataList="menuList"
-          :level="2"
-          @selectMenu="selectMenu"
+            v-model:dataList="menuList"
+            :level="2"
+            @selectMenu="selectMenu"
         />
       </el-scrollbar>
     </div>
@@ -95,6 +94,7 @@ const getStyle = () => {
   position: relative;
   bottom: env(safe-area-inset-bottom);
   bottom: constant(safe-area-inset-bottom);
+
   .main-bar {
     &.position-top {
       height: 60px;

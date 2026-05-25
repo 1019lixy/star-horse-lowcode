@@ -237,17 +237,17 @@ const fieldIndex = ref<number>(200);
 const complexFields = (items: Array<any>, isCut: boolean = false) => {
     for (const index in items) {
         const item = items[index];
-        if (item.compType == "container") {
-            const sitems = item.preps.elements;
+        if (item?.compType == "container") {
+            const sitems = item?.preps?.elements;
             for (const sindex in sitems) {
-                complexFields(sitems[sindex].items);
+                complexFields(sitems?.[sindex]?.items);
             }
         } else {
             item.id = uuid();
             item["preps"]["id"] = item.id;
             if (!isCut) {
                 fieldIndex.value++;
-                item.preps.name = item.preps.name + fieldIndex.value;
+                item.preps.name = (item?.preps?.name || '') + fieldIndex.value;
             }
         }
     }

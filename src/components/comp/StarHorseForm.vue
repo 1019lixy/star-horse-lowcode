@@ -79,7 +79,7 @@ const dialogProps = inject<DialogProps>("dialogProps", {});
 const formFields = shallowRef<Array<FieldInfo>>([]);
 provide("formFields", formFields);
 const loadData = async () => {
-  if (!props.compUrl || !props.compUrl.loadByIdUrl || !dialogProps.ids) {
+  if (!props.compUrl || !props.compUrl?.loadByIdUrl || !dialogProps?.ids) {
     return;
   }
   await nextTick();
@@ -87,9 +87,9 @@ const loadData = async () => {
     dataForm.value ={...dialogProps?.ids};
     return;
   }
-  let id = Array.isArray(dialogProps?.ids)
-      ? dialogProps.ids[0]
-      : dialogProps?.ids;
+  let ids = dialogProps?.ids;
+  if (!ids) return;
+  let id = Array.isArray(ids) ? ids[0] : ids;
   let objData;
   let params = props.globalCondition || {};
   //如果是Json 对象
@@ -112,22 +112,21 @@ const loadData = async () => {
       }
     }
   }
-  let mapping = data.mappingFields;
+  let mapping = data?.mappingFields;
   if (mapping) {
     for (let index in mapping) {
       let temp = mapping[index];
-      if (!Object.keys(objData).includes(temp.name)) {
-        dataForm.value[temp.name] = dataForm.value[temp.alias];
+      if (!Object.keys(objData || {}).includes(temp?.name)) {
+        dataForm.value[temp?.name] = dataForm.value[temp?.alias];
       }
     }
   }
-  let actions = data.actions;
+  let actions = data?.actions;
   if (actions?.length > 0) {
     for (let index in actions) {
       let temp = actions[index];
-      // let tempFunc: any = objData;
-      if (temp.actionNames == "change") {
-        temp.actions["change"]?.(objData);
+      if (temp?.actionNames == "change") {
+        temp.actions?.["change"]?.(objData);
       }
     }
   }
@@ -150,7 +149,7 @@ const checkActionRelation = () => {
   }
 };
 const merge = (type: string) => {
-  starHorseFormRef.value!.validate((result: boolean) => {
+  starHorseFormRef.value?.validate((result: boolean) => {
     if (!result) {
       return;
     }
@@ -162,7 +161,7 @@ const merge = (type: string) => {
  */
 const assignStatusName = () => {
   if (dataForm.value.statusCode) {
-    let sData = props.selectData.find(
+    let sData = props.selectData?.find(
         (item: any) => item.value === dataForm.value.statusCode,
     );
     if (sData) {
@@ -178,7 +177,7 @@ const assignStatusName = () => {
           index++
       ) {
         let temp = dataForm.value[item.batchName][index];
-        let sData = props.selectData.find(
+        let sData = props.selectData?.find(
             (sitem: any) => sitem.value === temp.statusCode,
         );
         if (sData) {
@@ -231,12 +230,14 @@ const analysisSameToParentField = (): Array<string> => {
  * @param res
  */
 const mergeResult = (type: string, formData: any, res: any) => {
-  emits("refresh", formData, res.data);
+  emits("refresh", formData, res?.data);
   resetForm();
   if (type == "close") {
     closeDialog();
   }
-  dialogProps.ids = -1;
+  if (dialogProps) {
+    dialogProps.ids = -1;
+  }
 };
 const doMerge = (type: string) => {
   assignStatusName();
@@ -289,11 +290,11 @@ const doMerge = (type: string) => {
   } else {
     postRequest(mergeUrl!, formData).then((res) => {
       closeLoad();
-      if (res.data.code != 0) {
-        warning(res.data.cnMessage);
+      if (res?.data?.code != 0) {
+        warning(res?.data?.cnMessage);
         return;
       } else {
-        success(res.data.cnMessage);
+        success(res?.data?.cnMessage);
       }
       mergeResult(type, formData, res);
       //关闭弹窗

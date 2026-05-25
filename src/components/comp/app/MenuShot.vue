@@ -4,6 +4,14 @@ import {nextTick, onMounted, PropType, ref, watch} from "vue";
 const props = defineProps({
   menus: {type: Array<any>, default: () => []},
   icon: {type: String, default: "menu"},
+  prop: {
+    type: Object as PropType<Record<string, string>>, default: () => {
+      return {
+        label: "btnName",
+        iconName: "icon",
+      };
+    }
+  },
   position: {type: Object as PropType<Record<string, any>>, default: {}},
 });
 const emits = defineEmits(["change"]);
@@ -173,8 +181,8 @@ watch(() => props.position, (val) => {
           :key="i"
           @click="changeMenu(menu)"
       >
-        <star-horse-icon :icon-class="menu.icon||'document'"/>
-        <span>{{ menu.btnName }}</span>
+        <star-horse-icon :icon-class="menu[prop.iconName??'icon']||'document'"/>
+        <span>{{ menu[prop.label ?? "btnName"] }}</span>
       </div>
     </div>
     <el-button

@@ -17,8 +17,7 @@ import {isSystemManage} from "@/utils/auth";
 import {error, warning} from "@/utils/message";
 import Sortable from "sortablejs";
 import {i18n} from "@/lang";
-import {computed, inject, onMounted, reactive, ref, unref, watch,} from "vue";
-import JSON5 from "json5";
+import {computed, inject, onActivated, onMounted, onUnmounted, ref, unref, watch,} from "vue";
 import {isMobile} from "@/api/device";
 import {convertCompToAppComps} from "@/api/form_utils";
 import type {PreValid} from "@/components/types";
@@ -44,11 +43,7 @@ const emits = defineEmits(["selectItem", "permission"]);
 let pagePermission = useButtonPermissionStore(piniaInstance);
 let configStore = useGlobalConfigStore(piniaInstance);
 let permissions = ref<Record<string, string>>({});
-const configInfo = computed(() => {
-  let data = configStore.configFormInfo;
-  showType(data.tableType == "card" ? "list" : "card");
-  return data;
-});
+const configInfo = computed(() => configStore.configFormInfo);
 let compSize = computed(
     () => configStore.configFormInfo?.inputSize || "default",
 );
@@ -63,11 +58,11 @@ const baseInfo: PageProps = {
   dataList: [],
 };
 let pageInfo = ref<PageProps>({});
-let searchFields = reactive<Array<SearchParams>>([]);
-let orderBys = reactive<Array<OrderByInfo>>([]);
+let searchFields = ref<Array<SearchParams>>([]);
+let orderBys = ref<Array<OrderByInfo>>([]);
 let fieldVisible = ref<boolean>(false);
 let dialogProps = inject("dialogProps") as DialogProps;
-let toolFields = reactive<Array<any>>([]);
+let toolFields = ref<Array<any>>([]);
 const exportOperationVisible = ref<boolean>(false);
 /**
  * Button area event
@@ -79,6 +74,7 @@ const tableCompFunc = (authority: any) => {
       pageInfo.value.currentPage = 1;
       searchFlag.value = true;
     }
+    console.log("-------------------------tableCompFunc------------h1------------------------");
     loadByPage();
   } else if (authority == "batchDelete") {
     batchDelete();
@@ -136,10 +132,10 @@ const exportData = () => {
       params.push(createCondition(keys, ids, "in"));
     }
   } else {
-    params = searchFields;
+    params = searchFields.value;
   }
   if (params.length == 0) {
-    params = searchFields;
+    params = searchFields.value;
   }
   let defaultCond: any = removeEmptyCondition(props.compUrl?.condition!);
   if (defaultCond?.length > 0) {
@@ -149,7 +145,7 @@ const exportData = () => {
     fieldList: params,
   };
   if (props.fieldList?.orderBy) {
-    condition["orderBy"] = props.fieldList.orderBy;
+    condition["orderBy"] = props.fieldList?.orderBy;
   }
   download(props.compUrl!.exportAllUrl!, condition)
       .catch((err: any) => {
@@ -164,7 +160,9 @@ const getIds = () => {
   let ids: any = [];
   for (let key in selectDatas) {
     let temp = selectDatas[key];
-    ids.push(analysisPrimaryKeys(props.primaryKey, temp));
+    if (temp) {
+      ids.push(analysisPrimaryKeys(props.primaryKey, temp));
+    }
   }
   return ids;
 };
@@ -188,9 +186,10 @@ const createSearchParams = (
     formData: SearchParams[],
     orderBy: OrderByInfo[] = [],
 ) => {
-  searchFields = formData;
-  orderBys = orderBy;
+  searchFields.value = formData;
+  orderBys.value = orderBy;
   searchFlag.value = true;
+  console.log("-------------------------createSearchParams------------h1------------------------");
   loadByPage();
 };
 /**
@@ -212,6 +211,7 @@ const init = async () => {
   permissions.value = {...permissions.value, ...props.btnPermissions};
   emits("permission", permissions.value);
   if (!props.fieldList?.stopAutoLoad) {
+    console.log("-------------------------------------h1------------------------");
     loadByPage();
   } else {
     pageInfo.value.dataList = props.tableDataList || [];
@@ -229,13 +229,13 @@ const init = async () => {
 };
 // Listen for changes in data passed in from outside
 watch(
-    () => props.tableDataList,
+    () => props.tableDataList?.length,
     (val) => {
       if (props.fieldList?.stopAutoLoad) {
-        pageInfo.value.dataList = val;
+        pageInfo.value.dataList = props.tableDataList;
       }
     },
-    {deep: true, immediate: false},
+    {immediate: false},
 );
 watch(() => cardSelection.value, (val) => {
   multipleSelection.value = Array.isArray(val) ? val : [val];
@@ -244,53 +244,57 @@ const assignData = (dataList: Array<any>) => {
   for (let key in dataList) {
     let temp: any = dataList[key];
     if (Array.isArray(temp)) {
-      toolFields.push(...temp);
+      toolFields.value.push(...temp);
     } else if (temp.tabList?.length > 0) {
       for (let skey in temp.tabList) {
         let stemp = temp.tabList[skey];
         if (stemp?.fieldList) {
-          toolFields.push(...stemp.fieldList);
+          toolFields.value.push(...stemp.fieldList);
         }
       }
     } else if (temp.dytableList?.length > 0) {
       for (let skey in temp.dytableList) {
         let stemp = temp.dytableList[skey];
         if (stemp) {
-          toolFields.push(...stemp);
+          toolFields.value.push(...stemp);
         }
       }
     } else {
-      toolFields.push(temp);
+      toolFields.value.push(temp);
     }
   }
 };
 const reCreateData = () => {
-  toolFields = [];
+  toolFields.value = [];
   let tempList = props.fieldList?.fieldList;
   if (tempList) {
     assignData(tempList);
   }
 };
+let sortableInstance: Sortable | null = null;
 const moveColumn = () => {
   const tbody = document.querySelector(
       ".sh-columns .el-table__body-wrapper tbody",
   ) as HTMLElement | null;
   if (tbody) {
-    Sortable.create(tbody, {
+    if (sortableInstance) {
+      sortableInstance.destroy();
+    }
+    sortableInstance = Sortable.create(tbody, {
       handle: ".move",
       animation: 200,
       ghostClass: "ghost",
       onEnd(event: any) {
         const {oldIndex, newIndex} = event;
-        if (oldIndex === newIndex) {
+        if (oldIndex === newIndex || !props.fieldList?.fieldList) {
           return;
         }
-        // Insert current row at drag end position
-        //  props.fieldList?.fieldList.splice(newIndex, 0, currRow);
-        let oitem = props.fieldList?.fieldList[oldIndex];
-        let nitem = props.fieldList?.fieldList[newIndex];
-        props.fieldList.fieldList[newIndex] = oitem;
-        props.fieldList.fieldList[oldIndex] = nitem;
+        let oitem = props.fieldList.fieldList[oldIndex];
+        let nitem = props.fieldList.fieldList[newIndex];
+        if (oitem && nitem) {
+          props.fieldList.fieldList[newIndex] = oitem;
+          props.fieldList.fieldList[oldIndex] = nitem;
+        }
       },
     });
   }
@@ -320,9 +324,9 @@ const checkParent = (val: any) => {
   let flag = false;
   for (let i in val) {
     let item = val[i];
-    if (item["children"]?.length > 0) {
+    if (item?.["children"]?.length > 0) {
       flag = true;
-      starHorseTableCompRef.value.toggleRowSelection(item, false);
+      starHorseTableCompRef.value?.toggleRowSelection(item, false);
     }
   }
   if (flag) {
@@ -346,7 +350,7 @@ const handleSelectionChange = (val: any) => {
           let temp = multipleSelection.value[index];
           let temp1: any = {};
           for (let key of keys) {
-            temp1[key] = temp[key];
+            temp1[key] = temp?.[key];
           }
           arr.push(temp1);
         }
@@ -372,14 +376,14 @@ const handleSelectionChange = (val: any) => {
         multipleSelection.value = filters;
       } else {
         let ids = multipleSelection.value.map(
-            (item: any) => item[keys],
+            (item: any) => item?.[keys],
         ) as Array<any>;
         multipleSelection.value = val.filter(
-            (item: any) => !ids.includes(item[keys]),
+            (item: any) => !ids.includes(item?.[keys]),
         );
       }
       let data = multipleSelection.value[0];
-      starHorseTableCompRef.value.toggleRowSelection(data, true);
+      starHorseTableCompRef.value?.toggleRowSelection(data, true);
     }
   } else {
     multipleSelection.value = val;
@@ -427,19 +431,21 @@ const splitKey = (key: string, row: any) => {
   if (arr?.length > 1) {
     let temp = row;
     for (let i in arr) {
-      temp = temp[arr[i]];
+      temp = temp?.[arr[i]];
     }
     return temp;
   } else {
-    return row[key] ?? uuid();
+    return row?.[key] ?? uuid();
   }
 };
 const viewById = (id: any, isExpand: boolean = false) => {
   if (overrideOperation("view", id)) {
     return;
   }
-  dialogProps!.viewVisible = true;
-  dialogProps!.ids = id;
+  if (dialogProps) {
+    dialogProps.viewVisible = true;
+    dialogProps.ids = id;
+  }
   if (isExpand) {
     dialogProps.isExpand = isExpand;
     dialogProps.expandUrl = props.expandTable?.expandUrls;
@@ -454,8 +460,10 @@ const editById = (id: any, isExpand: boolean = false) => {
   if (overrideOperation("edit", id)) {
     return;
   }
-  dialogProps!.editVisible = true;
-  dialogProps!.ids = id;
+  if (dialogProps) {
+    dialogProps.editVisible = true;
+    dialogProps.ids = id;
+  }
   if (isExpand) {
     dialogProps.isExpand = isExpand;
     dialogProps.expandUrl = props.expandTable?.expandUrls;
@@ -477,22 +485,25 @@ const deleteById = async (id: any, isExpand: boolean = false) => {
   let flag = await deleteByIds(deleteUrl, Array.isArray(id) ? id : [id]);
   if (flag) {
     searchFlag.value = true;
+    console.log("-------------------------deleteById------------h1------------------------");
     loadByPage();
   }
 };
 const pageSizeClick = (pageSize: number) => {
   pageInfo.value.pageSize = pageSize;
+  console.log("-------------------------pageSizeClick------------h1------------------------");
   loadByPage();
 };
 const pageChangeClick = (currentPage: number) => {
   pageInfo.value.currentPage = currentPage;
+  console.log("-------------------------pageChangeClick------------h1------------------------");
   loadByPage();
 };
 const inputFieldName = ref<string>("");
 const inputFieldVal = ref<any>();
 const createParams = () => {
   let searchTemp = [];
-  let orderByTemp = JSON5.parse(JSON5.stringify(orderBys)) || [];
+  let orderByTemp = orderBys.value.slice();
   if (props.filterCondition) {
     searchTemp.push(...props.filterCondition);
   }
@@ -500,10 +511,10 @@ const createParams = () => {
     orderByTemp.push(...props.orderBy);
   }
   if (props.fieldList?.orderBy) {
-    orderByTemp.push(...props.fieldList.orderBy);
+    orderByTemp.push(...(props.fieldList?.orderBy || []));
   }
-  if (searchFields?.length > 0) {
-    searchTemp.push(...searchFields);
+  if (searchFields.value?.length > 0) {
+    searchTemp.push(...searchFields.value);
   }
   let condition: any = removeEmptyCondition(props.compUrl?.condition!);
   if (condition && condition.length > 0) {
@@ -533,6 +544,7 @@ const createParams = () => {
 const loadByPage = (initPageInfo?: boolean) => {
   if (initPageInfo) {
     Object.assign(pageInfo.value, baseInfo);
+    pageInfo.value.dataList=[];
   }
   let url: string = props.compUrl?.pageListUrl as string;
   let params: any = createParams();
@@ -564,7 +576,12 @@ const loadByPage = (initPageInfo?: boolean) => {
           if (!pageInfo.value.dataList) {
             pageInfo.value.dataList = [];
           }
+          const maxCachePages = 10;
+          const maxCacheSize = pageInfo.value.pageSize * maxCachePages;
           pageInfo.value.dataList.push(...newData);
+          if (pageInfo.value.dataList.length > maxCacheSize) {
+            pageInfo.value.dataList.splice(0, pageInfo.value.dataList.length - maxCacheSize);
+          }
         } else {
           pageInfo.value.dataList = newData;
         }
@@ -587,11 +604,11 @@ const filterData = () => {
   let name = unref(inputFieldName) as string;
   if (pageInfo.value.dataList && name && inputFieldVal.value) {
     let row = pageInfo.value.dataList.find(
-        (item: any) => item[name] == inputFieldVal.value,
+        (item: any) => item?.[name] == inputFieldVal.value,
     );
     if (row) {
       multipleSelection.value.push(row);
-      starHorseTableCompRef.value.toggleRowSelection(row, true);
+      starHorseTableCompRef.value?.toggleRowSelection(row, true);
     }
   }
 };
@@ -619,24 +636,24 @@ const selectRow = (row: any, _column?: any, evt?: Event) => {
   }
   // Expand/Collapse
   if (props.expandTable) {
-    starHorseTableCompRef.value.toggleRowExpansion(row);
+    starHorseTableCompRef.value?.toggleRowExpansion(row);
   }
   if (multipleSelection.value?.length > 0) {
     for (let valueElement of multipleSelection.value) {
-      starHorseTableCompRef.value.toggleRowSelection(valueElement);
+      starHorseTableCompRef.value?.toggleRowSelection(valueElement);
     }
   }
   const selected = multipleSelection.value?.some(
-      (item: any) => item[props.primaryKey] === row[props.primaryKey],
+      (item: any) => item?.[props.primaryKey] === row?.[props.primaryKey],
   );
   if (!selected) {
     multipleSelection.value.push(row);
-    starHorseTableCompRef.value.toggleRowSelection(row, true);
+    starHorseTableCompRef.value?.toggleRowSelection(row, true);
   } else {
     multipleSelection.value = multipleSelection.value?.filter((item: any) => {
-      return item[props.primaryKey] !== row[props.primaryKey];
+      return item?.[props.primaryKey] !== row?.[props.primaryKey];
     });
-    starHorseTableCompRef.value.toggleRowSelection(row, false);
+    starHorseTableCompRef.value?.toggleRowSelection(row, false);
   }
   dynamicForm.setSelectData(row);
   emits("selectItem", row);
@@ -649,20 +666,20 @@ const extendBtnFunction = (): Array<UserFuncInfo> => {
   let arr: Array<UserFuncInfo> = [];
   const extendBtnsCopy: UserFuncInfo[] = props.extendBtns ?? [];
 
-  // Separately defined buttons
   extendBtnsCopy?.forEach((item: UserFuncInfo) => {
     if (item.position != "toolbar") {
       if (!item.funcName) {
-        item.funcName = (row: any) => tbCommonFun(item.authority, row);
+        const auth = item.authority;
+        item.funcName = (row: any) => tbCommonFun(auth, row);
       }
       arr.push(item);
     }
   });
-  // Buttons defined when defining fields
-  props.fieldList["userTableFuncs"]?.forEach((item: UserFuncInfo) => {
+  props.fieldList?.["userTableFuncs"]?.forEach((item: UserFuncInfo) => {
     if (item.position != "toolbar") {
       if (!item.funcName) {
-        item.funcName = (row: any) => tbCommonFun(item.authority, row);
+        const auth = item.authority;
+        item.funcName = (row: any) => tbCommonFun(auth, row);
       }
       arr.push(item);
     }
@@ -700,14 +717,12 @@ const extendBtnFunction = (): Array<UserFuncInfo> => {
     }
 
   }
-  // If no priority is specified, sort by default addition method
   arr.sort(
       (a: UserFuncInfo, b: UserFuncInfo) =>
           (a.priority || 40) - (b.priority || 40),
   );
   return arr;
 };
-// After modification
 const buttonList = computed(() => extendBtnFunction());
 /**
  * Expand table operation
@@ -824,6 +839,7 @@ const endReached = (direction: string) => {
     if (pageInfo.value.currentPage > pageInfo.value.totalPage) {
       return;
     }
+    console.log("-------------------------endReached------------h1------------------------");
     loadByPage();
   }
 };
@@ -837,8 +853,33 @@ const assignStaticData = (data: any) => {
   }
   pageInfo.value.dataList.splice(0, 0, Array.isArray(data) ? [...data] : data);
 };
+const clearData = () => {
+  pageInfo.value.dataList = [];
+};
+onActivated(() => {
+
+});
 onMounted(() => {
+  const data = configStore.configFormInfo;
+  if (data?.tableType == "card") {
+    showType("list");
+  }
   init();
+});
+onUnmounted(() => {
+  if (sortableInstance) {
+    sortableInstance.destroy();
+    sortableInstance = null;
+  }
+  if (starHorseTableCompRef.value) {
+    starHorseTableCompRef.value.clearSelection();
+  }
+  multipleSelection.value = [];
+  cardSelection.value = [];
+  pageInfo.value = {};
+  searchFields.value = [];
+  orderBys.value = [];
+  toolFields.value = [];
 });
 // Export methods and variables
 defineExpose({
@@ -857,6 +898,7 @@ defineExpose({
   tableCompFunc,
   getDatas,
   permissionList,
+  clearData
 });
 </script>
 <template>
@@ -1012,9 +1054,9 @@ defineExpose({
         <el-table-column type="expand" v-if="expandTable">
           <template #default="scope">
             <div class="expand-table">
-              <h4>{{ expandTable.title }}</h4>
+              <h4>{{ expandTable?.title }}</h4>
               <el-table
-                  :data="scope.row[expandTable.dataField]"
+                  :data="scope.row?.[expandTable?.dataField]"
                   :row-key="getRowIdentity"
                   :stripe="true"
                   :fit="true"
@@ -1030,28 +1072,28 @@ defineExpose({
                     :label="i18n('table.operation')"
                     :width="160"
                     v-if="
-                    expandTable.showButton && expandTable.extendFuncs.length > 0
+                    expandTable?.showButton && expandTable?.extendFuncs?.length > 0
                   "
                 >
                   <template #default="innerScope">
                     <template
-                        v-for="epd in expandTable.extendFuncs"
-                        :key="compKey(epd, epd.authority)"
+                        v-for="epd in expandTable?.extendFuncs"
+                        :key="compKey(epd, epd?.authority)"
                     >
-                      <el-tooltip :content="epd.btnName">
+                      <el-tooltip :content="epd?.btnName">
                         <star-horse-icon
-                            v-if="permissions[epd.authority!]"
+                            v-if="permissions?.[epd?.authority!]"
                             @click="
                             expandCommonFun(
-                              epd.authority!,
+                              epd?.authority!,
                               innerScope.row,
                               scope.row,
                             )
                           "
-                            :icon-class="epd.icon || 'edit'"
+                            :icon-class="epd?.icon || 'edit'"
                             style="cursor: pointer"
                             :color="
-                            epd.authority == 'delete'
+                            epd?.authority == 'delete'
                               ? 'var(--el-color-danger)'
                               : 'var(--star-horse-style)'
                           "
@@ -1062,7 +1104,7 @@ defineExpose({
                 </el-table-column>
                 <table-column
                     :fieldList="expandTable"
-                    :compSize="configInfo.inputSize"
+                    :compSize="configInfo?.inputSize"
                     :compUrl="compUrl"
                     :dataFormat="dataFormat"
                     :sortable="false"
@@ -1076,7 +1118,7 @@ defineExpose({
         </el-table-column>
         <table-column
             :fieldList="fieldList"
-            :compSize="configInfo.inputSize"
+            :compSize="configInfo?.inputSize"
             :compUrl="compUrl"
             :dataFormat="dataFormat"
             :globalConfig="globalConfig"
@@ -1144,8 +1186,8 @@ defineExpose({
                 <span>
                   {{
                     dataFormat?.(
-                        cardFieldList[0]?.fieldName,
-                        data[cardFieldList[0]?.fieldName],
+                        cardFieldList?.[0]?.fieldName,
+                        data?.[cardFieldList?.[0]?.fieldName],
                         data
                     )
                   }}</span>
@@ -1157,7 +1199,7 @@ defineExpose({
                 :Key="compKey(item, key)"
                 v-for="(item, key) in cardFieldList?.slice(1)"
             >
-              <label>{{ item.label }} :</label>
+              <label>{{ item?.label }} :</label>
               <div
                   class="content"
                   @click="selectRow(data)"
@@ -1165,10 +1207,10 @@ defineExpose({
               >
                 <el-tooltip
                     :content="
-                    dataFormat(item.fieldName, data[item.fieldName], data)
+                    dataFormat?.(item?.fieldName, data?.[item?.fieldName], data)
                   "
                 >
-                  {{ dataFormat(item.fieldName, data[item.fieldName], data) }}
+                  {{ dataFormat?.(item?.fieldName, data?.[item?.fieldName], data) }}
                 </el-tooltip>
               </div>
             </div>

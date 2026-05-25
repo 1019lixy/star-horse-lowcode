@@ -31,13 +31,13 @@ const createSearchParams = (formData: any) => {
 const analysisDefaultValue = () => {
   let defaultDatas: any = {};
   props.formData?.fieldList?.forEach((item: any) => {
-    if (item.defaultValue) {
+    if (item?.defaultValue) {
       if (isJson(item.defaultValue)) {
         for (let key in item.defaultValue) {
           defaultDatas[key] = item.defaultValue[key];
         }
       } else {
-        defaultDatas[item.fieldName] = item.defaultValue;
+        defaultDatas[item?.fieldName] = item.defaultValue;
       }
     }
   });

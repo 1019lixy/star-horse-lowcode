@@ -104,8 +104,8 @@ export function userAction(
             postRequest(content, {
               fieldList: fieldList,
             }).then((res) => {
-              if (res.data.code) {
-                warning(res.data.cnMessage);
+              if (res?.data?.code) {
+                warning(res?.data?.cnMessage);
                 return;
               }
               success(i18n("userFunc.operationSuccess"));

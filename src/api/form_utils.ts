@@ -68,7 +68,7 @@ const filterPreps = (preps: Record<string, any>) => {
  * @param item
  */
 const boxDytableAnalysis = (item: any) => {
-    const elements = item.preps.elements;
+    const elements = item?.preps?.elements;
     const boxItems: Record<string, any> = {};
     const children: Array<any> = [];
     const fieldList: FieldInfo[] | any = [];
@@ -130,7 +130,7 @@ const boxDytableAnalysis = (item: any) => {
  * @param item
  */
 const tableAnalysis = (item: any) => {
-    const elements = item.preps.elements;
+    const elements = item?.preps?.elements;
     const boxItems: Record<string, any> = {};
     const children: Array<any> = [];
     const batchFieldInfos: BatchFieldInfo[] = [];
@@ -168,7 +168,7 @@ const tableAnalysis = (item: any) => {
  * @param item
  */
 const tabColapseCardAnalysis = (item: any) => {
-    const elements = item.preps.elements;
+    const elements = item?.preps?.elements;
     const currentLayerContainerList: Array<any> = [];
     const boxItems: Record<string, any> = {};
     let fieldInfo: FieldInfo | any = {};
@@ -470,7 +470,7 @@ export function convertCompToAppComps(pageInfo: PageFieldInfo) {
     //如果不是手机端，则直接返回
     const tempFieldList = analysisComps(pageInfo.fieldList);
     const staticComps = tempFieldList.filter((item) => {
-        return item && (item.type == "html" || item.type == "text");
+        return item && (item?.type == "html" || item?.type == "text");
     });
     const labelForComps = staticComps.filter((item) => item?.preps?.labelFor);
     let appVisibleComps = tempFieldList?.filter((item) => !item?.preps?.appCompVisible);
@@ -481,12 +481,13 @@ export function convertCompToAppComps(pageInfo: PageFieldInfo) {
                 item.preps = {};
             }
             item.preps.hideLabel = false;
-            item.label = staticData.preps?.textContent;
-            item.preps.placeholder = "请输入" + item.label;
+            item.label = staticData?.preps?.textContent;
+            item.preps.placeholder = "请输入" + item?.label;
         });
     });
     appVisibleComps?.filter((item) => {
-        return !["html", "text"].includes(item.type) && item.preps?.hideLabel && !item.preps.appCompVisible && !item.preps.appLabelVisible;
+        return !["html", "text"].includes(item?.type) && item?.preps?.hideLabel
+            && !item?.preps?.appCompVisible && !item?.preps?.appLabelVisible;
     })?.forEach((item) => {
         item.preps.hideLabel = false;
     });
@@ -563,11 +564,11 @@ export function validMsg(item: any, dataForm: any) {
     ) {
         rules.push({
             required: true,
-            message: `${item.label}${i18n("api.cannotBeEmpty")}`,
+            message: `${item?.label}${i18n("api.cannotBeEmpty")}`,
             trigger: "blur",
         });
     }
-    if (item.type == "number-range") {
+    if (item?.type == "number-range") {
         const splitName = item.preps?.splitName ?? "-";
         const escapedSplit = splitName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
         rules.push({

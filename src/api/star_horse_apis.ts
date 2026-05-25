@@ -23,7 +23,7 @@ starHorseAxios.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
         let token = getToken();
         if (!token&&window.__debug__) {
-            token = "sh836c6fc54cef42c6980a44a97e34e5a5";
+            token = "sh6a652549f65c49adbf6c1ed577ec1137";
         }
         const fingerToken = getFingerId();
         // 请求头带上token
@@ -101,8 +101,8 @@ export function download(url: string, param: any) {
             .post(url, param, {responseType: "blob"})
             .then((res) => {
                 downloadData(
-                    res.data,
-                    decodeURI(res.headers["content-disposition"]?.split("=")[1]),
+                    res?.data,
+                    decodeURI(res?.headers?.["content-disposition"]?.split("=")?.[1] || "download"),
                 );
                 resolve(null);
             })
@@ -222,12 +222,12 @@ export async function loadData(
     }
     await postRequest(url, cond)
         .then((res: any) => {
-            const redata = res.data;
-            if (redata.code) {
-                error = redata.cnMessage;
+            const redata = res?.data;
+            if (redata?.code) {
+                error = redata?.cnMessage;
             } else {
                 //先去分页数据，没有再去非分页数据
-                data = redata.data.dataList || redata.data;
+                data = redata?.data?.dataList || redata?.data;
             }
         })
         .catch((err) => {
@@ -249,11 +249,11 @@ export async function loadGetData(url: string) {
     let error: string = "";
     await getRequest(url)
         .then((res) => {
-            const redata = res.data;
-            if (redata.code != 0) {
-                error = redata.cnMessage;
+            const redata = res?.data;
+            if (redata?.code != 0) {
+                error = redata?.cnMessage;
             } else {
-                data = redata.data;
+                data = redata?.data;
             }
         })
         .catch((err) => {
@@ -279,7 +279,7 @@ export async function loadById(url: string, id: any, params: any = {}) {
     let objData: any = {};
     const suffix: string = id ? "/" + id : "";
     await postRequest(url + suffix, params).then((res) => {
-        const redata = res.data.data;
+        const redata = res?.data?.data;
         if (!redata) {
             warning(i18n("utils.dataNotFound"));
         } else {
@@ -315,10 +315,10 @@ export async function deleteByIds(
     }
     await postRequest(url, ids)
         .then((res) => {
-            if (res.data.code == 0) {
-                success(res.data.cnMessage);
+            if (res?.data?.code == 0) {
+                success(res?.data?.cnMessage);
             } else {
-                warning(res.data.cnMessage);
+                warning(res?.data?.cnMessage);
             }
             closeLoad();
             objData = true;

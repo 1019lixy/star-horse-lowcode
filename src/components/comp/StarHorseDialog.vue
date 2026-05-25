@@ -65,20 +65,20 @@ const beforeClose = () => {
   if (props.dialogProps?.batchEditVisible || props.isBatch) {
     props.dialogProps.batchEditVisible = false;
   }
-  if (props.dialogProps!.viewVisible || props.source == 3) {
-    props.dialogProps!.viewVisible = false;
+  if (props.dialogProps?.viewVisible || props.source == 3) {
+    props.dialogProps.viewVisible = false;
   }
-  if (props.dialogProps!.editVisible) {
-    props.dialogProps!.editVisible = false;
+  if (props.dialogProps?.editVisible) {
+    props.dialogProps.editVisible = false;
   }
-  if (props.dialogProps!.bakeVisible1) {
-    props.dialogProps!.bakeVisible1 = false;
+  if (props.dialogProps?.bakeVisible1) {
+    props.dialogProps.bakeVisible1 = false;
   }
-  if (props.dialogProps!.bakeVisible2) {
-    props.dialogProps!.bakeVisible2 = false;
+  if (props.dialogProps?.bakeVisible2) {
+    props.dialogProps.bakeVisible2 = false;
   }
-  if (props.dialogProps!.bakeVisible3) {
-    props.dialogProps!.bakeVisible3 = false;
+  if (props.dialogProps?.bakeVisible3) {
+    props.dialogProps.bakeVisible3 = false;
   }
 };
 // 新增：安全调用函数的方法

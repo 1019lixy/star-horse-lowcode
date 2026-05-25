@@ -86,8 +86,8 @@ const normalizedFieldList = computed(() => {
 
   // Process batch field list if showBatchField is true
   if (props.showBatchField && props.fieldList?.batchFieldList) {
-    props.fieldList.batchFieldList.forEach((item: any, index: number) => {
-      if (item.fieldList) {
+    props.fieldList?.batchFieldList?.forEach((item: any, index: number) => {
+      if (item?.fieldList) {
         processFieldList(item.fieldList, `batch_${index}`);
       } else {
         result.push({

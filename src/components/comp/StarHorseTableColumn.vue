@@ -66,10 +66,10 @@ const blurEvent = (column: any, params: any) => {
   }
   postRequest(props.compUrl?.mergeUrl!, reqParams)
     .then((res) => {
-      if (res.data.code != 0) {
-        warning(res.data.cnMessage);
+      if (res?.data?.code != 0) {
+        warning(res?.data?.cnMessage);
       } else {
-        success(res.data.cnMessage);
+        success(res?.data?.cnMessage);
       }
     })
     .catch((err) => {
@@ -132,19 +132,19 @@ const cellClick = (row: any, column: any) => {
 };
 const currentDataFormat = (scope: any) => {
   let item = props.item;
-  let name = item.hideName || item.fieldName;
-  let val: string = scope.row[name];
+  let name = item?.hideName || item?.fieldName;
+  let val: string = scope?.row?.[name];
   //下拉数据,checkbox,radio切换为对应的名称
   let fname: string = "";
-  if (dateTypes.includes(item.type)) {
+  if (dateTypes.includes(item?.type)) {
     return parseDateByType(val, item.type);
   }
   if (
-    item.type == "select" ||
-    item.type == "checkbox" ||
-    item.type == "radio"
+    item?.type == "select" ||
+    item?.type == "checkbox" ||
+    item?.type == "radio"
   ) {
-    fname = item.preps?.values?.find(
+    fname = item?.preps?.values?.find(
       (temp: any) => String(temp.value) == val,
     )?.name;
   }
@@ -153,7 +153,7 @@ const currentDataFormat = (scope: any) => {
   }
   val = commonParseCodeToName(name, val);
   if (typeof props.dataFormat === "function") {
-    return props.dataFormat(name, val, scope.row);
+    return props.dataFormat(name, val, scope?.row);
   }
   return val;
 };

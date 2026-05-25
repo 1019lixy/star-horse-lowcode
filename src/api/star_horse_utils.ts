@@ -62,7 +62,7 @@ export function load(msg: string, defaultTarget?: string) {
         target: defaultTarget ?? "#app",
         text: msg || i18n("utils.loading"),
         customClass: "star-horse-loading",
-        background: "rgba(0, 0, 0, 0.7)",
+        background: "rgba(0,0,0,0.3)",
     });
 }
 
@@ -120,11 +120,10 @@ export function commonParseCodeToName(name: string, cellValue: any) {
         return cellValue == 1 ? i18n("api.normal") : i18n("api.abnormal");
     }
     const preps: Array<string> = [
-        "createdTime",
-        "updatedTime",
-        "createdTime",
-        "updatedTime",
         "createTime",
+        "updateTime",
+        "createdTime",
+        "updatedTime",
         "editTime",
     ];
     const result = preps.find(
@@ -188,9 +187,9 @@ export function orderBy(): SelectOption[] {
  */
 export function httpMethod(): SelectOption[] {
     const options: SelectOption[] = [];
+    options.push({name: "POST", value: "POST"});
     options.push({name: "GET", value: "GET"});
     options.push({name: "HEAD", value: "HEAD"});
-    options.push({name: "POST", value: "POST"});
     options.push({name: "PUT", value: "PUT"});
     options.push({name: "PATCH", value: "PATCH"});
     options.push({name: "DELETE", value: "DELETE"});
@@ -265,7 +264,7 @@ export function commonField(
     });
     fields.push({
         label: i18n("utils.field.createdDate"),
-        fieldName: "createdDate",
+        fieldName: "createdTime",
         type: "date",
         formVisible: false,
         listVisible: false,
@@ -278,7 +277,7 @@ export function commonField(
     });
     fields.push({
         label: i18n("utils.field.updatedDate"),
-        fieldName: "updatedDate",
+        fieldName: "updatedTime",
         type: "date",
         formVisible: false,
         listVisible: false,
@@ -716,6 +715,7 @@ export async function dynamicUrlOperation(
     let params: any = {
         fieldList: requestParams,
     };
+    // eslint-disable-next-line no-useless-assignment
     let validResult: any = {};
     //是否重定向
     if (redirect) {
@@ -734,7 +734,7 @@ export async function dynamicUrlOperation(
         url = proxyUrl ?? "/system-config/redirect/execute";
         validResult = await loadData(url, params);
     } else {
-        if (temp.httpMethod && temp.httpMethod.toUpperCase() === "GET") {
+        if (temp?.httpMethod && temp.httpMethod.toUpperCase() === "GET") {
             validResult = await loadGetData(url);
         } else {
             validResult = await loadData(url, params);
@@ -759,12 +759,12 @@ export async function dynamicUrlOperation(
             });
             return options;
         };
-        validResult.data.forEach((item: any) => {
+        validResult?.data?.forEach((item: any) => {
             const option: SelectOption = {
-                name: item[labelName],
-                value: item[valueName],
+                name: item?.[labelName],
+                value: item?.[valueName],
             };
-            if (item.children?.length > 0) {
+            if (item?.children?.length > 0) {
                 option.children = childrenOperation(item.children);
             }
             reDataList.push(option);
