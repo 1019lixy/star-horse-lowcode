@@ -208,7 +208,7 @@ export default defineConfig((mode) => {
           exports: "named",
           assetFileNames: "assets/[name][extname]", // 修正资源输出路径
           // 禁用代码分割
-          inlineDynamicImports: true,
+          codeSplitting: false,
           // 合并所有chunk到单个文件
           manualChunks: undefined,
           // 在 UMD 构建模式下为这些外部化的依赖提供一个全局变量

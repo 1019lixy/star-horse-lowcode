@@ -592,6 +592,10 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
                 }
                 formFields.push(temp);
                 brotherNodes(temp.brotherNodes);
+                // 递归处理 children
+                if (temp.children && Array.isArray(temp.children) && temp.children.length > 0) {
+                    fieldsOperation(temp.children, defaultData);
+                }
             }
         }
     };
@@ -657,7 +661,7 @@ export async function compDynamicData(field: any, analysisUrl?: false) {
     } else if (dataSource == "dict") {
         const dicts = await dictData(urlOrDictName);
         if (Object.keys(dicts).length == 0) {
-            error(`数据字典:【${urlOrDictName}】可能未配置`);
+            error(i18n("utils.dictNotConfigured") + `【${urlOrDictName}】`);
         } else {
             reDataList = dicts;
         }

@@ -109,6 +109,29 @@ onBeforeUnmount(() => {
 
 onMounted(() => {
 });
+
+// 设计模式下双击标签编辑
+const editingLabel = ref(false);
+const editingLabelText = ref("");
+const labelInputRef = ref();
+
+const startEditLabel = () => {
+  editingLabelText.value = props.field?.label || props.field?.preps?.label;
+  editingLabel.value = true;
+  nextTick(() => {
+    labelInputRef.value?.focus();
+  });
+};
+
+const finishEditLabel = () => {
+  editingLabel.value = false;
+  if (props.field && (editingLabelText.value !== props.field.label || editingLabelText.value !== props.field.preps?.label)) {
+    props.field.label = editingLabelText.value;
+    if (props.field.preps) {
+      props.field.preps.label = editingLabelText.value;
+    }
+  }
+};
 </script>
 <template>
   <star-horse-dialog
@@ -163,11 +186,28 @@ onMounted(() => {
           marginBottom: isEdit && !disabled ? '1px' : '18px',
         }"
           class="flex items-center w-full h-full"
-          :label="labelVisibleCheck(field)"
           :prop="field?.preps['name']"
+          :label="isEdit ? undefined : labelVisibleCheck(field)"
           :labelPosition="field?.preps['labelPosition']"
           :rules="validMsg(field, null)"
       >
+        <template #label v-if="isEdit">
+          <span
+              v-if="!editingLabel"
+              @dblclick.stop="startEditLabel"
+              style="cursor: text"
+          >{{ labelVisibleCheck(field) }}</span>
+          <el-input
+              v-else
+              ref="labelInputRef"
+              v-model="editingLabelText"
+              size="small"
+              @blur="finishEditLabel"
+              @keyup.enter="finishEditLabel"
+              @click.stop
+              style="width: 120px"
+          />
+        </template>
 
         <help :message="field.preps?.helpMsg" v-if="field.preps?.helpMsg"/>
         <slot></slot>

@@ -164,6 +164,12 @@ export default {
   "common.edit": "编辑",
   "common.view": "查看",
   "common.delete": "删除",
+  "common.sessionExpired": "Session 失效",
+  "common.noPagePermission": "没有页面按钮操作权限,请联系系统管理员授权",
+  "common.fieldNameExists": "新的属性名已存在，不能进行修改",
+  "common.copySuccess": "复制成功",
+  "common.cutSuccess": "剪切成功",
+  "common.toolPanel": "工具面板",
   /**
    * Cron组件--------------
    */
@@ -847,4 +853,38 @@ export default {
   "item.noContentSet": "未设置内容",
   "item.editData": "编辑数据",
   "item.crontabConfig": "Crontab 配置器",
+  /**
+   * 右键菜单--------------
+   */
+  "context.new": "新建",
+  "context.cut": "剪切",
+  "context.copy": "复制",
+  "context.paste": "粘贴",
+  "context.selectAll": "全选",
+  "context.clear": "清空",
+  "context.preview": "预览",
+  "context.addComponent": "添加组件",
+  "context.selectContainer": "选中容器",
+  "context.undo": "撤销",
+  "context.delete": "删除",
+  "context.properties": "属性",
+  "context.centerHorizontally": "水平居中",
+  "context.moveUpLayer": "上移一层",
+  "context.moveDownLayer": "下移一层",
+  "context.bringToFront": "置顶",
+  "context.sendToBack": "置底",
+  "context.clearGuides": "清空参考线",
+  /**
+   * WebSocket--------------
+   */
+  "ws.notInitialized": "未初始化",
+  "ws.connecting": "正在连接",
+  "ws.connected": "已连接",
+  "ws.closing": "正在关闭",
+  "ws.closed": "已关闭",
+  "ws.unknownState": "未知状态",
+  /**
+   * 工具提示--------------
+   */
+  "utils.dictNotConfigured": "数据字典可能未配置",
 };

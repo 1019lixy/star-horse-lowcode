@@ -4,6 +4,7 @@ import {ModelRef} from "vue";
 import {ContainerPreps} from "../types/ItemPreps";
 import {commonParseCodeToName} from "@/api/star_horse_utils";
 import {i18n} from "@/lang";
+import GroupItem from "./items/groupItem.vue";
 
 const props = withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
@@ -29,6 +30,11 @@ const itemCommonFormat = (name: string, cellValue: any, row: any) => {
       : props.commonFormat(name, cellValue, row);
 };
 const checkItemType = (item: any) => {
+  // 优先判断 children，有 children 的非叶子节点返回 group-item
+  if (item.children && Array.isArray(item.children) && item.children.length > 0) {
+    console.log("ok,group-item");
+    return "group-item";
+  }
   if (Array.isArray(item)) {
     return "box-item";
   } else if (item.cardList?.length > 0) {

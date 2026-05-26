@@ -13,7 +13,7 @@
     </div>
     <div class="sidebar-content">
       <div class="sidebar-header">
-        <h3>工具面板</h3>
+        <h3>{{ i18n("common.toolPanel") }}</h3>
       </div>
       <div class="sidebar-body">
         <slot></slot>
@@ -24,6 +24,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { i18n } from "@/lang";
 
 defineOptions({
   name: "StarHorseSidebar",

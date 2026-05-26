@@ -3,7 +3,7 @@ import {deleteByIds, download, loadData, postRequest,} from "@/api/star_horse_ap
 import {closeLoad, createCondition, isJson, load,} from "@/api/star_horse_utils";
 import {compKey, removeEmptyCondition, uuid} from "@/api/system";
 import Tablebtn from "@/components/comp/items/tablebtn.vue";
-import TableColumn from "@/components/comp/items/tableColumn.vue";
+import TableColumnItem from "@/components/comp/items/tableColumnItem.vue";
 import Help from "@/components/help.vue";
 import {DialogProps} from "@/components/types/DialogProps";
 import {FieldInfo, OrderByInfo, UserFuncInfo,} from "@/components/types/PageFieldInfo";
@@ -544,7 +544,7 @@ const createParams = () => {
 const loadByPage = (initPageInfo?: boolean) => {
   if (initPageInfo) {
     Object.assign(pageInfo.value, baseInfo);
-    pageInfo.value.dataList=[];
+    pageInfo.value.dataList = [];
   }
   let url: string = props.compUrl?.pageListUrl as string;
   let params: any = createParams();
@@ -1116,7 +1116,7 @@ defineExpose({
             </div>
           </template>
         </el-table-column>
-        <table-column
+        <table-column-item
             :fieldList="fieldList"
             :compSize="configInfo?.inputSize"
             :compUrl="compUrl"

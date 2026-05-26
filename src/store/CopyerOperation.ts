@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import { ModuleEnums } from "@/components/enums/ModuleEnums";
 import { message } from "@/utils/message";
+import { i18n } from "@/lang";
 
 /**
  * 用户自定义方法处理逻辑
@@ -36,9 +37,9 @@ export const useCopyerOperationStore = defineStore("copyerOperation", () => {
     parentContainer.value = container;
     copyerData.value = data;
     if (act == "copy") {
-      message("复制成功");
+      message(i18n("common.copySuccess"));
     } else if (act == "cut") {
-      message("剪切成功");
+      message(i18n("common.cutSuccess"));
     }
   };
   //设置动作

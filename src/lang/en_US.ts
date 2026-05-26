@@ -159,6 +159,12 @@ export default {
     "common.edit": "Edit",
     "common.view": "View",
     "common.delete": "Delete",
+    "common.sessionExpired": "Session expired",
+    "common.noPagePermission": "No page button permission, please contact the system administrator",
+    "common.fieldNameExists": "The new field name already exists and cannot be modified",
+    "common.copySuccess": "Copied successfully",
+    "common.cutSuccess": "Cut successfully",
+    "common.toolPanel": "Tool Panel",
     /**
      * Cron Components--------------
      */
@@ -850,4 +856,38 @@ export default {
     "item.noContentSet": "No content set",
     "item.editData": "Edit Data",
     "item.crontabConfig": "Crontab Configurator",
+    /**
+     * Context Menu--------------
+     */
+    "context.new": "New",
+    "context.cut": "Cut",
+    "context.copy": "Copy",
+    "context.paste": "Paste",
+    "context.selectAll": "Select All",
+    "context.clear": "Clear",
+    "context.preview": "Preview",
+    "context.addComponent": "Add Component",
+    "context.selectContainer": "Select Container",
+    "context.undo": "Undo",
+    "context.delete": "Delete",
+    "context.properties": "Properties",
+    "context.centerHorizontally": "Center Horizontally",
+    "context.moveUpLayer": "Move Up Layer",
+    "context.moveDownLayer": "Move Down Layer",
+    "context.bringToFront": "Bring to Front",
+    "context.sendToBack": "Send to Back",
+    "context.clearGuides": "Clear Guides",
+    /**
+     * WebSocket--------------
+     */
+    "ws.notInitialized": "Not initialized",
+    "ws.connecting": "Connecting",
+    "ws.connected": "Connected",
+    "ws.closing": "Closing",
+    "ws.closed": "Closed",
+    "ws.unknownState": "Unknown state",
+    /**
+     * Utils--------------
+     */
+    "utils.dictNotConfigured": "Data dictionary may not be configured",
 };

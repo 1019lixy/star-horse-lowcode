@@ -112,6 +112,10 @@ export interface ContainerPreps {
      */
     source: number;
     /**
+     * 层级深度（用于 children 递归渲染）
+     */
+    level?: number;
+    /**
      * 格式化函数
      */
     commonFormat?: Function,

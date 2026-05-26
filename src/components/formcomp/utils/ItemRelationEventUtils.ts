@@ -21,13 +21,26 @@ const ensureArray = (val: any): any[] => {
     return val;
 };
 
-/** 查找字段并确保 preps 存在 */
-const findField = (props: any, fieldName: string) => {
-    const field = props.formInfo?.find((f: any) => f.fieldName === fieldName);
-    if (field && !field.preps) {
-        field.preps = {};
+/** 查找字段并确保 preps 存在，支持递归查找 children */
+const findField = (props: any, fieldName: string, fieldList?: any[]): any => {
+    const list = fieldList || props.formInfo || [];
+    
+    for (const field of list) {
+        if (field.fieldName === fieldName) {
+            if (!field.preps) {
+                field.preps = {};
+            }
+            return field;
+        }
+        // 递归查找 children 中的字段
+        if (field.children && Array.isArray(field.children)) {
+            const found = findField(props, fieldName, field.children);
+            if (found) {
+                return found;
+            }
+        }
     }
-    return field;
+    return null;
 };
 
 /** 遍历关联字段，对每个字段执行操作 */

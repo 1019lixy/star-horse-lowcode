@@ -2,6 +2,7 @@ import {getCopyerOperationStore, getDesignFormStore} from "@/store/StoreManager"
 import {computed, reactive, ref} from "vue";
 import {uuid} from "@/api/system";
 import {DynamicNode} from "@/components/types/DynamicNode";
+import {i18n} from "@/lang";
 
 // const copyerAction = getCopyerOperationStore();
 // const designForm = getDesignFormStore();
@@ -361,7 +362,7 @@ export function dynamicFormContextMenuData(
     if (flag == "scene") {
         menus.push({
             type: "button",
-            text: "新建",
+            text: i18n("context.new"),
             icon: "new",
             display: !!recall,
             handler: () => {
@@ -372,7 +373,7 @@ export function dynamicFormContextMenuData(
     menus.push(
         {
             type: "button",
-            text: "剪切",
+            text: i18n("context.cut"),
             icon: "cut",
             display: true,
             handler: () => {
@@ -385,7 +386,7 @@ export function dynamicFormContextMenuData(
         },
         {
             type: "button",
-            text: "复制",
+            text: i18n("context.copy"),
             icon: "copy",
             display: true,
             handler: () => {
@@ -398,7 +399,7 @@ export function dynamicFormContextMenuData(
         },
         {
             type: "button",
-            text: "粘贴",
+            text: i18n("context.paste"),
             icon: "paste",
             display: pasteDisplay,
             handler: () => {
@@ -419,7 +420,7 @@ export function dynamicFormContextMenuData(
         menus.push(
             {
                 type: "button",
-                text: "全选",
+                text: i18n("context.selectAll"),
                 icon: "select-all",
                 display: !!recall,
                 handler: () => {
@@ -428,7 +429,7 @@ export function dynamicFormContextMenuData(
             },
             {
                 type: "button",
-                text: "清空",
+                text: i18n("context.clear"),
                 icon: "dustbin",
                 display: !!recall,
                 handler: () => {
@@ -442,7 +443,7 @@ export function dynamicFormContextMenuData(
             },
             {
                 type: "button",
-                text: "预览",
+                text: i18n("context.preview"),
                 icon: "preview",
                 display: !!recall,
                 handler: () => {
@@ -454,7 +455,7 @@ export function dynamicFormContextMenuData(
     if (flag == "container") {
         menus.push({
             type: "button",
-            text: "添加组件",
+            text: i18n("context.addComponent"),
             icon: "new",
             display: true,
             handler: () => {
@@ -463,7 +464,7 @@ export function dynamicFormContextMenuData(
         });
         menus.push({
             type: "button",
-            text: "选中容器",
+            text: i18n("context.selectContainer"),
             icon: "select-parent",
             display: currentItemId.value != item.id,
             handler: () => {
@@ -474,7 +475,7 @@ export function dynamicFormContextMenuData(
     menus.push(
         {
             type: "button",
-            text: "撤销",
+            text: i18n("context.undo"),
             icon: "undo",
             display: !!recall,
             handler: () => {
@@ -488,7 +489,7 @@ export function dynamicFormContextMenuData(
         },
         {
             type: "button",
-            text: "删除",
+            text: i18n("context.delete"),
             icon: "delete",
             display: !!recall,
             handler: () => {
@@ -502,7 +503,7 @@ export function dynamicFormContextMenuData(
         },
         {
             type: "button",
-            text: "属性",
+            text: i18n("context.properties"),
             icon: "prep",
             display: !!recall,
             handler: () => {
@@ -530,7 +531,7 @@ export function dynamicPageContextMenuData(
     contentMenuData = [
         {
             type: "button",
-            text: "水平居中",
+            text: i18n("context.centerHorizontally"),
             icon: "center",
             display: !!recallFunction,
             handler: () => {
@@ -539,7 +540,7 @@ export function dynamicPageContextMenuData(
         },
         {
             type: "button",
-            text: "复制",
+            text: i18n("context.copy"),
             icon: "copy",
             display: !!recallFunction,
             handler: () => {
@@ -553,7 +554,7 @@ export function dynamicPageContextMenuData(
         },
         {
             type: "button",
-            text: "上移一层",
+            text: i18n("context.moveUpLayer"),
             icon: "up-layer",
             display: true,
             handler: () => {
@@ -562,7 +563,7 @@ export function dynamicPageContextMenuData(
         },
         {
             type: "button",
-            text: "下移一层",
+            text: i18n("context.moveDownLayer"),
             icon: "down-layer",
             display: node.styles.zIndex && node.styles.zIndex > 100,
             handler: () => {
@@ -574,7 +575,7 @@ export function dynamicPageContextMenuData(
         },
         {
             type: "button",
-            text: "置顶",
+            text: i18n("context.bringToFront"),
             icon: "to-top",
             display: !!recallFunction,
             handler: () => {
@@ -583,7 +584,7 @@ export function dynamicPageContextMenuData(
         },
         {
             type: "button",
-            text: "置底",
+            text: i18n("context.sendToBack"),
             icon: "to-bottom",
             display: node.styles.zIndex && node.styles.zIndex > 100,
             handler: () => {
@@ -598,7 +599,7 @@ export function dynamicPageContextMenuData(
         },
         {
             type: "button",
-            text: "删除",
+            text: i18n("context.delete"),
             icon: "delete",
             display: !!recallFunction,
             handler: () => {
@@ -613,7 +614,7 @@ export function dynamicPageContextMenuData(
         {
             type: "button",
             icon: "empty_setting",
-            text: "清空参考线",
+            text: i18n("context.clearGuides"),
             display: !!recallFunction,
             handler: () => {
                 recallFunction && recallFunction("empty_setting", node);

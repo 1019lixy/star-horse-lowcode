@@ -246,6 +246,10 @@ export declare interface FieldInfo {
      * 删除事件
      */
     removeActions?: Function | string;
+    /**
+     * 子节点,在多级表头中使用，需考虑怎么在表单中正确渲染显示
+     */
+    children?: FieldInfo[];
 }
 
 /**
