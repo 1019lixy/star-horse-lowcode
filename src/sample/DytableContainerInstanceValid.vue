@@ -14593,7 +14593,7 @@ const conditionList = [{
 onMounted(() => {
   const result = analysisCompDatas(conditionList);
   //
-  console.log(JSON.stringify(result.compListResult));
+  console.log(JSON.stringify(result.fieldList));
   dataItem.value["fieldList"] = result.fieldList;
 
 });
