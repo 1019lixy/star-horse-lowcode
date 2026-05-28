@@ -4,13 +4,13 @@ import {uuid} from "@/api/system";
 import {DynamicNode} from "@/components/types/DynamicNode";
 import {i18n} from "@/lang";
 
-// const copyerAction = getCopyerOperationStore();
-// const designForm = getDesignFormStore();
-// const designPage = useDesignPageStore(piniaInstance);
-const compList = computed(() => getDesignFormStore().compList);
-const currentItemId = computed(() => getDesignFormStore().currentItemId);
+const copyerAction = getCopyerOperationStore();
+let designForm = getDesignFormStore();
+const compList = computed(() => designForm.compList);
+const currentItemId = computed(() => designForm.currentItemId);
+let currentSubItem = computed(() => designForm.currentSubItem);
 const pasteDisplay = computed(() => {
-    const action =  getCopyerOperationStore().action;
+    const action = getCopyerOperationStore().action;
     return !!action;
 });
 
@@ -248,7 +248,7 @@ const complexFields = (items: Array<any>, isCut: boolean = false) => {
             item["preps"]["id"] = item.id;
             if (!isCut) {
                 fieldIndex.value++;
-                item.preps.name = (item?.preps?.name || '') + fieldIndex.value;
+                item.preps.name = (item?.preps?.name || "") + fieldIndex.value;
             }
         }
     }
@@ -339,8 +339,19 @@ export function paste(parentItem: any) {
         } else {
             copyerData = JSON.parse(JSON.stringify(copyerData));
             copyerData.id = uuid();
+            copyerData.fieldName = "field_" + copyerData.id.substring(0, 6);
             copyerData.preps.id = copyerData.id;
-            compList.value.push(copyerData);
+            console.log("paste", copyerData, currentSubItem.value);
+            //如果选中了某个单元格
+            if (currentSubItem.value) {
+                if (!currentSubItem.value.items) {
+                    currentSubItem.value.items = [];
+                }
+                currentSubItem.value.items.push(copyerData);
+            } else {
+                compList.value.push(copyerData);
+            }
+
         }
     }
 }
@@ -358,6 +369,7 @@ export function dynamicFormContextMenuData(
     flag: string = "scene",
     recall?: Function,
 ) {
+    console.log(item,parentItem,flag,recall);
     const menus = reactive<Array<any>>([]);
     if (flag == "scene") {
         menus.push({

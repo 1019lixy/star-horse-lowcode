@@ -82,31 +82,10 @@ const boxDytableAnalysis = (item: any) => {
             const rowspan = column.rowspan;
             const cellVisible = column.cellVisible;
             const currentColumnItems: FieldInfo[] | any = [];
-            column?.items?.forEach((temp: any) => {
-                const {item, fieldInfo, layerItem, searchItem} = itemAnalysis(temp);
-                mergeObjects(boxItems, item);
-                children.push(layerItem);
-                if (!fieldInfo.preps) {
-                    fieldInfo.preps = {};
-                }
-                fieldInfo.preps["colHeight"] = colHeight;
-                fieldInfo.preps["colWidth"] = colWidth;
-                fieldInfo.preps["colspan"] = colspan;
-                fieldInfo.preps["rowspan"] = rowspan;
-                fieldInfo.preps["cellVisible"] = cellVisible;
-                currentColumnItems.push(fieldInfo);
-                if (hasKeys(searchItem)) {
-                    searchItemList.push(searchItem);
-                }
-            });
-            const len = column?.items?.length;
-            if (len > 1) {
-                columnItems.push(currentColumnItems);
-            } else if (len == 1) {
-                columnItems.push(currentColumnItems[0]);
-            } else {
+            if (column.staticData === true) {
                 columnItems.push({
-                    type: "empty",
+                    staticData: column.staticData,
+                    visiblePlatform: column.visiblePlatform,
                     viewVisible: true,
                     formVisible: false,
                     preps: {
@@ -115,8 +94,46 @@ const boxDytableAnalysis = (item: any) => {
                         colHeight: colHeight,
                         colWidth: colWidth,
                         cellVisible: cellVisible,
+                        textContent: column.textContent,
                     },
                 });
+            } else {
+                column?.items?.forEach((temp: any) => {
+                    const {item, fieldInfo, layerItem, searchItem} = itemAnalysis(temp);
+                    mergeObjects(boxItems, item);
+                    children.push(layerItem);
+                    if (!fieldInfo.preps) {
+                        fieldInfo.preps = {};
+                    }
+                    fieldInfo.preps["colHeight"] = colHeight;
+                    fieldInfo.preps["colWidth"] = colWidth;
+                    fieldInfo.preps["colspan"] = colspan;
+                    fieldInfo.preps["rowspan"] = rowspan;
+                    fieldInfo.preps["cellVisible"] = cellVisible;
+                    currentColumnItems.push(fieldInfo);
+                    if (hasKeys(searchItem)) {
+                        searchItemList.push(searchItem);
+                    }
+                });
+                const len = column?.items?.length;
+                if (len > 1) {
+                    columnItems.push(currentColumnItems);
+                } else if (len == 1) {
+                    columnItems.push(currentColumnItems[0]);
+                } else {
+                    columnItems.push({
+                        type: "empty",
+                        viewVisible: true,
+                        formVisible: false,
+                        preps: {
+                            colspan: colspan,
+                            rowspan: rowspan,
+                            colHeight: colHeight,
+                            colWidth: colWidth,
+                            cellVisible: cellVisible,
+                        },
+                    });
+                }
             }
         });
         fieldList.push(columnItems);
@@ -246,6 +263,8 @@ const itemAnalysis = (item: any) => {
         editDisabled: preps.editDisabled ?? item.editDisabled,
         id: preps.id ?? item.id,
         preps: remainingPreps,
+        staticData: preps.staticData ?? item.staticData,
+        visiblePlatform: preps.visiblePlatform ?? item.visiblePlatform,
     };
     const layerItem: any = {
         name: item.preps?.label ?? item.label,

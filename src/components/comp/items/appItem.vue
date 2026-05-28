@@ -54,6 +54,9 @@ onMounted(() => {
 <template>
   <template v-if="item.appList?.length > 0">
     <template v-for="(appItem, key) in item.appList">
+      22-{{appItem.staticData}}
+      <div class="h-full w-full p-2 items-center justify-center flex flex-col" v-if="appItem.staticData===true" v-html="appItem.preps?.textContent"/>
+     <template v-else>
       <template v-if="appItem.title">
         <star-horse-item
             :primaryKey="primaryKey"
@@ -98,6 +101,7 @@ onMounted(() => {
           :subFormFlag="appItem.subFormFlag"
           :primaryKey="primaryKey"
       />
+     </template>
     </template>
   </template>
 </template>

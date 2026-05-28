@@ -121,7 +121,7 @@ defineExpose({
 });
 </script>
 <template>
-  <div class="w-full h-full flex flex-col overflow-hidden star-horse-data-view">
+  <div class="w-full h-full flex flex-col overflow-hidden star-horse-data-view" :class="{'star-horse-app':isMobile}">
     <el-scrollbar height="100%" class="flex-1">
       <el-form
           :model="dataForm"
@@ -155,6 +155,12 @@ defineExpose({
   </div>
 </template>
 <style lang="scss" scoped>
+.star-horse-app {
+  :deep(.el-form-item__label) {
+    border-right: none !important;
+  }
+}
+
 /* ====== 查看视图：el-descriptions 风格 ====== */
 .data-view-mode {
   /* 整体布局：类似 el-descriptions 的表格感 */
@@ -182,6 +188,7 @@ defineExpose({
   /* 内容列：类似 el-descriptions__content */
   :deep(.el-form-item__content) {
     padding: 8px 12px;
+    margin-left: 5px !important;
     color: var(--el-text-color-primary);
     flex: 1;
     background-color: #fff;

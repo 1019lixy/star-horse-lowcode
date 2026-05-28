@@ -26,6 +26,7 @@ export const useDesignFormStore = defineStore("designForm", () => {
     const parentCompType = ref<string>("");
     const currentItemId = ref<string>("");
     const currentSubItemId = ref<string>("");
+    const currentSubItem = ref<Record<string, any>>({});
     const currentSubTabName = ref<string>("");
     const isEdit = ref<boolean>(false);
     const componentVisible = ref<boolean>(false);
@@ -152,10 +153,11 @@ export const useDesignFormStore = defineStore("designForm", () => {
     };
     /**
      * 选中子组件
-     * @param subItemId
+     * @param subItem
      */
-    const setSubItemId = (subItemId: string) => {
-        currentSubItemId.value = subItemId;
+    const setSubItem = (subItem: any) => {
+        currentSubItemId.value = subItem.id;
+        currentSubItem.value = subItem;
     };
     const setCurrentSubTabName = (tabName: string) => {
         currentSubTabName.value = tabName;
@@ -426,6 +428,7 @@ export const useDesignFormStore = defineStore("designForm", () => {
         currentItemType,
         currentFormPreps,
         currentSubItemId,
+        currentSubItem,
         isEdit,
         isDragging,
         currentComp,
@@ -453,7 +456,7 @@ export const useDesignFormStore = defineStore("designForm", () => {
         undo,
         selectItem,
         setRefresh,
-        setSubItemId,
+        setSubItem,
         setFormInfo,
         setCompList,
         loadCompNames,

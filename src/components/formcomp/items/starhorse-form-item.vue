@@ -296,7 +296,7 @@ const finishEditLabel = () => {
       </div>
     </div>
 
-    <Teleport to="body">
+    <Teleport to="body" v-if="isDesign">
       <ContentMenu
           ref="itemContextMenuRef"
           :menu-data="dynamicFormContextMenuData(field, parentField, 'item')"

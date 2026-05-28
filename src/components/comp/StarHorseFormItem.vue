@@ -30,6 +30,7 @@ const itemCommonFormat = (name: string, cellValue: any, row: any) => {
       : props.commonFormat(name, cellValue, row);
 };
 const checkItemType = (item: any) => {
+  console.log(item);
   // 优先判断 children，有 children 的非叶子节点返回 group-item
   if (item.children && Array.isArray(item.children) && item.children.length > 0) {
     console.log("ok,group-item");

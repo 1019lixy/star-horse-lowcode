@@ -34,16 +34,17 @@ onMounted(() => {
      <MainContainer :categories="categories" position="bottom" systemConfigName="系统配置" @select="handleSelect"/>
     </template>-->
   <div class="flex flex-col h-full overflow-auto">
+    <DytableContainerViewValid/>
     <!--    <Dashboard/>-->
     <!--    <FormValid/>-->
-    <el-tabs v-model="actName" class="h-full">
+<!--    <el-tabs v-model="actName" class="h-full">
       <el-tab-pane name="component" label="解析">
         <DytableContainerInstanceValid/>
       </el-tab-pane>
       <el-tab-pane name="2" label="实例">
         <NormalFormValid/>
       </el-tab-pane>
-    </el-tabs>
+    </el-tabs>-->
 
 <!--    <el-tabs v-model="actName" class="h-full">
       <el-tab-pane name="component" label="组件测试">

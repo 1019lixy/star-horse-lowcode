@@ -67,9 +67,14 @@ onMounted(() => {
           class="h-full flex items-center justify-center"
           v-bind="checkItem(sitem).preps"
           :style="{ height: checkItem(sitem).preps?.colHeight||'auto' ,
+          'text-align': checkItem(sitem).preps?.textAlign ?? 'left',
+           'white-space': sitem.staticData!==true?'nowrap':'unset',
+           'word-break': !!checkItem(sitem).preps?.wordBreak ? 'break-all' : 'normal',
+           'text-overflow': 'ellipsis'
         }"
       >
-        <template v-for="tempData in createArray(sitem)">
+        <div class="h-full w-full p-2 items-center justify-center flex flex-col" v-if="sitem.staticData===true" v-html="sitem.preps?.textContent"/>
+        <template v-else v-for="tempData in createArray(sitem)">
           <template
               v-if="
             tempData.type != 'button' &&

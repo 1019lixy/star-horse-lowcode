@@ -62,17 +62,5 @@ const shouldShow = () => {
   border-radius: 4px;
 }
 
-.group-label {
-  margin-bottom: 12px;
-  padding: 8px 12px;
-  background-color: #f5f7fa;
-  border-left: 3px solid var(--el-color-primary);
-  border-radius: 4px;
 
-  .group-label-text {
-    font-weight: 600;
-    color: var(--el-text-color-primary);
-    font-size: 14px;
-  }
-}
 </style>
