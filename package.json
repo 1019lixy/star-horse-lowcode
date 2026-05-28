@@ -2,7 +2,7 @@
   "name": "star-horse-lowcode",
   "private": false,
   "author": "l_1019@163.com",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "type": "module",
   "description": "星马低代码核心库，提供了低代码平台的基础功能和组件库。此库可引用到您的项目中，快速构建表单和列表。",
   "keywords": [
