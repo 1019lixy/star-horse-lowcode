@@ -74,7 +74,6 @@ const tableCompFunc = (authority: any) => {
       pageInfo.value.currentPage = 1;
       searchFlag.value = true;
     }
-    console.log("-------------------------tableCompFunc------------h1------------------------");
     loadByPage();
   } else if (authority == "batchDelete") {
     batchDelete();
@@ -189,7 +188,6 @@ const createSearchParams = (
   searchFields.value = formData;
   orderBys.value = orderBy;
   searchFlag.value = true;
-  console.log("-------------------------createSearchParams------------h1------------------------");
   loadByPage();
 };
 /**
@@ -211,7 +209,6 @@ const init = async () => {
   permissions.value = {...permissions.value, ...props.btnPermissions};
   emits("permission", permissions.value);
   if (!props.fieldList?.stopAutoLoad) {
-    console.log("-------------------------------------h1------------------------");
     loadByPage();
   } else {
     pageInfo.value.dataList = props.tableDataList || [];
@@ -485,18 +482,15 @@ const deleteById = async (id: any, isExpand: boolean = false) => {
   let flag = await deleteByIds(deleteUrl, Array.isArray(id) ? id : [id]);
   if (flag) {
     searchFlag.value = true;
-    console.log("-------------------------deleteById------------h1------------------------");
     loadByPage();
   }
 };
 const pageSizeClick = (pageSize: number) => {
   pageInfo.value.pageSize = pageSize;
-  console.log("-------------------------pageSizeClick------------h1------------------------");
   loadByPage();
 };
 const pageChangeClick = (currentPage: number) => {
   pageInfo.value.currentPage = currentPage;
-  console.log("-------------------------pageChangeClick------------h1------------------------");
   loadByPage();
 };
 const inputFieldName = ref<string>("");
@@ -839,7 +833,6 @@ const endReached = (direction: string) => {
     if (pageInfo.value.currentPage > pageInfo.value.totalPage) {
       return;
     }
-    console.log("-------------------------endReached------------h1------------------------");
     loadByPage();
   }
 };

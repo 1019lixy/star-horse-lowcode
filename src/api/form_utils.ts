@@ -454,6 +454,8 @@ function analysisComps(fieldList: any) {
             processContainer(filed, commonContainer, tempFieldList);
         } else if (filed.batchFieldList) {
             processBatchField(filed, tempFieldList);
+        } else if (filed.appList) {
+            tempFieldList.push(...filed.appList);
         } else {
             if (Array.isArray(filed)) {
                 tempFieldList.push(...filed);
@@ -568,7 +570,7 @@ export function convertCompToAppComps(pageInfo: PageFieldInfo) {
         const indexB = b.preps?.dataIndex ?? 0;
         return indexA - indexB;
     });
-    return {fieldList: appVisibleComps};
+    return {fieldList: [{appList: appVisibleComps}]};
 }
 
 /**

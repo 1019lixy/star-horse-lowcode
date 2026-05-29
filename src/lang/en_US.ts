@@ -832,6 +832,7 @@ export default {
     "item.imageSizeLimit": "Image size cannot exceed 5MB!",
     "item.videoSizeLimit": "Video size cannot exceed 100MB!",
     "item.notSupportedOnApp": "This operation is not supported on App, please use PC",
+    "item.systemLoading": "Loading,please wait...",
     "item.unknown": "Unknown",
     "item.systemConfig": "System Configuration",
     "item.currentProperty": "Current Property",

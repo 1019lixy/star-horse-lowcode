@@ -829,6 +829,7 @@ export default {
   "item.imageSizeLimit": "图片大小不能超过 5MB！",
   "item.videoSizeLimit": "视频大小不能超过 100MB！",
   "item.notSupportedOnApp": "App端不支持此操作,请到Pc端完成",
+  "item.systemLoading":"加载中,请稍后...",
   "item.unknown": "未知",
   "item.systemConfig": "系统配置",
   "item.currentProperty": "当前属性",

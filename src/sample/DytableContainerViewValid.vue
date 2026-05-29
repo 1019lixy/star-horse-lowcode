@@ -1,12 +1,12 @@
 <template>
   <el-scrollbar>
-    <star-horse-form :dataForm="formData" :fieldList="dataItem" :formInfo="{}"/>
+    <star-horse-form :dataForm="formData" :fieldList="dataItem" label-position="top" :formInfo="{}"/>
   </el-scrollbar>
 </template>
 
 <script lang="ts" setup>
 import {onMounted, ref} from "vue";
-import {analysisCompDatas} from "@/api/form_utils";
+import {analysisAutoFitOsCompDatas, analysisCompDatas, convertCompToAppComps} from "@/api/form_utils";
 import {StarHorseDataView} from "@/components/comp";
 import {getDesignFormStore} from "@/store/StoreManager";
 
@@ -17119,7 +17119,10 @@ const fields =[
 onMounted(() => {
   const result = analysisCompDatas(fields);
   dataItem.value = result;
-  console.log("xxx", result);
+  let result2 = convertCompToAppComps(dataItem.value)
+  dataItem.value = result2;
+
+  console.log("xxx", result2);
 });
 </script>
 

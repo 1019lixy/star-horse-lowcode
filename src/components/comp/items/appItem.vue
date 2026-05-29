@@ -44,7 +44,11 @@ const loadItem = (item: any) => {
     }
   };
 };
+const createFieldList = (item: any) => {
+  return {fieldList: Array.isArray(item) ? item : [item]};
+};
 const init = () => {
+  console.log(props.item);
 };
 onMounted(() => {
   init();
@@ -54,26 +58,28 @@ onMounted(() => {
 <template>
   <template v-if="item.appList?.length > 0">
     <template v-for="(appItem, key) in item.appList">
-      22-{{appItem.staticData}}
-      <div class="h-full w-full p-2 items-center justify-center flex flex-col" v-if="appItem.staticData===true" v-html="appItem.preps?.textContent"/>
-     <template v-else>
-      <template v-if="appItem.title">
-        <star-horse-item
-            :primaryKey="primaryKey"
-            :compSize="compSize"
-            v-model:dataForm="dataForm"
-            :commonFormat="commonFormat"
-            :item="loadItem(appItem)"
-            :dataIndex="dataIndex"
+
+      <div class="group-label" v-if="appItem.staticData===true&&['app','all'].includes(appItem.visiblePlatform)">
+        <div class="group-label-text" v-html="appItem.preps?.textContent"></div>
+      </div>
+      <template v-else>
+        <template v-if="appItem.title">
+          <star-horse-item
+              :primaryKey="primaryKey"
+              :compSize="compSize"
+              v-model:dataForm="dataForm"
+              :commonFormat="commonFormat"
+              :item="loadItem(appItem)"
+              :dataIndex="dataIndex"
+              :source="source"
+          />
+        </template>
+        <star-horse-form-item
             :source="source"
-        />
-      </template>
-      <star-horse-form-item
-          :source="source"
-          :compUrl="compUrl"
-          :compSize="compSize"
-          :commonFormat="commonFormat"
-          :dataForm="
+            :compUrl="compUrl"
+            :compSize="compSize"
+            :commonFormat="commonFormat"
+            :dataForm="
             getFormData(
               appItem,
               dataForm,
@@ -82,7 +88,7 @@ onMounted(() => {
               item.groupData ? key : 0,
             )
           "
-          :dataIndex="
+            :dataIndex="
             getDataIndex(
               appItem,
               propPrefix,
@@ -90,18 +96,18 @@ onMounted(() => {
               item.groupData ? key : 0,
             )
           "
-          :propPrefix="
+            :propPrefix="
             getPrefix(appItem, propPrefix, dataIndex, item.groupData ? key : 0)
           "
-          :objectName="appItem.objectName"
-          @addRow="addRow"
-          @removeRow="removeRow"
-          :fieldList="appItem"
-          :rules="rules"
-          :subFormFlag="appItem.subFormFlag"
-          :primaryKey="primaryKey"
-      />
-     </template>
+            :objectName="appItem.objectName"
+            @addRow="addRow"
+            @removeRow="removeRow"
+            :fieldList="createFieldList(appItem)"
+            :rules="rules"
+            :subFormFlag="appItem.subFormFlag"
+            :primaryKey="primaryKey"
+        />
+      </template>
     </template>
   </template>
 </template>
