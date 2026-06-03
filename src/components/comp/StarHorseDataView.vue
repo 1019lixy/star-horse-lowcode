@@ -213,7 +213,8 @@ defineExpose({
   }
 
   /* ---- Select：去边框 ---- */
-  :deep(.el-select.is-disabled .el-input__wrapper), :deep(.el-select__wrapper.is-disabled) {
+  :deep(.el-select.is-disabled .el-input__wrapper),
+  :deep(.el-select__wrapper.is-disabled) {
     background-color: transparent !important;
     box-shadow: none !important;
     border: none !important;
@@ -239,14 +240,20 @@ defineExpose({
   }
 
   /* ---- 日期/时间：去边框 ---- */
-  :deep(.el-date-editor.is-disabled .el-input__wrapper) {
+  :deep(.el-date-editor.is-disabled .el-input__wrapper),
+  :deep(.el-range-editor.is-disabled),
+  :deep(.el-range-editor.is-disabled .el-range-input){
     background-color: transparent !important;
     box-shadow: none !important;
     border: none !important;
     padding: 0;
+    .el-icon{
+      visibility: hidden;
+    }
   }
 
-  :deep(.el-date-editor.is-disabled .el-input__inner) {
+  :deep(.el-date-editor.is-disabled .el-input__inner),
+  :deep(.el-range-editor.is-disabled .el-range-input){
     color: var(--el-text-color-primary);
     -webkit-text-fill-color: var(--el-text-color-primary);
   }

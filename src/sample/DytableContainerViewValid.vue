@@ -1,13 +1,12 @@
 <template>
   <el-scrollbar>
-    <star-horse-form :dataForm="formData" :fieldList="dataItem" label-position="top" :formInfo="{}"/>
+    <star-horse-data-view :dataForm="formData" :fieldList="dataItem" label-position="top" :formInfo="{}"/>
   </el-scrollbar>
 </template>
 
 <script lang="ts" setup>
 import {onMounted, ref} from "vue";
-import {analysisAutoFitOsCompDatas, analysisCompDatas, convertCompToAppComps} from "@/api/form_utils";
-import {StarHorseDataView} from "@/components/comp";
+import {analysisCompDatas, convertCompToAppComps} from "@/api/form_utils";
 import {getDesignFormStore} from "@/store/StoreManager";
 
 let designForm = getDesignFormStore();
@@ -15,7 +14,7 @@ const formData = ref<any>({
   test: "1-2-1",
 });
 const dataItem = ref<any>({});
-const fields =[
+const fields = [
   {
     "id": "Idshf33d1e90-f977-49c2-8757-43abbd93b495",
     "preps": {
@@ -354,13 +353,14 @@ const fields =[
                     },
                     "appCompVisible": false,
                     "appLabelVisible": false,
-                    "hideLabel": true
+                    "hideLabel": true,
+                    type: "daterange"
                   },
                   "compType": "formItem",
                   "fieldName": "zuocheng",
-                  "itemType": "input",
+                  "itemType": "date",
                   "label": "单行文本框",
-                  "type": "input"
+                  "type": "date"
                 }
               ]
             },

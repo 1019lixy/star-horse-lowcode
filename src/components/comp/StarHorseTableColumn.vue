@@ -137,7 +137,7 @@ const currentDataFormat = (scope: any) => {
   //下拉数据,checkbox,radio切换为对应的名称
   let fname: string = "";
   if (dateTypes.includes(item?.type)) {
-    return parseDateByType(val, item.type);
+    return parseDateByType(val, item.type,item.preps?.type);
   }
   if (
       item?.type == "select" ||

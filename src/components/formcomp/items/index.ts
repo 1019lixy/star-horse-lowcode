@@ -7,6 +7,7 @@ export {default as checkboxItem} from "./checkbox-item.vue";
 export {default as colorItem} from "./color-item.vue";
 export {default as cronItem} from "./cron-item.vue";
 export {default as datetimeItem} from "./datetime-item.vue";
+export {default as dateItem} from "./date-item.vue";
 export {default as departItem} from "./depart-item.vue";
 export {default as dialogInputItem} from "./dialog-input-item.vue";
 export {default as dividerItem} from "./divider-item.vue";

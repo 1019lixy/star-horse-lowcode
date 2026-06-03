@@ -112,12 +112,20 @@ const selectType: Array<string> = [
 ];
 const dateType: Array<string> = [
     "year",
+    "years",
     "month",
+    "months",
     "date",
+    "dates",
     "datetime",
     "week",
     "datetimerange",
     "daterange",
+    "monthrange",
+    "yearrange",
+    "time",
+    "time-picker",
+    "timerange",
 ];
 
 /**
