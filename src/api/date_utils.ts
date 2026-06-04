@@ -161,6 +161,20 @@ const DATE_RE = /^\d{4}[-/]\d{2}[-/]\d{2}$/;
 const DATETIME_RE = /^\d{4}[-/]\d{2}[-/]\d{2}\s+\d{1,2}:\d{2}(:\d{2})?$/;
 const TIME_RE = /^\d{1,2}:\d{2}(:\d{2})?$/;
 
+// ISO 字符串正则（如 "2026-09-30T16:00:00.000Z"），提取 UTC 日期部分
+const ISO_DATE_RE = /^(\d{4})-(\d{2})-(\d{2})T/;
+
+/**
+ * 从 ISO 字符串中直接提取 UTC 日期部分，避免 new Date() 时区偏移
+ * "2026-09-30T16:00:00.000Z" → { year: "2026", month: "09", day: "30" }
+ * 非 ISO 字符串返回 null
+ */
+function extractISODateParts(val: string): { year: string; month: string; day: string } | null {
+    const m = val.match(ISO_DATE_RE);
+    if (!m) return null;
+    return { year: m[1], month: m[2], day: m[3] };
+}
+
 /**
  * 尝试识别已格式化的日期字符串，避免 new Date() 时区偏移
  * @returns 格式化后的字符串，或 null 表示未匹配需要走 Date 转换
@@ -171,62 +185,111 @@ function tryAlreadyFormatted(
     split: string,
     needSecond: boolean = false,
 ): string | null {
+    // 先尝试从 ISO 字符串直接提取 UTC 日期部分（避免时区偏移）
+    const iso = extractISODateParts(val);
+
     switch (effectiveType) {
         case "year":
         case "years":
             if (YEAR_RE.test(val)) return val;
-            // "2026-12-13" → "2026"
             if (DATE_RE.test(val)) return val.substring(0, 4);
-            // "2026-12-13T16:00:00.000Z" 等带时间的 ISO 不匹配，走 Date 转换
+            // ISO → 直接取 UTC 年份
+            if (iso) return iso.year;
             break;
         case "month":
         case "months":
             if (MONTH_RE.test(val)) return val.replace(/[-/]/g, split);
-            // "2026-12-13" → "2026-12"
             if (DATE_RE.test(val)) {
                 const parts = val.split(/[-/]/);
                 return parts[0] + split + parts[1];
             }
+            // ISO → 直接取 UTC 年月
+            if (iso) return iso.year + split + iso.month;
             break;
         case "date":
         case "dates":
         case "daterange":
             if (DATE_RE.test(val)) return val.replace(/[-/]/g, split);
+            // ISO → 直接取 UTC 年月日
+            if (iso) return iso.year + split + iso.month + split + iso.day;
             break;
         case "datetime":
         case "datetimerange":
             if (DATETIME_RE.test(val)) {
                 let result = val.replace(/[-/]/g, split);
                 if (!needSecond) {
-                    // 截掉秒 "2026-12-13 16:00:00" → "2026-12-13 16:00"
                     result = result.replace(/( \d{1,2}:\d{2}):\d{2}$/, "$1");
                 }
                 return result;
             }
+            // ISO → 用 Date 转换保留时间部分（datetime 需要本地时间显示）
+            break;
+        case "week":
+            if (DATE_RE.test(val)) {
+                // 已格式化日期 → 用 UTC 日期计算周数
+                const d = new Date(val + "T00:00:00");
+                return `${d.getFullYear()}${i18n("api.weekPrefix")}${getWeek(d)}${i18n("api.weekSuffix")}`;
+            }
+            // ISO → 从 UTC 日期计算周数
+            if (iso) {
+                const d = new Date(Date.UTC(parseInt(iso.year), parseInt(iso.month) - 1, parseInt(iso.day)));
+                return `${d.getUTCFullYear()}${i18n("api.weekPrefix")}${getWeek(d)}${i18n("api.weekSuffix")}`;
+            }
             break;
         case "monthrange":
             if (MONTH_RE.test(val)) return val.replace(/[-/]/g, split);
-            // "2026-12-13" → "2026-12"
             if (DATE_RE.test(val)) {
                 const parts = val.split(/[-/]/);
                 return parts[0] + split + parts[1];
             }
+            if (iso) return iso.year + split + iso.month;
             break;
         case "yearrange":
             if (YEAR_RE.test(val)) return val;
             if (DATE_RE.test(val)) return val.substring(0, 4);
+            if (iso) return iso.year;
             break;
     }
     return null;
 }
 
 /**
+ * 从带日期的时间字符串中提取时间部分
+ * "1970-01-01 08:11:01+08" → "08:11:01"
+ * "1970-01-01T16:00:00.000Z" → "16:00:00"
+ * "08:11:01" → "08:11:01"（纯时间直接返回）
+ * @returns 时间字符串 "HH:mm" 或 "HH:mm:ss"，或 null 表示不匹配
+ */
+function extractTimePart(val: string): string | null {
+    // 纯时间字符串 "HH:mm:ss" / "HH:mm"
+    if (/^\d{1,2}:\d{2}(:\d{2})?$/.test(val)) return val;
+
+    // 带时区偏移的日期时间 "1970-01-01 08:11:01+08" / "1970-01-01 08:11:01+08:00"
+    const tzMatch = val.match(/^\d{4}-\d{2}-\d{2}\s+(\d{1,2}:\d{2}(?::\d{2})?)/);
+    if (tzMatch) return tzMatch[1];
+
+    // ISO 格式 "2026-06-09T16:00:00.000Z"
+    const isoMatch = val.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})/);
+    if (isoMatch) return isoMatch[4] + ":" + isoMatch[5] + ":" + isoMatch[6];
+
+    return null;
+}
+
+/**
  * 格式化时间值（time / time-picker 类型专用）
- * 支持：单值字符串、数组范围、JSON 字符串数组
+ * 支持：单值字符串、数组范围、JSON 字符串数组、带日期的时间字符串
  */
 function formatTimeValue(val: any): string {
     if (Array.isArray(val)) {
-        return val.join(` ${i18n("api.to")} `);
+        return val
+            .map((v: any) => {
+                if (typeof v === "string") {
+                    const t = extractTimePart(v);
+                    return t !== null ? t : v;
+                }
+                return v;
+            })
+            .join(` ${i18n("api.to")} `);
     }
     if (typeof val === "string") {
         // JSON 字符串数组，如 '[ "08:00", "18:00" ]'
@@ -234,7 +297,15 @@ function formatTimeValue(val: any): string {
             try {
                 const parsed = JSON.parse(val);
                 if (Array.isArray(parsed)) {
-                    return parsed.join(` ${i18n("api.to")} `);
+                    return parsed
+                        .map((v: any) => {
+                            if (typeof v === "string") {
+                                const t = extractTimePart(v);
+                                return t !== null ? t : v;
+                            }
+                            return v;
+                        })
+                        .join(` ${i18n("api.to")} `);
                 }
             } catch {
                 /* 不是有效 JSON，继续 */
@@ -247,6 +318,9 @@ function formatTimeValue(val: any): string {
         if (rangeMatch) {
             return `${rangeMatch[1]} ${i18n("api.to")} ${rangeMatch[3]}`;
         }
+        // 带日期的时间字符串 → 提取时间部分
+        const t = extractTimePart(val);
+        if (t !== null) return t;
     }
     return val;
 }
@@ -310,12 +384,7 @@ export function parseDateByType(
             }
             if (effectiveType === "months") {
                 return val
-                    .map((v: any) => {
-                        if (typeof v === "string" && /^\d{1,2}$/.test(v)) {
-                            return v.padStart(2, "0");
-                        }
-                        return v;
-                    })
+                    .map((v: any) => parseDateByType(v, type, "month", needSecond, split))
                     .join(", ");
             }
             // 通用数组兜底
@@ -364,37 +433,68 @@ export function parseDateByType(
             return val;
         }
 
+        // 判断是否只关心日期部分（不含时间），用 UTC 方式格式化避免时区偏移
+        const isDateOnly = isDateOnlyType(effectiveType);
+
         // ── 根据 effectiveType 格式化 ──
         switch (effectiveType) {
             case "year":
-                return date.getFullYear().toString();
+                return isDateOnly ? date.getUTCFullYear().toString() : date.getFullYear().toString();
             case "years":
-                return date.getFullYear().toString();
+                return isDateOnly ? date.getUTCFullYear().toString() : date.getFullYear().toString();
             case "month":
+                if (isDateOnly) {
+                    return date.getUTCFullYear() + split + (date.getUTCMonth() + 1).toString().padStart(2, "0");
+                }
                 return (
                     date.getFullYear() +
                     split +
                     (date.getMonth() + 1).toString().padStart(2, "0")
                 );
             case "months":
+                if (isDateOnly) {
+                    return date.getUTCFullYear() + split + (date.getUTCMonth() + 1).toString().padStart(2, "0");
+                }
                 return (
                     date.getFullYear() +
                     split +
                     (date.getMonth() + 1).toString().padStart(2, "0")
                 );
             case "date":
+                if (isDateOnly) {
+                    return date.getUTCFullYear() + split + (date.getUTCMonth() + 1).toString().padStart(2, "0") + split + date.getUTCDate().toString().padStart(2, "0");
+                }
                 return dateParse(date, false, split);
             case "dates":
+                if (isDateOnly) {
+                    return date.getUTCFullYear() + split + (date.getUTCMonth() + 1).toString().padStart(2, "0") + split + date.getUTCDate().toString().padStart(2, "0");
+                }
                 return dateParse(date, false, split);
             case "datetime":
                 return dateParse(date, true, split, needSecond);
             case "week":
+                // week 用 UTC 日期计算周数
+                if (isDateOnly) {
+                    const utcDate = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+                    return `${utcDate.getUTCFullYear()}${i18n("api.weekPrefix")}${getWeek(utcDate)}${i18n("api.weekSuffix")}`;
+                }
                 return `${date.getFullYear()}${i18n("api.weekPrefix")}${getWeek(date)}${i18n("api.weekSuffix")}`;
             case "datetimerange":
                 return dateParse(date, true, split, needSecond);
             case "daterange":
+                if (isDateOnly) {
+                    return date.getUTCFullYear() + split + (date.getUTCMonth() + 1).toString().padStart(2, "0") + split + date.getUTCDate().toString().padStart(2, "0");
+                }
+                return dateParse(date, false, split);
             case "monthrange":
+                if (isDateOnly) {
+                    return date.getUTCFullYear() + split + (date.getUTCMonth() + 1).toString().padStart(2, "0");
+                }
+                return dateParse(date, false, split);
             case "yearrange":
+                if (isDateOnly) {
+                    return date.getUTCFullYear().toString();
+                }
                 return dateParse(date, false, split);
             default:
                 return dateParse(date, effectiveType?.includes("time"), split, needSecond);
@@ -424,6 +524,9 @@ export function getDateValueFormat(subType: string): string {
         monthrange: "YYYY-MM",
         yearrange: "YYYY",
         week: "YYYY-MM-DD",
+        time: "HH:mm",
+        "time-picker": "HH:mm:ss",
+        timerange: "HH:mm:ss",
     };
     return map[subType] || "YYYY-MM-DD";
 }
@@ -446,12 +549,37 @@ export function getDateDisplayFormat(subType: string): string {
         monthrange: "YYYY-MM",
         yearrange: "YYYY",
         week: "YYYY-MM-DD",
+        time: "HH:mm",
+        "time-picker": "HH:mm:ss",
+        timerange: "HH:mm:ss",
     };
     return map[subType] || "YYYY-MM-DD";
 }
 
 /**
- * 将 Date 对象按 dayjs 风格模式格式化
+ * 使用 UTC 方法按 dayjs 风格模式格式化（避免本地时区偏移）
+ * 用于 year/month/date/week 等只关心日期部分的类型
+ */
+function formatDateByPatternUTC(date: Date, pattern: string): string {
+    return pattern
+        .replace("YYYY", date.getUTCFullYear().toString())
+        .replace("MM", (date.getUTCMonth() + 1).toString().padStart(2, "0"))
+        .replace("DD", date.getUTCDate().toString().padStart(2, "0"))
+        .replace("HH", date.getUTCHours().toString().padStart(2, "0"))
+        .replace("mm", date.getUTCMinutes().toString().padStart(2, "0"))
+        .replace("ss", date.getUTCSeconds().toString().padStart(2, "0"));
+}
+
+/**
+ * 判断 subType 是否只关心日期部分（不需要本地时区转换）
+ */
+function isDateOnlyType(subType: string): boolean {
+    return ["year", "years", "month", "months", "date", "dates", "week",
+            "daterange", "monthrange", "yearrange"].includes(subType);
+}
+
+/**
+ * 将 Date 对象按 dayjs 风格模式格式化（本地时区）
  * 支持: YYYY, MM, DD, HH, mm, ss
  */
 function formatDateByPattern(date: Date, pattern: string): string {
@@ -491,13 +619,51 @@ function normalizeSingleValue(val: any, subType: string, format: string): any {
 
     // Date 对象 → 格式化
     if (val instanceof Date) {
-        return isNaN(val.getTime()) ? val : formatDateByPattern(val, format);
+        if (isNaN(val.getTime())) return val;
+        // 时间类型用本地时间格式化
+        if (subType === "time" || subType === "time-picker" || subType === "timerange") {
+            return formatDateByPattern(val, format);
+        }
+        return isDateOnlyType(subType)
+            ? formatDateByPatternUTC(val, format)
+            : formatDateByPattern(val, format);
     }
 
     if (typeof val !== "string") return val;
 
     // 已匹配目标格式 → 直接返回
     if (matchesValueFormat(val, format)) return val;
+
+    // ── 时间类型子类型：提取时间部分 ──
+    if (subType === "time" || subType === "time-picker" || subType === "timerange") {
+        const t = extractTimePart(val);
+        if (t !== null) {
+            // 确保匹配目标 format
+            if (format === "HH:mm" && /^\d{1,2}:\d{2}:\d{2}$/.test(t)) {
+                return t.substring(0, 5);
+            }
+            return t;
+        }
+    }
+
+    // ISO 字符串 → 优先从字符串直接提取 UTC 日期部分（避免时区偏移）
+    const iso = extractISODateParts(val);
+    if (iso && isDateOnlyType(subType)) {
+        // year/years → "2026"
+        if (subType === "year" || subType === "years") return iso.year;
+        // month/months → "2026-09"
+        if (subType === "month" || subType === "months") return iso.year + "-" + iso.month;
+        // date/dates/daterange → "2026-09-30"
+        if (subType === "date" || subType === "dates" || subType === "daterange") {
+            return iso.year + "-" + iso.month + "-" + iso.day;
+        }
+        // week → "2026-09-30" (后续由组件计算周数)
+        if (subType === "week") return iso.year + "-" + iso.month + "-" + iso.day;
+        // monthrange → "2026-09"
+        if (subType === "monthrange") return iso.year + "-" + iso.month;
+        // yearrange → "2026"
+        if (subType === "yearrange") return iso.year;
+    }
 
     // months/month 纯月份数字 "06" → 构造完整日期
     if ((subType === "months" || subType === "month") && /^\d{1,2}$/.test(val)) {
@@ -524,9 +690,12 @@ function normalizeSingleValue(val: any, subType: string, format: string): any {
     }
 
     // ISO 字符串或其他可解析格式 → 转 Date 再格式化
+    // datetime 类型使用本地时间，date-only 类型使用 UTC
     const d = new Date(val);
     if (!isNaN(d.getTime())) {
-        return formatDateByPattern(d, format);
+        return isDateOnlyType(subType)
+            ? formatDateByPatternUTC(d, format)
+            : formatDateByPattern(d, format);
     }
 
     return val;

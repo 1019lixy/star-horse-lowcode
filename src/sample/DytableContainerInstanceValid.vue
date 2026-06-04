@@ -4,6 +4,7 @@
     <!--    {{starHorseFormRef?.getFormData()}}
         <star-horse-form :fieldList="dataItem" ref="starHorseFormRef"/>-->
     <template v-for="data in formData">
+      ---------------------------------------------------------<br>
       <template v-for="item in Object.entries(data)">
        {{item[0]}}: {{ testDateFormat(item) }}<br/>
       </template>
@@ -20,7 +21,10 @@ import {parseDateByType} from "@/api/date_utils";
 let designForm = getDesignFormStore();
 const testDateFormat = (item) => {
   const key = item[0];
-  const type = key.split("field")?.[1]?.toLowerCase();
+  let type = key.split("field")?.[1]?.toLowerCase();
+  if(type=="timepicker"){
+    type="time";
+  }
   console.log(type);
   return parseDateByType(item[1],type);
 };
@@ -62,7 +66,118 @@ const formData = ref<any>([
       "2025-12-31T16:00:00.000Z",
       "2034-12-31T16:00:00.000Z"
     ]
+  },
+    {
+      "fieldMonth": "2026-05-31T16:00:00.000Z",
+      "fieldDaterange": [
+        "2026-06-17T16:00:00.000Z",
+        "2026-07-14T16:00:00.000Z"
+      ],
+      "remark": null,
+      "idValidDateNew": "387073561648432125",
+      "fieldTime": "00:30:00",
+      "local": "zh_CN",
+      "fieldDatetime": "2026-06-04T00:12:04.000Z",
+      "statusName": "正常",
+      "createdTime": "2026-06-04T00:12:26.471Z",
+      "createdRoleId": null,
+      "updatedTime": "2026-06-04T00:12:26.456Z",
+      "updatedBy": "admin",
+      "fieldWeek": "2026-05-31T16:00:00.000Z",
+      "fieldTimepicker": "08:11:01",
+      "fieldDate": "2026-06-09T16:00:00.000Z",
+      "fieldMonths": [
+        "2026-09-30T16:00:00.000Z",
+        "2026-10-31T16:00:00.000Z",
+        "2026-11-30T16:00:00.000Z"
+      ],
+      "version": 1,
+      "fieldTimerange": "08:11:01",
+      "createdBy": "admin",
+      "fieldDates": [
+        "2026-06-08T16:00:00.000Z",
+        "2026-06-16T16:00:00.000Z",
+        "2026-06-23T16:00:00.000Z"
+      ],
+      "fieldMonthrange": [
+        "2026-05-31T16:00:00.000Z",
+        "2027-05-31T16:00:00.000Z"
+      ],
+      "tenantId": "common",
+      "fieldYears": [
+        "2024-12-31T16:00:00.000Z",
+        "2021-12-31T16:00:00.000Z"
+      ],
+      "dataNo": "No369880074226100",
+      "fieldYear": "2025-12-31T16:00:00.000Z",
+      "isDel": 0,
+      "fieldDatetimerange": [
+        "2026-06-16T16:00:00.000Z",
+        "2026-07-14T16:00:00.000Z"
+      ],
+      "fieldYearrange": [
+        "2025-12-31T16:00:00.000Z",
+        "2034-12-31T16:00:00.000Z"
+      ],
+      "statusCode": "1"
+    },{
+    "fieldMonth": "2026-03-31T16:00:00.000Z",
+    "fieldDaterange": [
+      "2026-06-15T16:00:00.000Z",
+      "2026-07-12T16:00:00.000Z"
+    ],
+    "remark": null,
+    "idValidDateNew": "387073561648432125",
+    "fieldTime": "00:30:00",
+    "local": "zh_CN",
+    "fieldDatetime": "2026-06-04T00:12:04.000Z",
+    "statusName": "正常",
+    "createdTime": "2026-06-04T00:12:26.471Z",
+    "createdRoleId": null,
+    "updatedTime": "2026-06-04T05:04:26.495Z",
+    "updatedBy": "admin",
+    "fieldWeek": "2026-05-17T16:00:00.000Z",
+    "fieldTimepicker": "1970-01-01 08:11:01+08",
+    "fieldDate": "2026-06-07T16:00:00.000Z",
+    "fieldMonths": [
+      "2026-07-31T16:00:00.000Z",
+      "2026-08-31T16:00:00.000Z",
+      "2026-09-30T16:00:00.000Z"
+    ],
+    "version": 3,
+    "fieldTimerange": [
+      "1970-01-01 13:03:21+08",
+      "1970-01-01 14:03:21+08"
+    ],
+    "createdBy": "admin",
+    "fieldDates": [
+      "2026-06-06T16:00:00.000Z",
+      "2026-06-14T16:00:00.000Z",
+      "2026-06-21T16:00:00.000Z"
+    ],
+    "fieldMonthrange": [
+      "2026-03-31T16:00:00.000Z",
+      "2027-03-31T16:00:00.000Z"
+    ],
+    "tenantId": "common",
+    "fieldYears": [
+      "2022-12-31T16:00:00.000Z",
+      "2019-12-31T16:00:00.000Z"
+    ],
+    "dataNo": "No369880074226100",
+    "fieldYear": "2023-12-31T16:00:00.000Z",
+    "isDel": 0,
+    "fieldDatetimerange": [
+      "2026-06-16T16:00:00.000Z",
+      "2026-07-14T16:00:00.000Z"
+    ],
+    "fieldYearrange": [
+      "2023-12-31T16:00:00.000Z",
+      "2032-12-31T16:00:00.000Z"
+    ],
+    "statusCode": "1"
   }
+
 ]);
 const starHorseFormRef = ref();
 /**
