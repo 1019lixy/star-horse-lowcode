@@ -1,14 +1,14 @@
 <template>
   <el-scrollbar>
     <!--    <dytable-item :dataForm="formData" :item="dataItem"  :formInfo="{}" />-->
-    <!--    {{starHorseFormRef?.getFormData()}}
-        <star-horse-form :fieldList="dataItem" ref="starHorseFormRef"/>-->
-    <template v-for="data in formData">
-      ---------------------------------------------------------<br>
+    <!--    {{starHorseFormRef?.getFormData()}}-->
+        <star-horse-form :fieldList="dataItem" ref="starHorseFormRef"/>
+<!--    <template v-for="data in formData">
+      -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;<br>
       <template v-for="item in Object.entries(data)">
        {{item[0]}}: {{ testDateFormat(item) }}<br/>
       </template>
-    </template>
+    </template>-->
   </el-scrollbar>
 </template>
 
@@ -137,7 +137,7 @@ const formData = ref<any>([
     "updatedTime": "2026-06-04T05:04:26.495Z",
     "updatedBy": "admin",
     "fieldWeek": "2026-05-17T16:00:00.000Z",
-    "fieldTimepicker": "1970-01-01 08:11:01+08",
+
     "fieldDate": "2026-06-07T16:00:00.000Z",
     "fieldMonths": [
       "2026-07-31T16:00:00.000Z",
@@ -145,6 +145,7 @@ const formData = ref<any>([
       "2026-09-30T16:00:00.000Z"
     ],
     "version": 3,
+    "fieldTimepicker": "1970-01-01 08:11:01+08",
     "fieldTimerange": [
       "1970-01-01 13:03:21+08",
       "1970-01-01 14:03:21+08"
@@ -191,7 +192,7 @@ const dataItem = ref<any>({
     },
     {
       label: "时间2", type: "time-picker", fieldName: "timerange", preps: {
-        isRange: true,
+        type: "timerange",
       }
     },
     {
@@ -775,6 +776,11 @@ onMounted(() => {
   console.log(JSON.stringify(result.fieldList));
   dataItem.value["fieldList"] = result.fieldList;*/
   starHorseFormRef.value?.setFormData({
+    "time": "1970-01-01 10:12:01+08",
+    "timerange": [
+      "1970-01-01 17:20:01+08",
+      "1970-01-01 21:15:01+08"
+    ],
     "year": "2025-12-31T16:00:00.000Z",
     "years": ["2024-12-31T16:00:00.000Z", "2026-12-31T16:00:00.000Z"],
     "month": "2026-05-31T16:00:00.000Z",

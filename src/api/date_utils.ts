@@ -141,7 +141,8 @@ function getWeek(date: Date) {
     if (target.getDay() !== 4) {
         target.setMonth(0, 1 + ((4 - target.getDay() + 7) % 7));
     }
-    return 1 + Math.ceil((firstThursday - target.valueOf()) / 604800000);
+    //同element-plus 组件相差1,这里加上1
+    return 1 + Math.ceil((firstThursday - target.valueOf()) / 604800000) + 1;
 }
 
 /**
@@ -172,7 +173,7 @@ const ISO_DATE_RE = /^(\d{4})-(\d{2})-(\d{2})T/;
 function extractISODateParts(val: string): { year: string; month: string; day: string } | null {
     const m = val.match(ISO_DATE_RE);
     if (!m) return null;
-    return { year: m[1], month: m[2], day: m[3] };
+    return {year: m[1], month: m[2], day: m[3]};
 }
 
 /**
@@ -548,7 +549,7 @@ export function getDateDisplayFormat(subType: string): string {
         daterange: "YYYY-MM-DD",
         monthrange: "YYYY-MM",
         yearrange: "YYYY",
-        week: "YYYY-MM-DD",
+        week: "YYYY年ww周",
         time: "HH:mm",
         "time-picker": "HH:mm:ss",
         timerange: "HH:mm:ss",
@@ -575,7 +576,7 @@ function formatDateByPatternUTC(date: Date, pattern: string): string {
  */
 function isDateOnlyType(subType: string): boolean {
     return ["year", "years", "month", "months", "date", "dates", "week",
-            "daterange", "monthrange", "yearrange"].includes(subType);
+        "daterange", "monthrange", "yearrange"].includes(subType);
 }
 
 /**

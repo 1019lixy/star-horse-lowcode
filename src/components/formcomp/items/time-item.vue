@@ -21,7 +21,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { nextTick, onBeforeMount, onMounted } from "vue";
+import {nextTick, onMounted, ref, watch} from "vue";
 import {
   allAction,
   checkIsDisabled,
@@ -74,19 +74,32 @@ function normalizeTimeSelectValue(val: any): any {
   return val;
 }
 
-onBeforeMount(() => {
-  // 规范化初始数据
-  const name = props.field.fieldName;
-  if (formData.value?.[name] !== undefined) {
-    formData.value[name] = normalizeTimeSelectValue(formData.value[name]);
-  }
-});
-
 onMounted(() => {
   nextTick(() => {
     initCompCallEvent(props, emits, formData);
   });
 });
+const closeWatch = ref<()=>void>();
+// 持久化 watch：后端数据异步到达时自动格式化，无论何时到达都能正确处理
+closeWatch.value =watch(
+  () => formData.value?.[props.field.fieldName],
+  (val) => {
+    if(props.source == 1){
+      closeWatch.value?.();
+      return;
+    }
+    if (val != null && val !== "") {
+      const name = props.field.fieldName;
+      const normalized = normalizeTimeSelectValue(val);
+      // time-select 值始终为字符串，直接比较即可
+      if (normalized !== val) {
+        formData.value[name] = normalized;
+        closeWatch.value?.();
+      }
+    }
+  },
+  { immediate: true }
+);
 </script>
 <style lang="scss" scoped>
 .el-time-picker,

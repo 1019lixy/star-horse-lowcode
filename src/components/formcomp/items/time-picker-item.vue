@@ -1,38 +1,38 @@
 <template>
   <starhorse-form-item
-    :showFormItem="showFormItem"
-    :isDesign="isDesign"
-    :disabled="disabled"
-    :bareFlag="bareFlag"
-    :field="field"
-    :parentField="parentField"
+      :showFormItem="showFormItem"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      :field="field"
+      :parentField="parentField"
   >
     <el-time-picker
-      :fid="field.fieldName"
-      :disabled="checkIsDisabled(props)"
-      v-bind="prepsFilter(field.preps)"
-      :is-range="isRange"
-      :range-separator="field.preps?.rangeSeparator || i18n('api.to')"
-      :format="field.preps?.format || 'HH:mm:ss'"
-      :value-format="field.preps?.valueFormat || 'HH:mm:ss'"
-      v-on="getDynamicEvents(props, itemAction)"
-      @change="itemAction('change')"
-      v-model="formData[field.fieldName]"
+        :fid="field.fieldName"
+        :disabled="checkIsDisabled(props)"
+        v-bind="prepsFilter(field.preps)"
+        :is-range="isRange"
+        :range-separator="field.preps?.rangeSeparator || i18n('api.to')"
+        :format="field.preps?.format || 'HH:mm:ss'"
+        :value-format="field.preps?.valueFormat || 'HH:mm:ss'"
+        v-on="getDynamicEvents(props, itemAction)"
+        @change="itemAction('change')"
+        v-model="formData[field.fieldName]"
     />
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { computed, nextTick, onBeforeMount, onMounted } from "vue";
+import {computed, nextTick, onBeforeMount, onMounted, ref, watch} from "vue";
 import {
   allAction,
   checkIsDisabled,
   initCompCallEvent,
   prepsFilter,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
-import { getDynamicEvents } from "@/api/system";
-import { i18n } from "@/lang";
+import {getDynamicEvents} from "@/api/system";
+import {i18n} from "@/lang";
 
-import { ItemPreps } from "@/components/types/ItemPreps";
+import {ItemPreps} from "@/components/types/ItemPreps";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -62,7 +62,6 @@ const valueFormat = computed(() => props.field.preps?.valueFormat || "HH:mm:ss")
 function normalizeTimePickerValue(val: any): any {
   if (!val || val === "undefined" || val === "-") return val;
   const vf = valueFormat.value;
-
   // 数组 → 逐项规范化（范围选择）
   if (Array.isArray(val)) {
     return val.map((v: any) => normalizeTimePickerSingle(v, vf));
@@ -75,7 +74,8 @@ function normalizeTimePickerValue(val: any): any {
       if (Array.isArray(parsed)) {
         return parsed.map((v: any) => normalizeTimePickerSingle(v, vf));
       }
-    } catch { /* not JSON */ }
+    } catch { /* not JSON */
+    }
   }
 
   return normalizeTimePickerSingle(val, vf);
@@ -88,7 +88,6 @@ function normalizeTimePickerValue(val: any): any {
 function normalizeTimePickerSingle(val: any, vf: string): any {
   if (!val || val === "undefined" || val === "-") return val;
   if (typeof val !== "string") return val;
-
   // 已经匹配目标格式 → 直接返回
   if (vf === "HH:mm:ss" && /^\d{1,2}:\d{2}:\d{2}$/.test(val)) return val;
   if (vf === "HH:mm" && /^\d{1,2}:\d{2}$/.test(val)) return val;
@@ -127,12 +126,6 @@ onBeforeMount(() => {
   if (!props.field.preps) {
     props.field.preps = {};
   }
-
-  // 规范化初始数据：将 ISO 字符串 / 纯时间字符串转为 value-format 字符串
-  const name = props.field.fieldName;
-  if (formData.value?.[name] !== undefined) {
-    formData.value[name] = normalizeTimePickerValue(formData.value[name]);
-  }
 });
 
 onMounted(() => {
@@ -140,6 +133,32 @@ onMounted(() => {
     initCompCallEvent(props, emits, formData);
   });
 });
+const closeWatch = ref<() => void>();
+// 持久化 watch：后端数据异步到达时自动格式化，无论何时到达都能正确处理
+closeWatch.value = watch(
+    () => formData.value?.[props.field.fieldName],
+    (val) => {
+      if (props.source == 1) {
+        closeWatch.value?.();
+        return;
+      }
+      if (val != null && val !== "") {
+        const name = props.field.fieldName;
+        const normalized = normalizeTimePickerValue(val);
+        // 幂等保护：仅当格式化结果与原值不同时写回，防止无限循环
+        if (Array.isArray(normalized)) {
+          if (!Array.isArray(val) || normalized.length !== val.length || normalized.some((v: any, i: number) => v !== val[i])) {
+            formData.value[name] = normalized;
+            closeWatch.value?.();
+          }
+        } else if (normalized !== val) {
+          formData.value[name] = normalized;
+          closeWatch.value?.();
+        }
+      }
+    },
+    {immediate: true}
+);
 </script>
 <style lang="scss" scoped>
 .el-time-picker,

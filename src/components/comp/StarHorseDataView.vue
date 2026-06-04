@@ -222,9 +222,13 @@ defineExpose({
 
   }
 
-  :deep(.el-select__suffix) {
+  :deep(.el-select__suffix),:deep(.el-input__prefix-icon) {
     display: none;
+    .el-icon{
+      visibility: hidden;
+    }
   }
+
 
   :deep( .el-select__wrapper.is-disabled .el-select__selected-item) {
     color: var(--el-text-color-primary);
