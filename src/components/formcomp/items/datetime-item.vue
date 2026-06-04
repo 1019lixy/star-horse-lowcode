@@ -12,7 +12,6 @@
         :disabled="checkIsDisabled(props)"
         v-bind="prepsFilter(field.preps)"
         :type="effectiveType"
-        :showWeekNumber="true"
         :format="field.preps?.format || displayFormat"
         :value-format="field.preps?.valueFormat || valueFormat"
         v-on="getDynamicEvents(props, itemAction)"

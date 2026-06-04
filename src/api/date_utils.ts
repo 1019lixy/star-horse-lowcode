@@ -549,7 +549,7 @@ export function getDateDisplayFormat(subType: string): string {
         daterange: "YYYY-MM-DD",
         monthrange: "YYYY-MM",
         yearrange: "YYYY",
-        week: "YYYY年ww周",
+        week: `YYYY${i18n("api.weekPrefix")}ww${i18n("api.weekSuffix")}`,
         time: "HH:mm",
         "time-picker": "HH:mm:ss",
         timerange: "HH:mm:ss",
