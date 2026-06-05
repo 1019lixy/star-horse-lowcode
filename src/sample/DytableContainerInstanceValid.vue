@@ -248,6 +248,11 @@ const dataItem = ref<any>({
       }
     },
     {
+      label: "日期closeTime", type: "date", fieldName: "closetime", preps: {
+        type: "daterange",
+      }
+    },
+    {
       label: "日期11", type: "date", fieldName: "monthrange", preps: {
         type: "monthrange",
       }
@@ -788,6 +793,7 @@ onMounted(() => {
     "date": "2026-06-08T16:00:00.000Z",
     "dates": ["2026-06-17T16:00:00.000Z", "2026-06-24T16:00:00.000Z", "2026-06-23T16:00:00.000Z"],
     "week": "2026-06-13T16:00:00.000Z",
+    closetime:["2026-06-05", "2026-07-14"],
     "daterange": ["2026-06-17T16:00:00.000Z", "2026-07-22T16:00:00.000Z"],
     "monthrange": ["2026-05-31T16:00:00.000Z", "2027-06-30T16:00:00.000Z"],
     "yearrange": ["2026-06-03T03:51:32.804Z", "2036-06-03T03:51:33.779Z"]
