@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { warning } from "@/utils/message";
 import { ref } from "vue";
+import { i18n } from "@/lang";
 
 export const useDynamicFormStore = defineStore("dynamicForm", () => {
   const dataForm: any = ref({});
@@ -125,7 +126,7 @@ export const useDynamicFormStore = defineStore("dynamicForm", () => {
     newValue?: any,
   ) => {
     if (Object.keys(dataForm.value).includes(distField)) {
-      warning("新的属性名已存在，不能进行修改");
+      warning(i18n("common.fieldNameExists"));
       return;
     }
     const bakeValue = dataForm.value[sourceField];
@@ -159,7 +160,7 @@ export const useDynamicFormStore = defineStore("dynamicForm", () => {
       newValue?: any,
     ) => {
       if (Object.keys(data).includes(distField)) {
-        warning("新的属性名已存在，不能进行修改");
+        warning(i18n("common.fieldNameExists"));
         return false;
       }
       const bakeValue: any = data[sourceField];

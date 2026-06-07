@@ -8,6 +8,12 @@ import { closeLoad, createCondition } from "@/api/star_horse_utils";
 import { PageProps } from "@/components/types/PageProps";
 import { SearchParams } from "@/components/types";
 import JSON5 from "json5";
+import { isMobile } from "@/api/device";
+import {
+  buildRequestParams,
+  buildPageParams,
+  toggleNodeSelection,
+} from "@/components/comp/utils/DataSelectorUtils";
 export type ModelValueType = any;
 
 export interface DataDropdownProps {
@@ -125,59 +131,12 @@ const renderClass = (data: any, node: any): string => {
 };
 
 const onNodeClick = (treeNode: any) => {
-  let value = props.displayValue || "value";
-  const data = JSON5.parse(JSON5.stringify(treeNode));
-  // 新增处理父子节点逻辑
-  const processChildren = (node: any, add: boolean) => {
-    if (node.children) {
-      //非叶子节点也需要选中
-      if (!props.selectLeaf) {
-        const temp = Object.assign({}, node);
-        delete temp["children"];
-        dataOptions.value.push(temp);
-      }
-      //只选所有叶子节点
-      node.children.forEach((child: any) => {
-        const childIndex = dataOptions.value?.findIndex(
-          (e) => e[value] === child[value],
-        );
-        if (add && childIndex === -1) {
-          const temp = Object.assign({}, child);
-          delete temp["children"];
-          dataOptions.value.push(temp);
-        } else if (!add && childIndex !== -1) {
-          dataOptions.value.splice(childIndex, 1);
-        }
-        processChildren(child, add); // 递归处理子节点
-      });
-    } else {
-      dataOptions.value.push(node);
-    }
-  };
-  if (props.multiple) {
-    const index = dataOptions.value?.findIndex((e) => e[value] === data[value]);
-    if (index === -1) {
-      if (props.checkStrictly) {
-        const tempNode = { ...data };
-        delete tempNode.children;
-        dataOptions.value.push(tempNode);
-      } else {
-        processChildren(data, false);
-      }
-      // 当非严格模式时处理子节点
-    } else {
-      dataOptions.value?.splice(index, 1);
-    }
-    dataOptions.value?.sort((a, b) => a[value].localeCompare(b[value]));
-  } else {
-    const index = dataOptions.value?.findIndex((e) => e[value] === data[value]);
-    if (index === -1) {
-      delete data.children;
-      dataOptions.value = [data];
-    } else {
-      dataOptions.value.splice(index, 1);
-    }
-  }
+  dataOptions.value = toggleNodeSelection(treeNode, dataOptions.value, {
+    multiple: props.multiple,
+    checkStrictly: props.checkStrictly,
+    selectLeaf: props.selectLeaf,
+    displayValue: props.displayValue || "value",
+  });
 };
 const dialogVisible = ref(false);
 const queryName = ref(null);
@@ -212,36 +171,15 @@ const loadData = async (condition?: SearchParams[]) => {
   if (condition?.length > 0) {
     queryParams.push(...condition);
   }
-  if (props.params?.length > 0) {
-    queryParams.push(...props.params);
-  }
-  const baseParams: any = {
-    currentPage: pageInfo.currentPage,
-    pageSize: props.pageSize || 0,
-    fieldList: queryParams,
-    orderBy: [],
-  };
-  let params: any = {};
-  let tempUrl = props.dataUrl;
-  if (props.proxy) {
-    tempUrl = props.proxyUrl ?? "/system-config/redirect/execute";
-    params = {
-      url: props.dataUrl,
-      httpMethod: "POST",
-      dataType: "JSON",
-      searchInfo: baseParams,
-    };
-  } else {
-    params = baseParams;
-  }
-  await postRequest(tempUrl!, params)
+  const baseParams = buildPageParams(queryParams, props.params, pageInfo.currentPage, props.pageSize || 0);
+  const { url, params } = buildRequestParams(props.dataUrl, baseParams, props.proxy, props.proxyUrl);
+  await postRequest(url, params)
     .then((res) => {
       if (res?.data?.code) {
         console.error(res?.data?.cnMessage);
         return;
       }
       let redata = res?.data?.data;
-      //如果不是分页之间显示返回的所有数据
       dataOrgOptions.value = redata?.dataList || redata;
       pageInfo.totalPage = redata?.totalPages;
       pageInfo.totalData = redata?.totalDatas;
@@ -312,6 +250,7 @@ defineExpose({
     @open="onOpen"
     @merge="handelConfirm"
     @resetForm="resetData"
+    :full-screen="isMobile"
     @closeAction="dialogVisible = false"
     draggable
     :title="title || i18n('datapicker.selectData')"

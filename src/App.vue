@@ -1,9 +1,13 @@
 <template>
-  <main-container :categories="categories" :position="'bottom'" iconType="ele" system-config-name="系统配置"/>
+<!--  <main-container :categories="categories" :position="'bottom'" iconType="ele" system-config-name="系统配置"/>-->
+  <test/>
 </template>
 
 <script lang="ts" setup>
 import MainContainer from "@/components/comp/app/MainContainer.vue";
+import Test from "@/sample/test.vue";
+import {setToken} from "@/utils/auth";
+//测试数据
 
 const categories = [
   {id: "dashboard", meta:{

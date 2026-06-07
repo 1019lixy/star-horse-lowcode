@@ -9,7 +9,6 @@ import {
 
 import {StarHorseDataSelector} from "@/components/comp";
 import {ItemPreps} from "@/components/types/ItemPreps";
-import {compDynamicData} from "@/api/star_horse_utils";
 import {SearchParams} from "@/components/types";
 
 defineOptions({
@@ -53,25 +52,18 @@ const preps = computed(() => {
 const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
-const initData = async () => {
-  const dataa = await compDynamicData(props.field, false);
-  if (dataa?.length) {
-    props.field.preps["data"] = dataa;
-  }
-};
 onMounted(() => {
   if (!props.field.preps) {
     props.field.preps = {};
   }
-  props.field.preps["remote"] =
-      props.field.preps["remote"] || props.field.preps["dataSource"] == "url";
+
   props.field.preps["filterable"] = true;
   props.field.preps["collapseTags"] = true;
-  props.field.preps["props"] = props.field.preps["props"] || {
-    label: "name",
-    value: "value",
-  };
-  initData();
+  const tempProps = props.field.preps["prop"];
+  if (tempProps) {
+    props.field.preps["displayName"] = tempProps.label || "name";
+    props.field.preps["displayValue"] = tempProps.value || "value";
+  }
   nextTick(() => {
     initCompCallEvent(props, emits, formData);
   });
@@ -82,12 +74,8 @@ watch(
       if (val) {
         // 优化数组转换逻辑
         pickerData.value = props.field.preps?.multiple
-            ? Array.isArray(val)
-                ? val
-                : [val]
-            : val !== undefined
-                ? [val]
-                : [];
+            ? Array.isArray(val) ? val : [val]
+            : val ? [val] : [];
       }
     },
     {immediate: true, deep: true},

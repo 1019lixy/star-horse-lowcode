@@ -3,89 +3,34 @@ import {useVModel} from "@vueuse/core";
 import DataPicker, {type ModelValueType,} from "@/components/comp/utils/DataPicker.vue";
 import {computed, CSSProperties, onMounted, ref, watch} from "vue";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
-import {postRequest} from "@/api/star_horse_apis";
-import {createCondition} from "@/api/star_horse_utils";
+import {i18n} from "@/lang";
 import {SearchParams} from "@/components/types";
+import {
+  findNodesInTree,
+  loadSelectedData,
+} from "@/components/comp/utils/DataSelectorUtils";
 
 export interface DataSelectorProps {
-  /**
-   * 选中数据
-   */
   modelValue: ModelValueType;
-  /**
-   * 选中数据
-   */
   selectedData?: any;
-  /**
-   * 占位符
-   */
   placeholder?: string;
-  /**
-   * 接口地址
-   */
   dataUrl?: string;
-  /**
-   * 是否使用代理
-   */
   proxy?: boolean;
-  /**
-   * 代理地址
-   */
   proxyUrl?: string;
-  /**
-   * 接口参数
-   */
   params?: SearchParams[];
-  /**
-   * 数据
-   */
   data?: Array<any>;
-  /**
-   * 页码
-   */
   pageSize?: number;
-  /**
-   * 标题
-   */
   title?: string;
-  /**
-   * 组件大小
-   */
   compSize?: string;
-  /**
-   * 显示名称
-   */
   displayName?: string;
-  /**
-   * 显示值
-   */
   displayValue?: string;
-  /**
-   * 是否多选
-   */
   multiple?: boolean;
-  /**
-   * 是否禁用
-   */
   disabled?: boolean;
-  /**
-   * 严格模式
-   */
   checkStrictly?: boolean;
-  /**
-   * 选择叶子节点
-   */
   selectLeaf?: boolean;
-  /**
-   * 显示标签长度
-   */
   showTagLength?: number;
-  /**
-   * 样式
-   */
   style?: CSSProperties;
   tagType: "" | "primary" | "secondary" | "success" | "info" | "warning";
-
   tagEffect: "" | "light" | "dark" | "plain";
 }
 
@@ -99,12 +44,13 @@ const props = withDefaults(defineProps<DataSelectorProps>(), {
   checkStrictly: true,
   selectLeaf: false,
   showTagLength: 3,
-  placeholder: "请选择数据",
+  placeholder: i18n("api.pleaseSelectData2"),
 });
 const emits = defineEmits<{
   (e: "update:modelValue", modelValue: ModelValueType): void;
   (e: "update:selectedData", selectData: any): void;
   (e: "selectedData", selectData: any): void;
+  (e: "change", selectData: any): void;
 }>();
 const value: any = useVModel(props, "modelValue", emits);
 const emitData: any = useVModel(props, "selectedData", emits);
@@ -125,95 +71,50 @@ const openDataPicker = () => {
   if (props.disabled) return;
   dataPickerRef.value?.open();
 };
+
 const onClose = (data: any) => {
-  if (!selectData.value) return;
+  if (!selectData.value) {
+    emits("change", selectData.value);
+    return;
+  }
   if (props.multiple && Array.isArray(selectData.value)) {
-    selectData.value.splice(selectData.value.indexOf(data), 1);
-    value.value.splice(selectData.value.indexOf(data[props.displayValue]), 1);
+    const targetValue = data?.[props.displayValue] ?? data;
+    const selectIndex = selectData.value.findIndex(
+        (item: any) => item?.[props.displayValue] === targetValue
+    );
+    const valueIndex = value.value?.indexOf(targetValue);
+    if (selectIndex !== -1) {
+      selectData.value.splice(selectIndex, 1);
+    }
+    if (valueIndex !== -1 && value.value) {
+      value.value.splice(valueIndex, 1);
+    }
   } else {
     selectData.value = [];
     value.value = props.multiple ? [] : "";
   }
+  emits("change", selectData.value);
   emits("selectedData", selectData.value);
 };
+
 /**
- * 递归查找树结构数据中符合条件的节点
- * @param nodes 树结构数据节点数组
- * @param result 符合条件的节点结果数组
- * @returns 符合条件的节点结果数组
+ * 初始化数据选择器 - 使用公共工具函数
  */
-const findInTree = (nodes: any[], result: any[]) => {
-  nodes.forEach((node) => {
-    // 检查当前节点是否匹配
-    if (Array.isArray(value.value)) {
-      if (value.value.includes(node[props.displayValue])) {
-        const temp = {...node};
-        delete temp.children;
-        result.push(temp);
-      }
-    } else if (node[props.displayValue] === value.value) {
-      const temp = {...node};
-      delete temp.children;
-      result.push(temp);
-    }
-    // 递归处理子节点
-    if (node.children) {
-      findInTree(node.children, result);
-    }
-  });
-  return result;
-};
-/**
- * 初始化数据选择器
- */
-const init = () => {
+const init = async () => {
   if (props.data) {
-    selectData.value = findInTree(props.data, []);
+    selectData.value = findNodesInTree(props.data, value.value, props.displayValue);
   } else if (props.dataUrl && value.value?.length > 0) {
-    const queryParams: SearchParams[] = [];
-    queryParams.push(
-        createCondition(
-            props.displayValue,
-            Array.isArray(value.value) ? value.value : [value.value],
-            "in",
-        ),
+    selectData.value = await loadSelectedData(
+        props.dataUrl,
+        value.value,
+        props.displayValue,
+        props.params,
+        props.proxy,
+        props.proxyUrl,
     );
-    if (props.params?.length > 0) {
-      queryParams.push(...props.params);
-    }
-    let baseParams: any = {
-      currentPage: 0,
-      pageSize: 100,
-      fieldList: queryParams,
-      orderBy: [],
-    };
-    let params: any = {};
-    let tempUrl = props.dataUrl;
-    if (props.proxy) {
-      tempUrl = props.proxyUrl ?? "/system-config/redirect/execute";
-      params = {
-        url: props.dataUrl,
-        httpMethod: "POST",
-        dataType: "JSON",
-        searchInfo: baseParams,
-      };
-    } else {
-      params = baseParams;
-    }
-    postRequest(tempUrl!, params)
-        .then((res) => {
-          if (res?.data?.code) {
-            console.error(res?.data?.cnMessage);
-            return;
-          }
-          let redata = res?.data?.data;
-          selectData.value = findInTree(redata?.dataList || redata, []);
-        })
-        .catch((err: any) => {
-          console.log(err);
-        });
   }
 };
+
 const addTag = (val: any) => {
   const temp = {
     [props.displayName]: val,
@@ -225,29 +126,34 @@ const addTag = (val: any) => {
     selectData.value = [temp];
   }
 };
+
 const tagVisible = (val: any) => {
   const result =
       (Array.isArray(selectData?.value) &&
           selectData?.value?.find(
-              (item: any) => item[props.displayValue] === val,
+              (item: any) => item?.[props.displayValue] === val,
           )?.[props.displayName]) ??
       val;
   return result;
 };
+
 onMounted(() => {
   init();
 });
-// 新增 watch 监听 selectData 变化
+
 watch(
-    selectData,
+    () => selectData.value,
     (newVal) => {
-      // 同步modelValue
-      const tempNewValue = Array.isArray(newVal)
-          ? newVal.map((v) => v[props.displayValue])
-          : newVal?.[props.displayValue];
-      value.value = props.multiple ? tempNewValue : tempNewValue[0];
-      // 同步selectedData
-      emitData.value = newVal;
+      if (newVal) {
+        const tempNewValue = Array.isArray(newVal)
+            ? newVal.map((v) => v[props.displayValue])
+            : newVal?.[props.displayValue];
+        value.value = props.multiple ? tempNewValue : tempNewValue[0];
+        emitData.value = newVal;
+        emits("change", newVal);
+      } else {
+        console.error("dataselector error", newVal);
+      }
     },
     {deep: true},
 );
@@ -275,13 +181,12 @@ watch(
       :tag-type="tagType"
       :disabled="disabled"
       :tagEffect="tagEffect"
+      :collapse-tags="true"
+      :max-collapse-tags="showTagLength??5"
+      :collapse-tags-tooltip="true"
       @clear="selectData = []"
       @addTag="addTag"
-      @removeTag="
-      (val) => {
-        onClose(val);
-      }
-    "
+      @removeTag="(val) =>onClose(val)"
   >
     <template #tag="{ value }">
       <div class="flex items-center">

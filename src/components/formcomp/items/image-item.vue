@@ -47,7 +47,7 @@
           class="upload"
           name="file"
         >
-          <el-tooltip content="上传图片">
+          <el-tooltip :content="i18n('item.uploadImage')">
             <star-horse-icon
               icon-class="upload"
               color="var(--star-horse-style)"
@@ -111,7 +111,7 @@
             name="file"
           >
             <el-button type="text" text size="small">
-              <el-tooltip content="上传图片">
+              <el-tooltip :content="i18n('item.uploadImage')">
                 <star-horse-icon icon-class="upload" />
                 上传图片
               </el-tooltip>
@@ -127,7 +127,7 @@
         </template>
       </el-image>
       <div class="image-remove" v-if="formData[field.fieldName] && isDesign">
-        <el-tooltip content="删除图片">
+        <el-tooltip :content="i18n('item.deleteImage')">
           <el-button title="" size="small" type="text" @click="removeImage">
             <star-horse-icon
               icon-class="delete"
@@ -146,6 +146,7 @@ import { initCompCallEvent } from "@/components/formcomp/utils/ItemRelationEvent
 import { getToken } from "@/utils/auth";
 
 import { ItemPreps } from "@/components/types/ItemPreps";
+import { i18n } from "@/lang";
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
   disabled: false,

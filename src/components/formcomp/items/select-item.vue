@@ -12,6 +12,7 @@
       :remote="remote"
       :disabled="checkIsDisabled(props)"
       v-bind="prepsFilter(field.preps)"
+      :show-arrow="true"
       :remote-method="remoteMethod"
       v-on="getDynamicEvents(props, itemAction)"
       v-model="formData[field.fieldName]"

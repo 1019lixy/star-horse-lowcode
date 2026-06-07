@@ -37,6 +37,7 @@ const computedCategories = computed(() => {
 const handleSelect = (item: MenuItem) => {
   if (item.path && item.path != "#") {
     router.push(item.path);
+    emits("select", false, null);
   } else {
     emits("select", true, item.children);
   }
@@ -100,7 +101,7 @@ onMounted(() => {
           <div class="flex flex-col items-center justify-center">
             <template v-if="item.meta?.menuIcon">
               <el-icon class="star-icon" v-if="iconType=='ele'">
-                <component :is="item.meta.menuIcon || 'document'"/>
+                <component :is="item.meta?.menuIcon || 'document'"/>
               </el-icon>
               <star-horse-icon
                   v-else

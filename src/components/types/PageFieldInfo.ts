@@ -146,6 +146,10 @@ export declare interface FieldInfo {
      * 查看页面是否显示该属性
      */
     viewVisible?: boolean | Ref<boolean>;
+    /**
+     * app端是否可见
+     */
+    visiblePlatform?: string | Ref<string>;
 
     /**
      * 列表所在列最小宽度
@@ -246,6 +250,14 @@ export declare interface FieldInfo {
      * 删除事件
      */
     removeActions?: Function | string;
+    /**
+     * 子节点,在多级表头中使用，需考虑怎么在表单中正确渲染显示
+     */
+    children?: FieldInfo[];
+    /**
+     * 数据类型，静态文本，
+     */
+    staticData?: boolean;
 }
 
 /**

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ModelRef } from "vue";
+import { i18n } from "@/lang";
 
 const props = defineProps({
   level: { type: Number, default: 1, required: true },
@@ -21,9 +22,9 @@ const selectMenu = (menu: any) => {
         <div class="menu-item-content">
           <div class="flex flex-row items-center gap-3">
             <el-icon class="star-icon">
-              <component :is="item.meta.menuIcon || 'document'" />
+              <component :is="item.meta?.menuIcon || 'document'" />
             </el-icon>
-            <span @click="selectMenu(item)">{{ item.meta.title }} </span>
+            <span @click="selectMenu(item)">{{ item.meta?.title||i18n("item.unknown") }} </span>
           </div>
         </div>
         <div class="menu-children">
@@ -39,9 +40,9 @@ const selectMenu = (menu: any) => {
     <div v-else class="menu-item leaf-menu-item">
       <div class="flex flex-row items-center h-[35px] gap-1 cursor-pointer">
         <el-icon class="star-icon">
-          <component :is="item.meta.menuIcon || 'document'" />
+          <component :is="item.meta?.menuIcon || 'document'" />
         </el-icon>
-        <span @click="selectMenu(item)">{{ item.meta.title }} </span>
+        <span @click="selectMenu(item)">{{ item.meta?.title||i18n("item.unknown") }} </span>
       </div>
     </div>
   </template>

@@ -95,7 +95,7 @@ watch(
             </template>
           </el-scrollbar>
         </template>
-        <el-empty v-else description="未设置内容" />
+        <el-empty v-else :description="i18n('item.noContentSet')" />
       </el-card>
     </template>
     <template #footer>

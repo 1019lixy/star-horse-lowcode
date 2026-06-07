@@ -2,7 +2,7 @@ import {getValidType} from "@/api/valid_utils";
 import {unref} from "vue";
 import {i18n} from "@/lang";
 import {BatchFieldInfo, FieldInfo, PageFieldInfo, SearchProps} from "@/components/types";
-import {uuid} from "@/api/system";
+import {compKey, uuid} from "@/api/system";
 import {commonField} from "@/api/star_horse_utils";
 import {isMobile} from "@/api/device";
 // 定义已显式列出的属性
@@ -56,7 +56,7 @@ const hasKeys = (obj: Record<string, any>) => {
 };
 const filterPreps = (preps: Record<string, any>) => {
     const remainingPreps: Record<string, any> = {};
-    for (const [key, value] of Object.entries(preps)) {
+    for (const [key, value] of Object.entries(preps || {})) {
         if (!listedFields.includes(key) && value) {
             remainingPreps[key] = value;
         }
@@ -68,7 +68,7 @@ const filterPreps = (preps: Record<string, any>) => {
  * @param item
  */
 const boxDytableAnalysis = (item: any) => {
-    const elements = item.preps.elements;
+    const elements = item?.preps?.elements;
     const boxItems: Record<string, any> = {};
     const children: Array<any> = [];
     const fieldList: FieldInfo[] | any = [];
@@ -82,31 +82,10 @@ const boxDytableAnalysis = (item: any) => {
             const rowspan = column.rowspan;
             const cellVisible = column.cellVisible;
             const currentColumnItems: FieldInfo[] | any = [];
-            column?.items?.forEach((temp: any) => {
-                const {item, fieldInfo, layerItem, searchItem} = itemAnalysis(temp);
-                mergeObjects(boxItems, item);
-                children.push(layerItem);
-                if (!fieldInfo.preps) {
-                    fieldInfo.preps = {};
-                }
-                fieldInfo.preps["colHeight"] = colHeight;
-                fieldInfo.preps["colWidth"] = colWidth;
-                fieldInfo.preps["colspan"] = colspan;
-                fieldInfo.preps["rowspan"] = rowspan;
-                fieldInfo.preps["cellVisible"] = cellVisible;
-                currentColumnItems.push(fieldInfo);
-                if (hasKeys(searchItem)) {
-                    searchItemList.push(searchItem);
-                }
-            });
-            const len = column?.items?.length;
-            if (len > 1) {
-                columnItems.push(currentColumnItems);
-            } else if (len == 1) {
-                columnItems.push(currentColumnItems[0]);
-            } else {
+            if (column.staticData === true) {
                 columnItems.push({
-                    type: "empty",
+                    staticData: column.staticData,
+                    visiblePlatform: column.visiblePlatform,
                     viewVisible: true,
                     formVisible: false,
                     preps: {
@@ -115,8 +94,46 @@ const boxDytableAnalysis = (item: any) => {
                         colHeight: colHeight,
                         colWidth: colWidth,
                         cellVisible: cellVisible,
+                        textContent: column.textContent,
                     },
                 });
+            } else {
+                column?.items?.forEach((temp: any) => {
+                    const {item, fieldInfo, layerItem, searchItem} = itemAnalysis(temp);
+                    mergeObjects(boxItems, item);
+                    children.push(layerItem);
+                    if (!fieldInfo.preps) {
+                        fieldInfo.preps = {};
+                    }
+                    fieldInfo.preps["colHeight"] = colHeight;
+                    fieldInfo.preps["colWidth"] = colWidth;
+                    fieldInfo.preps["colspan"] = colspan;
+                    fieldInfo.preps["rowspan"] = rowspan;
+                    fieldInfo.preps["cellVisible"] = cellVisible;
+                    currentColumnItems.push(fieldInfo);
+                    if (hasKeys(searchItem)) {
+                        searchItemList.push(searchItem);
+                    }
+                });
+                const len = column?.items?.length;
+                if (len > 1) {
+                    columnItems.push(currentColumnItems);
+                } else if (len == 1) {
+                    columnItems.push(currentColumnItems[0]);
+                } else {
+                    columnItems.push({
+                        type: "empty",
+                        viewVisible: true,
+                        formVisible: false,
+                        preps: {
+                            colspan: colspan,
+                            rowspan: rowspan,
+                            colHeight: colHeight,
+                            colWidth: colWidth,
+                            cellVisible: cellVisible,
+                        },
+                    });
+                }
             }
         });
         fieldList.push(columnItems);
@@ -130,7 +147,7 @@ const boxDytableAnalysis = (item: any) => {
  * @param item
  */
 const tableAnalysis = (item: any) => {
-    const elements = item.preps.elements;
+    const elements = item?.preps?.elements;
     const boxItems: Record<string, any> = {};
     const children: Array<any> = [];
     const batchFieldInfos: BatchFieldInfo[] = [];
@@ -168,7 +185,7 @@ const tableAnalysis = (item: any) => {
  * @param item
  */
 const tabColapseCardAnalysis = (item: any) => {
-    const elements = item.preps.elements;
+    const elements = item?.preps?.elements;
     const currentLayerContainerList: Array<any> = [];
     const boxItems: Record<string, any> = {};
     let fieldInfo: FieldInfo | any = {};
@@ -227,45 +244,47 @@ const tabColapseCardAnalysis = (item: any) => {
  * @param item
  */
 const itemAnalysis = (item: any) => {
-    const preps = item.preps;
+    const preps = item.preps || {};
     const remainingPreps = filterPreps(preps);
     const fieldInfo: FieldInfo = {
-        label: preps.label,
-        fieldName: preps.name,
-        type: item.itemType,
-        formVisible: preps.formVisible,
-        listVisible: preps.listVisible,
-        viewVisible: preps.viewVisible,
-        required: preps.required,
-        actions: preps.actions,
-        helpMsg: preps.helpMsg,
-        listPrototypeDisplay: preps.listPrototypeDisplay,
-        defaultValue: preps.defaultValue,
-        prefix: preps.prefix,
-        disabled: preps.disabled,
-        editDisabled: preps.editDisabled,
-        id: preps.id,
+        label: preps.label ?? item.label,
+        fieldName: preps.name ?? item.fieldName,
+        type: item.itemType ?? item.type,
+        formVisible: preps.formVisible ?? item.formVisible,
+        listVisible: preps.listVisible ?? item.listVisible,
+        viewVisible: preps.viewVisible ?? item.viewVisible,
+        required: preps.required ?? item.required,
+        actions: preps.actions ?? item.actions,
+        helpMsg: preps.helpMsg ?? item.helpMsg,
+        listPrototypeDisplay: preps.listPrototypeDisplay ?? item.listPrototypeDisplay,
+        defaultValue: preps.defaultValue ?? item.defaultValue,
+        prefix: preps.prefix ?? item.prefix,
+        disabled: preps.disabled ?? item.disabled,
+        editDisabled: preps.editDisabled ?? item.editDisabled,
+        id: preps.id ?? item.id,
         preps: remainingPreps,
+        staticData: preps.staticData ?? item.staticData,
+        visiblePlatform: preps.visiblePlatform ?? item.visiblePlatform,
     };
     const layerItem: any = {
-        name: item.preps?.label,
-        id: item.preps?.id,
+        name: item.preps?.label ?? item.label,
+        id: item.preps?.id ?? item.id,
         compType: "item",
-        type: item.preps?.itemType,
-        value: item.preps?.name,
+        type: item.preps?.itemType ?? item.itemType,
+        value: item.preps?.name ?? item.name,
     };
     let searchItem: SearchProps = {};
     if (preps.searchVisible) {
         searchItem = {
-            fieldName: preps.name,
-            label: preps.label,
-            defaultValue: preps.defaultValue || "",
-            defaultVisible: preps.defaultVisible || false,
+            fieldName: preps.name ?? item.fieldName,
+            label: preps.label ?? item.label,
+            defaultValue: preps.defaultValue ?? item.defaultValue ?? "",
+            defaultVisible: preps.defaultVisible ?? item.defaultVisible ?? false,
             preps: remainingPreps,
         };
     }
     const record: Record<string, any> = {};
-    record[item.preps?.id] = item;
+    record[fieldInfo.id] = item;
     return {item: record, fieldInfo, layerItem, searchItem};
 };
 /**
@@ -284,7 +303,6 @@ export const analysisCompDatas = (dataList: any) => {
 
     for (let i = 0; i < compList.length; i++) {
         const comp = compList[i];
-
         if (comp.compType == "container") {
             const result = getContainerResult(comp);
             const {currentLayerContainer, boxItems, fieldList, searchItemList} = result;
@@ -329,6 +347,57 @@ export const analysisCompDatas = (dataList: any) => {
     };
 };
 
+/**
+ * 解析 condition 条件组
+ * 结构：condition 有 children（子条件组，递归）和 items（当前层级叶子字段）
+ * @param comp
+ */
+const conditionAnalysis = (comp: any) => {
+    const boxItems: Record<string, any> = {};
+    const searchItemList: SearchProps[] = [];
+    const childrenContainers: any[] = [];
+    const childrenFieldList: any[] = [];
+    // 递归处理 children（子条件组）
+    if (comp.children?.length > 0) {
+        for (const child of comp.children) {
+            const childResult = analysisCompDatas([child]);
+            mergeObjects(boxItems, childResult.compListResult);
+            if (Array.isArray(childResult.fieldList)) {
+                childrenFieldList.push(...childResult.fieldList);
+            } else {
+                childrenFieldList.push(childResult.fieldList);
+            }
+            if (Array.isArray(childResult.selectList)) {
+                childrenContainers.push(...childResult.selectList);
+            } else {
+                childrenContainers.push(childResult.selectList);
+            }
+            if (childResult.searchItemList?.length > 0) {
+                searchItemList.push(...childResult.searchItemList);
+            }
+        }
+    }
+    // 构建 fieldList：children 作为 children 属性，items 作为当前层叶子
+    const fieldInfo: any = {
+        fieldName: comp.fieldName || comp.preps?.name,
+        label: comp.label || comp.preps?.label,
+        type: comp.type || "group",
+        compType: "container",
+        itemType: "condition",
+        children: childrenFieldList ?? [],
+    };
+
+    const currentLayerContainer = createContainer(comp, childrenContainers);
+    boxItems[currentLayerContainer.id] = comp;
+
+    return {
+        currentLayerContainer,
+        boxItems,
+        fieldList: fieldInfo,
+        searchItemList,
+    };
+};
+
 function getContainerResult(comp: any) {
     if (comp.itemType === "box" || comp.itemType === "dytable") {
         return boxDytableAnalysis(comp);
@@ -336,6 +405,8 @@ function getContainerResult(comp: any) {
         return tableAnalysis(comp);
     } else if (["tab", "collapse", "card", "splitter"].includes(comp.itemType)) {
         return tabColapseCardAnalysis(comp);
+    } else if (comp.itemType === "condition") {
+        return conditionAnalysis(comp);
     }
     return null;
 }
@@ -383,6 +454,8 @@ function analysisComps(fieldList: any) {
             processContainer(filed, commonContainer, tempFieldList);
         } else if (filed.batchFieldList) {
             processBatchField(filed, tempFieldList);
+        } else if (filed.appList) {
+            tempFieldList.push(...filed.appList);
         } else {
             if (Array.isArray(filed)) {
                 tempFieldList.push(...filed);
@@ -470,7 +543,7 @@ export function convertCompToAppComps(pageInfo: PageFieldInfo) {
     //如果不是手机端，则直接返回
     const tempFieldList = analysisComps(pageInfo.fieldList);
     const staticComps = tempFieldList.filter((item) => {
-        return item && (item.type == "html" || item.type == "text");
+        return item && (item?.type == "html" || item?.type == "text");
     });
     const labelForComps = staticComps.filter((item) => item?.preps?.labelFor);
     let appVisibleComps = tempFieldList?.filter((item) => !item?.preps?.appCompVisible);
@@ -481,12 +554,13 @@ export function convertCompToAppComps(pageInfo: PageFieldInfo) {
                 item.preps = {};
             }
             item.preps.hideLabel = false;
-            item.label = staticData.preps?.textContent;
-            item.preps.placeholder = "请输入" + item.label;
+            item.label = staticData?.preps?.textContent;
+            item.preps.placeholder = i18n("api.pleaseInput2") + item?.label;
         });
     });
     appVisibleComps?.filter((item) => {
-        return !["html", "text"].includes(item.type) && item.preps?.hideLabel && !item.preps.appCompVisible && !item.preps.appLabelVisible;
+        return !["html", "text"].includes(item?.type) && item?.preps?.hideLabel
+            && !item?.preps?.appCompVisible && !item?.preps?.appLabelVisible;
     })?.forEach((item) => {
         item.preps.hideLabel = false;
     });
@@ -496,7 +570,7 @@ export function convertCompToAppComps(pageInfo: PageFieldInfo) {
         const indexB = b.preps?.dataIndex ?? 0;
         return indexA - indexB;
     });
-    return {fieldList: appVisibleComps};
+    return {fieldList: [{appList: appVisibleComps}]};
 }
 
 /**
@@ -563,11 +637,11 @@ export function validMsg(item: any, dataForm: any) {
     ) {
         rules.push({
             required: true,
-            message: `${item.label}${i18n("api.cannotBeEmpty")}`,
+            message: `${item?.label}${i18n("api.cannotBeEmpty")}`,
             trigger: "blur",
         });
     }
-    if (item.type == "number-range") {
+    if (item?.type == "number-range") {
         const splitName = item.preps?.splitName ?? "-";
         const escapedSplit = splitName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
         rules.push({
@@ -580,8 +654,9 @@ export function validMsg(item: any, dataForm: any) {
                 const minName = item.preps?.minName ?? item.fieldName + "Min";
                 const maxName = item.preps?.maxName ?? item.fieldName + "Max";
                 // 从formData中获取min和max的实际数值（通过fieldName+Min/Max）
-                const minValue = unref(dataForm)[`${minName}`];
-                const maxValue = unref(dataForm)[`${maxName}`];
+                const formData = unref(dataForm) || {};
+                const minValue = formData[`${minName}`];
+                const maxValue = formData[`${maxName}`];
                 if (minValue === undefined || maxValue === undefined) {
                     callback(); // 由required规则处理空值
                     return;
@@ -835,3 +910,62 @@ export function labelVisibleCheck(item: any) {
     }
     return item.preps?.label || item.label;
 }
+
+/**
+ * 处理属性
+ * @param fieldList
+ * @param parentKey
+ * @param result
+ */
+export const processFieldList = (fieldList: any[], parentKey: string = "", result: any[]) => {
+    if (!fieldList) return;
+    for (const [index, item] of fieldList.entries()) {
+        const key = `${parentKey}_${index}`;
+
+        if (Array.isArray(item)) {
+            processFieldList(item, `${key}_array`, result);
+        } else if (item.tabList?.length > 0) {
+            item.tabList.forEach((tabItems: any, tabIndex: number) => {
+                processFieldList(tabItems.fieldList, `${key}_tab_${tabIndex}`, result);
+            });
+        } else if (item.cardList?.length > 0) {
+            item.cardList.forEach((cardItems: any, cardIndex: number) => {
+                processFieldList(cardItems.fieldList, `${key}_card_${cardIndex}`, result);
+            });
+        } else if (item.collapseList?.length > 0) {
+            item.collapseList.forEach(
+                (collapseItems: any, collapseIndex: number) => {
+                    processFieldList(
+                        collapseItems.fieldList,
+                        `${key}_collapse_${collapseIndex}`, result
+                    );
+                },
+            );
+        } else if (item.splitterList?.length > 0) {
+            item.splitterList.forEach(
+                (splitterItems: any, splitterIndex: number) => {
+                    processFieldList(
+                        splitterItems.fieldList,
+                        `${key}_splitter_${splitterIndex}`, result
+                    );
+                },
+            );
+        } else if (item.dytableList?.length > 0) {
+            item.dytableList.forEach((tabItems: any, dytableIndex: number) => {
+                processFieldList(
+                    Array.isArray(tabItems) ? tabItems : [tabItems],
+                    `${key}_dytable_${dytableIndex}`, result
+                );
+            });
+        } else if (item.batchFieldList?.length > 0) {
+            item.batchFieldList.forEach((batchItems: any, batchIndex: number) => {
+                processFieldList(batchItems.fieldList, `${key}_batch_${batchIndex}`, result);
+            });
+        } else {
+            result.push({
+                item,
+                key: compKey(item, key),
+            });
+        }
+    }
+};

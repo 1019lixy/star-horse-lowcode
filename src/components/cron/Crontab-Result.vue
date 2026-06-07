@@ -340,12 +340,12 @@ const expressionChange = () => {
   }
   // 判断100年内的结果条数
   if (resultArr.length == 0) {
-    resultList.value = ["没有达到条件的结果！"];
+    resultList.value = [i18n("item.noResult")];
   } else {
     resultList.value = resultArr;
     if (resultArr.length !== 5) {
       resultList.value.push(
-        "最近100年内只有上面" + resultArr.length + "条结果！",
+        i18n("item.onlyResultsAbove") + resultArr.length + i18n("item.resultCount"),
       );
     }
   }

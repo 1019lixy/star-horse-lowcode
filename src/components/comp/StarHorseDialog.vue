@@ -49,7 +49,7 @@ watch(
       deep: true,
     },
 );
-let isFullScreen = computed(() => props.fullScreen || isMobile);
+let isFullScreen =ref<boolean>(false);
 const dialogStyle = computed(() => {
   return {
     height: isFullScreen.value ? "100%" : props.boxHeight,
@@ -65,20 +65,20 @@ const beforeClose = () => {
   if (props.dialogProps?.batchEditVisible || props.isBatch) {
     props.dialogProps.batchEditVisible = false;
   }
-  if (props.dialogProps!.viewVisible || props.source == 3) {
-    props.dialogProps!.viewVisible = false;
+  if (props.dialogProps?.viewVisible || props.source == 3) {
+    props.dialogProps.viewVisible = false;
   }
-  if (props.dialogProps!.editVisible) {
-    props.dialogProps!.editVisible = false;
+  if (props.dialogProps?.editVisible) {
+    props.dialogProps.editVisible = false;
   }
-  if (props.dialogProps!.bakeVisible1) {
-    props.dialogProps!.bakeVisible1 = false;
+  if (props.dialogProps?.bakeVisible1) {
+    props.dialogProps.bakeVisible1 = false;
   }
-  if (props.dialogProps!.bakeVisible2) {
-    props.dialogProps!.bakeVisible2 = false;
+  if (props.dialogProps?.bakeVisible2) {
+    props.dialogProps.bakeVisible2 = false;
   }
-  if (props.dialogProps!.bakeVisible3) {
-    props.dialogProps!.bakeVisible3 = false;
+  if (props.dialogProps?.bakeVisible3) {
+    props.dialogProps.bakeVisible3 = false;
   }
 };
 // 新增：安全调用函数的方法
@@ -112,7 +112,6 @@ const operation = (funcName: any, type: string) => {
   }
   console.log(clickFunction);
 };
-
 </script>
 <template>
   <Teleport to="body">
@@ -125,7 +124,7 @@ const operation = (funcName: any, type: string) => {
           :close-on-press-escape="false"
           :lock-scroll="true"
           class="dialog-settings"
-          :fullscreen="isFullScreen"
+          :fullscreen="isFullScreen||isMobile"
           :show-close="false"
           :draggable="draggable"
           :align-center="true"
@@ -361,21 +360,7 @@ const operation = (funcName: any, type: string) => {
   padding: 0 10px;
   box-sizing: border-box;
   height: 100%;
-
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: transparent;
-    border-radius: 10px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: #f2f2f2 !important;
-    z-index: 222;
-    border-radius: 8px;
-  }
+  overflow: hidden;
 }
 
 .dialog-footer {

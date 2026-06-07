@@ -7,16 +7,17 @@ import DytableContainerViewValid from "@/sample/DytableContainerViewValid.vue";
 import BoxContainerViewDemo from "@/sample/BoxContainerViewDemo.vue";
 import ComplexFormValid from "@/sample/ComplexFormValid.vue";
 import ComplexFormAnalysis from "@/sample/ComplexFormAnalysis.vue";
-import {device, isMobile} from "@/api/device";
-import MainContainer from "@/components/comp/app/MainContainer.vue";
+import DataPickerDemo from "@/sample/DataPickerDemo.vue";
+import FormValid from "@/sample/FormValid.vue";
+import NormalFormValid from "@/sample/NormalFormValid.vue";
 
 const visible = ref<boolean>(false);
 const actName = ref<string>("component");
 const categories = ref<Array<any>>([
-   {id: 'dashboard', name: '首页', icon: 'home'},
-    {id: 'production', name: '生产管理', icon: 'production'},
-    {id: 'quality', name: '质量管理', icon: 'quality'},
-    ]);
+  {id: 'dashboard', name: '首页', icon: 'home'},
+  {id: 'production', name: '生产管理', icon: 'production'},
+  {id: 'quality', name: '质量管理', icon: 'quality'},
+]);
 const initData = async () => {
 };
 
@@ -29,11 +30,22 @@ onMounted(() => {
 });
 </script>
 <template>
-<!--  <template v-if="isMobile">
-   <MainContainer :categories="categories" position="bottom" systemConfigName="系统配置" @select="handleSelect"/>
-  </template>-->
-  <div class="flex flex-col h-full overflow-auto" >
-   {{ device}}
+  <!--  <template v-if="isMobile">
+     <MainContainer :categories="categories" position="bottom" systemConfigName="系统配置" @select="handleSelect"/>
+    </template>-->
+  <div class="flex flex-col h-full overflow-auto">
+<!--    <DytableContainerViewValid/>-->
+    <!--    <Dashboard/>-->
+    <!--    <FormValid/>-->
+<!--    <el-tabs v-model="actName" class="h-full">
+      <el-tab-pane name="component" label="解析">
+        <DytableContainerInstanceValid/>
+      </el-tab-pane>
+      <el-tab-pane name="2" label="实例">
+        <NormalFormValid/>
+      </el-tab-pane>
+    </el-tabs>-->
+
     <el-tabs v-model="actName" class="h-full">
       <el-tab-pane name="component" label="组件测试">
         <ComponentTester/>
@@ -56,6 +68,13 @@ onMounted(() => {
         <!--      <DataPickerDemo />-->
         <!--      <InformationsUi/>-->
         <ComplexFormValid/>
+      </el-tab-pane>
+      <el-tab-pane name="h1" label="数据选择器2">
+        <DataPickerDemo/>
+
+      </el-tab-pane>
+      <el-tab-pane name="h2" label="正常表单">
+        <NormalFormValid/>
       </el-tab-pane>
       <el-tab-pane name="i" label="验证容器">
 

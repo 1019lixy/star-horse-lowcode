@@ -1,7 +1,7 @@
 <template>
   <!-- 对话框部分（与原 json-item.vue 完全一致） -->
   <star-horse-dialog
-      :title="field.label + 'JSON编辑'"
+      :title="field.label + i18n('item.jsonEditor')"
       :self-func="true"
       :boxHeight="field.preps?.boxHeight ?? '65%'"
       :boxWidth="field.preps?.boxWidth ?? '40%'"
@@ -46,14 +46,14 @@
             @click="editJsonData(false)"
             icon-class="edit"
             style="cursor: pointer"
-            title="设计模式编辑"
+            :title="i18n('item.designModeEdit')"
         />
         <div class="h-[10px]"/>
         <star-horse-icon
             @click="editJsonData(true)"
             icon-class="code"
             style="cursor: pointer"
-            title="开发模式编辑"
+            :title="i18n('item.devModeEdit')"
         />
       </div>
     </div>
@@ -68,6 +68,7 @@ import {getDynamicEvents} from "@/api/system";
 import JSON5 from "json5";
 import {StarHorseDialog} from "@/components/comp";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
+import {i18n} from "@/lang";
 
 // 公共 props（两个组件原有的 props 完全一致）
 const props = defineProps({
@@ -100,13 +101,13 @@ const jsonTableField = reactive<PageFieldInfo>({
       batchName: "jsonDatas",
       fieldList: [
         {
-          label: "Name/名称",
+          label: i18n("item.nameLabel"),
           fieldName: "name",
           required: true,
           formVisible: true,
         },
         {
-          label: "Value/值",
+          label: i18n("item.valueLabel"),
           fieldName: "value",
           required: true,
           formVisible: true,

@@ -20,6 +20,7 @@ import { warning } from "@/utils/message";
 import { SearchFields } from "@/components/types";
 
 import { ItemPreps } from "@/components/types/ItemPreps";
+import { i18n } from "@/lang";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -103,7 +104,7 @@ const loadByPage = (isInit: boolean = false) => {
     };
     url = "/system-config/redirect/pageList";
   }
-  load("数据加载中");
+  load(i18n("item.dataLoading"));
   postRequest(url, params)
     .then((res) => {
       let redata = res.data?.data;
@@ -255,7 +256,7 @@ onMounted(async () => {
   await nextTick();
   let inputPreps = props.field?.preps;
   if (!inputPreps) {
-    warning("属性" + props.field?.label + "需要配置params 信息");
+    warning(i18n("item.propertyNeedsParams") + props.field?.label);
     return;
   }
   if (!inputPreps.searchFieldList || inputPreps.searchFieldList?.length == 0) {

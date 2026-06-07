@@ -32,12 +32,13 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { nextTick, onMounted } from "vue";
+import { nextTick, onBeforeUnmount, onMounted, watch } from "vue";
 import {
   allAction,
   checkIsDisabled,
   initCompCallEvent,
   prepsFilter,
+  setupFormulaWatchers,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { getDynamicEvents } from "@/api/system";
 
@@ -61,6 +62,10 @@ const initEvent = async () => {
 const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
+
+// 公式计算 watch 清理
+let formulaStops: (() => void)[] = [];
+
 onMounted(() => {
   if (!props.field.preps) {
     props.field.preps = {};
@@ -70,9 +75,16 @@ onMounted(() => {
   props.field.preps["precision"] = props.field.preps["precision"] || 0;
   nextTick(() => {
     initCompCallEvent(props, emits, formData);
+    // 初始化公式计算监听
+    formulaStops = setupFormulaWatchers(props.field, props.formInfo, formData, watch);
   });
 
   initEvent();
+});
+
+onBeforeUnmount(() => {
+  formulaStops.forEach(stop => stop());
+  formulaStops = [];
 });
 </script>
 <style lang="scss" scoped>

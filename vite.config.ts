@@ -10,9 +10,11 @@ import fs from "fs";
 //生产types文件插件
 import dts from "vite-plugin-dts";
 // https://vitejs.dev/config/
+const baseHost: string = "http://localhost:7719/";
 const systemHost: string = "http://localhost:8749/";
 const userDbHost: string = "http://localhost:7758/";
 const gatewayHost: string = "http://localhost:7780/";
+const workflowHost: string = "http://localhost:8999/";
 const isGateway: boolean = true;
 const env: string = "-dev";
 const rewrite = (path: string, name: string) => {
@@ -76,6 +78,18 @@ export default defineConfig((mode) => {
           target: isGateway?gatewayHost:userDbHost,
           changeOrigin: true,
           rewrite: (path: string) =>rewrite(path,"userdb-manage"),
+          ws: true,
+        },
+        "/quantity-manage": {
+          target: isGateway ? gatewayHost : baseHost,
+          changeOrigin: true,
+          rewrite: (path: string) => rewrite(path, "quantity-manage"),
+          ws: true,
+        },
+        "/flow-engine": {
+          target: isGateway ? gatewayHost : workflowHost,
+          changeOrigin: true,
+          rewrite: (path: string) => rewrite(path, "flow-engine"),
           ws: true,
         },
       },
@@ -194,7 +208,7 @@ export default defineConfig((mode) => {
           exports: "named",
           assetFileNames: "assets/[name][extname]", // 修正资源输出路径
           // 禁用代码分割
-          inlineDynamicImports: true,
+          codeSplitting: false,
           // 合并所有chunk到单个文件
           manualChunks: undefined,
           // 在 UMD 构建模式下为这些外部化的依赖提供一个全局变量

@@ -29,7 +29,15 @@ const itemCommonFormat = (name: string, cellValue: any, row: any) => {
       : props.commonFormat(name, cellValue, row);
 };
 const checkItemType = (item: any) => {
-  if (Array.isArray(item)) {
+  // console.log(item);
+  // 优先判断 children，有 children 的非叶子节点返回 group-item
+  if (item.children && Array.isArray(item.children) && item.children.length > 0) {
+    // console.log("ok,group-item");
+    return "group-item";
+  }
+  if (item.appList?.length > 0) {
+    return "app-item";
+  } else if (Array.isArray(item)) {
     return "box-item";
   } else if (item.cardList?.length > 0) {
     return "card-item";
@@ -39,8 +47,6 @@ const checkItemType = (item: any) => {
     return "splitter-item";
   } else if (item.dytableList?.length > 0) {
     return "dytable-item";
-  } else if (item.appList?.length > 0) {
-    return "app-item";
   } else if (item.tabList?.length > 0 || item.batchFieldList?.length > 0) {
     return "tab-item";
   } else {
@@ -57,6 +63,7 @@ const removeRow = (row: any) => {
 <template>
   <template v-for="(item, index) in fieldList?.fieldList">
     <component
+        v-if="item"
         :Key="compKey(item, index, true)"
         :is="checkItemType(item)"
         :primary-key="primaryKey"

@@ -4,11 +4,10 @@ import FieldList from "@/components/formcomp/utils/FieldList.vue";
 import {ItemPreps} from "@/components/types/ItemPreps";
 import {i18n} from "@/lang";
 import {dynamicFormContextMenuData, getParentComp, moveDownItem, moveUpItem, removeItem,} from "@/plugins/AblesPlugin";
-import piniaInstance from "@/store";
-import {useDesignFormStore} from "@/store/DesignForm";
 import {computed, nextTick, onBeforeUnmount, onMounted, ref} from "vue";
 import {warning} from "@/utils/message";
-import {labelVisibleCheck} from "@/api/form_utils";
+import {labelVisibleCheck, validMsg} from "@/api/form_utils";
+import {getDesignFormStore} from "@/store/StoreManager";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -17,13 +16,13 @@ const props = withDefaults(defineProps<ItemPreps>(), {
   //是否需要css 修饰
   bareFlag: false,
 });
-let designForm = useDesignFormStore(piniaInstance);
+let designForm = getDesignFormStore();
 let isEdit = computed(() => props.isDesign);
 let editUserInfo = computed(() => {
   let userInfo = designForm.getCurrentCompEditUserInfo(
       props.field?.id || props.field?.preps.id,
   );
-  return userInfo ? userInfo.name + "正在编辑中" : "";
+  return userInfo ? userInfo.name + i18n("api.editingByOthers") : "";
 });
 // Use shallowRef for better performance
 let currentItemId = computed(() => designForm.currentItemId);
@@ -45,7 +44,7 @@ const refreshFlag = ref(0);
 const selectData = (data: any) => {
   if (!isEdit.value || isDisabled.value) return;
   if (editUserInfo.value.length > 0) {
-    warning("该属性正被他人编辑中...");
+    warning(i18n("api.fieldEditingByOthers"));
     return;
   }
   // Check for duplicate selection to avoid unnecessary updates
@@ -110,6 +109,29 @@ onBeforeUnmount(() => {
 
 onMounted(() => {
 });
+
+// 设计模式下双击标签编辑
+const editingLabel = ref(false);
+const editingLabelText = ref("");
+const labelInputRef = ref();
+
+const startEditLabel = () => {
+  editingLabelText.value = props.field?.label || props.field?.preps?.label;
+  editingLabel.value = true;
+  nextTick(() => {
+    labelInputRef.value?.focus();
+  });
+};
+
+const finishEditLabel = () => {
+  editingLabel.value = false;
+  if (props.field && (editingLabelText.value !== props.field.label || editingLabelText.value !== props.field.preps?.label)) {
+    props.field.label = editingLabelText.value;
+    if (props.field.preps) {
+      props.field.preps.label = editingLabelText.value;
+    }
+  }
+};
 </script>
 <template>
   <star-horse-dialog
@@ -164,21 +186,28 @@ onMounted(() => {
           marginBottom: isEdit && !disabled ? '1px' : '18px',
         }"
           class="flex items-center w-full h-full"
-          :label="labelVisibleCheck(field)"
           :prop="field?.preps['name']"
+          :label="isEdit ? undefined : labelVisibleCheck(field)"
           :labelPosition="field?.preps['labelPosition']"
-          :rules="
-          field?.preps['required']
-            ? [
-                {
-                  required: true,
-                  trigger: 'blur',
-                  message: i18n('form.requiredField'),
-                },
-              ]
-            : []
-        "
+          :rules="validMsg(field, null)"
       >
+        <template #label v-if="isEdit">
+          <span
+              v-if="!editingLabel"
+              @dblclick.stop="startEditLabel"
+              style="cursor: text"
+          >{{ labelVisibleCheck(field) }}</span>
+          <el-input
+              v-else
+              ref="labelInputRef"
+              v-model="editingLabelText"
+              size="small"
+              @blur="finishEditLabel"
+              @keyup.enter="finishEditLabel"
+              @click.stop
+              style="width: 120px"
+          />
+        </template>
 
         <help :message="field.preps?.helpMsg" v-if="field.preps?.helpMsg"/>
         <slot></slot>
@@ -267,7 +296,7 @@ onMounted(() => {
       </div>
     </div>
 
-    <Teleport to="body">
+    <Teleport to="body" v-if="isDesign">
       <ContentMenu
           ref="itemContextMenuRef"
           :menu-data="dynamicFormContextMenuData(field, parentField, 'item')"

@@ -7,8 +7,8 @@ import {download} from "@/api/star_horse_apis";
 import {warning} from "@/utils/message";
 import {ApiUrls} from "@/components/types";
 
-const dataUrl: ApiUrls = apiInstance("userdb-manage", "generator/code");
-
+const dataUrl: ApiUrls = apiInstance("http://userdb-manage", "////generator/code");
+console.log(dataUrl);
 const testFormValidRef = ref();
 const outerData: any = {
   backgroundSize: "http你好%",
@@ -16,6 +16,10 @@ const outerData: any = {
   barcode: "22222223333",
 };
 const fieldList = ref<PageFieldInfo>({
+  fieldList: []
+
+});
+/*const fieldList = ref<PageFieldInfo>({
   fieldList: [
     {
       label: "数据",
@@ -128,8 +132,21 @@ const fieldList = ref<PageFieldInfo>({
       listVisible:true,
       fieldName: "barcode",
     },
+    {
+      label: "数据选择器",
+      type: "datapicker",
+      formVisible: true,
+      listVisible:true,
+      fieldName: "datapicker",
+      preps: {
+        dataSource: "url",
+        urlOrDictName: "/system-config/system/usersinfo/pageList",
+        displayName: "name",
+        displayValue: "username",
+      }
+    },
   ],
-});
+});*/
 const initData = async () => {
 };
 const primaryKey = "idCodeGenerator";

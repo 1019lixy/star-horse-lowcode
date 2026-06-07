@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ModelRef } from "vue";
 import { compKey } from "@/api/system";
+import { i18n } from "@/lang";
 
 const props = defineProps({
   level: { type: Number, default: 1 },
@@ -16,22 +17,22 @@ let menuColor = computed(() =>
     style="height: 2px; background: var(--star-horse-white)"
   ></div>
   <template v-for="(item, key) in dataList" :key="compKey(item, key)">
-    <el-sub-menu v-if="item.children?.length > 0" :index="item.meta.menuId">
+    <el-sub-menu v-if="item.children?.length > 0" :index="item.meta?.menuId">
       <template #title>
         <el-icon class="star-icon">
-          <component :is="item.meta.menuIcon || 'document'" />
+          <component :is="item.meta?.menuIcon || 'document'" />
         </el-icon>
-        <span>{{ item.meta.title }} </span>
+        <span>{{ item.meta?.title||i18n("item.unknown") }} </span>
       </template>
       <SubMenu v-model:dataList="item.children" :level="level + 1"></SubMenu>
     </el-sub-menu>
-    <el-menu-item popper-class="popper-class" v-else :index="item.meta.menuId">
+    <el-menu-item popper-class="popper-class" v-else :index="item.meta?.menuId">
       <el-icon class="star-icon">
-        <component :is="item.meta.menuIcon || 'document'" />
+        <component :is="item.meta?.menuIcon || 'document'" />
       </el-icon>
       <template #title>
         <router-link :to="{ path: item.path }"
-          >{{ item.meta.title }}
+          >{{ item.meta?.title||i18n("item.unknown") }}
         </router-link>
       </template>
     </el-menu-item>

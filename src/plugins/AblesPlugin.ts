@@ -1,17 +1,16 @@
-import {useCopyerOperationStore} from "@/store/CopyerOperation";
-import piniaInstance from "@/store";
+import {getCopyerOperationStore, getDesignFormStore} from "@/store/StoreManager";
 import {computed, reactive, ref} from "vue";
-import {useDesignFormStore} from "@/store/DesignForm";
 import {uuid} from "@/api/system";
 import {DynamicNode} from "@/components/types/DynamicNode";
+import {i18n} from "@/lang";
 
-const copyerAction = useCopyerOperationStore(piniaInstance);
-const designForm = useDesignFormStore(piniaInstance);
-// const designPage = useDesignPageStore(piniaInstance);
+const copyerAction = getCopyerOperationStore();
+let designForm = getDesignFormStore();
 const compList = computed(() => designForm.compList);
 const currentItemId = computed(() => designForm.currentItemId);
+let currentSubItem = computed(() => designForm.currentSubItem);
 const pasteDisplay = computed(() => {
-    const action = copyerAction.action;
+    const action = getCopyerOperationStore().action;
     return !!action;
 });
 
@@ -49,7 +48,7 @@ const selectItem = (
         item = element?.items[element.items?.length - 1];
     }
     if (item && Object.keys(item).length > 0) {
-        designForm.selectItem(item, item.itemType, parentType);
+        getDesignFormStore().selectItem(item, item.itemType, parentType);
     }
 };
 
@@ -106,7 +105,7 @@ export function removeItem(isEdit: boolean, formItem: any, parentField: any) {
                 const item = dataList[i - 1] || dataList[0];
                 dataList.splice(i, 1);
                 if (item && Object.keys(item).length > 0) {
-                    designForm.selectItem(item, item.itemType, parentItemType);
+                    getDesignFormStore().selectItem(item, item.itemType, parentItemType);
                 }
                 return;
             }
@@ -239,17 +238,17 @@ const fieldIndex = ref<number>(200);
 const complexFields = (items: Array<any>, isCut: boolean = false) => {
     for (const index in items) {
         const item = items[index];
-        if (item.compType == "container") {
-            const sitems = item.preps.elements;
+        if (item?.compType == "container") {
+            const sitems = item?.preps?.elements;
             for (const sindex in sitems) {
-                complexFields(sitems[sindex].items);
+                complexFields(sitems?.[sindex]?.items);
             }
         } else {
             item.id = uuid();
             item["preps"]["id"] = item.id;
             if (!isCut) {
                 fieldIndex.value++;
-                item.preps.name = item.preps.name + fieldIndex.value;
+                item.preps.name = (item?.preps?.name || "") + fieldIndex.value;
             }
         }
     }
@@ -300,7 +299,7 @@ export const copyContainer = (
         const index = compList.value.indexOf(currentContainer);
         compList.value.splice(index + 1, 0, container);
     }
-    designForm.selectItem(container, containerType, "");
+    getDesignFormStore().selectItem(container, containerType, "");
 };
 
 /**
@@ -340,8 +339,19 @@ export function paste(parentItem: any) {
         } else {
             copyerData = JSON.parse(JSON.stringify(copyerData));
             copyerData.id = uuid();
+            copyerData.fieldName = "field_" + copyerData.id.substring(0, 6);
             copyerData.preps.id = copyerData.id;
-            compList.value.push(copyerData);
+            console.log("paste", copyerData, currentSubItem.value);
+            //如果选中了某个单元格
+            if (currentSubItem.value) {
+                if (!currentSubItem.value.items) {
+                    currentSubItem.value.items = [];
+                }
+                currentSubItem.value.items.push(copyerData);
+            } else {
+                compList.value.push(copyerData);
+            }
+
         }
     }
 }
@@ -359,11 +369,12 @@ export function dynamicFormContextMenuData(
     flag: string = "scene",
     recall?: Function,
 ) {
+    console.log(item,parentItem,flag,recall);
     const menus = reactive<Array<any>>([]);
     if (flag == "scene") {
         menus.push({
             type: "button",
-            text: "新建",
+            text: i18n("context.new"),
             icon: "new",
             display: !!recall,
             handler: () => {
@@ -374,7 +385,7 @@ export function dynamicFormContextMenuData(
     menus.push(
         {
             type: "button",
-            text: "剪切",
+            text: i18n("context.cut"),
             icon: "cut",
             display: true,
             handler: () => {
@@ -387,7 +398,7 @@ export function dynamicFormContextMenuData(
         },
         {
             type: "button",
-            text: "复制",
+            text: i18n("context.copy"),
             icon: "copy",
             display: true,
             handler: () => {
@@ -400,7 +411,7 @@ export function dynamicFormContextMenuData(
         },
         {
             type: "button",
-            text: "粘贴",
+            text: i18n("context.paste"),
             icon: "paste",
             display: pasteDisplay,
             handler: () => {
@@ -421,7 +432,7 @@ export function dynamicFormContextMenuData(
         menus.push(
             {
                 type: "button",
-                text: "全选",
+                text: i18n("context.selectAll"),
                 icon: "select-all",
                 display: !!recall,
                 handler: () => {
@@ -430,7 +441,7 @@ export function dynamicFormContextMenuData(
             },
             {
                 type: "button",
-                text: "清空",
+                text: i18n("context.clear"),
                 icon: "dustbin",
                 display: !!recall,
                 handler: () => {
@@ -444,7 +455,7 @@ export function dynamicFormContextMenuData(
             },
             {
                 type: "button",
-                text: "预览",
+                text: i18n("context.preview"),
                 icon: "preview",
                 display: !!recall,
                 handler: () => {
@@ -456,27 +467,27 @@ export function dynamicFormContextMenuData(
     if (flag == "container") {
         menus.push({
             type: "button",
-            text: "添加组件",
+            text: i18n("context.addComponent"),
             icon: "new",
             display: true,
             handler: () => {
-                designForm.setComponentVisible(true);
+                getDesignFormStore().setComponentVisible(true);
             },
         });
         menus.push({
             type: "button",
-            text: "选中容器",
+            text: i18n("context.selectContainer"),
             icon: "select-parent",
             display: currentItemId.value != item.id,
             handler: () => {
-                designForm.selectItem(item, item?.itemType, "");
+                getDesignFormStore().selectItem(item, item?.itemType, "");
             },
         });
     }
     menus.push(
         {
             type: "button",
-            text: "撤销",
+            text: i18n("context.undo"),
             icon: "undo",
             display: !!recall,
             handler: () => {
@@ -490,7 +501,7 @@ export function dynamicFormContextMenuData(
         },
         {
             type: "button",
-            text: "删除",
+            text: i18n("context.delete"),
             icon: "delete",
             display: !!recall,
             handler: () => {
@@ -504,7 +515,7 @@ export function dynamicFormContextMenuData(
         },
         {
             type: "button",
-            text: "属性",
+            text: i18n("context.properties"),
             icon: "prep",
             display: !!recall,
             handler: () => {
@@ -532,7 +543,7 @@ export function dynamicPageContextMenuData(
     contentMenuData = [
         {
             type: "button",
-            text: "水平居中",
+            text: i18n("context.centerHorizontally"),
             icon: "center",
             display: !!recallFunction,
             handler: () => {
@@ -541,7 +552,7 @@ export function dynamicPageContextMenuData(
         },
         {
             type: "button",
-            text: "复制",
+            text: i18n("context.copy"),
             icon: "copy",
             display: !!recallFunction,
             handler: () => {
@@ -555,7 +566,7 @@ export function dynamicPageContextMenuData(
         },
         {
             type: "button",
-            text: "上移一层",
+            text: i18n("context.moveUpLayer"),
             icon: "up-layer",
             display: true,
             handler: () => {
@@ -564,7 +575,7 @@ export function dynamicPageContextMenuData(
         },
         {
             type: "button",
-            text: "下移一层",
+            text: i18n("context.moveDownLayer"),
             icon: "down-layer",
             display: node.styles.zIndex && node.styles.zIndex > 100,
             handler: () => {
@@ -576,7 +587,7 @@ export function dynamicPageContextMenuData(
         },
         {
             type: "button",
-            text: "置顶",
+            text: i18n("context.bringToFront"),
             icon: "to-top",
             display: !!recallFunction,
             handler: () => {
@@ -585,7 +596,7 @@ export function dynamicPageContextMenuData(
         },
         {
             type: "button",
-            text: "置底",
+            text: i18n("context.sendToBack"),
             icon: "to-bottom",
             display: node.styles.zIndex && node.styles.zIndex > 100,
             handler: () => {
@@ -600,7 +611,7 @@ export function dynamicPageContextMenuData(
         },
         {
             type: "button",
-            text: "删除",
+            text: i18n("context.delete"),
             icon: "delete",
             display: !!recallFunction,
             handler: () => {
@@ -615,7 +626,7 @@ export function dynamicPageContextMenuData(
         {
             type: "button",
             icon: "empty_setting",
-            text: "清空参考线",
+            text: i18n("context.clearGuides"),
             display: !!recallFunction,
             handler: () => {
                 recallFunction && recallFunction("empty_setting", node);

@@ -1,11 +1,9 @@
 import { uuid } from "@/api/system";
 import { computed } from "vue";
-import { useDesignFormStore } from "@/store/DesignForm";
-import piniaInstance from "@/store";
+import { getDesignFormStore } from "@/store/StoreManager";
 import JSON5 from "json5";
 
-const designForm = useDesignFormStore(piniaInstance);
-const formData = computed(() => designForm.formData);
+const formData = computed(() => getDesignFormStore().formData);
 const numField: Array<string> = [
   "minlength",
   "maxLength",
@@ -46,7 +44,7 @@ const getDefaultVal = (type: string) => {
 export function fieldCopy(data: any, type: string) {
   const reData = JSON5.parse(JSON5.stringify(data));
   //如果数据没有索引，则初始化索引
-  const ms = designForm.getFieldDataIndex();
+  const ms = getDesignFormStore().getFieldDataIndex();
   const mvData: any = {};
   mvData["id"] = "Id" + uuid();
   // console.log(reData);

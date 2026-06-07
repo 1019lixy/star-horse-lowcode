@@ -170,7 +170,7 @@ const excelOperation = () => {
  * 下载模板
  */
 const downloadTemplate = () => {
-  download(props.importInfo!.downloadTemplateUrl, {}).catch((err) => {
+  download(props.importInfo?.downloadTemplateUrl, {}).catch((err) => {
     error(i18n("comp.interfaceNotFoundOrNetworkError") + err);
   });
 };
@@ -236,7 +236,7 @@ const moveColumn = () => {
   }
 };
 const clearAll = () => {
-  if (dataForm.value[props.batchName].length == 0) {
+  if (!dataForm.value[props.batchName] || dataForm.value[props.batchName]?.length == 0) {
     return;
   }
   operationConfirm(i18n("ui.confirm")).then(() => {
@@ -312,7 +312,7 @@ watch(
           :on-success="uploadSuccess"
           :show-file-list="false"
           accept=".xls,.xlsx"
-          :action="importInfo!.importDataUrl"
+          :action="importInfo?.importDataUrl"
           :headers="{ token: getToken() }"
           class="upload"
           name="file"
@@ -468,7 +468,7 @@ watch(
           />
         </template>
       </template>
-      <el-table-column fixed="right" label="操作" width="80">
+      <el-table-column fixed="right" :label="i18n('table.operation')" width="80">
         <template #default="scope" v-if="source != 3">
           <star-horse-icon
               icon-class="edit"

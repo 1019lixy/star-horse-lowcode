@@ -1,15 +1,14 @@
 <script setup lang="ts">
-import {useDesignFormStore} from "@/store/DesignForm";
-import piniaInstance from "@/store";
 import {computed, ComputedRef, ref} from "vue";
 import {i18n} from "@/lang";
+import {getDesignFormStore} from "@/store/StoreManager";
 
 defineOptions({
   name: "FieldList",
 });
 const containerRef = ref();
 const emits = defineEmits(["selectData"]);
-let designForm = useDesignFormStore(piniaInstance);
+let designForm = getDesignFormStore();
 let formDataList: ComputedRef = computed(() => designForm.formDataList);
 let containerList: ComputedRef = computed(() => designForm.containerList);
 let selfFormDataList: ComputedRef = computed(() => designForm.selfFormDataList);
@@ -19,7 +18,7 @@ const filteredContainerList = computed(() => {
     return containerList.value;
   }
   return containerList.value.filter((item: any) =>
-    item.itemName.toLowerCase().includes(searchQuery.value.toLowerCase())
+      item.itemName.toLowerCase().includes(searchQuery.value.toLowerCase())
   );
 });
 const filteredFormDataList = computed(() => {
@@ -27,7 +26,7 @@ const filteredFormDataList = computed(() => {
     return formDataList.value;
   }
   return formDataList.value.filter((item: any) =>
-    item.itemName.toLowerCase().includes(searchQuery.value.toLowerCase())
+      item.itemName.toLowerCase().includes(searchQuery.value.toLowerCase())
   );
 });
 const filteredSelfFormDataList = computed(() => {
@@ -35,7 +34,7 @@ const filteredSelfFormDataList = computed(() => {
     return selfFormDataList.value;
   }
   return selfFormDataList.value.filter((item: any) =>
-    item.itemName.toLowerCase().includes(searchQuery.value.toLowerCase())
+      item.itemName.toLowerCase().includes(searchQuery.value.toLowerCase())
   );
 });
 const selectData = (item: any) => {
@@ -92,7 +91,7 @@ const selectData = (item: any) => {
               i18n("form.basicComponents")
             }}
           </el-divider>
-          <ul id="basic"  class="my-2 min-h-[10px]">
+          <ul id="basic" class="my-2 min-h-[10px]">
             <template v-for="item in filteredFormDataList">
               <li class="field-item" @click="selectData(item)">
                 &nbsp;&nbsp;
@@ -108,7 +107,7 @@ const selectData = (item: any) => {
               i18n("form.customComponents")
             }}
           </el-divider>
-          <ul id="self"  class="my-2 min-h-[10px]">
+          <ul id="self" class="my-2 min-h-[10px]">
             <template v-for="item in filteredSelfFormDataList">
               <li class="field-item" @click="selectData(item)">
                 &nbsp;&nbsp;

@@ -1,6 +1,8 @@
 /**
  * WebSocket 重连配置项接口
  */
+import { i18n } from "@/lang";
+
 interface WebSocketOptions {
   /** 重连间隔（毫秒），默认 3000 */
   reconnectInterval?: number;
@@ -249,19 +251,19 @@ class WebSocketUtils implements WebSocketCallbacks {
    * 辅助方法：获取连接状态文本
    */
   public getReadyStateText(): string {
-    if (!this.ws) return "未初始化";
+    if (!this.ws) return i18n("ws.notInitialized");
 
     switch (this.ws.readyState) {
       case WebSocket.CONNECTING:
-        return "正在连接";
+        return i18n("ws.connecting");
       case WebSocket.OPEN:
-        return "已连接";
+        return i18n("ws.connected");
       case WebSocket.CLOSING:
-        return "正在关闭";
+        return i18n("ws.closing");
       case WebSocket.CLOSED:
-        return "已关闭";
+        return i18n("ws.closed");
       default:
-        return "未知状态";
+        return i18n("ws.unknownState");
     }
   }
 }

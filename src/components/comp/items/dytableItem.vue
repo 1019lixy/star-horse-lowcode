@@ -30,13 +30,13 @@ const rowHeight = computed(() => {
 const columnStructure = computed(() => {
   if (!props.item?.dytableList?.length) return [];
 
-  const rows=props.item.dytableList;
+  const rows = props.item.dytableList;
   // 找到最大列数的行
-  let maxColsRow = props.item.dytableList[0];
+  let maxColsRow = rows[0];
   let columns = maxColsRow.length;
   const colStructure = [];
   for (let i = 0; i < columns; i++) {
-    colStructure.push({width: checkItem(maxColsRow[i]).preps?.colWidth||"100%"});
+    colStructure.push({width: checkItem(maxColsRow[i]).preps?.colWidth || "100%"});
   }
   return colStructure;
 });
@@ -104,12 +104,14 @@ const createArray = (item: any) => {
               width: checkItem(sitem).preps?.colWidth || '100%',
               height: checkItem(sitem).preps?.colHeight || rowHeight,
               'text-align': checkItem(sitem).preps?.textAlign ?? 'left',
-              'white-space': 'nowrap',
+              'white-space': sitem.staticData!==true?'nowrap':'unset',
               'word-break': !!checkItem(sitem).preps?.wordBreak ? 'break-all' : 'normal',
               'text-overflow': 'ellipsis'
             }"
           >
-            <template v-for="tempData in createArray(sitem)">
+            <div class="h-full w-full p-2 items-center justify-center flex flex-col" v-if="sitem.staticData===true"
+                 v-html="sitem.preps?.textContent"/>
+            <template v-else v-for="tempData in createArray(sitem)">
               <template
                   v-if="
                 tempData.type != 'button' &&
@@ -124,7 +126,6 @@ const createArray = (item: any) => {
                     :prop="loadProp(propPrefix, tempData.fieldName, -1, -1)"
                     :labelPosition="tempData.preps?.labelPosition??parentPreps?.labelPosition"
                     :rules="validMsg(tempData, dataForm)"
-                    :commonFormat="commonFormat"
                     v-if="
                   (tempData.formVisible &&
                   tempData.label &&

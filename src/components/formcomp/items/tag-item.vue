@@ -5,6 +5,7 @@ import {
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 
 import { ItemPreps } from "@/components/types/ItemPreps";
+import { i18n } from "@/lang";
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
   disabled: false,
@@ -45,7 +46,7 @@ const tagType = (val: any) => {
         (callBack && callBack()) ||
         formData[field.fieldName] ||
         field.preps?.placeholder ||
-        "请赋值" + field.label
+        i18n("item.pleaseSetValue") + field.label
       }}
     </el-tag>
   </starhorse-form-item>

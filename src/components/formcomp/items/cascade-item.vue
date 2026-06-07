@@ -1,24 +1,25 @@
 <template>
   <starhorse-form-item
-    :showFormItem="showFormItem"
-    :isDesign="isDesign"
-    :disabled="disabled"
-    :bareFlag="bareFlag"
-    :field="field"
-    :parentField="parentField"
+      :showFormItem="showFormItem"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      :field="field"
+      :parentField="parentField"
   >
     <el-cascader
-      :fid="field.fieldName"
-      v-bind="prepsFilter(field.preps)"
-      :disabled="checkIsDisabled(props)"
-      v-on="getDynamicEvents(props, itemAction)"
-      v-model="formData[field.fieldName]"
+        :fid="field.fieldName"
+        v-bind="prepsFilter(field.preps)"
+        :props="cascadeProps"
+        :disabled="checkIsDisabled(props)"
+        v-on="getDynamicEvents(props, itemAction)"
+        v-model="formData[field.fieldName]"
     >
       <template v-if="field.preps?.multiple" #header>
         <el-checkbox
-          v-model="checkAll"
-          :indeterminate="indeterminate"
-          @change="handleCheckAll"
+            v-model="checkAll"
+            :indeterminate="indeterminate"
+            @change="handleCheckAll"
         >
           {{ i18n("common.selectAll") }}
         </el-checkbox>
@@ -30,23 +31,24 @@
         <template v-else>
           <div class="flex-row flex w-full justify-between">
             <el-input
-              v-model="optionName"
-              class="option-input flex-1"
-              :placeholder="i18n('form.enterOptionName')"
-              size="small"
+                v-model="optionName"
+                class="option-input flex-1"
+                :placeholder="i18n('form.enterOptionName')"
+                size="small"
             />
             <div class="flex-row flex justify-center w-[35%] mx-auto my-0">
               <el-button
-                type="primary"
-                icon="add"
-                size="small"
-                @click="onConfirm"
+                  type="primary"
+                  icon="add"
+                  size="small"
+                  @click="onConfirm"
               >
                 {{ i18n("form.add") }}
               </el-button>
               <el-button size="small" icon="cancel" @click="clear">{{
-                i18n("form.cancel")
-              }}</el-button>
+                  i18n("form.cancel")
+                }}
+              </el-button>
             </div>
           </div>
         </template>
@@ -55,19 +57,20 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref, watch } from "vue";
-import { compDynamicData, isJson } from "@/api/star_horse_utils";
+import {computed, nextTick, onMounted, ref, watch} from "vue";
+import {compDynamicData, isJson} from "@/api/star_horse_utils";
 import {
   allAction,
   checkIsDisabled,
   initCompCallEvent,
   prepsFilter,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
-import { getDynamicEvents } from "@/api/system";
-import { warning } from "@/utils/message";
-import { i18n } from "@/lang";
+import {getDynamicEvents} from "@/api/system";
+import {warning} from "@/utils/message";
+import {i18n} from "@/lang";
 import JSON5 from "json5";
-import { ItemPreps } from "@/components/types/ItemPreps";
+import {ItemPreps} from "@/components/types/ItemPreps";
+
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
   disabled: false,
@@ -81,27 +84,17 @@ const checkAll = ref(false);
 const indeterminate = ref(false);
 const isAdding = ref(false);
 const optionName = ref("");
-const getAllValuePaths = computed(() => {
-  const codeName =
-    props.field.preps?.props?.code || props.field.preps?.props?.value || "value";
-  const result: string[][] = [];
-  const queue: { node: any; path: string[] }[] = props.field.preps.options.map(
-    (node) => ({ node, path: [node[codeName]] }),
-  );
-
-  while (queue.length > 0) {
-    const { node, path } = queue.shift()!;
-    if (node.children?.length) {
-      node.children.forEach((child) => {
-        queue.push({ node: child, path: [...path, child[codeName]] });
-      });
-    } else {
-      result.push(path);
-    }
+const cascadeProps = computed(() => {
+  let temp: any = props.field.preps?.props;
+  if (!temp) {
+    temp = {
+      label: "name",
+      value: "value",
+    };
   }
-  return result;
+  temp["expandTrigger"] = "hover";
+  return temp;
 });
-
 const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
@@ -117,12 +110,12 @@ const onConfirm = () => {
 
   const labelName = props.field.preps.props?.label || "label";
   const codeName =
-    props.field.preps.props?.code || props.field.preps.props?.value || "value";
+      props.field.preps.props?.code || props.field.preps.props?.value || "value";
   // 校验重复
   if (
-    props.field.preps.options.find(
-      (item: any) => item[codeName] == optionName.value,
-    )
+      props.field.preps.options.find(
+          (item: any) => item[codeName] == optionName.value,
+      )
   ) {
     warning(i18n("form.optionNameDuplicate"));
     return;
@@ -152,7 +145,7 @@ const handleCheckAll = (val: any) => {
       return values;
     };
     formData.value[props.field.fieldName] = collectValues(
-      props.field.preps.options,
+        props.field.preps.options,
     );
   } else {
     // 取消全选
@@ -173,11 +166,32 @@ const initData = async () => {
     setTimeout(() => {
       let data: any = formData.value[props.field.fieldName];
       formData.value[props.field.fieldName] = isJson(data)
-        ? JSON5.parse(data)
-        : [];
+          ? JSON5.parse(data)
+          : [];
     }, 200);
   }
 };
+const getAllValuePaths = computed(() => {
+  const codeName =
+      props.field.preps?.props?.code || props.field.preps?.props?.value || "value";
+  const result: string[][] = [];
+  const queue: { node: any; path: string[] }[] = props.field.preps.options.map(
+      (node) => ({node, path: [node[codeName]]}),
+  );
+
+  while (queue.length > 0) {
+    const {node, path} = queue.shift()!;
+    if (node.children?.length) {
+      node.children.forEach((child) => {
+        queue.push({node: child, path: [...path, child[codeName]]});
+      });
+    } else {
+      result.push(path);
+    }
+  }
+  return result;
+});
+const fieldInfo = computed(() => formData.value[props.field?.fieldName]);
 onMounted(() => {
   if (!props.field.preps) {
     props.field.preps = {};
@@ -185,7 +199,9 @@ onMounted(() => {
   if (!props.field.preps.props) {
     props.field.preps["props"] = {
       label: "name",
+      value: "value",
       multiple: props.field?.preps?.multiple,
+      expandTrigger: "hover",
       checkStrictly: true,
     };
   }
@@ -195,11 +211,11 @@ onMounted(() => {
     initCompCallEvent(props, emits, formData);
   });
 });
-watch(formData.value[props.field.fieldName], (val) => {
-  if (val.length === 0) {
+watch(()=>fieldInfo.value, (val) => {
+  if (val?.length === 0) {
     checkAll.value = false;
     indeterminate.value = false;
-  } else if (val.length === getAllValuePaths.value.length) {
+  } else if (val?.length === getAllValuePaths.value?.length) {
     checkAll.value = true;
     indeterminate.value = false;
   } else {
@@ -207,19 +223,17 @@ watch(formData.value[props.field.fieldName], (val) => {
   }
 });
 watch(
-  () => formData.value[props.field.fieldName + "OptionList"],
-  (val) => {
-    if (val?.length > 0) {
-      props.field.preps["options"] = val;
-    }
-  },
-  {
-    immediate: true,
-  },
+    () => formData.value[props.field.fieldName + "OptionList"],
+    (val) => {
+      if (val?.length > 0) {
+        props.field.preps["options"] = val;
+      }
+    },
+    {
+      immediate: true,
+    },
 );
 </script>
 <style lang="scss" scoped>
-:deep(.el-cascader) {
-  width: 100%;
-}
+
 </style>

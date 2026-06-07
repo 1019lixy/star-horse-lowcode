@@ -292,6 +292,10 @@ a {
   margin: 0 10px;
 }
 
+.el-cascader {
+  width: 100%;
+}
+
 .el-cascader-menu {
   width: 100px !important;
 }
@@ -521,7 +525,7 @@ hr {
     align-items: center;
     vertical-align: middle;
     width: 100% !important;
-    margin-top: 10px;
+    margin: 10px;
     flex-shrink: 0;
   }
 
@@ -1142,4 +1146,23 @@ button.el-collapse-item__header {
       opacity: 1 !important;
     }
   }
+}
+.group-label {
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  background-color: #f5f7fa;
+  border-left: 3px solid var(--el-color-primary);
+  border-radius: 4px;
+
+  .group-label-text {
+    font-weight: 600;
+    color: var(--el-text-color-primary);
+    font-size: 14px;
+  }
+}
+/**
+* 解决弹窗模态框遮挡下拉数据bug
+ */
+.el-modal-dialog {
+  z-index: 2000 !important;
 }

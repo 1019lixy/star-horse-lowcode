@@ -1,855 +1,281 @@
-<template>
- {{formPageRef?.getFormData()}}
-  <star-horse-form
-      :dynamicForm="true"
-      ref="formPageRef"
-      :fieldList="tabList"
-      :typeModel="'form'"
-  />
-</template>
-
 <script lang="ts" setup>
-import {onMounted, ref} from "vue";
-import piniaInstance from "@/store";
-import {useDesignFormStore} from "@/store/DesignForm";
-import {analysisCompDatas} from "@/api/form_utils";
 
-let designForm = useDesignFormStore(piniaInstance);
-const formData = ref<any>({
-  test: "1-2-1",
+import { onActivated, onMounted, provide, reactive, ref } from "vue";
+import { i18n } from "@/lang";
+import {apiInstance, dialogPreps} from "@/api/star_horse_utils";
+import {ApiUrls, PageFieldInfo, SearchFields, SelectOption} from "@/components/types";
+import {postRequest} from "@/api/star_horse_apis";
+import {StarHorseTableComp} from "@/components/comp";
+
+let informationsList = ref<any>([]);
+const dataUrl: ApiUrls = apiInstance("system-config", "system/informations");
+dataUrl.loadByIdUrl = dataUrl.basePrefix + "/getInformationById";
+let systemIconList = ref<SelectOption[]>([]);
+let customerList = ref<SelectOption[]>([]);
+const searchFormData = reactive<SearchFields>({
+  fieldList: [
+    /*  {
+      label: i18n("system.belonging.entity"), fieldName: "idCustomer", type: "select",
+      preps: {
+        values: customerList
+      }
+    }, */
+    {
+      label: i18n("system.application.name"),
+      defaultVisible: true,
+      fieldName: "sysName",
+
+      matchType: "lk",
+    },
+    {
+      label: i18n("system.add.time"),
+      fieldName: "createdTime",
+      formVisible: false,
+      type: "daterange",
+      matchType: "bt",
+    },
+  ],
 });
-const formPageRef=ref();
-const tabList = {
-  "fieldList": [{
-    fieldName:"tab1",
-    "tabList": [{
-      "tabName": "tab1",
-      "objectName": "tab1",
-      "subFormFlag": "Y",
-      "title": "Tab1",
-      "fieldList": [{
-        "label": "单行文本框",
-        "fieldName": "input2",
-        "type": "input",
-        "formVisible": true,
-        "listVisible": true,
-        "viewVisible": true,
-        "actions": {},
-        "id": "Idsh860cde2c-f08d-4205-bdd5-9ba3b6809b84",
-        "preps": {
-          "clearable": true,
-          "placeholder": "请输入单行文本框",
-          "rules": [],
-          "readonly": false,
-          "starHorseFieldSource": 1
-        }
-      }]
-    }, {
-      "tabName": "tab2",
-      "objectName": "tab2",
-      "subFormFlag": "Y",
-      "title": "Tab2",
-      "fieldList": [{
-        "label": "单行文本框",
-        "fieldName": "input3",
-        "type": "input",
-        "formVisible": true,
-        "listVisible": true,
-        "viewVisible": true,
-        "actions": {},
-        "id": "Idsh761b8609-f999-4acc-8cee-e17d5021b15b",
-        "preps": {
-          "clearable": true,
-          "placeholder": "请输入单行文本框",
-          "rules": [],
-          "readonly": false,
-          "starHorseFieldSource": 1
-        }
-      }],
-      "mapping": "n"
-    }]
-  }], "stopAutoLoad": true
+const testFun = (formData: any) => {
+  if (!formData["parentId"]) {
+    return;
+  }
+  postRequest(dataUrl.loadByIdUrl + "/" + formData["parentId"], {}).then(
+      (res) => {
+        let redata = res.data.data;
+        formData["idCustomer"] = redata["idCustomer"];
+      },
+  );
 };
-const fields = ref<Array<any>>([
-  {
-    id: "Id1",
-    preps: {
-      align: "top",
-      justify: "start",
-      gutter: 0,
-      tag: "div",
-      comment: "",
-      id: "Id1",
-      label: "栅格",
-      itemNameLabel: "栅格",
-      name: "box1",
-      elements: [
-        {
-          rowIndex: 1,
-          columns: [
-            {
-              colIndex: 1,
-              colspan: 12,
-              items: [
-                {
-                  id: "Id2",
-                  preps: {
-                    name: "input2",
-                    placeholder: "",
-                    label: "单行文本框",
-                    required: false,
-                    prefixIcon: "",
-                    minlength: 0,
-                    formVisible: true,
-                    searchVisible: true,
-                    rows: 2,
-                    listVisible: true,
-                    maxLength: 100,
-                    showWordLimit: false,
-                    min: 0,
-                    readonly: false,
-                    disabled: false,
-                    max: null,
-                    formatter: "",
-                    clearable: false,
-                    suffixIcon: "",
-                    resize: "none",
-                    autocomplete: false,
-                    comment: "",
-                    id: "Id2",
-                    itemNameLabel: "单行文本框",
-                  },
-                  compType: "formItem",
-                  itemType: "input",
-                },
-              ],
-            },
-            {
-              id: "bd268607-301d-471d-aa3d-9d8036e3741d",
-              colspan: 12,
-              rowspan: 1,
-              items: [
-                {
-                  id: "Id4",
-                  preps: {
-                    name: "input4",
-                    placeholder: "",
-                    label: "单行文本框",
-                    required: false,
-                    prefixIcon: "",
-                    minlength: 0,
-                    formVisible: true,
-                    searchVisible: true,
-                    rows: 2,
-                    listVisible: true,
-                    maxLength: 100,
-                    showWordLimit: false,
-                    min: 0,
-                    readonly: false,
-                    disabled: false,
-                    max: null,
-                    formatter: "",
-                    clearable: false,
-                    suffixIcon: "",
-                    resize: "none",
-                    autocomplete: false,
-                    comment: "",
-                    id: "Id4",
-                    itemNameLabel: "单行文本框",
-                  },
-                  compType: "formItem",
-                  itemType: "input",
-                },
-              ],
-            },
-          ],
+const tableFieldList = reactive<PageFieldInfo>({
+  fieldList: [
+    {
+      label: i18n("system.primary.key"),
+      fieldName: "idInformations",
+      formVisible: false,
+    },
+    [
+      {
+        label: i18n("system.parent.application"),
+        fieldName: "parentId",
+        type: "select",
+        formVisible: true,
+        actions: { change: testFun },
+        preps: {
+          values: informationsList,
         },
-        {
-          columns: [
-            {
-              id: "ebd12943-e7ec-4594-9165-55801a5b5ce3",
-              colspan: 12,
-              rowspan: 1,
-              items: [
-                {
-                  id: "Id3",
-                  preps: {
-                    name: "input3",
-                    placeholder: "",
-                    label: "单行文本框",
-                    required: false,
-                    prefixIcon: "",
-                    minlength: 0,
-                    formVisible: true,
-                    searchVisible: true,
-                    rows: 2,
-                    listVisible: true,
-                    maxLength: 100,
-                    showWordLimit: false,
-                    min: 0,
-                    readonly: false,
-                    disabled: false,
-                    max: null,
-                    formatter: "",
-                    clearable: false,
-                    suffixIcon: "",
-                    resize: "none",
-                    autocomplete: false,
-                    comment: "",
-                    id: "Id3",
-                    itemNameLabel: "单行文本框",
-                  },
-                  compType: "formItem",
-                  itemType: "input",
-                },
-              ],
-            },
-            {
-              id: "c3611aa0-b50a-467f-a138-52a831c7c4c6",
-              colspan: 12,
-              rowspan: 1,
-              items: [
-                {
-                  id: "Id5",
-                  preps: {
-                    name: "input5",
-                    placeholder: "",
-                    label: "单行文本框",
-                    required: false,
-                    prefixIcon: "",
-                    minlength: 0,
-                    formVisible: true,
-                    searchVisible: true,
-                    rows: 2,
-                    listVisible: true,
-                    maxLength: 100,
-                    showWordLimit: false,
-                    min: 0,
-                    readonly: false,
-                    disabled: false,
-                    max: null,
-                    formatter: "",
-                    clearable: false,
-                    suffixIcon: "",
-                    resize: "none",
-                    autocomplete: false,
-                    comment: "",
-                    id: "Id5",
-                    itemNameLabel: "单行文本框",
-                  },
-                  compType: "formItem",
-                  itemType: "input",
-                },
-              ],
-            },
-          ],
-        },
-      ],
-      maxLength: 100,
-      rules: [],
-      formVisible: true,
-      searchVisible: false,
+      },
+
+      {
+        label: i18n("system.application.name"),
+        fieldName: "sysName",
+        required: true,
+        listVisible: true,
+      },
+      /* {
+        label: i18n("system.belonging.entity"),
+        fieldName: "idCustomer",
+        type: "select",
+        required: true,
+        formVisible: true,
+        listVisible: true,
+        preps: {
+          values: customerList,
+        }
+      } */
+    ],
+    /* {
+     label: i18n("system.belonging.entity"), fieldName: "customer['customerName']", type: "select",
+     required: true,
+     listVisible: true
+   },*/
+    {
+      label: i18n("system.system.code"),
+      fieldName: "sysCode",
+      required: true,
+      formVisible: false,
       listVisible: true,
-      viewVisible: true,
-      hideLabel: false,
-      required: false,
-      disabled: false,
-      editDisabled: false,
-      clearable: true,
-      readonly: false,
-      prototypeDisplay: false,
-      uniqueValid: false,
-      showWordLimit: false,
-      autocomplete: false,
-      listPrototypeDisplay: false,
+      preps: {
+        disabled: true,
+      },
     },
-    compType: "container",
-    itemType: "box",
-  },
-  {
-    id: "Id6",
-    preps: {
-      type: "—",
+    [
+      {
+        label: i18n("system.system.logo"),
+        fieldName: "sysLogo",
+        type: "icon",
+        formVisible: true,
+        listVisible: true,
+        preps: {
+          iconType: "system",
+          values: [],
+        },
+      },
+      {
+        label: i18n("system.data.sort"),
+        fieldName: "dataSort",
+        type: "number",
+        formVisible: true,
+        listVisible: true,
+      },
+    ],
+    {
+      label: i18n("system.system.description"),
+      fieldName: "sysDesc",
+      type: "textarea",
+      formVisible: true,
+      listVisible: true,
+      actions: { input: testFun },
+    },
+    {
+      label: i18n("system.created.by"),
+      preps: {
+        disabled: true,
+      },
+      fieldName: "createdBy",
       formVisible: false,
-      disabled: false,
-      searchVisible: false,
-      listVisible: false,
-      tablePosition: "top",
-      closable: false,
-      addable: false,
-      editable: false,
-      stretch: false,
-      comment: "",
-      id: "Id6",
-      label: "Tab",
-      itemNameLabel: "Tab",
-      name: "tab6",
-      required: false,
-      clearable: false,
-      elements: [
-        {
-          label: "Tab1",
-          tabName: "tab1",
-          objectName: "tab1",
-          subFormFlag: true,
-          items: [
-            {
-              id: "Id7",
-              preps: {
-                align: "top",
-                justify: "start",
-                gutter: 0,
-                tag: "div",
-                comment: "",
-                id: "Id7",
-                label: "栅格",
-                itemNameLabel: "栅格",
-                name: "box7",
-                elements: [
-                  {
-                    rowIndex: 1,
-                    columns: [
-                      {
-                        colIndex: 1,
-                        colspan: 12,
-                        items: [
-                          {
-                            id: "Id8",
-                            preps: {
-                              name: "input8",
-                              placeholder: "",
-                              label: "单行文本框",
-                              required: false,
-                              prefixIcon: "",
-                              minlength: 0,
-                              formVisible: true,
-                              searchVisible: true,
-                              rows: 2,
-                              listVisible: true,
-                              maxLength: 100,
-                              showWordLimit: false,
-                              min: 0,
-                              readonly: false,
-                              disabled: false,
-                              max: null,
-                              formatter: "",
-                              clearable: false,
-                              suffixIcon: "",
-                              resize: "none",
-                              autocomplete: false,
-                              comment: "",
-                              id: "Id8",
-                              itemNameLabel: "单行文本框",
-                            },
-                            compType: "formItem",
-                            itemType: "input",
-                          },
-                        ],
-                      },
-                      {
-                        id: "11890392-d8f7-4046-92a7-8cbe00644a69",
-                        colspan: 12,
-                        rowspan: 1,
-                        items: [
-                          {
-                            id: "Id9",
-                            preps: {
-                              name: "input9",
-                              placeholder: "",
-                              label: "单行文本框",
-                              required: false,
-                              prefixIcon: "",
-                              minlength: 0,
-                              formVisible: true,
-                              searchVisible: true,
-                              rows: 2,
-                              listVisible: true,
-                              maxLength: 100,
-                              showWordLimit: false,
-                              min: 0,
-                              readonly: false,
-                              disabled: false,
-                              max: null,
-                              formatter: "",
-                              clearable: false,
-                              suffixIcon: "",
-                              resize: "none",
-                              autocomplete: false,
-                              comment: "",
-                              id: "Id9",
-                              itemNameLabel: "单行文本框",
-                            },
-                            compType: "formItem",
-                            itemType: "input",
-                          },
-                        ],
-                      },
-                    ],
-                  },
-                ],
-              },
-              compType: "container",
-              itemType: "box",
-            },
-            {
-              id: "Id10",
-              preps: {
-                gutter: 0,
-                columns: 3,
-                align: "top",
-                primaryKeyName: "id",
-                batchFieldName: "batchFieldName",
-                templateDownFlag: false,
-                importFlag: false,
-                comment: "",
-                id: "Id10",
-                label: "动态列表",
-                itemNameLabel: "动态列表",
-                name: "table10",
-                elements: [
-                  {
-                    colIndex: 1,
-                    items: [
-                      {
-                        id: "Id11",
-                        preps: {
-                          name: "input11",
-                          placeholder: "",
-                          label: "单行文本框",
-                          required: false,
-                          prefixIcon: "",
-                          minlength: 0,
-                          formVisible: true,
-                          searchVisible: true,
-                          rows: 2,
-                          listVisible: true,
-                          maxLength: 100,
-                          showWordLimit: false,
-                          min: 0,
-                          readonly: false,
-                          disabled: false,
-                          max: null,
-                          formatter: "",
-                          clearable: false,
-                          suffixIcon: "",
-                          resize: "none",
-                          autocomplete: false,
-                          comment: "",
-                          id: "Id11",
-                          itemNameLabel: "单行文本框",
-                        },
-                        compType: "formItem",
-                        itemType: "input",
-                      },
-                    ],
-                  },
-                  {
-                    colIndex: 2,
-                    items: [
-                      {
-                        id: "Id12",
-                        preps: {
-                          name: "input12",
-                          placeholder: "",
-                          label: "单行文本框",
-                          required: false,
-                          prefixIcon: "",
-                          minlength: 0,
-                          formVisible: true,
-                          searchVisible: true,
-                          rows: 2,
-                          listVisible: true,
-                          maxLength: 100,
-                          showWordLimit: false,
-                          min: 0,
-                          readonly: false,
-                          disabled: false,
-                          max: null,
-                          formatter: "",
-                          clearable: false,
-                          suffixIcon: "",
-                          resize: "none",
-                          autocomplete: false,
-                          comment: "",
-                          id: "Id12",
-                          itemNameLabel: "单行文本框",
-                        },
-                        compType: "formItem",
-                        itemType: "input",
-                      },
-                    ],
-                  },
-                  {
-                    colIndex: 3,
-                    items: [
-                      {
-                        id: "Id13",
-                        preps: {
-                          name: "input13",
-                          placeholder: "",
-                          label: "单行文本框",
-                          required: false,
-                          prefixIcon: "",
-                          minlength: 0,
-                          formVisible: true,
-                          searchVisible: true,
-                          rows: 2,
-                          listVisible: true,
-                          maxLength: 100,
-                          showWordLimit: false,
-                          min: 0,
-                          readonly: false,
-                          disabled: false,
-                          max: null,
-                          formatter: "",
-                          clearable: false,
-                          suffixIcon: "",
-                          resize: "none",
-                          autocomplete: false,
-                          comment: "",
-                          id: "Id13",
-                          itemNameLabel: "单行文本框",
-                        },
-                        compType: "formItem",
-                        itemType: "input",
-                      },
-                    ],
-                  },
-                ],
-              },
-              compType: "container",
-              itemType: "table",
-            },
-          ],
-        },
-        {
-          label: "Tab2",
-          tabName: "tab2",
-          objectName: "tab2",
-          subFormFlag: true,
-          items: [
-            {
-              id: "Id14",
-              preps: {
-                name: "input14",
-                placeholder: "",
-                label: "单行文本框",
-                required: false,
-                prefixIcon: "",
-                minlength: 0,
-                formVisible: true,
-                searchVisible: true,
-                rows: 2,
-                listVisible: true,
-                maxLength: 100,
-                showWordLimit: false,
-                min: 0,
-                readonly: false,
-                disabled: false,
-                max: null,
-                formatter: "",
-                clearable: false,
-                suffixIcon: "",
-                resize: "none",
-                autocomplete: false,
-                comment: "",
-                id: "Id14",
-                itemNameLabel: "单行文本框",
-              },
-              compType: "formItem",
-              itemType: "input",
-            },
-            {
-              id: "Id15",
-              preps: {
-                name: "input15",
-                placeholder: "",
-                label: "单行文本框",
-                required: false,
-                prefixIcon: "",
-                minlength: 0,
-                formVisible: true,
-                searchVisible: true,
-                rows: 2,
-                listVisible: true,
-                maxLength: 100,
-                showWordLimit: false,
-                min: 0,
-                readonly: false,
-                disabled: false,
-                max: null,
-                formatter: "",
-                clearable: false,
-                suffixIcon: "",
-                resize: "none",
-                autocomplete: false,
-                comment: "",
-                id: "Id15",
-                itemNameLabel: "单行文本框",
-              },
-              compType: "formItem",
-              itemType: "input",
-            },
-            {
-              id: "Id16",
-              preps: {
-                remark: "",
-                id: "Id16",
-                label: "折叠面板",
-                itemNameLabel: "折叠面板",
-                name: "collapse16",
-                required: false,
-                formVisible: false,
-                searchVisible: false,
-                listVisible: false,
-                clearable: false,
-                elements: [
-                  {
-                    label: "Collapse1",
-                    tabName: "collapse1",
-                    objectName: "collapse1",
-                    subFormFlag: true,
-                    items: [
-                      {
-                        id: "Id17",
-                        preps: {
-                          name: "input17",
-                          placeholder: "",
-                          label: "单行文本框",
-                          required: false,
-                          prefixIcon: "",
-                          minlength: 0,
-                          formVisible: true,
-                          searchVisible: true,
-                          rows: 2,
-                          listVisible: true,
-                          maxLength: 100,
-                          showWordLimit: false,
-                          min: 0,
-                          readonly: false,
-                          disabled: false,
-                          max: null,
-                          formatter: "",
-                          clearable: false,
-                          suffixIcon: "",
-                          resize: "none",
-                          autocomplete: false,
-                          comment: "",
-                          id: "Id17",
-                          itemNameLabel: "单行文本框",
-                        },
-                        compType: "formItem",
-                        itemType: "input",
-                      },
-                    ],
-                  },
-                  {
-                    label: "Collapse2",
-                    tabName: "collapse2",
-                    objectName: "collapse2",
-                    subFormFlag: true,
-                    items: [
-                      {
-                        id: "Id18",
-                        preps: {
-                          name: "input18",
-                          placeholder: "",
-                          label: "单行文本框",
-                          required: false,
-                          prefixIcon: "",
-                          minlength: 0,
-                          formVisible: true,
-                          searchVisible: true,
-                          rows: 2,
-                          listVisible: true,
-                          maxLength: 100,
-                          showWordLimit: false,
-                          min: 0,
-                          readonly: false,
-                          disabled: false,
-                          max: null,
-                          formatter: "",
-                          clearable: false,
-                          suffixIcon: "",
-                          resize: "none",
-                          autocomplete: false,
-                          comment: "",
-                          id: "Id18",
-                          itemNameLabel: "单行文本框",
-                        },
-                        compType: "formItem",
-                        itemType: "input",
-                      },
-                    ],
-                  },
-                ],
-              },
-              compType: "container",
-              itemType: "collapse",
-              activeItemName: "collapse1",
-            },
-          ],
-        },
-      ],
     },
-    compType: "container",
-    itemType: "tab",
-    stretch: false,
-    activeItemName: "tab1",
-  },
-  {
-    id: "Id19",
-    preps: {
-      rowSpan: "0px",
-      colSpan: "0px",
-      remark: "",
-      id: "Id19",
-      label: "动态表格",
-      itemNameLabel: "动态表格",
-      name: "dytable19",
-      elements: [
-        {
-          colIndex: 1,
-          columns: [
-            {
-              colIndex: 1,
-              colspan: 1,
-              rowspan: 1,
-              items: [
-                {
-                  id: "Id20copy",
-                  preps: {
-                    name: "input20",
-                    placeholder: "",
-                    label: "单行文本框",
-                    required: false,
-                    prefixIcon: "",
-                    minlength: 0,
-                    formVisible: true,
-                    searchVisible: true,
-                    rows: 2,
-                    listVisible: true,
-                    maxLength: 100,
-                    showWordLimit: false,
-                    min: 0,
-                    readonly: false,
-                    disabled: false,
-                    max: null,
-                    formatter: "",
-                    clearable: false,
-                    suffixIcon: "",
-                    resize: "none",
-                    autocomplete: false,
-                    comment: "",
-                    id: "Id20",
-                    itemNameLabel: "单行文本框",
-                  },
-                  compType: "formItem",
-                  itemType: "input",
-                },
-              ],
-            },
-            {
-              id: "f98affcb-be49-4d9b-b816-8675856ec3bb",
-              colspan: 1,
-              rowspan: 2,
-              items: [
-                {
-                  id: "Id21copy",
-                  preps: {
-                    controlsPosition: "",
-                    name: "number21",
-                    label: "数字输入框",
-                    controls: true,
-                    placeholder: "",
-                    required: false,
-                    valueOnClear: "min",
-                    formVisible: true,
-                    searchVisible: true,
-                    listVisible: true,
-                    maxLength: 10,
-                    step: 1,
-                    precision: 0,
-                    clearable: false,
-                    disabled: false,
-                    readonly: false,
-                    min: 0,
-                    max: null,
-                    comment: "",
-                    id: "Id21",
-                    itemNameLabel: "数字输入框",
-                  },
-                  compType: "formItem",
-                  itemType: "number",
-                },
-              ],
-            },
-          ],
-        },
-        {
-          columns: [
-            {
-              id: "f48ca367-0197-4afd-88c2-e70db7ec9973",
-              colspan: 1,
-              rowspan: 1,
-              items: [
-                {
-                  id: "Id22copy",
-                  preps: {
-                    name: "input22",
-                    placeholder: "",
-                    label: "单行文本框",
-                    required: false,
-                    prefixIcon: "",
-                    minlength: 0,
-                    formVisible: true,
-                    searchVisible: true,
-                    rows: 2,
-                    listVisible: true,
-                    maxLength: 100,
-                    showWordLimit: false,
-                    min: 0,
-                    readonly: false,
-                    disabled: false,
-                    max: null,
-                    formatter: "",
-                    clearable: false,
-                    suffixIcon: "",
-                    resize: "none",
-                    autocomplete: false,
-                    comment: "",
-                    id: "Id22",
-                    itemNameLabel: "单行文本框",
-                  },
-                  compType: "formItem",
-                  itemType: "input",
-                },
-              ],
-            },
-          ],
-        },
-      ],
-      required: false,
+    {
+      label: i18n("system.updated.by"),
+      preps: {
+        disabled: true,
+      },
+      fieldName: "updatedBy",
       formVisible: false,
-      searchVisible: false,
-      listVisible: false,
-      clearable: false,
     },
-    compType: "container",
-    itemType: "dytable",
-  },
-]);
-const init = () => {
-  const {selectList, compListResult, fieldList, searchItemList} =
-      analysisCompDatas(fields);
-  console.log(selectList);
-  console.log(compListResult);
-  console.log(fieldList);
-  console.log(searchItemList);
-};
-onMounted(() => {
-  init();
+    {
+      label: i18n("system.created.date"),
+      preps: {
+        disabled: true,
+      },
+      fieldName: "createdTime",
+      formVisible: false,
+      type: "datetime",
+    },
+    {
+      label: i18n("system.updated.date"),
+      preps: {
+        disabled: true,
+      },
+      fieldName: "updatedTime",
+      formVisible: false,
+      type: "datetime",
+    },
+    {
+      label: i18n("system.data.version"),
+      fieldName: "version",
+      formVisible: false,
+      type: "number",
+    },
+    {
+      label: i18n("system.is.deleted"),
+      fieldName: "isDel",
+      formVisible: false,
+      type: "number",
+    },
+    {
+      label: i18n("system.data.number"),
+      fieldName: "dataNo",
+      formVisible: false,
+    },
+    {
+      label: i18n("system.status.code"),
+      fieldName: "statusCode",
+      formVisible: false,
+    },
+    {
+      label: i18n("system.status.name"),
+      fieldName: "statusName",
+      formVisible: false,
+    },
+    {
+      label: i18n("system.international.code"),
+      fieldName: "local",
+      formVisible: false,
+    },
+  ],
 });
-</script>
+const primaryKey = "idInformations";
+const informationsRef = ref();
+const rules = {};
+const dialogProps = dialogPreps();
+provide("dialogProps", dialogProps);
 
-<style lang="scss" scoped></style>
+const dataFormat = (name: string, cellValue: object): any => {
+  if (name == "parentId") {
+    return (
+        informationsList.value.find(
+            (item: SelectOption) => item.value == cellValue,
+        )?.name || cellValue
+    );
+  } else if (name == "idCustomer") {
+    return (
+        customerList.value.find((item: SelectOption) => item.value == cellValue)
+            ?.name || cellValue
+    );
+  }
+  return cellValue;
+};
+const initData = async () => {
+  let params = [{ propertyName: "statusCode", value: "1" }];
+  // const datas = await loadSystemInfo(params);
+  // const customs = await loadCustomInfo(params);
+  // informationsList.value = datas;
+  // customerList.value = customs;
+  // systemIconList.value = loadElementPlusIcon();
+};
+onMounted(async () => {
+  await initData();
+});
+onActivated(() => {});
+</script>
+<template>
+  <div class="flex flex-col h-full overflow-hidden">
+    <star-horse-dialog
+        :isShowBtnContinue="true"
+        :dialogVisible="dialogProps.editVisible"
+        :dialogProps="dialogProps"
+    >
+      <star-horse-form
+          @refresh="informationsRef?.loadByPage()"
+          :compUrl="dataUrl"
+          :fieldList="tableFieldList"
+          :rules="rules"
+      />
+    </star-horse-dialog>
+    <star-horse-dialog
+        :dialog-visible="dialogProps.viewVisible"
+        :dialogProps="dialogProps"
+        :source="3"
+    >
+      <star-horse-data-view
+          :data-format="dataFormat"
+          :field-list="tableFieldList"
+          :compUrl="dataUrl"
+      />
+    </star-horse-dialog>
+    <div class="search-content">
+      <div class="search_btn">
+        <star-horse-search-comp
+            @searchData="(data: any) => informationsRef?.createSearchParams(data)"
+            :formData="searchFormData"
+            :compUrl="dataUrl"
+        />
+      </div>
+    </div>
+    <el-card class="inner_content">
+      <star-horse-table-comp
+          ref="informationsRef"
+          :fieldList="tableFieldList"
+          :primaryKey="primaryKey"
+          :btn-permissions="{
+            'view':'view',
+            'add':'add',
+            'edit':'edit',
+          }"
+          :compUrl="dataUrl"
+          :dataFormat="dataFormat"
+      />
+    </el-card>
+  </div>
+</template>

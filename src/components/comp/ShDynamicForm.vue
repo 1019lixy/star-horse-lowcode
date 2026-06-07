@@ -26,12 +26,14 @@ const assignDefault = () => {
   dataForm.value = {};
 };
 const loadData = async () => {
-  dataForm.value = await loadById(props.compUrl!.loadByIdUrl!, dialogProps.ids);
+  dataForm.value = await loadById(props.compUrl?.loadByIdUrl!, dialogProps?.ids);
   //解决关闭并再次打开不触发watch监听
-  dialogProps.ids = -2;
+  if (dialogProps) {
+    dialogProps.ids = -2;
+  }
 };
 const merge = (_type: string) => {
-  starHorseFormRef.value.validate((result: boolean) => {
+  starHorseFormRef.value?.validate((result: boolean) => {
     if (!result) {
       return;
     }
@@ -43,14 +45,14 @@ const mergeDraft = (type: string) => {
 };
 const doMerge = () => {
   load(i18n("common.dataProcessing"));
-  postRequest(props.compUrl.mergeUrl!, dataForm.value)
+  postRequest(props.compUrl?.mergeUrl!, dataForm.value)
     .then((res) => {
       closeLoad();
-      if (res.data.code != 0) {
-        warning(res.data.cnMessage);
+      if (res?.data?.code != 0) {
+        warning(res?.data?.cnMessage);
         return;
       } else {
-        success(res.data.cnMessage);
+        success(res?.data?.cnMessage);
       }
       emits("refresh");
       resetForm();
@@ -87,7 +89,7 @@ watch(
   },
 );
 watch(
-  () => dialogProps.ids,
+  () => dialogProps?.ids,
   (val) => {
     if (val == -2) {
       console.log("val == -2 不予处理");

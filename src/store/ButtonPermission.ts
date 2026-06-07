@@ -4,6 +4,7 @@ import { RouteLocationNormalized } from "vue-router";
 import { postRequest } from "@/api/star_horse_apis";
 import { getUserInfo } from "@/utils/auth";
 import { warning } from "@/utils/message";
+import { i18n } from "@/lang";
 
 /**
  * 用户权限控制
@@ -60,7 +61,7 @@ export const useButtonPermissionStore = defineStore("buttonPermission", () => {
       if (!permissons || permissons.length == 0) {
         const userId = getUserInfo()?.idUsersinfo;
         if (!userId) {
-          warning("Session 失效");
+          warning(i18n("common.sessionExpired"));
           return;
         }
         //没拿到则到数据库中去取
@@ -68,16 +69,16 @@ export const useButtonPermissionStore = defineStore("buttonPermission", () => {
           `${permissionUrlPrefix.value}${userId}/${menuId}`,
           {},
         ).then((res) => {
-          if (res.data.code) {
-            console.log(res.data.cnMessage);
+          if (res?.data?.code) {
+            console.log(res?.data?.cnMessage);
             return;
           }
-          permissons = res.data.data;
+          permissons = res?.data?.data;
         });
         if (permissons && permissons.length > 0) {
           addPermission(menuId, permissons);
         } else {
-          warning("没有页面按钮操作权限,请联系系统管理员授权");
+          warning(i18n("common.noPagePermission"));
         }
       }
       const permission: any = {};

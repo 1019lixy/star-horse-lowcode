@@ -7,11 +7,10 @@ import {SearchParams} from "@/components/types/Params";
 import {PageProps} from "@/components/types/PageProps";
 import {OrderByInfo} from "@/components/types/PageFieldInfo";
 import {i18n} from "@/lang";
-import {useGlobalConfigStore} from "@/store/GlobalConfig";
-import piniaInstance from "@/store/index";
 import {isSystemManage} from "@/utils/auth";
 import {warning} from "@/utils/message";
 import {computed, ModelRef, nextTick, onMounted, PropType, reactive, ref, unref,} from "vue";
+import {getGlobalConfigStore} from "@/store/StoreManager";
 
 const props = defineProps({
   preps: {
@@ -73,9 +72,8 @@ const emits = defineEmits([
   "addData",
   "removeData",
 ]);
-let configStore = useGlobalConfigStore(piniaInstance);
 let compSize = computed(
-    () => configStore.configFormInfo?.inputSize || "default",
+    () => getGlobalConfigStore().configFormInfo?.inputSize || "default",
 );
 const treeRef = ref<any>();
 const menuTreeRef = ref<any>();
@@ -92,10 +90,10 @@ let pageInfo = reactive<PageProps>({
   dataList: [],
 });
 const onQueryChanged = (query: string) => {
-  treeRef.value!.filter(query);
+  treeRef.value?.filter(query);
 };
 const filterMethod = (query: string, node: any) => {
-  return node[props.preps?.label]!.toLowerCase().includes(query?.toLowerCase());
+  return node?.[props.preps?.label]?.toLowerCase()?.includes(query?.toLowerCase());
 };
 const changeArrow = (evt: MouseEvent) => {
   if (evt) {
@@ -111,11 +109,11 @@ const treeOperation = (cmd: string) => {
     if (cmd == "add") {
       emits("addData", {});
     } else if (cmd == "collapse") {
-      Object.values(treeRef.value!.store.nodesMap).forEach((v: any) =>
+      Object.values(treeRef.value?.store?.nodesMap || {}).forEach((v: any) =>
           v.collapse(),
       );
     } else {
-      Object.values(treeRef.value!.store.nodesMap).forEach((v: any) =>
+      Object.values(treeRef.value?.store?.nodesMap || {}).forEach((v: any) =>
           v.expand(),
       );
     }
@@ -126,9 +124,9 @@ const treeOperation = (cmd: string) => {
           if (cmd == "add") {
             emits("addData", {});
           } else if (cmd == "collapse") {
-            menuTreeRef.value.close(item[props.preps?.value]);
+            menuTreeRef.value?.close(item?.[props.preps?.value]);
           } else {
-            menuTreeRef.value!.open(item[props.preps?.value]);
+            menuTreeRef.value?.open(item?.[props.preps?.value]);
           }
           getAllSubNodeIndex(item.children);
         }
@@ -154,14 +152,13 @@ const operSelectData = (data: any, checked: boolean) => {
         break;
       }
     }
-    treeRef.value!.setChecked(data, checked);
+    treeRef.value?.setChecked(data, checked);
   }
 };
 const setSelectData = (datas: Array<any>) => {
-  //设置数据选中自动会再次赋值
   selectedDataList.value = datas;
-  datas.forEach((item) => {
-    treeRef.value!.setChecked(item, true);
+  datas?.forEach((item) => {
+    treeRef.value?.setChecked(item, true);
   });
 };
 const getSelectData = () => {
@@ -227,15 +224,15 @@ const loadByPage = async () => {
   };
   postRequest(props.compUrl?.pageListUrl!, params)
       .then((res: any) => {
-        if (!res || res.data.code != 0) {
-          console.error(res?.data?.cnMessage || "接口异常");
+        if (!res || res?.data?.code != 0) {
+          console.error(res?.data?.cnMessage || i18n("api.interfaceError"));
           return;
         }
-        let redata = res.data.data;
+        let redata = res?.data?.data;
         //如果不是分页之间显示返回的所有数据
         treeDatas.value = redata?.dataList || redata;
-        pageInfo.totalPage = redata.totalPages;
-        pageInfo.totalData = redata.totalDatas;
+        pageInfo.totalPage = redata?.totalPages;
+        pageInfo.totalData = redata?.totalDatas;
       })
       .catch((err: any) => {
         console.log(err);

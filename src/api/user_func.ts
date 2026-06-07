@@ -1,5 +1,4 @@
-import { useSelfOperationStore } from "@/store/SelfOperation";
-import piniaInstance from "@/store";
+import { getSelfOperationStore } from "@/store/StoreManager";
 import {
   download,
   getRequest,
@@ -13,10 +12,11 @@ import { success, warning } from "@/utils/message";
 import { i18n } from "@/lang";
 import { UserFuncInfo } from "@/components/types/PageFieldInfo";
 import JSON5 from "json5";
+
 /**
  * 动态表单用户自定义驱动
  */
-const userOperation = useSelfOperationStore(piniaInstance);
+// const userOperation = getSelfOperationStore();
 /**
  * 用户自定义事件对接接口
  * @param code 需要执行的代码
@@ -29,11 +29,11 @@ export const userFunction = (code: string, context: any, formData: any) => {
     return;
   }
   //表单元素
-  const formFields: any = userOperation.fieldItemList;
+  const formFields: any = getSelfOperationStore().fieldItemList;
   //表单数据
   // let formData: any = userOperation.formData;
   //表单实例
-  const formInstance: any = userOperation.formInstance;
+  const formInstance: any = getSelfOperationStore().formInstance;
   /**
    * currentField 当前组件信息
    * formData 表单数据
@@ -104,8 +104,8 @@ export function userAction(
             postRequest(content, {
               fieldList: fieldList,
             }).then((res) => {
-              if (res.data.code) {
-                warning(res.data.cnMessage);
+              if (res?.data?.code) {
+                warning(res?.data?.cnMessage);
                 return;
               }
               success(i18n("userFunc.operationSuccess"));

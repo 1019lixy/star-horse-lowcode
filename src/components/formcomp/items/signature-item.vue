@@ -7,6 +7,7 @@ import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 
 import {ItemPreps} from "@/components/types/ItemPreps";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
+import {i18n} from "@/lang";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -54,7 +55,7 @@ const handlePreview = (evt: MouseEvent) => {
   evt && evt.defaultPrevented;
   const isEmpty = signature.value.isEmpty();
   if (isEmpty) {
-    warning("请先签名");
+    warning(i18n("item.pleaseSignFirst"));
     return;
   }
   previewDialog.value = true;
@@ -88,17 +89,17 @@ onUpdated(() => {
       <div class="inner_button" v-if="source!=3">
         <el-menu mode="horizontal" style="height: inherit; width: 100%">
           <el-menu-item @click="clear">
-            <el-tooltip content="清除">
+            <el-tooltip :content="i18n('item.clear')">
               <star-horse-icon icon-class="reset"/>
             </el-tooltip>
           </el-menu-item>
           <el-menu-item @click="undo">
-            <el-tooltip content="后退">
+            <el-tooltip :content="i18n('item.undo')">
               <star-horse-icon icon-class="undo"/>
             </el-tooltip>
           </el-menu-item>
           <el-menu-item @click="handlePreview">
-            <el-tooltip content="预览">
+            <el-tooltip :content="i18n('item.preview')">
               <star-horse-icon icon-class="preview"/>
             </el-tooltip>
           </el-menu-item>

@@ -10,10 +10,11 @@ import piniaInstance from "@/store";
 import {useGlobalConfigStore} from "@/store/GlobalConfig";
 import {getToken} from "@/utils/auth";
 import {error, warning} from "@/utils/message";
-import {computed, onMounted, PropType, ref} from "vue";
+import {computed, nextTick, onMounted, PropType, ref} from "vue";
 import {i18n} from "@/lang";
 import {isMobile} from "@/api/device";
 import MenuShot from "@/components/comp/app/MenuShot.vue";
+import {closeLoad, load} from "@/api/star_horse_utils";
 
 const props = defineProps({
   dialogProps: {type: Object as PropType<DialogProps>, required: true},
@@ -48,7 +49,7 @@ const dataForm = ref<any>({});
  */
 const tableCompFunc = (funcName: string) => {
   if ((funcName == "upload" || funcName == "import") && isMobile) {
-    warning("App端不支持此操作,请到Pc端完成");
+    warning(i18n("item.notSupportedOnApp"));
     return;
   }
   emits("tableCompFunc", funcName);
@@ -70,18 +71,25 @@ const btnOperation = (funcName: string) => {
     }
   }
   //？表示判断是否为空 ！表示断言not null
-  if (funcName == "add") {
-    //  dataForm.value = {};
-    props.dialogProps!.ids = -1;
-    props.dialogProps!.editVisible = true;
-    props.dialogProps!.dialogTitle = i18n("dialog.addTitle");
-  } else if (funcName == "batchAdd") {
-    props.dialogProps!.batchEditVisible = true;
-    props.dialogProps!.batchDialogTitle = i18n("dialog.batchAddTitle");
-  } else if (funcName == "download") {
-    downloadTemplate();
-  } else {
-    tableCompFunc(funcName);
+  try {
+    load(i18n("item.systemLoading"));
+    if (funcName == "add") {
+      //  dataForm.value = {};
+      props.dialogProps!.ids = -1;
+      props.dialogProps!.editVisible = true;
+      props.dialogProps!.dialogTitle = i18n("dialog.addTitle");
+    } else if (funcName == "batchAdd") {
+      props.dialogProps!.batchEditVisible = true;
+      props.dialogProps!.batchDialogTitle = i18n("dialog.batchAddTitle");
+    } else if (funcName == "download") {
+      downloadTemplate();
+    } else {
+      tableCompFunc(funcName);
+    }
+  } finally {
+    nextTick(() => {
+      closeLoad();
+    });
   }
 };
 /**
