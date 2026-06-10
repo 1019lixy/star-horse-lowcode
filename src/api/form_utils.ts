@@ -630,14 +630,15 @@ export function dynamicFormAnalysis(props: any, dataForm: any) {
  */
 export function validMsg(item: any, dataForm: any) {
     const rules = [];
-    if (
-        item.required &&
-        (item.required === true || item.required == "true") &&
-        !item.disabled
-    ) {
+    // 兼容 preps 下的属性，优先取 preps 中的值
+    const preps = item.preps || {};
+    const required = preps.required ?? item.required;
+    const disabled = preps.disabled ?? item.disabled;
+    const label = preps.label ?? item.label;
+    if (required && (required === true || required == "true") && !disabled) {
         rules.push({
             required: true,
-            message: `${item?.label}${i18n("api.cannotBeEmpty")}`,
+            message: `${label}${i18n("api.cannotBeEmpty")}`,
             trigger: "blur",
         });
     }
