@@ -124,13 +124,9 @@ export const useDesignFormStore = defineStore("designForm", () => {
      * @param parentType 父组件类型
      */
     const selectItem = (data: any, itemType: string, parentType: string) => {
-        // Check for duplicate selection to avoid unnecessary updates
         const itemId = data?.id || data?.preps?.id;
-        if (currentItemId.value === itemId) {
-            return;
-        }
-        currentCompCategory.value = data.compType;
         currentItemId.value = itemId;
+        currentCompCategory.value = data.compType;
         parentCompType.value = parentType;
         currentComp.value = data;
         currentItemType.value = itemType || data.itemType;
