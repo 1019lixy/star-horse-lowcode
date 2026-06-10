@@ -5,6 +5,8 @@ defineProps<{
   language: string;
   lspConnected: boolean;
   showLsp: boolean;
+  loading?: boolean;
+  saving?: boolean;
 }>();
 </script>
 
@@ -19,6 +21,8 @@ defineProps<{
         <span class="status-dot" />
         LSP {{ lspConnected ? '已连接' : '未连接' }}
       </span>
+      <span v-if="loading" class="status-item status-loading">⏳ 加载中...</span>
+      <span v-if="saving" class="status-item status-saving">💾 保存中...</span>
     </div>
     <div class="status-right">
       <span class="status-item">行 {{ cursorLine }}, 列 {{ cursorCol }}</span>
@@ -66,5 +70,13 @@ defineProps<{
 }
 .status-err .status-dot {
   background: #ff4d4f;
+}
+.status-loading,
+.status-saving {
+  animation: pulse 1.2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
 }
 </style>

@@ -6,6 +6,7 @@ import { detectLanguage } from "./code-editor/constants";
 import { applyThemeVars } from "./code-editor/theme";
 import { useLsp } from "./code-editor/useLsp";
 import { useFileTree } from "./code-editor/useFileTree";
+import { useFileApi } from "./code-editor/useFileApi";
 import MenuBar from "./code-editor/MenuBar.vue";
 import ActivityBar from "./code-editor/ActivityBar.vue";
 import TabBar from "./code-editor/TabBar.vue";
@@ -21,6 +22,8 @@ const props = defineProps({
   theme: { type: String, default: "vs-dark" },
   readOnly: { type: Boolean, default: false },
   lspServerUrl: { type: String, default: "" },
+  loadUrl: { type: String, default: "" },
+  saveUrl: { type: String, default: "" },
   fontSize: { type: Number, default: 14 },
   minimap: { type: Boolean, default: true },
   showActivityBar: { type: Boolean, default: true },
@@ -32,6 +35,7 @@ const emit = defineEmits([
   "file-open", "file-save", "file-close", "file-create", "file-delete",
   "file-rename", "folder-create", "menu-action", "change",
   "lspConnected", "lspDisconnected", "tree-change",
+  "load-complete", "save-complete", "drop",
 ]);
 
 // ==================== IDE State ====================
@@ -54,6 +58,13 @@ const dirInputRef = ref<HTMLInputElement>();
 // ==================== File Tree (内部管理) ====================
 const fileTree = useFileTree(props.files);
 const editingNodeId = ref<string | null>(null);
+
+// ==================== File API (后端集成) ====================
+const fileApi = useFileApi(props.loadUrl, props.saveUrl);
+
+// ==================== Drag & Drop ====================
+const draggingId = ref<string | null>(null);
+const dropTargetId = ref<string | null>(null);
 
 // ==================== Context Menu ====================
 const contextMenuVisible = ref(false);
@@ -290,9 +301,11 @@ const defaultMenus: MenuItemDef[] = [
       { divider: true, label: "" },
       { label: "打开文件...", action: "open-file", shortcut: "Ctrl+O" },
       { label: "打开目录...", action: "open-directory" },
+      { label: "从服务器加载", action: "load-server" },
       { divider: true, label: "" },
       { label: "保存", action: "save", shortcut: "Ctrl+S" },
       { label: "全部保存", action: "save-all", shortcut: "Ctrl+Shift+S" },
+      { label: "保存到服务器", action: "save-server" },
       { divider: true, label: "" },
       { label: "关闭标签", action: "close-tab", shortcut: "Ctrl+W" },
       { label: "关闭全部", action: "close-all" },
@@ -341,6 +354,7 @@ const handleMenuAction = (item: MenuItemDef) => {
     case "new-folder": handleNewFolder(null); break;
     case "open-file": fileInputRef.value?.click(); break;
     case "open-directory": dirInputRef.value?.click(); break;
+    case "load-server": loadFromServer(); break;
     case "save":
       if (activeTabId.value) {
         const content = editor?.getValue() || "";
@@ -360,6 +374,9 @@ const handleMenuAction = (item: MenuItemDef) => {
           emit("file-save", { id: t.id, content });
         }
       });
+      break;
+    case "save-server":
+      saveToServer();
       break;
     case "close-tab": if (activeTabId.value) closeTab(activeTabId.value); break;
     case "close-all": [...openTabs.value].forEach(t => closeTab(t.id)); break;
@@ -490,6 +507,61 @@ const switchTheme = (themeValue: string) => {
   if (ideRoot.value) applyThemeVars(ideRoot.value, themeValue);
 };
 
+// ==================== 拖拽处理 ====================
+const handleDragStart = (id: string) => {
+  draggingId.value = id;
+};
+
+const handleDragEnd = () => {
+  draggingId.value = null;
+  dropTargetId.value = null;
+};
+
+const handleDrop = (sourceId: string, targetFolderId: string) => {
+  const moved = fileTree.moveNode(sourceId, targetFolderId);
+  if (moved) {
+    // 自动展开目标文件夹
+    const s = new Set(expandedFolders.value);
+    s.add(targetFolderId);
+    expandedFolders.value = s;
+    emit("drop", { sourceId, targetFolderId });
+    emit("tree-change", fileTree.tree.value);
+  }
+  draggingId.value = null;
+  dropTargetId.value = null;
+};
+
+// ==================== 从后端加载 ====================
+const loadFromServer = async () => {
+  const nodes = await fileApi.loadFromServer();
+  if (nodes.length > 0) {
+    fileTree.replaceTree(nodes);
+    // 关闭所有标签页并重新打开第一个文件
+    [...openTabs.value].forEach(t => closeTab(t.id));
+    const first = fileTree.findFirstFile();
+    if (first) openFile(first);
+    emit("load-complete", nodes);
+    emit("tree-change", fileTree.tree.value);
+  }
+};
+
+// ==================== 保存到后端 ====================
+const saveToServer = async () => {
+  // 先同步所有打开标签的内容到树
+  openTabs.value.forEach(t => {
+    const model = monacoModels.get(t.id);
+    if (model) {
+      fileTree.updateFileContent(t.id, model.getValue());
+      t.modified = false;
+    }
+  });
+  const ok = await fileApi.saveToServer(fileTree.tree.value);
+  if (ok) {
+    emit("save-complete", fileTree.tree.value);
+  }
+  return ok;
+};
+
 // ==================== 排序 ====================
 const sortedTree = computed(() => {
   const sortNodes = (nodes: FileNode[]): FileNode[] =>
@@ -576,6 +648,7 @@ const getEditor = () => toRaw(editorInstance.value);
 defineExpose({
   editor: editorInstance,
   fileTree,
+  fileApi,
   openFile,
   closeFile: (id: string) => closeTab(id),
   getValue,
@@ -587,6 +660,8 @@ defineExpose({
   createFolder: (parentId?: string) => handleNewFolder(parentId || null),
   deleteFile: (id: string) => handleDelete(id),
   renameFile: (id: string) => handleRename(id),
+  loadFromServer,
+  saveToServer,
 });
 
 // ==================== 生命周期 ====================
@@ -594,6 +669,10 @@ onMounted(() => {
   initEditor();
   document.addEventListener("keydown", handleKeydown);
   if (ideRoot.value) applyThemeVars(ideRoot.value, currentTheme.value);
+  // 如果配置了loadUrl，自动从后端加载
+  if (props.loadUrl) {
+    loadFromServer();
+  }
 });
 
 onBeforeUnmount(() => {
@@ -665,11 +744,16 @@ onBeforeUnmount(() => {
                 :expanded="expandedFolders"
                 :active-id="activeTabId"
                 :editing-node-id="editingNodeId"
+                :dragging-id="draggingId"
+                :drop-target-id="dropTargetId"
                 @toggle="toggleFolder"
                 @select="openFile"
                 @contextmenu="handleTreeContextMenu"
                 @edit-confirm="handleEditConfirm"
                 @edit-cancel="handleEditCancel"
+                @drag-start="handleDragStart"
+                @drag-end="handleDragEnd"
+                @drop="handleDrop"
               />
             </template>
             <div v-else class="sidebar-empty">
@@ -743,6 +827,8 @@ onBeforeUnmount(() => {
       :language="currentLang"
       :lsp-connected="lsp.lspConnected.value"
       :show-lsp="!!lspServerUrl"
+      :loading="fileApi.loading.value"
+      :saving="fileApi.saving.value"
     />
   </div>
 </template>

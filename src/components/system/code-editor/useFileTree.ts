@@ -143,6 +143,47 @@ export function useFileTree(initialFiles?: FileNode[]) {
     container.push(...newNodes);
   };
 
+  // ========== 替换整棵树（从后端加载） ==========
+
+  const replaceTree = (newTree: FileNode[]): void => {
+    tree.value = newTree;
+  };
+
+  // ========== 祖先检测（拖拽防循环） ==========
+
+  const isDescendant = (ancestorId: string, targetId: string): boolean => {
+    const ancestor = findNode(ancestorId);
+    if (!ancestor || !ancestor.children) return false;
+    const check = (nodes: FileNode[]): boolean =>
+      nodes.some(n => n.id === targetId || (n.children ? check(n.children) : false));
+    return check(ancestor.children);
+  };
+
+  // ========== 移动节点（拖拽） ==========
+
+  const moveNode = (sourceId: string, targetFolderId: string | null): boolean => {
+    if (sourceId === targetFolderId) return false;
+    if (targetFolderId && isDescendant(sourceId, targetFolderId)) return false;
+
+    const node = findNode(sourceId);
+    if (!node) return false;
+    const clone: FileNode = JSON.parse(JSON.stringify(node));
+
+    // 先从原位置删除
+    deleteNode(sourceId);
+
+    // 再插入目标位置
+    if (targetFolderId) {
+      const target = findNode(targetFolderId);
+      if (!target || target.type !== "folder") return false;
+      if (!target.children) target.children = [];
+      target.children.push(clone);
+    } else {
+      tree.value.push(clone);
+    }
+    return true;
+  };
+
   return {
     tree,
     findNode,
@@ -157,5 +198,8 @@ export function useFileTree(initialFiles?: FileNode[]) {
     getFileContent,
     findFirstFile,
     addNodes,
+    replaceTree,
+    isDescendant,
+    moveNode,
   };
 }
