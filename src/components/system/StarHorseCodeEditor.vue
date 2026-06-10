@@ -3,7 +3,7 @@ import { nextTick, onMounted, onBeforeUnmount, PropType, ref, shallowRef, watch,
 import * as monaco from "monaco-editor";
 import type { FileNode, TabInfo, MenuItemDef } from "./code-editor/types";
 import { detectLanguage } from "./code-editor/constants";
-import { IDE_THEMES, applyThemeVars } from "./code-editor/theme";
+import { applyThemeVars } from "./code-editor/theme";
 import { useLsp } from "./code-editor/useLsp";
 import { useFileTree } from "./code-editor/useFileTree";
 import MenuBar from "./code-editor/MenuBar.vue";
@@ -266,8 +266,6 @@ const handleSidebarContextMenu = (e: MouseEvent) => {
 const handleContextMenuAction = (action: string) => {
   const targetId = contextMenuTargetId.value;
   const targetNode = targetId ? fileTree.findNode(targetId) : null;
-  const parentId = targetNode?.type === "folder" ? targetId
-    : targetId ? fileTree.findParent(targetId)?.id || null : null;
   const siblingParentId = targetId ? fileTree.findParent(targetId)?.id || null : null;
 
   switch (action) {

@@ -1,4 +1,4 @@
-import { ref, shallowRef, toRaw, type Ref, type ShallowRef } from "vue";
+import { ref, toRaw, type Ref, type ShallowRef } from "vue";
 import * as monaco from "monaco-editor";
 
 const pendingRequests = new Map<number, { resolve: (v: any) => void; reject: (r: any) => void }>();
@@ -18,7 +18,6 @@ export function useLsp(
   let lspInitialized = false;
   let lspRequestId = 100;
   let documentVersion = 0;
-  let workspaceRootUri = "";
   let lspReconnectTimer: ReturnType<typeof setTimeout> | null = null;
   let lspReconnectAttempts = 0;
   let lspInitTimer: ReturnType<typeof setTimeout> | null = null;
@@ -68,7 +67,6 @@ export function useLsp(
       clearTimeout(lspInitTimer);
       lspInitTimer = null;
     }
-    workspaceRootUri = (result.rootUri || `file:///workspace/${currentLang.value}`).replace(/\/+$/, "");
     sendLspNotification("initialized", {});
     const editor = toRaw(editorInstance.value);
     const text = editor?.getValue() || "";
@@ -212,7 +210,6 @@ export function useLsp(
       lspWs = null;
     }
     lspInitialized = false;
-    workspaceRootUri = "";
     pendingRequests.clear();
     try {
       lspWs = new WebSocket(`${lspServerUrl.value.replace(/\/+$/, "")}/lsp/${lang}`);
@@ -251,7 +248,6 @@ export function useLsp(
     }
     lspConnected.value = false;
     lspInitialized = false;
-    workspaceRootUri = "";
     pendingRequests.clear();
   };
 
