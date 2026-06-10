@@ -1,626 +1,519 @@
 <script setup lang="ts" name="StarHorseCodeEditor">
-import { nextTick, onMounted, onBeforeUnmount, PropType, ref, shallowRef, watch, toRaw } from "vue";
+import { nextTick, onMounted, onBeforeUnmount, PropType, ref, shallowRef, watch, toRaw, computed } from "vue";
 import * as monaco from "monaco-editor";
-import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
-import { i18n } from "@/lang";
+import type { FileNode, TabInfo, MenuItemDef } from "./code-editor/types";
+import { detectLanguage } from "./code-editor/constants";
+import { IDE_THEMES, applyThemeVars } from "./code-editor/theme";
+import { useLsp } from "./code-editor/useLsp";
+import { useFileTree } from "./code-editor/useFileTree";
+import MenuBar from "./code-editor/MenuBar.vue";
+import ActivityBar from "./code-editor/ActivityBar.vue";
+import TabBar from "./code-editor/TabBar.vue";
+import StatusBar from "./code-editor/StatusBar.vue";
+import FileTreeNode from "./code-editor/FileTreeNode.vue";
+import ContextMenu from "./code-editor/ContextMenu.vue";
+import type { ContextMenuItem } from "./code-editor/ContextMenu.vue";
 
-const model = defineModel("value", { default: "" });
-
+// ==================== Props & Emits ====================
 const props = defineProps({
-  language: { type: String, default: "java" },
+  files: { type: Array as PropType<FileNode[]>, default: () => [] },
+  menuItems: { type: Array as PropType<MenuItemDef[]>, default: () => [] },
   theme: { type: String, default: "vs-dark" },
   readOnly: { type: Boolean, default: false },
-  boxHeight: { type: String, default: "100%" },
   lspServerUrl: { type: String, default: "" },
-  filePath: { type: String, default: "" },
-  btnList: { type: Object as PropType<Array<any>>, default: () => [] },
-  helpMsg: { type: String },
-  minimap: { type: Boolean, default: true },
   fontSize: { type: Number, default: 14 },
-  autoSaveDelay: { type: Number, default: 0 },
+  minimap: { type: Boolean, default: true },
+  showActivityBar: { type: Boolean, default: true },
+  showExplorer: { type: Boolean, default: true },
+  showStatusBar: { type: Boolean, default: true },
+  boxHeight: { type: String, default: "100%" },
 });
-
-const emit = defineEmits(["change", "lspConnected", "lspDisconnected"]);
-
-// ==================== 语言定义 ====================
-const languages = ref([
-  { name: "Java", value: "java" },
-  { name: "C#", value: "csharp" },
-  { name: "C++", value: "cpp" },
-  { name: "JavaScript", value: "javascript" },
-  { name: "TypeScript", value: "typescript" },
-  { name: "Python", value: "python" },
-  { name: "Go", value: "go" },
-  { name: "SQL", value: "sql" },
-  { name: "JSON", value: "json" },
-  { name: "YAML", value: "yaml" },
-  { name: "XML", value: "xml" },
-  { name: "HTML", value: "html" },
-  { name: "CSS", value: "css" },
-  { name: "Markdown", value: "markdown" },
+const emit = defineEmits([
+  "file-open", "file-save", "file-close", "file-create", "file-delete",
+  "file-rename", "folder-create", "menu-action", "change",
+  "lspConnected", "lspDisconnected", "tree-change",
 ]);
 
-const themes = ref([
-  { name: "VS Dark", value: "vs-dark" },
-  { name: "VS Light", value: "vs" },
-  { name: "HC Black", value: "hc-black" },
-]);
-
-// ==================== 状态 ====================
+// ==================== IDE State ====================
+const ideRoot = ref<HTMLElement>();
 const editorContainer = ref<HTMLElement>();
 const editorInstance = shallowRef<monaco.editor.IStandaloneCodeEditor>();
-const currentLang = ref(props.language);
+const openTabs = ref<TabInfo[]>([]);
+const activeTabId = ref("");
+const sidebarVisible = ref(true);
+const activePanel = ref("explorer");
 const currentTheme = ref(props.theme);
-const lspConnected = ref(false);
+const cursorLine = ref(1);
+const cursorCol = ref(1);
+const expandedFolders = ref<Set<string>>(new Set());
+const sidebarWidth = ref(220);
+const monacoModels = new Map<string, monaco.editor.ITextModel>();
+const fileInputRef = ref<HTMLInputElement>();
+const dirInputRef = ref<HTMLInputElement>();
 
-// LSP 相关
-let lspWs: WebSocket | null = null;
-let autoSaveTimer: ReturnType<typeof setTimeout> | null = null;
-let lastInternalValue: string | null = null;
-let keywordProvidersRegistered = false;
-let lspInitialized = false;
-let lspRequestId = 100; // 从100开始，避免和后端initialize请求的id=1冲突
-let documentVersion = 0;
-let workspaceRootUri = ""; // 从initialize响应中获取的工作空间根URI
-let lspReconnectTimer: ReturnType<typeof setTimeout> | null = null;
-let lspReconnectAttempts = 0;
-let lspInitTimer: ReturnType<typeof setTimeout> | null = null;
-const LSP_MAX_RECONNECT_ATTEMPTS = 10;
-const LSP_RECONNECT_DELAY = 3000; // 3秒
-const LSP_INIT_TIMEOUT = 60000; // 60秒超时
-const pendingRequests = new Map<number, { resolve: (value: any) => void; reject: (reason: any) => void }>();
+// ==================== File Tree (内部管理) ====================
+const fileTree = useFileTree(props.files);
+const editingNodeId = ref<string | null>(null);
 
-// ==================== LSP 请求/通知发送 ====================
-const sendLspRequest = (method: string, params: any): Promise<any> => {
-  return new Promise((resolve, reject) => {
-    if (!lspWs || lspWs.readyState !== WebSocket.OPEN) {
-      reject(new Error("WebSocket not open"));
-      return;
-    }
-    const id = ++lspRequestId;
-    const msg = { jsonrpc: "2.0", id, method, params };
-    pendingRequests.set(id, { resolve, reject });
-    lspWs!.send(JSON.stringify(msg));
-    // 超时处理
-    setTimeout(() => {
-      if (pendingRequests.has(id)) {
-        pendingRequests.delete(id);
-        reject(new Error(`LSP request timeout: ${method}`));
-      }
-    }, 10000);
-  });
-};
+// ==================== Context Menu ====================
+const contextMenuVisible = ref(false);
+const contextMenuPosition = ref({ x: 0, y: 0 });
+const contextMenuItems = ref<ContextMenuItem[]>([]);
+const contextMenuTargetId = ref<string | null>(null);
 
-const sendLspNotification = (method: string, params: any) => {
-  if (!lspWs || lspWs.readyState !== WebSocket.OPEN) return;
-  lspWs.send(JSON.stringify({ jsonrpc: "2.0", method, params }));
-};
+// ==================== Computed ====================
+const activeTab = computed(() => openTabs.value.find(t => t.id === activeTabId.value));
+const activeFile = computed(() => fileTree.findNode(activeTabId.value));
+const currentLang = computed(() => activeTab.value?.language || "plaintext");
 
-const sendLspResponse = (id: number, result: any) => {
-  if (!lspWs || lspWs.readyState !== WebSocket.OPEN) return;
-  lspWs.send(JSON.stringify({ jsonrpc: "2.0", id, result }));
-};
-
-// ==================== 获取文档URI ====================
+// ==================== LSP ====================
+const lspServerUrlRef = computed(() => props.lspServerUrl);
 const getDocumentUri = () => {
-  // 文档URI必须在工作空间根目录下，Language Server才能提供补全
-  // workspaceRootUri 格式: file:///D:/lsp-workspace/java
-  if (workspaceRootUri) {
-    const fileName = props.filePath
-      ? props.filePath.replace(/^\/+/, "") // 去掉开头的斜杠
-      : `src/untitled.${getFileExtension(currentLang.value)}`;
-    return `${workspaceRootUri}/${fileName}`;
-  }
-  // fallback: 如果还没收到initialize响应，使用临时路径
-  return `file:///tmp/workspace/src/untitled.${getFileExtension(currentLang.value)}`;
+  const name = activeTab.value?.name || "untitled.txt";
+  return `file:///workspace/${name}`;
 };
+const lsp = useLsp(lspServerUrlRef, editorInstance, currentLang, getDocumentUri);
 
-const getFileExtension = (lang: string): string => {
-  const extMap: Record<string, string> = {
-    java: "java", csharp: "cs", cpp: "cpp", javascript: "js",
-    typescript: "ts", python: "py", go: "go", sql: "sql",
-    json: "json", yaml: "yml", xml: "xml", html: "html",
-    css: "css", markdown: "md",
-  };
-  return extMap[lang] || "txt";
-};
-
-// ==================== LSP 初始化 ====================
-const initializeLsp = async () => {
-  if (lspInitialized) return;
-
-  // 后端在WebSocket连接建立时已发送initialize请求到Language Server
-  // 前端需要等待后端返回initialize响应后，发送initialized通知和didOpen
-  console.log("[LSP] Waiting for initialize response from backend...");
-
-  // 设置超时：JDT.LS首次启动可能需要30-60秒
-  if (lspInitTimer) clearTimeout(lspInitTimer);
-  lspInitTimer = setTimeout(() => {
-    if (!lspInitialized) {
-      console.warn(`[LSP] Initialize timeout (${LSP_INIT_TIMEOUT / 1000}s), Language Server可能仍在启动中，请等待后端日志出现 ServiceReady`);
-    }
-  }, LSP_INIT_TIMEOUT);
-};
-
-/**
- * 处理后端转发的initialize响应
- * 后端在连接建立后会发送initialize请求到Language Server，
- * 然后将响应转发回前端，前端收到后发送initialized和didOpen
- */
-const handleInitializeResponse = (result: any) => {
-  if (lspInitialized) return;
-  lspInitialized = true;
-
-  // 清除初始化超时定时器
-  if (lspInitTimer) {
-    clearTimeout(lspInitTimer);
-    lspInitTimer = null;
-  }
-
-  // 保存工作空间根URI，用于构建文档URI
-  // 后端sendInitialize中rootUri格式: file:///D:/lsp-workspace/java
-  if (result.rootUri) {
-    workspaceRootUri = result.rootUri.replace(/\/+$/, "");
-  } else {
-    // 如果响应中没有rootUri，从后端配置推断
-    workspaceRootUri = "file:///D:/lsp-workspace/" + currentLang.value;
-  }
-
-  console.log("[LSP] Received initialize response, rootUri=" + workspaceRootUri + ", sending initialized + didOpen");
-
-  // 发送 initialized 通知
-  sendLspNotification("initialized", {});
-
-  // 发送 textDocument/didOpen 通知
-  const editor = toRaw(editorInstance.value);
-  const text = editor?.getValue() || model.value || "";
-  documentVersion = 0;
-  const docUri = getDocumentUri();
-  console.log("[LSP] Opening document: " + docUri);
-  sendLspNotification("textDocument/didOpen", {
-    textDocument: {
-      uri: docUri,
-      languageId: currentLang.value,
-      version: documentVersion,
-      text,
-    },
-  });
-};
-
-// ==================== LSP 连接 ====================
-const connectLsp = (lang: string) => {
-  if (!props.lspServerUrl) return;
-  // 清理旧连接和重连定时器
-  clearReconnectTimer();
-  if (lspWs) {
-    lspWs.onclose = null; // 防止触发重连
-    lspWs.close();
-    lspWs = null;
-  }
-  lspInitialized = false;
-  workspaceRootUri = "";
-  pendingRequests.clear();
-
-  try {
-    const baseUrl = props.lspServerUrl.replace(/\/+$/, "");
-    const wsUrl = `${baseUrl}/lsp/${lang}`;
-    console.log(`[LSP] Connecting to: ${wsUrl} (attempt ${lspReconnectAttempts + 1})`);
-    lspWs = new WebSocket(wsUrl);
-  } catch (e) {
-    console.error("[LSP] WebSocket创建失败:", e);
-    lspWs = null;
-    scheduleReconnect(lang);
+// ==================== 标签页管理 ====================
+const openFile = (file: FileNode) => {
+  if (file.type === "folder") {
+    toggleFolder(file.id);
     return;
   }
-
-  lspWs.onopen = () => {
-    lspReconnectAttempts = 0; // 连接成功，重置重连计数
-    lspConnected.value = true;
-    emit("lspConnected");
-    console.log(`[LSP] Connected: ${lang}`);
-    // 测试WebSocket是否双向通信
-    console.log("[LSP] Sending test ping...");
-    lspWs!.send(JSON.stringify({ jsonrpc: "2.0", method: "lsp/ping", params: {} }));
-    initializeLsp();
-  };
-
-  lspWs.onmessage = (event) => {
-    // 先打印原始数据，确保onmessage确实被触发
-    console.log(`[LSP] <- raw data, length=${event.data?.length}, preview=${String(event.data).substring(0, 100)}`);
-    try {
-      const msg = JSON.parse(event.data);
-      const hasId = msg.id !== undefined && msg.id !== null;
-      const hasMethod = !!msg.method;
-      const hasResult = !!msg.result;
-      const hasCapabilities = !!msg.result?.capabilities;
-      console.log(`[LSP] <- msg: id=${msg.id}, method=${msg.method || "none"}, hasResult=${hasResult}, hasCapabilities=${hasCapabilities}, lspInitialized=${lspInitialized}`);
-      handleLspMessage(msg);
-    } catch (e) {
-      console.warn("[LSP] Failed to parse message:", e);
-    }
-  };
-
-  lspWs.onclose = (event) => {
-    lspConnected.value = false;
-    lspInitialized = false;
-    workspaceRootUri = "";
-    emit("lspDisconnected");
-    console.log(`[LSP] Disconnected: ${lang}, code=${event.code}, reason=${event.reason}`);
-    // 非正常关闭时自动重连
-    if (event.code !== 1000) {
-      scheduleReconnect(lang);
-    }
-  };
-
-  lspWs.onerror = () => {
-    console.warn(`[LSP] Connection failed: ${lang}`);
-    lspConnected.value = false;
-  };
-};
-
-const clearReconnectTimer = () => {
-  if (lspReconnectTimer) {
-    clearTimeout(lspReconnectTimer);
-    lspReconnectTimer = null;
-  }
-};
-
-const scheduleReconnect = (lang: string) => {
-  if (lspReconnectAttempts >= LSP_MAX_RECONNECT_ATTEMPTS) {
-    console.log(`[LSP] Max reconnect attempts (${LSP_MAX_RECONNECT_ATTEMPTS}) reached, giving up`);
-    return;
-  }
-  lspReconnectAttempts++;
-  const delay = LSP_RECONNECT_DELAY * lspReconnectAttempts; // 递增延迟
-  console.log(`[LSP] Reconnecting in ${delay}ms (attempt ${lspReconnectAttempts}/${LSP_MAX_RECONNECT_ATTEMPTS})...`);
-  lspReconnectTimer = setTimeout(() => {
-    connectLsp(lang);
-  }, delay);
-};
-
-const disconnectLsp = () => {
-  clearReconnectTimer();
-  if (lspInitTimer) {
-    clearTimeout(lspInitTimer);
-    lspInitTimer = null;
-  }
-  lspReconnectAttempts = LSP_MAX_RECONNECT_ATTEMPTS; // 阻止重连
-  if (lspWs) {
-    lspWs.onclose = null; // 防止触发重连
-    lspWs.close();
-    lspWs = null;
-  }
-  lspConnected.value = false;
-  lspInitialized = false;
-  workspaceRootUri = "";
-  pendingRequests.clear();
-};
-
-// ==================== LSP 消息处理 ====================
-const handleLspMessage = (msg: any) => {
-  // 处理 server-to-client 请求（有id和method，Language Server要求客户端响应）
-  if (msg.id !== undefined && msg.id !== null && msg.method) {
-    console.log(`[LSP] Server request: method=${msg.method}, id=${msg.id}`);
-
-    if (msg.method === "workspace/configuration") {
-      // workspace/configuration 需要返回配置数组，每个元素对应一个section
-      const items = (msg.params?.items || []).map((item: any) => {
-        const section = item.section || "";
-        // 为Java项目提供基本配置
-        if (section === "java") {
-          return {
-            import: { maven: { enabled: true }, gradle: { enabled: false } },
-            project: { sourcePaths: ["src/main/java", "src/test/java"] },
-          };
-        }
-        return {};
-      });
-      sendLspResponse(msg.id, items);
-    } else if (msg.method === "workspace/applyEdit") {
-      // workspace/applyEdit 需要返回 applied: true
-      sendLspResponse(msg.id, { applied: true });
-    } else if (msg.method === "window/showMessageRequest") {
-      // window/showMessageRequest 需要返回选择项，默认选第一个
-      const actions = msg.params?.actions || [];
-      sendLspResponse(msg.id, actions.length > 0 ? { title: actions[0].title } : null);
-    } else {
-      // 其他请求（client/registerCapability等）回复空结果
-      sendLspResponse(msg.id, null);
-    }
-
-    if (msg.method === "client/registerCapability" && msg.params?.registrations) {
-      console.log("[LSP] Registered capabilities:", msg.params.registrations.map((r: any) => r.method));
-    }
-    return;
-  }
-
-  // 处理响应（有id但没有method，是对前端请求的响应）
-  if (msg.id !== undefined && msg.id !== null) {
-    const pending = pendingRequests.get(msg.id);
-    if (pending) {
-      pendingRequests.delete(msg.id);
-      if (msg.error) {
-        pending.reject(msg.error);
-      } else {
-        pending.resolve(msg.result);
-      }
-      return;
-    }
-
-    // 后端转发的initialize响应
-    if (!lspInitialized && msg.result && msg.result.capabilities) {
-      console.log("[LSP] Received initialize response from backend:", msg.result);
-      handleInitializeResponse(msg.result);
-      return;
-    }
-
-    // 其他未匹配的响应，忽略
-    return;
-  }
-
-  // 处理通知（没有id，有method）
-  if (msg.method === "textDocument/publishDiagnostics") {
-    const editor = toRaw(editorInstance.value);
-    if (!editor) return;
-    const editorModel = editor.getModel();
-    if (!editorModel) return;
-
-    const diagnostics = msg.params?.diagnostics || [];
-    const markers: monaco.editor.IMarkerData[] = diagnostics.map((d: any) => ({
-      severity: mapSeverity(d.severity),
-      message: d.message,
-      startLineNumber: d.range.start.line + 1,
-      startColumn: d.range.start.character + 1,
-      endLineNumber: d.range.end.line + 1,
-      endColumn: d.range.end.character + 1,
-    }));
-    monaco.editor.setModelMarkers(editorModel, currentLang.value, markers);
-  } else if (msg.method) {
-    // 其他通知（language/status, window/logMessage等）
-    if (msg.method === "language/status") {
-      console.log(`[LSP] Status: ${msg.params?.type} - ${msg.params?.message}`);
-    }
-  }
-};
-
-const mapSeverity = (severity: number): monaco.MarkerSeverity => {
-  switch (severity) {
-    case 1: return monaco.MarkerSeverity.Error;
-    case 2: return monaco.MarkerSeverity.Warning;
-    case 3: return monaco.MarkerSeverity.Info;
-    case 4: return monaco.MarkerSeverity.Hint;
-    default: return monaco.MarkerSeverity.Info;
-  }
-};
-
-// ==================== LSP 补全请求 ====================
-const requestCompletion = async (
-  textModel: monaco.editor.ITextModel,
-  position: monaco.Position
-): Promise<monaco.languages.CompletionList | undefined> => {
-  if (!lspWs || lspWs.readyState !== WebSocket.OPEN || !lspInitialized) {
-    return undefined;
-  }
-
-  try {
-    console.log(`[LSP] Requesting completion: uri=${getDocumentUri()}, line=${position.lineNumber - 1}, char=${position.column - 1}`);
-    const result = await sendLspRequest("textDocument/completion", {
-      textDocument: { uri: getDocumentUri() },
-      position: {
-        line: position.lineNumber - 1,
-        character: position.column - 1,
-      },
+  if (!openTabs.value.find(t => t.id === file.id)) {
+    openTabs.value.push({
+      id: file.id,
+      name: file.name,
+      language: file.language || detectLanguage(file.name),
+      modified: false,
     });
+  }
+  activeTabId.value = file.id;
+  emit("file-open", file);
+};
 
-    console.log("[LSP] Completion result:", result ? `items=${(result.items || result || []).length}` : "null");
-    if (!result) return undefined;
-
-    const items = result.items || result || [];
-    const word = textModel.getWordUntilPosition(position);
-    const range = {
-      startLineNumber: position.lineNumber,
-      endLineNumber: position.lineNumber,
-      startColumn: word.startColumn,
-      endColumn: word.endColumn,
-    };
-
-    const suggestions: monaco.languages.CompletionItem[] = items.map((item: any, index: number) => ({
-      label: item.label,
-      kind: mapCompletionItemKind(item.kind),
-      insertText: item.insertText || item.label,
-      detail: item.detail || "",
-      documentation: item.documentation?.value || item.documentation || "",
-      sortText: item.sortText || String(index).padStart(5, "0"),
-      filterText: item.filterText || item.label,
-      range,
-    }));
-
-    return {
-      suggestions,
-      incomplete: result.isIncomplete || false,
-    };
-  } catch (e) {
-    console.warn("[LSP] Completion request failed:", e);
-    return undefined;
+const closeTab = (tabId: string) => {
+  const idx = openTabs.value.findIndex(t => t.id === tabId);
+  if (idx === -1) return;
+  openTabs.value.splice(idx, 1);
+  const model = monacoModels.get(tabId);
+  if (model) { model.dispose(); monacoModels.delete(tabId); }
+  emit("file-close", { id: tabId });
+  if (activeTabId.value === tabId) {
+    activeTabId.value = openTabs.value.length > 0
+      ? openTabs.value[Math.min(idx, openTabs.value.length - 1)].id
+      : "";
   }
 };
 
-const mapCompletionItemKind = (kind: number): monaco.languages.CompletionItemKind => {
-  const map: Record<number, monaco.languages.CompletionItemKind> = {
-    1: monaco.languages.CompletionItemKind.Text,
-    2: monaco.languages.CompletionItemKind.Method,
-    3: monaco.languages.CompletionItemKind.Function,
-    4: monaco.languages.CompletionItemKind.Constructor,
-    5: monaco.languages.CompletionItemKind.Field,
-    6: monaco.languages.CompletionItemKind.Variable,
-    7: monaco.languages.CompletionItemKind.Class,
-    8: monaco.languages.CompletionItemKind.Interface,
-    9: monaco.languages.CompletionItemKind.Module,
-    10: monaco.languages.CompletionItemKind.Property,
-    11: monaco.languages.CompletionItemKind.Unit,
-    12: monaco.languages.CompletionItemKind.Value,
-    13: monaco.languages.CompletionItemKind.Enum,
-    14: monaco.languages.CompletionItemKind.Keyword,
-    15: monaco.languages.CompletionItemKind.Snippet,
-    16: monaco.languages.CompletionItemKind.Color,
-    17: monaco.languages.CompletionItemKind.File,
-    18: monaco.languages.CompletionItemKind.Reference,
-    19: monaco.languages.CompletionItemKind.Folder,
-    20: monaco.languages.CompletionItemKind.EnumMember,
-    21: monaco.languages.CompletionItemKind.Constant,
-    22: monaco.languages.CompletionItemKind.Struct,
-    23: monaco.languages.CompletionItemKind.Event,
-    24: monaco.languages.CompletionItemKind.Operator,
-    25: monaco.languages.CompletionItemKind.TypeParameter,
+const switchTab = (tabId: string) => { activeTabId.value = tabId; };
+
+const toggleFolder = (id: string) => {
+  const s = new Set(expandedFolders.value);
+  s.has(id) ? s.delete(id) : s.add(id);
+  expandedFolders.value = s;
+};
+
+// ==================== Monaco 模型管理 ====================
+const getOrCreateModel = (file: FileNode): monaco.editor.ITextModel => {
+  let model = monacoModels.get(file.id);
+  if (!model) {
+    const lang = file.language || detectLanguage(file.name);
+    model = monaco.editor.createModel(file.content || "", lang);
+    monacoModels.set(file.id, model);
+  }
+  return model;
+};
+
+const syncActiveFile = async () => {
+  const editor = toRaw(editorInstance.value);
+  if (!editor) return;
+  const file = activeFile.value;
+  if (file) {
+    const model = getOrCreateModel(file);
+    editor.setModel(model);
+    lsp.notifyDidOpen();
+  } else {
+    const emptyModel = monaco.editor.createModel("", "plaintext");
+    editor.setModel(emptyModel);
+  }
+};
+
+// ==================== 文件树 CRUD ====================
+const handleNewFile = (parentId: string | null = null) => {
+  if (parentId) {
+    const s = new Set(expandedFolders.value);
+    s.add(parentId);
+    expandedFolders.value = s;
+  }
+  const id = fileTree.createFile(parentId);
+  editingNodeId.value = id;
+};
+
+const handleNewFolder = (parentId: string | null = null) => {
+  if (parentId) {
+    const s = new Set(expandedFolders.value);
+    s.add(parentId);
+    expandedFolders.value = s;
+  }
+  const id = fileTree.createFolder(parentId);
+  editingNodeId.value = id;
+};
+
+const handleRename = (nodeId: string) => {
+  editingNodeId.value = nodeId;
+};
+
+const handleDelete = (nodeId: string) => {
+  const node = fileTree.findNode(nodeId);
+  if (!node) return;
+  const msg = node.type === "folder"
+    ? `确定删除文件夹 "${node.name}" 及其所有内容？`
+    : `确定删除文件 "${node.name}"？`;
+  if (!confirm(msg)) return;
+  // 关闭受影响的标签页
+  const affected = new Set<string>();
+  const collectIds = (n: FileNode) => {
+    affected.add(n.id);
+    n.children?.forEach(collectIds);
   };
-  return map[kind] || monaco.languages.CompletionItemKind.Text;
+  collectIds(node);
+  openTabs.value.filter(t => affected.has(t.id)).forEach(t => closeTab(t.id));
+  fileTree.deleteNode(nodeId);
+  emit("file-delete", { id: nodeId });
+  emit("tree-change", fileTree.tree.value);
 };
 
-// ==================== 注册补全提供者 ====================
-const registerKeywordProviders = () => {
-  if (keywordProvidersRegistered) return;
-  keywordProvidersRegistered = true;
-
-  // Java: 关键词 + LSP补全
-  monaco.languages.registerCompletionItemProvider("java", {
-    triggerCharacters: [".", " ", "(", "@"],
-    provideCompletionItems: async (textModel, position) => {
-      // 先尝试LSP补全
-      const lspResult = await requestCompletion(textModel, position);
-      const word = textModel.getWordUntilPosition(position);
-      const range = {
-        startLineNumber: position.lineNumber,
-        endLineNumber: position.lineNumber,
-        startColumn: word.startColumn,
-        endColumn: word.endColumn,
-      };
-
-      // LSP有结果时优先使用LSP结果
-      if (lspResult && lspResult.suggestions.length > 0) {
-        // 补充关键词（LSP没返回的）
-        const lspLabels = new Set(lspResult.suggestions.map(s => s.label));
-        const keywordSuggestions = JAVA_KEYWORDS
-          .filter(kw => !lspLabels.has(kw))
-          .map(kw => ({
-            label: kw,
-            kind: monaco.languages.CompletionItemKind.Keyword,
-            insertText: kw,
-            range,
-          }));
-        return {
-          suggestions: [...lspResult.suggestions, ...keywordSuggestions],
-          incomplete: lspResult.incomplete,
-        };
-      }
-
-      // LSP无结果时回退到关键词
-      return {
-        suggestions: JAVA_KEYWORDS.map(kw => ({
-          label: kw,
-          kind: monaco.languages.CompletionItemKind.Keyword,
-          insertText: kw,
-          range,
-        })),
-      };
-    },
-  });
-
-  // C#: 关键词 + LSP补全
-  monaco.languages.registerCompletionItemProvider("csharp", {
-    triggerCharacters: [".", " ", "("],
-    provideCompletionItems: async (textModel, position) => {
-      const lspResult = await requestCompletion(textModel, position);
-      const word = textModel.getWordUntilPosition(position);
-      const range = {
-        startLineNumber: position.lineNumber,
-        endLineNumber: position.lineNumber,
-        startColumn: word.startColumn,
-        endColumn: word.endColumn,
-      };
-
-      if (lspResult && lspResult.suggestions.length > 0) {
-        const lspLabels = new Set(lspResult.suggestions.map(s => s.label));
-        const keywordSuggestions = CSHARP_KEYWORDS
-          .filter(kw => !lspLabels.has(kw))
-          .map(kw => ({
-            label: kw,
-            kind: monaco.languages.CompletionItemKind.Keyword,
-            insertText: kw,
-            range,
-          }));
-        return {
-          suggestions: [...lspResult.suggestions, ...keywordSuggestions],
-          incomplete: lspResult.incomplete,
-        };
-      }
-
-      return {
-        suggestions: CSHARP_KEYWORDS.map(kw => ({
-          label: kw,
-          kind: monaco.languages.CompletionItemKind.Keyword,
-          insertText: kw,
-          range,
-        })),
-      };
-    },
-  });
-
-  // C++: 关键词 + LSP补全
-  monaco.languages.registerCompletionItemProvider("cpp", {
-    triggerCharacters: [".", " ", ":", ">", "("],
-    provideCompletionItems: async (textModel, position) => {
-      const lspResult = await requestCompletion(textModel, position);
-      const word = textModel.getWordUntilPosition(position);
-      const range = {
-        startLineNumber: position.lineNumber,
-        endLineNumber: position.lineNumber,
-        startColumn: word.startColumn,
-        endColumn: word.endColumn,
-      };
-
-      if (lspResult && lspResult.suggestions.length > 0) {
-        const lspLabels = new Set(lspResult.suggestions.map(s => s.label));
-        const keywordSuggestions = CPP_KEYWORDS
-          .filter(kw => !lspLabels.has(kw))
-          .map(kw => ({
-            label: kw,
-            kind: monaco.languages.CompletionItemKind.Keyword,
-            insertText: kw,
-            range,
-          }));
-        return {
-          suggestions: [...lspResult.suggestions, ...keywordSuggestions],
-          incomplete: lspResult.incomplete,
-        };
-      }
-
-      return {
-        suggestions: CPP_KEYWORDS.map(kw => ({
-          label: kw,
-          kind: monaco.languages.CompletionItemKind.Keyword,
-          insertText: kw,
-          range,
-        })),
-      };
-    },
-  });
+const handleEditConfirm = (id: string, newName: string) => {
+  if (!newName.trim()) {
+    editingNodeId.value = null;
+    fileTree.cancelCreate(id);
+    return;
+  }
+  const node = fileTree.findNode(id);
+  if (!node) { editingNodeId.value = null; return; }
+  const isPending = node.name === "untitled.txt" || node.name === "新建文件夹"
+    || node.name.startsWith("untitled-") || node.name.startsWith("新建文件夹-");
+  if (isPending) {
+    fileTree.confirmCreate(id, newName);
+    if (node.type === "file") {
+      openFile(node);
+      emit("file-create", { id, name: newName });
+    } else {
+      emit("folder-create", { id, name: newName });
+    }
+  } else {
+    fileTree.renameNode(id, newName);
+    // 更新标签页名称
+    const tab = openTabs.value.find(t => t.id === id);
+    if (tab) { tab.name = newName; tab.language = node.language || detectLanguage(newName); }
+    // 更新 Monaco 模型语言
+    const model = monacoModels.get(id);
+    if (model && node.language) monaco.editor.setModelLanguage(model, node.language);
+    emit("file-rename", { id, name: newName });
+  }
+  editingNodeId.value = null;
+  emit("tree-change", fileTree.tree.value);
 };
+
+const handleEditCancel = (id: string) => {
+  editingNodeId.value = null;
+  const node = fileTree.findNode(id);
+  const isPending = node && (node.name === "untitled.txt" || node.name === "新建文件夹"
+    || node.name.startsWith("untitled-") || node.name.startsWith("新建文件夹-"));
+  if (isPending) fileTree.cancelCreate(id);
+};
+
+// ==================== 右键菜单 ====================
+const handleTreeContextMenu = (node: FileNode, e: MouseEvent) => {
+  contextMenuTargetId.value = node.id;
+  contextMenuPosition.value = { x: e.clientX, y: e.clientY };
+  if (node.type === "folder") {
+    contextMenuItems.value = [
+      { label: "新建文件", action: "ctx-new-file" },
+      { label: "新建文件夹", action: "ctx-new-folder" },
+      { divider: true, label: "" },
+      { label: "重命名", action: "ctx-rename" },
+      { divider: true, label: "" },
+      { label: "删除", action: "ctx-delete", danger: true },
+    ];
+  } else {
+    contextMenuItems.value = [
+      { label: "打开", action: "ctx-open" },
+      { divider: true, label: "" },
+      { label: "新建文件", action: "ctx-new-file-sibling" },
+      { label: "新建文件夹", action: "ctx-new-folder-sibling" },
+      { divider: true, label: "" },
+      { label: "重命名", action: "ctx-rename" },
+      { divider: true, label: "" },
+      { label: "删除", action: "ctx-delete", danger: true },
+    ];
+  }
+  contextMenuVisible.value = true;
+};
+
+const handleSidebarContextMenu = (e: MouseEvent) => {
+  e.preventDefault();
+  contextMenuTargetId.value = null;
+  contextMenuPosition.value = { x: e.clientX, y: e.clientY };
+  contextMenuItems.value = [
+    { label: "新建文件", action: "ctx-new-file" },
+    { label: "新建文件夹", action: "ctx-new-folder" },
+  ];
+  contextMenuVisible.value = true;
+};
+
+const handleContextMenuAction = (action: string) => {
+  const targetId = contextMenuTargetId.value;
+  const targetNode = targetId ? fileTree.findNode(targetId) : null;
+  const parentId = targetNode?.type === "folder" ? targetId
+    : targetId ? fileTree.findParent(targetId)?.id || null : null;
+  const siblingParentId = targetId ? fileTree.findParent(targetId)?.id || null : null;
+
+  switch (action) {
+    case "ctx-new-file": handleNewFile(targetNode?.type === "folder" ? targetId : null); break;
+    case "ctx-new-folder": handleNewFolder(targetNode?.type === "folder" ? targetId : null); break;
+    case "ctx-new-file-sibling": handleNewFile(siblingParentId); break;
+    case "ctx-new-folder-sibling": handleNewFolder(siblingParentId); break;
+    case "ctx-rename": if (targetId) handleRename(targetId); break;
+    case "ctx-delete": if (targetId) handleDelete(targetId); break;
+    case "ctx-open": if (targetNode) openFile(targetNode); break;
+  }
+  contextMenuVisible.value = false;
+};
+
+// ==================== 菜单定义（中文） ====================
+const defaultMenus: MenuItemDef[] = [
+  {
+    label: "文件",
+    children: [
+      { label: "新建文件", action: "new-file", shortcut: "Ctrl+N" },
+      { label: "新建文件夹", action: "new-folder" },
+      { divider: true, label: "" },
+      { label: "打开文件...", action: "open-file", shortcut: "Ctrl+O" },
+      { label: "打开目录...", action: "open-directory" },
+      { divider: true, label: "" },
+      { label: "保存", action: "save", shortcut: "Ctrl+S" },
+      { label: "全部保存", action: "save-all", shortcut: "Ctrl+Shift+S" },
+      { divider: true, label: "" },
+      { label: "关闭标签", action: "close-tab", shortcut: "Ctrl+W" },
+      { label: "关闭全部", action: "close-all" },
+    ],
+  },
+  {
+    label: "编辑",
+    children: [
+      { label: "撤销", action: "undo", shortcut: "Ctrl+Z" },
+      { label: "重做", action: "redo", shortcut: "Ctrl+Shift+Z" },
+      { divider: true, label: "" },
+      { label: "剪切", action: "cut", shortcut: "Ctrl+X" },
+      { label: "复制", action: "copy", shortcut: "Ctrl+C" },
+      { label: "粘贴", action: "paste", shortcut: "Ctrl+V" },
+      { divider: true, label: "" },
+      { label: "查找", action: "find", shortcut: "Ctrl+F" },
+      { label: "替换", action: "replace", shortcut: "Ctrl+H" },
+      { divider: true, label: "" },
+      { label: "全选", action: "select-all", shortcut: "Ctrl+A" },
+    ],
+  },
+  {
+    label: "视图",
+    children: [
+      { label: "切换侧边栏", action: "toggle-sidebar", shortcut: "Ctrl+B" },
+      { label: "切换小地图", action: "toggle-minimap" },
+      { divider: true, label: "" },
+      { label: "放大", action: "zoom-in", shortcut: "Ctrl+=" },
+      { label: "缩小", action: "zoom-out", shortcut: "Ctrl+-" },
+      { label: "重置缩放", action: "zoom-reset", shortcut: "Ctrl+0" },
+    ],
+  },
+];
+
+const mergedMenus = computed(() => {
+  if (props.menuItems.length > 0) return [...defaultMenus, ...props.menuItems];
+  return defaultMenus;
+});
+
+// ==================== 菜单动作处理 ====================
+const handleMenuAction = (item: MenuItemDef) => {
+  if (!item.action) return;
+  const editor = toRaw(editorInstance.value);
+  switch (item.action) {
+    case "new-file": handleNewFile(null); break;
+    case "new-folder": handleNewFolder(null); break;
+    case "open-file": fileInputRef.value?.click(); break;
+    case "open-directory": dirInputRef.value?.click(); break;
+    case "save":
+      if (activeTabId.value) {
+        const content = editor?.getValue() || "";
+        fileTree.updateFileContent(activeTabId.value, content);
+        const tab = openTabs.value.find(t => t.id === activeTabId.value);
+        if (tab) tab.modified = false;
+        emit("file-save", { id: activeTabId.value, content });
+      }
+      break;
+    case "save-all":
+      openTabs.value.forEach(t => {
+        const model = monacoModels.get(t.id);
+        if (model) {
+          const content = model.getValue();
+          fileTree.updateFileContent(t.id, content);
+          t.modified = false;
+          emit("file-save", { id: t.id, content });
+        }
+      });
+      break;
+    case "close-tab": if (activeTabId.value) closeTab(activeTabId.value); break;
+    case "close-all": [...openTabs.value].forEach(t => closeTab(t.id)); break;
+    case "undo": editor?.trigger("menu", "undo", null); break;
+    case "redo": editor?.trigger("menu", "redo", null); break;
+    case "cut": editor?.trigger("menu", "editor.action.clipboardCutAction", null); break;
+    case "copy": editor?.trigger("menu", "editor.action.clipboardCopyAction", null); break;
+    case "paste": editor?.trigger("menu", "editor.action.clipboardPasteAction", null); break;
+    case "find": editor?.trigger("menu", "actions.find", null); break;
+    case "replace": editor?.trigger("menu", "editor.action.startFindReplaceAction", null); break;
+    case "select-all": editor?.trigger("menu", "editor.action.selectAll", null); break;
+    case "toggle-sidebar": sidebarVisible.value = !sidebarVisible.value; break;
+    case "toggle-minimap": {
+      const cur = editor?.getOption(monaco.editor.EditorOption.minimap);
+      editor?.updateOptions({ minimap: { enabled: !cur?.enabled } });
+      break;
+    }
+    case "zoom-in": {
+      const s = editor?.getOption(monaco.editor.EditorOption.fontSize) || 14;
+      editor?.updateOptions({ fontSize: s + 1 });
+      break;
+    }
+    case "zoom-out": {
+      const s = editor?.getOption(monaco.editor.EditorOption.fontSize) || 14;
+      editor?.updateOptions({ fontSize: Math.max(8, s - 1) });
+      break;
+    }
+    case "zoom-reset": editor?.updateOptions({ fontSize: props.fontSize }); break;
+    default: emit("menu-action", item.action);
+  }
+};
+
+// ==================== 文件输入处理 ====================
+const handleFileInput = (e: Event) => {
+  const input = e.target as HTMLInputElement;
+  if (!input.files?.length) return;
+  Array.from(input.files).forEach((file, i) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const id = fileTree.createFile(null, file.name);
+      fileTree.updateFileContent(id, reader.result as string);
+      const node = fileTree.findNode(id);
+      if (node) openFile(node);
+    };
+    reader.readAsText(file);
+  });
+  input.value = "";
+};
+
+const handleDirInput = (e: Event) => {
+  const input = e.target as HTMLInputElement;
+  if (!input.files?.length) return;
+  const fileList = Array.from(input.files);
+  const root: Record<string, any> = {};
+  fileList.forEach(file => {
+    const path = (file as any).webkitRelativePath || file.name;
+    const parts = path.split("/");
+    let current = root;
+    parts.forEach((part: string, i: number) => {
+      if (!current[part]) current[part] = i === parts.length - 1 ? { __file: file } : {};
+      current = current[part];
+    });
+  });
+  const buildTree = (obj: Record<string, any>, parentId: string | null): void => {
+    for (const [name, value] of Object.entries(obj)) {
+      if (value.__file) {
+        const file = value.__file as File;
+        const id = fileTree.createFile(parentId, name);
+        const reader = new FileReader();
+        reader.onload = () => fileTree.updateFileContent(id, reader.result as string);
+        reader.readAsText(file);
+      } else {
+        const id = fileTree.createFolder(parentId, name);
+        buildTree(value, id);
+      }
+    }
+  };
+  buildTree(root, null);
+  emit("tree-change", fileTree.tree.value);
+  input.value = "";
+};
+
+// ==================== 键盘快捷键 ====================
+const handleKeydown = (e: KeyboardEvent) => {
+  if (e.ctrlKey || e.metaKey) {
+    const key = e.key.toLowerCase();
+    if (key === "s") { e.preventDefault(); handleMenuAction({ label: "", action: "save" }); }
+    else if (key === "b") { e.preventDefault(); sidebarVisible.value = !sidebarVisible.value; }
+    else if (key === "w") { e.preventDefault(); if (activeTabId.value) closeTab(activeTabId.value); }
+    else if (key === "o") { e.preventDefault(); fileInputRef.value?.click(); }
+    else if (key === "n") { e.preventDefault(); handleNewFile(null); }
+  }
+};
+
+// ==================== 侧边栏拖拽调整宽度 ====================
+let isResizing = false;
+const onResizeStart = (e: MouseEvent) => {
+  isResizing = true;
+  const startX = e.clientX;
+  const startW = sidebarWidth.value;
+  const onMove = (ev: MouseEvent) => {
+    if (!isResizing) return;
+    sidebarWidth.value = Math.max(120, Math.min(500, startW + ev.clientX - startX));
+  };
+  const onUp = () => {
+    isResizing = false;
+    document.removeEventListener("mousemove", onMove);
+    document.removeEventListener("mouseup", onUp);
+  };
+  document.addEventListener("mousemove", onMove);
+  document.addEventListener("mouseup", onUp);
+};
+
+// ==================== 活动栏面板切换 ====================
+const handleTogglePanel = (panel: string) => {
+  if (activePanel.value === panel && sidebarVisible.value) {
+    sidebarVisible.value = false;
+  } else {
+    activePanel.value = panel;
+    sidebarVisible.value = true;
+  }
+};
+
+// ==================== 主题切换（全局） ====================
+const switchTheme = (themeValue: string) => {
+  currentTheme.value = themeValue;
+  monaco.editor.setTheme(themeValue);
+  if (ideRoot.value) applyThemeVars(ideRoot.value, themeValue);
+};
+
+// ==================== 排序 ====================
+const sortedTree = computed(() => {
+  const sortNodes = (nodes: FileNode[]): FileNode[] =>
+    [...nodes].sort((a, b) => {
+      if (a.type !== b.type) return a.type === "folder" ? -1 : 1;
+      return a.name.localeCompare(b.name);
+    });
+  return sortNodes(fileTree.tree.value);
+});
 
 // ==================== 初始化编辑器 ====================
 const initEditor = async () => {
   await nextTick();
   if (!editorContainer.value) return;
-
   if (editorInstance.value) {
     toRaw(editorInstance.value).dispose();
     editorInstance.value = undefined;
   }
-
-  registerKeywordProviders();
-
+  lsp.registerProviders();
   const editor = monaco.editor.create(editorContainer.value, {
-    value: model.value || "",
-    language: currentLang.value,
+    value: "",
+    language: "plaintext",
     theme: currentTheme.value,
     readOnly: props.readOnly,
     fontSize: props.fontSize,
@@ -644,290 +537,369 @@ const initEditor = async () => {
     smoothScrolling: true,
     mouseWheelZoom: true,
   });
-
   editorInstance.value = editor;
-  lastInternalValue = model.value || "";
 
-  // 监听内容变化
-  editor.onDidChangeModelContent(() => {
-    const newVal = toRaw(editor).getValue();
-    lastInternalValue = newVal;
-    model.value = newVal;
-    emit("change", newVal);
-
-    // 通知LSP文档变更
-    if (lspWs && lspWs.readyState === WebSocket.OPEN && lspInitialized) {
-      documentVersion++;
-      sendLspNotification("textDocument/didChange", {
-        textDocument: {
-          uri: getDocumentUri(),
-          version: documentVersion,
-        },
-        contentChanges: [{ text: newVal }],
-      });
-    }
-
-    if (props.autoSaveDelay > 0) {
-      if (autoSaveTimer) clearTimeout(autoSaveTimer);
-      autoSaveTimer = setTimeout(() => {
-        sendLspNotification("textDocument/didSave", {
-          textDocument: { uri: getDocumentUri() },
-        });
-      }, props.autoSaveDelay);
-    }
+  editor.onDidChangeCursorPosition((e) => {
+    cursorLine.value = e.position.lineNumber;
+    cursorCol.value = e.position.column;
   });
 
-  // 连接LSP
-  if (props.lspServerUrl) {
-    connectLsp(currentLang.value);
+  editor.onDidChangeModelContent(() => {
+    const tab = openTabs.value.find(t => t.id === activeTabId.value);
+    if (tab) tab.modified = true;
+    emit("change", editor.getValue());
+    lsp.notifyDidChange();
+  });
+
+  // 打开初始文件
+  const first = fileTree.findFirstFile();
+  if (first) openFile(first);
+  if (props.lspServerUrl) lsp.connectLsp(currentLang.value);
+};
+
+// ==================== Watchers ====================
+watch(activeTabId, () => { nextTick(() => syncActiveFile()); });
+
+watch(() => props.files, (val) => {
+  // 如果外部传入文件且内部树为空，初始化
+  if (val.length > 0 && fileTree.tree.value.length === 0) {
+    fileTree.addNodes(JSON.parse(JSON.stringify(val)));
+    nextTick(() => {
+      const first = fileTree.findFirstFile();
+      if (first) openFile(first);
+    });
   }
-};
+}, { deep: true });
 
-// ==================== 切换语言 ====================
-const switchLang = (lang: string) => {
-  currentLang.value = lang;
-  const editor = toRaw(editorInstance.value);
-  if (editor) {
-    const editorModel = editor.getModel();
-    if (editorModel) {
-      monaco.editor.setModelLanguage(editorModel, lang);
-    }
-  }
-  if (props.lspServerUrl) {
-    connectLsp(lang);
-  }
-};
-
-// ==================== 切换主题 ====================
-const switchTheme = (theme: string) => {
-  currentTheme.value = theme;
-  monaco.editor.setTheme(theme);
-};
-
-// ==================== 暴露方法 ====================
-const setValue = (val: string) => {
-  const editor = toRaw(editorInstance.value);
-  if (editor && val !== editor.getValue()) {
-    lastInternalValue = val;
-    editor.setValue(val);
-  }
-};
-
-const getValue = () => {
-  const editor = toRaw(editorInstance.value);
-  return editor?.getValue() || "";
-};
-
-const getEditor = () => {
-  return toRaw(editorInstance.value);
-};
-
+// ==================== Expose ====================
+const getValue = () => toRaw(editorInstance.value)?.getValue() || "";
+const setValue = (v: string) => { const e = toRaw(editorInstance.value); if (e) e.setValue(v); };
+const getEditor = () => toRaw(editorInstance.value);
 defineExpose({
   editor: editorInstance,
-  setValue,
+  fileTree,
+  openFile,
+  closeFile: (id: string) => closeTab(id),
   getValue,
+  setValue,
   getEditor,
-  connectLsp,
-  disconnectLsp,
+  connectLsp: lsp.connectLsp,
+  disconnectLsp: lsp.disconnectLsp,
+  createFile: (parentId?: string) => handleNewFile(parentId || null),
+  createFolder: (parentId?: string) => handleNewFolder(parentId || null),
+  deleteFile: (id: string) => handleDelete(id),
+  renameFile: (id: string) => handleRename(id),
 });
 
 // ==================== 生命周期 ====================
 onMounted(() => {
   initEditor();
+  document.addEventListener("keydown", handleKeydown);
+  if (ideRoot.value) applyThemeVars(ideRoot.value, currentTheme.value);
 });
 
 onBeforeUnmount(() => {
-  disconnectLsp();
-  if (autoSaveTimer) clearTimeout(autoSaveTimer);
-  const editor = toRaw(editorInstance.value);
-  if (editor) {
-    editor.dispose();
-  }
+  lsp.disconnectLsp();
+  document.removeEventListener("keydown", handleKeydown);
+  monacoModels.forEach(m => m.dispose());
+  monacoModels.clear();
+  toRaw(editorInstance.value)?.dispose();
 });
-
-watch(
-  () => model.value,
-  (newVal) => {
-    if (lastInternalValue === newVal) return;
-    const editor = toRaw(editorInstance.value);
-    if (editor && newVal !== editor.getValue()) {
-      lastInternalValue = newVal;
-      editor.setValue(newVal || "");
-    }
-  }
-);
-
-// ==================== 关键词列表 ====================
-const JAVA_KEYWORDS = [
-  "abstract", "assert", "boolean", "break", "byte", "case", "catch", "char",
-  "class", "const", "continue", "default", "do", "double", "else", "enum",
-  "extends", "final", "finally", "float", "for", "goto", "if", "implements",
-  "import", "instanceof", "int", "interface", "long", "native", "new", "package",
-  "private", "protected", "public", "return", "short", "static", "strictfp",
-  "super", "switch", "synchronized", "this", "throw", "throws", "transient",
-  "try", "void", "volatile", "while",
-  "String", "Integer", "Long", "Double", "Float", "Boolean", "Object", "List",
-  "Map", "Set", "ArrayList", "HashMap", "HashSet", "LinkedList", "TreeMap",
-  "Optional", "Stream", "Collectors", "System", "Math", "Arrays", "Collections",
-  "Override", "Deprecated", "SuppressWarnings", "FunctionalInterface",
-  "Runnable", "Callable", "CompletableFuture", "Thread",
-  "Exception", "RuntimeException", "NullPointerException", "IllegalArgumentException",
-  "HttpServletRequest", "HttpServletResponse", "RestController", "GetMapping",
-  "PostMapping", "PutMapping", "DeleteMapping", "Autowired", "Service", "Component",
-  "Repository", "Configuration", "Bean", "Value", "RequestParam", "PathVariable",
-  "RequestBody", "ResponseBody", "Entity", "Table", "Column", "Id", "Mapper",
-];
-
-const CSHARP_KEYWORDS = [
-  "abstract", "as", "base", "bool", "break", "byte", "case", "catch", "char",
-  "checked", "class", "const", "continue", "decimal", "default", "delegate",
-  "do", "double", "else", "enum", "event", "explicit", "extern", "false",
-  "finally", "fixed", "float", "for", "foreach", "goto", "if", "implicit",
-  "in", "int", "interface", "internal", "is", "lock", "long", "namespace",
-  "new", "null", "object", "operator", "out", "override", "params", "private",
-  "protected", "public", "readonly", "ref", "return", "sbyte", "sealed",
-  "short", "sizeof", "stackalloc", "static", "string", "struct", "switch",
-  "this", "throw", "true", "try", "typeof", "uint", "ulong", "unchecked",
-  "unsafe", "ushort", "using", "virtual", "void", "volatile", "while",
-  "Console", "String", "Integer", "Boolean", "List", "Dictionary", "HashSet",
-  "Task", "Thread", "HttpClient", "DateTime", "Guid", "StringBuilder",
-  "IEnumerable", "IQueryable", "ActionResult", "Controller", "ApiController",
-  "HttpGet", "HttpPost", "Route", "FromBody", "Authorize", "AllowAnonymous",
-  "DbContext", "DbSet", "Table", "Column", "Key", "Required", "MaxLength",
-  "IConfiguration", "ILogger", "IServiceCollection", "IHostBuilder",
-  "var", "dynamic", "async", "await", "yield", "record", "init", "with",
-  "notnull", "unmanaged", "nint", "nuint", "required", "file", "scoped",
-];
-
-const CPP_KEYWORDS = [
-  "alignas", "alignof", "and", "and_eq", "asm", "auto", "bitand", "bitor",
-  "bool", "break", "case", "catch", "char", "char8_t", "char16_t", "char32_t",
-  "class", "compl", "concept", "const", "consteval", "constexpr", "constinit",
-  "const_cast", "continue", "co_await", "co_return", "co_yield", "decltype",
-  "default", "delete", "do", "double", "dynamic_cast", "else", "enum",
-  "explicit", "export", "extern", "false", "float", "for", "friend", "goto",
-  "if", "inline", "int", "long", "mutable", "namespace", "new", "noexcept",
-  "not", "not_eq", "nullptr", "operator", "or", "or_eq", "private",
-  "protected", "public", "register", "reinterpret_cast", "requires", "return",
-  "short", "signed", "sizeof", "static", "static_assert", "static_cast",
-  "struct", "switch", "template", "this", "thread_local", "throw", "true",
-  "try", "typedef", "typeid", "typename", "union", "unsigned", "using",
-  "virtual", "void", "volatile", "wchar_t", "while", "xor", "xor_eq",
-  "std", "cout", "cin", "endl", "string", "vector", "map", "set", "unordered_map",
-  "unordered_set", "list", "deque", "queue", "stack", "pair", "tuple",
-  "shared_ptr", "unique_ptr", "weak_ptr", "make_shared", "make_unique",
-  "algorithm", "sort", "find", "begin", "end", "size", "empty", "push_back",
-  "emplace_back", "front", "back", "iterator", "const_iterator",
-  "iostream", "fstream", "sstream", "memory", "functional", "thread",
-  "mutex", "lock_guard", "unique_lock", "condition_variable", "future",
-  "promise", "async", "chrono", "ratio",
-];
 </script>
 
 <template>
-  <div class="sh-code-editor flex flex-col h-full">
-    <!-- 工具栏 -->
-    <div class="sh-code-editor-toolbar flex items-center h-[36px] px-2 border-b border-[var(--sh-border,#333)]">
-      <el-menu
-        mode="horizontal"
-        :ellipsis="false"
-        v-if="btnList?.length > 0"
-        style="height: 100%; flex: 1"
-      >
-        <template v-for="(item, index) in btnList">
-          <template v-if="item.children?.length > 0">
-            <el-sub-menu :index="'1_' + index">
-              <template #title>
-                <el-tooltip :content="item.label" effect="dark" placement="bottom">
-                  <star-horse-icon :icon-class="item.icon" size="24px" style="color: var(--star-horse-style)" />
-                </el-tooltip>
-              </template>
-              <el-menu-item
-                v-for="(sitem, sindex) in item.children"
-                :disabled="sitem.disabled?.value === true"
-                :index="'2_' + sindex"
-                @click="sitem.actions"
-              >
-                <star-horse-icon :icon-class="sitem.icon" size="24px" style="color: var(--star-horse-style)" />
-                {{ sitem.label }}
-              </el-menu-item>
-            </el-sub-menu>
-          </template>
-          <el-menu-item v-else :disabled="item.disabled?.value === true" :index="'1_' + index" @click="item.actions">
-            <el-tooltip :content="item.label" effect="dark" placement="bottom">
-              <star-horse-icon :icon-class="item.icon" size="24px" style="color: var(--star-horse-style)" />
-            </el-tooltip>
-          </el-menu-item>
-        </template>
-      </el-menu>
+  <div ref="ideRoot" class="sh-ide" :style="{ height: boxHeight }">
+    <!-- 隐藏的文件输入框 -->
+    <input ref="fileInputRef" type="file" multiple style="display:none" @change="handleFileInput" />
+    <input ref="dirInputRef" type="file" webkitdirectory style="display:none" @change="handleDirInput" />
 
-      <div class="flex items-center gap-3 ml-auto">
-        <!-- LSP状态指示 -->
-        <el-tooltip v-if="lspServerUrl" :content="lspConnected ? 'LSP已连接' : 'LSP未连接'" effect="dark">
-          <span class="lsp-status" :class="{ connected: lspConnected, disconnected: !lspConnected }" />
-        </el-tooltip>
-        <!-- 主题切换 -->
-        <el-dropdown>
-          <span class="cursor-pointer text-xs opacity-70 hover:opacity-100">
-            {{ i18n("item.theme") }} ▼
+    <!-- 右键菜单 -->
+    <ContextMenu
+      v-if="contextMenuVisible"
+      :items="contextMenuItems"
+      :position="contextMenuPosition"
+      @action="handleContextMenuAction"
+      @close="contextMenuVisible = false"
+    />
+
+    <!-- 菜单栏 -->
+    <MenuBar
+      :menus="mergedMenus"
+      :current-theme="currentTheme"
+      @action="handleMenuAction"
+      @switch-theme="switchTheme"
+    />
+
+    <!-- 主体区域 -->
+    <div class="sh-ide-body">
+      <!-- 活动栏 -->
+      <ActivityBar
+        v-if="showActivityBar"
+        :active-panel="activePanel"
+        :sidebar-visible="sidebarVisible"
+        @toggle-panel="handleTogglePanel"
+      />
+
+      <!-- 侧边栏 / 资源管理器 -->
+      <div
+        v-if="sidebarVisible && showExplorer"
+        class="sh-ide-sidebar"
+        :style="{ width: sidebarWidth + 'px' }"
+      >
+        <div class="sidebar-header">
+          <span class="sidebar-title">
+            {{ activePanel === 'explorer' ? '资源管理器' : activePanel === 'search' ? '搜索' : '设置' }}
           </span>
-          <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item v-for="t in themes" :key="t.value" @click="switchTheme(t.value)">
-                {{ t.name }}
-              </el-dropdown-item>
-            </el-dropdown-menu>
+          <template v-if="activePanel === 'explorer'">
+            <button class="sidebar-btn" title="新建文件" @click="handleNewFile(null)">📄+</button>
+            <button class="sidebar-btn" title="新建文件夹" @click="handleNewFolder(null)">📁+</button>
           </template>
-        </el-dropdown>
-        <!-- 语言切换 -->
-        <el-dropdown>
-          <span class="cursor-pointer text-xs opacity-70 hover:opacity-100">
-            {{ languages.find(l => l.value === currentLang)?.name || currentLang }} ▼
-          </span>
-          <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item v-for="l in languages" :key="l.value" @click="switchLang(l.value)">
-                {{ l.name }}
-              </el-dropdown-item>
-            </el-dropdown-menu>
+        </div>
+        <div class="sidebar-content" @contextmenu="handleSidebarContextMenu">
+          <!-- 资源管理器面板 -->
+          <template v-if="activePanel === 'explorer'">
+            <template v-if="sortedTree.length > 0">
+              <FileTreeNode
+                v-for="node in sortedTree"
+                :key="node.id"
+                :node="node"
+                :depth="0"
+                :expanded="expandedFolders"
+                :active-id="activeTabId"
+                :editing-node-id="editingNodeId"
+                @toggle="toggleFolder"
+                @select="openFile"
+                @contextmenu="handleTreeContextMenu"
+                @edit-confirm="handleEditConfirm"
+                @edit-cancel="handleEditCancel"
+              />
+            </template>
+            <div v-else class="sidebar-empty">
+              <p>暂无文件</p>
+              <button class="sidebar-action-btn" @click="handleNewFile(null)">📄 新建文件</button>
+              <button class="sidebar-action-btn" @click="handleNewFolder(null)">📁 新建文件夹</button>
+              <p class="sidebar-hint">或通过菜单 "打开文件" / "打开目录"</p>
+            </div>
           </template>
-        </el-dropdown>
+          <!-- 搜索面板 -->
+          <template v-else-if="activePanel === 'search'">
+            <div class="sidebar-empty">
+              <p>搜索功能</p>
+              <p class="sidebar-hint">在编辑器中使用 Ctrl+F 搜索内容</p>
+            </div>
+          </template>
+          <!-- 设置面板 -->
+          <template v-else>
+            <div class="sidebar-empty">
+              <p>编辑器设置</p>
+              <p class="sidebar-hint">字体大小: {{ fontSize }}px</p>
+            </div>
+          </template>
+        </div>
+        <div class="sidebar-resize" @mousedown="onResizeStart" />
+      </div>
+
+      <!-- 编辑器区域 -->
+      <div class="sh-ide-editor">
+        <!-- 标签栏 -->
+        <TabBar
+          v-if="openTabs.length > 0"
+          :tabs="openTabs"
+          :active-id="activeTabId"
+          @switch="switchTab"
+          @close="closeTab"
+        />
+        <!-- 面包屑 -->
+        <div v-if="activeTab" class="sh-ide-breadcrumb">
+          <span>{{ activeTab.name }}</span>
+          <span class="breadcrumb-lang">{{ activeTab.language }}</span>
+        </div>
+        <!-- Monaco 编辑器 -->
+        <div ref="editorContainer" class="sh-ide-monaco" />
+        <!-- 欢迎页 -->
+        <div v-if="openTabs.length === 0" class="sh-ide-welcome">
+          <div class="welcome-icon">⌨️</div>
+          <h2>星马代码编辑器</h2>
+          <p>右键资源管理器新建文件，或通过菜单打开</p>
+          <div class="welcome-actions">
+            <button class="welcome-btn" @click="handleNewFile(null)">📄 新建文件</button>
+            <button class="welcome-btn" @click="handleNewFolder(null)">📁 新建文件夹</button>
+            <button class="welcome-btn" @click="fileInputRef?.click()">📂 打开文件</button>
+            <button class="welcome-btn" @click="dirInputRef?.click()">📁 打开目录</button>
+          </div>
+          <div class="welcome-shortcuts">
+            <div><kbd>Ctrl+N</kbd> 新建文件</div>
+            <div><kbd>Ctrl+O</kbd> 打开文件</div>
+            <div><kbd>Ctrl+S</kbd> 保存</div>
+            <div><kbd>Ctrl+B</kbd> 切换侧边栏</div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- 编辑器容器 -->
-    <div ref="editorContainer" class="flex-1 min-h-0" :style="{ height: boxHeight }" />
+    <!-- 状态栏 -->
+    <StatusBar
+      v-if="showStatusBar"
+      :cursor-line="cursorLine"
+      :cursor-col="cursorCol"
+      :language="currentLang"
+      :lsp-connected="lsp.lspConnected.value"
+      :show-lsp="!!lspServerUrl"
+    />
   </div>
 </template>
 
 <style lang="scss" scoped>
-.sh-code-editor {
-  border: 1px solid var(--sh-border, #333);
+.sh-ide {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--ide-border, #3c3c3c);
   border-radius: 4px;
   overflow: hidden;
-  background: var(--sh-bg, #1e1e1e);
-
-  .sh-code-editor-toolbar {
-    background: var(--sh-toolbar-bg, #252526);
-    border-bottom: 1px solid var(--sh-border, #333);
-    user-select: none;
-  }
-
-  .lsp-status {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    margin-right: 4px;
-
-    &.connected {
-      background: #52c41a;
-      box-shadow: 0 0 4px #52c41a;
-    }
-
-    &.disconnected {
-      background: #ff4d4f;
-    }
-  }
+  background: var(--ide-bg, #1e1e1e);
+  color: var(--ide-fg, #cccccc);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 13px;
+}
+.sh-ide-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+.sh-ide-sidebar {
+  position: relative;
+  background: var(--ide-sidebar-bg, #252526);
+  border-right: 1px solid var(--ide-border, #3c3c3c);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.sidebar-header {
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--ide-fg-dim, #858585);
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--ide-border, #3c3c3c);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.sidebar-title { flex: 1; }
+.sidebar-btn {
+  background: none;
+  border: none;
+  color: var(--ide-fg-dim, #858585);
+  cursor: pointer;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  line-height: 1;
+  &:hover { background: var(--ide-bg-hover, #2a2d2e); color: var(--ide-fg, #ccc); }
+}
+.sidebar-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 4px 0;
+}
+.sidebar-empty {
+  padding: 16px;
+  color: var(--ide-fg-dim, #858585);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  p { margin: 0; }
+}
+.sidebar-action-btn {
+  background: var(--ide-bg-hover, #2a2d2e);
+  border: 1px solid var(--ide-border, #3c3c3c);
+  color: var(--ide-fg, #ccc);
+  padding: 6px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  width: 100%;
+  max-width: 160px;
+  &:hover { background: var(--ide-accent, #007acc); border-color: var(--ide-accent, #007acc); }
+}
+.sidebar-hint { font-size: 12px; font-style: italic; opacity: 0.7; }
+.sidebar-resize {
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  width: 4px;
+  cursor: col-resize;
+  z-index: 10;
+  &:hover { background: var(--ide-accent, #007acc); }
+}
+.sh-ide-editor {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+.sh-ide-breadcrumb {
+  padding: 2px 16px;
+  font-size: 12px;
+  color: var(--ide-fg-dim, #858585);
+  background: var(--ide-bg, #1e1e1e);
+  border-bottom: 1px solid var(--ide-border, #3c3c3c);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.breadcrumb-lang { font-size: 11px; opacity: 0.6; }
+.sh-ide-monaco { flex: 1; min-height: 0; }
+.sh-ide-welcome {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--ide-welcome-fg, #858585);
+  text-align: center;
+  gap: 8px;
+}
+.welcome-icon { font-size: 64px; margin-bottom: 8px; }
+.sh-ide-welcome h2 { color: var(--ide-fg, #cccccc); font-weight: 400; margin: 0; }
+.sh-ide-welcome p { margin: 0; }
+.welcome-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin: 12px 0;
+}
+.welcome-btn {
+  background: var(--ide-bg-hover, #2a2d2e);
+  border: 1px solid var(--ide-border, #3c3c3c);
+  color: var(--ide-fg, #ccc);
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  &:hover { background: var(--ide-accent, #007acc); border-color: var(--ide-accent, #007acc); }
+}
+.welcome-shortcuts {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+}
+.welcome-shortcuts kbd {
+  background: var(--ide-bg-tertiary, #2d2d2d);
+  border: 1px solid var(--ide-border, #3c3c3c);
+  border-radius: 3px;
+  padding: 2px 6px;
+  font-size: 12px;
+  margin-right: 8px;
 }
 </style>
