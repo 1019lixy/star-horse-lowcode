@@ -24,6 +24,12 @@ const props = defineProps({
   lspServerUrl: { type: String, default: "" },
   loadUrl: { type: String, default: "" },
   saveUrl: { type: String, default: "" },
+  /** 模块ID，传入后自动从服务器加载该模块的代码 */
+  moduleId: { type: String, default: "" },
+  /** 加载时的附加参数，如 { moduleId: "xxx", version: "1.0" } */
+  loadParams: { type: Object as PropType<Record<string, any>>, default: () => ({}) },
+  /** 保存时的附加参数，保存body = { files: tree, ...saveParams } */
+  saveParams: { type: Object as PropType<Record<string, any>>, default: () => ({}) },
   fontSize: { type: Number, default: 14 },
   minimap: { type: Boolean, default: true },
   showActivityBar: { type: Boolean, default: true },
@@ -532,11 +538,29 @@ const handleDrop = (sourceId: string, targetFolderId: string) => {
 };
 
 // ==================== 从后端加载 ====================
-const loadFromServer = async () => {
-  const nodes = await fileApi.loadFromServer();
+const loadFromServer = async (params?: Record<string, any>) => {
+  // 合并参数: moduleId + loadParams + 手动传入的 params
+  const mergedParams: Record<string, any> = { ...props.loadParams, ...params };
+  if (props.moduleId) mergedParams.moduleId = props.moduleId;
+  const nodes = await fileApi.loadFromServer(
+    Object.keys(mergedParams).length > 0 ? mergedParams : undefined,
+  );
   if (nodes.length > 0) {
     fileTree.replaceTree(nodes);
-    // 关闭所有标签页并重新打开第一个文件
+    [...openTabs.value].forEach(t => closeTab(t.id));
+    const first = fileTree.findFirstFile();
+    if (first) openFile(first);
+    emit("load-complete", nodes);
+    emit("tree-change", fileTree.tree.value);
+  }
+};
+
+/** 加载指定模块的代码（便捷方法） */
+const loadModule = async (moduleId: string) => {
+  const params: Record<string, any> = { ...props.loadParams, moduleId };
+  const nodes = await fileApi.loadFromServer(params);
+  if (nodes.length > 0) {
+    fileTree.replaceTree(nodes);
     [...openTabs.value].forEach(t => closeTab(t.id));
     const first = fileTree.findFirstFile();
     if (first) openFile(first);
@@ -547,7 +571,6 @@ const loadFromServer = async () => {
 
 // ==================== 保存到后端 ====================
 const saveToServer = async () => {
-  // 先同步所有打开标签的内容到树
   openTabs.value.forEach(t => {
     const model = monacoModels.get(t.id);
     if (model) {
@@ -555,7 +578,12 @@ const saveToServer = async () => {
       t.modified = false;
     }
   });
-  const ok = await fileApi.saveToServer(fileTree.tree.value);
+  const mergedParams: Record<string, any> = { ...props.saveParams };
+  if (props.moduleId) mergedParams.moduleId = props.moduleId;
+  const ok = await fileApi.saveToServer(
+    fileTree.tree.value,
+    Object.keys(mergedParams).length > 0 ? mergedParams : undefined,
+  );
   if (ok) {
     emit("save-complete", fileTree.tree.value);
   }
@@ -631,7 +659,6 @@ const initEditor = async () => {
 watch(activeTabId, () => { nextTick(() => syncActiveFile()); });
 
 watch(() => props.files, (val) => {
-  // 如果外部传入文件且内部树为空，初始化
   if (val.length > 0 && fileTree.tree.value.length === 0) {
     fileTree.addNodes(JSON.parse(JSON.stringify(val)));
     nextTick(() => {
@@ -640,6 +667,13 @@ watch(() => props.files, (val) => {
     });
   }
 }, { deep: true });
+
+// moduleId 变化时自动重新加载
+watch(() => props.moduleId, (newId, oldId) => {
+  if (newId && newId !== oldId) {
+    loadModule(newId);
+  }
+});
 
 // ==================== Expose ====================
 const getValue = () => toRaw(editorInstance.value)?.getValue() || "";
@@ -661,6 +695,7 @@ defineExpose({
   deleteFile: (id: string) => handleDelete(id),
   renameFile: (id: string) => handleRename(id),
   loadFromServer,
+  loadModule,
   saveToServer,
 });
 
