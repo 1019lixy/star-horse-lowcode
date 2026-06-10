@@ -148,7 +148,6 @@ const init = async () => {
 };
 const assignPosition = () => {
   let temp = screenshot.value;
-  console.log(temp);
   nextTick(() => {
     console.log(temp);
     if (temp) {

@@ -181,6 +181,8 @@ export default defineConfig((mode) => {
           "uuid",
           "vuedraggable-es",
           "preview-image-js",
+          "monaco-editor",
+          "@monaco-editor/react",
           "@codemirror/lang-cpp",
           "@codemirror/lang-css",
           "@codemirror/lang-go",

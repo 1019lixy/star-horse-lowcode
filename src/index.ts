@@ -91,6 +91,9 @@ const install = (
             .pop() // 获取文件名
             ?.replace(/\.vue$/, ""); // 移除扩展名
 
+        // 跳过StarHorseCodeEditor，它依赖monaco-editor，需要按需加载
+        if (name === "StarHorseCodeEditor") return;
+
         if (name) {
             app.component(name, defineAsyncComponent(component as any));
         }
