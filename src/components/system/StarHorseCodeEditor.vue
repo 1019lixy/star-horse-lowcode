@@ -789,29 +789,34 @@ const handleExternalDrop = (e: DragEvent) => {
 // ==================== 键盘快捷键 ====================
 const handleKeydown = (e: KeyboardEvent) => {
   const editor = toRaw(editorInstance.value);
-  e.preventDefault();
   // Shift+Alt+F 格式化
   if (e.shiftKey && e.altKey && e.key.toLowerCase() === "f") {
-
+    e.preventDefault();
     editor?.getAction("editor.action.formatDocument")?.run();
     return;
   }
   // Ctrl+` 切换控制台
   if ((e.ctrlKey || e.metaKey) && e.key === "`") {
+    e.preventDefault();
     toggleConsole();
     return;
   }
   if (e.ctrlKey || e.metaKey) {
     const key = e.key.toLowerCase();
     if (key === "s") {
+      e.preventDefault();
       handleMenuAction({label: "", action: "save"});
     } else if (key === "b") {
+      e.preventDefault();
       sidebarVisible.value = !sidebarVisible.value;
     } else if (key === "w") {
+      e.preventDefault();
       if (activeTabId.value) closeTab(activeTabId.value);
     } else if (key === "o") {
+      e.preventDefault();
       fileInputRef.value?.click();
     } else if (key === "n") {
+      e.preventDefault();
       handleNewFile(null);
     }
   }
