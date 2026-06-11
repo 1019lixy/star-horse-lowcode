@@ -593,6 +593,21 @@
   z-index: 500;
 }
 
+.sh-diff-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 600;
+  padding: 20px;
+  backdrop-filter: blur(2px);
+}
+
 .sh-module-dialog {
   background: var(--ide-bg-secondary, #252526);
   border: 1px solid var(--ide-border, #3c3c3c);

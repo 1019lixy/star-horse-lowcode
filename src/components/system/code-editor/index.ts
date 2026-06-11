@@ -4,3 +4,4 @@ export { LANG_MAP, FILE_ICONS, FOLDER_ICONS, getFileExt, detectLanguage, getFile
 export { useFileTree } from "./useFileTree";
 export { useFileApi } from "./useFileApi";
 export type { ContextMenuItem } from "./ContextMenu.vue";
+export { default as StarHorseDiffEditor } from "../StarHorseDiffEditor.vue";

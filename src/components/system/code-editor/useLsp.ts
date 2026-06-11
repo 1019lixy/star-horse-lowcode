@@ -406,6 +406,26 @@ export function useLsp(
     }, 1000);
   };
 
+  /** 根据当前文件语言自动切换LSP连接 */
+  const switchLanguage = (lang: string) => {
+    if (!isLspLanguage(lang)) {
+      // 当前语言不需要LSP，断开连接
+      if (lspWs) {
+        disconnectLsp();
+      }
+      return;
+    }
+    if (!lspServerUrl.value) return;
+    // 如果已连接相同语言，不需要重连
+    if (lspWs && lspWs.readyState === WebSocket.OPEN && lspInitialized) {
+      // 同语言只重新打开文档
+      openCurrentDocument();
+      return;
+    }
+    // 不同语言或未连接，重新连接
+    connectLsp(lang);
+  };
+
   return {
     lspConnected,
     connectLsp,
@@ -414,5 +434,6 @@ export function useLsp(
     notifyDidOpen,
     notifyDidChange,
     isLspLanguage,
+    switchLanguage,
   };
 }

@@ -30,6 +30,7 @@ import type {ContextMenuItem} from "./code-editor/ContextMenu.vue";
 import ContextMenu from "./code-editor/ContextMenu.vue";
 import ConsolePanel from "./code-editor/ConsolePanel.vue";
 import ApiConfigDialog from "./code-editor/ApiConfigDialog.vue";
+import StarHorseDiffEditor from "./StarHorseDiffEditor.vue";
 
 const IDE_THEMES = [
   {value: "vs", name: "Light"},
@@ -88,6 +89,17 @@ const dirInputRef = ref<HTMLInputElement>();
 const modifiedFiles = ref<Set<string>>(new Set());
 /** API配置弹窗 */
 const apiConfigDialogVisible = ref(false);
+
+// ==================== 冲突解决 ====================
+const diffEditorVisible = ref(false);
+const diffOriginal = ref("");
+const diffModified = ref("");
+const diffLanguage = ref("plaintext");
+const diffTitle = ref("");
+const diffOriginalLabel = ref("");
+const diffModifiedLabel = ref("");
+const diffConflictMode = ref(false);
+const diffConflictMarkers = ref<any[]>([]);
 
 // ==================== 可配置设置（运行时） ====================
 const currentFontSize = ref(props.fontSize);
@@ -308,7 +320,9 @@ const syncActiveFile = async () => {
   if (file) {
     const model = getOrCreateModel(file);
     editor.setModel(model);
-    lsp.notifyDidOpen();
+    // 根据当前文件语言自动切换LSP连接
+    const lang = file.language || detectLanguage(file.name);
+    lsp.switchLanguage(lang);
   } else {
     const emptyModel = monaco.editor.createModel("", "plaintext");
     editor.setModel(emptyModel);
@@ -693,6 +707,34 @@ const handleMenuAction = (item: MenuItemDef) => {
       ideActions.doSaveDraft();
       break;
     }
+    case "diff-editor": {
+      // 对比当前文件与原始版本
+      const currentContent = editor?.getValue() || "";
+      const tab = activeTab.value;
+      const originalContent = tab?.originalContent || "";
+      openDiffEditor({
+        original: originalContent || currentContent,
+        modified: currentContent,
+        language: tab?.language || "plaintext",
+        title: i18n("diff.title") + (tab?.name ? " - " + tab.name : ""),
+        originalLabel: i18n("diff.original"),
+        modifiedLabel: i18n("diff.modified"),
+      });
+      break;
+    }
+    case "resolve-conflict": {
+      // 解决冲突：对比服务器版本和本地版本
+      if (activeTab.value) {
+        const localContent = editor?.getValue() || "";
+        const serverContent = activeTab.value.serverContent || "";
+        if (localContent.includes("<<<<<<<") || serverContent) {
+          resolveConflict(serverContent || localContent, localContent, activeTab.value.language || "plaintext");
+        } else {
+          warning(i18n("ide.diff.noConflict"));
+        }
+      }
+      break;
+    }
     default:
       emit("menu-action", item.action);
   }
@@ -818,6 +860,9 @@ const handleKeydown = (e: KeyboardEvent) => {
     } else if (key === "n") {
       e.preventDefault();
       handleNewFile(null);
+    } else if (e.shiftKey && key === "d") {
+      e.preventDefault();
+      handleMenuAction({label: "", action: "diff-editor"});
     }
   }
 };
@@ -1187,7 +1232,7 @@ const initEditor = async () => {
   // 打开初始文件
   const first = fileTree.findFirstFile();
   if (first) openFile(first);
-  if (props.api?.lspServerUrl) lsp.connectLsp(currentLang.value);
+  if (props.api?.lspServerUrl) lsp.switchLanguage(currentLang.value);
 };
 
 // ==================== Watchers ====================
@@ -1237,7 +1282,90 @@ defineExpose({
   loadFromServer,
   loadModule,
   saveToServer,
+  openDiffEditor,
+  resolveConflict,
 });
+
+// ==================== 冲突解决方法 ====================
+/** 打开Diff编辑器对比文本 */
+function openDiffEditor(options: {
+  original: string;
+  modified: string;
+  language?: string;
+  title?: string;
+  originalLabel?: string;
+  modifiedLabel?: string;
+  conflictMode?: boolean;
+  conflictMarkers?: any[];
+}) {
+  diffOriginal.value = options.original;
+  diffModified.value = options.modified;
+  diffLanguage.value = options.language || "plaintext";
+  diffTitle.value = options.title || "";
+  diffOriginalLabel.value = options.originalLabel || "";
+  diffModifiedLabel.value = options.modifiedLabel || "";
+  diffConflictMode.value = options.conflictMode || false;
+  diffConflictMarkers.value = options.conflictMarkers || [];
+  diffEditorVisible.value = true;
+}
+
+/** 解决冲突（从后端返回冲突时调用） */
+function resolveConflict(serverContent: string, localContent: string, language: string = "plaintext") {
+  // 自动检测冲突标记
+  const markers: { startLine: number; separatorLine: number; endLine: number; currentContent: string; incomingContent: string }[] = [];
+  const lines = localContent.split("\n");
+  let i = 0;
+  while (i < lines.length) {
+    if (lines[i].startsWith("<<<<<<<")) {
+      const startLine = i;
+      let separatorLine = -1;
+      let endLine = -1;
+      let j = i + 1;
+      while (j < lines.length) {
+        if (lines[j].startsWith("=======") && separatorLine === -1) separatorLine = j;
+        else if (lines[j].startsWith(">>>>>>>")) { endLine = j; break; }
+        j++;
+      }
+      if (separatorLine >= 0 && endLine >= 0) {
+        markers.push({
+          startLine,
+          separatorLine,
+          endLine,
+          currentContent: lines.slice(startLine + 1, separatorLine).join("\n"),
+          incomingContent: lines.slice(separatorLine + 1, endLine).join("\n"),
+        });
+      }
+      i = endLine >= 0 ? endLine + 1 : lines.length;
+    } else {
+      i++;
+    }
+  }
+
+  openDiffEditor({
+    original: serverContent,
+    modified: localContent,
+    language,
+    title: i18n("diff.conflictTitle"),
+    originalLabel: i18n("diff.serverVersion"),
+    modifiedLabel: i18n("diff.localVersion"),
+    conflictMode: markers.length > 0,
+    conflictMarkers: markers,
+  });
+}
+
+/** Diff编辑器保存/解决回调 */
+const handleDiffSave = (result: string) => {
+  const editor = toRaw(editorInstance.value);
+  if (editor) {
+    editor.setValue(result);
+  }
+  diffEditorVisible.value = false;
+  emit("save-complete", { resolved: true, content: result });
+};
+
+const handleDiffClose = () => {
+  diffEditorVisible.value = false;
+};
 
 // ==================== 生命周期 ====================
 onMounted(() => {
@@ -1649,6 +1777,24 @@ onBeforeUnmount(() => {
         @save="updateConfig"
         @reset="resetConfig"
     />
+
+    <!-- Diff/冲突解决编辑器（独立弹层） -->
+    <div v-if="diffEditorVisible" class="sh-diff-overlay">
+      <StarHorseDiffEditor
+        :original="diffOriginal"
+        :modified="diffModified"
+        :language="diffLanguage"
+        :title="diffTitle"
+        :original-label="diffOriginalLabel"
+        :modified-label="diffModifiedLabel"
+        :theme="currentTheme"
+        :conflict-mode="diffConflictMode"
+        :conflict-markers="diffConflictMarkers"
+        height="80vh"
+        @save="handleDiffSave"
+        @close="handleDiffClose"
+      />
+    </div>
   </div>
 </template>
 

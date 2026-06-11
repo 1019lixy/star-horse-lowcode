@@ -33,6 +33,8 @@ const defaultMenus: MenuItemDef[] = [
       {divider: true, label: ""},
       {label: i18n("ide.menu.file.closeTab"), action: "close-tab", shortcut: "Ctrl+W"},
       {label: i18n("ide.menu.file.closeAll"), action: "close-all"},
+      {divider: true, label: ""},
+      {label: i18n("ide.menu.file.resolveConflict"), action: "resolve-conflict"},
     ],
   },
   {
@@ -77,6 +79,8 @@ const defaultMenus: MenuItemDef[] = [
       {label: i18n("ide.menu.view.zoomIn"), action: "zoom-in", shortcut: "Ctrl+="},
       {label: i18n("ide.menu.view.zoomOut"), action: "zoom-out", shortcut: "Ctrl+-"},
       {label: i18n("ide.menu.view.zoomReset"), action: "zoom-reset", shortcut: "Ctrl+0"},
+      {divider: true, label: ""},
+      {label: i18n("ide.menu.view.diffEditor"), action: "diff-editor", shortcut: "Ctrl+Shift+D"},
     ],
   },
 ];
