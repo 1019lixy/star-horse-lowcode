@@ -245,6 +245,23 @@ export function useFileTree(initialFiles?: FileNode[]) {
     return check(ancestor.children);
   };
 
+  /** 获取从根到指定节点的所有祖先ID（不含自身） */
+  const getAncestorIds = (id: string): string[] => {
+    const ids: string[] = [];
+    const collect = (targetId: string, nodes: FileNode[]): boolean => {
+      for (const n of nodes) {
+        if (n.idCodeFile === targetId) return true;
+        if (n.children && collect(targetId, n.children)) {
+          ids.push(n.idCodeFile);
+          return true;
+        }
+      }
+      return false;
+    };
+    collect(id, tree.value);
+    return ids;
+  };
+
   // ========== 移动节点（拖拽，带重名检测） ==========
 
   /** 移动节点。返回 true 成功，false 表示循环、重名或无效 */
@@ -291,6 +308,7 @@ export function useFileTree(initialFiles?: FileNode[]) {
     addNodes,
     replaceTree,
     isDescendant,
+    getAncestorIds,
     moveNode,
     hasDuplicateName,
     getSiblingNames,

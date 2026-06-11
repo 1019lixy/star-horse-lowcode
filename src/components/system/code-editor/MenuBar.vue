@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from "vue";
+import {ref, onMounted, onBeforeUnmount, computed} from "vue";
 import type { MenuItemDef } from "./types";
 import { IDE_THEMES } from "./theme";
 import { i18n } from "@/lang/index";
@@ -15,7 +15,75 @@ const emit = defineEmits<{
 }>();
 
 const openIndex = ref<number | null>(null);
-
+// ==================== 菜单定义 ====================
+const defaultMenus: MenuItemDef[] = [
+  {
+    label: i18n("ide.menu.file"),
+    children: [
+      {label: i18n("ide.menu.file.newFile"), action: "new-file", shortcut: "Ctrl+N"},
+      {label: i18n("ide.menu.file.newFolder"), action: "new-folder"},
+      {divider: true, label: ""},
+      {label: i18n("ide.menu.file.openFile"), action: "open-file", shortcut: "Ctrl+O"},
+      {label: i18n("ide.menu.file.openDirectory"), action: "open-directory"},
+      {label: i18n("ide.menu.file.loadServer"), action: "load-server"},
+      {divider: true, label: ""},
+      {label: i18n("ide.menu.file.save"), action: "save", shortcut: "Ctrl+S"},
+      {label: i18n("ide.menu.file.saveAll"), action: "save-all", shortcut: "Ctrl+Shift+S"},
+      {label: i18n("ide.menu.file.saveServer"), action: "save-server"},
+      {divider: true, label: ""},
+      {label: i18n("ide.menu.file.closeTab"), action: "close-tab", shortcut: "Ctrl+W"},
+      {label: i18n("ide.menu.file.closeAll"), action: "close-all"},
+    ],
+  },
+  {
+    label: i18n("ide.menu.edit"),
+    children: [
+      {label: i18n("ide.menu.edit.undo"), action: "undo", shortcut: "Ctrl+Z"},
+      {label: i18n("ide.menu.edit.redo"), action: "redo", shortcut: "Ctrl+Shift+Z"},
+      {divider: true, label: ""},
+      {label: i18n("ide.menu.edit.cut"), action: "cut", shortcut: "Ctrl+X"},
+      {label: i18n("ide.menu.edit.copy"), action: "copy", shortcut: "Ctrl+C"},
+      {label: i18n("ide.menu.edit.paste"), action: "paste", shortcut: "Ctrl+V"},
+      {divider: true, label: ""},
+      {label: i18n("ide.menu.edit.find"), action: "find", shortcut: "Ctrl+F"},
+      {label: i18n("ide.menu.edit.replace"), action: "replace", shortcut: "Ctrl+H"},
+      {divider: true, label: ""},
+      {label: i18n("ide.menu.edit.selectAll"), action: "select-all", shortcut: "Ctrl+A"},
+      {divider: true, label: ""},
+      {label: i18n("ide.menu.edit.formatDocument"), action: "format-document", shortcut: "Shift+Alt+F"},
+    ],
+  },
+  {
+    label: i18n("ide.menu.build"),
+    children: [
+      {label: i18n("ide.menu.build.compile"), action: "compile", shortcut: "Ctrl+Shift+B"},
+      {label: i18n("ide.menu.build.compileRegister"), action: "compile-register"},
+      {label: i18n("ide.menu.build.run"), action: "run", shortcut: "Ctrl+F5"},
+      {divider: true, label: ""},
+      {label: i18n("ide.menu.build.draftSave"), action: "draft-save"},
+      {divider: true, label: ""},
+      {label: i18n("ide.menu.build.unregisterAll"), action: "unregister-all"},
+      {label: i18n("ide.menu.build.healthCheck"), action: "health-check"},
+      {divider: true, label: ""},
+      {label: i18n("ide.menu.build.console"), action: "toggle-console", shortcut: "Ctrl+`"},
+    ],
+  },
+  {
+    label: i18n("ide.menu.view"),
+    children: [
+      {label: i18n("ide.menu.view.toggleSidebar"), action: "toggle-sidebar", shortcut: "Ctrl+B"},
+      {label: i18n("ide.menu.view.toggleMinimap"), action: "toggle-minimap"},
+      {divider: true, label: ""},
+      {label: i18n("ide.menu.view.zoomIn"), action: "zoom-in", shortcut: "Ctrl+="},
+      {label: i18n("ide.menu.view.zoomOut"), action: "zoom-out", shortcut: "Ctrl+-"},
+      {label: i18n("ide.menu.view.zoomReset"), action: "zoom-reset", shortcut: "Ctrl+0"},
+    ],
+  },
+];
+const mergedMenus = computed(() => {
+  if (props.menus.length > 0) return [...defaultMenus, ...props.menus];
+  return defaultMenus;
+});
 const toggle = (i: number) => {
   openIndex.value = openIndex.value === i ? null : i;
 };
@@ -43,7 +111,7 @@ onBeforeUnmount(() => document.removeEventListener("click", onClickOutside));
 <template>
   <div class="sh-menubar" @click.stop>
     <div
-      v-for="(menu, i) in menus"
+      v-for="(menu, i) in mergedMenus"
       :key="i"
       class="menubar-item"
       :class="{ active: openIndex === i }"

@@ -23,7 +23,7 @@ starHorseAxios.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
         let token = getToken();
         if (!token&&window._isDebug_) {
-            token = "shd33de18000d8498590d60b1f005a4c43";
+            token = "sh36877d9f94004bfda1b9529981f956e9";
         }
         const fingerToken = getFingerId();
         // 请求头带上token

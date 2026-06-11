@@ -934,6 +934,7 @@ export default {
   "ide.sidebar.settings": "设置",
   "ide.sidebar.noFiles": "暂无文件",
   "ide.sidebar.hideHint": "隐藏侧边栏 (Ctrl+B)",
+  "ide.sidebar.locateFile": "定位当前文件",
   "ide.sidebar.searchPlaceholder": "搜索文件内容...",
   "ide.sidebar.noResults": "未找到匹配结果",
   "ide.sidebar.resultCount": (count: number) => `共 ${count} 条结果`,

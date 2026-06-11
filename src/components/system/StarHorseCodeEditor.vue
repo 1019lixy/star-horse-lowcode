@@ -1,20 +1,25 @@
 <script setup lang="ts" name="StarHorseCodeEditor">
-import {computed, nextTick, onBeforeUnmount, onMounted, PropType, ref, shallowRef, toRaw, watch} from "vue";
+import {computed, nextTick, onBeforeUnmount, onMounted, PropType, ref, shallowRef, toRaw, toRef, watch} from "vue";
 import * as monaco from "monaco-editor";
 import type {FileNode, MenuItemDef, TabInfo} from "./code-editor/types";
-import {detectLanguage, COMPILABLE_LANGUAGES, RUNNABLE_LANGUAGES, DEFAULT_TEMPLATES, deriveJavaPackage, deriveClassName, getFileExt, type IdeApiConfig} from "./code-editor/constants";
-
-const IDE_THEMES = [
-  { value: "vs", name: "Light" },
-  { value: "vs-dark", name: "Dark" },
-  { value: "hc-black", name: "High Contrast" },
-];
-import {applyThemeVars} from "./code-editor/theme";
+import {
+  COMPILABLE_LANGUAGES,
+  DEFAULT_TEMPLATES,
+  deriveClassName,
+  deriveJavaPackage,
+  detectLanguage,
+  type IdeApiConfig,
+  RUNNABLE_LANGUAGES
+} from "./code-editor/constants";
+import {applyThemeVars, getThemeByValue} from "./code-editor/theme";
 import {useLsp} from "./code-editor/useLsp";
 import {useFileTree} from "./code-editor/useFileTree";
 import {useFileApi} from "./code-editor/useFileApi";
-import {getRequest, postRequest} from "@/api/star_horse_apis";
-import {error as errorMsg, operationConfirm, success, warning} from "@/utils/message";
+import {useConsole} from "./code-editor/useConsole";
+import {useModuleDialog} from "./code-editor/useModuleDialog";
+import {useIdeActions} from "./code-editor/useIdeActions";
+import {useApiConfig} from "./code-editor/useApiConfig";
+import {operationConfirm, success, warning} from "@/utils/message";
 import {i18n} from "@/lang/index";
 import MenuBar from "./code-editor/MenuBar.vue";
 import ActivityBar from "./code-editor/ActivityBar.vue";
@@ -24,7 +29,13 @@ import FileTreeNode from "./code-editor/FileTreeNode.vue";
 import type {ContextMenuItem} from "./code-editor/ContextMenu.vue";
 import ContextMenu from "./code-editor/ContextMenu.vue";
 import ConsolePanel from "./code-editor/ConsolePanel.vue";
-import type {ConsoleLine} from "./code-editor/ConsolePanel.vue";
+import ApiConfigDialog from "./code-editor/ApiConfigDialog.vue";
+
+const IDE_THEMES = [
+  {value: "vs", name: "Light"},
+  {value: "vs-dark", name: "Dark"},
+  {value: "hc-black", name: "High Contrast"},
+];
 
 // ==================== Props & Emits ====================
 const props = defineProps({
@@ -32,17 +43,8 @@ const props = defineProps({
   menuItems: {type: Array as PropType<MenuItemDef[]>, default: () => []},
   theme: {type: String, default: "vs"},
   readOnly: {type: Boolean, default: false},
-  lspServerUrl: {type: String, default: ""},
   /** API接口配置对象，统一管理所有后端接口地址 */
   api: {type: Object as PropType<IdeApiConfig>, default: () => ({})},
-  /** @deprecated 使用 api.loadUrl 代替 */
-  loadUrl: {type: String, default: ""},
-  /** @deprecated 使用 api.saveUrl 代替 */
-  saveUrl: {type: String, default: ""},
-  /** @deprecated 使用 api.createModuleUrl 代替 */
-  moduleListUrl: {type: String, default: ""},
-  /** @deprecated 使用 api.createModuleUrl 代替 */
-  createModuleUrl: {type: String, default: ""},
   /** 模块ID，传入后自动从服务器加载该模块的代码 */
   moduleId: {type: String, default: ""},
   /** 加载时的附加参数 */
@@ -55,10 +57,6 @@ const props = defineProps({
   showExplorer: {type: Boolean, default: true},
   showStatusBar: {type: Boolean, default: true},
   boxHeight: {type: String, default: "100%"},
-  /** @deprecated 使用 api.compileUrl 代替 */
-  compileUrl: {type: String, default: ""},
-  /** @deprecated 使用 api.runUrl 代替 */
-  runUrl: {type: String, default: ""},
 });
 const emit = defineEmits([
   "file-open", "file-save", "file-close", "file-create", "file-delete",
@@ -68,27 +66,7 @@ const emit = defineEmits([
   "compile", "run",
 ]);
 
-// ==================== 兼容旧 props 的 API 解析 ====================
-const resolvedApi = computed<IdeApiConfig>(() => ({
-  loadUrl: props.api.loadUrl || props.loadUrl,
-  saveUrl: props.api.saveUrl || props.saveUrl,
-  compileUrl: props.api.compileUrl || props.compileUrl,
-  runUrl: props.api.runUrl || props.runUrl,
-  templateUrl: props.api.templateUrl,
-  templateLoadUrl: props.api.templateLoadUrl,
-  compileRegisterUrl: props.api.compileRegisterUrl,
-  unregisterUrl: props.api.unregisterUrl,
-  unregisterAllUrl: props.api.unregisterAllUrl,
-  registeredListUrl: props.api.registeredListUrl,
-  sourceCodeUrl: props.api.sourceCodeUrl,
-  draftSaveUrl: props.api.draftSaveUrl,
-  draftListUrl: props.api.draftListUrl,
-  draftSourceUrl: props.api.draftSourceUrl,
-  healthCheckUrl: props.api.healthCheckUrl,
-  executeUrl: props.api.executeUrl,
-  createModuleUrl: props.api.createModuleUrl || props.createModuleUrl,
-}));
-
+const {localConfig, resolvedApi, resetConfig,updateConfig} = useApiConfig(toRef(props.api));
 // ==================== IDE State ====================
 const ideRoot = ref<HTMLElement>();
 const editorContainer = ref<HTMLElement>();
@@ -98,6 +76,7 @@ const activeTabId = ref("");
 const sidebarVisible = ref(true);
 const activePanel = ref("explorer");
 const currentTheme = ref(props.theme);
+const themeVars = computed(() => getThemeByValue(currentTheme.value).vars);
 const cursorLine = ref(1);
 const cursorCol = ref(1);
 const expandedFolders = ref<Set<string>>(new Set());
@@ -107,6 +86,8 @@ const fileInputRef = ref<HTMLInputElement>();
 const dirInputRef = ref<HTMLInputElement>();
 /** 跟踪已修改的文件ID（编辑过但未保存的） */
 const modifiedFiles = ref<Set<string>>(new Set());
+/** API配置弹窗 */
+const apiConfigDialogVisible = ref(false);
 
 // ==================== 可配置设置（运行时） ====================
 const currentFontSize = ref(props.fontSize);
@@ -114,7 +95,7 @@ const currentMinimap = ref(props.minimap);
 const currentWordWrap = ref<"on" | "off">("on");
 const currentTabSize = ref(4);
 const searchQuery = ref("");
-const searchResults = ref<{idCodeFile: string; name: string; line: number; text: string; path: string}[]>([]);
+const searchResults = ref<{ idCodeFile: string; name: string; line: number; text: string; path: string }[]>([]);
 
 /** 搜索文件内容 */
 const doSearch = (query: string) => {
@@ -150,7 +131,7 @@ const doSearch = (query: string) => {
 };
 
 /** 点击搜索结果 */
-const openSearchResult = (result: {idCodeFile: string; line: number}) => {
+const openSearchResult = (result: { idCodeFile: string; line: number }) => {
   const node = fileTree.findNode(result.idCodeFile);
   if (node) {
     openFile(node);
@@ -186,81 +167,13 @@ const editingNodeId = ref<string | null>(null);
 const fileApi = useFileApi(resolvedApi.value.loadUrl, resolvedApi.value.saveUrl);
 
 // ==================== 模块选择弹窗（加载/保存共用） ====================
-interface ModuleItem {
-  idCodeModule: string;
-  name: string;
-  description?: string;
-
-  [key: string]: any;
-}
-
-type DialogMode = "load" | "save";
-
-const moduleDialogVisible = ref(false);
-const moduleDialogMode = ref<DialogMode>("load");
-const moduleList = ref<ModuleItem[]>([]);
-const selectedModuleId = ref("");
-const moduleListLoading = ref(false);
-const moduleSearchKeyword = ref("");
-const moduleDialogLoading = ref(false);
-
-/** 新建模块表单 */
-const showCreateForm = ref(false);
-const newModuleName = ref("");
-const newModuleDesc = ref("");
-
-/** 过滤后的模块列表 */
-const filteredModuleList = computed(() => {
-  const kw = moduleSearchKeyword.value.trim().toLowerCase();
-  if (!kw) return moduleList.value;
-  return moduleList.value.filter(
-      (m) => m.name.toLowerCase().includes(kw) || (m.description || "").toLowerCase().includes(kw),
-  );
-});
-
-/** 弹窗标题 */
-const moduleDialogTitle = computed(() => {
-  return moduleDialogMode.value === "load" ? i18n("ide.module.selectLoad") : i18n("ide.module.selectSave");
-});
-
-/** 获取模块列表 */
-const fetchModuleList = async (): Promise<ModuleItem[]> => {
-  if (!resolvedApi.value.createModuleUrl && !resolvedApi.value.loadUrl) return [];
-  moduleListLoading.value = true;
-  try {
-    const res: any = await getRequest(resolvedApi.value.loadUrl || resolvedApi.value.createModuleUrl!);
-    const data = res?.data;
-    if (data?.code === 0 && Array.isArray(data?.data)) {
-      return data.data as ModuleItem[];
-    }
-    if (Array.isArray(data)) return data;
-    if (Array.isArray(data?.data)) return data.data;
-    warning(data?.cnMessage || i18n("ide.module.fetchFailed"));
-    return [];
-  } catch (err: any) {
-    errorMsg(err?.message || i18n("ide.load.requestError"));
-    return [];
-  } finally {
-    moduleListLoading.value = false;
-  }
-};
-
-/** 打开模块弹窗 */
-const openModuleDialog = async (mode: DialogMode = "load") => {
-  moduleDialogMode.value = mode;
-  moduleSearchKeyword.value = "";
-  selectedModuleId.value = "";
-  showCreateForm.value = false;
-  newModuleName.value = "";
-  newModuleDesc.value = "";
-  moduleList.value = await fetchModuleList();
-  if (moduleList.value.length === 0 && !resolvedApi.value.loadUrl) {
-    // 没有配置 moduleListUrl，直接走无参加载
-    if (mode === "load") doLoadFromServer();
-    return;
-  }
-  moduleDialogVisible.value = true;
-};
+const {
+  moduleDialogVisible, moduleDialogMode, selectedModuleId,
+  moduleListLoading, moduleSearchKeyword, moduleDialogLoading,
+  showCreateForm, newModuleName, newModuleDesc,
+  filteredModuleList, moduleDialogTitle,
+  openModuleDialog, cancelModuleDialog, toggleCreateForm, createModuleAndSave,
+} = useModuleDialog(resolvedApi);
 
 /** 弹窗确认（加载模式） */
 const confirmModuleLoad = () => {
@@ -291,56 +204,6 @@ const confirmModuleAction = () => {
   }
 };
 
-/** 取消模块选择 */
-const cancelModuleDialog = () => {
-  moduleDialogVisible.value = false;
-  selectedModuleId.value = "";
-  showCreateForm.value = false;
-};
-
-/** 创建新模块并保存 */
-const createModuleAndSave = async () => {
-  if (!newModuleName.value.trim()) {
-    warning(i18n("ide.module.enterName"));
-    return;
-  }
-  if (!resolvedApi.value.createModuleUrl) {
-    warning(i18n("ide.module.noCreateUrl"));
-    return;
-  }
-  moduleDialogLoading.value = true;
-  try {
-    const res: any = await postRequest(resolvedApi.value.createModuleUrl!, {
-      name: newModuleName.value.trim(),
-      description: newModuleDesc.value.trim(),
-    });
-    const data = res?.data;
-    if (data?.code === 0 && data?.data) {
-      const newModule = data.data as ModuleItem;
-      // 使用新创建的模块 ID 保存代码
-      showCreateForm.value = false;
-      moduleDialogVisible.value = false;
-      success(i18n("ide.module.createSuccess"));
-      await doSaveToServer({item: newModule.idCodeModule, moduleName: newModule.name});
-    } else {
-      warning(data?.cnMessage || i18n("ide.module.createFailed"));
-    }
-  } catch (err: any) {
-    errorMsg(err?.message || i18n("ide.save.requestError"));
-  } finally {
-    moduleDialogLoading.value = false;
-  }
-};
-
-/** 切换显示新建模块表单 */
-const toggleCreateForm = () => {
-  showCreateForm.value = !showCreateForm.value;
-  if (showCreateForm.value) {
-    newModuleName.value = "";
-    newModuleDesc.value = "";
-  }
-};
-
 
 // ==================== Drag & Drop ====================
 const draggingId = ref<string | null>(null);
@@ -364,7 +227,7 @@ const breadcrumbPath = computed(() => {
 });
 
 // ==================== LSP ====================
-const lspServerUrlRef = computed(() => props.lspServerUrl);
+const lspServerUrlRef = computed(() => props.api?.lspServerUrl);
 const getDocumentUri = () => {
   const name = activeTab.value?.name || "untitled.txt";
   return `file:///workspace/${name}`;
@@ -699,76 +562,6 @@ const handleContextMenuAction = (action: string) => {
   contextMenuVisible.value = false;
 };
 
-// ==================== 菜单定义 ====================
-const defaultMenus: MenuItemDef[] = [
-  {
-    label: i18n("ide.menu.file"),
-    children: [
-      {label: i18n("ide.menu.file.newFile"), action: "new-file", shortcut: "Ctrl+N"},
-      {label: i18n("ide.menu.file.newFolder"), action: "new-folder"},
-      {divider: true, label: ""},
-      {label: i18n("ide.menu.file.openFile"), action: "open-file", shortcut: "Ctrl+O"},
-      {label: i18n("ide.menu.file.openDirectory"), action: "open-directory"},
-      {label: i18n("ide.menu.file.loadServer"), action: "load-server"},
-      {divider: true, label: ""},
-      {label: i18n("ide.menu.file.save"), action: "save", shortcut: "Ctrl+S"},
-      {label: i18n("ide.menu.file.saveAll"), action: "save-all", shortcut: "Ctrl+Shift+S"},
-      {label: i18n("ide.menu.file.saveServer"), action: "save-server"},
-      {divider: true, label: ""},
-      {label: i18n("ide.menu.file.closeTab"), action: "close-tab", shortcut: "Ctrl+W"},
-      {label: i18n("ide.menu.file.closeAll"), action: "close-all"},
-    ],
-  },
-  {
-    label: i18n("ide.menu.edit"),
-    children: [
-      {label: i18n("ide.menu.edit.undo"), action: "undo", shortcut: "Ctrl+Z"},
-      {label: i18n("ide.menu.edit.redo"), action: "redo", shortcut: "Ctrl+Shift+Z"},
-      {divider: true, label: ""},
-      {label: i18n("ide.menu.edit.cut"), action: "cut", shortcut: "Ctrl+X"},
-      {label: i18n("ide.menu.edit.copy"), action: "copy", shortcut: "Ctrl+C"},
-      {label: i18n("ide.menu.edit.paste"), action: "paste", shortcut: "Ctrl+V"},
-      {divider: true, label: ""},
-      {label: i18n("ide.menu.edit.find"), action: "find", shortcut: "Ctrl+F"},
-      {label: i18n("ide.menu.edit.replace"), action: "replace", shortcut: "Ctrl+H"},
-      {divider: true, label: ""},
-      {label: i18n("ide.menu.edit.selectAll"), action: "select-all", shortcut: "Ctrl+A"},
-      {divider: true, label: ""},
-      {label: i18n("ide.menu.edit.formatDocument"), action: "format-document", shortcut: "Shift+Alt+F"},
-    ],
-  },
-  {
-    label: i18n("ide.menu.build"),
-    children: [
-      {label: i18n("ide.menu.build.compile"), action: "compile", shortcut: "Ctrl+Shift+B"},
-      {label: i18n("ide.menu.build.compileRegister"), action: "compile-register"},
-      {label: i18n("ide.menu.build.run"), action: "run", shortcut: "Ctrl+F5"},
-      {divider: true, label: ""},
-      {label: i18n("ide.menu.build.draftSave"), action: "draft-save"},
-      {divider: true, label: ""},
-      {label: i18n("ide.menu.build.unregisterAll"), action: "unregister-all"},
-      {label: i18n("ide.menu.build.healthCheck"), action: "health-check"},
-      {divider: true, label: ""},
-      {label: i18n("ide.menu.build.console"), action: "toggle-console", shortcut: "Ctrl+`"},
-    ],
-  },
-  {
-    label: i18n("ide.menu.view"),
-    children: [
-      {label: i18n("ide.menu.view.toggleSidebar"), action: "toggle-sidebar", shortcut: "Ctrl+B"},
-      {label: i18n("ide.menu.view.toggleMinimap"), action: "toggle-minimap"},
-      {divider: true, label: ""},
-      {label: i18n("ide.menu.view.zoomIn"), action: "zoom-in", shortcut: "Ctrl+="},
-      {label: i18n("ide.menu.view.zoomOut"), action: "zoom-out", shortcut: "Ctrl+-"},
-      {label: i18n("ide.menu.view.zoomReset"), action: "zoom-reset", shortcut: "Ctrl+0"},
-    ],
-  },
-];
-
-const mergedMenus = computed(() => {
-  if (props.menuItems.length > 0) return [...defaultMenus, ...props.menuItems];
-  return defaultMenus;
-});
 
 // ==================== 菜单动作处理 ====================
 const handleMenuAction = (item: MenuItemDef) => {
@@ -884,6 +677,22 @@ const handleMenuAction = (item: MenuItemDef) => {
       doRun();
       break;
     }
+    case "compile-register": {
+      ideActions.doCompileRegister();
+      break;
+    }
+    case "unregister-all": {
+      ideActions.doUnregisterAll();
+      break;
+    }
+    case "health-check": {
+      ideActions.doHealthCheck();
+      break;
+    }
+    case "draft-save": {
+      ideActions.doSaveDraft();
+      break;
+    }
     default:
       emit("menu-action", item.action);
   }
@@ -953,7 +762,7 @@ const handleEditorDragOver = (e: DragEvent) => {
 
 const handleEditorDragLeave = (e: DragEvent) => {
   const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-  const { clientX: x, clientY: y } = e;
+  const {clientX: x, clientY: y} = e;
   if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
     fileDragOver.value = false;
   }
@@ -979,34 +788,30 @@ const handleExternalDrop = (e: DragEvent) => {
 
 // ==================== 键盘快捷键 ====================
 const handleKeydown = (e: KeyboardEvent) => {
+  const editor = toRaw(editorInstance.value);
+  e.preventDefault();
   // Shift+Alt+F 格式化
   if (e.shiftKey && e.altKey && e.key.toLowerCase() === "f") {
-    e.preventDefault();
+
     editor?.getAction("editor.action.formatDocument")?.run();
     return;
   }
   // Ctrl+` 切换控制台
   if ((e.ctrlKey || e.metaKey) && e.key === "`") {
-    e.preventDefault();
-    consoleVisible.value = !consoleVisible.value;
+    toggleConsole();
     return;
   }
   if (e.ctrlKey || e.metaKey) {
     const key = e.key.toLowerCase();
     if (key === "s") {
-      e.preventDefault();
       handleMenuAction({label: "", action: "save"});
     } else if (key === "b") {
-      e.preventDefault();
       sidebarVisible.value = !sidebarVisible.value;
     } else if (key === "w") {
-      e.preventDefault();
       if (activeTabId.value) closeTab(activeTabId.value);
     } else if (key === "o") {
-      e.preventDefault();
       fileInputRef.value?.click();
     } else if (key === "n") {
-      e.preventDefault();
       handleNewFile(null);
     }
   }
@@ -1080,16 +885,19 @@ const handleDrop = (sourceId: string, targetFolderId: string) => {
 };
 
 /** 紧凑目录拖拽选择：弹出菜单让用户选择放到哪个中间目录 */
-const handleCompactDropSelect = (sourceId: string, targetNodeId: string, chain: { id: string; name: string }[], position: { x: number; y: number }) => {
+const handleCompactDropSelect = (sourceId: string, targetNodeId: string, chain: {
+  id: string;
+  name: string
+}[], position: { x: number; y: number }) => {
   const items: ContextMenuItem[] = [];
   // 添加中间目录选项
   for (const ancestor of chain) {
-    items.push({ label: i18n("ide.drop.moveTo", ancestor.name), action: `compact-drop::${ancestor.id}` });
+    items.push({label: i18n("ide.drop.moveTo", ancestor.name), action: `compact-drop::${ancestor.id}`});
   }
   // 添加最底层目录选项
   const targetNode = fileTree.findNode(targetNodeId);
   if (targetNode) {
-    items.push({ label: i18n("ide.drop.moveTo", targetNode.name), action: `compact-drop::${targetNodeId}` });
+    items.push({label: i18n("ide.drop.moveTo", targetNode.name), action: `compact-drop::${targetNodeId}`});
   }
   compactDropSourceId.value = sourceId;
   contextMenuItems.value = items;
@@ -1149,7 +957,7 @@ const loadFromServer = async (params?: Record<string, any>) => {
     await doLoadFromServer(params);
     return;
   }
-  if (resolvedApi.value.loadUrl) {
+  if (resolvedApi.value.moduleListUrl) {
     // 弹出模块选择弹窗
     await openModuleDialog();
   } else {
@@ -1196,7 +1004,7 @@ const doSaveToServer = async (params?: Record<string, any>) => {
 
 /** 保存到服务器（公共方法），如果配置了 moduleListUrl 则弹窗选择模块 */
 const saveToServer = async () => {
-  if (resolvedApi.value.loadUrl) {
+  if (resolvedApi.value.moduleListUrl) {
     // 弹出模块选择弹窗（保存模式）
     await openModuleDialog("save");
   } else {
@@ -1226,19 +1034,22 @@ const compactAndSort = (nodes: FileNode[]): {
 } => {
   const labels = new Map<string, string>();
   const chains = new Map<string, { id: string; name: string }[]>();
-  const process = (nodes: FileNode[], parentLabel = "", parentChain: { id: string; name: string }[] = []): FileNode[] => {
+  const process = (nodes: FileNode[], parentLabel = "", parentChain: {
+    id: string;
+    name: string
+  }[] = []): FileNode[] => {
     const result: FileNode[] = [];
     for (const node of sortNodes(nodes)) {
       if (node.type === "folder" && node.children?.length === 1 && node.children[0].type === "folder") {
         const child = node.children[0];
         const combinedLabel = parentLabel ? parentLabel + "/" + node.name : node.name;
-        const newChain = [...parentChain, { id: node.idCodeFile, name: node.name }];
+        const newChain = [...parentChain, {id: node.idCodeFile, name: node.name}];
         labels.set(child.idCodeFile, combinedLabel + "/" + child.name);
         chains.set(child.idCodeFile, newChain);
         result.push(...process([child], combinedLabel, newChain));
       } else {
         if (node.children) {
-          result.push({ ...node, children: process(node.children) });
+          result.push({...node, children: process(node.children)});
         } else {
           result.push(node);
         }
@@ -1246,7 +1057,7 @@ const compactAndSort = (nodes: FileNode[]): {
     }
     return result;
   };
-  return { nodes: process(nodes), labels, chains };
+  return {nodes: process(nodes), labels, chains};
 };
 
 const compactResult = computed(() => compactAndSort(fileTree.tree.value));
@@ -1255,9 +1066,34 @@ const compactLabels = computed(() => compactResult.value.labels);
 const compactChains = computed(() => compactResult.value.chains);
 
 // ==================== 控制台 ====================
-const consoleVisible = ref(false);
-const consoleLines = ref<ConsoleLine[]>([]);
-const consoleBusy = ref(false);
+const {
+  consoleVisible, consoleLines, consoleBusy,
+  appendConsole, clearConsole, toggleConsole,
+} = useConsole();
+
+// ==================== 定位当前文件 ====================
+const highlightedId = ref<string | null>(null);
+let highlightTimer: ReturnType<typeof setTimeout> | null = null;
+
+const locateActiveFile = () => {
+  if (!activeTabId.value) return;
+  // 展开所有祖先目录
+  const ancestorIds = fileTree.getAncestorIds(activeTabId.value);
+  const s = new Set(expandedFolders.value);
+  for (const id of ancestorIds) s.add(id);
+  expandedFolders.value = s;
+  // 高亮目标节点
+  highlightedId.value = activeTabId.value;
+  if (highlightTimer) clearTimeout(highlightTimer);
+  highlightTimer = setTimeout(() => {
+    highlightedId.value = null;
+  }, 2000);
+  // 滚动到目标节点
+  nextTick(() => {
+    const el = document.querySelector(".locate-highlight") as HTMLElement;
+    if (el) el.scrollIntoView({behavior: "smooth", block: "center"});
+  });
+};
 
 /** 当前活动文件是否支持编译或运行 */
 const canBuildActive = computed(() => {
@@ -1266,124 +1102,25 @@ const canBuildActive = computed(() => {
   return COMPILABLE_LANGUAGES.has(lang) || RUNNABLE_LANGUAGES.has(lang);
 });
 
-const now = () => {
-  const d = new Date();
-  return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}:${String(d.getSeconds()).padStart(2, "0")}`;
-};
+// ==================== IDE Actions（编译/运行/编译注册/注销/草稿/健康检查） ====================
+const ideActions = useIdeActions({
+  resolvedApi,
+  activeTabId,
+  consoleVisible,
+  consoleBusy,
+  appendConsole,
+  getFileContent: (id: string) => fileTree.getFileContent(id) || "",
+  findNode: (id: string) => fileTree.findNode(id),
+  detectLanguage,
+});
 
-const appendConsole = (type: ConsoleLine["type"], text: string) => {
-  consoleLines.value.push({ type, text, time: now() });
-};
-
-const clearConsole = () => {
-  consoleLines.value = [];
-};
-
-/** 获取当前活动文件的源码 */
-const getActiveSourceCode = (): string | null => {
-  if (!activeTabId.value) return null;
-  return fileTree.getFileContent(activeTabId.value) || null;
-};
-
-/** 获取当前活动文件的语言 */
-const getActiveLanguage = (): string => {
-  if (!activeTabId.value) return "";
-  const node = fileTree.findNode(activeTabId.value);
-  return node?.language || detectLanguage(node?.name || "");
-};
-
-/** 获取当前活动文件名 */
-const getActiveFileName = (): string => {
-  if (!activeTabId.value) return "";
-  const node = fileTree.findNode(activeTabId.value);
-  return node?.name || "";
-};
-
-// ==================== 编译 ====================
 const doCompile = async () => {
-  const url = resolvedApi.value.compileUrl;
-  if (!url) {
-    warning(i18n("ide.console.noCompileUrl"));
-    return;
-  }
-  const sourceCode = getActiveSourceCode();
-  if (!sourceCode) {
-    warning(i18n("ide.console.noActiveFile"));
-    return;
-  }
-  consoleVisible.value = true;
-  consoleBusy.value = true;
-  appendConsole("info", i18n("ide.console.compileStart", getActiveFileName()));
-  try {
-    const res = await postRequest(url, {
-      sourceCode,
-      language: getActiveLanguage(),
-      fileName: getActiveFileName(),
-    });
-    if (res?.data?.success || res?.data?.code === 200) {
-      const result = res.data.data || res.data;
-      if (result.success) {
-        appendConsole("success", i18n("ide.console.compileSuccess"));
-        if (result.fullClassName) appendConsole("info", `  class: ${result.fullClassName}`);
-        if (result.beanName) appendConsole("info", `  bean: ${result.beanName}`);
-      } else {
-        appendConsole("error", i18n("ide.console.compileFail"));
-        if (result.errorMessage) appendConsole("error", result.errorMessage);
-      }
-    } else {
-      const msg = res?.data?.msg || res?.data?.message || i18n("ide.console.compileFail");
-      appendConsole("error", `${i18n("ide.console.compileFail")}: ${msg}`);
-    }
-  } catch (e: any) {
-    appendConsole("error", `${i18n("ide.console.compileFail")}: ${e.message || e}`);
-  } finally {
-    consoleBusy.value = false;
-  }
+  await ideActions.doCompile();
   emit("compile", fileTree.findNode(activeTabId.value!));
 };
 
-// ==================== 运行 ====================
 const doRun = async () => {
-  const url = resolvedApi.value.runUrl;
-  if (!url) {
-    warning(i18n("ide.console.noRunUrl"));
-    return;
-  }
-  const sourceCode = getActiveSourceCode();
-  if (!sourceCode) {
-    warning(i18n("ide.console.noActiveFile"));
-    return;
-  }
-  consoleVisible.value = true;
-  consoleBusy.value = true;
-  appendConsole("info", i18n("ide.console.runStart", getActiveFileName()));
-  try {
-    const res = await postRequest(url, {
-      sourceCode,
-      language: getActiveLanguage(),
-      fileName: getActiveFileName(),
-      codeId: activeTabId.value,
-    });
-    if (res?.data?.success || res?.data?.code === 200) {
-      const result = res.data.data || res.data;
-      if (result.success) {
-        appendConsole("success", i18n("ide.console.runSuccess"));
-        if (result.result !== undefined && result.result !== null) {
-          appendConsole("info", `  ${i18n("ide.console.result")}: ${JSON.stringify(result.result)}`);
-        }
-      } else {
-        appendConsole("error", i18n("ide.console.runFail"));
-        if (result.errorMessage) appendConsole("error", result.errorMessage);
-      }
-    } else {
-      const msg = res?.data?.msg || res?.data?.message || i18n("ide.console.runFail");
-      appendConsole("error", `${i18n("ide.console.runFail")}: ${msg}`);
-    }
-  } catch (e: any) {
-    appendConsole("error", `${i18n("ide.console.runFail")}: ${e.message || e}`);
-  } finally {
-    consoleBusy.value = false;
-  }
+  await ideActions.doRun();
   emit("run", fileTree.findNode(activeTabId.value!));
 };
 
@@ -1445,7 +1182,7 @@ const initEditor = async () => {
   // 打开初始文件
   const first = fileTree.findFirstFile();
   if (first) openFile(first);
-  if (props.lspServerUrl) lsp.connectLsp(currentLang.value);
+  if (props.api?.lspServerUrl) lsp.connectLsp(currentLang.value);
 };
 
 // ==================== Watchers ====================
@@ -1505,7 +1242,7 @@ onMounted(() => {
   // 如果配置了loadUrl，自动从后端加载
   if (resolvedApi.value.loadUrl) {
     // 初始化时直接加载（不弹窗），弹窗仅在用户手动点击"从服务器加载"时触发
-   // doLoadFromServer();
+    // doLoadFromServer();
   }
 });
 
@@ -1522,7 +1259,7 @@ onBeforeUnmount(() => {
   <div
       ref="ideRoot"
       class="sh-ide"
-      :class="{ 'ide-drop-zone': fileDragOver }"
+
       :style="{ height: boxHeight }"
       @dragover="handleEditorDragOver"
       @dragleave="handleEditorDragLeave"
@@ -1545,7 +1282,7 @@ onBeforeUnmount(() => {
 
     <!-- 菜单栏 -->
     <MenuBar
-        :menus="mergedMenus"
+        :menus="menuItems"
         :current-theme="currentTheme"
         @action="handleMenuAction"
         @switch-theme="switchTheme"
@@ -1576,8 +1313,16 @@ onBeforeUnmount(() => {
           <template v-if="activePanel === 'explorer'">
             <button class="sidebar-btn" :title="i18n('ide.ctx.newFile')" @click="handleNewFile(null)">📄+</button>
             <button class="sidebar-btn" :title="i18n('ide.ctx.newFolder')" @click="handleNewFolder(null)">📁+</button>
+            <button class="sidebar-btn" :title="i18n('ide.sidebar.locateFile')" @click="locateActiveFile">
+              <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor">
+                <path
+                    d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+              </svg>
+            </button>
           </template>
-          <button class="sidebar-btn sidebar-close-btn" :title="i18n('ide.sidebar.hideHint')" @click="sidebarVisible = false">✕</button>
+          <button class="sidebar-btn sidebar-close-btn" :title="i18n('ide.sidebar.hideHint')"
+                  @click="sidebarVisible = false">✕
+          </button>
         </div>
         <div class="sidebar-content" @contextmenu="handleSidebarContextMenu">
           <!-- 资源管理器面板 -->
@@ -1597,6 +1342,7 @@ onBeforeUnmount(() => {
                   :compact-labels="compactLabels"
                   :compact-chains="compactChains"
                   :modified-files="modifiedFiles"
+                  :highlighted-id="highlightedId"
                   @toggle="toggleFolder"
                   @select="openFile"
                   @contextmenu="handleTreeContextMenu"
@@ -1631,7 +1377,8 @@ onBeforeUnmount(() => {
                     :placeholder="i18n('ide.sidebar.searchPlaceholder')"
                     @input="doSearch(searchQuery)"
                 />
-                <span v-if="searchQuery" class="search-clear" @click="searchQuery = ''; searchResults = []">&times;</span>
+                <span v-if="searchQuery" class="search-clear"
+                      @click="searchQuery = ''; searchResults = []">&times;</span>
               </div>
               <div class="search-results">
                 <div v-if="searchResults.length === 0 && searchQuery" class="search-empty">
@@ -1660,7 +1407,8 @@ onBeforeUnmount(() => {
               <!-- 主题 -->
               <div class="setting-group">
                 <label class="setting-label">{{ i18n('ide.settings.theme') }}</label>
-                <select class="setting-select" :value="currentTheme" @change="switchTheme(($event.target as HTMLSelectElement).value)">
+                <select class="setting-select" :value="currentTheme"
+                        @change="switchTheme(($event.target as HTMLSelectElement).value)">
                   <option v-for="t in IDE_THEMES" :key="t.value" :value="t.value">{{ t.name }}</option>
                 </select>
               </div>
@@ -1668,9 +1416,13 @@ onBeforeUnmount(() => {
               <div class="setting-group">
                 <label class="setting-label">{{ i18n('ide.settings.fontSize') }}</label>
                 <div class="setting-number">
-                  <button class="setting-btn" @click="currentFontSize = Math.max(10, currentFontSize - 1); applyEditorSettings()">−</button>
+                  <button class="setting-btn"
+                          @click="currentFontSize = Math.max(10, currentFontSize - 1); applyEditorSettings()">−
+                  </button>
                   <span class="setting-value">{{ currentFontSize }}px</span>
-                  <button class="setting-btn" @click="currentFontSize = Math.min(28, currentFontSize + 1); applyEditorSettings()">+</button>
+                  <button class="setting-btn"
+                          @click="currentFontSize = Math.min(28, currentFontSize + 1); applyEditorSettings()">+
+                  </button>
                 </div>
               </div>
               <!-- Tab 大小 -->
@@ -1683,14 +1435,16 @@ onBeforeUnmount(() => {
                       class="setting-tab-btn"
                       :class="{ active: currentTabSize === size }"
                       @click="currentTabSize = size; applyEditorSettings()"
-                  >{{ size }}</button>
+                  >{{ size }}
+                  </button>
                 </div>
               </div>
               <!-- 自动换行 -->
               <div class="setting-group">
                 <label class="setting-label">自动换行</label>
                 <label class="setting-toggle">
-                  <input type="checkbox" :checked="currentWordWrap === 'on'" @change="currentWordWrap = currentWordWrap === 'on' ? 'off' : 'on'; applyEditorSettings()"/>
+                  <input type="checkbox" :checked="currentWordWrap === 'on'"
+                         @change="currentWordWrap = currentWordWrap === 'on' ? 'off' : 'on'; applyEditorSettings()"/>
                   <span class="toggle-slider"></span>
                 </label>
               </div>
@@ -1698,9 +1452,22 @@ onBeforeUnmount(() => {
               <div class="setting-group">
                 <label class="setting-label">小地图</label>
                 <label class="setting-toggle">
-                  <input type="checkbox" :checked="currentMinimap" @change="currentMinimap = !currentMinimap; applyEditorSettings()"/>
+                  <input type="checkbox" :checked="currentMinimap"
+                         @change="currentMinimap = !currentMinimap; applyEditorSettings()"/>
                   <span class="toggle-slider"></span>
                 </label>
+              </div>
+              <!-- API 接口配置 -->
+              <div class="setting-group setting-group-section">
+                <button class="api-config-open-btn" @click="apiConfigDialogVisible = true">
+                  <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor">
+                    <path
+                        d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/>
+                    <path
+                        d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z"/>
+                  </svg>
+                  API 接口配置
+                </button>
               </div>
             </div>
           </template>
@@ -1723,8 +1490,12 @@ onBeforeUnmount(() => {
           <span class="breadcrumb-path">{{ breadcrumbPath }}</span>
           <span class="breadcrumb-lang">{{ activeTab.language }}</span>
           <div v-if="canBuildActive" class="breadcrumb-actions">
-            <button v-if="COMPILABLE_LANGUAGES.has(activeTab.language)" class="breadcrumb-btn compile-btn" :title="i18n('ide.menu.build.compile')" :disabled="consoleBusy" @click="doCompile">▶</button>
-            <button v-if="RUNNABLE_LANGUAGES.has(activeTab.language)" class="breadcrumb-btn run-btn" :title="i18n('ide.menu.build.run')" :disabled="consoleBusy" @click="doRun">►</button>
+            <button v-if="COMPILABLE_LANGUAGES.has(activeTab.language)" class="breadcrumb-btn compile-btn"
+                    :title="i18n('ide.menu.build.compile')" :disabled="consoleBusy" @click="doCompile">▶
+            </button>
+            <button v-if="RUNNABLE_LANGUAGES.has(activeTab.language)" class="breadcrumb-btn run-btn"
+                    :title="i18n('ide.menu.build.run')" :disabled="consoleBusy" @click="doRun">►
+            </button>
           </div>
         </div>
         <!-- Monaco 编辑器 -->
@@ -1732,7 +1503,8 @@ onBeforeUnmount(() => {
         <!-- 欢迎页 -->
         <div v-if="openTabs.length === 0" class="sh-ide-welcome">
           <div class="welcome-icon">
-            <svg viewBox="0 0 100 100" width="80" height="80" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <svg viewBox="0 0 100 100" width="80" height="80" fill="none" stroke="currentColor" stroke-width="3"
+                 stroke-linecap="round" stroke-linejoin="round">
               <polyline points="30,25 15,50 30,75"/>
               <polyline points="70,25 85,50 70,75"/>
               <line x1="55" y1="20" x2="45" y2="80"/>
@@ -1755,10 +1527,10 @@ onBeforeUnmount(() => {
         </div>
         <!-- 控制台 -->
         <ConsolePanel
-          v-model:visible="consoleVisible"
-          :lines="consoleLines"
-          :busy="consoleBusy"
-          @clear="clearConsole"
+            v-model:visible="consoleVisible"
+            :lines="consoleLines"
+            :busy="consoleBusy"
+            @clear="clearConsole"
         />
       </div>
     </div>
@@ -1770,7 +1542,7 @@ onBeforeUnmount(() => {
         :cursor-col="cursorCol"
         :language="currentLang"
         :lsp-connected="lsp.lspConnected.value"
-        :show-lsp="!!lspServerUrl"
+        :show-lsp="!!api?.lspServerUrl"
         :loading="fileApi.loading.value"
         :saving="fileApi.saving.value"
         :console-visible="consoleVisible"
@@ -1803,10 +1575,10 @@ onBeforeUnmount(() => {
           <div v-else class="sh-module-list">
             <div
                 v-for="item in filteredModuleList"
-                :key="item.id"
+                :key="item.idCodeModule"
                 class="sh-module-item"
-                :class="{ active: selectedModuleId === item.id }"
-                @click="selectedModuleId = item.id; showCreateForm = false"
+                :class="{ active: selectedModuleId === item.idCodeModule }"
+                @click="selectedModuleId = item.idCodeModule; showCreateForm = false"
                 @dblclick="confirmModuleAction"
             >
               <div class="sh-module-item-name">{{ item.name }}</div>
@@ -1862,810 +1634,19 @@ onBeforeUnmount(() => {
         </div>
       </div>
     </div>
+
+    <!-- API配置弹窗 -->
+    <ApiConfigDialog
+        v-model:visible="apiConfigDialogVisible"
+        :config="localConfig"
+        :resolved-config="resolvedApi"
+        :theme-vars="themeVars"
+        @save="updateConfig"
+        @reset="resetConfig"
+    />
   </div>
 </template>
 
 <style lang="scss" scoped>
-.sh-ide {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  border: 1px solid var(--ide-border, #3c3c3c);
-  border-radius: 4px;
-  overflow: hidden;
-  background: var(--ide-bg, #1e1e1e);
-  color: var(--ide-fg, #cccccc);
-  font-family: 'Segoe UI', system-ui, sans-serif;
-  font-size: 13px;
-
-  &.ide-drop-zone {
-    border-color: var(--ide-accent, #007acc);
-    box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--ide-accent, #007acc) 25%, transparent);
-  }
-}
-
-.sh-ide-body {
-  display: flex;
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
-}
-
-.sh-ide-sidebar {
-  position: relative;
-  background: var(--ide-sidebar-bg, #252526);
-  border-right: 1px solid var(--ide-border, #3c3c3c);
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-  overflow: hidden;
-}
-
-.sidebar-header {
-  padding: 6px 12px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  color: var(--ide-fg-dim, #858585);
-  text-transform: uppercase;
-  border-bottom: 1px solid var(--ide-border, #3c3c3c);
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  flex-shrink: 0;
-}
-
-.sidebar-title {
-  flex: 1;
-}
-
-.sidebar-btn {
-  background: none;
-  border: none;
-  color: var(--ide-fg-dim, #858585);
-  cursor: pointer;
-  font-size: 12px;
-  padding: 2px 6px;
-  border-radius: 3px;
-  line-height: 1;
-
-  &:hover {
-    background: var(--ide-bg-hover, #2a2d2e);
-    color: var(--ide-fg, #ccc);
-  }
-}
-
-.sidebar-close-btn {
-  font-size: 14px;
-  padding: 2px 5px;
-  opacity: 0.6;
-
-  &:hover {
-    opacity: 1;
-    color: var(--ide-fg, #ccc);
-  }
-}
-
-.sidebar-content {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding: 4px 0;
-}
-
-.sidebar-empty {
-  padding: 16px;
-  color: var(--ide-fg-dim, #858585);
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-
-  p {
-    margin: 0;
-  }
-}
-
-.sidebar-action-btn {
-  background: var(--ide-bg-hover, #2a2d2e);
-  border: 1px solid var(--ide-border, #3c3c3c);
-  color: var(--ide-fg, #ccc);
-  padding: 6px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 13px;
-  width: 100%;
-  max-width: 160px;
-
-  &:hover {
-    background: var(--ide-accent, #007acc);
-    border-color: var(--ide-accent, #007acc);
-  }
-}
-
-.sidebar-hint {
-  font-size: 12px;
-  font-style: italic;
-  opacity: 0.7;
-}
-
-// ==================== 搜索面板样式 ====================
-.sidebar-search {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.search-input-wrap {
-  padding: 8px;
-  position: relative;
-  flex-shrink: 0;
-}
-
-.search-input {
-  width: 100%;
-  padding: 6px 28px 6px 10px;
-  background: var(--ide-bg, #1e1e1e);
-  border: 1px solid var(--ide-border, #3c3c3c);
-  border-radius: 4px;
-  color: var(--ide-fg, #ccc);
-  font-size: 13px;
-  outline: none;
-  box-sizing: border-box;
-
-  &:focus {
-    border-color: var(--ide-accent, #007acc);
-  }
-
-  &::placeholder {
-    color: var(--ide-fg-dim, #858585);
-  }
-}
-
-.search-clear {
-  position: absolute;
-  right: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  color: var(--ide-fg-dim, #858585);
-  font-size: 16px;
-  line-height: 1;
-
-  &:hover {
-    color: var(--ide-fg, #ccc);
-  }
-}
-
-.search-results {
-  flex: 1;
-  overflow-y: auto;
-  padding: 0 4px;
-}
-
-.search-empty {
-  padding: 16px;
-  text-align: center;
-  color: var(--ide-fg-dim, #858585);
-  font-size: 12px;
-}
-
-.search-result-item {
-  padding: 6px 8px;
-  cursor: pointer;
-  border-radius: 4px;
-  font-size: 12px;
-  margin-bottom: 2px;
-
-  &:hover {
-    background: var(--ide-bg-hover, #2a2d2e);
-  }
-}
-
-.search-result-file {
-  color: var(--ide-fg, #ccc);
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.search-result-icon {
-  font-size: 11px;
-}
-
-.search-result-line {
-  color: var(--ide-accent, #007acc);
-  font-size: 11px;
-}
-
-.search-result-text {
-  color: var(--ide-fg-dim, #858585);
-  font-family: 'Consolas', 'Courier New', monospace;
-  font-size: 11px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin-top: 2px;
-  padding-left: 18px;
-}
-
-.search-result-path {
-  color: var(--ide-fg-dim, #858585);
-  font-size: 10px;
-  opacity: 0.6;
-  padding-left: 18px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.search-count {
-  padding: 6px 8px;
-  font-size: 11px;
-  color: var(--ide-fg-dim, #858585);
-  text-align: center;
-  border-top: 1px solid var(--ide-border, #3c3c3c);
-  margin-top: 4px;
-}
-
-// ==================== 设置面板样式 ====================
-.sidebar-settings {
-  padding: 8px;
-}
-
-.setting-group {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 4px;
-  border-bottom: 1px solid var(--ide-border, #3c3c3c);
-
-  &:last-child {
-    border-bottom: none;
-  }
-}
-
-.setting-label {
-  font-size: 12px;
-  color: var(--ide-fg, #ccc);
-  flex-shrink: 0;
-}
-
-.setting-select {
-  background: var(--ide-bg, #1e1e1e);
-  border: 1px solid var(--ide-border, #3c3c3c);
-  color: var(--ide-fg, #ccc);
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  outline: none;
-  cursor: pointer;
-
-  &:focus {
-    border-color: var(--ide-accent, #007acc);
-  }
-}
-
-.setting-number {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.setting-btn {
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--ide-bg-hover, #2a2d2e);
-  border: 1px solid var(--ide-border, #3c3c3c);
-  color: var(--ide-fg, #ccc);
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  line-height: 1;
-
-  &:hover {
-    background: var(--ide-accent, #007acc);
-    border-color: var(--ide-accent, #007acc);
-  }
-}
-
-.setting-value {
-  min-width: 36px;
-  text-align: center;
-  font-size: 12px;
-  color: var(--ide-fg, #ccc);
-}
-
-.setting-tabs {
-  display: flex;
-  gap: 2px;
-}
-
-.setting-tab-btn {
-  width: 28px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--ide-bg-hover, #2a2d2e);
-  border: 1px solid var(--ide-border, #3c3c3c);
-  color: var(--ide-fg, #ccc);
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 12px;
-
-  &.active {
-    background: var(--ide-accent, #007acc);
-    border-color: var(--ide-accent, #007acc);
-    color: #fff;
-  }
-
-  &:hover:not(.active) {
-    border-color: var(--ide-accent, #007acc);
-  }
-}
-
-.setting-toggle {
-  position: relative;
-  display: inline-block;
-  width: 36px;
-  height: 20px;
-  cursor: pointer;
-
-  input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
-}
-
-.toggle-slider {
-  position: absolute;
-  inset: 0;
-  background: var(--ide-bg-hover, #2a2d2e);
-  border: 1px solid var(--ide-border, #3c3c3c);
-  border-radius: 10px;
-  transition: 0.2s;
-
-  &::before {
-    content: '';
-    position: absolute;
-    width: 14px;
-    height: 14px;
-    left: 2px;
-    top: 2px;
-    background: var(--ide-fg-dim, #858585);
-    border-radius: 50%;
-    transition: 0.2s;
-  }
-}
-
-.setting-toggle input:checked + .toggle-slider {
-  background: var(--ide-accent, #007acc);
-  border-color: var(--ide-accent, #007acc);
-
-  &::before {
-    transform: translateX(16px);
-    background: #fff;
-  }
-}
-
-.sidebar-resize {
-  position: absolute;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  width: 4px;
-  cursor: col-resize;
-  z-index: 10;
-
-  &:hover {
-    background: var(--ide-accent, #007acc);
-  }
-}
-
-.sh-ide-editor {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-}
-
-.editor-drop-overlay {
-  position: absolute;
-  inset: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: color-mix(in srgb, var(--ide-accent, #007acc) 12%, transparent);
-  border: 2px dashed var(--ide-accent, #007acc);
-  border-radius: 8px;
-  color: var(--ide-accent, #007acc);
-  font-size: 18px;
-  font-weight: 500;
-  z-index: 50;
-  pointer-events: none;
-}
-
-.sh-ide-breadcrumb {
-  padding: 2px 16px;
-  font-size: 12px;
-  color: var(--ide-fg-dim, #858585);
-  background: var(--ide-bg, #1e1e1e);
-  border-bottom: 1px solid var(--ide-border, #3c3c3c);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-}
-
-.breadcrumb-path {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  color: var(--ide-fg, #cccccc);
-}
-
-.breadcrumb-lang {
-  font-size: 11px;
-  opacity: 0.6;
-  flex-shrink: 0;
-}
-
-.breadcrumb-actions {
-  margin-left: auto;
-  display: flex;
-  gap: 4px;
-  flex-shrink: 0;
-}
-
-.breadcrumb-btn {
-  background: none;
-  border: 1px solid var(--ide-border, #3c3c3c);
-  color: var(--ide-fg, #cccccc);
-  cursor: pointer;
-  font-size: 12px;
-  padding: 1px 8px;
-  border-radius: 3px;
-  line-height: 1.4;
-}
-.breadcrumb-btn:hover:not(:disabled) {
-  background: var(--ide-hover, #2a2d2e);
-}
-.breadcrumb-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-.compile-btn {
-  color: var(--ide-accent, #007acc);
-  border-color: var(--ide-accent, #007acc);
-}
-.run-btn {
-  color: #89d185;
-  border-color: #89d185;
-}
-
-.sh-ide-monaco {
-  flex: 1;
-  min-height: 0;
-}
-
-.sh-ide-welcome {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: var(--ide-welcome-fg, #858585);
-  text-align: center;
-  gap: 8px;
-}
-
-.welcome-icon {
-  margin-bottom: 12px;
-  opacity: 0.5;
-  color: var(--ide-fg-dim, #858585);
-}
-
-.sh-ide-welcome h2 {
-  color: var(--ide-fg, #cccccc);
-  font-weight: 400;
-  margin: 0;
-}
-
-.sh-ide-welcome p {
-  margin: 0;
-}
-
-.welcome-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: center;
-  margin: 12px 0;
-}
-
-.welcome-btn {
-  background: var(--ide-bg-hover, #2a2d2e);
-  border: 1px solid var(--ide-border, #3c3c3c);
-  color: var(--ide-fg, #ccc);
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 13px;
-
-  &:hover {
-    background: var(--ide-accent, #007acc);
-    border-color: var(--ide-accent, #007acc);
-  }
-}
-
-.welcome-shortcuts {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-top: 8px;
-}
-
-.welcome-shortcuts kbd {
-  background: var(--ide-bg-tertiary, #2d2d2d);
-  border: 1px solid var(--ide-border, #3c3c3c);
-  border-radius: 3px;
-  padding: 2px 6px;
-  font-size: 12px;
-  margin-right: 8px;
-}
-
-/* ==================== 模块弹窗（scoped，跟随主题变量） ==================== */
-.sh-module-dialog-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 500;
-}
-
-.sh-module-dialog {
-  background: var(--ide-bg-secondary, #252526);
-  border: 1px solid var(--ide-border, #3c3c3c);
-  border-radius: 6px;
-  width: 480px;
-  max-height: 80%;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 8px 32px var(--ide-dropdown-shadow, rgba(0, 0, 0, 0.4));
-  color: var(--ide-fg, #cccccc);
-  font-family: 'Segoe UI', system-ui, sans-serif;
-}
-
-.sh-module-dialog-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--ide-border, #3c3c3c);
-  flex-shrink: 0;
-}
-
-.sh-module-dialog-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--ide-fg, #cccccc);
-}
-
-.sh-module-dialog-close {
-  background: none;
-  border: none;
-  color: var(--ide-fg-dim, #858585);
-  font-size: 20px;
-  cursor: pointer;
-  padding: 0 4px;
-  line-height: 1;
-
-  &:hover {
-    color: var(--ide-fg, #cccccc);
-  }
-}
-
-.sh-module-dialog-body {
-  flex: 1;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  padding: 12px 16px;
-}
-
-.sh-module-search {
-  margin-bottom: 10px;
-  flex-shrink: 0;
-}
-
-.sh-module-search-input {
-  width: 100%;
-  padding: 7px 10px;
-  background: var(--ide-bg-input, #3c3c3c);
-  border: 1px solid var(--ide-border, #5a5a5a);
-  border-radius: 4px;
-  color: var(--ide-fg, #cccccc);
-  font-size: 13px;
-  outline: none;
-  box-sizing: border-box;
-
-  &:focus {
-    border-color: var(--ide-accent, #007acc);
-  }
-
-  &::placeholder {
-    color: var(--ide-fg-dim, #858585);
-  }
-}
-
-.sh-module-loading {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--ide-fg-dim, #858585);
-  font-size: 13px;
-  min-height: 120px;
-}
-
-.sh-module-list {
-  flex: 1;
-  overflow-y: auto;
-  border: 1px solid var(--ide-border, #3c3c3c);
-  border-radius: 4px;
-  background: var(--ide-bg, #1e1e1e);
-}
-
-.sh-module-item {
-  padding: 8px 12px;
-  cursor: pointer;
-  border-bottom: 1px solid var(--ide-bg-tertiary, #2d2d2d);
-
-  &:last-child {
-    border-bottom: none;
-  }
-
-  &:hover {
-    background: var(--ide-bg-hover, #2a2d2e);
-  }
-
-  &.active {
-    background: #094771;
-    border-color: #094771;
-
-    .sh-module-item-name {
-      color: #ffffff;
-    }
-
-    .sh-module-item-desc {
-      color: rgba(255, 255, 255, 0.7);
-    }
-  }
-}
-
-.sh-module-item-name {
-  font-size: 13px;
-  color: var(--ide-fg, #cccccc);
-  font-weight: 500;
-}
-
-.sh-module-item-desc {
-  font-size: 12px;
-  color: var(--ide-fg-dim, #858585);
-  margin-top: 2px;
-}
-
-.sh-module-empty {
-  padding: 24px 12px;
-  text-align: center;
-  color: var(--ide-fg-dim, #858585);
-  font-size: 13px;
-}
-
-.sh-module-create-section {
-  margin-top: 10px;
-  border-top: 1px solid var(--ide-border, #3c3c3c);
-  padding-top: 10px;
-  flex-shrink: 0;
-}
-
-.sh-module-toggle-create {
-  background: none;
-  border: none;
-  color: var(--ide-accent, #007acc);
-  cursor: pointer;
-  font-size: 13px;
-  padding: 4px 0;
-
-  &:hover {
-    color: var(--ide-accent-hover, #1a8cdb);
-    text-decoration: underline;
-  }
-}
-
-.sh-module-create-form {
-  margin-top: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.sh-module-create-input {
-  width: 100%;
-  padding: 7px 10px;
-  background: var(--ide-bg-input, #3c3c3c);
-  border: 1px solid var(--ide-border, #5a5a5a);
-  border-radius: 4px;
-  color: var(--ide-fg, #cccccc);
-  font-size: 13px;
-  outline: none;
-  box-sizing: border-box;
-
-  &:focus {
-    border-color: var(--ide-accent, #007acc);
-  }
-
-  &::placeholder {
-    color: var(--ide-fg-dim, #858585);
-  }
-}
-
-.sh-module-btn-create {
-  align-self: flex-start;
-  padding: 6px 20px;
-}
-
-.sh-module-dialog-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  padding: 12px 16px;
-  border-top: 1px solid var(--ide-border, #3c3c3c);
-  flex-shrink: 0;
-}
-
-.sh-module-btn {
-  padding: 6px 16px;
-  border-radius: 4px;
-  font-size: 13px;
-  cursor: pointer;
-  border: 1px solid var(--ide-border, #3c3c3c);
-  transition: background 0.15s;
-}
-
-.sh-module-btn-cancel {
-  background: var(--ide-bg-tertiary, #3c3c3c);
-  color: var(--ide-fg, #cccccc);
-
-  &:hover {
-    background: var(--ide-bg-hover, #505050);
-  }
-}
-
-.sh-module-btn-confirm {
-  background: var(--ide-accent, #007acc);
-  border-color: var(--ide-accent, #007acc);
-  color: #ffffff;
-
-  &:hover:not(:disabled) {
-    background: var(--ide-accent-hover, #1a8cdb);
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-}
+@import "@/components/system/code-editor/styles/editor.scss";
 </style>

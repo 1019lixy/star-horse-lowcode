@@ -99,8 +99,6 @@ int main() {
 }
 `);
 
-const actName = ref("java");
-const lspUrl = ref("ws://localhost:8900/language-server");
 const readOnly = ref(false);
 
 const handleChange = (val: string) => {
@@ -110,65 +108,21 @@ const handleChange = (val: string) => {
 
 <template>
   <div class="flex flex-col h-full p-4 gap-4">
-    <div class="text-lg font-bold">StarHorseCodeEditor 测试</div>
-
-    <!-- 配置区 -->
-    <div class="flex items-center gap-4 flex-wrap">
-      <div class="flex items-center gap-2">
-        <span class="text-sm">LSP Server:</span>
-        <el-input v-model="lspUrl" placeholder="ws://localhost:8900/language-server" style="width: 250px" size="small"/>
-      </div>
-      <el-checkbox v-model="readOnly">只读模式</el-checkbox>
-    </div>
-
-    <!-- 语言Tab - 使用lazy延迟加载，避免同时创建3个Monaco编辑器 -->
-    <el-tabs v-model="actName" class="flex-1">
-      <el-tab-pane label="Java" name="java" lazy>
-        <div class="h-full">
-          <StarHorseCodeEditor
-              load-url="/userdb-manage/code/codeFiles/load"
-              save-url="/userdb-manage/code/codeFiles/save"
-              module-list-url="/userdb-manage/code/codeModules/list"
-              create-module-url="/userdb-manage/code/codeModules/create"
-              v-model:value="javaCode"
-              language="java"
-              :lsp-server-url="lspUrl"
-              file-path="/src/main/java/com/example/demo/DemoController.java"
-              :read-only="readOnly"
-              box-height="100%"
-              @change="handleChange"
-          />
-        </div>
-      </el-tab-pane>
-
-      <el-tab-pane label="C#" name="csharp" lazy>
-        <div class="h-full">
-          <StarHorseCodeEditor
-              v-model:value="csharpCode"
-              language="csharp"
-              :lsp-server-url="lspUrl"
-              file-path="/project/Controllers/DemoController.cs"
-              :read-only="readOnly"
-              box-height="100%"
-              @change="handleChange"
-          />
-        </div>
-      </el-tab-pane>
-
-      <el-tab-pane label="C++" name="cpp" lazy>
-        <div class="h-full">
-          <StarHorseCodeEditor
-              v-model:value="cppCode"
-              language="cpp"
-              :lsp-server-url="lspUrl"
-              file-path="/project/src/main.cpp"
-              :read-only="readOnly"
-              box-height="100%"
-              @change="handleChange"
-          />
-        </div>
-      </el-tab-pane>
-    </el-tabs>
+    <StarHorseCodeEditor
+        :api="{
+               loadUrl: '/userdb-manage/code/codeFiles/load',
+               saveUrl: '/userdb-manage/code/codeFiles/save',
+               moduleListUrl: '/userdb-manage/code/codeModules/list',
+               createModuleUrl: '/userdb-manage/code/codeModules/create',
+               lspServerUrl:'ws://localhost:8900/language-server',
+              }"
+        v-model:value="javaCode"
+        language="java"
+        file-path="/src/main/java/com/example/demo/DemoController.java"
+        :read-only="readOnly"
+        box-height="100%"
+        @change="handleChange"
+    />
   </div>
 </template>
 

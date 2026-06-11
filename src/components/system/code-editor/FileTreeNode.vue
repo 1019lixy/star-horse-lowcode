@@ -12,14 +12,11 @@ const props = defineProps<{
   editingNodeId: string | null;
   draggingId: string | null;
   dropTargetId: string | null;
-  /** 紧凑目录：被隐藏的节点ID */
   compactHidden?: Set<string>;
-  /** 紧凑目录：节点ID -> 合并显示路径 */
   compactLabels?: Map<string, string>;
-  /** 已修改文件ID集合 */
   modifiedFiles?: Set<string>;
-  /** 紧凑目录：节点ID -> 合并的目录链 */
   compactChains?: Map<string, { id: string; name: string }[]>;
+  highlightedId?: string;
 }>();
 
 const emit = defineEmits<{
@@ -164,6 +161,7 @@ const handleEditBlur = () => {
         'tree-active': isActive(),
         'tree-dragging': isDragging,
         'tree-drop-target': isDropTarget,
+        'locate-highlight': props.highlightedId === props.node.idCodeFile,
       }"
       :style="{ paddingLeft: depth * 16 + 8 + 'px' }"
       :draggable="!isEditing"
@@ -218,6 +216,7 @@ const handleEditBlur = () => {
         :compact-labels="compactLabels"
         :compact-chains="compactChains"
         :modified-files="modifiedFiles"
+        :highlighted-id="highlightedId"
         @toggle="(id) => emit('toggle', id)"
         @select="(f) => emit('select', f)"
         @contextmenu="(n, e) => emit('contextmenu', n, e)"
@@ -255,6 +254,15 @@ export default { name: "FileTreeNode" };
     outline: 1px dashed var(--ide-accent);
     outline-offset: -1px;
   }
+  &.locate-highlight {
+    animation: locate-flash 1.5s ease-out;
+    outline: 1px solid var(--ide-accent);
+    outline-offset: -1px;
+  }
+}
+@keyframes locate-flash {
+  0% { background: color-mix(in srgb, var(--ide-accent) 50%, transparent); }
+  100% { background: transparent; }
 }
 .tree-arrow {
   display: inline-block;
