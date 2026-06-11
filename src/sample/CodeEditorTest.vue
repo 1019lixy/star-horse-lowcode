@@ -1,6 +1,6 @@
 <script setup lang="ts" name="CodeEditorTest">
-import { ref } from "vue";
-import { StarHorseCodeEditor } from "@/components/system";
+import {ref} from "vue";
+import {StarHorseCodeEditor} from "@/components/system";
 
 const javaCode = ref(`package com.example.demo;
 
@@ -116,7 +116,7 @@ const handleChange = (val: string) => {
     <div class="flex items-center gap-4 flex-wrap">
       <div class="flex items-center gap-2">
         <span class="text-sm">LSP Server:</span>
-        <el-input v-model="lspUrl" placeholder="ws://localhost:8900/language-server" style="width: 250px" size="small" />
+        <el-input v-model="lspUrl" placeholder="ws://localhost:8900/language-server" style="width: 250px" size="small"/>
       </div>
       <el-checkbox v-model="readOnly">只读模式</el-checkbox>
     </div>
@@ -126,17 +126,17 @@ const handleChange = (val: string) => {
       <el-tab-pane label="Java" name="java" lazy>
         <div class="h-full">
           <StarHorseCodeEditor
-load-url="/userdb/codeModule/load"
-  save-url="/userdb/codeModule/save"
-  module-list-url="/userdb/codeModule/list"
-  create-module-url="/userdb/codeModule/create"
-            v-model:value="javaCode"
-            language="java"
-            :lsp-server-url="lspUrl"
-            file-path="/src/main/java/com/example/demo/DemoController.java"
-            :read-only="readOnly"
-            box-height="100%"
-            @change="handleChange"
+              load-url="/userdb-manage/code/codeFiles/load"
+              save-url="/userdb-manage/code/codeFiles/save"
+              module-list-url="/userdb-manage/code/codeModules/list"
+              create-module-url="/userdb-manage/code/codeModules/create"
+              v-model:value="javaCode"
+              language="java"
+              :lsp-server-url="lspUrl"
+              file-path="/src/main/java/com/example/demo/DemoController.java"
+              :read-only="readOnly"
+              box-height="100%"
+              @change="handleChange"
           />
         </div>
       </el-tab-pane>
@@ -144,13 +144,13 @@ load-url="/userdb/codeModule/load"
       <el-tab-pane label="C#" name="csharp" lazy>
         <div class="h-full">
           <StarHorseCodeEditor
-            v-model:value="csharpCode"
-            language="csharp"
-            :lsp-server-url="lspUrl"
-            file-path="/project/Controllers/DemoController.cs"
-            :read-only="readOnly"
-            box-height="100%"
-            @change="handleChange"
+              v-model:value="csharpCode"
+              language="csharp"
+              :lsp-server-url="lspUrl"
+              file-path="/project/Controllers/DemoController.cs"
+              :read-only="readOnly"
+              box-height="100%"
+              @change="handleChange"
           />
         </div>
       </el-tab-pane>
@@ -158,13 +158,13 @@ load-url="/userdb/codeModule/load"
       <el-tab-pane label="C++" name="cpp" lazy>
         <div class="h-full">
           <StarHorseCodeEditor
-            v-model:value="cppCode"
-            language="cpp"
-            :lsp-server-url="lspUrl"
-            file-path="/project/src/main.cpp"
-            :read-only="readOnly"
-            box-height="100%"
-            @change="handleChange"
+              v-model:value="cppCode"
+              language="cpp"
+              :lsp-server-url="lspUrl"
+              file-path="/project/src/main.cpp"
+              :read-only="readOnly"
+              box-height="100%"
+              @change="handleChange"
           />
         </div>
       </el-tab-pane>

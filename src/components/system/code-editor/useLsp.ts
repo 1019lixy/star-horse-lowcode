@@ -1,6 +1,16 @@
 import { ref, toRaw, type Ref, type ShallowRef } from "vue";
 import * as monaco from "monaco-editor";
 
+/** 支持LSP的语言列表 */
+const LSP_LANGUAGES = new Set(["java", "csharp", "cpp"]);
+
+/** 语言 -> 默认文件扩展名 */
+const LANG_EXTENSIONS: Record<string, string> = {
+  java: ".java",
+  csharp: ".cs",
+  cpp: ".cpp",
+};
+
 const pendingRequests = new Map<number, { resolve: (v: any) => void; reject: (r: any) => void }>();
 const LSP_MAX_RECONNECT_ATTEMPTS = 10;
 const LSP_RECONNECT_DELAY = 3000;
@@ -22,6 +32,59 @@ export function useLsp(
   let lspReconnectAttempts = 0;
   let lspInitTimer: ReturnType<typeof setTimeout> | null = null;
   let keywordProvidersRegistered = false;
+
+  // 当前文档在工作空间中的相对路径（用于文件同步API）
+  let currentDocRelativePath = "";
+  // 当前文档的完整URI（用于LSP协议）
+  let currentDocUri = "";
+  // 当前工作空间根URI
+  let workspaceRootUri = "";
+  // 文件同步防抖定时器
+  let syncDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+
+  // ===== 判断是否需要LSP =====
+  const isLspLanguage = (lang: string) => LSP_LANGUAGES.has(lang);
+
+  // ===== 文件同步到后端工作空间 =====
+  const syncFileToWorkspace = async (relativePath: string, content: string) => {
+    if (!lspServerUrl.value || !currentLang.value) return;
+    const lang = currentLang.value;
+    try {
+      const baseUrl = lspServerUrl.value.replace(/\/+$/, "");
+      // 从 ws://host:port/language-server/lsp/java 提取 http 基础URL
+      const httpBase = baseUrl.replace(/^ws/, "http");
+      const url = `${httpBase}/api/lsp/workspace/${lang}/sync`;
+      await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ path: relativePath, content }),
+      });
+    } catch (e) {
+      console.warn("[LSP] File sync failed:", e);
+    }
+  };
+
+  // ===== 计算文档URI和相对路径 =====
+  const computeDocInfo = (lang: string, fileName: string): { uri: string; relativePath: string } => {
+    if (!workspaceRootUri) {
+      // 工作空间还没初始化，用默认路径
+      const defaultWorkspace = `file:///D:/lsp-workspace/${lang}`;
+      workspaceRootUri = defaultWorkspace;
+    }
+
+    let relativePath: string;
+    if (lang === "java") {
+      // Java: Maven标准路径 src/main/java/com/example/demo/FileName.java
+      const nameWithoutExt = fileName.replace(/\.java$/, "");
+      const packagePath = nameWithoutExt.split(".").join("/");
+      relativePath = `src/main/java/${packagePath}.java`;
+    } else {
+      relativePath = fileName;
+    }
+
+    const uri = `${workspaceRootUri.replace(/\/+$/, "")}/${relativePath}`;
+    return { uri, relativePath };
+  };
 
   // ===== 发送消息 =====
   const sendLspRequest = (method: string, params: any): Promise<any> =>
@@ -67,11 +130,40 @@ export function useLsp(
       clearTimeout(lspInitTimer);
       lspInitTimer = null;
     }
+
+    // 保存工作空间根URI
+    if (result.rootUri) {
+      workspaceRootUri = result.rootUri.replace(/\/+$/, "");
+    }
+
+    console.log("[LSP] Initialized, rootUri=" + workspaceRootUri);
+
+    // 发送initialized通知
     sendLspNotification("initialized", {});
+
+    // 打开当前文档
+    openCurrentDocument();
+  };
+
+  // ===== 打开当前文档 =====
+  const openCurrentDocument = () => {
     const editor = toRaw(editorInstance.value);
     const text = editor?.getValue() || "";
-    sendLspNotification("textDocument/didOpen", {
-      textDocument: { uri: getDocumentUri(), languageId: currentLang.value, version: 0, text },
+    const lang = currentLang.value;
+    const fileName = getDocumentUri().split("/").pop() || `untitled${LANG_EXTENSIONS[lang] || ".txt"}`;
+
+    const { uri, relativePath } = computeDocInfo(lang, fileName);
+    currentDocUri = uri;
+    currentDocRelativePath = relativePath;
+
+    console.log(`[LSP] Opening document: ${uri} (relative: ${relativePath})`);
+
+    // 先同步文件到后端工作空间，再发送didOpen
+    syncFileToWorkspace(relativePath, text).then(() => {
+      documentVersion = 0;
+      sendLspNotification("textDocument/didOpen", {
+        textDocument: { uri, languageId: lang, version: 0, text },
+      });
     });
   };
 
@@ -94,13 +186,28 @@ export function useLsp(
   const handleLspMessage = (msg: any) => {
     // server-to-client 请求
     if (msg.id != null && msg.method) {
-      if (msg.method === "workspace/configuration")
-        sendLspResponse(msg.id, (msg.params?.items || []).map(() => ({})));
-      else if (msg.method === "workspace/applyEdit")
+      if (msg.method === "workspace/configuration") {
+        const items = (msg.params?.items || []).map((item: any) => {
+          const section = item.section || "";
+          if (section === "java") {
+            return {
+              import: { maven: { enabled: true }, gradle: { enabled: false } },
+              project: { sourcePaths: ["src/main/java", "src/test/java"] },
+            };
+          }
+          return {};
+        });
+        sendLspResponse(msg.id, items);
+      } else if (msg.method === "workspace/applyEdit") {
         sendLspResponse(msg.id, { applied: true });
-      else if (msg.method === "window/showMessageRequest")
+      } else if (msg.method === "window/showMessageRequest") {
         sendLspResponse(msg.id, msg.params?.actions?.[0] || null);
-      else sendLspResponse(msg.id, null);
+      } else {
+        sendLspResponse(msg.id, null);
+      }
+      if (msg.method === "client/registerCapability" && msg.params?.registrations) {
+        console.log("[LSP] Registered capabilities:", msg.params.registrations.map((r: any) => r.method));
+      }
       return;
     }
     // 响应
@@ -140,9 +247,10 @@ export function useLsp(
     position: monaco.Position,
   ): Promise<monaco.languages.CompletionList | undefined> => {
     if (!lspWs || lspWs.readyState !== WebSocket.OPEN || !lspInitialized) return undefined;
+    if (!currentDocUri) return undefined;
     try {
       const result = await sendLspRequest("textDocument/completion", {
-        textDocument: { uri: getDocumentUri() },
+        textDocument: { uri: currentDocUri },
         position: { line: position.lineNumber - 1, character: position.column - 1 },
       });
       if (!result) return undefined;
@@ -202,7 +310,13 @@ export function useLsp(
   };
 
   const connectLsp = (lang: string) => {
+    // 只对支持LSP的语言连接
+    if (!isLspLanguage(lang)) {
+      console.log(`[LSP] Language '${lang}' does not require LSP, skipping connection`);
+      return;
+    }
     if (!lspServerUrl.value) return;
+
     clearReconnectTimer();
     if (lspWs) {
       lspWs.onclose = null;
@@ -210,7 +324,9 @@ export function useLsp(
       lspWs = null;
     }
     lspInitialized = false;
+    workspaceRootUri = "";
     pendingRequests.clear();
+
     try {
       lspWs = new WebSocket(`${lspServerUrl.value.replace(/\/+$/, "")}/lsp/${lang}`);
     } catch {
@@ -221,6 +337,7 @@ export function useLsp(
     lspWs.onopen = () => {
       lspReconnectAttempts = 0;
       lspConnected.value = true;
+      console.log(`[LSP] Connected: ${lang}`);
       initializeLsp();
     };
     lspWs.onmessage = (ev) => {
@@ -229,6 +346,7 @@ export function useLsp(
     lspWs.onclose = (ev) => {
       lspConnected.value = false;
       lspInitialized = false;
+      workspaceRootUri = "";
       if (ev.code !== 1000) scheduleReconnect(lang);
     };
     lspWs.onerror = () => { lspConnected.value = false; };
@@ -240,6 +358,10 @@ export function useLsp(
       clearTimeout(lspInitTimer);
       lspInitTimer = null;
     }
+    if (syncDebounceTimer) {
+      clearTimeout(syncDebounceTimer);
+      syncDebounceTimer = null;
+    }
     lspReconnectAttempts = LSP_MAX_RECONNECT_ATTEMPTS;
     if (lspWs) {
       lspWs.onclose = null;
@@ -248,29 +370,40 @@ export function useLsp(
     }
     lspConnected.value = false;
     lspInitialized = false;
+    workspaceRootUri = "";
     pendingRequests.clear();
   };
 
-  /** 通知LSP文档内容变化 */
+  /** 通知LSP文档打开（切换标签页时调用） */
   const notifyDidOpen = () => {
     if (!lspWs || lspWs.readyState !== WebSocket.OPEN || !lspInitialized) return;
-    const editor = toRaw(editorInstance.value);
-    const text = editor?.getValue() || "";
-    documentVersion = 0;
-    sendLspNotification("textDocument/didOpen", {
-      textDocument: { uri: getDocumentUri(), languageId: currentLang.value, version: 0, text },
-    });
+    // 只有LSP语言才发送
+    if (!isLspLanguage(currentLang.value)) return;
+    openCurrentDocument();
   };
 
+  /** 通知LSP文档内容变化（输入时调用） */
   const notifyDidChange = () => {
     if (!lspWs || lspWs.readyState !== WebSocket.OPEN || !lspInitialized) return;
+    if (!isLspLanguage(currentLang.value)) return;
+    if (!currentDocUri) return;
+
     const editor = toRaw(editorInstance.value);
     if (!editor) return;
+    const text = editor.getValue();
     documentVersion++;
     sendLspNotification("textDocument/didChange", {
-      textDocument: { uri: getDocumentUri(), version: documentVersion },
-      contentChanges: [{ text: editor.getValue() }],
+      textDocument: { uri: currentDocUri, version: documentVersion },
+      contentChanges: [{ text }],
     });
+
+    // 防抖同步文件到后端工作空间（1秒后）
+    if (syncDebounceTimer) clearTimeout(syncDebounceTimer);
+    syncDebounceTimer = setTimeout(() => {
+      if (currentDocRelativePath) {
+        syncFileToWorkspace(currentDocRelativePath, text);
+      }
+    }, 1000);
   };
 
   return {
@@ -280,5 +413,6 @@ export function useLsp(
     registerProviders,
     notifyDidOpen,
     notifyDidChange,
+    isLspLanguage,
   };
 }

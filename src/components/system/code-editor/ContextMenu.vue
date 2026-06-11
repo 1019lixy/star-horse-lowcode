@@ -52,7 +52,10 @@ onBeforeUnmount(() => {
   document.removeEventListener("keydown", onEsc);
 });
 
-const onDocClick = () => emit("close");
+const onDocClick = (e: MouseEvent) => {
+  if (menuRef.value?.contains(e.target as Node)) return;
+  emit("close");
+};
 const onDocCtx = (e: Event) => { e.preventDefault(); emit("close"); };
 const onEsc = (e: KeyboardEvent) => { if (e.key === "Escape") emit("close"); };
 </script>

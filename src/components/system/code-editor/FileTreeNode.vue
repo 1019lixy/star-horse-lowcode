@@ -2,6 +2,7 @@
 import { ref, computed, watch, nextTick } from "vue";
 import type { FileNode } from "./types";
 import { getFileIcon, FOLDER_ICONS } from "./constants";
+import { i18n } from "@/lang/index";
 
 const props = defineProps<{
   node: FileNode;
@@ -11,6 +12,14 @@ const props = defineProps<{
   editingNodeId: string | null;
   draggingId: string | null;
   dropTargetId: string | null;
+  /** 紧凑目录：被隐藏的节点ID */
+  compactHidden?: Set<string>;
+  /** 紧凑目录：节点ID -> 合并显示路径 */
+  compactLabels?: Map<string, string>;
+  /** 已修改文件ID集合 */
+  modifiedFiles?: Set<string>;
+  /** 紧凑目录：节点ID -> 合并的目录链 */
+  compactChains?: Map<string, { id: string; name: string }[]>;
 }>();
 
 const emit = defineEmits<{
@@ -22,17 +31,24 @@ const emit = defineEmits<{
   "drag-start": [id: string];
   "drag-end": [];
   drop: [sourceId: string, targetFolderId: string];
+  /** 紧凑目录拖拽选择：需要用户选择放到哪个中间目录 */
+  "compact-drop-select": [sourceId: string, targetNodeId: string, chain: { id: string; name: string }[], position: { x: number; y: number }];
 }>();
 
 const isFolder = props.node.type === "folder";
-const isExpanded = () => props.expanded.has(props.node.id);
-const isActive = () => props.node.id === props.activeId;
-const isDragging = computed(() => props.draggingId === props.node.id);
-const isDropTarget = computed(() => isFolder && props.dropTargetId === props.node.id);
+const isExpanded = () => props.expanded.has(props.node.idCodeFile);
+const isActive = () => props.node.idCodeFile === props.activeId;
+const isDragging = computed(() => props.draggingId === props.node.idCodeFile);
+const isDropTarget = computed(() => isFolder && props.dropTargetId === props.node.idCodeFile);
+const isModified = computed(() => !isFolder && props.modifiedFiles?.has(props.node.idCodeFile));
+const isCompactHidden = computed(() => props.compactHidden?.has(props.node.idCodeFile));
 
-const isEditing = computed(() => props.editingNodeId === props.node.id);
+/** 紧凑路径显示名：如果有合并路径则显示合并路径，否则显示原名 */
+const displayName = computed(() => props.compactLabels?.get(props.node.idCodeFile) || props.node.name);
+
+const isEditing = computed(() => props.editingNodeId === props.node.idCodeFile);
 const isPendingNew = computed(
-  () => isEditing.value && (props.node.name === "untitled.txt" || props.node.name === "新建文件夹" || props.node.name.startsWith("untitled-") || props.node.name.startsWith("新建文件夹-")),
+  () => isEditing.value && (props.node.name === "untitled.txt" || props.node.name === i18n("ide.newFolder") || props.node.name.startsWith("untitled-") || props.node.name.startsWith(i18n("ide.newFolder") + "-")),
 );
 
 const editInputRef = ref<HTMLInputElement>();
@@ -52,7 +68,7 @@ const selectNameWithoutExt = () => {
 watch(
   () => props.editingNodeId,
   async (val) => {
-    if (val === props.node.id) {
+    if (val === props.node.idCodeFile) {
       editValue.value = props.node.name;
       await nextTick();
       editInputRef.value?.focus();
@@ -65,7 +81,7 @@ watch(
 const handleClick = () => {
   if (isEditing.value) return;
   if (isFolder) {
-    emit("toggle", props.node.id);
+    emit("toggle", props.node.idCodeFile);
   } else {
     emit("select", props.node);
   }
@@ -80,9 +96,9 @@ const handleContextMenu = (e: MouseEvent) => {
 // ========== 拖拽 ==========
 const handleDragStart = (e: DragEvent) => {
   if (isEditing.value) { e.preventDefault(); return; }
-  e.dataTransfer!.setData("text/plain", props.node.id);
+  e.dataTransfer!.setData("text/plain", props.node.idCodeFile);
   e.dataTransfer!.effectAllowed = "move";
-  emit("drag-start", props.node.id);
+  emit("drag-start", props.node.idCodeFile);
 };
 
 const handleDragEnd = () => {
@@ -91,14 +107,10 @@ const handleDragEnd = () => {
 
 const handleDragOver = (e: DragEvent) => {
   if (!isFolder) return;
-  // 不能拖到自己或自己的子节点
-  if (props.draggingId === props.node.id) return;
+  if (props.draggingId === props.node.idCodeFile) return;
   e.preventDefault();
   e.dataTransfer!.dropEffect = "move";
-  // 高亮当前拖放目标（通过父组件的 dropTargetId 控制）
-  // 这里通过 emit 通知父组件更新 dropTargetId
-  if (props.dropTargetId !== props.node.id) {
-    // 使用自定义事件通知，避免频繁 emit
+  if (props.dropTargetId !== props.node.idCodeFile) {
     (e.currentTarget as HTMLElement).classList.add("tree-drop-target");
   }
 };
@@ -113,28 +125,35 @@ const handleDrop = (e: DragEvent) => {
   (e.currentTarget as HTMLElement).classList.remove("tree-drop-target");
   if (!isFolder) return;
   const sourceId = e.dataTransfer!.getData("text/plain");
-  if (!sourceId || sourceId === props.node.id) return;
-  emit("drop", sourceId, props.node.id);
+  if (!sourceId || sourceId === props.node.idCodeFile) return;
+  // 紧凑目录：如果有中间层级，弹出选择菜单
+  const chain = props.compactChains?.get(props.node.idCodeFile);
+  if (chain && chain.length > 0) {
+    emit("compact-drop-select", sourceId, props.node.idCodeFile, chain, { x: e.clientX, y: e.clientY });
+  } else {
+    emit("drop", sourceId, props.node.idCodeFile);
+  }
 };
 
 const handleEditKeydown = (e: KeyboardEvent) => {
   if (e.key === "Enter") {
     e.preventDefault();
-    emit("edit-confirm", props.node.id, editValue.value);
+    emit("edit-confirm", props.node.idCodeFile, editValue.value);
   } else if (e.key === "Escape") {
     e.preventDefault();
-    emit("edit-cancel", props.node.id);
+    emit("edit-cancel", props.node.idCodeFile);
   }
   e.stopPropagation();
 };
 
 const handleEditBlur = () => {
-  emit("edit-cancel", props.node.id);
+  emit("edit-cancel", props.node.idCodeFile);
 };
 </script>
 
 <template>
-  <div>
+  <!-- 紧凑目录：被合并的父目录不显示 -->
+  <div v-if="!isCompactHidden">
     <!-- 正常显示行 -->
     <div
       v-if="!isEditing"
@@ -159,7 +178,9 @@ const handleEditBlur = () => {
       <span v-if="isFolder" class="tree-arrow" :class="{ expanded: isExpanded() }">&#9654;</span>
       <span v-if="isFolder" class="tree-icon">{{ isExpanded() ? FOLDER_ICONS.open : FOLDER_ICONS.closed }}</span>
       <span v-else class="tree-icon">{{ getFileIcon(node.name) }}</span>
-      <span class="tree-name">{{ node.name }}</span>
+      <span class="tree-name" :class="{ 'compact-name': displayName !== node.name }">{{ displayName }}</span>
+      <!-- 修改标记 -->
+      <span v-if="isModified" class="tree-modified-badge">M</span>
     </div>
 
     <!-- 内联编辑输入框 -->
@@ -174,7 +195,7 @@ const handleEditBlur = () => {
         ref="editInputRef"
         v-model="editValue"
         class="tree-input"
-        :placeholder="isPendingNew ? '输入名称...' : '重命名...'"
+        :placeholder="isPendingNew ? i18n('ide.inputName') : i18n('ide.renameHint')"
         @keydown="handleEditKeydown"
         @blur="handleEditBlur"
         @click.stop
@@ -185,7 +206,7 @@ const handleEditBlur = () => {
     <template v-if="isFolder && isExpanded() && node.children">
       <FileTreeNode
         v-for="child in node.children"
-        :key="child.id"
+        :key="child.idCodeFile"
         :node="child"
         :depth="depth + 1"
         :expanded="expanded"
@@ -193,6 +214,10 @@ const handleEditBlur = () => {
         :editing-node-id="editingNodeId"
         :dragging-id="draggingId"
         :drop-target-id="dropTargetId"
+        :compact-hidden="compactHidden"
+        :compact-labels="compactLabels"
+        :compact-chains="compactChains"
+        :modified-files="modifiedFiles"
         @toggle="(id) => emit('toggle', id)"
         @select="(f) => emit('select', f)"
         @contextmenu="(n, e) => emit('contextmenu', n, e)"
@@ -201,6 +226,7 @@ const handleEditBlur = () => {
         @drag-start="(id) => emit('drag-start', id)"
         @drag-end="emit('drag-end')"
         @drop="(s, t) => emit('drop', s, t)"
+        @compact-drop-select="(s, t, c, p) => emit('compact-drop-select', s, t, c, p)"
       />
     </template>
   </div>
@@ -249,7 +275,27 @@ export default { name: "FileTreeNode" };
   margin-left: 4px;
   overflow: hidden;
   text-overflow: ellipsis;
+
+  &.compact-name {
+    color: var(--ide-fg-dim, #858585);
+    font-size: 12px;
+  }
 }
+
+/* 修改标记 M/U */
+.tree-modified-badge {
+  margin-left: auto;
+  padding: 0 4px;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 16px;
+  color: #e2c08d;
+  background: color-mix(in srgb, #e2c08d 15%, transparent);
+  border-radius: 3px;
+  flex-shrink: 0;
+  letter-spacing: 0.5px;
+}
+
 .tree-input {
   flex: 1;
   min-width: 0;

@@ -2,6 +2,7 @@
 import { VueSignaturePad } from "@selemondev/vue3-signature-pad";
 import type { Signature } from "@selemondev/vue3-signature-pad";
 import { ref, useTemplateRef } from "vue";
+import {warning} from "@/utils/message";
 
 const state = ref({
   disabled: false,
@@ -25,7 +26,7 @@ function dataURLToBlob(dataURL: string) {
 }
 function handleSave(dataURL: string, downloadFormat: string) {
   if (signature.value?.isCanvasEmpty())
-    return alert("Signature cannot be empty!");
+    return warning("Signature cannot be empty!");
   const _data_url = signature.value?.toDataURL(dataURL);
   const blob = dataURLToBlob(_data_url!);
   const url = window.URL.createObjectURL(blob);

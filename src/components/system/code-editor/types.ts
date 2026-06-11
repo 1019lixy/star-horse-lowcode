@@ -1,6 +1,6 @@
 /** 文件节点 */
 export interface FileNode {
-  id: string;
+  idCodeFile: string;
   name: string;
   type: "file" | "folder";
   language?: string;
@@ -15,6 +15,8 @@ export interface TabInfo {
   name: string;
   language: string;
   modified: boolean;
+  /** 父目录路径，用于区分不同目录下的同名文件 */
+  path?: string;
 }
 
 /** 菜单项定义 */

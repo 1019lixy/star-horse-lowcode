@@ -104,7 +104,7 @@ const openDialog = async () => {
   let action: BtnAction = props.field.preps;
   //执行代码块
   if (action?.needConfirm) {
-    let result = operationConfirm(action.confirmMsg ?? i18n("item.confirmToExecute"));
+    let result =await operationConfirm(action.confirmMsg ?? i18n("item.confirmToExecute"));
     if (!result) {
       return;
     }

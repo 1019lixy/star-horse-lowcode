@@ -1,4 +1,5 @@
 import type { IdeTheme } from "./types";
+import { i18n } from "@/lang/index";
 
 /**
  * IDE 主题定义 - 通过 CSS 变量控制整个编辑器外观
@@ -6,7 +7,7 @@ import type { IdeTheme } from "./types";
  */
 export const IDE_THEMES: IdeTheme[] = [
   {
-    name: "深色主题",
+    name: i18n("ide.theme.dark"),
     value: "vs-dark",
     vars: {
       "--ide-bg": "#1e1e1e",
@@ -39,7 +40,7 @@ export const IDE_THEMES: IdeTheme[] = [
     },
   },
   {
-    name: "浅色主题",
+    name: i18n("ide.theme.light"),
     value: "vs",
     vars: {
       "--ide-bg": "#ffffff",
@@ -72,7 +73,7 @@ export const IDE_THEMES: IdeTheme[] = [
     },
   },
   {
-    name: "高对比度主题",
+    name: i18n("ide.theme.hc"),
     value: "hc-black",
     vars: {
       "--ide-bg": "#000000",

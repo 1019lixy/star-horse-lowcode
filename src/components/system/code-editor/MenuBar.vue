@@ -2,6 +2,7 @@
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import type { MenuItemDef } from "./types";
 import { IDE_THEMES } from "./theme";
+import { i18n } from "@/lang/index";
 
 const props = defineProps<{
   menus: MenuItemDef[];
@@ -68,7 +69,7 @@ onBeforeUnmount(() => document.removeEventListener("click", onClickOutside));
     <div class="menubar-item theme-switcher" @click.stop>
       <el-dropdown trigger="click" @command="(v: string) => emit('switch-theme', v)">
         <span class="menubar-label cursor-pointer">
-          {{ IDE_THEMES.find(t => t.value === currentTheme)?.name || '深色主题' }} ▾
+          {{ IDE_THEMES.find(t => t.value === currentTheme)?.name || i18n('ide.theme.dark') }} ▾
         </span>
         <template #dropdown>
           <el-dropdown-menu>

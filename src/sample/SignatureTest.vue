@@ -54,6 +54,7 @@
 <script setup>
 import { ref, watch } from "vue";
 import Vue3Signature from "vue3-signature";
+import {warning} from "@/utils/message.js";
 
 const signature = ref(null);
 const preview = ref("");
@@ -70,7 +71,7 @@ const options = ref({
 });
 const save = (format) => {
   if (signature.value.isEmpty()) {
-    alert("请先提供签名。");
+    warning("请先提供签名。");
     return;
   }
 
