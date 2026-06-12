@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, computed } from "vue";
 import type { IdeApiConfig } from "./constants";
+import { API_METHOD_MAP } from "./constants";
 
 const props = defineProps<{
   visible: boolean;
@@ -137,6 +138,12 @@ const overlayStyle = computed(() => {
                 <div v-for="field in group.fields" :key="field.key" class="api-field">
                   <div class="api-field-label-row">
                     <label class="api-field-label">{{ field.label }}</label>
+                    <span
+                      class="api-method-badge"
+                      :class="API_METHOD_MAP[field.key] === 'GET' ? 'api-method-badge--get' : 'api-method-badge--post'"
+                    >
+                      {{ API_METHOD_MAP[field.key] || 'POST' }}
+                    </span>
                     <span class="api-field-desc">{{ field.desc }}</span>
                   </div>
                   <div class="api-field-input-wrap">
@@ -310,8 +317,33 @@ const overlayStyle = computed(() => {
 
 .api-field-label-row {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 8px;
+}
+
+.api-method-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  line-height: 1.4;
+  flex-shrink: 0;
+
+  &--get {
+    background: rgba(97, 175, 254, 0.15);
+    color: #61affe;
+    border: 1px solid rgba(97, 175, 254, 0.3);
+  }
+
+  &--post {
+    background: rgba(73, 204, 144, 0.15);
+    color: #49cc90;
+    border: 1px solid rgba(73, 204, 144, 0.3);
+  }
 }
 
 .api-field-label {

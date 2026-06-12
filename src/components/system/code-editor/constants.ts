@@ -14,48 +14,86 @@ export const COMPILABLE_LANGUAGES = new Set(["java", "csharp", "cpp"]);
 export const RUNNABLE_LANGUAGES = new Set(["java", "csharp", "cpp", "python"]);
 
 /** ==================== API 接口配置 ==================== */
+
+/** HTTP 请求方法 */
+export type HttpMethod = "GET" | "POST";
+
+/** 端点配置：URL + HTTP 方法 */
+export interface EndpointConfig {
+    url: string;
+    method: HttpMethod;
+}
+
 export interface IdeApiConfig {
-    /**
-     * 代码补全服务器接口
-     */
+    /** 代码补全服务器接口 (WebSocket) */
     lspServerUrl?: string;
-    /** 加载文件树接口 (POST) */
+    /** 加载文件树接口 */
     loadUrl?: string;
-    /** 保存文件树接口 (POST) */
+    /** 保存文件树接口 */
     saveUrl?: string;
-    /** 编译接口 (POST) */
+    /** 编译接口 */
     compileUrl?: string;
-    /** 运行接口 (POST) */
+    /** 运行接口 */
     runUrl?: string;
-    /** 模板列表接口 (POST) - 返回 { data: { key: name, ... } } */
+    /** 模板列表接口 - 返回 { data: { key: name, ... } } */
     templateUrl?: string;
-    /** 加载模板代码接口 (POST) - body: { templateCode, packageName, className } */
+    /** 加载模板代码接口 - body: { templateCode, packageName, className } */
     templateLoadUrl?: string;
-    /** 编译并注册接口 (POST) - body: { content: sourceCode } */
+    /** 编译并注册接口 - body: { content: sourceCode } */
     compileRegisterUrl?: string;
-    /** 注销Bean接口 (POST) - 路径: /unregister/{beanName} */
+    /** 注销Bean接口 - 路径: /unregister/{beanName} */
     unregisterUrl?: string;
-    /** 注销全部Bean接口 (POST) */
+    /** 注销全部Bean接口 */
     unregisterAllUrl?: string;
-    /** 已注册Bean列表接口 (GET) */
+    /** 已注册Bean列表接口 */
     registeredListUrl?: string;
-    /** 获取Bean源码接口 (GET) - 路径: /source/{beanName} */
+    /** 获取Bean源码接口 - 路径: /source/{beanName} */
     sourceCodeUrl?: string;
-    /** 保存草稿接口 (POST) - body: { content: sourceCode } */
+    /** 保存草稿接口 - body: { content: sourceCode } */
     draftSaveUrl?: string;
-    /** 草稿列表接口 (GET) */
+    /** 草稿列表接口 */
     draftListUrl?: string;
-    /** 获取草稿源码接口 (GET) - 路径: /draft/{beanName} */
+    /** 获取草稿源码接口 - 路径: /draft/{beanName} */
     draftSourceUrl?: string;
-    /** 健康检查接口 (GET) */
+    /** 健康检查接口 */
     healthCheckUrl?: string;
-    /** 执行方法接口 (POST) - body: { codeId, methodName, params } */
+    /** 执行方法接口 - body: { codeId, methodName, params } */
     executeUrl?: string;
-    /**加载模块列表接口 (POST)*/
+    /** 加载模块列表接口 */
     moduleListUrl?: string;
-    /** 创建模块接口 (POST) */
+    /** 创建模块接口 */
     createModuleUrl?: string;
 }
+
+/**
+ * 每个端点对应的 HTTP 方法（与后端 Controller 注解保持一致）
+ * 用于 ApiConfigDialog 展示和方法调度
+ */
+export const API_METHOD_MAP: Record<keyof Omit<IdeApiConfig, "lspServerUrl">, HttpMethod> = {
+    // CodeFilesController
+    loadUrl: "POST",
+    saveUrl: "POST",
+    // CodeModulesController
+    moduleListUrl: "GET",
+    createModuleUrl: "POST",
+    // DynamicCodeController - 编译运行
+    compileUrl: "POST",
+    runUrl: "POST",
+    compileRegisterUrl: "POST",
+    executeUrl: "POST",
+    templateUrl: "POST",
+    templateLoadUrl: "POST",
+    // DynamicCodeController - Bean 管理
+    unregisterUrl: "POST",
+    unregisterAllUrl: "POST",
+    registeredListUrl: "GET",
+    sourceCodeUrl: "GET",
+    healthCheckUrl: "GET",
+    // DynamicCodeController - 草稿
+    draftSaveUrl: "POST",
+    draftListUrl: "GET",
+    draftSourceUrl: "GET",
+};
 
 /** ==================== 默认语言模板 ==================== */
 export const DEFAULT_TEMPLATES: Record<string, (className: string, packageName: string) => string> = {

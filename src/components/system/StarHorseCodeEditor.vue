@@ -1,6 +1,7 @@
 <script setup lang="ts" name="StarHorseCodeEditor">
 import {computed, nextTick, onBeforeUnmount, onMounted, PropType, ref, shallowRef, toRaw, toRef, watch} from "vue";
 import * as monaco from "monaco-editor";
+import "@/components/system/code-editor/styles/editor.scss";
 import type {FileNode, MenuItemDef, TabInfo} from "./code-editor/types";
 import {
   COMPILABLE_LANGUAGES,
@@ -14,7 +15,7 @@ import {
 import {applyThemeVars, getThemeByValue} from "./code-editor/theme";
 import {useLsp} from "./code-editor/useLsp";
 import {useFileTree} from "./code-editor/useFileTree";
-import {useFileApi} from "./code-editor/useFileApi";
+import {useFileApi, type ConflictCheckResult, type ConflictFile, type SaveResult} from "./code-editor/useFileApi";
 import {useConsole} from "./code-editor/useConsole";
 import {useModuleDialog} from "./code-editor/useModuleDialog";
 import {useIdeActions} from "./code-editor/useIdeActions";
@@ -81,7 +82,7 @@ const themeVars = computed(() => getThemeByValue(currentTheme.value).vars);
 const cursorLine = ref(1);
 const cursorCol = ref(1);
 const expandedFolders = ref<Set<string>>(new Set());
-const sidebarWidth = ref(220);
+const sidebarWidth = ref(240);
 const monacoModels = new Map<string, monaco.editor.ITextModel>();
 const fileInputRef = ref<HTMLInputElement>();
 const dirInputRef = ref<HTMLInputElement>();
@@ -100,6 +101,31 @@ const diffOriginalLabel = ref("");
 const diffModifiedLabel = ref("");
 const diffConflictMode = ref(false);
 const diffConflictMarkers = ref<any[]>([]);
+/** 后端返回的冲突信息（用于解决后 force commit） */
+const pendingConflictInfo = ref<ConflictCheckResult | null>(null);
+/** 当前正在解决冲突的文件索引 */
+const currentConflictFileIndex = ref(0);
+/** 冲突文件列表 */
+const conflictFiles = ref<ConflictFile[]>([]);
+/** 保存时的附加参数（用于冲突解决后重试） */
+const pendingSaveParams = ref<Record<string, any>>({});
+
+// ==================== 先拉取再提交 ====================
+interface PreSaveDiffFile {
+  path: string;
+  language: string;
+  serverContent: string;
+  localContent: string;
+  resolvedContent?: string;
+  id: string;
+}
+
+/** 当前 diff 是否为先拉取再提交的审阅模式 */
+const isPreSaveReview = ref(false);
+/** 先拉取后检测到的变更文件列表 */
+const preSaveDiffFiles = ref<PreSaveDiffFile[]>([]);
+/** 当前审阅的文件索引 */
+const currentDiffFileIndex = ref(0);
 
 // ==================== 可配置设置（运行时） ====================
 const currentFontSize = ref(props.fontSize);
@@ -1022,12 +1048,14 @@ const loadModule = async (moduleId: string) => {
 };
 
 // ==================== 保存到后端 ====================
-/** 内部执行保存（带参数） */
+/** 内部执行保存（带参数）- 先拉取再提交流程 */
 const doSaveToServer = async (params?: Record<string, any>) => {
   if (!resolvedApi.value.saveUrl) {
     warning(i18n("ide.save.noUrl"));
     return false;
   }
+
+  // 1. 同步所有标签页内容到文件树
   openTabs.value.forEach(t => {
     const model = monacoModels.get(t.id);
     if (model) {
@@ -1035,21 +1063,233 @@ const doSaveToServer = async (params?: Record<string, any>) => {
       t.modified = false;
     }
   });
-  // 清除所有修改标记
   modifiedFiles.value = new Set();
+
+  // 准备保存参数
   const mergedParams: Record<string, any> = {...props.saveParams, ...params};
   if (props.moduleId) mergedParams.moduleId = props.moduleId;
-  const ok = await fileApi.saveToServer(
-      fileTree.tree.value,
-      Object.keys(mergedParams).length > 0 ? mergedParams : undefined,
+  if (fileApi.baseCommitId.value) {
+    mergedParams.baseCommitId = fileApi.baseCommitId.value;
+  }
+  pendingSaveParams.value = mergedParams;
+
+  // 2. 如果配置了 loadUrl，先拉取最新版本做对比（pull-before-push）
+  if (resolvedApi.value.loadUrl) {
+    success(i18n("ide.save.fetchingLatest"));
+
+    // 构建加载参数（与 doLoadFromServer 保持一致）
+    const loadParams: Record<string, any> = {...props.loadParams};
+    if (props.moduleId) loadParams.item = props.moduleId;
+
+    const latest = await fileApi.fetchLatest(
+      Object.keys(loadParams).length > 0 ? loadParams : undefined,
+    );
+
+    // 如果成功拉取到服务端版本，进行文件对比
+    if (latest.tree.length > 0) {
+      const localFiles = fileTree.collectAllFiles();
+      const serverFiles = fileTree.collectAllFiles(latest.tree);
+
+      // 构建服务端文件 Map（按路径索引）
+      const serverMap = new Map<string, { content: string; language: string }>();
+      serverFiles.forEach(f => serverMap.set(f.path, { content: f.content, language: f.language }));
+
+      // 找出有差异的文件
+      const changedFiles: PreSaveDiffFile[] = [];
+      for (const local of localFiles) {
+        const server = serverMap.get(local.path);
+        const serverContent = server?.content || "";
+        if (local.content !== serverContent) {
+          changedFiles.push({
+            path: local.path,
+            language: local.language,
+            serverContent,
+            localContent: local.content,
+            id: local.id,
+          });
+        }
+      }
+
+      // 如果没有任何变更，直接提交（快速路径）
+      if (changedFiles.length === 0) {
+        warning(i18n("ide.save.noChanges"));
+        return false;
+      }
+
+      // 有变更 -> 进入先审阅再提交流程
+      isPreSaveReview.value = true;
+      preSaveDiffFiles.value = changedFiles;
+      currentDiffFileIndex.value = 0;
+
+      // 更新 baseCommitId 为最新
+      if (latest.commitId) {
+        fileApi.baseCommitId.value = latest.commitId;
+        pendingSaveParams.value = { ...mergedParams, baseCommitId: latest.commitId };
+      }
+
+      // 打开第一个变更文件的 diff
+      openPreSaveDiffFile(0);
+      return false;
+    }
+    // 拉取失败或为空 -> 回退到直接保存模式
+  }
+
+  // 3. 直接保存（无 loadUrl 或拉取失败时的回退路径）
+  const result: SaveResult = await fileApi.saveToServer(
+    fileTree.tree.value,
+    Object.keys(mergedParams).length > 0 ? mergedParams : undefined,
   );
-  if (ok) {
+
+  if (result.success) {
     success(i18n("ide.save.success"));
     emit("save-complete", fileTree.tree.value);
-  } else {
-    warning(fileApi.lastError.value || i18n("ide.save.failed"));
+    return true;
   }
-  return ok;
+
+  // 检测到冲突，打开冲突解决界面
+  if (result.hasConflict && result.conflictInfo) {
+    handleConflictDetected(result.conflictInfo);
+    return false;
+  }
+
+  // 其他错误
+  warning(result.error || fileApi.lastError.value || i18n("ide.save.failed"));
+  return false;
+};
+
+/** 打开先审阅模式的 diff 文件 */
+const openPreSaveDiffFile = (index: number) => {
+  if (index < 0 || index >= preSaveDiffFiles.value.length) return;
+  currentDiffFileIndex.value = index;
+  const file = preSaveDiffFiles.value[index];
+
+  openDiffEditor({
+    original: file.serverContent,
+    modified: file.localContent,
+    language: file.language,
+    title: `${i18n("diff.title")} - ${file.path} (${index + 1}/${preSaveDiffFiles.value.length})`,
+    originalLabel: i18n("diff.serverVersion"),
+    modifiedLabel: i18n("diff.localVersion"),
+    conflictMode: false,
+    conflictMarkers: [],
+  });
+};
+
+/** 处理后端返回的冲突信息 */
+const handleConflictDetected = (conflictInfo: ConflictCheckResult) => {
+  pendingConflictInfo.value = conflictInfo;
+  conflictFiles.value = conflictInfo.conflictFiles || [];
+  currentConflictFileIndex.value = 0;
+
+  if (conflictFiles.value.length === 0) {
+    warning(i18n("ide.diff.noConflict"));
+    return;
+  }
+
+  // 显示冲突提示消息
+  const fileCount = conflictFiles.value.length;
+  const commitCount = conflictInfo.divergedCommits;
+  warning(i18n("ide.save.conflictDetected", fileCount, commitCount));
+
+  // 打开第一个冲突文件的 Diff 编辑器
+  openConflictFileByIndex(0);
+};
+
+/** 打开指定索引的冲突文件 */
+const openConflictFileByIndex = (index: number) => {
+  if (index < 0 || index >= conflictFiles.value.length) return;
+  currentConflictFileIndex.value = index;
+  const cf = conflictFiles.value[index];
+
+  // 根据冲突类型决定展示内容
+  // 原始侧 = 别人的版本（theirContent / 服务器最新版本）
+  // 修改侧 = 我的版本（myContent / 本地编辑的版本）
+  openDiffEditor({
+    original: cf.theirContent || "",
+    modified: cf.myContent || "",
+    language: cf.language || "plaintext",
+    title: `${i18n("diff.conflictTitle")} - ${cf.path} (${index + 1}/${conflictFiles.value.length})`,
+    originalLabel: i18n("diff.serverVersion"),
+    modifiedLabel: i18n("diff.localVersion"),
+    conflictMode: cf.conflictType === "CONTENT",
+    conflictMarkers: [],
+  });
+};
+
+/** 强制提交（跳过冲突检测） */
+const doForceCommit = async () => {
+  if (!resolvedApi.value.saveUrl) return false;
+
+  // 更新所有标签页内容到文件树
+  openTabs.value.forEach(t => {
+    const model = monacoModels.get(t.id);
+    if (model) {
+      fileTree.updateFileContent(t.id, model.getValue());
+      t.modified = false;
+    }
+  });
+  modifiedFiles.value = new Set();
+
+  // 强制提交参数
+  const forceParams: Record<string, any> = {
+    ...pendingSaveParams.value,
+    forceCommit: true,
+  };
+
+  const result: SaveResult = await fileApi.saveToServer(
+      fileTree.tree.value,
+      forceParams,
+  );
+
+  if (result.success) {
+    success(i18n("ide.save.conflictResolvedSuccess"));
+    pendingConflictInfo.value = null;
+    conflictFiles.value = [];
+    emit("save-complete", fileTree.tree.value);
+    return true;
+  }
+
+  warning(result.error || fileApi.lastError.value || i18n("ide.save.failed"));
+  return false;
+};
+
+/** 先审阅模式下跳过剩余审阅直接提交 */
+const doPreSaveForceCommit = async () => {
+  // 先把已审阅的文件内容更新到文件树（未审阅的保持本地版本）
+  for (const file of preSaveDiffFiles.value) {
+    if (file.resolvedContent !== undefined) {
+      fileTree.updateFileContent(file.id, file.resolvedContent);
+    }
+  }
+
+  diffEditorVisible.value = false;
+  isPreSaveReview.value = false;
+  success(i18n("ide.save.allFilesReviewed"));
+
+  const commitParams: Record<string, any> = {
+    ...pendingSaveParams.value,
+    forceCommit: true,
+  };
+
+  const result: SaveResult = await fileApi.saveToServer(
+    fileTree.tree.value,
+    Object.keys(commitParams).length > 0 ? commitParams : undefined,
+  );
+
+  if (result.success) {
+    success(i18n("ide.save.success"));
+    preSaveDiffFiles.value = [];
+    emit("save-complete", fileTree.tree.value);
+    return true;
+  }
+
+  if (result.hasConflict && result.conflictInfo) {
+    handleConflictDetected(result.conflictInfo);
+    return false;
+  }
+
+  warning(result.error || fileApi.lastError.value || i18n("ide.save.failed"));
+  return false;
 };
 
 /** 保存到服务器（公共方法），如果配置了 moduleListUrl 则弹窗选择模块 */
@@ -1164,12 +1404,29 @@ const ideActions = useIdeActions({
   detectLanguage,
 });
 
+/** 编译/运行前自动保存当前文件内容到文件树，确保发送给后端的是最新代码 */
+const autoSaveCurrentFile = () => {
+  if (!activeTabId.value) return;
+  const editor = toRaw(editorInstance.value);
+  if (!editor) return;
+  const content = editor.getValue();
+  fileTree.updateFileContent(activeTabId.value, content);
+  // 清除修改标记
+  const tab = openTabs.value.find(t => t.id === activeTabId.value);
+  if (tab) tab.modified = false;
+  const ms = new Set(modifiedFiles.value);
+  ms.delete(activeTabId.value);
+  modifiedFiles.value = ms;
+};
+
 const doCompile = async () => {
+  autoSaveCurrentFile();
   await ideActions.doCompile();
   emit("compile", fileTree.findNode(activeTabId.value!));
 };
 
 const doRun = async () => {
+  autoSaveCurrentFile();
   await ideActions.doRun();
   emit("run", fileTree.findNode(activeTabId.value!));
 };
@@ -1354,8 +1611,92 @@ function resolveConflict(serverContent: string, localContent: string, language: 
 }
 
 /** Diff编辑器保存/解决回调 */
-const handleDiffSave = (result: string) => {
+const handleDiffSave = async (result: string) => {
   const editor = toRaw(editorInstance.value);
+
+  // 如果是先拉取再提交的审阅模式
+  if (isPreSaveReview.value && preSaveDiffFiles.value.length > 0) {
+    const file = preSaveDiffFiles.value[currentDiffFileIndex.value];
+    if (file) {
+      // 更新审阅后的内容
+      file.resolvedContent = result;
+      // 同时更新文件树中对应文件的内容
+      fileTree.updateFileContent(file.id, result);
+
+      // 检查是否还有更多变更文件
+      const nextIndex = currentDiffFileIndex.value + 1;
+      if (nextIndex < preSaveDiffFiles.value.length) {
+        diffEditorVisible.value = false;
+        await nextTick();
+        openPreSaveDiffFile(nextIndex);
+        return;
+      }
+
+      // 所有文件已审阅完毕，执行实际提交
+      diffEditorVisible.value = false;
+      isPreSaveReview.value = false;
+      success(i18n("ide.save.allFilesReviewed"));
+
+      // 使用 forceCommit 提交（用户已经审阅了所有变更）
+      const commitParams: Record<string, any> = {
+        ...pendingSaveParams.value,
+        forceCommit: true,
+      };
+
+      const saveResult: SaveResult = await fileApi.saveToServer(
+        fileTree.tree.value,
+        Object.keys(commitParams).length > 0 ? commitParams : undefined,
+      );
+
+      if (saveResult.success) {
+        success(i18n("ide.save.success"));
+        preSaveDiffFiles.value = [];
+        emit("save-complete", fileTree.tree.value);
+        return;
+      }
+
+      // 如果仍然检测到冲突（服务端在审阅期间又有人提交了），走冲突解决流程
+      if (saveResult.hasConflict && saveResult.conflictInfo) {
+        handleConflictDetected(saveResult.conflictInfo);
+        return;
+      }
+
+      warning(saveResult.error || fileApi.lastError.value || i18n("ide.save.failed"));
+      return;
+    }
+  }
+
+  // 如果是后端冲突解决流程
+  if (pendingConflictInfo.value && conflictFiles.value.length > 0) {
+    const cf = conflictFiles.value[currentConflictFileIndex.value];
+    if (cf) {
+      // 更新解决后的内容
+      cf.resolvedContent = result;
+
+      // 同时更新文件树中对应文件的内容
+      const node = fileTree.findNodeByPath(cf.path);
+      if (node) {
+        fileTree.updateFileContent(node.idCodeFile, result);
+      }
+
+      // 检查是否还有更多冲突文件
+      const nextIndex = currentConflictFileIndex.value + 1;
+      if (nextIndex < conflictFiles.value.length) {
+        diffEditorVisible.value = false;
+        // 打开下一个冲突文件
+        await nextTick();
+        openConflictFileByIndex(nextIndex);
+        return;
+      }
+
+      // 所有冲突文件已解决，执行强制提交
+      diffEditorVisible.value = false;
+      await doForceCommit();
+      return;
+    }
+  }
+
+  // 普通 diff 保存（非后端冲突流程）
   if (editor) {
     editor.setValue(result);
   }
@@ -1365,6 +1706,8 @@ const handleDiffSave = (result: string) => {
 
 const handleDiffClose = () => {
   diffEditorVisible.value = false;
+  isPreSaveReview.value = false;
+  preSaveDiffFiles.value = [];
 };
 
 // ==================== 生命周期 ====================
@@ -1779,25 +2122,389 @@ onBeforeUnmount(() => {
     />
 
     <!-- Diff/冲突解决编辑器（独立弹层） -->
-    <div v-if="diffEditorVisible" class="sh-diff-overlay">
-      <StarHorseDiffEditor
-        :original="diffOriginal"
-        :modified="diffModified"
-        :language="diffLanguage"
-        :title="diffTitle"
-        :original-label="diffOriginalLabel"
-        :modified-label="diffModifiedLabel"
-        :theme="currentTheme"
-        :conflict-mode="diffConflictMode"
-        :conflict-markers="diffConflictMarkers"
-        height="80vh"
-        @save="handleDiffSave"
-        @close="handleDiffClose"
-      />
-    </div>
+    <Teleport to="body">
+      <Transition name="diff-fade">
+        <div v-if="diffEditorVisible" class="sh-diff-dialog-overlay" @click.self="handleDiffClose">
+          <div class="sh-diff-dialog" :class="{ 'sh-diff-dialog--dark': currentTheme === 'vs-dark' || currentTheme === 'hc-black' }">
+            <!-- 弹窗头部 -->
+            <div class="sh-diff-dialog__header">
+              <div class="sh-diff-dialog__header-left">
+                <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" class="sh-diff-dialog__icon">
+                  <path d="M1.5 1a.5.5 0 0 0-.5.5v13a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5V8a.5.5 0 0 0-1 0v5.5H2V2h5.5a.5.5 0 0 0 0-1h-6zm9 0a.5.5 0 0 0-.5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .354-.854l-4-4A.5.5 0 0 0 10.5 1zM11 2.707 13.293 5H11V2.707z"/>
+                  <path d="M4 6.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5z"/>
+                </svg>
+                <span class="sh-diff-dialog__title">{{ diffTitle || i18n('diff.title') }}</span>
+              </div>
+              <div class="sh-diff-dialog__header-right">
+                <!-- 先审阅模式的文件导航 -->
+                <template v-if="isPreSaveReview && preSaveDiffFiles.length > 1">
+                  <button
+                    class="sh-diff-dialog__nav-btn"
+                    :disabled="currentDiffFileIndex <= 0"
+                    :title="i18n('ide.save.prevConflictFile')"
+                    @click="openPreSaveDiffFile(currentDiffFileIndex - 1)"
+                  >
+                    <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor">
+                      <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+                    </svg>
+                  </button>
+                  <span class="sh-diff-dialog__progress">
+                    {{ i18n('ide.save.diffFileProgress', currentDiffFileIndex + 1, preSaveDiffFiles.length) }}
+                  </span>
+                  <button
+                    class="sh-diff-dialog__nav-btn"
+                    :disabled="currentDiffFileIndex >= preSaveDiffFiles.length - 1"
+                    :title="i18n('ide.save.nextConflictFile')"
+                    @click="openPreSaveDiffFile(currentDiffFileIndex + 1)"
+                  >
+                    <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor">
+                      <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+                    </svg>
+                  </button>
+                  <span class="sh-diff-dialog__sep"/>
+                </template>
+                <!-- 冲突文件导航（仅在冲突解决模式下显示） -->
+                <template v-if="conflictFiles.length > 1">
+                  <button
+                    class="sh-diff-dialog__nav-btn"
+                    :disabled="currentConflictFileIndex <= 0"
+                    :title="i18n('ide.save.prevConflictFile')"
+                    @click="openConflictFileByIndex(currentConflictFileIndex - 1)"
+                  >
+                    <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor">
+                      <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+                    </svg>
+                  </button>
+                  <span class="sh-diff-dialog__progress">
+                    {{ i18n('ide.save.conflictProgress', currentConflictFileIndex + 1, conflictFiles.length) }}
+                  </span>
+                  <button
+                    class="sh-diff-dialog__nav-btn"
+                    :disabled="currentConflictFileIndex >= conflictFiles.length - 1"
+                    :title="i18n('ide.save.nextConflictFile')"
+                    @click="openConflictFileByIndex(currentConflictFileIndex + 1)"
+                  >
+                    <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor">
+                      <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+                    </svg>
+                  </button>
+                  <span class="sh-diff-dialog__sep"/>
+                </template>
+                <!-- 强制提交按钮（冲突解决流程 或 先审阅流程中可见） -->
+                <button
+                  v-if="pendingConflictInfo || isPreSaveReview"
+                  class="sh-diff-dialog__force-btn"
+                  :title="i18n('ide.save.forceCommit')"
+                  @click="isPreSaveReview ? doPreSaveForceCommit() : doForceCommit()"
+                >
+                  <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor">
+                    <path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
+                  </svg>
+                  {{ i18n('ide.save.forceCommit') }}
+                </button>
+                <button class="sh-diff-dialog__close" :title="i18n('diff.close')" @click="handleDiffClose">
+                  <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor">
+                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <!-- 冲突提示条 -->
+            <div v-if="pendingConflictInfo" class="sh-diff-dialog__conflict-banner">
+              <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor" class="sh-diff-dialog__warn-icon">
+                <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+              </svg>
+              <span class="sh-diff-dialog__conflict-text">
+                {{ i18n('ide.save.conflictDetected', conflictFiles.length, pendingConflictInfo.divergedCommits) }}
+              </span>
+              <span v-if="pendingConflictInfo.suggestedAction" class="sh-diff-dialog__suggested-action">
+                {{ pendingConflictInfo.suggestedAction === 'CONFLICT' ? '⚠️' : pendingConflictInfo.suggestedAction === 'MERGE' ? '🔀' : '⚡' }}
+                {{ pendingConflictInfo.suggestedAction }}
+              </span>
+            </div>
+            <!-- DiffEditor 主体 -->
+            <div class="sh-diff-dialog__body">
+              <StarHorseDiffEditor
+                :original="diffOriginal"
+                :modified="diffModified"
+                :language="diffLanguage"
+                :title="diffTitle"
+                :original-label="diffOriginalLabel"
+                :modified-label="diffModifiedLabel"
+                :theme="currentTheme"
+                :conflict-mode="diffConflictMode"
+                :conflict-markers="diffConflictMarkers"
+                height="100%"
+                @save="handleDiffSave"
+                @close="handleDiffClose"
+              />
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
 <style lang="scss" scoped>
-@import "@/components/system/code-editor/styles/editor.scss";
+//@import "@/components/system/code-editor/styles/editor.scss";
+
+/* ==================== Diff 弹窗 Overlay ==================== */
+.sh-diff-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  padding: 24px;
+}
+
+.sh-diff-dialog {
+  width: 90vw;
+  max-width: 1400px;
+  height: 85vh;
+  max-height: 900px;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+
+  &--dark {
+    background: #1e1e1e;
+    border-color: #3c3c3c;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    color: #ccc;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    height: 48px;
+    background: #f3f3f3;
+    border-bottom: 1px solid #e0e0e0;
+    flex-shrink: 0;
+
+    .sh-diff-dialog--dark & {
+      background: #252526;
+      border-bottom-color: #3c3c3c;
+    }
+  }
+
+  &__header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    flex: 1;
+  }
+
+  &__icon {
+    flex-shrink: 0;
+    opacity: 0.6;
+    color: #007acc;
+
+    .sh-diff-dialog--dark & {
+      color: #4fc1ff;
+    }
+  }
+
+  &__title {
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #1e1e1e;
+
+    .sh-diff-dialog--dark & {
+      color: #ccc;
+    }
+  }
+
+  &__header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  &__nav-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    background: none;
+    cursor: pointer;
+    color: #666;
+    transition: all 0.15s ease;
+
+    .sh-diff-dialog--dark & {
+      color: #858585;
+    }
+
+    &:hover:not(:disabled) {
+      background: rgba(0, 122, 204, 0.1);
+      color: #007acc;
+      border-color: rgba(0, 122, 204, 0.3);
+    }
+
+    &:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+  }
+
+  &__progress {
+    font-size: 12px;
+    font-weight: 500;
+    color: #666;
+    white-space: nowrap;
+    padding: 0 4px;
+
+    .sh-diff-dialog--dark & {
+      color: #858585;
+    }
+  }
+
+  &__sep {
+    width: 1px;
+    height: 20px;
+    background: #e0e0e0;
+
+    .sh-diff-dialog--dark & {
+      background: #3c3c3c;
+    }
+  }
+
+  &__force-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid rgba(115, 201, 145, 0.4);
+    background: rgba(115, 201, 145, 0.1);
+    color: #2ea043;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+
+    .sh-diff-dialog--dark & {
+      color: #73c991;
+    }
+
+    &:hover {
+      background: rgba(115, 201, 145, 0.2);
+      border-color: rgba(115, 201, 145, 0.6);
+    }
+  }
+
+  &__close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 6px;
+    background: none;
+    cursor: pointer;
+    color: #666;
+    transition: all 0.15s ease;
+
+    .sh-diff-dialog--dark & {
+      color: #858585;
+    }
+
+    &:hover {
+      background: rgba(241, 76, 76, 0.1);
+      color: #f14c4c;
+    }
+  }
+
+  &__conflict-banner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(255, 166, 0, 0.08);
+    border-bottom: 1px solid rgba(255, 166, 0, 0.2);
+    flex-shrink: 0;
+
+    .sh-diff-dialog--dark & {
+      background: rgba(204, 167, 0, 0.1);
+      border-bottom-color: rgba(204, 167, 0, 0.3);
+    }
+  }
+
+  &__warn-icon {
+    color: #e5a00d;
+    flex-shrink: 0;
+  }
+
+  &__conflict-text {
+    font-size: 12px;
+    color: #b38600;
+    flex: 1;
+
+    .sh-diff-dialog--dark & {
+      color: #cca700;
+    }
+  }
+
+  &__suggested-action {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 3px;
+    background: rgba(204, 167, 0, 0.15);
+    color: #b38600;
+    white-space: nowrap;
+
+    .sh-diff-dialog--dark & {
+      background: rgba(204, 167, 0, 0.2);
+      color: #cca700;
+    }
+  }
+
+  &__body {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+}
+
+/* ==================== Diff 弹窗过渡动画 ==================== */
+.diff-fade-enter-active,
+.diff-fade-leave-active {
+  transition: opacity 0.2s ease;
+
+  .sh-diff-dialog {
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+}
+
+.diff-fade-enter-from,
+.diff-fade-leave-to {
+  opacity: 0;
+
+  .sh-diff-dialog {
+    transform: scale(0.95) translateY(10px);
+    opacity: 0;
+  }
+}
 </style>

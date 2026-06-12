@@ -1,68 +1,104 @@
 <template>
   <div
-    ref="diffRoot"
-    class="sh-diff-editor"
-    :class="{ 'sh-diff-editor--dark': isDark }"
-    :style="{ height: height }"
+      ref="diffRoot"
+      class="sh-diff-editor"
+      :class="{ 'sh-diff-editor--dark': isDark }"
+      :style="{ height: height }"
   >
     <!-- 工具栏 -->
     <div class="sh-diff-toolbar">
       <div class="sh-diff-toolbar__left">
         <span class="sh-diff-toolbar__title">
           <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" class="sh-diff-icon">
-            <path d="M1.5 1a.5.5 0 0 0-.5.5v13a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5V8a.5.5 0 0 0-1 0v5.5H2V2h5.5a.5.5 0 0 0 0-1h-6zm9 0a.5.5 0 0 0-.5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .354-.854l-4-4A.5.5 0 0 0 10.5 1zM11 2.707 13.293 5H11V2.707z"/>
-            <path d="M4 6.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5z"/>
+            <path
+                d="M1.5 1a.5.5 0 0 0-.5.5v13a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5V8a.5.5 0 0 0-1 0v5.5H2V2h5.5a.5.5 0 0 0 0-1h-6zm9 0a.5.5 0 0 0-.5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .354-.854l-4-4A.5.5 0 0 0 10.5 1zM11 2.707 13.293 5H11V2.707z"/>
+            <path
+                d="M4 6.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5z"/>
           </svg>
           {{ title || i18n('diff.title') }}
         </span>
         <span v-if="conflictCount > 0" class="sh-diff-toolbar__conflict-badge">
           {{ conflictCount }} {{ i18n('diff.conflicts') }}
         </span>
+        <!-- 文件上传按钮（enableFileInput 模式下） -->
+        <template v-if="enableFileInput">
+          <span class="sh-diff-toolbar__sep"/>
+          <button
+              class="sh-diff-toolbar__btn sh-diff-toolbar__btn--file"
+              :title="i18n('diff.uploadOriginal')"
+              @click="handleOriginalFilePick"
+          >
+            <svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor">
+              <path
+                  d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+              <path
+                  d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/>
+            </svg>
+            {{ originalFileName || i18n('diff.uploadOriginal') }}
+          </button>
+          <button
+              class="sh-diff-toolbar__btn sh-diff-toolbar__btn--file"
+              :title="i18n('diff.uploadModified')"
+              @click="handleModifiedFilePick"
+          >
+            <svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor">
+              <path
+                  d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+              <path
+                  d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/>
+            </svg>
+            {{ modifiedFileName || i18n('diff.uploadModified') }}
+          </button>
+        </template>
       </div>
       <div class="sh-diff-toolbar__center">
         <button
-          class="sh-diff-toolbar__btn"
-          :class="{ active: renderSideBySide }"
-          :title="i18n('diff.sideBySide')"
-          @click="renderSideBySide = true"
+            class="sh-diff-toolbar__btn"
+            :class="{ active: renderSideBySide }"
+            :title="i18n('diff.sideBySide')"
+            @click="renderSideBySide = true"
         >
           <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor">
-            <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm8.5 0v12H14a.5.5 0 0 0 .5-.5V2.5a.5.5 0 0 0-.5-.5H8.5zm-1 0H2.5a.5.5 0 0 0-.5.5v11a.5.5 0 0 0 .5.5h5V2z"/>
+            <path
+                d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm8.5 0v12H14a.5.5 0 0 0 .5-.5V2.5a.5.5 0 0 0-.5-.5H8.5zm-1 0H2.5a.5.5 0 0 0-.5.5v11a.5.5 0 0 0 .5.5h5V2z"/>
           </svg>
         </button>
         <button
-          class="sh-diff-toolbar__btn"
-          :class="{ active: !renderSideBySide }"
-          :title="i18n('diff.inline')"
-          @click="renderSideBySide = false"
+            class="sh-diff-toolbar__btn"
+            :class="{ active: !renderSideBySide }"
+            :title="i18n('diff.inline')"
+            @click="renderSideBySide = false"
         >
           <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor">
-            <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm1 0v12a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5V2a.5.5 0 0 0-.5-.5h-13A.5.5 0 0 0 1 2z"/>
+            <path
+                d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm1 0v12a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5V2a.5.5 0 0 0-.5-.5h-13A.5.5 0 0 0 1 2z"/>
             <path d="M2 5h12v1H2V5zm0 3h12v1H2V8zm0 3h12v1H2v-1z"/>
           </svg>
         </button>
         <span class="sh-diff-toolbar__sep"/>
         <button
-          v-if="conflictMode"
-          class="sh-diff-toolbar__btn sh-diff-toolbar__btn--accept-all"
-          :title="i18n('diff.acceptAllCurrent')"
-          :disabled="conflictCount === 0"
-          @click="acceptAllCurrent"
+            v-if="conflictMode"
+            class="sh-diff-toolbar__btn sh-diff-toolbar__btn--accept-all"
+            :title="i18n('diff.acceptAllCurrent')"
+            :disabled="conflictCount === 0"
+            @click="acceptAllCurrent"
         >
           <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor">
-            <path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
+            <path
+                d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
           </svg>
           {{ i18n('diff.acceptAllCurrent') }}
         </button>
         <button
-          v-if="conflictMode"
-          class="sh-diff-toolbar__btn sh-diff-toolbar__btn--accept-all"
-          :title="i18n('diff.acceptAllIncoming')"
-          :disabled="conflictCount === 0"
-          @click="acceptAllIncoming"
+            v-if="conflictMode"
+            class="sh-diff-toolbar__btn sh-diff-toolbar__btn--accept-all"
+            :title="i18n('diff.acceptAllIncoming')"
+            :disabled="conflictCount === 0"
+            @click="acceptAllIncoming"
         >
           <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor">
-            <path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
+            <path
+                d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
           </svg>
           {{ i18n('diff.acceptAllIncoming') }}
         </button>
@@ -75,7 +111,8 @@
         </span>
         <button class="sh-diff-toolbar__btn" :title="i18n('diff.close')" @click="handleClose">
           <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor">
-            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+            <path
+                d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
           </svg>
         </button>
       </div>
@@ -84,21 +121,50 @@
     <!-- 冲突操作栏（冲突模式下显示） -->
     <div v-if="conflictMode && currentConflictIndex >= 0" class="sh-diff-conflict-bar">
       <span class="sh-diff-conflict-bar__info">
+        <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor" class="conflict-info-icon">
+          <path
+              d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+        </svg>
         {{ i18n('diff.conflictOf', currentConflictIndex + 1, conflictCount) }}
       </span>
       <div class="sh-diff-conflict-bar__actions">
         <button class="conflict-btn conflict-btn--current" @click="acceptCurrentConflict">
+          <svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor">
+            <path
+                d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
+          </svg>
           {{ i18n('diff.acceptCurrent') }}
         </button>
         <button class="conflict-btn conflict-btn--incoming" @click="acceptIncomingConflict">
+          <svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor">
+            <path
+                d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"/>
+          </svg>
           {{ i18n('diff.acceptIncoming') }}
         </button>
         <button class="conflict-btn conflict-btn--both" @click="acceptBothConflict">
+          <svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor">
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+            <path
+                d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+          </svg>
           {{ i18n('diff.acceptBoth') }}
         </button>
         <span class="sh-diff-conflict-bar__nav">
-          <button class="conflict-nav-btn" :disabled="currentConflictIndex <= 0" @click="prevConflict">↑</button>
-          <button class="conflict-nav-btn" :disabled="currentConflictIndex >= conflictCount - 1" @click="nextConflict">↓</button>
+          <button class="conflict-nav-btn" :disabled="currentConflictIndex <= 0" @click="prevConflict"
+                  :title="i18n('diff.prevConflict')">
+            <svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor">
+              <path fill-rule="evenodd"
+                    d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/>
+            </svg>
+          </button>
+          <button class="conflict-nav-btn" :disabled="currentConflictIndex >= conflictCount - 1" @click="nextConflict"
+                  :title="i18n('diff.nextConflict')">
+            <svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor">
+              <path fill-rule="evenodd"
+                    d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+            </svg>
+          </button>
         </span>
       </div>
     </div>
@@ -109,7 +175,20 @@
     <!-- 底部操作栏 -->
     <div class="sh-diff-footer">
       <div class="sh-diff-footer__left">
-        <span class="sh-diff-footer__label original-label">{{ originalLabel || i18n('diff.original') }}</span>
+        <span
+            class="sh-diff-footer__label original-label"
+            :class="{ 'drop-active': originalDropActive, 'file-input-active': enableFileInput }"
+            @dragover="handleOriginalDragOver"
+            @dragleave="handleOriginalDragLeave"
+            @drop="handleOriginalDrop"
+            @click="enableFileInput && handleOriginalFilePick()"
+        >
+          {{ originalLabel || i18n('diff.original') }}
+          <template v-if="originalFileName"> - {{ originalFileName }}</template>
+          <template v-if="enableFileInput && !originalFileName">
+            <span class="drop-hint">{{ i18n('diff.dragFileHint') }}</span>
+          </template>
+        </span>
       </div>
       <div class="sh-diff-footer__center">
         <button class="sh-diff-footer__btn sh-diff-footer__btn--primary" @click="handleSave">
@@ -120,43 +199,62 @@
         </button>
       </div>
       <div class="sh-diff-footer__right">
-        <span class="sh-diff-footer__label modified-label">{{ modifiedLabel || i18n('diff.modified') }}</span>
+        <span
+            class="sh-diff-footer__label modified-label"
+            :class="{ 'drop-active': modifiedDropActive, 'file-input-active': enableFileInput }"
+            @dragover="handleModifiedDragOver"
+            @dragleave="handleModifiedDragLeave"
+            @drop="handleModifiedDrop"
+            @click="enableFileInput && handleModifiedFilePick()"
+        >
+          {{ modifiedLabel || i18n('diff.modified') }}
+          <template v-if="modifiedFileName"> - {{ modifiedFileName }}</template>
+          <template v-if="enableFileInput && !modifiedFileName">
+            <span class="drop-hint">{{ i18n('diff.dragFileHint') }}</span>
+          </template>
+        </span>
       </div>
     </div>
+
+    <!-- 隐藏的文件输入框 -->
+    <input ref="originalFileInputRef" type="file" style="display:none" @change="handleOriginalFileInput"/>
+    <input ref="modifiedFileInputRef" type="file" style="display:none" @change="handleModifiedFileInput"/>
   </div>
 </template>
 
 <script setup lang="ts" name="StarHorseDiffEditor">
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, watch } from "vue";
+import {computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, watch} from "vue";
 import * as monaco from "monaco-editor";
-import { i18n } from "@/lang/index";
+import {i18n} from "@/lang/index";
 
 // ==================== Props & Emits ====================
 const props = defineProps({
   /** 原始内容（服务器版本/基线版本） */
-  original: { type: String, default: "" },
+  original: {type: String, default: ""},
   /** 修改后内容（当前版本/冲突版本） */
-  modified: { type: String, default: "" },
+  modified: {type: String, default: ""},
   /** 文件语言，用于语法高亮 */
-  language: { type: String, default: "plaintext" },
+  language: {type: String, default: "plaintext"},
   /** 原始侧标签 */
-  originalLabel: { type: String, default: "" },
+  originalLabel: {type: String, default: ""},
   /** 修改侧标签 */
-  modifiedLabel: { type: String, default: "" },
+  modifiedLabel: {type: String, default: ""},
   /** 标题 */
-  title: { type: String, default: "" },
+  title: {type: String, default: ""},
   /** 编辑器高度 */
-  height: { type: String, default: "600px" },
+  height: {type: String, default: "600px"},
   /** 主题 */
-  theme: { type: String, default: "vs" },
+  theme: {type: String, default: "vs"},
   /** 是否只读（原始侧始终只读） */
-  readOnly: { type: Boolean, default: false },
+  readOnly: {type: Boolean, default: false},
   /** 是否为冲突解决模式 */
-  conflictMode: { type: Boolean, default: false },
+  conflictMode: {type: Boolean, default: false},
   /** 是否默认并排显示 */
-  sideBySide: { type: Boolean, default: true },
-  /** 冲突标记（用于自动检测冲突区域） */
-  conflictMarkers: { type: Array as () => ConflictMarker[], default: () => [] },
+  sideBySide: {type: Boolean, default: true},
+  /** 冲突标记（用于自动检测冲突的区域） */
+  conflictMarkers: {type: Array as () => ConflictMarker[], default: () => []},
+  /** 是否启用文件上传/拖拽功能（独立使用时开启） */
+  enableFileInput: {type: Boolean, default: false},
 });
 
 const emit = defineEmits<{
@@ -164,6 +262,7 @@ const emit = defineEmits<{
   (e: "close"): void;
   (e: "resolve", result: string): void;
   (e: "conflictChange", remaining: number, total: number): void;
+  (e: "fileLoaded", side: "original" | "modified", fileName: string): void;
 }>();
 
 // ==================== Types ====================
@@ -189,6 +288,119 @@ const currentChangeIndex = ref(0);
 const changeCount = ref(0);
 
 const isDark = computed(() => props.theme === "vs-dark" || props.theme === "hc-black");
+
+// ==================== 文件上传/拖拽 ====================
+const originalFileName = ref("");
+const modifiedFileName = ref("");
+const originalFileInputRef = ref<HTMLInputElement>();
+const modifiedFileInputRef = ref<HTMLInputElement>();
+const originalDropActive = ref(false);
+const modifiedDropActive = ref(false);
+
+/** 根据文件扩展名推断 Monaco 语言 */
+const detectLangFromExt = (fileName: string): string => {
+  const ext = fileName.split(".").pop()?.toLowerCase() || "";
+  const map: Record<string, string> = {
+    js: "javascript", jsx: "javascript", ts: "typescript", tsx: "typescript",
+    java: "java", py: "python", rb: "ruby", go: "go", rs: "rust",
+    c: "c", cpp: "cpp", h: "c", hpp: "cpp", cs: "csharp",
+    php: "php", swift: "swift", kt: "kotlin", scala: "scala",
+    html: "html", htm: "html", css: "css", scss: "scss", sass: "scss", less: "less",
+    json: "json", xml: "xml", yaml: "yaml", yml: "yaml", toml: "ini",
+    md: "markdown", sql: "sql", sh: "shell", bash: "shell", ps1: "powershell",
+    vue: "html", svelte: "html",
+    txt: "plaintext", log: "plaintext", cfg: "ini", ini: "ini",
+  };
+  return map[ext] || "plaintext";
+};
+
+/** 读取文件并更新到对应编辑器侧 */
+const loadFileToSide = (file: File, side: "original" | "modified") => {
+  const reader = new FileReader();
+  reader.onload = () => {
+    const content = reader.result as string;
+    const lang = detectLangFromExt(file.name);
+
+    if (side === "original") {
+      originalFileName.value = file.name;
+      const editor = editorInstance.value;
+      if (editor) {
+        const model = editor.getModel();
+        if (model) {
+          model.original.setValue(content);
+          monaco.editor.setModelLanguage(model.original, lang);
+        }
+      }
+    } else {
+      modifiedFileName.value = file.name;
+      const editor = editorInstance.value;
+      if (editor) {
+        const model = editor.getModel();
+        if (model) {
+          model.modified.setValue(content);
+          monaco.editor.setModelLanguage(model.modified, lang);
+        }
+      }
+    }
+    emit("fileLoaded", side, file.name);
+  };
+  reader.readAsText(file);
+};
+
+const handleOriginalFilePick = () => originalFileInputRef.value?.click();
+const handleModifiedFilePick = () => modifiedFileInputRef.value?.click();
+
+const handleOriginalFileInput = (e: Event) => {
+  const input = e.target as HTMLInputElement;
+  if (input.files?.[0]) loadFileToSide(input.files[0], "original");
+  input.value = "";
+};
+
+const handleModifiedFileInput = (e: Event) => {
+  const input = e.target as HTMLInputElement;
+  if (input.files?.[0]) loadFileToSide(input.files[0], "modified");
+  input.value = "";
+};
+
+const handleOriginalDragOver = (e: DragEvent) => {
+  if (!props.enableFileInput) return;
+  if (e.dataTransfer?.types?.includes("Files")) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "copy";
+    originalDropActive.value = true;
+  }
+};
+
+const handleOriginalDragLeave = () => {
+  originalDropActive.value = false;
+};
+
+const handleOriginalDrop = (e: DragEvent) => {
+  e.preventDefault();
+  originalDropActive.value = false;
+  const file = e.dataTransfer?.files?.[0];
+  if (file) loadFileToSide(file, "original");
+};
+
+const handleModifiedDragOver = (e: DragEvent) => {
+  if (!props.enableFileInput) return;
+  if (e.dataTransfer?.types?.includes("Files")) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "copy";
+    modifiedDropActive.value = true;
+  }
+};
+
+const handleModifiedDragLeave = () => {
+  modifiedDropActive.value = false;
+};
+
+const handleModifiedDrop = (e: DragEvent) => {
+  e.preventDefault();
+  modifiedDropActive.value = false;
+  const file = e.dataTransfer?.files?.[0];
+  if (file) loadFileToSide(file, "modified");
+};
 
 // ==================== 冲突检测（git conflict markers） ====================
 const detectConflicts = (text: string): ConflictMarker[] => {
@@ -299,12 +511,12 @@ const computeDiffStats = () => {
       removed += c.originalEndLineNumber - c.originalStartLineNumber + 1;
     } else {
       changed += Math.max(
-        c.originalEndLineNumber - c.originalStartLineNumber + 1,
-        c.modifiedEndLineNumber - c.modifiedStartLineNumber + 1
+          c.originalEndLineNumber - c.originalStartLineNumber + 1,
+          c.modifiedEndLineNumber - c.modifiedStartLineNumber + 1
       );
     }
   });
-  diffStats.value = { added, removed, changed };
+  diffStats.value = {added, removed, changed};
 };
 
 // ==================== 编辑器初始化 ====================
@@ -322,7 +534,7 @@ const initEditor = () => {
     automaticLayout: true,
     scrollBeyondLastLine: false,
     fontSize: 14,
-    minimap: { enabled: false },
+    minimap: {enabled: false},
     renderOverviewRuler: true,
     diffAlgorithm: "advanced",
     enableSplitViewResizing: true,
@@ -331,7 +543,7 @@ const initEditor = () => {
     useInlineViewWhenSpaceIsLimited: true,
   });
 
-  editor.setModel({ original: originalModel, modified: modifiedModel });
+  editor.setModel({original: originalModel, modified: modifiedModel});
   editorInstance.value = editor;
 
   // 监听diff变化计算统计
@@ -391,7 +603,7 @@ const acceptCurrentConflict = () => {
       const editor = getModifiedEditor();
       if (!editor) return;
       const range = new monaco.Range(marker.startLine + 1, 1, marker.endLine + 1, 1);
-      editor.executeEdits("conflict-resolve", [{ range, text: marker.currentContent + "\n" }]);
+      editor.executeEdits("conflict-resolve", [{range, text: marker.currentContent + "\n"}]);
       return;
     }
   }
@@ -413,7 +625,7 @@ const acceptIncomingConflict = () => {
       const editor = getModifiedEditor();
       if (!editor) return;
       const range = new monaco.Range(marker.startLine + 1, 1, marker.endLine + 1, 1);
-      editor.executeEdits("conflict-resolve", [{ range, text: marker.incomingContent + "\n" }]);
+      editor.executeEdits("conflict-resolve", [{range, text: marker.incomingContent + "\n"}]);
       return;
     }
   }
@@ -424,28 +636,28 @@ const acceptIncomingConflict = () => {
   if (!editor) return;
 
   const originalText = getOriginalLines(
-    change.originalStartLineNumber,
-    change.originalEndLineNumber
+      change.originalStartLineNumber,
+      change.originalEndLineNumber
   );
 
   if (change.modifiedEndLineNumber === 0) {
     // 纯新增行（modified侧没有对应行），在modifiedStartLineNumber处插入original内容
     const range = new monaco.Range(change.modifiedStartLineNumber, 1, change.modifiedStartLineNumber, 1);
-    editor.executeEdits("diff-resolve", [{ range, text: originalText + "\n" }]);
+    editor.executeEdits("diff-resolve", [{range, text: originalText + "\n"}]);
   } else if (change.originalEndLineNumber === 0) {
     // 纯删除行（original侧没有对应行），删除modified侧的行
     const range = new monaco.Range(
-      change.modifiedStartLineNumber, 1,
-      change.modifiedEndLineNumber, editor.getModel()!.getLineMaxColumn(change.modifiedEndLineNumber)
+        change.modifiedStartLineNumber, 1,
+        change.modifiedEndLineNumber, editor.getModel()!.getLineMaxColumn(change.modifiedEndLineNumber)
     );
-    editor.executeEdits("diff-resolve", [{ range, text: "" }]);
+    editor.executeEdits("diff-resolve", [{range, text: ""}]);
   } else {
     // 修改行，用original替换modified
     const range = new monaco.Range(
-      change.modifiedStartLineNumber, 1,
-      change.modifiedEndLineNumber, editor.getModel()!.getLineMaxColumn(change.modifiedEndLineNumber)
+        change.modifiedStartLineNumber, 1,
+        change.modifiedEndLineNumber, editor.getModel()!.getLineMaxColumn(change.modifiedEndLineNumber)
     );
-    editor.executeEdits("diff-resolve", [{ range, text: originalText }]);
+    editor.executeEdits("diff-resolve", [{range, text: originalText}]);
   }
 };
 
@@ -458,7 +670,10 @@ const acceptBothConflict = () => {
       const editor = getModifiedEditor();
       if (!editor) return;
       const range = new monaco.Range(marker.startLine + 1, 1, marker.endLine + 1, 1);
-      editor.executeEdits("conflict-resolve", [{ range, text: marker.currentContent + "\n" + marker.incomingContent + "\n" }]);
+      editor.executeEdits("conflict-resolve", [{
+        range,
+        text: marker.currentContent + "\n" + marker.incomingContent + "\n"
+      }]);
       return;
     }
   }
@@ -469,28 +684,28 @@ const acceptBothConflict = () => {
   if (!editor) return;
 
   const originalText = getOriginalLines(
-    change.originalStartLineNumber,
-    change.originalEndLineNumber
+      change.originalStartLineNumber,
+      change.originalEndLineNumber
   );
   const modifiedText = getModifiedLines(
-    change.modifiedStartLineNumber,
-    change.modifiedEndLineNumber
+      change.modifiedStartLineNumber,
+      change.modifiedEndLineNumber
   );
 
   if (change.modifiedEndLineNumber === 0) {
     // 纯新增行，在modifiedStartLineNumber处追加original
     const range = new monaco.Range(change.modifiedStartLineNumber, 1, change.modifiedStartLineNumber, 1);
-    editor.executeEdits("diff-resolve", [{ range, text: originalText + "\n" }]);
+    editor.executeEdits("diff-resolve", [{range, text: originalText + "\n"}]);
   } else if (change.originalEndLineNumber === 0) {
     // 纯删除行，保持modified侧内容（即已删除的内容被恢复）
     // 不做操作，因为"合并"意味着两边都保留，但original侧没有内容
   } else {
     // 修改行，保留modified内容 + 追加original内容
     const range = new monaco.Range(
-      change.modifiedStartLineNumber, 1,
-      change.modifiedEndLineNumber, editor.getModel()!.getLineMaxColumn(change.modifiedEndLineNumber)
+        change.modifiedStartLineNumber, 1,
+        change.modifiedEndLineNumber, editor.getModel()!.getLineMaxColumn(change.modifiedEndLineNumber)
     );
-    editor.executeEdits("diff-resolve", [{ range, text: modifiedText + "\n" + originalText }]);
+    editor.executeEdits("diff-resolve", [{range, text: modifiedText + "\n" + originalText}]);
   }
 };
 
@@ -502,7 +717,7 @@ const acceptAllCurrent = () => {
     const markers = [...detectedConflicts.value].reverse();
     markers.forEach((marker) => {
       const range = new monaco.Range(marker.startLine + 1, 1, marker.endLine + 1, 1);
-      editor.executeEdits("conflict-resolve-all", [{ range, text: marker.currentContent + "\n" }]);
+      editor.executeEdits("conflict-resolve-all", [{range, text: marker.currentContent + "\n"}]);
     });
   }
   // diff changes: 全部保留修改侧 = 不做任何修改
@@ -516,7 +731,7 @@ const acceptAllIncoming = () => {
     const markers = [...detectedConflicts.value].reverse();
     markers.forEach((marker) => {
       const range = new monaco.Range(marker.startLine + 1, 1, marker.endLine + 1, 1);
-      editor.executeEdits("conflict-resolve-all", [{ range, text: marker.incomingContent + "\n" }]);
+      editor.executeEdits("conflict-resolve-all", [{range, text: marker.incomingContent + "\n"}]);
     });
   }
   // diff changes: 全部用原始侧替换修改侧 = 恢复原始内容
@@ -576,7 +791,7 @@ const handleClose = () => {
 watch(renderSideBySide, (val) => {
   const editor = editorInstance.value;
   if (!editor) return;
-  editor.updateOptions({ renderSideBySide: val });
+  editor.updateOptions({renderSideBySide: val});
 });
 
 watch(() => props.original, (val) => {
@@ -835,9 +1050,17 @@ $diff-conflict-border: #f14c4c;
     font-weight: 500;
     font-variant-numeric: tabular-nums;
 
-    .stat-add { color: $diff-success; }
-    .stat-del { color: $diff-danger; }
-    .stat-chg { color: $diff-warning; }
+    .stat-add {
+      color: $diff-success;
+    }
+
+    .stat-del {
+      color: $diff-danger;
+    }
+
+    .stat-chg {
+      color: $diff-warning;
+    }
   }
 }
 
@@ -845,17 +1068,25 @@ $diff-conflict-border: #f14c4c;
 .sh-diff-conflict-bar {
   display: flex;
   align-items: center;
-  padding: 6px 12px;
+  padding: 8px 12px;
   background: $diff-conflict-bg;
   border-bottom: 1px solid rgba(241, 76, 76, 0.2);
   gap: 12px;
   flex-shrink: 0;
 
   &__info {
+    display: flex;
+    align-items: center;
+    gap: 6px;
     font-size: 12px;
     color: $diff-conflict-border;
-    font-weight: 500;
+    font-weight: 600;
     white-space: nowrap;
+
+    .conflict-info-icon {
+      color: $diff-warning;
+      flex-shrink: 0;
+    }
   }
 
   &__actions {
@@ -873,8 +1104,11 @@ $diff-conflict-border: #f14c4c;
 }
 
 .conflict-btn {
-  padding: 3px 12px;
-  border-radius: 3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: 4px;
   font-size: 11px;
   font-weight: 500;
   cursor: pointer;
@@ -1043,5 +1277,55 @@ $diff-conflict-border: #f14c4c;
 .sh-diff-icon {
   opacity: 0.7;
   flex-shrink: 0;
+}
+
+/* ==================== 文件上传按钮 ==================== */
+.sh-diff-toolbar__btn--file {
+  font-size: 11px !important;
+  padding: 3px 10px !important;
+  border-radius: 3px !important;
+  background: rgba(0, 122, 204, 0.06) !important;
+  border-color: rgba(0, 122, 204, 0.2) !important;
+  color: $diff-accent !important;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &:hover {
+    background: rgba(0, 122, 204, 0.15) !important;
+    border-color: rgba(0, 122, 204, 0.4) !important;
+  }
+
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+/* ==================== 拖拽区域 ==================== */
+.sh-diff-footer__label {
+  &.drop-active {
+    border: 2px dashed $diff-accent !important;
+    background: rgba(0, 122, 204, 0.1) !important;
+    color: $diff-accent !important;
+  }
+
+  .drop-hint {
+    display: block;
+    font-size: 10px;
+    opacity: 0.5;
+    font-weight: 400;
+    margin-top: 2px;
+    font-style: italic;
+  }
+}
+
+.sh-diff-editor--dark {
+  .sh-diff-footer__label.drop-active {
+    background: rgba(0, 122, 204, 0.15) !important;
+  }
+}
+
+.sh-diff-footer__label.file-input-active {
+  cursor: pointer;
 }
 </style>

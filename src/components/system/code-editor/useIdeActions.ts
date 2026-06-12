@@ -50,19 +50,19 @@ export function useIdeActions(deps: IdeActionsDeps) {
     appendConsole("info", i18n("ide.console.compileStart", getActiveFileName()));
     try {
       const res = await postRequest(url, { sourceCode, language: getActiveLanguage(), fileName: getActiveFileName() });
-      if (res?.data?.success || res?.data?.code === 200) {
-        const result = res.data.data || res.data;
+      const respData = res?.data;
+      if (respData?.code === 0 && respData?.data) {
+        const result = respData.data;
         if (result.success) {
           appendConsole("success", i18n("ide.console.compileSuccess"));
           if (result.fullClassName) appendConsole("info", `  class: ${result.fullClassName}`);
           if (result.beanName) appendConsole("info", `  bean: ${result.beanName}`);
         } else {
-          appendConsole("error", i18n("ide.console.compileFail"));
-          if (result.errorMessage) appendConsole("error", result.errorMessage);
+          appendConsole("error", result.errorMessage || i18n("ide.console.compileFail"));
         }
       } else {
-        const msg = res?.data?.msg || res?.data?.message || i18n("ide.console.compileFail");
-        appendConsole("error", `${i18n("ide.console.compileFail")}: ${msg}`);
+        const msg = respData?.cnMessage || respData?.message || i18n("ide.console.compileFail");
+        appendConsole("error", msg);
       }
     } catch (e: any) {
       appendConsole("error", `${i18n("ide.console.compileFail")}: ${e.message || e}`);
@@ -71,7 +71,7 @@ export function useIdeActions(deps: IdeActionsDeps) {
     }
   };
 
-  /** 运行 */
+  /** 运行（编译并执行 main 方法） */
   const doRun = async () => {
     const url = resolvedApi.value.runUrl;
     if (!url) { warning(i18n("ide.console.noRunUrl")); return; }
@@ -82,20 +82,24 @@ export function useIdeActions(deps: IdeActionsDeps) {
     appendConsole("info", i18n("ide.console.runStart", getActiveFileName()));
     try {
       const res = await postRequest(url, { sourceCode, language: getActiveLanguage(), fileName: getActiveFileName(), codeId: activeTabId.value });
-      if (res?.data?.success || res?.data?.code === 200) {
-        const result = res.data.data || res.data;
+      const respData = res?.data;
+      if (respData?.code === 0 && respData?.data) {
+        const result = respData.data;
+        // 逐行输出捕获的 stdout
+        if (result.output) {
+          result.output.split("\n").forEach((line: string) => {
+            if (line.length > 0) appendConsole("info", `  ${line}`);
+          });
+        }
         if (result.success) {
-          appendConsole("success", i18n("ide.console.runSuccess"));
-          if (result.result !== undefined && result.result !== null) {
-            appendConsole("info", `  ${i18n("ide.console.result")}: ${JSON.stringify(result.result)}`);
-          }
+          const duration = result.durationMs != null ? ` (${result.durationMs}ms)` : "";
+          appendConsole("success", i18n("ide.console.runSuccess") + duration);
         } else {
-          appendConsole("error", i18n("ide.console.runFail"));
-          if (result.errorMessage) appendConsole("error", result.errorMessage);
+          appendConsole("error", result.errorMessage || i18n("ide.console.runFail"));
         }
       } else {
-        const msg = res?.data?.msg || res?.data?.message || i18n("ide.console.runFail");
-        appendConsole("error", `${i18n("ide.console.runFail")}: ${msg}`);
+        const msg = respData?.cnMessage || respData?.message || i18n("ide.console.runFail");
+        appendConsole("error", msg);
       }
     } catch (e: any) {
       appendConsole("error", `${i18n("ide.console.runFail")}: ${e.message || e}`);
