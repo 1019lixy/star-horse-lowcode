@@ -1,5 +1,5 @@
 <script setup lang="ts" name="StarHorseEditor">
-import { nextTick, onMounted, PropType, ref } from "vue";
+import { nextTick, onMounted, PropType, ref, computed } from "vue";
 import { basicSetup } from "codemirror";
 import { EditorView, keymap } from "@codemirror/view";
 import { Compartment } from "@codemirror/state";
@@ -36,6 +36,26 @@ import {
 import StarHorseSidebar from "@/components/system/StarHorseSidebar.vue";
 import { i18n } from "@/lang";
 
+/**
+ * ToolbarItem - 外部配置的工具栏按钮
+ * id:       唯一标识
+ * label:    显示文字
+ * icon:     图标class（传给 star-horse-icon）
+ * position: 'left' | 'right'，按钮显示在哪一侧
+ * type:     'button' 普通按钮 | 'dropdown' 下拉菜单
+ * handler:  type='button' 时的点击回调
+ * children: type='dropdown' 时的下拉选项 { label, handler }[]
+ */
+interface ToolbarItem {
+  id: string;
+  label?: string;
+  icon?: string;
+  position?: "left" | "right";
+  type?: "button" | "dropdown";
+  handler?: () => void;
+  children?: Array<{ label: string; handler: () => void }>;
+}
+
 const model = defineModel("value", { default: "" });
 const editorLang = ref<any>(javascript());
 const editorTheme = ref<any>(dracula);
@@ -47,7 +67,26 @@ const props = defineProps({
   boxHeight: { type: String, default: "95%" },
   btnList: { type: Object as PropType<Array<any>>, default: () => [] },
   helpMsg: { type: String },
+  /** 外部配置的工具栏按钮 */
+  toolbarItems: {
+    type: Array as PropType<ToolbarItem[]>,
+    default: () => [],
+  },
+  /** 是否显示工具栏 */
+  showToolbar: { type: Boolean, default: true },
 });
+
+// 分离用户配置的左右按钮
+const userLeftItems = computed(() =>
+  (props.toolbarItems || []).filter((i) => i.position !== "right")
+);
+const userRightItems = computed(() =>
+  (props.toolbarItems || []).filter((i) => i.position === "right")
+);
+
+// Editor settings state
+const fontSize = ref(17);
+const showMinimapEnabled = ref(true);
 const languageConf = new Compartment();
 const config = ref<any>({
   defaultSchema: "test",
@@ -98,6 +137,17 @@ const themes = ref<Array<any>>([
 ]);
 const editor = ref<EditorView>();
 const codemirror = ref();
+
+// 当前选中的语言/主题标签（工具栏显示用）
+const currentLangLabel = computed(() => {
+  const found = languages.value.find((l) => l.value === (props.lang || "javascript"));
+  return found?.name || "JavaScript";
+});
+const currentThemeLabel = computed(() => {
+  const found = themes.value.find((t) => t.value === props.theme);
+  return found?.name || "Dracula";
+});
+
 const customerTheme = (theme: string) => {
   let fdata = themes.value.find((item) => item.value == theme);
   editorTheme.value = fdata.obj;
@@ -105,78 +155,41 @@ const customerTheme = (theme: string) => {
     effects: themesConf.reconfigure(editorTheme.value),
   });
 };
+
+const changeFontSize = (size: number) => {
+  fontSize.value = size;
+  init();
+};
+
+const toggleMinimap = () => {
+  showMinimapEnabled.value = !showMinimapEnabled.value;
+  init();
+};
+
 const currentValFun = (_val: string) => {
   // console.log(val);
 };
-// 自定义自动完成函数
-/*const javaHint = (context: CompletionContext) => {
-  let word: any = context.matchBefore(/\w*!/);
-  if (word.from == word.to && !context.explicit) return null;
-  return {
-    from: word.from,
-    options: [...javaKeywords],
-  };
-};*/
+
 // 自定义自动完成函数
 const jsHint = (context: CompletionContext) => {
   let word: any = context.matchBefore(/\w*/);
-
   if (word.from == word.to && !context.explicit) return null;
   return {
     from: word.from,
     options: [
-      {
-        label: "currentField",
-        detail: i18n("item.currentProperty"),
-        apply: "currentField",
-      },
-      {
-        label: "formInstance",
-        detail: i18n("item.formInstance"),
-        apply: "formInstance",
-      },
-      {
-        label: "formData",
-        detail: i18n("item.formData"),
-        apply: "formData",
-      },
-      {
-        label: "formFields",
-        detail: i18n("item.formFields"),
-        apply: "formFields",
-      },
-      {
-        label: "userInfo",
-        detail: i18n("item.userInfo"),
-        apply: "userInfo",
-      },
-      {
-        label: "postRequest",
-        detail: "PostRequest",
-        apply: "postRequest(url,params)",
-      },
-      {
-        label: "getRequest",
-        detail: "GetRequest",
-        apply: "getRequest(url)",
-      },
-      {
-        label: "download",
-        detail: i18n("item.download"),
-        apply: "download(url)",
-      },
-      {
-        label: "upload",
-        detail: i18n("item.upload"),
-        apply: "upload(url,params)",
-      },
+      { label: "currentField", detail: i18n("item.currentProperty"), apply: "currentField" },
+      { label: "formInstance", detail: i18n("item.formInstance"), apply: "formInstance" },
+      { label: "formData", detail: i18n("item.formData"), apply: "formData" },
+      { label: "formFields", detail: i18n("item.formFields"), apply: "formFields" },
+      { label: "userInfo", detail: i18n("item.userInfo"), apply: "userInfo" },
+      { label: "postRequest", detail: "PostRequest", apply: "postRequest(url,params)" },
+      { label: "getRequest", detail: "GetRequest", apply: "getRequest(url)" },
+      { label: "download", detail: i18n("item.download"), apply: "download(url)" },
+      { label: "upload", detail: i18n("item.upload"), apply: "upload(url,params)" },
     ],
   };
 };
-/**
- * Get language information
- * @param lang
- */
+
 const langInfo = (lang: string) => {
   let fdata = languages.value.find((item) => item.value == lang);
   if (lang == "sql") {
@@ -189,18 +202,14 @@ const langInfo = (lang: string) => {
   };
   editor.value?.dispatch(disData);
 };
-// const javaCompletions = javaLanguage.data.of({
-//   autocomplete: javaHint,
-// });
+
 const windowCompletions = javascriptLanguage.data.of({
   autocomplete: scopeCompletionSource(window),
 });
 const jsCompletions = javascriptLanguage.data.of({
   autocomplete: jsHint,
 });
-/**
- * Initialize
- */
+
 const init = async () => {
   if (typeof editor.value !== "undefined") {
     if (editor.value instanceof EditorView) {
@@ -220,7 +229,6 @@ const init = async () => {
       extensions: [
         basicSetup,
         themesConf.of(editorTheme.value),
-        //javaCompletions
         ...[windowCompletions, jsCompletions],
         keymap.of([
           ...standardKeymap,
@@ -238,30 +246,34 @@ const init = async () => {
             currentValFun(model.value);
           }
         }),
-        showMinimap.compute(["doc"], (_state: any) => {
-          return {
-            create,
-            displayText: "blocks",
-            showOverlay: "always",
-            gutters: [{ 1: "#00FF00", 2: "#00FF00" }],
-          };
+        ...(showMinimapEnabled.value
+          ? [
+              showMinimap.compute(["doc"], (_state: any) => {
+                return {
+                  create,
+                  displayText: "blocks",
+                  showOverlay: "always",
+                  gutters: [{ 1: "#00FF00", 2: "#00FF00" }],
+                };
+              }),
+            ]
+          : []),
+        EditorView.theme({
+          "&": { fontSize: `${fontSize.value}px` },
         }),
       ],
       parent: codemirror.value,
     });
   });
 };
+
 onMounted(async () => {
   await nextTick(() => {
     langInfo(props.lang || "javascript");
     init();
   });
 });
-/**
- * Generate different query tips based on different databases
- * @param dbName
- * @param datas
- */
+
 const setAutoCompletion = (dbName: string, datas: any) => {
   config.value["tables"] = [];
   config.value["schema"] = {};
@@ -277,11 +289,13 @@ const setAutoCompletion = (dbName: string, datas: any) => {
   });
   langInfo("sql");
 };
+
 const setValue = (val: any) => {
   editor.value?.dispatch({
     changes: { from: 0, to: editor.value.state.doc.length, insert: val },
   });
 };
+
 defineExpose({
   editor,
   setValue,
@@ -289,137 +303,275 @@ defineExpose({
 });
 </script>
 <template>
-  <div class="flex flex-col h-full">
-    <div ref="codemirror" class="coder flex-1"></div>
-    <StarHorseSidebar>
-      <div class="flex flex-row items-center h-[40px] w-full">
-        <el-menu
-          mode="horizontal"
-          :ellipsis="false"
-          v-if="btnList?.length > 0"
-          style="height: 100%; flex: 1"
-        >
-          <template v-for="(item, index) in btnList">
-            <template v-if="item.children?.length > 0">
-              <el-sub-menu :index="'1_' + index">
-                <template #title>
-                  <el-tooltip
-                    class="item"
-                    :content="item.label"
-                    effect="dark"
-                    placement="bottom"
-                  >
-                    <star-horse-icon
-                      :icon-class="item.icon"
-                      size="24px"
-                      style="color: var(--star-horse-style)"
-                    />
-                  </el-tooltip>
-                </template>
-                <el-menu-item
-                  v-for="(sitem, sindex) in item.children"
-                  :disabled="sitem.disabled?.value === true"
-                  :index="'2_' + sindex"
-                  @click="sitem.actions"
+  <div class="star-horse-editor-container">
+    <!-- 工具栏 -->
+    <div class="editor-toolbar" v-if="showToolbar">
+      <!-- 左侧：用户自定义左按钮 -->
+      <div class="toolbar-left">
+        <template v-for="item in userLeftItems" :key="item.id">
+          <!-- dropdown 类型 -->
+          <el-dropdown trigger="click" v-if="item.type === 'dropdown'">
+            <span class="toolbar-btn">
+              <star-horse-icon v-if="item.icon" :icon-class="item.icon" size="15px" />
+              <span v-if="item.label">{{ item.label }}</span>
+              <el-icon><arrow-down /></el-icon>
+            </span>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item
+                  v-for="(child, ci) in item.children"
+                  :key="ci"
+                  @click="child.handler"
                 >
-                  <star-horse-icon
-                    :icon-class="sitem.icon"
-                    size="24px"
-                    style="color: var(--star-horse-style)"
-                  />
-                  {{ sitem.label }}
-                </el-menu-item>
-              </el-sub-menu>
+                  {{ child.label }}
+                </el-dropdown-item>
+              </el-dropdown-menu>
             </template>
-            <el-menu-item
-              v-else
-              :disabled="item.disabled?.value === true"
-              :index="'1_' + index"
-              @click="item.actions"
-            >
-              <el-tooltip
-                class="item"
-                :content="item.label"
-                effect="dark"
-                placement="bottom"
+          </el-dropdown>
+          <!-- button 类型 -->
+          <el-tooltip v-else :content="item.label || ''" placement="bottom">
+            <span class="toolbar-btn" @click="item.handler">
+              <star-horse-icon v-if="item.icon" :icon-class="item.icon" size="15px" />
+              <span v-if="item.label && !item.icon">{{ item.label }}</span>
+            </span>
+          </el-tooltip>
+        </template>
+      </div>
+
+      <!-- 右侧：默认配置 + 用户自定义右按钮 -->
+      <div class="toolbar-right">
+        <!-- 用户自定义右按钮 -->
+        <template v-for="item in userRightItems" :key="item.id">
+          <el-dropdown trigger="click" v-if="item.type === 'dropdown'">
+            <span class="toolbar-btn">
+              <star-horse-icon v-if="item.icon" :icon-class="item.icon" size="15px" />
+              <span v-if="item.label">{{ item.label }}</span>
+              <el-icon><arrow-down /></el-icon>
+            </span>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item
+                  v-for="(child, ci) in item.children"
+                  :key="ci"
+                  @click="child.handler"
+                >
+                  {{ child.label }}
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+          <el-tooltip v-else :content="item.label || ''" placement="bottom">
+            <span class="toolbar-btn" @click="item.handler">
+              <star-horse-icon v-if="item.icon" :icon-class="item.icon" size="15px" />
+              <span v-if="item.label && !item.icon">{{ item.label }}</span>
+            </span>
+          </el-tooltip>
+        </template>
+
+        <span class="toolbar-divider"></span>
+
+        <!-- 语言选择（默认项） -->
+        <el-dropdown trigger="click" v-if="!lang">
+          <span class="toolbar-btn">
+            {{ currentLangLabel }}
+            <el-icon><arrow-down /></el-icon>
+          </span>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item
+                @click="langInfo(item.value)"
+                v-for="item in languages"
+                :key="item.value"
               >
-                <star-horse-icon
-                  :icon-class="item.icon"
-                  size="24px"
-                  style="color: var(--star-horse-style)"
-                />
-              </el-tooltip>
-            </el-menu-item>
+                {{ item.name }}
+              </el-dropdown-item>
+            </el-dropdown-menu>
           </template>
-        </el-menu>
-        <div class="w-[20%] h-full items-center">
-          <el-dropdown>
-            <span class="el-dropdown-link">
-              {{ i18n("item.theme") }}
-              <el-icon class="el-icon--right">
-                <arrow-down />
-              </el-icon>
-            </span>
-            <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item
-                  @click="customerTheme(item.value)"
-                  v-for="item in themes"
-                >
-                  <star-horse-icon
-                    :icon-class="item.icon"
-                    color="gray"
-                    size="14px"
-                  />
-                  {{ item.name }}
-                </el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
-          &nbsp;&nbsp;
-        </div>
-        <div class="w-[20%] h-full items-center">
-          <el-dropdown v-if="!lang">
-            <span class="el-dropdown-link">
-              {{ i18n("item.language") }}
-              <el-icon class="el-icon--right">
-                <arrow-down />
-              </el-icon>
-            </span>
-            <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item
-                  @click="langInfo(item.value)"
-                  v-for="item in languages"
-                >
-                  <star-horse-icon
-                    :icon-class="item.icon"
-                    color="gray"
-                    size="14px"
-                  />
-                  {{ item.name }}
-                </el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
-        </div>
+        </el-dropdown>
+
+        <!-- 主题选择（默认项） -->
+        <el-dropdown trigger="click">
+          <span class="toolbar-btn">
+            {{ currentThemeLabel }}
+            <el-icon><arrow-down /></el-icon>
+          </span>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item
+                @click="customerTheme(item.value)"
+                v-for="item in themes"
+                :key="item.value"
+              >
+                {{ item.name }}
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+
+        <!-- 字号选择（默认项） -->
+        <el-dropdown trigger="click">
+          <span class="toolbar-btn">
+            {{ fontSize }}px
+            <el-icon><arrow-down /></el-icon>
+          </span>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item @click="changeFontSize(12)">12px</el-dropdown-item>
+              <el-dropdown-item @click="changeFontSize(14)">14px</el-dropdown-item>
+              <el-dropdown-item @click="changeFontSize(16)">16px</el-dropdown-item>
+              <el-dropdown-item @click="changeFontSize(17)">17px</el-dropdown-item>
+              <el-dropdown-item @click="changeFontSize(18)">18px</el-dropdown-item>
+              <el-dropdown-item @click="changeFontSize(20)">20px</el-dropdown-item>
+              <el-dropdown-item @click="changeFontSize(24)">24px</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+
+        <!-- Minimap 开关（默认项） -->
+        <el-tooltip :content="showMinimapEnabled ? 'Hide Minimap' : 'Show Minimap'" placement="bottom">
+          <span class="toolbar-btn" @click="toggleMinimap">
+            <star-horse-icon :icon-class="showMinimapEnabled ? 'eye-open' : 'eye-close'" size="15px" />
+          </span>
+        </el-tooltip>
+
+        <!-- 帮助 -->
         <help :message="helpMsg" v-if="helpMsg" />
       </div>
-    </StarHorseSidebar>
+    </div>
+
+    <!-- 编辑器区域 -->
+    <div ref="codemirror" class="editor-area"></div>
   </div>
 </template>
 <style lang="scss" scoped>
-.inner_button {
-  margin-bottom: 10px;
+.star-horse-editor-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  position: relative;
 }
 
-.coder {
-  font-size: 17px;
+// 工具栏
+.editor-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 8px;
+  background-color: #fafafa;
+  border-bottom: 1px solid #e8e8e8;
+  min-height: 34px;
+  flex-shrink: 0;
+
+  .toolbar-left,
+  .toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .toolbar-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 4px 8px;
+    font-size: 12px;
+    color: #666;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: all 0.15s;
+    white-space: nowrap;
+    user-select: none;
+
+    &:hover {
+      background-color: #e8e8e8;
+      color: #333;
+    }
+
+    :deep(.el-icon) {
+      font-size: 11px;
+      margin-left: 1px;
+    }
+  }
+
+  .toolbar-divider {
+    display: inline-block;
+    width: 1px;
+    height: 16px;
+    background-color: #dcdcdc;
+    margin: 0 4px;
+  }
+}
+
+// 编辑器区域
+.editor-area {
+  flex: 1;
   width: 100%;
-  height: v-bind(boxHeight);
+  overflow: hidden;
 
   :deep(.cm-editor) {
     height: 100%;
+    line-height: 1.6;
+
+    .cm-content {
+      padding: 8px 0;
+      caret-color: #4a9eff;
+    }
+
+    .cm-activeLine {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .cm-selectionBackground {
+      background-color: rgba(74, 158, 255, 0.3) !important;
+    }
+
+    .cm-matchingBracket {
+      background-color: rgba(74, 158, 255, 0.3);
+      border: 1px solid rgba(74, 158, 255, 0.6);
+    }
+
+    &::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: rgba(128, 128, 128, 0.4);
+      border-radius: 5px;
+
+      &:hover {
+        background: rgba(128, 128, 128, 0.6);
+      }
+    }
   }
+
+  :deep(.cm-minimap) {
+    opacity: 0.8;
+    transition: opacity 0.2s;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+// 侧边栏菜单
+.sidebar-menu {
+  border-right: none;
+
+  .el-menu-item {
+    height: 36px;
+    line-height: 36px;
+    font-size: 13px;
+  }
+}
+
+.sidebar-btn-list {
+  padding: 12px 0;
 }
 </style>

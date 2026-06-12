@@ -12,6 +12,7 @@ import FormValid from "@/sample/FormValid.vue";
 import NormalFormValid from "@/sample/NormalFormValid.vue";
 import CodeEditorTest from "@/sample/CodeEditorTest.vue";
 import CodeDiffEditorTest from "@/sample/CodeDiffEditorTest.vue";
+import EditorTest from "@/sample/EditorTest.vue";
 
 const visible = ref<boolean>(false);
 const actName = ref<string>("component");
@@ -48,11 +49,14 @@ onMounted(() => {
           </el-tab-pane>
         </el-tabs>-->
     <el-tabs v-model="actName" class="h-full">
-      <el-tab-pane name="component" label="解析">
+      <el-tab-pane name="component" label="IDE">
         <CodeEditorTest/>
       </el-tab-pane>
-      <el-tab-pane name="2" label="实例">
+      <el-tab-pane name="2" label="对比">
         <CodeDiffEditorTest/>
+      </el-tab-pane>
+      <el-tab-pane name="3" label="编辑器">
+        <EditorTest/>
       </el-tab-pane>
     </el-tabs>
     <!--    <el-tabs v-model="actName" class="h-full">
