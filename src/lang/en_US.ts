@@ -1021,6 +1021,13 @@ export default {
     "ide.save.success": "Saved successfully",
     "ide.save.failed": "Save failed",
     "ide.save.requestError": "Create module request error",
+    "ide.save.conflictDetected": (fileCount: number, commitCount: number) => `Detected ${fileCount} conflicting file(s) (${commitCount} commit(s) by others). Please resolve conflicts before submitting`,
+    "ide.save.conflictResolvedSuccess": "Conflicts resolved, code submitted successfully",
+    "ide.save.forceCommit": "Force Commit",
+    "ide.save.forceCommitConfirm": "Are you sure to force commit? This will overwrite the server version",
+    "ide.save.nextConflictFile": "Next Conflict File",
+    "ide.save.prevConflictFile": "Previous Conflict File",
+    "ide.save.conflictProgress": (current: number, total: number) => `Conflict File ${current}/${total}`,
 
     // Diff Editor
     "diff.title": "File Comparison",
@@ -1049,6 +1056,18 @@ export default {
     "diff.save": "Save",
     "diff.cancel": "Cancel",
     "diff.close": "Close",
+    "diff.prevConflict": "Previous Conflict",
+    "diff.nextConflict": "Next Conflict",
+    // File upload / drag-to-compare
+    "diff.uploadOriginal": "Upload Original File",
+    "diff.uploadModified": "Upload Modified File",
+    "diff.dragFileHint": "Drag a file here or click to upload",
+    "diff.fileLoaded": (name: string) => `File loaded: ${name}`,
+    // Pull-before-push flow
+    "ide.save.fetchingLatest": "Fetching latest version from server...",
+    "ide.save.noChanges": "No changes detected, nothing to commit",
+    "ide.save.diffFileProgress": (current: number, total: number) => `File ${current}/${total}`,
+    "ide.save.allFilesReviewed": "All files reviewed, submitting...",
     "ide.menu.view.diffEditor": "Compare Files",
     "ide.menu.file.resolveConflict": "Resolve Conflict",
     "ide.diff.noConflict": "No conflicts in current file",

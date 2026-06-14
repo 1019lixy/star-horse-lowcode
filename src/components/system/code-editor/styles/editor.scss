@@ -406,6 +406,7 @@
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.15s;
+
   &:hover {
     background: color-mix(in srgb, var(--ide-accent, #007acc) 15%, transparent);
     border-color: color-mix(in srgb, var(--ide-accent, #007acc) 40%, transparent);
@@ -492,17 +493,21 @@
   border-radius: 3px;
   line-height: 1.4;
 }
+
 .breadcrumb-btn:hover:not(:disabled) {
   background: var(--ide-hover, #2a2d2e);
 }
+
 .breadcrumb-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
+
 .compile-btn {
   color: var(--ide-accent, #007acc);
   border-color: var(--ide-accent, #007acc);
 }
+
 .run-btn {
   color: #89d185;
   border-color: #89d185;
@@ -568,6 +573,7 @@
   flex-direction: column;
   gap: 6px;
   margin-top: 8px;
+  text-align: left;
 }
 
 .welcome-shortcuts kbd {

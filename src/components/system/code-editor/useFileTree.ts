@@ -292,6 +292,52 @@ export function useFileTree(initialFiles?: FileNode[]) {
     return true;
   };
 
+  /**
+   * 根据文件路径查找节点（路径格式：folder1/folder2/file.txt）
+   */
+  const findNodeByPath = (path: string, nodes: FileNode[] = tree.value): FileNode | null => {
+    if (!path) return null;
+    const parts = path.split("/").filter(Boolean);
+    let currentNodes = nodes;
+
+    for (let i = 0; i < parts.length; i++) {
+      const part = parts[i];
+      const found = currentNodes.find(n => n.name === part);
+      if (!found) return null;
+
+      // 如果是最后一个部分，返回该节点
+      if (i === parts.length - 1) return found;
+
+      // 否则继续往下找
+      if (found.type !== "folder" || !found.children) return null;
+      currentNodes = found.children;
+    }
+    return null;
+  };
+
+  // ========== 递归收集所有文件（路径 + 内容） ==========
+
+  const collectAllFiles = (
+    nodes: FileNode[] = tree.value,
+    prefix: string = "",
+  ): { path: string; content: string; language: string; id: string }[] => {
+    const result: { path: string; content: string; language: string; id: string }[] = [];
+    for (const node of nodes) {
+      const currentPath = prefix ? `${prefix}/${node.name}` : node.name;
+      if (node.type === "file") {
+        result.push({
+          path: currentPath,
+          content: node.content || "",
+          language: node.language || "plaintext",
+          id: node.idCodeFile,
+        });
+      } else if (node.children) {
+        result.push(...collectAllFiles(node.children, currentPath));
+      }
+    }
+    return result;
+  };
+
   return {
     tree,
     findNode,
@@ -316,5 +362,7 @@ export function useFileTree(initialFiles?: FileNode[]) {
     getParentPath,
     hasSameNameElsewhere,
     generateUniqueNameIn,
+    findNodeByPath,
+    collectAllFiles,
   };
 }

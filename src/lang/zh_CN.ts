@@ -1019,6 +1019,13 @@ export default {
   "ide.save.success": "保存成功",
   "ide.save.failed": "保存失败",
   "ide.save.requestError": "创建模块请求异常",
+  "ide.save.conflictDetected": (fileCount: number, commitCount: number) => `检测到 ${fileCount} 个文件存在冲突（其他人已提交 ${commitCount} 次），请解决冲突后重新提交`,
+  "ide.save.conflictResolvedSuccess": "冲突已解决，代码提交成功",
+  "ide.save.forceCommit": "强制提交",
+  "ide.save.forceCommitConfirm": "确定强制提交？这将覆盖服务器上的版本",
+  "ide.save.nextConflictFile": "下一个冲突文件",
+  "ide.save.prevConflictFile": "上一个冲突文件",
+  "ide.save.conflictProgress": (current: number, total: number) => `冲突文件 ${current}/${total}`,
   // 格式化
   "ide.menu.edit.formatDocument": "格式化文档",
   // 控制台
@@ -1066,6 +1073,18 @@ export default {
   "diff.save": "保存",
   "diff.cancel": "取消",
   "diff.close": "关闭",
+  "diff.prevConflict": "上一个冲突",
+  "diff.nextConflict": "下一个冲突",
+  // 文件上传/拖拽对比
+  "diff.uploadOriginal": "上传原始文件",
+  "diff.uploadModified": "上传修改文件",
+  "diff.dragFileHint": "拖拽文件到此处或点击上传",
+  "diff.fileLoaded": (name: string) => `已加载文件: ${name}`,
+  // 先拉取再提交流程
+  "ide.save.fetchingLatest": "正在从服务器拉取最新版本...",
+  "ide.save.noChanges": "未检测到变更，无需提交",
+  "ide.save.diffFileProgress": (current: number, total: number) => `文件 ${current}/${total}`,
+  "ide.save.allFilesReviewed": "所有文件已审阅，正在提交...",
   "ide.menu.view.diffEditor": "文件对比",
   "ide.menu.file.resolveConflict": "解决冲突",
   "ide.diff.noConflict": "当前文件无冲突",
