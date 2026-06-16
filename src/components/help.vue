@@ -21,9 +21,17 @@ defineProps({
         style="cursor: pointer"
       />
     </template>
-    <div style="font-size: 12px">
+    <div class="help-content">
       <pre>{{ message }}</pre>
     </div>
   </el-popover>
 </template>
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.help-content {
+  font-size: 12px;
+  max-height: 80vh;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+</style>

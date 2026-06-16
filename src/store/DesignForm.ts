@@ -90,6 +90,7 @@ export const useDesignFormStore = defineStore("designForm", () => {
             parentCompType.value = "";
             currentCompCategory.value = "";
             compList.value = [];
+            isCompListUpdated.value = true;
         } else {
             const data = JSON5.parse(record.datas[record.index]);
             setCompList(data.complist);
@@ -223,6 +224,7 @@ export const useDesignFormStore = defineStore("designForm", () => {
         } else {
             compList.value.push(comp);
         }
+        isCompListUpdated.value = true;
     };
     const setFormData = (data: any) => {
         formData.value = data;
@@ -351,6 +353,7 @@ export const useDesignFormStore = defineStore("designForm", () => {
             tbName: "tb" + ms,
         };
         compList.value = [];
+        isCompListUpdated.value = true;
         formData.value = {index: 1};
         historyRecord.value = {
             index: -1,
