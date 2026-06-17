@@ -870,6 +870,7 @@ export function apiInstance(
         importUrl: `${prefix}/importData`,
         uploadUrl: `${normalizedAppName}/annex/upload/common`,
         modifyColumnsUrl: `${prefix}/modifyColumns`,
+        exportSingleDataUrl: `${prefix}/exportSingleData`,
         condition: condition,
     };
     apiUrls.pageAction = (params: SearchInfo) => {
@@ -929,6 +930,9 @@ export function apiInstance(
     };
     apiUrls.modifyColumnsAction = (param: any) => {
         return postRequest(apiUrls.modifyColumnsUrl!, param);
+    };
+    apiUrls.exportSingleDataAction = async (param: any) => {
+        return await download(apiUrls.exportSingleDataUrl!, param);
     };
     return apiUrls;
 }

@@ -591,4 +591,9 @@ barcode        条形码组件
 -增加代码编辑器StarHorseCodeEditor,对比组件StarHorseDiffEditor 
 -修复StarHorseDialog 在app端的bug
 ```
+#### v3.1.5
+
+```
+-解决类型丢失问题
+```
 

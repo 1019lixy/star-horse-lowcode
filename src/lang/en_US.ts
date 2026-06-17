@@ -161,6 +161,8 @@ export default {
     "common.edit": "Edit",
     "common.view": "View",
     "common.delete": "Delete",
+    "common.exportPdf": "Export Pdf",
+    "common.exportForm": "Export Form",
     "common.sessionExpired": "Session expired",
     "common.noPagePermission": "No page button permission, please contact the system administrator",
     "common.fieldNameExists": "The new field name already exists and cannot be modified",

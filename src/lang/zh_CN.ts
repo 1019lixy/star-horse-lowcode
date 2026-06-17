@@ -166,6 +166,8 @@ export default {
   "common.edit": "编辑",
   "common.view": "查看",
   "common.delete": "删除",
+  "common.exportPdf": "导出Pdf",
+  "common.exportForm": "导出表单",
   "common.sessionExpired": "Session 失效",
   "common.noPagePermission": "没有页面按钮操作权限,请联系系统管理员授权",
   "common.fieldNameExists": "新的属性名已存在，不能进行修改",

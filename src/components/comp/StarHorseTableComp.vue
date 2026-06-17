@@ -398,6 +398,8 @@ const tbCommonFun = (name: string | undefined, row: any) => {
     editById(props.preview ? row : id);
   } else if (["delete", "batchDelete"].includes(name)) {
     deleteById(id);
+  } else if (["exportForm", "exportPdf"].includes(name)) {
+    exportSingleFile(id, name);
   } else {
     console.log(i18n("comp.undefinedFunction"), name);
   }
@@ -484,6 +486,20 @@ const deleteById = async (id: any, isExpand: boolean = false) => {
     searchFlag.value = true;
     loadByPage();
   }
+};
+/**
+ * 导出单条数据
+ * @param id
+ * @param type pdf,form
+ */
+const exportSingleFile = async (id: any, type: string) => {
+  if (overrideOperation(type, id)) {
+    return;
+  }
+  let action = props.compUrl?.exportSingleDataAction;
+  action && action({
+    id, type
+  });
 };
 const pageSizeClick = (pageSize: number) => {
   pageInfo.value.pageSize = pageSize;
@@ -709,11 +725,31 @@ const extendBtnFunction = (): Array<UserFuncInfo> => {
         funcName: (row: any) => tbCommonFun("delete", row),
       });
     }
+    let exportForm = arr.filter((item) => item.authority == "export-form")?.length;
+    if (!exportForm) {
+      arr.push({
+        authority: "export-form",
+        btnName: i18n("common.exportForm"),
+        priority: 40,
+        icon: "form",
+        funcName: (row: any) => tbCommonFun("export-form", row),
+      });
+    }
+    let exportPdf = arr.filter((item) => item.authority == "export-pdf")?.length;
+    if (!exportPdf) {
+      arr.push({
+        authority: "export-pdf",
+        btnName: i18n("common.exportPdf"),
+        priority: 50,
+        icon: "pdf",
+        funcName: (row: any) => tbCommonFun("export-pdf", row),
+      });
+    }
 
   }
   arr.sort(
       (a: UserFuncInfo, b: UserFuncInfo) =>
-          (a.priority || 40) - (b.priority || 40),
+          (a.priority || 60) - (b.priority || 60),
   );
   return arr;
 };

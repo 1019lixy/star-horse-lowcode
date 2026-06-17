@@ -89,6 +89,10 @@ export type ApiUrls = {
      */
     redirectPageListUrl?: string;
     /**
+     * 导出单条数据接口
+     */
+    exportSingleDataUrl?: string;
+    /**
      * 应用名称或者接口前缀路径
      */
     appName?: string;
@@ -181,4 +185,9 @@ export type ApiUrls = {
      * }
      */
     modifyColumnsAction?: Function;
+    /**
+     * 导出单条数据
+     * 接收参数为：{id:string,type:string}
+     */
+    exportSingleDataAction?: Function;
 };
