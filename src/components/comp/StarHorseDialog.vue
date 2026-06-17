@@ -13,6 +13,7 @@ const emits = defineEmits([
   "resetForm",
   "open",
   "closeAction",
+  "minimize",
 ]);
 const props = defineProps({
   dialogVisible: {type: Boolean, default: false},
@@ -26,6 +27,7 @@ const props = defineProps({
   isBatch: {type: Boolean, default: false},
   fullScreen: {type: Boolean, default: false},
   hideFullScreenIcon: {type: Boolean, default: false},
+  hideMinimizeIcon: {type: Boolean, default: false},
   //自定义提交
   selfFunc: {type: Boolean, default: false},
   //自定义关闭
@@ -43,13 +45,26 @@ watch(
     () => props.dialogVisible,
     (val: boolean) => {
       windowsType.value = val;
+      if (val) {
+        // 打开时重置最小化状态
+        isMinimized.value = false;
+        // 手机模式默认最大化
+        if (isMobile) {
+          isFullScreen.value = true;
+        }
+      }
     },
     {
       immediate: true,
       deep: true,
     },
 );
-let isFullScreen =ref<boolean>(false);
+let isFullScreen = ref<boolean>(false);
+// 最小化状态
+let isMinimized = ref<boolean>(false);
+// 记住最小化前是否全屏
+let wasFullScreenBeforeMinimize = ref<boolean>(false);
+
 const dialogStyle = computed(() => {
   return {
     height: isFullScreen.value ? "100%" : props.boxHeight,
@@ -59,6 +74,7 @@ const dialogStyle = computed(() => {
 const beforeClose = () => {
   emits("closeAction");
   windowsType.value = false;
+  isMinimized.value = false;
   if (props.selfClose) {
     return;
   }
@@ -95,11 +111,25 @@ const open = () => {
   emits("open");
 };
 onMounted(() => {
+  // 手机模式默认最大化
+  if (isMobile && windowsType.value) {
+    isFullScreen.value = true;
+  }
 });
 provide("closeDialog", beforeClose);
 const fullScreen = () => {
   if (props.hideFullScreenIcon) return;
   isFullScreen.value = !isFullScreen.value;
+};
+const minimize = () => {
+  if (props.hideMinimizeIcon) return;
+  wasFullScreenBeforeMinimize.value = isFullScreen.value;
+  isMinimized.value = true;
+  emits("minimize");
+};
+const restoreFromMinimize = () => {
+  isMinimized.value = false;
+  isFullScreen.value = wasFullScreenBeforeMinimize.value;
 };
 const clickFunction = reactive<Record<any, any>>({});
 provide("dialogOperation", clickFunction);
@@ -115,7 +145,26 @@ const operation = (funcName: any, type: string) => {
 </script>
 <template>
   <Teleport to="body">
-    <div class="di animated animate__fadeIn">
+    <!-- 最小化后的折叠图标 -->
+    <div
+      v-if="isMinimized && windowsType"
+      class="dialog-minimized-bar"
+      @click="restoreFromMinimize"
+      :title="i18n('dialog.restore')"
+    >
+      <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" class="minimized-icon">
+        <path d="M3 3h10v10H3V3zm1 1v8h8V4H4z"/>
+        <path d="M6 6h4v4H6V6z" opacity="0.5"/>
+      </svg>
+      <span class="minimized-title">{{
+        title ||
+        (source == 3
+          ? i18n("dialog.viewTitle")
+          : i18n("dialog.editTitle"))
+      }}</span>
+    </div>
+
+    <div class="di animated animate__fadeIn" v-show="!isMinimized">
       <el-dialog
           :append-to-body="false"
           :center="false"
@@ -126,7 +175,7 @@ const operation = (funcName: any, type: string) => {
           class="dialog-settings"
           :fullscreen="isFullScreen||isMobile"
           :show-close="false"
-          :draggable="draggable"
+          :draggable="draggable && !isFullScreen && !isMobile"
           :align-center="true"
           v-model="windowsType"
           @close="beforeClose"
@@ -144,41 +193,58 @@ const operation = (funcName: any, type: string) => {
             }}
           </h3>
           <div class="my-header">
-            <template v-if="!hideFullScreenIcon&&!isMobile">
+            <template v-if="!isMobile">
               <el-button
                   style="
                   background: var(--star-horse-style);
                   color: var(--star-horse-white);
                 "
                   :size="compSize"
-                  @click="fullScreen"
+                  @click="minimize"
                   link
-                  v-if="!!isFullScreen && draggable"
-                  :title="i18n('dialog.resize')"
+                  v-if="!hideMinimizeIcon"
+                  :title="i18n('dialog.minimize')"
               >
-                <star-horse-icon
-                    icon-class="fullscreen-shrink"
-                    color="var(--star-horse-white)"
-                    cursor="pointer"
-                />
+                <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" style="cursor: pointer;">
+                  <path d="M2 8h12" stroke="currentColor" stroke-width="2" fill="none"/>
+                </svg>
               </el-button>
-              <el-button
-                  style="
+              <template v-if="!hideFullScreenIcon">
+                <el-button
+                    style="
                   background: var(--star-horse-style);
                   color: var(--star-horse-white);
                 "
-                  :size="compSize"
-                  @click="fullScreen"
-                  link
-                  v-if="!isFullScreen && draggable"
-                  :title="i18n('dialog.fullScreen')"
-              >
-                <star-horse-icon
-                    icon-class="fullscreen-expand"
-                    color="var(--star-horse-white)"
-                    cursor="pointer"
-                />
-              </el-button>
+                    :size="compSize"
+                    @click="fullScreen"
+                    link
+                    v-if="!!isFullScreen && draggable"
+                    :title="i18n('dialog.resize')"
+                >
+                  <star-horse-icon
+                      icon-class="fullscreen-shrink"
+                      color="var(--star-horse-white)"
+                      cursor="pointer"
+                  />
+                </el-button>
+                <el-button
+                    style="
+                  background: var(--star-horse-style);
+                  color: var(--star-horse-white);
+                "
+                    :size="compSize"
+                    @click="fullScreen"
+                    link
+                    v-if="!isFullScreen && draggable"
+                    :title="i18n('dialog.fullScreen')"
+                >
+                  <star-horse-icon
+                      icon-class="fullscreen-expand"
+                      color="var(--star-horse-white)"
+                      cursor="pointer"
+                  />
+                </el-button>
+              </template>
             </template>
             <el-button
                 style="
@@ -311,6 +377,43 @@ const operation = (funcName: any, type: string) => {
 <style lang="scss" scoped>
 :deep(.el-dialog__footer) {
   text-align: center;
+}
+
+// 最小化折叠栏
+.dialog-minimized-bar {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--star-horse-style);
+  color: var(--star-horse-white);
+  border-radius: 8px 8px 0 0;
+  cursor: pointer;
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.25);
+  transition: all 0.2s ease;
+  max-width: 260px;
+  overflow: hidden;
+
+  &:hover {
+    box-shadow: 0 -2px 18px rgba(0, 0, 0, 0.4);
+    transform: translateY(-2px);
+  }
+
+  .minimized-icon {
+    flex-shrink: 0;
+  }
+
+  .minimized-title {
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 .di {

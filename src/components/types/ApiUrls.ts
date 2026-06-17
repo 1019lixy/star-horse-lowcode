@@ -81,6 +81,14 @@ export type ApiUrls = {
      */
     permissionsUrl?: string;
     /**
+     * 重定向执行接口
+     */
+    redirectExecutionUrl?: string;
+    /**
+     * 重定向分页接口
+     */
+    redirectPageListUrl?: string;
+    /**
      * 应用名称或者接口前缀路径
      */
     appName?: string;

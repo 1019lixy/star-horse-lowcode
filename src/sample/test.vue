@@ -56,7 +56,8 @@ onMounted(() => {
         <CodeDiffEditorTest/>
       </el-tab-pane>
       <el-tab-pane name="3" label="编辑器">
-        <EditorTest/>
+<!--        <EditorTest/>-->
+        <NormalFormValid/>
       </el-tab-pane>
     </el-tabs>
     <!--    <el-tabs v-model="actName" class="h-full">
