@@ -26,3 +26,4 @@ dist-ssr
 components.d.ts
 /plugin-dist/
 .scannerwork/*
+yarn.lock
