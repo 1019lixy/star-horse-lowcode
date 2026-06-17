@@ -1,0 +1,35 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "declaration": true,
+    "declarationDir": "dist/types",
+    "emitDeclarationOnly": true,
+    "noEmitOnError": false,
+    "skipLibCheck": true
+  },
+  "include": [
+    "src/api/**/*",
+    "src/assets/**/*",
+    "src/components/**/*",
+    "src/lang/**/*",
+    "src/plugins/**/*",
+    "src/store/**/*",
+    "src/theme/**/*",
+    "src/utils/**/*",
+    "src/index.ts",
+    "types/**/*.ts",
+    "node_modules/unplugin-auto-import/auto-imports.d.ts"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "src/sample/**/*",
+    "src/views/**/*",
+    "src/router/**/*",
+    "src/App.vue",
+    "src/main.ts"
+  ]
+}

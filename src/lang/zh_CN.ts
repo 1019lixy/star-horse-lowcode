@@ -44,6 +44,8 @@ export default {
   "dialog.reset": "重置",
   "dialog.fullScreen": "最大化",
   "dialog.resize": "还原",
+  "dialog.minimize": "最小化",
+  "dialog.restore": "还原窗口",
   "dialog.close": "关闭",
   "dialog.editTitle": "编辑",
   "dialog.viewTitle": "查看",

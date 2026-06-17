@@ -41,6 +41,8 @@ export default {
     "dialog.reset": "Reset",
     "dialog.fullScreen": "FullScreen",
     "dialog.resize": "Restore",
+    "dialog.minimize": "Minimize",
+    "dialog.restore": "Restore Window",
     "dialog.close": "Close",
     "dialog.editTitle": "Edit",
     "dialog.viewTitle": "View",

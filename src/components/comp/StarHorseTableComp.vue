@@ -553,7 +553,7 @@ const loadByPage = (initPageInfo?: boolean) => {
       dataType: props.compUrl?.dataType || "JSON",
       searchInfo: params,
     };
-    url = "/system-config/redirect/pageList";
+    url = props.compUrl?.redirectPageListUrl ?? "/system-config/redirect/pageList";
   }
   if (props.needLoad) {
     load(i18n("comp.dataLoading"));
