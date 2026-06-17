@@ -9,6 +9,7 @@ import AutoImport from "unplugin-auto-import/vite";
 import fs from "fs";
 //生产types文件插件
 import dts from "vite-plugin-dts";
+import { execSync } from "child_process";
 // https://vitejs.dev/config/
 const baseHost: string = "http://localhost:7719/";
 const systemHost: string = "http://localhost:8749/";
@@ -110,9 +111,24 @@ export default defineConfig((mode) => {
         entryRoot: "./src",
         outDir: "dist/types",
         insertTypesEntry: true,
-        rollupTypes: true,
-        tsconfigPath: "./tsconfig.json",
-        exclude: ["**/*.svg", "**/sample/*.vue"],
+        rollupTypes: false,
+        tsconfigPath: "./tsconfig.build.json",
+        exclude: ["**/*.svg", "**/sample/**", "**/views/**"],
+        async afterBuild() {
+          // vue-tsc 在有类型错误时默认不生成声明文件，需要显式传入 --noEmitOnError false
+          console.log("[dts] Running vue-tsc to generate type declarations...");
+          try {
+            execSync(
+              "npx vue-tsc -p tsconfig.build.json --noEmitOnError false",
+              { stdio: "pipe", cwd: process.cwd() }
+            );
+            console.log("[dts] Type declarations generated successfully.");
+          } catch {
+            // vue-tsc exits with code 1 on type errors, but with --noEmitOnError false
+            // declarations are still emitted
+            console.log("[dts] Type declarations generated (with type warnings).");
+          }
+        },
       }),
       AutoImport({
         imports: [

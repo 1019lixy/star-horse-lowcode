@@ -5,13 +5,14 @@
     "module": "ESNext",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "skipLibCheck": true,
-    "baseUrl": "./",
+    "rootDir": "./src",
     "paths": {
       "@/*": ["./src/*"]
     },
     "types": ["node", "vite/client"],
+
     /* Bundler mode */
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": false, // 必须改为 false 才能生成声明文件
@@ -29,8 +30,8 @@
     "emitDeclarationOnly": true,
   },
   "outDir": "dist",  // 明确指定输出目录
-  "include": ["src/**/*", "types/**/*.ts", "node_modules/unplugin-auto-import/auto-imports.d.ts"],
-  "exclude": ["dist", "node_modules"],
+  "include": ["src/api/**/*", "src/assets/**/*", "src/components/**/*", "src/lang/**/*", "src/plugins/**/*", "src/router/**/*", "src/store/**/*", "src/theme/**/*", "src/utils/**/*", "src/views/**/*", "src/*.ts", "src/*.vue", "types/**/*.ts", "node_modules/unplugin-auto-import/auto-imports.d.ts"],
+  "exclude": ["dist", "node_modules", "src/sample/**/*"],
   "references": [
     {
       "path": "./tsconfig.node.json"
