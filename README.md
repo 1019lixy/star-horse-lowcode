@@ -588,5 +588,7 @@ barcode        条形码组件
 
 ```
 -修复日期和时间组件因数据格式不统一导致组件异常,
+-增加代码编辑器StarHorseCodeEditor,对比组件StarHorseDiffEditor 
+-修复StarHorseDialog 在app端的bug
 ```
 
