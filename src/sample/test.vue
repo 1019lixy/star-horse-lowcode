@@ -13,6 +13,7 @@ import NormalFormValid from "@/sample/NormalFormValid.vue";
 import CodeEditorTest from "@/sample/CodeEditorTest.vue";
 import CodeDiffEditorTest from "@/sample/CodeDiffEditorTest.vue";
 import EditorTest from "@/sample/EditorTest.vue";
+import ImagePreviewTest from "@/sample/ImagePreviewTest.vue";
 
 const visible = ref<boolean>(false);
 const actName = ref<string>("component");
@@ -58,6 +59,12 @@ onMounted(() => {
       <el-tab-pane name="3" label="编辑器">
 <!--        <EditorTest/>-->
         <NormalFormValid/>
+      </el-tab-pane>
+      <el-tab-pane name="4" label="图片预览">
+        <ImagePreviewTest/>
+      </el-tab-pane>
+      <el-tab-pane name="5" label="数据选择器">
+        <DataPickerDemo/>
       </el-tab-pane>
     </el-tabs>
     <!--    <el-tabs v-model="actName" class="h-full">

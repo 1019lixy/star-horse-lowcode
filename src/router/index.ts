@@ -58,6 +58,12 @@ const routes: RouteRecordRaw[] = [
         meta: {title: "盒子容器视图演示"},
     },
     {
+        path: "/image-preview-test",
+        name: "image-preview-test",
+        component: () => import("@/sample/ImagePreviewTest.vue"),
+        meta: {title: "图片预览测试"},
+    },
+    {
         path: "/complex-form-valid",
         name: "complex-form-valid",
         component: () => import("@/sample/ComplexFormValid.vue"),

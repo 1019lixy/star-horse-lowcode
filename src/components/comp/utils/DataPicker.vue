@@ -14,6 +14,7 @@ import {
   buildPageParams,
   toggleNodeSelection,
 } from "@/components/comp/utils/DataSelectorUtils";
+import {StarHorseIcon} from "@/components/comp";
 export type ModelValueType = any;
 
 export interface DataDropdownProps {
@@ -281,10 +282,15 @@ defineExpose({
               v-model="queryName"
               :placeholder="i18n('datapicker.enterKeywords')"
               :style="{ width: '100%' }"
-              suffix-icon="search"
               clearable
               @keyup.enter="dataSearch"
-            />
+            >
+              <template #append>
+                <div class="cursor-pointer" @click="dataSearch">
+                  <star-horse-icon iconClass="search" />
+                </div>
+              </template>
+            </el-input>
           </div>
           <el-scrollbar tag="div" class="org-tree">
             <el-tree
