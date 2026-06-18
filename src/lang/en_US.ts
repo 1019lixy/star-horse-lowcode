@@ -114,6 +114,11 @@ export default {
     "datapicker.pendingDataArea": "Pending Data Area",
     "datapicker.enterKeywords": "Enter keywords to search",
     "datapicker.selectedDataArea": "Selected Data Area",
+    "datapicker.moveUp": "Move Up",
+    "datapicker.moveDown": "Move Down",
+    "datapicker.dragSortTip": "Drag to sort",
+    "datapicker.helpTitle": "Help",
+    "datapicker.helpContent": "Click left panel to add data; Click selected data to deselect; Drag selected items to reorder; Use up/down buttons or ↑↓ keys to adjust order",
     /**
      * Data Selector--------------
      */
@@ -295,6 +300,8 @@ export default {
     "form.selectParentContainer": "Select parent container",
     "form.moveUp": "Move up",
     "form.moveDown": "Move down",
+    "datapicker.moveToFirst": "Move to first",
+    "datapicker.moveToEnd": "Move to end",
     "form.deleteComponent": "Delete component",
     "form.searchPlaceholder": "Search components...",
     /**

@@ -117,6 +117,13 @@ export default {
   "datapicker.pendingDataArea": "待选数据区",
   "datapicker.enterKeywords": "输入关键字进行查询",
   "datapicker.selectedDataArea": "已选数据区",
+  "datapicker.moveUp": "上移",
+  "datapicker.moveDown": "下移",
+  "datapicker.moveToFirst": "置顶",
+  "datapicker.moveToEnd": "置底",
+  "datapicker.dragSortTip": "拖拽排序",
+  "datapicker.helpTitle": "操作提示",
+  "datapicker.helpContent": "点击左侧待选数据可添加到已选区；点击已选数据可取消选中；拖拽已选数据可调整顺序；使用上下按钮或键盘↑↓键可调整选中项顺序",
   /**
    * 数据选择器--------------
    */

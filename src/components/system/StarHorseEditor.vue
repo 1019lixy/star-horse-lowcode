@@ -35,6 +35,7 @@ import {
 } from "thememirror";
 import StarHorseSidebar from "@/components/system/StarHorseSidebar.vue";
 import { i18n } from "@/lang";
+import {ArrowDown} from "@element-plus/icons-vue";
 
 /**
  * ToolbarItem - 外部配置的工具栏按钮

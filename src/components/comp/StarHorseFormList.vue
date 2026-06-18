@@ -14,6 +14,7 @@ import UTableColumn from "@/components/comp/items/UTableColumn.vue";
 import StarHorseForm from "@/components/comp/StarHorseForm.vue";
 import {FieldInfo} from "@/components/types";
 import JSON5 from "json5";
+import {Sort, UploadFilled} from "@element-plus/icons-vue";
 
 let importDialogVisible = ref<boolean>(false);
 let rowDialogVisible = ref<boolean>(false);

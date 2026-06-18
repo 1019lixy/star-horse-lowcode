@@ -193,15 +193,15 @@ watch(
         <span>{{ tagVisible(value) }}</span>
       </div>
     </template>
-    <template #prefix>
-      <star-horse-icon
-          @click="openDataPicker"
-          cursor="pointer"
-          icon-class="select-data"
-          size="22px"
-          :color="!disabled?'var(--star-horse-style)':'var(--star-horse-disabled)'"
-          :border="!disabled"
-      />
+    <template #suffix>
+      <div class="data-selector-suffix" :class="{ 'is-disabled': disabled }" @click="openDataPicker">
+        <star-horse-icon
+            cursor="pointer"
+            icon-class="select-data"
+            size="18px"
+            :color="!disabled?'var(--star-horse-style)':'var(--star-horse-disabled)'"
+        />
+      </div>
     </template>
   </el-input-tag>
 </template>
@@ -209,5 +209,41 @@ watch(
 <style scoped lang="scss">
 .el-tag {
   padding: 0 3px;
+}
+
+:deep(.el-input-tag__suffix) {
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 100% !important;
+}
+
+:deep(.el-input-tag__suffix-inner) {
+  height: 100% !important;
+  align-items: stretch !important;
+}
+
+.data-selector-suffix {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border-radius: 0;
+  background: var(--el-fill-color-light);
+  border-left: 1px solid var(--el-border-color);
+  transition: background 0.2s, border-color 0.2s;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--el-fill-color);
+  }
+
+  &.is-disabled {
+    cursor: not-allowed;
+    background: transparent;
+    border-left-color: var(--el-disabled-border-color);
+  }
 }
 </style>

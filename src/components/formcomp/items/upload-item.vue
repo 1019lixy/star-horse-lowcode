@@ -76,6 +76,7 @@ import { i18n } from "@/lang";
 
 import { ItemPreps } from "@/components/types/ItemPreps";
 import JSON5 from "json5";
+import {UploadFilled} from "@element-plus/icons-vue";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,

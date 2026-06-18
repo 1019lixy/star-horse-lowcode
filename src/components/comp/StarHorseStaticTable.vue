@@ -5,6 +5,7 @@ import { i18n } from "@/lang";
 import { warning } from "@/utils/message";
 import Sortable from "sortablejs";
 import { onMounted, PropType, reactive, ref, unref } from "vue";
+import {Sort, Tools} from "@element-plus/icons-vue";
 const props = defineProps({
   //主键
   primaryKey: {

@@ -121,7 +121,7 @@
         <template #placeholder>
           <div class="image-slot">
             <el-icon>
-              <icon-picture />
+              <Picture />
             </el-icon>
           </div>
         </template>
@@ -147,6 +147,7 @@ import { getToken } from "@/utils/auth";
 
 import { ItemPreps } from "@/components/types/ItemPreps";
 import { i18n } from "@/lang";
+import {Picture} from "@element-plus/icons-vue";
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
   disabled: false,

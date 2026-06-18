@@ -73,6 +73,11 @@ export const findNodesInTree = (
     }
   };
   walk(nodes);
+  // 按 targetValue 的原始顺序排列，保持选择顺序
+  if (Array.isArray(targetValue)) {
+    const orderMap = new Map(targetValue.map((v: any, i: number) => [v, i]));
+    result.sort((a, b) => (orderMap.get(a[displayValue]) ?? 0) - (orderMap.get(b[displayValue]) ?? 0));
+  }
   return result;
 };
 
@@ -122,7 +127,6 @@ export const toggleNodeSelection = (
     } else {
       selection.splice(index, 1);
     }
-    selection.sort((a, b) => a[displayValue].localeCompare(b[displayValue]));
   } else {
     const index = selection.findIndex((e) => e[displayValue] === data[displayValue]);
     if (index === -1) {
