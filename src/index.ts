@@ -2,12 +2,11 @@
 import {App, defineAsyncComponent} from "vue";
 import "tailwindcss/index.css";
 import "@/assets/css/index.scss";
-import "element-plus/theme-chalk/index.css";
 import "@/assets/icons.css";
 import piniaInstance from "@/store";
 import {AxiosInstance} from "axios";
 import type {Router} from "vue-router";
-import ElementPlus from "element-plus";
+import {configProviderContextKey} from "element-plus";
 import zhCn from "element-plus/dist/locale/zh-cn.mjs";
 import en from "element-plus/dist/locale/en.mjs";
 import {starHorseAxios} from "@/api/star_horse_apis";
@@ -72,17 +71,12 @@ const install = (
         window.__starHorseHostLang__ = LangType.ZH_CN;
     }
     if (options?.initElementPlus ?? true) {
-        // 只在没有配置时才设置中文
-        if (Object.keys(options?.elementPlusOptions || {}).length > 0) {
-            app.use(ElementPlus, options.elementPlusOptions);
-        } else {
-            const locale =
-                !options?.lang || options?.lang == LangType.ZH_CN ? zhCn : en;
-            app.use(ElementPlus, {
-                locale: locale,
-            });
-            console.log("star-horse-lowcode:", locale);
-        }
+        // 仅注入 locale 配置，不全量注册 Element Plus 组件
+        // 组件由 ElementPlusResolver 按需自动导入，样式也由 resolver 按需导入
+        const locale =
+            !options?.lang || options?.lang == LangType.ZH_CN ? zhCn : en;
+        app.provide(configProviderContextKey, { locale });
+        console.log("star-horse-lowcode locale:", locale);
     }
     window.__starHorseHostApp__ = app;
     Object.entries(items).forEach(([path, component]) => {

@@ -54,6 +54,7 @@ let envList = ref<Array<SelectOption>>([]);
 
 const dataSourceField = reactive<PageFieldInfo | any>({
   fieldList: [
+    // ========== 基础连接配置 ==========
     [
       {
         label: "系统环境",
@@ -168,6 +169,197 @@ const dataSourceField = reactive<PageFieldInfo | any>({
         listVisible: true,
       },
     ],
+    // ========== 响应模板配置 ==========
+    [
+      {
+        label: "响应模板",
+        fieldName: "apiResponseTemplate",
+        type: "select",
+        defaultValue: "result_data",
+        required: false,
+        formVisible: true,
+        listVisible: true,
+        preps: {
+          values: [
+            { name: "标准格式 {code,data,message}", value: "result_data" },
+            { name: "标准列表 {code,data:[]}", value: "result_data_list" },
+            { name: "直接Map", value: "map" },
+            { name: "直接List", value: "list" },
+            { name: "标准Map {code,data:{}}", value: "result_data_map" },
+          ],
+        },
+      },
+      {
+        label: "成功码",
+        fieldName: "apiSuccessCode",
+        type: "input",
+        defaultValue: "0",
+        required: false,
+        formVisible: true,
+        preps: {
+          colspan: 8,
+        },
+      },
+    ],
+    [
+      {
+        label: "数据路径",
+        fieldName: "apiDataPath",
+        type: "input",
+        defaultValue: "data",
+        required: false,
+        formVisible: true,
+        helpMsg: "响应中数据所在路径，如 data、result.list",
+        preps: {
+          colspan: 12,
+        },
+      },
+      {
+        label: "状态码路径",
+        fieldName: "apiCodePath",
+        type: "input",
+        defaultValue: "code",
+        required: false,
+        formVisible: true,
+        preps: {
+          colspan: 12,
+        },
+      },
+    ],
+    // ========== 登录认证配置 ==========
+    {
+      type: "divider",
+      fieldName: "loginDivider",
+      formVisible: true,
+      preps: {
+        bareFlag: "Y",
+        content: "登录认证配置",
+      },
+    },
+    [
+      {
+        label: "需要登录",
+        fieldName: "apiNeedLogin",
+        type: "switch",
+        defaultValue: "N",
+        required: false,
+        formVisible: true,
+        listVisible: true,
+        preps: {
+          activeValue: "Y",
+          inactiveValue: "N",
+          colspan: 8,
+          dataRelation: {
+            actionName: "change",
+            relationDetails: [
+              {
+                matchType: "eq",
+                controlCondition: "eqVisible",
+                relationFields: [
+                  "apiLoginUrl",
+                  "apiLoginMethod",
+                  "apiLoginAccount",
+                  "apiLoginPassword",
+                  "apiLoginTokenPath",
+                  "apiLoginHeaderName",
+                ],
+                matchFieldValue: "Y",
+              },
+            ],
+          },
+        },
+      },
+      {
+        label: "登录方式",
+        fieldName: "apiLoginMethod",
+        type: "select",
+        defaultValue: "POST",
+        required: false,
+        formVisible: false,
+        listVisible: true,
+        preps: {
+          colspan: 16,
+          values: [
+            { name: "POST", value: "POST" },
+            { name: "GET", value: "GET" },
+          ],
+        },
+      },
+    ],
+    {
+      label: "登录地址",
+      fieldName: "apiLoginUrl",
+      type: "input",
+      required: false,
+      formVisible: false,
+      helpMsg: "第三方系统登录接口完整地址，如 https://api.example.com/auth/login",
+      preps: {
+        placeholder: "https://api.example.com/auth/login",
+      },
+    },
+    [
+      {
+        label: "登录账号",
+        fieldName: "apiLoginAccount",
+        type: "input",
+        required: false,
+        formVisible: false,
+        preps: {
+          colspan: 12,
+        },
+      },
+      {
+        label: "登录密码",
+        fieldName: "apiLoginPassword",
+        type: "password",
+        required: false,
+        formVisible: false,
+        preps: {
+          colspan: 12,
+        },
+      },
+    ],
+    [
+      {
+        label: "Token路径",
+        fieldName: "apiLoginTokenPath",
+        type: "input",
+        defaultValue: "data.token",
+        required: false,
+        formVisible: false,
+        helpMsg: "登录响应中Token的提取路径，如 data.token、result.accessToken",
+        preps: {
+          colspan: 12,
+        },
+      },
+      {
+        label: "Token头名称",
+        fieldName: "apiLoginHeaderName",
+        type: "input",
+        defaultValue: "Authorization",
+        required: false,
+        formVisible: false,
+        helpMsg: "携带Token的请求头名称，默认Authorization（自动加Bearer前缀）",
+        preps: {
+          colspan: 12,
+        },
+      },
+    ],
+    // ========== 自定义请求头 ==========
+    {
+      label: "自定义Header",
+      fieldName: "apiHeaders",
+      type: "json",
+      formVisible: true,
+      listVisible: true,
+      required: false,
+      defaultValue: "",
+      helpMsg: "业务接口的自定义请求头（JSON格式），登录成功后Token会自动注入到配置的Header中",
+      preps: {
+        devType: "Y",
+      },
+    },
+    // ========== 查询参数配置（Tabs） ==========
     {
       fieldName: "queryParams",
       tabList: [

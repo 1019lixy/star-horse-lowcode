@@ -435,7 +435,7 @@ export default {
   "api.eventTriggerError": "事件触发异常：",
   "api.pleaseSelectData2": "请选择数据",
   "api.noUrlProvided": "未提供接口地址",
-
+  "api.apiLinkageError":"接口错误",
   /**
    * Component Strings
    */

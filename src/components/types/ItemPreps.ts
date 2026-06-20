@@ -121,6 +121,158 @@ export interface ContainerPreps {
     commonFormat?: Function,
 }
 
+export interface FieldMappingItem {
+    /**
+     * 接口返回字段名
+     */
+    sourceField: string;
+    /**
+     * 表单字段名
+     */
+    targetField: string;
+    /**
+     * 类型转换: string/number/boolean/array（可选）
+     */
+    typeConvert?: string;
+    /**
+     * 转换表达式（如日期格式化: dateFormat:yyyy-MM-dd）
+     */
+    transform?: string;
+}
+
+/**
+ * 请求参数项
+ */
+export interface RequestParamItem {
+    /**
+     * 参数名
+     */
+    paramName: string;
+    /**
+     * 参数值(支持动态占位符)
+     */
+    paramValue: string;
+}
+
+export interface ApiLinkageConfig {
+    /**
+     * 接口地址
+     */
+    url: string;
+    /**
+     * 请求方法 GET/POST
+     */
+    httpMethod?: string;
+    /**
+     * 数据格式 Form/JSON
+     */
+    dataType?: string;
+    /**
+     * 请求协议 http/https
+     */
+    protocol?: string;
+    /**
+     * 请求IP或域名或服务名
+     */
+    host?: string;
+    /**
+     * 请求端口
+     */
+    port?: number;
+    /**
+     * 系统环境后缀
+     */
+    env?: string;
+    /**
+     * 响应模板类型: map/result_data/result_data_list/list/result_data_map
+     */
+    responseTemplate?: string;
+    /**
+     * 成功状态码(默认0)
+     */
+    successCode?: number | string;
+    /**
+     * 响应码字段路径(默认code)
+     */
+    codePath?: string;
+    /**
+     * 响应数据字段路径(默认data)
+     */
+    dataPath?: string;
+    /**
+     * 响应消息字段路径(默认message)
+     */
+    messagePath?: string;
+    /**
+     * 字段映射列表
+     */
+    fieldMappings?: FieldMappingItem[];
+    /**
+     * 认证类型: none/login/basic/bearer/custom
+     */
+    authType?: string;
+    /**
+     * 认证信息(兼容旧配置)
+     */
+    authInfo?: Record<string, string>;
+    /**
+     * 自定义请求头(兼容旧配置)
+     */
+    headers?: Record<string, string>;
+    /**
+     * 请求参数(动态值占位符,如 {fieldName: "$formField.xxx"}) - 兼容旧JSON格式
+     */
+    requestParams?: Record<string, any> | RequestParamItem[];
+    // ====== 登录接口配置(authType=login时) ======
+    /**
+     * 登录接口地址
+     */
+    loginUrl?: string;
+    /**
+     * 登录请求方法
+     */
+    loginMethod?: string;
+    /**
+     * 登录请求参数(JSON)
+     */
+    loginParams?: Record<string, any>;
+    /**
+     * 登录响应中Token的提取路径
+     */
+    loginTokenPath?: string;
+    /**
+     * 携带Token的请求头名称
+     */
+    loginHeaderName?: string;
+    // ====== Basic认证(authType=basic时) ======
+    /**
+     * Basic认证用户名
+     */
+    basicUsername?: string;
+    /**
+     * Basic认证密码
+     */
+    basicPassword?: string;
+    // ====== Bearer Token(authType=bearer时) ======
+    /**
+     * Bearer Token值
+     */
+    bearerToken?: string;
+    // ====== 自定义请求头(authType=custom时) ======
+    /**
+     * 自定义请求头(JSON)
+     */
+    customHeaders?: Record<string, string>;
+    /**
+     * 请求超时时间（秒），默认120
+     */
+    timeout?: number;
+    /**
+     * Nacos服务名（用于微服务内部调用）
+     */
+    serviceName?: string;
+}
+
 export interface RelationDetail {
     /**
      * 控制条件
@@ -133,8 +285,12 @@ export interface RelationDetail {
         | "eqHide"
         | "eqVisible"
         | "eqRequired"
+        | "eqUnRequired"
         | "assignValue"
         | "changeType"
+        | "apiLinkage"
+        | "clearLinkage"
+        | "refreshLinkage"
         | string;
     /**
      * 关联字段
@@ -165,6 +321,10 @@ export interface RelationDetail {
      * 多次事件是否 working
      */
     isWorking: boolean;
+    /**
+     * 接口联动配置(controlCondition为apiLinkage时使用)
+     */
+    apiLinkageConfig?: ApiLinkageConfig;
 }
 
 export interface ItemRelation {
