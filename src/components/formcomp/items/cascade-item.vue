@@ -12,7 +12,7 @@
         v-bind="prepsFilter(field.preps)"
         :props="cascadeProps"
         :disabled="checkIsDisabled(props)"
-        v-on="getDynamicEvents(props, itemAction)"
+        v-on="getDynamicEvents(props, itemAction,formData)"
         v-model="formData[field.fieldName]"
     >
       <template v-if="field.preps?.multiple" #header>

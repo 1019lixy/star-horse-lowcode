@@ -20,7 +20,7 @@
       v-bind="prepsFilter(field.preps)"
       type="textarea"
       :style="field.preps?.styles"
-      v-on="getDynamicEvents(props, itemAction)"
+      v-on="getDynamicEvents(props, itemAction,formData)"
       v-model="formData[field.fieldName]"
     />
   </starhorse-form-item>

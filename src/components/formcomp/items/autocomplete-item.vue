@@ -12,7 +12,7 @@
       :disabled="checkIsDisabled(props)"
       :fetch-suggestions="querySearch"
       v-bind="prepsFilter(field.preps)"
-      v-on="getDynamicEvents(props, itemAction)"
+      v-on="getDynamicEvents(props, itemAction,formData)"
       v-model="normalData"
     >
       <template #prefix>

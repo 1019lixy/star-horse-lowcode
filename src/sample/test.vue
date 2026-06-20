@@ -14,6 +14,8 @@ import CodeEditorTest from "@/sample/CodeEditorTest.vue";
 import CodeDiffEditorTest from "@/sample/CodeDiffEditorTest.vue";
 import EditorTest from "@/sample/EditorTest.vue";
 import ImagePreviewTest from "@/sample/ImagePreviewTest.vue";
+import FormRelationOperation from "@/sample/FormRelationOperation.vue";
+import ValidDialogFormRelation from "@/sample/ValidDialogFormRelation.vue";
 
 const visible = ref<boolean>(false);
 const actName = ref<string>("component");
@@ -49,7 +51,8 @@ onMounted(() => {
             <NormalFormValid/>
           </el-tab-pane>
         </el-tabs>-->
-    <el-tabs v-model="actName" class="h-full">
+    <ValidDialogFormRelation/>
+<!--    <el-tabs v-model="actName" class="h-full">
       <el-tab-pane name="component" label="IDE">
         <CodeEditorTest/>
       </el-tab-pane>
@@ -57,7 +60,7 @@ onMounted(() => {
         <CodeDiffEditorTest/>
       </el-tab-pane>
       <el-tab-pane name="3" label="编辑器">
-<!--        <EditorTest/>-->
+&lt;!&ndash;        <EditorTest/>&ndash;&gt;
         <NormalFormValid/>
       </el-tab-pane>
       <el-tab-pane name="4" label="图片预览">
@@ -66,7 +69,7 @@ onMounted(() => {
       <el-tab-pane name="5" label="数据选择器">
         <DataPickerDemo/>
       </el-tab-pane>
-    </el-tabs>
+    </el-tabs>-->
     <!--    <el-tabs v-model="actName" class="h-full">
           <el-tab-pane name="component" label="组件测试">
             <ComponentTester/>

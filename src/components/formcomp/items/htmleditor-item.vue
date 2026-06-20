@@ -23,7 +23,7 @@
           'border-radius': '4px',
         }"
           v-bind="prepsFilter(props)"
-          v-on="getDynamicEvents(props, itemAction)"
+          v-on="getDynamicEvents(props, itemAction,formData)"
           v-model="formData[field.fieldName]"
           :defaultConfig="editorConfig"
           :mode="field.preps?.mode ?? 'default'"

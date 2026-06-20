@@ -11,7 +11,7 @@
       :fid="field.fieldName"
       :disabled="checkIsDisabled(props)"
       v-bind="prepsFilter(props)"
-      v-on="getDynamicEvents(props, itemAction)"
+      v-on="getDynamicEvents(props, itemAction,formData)"
       v-model="formData[field.fieldName]"
     >
       <el-checkbox

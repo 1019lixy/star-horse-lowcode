@@ -38,7 +38,7 @@ const tagType = (val: any) => {
         :disabled="checkIsDisabled(props)"
         v-bind="prepsFilter(field.preps)"
         :tagType="tagType(formData[field.fieldName])"
-        v-on="getDynamicEvents(props, itemAction)"
+        v-on="getDynamicEvents(props, itemAction,formData)"
         v-model="formData[field.fieldName]"
     >
       <template #prefix>

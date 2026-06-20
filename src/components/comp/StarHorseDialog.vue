@@ -41,24 +41,7 @@ const props = defineProps({
 });
 let windowsType = ref<boolean>(false);
 const _compKey = compKey;
-watch(
-    () => props.dialogVisible,
-    (val: boolean) => {
-      windowsType.value = val;
-      if (val) {
-        // 打开时重置最小化状态
-        isMinimized.value = false;
-        // 手机模式默认最大化
-        if (isMobile) {
-          isFullScreen.value = true;
-        }
-      }
-    },
-    {
-      immediate: true,
-      deep: true,
-    },
-);
+
 let isFullScreen = ref<boolean>(false);
 // 最小化状态
 let isMinimized = ref<boolean>(false);
@@ -142,6 +125,24 @@ const operation = (funcName: any, type: string) => {
   }
   console.log(clickFunction);
 };
+watch(
+    () => props.dialogVisible,
+    (val: boolean) => {
+      windowsType.value = val;
+      if (val) {
+        // 打开时重置最小化状态
+        isMinimized.value = false;
+        // 手机模式默认最大化
+        if (isMobile) {
+          isFullScreen.value = true;
+        }
+      }
+    },
+    {
+      immediate: true,
+      deep: true,
+    },
+);
 </script>
 <template>
   <Teleport to="body">

@@ -20,7 +20,7 @@
         ref="inputItemRef"
         :fid="field.fieldName"
         class="input-with-select"
-        v-on="getDynamicEvents(props, itemAction)"
+        v-on="getDynamicEvents(props, itemAction,formData)"
         @dblclick.stop="editContent"
         v-model="normalData"
     >

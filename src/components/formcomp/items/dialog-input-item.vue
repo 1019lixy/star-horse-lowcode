@@ -162,7 +162,7 @@ onMounted(async () => {
       type="text"
       v-bind="prepsFilter(field.preps)"
       :fid="field.fieldName"
-      v-on="getDynamicEvents(props, itemAction)"
+      v-on="getDynamicEvents(props, itemAction,formData)"
       v-model="formData[field.fieldName]"
     >
       <template #append>

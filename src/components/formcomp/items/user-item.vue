@@ -30,7 +30,7 @@
       :whole="true"
       :fid="field.fieldName"
       v-bind="prepsFilter(field.preps)"
-      v-on="getDynamicEvents(props, itemAction)"
+      v-on="getDynamicEvents(props, itemAction,formData)"
       v-model="formData[field.fieldName]"
     >
       <template #append>

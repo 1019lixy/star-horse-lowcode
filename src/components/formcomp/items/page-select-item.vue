@@ -291,7 +291,7 @@ onMounted(async () => {
         :fid="field.fieldName"
         v-bind="prepsFilter(field.preps)"
         :disabled="checkIsDisabled(props)"
-        v-on="getDynamicEvents(props, itemAction)"
+        v-on="getDynamicEvents(props, itemAction,formData)"
         v-model="formData[field.fieldName]"
     >
       <!-- 新增显示选中项标签 -->

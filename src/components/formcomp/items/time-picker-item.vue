@@ -15,7 +15,7 @@
         :range-separator="field.preps?.rangeSeparator || i18n('api.to')"
         :format="field.preps?.format || 'HH:mm:ss'"
         :value-format="field.preps?.valueFormat || 'HH:mm:ss'"
-        v-on="getDynamicEvents(props, itemAction)"
+        v-on="getDynamicEvents(props, itemAction,formData)"
         @change="itemAction('change')"
         v-model="formData[field.fieldName]"
     />

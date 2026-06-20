@@ -12,7 +12,7 @@
         :disabled="checkIsDisabled(props)"
         :readonly="field.preps?.readonly ?? false"
         :text-color="field.preps?.textColor"
-        v-on="getDynamicEvents(props, itemAction)"
+        v-on="getDynamicEvents(props, itemAction,formData)"
         v-model="formData[field.fieldName]"
     >
       <el-radio-button

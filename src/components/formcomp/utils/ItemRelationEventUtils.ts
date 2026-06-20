@@ -3,7 +3,7 @@ import {userFunction} from "@/api/user_func";
 import {RelationDetail, SelectOption} from "@/components/types";
 import {error} from "@/utils/message";
 import {i18n} from "@/lang";
-import {computed, nextTick, unref, watch} from "vue";
+import {computed, nextTick, Ref, unref, watch} from "vue";
 import JSON5 from "json5";
 import {
     executeFormulaWithFill,
@@ -24,7 +24,7 @@ const ensureArray = (val: any): any[] => {
 /** 查找字段并确保 preps 存在，支持递归查找 children */
 const findField = (props: any, fieldName: string, fieldList?: any[]): any => {
     const list = fieldList || props.formInfo || [];
-    
+
     for (const field of list) {
         if (field.fieldName === fieldName) {
             if (!field.preps) {
@@ -97,18 +97,29 @@ const isMatch = (matchType: string, matchFieldValue: any, e: any) => {
         return e.some((item) => matchFieldValue.includes(item));
     }
     switch (matchType) {
-        case "llk": return matchFieldValue.startsWith(e);
-        case "rlk": return matchFieldValue.endsWith(e);
+        case "llk":
+            return matchFieldValue.startsWith(e);
+        case "rlk":
+            return matchFieldValue.endsWith(e);
         case "neq":
-        case "nlk": return !matchFieldValue.includes(e);
-        case "lt": return matchFieldValue < e;
-        case "lte": return matchFieldValue <= e;
-        case "gt": return matchFieldValue > e;
-        case "gte": return matchFieldValue >= e;
-        case "isnull": return !e;
-        case "notnull": return !!e;
-        case "bt": return matchFieldValue[0] <= e && e <= matchFieldValue[1];
-        default: return matchFieldValue.includes(e);
+        case "nlk":
+            return !matchFieldValue.includes(e);
+        case "lt":
+            return matchFieldValue < e;
+        case "lte":
+            return matchFieldValue <= e;
+        case "gt":
+            return matchFieldValue > e;
+        case "gte":
+            return matchFieldValue >= e;
+        case "isnull":
+            return !e;
+        case "notnull":
+            return !!e;
+        case "bt":
+            return matchFieldValue[0] <= e && e <= matchFieldValue[1];
+        default:
+            return matchFieldValue.includes(e);
     }
 };
 
@@ -116,12 +127,12 @@ const isMatch = (matchType: string, matchFieldValue: any, e: any) => {
 
 /** 属性控制映射表：controlCondition -> { 目标属性, 是否取反 } */
 const CONTROL_ACTION_MAP: Record<string, { targetProp: string; negate: boolean; isPreps: boolean }> = {
-    eqHide:      { targetProp: "formVisible", negate: true,  isPreps: false },
-    eqVisible:   { targetProp: "formVisible", negate: false, isPreps: false },
-    eqDisable:   { targetProp: "disabled",    negate: false, isPreps: true },
-    eqEditable:  { targetProp: "disabled",    negate: true,  isPreps: true },
-    eqRequired:  { targetProp: "required",    negate: false, isPreps: false },
-    eqUnRequired: { targetProp: "required",   negate: true,  isPreps: false },
+    eqHide: {targetProp: "formVisible", negate: true, isPreps: false},
+    eqVisible: {targetProp: "formVisible", negate: false, isPreps: false},
+    eqDisable: {targetProp: "disabled", negate: false, isPreps: true},
+    eqEditable: {targetProp: "disabled", negate: true, isPreps: true},
+    eqRequired: {targetProp: "required", negate: false, isPreps: false},
+    eqUnRequired: {targetProp: "required", negate: true, isPreps: false},
 };
 
 /** 属性控制（显隐/禁用/必填） */
@@ -186,6 +197,7 @@ const relationEvent = (
     props: any,
     relationDetails: RelationDetail[],
     e: any,
+    formData: Ref<Record<string, any>>,
     actionName: string,
 ) => {
     if (!Array.isArray(relationDetails)) {
@@ -217,6 +229,10 @@ const relationEvent = (
             case "changeType":
                 changeType(props, item, e);
                 break;
+            case "loadDataLinkage":
+                loadDataLinkageOperation(props, item, formData);
+
+                break;
             default:
                 console.log(i18n("api.unhandledEvent") + controlCondition);
         }
@@ -225,6 +241,15 @@ const relationEvent = (
     });
 };
 
+/**
+ * 处理第三方接口调用
+ * @param props
+ * @param item
+ * @param formData
+ */
+const loadDataLinkageOperation = (props: any, item: RelationDetail, formData: any) => {
+    console.log("loadDataLinkage", props.field.fieldName, item, formData);
+};
 // ==================== 事件触发 ====================
 
 /** 所有触发的事件 */
@@ -327,7 +352,8 @@ const initRelationEvent = (props: any, formData: any, needWatch?: boolean) => {
                             props,
                             dataRelation?.relationDetails,
                             val,
-                            actionName,
+                            formData,
+                            actionName
                         );
                         stop();
                     }
@@ -340,6 +366,7 @@ const initRelationEvent = (props: any, formData: any, needWatch?: boolean) => {
             props,
             dataRelation?.relationDetails,
             formData.value[props.field.fieldName],
+            formData,
             actionName,
         );
     }

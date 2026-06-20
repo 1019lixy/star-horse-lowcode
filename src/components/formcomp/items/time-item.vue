@@ -14,7 +14,7 @@
       :end="field.preps?.end || '24:00'"
       :step="field.preps?.step || '00:05'"
       v-bind="prepsFilter(field.preps)"
-      v-on="getDynamicEvents(props, itemAction)"
+      v-on="getDynamicEvents(props, itemAction,formData)"
       @change="itemAction('change')"
       v-model="formData[field.fieldName]"
     />

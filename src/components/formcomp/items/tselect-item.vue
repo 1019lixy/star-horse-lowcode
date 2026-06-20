@@ -14,7 +14,7 @@
       v-bind="prepsFilter(field.preps)"
       :filter-node-method="filterNodeMethod"
       :render-content="renderContent"
-      v-on="getDynamicEvents(props, itemAction)"
+      v-on="getDynamicEvents(props, itemAction,formData)"
       v-model="formData[field.fieldName]"
     >
       <template v-if="field.preps?.multiple" #header>

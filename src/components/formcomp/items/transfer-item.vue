@@ -11,7 +11,7 @@
       :fid="field?.preps['name']"
       v-bind="prepsFilter(field.preps)"
       :props="field?.preps.props ?? { key: 'value', label: 'name' }"
-      v-on="getDynamicEvents(props, itemAction)"
+      v-on="getDynamicEvents(props, itemAction,formData)"
       v-model="formData[field.fieldName]"
     />
   </starhorse-form-item>

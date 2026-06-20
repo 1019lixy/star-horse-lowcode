@@ -14,7 +14,7 @@
         :type="effectiveType"
         :format="field.preps?.format || displayFormat"
         :value-format="field.preps?.valueFormat || valueFormat"
-        v-on="getDynamicEvents(props, itemAction)"
+        v-on="getDynamicEvents(props, itemAction,formData)"
         @change="itemAction('change')"
         v-model="formData[field.fieldName]"
     />

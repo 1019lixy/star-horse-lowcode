@@ -374,18 +374,19 @@ export const baseEvent = (eventName: string, recall?: Function) => {
 export const baseRelationEvent = (
     props: any,
     relationDetails: RelationDetail[],
+    formData: any,
     actionName: string,
 ) => {
     return function handler(e: Event) {
-        console.log("baseRelationEvent2", actionName);
+        console.log("baseRelationEvent2", actionName,formData);
         return handleEvent(actionName, e, (tempName) => {
-            relationEvent(props, relationDetails, e, tempName);
+            relationEvent(props, relationDetails, e, formData, tempName);
         });
     };
 };
 
 // 添加动态事件处理方法
-export function getDynamicEvents(props: any, recall: Function) {
+export function getDynamicEvents(props: any, recall: Function, formData: any) {
     const events: Record<string, any> = {};
     const actions = props.field.actions;
     const actionNames: string[] = Object.keys(actions || {});
@@ -404,6 +405,7 @@ export function getDynamicEvents(props: any, recall: Function) {
         events[actionName] = baseRelationEvent(
             props,
             dataRelation?.relationDetails,
+            formData,
             actionName,
         );
     }
