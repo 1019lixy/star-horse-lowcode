@@ -145,15 +145,12 @@ const eventList: SelectOption[] = [
 const controlConditionList: SelectOption[] = [
   { name: "满足条件触发数据联动", value: "eqConditionDataLinkage" },
   { name: "数据作为参数触发数据联动", value: "asParamDataLinkage" },
-  { name: "接口联动（调用第三方接口赋值）", value: "apiLinkage" },
   { name: "等于指定值时禁用被关联字段", value: "eqDisable" },
   { name: "等于指定值时可编辑被关联字段", value: "eqEditable" },
   { name: "等于指定值时隐藏被关联字段", value: "eqHide" },
   { name: "等于指定值时显示被关联字段", value: "eqVisible" },
   { name: "等于指定值时被关联字段必填", value: "eqRequired" },
   { name: "等于指定值时被关联字段赋予新值", value: "assignValue" },
-  { name: "等于指定值时清空被关联字段", value: "clearLinkage" },
-  { name: "等于指定值时刷新被关联字段数据源", value: "refreshLinkage" },
   { name: "数据等于指定值时被关联字段改变字段类型", value: "changeType" },
   { name: "测试数据", value: "button_authority" },
 ];
@@ -200,7 +197,6 @@ const tableFieldList = reactive<PageFieldInfo | any>({
                       matchFieldValue: [
                         "eqConditionDataLinkage",
                         "asParamDataLinkage",
-                        "apiLinkage",
                       ],
                     },
                     {
@@ -228,16 +224,13 @@ const tableFieldList = reactive<PageFieldInfo | any>({
                         "eqHide",
                         "eqConditionDataLinkage",
                         "asParamDataLinkage",
-                        "apiLinkage",
-                        "clearLinkage",
-                        "refreshLinkage",
                       ],
                     },
                     {
                       matchType: "eq",
                       controlCondition: "eqRequired",
                       relationFields: ["matchFieldName"],
-                      matchFieldValue: ["asParamDataLinkage", "apiLinkage"],
+                      matchFieldValue: ["asParamDataLinkage"],
                     },
                   ],
                 },

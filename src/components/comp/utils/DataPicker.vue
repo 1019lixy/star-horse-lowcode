@@ -10,7 +10,7 @@ import {SearchParams} from "@/components/types";
 import {isMobile} from "@/api/device";
 import {buildPageParams, buildRequestParams, toggleNodeSelection,} from "@/components/comp/utils/DataSelectorUtils";
 import {StarHorseIcon} from "@/components/comp";
-import {Bottom, Check, Delete, Download, More, QuestionFilled, Sort, Top, Upload} from "@element-plus/icons-vue";
+import {Bottom, Check, Delete, Download, QuestionFilled, Sort, Top, Upload} from "@element-plus/icons-vue";
 import Sortable from "sortablejs";
 
 export type ModelValueType = any;
@@ -474,110 +474,50 @@ defineExpose({
                   <span class="selected-item-label">{{ item[displayName] }}</span>
                 </div>
                 <div class="selected-item-actions">
-                  <template v-if="isMobile">
-                    <!-- 移动端：用 popover 收起操作按钮，只占一个图标空间 -->
-                    <el-popover
-                        placement="left"
-                        trigger="click"
-                        :width="160"
-                        popper-class="selected-item-actions-popover"
-                    >
-                      <template #reference>
-                        <el-icon :size="22" class="actions-trigger">
-                          <More />
-                        </el-icon>
-                      </template>
-                      <div class="actions-menu">
-                        <div
-                            v-if="multiple"
-                            class="action-menu-item"
-                            :class="{ 'is-disabled': index === 0 }"
-                            @click="moveTop(index)"
-                        >
-                          <el-icon :size="18"><Upload /></el-icon>
-                          <span>{{ i18n('datapicker.moveToFirst') }}</span>
-                        </div>
-                        <div
-                            v-if="multiple"
-                            class="action-menu-item"
-                            :class="{ 'is-disabled': index === 0 }"
-                            @click="moveUp(index)"
-                        >
-                          <el-icon :size="18"><Top /></el-icon>
-                          <span>{{ i18n('datapicker.moveUp') }}</span>
-                        </div>
-                        <div
-                            v-if="multiple"
-                            class="action-menu-item"
-                            :class="{ 'is-disabled': index === dataOptions.length - 1 }"
-                            @click="moveDown(index)"
-                        >
-                          <el-icon :size="18"><Bottom /></el-icon>
-                          <span>{{ i18n('datapicker.moveDown') }}</span>
-                        </div>
-                        <div
-                            v-if="multiple"
-                            class="action-menu-item"
-                            :class="{ 'is-disabled': index === dataOptions.length - 1 }"
-                            @click="moveEnd(index)"
-                        >
-                          <el-icon :size="18"><Download /></el-icon>
-                          <span>{{ i18n('datapicker.moveToEnd') }}</span>
-                        </div>
-                        <div class="action-menu-item danger" @click="removeItem(index)">
-                          <el-icon :size="18"><Delete /></el-icon>
-                          <span>{{ i18n('common.delete') }}</span>
-                        </div>
-                      </div>
-                    </el-popover>
-                  </template>
-                  <template v-else>
-                    <!-- PC端：直接展示操作按钮 -->
-                    <el-icon
-                        :title="i18n('datapicker.moveToFirst')"
-                        v-if="multiple"
-                        :size="22"
-                        :class="{ 'is-disabled-action': index === 0 }"
-                        @click.stop="moveTop(index)"
-                    >
-                      <Upload/>
-                    </el-icon>
-                    <el-icon
-                        :title="i18n('datapicker.moveUp')"
-                        v-if="multiple"
-                        :size="22"
-                        :class="{ 'is-disabled-action': index === 0 }"
-                        @click.stop="moveUp(index)"
-                    >
-                      <Top/>
-                    </el-icon>
-                    <el-icon
-                        :title="i18n('datapicker.moveToEnd')"
-                        v-if="multiple"
-                        :size="22"
-                        :class="{ 'is-disabled-action': index === dataOptions.length - 1 }"
-                        @click.stop="moveEnd(index)"
-                    >
-                      <Download/>
-                    </el-icon>
-                    <el-icon
-                        :title="i18n('datapicker.moveDown')"
-                        v-if="multiple"
-                        :size="22"
-                        :class="{ 'is-disabled-action': index === dataOptions.length - 1 }"
-                        @click.stop="moveDown(index)"
-                    >
-                      <Bottom/>
-                    </el-icon>
-                    <el-icon
-                        :title="i18n('common.delete')"
-                        :size="22"
-                        class="remove-action"
-                        @click.stop="removeItem(index)"
-                    >
-                      <Delete style="color:var(--el-color-danger)"/>
-                    </el-icon>
-                  </template>
+                  <el-icon
+                      :title="i18n('datapicker.moveToFirst')"
+                      v-if="multiple"
+                      :size="22"
+                      :class="{ 'is-disabled-action': index === 0 }"
+                      @click.stop="moveTop(index)"
+                  >
+                    <Upload/>
+                  </el-icon>
+                  <el-icon
+                      :title="i18n('datapicker.moveUp')"
+                      v-if="multiple"
+                      :size="22"
+                      :class="{ 'is-disabled-action': index === 0 }"
+                      @click.stop="moveUp(index)"
+                  >
+                    <Top/>
+                  </el-icon>
+                  <el-icon
+                      :title="i18n('datapicker.moveToEnd')"
+                      v-if="multiple"
+                      :size="22"
+                      :class="{ 'is-disabled-action': index === dataOptions.length - 1 }"
+                      @click.stop="moveEnd(index)"
+                  >
+                    <Download/>
+                  </el-icon>
+                  <el-icon
+                      :title="i18n('datapicker.moveDown')"
+                      v-if="multiple"
+                      :size="22"
+                      :class="{ 'is-disabled-action': index === dataOptions.length - 1 }"
+                      @click.stop="moveDown(index)"
+                  >
+                    <Bottom/>
+                  </el-icon>
+                  <el-icon
+                      :title="i18n('common.delete')"
+                      :size="22"
+                      class="remove-action"
+                      @click.stop="removeItem(index)"
+                  >
+                    <Delete style="color:var(--el-color-danger)"/>
+                  </el-icon>
                 </div>
               </div>
               <div v-if="dataOptions.length === 0" class="empty-tip">
@@ -735,23 +675,11 @@ defineExpose({
       color: var(--el-color-danger);
     }
   }
-
-  // 移动端：触发器始终可见，只占一个图标空间
-  .actions-trigger {
-    cursor: pointer;
-    border-radius: 4px;
-    padding: 4px;
-  }
 }
 
 .selected-item:hover .selected-item-actions,
 .selected-item.is-active-item .selected-item-actions {
   opacity: 1;
-}
-
-// 移动端始终显示操作按钮
-.selected-item-actions:has(.actions-trigger) {
-  opacity: 1 !important;
 }
 
 // Sortable 样式
@@ -785,52 +713,5 @@ defineExpose({
   padding: 40px 0;
   color: var(--el-text-color-placeholder);
   font-size: 13px;
-}
-</style>
-
-<!-- popover 渲染在 body 上，需要非 scoped 样式 -->
-<style lang="scss">
-.selected-item-actions-popover {
-  .actions-menu {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  .action-menu-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 10px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 13px;
-    color: var(--el-text-color-regular);
-    transition: background 0.2s;
-
-    &:hover {
-      background: var(--el-fill-color-light);
-      color: var(--el-color-primary);
-    }
-
-    &.is-disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-
-      &:hover {
-        background: transparent;
-        color: var(--el-text-color-regular);
-      }
-    }
-
-    &.danger {
-      color: var(--el-color-danger);
-
-      &:hover {
-        background: var(--el-color-danger-light-9);
-        color: var(--el-color-danger);
-      }
-    }
-  }
 }
 </style>

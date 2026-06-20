@@ -1,6 +1,7 @@
 import "tailwindcss/index.css";
 import "@/assets/css/index.scss";
 import "@/assets/icons.css";
+import "element-plus/dist/index.css";
 import userComponent from "@/components/comp/selfcomp";
 import userContainerComponent from "@/components/comp/items/callitem";
 import itemComponent from "@/components/formcomp/items/allitem";
@@ -10,7 +11,7 @@ import App from "@/App.vue";
 import {createApp} from "vue";
 import draggable from "vuedraggable-es";
 import piniaInstance from "@/store";
-import {configProviderContextKey} from "element-plus";
+import ElementPlus from "element-plus";
 import zhCn from "element-plus/es/locale/lang/zh-cn";
 import router from "@/router";
 window.__debug__=true;
@@ -24,8 +25,9 @@ app.use(systemComponent);
 
 app.use(piniaInstance);
 app.use(router);
-// 仅注入 locale，组件由 ElementPlusResolver 按需自动导入
-app.provide(configProviderContextKey, { locale: zhCn });
+app.use(ElementPlus, {
+    locale: zhCn,
+});
 app.config.performance = true;
 /**
  * 处理未捕获异常

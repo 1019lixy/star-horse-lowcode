@@ -10,21 +10,6 @@ import fs from "fs";
 //生产types文件插件
 import dts from "vite-plugin-dts";
 import { execSync } from "child_process";
-
-// 构建后复制省市区数据 JSON 到 dist，供运行时 fetch 加载
-function copyPcasJson() {
-  return {
-    name: "copy-pcas-json",
-    closeBundle() {
-      const src = resolve(dirname(fileURLToPath(import.meta.url)), "src/api/pcas-code.json");
-      const dest = resolve(dirname(fileURLToPath(import.meta.url)), "dist/pcas-code.json");
-      if (fs.existsSync(src)) {
-        fs.copyFileSync(src, dest);
-        console.log("[copy-pcas-json] Copied pcas-code.json to dist/");
-      }
-    },
-  };
-}
 // https://vitejs.dev/config/
 const baseHost: string = "http://localhost:7719/";
 const systemHost: string = "http://localhost:8749/";
@@ -122,7 +107,6 @@ export default defineConfig((mode) => {
           defineModel: true,
         },
       }),
-      copyPcasJson(),
       dts({
         entryRoot: "./src",
         outDir: "dist/types",
@@ -279,7 +263,7 @@ export default defineConfig((mode) => {
         output: {
           exports: "named",
           assetFileNames: "assets/[name][extname]", // 修正资源输出路径
-          // 禁用代码分割，保持 lib 单文件输出
+          // 禁用代码分割
           codeSplitting: false,
           // 合并所有chunk到单个文件
           manualChunks: undefined,

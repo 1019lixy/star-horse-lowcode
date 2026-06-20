@@ -3,7 +3,6 @@ import StarHorseFormTable from "@/components/comp/StarHorseFormTable.vue";
 import { ContainerPreps } from "@/components/types/ItemPreps";
 import { ModelRef, onMounted } from "vue";
 import StarHorseItem from "@/components/comp/StarHorseItem.vue";
-import {checkVisible} from "@/api/form_utils";
 
 const props = withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
@@ -64,7 +63,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <template v-if="item.tabList?.length > 0 && checkVisible(item, dataForm)">
+  <template v-if="item.tabList?.length > 0">
     <el-tabs
       v-model="item.fieldName"
       :type="item.preps?.type || ''"

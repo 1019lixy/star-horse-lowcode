@@ -433,7 +433,7 @@ export default {
     "api.eventTriggerError": "Event trigger error: ",
     "api.pleaseSelectData2": "Please select data",
     "api.noUrlProvided": "No URL provided",
-    "api.apiLinkageError":"Interface error",
+
     /**
      * Component Strings
      */

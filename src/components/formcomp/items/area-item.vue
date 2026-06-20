@@ -18,6 +18,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
+import areaData from "@/api/pcas-code.json";
 import { compDynamicData } from "@/api/star_horse_utils";
 import { getDynamicEvents } from "@/api/system";
 import {
@@ -27,11 +28,8 @@ import {
   prepsFilter,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { ItemPreps } from "@/components/types/ItemPreps";
-import { nextTick, onMounted, ref, watch } from "vue";
+import { nextTick, onMounted, watch } from "vue";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
-
-// 动态加载省市区数据，避免 5MB JSON 静态打包
-const areaData = ref<any[]>([]);
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -73,24 +71,6 @@ const initData = async () => {
   }
 };
 onMounted(() => {
-  // 动态加载省市区数据：通过 fetch 运行时加载，避免 5MB+ JSON 打包进主 JS
-  // 开发模式从 Vite dev server 加载源文件
-  // 生产模式从库 JS 同目录加载 pcas-code.json（构建时复制到 dist/）
-  // 消费方用 Vite 打包时，会自动识别 ./pcas-code.json 并处理资源，无感知
-  if (!props.field.preps?.options) {
-    const jsonName = import.meta.env.DEV
-      ? "/src/api/pcas-code.json"
-      : "./pcas-code.json";
-    const areaDataUrl = new URL(jsonName, import.meta.url).href;
-    fetch(areaDataUrl)
-      .then((res) => res.json())
-      .then((data) => {
-        areaData.value = data || [];
-      })
-      .catch((err) => {
-        console.error("[area-item] Failed to load area data:", err);
-      });
-  }
   initData();
   initCompCallEvent(props, emits, formData);
 });

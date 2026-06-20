@@ -663,9 +663,6 @@ export async function compDynamicData(field: any, analysisUrl?: false) {
         } else {
             reDataList = dicts;
         }
-    } else if (dataSource == "api") {
-        // 第三方接口数据源
-        reDataList = await loadApiDataSource(temp.preps);
     } else {
         reDataList = [];
     }
@@ -680,76 +677,6 @@ export async function compDynamicData(field: any, analysisUrl?: false) {
         return unref(field.optionList);
     }
     return reDataList;
-}
-
-/**
- * 加载第三方接口数据源，将接口返回数据转换为SelectOption[]
- */
-async function loadApiDataSource(preps: any): Promise<SelectOption[]> {
-    const temp = preps || {};
-    const requestParams: Record<string, any> = {
-        url: temp.apiUrl,
-        httpMethod: temp.apiHttpMethod || "POST",
-        dataType: temp.apiDataType || "JSON",
-        responseTemplate: temp.apiResponseTemplate || "result_data",
-        successCode: temp.apiSuccessCode ?? 0,
-        codePath: temp.apiCodePath || "code",
-        dataPath: temp.apiDataPath || "data",
-    };
-
-    // 请求参数
-    if (temp.apiRequestParams && Array.isArray(temp.apiRequestParams)) {
-        const params: Record<string, any> = {};
-        temp.apiRequestParams.forEach((p: any) => {
-            if (p.paramName) {
-                params[p.paramName] = p.paramValue || "";
-            }
-        });
-        requestParams.requestParams = params;
-    }
-
-    // 自定义请求头
-    if (temp.apiHeaders) {
-        requestParams.headers = typeof temp.apiHeaders === "string" ? JSON.parse(temp.apiHeaders) : temp.apiHeaders;
-    }
-
-    // 登录配置
-    if (temp.apiNeedLogin === "Y") {
-        requestParams.authType = "login";
-        requestParams.loginUrl = temp.apiLoginUrl;
-        requestParams.loginMethod = temp.apiLoginMethod || "POST";
-        requestParams.loginAccount = temp.apiLoginAccount || "";
-        requestParams.loginPassword = temp.apiLoginPassword || "";
-        requestParams.loginTokenPath = temp.apiLoginTokenPath || "data.token";
-        requestParams.loginHeaderName = temp.apiLoginHeaderName || "Authorization";
-    }
-
-    try {
-        const result = await loadData(temp.preps.apiLinkageRedirectUrl ?? "/system-config/redirect/apiLinkage", requestParams);
-        if (result.error) {
-            error(i18n("api.apiLinkageError") || "第三方接口请求失败: " + result.error);
-            return [];
-        }
-        const data = result.data;
-        if (!data) return [];
-
-        // 将返回数据转换为SelectOption[]
-        const labelField = temp.apiLabelField || "name";
-        const valueField = temp.apiValueField || "value";
-        let list: any[] = [];
-        if (Array.isArray(data)) {
-            list = data;
-        } else if (typeof data === "object") {
-            list = [data];
-        }
-        return list.map((item: any) => ({
-            name: typeof item === "object" ? item[labelField] : String(item),
-            value: typeof item === "object" ? item[valueField] : item,
-        })).filter((item: SelectOption) => item.name !== undefined && item.value !== undefined);
-    } catch (err: any) {
-        error(i18n("api.apiLinkageError") || "第三方接口请求异常: " + (err.message || err));
-        return [];
-    }
 }
 
 /**
@@ -1073,8 +1000,8 @@ export function base64Decode(param: string) {
  * 预览图片（纯JS实现，无第三方依赖）
  * @param images 图片URL数组或单个URL
  */
-export {ImagePreview, imagesPreview} from "@/utils/ImagePreview";
-export type {ImagePreviewOptions, ImageTransition} from "@/utils/ImagePreview";
+export { ImagePreview, imagesPreview } from "@/utils/ImagePreview";
+export type { ImagePreviewOptions, ImageTransition } from "@/utils/ImagePreview";
 
 /**
  * 设置css 全局变量
