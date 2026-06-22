@@ -16,6 +16,7 @@ import EditorTest from "@/sample/EditorTest.vue";
 import ImagePreviewTest from "@/sample/ImagePreviewTest.vue";
 import FormRelationOperation from "@/sample/FormRelationOperation.vue";
 import ValidDialogFormRelation from "@/sample/ValidDialogFormRelation.vue";
+import ValidMulitSameFormTab from "@/sample/ValidMulitSameFormTab.vue";
 
 const visible = ref<boolean>(false);
 const actName = ref<string>("component");
@@ -51,7 +52,7 @@ onMounted(() => {
             <NormalFormValid/>
           </el-tab-pane>
         </el-tabs>-->
-    <ValidDialogFormRelation/>
+    <ValidMulitSameFormTab/>
 <!--    <el-tabs v-model="actName" class="h-full">
       <el-tab-pane name="component" label="IDE">
         <CodeEditorTest/>
