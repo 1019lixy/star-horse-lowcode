@@ -1,6 +1,6 @@
 import {createCondition, dynamicUrlOperation, isJson,} from "@/api/star_horse_utils";
 import {userFunction} from "@/api/user_func";
-import {RelationDetail, SelectOption} from "@/components/types";
+import {ApiLinkageDetail, ItemRelation, RelationDetail, SelectOption} from "@/components/types";
 import {error} from "@/utils/message";
 import {i18n} from "@/lang";
 import {computed, nextTick, Ref, unref, watch} from "vue";
@@ -192,6 +192,37 @@ const changeType = (props: any, item: RelationDetail, e: any) => {
 };
 
 // ==================== 联动事件分发 ====================
+/**
+ * 联动事件分发函数
+ * @param props
+ * @param item
+ * @param e
+ * @param formData
+ * @param actionName
+ */
+const relationEventDispatcher = (props: any, item: ItemRelation, e: any, formData: Ref<Record<string, any>>,
+                                 actionName: string) => {
+    const relationDetails = item.relationDetails;
+    const apiLinkage = item.apiLinkage;
+    if (relationDetails && relationDetails.length > 0) {
+        relationEvent(props, relationDetails, e, formData, actionName);
+    } else if (apiLinkage && Object.keys(apiLinkage).length > 0) {
+        apiLinkageOperation(props, apiLinkage, e, formData, actionName);
+    }
+};
+/**
+ *
+ * @param props
+ * @param item
+ * @param e
+ * @param formData
+ * @param actionName
+ */
+const apiLinkageOperation = (props: any, apiLinkage: ApiLinkageDetail, e: any,
+                             formData: Ref<Record<string, any>>, actionName: string) => {
+//数据配置OK后
+    console.log(apiLinkage);
+};
 
 const relationEvent = (
     props: any,
@@ -348,9 +379,9 @@ const initRelationEvent = (props: any, formData: any, needWatch?: boolean) => {
                 () => formData.value?.[props.field?.fieldName],
                 (val) => {
                     if (val) {
-                        relationEvent(
+                        relationEventDispatcher(
                             props,
-                            dataRelation?.relationDetails,
+                            dataRelation,
                             val,
                             formData,
                             actionName
@@ -364,7 +395,7 @@ const initRelationEvent = (props: any, formData: any, needWatch?: boolean) => {
         }
         relationEvent(
             props,
-            dataRelation?.relationDetails,
+            dataRelation,
             formData.value[props.field.fieldName],
             formData,
             actionName,
@@ -463,6 +494,7 @@ export {
     initCompCallEvent,
     prepsFilter,
     relationEvent,
+    relationEventDispatcher,
     useFormField,
     convertData,
     executeFormulaWithFill,

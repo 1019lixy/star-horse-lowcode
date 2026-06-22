@@ -1,13 +1,13 @@
 import {isJson} from "@/api/star_horse_utils";
-import {relationEvent} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {relationEventDispatcher} from "@/components/formcomp/utils/ItemRelationEventUtils";
 import {DyCompField} from "@/components/types/DyCompField";
-import {RelationDetail} from "@/components/types/ItemPreps";
 import {SearchParams} from "@/components/types/Params";
 import {error, success} from "@/utils/message";
 import {useDark, useToggle} from "@vueuse/core";
 import {v4 as uuidv4} from "uuid";
 import {computed, Ref, ref, unref} from "vue";
 import {i18n} from "@/lang";
+import {ItemRelation} from "@/components/types";
 
 /**
  * UUID
@@ -373,14 +373,14 @@ export const baseEvent = (eventName: string, recall?: Function) => {
 };
 export const baseRelationEvent = (
     props: any,
-    relationDetails: RelationDetail[],
+    relation: ItemRelation,
     formData: any,
     actionName: string,
 ) => {
     return function handler(e: Event) {
         console.log("baseRelationEvent2", actionName,formData);
         return handleEvent(actionName, e, (tempName) => {
-            relationEvent(props, relationDetails, e, formData, tempName);
+            relationEventDispatcher(props, relation, e, formData, tempName);
         });
     };
 };
@@ -404,7 +404,7 @@ export function getDynamicEvents(props: any, recall: Function, formData: any) {
     if (actionName) {
         events[actionName] = baseRelationEvent(
             props,
-            dataRelation?.relationDetails,
+            dataRelation,
             formData,
             actionName,
         );

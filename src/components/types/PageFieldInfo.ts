@@ -273,6 +273,14 @@ export declare interface FieldMapping {
      * 需要赋值的属性
      */
     distField: string;
+    /**
+     * 类型转换选项
+     */
+    typeConvert?: string;
+    /**
+     * 转换表达式
+     */
+    transform?: string;
 }
 
 /**

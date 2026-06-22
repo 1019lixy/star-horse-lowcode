@@ -1,5 +1,5 @@
 import {ApiUrls} from "./ApiUrls";
-import {FieldInfo, PageFieldInfo} from "./PageFieldInfo";
+import {FieldInfo, FieldMapping, PageFieldInfo} from "./PageFieldInfo";
 import {RedirectParams} from "./Params";
 import {SelectOption} from "./SearchProps";
 
@@ -167,6 +167,124 @@ export interface RelationDetail {
     isWorking: boolean;
 }
 
+export interface ApiHeader {
+    /**
+     * 值类型，如果是动态值，需要提取value 中的${xx},替换为具体的xx
+     */
+    valueType: "dynamic" | "static",
+    /**
+     * 名称
+     */
+    name?: string,
+    /**
+     * 值
+     */
+    value?: string,
+}
+
+export interface ApiInfo {
+    /**
+     * 请求头
+     */
+    headers?: ApiHeader[],
+    /**
+     * 请求参数
+     */
+    requestParams?: Array<any>,
+    /**
+     * 数据返回模板
+     */
+    responseTemplate?: string,
+    /**
+     * 消息路径,如：返回数据位 {code:0,msg:'xxx',data:业务数据},这里的路径是msg
+     * 返回数据位 {code:0,data:{
+     *     msg:'xxx',
+     *     instanceData:{}
+     * }},这里的路径是data.msg
+     */
+    messagePath?: string,
+    /**
+     * 编码路径，参考messagePath
+     */
+    codePath?: string,
+    /**
+     * 业务数据路径,参考messagePath
+     */
+    dataPath?: string,
+    /**
+     * 成功码
+     */
+    successCode?: string,
+    /**
+     * 请求方式
+     */
+    httpMethod?: string,
+    /**
+     * 请求数据类型
+     */
+    requestDataType?: "form" | "json" | "binary";
+    /**
+     * 接口地址
+     */
+    url?: string;
+    /**
+     * 请求协议
+     */
+    protocol?: string,
+    /**
+     * 超时
+     */
+    timeout?: number,
+}
+
+export interface OptionField {
+    /**
+     * 显示属性
+     */
+    displayField: string,
+    /**
+     * 值属性
+     */
+    valueField: string,
+    /**
+     * 子节点属性
+     */
+    childrenField?: string,
+    /**
+     * 是否叶子节点属性
+     */
+    leafField?: string,
+    /**
+     * 禁用属性
+     */
+    disabledField?: string,
+}
+
+/**
+ * 第三方接口
+ */
+export interface ApiLinkageDetail {
+    /**
+     * 业务接口
+     */
+    apiInfo: ApiInfo;
+    /**
+     * 认证信息
+     */
+    authInfo?: ApiInfo;
+    /**
+     * 字段映射，接口字段与表单字段之间的转换关系
+     */
+    fieldMappings?: FieldMapping[];
+    /**
+     * 数据源中数据返回后的显示属性配置
+     */
+    optionField?: OptionField;
+}
+
+/**
+ * 联动对象
+ */
 export interface ItemRelation {
     /**
      * 关联事件名称
@@ -175,5 +293,9 @@ export interface ItemRelation {
     /**
      * 关联关系详情
      */
-    relationDetails: RelationDetail[];
+    relationDetails?: RelationDetail[];
+    /**
+     * 动态接口
+     */
+    apiLinkage?: ApiLinkageDetail;
 }
