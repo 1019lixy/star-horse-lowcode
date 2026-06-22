@@ -1,7 +1,7 @@
 import {createCondition, dynamicUrlOperation, isJson,} from "@/api/star_horse_utils";
 import {userFunction} from "@/api/user_func";
 import {ApiLinkageDetail, ItemRelation, RelationDetail, SelectOption} from "@/components/types";
-import {error} from "@/utils/message";
+import {error, warning} from "@/utils/message";
 import {i18n} from "@/lang";
 import {computed, nextTick, Ref, unref, watch} from "vue";
 import JSON5 from "json5";
@@ -10,6 +10,7 @@ import {
     initFormFormulaWatchers,
     setupFormulaWatchers,
 } from "@/components/formcomp/utils/FormulaEngine";
+import {postRequest} from "@/api/star_horse_apis";
 
 // ==================== 公共工具函数 ====================
 
@@ -221,7 +222,26 @@ const relationEventDispatcher = (props: any, item: ItemRelation, e: any, formDat
 const apiLinkageOperation = (props: any, apiLinkage: ApiLinkageDetail, e: any,
                              formData: Ref<Record<string, any>>, actionName: string) => {
 //数据配置OK后
-    console.log(apiLinkage);
+    const field = props.field;
+    const fieldName = field.fieldName;
+    const condition = {
+        ...apiLinkage,
+        condition: {
+            fieldList: [createCondition(fieldName, unref(formData)?.[fieldName], apiLinkage.valueMatchType ?? "eq")]
+        }
+    };
+
+    postRequest(apiLinkage.proxyUrl??"/userdb-manage/redirect/apiLinkage", condition).then(response => {
+        const result = response.data;
+        if (result.code) {
+            warning(result.cnMessage);
+            return;
+        }
+        const data = result.data;
+        if (data) {
+            formData.value = {...formData.value, ...data};
+        }
+    });
 };
 
 const relationEvent = (

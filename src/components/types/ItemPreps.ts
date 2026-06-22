@@ -280,6 +280,14 @@ export interface ApiLinkageDetail {
      * 数据源中数据返回后的显示属性配置
      */
     optionField?: OptionField;
+    /**
+     * 值匹配方式
+     */
+    valueMatchType: string;
+    /**
+     * 代理接口
+     */
+    proxyUrl?: string;
 }
 
 /**
