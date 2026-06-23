@@ -52,7 +52,7 @@ onMounted(() => {
             <NormalFormValid/>
           </el-tab-pane>
         </el-tabs>-->
-    <ValidMulitSameFormTab/>
+    <ValidDialogFormRelation/>
 <!--    <el-tabs v-model="actName" class="h-full">
       <el-tab-pane name="component" label="IDE">
         <CodeEditorTest/>

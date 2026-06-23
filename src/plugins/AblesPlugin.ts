@@ -3,6 +3,7 @@ import {computed, reactive, ref} from "vue";
 import {uuid} from "@/api/system";
 import {DynamicNode} from "@/components/types/DynamicNode";
 import {i18n} from "@/lang";
+import camelcase from "camelcase";
 
 const copyerAction = getCopyerOperationStore();
 let designForm = getDesignFormStore();
@@ -339,7 +340,7 @@ export function paste(parentItem: any) {
         } else {
             copyerData = JSON.parse(JSON.stringify(copyerData));
             copyerData.id = uuid();
-            copyerData.fieldName = "field_" + copyerData.id.substring(0, 6);
+            copyerData.fieldName = camelcase(["field",copyerData.id.substring(0, 6)]);
             copyerData.preps.id = copyerData.id;
             console.log("paste", copyerData, currentSubItem.value);
             //如果选中了某个单元格

@@ -39,7 +39,7 @@
 </template>
 <script setup lang="ts">
 import {nextTick, onMounted, watch} from "vue";
-import {allAction, checkIsDisabled,} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {allAction, checkIsDisabled, initCompCallEvent,} from "@/components/formcomp/utils/ItemRelationEventUtils";
 import {compDynamicData} from "@/api/star_horse_utils";
 import {getDynamicEvents} from "@/api/system";
 
@@ -70,7 +70,7 @@ onMounted(async () => {
   }
   await initData();
   nextTick(() => {
-    allAction(props, emits, formData, "change", true);
+    initCompCallEvent(props, emits, formData);
   });
 });
 watch(

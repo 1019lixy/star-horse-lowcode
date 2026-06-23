@@ -167,34 +167,38 @@ export interface RelationDetail {
     isWorking: boolean;
 }
 
-export interface ApiHeader {
+export interface ApiParam {
     /**
      * 值类型，如果是动态值，需要提取value 中的${xx},替换为具体的xx
      */
-    valueType: "dynamic" | "static",
+    valueType: "dynamic" | "static";
     /**
      * 名称
      */
-    name?: string,
+    paramName?: string;
     /**
      * 值
      */
-    value?: string,
+    paramValue?: string;
+    /**
+     * 数据匹配方式
+     */
+    matchType?: string;
 }
 
 export interface ApiInfo {
     /**
      * 请求头
      */
-    headers?: ApiHeader[],
+    headers?: ApiParam[];
     /**
      * 请求参数
      */
-    requestParams?: Array<any>,
+    requestParams?: ApiParam[];
     /**
      * 数据返回模板
      */
-    responseTemplate?: string,
+    responseTemplate?: string;
     /**
      * 消息路径,如：返回数据位 {code:0,msg:'xxx',data:业务数据},这里的路径是msg
      * 返回数据位 {code:0,data:{
@@ -234,30 +238,51 @@ export interface ApiInfo {
     /**
      * 超时
      */
-    timeout?: number,
+    timeout?: number;
+    /**
+     * 接口类型
+     */
+    apiType: "systemApi" | "thirdApi";
+    /*******************以下参数是systemApi专属**********************/
+    /**
+     * 是否代理
+     */
+    redirect?: boolean;
+    /**
+     * 接口调用方法
+     */
+    method?: string;
+    /**
+     * 接口名称
+     */
+    interfaceName?: string;
+    /**
+     * 服务名
+     */
+    serviceName?: string;
 }
 
 export interface OptionField {
     /**
      * 显示属性
      */
-    displayField: string,
+    displayField: string;
     /**
      * 值属性
      */
-    valueField: string,
+    valueField: string;
     /**
      * 子节点属性
      */
-    childrenField?: string,
+    childrenField?: string;
     /**
      * 是否叶子节点属性
      */
-    leafField?: string,
+    leafField?: string;
     /**
      * 禁用属性
      */
-    disabledField?: string,
+    disabledField?: string;
 }
 
 /**
@@ -280,14 +305,17 @@ export interface ApiLinkageDetail {
      * 数据源中数据返回后的显示属性配置
      */
     optionField?: OptionField;
-    /**
-     * 值匹配方式
-     */
-    valueMatchType: string;
+
     /**
      * 代理接口
      */
     proxyUrl?: string;
+    /**
+     * 赋值方式
+     */
+    assignValueType?: "form" | "datasource";
+    /** 接口来源模式 */
+    apiMode: "system" | "custom";
 }
 
 /**

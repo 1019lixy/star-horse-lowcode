@@ -1,30 +1,29 @@
 <template>
   {{ areaFormRef?.getFormData() }}
   <star-horse-dialog
-    :dialogVisible="dataRelationDialogVisible"
-    :title="'数据联动策略配置'"
-    :isBatch="false"
-    @merge="dataRelationMerge"
-    @closeAction="closeAction"
-    @resetForm="dataRelationReset"
-    :selfFunc="true"
+      :dialogVisible="dataRelationDialogVisible"
+      :title="'数据联动策略配置'"
+      :isBatch="false"
+      @merge="dataRelationMerge"
+      @closeAction="closeAction"
+      @resetForm="dataRelationReset"
+      :selfFunc="true"
   >
     <star-horse-form
-      primary-key=""
-      ref="areaFormRef"
-      :fieldList="tableFieldList"
+        primary-key=""
+        ref="areaFormRef"
+        :fieldList="tableFieldList"
     />
   </star-horse-dialog>
   <el-button @click="editData">Test</el-button>
 </template>
 
 <script lang="ts" setup>
-import { searchMatchList } from "@/api/star_horse_utils";
-import { PageFieldInfo } from "@/components/types/PageFieldInfo";
-import { SelectOption } from "@/components/types/SearchProps";
-import {nextTick, onMounted, reactive, ref} from "vue";
-import WebUrlComp from "./WebUrlComp.vue";
-import {analysisCompDatas} from "@";
+import {PageFieldInfo} from "@/components/types/PageFieldInfo";
+import {SelectOption} from "@/components/types/SearchProps";
+import {onMounted, ref} from "vue";
+import {analysisCompDatas} from "@/api/form_utils";
+
 
 const areaFormRef = ref();
 const dataRelationDialogVisible = ref<boolean>(false);
@@ -139,384 +138,217 @@ const closeAction = () => {
  */
 const fields: SelectOption[] = [];
 const eventList: SelectOption[] = [
-  { name: "Change", value: "change" },
-  { name: "Input", value: "input" },
+  {name: "Change", value: "change"},
+  {name: "Input", value: "input"},
 ];
 const controlConditionList: SelectOption[] = [
-  { name: "满足条件触发数据联动", value: "eqConditionDataLinkage" },
-  { name: "数据作为参数触发数据联动", value: "asParamDataLinkage" },
-  { name: "等于指定值时禁用被关联字段", value: "eqDisable" },
-  { name: "等于指定值时可编辑被关联字段", value: "eqEditable" },
-  { name: "等于指定值时隐藏被关联字段", value: "eqHide" },
-  { name: "等于指定值时显示被关联字段", value: "eqVisible" },
-  { name: "等于指定值时被关联字段必填", value: "eqRequired" },
-  { name: "等于指定值时被关联字段赋予新值", value: "assignValue" },
-  { name: "数据等于指定值时被关联字段改变字段类型", value: "changeType" },
-  { name: "测试数据", value: "button_authority" },
+  {name: "满足条件触发数据联动", value: "eqConditionDataLinkage"},
+  {name: "数据作为参数触发数据联动", value: "asParamDataLinkage"},
+  {name: "等于指定值时禁用被关联字段", value: "eqDisable"},
+  {name: "等于指定值时可编辑被关联字段", value: "eqEditable"},
+  {name: "等于指定值时隐藏被关联字段", value: "eqHide"},
+  {name: "等于指定值时显示被关联字段", value: "eqVisible"},
+  {name: "等于指定值时被关联字段必填", value: "eqRequired"},
+  {name: "等于指定值时被关联字段赋予新值", value: "assignValue"},
+  {name: "数据等于指定值时被关联字段改变字段类型", value: "changeType"},
+  {name: "测试数据", value: "button_authority"},
 ];
 const fieldType = ref<string>("input");
 const fieldLinkVisible = ref<boolean>(false);
-const dataList=[
-  {
-    "id": "Idsh3124fe7b-2c64-4974-b277-fac1d84be389",
-    "preps": {
-      "id": "Idsh3124fe7b-2c64-4974-b277-fac1d84be389",
-      "itemNameLabel": "单行文本框",
-      "clearable": true,
-      "readonly": false,
-      "placeholder": "请输入所属模块ID",
-      "appCompVisible": false,
-      "appLabelVisible": false,
-      "rules": [],
-      "maxLength": 100,
-      "formVisible": true,
-      "listVisible": true,
-      "viewVisible": true,
-      "formula": {
-        "enable": false,
-        "type": "calc",
-        "sourceFields": [],
-        "expression": ""
-      },
-      "label": "所属模块ID",
-      "name": "moduleId",
-      "required": true,
-      "searchVisible": true,
-      "defaultVisible": true
-    },
-    "compType": "formItem",
-    "fieldName": "moduleId",
-    "itemType": "input",
-    "label": "单行文本框",
-    "type": "input",
-    "priority": 1
-  },
-  {
-    "id": "Idshfa69c6c3-bcf5-4913-869b-3012f84454ba",
-    "preps": {
-      "id": "Idshfa69c6c3-bcf5-4913-869b-3012f84454ba",
-      "itemNameLabel": "单行文本框",
-      "clearable": true,
-      "readonly": false,
-      "placeholder": "请输入完整路径",
-      "rules": [],
-      "maxLength": 1500,
-      "formVisible": true,
-      "listVisible": true,
-      "viewVisible": true,
-      "formula": {
-        "enable": false,
-        "type": "calc",
-        "sourceFields": [],
-        "expression": ""
-      },
-      "label": "完整路径",
-      "name": "filePath",
-      "required": true,
-      "hideLabel": false
-    },
-    "compType": "formItem",
-    "fieldName": "filePath",
-    "itemType": "input",
-    "label": "单行文本框",
-    "type": "input",
-    "priority": 2
-  },
-  {
-    "id": "Idsh71368af7-81f6-4820-817c-6d6ba68b978f",
-    "preps": {
-      "id": "Idsh71368af7-81f6-4820-817c-6d6ba68b978f",
-      "itemNameLabel": "单行文本框",
-      "clearable": true,
-      "readonly": false,
-      "placeholder": "请输入文件名",
-      "rules": [],
-      "maxLength": 200,
-      "formVisible": true,
-      "listVisible": true,
-      "viewVisible": true,
-      "formula": {
-        "enable": false,
-        "type": "calc",
-        "sourceFields": [],
-        "expression": ""
-      },
-      "label": "文件名",
-      "name": "fileName",
-      "required": true,
-      "searchVisible": true,
-      "defaultVisible": true
-    },
-    "compType": "formItem",
-    "fieldName": "fileName",
-    "itemType": "input",
-    "label": "单行文本框",
-    "type": "input",
-    "priority": 3
-  },
-  {
-    "id": "Idshc04bd871-22f8-4df0-ba47-b0bed628336a",
-    "preps": {
-      "id": "Idshc04bd871-22f8-4df0-ba47-b0bed628336a",
-      "itemNameLabel": "单行文本框",
-      "clearable": true,
-      "readonly": false,
-      "placeholder": "请输入节点类型",
-      "rules": [],
-      "maxLength": 50,
-      "formVisible": true,
-      "listVisible": true,
-      "viewVisible": true,
-      "formula": {
-        "enable": false,
-        "type": "calc",
-        "sourceFields": [],
-        "expression": ""
-      },
-      "label": "节点类型",
-      "name": "nodeType",
-      "defaultValue": "file",
-      "required": true
-    },
-    "compType": "formItem",
-    "fieldName": "nodeType",
-    "itemType": "input",
-    "label": "单行文本框",
-    "type": "input",
-    "priority": 4
-  },
-  {
-    "id": "Idshab894a3f-b6dd-493c-b831-62b4dbd0bf08",
-    "preps": {
-      "id": "Idshab894a3f-b6dd-493c-b831-62b4dbd0bf08",
-      "itemNameLabel": "单行文本框",
-      "clearable": true,
-      "readonly": false,
-      "placeholder": "请输入文件内容",
-      "rules": [],
-      "maxLength": 4000,
-      "formVisible": true,
-      "listVisible": true,
-      "viewVisible": true,
-      "formula": {
-        "enable": false,
-        "type": "calc",
-        "sourceFields": [],
-        "expression": ""
-      },
-      "label": "文件内容",
-      "name": "content"
-    },
-    "compType": "formItem",
-    "fieldName": "content",
-    "itemType": "input",
-    "label": "单行文本框",
-    "type": "input",
-    "priority": 5
-  },
-  {
-    "id": "Idsh52e01cf7-6f75-49fb-b445-c6e27b7481e7",
-    "preps": {
-      "id": "Idsh52e01cf7-6f75-49fb-b445-c6e27b7481e7",
-      "itemNameLabel": "单行文本框",
-      "clearable": true,
-      "readonly": false,
-      "placeholder": "请输入语言类型",
-      "rules": [],
-      "maxLength": 100,
-      "formVisible": true,
-      "listVisible": true,
-      "viewVisible": true,
-      "formula": {
-        "enable": false,
-        "type": "calc",
-        "sourceFields": [],
-        "expression": ""
-      },
-      "label": "语言类型",
-      "name": "language",
-      "required": true
-    },
-    "compType": "formItem",
-    "fieldName": "language",
-    "itemType": "input",
-    "label": "单行文本框",
-    "type": "input",
-    "priority": 6
-  },
-  {
-    "id": "Idsh28c4e630-7886-4253-8836-dc8376f185a8",
-    "preps": {
-      "dataRelation": {
-        "actionName": "blur",
-        "relationDetails": [
-          {
-            "matchType": "eq",
-            "controlCondition": "loadDataLinkage",
-            "params": {
-              "redirect": true,
+const dataList = [{
+      "id": "Idsh9cea0550-5fba-4bf4-97ee-6ba9f21d9304", "preps": {
+        "id": "Idsh9cea0550-5fba-4bf4-97ee-6ba9f21d9304",
+        "label": "用户信息",
+        "itemNameLabel": "单行文本框",
+        "name": "userInfo",
+        "clearable": true,
+        "readonly": false,
+        "placeholder": "请输入用户信息",
+        "rules": [],
+        "maxLength": 255,
+        "formVisible": true,
+        "listVisible": true,
+        "viewVisible": true,
+        "formula": {"enable": false, "type": "calc", "sourceFields": [], "expression": ""},
+        "dataRelation": {
+          "relationDetails": [], "actionName": "blur", "apiLinkage": {
+            "proxyUrl": "/system-config/redirect/apiLinkage",
+            "conditionFields": ["userInfo", "fieldShcad6"],
+            "apiInfo": {
+              "apiType": "thirdApi",
               "httpMethod": "POST",
               "protocol": "http",
-              "queryParams": []
+              "dataType": "JSON",
+              "headers": [{
+                "valueType": "static",
+                "paramName": "P-Auth",
+                "paramValue": "u_Mjc2MWI1ZXZqYmI1azJhN3Y4bF4WNzU5ODEWMZ9ONTE5MzIxMTU4MjkyMjg20831",
+                "xh": 1
+              }],
+              "requestParams": [{
+                "valueType": "isolation",
+                "paramName": "DataType",
+                "paramValue": "${DataType}",
+                "xh": 1
+              }, {"valueType": "dynamic", "paramName": "Id", "paramValue": "${userInfo}", "xh": 2}, {
+                "valueType": "static",
+                "paramName": "typeid",
+                "paramValue": "1",
+                "xh": 3
+              }, {"valueType": "static", "paramName": "wo", "paramValue": "", "xh": 4}],
+              "responseTemplate": "result_data_list",
+              "codePath": "code",
+              "dataPath": "data",
+              "url": "http://192.168.20.102:8092/tims",
+              "successCode": "200"
             },
-            "dataSourceDivider": "数据源",
-            "relationFields": [
-              "moduleId"
-            ],
-            "matchFieldValue": [
-              "abc"
-            ],
-            "xh": 1,
-            "isWorking": false,
-            "starHorseEditing": "no"
-          }
-        ],
-        "relationDetailsDefaultValue": [
-          {}
-        ]
-      },
-      "id": "Idsh28c4e630-7886-4253-8836-dc8376f185a8",
-      "itemNameLabel": "单行文本框",
-      "clearable": true,
-      "readonly": false,
-      "placeholder": "请输入父目录路径",
-      "rules": [],
-      "maxLength": 255,
-      "formVisible": true,
-      "listVisible": true,
-      "viewVisible": true,
-      "formula": {
-        "enable": false,
-        "type": "calc",
-        "sourceFields": [],
-        "expression": ""
-      },
-      "label": "父目录路径",
-      "name": "parentPath",
-      "required": true
-    },
-    "compType": "formItem",
-    "fieldName": "parentPath",
-    "itemType": "input",
-    "label": "单行文本框",
-    "type": "input",
-    "priority": 7
-  },
-  {
-    "id": "Idsh899e980f-9320-4b33-9684-bf22904e9b22",
-    "preps": {
-      "id": "Idsh899e980f-9320-4b33-9684-bf22904e9b22",
-      "itemNameLabel": "数字输入框",
-      "clearable": true,
-      "readonly": false,
-      "placeholder": "请输入排序号",
-      "step": 1,
-      "min": 0,
-      "precision": 0,
-      "rules": [],
-      "formVisible": true,
-      "listVisible": true,
-      "viewVisible": true,
-      "formula": {
-        "enable": false,
-        "type": "calc",
-        "sourceFields": [],
-        "expression": ""
-      },
-      "label": "排序号",
-      "name": "sortOrder",
-      "maxLength": 10,
-      "required": true
-    },
-    "compType": "formItem",
-    "fieldName": "sortOrder",
-    "itemType": "number",
-    "label": "数字输入框",
-    "type": "number",
-    "priority": 8
-  },
-  {
-    "id": "Idshf1c78d56-ce40-4429-85c1-7fe2848c879d",
-    "preps": {
-      "id": "Idshf1c78d56-ce40-4429-85c1-7fe2848c879d",
-      "label": "选择器",
-      "itemNameLabel": "选择器",
-      "name": "field_validInfo",
-      "clearable": true,
-      "readonly": false,
-      "filterable": true,
-      "collapseTags": true,
-      "collapseTagsTooltip": true,
-      "placeholder": "请选择选择器",
-      "rules": [],
-      "maxLength": 255,
-      "formVisible": true,
-      "listVisible": true,
-      "viewVisible": true,
-      "formula": {
-        "enable": false,
-        "type": "calc",
-        "sourceFields": [],
-        "expression": ""
-      },
-      "remote": false,
-      "dataRelation": {
-        "actionName": "change",
-        "relationDetails": [
-          {
-            "matchType": "eq",
-            "matchFieldName": "field_shf1c7",
-            "controlCondition": "eqHide",
-            "params": {
-              "redirect": true,
+            "redirect": true,
+            "httpMethod": "POST",
+            "protocol": "http",
+            "dataType": "JSON",
+            "headers": [],
+            "requestParams": [],
+            "responseTemplate": "result_data_list",
+            "codePath": "code",
+            "dataPath": "data",
+            "fieldMappings": [{
+              "sourceField": "line",
+              "distField": "address",
+              "xh": 1,
+              "starHorseEditing": "no"
+            }, {"sourceField": "partdesc", "distField": "otherInfo", "xh": 2, "starHorseEditing": "no"}],
+            "authInfo": {
+              "apiType": "systemApi",
               "httpMethod": "POST",
               "protocol": "http",
-              "queryParams": []
+              "dataType": "JSON",
+              "headers": [],
+              "requestParams": [],
+              "responseTemplate": "result_data_list",
+              "codePath": "code",
+              "dataPath": "data"
             },
-            "dataSourceDivider": "数据源",
-            "relationFields": [
-              "moduleId"
-            ],
-            "matchFieldValue": [
-              "abc"
-            ],
-            "xh": 1,
-            "isWorking": false,
-            "starHorseEditing": "no"
+            "isolationConfig": {
+              "isolationDetails": [{
+                "isolationName": "330119242655466492",
+                "paramName": "DataType",
+                "isolationCode": "1",
+                "xh": 1
+              }, {
+                "isolationName": "357139040828392444",
+                "paramName": "DataType",
+                "isolationCode": "2",
+                "xh": 2
+              }, {"isolationName": "default", "paramName": "DataType", "isolationCode": "1", "xh": 3}],
+              "isolationType": "role"
+            },
+            "isolationDetails": [],
+            "headersDefaultValue": [{"valueType": "static"}, {"valueType": "static"}],
+            "requestParamsDefaultValue": [{"valueType": "static"}, {"valueType": "static"}],
+            "fieldMappingsDefaultValue": [{}],
+            "isolationDetailsDefaultValue": [{}]
           }
-        ],
-        "relationDetailsDefaultValue": [
-          {}
-        ]
-      },
-      "dataSource": "data",
-      "analysisType": "func",
-      "values": [
-        {
-          "name": "Abc",
-          "value": "abc",
-          "xh": 1,
-          "starHorseEditing": "no"
-        },
-        {
-          "name": "123",
-          "value": "123",
-          "xh": 2
         }
-      ],
-      "valuesDefaultValue": [
-        {}
-      ],
-      "hideLabel": false,
-      "searchVisible": false
-    },
-    "compType": "formItem",
-    "fieldName": "field_validInfo",
-    "itemType": "select",
-    "label": "选择器",
-    "type": "select"
-  }
-];
+      }, "compType": "formItem", "fieldName": "userInfo", "itemType": "input", "label": "单行文本框", "type": "input"
+    }, {
+      "id": "Idshcad62f7a-d330-4382-b8be-ea625d8c8349", "preps": {
+        "id": "Idshcad62f7a-d330-4382-b8be-ea625d8c8349",
+        "label": "数据选择",
+        "itemNameLabel": "选择器",
+        "name": "dataList",
+        "clearable": true,
+        "readonly": false,
+        "filterable": true,
+        "collapseTags": true,
+        "collapseTagsTooltip": true,
+        "placeholder": "请选择数据选择",
+        "remote": true,
+        "rules": [],
+        "maxLength": 255,
+        "formVisible": true,
+        "listVisible": true,
+        "viewVisible": true,
+        "formula": {"enable": false, "type": "calc", "sourceFields": [], "expression": ""},
+        "dataSource": "url",
+        "apiDataSource": {
+          "apiInfo": {
+            "apiType": "systemApi",
+            "httpMethod": "POST",
+            "protocol": "http",
+            "dataType": "JSON",
+            "headers": [],
+            "requestParams": [{"valueType": "static", "paramName": "dictType", "paramValue": "button_authority", "xh": 1}],
+            "responseTemplate": "result_data_list",
+            "codePath": "code",
+            "dataPath": "data",
+            "redirect": true,
+            "serviceName": "system-config-dev",
+            "interfaceName": "DictinfoController",
+            "method": "getAllByCondition",
+            "url": "http://172.26.224.1:8749/system-config/system/dictinfo/getAllByCondition"
+          },
+          "optionField": {"labelField": "dictName", "valueField": "dictCode"},
+          "authInfo": {
+            "apiType": "systemApi",
+            "httpMethod": "GET",
+            "protocol": "http",
+            "dataType": "JSON",
+            "headers": [],
+            "requestParams": [],
+            "responseTemplate": "result_data_list",
+            "codePath": "code",
+            "dataPath": "data"
+          },
+          "proxyUrl": "/system-config/redirect/apiLinkage",
+          "conditionFields": ["fieldShcad6"]
+        }
+      }, "compType": "formItem", "fieldName": "dataList", "itemType": "select", "label": "选择器", "type": "select"
+    }, {
+      "id": "Idsh39a0864c-fe9c-44ab-a458-1ef51ed2b2ae",
+      "preps": {
+        "id": "Idsh39a0864c-fe9c-44ab-a458-1ef51ed2b2ae",
+        "itemNameLabel": "单行文本框",
+        "name": "address",
+        "clearable": true,
+        "readonly": false,
+        "placeholder": "请输入地址",
+        "rules": [],
+        "maxLength": 255,
+        "formVisible": true,
+        "listVisible": true,
+        "viewVisible": true,
+        "formula": {"enable": false, "type": "calc", "sourceFields": [], "expression": ""},
+        "label": "地址"
+      },
+      "compType": "formItem",
+      "fieldName": "address",
+      "itemType": "input",
+      "label": "单行文本框",
+      "type": "input"
+    }, {
+      "id": "Idshfec4bfca-19ba-44ed-8c8a-ba26ab3d9f79",
+      "preps": {
+        "id": "Idshfec4bfca-19ba-44ed-8c8a-ba26ab3d9f79",
+        "label": "其他信息",
+        "itemNameLabel": "单行文本框",
+        "name": "otherInfo",
+        "clearable": true,
+        "readonly": false,
+        "placeholder": "请输入其他信息",
+        "rules": [],
+        "maxLength": 255,
+        "formVisible": true,
+        "listVisible": true,
+        "viewVisible": true,
+        "formula": {"enable": false, "type": "calc", "sourceFields": [], "expression": ""}
+      },
+      "compType": "formItem",
+      "fieldName": "otherInfo",
+      "itemType": "input",
+      "label": "单行文本框",
+      "type": "input"
+    }]
+;
 /*const tableFieldList = reactive<PageFieldInfo | any>({
   fieldList: [
     {
@@ -708,13 +540,13 @@ const dataList=[
     },
   ],
 });*/
-const tableFieldList=ref<PageFieldInfo>({
-  fieldList:[]
+const tableFieldList = ref<PageFieldInfo>({
+  fieldList: []
 });
-onMounted(()=>{
+onMounted(() => {
   const result = analysisCompDatas(dataList);
   console.log(result);
-  tableFieldList.value.fieldList=result.fieldList;
+  tableFieldList.value.fieldList = result.fieldList;
 });
 </script>
 

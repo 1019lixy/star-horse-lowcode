@@ -214,7 +214,7 @@ const relationEventDispatcher = (props: any, item: ItemRelation, e: any, formDat
 /**
  *
  * @param props
- * @param item
+ * @param apiLinkage
  * @param e
  * @param formData
  * @param actionName
@@ -222,16 +222,12 @@ const relationEventDispatcher = (props: any, item: ItemRelation, e: any, formDat
 const apiLinkageOperation = (props: any, apiLinkage: ApiLinkageDetail, e: any,
                              formData: Ref<Record<string, any>>, actionName: string) => {
 //数据配置OK后
-    const field = props.field;
-    const fieldName = field.fieldName;
     const condition = {
         ...apiLinkage,
-        condition: {
-            fieldList: [createCondition(fieldName, unref(formData)?.[fieldName], apiLinkage.valueMatchType ?? "eq")]
-        }
+        formData: unref(formData)
     };
 
-    postRequest(apiLinkage.proxyUrl??"/userdb-manage/redirect/apiLinkage", condition).then(response => {
+    postRequest(apiLinkage.proxyUrl ?? "/system-config/redirect/apiLinkage", condition).then(response => {
         const result = response.data;
         if (result.code) {
             warning(result.cnMessage);
@@ -239,7 +235,10 @@ const apiLinkageOperation = (props: any, apiLinkage: ApiLinkageDetail, e: any,
         }
         const data = result.data;
         if (data) {
-            formData.value = {...formData.value, ...data};
+            for(let key in data) {
+                unref(formData)[key] =data[key];
+            }
+
         }
     });
 };
@@ -280,10 +279,6 @@ const relationEvent = (
             case "changeType":
                 changeType(props, item, e);
                 break;
-            case "loadDataLinkage":
-                loadDataLinkageOperation(props, item, formData);
-
-                break;
             default:
                 console.log(i18n("api.unhandledEvent") + controlCondition);
         }
@@ -292,15 +287,7 @@ const relationEvent = (
     });
 };
 
-/**
- * 处理第三方接口调用
- * @param props
- * @param item
- * @param formData
- */
-const loadDataLinkageOperation = (props: any, item: RelationDetail, formData: any) => {
-    console.log("loadDataLinkage", props.field.fieldName, item, formData);
-};
+
 // ==================== 事件触发 ====================
 
 /** 所有触发的事件 */

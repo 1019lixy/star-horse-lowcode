@@ -19,6 +19,7 @@ import {ApiUrls} from "@/components/types/ApiUrls";
 import {DialogProps} from "@/components/types/DialogProps";
 import {createDatetime} from "@/api/date_utils";
 import {i18n} from "@/lang";
+import {ApiLinkageDetail} from "@/components/types";
 
 let loading: any = null;
 
@@ -648,14 +649,15 @@ export function batchFieldDefaultValues(datas: BatchFieldInfo, dataForm: any) {
  * 动态组件数据
  * @param field 组件参数信息
  * @param analysisUrl 是否解析Url
+ * @param proxyUrl 代理接口
  */
-export async function compDynamicData(field: any, analysisUrl?: false) {
+export async function compDynamicData(field: any, analysisUrl?: false, proxyUrl?: string) {
     const temp = field;
     let reDataList: SelectOption[] = [];
     const dataSource = temp.preps?.dataSource;
     const urlOrDictName = temp.preps?.urlOrDictName;
-    if (dataSource == "url" && !analysisUrl) {
-        reDataList = await dynamicUrlOperation(field);
+    if (dataSource == "url" || temp.preps?.apiDataSource) {
+        reDataList = await dynamicUrlOperation(field, [], proxyUrl);
     } else if (dataSource == "dict") {
         const dicts = await dictData(urlOrDictName);
         if (Object.keys(dicts).length == 0) {
@@ -691,7 +693,19 @@ export async function dynamicUrlOperation(
     proxyUrl?: string,
 ) {
     const temp = preps.preps || preps;
-    const redirect = temp.redirect ?? true;
+    const apiDataSource = temp?.apiDataSource as ApiLinkageDetail;
+    if (apiDataSource) {
+        let validResult = await loadData(apiDataSource.proxyUrl ?? "/system-config/redirect/apiLinkage", {
+            ...apiDataSource,
+            formData: {},
+            queryCondition: {
+                fieldList: queryInfo ?? [],
+            }
+        });
+        return validResult.data;
+    }
+    /*************后面的代码将被废弃***************/
+    const redirect = temp?.redirect ?? true;
     const reDataList: SelectOption[] = [];
     const requestParams: SearchParams[] = [];
     const queryParams = temp?.queryParams;
@@ -706,7 +720,7 @@ export async function dynamicUrlOperation(
         });
     });
     //自定义查询
-    if (queryInfo) {
+    if (queryInfo && queryInfo.length > 0) {
         requestParams.push(...queryInfo);
     }
     let url = temp.url;
@@ -1000,8 +1014,8 @@ export function base64Decode(param: string) {
  * 预览图片（纯JS实现，无第三方依赖）
  * @param images 图片URL数组或单个URL
  */
-export { ImagePreview, imagesPreview } from "@/utils/ImagePreview";
-export type { ImagePreviewOptions, ImageTransition } from "@/utils/ImagePreview";
+export {ImagePreview, imagesPreview} from "@/utils/ImagePreview";
+export type {ImagePreviewOptions, ImageTransition} from "@/utils/ImagePreview";
 
 /**
  * 设置css 全局变量

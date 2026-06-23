@@ -29,7 +29,7 @@
 import { nextTick, onMounted, watch } from "vue";
 import {
   allAction,
-  checkIsDisabled,
+  checkIsDisabled, initCompCallEvent,
   prepsFilter,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { compDynamicData } from "@/api/star_horse_utils";
@@ -60,7 +60,7 @@ onMounted(() => {
   }
   initData();
   nextTick(() => {
-    allAction(props, emits, formData, "change", true);
+    initCompCallEvent(props, emits, formData);
   });
 });
 watch(
