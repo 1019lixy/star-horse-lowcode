@@ -1,5 +1,5 @@
 import {getCopyerOperationStore, getDesignFormStore} from "@/store/StoreManager";
-import {computed, reactive, ref} from "vue";
+import {computed, reactive} from "vue";
 import {uuid} from "@/api/system";
 import {DynamicNode} from "@/components/types/DynamicNode";
 import {i18n} from "@/lang";
@@ -38,7 +38,7 @@ const selectItem = (
     elements: Array<any>,
     parentType: string,
 ) => {
-    let item: any = {};
+    let item: any;
     if (currentItems.length > 0) {
         item = currentItems[currentItems.length - 1];
     } else {
@@ -140,9 +140,9 @@ export function moveUpItem(isEdit: boolean, formItem: any, parentField: any) {
             }
         }
     } else if (parentField?.itemType == "box") {
-        console.log("咱不处理");
+        console.log("暂不处理");
     }
-    const compType = getParentComp(parentField);
+    const compType = parentField.compType ?? getParentComp(parentField);
     if (compType === "item") {
         for (let i = 0; i < dataList.length; i++) {
             if (formItem.id === dataList[i].id && i > 0) {
@@ -198,7 +198,7 @@ export function moveDownItem(isEdit: boolean, formItem: any, parentField: any) {
             }
         }
     }
-    const compType = getParentComp(parentField);
+    const compType = parentField.compType ?? getParentComp(parentField);
     if (compType === "item") {
         for (let i = 0; i < dataList.length; i++) {
             if (formItem.id === dataList[i].id && i < dataList.length - 1) {
@@ -235,7 +235,7 @@ export function moveDownItem(isEdit: boolean, formItem: any, parentField: any) {
     }
 }
 
-const fieldIndex = ref<number>(200);
+// const fieldIndex = ref<number>(200);
 const complexFields = (items: Array<any>, isCut: boolean = false) => {
     for (const index in items) {
         const item = items[index];
@@ -248,8 +248,8 @@ const complexFields = (items: Array<any>, isCut: boolean = false) => {
             item.id = uuid();
             item["preps"]["id"] = item.id;
             if (!isCut) {
-                fieldIndex.value++;
-                item.preps.name = (item?.preps?.name || "") + fieldIndex.value;
+                // fieldIndex.value++;
+                item.preps.name = camelcase(["field", item.id.substring(0, 6)]);
             }
         }
     }
@@ -340,7 +340,7 @@ export function paste(parentItem: any) {
         } else {
             copyerData = JSON.parse(JSON.stringify(copyerData));
             copyerData.id = uuid();
-            copyerData.fieldName = camelcase(["field",copyerData.id.substring(0, 6)]);
+            copyerData.fieldName = camelcase(["field", copyerData.id.substring(0, 6)]);
             copyerData.preps.id = copyerData.id;
             console.log("paste", copyerData, currentSubItem.value);
             //如果选中了某个单元格
@@ -370,7 +370,7 @@ export function dynamicFormContextMenuData(
     flag: string = "scene",
     recall?: Function,
 ) {
-    console.log(item,parentItem,flag,recall);
+    console.log(item, parentItem, flag, recall);
     const menus = reactive<Array<any>>([]);
     if (flag == "scene") {
         menus.push({
@@ -537,11 +537,10 @@ export function dynamicPageContextMenuData(
     node: DynamicNode,
     recallFunction: Function,
 ) {
-    let contentMenuData: Array<any> = [];
     if (!node.styles) {
         node.styles = {};
     }
-    contentMenuData = [
+    return [
         {
             type: "button",
             text: i18n("context.centerHorizontally"),
@@ -634,5 +633,4 @@ export function dynamicPageContextMenuData(
             },
         },
     ];
-    return contentMenuData;
 }

@@ -15,7 +15,7 @@
       :multiple="field.preps?.multiple"
       :check-strictly="field.preps?.checkStrictly ?? true"
       :render-after-expand="false"
-      :placeholder="field.preps?.placeholder || i18n('api.pleaseSelect2')"
+      :placeholder="field.preps?.placeholder || i18n('api.pleaseSelectData2')"
       :filterable="field.preps?.filterable ?? true"
       :clearable="field.preps?.clearable ?? true"
       :props="treeProps"

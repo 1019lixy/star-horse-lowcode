@@ -79,7 +79,7 @@ const selectItem = (_row: any) => {
   let selectDatas =
     userTableRef.value?.$refs?.employeeInfoRef?.getSelectedDatas();
   if (!selectDatas) {
-    warning(i18n("item.pleaseSelectData2"));
+    warning(i18n("api.pleaseSelectData2"));
     return;
   }
   //如果没有指定属性，则默认取相同的属性

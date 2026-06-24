@@ -3,7 +3,7 @@ import {isJson, searchMatchList} from "@/api/star_horse_utils";
 import {SearchParams} from "@/components/types/Params";
 import {SearchFields, SelectOption} from "@/components/types/SearchProps";
 import {analysisSearchData} from "@/utils/preview";
-import {computed, nextTick, onMounted, PropType, ref} from "vue";
+import {computed, nextTick, onMounted, ref} from "vue";
 import {i18n} from "@/lang";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
 import Help from "@/components/help.vue";
@@ -12,11 +12,14 @@ import {getGlobalConfigStore} from "@/store/StoreManager";
 
 let matchTypeList = ref<SelectOption[]>();
 const emits = defineEmits(["searchData", "initComplete"]);
-const props = defineProps({
-  formData: {type: Object as PropType<SearchFields>, required: true},
-  defaultCondition: {type: Array<SearchParams>},
-  dialogInput: {type: Boolean, default: false},
-  mutComp: {type: Boolean, default: false},
+const props = withDefaults(defineProps<{
+  formData: SearchFields,
+  defaultCondition: SearchParams[],
+  dialogInput: boolean,
+  mutComp: boolean
+}>(), {
+  dialogInput: false,
+  mutComp: false
 });
 let compSize = computed(() => getGlobalConfigStore().configFormInfo?.inputSize || "default");
 let searchForm = ref<any>({});

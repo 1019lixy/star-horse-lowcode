@@ -1,4 +1,4 @@
-import {createCondition, dynamicUrlOperation, isJson,} from "@/api/star_horse_utils";
+import {closeLoad, createCondition, dynamicUrlOperation, isJson, load,} from "@/api/star_horse_utils";
 import {userFunction} from "@/api/user_func";
 import {ApiLinkageDetail, ItemRelation, RelationDetail, SelectOption} from "@/components/types";
 import {error, warning} from "@/utils/message";
@@ -226,20 +226,25 @@ const apiLinkageOperation = (props: any, apiLinkage: ApiLinkageDetail, e: any,
         ...apiLinkage,
         formData: unref(formData)
     };
-
+    load(i18n("ide.status.loading"));
     postRequest(apiLinkage.proxyUrl ?? "/system-config/redirect/apiLinkage", condition).then(response => {
-        const result = response.data;
-        if (result.code) {
+        const result = response?.data;
+        closeLoad();
+        if (result?.code) {
             warning(result.cnMessage);
             return;
         }
-        const data = result.data;
+        const data = result?.data;
         if (data) {
-            for(let key in data) {
-                unref(formData)[key] =data[key];
+            for (let key in data) {
+                if ("_value" != key) {
+                    unref(formData)[key] = data[key];
+                }
             }
 
         }
+    }).finally(() => {
+        closeLoad();
     });
 };
 

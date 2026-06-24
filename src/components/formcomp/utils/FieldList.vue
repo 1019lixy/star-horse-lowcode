@@ -6,6 +6,15 @@ import {getDesignFormStore} from "@/store/StoreManager";
 defineOptions({
   name: "FieldList",
 });
+withDefaults(defineProps<{
+  showContainer: boolean;
+  showFormItems: boolean;
+  showThirdItems: boolean;
+}>(), {
+  showContainer: true,
+  showFormItems: true,
+  showThirdItems: true,
+});
 const containerRef = ref();
 const emits = defineEmits(["selectData"]);
 let designForm = getDesignFormStore();
@@ -46,15 +55,15 @@ const selectData = (item: any) => {
   <div class="component-list">
     <div class="title">
       <el-anchor type="underline" :container="containerRef" :offset="70">
-        <el-anchor-link :href="`#container`">
+        <el-anchor-link :href="`#container`" v-if="showContainer">
           {{ i18n("form.container") }}
         </el-anchor-link
         >
-        <el-anchor-link :href="`#basic`">
+        <el-anchor-link :href="`#basic`" v-if="showFormItems">
           {{ i18n("form.basicComponents") }}
         </el-anchor-link
         >
-        <el-anchor-link :href="`#self`">
+        <el-anchor-link :href="`#self`" v-if="showThirdItems">
           {{ i18n("form.customComponents") }}
         </el-anchor-link
         >
@@ -71,11 +80,11 @@ const selectData = (item: any) => {
       </div>
       <div class="flex-1 overflow-hidden">
         <el-scrollbar>
-          <el-divider content-position="left">{{
+          <el-divider content-position="left" v-if="showContainer">{{
               i18n("form.container")
             }}
           </el-divider>
-          <ul id="container" class="my-2 min-h-[10px]">
+          <ul id="container" class="my-2 min-h-[10px]" v-if="showContainer">
             <template v-for="item in filteredContainerList">
               <li class="field-item" @click="selectData(item)">
                 &nbsp;&nbsp;
@@ -87,11 +96,11 @@ const selectData = (item: any) => {
               </li>
             </template>
           </ul>
-          <el-divider content-position="left">{{
+          <el-divider content-position="left" v-if="showFormItems">{{
               i18n("form.basicComponents")
             }}
           </el-divider>
-          <ul id="basic" class="my-2 min-h-[10px]">
+          <ul id="basic" class="my-2 min-h-[10px]" v-if="showFormItems">
             <template v-for="item in filteredFormDataList">
               <li class="field-item" @click="selectData(item)">
                 &nbsp;&nbsp;
@@ -103,11 +112,11 @@ const selectData = (item: any) => {
               </li>
             </template>
           </ul>
-          <el-divider content-position="left">{{
+          <el-divider content-position="left" v-if="showThirdItems">{{
               i18n("form.customComponents")
             }}
           </el-divider>
-          <ul id="self" class="my-2 min-h-[10px]">
+          <ul id="self" class="my-2 min-h-[10px]" v-if="showThirdItems">
             <template v-for="item in filteredSelfFormDataList">
               <li class="field-item" @click="selectData(item)">
                 &nbsp;&nbsp;

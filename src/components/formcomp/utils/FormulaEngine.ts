@@ -114,6 +114,8 @@ const safeNumber = (val: any): number => {
 
 /**
  * 将 ${fieldName} 替换为实际值（字符串形式）
+ * @param expression
+ * @param formData
  * @param emptyAsZero true 时空值替换为 '0'（用于 calc），false 时替换为 ''（用于 concat）
  */
 const resolveFieldRefs = (expression: string, formData: Record<string, any>, emptyAsZero = true): string => {
@@ -577,9 +579,9 @@ export const executeFormula = (formula: FormulaConfig, formData: Record<string, 
       return executeCondition(formula.branches || [], formData, formula.defaultValue);
     case "lookup":
       return executeLookup(formula.lookupMappings || [], formula.sourceFields, formData);
-    case 'aggregate':
+    case "aggregate":
       return executeAggregate(
-        formula.expression || 'sum', formula.sourceFields,
+        formula.expression || "sum", formula.sourceFields,
         formula.aggregateField, formData, formula.precision,
       );
     case "dateCalc":

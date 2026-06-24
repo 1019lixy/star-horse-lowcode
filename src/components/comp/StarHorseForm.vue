@@ -9,7 +9,7 @@ import {SelectOption} from "@/components/types/SearchProps";
 import {error, success, warning} from "@/utils/message";
 import {i18n} from "@/lang";
 import {
-  computed,
+  computed, ComputedRef,
   inject,
   nextTick,
   onActivated,
@@ -64,7 +64,7 @@ const starHorseFormRef = ref(null);
 const dataForm = ref<any>({});
 // source:{type:Number,default:1},
 const source = ref<number>(1);
-const platformFields = computed(() => convertPcCompToFitPlatformComps(props.fieldList));
+const platformFields:ComputedRef = computed(() => convertPcCompToFitPlatformComps(props.fieldList));
 const mappingFields = computed(() => formFieldMapping(unref(platformFields)));
 //更新外面传进来的数据
 
@@ -406,7 +406,7 @@ watch(
       };
       if (val.funcName) {
         handlers[val.funcName]?.();
-        dialogOperation.funcName = "";
+        dialogOperation["funcName"] = "";
         dialogOperation["type"] = "";
       }
     },

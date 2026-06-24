@@ -35,7 +35,7 @@ const selectItem = (row: any) => {
   if (!row || !isJson(row)) {
     let selectDatas = dialogInputTableRef.value.multipleSelection;
     if (!selectDatas) {
-      warning(i18n("item.pleaseSelectData2"));
+      warning(i18n("item.pleaseSetValue"));
       return;
     }
     data = selectDatas[0];

@@ -73,6 +73,26 @@ export type ApiUrls = {
      */
     modifyColumnsUrl?: string;
     /**
+     * 用户自定义接口1,用户自定义接口使用时保持原样，不会像系统接口那样拼接上下文
+     */
+    customerUrl1?: string;
+    /**
+     * 用户自定义接口2
+     */
+    customerUrl2?: string;
+    /**
+     * 用户自定义接口3
+     */
+    customerUrl3?: string;
+    /**
+     * 用户自定义接口4
+     */
+    customerUrl4?: string;
+    /**
+     * 用户自定义接口5
+     */
+    customerUrl5?: string;
+    /**
      * 接口路径前缀
      */
     basePrefix?: string;

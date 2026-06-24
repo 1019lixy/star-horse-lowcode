@@ -189,7 +189,7 @@ export function httpRequest(url: string, method: string, data: any) {
  * @param url
  * @param data
  */
-export function uploadRequest(url: string, data: Array<any>) {
+export function uploadRequest(url: string, data: any) {
     return getAxiosInstance().post(url, data, {
         headers: {"Content-Type": "multipart/form-data"},
     });

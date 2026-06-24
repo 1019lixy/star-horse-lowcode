@@ -68,18 +68,18 @@ export class ImagePreview {
     private dragStartY = 0;
     private isTransitioning = false;
 
-    private overlay!: HTMLDivElement;
-    private imgWrap!: HTMLDivElement;
-    private img!: HTMLImageElement;
-    private imgBack!: HTMLImageElement;
-    private toolbar!: HTMLDivElement;
-    private thumbBar!: HTMLDivElement;
+    private overlay!: HTMLDivElement | HTMLImageElement | HTMLSpanElement;
+    private imgWrap!: HTMLDivElement | HTMLImageElement | HTMLSpanElement;
+    private img!: HTMLDivElement | HTMLImageElement | HTMLSpanElement;
+    private imgBack!: HTMLDivElement | HTMLImageElement | HTMLSpanElement;
+    private toolbar!: HTMLDivElement | HTMLImageElement | HTMLSpanElement;
+    private thumbBar!: HTMLDivElement | HTMLImageElement | HTMLSpanElement;
     private counter!: HTMLSpanElement;
-    private arrowLeft!: HTMLDivElement;
-    private arrowRight!: HTMLDivElement;
+    private arrowLeft!: HTMLDivElement | HTMLImageElement | HTMLSpanElement;
+    private arrowRight!: HTMLDivElement | HTMLImageElement | HTMLSpanElement;
     private prevBtn!: HTMLButtonElement;
     private nextBtn!: HTMLButtonElement;
-    private thumbs: HTMLImageElement[] = [];
+    private thumbs: (HTMLDivElement | HTMLImageElement | HTMLSpanElement)[] = [];
 
     private boundOnMouseMove: (e: MouseEvent) => void;
     private boundOnMouseUp: () => void;
@@ -195,7 +195,7 @@ export class ImagePreview {
         `);
 
         this.prevBtn = this.createBtn(i18n("image.preview.prev"), "‹", () => this.prev());
-        this.counter = this.el("span", `color:#fff;font-size:14px;padding:0 8px;min-width:60px;text-align:center;`);
+        this.counter = this.el("span", "color:#fff;font-size:14px;padding:0 8px;min-width:60px;text-align:center;");
         this.nextBtn = this.createBtn(i18n("image.preview.next"), "›", () => this.next());
 
         if (!isMulti) {
@@ -350,7 +350,7 @@ export class ImagePreview {
 
             requestAnimationFrame(() => {
                 this.img.style.transition = `transform ${duration}ms ease, opacity ${duration}ms ease`;
-                this.img.style.transform = `translate(0,0) scale(1) rotate(0deg)`;
+                this.img.style.transform = "translate(0,0) scale(1) rotate(0deg)";
                 this.img.style.opacity = "1";
                 this.updateUI();
                 setTimeout(() => {
@@ -545,7 +545,7 @@ export class ImagePreview {
             border-top-color:#fff;border-radius:50%;
             animation:imgPreviewSpin 0.6s linear infinite;
         `);
-        const text = this.el("span", `color:#fff;font-size:14px;`);
+        const text = this.el("span", "color:#fff;font-size:14px;");
         text.textContent = i18n("image.preview.downloading") || "下载中...";
         tip.append(spinner, text);
         document.body.appendChild(tip);
@@ -554,7 +554,7 @@ export class ImagePreview {
         if (!document.getElementById("img-preview-spin-style")) {
             const style = document.createElement("style");
             style.id = "img-preview-spin-style";
-            style.textContent = `@keyframes imgPreviewSpin { to { transform: rotate(360deg); } }`;
+            style.textContent = "@keyframes imgPreviewSpin { to { transform: rotate(360deg); } }";
             document.head.appendChild(style);
         }
 
