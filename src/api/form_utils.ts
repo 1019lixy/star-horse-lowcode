@@ -173,12 +173,27 @@ const tableAnalysis = (item: any) => {
         helpMsg: item.preps?.helpMsg,
         fieldList: columnsList,
     });
+
     const fieldList: FieldInfo | any = {
         batchFieldList: batchFieldInfos,
+        preps: getPreps(item),
     };
     const currentLayerContainer = createContainer(item, children);
     boxItems[currentLayerContainer.id] = item;
     return {currentLayerContainer, boxItems, fieldList, searchItemList};
+};
+const getPreps = (item: any) => {
+    const preps: Record<string, any> = {};
+    const keys = Object.keys(item.preps || {});
+    if (!keys.length) {
+        return preps;
+    }
+    for (const key of keys) {
+        if (key != "elements") {
+            preps[key] = item.preps[key];
+        }
+    }
+    return preps;
 };
 /**
  * 解析tab,collapse,card,splitter?
@@ -227,6 +242,7 @@ const tabColapseCardAnalysis = (item: any) => {
     } else {
         console.error("Unknown itemType: ", item.itemType);
     }
+    fieldInfo.preps = getPreps(item);
     const currentLayerContainer = createContainer(
         item,
         currentLayerContainerList,
@@ -316,7 +332,7 @@ export const analysisCompDatas = (dataList: any) => {
             mergeObjects(compListResult, boxItems);
 
             if (comp.itemType === "dytable") {
-                compFieldList.push({fieldName: "", dytableList: fieldList});
+                compFieldList.push({fieldName: "", dytableList: fieldList, preps: getPreps(comp)});
             } else {
                 if (Array.isArray(fieldList)) {
                     compFieldList.push(...fieldList);

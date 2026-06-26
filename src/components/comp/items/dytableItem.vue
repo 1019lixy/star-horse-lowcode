@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import {checkVisible, labelVisibleCheck, loadProp, validMsg} from "@/api/form_utils";
 import {ContainerPreps} from "@/components/types/ItemPreps";
-import {computed, ModelRef, onMounted} from "vue";
+import {computed, ModelRef, onMounted, ref} from "vue";
 import StarHorseItem from "@/components/comp/StarHorseItem.vue";
+import {FieldInfo} from "@/components/types";
 
 const props = withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
@@ -58,6 +59,73 @@ const createArray = (item: any) => {
   }
   return [item];
 };
+
+// 列宽调整相关状态
+const resizingColIndex = ref(-1);
+const startX = ref(0);
+const startWidth = ref(0);
+// 新增拖拽辅助线DOM
+let resizeLine: HTMLElement | null = null;
+// 处理列宽调整开始
+const handleColResizeStart = (e: MouseEvent, row: FieldInfo[], index: number) => {
+  e.preventDefault();
+  const leftCols = row?.slice(0, index) ?? [];
+  const hideCell = leftCols.filter(item => !item.preps.cellVisible)?.length || 0;
+  resizingColIndex.value = row ? index - hideCell + 1 : index;
+  startX.value = e.clientX;
+  document.body.style.userSelect = "none";
+  const colElement = (e.target as HTMLElement).parentElement as HTMLElement;
+  // console.log("colElement",e, colElement);
+  startWidth.value = colElement.offsetWidth;
+  // 创建跟随鼠标的垂直线
+  resizeLine = document.createElement("div");
+  const handleHalf = 3; // 手柄宽度一半，用来居中
+  resizeLine.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: ${e.clientX - handleHalf}px;
+    width: 4px;
+    height: 100vh;
+    background: #409eff;
+    z-index: 9999;
+    pointer-events: none;
+  `;
+  document.body.appendChild(resizeLine);
+  document.addEventListener("mousemove", handleColResizeMove);
+  document.addEventListener("mouseup", handleColResizeEnd);
+};
+
+// 处理列宽调整移动
+const handleColResizeMove = (e: MouseEvent) => {
+  if (resizingColIndex.value === -1 || !resizeLine) return;
+  const handleHalf = 3;
+  // 线条跟随鼠标，居中对齐分割位置
+  resizeLine.style.left = `${e.clientX - handleHalf}px`;
+  const delta = e.clientX - startX.value;
+  const newWidth = Math.max(20, startWidth.value + delta);
+  const newWidthStr = `${newWidth}px`;
+  // 更新所有行中对应列的宽度
+  // props.item.dytableList?.forEach((row: any) => {
+  const row = props.item.dytableList[0];
+  const cell = row[resizingColIndex.value];
+  if (!cell) return;
+  if (!cell.preps) cell.preps = {};
+  cell.preps.colWidth = newWidthStr;
+  // });
+};
+
+// 处理列宽调整结束
+const handleColResizeEnd = () => {
+  resizingColIndex.value = -1;
+  // 删除跟随线条
+  if (resizeLine) {
+    document.body.removeChild(resizeLine);
+    resizeLine = null;
+  }
+  document.body.style.userSelect = "";
+  document.removeEventListener("mousemove", handleColResizeMove);
+  document.removeEventListener("mouseup", handleColResizeEnd);
+};
 </script>
 
 <template>
@@ -73,19 +141,51 @@ const createArray = (item: any) => {
     >
       <!-- 隐藏的表头行，用于保持列结构和宽度 -->
       <thead v-if="item.dytableList?.length > 0">
-      <tr class="hidden-header">
+      <tr v-if="item.preps?.showLineNumber" class="hidden-header">
+        <td style="width:30px;height: 10px;visibility:visible">NO.</td>
         <td
             v-for="(col, index) in columnStructure"
             :key="index"
             :style="{
               width: col.width || '100%',
-              height: '1px',
+              height: '10px',
+              padding: '2px',
+              border: '1px solid rgba(247,250,250,1)',
+              visibility:  'visible',
+            }"
+            class="dy-cell no-cell "
+        >
+          {{ index + 1 }}
+          <div
+              v-if="item.preps?.allowResize"
+              class="col-resize-handle"
+              :title="'拖动改变宽度'+index"
+              @mousedown="(e) => handleColResizeStart(e, null,index)"
+          />
+        </td>
+      </tr>
+      <tr v-else class="hidden-header">
+        <td
+            v-for="(col, index) in columnStructure"
+            :key="index"
+            :style="{
+              width: col.width || '100%',
+              height: item.preps?.allowResize?'10px':'0',
               padding: '0',
-              border: 'none',
+              border: '1px',
+              background:'rgba(247,250,250,0.8)',
               visibility: 'hidden'
             }"
-        />
+        >
+          <div
+              v-if="item.preps?.allowResize"
+              class="col-resize-handle"
+              :title="'拖动改变宽度'+index"
+              @mousedown="(e) => handleColResizeStart(e, null,index)"
+          />
+        </td>
       </tr>
+
       </thead>
       <tbody>
       <tr
@@ -93,6 +193,7 @@ const createArray = (item: any) => {
           :key="rowIndex"
           class="dy-tr"
       >
+        <td class="dy-cell no-cell" v-if="item.preps?.showLineNumber">{{ Number(rowIndex) + 1 }}</td>
         <template v-for="(sitem, colIndex) in row">
           <td
               v-if="checkItem(sitem).preps.cellVisible"
@@ -102,14 +203,16 @@ const createArray = (item: any) => {
               :class="{ 'title-style': checkItem(sitem).preps?.labelFlag == 'Y' }"
               :style="{
               width: checkItem(sitem).preps?.colWidth || '100%',
-              height: checkItem(sitem).preps?.colHeight || rowHeight,
+              minHeight: checkItem(sitem).preps?.colHeight || rowHeight,
               'text-align': checkItem(sitem).preps?.textAlign ?? 'left',
               'white-space': sitem.staticData!==true?'nowrap':'unset',
               'word-break': !!checkItem(sitem).preps?.wordBreak ? 'break-all' : 'normal',
-              'text-overflow': 'ellipsis'
+              'text-overflow': 'ellipsis',
+              'position': 'relative',
             }"
           >
-            <div class="h-full w-full p-2 items-center justify-center flex flex-col" v-if="sitem.staticData===true"
+            <div class="h-full  w-full flex-1 p-2 items-center justify-center flex flex-col"
+                 v-if="sitem.staticData===true"
                  v-html="sitem.preps?.textContent"/>
             <template v-else v-for="tempData in createArray(sitem)">
               <template
@@ -164,6 +267,11 @@ const createArray = (item: any) => {
                 />
               </template>
             </template>
+            <!--            <div
+                            class="col-resize-handle"
+                            :title="'拖动改变宽度'+colIndex"
+                            @mousedown="(e) => handleColResizeStart(e, row,colIndex)"
+                        />-->
           </td>
         </template>
       </tr>
@@ -173,6 +281,42 @@ const createArray = (item: any) => {
 </template>
 
 <style scoped lang="scss">
+.no-cell {
+  border: 1px solid var(--star-horse-style);
+}
+
+.col-resize-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: -3px;
+  width: 6px;
+  cursor: col-resize;
+  background: var(--star-horse-style);
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 1000;
+  visibility: visible;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.hidden-header {
+  visibility: hidden;
+  position: relative;
+}
+
+.hidden-header td {
+  position: relative;
+}
+
+.hidden-header:hover .col-resize-handle {
+  opacity: 1;
+  background: var(--star-horse-style);
+}
+
 .title-style {
   font-weight: 700;
   background: #f5f7fa;
@@ -185,6 +329,7 @@ table {
   box-sizing: border-box;
   text-indent: initial;
   unicode-bidi: isolate;
+  table-layout: fixed;
   border-spacing: 0;
   border-color: gray;
 }
@@ -196,14 +341,14 @@ tr {
   border-color: inherit;
 }
 
-.instance-table {
+.instance-table tbody {
   /*  width: inherit;
     height: inherit;*/
 
   td {
     line-height: 35px;
     border: 1px solid #ebeef5;
-    height: 35px;
+    min-height: 35px;
     padding: 1px;
 
     :deep(.el-form-item--default) {

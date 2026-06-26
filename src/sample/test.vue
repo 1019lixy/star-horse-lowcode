@@ -52,7 +52,7 @@ onMounted(() => {
             <NormalFormValid/>
           </el-tab-pane>
         </el-tabs>-->
-    <ValidDialogFormRelation/>
+<!--    <ValidDialogFormRelation/>-->
 <!--    <el-tabs v-model="actName" class="h-full">
       <el-tab-pane name="component" label="IDE">
         <CodeEditorTest/>
@@ -71,7 +71,7 @@ onMounted(() => {
         <DataPickerDemo/>
       </el-tab-pane>
     </el-tabs>-->
-    <!--    <el-tabs v-model="actName" class="h-full">
+        <el-tabs v-model="actName" class="h-full">
           <el-tab-pane name="component" label="组件测试">
             <ComponentTester/>
           </el-tab-pane>
@@ -90,8 +90,8 @@ onMounted(() => {
           </el-tab-pane>
 
           <el-tab-pane name="h" label="数据选择器">
-            &lt;!&ndash;      <DataPickerDemo />&ndash;&gt;
-            &lt;!&ndash;      <InformationsUi/>&ndash;&gt;
+            <!--      <DataPickerDemo />-->
+            <!--      <InformationsUi/>-->
             <ComplexFormValid/>
           </el-tab-pane>
           <el-tab-pane name="h1" label="数据选择器2">
@@ -107,7 +107,7 @@ onMounted(() => {
           <el-tab-pane name="j" label="代码编辑器">
             <CodeEditorTest/>
           </el-tab-pane>
-        </el-tabs>-->
+        </el-tabs>
   </div>
 </template>
 <style lang="scss" scoped>
