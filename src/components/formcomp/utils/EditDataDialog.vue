@@ -17,6 +17,7 @@
       resize="both"
       show-word-limit
       :placeholder="placeholder"
+      :autofocus="true"
     />
   </star-horse-dialog>
 </template>

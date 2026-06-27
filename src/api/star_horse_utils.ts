@@ -793,7 +793,7 @@ export async function dynamicUrlOperation(
  * 创建过滤器
  * @param queryString 查询参数
  */
-export async function createFilter(queryString: string) {
+export  function createFilter(queryString: string) {
     return (data: SelectOption) => {
         return (
             data?.name?.toLowerCase().search(queryString?.toLowerCase()) ||

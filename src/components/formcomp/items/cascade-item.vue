@@ -222,17 +222,6 @@ watch(()=>fieldInfo.value, (val) => {
     indeterminate.value = true;
   }
 });
-watch(
-    () => formData.value[props.field.fieldName + "OptionList"],
-    (val) => {
-      if (val?.length > 0) {
-        props.field.preps["options"] = val;
-      }
-    },
-    {
-      immediate: true,
-    },
-);
 </script>
 <style lang="scss" scoped>
 

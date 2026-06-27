@@ -22,6 +22,7 @@
           :disabled="item['disabled']||source==3"
           :label="item['name']"
           :value="item['value']"
+          @dblclick.stop="cancelChecked"
           v-for="item in field.preps?.values"
       />
       <el-radio
@@ -31,6 +32,7 @@
           :disabled="item['disabled']||source==3"
           :label="item['name']"
           :value="item['value']"
+          @dblclick.stop="cancelChecked"
           v-for="item in field.preps?.values"
       >
       </el-radio>
@@ -54,7 +56,12 @@ const props = withDefaults(defineProps<ItemPreps>(), {
 });
 const emits = defineEmits(["selfFunc", "selectItem"]);
 const formData = defineModel("formData");
-
+const cancelChecked = () => {
+  const preps = props.field.preps;
+  if (!preps?.readonly && !preps?.disabled) {
+    formData.value[props.field.fieldName] = null;
+  }
+};
 const itemAction = () => {
   allAction(props, emits, formData, "change");
 };
@@ -73,16 +80,5 @@ onMounted(async () => {
     initCompCallEvent(props, emits, formData);
   });
 });
-watch(
-    () => formData.value[props.field.fieldName + "OptionList"],
-    (val) => {
-      if (val?.length > 0) {
-        props.field.preps["values"] = val;
-      }
-    },
-    {
-      immediate: true,
-    },
-);
 </script>
 <style scoped></style>

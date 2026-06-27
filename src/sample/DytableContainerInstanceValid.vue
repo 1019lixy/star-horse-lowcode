@@ -1282,7 +1282,7 @@ const fields = [
                   "preps": {
                     "id": "Idsh2e2a7b76-639f-4b3d-bd54-49fb2d8d7a55",
                     "label": "8:00-12:00 20:00-2:00",
-                    "itemNameLabel": "单选框",
+                    "itemNameLabel": "验证",
                     "name": "field_sh2e2a",
                     "clearable": true,
                     "readonly": false,
@@ -1320,9 +1320,9 @@ const fields = [
                   },
                   "compType": "formItem",
                   "fieldName": "field_sh2e2a",
-                  "itemType": "radio",
-                  "label": "单选框",
-                  "type": "radio"
+                  "itemType": "autocomplete",
+                  "label": "验证自动补全",
+                  "type": "autocomplete"
                 }
               ]
             },

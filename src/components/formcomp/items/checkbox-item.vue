@@ -63,14 +63,5 @@ onMounted(() => {
     initCompCallEvent(props, emits, formData);
   });
 });
-watch(
-  () => formData.value[props.field.fieldName + "OptionList"],
-  (val) => {
-    if (val?.length > 0) {
-      props.field.preps["values"] = val;
-    }
-  },
-  { immediate: true },
-);
 </script>
 <style scoped></style>

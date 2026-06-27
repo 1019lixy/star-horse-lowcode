@@ -74,17 +74,6 @@ onMounted(() => {
   initData();
   initCompCallEvent(props, emits, formData);
 });
-watch(
-  () => formData.value[props.field.fieldName + "OptionList"],
-  (val) => {
-    if (val?.length > 0) {
-      props.field.preps["options"] = val;
-    }
-  },
-  {
-    immediate: true,
-  },
-);
 </script>
 <style lang="scss" scoped>
 :deep(.el-cascader) {
