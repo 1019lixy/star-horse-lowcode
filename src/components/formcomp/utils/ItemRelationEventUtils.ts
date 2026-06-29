@@ -11,6 +11,7 @@ import {
     setupFormulaWatchers,
 } from "@/components/formcomp/utils/FormulaEngine";
 import {postRequest} from "@/api/star_horse_apis";
+import {PreOrPendEventConfig} from "@/components/types/PreOrPendType";
 
 // ==================== 公共工具函数 ====================
 
@@ -514,7 +515,24 @@ const convertData = (data: any) => {
     }
     return data;
 };
-
+/**
+ * 自定义事件
+ * @param action
+ * @param props
+ * @param emits
+ * @param formData
+ */
+const userActionEvent = (action: PreOrPendEventConfig,props:any,emits:any,formData:any) => {
+    if (action.eventType === "custom") {
+        buttonAction(props, emits, formData, action.customCode);
+    } else if (action.eventType === "linkage" || action.eventType === "dataSource") {
+        apiLinkageOperation(action.dataRelation?.apiLinkage, formData);
+    } else if (action.eventType === "function") {
+        action.funcInfo?.(props, formData, props.formInfo);
+    } else {
+        console.error("Unknown action: ", action);
+    }
+};
 // ==================== 导出 ====================
 
 export {
@@ -530,4 +548,5 @@ export {
     executeFormulaWithFill,
     initFormFormulaWatchers,
     setupFormulaWatchers,
+    userActionEvent
 };

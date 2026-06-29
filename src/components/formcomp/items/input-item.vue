@@ -47,7 +47,7 @@
             :title="item.actionTitle"
             style="cursor: pointer"
             :icon-class="item.icon || 'document'"
-            @click.stop="actionEvent(item.actions)"
+            @click.stop="userActionEvent(item.actions,props,emits,formData)"
         />
       </template>
       <template #prepend v-if="prependList?.length > 0">
@@ -69,7 +69,7 @@
             :title="item.actionTitle"
             style="cursor: pointer"
             :icon-class="item.icon || 'document'"
-            @click.stop="actionEvent(item.actions)"
+            @click.stop="userActionEvent(item.actions,props,emits,formData)"
         />
       </template>
 
@@ -90,19 +90,17 @@
 import {getDynamicEvents} from "@/api/system";
 import {
   allAction,
-  apiLinkageOperation,
-  buttonAction,
   checkIsDisabled,
   initCompCallEvent,
   prepsFilter,
   setupFormulaWatchers,
+  userActionEvent,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import {usePrefixSuffix} from "@/components/formcomp/utils/prefixSuffixUtils";
 import {ItemPreps} from "@/components/types/ItemPreps";
 import {nextTick, onBeforeUnmount, onMounted, ref, watch} from "vue";
 import {StarHorseIcon} from "@/components/comp";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
-import {PreOrPendEventConfig} from "@/components/types/PreOrPendType";
 
 defineOptions({
   name: "InputItem",
@@ -133,17 +131,7 @@ const initEvent = async () => {
 const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
-const actionEvent = (action: PreOrPendEventConfig) => {
-  if (action.eventType === "custom") {
-    buttonAction(props, emits, formData, action.customCode);
-  } else if (action.eventType === "linkage" || action.eventType === "dataSource") {
-    apiLinkageOperation(action.dataRelation?.apiLinkage, formData);
-  } else if (action.eventType === "function") {
-    action.funcInfo?.(props, formData, props.formInfo);
-  } else {
-    console.error("Unknown action: ", action);
-  }
-};
+
 const handleContentConfirm = (newContent: string) => {
   normalData.value = newContent;
   dialogInputVisible.value = false;

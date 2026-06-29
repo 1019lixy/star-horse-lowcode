@@ -51,7 +51,7 @@
             :title="item.actionTitle"
             style="cursor: pointer"
             :icon-class="item.icon || 'document'"
-            @click.stop="actionEvent(item.actions)"
+            @click.stop="userActionEvent(item.actions,props,emits,formData)"
         />
       </template>
       <template #append v-if="appendList?.length > 0">
@@ -71,12 +71,11 @@
 import {computed, nextTick, onMounted} from "vue";
 import {
   allAction,
-  apiLinkageOperation,
-  buttonAction,
   checkIsDisabled,
   convertData,
   initCompCallEvent,
   prepsFilter,
+  userActionEvent,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import {getDynamicEvents} from "@/api/system";
 
@@ -105,17 +104,7 @@ const prependList = computed(() =>
 const itemAction = (prep: string) => {
   allAction(props, emits, formData, prep);
 };
-const actionEvent = (action: any) => {
-  if (action.eventType === "custom") {
-    buttonAction(props, emits, formData, action.customCode);
-  } else if (action.eventType === "linkage" || action.eventType === "dataSource") {
-    apiLinkageOperation(action.dataRelation?.apiLinkage, formData);
-  } else if (action.eventType === "function") {
-    action.funcInfo?.(props, formData, props.formInfo);
-  } else {
-    console.error("Unknown action: ", action);
-  }
-};
+
 onMounted(() => {
   nextTick(() => {
     initCompCallEvent(props, emits, formData);
