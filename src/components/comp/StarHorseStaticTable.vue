@@ -4,7 +4,14 @@ import { compKey } from "@/api/system";
 import { i18n } from "@/lang";
 import { warning } from "@/utils/message";
 import Sortable from "sortablejs";
-import { onMounted, PropType, reactive, ref, unref } from "vue";
+import {
+  onMounted,
+  PropType,
+  provide,
+  reactive,
+  ref,
+  unref,
+} from "vue";
 import { Sort, Tools } from "@element-plus/icons-vue";
 const props = defineProps({
   //主键
@@ -35,13 +42,32 @@ const props = defineProps({
 // const emits = defineEmits(["selectItem"]);
 const multipleSelection = ref<any>([]);
 const shStaticTableCompRef = ref();
+// 当前正在编辑的行引用（编辑互斥：仅允许一行处于编辑状态）
+const editingRow = ref<any>(null);
+// 取消当前编辑行的编辑状态（O(1)，不遍历 dataList）
+const cancelAllEdit = () => {
+  const row = editingRow.value;
+  if (!row) return;
+  const originalValue =
+    row.starHorseBakeValue === "_" ? null : row.starHorseBakeValue;
+  if (row.selectName) row[row.selectName] = originalValue;
+  delete row.isSelected;
+  delete row.selectName;
+  delete row.starHorseBakeValue;
+  editingRow.value = null;
+};
+provide("starHorseCancelAllEdit", cancelAllEdit);
+provide("starHorseSetEditingRow", (row: any) => {
+  editingRow.value = row;
+});
+// 字段配置表（.sh-columns）的 ref，替代 document.querySelector 全局查询
+const shColumnsTableRef = ref<any>(null);
 let staticDataList = ref<any>([]);
 let toolFields = reactive<Array<any>>([]);
 const getIds = () => {
   let selectDatas = unref(multipleSelection);
   let ids: any = [];
-  for (let key in selectDatas) {
-    let temp = selectDatas[key];
+  for (const temp of selectDatas) {
     ids.push(temp[props.primaryKey]);
   }
   return ids;
@@ -55,13 +81,11 @@ const init = async () => {
 };
 //监听外面传入数据的变化
 const assignData = (dataList: Array<any>) => {
-  for (let key in dataList) {
-    let temp: any = dataList[key];
+  for (const temp of dataList) {
     if (temp instanceof Array) {
       toolFields.push(...temp);
     } else if (temp.tabList?.length > 0) {
-      for (let skey in temp.tabList) {
-        let stemp = temp.tabList[skey];
+      for (const stemp of temp.tabList) {
         if (stemp["fieldList"]) {
           toolFields.push(...stemp["fieldList"]);
         }
@@ -80,8 +104,12 @@ const reCreateData = () => {
 };
 
 const moveColumn = () => {
-  const tbody = document.querySelector(
-    ".sh-columns .el-table__body-wrapper tbody",
+  // 优先通过 ref 定位表格实例，避免全局 querySelector 误匹配多实例
+  const tableEl: HTMLElement | null =
+    shColumnsTableRef.value?.$el ??
+    (document.querySelector(".sh-columns") as HTMLElement | null);
+  const tbody = tableEl?.querySelector(
+    ".el-table__body-wrapper tbody",
   ) as HTMLElement | null;
   if (tbody) {
     Sortable.create(tbody, {
@@ -108,8 +136,7 @@ const checkParent = (val: any) => {
     return true;
   }
   let flag = false;
-  for (let i in val) {
-    let item = val[i];
+  for (const item of val) {
     if (item["children"] && item["children"].length > 0) {
       flag = true;
       shStaticTableCompRef.value.toggleRowSelection(item, false);
@@ -152,8 +179,8 @@ const getRowIdentity = (row: any) => {
   let arr = props.primaryKey?.split(".");
   if (arr?.length > 1) {
     let temp = row;
-    for (let i in arr) {
-      temp = temp[arr[i]];
+    for (const k of arr) {
+      temp = temp[k];
     }
     return temp;
   }
@@ -240,7 +267,7 @@ defineExpose({
           </template>
           <el-table
             class="sh-columns"
-            ref="table"
+            ref="shColumnsTableRef"
             :data="toolFields"
             :strip="true"
             :fit="true"

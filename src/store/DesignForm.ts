@@ -191,7 +191,6 @@ export const useDesignFormStore = defineStore("designForm", () => {
     }
 
     // 直接从对象中获取，无需再进行find操作
-    console.log(compListNoLayer.value);
     return compListNoLayer.value?.[itemId] || null;
   };
 

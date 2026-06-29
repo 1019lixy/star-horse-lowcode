@@ -52,7 +52,6 @@ export const useCopyerOperationStore = defineStore("copyerOperation", () => {
   };
   //设置拷贝数据
   const setCopyerData = (data: any) => {
-    console.log("setCopyerData", data);
     copyerData.value = data;
   };
   //清除所有数据

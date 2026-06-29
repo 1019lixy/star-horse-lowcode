@@ -449,7 +449,7 @@ export function isJson(v: any) {
       JSON5.parse(v);
       return true;
     } catch (e) {
-      console.log(e);
+      console.error(e);
       return false;
     }
   }
@@ -638,8 +638,7 @@ export function batchFieldDefaultValues(datas: BatchFieldInfo, dataForm: any) {
     defaultValues = { ...datas["batchDefaultData"] };
   }
   const fieldList = datas["fieldList"];
-  for (const inde in fieldList) {
-    const temp = fieldList[inde];
+  for (const temp of fieldList) {
     if (temp.defaultValue) {
       if (isJson(temp.defaultValue)) {
         for (const key in temp.defaultValue) {

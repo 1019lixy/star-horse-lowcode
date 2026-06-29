@@ -209,7 +209,6 @@ export default defineConfig((mode) => {
     resolve: {
       alias: {
         "@": resolve(dirname(fileURLToPath(import.meta.url)), "./src"),
-        jquery: fileURLToPath(new URL("./src/jquery-shim.js", import.meta.url)),
       },
       extensions: [".js", ".vue", ".json", ".ts", ".jsx"],
     },
@@ -231,7 +230,6 @@ export default defineConfig((mode) => {
           "vanilla-jsoneditor",
           "vue3-barcode",
           "vue3-ts-jsoneditor",
-          "jquery",
           "json5",
           "vue-m-message",
           "sql-formatter",

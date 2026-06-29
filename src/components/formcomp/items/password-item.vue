@@ -1,31 +1,31 @@
 <template>
   <starhorse-form-item
-    :showFormItem="showFormItem"
-    :isDesign="isDesign"
-    :disabled="disabled"
-    :bareFlag="bareFlag"
-    :field="field"
-    :parentField="parentField"
+      :showFormItem="showFormItem"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      :field="field"
+      :parentField="parentField"
   >
     <el-input
-      :fid="field.fieldName"
-      :disabled="checkIsDisabled(props)"
-      v-bind="prepsFilter(field.preps)"
-      type="password"
-      v-on="getDynamicEvents(props, itemAction, formData)"
-      v-model="formData[field.fieldName]"
+        :fid="field.fieldName"
+        :disabled="checkIsDisabled(props)"
+        v-bind="prepsFilter(field.preps)"
+        type="password"
+        v-on="getDynamicEvents(props, itemAction, formData)"
+        v-model="formData[field.fieldName]"
     >
       <template #prefix>
         <star-horse-icon
-          :icon-class="field.preps?.prefixIcon"
-          v-if="field.preps?.prefixIcon"
+            :icon-class="field.preps?.prefixIcon"
+            v-if="field.preps?.prefixIcon"
         />
         <span v-if="field.preps?.prefix">{{ field.preps?.prefix }}</span>
       </template>
       <template #suffix>
         <star-horse-icon
-          :icon-class="field.preps?.suffixIcon"
-          v-if="field.preps?.suffixIcon"
+            :icon-class="field.preps?.suffixIcon"
+            v-if="field.preps?.suffixIcon"
         />
         <span v-if="field.preps?.suffix">{{ field.preps?.suffix }}</span>
       </template>
@@ -35,31 +35,32 @@
       <template #prepend v-if="prependList?.length > 0">
         <el-select v-model="formData[preName]" style="width: 115px !important">
           <el-option
-            v-for="item in prependList"
-            :key="item.value"
-            :label="item.name"
-            :value="item.value"
+              v-for="item in prependList"
+              :key="item.value"
+              :label="item.name"
+              :value="item.value"
           />
         </el-select>
       </template>
       <template #append v-if="field.preps?.appendText">
         {{ field.preps?.appendText }}
       </template>
-      <template #append v-if="field.preps?.appendAction">
+      <template #append v-if="field.preps?.appendAction?.length>0">
         <star-horse-icon
-          :title="field.preps?.appendAction?.actionTitle"
-          style="cursor: pointer"
-          :icon-class="field.preps?.appendAction?.icon || 'document'"
-          @click="field.preps?.appendAction?.actions?.(formData)"
+            v-for="item in field.preps?.appendAction"
+            :title="item.actionTitle"
+            style="cursor: pointer"
+            :icon-class="item.icon || 'document'"
+            @click.stop="actionEvent(item.actions)"
         />
       </template>
       <template #append v-if="appendList?.length > 0">
         <el-select v-model="formData[appName]" style="width: 115px !important">
           <el-option
-            v-for="item in appendList"
-            :key="item.value"
-            :label="item.name"
-            :value="item.value"
+              v-for="item in appendList"
+              :key="item.value"
+              :label="item.name"
+              :value="item.value"
           />
         </el-select>
       </template>
@@ -67,18 +68,20 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { computed, nextTick, onMounted } from "vue";
+import {computed, nextTick, onMounted} from "vue";
 import {
   allAction,
+  apiLinkageOperation,
+  buttonAction,
   checkIsDisabled,
   convertData,
   initCompCallEvent,
   prepsFilter,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
-import { getDynamicEvents } from "@/api/system";
+import {getDynamicEvents} from "@/api/system";
 
-import { ItemPreps } from "@/components/types/ItemPreps";
-import { StarHorseIcon } from "@/components/comp";
+import {ItemPreps} from "@/components/types/ItemPreps";
+import {StarHorseIcon} from "@/components/comp";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -97,10 +100,21 @@ const appName = computed(() => {
 });
 const appendList = computed(() => convertData(props.field?.preps?.appendList));
 const prependList = computed(() =>
-  convertData(props.field?.preps?.prependList),
+    convertData(props.field?.preps?.prependList),
 );
 const itemAction = (prep: string) => {
   allAction(props, emits, formData, prep);
+};
+const actionEvent = (action: any) => {
+  if (action.eventType === "custom") {
+    buttonAction(props, emits, formData, action.customCode);
+  } else if (action.eventType === "linkage" || action.eventType === "dataSource") {
+    apiLinkageOperation(action.dataRelation?.apiLinkage, formData);
+  } else if (action.eventType === "function") {
+    action.funcInfo?.(props, formData, props.formInfo);
+  } else {
+    console.error("Unknown action: ", action);
+  }
 };
 onMounted(() => {
   nextTick(() => {

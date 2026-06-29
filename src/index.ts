@@ -81,7 +81,6 @@ const install = (
       app.use(ElementPlus, {
         locale: locale,
       });
-      console.log("star-horse-lowcode:", locale);
     }
   }
   window.__starHorseHostApp__ = app;

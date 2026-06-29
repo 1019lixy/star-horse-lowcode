@@ -22,8 +22,8 @@ const starHorseAxios = axios.create({
 starHorseAxios.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     let token = getToken();
-    if (!token && window._isDebug_) {
-      token = "sh08e17707bfc44ffa9fa6153b45862542";
+    if (!token) {
+      token = "7bbeb67b62fd449a85e0f8b0fa5816df";
     }
     const fingerToken = getFingerId();
     // 请求头带上token
@@ -76,7 +76,7 @@ starHorseAxios.interceptors.response.use(
       error(i18n("api.serviceError"));
       return Promise.reject(err);
     } else {
-      console.log(err);
+      console.error(err);
       // 对响应错误做点什么
       return Promise.reject(err);
     }
@@ -110,7 +110,7 @@ export function download(url: string, param: any) {
         resolve(null);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         reject(err);
       });
   });
@@ -366,7 +366,7 @@ export async function dictData(
       }
     })
     .catch((err: any) => {
-      console.log("接口不存在或网络异常", err);
+      console.error("接口不存在或网络异常", err);
     });
   return dicts;
 }

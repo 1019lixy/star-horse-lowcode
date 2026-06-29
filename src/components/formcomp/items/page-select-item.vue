@@ -113,9 +113,15 @@ const loadByPage = (isInit: boolean = false) => {
       pageInfo.value.dataList = redata?.dataList;
       pageInfo.value.totalPage = redata?.totalPages;
       pageInfo.value.totalData = redata?.totalDatas;
+      // 回显已选数据：初始化加载时根据 formData 中的值勾选匹配行
+      if (isInit) {
+        nextTick(() => {
+          echoSelection();
+        });
+      }
     })
     .catch((err) => {
-      console.log(err);
+      console.error(err);
     })
     .finally(() => {
       closeLoad();
@@ -223,6 +229,24 @@ const loadSourceField = (aliasFirst: boolean = true) => {
     fields?.find((temp: FieldMapping) => temp.distField == name)?.sourceField ||
     ""
   );
+};
+/**
+ * 回显已选数据：根据 formData 中已存的值，在当前数据列表中勾选匹配行
+ */
+const echoSelection = () => {
+  let realName = props.field.aliasName || props.field.fieldName;
+  let value: any = formData.value[realName];
+  if (!value) return;
+  let sourceField = loadSourceField();
+  if (!sourceField) {
+    sourceField = realName;
+  }
+  const values = Array.isArray(value) ? value : [value];
+  for (const row of pageInfo.value.dataList) {
+    if (values.includes(row[sourceField])) {
+      starHorseTableCompRef.value?.toggleRowSelection(row, true);
+    }
+  }
 };
 const assignVal = () => {
   let fields: any = props.field.preps?.["needField"];

@@ -15,9 +15,7 @@ export default [
             globals: {
                 ...globals.browser,
                 ...globals.node,
-                process: "readonly",
-                $: "readonly",
-                jQuery: "readonly"
+                process: "readonly"
             },
             parser: vueParser,
             parserOptions: {

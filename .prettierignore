@@ -23,4 +23,3 @@ node_modules/
 .prettierignore
 *.txt
 **/*.html
-jquery.min.js

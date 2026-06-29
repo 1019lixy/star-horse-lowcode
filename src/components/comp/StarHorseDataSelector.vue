@@ -1,16 +1,11 @@
 <script setup lang="ts">
-import { useVModel } from "@vueuse/core";
-import DataPicker, {
-  type ModelValueType,
-} from "@/components/comp/utils/DataPicker.vue";
-import { computed, CSSProperties, onMounted, ref, watch } from "vue";
+import {useVModel} from "@vueuse/core";
+import DataPicker, {type ModelValueType,} from "@/components/comp/utils/DataPicker.vue";
+import {computed, CSSProperties, onMounted, ref, watch} from "vue";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
-import { i18n } from "@/lang";
-import { SearchParams } from "@/components/types";
-import {
-  findNodesInTree,
-  loadSelectedData,
-} from "@/components/comp/utils/DataSelectorUtils";
+import {i18n} from "@/lang";
+import {SearchParams} from "@/components/types";
+import {findNodesInTree, loadSelectedData,} from "@/components/comp/utils/DataSelectorUtils";
 
 export interface DataSelectorProps {
   modelValue: ModelValueType;
@@ -134,13 +129,11 @@ const addTag = (val: any) => {
 };
 
 const tagVisible = (val: any) => {
-  const result =
-    (Array.isArray(selectData?.value) &&
-      selectData?.value?.find(
-        (item: any) => item?.[props.displayValue] === val,
-      )?.[props.displayName]) ??
-    val;
-  return result;
+  return (Array.isArray(selectData?.value) &&
+          selectData?.value?.find(
+              (item: any) => item?.[props.displayValue] === val,
+          )?.[props.displayName]) ??
+      val;
 };
 
 onMounted(() => {

@@ -88,8 +88,7 @@ export function removeItem(isEdit: boolean, formItem: any, parentField: any) {
     }
   } else if (parentItemType == "box" || parentItemType == "dytable") {
     const elements = parentField!.preps.elements;
-    for (const index in elements) {
-      const sdataTemp = elements[index];
+    for (const sdataTemp of elements) {
       if (sdataTemp.columns.length > 0) {
         for (let i = 0; i < sdataTemp.columns.length; i++) {
           const items = sdataTemp.columns[i].items;
@@ -143,7 +142,7 @@ export function moveUpItem(isEdit: boolean, formItem: any, parentField: any) {
       }
     }
   } else if (parentField?.itemType == "box") {
-    console.log("暂不处理");
+    // box 类型暂不处理
   }
   const compType = parentField.compType ?? getParentComp(parentField);
   if (compType === "item") {
@@ -162,8 +161,7 @@ export function moveUpItem(isEdit: boolean, formItem: any, parentField: any) {
         continue;
       }
       const elements = dataTemp.preps.elements;
-      for (const index in elements) {
-        const sdataTemp = elements[index];
+      for (const sdataTemp of elements) {
         if (sdataTemp.columns.length > 0) {
           for (let i = 0; i < sdataTemp.columns.length; i++) {
             const items = sdataTemp.columns[i].items;
@@ -218,8 +216,7 @@ export function moveDownItem(isEdit: boolean, formItem: any, parentField: any) {
         continue;
       }
       const elements = dataTemp.preps.elements;
-      for (const index in elements) {
-        const sdataTemp = elements[index];
+      for (const sdataTemp of elements) {
         if (sdataTemp.columns.length > 0) {
           for (let i = 0; i < sdataTemp.columns.length; i++) {
             const items = sdataTemp.columns[i].items;
@@ -240,12 +237,11 @@ export function moveDownItem(isEdit: boolean, formItem: any, parentField: any) {
 
 // const fieldIndex = ref<number>(200);
 const complexFields = (items: Array<any>, isCut: boolean = false) => {
-  for (const index in items) {
-    const item = items[index];
+  for (const item of items) {
     if (item?.compType == "container") {
       const sitems = item?.preps?.elements;
-      for (const sindex in sitems) {
-        complexFields(sitems?.[sindex]?.items);
+      for (const sitem of sitems) {
+        complexFields(sitem?.items);
       }
     } else {
       item.id = uuid();
@@ -277,19 +273,16 @@ export const copyContainer = (
   //box和dytable 有列属性
   if (containerType == "box" || containerType == "dytable") {
     const rows = container.preps.elements;
-    for (const index in rows) {
-      const row = rows[index];
+    for (const row of rows) {
       row.id = uuid();
-      for (const cIndex in row.columns) {
-        const col = row.columns[cIndex];
+      for (const col of row.columns) {
         col.id = uuid();
         complexFields(col.items, isCut);
       }
     }
   } else {
     const rows = container.preps.elements;
-    for (const index in rows) {
-      const row = rows[index];
+    for (const row of rows) {
       row.id = uuid();
       complexFields(row.items, isCut);
     }
@@ -313,7 +306,6 @@ export const copyContainer = (
  * @param parentItem
  */
 export function contextOperation(act: string, item: any, parentItem: any) {
-  console.log(act, item, parentItem);
 }
 
 export function cut(item: any, parentItem: any) {
@@ -348,7 +340,6 @@ export function paste(parentItem: any) {
         copyerData.id.substring(0, 6),
       ]);
       copyerData.preps.id = copyerData.id;
-      console.log("paste", copyerData, currentSubItem.value);
       //如果选中了某个单元格
       if (currentSubItem.value) {
         if (!currentSubItem.value.items) {
@@ -375,7 +366,6 @@ export function dynamicFormContextMenuData(
   flag: string = "scene",
   recall?: Function,
 ) {
-  console.log(item, parentItem, flag, recall);
   const menus = reactive<Array<any>>([]);
   if (flag == "scene") {
     menus.push({

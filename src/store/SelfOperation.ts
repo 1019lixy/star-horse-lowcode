@@ -46,8 +46,7 @@ export const useSelfOperationStore = defineStore("selfOperation", () => {
     if (!formItems) {
       return;
     }
-    for (const index in formItems) {
-      const formItem = formItems[index];
+    for (const formItem of formItems) {
       fieldItemList.value[formItem.fieldName || formItem.preps?.name] =
         formItem;
     }

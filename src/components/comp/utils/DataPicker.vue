@@ -299,7 +299,7 @@ const loadData = async (condition?: SearchParams[]) => {
       pageInfo.totalData = redata?.totalDatas;
     })
     .catch((err: any) => {
-      console.log(err);
+      console.error(err);
     })
     .finally(() => {
       closeLoad();

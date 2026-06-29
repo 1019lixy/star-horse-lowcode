@@ -161,8 +161,7 @@ const tableAnalysis = (item: any) => {
   const batchFieldInfos: BatchFieldInfo[] = [];
   const columnsList: FieldInfo[] | any = [];
   const searchItemList: SearchProps[] | any = [];
-  for (const index in elements) {
-    const element = elements[index];
+  for (const element of elements) {
     element?.items?.forEach((temp: any) => {
       const { item, fieldInfo, layerItem, searchItem } = itemAnalysis(temp);
       mergeObjects(boxItems, item);
@@ -214,8 +213,7 @@ const tabColapseCardAnalysis = (item: any) => {
   let fieldInfo: FieldInfo | any = {};
   const searchItemList2: SearchProps[] | any = [];
   const dataList: Array<any> = [];
-  for (const index in elements) {
-    const element = elements[index];
+  for (const element of elements) {
     const { selectList, compListResult, fieldList, searchItemList } =
       analysisCompDatas(element.items);
     mergeObjects(boxItems, compListResult);

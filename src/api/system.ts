@@ -66,12 +66,10 @@ export const batchModifyAction = (
   val: any,
   fieldName: string,
 ) => {
-  for (const index in items) {
-    const item = items[index];
+  for (const item of items) {
     if (item.compType == "container") {
       const sitems = item.preps.elements;
-      for (const sindex in sitems) {
-        const col = sitems[sindex];
+      for (const col of sitems) {
         if (col.columns) {
           col.columns.forEach((temp: any) => {
             batchModifyAction(temp.items, val, fieldName);
@@ -296,8 +294,7 @@ export function removeEmptyCondition(
   if (!condition || condition.length == 0) {
     return params;
   }
-  for (const a in condition) {
-    const temp = condition[a];
+  for (const temp of condition) {
     if (temp && isJson(temp) && Object.keys(temp).length > 0) {
       params.push(temp);
     }

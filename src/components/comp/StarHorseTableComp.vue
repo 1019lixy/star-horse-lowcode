@@ -34,9 +34,11 @@ import { i18n } from "@/lang";
 import {
   computed,
   inject,
+  nextTick,
   onActivated,
   onMounted,
   onUnmounted,
+  provide,
   ref,
   unref,
   watch,
@@ -82,6 +84,25 @@ const baseInfo: PageProps = {
   dataList: [],
 };
 let pageInfo = ref<PageProps>({});
+// 当前正在编辑的行引用（编辑互斥：仅允许一行处于编辑状态）
+const editingRow = ref<any>(null);
+// 取消当前编辑行的编辑状态（O(1)，不遍历 dataList）
+const cancelAllEdit = () => {
+  const row = editingRow.value;
+  if (!row) return;
+  const originalValue =
+    row.starHorseBakeValue === "_" ? null : row.starHorseBakeValue;
+  if (row.selectName) row[row.selectName] = originalValue;
+  delete row.isSelected;
+  delete row.selectName;
+  delete row.starHorseBakeValue;
+  editingRow.value = null;
+};
+// 提供给列组件：激活新单元格编辑前，先取消其他编辑状态
+provide("starHorseCancelAllEdit", cancelAllEdit);
+provide("starHorseSetEditingRow", (row: any) => {
+  editingRow.value = row;
+});
 let searchFields = ref<Array<SearchParams>>([]);
 let orderBys = ref<Array<OrderByInfo>>([]);
 let fieldVisible = ref<boolean>(false);
@@ -104,7 +125,7 @@ const tableCompFunc = (authority: any) => {
   } else if (authority == "export") {
     exportOperationVisible.value = true;
   } else if (authority == "execution") {
-    console.log(i18n("comp.youClickedExecuteButton"));
+    // 执行按钮：由外部通过 overrideOperation 处理
   }
 };
 
@@ -123,8 +144,6 @@ const overrideOperation = (authCode: string, params: any) => {
   if (viewBtn && viewBtn.funcName && viewBtn.override) {
     if (typeof viewBtn.funcName === "function") {
       viewBtn.funcName(params);
-    } else {
-      console.log("overrideOperation:", viewBtn.funcName);
     }
     return true;
   }
@@ -142,7 +161,7 @@ const exportData = () => {
     if (Array.isArray(keys)) {
       for (let key of keys) {
         let temp: Array<any> = [];
-        for (let id in ids) {
+        for (const id of ids) {
           if (id[key]) {
             temp.push(id[key]);
           }
@@ -181,8 +200,7 @@ const exportData = () => {
 const getIds = () => {
   let selectDatas = unref(multipleSelection);
   let ids: any = [];
-  for (let key in selectDatas) {
-    let temp = selectDatas[key];
+  for (const temp of selectDatas) {
     if (temp) {
       ids.push(analysisPrimaryKeys(props.primaryKey, temp));
     }
@@ -245,7 +263,6 @@ const init = async () => {
   reCreateData();
   if (isMobile) {
     cardFieldList.value = loadField();
-    console.log("cardFieldList", cardFieldList.value);
   }
 };
 // Listen for changes in data passed in from outside
@@ -266,20 +283,17 @@ watch(
   { immediate: false },
 );
 const assignData = (dataList: Array<any>) => {
-  for (let key in dataList) {
-    let temp: any = dataList[key];
+  for (const temp of dataList) {
     if (Array.isArray(temp)) {
       toolFields.value.push(...temp);
     } else if (temp.tabList?.length > 0) {
-      for (let skey in temp.tabList) {
-        let stemp = temp.tabList[skey];
+      for (const stemp of temp.tabList) {
         if (stemp?.fieldList) {
           toolFields.value.push(...stemp.fieldList);
         }
       }
     } else if (temp.dytableList?.length > 0) {
-      for (let skey in temp.dytableList) {
-        let stemp = temp.dytableList[skey];
+      for (const stemp of temp.dytableList) {
         if (stemp) {
           toolFields.value.push(...stemp);
         }
@@ -297,9 +311,15 @@ const reCreateData = () => {
   }
 };
 let sortableInstance: Sortable | null = null;
+// 字段配置表（.sh-columns）的 ref，用于替代 document.querySelector 全局查询
+const shColumnsTableRef = ref<any>(null);
 const moveColumn = () => {
-  const tbody = document.querySelector(
-    ".sh-columns .el-table__body-wrapper tbody",
+  // 优先通过 ref 定位表格实例，避免全局 querySelector 误匹配多实例
+  const tableEl: HTMLElement | null =
+    shColumnsTableRef.value?.$el ??
+    (document.querySelector(".sh-columns") as HTMLElement | null);
+  const tbody = tableEl?.querySelector(
+    ".el-table__body-wrapper tbody",
   ) as HTMLElement | null;
   if (tbody) {
     if (sortableInstance) {
@@ -347,8 +367,7 @@ const checkParent = (val: any) => {
     return true;
   }
   let flag = false;
-  for (let i in val) {
-    let item = val[i];
+  for (const item of val) {
     if (item?.["children"]?.length > 0) {
       flag = true;
       starHorseTableCompRef.value?.toggleRowSelection(item, false);
@@ -371,8 +390,7 @@ const handleSelectionChange = (val: any) => {
       let keys: any = props.primaryKey;
       if (Array.isArray(keys)) {
         let arr: any = [];
-        for (let index in multipleSelection.value) {
-          let temp = multipleSelection.value[index];
+        for (const temp of multipleSelection.value) {
           let temp1: any = {};
           for (let key of keys) {
             temp1[key] = temp?.[key];
@@ -380,12 +398,10 @@ const handleSelectionChange = (val: any) => {
           arr.push(temp1);
         }
         let filters: Array<any> = [];
-        for (let index in val) {
-          let temp = val[index];
-          for (let sindex in arr) {
-            let stemp = arr[sindex];
+        for (const temp of val) {
+          for (const stemp of arr) {
             let bflag: number = 0;
-            for (let skey in stemp) {
+            for (const skey in stemp) {
               if (
                 Object.prototype.hasOwnProperty.call(temp, skey) &&
                 stemp[skey] == temp[skey]
@@ -429,7 +445,7 @@ const tbCommonFun = (name: string | undefined, row: any) => {
   } else if (["exportForm", "exportPdf"].includes(name)) {
     exportSingleFile(id, name);
   } else {
-    console.log(i18n("comp.undefinedFunction"), name);
+    warning(i18n("comp.undefinedFunction") + name);
   }
   return false;
 };
@@ -457,8 +473,8 @@ const splitKey = (key: string, row: any) => {
   let arr = key?.split(".");
   if (arr?.length > 1) {
     let temp = row;
-    for (let i in arr) {
-      temp = temp?.[arr[i]];
+    for (const k of arr) {
+      temp = temp?.[k];
     }
     return temp;
   } else {
@@ -632,13 +648,15 @@ const loadByPage = (initPageInfo?: boolean) => {
       searchFlag.value = false;
 
       if (props.dialogInput) {
-        filterData();
+        nextTick(() => {
+          filterData();
+        });
       }
       pageInfo.value.totalPage = redata?.totalPages;
       pageInfo.value.totalData = redata?.totalDatas;
     })
     .catch((err: any) => {
-      console.log(err);
+      console.error(err);
     })
     .finally(() => {
       closeLoad();
@@ -647,12 +665,21 @@ const loadByPage = (initPageInfo?: boolean) => {
 const filterData = () => {
   let name = unref(inputFieldName) as string;
   if (pageInfo.value.dataList && name && inputFieldVal.value) {
-    let row = pageInfo.value.dataList.find(
-      (item: any) => item?.[name] == inputFieldVal.value,
-    );
-    if (row) {
-      multipleSelection.value.push(row);
-      starHorseTableCompRef.value?.toggleRowSelection(row, true);
+    const values = Array.isArray(inputFieldVal.value)
+      ? inputFieldVal.value
+      : [inputFieldVal.value];
+    for (const val of values) {
+      const exists = multipleSelection.value.some(
+        (item: any) => item?.[name] == val,
+      );
+      if (exists) continue;
+      let row = pageInfo.value.dataList.find(
+        (item: any) => item?.[name] == val,
+      );
+      if (row) {
+        multipleSelection.value.push(row);
+        starHorseTableCompRef.value?.toggleRowSelection(row, true);
+      }
     }
   }
 };
@@ -898,6 +925,23 @@ const getSelectedDatas = () => {
   return multipleSelection.value;
 };
 /**
+ * 从已选数据中移除指定行（用于弹窗多选模式下"已选"tab 的删除操作）
+ * 同步取消 el-table 的 checkbox 选中状态，并从 multipleSelection 中过滤
+ */
+const removeSelection = (row: any) => {
+  starHorseTableCompRef.value?.toggleRowSelection(row, false);
+  let keys: any = props.primaryKey;
+  if (Array.isArray(keys)) {
+    multipleSelection.value = multipleSelection.value.filter((item: any) =>
+      keys.some((k: string) => item?.[k] !== row?.[k]),
+    );
+  } else {
+    multipleSelection.value = multipleSelection.value.filter(
+      (item: any) => item?.[keys] !== row?.[keys],
+    );
+  }
+};
+/**
  * 列表滚动到底部时自动翻译
  * @param direction
  */
@@ -957,6 +1001,7 @@ defineExpose({
   getIds,
   assignStaticData,
   getSelectedDatas,
+  removeSelection,
   multipleSelection,
   setDataInfo,
   deleteById,
@@ -1029,7 +1074,7 @@ defineExpose({
           </template>
           <el-table
             class="sh-columns"
-            ref="table"
+            ref="shColumnsTableRef"
             :data="toolFields"
             :strip="true"
             :fit="true"

@@ -2,6 +2,7 @@
 import {
   computed,
   ComputedRef,
+  inject,
   nextTick,
   onMounted,
   PropType,
@@ -52,12 +53,20 @@ const compInfo: ComputedRef<DyCompField> = computed(() => {
 });
 const currentRow = ref<any>({});
 const columnId = ref<string>(uuid());
+// 父组件提供的取消当前编辑行的方法（O(1) 编辑互斥）
+const cancelAllEdit = inject<() => void>("starHorseCancelAllEdit", () => {});
+// 父组件提供的设置当前编辑行引用的方法
+const setEditingRow = inject<(row: any) => void>(
+  "starHorseSetEditingRow",
+  () => {},
+);
 const focusEvent = (_column: any) => {};
 const blurEvent = (column: any, params: any) => {
   const data = Array.isArray(params) ? params[0] : params;
   let bakeValue = data["starHorseBakeValue"];
   delete data["starHorseBakeValue"];
   delete data["isSelected"];
+  setEditingRow(null);
   changeStyle("hidden");
   if ((!bakeValue && bakeValue != 0) || bakeValue == data[column["property"]]) {
     return;
@@ -94,17 +103,29 @@ const cancelEdit = (row: any) => {
   delete row.isSelected;
   delete row.selectName;
   delete row.starHorseBakeValue;
+  setEditingRow(null);
   changeStyle("hidden");
 };
 const changeStyle = (type: string) => {
   nextTick(() => {
-    $(".edit-container")?.parent(".cell").css("overflow", type);
-    //所有输入框，下拉框，自动聚焦
-    $(".edit-container")
-      ?.find("input,select,textarea")
-      .first()
-      .select()
-      .focus();
+    // 通过当前列的唯一 columnId 精确定位，避免全局查询误匹配其他表格实例
+    const container = document.getElementById(columnId.value);
+    if (!container) return;
+    const cell = container.closest(".cell") as HTMLElement | null;
+    if (cell) {
+      cell.style.overflow = type;
+    }
+    // 自动聚焦第一个表单元素
+    const input = container.querySelector(
+      "input, select, textarea",
+    ) as HTMLElement | null;
+    if (input) {
+      // select 元素调用 select() 选中全部文本，其他元素调用 focus()
+      if (typeof (input as HTMLInputElement).select === "function") {
+        (input as HTMLInputElement).select();
+      }
+      input.focus();
+    }
   });
 };
 const cellClick = (row: any, column: any) => {
@@ -116,25 +137,16 @@ const cellClick = (row: any, column: any) => {
     warning(i18n("api.columnNotEditable"));
     return;
   }
-  let flag = false;
-  if ($(".edit-container").length > 0) {
-    $(".edit-container")?.forEach((item) => {
-      const type = $(item).parent(".cell").css("overflow");
-      if (type == "visible") {
-        flag = true;
-        return false;
-      }
-    });
-  }
-  if (flag) {
-    return;
-  }
+  // 激活新单元格编辑前，先取消表格内所有其他正在编辑的单元格（编辑互斥）
+  cancelAllEdit();
   row["isSelected"] = true;
   row["selectName"] = column["property"];
   let bakeValue = row[column["property"]];
   //解决空值不能提交问题
   row["starHorseBakeValue"] = bakeValue ? bakeValue : "_";
   currentRow.value = row;
+  // 登记当前编辑行引用，供下次切换时 O(1) 清理
+  setEditingRow(row);
   changeStyle("visible");
 };
 const currentDataFormat = (scope: any) => {
@@ -330,7 +342,10 @@ onMounted(() => {
 <style lang="scss" scoped>
 .edit-container {
   position: relative;
-  z-index: 50000;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  z-index:999;
 
   .action-buttons {
     .el-button {
