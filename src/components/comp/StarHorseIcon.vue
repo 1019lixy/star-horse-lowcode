@@ -19,7 +19,8 @@ const props = defineProps({
 });
 const iconName = computed(() => `sh-${props.iconClass}`);
 const sizeNumber = computed(() => {
-  const numberMatch = props.size != null ? String(props.size).match(/\d+/) : null; // 正则匹配连续数字
+  const numberMatch =
+    props.size != null ? String(props.size).match(/\d+/) : null; // 正则匹配连续数字
   return numberMatch ? Number(numberMatch[0]) : 0; // 转换为数值，无匹配时返回0
 });
 const width = computed(() =>

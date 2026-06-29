@@ -59,7 +59,8 @@ const orgTreeProps = computed(() => ({
 const loadOrgData = async () => {
   const url = props.field.preps?.url;
   if (!url) {
-    orgTreeData.value = props.field.preps?.values || props.field.preps?.data || [];
+    orgTreeData.value =
+      props.field.preps?.values || props.field.preps?.data || [];
     return;
   }
   try {
@@ -83,7 +84,7 @@ watch(
       orgTreeData.value = val;
     }
   },
-  { deep: true }
+  { deep: true },
 );
 </script>
 <style lang="scss" scoped></style>

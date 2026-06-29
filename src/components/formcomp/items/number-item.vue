@@ -11,7 +11,7 @@
       :fid="field.fieldName"
       :disabled="checkIsDisabled(props)"
       v-bind="prepsFilter(field.preps)"
-      v-on="getDynamicEvents(props, itemAction,formData)"
+      v-on="getDynamicEvents(props, itemAction, formData)"
       v-model="formData[field.fieldName]"
     >
       <template #prefix>
@@ -76,14 +76,19 @@ onMounted(() => {
   nextTick(() => {
     initCompCallEvent(props, emits, formData);
     // 初始化公式计算监听
-    formulaStops = setupFormulaWatchers(props.field, props.formInfo, formData, watch);
+    formulaStops = setupFormulaWatchers(
+      props.field,
+      props.formInfo,
+      formData,
+      watch,
+    );
   });
 
   initEvent();
 });
 
 onBeforeUnmount(() => {
-  formulaStops.forEach(stop => stop());
+  formulaStops.forEach((stop) => stop());
   formulaStops = [];
 });
 </script>

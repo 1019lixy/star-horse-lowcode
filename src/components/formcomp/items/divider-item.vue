@@ -9,7 +9,7 @@
   >
     <el-divider
       :direction="field.preps?.direction || 'horizontal'"
-      v-on="getDynamicEvents(props, itemAction,formData)"
+      v-on="getDynamicEvents(props, itemAction, formData)"
       :content-position="field.preps?.contentPosition || 'center'"
     >
       {{ field.preps?.content }}

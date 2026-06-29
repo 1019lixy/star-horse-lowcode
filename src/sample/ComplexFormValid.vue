@@ -1,12 +1,24 @@
 <script setup lang="ts" name="EnvInfo">
-import {i18n} from "@/lang";
-import {onMounted, provide, reactive, ref} from "vue";
-import {StarHorseDataView, StarHorseTableComp} from "@/components/comp";
-import {ApiUrls, OrderByInfo, PageFieldInfo, SearchFields, SelectOption, UserFuncInfo} from "@/components/types";
-import {apiInstance, closeLoad, dialogPreps, load} from "@/api/star_horse_utils";
-import {dictData, download} from "@/api/star_horse_apis";
-import {warning} from "@/utils/message";
-import {createDatetime} from "@/api/date_utils";
+import { i18n } from "@/lang";
+import { onMounted, provide, reactive, ref } from "vue";
+import { StarHorseDataView, StarHorseTableComp } from "@/components/comp";
+import {
+  ApiUrls,
+  OrderByInfo,
+  PageFieldInfo,
+  SearchFields,
+  SelectOption,
+  UserFuncInfo,
+} from "@/components/types";
+import {
+  apiInstance,
+  closeLoad,
+  dialogPreps,
+  load,
+} from "@/api/star_horse_utils";
+import { dictData, download } from "@/api/star_horse_apis";
+import { warning } from "@/utils/message";
+import { createDatetime } from "@/api/date_utils";
 
 const dataUrl: ApiUrls = apiInstance("userdb-manage", "generator/code");
 
@@ -92,7 +104,7 @@ const searchFormData = reactive<SearchFields>({
   ],
 });
 const appFieldList = reactive<PageFieldInfo>({
-  fieldList: []
+  fieldList: [],
 });
 const tableFieldList = reactive<PageFieldInfo>({
   fieldList: [
@@ -108,7 +120,7 @@ const tableFieldList = reactive<PageFieldInfo>({
         type: "select",
         required: true,
         formVisible: true,
-        actions: {change: loadTabInfo},
+        actions: { change: loadTabInfo },
         listVisible: true,
         preps: {
           values: dbInfoList,
@@ -189,14 +201,14 @@ const tableFieldList = reactive<PageFieldInfo>({
               label: "生成模块",
               fieldName: "createModules",
               type: "checkbox",
-              helpMsg: `选择了前端/后端项目后,选择的前端或者后端代码自动失效`,
+              helpMsg: "选择了前端/后端项目后,选择的前端或者后端代码自动失效",
               preps: {
                 values: [
-                  {name: "后端代码", value: "backendCode"},
-                  {name: "前端代码", value: "frontendCode"},
-                  {name: "后端项目", value: "backendProject"},
-                  {name: "前端项目", value: "frontendProject"},
-                  {name: "权限系统", value: "auth"},
+                  { name: "后端代码", value: "backendCode" },
+                  { name: "前端代码", value: "frontendCode" },
+                  { name: "后端项目", value: "backendProject" },
+                  { name: "前端项目", value: "frontendProject" },
+                  { name: "权限系统", value: "auth" },
                 ],
               },
               actions: {
@@ -204,12 +216,12 @@ const tableFieldList = reactive<PageFieldInfo>({
                   const modules = val["createModules"] ?? [];
                   if (modules.includes("backendProject")) {
                     val.createModules = modules.filter(
-                        (item: any) => item !== "backendCode",
+                      (item: any) => item !== "backendCode",
                     );
                   }
                   if (modules.includes("frontendProject")) {
                     val.createModules = modules.filter(
-                        (item: any) => item !== "frontendCode",
+                      (item: any) => item !== "frontendCode",
                     );
                   }
                   console.log(val);
@@ -585,8 +597,8 @@ const tableFieldList = reactive<PageFieldInfo>({
                   formVisible: true,
                   preps: {
                     values: [
-                      {name: "账号", value: "username"},
-                      {name: "证书", value: "authentication"},
+                      { name: "账号", value: "username" },
+                      { name: "证书", value: "authentication" },
                     ],
                     dataRelation: {
                       actionName: "change",
@@ -707,13 +719,12 @@ const orderBy = ref<OrderByInfo[]>([
   },
 ]);
 
-const selectItemFun = (_data: any) => {
-};
+const selectItemFun = (_data: any) => {};
 const dataFormat = (name: string, cellValue: any): any => {
   if (name == "datasourceConfigId") {
     return (
-        dbInfoList.value.find((item: any) => item.value == cellValue)?.name ||
-        cellValue
+      dbInfoList.value.find((item: any) => item.value == cellValue)?.name ||
+      cellValue
     );
   }
   if (name == "createdTime" || name == "updatedTime") {
@@ -723,34 +734,34 @@ const dataFormat = (name: string, cellValue: any): any => {
 };
 const init = async () => {
   dbInfoList.value = [];
-  dictData("program_file_type").then(res => {
+  dictData("program_file_type").then((res) => {
     fileTypeList.value = res;
   });
-  dictData("template_version").then(res => {
+  dictData("template_version").then((res) => {
     templateVersionList.value = res;
   });
-  dictData("program_language").then(res => {
+  dictData("program_language").then((res) => {
     languageList.value = res;
   });
-  dictData("ui_type").then(res => {
+  dictData("ui_type").then((res) => {
     uiTypeList.value = res;
   });
-  dictData("packaging_type").then(res => {
+  dictData("packaging_type").then((res) => {
     packagingList.value = res;
   });
-  dictData("REGISTRY_TYPE").then(res => {
+  dictData("REGISTRY_TYPE").then((res) => {
     registryTypeList.value = res;
   });
-  dictData("CACHE_TYPE").then(res => {
+  dictData("CACHE_TYPE").then((res) => {
     cacheTypeList.value = res;
   });
-  dictData("AUTH_MODULE_TYPE").then(res => {
+  dictData("AUTH_MODULE_TYPE").then((res) => {
     moduleNameList.value = res;
   });
-  dictData("OS_TYPE").then(res => {
+  dictData("OS_TYPE").then((res) => {
     osTypeList.value = res;
   });
-  dictData("DEPLOY_TYPE").then(res => {
+  dictData("DEPLOY_TYPE").then((res) => {
     deployTypeList.value = res;
   });
   // appFieldList.fieldList = convertPcCompToAppComps(tableFieldList).fieldList;
@@ -764,7 +775,8 @@ let extendBtns = ref<UserFuncInfo[]>([
     authority: "edit",
     icon: "exchange",
     priority: 100,
-    position: "toolbar"},
+    position: "toolbar",
+  },
   {
     btnName: "重新生成代码",
     authority: "add",
@@ -773,21 +785,21 @@ let extendBtns = ref<UserFuncInfo[]>([
     funcName: (row: any) => {
       load("代码生成中，请稍后");
       download(
-          `/userdb-manage/generator/code/convertToCodeById/${row[primaryKey]}`,
-          {},
+        `/userdb-manage/generator/code/convertToCodeById/${row[primaryKey]}`,
+        {},
       )
-          .catch((err) => {
-            warning(err);
-          })
-          .finally(() => {
-            closeLoad();
-          });
+        .catch((err) => {
+          warning(err);
+        })
+        .finally(() => {
+          closeLoad();
+        });
     },
   },
 ]);
 const generateFormRef = ref();
 const generateMerge = (type: string) => {
-  console.log(generateFormRef.value.getFormData()?.value)
+  console.log(generateFormRef.value.getFormData()?.value);
   generateFormRef.value.$refs.starHorseFormRef.validate((res: boolean) => {
     let dataForm: any = generateFormRef.value.getFormData()?.value;
     if (res) {
@@ -797,16 +809,16 @@ const generateMerge = (type: string) => {
       }
       let isError = false;
       download("/userdb-manage/generator/code/convertToCode", dataForm)
-          .catch((err) => {
-            isError = true;
-            warning(err);
-          })
-          .finally(() => {
-            closeLoad();
-            if (type != "continue" && !isError) {
-              closeAction();
-            }
-          });
+        .catch((err) => {
+          isError = true;
+          warning(err);
+        })
+        .finally(() => {
+          closeLoad();
+          if (type != "continue" && !isError) {
+            closeAction();
+          }
+        });
     }
   });
 };
@@ -817,32 +829,32 @@ const closeAction = () => {
 <template>
   <div class="flex flex-col h-full overflow-hidden">
     <star-horse-dialog
-        :isShowBtnContinue="true"
-        :dialogVisible="dialogProps.editVisible"
-        :dialogProps="dialogProps"
-        :selfFunc="true"
-        @merge="generateMerge"
-        @closeAction="closeAction"
-        boxHeight="85%"
+      :isShowBtnContinue="true"
+      :dialogVisible="dialogProps.editVisible"
+      :dialogProps="dialogProps"
+      :selfFunc="true"
+      @merge="generateMerge"
+      @closeAction="closeAction"
+      boxHeight="85%"
     >
       <star-horse-form
-          ref="generateFormRef"
-          @refresh="codeGeneratorRef?.loadByPage()"
-          :compUrl="dataUrl"
-          formSize="default"
-          :fieldList="tableFieldList"
-          :rules="rules"
+        ref="generateFormRef"
+        @refresh="codeGeneratorRef?.loadByPage()"
+        :compUrl="dataUrl"
+        formSize="default"
+        :fieldList="tableFieldList"
+        :rules="rules"
       />
     </star-horse-dialog>
     <star-horse-dialog
-        :dialog-visible="dialogProps.viewVisible"
-        :dialogProps="dialogProps"
-        :source="3"
+      :dialog-visible="dialogProps.viewVisible"
+      :dialogProps="dialogProps"
+      :source="3"
     >
       <star-horse-data-view
-          :dataFormat="dataFormat"
-          :field-list="tableFieldList"
-          :compUrl="dataUrl"
+        :dataFormat="dataFormat"
+        :field-list="tableFieldList"
+        :compUrl="dataUrl"
       />
     </star-horse-dialog>
     <el-tabs v-model="codeGener" type="border-card">
@@ -851,28 +863,28 @@ const closeAction = () => {
           <div class="flex items-center justify-end">
             <el-button type="primary" @click="generateMerge">
               <star-horse-icon
-                  iconClass="export"
-                  color="var(--star-horse-white)"
+                iconClass="export"
+                color="var(--star-horse-white)"
               />
               导出代码
             </el-button>
             <el-button type="warning">
               <star-horse-icon
-                  iconClass="publish"
-                  color="var(--star-horse-white)"
+                iconClass="publish"
+                color="var(--star-horse-white)"
               />
               发起部署
             </el-button>
           </div>
-          <el-divider/>
+          <el-divider />
           <div class="flex-1 overflow-hidden">
             <star-horse-form
-                ref="generateFormRef"
-                @refresh="codeGeneratorRef?.loadByPage()"
-                :compUrl="dataUrl"
-                formSize="default"
-                :fieldList="tableFieldList"
-                :rules="rules"
+              ref="generateFormRef"
+              @refresh="codeGeneratorRef?.loadByPage()"
+              :compUrl="dataUrl"
+              formSize="default"
+              :fieldList="tableFieldList"
+              :rules="rules"
             />
           </div>
         </div>
@@ -882,30 +894,30 @@ const closeAction = () => {
           <div class="search-content">
             <div class="search_btn">
               <star-horse-search-comp
-                  @searchData="
+                @searchData="
                   (data: any) => codeGeneratorRef?.createSearchParams(data)
                 "
-                  :formData="searchFormData"
-                  :compUrl="dataUrl"
+                :formData="searchFormData"
+                :compUrl="dataUrl"
               />
             </div>
           </div>
           <el-card class="inner_content">
             <star-horse-table-comp
-                ref="codeGeneratorRef"
-                :fieldList="tableFieldList"
-                :primaryKey="primaryKey"
-                :compUrl="dataUrl"
-                :orderBy="orderBy"
-                :btn-permissions="{
-                  edit: 'edit',
-                  view: 'view',
-                  delete: 'delete',
-                  add:'add'
-                }"
-                :extendBtns="extendBtns"
-                :dataFormat="dataFormat"
-                @selectItem="selectItemFun"
+              ref="codeGeneratorRef"
+              :fieldList="tableFieldList"
+              :primaryKey="primaryKey"
+              :compUrl="dataUrl"
+              :orderBy="orderBy"
+              :btn-permissions="{
+                edit: 'edit',
+                view: 'view',
+                delete: 'delete',
+                add: 'add',
+              }"
+              :extendBtns="extendBtns"
+              :dataFormat="dataFormat"
+              @selectItem="selectItemFun"
             />
           </el-card>
         </div>
@@ -913,6 +925,4 @@ const closeAction = () => {
     </el-tabs>
   </div>
 </template>
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

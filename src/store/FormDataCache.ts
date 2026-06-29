@@ -47,7 +47,9 @@ export const useFormDataCacheStore = defineStore(
         const oldestParam = accessQueue.value.shift();
         if (oldestParam) {
           cache.value.delete(oldestParam);
-          console.log(`[FormDataCache] 缓存已满，删除最久未使用的缓存：${oldestParam}`);
+          console.log(
+            `[FormDataCache] 缓存已满，删除最久未使用的缓存：${oldestParam}`,
+          );
         }
       }
       cache.value.set(param, JSON.parse(JSON.stringify(data)));

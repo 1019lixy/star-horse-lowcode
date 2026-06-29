@@ -5,7 +5,7 @@ import { FieldInfo } from "@/components/types/PageFieldInfo";
 
 import { getDataIndex, getFormData, getPrefix } from "@/api/form_utils";
 import StarHorseItem from "@/components/comp/StarHorseItem.vue";
-import {StarHorseFormTable} from "@/components/comp";
+import { StarHorseFormTable } from "@/components/comp";
 
 defineProps({
   compUrl: { type: Object as PropType<ApiUrls> },

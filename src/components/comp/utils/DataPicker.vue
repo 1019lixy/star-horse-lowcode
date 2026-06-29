@@ -1,16 +1,29 @@
 <script setup lang="ts">
-import {useVModel} from "@vueuse/core";
-import {nextTick, onUnmounted, reactive, ref, watch} from "vue";
-import {i18n} from "@/lang";
-import {postRequest} from "@/api/star_horse_apis";
+import { useVModel } from "@vueuse/core";
+import { nextTick, onUnmounted, reactive, ref, watch } from "vue";
+import { i18n } from "@/lang";
+import { postRequest } from "@/api/star_horse_apis";
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
-import {closeLoad, createCondition} from "@/api/star_horse_utils";
-import {PageProps} from "@/components/types/PageProps";
-import {SearchParams} from "@/components/types";
-import {isMobile} from "@/api/device";
-import {buildPageParams, buildRequestParams, toggleNodeSelection,} from "@/components/comp/utils/DataSelectorUtils";
-import {StarHorseIcon} from "@/components/comp";
-import {Bottom, Check, Delete, Download, QuestionFilled, Sort, Top, Upload} from "@element-plus/icons-vue";
+import { closeLoad, createCondition } from "@/api/star_horse_utils";
+import { PageProps } from "@/components/types/PageProps";
+import { SearchParams } from "@/components/types";
+import { isMobile } from "@/api/device";
+import {
+  buildPageParams,
+  buildRequestParams,
+  toggleNodeSelection,
+} from "@/components/comp/utils/DataSelectorUtils";
+import { StarHorseIcon } from "@/components/comp";
+import {
+  Bottom,
+  Check,
+  Delete,
+  Download,
+  QuestionFilled,
+  Sort,
+  Top,
+  Upload,
+} from "@element-plus/icons-vue";
 import Sortable from "sortablejs";
 
 export type ModelValueType = any;
@@ -77,8 +90,13 @@ const initSortable = () => {
     chosenClass: "sortable-chosen",
     dragClass: "sortable-drag",
     onEnd: (evt) => {
-      const {oldIndex, newIndex} = evt;
-      if (oldIndex === undefined || newIndex === undefined || oldIndex === newIndex) return;
+      const { oldIndex, newIndex } = evt;
+      if (
+        oldIndex === undefined ||
+        newIndex === undefined ||
+        oldIndex === newIndex
+      )
+        return;
       const list = [...dataOptions.value];
       const [item] = list.splice(oldIndex, 1);
       list.splice(newIndex, 0, item);
@@ -95,10 +113,13 @@ const destroySortable = () => {
   }
 };
 
-watch(() => props.multiple, (val) => {
-  destroySortable();
-  if (val) nextTick(initSortable);
-});
+watch(
+  () => props.multiple,
+  (val) => {
+    destroySortable();
+    if (val) nextTick(initSortable);
+  },
+);
 
 const handleCheckAll = () => {
   if (!checkAll.value) {
@@ -186,20 +207,24 @@ const moveEnd = (index: number) => {
 const scrollToActive = () => {
   nextTick(() => {
     const el = selectedListRef.value?.querySelector(
-        `.selected-item[data-index="${activeIndex.value}"]`
+      `.selected-item[data-index="${activeIndex.value}"]`,
     ) as HTMLElement;
-    el?.scrollIntoView({behavior: "smooth", block: "nearest"});
+    el?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   });
 };
 
 const onSelectedItemClick = (index: number) => {
   if (!props.multiple) {
-    dataOptions.value = toggleNodeSelection(dataOptions.value[index], dataOptions.value, {
-      multiple: false,
-      checkStrictly: true,
-      selectLeaf: false,
-      displayValue: props.displayValue || "value",
-    });
+    dataOptions.value = toggleNodeSelection(
+      dataOptions.value[index],
+      dataOptions.value,
+      {
+        multiple: false,
+        checkStrictly: true,
+        selectLeaf: false,
+        displayValue: props.displayValue || "value",
+      },
+    );
     activeIndex.value = -1;
     return;
   }
@@ -224,9 +249,9 @@ const queryName = ref(null);
 const dataSearch = () => {
   if (props.dataUrl) {
     loadData(
-        queryName.value
-            ? [createCondition(props.displayName, queryName.value, "lk")]
-            : [],
+      queryName.value
+        ? [createCondition(props.displayName, queryName.value, "lk")]
+        : [],
     );
   } else {
     if (!queryName.value) return;
@@ -250,25 +275,35 @@ const loadData = async (condition?: SearchParams[]) => {
   if (condition?.length > 0) {
     queryParams.push(...condition);
   }
-  const baseParams = buildPageParams(queryParams, props.params, pageInfo.currentPage, props.pageSize || 0);
-  const {url, params} = buildRequestParams(props.dataUrl, baseParams, props.proxy, props.proxyUrl);
+  const baseParams = buildPageParams(
+    queryParams,
+    props.params,
+    pageInfo.currentPage,
+    props.pageSize || 0,
+  );
+  const { url, params } = buildRequestParams(
+    props.dataUrl,
+    baseParams,
+    props.proxy,
+    props.proxyUrl,
+  );
   await postRequest(url, params)
-      .then((res) => {
-        if (res?.data?.code) {
-          console.error(res?.data?.cnMessage);
-          return;
-        }
-        let redata = res?.data?.data;
-        dataOrgOptions.value = redata?.dataList || redata;
-        pageInfo.totalPage = redata?.totalPages;
-        pageInfo.totalData = redata?.totalDatas;
-      })
-      .catch((err: any) => {
-        console.log(err);
-      })
-      .finally(() => {
-        closeLoad();
-      });
+    .then((res) => {
+      if (res?.data?.code) {
+        console.error(res?.data?.cnMessage);
+        return;
+      }
+      let redata = res?.data?.data;
+      dataOrgOptions.value = redata?.dataList || redata;
+      pageInfo.totalPage = redata?.totalPages;
+      pageInfo.totalData = redata?.totalDatas;
+    })
+    .catch((err: any) => {
+      console.log(err);
+    })
+    .finally(() => {
+      closeLoad();
+    });
 };
 const open = () => {
   dialogVisible.value = true;
@@ -284,10 +319,10 @@ const onOpen = async () => {
     await loadData();
   }
   dataOptions.value = Array.isArray(value.value)
-      ? value.value
-      : value.value
-          ? [value.value]
-          : [];
+    ? value.value
+    : value.value
+      ? [value.value]
+      : [];
   activeIndex.value = -1;
   nextTick(() => {
     destroySortable();
@@ -335,17 +370,17 @@ defineExpose({
 
 <template>
   <star-horse-dialog
-      :self-func="true"
-      :dialog-visible="dialogVisible"
-      @open="onOpen"
-      @merge="handelConfirm"
-      @resetForm="resetData"
-      :full-screen="isMobile"
-      @closeAction="dialogVisible = false"
-      draggable
-      :title="title || i18n('datapicker.selectData')"
-      boxWidth="60%"
-      boxHeight="70%"
+    :self-func="true"
+    :dialog-visible="dialogVisible"
+    @open="onOpen"
+    @merge="handelConfirm"
+    @resetForm="resetData"
+    :full-screen="isMobile"
+    @closeAction="dialogVisible = false"
+    draggable
+    :title="title || i18n('datapicker.selectData')"
+    boxWidth="60%"
+    boxHeight="70%"
   >
     <el-splitter>
       <el-splitter-panel collapsible min="50%">
@@ -353,11 +388,11 @@ defineExpose({
           <template #header>
             <div class="flex flex-row items-center w-full justify-between">
               <el-checkbox
-                  v-model="checkAll"
-                  class="!w-[30%]"
-                  v-if="multiple"
-                  :indeterminate="indeterminate"
-                  @change="handleCheckAll"
+                v-model="checkAll"
+                class="!w-[30%]"
+                v-if="multiple"
+                :indeterminate="indeterminate"
+                @change="handleCheckAll"
               >
                 {{ i18n("datapicker.selectAll") }}
               </el-checkbox>
@@ -368,36 +403,36 @@ defineExpose({
           </template>
           <div class="my-[5px] w-[95%] mx-auto">
             <el-input
-                v-model="queryName"
-                :placeholder="i18n('datapicker.enterKeywords')"
-                :style="{ width: '100%' }"
-                clearable
-                @keyup.enter="dataSearch"
+              v-model="queryName"
+              :placeholder="i18n('datapicker.enterKeywords')"
+              :style="{ width: '100%' }"
+              clearable
+              @keyup.enter="dataSearch"
             >
               <template #append>
                 <div class="cursor-pointer" @click="dataSearch">
-                  <star-horse-icon iconClass="search"/>
+                  <star-horse-icon iconClass="search" />
                 </div>
               </template>
             </el-input>
           </div>
           <el-scrollbar tag="div" class="org-tree">
             <el-tree
-                ref="orgTreeRef"
-                :node-key="displayValue"
-                :data="dataOrgOptions"
-                :default-expanded-keys="expandedKeys"
-                :props="treeProps"
-                :check-strictly="checkStrictly"
-                :filter-node-method="filterNode"
-                @node-click="onNodeClick"
+              ref="orgTreeRef"
+              :node-key="displayValue"
+              :data="dataOrgOptions"
+              :default-expanded-keys="expandedKeys"
+              :props="treeProps"
+              :check-strictly="checkStrictly"
+              :filter-node-method="filterNode"
+              @node-click="onNodeClick"
             >
               <template #default="{ data }">
                 <div class="data-line">
                   <div class="menu-title">
                     <div class="flex flex-row items-center">
                       <star-horse-icon
-                          :icon-class="
+                        :icon-class="
                           data.children?.length > 0 ? 'folder' : 'document'
                         "
                       />
@@ -405,118 +440,130 @@ defineExpose({
                     </div>
                   </div>
                   <el-icon class="is-selected">
-                    <Check/>
+                    <Check />
                   </el-icon>
                 </div>
               </template>
             </el-tree>
           </el-scrollbar>
           <el-pagination
-              v-if="pageSize > 0"
-              :total="pageInfo.totalData"
-              @current-change="pageChangeClick"
-              @size-change="pageSizeClick"
-              :size="compSize"
-              layout="total, sizes, prev, pager, next, jumper"
-              v-model:currentPage="pageInfo.currentPage"
-              v-model:page-size="pageInfo.pageSize"
-              v-model:pageCount="pageInfo.totalPage"
+            v-if="pageSize > 0"
+            :total="pageInfo.totalData"
+            @current-change="pageChangeClick"
+            @size-change="pageSizeClick"
+            :size="compSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            v-model:currentPage="pageInfo.currentPage"
+            v-model:page-size="pageInfo.pageSize"
+            v-model:pageCount="pageInfo.totalPage"
           />
         </el-card>
       </el-splitter-panel>
       <el-splitter-panel size="40%" min="20%" collapsible>
         <el-card shadow="never" class="org-card dialog-body">
           <template #header>
-            <div class="flex flex-row items-center justify-between w-full h-[32px]">
+            <div
+              class="flex flex-row items-center justify-between w-full h-[32px]"
+            >
               <div class="flex-1 text-center">
-                {{ i18n("datapicker.selectedDataArea") }}[{{ dataOptions?.length }}]
+                {{ i18n("datapicker.selectedDataArea") }}[{{
+                  dataOptions?.length
+                }}]
               </div>
               <el-tooltip
-                  :content="i18n('datapicker.helpContent')"
-                  placement="left"
-                  effect="dark"
+                :content="i18n('datapicker.helpContent')"
+                placement="left"
+                effect="dark"
               >
                 <el-icon class="help-icon" :size="16">
-                  <QuestionFilled/>
+                  <QuestionFilled />
                 </el-icon>
               </el-tooltip>
             </div>
           </template>
           <el-scrollbar tag="div" class="org-tree">
             <div
-                ref="selectedListRef"
-                class="selected-list"
-                tabindex="0"
-                @keydown="onSelectedKeydown"
+              ref="selectedListRef"
+              class="selected-list"
+              tabindex="0"
+              @keydown="onSelectedKeydown"
             >
               <div
-                  v-for="(item, index) in dataOptions"
-                  :key="item[displayValue]"
-                  class="selected-item"
-                  :class="{ 'is-active-item': activeIndex === index }"
-                  :data-index="index"
-                  :data-id="item[displayValue]"
-                  @click="onSelectedItemClick(index)"
+                v-for="(item, index) in dataOptions"
+                :key="item[displayValue]"
+                class="selected-item"
+                :class="{ 'is-active-item': activeIndex === index }"
+                :data-index="index"
+                :data-id="item[displayValue]"
+                @click="onSelectedItemClick(index)"
               >
                 <div class="selected-item-content">
                   <el-icon
-                      title="拖拽排序"
-                      v-if="multiple"
-                      class="drag-handle"
-                      :size="20"
+                    title="拖拽排序"
+                    v-if="multiple"
+                    class="drag-handle"
+                    :size="20"
                   >
-                    <Sort/>
+                    <Sort />
                   </el-icon>
                   <star-horse-icon
-                      :icon-class="item.children?.length > 0 ? 'folder' : 'document'"
-                      size="18px"
+                    :icon-class="
+                      item.children?.length > 0 ? 'folder' : 'document'
+                    "
+                    size="18px"
                   />
-                  <span class="selected-item-label">{{ item[displayName] }}</span>
+                  <span class="selected-item-label">{{
+                    item[displayName]
+                  }}</span>
                 </div>
                 <div class="selected-item-actions">
                   <el-icon
-                      :title="i18n('datapicker.moveToFirst')"
-                      v-if="multiple"
-                      :size="22"
-                      :class="{ 'is-disabled-action': index === 0 }"
-                      @click.stop="moveTop(index)"
+                    :title="i18n('datapicker.moveToFirst')"
+                    v-if="multiple"
+                    :size="22"
+                    :class="{ 'is-disabled-action': index === 0 }"
+                    @click.stop="moveTop(index)"
                   >
-                    <Upload/>
+                    <Upload />
                   </el-icon>
                   <el-icon
-                      :title="i18n('datapicker.moveUp')"
-                      v-if="multiple"
-                      :size="22"
-                      :class="{ 'is-disabled-action': index === 0 }"
-                      @click.stop="moveUp(index)"
+                    :title="i18n('datapicker.moveUp')"
+                    v-if="multiple"
+                    :size="22"
+                    :class="{ 'is-disabled-action': index === 0 }"
+                    @click.stop="moveUp(index)"
                   >
-                    <Top/>
+                    <Top />
                   </el-icon>
                   <el-icon
-                      :title="i18n('datapicker.moveToEnd')"
-                      v-if="multiple"
-                      :size="22"
-                      :class="{ 'is-disabled-action': index === dataOptions.length - 1 }"
-                      @click.stop="moveEnd(index)"
+                    :title="i18n('datapicker.moveToEnd')"
+                    v-if="multiple"
+                    :size="22"
+                    :class="{
+                      'is-disabled-action': index === dataOptions.length - 1,
+                    }"
+                    @click.stop="moveEnd(index)"
                   >
-                    <Download/>
+                    <Download />
                   </el-icon>
                   <el-icon
-                      :title="i18n('datapicker.moveDown')"
-                      v-if="multiple"
-                      :size="22"
-                      :class="{ 'is-disabled-action': index === dataOptions.length - 1 }"
-                      @click.stop="moveDown(index)"
+                    :title="i18n('datapicker.moveDown')"
+                    v-if="multiple"
+                    :size="22"
+                    :class="{
+                      'is-disabled-action': index === dataOptions.length - 1,
+                    }"
+                    @click.stop="moveDown(index)"
                   >
-                    <Bottom/>
+                    <Bottom />
                   </el-icon>
                   <el-icon
-                      :title="i18n('common.delete')"
-                      :size="22"
-                      class="remove-action"
-                      @click.stop="removeItem(index)"
+                    :title="i18n('common.delete')"
+                    :size="22"
+                    class="remove-action"
+                    @click.stop="removeItem(index)"
                   >
-                    <Delete style="color:var(--el-color-danger)"/>
+                    <Delete style="color: var(--el-color-danger)" />
                   </el-icon>
                 </div>
               </div>

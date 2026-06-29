@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import {useVModel} from "@vueuse/core";
-import DataPicker, {type ModelValueType,} from "@/components/comp/utils/DataPicker.vue";
-import {computed, CSSProperties, onMounted, ref, watch} from "vue";
+import { useVModel } from "@vueuse/core";
+import DataPicker, {
+  type ModelValueType,
+} from "@/components/comp/utils/DataPicker.vue";
+import { computed, CSSProperties, onMounted, ref, watch } from "vue";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
-import {i18n} from "@/lang";
-import {SearchParams} from "@/components/types";
+import { i18n } from "@/lang";
+import { SearchParams } from "@/components/types";
 import {
   findNodesInTree,
   loadSelectedData,
@@ -58,8 +60,8 @@ const selectData: any = ref<any>(props.multiple ? [] : "");
 const valueArr = computed<string[]>(() => {
   if (selectData.value) {
     const temp = Array.isArray(selectData.value)
-        ? selectData.value
-        : [selectData.value];
+      ? selectData.value
+      : [selectData.value];
     return temp.map((item: any) => item?.[props.displayValue]);
   }
   return [];
@@ -80,7 +82,7 @@ const onClose = (data: any) => {
   if (props.multiple && Array.isArray(selectData.value)) {
     const targetValue = data?.[props.displayValue] ?? data;
     const selectIndex = selectData.value.findIndex(
-        (item: any) => item?.[props.displayValue] === targetValue
+      (item: any) => item?.[props.displayValue] === targetValue,
     );
     const valueIndex = value.value?.indexOf(targetValue);
     if (selectIndex !== -1) {
@@ -102,15 +104,19 @@ const onClose = (data: any) => {
  */
 const init = async () => {
   if (props.data) {
-    selectData.value = findNodesInTree(props.data, value.value, props.displayValue);
+    selectData.value = findNodesInTree(
+      props.data,
+      value.value,
+      props.displayValue,
+    );
   } else if (props.dataUrl && value.value?.length > 0) {
     selectData.value = await loadSelectedData(
-        props.dataUrl,
-        value.value,
-        props.displayValue,
-        props.params,
-        props.proxy,
-        props.proxyUrl,
+      props.dataUrl,
+      value.value,
+      props.displayValue,
+      props.params,
+      props.proxy,
+      props.proxyUrl,
     );
   }
 };
@@ -129,11 +135,11 @@ const addTag = (val: any) => {
 
 const tagVisible = (val: any) => {
   const result =
-      (Array.isArray(selectData?.value) &&
-          selectData?.value?.find(
-              (item: any) => item?.[props.displayValue] === val,
-          )?.[props.displayName]) ??
-      val;
+    (Array.isArray(selectData?.value) &&
+      selectData?.value?.find(
+        (item: any) => item?.[props.displayValue] === val,
+      )?.[props.displayName]) ??
+    val;
   return result;
 };
 
@@ -142,51 +148,51 @@ onMounted(() => {
 });
 
 watch(
-    () => selectData.value,
-    (newVal) => {
-      if (newVal) {
-        const tempNewValue = Array.isArray(newVal)
-            ? newVal.map((v) => v[props.displayValue])
-            : newVal?.[props.displayValue];
-        value.value = props.multiple ? tempNewValue : tempNewValue[0];
-        emitData.value = newVal;
-        emits("change", newVal);
-      } else {
-        console.error("dataselector error", newVal);
-      }
-    },
-    {deep: true},
+  () => selectData.value,
+  (newVal) => {
+    if (newVal) {
+      const tempNewValue = Array.isArray(newVal)
+        ? newVal.map((v) => v[props.displayValue])
+        : newVal?.[props.displayValue];
+      value.value = props.multiple ? tempNewValue : tempNewValue[0];
+      emitData.value = newVal;
+      emits("change", newVal);
+    } else {
+      console.error("dataselector error", newVal);
+    }
+  },
+  { deep: true },
 );
 </script>
 
 <template>
   <data-picker
-      ref="dataPickerRef"
-      :title="title"
-      :data="data"
-      :data-url="dataUrl"
-      :proxy="proxy"
-      :proxy-url="proxyUrl"
-      :params="params"
-      :page-size="pageSize"
-      :display-name="displayName"
-      :display-value="displayValue"
-      :checkStrictly="checkStrictly"
-      :select-leaf="selectLeaf"
-      :multiple="multiple"
-      v-model="selectData"
+    ref="dataPickerRef"
+    :title="title"
+    :data="data"
+    :data-url="dataUrl"
+    :proxy="proxy"
+    :proxy-url="proxyUrl"
+    :params="params"
+    :page-size="pageSize"
+    :display-name="displayName"
+    :display-value="displayValue"
+    :checkStrictly="checkStrictly"
+    :select-leaf="selectLeaf"
+    :multiple="multiple"
+    v-model="selectData"
   />
   <el-input-tag
-      v-model="valueArr"
-      :tag-type="tagType"
-      :disabled="disabled"
-      :tagEffect="tagEffect"
-      :collapse-tags="true"
-      :max-collapse-tags="showTagLength??5"
-      :collapse-tags-tooltip="true"
-      @clear="selectData = []"
-      @addTag="addTag"
-      @removeTag="(val) =>onClose(val)"
+    v-model="valueArr"
+    :tag-type="tagType"
+    :disabled="disabled"
+    :tagEffect="tagEffect"
+    :collapse-tags="true"
+    :max-collapse-tags="showTagLength ?? 5"
+    :collapse-tags-tooltip="true"
+    @clear="selectData = []"
+    @addTag="addTag"
+    @removeTag="(val) => onClose(val)"
   >
     <template #tag="{ value }">
       <div class="flex items-center">
@@ -194,12 +200,18 @@ watch(
       </div>
     </template>
     <template #suffix>
-      <div class="data-selector-suffix" :class="{ 'is-disabled': disabled }" @click="openDataPicker">
+      <div
+        class="data-selector-suffix"
+        :class="{ 'is-disabled': disabled }"
+        @click="openDataPicker"
+      >
         <star-horse-icon
-            cursor="pointer"
-            icon-class="select-data"
-            size="18px"
-            :color="!disabled?'var(--star-horse-style)':'var(--star-horse-disabled)'"
+          cursor="pointer"
+          icon-class="select-data"
+          size="18px"
+          :color="
+            !disabled ? 'var(--star-horse-style)' : 'var(--star-horse-disabled)'
+          "
         />
       </div>
     </template>
@@ -233,7 +245,9 @@ watch(
   border-radius: 0;
   background: var(--el-fill-color-light);
   border-left: 1px solid var(--el-border-color);
-  transition: background 0.2s, border-color 0.2s;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
   cursor: pointer;
 
   &:hover {

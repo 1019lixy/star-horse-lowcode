@@ -11,7 +11,7 @@
       :fid="field.fieldName"
       :disabled="checkIsDisabled(props)"
       v-bind="prepsFilter(field.preps)"
-      v-on="getDynamicEvents(props, itemAction,formData)"
+      v-on="getDynamicEvents(props, itemAction, formData)"
       v-model="formData[field.fieldName]"
     />
   </starhorse-form-item>

@@ -11,13 +11,13 @@
       :fid="field.fieldName"
       :disabled="checkIsDisabled(props)"
       v-bind="prepsFilter(props)"
-      v-on="getDynamicEvents(props, itemAction,formData)"
+      v-on="getDynamicEvents(props, itemAction, formData)"
       v-model="formData[field.fieldName]"
     >
       <el-checkbox
         :border="item['border'] ?? true"
         :checked="item['checked']"
-        :disabled="item['disabled']||source==3"
+        :disabled="item['disabled'] || source == 3"
         :label="item[field.preps?.props?.label || 'name']"
         :value="item[field.preps?.props?.value || 'value']"
         v-for="item in field.preps?.values"
@@ -29,7 +29,8 @@
 import { nextTick, onMounted, watch } from "vue";
 import {
   allAction,
-  checkIsDisabled, initCompCallEvent,
+  checkIsDisabled,
+  initCompCallEvent,
   prepsFilter,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { compDynamicData } from "@/api/star_horse_utils";

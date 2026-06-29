@@ -81,7 +81,9 @@ const operResultAction = async () => {
   let action: BtnAction = props.field.preps;
   let formData: any = {};
   if (action?.viewType == "comp") {
-    formData = await btnCompRef.value?.getFormData(i18n("item.pleaseFillFormData"));
+    formData = await btnCompRef.value?.getFormData(
+      i18n("item.pleaseFillFormData"),
+    );
     if (!formData) {
       return;
     }
@@ -104,7 +106,9 @@ const openDialog = async () => {
   let action: BtnAction = props.field.preps;
   //执行代码块
   if (action?.needConfirm) {
-    let result =await operationConfirm(action.confirmMsg ?? i18n("item.confirmToExecute"));
+    let result = await operationConfirm(
+      action.confirmMsg ?? i18n("item.confirmToExecute"),
+    );
     if (!result) {
       return;
     }

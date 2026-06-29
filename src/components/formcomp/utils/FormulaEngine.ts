@@ -32,14 +32,14 @@
 
 /** 公式类型 */
 export type FormulaType =
-  | "calc"        // 数学运算
-  | "concat"      // 字符串拼接
-  | "condition"   // 多分支条件判断
-  | "lookup"      // 联动回填
-  | "aggregate"   // 聚合运算（sum/avg/count/min/max）
-  | "dateCalc"    // 日期计算
-  | "format"      // 格式化
-  | "ternary";    // 三元表达式
+  | "calc" // 数学运算
+  | "concat" // 字符串拼接
+  | "condition" // 多分支条件判断
+  | "lookup" // 联动回填
+  | "aggregate" // 聚合运算（sum/avg/count/min/max）
+  | "dateCalc" // 日期计算
+  | "format" // 格式化
+  | "ternary"; // 三元表达式
 
 /** 条件分支配置 */
 export interface ConditionBranch {
@@ -118,10 +118,15 @@ const safeNumber = (val: any): number => {
  * @param formData
  * @param emptyAsZero true 时空值替换为 '0'（用于 calc），false 时替换为 ''（用于 concat）
  */
-const resolveFieldRefs = (expression: string, formData: Record<string, any>, emptyAsZero = true): string => {
+const resolveFieldRefs = (
+  expression: string,
+  formData: Record<string, any>,
+  emptyAsZero = true,
+): string => {
   return expression.replace(/\$\{(\w+)\}/g, (_, fieldName) => {
     const val = formData[fieldName];
-    if (val === undefined || val === null || val === "") return emptyAsZero ? "0" : "";
+    if (val === undefined || val === null || val === "")
+      return emptyAsZero ? "0" : "";
     return String(val);
   });
 };
@@ -171,7 +176,8 @@ const executeCalc = (
     const resolved = resolveFieldRefs(expression, formData);
     const result = safeEval(resolved);
     const num = safeNumber(result);
-    const calcResult = precision !== undefined ? Number(num.toFixed(precision)) : num;
+    const calcResult =
+      precision !== undefined ? Number(num.toFixed(precision)) : num;
 
     if (prefix || suffix) {
       return `${prefix || ""}${calcResult}${suffix || ""}`;
@@ -191,7 +197,10 @@ const executeCalc = (
  *   '${province}${city}${district}'             → 多字段拼接
  *   '联系人：${name}，电话：${phone}'             → 混合拼接
  */
-const executeConcat = (expression: string, formData: Record<string, any>): string => {
+const executeConcat = (
+  expression: string,
+  formData: Record<string, any>,
+): string => {
   try {
     return resolveFieldRefs(expression, formData, false);
   } catch (e) {
@@ -248,7 +257,9 @@ const executeLookup = (
     const keyValue = formData[sourceFields[0]];
     if (keyValue === undefined || keyValue === null) return null;
 
-    const matched = lookupMappings.find(m => String(m.key) === String(keyValue));
+    const matched = lookupMappings.find(
+      (m) => String(m.key) === String(keyValue),
+    );
     return matched ? { ...matched.values } : null;
   } catch (e) {
     console.warn("[FormulaEngine] lookup 执行失败", e);
@@ -293,7 +304,8 @@ const executeAggregate = (
         result = values.reduce((a: number, b: number) => a + b, 0);
         break;
       case "avg":
-        result = values.reduce((a: number, b: number) => a + b, 0) / values.length;
+        result =
+          values.reduce((a: number, b: number) => a + b, 0) / values.length;
         break;
       case "count":
         result = values.length;
@@ -382,7 +394,10 @@ const dateDiff = (start: Date, end: Date, unit: string): number => {
     case "year":
       return end.getFullYear() - start.getFullYear();
     case "month":
-      return (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
+      return (
+        (end.getFullYear() - start.getFullYear()) * 12 +
+        (end.getMonth() - start.getMonth())
+      );
     case "day":
       return Math.round(ms / (1000 * 60 * 60 * 24));
     case "hour":
@@ -428,12 +443,12 @@ const addDateOffset = (date: Date, offset: number, unit: string): Date => {
 const formatDate = (date: Date, format: string): string => {
   const pad = (n: number) => String(n).padStart(2, "0");
   const tokens: Record<string, string> = {
-    "YYYY": String(date.getFullYear()),
-    "MM": pad(date.getMonth() + 1),
-    "DD": pad(date.getDate()),
-    "HH": pad(date.getHours()),
-    "mm": pad(date.getMinutes()),
-    "ss": pad(date.getSeconds()),
+    YYYY: String(date.getFullYear()),
+    MM: pad(date.getMonth() + 1),
+    DD: pad(date.getDate()),
+    HH: pad(date.getHours()),
+    mm: pad(date.getMinutes()),
+    ss: pad(date.getSeconds()),
   };
   let result = format;
   // 按长度降序替换，避免 YYYY 被 YY 先匹配
@@ -523,7 +538,9 @@ const executeTernary = (
     const colonIdx = expression.lastIndexOf(":");
 
     if (questionIdx === -1 || colonIdx === -1 || colonIdx <= questionIdx) {
-      console.warn("[FormulaEngine] ternary 表达式格式错误，需要: 条件 ? 真值 : 假值");
+      console.warn(
+        "[FormulaEngine] ternary 表达式格式错误，需要: 条件 ? 真值 : 假值",
+      );
       return defaultValue ?? undefined;
     }
 
@@ -567,35 +584,67 @@ const executeTernary = (
  * @param formData 表单数据
  * @returns 计算结果
  */
-export const executeFormula = (formula: FormulaConfig, formData: Record<string, any>): any => {
+export const executeFormula = (
+  formula: FormulaConfig,
+  formData: Record<string, any>,
+): any => {
   if (!formula?.enable) return undefined;
 
   switch (formula.type) {
     case "calc":
-      return executeCalc(formula.expression || "", formData, formula.precision, formula.prefix, formula.suffix);
+      return executeCalc(
+        formula.expression || "",
+        formData,
+        formula.precision,
+        formula.prefix,
+        formula.suffix,
+      );
     case "concat":
       return executeConcat(formula.expression || "", formData);
     case "condition":
-      return executeCondition(formula.branches || [], formData, formula.defaultValue);
+      return executeCondition(
+        formula.branches || [],
+        formData,
+        formula.defaultValue,
+      );
     case "lookup":
-      return executeLookup(formula.lookupMappings || [], formula.sourceFields, formData);
+      return executeLookup(
+        formula.lookupMappings || [],
+        formula.sourceFields,
+        formData,
+      );
     case "aggregate":
       return executeAggregate(
-        formula.expression || "sum", formula.sourceFields,
-        formula.aggregateField, formData, formula.precision,
+        formula.expression || "sum",
+        formula.sourceFields,
+        formula.aggregateField,
+        formData,
+        formula.precision,
       );
     case "dateCalc":
       return executeDateCalc(
-        formula.expression || "", formData, formula.dateUnit,
-        formula.dateMode, formula.dateOffset, formula.dateFormat,
+        formula.expression || "",
+        formData,
+        formula.dateUnit,
+        formula.dateMode,
+        formula.dateOffset,
+        formula.dateFormat,
       );
     case "format":
       return executeFormat(
-        formula.expression || "", formData, formula.formatType,
-        formula.formatArg, formula.formatArg2, formula.precision,
+        formula.expression || "",
+        formData,
+        formula.formatType,
+        formula.formatArg,
+        formula.formatArg2,
+        formula.precision,
       );
     case "ternary":
-      return executeTernary(formula.expression || "", formData, formula.defaultValue);
+      return executeTernary(
+        formula.expression || "",
+        formData,
+        formula.defaultValue,
+      );
     default:
       console.warn(`[FormulaEngine] 未知公式类型: ${formula.type}`);
       return undefined;
@@ -620,10 +669,14 @@ export const executeFormulaWithFill = (
   if (!formula?.enable) return;
 
   if (formula.type === "lookup") {
-    const result = executeLookup(formula.lookupMappings || [], formula.sourceFields, formData);
+    const result = executeLookup(
+      formula.lookupMappings || [],
+      formula.sourceFields,
+      formData,
+    );
     if (result) {
       Object.entries(result).forEach(([key, value]) => {
-        const targetField = formInfo?.find(f => f.fieldName === key);
+        const targetField = formInfo?.find((f) => f.fieldName === key);
         if (targetField) {
           formData[key] = value;
         }

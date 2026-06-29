@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {
-  allAction, checkIsDisabled,
+  allAction,
+  checkIsDisabled,
   prepsFilter,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 

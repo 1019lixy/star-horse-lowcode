@@ -1,9 +1,9 @@
 <script setup lang="ts" name="StarHorseFormItem">
-import {compKey} from "@/api/system";
-import {ModelRef} from "vue";
-import {ContainerPreps} from "../types/ItemPreps";
-import {commonParseCodeToName} from "@/api/star_horse_utils";
-import {i18n} from "@/lang";
+import { compKey } from "@/api/system";
+import { ModelRef } from "vue";
+import { ContainerPreps } from "../types/ItemPreps";
+import { commonParseCodeToName } from "@/api/star_horse_utils";
+import { i18n } from "@/lang";
 
 const props = withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
@@ -25,13 +25,17 @@ const itemCommonFormat = (name: string, cellValue: any, row: any) => {
     return cellValue == 1 ? i18n("common.yes") : i18n("common.no");
   }
   return null == props.commonFormat
-      ? cellValue
-      : props.commonFormat(name, cellValue, row);
+    ? cellValue
+    : props.commonFormat(name, cellValue, row);
 };
 const checkItemType = (item: any) => {
   // console.log(item);
   // 优先判断 children，有 children 的非叶子节点返回 group-item
-  if (item.children && Array.isArray(item.children) && item.children.length > 0) {
+  if (
+    item.children &&
+    Array.isArray(item.children) &&
+    item.children.length > 0
+  ) {
     // console.log("ok,group-item");
     return "group-item";
   }
@@ -63,29 +67,11 @@ const removeRow = (row: any) => {
 <template>
   <template v-for="(item, index) in fieldList?.fieldList">
     <component
-        v-if="item"
-        :Key="compKey(item, index, true)"
-        :is="checkItemType(item)"
-        :primary-key="primaryKey"
-        :item="item"
-        :rules="rules"
-        :batchFieldName="batchFieldName"
-        :batchName="batchName"
-        :compSize="compSize"
-        :compUrl="compUrl"
-        :subFormFlag="subFormFlag"
-        :source="source"
-        :objectName="objectName"
-        :dataIndex="dataIndex"
-        :propPrefix="propPrefix"
-        :commonFormat="itemCommonFormat"
-        v-model:dataForm="dataForm"
-        :parentPreps="fieldList?.preps"
-    />
-  </template>
-  <table-item
+      v-if="item"
+      :Key="compKey(item, index, true)"
+      :is="checkItemType(item)"
       :primary-key="primaryKey"
-      :item="fieldList"
+      :item="item"
       :rules="rules"
       :batchFieldName="batchFieldName"
       :batchName="batchName"
@@ -93,14 +79,32 @@ const removeRow = (row: any) => {
       :compUrl="compUrl"
       :subFormFlag="subFormFlag"
       :source="source"
-      :commonFormat="itemCommonFormat"
       :objectName="objectName"
       :dataIndex="dataIndex"
       :propPrefix="propPrefix"
+      :commonFormat="itemCommonFormat"
       v-model:dataForm="dataForm"
-      @addRow="addRow"
-      @removeRow="removeRow"
       :parentPreps="fieldList?.preps"
+    />
+  </template>
+  <table-item
+    :primary-key="primaryKey"
+    :item="fieldList"
+    :rules="rules"
+    :batchFieldName="batchFieldName"
+    :batchName="batchName"
+    :compSize="compSize"
+    :compUrl="compUrl"
+    :subFormFlag="subFormFlag"
+    :source="source"
+    :commonFormat="itemCommonFormat"
+    :objectName="objectName"
+    :dataIndex="dataIndex"
+    :propPrefix="propPrefix"
+    v-model:dataForm="dataForm"
+    @addRow="addRow"
+    @removeRow="removeRow"
+    :parentPreps="fieldList?.preps"
   />
 </template>
 <style lang="scss" scoped></style>

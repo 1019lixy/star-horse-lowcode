@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import {ContainerPreps} from "@/components/types/ItemPreps";
-import {ModelRef} from "vue";
+import { ContainerPreps } from "@/components/types/ItemPreps";
+import { ModelRef } from "vue";
 import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
 
 const props = withDefaults(defineProps<ContainerPreps>(), {
@@ -28,7 +28,11 @@ const shouldShow = () => {
 
 <template>
   <!-- 根据 formVisible 判断是否显示整个分组 -->
-  <div v-if="shouldShow()" class="form-group" :style="{ marginLeft: level * 16 + 'px' }">
+  <div
+    v-if="shouldShow()"
+    class="form-group"
+    :style="{ marginLeft: level * 16 + 'px' }"
+  >
     <!-- 非叶子节点显示为标签标题 -->
     <div class="group-label">
       <span class="group-label-text">{{ item.label }}</span>
@@ -61,6 +65,4 @@ const shouldShow = () => {
   background-color: #fafafa;
   border-radius: 4px;
 }
-
-
 </style>

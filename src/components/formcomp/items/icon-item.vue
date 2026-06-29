@@ -19,6 +19,7 @@
           v-if="iconType == 'system'"
           fit="fill"
           shape="square"
+          @dblclick.stop="formData[field.fieldName]=''"
           :style="{
             'font-size': field.preps?.listView ? '22px' : '24px',
             background: field.preps?.listView
@@ -30,6 +31,7 @@
         <star-horse-icon
           :icon-class="formData[field.fieldName]"
           v-else
+          @dblclick.stop="formData[field.fieldName]=''"
           size="30px"
           style="
             color: var(--star-horse-style);

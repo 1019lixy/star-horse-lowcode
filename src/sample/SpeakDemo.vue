@@ -53,7 +53,7 @@
 
 <script setup lang="ts">
 import { ref, onUnmounted } from "vue";
-import {warning} from "@/utils/message";
+import { warning } from "@/utils/message";
 
 // 响应式数据
 const textToSpeak = ref(""); // 要转换的文字
@@ -70,7 +70,9 @@ let speechInstance = null;
 const initSpeech = () => {
   // 检查浏览器是否支持
   if (!("speechSynthesis" in window)) {
-    warning("你的浏览器不支持文字转语音功能，请更换现代浏览器（如Chrome、Edge）");
+    warning(
+      "你的浏览器不支持文字转语音功能，请更换现代浏览器（如Chrome、Edge）",
+    );
     return null;
   }
 

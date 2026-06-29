@@ -1,5 +1,5 @@
 <script setup lang="ts" name="ShDynamicForm">
-import {inject, PropType, Ref, ref, ShallowReactive, watch} from "vue";
+import { inject, PropType, Ref, ref, ShallowReactive, watch } from "vue";
 import { ApiUrls } from "@/components/types/ApiUrls";
 import { error, success, warning } from "@/utils/message";
 import { postRequest, loadById } from "@/api/star_horse_apis";
@@ -26,7 +26,10 @@ const assignDefault = () => {
   dataForm.value = {};
 };
 const loadData = async () => {
-  dataForm.value = await loadById(props.compUrl?.loadByIdUrl!, dialogProps?.ids);
+  dataForm.value = await loadById(
+    props.compUrl?.loadByIdUrl!,
+    dialogProps?.ids,
+  );
   //解决关闭并再次打开不触发watch监听
   if (dialogProps) {
     dialogProps.ids = -2;

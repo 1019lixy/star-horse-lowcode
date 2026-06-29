@@ -44,11 +44,18 @@ const itemAction = (prep: any) => {
 };
 
 const computedHref = computed(() => {
-  return formData.value?.[props.field.fieldName] || props.field.preps?.href || "";
+  return (
+    formData.value?.[props.field.fieldName] || props.field.preps?.href || ""
+  );
 });
 
 const computedText = computed(() => {
-  return props.field.preps?.linkText || formData.value?.[props.field.fieldName] || props.field.preps?.href || "";
+  return (
+    props.field.preps?.linkText ||
+    formData.value?.[props.field.fieldName] ||
+    props.field.preps?.href ||
+    ""
+  );
 });
 </script>
 <style lang="scss" scoped></style>

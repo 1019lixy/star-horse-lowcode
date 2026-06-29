@@ -11,7 +11,7 @@
       :fid="field.fieldName"
       :disabled="checkIsDisabled(props)"
       v-bind="prepsFilter(field.preps)"
-      v-on="getDynamicEvents(props, itemAction,formData)"
+      v-on="getDynamicEvents(props, itemAction, formData)"
       v-model="formData[field.fieldName]"
     />
   </starhorse-form-item>
@@ -45,8 +45,10 @@ onMounted(() => {
   if (!props.field.preps) {
     props.field.preps = {};
   }
-  props.field.preps["activeText"] = props.field.preps?.activeText ?? i18n("common.yes");
-  props.field.preps["inactiveText"] = props.field.preps?.inactiveText ?? i18n("common.no");
+  props.field.preps["activeText"] =
+    props.field.preps?.activeText ?? i18n("common.yes");
+  props.field.preps["inactiveText"] =
+    props.field.preps?.inactiveText ?? i18n("common.no");
   props.field.preps["activeValue"] = props.field.preps?.activeValue ?? true;
   props.field.preps["inactiveValue"] =
     props.field.preps?.inactiveValue ?? false;

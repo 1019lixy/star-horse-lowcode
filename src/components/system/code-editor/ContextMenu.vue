@@ -34,8 +34,10 @@ const adjustPosition = () => {
   const rect = menuRef.value.getBoundingClientRect();
   const vw = window.innerWidth;
   const vh = window.innerHeight;
-  if (rect.right > vw) adjustedPos.value.x = Math.max(0, props.position.x - rect.width);
-  if (rect.bottom > vh) adjustedPos.value.y = Math.max(0, props.position.y - rect.height);
+  if (rect.right > vw)
+    adjustedPos.value.x = Math.max(0, props.position.x - rect.width);
+  if (rect.bottom > vh)
+    adjustedPos.value.y = Math.max(0, props.position.y - rect.height);
 };
 
 onMounted(async () => {
@@ -56,8 +58,13 @@ const onDocClick = (e: MouseEvent) => {
   if (menuRef.value?.contains(e.target as Node)) return;
   emit("close");
 };
-const onDocCtx = (e: Event) => { e.preventDefault(); emit("close"); };
-const onEsc = (e: KeyboardEvent) => { if (e.key === "Escape") emit("close"); };
+const onDocCtx = (e: Event) => {
+  e.preventDefault();
+  emit("close");
+};
+const onEsc = (e: KeyboardEvent) => {
+  if (e.key === "Escape") emit("close");
+};
 </script>
 
 <template>
@@ -78,7 +85,9 @@ const onEsc = (e: KeyboardEvent) => { if (e.key === "Escape") emit("close"); };
           @click="handleAction(item)"
         >
           <span class="ctx-label">{{ item.label }}</span>
-          <span v-if="item.shortcut" class="ctx-shortcut">{{ item.shortcut }}</span>
+          <span v-if="item.shortcut" class="ctx-shortcut">{{
+            item.shortcut
+          }}</span>
         </div>
       </template>
     </div>
@@ -94,7 +103,7 @@ const onEsc = (e: KeyboardEvent) => { if (e.key === "Escape") emit("close"); };
   border-radius: 4px;
   padding: 4px 0;
   z-index: 10000;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
   font-size: 13px;
   user-select: none;
 }
@@ -105,11 +114,37 @@ const onEsc = (e: KeyboardEvent) => { if (e.key === "Escape") emit("close"); };
   padding: 5px 20px;
   cursor: pointer;
   color: var(--ide-fg, #cccccc);
-  &:hover { background: var(--ide-accent, #007acc); color: #fff; }
-  &.ctx-danger { color: #ff4d4f; &:hover { background: #ff4d4f; color: #fff; } }
-  &.ctx-disabled { opacity: 0.4; cursor: not-allowed; &:hover { background: none; color: inherit; } }
+  &:hover {
+    background: var(--ide-accent, #007acc);
+    color: #fff;
+  }
+  &.ctx-danger {
+    color: #ff4d4f;
+    &:hover {
+      background: #ff4d4f;
+      color: #fff;
+    }
+  }
+  &.ctx-disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    &:hover {
+      background: none;
+      color: inherit;
+    }
+  }
 }
-.ctx-divider { height: 1px; background: var(--ide-border, #3c3c3c); margin: 4px 0; }
-.ctx-shortcut { color: var(--ide-fg-dim, #858585); font-size: 11px; margin-left: 20px; }
-.ctx-item:hover .ctx-shortcut { color: rgba(255,255,255,0.7); }
+.ctx-divider {
+  height: 1px;
+  background: var(--ide-border, #3c3c3c);
+  margin: 4px 0;
+}
+.ctx-shortcut {
+  color: var(--ide-fg-dim, #858585);
+  font-size: 11px;
+  margin-left: 20px;
+}
+.ctx-item:hover .ctx-shortcut {
+  color: rgba(255, 255, 255, 0.7);
+}
 </style>

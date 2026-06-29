@@ -1,6 +1,6 @@
 <script setup lang="ts" name="crontab-result">
 import { onMounted, ref, watch } from "vue";
-import {i18n} from "@/lang";
+import { i18n } from "@/lang";
 const props = defineProps({
   ex: { type: String },
 });
@@ -345,7 +345,9 @@ const expressionChange = () => {
     resultList.value = resultArr;
     if (resultArr.length !== 5) {
       resultList.value.push(
-        i18n("item.onlyResultsAbove") + resultArr.length + i18n("item.resultCount"),
+        i18n("item.onlyResultsAbove") +
+          resultArr.length +
+          i18n("item.resultCount"),
       );
     }
   }

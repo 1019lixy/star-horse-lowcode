@@ -1,11 +1,15 @@
 <script lang="ts" setup>
-
 import { onActivated, onMounted, provide, reactive, ref } from "vue";
 import { i18n } from "@/lang";
-import {apiInstance, dialogPreps} from "@/api/star_horse_utils";
-import {ApiUrls, PageFieldInfo, SearchFields, SelectOption} from "@/components/types";
-import {postRequest} from "@/api/star_horse_apis";
-import {StarHorseTableComp} from "@/components/comp";
+import { apiInstance, dialogPreps } from "@/api/star_horse_utils";
+import {
+  ApiUrls,
+  PageFieldInfo,
+  SearchFields,
+  SelectOption,
+} from "@/components/types";
+import { postRequest } from "@/api/star_horse_apis";
+import { StarHorseTableComp } from "@/components/comp";
 
 let informationsList = ref<any>([]);
 const dataUrl: ApiUrls = apiInstance("system-config", "system/informations");
@@ -41,10 +45,10 @@ const testFun = (formData: any) => {
     return;
   }
   postRequest(dataUrl.loadByIdUrl + "/" + formData["parentId"], {}).then(
-      (res) => {
-        let redata = res.data.data;
-        formData["idCustomer"] = redata["idCustomer"];
-      },
+    (res) => {
+      let redata = res.data.data;
+      formData["idCustomer"] = redata["idCustomer"];
+    },
   );
 };
 const tableFieldList = reactive<PageFieldInfo>({
@@ -204,14 +208,14 @@ provide("dialogProps", dialogProps);
 const dataFormat = (name: string, cellValue: object): any => {
   if (name == "parentId") {
     return (
-        informationsList.value.find(
-            (item: SelectOption) => item.value == cellValue,
-        )?.name || cellValue
+      informationsList.value.find(
+        (item: SelectOption) => item.value == cellValue,
+      )?.name || cellValue
     );
   } else if (name == "idCustomer") {
     return (
-        customerList.value.find((item: SelectOption) => item.value == cellValue)
-            ?.name || cellValue
+      customerList.value.find((item: SelectOption) => item.value == cellValue)
+        ?.name || cellValue
     );
   }
   return cellValue;
@@ -232,49 +236,49 @@ onActivated(() => {});
 <template>
   <div class="flex flex-col h-full overflow-hidden">
     <star-horse-dialog
-        :isShowBtnContinue="true"
-        :dialogVisible="dialogProps.editVisible"
-        :dialogProps="dialogProps"
+      :isShowBtnContinue="true"
+      :dialogVisible="dialogProps.editVisible"
+      :dialogProps="dialogProps"
     >
       <star-horse-form
-          @refresh="informationsRef?.loadByPage()"
-          :compUrl="dataUrl"
-          :fieldList="tableFieldList"
-          :rules="rules"
+        @refresh="informationsRef?.loadByPage()"
+        :compUrl="dataUrl"
+        :fieldList="tableFieldList"
+        :rules="rules"
       />
     </star-horse-dialog>
     <star-horse-dialog
-        :dialog-visible="dialogProps.viewVisible"
-        :dialogProps="dialogProps"
-        :source="3"
+      :dialog-visible="dialogProps.viewVisible"
+      :dialogProps="dialogProps"
+      :source="3"
     >
       <star-horse-data-view
-          :data-format="dataFormat"
-          :field-list="tableFieldList"
-          :compUrl="dataUrl"
+        :data-format="dataFormat"
+        :field-list="tableFieldList"
+        :compUrl="dataUrl"
       />
     </star-horse-dialog>
     <div class="search-content">
       <div class="search_btn">
         <star-horse-search-comp
-            @searchData="(data: any) => informationsRef?.createSearchParams(data)"
-            :formData="searchFormData"
-            :compUrl="dataUrl"
+          @searchData="(data: any) => informationsRef?.createSearchParams(data)"
+          :formData="searchFormData"
+          :compUrl="dataUrl"
         />
       </div>
     </div>
     <el-card class="inner_content">
       <star-horse-table-comp
-          ref="informationsRef"
-          :fieldList="tableFieldList"
-          :primaryKey="primaryKey"
-          :btn-permissions="{
-            'view':'view',
-            'add':'add',
-            'edit':'edit',
-          }"
-          :compUrl="dataUrl"
-          :dataFormat="dataFormat"
+        ref="informationsRef"
+        :fieldList="tableFieldList"
+        :primaryKey="primaryKey"
+        :btn-permissions="{
+          view: 'view',
+          add: 'add',
+          edit: 'edit',
+        }"
+        :compUrl="dataUrl"
+        :dataFormat="dataFormat"
       />
     </el-card>
   </div>

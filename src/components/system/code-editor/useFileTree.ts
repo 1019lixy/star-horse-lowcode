@@ -7,11 +7,16 @@ let _idCounter = 0;
 const genId = () => `node-${Date.now()}-${++_idCounter}`;
 
 export function useFileTree(initialFiles?: FileNode[]) {
-  const tree: Ref<FileNode[]> = ref(initialFiles ? JSON.parse(JSON.stringify(initialFiles)) : []);
+  const tree: Ref<FileNode[]> = ref(
+    initialFiles ? JSON.parse(JSON.stringify(initialFiles)) : [],
+  );
 
   // ========== 查找 ==========
 
-  const findNode = (id: string, nodes: FileNode[] = tree.value): FileNode | null => {
+  const findNode = (
+    id: string,
+    nodes: FileNode[] = tree.value,
+  ): FileNode | null => {
     for (const n of nodes) {
       if (n.idCodeFile === id) return n;
       if (n.children) {
@@ -22,9 +27,12 @@ export function useFileTree(initialFiles?: FileNode[]) {
     return null;
   };
 
-  const findParent = (id: string, nodes: FileNode[] = tree.value): FileNode | null => {
+  const findParent = (
+    id: string,
+    nodes: FileNode[] = tree.value,
+  ): FileNode | null => {
     for (const n of nodes) {
-      if (n.children?.some(c => c.idCodeFile === id)) return n;
+      if (n.children?.some((c) => c.idCodeFile === id)) return n;
       if (n.children) {
         const f = findParent(id, n.children);
         if (f) return f;
@@ -44,20 +52,33 @@ export function useFileTree(initialFiles?: FileNode[]) {
   // ========== 重名检测 ==========
 
   /** 检查同级目录下是否存在同名节点（排除指定id） */
-  const hasDuplicateName = (parentId: string | null, name: string, excludeId?: string): boolean => {
+  const hasDuplicateName = (
+    parentId: string | null,
+    name: string,
+    excludeId?: string,
+  ): boolean => {
     const container = getContainer(parentId);
-    return container.some(n => n.name === name && n.idCodeFile !== excludeId);
+    return container.some((n) => n.name === name && n.idCodeFile !== excludeId);
   };
 
   /** 获取同级目录下已有名称集合（排除指定id） */
-  const getSiblingNames = (parentId: string | null, excludeId?: string): Set<string> => {
+  const getSiblingNames = (
+    parentId: string | null,
+    excludeId?: string,
+  ): Set<string> => {
     const container = getContainer(parentId);
-    return new Set(container.filter(n => n.idCodeFile !== excludeId).map(n => n.name));
+    return new Set(
+      container.filter((n) => n.idCodeFile !== excludeId).map((n) => n.name),
+    );
   };
 
   /** 在指定目录下生成唯一名称 */
-  const generateUniqueName = (container: FileNode[], baseName: string, ext: string): string => {
-    const existing = new Set(container.map(n => n.name));
+  const generateUniqueName = (
+    container: FileNode[],
+    baseName: string,
+    ext: string,
+  ): string => {
+    const existing = new Set(container.map((n) => n.name));
     let name = baseName + ext;
     let i = 1;
     while (existing.has(name)) {
@@ -67,7 +88,11 @@ export function useFileTree(initialFiles?: FileNode[]) {
   };
 
   /** 对外暴露：在指定父目录下生成唯一名称 */
-  const generateUniqueNameIn = (parentId: string | null, baseName: string, ext: string): string => {
+  const generateUniqueNameIn = (
+    parentId: string | null,
+    baseName: string,
+    ext: string,
+  ): string => {
     const container = getContainer(parentId);
     return generateUniqueName(container, baseName, ext);
   };
@@ -77,13 +102,20 @@ export function useFileTree(initialFiles?: FileNode[]) {
   /** 获取节点从根到自身的完整路径（目录名数组） */
   const getNodePath = (id: string): string[] => {
     const path: string[] = [];
-    const collectPath = (targetId: string, nodes: FileNode[], current: string[]): boolean => {
+    const collectPath = (
+      targetId: string,
+      nodes: FileNode[],
+      current: string[],
+    ): boolean => {
       for (const n of nodes) {
         if (n.idCodeFile === targetId) {
           path.push(...current, n.name);
           return true;
         }
-        if (n.children && collectPath(targetId, n.children, [...current, n.name])) {
+        if (
+          n.children &&
+          collectPath(targetId, n.children, [...current, n.name])
+        ) {
           return true;
         }
       }
@@ -104,7 +136,8 @@ export function useFileTree(initialFiles?: FileNode[]) {
   const hasSameNameElsewhere = (id: string, name: string): boolean => {
     const findByName = (nodes: FileNode[]): boolean => {
       for (const n of nodes) {
-        if (n.type === "file" && n.name === name && n.idCodeFile !== id) return true;
+        if (n.type === "file" && n.name === name && n.idCodeFile !== id)
+          return true;
         if (n.children && findByName(n.children)) return true;
       }
       return false;
@@ -120,9 +153,19 @@ export function useFileTree(initialFiles?: FileNode[]) {
     const fileName = name || generateUniqueName(container, "untitled", ".txt");
     // 如果指定的名称已存在，生成唯一名称
     const finalName = hasDuplicateName(parentId, fileName)
-      ? generateUniqueName(container, fileName.replace(/\.[^.]+$/, ""), fileName.match(/\.[^.]+$/)?.[0] || "")
+      ? generateUniqueName(
+          container,
+          fileName.replace(/\.[^.]+$/, ""),
+          fileName.match(/\.[^.]+$/)?.[0] || "",
+        )
       : fileName;
-    container.push({ idCodeFile:id, name: finalName, type: "file", language: detectLanguage(finalName), content: "" });
+    container.push({
+      idCodeFile: id,
+      name: finalName,
+      type: "file",
+      language: detectLanguage(finalName),
+      content: "",
+    });
     if (parentId) {
       const parent = findNode(parentId);
       if (parent) parent.type = "folder";
@@ -133,11 +176,17 @@ export function useFileTree(initialFiles?: FileNode[]) {
   const createFolder = (parentId: string | null = null, name = ""): string => {
     const id = genId();
     const container = getContainer(parentId);
-    const folderName = name || generateUniqueName(container, i18n("ide.newFolder"), "");
+    const folderName =
+      name || generateUniqueName(container, i18n("ide.newFolder"), "");
     const finalName = hasDuplicateName(parentId, folderName)
       ? generateUniqueName(container, folderName, "")
       : folderName;
-    container.push({ idCodeFile:id, name: finalName, type: "folder", children: [] });
+    container.push({
+      idCodeFile: id,
+      name: finalName,
+      type: "folder",
+      children: [],
+    });
     return id;
   };
 
@@ -145,8 +194,11 @@ export function useFileTree(initialFiles?: FileNode[]) {
 
   const deleteNode = (id: string): boolean => {
     const removeFrom = (nodes: FileNode[]): boolean => {
-      const idx = nodes.findIndex(n => n.idCodeFile === id);
-      if (idx !== -1) { nodes.splice(idx, 1); return true; }
+      const idx = nodes.findIndex((n) => n.idCodeFile === id);
+      if (idx !== -1) {
+        nodes.splice(idx, 1);
+        return true;
+      }
       for (const n of nodes) {
         if (n.children && removeFrom(n.children)) return true;
       }
@@ -224,7 +276,10 @@ export function useFileTree(initialFiles?: FileNode[]) {
 
   // ========== 批量添加节点 ==========
 
-  const addNodes = (newNodes: FileNode[], parentId: string | null = null): void => {
+  const addNodes = (
+    newNodes: FileNode[],
+    parentId: string | null = null,
+  ): void => {
     const container = getContainer(parentId);
     container.push(...newNodes);
   };
@@ -241,7 +296,10 @@ export function useFileTree(initialFiles?: FileNode[]) {
     const ancestor = findNode(ancestorId);
     if (!ancestor || !ancestor.children) return false;
     const check = (nodes: FileNode[]): boolean =>
-      nodes.some(n => n.idCodeFile === targetId || (n.children ? check(n.children) : false));
+      nodes.some(
+        (n) =>
+          n.idCodeFile === targetId || (n.children ? check(n.children) : false),
+      );
     return check(ancestor.children);
   };
 
@@ -265,7 +323,10 @@ export function useFileTree(initialFiles?: FileNode[]) {
   // ========== 移动节点（拖拽，带重名检测） ==========
 
   /** 移动节点。返回 true 成功，false 表示循环、重名或无效 */
-  const moveNode = (sourceId: string, targetFolderId: string | null): boolean => {
+  const moveNode = (
+    sourceId: string,
+    targetFolderId: string | null,
+  ): boolean => {
     if (sourceId === targetFolderId) return false;
     if (targetFolderId && isDescendant(sourceId, targetFolderId)) return false;
 
@@ -295,14 +356,17 @@ export function useFileTree(initialFiles?: FileNode[]) {
   /**
    * 根据文件路径查找节点（路径格式：folder1/folder2/file.txt）
    */
-  const findNodeByPath = (path: string, nodes: FileNode[] = tree.value): FileNode | null => {
+  const findNodeByPath = (
+    path: string,
+    nodes: FileNode[] = tree.value,
+  ): FileNode | null => {
     if (!path) return null;
     const parts = path.split("/").filter(Boolean);
     let currentNodes = nodes;
 
     for (let i = 0; i < parts.length; i++) {
       const part = parts[i];
-      const found = currentNodes.find(n => n.name === part);
+      const found = currentNodes.find((n) => n.name === part);
       if (!found) return null;
 
       // 如果是最后一个部分，返回该节点
@@ -321,7 +385,12 @@ export function useFileTree(initialFiles?: FileNode[]) {
     nodes: FileNode[] = tree.value,
     prefix: string = "",
   ): { path: string; content: string; language: string; id: string }[] => {
-    const result: { path: string; content: string; language: string; id: string }[] = [];
+    const result: {
+      path: string;
+      content: string;
+      language: string;
+      id: string;
+    }[] = [];
     for (const node of nodes) {
       const currentPath = prefix ? `${prefix}/${node.name}` : node.name;
       if (node.type === "file") {

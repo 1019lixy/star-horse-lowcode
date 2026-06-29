@@ -1,5 +1,5 @@
 <script setup lang="ts" name="Areainfo">
-import {onMounted, ref} from "vue";
+import { onMounted, ref } from "vue";
 import DytableContainerInstanceValid from "@/sample/DytableContainerInstanceValid.vue";
 import BoxContainerInstanceDemo from "@/sample/BoxContainerInstanceDemo.vue";
 import ComponentTester from "@/sample/ComponentTester.vue";
@@ -21,12 +21,11 @@ import ValidMulitSameFormTab from "@/sample/ValidMulitSameFormTab.vue";
 const visible = ref<boolean>(false);
 const actName = ref<string>("component");
 const categories = ref<Array<any>>([
-  {id: 'dashboard', name: '首页', icon: 'home'},
-  {id: 'production', name: '生产管理', icon: 'production'},
-  {id: 'quality', name: '质量管理', icon: 'quality'},
+  { id: "dashboard", name: "首页", icon: "home" },
+  { id: "production", name: "生产管理", icon: "production" },
+  { id: "quality", name: "质量管理", icon: "quality" },
 ]);
-const initData = async () => {
-};
+const initData = async () => {};
 
 const handleSelect = (item: any) => {
   console.log(item);
@@ -52,8 +51,8 @@ onMounted(() => {
             <NormalFormValid/>
           </el-tab-pane>
         </el-tabs>-->
-<!--    <ValidDialogFormRelation/>-->
-<!--    <el-tabs v-model="actName" class="h-full">
+    <!--    <ValidDialogFormRelation/>-->
+    <!--    <el-tabs v-model="actName" class="h-full">
       <el-tab-pane name="component" label="IDE">
         <CodeEditorTest/>
       </el-tab-pane>
@@ -71,43 +70,42 @@ onMounted(() => {
         <DataPickerDemo/>
       </el-tab-pane>
     </el-tabs>-->
-        <el-tabs v-model="actName" class="h-full">
-          <el-tab-pane name="component" label="组件测试">
-            <ComponentTester/>
-          </el-tab-pane>
-          <el-tab-pane name="a" label="动态列表实例">
-            <DytableContainerInstanceValid/>
-          </el-tab-pane>
+    <el-tabs v-model="actName" class="h-full">
+      <el-tab-pane name="component" label="组件测试">
+        <ComponentTester />
+      </el-tab-pane>
+      <el-tab-pane name="a" label="动态列表实例">
+        <DytableContainerInstanceValid />
+      </el-tab-pane>
 
-          <el-tab-pane name="d" label="动态实例Box">
-            <BoxContainerInstanceDemo/>
-          </el-tab-pane>
-          <el-tab-pane name="e" label="动态列表查看视图">
-            <DytableContainerViewValid/>
-          </el-tab-pane>
-          <el-tab-pane name="f" label="动态栅格查看视图">
-            <BoxContainerViewDemo/>
-          </el-tab-pane>
+      <el-tab-pane name="d" label="动态实例Box">
+        <BoxContainerInstanceDemo />
+      </el-tab-pane>
+      <el-tab-pane name="e" label="动态列表查看视图">
+        <DytableContainerViewValid />
+      </el-tab-pane>
+      <el-tab-pane name="f" label="动态栅格查看视图">
+        <BoxContainerViewDemo />
+      </el-tab-pane>
 
-          <el-tab-pane name="h" label="数据选择器">
-            <!--      <DataPickerDemo />-->
-            <!--      <InformationsUi/>-->
-            <ComplexFormValid/>
-          </el-tab-pane>
-          <el-tab-pane name="h1" label="数据选择器2">
-            <DataPickerDemo/>
-
-          </el-tab-pane>
-          <el-tab-pane name="h2" label="正常表单">
-            <NormalFormValid/>
-          </el-tab-pane>
-          <el-tab-pane name="i" label="验证容器">
-            <ComplexFormAnalysis/>
-          </el-tab-pane>
-          <el-tab-pane name="j" label="代码编辑器">
-            <CodeEditorTest/>
-          </el-tab-pane>
-        </el-tabs>
+      <el-tab-pane name="h" label="数据选择器">
+        <!--      <DataPickerDemo />-->
+        <!--      <InformationsUi/>-->
+        <ComplexFormValid />
+      </el-tab-pane>
+      <el-tab-pane name="h1" label="数据选择器2">
+        <DataPickerDemo />
+      </el-tab-pane>
+      <el-tab-pane name="h2" label="正常表单">
+        <NormalFormValid />
+      </el-tab-pane>
+      <el-tab-pane name="i" label="验证容器">
+        <ComplexFormAnalysis />
+      </el-tab-pane>
+      <el-tab-pane name="j" label="代码编辑器">
+        <CodeEditorTest />
+      </el-tab-pane>
+    </el-tabs>
   </div>
 </template>
 <style lang="scss" scoped>

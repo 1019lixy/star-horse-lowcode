@@ -1,11 +1,11 @@
 <template>
   <el-scrollbar>
-  <box-item
-    v-for="item in dataItem"
-    :dataForm="formData"
-    :item="item"
-    :formInfo="{}"
-  />
+    <box-item
+      v-for="item in dataItem"
+      :dataForm="formData"
+      :item="item"
+      :formInfo="{}"
+    />
   </el-scrollbar>
 </template>
 

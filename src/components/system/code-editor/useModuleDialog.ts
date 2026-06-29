@@ -30,21 +30,29 @@ export function useModuleDialog(resolvedApi: Ref<IdeApiConfig>) {
     const kw = moduleSearchKeyword.value.trim().toLowerCase();
     if (!kw) return moduleList.value;
     return moduleList.value.filter(
-      (m) => m.name.toLowerCase().includes(kw) || (m.description || "").toLowerCase().includes(kw),
+      (m) =>
+        m.name.toLowerCase().includes(kw) ||
+        (m.description || "").toLowerCase().includes(kw),
     );
   });
 
   const moduleDialogTitle = computed(() => {
-    return moduleDialogMode.value === "load" ? i18n("ide.module.selectLoad") : i18n("ide.module.selectSave");
+    return moduleDialogMode.value === "load"
+      ? i18n("ide.module.selectLoad")
+      : i18n("ide.module.selectSave");
   });
 
   const fetchModuleList = async (): Promise<ModuleItem[]> => {
-    if (!resolvedApi.value.createModuleUrl && !resolvedApi.value.moduleListUrl) return [];
+    if (!resolvedApi.value.createModuleUrl && !resolvedApi.value.moduleListUrl)
+      return [];
     moduleListLoading.value = true;
     try {
-      const res: any = await getRequest(resolvedApi.value.moduleListUrl || resolvedApi.value.createModuleUrl!);
+      const res: any = await getRequest(
+        resolvedApi.value.moduleListUrl || resolvedApi.value.createModuleUrl!,
+      );
       const data = res?.data;
-      if (data?.code === 0 && Array.isArray(data?.data)) return data.data as ModuleItem[];
+      if (data?.code === 0 && Array.isArray(data?.data))
+        return data.data as ModuleItem[];
       if (Array.isArray(data)) return data;
       if (Array.isArray(data?.data)) return data.data;
       warning(data?.cnMessage || i18n("ide.module.fetchFailed"));
@@ -82,7 +90,10 @@ export function useModuleDialog(resolvedApi: Ref<IdeApiConfig>) {
     }
   };
 
-  const createModuleAndSave = async (): Promise<{ id: string; name: string } | null> => {
+  const createModuleAndSave = async (): Promise<{
+    id: string;
+    name: string;
+  } | null> => {
     if (!newModuleName.value.trim()) {
       warning(i18n("ide.module.enterName"));
       return null;

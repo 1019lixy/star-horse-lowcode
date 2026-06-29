@@ -37,9 +37,10 @@ body {
   width: 100%;
   height: 100%;
   font-size: 12px;
-  font-family: "PingFang SC", "Lantinghei SC", "Microsoft YaHei", "HanHei SC",
-  "Helvetica Neue", "Open Sans", Arial, "Hiragino Sans GB", "微软雅黑",
-  STHeiti, "WenQuanYi Micro Hei", SimSun, sans-serif;
+  font-family:
+    "PingFang SC", "Lantinghei SC", "Microsoft YaHei", "HanHei SC",
+    "Helvetica Neue", "Open Sans", Arial, "Hiragino Sans GB", "微软雅黑",
+    STHeiti, "WenQuanYi Micro Hei", SimSun, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   margin: 0;
@@ -330,8 +331,6 @@ a {
     border: 1px solid #ebeef5;
     background: #f5f7fa;
   }
-
-
 }
 
 .content {
@@ -1023,8 +1022,9 @@ button.el-collapse-item__header {
   -webkit-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  transition: width 0.2s,
-  height 0.2s;
+  transition:
+    width 0.2s,
+    height 0.2s;
   border: 1px solid var(--star-horse-border—color);
 
   .table-cell-action {

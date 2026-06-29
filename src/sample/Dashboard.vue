@@ -1,6 +1,6 @@
 <script setup lang="ts">
-const loadAppmenus=()=>{
-  const appMenuDatas=[
+const loadAppmenus = () => {
+  const appMenuDatas = [
     {
       path: "#",
       name: "#",
@@ -116,18 +116,16 @@ const loadAppmenus=()=>{
   console.log(appMenus);
   return appMenus;
 };
-const cachedDatas=[];
+const cachedDatas = [];
 </script>
 
 <template>
   <MainContainer
-      :categories="loadAppmenus()"
-      iconType="ele"
-      :cachedDatas="cachedDatas"
-      position="bottom"
+    :categories="loadAppmenus()"
+    iconType="ele"
+    :cachedDatas="cachedDatas"
+    position="bottom"
   />
 </template>
 
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>

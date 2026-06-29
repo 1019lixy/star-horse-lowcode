@@ -7,12 +7,13 @@
   overflow: hidden;
   background: var(--ide-bg, #1e1e1e);
   color: var(--ide-fg, #cccccc);
-  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-family: "Segoe UI", system-ui, sans-serif;
   font-size: 13px;
 
   &.ide-drop-zone {
     border-color: var(--ide-accent, #007acc);
-    box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--ide-accent, #007acc) 25%, transparent);
+    box-shadow: inset 0 0 0 2px
+      color-mix(in srgb, var(--ide-accent, #007acc) 25%, transparent);
   }
 }
 
@@ -211,7 +212,7 @@
 
 .search-result-text {
   color: var(--ide-fg-dim, #858585);
-  font-family: 'Consolas', 'Courier New', monospace;
+  font-family: "Consolas", "Courier New", monospace;
   font-size: 11px;
   white-space: nowrap;
   overflow: hidden;
@@ -362,7 +363,7 @@
   transition: 0.2s;
 
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     width: 14px;
     height: 14px;
@@ -400,14 +401,19 @@
   font-weight: 500;
   color: var(--ide-accent, #007acc);
   background: color-mix(in srgb, var(--ide-accent, #007acc) 8%, transparent);
-  border: 1px solid color-mix(in srgb, var(--ide-accent, #007acc) 25%, transparent);
+  border: 1px solid
+    color-mix(in srgb, var(--ide-accent, #007acc) 25%, transparent);
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.15s;
 
   &:hover {
     background: color-mix(in srgb, var(--ide-accent, #007acc) 15%, transparent);
-    border-color: color-mix(in srgb, var(--ide-accent, #007acc) 40%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--ide-accent, #007acc) 40%,
+      transparent
+    );
   }
 }
 
@@ -622,7 +628,7 @@
   flex-direction: column;
   box-shadow: 0 8px 32px var(--ide-dropdown-shadow, rgba(0, 0, 0, 0.4));
   color: var(--ide-fg, #cccccc);
-  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-family: "Segoe UI", system-ui, sans-serif;
 }
 
 .sh-module-dialog-header {

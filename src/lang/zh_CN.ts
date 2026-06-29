@@ -123,7 +123,8 @@ export default {
   "datapicker.moveToEnd": "置底",
   "datapicker.dragSortTip": "拖拽排序",
   "datapicker.helpTitle": "操作提示",
-  "datapicker.helpContent": "点击左侧待选数据可添加到已选区；点击已选数据可取消选中；拖拽已选数据可调整顺序；使用上下按钮或键盘↑↓键可调整选中项顺序",
+  "datapicker.helpContent":
+    "点击左侧待选数据可添加到已选区；点击已选数据可取消选中；拖拽已选数据可调整顺序；使用上下按钮或键盘↑↓键可调整选中项顺序",
   /**
    * 数据选择器--------------
    */
@@ -849,7 +850,7 @@ export default {
   "item.imageSizeLimit": "图片大小不能超过 5MB！",
   "item.videoSizeLimit": "视频大小不能超过 100MB！",
   "item.notSupportedOnApp": "App端不支持此操作,请到Pc端完成",
-  "item.systemLoading":"加载中,请稍后...",
+  "item.systemLoading": "加载中,请稍后...",
   "item.unknown": "未知",
   "item.systemConfig": "系统配置",
   "item.currentProperty": "当前属性",
@@ -961,8 +962,8 @@ export default {
   "ide.settings.theme": "主题",
   "ide.settings.fontSize": "字体大小",
   "ide.settings.tabSize": "Tab 大小",
-  "ide.sidebar.orViaMenu": "或通过菜单 \"打开文件\" / \"打开目录\"",
-  "ide.sidebar.openHint": "或通过菜单 \"打开文件\" / \"打开目录\"",
+  "ide.sidebar.orViaMenu": '或通过菜单 "打开文件" / "打开目录"',
+  "ide.sidebar.openHint": '或通过菜单 "打开文件" / "打开目录"',
   "ide.sidebar.searchFeature": "搜索功能",
   "ide.sidebar.searchHint": "在编辑器中使用 Ctrl+F 搜索内容",
   "ide.sidebar.editorSettings": "编辑器设置",
@@ -1009,7 +1010,8 @@ export default {
   "ide.console.runSuccess": "运行成功",
   "ide.console.runFail": "运行失败",
   "ide.console.result": "返回值",
-  "ide.confirmDeleteFolder": (name: string) => `确定删除文件夹 "${name}" 及其所有内容？`,
+  "ide.confirmDeleteFolder": (name: string) =>
+    `确定删除文件夹 "${name}" 及其所有内容？`,
   "ide.confirmDeleteFile": (name: string) => `确定删除文件 "${name}"？`,
   "ide.module.selectLoad": "选择模块 - 加载",
   "ide.module.selectSave": "选择模块 - 保存",
@@ -1039,13 +1041,15 @@ export default {
   "ide.save.success": "保存成功",
   "ide.save.failed": "保存失败",
   "ide.save.requestError": "创建模块请求异常",
-  "ide.save.conflictDetected": (fileCount: number, commitCount: number) => `检测到 ${fileCount} 个文件存在冲突（其他人已提交 ${commitCount} 次），请解决冲突后重新提交`,
+  "ide.save.conflictDetected": (fileCount: number, commitCount: number) =>
+    `检测到 ${fileCount} 个文件存在冲突（其他人已提交 ${commitCount} 次），请解决冲突后重新提交`,
   "ide.save.conflictResolvedSuccess": "冲突已解决，代码提交成功",
   "ide.save.forceCommit": "强制提交",
   "ide.save.forceCommitConfirm": "确定强制提交？这将覆盖服务器上的版本",
   "ide.save.nextConflictFile": "下一个冲突文件",
   "ide.save.prevConflictFile": "上一个冲突文件",
-  "ide.save.conflictProgress": (current: number, total: number) => `冲突文件 ${current}/${total}`,
+  "ide.save.conflictProgress": (current: number, total: number) =>
+    `冲突文件 ${current}/${total}`,
   // 格式化
   "ide.menu.edit.formatDocument": "格式化文档",
   // 控制台
@@ -1056,13 +1060,16 @@ export default {
   "ide.menu.build.unregisterAll": "注销全部Bean",
   "ide.menu.build.healthCheck": "健康检查",
   "ide.menu.build.draftSave": "保存草稿",
-  "ide.console.compileRegisterStart": (name: string) => `开始编译注册 ${name} ...`,
+  "ide.console.compileRegisterStart": (name: string) =>
+    `开始编译注册 ${name} ...`,
   "ide.console.compileRegisterSuccess": "编译注册成功",
   "ide.console.unregisterSuccess": (name: string) => `注销成功: ${name}`,
   "ide.console.unregisterAllSuccess": "已注销所有动态 Bean",
   "ide.console.draftSaveSuccess": "草稿保存成功",
-  "ide.console.healthCheckOk": (count: number) => `健康检查: 所有 ${count} 个 Bean 正常`,
-  "ide.console.healthCheckRecovered": (count: number) => `健康检查: 恢复了 ${count} 个丢失的 Bean`,
+  "ide.console.healthCheckOk": (count: number) =>
+    `健康检查: 所有 ${count} 个 Bean 正常`,
+  "ide.console.healthCheckRecovered": (count: number) =>
+    `健康检查: 恢复了 ${count} 个丢失的 Bean`,
   "ide.template.loadFailed": "加载模板失败",
   "ide.template.noTemplateUrl": "未配置模板接口地址",
 
@@ -1076,7 +1083,8 @@ export default {
   "diff.sideBySide": "并排对比",
   "diff.inline": "内联对比",
   "diff.conflicts": "个冲突",
-  "diff.conflictOf": (current: number, total: number) => `冲突 ${current}/${total}`,
+  "diff.conflictOf": (current: number, total: number) =>
+    `冲突 ${current}/${total}`,
   "diff.acceptCurrent": "保留当前",
   "diff.acceptIncoming": "采用传入",
   "diff.acceptBoth": "保留双方",
@@ -1103,7 +1111,8 @@ export default {
   // 先拉取再提交流程
   "ide.save.fetchingLatest": "正在从服务器拉取最新版本...",
   "ide.save.noChanges": "未检测到变更，无需提交",
-  "ide.save.diffFileProgress": (current: number, total: number) => `文件 ${current}/${total}`,
+  "ide.save.diffFileProgress": (current: number, total: number) =>
+    `文件 ${current}/${total}`,
   "ide.save.allFilesReviewed": "所有文件已审阅，正在提交...",
   "ide.menu.view.diffEditor": "文件对比",
   "ide.menu.file.resolveConflict": "解决冲突",

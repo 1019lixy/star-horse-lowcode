@@ -197,7 +197,8 @@ const validTypes: any = [
   {
     message: i18n("api.portFormat"),
     value: "port",
-    pattern: /^([0-9]|[1-9]\d{1,3}|[1-5]\d{4}|6[0-4]\d{3}|65[0-4]\d{2}|655[0-2]\d|6553[0-5])$/,
+    pattern:
+      /^([0-9]|[1-9]\d{1,3}|[1-5]\d{4}|6[0-4]\d{3}|65[0-4]\d{2}|655[0-2]\d|6553[0-5])$/,
   },
   {
     message: i18n("api.taxNumberFormat"),
@@ -217,12 +218,14 @@ const validTypes: any = [
   {
     message: i18n("api.coordinateFormat"),
     value: "coordinate",
-    pattern: /^-?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?),\s*-?(90(\.0+)?|([1-8]?\d)(\.\d+)?)$/,
+    pattern:
+      /^-?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?),\s*-?(90(\.0+)?|([1-8]?\d)(\.\d+)?)$/,
   },
   {
     message: i18n("api.semverFormat"),
     value: "semver",
-    pattern: /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[\da-zA-Z-]+(?:\.[\da-zA-Z-]+)*)?(?:\+[\da-zA-Z-]+(?:\.[\da-zA-Z-]+)*)?$/,
+    pattern:
+      /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[\da-zA-Z-]+(?:\.[\da-zA-Z-]+)*)?(?:\+[\da-zA-Z-]+(?:\.[\da-zA-Z-]+)*)?$/,
   },
   {
     message: i18n("api.jsonFormat"),
@@ -237,7 +240,8 @@ const validTypes: any = [
   {
     message: i18n("api.uuidFormat"),
     value: "uuid",
-    pattern: /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/,
+    pattern:
+      /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/,
   },
   {
     message: i18n("api.chinesePhoneFormat"),
@@ -317,7 +321,10 @@ export function getValidType(type: any, options?: any) {
     if (type === "decimal") {
       return {
         message: typeConfig.message,
-        pattern: typeConfig.pattern(options?.intLen ?? 10, options?.decLen ?? 2),
+        pattern: typeConfig.pattern(
+          options?.intLen ?? 10,
+          options?.decLen ?? 2,
+        ),
       };
     }
     if (type === "numberRange") {

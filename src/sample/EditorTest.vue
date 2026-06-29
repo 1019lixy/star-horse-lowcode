@@ -16,7 +16,9 @@ const customToolbarItems = ref([
     position: "left" as const,
     type: "button" as const,
     handler: () => {
-      ElMessage.success("保存成功！内容：" + sqlContent.value.substring(0, 50) + "...");
+      ElMessage.success(
+        "保存成功！内容：" + sqlContent.value.substring(0, 50) + "...",
+      );
     },
   },
   {
@@ -94,7 +96,10 @@ onMounted(() => {
   <div class="flex flex-col h-full p-4 gap-4">
     <div class="flex items-center gap-4 text-sm text-gray-500 flex-wrap">
       <span>测试1：输入 <code>s</code> → 应弹出表名 + SQL关键字</span>
-      <span>测试2：<code>FROM sys_user a</code> 然后 <code>a.</code> → 应弹出 sys_user 的字段</span>
+      <span
+        >测试2：<code>FROM sys_user a</code> 然后 <code>a.</code> → 应弹出
+        sys_user 的字段</span
+      >
       <span>测试3：<code>FROM sys_order.</code> → 应弹出 sys_order 的字段</span>
     </div>
     <StarHorseEditor

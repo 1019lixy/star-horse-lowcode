@@ -1,11 +1,10 @@
 <template>
   <el-scrollbar>
-  <star-horse-data-view
-
-    :dataForm="formData"
-    :fieldList="dataItem"
-    :formInfo="{}"
-  />
+    <star-horse-data-view
+      :dataForm="formData"
+      :fieldList="dataItem"
+      :formInfo="{}"
+    />
   </el-scrollbar>
 </template>
 
@@ -14,7 +13,7 @@ import piniaInstance from "@/store";
 import { useDesignFormStore } from "@/store/DesignForm";
 import { onMounted, ref } from "vue";
 import { analysisCompDatas } from "@/api/form_utils";
-import {StarHorseDataView} from "@/components/comp";
+import { StarHorseDataView } from "@/components/comp";
 
 let designForm = useDesignFormStore(piniaInstance);
 const formData = ref<any>({
@@ -500,19 +499,21 @@ const fields = [
               id: "sh7afb1640-5586-4cd6-bfa7-c4220ee893d0",
               colspan: 21,
               rowspan: 1,
-              items: [ {
-                type: "datapicker",
-                staticData: false,
-                itemType: "datapicker",
-                formVisible: true,
-                listVisible: true,
-                viewVisible: true,
-                preps: {
-                  hideLabel: true,
-                  hideToolbar: true,
-                  autosize: true,
+              items: [
+                {
+                  type: "datapicker",
+                  staticData: false,
+                  itemType: "datapicker",
+                  formVisible: true,
+                  listVisible: true,
+                  viewVisible: true,
+                  preps: {
+                    hideLabel: true,
+                    hideToolbar: true,
+                    autosize: true,
+                  },
                 },
-              },],
+              ],
               colHeight: "250.66666793823242px",
             },
           ],
@@ -553,19 +554,21 @@ const fields = [
               id: "shfa93a0f5-7b6f-43dd-8a18-693fc9a4e5b2",
               colspan: 21,
               rowspan: 1,
-              items: [{
-                type: "time",
-                staticData: false,
-                itemType: "time",
-                formVisible: true,
-                listVisible: true,
-                viewVisible: true,
-                preps: {
-                  hideLabel: true,
-                  hideToolbar: true,
-                  autosize: true,
+              items: [
+                {
+                  type: "time",
+                  staticData: false,
+                  itemType: "time",
+                  formVisible: true,
+                  listVisible: true,
+                  viewVisible: true,
+                  preps: {
+                    hideLabel: true,
+                    hideToolbar: true,
+                    autosize: true,
+                  },
                 },
-              }],
+              ],
               colHeight: "272.6666679382324px",
             },
           ],
@@ -776,7 +779,7 @@ const fields = [
 onMounted(() => {
   const result = analysisCompDatas(fields);
   dataItem.value = result;
-  console.log("fffffffff",result);
+  console.log("fffffffff", result);
 });
 </script>
 

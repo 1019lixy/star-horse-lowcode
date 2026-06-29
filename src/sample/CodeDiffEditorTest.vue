@@ -20,17 +20,40 @@ const modifiedInputRef = ref<HTMLInputElement>();
 const diffEditorRef = ref<InstanceType<typeof StarHorseDiffEditor>>();
 
 const hasChanges = computed(() => remainingChanges.value > 0);
-const allResolved = computed(() => diffVisible.value && totalChanges.value > 0 && remainingChanges.value === 0);
+const allResolved = computed(
+  () =>
+    diffVisible.value && totalChanges.value > 0 && remainingChanges.value === 0,
+);
 
 const detectLang = (name: string): string => {
   const ext = name.split(".").pop()?.toLowerCase() || "";
   const map: Record<string, string> = {
-    js: "javascript", ts: "typescript", jsx: "javascript", tsx: "typescript",
-    vue: "html", html: "html", htm: "html", css: "css", scss: "scss", less: "less",
-    json: "json", xml: "xml", yaml: "yaml", yml: "yaml",
-    md: "markdown", py: "python", java: "java", c: "c", cpp: "cpp",
-    go: "go", rs: "rust", sql: "sql", sh: "shell", bash: "shell",
-    txt: "plaintext", log: "plaintext",
+    js: "javascript",
+    ts: "typescript",
+    jsx: "javascript",
+    tsx: "typescript",
+    vue: "html",
+    html: "html",
+    htm: "html",
+    css: "css",
+    scss: "scss",
+    less: "less",
+    json: "json",
+    xml: "xml",
+    yaml: "yaml",
+    yml: "yaml",
+    md: "markdown",
+    py: "python",
+    java: "java",
+    c: "c",
+    cpp: "cpp",
+    go: "go",
+    rs: "rust",
+    sql: "sql",
+    sh: "shell",
+    bash: "shell",
+    txt: "plaintext",
+    log: "plaintext",
   };
   return map[ext] || "plaintext";
 };
@@ -130,7 +153,11 @@ const handleSubmit = () => {
 };
 
 const detectConflictMarkers = (text: string): boolean => {
-  return text.includes("<<<<<<<") && text.includes(">>>>>>>") && text.includes("=======");
+  return (
+    text.includes("<<<<<<<") &&
+    text.includes(">>>>>>>") &&
+    text.includes("=======")
+  );
 };
 
 const handleDiffSave = (result: string) => {
@@ -146,15 +173,17 @@ const handleDiffClose = () => {
 
 <template>
   <div class="flex flex-col h-full p-4 gap-4">
-    <h3 class="text-lg font-semibold mb-2">{{ i18n('diff.title') }}</h3>
+    <h3 class="text-lg font-semibold mb-2">{{ i18n("diff.title") }}</h3>
 
     <!-- 文件上传区域 -->
     <div class="flex gap-4">
       <!-- 原始文件 -->
       <div class="flex-1 border rounded p-4 flex flex-col gap-2">
         <div class="flex items-center justify-between">
-          <span class="font-medium">{{ i18n('diff.original') }}</span>
-          <span v-if="originalFileName" class="text-sm text-gray-500">{{ originalFileName }}</span>
+          <span class="font-medium">{{ i18n("diff.original") }}</span>
+          <span v-if="originalFileName" class="text-sm text-gray-500">{{
+            originalFileName
+          }}</span>
         </div>
         <input
           ref="originalInputRef"
@@ -176,8 +205,10 @@ const handleDiffClose = () => {
       <!-- 修改文件 -->
       <div class="flex-1 border rounded p-4 flex flex-col gap-2">
         <div class="flex items-center justify-between">
-          <span class="font-medium">{{ i18n('diff.modified') }}</span>
-          <span v-if="modifiedFileName" class="text-sm text-gray-500">{{ modifiedFileName }}</span>
+          <span class="font-medium">{{ i18n("diff.modified") }}</span>
+          <span v-if="modifiedFileName" class="text-sm text-gray-500">{{
+            modifiedFileName
+          }}</span>
         </div>
         <input
           ref="modifiedInputRef"
@@ -219,7 +250,7 @@ const handleDiffClose = () => {
           @click="handleUseMine"
           title="保留修改侧（右侧）的内容"
         >
-          {{ i18n('diff.useMine') }}
+          {{ i18n("diff.useMine") }}
         </button>
         <button
           class="px-4 py-1.5 bg-blue-500 text-white rounded hover:bg-blue-600 transition text-sm disabled:opacity-50 disabled:cursor-not-allowed"
@@ -227,7 +258,7 @@ const handleDiffClose = () => {
           @click="handleUseTheirs"
           title="用原始侧（左侧）的内容替换"
         >
-          {{ i18n('diff.useTheirs') }}
+          {{ i18n("diff.useTheirs") }}
         </button>
         <button
           class="px-4 py-1.5 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition text-sm disabled:opacity-50 disabled:cursor-not-allowed"
@@ -235,7 +266,7 @@ const handleDiffClose = () => {
           @click="handleMerge"
           title="保留双方内容"
         >
-          {{ i18n('diff.merge') }}
+          {{ i18n("diff.merge") }}
         </button>
 
         <span class="text-gray-300 mx-1">|</span>
@@ -261,25 +292,31 @@ const handleDiffClose = () => {
         <div class="flex-1" />
 
         <!-- 差异状态 -->
-        <span v-if="totalChanges > 0" class="text-sm" :class="hasChanges ? 'text-red-500' : 'text-green-500'">
+        <span
+          v-if="totalChanges > 0"
+          class="text-sm"
+          :class="hasChanges ? 'text-red-500' : 'text-green-500'"
+        >
           <template v-if="hasChanges">
             剩余 {{ remainingChanges }} 处差异
           </template>
           <template v-else>
-            {{ i18n('diff.allResolved') }}
+            {{ i18n("diff.allResolved") }}
           </template>
         </span>
 
         <!-- 提交按钮 -->
         <button
           class="px-4 py-1.5 rounded text-sm transition"
-          :class="allResolved
-            ? 'bg-purple-500 text-white hover:bg-purple-600'
-            : 'bg-gray-300 text-gray-500 cursor-not-allowed'"
+          :class="
+            allResolved
+              ? 'bg-purple-500 text-white hover:bg-purple-600'
+              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+          "
           :disabled="!allResolved"
           @click="handleSubmit"
         >
-          {{ i18n('diff.submit') }}
+          {{ i18n("diff.submit") }}
         </button>
       </div>
 
@@ -306,13 +343,19 @@ const handleDiffClose = () => {
     <!-- 已解决的内容预览 -->
     <div v-if="resolvedContent && !diffVisible" class="border rounded p-3">
       <div class="flex items-center justify-between mb-2">
-        <span class="text-sm font-medium text-green-600">{{ i18n('diff.resolved') }}</span>
-        <span class="text-xs text-gray-400">{{ resolvedContent.length }} 字符</span>
+        <span class="text-sm font-medium text-green-600">{{
+          i18n("diff.resolved")
+        }}</span>
+        <span class="text-xs text-gray-400"
+          >{{ resolvedContent.length }} 字符</span
+        >
       </div>
-      <pre class="text-xs bg-gray-50 p-2 rounded max-h-40 overflow-auto whitespace-pre-wrap">{{ resolvedContent }}</pre>
+      <pre
+        class="text-xs bg-gray-50 p-2 rounded max-h-40 overflow-auto whitespace-pre-wrap"
+        >{{ resolvedContent }}</pre
+      >
     </div>
   </div>
 </template>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

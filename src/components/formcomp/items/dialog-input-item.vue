@@ -83,7 +83,11 @@ onMounted(async () => {
   await nextTick();
   let inputPreps = props.field?.preps;
   if (!inputPreps) {
-    warning(i18n("item.propertyNeedsParams") + props.field?.label + i18n("item.propertyNeedsParamsSuffix"));
+    warning(
+      i18n("item.propertyNeedsParams") +
+        props.field?.label +
+        i18n("item.propertyNeedsParamsSuffix"),
+    );
     return;
   }
   if (!inputPreps.searchFieldList || inputPreps.searchFieldList?.length == 0) {
@@ -162,7 +166,7 @@ onMounted(async () => {
       type="text"
       v-bind="prepsFilter(field.preps)"
       :fid="field.fieldName"
-      v-on="getDynamicEvents(props, itemAction,formData)"
+      v-on="getDynamicEvents(props, itemAction, formData)"
       v-model="formData[field.fieldName]"
     >
       <template #append>

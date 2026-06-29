@@ -11,7 +11,10 @@ const LANG_EXTENSIONS: Record<string, string> = {
   cpp: ".cpp",
 };
 
-const pendingRequests = new Map<number, { resolve: (v: any) => void; reject: (r: any) => void }>();
+const pendingRequests = new Map<
+  number,
+  { resolve: (v: any) => void; reject: (r: any) => void }
+>();
 const LSP_MAX_RECONNECT_ATTEMPTS = 10;
 const LSP_RECONNECT_DELAY = 3000;
 const LSP_INIT_TIMEOUT = 60000;
@@ -65,7 +68,10 @@ export function useLsp(
   };
 
   // ===== 计算文档URI和相对路径 =====
-  const computeDocInfo = (lang: string, fileName: string): { uri: string; relativePath: string } => {
+  const computeDocInfo = (
+    lang: string,
+    fileName: string,
+  ): { uri: string; relativePath: string } => {
     if (!workspaceRootUri) {
       // 工作空间还没初始化，用默认路径
       const defaultWorkspace = `file:///D:/lsp-workspace/${lang}`;
@@ -150,7 +156,9 @@ export function useLsp(
     const editor = toRaw(editorInstance.value);
     const text = editor?.getValue() || "";
     const lang = currentLang.value;
-    const fileName = getDocumentUri().split("/").pop() || `untitled${LANG_EXTENSIONS[lang] || ".txt"}`;
+    const fileName =
+      getDocumentUri().split("/").pop() ||
+      `untitled${LANG_EXTENSIONS[lang] || ".txt"}`;
 
     const { uri, relativePath } = computeDocInfo(lang, fileName);
     currentDocUri = uri;
@@ -169,16 +177,43 @@ export function useLsp(
 
   // ===== 消息处理 =====
   const mapSeverity = (s: number) =>
-    s === 1 ? monaco.MarkerSeverity.Error
-    : s === 2 ? monaco.MarkerSeverity.Warning
-    : s === 3 ? monaco.MarkerSeverity.Info
-    : monaco.MarkerSeverity.Hint;
+    s === 1
+      ? monaco.MarkerSeverity.Error
+      : s === 2
+        ? monaco.MarkerSeverity.Warning
+        : s === 3
+          ? monaco.MarkerSeverity.Info
+          : monaco.MarkerSeverity.Hint;
 
-  const mapCompletionKind = (k: number): monaco.languages.CompletionItemKind => {
+  const mapCompletionKind = (
+    k: number,
+  ): monaco.languages.CompletionItemKind => {
     const m: Record<number, monaco.languages.CompletionItemKind> = {
-      1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8, 9: 9, 10: 10,
-      11: 11, 12: 12, 13: 13, 14: 14, 15: 27, 16: 16, 17: 17, 18: 18,
-      19: 19, 20: 20, 21: 21, 22: 22, 23: 23, 24: 24, 25: 25,
+      1: 1,
+      2: 2,
+      3: 3,
+      4: 4,
+      5: 5,
+      6: 6,
+      7: 7,
+      8: 8,
+      9: 9,
+      10: 10,
+      11: 11,
+      12: 12,
+      13: 13,
+      14: 14,
+      15: 27,
+      16: 16,
+      17: 17,
+      18: 18,
+      19: 19,
+      20: 20,
+      21: 21,
+      22: 22,
+      23: 23,
+      24: 24,
+      25: 25,
     };
     return m[k] || 1;
   };
@@ -205,8 +240,14 @@ export function useLsp(
       } else {
         sendLspResponse(msg.id, null);
       }
-      if (msg.method === "client/registerCapability" && msg.params?.registrations) {
-        console.log("[LSP] Registered capabilities:", msg.params.registrations.map((r: any) => r.method));
+      if (
+        msg.method === "client/registerCapability" &&
+        msg.params?.registrations
+      ) {
+        console.log(
+          "[LSP] Registered capabilities:",
+          msg.params.registrations.map((r: any) => r.method),
+        );
       }
       return;
     }
@@ -246,12 +287,16 @@ export function useLsp(
     textModel: monaco.editor.ITextModel,
     position: monaco.Position,
   ): Promise<monaco.languages.CompletionList | undefined> => {
-    if (!lspWs || lspWs.readyState !== WebSocket.OPEN || !lspInitialized) return undefined;
+    if (!lspWs || lspWs.readyState !== WebSocket.OPEN || !lspInitialized)
+      return undefined;
     if (!currentDocUri) return undefined;
     try {
       const result = await sendLspRequest("textDocument/completion", {
         textDocument: { uri: currentDocUri },
-        position: { line: position.lineNumber - 1, character: position.column - 1 },
+        position: {
+          line: position.lineNumber - 1,
+          character: position.column - 1,
+        },
       });
       if (!result) return undefined;
       const items = result.items || result || [];
@@ -283,7 +328,7 @@ export function useLsp(
   const registerProviders = () => {
     if (keywordProvidersRegistered) return;
     keywordProvidersRegistered = true;
-    ["java", "csharp", "cpp"].forEach(lang => {
+    ["java", "csharp", "cpp"].forEach((lang) => {
       monaco.languages.registerCompletionItemProvider(lang, {
         triggerCharacters: [".", "(", ":", ">", " ", "@"],
         provideCompletionItems: async (model, pos) => {
@@ -306,13 +351,18 @@ export function useLsp(
   const scheduleReconnect = (lang: string) => {
     if (lspReconnectAttempts >= LSP_MAX_RECONNECT_ATTEMPTS) return;
     lspReconnectAttempts++;
-    lspReconnectTimer = setTimeout(() => connectLsp(lang), LSP_RECONNECT_DELAY * lspReconnectAttempts);
+    lspReconnectTimer = setTimeout(
+      () => connectLsp(lang),
+      LSP_RECONNECT_DELAY * lspReconnectAttempts,
+    );
   };
 
   const connectLsp = (lang: string) => {
     // 只对支持LSP的语言连接
     if (!isLspLanguage(lang)) {
-      console.log(`[LSP] Language '${lang}' does not require LSP, skipping connection`);
+      console.log(
+        `[LSP] Language '${lang}' does not require LSP, skipping connection`,
+      );
       return;
     }
     if (!lspServerUrl.value) return;
@@ -328,7 +378,9 @@ export function useLsp(
     pendingRequests.clear();
 
     try {
-      lspWs = new WebSocket(`${lspServerUrl.value.replace(/\/+$/, "")}/lsp/${lang}`);
+      lspWs = new WebSocket(
+        `${lspServerUrl.value.replace(/\/+$/, "")}/lsp/${lang}`,
+      );
     } catch {
       lspWs = null;
       scheduleReconnect(lang);
@@ -341,7 +393,9 @@ export function useLsp(
       initializeLsp();
     };
     lspWs.onmessage = (ev) => {
-      try { handleLspMessage(JSON.parse(ev.data)); } catch {}
+      try {
+        handleLspMessage(JSON.parse(ev.data));
+      } catch {}
     };
     lspWs.onclose = (ev) => {
       lspConnected.value = false;
@@ -349,7 +403,9 @@ export function useLsp(
       workspaceRootUri = "";
       if (ev.code !== 1000) scheduleReconnect(lang);
     };
-    lspWs.onerror = () => { lspConnected.value = false; };
+    lspWs.onerror = () => {
+      lspConnected.value = false;
+    };
   };
 
   const disconnectLsp = () => {
@@ -376,7 +432,8 @@ export function useLsp(
 
   /** 通知LSP文档打开（切换标签页时调用） */
   const notifyDidOpen = () => {
-    if (!lspWs || lspWs.readyState !== WebSocket.OPEN || !lspInitialized) return;
+    if (!lspWs || lspWs.readyState !== WebSocket.OPEN || !lspInitialized)
+      return;
     // 只有LSP语言才发送
     if (!isLspLanguage(currentLang.value)) return;
     openCurrentDocument();
@@ -384,7 +441,8 @@ export function useLsp(
 
   /** 通知LSP文档内容变化（输入时调用） */
   const notifyDidChange = () => {
-    if (!lspWs || lspWs.readyState !== WebSocket.OPEN || !lspInitialized) return;
+    if (!lspWs || lspWs.readyState !== WebSocket.OPEN || !lspInitialized)
+      return;
     if (!isLspLanguage(currentLang.value)) return;
     if (!currentDocUri) return;
 

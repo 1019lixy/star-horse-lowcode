@@ -20,7 +20,7 @@
       v-bind="prepsFilter(field.preps)"
       type="textarea"
       :style="field.preps?.styles"
-      v-on="getDynamicEvents(props, itemAction,formData)"
+      v-on="getDynamicEvents(props, itemAction, formData)"
       v-model="formData[field.fieldName]"
     />
   </starhorse-form-item>
@@ -52,7 +52,11 @@ const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
 const maxEdit = () => {
-  if (!props.field.preps?.readonly && !props.field.preps?.disabled && !props.field.disabled) {
+  if (
+    !props.field.preps?.readonly &&
+    !props.field.preps?.disabled &&
+    !props.field.disabled
+  ) {
     editorDialogVisible.value = true;
   }
 };

@@ -22,7 +22,7 @@
   >
     <el-input
       :fid="field.fieldName"
-      v-on="getDynamicEvents(props, itemAction,formData)"
+      v-on="getDynamicEvents(props, itemAction, formData)"
       v-model="formData[field.fieldName]"
     >
       <template #append>

@@ -29,23 +29,41 @@ const emit = defineEmits<{
   "drag-end": [];
   drop: [sourceId: string, targetFolderId: string];
   /** 紧凑目录拖拽选择：需要用户选择放到哪个中间目录 */
-  "compact-drop-select": [sourceId: string, targetNodeId: string, chain: { id: string; name: string }[], position: { x: number; y: number }];
+  "compact-drop-select": [
+    sourceId: string,
+    targetNodeId: string,
+    chain: { id: string; name: string }[],
+    position: { x: number; y: number },
+  ];
 }>();
 
 const isFolder = props.node.type === "folder";
 const isExpanded = () => props.expanded.has(props.node.idCodeFile);
 const isActive = () => props.node.idCodeFile === props.activeId;
 const isDragging = computed(() => props.draggingId === props.node.idCodeFile);
-const isDropTarget = computed(() => isFolder && props.dropTargetId === props.node.idCodeFile);
-const isModified = computed(() => !isFolder && props.modifiedFiles?.has(props.node.idCodeFile));
-const isCompactHidden = computed(() => props.compactHidden?.has(props.node.idCodeFile));
+const isDropTarget = computed(
+  () => isFolder && props.dropTargetId === props.node.idCodeFile,
+);
+const isModified = computed(
+  () => !isFolder && props.modifiedFiles?.has(props.node.idCodeFile),
+);
+const isCompactHidden = computed(() =>
+  props.compactHidden?.has(props.node.idCodeFile),
+);
 
 /** 紧凑路径显示名：如果有合并路径则显示合并路径，否则显示原名 */
-const displayName = computed(() => props.compactLabels?.get(props.node.idCodeFile) || props.node.name);
+const displayName = computed(
+  () => props.compactLabels?.get(props.node.idCodeFile) || props.node.name,
+);
 
 const isEditing = computed(() => props.editingNodeId === props.node.idCodeFile);
 const isPendingNew = computed(
-  () => isEditing.value && (props.node.name === "untitled.txt" || props.node.name === i18n("ide.newFolder") || props.node.name.startsWith("untitled-") || props.node.name.startsWith(i18n("ide.newFolder") + "-")),
+  () =>
+    isEditing.value &&
+    (props.node.name === "untitled.txt" ||
+      props.node.name === i18n("ide.newFolder") ||
+      props.node.name.startsWith("untitled-") ||
+      props.node.name.startsWith(i18n("ide.newFolder") + "-")),
 );
 
 const editInputRef = ref<HTMLInputElement>();
@@ -92,7 +110,10 @@ const handleContextMenu = (e: MouseEvent) => {
 
 // ========== 拖拽 ==========
 const handleDragStart = (e: DragEvent) => {
-  if (isEditing.value) { e.preventDefault(); return; }
+  if (isEditing.value) {
+    e.preventDefault();
+    return;
+  }
   e.dataTransfer!.setData("text/plain", props.node.idCodeFile);
   e.dataTransfer!.effectAllowed = "move";
   emit("drag-start", props.node.idCodeFile);
@@ -126,7 +147,10 @@ const handleDrop = (e: DragEvent) => {
   // 紧凑目录：如果有中间层级，弹出选择菜单
   const chain = props.compactChains?.get(props.node.idCodeFile);
   if (chain && chain.length > 0) {
-    emit("compact-drop-select", sourceId, props.node.idCodeFile, chain, { x: e.clientX, y: e.clientY });
+    emit("compact-drop-select", sourceId, props.node.idCodeFile, chain, {
+      x: e.clientX,
+      y: e.clientY,
+    });
   } else {
     emit("drop", sourceId, props.node.idCodeFile);
   }
@@ -173,10 +197,21 @@ const handleEditBlur = () => {
       @dragleave="handleDragLeave"
       @drop="handleDrop"
     >
-      <span v-if="isFolder" class="tree-arrow" :class="{ expanded: isExpanded() }">&#9654;</span>
-      <span v-if="isFolder" class="tree-icon">{{ isExpanded() ? FOLDER_ICONS.open : FOLDER_ICONS.closed }}</span>
+      <span
+        v-if="isFolder"
+        class="tree-arrow"
+        :class="{ expanded: isExpanded() }"
+        >&#9654;</span
+      >
+      <span v-if="isFolder" class="tree-icon">{{
+        isExpanded() ? FOLDER_ICONS.open : FOLDER_ICONS.closed
+      }}</span>
       <span v-else class="tree-icon">{{ getFileIcon(node.name) }}</span>
-      <span class="tree-name" :class="{ 'compact-name': displayName !== node.name }">{{ displayName }}</span>
+      <span
+        class="tree-name"
+        :class="{ 'compact-name': displayName !== node.name }"
+        >{{ displayName }}</span
+      >
       <!-- 修改标记 -->
       <span v-if="isModified" class="tree-modified-badge">M</span>
     </div>
@@ -193,7 +228,9 @@ const handleEditBlur = () => {
         ref="editInputRef"
         v-model="editValue"
         class="tree-input"
-        :placeholder="isPendingNew ? i18n('ide.inputName') : i18n('ide.renameHint')"
+        :placeholder="
+          isPendingNew ? i18n('ide.inputName') : i18n('ide.renameHint')
+        "
         @keydown="handleEditKeydown"
         @blur="handleEditBlur"
         @click.stop
@@ -225,7 +262,9 @@ const handleEditBlur = () => {
         @drag-start="(id) => emit('drag-start', id)"
         @drag-end="emit('drag-end')"
         @drop="(s, t) => emit('drop', s, t)"
-        @compact-drop-select="(s, t, c, p) => emit('compact-drop-select', s, t, c, p)"
+        @compact-drop-select="
+          (s, t, c, p) => emit('compact-drop-select', s, t, c, p)
+        "
       />
     </template>
   </div>
@@ -245,12 +284,26 @@ export default { name: "FileTreeNode" };
   font-size: 13px;
   user-select: none;
   transition: background 0.1s;
-  &:hover { background: var(--ide-bg-hover); }
-  &.tree-active { background: color-mix(in srgb, var(--ide-accent) 25%, transparent); }
-  &.tree-editing { padding-top: 1px; padding-bottom: 1px; cursor: text; }
-  &.tree-dragging { opacity: 0.4; }
+  &:hover {
+    background: var(--ide-bg-hover);
+  }
+  &.tree-active {
+    background: color-mix(in srgb, var(--ide-accent) 25%, transparent);
+  }
+  &.tree-editing {
+    padding-top: 1px;
+    padding-bottom: 1px;
+    cursor: text;
+  }
+  &.tree-dragging {
+    opacity: 0.4;
+  }
   &.tree-drop-target {
-    background: color-mix(in srgb, var(--ide-accent) 20%, transparent) !important;
+    background: color-mix(
+      in srgb,
+      var(--ide-accent) 20%,
+      transparent
+    ) !important;
     outline: 1px dashed var(--ide-accent);
     outline-offset: -1px;
   }
@@ -261,8 +314,12 @@ export default { name: "FileTreeNode" };
   }
 }
 @keyframes locate-flash {
-  0% { background: color-mix(in srgb, var(--ide-accent) 50%, transparent); }
-  100% { background: transparent; }
+  0% {
+    background: color-mix(in srgb, var(--ide-accent) 50%, transparent);
+  }
+  100% {
+    background: transparent;
+  }
 }
 .tree-arrow {
   display: inline-block;
@@ -272,7 +329,9 @@ export default { name: "FileTreeNode" };
   transition: transform 0.15s;
   color: var(--ide-fg-dim);
   flex-shrink: 0;
-  &.expanded { transform: rotate(90deg); }
+  &.expanded {
+    transform: rotate(90deg);
+  }
 }
 .tree-icon {
   margin-right: 4px;
@@ -315,6 +374,8 @@ export default { name: "FileTreeNode" };
   border: 1px solid var(--ide-accent);
   border-radius: 2px;
   outline: none;
-  &::placeholder { color: var(--ide-fg-dim); }
+  &::placeholder {
+    color: var(--ide-fg-dim);
+  }
 }
 </style>

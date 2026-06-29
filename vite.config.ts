@@ -69,16 +69,16 @@ export default defineConfig((mode) => {
       hmr: true,
       proxy: {
         "/system-config": {
-          target: isGateway?gatewayHost:systemHost,
+          target: isGateway ? gatewayHost : systemHost,
           changeOrigin: true,
-          rewrite: (path: string) =>rewrite(path,"system-config"),
+          rewrite: (path: string) => rewrite(path, "system-config"),
           ws: true,
         },
 
         "/userdb-manage": {
-          target: isGateway?gatewayHost:userDbHost,
+          target: isGateway ? gatewayHost : userDbHost,
           changeOrigin: true,
-          rewrite: (path: string) =>rewrite(path,"userdb-manage"),
+          rewrite: (path: string) => rewrite(path, "userdb-manage"),
           ws: true,
         },
         "/quantity-manage": {
@@ -124,11 +124,13 @@ export default defineConfig((mode) => {
           try {
             execSync(
               "npx vue-tsc -p tsconfig.build.json --noEmitOnError false",
-              { stdio: "pipe", cwd: process.cwd() }
+              { stdio: "pipe", cwd: process.cwd() },
             );
             console.log("[dts] Type declarations generated successfully.");
           } catch {
-            console.log("[dts] Type declarations generated (with type warnings).");
+            console.log(
+              "[dts] Type declarations generated (with type warnings).",
+            );
           }
 
           // 后备修复：如果 aliases 选项未完全生效，手动替换 @/ 为相对路径
@@ -142,7 +144,9 @@ export default defineConfig((mode) => {
             if (!content.includes("@/")) return;
 
             // 计算从当前文件到 types 根目录的相对路径
-            const relToRoot = path.relative(path.dirname(filePath), typesDir).replace(/\\/g, "/");
+            const relToRoot = path
+              .relative(path.dirname(filePath), typesDir)
+              .replace(/\\/g, "/");
             const prefix = relToRoot ? relToRoot + "/" : "./";
 
             // 替换 "@/xxx" 为 "./xxx" 或 "../xxx"

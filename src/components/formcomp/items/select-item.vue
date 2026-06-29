@@ -14,7 +14,7 @@
       v-bind="prepsFilter(field.preps)"
       :show-arrow="true"
       :remote-method="remoteMethod"
-      v-on="getDynamicEvents(props, itemAction,formData)"
+      v-on="getDynamicEvents(props, itemAction, formData)"
       v-model="formData[field.fieldName]"
     >
       <template v-if="field.preps?.multiple" #header>
@@ -185,7 +185,6 @@ onMounted(() => {
     initCompCallEvent(props, emits, formData);
   });
 });
-
 </script>
 <style lang="scss" scoped>
 .el-select {

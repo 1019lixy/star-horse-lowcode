@@ -1,11 +1,19 @@
 <script setup lang="ts" name="StarHorseDialog">
-import {computed, onMounted, PropType, provide, reactive, ref, watch,} from "vue";
-import {DialogProps} from "@/components/types/DialogProps";
-import {i18n} from "@/lang";
-import {UserFuncInfo} from "@/components/types/PageFieldInfo";
+import {
+  computed,
+  onMounted,
+  PropType,
+  provide,
+  reactive,
+  ref,
+  watch,
+} from "vue";
+import { DialogProps } from "@/components/types/DialogProps";
+import { i18n } from "@/lang";
+import { UserFuncInfo } from "@/components/types/PageFieldInfo";
 
-import {compKey} from "@/api/system";
-import {isMobile} from "@/api/device";
+import { compKey } from "@/api/system";
+import { isMobile } from "@/api/device";
 
 const emits = defineEmits([
   "merge",
@@ -16,28 +24,28 @@ const emits = defineEmits([
   "minimize",
 ]);
 const props = defineProps({
-  dialogVisible: {type: Boolean, default: false},
-  dialogProps: {type: Object as PropType<DialogProps>, default: {}},
-  isShowReset: {type: Boolean, default: true},
-  isShowSave: {type: Boolean, default: false},
-  isShowBtnContinue: {type: Boolean, default: false},
-  draggable: {type: Boolean, default: true},
-  boxHeight: {type: String, default: "auto"},
-  boxWidth: {type: String, default: "60%"},
-  isBatch: {type: Boolean, default: false},
-  fullScreen: {type: Boolean, default: false},
-  hideFullScreenIcon: {type: Boolean, default: false},
-  hideMinimizeIcon: {type: Boolean, default: false},
+  dialogVisible: { type: Boolean, default: false },
+  dialogProps: { type: Object as PropType<DialogProps>, default: {} },
+  isShowReset: { type: Boolean, default: true },
+  isShowSave: { type: Boolean, default: false },
+  isShowBtnContinue: { type: Boolean, default: false },
+  draggable: { type: Boolean, default: true },
+  boxHeight: { type: String, default: "auto" },
+  boxWidth: { type: String, default: "60%" },
+  isBatch: { type: Boolean, default: false },
+  fullScreen: { type: Boolean, default: false },
+  hideFullScreenIcon: { type: Boolean, default: false },
+  hideMinimizeIcon: { type: Boolean, default: false },
   //自定义提交
-  selfFunc: {type: Boolean, default: false},
+  selfFunc: { type: Boolean, default: false },
   //自定义关闭
-  selfClose: {type: Boolean, default: false},
-  btnText: {type: String},
-  userBtn: {type: Array<UserFuncInfo>, default: []},
-  btnTextContinue: {type: String, default: i18n("common.submitAndContinue")},
-  title: {type: String, default: ""},
-  source: {type: Number, default: 1},
-  compSize: {type: String, default: "default"},
+  selfClose: { type: Boolean, default: false },
+  btnText: { type: String },
+  userBtn: { type: Array<UserFuncInfo>, default: [] },
+  btnTextContinue: { type: String, default: i18n("common.submitAndContinue") },
+  title: { type: String, default: "" },
+  source: { type: Number, default: 1 },
+  compSize: { type: String, default: "default" },
 });
 let windowsType = ref<boolean>(false);
 const _compKey = compKey;
@@ -126,22 +134,22 @@ const operation = (funcName: any, type: string) => {
   console.log(clickFunction);
 };
 watch(
-    () => props.dialogVisible,
-    (val: boolean) => {
-      windowsType.value = val;
-      if (val) {
-        // 打开时重置最小化状态
-        isMinimized.value = false;
-        // 手机模式默认最大化
-        if (isMobile) {
-          isFullScreen.value = true;
-        }
+  () => props.dialogVisible,
+  (val: boolean) => {
+    windowsType.value = val;
+    if (val) {
+      // 打开时重置最小化状态
+      isMinimized.value = false;
+      // 手机模式默认最大化
+      if (isMobile) {
+        isFullScreen.value = true;
       }
-    },
-    {
-      immediate: true,
-      deep: true,
-    },
+    }
+  },
+  {
+    immediate: true,
+    deep: true,
+  },
 );
 </script>
 <template>
@@ -153,218 +161,236 @@ watch(
       @click="restoreFromMinimize"
       :title="i18n('dialog.restore')"
     >
-      <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" class="minimized-icon">
-        <path d="M3 3h10v10H3V3zm1 1v8h8V4H4z"/>
-        <path d="M6 6h4v4H6V6z" opacity="0.5"/>
+      <svg
+        viewBox="0 0 16 16"
+        width="16"
+        height="16"
+        fill="currentColor"
+        class="minimized-icon"
+      >
+        <path d="M3 3h10v10H3V3zm1 1v8h8V4H4z" />
+        <path d="M6 6h4v4H6V6z" opacity="0.5" />
       </svg>
       <span class="minimized-title">{{
         title ||
-        (source == 3
-          ? i18n("dialog.viewTitle")
-          : i18n("dialog.editTitle"))
+        (source == 3 ? i18n("dialog.viewTitle") : i18n("dialog.editTitle"))
       }}</span>
     </div>
 
     <div class="di animated animate__fadeIn" v-show="!isMinimized">
       <el-dialog
-          :append-to-body="false"
-          :center="false"
-          :destroy-on-close="true"
-          :close-on-click-modal="false"
-          :close-on-press-escape="false"
-          :lock-scroll="true"
-          class="dialog-settings"
-          :fullscreen="isFullScreen||isMobile"
-          :show-close="false"
-          :draggable="draggable && !isFullScreen && !isMobile"
-          :align-center="true"
-          v-model="windowsType"
-          @close="beforeClose"
-          @open="open"
-          :width="boxWidth"
-          :style="dialogStyle"
+        :append-to-body="false"
+        :center="false"
+        :destroy-on-close="true"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+        :lock-scroll="true"
+        class="dialog-settings"
+        :fullscreen="isFullScreen || isMobile"
+        :show-close="false"
+        :draggable="draggable && !isFullScreen && !isMobile"
+        :align-center="true"
+        v-model="windowsType"
+        @close="beforeClose"
+        @open="open"
+        :width="boxWidth"
+        :style="dialogStyle"
       >
         <template #header="{ close }">
           <h3 @dblclick="fullScreen">
             {{
               title ||
               (source == 3
-                  ? i18n("dialog.viewTitle")
-                  : i18n("dialog.editTitle"))
+                ? i18n("dialog.viewTitle")
+                : i18n("dialog.editTitle"))
             }}
           </h3>
           <div class="my-header">
             <template v-if="!isMobile">
               <el-button
-                  style="
+                style="
                   background: var(--star-horse-style);
                   color: var(--star-horse-white);
                 "
-                  :size="compSize"
-                  @click="minimize"
-                  link
-                  v-if="!hideMinimizeIcon"
-                  :title="i18n('dialog.minimize')"
+                :size="compSize"
+                @click="minimize"
+                link
+                v-if="!hideMinimizeIcon"
+                :title="i18n('dialog.minimize')"
               >
-                <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" style="cursor: pointer;">
-                  <path d="M2 8h12" stroke="currentColor" stroke-width="2" fill="none"/>
+                <svg
+                  viewBox="0 0 16 16"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  style="cursor: pointer"
+                >
+                  <path
+                    d="M2 8h12"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    fill="none"
+                  />
                 </svg>
               </el-button>
               <template v-if="!hideFullScreenIcon">
                 <el-button
-                    style="
-                  background: var(--star-horse-style);
-                  color: var(--star-horse-white);
-                "
-                    :size="compSize"
-                    @click="fullScreen"
-                    link
-                    v-if="!!isFullScreen && draggable"
-                    :title="i18n('dialog.resize')"
+                  style="
+                    background: var(--star-horse-style);
+                    color: var(--star-horse-white);
+                  "
+                  :size="compSize"
+                  @click="fullScreen"
+                  link
+                  v-if="!!isFullScreen && draggable"
+                  :title="i18n('dialog.resize')"
                 >
                   <star-horse-icon
-                      icon-class="fullscreen-shrink"
-                      color="var(--star-horse-white)"
-                      cursor="pointer"
+                    icon-class="fullscreen-shrink"
+                    color="var(--star-horse-white)"
+                    cursor="pointer"
                   />
                 </el-button>
                 <el-button
-                    style="
-                  background: var(--star-horse-style);
-                  color: var(--star-horse-white);
-                "
-                    :size="compSize"
-                    @click="fullScreen"
-                    link
-                    v-if="!isFullScreen && draggable"
-                    :title="i18n('dialog.fullScreen')"
+                  style="
+                    background: var(--star-horse-style);
+                    color: var(--star-horse-white);
+                  "
+                  :size="compSize"
+                  @click="fullScreen"
+                  link
+                  v-if="!isFullScreen && draggable"
+                  :title="i18n('dialog.fullScreen')"
                 >
                   <star-horse-icon
-                      icon-class="fullscreen-expand"
-                      color="var(--star-horse-white)"
-                      cursor="pointer"
+                    icon-class="fullscreen-expand"
+                    color="var(--star-horse-white)"
+                    cursor="pointer"
                   />
                 </el-button>
               </template>
             </template>
             <el-button
-                style="
+              style="
                 background: var(--star-horse-style);
                 color: var(--star-horse-white);
               "
-                :size="compSize"
-                @click="close"
-                link
-                :title="i18n('dialog.close')"
+              :size="compSize"
+              @click="close"
+              link
+              :title="i18n('dialog.close')"
             >
               <star-horse-icon
-                  icon-class="close"
-                  color="var(--star-horse-white)"
-                  cursor="pointer"
+                icon-class="close"
+                color="var(--star-horse-white)"
+                cursor="pointer"
               />
             </el-button>
           </div>
         </template>
         <slot name="header"></slot>
-        <div class="shdialog" :class="{'overflow-hidden':source==3}">
+        <div class="shdialog" :class="{ 'overflow-hidden': source == 3 }">
           <div class="dialog-body">
             <slot></slot>
             <div v-if="false" class="w-full h-[80px]"></div>
           </div>
         </div>
         <template #footer>
-          <span class="dialog-footer" :class="{'app-btn': false}" v-if="source != 3">
+          <span
+            class="dialog-footer"
+            :class="{ 'app-btn': false }"
+            v-if="source != 3"
+          >
             <slot name="extend"></slot>
             <el-button
-                @click="operation('merge', 'close')"
-                style="
+              @click="operation('merge', 'close')"
+              style="
                 background: var(--star-horse-style);
                 color: var(--star-horse-white);
               "
-                :size="compSize"
+              :size="compSize"
             >
               <star-horse-icon
-                  icon-class="save"
-                  cursor="pointer"
-                  style="color: var(--star-horse-white)"
+                icon-class="save"
+                cursor="pointer"
+                style="color: var(--star-horse-white)"
               />
               {{ btnText ?? i18n("dialog.submit") }}
             </el-button>
             <el-button
-                @click="operation('merge', 'continue')"
-                style="
+              @click="operation('merge', 'continue')"
+              style="
                 background: var(--star-horse-style);
                 color: var(--star-horse-white);
               "
-
-                :size="compSize"
-                v-if="isShowBtnContinue"
+              :size="compSize"
+              v-if="isShowBtnContinue"
             >
               <star-horse-icon
-                  icon-class="save_continue"
-                  cursor="pointer"
-                  style="color: var(--star-horse-white)"
+                icon-class="save_continue"
+                cursor="pointer"
+                style="color: var(--star-horse-white)"
               />
               {{ i18n("dialog.submitContinue") }}</el-button
             >
             <el-button
-                @click="operation('mergeDraft', 'close')"
-                :size="compSize"
-                link
-                style="
+              @click="operation('mergeDraft', 'close')"
+              :size="compSize"
+              link
+              style="
                 background: var(--star-horse-style);
                 color: var(--star-horse-white);
               "
-                v-if="isShowSave"
+              v-if="isShowSave"
             >
-              <star-horse-icon icon-class="short_save" cursor="pointer"/>{{
+              <star-horse-icon icon-class="short_save" cursor="pointer" />{{
                 i18n("dialog.save")
               }}</el-button
             >
             <el-button
-                @click="operation('mergeDraft', 'continue')"
-                :size="compSize"
-                link
-                style="
+              @click="operation('mergeDraft', 'continue')"
+              :size="compSize"
+              link
+              style="
                 background: var(--star-horse-style);
                 color: var(--star-horse-white);
               "
-                v-if="isShowSave && isShowBtnContinue"
+              v-if="isShowSave && isShowBtnContinue"
             >
-              <star-horse-icon icon-class="save" cursor="pointer"/>{{
+              <star-horse-icon icon-class="save" cursor="pointer" />{{
                 i18n("dialog.saveContinue")
               }}</el-button
             >
             <el-button
-                v-for="item in userBtn"
-                :key="_compKey(item, item.authority)"
-                @click="callFunc(item.funcName)"
-                :disabled="item.disabled ?? false"
-                :style="{
+              v-for="item in userBtn"
+              :key="_compKey(item, item.authority)"
+              @click="callFunc(item.funcName)"
+              :disabled="item.disabled ?? false"
+              :style="{
                 background: item.disabled
                   ? 'var(--star-horse-disable)'
                   : 'var(--star-horse-style)',
                 color: 'var(--star-horse-white)',
               }"
-                :size="compSize"
+              :size="compSize"
             >
               <star-horse-icon
-                  :icon-class="item.icon"
-                  cursor="pointer"
-                  style="color: var(--star-horse-white)"
+                :icon-class="item.icon"
+                cursor="pointer"
+                style="color: var(--star-horse-white)"
               />
               {{ item.btnName }}
             </el-button>
             <el-button
-                @click="operation('resetForm', 'reset')"
-                :size="compSize"
-                link
-                v-if="isShowReset"
+              @click="operation('resetForm', 'reset')"
+              :size="compSize"
+              link
+              v-if="isShowReset"
             >
               <star-horse-icon
-                  icon-class="undo"
-                  cursor="pointer"
-                  style="color: var(--star-horse-style)"
+                icon-class="undo"
+                cursor="pointer"
+                style="color: var(--star-horse-style)"
               />
               {{ i18n("dialog.reset") }}</el-button
             >

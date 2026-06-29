@@ -77,8 +77,8 @@ export const useButtonPermissionStore = defineStore("buttonPermission", () => {
         });
         if (permissons && permissons.length > 0) {
           addPermission(menuId, permissons);
-        } else {
-          warning(i18n("common.noPagePermission"));
+        // } else {
+        //   warning(i18n("common.noPagePermission"));
         }
       }
       const permission: any = {};

@@ -35,7 +35,7 @@ import {
 } from "thememirror";
 import StarHorseSidebar from "@/components/system/StarHorseSidebar.vue";
 import { i18n } from "@/lang";
-import {ArrowDown} from "@element-plus/icons-vue";
+import { ArrowDown } from "@element-plus/icons-vue";
 
 /**
  * ToolbarItem - 外部配置的工具栏按钮
@@ -79,10 +79,10 @@ const props = defineProps({
 
 // 分离用户配置的左右按钮
 const userLeftItems = computed(() =>
-  (props.toolbarItems || []).filter((i) => i.position !== "right")
+  (props.toolbarItems || []).filter((i) => i.position !== "right"),
 );
 const userRightItems = computed(() =>
-  (props.toolbarItems || []).filter((i) => i.position === "right")
+  (props.toolbarItems || []).filter((i) => i.position === "right"),
 );
 
 // Editor settings state
@@ -141,7 +141,9 @@ const codemirror = ref();
 
 // 当前选中的语言/主题标签（工具栏显示用）
 const currentLangLabel = computed(() => {
-  const found = languages.value.find((l) => l.value === (props.lang || "javascript"));
+  const found = languages.value.find(
+    (l) => l.value === (props.lang || "javascript"),
+  );
   return found?.name || "JavaScript";
 });
 const currentThemeLabel = computed(() => {
@@ -178,15 +180,39 @@ const jsHint = (context: CompletionContext) => {
   return {
     from: word.from,
     options: [
-      { label: "currentField", detail: i18n("item.currentProperty"), apply: "currentField" },
-      { label: "formInstance", detail: i18n("item.formInstance"), apply: "formInstance" },
+      {
+        label: "currentField",
+        detail: i18n("item.currentProperty"),
+        apply: "currentField",
+      },
+      {
+        label: "formInstance",
+        detail: i18n("item.formInstance"),
+        apply: "formInstance",
+      },
       { label: "formData", detail: i18n("item.formData"), apply: "formData" },
-      { label: "formFields", detail: i18n("item.formFields"), apply: "formFields" },
+      {
+        label: "formFields",
+        detail: i18n("item.formFields"),
+        apply: "formFields",
+      },
       { label: "userInfo", detail: i18n("item.userInfo"), apply: "userInfo" },
-      { label: "postRequest", detail: "PostRequest", apply: "postRequest(url,params)" },
+      {
+        label: "postRequest",
+        detail: "PostRequest",
+        apply: "postRequest(url,params)",
+      },
       { label: "getRequest", detail: "GetRequest", apply: "getRequest(url)" },
-      { label: "download", detail: i18n("item.download"), apply: "download(url)" },
-      { label: "upload", detail: i18n("item.upload"), apply: "upload(url,params)" },
+      {
+        label: "download",
+        detail: i18n("item.download"),
+        apply: "download(url)",
+      },
+      {
+        label: "upload",
+        detail: i18n("item.upload"),
+        apply: "upload(url,params)",
+      },
     ],
   };
 };
@@ -313,7 +339,11 @@ defineExpose({
           <!-- dropdown 类型 -->
           <el-dropdown trigger="click" v-if="item.type === 'dropdown'">
             <span class="toolbar-btn">
-              <star-horse-icon v-if="item.icon" :icon-class="item.icon" size="15px" />
+              <star-horse-icon
+                v-if="item.icon"
+                :icon-class="item.icon"
+                size="15px"
+              />
               <span v-if="item.label">{{ item.label }}</span>
               <el-icon><arrow-down /></el-icon>
             </span>
@@ -332,7 +362,11 @@ defineExpose({
           <!-- button 类型 -->
           <el-tooltip v-else :content="item.label || ''" placement="bottom">
             <span class="toolbar-btn" @click="item.handler">
-              <star-horse-icon v-if="item.icon" :icon-class="item.icon" size="15px" />
+              <star-horse-icon
+                v-if="item.icon"
+                :icon-class="item.icon"
+                size="15px"
+              />
               <span v-if="item.label && !item.icon">{{ item.label }}</span>
             </span>
           </el-tooltip>
@@ -345,7 +379,11 @@ defineExpose({
         <template v-for="item in userRightItems" :key="item.id">
           <el-dropdown trigger="click" v-if="item.type === 'dropdown'">
             <span class="toolbar-btn">
-              <star-horse-icon v-if="item.icon" :icon-class="item.icon" size="15px" />
+              <star-horse-icon
+                v-if="item.icon"
+                :icon-class="item.icon"
+                size="15px"
+              />
               <span v-if="item.label">{{ item.label }}</span>
               <el-icon><arrow-down /></el-icon>
             </span>
@@ -363,7 +401,11 @@ defineExpose({
           </el-dropdown>
           <el-tooltip v-else :content="item.label || ''" placement="bottom">
             <span class="toolbar-btn" @click="item.handler">
-              <star-horse-icon v-if="item.icon" :icon-class="item.icon" size="15px" />
+              <star-horse-icon
+                v-if="item.icon"
+                :icon-class="item.icon"
+                size="15px"
+              />
               <span v-if="item.label && !item.icon">{{ item.label }}</span>
             </span>
           </el-tooltip>
@@ -417,21 +459,41 @@ defineExpose({
           </span>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item @click="changeFontSize(12)">12px</el-dropdown-item>
-              <el-dropdown-item @click="changeFontSize(14)">14px</el-dropdown-item>
-              <el-dropdown-item @click="changeFontSize(16)">16px</el-dropdown-item>
-              <el-dropdown-item @click="changeFontSize(17)">17px</el-dropdown-item>
-              <el-dropdown-item @click="changeFontSize(18)">18px</el-dropdown-item>
-              <el-dropdown-item @click="changeFontSize(20)">20px</el-dropdown-item>
-              <el-dropdown-item @click="changeFontSize(24)">24px</el-dropdown-item>
+              <el-dropdown-item @click="changeFontSize(12)"
+                >12px</el-dropdown-item
+              >
+              <el-dropdown-item @click="changeFontSize(14)"
+                >14px</el-dropdown-item
+              >
+              <el-dropdown-item @click="changeFontSize(16)"
+                >16px</el-dropdown-item
+              >
+              <el-dropdown-item @click="changeFontSize(17)"
+                >17px</el-dropdown-item
+              >
+              <el-dropdown-item @click="changeFontSize(18)"
+                >18px</el-dropdown-item
+              >
+              <el-dropdown-item @click="changeFontSize(20)"
+                >20px</el-dropdown-item
+              >
+              <el-dropdown-item @click="changeFontSize(24)"
+                >24px</el-dropdown-item
+              >
             </el-dropdown-menu>
           </template>
         </el-dropdown>
 
         <!-- Minimap 开关（默认项） -->
-        <el-tooltip :content="showMinimapEnabled ? 'Hide Minimap' : 'Show Minimap'" placement="bottom">
+        <el-tooltip
+          :content="showMinimapEnabled ? 'Hide Minimap' : 'Show Minimap'"
+          placement="bottom"
+        >
           <span class="toolbar-btn" @click="toggleMinimap">
-            <star-horse-icon :icon-class="showMinimapEnabled ? 'eye-open' : 'eye-close'" size="15px" />
+            <star-horse-icon
+              :icon-class="showMinimapEnabled ? 'eye-open' : 'eye-close'"
+              size="15px"
+            />
           </span>
         </el-tooltip>
 

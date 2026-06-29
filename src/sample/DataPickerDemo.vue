@@ -1,146 +1,157 @@
 <template>
   <div class="h-[30px] my-5">
-    <cascade-item :formData="formData" :field="
-{
-     label: '验证',
-      fieldName: 'testValid',
-      preps: {
-        options:cascadeItem,
-        props:{
-          label:'name',
-          value:'code'
-
-        }
-      }
-}
-"/>
+    <cascade-item
+      :formData="formData"
+      :field="{
+        label: '验证',
+        fieldName: 'testValid',
+        preps: {
+          options: cascadeItem,
+          props: {
+            label: 'name',
+            value: 'code',
+          },
+        },
+      }"
+    />
   </div>
   {{ test }}
   <StarHorseDataSelector
-      v-model="test"
-      :data="datas"
-      :multiple="true"
-      @change="(data)=>console.log(data)"
-      :checkStrictly="false"
+    v-model="test"
+    :data="datas"
+    :multiple="true"
+    @change="(data) => console.log(data)"
+    :checkStrictly="false"
   />
   <div class="h-[30px] my-5">
     <data-picker-item
-        :field="{
-      label: '测试',
-      fieldName: 'test',
-      preps: {
-      dataUrl: '/system-config/system/dictinfoType/pageList',
-      displayName: 'dictTypeName',
-      multiple:true,
-      displayValue: 'dictTypeCode',
-      pageSize: 100,
-      colspan: 16,
-  }}"
-        :formData="formData"
+      :field="{
+        label: '测试',
+        fieldName: 'test',
+        preps: {
+          dataUrl: '/system-config/system/dictinfoType/pageList',
+          displayName: 'dictTypeName',
+          multiple: true,
+          displayValue: 'dictTypeCode',
+          pageSize: 100,
+          colspan: 16,
+        },
+      }"
+      :formData="formData"
     />
   </div>
   <div class="h-[30px] my-5">
     <data-picker-item
-        :field="{
-      label: '测试2',
-      fieldName: 'test2',
-      preps: {
-        datas,
-        collapseTags: true,
-        collapseTagsTooltip: true,
-        multiple: true,
-        disabled: false,
-        displayName: 'name',
-        displayValue: 'value',
-      },
-    }"
-        :formData="formData"
+      :field="{
+        label: '测试2',
+        fieldName: 'test2',
+        preps: {
+          datas,
+          collapseTags: true,
+          collapseTagsTooltip: true,
+          multiple: true,
+          disabled: false,
+          displayName: 'name',
+          displayValue: 'value',
+        },
+      }"
+      :formData="formData"
     />
   </div>
-  <star-horse-form
-      ref="formRef"
-      labelPosition="top"
-      :fieldList="formFields"
-  />
+  <star-horse-form ref="formRef" labelPosition="top" :fieldList="formFields" />
 </template>
 
 <script lang="ts" setup>
 // import StarHorseJsonEditor from '@/components/comp/StarHorseJsonEditor.vue';
 import StarHorseDataSelector from "@/components/comp/StarHorseDataSelector.vue";
-import {reactive} from "vue";
+import { reactive, ref } from "vue";
 import DataPickerItem from "@/components/formcomp/items/datapicker-item.vue";
 import CascadeItem from "@/components/formcomp/items/cascade-item.vue";
 
-
 const formFields = reactive({
-  "fieldList": [{
-    "label": "拒绝原因",
-    "fieldName": "reason",
-    "type": "textarea",
-    "required": true,
-    "formVisible": true,
-    "preps": {
-      "rows": 3,
-      "placeholder": "请输入拒绝原因",
-      "maxlength": 200,
-      "showWordLimit": true,
-      "clearable": true,
-      "readonly": false,
-      "starHorseFieldSource": 1
-    },
-    "actions": {},
-    "id": "shd43f93ed-a9fa-4b76-911f-eb309d2345aa"
-  }, {
-    "label": "拒绝后流向",
-    "fieldName": "rejectType",
-    "type": "radio",
-    "required": true,
-    "formVisible": true,
-    "defaultValue": "back",
-    "preps": {
-      "dataRelation": {
-        "actionName": "change",
-        "relationDetails": [{
-          "matchType": "eq",
-          "controlCondition": "eqVisible",
-          "relationFields": ["targetNodeId"],
-          "matchFieldValue": ["return"]
-        }]
+  fieldList: [
+    {
+      label: "拒绝原因",
+      fieldName: "reason",
+      type: "textarea",
+      required: true,
+      formVisible: true,
+      preps: {
+        rows: 3,
+        placeholder: "请输入拒绝原因",
+        maxlength: 200,
+        showWordLimit: true,
+        clearable: true,
+        readonly: false,
+        starHorseFieldSource: 1,
       },
-      "values": [{
-        "name": "驳回到发起人（流程结束）",
-        "value": "back",
-        "helpMsg": "驳回到发起人（流程结束）"
-      }, {"name": "退回到指定节点（流程继续）", "value": "return", "helpMsg": "退回到指定节点（流程继续）"}],
-      "clearable": true,
-      "readonly": false,
-      "starHorseFieldSource": 1
+      actions: {},
+      id: "shd43f93ed-a9fa-4b76-911f-eb309d2345aa",
     },
-    "actions": {},
-    "id": "shec687e43-1e68-46a0-96d8-9b57aac0fe66"
-  }, {
-    "label": "退回节点",
-    "fieldName": "targetNodeId",
-    "type": "select",
-    "required": true,
-    "formVisible": false,
-    "preps": {
-      "values": [{"name": "发起人", "value": "sh9072d5fa-da03-4aaa-a22a-246e2919becf"}],
-      "placeholder": "请选择退回节点（仅退回时必填）"
-    }
-  }]
+    {
+      label: "拒绝后流向",
+      fieldName: "rejectType",
+      type: "radio",
+      required: true,
+      formVisible: true,
+      defaultValue: "back",
+      preps: {
+        dataRelation: {
+          actionName: "change",
+          relationDetails: [
+            {
+              matchType: "eq",
+              controlCondition: "eqVisible",
+              relationFields: ["targetNodeId"],
+              matchFieldValue: ["return"],
+            },
+          ],
+        },
+        values: [
+          {
+            name: "驳回到发起人（流程结束）",
+            value: "back",
+            helpMsg: "驳回到发起人（流程结束）",
+          },
+          {
+            name: "退回到指定节点（流程继续）",
+            value: "return",
+            helpMsg: "退回到指定节点（流程继续）",
+          },
+        ],
+        clearable: true,
+        readonly: false,
+        starHorseFieldSource: 1,
+      },
+      actions: {},
+      id: "shec687e43-1e68-46a0-96d8-9b57aac0fe66",
+    },
+    {
+      label: "退回节点",
+      fieldName: "targetNodeId",
+      type: "select",
+      required: true,
+      formVisible: false,
+      preps: {
+        values: [
+          { name: "发起人", value: "sh9072d5fa-da03-4aaa-a22a-246e2919becf" },
+        ],
+        placeholder: "请选择退回节点（仅退回时必填）",
+      },
+    },
+  ],
 });
 const formData = ref<any>({
   test: "121",
 });
 const test = ref("121");
-const cascadeItem = ref([{
-  name: "test1",
-  code: "123",
-  children: [
-    {name: "test11", code: "234", children: []}
-  ]
-}])
+const cascadeItem = ref([
+  {
+    name: "test1",
+    code: "123",
+    children: [{ name: "test11", code: "234", children: [] }],
+  },
+]);
 const datas = ref([
   {
     name: "测试1",

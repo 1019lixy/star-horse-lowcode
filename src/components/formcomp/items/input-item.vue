@@ -1,47 +1,53 @@
 <template>
   <EditDataDialog
-      v-model="dialogInputVisible"
-      :disabled="checkIsDisabled(props)"
-      :initial-content="String(formData[field.fieldName])"
-      @confirm="handleContentConfirm"
+    v-model="dialogInputVisible"
+    :disabled="checkIsDisabled(props)"
+    :initial-content="String(formData[field.fieldName])"
+    @confirm="handleContentConfirm"
   />
   <starhorse-form-item
-      :showFormItem="showFormItem"
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :field="field"
-      :parentField="parentField"
+    :showFormItem="showFormItem"
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :bareFlag="bareFlag"
+    :field="field"
+    :parentField="parentField"
   >
     <el-input
-        :disabled="checkIsDisabled(props)"
-        v-bind="prepsFilter(field.preps)"
-        type="text"
-        ref="inputItemRef"
-        :fid="field.fieldName"
-        class="input-with-select"
-        v-on="getDynamicEvents(props, itemAction,formData)"
-        @dblclick.stop="editContent"
-        v-model="normalData"
+      :disabled="checkIsDisabled(props)"
+      v-bind="prepsFilter(field.preps)"
+      type="text"
+      ref="inputItemRef"
+      :fid="field.fieldName"
+      class="input-with-select"
+      v-on="getDynamicEvents(props, itemAction, formData)"
+      @dblclick.stop="editContent"
+      v-model="normalData"
     >
       <template #prefix>
-        <star-horse-icon :icon-class="field.preps?.prefixIcon" v-if="field.preps?.prefixIcon"/>
+        <star-horse-icon
+          :icon-class="field.preps?.prefixIcon"
+          v-if="field.preps?.prefixIcon"
+        />
         <span v-if="field.preps?.prefix">{{ field.preps?.prefix }}</span>
       </template>
       <template #suffix>
-        <star-horse-icon :icon-class="field.preps?.suffixIcon" v-if="field.preps?.suffixIcon"/>
+        <star-horse-icon
+          :icon-class="field.preps?.suffixIcon"
+          v-if="field.preps?.suffixIcon"
+        />
         <span v-if="field.preps?.suffix">{{ field.preps?.suffix }}</span>
       </template>
       <template #prepend v-if="field.preps?.prependText">
         {{ field.preps?.prependText }}
       </template>
-      <template #prepend v-if="prependList?.length>0">
-        <el-select v-model="formData[preName]" style="width: 115px !important;">
+      <template #prepend v-if="prependList?.length > 0">
+        <el-select v-model="formData[preName]" style="width: 115px !important">
           <el-option
-              v-for="item in prependList"
-              :key="item.value"
-              :label="item.name"
-              :value="item.value"
+            v-for="item in prependList"
+            :key="item.value"
+            :label="item.name"
+            :value="item.value"
           />
         </el-select>
       </template>
@@ -50,19 +56,19 @@
       </template>
       <template #append v-if="field.preps?.appendAction">
         <star-horse-icon
-            :title="field.preps?.appendAction?.actionTitle"
-            style="cursor: pointer"
-            :icon-class="field.preps?.appendAction?.icon || 'document'"
-            @click="field.preps?.appendAction?.actions?.(formData)"
+          :title="field.preps?.appendAction?.actionTitle"
+          style="cursor: pointer"
+          :icon-class="field.preps?.appendAction?.icon || 'document'"
+          @click="field.preps?.appendAction?.actions?.(formData)"
         />
       </template>
-      <template #append v-if="appendList?.length>0">
-        <el-select v-model="formData[appName]" style="width: 115px !important;">
+      <template #append v-if="appendList?.length > 0">
+        <el-select v-model="formData[appName]" style="width: 115px !important">
           <el-option
-              v-for="item in appendList"
-              :key="item.value"
-              :label="item.name"
-              :value="item.value"
+            v-for="item in appendList"
+            :key="item.value"
+            :label="item.name"
+            :value="item.value"
           />
         </el-select>
       </template>
@@ -70,7 +76,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {getDynamicEvents} from "@/api/system";
+import { getDynamicEvents } from "@/api/system";
 import {
   allAction,
   checkIsDisabled,
@@ -78,10 +84,10 @@ import {
   prepsFilter,
   setupFormulaWatchers,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
-import {usePrefixSuffix} from "@/components/formcomp/utils/prefixSuffixUtils";
-import {ItemPreps} from "@/components/types/ItemPreps";
-import {nextTick, onBeforeUnmount, onMounted, ref, watch} from "vue";
-import {StarHorseIcon} from "@/components/comp";
+import { usePrefixSuffix } from "@/components/formcomp/utils/prefixSuffixUtils";
+import { ItemPreps } from "@/components/types/ItemPreps";
+import { nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { StarHorseIcon } from "@/components/comp";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
 
 defineOptions({
@@ -120,7 +126,11 @@ const handleContentConfirm = (newContent: string) => {
 };
 
 const editContent = () => {
-  if (!props.field.preps?.readonly && !props.field.preps?.disabled && !props.field.disabled) {
+  if (
+    !props.field.preps?.readonly &&
+    !props.field.preps?.disabled &&
+    !props.field.disabled
+  ) {
     dialogInputVisible.value = true;
   }
 };
@@ -133,13 +143,18 @@ onMounted(() => {
     initCompCallEvent(props, emits, formData);
     mergeData(true);
     // 初始化公式计算监听
-    formulaStops = setupFormulaWatchers(props.field, props.formInfo, formData, watch);
+    formulaStops = setupFormulaWatchers(
+      props.field,
+      props.formInfo,
+      formData,
+      watch,
+    );
   });
   initEvent();
 });
 
 onBeforeUnmount(() => {
-  formulaStops.forEach(stop => stop());
+  formulaStops.forEach((stop) => stop());
   formulaStops = [];
 });
 

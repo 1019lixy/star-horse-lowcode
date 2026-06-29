@@ -1,9 +1,8 @@
-
 import { i18n } from "@/lang";
-import {error} from "@/utils/message";
-import {loadData, postRequest} from "@/api/star_horse_apis";
-import {ApiUrls,SearchFields,PageFieldInfo} from "@/components/types";
-import {apiInstance, closeLoad, load} from "@/api/star_horse_utils";
+import { error } from "@/utils/message";
+import { loadData, postRequest } from "@/api/star_horse_apis";
+import { ApiUrls, SearchFields, PageFieldInfo } from "@/components/types";
+import { apiInstance, closeLoad, load } from "@/api/star_horse_utils";
 const serviceName = "quantity-manage";
 export interface FormDataProp {
   /**
@@ -77,7 +76,7 @@ export const loadDynamicFormData = async (
   let searchFormData: SearchFields | any = {};
   let tableFieldList: any = { fieldList: [] };
   let processDefineNodes: Array<any> = [];
-  let bindWorkFlowId="";
+  let bindWorkFlowId = "";
   try {
     if (!formId) {
       return Promise.reject();

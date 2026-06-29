@@ -109,7 +109,7 @@ export const IDE_THEMES: IdeTheme[] = [
 
 /** 根据主题值获取主题对象 */
 export const getThemeByValue = (value: string): IdeTheme =>
-  IDE_THEMES.find(t => t.value === value) || IDE_THEMES[0];
+  IDE_THEMES.find((t) => t.value === value) || IDE_THEMES[0];
 
 /** 将主题CSS变量应用到DOM元素 */
 export const applyThemeVars = (el: HTMLElement, themeValue: string) => {

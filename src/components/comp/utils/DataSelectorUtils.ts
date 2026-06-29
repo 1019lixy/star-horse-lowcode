@@ -76,7 +76,11 @@ export const findNodesInTree = (
   // 按 targetValue 的原始顺序排列，保持选择顺序
   if (Array.isArray(targetValue)) {
     const orderMap = new Map(targetValue.map((v: any, i: number) => [v, i]));
-    result.sort((a, b) => (orderMap.get(a[displayValue]) ?? 0) - (orderMap.get(b[displayValue]) ?? 0));
+    result.sort(
+      (a, b) =>
+        (orderMap.get(a[displayValue]) ?? 0) -
+        (orderMap.get(b[displayValue]) ?? 0),
+    );
   }
   return result;
 };
@@ -97,7 +101,9 @@ export const toggleNodeSelection = (
   const selection = [...currentSelection];
 
   if (multiple) {
-    const index = selection.findIndex((e) => e[displayValue] === data[displayValue]);
+    const index = selection.findIndex(
+      (e) => e[displayValue] === data[displayValue],
+    );
     if (index === -1) {
       if (checkStrictly) {
         const temp = { ...data };
@@ -114,7 +120,9 @@ export const toggleNodeSelection = (
             }
             n.children.forEach((child: any) => processChildren(child));
           } else {
-            const childIdx = selection.findIndex((e) => e[displayValue] === n[displayValue]);
+            const childIdx = selection.findIndex(
+              (e) => e[displayValue] === n[displayValue],
+            );
             if (childIdx === -1) {
               const temp = { ...n };
               delete temp.children;
@@ -128,7 +136,9 @@ export const toggleNodeSelection = (
       selection.splice(index, 1);
     }
   } else {
-    const index = selection.findIndex((e) => e[displayValue] === data[displayValue]);
+    const index = selection.findIndex(
+      (e) => e[displayValue] === data[displayValue],
+    );
     if (index === -1) {
       delete data.children;
       return [data];
@@ -152,17 +162,18 @@ export const loadSelectedData = async (
     return [];
   }
   const queryParams: SearchParams[] = [
-    createCondition(
-      displayValue,
-      Array.isArray(value) ? value : [value],
-      "in",
-    ),
+    createCondition(displayValue, Array.isArray(value) ? value : [value], "in"),
   ];
   if (extraParams && extraParams.length > 0) {
     queryParams.push(...extraParams);
   }
   const baseParams = buildPageParams(queryParams);
-  const { url, params } = buildRequestParams(dataUrl, baseParams, proxy, proxyUrl);
+  const { url, params } = buildRequestParams(
+    dataUrl,
+    baseParams,
+    proxy,
+    proxyUrl,
+  );
 
   try {
     const res = await postRequest(url, params);

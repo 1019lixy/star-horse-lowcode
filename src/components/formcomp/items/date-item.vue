@@ -1,37 +1,49 @@
 <template>
   <starhorse-form-item
-      :showFormItem="showFormItem"
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :field="field"
-      :parentField="parentField"
+    :showFormItem="showFormItem"
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :bareFlag="bareFlag"
+    :field="field"
+    :parentField="parentField"
   >
     <el-date-picker
-        :fid="field.fieldName"
-        :disabled="checkIsDisabled(props)"
-        v-bind="prepsFilter(field.preps)"
-        :type="effectiveType"
-        :format="field.preps?.format || displayFormat"
-        :value-format="field.preps?.valueFormat || valueFormat"
-        v-on="getDynamicEvents(props, itemAction,formData)"
-        @change="itemAction('change')"
-        v-model="formData[field.fieldName]"
+      :fid="field.fieldName"
+      :disabled="checkIsDisabled(props)"
+      v-bind="prepsFilter(field.preps)"
+      :type="effectiveType"
+      :format="field.preps?.format || displayFormat"
+      :value-format="field.preps?.valueFormat || valueFormat"
+      v-on="getDynamicEvents(props, itemAction, formData)"
+      @change="itemAction('change')"
+      v-model="formData[field.fieldName]"
     />
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {computed, nextTick, onBeforeMount, onMounted, ref, shallowRef, watch} from "vue";
+import {
+  computed,
+  nextTick,
+  onBeforeMount,
+  onMounted,
+  ref,
+  shallowRef,
+  watch,
+} from "vue";
 import {
   allAction,
   checkIsDisabled,
   initCompCallEvent,
   prepsFilter,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
-import {getDynamicEvents} from "@/api/system";
+import { getDynamicEvents } from "@/api/system";
 
-import {ItemPreps} from "@/components/types/ItemPreps";
-import {getDateDisplayFormat, getDateValueFormat, normalizeDateModel,} from "@/api/date_utils";
+import { ItemPreps } from "@/components/types/ItemPreps";
+import {
+  getDateDisplayFormat,
+  getDateValueFormat,
+  normalizeDateModel,
+} from "@/api/date_utils";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -87,32 +99,36 @@ onMounted(() => {
     initCompCallEvent(props, emits, formData);
   });
 });
-const closeWatch = ref<()=>void>();
+const closeWatch = ref<() => void>();
 // 持久化 watch：后端数据异步到达时自动格式化，无论何时到达都能正确处理
-closeWatch.value  = watch(
-    () => formData.value?.[props.field.fieldName],
-    (val) => {
-      if(props.source == 1){
-        closeWatch.value?.();
-        return;
-      }
-      if (val != null && val !== "") {
-        const name = props.field.fieldName;
-        const vf = props.field.preps?.valueFormat || valueFormat.value;
-        const normalized = normalizeDateModel(val, effectiveType.value, vf);
-        // 幂等保护：仅当格式化结果与原值不同时写回，防止无限循环
-        if (Array.isArray(normalized)) {
-          if (!Array.isArray(val) || normalized.length !== val.length || normalized.some((v: any, i: number) => v !== val[i])) {
-            formData.value[name] = normalized;
-            closeWatch.value?.();
-          }
-        } else if (normalized !== val) {
+closeWatch.value = watch(
+  () => formData.value?.[props.field.fieldName],
+  (val) => {
+    if (props.source == 1) {
+      closeWatch.value?.();
+      return;
+    }
+    if (val != null && val !== "") {
+      const name = props.field.fieldName;
+      const vf = props.field.preps?.valueFormat || valueFormat.value;
+      const normalized = normalizeDateModel(val, effectiveType.value, vf);
+      // 幂等保护：仅当格式化结果与原值不同时写回，防止无限循环
+      if (Array.isArray(normalized)) {
+        if (
+          !Array.isArray(val) ||
+          normalized.length !== val.length ||
+          normalized.some((v: any, i: number) => v !== val[i])
+        ) {
           formData.value[name] = normalized;
           closeWatch.value?.();
         }
+      } else if (normalized !== val) {
+        formData.value[name] = normalized;
+        closeWatch.value?.();
       }
-    },
-    {immediate: true}
+    }
+  },
+  { immediate: true },
 );
 </script>
 <style lang="scss" scoped>

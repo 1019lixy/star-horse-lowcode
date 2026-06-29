@@ -83,7 +83,7 @@ watch(
       treeData.value = val;
     }
   },
-  { deep: true }
+  { deep: true },
 );
 </script>
 <style lang="scss" scoped></style>

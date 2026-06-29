@@ -1,38 +1,38 @@
 <template>
   <starhorse-form-item
-      :showFormItem="showFormItem"
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :field="field"
-      :parentField="parentField"
+    :showFormItem="showFormItem"
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :bareFlag="bareFlag"
+    :field="field"
+    :parentField="parentField"
   >
     <el-time-picker
-        :fid="field.fieldName"
-        :disabled="checkIsDisabled(props)"
-        v-bind="prepsFilter(field.preps)"
-        :is-range="isRange"
-        :range-separator="field.preps?.rangeSeparator || i18n('api.to')"
-        :format="field.preps?.format || 'HH:mm:ss'"
-        :value-format="field.preps?.valueFormat || 'HH:mm:ss'"
-        v-on="getDynamicEvents(props, itemAction,formData)"
-        @change="itemAction('change')"
-        v-model="formData[field.fieldName]"
+      :fid="field.fieldName"
+      :disabled="checkIsDisabled(props)"
+      v-bind="prepsFilter(field.preps)"
+      :is-range="isRange"
+      :range-separator="field.preps?.rangeSeparator || i18n('api.to')"
+      :format="field.preps?.format || 'HH:mm:ss'"
+      :value-format="field.preps?.valueFormat || 'HH:mm:ss'"
+      v-on="getDynamicEvents(props, itemAction, formData)"
+      @change="itemAction('change')"
+      v-model="formData[field.fieldName]"
     />
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {computed, nextTick, onBeforeMount, onMounted, ref, watch} from "vue";
+import { computed, nextTick, onBeforeMount, onMounted, ref, watch } from "vue";
 import {
   allAction,
   checkIsDisabled,
   initCompCallEvent,
   prepsFilter,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
-import {getDynamicEvents} from "@/api/system";
-import {i18n} from "@/lang";
+import { getDynamicEvents } from "@/api/system";
+import { i18n } from "@/lang";
 
-import {ItemPreps} from "@/components/types/ItemPreps";
+import { ItemPreps } from "@/components/types/ItemPreps";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -52,7 +52,9 @@ const isRange = computed(() => {
 });
 
 // 目标 value-format
-const valueFormat = computed(() => props.field.preps?.valueFormat || "HH:mm:ss");
+const valueFormat = computed(
+  () => props.field.preps?.valueFormat || "HH:mm:ss",
+);
 
 /**
  * 规范化 el-time-picker 的值
@@ -74,7 +76,8 @@ function normalizeTimePickerValue(val: any): any {
       if (Array.isArray(parsed)) {
         return parsed.map((v: any) => normalizeTimePickerSingle(v, vf));
       }
-    } catch { /* not JSON */
+    } catch {
+      /* not JSON */
     }
   }
 
@@ -93,10 +96,13 @@ function normalizeTimePickerSingle(val: any, vf: string): any {
   if (vf === "HH:mm" && /^\d{1,2}:\d{2}$/.test(val)) return val;
 
   // "HH:mm:ss" 格式但目标是 "HH:mm" → 截取
-  if (vf === "HH:mm" && /^\d{1,2}:\d{2}:\d{2}$/.test(val)) return val.substring(0, 5);
+  if (vf === "HH:mm" && /^\d{1,2}:\d{2}:\d{2}$/.test(val))
+    return val.substring(0, 5);
 
   // 带时区偏移的日期时间 "1970-01-01 08:11:01+08" / "1970-01-01 08:11:01+08:00"
-  const tzMatch = val.match(/^\d{4}-\d{2}-\d{2}\s+(\d{1,2}):(\d{2})(?::(\d{2}))?/);
+  const tzMatch = val.match(
+    /^\d{4}-\d{2}-\d{2}\s+(\d{1,2}):(\d{2})(?::(\d{2}))?/,
+  );
   if (tzMatch) {
     const h = tzMatch[1];
     const m = tzMatch[2];
@@ -106,7 +112,9 @@ function normalizeTimePickerSingle(val: any, vf: string): any {
   }
 
   // ISO 字符串 "2026-06-09T16:00:00.000Z" → 直接提取 UTC 时间部分（避免时区偏移）
-  const isoMatch = val.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})/);
+  const isoMatch = val.match(
+    /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})/,
+  );
   if (isoMatch) {
     const h = isoMatch[4];
     const m = isoMatch[5];
@@ -136,28 +144,32 @@ onMounted(() => {
 const closeWatch = ref<() => void>();
 // 持久化 watch：后端数据异步到达时自动格式化，无论何时到达都能正确处理
 closeWatch.value = watch(
-    () => formData.value?.[props.field.fieldName],
-    (val) => {
-      if (props.source == 1) {
-        closeWatch.value?.();
-        return;
-      }
-      if (val != null && val !== "") {
-        const name = props.field.fieldName;
-        const normalized = normalizeTimePickerValue(val);
-        // 幂等保护：仅当格式化结果与原值不同时写回，防止无限循环
-        if (Array.isArray(normalized)) {
-          if (!Array.isArray(val) || normalized.length !== val.length || normalized.some((v: any, i: number) => v !== val[i])) {
-            formData.value[name] = normalized;
-            closeWatch.value?.();
-          }
-        } else if (normalized !== val) {
+  () => formData.value?.[props.field.fieldName],
+  (val) => {
+    if (props.source == 1) {
+      closeWatch.value?.();
+      return;
+    }
+    if (val != null && val !== "") {
+      const name = props.field.fieldName;
+      const normalized = normalizeTimePickerValue(val);
+      // 幂等保护：仅当格式化结果与原值不同时写回，防止无限循环
+      if (Array.isArray(normalized)) {
+        if (
+          !Array.isArray(val) ||
+          normalized.length !== val.length ||
+          normalized.some((v: any, i: number) => v !== val[i])
+        ) {
           formData.value[name] = normalized;
           closeWatch.value?.();
         }
+      } else if (normalized !== val) {
+        formData.value[name] = normalized;
+        closeWatch.value?.();
       }
-    },
-    {immediate: true}
+    }
+  },
+  { immediate: true },
 );
 </script>
 <style lang="scss" scoped>

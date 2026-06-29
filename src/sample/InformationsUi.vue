@@ -1,11 +1,16 @@
 <script setup lang="ts" name="Rolesinfo">
-
 import { onMounted, provide, reactive, ref } from "vue";
 import { isSystemManage } from "@/utils/auth";
 import { i18n } from "@/lang";
-import {StarHorseTableComp} from "@/components/comp";
-import {ApiUrls, PageFieldInfo, SearchFields, SelectOption, UserFuncInfo} from "@/components/types";
-import {apiInstance, dialogPreps} from "@/api/star_horse_utils";
+import { StarHorseTableComp } from "@/components/comp";
+import {
+  ApiUrls,
+  PageFieldInfo,
+  SearchFields,
+  SelectOption,
+  UserFuncInfo,
+} from "@/components/types";
+import { apiInstance, dialogPreps } from "@/api/star_horse_utils";
 
 const dataUrl: ApiUrls = apiInstance("system-config", "system/rolesinfo");
 let departmentList = ref<SelectOption[]>([]);
@@ -196,7 +201,7 @@ const dataFormat = (name: string, cellValue: any, row: any): any => {
   let data = [] as Array<any>;
   if (name == "roleType") {
     let fdata = roleTypes.value.find(
-        (item) => item.value == parseInt(cellValue),
+      (item) => item.value == parseInt(cellValue),
     );
     return fdata?.name || cellValue;
   } else if (name == "departments" && row) {
@@ -262,50 +267,50 @@ onMounted(async () => {
 <template>
   <div class="flex flex-col h-full overflow-hidden">
     <star-horse-dialog
-        :isShowBtnContinue="true"
-        :dialogVisible="dialogProps.editVisible"
-        :dialogProps="dialogProps"
+      :isShowBtnContinue="true"
+      :dialogVisible="dialogProps.editVisible"
+      :dialogProps="dialogProps"
     >
       <star-horse-form
-          :compUrl="dataUrl"
-          @refresh="starHorseTableCompRef?.loadByPage()"
-          :fieldList="tableFieldList"
-          :rules="rules"
+        :compUrl="dataUrl"
+        @refresh="starHorseTableCompRef?.loadByPage()"
+        :fieldList="tableFieldList"
+        :rules="rules"
       />
     </star-horse-dialog>
     <star-horse-dialog
-        :dialog-visible="dialogProps.viewVisible"
-        :dialogProps="dialogProps"
-        :source="3"
+      :dialog-visible="dialogProps.viewVisible"
+      :dialogProps="dialogProps"
+      :source="3"
     >
       <star-horse-data-view
-          :dataFormat="dataFormat"
-          :field-list="tableFieldList"
-          :compUrl="dataUrl"
+        :dataFormat="dataFormat"
+        :field-list="tableFieldList"
+        :compUrl="dataUrl"
       />
     </star-horse-dialog>
     <div class="search-content">
       <div class="search_btn">
         <star-horse-search-comp
-            @searchData="
+          @searchData="
             (data: any) => starHorseTableCompRef?.createSearchParams(data)
           "
-            :formData="searchFormData"
-            :compUrl="dataUrl"
+          :formData="searchFormData"
+          :compUrl="dataUrl"
         />
       </div>
     </div>
     <el-card class="inner_content">
       <star-horse-table-comp
-          ref="starHorseTableCompRef"
-          :fieldList="tableFieldList"
-          :primaryKey="primaryKey"
-          :btn-permissions="{
-            view:'view',
-            edit:'edit'
-          }"
-          :compUrl="dataUrl"
-          :dataFormat="dataFormat"
+        ref="starHorseTableCompRef"
+        :fieldList="tableFieldList"
+        :primaryKey="primaryKey"
+        :btn-permissions="{
+          view: 'view',
+          edit: 'edit',
+        }"
+        :compUrl="dataUrl"
+        :dataFormat="dataFormat"
       />
     </el-card>
   </div>

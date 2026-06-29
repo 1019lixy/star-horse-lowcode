@@ -2,7 +2,7 @@
 import { VueSignaturePad } from "@selemondev/vue3-signature-pad";
 import type { Signature } from "@selemondev/vue3-signature-pad";
 import { ref, useTemplateRef } from "vue";
-import {warning} from "@/utils/message";
+import { warning } from "@/utils/message";
 
 const state = ref({
   disabled: false,

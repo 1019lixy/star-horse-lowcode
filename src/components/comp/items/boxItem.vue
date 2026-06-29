@@ -1,7 +1,12 @@
 <script setup lang="ts">
-import {checkVisible, labelVisibleCheck, loadProp, validMsg} from "@/api/form_utils";
-import {ContainerPreps} from "@/components/types/ItemPreps";
-import {computed, onMounted} from "vue";
+import {
+  checkVisible,
+  labelVisibleCheck,
+  loadProp,
+  validMsg,
+} from "@/api/form_utils";
+import { ContainerPreps } from "@/components/types/ItemPreps";
+import { computed, onMounted } from "vue";
 import StarHorseItem from "@/components/comp/StarHorseItem.vue";
 
 const props = withDefaults(defineProps<ContainerPreps>(), {
@@ -19,11 +24,11 @@ const props = withDefaults(defineProps<ContainerPreps>(), {
 const dataForm = defineModel("dataForm");
 const noVisibleData = computed(() => {
   const temp = props.item;
-  const datas = Array.isArray(temp) && temp.filter(item => item?.formVisible === false);
+  const datas =
+    Array.isArray(temp) && temp.filter((item) => item?.formVisible === false);
   return temp.length == datas.length;
 });
-const init = () => {
-};
+const init = () => {};
 const checkItem = (item: any) => {
   if (Array.isArray(item)) {
     return item[0];
@@ -31,10 +36,14 @@ const checkItem = (item: any) => {
   return item;
 };
 const countSpan = (item: any) => {
-  const visibleDatas = Array.isArray(item) && item.filter((temp) => temp && temp.formVisible);
-  const hasAssigned = visibleDatas?.filter(item => item.preps?.colspan > 0);
-  const unAssigned = visibleDatas?.filter(item => !item.preps?.colspan);
-  const assignedSum = hasAssigned?.reduce((sum, item) => sum + (item.preps?.colspan || 0), 0);
+  const visibleDatas =
+    Array.isArray(item) && item.filter((temp) => temp && temp.formVisible);
+  const hasAssigned = visibleDatas?.filter((item) => item.preps?.colspan > 0);
+  const unAssigned = visibleDatas?.filter((item) => !item.preps?.colspan);
+  const assignedSum = hasAssigned?.reduce(
+    (sum, item) => sum + (item.preps?.colspan || 0),
+    0,
+  );
   let totalVisible = 24 - assignedSum;
   let unAssignedSize = unAssigned?.length || 1;
   return Math.floor(totalVisible / unAssignedSize);
@@ -48,86 +57,96 @@ const createArray = (item: any) => {
 onMounted(() => {
   init();
 });
-
 </script>
 
 <template>
   <el-row
-      v-if="Array.isArray(item)&&!noVisibleData"
-      :gutter="5"
-      :justify="'center'"
-      :align="'middle'"
-      :tag="'div'"
-      style=""
+    v-if="Array.isArray(item) && !noVisibleData"
+    :gutter="5"
+    :justify="'center'"
+    :align="'middle'"
+    :tag="'div'"
+    style=""
   >
     <template v-for="sitem in item">
       <el-col
-          v-if="sitem"
-          :span="sitem.preps?.colspan||countSpan(item)"
-          class="h-full flex items-center justify-center"
-          v-bind="checkItem(sitem).preps"
-          :style="{ height: checkItem(sitem).preps?.colHeight||'auto' ,
+        v-if="sitem"
+        :span="sitem.preps?.colspan || countSpan(item)"
+        class="h-full flex items-center justify-center"
+        v-bind="checkItem(sitem).preps"
+        :style="{
+          height: checkItem(sitem).preps?.colHeight || 'auto',
           'text-align': checkItem(sitem).preps?.textAlign ?? 'left',
-           'white-space': sitem.staticData!==true?'nowrap':'unset',
-           'word-break': !!checkItem(sitem).preps?.wordBreak ? 'break-all' : 'normal',
-           'text-overflow': 'ellipsis'
+          'white-space': sitem.staticData !== true ? 'nowrap' : 'unset',
+          'word-break': !!checkItem(sitem).preps?.wordBreak
+            ? 'break-all'
+            : 'normal',
+          'text-overflow': 'ellipsis',
         }"
       >
-        <div class="h-full w-full p-2 items-center justify-center flex flex-col" v-if="sitem.staticData===true" v-html="sitem.preps?.textContent"/>
+        <div
+          class="h-full w-full p-2 items-center justify-center flex flex-col"
+          v-if="sitem.staticData === true"
+          v-html="sitem.preps?.textContent"
+        />
         <template v-else v-for="tempData in createArray(sitem)">
           <template
-              v-if="
-            tempData.type != 'button' &&
-            tempData.type != 'usercomp' &&
-            !tempData.preps?.staticData
-          "
+            v-if="
+              tempData.type != 'button' &&
+              tempData.type != 'usercomp' &&
+              !tempData.preps?.staticData
+            "
           >
             <!--需解决只需要标签内容的情况-->
             <el-form-item
-                :size="compSize"
-                class="flex w-full flex-1 my-5"
-                :label="labelVisibleCheck(tempData)"
-                :prop="loadProp(propPrefix, tempData.fieldName, -1, -1)"
-                :labelPosition="tempData.preps?.labelPosition??parentPreps?.labelPosition"
-                :rules="validMsg(tempData, dataForm)"
-                v-if="
-              (tempData.formVisible &&
-                tempData.label &&
-                tempData.preps?.headerFlag != 'Y') ||
-              checkVisible(tempData, dataForm)
-            "
+              :size="compSize"
+              class="flex w-full flex-1 my-5"
+              :label="labelVisibleCheck(tempData)"
+              :prop="loadProp(propPrefix, tempData.fieldName, -1, -1)"
+              :labelPosition="
+                tempData.preps?.labelPosition ?? parentPreps?.labelPosition
+              "
+              :rules="validMsg(tempData, dataForm)"
+              v-if="
+                (tempData.formVisible &&
+                  tempData.label &&
+                  tempData.preps?.headerFlag != 'Y') ||
+                checkVisible(tempData, dataForm)
+              "
             >
               <star-horse-item
-                  :primaryKey="primaryKey"
-                  :compSize="compSize"
-                  v-model:dataForm="dataForm"
-                  :commonFormat="commonFormat"
-                  :item="tempData"
-                  :dataIndex="dataIndex"
-                  :source="source"
+                :primaryKey="primaryKey"
+                :compSize="compSize"
+                v-model:dataForm="dataForm"
+                :commonFormat="commonFormat"
+                :item="tempData"
+                :dataIndex="dataIndex"
+                :source="source"
               />
             </el-form-item>
 
             <star-horse-item
-                v-else-if="tempData.viewVisible || checkVisible(tempData, dataForm)"
-                :compSize="compSize"
-                :primaryKey="primaryKey"
-                v-model:dataForm="dataForm"
-                :commonFormat="commonFormat"
-                :item="tempData"
-                :dataIndex="dataIndex"
-                :source="source"
+              v-else-if="
+                tempData.viewVisible || checkVisible(tempData, dataForm)
+              "
+              :compSize="compSize"
+              :primaryKey="primaryKey"
+              v-model:dataForm="dataForm"
+              :commonFormat="commonFormat"
+              :item="tempData"
+              :dataIndex="dataIndex"
+              :source="source"
             />
           </template>
           <template v-else-if="tempData.fieldName">
             <star-horse-item
-                :primaryKey="primaryKey"
-                :compSize="compSize"
-                v-model:dataForm="dataForm"
-                :commonFormat="commonFormat"
-                :item="tempData"
-                :dataIndex="dataIndex"
-                :source="source"
+              :primaryKey="primaryKey"
+              :compSize="compSize"
+              v-model:dataForm="dataForm"
+              :commonFormat="commonFormat"
+              :item="tempData"
+              :dataIndex="dataIndex"
+              :source="source"
             />
           </template>
         </template>

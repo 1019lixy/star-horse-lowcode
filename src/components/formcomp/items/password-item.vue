@@ -12,7 +12,7 @@
       :disabled="checkIsDisabled(props)"
       v-bind="prepsFilter(field.preps)"
       type="password"
-      v-on="getDynamicEvents(props, itemAction,formData)"
+      v-on="getDynamicEvents(props, itemAction, formData)"
       v-model="formData[field.fieldName]"
     >
       <template #prefix>

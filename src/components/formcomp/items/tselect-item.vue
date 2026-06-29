@@ -14,7 +14,7 @@
       v-bind="prepsFilter(field.preps)"
       :filter-node-method="filterNodeMethod"
       :render-content="renderContent"
-      v-on="getDynamicEvents(props, itemAction,formData)"
+      v-on="getDynamicEvents(props, itemAction, formData)"
       v-model="formData[field.fieldName]"
     >
       <template v-if="field.preps?.multiple" #header>
@@ -99,7 +99,9 @@ const onConfirm = () => {
 
   const labelName = props.field.preps?.props?.label || "label";
   const codeName =
-    props.field.preps?.props?.code || props.field.preps?.props?.value || "value";
+    props.field.preps?.props?.code ||
+    props.field.preps?.props?.value ||
+    "value";
   // 校验重复
   if (
     props.field.preps.data.find(
@@ -182,6 +184,5 @@ onMounted(() => {
     initCompCallEvent(props, emits, formData);
   });
 });
-
 </script>
 <style scoped></style>

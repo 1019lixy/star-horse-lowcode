@@ -11,7 +11,7 @@
       :fid="field?.preps['name']"
       v-bind="prepsFilter(field.preps)"
       :props="field?.preps.props ?? { key: 'value', label: 'name' }"
-      v-on="getDynamicEvents(props, itemAction,formData)"
+      v-on="getDynamicEvents(props, itemAction, formData)"
       v-model="formData[field.fieldName]"
     />
   </starhorse-form-item>
@@ -60,6 +60,5 @@ onMounted(() => {
     initCompCallEvent(props, emits, formData);
   });
 });
-
 </script>
 <style lang="scss" scoped></style>

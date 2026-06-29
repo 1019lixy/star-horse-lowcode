@@ -55,8 +55,13 @@ const shouldShowPath = (tab: TabInfo) => {
   overflow-x: auto;
   flex-shrink: 0;
   height: 35px;
-  &::-webkit-scrollbar { height: 3px; }
-  &::-webkit-scrollbar-thumb { background: var(--ide-scrollbar); border-radius: 2px; }
+  &::-webkit-scrollbar {
+    height: 3px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--ide-scrollbar);
+    border-radius: 2px;
+  }
 }
 .ide-tab {
   display: flex;
@@ -76,7 +81,9 @@ const shouldShowPath = (tab: TabInfo) => {
     background: var(--ide-tab-active-bg);
     border-top: 2px solid var(--ide-accent);
   }
-  &:hover { background: var(--ide-bg-hover); }
+  &:hover {
+    background: var(--ide-bg-hover);
+  }
 }
 .tab-icon {
   margin-right: 4px;
@@ -117,8 +124,12 @@ const shouldShowPath = (tab: TabInfo) => {
   font-size: 16px;
   opacity: 0;
   flex-shrink: 0;
-  &:hover { background: rgba(255,255,255,0.1); }
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
 }
 .ide-tab:hover .tab-close,
-.ide-tab.active .tab-close { opacity: 0.7; }
+.ide-tab.active .tab-close {
+  opacity: 0.7;
+}
 </style>

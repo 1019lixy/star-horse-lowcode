@@ -14,14 +14,14 @@
       :end="field.preps?.end || '24:00'"
       :step="field.preps?.step || '00:05'"
       v-bind="prepsFilter(field.preps)"
-      v-on="getDynamicEvents(props, itemAction,formData)"
+      v-on="getDynamicEvents(props, itemAction, formData)"
       @change="itemAction('change')"
       v-model="formData[field.fieldName]"
     />
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {nextTick, onMounted, ref, watch} from "vue";
+import { nextTick, onMounted, ref, watch } from "vue";
 import {
   allAction,
   checkIsDisabled,
@@ -79,12 +79,12 @@ onMounted(() => {
     initCompCallEvent(props, emits, formData);
   });
 });
-const closeWatch = ref<()=>void>();
+const closeWatch = ref<() => void>();
 // 持久化 watch：后端数据异步到达时自动格式化，无论何时到达都能正确处理
-closeWatch.value =watch(
+closeWatch.value = watch(
   () => formData.value?.[props.field.fieldName],
   (val) => {
-    if(props.source == 1){
+    if (props.source == 1) {
       closeWatch.value?.();
       return;
     }
@@ -98,7 +98,7 @@ closeWatch.value =watch(
       }
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 </script>
 <style lang="scss" scoped>
