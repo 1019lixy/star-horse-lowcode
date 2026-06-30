@@ -686,13 +686,13 @@ export async function compDynamicData(
     reDataList = [];
   }
   //前面没有满足条件的数据，则判断静态数据是否存在
-  if (unref(field.preps?.values)?.length > 0) {
+  if (unref(field.preps?.values)?.length > 0&&!reDataList.length) {
     return unref(field.preps?.values);
   }
-  if (unref(field.preps?.data)?.length > 0) {
+  if (unref(field.preps?.data)?.length > 0&&!reDataList.length) {
     return unref(field.preps?.data);
   }
-  if (unref(field?.optionList)?.length > 0) {
+  if (unref(field?.optionList)?.length > 0&&!reDataList.length) {
     return unref(field.optionList);
   }
   return reDataList;
