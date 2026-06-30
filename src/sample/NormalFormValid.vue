@@ -11,6 +11,7 @@ import {
 import { download } from "@/api/star_horse_apis";
 import { warning } from "@/utils/message";
 import { ApiUrls, SearchInfo } from "@/components/types";
+import {parseDateByType} from "@/api/date_utils";
 
 const dataUrl: ApiUrls = apiInstance(
   "userdb-manage",
@@ -733,6 +734,10 @@ onMounted(() => {
       </div>
     </div>
     <el-card class="inner_content">
+      {{parseDateByType('2026-06-30 00:00:00','date')}}
+      {{parseDateByType('2026-6-30 00:00:00','date')}}
+      {{parseDateByType('26-6-30 00:00:00','date')}}
+      {{parseDateByType('26-6-32 00:00:00','date')}}
       <star-horse-table-comp
         ref="codeGeneratorRef"
         :fieldList="fieldList"

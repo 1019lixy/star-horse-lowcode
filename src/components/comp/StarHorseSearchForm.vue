@@ -15,7 +15,7 @@ const emits = defineEmits(["searchData", "initComplete"]);
 const props = withDefaults(
   defineProps<{
     formData: SearchFields;
-    defaultCondition: SearchParams[];
+    defaultCondition?: SearchParams[];
     dialogInput: boolean;
     mutComp: boolean;
   }>(),

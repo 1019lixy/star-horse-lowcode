@@ -236,6 +236,7 @@ export default defineConfig((mode) => {
           "tailwindcss",
           "uuid",
           "vuedraggable-es",
+          "sortablejs",
           "preview-image-js",
           "monaco-editor",
           "@monaco-editor/react",

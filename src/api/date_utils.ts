@@ -155,15 +155,17 @@ function getWeek(date: Date) {
  */
 import { i18n } from "@/lang";
 
-// 已格式化日期字符串的正则
-const YEAR_RE = /^\d{4}$/;
-const MONTH_RE = /^\d{4}[-/]\d{2}$/;
-const DATE_RE = /^\d{4}[-/]\d{2}[-/]\d{2}$/;
-const DATETIME_RE = /^\d{4}[-/]\d{2}[-/]\d{2}\s+\d{1,2}:\d{2}(:\d{2})?$/;
-const TIME_RE = /^\d{1,2}:\d{2}(:\d{2})?$/;
+// 已格式化日期字符串的正则（支持长/短年份 + 长/短月日混合）
+const YEAR_RE = /^\d{2,4}$/;
+const MONTH_RE = /^\d{2,4}[-/]\d{1,2}$/;
 
 // ISO 字符串正则（如 "2026-09-30T16:00:00.000Z"），提取 UTC 日期部分
 const ISO_DATE_RE = /^(\d{4})-(\d{2})-(\d{2})T/;
+
+// 本地日期/日期时间字符串（支持 2 位短年份 + 长/短月日 + 可选时间）
+// "2026-06-30" / "26-6-3" / "2026/6/30 00:00:00" / "26-6-3 8:5:9"
+const LOCAL_DATETIME_RE =
+  /^(\d{2,4})[-/](\d{1,2})[-/](\d{1,2})(?:\s+(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?/;
 
 /**
  * 从 ISO 字符串中直接提取 UTC 日期部分，避免 new Date() 时区偏移
@@ -179,6 +181,60 @@ function extractISODateParts(
 }
 
 /**
+ * 将 2 位短年份补全为 4 位（00-68 → 20xx，69-99 → 19xx，POSIX 风格）
+ */
+function normalizeYear(year: string): string {
+  if (year.length === 4) return year;
+  const y = parseInt(year, 10);
+  return (y >= 69 ? 1900 : 2000) + y + "";
+}
+
+/**
+ * 解析本地日期/日期时间字符串，支持 2 位短年份 + 长/短月日混合
+ * 对溢出字段自动进位（如 26-6-32 → 2026-07-01，26-6-3 24:00:00 → 2026-06-04 00:00:00）
+ * 通过 new Date(y, m-1, d, h, mi, s) 本地构造让 JS 自动进位，再用本地方法取值避免时区偏移
+ * 非本地日期格式返回 null
+ */
+function parseLocalDateTimeParts(
+  val: string,
+): {
+  year: string;
+  month: string;
+  day: string;
+  hour: string;
+  minute: string;
+  second: string;
+} | null {
+  const m = val.match(LOCAL_DATETIME_RE);
+  if (!m) return null;
+  const yearNum = parseInt(normalizeYear(m[1]), 10);
+  const monthNum = parseInt(m[2], 10);
+  const dayNum = parseInt(m[3], 10);
+  const hourNum = parseInt(m[4] || "0", 10);
+  const minuteNum = parseInt(m[5] || "0", 10);
+  const secondNum = parseInt(m[6] || "0", 10);
+  // 本地构造，让 JS Date 自动处理所有溢出/负数进位换算
+  // 6-32 → 7-2，6-0 → 5-31，13-1 → 次年1-1，0-1 → 上年12-1，6-3 24:00 → 6-4 0:00
+  const d = new Date(
+    yearNum,
+    monthNum - 1,
+    dayNum,
+    hourNum,
+    minuteNum,
+    secondNum,
+  );
+  if (isNaN(d.getTime())) return null;
+  return {
+    year: d.getFullYear().toString(),
+    month: (d.getMonth() + 1).toString().padStart(2, "0"),
+    day: d.getDate().toString().padStart(2, "0"),
+    hour: d.getHours().toString().padStart(2, "0"),
+    minute: d.getMinutes().toString().padStart(2, "0"),
+    second: d.getSeconds().toString().padStart(2, "0"),
+  };
+}
+
+/**
  * 尝试识别已格式化的日期字符串，避免 new Date() 时区偏移
  * @returns 格式化后的字符串，或 null 表示未匹配需要走 Date 转换
  */
@@ -190,49 +246,68 @@ function tryAlreadyFormatted(
 ): string | null {
   // 先尝试从 ISO 字符串直接提取 UTC 日期部分（避免时区偏移）
   const iso = extractISODateParts(val);
+  // 本地日期/日期时间字符串解析（支持长/短日期混合，输出标准化补零）
+  const local = parseLocalDateTimeParts(val);
 
   switch (effectiveType) {
     case "year":
     case "years":
-      if (YEAR_RE.test(val)) return val;
-      if (DATE_RE.test(val)) return val.substring(0, 4);
+      if (YEAR_RE.test(val)) return normalizeYear(val);
       // ISO → 直接取 UTC 年份
       if (iso) return iso.year;
+      // 本地日期/日期时间字符串 → 取年份
+      if (local) return local.year;
       break;
     case "month":
     case "months":
-      if (MONTH_RE.test(val)) return val.replace(/[-/]/g, split);
-      if (DATE_RE.test(val)) {
+      if (MONTH_RE.test(val)) {
         const parts = val.split(/[-/]/);
-        return parts[0] + split + parts[1];
+        const yearNum = parseInt(normalizeYear(parts[0]), 10);
+        const monthNum = parseInt(parts[1], 10);
+        // 本地构造处理月份溢出（13 → 次年1月，0 → 上年12月）
+        const d = new Date(yearNum, monthNum - 1, 1);
+        if (!isNaN(d.getTime())) {
+          return (
+            d.getFullYear().toString() +
+            split +
+            (d.getMonth() + 1).toString().padStart(2, "0")
+          );
+        }
       }
       // ISO → 直接取 UTC 年月
       if (iso) return iso.year + split + iso.month;
+      // 本地日期/日期时间字符串 → 取年月
+      if (local) return local.year + split + local.month;
       break;
     case "date":
     case "dates":
     case "daterange":
-      if (DATE_RE.test(val)) return val.replace(/[-/]/g, split);
       // ISO → 直接取 UTC 年月日
       if (iso) return iso.year + split + iso.month + split + iso.day;
+      // 本地日期/日期时间字符串 → 取年月日（标准化补零）
+      if (local)
+        return local.year + split + local.month + split + local.day;
       break;
     case "datetime":
     case "datetimerange":
-      if (DATETIME_RE.test(val)) {
-        let result = val.replace(/[-/]/g, split);
-        if (!needSecond) {
-          result = result.replace(/( \d{1,2}:\d{2}):\d{2}$/, "$1");
-        }
-        return result;
+      // 本地日期时间字符串 → 标准化补零输出（支持长/短日期混合）
+      if (local) {
+        const timePart = needSecond
+          ? `${local.hour}:${local.minute}:${local.second}`
+          : `${local.hour}:${local.minute}`;
+        return (
+          local.year +
+          split +
+          local.month +
+          split +
+          local.day +
+          " " +
+          timePart
+        );
       }
       // ISO → 用 Date 转换保留时间部分（datetime 需要本地时间显示）
       break;
     case "week":
-      if (DATE_RE.test(val)) {
-        // 已格式化日期 → 用 UTC 日期计算周数
-        const d = new Date(val + "T00:00:00");
-        return `${d.getFullYear()}${i18n("api.weekPrefix")}${getWeek(d)}${i18n("api.weekSuffix")}`;
-      }
       // ISO → 从 UTC 日期计算周数
       if (iso) {
         const d = new Date(
@@ -244,19 +319,40 @@ function tryAlreadyFormatted(
         );
         return `${d.getUTCFullYear()}${i18n("api.weekPrefix")}${getWeek(d)}${i18n("api.weekSuffix")}`;
       }
+      // 本地日期/日期时间字符串 → 用日期部分计算周数
+      if (local) {
+        const d = new Date(
+          Date.UTC(
+            parseInt(local.year),
+            parseInt(local.month) - 1,
+            parseInt(local.day),
+          ),
+        );
+        return `${d.getUTCFullYear()}${i18n("api.weekPrefix")}${getWeek(d)}${i18n("api.weekSuffix")}`;
+      }
       break;
     case "monthrange":
-      if (MONTH_RE.test(val)) return val.replace(/[-/]/g, split);
-      if (DATE_RE.test(val)) {
+      if (MONTH_RE.test(val)) {
         const parts = val.split(/[-/]/);
-        return parts[0] + split + parts[1];
+        const yearNum = parseInt(normalizeYear(parts[0]), 10);
+        const monthNum = parseInt(parts[1], 10);
+        // 本地构造处理月份溢出
+        const d = new Date(yearNum, monthNum - 1, 1);
+        if (!isNaN(d.getTime())) {
+          return (
+            d.getFullYear().toString() +
+            split +
+            (d.getMonth() + 1).toString().padStart(2, "0")
+          );
+        }
       }
       if (iso) return iso.year + split + iso.month;
+      if (local) return local.year + split + local.month;
       break;
     case "yearrange":
-      if (YEAR_RE.test(val)) return val;
-      if (DATE_RE.test(val)) return val.substring(0, 4);
+      if (YEAR_RE.test(val)) return normalizeYear(val);
       if (iso) return iso.year;
+      if (local) return local.year;
       break;
   }
   return null;
@@ -432,6 +528,10 @@ export function parseDateByType(
         needSecond,
       );
       if (formatted !== null) return formatted;
+      // 匹配日期格式但字段非法（如 26-6-32、26-13-1、26-13）→ 返回 "--"
+      if (LOCAL_DATETIME_RE.test(val) || MONTH_RE.test(val)) {
+        return "--";
+      }
     }
 
     // ── 统一转换日期对象 ──

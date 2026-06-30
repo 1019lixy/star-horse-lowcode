@@ -881,7 +881,7 @@ const loadField = (): FieldInfo[] => {
   //同一个页面将数据缓存，而不是每次都去解析一遍
   if (!cacheAppCompList.value.length) {
     let { fieldList } = convertCompToAppComps(props.fieldList);
-    cacheAppCompList.value = fieldList;
+    cacheAppCompList.value = fieldList as unknown as FieldInfo[];
   }
   if (!cacheAppCompList.value?.length) {
     return [];

@@ -10,6 +10,10 @@ export interface FormDataProp {
    */
   primaryKey: string;
   /**
+   * 绑定流程ID
+   */
+  bindWorkFlowId: string;
+  /**
    * 表单验证规则
    */
   rules: Record<string, any>;
@@ -53,6 +57,10 @@ export interface FormDataProp {
    * 流程节点
    */
   processDefineNodes: Array<any>;
+  /**
+   * 表单信息
+   */
+  formInfo: Record<string, any>;
 }
 
 /**

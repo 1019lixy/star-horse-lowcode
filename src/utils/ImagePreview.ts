@@ -69,9 +69,9 @@ export class ImagePreview {
   private isTransitioning = false;
 
   private overlay!: HTMLDivElement | HTMLImageElement | HTMLSpanElement;
-  private imgWrap!: HTMLDivElement | HTMLImageElement | HTMLSpanElement;
-  private img!: HTMLDivElement | HTMLImageElement | HTMLSpanElement;
-  private imgBack!: HTMLDivElement | HTMLImageElement | HTMLSpanElement;
+  private imgWrap!: HTMLDivElement;
+  private img!: HTMLImageElement;
+  private imgBack!: HTMLImageElement;
   private toolbar!: HTMLDivElement | HTMLImageElement | HTMLSpanElement;
   private thumbBar!: HTMLDivElement | HTMLImageElement | HTMLSpanElement;
   private counter!: HTMLSpanElement;
@@ -346,7 +346,7 @@ export class ImagePreview {
 
   private loadImage(index: number, animate = true) {
     if (this.isTransitioning) return;
-    const isMulti = this.images.length > 1;
+    // const isMulti = this.images.length > 1;
     const direction = index > this.currentIndex ? 1 : -1;
     const oldIndex = this.currentIndex;
     this.currentIndex = index;
@@ -681,10 +681,12 @@ export class ImagePreview {
     document.removeEventListener("keydown", this.boundOnKeydown);
   }
 
-  private el(
-    tag: string,
+  // eslint-disable-next-line no-undef
+  private el<K extends keyof HTMLElementTagNameMap>(
+    tag: K,
     css: string,
-  ): HTMLDivElement | HTMLImageElement | HTMLSpanElement {
+    // eslint-disable-next-line no-undef
+  ): HTMLElementTagNameMap[K] {
     const element = document.createElement(tag);
     element.style.cssText = css;
     return element;

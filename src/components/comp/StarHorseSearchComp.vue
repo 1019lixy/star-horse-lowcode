@@ -2,9 +2,10 @@
 import { isMobile } from "@/api/device";
 import StarHorseSearchForm from "@/components/comp/StarHorseSearchForm.vue";
 import { i18n } from "@/lang";
-import { ref } from "vue";
+import { PropType, ref } from "vue";
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import MenuShot from "@/components/comp/app/MenuShot.vue";
+import type { SearchFields } from "@/components/types/SearchProps";
 
 const searchFormRef = ref<InstanceType<typeof StarHorseSearchForm> | null>(
   null,
@@ -16,7 +17,7 @@ const props = defineProps({
   dialogInput: { type: Boolean, default: false },
   mutComp: { type: Boolean, default: false },
   compUrl: { type: Object },
-  formData: { type: Object, required: true },
+  formData: { type: Object as PropType<SearchFields>, required: true },
   defaultCondition: { type: Array },
 });
 

@@ -57,7 +57,7 @@ interface ToolbarItem {
   children?: Array<{ label: string; handler: () => void }>;
 }
 
-const model = defineModel("value", { default: "" });
+const model = defineModel<string>("value", { default: "" });
 const editorLang = ref<any>(javascript());
 const editorTheme = ref<any>(dracula);
 const props = defineProps({

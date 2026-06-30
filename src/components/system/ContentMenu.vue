@@ -97,7 +97,7 @@ const show = (e?: MouseEvent) => {
     });
   }, 300);
 };
-const showSubMenu = (item: any, index: number) => {
+const showSubMenu = (item: any, index: number | string) => {
   const menuItem = item;
   if (typeof item !== "object") {
     return;

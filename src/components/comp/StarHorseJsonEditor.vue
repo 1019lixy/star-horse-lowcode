@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {
   computed,
-  ModelRef,
   onBeforeUnmount,
   onMounted,
   PropType,
@@ -30,9 +29,7 @@ defineProps({
   },
 });
 
-const json: ModelRef<any> = defineModel({
-  default: {},
-});
+const json = defineModel<any>({ default: () => ({}) });
 
 // 'javascript' | 'lodash' | 'jmespath' | 'jsonquery' | 'jsonpath'
 const queryLanguages: Array<any> = [

@@ -541,6 +541,9 @@ export default {
   "comp.undefinedFunction": "未定义的功能",
   "comp.dataLoadingException": "数据加载异常：",
   "comp.dataLoading": "数据加载中",
+  "commonPage.dataLoading": "数据加载中",
+  "commonPage.dataLoadError": "数据加载失败",
+  "commonPage.dataTypeMismatch": "数据类型不匹配",
   /**
    * Star Horse Utils Messages
    */

@@ -1,12 +1,11 @@
 import { CompParams } from "@/components/types/PageFieldInfo";
-import { Ref } from "vue";
 
 export type SelectOption = {
   name?: string;
   value?: string | number;
   disabled?: string;
   helpMsg?: string;
-  children?: SelectOption[] | Ref<SelectOption[]>;
+  children?: SelectOption[];
 };
 /**
  * 查询组件的属性
@@ -37,7 +36,7 @@ export type SearchProps = {
   /**
    * 废弃，请根据具体业务在preps 中添加 values 或者data
    */
-  optionList?: SelectOption[] | Ref<SelectOption[]>;
+  optionList?: SelectOption[];
 };
 /**
  * 查询属性

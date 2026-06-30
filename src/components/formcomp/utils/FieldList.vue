@@ -8,9 +8,9 @@ defineOptions({
 });
 withDefaults(
   defineProps<{
-    showContainer: boolean;
-    showFormItems: boolean;
-    showThirdItems: boolean;
+    showContainer?: boolean;
+    showFormItems?: boolean;
+    showThirdItems?: boolean;
   }>(),
   {
     showContainer: true,

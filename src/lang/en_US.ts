@@ -544,6 +544,9 @@ export default {
   "comp.undefinedFunction": "Undefined function",
   "comp.dataLoadingException": "Data loading exception:",
   "comp.dataLoading": "Data loading",
+  "commonPage.dataLoading": "Data loading",
+  "commonPage.dataLoadError": "Data loading failed",
+  "commonPage.dataTypeMismatch": "Data type mismatch",
   /**
    * Star Horse Utils Messages
    */

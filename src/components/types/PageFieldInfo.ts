@@ -2,7 +2,6 @@ import { ApiUrls } from "@/components/types/ApiUrls";
 import { SearchParams } from "@/components/types/Params";
 import { RuleType } from "@/components/types/RuleType";
 import { SearchFields } from "@/components/types/SearchProps";
-import { Ref } from "vue";
 
 /**
  * Tab 表单数据
@@ -130,23 +129,23 @@ export declare interface FieldInfo {
   /**
    * 是否必须项
    */
-  required?: boolean | Ref<boolean>;
+  required?: boolean;
   /**
    * 表单是否显示该属性
    */
-  formVisible?: boolean | Ref<boolean>;
+  formVisible?: boolean;
   /**
    * 列表是否显示该属性
    */
-  listVisible?: boolean | Ref<boolean>;
+  listVisible?: boolean;
   /**
    * 查看页面是否显示该属性
    */
-  viewVisible?: boolean | Ref<boolean>;
+  viewVisible?: boolean;
   /**
    * app端是否可见
    */
-  visiblePlatform?: string | Ref<string>;
+  visiblePlatform?: string;
 
   /**
    * 列表所在列最小宽度
@@ -156,11 +155,11 @@ export declare interface FieldInfo {
   /**
    * 是否禁用,true 禁用 false 非禁用
    */
-  disabled?: boolean | Ref<boolean>;
+  disabled?: boolean;
   /**
    * 编辑时禁用，true 禁用 false 非禁用
    */
-  editDisabled?: boolean | Ref<boolean>;
+  editDisabled?: boolean;
   /**
    * Tab容器数据
    */
