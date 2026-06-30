@@ -208,9 +208,7 @@ defineExpose({
         </star-horse-item>
       </el-form-item>
     </template>
-    <el-form-item
-      style="vertical-align: middle; align-items: center; width: 100%"
-    >
+    <el-form-item class="search-action-item">
       <div class="search_btn" :class="{ search_app: isMobile }">
         <el-button
           @click="dataSearch"
@@ -244,6 +242,7 @@ defineExpose({
             />
           </el-button>
         </el-tooltip>
+        <slot name="action-append" />
       </div>
     </el-form-item>
   </el-form>
@@ -278,19 +277,25 @@ defineExpose({
   padding: 5px 0;
 }
 
+/* 桌面端：操作按钮右对齐，跟随字段流动而非独占整行居中 */
+.search_area .search-action-item {
+  width: auto !important;
+  margin-left: auto;
+  margin-right: 0 !important;
+  align-items: center;
+}
+
 .search_btn {
   margin-left: 10px;
   display: flex;
-  width: 100%;
   align-items: center;
-  justify-content: center;
+  gap: 8px;
   vertical-align: middle;
 }
 
+/* 移动端：按钮居中、正常文档流（避免在 dialog 内 position:fixed 错位） */
 .search_app {
   width: 100%;
-  position: fixed;
-  bottom: 15px;
   margin-top: 18px;
   justify-content: center;
 }
