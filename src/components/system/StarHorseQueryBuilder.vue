@@ -268,7 +268,9 @@ function onHavingConditionChange(item: Record<string, any>) { onConditionChange(
                     <el-input v-model="item[VK][1]" :placeholder="i18n('queryBuilder.placeholder.max')" :disabled="disabled"/>
                   </div>
                   <el-select v-else-if="isMulti(item[CK])" v-model="item[VK]" multiple filterable allow-create default-first-option :placeholder="i18n('queryBuilder.placeholder.multi')" :disabled="disabled"/>
-                  <el-input v-else v-model="item[VK]" :placeholder="i18n('queryBuilder.placeholder.value')" :disabled="disabled"/>
+                  <slot v-else name="value-input" :item="item" :value-key="VK" :prop="item[PK]" :condition="item[CK]" :disabled="disabled">
+                    <el-input v-model="item[VK]" :placeholder="i18n('queryBuilder.placeholder.value')" :disabled="disabled"/>
+                  </slot>
                 </div>
                 <el-button v-if="!disabled" type="danger" text size="small" icon="Close" class="dqb-item-del" @click="removeItem(idx)"/>
               </div>
@@ -300,7 +302,9 @@ function onHavingConditionChange(item: Record<string, any>) { onConditionChange(
                       <el-input v-model="orCond[VK][1]" :placeholder="i18n('queryBuilder.placeholder.max')" :disabled="disabled"/>
                     </div>
                     <el-select v-else-if="isMulti(orCond[CK])" v-model="orCond[VK]" multiple filterable allow-create default-first-option :placeholder="i18n('queryBuilder.placeholder.multi')" :disabled="disabled"/>
-                    <el-input v-else v-model="orCond[VK]" :placeholder="i18n('queryBuilder.placeholder.value')" :disabled="disabled"/>
+                    <slot v-else name="value-input" :item="orCond" :value-key="VK" :prop="orCond[PK]" :condition="orCond[CK]" :disabled="disabled">
+                      <el-input v-model="orCond[VK]" :placeholder="i18n('queryBuilder.placeholder.value')" :disabled="disabled"/>
+                    </slot>
                   </div>
                   <el-button v-if="!disabled" type="danger" text size="small" icon="Close" class="dqb-item-del" @click="removeOrCondition(item, oi)"/>
                 </div>

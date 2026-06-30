@@ -14,10 +14,15 @@ declare global {
   const ElCollapseTransition: typeof import('element-plus/es').ElCollapseTransition
   const ElCollection$1: typeof import('element-plus/es')['ElCollection$1']
   const ElCollectionItem$1: typeof import('element-plus/es')['ElCollectionItem$1']
+  const ElDatePicker: typeof import('element-plus/es').ElDatePicker
   const ElFocusGroupCollection: typeof import('element-plus/es').ElFocusGroupCollection
   const ElIcon: typeof import('element-plus/es').ElIcon
+  const ElInput: typeof import('element-plus/es').ElInput
+  const ElInputNumber: typeof import('element-plus/es').ElInputNumber
+  const ElOption: typeof import('element-plus/es').ElOption
   const ElRovingFocusCollectionItem: typeof import('element-plus/es').ElRovingFocusCollectionItem
   const ElRovingFocusItem: typeof import('element-plus/es').ElRovingFocusItem
+  const ElSelect: typeof import('element-plus/es').ElSelect
   const ElSelectMenu: typeof import('element-plus/es').ElSelectMenu
   const ElTreeNode: typeof import('element-plus/es').ElTreeNode
   const computed: typeof import('vue').computed
@@ -92,6 +97,11 @@ declare module 'vue' {
   interface GlobalComponents {}
   interface ComponentCustomProperties {
     readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
+    readonly ElDatePicker: UnwrapRef<typeof import('element-plus/es')['ElDatePicker']>
+    readonly ElInput: UnwrapRef<typeof import('element-plus/es')['ElInput']>
+    readonly ElInputNumber: UnwrapRef<typeof import('element-plus/es')['ElInputNumber']>
+    readonly ElOption: UnwrapRef<typeof import('element-plus/es')['ElOption']>
+    readonly ElSelect: UnwrapRef<typeof import('element-plus/es')['ElSelect']>
     readonly computed: UnwrapRef<typeof import('vue')['computed']>
     readonly createApp: UnwrapRef<typeof import('vue')['createApp']>
     readonly customRef: UnwrapRef<typeof import('vue')['customRef']>
