@@ -127,7 +127,7 @@ defineExpose({
     :inline-message="formInfo['inlineMessage'] ?? false"
     :label-position="formInfo['labelPosition']"
     :label-suffix="formInfo['labelSuffix']"
-    :label-width="formInfo['labelWidth']"
+    :label-width="formInfo['labelWidth']??'auto'"
     :require-asterisk-position="formInfo['requireAsteriskPosition']"
     :scroll-to-error="formInfo['scrollToError'] ?? true"
     :show-message="formInfo['showMessage'] ?? true"

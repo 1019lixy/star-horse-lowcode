@@ -623,3 +623,8 @@ barcode        条形码组件
 ```
 --增加事件支持,优化dialog-input,autocomplete 组件，修复已知bug
 ```
+#### v3.1.11
+
+```
+--修复已知bug
+```

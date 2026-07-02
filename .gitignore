@@ -23,6 +23,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+*.tgz
 components.d.ts
 /plugin-dist/
 .scannerwork/*
