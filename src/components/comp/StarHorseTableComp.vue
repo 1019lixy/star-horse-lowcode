@@ -787,27 +787,27 @@ const extendBtnFunction = (): Array<UserFuncInfo> => {
       });
     }
     let exportForm = arr.filter(
-      (item) => item.authority == "export-form",
+      (item) => item.authority == "exportForm",
     )?.length;
     if (!exportForm) {
       arr.push({
-        authority: "export-form",
+        authority: "exportForm",
         btnName: i18n("common.exportForm"),
         priority: 40,
         icon: "form",
-        funcName: (row: any) => tbCommonFun("export-form", row),
+        funcName: (row: any) => tbCommonFun("exportForm", row),
       });
     }
     let exportPdf = arr.filter(
-      (item) => item.authority == "export-pdf",
+      (item) => item.authority == "exportPdf",
     )?.length;
     if (!exportPdf) {
       arr.push({
-        authority: "export-pdf",
+        authority: "exportPdf",
         btnName: i18n("common.exportPdf"),
         priority: 50,
         icon: "pdf",
-        funcName: (row: any) => tbCommonFun("export-pdf", row),
+        funcName: (row: any) => tbCommonFun("exportPdf", row),
       });
     }
   }
