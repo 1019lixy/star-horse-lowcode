@@ -1,0 +1,2822 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StarHorse Lowcode 组件库文档</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #409eff;
+      --primary-light: #ecf5ff;
+      --primary-dark: #337ecc;
+      --text: #303133;
+      --text-secondary: #606266;
+      --text-muted: #909399;
+      --border: #dcdfe6;
+      --border-light: #e4e7ed;
+      --bg: #fff;
+      --bg-page: #f5f7fa;
+      --bg-code: #f8f8f8;
+      --sidebar-width: 260px;
+      --header-height: 56px;
+    }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif; color: var(--text); background: var(--bg-page); line-height: 1.6; }
+    a { color: var(--primary); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Layout */
+    .app { display: flex; min-height: 100vh; }
+    .sidebar {
+      position: fixed; top: 0; left: 0; bottom: 0;
+      width: var(--sidebar-width);
+      background: var(--bg);
+      border-right: 1px solid var(--border-light);
+      overflow-y: auto; z-index: 100;
+      transition: transform 0.3s ease;
+      display: flex; flex-direction: column;
+    }
+    .sidebar-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-light);
+      position: sticky; top: 0; background: var(--bg); z-index: 1;
+    }
+    .sidebar-header h1 {
+      font-size: 18px; font-weight: 700; color: var(--primary);
+      margin-bottom: 12px; white-space: nowrap;
+    }
+    .search-input {
+      width: 100%; padding: 8px 12px; border: 1px solid var(--border);
+      border-radius: 4px; font-size: 13px; outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-input:focus { border-color: var(--primary); }
+    .search-input::placeholder { color: var(--text-muted); }
+
+    /* Nav */
+    .nav { flex: 1; overflow-y: auto; padding: 8px 0; }
+    .nav-group { margin-bottom: 4px; }
+    .nav-group-title {
+      padding: 8px 20px 4px; font-size: 12px; font-weight: 600;
+      color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;
+      cursor: default; user-select: none;
+    }
+    .nav-item {
+      display: block; padding: 7px 20px 7px 28px; font-size: 14px;
+      color: var(--text-secondary); cursor: pointer;
+      transition: all 0.15s; border-left: 3px solid transparent;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .nav-item:hover { color: var(--primary); background: var(--primary-light); }
+    .nav-item.active {
+      color: var(--primary); background: var(--primary-light);
+      border-left-color: var(--primary); font-weight: 500;
+    }
+    .nav-item.hidden { display: none; }
+
+    /* Content */
+    .content {
+      flex: 1; margin-left: var(--sidebar-width);
+      max-width: 900px; padding: 40px 48px 80px;
+    }
+    .content section { margin-bottom: 48px; scroll-margin-top: 20px; }
+    .content section + section { padding-top: 24px; border-top: 1px solid var(--border-light); }
+    .content h1 { font-size: 28px; font-weight: 700; margin-bottom: 16px; color: var(--text); }
+    .content h2 { font-size: 22px; font-weight: 600; margin: 32px 0 12px; color: var(--text); padding-bottom: 8px; border-bottom: 1px solid var(--border-light); }
+    .content h3 { font-size: 18px; font-weight: 600; margin: 24px 0 10px; color: var(--text); }
+    .content h4 { font-size: 16px; font-weight: 600; margin: 20px 0 8px; color: var(--text-secondary); }
+    .content p { margin: 8px 0; color: var(--text-secondary); }
+    .content ul, .content ol { margin: 8px 0; padding-left: 24px; color: var(--text-secondary); }
+    .content li { margin: 4px 0; }
+    .content strong { color: var(--text); font-weight: 600; }
+    .content blockquote {
+      margin: 12px 0; padding: 12px 16px;
+      border-left: 4px solid var(--primary);
+      background: var(--primary-light); border-radius: 0 4px 4px 0;
+      color: var(--text-secondary); font-size: 14px;
+    }
+    .content blockquote p { margin: 4px 0; }
+    .content hr { border: none; border-top: 1px solid var(--border-light); margin: 24px 0; }
+
+    /* Table */
+    .content table {
+      width: 100%; border-collapse: collapse; margin: 12px 0;
+      font-size: 14px; overflow-x: auto; display: block;
+    }
+    .content th, .content td {
+      border: 1px solid var(--border); padding: 10px 14px;
+      text-align: left; vertical-align: top;
+    }
+    .content th {
+      background: var(--bg-page); font-weight: 600;
+      color: var(--text); white-space: nowrap;
+    }
+    .content tr:nth-child(even) td { background: #fafafa; }
+    .content tr:hover td { background: var(--primary-light); }
+
+    /* Code */
+    .content code {
+      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+      background: var(--bg-code); padding: 2px 6px; border-radius: 3px;
+      font-size: 0.9em; color: #c7254e;
+    }
+    .content pre {
+      margin: 12px 0; padding: 16px 20px;
+      background: #1e1e1e; border-radius: 6px;
+      overflow-x: auto; line-height: 1.5;
+    }
+    .content pre code {
+      background: none; color: #d4d4d4; padding: 0;
+      font-size: 13px; white-space: pre;
+    }
+    .content .code-label {
+      font-size: 12px; color: var(--text-muted); margin-bottom: 4px;
+      font-family: 'SFMono-Regular', Consolas, monospace;
+    }
+
+    /* Mobile */
+    .menu-btn {
+      display: none; position: fixed; top: 12px; left: 12px; z-index: 200;
+      width: 40px; height: 40px; border-radius: 8px;
+      background: var(--bg); border: 1px solid var(--border);
+      cursor: pointer; align-items: center; justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .menu-btn svg { width: 20px; height: 20px; stroke: var(--text); }
+    .overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3);
+      z-index: 99;
+    }
+    .overlay.show { display: block; }
+
+    @media (max-width: 768px) {
+      .menu-btn { display: flex; }
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); box-shadow: 4px 0 16px rgba(0,0,0,0.1); }
+      .content { margin-left: 0; padding: 20px 16px 60px; padding-top: 64px; }
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-thumb { background: #c0c4cc; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #909399; }
+    ::-webkit-scrollbar-track { background: transparent; }
+
+    /* Back to top */
+    .back-top {
+      position: fixed; right: 32px; bottom: 32px;
+      width: 40px; height: 40px; border-radius: 50%;
+      background: var(--primary); color: #fff;
+      border: none; cursor: pointer; display: none;
+      align-items: center; justify-content: center;
+      box-shadow: 0 2px 8px rgba(64,158,255,0.4);
+      transition: opacity 0.2s; z-index: 50;
+    }
+    .back-top:hover { background: var(--primary-dark); }
+    .back-top.show { display: flex; }
+    .back-top svg { width: 18px; height: 18px; }
+  </style>
+</head>
+<body>
+  <button class="menu-btn" id="menuBtn" aria-label="菜单">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <div class="overlay" id="overlay"></div>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h1>StarHorse Lowcode</h1>
+        <input type="text" placeholder="搜索文档..." class="search-input" id="searchInput">
+      </div>
+      <nav class="nav" id="nav">
+        <div class="nav-group">
+          <div class="nav-group-title">指南</div>
+          <a class="nav-item" href="#architecture" data-keyword="架构">架构</a>
+          <a class="nav-item" href="#quickstart" data-keyword="快速上手">快速上手</a>
+        </div>
+        <div class="nav-group">
+          <div class="nav-group-title">核心</div>
+          <a class="nav-item" href="#internal-mechanisms" data-keyword="内部机制">内部机制</a>
+          <a class="nav-item" href="#linkage-and-datasource" data-keyword="联动策略与数据源">联动策略与数据源</a>
+        </div>
+        <div class="nav-group">
+          <div class="nav-group-title">组件</div>
+          <a class="nav-item" href="#form-items" data-keyword="表单项组件">表单项组件</a>
+          <a class="nav-item" href="#star-horse-form" data-keyword="StarHorseForm">StarHorseForm</a>
+          <a class="nav-item" href="#star-horse-table-comp" data-keyword="StarHorseTableComp">StarHorseTableComp</a>
+          <a class="nav-item" href="#star-horse-dialog" data-keyword="StarHorseDialog">StarHorseDialog</a>
+          <a class="nav-item" href="#star-horse-search-form" data-keyword="StarHorseSearchForm">StarHorseSearchForm</a>
+          <a class="nav-item" href="#star-horse-data-selector" data-keyword="StarHorseDataSelector">StarHorseDataSelector</a>
+          <a class="nav-item" href="#star-horse-data-view" data-keyword="StarHorseDataView">StarHorseDataView</a>
+          <a class="nav-item" href="#star-horse-form-list" data-keyword="StarHorseFormList">StarHorseFormList</a>
+          <a class="nav-item" href="#star-horse-tree" data-keyword="StarHorseTree">StarHorseTree</a>
+          <a class="nav-item" href="#star-horse-static-table" data-keyword="StarHorseStaticTable">StarHorseStaticTable</a>
+          <a class="nav-item" href="#star-horse-draggable" data-keyword="StarHorseDraggable">StarHorseDraggable</a>
+          <a class="nav-item" href="#sh-form" data-keyword="ShForm">ShForm</a>
+          <a class="nav-item" href="#system-components" data-keyword="系统组件">系统组件</a>
+          <a class="nav-item" href="#layout-components" data-keyword="布局组件">布局组件</a>
+        </div>
+        <div class="nav-group">
+          <div class="nav-group-title">类型</div>
+          <a class="nav-item" href="#types" data-keyword="类型定义">类型定义</a>
+        </div>
+      </nav>
+    </aside>
+    <main class="content" id="content">
+
+      <!-- ===== 架构 ===== -->
+      <section id="architecture">
+        <h1>StarHorse Lowcode 组件库架构</h1>
+        <h2 id="架构-概述">概述</h2>
+        <p>StarHorse Lowcode 是一套基于 Vue 3 + Element Plus 的低代码组件库，提供表单、表格、对话框、树形控件、数据选择器等核心业务组件，以及丰富的表单项组件，支持配置化驱动的页面开发。</p>
+        <h2 id="架构-技术栈">技术栈</h2>
+        <ul>
+          <li><strong>Vue 3</strong> — Composition API + <code>&lt;script setup&gt;</code></li>
+          <li><strong>Element Plus</strong> — 基础 UI 组件库</li>
+          <li><strong>Pinia</strong> — 状态管理</li>
+          <li><strong>TypeScript</strong> — 类型系统</li>
+          <li><strong>Vite</strong> — 构建工具</li>
+          <li><strong>sortablejs</strong> — 拖拽排序</li>
+          <li><strong>vuedraggable-es</strong> — Vue 3 拖拽组件</li>
+        </ul>
+        <h2 id="架构-安装与使用">安装与使用</h2>
+        <h3>全局注册</h3>
+        <div class="code-label">ts</div>
+        <pre><code>import { createApp } from 'vue'
+import StarHorseLowcode from 'star-horse-lowcode'
+
+const app = createApp(App)
+
+app.use(StarHorseLowcode, {
+  router,                   // Vue Router 实例
+  axiosInstance,            // Axios 实例（可选，不传则使用内置实例）
+  lang: 'zh_CN',           // 国际化语言：zh_CN | en_US
+  initElementPlus: true,    // 是否初始化 Element Plus（默认 true）
+  elementPlusOptions: {},   // Element Plus 配置（可选）
+})</code></pre>
+        <h3>按需引入</h3>
+        <div class="code-label">ts</div>
+        <pre><code>import { StarHorseForm, StarHorseTableComp, StarHorseDialog } from 'star-horse-lowcode'</code></pre>
+        <h3>插件安装选项</h3>
+        <table>
+          <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>router</td><td><code>Router</code></td><td>否</td><td>—</td><td>Vue Router 实例，组件内通过 <code>window.__hostRouter__</code> 访问</td></tr>
+            <tr><td>axiosInstance</td><td><code>AxiosInstance</code></td><td>否</td><td>内置实例</td><td>Axios 实例，组件内通过 <code>window.__hostAxios__</code> 访问</td></tr>
+            <tr><td>lang</td><td><code>LangType</code></td><td>否</td><td><code>zh_CN</code></td><td>国际化语言</td></tr>
+            <tr><td>initElementPlus</td><td><code>boolean</code></td><td>否</td><td><code>true</code></td><td>是否自动初始化 Element Plus</td></tr>
+            <tr><td>elementPlusOptions</td><td><code>object</code></td><td>否</td><td>—</td><td>Element Plus 配置项，传入后覆盖默认配置</td></tr>
+          </tbody>
+        </table>
+        <h2 id="架构-组件架构">组件架构</h2>
+        <pre><code>star-horse-lowcode
+├── 核心组件 (comp/)
+│   ├── StarHorseForm          # 表单组件（核心）
+│   ├── StarHorseFormItem      # 表单项容器组件
+│   ├── StarHorseFormList      # 表单列表组件
+│   ├── StarHorseFormTable     # 表单表格组件
+│   ├── StarHorseTableComp     # 数据列表组件（核心）
+│   ├── StarHorseStaticTable   # 静态表格组件
+│   ├── StarHorseSearchForm    # 搜索表单组件
+│   ├── StarHorseSearchComp    # 搜索组件（含高级查询）
+│   ├── StarHorseDialog        # 对话框组件
+│   ├── StarHorseTree          # 树形控件
+│   ├── StarHorseDataSelector  # 数据选择器
+│   ├── StarHorseDataView      # 数据查看视图
+│   ├── StarHorseDraggable     # 拖拽布局组件
+│   ├── StarHorseIcon          # 图标组件
+│   ├── StarHorsePopover       # 弹出框图标选择
+│   ├── StarHorseJsonEditor    # JSON 编辑器
+│   ├── StarHorseTableColumn   # 表格列组件
+│   ├── StarHorseItem          # 通用项渲染组件
+│   ├── ShForm                 # 轻量表单包装
+│   ├── ShDynamicForm          # 动态表单
+│   ├── ShTableListColumn      # 列表表格列组件
+│   ├── DataPicker             # 数据拾取器
+│   └── DataTag                # 数据标签
+│
+├── 表单项组件 (formcomp/items/)
+│   ├── input-item             # 输入框
+│   ├── textarea-item          # 文本域
+│   ├── number-item            # 数字输入
+│   ├── select-item            # 下拉选择
+│   ├── radio-item             # 单选框
+│   ├── checkbox-item          # 复选框
+│   ├── switch-item            # 开关
+│   ├── date-item              # 日期选择
+│   ├── datetime-item          # 日期时间选择
+│   ├── time-item              # 时间选择
+│   ├── time-picker-item       # 时间选择器
+│   ├── tree-select-item       # 树选择
+│   ├── cascade-item           # 级联选择
+│   ├── datapicker-item        # 数据拾取选择
+│   ├── page-select-item       # 分页选择
+│   ├── dialog-input-item      # 弹窗输入
+│   ├── dialog-item            # 弹窗容器
+│   ├── drawer-item            # 抽屉容器
+│   ├── button-item            # 按钮
+│   ├── upload-item            # 文件上传
+│   ├── image-item             # 图片
+│   ├── password-item          # 密码输入
+│   ├── signature-item         # 签名
+│   ├── autocomplete-item      # 自动补全
+│   ├── input-tag-item         # 标签输入
+│   ├── number-range-item      # 数字范围
+│   ├── icon-item              # 图标选择
+│   ├── color-item             # 颜色选择
+│   ├── rate-item              # 评分
+│   ├── slider-item            # 滑块
+│   ├── tag-item               # 标签
+│   ├── link-item              # 链接
+│   ├── text-item              # 文本展示
+│   ├── html-item              # HTML 内容
+│   ├── htmleditor-item        # 富文本编辑器
+│   ├── json-item              # JSON 编辑（对象）
+│   ├── json-array-item        # JSON 编辑（数组）
+│   ├── markdown-item          # Markdown 编辑
+│   ├── view-markdown-item     # Markdown 查看
+│   ├── description-item       # 描述列表
+│   ├── divider-item           # 分割线
+│   ├── progress-item          # 进度条
+│   ├── cron-item              # Cron 表达式
+│   ├── user-item              # 用户选择
+│   ├── org-item               # 组织选择
+│   ├── depart-item            # 部门选择（未实现）
+│   ├── area-item              # 地区选择
+│   ├── location-item          # 位置选择
+│   ├── qrcode-item            # 二维码
+│   ├── barcode-item           # 条形码
+│   ├── audio-item             # 音频播放
+│   ├── transfer-item          # 穿梭框
+│   ├── tselect-item           # 树形下拉选择
+│   ├── usercomp-item          # 自定义组件容器
+│   ├── empty-item             # 空占位
+│   └── unknown-item           # 未知组件占位
+│
+├── 系统组件 (system/)
+│   ├── StarHorseButtonList    # 按钮列表
+│   ├── StarHorseMenu          # 菜单组件
+│   ├── StarHorseSvg           # SVG 组件
+│   ├── StarHorseEditor        # 代码编辑器
+│   ├── StarHorseSidebar       # 侧边栏
+│   ├── StarHorseCodeEditor    # 代码编辑器（IDE风格，需按需加载）
+│   ├── StarHorseDiffEditor    # Diff 编辑器（需按需加载）
+│   ├── StarHorseQueryBuilder  # 查询构建器
+│   ├── ContentMenu            # 右键菜单
+│   ├── SvgLoader              # SVG 加载器
+│   └── PageConfig             # 页面配置
+│
+├── 布局组件 (comp/app/)
+│   ├── MainBar                # 主导航栏
+│   ├── MainContent            # 主内容区
+│   ├── MainContainer          # 主容器
+│   ├── MainSubBar             # 子导航栏
+│   └── MenuShot               # 快捷菜单
+│
+├── Cron 组件 (cron/)
+│   └── Crontab                # Cron 表达式编辑器
+│
+└── 类型定义 (types/)
+    ├── ApiUrls                # 接口地址类型
+    ├── BtnAction              # 按钮事件类型
+    ├── BtnAuth                # 按钮权限类型
+    ├── CompInfo               # 组件信息类型
+    ├── DialogProps            # 弹窗属性类型
+    ├── DyCompField            # 动态组件字段类型
+    ├── DynamicNode            # 动态节点类型
+    ├── FormType               # 表单类型
+    ├── ItemPreps              # 组件属性类型
+    ├── MenusInfo              # 菜单信息类型
+    ├── PageFieldInfo          # 页面字段信息类型
+    ├── PageProps              # 页面属性类型
+    ├── Params                 # 参数类型
+    ├── PreOrPendType          # 前后缀事件类型
+    ├── RuleType               # 校验规则类型
+    ├── SearchProps            # 搜索属性类型
+    ├── ShortKey               # 快捷键类型
+    ├── StarHorseType          # 通用类型
+    └── UserinfoType           # 用户信息类型</code></pre>
+        <h2 id="架构-核心数据流">核心数据流</h2>
+        <pre><code>┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│ StarHorse    │     │ StarHorse    │     │  API 服务    │
+│ SearchForm   │────▶│ TableComp    │────▶│  (compUrl)   │
+│ (搜索条件)   │     │ (数据列表)   │◀────│              │
+└──────────────┘     └──────┬───────┘     └──────────────┘
+                            │
+                     点击新增/编辑
+                            │
+                     ┌──────▼───────┐
+                     │ StarHorse    │
+                     │ Dialog       │
+                     │  ┌────────┐  │
+                     │  │StarHorse│  │
+                     │  │Form    │  │
+                     │  └────────┘  │
+                     └──────────────┘</code></pre>
+        <h2 id="架构-数据来源标识">数据来源标识 (source)</h2>
+        <p>所有表单相关组件通过 <code>source</code> 参数标识调用场景：</p>
+        <table>
+          <thead><tr><th>值</th><th>含义</th></tr></thead>
+          <tbody>
+            <tr><td>0</td><td>表单项组件内部</td></tr>
+            <tr><td>1</td><td>表单新增</td></tr>
+            <tr><td>2</td><td>表单编辑</td></tr>
+            <tr><td>3</td><td>查看视图（只读）</td></tr>
+            <tr><td>4</td><td>查询</td></tr>
+            <tr><td>5</td><td>列表</td></tr>
+            <tr><td>6</td><td>表单设计</td></tr>
+            <tr><td>7</td><td>页面设计</td></tr>
+          </tbody>
+        </table>
+        <h2 id="架构-全局变量">全局变量</h2>
+        <p>插件安装后，以下全局变量可用：</p>
+        <table>
+          <thead><tr><th>变量</th><th>类型</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td><code>window.__hostRouter__</code></td><td><code>Router</code></td><td>宿主应用路由实例</td></tr>
+            <tr><td><code>window.__hostAxios__</code></td><td><code>AxiosInstance</code></td><td>宿主应用 Axios 实例</td></tr>
+            <tr><td><code>window.__starHorseHostApp__</code></td><td><code>App</code></td><td>宿主应用实例</td></tr>
+            <tr><td><code>window.__starHorseHostLang__</code></td><td><code>LangType</code></td><td>国际化语言设置</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ===== 快速上手 ===== -->
+      <section id="quickstart">
+        <h1>快速上手</h1>
+        <h2 id="快速上手-安装">安装</h2>
+        <div class="code-label">bash</div>
+        <pre><code>npm install star-horse-lowcode</code></pre>
+        <h2 id="快速上手-全局注册">全局注册</h2>
+        <div class="code-label">ts</div>
+        <pre><code>// main.ts
+import { createApp } from 'vue'
+import App from './App.vue'
+import router from './router'
+import StarHorseLowcode from 'star-horse-lowcode'
+
+const app = createApp(App)
+
+app.use(StarHorseLowcode, {
+  router,
+  lang: 'zh_CN',
+})
+
+app.mount('#app')</code></pre>
+        <h2 id="快速上手-按需引入">按需引入</h2>
+        <div class="code-label">ts</div>
+        <pre><code>import {
+  StarHorseForm,
+  StarHorseTableComp,
+  StarHorseDialog,
+  StarHorseSearchForm,
+} from 'star-horse-lowcode'</code></pre>
+        <h2 id="快速上手-基本用法">基本用法</h2>
+        <h3>1. 配合接口的完整列表页</h3>
+        <div class="code-label">vue</div>
+        <pre><code>&lt;template&gt;
+  &lt;div&gt;
+    &lt;!-- 搜索区域 --&gt;
+    &lt;StarHorseSearchForm
+      :formData="searchFields"
+      @searchData="onSearch"
+    /&gt;
+
+    &lt;!-- 数据列表 --&gt;
+    &lt;StarHorseTableComp
+      ref="tableRef"
+      :compUrl="apiUrls"
+      :fieldList="pageFieldInfo"
+      :primaryKey="'id'"
+      :showBatchField="false"
+      :dataFormat="dataFormat"
+      :disableAction="false"
+      :dialogInput="false"
+      :filterCondition="searchParams"
+      :orderBy="orderByList"
+      :tableDataList="[]"
+      :expand="false"
+      :title="'用户管理'"
+      :extendBtns="[]"
+      :multipleSelect="false"
+      :expandTable="{}"
+      :helpMsg="''"
+      :globalConfig="{}"
+      :isDynamic="false"
+      :hideButtonList="false"
+      :editCondition="[]"
+      :pageKeepOldData="false"
+      :preview="false"
+    /&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+import type { ApiUrls, PageFieldInfo, SearchParams, OrderByInfo } from 'star-horse-lowcode'
+
+const tableRef = ref()
+
+const apiUrls: ApiUrls = {
+  pageListUrl: '/api/user/page',
+  mergeUrl: '/api/user/save',
+  mergeDraftUrl: '/api/user/draft',
+  batchMergeUrl: '/api/user/batch',
+  batchMergeDraftUrl: '/api/user/batch-draft',
+  loadByIdUrl: '/api/user/detail',
+  loadByIdForViewUrl: '/api/user/view',
+  deleteUrl: '/api/user/delete',
+}
+
+const searchFields = {
+  fieldList: [
+    { label: '名称', fieldName: 'name', type: 'input' },
+    { label: '状态', fieldName: 'status', type: 'select', preps: { values: [{ name: '启用', value: '1' }, { name: '禁用', value: '0' }] } },
+  ]
+}
+
+const pageFieldInfo: PageFieldInfo = {
+  fieldList: [
+    { label: '名称', fieldName: 'name', required: true, formVisible: true, listVisible: true },
+    { label: '状态', fieldName: 'status', type: 'select', preps: { values: [{ name: '启用', value: '1' }, { name: '禁用', value: '0' }] } },
+  ]
+}
+
+const searchParams = ref&lt;SearchParams[]&gt;([])
+const orderByList: OrderByInfo[] = [{ fieldName: 'create_time', orderBy: 'desc' }]
+
+function onSearch(data: SearchParams[]) {
+  searchParams.value = data
+  tableRef.value?.createSearchParams(data)
+}
+
+function dataFormat(row: any, column: any, cellValue: any) {
+  return cellValue
+}
+&lt;/script&gt;</code></pre>
+        <h3>2. 独立表单</h3>
+        <div class="code-label">vue</div>
+        <pre><code>&lt;template&gt;
+  &lt;StarHorseForm
+    ref="formRef"
+    :compUrl="apiUrls"
+    :fieldList="pageFieldInfo"
+    @refresh="onRefresh"
+  /&gt;
+&lt;/template&gt;</code></pre>
+        <h3>3. 对话框中的表单</h3>
+        <div class="code-label">vue</div>
+        <pre><code>&lt;template&gt;
+  &lt;StarHorseDialog
+    v-model:dialogVisible="visible"
+    title="编辑数据"
+    @merge="onMerge"
+  &gt;
+    &lt;StarHorseForm
+      ref="formRef"
+      :compUrl="apiUrls"
+      :fieldList="pageFieldInfo"
+    /&gt;
+  &lt;/StarHorseDialog&gt;
+&lt;/template&gt;</code></pre>
+        <h3>4. 静态表格</h3>
+        <div class="code-label">vue</div>
+        <pre><code>&lt;template&gt;
+  &lt;StarHorseStaticTable
+    primaryKey="id"
+    :fieldList="{ fieldList: columns }"
+    :dataList="tableData"
+  /&gt;
+&lt;/template&gt;</code></pre>
+        <h3>5. 数据选择器</h3>
+        <div class="code-label">vue</div>
+        <pre><code>&lt;template&gt;
+  &lt;StarHorseDataSelector
+    v-model="selectedValue"
+    :dataUrl="'/api/user/list'"
+    :displayName="'name'"
+    :displayValue="'id'"
+    :multiple="true"
+    @change="onChange"
+  /&gt;
+&lt;/template&gt;</code></pre>
+        <h2 id="快速上手-国际化">国际化</h2>
+        <p>组件库支持中文和英文，通过安装选项设置：</p>
+        <div class="code-label">ts</div>
+        <pre><code>app.use(StarHorseLowcode, {
+  lang: 'en_US',  // 或 'zh_CN'
+})</code></pre>
+        <h2 id="快速上手-主题定制">主题定制</h2>
+        <p>组件库使用 CSS 变量控制主题色，可通过覆盖以下变量自定义：</p>
+        <div class="code-label">css</div>
+        <pre><code>:root {
+  --star-horse-style: #409eff;   /* 主题色 */
+}</code></pre>
+      </section>
+
+      <!-- ===== 内部机制 ===== -->
+      <section id="internal-mechanisms">
+        <h1>内部机制</h1>
+        <p>本文档说明组件库的核心内部机制，理解这些机制对于正确配置和使用组件至关重要。</p>
+        <h2 id="内部机制-1-prepsfilter">1. prepsFilter — 属性透传机制</h2>
+        <h3>核心原理</h3>
+        <p>所有表单项组件通过 <code>v-bind="prepsFilter(field.preps)"</code> 将 <code>field.preps</code> 中的属性透传给底层的 Element Plus 组件。这意味着 <strong><code>field.preps</code> 中除了框架内部使用的属性外，其余属性会直接传递给对应的 el-xxx 组件</strong>。</p>
+        <div class="code-label">vue</div>
+        <pre><code>&lt;!-- input-item.vue 中 --&gt;
+&lt;el-input v-bind="prepsFilter(field.preps)" v-model="normalData" /&gt;
+
+&lt;!-- select-item.vue 中 --&gt;
+&lt;el-select v-bind="prepsFilter(field.preps)" v-model="formData[field.fieldName]" /&gt;</code></pre>
+        <h3>prepsFilter 处理逻辑</h3>
+        <p><code>prepsFilter</code> 函数会做以下处理：</p>
+        <ol>
+          <li><strong>移除空值属性</strong>：值为 <code>undefined</code>、<code>null</code>、<code>""</code>、<code>NaN</code> 的属性会被删除（只读属性除外）</li>
+          <li><strong>字符串布尔值转换</strong>：<code>"true"</code> → <code>true</code>，<code>"false"</code> → <code>false</code></li>
+          <li><strong>返回处理后的对象</strong>，供 <code>v-bind</code> 使用</li>
+        </ol>
+        <h3>框架内部使用的 preps 属性（不会透传给 Element Plus）</h3>
+        <p>以下属性被框架内部消费，虽然也会出现在 preps 对象中，但它们<strong>不会</strong>被 Element Plus 识别为有效 prop：</p>
+        <table>
+          <thead><tr><th>属性名</th><th>使用组件</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td><code>values</code></td><td>select/radio/checkbox/autocomplete</td><td>选项数据，由组件内部渲染为 el-option</td></tr>
+            <tr><td><code>data</code></td><td>tselect/transfer/tree-select</td><td>数据源</td></tr>
+            <tr><td><code>options</code></td><td>cascade</td><td>级联选项数据</td></tr>
+            <tr><td><code>dataSource</code></td><td>select/datapicker</td><td>数据源类型标识</td></tr>
+            <tr><td><code>dataRelation</code></td><td>所有表单项</td><td>联动策略配置</td></tr>
+            <tr><td><code>formula</code></td><td>input/number/textarea</td><td>公式计算配置</td></tr>
+            <tr><td><code>prefixIcon</code> / <code>prefix</code></td><td>input</td><td>前缀图标/文字，由组件内部渲染到 #prefix 插槽</td></tr>
+            <tr><td><code>suffixIcon</code> / <code>suffix</code></td><td>input</td><td>后缀图标/文字，由组件内部渲染到 #suffix 插槽</td></tr>
+            <tr><td><code>prependText</code> / <code>prependAction</code></td><td>input</td><td>前置内容，由组件内部渲染到 #prepend 插槽</td></tr>
+            <tr><td><code>appendText</code> / <code>appendAction</code></td><td>input</td><td>后置内容，由组件内部渲染到 #append 插槽</td></tr>
+            <tr><td><code>appendList</code> / <code>prependList</code></td><td>input</td><td>前后缀下拉选项列表</td></tr>
+            <tr><td><code>mergePrefix</code> / <code>mergeAppend</code></td><td>input</td><td>是否合并前后缀到字段值</td></tr>
+            <tr><td><code>preName</code> / <code>appName</code></td><td>input</td><td>前后缀字段名</td></tr>
+            <tr><td><code>prependDefaultValue</code> / <code>appendDefaultValue</code></td><td>input</td><td>前后缀默认值</td></tr>
+            <tr><td><code>showFooter</code></td><td>select/cascade/tselect</td><td>是否显示底部添加选项区</td></tr>
+            <tr><td><code>needSplitName</code></td><td>date</td><td>范围选择时是否拆分到 Start/End 字段</td></tr>
+            <tr><td><code>disableDate</code></td><td>date</td><td>禁用日期配置</td></tr>
+            <tr><td><code>multipleSelect</code></td><td>datapicker</td><td>是否多选</td></tr>
+            <tr><td><code>urlOrDictName</code></td><td>datapicker</td><td>URL 或字典名</td></tr>
+            <tr><td><code>queryParams</code></td><td>datapicker</td><td>查询参数</td></tr>
+            <tr><td><code>prop.label</code> / <code>prop.value</code></td><td>datapicker</td><td>显示/值属性名</td></tr>
+            <tr><td><code>iconType</code> / <code>placement</code> / <code>listView</code></td><td>icon</td><td>图标选择器配置</td></tr>
+            <tr><td><code>compName</code></td><td>dialog/drawer/usercomp</td><td>动态组件名</td></tr>
+            <tr><td><code>fieldList</code></td><td>dialog/drawer/page-select/dialog-input</td><td>弹窗内字段列表</td></tr>
+            <tr><td><code>viewType</code></td><td>button</td><td>操作类型</td></tr>
+            <tr><td><code>selectLabel</code></td><td>autocomplete</td><td>远程搜索标签属性名</td></tr>
+            <tr><td><code>radioType</code></td><td>radio</td><td>样式类型</td></tr>
+            <tr><td><code>tagType</code> / <code>tagMap</code> / <code>placeholder</code></td><td>tag/input-tag</td><td>标签配置</td></tr>
+            <tr><td><code>assignType</code></td><td>image</td><td>赋值方式</td></tr>
+            <tr><td><code>context</code></td><td>upload/image</td><td>上下文路径</td></tr>
+            <tr><td><code>minName</code> / <code>maxName</code> / <code>splitName</code></td><td>number-range</td><td>范围字段名</td></tr>
+            <tr><td><code>descItems</code></td><td>description</td><td>描述项数组</td></tr>
+            <tr><td><code>stopInitCallAction</code></td><td>所有表单项</td><td>阻止初始化时调用 actions</td></tr>
+            <tr><td><code>starHorseFieldSource</code></td><td>所有表单项</td><td>字段来源标识</td></tr>
+          </tbody>
+        </table>
+        <h3>如何使用 Element Plus 原生属性</h3>
+        <p>由于 <code>v-bind="prepsFilter(field.preps)"</code> 的透传机制，你只需在 <code>field.preps</code> 中添加 Element Plus 组件支持的任何属性即可：</p>
+        <div class="code-label">ts</div>
+        <pre><code>// input-item 支持 el-input 的所有属性
+{
+  fieldName: 'name',
+  type: 'input',
+  preps: {
+    placeholder: '请输入姓名',     // el-input 的 placeholder
+    maxlength: 50,                  // el-input 的 maxlength
+    clearable: true,                // el-input 的 clearable
+    showWordLimit: true,            // el-input 的 showWordLimit
+    size: 'large',                  // el-input 的 size
+    validateEvent: true,            // el-input 的 validateEvent
+  }
+}
+
+// select-item 支持 el-select 的所有属性
+{
+  fieldName: 'status',
+  type: 'select',
+  preps: {
+    values: [{ name: '启用', value: '1' }],
+    placeholder: '请选择状态',     // el-select 的 placeholder
+    clearable: true,                // el-select 的 clearable
+    multiple: true,                 // el-select 的 multiple
+    collapseTags: true,             // el-select 的 collapseTags
+    collapseTagsTooltip: true,      // el-select 的 collapseTagsTooltip
+    filterable: true,               // el-select 的 filterable
+    allowCreate: true,              // el-select 的 allowCreate
+    defaultFirstOption: true,       // el-select 的 defaultFirstOption
+  }
+}</code></pre>
+        <blockquote><p><strong>重要提示</strong>：框架内部使用的属性（如 <code>values</code>、<code>dataRelation</code>）即使写在 preps 中也不会冲突，因为它们要么被组件内部消费，要么 Element Plus 不识别会自动忽略。</p></blockquote>
+        <hr>
+        <h2 id="内部机制-2-formulaengine">2. FormulaEngine — 公式计算引擎</h2>
+        <p>公式引擎支持在字段值变化时自动计算并回填结果。配置在 <code>field.preps.formula</code> 或 <code>field.formula</code> 中。</p>
+        <h3>FormulaConfig 配置</h3>
+        <table>
+          <thead><tr><th>字段</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>enable</td><td><code>boolean</code></td><td>是</td><td>—</td><td>是否启用</td></tr>
+            <tr><td>type</td><td><code>FormulaType</code></td><td>是</td><td>—</td><td>公式类型</td></tr>
+            <tr><td>sourceFields</td><td><code>string[]</code></td><td>是</td><td>—</td><td>依赖字段列表，值变化时触发计算</td></tr>
+            <tr><td>expression</td><td><code>string</code></td><td>否</td><td>—</td><td>公式表达式，使用 <code>${fieldName}</code> 引用字段值</td></tr>
+            <tr><td>branches</td><td><code>ConditionBranch[]</code></td><td>否</td><td>—</td><td>条件分支（type=condition）</td></tr>
+            <tr><td>lookupMappings</td><td><code>LookupMapping[]</code></td><td>否</td><td>—</td><td>联动回填映射（type=lookup）</td></tr>
+            <tr><td>precision</td><td><code>number</code></td><td>否</td><td>—</td><td>精度</td></tr>
+            <tr><td>prefix</td><td><code>string</code></td><td>否</td><td>—</td><td>前缀（如 '¥'）</td></tr>
+            <tr><td>suffix</td><td><code>string</code></td><td>否</td><td>—</td><td>后缀（如 '元'、'%'）</td></tr>
+            <tr><td>dateUnit</td><td><code>'year'|'month'|'day'|'hour'|'minute'|'second'</code></td><td>否</td><td>—</td><td>日期单位</td></tr>
+            <tr><td>dateMode</td><td><code>'diff'|'offset'|'format'</code></td><td>否</td><td>—</td><td>日期计算模式</td></tr>
+            <tr><td>dateOffset</td><td><code>number</code></td><td>否</td><td>—</td><td>日期偏移量</td></tr>
+            <tr><td>dateFormat</td><td><code>string</code></td><td>否</td><td>—</td><td>日期输出格式</td></tr>
+            <tr><td>formatType</td><td><code>'thousands'|'padStart'|'toFixed'|'regex'</code></td><td>否</td><td>—</td><td>格式化子类型</td></tr>
+            <tr><td>formatArg</td><td><code>string | number</code></td><td>否</td><td>—</td><td>格式化参数</td></tr>
+            <tr><td>formatArg2</td><td><code>string</code></td><td>否</td><td>—</td><td>格式化参数2</td></tr>
+            <tr><td>aggregateField</td><td><code>string</code></td><td>否</td><td>—</td><td>聚合子字段名</td></tr>
+            <tr><td>defaultValue</td><td><code>any</code></td><td>否</td><td>—</td><td>条件不匹配时的默认值</td></tr>
+          </tbody>
+        </table>
+        <h3>8 种公式类型</h3>
+        <h4>1. calc — 数学运算</h4>
+        <div class="code-label">ts</div>
+        <pre><code>{
+  fieldName: 'totalPrice',
+  preps: {
+    formula: {
+      enable: true,
+      type: 'calc',
+      sourceFields: ['price', 'quantity'],
+      expression: '${price} * ${quantity}',
+      precision: 2,
+      suffix: '元',
+    }
+  }
+}
+// 支持所有 JS 数学运算：+ - * / %，以及 Math 对象方法</code></pre>
+        <h4>2. concat — 字符串拼接</h4>
+        <div class="code-label">ts</div>
+        <pre><code>{
+  fieldName: 'fullName',
+  preps: {
+    formula: {
+      enable: true,
+      type: 'concat',
+      sourceFields: ['lastName', 'firstName'],
+      expression: '${lastName}${firstName}',
+    }
+  }
+}</code></pre>
+        <h4>3. condition — 多分支条件判断</h4>
+        <div class="code-label">ts</div>
+        <pre><code>{
+  fieldName: 'level',
+  preps: {
+    formula: {
+      enable: true,
+      type: 'condition',
+      sourceFields: ['score'],
+      branches: [
+        { when: '${score} >= 90', then: '优秀' },
+        { when: '${score} >= 60', then: '及格' },
+      ],
+      defaultValue: '不及格',
+    }
+  }
+}</code></pre>
+        <h4>4. lookup — 联动回填</h4>
+        <div class="code-label">ts</div>
+        <pre><code>{
+  fieldName: 'productCode',
+  preps: {
+    formula: {
+      enable: true,
+      type: 'lookup',
+      sourceFields: ['productCode'],
+      lookupMappings: [
+        { key: 'P001', values: { productName: '商品A', price: 99.9 } },
+        { key: 'P002', values: { productName: '商品B', price: 199.9 } },
+      ],
+    }
+  }
+}</code></pre>
+        <h4>5. aggregate — 聚合运算</h4>
+        <div class="code-label">ts</div>
+        <pre><code>{
+  fieldName: 'totalAmount',
+  preps: {
+    formula: {
+      enable: true,
+      type: 'aggregate',
+      sourceFields: ['items'],
+      aggregateField: 'amount',
+      expression: 'sum',
+      precision: 2,
+    }
+  }
+}</code></pre>
+        <h4>6. dateCalc — 日期计算</h4>
+        <div class="code-label">ts</div>
+        <pre><code>// diff 模式
+{ type: 'dateCalc', sourceFields: ['startDate', 'endDate'], expression: '${startDate} ~ ${endDate}', dateUnit: 'day', dateMode: 'diff' }
+
+// offset 模式
+{ type: 'dateCalc', sourceFields: ['createDate'], expression: '${createDate}', dateMode: 'offset', dateOffset: 7, dateUnit: 'day', dateFormat: 'YYYY-MM-DD' }
+
+// format 模式
+{ type: 'dateCalc', sourceFields: ['rawDate'], expression: '${rawDate}', dateMode: 'format', dateFormat: 'YYYY-MM-DD' }</code></pre>
+        <h4>7. format — 格式化</h4>
+        <div class="code-label">ts</div>
+        <pre><code>// 千分位: 1234567 → '1,234,567'
+{ type: 'format', sourceFields: ['amount'], formatType: 'thousands' }
+
+// 左填充: 5 → '000005'
+{ type: 'format', sourceFields: ['code'], formatType: 'padStart', formatArg: 6, formatArg2: '0' }
+
+// 固定小数位: 3.1 → '3.10'
+{ type: 'format', sourceFields: ['price'], formatType: 'toFixed', precision: 2 }
+
+// 正则替换: 'abc123' → '123'
+{ type: 'format', sourceFields: ['rawText'], formatType: 'regex', formatArg: '[^0-9]', formatArg2: '' }</code></pre>
+        <h4>8. ternary — 三元表达式</h4>
+        <div class="code-label">ts</div>
+        <pre><code>{
+  fieldName: 'result',
+  preps: {
+    formula: {
+      enable: true,
+      type: 'ternary',
+      sourceFields: ['score'],
+      expression: '${score} >= 60 ? ${score} : 0',
+    }
+  }
+}</code></pre>
+        <hr>
+        <h2 id="内部机制-3-useprefixsuffix">3. usePrefixSuffix — 前后缀机制</h2>
+        <p>input-item / password-item / autocomplete-item 等组件使用 <code>usePrefixSuffix</code> composable 处理前后缀数据与主字段值的合并和拆分。</p>
+        <h3>工作原理</h3>
+        <p>当配置了 <code>mergePrefix: true</code> 或 <code>mergeAppend: true</code> 时，输入框的实际值会由<strong>主字段值 + 前缀字段值 + 后缀字段值</strong>合并而成：</p>
+        <pre><code>formData[field.fieldName] = 前缀值 + 主值 + 后缀值</code></pre>
+        <h3>field.preps 配置</h3>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>mergePrefix</td><td><code>boolean</code></td><td><code>false</code></td><td>是否启用前缀合并</td></tr>
+            <tr><td>mergeAppend</td><td><code>boolean</code></td><td><code>false</code></td><td>是否启用后缀合并</td></tr>
+            <tr><td>preName</td><td><code>string</code></td><td><code>'pre' + fieldName</code></td><td>前缀字段名</td></tr>
+            <tr><td>appName</td><td><code>string</code></td><td><code>'app' + fieldName</code></td><td>后缀字段名</td></tr>
+            <tr><td>prependList</td><td><code>SelectOption[]</code></td><td>—</td><td>前缀下拉选项</td></tr>
+            <tr><td>appendList</td><td><code>SelectOption[]</code></td><td>—</td><td>后缀下拉选项</td></tr>
+            <tr><td>prependDefaultValue</td><td><code>string</code></td><td>—</td><td>前缀默认值</td></tr>
+            <tr><td>appendDefaultValue</td><td><code>string</code></td><td>—</td><td>后缀默认值</td></tr>
+          </tbody>
+        </table>
+        <h3>使用示例</h3>
+        <h4>前后缀下拉选择</h4>
+        <div class="code-label">ts</div>
+        <pre><code>{
+  fieldName: 'phone',
+  type: 'input',
+  preps: {
+    mergePrefix: true,
+    mergeAppend: false,
+    prependList: [
+      { name: '+86', value: '+86' },
+      { name: '+1', value: '+1' },
+    ],
+  }
+}
+// formData: { phone: '+8613800138000', prePhone: '+86' }</code></pre>
+        <hr>
+        <h2 id="内部机制-4-source">4. source 数据来源的影响</h2>
+        <p><code>source</code> 参数不仅是一个标识，还会影响组件的实际行为：</p>
+        <table>
+          <thead><tr><th>source 值</th><th>含义</th><th>行为影响</th></tr></thead>
+          <tbody>
+            <tr><td>0</td><td>表单项组件内部</td><td>—</td></tr>
+            <tr><td>1</td><td>表单新增</td><td>日期格式化 watch 在 source===1 时会自动关闭（不格式化用户输入）</td></tr>
+            <tr><td>2</td><td>表单编辑</td><td>—</td></tr>
+            <tr><td>3</td><td>查看视图（只读）</td><td>① 所有字段变为禁用状态；② apiLinkage 联动不执行；③ 初始化时 actions 不调用</td></tr>
+            <tr><td>4</td><td>查询</td><td>—</td></tr>
+            <tr><td>5</td><td>列表</td><td>列表中的表单项不触发初始化 actions</td></tr>
+            <tr><td>6</td><td>表单设计</td><td>—</td></tr>
+            <tr><td>7</td><td>页面设计</td><td>—</td></tr>
+          </tbody>
+        </table>
+        <h3>禁用判断逻辑</h3>
+        <div class="code-label">ts</div>
+        <pre><code>// checkIsDisabled 函数判断逻辑：
+const isDisabled = 
+  editDisabled === true ||                           // 编辑时禁用且非新增
+  field.disabled === true ||                          // 字段显式禁用
+  field.preps?.disabled === true ||                   // preps 中禁用
+  (!formData['_fieldNameEditable'] &amp;&amp; preps.disabled) || // 隐式禁用
+  source === 3                                        // 查看模式全部禁用</code></pre>
+        <hr>
+        <h2 id="内部机制-5-动态事件">5. 动态事件 — getDynamicEvents</h2>
+        <p>所有表单项组件通过 <code>v-on="getDynamicEvents(props, itemAction, formData)"</code> 绑定动态事件。这意味着你在 <code>field.actions</code> 中配置的事件会自动绑定到 Element Plus 组件上。</p>
+        <div class="code-label">ts</div>
+        <pre><code>{
+  fieldName: 'name',
+  type: 'input',
+  actions: {
+    blur: (formData) =&gt; { console.log('失焦', formData) },
+    input: (formData) =&gt; { console.log('输入', formData) },
+  }
+}</code></pre>
+        <blockquote><p>同时，组件也会自动触发 <code>selfFunc</code> 事件（通过 <code>allAction</code>），参数为 <code>(actionName, currentData)</code>。</p></blockquote>
+        <hr>
+        <h2 id="内部机制-6-字段禁用状态">6. 字段禁用状态详细说明</h2>
+        <p>字段的禁用状态由多个因素综合判断，优先级从高到低：</p>
+        <ol>
+          <li><strong>source === 3</strong>：查看模式，所有字段强制禁用</li>
+          <li><strong>field.disabled / props.disabled / field.preps.disabled</strong>：显式禁用</li>
+          <li><strong>field.editDisabled / props.editDisabled / field.preps.editDisabled</strong>：编辑时禁用（仅当 <code>starHorseFieldSource !== 1</code> 即非新增时生效）</li>
+          <li><strong>隐式禁用</strong>：当 <code>formData['_fieldNameEditable']</code> 为 falsy 且 <code>field.preps.disabled</code> 为 truthy 时</li>
+        </ol>
+        <p>可以通过在 <code>formData</code> 中设置 <code>_fieldNameEditable = true</code> 来解锁被隐式禁用的字段。</p>
+      </section>
+
+      <!-- ===== 联动策略与数据源 ===== -->
+      <section id="linkage-and-datasource">
+        <h1>联动策略与数据源</h1>
+        <p>本文档详细说明组件库的联动策略（ItemRelation）和数据源（ApiLinkageDetail）机制，这是框架的核心能力之一。</p>
+        <h2 id="联动-概述">概述</h2>
+        <p>联动策略允许一个字段的变化自动影响其他字段的显隐、禁用、必填、选项数据等。配置在 <code>field.preps.dataRelation</code> 中。</p>
+        <div class="code-label">ts</div>
+        <pre><code>{
+  fieldName: 'type',
+  preps: {
+    dataRelation: {
+      actionName: 'change',
+      relationDetails: [
+        {
+          controlCondition: 'eqHide',
+          relationFields: ['detailField'],
+          matchType: 'eq',
+          matchFieldName: 'type',
+          matchFieldValue: ['1'],
+          params: {},
+          staticDatas: [],
+          isWorking: false,
+        }
+      ]
+    }
+  }
+}</code></pre>
+        <h2 id="联动-配置结构">联动配置结构</h2>
+        <h3>ItemRelation 联动对象</h3>
+        <table>
+          <thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>actionName</td><td><code>string</code></td><td>是</td><td>触发联动的事件名称，常用值：<code>'change'</code>、<code>'input'</code>、<code>'blur'</code></td></tr>
+            <tr><td>relationDetails</td><td><code>RelationDetail[]</code></td><td>否</td><td>简单联动策略详情（与 apiLinkage 二选一）</td></tr>
+            <tr><td>apiLinkage</td><td><code>ApiLinkageDetail</code></td><td>否</td><td>第三方接口联动（与 relationDetails 二选一）</td></tr>
+          </tbody>
+        </table>
+        <blockquote><p><strong>注意</strong>：<code>relationDetails</code> 和 <code>apiLinkage</code> 二选一。如果 <code>relationDetails</code> 存在且非空，优先使用；否则走 <code>apiLinkage</code>。当 <code>source === 3</code>（查看模式）时，<code>apiLinkage</code> 不执行。</p></blockquote>
+        <h2 id="联动-简单联动">简单联动 — RelationDetail</h2>
+        <h3>controlCondition 联动类型</h3>
+        <table>
+          <thead><tr><th>值</th><th>说明</th><th>目标属性</th><th>取反</th></tr></thead>
+          <tbody>
+            <tr><td><code>eqHide</code></td><td>匹配时<strong>隐藏</strong>目标字段</td><td><code>formVisible = false</code></td><td>否</td></tr>
+            <tr><td><code>eqVisible</code></td><td>匹配时<strong>显示</strong>目标字段</td><td><code>formVisible = true</code></td><td>否</td></tr>
+            <tr><td><code>eqDisable</code></td><td>匹配时<strong>禁用</strong>目标字段</td><td><code>disabled = true</code></td><td>否</td></tr>
+            <tr><td><code>eqEditable</code></td><td>匹配时<strong>可编辑</strong>目标字段</td><td><code>disabled = false</code></td><td>是</td></tr>
+            <tr><td><code>eqRequired</code></td><td>匹配时<strong>必填</strong>目标字段</td><td><code>required = true</code></td><td>否</td></tr>
+            <tr><td><code>eqUnRequired</code></td><td>匹配时<strong>非必填</strong>目标字段</td><td><code>required = false</code></td><td>是</td></tr>
+            <tr><td><code>eqConditionDataLinkage</code></td><td>条件数据联动（用匹配值过滤）</td><td>赋值选项数据</td><td>—</td></tr>
+            <tr><td><code>asParamDataLinkage</code></td><td>参数数据联动（将值作为查询参数）</td><td>赋值选项数据</td><td>—</td></tr>
+            <tr><td><code>assignValue</code></td><td>静态赋值</td><td>赋值到字段</td><td>—</td></tr>
+            <tr><td><code>changeType</code></td><td>改变字段类型</td><td>修改 field.type</td><td>—</td></tr>
+          </tbody>
+        </table>
+        <h3>matchType 匹配方式</h3>
+        <table>
+          <thead><tr><th>值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td><code>eq</code> / 默认</td><td>当前字段值包含在 matchFieldValue 中（<code>includes</code>）</td></tr>
+            <tr><td><code>llk</code></td><td>当前字段值以 matchFieldValue 开头（<code>startsWith</code>）</td></tr>
+            <tr><td><code>rlk</code></td><td>当前字段值以 matchFieldValue 结尾（<code>endsWith</code>）</td></tr>
+            <tr><td><code>neq</code> / <code>nlk</code></td><td>当前字段值不包含 matchFieldValue</td></tr>
+            <tr><td><code>lt</code></td><td>当前字段值 &lt; matchFieldValue</td></tr>
+            <tr><td><code>lte</code></td><td>当前字段值 &lt;= matchFieldValue</td></tr>
+            <tr><td><code>gt</code></td><td>当前字段值 &gt; matchFieldValue</td></tr>
+            <tr><td><code>gte</code></td><td>当前字段值 &gt;= matchFieldValue</td></tr>
+            <tr><td><code>isnull</code></td><td>当前字段值为空</td></tr>
+            <tr><td><code>notnull</code></td><td>当前字段值非空</td></tr>
+            <tr><td><code>bt</code></td><td>当前字段值在 matchFieldValue[0] ~ matchFieldValue[1] 之间</td></tr>
+          </tbody>
+        </table>
+        <h3>数据联动赋值规则</h3>
+        <table>
+          <thead><tr><th>目标字段类型</th><th>赋值方式</th></tr></thead>
+          <tbody>
+            <tr><td>select / autocomplete / radio / checkbox</td><td>赋值到 <code>field.preps.values</code>（选项列表）</td></tr>
+            <tr><td>tselect / transfer</td><td>赋值到 <code>field.preps.data</code></td></tr>
+            <tr><td>cascade</td><td>赋值到 <code>field.preps.options</code></td></tr>
+            <tr><td>其他类型（对象数据）</td><td>遍历对象 key-value，逐个赋值到 <code>field.preps[key]</code></td></tr>
+            <tr><td>其他类型（非对象、非数组）</td><td>赋值到 <code>field.defaultValue</code></td></tr>
+          </tbody>
+        </table>
+        <h2 id="联动-配置示例">联动配置示例</h2>
+        <h3>示例1：字段显隐联动</h3>
+        <div class="code-label">ts</div>
+        <pre><code>{
+  fieldName: 'type',
+  type: 'select',
+  preps: {
+    values: [{ name: '类型1', value: '1' }, { name: '类型2', value: '2' }],
+    dataRelation: {
+      actionName: 'change',
+      relationDetails: [{
+        controlCondition: 'eqHide',
+        relationFields: ['detailField'],
+        matchType: 'eq',
+        matchFieldName: 'type',
+        matchFieldValue: ['1'],
+        params: {},
+        staticDatas: [],
+        isWorking: false,
+      }]
+    }
+  }
+}</code></pre>
+        <h3>示例2：字段禁用联动</h3>
+        <div class="code-label">ts</div>
+        <pre><code>{
+  fieldName: 'status',
+  preps: {
+    dataRelation: {
+      actionName: 'change',
+      relationDetails: [{
+        controlCondition: 'eqDisable',
+        relationFields: ['amount'],
+        matchType: 'eq',
+        matchFieldName: 'status',
+        matchFieldValue: ['approved'],
+        params: {},
+        staticDatas: [],
+        isWorking: false,
+      }]
+    }
+  }
+}</code></pre>
+        <h3>示例3：数据联动（条件过滤）</h3>
+        <div class="code-label">ts</div>
+        <pre><code>{
+  fieldName: 'category',
+  preps: {
+    dataRelation: {
+      actionName: 'change',
+      relationDetails: [{
+        controlCondition: 'eqConditionDataLinkage',
+        relationFields: ['subCategory'],
+        matchType: 'eq',
+        matchFieldName: 'category',
+        matchFieldValue: [],
+        params: {
+          url: '/api/sub-category/list',
+          httpMethod: 'POST',
+          queryParams: [{ propertyName: 'categoryId', operation: 'eq', value: '' }],
+        },
+        staticDatas: [],
+        isWorking: false,
+      }]
+    }
+  }
+}</code></pre>
+        <h3>示例4：数据联动（作为参数）</h3>
+        <div class="code-label">ts</div>
+        <pre><code>{
+  fieldName: 'userId',
+  preps: {
+    dataRelation: {
+      actionName: 'change',
+      relationDetails: [{
+        controlCondition: 'asParamDataLinkage',
+        relationFields: ['orderId'],
+        matchType: 'eq',
+        matchFieldName: 'userId',
+        matchFieldValue: [],
+        params: { url: '/api/order/list', httpMethod: 'POST' },
+        staticDatas: [],
+        isWorking: false,
+      }]
+    }
+  }
+}</code></pre>
+        <h3>示例5：静态赋值</h3>
+        <div class="code-label">ts</div>
+        <pre><code>{
+  fieldName: 'level',
+  preps: {
+    dataRelation: {
+      actionName: 'change',
+      relationDetails: [{
+        controlCondition: 'assignValue',
+        relationFields: ['score'],
+        matchType: 'eq',
+        matchFieldName: 'level',
+        matchFieldValue: ['A'],
+        params: {},
+        staticDatas: 100,
+        isWorking: false,
+      }]
+    }
+  }
+}</code></pre>
+        <h3>示例6：改变字段类型</h3>
+        <div class="code-label">ts</div>
+        <pre><code>{
+  fieldName: 'inputType',
+  preps: {
+    dataRelation: {
+      actionName: 'change',
+      relationDetails: [{
+        controlCondition: 'changeType',
+        relationFields: ['content'],
+        matchType: 'eq',
+        matchFieldName: 'inputType',
+        matchFieldValue: ['textarea'],
+        params: {},
+        staticDatas: 'textarea',
+        isWorking: false,
+      }]
+    }
+  }
+}</code></pre>
+        <h2 id="联动-第三方接口联动">第三方接口联动 — ApiLinkageDetail</h2>
+        <p>当简单联动无法满足需求时，可通过 <code>apiLinkage</code> 配置调用第三方接口，并将返回数据自动回填到表单字段。</p>
+        <h3>ApiLinkageDetail 字段</h3>
+        <table>
+          <thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>apiMode</td><td><code>'system' | 'custom'</code></td><td>是</td><td>接口来源模式</td></tr>
+            <tr><td>apiInfo</td><td><code>ApiInfo</code></td><td>是</td><td>业务接口配置</td></tr>
+            <tr><td>authInfo</td><td><code>ApiInfo</code></td><td>否</td><td>认证接口配置</td></tr>
+            <tr><td>fieldMappings</td><td><code>FieldMapping[]</code></td><td>否</td><td>字段映射配置</td></tr>
+            <tr><td>optionField</td><td><code>OptionField</code></td><td>否</td><td>数据源显示属性配置</td></tr>
+            <tr><td>proxyUrl</td><td><code>string</code></td><td>否</td><td>代理接口地址</td></tr>
+            <tr><td>assignValueType</td><td><code>'form' | 'datasource'</code></td><td>否</td><td>赋值方式</td></tr>
+            <tr><td>dataRelation</td><td><code>ItemRelation</code></td><td>否</td><td>嵌套联动</td></tr>
+          </tbody>
+        </table>
+        <h3>apiMode 说明</h3>
+        <ul>
+          <li><strong><code>'system'</code></strong>：系统内部接口，通过 <code>serviceName</code> + <code>interfaceName</code> + <code>method</code> 调用，可配置 <code>redirect</code> 是否走代理</li>
+          <li><strong><code>'custom'</code></strong>：自定义接口，直接使用 <code>url</code> + <code>httpMethod</code> 调用</li>
+        </ul>
+        <h3>接口联动配置示例</h3>
+        <div class="code-label">ts</div>
+        <pre><code>{
+  fieldName: 'productCode',
+  preps: {
+    dataRelation: {
+      actionName: 'change',
+      apiLinkage: {
+        apiMode: 'custom',
+        apiInfo: {
+          url: 'https://api.example.com/product/detail',
+          httpMethod: 'POST',
+          requestDataType: 'json',
+          requestParams: [
+            { valueType: 'dynamic', paramName: 'code', paramValue: '${productCode}' }
+          ],
+          dataPath: 'data',
+          successCode: '200',
+          apiType: 'thirdApi',
+        },
+        fieldMappings: [
+          { sourceField: 'name', distField: 'productName' },
+          { sourceField: 'price', distField: 'unitPrice' },
+        ],
+        proxyUrl: '/system-config/redirect/apiLinkage',
+        assignValueType: 'form',
+      }
+    }
+  }
+}</code></pre>
+        <h2 id="联动-前后缀按钮事件">前后缀按钮事件 — PreOrPendEventConfig</h2>
+        <p>input-item 等组件支持前后缀按钮（<code>prependAction</code> / <code>appendAction</code>），每个按钮的 <code>actions</code> 字段类型为 <code>PreOrPendEventConfig</code>。</p>
+        <h3>PreOrPendEventType 事件类型</h3>
+        <table>
+          <thead><tr><th>值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td><code>'none'</code></td><td>无事件</td></tr>
+            <tr><td><code>'linkage'</code></td><td>调用联动策略配置</td></tr>
+            <tr><td><code>'dataSource'</code></td><td>调用数据源配置</td></tr>
+            <tr><td><code>'custom'</code></td><td>自定义 JS 代码执行</td></tr>
+            <tr><td><code>'function'</code></td><td>自定义函数，参数为 <code>(props, formData, formInfo)</code></td></tr>
+          </tbody>
+        </table>
+        <h2 id="联动-触发时机">联动触发时机</h2>
+        <ol>
+          <li><strong>字段值变化时</strong>：当用户操作导致 <code>formData[fieldName]</code> 值变化时，如果该字段配置了 <code>field.preps.dataRelation</code>，联动自动触发</li>
+          <li><strong>表单初始化时</strong>：<code>onMounted</code> 中调用 <code>initCompCallEvent</code>，如果字段有初始值，会自动触发联动</li>
+          <li><strong>初始化延迟触发</strong>：如果字段没有初始值，会 watch 该字段，等有值后自动触发一次联动然后停止 watch</li>
+          <li><strong>source === 3 时</strong>：查看模式下 <code>apiLinkage</code> 不执行，但 <code>relationDetails</code> 仍然执行</li>
+        </ol>
+        <h3>联动执行流程</h3>
+        <pre><code>字段值变化
+    │
+    ▼
+relationEventDispatcher()
+    │
+    ├─ relationDetails 存在？
+    │   │
+    │   ├─ 是 → relationEvent()
+    │   │         │
+    │   │         ├─ eqHide / eqVisible / eqDisable / eqEditable / eqRequired / eqUnRequired
+    │   │         │   → controlFieldProps() 修改目标字段属性
+    │   │         │
+    │   │         ├─ eqConditionDataLinkage / asParamDataLinkage
+    │   │         │   → dataLinkage() 异步获取数据并赋值
+    │   │         │
+    │   │         ├─ assignValue
+    │   │         │   → assignValue() 静态赋值
+    │   │         │
+    │   │         └─ changeType
+    │   │             → changeType() 修改字段类型
+    │   │
+    │   └─ 否 → apiLinkage 存在且 source !== 3？
+    │             │
+    │             └─ 是 → apiLinkageOperation() 调用第三方接口回填</code></pre>
+      </section>
+
+      <!-- ===== 表单项组件 ===== -->
+      <section id="form-items">
+        <h1>表单项组件</h1>
+        <p>所有表单项组件共享以下核心机制：</p>
+        <ol>
+          <li><strong>Props 类型</strong>：<code>ItemPreps</code></li>
+          <li><strong>属性透传</strong>：通过 <code>v-bind="prepsFilter(field.preps)"</code> 将 <code>field.preps</code> 中的属性透传给底层 Element Plus 组件</li>
+          <li><strong>联动策略</strong>：通过 <code>field.preps.dataRelation</code> 配置</li>
+          <li><strong>公式计算</strong>：通过 <code>field.preps.formula</code> 配置</li>
+          <li><strong>动态事件</strong>：通过 <code>v-on="getDynamicEvents()"</code> 绑定 <code>field.actions</code> 中配置的事件</li>
+        </ol>
+        <h2 id="表单项-公共接口">公共接口 ItemPreps</h2>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>isDesign</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否设计模式</td></tr>
+            <tr><td>disabled</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否禁用</td></tr>
+            <tr><td>showFormItem</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否显示在表单中</td></tr>
+            <tr><td>bareFlag</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否基础组件</td></tr>
+            <tr><td>isSearch</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否搜索组件</td></tr>
+            <tr><td>field</td><td><code>FieldInfo | any</code></td><td><strong>是</strong></td><td>—</td><td>组件属性配置</td></tr>
+            <tr><td>parentField</td><td><code>any</code></td><td>否</td><td>—</td><td>父组件属性</td></tr>
+            <tr><td>formInfo</td><td><code>any</code></td><td>否</td><td>—</td><td>所有字段列表</td></tr>
+            <tr><td>parentId</td><td><code>string</code></td><td>否</td><td>—</td><td>父节点 ID</td></tr>
+            <tr><td>callBack</td><td><code>Function</code></td><td>否</td><td>—</td><td>回调函数</td></tr>
+            <tr><td>source</td><td><code>number</code></td><td>否</td><td>—</td><td>数据来源标识</td></tr>
+          </tbody>
+        </table>
+        <h2 id="表单项-input-item">input-item 输入框</h2>
+        <p><strong>包装组件</strong>：<code>el-input</code></p>
+        <blockquote><p><strong>支持 el-input 的所有 Props / Events / Slots</strong>，通过 <code>field.preps</code> 透传。</p></blockquote>
+        <h3>额外能力</h3>
+        <ul>
+          <li><strong>前后缀图标/文字</strong>：通过 <code>preps.prefixIcon</code> / <code>preps.prefix</code> / <code>preps.suffixIcon</code> / <code>preps.suffix</code></li>
+          <li><strong>前后置内容</strong>：文字（<code>prependText</code> / <code>appendText</code>）、操作按钮（<code>prependAction</code> / <code>appendAction</code>）、下拉选择（<code>prependList</code> / <code>appendList</code>）</li>
+          <li><strong>前后缀数据合并</strong>：通过 <code>mergePrefix</code> / <code>mergeAppend</code></li>
+          <li><strong>大文本编辑</strong>：双击打开 EditDataDialog 弹窗</li>
+          <li><strong>公式计算</strong>：支持 <code>field.preps.formula</code></li>
+        </ul>
+        <h3>field.preps 专属配置</h3>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>prefixIcon</td><td><code>string</code></td><td>—</td><td>前缀图标类名</td></tr>
+            <tr><td>prefix</td><td><code>string</code></td><td>—</td><td>前缀文字</td></tr>
+            <tr><td>suffixIcon</td><td><code>string</code></td><td>—</td><td>后缀图标类名</td></tr>
+            <tr><td>suffix</td><td><code>string</code></td><td>—</td><td>后缀文字</td></tr>
+            <tr><td>prependText</td><td><code>string</code></td><td>—</td><td>前置文字</td></tr>
+            <tr><td>prependAction</td><td><code>Array</code></td><td>—</td><td>前置操作按钮</td></tr>
+            <tr><td>appendText</td><td><code>string</code></td><td>—</td><td>后置文字</td></tr>
+            <tr><td>appendAction</td><td><code>Array</code></td><td>—</td><td>后置操作按钮</td></tr>
+            <tr><td>prependList</td><td><code>SelectOption[]</code></td><td>—</td><td>前置下拉选项</td></tr>
+            <tr><td>appendList</td><td><code>SelectOption[]</code></td><td>—</td><td>后置下拉选项</td></tr>
+            <tr><td>mergePrefix</td><td><code>boolean</code></td><td><code>false</code></td><td>是否将前缀值合并到字段值</td></tr>
+            <tr><td>mergeAppend</td><td><code>boolean</code></td><td><code>false</code></td><td>是否将后缀值合并到字段值</td></tr>
+            <tr><td>preName</td><td><code>string</code></td><td><code>'pre'+fieldName</code></td><td>前缀字段名</td></tr>
+            <tr><td>appName</td><td><code>string</code></td><td><code>'app'+fieldName</code></td><td>后缀字段名</td></tr>
+            <tr><td>prependDefaultValue</td><td><code>string</code></td><td>—</td><td>前缀默认值</td></tr>
+            <tr><td>appendDefaultValue</td><td><code>string</code></td><td>—</td><td>后缀默认值</td></tr>
+            <tr><td>readonly</td><td><code>boolean</code></td><td><code>false</code></td><td>只读时双击不打开大文本编辑</td></tr>
+          </tbody>
+        </table>
+        <h3>使用示例</h3>
+        <div class="code-label">ts</div>
+        <pre><code>// 基础输入框
+{ fieldName: 'name', type: 'input', preps: { placeholder: '请输入姓名', clearable: true, maxlength: 50 } }
+
+// 带前后缀的金额输入
+{ fieldName: 'amount', type: 'input', preps: { prefix: '¥', placeholder: '请输入金额' } }
+
+// 带后置单位
+{ fieldName: 'weight', type: 'input', preps: { appendText: 'kg' } }
+
+// 带前置下拉选择（区号）
+{ fieldName: 'phone', type: 'input', preps: {
+  mergePrefix: true,
+  prependList: [{ name: '+86', value: '+86' }, { name: '+1', value: '+1' }],
+}}</code></pre>
+        <hr>
+        <h2 id="表单项-textarea-item">textarea-item 文本域</h2>
+        <p><strong>包装组件</strong>：<code>el-input</code>（type="textarea"）</p>
+        <p>双击打开大文本编辑弹窗（EditDataDialog），支持公式计算。</p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>placeholder</td><td><code>string</code></td><td>—</td><td>占位文字</td></tr>
+            <tr><td>rows</td><td><code>number</code></td><td><code>2</code></td><td>行数</td></tr>
+            <tr><td>autosize</td><td><code>boolean | { minRows, maxRows }</code></td><td><code>false</code></td><td>自适应高度</td></tr>
+            <tr><td>maxlength</td><td><code>number</code></td><td>—</td><td>最大长度</td></tr>
+            <tr><td>showWordLimit</td><td><code>boolean</code></td><td><code>false</code></td><td>显示字数统计</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-number-item">number-item 数字输入</h2>
+        <p><strong>包装组件</strong>：<code>el-input-number</code></p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>step</td><td><code>number</code></td><td><code>1</code></td><td>步长</td></tr>
+            <tr><td>min</td><td><code>number</code></td><td><code>0</code></td><td>最小值</td></tr>
+            <tr><td>max</td><td><code>number</code></td><td>—</td><td>最大值</td></tr>
+            <tr><td>precision</td><td><code>number</code></td><td><code>0</code></td><td>小数精度</td></tr>
+            <tr><td>formula</td><td><code>FormulaConfig</code></td><td>—</td><td>公式计算配置</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-select-item">select-item 下拉选择</h2>
+        <p><strong>包装组件</strong>：<code>el-select</code></p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>values</td><td><code>SelectOption[]</code></td><td>—</td><td><strong>选项数据</strong>，渲染为 el-option</td></tr>
+            <tr><td>multiple</td><td><code>boolean</code></td><td><code>false</code></td><td>是否多选</td></tr>
+            <tr><td>remote</td><td><code>boolean | string</code></td><td><code>false</code></td><td>是否远程搜索</td></tr>
+            <tr><td>dataSource</td><td><code>string</code></td><td>—</td><td>数据源类型</td></tr>
+            <tr><td>selectLabel</td><td><code>string</code></td><td>—</td><td>远程搜索标签属性名</td></tr>
+            <tr><td>showFooter</td><td><code>boolean</code></td><td><code>false</code></td><td>是否显示底部动态添加选项区</td></tr>
+          </tbody>
+        </table>
+        <blockquote><p>组件 onMounted 时会自动设置 <code>filterable=true</code> 和 <code>collapseTags=true</code>。</p></blockquote>
+        <hr>
+        <h2 id="表单项-radio-item">radio-item 单选框</h2>
+        <p><strong>包装组件</strong>：<code>el-radio-group</code> / <code>el-radio-button</code></p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>values</td><td><code>SelectOption[]</code></td><td>—</td><td>选项数据</td></tr>
+            <tr><td>radioType</td><td><code>string</code></td><td>—</td><td><code>'button'</code> 时使用按钮样式</td></tr>
+            <tr><td>readonly</td><td><code>boolean</code></td><td><code>false</code></td><td>是否只读（双击可取消选中）</td></tr>
+            <tr><td>textColor</td><td><code>string</code></td><td>—</td><td>选中时文字颜色</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-checkbox-item">checkbox-item 复选框</h2>
+        <p><strong>包装组件</strong>：<code>el-checkbox-group</code></p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>values</td><td><code>SelectOption[]</code></td><td>—</td><td>选项数据</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-switch-item">switch-item 开关</h2>
+        <p><strong>包装组件</strong>：<code>el-switch</code></p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>activeText</td><td><code>string</code></td><td><code>i18n("common.yes")</code></td><td>开启文字</td></tr>
+            <tr><td>inactiveText</td><td><code>string</code></td><td><code>i18n("common.no")</code></td><td>关闭文字</td></tr>
+            <tr><td>activeValue</td><td><code>any</code></td><td><code>true</code></td><td>开启值</td></tr>
+            <tr><td>inactiveValue</td><td><code>any</code></td><td><code>false</code></td><td>关闭值</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-date-item">date-item 日期选择</h2>
+        <p><strong>包装组件</strong>：<code>el-date-picker</code></p>
+        <h3>内部计算属性</h3>
+        <table>
+          <thead><tr><th>名称</th><th>类型</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>effectiveType</td><td><code>computed&lt;string&gt;</code></td><td>最终日期类型，优先级：<code>preps.type</code> &gt; <code>field.type</code> &gt; <code>'date'</code></td></tr>
+            <tr><td>valueFormat</td><td><code>computed&lt;string&gt;</code></td><td>值格式，根据 effectiveType 自动推导</td></tr>
+            <tr><td>displayFormat</td><td><code>computed&lt;string&gt;</code></td><td>显示格式，根据 effectiveType 自动推导</td></tr>
+          </tbody>
+        </table>
+        <h3>field.preps 专属配置</h3>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>type</td><td><code>string</code></td><td><code>'date'</code></td><td>日期类型</td></tr>
+            <tr><td>format</td><td><code>string</code></td><td>自动推导</td><td>显示格式</td></tr>
+            <tr><td>valueFormat</td><td><code>string</code></td><td>自动推导</td><td>值格式</td></tr>
+            <tr><td>needSplitName</td><td><code>boolean</code></td><td><code>false</code></td><td>范围选择时是否拆分字段</td></tr>
+            <tr><td>disableDate</td><td><code>Function | string</code></td><td>—</td><td>禁用日期配置</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-datetime-item">datetime-item 日期时间选择</h2>
+        <p>与 date-item 完全一致，仅默认 effectiveType 为 <code>'datetime'</code>。</p>
+        <hr>
+        <h2 id="表单项-time-item">time-item 时间选择</h2>
+        <p><strong>包装组件</strong>：<code>el-time-select</code></p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>start</td><td><code>string</code></td><td><code>'00:00'</code></td><td>开始时间</td></tr>
+            <tr><td>end</td><td><code>string</code></td><td><code>'24:00'</code></td><td>结束时间</td></tr>
+            <tr><td>step</td><td><code>string</code></td><td><code>'00:05'</code></td><td>步长</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-time-picker-item">time-picker-item 时间选择器</h2>
+        <p><strong>包装组件</strong>：<code>el-time-picker</code></p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>isRange</td><td><code>boolean</code></td><td>—</td><td>是否范围选择</td></tr>
+            <tr><td>type</td><td><code>string</code></td><td>—</td><td><code>'timerange'</code> 时也为范围</td></tr>
+            <tr><td>format</td><td><code>string</code></td><td><code>'HH:mm:ss'</code></td><td>显示格式</td></tr>
+            <tr><td>valueFormat</td><td><code>string</code></td><td><code>'HH:mm:ss'</code></td><td>值格式</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-tree-select-item">tree-select-item 树选择</h2>
+        <p><strong>包装组件</strong>：<code>el-tree-select</code></p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>multiple</td><td><code>boolean</code></td><td><code>false</code></td><td>是否多选</td></tr>
+            <tr><td>checkStrictly</td><td><code>boolean</code></td><td><code>true</code></td><td>父子是否不关联</td></tr>
+            <tr><td>url</td><td><code>string</code></td><td>—</td><td>远程数据 URL</td></tr>
+            <tr><td>values / data</td><td><code>Array</code></td><td>—</td><td>本地数据</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-cascade-item">cascade-item 级联选择</h2>
+        <p><strong>包装组件</strong>：<code>el-cascader</code></p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>options</td><td><code>Array</code></td><td>—</td><td>级联选项数据</td></tr>
+            <tr><td>multiple</td><td><code>boolean</code></td><td><code>false</code></td><td>是否多选</td></tr>
+            <tr><td>showFooter</td><td><code>boolean</code></td><td><code>false</code></td><td>是否显示底部添加选项区</td></tr>
+            <tr><td>props</td><td><code>object</code></td><td><code>{label:'name',value:'value',expandTrigger:'hover'}</code></td><td>属性映射</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-datapicker-item">datapicker-item 数据拾取选择</h2>
+        <p><strong>包装组件</strong>：<code>el-select</code>（增强版）</p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>dataSource</td><td><code>string</code></td><td>—</td><td>数据源类型</td></tr>
+            <tr><td>urlOrDictName</td><td><code>string</code></td><td>—</td><td>URL 或字典名称</td></tr>
+            <tr><td>queryParams</td><td><code>Array</code></td><td>—</td><td>查询参数列表</td></tr>
+            <tr><td>multiple</td><td><code>boolean</code></td><td><code>false</code></td><td>是否多选</td></tr>
+            <tr><td>prop.label</td><td><code>string</code></td><td>—</td><td>显示属性名</td></tr>
+            <tr><td>prop.value</td><td><code>string</code></td><td>—</td><td>值属性名</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-page-select-item">page-select-item 分页选择</h2>
+        <p><strong>包装组件</strong>：<code>el-select</code>（弹窗模式，内嵌表格+分页）</p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>dataUrl</td><td><code>ApiUrls</code></td><td>—</td><td>数据接口配置</td></tr>
+            <tr><td>fieldList</td><td><code>Array</code></td><td>—</td><td>列表字段配置</td></tr>
+            <tr><td>primaryKey</td><td><code>string</code></td><td>—</td><td>主键字段名</td></tr>
+            <tr><td>multiple</td><td><code>boolean</code></td><td><code>false</code></td><td>是否多选</td></tr>
+            <tr><td>needField</td><td><code>FieldMapping[]</code></td><td>—</td><td>字段映射配置</td></tr>
+            <tr><td>displayField</td><td><code>string</code></td><td>—</td><td>显示字段名</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-dialog-input-item">dialog-input-item 弹窗输入</h2>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>multiple</td><td><code>boolean</code></td><td><code>false</code></td><td>是否多选</td></tr>
+            <tr><td>needField</td><td><code>FieldMapping[]</code></td><td>—</td><td>字段映射配置</td></tr>
+            <tr><td>aliasName</td><td><code>string</code></td><td>—</td><td>别名字段名</td></tr>
+            <tr><td>primaryKey</td><td><code>string</code></td><td>—</td><td>主键</td></tr>
+            <tr><td>dataUrl</td><td><code>ApiUrls</code></td><td>—</td><td>数据接口配置</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-dialog-item">dialog-item 弹窗容器</h2>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>compName</td><td><code>string</code></td><td>—</td><td>弹窗内动态组件名</td></tr>
+            <tr><td>fieldList</td><td><code>Array</code></td><td>—</td><td>弹窗内表单字段列表</td></tr>
+            <tr><td>params</td><td><code>object</code></td><td>—</td><td>传递给弹窗内容的参数</td></tr>
+            <tr><td>compSize</td><td><code>string</code></td><td><code>'default'</code></td><td>组件大小</td></tr>
+            <tr><td>boxHeight</td><td><code>string</code></td><td><code>'60%'</code></td><td>弹窗高度</td></tr>
+            <tr><td>boxWidth</td><td><code>string</code></td><td><code>'50%'</code></td><td>弹窗宽度</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-drawer-item">drawer-item 抽屉容器</h2>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>compName</td><td><code>string</code></td><td>—</td><td>动态组件名</td></tr>
+            <tr><td>fieldList</td><td><code>Array</code></td><td>—</td><td>表单字段列表</td></tr>
+            <tr><td>params</td><td><code>object</code></td><td>—</td><td>传递给内容的参数</td></tr>
+            <tr><td>direction</td><td><code>string</code></td><td><code>'rtl'</code></td><td>抽屉方向</td></tr>
+            <tr><td>modal</td><td><code>boolean</code></td><td><code>true</code></td><td>是否显示遮罩</td></tr>
+            <tr><td>resizable</td><td><code>boolean</code></td><td><code>true</code></td><td>是否可调整大小</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-button-item">button-item 按钮</h2>
+        <p><strong>包装组件</strong>：<code>el-button</code></p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>viewType</td><td><code>'inter'|'code'|'method'|'form'|'usercomp'</code></td><td>—</td><td>操作类型</td></tr>
+            <tr><td>code</td><td><code>string</code></td><td>—</td><td>JS 代码块</td></tr>
+            <tr><td>icon</td><td><code>string</code></td><td>—</td><td>按钮图标</td></tr>
+            <tr><td>url</td><td><code>string</code></td><td>—</td><td>接口地址</td></tr>
+            <tr><td>method</td><td><code>string</code></td><td>—</td><td>请求方法</td></tr>
+            <tr><td>needConfirm</td><td><code>string</code></td><td>—</td><td>是否需要确认</td></tr>
+            <tr><td>confirmMsg</td><td><code>string</code></td><td>—</td><td>确认消息</td></tr>
+            <tr><td>afterAction</td><td><code>string</code></td><td>—</td><td>执行后动作</td></tr>
+            <tr><td>actions</td><td><code>Function</code></td><td>—</td><td>自定义函数</td></tr>
+            <tr><td>dialogTitle</td><td><code>string</code></td><td>—</td><td>弹窗标题</td></tr>
+            <tr><td>isShowReset</td><td><code>boolean</code></td><td>—</td><td>是否显示重置按钮</td></tr>
+            <tr><td>componentName</td><td><code>string</code></td><td>—</td><td>自定义组件名</td></tr>
+            <tr><td>fieldList</td><td><code>Array</code></td><td>—</td><td>弹窗表单字段列表</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-upload-item">upload-item 文件上传</h2>
+        <p><strong>包装组件</strong>：<code>el-upload</code></p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>action</td><td><code>string</code></td><td><code>'/system-config/annex/upload/commonFiles'</code></td><td>上传地址</td></tr>
+            <tr><td>multiple</td><td><code>boolean</code></td><td><code>false</code></td><td>是否多文件</td></tr>
+            <tr><td>drag</td><td><code>boolean</code></td><td><code>false</code></td><td>是否拖拽上传</td></tr>
+            <tr><td>maxSize</td><td><code>number</code></td><td>—</td><td>文件大小限制（MB）</td></tr>
+            <tr><td>headers</td><td><code>object | string</code></td><td>—</td><td>自定义请求头</td></tr>
+            <tr><td>context</td><td><code>string</code></td><td><code>'/system-config'</code></td><td>文件上下文路径</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-image-item">image-item 图片</h2>
+        <p><strong>包装组件</strong>：<code>el-image</code></p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>assignType</td><td><code>string</code></td><td>—</td><td>赋值方式</td></tr>
+            <tr><td>action</td><td><code>string</code></td><td><code>'/system-config/annex/upload/common'</code></td><td>上传地址</td></tr>
+            <tr><td>context</td><td><code>string</code></td><td><code>'/system-config'</code></td><td>上下文路径</td></tr>
+            <tr><td>width / height</td><td><code>number</code></td><td>—</td><td>图片尺寸</td></tr>
+            <tr><td>fit</td><td><code>string</code></td><td><code>'contain'</code></td><td>填充方式</td></tr>
+            <tr><td>previewSrcList</td><td><code>Array</code></td><td>—</td><td>预览图片列表</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-password-item">password-item 密码输入</h2>
+        <p><strong>包装组件</strong>：<code>el-input</code>（type="password"）。与 input-item 类似，支持前后缀和前后置。</p>
+        <hr>
+        <h2 id="表单项-signature-item">signature-item 签名</h2>
+        <p>手写签名组件（基于 SmoothSignature）。</p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>imageType</td><td><code>string</code></td><td>—</td><td>图片类型</td></tr>
+            <tr><td>width / height</td><td><code>number</code></td><td>—</td><td>画布尺寸</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-autocomplete-item">autocomplete-item 自动补全</h2>
+        <p><strong>包装组件</strong>：<code>el-autocomplete</code></p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>values</td><td><code>Array</code></td><td>—</td><td>建议数据列表</td></tr>
+            <tr><td>dataSource</td><td><code>string</code></td><td>—</td><td>数据源类型</td></tr>
+            <tr><td>selectLabel</td><td><code>string</code></td><td>—</td><td>远程搜索标签属性名</td></tr>
+            <tr><td>appendAction</td><td><code>Array</code></td><td>—</td><td>后置操作按钮</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-input-tag-item">input-tag-item 标签输入</h2>
+        <p><strong>包装组件</strong>：<code>el-input-tag</code></p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>tagType</td><td><code>string</code></td><td><code>'info'</code></td><td>标签类型</td></tr>
+            <tr><td>tagMap</td><td><code>object</code></td><td>—</td><td>值到标签类型的映射</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-number-range-item">number-range-item 数字范围</h2>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>minName</td><td><code>string</code></td><td><code>fieldName + 'Min'</code></td><td>最小值字段名</td></tr>
+            <tr><td>maxName</td><td><code>string</code></td><td><code>fieldName + 'Max'</code></td><td>最大值字段名</td></tr>
+            <tr><td>splitName</td><td><code>string</code></td><td><code>'-'</code></td><td>分隔符</td></tr>
+            <tr><td>prefix / suffix</td><td><code>string</code></td><td>—</td><td>前缀/后缀内容</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-icon-item">icon-item 图标选择</h2>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>iconType</td><td><code>string</code></td><td><code>'system'</code></td><td>图标类型</td></tr>
+            <tr><td>placement</td><td><code>string</code></td><td><code>'bottom-start'</code></td><td>弹出位置</td></tr>
+            <tr><td>listView</td><td><code>boolean</code></td><td>—</td><td>列表视图模式</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-color-item">color-item 颜色选择</h2>
+        <p><strong>包装组件</strong>：<code>el-color-picker</code></p>
+        <hr>
+        <h2 id="表单项-rate-item">rate-item 评分</h2>
+        <p><strong>包装组件</strong>：<code>el-rate</code>。挂载时自动触发一次 <code>change</code> 事件。</p>
+        <hr>
+        <h2 id="表单项-slider-item">slider-item 滑块</h2>
+        <p><strong>包装组件</strong>：<code>el-slider</code></p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>step</td><td><code>number</code></td><td><code>1</code></td><td>步长</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-tag-item">tag-item 标签</h2>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>tagType</td><td><code>string</code></td><td><code>'primary'</code></td><td>标签类型</td></tr>
+            <tr><td>tagMap</td><td><code>object</code></td><td>—</td><td>值到标签类型的映射</td></tr>
+            <tr><td>placeholder</td><td><code>string</code></td><td>—</td><td>空值时占位文字</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-link-item">link-item 链接</h2>
+        <p><strong>包装组件</strong>：<code>el-link</code></p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>linkType</td><td><code>string</code></td><td><code>'primary'</code></td><td>链接类型</td></tr>
+            <tr><td>underline</td><td><code>boolean</code></td><td><code>false</code></td><td>是否下划线</td></tr>
+            <tr><td>href</td><td><code>string</code></td><td>—</td><td>链接地址</td></tr>
+            <tr><td>target</td><td><code>string</code></td><td><code>'_blank'</code></td><td>打开方式</td></tr>
+            <tr><td>linkText</td><td><code>string</code></td><td>—</td><td>链接显示文字</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-text-item">text-item 文本展示</h2>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>staticData</td><td><code>boolean</code></td><td>—</td><td>是否静态数据</td></tr>
+            <tr><td>textContent</td><td><code>string</code></td><td>—</td><td>静态文本</td></tr>
+            <tr><td>styles</td><td><code>object | string</code></td><td>—</td><td>自定义样式</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-html-item">html-item HTML 内容</h2>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>content</td><td><code>string</code></td><td>—</td><td>默认 HTML 内容</td></tr>
+            <tr><td>textContent</td><td><code>string</code></td><td>—</td><td>静态文本</td></tr>
+            <tr><td>staticData</td><td><code>boolean</code></td><td>—</td><td>是否静态数据</td></tr>
+            <tr><td>styles</td><td><code>object | string</code></td><td>—</td><td>自定义样式</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-htmleditor-item">htmleditor-item 富文本编辑器</h2>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>hideToolbar</td><td><code>boolean</code></td><td>—</td><td>是否隐藏工具栏</td></tr>
+            <tr><td>mode</td><td><code>string</code></td><td><code>'default'</code></td><td>编辑器模式</td></tr>
+            <tr><td>width / height</td><td><code>string</code></td><td>—</td><td>编辑器尺寸</td></tr>
+            <tr><td>uploadUrl</td><td><code>string</code></td><td>—</td><td>图片/视频上传地址</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-json-item">json-item / json-array-item JSON 编辑</h2>
+        <p>委托给 <code>base-json-item</code>，<code>dataType</code> 分别为 <code>'object'</code> 和 <code>'array'</code>。</p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>devType</td><td><code>string</code></td><td>—</td><td>开发/设计模式编辑</td></tr>
+            <tr><td>boxHeight / boxWidth</td><td><code>string</code></td><td>—</td><td>弹窗尺寸</td></tr>
+            <tr><td>rows</td><td><code>number</code></td><td><code>3</code></td><td>textarea 行数</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-markdown-item">markdown-item / view-markdown-item Markdown</h2>
+        <p>编辑使用 MarkdownIt 编辑器，查看使用 MarkdownIt 只读渲染。</p>
+        <hr>
+        <h2 id="表单项-description-item">description-item 描述列表</h2>
+        <p><strong>包装组件</strong>：<code>el-descriptions</code></p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>column</td><td><code>number</code></td><td><code>2</code></td><td>列数</td></tr>
+            <tr><td>border</td><td><code>boolean</code></td><td><code>true</code></td><td>是否边框</td></tr>
+            <tr><td>descItems</td><td><code>Array</code></td><td>—</td><td>描述项数组</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-divider-item">divider-item 分割线</h2>
+        <p><strong>包装组件</strong>：<code>el-divider</code></p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>direction</td><td><code>string</code></td><td><code>'horizontal'</code></td><td>方向</td></tr>
+            <tr><td>contentPosition</td><td><code>string</code></td><td><code>'center'</code></td><td>内容位置</td></tr>
+            <tr><td>content</td><td><code>string</code></td><td>—</td><td>分割线文字内容</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-progress-item">progress-item 进度条</h2>
+        <p><strong>包装组件</strong>：<code>el-progress</code></p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>percentage</td><td><code>number</code></td><td><code>0</code></td><td>百分比</td></tr>
+            <tr><td>status</td><td><code>string</code></td><td>—</td><td>状态</td></tr>
+            <tr><td>strokeWidth</td><td><code>number</code></td><td><code>6</code></td><td>宽度</td></tr>
+            <tr><td>color</td><td><code>string</code></td><td>—</td><td>颜色</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-cron-item">cron-item Cron 表达式</h2>
+        <p>点击按钮打开 Crontab 弹窗，确认后将表达式写回 formData。</p>
+        <hr>
+        <h2 id="表单项-user-item">user-item 用户选择</h2>
+        <p><strong>包装组件</strong>：<code>el-mention</code> + 弹窗选择</p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>compName</td><td><code>string</code></td><td>—</td><td>弹窗中用户选择组件名</td></tr>
+            <tr><td>needField</td><td><code>FieldMapping[]</code></td><td>—</td><td>字段映射配置</td></tr>
+            <tr><td>aliasName</td><td><code>string</code></td><td>—</td><td>别名字段名</td></tr>
+            <tr><td>recall</td><td><code>Function</code></td><td>—</td><td>选择后回调函数</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-org-item">org-item 组织选择</h2>
+        <p><strong>包装组件</strong>：<code>el-tree-select</code>。与 tree-select-item 基本一致，默认 value 属性名为 <code>'id'</code>。</p>
+        <hr>
+        <h2 id="表单项-area-item">area-item 地区选择</h2>
+        <p><strong>包装组件</strong>：<code>el-cascader</code></p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>options</td><td><code>Array</code></td><td>内置省市区数据</td><td>级联选项数据</td></tr>
+            <tr><td>user</td><td><code>boolean</code></td><td>—</td><td>是否使用自定义数据</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-location-item">location-item 位置选择</h2>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>mapClick</td><td><code>Function</code></td><td>—</td><td>地图选点回调</td></tr>
+            <tr><td>placeholder</td><td><code>string</code></td><td>—</td><td>占位文字</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-qrcode-item">qrcode-item 二维码</h2>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>src</td><td><code>string</code></td><td>—</td><td>中心图片地址</td></tr>
+            <tr><td>width / height</td><td><code>number</code></td><td><code>30</code></td><td>中心图片尺寸</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-barcode-item">barcode-item 条形码</h2>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>value</td><td><code>string</code></td><td>—</td><td>条形码值</td></tr>
+            <tr><td>format</td><td><code>string</code></td><td><code>'CODE39'</code></td><td>条形码类型</td></tr>
+            <tr><td>width</td><td><code>number</code></td><td><code>1</code></td><td>宽度</td></tr>
+            <tr><td>height</td><td><code>number</code></td><td><code>20</code></td><td>高度</td></tr>
+            <tr><td>displayValue</td><td><code>boolean</code></td><td><code>true</code></td><td>是否显示文字</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-audio-item">audio-item 音频播放</h2>
+        <p>音频播放组件，使用 <code>field.audioUrl</code>（非 preps 内属性）获取音频文件 URL。</p>
+        <hr>
+        <h2 id="表单项-transfer-item">transfer-item 穿梭框</h2>
+        <p><strong>包装组件</strong>：<code>el-transfer</code></p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>data</td><td><code>Array</code></td><td>—</td><td>穿梭框数据</td></tr>
+            <tr><td>props</td><td><code>object</code></td><td><code>{key:'value',label:'name'}</code></td><td>属性映射</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-tselect-item">tselect-item 树形下拉选择</h2>
+        <p><strong>包装组件</strong>：<code>el-tree-select</code></p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>data</td><td><code>Array</code></td><td>—</td><td>树形数据</td></tr>
+            <tr><td>multiple</td><td><code>boolean</code></td><td><code>false</code></td><td>是否多选</td></tr>
+            <tr><td>showFooter</td><td><code>boolean</code></td><td><code>false</code></td><td>是否显示底部添加区</td></tr>
+            <tr><td>showCode</td><td><code>boolean</code></td><td>—</td><td>是否显示编码</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="表单项-usercomp-item">usercomp-item 自定义组件容器</h2>
+        <p>动态组件容器，通过 <code>field.preps.compName</code> 渲染指定组件，将 <code>field.preps</code> 全部传递给子组件。<code>source</code> 默认为 <code>0</code>。</p>
+        <hr>
+        <h2 id="表单项-empty-item">empty-item 空占位</h2>
+        <p>不渲染任何内容的占位组件。</p>
+        <hr>
+        <h2 id="表单项-unknown-item">unknown-item 未知组件占位</h2>
+        <p>未知组件类型的占位显示组件，模板显示"未知组件"。</p>
+      </section>
+
+      <!-- ===== StarHorseForm ===== -->
+      <section id="star-horse-form">
+        <h1>StarHorseForm 表单</h1>
+        <p>基于 el-form 的增强表单组件，支持配置化字段渲染、校验、提交等功能，是组件库的核心表单组件。</p>
+        <h2 id="shform-属性">属性 (Props)</h2>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>compUrl</td><td><code>ApiUrls</code></td><td>否</td><td>—</td><td>接口地址配置</td></tr>
+            <tr><td>fieldList</td><td><code>PageFieldInfo</code></td><td><strong>是</strong></td><td>—</td><td>表单字段配置</td></tr>
+            <tr><td>batchName</td><td><code>string</code></td><td>否</td><td><code>'batchDataList'</code></td><td>提交后端批量数据的 Key 名称</td></tr>
+            <tr><td>batchFieldName</td><td><code>string</code></td><td>否</td><td><code>'batchFieldList'</code></td><td>批量字段列表的 Key 名称</td></tr>
+            <tr><td>outerFormData</td><td><code>object</code></td><td>否</td><td>—</td><td>外部传入的表单数据</td></tr>
+            <tr><td>primaryKey</td><td><code>string | object</code></td><td>否</td><td>—</td><td>主键字段名</td></tr>
+            <tr><td>globalCondition</td><td><code>object</code></td><td>否</td><td>—</td><td>全局过滤条件</td></tr>
+            <tr><td>rules</td><td><code>object</code></td><td>否</td><td>—</td><td>自定义校验规则</td></tr>
+            <tr><td>formSize</td><td><code>string</code></td><td>否</td><td><code>'default'</code></td><td>表单尺寸</td></tr>
+            <tr><td>labelPosition</td><td><code>string</code></td><td>否</td><td><code>'left'</code></td><td>标签位置</td></tr>
+            <tr><td>dynamicForm</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否动态表单</td></tr>
+            <tr><td>preview</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否预览模式（只读）</td></tr>
+            <tr><td>selectData</td><td><code>SelectOption[]</code></td><td>否</td><td>—</td><td>选择数据选项</td></tr>
+          </tbody>
+        </table>
+        <h2 id="shform-事件">事件 (Emits)</h2>
+        <table>
+          <thead><tr><th>事件名</th><th>参数</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>refresh</td><td><code>(formData, resData)</code></td><td>数据提交成功后触发</td></tr>
+            <tr><td>dataLoaded</td><td><code>(objData)</code></td><td>表单数据加载完成时触发</td></tr>
+            <tr><td>exportData</td><td><code>(dataForm)</code></td><td>表单数据变化时实时触发</td></tr>
+            <tr><td>removeRow</td><td><code>(row)</code></td><td>列表中删除行时触发</td></tr>
+            <tr><td>addRow</td><td><code>(row)</code></td><td>列表中添加行时触发</td></tr>
+            <tr><td>inited</td><td>—</td><td>表单初始化完成时触发</td></tr>
+          </tbody>
+        </table>
+        <h2 id="shform-方法">方法 (Expose)</h2>
+        <table>
+          <thead><tr><th>方法名</th><th>参数</th><th>返回值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>merge</td><td><code>(type: string)</code></td><td><code>void</code></td><td>提交表单（含校验）</td></tr>
+            <tr><td>mergeDraft</td><td><code>(type: string)</code></td><td><code>void</code></td><td>暂存草稿（不含校验）</td></tr>
+            <tr><td>resetForm</td><td>—</td><td><code>void</code></td><td>重置表单</td></tr>
+            <tr><td>setFormData</td><td><code>(data: any)</code></td><td><code>void</code></td><td>设置表单数据</td></tr>
+            <tr><td>getFormData</td><td>—</td><td><code>Ref&lt;any&gt;</code></td><td>获取表单数据引用</td></tr>
+            <tr><td>updateFormData</td><td><code>(data: any)</code></td><td><code>void</code></td><td>更新表单数据</td></tr>
+            <tr><td>validate</td><td>—</td><td><code>Promise&lt;boolean&gt;</code></td><td>校验表单</td></tr>
+            <tr><td>setSource</td><td><code>(dataSource: number)</code></td><td><code>void</code></td><td>设置数据来源</td></tr>
+          </tbody>
+        </table>
+        <h2 id="shform-source">source 值对行为的影响</h2>
+        <table>
+          <thead><tr><th>source 值</th><th>含义</th><th>对 StarHorseForm 的影响</th><th>对子组件的影响</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>新增模式</td><td>dialogProps.ids 为 -1 时设置，使用默认值初始化</td><td>字段可编辑；日期组件默认赋当前时间</td></tr>
+            <tr><td>2</td><td>编辑模式</td><td>dialogProps.ids 有值时设置，触发 loadData()</td><td>字段可编辑</td></tr>
+            <tr><td>3</td><td>查看模式</td><td>通过 setSource(3) 手动设置</td><td>所有字段变为只读</td></tr>
+            <tr><td>4</td><td>搜索模式</td><td>本组件不直接使用</td><td>搜索表单场景</td></tr>
+            <tr><td>5</td><td>列表模式</td><td>本组件不直接使用</td><td>列表中的表单项不触发初始化 actions</td></tr>
+          </tbody>
+        </table>
+        <h2 id="shform-使用示例">使用示例</h2>
+        <div class="code-label">ts</div>
+        <pre><code>// 校验并提交
+await formRef.value.merge('add')
+
+// 暂存草稿（不校验）
+formRef.value.mergeDraft('draft')
+
+// 获取表单数据
+const formData = formRef.value.getFormData()
+
+// 切换为查看模式
+formRef.value.setSource(3)</code></pre>
+      </section>
+
+      <!-- ===== StarHorseTableComp ===== -->
+      <section id="star-horse-table-comp">
+        <h1>StarHorseTableComp 数据列表</h1>
+        <p>基于 el-table 的增强数据列表组件，支持分页、行编辑、批量操作、嵌套表等功能。</p>
+        <h2 id="shtablecomp-属性">属性 (Props)</h2>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>compUrl</td><td><code>ApiUrls | any</code></td><td><strong>是</strong></td><td>—</td><td>接口地址配置</td></tr>
+            <tr><td>primaryKey</td><td><code>string | any</code></td><td><strong>是</strong></td><td>—</td><td>主键字段名</td></tr>
+            <tr><td>fieldList</td><td><code>PageFieldInfo</code></td><td><strong>是</strong></td><td>—</td><td>页面字段配置</td></tr>
+            <tr><td>showBatchField</td><td><code>boolean</code></td><td><strong>是</strong></td><td>—</td><td>是否显示批量属性列</td></tr>
+            <tr><td>dataFormat</td><td><code>Function</code></td><td><strong>是</strong></td><td>—</td><td>单元格格式化函数</td></tr>
+            <tr><td>disableAction</td><td><code>boolean</code></td><td><strong>是</strong></td><td>—</td><td>是否禁用操作按钮</td></tr>
+            <tr><td>dialogInput</td><td><code>boolean</code></td><td><strong>是</strong></td><td>—</td><td>是否弹窗输入模式</td></tr>
+            <tr><td>filterCondition</td><td><code>SearchParams[]</code></td><td><strong>是</strong></td><td>—</td><td>搜索过滤条件</td></tr>
+            <tr><td>orderBy</td><td><code>OrderByInfo[]</code></td><td><strong>是</strong></td><td>—</td><td>默认排序</td></tr>
+            <tr><td>tableDataList</td><td><code>Array</code></td><td><strong>是</strong></td><td>—</td><td>列表数据</td></tr>
+            <tr><td>expand</td><td><code>boolean</code></td><td><strong>是</strong></td><td>—</td><td>是否默认展开所有行</td></tr>
+            <tr><td>title</td><td><code>string</code></td><td><strong>是</strong></td><td>—</td><td>列表标题</td></tr>
+            <tr><td>extendBtns</td><td><code>UserFuncInfo[]</code></td><td><strong>是</strong></td><td>—</td><td>自定义扩展按钮</td></tr>
+            <tr><td>multipleSelect</td><td><code>boolean</code></td><td><strong>是</strong></td><td>—</td><td>是否允许多选</td></tr>
+            <tr><td>expandTable</td><td><code>ExpandTable</code></td><td><strong>是</strong></td><td>—</td><td>嵌套表配置</td></tr>
+            <tr><td>isDynamic</td><td><code>boolean</code></td><td><strong>是</strong></td><td>—</td><td>是否动态表</td></tr>
+            <tr><td>hideButtonList</td><td><code>boolean</code></td><td><strong>是</strong></td><td>—</td><td>是否隐藏按钮栏</td></tr>
+            <tr><td>editCondition</td><td><code>EditCondition[]</code></td><td><strong>是</strong></td><td>—</td><td>编辑条件</td></tr>
+            <tr><td>pageKeepOldData</td><td><code>boolean</code></td><td><strong>是</strong></td><td>—</td><td>翻页是否保留历史数据</td></tr>
+            <tr><td>preview</td><td><code>boolean</code></td><td><strong>是</strong></td><td>—</td><td>是否预览模式</td></tr>
+            <tr><td>height</td><td><code>string</code></td><td>否</td><td><code>'400'</code></td><td>列表高度</td></tr>
+            <tr><td>showPageBar</td><td><code>boolean</code></td><td>否</td><td><code>true</code></td><td>是否显示分页条</td></tr>
+          </tbody>
+        </table>
+        <h2 id="shtablecomp-事件">事件 (Emits)</h2>
+        <table>
+          <thead><tr><th>事件名</th><th>参数</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>selectItem</td><td><code>(row: any)</code></td><td>选中行时触发</td></tr>
+            <tr><td>permission</td><td><code>(permissions)</code></td><td>权限加载完成时触发</td></tr>
+          </tbody>
+        </table>
+        <h2 id="shtablecomp-方法">方法 (Expose)</h2>
+        <table>
+          <thead><tr><th>方法名</th><th>参数</th><th>返回值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>init</td><td>—</td><td><code>Promise&lt;void&gt;</code></td><td>初始化（加载权限+数据）</td></tr>
+            <tr><td>createSearchParams</td><td><code>(formData, orderBy?)</code></td><td><code>void</code></td><td>创建搜索参数并加载数据</td></tr>
+            <tr><td>loadByPage</td><td><code>(initPageInfo?)</code></td><td><code>void</code></td><td>分页加载数据</td></tr>
+            <tr><td>getIds</td><td>—</td><td><code>any[]</code></td><td>获取选中行的主键数组</td></tr>
+            <tr><td>getSelectedDatas</td><td>—</td><td><code>any[]</code></td><td>获取已选中的数据数组</td></tr>
+            <tr><td>deleteById</td><td><code>(id, isExpand?)</code></td><td><code>Promise&lt;void&gt;</code></td><td>根据 ID 删除数据</td></tr>
+            <tr><td>editById</td><td><code>(id, isExpand?)</code></td><td><code>void</code></td><td>根据 ID 编辑数据</td></tr>
+            <tr><td>getDatas</td><td><code>(limitSize?, params?, ...)</code></td><td><code>Promise&lt;any&gt;</code></td><td>借助列表组件获取指定数据</td></tr>
+            <tr><td>clearData</td><td>—</td><td><code>void</code></td><td>清空列表数据</td></tr>
+          </tbody>
+        </table>
+        <h2 id="shtablecomp-使用示例">使用示例</h2>
+        <div class="code-label">ts</div>
+        <pre><code>// 获取选中行 ID
+const ids = tableRef.value.getIds()
+
+// 刷新当前页
+tableRef.value.loadByPage()
+
+// 重新搜索
+tableRef.value.createSearchParams([{ propertyName: 'name', operation: 'lk', value: 'test' }])</code></pre>
+      </section>
+
+      <!-- ===== StarHorseDialog ===== -->
+      <section id="star-horse-dialog">
+        <h1>StarHorseDialog 对话框</h1>
+        <p>基于 el-dialog 的增强对话框组件，内置表单提交、重置、最小化等功能。</p>
+        <h2 id="shdialog-属性">属性 (Props)</h2>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>dialogVisible</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>对话框是否可见</td></tr>
+            <tr><td>dialogProps</td><td><code>DialogProps</code></td><td>否</td><td><code>{}</code></td><td>弹窗属性配置</td></tr>
+            <tr><td>isShowReset</td><td><code>boolean</code></td><td>否</td><td><code>true</code></td><td>是否显示重置按钮</td></tr>
+            <tr><td>isShowSave</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否显示保存按钮</td></tr>
+            <tr><td>isShowBtnContinue</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否显示"提交并继续"按钮</td></tr>
+            <tr><td>draggable</td><td><code>boolean</code></td><td>否</td><td><code>true</code></td><td>是否可拖拽</td></tr>
+            <tr><td>boxHeight</td><td><code>string</code></td><td>否</td><td><code>'auto'</code></td><td>对话框内容区高度</td></tr>
+            <tr><td>boxWidth</td><td><code>string</code></td><td>否</td><td><code>'60%'</code></td><td>对话框宽度</td></tr>
+            <tr><td>isBatch</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否批量编辑模式</td></tr>
+            <tr><td>fullScreen</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否默认全屏</td></tr>
+            <tr><td>selfFunc</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否自定义提交逻辑</td></tr>
+            <tr><td>selfClose</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否自定义关闭逻辑</td></tr>
+            <tr><td>title</td><td><code>string</code></td><td>否</td><td><code>''</code></td><td>对话框标题</td></tr>
+            <tr><td>source</td><td><code>number</code></td><td>否</td><td><code>1</code></td><td>数据来源标识</td></tr>
+            <tr><td>userBtn</td><td><code>UserFuncInfo[]</code></td><td>否</td><td><code>[]</code></td><td>自定义按钮列表</td></tr>
+          </tbody>
+        </table>
+        <h2 id="shdialog-事件">事件 (Emits)</h2>
+        <table>
+          <thead><tr><th>事件名</th><th>参数</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>merge</td><td><code>(type: string)</code></td><td>点击提交按钮时触发</td></tr>
+            <tr><td>mergeDraft</td><td><code>(type: string)</code></td><td>点击暂存草稿按钮时触发</td></tr>
+            <tr><td>resetForm</td><td>—</td><td>点击重置按钮时触发</td></tr>
+            <tr><td>open</td><td>—</td><td>对话框打开时触发</td></tr>
+            <tr><td>closeAction</td><td>—</td><td>对话框关闭时触发</td></tr>
+            <tr><td>minimize</td><td>—</td><td>对话框最小化时触发</td></tr>
+          </tbody>
+        </table>
+        <h2 id="shdialog-插槽">插槽 (Slots)</h2>
+        <table>
+          <thead><tr><th>插槽名</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>header</td><td>自定义对话框头部区域</td></tr>
+            <tr><td>default</td><td>对话框主体内容区域</td></tr>
+            <tr><td>extend</td><td>底部按钮区域扩展位</td></tr>
+            <tr><td>footer</td><td>自定义底部区域</td></tr>
+          </tbody>
+        </table>
+        <h2 id="shdialog-source">source 值对行为的影响</h2>
+        <table>
+          <thead><tr><th>source 值</th><th>影响</th></tr></thead>
+          <tbody>
+            <tr><td>1（默认）</td><td>编辑模式——标题显示"编辑"，底部按钮区正常显示</td></tr>
+            <tr><td>3</td><td>查看模式——标题显示"查看"，底部按钮区完全隐藏</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ===== StarHorseSearchForm ===== -->
+      <section id="star-horse-search-form">
+        <h1>StarHorseSearchForm 搜索表单</h1>
+        <p>配置化的搜索表单组件，支持多种查询条件的自动渲染和搜索参数组装。</p>
+        <h2 id="shsearchform-属性">属性 (Props)</h2>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>formData</td><td><code>SearchFields</code></td><td><strong>是</strong></td><td>—</td><td>查询字段配置</td></tr>
+            <tr><td>defaultCondition</td><td><code>SearchParams[]</code></td><td>否</td><td>—</td><td>默认查询条件</td></tr>
+            <tr><td>dialogInput</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否弹窗输入模式</td></tr>
+            <tr><td>mutComp</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否多组件模式</td></tr>
+          </tbody>
+        </table>
+        <h2 id="shsearchform-事件">事件 (Emits)</h2>
+        <table>
+          <thead><tr><th>事件名</th><th>参数</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>searchData</td><td><code>(searchDatas: SearchParams[])</code></td><td>点击查询或重置时触发</td></tr>
+            <tr><td>initComplete</td><td>—</td><td>初始化完成时触发</td></tr>
+          </tbody>
+        </table>
+        <h2 id="shsearchform-方法">方法 (Expose)</h2>
+        <table>
+          <thead><tr><th>方法名</th><th>参数</th><th>返回值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>searchForm</td><td>—</td><td><code>Ref&lt;any&gt;</code></td><td>搜索表单数据</td></tr>
+            <tr><td>setData</td><td><code>(data: any)</code></td><td><code>void</code></td><td>合并设置搜索表单数据</td></tr>
+            <tr><td>createSearchParams</td><td><code>(formData: any)</code></td><td><code>SearchParams[]</code></td><td>根据表单数据创建搜索参数</td></tr>
+          </tbody>
+        </table>
+        <p>此组件传给子组件 <code>&lt;star-horse-item&gt;</code> 时硬编码 <code>source=4</code>，表示搜索模式。</p>
+        <hr>
+        <h2 id="shsearchcomp">StarHorseSearchComp 搜索组件</h2>
+        <p>组合搜索组件，集成了简单搜索表单和高级查询构建器。</p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>dialogInput</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否弹窗输入模式</td></tr>
+            <tr><td>mutComp</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否多组件模式</td></tr>
+            <tr><td>compUrl</td><td><code>object</code></td><td>否</td><td>—</td><td>接口地址配置</td></tr>
+            <tr><td>formData</td><td><code>SearchFields</code></td><td><strong>是</strong></td><td>—</td><td>查询字段配置</td></tr>
+            <tr><td>defaultCondition</td><td><code>SearchParams[]</code></td><td>否</td><td>—</td><td>默认查询条件</td></tr>
+            <tr><td>showAdvanced</td><td><code>boolean</code></td><td>否</td><td><code>true</code></td><td>是否显示"高级查询"入口</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ===== StarHorseDataSelector ===== -->
+      <section id="star-horse-data-selector">
+        <h1>StarHorseDataSelector 数据选择器</h1>
+        <p>数据选择器组件，支持从远程数据源或本地数据中选择数据，支持多选、标签展示等功能。</p>
+        <h2 id="shdataselector-属性">属性 (Props)</h2>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>modelValue</td><td><code>any</code></td><td><strong>是</strong></td><td>—</td><td>绑定值，支持 v-model</td></tr>
+            <tr><td>selectedData</td><td><code>any</code></td><td>否</td><td>—</td><td>已选中的数据</td></tr>
+            <tr><td>placeholder</td><td><code>string</code></td><td>否</td><td>—</td><td>占位文字</td></tr>
+            <tr><td>dataUrl</td><td><code>string</code></td><td>否</td><td>—</td><td>远程数据接口地址</td></tr>
+            <tr><td>params</td><td><code>SearchParams[]</code></td><td>否</td><td>—</td><td>查询参数</td></tr>
+            <tr><td>data</td><td><code>Array</code></td><td>否</td><td>—</td><td>本地数据</td></tr>
+            <tr><td>pageSize</td><td><code>number</code></td><td>否</td><td><code>0</code></td><td>分页大小</td></tr>
+            <tr><td>displayName</td><td><code>string</code></td><td>否</td><td><code>'name'</code></td><td>显示名称字段</td></tr>
+            <tr><td>displayValue</td><td><code>string</code></td><td>否</td><td><code>'value'</code></td><td>值字段</td></tr>
+            <tr><td>multiple</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否多选</td></tr>
+            <tr><td>disabled</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否禁用</td></tr>
+            <tr><td>showTagLength</td><td><code>number</code></td><td>否</td><td><code>3</code></td><td>多选时标签最大显示数量</td></tr>
+          </tbody>
+        </table>
+        <h2 id="shdataselector-事件">事件 (Emits)</h2>
+        <table>
+          <thead><tr><th>事件名</th><th>参数</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>update:modelValue</td><td><code>(modelValue)</code></td><td>值变化时触发</td></tr>
+            <tr><td>update:selectedData</td><td><code>(selectData)</code></td><td>选中数据变化时触发</td></tr>
+            <tr><td>change</td><td><code>(selectData)</code></td><td>选择变化时触发</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="datapicker">DataPicker 数据拾取器</h2>
+        <p>数据拾取器弹窗组件，支持从树形/列表数据中选择数据，支持拖拽排序。</p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>modelValue</td><td><code>any</code></td><td><strong>是</strong></td><td>—</td><td>绑定值</td></tr>
+            <tr><td>dataUrl</td><td><code>string</code></td><td>否</td><td>—</td><td>远程数据地址</td></tr>
+            <tr><td>data</td><td><code>Array</code></td><td>否</td><td>—</td><td>本地数据</td></tr>
+            <tr><td>displayName / displayValue</td><td><code>string</code></td><td>否</td><td><code>'name'</code>/<code>'value'</code></td><td>显示/值字段</td></tr>
+            <tr><td>multiple</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否多选</td></tr>
+            <tr><td>autoClose</td><td><code>boolean</code></td><td>否</td><td><code>true</code></td><td>选择后是否自动关闭弹窗</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="datatag">DataTag 数据标签</h2>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>data</td><td><code>any</code></td><td><strong>是</strong></td><td>—</td><td>标签数据对象</td></tr>
+            <tr><td>displayName / displayValue</td><td><code>string</code></td><td>否</td><td><code>'name'</code>/<code>'value'</code></td><td>显示/值字段</td></tr>
+            <tr><td>type</td><td><code>'success'|'info'|'warning'|'danger'</code></td><td>否</td><td><code>'info'</code></td><td>标签类型</td></tr>
+            <tr><td>closable</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否可关闭</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ===== StarHorseDataView ===== -->
+      <section id="star-horse-data-view">
+        <h1>StarHorseDataView 数据查看视图</h1>
+        <p>数据查看视图组件，以表单形式展示数据详情，支持子表单和动态表单。组件内部 <code>source</code> 固定为 <code>3</code>（查看模式）。</p>
+        <h2 id="shdataview-属性">属性 (Props)</h2>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>compUrl</td><td><code>ApiUrls</code></td><td>否</td><td>—</td><td>接口地址配置</td></tr>
+            <tr><td>objectName</td><td><code>string</code></td><td>否</td><td>—</td><td>子集合 Key 名称</td></tr>
+            <tr><td>fieldList</td><td><code>object</code></td><td><strong>是</strong></td><td>—</td><td>表单字段配置</td></tr>
+            <tr><td>outerData</td><td><code>object</code></td><td>否</td><td>—</td><td>外部传入数据</td></tr>
+            <tr><td>dynamicForm</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否动态表单</td></tr>
+            <tr><td>preview</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否预览模式</td></tr>
+            <tr><td>primaryKey</td><td><code>string | object</code></td><td>否</td><td><code>'id'</code></td><td>主键字段名</td></tr>
+            <tr><td>useViewUrl</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否使用查看专用接口</td></tr>
+            <tr><td>slotType</td><td><code>string</code></td><td>否</td><td><code>'normal'</code></td><td>插槽类型</td></tr>
+          </tbody>
+        </table>
+        <h2 id="shdataview-事件">事件 (Emits)</h2>
+        <table>
+          <thead><tr><th>事件名</th><th>参数</th><th>说明</th></tr></thead>
+          <tbody><tr><td>dataLoaded</td><td><code>(objData, flag)</code></td><td>数据加载完成时触发</td></tr></tbody>
+        </table>
+        <h2 id="shdataview-方法">方法 (Expose)</h2>
+        <table>
+          <thead><tr><th>方法名</th><th>参数</th><th>返回值</th><th>说明</th></tr></thead>
+          <tbody><tr><td>setData</td><td><code>(data: any)</code></td><td><code>void</code></td><td>设置视图数据</td></tr></tbody>
+        </table>
+      </section>
+
+      <!-- ===== StarHorseFormList ===== -->
+      <section id="star-horse-form-list">
+        <h1>StarHorseFormList 表单列表</h1>
+        <p>可编辑的表单列表组件，支持行内编辑、批量添加、删除、导入等功能。</p>
+        <h2 id="shformlist-属性">属性 (Props)</h2>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>compUrl</td><td><code>ApiUrls</code></td><td>否</td><td>—</td><td>接口地址配置</td></tr>
+            <tr><td>fieldList</td><td><code>FieldInfo[]</code></td><td><strong>是</strong></td><td>—</td><td>字段配置列表</td></tr>
+            <tr><td>defaultValues</td><td><code>object</code></td><td>否</td><td><code>{}</code></td><td>新增行默认值</td></tr>
+            <tr><td>batchName</td><td><code>string</code></td><td>否</td><td><code>'batchDataList'</code></td><td>批量数据 Key</td></tr>
+            <tr><td>primaryKey</td><td><code>string | object</code></td><td>否</td><td>—</td><td>主键字段名</td></tr>
+            <tr><td>initRows</td><td><code>number</code></td><td>否</td><td><code>0</code></td><td>初始行数</td></tr>
+            <tr><td>importInfo</td><td><code>object</code></td><td>否</td><td>—</td><td>导入信息配置</td></tr>
+            <tr><td>title</td><td><code>string</code></td><td>否</td><td>—</td><td>列表标题</td></tr>
+            <tr><td>staticColumn</td><td><code>string</code></td><td>否</td><td><code>'Y'</code></td><td>是否静态列模式</td></tr>
+            <tr><td>source</td><td><code>number</code></td><td>否</td><td><code>1</code></td><td>数据来源标识</td></tr>
+            <tr><td>showCheckBox</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否显示复选框</td></tr>
+          </tbody>
+        </table>
+        <h2 id="shformlist-source">source 值对行为的影响</h2>
+        <table>
+          <thead><tr><th>source 值</th><th>影响</th></tr></thead>
+          <tbody>
+            <tr><td>1（默认）</td><td>编辑模式——显示操作按钮</td></tr>
+            <tr><td>3</td><td>查看模式——隐藏所有操作按钮，列表只读</td></tr>
+          </tbody>
+        </table>
+        <h2 id="shformlist-事件">事件 (Emits)</h2>
+        <table>
+          <thead><tr><th>事件名</th><th>参数</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>addRow</td><td><code>(row)</code></td><td>添加行时触发</td></tr>
+            <tr><td>removeRow</td><td><code>(row)</code></td><td>删除行时触发</td></tr>
+            <tr><td>inited</td><td>—</td><td>列表初始化完成时触发</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="shformtable">StarHorseFormTable 表单表格</h2>
+        <p>批量表格的包装组件，嵌套在 StarHorseForm 中用于展示可编辑的批量数据。</p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>item</td><td><code>object</code></td><td><strong>是</strong></td><td>—</td><td>表格配置项</td></tr>
+            <tr><td>rules</td><td><code>object</code></td><td>否</td><td>—</td><td>校验规则</td></tr>
+            <tr><td>initRows</td><td><code>number</code></td><td>否</td><td><code>0</code></td><td>初始行数</td></tr>
+            <tr><td>source</td><td><code>number</code></td><td>否</td><td><code>1</code></td><td>数据来源标识</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="shformitem">StarHorseFormItem 表单项容器</h2>
+        <p>表单项的容器组件，负责渲染单个表单字段的标签和内容。</p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>compUrl</td><td><code>ApiUrls</code></td><td>否</td><td>—</td><td>接口地址配置</td></tr>
+            <tr><td>fieldList</td><td><code>PageFieldInfo</code></td><td>否</td><td>—</td><td>字段配置</td></tr>
+            <tr><td>item</td><td><code>any</code></td><td>否</td><td>—</td><td>组件配置项</td></tr>
+            <tr><td>dataIndex</td><td><code>number</code></td><td>否</td><td><code>-1</code></td><td>数据索引</td></tr>
+            <tr><td>compSize</td><td><code>string</code></td><td><strong>是</strong></td><td><code>'default'</code></td><td>组件尺寸</td></tr>
+            <tr><td>source</td><td><code>number</code></td><td><strong>是</strong></td><td><code>1</code></td><td>数据来源标识</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ===== StarHorseTree ===== -->
+      <section id="star-horse-tree">
+        <h1>StarHorseTree 树形控件</h1>
+        <p>基于 el-tree 的增强树形控件，支持搜索、分页、复选框、动态数据加载等功能。</p>
+        <h2 id="shtree-属性">属性 (Props)</h2>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>preps</td><td><code>object</code></td><td>否</td><td>—</td><td>树属性映射配置</td></tr>
+            <tr><td>expand</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否默认展开</td></tr>
+            <tr><td>height</td><td><code>number</code></td><td>否</td><td><code>600</code></td><td>树高度</td></tr>
+            <tr><td>showCheckBox</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否显示复选框</td></tr>
+            <tr><td>showSearch</td><td><code>boolean</code></td><td>否</td><td><code>true</code></td><td>是否显示搜索框</td></tr>
+            <tr><td>checkStrictly</td><td><code>boolean</code></td><td>否</td><td><code>true</code></td><td>父子是否不关联</td></tr>
+            <tr><td>showPageBar</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否显示分页</td></tr>
+            <tr><td>autoLoad</td><td><code>boolean</code></td><td>否</td><td><code>true</code></td><td>是否自动加载数据</td></tr>
+            <tr><td>compUrl</td><td><code>ApiUrls</code></td><td>否</td><td>—</td><td>接口地址配置</td></tr>
+            <tr><td>orderBy</td><td><code>OrderByInfo[]</code></td><td>否</td><td><code>[]</code></td><td>默认排序</td></tr>
+          </tbody>
+        </table>
+        <h2 id="shtree-事件">事件 (Emits)</h2>
+        <table>
+          <thead><tr><th>事件名</th><th>参数</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>selectData</td><td><code>(data, checked?)</code></td><td>选中/取消节点时触发</td></tr>
+            <tr><td>changeCollapse</td><td><code>(collapse)</code></td><td>折叠状态变化时触发</td></tr>
+            <tr><td>addData</td><td><code>(item)</code></td><td>点击添加按钮时触发</td></tr>
+            <tr><td>removeData</td><td><code>(item)</code></td><td>点击删除按钮时触发</td></tr>
+          </tbody>
+        </table>
+        <h2 id="shtree-方法">方法 (Expose)</h2>
+        <table>
+          <thead><tr><th>方法名</th><th>参数</th><th>返回值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>getSelectData</td><td>—</td><td><code>Array</code></td><td>获取选中的数据列表</td></tr>
+            <tr><td>setSelectData</td><td><code>(datas)</code></td><td><code>void</code></td><td>设置选中的数据列表</td></tr>
+            <tr><td>createSearchParams</td><td><code>(params?, orderBy?)</code></td><td><code>void</code></td><td>创建搜索参数并重新加载</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ===== StarHorseStaticTable ===== -->
+      <section id="star-horse-static-table">
+        <h1>StarHorseStaticTable 静态表格</h1>
+        <p>静态数据表格组件，不接受接口配置，仅展示传入的数据列表。</p>
+        <h2 id="shstatictable-属性">属性 (Props)</h2>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>primaryKey</td><td><code>string | object</code></td><td><strong>是</strong></td><td>—</td><td>主键字段名</td></tr>
+            <tr><td>fieldList</td><td><code>object</code></td><td><strong>是</strong></td><td>—</td><td>字段配置</td></tr>
+            <tr><td>dataFormat</td><td><code>Function</code></td><td>否</td><td>—</td><td>单元格格式化函数</td></tr>
+            <tr><td>compSize</td><td><code>string</code></td><td>否</td><td><code>'default'</code></td><td>组件尺寸</td></tr>
+            <tr><td>dialogInput</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否弹窗输入模式</td></tr>
+            <tr><td>height</td><td><code>string</code></td><td>否</td><td><code>'100%'</code></td><td>表格高度</td></tr>
+            <tr><td>title</td><td><code>string</code></td><td>否</td><td>—</td><td>表格标题</td></tr>
+            <tr><td>dataList</td><td><code>Array</code></td><td>否</td><td>—</td><td>表格数据</td></tr>
+          </tbody>
+        </table>
+        <h2 id="shstatictable-方法">方法 (Expose)</h2>
+        <table>
+          <thead><tr><th>方法名</th><th>参数</th><th>返回值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>getIds</td><td>—</td><td><code>any[]</code></td><td>获取选中行的主键数组</td></tr>
+            <tr><td>setData</td><td><code>(data)</code></td><td><code>void</code></td><td>设置表格数据</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="shtablecolumn">StarHorseTableColumn 表格列</h2>
+        <p>表格列组件，用于自定义列表中的列渲染。</p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>item</td><td><code>FieldInfo</code></td><td><strong>是</strong></td><td>—</td><td>字段配置</td></tr>
+            <tr><td>dataFormat</td><td><code>Function</code></td><td><strong>是</strong></td><td>—</td><td>格式化函数</td></tr>
+            <tr><td>cellEditable</td><td><code>boolean</code></td><td>否</td><td><code>true</code></td><td>是否可编辑单元格</td></tr>
+            <tr><td>sortable</td><td><code>boolean</code></td><td>否</td><td><code>true</code></td><td>是否可排序</td></tr>
+            <tr><td>source</td><td><code>number</code></td><td>否</td><td><code>5</code></td><td>数据来源标识</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ===== StarHorseDraggable ===== -->
+      <section id="star-horse-draggable">
+        <h1>StarHorseDraggable 拖拽布局</h1>
+        <p>拖拽布局组件，用于设计模式下拖拽排列子节点。</p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>node</td><td><code>DynamicNode</code></td><td><strong>是</strong></td><td>—</td><td>节点数据</td></tr>
+            <tr><td>isActive</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否激活（选中）状态</td></tr>
+            <tr><td>showLine</td><td><code>boolean</code></td><td>否</td><td><code>true</code></td><td>是否显示辅助线</td></tr>
+            <tr><td>sizeControlType</td><td><code>string</code></td><td>否</td><td><code>'percent'</code></td><td>大小控制类型</td></tr>
+            <tr><td>isDesign</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否设计模式</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="shicon">StarHorseIcon 图标组件</h2>
+        <p>SVG 图标组件，支持系统图标库和自定义图标。</p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>iconClass</td><td><code>string</code></td><td><strong>是</strong></td><td>—</td><td>图标类名</td></tr>
+            <tr><td>size</td><td><code>string</code></td><td>否</td><td><code>'20px'</code></td><td>图标大小</td></tr>
+            <tr><td>color</td><td><code>string</code></td><td>否</td><td><code>'var(--star-horse-style)'</code></td><td>图标颜色</td></tr>
+            <tr><td>boxShow</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否显示背景框</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="shpopover">StarHorsePopover 弹出框图标选择</h2>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>menuIcon</td><td><code>string</code></td><td>否</td><td>—</td><td>当前选中的图标</td></tr>
+            <tr><td>icons</td><td><code>Array</code></td><td>否</td><td><code>[]</code></td><td>可选图标列表</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="shjsoneditor">StarHorseJsonEditor JSON 编辑器</h2>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>options</td><td><code>object</code></td><td>否</td><td>—</td><td>json-editor 配置选项</td></tr>
+            <tr><td>currentMode</td><td><code>string</code></td><td>否</td><td><code>'text'</code></td><td>当前编辑模式</td></tr>
+            <tr><td>modeList</td><td><code>Array</code></td><td>否</td><td>—</td><td>可用模式列表</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="shitem">StarHorseItem 通用项渲染组件</h2>
+        <p>通用的表单项/列项渲染组件，根据配置自动选择对应的表单项组件。</p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>item</td><td><code>object</code></td><td><strong>是</strong></td><td>—</td><td>组件配置项</td></tr>
+            <tr><td>compSize</td><td><code>string</code></td><td>否</td><td><code>'default'</code></td><td>组件尺寸</td></tr>
+            <tr><td>source</td><td><code>number</code></td><td>否</td><td><code>1</code></td><td>数据来源标识</td></tr>
+            <tr><td>showLabel</td><td><code>boolean</code></td><td>否</td><td><code>true</code></td><td>是否显示标签</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ===== ShForm ===== -->
+      <section id="sh-form">
+        <h1>ShForm 轻量表单</h1>
+        <p>轻量表单包装组件，基于 el-form 的简单封装，提供基础的表单布局和校验功能。</p>
+        <h2 id="shform-轻量-属性">属性 (Props)</h2>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>needScroller</td><td><code>boolean</code></td><td>否</td><td><code>true</code></td><td>是否需要滚动条</td></tr>
+          </tbody>
+        </table>
+        <h2 id="shform-轻量-方法">方法 (Expose)</h2>
+        <table>
+          <thead><tr><th>方法名</th><th>参数</th><th>返回值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>getFields</td><td>—</td><td><code>any</code></td><td>获取 el-form 实例的 fields</td></tr>
+            <tr><td>validate</td><td>—</td><td><code>Promise&lt;any&gt;</code></td><td>触发表单校验</td></tr>
+          </tbody>
+        </table>
+        <h2 id="shform-轻量-插槽">插槽 (Slots)</h2>
+        <table>
+          <thead><tr><th>插槽名</th><th>作用域参数</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>header</td><td>—</td><td>表单头部区域</td></tr>
+            <tr><td>default</td><td><code>{ form }</code></td><td>表单内容区域</td></tr>
+            <tr><td>empty</td><td><code>{ form }</code></td><td>空状态</td></tr>
+            <tr><td>button</td><td><code>{ form }</code></td><td>表单底部按钮区域</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <h2 id="shdynamicform">ShDynamicForm 动态表单</h2>
+        <p>动态表单组件，根据接口配置自动渲染表单。</p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>compUrl</td><td><code>ApiUrls</code></td><td><strong>是</strong></td><td>—</td><td>接口地址配置</td></tr>
+            <tr><td>fieldList</td><td><code>object</code></td><td><strong>是</strong></td><td>—</td><td>字段配置</td></tr>
+            <tr><td>formInfo</td><td><code>object</code></td><td><strong>是</strong></td><td>—</td><td>表单信息</td></tr>
+            <tr><td>rules</td><td><code>object</code></td><td>否</td><td>—</td><td>校验规则</td></tr>
+            <tr><td>typeModel</td><td><code>string</code></td><td>否</td><td><code>'normal'</code></td><td>类型模型</td></tr>
+          </tbody>
+        </table>
+        <h3>方法 (Expose)</h3>
+        <table>
+          <thead><tr><th>方法名</th><th>参数</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>merge</td><td><code>(type: string)</code></td><td>校验并提交数据</td></tr>
+            <tr><td>mergeDraft</td><td><code>(type: string)</code></td><td>跳过校验直接提交草稿</td></tr>
+            <tr><td>resetForm</td><td>—</td><td>重置表单</td></tr>
+            <tr><td>assignDefault</td><td>—</td><td>清空表单数据</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ===== 系统组件 ===== -->
+      <section id="system-components">
+        <h1>系统组件</h1>
+        <h2 id="sys-btnlist">StarHorseButtonList 按钮列表</h2>
+        <p>按钮列表组件，集成了列表操作按钮（新增、编辑、删除、上传、导出等）。</p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>dialogProps</td><td><code>DialogProps</code></td><td><strong>是</strong></td><td>—</td><td>弹窗属性配置</td></tr>
+            <tr><td>compUrl</td><td><code>ApiUrls</code></td><td><strong>是</strong></td><td>—</td><td>接口地址配置</td></tr>
+            <tr><td>viewFlag</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否查看模式</td></tr>
+            <tr><td>extendBtns</td><td><code>UserFuncInfo[]</code></td><td>否</td><td>—</td><td>扩展按钮列表</td></tr>
+          </tbody>
+        </table>
+        <h2 id="sys-menu">StarHorseMenu 菜单组件</h2>
+        <p>侧边菜单组件，支持树形菜单结构。</p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>preps</td><td><code>object</code></td><td>否</td><td>—</td><td>属性映射配置</td></tr>
+          </tbody>
+        </table>
+        <h2 id="sys-svg">StarHorseSvg SVG 组件</h2>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>className</td><td><code>string</code></td><td>否</td><td>—</td><td>CSS 类名</td></tr>
+            <tr><td>size</td><td><code>string</code></td><td>否</td><td><code>'20px'</code></td><td>大小</td></tr>
+            <tr><td>width / height</td><td><code>number</code></td><td>否</td><td><code>200</code></td><td>宽度/高度</td></tr>
+            <tr><td>data</td><td><code>object</code></td><td>否</td><td><code>{}</code></td><td>SVG 数据</td></tr>
+            <tr><td>color</td><td><code>string</code></td><td>否</td><td><code>'var(--star-horse-style)'</code></td><td>颜色</td></tr>
+          </tbody>
+        </table>
+        <h2 id="sys-editor">StarHorseEditor 代码编辑器</h2>
+        <p>基于 CodeMirror 的代码编辑器组件。</p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>value</td><td><code>string</code></td><td>否</td><td><code>''</code></td><td>编辑器内容</td></tr>
+            <tr><td>lang</td><td><code>string</code></td><td>否</td><td>—</td><td>语言类型</td></tr>
+            <tr><td>theme</td><td><code>string</code></td><td>否</td><td><code>'dracula'</code></td><td>主题</td></tr>
+            <tr><td>showToolbar</td><td><code>boolean</code></td><td>否</td><td><code>true</code></td><td>是否显示工具栏</td></tr>
+          </tbody>
+        </table>
+        <h2 id="sys-contextmenu">ContentMenu 右键菜单</h2>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>menuData</td><td><code>Array</code></td><td>否</td><td><code>[]</code></td><td>菜单数据</td></tr>
+            <tr><td>autoHide</td><td><code>boolean</code></td><td>否</td><td><code>true</code></td><td>是否自动隐藏</td></tr>
+          </tbody>
+        </table>
+        <h2 id="sys-svgloader">SvgLoader SVG 加载器</h2>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>path</td><td><code>string</code></td><td><strong>是</strong></td><td>—</td><td>SVG 文件路径</td></tr>
+            <tr><td>size</td><td><code>string</code></td><td>否</td><td><code>'20px'</code></td><td>大小</td></tr>
+            <tr><td>color</td><td><code>string</code></td><td>否</td><td><code>'var(--star-horse-style)'</code></td><td>颜色</td></tr>
+          </tbody>
+        </table>
+        <h2 id="sys-pageconfig">PageConfig 页面配置</h2>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>modelValue</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否可见</td></tr>
+            <tr><td>direction</td><td><code>string</code></td><td>否</td><td><code>'rtl'</code></td><td>抽屉方向</td></tr>
+            <tr><td>resizable</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否可调整大小</td></tr>
+            <tr><td>title</td><td><code>string</code></td><td>否</td><td>—</td><td>标题</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ===== 布局组件 ===== -->
+      <section id="layout-components">
+        <h1>布局组件</h1>
+        <h2 id="layout-mainbar">MainBar 主导航栏</h2>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>categories</td><td><code>MenuItem[]</code></td><td><strong>是</strong></td><td>—</td><td>菜单分类数据</td></tr>
+            <tr><td>iconType</td><td><code>'user' | 'ele'</code></td><td>否</td><td>—</td><td>图标类型</td></tr>
+            <tr><td>position</td><td><code>'top'|'bottom'|'left'|'right'</code></td><td>否</td><td>—</td><td>导航栏位置</td></tr>
+          </tbody>
+        </table>
+        <h2 id="layout-maincontent">MainContent 主内容区</h2>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>categories</td><td><code>Array</code></td><td><strong>是</strong></td><td>—</td><td>菜单分类数据</td></tr>
+            <tr><td>systemConfigName</td><td><code>string</code></td><td>否</td><td>—</td><td>系统配置名称</td></tr>
+            <tr><td>position</td><td><code>string</code></td><td>否</td><td>—</td><td>位置</td></tr>
+          </tbody>
+        </table>
+        <h2 id="layout-maincontainer">MainContainer 主容器</h2>
+        <p>集成了 MainBar 和 MainContent 的主容器组件。</p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>categories</td><td><code>MenuItem[]</code></td><td><strong>是</strong></td><td>—</td><td>菜单分类数据</td></tr>
+            <tr><td>position</td><td><code>string</code></td><td>否</td><td>—</td><td>位置</td></tr>
+            <tr><td>iconType</td><td><code>string</code></td><td>否</td><td>—</td><td>图标类型</td></tr>
+          </tbody>
+        </table>
+        <h2 id="layout-mainsubbar">MainSubBar 子导航栏</h2>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>level</td><td><code>number</code></td><td><strong>是</strong></td><td><code>1</code></td><td>菜单层级</td></tr>
+            <tr><td>menuType</td><td><code>string</code></td><td>否</td><td><code>'url'</code></td><td>菜单类型</td></tr>
+          </tbody>
+        </table>
+        <h2 id="layout-menushot">MenuShot 快捷菜单</h2>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>menus</td><td><code>Array</code></td><td>否</td><td><code>[]</code></td><td>菜单列表</td></tr>
+            <tr><td>icon</td><td><code>string</code></td><td>否</td><td><code>'menu'</code></td><td>图标</td></tr>
+            <tr><td>prop</td><td><code>Record&lt;string, string&gt;</code></td><td>否</td><td>—</td><td>属性映射</td></tr>
+          </tbody>
+        </table>
+        <h2 id="layout-crontab">Crontab Cron 表达式编辑器</h2>
+        <p>Cron 表达式可视化编辑器，支持秒、分、时、日、月、周、年配置。</p>
+        <table>
+          <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>modelValue</td><td><code>string</code></td><td><strong>是</strong></td><td>—</td><td>Cron 表达式（支持 v-model）</td></tr>
+            <tr><td>expression</td><td><code>string</code></td><td>否</td><td>—</td><td>Cron 表达式</td></tr>
+            <tr><td>hideComponent</td><td><code>any</code></td><td>否</td><td>—</td><td>隐藏的组件标签页</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ===== 类型定义 ===== -->
+      <section id="types">
+        <h1>类型定义</h1>
+        <p>组件库导出的所有 TypeScript 类型定义。</p>
+        <h2 id="types-apiurls">ApiUrls — 接口地址</h2>
+        <table>
+          <thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>pageListUrl</td><td><code>string</code></td><td>是</td><td>分页接口</td></tr>
+            <tr><td>mergeUrl</td><td><code>string</code></td><td>是</td><td>merge 接口</td></tr>
+            <tr><td>mergeDraftUrl</td><td><code>string</code></td><td>是</td><td>merge 暂存接口</td></tr>
+            <tr><td>batchMergeUrl</td><td><code>string</code></td><td>是</td><td>批量 Merge 接口</td></tr>
+            <tr><td>batchMergeDraftUrl</td><td><code>string</code></td><td>是</td><td>批量暂存接口</td></tr>
+            <tr><td>loadByIdUrl</td><td><code>string</code></td><td>是</td><td>根据 Id 获取数据接口</td></tr>
+            <tr><td>loadByIdForViewUrl</td><td><code>string</code></td><td>是</td><td>根据 Id 获取数据接口（查看用）</td></tr>
+            <tr><td>deleteUrl</td><td><code>string</code></td><td>是</td><td>删除数据接口</td></tr>
+            <tr><td>deleteByConditionUrl</td><td><code>string</code></td><td>否</td><td>根据条件删除数据</td></tr>
+            <tr><td>exportAllUrl</td><td><code>string</code></td><td>否</td><td>导出数据接口</td></tr>
+            <tr><td>downloadTemplateUrl</td><td><code>string</code></td><td>否</td><td>下载模板接口</td></tr>
+            <tr><td>customerUrl1 ~ customerUrl5</td><td><code>string</code></td><td>否</td><td>用户自定义接口 1~5</td></tr>
+            <tr><td>basePrefix</td><td><code>string</code></td><td>否</td><td>接口路径前缀</td></tr>
+            <tr><td>condition</td><td><code>SearchParams[]</code></td><td>否</td><td>权限隔离属性字段</td></tr>
+            <tr><td>redirect</td><td><code>boolean</code></td><td>否</td><td>是否接口转发</td></tr>
+          </tbody>
+        </table>
+        <h2 id="types-searchparams">SearchParams — 查询条件</h2>
+        <table>
+          <thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>propertyName</td><td><code>string</code></td><td>否</td><td>属性名称</td></tr>
+            <tr><td>operation</td><td><code>string | null</code></td><td>否</td><td>匹配方式：eq/lk/gt/gte/lt/lte/llk/rlk/in/nin/exits</td></tr>
+            <tr><td>value</td><td><code>any</code></td><td>否</td><td>查询值</td></tr>
+            <tr><td>orOperList</td><td><code>SearchParams[]</code></td><td>否</td><td>或查询</td></tr>
+          </tbody>
+        </table>
+        <h2 id="types-fieldinfo">FieldInfo — 表单字段属性</h2>
+        <table>
+          <thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>label</td><td><code>string</code></td><td>否</td><td>标签名称</td></tr>
+            <tr><td>fieldName</td><td><code>string</code></td><td>是</td><td>属性名称</td></tr>
+            <tr><td>type</td><td><code>string</code></td><td>否</td><td>类型名称</td></tr>
+            <tr><td>required</td><td><code>boolean</code></td><td>否</td><td>是否必须项</td></tr>
+            <tr><td>formVisible</td><td><code>boolean</code></td><td>否</td><td>表单是否显示</td></tr>
+            <tr><td>listVisible</td><td><code>boolean</code></td><td>否</td><td>列表是否显示</td></tr>
+            <tr><td>viewVisible</td><td><code>boolean</code></td><td>否</td><td>查看页面是否显示</td></tr>
+            <tr><td>disabled</td><td><code>boolean</code></td><td>否</td><td>是否禁用</td></tr>
+            <tr><td>editDisabled</td><td><code>boolean</code></td><td>否</td><td>编辑时禁用</td></tr>
+            <tr><td>defaultValue</td><td><code>any</code></td><td>否</td><td>默认值</td></tr>
+            <tr><td>actions</td><td><code>Function | Record&lt;string, Function&gt;</code></td><td>否</td><td>事件内容</td></tr>
+            <tr><td>preps</td><td><code>Record&lt;string, any&gt;</code></td><td>否</td><td>组件个性化属性（核心配置入口）</td></tr>
+            <tr><td>children</td><td><code>FieldInfo[]</code></td><td>否</td><td>子节点（多级表头）</td></tr>
+          </tbody>
+        </table>
+        <h2 id="types-pagefieldinfo">PageFieldInfo — 页面字段信息</h2>
+        <table>
+          <thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>fieldList</td><td><code>FieldInfo[] | any</code></td><td>否</td><td>表单属性</td></tr>
+            <tr><td>batchFieldList</td><td><code>BatchFieldInfo[]</code></td><td>否</td><td>批量表单属性</td></tr>
+            <tr><td>userTableFuncs</td><td><code>UserFuncInfo[]</code></td><td>否</td><td>表格自定义方法</td></tr>
+            <tr><td>stopAutoLoad</td><td><code>boolean</code></td><td>否</td><td>是否阻止自动加载列表数据</td></tr>
+            <tr><td>cellEditable</td><td><code>boolean</code></td><td>否</td><td>是否允许列表单元格可编辑</td></tr>
+            <tr><td>orderBy</td><td><code>OrderByInfo[]</code></td><td>否</td><td>列表数据排序</td></tr>
+            <tr><td>conditions</td><td><code>SearchParams[]</code></td><td>否</td><td>默认查询条件</td></tr>
+            <tr><td>primaryKey</td><td><code>string | Array</code></td><td>否</td><td>主键</td></tr>
+          </tbody>
+        </table>
+        <h2 id="types-dialogprops">DialogProps — 弹窗属性</h2>
+        <table>
+          <thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>batchDialogTitle</td><td><code>string</code></td><td>否</td><td>批量编辑标题</td></tr>
+            <tr><td>dialogTitle</td><td><code>string</code></td><td>否</td><td>编辑标题</td></tr>
+            <tr><td>batchEditVisible</td><td><code>boolean</code></td><td>否</td><td>批量编辑弹窗控制变量</td></tr>
+            <tr><td>editVisible</td><td><code>boolean</code></td><td>否</td><td>编辑弹窗控制变量</td></tr>
+            <tr><td>viewVisible</td><td><code>boolean</code></td><td>否</td><td>查看数据控制变量</td></tr>
+            <tr><td>ids</td><td><code>any</code></td><td>否</td><td>数据 id</td></tr>
+            <tr><td>isExpand</td><td><code>boolean</code></td><td>否</td><td>是否扩展表</td></tr>
+            <tr><td>expandUrl</td><td><code>ApiUrls</code></td><td>否</td><td>扩展表的接口 API</td></tr>
+          </tbody>
+        </table>
+        <h2 id="types-dynamicnode">DynamicNode — 动态节点</h2>
+        <table>
+          <thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>id</td><td><code>string</code></td><td>是</td><td>节点 ID</td></tr>
+            <tr><td>label</td><td><code>string</code></td><td>是</td><td>节点标签</td></tr>
+            <tr><td>name</td><td><code>string</code></td><td>是</td><td>节点名称</td></tr>
+            <tr><td>icon</td><td><code>string</code></td><td>否</td><td>节点图标</td></tr>
+            <tr><td>type</td><td><code>string</code></td><td>否</td><td>节点类型</td></tr>
+            <tr><td>preps</td><td><code>Record&lt;string, any&gt;</code></td><td>否</td><td>节点属性</td></tr>
+            <tr><td>styles</td><td><code>Record&lt;string, any&gt;</code></td><td>否</td><td>节点样式</td></tr>
+            <tr><td>children</td><td><code>DynamicNode[]</code></td><td>否</td><td>子节点</td></tr>
+          </tbody>
+        </table>
+        <h2 id="types-other">其他类型</h2>
+        <table>
+          <thead><tr><th>类型名</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td><code>SelectOption</code></td><td>下拉选项</td></tr>
+            <tr><td><code>SearchFields</code></td><td>查询属性集合</td></tr>
+            <tr><td><code>SearchProps</code></td><td>查询组件属性</td></tr>
+            <tr><td><code>BatchFieldInfo</code></td><td>批量表单</td></tr>
+            <tr><td><code>UserFuncInfo</code></td><td>用户自定义方法</td></tr>
+            <tr><td><code>OrderByInfo</code></td><td>排序条件</td></tr>
+            <tr><td><code>BtnAction</code></td><td>按钮事件</td></tr>
+            <tr><td><code>BtnAuth</code></td><td>按钮权限</td></tr>
+            <tr><td><code>CompParams</code></td><td>动态组件参数</td></tr>
+            <tr><td><code>ExpandTable</code></td><td>嵌套表结构</td></tr>
+            <tr><td><code>DynamicParamField</code></td><td>动态参数字段定义</td></tr>
+            <tr><td><code>RelationDetail</code></td><td>联动关系详情</td></tr>
+            <tr><td><code>ApiLinkageDetail</code></td><td>第三方接口联动详情</td></tr>
+            <tr><td><code>ItemRelation</code></td><td>联动对象</td></tr>
+            <tr><td><code>MenusInfo</code></td><td>菜单信息</td></tr>
+            <tr><td><code>PageProps</code></td><td>页面数据信息</td></tr>
+            <tr><td><code>ItemPreps</code></td><td>组件通用属性集合</td></tr>
+            <tr><td><code>RuleType</code></td><td>校验规则类型</td></tr>
+            <tr><td><code>ShortKey</code></td><td>快捷键定义</td></tr>
+            <tr><td><code>FieldMapping</code></td><td>属性映射</td></tr>
+            <tr><td><code>ImportInfo</code></td><td>导入信息</td></tr>
+            <tr><td><code>EditCondition</code></td><td>编辑条件</td></tr>
+            <tr><td><code>PreOrPendEventConfig</code></td><td>前后缀元素事件配置</td></tr>
+            <tr><td><code>PreValid</code></td><td>按钮响应事件前置校验</td></tr>
+            <tr><td><code>CustomerItem</code></td><td>折叠面板数据格式</td></tr>
+            <tr><td><code>NodeInfo</code></td><td>节点信息</td></tr>
+            <tr><td><code>EdgeInfo</code></td><td>边构建信息</td></tr>
+            <tr><td><code>DyCompField</code></td><td>动态组件字段定义</td></tr>
+            <tr><td><code>ItemType</code></td><td>组件属性</td></tr>
+            <tr><td><code>CompAction</code></td><td>组件操作</td></tr>
+            <tr><td><code>CompType</code></td><td>组件类型</td></tr>
+            <tr><td><code>ContainerPreps</code></td><td>容器组件属性</td></tr>
+            <tr><td><code>ApiInfo</code></td><td>接口信息</td></tr>
+            <tr><td><code>OptionField</code></td><td>数据源字段映射配置</td></tr>
+            <tr><td><code>DataListProps</code></td><td>数据列表属性</td></tr>
+            <tr><td><code>JoinSearchParams</code></td><td>连接查询条件</td></tr>
+            <tr><td><code>SearchInfo</code></td><td>查询对象</td></tr>
+            <tr><td><code>BtnHideCondition</code></td><td>列表按钮隐藏条件</td></tr>
+            <tr><td><code>RedirectParams</code></td><td>接口重定向参数</td></tr>
+            <tr><td><code>PreOrPendEventType</code></td><td>前后缀事件类型</td></tr>
+            <tr><td><code>Tags</code></td><td>标签信息</td></tr>
+            <tr><td><code>RoleInfo</code></td><td>角色信息</td></tr>
+            <tr><td><code>UserInfo</code></td><td>用户信息</td></tr>
+            <tr><td><code>SubFieldInfo</code></td><td>子表单信息</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+    </main>
+  </div>
+
+  <button class="back-top" id="backTop" aria-label="回到顶部">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
+  </button>
+
+  <script>
+    // Sidebar toggle
+    const menuBtn = document.getElementById('menuBtn');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+
+    menuBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('show');
+    });
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('show');
+    });
+
+    // Search filter
+    const searchInput = document.getElementById('searchInput');
+    const navItems = document.querySelectorAll('.nav-item');
+
+    searchInput.addEventListener('input', () => {
+      const query = searchInput.value.toLowerCase().trim();
+      navItems.forEach(item => {
+        const keyword = (item.getAttribute('data-keyword') || '').toLowerCase();
+        const text = item.textContent.toLowerCase();
+        if (!query || keyword.includes(query) || text.includes(query)) {
+          item.classList.remove('hidden');
+        } else {
+          item.classList.add('hidden');
+        }
+      });
+      // Show/hide group titles
+      document.querySelectorAll('.nav-group').forEach(group => {
+        const visibleItems = group.querySelectorAll('.nav-item:not(.hidden)');
+        group.style.display = visibleItems.length ? '' : 'none';
+      });
+    });
+
+    // Smooth scroll & active highlight
+    const sections = document.querySelectorAll('section[id]');
+    const backTop = document.getElementById('backTop');
+
+    function updateActiveNav() {
+      let current = '';
+      sections.forEach(section => {
+        const rect = section.getBoundingClientRect();
+        if (rect.top <= 100) current = section.id;
+      });
+      navItems.forEach(item => {
+        item.classList.toggle('active', item.getAttribute('href') === '#' + current);
+      });
+    }
+
+    // Nav click
+    navItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = document.querySelector(item.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+          // Close mobile sidebar
+          sidebar.classList.remove('open');
+          overlay.classList.remove('show');
+        }
+      });
+    });
+
+    // Scroll events
+    window.addEventListener('scroll', () => {
+      updateActiveNav();
+      backTop.classList.toggle('show', window.scrollY > 400);
+    });
+
+    backTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Initial highlight
+    updateActiveNav();
+  </script>
+</body>
+</html>
