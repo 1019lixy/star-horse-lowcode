@@ -25,7 +25,7 @@ export function getParentComp(parentField: any) {
       parentField.itemType == "dytable" ||
       parentField.itemType == "table")
     ? "container"
-    : "item";
+    : "formItem";
 }
 
 /**
@@ -144,8 +144,8 @@ export function moveUpItem(isEdit: boolean, formItem: any, parentField: any) {
   } else if (parentField?.itemType == "box") {
     // box 类型暂不处理
   }
-  const compType = parentField.compType ?? getParentComp(parentField);
-  if (compType === "item") {
+  const compType = parentField?.compType ?? getParentComp(parentField);
+  if (compType === "formItem") {
     for (let i = 0; i < dataList.length; i++) {
       if (formItem.id === dataList[i].id && i > 0) {
         const temp = dataList[i];
@@ -199,8 +199,8 @@ export function moveDownItem(isEdit: boolean, formItem: any, parentField: any) {
       }
     }
   }
-  const compType = parentField.compType ?? getParentComp(parentField);
-  if (compType === "item") {
+  const compType = parentField?.compType ?? getParentComp(parentField);
+  if (compType === "formItem") {
     for (let i = 0; i < dataList.length; i++) {
       if (formItem.id === dataList[i].id && i < dataList.length - 1) {
         const temp = dataList[i];

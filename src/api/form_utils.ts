@@ -292,7 +292,7 @@ const itemAnalysis = (item: any) => {
   const layerItem: any = {
     name: item.preps?.label ?? item.label,
     id: item.preps?.id ?? item.id,
-    compType: "item",
+    compType: "formItem",
     type: item.preps?.itemType ?? item.itemType,
     value: item.preps?.name ?? item.name,
   };
