@@ -91,7 +91,9 @@ const AdvancedValueInput = defineComponent({
       return reactive({
         ...rest,
         fieldName: p.valueKey,
-        preps: { ...(preps || {}) },
+        preps: { ...(preps || {}),
+        allowCreate:true
+        },
       });
     };
     const fieldRef = ref<any>(buildField());
