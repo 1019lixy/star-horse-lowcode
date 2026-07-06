@@ -1,47 +1,47 @@
 import {defineStore} from "pinia";
-import {ref, unref} from "vue";
+import {ref, shallowRef, unref, triggerRef, nextTick} from "vue";
 import JSON5 from "json5";
 import {CompType} from "@/components/types/FormType";
 import {analysisCompDatas} from "@/api/form_utils";
 import {UserInfo} from "@/components/types";
 
 export const useDesignFormStore = defineStore("designForm", () => {
-    const containerList = ref<CompType[]>([]);
-    const formDataList = ref<CompType[]>([]);
-    const selfFormDataList = ref<CompType[]>([]);
-    const allFormDataList = ref<Array<any>>([]);
-    const formInfo = ref<any>({});
-    const compList = ref<Array<any>>([]);
-    const compListNoLayer = ref<Record<string, any>>({});
-    const editUserList = ref<Record<string, UserInfo>>({});
-    const formData = ref<any>({});
-    const currentComp = ref<Array<any> | any>();
-    // 添加缓存状态标记和缓存结果
-    const isCompListUpdated = ref<boolean>(true);
-    const cachedCompListNoLayer = ref<Record<string, any>>({});
-    const cachedSelectList = ref<any>([]);
-    const parentContainer = ref<Record<string, any>>({});
-    const currentItemType = ref<string>("");
-    const currentCompCategory = ref<string>("");
-    const parentCompType = ref<string>("");
-    const currentItemId = ref<string>("");
-    const currentSubItemId = ref<string>("");
-    const currentSubItem = ref<Record<string, any>>({});
-    const currentSubTabName = ref<string>("");
-    const isEdit = ref<boolean>(false);
-    const componentVisible = ref<boolean>(false);
-    const batchEditFieldVisible = ref<boolean>(false);
-    const previewVisible = ref<boolean>(false);
-    const refresh = ref<number>(0);
-    const currentFormPreps = ref<any>({});
-    const draggingItem = ref<any>({});
-    const isDragging = ref<boolean>(false);
-    const shortKeyDisabled = ref<boolean>(false);
-    const historyRecord = ref<any>({
-        index: -1,
-        maxStep: 20,
-        datas: [],
-    });
+  const containerList = ref<CompType[]>([]);
+  const formDataList = ref<CompType[]>([]);
+  const selfFormDataList = ref<CompType[]>([]);
+  const allFormDataList = ref<Array<any>>([]);
+  const formInfo = ref<any>({});
+  const compList = ref<Array<any>>([]);
+  const compListNoLayer = shallowRef<Record<string, any>>({});
+  const editUserList = shallowRef<Record<string, UserInfo>>({});
+  const formData = ref<any>({});
+  const currentComp = ref<Array<any> | any>();
+  // 添加缓存状态标记和缓存结果
+  const isCompListUpdated = ref<boolean>(true);
+  const cachedCompListNoLayer = shallowRef<Record<string, any>>({});
+  const cachedSelectList = shallowRef<any>([]);
+  const parentContainer = ref<Record<string, any>>({});
+  const currentItemType = ref<string>("");
+  const currentCompCategory = ref<string>("");
+  const parentCompType = ref<string>("");
+  const currentItemId = ref<string>("");
+  const currentSubItemId = ref<string>("");
+  const currentSubItem = ref<Record<string, any>>({});
+  const currentSubTabName = ref<string>("");
+  const isEdit = ref<boolean>(false);
+  const componentVisible = ref<boolean>(false);
+  const batchEditFieldVisible = ref<boolean>(false);
+  const previewVisible = ref<boolean>(false);
+  const refresh = ref<number>(0);
+  const currentFormPreps = ref<any>({});
+  const draggingItem = ref<any>({});
+  const isDragging = ref<boolean>(false);
+  const shortKeyDisabled = ref<boolean>(false);
+  const historyRecord = ref<any>({
+    index: -1,
+    maxStep: 20,
+    datas: [],
+  });
 
     /**
      * 添加历史记录
@@ -129,11 +129,19 @@ export const useDesignFormStore = defineStore("designForm", () => {
         currentItemId.value = itemId;
         currentCompCategory.value = data?.compType || "";
         parentCompType.value = parentType;
-        currentComp.value = data;
-        currentItemType.value = itemType || data?.itemType || "";
-        currentFormPreps.value = data?.preps || data || {};
-        setIsDragging(false);
-        setRefresh();
+        currentComp.value = null;
+        currentFormPreps.value = {};
+        triggerRef(currentComp);
+        triggerRef(currentFormPreps);
+        nextTick(() => {
+            currentComp.value = data;
+            currentItemType.value = itemType || data?.itemType || "";
+            currentFormPreps.value = data?.preps || data || {};
+            setIsDragging(false);
+            setRefresh();
+            triggerRef(currentComp);
+            triggerRef(currentFormPreps);
+        });
     };
     //设置父容器
     const setParentContainer = (item: any) => {
