@@ -1,27 +1,20 @@
 <script setup lang="ts" name="StarHorseSearchComp">
-import { isMobile } from "@/api/device";
+import {isMobile} from "@/api/device";
 import StarHorseSearchForm from "@/components/comp/StarHorseSearchForm.vue";
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import MenuShot from "@/components/comp/app/MenuShot.vue";
 import StarHorseQueryBuilder from "@/components/system/StarHorseQueryBuilder.vue";
-import { i18n } from "@/lang";
-import {
-  PropType,
-  computed,
-  defineComponent,
-  h,
-  reactive,
-  ref,
-  watch,
-} from "vue";
-import { Filter } from "@element-plus/icons-vue";
+import {i18n} from "@/lang";
+import {computed, defineComponent, h, PropType, reactive, ref, watch,} from "vue";
+import {Filter} from "@element-plus/icons-vue";
 import StarHorseItem from "@/components/comp/StarHorseItem.vue";
-import type { SearchFields, SelectOption } from "@/components/types/SearchProps";
-import type { SearchParams } from "@/components/types/Params";
-import type { OrderByInfo } from "@/components/types/PageFieldInfo";
+import type {SearchFields, SelectOption} from "@/components/types/SearchProps";
+import type {SearchParams} from "@/components/types/Params";
+import type {OrderByInfo} from "@/components/types/PageFieldInfo";
+import {StarHorseIcon} from "@/components/comp/index";
 
 const searchFormRef = ref<InstanceType<typeof StarHorseSearchForm> | null>(
-  null,
+    null,
 );
 /** 移动端：简单 / 高级 查询弹窗 */
 const dialogVisible = ref(false);
@@ -37,21 +30,21 @@ const advancedSort = ref<any[]>([]);
 
 const emits = defineEmits(["searchData", "searchOrderBy"]);
 const props = defineProps({
-  dialogInput: { type: Boolean, default: false },
-  mutComp: { type: Boolean, default: false },
-  compUrl: { type: Object },
-  formData: { type: Object as PropType<SearchFields>, required: true },
-  defaultCondition: { type: Array as PropType<SearchParams[]> },
+  dialogInput: {type: Boolean, default: false},
+  mutComp: {type: Boolean, default: false},
+  compUrl: {type: Object},
+  formData: {type: Object as PropType<SearchFields>, required: true},
+  defaultCondition: {type: Array as PropType<SearchParams[]>},
   /** 是否展示「高级查询」入口，默认开启 */
-  showAdvanced: { type: Boolean, default: true },
+  showAdvanced: {type: Boolean, default: true},
 });
 
 /** 从 formData.fieldList 派生 QueryBuilder 所需的字段下拉选项 */
 const propertyOptions = computed<SelectOption[]>(() =>
-  (props.formData?.fieldList || []).map((f: any) => ({
-    name: f.label || f.fieldName,
-    value: f.fieldName,
-  })),
+    (props.formData?.fieldList || []).map((f: any) => ({
+      name: f.label || f.fieldName,
+      value: f.fieldName,
+    })),
 );
 
 /** 字段名 → 字段元数据映射，用于按类型驱动值输入控件 */
@@ -71,64 +64,69 @@ const fieldMetaMap = computed<Map<string, any>>(() => {
 const AdvancedValueInput = defineComponent({
   name: "AdvancedValueInput",
   props: {
-    item: { type: Object, required: true },
-    valueKey: { type: String, required: true },
-    prop: { type: String, default: "" },
-    disabled: { type: Boolean, default: false },
+    item: {type: Object, required: true},
+    valueKey: {type: String, required: true},
+    prop: {type: String, default: ""},
+    disabled: {type: Boolean, default: false},
   },
   setup(p) {
     // -item 组件通过 formData[field.fieldName] 读写值；
     // proxyForm 以 valueKey 为 key 承载单值，与 item[valueKey] 双向同步
-    const proxyForm = reactive<any>({ [p.valueKey]: p.item?.[p.valueKey] ?? "" });
+    const proxyForm = reactive<any>({[p.valueKey]: p.item?.[p.valueKey] ?? ""});
 
     // 每次字段切换创建全新 field 对象，不复用 reactive，
     // 避免 -item 组件 onMounted mutate 的内部状态（id/actions/step）被破坏导致白屏
     const buildField = () => {
       const meta: any = fieldMetaMap.value.get(p.prop) || {};
       // 去掉 defaultValue 避免预填干扰空条件；preps 单独克隆防止 -item mutate 污染原元数据
-      const { defaultValue, preps, ...rest } = meta;
+      const {defaultValue, preps, ...rest} = meta;
       void defaultValue;
       return reactive({
         ...rest,
         fieldName: p.valueKey,
-        preps: { ...(preps || {}),
-        allowCreate:true
+        preps: {
+          ...(preps || {}),
+          allowCreate: true
         },
       });
     };
     const fieldRef = ref<any>(buildField());
-    watch(() => p.prop, () => { fieldRef.value = buildField(); }, { immediate: false });
-    watch(fieldMetaMap, () => { fieldRef.value = buildField(); });
+    watch(() => p.prop, () => {
+      fieldRef.value = buildField();
+    }, {immediate: false});
+    watch(fieldMetaMap, () => {
+      fieldRef.value = buildField();
+    });
 
     // 双向同步 proxyForm[valueKey] <-> item[valueKey]
     watch(
-      () => proxyForm[p.valueKey],
-      (v) => {
-        if (p.item?.[p.valueKey] !== v) p.item[p.valueKey] = v;
-      },
+        () => proxyForm[p.valueKey],
+        (v) => {
+          if (p.item?.[p.valueKey] !== v) p.item[p.valueKey] = v;
+        },
     );
     watch(
-      () => p.item?.[p.valueKey],
-      (v) => {
-        if (proxyForm[p.valueKey] !== v) proxyForm[p.valueKey] = v ?? "";
-      },
+        () => p.item?.[p.valueKey],
+        (v) => {
+          if (proxyForm[p.valueKey] !== v) proxyForm[p.valueKey] = v ?? "";
+        },
     );
 
     return () =>
-      h(
-        "div",
-        { class: "advanced-value-input" },
-        h(StarHorseItem, {
-          dataForm: proxyForm,
-          "onUpdate:dataForm": (v: any) => Object.assign(proxyForm, v),
-          item: fieldRef.value,
-          source: 4,
-          compSize: "small",
-          bareFlag: true,
-          // 切换字段时强制重建 -item，配合 fieldRef 换新对象，彻底隔离状态
-          key: p.prop,
-        }),
-      );
+        h(
+            "div",
+            {class: "advanced-value-input"},
+            h(StarHorseItem, {
+              dataForm: proxyForm,
+              "onUpdate:dataForm": (v: any) => Object.assign(proxyForm, v),
+              item: fieldRef.value,
+              source: 4,
+              compSize: "small",
+              bareFlag: true,
+              // 切换字段时强制重建 -item，配合 fieldRef 换新对象，彻底隔离状态
+              key: p.prop,
+            }),
+        );
   },
 });
 
@@ -211,16 +209,16 @@ const handleAdvancedClose = () => {
   <!-- ── 桌面端：内联搜索表单 + 高级查询入口 ───────────────────── -->
   <div v-if="!isMobile">
     <StarHorseSearchForm
-      ref="searchFormRef"
-      v-bind="props"
-      @searchData="handleSearchData"
+        ref="searchFormRef"
+        v-bind="props"
+        @searchData="handleSearchData"
     >
       <template v-if="showAdvanced" #action-append>
         <el-button
-          :icon="Filter"
-          text
-          size="default"
-          @click="advancedVisible = true"
+            :icon="Filter"
+            text
+            size="default"
+            @click="advancedVisible = true"
         >
           {{ i18n("search.advancedQuery") }}
         </el-button>
@@ -230,26 +228,26 @@ const handleAdvancedClose = () => {
 
   <!-- ── 移动端：悬浮入口按钮 ───────────────────────────────── -->
   <MenuShot
-    v-if="isMobile"
-    icon="search"
-    :position="{
+      v-if="isMobile"
+      icon="search"
+      :position="{
       top: '50px',
       right: '20px',
       bottom: 'unset',
     }"
-    @change="handleMobileSearch"
+      @change="handleMobileSearch"
   />
 
   <!-- ── 移动端：搜索弹窗（简单 / 高级 切换） ─────────────────── -->
   <star-horse-dialog
-    :dialog-visible="dialogVisible"
-    :title="i18n('search.query')"
-    :full-screen="false"
-    :source="3"
-    :box-height="'100%'"
-    :box-width="'100%'"
-    :hide-full-screen-icon="true"
-    @closeAction="handleClose"
+      :dialog-visible="dialogVisible"
+      :title="i18n('search.query')"
+      :full-screen="false"
+      :source="3"
+      :box-height="'100%'"
+      :box-width="'100%'"
+      :hide-full-screen-icon="true"
+      @closeAction="handleClose"
   >
     <div v-if="showAdvanced" class="mobile-mode-switch">
       <el-radio-group v-model="mobileMode" size="default">
@@ -263,14 +261,65 @@ const handleAdvancedClose = () => {
     </div>
 
     <StarHorseSearchForm
-      v-if="mobileMode === 'simple'"
-      ref="searchFormRef"
-      v-bind="props"
-      @searchData="handleSearchData"
+        v-if="mobileMode === 'simple'"
+        ref="searchFormRef"
+        v-bind="props"
+        @searchData="handleSearchData"
     />
 
     <div v-else class="mobile-advanced-wrap">
       <StarHorseQueryBuilder
+          v-model="advancedConditions"
+          v-model:sort-value="advancedSort"
+          :properties="propertyOptions"
+          :hide-alias="true"
+          :tabs="['conditions', 'sort']"
+          condition-name="operation"
+          property-name="propertyName"
+          value-name="value"
+          or-condition-name="orOperList"
+          :max-height="'50vh'"
+      >
+        <template #value-input="{ item, valueKey, prop, disabled }">
+          <advanced-value-input
+              :item="item"
+              :value-key="valueKey"
+              :prop="prop"
+              :disabled="disabled"
+          />
+        </template>
+      </StarHorseQueryBuilder>
+      <div class="advanced-footer mobile-advanced-footer">
+        <div class="advanced-footer__secondary">
+          <el-button link @click="resetAdvanced">
+            <star-horse-icon icon-class="reset" size="14px"/>
+            {{ i18n("search.reset") }}
+          </el-button>
+        </div>
+        <el-button
+            type="primary"
+            class="advanced-submit"
+            @click="executeAdvancedSearch"
+        >
+          <star-horse-icon icon-class="search" size="16px" color="var(--star-horse-white)"/>
+          {{ i18n("search.query") }}
+        </el-button>
+      </div>
+    </div>
+  </star-horse-dialog>
+
+  <!-- ── 桌面端：高级查询弹窗 ───────────────────────────────── -->
+  <star-horse-dialog
+      :dialog-visible="advancedVisible"
+      :title="i18n('search.advancedQuery')"
+      :full-screen="false"
+      :source="3"
+      :box-height="'70vh'"
+      :box-width="'760px'"
+      :hide-full-screen-icon="false"
+      @closeAction="handleAdvancedClose"
+  >
+    <StarHorseQueryBuilder
         v-model="advancedConditions"
         v-model:sort-value="advancedSort"
         :properties="propertyOptions"
@@ -280,63 +329,14 @@ const handleAdvancedClose = () => {
         property-name="propertyName"
         value-name="value"
         or-condition-name="orOperList"
-        :max-height="'50vh'"
-      >
-        <template #value-input="{ item, valueKey, prop, disabled }">
-          <advanced-value-input
+        :max-height="'calc(70vh - 180px)'"
+    >
+      <template #value-input="{ item, valueKey, prop, disabled }">
+        <advanced-value-input
             :item="item"
             :value-key="valueKey"
             :prop="prop"
             :disabled="disabled"
-          />
-        </template>
-      </StarHorseQueryBuilder>
-      <div class="advanced-footer mobile-advanced-footer">
-        <div class="advanced-footer__secondary">
-          <el-button link @click="resetAdvanced">
-            {{ i18n("search.reset") }}
-          </el-button>
-        </div>
-        <el-button
-          type="primary"
-          class="advanced-submit"
-          @click="executeAdvancedSearch"
-        >
-          {{ i18n("search.query") }}
-        </el-button>
-      </div>
-    </div>
-  </star-horse-dialog>
-
-  <!-- ── 桌面端：高级查询弹窗 ───────────────────────────────── -->
-  <star-horse-dialog
-    :dialog-visible="advancedVisible"
-    :title="i18n('search.advancedQuery')"
-    :full-screen="false"
-    :source="3"
-    :box-height="'70vh'"
-    :box-width="'760px'"
-    :hide-full-screen-icon="false"
-    @closeAction="handleAdvancedClose"
-  >
-    <StarHorseQueryBuilder
-      v-model="advancedConditions"
-      v-model:sort-value="advancedSort"
-      :properties="propertyOptions"
-      :hide-alias="true"
-      :tabs="['conditions', 'sort']"
-      condition-name="operation"
-      property-name="propertyName"
-      value-name="value"
-      or-condition-name="orOperList"
-      :max-height="'calc(70vh - 180px)'"
-    >
-      <template #value-input="{ item, valueKey, prop, disabled }">
-        <advanced-value-input
-          :item="item"
-          :value-key="valueKey"
-          :prop="prop"
-          :disabled="disabled"
         />
       </template>
     </StarHorseQueryBuilder>
@@ -344,17 +344,20 @@ const handleAdvancedClose = () => {
       <div class="advanced-footer">
         <div class="advanced-footer__secondary">
           <el-button link @click="resetAdvanced">
+            <star-horse-icon icon-class="reset" size="14px"/>
             {{ i18n("search.reset") }}
           </el-button>
           <el-button link @click="handleAdvancedClose">
+            <star-horse-icon icon-class="close" size="14px"/>
             {{ i18n("search.cancel") }}
           </el-button>
         </div>
         <el-button
-          type="primary"
-          class="advanced-submit"
-          @click="executeAdvancedSearch"
+            type="primary"
+            class="advanced-submit"
+            @click="executeAdvancedSearch"
         >
+          <star-horse-icon icon-class="search" size="16px" color="var(--star-horse-white)"/>
           {{ i18n("search.query") }}
         </el-button>
       </div>

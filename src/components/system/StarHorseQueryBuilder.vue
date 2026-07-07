@@ -4,6 +4,7 @@ import {i18n} from "@/lang";
 import {SelectOption} from "../types/SearchProps";
 import {uuid} from "@/api/system";
 import {searchMatchList} from "@/api/star_horse_utils";
+import {StarHorseIcon} from "@/components/comp";
 
 defineOptions({name: "StarHorseQueryBuilder"});
 
@@ -334,8 +335,10 @@ function onHavingConditionChange(item: Record<string, any>) {
                               :disabled="disabled"/>
                   </slot>
                 </div>
-                <el-button v-if="!disabled" type="danger" text size="small" icon="Close" class="dqb-item-del"
-                           @click="removeItem(idx)"/>
+                <el-button v-if="!disabled" type="danger" text size="small"  class="dqb-item-del"
+                           @click="removeItem(idx)">
+                  <star-horse-icon icon-class="delete" color="var(--el-color-danger)"/>
+                </el-button>
               </div>
               <div v-if="item[GK]?.length" class="dqb-or-list">
                 <div v-for="(orCond, oi) in item[GK]" :key="orCond.id" class="dqb-item dqb-item--or">
@@ -380,20 +383,22 @@ function onHavingConditionChange(item: Record<string, any>) {
                                 :disabled="disabled"/>
                     </slot>
                   </div>
-                  <el-button v-if="!disabled" type="danger" text size="small" icon="Close" class="dqb-item-del"
-                             @click="removeOrCondition(item, oi)"/>
+                  <el-button v-if="!disabled" type="danger" text size="small"  class="dqb-item-del"
+                             @click="removeOrCondition(item, oi)">
+                    <star-horse-icon icon-class="delete" color="var(--el-color-danger)"/>
+                  </el-button>
                 </div>
               </div>
               <div v-if="!disabled && depth < maxDepth - 1" class="dqb-or-action">
-                <el-button type="warning" text size="small" icon="Plus" @click="addOrCondition(item)">
-                  {{ i18n('queryBuilder.action.addOr') }}
+                <el-button type="warning" text size="small"  @click="addOrCondition(item)">
+                  <star-horse-icon icon-class="add" /> {{ i18n('queryBuilder.action.addOr') }}
                 </el-button>
               </div>
             </div>
           </div>
           <div v-if="!disabled" class="dqb-actions">
-            <el-button type="primary" text size="small" icon="Plus" @click="addItem">
-              {{ i18n('queryBuilder.action.addCondition') }}
+            <el-button type="primary" text size="small"  @click="addItem">
+              <star-horse-icon icon-class="add" />{{ i18n('queryBuilder.action.addCondition') }}
             </el-button>
           </div>
         </template>
@@ -433,13 +438,15 @@ function onHavingConditionChange(item: Record<string, any>) {
               </el-radio-group>
             </div>
             <div class="dqb-item-val"></div>
-            <el-button v-if="!disabled" type="danger" text size="small" icon="Close" class="dqb-item-del"
-                       @click="removeSort(si)"/>
+            <el-button v-if="!disabled" type="danger" text size="small"  class="dqb-item-del"
+                       @click="removeSort(si)">
+              <star-horse-icon icon-class="delete" color="var(--el-color-danger)"/>
+            </el-button>
           </div>
         </div>
         <div v-if="!disabled" class="dqb-actions">
-          <el-button type="primary" text size="small" icon="Plus" @click="addSort">
-            {{ i18n('queryBuilder.action.addSort') }}
+          <el-button type="primary" text size="small"  @click="addSort">
+            <star-horse-icon icon-class="add" /> {{ i18n('queryBuilder.action.addSort') }}
           </el-button>
         </div>
       </el-tab-pane>
@@ -482,13 +489,15 @@ function onHavingConditionChange(item: Record<string, any>) {
                 </el-select>
               </div>
               <div class="dqb-item-val"></div>
-              <el-button v-if="!disabled" type="danger" text size="small" icon="Close" class="dqb-item-del"
-                         @click="removeAgg(ai)"/>
+              <el-button v-if="!disabled" type="danger" text size="small"  class="dqb-item-del"
+                         @click="removeAgg(ai)">
+                <star-horse-icon icon-class="delete" color="var(--el-color-danger)"/>
+              </el-button>
             </div>
           </div>
           <div v-if="!disabled" class="dqb-actions">
-            <el-button type="primary" text size="small" icon="Plus" @click="addAgg">
-              {{ i18n('queryBuilder.action.addAggregate') }}
+            <el-button type="primary" text size="small"  @click="addAgg">
+              <star-horse-icon icon-class="add" /> {{ i18n('queryBuilder.action.addAggregate') }}
             </el-button>
           </div>
         </div>
@@ -521,13 +530,15 @@ function onHavingConditionChange(item: Record<string, any>) {
                           :disabled="disabled"/>
               </div>
               <div class="dqb-item-val"></div>
-              <el-button v-if="!disabled" type="danger" text size="small" icon="Close" class="dqb-item-del"
-                         @click="removeGroupBy(gi)"/>
+              <el-button v-if="!disabled" type="danger" text size="small"  class="dqb-item-del"
+                         @click="removeGroupBy(gi)">
+                <star-horse-icon icon-class="delete" color="var(--el-color-danger)"/>
+              </el-button>
             </div>
           </div>
           <div v-if="!disabled" class="dqb-actions">
-            <el-button type="primary" text size="small" icon="Plus" @click="addGroupBy">
-              {{ i18n('queryBuilder.action.addGroupBy') }}
+            <el-button type="primary" text size="small"  @click="addGroupBy">
+              <star-horse-icon icon-class="add" />{{ i18n('queryBuilder.action.addGroupBy') }}
             </el-button>
           </div>
         </div>
@@ -590,13 +601,15 @@ function onHavingConditionChange(item: Record<string, any>) {
                 <el-input v-else v-model="h[VK]" :placeholder="i18n('queryBuilder.placeholder.value')"
                           :disabled="disabled"/>
               </div>
-              <el-button v-if="!disabled" type="danger" text size="small" icon="Close" class="dqb-item-del"
-                         @click="removeHaving(hi)"/>
+              <el-button v-if="!disabled" type="danger" text size="small"  class="dqb-item-del"
+                         @click="removeHaving(hi)">
+                <star-horse-icon icon-class="delete" color="var(--el-color-danger)"/>
+              </el-button>
             </div>
           </div>
           <div v-if="!disabled" class="dqb-actions">
-            <el-button type="primary" text size="small" icon="Plus" @click="addHaving">
-              {{ i18n('queryBuilder.action.addHaving') }}
+            <el-button type="primary" text size="small"  @click="addHaving">
+              <star-horse-icon icon-class="add" />{{ i18n('queryBuilder.action.addHaving') }}
             </el-button>
           </div>
         </div>
@@ -653,8 +666,10 @@ function onHavingConditionChange(item: Record<string, any>) {
                 <el-input v-else v-model="item[VK]" :placeholder="i18n('queryBuilder.placeholder.value')"
                           :disabled="disabled"/>
               </div>
-              <el-button v-if="!disabled" type="danger" text size="small" icon="Close" class="dqb-item-del"
-                         @click="removeItem(idx)"/>
+              <el-button v-if="!disabled" type="danger" text size="small"  class="dqb-item-del"
+                         @click="removeItem(idx)">
+                <star-horse-icon icon-class="delete" color="var(--el-color-danger)"/>
+              </el-button>
             </div>
             <div v-if="item[GK]?.length" class="dqb-or-list">
               <div v-for="(orCond, oi) in item[GK]" :key="orCond.id" class="dqb-item dqb-item--or">
@@ -696,20 +711,22 @@ function onHavingConditionChange(item: Record<string, any>) {
                   <el-input v-else v-model="orCond[VK]" :placeholder="i18n('queryBuilder.placeholder.value')"
                             :disabled="disabled"/>
                 </div>
-                <el-button v-if="!disabled" type="danger" text size="small" icon="Close" class="dqb-item-del"
-                           @click="removeOrCondition(item, oi)"/>
+                <el-button v-if="!disabled" type="danger" text size="small"  class="dqb-item-del"
+                           @click="removeOrCondition(item, oi)">
+                  <star-horse-icon icon-class="delete" color="var(--el-color-danger)"/>
+                </el-button>
               </div>
             </div>
             <div v-if="!disabled && depth < maxDepth - 1" class="dqb-or-action">
-              <el-button type="warning" text size="small" icon="Plus" @click="addOrCondition(item)">
-                {{ i18n('queryBuilder.action.addOr') }}
+              <el-button type="warning" text size="small"  @click="addOrCondition(item)">
+                <star-horse-icon icon-class="add" /> {{ i18n('queryBuilder.action.addOr') }}
               </el-button>
             </div>
           </div>
         </div>
         <div v-if="!disabled" class="dqb-actions">
-          <el-button type="primary" text size="small" icon="Plus" @click="addItem">
-            {{ i18n('queryBuilder.action.addCondition') }}
+          <el-button type="primary" text size="small"  @click="addItem">
+            <star-horse-icon icon-class="add" /> {{ i18n('queryBuilder.action.addCondition') }}
           </el-button>
         </div>
       </template>
@@ -748,13 +765,15 @@ function onHavingConditionChange(item: Record<string, any>) {
               </el-radio-group>
             </div>
             <div class="dqb-item-val"></div>
-            <el-button v-if="!disabled" type="danger" text size="small" icon="Close" class="dqb-item-del"
-                       @click="removeSort(si)"/>
+            <el-button v-if="!disabled" type="danger" text size="small"  class="dqb-item-del"
+                       @click="removeSort(si)">
+              <star-horse-icon icon-class="delete" color="var(--el-color-danger)"/>
+            </el-button>
           </div>
         </div>
         <div v-if="!disabled" class="dqb-actions">
-          <el-button type="primary" text size="small" icon="Plus" @click="addSort">
-            {{ i18n('queryBuilder.action.addSort') }}
+          <el-button type="primary" text size="small"  @click="addSort">
+            <star-horse-icon icon-class="add" /> {{ i18n('queryBuilder.action.addSort') }}
           </el-button>
         </div>
       </template>
@@ -796,13 +815,15 @@ function onHavingConditionChange(item: Record<string, any>) {
                 </el-select>
               </div>
               <div class="dqb-item-val"></div>
-              <el-button v-if="!disabled" type="danger" text size="small" icon="Close" class="dqb-item-del"
-                         @click="removeAgg(ai)"/>
+              <el-button v-if="!disabled" type="danger" text size="small"  class="dqb-item-del"
+                         @click="removeAgg(ai)">
+                <star-horse-icon icon-class="delete" color="var(--el-color-danger)"/>
+              </el-button>
             </div>
           </div>
           <div v-if="!disabled" class="dqb-actions">
-            <el-button type="primary" text size="small" icon="Plus" @click="addAgg">
-              {{ i18n('queryBuilder.action.addAggregate') }}
+            <el-button type="primary" text size="small"  @click="addAgg">
+              <star-horse-icon icon-class="add" /> {{ i18n('queryBuilder.action.addAggregate') }}
             </el-button>
           </div>
         </div>
@@ -835,13 +856,15 @@ function onHavingConditionChange(item: Record<string, any>) {
                           :disabled="disabled"/>
               </div>
               <div class="dqb-item-val"></div>
-              <el-button v-if="!disabled" type="danger" text size="small" icon="Close" class="dqb-item-del"
-                         @click="removeGroupBy(gi)"/>
+              <el-button v-if="!disabled" type="danger" text size="small"  class="dqb-item-del"
+                         @click="removeGroupBy(gi)">
+                <star-horse-icon icon-class="delete" color="var(--el-color-danger)"/>
+              </el-button>
             </div>
           </div>
           <div v-if="!disabled" class="dqb-actions">
-            <el-button type="primary" text size="small" icon="Plus" @click="addGroupBy">
-              {{ i18n('queryBuilder.action.addGroupBy') }}
+            <el-button type="primary" text size="small"  @click="addGroupBy">
+              <star-horse-icon icon-class="add" /> {{ i18n('queryBuilder.action.addGroupBy') }}
             </el-button>
           </div>
         </div>
@@ -904,13 +927,15 @@ function onHavingConditionChange(item: Record<string, any>) {
                 <el-input v-else v-model="h[VK]" :placeholder="i18n('queryBuilder.placeholder.value')"
                           :disabled="disabled"/>
               </div>
-              <el-button v-if="!disabled" type="danger" text size="small" icon="Close" class="dqb-item-del"
-                         @click="removeHaving(hi)"/>
+              <el-button v-if="!disabled" type="danger" text size="small"  class="dqb-item-del"
+                         @click="removeHaving(hi)">
+                <star-horse-icon icon-class="delete" color="var(--el-color-danger)"/>
+              </el-button>
             </div>
           </div>
           <div v-if="!disabled" class="dqb-actions">
-            <el-button type="primary" text size="small" icon="Plus" @click="addHaving">
-              {{ i18n('queryBuilder.action.addHaving') }}
+            <el-button type="primary" text size="small"  @click="addHaving">
+              <star-horse-icon icon-class="add" /> {{ i18n('queryBuilder.action.addHaving') }}
             </el-button>
           </div>
         </div>
