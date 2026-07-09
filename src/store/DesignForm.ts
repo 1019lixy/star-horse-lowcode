@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {ref, shallowRef, unref, triggerRef, nextTick} from "vue";
+import {ref, shallowRef, unref, triggerRef, nextTick, computed} from "vue";
 import JSON5 from "json5";
 import {CompType} from "@/components/types/FormType";
 import {analysisCompDatas} from "@/api/form_utils";
@@ -33,7 +33,12 @@ export const useDesignFormStore = defineStore("designForm", () => {
   const batchEditFieldVisible = ref<boolean>(false);
   const previewVisible = ref<boolean>(false);
   const refresh = ref<number>(0);
-  const currentFormPreps = ref<any>({});
+  // currentFormPreps 改为 computed，始终从 currentComp 读取最新的 preps
+  // 这样当组件类型改变导致 preps 被替换时，currentFormPreps 会自动更新
+  const currentFormPreps = computed(() => {
+    const comp = currentComp.value;
+    return comp?.preps || comp || {};
+  });
   const draggingItem = ref<any>({});
   const isDragging = ref<boolean>(false);
   const shortKeyDisabled = ref<boolean>(false);
@@ -83,7 +88,6 @@ export const useDesignFormStore = defineStore("designForm", () => {
     const reAndUnDo = () => {
         const record = unref(historyRecord);
         if (!record.datas[record.index]) {
-            currentFormPreps.value = {};
             currentItemType.value = "";
             currentComp.value = {};
             currentItemId.value = "";
@@ -98,7 +102,7 @@ export const useDesignFormStore = defineStore("designForm", () => {
             currentItemId.value = data.currentItemId;
             parentCompType.value = data.parentCompType;
             currentItemType.value = data.currentItemType;
-            currentFormPreps.value = data.currentFormPreps;
+            // currentFormPreps 现在是 computed，会自动从 currentComp 读取
         }
     };
 
@@ -130,17 +134,13 @@ export const useDesignFormStore = defineStore("designForm", () => {
         currentCompCategory.value = data?.compType || "";
         parentCompType.value = parentType;
         currentComp.value = null;
-        currentFormPreps.value = {};
         triggerRef(currentComp);
-        triggerRef(currentFormPreps);
         nextTick(() => {
             currentComp.value = data;
             currentItemType.value = itemType || data?.itemType || "";
-            currentFormPreps.value = data?.preps || data || {};
             setIsDragging(false);
             setRefresh();
             triggerRef(currentComp);
-            triggerRef(currentFormPreps);
         });
     };
     //设置父容器
@@ -253,7 +253,10 @@ export const useDesignFormStore = defineStore("designForm", () => {
         currentItemId.value = currItemId;
     };
     const setCurrentFormPreps = (currFormPreps: any) => {
-        currentFormPreps.value = currFormPreps["preps"] || currFormPreps;
+        // currentFormPreps 现在是 computed，需要更新 currentComp 的 preps
+        if (currentComp.value) {
+            currentComp.value.preps = currFormPreps["preps"] || currFormPreps;
+        }
     };
     const setContainerList = (list: CompType[]) => {
         containerList.value = list;
@@ -330,13 +333,13 @@ export const useDesignFormStore = defineStore("designForm", () => {
         const ms = new Date().getTime();
         isEdit.value = true;
         isDragging.value = false;
-        currentFormPreps.value = {};
         currentItemType.value = "";
         currentComp.value = {};
         currentItemId.value = "";
         currentItemType.value = "";
         parentCompType.value = "";
         currentCompCategory.value = "";
+        // currentFormPreps 现在是 computed，会自动从 currentComp 读取
         editUserList.value = {};
         parentContainer.value = {};
         formInfo.value = {
