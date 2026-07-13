@@ -583,7 +583,6 @@ watch(
           />
           <star-horse-icon
               icon-class="add"
-              v-if="staticColumn == 'Y'"
               @click="addSubData(scope.row)"
               :title="i18n('ui.addSubData')"
           />
