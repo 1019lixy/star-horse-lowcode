@@ -256,6 +256,7 @@ export default {
   "ui.edit": "Edit",
   "ui.deleteRow": "Delete current row",
   "ui.addData": "Add data",
+  "ui.addSubData":"Add child data",
   "ui.addRow": "Add row",
   "ui.pleaseInputKeyword": "Please input keyword",
   "ui.expandAll": "Expand all",

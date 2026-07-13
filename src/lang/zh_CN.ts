@@ -261,6 +261,7 @@ export default {
   "ui.edit": "编辑",
   "ui.deleteRow": "删除当前行",
   "ui.addData": "添加数据",
+  "ui.addSubData":"添加子数据",
   "ui.addRow": "加一行",
   "ui.pleaseInputKeyword": "请输入关键字",
   "ui.expandAll": "展开全部",
