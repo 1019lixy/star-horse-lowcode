@@ -143,6 +143,66 @@ const fieldList = ref<PageFieldInfo>({
         },
       },
     },
+    {
+      label: "角度",
+      fieldName: "trigAngle",
+      type: "number",
+      preps: { defaultValue: 30 },
+    },
+    {
+      label: "正弦sin(calc)",
+      fieldName: "trigSin",
+      type: "number",
+      preps: {
+        formula: {
+          enable: true,
+          type: "calc",
+          sourceFields: ["trigAngle"],
+          expression: "Math.sin(${trigAngle}*Math.PI/180)",
+          precision: 4,
+        },
+      },
+    },
+    {
+      label: "余弦cos(calc)",
+      fieldName: "trigCos",
+      type: "number",
+      preps: {
+        formula: {
+          enable: true,
+          type: "calc",
+          sourceFields: ["trigAngle"],
+          expression: "Math.cos(${trigAngle}*Math.PI/180)",
+          precision: 4,
+        },
+      },
+    },
+    {
+      label: "被除数",
+      fieldName: "modA",
+      type: "number",
+      preps: { defaultValue: 17 },
+    },
+    {
+      label: "除数",
+      fieldName: "modB",
+      type: "number",
+      preps: { defaultValue: 5 },
+    },
+    {
+      label: "求余%(calc)",
+      fieldName: "modResult",
+      type: "number",
+      preps: {
+        formula: {
+          enable: true,
+          type: "calc",
+          sourceFields: ["modA", "modB"],
+          expression: "${modA}%${modB}",
+          precision: 2,
+        },
+      },
+    },
     // ===== concat 拼接 =====
     {
       label: "拼接A",
