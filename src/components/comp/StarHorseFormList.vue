@@ -13,7 +13,6 @@ import {compKey, uuid} from "@/api/system";
 import UTableColumn from "@/components/comp/items/UTableColumn.vue";
 import StarHorseForm from "@/components/comp/StarHorseForm.vue";
 import {FieldInfo} from "@/components/types";
-import JSON5 from "json5";
 import {Sort, UploadFilled} from "@element-plus/icons-vue";
 
 let importDialogVisible = ref<boolean>(false);
@@ -79,7 +78,7 @@ const addSubData = (parentRow: any) => {
       rowDataFormRef.value.setFormData(newChild);
     });
   } else {
-    const obj = JSON5.parse(JSON5.stringify(props.defaultValues || {}));
+    const obj = JSON.parse(JSON.stringify(props.defaultValues || {}));
     obj["id"] = uuid();
     Object.assign(newChild, obj);
     parentRow.children.push(newChild);
@@ -174,7 +173,6 @@ const mergeData = async (type: string) => {
   if (!flag) {
     return;
   }
-  const batchArray = dataForm.value[props.batchName];
   let formData = rowDataFormRef.value.getFormData().value;
   if (editingNodeId.value) {
     if (isAddingNewChild.value) {
@@ -207,13 +205,12 @@ const mergeData = async (type: string) => {
         });
       }
     } else {
-      // 编辑子节点：在树中查找并更新
-      const found = findNodeInTree(batchArray, editingNodeId.value);
-      if (found) {
+      // 编辑子节点：直接更新缓存的行引用（避免树遍历和对象重建）
+      if (currentRow.value) {
         if (formData.starHorseEditing == "yes") {
           formData.starHorseEditing = "no";
         }
-        found.parentChildren[found.index] = Object.assign({}, formData, {
+        Object.assign(currentRow.value, formData, {
           __nodeId: editingNodeId.value,
           __isChild: true,
         });
@@ -226,13 +223,11 @@ const mergeData = async (type: string) => {
       }
     }
   } else if (formData.starHorseEditing == "yes") {
-    //有xh表示数据编辑
-    batchArray.forEach((item: any, index: number) => {
-      if (item.xh == formData.xh) {
-        formData.starHorseEditing = "no";
-        batchArray[index] = Object.assign({}, formData);
-      }
-    });
+    // 顶层编辑：直接更新缓存的行引用（避免遍历查找和对象重建）
+    if (currentRow.value) {
+      formData.starHorseEditing = "no";
+      Object.assign(currentRow.value, formData);
+    }
     if (type == "close") {
       closeAction();
     } else {
@@ -267,7 +262,7 @@ const initDataList = () => {
 const dynamicHandleAddRow = (row: any, type: number) => {
   initDataList();
   if (type === 1) {
-    let obj = JSON5.parse(JSON5.stringify(props.defaultValues || {}));
+    let obj = JSON.parse(JSON.stringify(props.defaultValues || {}));
     obj["id"] = uuid();
     dataForm.value[props.batchName].push(obj);
     emits("addRow", row);
@@ -278,9 +273,8 @@ const dynamicHandleAddRow = (row: any, type: number) => {
     emits("removeRow", row);
   }
   //将事件传出去
-  let fieldList = props.fieldList;
-  for (let ind in fieldList) {
-    let temp = fieldList[ind];
+  const fieldList = props.fieldList;
+  for (const temp of fieldList) {
     if (typeof temp.actions == "function") {
       temp.actions(dataForm, "oper");
     }
@@ -440,18 +434,17 @@ onMounted(async () => {
   await init();
 });
 watch(
-    () => dataForm.value[props.batchName],
-    (val) => {
-      if (val && val.length > 0 && props.showCheckBox && props.selectAll) {
-        nextTick(() => {
-          // 改用原生全选方法
-          starHorseFormListRef.value?.toggleAllSelection(true);
-        });
+    () => dataForm.value[props.batchName]?.length,
+    () => {
+      if (props.showCheckBox && props.selectAll) {
+        const val = dataForm.value[props.batchName];
+        if (val && val.length > 0) {
+          nextTick(() => {
+            // 改用原生全选方法
+            starHorseFormListRef.value?.toggleAllSelection(true);
+          });
+        }
       }
-    },
-    {
-      immediate: false,
-      deep: true,
     },
 );
 </script>

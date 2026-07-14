@@ -72,7 +72,12 @@ onMounted(() => {
   }
   props.field.preps["step"] = props.field.preps["step"] || 1;
   props.field.preps["min"] = props.field.preps["min"] || 0;
-  props.field.preps["precision"] = props.field.preps["precision"] || 0;
+  // 优先使用字段自身精度，其次公式精度，最后默认 0
+  // 避免公式字段的小数结果被 el-input-number 的 precision=0 四舍五入
+  props.field.preps["precision"] =
+    props.field.preps["precision"] ??
+    props.field.preps?.formula?.precision ??
+    0;
   nextTick(() => {
     initCompCallEvent(props, emits, formData);
     // 初始化公式计算监听

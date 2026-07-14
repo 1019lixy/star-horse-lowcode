@@ -4,6 +4,7 @@ import {
   nextTick,
   onBeforeUnmount,
   onMounted,
+  provide,
   PropType,
   ref,
   shallowRef,
@@ -13,7 +14,13 @@ import {
 } from "vue";
 import * as monaco from "monaco-editor";
 import "@/components/system/code-editor/styles/editor.scss";
-import type { FileNode, MenuItemDef, TabInfo } from "./code-editor/types";
+import type {
+  DropZone,
+  FileNode,
+  MenuItemDef,
+  SplitSide,
+  TabDragPayload,
+} from "./code-editor/types";
 import {
   COMPILABLE_LANGUAGES,
   DEFAULT_TEMPLATES,
@@ -36,11 +43,11 @@ import { useConsole } from "./code-editor/useConsole";
 import { useModuleDialog } from "./code-editor/useModuleDialog";
 import { useIdeActions } from "./code-editor/useIdeActions";
 import { useApiConfig } from "./code-editor/useApiConfig";
+import { useEditorGroups } from "./code-editor/useEditorGroups";
 import { operationConfirm, success, warning } from "@/utils/message";
 import { i18n } from "@/lang/index";
 import MenuBar from "./code-editor/MenuBar.vue";
 import ActivityBar from "./code-editor/ActivityBar.vue";
-import TabBar from "./code-editor/TabBar.vue";
 import StatusBar from "./code-editor/StatusBar.vue";
 import FileTreeNode from "./code-editor/FileTreeNode.vue";
 import type { ContextMenuItem } from "./code-editor/ContextMenu.vue";
@@ -48,6 +55,7 @@ import ContextMenu from "./code-editor/ContextMenu.vue";
 import ConsolePanel from "./code-editor/ConsolePanel.vue";
 import ApiConfigDialog from "./code-editor/ApiConfigDialog.vue";
 import StarHorseDiffEditor from "./StarHorseDiffEditor.vue";
+import SplitView from "./code-editor/SplitView.vue";
 
 const IDE_THEMES = [
   { value: "vs", name: "Light" },
@@ -107,10 +115,10 @@ const { localConfig, resolvedApi, resetConfig, updateConfig } = useApiConfig(
 );
 // ==================== IDE State ====================
 const ideRoot = ref<HTMLElement>();
-const editorContainer = ref<HTMLElement>();
+/** 活动编辑器实例（最近聚焦的 pane 的 editor） */
 const editorInstance = shallowRef<monaco.editor.IStandaloneCodeEditor>();
-const openTabs = ref<TabInfo[]>([]);
-const activeTabId = ref("");
+/** 所有组到编辑器实例的映射 */
+const editors = new Map<string, monaco.editor.IStandaloneCodeEditor>();
 const sidebarVisible = ref(true);
 const activePanel = ref("explorer");
 const currentTheme = ref(props.theme);
@@ -126,6 +134,8 @@ const dirInputRef = ref<HTMLInputElement>();
 const modifiedFiles = ref<Set<string>>(new Set());
 /** API配置弹窗 */
 const apiConfigDialogVisible = ref(false);
+/** 当前正在拖拽的 tab 数据（用于显示 drop zones） */
+const draggingTab = ref<TabDragPayload | null>(null);
 
 // ==================== 冲突解决 ====================
 const diffEditorVisible = ref(false);
@@ -228,10 +238,9 @@ const openSearchResult = (result: { idCodeFile: string; line: number }) => {
   }
 };
 
-/** 应用编辑器设置 */
+/** 应用编辑器设置（应用到所有组的编辑器） */
 const applyEditorSettings = () => {
-  const editor = toRaw(editorInstance.value);
-  if (editor) {
+  for (const editor of editors.values()) {
     editor.updateOptions({
       fontSize: currentFontSize.value,
       minimap: { enabled: currentMinimap.value },
@@ -244,6 +253,12 @@ const applyEditorSettings = () => {
 // ==================== File Tree (内部管理) ====================
 const fileTree = useFileTree(props.files);
 const editingNodeId = ref<string | null>(null);
+
+// ==================== Editor Groups (分屏管理) ====================
+const editorGroups = useEditorGroups({
+  findNode: (id: string) => fileTree.findNode(id),
+  getParentPath: (id: string) => fileTree.getParentPath(id),
+});
 
 // ==================== File API (后端集成) ====================
 const fileApi = useFileApi(
@@ -310,16 +325,59 @@ const contextMenuItems = ref<ContextMenuItem[]>([]);
 const contextMenuTargetId = ref<string | null>(null);
 
 // ==================== Computed ====================
-const activeTab = computed(() =>
-  openTabs.value.find((t) => t.id === activeTabId.value),
-);
-const activeFile = computed(() => fileTree.findNode(activeTabId.value));
+const activeTab = computed(() => {
+  const g = editorGroups.activeGroup.value;
+  if (!g) return null;
+  return g.tabs.find((t) => t.id === g.activeTabId) || null;
+});
+const activeTabId = computed(() => editorGroups.activeTabId.value);
 const currentLang = computed(() => activeTab.value?.language || "plaintext");
-/** 面包屑路径：显示文件完整路径（含父目录） */
-const breadcrumbPath = computed(() => {
-  if (!activeTabId.value) return "";
-  const path = fileTree.getNodePath(activeTabId.value);
-  return path.join(" / ");
+
+/** 各组的面包屑路径（用于 SplitView 传递给每个 pane） */
+const groupBreadcrumbPaths = computed(() => {
+  const out: Record<string, string> = {};
+  for (const gid of Object.keys(editorGroups.groups.value)) {
+    const g = editorGroups.groups.value[gid];
+    if (g.activeTabId) {
+      out[gid] = fileTree.getNodePath(g.activeTabId).join(" / ");
+    } else {
+      out[gid] = "";
+    }
+  }
+  return out;
+});
+
+/** 各组的活动 tab 语言标签 */
+const groupLanguageLabels = computed(() => {
+  const out: Record<string, string> = {};
+  for (const gid of Object.keys(editorGroups.groups.value)) {
+    const g = editorGroups.groups.value[gid];
+    const tab = g.tabs.find((t) => t.id === g.activeTabId);
+    out[gid] = tab?.language || "plaintext";
+  }
+  return out;
+});
+
+/** 各组能否编译 */
+const groupCanCompile = computed(() => {
+  const out: Record<string, boolean> = {};
+  for (const gid of Object.keys(editorGroups.groups.value)) {
+    const g = editorGroups.groups.value[gid];
+    const tab = g.tabs.find((t) => t.id === g.activeTabId);
+    out[gid] = tab ? COMPILABLE_LANGUAGES.has(tab.language) : false;
+  }
+  return out;
+});
+
+/** 各组能否运行 */
+const groupCanRun = computed(() => {
+  const out: Record<string, boolean> = {};
+  for (const gid of Object.keys(editorGroups.groups.value)) {
+    const g = editorGroups.groups.value[gid];
+    const tab = g.tabs.find((t) => t.id === g.activeTabId);
+    out[gid] = tab ? RUNNABLE_LANGUAGES.has(tab.language) : false;
+  }
+  return out;
 });
 
 // ==================== LSP ====================
@@ -335,13 +393,112 @@ const lsp = useLsp(
   getDocumentUri,
 );
 
+// ==================== EditorPane API（通过 provide 注入给子组件） ====================
+const paneApi = {
+  // ===== Tab 操作 =====
+  switchTab: (gid: string, tabId: string) => {
+    switchTab(tabId, gid);
+  },
+  closeTab: (gid: string, tabId: string) => {
+    closeTab(tabId, gid);
+  },
+  contextmenuTab: (gid: string, tabId: string, e: MouseEvent) => {
+    handleTabContextMenu(gid, tabId, e);
+  },
+  closeOthers: (gid: string, tabId: string) => {
+    editorGroups.closeOthersInGroup(gid, tabId);
+  },
+  // ===== 分屏操作 =====
+  split: (gid: string, side: SplitSide, tabId?: string) => {
+    editorGroups.splitGroup(gid, side, tabId);
+  },
+  closeGroup: (gid: string) => {
+    if (!editorGroups.closeGroup(gid)) {
+      warning(i18n("ide.split.cannotCloseLast"));
+    }
+  },
+  moveTabToGroup: (gid: string, tabId: string, dir: "next" | "prev") => {
+    const target = editorGroups.getAdjacentGroup(gid, dir);
+    if (target !== gid) editorGroups.moveTab(gid, tabId, target);
+  },
+  canCloseGroup: (gid: string) => editorGroups.canCloseGroup(gid),
+  // ===== 编辑器生命周期 =====
+  editorReady: (gid: string, editor: monaco.editor.IStandaloneCodeEditor) => {
+    editors.set(gid, editor);
+    // 新编辑器属于活动组（如拆分后），或尚无活动编辑器时，设为活动编辑器
+    if (gid === editorGroups.activeGroupId.value || !editorInstance.value) {
+      editorInstance.value = editor;
+    }
+    // 应用当前 LSP providers
+    lsp.registerProviders();
+  },
+  editorFocus: (gid: string) => {
+    editorGroups.setActiveGroup(gid);
+    const ed = editors.get(gid);
+    if (ed) editorInstance.value = ed;
+    // 切换 LSP 语言
+    const g = editorGroups.groups.value[gid];
+    if (g && g.activeTabId) {
+      const file = fileTree.findNode(g.activeTabId);
+      if (file) {
+        const lang = file.language || detectLanguage(file.name);
+        lsp.switchLanguage(lang);
+      }
+    }
+  },
+  editorDispose: (gid: string) => {
+    editors.delete(gid);
+    // 如果活动编辑器被销毁，切换到第一个可用编辑器
+    if (editorInstance.value && !editors.has(gid)) {
+      const firstEditor = editors.values().next().value;
+      editorInstance.value = firstEditor;
+    }
+  },
+  editorCursorChange: (gid: string, line: number, col: number) => {
+    if (gid === editorGroups.activeGroupId.value) {
+      cursorLine.value = line;
+      cursorCol.value = col;
+    }
+  },
+  editorContentChange: (gid: string, tabId: string, content: string) => {
+    // 标记 tab 为已修改
+    editorGroups.setTabModified(gid, tabId, true);
+    const ms = new Set(modifiedFiles.value);
+    ms.add(tabId);
+    modifiedFiles.value = ms;
+    // 如果是活动组，通知 LSP 并触发 change 事件
+    if (gid === editorGroups.activeGroupId.value) {
+      emit("change", content);
+      lsp.notifyDidChange();
+    }
+  },
+  // ===== Drop 处理 =====
+  handleDrop: (
+    toGid: string,
+    payload: TabDragPayload,
+    zone: DropZone,
+  ) => {
+    editorGroups.handleDrop(payload.fromGroupId, payload.tabId, toGid, zone);
+  },
+  // ===== 模型访问 =====
+  getModel: (tabId: string) => getModel(tabId),
+  // ===== 设置 =====
+  applySettings: (editor: monaco.editor.IStandaloneCodeEditor) => {
+    applySettingsToEditor(editor);
+  },
+  // ===== 拖拽状态 =====
+  draggingTab: () => draggingTab.value,
+  setDraggingTab: (payload: TabDragPayload | null) => {
+    draggingTab.value = payload;
+  },
+};
+provide("editorPaneApi", paneApi);
+
 // ==================== 标签页管理 ====================
 
 /** 刷新所有打开标签页的路径信息（用于同名文件区分） */
 const refreshTabPaths = () => {
-  for (const tab of openTabs.value) {
-    tab.path = fileTree.getParentPath(tab.id);
-  }
+  editorGroups.refreshAllTabPaths();
 };
 
 const openFile = (file: FileNode) => {
@@ -349,41 +506,59 @@ const openFile = (file: FileNode) => {
     toggleFolder(file.idCodeFile);
     return;
   }
-  if (!openTabs.value.find((t) => t.id === file.idCodeFile)) {
-    openTabs.value.push({
-      id: file.idCodeFile,
-      name: file.name,
-      language: file.language || detectLanguage(file.name),
-      modified: false,
-      path: fileTree.getParentPath(file.idCodeFile),
-    });
-    // 刷新所有标签页路径，以便同名文件能正确区分
-    refreshTabPaths();
-  }
-  activeTabId.value = file.idCodeFile;
+  // 确保 Monaco 模型已创建（多组共享，按 fileId 索引）
+  getOrCreateModel(file);
+  editorGroups.openFile(file);
+  editorGroups.refreshAllTabPaths();
+  // 切换 LSP 语言
+  const lang = file.language || detectLanguage(file.name);
+  lsp.switchLanguage(lang);
+  lsp.notifyDidOpen();
   emit("file-open", file);
 };
 
-const closeTab = (tabId: string) => {
-  const idx = openTabs.value.findIndex((t) => t.id === tabId);
-  if (idx === -1) return;
-  openTabs.value.splice(idx, 1);
-  const model = monacoModels.get(tabId);
-  if (model) {
-    model.dispose();
-    monacoModels.delete(tabId);
-  }
+/** 关闭标签页（在指定组中） */
+const closeTab = (tabId: string, gid?: string) => {
+  const targetGid = gid || editorGroups.activeGroupId.value;
+  editorGroups.closeTabInGroup(targetGid, tabId);
   emit("file-close", { id: tabId });
-  if (activeTabId.value === tabId) {
-    activeTabId.value =
-      openTabs.value.length > 0
-        ? openTabs.value[Math.min(idx, openTabs.value.length - 1)].id
-        : "";
+  // 如果该文件在所有组中都关闭了，dispose 模型
+  const stillOpen = editorGroups
+    .getAllOpenTabs()
+    .some((t) => t.id === tabId);
+  if (!stillOpen) {
+    const model = monacoModels.get(tabId);
+    if (model) {
+      model.dispose();
+      monacoModels.delete(tabId);
+    }
+    // 清除修改标记
+    const ms = new Set(modifiedFiles.value);
+    ms.delete(tabId);
+    modifiedFiles.value = ms;
+  }
+  // 切换 LSP 到新的活动 tab
+  const newActiveTabId = editorGroups.activeTabId.value;
+  if (newActiveTabId) {
+    const file = fileTree.findNode(newActiveTabId);
+    if (file) {
+      const lang = file.language || detectLanguage(file.name);
+      lsp.switchLanguage(lang);
+      lsp.notifyDidOpen();
+    }
   }
 };
 
-const switchTab = (tabId: string) => {
-  activeTabId.value = tabId;
+/** 切换标签页（在指定组中） */
+const switchTab = (tabId: string, gid?: string) => {
+  const targetGid = gid || editorGroups.activeGroupId.value;
+  editorGroups.switchTabInGroup(targetGid, tabId);
+  const file = fileTree.findNode(tabId);
+  if (file) {
+    const lang = file.language || detectLanguage(file.name);
+    lsp.switchLanguage(lang);
+    lsp.notifyDidOpen();
+  }
 };
 
 const toggleFolder = (id: string) => {
@@ -392,7 +567,7 @@ const toggleFolder = (id: string) => {
   expandedFolders.value = s;
 };
 
-// ==================== Monaco 模型管理 ====================
+// ==================== Monaco 模型管理（多组共享） ====================
 const getOrCreateModel = (file: FileNode): monaco.editor.ITextModel => {
   let model = monacoModels.get(file.idCodeFile);
   if (!model) {
@@ -403,20 +578,19 @@ const getOrCreateModel = (file: FileNode): monaco.editor.ITextModel => {
   return model;
 };
 
-const syncActiveFile = async () => {
-  const editor = toRaw(editorInstance.value);
-  if (!editor) return;
-  const file = activeFile.value;
-  if (file) {
-    const model = getOrCreateModel(file);
-    editor.setModel(model);
-    // 根据当前文件语言自动切换LSP连接
-    const lang = file.language || detectLanguage(file.name);
-    lsp.switchLanguage(lang);
-  } else {
-    const emptyModel = monaco.editor.createModel("", "plaintext");
-    editor.setModel(emptyModel);
-  }
+/** 根据 tabId 获取模型（供 EditorPane 使用） */
+const getModel = (tabId: string): monaco.editor.ITextModel | undefined => {
+  return monacoModels.get(tabId);
+};
+
+/** 应用编辑器设置到指定编辑器（供 EditorPane 使用） */
+const applySettingsToEditor = (editor: monaco.editor.IStandaloneCodeEditor) => {
+  editor.updateOptions({
+    fontSize: currentFontSize.value,
+    minimap: { enabled: currentMinimap.value },
+    wordWrap: currentWordWrap.value,
+    tabSize: currentTabSize.value,
+  });
 };
 
 // ==================== 文件树 CRUD ====================
@@ -460,9 +634,18 @@ const handleDelete = async (nodeId: string) => {
     n.children?.forEach(collectIds);
   };
   collectIds(node);
-  openTabs.value
-    .filter((t) => affected.has(t.id))
-    .forEach((t) => closeTab(t.id));
+  for (const fid of affected) {
+    editorGroups.closeTabsByFileId(fid);
+    const model = monacoModels.get(fid);
+    if (model) {
+      model.dispose();
+      monacoModels.delete(fid);
+    }
+    const ms = new Set(modifiedFiles.value);
+    ms.delete(fid);
+    modifiedFiles.value = ms;
+    emit("file-close", { id: fid });
+  }
   fileTree.deleteNode(nodeId);
   emit("file-delete", { id: nodeId });
   emit("tree-change", fileTree.tree.value);
@@ -526,13 +709,12 @@ const handleEditConfirm = (id: string, newName: string) => {
       editConfirming.value = false;
       return;
     }
-    // 更新标签页名称和路径
-    const tab = openTabs.value.find((t) => t.id === id);
-    if (tab) {
-      tab.name = newName;
-      tab.language = node.language || detectLanguage(newName);
-    }
-    refreshTabPaths();
+    // 更新所有组中匹配 tab 的名称和路径
+    editorGroups.renameTab(
+      id,
+      newName,
+      node.language || detectLanguage(newName),
+    );
     // 更新 Monaco 模型语言
     const model = monacoModels.get(id);
     if (model && node.language)
@@ -558,6 +740,73 @@ const handleEditCancel = (id: string) => {
 };
 
 // ==================== 右键菜单 ====================
+/** Tab 右键菜单（在 EditorPane 中触发） */
+const tabContextMenuTarget = ref<{ gid: string; tabId: string } | null>(null);
+
+const handleTabContextMenu = (gid: string, tabId: string, e: MouseEvent) => {
+  tabContextMenuTarget.value = { gid, tabId };
+  contextMenuPosition.value = { x: e.clientX, y: e.clientY };
+  const groupCount = editorGroups.allGroups.value.length;
+  const items: ContextMenuItem[] = [
+    { label: i18n("ide.ctx.splitRight"), action: "tab-split-right" },
+    { label: i18n("ide.ctx.splitDown"), action: "tab-split-down" },
+    { divider: true, label: "" },
+    { label: i18n("ide.ctx.closeOthersInGroup"), action: "tab-close-others" },
+    {
+      label: i18n("ide.ctx.closeGroup"),
+      action: "tab-close-group",
+      disabled: groupCount <= 1,
+    },
+  ];
+  if (groupCount > 1) {
+    items.push({ divider: true, label: "" });
+    items.push({ label: i18n("ide.ctx.moveToNextGroup"), action: "tab-move-next" });
+    items.push({ label: i18n("ide.ctx.moveToPrevGroup"), action: "tab-move-prev" });
+  }
+  contextMenuItems.value = items;
+  contextMenuVisible.value = true;
+};
+
+/** 处理 tab 右键菜单动作 */
+const handleTabContextMenuAction = (action: string) => {
+  const target = tabContextMenuTarget.value;
+  if (!target) return;
+  const { gid, tabId } = target;
+  switch (action) {
+    case "tab-split-right":
+      editorGroups.splitGroup(gid, "right", tabId);
+      break;
+    case "tab-split-down":
+      editorGroups.splitGroup(gid, "down", tabId);
+      break;
+    case "tab-split-left":
+      editorGroups.splitGroup(gid, "left", tabId);
+      break;
+    case "tab-split-up":
+      editorGroups.splitGroup(gid, "up", tabId);
+      break;
+    case "tab-close-others":
+      editorGroups.closeOthersInGroup(gid, tabId);
+      break;
+    case "tab-close-group":
+      if (!editorGroups.closeGroup(gid)) {
+        warning(i18n("ide.split.cannotCloseLast"));
+      }
+      break;
+    case "tab-move-next": {
+      const next = editorGroups.getAdjacentGroup(gid, "next");
+      if (next !== gid) editorGroups.moveTab(gid, tabId, next);
+      break;
+    }
+    case "tab-move-prev": {
+      const prev = editorGroups.getAdjacentGroup(gid, "prev");
+      if (prev !== gid) editorGroups.moveTab(gid, tabId, prev);
+      break;
+    }
+  }
+  tabContextMenuTarget.value = null;
+};
+
 const handleTreeContextMenu = (node: FileNode, e: MouseEvent) => {
   contextMenuTargetId.value = node.idCodeFile;
   contextMenuPosition.value = { x: e.clientX, y: e.clientY };
@@ -643,6 +892,13 @@ const handleContextMenuAction = (action: string) => {
     ? fileTree.findParent(targetId)?.idCodeFile || null
     : null;
 
+  // Tab 右键菜单动作路由
+  if (action.startsWith("tab-")) {
+    handleTabContextMenuAction(action);
+    contextMenuVisible.value = false;
+    return;
+  }
+
   // 紧凑目录中间层级操作：ctx-new-file-in::parentId / ctx-new-folder-in::parentId
   if (action.startsWith("ctx-new-file-in::")) {
     const parentId = action.split("::")[1];
@@ -720,39 +976,53 @@ const handleMenuAction = (item: MenuItemDef) => {
       loadFromServer();
       break;
     case "save":
-      if (activeTabId.value) {
+      if (editorGroups.activeTabId.value) {
+        const tid = editorGroups.activeTabId.value;
         const content = editor?.getValue() || "";
-        fileTree.updateFileContent(activeTabId.value, content);
-        const tab = openTabs.value.find((t) => t.id === activeTabId.value);
-        if (tab) tab.modified = false;
+        fileTree.updateFileContent(tid, content);
+        editorGroups.setTabModified(
+          editorGroups.activeGroupId.value,
+          tid,
+          false,
+        );
         // 清除修改标记
         const ms = new Set(modifiedFiles.value);
-        ms.delete(activeTabId.value);
+        ms.delete(tid);
         modifiedFiles.value = ms;
-        emit("file-save", { id: activeTabId.value, content });
+        emit("file-save", { id: tid, content });
       }
       break;
     case "save-all":
-      openTabs.value.forEach((t) => {
+      // 遍历所有组所有 tab（去重），保存内容
+      for (const t of editorGroups.getAllOpenTabs()) {
         const model = monacoModels.get(t.id);
         if (model) {
           const content = model.getValue();
           fileTree.updateFileContent(t.id, content);
-          t.modified = false;
           emit("file-save", { id: t.id, content });
         }
-      });
-      // 清除所有修改标记
+      }
+      // 清除所有组所有 tab 的修改标记
+      for (const gid of Object.keys(editorGroups.groups.value)) {
+        const g = editorGroups.groups.value[gid];
+        for (const t of g.tabs) t.modified = false;
+      }
       modifiedFiles.value = new Set();
       break;
     case "save-server":
       saveToServer();
       break;
     case "close-tab":
-      if (activeTabId.value) closeTab(activeTabId.value);
+      if (editorGroups.activeTabId.value)
+        closeTab(editorGroups.activeTabId.value);
       break;
     case "close-all":
-      [...openTabs.value].forEach((t) => closeTab(t.id));
+      // 关闭所有组的所有 tab
+      for (const gid of Object.keys(editorGroups.groups.value)) {
+        const g = editorGroups.groups.value[gid];
+        const ids = g.tabs.map((t) => t.id);
+        for (const tid of ids) closeTab(tid, gid);
+      }
       break;
     case "undo":
       editor?.trigger("menu", "undo", null);
@@ -787,23 +1057,43 @@ const handleMenuAction = (item: MenuItemDef) => {
     case "toggle-sidebar":
       sidebarVisible.value = !sidebarVisible.value;
       break;
+    case "split-editor":
+      // 拆分当前组到右侧
+      editorGroups.splitGroup(
+        editorGroups.activeGroupId.value,
+        "right",
+        editorGroups.activeTabId.value || undefined,
+      );
+      break;
     case "toggle-minimap": {
       const cur = editor?.getOption(monaco.editor.EditorOption.minimap);
-      editor?.updateOptions({ minimap: { enabled: !cur?.enabled } });
+      const enabled = !cur?.enabled;
+      currentMinimap.value = enabled;
+      // 应用到所有编辑器
+      for (const ed of editors.values()) {
+        ed.updateOptions({ minimap: { enabled } });
+      }
       break;
     }
     case "zoom-in": {
-      const s = editor?.getOption(monaco.editor.EditorOption.fontSize) || 14;
-      editor?.updateOptions({ fontSize: s + 1 });
+      currentFontSize.value = Math.min(28, currentFontSize.value + 1);
+      for (const ed of editors.values()) {
+        ed.updateOptions({ fontSize: currentFontSize.value });
+      }
       break;
     }
     case "zoom-out": {
-      const s = editor?.getOption(monaco.editor.EditorOption.fontSize) || 14;
-      editor?.updateOptions({ fontSize: Math.max(8, s - 1) });
+      currentFontSize.value = Math.max(10, currentFontSize.value - 1);
+      for (const ed of editors.values()) {
+        ed.updateOptions({ fontSize: currentFontSize.value });
+      }
       break;
     }
     case "zoom-reset":
-      editor?.updateOptions({ fontSize: props.fontSize });
+      currentFontSize.value = props.fontSize;
+      for (const ed of editors.values()) {
+        ed.updateOptions({ fontSize: props.fontSize });
+      }
       break;
     case "compile": {
       doCompile();
@@ -1135,7 +1425,10 @@ const doLoadFromServer = async (params?: Record<string, any>) => {
     const allFolderIds = new Set<string>();
     collectFolderIds(nodes, allFolderIds);
     expandedFolders.value = allFolderIds;
-    [...openTabs.value].forEach((t) => closeTab(t.id));
+    // 清空所有组并重置为单个组
+    editorGroups.reset();
+    monacoModels.forEach((m) => m.dispose());
+    monacoModels.clear();
     const first = fileTree.findFirstFile();
     if (first) openFile(first);
     success(i18n("ide.load.success"));
@@ -1177,14 +1470,18 @@ const doSaveToServer = async (params?: Record<string, any>) => {
     return false;
   }
 
-  // 1. 同步所有标签页内容到文件树
-  openTabs.value.forEach((t) => {
+  // 1. 同步所有标签页内容到文件树（所有组去重）
+  for (const t of editorGroups.getAllOpenTabs()) {
     const model = monacoModels.get(t.id);
     if (model) {
       fileTree.updateFileContent(t.id, model.getValue());
-      t.modified = false;
     }
-  });
+  }
+  // 清除所有组所有 tab 的修改标记
+  for (const gid of Object.keys(editorGroups.groups.value)) {
+    const g = editorGroups.groups.value[gid];
+    for (const t of g.tabs) t.modified = false;
+  }
   modifiedFiles.value = new Set();
 
   // 准备保存参数
@@ -1351,13 +1648,16 @@ const doForceCommit = async () => {
   if (!resolvedApi.value.saveUrl) return false;
 
   // 更新所有标签页内容到文件树
-  openTabs.value.forEach((t) => {
+  for (const t of editorGroups.getAllOpenTabs()) {
     const model = monacoModels.get(t.id);
     if (model) {
       fileTree.updateFileContent(t.id, model.getValue());
-      t.modified = false;
     }
-  });
+  }
+  for (const gid of Object.keys(editorGroups.groups.value)) {
+    const g = editorGroups.groups.value[gid];
+    for (const t of g.tabs) t.modified = false;
+  }
   modifiedFiles.value = new Set();
 
   // 强制提交参数
@@ -1534,13 +1834,6 @@ const locateActiveFile = () => {
   });
 };
 
-/** 当前活动文件是否支持编译或运行 */
-const canBuildActive = computed(() => {
-  if (!activeTab.value) return false;
-  const lang = activeTab.value.language;
-  return COMPILABLE_LANGUAGES.has(lang) || RUNNABLE_LANGUAGES.has(lang);
-});
-
 // ==================== IDE Actions（编译/运行/编译注册/注销/草稿/健康检查） ====================
 const ideActions = useIdeActions({
   resolvedApi,
@@ -1561,8 +1854,11 @@ const autoSaveCurrentFile = () => {
   const content = editor.getValue();
   fileTree.updateFileContent(activeTabId.value, content);
   // 清除修改标记
-  const tab = openTabs.value.find((t) => t.id === activeTabId.value);
-  if (tab) tab.modified = false;
+  editorGroups.setTabModified(
+    editorGroups.activeGroupId.value,
+    activeTabId.value,
+    false,
+  );
   const ms = new Set(modifiedFiles.value);
   ms.delete(activeTabId.value);
   modifiedFiles.value = ms;
@@ -1580,71 +1876,39 @@ const doRun = async () => {
   emit("run", fileTree.findNode(activeTabId.value!));
 };
 
-// ==================== 初始化编辑器 ====================
-const initEditor = async () => {
+// ==================== 初始化（多组编辑器，每组独立创建） ====================
+const initIde = async () => {
   await nextTick();
-  if (!editorContainer.value) return;
-  if (editorInstance.value) {
-    toRaw(editorInstance.value).dispose();
-    editorInstance.value = undefined;
-  }
+  // 注册 LSP providers（全局）
   lsp.registerProviders();
-  const editor = monaco.editor.create(editorContainer.value, {
-    value: "",
-    language: "plaintext",
-    theme: currentTheme.value,
-    readOnly: props.readOnly,
-    fontSize: props.fontSize,
-    minimap: { enabled: props.minimap },
-    automaticLayout: true,
-    scrollBeyondLastLine: false,
-    wordWrap: "on",
-    tabSize: 4,
-    insertSpaces: true,
-    suggestOnTriggerCharacters: true,
-    acceptSuggestionOnEnter: "on",
-    quickSuggestions: true,
-    parameterHints: { enabled: true },
-    folding: true,
-    foldingStrategy: "indentation",
-    showFoldingControls: "mouseover",
-    bracketPairColorization: { enabled: true },
-    guides: { bracketPairs: true, indentation: true },
-    renderWhitespace: "selection",
-    cursorBlinking: "smooth",
-    smoothScrolling: true,
-    mouseWheelZoom: true,
-  });
-  editorInstance.value = editor;
-
-  editor.onDidChangeCursorPosition((e) => {
-    cursorLine.value = e.position.lineNumber;
-    cursorCol.value = e.position.column;
-  });
-
-  editor.onDidChangeModelContent(() => {
-    const tab = openTabs.value.find((t) => t.id === activeTabId.value);
-    if (tab) tab.modified = true;
-    // 标记文件为已修改
-    if (activeTabId.value) {
-      const s = new Set(modifiedFiles.value);
-      s.add(activeTabId.value);
-      modifiedFiles.value = s;
-    }
-    emit("change", editor.getValue());
-    lsp.notifyDidChange();
-  });
-
-  // 打开初始文件
+  // 打开初始文件（在默认组中）
   const first = fileTree.findFirstFile();
   if (first) openFile(first);
   if (props.api?.lspServerUrl) lsp.switchLanguage(currentLang.value);
 };
 
 // ==================== Watchers ====================
-watch(activeTabId, () => {
-  nextTick(() => syncActiveFile());
-});
+// 活动组变化时，更新活动编辑器和 LSP
+watch(
+  () => editorGroups.activeGroupId.value,
+  () => {
+    const ed = editors.get(editorGroups.activeGroupId.value);
+    if (ed) editorInstance.value = ed;
+  },
+);
+// 活动标签页变化时，切换 LSP 语言
+watch(
+  () => editorGroups.activeTabId.value,
+  (newTabId) => {
+    if (newTabId) {
+      const file = fileTree.findNode(newTabId);
+      if (file) {
+        const lang = file.language || detectLanguage(file.name);
+        lsp.switchLanguage(lang);
+      }
+    }
+  },
+);
 
 watch(
   () => props.files,
@@ -1681,6 +1945,7 @@ defineExpose({
   editor: editorInstance,
   fileTree,
   fileApi,
+  editorGroups,
   openFile,
   closeFile: (id: string) => closeTab(id),
   getValue,
@@ -1697,6 +1962,18 @@ defineExpose({
   saveToServer,
   openDiffEditor,
   resolveConflict,
+  /** 拆分当前活动组到指定方向 */
+  splitEditor: (side: SplitSide, tabId?: string) =>
+    editorGroups.splitGroup(
+      editorGroups.activeGroupId.value,
+      side,
+      tabId || editorGroups.activeTabId.value || undefined,
+    ),
+  /** 关闭指定组 */
+  closeGroup: (gid: string) => editorGroups.closeGroup(gid),
+  /** 移动 tab 到指定组 */
+  moveTabToGroup: (tabId: string, fromGid: string, toGid: string) =>
+    editorGroups.moveTab(fromGid, tabId, toGid),
 });
 
 // ==================== 冲突解决方法 ====================
@@ -1884,22 +2161,20 @@ const handleDiffClose = () => {
 
 // ==================== 生命周期 ====================
 onMounted(() => {
-  initEditor();
+  initIde();
   document.addEventListener("keydown", handleKeydown);
   if (ideRoot.value) applyThemeVars(ideRoot.value, currentTheme.value);
-  // 如果配置了loadUrl，自动从后端加载
-  if (resolvedApi.value.loadUrl) {
-    // 初始化时直接加载（不弹窗），弹窗仅在用户手动点击"从服务器加载"时触发
-    // doLoadFromServer();
-  }
 });
 
 onBeforeUnmount(() => {
   lsp.disconnectLsp();
   document.removeEventListener("keydown", handleKeydown);
+  // 销毁所有组的编辑器
+  editors.forEach((ed) => toRaw(ed)?.dispose());
+  editors.clear();
   monacoModels.forEach((m) => m.dispose());
   monacoModels.clear();
-  toRaw(editorInstance.value)?.dispose();
+  editorInstance.value = undefined;
 });
 </script>
 
@@ -2234,94 +2509,20 @@ onBeforeUnmount(() => {
         <div class="sidebar-resize" @mousedown="onResizeStart" />
       </div>
 
-      <!-- 编辑器区域 -->
+      <!-- 编辑器区域：分屏布局 -->
       <div class="sh-ide-editor">
-        <!-- 标签栏 -->
-        <TabBar
-          v-if="openTabs.length > 0"
-          :tabs="openTabs"
-          :active-id="activeTabId"
-          @switch="switchTab"
-          @close="closeTab"
+        <SplitView
+          :node="editorGroups.splitRoot.value"
+          :active-group-id="editorGroups.activeGroupId.value"
+          :groups="editorGroups.groups.value"
+          :breadcrumb-paths="groupBreadcrumbPaths"
+          :language-labels="groupLanguageLabels"
+          :can-compile-map="groupCanCompile"
+          :can-run-map="groupCanRun"
+          :theme="currentTheme"
+          @compile="(_gid: string) => doCompile()"
+          @run="(_gid: string) => doRun()"
         />
-        <!-- 面包屑 + 操作按钮 -->
-        <div v-if="activeTab" class="sh-ide-breadcrumb">
-          <span class="breadcrumb-path">{{ breadcrumbPath }}</span>
-          <span class="breadcrumb-lang">{{ activeTab.language }}</span>
-          <div v-if="canBuildActive" class="breadcrumb-actions">
-            <button
-              v-if="COMPILABLE_LANGUAGES.has(activeTab.language)"
-              class="breadcrumb-btn compile-btn"
-              :title="i18n('ide.menu.build.compile')"
-              :disabled="consoleBusy"
-              @click="doCompile"
-            >
-              ▶
-            </button>
-            <button
-              v-if="RUNNABLE_LANGUAGES.has(activeTab.language)"
-              class="breadcrumb-btn run-btn"
-              :title="i18n('ide.menu.build.run')"
-              :disabled="consoleBusy"
-              @click="doRun"
-            >
-              ►
-            </button>
-          </div>
-        </div>
-        <!-- Monaco 编辑器 -->
-        <div
-          ref="editorContainer"
-          class="sh-ide-monaco"
-          v-show="openTabs.length > 0"
-        />
-        <!-- 欢迎页 -->
-        <div v-if="openTabs.length === 0" class="sh-ide-welcome">
-          <div class="welcome-icon">
-            <svg
-              viewBox="0 0 100 100"
-              width="80"
-              height="80"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="3"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <polyline points="30,25 15,50 30,75" />
-              <polyline points="70,25 85,50 70,75" />
-              <line x1="55" y1="20" x2="45" y2="80" />
-            </svg>
-          </div>
-          <h2>{{ i18n("ide.welcome.title") }}</h2>
-          <p>{{ i18n("ide.welcome.hint") }}</p>
-          <div class="welcome-actions">
-            <button class="welcome-btn" @click="handleNewFile(null)">
-              📄 {{ i18n("ide.welcome.newFile") }}
-            </button>
-            <button class="welcome-btn" @click="handleNewFolder(null)">
-              📁 {{ i18n("ide.welcome.newFolder") }}
-            </button>
-            <button class="welcome-btn" @click="fileInputRef?.click()">
-              📂 {{ i18n("ide.welcome.openFile") }}
-            </button>
-            <button class="welcome-btn" @click="dirInputRef?.click()">
-              📁 {{ i18n("ide.welcome.openDir") }}
-            </button>
-          </div>
-          <div class="welcome-shortcuts">
-            <div>
-              <kbd>Ctrl+N</kbd> {{ i18n("ide.welcome.shortcutNewFile") }}
-            </div>
-            <div>
-              <kbd>Ctrl+O</kbd> {{ i18n("ide.welcome.shortcutOpenFile") }}
-            </div>
-            <div><kbd>Ctrl+S</kbd> {{ i18n("ide.welcome.shortcutSave") }}</div>
-            <div>
-              <kbd>Ctrl+B</kbd> {{ i18n("ide.welcome.shortcutToggleSidebar") }}
-            </div>
-          </div>
-        </div>
         <!-- 控制台 -->
         <ConsolePanel
           v-model:visible="consoleVisible"
