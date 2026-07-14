@@ -116,6 +116,182 @@ const fieldList = ref<PageFieldInfo>({
         ],
       }
     },
+    // ===== calc 计算 =====
+    {
+      label: "计算A",
+      fieldName: "calcA",
+      type: "number",
+      preps: { defaultValue: 10 },
+    },
+    {
+      label: "计算B",
+      fieldName: "calcB",
+      type: "number",
+      preps: { defaultValue: 5 },
+    },
+    {
+      label: "计算结果(calc)",
+      fieldName: "calcResult",
+      type: "number",
+      preps: {
+        formula: {
+          enable: true,
+          type: "calc",
+          sourceFields: ["calcA", "calcB"],
+          expression: "${calcA}-20+${calcB}*5/8",
+          precision: 2,
+        },
+      },
+    },
+    // ===== concat 拼接 =====
+    {
+      label: "拼接A",
+      fieldName: "concatA",
+      type: "input",
+      preps: { defaultValue: "Hello" },
+    },
+    {
+      label: "拼接B",
+      fieldName: "concatB",
+      type: "input",
+      preps: { defaultValue: "World" },
+    },
+    {
+      label: "拼接结果(concat)",
+      fieldName: "concatResult",
+      type: "input",
+      preps: {
+        formula: {
+          enable: true,
+          type: "concat",
+          sourceFields: ["concatA", "concatB"],
+          expression: "${concatA}-${concatB}",
+        },
+      },
+    },
+    // ===== lookup 查找 =====
+    {
+      label: "查找键(lookup)",
+      fieldName: "lookupKey",
+      type: "select",
+      preps: {
+        values: [
+          { name: "Windows", value: "win", xh: 1 },
+          { name: "Linux", value: "linux", xh: 2 },
+        ],
+      },
+    },
+    {
+      label: "查找-端口",
+      fieldName: "lkPort",
+      type: "number",
+    },
+    {
+      label: "查找-名称(lookup触发)",
+      fieldName: "lkName",
+      type: "input",
+      preps: {
+        formula: {
+          enable: true,
+          type: "lookup",
+          sourceFields: ["lookupKey"],
+          lookupMappings: [
+            { key: "win", values: { lkPort: 3389, lkName: "Windows" } },
+            { key: "linux", values: { lkPort: 22, lkName: "Linux" } },
+          ],
+        },
+      },
+    },
+    // ===== dateCalc 日期计算 =====
+    {
+      label: "开始日期",
+      fieldName: "dcStart",
+      type: "date",
+      preps: { type: "date", subType: "date", clearable: true },
+    },
+    {
+      label: "结束日期",
+      fieldName: "dcEnd",
+      type: "date",
+      preps: { type: "date", subType: "date", clearable: true },
+    },
+    {
+      label: "日期差-天(dateCalc)",
+      fieldName: "dcDiff",
+      type: "number",
+      preps: {
+        formula: {
+          enable: true,
+          type: "dateCalc",
+          sourceFields: ["dcStart", "dcEnd"],
+          expression: "${dcStart}~${dcEnd}",
+          dateMode: "diff",
+          dateUnit: "day",
+        },
+      },
+    },
+    // ===== format 格式化 =====
+    {
+      label: "金额",
+      fieldName: "fmtMoney",
+      type: "number",
+      preps: { defaultValue: 1234567 },
+    },
+    {
+      label: "千分位(format)",
+      fieldName: "fmtThousands",
+      type: "input",
+      preps: {
+        formula: {
+          enable: true,
+          type: "format",
+          sourceFields: ["fmtMoney"],
+          expression: "${fmtMoney}",
+          formatType: "thousands",
+        },
+      },
+    },
+    {
+      label: "比率",
+      fieldName: "fmtRate",
+      type: "number",
+      preps: { defaultValue: 3.14159 },
+    },
+    {
+      label: "保留两位(format)",
+      fieldName: "fmtFixed",
+      type: "input",
+      preps: {
+        formula: {
+          enable: true,
+          type: "format",
+          sourceFields: ["fmtRate"],
+          expression: "${fmtRate}",
+          formatType: "toFixed",
+          formatArg: 2,
+        },
+      },
+    },
+    // ===== ternary 三元 =====
+    {
+      label: "分数",
+      fieldName: "tnScore",
+      type: "number",
+      preps: { defaultValue: 85 },
+    },
+    {
+      label: "及格判定(ternary)",
+      fieldName: "tnResult",
+      type: "input",
+      preps: {
+        formula: {
+          enable: true,
+          type: "ternary",
+          sourceFields: ["tnScore"],
+          expression: "${tnScore}>=60?'及格':'不及格'",
+        },
+      },
+    },
     {
       label: "年",
       fieldName: "fieldYear",
@@ -600,6 +776,7 @@ const fieldList = ref<PageFieldInfo>({
 
   ],
 });
+
 const initData = async () => {};
 const primaryKey = "idValidDateNew";
 const codeGeneratorRef = ref();

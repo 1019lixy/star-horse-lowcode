@@ -122,7 +122,8 @@ const safeEvalExpr = (expression: string): any => {
   try {
     const sanitized = sanitizeExpression(expression);
 
-    return new Function('"use strict";', `return (${sanitized});`)();
+    // 与 safeEvalCondition 保持一致，注入 Math 供表达式使用
+    return new Function("Math", `"use strict"; return (${sanitized});`)(Math);
   } catch {
     return undefined;
   }
@@ -193,6 +194,11 @@ const resolveThen = (then: any, formData: Record<string, any>): any => {
       const val = formData[fieldName];
       return val === undefined || val === null ? "" : String(val);
     });
+  }
+
+  // 纯数字字面量：转为数字类型，避免给数字字段赋字符串导致显示/校验异常
+  if (trimmed !== "" && !isNaN(Number(trimmed))) {
+    return Number(trimmed);
   }
 
   return then;
@@ -275,10 +281,10 @@ const executeCondition = (
 ): any => {
   for (const branch of branches) {
     try {
-      const resolved = resolveFieldRefs(branch.when, formData, true);
-      console.log("executeCondition:",resolved);
+      // 条件判断使用空字符串而非 0，避免字符串比较时出现类型转换错误
+      // （如空字段被当作 0，导致 0=="0" 误判为 true）
+      const resolved = resolveFieldRefs(branch.when, formData, false);
       if (safeEvalCondition(resolved)) {
-        console.log("safeEvalCondition:","ok");
         return resolveThen(branch.then, formData);
       }
     } catch (e) {
@@ -492,9 +498,9 @@ const executeFormat = (
       }
       case "toFixed": {
         const num = safeNumber(resolved);
-        // eslint-disable-next-line no-constant-binary-expression
-        const p = precision ?? Number(formatArg) ?? 2;
-        return num.toFixed(p);
+        // precision 优先，其次 formatArg，最后默认 2；需防御 NaN
+        const p = precision ?? (formatArg !== undefined ? Number(formatArg) : 2);
+        return num.toFixed(Number.isNaN(p) ? 2 : p);
       }
       case "regex": {
         const pattern = String(formatArg || "");
@@ -607,6 +613,7 @@ export const setupFormulaWatchers = (
         () => {
           executeFormulaWithFill(field, formInfo, formData.value);
         },
+        { immediate: true },
     );
     stops.push(stop);
   });
