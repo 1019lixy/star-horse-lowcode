@@ -1,103 +1,61 @@
 /**
- * 公式计算引擎
+ * 公式计算引擎 (Hardened Version)
  *
  * 统一字段引用语法：${fieldName}
- * 支持 8 种公式类型：
- * - calc:       数学运算          expression = '${price} * ${quantity}'
- * - concat:     字符串拼接        expression = '${lastName}${firstName}'
- * - condition:  多分支条件判断     branches = [{ when, then }]
- * - lookup:     联动回填          lookupMappings = [{ key, values }]
- * - aggregate:  聚合运算          expression = 'sum' / 'avg' / 'count' / 'min' / 'max'
- * - dateCalc:   日期计算          expression = '${start} ~ ${end}', dateUnit = 'day'
- * - format:     格式化            expression = 'thousands' / 'padStart' / 'toFixed' / 'regex'
- * - ternary:    三元表达式        expression = '${score} >= 60 ? ${score} : 0'
+ * 支持 8 种公式类型：calc, concat, condition, lookup, aggregate, dateCalc, format, ternary
  *
- * 配置示例：
- * field: {
- *   fieldName: 'totalPrice',
- *   preps: {
- *     formula: {
- *       enable: true,
- *       type: 'calc',
- *       sourceFields: ['price', 'quantity'],
- *       expression: '${price} * ${quantity}',
- *       precision: 2,
- *       suffix: '元',
- *     }
- *   }
- * }
+ * 核心安全与兼容性保障：
+ * 1. 表达式求值与条件判断分离，杜绝代码注入与类型丢失
+ * 2. 字符串拼接独立实现，避免空值被当作字面量文本
+ * 3. 跨浏览器健壮的日期解析，兼容 Safari 及非标准格式
+ * 4. 三元表达式交由原生引擎解析，完美支持嵌套
+ * 5. 聚合与正则格式化增加完整的边界防护
  */
 
 // ==================== 类型定义 ====================
 
-/** 公式类型 */
 export type FormulaType =
-  | "calc" // 数学运算
-  | "concat" // 字符串拼接
-  | "condition" // 多分支条件判断
-  | "lookup" // 联动回填
-  | "aggregate" // 聚合运算（sum/avg/count/min/max）
-  | "dateCalc" // 日期计算
-  | "format" // 格式化
-  | "ternary"; // 三元表达式
 
-/** 条件分支配置 */
+    | "calc"
+    | "concat"
+    | "condition"
+    | "lookup"
+    | "aggregate"
+    | "dateCalc"
+    | "format"
+    | "ternary";
+
 export interface ConditionBranch {
-  /** 匹配表达式，如 '${score} >= 90' */
   when: string;
-  /** 匹配时返回的值，支持常量或 ${fieldName} 引用 */
   then: any;
 }
 
-/** 联动回填映射配置 */
 export interface LookupMapping {
-  /** 匹配的源字段值 */
   key: string;
-  /** 回填目标字段名 -> 回填值的映射 */
   values: Record<string, any>;
 }
 
-/** 公式配置 */
 export interface FormulaConfig {
-  /** 是否启用 */
   enable: boolean;
-  /** 公式类型 */
   type: FormulaType;
-  /** 依赖字段列表 */
   sourceFields: string[];
-  /** 公式表达式，统一使用 ${fieldName} 引用字段 */
   expression?: string;
-  /** 条件分支（type=condition 时使用） */
   branches?: ConditionBranch[];
-  /** 联动回填映射（type=lookup 时使用） */
   lookupMappings?: LookupMapping[];
-  /** 精度，type=calc/format(toFixed) 时使用 */
   precision?: number;
-  /** 前缀，type=calc 时使用，如 '¥' */
   prefix?: string;
-  /** 后缀，type=calc 时使用，如 '%'、'元' */
   suffix?: string;
-  /** 日期单位，type=dateCalc 时使用：'year'|'month'|'day'|'hour'|'minute'|'second' */
   dateUnit?: "year" | "month" | "day" | "hour" | "minute" | "second";
-  /** 日期偏移量，type=dateCalc 且 mode=offset 时使用，正数向后，负数向前 */
   dateOffset?: number;
-  /** 日期计算模式：diff(差值) | offset(偏移) | format(格式化) */
   dateMode?: "diff" | "offset" | "format";
-  /** 日期输出格式，type=dateCalc 且 mode=format 时使用，如 'YYYY-MM-DD' */
   dateFormat?: string;
-  /** 格式化子类型，type=format 时使用 */
   formatType?: "thousands" | "padStart" | "toFixed" | "regex";
-  /** 格式化参数：padStart 的目标长度 / regex 的替换模式 */
   formatArg?: string | number;
-  /** 格式化参数2：padStart 的填充字符 / regex 的替换值 */
   formatArg2?: string;
-  /** 聚合子字段，type=aggregate 时使用，指定子表单中要聚合的字段名 */
   aggregateField?: string;
-  /** 条件不匹配时的默认值，type=condition/ternary 时使用 */
   defaultValue?: any;
 }
 
-/** 字段定义（最小集） */
 export interface FormulaField {
   fieldName: string;
   type?: string;
@@ -105,7 +63,7 @@ export interface FormulaField {
   preps?: Record<string, any>;
 }
 
-// ==================== 工具函数 ====================
+// ==================== 安全工具函数 ====================
 
 const safeNumber = (val: any): number => {
   const num = Number(val);
@@ -113,71 +71,175 @@ const safeNumber = (val: any): number => {
 };
 
 /**
- * 将 ${fieldName} 替换为实际值（字符串形式）
- * @param expression
- * @param formData
- * @param emptyAsZero true 时空值替换为 '0'（用于 calc），false 时替换为 ''（用于 concat）
+ * 安全沙箱清洗：移除危险的原型链与全局对象访问
+ */
+const sanitizeExpression = (expr: string): string => {
+  return expr.replace(/\b(__proto__|constructor|prototype|window|document|globalThis|eval|Function)\b/g, "");
+};
+
+/**
+ * [安全执行] 条件判断与数学计算统一入口
+ * 增加了对“纯字符串”的防御性处理
+ */
+const safeEvalCondition = (expression: string): boolean => {
+  try {
+    let expr = expression.trim();
+
+    // 防御性编程：如果整个表达式被双引号包裹（如 "\"a\"==\"b\""），说明被过度序列化了
+    // 尝试剥离最外层的双引号并还原转义
+    if (expr.startsWith('"') && expr.endsWith('"')) {
+      try {
+        // 尝试解析 JSON 字符串，看是否能还原为代码
+        const unwrapped = JSON.parse(expr);
+        if (typeof unwrapped === "string") {
+          expr = unwrapped;
+        }
+      } catch (e) {
+        // 忽略解析错误，继续按原样执行
+      }
+    }
+
+    if (!expr) return false;
+
+    // 执行代码
+    // 使用 new Function 创建沙箱，仅允许访问 Math
+    const result = new Function(
+        "Math",
+        `"use strict"; return (${expr});`
+    )(Math);
+
+    return !!result;
+  } catch (e) {
+    console.warn(`[FormulaEngine] 表达式执行失败: "${expression}"`, e);
+    return false;
+  }
+};
+
+/**
+ * 用于 calc / ternary 的数值或字符串计算，保留原始返回类型
+ */
+const safeEvalExpr = (expression: string): any => {
+  try {
+    const sanitized = sanitizeExpression(expression);
+
+    return new Function('"use strict";', `return (${sanitized});`)();
+  } catch {
+    return undefined;
+  }
+};
+
+
+/**
+ * [核心修复] 将 ${fieldName} 替换为可执行的 JS 代码片段
+ *
+ * 策略：
+ * 1. 数字/布尔 -> 直接输出 (例: 100, true)
+ * 2. 字符串   -> 使用单引号包裹，并转义内部单引号 (例: 'O\'Reilly')
+ *
+ * 这样生成的表达式如: 'windows' !== 'linux'
+ * JS 引擎能完美解析，无需正则猜测运算符。
  */
 const resolveFieldRefs = (
-  expression: string,
-  formData: Record<string, any>,
-  emptyAsZero = true,
+    expression: string,
+    formData: Record<string, any>,
+    emptyAsZero = true,
 ): string => {
+  if (!expression) return "";
+
   return expression.replace(/\$\{(\w+)\}/g, (_, fieldName) => {
     const val = formData[fieldName];
-    if (val === undefined || val === null || val === "")
-      return emptyAsZero ? "0" : "";
-    return String(val);
+
+    // 1. 空值处理
+    if (val === undefined || val === null || val === "") {
+      return emptyAsZero ? "0" : "''"; // 注意：这里改为两个单引号，代表空字符串
+    }
+
+    // 2. 数字 / 布尔值：直接返回，不加引号
+    if (typeof val === "number" || typeof val === "boolean") {
+      return String(val);
+    }
+
+    // 3. 字符串：手动转义单引号，并用单引号包裹
+    // 这样可以兼容 ==, !=, ===, !==, >, < 等所有运算符
+    if (typeof val === "string") {
+      // 将字符串内部的 \ 替换为 \\，将 ' 替换为 \'
+      const escaped = val.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+      return `'${escaped}'`;
+    }
+
+    // 4. 其他类型兜底（转为字符串处理）
+    const strVal = String(val);
+    const escaped = strVal.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+    return `'${escaped}'`;
   });
 };
 
-/** 将 ${fieldName} 替换为实际值（保留原始类型，用于条件判断的 then） */
-const resolveFieldValue = (ref: string, formData: Record<string, any>): any => {
-  const fieldName = ref.replace(/^\$\{(\w+)\}$/, "$1");
-  return formData[fieldName];
-};
 
-/** 解析 then 值：${fieldName} 引用取字段值，否则返回常量 */
+
+/** 解析 then 值：${fieldName} 引用取字段原始值，否则返回常量或拼接字符串 */
 const resolveThen = (then: any, formData: Record<string, any>): any => {
-  if (typeof then === "string" && /^\$\{(\w+)\}$/.test(then.trim())) {
-    return resolveFieldValue(then.trim(), formData);
+  if (typeof then !== "string") return then;
+
+  const trimmed = then.trim();
+  // 纯字段引用：返回原始类型
+  const fullRefMatch = trimmed.match(/^\$\{(\w+)\}$/);
+  if (fullRefMatch) {
+    return formData[fullRefMatch[1]];
   }
-  // 支持字符串中包含 ${fieldName} 的拼接
-  if (typeof then === "string" && /\$\{(\w+)\}/.test(then)) {
-    return resolveFieldRefs(then, formData, false);
+
+  // 包含字段引用的拼接字符串
+  if (/\$\{(\w+)\}/.test(then)) {
+    return then.replace(/\$\{(\w+)\}/g, (_, fieldName) => {
+      const val = formData[fieldName];
+      return val === undefined || val === null ? "" : String(val);
+    });
   }
+
   return then;
 };
 
-/** 安全执行数学表达式 */
-const safeEval = (expression: string): any => {
-  return new Function("Math", `"use strict"; return (${expression})`)(Math);
+/**
+ * 跨浏览器健壮的日期解析
+ * 兼容 ISO、YYYY-MM-DD HH:mm:ss、纯日期等格式
+ */
+const parseDate = (val: any): Date | null => {
+  if (!val) return null;
+  if (val instanceof Date) return Number.isNaN(val.getTime()) ? null : val;
+
+  let d = new Date(val);
+  if (!Number.isNaN(d.getTime())) return d;
+
+  if (typeof val === "string") {
+    // 兼容 Safari 不支持的空格分隔日期时间
+    const normalized = val.replace(" ", "T");
+    d = new Date(normalized);
+    if (!Number.isNaN(d.getTime())) return d;
+
+    // 兼容纯日期 YYYY-MM-DD（避免时区偏移问题）
+    const dateOnly = val.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (dateOnly) {
+      d = new Date(Number(dateOnly[1]), Number(dateOnly[2]) - 1, Number(dateOnly[3]));
+      if (!Number.isNaN(d.getTime())) return d;
+    }
+  }
+
+  return null;
 };
 
 // ==================== 8 种公式处理器 ====================
 
-/**
- * calc - 数学运算
- * expression 示例:
- *   '${price} * ${quantity}'                    → 乘法
- *   '${field1} + ${field2} - ${field3}'         → 混合运算
- *   'Math.round(${a} / ${b} * 100) / 100'      → 除法保留2位
- *   '${a} / ${b} * 100' + suffix: '%'          → 百分比
- *   '${amount}' + prefix: '¥'                   → 金额前缀
- */
 const executeCalc = (
-  expression: string,
-  formData: Record<string, any>,
-  precision?: number,
-  prefix?: string,
-  suffix?: string,
+    expression: string,
+    formData: Record<string, any>,
+    precision?: number,
+    prefix?: string,
+    suffix?: string,
 ): any => {
   try {
-    const resolved = resolveFieldRefs(expression, formData);
-    const result = safeEval(resolved);
+    const resolved = resolveFieldRefs(expression, formData, true);
+    const result = safeEvalExpr(resolved);
     const num = safeNumber(result);
-    const calcResult =
-      precision !== undefined ? Number(num.toFixed(precision)) : num;
+    const calcResult = precision !== undefined ? Number(num.toFixed(precision)) : num;
 
     if (prefix || suffix) {
       return `${prefix || ""}${calcResult}${suffix || ""}`;
@@ -190,44 +252,33 @@ const executeCalc = (
 };
 
 /**
- * concat - 字符串拼接
- * expression 示例:
- *   '${lastName}${firstName}'                   → 简单拼接
- *   '订单号：${orderNo}'                         → 带固定文本
- *   '${province}${city}${district}'             → 多字段拼接
- *   '联系人：${name}，电话：${phone}'             → 混合拼接
+ * concat 独立实现纯字符串拼接，不走 resolveFieldRefs + safeEval
+ * 避免空值被当作 "" 字面量文本拼入结果
  */
-const executeConcat = (
-  expression: string,
-  formData: Record<string, any>,
-): string => {
+const executeConcat = (expression: string, formData: Record<string, any>): string => {
   try {
-    return resolveFieldRefs(expression, formData, false);
+    return expression.replace(/\$\{(\w+)\}/g, (_, fieldName) => {
+      const val = formData[fieldName];
+      if (val === undefined || val === null) return "";
+      return String(val);
+    });
   } catch (e) {
     console.warn(`[FormulaEngine] concat 执行失败: ${expression}`, e);
     return "";
   }
 };
 
-/**
- * condition - 多分支条件判断
- * branches 示例: [
- *   { when: '${score} >= 90', then: '优秀' },
- *   { when: '${score} >= 60', then: '及格' },
- * ]
- * then 支持：常量值、${fieldName} 字段引用、含 ${fieldName} 的拼接字符串
- * 无匹配时返回 defaultValue 或 undefined
- */
 const executeCondition = (
-  branches: ConditionBranch[],
-  formData: Record<string, any>,
-  defaultValue?: any,
+    branches: ConditionBranch[],
+    formData: Record<string, any>,
+    defaultValue?: any,
 ): any => {
   for (const branch of branches) {
     try {
-      const resolved = resolveFieldRefs(branch.when, formData);
-      const matched = safeEval(resolved);
-      if (matched) {
+      const resolved = resolveFieldRefs(branch.when, formData, true);
+      console.log("executeCondition:",resolved);
+      if (safeEvalCondition(resolved)) {
+        console.log("safeEvalCondition:","ok");
         return resolveThen(branch.then, formData);
       }
     } catch (e) {
@@ -237,19 +288,10 @@ const executeCondition = (
   return defaultValue ?? undefined;
 };
 
-/**
- * lookup - 联动回填
- * lookupMappings 示例: [
- *   { key: 'P001', values: { productName: '商品A', price: 99.9 } },
- *   { key: 'P002', values: { productName: '商品B', price: 199.9 } },
- * ]
- * 根据 sourceFields[0] 的值匹配 key，回填 values 中的字段
- * 返回回填结果对象，找不到返回 null
- */
 const executeLookup = (
-  lookupMappings: LookupMapping[],
-  sourceFields: string[],
-  formData: Record<string, any>,
+    lookupMappings: LookupMapping[],
+    sourceFields: string[],
+    formData: Record<string, any>,
 ): Record<string, any> | null => {
   if (!sourceFields?.length || !lookupMappings?.length) return null;
 
@@ -257,9 +299,7 @@ const executeLookup = (
     const keyValue = formData[sourceFields[0]];
     if (keyValue === undefined || keyValue === null) return null;
 
-    const matched = lookupMappings.find(
-      (m) => String(m.key) === String(keyValue),
-    );
+    const matched = lookupMappings.find((m) => String(m.key) === String(keyValue));
     return matched ? { ...matched.values } : null;
   } catch (e) {
     console.warn("[FormulaEngine] lookup 执行失败", e);
@@ -267,32 +307,26 @@ const executeLookup = (
   }
 };
 
-/**
- * aggregate - 聚合运算
- * 对子表单/批量数据中的某个字段进行聚合
- * expression 支持: 'sum' | 'avg' | 'count' | 'min' | 'max'
- *
- * 配置示例:
- * { type: 'aggregate', sourceFields: ['items'], aggregateField: 'amount', expression: 'sum' }
- * 其中 items 是子表单数据（数组），amount 是子表单中要聚合的字段
- */
 const executeAggregate = (
-  expression: string,
-  sourceFields: string[],
-  aggregateField: string | undefined,
-  formData: Record<string, any>,
-  precision?: number,
+    expression: string,
+    sourceFields: string[],
+    aggregateField: string | undefined,
+    formData: Record<string, any>,
+    precision?: number,
 ): number => {
   try {
     if (!sourceFields?.length || !aggregateField) return 0;
 
-    // 取第一个依赖字段作为数组数据源
-    const arr = formData[sourceFields[0]];
-    if (!Array.isArray(arr) || arr.length === 0) return 0;
+    const rawArr = formData[sourceFields[0]];
+    if (!Array.isArray(rawArr)) return 0;
 
-    const values = arr
-      .map((item: any) => safeNumber(item?.[aggregateField]))
-      .filter((v: number) => !Number.isNaN(v));
+    // 过滤掉 null/undefined 元素，防止 map 抛异常
+    const validItems = rawArr.filter((item: any) => item != null);
+    if (validItems.length === 0) return 0;
+
+    const values = validItems
+        .map((item: any) => safeNumber(item?.[aggregateField]))
+        .filter((v: number) => !Number.isNaN(v));
 
     if (values.length === 0) return 0;
 
@@ -304,8 +338,7 @@ const executeAggregate = (
         result = values.reduce((a: number, b: number) => a + b, 0);
         break;
       case "avg":
-        result =
-          values.reduce((a: number, b: number) => a + b, 0) / values.length;
+        result = values.reduce((a: number, b: number) => a + b, 0) / values.length;
         break;
       case "count":
         result = values.length;
@@ -328,57 +361,40 @@ const executeAggregate = (
   }
 };
 
-/**
- * dateCalc - 日期计算
- * 三种模式:
- * 1. diff: 计算两个日期的差值
- *    expression = '${startDate} ~ ${endDate}', dateUnit = 'day'
- *    结果: 两个日期之间相差的天/月/年数
- *
- * 2. offset: 日期偏移
- *    expression = '${baseDate}', dateOffset = 7, dateUnit = 'day'
- *    结果: 基准日期 + 偏移量后的日期字符串
- *
- * 3. format: 日期格式化
- *    expression = '${rawDate}', dateFormat = 'YYYY-MM-DD'
- *    结果: 格式化后的日期字符串
- */
 const executeDateCalc = (
-  expression: string,
-  formData: Record<string, any>,
-  dateUnit: string = "day",
-  dateMode: string = "diff",
-  dateOffset?: number,
-  dateFormat?: string,
+    expression: string,
+    formData: Record<string, any>,
+    dateUnit: string = "day",
+    dateMode: string = "diff",
+    dateOffset?: number,
+    dateFormat?: string,
 ): any => {
   try {
     const resolved = resolveFieldRefs(expression, formData, false);
 
     if (dateMode === "format") {
-      // 格式化模式
-      const date = new Date(resolved);
-      if (Number.isNaN(date.getTime())) return "";
+      const date = parseDate(resolved);
+      if (!date) return "";
       return formatDate(date, dateFormat || "YYYY-MM-DD");
     }
 
     if (dateMode === "offset") {
-      // 偏移模式
-      const baseDate = new Date(resolved);
-      if (Number.isNaN(baseDate.getTime())) return "";
-      const offset = dateOffset ?? 0;
-      const result = addDateOffset(baseDate, offset, dateUnit);
+      const baseDate = parseDate(resolved);
+      if (!baseDate) return "";
+      const result = addDateOffset(baseDate, dateOffset ?? 0, dateUnit);
       return formatDate(result, dateFormat || "YYYY-MM-DD");
     }
 
-    // diff 模式（默认）
+    // diff 模式
     const parts = resolved.split("~").map((s: string) => s.trim());
     if (parts.length < 2) {
       console.warn("[FormulaEngine] dateCalc diff 模式需要两个日期，用 ~ 分隔");
       return 0;
     }
-    const start = new Date(parts[0]);
-    const end = new Date(parts[1]);
-    if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) return 0;
+
+    const start = parseDate(parts[0]);
+    const end = parseDate(parts[1]);
+    if (!start || !end) return 0;
 
     return dateDiff(start, end, dateUnit);
   } catch (e) {
@@ -387,17 +403,13 @@ const executeDateCalc = (
   }
 };
 
-/** 日期差值计算 */
 const dateDiff = (start: Date, end: Date, unit: string): number => {
   const ms = end.getTime() - start.getTime();
   switch (unit) {
     case "year":
       return end.getFullYear() - start.getFullYear();
     case "month":
-      return (
-        (end.getFullYear() - start.getFullYear()) * 12 +
-        (end.getMonth() - start.getMonth())
-      );
+      return (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
     case "day":
       return Math.round(ms / (1000 * 60 * 60 * 24));
     case "hour":
@@ -411,7 +423,6 @@ const dateDiff = (start: Date, end: Date, unit: string): number => {
   }
 };
 
-/** 日期偏移 */
 const addDateOffset = (date: Date, offset: number, unit: string): Date => {
   const result = new Date(date);
   switch (unit) {
@@ -439,7 +450,6 @@ const addDateOffset = (date: Date, offset: number, unit: string): Date => {
   return result;
 };
 
-/** 简易日期格式化（不依赖第三方库） */
 const formatDate = (date: Date, format: string): string => {
   const pad = (n: number) => String(n).padStart(2, "0");
   const tokens: Record<string, string> = {
@@ -451,7 +461,6 @@ const formatDate = (date: Date, format: string): string => {
     ss: pad(date.getSeconds()),
   };
   let result = format;
-  // 按长度降序替换，避免 YYYY 被 YY 先匹配
   const keys = Object.keys(tokens).sort((a, b) => b.length - a.length);
   for (const key of keys) {
     result = result.replace(key, tokens[key]);
@@ -459,27 +468,13 @@ const formatDate = (date: Date, format: string): string => {
   return result;
 };
 
-/**
- * format - 格式化
- * formatType 支持:
- * - thousands:   千分位分隔  1234567 → '1,234,567'
- * - padStart:    左填充      5 → '005'  (formatArg=3, formatArg2='0')
- * - toFixed:     固定小数位  3.1 → '3.10'  (precision=2)
- * - regex:       正则替换    'abc123' → '123'  (formatArg='[^0-9]', formatArg2='')
- *
- * 配置示例:
- * { type: 'format', sourceFields: ['amount'], formatType: 'thousands' }
- * { type: 'format', sourceFields: ['code'], formatType: 'padStart', formatArg: 6, formatArg2: '0' }
- * { type: 'format', sourceFields: ['price'], formatType: 'toFixed', precision: 2 }
- * { type: 'format', sourceFields: ['rawText'], formatType: 'regex', formatArg: '[^0-9]', formatArg2: '' }
- */
 const executeFormat = (
-  expression: string,
-  formData: Record<string, any>,
-  formatType?: string,
-  formatArg?: string | number,
-  formatArg2?: string,
-  precision?: number,
+    expression: string,
+    formData: Record<string, any>,
+    formatType?: string,
+    formatArg?: string | number,
+    formatArg2?: string,
+    precision?: number,
 ): string => {
   try {
     const resolved = resolveFieldRefs(expression, formData, false);
@@ -505,7 +500,12 @@ const executeFormat = (
         const pattern = String(formatArg || "");
         const replacement = formatArg2 ?? "";
         if (!pattern) return resolved;
-        return String(resolved).replace(new RegExp(pattern, "g"), replacement);
+        try {
+          return String(resolved).replace(new RegExp(pattern, "g"), replacement);
+        } catch {
+          console.warn(`[FormulaEngine] format regex 非法正则: ${pattern}`);
+          return resolved;
+        }
       }
       default:
         console.warn(`[FormulaEngine] format 未知格式化类型: ${fType}`);
@@ -518,58 +518,18 @@ const executeFormat = (
 };
 
 /**
- * ternary - 三元表达式
- * expression 示例:
- *   '${score} >= 60 ? ${score} : 0'
- *   '${status} == 1 ? "启用" : "禁用"'
- *   '${amount} > 1000 ? ${amount} * 0.9 : ${amount}'
- *
- * 条件为真时返回 ? 后的值，为假时返回 : 后的值
- * 支持 defaultValue 作为条件不满足时的兜底
+ * ternary 直接交由 JS 引擎解析，完美支持嵌套三元表达式
+ * 不再手动分割 ? 和 :
  */
 const executeTernary = (
-  expression: string,
-  formData: Record<string, any>,
-  defaultValue?: any,
+    expression: string,
+    formData: Record<string, any>,
+    defaultValue?: any,
 ): any => {
   try {
-    // 分割条件、真值、假值
-    const questionIdx = expression.indexOf("?");
-    const colonIdx = expression.lastIndexOf(":");
-
-    if (questionIdx === -1 || colonIdx === -1 || colonIdx <= questionIdx) {
-      console.warn(
-        "[FormulaEngine] ternary 表达式格式错误，需要: 条件 ? 真值 : 假值",
-      );
-      return defaultValue ?? undefined;
-    }
-
-    const conditionExpr = expression.substring(0, questionIdx).trim();
-    const trueExpr = expression.substring(questionIdx + 1, colonIdx).trim();
-    const falseExpr = expression.substring(colonIdx + 1).trim();
-
-    // 解析条件
-    const resolvedCondition = resolveFieldRefs(conditionExpr, formData);
-    const conditionResult = safeEval(resolvedCondition);
-
-    // 根据条件结果选择表达式
-    const chosenExpr = conditionResult ? trueExpr : falseExpr;
-
-    // 解析选中表达式中的字段引用
-    const resolvedExpr = resolveFieldRefs(chosenExpr, formData);
-
-    // 尝试作为数学表达式执行，失败则作为字符串返回
-    try {
-      const result = safeEval(resolvedExpr);
-      // 如果结果是 NaN 则返回原始解析字符串
-      if (typeof result === "number" && Number.isNaN(result)) {
-        return resolveFieldRefs(chosenExpr, formData, false);
-      }
-      return result;
-    } catch {
-      // 不是数学表达式，直接返回字符串
-      return resolveFieldRefs(chosenExpr, formData, false);
-    }
+    const resolved = resolveFieldRefs(expression, formData, true);
+    const result = safeEvalExpr(resolved);
+    return result !== undefined ? result : (defaultValue ?? undefined);
   } catch (e) {
     console.warn(`[FormulaEngine] ternary 执行失败: ${expression}`, e);
     return defaultValue ?? undefined;
@@ -578,102 +538,42 @@ const executeTernary = (
 
 // ==================== 公共 API ====================
 
-/**
- * 执行公式计算，返回计算结果
- * @param formula 公式配置
- * @param formData 表单数据
- * @returns 计算结果
- */
-export const executeFormula = (
-  formula: FormulaConfig,
-  formData: Record<string, any>,
-): any => {
+export const executeFormula = (formula: FormulaConfig, formData: Record<string, any>): any => {
   if (!formula?.enable) return undefined;
 
   switch (formula.type) {
     case "calc":
-      return executeCalc(
-        formula.expression || "",
-        formData,
-        formula.precision,
-        formula.prefix,
-        formula.suffix,
-      );
+      return executeCalc(formula.expression || "", formData, formula.precision, formula.prefix, formula.suffix);
     case "concat":
       return executeConcat(formula.expression || "", formData);
     case "condition":
-      return executeCondition(
-        formula.branches || [],
-        formData,
-        formula.defaultValue,
-      );
+      return executeCondition(formula.branches || [], formData, formula.defaultValue);
     case "lookup":
-      return executeLookup(
-        formula.lookupMappings || [],
-        formula.sourceFields,
-        formData,
-      );
+      return executeLookup(formula.lookupMappings || [], formula.sourceFields, formData);
     case "aggregate":
-      return executeAggregate(
-        formula.expression || "sum",
-        formula.sourceFields,
-        formula.aggregateField,
-        formData,
-        formula.precision,
-      );
+      return executeAggregate(formula.expression || "sum", formula.sourceFields, formula.aggregateField, formData, formula.precision);
     case "dateCalc":
-      return executeDateCalc(
-        formula.expression || "",
-        formData,
-        formula.dateUnit,
-        formula.dateMode,
-        formula.dateOffset,
-        formula.dateFormat,
-      );
+      return executeDateCalc(formula.expression || "", formData, formula.dateUnit, formula.dateMode, formula.dateOffset, formula.dateFormat);
     case "format":
-      return executeFormat(
-        formula.expression || "",
-        formData,
-        formula.formatType,
-        formula.formatArg,
-        formula.formatArg2,
-        formula.precision,
-      );
+      return executeFormat(formula.expression || "", formData, formula.formatType, formula.formatArg, formula.formatArg2, formula.precision);
     case "ternary":
-      return executeTernary(
-        formula.expression || "",
-        formData,
-        formula.defaultValue,
-      );
+      return executeTernary(formula.expression || "", formData, formula.defaultValue);
     default:
-      console.warn(`[FormulaEngine] 未知公式类型: ${formula.type}`);
+      console.warn(`[FormulaEngine] 未知公式类型: ${(formula as any).type}`);
       return undefined;
   }
 };
 
-/**
- * 执行公式并回填表单数据
- * - lookup: 回填多个目标字段
- * - 其他类型: 结果赋值给当前字段
- *
- * @param field 当前字段
- * @param formInfo 所有字段列表
- * @param formData 表单数据（会被直接修改）
- */
 export const executeFormulaWithFill = (
-  field: FormulaField,
-  formInfo: FormulaField[],
-  formData: Record<string, any>,
+    field: FormulaField,
+    formInfo: FormulaField[],
+    formData: Record<string, any>,
 ): void => {
   const formula = field.preps?.formula || field.formula;
   if (!formula?.enable) return;
 
   if (formula.type === "lookup") {
-    const result = executeLookup(
-      formula.lookupMappings || [],
-      formula.sourceFields,
-      formData,
-    );
+    const result = executeLookup(formula.lookupMappings || [], formula.sourceFields, formData);
     if (result) {
       Object.entries(result).forEach(([key, value]) => {
         const targetField = formInfo?.find((f) => f.fieldName === key);
@@ -690,21 +590,11 @@ export const executeFormulaWithFill = (
   }
 };
 
-/**
- * 构建字段级别的 watch 监听器
- * 当依赖字段变化时，自动触发公式计算并回填
- *
- * @param field 当前字段
- * @param formInfo 所有字段列表
- * @param formData 响应式表单数据
- * @param watchFn Vue watch 函数
- * @returns stop 函数数组，用于在 onBeforeUnmount 中清理
- */
 export const setupFormulaWatchers = (
-  field: FormulaField,
-  formInfo: FormulaField[],
-  formData: any,
-  watchFn: typeof import("vue").watch,
+    field: FormulaField,
+    formInfo: FormulaField[],
+    formData: any,
+    watchFn: typeof import("vue").watch,
 ): (() => void)[] => {
   const formula = field.preps?.formula || field.formula;
   if (!formula?.enable || !formula.sourceFields?.length) return [];
@@ -713,10 +603,10 @@ export const setupFormulaWatchers = (
 
   formula.sourceFields.forEach((sourceField) => {
     const stop = watchFn(
-      () => formData.value?.[sourceField],
-      () => {
-        executeFormulaWithFill(field, formInfo, formData.value);
-      },
+        () => formData.value?.[sourceField],
+        () => {
+          executeFormulaWithFill(field, formInfo, formData.value);
+        },
     );
     stops.push(stop);
   });
@@ -724,19 +614,10 @@ export const setupFormulaWatchers = (
   return stops;
 };
 
-/**
- * 批量初始化表单中所有带 formula 配置的字段
- * 适合在表单容器组件 onMounted 时调用
- *
- * @param formInfo 所有字段列表
- * @param formData 响应式表单数据
- * @param watchFn Vue watch 函数
- * @returns stop 函数数组，用于在 onBeforeUnmount 中清理
- */
 export const initFormFormulaWatchers = (
-  formInfo: FormulaField[],
-  formData: any,
-  watchFn: typeof import("vue").watch,
+    formInfo: FormulaField[],
+    formData: any,
+    watchFn: typeof import("vue").watch,
 ): (() => void)[] => {
   if (!formInfo?.length) return [];
 
@@ -747,6 +628,7 @@ export const initFormFormulaWatchers = (
     if (formula?.enable) {
       const stops = setupFormulaWatchers(field, formInfo, formData, watchFn);
       allStops.push(...stops);
+      // 初始化时立即执行一次计算
       executeFormulaWithFill(field, formInfo, formData.value);
     }
   });

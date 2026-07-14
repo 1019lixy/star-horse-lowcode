@@ -93,6 +93,7 @@ onMounted(() => {
             :fieldList="splitterItem"
             :rules="rules"
             :subFormFlag="splitterItem.subFormFlag"
+            :enableSubNode="splitterItem.enableSubNode"
             :primaryKey="primaryKey"
           />
         </el-splitter-panel>

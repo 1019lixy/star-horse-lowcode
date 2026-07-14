@@ -119,6 +119,10 @@ export interface ContainerPreps {
    * 格式化函数
    */
   commonFormat?: Function;
+  /**
+   * 是否添加运行子节点
+   */
+  enableSubNode?: boolean;
 }
 
 export interface RelationDetail {

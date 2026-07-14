@@ -4,6 +4,7 @@ import { ModelRef } from "vue";
 import { ContainerPreps } from "../types/ItemPreps";
 import { commonParseCodeToName } from "@/api/star_horse_utils";
 import { i18n } from "@/lang";
+import TableItem from "@/components/comp/items/tableItem.vue";
 
 const props = withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
@@ -96,6 +97,7 @@ const removeRow = (row: any) => {
     :compSize="compSize"
     :compUrl="compUrl"
     :subFormFlag="subFormFlag"
+    :enableSubNode="enableSubNode"
     :source="source"
     :commonFormat="itemCommonFormat"
     :objectName="objectName"

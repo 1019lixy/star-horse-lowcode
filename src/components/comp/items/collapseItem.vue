@@ -117,6 +117,7 @@ onMounted(() => {
             :fieldList="collapseItem"
             :rules="rules"
             :subFormFlag="collapseItem.subFormFlag"
+            :enableSubNode="collapseItem.enableSubNode"
             :primaryKey="primaryKey"
           />
         </el-collapse-item>

@@ -36,6 +36,7 @@ const props = defineProps({
   showCheckBox: {type: Boolean, default: false},
   selectAll: {type: Boolean, default: false},
   subFlag: {type: Boolean, default: false},
+  enableSubNode: {type: Boolean, default: false},
   commonFormat: {
     type: Function,
     default: () => {
@@ -68,9 +69,11 @@ const addSubData = (parentRow: any) => {
   };
   if (props.staticColumn == "Y") {
     editingNodeId.value = newChild.__nodeId;
+    isAddingNewChild.value = true;
+    childParentChildren.value = parentRow.children;
     currentRow.value = newChild;
     rowDialogVisible.value = true;
-    parentRow.children.push(newChild);
+    // 不预push，等mergeData验证通过后再添加到children
     nextTick(() => {
       rowDataFormRef.value.setSource(1);
       rowDataFormRef.value.setFormData(newChild);
@@ -88,6 +91,8 @@ const addSubData = (parentRow: any) => {
  */
 const editSubData = (row: any) => {
   editingNodeId.value = row.__nodeId;
+  isAddingNewChild.value = false;
+  childParentChildren.value = null;
   dynamicHandleAddForm(row, "edit");
 };
 /**
@@ -123,6 +128,10 @@ const handleAddDetails = (row: any, type: number) => {
 };
 let currentRow = ref<any>({});
 let editingNodeId = ref<string | null>(null);
+// 标记当前是新增子节点还是编辑子节点
+let isAddingNewChild = ref(false);
+// 子节点"提交并继续"时，直接引用父行的children数组
+let childParentChildren = ref<any[] | null>(null);
 /**
  * 递归查找节点在树中的位置
  * @returns { parentChildren, index } 或 null
@@ -130,7 +139,7 @@ let editingNodeId = ref<string | null>(null);
 const findNodeInTree = (nodes: any[], nodeId: string): { parentChildren: any[], index: number } | null => {
   for (let i = 0; i < nodes.length; i++) {
     if (nodes[i].__nodeId === nodeId) {
-      return { parentChildren: nodes, index: i };
+      return {parentChildren: nodes, index: i};
     }
     if (nodes[i].children && nodes[i].children.length > 0) {
       const result = findNodeInTree(nodes[i].children, nodeId);
@@ -160,6 +169,7 @@ const dynamicHandleAddForm = async (row: any, type: string) => {
 const mergeData = async (type: string) => {
   let flag = false;
   let formRef = rowDataFormRef.value.$refs.starHorseFormRef;
+  initDataList();
   await formRef.validate((res: any) => (flag = res));
   if (!flag) {
     return;
@@ -167,18 +177,54 @@ const mergeData = async (type: string) => {
   const batchArray = dataForm.value[props.batchName];
   let formData = rowDataFormRef.value.getFormData().value;
   if (editingNodeId.value) {
-    // 子节点：递归查找并更新
-    const found = findNodeInTree(batchArray, editingNodeId.value);
-    if (found) {
-      if (formData.starHorseEditing == "yes") {
-        formData.starHorseEditing = "no";
-      }
-      found.parentChildren[found.index] = Object.assign({}, formData, {
+    if (isAddingNewChild.value) {
+      // 新增子节点：验证通过后再push到父节点children
+      const parentChildren = childParentChildren.value!;
+      Object.assign(formData, {
         __nodeId: editingNodeId.value,
         __isChild: true,
+        xh: parentChildren.length + 1,
       });
+      parentChildren.push(Object.assign({}, formData));
+
+      if (type == "close") {
+        editingNodeId.value = null;
+        isAddingNewChild.value = false;
+        childParentChildren.value = null;
+        closeAction();
+      } else {
+        // "提交并继续"：继续往同一父节点下新增
+        const newChild: any = {
+          xh: parentChildren.length + 1,
+          __nodeId: uuid(),
+          __isChild: true,
+        };
+        editingNodeId.value = newChild.__nodeId;
+        currentRow.value = newChild;
+        nextTick(() => {
+          rowDataFormRef.value.setSource(1);
+          rowDataFormRef.value.setFormData(newChild);
+        });
+      }
+    } else {
+      // 编辑子节点：在树中查找并更新
+      const found = findNodeInTree(batchArray, editingNodeId.value);
+      if (found) {
+        if (formData.starHorseEditing == "yes") {
+          formData.starHorseEditing = "no";
+        }
+        found.parentChildren[found.index] = Object.assign({}, formData, {
+          __nodeId: editingNodeId.value,
+          __isChild: true,
+        });
+      }
+      editingNodeId.value = null;
+      if (type == "close") {
+        closeAction();
+      } else {
+        rowDataFormRef.value.resetForm();
+      }
     }
-    editingNodeId.value = null;
   } else if (formData.starHorseEditing == "yes") {
     //有xh表示数据编辑
     batchArray.forEach((item: any, index: number) => {
@@ -187,30 +233,39 @@ const mergeData = async (type: string) => {
         batchArray[index] = Object.assign({}, formData);
       }
     });
+    if (type == "close") {
+      closeAction();
+    } else {
+      rowDataFormRef.value.resetForm();
+    }
   } else {
     dataForm.value[props.batchName].push(Object.assign({}, formData));
-  }
-  if (type == "close") {
-    closeAction();
-  } else {
-    rowDataFormRef.value.resetForm();
+    if (type == "close") {
+      closeAction();
+    } else {
+      rowDataFormRef.value.resetForm();
+    }
   }
 };
 const closeAction = () => {
   rowDialogVisible.value = false;
   editingNodeId.value = null;
+  isAddingNewChild.value = false;
+  childParentChildren.value = null;
   document.removeEventListener("keydown", enterEvent);
 };
-
+const initDataList = () => {
+  if (!dataForm.value[props.batchName]) {
+    dataForm.value[props.batchName] = [];
+  }
+};
 /**
  * 动态添加行
  * @param row
  * @param type
  */
 const dynamicHandleAddRow = (row: any, type: number) => {
-  if (!dataForm.value[props.batchName]) {
-    dataForm.value[props.batchName] = [];
-  }
+  initDataList();
   if (type === 1) {
     let obj = JSON5.parse(JSON5.stringify(props.defaultValues || {}));
     obj["id"] = uuid();
@@ -343,6 +398,25 @@ const clearAll = () => {
     dataForm.value[props.batchName] = [];
   });
 };
+const expandFlag = ref<boolean>(false);
+/**
+ * 递归展开/收起所有节点
+ */
+const toggleAllExpand = (rows: any[], expand: boolean) => {
+  for (const row of rows) {
+    if (row.children && row.children.length > 0) {
+      starHorseFormListRef.value?.toggleRowExpansion(row, expand);
+      toggleAllExpand(row.children, expand);
+    }
+  }
+};
+const expandSubNodes = () => {
+  expandFlag.value = !expandFlag.value;
+  const batchArray = dataForm.value[props.batchName];
+  if (batchArray && batchArray.length > 0) {
+    toggleAllExpand(batchArray, expandFlag.value);
+  }
+};
 const init = async () => {
   // console.log(Object.keys(dataForm.value), props.batchName);
   if (!Object.keys(dataForm.value).includes(props.batchName)) {
@@ -351,7 +425,7 @@ const init = async () => {
   /**
    * 如果列表为空的情况才初始化行数
    */
-  if (props.staticColumn == "N") {
+  if (props.staticColumn !== "Y") {
     if (dataForm.value[props.batchName]?.length == 0) {
       for (let i = 0; i < props.initRows; i++) {
         handleAddDetails(null, 1);
@@ -469,6 +543,14 @@ watch(
               />
             </el-tooltip>
           </li>
+          <li v-if="enableSubNode" @click="expandSubNodes">
+            <el-tooltip :content="i18n(!expandFlag?'ui.expandAll':'ui.collapseAll')">
+              <star-horse-icon
+                  :icon-class="!expandFlag?'expand':'collapse'"
+                  size="22px"
+              />
+            </el-tooltip>
+          </li>
           <li @click="clearAll">
             <el-tooltip :content="i18n('ui.clearList')">
               <star-horse-icon
@@ -488,7 +570,6 @@ watch(
         border
         sortable
         :size="size"
-        :strip="true"
         :row-key="getRowIdentity"
         :highlight-current-row="true"
         :row-class-name="rowClassName"
@@ -496,14 +577,7 @@ watch(
         ref="starHorseFormListRef"
         class="sh-columns"
         :stripe="true"
-        :virtual="true"
         max-height="400px"
-        :virtual-scroll-threshold="10"
-        :virtual-scroll-options="{
-        scrollSensitivity: 60,
-        scrollDebounce: 20,
-      }"
-        :use-virtual="dataForm[batchName]?.length > 10"
         :header-cell-style="{
         background: '#f2f2f2',
         color: '#707070',
@@ -583,6 +657,7 @@ watch(
           />
           <star-horse-icon
               icon-class="add"
+              v-if="enableSubNode"
               @click="addSubData(scope.row)"
               :title="i18n('ui.addSubData')"
           />

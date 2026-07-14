@@ -48,6 +48,7 @@ const shouldShow = () => {
       :compSize="compSize"
       :compUrl="compUrl"
       :subFormFlag="subFormFlag"
+      :enableSubNode="enableSubNode"
       :source="source"
       :objectName="objectName"
       :dataIndex="dataIndex"

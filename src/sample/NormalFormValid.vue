@@ -71,6 +71,52 @@ const searchFormData = ref<SearchInfo>({
 const fieldList = ref<PageFieldInfo>({
   fieldList: [
     {
+      label:"数字",
+      fieldName: "testnum",
+      type: "number",
+      preps:{
+        "formula": {
+          "enable": true,
+          "type": "condition",
+          "sourceFields": [
+            "fieldSh3C9D"
+          ],
+          "expression": "",
+          "branches": [
+            {
+              "when": "${fieldSh3C9D}==\"windows\"",
+              "then": "3389"
+            },
+            {
+              "when": "${fieldSh3C9D}==\"linux\"",
+              "then": "22"
+            }
+          ],
+          "defaultValue": "23"
+        }
+      },
+    },
+    {
+      label:"选择数据",
+      fieldName: "fieldSh3C9D",
+      type:"select",
+      preps:{
+        "values": [
+          {
+            "name": "Windows",
+            "value": "windows",
+            "xh": 1
+          },
+          {
+            "name": "Linux",
+            "value": "linux",
+            "xh": 2,
+            "starHorseEditing": "no"
+          }
+        ],
+      }
+    },
+    {
       label: "年",
       fieldName: "fieldYear",
       type: "date",
@@ -329,6 +375,7 @@ const fieldList = ref<PageFieldInfo>({
     {
       batchFieldList:[{
         batchName:"test",
+        enableSubNode:true,
         fieldList:[ {
           label: "月份范围",
           fieldName: "fieldMonthrange",
