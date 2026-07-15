@@ -1,5 +1,6 @@
 <script setup lang="ts" name="StarHorseDialog">
-import {computed, nextTick, onMounted, provide, reactive, ref, watch,} from "vue";
+import {computed, onMounted, provide, reactive, ref, watch,} from "vue";
+import {useZIndex} from "element-plus";
 import {i18n} from "@/lang";
 import {UserFuncInfo} from "@/components/types/PageFieldInfo";
 
@@ -91,33 +92,13 @@ const callFunc = (func: any) => {
     // if (method) method();
   }
 };
-/** 当前弹窗的 z-index（打开时计算） */
-const activeZIndex = ref(0);
-const diRef = ref<HTMLElement>();
-
-/** 获取当前页面所有 .el-overlay 中的最高 z-index */
-const getMaxOverlayZIndex = (): number => {
-  let maxZ = 0;
-  for (const el of document.querySelectorAll(".el-overlay")) {
-    const z = parseInt(getComputedStyle(el).zIndex, 10);
-    if (!isNaN(z) && z > maxZ) maxZ = z;
-  }
-  return maxZ;
-};
-
-/** 将计算/指定的 z-index 直接写入 el-overlay 行内样式 */
-const applyOverlayZIndex = (z: number) => {
-  activeZIndex.value = z;
-  const overlay = diRef.value?.querySelector(".el-overlay") as HTMLElement | null;
-  if (overlay) overlay.style.zIndex = String(z);
-};
+/** 当前弹窗的 z-index（打开前计算） */
+const activeZIndex = ref<number | undefined>(undefined);
+/** 复用 EP 全局 z-index 计数器，确保与 el-drawer / el-popover 等弹层正确叠加 */
+const {nextZIndex} = useZIndex();
 
 const open = () => {
   emits("open");
-  nextTick(() => {
-    const z = props.zIndex > 0 ? props.zIndex : Math.max(getMaxOverlayZIndex(), 2000) + 1;
-    applyOverlayZIndex(z);
-  });
 };
 
 
@@ -157,6 +138,11 @@ watch(
     () => windowsType.value,
     (val: boolean) => {
       if (val) {
+        // 在 el-dialog 内部打开逻辑之前计算 z-index：
+        // 通过 EP 全局 nextZIndex() 递增计数器，保证本次打开的 z-index
+        // 高于此前所有 dialog / drawer / popover 等弹层；
+        // 同时计数器被推进，后续任何 EP 弹层都会再高于本弹窗，避免互相遮盖
+        activeZIndex.value = props.zIndex > 0 ? props.zIndex : nextZIndex();
         // 打开时重置最小化状态
         isMinimized.value = false;
         // 手机模式默认最大化
@@ -196,7 +182,7 @@ watch(
         }}</span>
     </div>
 
-    <div class="di animated animate__fadeIn" v-show="!isMinimized" ref="diRef">
+    <div class="di animated animate__fadeIn" v-show="!isMinimized">
       <el-dialog
           :append-to-body="false"
           :append-to="appendTo"
