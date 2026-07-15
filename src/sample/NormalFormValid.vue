@@ -868,6 +868,7 @@ const generateMerge = (type: string) => {
     }
   });
 };
+const drawerVisible=ref(false);
 const closeAction = () => {
   dialogProps.editVisible = false;
 };
@@ -879,13 +880,15 @@ onMounted(() => {
   <div class="flex flex-col h-full overflow-hidden">
     <star-horse-dialog
       :isShowBtnContinue="true"
-      :dialogVisible="dialogProps.editVisible"
+      v-model="dialogProps.editVisible"
       :dialogProps="dialogProps"
       :selfFunc="false"
       @merge="generateMerge"
       @closeAction="closeAction"
       boxHeight="85%"
     >
+      {{dialogProps.viewVisible}}
+      <el-button @click="dialogProps.viewVisible=true">Click</el-button>
       <star-horse-form
         ref="generateFormRef"
         @refresh="
@@ -899,9 +902,9 @@ onMounted(() => {
       />
     </star-horse-dialog>
     <star-horse-dialog
-      :dialog-visible="dialogProps.viewVisible"
-      :dialogProps="dialogProps"
+      v-model="dialogProps.viewVisible"
       :source="3"
+      boxHeight="85%"
     >
       <star-horse-data-view
         :preview="true"
@@ -920,6 +923,10 @@ onMounted(() => {
         />
       </div>
     </div>
+    <el-drawer v-model="drawerVisible">
+      <el-button @click="dialogProps.editVisible=true">Click</el-button>
+    </el-drawer>
+    <el-button @click="drawerVisible=true">Click</el-button>
     <el-card class="inner_content">
       {{parseDateByType('2026-06-30 00:00:00','date')}}
       {{parseDateByType('2026-6-30 00:00:00','date')}}

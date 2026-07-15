@@ -155,12 +155,12 @@ export function useEditorGroups(opts?: {
     }
   };
 
-  /** 标记指定 tab 为已修改/未修改 */
+  /** 标记指定 tab 为已修改/未修改（同步所有组中相同 tabId） */
   const setTabModified = (gid: string, tabId: string, modified: boolean) => {
-    const group = groups.value[gid];
-    if (!group) return;
-    const tab = group.tabs.find((t) => t.id === tabId);
-    if (tab) tab.modified = modified;
+    for (const g of Object.values(groups.value)) {
+      const tab = g.tabs.find((t) => t.id === tabId);
+      if (tab) tab.modified = modified;
+    }
   };
 
   /** 刷新所有组中标签页的父路径信息（用于同名文件区分） */
