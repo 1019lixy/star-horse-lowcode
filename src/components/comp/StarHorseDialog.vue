@@ -95,7 +95,7 @@ const callFunc = (func: any) => {
 const activeZIndex = ref(0);
 const diRef = ref<HTMLElement>();
 
-/** 获取当前页面所有 .el-overlay 中的最高 z-index */
+/** 获取当前页面所有 .el-overlay 中的最高 z-index（排除自身） */
 const getMaxOverlayZIndex = (): number => {
   let maxZ = 0;
   for (const el of document.querySelectorAll(".el-overlay")) {
@@ -105,19 +105,8 @@ const getMaxOverlayZIndex = (): number => {
   return maxZ;
 };
 
-/** 将计算/指定的 z-index 直接写入 el-overlay 行内样式 */
-const applyOverlayZIndex = (z: number) => {
-  activeZIndex.value = z;
-  const overlay = diRef.value?.querySelector(".el-overlay") as HTMLElement | null;
-  if (overlay) overlay.style.zIndex = String(z);
-};
-
 const open = () => {
   emits("open");
-  nextTick(() => {
-    const z = props.zIndex > 0 ? props.zIndex : Math.max(getMaxOverlayZIndex(), 2000) + 1;
-    applyOverlayZIndex(z);
-  });
 };
 
 
@@ -154,12 +143,13 @@ const operation = (funcName: any, type: string) => {
   console.log(clickFunction);
 };
 watch(
-    () => windowsType.value,
+    () => props.dialogVisible,
     (val: boolean) => {
+      windowsType.value = val;
       if (val) {
-        // 打开时重置最小化状态
+        // 打开前同步计算 z-index，确保 el-dialog 创建 overlay 时拿到正确值
+        activeZIndex.value = props.zIndex > 0 ? props.zIndex : Math.max(getMaxOverlayZIndex(), 2000) + 1;
         isMinimized.value = false;
-        // 手机模式默认最大化
         if (isMobile) {
           isFullScreen.value = true;
         }
@@ -170,6 +160,16 @@ watch(
       deep: true,
     },
 );
+
+// activeZIndex 变化时同步写入 overlay 行内样式（el-dialog 的 :zIndex prop 只在创建时生效）
+watch(activeZIndex, (z) => {
+  if (z > 0) {
+    nextTick(() => {
+      const overlay = diRef.value?.querySelector(".el-overlay") as HTMLElement | null;
+      if (overlay) overlay.style.zIndex = String(z);
+    });
+  }
+});
 </script>
 <template>
   <Teleport to="body">
