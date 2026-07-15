@@ -182,7 +182,7 @@ watch(
         }}</span>
     </div>
 
-    <div class="di animated animate__fadeIn" v-show="!isMinimized">
+    <div class="di animated animate__fadeIn" v-show="!isMinimized" ref="diRef">
       <el-dialog
           :append-to-body="false"
           :append-to="appendTo"
