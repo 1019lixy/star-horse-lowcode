@@ -226,7 +226,7 @@ export default defineConfig((mode) => {
                 external: [
                     "vue",
                     "pinia",
-                    "element-plus",
+                   // "element-plus",
                     "@element-plus/icons-vue",
                     "@vueuse/core",
                     "axios",
