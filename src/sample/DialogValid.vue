@@ -11,7 +11,7 @@ const visible = ref(false);
 
 <template>
   <star-horse-dialog
-    :dialogVisible="visible"
+      v-model="visible"
     @closeAction="visible = false"
     box-height="80%"
     :selfFunc="true"

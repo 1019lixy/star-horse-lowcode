@@ -1,19 +1,19 @@
 <template>
   <div class="cron-content">
     <div class="cron-item">
-      <el-radio size="small" v-model="radioValue" :value="1" :label="1" border>
+      <el-radio  v-model="radioValue" :value="1" :label="1" border>
         {{ i18n("cron.minute") }}{{ i18n("cron.wildcards") }}
       </el-radio>
     </div>
     <div class="cron-item">
-      <el-radio size="small" v-model="radioValue" :label="2" border>
+      <el-radio  v-model="radioValue" :label="2" border>
         {{ i18n("cron.period") }}
       </el-radio>
       <span style="margin-left: 10px; margin-right: 5px">{{
         i18n("cron.from")
       }}</span>
       <el-input-number
-        size="small"
+
         v-model="cycle01"
         :min="0"
         :max="60"
@@ -23,7 +23,7 @@
         i18n("cron.to")
       }}</span>
       <el-input-number
-        size="small"
+
         v-model="cycle02"
         :min="0"
         :max="60"
@@ -34,14 +34,14 @@
       }}</span>
     </div>
     <div class="cron-item">
-      <el-radio size="small" v-model="radioValue" :label="3" border>
+      <el-radio  v-model="radioValue" :label="3" border>
         {{ i18n("cron.loop") }}
       </el-radio>
       <span style="margin-left: 10px; margin-right: 5px">{{
         i18n("cron.from")
       }}</span>
       <el-input-number
-        size="small"
+
         v-model="average01"
         :min="0"
         :max="60"
@@ -53,7 +53,7 @@
         }}</span
       >
       <el-input-number
-        size="small"
+
         v-model="average02"
         :min="0"
         :max="60"
@@ -64,10 +64,10 @@
       >
     </div>
     <div class="cron-item">
-      <el-radio size="small" v-model="radioValue" :label="4" border>
+      <el-radio  v-model="radioValue" :label="4" border>
         {{ i18n("cron.specify") }}
       </el-radio>
-      <el-checkbox-group size="small" v-model="checkboxList">
+      <el-checkbox-group  v-model="checkboxList">
         <el-checkbox
           class="my-[5px]"
           :border="true"

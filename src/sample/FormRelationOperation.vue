@@ -214,7 +214,7 @@ onMounted(() => {
       />
     </star-horse-dialog>
     <star-horse-dialog
-      :dialog-visible="dialogProps.viewVisible"
+      v-model="dialogProps.viewVisible"
       :dialogProps="dialogProps"
       :source="3"
     >

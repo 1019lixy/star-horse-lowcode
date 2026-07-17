@@ -438,7 +438,7 @@ onActivated(() => {});
   <div class="flex flex-col h-full overflow-hidden">
     <star-horse-dialog
       :isShowBtnContinue="true"
-      :dialogVisible="dialogProps.editVisible"
+      v-model="dialogProps.editVisible"
       :dialogProps="dialogProps"
     >
       <star-horse-form
@@ -449,7 +449,7 @@ onActivated(() => {});
       />
     </star-horse-dialog>
     <star-horse-dialog
-      :dialog-visible="dialogProps.viewVisible"
+      v-model="dialogProps.viewVisible"
       :dialogProps="dialogProps"
       :source="3"
     >

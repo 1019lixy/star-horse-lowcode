@@ -266,6 +266,7 @@ defineExpose({
   .el-autocomplete .el-input__suffix,
   .el-input-group__append,
   .el-input-group__prepend,
+  .el-range__icon,
   .data-selector-suffix {
     display: none !important;
   }

@@ -5,7 +5,7 @@
     :self-func="true"
     :boxHeight="field.preps?.boxHeight ?? '65%'"
     :boxWidth="field.preps?.boxWidth ?? '40%'"
-    :dialog-visible="dialogInputVisible"
+    v-model="dialogInputVisible"
     @merge="selectItem"
     @resetForm="resetForm"
     @closeAction="closeAction"

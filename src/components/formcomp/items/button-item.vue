@@ -3,7 +3,7 @@
     :title="field.preps?.dialogTitle || i18n('item.configureButtonEvent')"
     :selfFunc="true"
     @merge="operResultAction"
-    :dialogVisible="btnDialogVisible"
+    v-model="btnDialogVisible"
     :boxWidth="field.preps?.boxWidth || '50%'"
     :isShowReset="field.preps?.isShowReset ?? false"
     @closeAction="close"

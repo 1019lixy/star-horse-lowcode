@@ -2,7 +2,7 @@
   <star-horse-dialog
     :title="field.label + i18n('item.dataSelect')"
     :self-func="true"
-    :dialog-visible="dialogInputVisible"
+    v-model="dialogInputVisible"
     @merge="selectItem"
     :box-height="'500px'"
     @closeAction="closeAction"

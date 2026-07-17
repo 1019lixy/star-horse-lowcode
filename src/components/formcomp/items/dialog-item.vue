@@ -53,7 +53,7 @@ onMounted(() => {
     :self-func="true"
     :boxHeight="field.preps?.boxHeight ?? '60%'"
     :boxWidth="field.preps?.boxWidth ?? '50%'"
-    :dialog-visible="dialogInputVisible"
+    v-model="dialogInputVisible"
     @merge="selectItem"
     @closeAction="closeAction"
   >

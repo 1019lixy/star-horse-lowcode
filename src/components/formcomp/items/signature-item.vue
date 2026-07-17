@@ -69,7 +69,7 @@ onUpdated(() => {
 </script>
 <template>
   <star-horse-dialog
-    :dialog-visible="previewDialog"
+    v-model="previewDialog"
     :source="3"
     :self-func="true"
     @closeAction="previewDialog = false"

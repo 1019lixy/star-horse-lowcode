@@ -185,7 +185,7 @@ onMounted(async () => {
       :title="field.label + i18n('item.dataSelect')"
       :self-func="true"
       boxHeight="80%"
-      :dialog-visible="dialogInputVisible"
+      v-model="dialogInputVisible"
       @merge="submitData"
       @closeAction="closeAction"
   >

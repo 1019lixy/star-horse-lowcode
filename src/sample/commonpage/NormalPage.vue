@@ -195,7 +195,7 @@ defineExpose({ refreshForm });
     <template v-else-if="formData.hasData">
       <star-horse-dialog
         :isShowBtnContinue="true"
-        :dialogVisible="dialogProps.editVisible"
+        v-model="dialogProps.editVisible"
         :dialogProps="dialogProps"
       >
         <star-horse-form
@@ -210,7 +210,7 @@ defineExpose({ refreshForm });
         />
       </star-horse-dialog>
       <star-horse-dialog
-        :dialog-visible="dialogProps.viewVisible"
+        v-model="dialogProps.viewVisible"
         :dialogProps="dialogProps"
         :source="3"
       >

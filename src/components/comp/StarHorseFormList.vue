@@ -451,7 +451,7 @@ watch(
 <template>
   <star-horse-dialog
       :title="i18n('dialog.editTitle')"
-      :dialogVisible="rowDialogVisible"
+      v-model="rowDialogVisible"
       :boxWidth="'50%'"
       :is-show-btn-continue="true"
       :selfFunc="true"
@@ -466,7 +466,7 @@ watch(
   <star-horse-dialog
       v-if="!subFlag"
       :title="i18n('ui.importFile')"
-      :dialogVisible="importDialogVisible"
+      v-model="importDialogVisible"
       :boxWidth="'30%'"
       :source="3"
       :draggable="false"

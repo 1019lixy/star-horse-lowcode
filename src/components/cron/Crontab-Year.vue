@@ -1,24 +1,24 @@
 <template>
   <div class="cron-content">
     <div class="cron-item">
-      <el-radio size="small" :label="1" v-model="radioValue" border>
+      <el-radio  :label="1" v-model="radioValue" border>
         {{ i18n("cron.fillIn") }}{{ i18n("cron.wildcards") }}
       </el-radio>
     </div>
     <div class="cron-item">
-      <el-radio size="small" :label="2" v-model="radioValue" border>
+      <el-radio  :label="2" v-model="radioValue" border>
         {{ i18n("cron.everyYear") }}
       </el-radio>
     </div>
     <div class="cron-item">
-      <el-radio size="small" :label="3" v-model="radioValue" border>
+      <el-radio  :label="3" v-model="radioValue" border>
         {{ i18n("cron.period") }}
       </el-radio>
       <span style="margin-left: 10px; margin-right: 5px">{{
         i18n("cron.from")
       }}</span>
       <el-input-number
-        size="small"
+
         v-model="cycle01"
         :min="fullYear"
         controls-position="right"
@@ -27,21 +27,21 @@
         i18n("cron.to")
       }}</span>
       <el-input-number
-        size="small"
+
         v-model="cycle02"
         :min="fullYear"
         controls-position="right"
       />
     </div>
     <div class="cron-item">
-      <el-radio size="small" :label="4" v-model="radioValue" border>
+      <el-radio  :label="4" v-model="radioValue" border>
         {{ i18n("cron.loop") }}
       </el-radio>
       <span style="margin-left: 10px; margin-right: 5px">{{
         i18n("cron.from")
       }}</span>
       <el-input-number
-        size="small"
+
         v-model="average01"
         :min="fullYear"
         controls-position="right"
@@ -52,7 +52,7 @@
         }}</span
       >
       <el-input-number
-        size="small"
+
         v-model="average02"
         :min="fullYear"
         controls-position="right"
@@ -62,10 +62,10 @@
       >
     </div>
     <div class="cron-item">
-      <el-radio size="small" :label="5" v-model="radioValue" border>
+      <el-radio  :label="5" v-model="radioValue" border>
         {{ i18n("cron.specify") }}
       </el-radio>
-      <el-checkbox-group size="small" v-model="checkboxList">
+      <el-checkbox-group  v-model="checkboxList">
         <el-checkbox
           class="my-[5px]"
           :border="true"

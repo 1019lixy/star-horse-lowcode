@@ -240,7 +240,7 @@ const handleAdvancedClose = () => {
 
   <!-- ── 移动端：搜索弹窗（简单 / 高级 切换） ─────────────────── -->
   <star-horse-dialog
-      :dialog-visible="dialogVisible"
+      v-model="dialogVisible"
       :title="i18n('search.query')"
       :full-screen="false"
       :source="3"
@@ -310,7 +310,7 @@ const handleAdvancedClose = () => {
 
   <!-- ── 桌面端：高级查询弹窗 ───────────────────────────────── -->
   <star-horse-dialog
-      :dialog-visible="advancedVisible"
+      v-model="advancedVisible"
       :title="i18n('search.advancedQuery')"
       :full-screen="false"
       :source="3"

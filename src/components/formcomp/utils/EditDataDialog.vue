@@ -1,30 +1,30 @@
 <template>
   <star-horse-dialog
-    :title="title"
-    :box-width="boxWidth"
-    :self-func="true"
-    @resetForm="handleReset"
-    :hideFullScreenIcon="true"
-    :dialog-visible="modelValue"
-    @merge="handleConfirm"
-    @closeAction="$emit('update:modelValue', false)"
+      :title="title"
+      :box-width="boxWidth"
+      :self-func="true"
+      @resetForm="handleReset"
+      :hideFullScreenIcon="true"
+      v-model="compVisible"
+      @merge="handleConfirm"
+      @closeAction="$emit('update:modelValue', false)"
   >
     <el-input
-      v-model="content"
-      type="textarea"
-      :rows="20"
-      :disabled="disabled"
-      resize="both"
-      show-word-limit
-      :placeholder="placeholder"
-      :autofocus="true"
+        v-model="content"
+        type="textarea"
+        :rows="20"
+        :disabled="disabled"
+        resize="both"
+        show-word-limit
+        :placeholder="placeholder"
+        :autofocus="true"
     />
   </star-horse-dialog>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
-import { i18n } from "@/lang";
+import {ref, watch} from "vue";
+import {i18n} from "@/lang";
 
 const props = defineProps({
   modelValue: Boolean,
@@ -50,7 +50,7 @@ const props = defineProps({
 
 const content = ref("");
 const emit = defineEmits(["update:modelValue", "confirm"]);
-
+const compVisible = ref(false);
 const handleConfirm = () => {
   emit("confirm", content.value);
   emit("update:modelValue", false);
@@ -61,9 +61,13 @@ const handleReset = () => {
 };
 // 新增内容监听
 watch(
-  () => props.initialContent,
-  (newVal) => {
-    content.value = newVal || "";
-  },
+    () => props.initialContent,
+    (newVal) => {
+      content.value = newVal || "";
+    },
+    {immediate: true}
 );
+watch(() => props.modelValue, (newVal) => {
+  compVisible.value = newVal;
+}, {immediate: true});
 </script>

@@ -6,7 +6,7 @@
     @resetForm="resetForm"
     @closeAction="close"
     @merge="submit"
-    :dialog-visible="cronVisible"
+    v-model="cronVisible"
   >
     <el-scrollbar>
       <Crontab ref="cronTabRef" v-model="cronDataValue" />

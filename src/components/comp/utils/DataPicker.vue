@@ -371,7 +371,7 @@ defineExpose({
 <template>
   <star-horse-dialog
     :self-func="true"
-    :dialog-visible="dialogVisible"
+    v-model="dialogVisible"
     @open="onOpen"
     @merge="handelConfirm"
     @resetForm="resetData"

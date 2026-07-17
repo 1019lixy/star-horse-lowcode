@@ -150,7 +150,7 @@ const finishEditLabel = () => {
     :full-screen="false"
     :title="i18n('form.changeComponent')"
     :self-func="true"
-    :dialog-visible="componentVisible"
+    v-model="componentVisible"
     @closeAction="close"
   >
     <template #footer>

@@ -1018,7 +1018,7 @@ defineExpose({
     :isShowBtnContinue="false"
     :selfFunc="true"
     @merge="selectedFields"
-    :dialogVisible="exportOperationVisible"
+    v-model="exportOperationVisible"
     @closeAction="exportOperationVisible = false"
   >
     {{ i18n("comp.underDevelopment") }}
