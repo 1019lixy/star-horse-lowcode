@@ -49,7 +49,7 @@ const openWithTransition = (type: ImageTransition) => {
       <span style="font-size: 14px; color: #666; margin-right: 8px"
         >过渡动画：</span
       >
-      <el-radio-group v-model="transitionType" size="small">
+      <el-radio-group v-model="transitionType" >
         <el-radio-button value="fade">淡入淡出</el-radio-button>
         <el-radio-button value="slide">滑动</el-radio-button>
         <el-radio-button value="zoom">缩放</el-radio-button>
@@ -74,22 +74,22 @@ const openWithTransition = (type: ImageTransition) => {
     </div>
 
     <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px">
-      <el-button size="small" @click="openWithTransition('fade')"
+      <el-button  @click="openWithTransition('fade')"
         >淡入淡出</el-button
       >
-      <el-button size="small" @click="openWithTransition('slide')"
+      <el-button  @click="openWithTransition('slide')"
         >滑动</el-button
       >
-      <el-button size="small" @click="openWithTransition('zoom')"
+      <el-button  @click="openWithTransition('zoom')"
         >缩放</el-button
       >
       <el-button
-        size="small"
+
         type="warning"
         @click="openWithTransition('flip3d')"
         >3D翻转</el-button
       >
-      <el-button size="small" @click="openWithTransition('none')"
+      <el-button  @click="openWithTransition('none')"
         >无动画</el-button
       >
     </div>

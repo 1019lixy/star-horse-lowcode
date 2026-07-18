@@ -74,7 +74,7 @@ const selectData = (item: any) => {
         <el-input
           v-model="searchQuery"
           :placeholder="i18n('form.searchPlaceholder')"
-          size="small"
+
           clearable
         />
       </div>

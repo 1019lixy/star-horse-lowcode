@@ -17,6 +17,7 @@ import ImagePreviewTest from "@/sample/ImagePreviewTest.vue";
 import FormRelationOperation from "@/sample/FormRelationOperation.vue";
 import ValidDialogFormRelation from "@/sample/ValidDialogFormRelation.vue";
 import ValidMulitSameFormTab from "@/sample/ValidMulitSameFormTab.vue";
+import AdvancedComponentsDemo from "@/sample/AdvancedComponentsDemo.vue";
 
 const visible = ref<boolean>(false);
 const actName = ref<string>("component");
@@ -105,6 +106,9 @@ onMounted(() => {
       </el-tab-pane>
       <el-tab-pane name="j" label="代码编辑器">
         <CodeEditorTest />
+      </el-tab-pane>
+      <el-tab-pane name="k" label="高级组件库">
+        <AdvancedComponentsDemo />
       </el-tab-pane>
     </el-tabs>
   </div>

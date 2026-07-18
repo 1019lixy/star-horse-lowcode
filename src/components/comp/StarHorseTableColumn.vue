@@ -293,11 +293,11 @@ onMounted(() => {
           <div class="action-buttons">
             <el-button
               type="primary"
-              size="small"
+
               @click.stop="blurEvent(scope.column, scope.row)"
               >✔
             </el-button>
-            <el-button size="small" @click.stop="cancelEdit(scope.row)"
+            <el-button  @click.stop="cancelEdit(scope.row)"
               >✖
             </el-button>
           </div>

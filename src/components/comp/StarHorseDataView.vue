@@ -208,6 +208,7 @@ defineExpose({
   .el-tree-select.is-disabled .el-input__wrapper,
   .el-input-number.is-disabled .el-input__wrapper,
   .el-autocomplete.is-disabled .el-input__wrapper,
+  .el-input__wrapper.is-disabled .el-range-input,
   .el-input-tag.is-disabled {
     background-color: var(--el-bg-color) !important;
     box-shadow: 0 0 0 1px var(--el-border-color) inset !important;
@@ -318,5 +319,11 @@ defineExpose({
 /* 移动端标签无边框 */
 .star-horse-app .data-view-mode .el-form-item__label {
   border-right: none !important;
+}
+.el-input__wrapper{
+  padding: 0 !important;
+}
+.el-icon{
+  display: none;
 }
 </style>

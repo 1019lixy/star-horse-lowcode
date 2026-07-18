@@ -363,7 +363,7 @@ onMounted(async () => {
               :stripe="true"
               :row-key="getRowIdentity"
               :fit="true"
-              size="small"
+
               max-height="250px"
               :highlight-current-row="true"
               :header-cell-style="{
@@ -410,7 +410,7 @@ onMounted(async () => {
       </template>
       <template #footer>
         <el-pagination
-          size="small"
+
           :total="pageInfo.totalData"
           @current-change="pageChangeClick"
           @size-change="pageSizeClick"

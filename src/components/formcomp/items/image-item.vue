@@ -110,7 +110,7 @@
             class="upload"
             name="file"
           >
-            <el-button type="text" text size="small">
+            <el-button type="text" text >
               <el-tooltip :content="i18n('item.uploadImage')">
                 <star-horse-icon icon-class="upload" />
                 上传图片
@@ -128,7 +128,7 @@
       </el-image>
       <div class="image-remove" v-if="formData[field.fieldName] && isDesign">
         <el-tooltip :content="i18n('item.deleteImage')">
-          <el-button title="" size="small" type="text" @click="removeImage">
+          <el-button title=""  type="text" @click="removeImage">
             <star-horse-icon
               icon-class="delete"
               color="var(--el-color-danger)"

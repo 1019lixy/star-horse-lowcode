@@ -25,7 +25,7 @@
         </el-checkbox>
       </template>
       <template v-if="field.preps?.showFooter" #footer>
-        <el-button v-if="!isAdding" text bg size="small" @click="onAddOption">
+        <el-button v-if="!isAdding" text bg  @click="onAddOption">
           {{ i18n("form.addComponentOption") }}
         </el-button>
         <template v-else>
@@ -34,18 +34,18 @@
               v-model="optionName"
               class="option-input flex-1"
               :placeholder="i18n('form.enterOptionName')"
-              size="small"
+
             />
             <div class="flex-row flex justify-center w-[35%] mx-auto my-0">
               <el-button
                 type="primary"
                 icon="add"
-                size="small"
+
                 @click="onConfirm"
               >
                 {{ i18n("form.add") }}
               </el-button>
-              <el-button size="small" icon="cancel" @click="clear"
+              <el-button  icon="cancel" @click="clear"
                 >{{ i18n("form.cancel") }}
               </el-button>
             </div>

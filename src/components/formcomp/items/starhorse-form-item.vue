@@ -211,7 +211,7 @@ const finishEditLabel = () => {
             v-else
             ref="labelInputRef"
             v-model="editingLabelText"
-            size="small"
+
             @blur="finishEditLabel"
             @keyup.enter="finishEditLabel"
             @click.stop

@@ -298,11 +298,11 @@ function onHavingConditionChange(item: Record<string, any>) {
                 <div class="dqb-item-alias">
                   <el-select v-if="hasAliasOpts" v-model="item[AK]"
                              :placeholder="i18n('queryBuilder.placeholder.alias')"
-                             clearable filterable allow-create default-first-option :disabled="disabled" size="small">
+                             clearable filterable allow-create default-first-option :disabled="disabled" >
                     <el-option v-for="a in aliasOpts" :key="a.value" :label="a.name" :value="a.value"/>
                   </el-select>
                   <el-input v-else v-model="item[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                            :disabled="disabled" size="small"/>
+                            :disabled="disabled" />
                 </div>
                 <div class="dqb-item-prop">
                   <el-select v-if="propertyOptions.length" v-model="item[PK]" :placeholder="effectivePlaceholder"
@@ -335,7 +335,7 @@ function onHavingConditionChange(item: Record<string, any>) {
                               :disabled="disabled"/>
                   </slot>
                 </div>
-                <el-button v-if="!disabled" type="danger" text size="small"  class="dqb-item-del"
+                <el-button v-if="!disabled" type="danger" text   class="dqb-item-del"
                            @click="removeItem(idx)">
                   <star-horse-icon icon-class="delete" color="var(--el-color-danger)"/>
                 </el-button>
@@ -346,11 +346,11 @@ function onHavingConditionChange(item: Record<string, any>) {
                   <div class="dqb-item-alias">
                     <el-select v-if="hasAliasOpts" v-model="orCond[AK]"
                                :placeholder="i18n('queryBuilder.placeholder.alias')" clearable filterable allow-create
-                               default-first-option :disabled="disabled" size="small">
+                               default-first-option :disabled="disabled" >
                       <el-option v-for="a in aliasOpts" :key="a.value" :label="a.name" :value="a.value"/>
                     </el-select>
                     <el-input v-else v-model="orCond[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                              :disabled="disabled" size="small"/>
+                              :disabled="disabled" />
                   </div>
                   <div class="dqb-item-prop">
                     <el-select v-if="propertyOptions.length" v-model="orCond[PK]" :placeholder="effectivePlaceholder"
@@ -383,21 +383,21 @@ function onHavingConditionChange(item: Record<string, any>) {
                                 :disabled="disabled"/>
                     </slot>
                   </div>
-                  <el-button v-if="!disabled" type="danger" text size="small"  class="dqb-item-del"
+                  <el-button v-if="!disabled" type="danger" text   class="dqb-item-del"
                              @click="removeOrCondition(item, oi)">
                     <star-horse-icon icon-class="delete" color="var(--el-color-danger)"/>
                   </el-button>
                 </div>
               </div>
               <div v-if="!disabled && depth < maxDepth - 1" class="dqb-or-action">
-                <el-button type="warning" text size="small"  @click="addOrCondition(item)">
+                <el-button type="warning" text   @click="addOrCondition(item)">
                   <star-horse-icon icon-class="add" /> {{ i18n('queryBuilder.action.addOr') }}
                 </el-button>
               </div>
             </div>
           </div>
           <div v-if="!disabled" class="dqb-actions">
-            <el-button type="primary" text size="small"  @click="addItem">
+            <el-button type="primary" text   @click="addItem">
               <star-horse-icon icon-class="add" />{{ i18n('queryBuilder.action.addCondition') }}
             </el-button>
           </div>
@@ -416,11 +416,11 @@ function onHavingConditionChange(item: Record<string, any>) {
           <div v-for="(s, si) in localSort" :key="s.id" class="dqb-item">
             <div class="dqb-item-alias">
               <el-select v-if="hasAliasOpts" v-model="s[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                         clearable filterable allow-create default-first-option :disabled="disabled" size="small">
+                         clearable filterable allow-create default-first-option :disabled="disabled" >
                 <el-option v-for="a in aliasOpts" :key="a.value" :label="a.name" :value="a.value"/>
               </el-select>
               <el-input v-else v-model="s[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                        :disabled="disabled" size="small"/>
+                        :disabled="disabled" />
             </div>
             <div class="dqb-sort-field">
               <el-select v-if="propertyOptions.length" v-model="s[sortName]"
@@ -438,14 +438,14 @@ function onHavingConditionChange(item: Record<string, any>) {
               </el-radio-group>
             </div>
             <div class="dqb-item-val"></div>
-            <el-button v-if="!disabled" type="danger" text size="small"  class="dqb-item-del"
+            <el-button v-if="!disabled" type="danger" text   class="dqb-item-del"
                        @click="removeSort(si)">
               <star-horse-icon icon-class="delete" color="var(--el-color-danger)"/>
             </el-button>
           </div>
         </div>
         <div v-if="!disabled" class="dqb-actions">
-          <el-button type="primary" text size="small"  @click="addSort">
+          <el-button type="primary" text   @click="addSort">
             <star-horse-icon icon-class="add" /> {{ i18n('queryBuilder.action.addSort') }}
           </el-button>
         </div>
@@ -467,11 +467,11 @@ function onHavingConditionChange(item: Record<string, any>) {
             <div v-for="(a, ai) in localAgg" :key="a.id" class="dqb-item">
               <div class="dqb-item-alias">
                 <el-select v-if="hasAliasOpts" v-model="a[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                           clearable filterable allow-create default-first-option :disabled="disabled" size="small">
+                           clearable filterable allow-create default-first-option :disabled="disabled" >
                   <el-option v-for="a2 in aliasOpts" :key="a2.value" :label="a2.name" :value="a2.value"/>
                 </el-select>
                 <el-input v-else v-model="a[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                          :disabled="disabled" size="small"/>
+                          :disabled="disabled" />
               </div>
               <div class="dqb-agg-field">
                 <el-select v-if="propertyOptions.length" v-model="a[aggName]"
@@ -489,14 +489,14 @@ function onHavingConditionChange(item: Record<string, any>) {
                 </el-select>
               </div>
               <div class="dqb-item-val"></div>
-              <el-button v-if="!disabled" type="danger" text size="small"  class="dqb-item-del"
+              <el-button v-if="!disabled" type="danger" text   class="dqb-item-del"
                          @click="removeAgg(ai)">
                 <star-horse-icon icon-class="delete" color="var(--el-color-danger)"/>
               </el-button>
             </div>
           </div>
           <div v-if="!disabled" class="dqb-actions">
-            <el-button type="primary" text size="small"  @click="addAgg">
+            <el-button type="primary" text   @click="addAgg">
               <star-horse-icon icon-class="add" /> {{ i18n('queryBuilder.action.addAggregate') }}
             </el-button>
           </div>
@@ -514,11 +514,11 @@ function onHavingConditionChange(item: Record<string, any>) {
             <div v-for="(g, gi) in localGroupBy" :key="g.id" class="dqb-item">
               <div class="dqb-item-alias">
                 <el-select v-if="hasAliasOpts" v-model="g[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                           clearable filterable allow-create default-first-option :disabled="disabled" size="small">
+                           clearable filterable allow-create default-first-option :disabled="disabled" >
                   <el-option v-for="a in aliasOpts" :key="a.value" :label="a.name" :value="a.value"/>
                 </el-select>
                 <el-input v-else v-model="g[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                          :disabled="disabled" size="small"/>
+                          :disabled="disabled" />
               </div>
               <div class="dqb-groupby-field">
                 <el-select v-if="propertyOptions.length" v-model="g[PK]"
@@ -530,14 +530,14 @@ function onHavingConditionChange(item: Record<string, any>) {
                           :disabled="disabled"/>
               </div>
               <div class="dqb-item-val"></div>
-              <el-button v-if="!disabled" type="danger" text size="small"  class="dqb-item-del"
+              <el-button v-if="!disabled" type="danger" text   class="dqb-item-del"
                          @click="removeGroupBy(gi)">
                 <star-horse-icon icon-class="delete" color="var(--el-color-danger)"/>
               </el-button>
             </div>
           </div>
           <div v-if="!disabled" class="dqb-actions">
-            <el-button type="primary" text size="small"  @click="addGroupBy">
+            <el-button type="primary" text   @click="addGroupBy">
               <star-horse-icon icon-class="add" />{{ i18n('queryBuilder.action.addGroupBy') }}
             </el-button>
           </div>
@@ -559,11 +559,11 @@ function onHavingConditionChange(item: Record<string, any>) {
             <div v-for="(h, hi) in localHaving" :key="h.id" class="dqb-item">
               <div class="dqb-item-alias">
                 <el-select v-if="hasAliasOpts" v-model="h[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                           clearable filterable allow-create default-first-option :disabled="disabled" size="small">
+                           clearable filterable allow-create default-first-option :disabled="disabled" >
                   <el-option v-for="a in aliasOpts" :key="a.value" :label="a.name" :value="a.value"/>
                 </el-select>
                 <el-input v-else v-model="h[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                          :disabled="disabled" size="small"/>
+                          :disabled="disabled" />
               </div>
               <div class="dqb-having-func">
                 <el-select v-model="h.aggFunction" :placeholder="i18n('queryBuilder.agg.selectFunc')"
@@ -601,14 +601,14 @@ function onHavingConditionChange(item: Record<string, any>) {
                 <el-input v-else v-model="h[VK]" :placeholder="i18n('queryBuilder.placeholder.value')"
                           :disabled="disabled"/>
               </div>
-              <el-button v-if="!disabled" type="danger" text size="small"  class="dqb-item-del"
+              <el-button v-if="!disabled" type="danger" text   class="dqb-item-del"
                          @click="removeHaving(hi)">
                 <star-horse-icon icon-class="delete" color="var(--el-color-danger)"/>
               </el-button>
             </div>
           </div>
           <div v-if="!disabled" class="dqb-actions">
-            <el-button type="primary" text size="small"  @click="addHaving">
+            <el-button type="primary" text   @click="addHaving">
               <star-horse-icon icon-class="add" />{{ i18n('queryBuilder.action.addHaving') }}
             </el-button>
           </div>
@@ -632,11 +632,11 @@ function onHavingConditionChange(item: Record<string, any>) {
             <div class="dqb-item">
               <div class="dqb-item-alias">
                 <el-select v-if="hasAliasOpts" v-model="item[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                           clearable filterable allow-create default-first-option :disabled="disabled" size="small">
+                           clearable filterable allow-create default-first-option :disabled="disabled" >
                   <el-option v-for="a in aliasOpts" :key="a.value" :label="a.name" :value="a.value"/>
                 </el-select>
                 <el-input v-else v-model="item[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                          :disabled="disabled" size="small"/>
+                          :disabled="disabled" />
               </div>
               <div class="dqb-item-prop">
                 <el-select v-if="propertyOptions.length" v-model="item[PK]" :placeholder="effectivePlaceholder"
@@ -666,7 +666,7 @@ function onHavingConditionChange(item: Record<string, any>) {
                 <el-input v-else v-model="item[VK]" :placeholder="i18n('queryBuilder.placeholder.value')"
                           :disabled="disabled"/>
               </div>
-              <el-button v-if="!disabled" type="danger" text size="small"  class="dqb-item-del"
+              <el-button v-if="!disabled" type="danger" text   class="dqb-item-del"
                          @click="removeItem(idx)">
                 <star-horse-icon icon-class="delete" color="var(--el-color-danger)"/>
               </el-button>
@@ -677,11 +677,11 @@ function onHavingConditionChange(item: Record<string, any>) {
                 <div class="dqb-item-alias">
                   <el-select v-if="hasAliasOpts" v-model="orCond[AK]"
                              :placeholder="i18n('queryBuilder.placeholder.alias')" clearable filterable allow-create
-                             default-first-option :disabled="disabled" size="small">
+                             default-first-option :disabled="disabled" >
                     <el-option v-for="a in aliasOpts" :key="a.value" :label="a.name" :value="a.value"/>
                   </el-select>
                   <el-input v-else v-model="orCond[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                            :disabled="disabled" size="small"/>
+                            :disabled="disabled" />
                 </div>
                 <div class="dqb-item-prop">
                   <el-select v-if="propertyOptions.length" v-model="orCond[PK]" :placeholder="effectivePlaceholder"
@@ -711,21 +711,21 @@ function onHavingConditionChange(item: Record<string, any>) {
                   <el-input v-else v-model="orCond[VK]" :placeholder="i18n('queryBuilder.placeholder.value')"
                             :disabled="disabled"/>
                 </div>
-                <el-button v-if="!disabled" type="danger" text size="small"  class="dqb-item-del"
+                <el-button v-if="!disabled" type="danger" text   class="dqb-item-del"
                            @click="removeOrCondition(item, oi)">
                   <star-horse-icon icon-class="delete" color="var(--el-color-danger)"/>
                 </el-button>
               </div>
             </div>
             <div v-if="!disabled && depth < maxDepth - 1" class="dqb-or-action">
-              <el-button type="warning" text size="small"  @click="addOrCondition(item)">
+              <el-button type="warning" text   @click="addOrCondition(item)">
                 <star-horse-icon icon-class="add" /> {{ i18n('queryBuilder.action.addOr') }}
               </el-button>
             </div>
           </div>
         </div>
         <div v-if="!disabled" class="dqb-actions">
-          <el-button type="primary" text size="small"  @click="addItem">
+          <el-button type="primary" text   @click="addItem">
             <star-horse-icon icon-class="add" /> {{ i18n('queryBuilder.action.addCondition') }}
           </el-button>
         </div>
@@ -743,11 +743,11 @@ function onHavingConditionChange(item: Record<string, any>) {
           <div v-for="(s, si) in localSort" :key="s.id" class="dqb-item">
             <div class="dqb-item-alias">
               <el-select v-if="hasAliasOpts" v-model="s[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                         clearable filterable allow-create default-first-option :disabled="disabled" size="small">
+                         clearable filterable allow-create default-first-option :disabled="disabled" >
                 <el-option v-for="a in aliasOpts" :key="a.value" :label="a.name" :value="a.value"/>
               </el-select>
               <el-input v-else v-model="s[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                        :disabled="disabled" size="small"/>
+                        :disabled="disabled" />
             </div>
             <div class="dqb-sort-field">
               <el-select v-if="propertyOptions.length" v-model="s[sortName]"
@@ -765,14 +765,14 @@ function onHavingConditionChange(item: Record<string, any>) {
               </el-radio-group>
             </div>
             <div class="dqb-item-val"></div>
-            <el-button v-if="!disabled" type="danger" text size="small"  class="dqb-item-del"
+            <el-button v-if="!disabled" type="danger" text   class="dqb-item-del"
                        @click="removeSort(si)">
               <star-horse-icon icon-class="delete" color="var(--el-color-danger)"/>
             </el-button>
           </div>
         </div>
         <div v-if="!disabled" class="dqb-actions">
-          <el-button type="primary" text size="small"  @click="addSort">
+          <el-button type="primary" text   @click="addSort">
             <star-horse-icon icon-class="add" /> {{ i18n('queryBuilder.action.addSort') }}
           </el-button>
         </div>
@@ -793,11 +793,11 @@ function onHavingConditionChange(item: Record<string, any>) {
             <div v-for="(a, ai) in localAgg" :key="a.id" class="dqb-item">
               <div class="dqb-item-alias">
                 <el-select v-if="hasAliasOpts" v-model="a[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                           clearable filterable allow-create default-first-option :disabled="disabled" size="small">
+                           clearable filterable allow-create default-first-option :disabled="disabled" >
                   <el-option v-for="a2 in aliasOpts" :key="a2.value" :label="a2.name" :value="a2.value"/>
                 </el-select>
                 <el-input v-else v-model="a[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                          :disabled="disabled" size="small"/>
+                          :disabled="disabled" />
               </div>
               <div class="dqb-agg-field">
                 <el-select v-if="propertyOptions.length" v-model="a[aggName]"
@@ -815,14 +815,14 @@ function onHavingConditionChange(item: Record<string, any>) {
                 </el-select>
               </div>
               <div class="dqb-item-val"></div>
-              <el-button v-if="!disabled" type="danger" text size="small"  class="dqb-item-del"
+              <el-button v-if="!disabled" type="danger" text   class="dqb-item-del"
                          @click="removeAgg(ai)">
                 <star-horse-icon icon-class="delete" color="var(--el-color-danger)"/>
               </el-button>
             </div>
           </div>
           <div v-if="!disabled" class="dqb-actions">
-            <el-button type="primary" text size="small"  @click="addAgg">
+            <el-button type="primary" text   @click="addAgg">
               <star-horse-icon icon-class="add" /> {{ i18n('queryBuilder.action.addAggregate') }}
             </el-button>
           </div>
@@ -840,11 +840,11 @@ function onHavingConditionChange(item: Record<string, any>) {
             <div v-for="(g, gi) in localGroupBy" :key="g.id" class="dqb-item">
               <div class="dqb-item-alias">
                 <el-select v-if="hasAliasOpts" v-model="g[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                           clearable filterable allow-create default-first-option :disabled="disabled" size="small">
+                           clearable filterable allow-create default-first-option :disabled="disabled" >
                   <el-option v-for="a in aliasOpts" :key="a.value" :label="a.name" :value="a.value"/>
                 </el-select>
                 <el-input v-else v-model="g[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                          :disabled="disabled" size="small"/>
+                          :disabled="disabled" />
               </div>
               <div class="dqb-groupby-field">
                 <el-select v-if="propertyOptions.length" v-model="g[PK]"
@@ -856,14 +856,14 @@ function onHavingConditionChange(item: Record<string, any>) {
                           :disabled="disabled"/>
               </div>
               <div class="dqb-item-val"></div>
-              <el-button v-if="!disabled" type="danger" text size="small"  class="dqb-item-del"
+              <el-button v-if="!disabled" type="danger" text   class="dqb-item-del"
                          @click="removeGroupBy(gi)">
                 <star-horse-icon icon-class="delete" color="var(--el-color-danger)"/>
               </el-button>
             </div>
           </div>
           <div v-if="!disabled" class="dqb-actions">
-            <el-button type="primary" text size="small"  @click="addGroupBy">
+            <el-button type="primary" text   @click="addGroupBy">
               <star-horse-icon icon-class="add" /> {{ i18n('queryBuilder.action.addGroupBy') }}
             </el-button>
           </div>
@@ -885,11 +885,11 @@ function onHavingConditionChange(item: Record<string, any>) {
             <div v-for="(h, hi) in localHaving" :key="h.id" class="dqb-item">
               <div class="dqb-item-alias">
                 <el-select v-if="hasAliasOpts" v-model="h[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                           clearable filterable allow-create default-first-option :disabled="disabled" size="small">
+                           clearable filterable allow-create default-first-option :disabled="disabled" >
                   <el-option v-for="a in aliasOpts" :key="a.value" :label="a.name" :value="a.value"/>
                 </el-select>
                 <el-input v-else v-model="h[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                          :disabled="disabled" size="small"/>
+                          :disabled="disabled" />
               </div>
               <div class="dqb-having-func">
                 <el-select v-model="h.aggFunction" :placeholder="i18n('queryBuilder.agg.selectFunc')"
@@ -927,14 +927,14 @@ function onHavingConditionChange(item: Record<string, any>) {
                 <el-input v-else v-model="h[VK]" :placeholder="i18n('queryBuilder.placeholder.value')"
                           :disabled="disabled"/>
               </div>
-              <el-button v-if="!disabled" type="danger" text size="small"  class="dqb-item-del"
+              <el-button v-if="!disabled" type="danger" text   class="dqb-item-del"
                          @click="removeHaving(hi)">
                 <star-horse-icon icon-class="delete" color="var(--el-color-danger)"/>
               </el-button>
             </div>
           </div>
           <div v-if="!disabled" class="dqb-actions">
-            <el-button type="primary" text size="small"  @click="addHaving">
+            <el-button type="primary" text   @click="addHaving">
               <star-horse-icon icon-class="add" /> {{ i18n('queryBuilder.action.addHaving') }}
             </el-button>
           </div>

@@ -1,0 +1,219 @@
+<script setup lang="ts" name="EtlDesigner">
+import { ref } from "vue";
+import { ElMessage } from "element-plus";
+import { i18n } from "@/lang";
+import { useEtlDesigner } from "./composables/useEtlDesigner";
+import { useEtlExecutor } from "./composables/useEtlExecutor";
+import EtlToolbar from "./panels/EtlToolbar.vue";
+import EtlNodePanel from "./panels/EtlNodePanel.vue";
+import EtlCanvas from "./panels/EtlCanvas.vue";
+import EtlPropertyPanel from "./panels/EtlPropertyPanel.vue";
+import EtlPreviewDialog from "./dialogs/EtlPreviewDialog.vue";
+import type { EtlPipeline, EtlNodeType } from "./types";
+
+const props = defineProps<{
+    pipeline?: Partial<EtlPipeline>;
+    readonly?: boolean;
+}>();
+
+const emits = defineEmits<{
+    (e: "save", v: EtlPipeline): void;
+}>();
+
+const designer = useEtlDesigner(props.pipeline);
+const executor = useEtlExecutor();
+
+const previewVisible = ref(false);
+const logCollapsed = ref(false);
+
+const handleAddNode = (type: EtlNodeType) => {
+    // 网格布局：每次添加节点错开位置
+    const count = designer.state.nodes.length;
+    const x = 100 + (count % 4) * 180;
+    const y = 100 + Math.floor(count / 4) * 100;
+    designer.addNode(type, x, y);
+};
+
+const handleDropNode = (type: string, x: number, y: number) => {
+    designer.addNode(type as EtlNodeType, x, y);
+};
+
+const handleSave = () => {
+    const data = designer.getData();
+    emits("save", data);
+    ElMessage.success(i18n("etl.message.saved"));
+};
+
+const handleClearLog = () => executor.clearLog();
+</script>
+
+<template>
+    <div class="etl-designer">
+        <etl-toolbar
+            :designer="designer"
+            :executor="executor"
+            @preview="previewVisible = true"
+            @save="handleSave"
+        />
+        <div class="designer-body">
+            <etl-node-panel @add="handleAddNode" />
+            <etl-canvas :designer="designer" @drop-node="handleDropNode" />
+            <etl-property-panel :designer="designer" />
+        </div>
+        <div class="log-panel" :class="{ collapsed: logCollapsed }">
+            <div class="log-header" @click="logCollapsed = !logCollapsed">
+                <span class="log-title">
+                    <el-icon><Document/></el-icon>
+                    {{ i18n("etl.log.title") }}
+                    <span v-if="executor.log.value.length" class="log-count">({{ executor.log.value.length }})</span>
+                </span>
+                <div class="log-actions" @click.stop>
+                    <el-button v-if="executor.log.value.length" text  @click="handleClearLog">
+                        {{ i18n("etl.btn.clear") }}
+                    </el-button>
+                    <el-icon class="toggle-icon">
+                        <ArrowUp v-if="!logCollapsed"/>
+                        <ArrowDown v-else/>
+                    </el-icon>
+                </div>
+            </div>
+            <div v-show="!logCollapsed" class="log-content">
+                <div v-if="executor.log.value.length === 0" class="log-empty">
+                    {{ i18n("etl.log.empty") }}
+                </div>
+                <div v-else class="log-list">
+                    <div
+                        v-for="(item, idx) in executor.log.value"
+                        :key="idx"
+                        class="log-item"
+                        :class="`level-${item.level}`"
+                    >
+                        <span class="log-time">{{ item.time }}</span>
+                        <span class="log-level">[{{ i18n(`etl.log.level.${item.level}`) }}]</span>
+                        <span class="log-message">{{ item.message }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <etl-preview-dialog v-model:visible="previewVisible" :pipeline="designer.state" />
+    </div>
+</template>
+
+<script lang="ts">
+import { Document, ArrowUp, ArrowDown } from "@element-plus/icons-vue";
+export default { components: { Document, ArrowUp, ArrowDown } };
+</script>
+
+<style lang="scss" scoped>
+.etl-designer {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    background: var(--el-bg-color-page);
+    overflow: hidden;
+
+    .designer-body {
+        flex: 1;
+        display: flex;
+        overflow: hidden;
+        min-height: 0;
+    }
+
+    .log-panel {
+        height: 160px;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        border-top: 1px solid var(--el-border-color);
+        background: var(--el-bg-color);
+        transition: height 0.2s;
+
+        &.collapsed {
+            height: 32px;
+        }
+
+        .log-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 4px 12px;
+            background: var(--el-fill-color-light);
+            border-bottom: 1px solid var(--el-border-color-lighter);
+            cursor: pointer;
+            user-select: none;
+            font-size: 12px;
+
+            .log-title {
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                font-weight: 600;
+
+                .log-count {
+                    color: var(--el-text-color-secondary);
+                    font-weight: normal;
+                }
+            }
+
+            .log-actions {
+                display: flex;
+                align-items: center;
+                gap: 4px;
+
+                .toggle-icon {
+                    font-size: 12px;
+                }
+            }
+        }
+
+        .log-content {
+            flex: 1;
+            overflow: auto;
+        }
+
+        .log-empty {
+            padding: 20px;
+            text-align: center;
+            color: var(--el-text-color-placeholder);
+            font-size: 12px;
+        }
+
+        .log-list {
+            padding: 4px 0;
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 12px;
+        }
+
+        .log-item {
+            display: flex;
+            gap: 8px;
+            padding: 2px 12px;
+
+            &.level-info {
+                color: var(--el-text-color-regular);
+            }
+            &.level-warn {
+                color: var(--el-color-warning);
+            }
+            &.level-error {
+                color: var(--el-color-danger);
+            }
+
+            .log-time {
+                color: var(--el-text-color-secondary);
+                flex-shrink: 0;
+            }
+            .log-level {
+                flex-shrink: 0;
+                width: 60px;
+            }
+            .log-message {
+                flex: 1;
+                word-break: break-all;
+            }
+        }
+    }
+}
+</style>

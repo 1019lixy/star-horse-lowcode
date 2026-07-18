@@ -269,7 +269,7 @@ onMounted(async () => {
                     <el-button
                         type="danger"
                         link
-                        size="small"
+
                         @click="removeSelected(row)"
                     >
                       <el-tooltip :content="i18n('item.removeSelected')">
