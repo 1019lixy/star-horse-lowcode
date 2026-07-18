@@ -136,7 +136,7 @@ watch(
                             <span class="action-desc">{{ action.description }}</span>
                             <el-button
                                 v-if="!action.applied"
-                                size="small"
+
                                 type="primary"
                                 link
                                 @click="handleApplyAction(m.id, action.id)"
@@ -151,7 +151,7 @@ watch(
 
                     <!-- 消息工具栏 -->
                     <div v-if="!m.streaming && m.content" class="message-toolbar">
-                        <el-button size="small" link @click="handleCopy(m.content)">
+                        <el-button  link @click="handleCopy(m.content)">
                             <el-icon><CopyDocument /></el-icon>
                             {{ i18n("aicopilot.chat.copy") }}
                         </el-button>
@@ -167,7 +167,7 @@ watch(
                 <el-button
                     v-for="cmd in AI_COMMAND_TEMPLATE_PRESETS"
                     :key="cmd.id"
-                    size="small"
+
                     :disabled="isGenerating"
                     @click="handleQuickCommand(cmd.command)"
                 >
@@ -191,7 +191,7 @@ watch(
                 <el-button
                     v-if="isGenerating"
                     type="danger"
-                    size="small"
+
                     @click="handleStop"
                 >
                     <el-icon><VideoPause /></el-icon>
@@ -200,7 +200,7 @@ watch(
                 <el-button
                     v-else
                     type="primary"
-                    size="small"
+
                     :disabled="!inputText.trim()"
                     @click="handleSend"
                 >

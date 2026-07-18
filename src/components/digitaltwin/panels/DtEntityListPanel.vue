@@ -75,14 +75,14 @@ void DT_STATUS_PRESETS;
     <div class="dt-entity-list">
         <div class="panel-header">
             <span class="panel-title">{{ i18n("digitaltwin.entity.title") }}</span>
-            <el-button size="small" type="primary" @click="emit('add-entity')">
+            <el-button  type="primary" @click="emit('add-entity')">
                 <el-icon><Plus /></el-icon>
                 {{ i18n("digitaltwin.entity.add") }}
             </el-button>
         </div>
 
         <div class="filter-bar">
-            <el-select v-model="statusFilter" size="small" style="width: 100%">
+            <el-select v-model="statusFilter"  style="width: 100%">
                 <el-option :label="i18n('digitaltwin.status.normal')" value="all" />
                 <el-option
                     v-for="s in DT_STATUS_PRESETS"
@@ -110,10 +110,10 @@ void DT_STATUS_PRESETS;
                         <span class="status-dot" :style="{ background: statusColor(item.status as DtEntityStatus) }" />
                         <span class="entity-name">{{ item.name }}</span>
                         <span class="entity-actions">
-                            <el-button size="small" link @click.stop="handleEdit(item.id)">
+                            <el-button  link @click.stop="handleEdit(item.id)">
                                 {{ i18n("digitaltwin.entity.edit") }}
                             </el-button>
-                            <el-button size="small" link type="danger" @click.stop="handleDelete(item.id)">
+                            <el-button  link type="danger" @click.stop="handleDelete(item.id)">
                                 {{ i18n("digitaltwin.entity.delete") }}
                             </el-button>
                         </span>

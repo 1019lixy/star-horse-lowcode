@@ -66,7 +66,7 @@ const statusColor = (status: DtEntityStatus): string => dtGetStatusPreset(status
                         <span class="prop-value">
                             <el-select
                                 :model-value="entity.status"
-                                size="small"
+
                                 style="width: 120px"
                                 @update:model-value="(v) => handleStatusChange(v as DtEntityStatus)"
                             >

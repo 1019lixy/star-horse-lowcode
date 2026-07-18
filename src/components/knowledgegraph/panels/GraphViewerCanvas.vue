@@ -411,11 +411,11 @@ defineExpose({
         <!-- 浮动操作条 -->
         <div class="floating-actions">
             <el-button-group>
-                <el-button size="small" @click="runLayoutOnce" :title="i18n('knowledgegraph.viewer.reset')">
+                <el-button  @click="runLayoutOnce" :title="i18n('knowledgegraph.viewer.reset')">
                     <el-icon><Refresh /></el-icon>
                 </el-button>
                 <el-button
-                    size="small"
+
                     :type="forceLayout && forceLayout.running.value ? 'primary' : 'default'"
                     @click="toggleForce"
                     v-if="forceLayout"

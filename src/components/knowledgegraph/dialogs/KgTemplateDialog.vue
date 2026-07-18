@@ -139,14 +139,14 @@ const handleOpen = () => {
                             <div class="detail-actions">
                                 <el-button
                                     type="primary"
-                                    size="small"
+
                                     @click="handleLoad"
                                 >
                                     {{ i18n("knowledgegraph.query.template.load") }}
                                 </el-button>
                                 <el-button
                                     type="danger"
-                                    size="small"
+
                                     @click="handleDelete"
                                 >
                                     {{ i18n("knowledgegraph.query.template.delete") }}

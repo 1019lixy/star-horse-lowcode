@@ -100,7 +100,7 @@ defineExpose({
                     :model-value="pathFromId"
                     @update:model-value="setPathFrom"
                     :placeholder="i18n('knowledgegraph.viewer.pathFrom')"
-                    size="small"
+
                     filterable
                     clearable
                     style="width: 180px"
@@ -117,7 +117,7 @@ defineExpose({
                     :model-value="pathToId"
                     @update:model-value="setPathTo"
                     :placeholder="i18n('knowledgegraph.viewer.pathTo')"
-                    size="small"
+
                     filterable
                     clearable
                     style="width: 180px"
@@ -129,7 +129,7 @@ defineExpose({
                         :value="n.id"
                     />
                 </el-select>
-                <el-button size="small" type="primary" @click="runPathQuery">
+                <el-button  type="primary" @click="runPathQuery">
                     {{ i18n("knowledgegraph.viewer.findPath") }}
                 </el-button>
                 <div v-if="viewer.state.pathNodeIds.length > 0" class="path-result">

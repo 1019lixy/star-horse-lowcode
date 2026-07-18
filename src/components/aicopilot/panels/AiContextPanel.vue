@@ -49,7 +49,7 @@ const actionTypeLabel = (action: AiAction): string => {
             <div v-if="context" class="context-info">
                 <div class="info-row">
                     <span class="info-label">{{ i18n("aicopilot.context.type") }}：</span>
-                    <el-tag size="small">{{ contextTypeLabel }}</el-tag>
+                    <el-tag >{{ contextTypeLabel }}</el-tag>
                 </div>
                 <div class="info-row">
                     <span class="info-label">{{ i18n("aicopilot.context.name") }}：</span>
@@ -65,7 +65,7 @@ const actionTypeLabel = (action: AiAction): string => {
                         <el-tag
                             v-for="f in context.fields"
                             :key="f.name"
-                            size="small"
+
                             class="field-tag"
                         >
                             {{ f.label || f.name }}
@@ -93,15 +93,15 @@ const actionTypeLabel = (action: AiAction): string => {
                     :class="{ applied: action.applied }"
                 >
                     <div class="action-header">
-                        <el-tag size="small" type="warning">{{ actionTypeLabel(action) }}</el-tag>
+                        <el-tag  type="warning">{{ actionTypeLabel(action) }}</el-tag>
                         <span v-if="action.applied" class="applied-mark">✓</span>
                     </div>
                     <div class="action-desc">{{ action.description }}</div>
                     <div v-if="!action.applied" class="action-buttons">
-                        <el-button size="small" type="primary" @click="handleApply(action)">
+                        <el-button  type="primary" @click="handleApply(action)">
                             {{ i18n("aicopilot.action.apply") }}
                         </el-button>
-                        <el-button size="small" @click="handleReject(action)">
+                        <el-button  @click="handleReject(action)">
                             {{ i18n("aicopilot.action.reject") }}
                         </el-button>
                     </div>

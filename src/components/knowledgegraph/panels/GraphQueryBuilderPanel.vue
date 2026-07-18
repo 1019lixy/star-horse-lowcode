@@ -54,14 +54,14 @@ const stepIndex = (step: KgQueryStep): number => query.value.steps.indexOf(step)
         <div class="panel-header">
             <span>{{ i18n("knowledgegraph.query.title") }}</span>
             <div class="header-actions">
-                <el-button size="small" @click="handleOpenTemplate">
+                <el-button  @click="handleOpenTemplate">
                     <el-icon><FolderOpened /></el-icon>
                     {{ i18n("knowledgegraph.query.template.title") }}
                 </el-button>
-                <el-button size="small" @click="handleClear">
+                <el-button  @click="handleClear">
                     {{ i18n("knowledgegraph.query.clear") }}
                 </el-button>
-                <el-button size="small" type="primary" @click="runQuery">
+                <el-button  type="primary" @click="runQuery">
                     <el-icon><VideoPlay /></el-icon>
                     {{ i18n("knowledgegraph.query.run") }}
                 </el-button>
@@ -76,7 +76,7 @@ const stepIndex = (step: KgQueryStep): number => query.value.steps.indexOf(step)
                     {{ i18n("knowledgegraph.query.startNode") }}
                 </div>
                 <div class="section-content">
-                    <el-form label-width="90px" size="small">
+                    <el-form label-width="90px" >
                         <el-form-item :label="i18n('knowledgegraph.query.nodeType')">
                             <el-select v-model="query.startNodeType" style="width: 100%">
                                 <el-option
@@ -118,7 +118,7 @@ const stepIndex = (step: KgQueryStep): number => query.value.steps.indexOf(step)
                                     style="flex: 1"
                                 />
                                 <el-button
-                                    size="small"
+
                                     type="danger"
                                     link
                                     @click="handleRemoveStartCondition(cond.id)"
@@ -127,7 +127,7 @@ const stepIndex = (step: KgQueryStep): number => query.value.steps.indexOf(step)
                                 </el-button>
                             </div>
                         </div>
-                        <el-button size="small" link @click="handleAddStartCondition">
+                        <el-button  link @click="handleAddStartCondition">
                             <el-icon><Plus /></el-icon>
                             {{ i18n("knowledgegraph.query.condition") }}
                         </el-button>
@@ -145,7 +145,7 @@ const stepIndex = (step: KgQueryStep): number => query.value.steps.indexOf(step)
                     <span class="step-badge">{{ stepIndex(step) }}</span>
                     {{ i18n("knowledgegraph.query.step") }}
                     <el-button
-                        size="small"
+
                         type="danger"
                         link
                         style="margin-left: auto"
@@ -156,7 +156,7 @@ const stepIndex = (step: KgQueryStep): number => query.value.steps.indexOf(step)
                     </el-button>
                 </div>
                 <div class="section-content">
-                    <el-form label-width="90px" size="small">
+                    <el-form label-width="90px" >
                         <el-form-item :label="i18n('knowledgegraph.query.direction')">
                             <el-radio-group
                                 :model-value="step.direction"
@@ -226,7 +226,7 @@ const stepIndex = (step: KgQueryStep): number => query.value.steps.indexOf(step)
                                     style="flex: 1"
                                 />
                                 <el-button
-                                    size="small"
+
                                     type="danger"
                                     link
                                     @click="handleRemoveStepCondition(step.id, cond.id)"
@@ -235,7 +235,7 @@ const stepIndex = (step: KgQueryStep): number => query.value.steps.indexOf(step)
                                 </el-button>
                             </div>
                         </div>
-                        <el-button size="small" link @click="handleAddStepCondition(step.id)">
+                        <el-button  link @click="handleAddStepCondition(step.id)">
                             <el-icon><Plus /></el-icon>
                             {{ i18n("knowledgegraph.query.condition") }}
                         </el-button>

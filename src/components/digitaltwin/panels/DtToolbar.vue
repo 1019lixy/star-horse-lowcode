@@ -44,7 +44,7 @@ void props;
         <span class="dt-label">{{ i18n("digitaltwin.toolbar.view") }}:</span>
         <el-select
             :model-value="''"
-            size="small"
+
             style="width: 100px"
             :placeholder="i18n('digitaltwin.toolbar.view')"
             @update:model-value="(v) => handleViewChange(v as DtViewPreset)"
@@ -58,19 +58,19 @@ void props;
         </el-select>
 
         <el-button-group>
-            <el-button size="small" @click="camera.rotate(-15, 0)" :title="i18n('digitaltwin.toolbar.rotateLeft')">
+            <el-button  @click="camera.rotate(-15, 0)" :title="i18n('digitaltwin.toolbar.rotateLeft')">
                 <el-icon><RefreshLeft /></el-icon>
             </el-button>
-            <el-button size="small" @click="camera.rotate(15, 0)" :title="i18n('digitaltwin.toolbar.rotateRight')">
+            <el-button  @click="camera.rotate(15, 0)" :title="i18n('digitaltwin.toolbar.rotateRight')">
                 <el-icon><RefreshRight /></el-icon>
             </el-button>
-            <el-button size="small" @click="camera.zoomIn()" :title="i18n('digitaltwin.toolbar.zoomIn')">
+            <el-button  @click="camera.zoomIn()" :title="i18n('digitaltwin.toolbar.zoomIn')">
                 <el-icon><ZoomIn /></el-icon>
             </el-button>
-            <el-button size="small" @click="camera.zoomOut()" :title="i18n('digitaltwin.toolbar.zoomOut')">
+            <el-button  @click="camera.zoomOut()" :title="i18n('digitaltwin.toolbar.zoomOut')">
                 <el-icon><ZoomOut /></el-icon>
             </el-button>
-            <el-button size="small" @click="handleReset" :title="i18n('digitaltwin.toolbar.reset')">
+            <el-button  @click="handleReset" :title="i18n('digitaltwin.toolbar.reset')">
                 <el-icon><Refresh /></el-icon>
             </el-button>
         </el-button-group>
@@ -79,7 +79,7 @@ void props;
 
         <!-- 模拟控制 -->
         <el-button
-            size="small"
+
             :type="simRunning ? 'warning' : 'success'"
             @click="emit('toggle-sim')"
         >
@@ -92,7 +92,7 @@ void props;
 
         <el-divider direction="vertical" />
 
-        <el-button size="small" type="primary" @click="emit('add-entity')">
+        <el-button  type="primary" @click="emit('add-entity')">
             <el-icon><Plus /></el-icon>
             {{ i18n("digitaltwin.toolbar.addEntity") }}
         </el-button>

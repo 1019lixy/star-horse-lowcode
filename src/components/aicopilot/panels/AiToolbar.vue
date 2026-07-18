@@ -25,13 +25,13 @@ defineProps<{
 
         <el-divider direction="vertical" />
 
-        <el-button size="small" type="primary" @click="$emit('new-conversation')">
+        <el-button  type="primary" @click="$emit('new-conversation')">
             <el-icon><Plus /></el-icon>
             {{ i18n("aicopilot.toolbar.new") }}
         </el-button>
 
         <el-button
-            size="small"
+
             :type="historyVisible ? 'info' : 'default'"
             @click="$emit('toggle-history')"
         >
@@ -39,14 +39,14 @@ defineProps<{
             {{ i18n("aicopilot.toolbar.history") }}
         </el-button>
 
-        <el-button size="small" @click="$emit('clear')">
+        <el-button  @click="$emit('clear')">
             <el-icon><Delete /></el-icon>
             {{ i18n("aicopilot.toolbar.clear") }}
         </el-button>
 
         <div class="ai-spacer" />
 
-        <el-button size="small" @click="$emit('open-settings')" :title="i18n('aicopilot.toolbar.settings')">
+        <el-button  @click="$emit('open-settings')" :title="i18n('aicopilot.toolbar.settings')">
             <el-icon><Setting /></el-icon>
             {{ i18n("aicopilot.toolbar.settings") }}
         </el-button>

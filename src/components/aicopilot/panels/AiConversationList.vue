@@ -80,7 +80,7 @@ void props;
     <div class="ai-conversation-list">
         <div class="list-header">
             <span class="header-title">{{ i18n("aicopilot.conversation.title") }}</span>
-            <el-button size="small" type="primary" @click="emit('new')">
+            <el-button  type="primary" @click="emit('new')">
                 <el-icon><Plus /></el-icon>
                 {{ i18n("aicopilot.conversation.new") }}
             </el-button>
@@ -101,7 +101,7 @@ void props;
                 <template v-if="editingId === conv.id">
                     <el-input
                         v-model="editingName"
-                        size="small"
+
                         autofocus
                         @keyup.enter="handleConfirmRename"
                         @keyup.esc="handleCancelRename"
@@ -118,7 +118,7 @@ void props;
                     </div>
                     <el-button
                         class="conv-delete"
-                        size="small"
+
                         link
                         @click="handleDelete(conv, $event)"
                     >

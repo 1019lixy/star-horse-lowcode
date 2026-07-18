@@ -69,7 +69,7 @@ const propertySummary = (node: KgNode): string => {
                 <span class="count">
                     {{ i18n("knowledgegraph.query.results.count") }}: {{ results.length }}
                 </span>
-                <el-radio-group v-model="viewMode" size="small">
+                <el-radio-group v-model="viewMode" >
                     <el-radio-button value="table">Table</el-radio-button>
                     <el-radio-button value="graph">Graph</el-radio-button>
                 </el-radio-group>
@@ -89,7 +89,7 @@ const propertySummary = (node: KgNode): string => {
                 <div v-if="viewMode === 'table'" class="table-view">
                     <el-table
                         :data="tableRows"
-                        size="small"
+
                         border
                         highlight-current-row
                         @row-click="handleRowClick"
@@ -99,7 +99,7 @@ const propertySummary = (node: KgNode): string => {
                         <el-table-column :label="i18n('knowledgegraph.viewer.detail.type')" width="90">
                             <template #default="{ row }">
                                 <el-tag
-                                    size="small"
+
                                     :style="{ background: kgGetNodeColor(row), color: '#FFF', border: 'none' }"
                                 >
                                     {{ nodeTypeLabel(row.type) }}

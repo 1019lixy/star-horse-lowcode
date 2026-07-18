@@ -94,7 +94,7 @@ const isCollapsed = computed(() =>
                     </div>
                     <div class="section-row">
                         <span class="label">{{ i18n("knowledgegraph.viewer.detail.type") }}</span>
-                        <el-tag size="small" :style="{ background: kgGetNodeColor(selectedNode), color: '#FFF', border: 'none' }">
+                        <el-tag  :style="{ background: kgGetNodeColor(selectedNode), color: '#FFF', border: 'none' }">
                             {{ nodeTypeLabel(selectedNode.type) }}
                         </el-tag>
                     </div>
@@ -110,7 +110,7 @@ const isCollapsed = computed(() =>
 
                 <div class="detail-section">
                     <div class="section-title">{{ i18n("knowledgegraph.viewer.detail.properties") }}</div>
-                    <el-table v-if="propertyEntries.length" :data="propertyEntries" size="small" border>
+                    <el-table v-if="propertyEntries.length" :data="propertyEntries"  border>
                         <el-table-column prop="0" label="Key" width="100" />
                         <el-table-column prop="1" label="Value" />
                     </el-table>
@@ -122,12 +122,12 @@ const isCollapsed = computed(() =>
                         {{ i18n("knowledgegraph.viewer.neighbors") }} ({{ neighbors.length }})
                         <el-button-group style="float: right">
                             <el-button
-                                size="small"
+
                                 :disabled="isCollapsed"
                                 @click="handleCollapse"
                             >{{ i18n("knowledgegraph.viewer.collapse") }}</el-button>
                             <el-button
-                                size="small"
+
                                 :disabled="!isCollapsed"
                                 @click="handleExpand"
                             >{{ i18n("knowledgegraph.viewer.expand") }}</el-button>
@@ -170,7 +170,7 @@ const isCollapsed = computed(() =>
                     </div>
                     <div class="section-row">
                         <span class="label">{{ i18n("knowledgegraph.query.edgeType") }}</span>
-                        <el-tag size="small" :style="{ background: kgGetEdgeColor(selectedEdge), color: '#FFF', border: 'none' }">
+                        <el-tag  :style="{ background: kgGetEdgeColor(selectedEdge), color: '#FFF', border: 'none' }">
                             {{ edgeTypeLabel(selectedEdge.type) }}
                         </el-tag>
                     </div>

@@ -46,7 +46,7 @@ const handleZoomOut = () => props.viewer.zoomOut();
         <div class="toolbar-right">
             <el-select
                 v-model="layout"
-                size="small"
+
                 style="width: 110px"
                 :placeholder="i18n('knowledgegraph.viewer.layout')"
             >
@@ -59,7 +59,7 @@ const handleZoomOut = () => props.viewer.zoomOut();
             </el-select>
             <el-input
                 v-model="searchKeyword"
-                size="small"
+
                 style="width: 180px"
                 clearable
                 :placeholder="i18n('knowledgegraph.viewer.searchPlaceholder')"
@@ -69,16 +69,16 @@ const handleZoomOut = () => props.viewer.zoomOut();
                 </template>
             </el-input>
             <el-button-group>
-                <el-button size="small" @click="handleZoomIn" :title="i18n('knowledgegraph.viewer.zoomIn')">
+                <el-button  @click="handleZoomIn" :title="i18n('knowledgegraph.viewer.zoomIn')">
                     <el-icon><ZoomIn /></el-icon>
                 </el-button>
-                <el-button size="small" @click="handleZoomOut" :title="i18n('knowledgegraph.viewer.zoomOut')">
+                <el-button  @click="handleZoomOut" :title="i18n('knowledgegraph.viewer.zoomOut')">
                     <el-icon><ZoomOut /></el-icon>
                 </el-button>
-                <el-button size="small" @click="handleFit" :title="i18n('knowledgegraph.viewer.fit')">
+                <el-button  @click="handleFit" :title="i18n('knowledgegraph.viewer.fit')">
                     <el-icon><FullScreen /></el-icon>
                 </el-button>
-                <el-button size="small" @click="handleReset" :title="i18n('knowledgegraph.viewer.reset')">
+                <el-button  @click="handleReset" :title="i18n('knowledgegraph.viewer.reset')">
                     <el-icon><Refresh /></el-icon>
                 </el-button>
             </el-button-group>
