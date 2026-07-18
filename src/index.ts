@@ -122,6 +122,7 @@ export * from "@/components/office";
 export * from "@/components/whiteboard";
 export * from "@/components/knowledgegraph";
 export * from "@/components/digitaltwin";
+export * from "@/components/aicopilot";
 // 导出所有store
 export * from "@/store/ButtonPermission";
 export * from "@/store/ConsumerView";

@@ -17,6 +17,7 @@ import OfficeDemo from "./OfficeDemo.vue";
 import WhiteboardDemo from "./WhiteboardDemo.vue";
 import KnowledgeGraphDemo from "./KnowledgeGraphDemo.vue";
 import DigitalTwinDemo from "./DigitalTwinDemo.vue";
+import AiCopilotDemo from "./AiCopilotDemo.vue";
 
 const activeTab = ref("diagram");
 
@@ -38,6 +39,7 @@ const tabs = [
     { label: "白板", name: "whiteboard", component: WhiteboardDemo },
     { label: "知识图谱", name: "knowledgegraph", component: KnowledgeGraphDemo },
     { label: "数字孪生", name: "digitaltwin", component: DigitalTwinDemo },
+    { label: "AI助手", name: "aicopilot", component: AiCopilotDemo },
 ];
 </script>
 
