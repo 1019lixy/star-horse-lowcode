@@ -1,5 +1,5 @@
 <script setup lang="ts" name="ScheduleView">
-import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 import { useScheduleDesigner } from "./composables/useScheduleDesigner";
 import ScheduleToolbar from "./panels/ScheduleToolbar.vue";
 import ScheduleResourcePanel from "./panels/ScheduleResourcePanel.vue";
@@ -33,7 +33,6 @@ const editingResourceId = ref<string | null>(null);
 
 const resourcePanelRef = ref<InstanceType<typeof ScheduleResourcePanel> | null>(null);
 const canvasRef = ref<InstanceType<typeof ScheduleCanvas> | null>(null);
-const selectedEventId = computed(() => designer.selectedEventId.value);
 
 const handleEditEvent = (id: string) => {
     editingEventId.value = id;

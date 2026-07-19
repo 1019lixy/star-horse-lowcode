@@ -9,7 +9,6 @@ import type {
     ScheduleEventType,
     ScheduleResource,
     ScheduleResourceTypePreset,
-    ScheduleResourceType,
     ScheduleViewMode,
 } from "./types";
 

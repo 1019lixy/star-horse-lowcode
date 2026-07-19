@@ -127,6 +127,7 @@ const scheduleData = ref<ScheduleData>({
     ],
     config: {
         viewMode: "day",
+        rowHeight: 40,
         cellHeight: 30,
         cellWidth: 50,
         dayStartHour: 8,

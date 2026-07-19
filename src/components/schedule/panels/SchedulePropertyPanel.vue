@@ -6,7 +6,6 @@ import {
     SCHEDULE_EVENT_TYPE_PRESETS,
     SCHEDULE_RESOURCE_TYPE_PRESETS,
 } from "../constants";
-import { formatHourMinute, parseTime } from "../utils/ScheduleDateUtils";
 
 const props = defineProps<{
     designer: ScheduleDesigner;
@@ -18,17 +17,6 @@ const formData = computed(() => props.designer.selectedEvent.value);
 
 /** 选中资源表单数据 */
 const resourceData = computed(() => props.designer.selectedResource.value);
-
-/** 是否有选中 */
-const hasSelection = computed(() => formData.value || resourceData.value);
-
-/** 事件类型标签 */
-const getEventTypeLabel = (type: string) =>
-    SCHEDULE_EVENT_TYPE_PRESETS.find((t) => t.value === type)?.label ?? type;
-
-/** 资源类型标签 */
-const getResTypeLabel = (type: string) =>
-    SCHEDULE_RESOURCE_TYPE_PRESETS.find((t) => t.value === type)?.label ?? type;
 </script>
 
 <template>
