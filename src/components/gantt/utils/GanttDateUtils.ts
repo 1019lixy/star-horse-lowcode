@@ -137,8 +137,7 @@ export const formatYear = (dateStr: string): string => {
     return `${d.getFullYear()}`;
 };
 
-/** 时间单位类型 */
-export type GanttTimeUnit = "day" | "week" | "month" | "quarter" | "year";
+import type { GanttTimeUnit } from "../types";
 
 /** 时间轴单元格（按时间单位聚合） */
 export interface GanttTimelineCell {

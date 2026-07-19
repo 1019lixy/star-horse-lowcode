@@ -2,7 +2,7 @@
  * PDF 模块导出
  */
 export { default as PdfTemplateDesigner } from "./PdfTemplateDesigner.vue";
-export { default as PdfSigner } from "./PdfSigner.vue";
+export { default as PdfSignerVue } from "./PdfSigner.vue";
 export { usePdfDesigner } from "./composables/usePdfDesigner";
 export { usePdfSigner } from "./composables/usePdfSigner";
 export type { PdfDesigner } from "./composables/usePdfDesigner";

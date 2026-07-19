@@ -31,16 +31,7 @@ export type { UseDtEngineOptions, UseDtEngineReturn } from "./composables/useDtE
 export { useDtScene } from "./composables/useDtScene";
 export type { UseDtSceneReturn } from "./composables/useDtScene";
 
-// 新增常量（v3.2 引擎层）
-export {
-    DT_DEFAULT_ENGINE_OPTIONS,
-    DT_VIEW_PRESETS_3D,
-    DT_VIEWPORT_MODES,
-    DT_LIGHTING_PRESETS,
-    DT_SHADOW_QUALITY_OPTIONS,
-    DT_DEFAULT_PERFORMANCE_THRESHOLD,
-    DT_STATUS_COLOR_MAP,
-} from "./constants";
+// v3.2 引擎层常量暂无（待引擎层完善后再导出）
 
 /* ============================================================
  *  旧版导出（@deprecated，向后兼容保留）
