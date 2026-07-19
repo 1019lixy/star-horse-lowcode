@@ -211,6 +211,8 @@ export interface DiagramDesignerState {
     tool: "select" | "pan" | "connect";
     /** 连接临时状态 */
     connecting: { fromNodeId: string; fromPortId?: string; toX: number; toY: number } | null;
+    /** 剪贴板 */
+    clipboard: DiagramNode[];
 }
 
 /** 节点类型预设（左侧面板） */

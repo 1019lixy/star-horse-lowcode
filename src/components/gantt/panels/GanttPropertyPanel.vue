@@ -104,7 +104,8 @@ watch(
 
 <style lang="scss" scoped>
 .gantt-property-panel {
-    width: 280px;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     border-left: 1px solid var(--el-border-color);

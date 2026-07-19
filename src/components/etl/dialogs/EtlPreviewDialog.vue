@@ -105,6 +105,11 @@ const handleExport = () => {
     a.click();
     URL.revokeObjectURL(url);
 };
+
+/** 内联 SVG 图标（替代 Element Plus 图标，减少依赖） */
+const icons: Record<string, string> = {
+    download: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>',
+};
 </script>
 
 <template>
@@ -123,7 +128,7 @@ const handleExport = () => {
                     <el-option v-for="opt in nodeOptions" :key="opt.id" :label="opt.label" :value="opt.id" />
                 </el-select>
                 <el-button  :disabled="!previewData" @click="handleExport">
-                    <el-icon><Download/></el-icon>
+                    <span class="svg-icon" v-html="icons.download"></span>
                     {{ i18n("etl.btn.export") }}
                 </el-button>
             </div>
@@ -151,11 +156,6 @@ const handleExport = () => {
         </template>
     </star-horse-dialog>
 </template>
-
-<script lang="ts">
-import { Download } from "@element-plus/icons-vue";
-export default { components: { Download } };
-</script>
 
 <style lang="scss" scoped>
 .etl-preview-dialog {
@@ -192,5 +192,17 @@ export default { components: { Download } };
             border-radius: 4px;
         }
     }
+}
+.svg-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1em;
+    height: 1em;
+    margin-right: 4px;
+}
+.svg-icon :deep(svg) {
+    width: 100%;
+    height: 100%;
 }
 </style>

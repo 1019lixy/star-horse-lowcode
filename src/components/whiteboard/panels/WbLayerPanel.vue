@@ -163,7 +163,7 @@ export default {
     display: flex;
     flex-direction: column;
     height: 100%;
-    width: 220px;
+    width: 100%;
     border-right: 1px solid var(--el-border-color-lighter);
     background: var(--el-bg-color);
 

@@ -38,7 +38,8 @@ watch(
                 return;
             }
         }
-        form.value = createCard({ columnId: props.columnId || "col_todo" });
+        const firstColId = props.designer.sortedColumns.value[0]?.id || "";
+        form.value = createCard({ columnId: props.columnId || firstColId });
         isNew.value = true;
     },
     { immediate: true },

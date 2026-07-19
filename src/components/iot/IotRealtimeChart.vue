@@ -92,6 +92,14 @@ const unitValue = computed({
     get: () => chart.config.unit,
     set: (v: string) => chart.updateConfig({ unit: v }),
 });
+
+/** 内联 SVG 图标（替代 Element Plus 图标，减少依赖） */
+const icons: Record<string, string> = {
+    setting: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>',
+    delete: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M5 6v14a2 2 0 002 2h10a2 2 0 002-2V6M10 11v6M14 11v6"/></svg>',
+    videoPause: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>',
+    videoPlay: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>',
+};
 </script>
 
 <template>
@@ -110,12 +118,15 @@ const unitValue = computed({
                     :type="chart.isRunning.value ? 'danger' : 'primary'"
                     @click="chart.toggle()"
                 >
+                    <span class="svg-icon" v-html="chart.isRunning.value ? icons.videoPause : icons.videoPlay"></span>
                     {{ chart.isRunning.value ? i18n("iot.chart.stop") : i18n("iot.chart.start") }}
                 </el-button>
                 <el-button  @click="showConfig = !showConfig">
+                    <span class="svg-icon" v-html="icons.setting"></span>
                     {{ i18n("iot.btn.filter") }}
                 </el-button>
                 <el-button  @click="chart.clear()" :disabled="chart.series.length === 0">
+                    <span class="svg-icon" v-html="icons.delete"></span>
                     {{ i18n("iot.chart.clear") }}
                 </el-button>
             </div>
@@ -172,10 +183,6 @@ const unitValue = computed({
         </div>
     </div>
 </template>
-
-<script lang="ts">
-export default { name: "IotRealtimeChart" };
-</script>
 
 <style lang="scss" scoped>
 .iot-realtime-chart {
@@ -272,5 +279,18 @@ export default { name: "IotRealtimeChart" };
             pointer-events: none;
         }
     }
+}
+
+.svg-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1em;
+    height: 1em;
+    margin-right: 4px;
+}
+.svg-icon :deep(svg) {
+    width: 100%;
+    height: 100%;
 }
 </style>

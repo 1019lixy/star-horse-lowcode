@@ -135,37 +135,43 @@ const handleSave = () => {
             </el-form>
         </div>
 
-        <div class="designer-body">
-            <email-variable-panel
-                :designer="designer"
-                :readonly="readonly"
-                @insert="handleInsertVariable"
-                @edit="handleEditVariable"
-                @add="handleAddVariable"
-            />
-            <div class="editor-area">
-                <Toolbar
-                    v-if="!readonly"
-                    :editor="editorRef"
-                    :defaultConfig="toolbarConfig"
-                    mode="default"
-                    class="email-toolbar"
+        <el-splitter class="designer-body" direction="horizontal">
+            <el-splitter-panel size="220px" min="160px" max="360px">
+                <email-variable-panel
+                    :designer="designer"
+                    :readonly="readonly"
+                    @insert="handleInsertVariable"
+                    @edit="handleEditVariable"
+                    @add="handleAddVariable"
                 />
-                <Editor
-                    v-model="designer.state.content"
-                    :defaultConfig="editorConfig"
-                    mode="default"
-                    class="email-editor"
-                    @onChange="handleEditorChange"
-                    @onCreated="handleEditorCreated"
+            </el-splitter-panel>
+            <el-splitter-panel>
+                <div class="editor-area">
+                    <Toolbar
+                        v-if="!readonly"
+                        :editor="editorRef"
+                        :defaultConfig="toolbarConfig"
+                        mode="default"
+                        class="email-toolbar"
+                    />
+                    <Editor
+                        v-model="designer.state.content"
+                        :defaultConfig="editorConfig"
+                        mode="default"
+                        class="email-editor"
+                        @onChange="handleEditorChange"
+                        @onCreated="handleEditorCreated"
+                    />
+                </div>
+            </el-splitter-panel>
+            <el-splitter-panel size="220px" min="160px" max="360px">
+                <email-attachment-panel
+                    :designer="designer"
+                    :readonly="readonly"
+                    @add="handleAddAttachment"
                 />
-            </div>
-            <email-attachment-panel
-                :designer="designer"
-                :readonly="readonly"
-                @add="handleAddAttachment"
-            />
-        </div>
+            </el-splitter-panel>
+        </el-splitter>
 
         <email-variable-dialog
             v-model:visible="varDialogVisible"
@@ -227,11 +233,11 @@ export default { components: { View, Check } };
 
     .designer-body {
         flex: 1;
-        display: flex;
         overflow: hidden;
 
         .editor-area {
-            flex: 1;
+            width: 100%;
+            height: 100%;
             display: flex;
             flex-direction: column;
             background: var(--el-bg-color);

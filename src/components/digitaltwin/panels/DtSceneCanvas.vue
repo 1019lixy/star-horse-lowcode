@@ -14,13 +14,19 @@ import { i18n } from "@/lang";
 import { DT_DEFAULT_COLORS, DT_GRID_DIVISIONS, DT_GRID_SIZE } from "../constants";
 import { dtDepthSort, dtEntityBoundingBox, dtProjectPoint } from "../utils/DtProjection";
 import { dtDrawEntity, type DtRenderContext } from "../utils/DtEntityRenderer";
-import type { DtEntity } from "../types";
+import { dtDrawModelInstanceWithParts } from "../utils/DtModelRenderer";
+import { dtAnimatePart } from "../utils/DtModelAnimator";
+import { dtFindModelPreset } from "../modelLibrary";
+import type { DtEntity, DtModelInstance } from "../types";
 import type { UseDigitalTwinCameraReturn } from "../composables/useDigitalTwinCamera";
 import type { UseDigitalTwinDesignerReturn } from "../composables/useDigitalTwinDesigner";
+import type { UseDigitalTwinAnimationReturn } from "../composables/useDigitalTwinAnimation";
 
 const props = defineProps<{
     designer: UseDigitalTwinDesignerReturn;
     camera: UseDigitalTwinCameraReturn;
+    /** 动画循环 composable（可选，未传则不应用动画） */
+    animation?: UseDigitalTwinAnimationReturn;
 }>();
 
 const emit = defineEmits<{
@@ -78,10 +84,20 @@ const render = (): void => {
     // 绘制网格
     drawGridWithCam(ctx, renderCam);
 
-    // 深度排序后绘制实体
+    // 动画状态（用于模型实例部件变换）
+    const animState = props.animation?.state.value;
+
+    // 深度排序后绘制实体（区分普通实体与模型实例）
     const sorted = dtDepthSort(entities.value, renderCam);
     const rc: DtRenderContext = { ctx, camera: renderCam, selectedId: selectedId.value };
-    sorted.forEach((e) => dtDrawEntity(e, rc));
+    sorted.forEach((e) => {
+        const inst = e as DtModelInstance;
+        if (inst.modelType) {
+            drawModelInstanceWithAnimation(inst, rc, animState);
+        } else {
+            dtDrawEntity(e, rc);
+        }
+    });
 
     // 空场景提示
     if (entities.value.length === 0) {
@@ -93,6 +109,28 @@ const render = (): void => {
         ctx.fillText(i18n("digitaltwin.scene.empty"), w / 2, h / 2);
         ctx.restore();
     }
+};
+
+/** 绘制带动画的模型实例 */
+const drawModelInstanceWithAnimation = (
+    instance: DtModelInstance,
+    rc: DtRenderContext,
+    animState: { elapsed: number } | undefined,
+): void => {
+    if (instance.visible === false) return;
+    const preset = dtFindModelPreset(instance.modelType);
+    if (!preset) return;
+    const animation = instance.animation ?? preset.defaultAnimation;
+    if (animation && animState && animation.partId) {
+        const targetPart = preset.parts.find((p) => p.id === animation.partId);
+        if (targetPart) {
+            const animatedPart = dtAnimatePart(targetPart, animation, animState);
+            const tempParts = preset.parts.map((p) => (p.id === animation.partId ? animatedPart : p));
+            dtDrawModelInstanceWithParts(instance, tempParts, rc);
+            return;
+        }
+    }
+    dtDrawModelInstanceWithParts(instance, preset.parts, rc);
 };
 
 /** 用指定相机绘制网格（避免修改全局） */
@@ -159,6 +197,28 @@ const pickEntity = (x: number, y: number): DtEntity | null => {
     };
     const sorted = dtDepthSort(entities.value, renderCam);
     for (const e of sorted) {
+        // 模型实例：用 preset.defaultSize 构造 cube 包围盒
+        const inst = e as DtModelInstance;
+        if (inst.modelType) {
+            const preset = dtFindModelPreset(inst.modelType);
+            if (!preset) continue;
+            const bboxEntity: DtEntity = {
+                id: `${inst.id}_bbox`,
+                type: "cube",
+                name: "",
+                position: { ...inst.position },
+                size: { ...preset.defaultSize },
+                color: inst.color,
+                status: inst.status,
+                visible: true,
+            };
+            const bbox = dtEntityBoundingBox(bboxEntity, renderCam);
+            if (!bbox) continue;
+            if (x >= bbox.minX && x <= bbox.maxX && y >= bbox.minY && y <= bbox.maxY) {
+                return e;
+            }
+            continue;
+        }
         const bbox = dtEntityBoundingBox(e, renderCam);
         if (!bbox) continue;
         if (x >= bbox.minX && x <= bbox.maxX && y >= bbox.minY && y <= bbox.maxY) {
@@ -269,7 +329,8 @@ watch(simTick, () => {
 
 <style lang="scss" scoped>
 .dt-canvas-wrapper {
-    flex: 1;
+    width: 100%;
+    height: 100%;
     position: relative;
     overflow: hidden;
     background: #FAFAFA;

@@ -101,31 +101,35 @@ const handleSave = () => {
             </div>
         </div>
 
-        <div class="designer-body">
-            <doc-variable-panel
-                :designer="designer"
-                :readonly="readonly"
-                @insert="handleInsertVariable"
-                @edit="handleEditVariable"
-            />
-            <div class="editor-area">
-                <Toolbar
-                    v-if="!readonly"
-                    :editor="editorRef"
-                    :defaultConfig="toolbarConfig"
-                    mode="default"
-                    class="doc-toolbar"
+        <el-splitter class="designer-body" direction="horizontal">
+            <el-splitter-panel size="240px" min="180px" max="380px">
+                <doc-variable-panel
+                    :designer="designer"
+                    :readonly="readonly"
+                    @insert="handleInsertVariable"
+                    @edit="handleEditVariable"
                 />
-                <Editor
-                    v-model="designer.state.content"
-                    :defaultConfig="editorConfig"
-                    mode="default"
-                    class="doc-editor"
-                    @onChange="handleEditorChange"
-                    @onCreated="handleEditorCreated"
-                />
-            </div>
-        </div>
+            </el-splitter-panel>
+            <el-splitter-panel>
+                <div class="editor-area">
+                    <Toolbar
+                        v-if="!readonly"
+                        :editor="editorRef"
+                        :defaultConfig="toolbarConfig"
+                        mode="default"
+                        class="doc-toolbar"
+                    />
+                    <Editor
+                        v-model="designer.state.content"
+                        :defaultConfig="editorConfig"
+                        mode="default"
+                        class="doc-editor"
+                        @onChange="handleEditorChange"
+                        @onCreated="handleEditorCreated"
+                    />
+                </div>
+            </el-splitter-panel>
+        </el-splitter>
 
         <doc-variable-dialog
             v-model:visible="varDialogVisible"
@@ -172,11 +176,11 @@ export default { components: { View, Check } };
 
     .designer-body {
         flex: 1;
-        display: flex;
         overflow: hidden;
 
         .editor-area {
-            flex: 1;
+            width: 100%;
+            height: 100%;
             display: flex;
             flex-direction: column;
             background: var(--el-bg-color);

@@ -28,6 +28,7 @@ export const useScheduleDesigner = (initial?: Partial<ScheduleData>) => {
     });
 
     const selectedEventId = ref<string | null>(null);
+    const selectedResourceId = ref<string | null>(null);
     /** 视图锚点日期 */
     const anchorDate = ref(new Date());
     const history: ScheduleData[] = [];
@@ -36,6 +37,11 @@ export const useScheduleDesigner = (initial?: Partial<ScheduleData>) => {
     const selectedEvent = computed<ScheduleEvent | null>(() => {
         if (!selectedEventId.value) return null;
         return state.events.find((e) => e.id === selectedEventId.value) ?? null;
+    });
+
+    const selectedResource = computed<ScheduleResource | null>(() => {
+        if (!selectedResourceId.value) return null;
+        return state.resources.find((r) => r.id === selectedResourceId.value) ?? null;
     });
 
     const sortedResources = computed(() =>
@@ -144,9 +150,19 @@ export const useScheduleDesigner = (initial?: Partial<ScheduleData>) => {
         event.endTime = newEnd;
     };
 
-    /** 选中事件 */
+    /** 选中事件（同时取消资源选中） */
     const selectEvent = (id: string | null) => {
         selectedEventId.value = id;
+        if (id) {
+            const event = state.events.find((e) => e.id === id);
+            if (event) selectedResourceId.value = event.resourceId;
+        }
+    };
+
+    /** 选中资源（同时取消事件选中） */
+    const selectResource = (id: string | null) => {
+        selectedResourceId.value = id;
+        selectedEventId.value = null;
     };
 
     /** 添加资源 */
@@ -171,6 +187,61 @@ export const useScheduleDesigner = (initial?: Partial<ScheduleData>) => {
         pushHistory();
         state.events = state.events.filter((e) => e.resourceId !== id);
         state.resources = state.resources.filter((r) => r.id !== id);
+        if (selectedResourceId.value === id) selectedResourceId.value = null;
+    };
+
+    /** 资源上移 */
+    const moveResourceUp = (id: string) => {
+        const sorted = sortedResources.value;
+        const idx = sorted.findIndex((r) => r.id === id);
+        if (idx <= 0) return;
+        pushHistory();
+        const a = state.resources.find((r) => r.id === sorted[idx].id);
+        const b = state.resources.find((r) => r.id === sorted[idx - 1].id);
+        if (a && b) {
+            const tmp = a.order;
+            a.order = b.order;
+            b.order = tmp;
+        }
+    };
+
+    /** 资源下移 */
+    const moveResourceDown = (id: string) => {
+        const sorted = sortedResources.value;
+        const idx = sorted.findIndex((r) => r.id === id);
+        if (idx < 0 || idx >= sorted.length - 1) return;
+        pushHistory();
+        const a = state.resources.find((r) => r.id === sorted[idx].id);
+        const b = state.resources.find((r) => r.id === sorted[idx + 1].id);
+        if (a && b) {
+            const tmp = a.order;
+            a.order = b.order;
+            b.order = tmp;
+        }
+    };
+
+    /** 资源置顶 */
+    const moveResourceToTop = (id: string) => {
+        const sorted = sortedResources.value;
+        const idx = sorted.findIndex((r) => r.id === id);
+        if (idx <= 0) return;
+        pushHistory();
+        const target = state.resources.find((r) => r.id === id);
+        if (!target) return;
+        const minOrder = Math.min(...state.resources.map((r) => r.order));
+        target.order = minOrder - 1;
+    };
+
+    /** 资源置底 */
+    const moveResourceToBottom = (id: string) => {
+        const sorted = sortedResources.value;
+        const idx = sorted.findIndex((r) => r.id === id);
+        if (idx < 0 || idx >= sorted.length - 1) return;
+        pushHistory();
+        const target = state.resources.find((r) => r.id === id);
+        if (!target) return;
+        const maxOrder = Math.max(...state.resources.map((r) => r.order));
+        target.order = maxOrder + 1;
     };
 
     /** 更新配置 */
@@ -192,6 +263,7 @@ export const useScheduleDesigner = (initial?: Partial<ScheduleData>) => {
     const loadData = (data: ScheduleData) => {
         Object.assign(state, JSON.parse(JSON.stringify(data)));
         selectedEventId.value = null;
+        selectedResourceId.value = null;
         history.length = 0;
         historyIndex.value = -1;
     };
@@ -201,7 +273,9 @@ export const useScheduleDesigner = (initial?: Partial<ScheduleData>) => {
     return {
         state,
         selectedEventId,
+        selectedResourceId,
         selectedEvent,
+        selectedResource,
         sortedResources,
         anchorDate,
         checkConflict,
@@ -211,9 +285,14 @@ export const useScheduleDesigner = (initial?: Partial<ScheduleData>) => {
         moveEvent,
         resizeEvent,
         selectEvent,
+        selectResource,
         addResource,
         updateResource,
         removeResource,
+        moveResourceUp,
+        moveResourceDown,
+        moveResourceToTop,
+        moveResourceToBottom,
         updateConfig,
         setViewMode,
         setAnchorDate,

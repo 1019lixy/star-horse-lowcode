@@ -1,28 +1,22 @@
 <script setup lang="ts" name="GanttCanvas">
-import { computed, ref } from "vue";
-import { i18n } from "@/lang";
+import { computed, ref, watch } from "vue";
 import type { GanttDesigner } from "../composables/useGanttDesigner";
 import {
     CRITICAL_COLOR,
     GANTT_STATUS_PRESETS,
     MILESTONE_SIZE,
     TODAY_LINE_COLOR,
-    WEEKEND_COLOR,
 } from "../constants";
 import {
-    daysBetween,
     formatDate,
-    formatMonth,
-    formatQuarter,
-    formatShortDate,
-    formatYear,
-    getDateRange,
-    getMondayOfWeek,
+    getTimelineCells,
+    getUnitOffset,
+    getUnitDuration,
     isToday,
-    isWeekend,
     parseDate,
 } from "../utils/GanttDateUtils";
-import type { GanttLinkType, GanttTask, GanttTimeUnit } from "../types";
+import type { GanttTimelineCell } from "../utils/GanttDateUtils";
+import type { GanttLinkType, GanttTask } from "../types";
 
 const props = defineProps<{
     designer: GanttDesigner;
@@ -32,6 +26,11 @@ const props = defineProps<{
 const emit = defineEmits<{
     (e: "edit", id: string): void;
 }>();
+
+const canvasScrollRef = ref<HTMLElement>();
+
+/** 暴露滚动元素供 GanttChart 同步 */
+defineExpose({ canvasScrollRef });
 
 /** 拖拽状态 */
 const dragState = ref<{
@@ -47,33 +46,26 @@ const linkState = ref<{
     sourceId: string;
 } | null>(null);
 
-/** 时间轴日期列表 */
-const timelineDates = computed(() => {
+/** 时间单位（从配置读取） */
+const timeUnit = computed(() => props.designer.state.config.timeUnit);
+
+/** 时间轴单元格列表（按时间单位聚合，非每日） */
+const timelineCells = computed<GanttTimelineCell[]>(() => {
     const { projectStart, projectEnd } = props.designer.state.config;
-    return getDateRange(projectStart, projectEnd);
+    return getTimelineCells(projectStart, projectEnd, timeUnit.value);
 });
 
-/** 顶层时间轴分组（按时间单位） */
+/** 顶层时间轴分组（按 topLabel 聚合） */
 const timelineGroups = computed(() => {
-    const unit: GanttTimeUnit = props.designer.state.config.timeUnit;
-    const dates = timelineDates.value;
-    if (dates.length === 0) return [];
-
+    const cells = timelineCells.value;
+    if (cells.length === 0) return [];
     const groups: { label: string; count: number }[] = [];
     let prevKey = "";
     let count = 0;
-
-    for (const d of dates) {
-        let key = "";
-        if (unit === "day") key = formatMonth(d);
-        else if (unit === "week") key = formatMonth(d);
-        else if (unit === "month") key = formatYear(d);
-        else if (unit === "quarter") key = formatYear(d);
-        else key = formatYear(d);
-
-        if (key !== prevKey) {
+    for (const c of cells) {
+        if (c.topLabel !== prevKey) {
             if (prevKey) groups.push({ label: prevKey, count });
-            prevKey = key;
+            prevKey = c.topLabel;
             count = 1;
         } else {
             count++;
@@ -83,30 +75,30 @@ const timelineGroups = computed(() => {
     return groups;
 });
 
-/** 单元格宽度（按时间单位） */
-const cellWidth = computed(() => {
-    const unit = props.designer.state.config.timeUnit;
-    const widths: Record<GanttTimeUnit, number> = {
-        day: props.designer.state.config.dayWidth,
-        week: props.designer.state.config.dayWidth,
-        month: props.designer.state.config.dayWidth,
-        quarter: props.designer.state.config.dayWidth,
-        year: props.designer.state.config.dayWidth,
+/** 单元格宽度（按时间单位，每个单位有合理固定宽度） */
+const cellWidth = computed<number>(() => {
+    const widths: Record<string, number> = {
+        day: 40,
+        week: 80,
+        month: 120,
+        quarter: 200,
+        year: 360,
     };
-    return widths[unit];
+    return widths[timeUnit.value] ?? 40;
 });
 
 const rowHeight = computed(() => props.designer.state.config.rowHeight);
+const selectedTaskId = computed(() => props.designer.selectedTaskId.value);
 
-/** 计算任务条位置 */
+/** 计算任务条位置（基于时间单位聚合，不再按天计算） */
 const getTaskPosition = (task: GanttTask) => {
-    const start = parseDate(task.startDate);
-    const projectStart = parseDate(props.designer.state.config.projectStart);
-    const offsetDays = Math.floor((start.getTime() - projectStart.getTime()) / (24 * 60 * 60 * 1000));
-    const duration = daysBetween(task.startDate, task.endDate);
+    const unit = timeUnit.value;
+    const { projectStart } = props.designer.state.config;
+    const offsetUnits = getUnitOffset(projectStart, task.startDate, unit);
+    const durationUnits = getUnitDuration(task.startDate, task.endDate, unit);
     return {
-        left: offsetDays * cellWidth.value,
-        width: Math.max(duration * cellWidth.value, cellWidth.value),
+        left: offsetUnits * cellWidth.value,
+        width: Math.max(durationUnits * cellWidth.value, cellWidth.value),
     };
 };
 
@@ -116,13 +108,12 @@ const getTaskColor = (task: GanttTask) => {
     return GANTT_STATUS_PRESETS.find((s) => s.value === task.status)?.color ?? "#409EFF";
 };
 
-/** 今日线位置 */
+/** 今日线位置（基于时间单位计算） */
 const todayLeft = computed(() => {
     const today = formatDate(new Date());
-    const projectStart = parseDate(props.designer.state.config.projectStart);
-    const t = parseDate(today);
-    const offset = Math.floor((t.getTime() - projectStart.getTime()) / (24 * 60 * 60 * 1000));
-    return offset * cellWidth.value;
+    const { projectStart } = props.designer.state.config;
+    const offsetUnits = getUnitOffset(projectStart, today, timeUnit.value);
+    return offsetUnits * cellWidth.value + cellWidth.value / 2;
 });
 
 /** 处理任务条鼠标按下 */
@@ -142,34 +133,40 @@ const handleTaskMouseDown = (e: MouseEvent, task: GanttTask, mode: "move" | "res
     document.addEventListener("mouseup", handleMouseUp);
 };
 
-/** 处理鼠标移动 */
+/** 处理鼠标移动（按时间单位拖动） */
 const handleMouseMove = (e: MouseEvent) => {
     if (!dragState.value) return;
     const dx = e.clientX - dragState.value.startX;
-    const dayOffset = Math.round(dx / cellWidth.value);
-    if (dayOffset === 0) return;
+    const unitOffset = Math.round(dx / cellWidth.value);
+    if (unitOffset === 0) return;
     const task = props.designer.state.tasks.find((t) => t.id === dragState.value!.taskId);
     if (!task) return;
 
+    const unit = timeUnit.value;
     const original = dragState.value;
+    /** 按时间单位计算日期偏移 */
+    const shiftDate = (dateStr: string, offset: number): string => {
+        const d = parseDate(dateStr);
+        if (unit === "day") d.setDate(d.getDate() + offset);
+        else if (unit === "week") d.setDate(d.getDate() + offset * 7);
+        else if (unit === "month") d.setMonth(d.getMonth() + offset);
+        else if (unit === "quarter") d.setMonth(d.getMonth() + offset * 3);
+        else d.setFullYear(d.getFullYear() + offset);
+        return formatDate(d);
+    };
+
     if (original.mode === "move") {
-        const newStart = new Date(parseDate(original.originalStart));
-        newStart.setDate(newStart.getDate() + dayOffset);
-        const newEnd = new Date(parseDate(original.originalEnd));
-        newEnd.setDate(newEnd.getDate() + dayOffset);
-        task.startDate = formatDate(newStart);
-        task.endDate = formatDate(newEnd);
+        task.startDate = shiftDate(original.originalStart, unitOffset);
+        task.endDate = shiftDate(original.originalEnd, unitOffset);
     } else if (original.mode === "resize-end") {
-        const newEnd = new Date(parseDate(original.originalEnd));
-        newEnd.setDate(newEnd.getDate() + dayOffset);
-        if (newEnd >= parseDate(task.startDate)) {
-            task.endDate = formatDate(newEnd);
+        const newEnd = shiftDate(original.originalEnd, unitOffset);
+        if (parseDate(newEnd) >= parseDate(task.startDate)) {
+            task.endDate = newEnd;
         }
     } else if (original.mode === "resize-start") {
-        const newStart = new Date(parseDate(original.originalStart));
-        newStart.setDate(newStart.getDate() + dayOffset);
-        if (newStart <= parseDate(task.endDate)) {
-            task.startDate = formatDate(newStart);
+        const newStart = shiftDate(original.originalStart, unitOffset);
+        if (parseDate(newStart) <= parseDate(task.endDate)) {
+            task.startDate = newStart;
         }
     }
 };
@@ -217,44 +214,35 @@ const getLinkPath = (link: { source: string; target: string }) => {
     return `M ${sx},${sy} C ${midX},${sy} ${midX},${ty} ${tx},${ty}`;
 };
 
-/** 时间轴单元格类名 */
-const getCellClass = (date: string) => ({
-    weekend: props.designer.state.config.showWeekend && isWeekend(date),
-    today: props.designer.state.config.showToday && isToday(date),
+/** 时间轴单元格类名（基于单元格起始日期） */
+const getCellClass = (cell: GanttTimelineCell) => ({
+    weekend: props.designer.state.config.showWeekend && cell.hasWeekend,
+    today: props.designer.state.config.showToday && isToday(cell.date),
 });
 
-/** 顶层时间轴显示 */
-const getTopLabel = (date: string) => {
-    const unit = props.designer.state.config.timeUnit;
-    if (unit === "day" || unit === "week") return formatMonth(date);
-    if (unit === "month") return formatYear(date);
-    if (unit === "quarter") return formatYear(date);
-    return formatYear(date);
-};
-
-/** 底层时间轴显示 */
-const getBottomLabel = (date: string) => {
-    const unit = props.designer.state.config.timeUnit;
-    if (unit === "day") return formatShortDate(date);
-    if (unit === "week") return `W${getWeekLabel(date)}`;
-    if (unit === "month") return formatMonth(date).split("-")[1];
-    if (unit === "quarter") return `Q${Math.floor(parseDate(date).getMonth() / 3) + 1}`;
-    return formatMonth(date).split("-")[1];
-};
-
-const getWeekLabel = (date: string) => {
-    const monday = getMondayOfWeek(date);
-    const yearStart = new Date(parseDate(monday).getFullYear(), 0, 1);
-    const diff = Math.floor((parseDate(monday).getTime() - yearStart.getTime()) / (24 * 60 * 60 * 1000));
-    return Math.ceil((diff + 1) / 7);
-};
-
-const timelineWidth = computed(() => timelineDates.value.length * cellWidth.value);
+const timelineWidth = computed(() => timelineCells.value.length * cellWidth.value);
 const bodyHeight = computed(() => props.designer.sortedTasks.value.length * rowHeight.value);
+
+/** 监听选中任务，自动滚动到可见区域 */
+watch(() => props.designer.selectedTaskId.value, (id) => {
+    if (!id) return;
+    const idx = props.designer.sortedTasks.value.findIndex(t => t.id === id);
+    if (idx < 0) return;
+    const container = canvasScrollRef.value;
+    if (!container) return;
+    const headerHeight = 52; // 时间轴头高度
+    const rowY = idx * rowHeight.value;
+    const scrollTop = container.scrollTop;
+    const viewHeight = container.clientHeight - headerHeight;
+    const relativeY = rowY - (scrollTop - headerHeight);
+    if (relativeY < 0 || relativeY > viewHeight - rowHeight.value) {
+        container.scrollTop = rowY - viewHeight / 2 + rowHeight.value / 2 + headerHeight;
+    }
+});
 </script>
 
 <template>
-    <div class="gantt-canvas">
+    <div class="gantt-canvas" ref="canvasScrollRef">
         <!-- 时间轴头 -->
         <div class="timeline-header" :style="{ width: `${timelineWidth}px` }">
             <div class="timeline-row top-row">
@@ -269,13 +257,13 @@ const bodyHeight = computed(() => props.designer.sortedTasks.value.length * rowH
             </div>
             <div class="timeline-row bottom-row">
                 <div
-                    v-for="date in timelineDates"
-                    :key="date"
+                    v-for="cell in timelineCells"
+                    :key="cell.date"
                     class="timeline-cell bottom-cell"
-                    :class="getCellClass(date)"
+                    :class="getCellClass(cell)"
                     :style="{ width: `${cellWidth}px` }"
                 >
-                    {{ getBottomLabel(date) }}
+                    {{ cell.label }}
                 </div>
             </div>
         </div>
@@ -286,10 +274,10 @@ const bodyHeight = computed(() => props.designer.sortedTasks.value.length * rowH
                 <!-- 网格列 -->
                 <div class="grid-layer">
                     <div
-                        v-for="date in timelineDates"
-                        :key="date"
+                        v-for="cell in timelineCells"
+                        :key="cell.date"
                         class="grid-col"
-                        :class="getCellClass(date)"
+                        :class="getCellClass(cell)"
                         :style="{ width: `${cellWidth}px` }"
                     />
                 </div>
@@ -300,7 +288,7 @@ const bodyHeight = computed(() => props.designer.sortedTasks.value.length * rowH
                         v-for="(task, idx) in designer.sortedTasks.value"
                         :key="task.id"
                         class="grid-row"
-                        :class="{ selected: task.id === designer.selectedTaskId }"
+                        :class="{ selected: task.id === selectedTaskId }"
                         :style="{ height: `${rowHeight}px`, top: `${idx * rowHeight}px` }"
                         @click="designer.selectTask(task.id)"
                     />
@@ -345,9 +333,12 @@ const bodyHeight = computed(() => props.designer.sortedTasks.value.length * rowH
                         <template v-else>
                             <div
                                 class="task-bar"
-                                :class="{ critical: task.isCritical && designer.state.config.showCritical }"
+                                :class="{
+                                    critical: task.isCritical && designer.state.config.showCritical,
+                                    selected: task.id === selectedTaskId
+                                }"
                                 :style="{
-                                    backgroundColor: getTaskColor(task),
+                                    backgroundColor: task.id === selectedTaskId ? '#409EFF' : getTaskColor(task),
                                     opacity: task.status === 'paused' ? 0.5 : 1
                                 }"
                                 @mousedown="(e) => handleTaskMouseDown(e, task, 'move')"
@@ -405,7 +396,8 @@ const bodyHeight = computed(() => props.designer.sortedTasks.value.length * rowH
 
 <style lang="scss" scoped>
 .gantt-canvas {
-    flex: 1;
+    width: 100%;
+    height: 100%;
     overflow: auto;
     background: var(--el-bg-color);
     position: relative;
@@ -534,6 +526,11 @@ const bodyHeight = computed(() => props.designer.sortedTasks.value.length * rowH
 
                     &.critical {
                         border: 2px solid v-bind(CRITICAL_COLOR);
+                    }
+
+                    &.selected {
+                        border: 2px solid #096DD9;
+                        box-shadow: 0 0 8px rgba(64, 158, 255, 0.4);
                     }
 
                     .progress-bar {

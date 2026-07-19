@@ -217,13 +217,19 @@ const thumbElements = (slide: Slide): string => {
 
 const thumbSvg = (slide: Slide): string =>
     `<svg viewBox="0 0 ${OFFICE_SLIDE_CANVAS_WIDTH / 4} ${OFFICE_SLIDE_CANVAS_HEIGHT / 4}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">${thumbElements(slide)}</svg>`;
+
+/** 内联 SVG 图标（替代 Element Plus 图标，减少依赖） */
+const icons: Record<string, string> = {
+    plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>',
+    caretBottom: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>'
+};
 </script>
 
 <template>
     <div class="slide-editor">
         <div class="slide-toolbar">
             <el-button  type="primary" @click="addSlide">
-                <el-icon><Plus/></el-icon>{{ i18n("office.slide.addSlide") }}
+                <span class="svg-icon" v-html="icons.plus"></span>{{ i18n("office.slide.addSlide") }}
             </el-button>
             <el-button  @click="duplicateSlide">{{ i18n("office.slide.duplicateSlide") }}</el-button>
             <el-button  type="danger" :disabled="content.slides.length <= 1" @click="removeSlide">
@@ -233,7 +239,7 @@ const thumbSvg = (slide: Slide): string =>
             <el-button  @click="addText">{{ i18n("office.slide.addText") }}</el-button>
             <el-dropdown  @command="(cmd: OfficeShapeType) => addShape(cmd)">
                 <el-button >
-                    {{ i18n("office.slide.addShape") }}<el-icon class="el-icon--right"><CaretBottom/></el-icon>
+                    {{ i18n("office.slide.addShape") }}<span class="svg-icon" v-html="icons.caretBottom"></span>
                 </el-button>
                 <template #dropdown>
                     <el-dropdown-menu>
@@ -380,11 +386,6 @@ const thumbSvg = (slide: Slide): string =>
     </div>
 </template>
 
-<script lang="ts">
-import { CaretBottom, Plus } from "@element-plus/icons-vue";
-export default { name: "SlideEditor", components: { Plus, CaretBottom } };
-</script>
-
 <style lang="scss" scoped>
 .slide-editor {
     width: 100%;
@@ -497,5 +498,18 @@ export default { name: "SlideEditor", components: { Plus, CaretBottom } };
             }
         }
     }
+}
+
+.svg-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1em;
+    height: 1em;
+    margin-right: 4px;
+}
+.svg-icon :deep(svg) {
+    width: 100%;
+    height: 100%;
 }
 </style>

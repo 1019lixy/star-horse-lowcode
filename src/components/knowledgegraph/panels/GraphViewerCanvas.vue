@@ -292,6 +292,13 @@ defineExpose({
     toggleForce,
     handleRunPath,
 });
+
+/** 内联 SVG 图标（替代 Element Plus 图标，减少依赖） */
+const icons: Record<string, string> = {
+    refresh: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M3.51 15a9 9 0 012.12-9.36L12 3M20.49 9a9 9 0 01-2.12 9.36L12 21"/></svg>',
+    videoPlay: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>',
+    videoPause: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>',
+};
 </script>
 
 <template>
@@ -412,7 +419,7 @@ defineExpose({
         <div class="floating-actions">
             <el-button-group>
                 <el-button  @click="runLayoutOnce" :title="i18n('knowledgegraph.viewer.reset')">
-                    <el-icon><Refresh /></el-icon>
+                    <span class="svg-icon" v-html="icons.refresh"></span>
                 </el-button>
                 <el-button
 
@@ -420,21 +427,18 @@ defineExpose({
                     @click="toggleForce"
                     v-if="forceLayout"
                 >
-                    <el-icon><VideoPlay v-if="!forceLayout.running.value" /><VideoPause v-else /></el-icon>
+                    <span class="svg-icon" v-html="forceLayout && !forceLayout.running.value ? icons.videoPlay : icons.videoPause"></span>
                 </el-button>
             </el-button-group>
         </div>
     </div>
 </template>
 
-<script lang="ts">
-import { Refresh, VideoPlay, VideoPause } from "@element-plus/icons-vue";
-export default { components: { Refresh, VideoPlay, VideoPause } };
-</script>
 
 <style lang="scss" scoped>
 .kg-canvas-wrapper {
-    flex: 1;
+    width: 100%;
+    height: 100%;
     position: relative;
     overflow: hidden;
     background: #FAFAFA;
@@ -454,5 +458,18 @@ export default { components: { Refresh, VideoPlay, VideoPause } };
         display: flex;
         gap: 8px;
     }
+}
+
+.svg-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1em;
+    height: 1em;
+    margin-right: 4px;
+}
+.svg-icon :deep(svg) {
+    width: 100%;
+    height: 100%;
 }
 </style>

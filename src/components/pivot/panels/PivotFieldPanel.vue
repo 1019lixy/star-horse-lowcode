@@ -170,7 +170,8 @@ export default { components: { Edit, Close, Operation, DataLine } };
 
 <style lang="scss" scoped>
 .pivot-field-panel {
-    width: 260px;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     border-right: 1px solid var(--el-border-color);

@@ -67,30 +67,40 @@ const handleSave = () => {
     emits("save", data);
     ElMessage.success(i18n("api.message.saved"));
 };
+
+/** 内联 SVG 图标（替代 Element Plus 图标，减少依赖） */
+const icons: Record<string, string> = {
+    document: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2h8l6 6v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2z"/><polyline points="14 2 14 8 20 8"/></svg>',
+    arrowUp: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>',
+    arrowDown: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>',
+};
 </script>
 
 <template>
     <div class="api-orchestrator">
         <api-toolbar :state="state" @save="handleSave" />
-        <div class="designer-body">
-            <api-endpoint-panel :state="state" />
-            <api-chain-panel :state="state" />
-            <api-mock-panel :state="state" />
-        </div>
+        <el-splitter class="designer-body" direction="horizontal">
+            <el-splitter-panel size="240px" min="180px" max="380px">
+                <api-endpoint-panel :state="state" />
+            </el-splitter-panel>
+            <el-splitter-panel>
+                <api-chain-panel :state="state" />
+            </el-splitter-panel>
+            <el-splitter-panel size="360px" min="260px" max="560px">
+                <api-mock-panel :state="state" />
+            </el-splitter-panel>
+        </el-splitter>
         <div class="log-panel" :class="{ collapsed: logCollapsed }">
             <div class="log-header" @click="logCollapsed = !logCollapsed">
                 <span class="log-title">
-                    <el-icon><Document/></el-icon>
+                <span class="svg-icon" v-html="icons.document"></span>
                     {{ i18n("api.test.title") }}
                     <span v-if="state.testResults.value.length" class="log-count">
                         ({{ state.testResults.value.length }})
                     </span>
                 </span>
                 <div class="log-actions" @click.stop>
-                    <el-icon class="toggle-icon">
-                        <ArrowUp v-if="!logCollapsed"/>
-                        <ArrowDown v-else/>
-                    </el-icon>
+                    <span class="svg-icon" v-html="logCollapsed ? icons.arrowDown : icons.arrowUp"></span>
                 </div>
             </div>
             <div v-show="!logCollapsed" class="log-content">
@@ -114,11 +124,6 @@ const handleSave = () => {
     </div>
 </template>
 
-<script lang="ts">
-import { Document, ArrowUp, ArrowDown } from "@element-plus/icons-vue";
-export default { components: { Document, ArrowUp, ArrowDown } };
-</script>
-
 <style lang="scss" scoped>
 .api-orchestrator {
     display: flex;
@@ -130,7 +135,6 @@ export default { components: { Document, ArrowUp, ArrowDown } };
 
     .designer-body {
         flex: 1;
-        display: flex;
         overflow: hidden;
         min-height: 0;
     }
@@ -233,5 +237,16 @@ export default { components: { Document, ArrowUp, ArrowDown } };
             }
         }
     }
+}
+.svg-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1em;
+    height: 1em;
+}
+.svg-icon :deep(svg) {
+    width: 100%;
+    height: 100%;
 }
 </style>

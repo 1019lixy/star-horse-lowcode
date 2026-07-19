@@ -54,17 +54,23 @@ const handleExport = () => {
             :readonly="readonly"
             @export="handleExport"
         />
-        <div class="whiteboard-body">
-            <wb-layer-panel
-                :designer="designer"
-                :readonly="readonly"
-            />
-            <wb-canvas :designer="designer" />
-            <wb-property-panel
-                :designer="designer"
-                :readonly="readonly"
-            />
-        </div>
+        <el-splitter class="whiteboard-body" direction="horizontal">
+            <el-splitter-panel size="220px" min="160px" max="360px">
+                <wb-layer-panel
+                    :designer="designer"
+                    :readonly="readonly"
+                />
+            </el-splitter-panel>
+            <el-splitter-panel>
+                <wb-canvas :designer="designer" />
+            </el-splitter-panel>
+            <el-splitter-panel size="260px" min="200px" max="420px">
+                <wb-property-panel
+                    :designer="designer"
+                    :readonly="readonly"
+                />
+            </el-splitter-panel>
+        </el-splitter>
 
         <wb-export-dialog
             v-model:visible="exportVisible"
@@ -84,7 +90,6 @@ const handleExport = () => {
 
     .whiteboard-body {
         flex: 1;
-        display: flex;
         overflow: hidden;
     }
 }

@@ -15,6 +15,12 @@ const handleRemove = (id: string, e: Event) => {
     e.stopPropagation();
     props.state.removeEndpoint(id);
 };
+
+/** 内联 SVG 图标（替代 Element Plus 图标，减少依赖） */
+const icons: Record<string, string> = {
+    plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>',
+    delete: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M5 6v14a2 2 0 002 2h10a2 2 0 002-2V6M10 11v6M14 11v6"/></svg>'
+};
 </script>
 
 <template>
@@ -22,7 +28,7 @@ const handleRemove = (id: string, e: Event) => {
         <div class="panel-title">
             <span>{{ i18n("api.endpoint.title") }}</span>
             <el-button  type="primary" plain @click="handleAdd">
-                <el-icon><Plus/></el-icon>
+                <span class="svg-icon" v-html="icons.plus"></span>
                 {{ i18n("api.btn.addEndpoint") }}
             </el-button>
         </div>
@@ -51,7 +57,7 @@ const handleRemove = (id: string, e: Event) => {
 
                         @click="handleRemove(ep.id, $event)"
                     >
-                        <el-icon><Delete/></el-icon>
+                        <span class="svg-icon" v-html="icons.delete"></span>
                     </el-button>
                 </div>
             </div>
@@ -59,14 +65,11 @@ const handleRemove = (id: string, e: Event) => {
     </div>
 </template>
 
-<script lang="ts">
-import { Plus, Delete } from "@element-plus/icons-vue";
-export default { components: { Plus, Delete } };
-</script>
 
 <style lang="scss" scoped>
 .api-endpoint-panel {
-    width: 240px;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     border-right: 1px solid var(--el-border-color);
@@ -153,5 +156,18 @@ export default { components: { Plus, Delete } };
             }
         }
     }
+}
+
+.svg-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1em;
+    height: 1em;
+    margin-right: 4px;
+}
+.svg-icon :deep(svg) {
+    width: 100%;
+    height: 100%;
 }
 </style>

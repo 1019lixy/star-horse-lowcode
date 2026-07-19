@@ -1,8 +1,8 @@
 <script setup lang="ts" name="GanttTaskListPanel">
-import { computed } from "vue";
+import { computed, ref, watch } from "vue";
 import { i18n } from "@/lang";
 import type { GanttDesigner } from "../composables/useGanttDesigner";
-import { GANTT_PRIORITY_PRESETS, GANTT_STATUS_PRESETS } from "../constants";
+import { daysBetween } from "../utils/GanttDateUtils";
 
 const props = defineProps<{
     designer: GanttDesigner;
@@ -13,158 +13,295 @@ const emit = defineEmits<{
     (e: "edit", id: string): void;
 }>();
 
-/** 构建树形结构 */
-const treeTasks = computed(() => {
-    const tasks = props.designer.sortedTasks.value;
-    const map = new Map<string, any>();
-    const roots: any[] = [];
-    tasks.forEach((t) => {
-        map.set(t.id, { ...t, children: [] });
-    });
-    tasks.forEach((t) => {
-        const node = map.get(t.id);
-        if (t.parentId && map.has(t.parentId)) {
-            map.get(t.parentId).children.push(node);
-        } else {
-            roots.push(node);
-        }
-    });
-    return roots;
-});
+const listScrollRef = ref<HTMLElement>();
 
-const getStatusLabel = (status: string) =>
-    GANTT_STATUS_PRESETS.find((s) => s.value === status)?.label ?? status;
+const rowHeight = computed(() => props.designer.state.config.rowHeight);
+const selectedTaskId = computed(() => props.designer.selectedTaskId.value);
 
-const getPriorityColor = (priority: string) =>
-    GANTT_PRIORITY_PRESETS.find((p) => p.value === priority)?.color ?? "#909399";
+/** 扁平化任务列表（与甘特图排序一致） */
+const flatTasks = computed(() => props.designer.sortedTasks.value);
 
+/** 计算工期天数 */
+const getDuration = (task: { startDate: string; endDate: string }) => {
+    return daysBetween(task.startDate, task.endDate) - 1;
+};
+
+/** 短日期格式 MM-DD */
+const shortDate = (dateStr: string) => {
+    if (!dateStr || dateStr.length < 10) return dateStr;
+    return dateStr.slice(5);
+};
+
+/** 行点击 */
 const handleRowClick = (id: string) => {
     props.designer.selectTask(id);
 };
 
-const handleEdit = (id: string) => {
+/** 双击编辑 */
+const handleRowDblClick = (id: string) => {
     emit("edit", id);
 };
 
-const handleAddChild = (parentId: string) => {
-    props.designer.addChildTask(parentId);
+/** 拖拽排序 */
+const dragTaskId = ref<string | null>(null);
+const dragOverTaskId = ref<string | null>(null);
+
+const handleDragStart = (e: DragEvent, id: string) => {
+    dragTaskId.value = id;
+    e.dataTransfer?.setData("text/plain", id);
+    if (e.dataTransfer) e.dataTransfer.effectAllowed = "move";
 };
+
+const handleDragOver = (e: DragEvent, targetId: string) => {
+    e.preventDefault();
+    if (e.dataTransfer) e.dataTransfer.dropEffect = "move";
+    dragOverTaskId.value = targetId;
+};
+
+const handleDragLeave = () => {
+    dragOverTaskId.value = null;
+};
+
+const handleDrop = (e: DragEvent, targetId: string) => {
+    e.preventDefault();
+    const sourceId = dragTaskId.value;
+    if (!sourceId || sourceId === targetId) return;
+    const source = props.designer.state.tasks.find(t => t.id === sourceId);
+    const target = props.designer.state.tasks.find(t => t.id === targetId);
+    if (!source || !target) return;
+    if (source.parentId !== target.parentId) return; // 只允许同级拖拽
+    const tempOrder = source.order;
+    source.order = target.order;
+    target.order = tempOrder;
+    dragTaskId.value = null;
+    dragOverTaskId.value = null;
+};
+
+const handleDragEnd = () => {
+    dragTaskId.value = null;
+    dragOverTaskId.value = null;
+};
+
+/** 暴露滚动元素供 GanttChart 同步 */
+defineExpose({ listScrollRef });
+
+/** 监听选中任务，自动滚动到可见区域 */
+watch(() => props.designer.selectedTaskId.value, (id) => {
+    if (!id) return;
+    const idx = flatTasks.value.findIndex(t => t.id === id);
+    if (idx < 0) return;
+    const container = listScrollRef.value;
+    if (!container) return;
+    const rowY = idx * rowHeight.value;
+    const headerHeight = 56; // 表头高度
+    const scrollTop = container.scrollTop;
+    const viewHeight = container.clientHeight - headerHeight;
+    const relativeY = rowY - (scrollTop - headerHeight);
+    if (relativeY < 0 || relativeY > viewHeight - rowHeight.value) {
+        container.scrollTop = rowY - viewHeight / 2 + rowHeight.value / 2 + headerHeight;
+    }
+});
 </script>
 
 <template>
     <div class="gantt-task-list-panel">
-        <div class="panel-header">
-            <span>{{ i18n("gantt.taskList.title") }}</span>
-            <el-button
-
-                text
-                :disabled="readonly"
-                @click="designer.addTask()"
-            >
-                <el-icon><Plus/></el-icon>
-            </el-button>
+        <!-- 表头 -->
+        <div class="list-header">
+            <div class="header-cell cell-index">#</div>
+            <div class="header-cell cell-name">{{ i18n("gantt.task.name") }}</div>
+            <div class="header-cell cell-date">{{ i18n("gantt.task.startDate") }}</div>
+            <div class="header-cell cell-date">{{ i18n("gantt.task.endDate") }}</div>
+            <div class="header-cell cell-duration">工期</div>
         </div>
-        <div class="tree-container">
-            <el-tree
-                :data="treeTasks"
-                node-key="id"
-                :props="{ label: 'name', children: 'children' }"
-                default-expand-all
-                :highlight-current="true"
-                :current-node-key="designer.selectedTaskId"
-                @node-click="(node: any) => handleRowClick(node.id)"
+        <!-- 行列表 -->
+        <div class="list-scroll" ref="listScrollRef">
+            <div
+                v-for="(task, idx) in flatTasks"
+                :key="task.id"
+                class="list-row"
+                :class="{
+                    selected: task.id === selectedTaskId,
+                    'row-even': idx % 2 === 0,
+                    'row-odd': idx % 2 !== 0,
+                    dragging: task.id === dragTaskId,
+                    'drag-over': task.id === dragOverTaskId
+                }"
+                :style="{ height: `${rowHeight}px` }"
+                draggable="true"
+                @click="handleRowClick(task.id)"
+                @dblclick="handleRowDblClick(task.id)"
+                @dragstart="(e) => handleDragStart(e, task.id)"
+                @dragover="(e) => handleDragOver(e, task.id)"
+                @dragleave="handleDragLeave"
+                @drop="(e) => handleDrop(e, task.id)"
+                @dragend="handleDragEnd"
             >
-                <template #default="{ data }">
-                    <div class="task-row" :class="{ selected: data.id === designer.selectedTaskId }">
-                        <span class="task-name" :style="{ paddingLeft: `${data.level * 12}px` }">
-                            <el-icon v-if="data.isMilestone" class="milestone-icon">
-                                <Flag/>
-                            </el-icon>
-                            {{ data.name }}
-                        </span>
-                        <span class="task-status">{{ getStatusLabel(data.status) }}</span>
-                        <span class="task-actions" v-if="!readonly">
-                            <el-tag :color="getPriorityColor(data.priority)"  effect="dark">
-                                {{ data.progress }}%
-                            </el-tag>
-                            <el-button  text @click.stop="handleEdit(data.id)">
-                                <el-icon><Edit/></el-icon>
-                            </el-button>
-                            <el-button  text @click.stop="handleAddChild(data.id)">
-                                <el-icon><Plus/></el-icon>
-                            </el-button>
-                        </span>
-                    </div>
-                </template>
-            </el-tree>
+                <div class="row-cell cell-index">{{ idx + 1 }}</div>
+                <div class="row-cell cell-name" :style="{ paddingLeft: `${task.level * 16 + 8}px` }">
+                    <span class="tree-indent" v-if="task.level > 0">└ </span>
+                    <svg v-if="task.isMilestone" class="milestone-icon" viewBox="0 0 16 16" width="14" height="14">
+                        <path d="M8 1L15 8L8 15L1 8Z" fill="#E6A23C" stroke="#C88520" stroke-width="1"/>
+                    </svg>
+                    <span class="task-name-text">{{ task.name }}</span>
+                </div>
+                <div class="row-cell cell-date">{{ shortDate(task.startDate) }}</div>
+                <div class="row-cell cell-date">{{ shortDate(task.endDate) }}</div>
+                <div class="row-cell cell-duration">{{ getDuration(task) }}天</div>
+            </div>
         </div>
     </div>
 </template>
 
-<script lang="ts">
-import { Plus, Edit, Flag } from "@element-plus/icons-vue";
-export default { components: { Plus, Edit, Flag } };
-</script>
-
 <style lang="scss" scoped>
 .gantt-task-list-panel {
-    width: 280px;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     border-right: 1px solid var(--el-border-color);
     background: var(--el-bg-color);
     overflow: hidden;
+    user-select: none;
 
-    .panel-header {
+    .list-header {
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        padding: 8px 12px;
+        height: 56px;
+        min-height: 56px;
+        border-bottom: 2px solid var(--el-border-color);
+        background: var(--el-fill-color-light);
         font-weight: 600;
-        border-bottom: 1px solid var(--el-border-color);
-    }
+        font-size: 12px;
+        color: var(--el-text-color-secondary);
 
-    .tree-container {
-        flex: 1;
-        overflow: auto;
-        padding: 4px;
-    }
-
-    .task-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex: 1;
-        padding-right: 8px;
-        gap: 8px;
-
-        &.selected {
-            background: var(--el-color-primary-light-9);
-        }
-
-        .task-name {
+        .header-cell {
             display: flex;
             align-items: center;
-            gap: 4px;
-            flex: 1;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            justify-content: center;
+            padding: 0 4px;
+            border-right: 1px solid var(--el-border-color-lighter);
+            height: 100%;
 
-            .milestone-icon {
-                color: var(--el-color-warning);
+            &.cell-index {
+                width: 32px;
+                min-width: 32px;
+            }
+            &.cell-name {
+                flex: 1;
+                min-width: 0;
+                justify-content: flex-start;
+                padding-left: 8px;
+            }
+            &.cell-date {
+                width: 72px;
+                min-width: 72px;
+            }
+            &.cell-duration {
+                width: 40px;
+                min-width: 40px;
+                border-right: none;
             }
         }
+    }
 
-        .task-status {
-            font-size: 12px;
-            color: var(--el-text-color-secondary);
+    .list-scroll {
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+
+        &::-webkit-scrollbar {
+            width: 6px;
+        }
+        &::-webkit-scrollbar-thumb {
+            background: var(--el-border-color);
+            border-radius: 3px;
+        }
+    }
+
+    .list-row {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        border-bottom: 1px solid var(--el-border-color-lighter);
+        transition: background 0.15s;
+
+        &.row-even {
+            background: var(--el-bg-color);
+        }
+        &.row-odd {
+            background: var(--el-fill-color-lighter);
+        }
+        &:hover {
+            background: var(--el-fill-color);
+        }
+        &.selected {
+            background: var(--el-color-primary-light-8) !important;
         }
 
-        .task-actions {
+        .row-cell {
             display: flex;
             align-items: center;
-            gap: 4px;
+            font-size: 12px;
+            padding: 0 4px;
+            height: 100%;
+            border-right: 1px solid var(--el-border-color-lighter);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            &.cell-index {
+                width: 32px;
+                min-width: 32px;
+                justify-content: center;
+                color: var(--el-text-color-secondary);
+                font-size: 11px;
+            }
+            &.cell-name {
+                flex: 1;
+                min-width: 0;
+                gap: 2px;
+
+                .tree-indent {
+                    color: var(--el-text-color-placeholder);
+                    font-size: 11px;
+                    flex-shrink: 0;
+                }
+
+                .milestone-icon {
+                    flex-shrink: 0;
+                    margin-right: 2px;
+                }
+
+                .task-name-text {
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+            }
+            &.cell-date {
+                width: 72px;
+                min-width: 72px;
+                justify-content: center;
+                color: var(--el-text-color-regular);
+                font-size: 11px;
+            }
+            &.cell-duration {
+                width: 40px;
+                min-width: 40px;
+                justify-content: center;
+                color: var(--el-text-color-secondary);
+                font-size: 11px;
+                border-right: none;
+            }
+        }
+    }
+
+    .list-row {
+        &.dragging {
+            opacity: 0.5;
+            background: var(--el-color-primary-light-9);
+        }
+        &.drag-over {
+            border-top: 2px solid var(--el-color-primary);
         }
     }
 }

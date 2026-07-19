@@ -164,41 +164,45 @@ const handleRename = (id: string, name: string) => designer.renameDoc(id, name);
             @redo="handleRedo"
             @switch-type="handleSwitchType"
         />
-        <div class="office-main">
-            <div class="office-left">
-                <office-document-list
-                    :documents="designer.state.documents"
-                    :current-doc-id="designer.state.currentDocId"
-                    @select="handleSelect"
-                    @create="handleCreate"
-                    @delete="handleDelete"
-                    @rename="handleRename"
-                />
-            </div>
-            <div class="office-right">
-                <div v-if="!currentDoc" class="no-doc">
-                    {{ i18n("office.message.noDocSelected") }}
+        <el-splitter class="office-main" direction="horizontal">
+            <el-splitter-panel size="240px" min="180px" max="380px">
+                <div class="office-left">
+                    <office-document-list
+                        :documents="designer.state.documents"
+                        :current-doc-id="designer.state.currentDocId"
+                        @select="handleSelect"
+                        @create="handleCreate"
+                        @delete="handleDelete"
+                        @rename="handleRename"
+                    />
                 </div>
-                <word-editor
-                    v-else-if="currentDoc.type === 'word'"
-                    :key="currentDoc.id"
-                    :content="currentDoc.wordContent ?? { html: '' }"
-                    @update="handleWordUpdate"
-                />
-                <excel-editor
-                    v-else-if="currentDoc.type === 'excel'"
-                    :key="currentDoc.id"
-                    :content="currentDoc.excelContent ?? { sheets: [] }"
-                    @update="handleExcelUpdate"
-                />
-                <slide-editor
-                    v-else-if="currentDoc.type === 'slide'"
-                    :key="currentDoc.id"
-                    :content="currentDoc.slideContent ?? { slides: [], canvasWidth: 960, canvasHeight: 540 }"
-                    @update="handleSlideUpdate"
-                />
-            </div>
-        </div>
+            </el-splitter-panel>
+            <el-splitter-panel>
+                <div class="office-right">
+                    <div v-if="!currentDoc" class="no-doc">
+                        {{ i18n("office.message.noDocSelected") }}
+                    </div>
+                    <word-editor
+                        v-else-if="currentDoc.type === 'word'"
+                        :key="currentDoc.id"
+                        :content="currentDoc.wordContent ?? { html: '' }"
+                        @update="handleWordUpdate"
+                    />
+                    <excel-editor
+                        v-else-if="currentDoc.type === 'excel'"
+                        :key="currentDoc.id"
+                        :content="currentDoc.excelContent ?? { sheets: [] }"
+                        @update="handleExcelUpdate"
+                    />
+                    <slide-editor
+                        v-else-if="currentDoc.type === 'slide'"
+                        :key="currentDoc.id"
+                        :content="currentDoc.slideContent ?? { slides: [], canvasWidth: 960, canvasHeight: 540 }"
+                        @update="handleSlideUpdate"
+                    />
+                </div>
+            </el-splitter-panel>
+        </el-splitter>
         <!-- 新建文档对话框 -->
         <el-dialog
             v-model="designer.createDialogVisible.value"
@@ -247,17 +251,17 @@ export default { name: "OfficeEditor" };
 
     .office-main {
         flex: 1;
-        display: flex;
         overflow: hidden;
 
         .office-left {
-            width: 240px;
-            flex-shrink: 0;
+            width: 100%;
+            height: 100%;
             overflow: hidden;
         }
 
         .office-right {
-            flex: 1;
+            width: 100%;
+            height: 100%;
             overflow: hidden;
             display: flex;
             flex-direction: column;

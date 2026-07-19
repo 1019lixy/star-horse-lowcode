@@ -36,6 +36,7 @@ const createInitialState = (diagram?: Partial<DiagramData>): DiagramDesignerStat
         readonly: false,
         tool: "select",
         connecting: null,
+        clipboard: [],
     };
 };
 
@@ -52,7 +53,11 @@ export function useDiagramDesigner(initial?: Partial<DiagramData>) {
         state.diagram.edges.filter((e) => state.selectedEdgeIds.includes(e.id)),
     );
 
-    const selectNode = (id: string, multi = false) => {
+    const selectNode = (id: string | null, multi = false) => {
+        if (id === null) {
+            state.selectedNodeIds = [];
+            return;
+        }
         if (multi) {
             const idx = state.selectedNodeIds.indexOf(id);
             if (idx >= 0) state.selectedNodeIds.splice(idx, 1);
@@ -63,7 +68,11 @@ export function useDiagramDesigner(initial?: Partial<DiagramData>) {
         }
     };
 
-    const selectEdge = (id: string, multi = false) => {
+    const selectEdge = (id: string | null, multi = false) => {
+        if (id === null) {
+            state.selectedEdgeIds = [];
+            return;
+        }
         if (multi) {
             const idx = state.selectedEdgeIds.indexOf(id);
             if (idx >= 0) state.selectedEdgeIds.splice(idx, 1);
@@ -102,6 +111,7 @@ export function useDiagramDesigner(initial?: Partial<DiagramData>) {
     };
 
     const deleteNodes = (ids: string[] = state.selectedNodeIds) => {
+        if (ids.length === 0) return;
         state.diagram.nodes = state.diagram.nodes.filter((n) => !ids.includes(n.id));
         state.diagram.edges = state.diagram.edges.filter((e) => !ids.includes(e.source) && !ids.includes(e.target));
         state.diagram.layers.forEach((l) => {
@@ -110,6 +120,10 @@ export function useDiagramDesigner(initial?: Partial<DiagramData>) {
         });
         state.selectedNodeIds = state.selectedNodeIds.filter((id) => !ids.includes(id));
         pushHistory();
+    };
+
+    const removeNode = (id: string) => {
+        deleteNodes([id]);
     };
 
     const addEdge = (edge: Omit<DiagramEdge, "id">): DiagramEdge => {
@@ -131,11 +145,76 @@ export function useDiagramDesigner(initial?: Partial<DiagramData>) {
     };
 
     const deleteEdges = (ids: string[] = state.selectedEdgeIds) => {
+        if (ids.length === 0) return;
         state.diagram.edges = state.diagram.edges.filter((e) => !ids.includes(e.id));
         state.diagram.layers.forEach((l) => {
             l.edgeIds = l.edgeIds.filter((id) => !ids.includes(id));
         });
         state.selectedEdgeIds = state.selectedEdgeIds.filter((id) => !ids.includes(id));
+        pushHistory();
+    };
+
+    const removeEdge = (id: string) => {
+        deleteEdges([id]);
+    };
+
+    // 全选
+    const selectAll = () => {
+        state.selectedNodeIds = state.diagram.nodes.map((n) => n.id);
+        state.selectedEdgeIds = [];
+    };
+
+    // 移动节点
+    const moveNode = (id: string, dx: number, dy: number) => {
+        const node = state.diagram.nodes.find((n) => n.id === id);
+        if (!node || node.locked) return;
+        node.x = snapValue(node.x + dx);
+        node.y = snapValue(node.y + dy);
+    };
+
+    // 复制/粘贴
+    const copySelected = () => {
+        const nodes = selectedNodes.value;
+        if (nodes.length === 0 && selectedEdges.value.length === 0) return;
+        state.clipboard = JSON.parse(JSON.stringify(nodes));
+    };
+
+    const paste = () => {
+        if (state.clipboard.length === 0) return;
+        const offset = 20;
+        const newNodeIds: Record<string, string> = {};
+        state.selectedNodeIds = [];
+        for (const clipNode of state.clipboard) {
+            const newId = `node_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+            newNodeIds[clipNode.id] = newId;
+            const node: DiagramNode = {
+                ...clipNode,
+                id: newId,
+                x: clipNode.x + offset,
+                y: clipNode.y + offset,
+            };
+            state.diagram.nodes.push(node);
+            const layer = state.diagram.layers.find((l) => l.id === state.diagram.activeLayerId);
+            layer?.nodeIds.push(node.id);
+            state.selectedNodeIds.push(node.id);
+        }
+        pushHistory();
+    };
+
+    // 置顶/置底
+    const bringToFront = (id: string) => {
+        const idx = state.diagram.nodes.findIndex((n) => n.id === id);
+        if (idx < 0) return;
+        const [node] = state.diagram.nodes.splice(idx, 1);
+        state.diagram.nodes.push(node);
+        pushHistory();
+    };
+
+    const sendToBack = (id: string) => {
+        const idx = state.diagram.nodes.findIndex((n) => n.id === id);
+        if (idx < 0) return;
+        const [node] = state.diagram.nodes.splice(idx, 1);
+        state.diagram.nodes.unshift(node);
         pushHistory();
     };
 
@@ -220,6 +299,33 @@ export function useDiagramDesigner(initial?: Partial<DiagramData>) {
         return Math.round(v / state.diagram.canvas.snapThreshold) * state.diagram.canvas.snapThreshold;
     };
 
+    // 适应画布
+    const fitView = () => {
+        if (state.diagram.nodes.length === 0) {
+            zoomReset();
+            return;
+        }
+        let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+        for (const n of state.diagram.nodes) {
+            minX = Math.min(minX, n.x);
+            minY = Math.min(minY, n.y);
+            maxX = Math.max(maxX, n.x + n.width);
+            maxY = Math.max(maxY, n.y + n.height);
+        }
+        const padding = 50;
+        minX -= padding;
+        minY -= padding;
+        maxX += padding;
+        maxY += padding;
+        const contentW = maxX - minX;
+        const contentH = maxY - minY;
+        if (contentW <= 0 || contentH <= 0) return;
+        const zoom = Math.min(800 / contentW, 600 / contentH, 2);
+        setZoom(zoom);
+        state.diagram.canvas.panX = -minX * zoom;
+        state.diagram.canvas.panY = -minY * zoom;
+    };
+
     return {
         state,
         selectedNodes,
@@ -232,9 +338,17 @@ export function useDiagramDesigner(initial?: Partial<DiagramData>) {
         updateNode,
         updateNodeStyle,
         deleteNodes,
+        removeNode,
         addEdge,
         updateEdge,
         deleteEdges,
+        removeEdge,
+        selectAll,
+        moveNode,
+        copySelected,
+        paste,
+        bringToFront,
+        sendToBack,
         undo,
         redo,
         canUndo,
@@ -248,6 +362,7 @@ export function useDiagramDesigner(initial?: Partial<DiagramData>) {
         setPan,
         toggleGrid,
         toggleSnap,
+        fitView,
         loadDiagram,
         getDiagram,
         clearDiagram,

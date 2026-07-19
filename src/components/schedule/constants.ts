@@ -9,13 +9,13 @@ import type {
     ScheduleEventType,
     ScheduleResource,
     ScheduleResourceTypePreset,
-    ScheduleResourceType,
     ScheduleViewMode,
 } from "./types";
 
 /** 默认配置 */
 export const DEFAULT_SCHEDULE_CONFIG: ScheduleConfig = {
     viewMode: "week",
+    rowHeight: 40,
     cellHeight: 30,
     cellWidth: 50,
     dayStartHour: 8,

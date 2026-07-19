@@ -64,6 +64,13 @@ const handleRename = (doc: OfficeDocument) => {
             /* 取消 */
         });
 };
+
+/** 内联 SVG 图标（替代 Element Plus 图标，减少依赖） */
+const icons: Record<string, string> = {
+    plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>',
+    editPen: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>',
+    delete: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M5 6v14a2 2 0 002 2h10a2 2 0 002-2V6M10 11v6M14 11v6"/></svg>'
+};
 </script>
 
 <template>
@@ -71,7 +78,7 @@ const handleRename = (doc: OfficeDocument) => {
         <div class="doc-list-header">
             <span class="title">{{ i18n("office.docList.title") }}</span>
             <el-button  type="primary" @click="emit('create')">
-                <el-icon><Plus/></el-icon>
+                <span class="svg-icon" v-html="icons.plus"></span>
                 {{ i18n("office.docList.create") }}
             </el-button>
         </div>
@@ -97,10 +104,10 @@ const handleRename = (doc: OfficeDocument) => {
                 </div>
                 <div class="doc-actions" @click.stop>
                     <el-button  link @click="handleRename(doc)">
-                        <el-icon><EditPen/></el-icon>
+                        <span class="svg-icon" v-html="icons.editPen"></span>
                     </el-button>
                     <el-button  link type="danger" @click="handleDelete(doc)">
-                        <el-icon><Delete/></el-icon>
+                        <span class="svg-icon" v-html="icons.delete"></span>
                     </el-button>
                 </div>
             </div>
@@ -108,10 +115,6 @@ const handleRename = (doc: OfficeDocument) => {
     </div>
 </template>
 
-<script lang="ts">
-import { Delete, EditPen, Plus } from "@element-plus/icons-vue";
-export default { components: { Plus, EditPen, Delete } };
-</script>
 
 <style lang="scss" scoped>
 .office-doc-list {
@@ -210,5 +213,18 @@ export default { components: { Plus, EditPen, Delete } };
             }
         }
     }
+}
+
+.svg-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1em;
+    height: 1em;
+    margin-right: 4px;
+}
+.svg-icon :deep(svg) {
+    width: 100%;
+    height: 100%;
 }
 </style>

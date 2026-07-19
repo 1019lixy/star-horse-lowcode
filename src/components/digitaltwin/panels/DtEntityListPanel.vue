@@ -8,7 +8,7 @@ import { computed } from "vue";
 import { i18n } from "@/lang";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { DT_ENTITY_TYPE_PRESETS, DT_STATUS_PRESETS, dtGetStatusPreset } from "../constants";
-import type { DtEntityStatus, DtEntityType } from "../types";
+import type { DtEntityStatus } from "../types";
 import type { UseDigitalTwinDesignerReturn } from "../composables/useDigitalTwinDesigner";
 
 const props = defineProps<{
@@ -69,6 +69,13 @@ const statusColor = (status: DtEntityStatus): string => dtGetStatusPreset(status
 
 // 阻止未使用变量告警
 void DT_STATUS_PRESETS;
+
+/** 内联 SVG 图标（替代 Element Plus 图标，减少依赖） */
+const icons: Record<string, string> = {
+    plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>',
+    edit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
+    delete: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M5 6v14a2 2 0 002 2h10a2 2 0 002-2V6M10 11v6M14 11v6"/></svg>'
+};
 </script>
 
 <template>
@@ -76,7 +83,7 @@ void DT_STATUS_PRESETS;
         <div class="panel-header">
             <span class="panel-title">{{ i18n("digitaltwin.entity.title") }}</span>
             <el-button  type="primary" @click="emit('add-entity')">
-                <el-icon><Plus /></el-icon>
+                <span class="svg-icon" v-html="icons.plus"></span>
                 {{ i18n("digitaltwin.entity.add") }}
             </el-button>
         </div>
@@ -111,9 +118,11 @@ void DT_STATUS_PRESETS;
                         <span class="entity-name">{{ item.name }}</span>
                         <span class="entity-actions">
                             <el-button  link @click.stop="handleEdit(item.id)">
+                                <span class="svg-icon" v-html="icons.edit"></span>
                                 {{ i18n("digitaltwin.entity.edit") }}
                             </el-button>
                             <el-button  link type="danger" @click.stop="handleDelete(item.id)">
+                                <span class="svg-icon" v-html="icons.delete"></span>
                                 {{ i18n("digitaltwin.entity.delete") }}
                             </el-button>
                         </span>
@@ -124,10 +133,6 @@ void DT_STATUS_PRESETS;
     </div>
 </template>
 
-<script lang="ts">
-import { Plus } from "@element-plus/icons-vue";
-export default { components: { Plus } };
-</script>
 
 <style lang="scss" scoped>
 .dt-entity-list {
@@ -216,5 +221,18 @@ export default { components: { Plus } };
             gap: 4px;
         }
     }
+}
+
+.svg-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1em;
+    height: 1em;
+    margin-right: 4px;
+}
+.svg-icon :deep(svg) {
+    width: 100%;
+    height: 100%;
 }
 </style>

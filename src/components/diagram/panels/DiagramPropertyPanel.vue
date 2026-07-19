@@ -1,5 +1,5 @@
 <script setup lang="ts" name="DiagramPropertyPanel">
-import { computed } from "vue";
+import { computed, ref, watch } from "vue";
 import { i18n } from "@/lang";
 import type { UseDiagramDesignerReturn } from "../composables/useDiagramDesigner";
 
@@ -9,6 +9,20 @@ const props = defineProps<{
 
 const selected = computed(() => props.designer.selectedNode.value);
 const selectedEdge = computed(() => props.designer.selectedEdges.value[0] || null);
+
+// 当前 tab 自动跟随选中
+const activeTab = ref("node");
+
+watch(
+    () => [props.designer.state.selectedNodeIds.length, props.designer.state.selectedEdgeIds.length],
+    ([nodeCount, edgeCount]) => {
+        if ((edgeCount as number) > 0) {
+            activeTab.value = "edge";
+        } else {
+            activeTab.value = "node";
+        }
+    },
+);
 
 const updateNode = (patch: Record<string, any>) => {
     if (!selected.value) return;
@@ -20,21 +34,46 @@ const updateStyle = (patch: Record<string, any>) => {
     props.designer.updateNodeStyle(selected.value.id, patch);
 };
 
-const updateEdge = (patch: Record<string, any>) => {
+const updateEdge = (patch: Partial<Record<string, any>>) => {
     if (!selectedEdge.value) return;
     props.designer.updateEdge(selectedEdge.value.id, patch);
 };
+
+const updateEdgeStyle = (patch: Record<string, any>) => {
+    if (!selectedEdge.value) return;
+    props.designer.updateEdge(selectedEdge.value.id, {
+        style: { ...(selectedEdge.value.style || {}), ...patch },
+    });
+};
+
+// 获取源/目标节点名
+const sourceNode = computed(() => {
+    if (!selectedEdge.value) return "";
+    const n = props.designer.state.diagram.nodes.find((nd) => nd.id === selectedEdge.value!.source);
+    return n ? n.text || n.id : selectedEdge.value.source;
+});
+const targetNode = computed(() => {
+    if (!selectedEdge.value) return "";
+    const n = props.designer.state.diagram.nodes.find((nd) => nd.id === selectedEdge.value!.target);
+    return n ? n.text || n.id : selectedEdge.value.target;
+});
 </script>
 
 <template>
     <div class="diagram-property-panel">
-        <el-tabs class="prop-tabs">
+        <el-tabs v-model="activeTab" class="prop-tabs">
             <el-tab-pane :label="i18n('diagram.property.node')" name="node">
                 <div v-if="!selected" class="empty-tip">
                     {{ i18n('diagram.property.selectFirst') }}
                 </div>
-                <el-form v-else  label-width="80px" class="prop-form">
+                <el-form v-else label-width="80px" class="prop-form">
                     <el-divider content-position="left">{{ i18n('diagram.property.basic') }}</el-divider>
+                    <el-form-item :label="i18n('diagram.property.id')">
+                        <el-input :model-value="selected.id" disabled />
+                    </el-form-item>
+                    <el-form-item :label="i18n('diagram.property.type')">
+                        <el-input :model-value="selected.type" disabled />
+                    </el-form-item>
                     <el-form-item :label="i18n('diagram.property.text')">
                         <el-input :model-value="selected.text" @change="(v) => updateNode({ text: v })"/>
                     </el-form-item>
@@ -71,10 +110,22 @@ const updateEdge = (patch: Record<string, any>) => {
                 <div v-if="!selectedEdge" class="empty-tip">
                     {{ i18n('diagram.property.selectEdgeFirst') }}
                 </div>
-                <el-form v-else  label-width="80px" class="prop-form">
+                <el-form v-else label-width="80px" class="prop-form">
+                    <el-divider content-position="left">{{ i18n('diagram.property.basic') }}</el-divider>
+                    <el-form-item :label="i18n('diagram.property.id')">
+                        <el-input :model-value="selectedEdge.id" disabled />
+                    </el-form-item>
+                    <el-form-item :label="i18n('diagram.property.source')">
+                        <el-input :model-value="sourceNode" disabled />
+                    </el-form-item>
+                    <el-form-item :label="i18n('diagram.property.target')">
+                        <el-input :model-value="targetNode" disabled />
+                    </el-form-item>
                     <el-form-item :label="i18n('diagram.property.label')">
                         <el-input :model-value="selectedEdge.label" @change="(v) => updateEdge({ label: v })"/>
                     </el-form-item>
+
+                    <el-divider content-position="left">{{ i18n('diagram.property.style') }}</el-divider>
                     <el-form-item :label="i18n('diagram.property.edgeType')">
                         <el-select :model-value="selectedEdge.type" @change="(v) => updateEdge({ type: v })">
                             <el-option :label="i18n('diagram.edge.straight')" value="straight"/>
@@ -83,8 +134,18 @@ const updateEdge = (patch: Record<string, any>) => {
                             <el-option :label="i18n('diagram.edge.orthogonal')" value="orthogonal"/>
                         </el-select>
                     </el-form-item>
+                    <el-form-item :label="i18n('diagram.property.lineStyle')">
+                        <el-select :model-value="selectedEdge.style?.lineStyle || 'solid'" @change="(v) => updateEdgeStyle({ lineStyle: v })">
+                            <el-option :label="i18n('diagram.edge.solid')" value="solid"/>
+                            <el-option :label="i18n('diagram.edge.dashed')" value="dashed"/>
+                            <el-option :label="i18n('diagram.edge.dotted')" value="dotted"/>
+                        </el-select>
+                    </el-form-item>
                     <el-form-item :label="i18n('diagram.property.stroke')">
-                        <el-color-picker :model-value="selectedEdge.style?.stroke" @change="(v) => updateEdge({ style: { ...selectedEdge!.style, stroke: v } })"/>
+                        <el-color-picker :model-value="selectedEdge.style?.stroke" @change="(v) => updateEdgeStyle({ stroke: v })"/>
+                    </el-form-item>
+                    <el-form-item :label="i18n('diagram.property.strokeWidth')">
+                        <el-input-number :model-value="selectedEdge.style?.strokeWidth" :min="1" :max="10" @change="(v) => updateEdgeStyle({ strokeWidth: v })"/>
                     </el-form-item>
                 </el-form>
             </el-tab-pane>
@@ -94,11 +155,10 @@ const updateEdge = (patch: Record<string, any>) => {
 
 <style lang="scss" scoped>
 .diagram-property-panel {
-    width: 280px;
+    width: 100%;
     height: 100%;
     background: var(--el-bg-color);
     border-left: 1px solid var(--el-border-color-lighter);
-    flex-shrink: 0;
 
     .prop-tabs {
         height: 100%;
