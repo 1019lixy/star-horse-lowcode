@@ -1,4 +1,5 @@
 <script setup lang="ts" name="PivotFieldPanel">
+import { computed } from "vue";
 import { i18n } from "@/lang";
 import draggable from "vuedraggable-es";
 import type { PivotDesigner } from "../composables/usePivotDesigner";
@@ -20,40 +21,40 @@ const dragOptions = {
     animation: 150,
 };
 
-/** 行字段列表（draggable v-model） */
-let rowFields = {
+/** 行字段列表（draggable v-model，必须用 computed 包装为可写响应式引用） */
+const rowFields = computed<PivotField[]>({
     get: () => props.designer.state.config.rows
         .map((name) => props.designer.state.fields.find((f) => f.name === name))
         .filter(Boolean) as PivotField[],
-    set: (val: PivotField[]) => {
+    set: (val) => {
         props.designer.state.config.rows = val.map((f) => f.name);
     },
-};
+});
 
-let colFields = {
+const colFields = computed<PivotField[]>({
     get: () => props.designer.state.config.columns
         .map((name) => props.designer.state.fields.find((f) => f.name === name))
         .filter(Boolean) as PivotField[],
-    set: (val: PivotField[]) => {
+    set: (val) => {
         props.designer.state.config.columns = val.map((f) => f.name);
     },
-};
+});
 
-let valFields = {
+const valFields = computed<PivotField[]>({
     get: () => props.designer.state.config.values
         .map((name) => props.designer.state.fields.find((f) => f.name === name))
         .filter(Boolean) as PivotField[],
-    set: (val: PivotField[]) => {
+    set: (val) => {
         props.designer.state.config.values = val.map((f) => f.name);
     },
-};
+});
 
-let unusedFieldList = {
+const unusedFieldList = computed<PivotField[]>({
     get: () => props.designer.unusedFields.value,
     set: () => {
         // unused fields 不需要排序
     },
-};
+});
 
 const handleDropToUnused = (item: PivotField) => {
     props.designer.removeFromRow(item.name);
