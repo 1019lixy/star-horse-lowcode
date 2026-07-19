@@ -28,6 +28,11 @@ const updateName = (value: string) => {
     props.designer.updateNode(selected.value.id, { name: value });
 };
 
+/** 内联 SVG 图标（替代 Element Plus 图标，减少依赖） */
+const icons: Record<string, string> = {
+    delete: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M5 6v14a2 2 0 002 2h10a2 2 0 002-2V6M10 11v6M14 11v6"/></svg>',
+};
+
 /** 字段映射操作 */
 const addMapping = () => {
     if (!selected.value) return;
@@ -369,7 +374,7 @@ const handleRemoveNode = () => {
 
                 <el-form-item>
                     <el-button type="danger"  plain @click="handleRemoveNode">
-                        <el-icon><Delete/></el-icon>
+                        <span class="svg-icon" v-html="icons.delete"></span>
                         {{ i18n("btn.delete") }}
                     </el-button>
                 </el-form-item>
@@ -378,14 +383,10 @@ const handleRemoveNode = () => {
     </div>
 </template>
 
-<script lang="ts">
-import { Delete } from "@element-plus/icons-vue";
-export default { components: { Delete } };
-</script>
-
 <style lang="scss" scoped>
 .etl-property-panel {
-    width: 320px;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     border-left: 1px solid var(--el-border-color);
@@ -447,5 +448,17 @@ export default { components: { Delete } };
             }
         }
     }
+}
+.svg-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1em;
+    height: 1em;
+    margin-right: 4px;
+}
+.svg-icon :deep(svg) {
+    width: 100%;
+    height: 100%;
 }
 </style>

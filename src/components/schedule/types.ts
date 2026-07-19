@@ -72,6 +72,8 @@ export interface ScheduleResource {
 export interface ScheduleConfig {
     /** 视图模式 */
     viewMode: ScheduleViewMode;
+    /** 行高（资源列表与画布对齐用） */
+    rowHeight: number;
     /** 单元格高度 */
     cellHeight: number;
     /** 单元格宽度（分钟单位） */

@@ -113,6 +113,12 @@ watch(
     () => center.alarms.length,
     () => scrollToLatest(),
 );
+
+/** 内联 SVG 图标（替代 Element Plus 图标，减少依赖） */
+const icons: Record<string, string> = {
+    check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg>',
+    circleCheck: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>'
+};
 </script>
 
 <template>
@@ -216,6 +222,7 @@ watch(
                         plain
                         @click="center.acknowledgeAlarm(alarm.id)"
                     >
+                        <span class="svg-icon" v-html="icons.check"></span>
                         {{ i18n("iot.alarm.acknowledge") }}
                     </el-button>
                     <el-button
@@ -225,6 +232,7 @@ watch(
                         plain
                         @click="center.resolveAlarm(alarm.id)"
                     >
+                        <span class="svg-icon" v-html="icons.circleCheck"></span>
                         {{ i18n("iot.alarm.resolve") }}
                     </el-button>
                 </div>
@@ -232,10 +240,6 @@ watch(
         </div>
     </div>
 </template>
-
-<script lang="ts">
-export default { name: "IotAlarmCenter" };
-</script>
 
 <style lang="scss" scoped>
 .iot-alarm-center {
@@ -409,5 +413,18 @@ export default { name: "IotAlarmCenter" };
             justify-content: center;
         }
     }
+}
+
+.svg-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1em;
+    height: 1em;
+    margin-right: 4px;
+}
+.svg-icon :deep(svg) {
+    width: 100%;
+    height: 100%;
 }
 </style>

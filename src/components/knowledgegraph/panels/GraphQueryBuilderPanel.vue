@@ -47,6 +47,14 @@ const runQuery = () => {
 };
 
 const stepIndex = (step: KgQueryStep): number => query.value.steps.indexOf(step) + 1;
+
+/** 内联 SVG 图标（替代 Element Plus 图标，减少依赖） */
+const icons: Record<string, string> = {
+    folderOpened: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h6a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-4 0v2H5"/></svg>',
+    videoPlay: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>',
+    delete: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M5 6v14a2 2 0 002 2h10a2 2 0 002-2V6M10 11v6M14 11v6"/></svg>',
+    plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>'
+};
 </script>
 
 <template>
@@ -55,14 +63,14 @@ const stepIndex = (step: KgQueryStep): number => query.value.steps.indexOf(step)
             <span>{{ i18n("knowledgegraph.query.title") }}</span>
             <div class="header-actions">
                 <el-button  @click="handleOpenTemplate">
-                    <el-icon><FolderOpened /></el-icon>
+                    <span class="svg-icon" v-html="icons.folderOpened"></span>
                     {{ i18n("knowledgegraph.query.template.title") }}
                 </el-button>
                 <el-button  @click="handleClear">
                     {{ i18n("knowledgegraph.query.clear") }}
                 </el-button>
                 <el-button  type="primary" @click="runQuery">
-                    <el-icon><VideoPlay /></el-icon>
+                    <span class="svg-icon" v-html="icons.videoPlay"></span>
                     {{ i18n("knowledgegraph.query.run") }}
                 </el-button>
             </div>
@@ -123,12 +131,12 @@ const stepIndex = (step: KgQueryStep): number => query.value.steps.indexOf(step)
                                     link
                                     @click="handleRemoveStartCondition(cond.id)"
                                 >
-                                    <el-icon><Delete /></el-icon>
+                                    <span class="svg-icon" v-html="icons.delete"></span>
                                 </el-button>
                             </div>
                         </div>
                         <el-button  link @click="handleAddStartCondition">
-                            <el-icon><Plus /></el-icon>
+                            <span class="svg-icon" v-html="icons.plus"></span>
                             {{ i18n("knowledgegraph.query.condition") }}
                         </el-button>
                     </el-form>
@@ -151,7 +159,7 @@ const stepIndex = (step: KgQueryStep): number => query.value.steps.indexOf(step)
                         style="margin-left: auto"
                         @click="handleRemoveStep(step.id)"
                     >
-                        <el-icon><Delete /></el-icon>
+                        <span class="svg-icon" v-html="icons.delete"></span>
                         {{ i18n("knowledgegraph.query.removeStep") }}
                     </el-button>
                 </div>
@@ -231,12 +239,12 @@ const stepIndex = (step: KgQueryStep): number => query.value.steps.indexOf(step)
                                     link
                                     @click="handleRemoveStepCondition(step.id, cond.id)"
                                 >
-                                    <el-icon><Delete /></el-icon>
+                                    <span class="svg-icon" v-html="icons.delete"></span>
                                 </el-button>
                             </div>
                         </div>
                         <el-button  link @click="handleAddStepCondition(step.id)">
-                            <el-icon><Plus /></el-icon>
+                            <span class="svg-icon" v-html="icons.plus"></span>
                             {{ i18n("knowledgegraph.query.condition") }}
                         </el-button>
                     </el-form>
@@ -245,7 +253,7 @@ const stepIndex = (step: KgQueryStep): number => query.value.steps.indexOf(step)
 
             <div class="add-step-row">
                 <el-button type="primary" plain @click="handleAddStep" style="width: 100%">
-                    <el-icon><Plus /></el-icon>
+                    <span class="svg-icon" v-html="icons.plus"></span>
                     {{ i18n("knowledgegraph.query.addStep") }}
                 </el-button>
             </div>
@@ -253,10 +261,6 @@ const stepIndex = (step: KgQueryStep): number => query.value.steps.indexOf(step)
     </div>
 </template>
 
-<script lang="ts">
-import { FolderOpened, VideoPlay, Delete, Plus } from "@element-plus/icons-vue";
-export default { components: { FolderOpened, VideoPlay, Delete, Plus } };
-</script>
 
 <style lang="scss" scoped>
 .kg-query-panel {
@@ -341,5 +345,18 @@ export default { components: { FolderOpened, VideoPlay, Delete, Plus } };
     .add-step-row {
         margin-top: 8px;
     }
+}
+
+.svg-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1em;
+    height: 1em;
+    margin-right: 4px;
+}
+.svg-icon :deep(svg) {
+    width: 100%;
+    height: 100%;
 }
 </style>

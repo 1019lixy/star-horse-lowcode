@@ -138,7 +138,8 @@ export default { components: { Delete, Plus } };
 
 <style lang="scss" scoped>
 .pdf-property-panel {
-    width: 280px;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     border-left: 1px solid var(--el-border-color);

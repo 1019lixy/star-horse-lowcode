@@ -61,7 +61,8 @@ export default { components: { Plus, DocumentAdd, Edit, Delete } };
 
 <style lang="scss" scoped>
 .email-variable-panel {
-    width: 220px;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     border-right: 1px solid var(--el-border-color);

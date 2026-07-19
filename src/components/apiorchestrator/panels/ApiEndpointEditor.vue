@@ -64,6 +64,11 @@ const removeParam = (index: number) => {
     params.splice(index, 1);
     update("params", params);
 };
+
+/** 内联 SVG 图标（替代 Element Plus 图标，减少依赖） */
+const icons: Record<string, string> = {
+    delete: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M5 6v14a2 2 0 002 2h10a2 2 0 002-2V6M10 11v6M14 11v6"/></svg>'
+};
 </script>
 
 <template>
@@ -109,7 +114,7 @@ const removeParam = (index: number) => {
                         @change="(v) => updateHeaderValue(key, String(v))"
                     />
                     <el-button text type="danger"  @click="removeHeader(key)">
-                        <el-icon><Delete/></el-icon>
+                        <span class="svg-icon" v-html="icons.delete"></span>
                     </el-button>
                 </div>
                 <el-button  @click="addHeader">+ {{ i18n("api.endpoint.headers") }}</el-button>
@@ -145,7 +150,7 @@ const removeParam = (index: number) => {
                         @change="(v) => updateParam(Number(idx), 'defaultValue', String(v))"
                     />
                     <el-button text type="danger"  @click="removeParam(Number(idx))">
-                        <el-icon><Delete/></el-icon>
+                        <span class="svg-icon" v-html="icons.delete"></span>
                     </el-button>
                 </div>
                 <el-button  @click="addParam">+ {{ i18n("api.endpoint.params") }}</el-button>
@@ -163,10 +168,6 @@ const removeParam = (index: number) => {
     </div>
 </template>
 
-<script lang="ts">
-import { Delete } from "@element-plus/icons-vue";
-export default { components: { Delete } };
-</script>
 
 <style lang="scss" scoped>
 .api-endpoint-editor {
@@ -228,5 +229,18 @@ export default { components: { Delete } };
             }
         }
     }
+}
+
+.svg-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1em;
+    height: 1em;
+    margin-right: 4px;
+}
+.svg-icon :deep(svg) {
+    width: 100%;
+    height: 100%;
 }
 </style>

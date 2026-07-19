@@ -49,6 +49,14 @@ const removeExtraction = (stepId: string, index: number) => {
     extractions.splice(index, 1);
     props.state.updateChainStep(stepId, { variableExtractions: extractions });
 };
+
+/** 内联 SVG 图标（替代 Element Plus 图标，减少依赖） */
+const icons: Record<string, string> = {
+    plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>',
+    top: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 10l7-7 7 7"/></svg>',
+    bottom: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 14l7 7 7-7"/></svg>',
+    delete: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M5 6v14a2 2 0 002 2h10a2 2 0 002-2V6M10 11v6M14 11v6"/></svg>'
+};
 </script>
 
 <template>
@@ -56,7 +64,7 @@ const removeExtraction = (stepId: string, index: number) => {
         <div class="section-title">
             <span>{{ i18n("api.chain.steps") }}</span>
             <el-button  type="primary" plain @click="handleAddStep">
-                <el-icon><Plus/></el-icon>
+                <span class="svg-icon" v-html="icons.plus"></span>
                 {{ i18n("api.btn.addStep") }}
             </el-button>
         </div>
@@ -99,7 +107,7 @@ const removeExtraction = (stepId: string, index: number) => {
                             {{ endpointMethod(step.endpointId) }}
                         </span>
                         <el-button text  :disabled="idx === 0" @click="state.moveStep(step.id, -1)">
-                            <el-icon><Top/></el-icon>
+                            <span class="svg-icon" v-html="icons.top"></span>
                         </el-button>
                         <el-button
                             text
@@ -107,10 +115,10 @@ const removeExtraction = (stepId: string, index: number) => {
                             :disabled="idx === state.chain.steps.length - 1"
                             @click="state.moveStep(step.id, 1)"
                         >
-                            <el-icon><Bottom/></el-icon>
+                            <span class="svg-icon" v-html="icons.bottom"></span>
                         </el-button>
                         <el-button text type="danger"  @click="state.removeChainStep(step.id)">
-                            <el-icon><Delete/></el-icon>
+                            <span class="svg-icon" v-html="icons.delete"></span>
                         </el-button>
                     </div>
                     <div class="step-meta">
@@ -137,7 +145,7 @@ const removeExtraction = (stepId: string, index: number) => {
                                 @change="(v) => updateExtraction(step.id, Number(eIdx), 'targetVar', String(v))"
                             />
                             <el-button text type="danger"  @click="removeExtraction(step.id, Number(eIdx))">
-                                <el-icon><Delete/></el-icon>
+                                <span class="svg-icon" v-html="icons.delete"></span>
                             </el-button>
                         </div>
                         <el-button  text @click="addExtraction(step.id)">
@@ -159,10 +167,6 @@ const removeExtraction = (stepId: string, index: number) => {
     </div>
 </template>
 
-<script lang="ts">
-import { Plus, Top, Bottom, Delete } from "@element-plus/icons-vue";
-export default { components: { Plus, Top, Bottom, Delete } };
-</script>
 
 <style lang="scss" scoped>
 .api-chain-sequence {
@@ -277,5 +281,18 @@ export default { components: { Plus, Top, Bottom, Delete } };
             }
         }
     }
+}
+
+.svg-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1em;
+    height: 1em;
+    margin-right: 4px;
+}
+.svg-icon :deep(svg) {
+    width: 100%;
+    height: 100%;
 }
 </style>

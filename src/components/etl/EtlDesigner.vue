@@ -45,6 +45,13 @@ const handleSave = () => {
 };
 
 const handleClearLog = () => executor.clearLog();
+
+/** 内联 SVG 图标（替代 Element Plus 图标，减少依赖） */
+const icons: Record<string, string> = {
+    document: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2h8l6 6v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2z"/><polyline points="14 2 14 8 20 8"/></svg>',
+    arrowUp: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>',
+    arrowDown: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>',
+};
 </script>
 
 <template>
@@ -55,15 +62,21 @@ const handleClearLog = () => executor.clearLog();
             @preview="previewVisible = true"
             @save="handleSave"
         />
-        <div class="designer-body">
-            <etl-node-panel @add="handleAddNode" />
-            <etl-canvas :designer="designer" @drop-node="handleDropNode" />
-            <etl-property-panel :designer="designer" />
-        </div>
+        <el-splitter class="designer-body" direction="horizontal">
+            <el-splitter-panel size="220px" min="160px" max="360px">
+                <etl-node-panel @add="handleAddNode" />
+            </el-splitter-panel>
+            <el-splitter-panel>
+                <etl-canvas :designer="designer" @drop-node="handleDropNode" />
+            </el-splitter-panel>
+            <el-splitter-panel size="320px" min="240px" max="520px">
+                <etl-property-panel :designer="designer" />
+            </el-splitter-panel>
+        </el-splitter>
         <div class="log-panel" :class="{ collapsed: logCollapsed }">
             <div class="log-header" @click="logCollapsed = !logCollapsed">
                 <span class="log-title">
-                    <el-icon><Document/></el-icon>
+                <span class="svg-icon" v-html="icons.document"></span>
                     {{ i18n("etl.log.title") }}
                     <span v-if="executor.log.value.length" class="log-count">({{ executor.log.value.length }})</span>
                 </span>
@@ -71,10 +84,7 @@ const handleClearLog = () => executor.clearLog();
                     <el-button v-if="executor.log.value.length" text  @click="handleClearLog">
                         {{ i18n("etl.btn.clear") }}
                     </el-button>
-                    <el-icon class="toggle-icon">
-                        <ArrowUp v-if="!logCollapsed"/>
-                        <ArrowDown v-else/>
-                    </el-icon>
+                    <span class="svg-icon" v-html="logCollapsed ? icons.arrowDown : icons.arrowUp"></span>
                 </div>
             </div>
             <div v-show="!logCollapsed" class="log-content">
@@ -100,10 +110,6 @@ const handleClearLog = () => executor.clearLog();
     </div>
 </template>
 
-<script lang="ts">
-import { Document, ArrowUp, ArrowDown } from "@element-plus/icons-vue";
-export default { components: { Document, ArrowUp, ArrowDown } };
-</script>
 
 <style lang="scss" scoped>
 .etl-designer {
@@ -116,7 +122,6 @@ export default { components: { Document, ArrowUp, ArrowDown } };
 
     .designer-body {
         flex: 1;
-        display: flex;
         overflow: hidden;
         min-height: 0;
     }
@@ -215,5 +220,16 @@ export default { components: { Document, ArrowUp, ArrowDown } };
             }
         }
     }
+}
+.svg-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1em;
+    height: 1em;
+}
+.svg-icon :deep(svg) {
+    width: 100%;
+    height: 100%;
 }
 </style>

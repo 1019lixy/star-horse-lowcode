@@ -24,16 +24,19 @@ if (props.kanban) designer.loadData(props.kanban);
 
 const cardDialogVisible = ref(false);
 const editingCardId = ref<string | null>(null);
+const presetColumnId = ref<string | undefined>(undefined);
 const editingColumnId = ref<string | null>(null);
 const columnDialogVisible = ref(false);
 
 const handleEditCard = (id: string) => {
     editingCardId.value = id;
+    presetColumnId.value = undefined;
     cardDialogVisible.value = true;
 };
 
-const handleAddCardToFirstColumn = () => {
+const handleAddCard = (columnId?: string) => {
     editingCardId.value = null;
+    presetColumnId.value = columnId;
     cardDialogVisible.value = true;
 };
 
@@ -47,6 +50,11 @@ const handleSave = () => {
     emits("update:kanban", data);
     emits("save", data);
 };
+
+/** 内联 SVG 图标 */
+const icons: Record<string, string> = {
+    plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>',
+};
 </script>
 
 <template>
@@ -55,7 +63,7 @@ const handleSave = () => {
             :designer="designer"
             :readonly="readonly"
             @save="handleSave"
-            @preview="handleAddCardToFirstColumn"
+            @add-card="handleAddCard()"
         />
         <div class="board-body">
             <div class="columns-container">
@@ -67,10 +75,11 @@ const handleSave = () => {
                     :readonly="readonly"
                     @edit="handleEditCard"
                     @edit-column="handleEditColumn"
+                    @add-card="handleAddCard"
                 />
                 <div class="add-column-btn" v-if="!readonly">
                     <el-button @click="designer.addColumn()">
-                        <el-icon><Plus/></el-icon>
+                        <span class="svg-icon" v-html="icons.plus"></span>
                         {{ i18n("kanban.btn.addColumn") }}
                     </el-button>
                 </div>
@@ -81,6 +90,7 @@ const handleSave = () => {
             v-model:visible="cardDialogVisible"
             :designer="designer"
             :card-id="editingCardId"
+            :column-id="presetColumnId"
         />
         <kanban-column-dialog
             v-model:visible="columnDialogVisible"
@@ -89,11 +99,6 @@ const handleSave = () => {
         />
     </div>
 </template>
-
-<script lang="ts">
-import { Plus } from "@element-plus/icons-vue";
-export default { components: { Plus } };
-</script>
 
 <style lang="scss" scoped>
 .kanban-board {
@@ -121,5 +126,17 @@ export default { components: { Plus } };
             }
         }
     }
+}
+.svg-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1em;
+    height: 1em;
+    margin-right: 4px;
+}
+.svg-icon :deep(svg) {
+    width: 100%;
+    height: 100%;
 }
 </style>

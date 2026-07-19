@@ -87,6 +87,11 @@ defineExpose({
     setPathTo,
     runPathQuery,
 });
+
+/** 内联 SVG 图标（替代 Element Plus 图标，减少依赖） */
+const icons: Record<string, string> = {
+    right: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>'
+};
 </script>
 
 <template>
@@ -112,7 +117,7 @@ defineExpose({
                         :value="n.id"
                     />
                 </el-select>
-                <el-icon class="arrow"><Right /></el-icon>
+                <span class="svg-icon" v-html="icons.right"></span>
                 <el-select
                     :model-value="pathToId"
                     @update:model-value="setPathTo"
@@ -140,25 +145,25 @@ defineExpose({
                     <span class="path-length"> ({{ viewer.state.pathNodeIds.length - 1 }})</span>
                 </div>
             </div>
-            <div class="canvas-area">
-                <graph-viewer-canvas
-                    ref="canvasRef"
-                    :viewer="viewer"
-                    :force="force"
-                />
-                <graph-viewer-detail-panel
-                    :viewer="viewer"
-                    @select-node="handleSelectFromDetail"
-                />
-            </div>
+            <el-splitter class="canvas-area" direction="horizontal">
+                <el-splitter-panel>
+                    <graph-viewer-canvas
+                        ref="canvasRef"
+                        :viewer="viewer"
+                        :force="force"
+                    />
+                </el-splitter-panel>
+                <el-splitter-panel size="320px" min="240px" max="500px">
+                    <graph-viewer-detail-panel
+                        :viewer="viewer"
+                        @select-node="handleSelectFromDetail"
+                    />
+                </el-splitter-panel>
+            </el-splitter>
         </div>
     </div>
 </template>
 
-<script lang="ts">
-import { Right } from "@element-plus/icons-vue";
-export default { components: { Right } };
-</script>
 
 <style lang="scss" scoped>
 .kg-viewer {
@@ -217,8 +222,20 @@ export default { components: { Right } };
 
     .canvas-area {
         flex: 1;
-        display: flex;
         overflow: hidden;
     }
+}
+
+.svg-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1em;
+    height: 1em;
+    margin-right: 4px;
+}
+.svg-icon :deep(svg) {
+    width: 100%;
+    height: 100%;
 }
 </style>

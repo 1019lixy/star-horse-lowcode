@@ -1,6 +1,5 @@
 <script setup lang="ts" name="GanttChart">
-import { ref } from "vue";
-import { i18n } from "@/lang";
+import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import { useGanttDesigner } from "./composables/useGanttDesigner";
 import GanttToolbar from "./panels/GanttToolbar.vue";
 import GanttTaskListPanel from "./panels/GanttTaskListPanel.vue";
@@ -26,9 +25,33 @@ if (props.gantt) designer.loadData(props.gantt);
 const taskDialogVisible = ref(false);
 const editingTaskId = ref<string | null>(null);
 
+const taskListRef = ref<InstanceType<typeof GanttTaskListPanel> | null>(null);
+const canvasRef = ref<InstanceType<typeof GanttCanvas> | null>(null);
+const selectedTaskId = computed(() => designer.selectedTaskId.value);
+
 const handleAddTask = () => {
-    editingTaskId.value = null;
-    taskDialogVisible.value = true;
+    const selectedId = designer.selectedTaskId.value;
+    if (selectedId) {
+        const task = designer.insertAfter(selectedId);
+        if (task) designer.selectTask(task.id);
+    } else {
+        const task = designer.addTask();
+        designer.selectTask(task.id);
+    }
+};
+
+const handleInsertBefore = () => {
+    const id = designer.selectedTaskId.value;
+    if (!id) return;
+    const task = designer.insertBefore(id);
+    if (task) designer.selectTask(task.id);
+};
+
+const handleInsertAfter = () => {
+    const id = designer.selectedTaskId.value;
+    if (!id) return;
+    const task = designer.insertAfter(id);
+    if (task) designer.selectTask(task.id);
 };
 
 const handleEditTask = (id: string) => {
@@ -43,9 +66,58 @@ const handleSave = () => {
 };
 
 const handlePreview = () => {
-    // 预览即直接展示当前甘特图（用户可通过 canvas 查看实际效果）
-    // 复杂预览场景可后续扩展预览弹窗
+    // 预览即直接展示当前甘特图
 };
+
+// ======================== 滚动同步 ========================
+let isSyncingScroll = false;
+
+const syncListScroll = (e: Event) => {
+    if (isSyncingScroll) return;
+    isSyncingScroll = true;
+    const listEl = (e.target as HTMLElement);
+    const canvasEl = canvasRef.value?.canvasScrollRef;
+    if (canvasEl) {
+        canvasEl.scrollTop = listEl.scrollTop;
+    }
+    requestAnimationFrame(() => { isSyncingScroll = false; });
+};
+
+const syncCanvasScroll = (e: Event) => {
+    if (isSyncingScroll) return;
+    isSyncingScroll = true;
+    const canvasEl = (e.target as HTMLElement);
+    const listEl = taskListRef.value?.listScrollRef;
+    if (listEl) {
+        listEl.scrollTop = canvasEl.scrollTop;
+    }
+    requestAnimationFrame(() => { isSyncingScroll = false; });
+};
+
+onMounted(() => {
+    // 延迟绑定滚动同步事件
+    setTimeout(() => {
+        const listEl = taskListRef.value?.listScrollRef;
+        const canvasEl = canvasRef.value?.canvasScrollRef;
+        if (listEl) {
+            listEl.addEventListener("scroll", syncListScroll);
+        }
+        if (canvasEl) {
+            canvasEl.addEventListener("scroll", syncCanvasScroll);
+        }
+    }, 100);
+});
+
+onBeforeUnmount(() => {
+    const listEl = taskListRef.value?.listScrollRef;
+    const canvasEl = canvasRef.value?.canvasScrollRef;
+    if (listEl) {
+        listEl.removeEventListener("scroll", syncListScroll);
+    }
+    if (canvasEl) {
+        canvasEl.removeEventListener("scroll", syncCanvasScroll);
+    }
+});
 </script>
 
 <template>
@@ -56,29 +128,39 @@ const handlePreview = () => {
             @save="handleSave"
             @preview="handlePreview"
             @add-task="handleAddTask"
+            @insert-before="handleInsertBefore"
+            @insert-after="handleInsertAfter"
         />
-        <div class="designer-body">
-            <gantt-task-list-panel
-                :designer="designer"
-                :readonly="readonly"
-                @edit="handleEditTask"
-            />
-            <gantt-canvas
-                :designer="designer"
-                :readonly="readonly"
-                @edit="handleEditTask"
-            />
-            <gantt-property-panel
-                :designer="designer"
-                :readonly="readonly"
-            />
-        </div>
+        <el-splitter class="designer-body" direction="horizontal">
+            <el-splitter-panel size="280px" min="200px" max="420px">
+                <gantt-task-list-panel
+                    ref="taskListRef"
+                    :designer="designer"
+                    :readonly="readonly"
+                    @edit="handleEditTask"
+                />
+            </el-splitter-panel>
+            <el-splitter-panel>
+                <gantt-canvas
+                    ref="canvasRef"
+                    :designer="designer"
+                    :readonly="readonly"
+                    @edit="handleEditTask"
+                />
+            </el-splitter-panel>
+            <el-splitter-panel size="280px" min="220px" max="480px">
+                <gantt-property-panel
+                    :designer="designer"
+                    :readonly="readonly"
+                />
+            </el-splitter-panel>
+        </el-splitter>
 
         <gantt-task-dialog
             v-model:visible="taskDialogVisible"
             :designer="designer"
             :task-id="editingTaskId"
-            :parent-id="designer.selectedTaskId"
+            :parent-id="selectedTaskId"
         />
     </div>
 </template>
@@ -94,7 +176,6 @@ const handlePreview = () => {
 
     .designer-body {
         flex: 1;
-        display: flex;
         overflow: hidden;
     }
 }

@@ -283,6 +283,7 @@ const yAxisTicks = computed(() => {
 .pivot-chart-panel {
     display: flex;
     flex-direction: column;
+    width: 100%;
     height: 100%;
     background: var(--el-bg-color);
 

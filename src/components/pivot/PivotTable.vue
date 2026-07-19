@@ -47,17 +47,21 @@ const handleSave = () => {
             @save="handleSave"
             @preview="dataDialogVisible = true"
         />
-        <div class="designer-body">
-            <pivot-field-panel
-                :designer="designer"
-                :readonly="readonly"
-                @edit-field="handleEditField"
-            />
-            <div class="content-area">
-                <pivot-chart-panel v-if="designer.showChart" :designer="designer"/>
-                <pivot-table-panel v-else :designer="designer"/>
-            </div>
-        </div>
+        <el-splitter class="designer-body" direction="horizontal">
+            <el-splitter-panel size="260px" min="200px" max="400px">
+                <pivot-field-panel
+                    :designer="designer"
+                    :readonly="readonly"
+                    @edit-field="handleEditField"
+                />
+            </el-splitter-panel>
+            <el-splitter-panel>
+                <div class="content-area">
+                    <pivot-chart-panel v-if="designer.showChart" :designer="designer"/>
+                    <pivot-table-panel v-else :designer="designer"/>
+                </div>
+            </el-splitter-panel>
+        </el-splitter>
 
         <pivot-field-dialog
             v-model:visible="fieldDialogVisible"
@@ -82,12 +86,11 @@ const handleSave = () => {
 
     .designer-body {
         flex: 1;
-        display: flex;
         overflow: hidden;
 
         .content-area {
-            flex: 1;
-            display: flex;
+            width: 100%;
+            height: 100%;
             overflow: hidden;
         }
     }

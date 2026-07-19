@@ -55,10 +55,7 @@ const formatJson = (str: string): string => {
                         <span class="result-status" v-if="r.response.status">
                             {{ r.response.status }} · {{ r.response.duration }}ms
                         </span>
-                        <el-icon class="toggle-icon">
-                            <ArrowDown v-if="!expanded.has(r.stepId)"/>
-                            <ArrowUp v-else/>
-                        </el-icon>
+                        <span class="svg-icon" v-html="expanded.has(r.stepId) ? icons.arrowUp : icons.arrowDown"></span>
                     </div>
                     <div v-show="expanded.has(r.stepId)" class="result-detail">
                         <div v-if="r.error" class="error-box">{{ r.error }}</div>
@@ -106,11 +103,6 @@ const formatJson = (str: string): string => {
         </div>
     </div>
 </template>
-
-<script lang="ts">
-import { ArrowUp, ArrowDown } from "@element-plus/icons-vue";
-export default { components: { ArrowUp, ArrowDown } };
-</script>
 
 <style lang="scss" scoped>
 .api-test-results {

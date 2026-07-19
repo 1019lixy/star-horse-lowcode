@@ -31,6 +31,15 @@ const handleReset = () => {
 const handleFit = () => props.viewer.fitView();
 const handleZoomIn = () => props.viewer.zoomIn();
 const handleZoomOut = () => props.viewer.zoomOut();
+
+/** 内联 SVG 图标（替代 Element Plus 图标，减少依赖） */
+const icons: Record<string, string> = {
+    search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>',
+    zoomIn: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35M11 8v6M8 11h6"/></svg>',
+    zoomOut: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35M8 11h6"/></svg>',
+    fullScreen: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 00-2 2v3M21 8V5a2 2 0 00-2-2h-3M3 16v3a2 2 0 002 2h3M16 21h3a2 2 0 002-2v-3"/></svg>',
+    refresh: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M3.51 15a9 9 0 012.12-9.36L12 3M20.49 9a9 9 0 01-2.12 9.36L12 21"/></svg>'
+};
 </script>
 
 <template>
@@ -65,31 +74,27 @@ const handleZoomOut = () => props.viewer.zoomOut();
                 :placeholder="i18n('knowledgegraph.viewer.searchPlaceholder')"
             >
                 <template #prefix>
-                    <el-icon><Search /></el-icon>
+                    <span class="svg-icon" v-html="icons.search"></span>
                 </template>
             </el-input>
             <el-button-group>
                 <el-button  @click="handleZoomIn" :title="i18n('knowledgegraph.viewer.zoomIn')">
-                    <el-icon><ZoomIn /></el-icon>
+                    <span class="svg-icon" v-html="icons.zoomIn"></span>
                 </el-button>
                 <el-button  @click="handleZoomOut" :title="i18n('knowledgegraph.viewer.zoomOut')">
-                    <el-icon><ZoomOut /></el-icon>
+                    <span class="svg-icon" v-html="icons.zoomOut"></span>
                 </el-button>
                 <el-button  @click="handleFit" :title="i18n('knowledgegraph.viewer.fit')">
-                    <el-icon><FullScreen /></el-icon>
+                    <span class="svg-icon" v-html="icons.fullScreen"></span>
                 </el-button>
                 <el-button  @click="handleReset" :title="i18n('knowledgegraph.viewer.reset')">
-                    <el-icon><Refresh /></el-icon>
+                    <span class="svg-icon" v-html="icons.refresh"></span>
                 </el-button>
             </el-button-group>
         </div>
     </div>
 </template>
 
-<script lang="ts">
-import { Search, ZoomIn, ZoomOut, FullScreen, Refresh } from "@element-plus/icons-vue";
-export default { components: { Search, ZoomIn, ZoomOut, FullScreen, Refresh } };
-</script>
 
 <style lang="scss" scoped>
 .kg-toolbar {
@@ -123,5 +128,18 @@ export default { components: { Search, ZoomIn, ZoomOut, FullScreen, Refresh } };
         align-items: center;
         gap: 8px;
     }
+}
+
+.svg-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1em;
+    height: 1em;
+    margin-right: 4px;
+}
+.svg-icon :deep(svg) {
+    width: 100%;
+    height: 100%;
 }
 </style>

@@ -21,6 +21,14 @@ const handleStop = () => {
 const handleSave = () => emit("save");
 
 const handleClear = () => props.state.clearResults();
+
+/** 内联 SVG 图标（替代 Element Plus 图标，减少依赖） */
+const icons: Record<string, string> = {
+    switchButton: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>',
+    videoPlay: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>',
+    check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg>',
+    delete: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M5 6v14a2 2 0 002 2h10a2 2 0 002-2V6M10 11v6M14 11v6"/></svg>'
+};
 </script>
 
 <template>
@@ -43,7 +51,7 @@ const handleClear = () => props.state.clearResults();
                 @click="handleStop"
                 v-if="state.isRunning.value"
             >
-                <el-icon><SwitchButton/></el-icon>
+                <span class="svg-icon" v-html="icons.switchButton"></span>
                 {{ i18n("api.btn.stop") }}
             </el-button>
             <el-button
@@ -53,11 +61,11 @@ const handleClear = () => props.state.clearResults();
                 :disabled="state.chain.steps.length === 0 || state.isRunning.value"
                 v-else
             >
-                <el-icon><VideoPlay/></el-icon>
+                <span class="svg-icon" v-html="icons.videoPlay"></span>
                 {{ i18n("api.btn.run") }}
             </el-button>
             <el-button  @click="handleSave">
-                <el-icon><Check/></el-icon>
+                <span class="svg-icon" v-html="icons.check"></span>
                 {{ i18n("api.btn.save") }}
             </el-button>
             <el-button
@@ -65,17 +73,13 @@ const handleClear = () => props.state.clearResults();
                 @click="handleClear"
                 :disabled="state.testResults.value.length === 0"
             >
-                <el-icon><Delete/></el-icon>
+                <span class="svg-icon" v-html="icons.delete"></span>
                 {{ i18n("api.btn.clear") }}
             </el-button>
         </div>
     </div>
 </template>
 
-<script lang="ts">
-import { SwitchButton, VideoPlay, Check, Delete } from "@element-plus/icons-vue";
-export default { components: { SwitchButton, VideoPlay, Check, Delete } };
-</script>
 
 <style lang="scss" scoped>
 .api-toolbar {
@@ -92,5 +96,18 @@ export default { components: { SwitchButton, VideoPlay, Check, Delete } };
         align-items: center;
         gap: 8px;
     }
+}
+
+.svg-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1em;
+    height: 1em;
+    margin-right: 4px;
+}
+.svg-icon :deep(svg) {
+    width: 100%;
+    height: 100%;
 }
 </style>

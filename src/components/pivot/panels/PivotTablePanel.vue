@@ -125,7 +125,8 @@ const formatCell = (value: number | string | null): string => {
 
 <style lang="scss" scoped>
 .pivot-table-panel {
-    flex: 1;
+    width: 100%;
+    height: 100%;
     overflow: auto;
     background: var(--el-bg-color);
     padding: 8px;

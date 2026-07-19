@@ -74,6 +74,12 @@ const formatTime = (ts: number): string => {
 
 // 抑制未使用告警
 void props;
+
+/** 内联 SVG 图标（替代 Element Plus 图标，减少依赖） */
+const icons: Record<string, string> = {
+    plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>',
+    delete: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M5 6v14a2 2 0 002 2h10a2 2 0 002-2V6M10 11v6M14 11v6"/></svg>'
+};
 </script>
 
 <template>
@@ -81,7 +87,7 @@ void props;
         <div class="list-header">
             <span class="header-title">{{ i18n("aicopilot.conversation.title") }}</span>
             <el-button  type="primary" @click="emit('new')">
-                <el-icon><Plus /></el-icon>
+                <span class="svg-icon" v-html="icons.plus"></span>
                 {{ i18n("aicopilot.conversation.new") }}
             </el-button>
         </div>
@@ -122,7 +128,7 @@ void props;
                         link
                         @click="handleDelete(conv, $event)"
                     >
-                        <el-icon><Delete /></el-icon>
+                        <span class="svg-icon" v-html="icons.delete"></span>
                     </el-button>
                 </template>
             </div>
@@ -130,10 +136,6 @@ void props;
     </div>
 </template>
 
-<script lang="ts">
-import { Delete, Plus } from "@element-plus/icons-vue";
-export default { components: { Delete, Plus } };
-</script>
 
 <style lang="scss" scoped>
 .ai-conversation-list {
@@ -215,5 +217,18 @@ export default { components: { Delete, Plus } };
             opacity: 1;
         }
     }
+}
+
+.svg-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1em;
+    height: 1em;
+    margin-right: 4px;
+}
+.svg-icon :deep(svg) {
+    width: 100%;
+    height: 100%;
 }
 </style>

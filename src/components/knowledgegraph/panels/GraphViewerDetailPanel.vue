@@ -194,7 +194,7 @@ const isCollapsed = computed(() =>
 
 <style lang="scss" scoped>
 .kg-detail-panel {
-    width: 320px;
+    width: 100%;
     height: 100%;
     background: var(--el-bg-color);
     border-left: 1px solid var(--el-border-color);

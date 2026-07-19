@@ -39,11 +39,17 @@ const handleSave = () => {
             @save="handleSave"
             @preview="previewVisible = true"
         />
-        <div class="designer-body">
-            <pdf-element-panel :designer="designer" :readonly="readonly"/>
-            <pdf-canvas :designer="designer" :readonly="readonly"/>
-            <pdf-property-panel :designer="designer" :readonly="readonly"/>
-        </div>
+        <el-splitter class="designer-body" direction="horizontal">
+            <el-splitter-panel size="220px" min="160px" max="360px">
+                <pdf-element-panel :designer="designer" :readonly="readonly"/>
+            </el-splitter-panel>
+            <el-splitter-panel>
+                <pdf-canvas :designer="designer" :readonly="readonly"/>
+            </el-splitter-panel>
+            <el-splitter-panel size="280px" min="220px" max="480px">
+                <pdf-property-panel :designer="designer" :readonly="readonly"/>
+            </el-splitter-panel>
+        </el-splitter>
 
         <pdf-preview-dialog
             v-model:visible="previewVisible"
@@ -63,7 +69,6 @@ const handleSave = () => {
 
     .designer-body {
         flex: 1;
-        display: flex;
         overflow: hidden;
     }
 }
