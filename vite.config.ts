@@ -61,6 +61,8 @@ export default defineConfig((mode) => {
             },
         );
     }
+    // 数字孪生 3D 引擎 Three.js 预构建（dev 与 prod 均需要）
+    optimizeDepsList.push("three");
     return {
         base: "/",
         server: {
@@ -273,6 +275,7 @@ export default defineConfig((mode) => {
                     "thememirror",
                     "markdown-it",
                     "camelcase",
+                    "three",
                     "sample/**/*",
                 ],
                 output: {

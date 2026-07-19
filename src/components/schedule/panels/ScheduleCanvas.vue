@@ -46,9 +46,6 @@ const viewDates = computed(() =>
     getViewDateRange(props.designer.state.config.viewMode, props.designer.anchorDate.value),
 );
 
-/** 行高 */
-const rowHeight = computed(() => props.designer.state.config.rowHeight);
-
 /** 单元格高度 */
 const cellHeight = computed(() => props.designer.state.config.cellHeight);
 

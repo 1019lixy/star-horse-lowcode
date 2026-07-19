@@ -4,6 +4,10 @@
  *
  * 职责：渲染循环 / 鼠标交互（拖拽旋转、滚轮缩放、平移）/ 点击拾取 / 高亮选中
  * 注：本组件承担渲染循环 + 多种鼠标交互 + 拾取算法，行数较多（合理超 350 行）
+ *
+ * @deprecated v3.2 起数字孪生改用 Three.js WebGL2 引擎（见 panels/DtSceneViewport.vue）。
+ *     本组件基于 Canvas 2D 等距投影，仅作向后兼容保留，将在 v4.0 移除。
+ *     新代码请使用 DtSceneViewport + DigitalTwinDesigner。
  */
 import { computed, onBeforeUnmount, onMounted, ref, shallowRef, watch } from "vue";
 import { i18n } from "@/lang";
