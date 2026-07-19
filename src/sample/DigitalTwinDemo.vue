@@ -5,9 +5,12 @@
  * 1 个厂房（立方体）+ 3 个储罐（圆柱）+ 2 个设备（立方体）+ 地面（平面）+ 1 个点缀球体
  * 不同实体有不同状态（部分正常、部分警告、部分报警）
  * 实时数据模拟（温度/压力/转速每秒更新）
+ *
+ * v3.2：通过 DigitalTwinDesigner 渲染为 Three.js 真 3D 视口（WebGL2 + PBR 材质 + 阴影），
+ *       旧 DtEntity[] 自动映射为 Three.js Mesh，OrbitControls 旋转/平移/缩放。
  */
 import { ref } from "vue";
-import { DigitalTwinViewer } from "@/components/digitaltwin";
+import { DigitalTwinDesigner } from "@/components/digitaltwin";
 import type { DtScene } from "@/components/digitaltwin";
 
 /** 工厂场景 */
@@ -153,7 +156,7 @@ const handleSelectEntity = (id: string | null) => {
 
 <template>
     <div class="demo-container">
-        <DigitalTwinViewer
+        <DigitalTwinDesigner
             :scene="scene"
             :auto-sim="true"
             @select-entity="handleSelectEntity"

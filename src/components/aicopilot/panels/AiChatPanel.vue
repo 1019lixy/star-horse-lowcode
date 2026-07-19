@@ -113,7 +113,7 @@ watch(
             >
                 <div class="message-avatar">
                     <el-icon v-if="m.role === 'user'"><User /></el-icon>
-                    <el-icon v-else-if="m.role === 'assistant'"><Robot /></el-icon>
+                    <el-icon v-else-if="m.role === 'assistant'"><Avatar /></el-icon>
                     <el-icon v-else><Cpu /></el-icon>
                 </div>
                 <div class="message-body">
@@ -218,7 +218,7 @@ import {
     CopyDocument,
     Cpu,
     Promotion,
-    Robot,
+    Avatar,
     User,
     VideoPause,
 } from "@element-plus/icons-vue";
@@ -228,7 +228,7 @@ export default {
         CopyDocument,
         Cpu,
         Promotion,
-        Robot,
+        Avatar,
         User,
         VideoPause,
     },

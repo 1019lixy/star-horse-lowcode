@@ -3,6 +3,10 @@
  *
  * 等距投影 + 旋转矩阵 + 深度排序（画家算法）
  * 纯数学计算，不依赖 Canvas
+ *
+ * @deprecated v3.2 起数字孪生改用 Three.js WebGL2 引擎（见 core/DtEngine.ts）。
+ *     本模块基于 Canvas 2D 等距投影，仅作向后兼容保留，将在 v4.0 移除。
+ *     新代码请使用 DtSceneViewport + DtEngine。
  */
 
 import { DT_PROJECTION_SCALE } from "../constants";

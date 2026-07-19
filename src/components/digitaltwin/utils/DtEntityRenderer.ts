@@ -3,6 +3,10 @@
  *
  * dtDrawCube / dtDrawCylinder / dtDrawPlane / dtDrawSphere / dtDrawEntity
  * 纯函数式绘制，依赖 CanvasRenderingContext2D
+ *
+ * @deprecated v3.2 起数字孪生改用 Three.js WebGL2 引擎（见 core/DtEngine.ts）。
+ *     本模块基于 Canvas 2D 绘制，仅作向后兼容保留，将在 v4.0 移除。
+ *     新代码请使用 DtSceneViewport + DtEngine。
  */
 
 import { dtGetEntityColor } from "../constants";

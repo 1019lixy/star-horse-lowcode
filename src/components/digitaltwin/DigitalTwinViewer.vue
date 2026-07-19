@@ -3,6 +3,9 @@
  * 数字孪生查看器 - 主组件
  *
  * 工具栏 + 实体列表 + 画布 + 属性面板 + 图例 + 弹窗
+ *
+ * @deprecated v3.2 起请使用 DigitalTwinDesigner（基于 Three.js WebGL2 + DtSceneViewport）。
+ *     本组件基于 Canvas 2D 等距投影，仅作向后兼容保留，将在 v4.0 移除。
  */
 import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { i18n } from "@/lang";

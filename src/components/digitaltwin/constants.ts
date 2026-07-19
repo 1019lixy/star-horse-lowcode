@@ -13,6 +13,11 @@ import type {
     DtSize3D,
     DtStatusPreset,
     DtViewPresetItem,
+    DtViewPreset3D,
+    DtViewportMode,
+    DtLightingPreset,
+    DtShadowQuality,
+    DtRenderMode,
 } from "./types";
 
 /** 实体类型预设 */
@@ -200,4 +205,100 @@ export const createDtEntity = (
         sensorData: dtCreateSensorData(type),
         visible: true,
     };
+};
+
+/* ============================================================
+ *  v3.2 企业级 3D 引擎层常量
+ *
+ *  与 DtEngine 构造函数 defaults / DtCameraRig.PRESET_SPHERICAL /
+ *  DtLightingRig 预设对齐，便于外部统一引用与覆盖。
+ * ============================================================ */
+
+/** 引擎默认配置（与 DtEngine 构造函数 defaults 对齐，便于外部预设） */
+export const DT_DEFAULT_ENGINE_OPTIONS: {
+    antialias: boolean;
+    maxPixelRatio: number;
+    shadowMapEnabled: boolean;
+    enablePostProcessing: boolean;
+    renderMode: DtRenderMode;
+    background: number;
+    assetBase: string;
+    fov: number;
+    near: number;
+    far: number;
+} = {
+    antialias: true,
+    maxPixelRatio: 2,
+    shadowMapEnabled: true,
+    enablePostProcessing: false,
+    renderMode: "always",
+    background: 0x1e1e1e,
+    assetBase: "/assets/",
+    fov: 50,
+    near: 0.1,
+    far: 5000,
+};
+
+/** 3D 视角预设列表（与 DtCameraRig.PRESET_SPHERICAL 对齐） */
+export const DT_VIEW_PRESETS_3D: Array<{
+    value: DtViewPreset3D;
+    labelKey: string;
+}> = [
+    { value: "top", labelKey: "digitaltwin.viewport.preset.top" },
+    { value: "front", labelKey: "digitaltwin.viewport.preset.front" },
+    { value: "side", labelKey: "digitaltwin.viewport.preset.side" },
+    { value: "iso", labelKey: "digitaltwin.viewport.preset.iso" },
+    { value: "back", labelKey: "digitaltwin.viewport.preset.back" },
+    { value: "bottom", labelKey: "digitaltwin.viewport.preset.bottom" },
+];
+
+/** 视口交互模式列表 */
+export const DT_VIEWPORT_MODES: Array<{
+    value: DtViewportMode;
+    labelKey: string;
+}> = [
+    { value: "view", labelKey: "digitaltwin.viewport.mode.view" },
+    { value: "edit", labelKey: "digitaltwin.viewport.mode.edit" },
+    { value: "measure", labelKey: "digitaltwin.viewport.mode.measure" },
+    { value: "annotation", labelKey: "digitaltwin.viewport.mode.annotation" },
+    { value: "inspection", labelKey: "digitaltwin.viewport.mode.inspection" },
+];
+
+/** 光照预设列表 */
+export const DT_LIGHTING_PRESETS: Array<{
+    value: DtLightingPreset;
+    labelKey: string;
+}> = [
+    { value: "day", labelKey: "digitaltwin.lighting.preset.day" },
+    { value: "dusk", labelKey: "digitaltwin.lighting.preset.dusk" },
+    { value: "night", labelKey: "digitaltwin.lighting.preset.night" },
+    { value: "industrial", labelKey: "digitaltwin.lighting.preset.industrial" },
+    { value: "studio", labelKey: "digitaltwin.lighting.preset.studio" },
+];
+
+/** 阴影质量选项 */
+export const DT_SHADOW_QUALITY_OPTIONS: Array<{
+    value: DtShadowQuality;
+    labelKey: string;
+    mapSize: number;
+}> = [
+    { value: "low", labelKey: "digitaltwin.shadow.quality.low", mapSize: 1024 },
+    { value: "medium", labelKey: "digitaltwin.shadow.quality.medium", mapSize: 2048 },
+    { value: "high", labelKey: "digitaltwin.shadow.quality.high", mapSize: 4096 },
+];
+
+/** 性能阈值默认配置（FPS<30 触发自动降级） */
+export const DT_DEFAULT_PERFORMANCE_THRESHOLD = {
+    minFps: 30,
+    maxTriangles: 2_000_000,
+    maxDrawCalls: 5000,
+    maxFrameTime: 33, // ms（约 30fps）
+};
+
+/** 旧 DtEntity status → 颜色映射（DtSceneViewport 兼容映射复用） */
+export const DT_STATUS_COLOR_MAP: Record<string, string> = {
+    normal: "#52C41A",
+    warning: "#FAAD14",
+    alarm: "#F5222D",
+    offline: "#8C8C8C",
 };
