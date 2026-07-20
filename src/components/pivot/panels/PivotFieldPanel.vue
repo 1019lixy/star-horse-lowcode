@@ -4,6 +4,7 @@ import { i18n } from "@/lang";
 import draggable from "vuedraggable-es";
 import type { PivotDesigner } from "../composables/usePivotDesigner";
 import type { PivotField } from "../types";
+import { ShSvgIcon } from "@/components/shared";
 
 const props = defineProps<{
     designer: PivotDesigner;
@@ -61,6 +62,19 @@ const handleDropToUnused = (item: PivotField) => {
     props.designer.removeFromColumn(item.name);
     props.designer.removeFromValue(item.name);
 };
+/** 字段类型 → svgIconRegistry key 映射 */
+const fieldTypeIcon = (type: string): string => {
+    if (type === "number") return "total";
+    if (type === "date") return "date";
+    return "text";
+};
+
+/** 字段类型 i18n label key */
+const fieldTypeLabelKey = (type: string): string => {
+    if (type === "number") return "pivot.fieldType.number";
+    if (type === "date") return "pivot.fieldType.date";
+    return "pivot.fieldType.string";
+};
 </script>
 
 <template>
@@ -77,12 +91,10 @@ const handleDropToUnused = (item: PivotField) => {
             >
                 <template #item="{ element }">
                     <div class="field-chip" @dblclick="emit('editField', element.name)">
-                        <el-icon class="type-icon">
-                            <component :is="element.type === 'number' ? 'Histogram' : element.type === 'date' ? 'Calendar' : 'Document'"/>
-                        </el-icon>
+                        <ShSvgIcon :name="fieldTypeIcon(element.type)" size="12px"/>
                         <span class="chip-text">{{ element.label }}</span>
-                        <el-button  text @click.stop="emit('editField', element.name)">
-                            <el-icon><Edit/></el-icon>
+                        <el-button text size="small" @click.stop="emit('editField', element.name)" :title="i18n('pivot.btn.configField')">
+                            <ShSvgIcon name="settings" size="12px"/>
                         </el-button>
                     </div>
                 </template>
@@ -93,7 +105,7 @@ const handleDropToUnused = (item: PivotField) => {
             <!-- 行区域 -->
             <div class="drop-zone">
                 <div class="zone-title">
-                    <el-icon><Operation/></el-icon>
+                    <ShSvgIcon name="total" size="12px"/>
                     {{ i18n("pivot.section.rows") }}
                 </div>
                 <draggable
@@ -104,9 +116,13 @@ const handleDropToUnused = (item: PivotField) => {
                 >
                     <template #item="{ element }">
                         <div class="field-chip row-chip">
-                            <span>{{ element.label }}</span>
-                            <el-button  text @click.stop="designer.removeFromRow(element.name)">
-                                <el-icon><Close/></el-icon>
+                            <span class="chip-label">{{ element.label }}</span>
+                            <el-tag size="small" effect="plain">{{ i18n(fieldTypeLabelKey(element.type)) }}</el-tag>
+                            <el-button text size="small" @click.stop="emit('editField', element.name)" :title="i18n('pivot.btn.configField')">
+                                <ShSvgIcon name="settings" size="12px"/>
+                            </el-button>
+                            <el-button text size="small" @click.stop="designer.removeFromRow(element.name)" :title="i18n('pivot.btn.removeField')">
+                                <ShSvgIcon name="close" size="12px"/>
                             </el-button>
                         </div>
                     </template>
@@ -116,7 +132,7 @@ const handleDropToUnused = (item: PivotField) => {
             <!-- 列区域 -->
             <div class="drop-zone">
                 <div class="zone-title">
-                    <el-icon><Operation/></el-icon>
+                    <ShSvgIcon name="total" size="12px"/>
                     {{ i18n("pivot.section.columns") }}
                 </div>
                 <draggable
@@ -127,9 +143,13 @@ const handleDropToUnused = (item: PivotField) => {
                 >
                     <template #item="{ element }">
                         <div class="field-chip col-chip">
-                            <span>{{ element.label }}</span>
-                            <el-button  text @click.stop="designer.removeFromColumn(element.name)">
-                                <el-icon><Close/></el-icon>
+                            <span class="chip-label">{{ element.label }}</span>
+                            <el-tag size="small" effect="plain">{{ i18n(fieldTypeLabelKey(element.type)) }}</el-tag>
+                            <el-button text size="small" @click.stop="emit('editField', element.name)" :title="i18n('pivot.btn.configField')">
+                                <ShSvgIcon name="settings" size="12px"/>
+                            </el-button>
+                            <el-button text size="small" @click.stop="designer.removeFromColumn(element.name)" :title="i18n('pivot.btn.removeField')">
+                                <ShSvgIcon name="close" size="12px"/>
                             </el-button>
                         </div>
                     </template>
@@ -139,7 +159,7 @@ const handleDropToUnused = (item: PivotField) => {
             <!-- 值区域 -->
             <div class="drop-zone">
                 <div class="zone-title">
-                    <el-icon><DataLine/></el-icon>
+                    <ShSvgIcon name="chart" size="12px"/>
                     {{ i18n("pivot.section.values") }}
                 </div>
                 <draggable
@@ -150,10 +170,13 @@ const handleDropToUnused = (item: PivotField) => {
                 >
                     <template #item="{ element }">
                         <div class="field-chip value-chip">
-                            <span>{{ element.label }}</span>
-                            <el-tag >{{ element.aggregation }}</el-tag>
-                            <el-button  text @click.stop="designer.removeFromValue(element.name)">
-                                <el-icon><Close/></el-icon>
+                            <span class="chip-label">{{ element.label }}</span>
+                            <el-tag size="small" effect="plain" type="warning">{{ element.aggregation }}</el-tag>
+                            <el-button text size="small" @click.stop="emit('editField', element.name)" :title="i18n('pivot.btn.configField')">
+                                <ShSvgIcon name="settings" size="12px"/>
+                            </el-button>
+                            <el-button text size="small" @click.stop="designer.removeFromValue(element.name)" :title="i18n('pivot.btn.removeField')">
+                                <ShSvgIcon name="close" size="12px"/>
                             </el-button>
                         </div>
                     </template>
@@ -164,8 +187,7 @@ const handleDropToUnused = (item: PivotField) => {
 </template>
 
 <script lang="ts">
-import { Edit, Close, Operation, DataLine } from "@element-plus/icons-vue";
-export default { components: { Edit, Close, Operation, DataLine } };
+export default { components: {} };
 </script>
 
 <style lang="scss" scoped>
@@ -241,6 +263,7 @@ export default { components: { Edit, Close, Operation, DataLine } };
         font-size: 12px;
         cursor: move;
         user-select: none;
+        max-width: 100%;
 
         &.row-chip {
             border-color: var(--el-color-primary);
@@ -257,8 +280,11 @@ export default { components: { Edit, Close, Operation, DataLine } };
             color: var(--el-color-warning);
         }
 
-        .type-icon {
-            font-size: 12px;
+        .chip-label {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 120px;
         }
 
         .chip-text {

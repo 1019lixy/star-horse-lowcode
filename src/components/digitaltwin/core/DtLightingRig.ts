@@ -53,51 +53,51 @@ interface PresetConfig {
 
 const PRESETS: Record<DtLightingPreset, PresetConfig> = {
     day: {
-        ambient: { color: 0xffffff, intensity: 0.6 },
-        hemisphere: { sky: 0xb1e1ff, ground: 0xb97a20, intensity: 0.4 },
+        ambient: { color: 0xffffff, intensity: 0.8 },
+        hemisphere: { sky: 0xb1e1ff, ground: 0xb97a20, intensity: 0.6 },
         directional: [
-            { color: 0xffffff, intensity: 1.2, position: [120, 200, 80], castShadow: true },
+            { color: 0xffffff, intensity: 1.4, position: [120, 200, 80], castShadow: true },
         ],
-        envIntensity: 1.0,
-        backgroundFallback: 0x1e1e1e,
+        envIntensity: 1.2,
+        backgroundFallback: 0xeaf2fb,
     },
     dusk: {
-        ambient: { color: 0xffa97a, intensity: 0.4 },
-        hemisphere: { sky: 0xff8855, ground: 0x331100, intensity: 0.3 },
+        ambient: { color: 0xffd0a0, intensity: 0.55 },
+        hemisphere: { sky: 0xff8855, ground: 0x331100, intensity: 0.4 },
         directional: [
-            { color: 0xff8855, intensity: 0.9, position: [80, 100, 60], castShadow: true },
+            { color: 0xff9966, intensity: 1.1, position: [80, 100, 60], castShadow: true },
         ],
-        envIntensity: 0.7,
-        backgroundFallback: 0x1e1e1e,
+        envIntensity: 0.9,
+        backgroundFallback: 0xf3e2d8,
     },
     night: {
-        ambient: { color: 0x4a5a8a, intensity: 0.25 },
-        hemisphere: { sky: 0x223355, ground: 0x000011, intensity: 0.2 },
+        ambient: { color: 0x6a7aa0, intensity: 0.4 },
+        hemisphere: { sky: 0x223355, ground: 0x000011, intensity: 0.35 },
         directional: [
-            { color: 0x6688cc, intensity: 0.5, position: [60, 120, 40], castShadow: true },
+            { color: 0x88aacc, intensity: 0.7, position: [60, 120, 40], castShadow: true },
         ],
-        envIntensity: 0.4,
-        backgroundFallback: 0x111418,
+        envIntensity: 0.6,
+        backgroundFallback: 0x1a2336,
     },
     industrial: {
-        ambient: { color: 0xcfd8dc, intensity: 0.5 },
-        hemisphere: { sky: 0xb0bec5, ground: 0x37474f, intensity: 0.4 },
+        ambient: { color: 0xffffff, intensity: 0.85 },
+        hemisphere: { sky: 0xdde7f0, ground: 0x5a6470, intensity: 0.6 },
         directional: [
-            { color: 0xffffff, intensity: 1.0, position: [100, 180, 80], castShadow: true },
-            { color: 0xcfd8dc, intensity: 0.4, position: [-80, 100, -60] },
-        ],
-        envIntensity: 0.8,
-        backgroundFallback: 0x1e1e1e,
-    },
-    studio: {
-        ambient: { color: 0xffffff, intensity: 0.7 },
-        directional: [
-            { color: 0xffffff, intensity: 1.0, position: [100, 100, 100] },
-            { color: 0xffffff, intensity: 0.8, position: [-100, 80, -80] },
-            { color: 0xffffff, intensity: 0.6, position: [0, 60, -120] },
+            { color: 0xffffff, intensity: 1.3, position: [100, 180, 80], castShadow: true },
+            { color: 0xeef2f7, intensity: 0.55, position: [-80, 100, -60] },
         ],
         envIntensity: 1.0,
-        backgroundFallback: 0x2a2a2a,
+        backgroundFallback: 0xeef1f5,
+    },
+    studio: {
+        ambient: { color: 0xffffff, intensity: 0.9 },
+        directional: [
+            { color: 0xffffff, intensity: 1.1, position: [100, 100, 100] },
+            { color: 0xffffff, intensity: 0.85, position: [-100, 80, -80] },
+            { color: 0xffffff, intensity: 0.7, position: [0, 60, -120] },
+        ],
+        envIntensity: 1.2,
+        backgroundFallback: 0xf5f6f8,
     },
 };
 

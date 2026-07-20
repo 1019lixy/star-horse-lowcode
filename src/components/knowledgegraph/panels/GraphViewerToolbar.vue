@@ -56,7 +56,7 @@ const icons: Record<string, string> = {
             <el-select
                 v-model="layout"
 
-                style="width: 110px"
+                style="width: 110px !important;"
                 :placeholder="i18n('knowledgegraph.viewer.layout')"
             >
                 <el-option
@@ -69,7 +69,7 @@ const icons: Record<string, string> = {
             <el-input
                 v-model="searchKeyword"
 
-                style="width: 180px"
+                style="width: 180px !important;"
                 clearable
                 :placeholder="i18n('knowledgegraph.viewer.searchPlaceholder')"
             >

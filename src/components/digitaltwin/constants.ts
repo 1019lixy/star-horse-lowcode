@@ -5,7 +5,9 @@
  */
 
 import type {
+    DtAlarmEvent,
     DtCamera,
+    DtCruisePath,
     DtEntity,
     DtEntityType,
     DtEntityTypePreset,
@@ -13,6 +15,7 @@ import type {
     DtSensorData,
     DtSize3D,
     DtStatusPreset,
+    DtVideoCamera,
     DtViewPresetItem,
 } from "./types";
 
@@ -269,12 +272,26 @@ export const DT_SCENE_TEMPLATES: DtSceneTemplate[] = [
             dtCreateModelInstance("heatExchanger", "换热器 E1", { x: 0, y: 0, z: 220 }, "normal"),
             // 1 控制室
             createDtEntity("cube", "控制室", { x: 250, y: 0, z: -100 }, { width: 100, height: 60, depth: 80, radius: 0 }, "#722ED1"),
+            // 装卸区物流设备（工业级）
+            // 半挂车（停泊在月台）
+            dtCreateModelInstance("trailerTruck", "半挂车 T1", { x: 0, y: 0, z: 105 }, "normal", { type: "rotation", partId: "frontWheelL", axis: "x", speed: 360 }),
+            // 2 传送带（生产线输送）
+            dtCreateModelInstance("conveyor", "传送带 C1", { x: -260, y: 0, z: -10 }, "normal", { type: "rotation", partId: "roller1", axis: "x", speed: 360 }),
+            dtCreateModelInstance("conveyor", "传送带 C2", { x: 260, y: 0, z: -10 }, "normal", { type: "rotation", partId: "roller1", axis: "x", speed: 360 }),
+            // 2 货架（仓储区）
+            dtCreateModelInstance("rackShelf", "货架 R1", { x: -280, y: 0, z: -180 }, "normal"),
+            dtCreateModelInstance("rackShelf", "货架 R2", { x: 280, y: 0, z: -180 }, "normal"),
+            // 2 AGV（智能搬运）
+            dtCreateModelInstance("agv", "AGV A1", { x: -150, y: 0, z: 120 }, "normal", { type: "translation", partId: "body", translateAxis: "x", range: 80, translateSpeed: 0.3 }),
+            dtCreateModelInstance("agv", "AGV A2", { x: 150, y: 0, z: 120 }, "normal", { type: "translation", partId: "body", translateAxis: "x", range: 80, translateSpeed: 0.4 }),
             // 5 管道
             dtCreateModelInstance("pipeline", "管道 L1", { x: -200, y: 0, z: 100 }, "normal"),
             dtCreateModelInstance("pipeline", "管道 L2", { x: 200, y: 0, z: 100 }, "normal"),
             dtCreateModelInstance("pipeline", "管道 L3", { x: -100, y: 0, z: 200 }, "normal"),
             dtCreateModelInstance("pipeline", "管道 L4", { x: 100, y: 0, z: 200 }, "normal"),
             dtCreateModelInstance("pipeline", "管道 L5", { x: 0, y: 0, z: 250 }, "normal"),
+            // 1 水塔（高位储水系统，工厂级落地组件）
+            dtCreateModelInstance("waterTower", "高位水塔 W1", { x: -320, y: 0, z: -200 }, "normal", { type: "blink", partId: "beacon", frequency: 1 }),
         ],
         hierarchy: {
             id: "node_factory",
@@ -454,5 +471,116 @@ export const DT_SCENE_TEMPLATES: DtSceneTemplate[] = [
                 },
             ],
         },
+    },
+];
+
+// ==================== 企业级运营扩展预设 ====================
+
+/**
+ * 巡航路径预设
+ *
+ * 对标古河 IBDT 的"巡检漫游"功能：预设 3 条工厂巡检路径
+ */
+export const DT_CRUISE_PATH_PRESETS: DtCruisePath[] = [
+    {
+        id: "cruise_overview",
+        name: "全景概览",
+        loop: true,
+        waypoints: [
+            { id: "wp1", name: "主入口", position: { x: 400, y: 250, z: 400 }, target: { x: 0, y: 50, z: 0 }, stayMs: 2000, transitionMs: 4000 },
+            { id: "wp2", name: "厂房正面", position: { x: 0, y: 200, z: 500 }, target: { x: 0, y: 50, z: 0 }, stayMs: 2500, transitionMs: 4000 },
+            { id: "wp3", name: "储罐区", position: { x: -400, y: 250, z: 200 }, target: { x: -200, y: 0, z: 0 }, stayMs: 2500, transitionMs: 4000 },
+            { id: "wp4", name: "水塔俯瞰", position: { x: -500, y: 400, z: -300 }, target: { x: -320, y: 160, z: -200 }, stayMs: 2500, transitionMs: 4000 },
+            { id: "wp5", name: "俯视图", position: { x: 0, y: 600, z: 0 }, target: { x: 0, y: 0, z: 0 }, stayMs: 2000, transitionMs: 4000 },
+        ],
+    },
+    {
+        id: "cruise_pump_zone",
+        name: "泵区巡检",
+        loop: false,
+        waypoints: [
+            { id: "wp1", name: "P1 进料泵", position: { x: 150, y: 80, z: 200 }, target: { x: 150, y: 30, z: 0 }, stayMs: 3000, transitionMs: 3000 },
+            { id: "wp2", name: "P2 出料泵", position: { x: 220, y: 80, z: 200 }, target: { x: 220, y: 30, z: 0 }, stayMs: 3000, transitionMs: 3000 },
+            { id: "wp3", name: "换热器", position: { x: 300, y: 100, z: 150 }, target: { x: 300, y: 30, z: 0 }, stayMs: 3000, transitionMs: 3000 },
+            { id: "wp4", name: "V1 主阀", position: { x: 0, y: 80, z: 200 }, target: { x: 0, y: 30, z: 0 }, stayMs: 3000, transitionMs: 3000 },
+        ],
+    },
+    {
+        id: "cruise_perimeter",
+        name: "周界安防",
+        loop: true,
+        waypoints: [
+            { id: "wp1", name: "东南角", position: { x: 500, y: 150, z: 500 }, target: { x: 200, y: 0, z: 200 }, stayMs: 1500, transitionMs: 5000 },
+            { id: "wp2", name: "东北角", position: { x: 500, y: 150, z: -500 }, target: { x: 200, y: 0, z: -200 }, stayMs: 1500, transitionMs: 5000 },
+            { id: "wp3", name: "西北角", position: { x: -500, y: 150, z: -500 }, target: { x: -200, y: 0, z: -200 }, stayMs: 1500, transitionMs: 5000 },
+            { id: "wp4", name: "西南角", position: { x: -500, y: 150, z: 500 }, target: { x: -200, y: 0, z: 200 }, stayMs: 1500, transitionMs: 5000 },
+        ],
+    },
+];
+
+/**
+ * 视频监控点位预设（工厂车间模板）
+ *
+ * 部署 6 个摄像头覆盖关键区域，2 个离线模拟故障
+ */
+export const DT_CAMERA_PRESETS: DtVideoCamera[] = [
+    { id: "cam_main_gate", name: "主出入口", position: { x: 0, y: 120, z: 250 }, streamUrl: "mock://cam_main_gate", cameraType: "ptz", online: true, fov: 75, heading: 0 },
+    { id: "cam_tank_area", name: "储罐区", position: { x: -200, y: 100, z: 100 }, streamUrl: "mock://cam_tank_area", cameraType: "fixed", online: true, fov: 60, heading: 90 },
+    { id: "cam_pump_zone", name: "泵区", position: { x: 200, y: 100, z: 100 }, streamUrl: "mock://cam_pump_zone", cameraType: "fixed", online: true, fov: 60, heading: 270 },
+    { id: "cam_workshop", name: "厂房顶部", position: { x: 0, y: 150, z: 0 }, streamUrl: "mock://cam_workshop", cameraType: "panoramic", online: true, fov: 360, heading: 0 },
+    { id: "cam_tower", name: "水塔附近", position: { x: -320, y: 100, z: -100 }, streamUrl: "mock://cam_tower", cameraType: "fixed", online: false, fov: 60, heading: 180 },
+    { id: "cam_perimeter_e", name: "东侧周界", position: { x: 400, y: 100, z: 0 }, streamUrl: "mock://cam_perimeter_e", cameraType: "ptz", online: false, fov: 75, heading: 270 },
+];
+
+/**
+ * 预设告警事件（演示）
+ *
+ * 模拟工厂运行中的常见告警：温度过高、压力异常、设备离线
+ */
+export const DT_ALARM_EVENT_PRESETS: DtAlarmEvent[] = [
+    {
+        id: "alarm_001",
+        entityId: undefined, // 模板中实体 id 是动态生成的，这里留空，运行时绑定
+        entityName: "出料泵 P2",
+        title: "出料泵 P2 振动超标",
+        description: "电机前轴承振动值 7.2mm/s，超过告警阈值 5.0mm/s",
+        level: "alarm",
+        status: "active",
+        timestamp: Date.now() - 3 * 60 * 1000,
+        source: "threshold",
+        metric: "vibration=7.2mm/s",
+    },
+    {
+        id: "alarm_002",
+        entityName: "原料罐 T2",
+        title: "原料罐 T2 液位低",
+        description: "当前液位 18%，低于警告阈值 20%",
+        level: "warning",
+        status: "active",
+        timestamp: Date.now() - 8 * 60 * 1000,
+        source: "threshold",
+        metric: "level=18%",
+    },
+    {
+        id: "alarm_003",
+        entityName: "水塔附近摄像头",
+        title: "摄像头离线",
+        description: "cam_tower 已离线超过 5 分钟，请检查网络连接",
+        level: "info",
+        status: "active",
+        timestamp: Date.now() - 15 * 60 * 1000,
+        source: "system",
+    },
+    {
+        id: "alarm_004",
+        entityName: "主出水阀 V1",
+        title: "阀门开度异常",
+        description: "V1 开度 95% 与设定值 70% 偏差超过 25%",
+        level: "warning",
+        status: "acknowledged",
+        timestamp: Date.now() - 25 * 60 * 1000,
+        acknowledgedAt: Date.now() - 22 * 60 * 1000,
+        source: "system",
+        metric: "opening=95%",
     },
 ];

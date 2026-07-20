@@ -1,5 +1,6 @@
 <script setup lang="ts" name="OfficeToolbar">
 import { i18n } from "@/lang";
+import { ShSvgIcon } from "@/components/shared";
 import { OFFICE_DOC_TYPE_PRESETS } from "../constants";
 import type { OfficeDocType } from "../types";
 
@@ -17,49 +18,47 @@ const emit = defineEmits<{
     (e: "redo"): void;
     (e: "switch-type", type: OfficeDocType): void;
 }>();
-
-/** 内联 SVG 图标（替代 Element Plus 图标，减少依赖） */
-const icons: Record<string, string> = {
-    plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>',
-    select: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/></svg>',
-    download: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>',
-    back: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>',
-    right: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>'
-};
 </script>
 
 <template>
     <div class="office-toolbar">
         <div class="toolbar-group">
-            <el-button  type="primary" @click="emit('new')">
-                <span class="svg-icon" v-html="icons.plus"></span>
-                {{ i18n("office.toolbar.new") }}
-            </el-button>
-            <el-button  @click="emit('save')">
-                <span class="svg-icon" v-html="icons.select"></span>
-                {{ i18n("office.toolbar.save") }}
-            </el-button>
-            <el-button  @click="emit('export')">
-                <span class="svg-icon" v-html="icons.download"></span>
-                {{ i18n("office.toolbar.export") }}
-            </el-button>
+            <el-tooltip :content="i18n('office.toolbar.new')" :show-after="500">
+                <el-button type="primary" @click="emit('new')">
+                    <ShSvgIcon name="plus" size="14px" />
+                    <span class="btn-text">{{ i18n("office.toolbar.new") }}</span>
+                </el-button>
+            </el-tooltip>
+            <el-tooltip :content="i18n('office.toolbar.save')" :show-after="500">
+                <el-button @click="emit('save')">
+                    <ShSvgIcon name="save" size="14px" />
+                    <span class="btn-text">{{ i18n("office.toolbar.save") }}</span>
+                </el-button>
+            </el-tooltip>
+            <el-tooltip :content="i18n('office.toolbar.export')" :show-after="500">
+                <el-button @click="emit('export')">
+                    <ShSvgIcon name="export" size="14px" />
+                    <span class="btn-text">{{ i18n("office.toolbar.export") }}</span>
+                </el-button>
+            </el-tooltip>
         </div>
         <div class="toolbar-divider"></div>
         <div class="toolbar-group">
-            <el-button  :disabled="!canUndo" @click="emit('undo')">
-                <span class="svg-icon" v-html="icons.back"></span>
-                {{ i18n("office.toolbar.undo") }}
-            </el-button>
-            <el-button  :disabled="!canRedo" @click="emit('redo')">
-                <span class="svg-icon" v-html="icons.right"></span>
-                {{ i18n("office.toolbar.redo") }}
-            </el-button>
+            <el-tooltip :content="i18n('office.toolbar.undo')" :show-after="500">
+                <el-button :disabled="!canUndo" @click="emit('undo')">
+                    <ShSvgIcon name="undo" size="14px" />
+                </el-button>
+            </el-tooltip>
+            <el-tooltip :content="i18n('office.toolbar.redo')" :show-after="500">
+                <el-button :disabled="!canRedo" @click="emit('redo')">
+                    <ShSvgIcon name="redo" size="14px" />
+                </el-button>
+            </el-tooltip>
         </div>
         <div class="toolbar-divider"></div>
         <div class="toolbar-group type-switch">
             <el-radio-group
                 :model-value="activeType ?? 'word'"
-
                 @change="(v: string | number | boolean | undefined) => emit('switch-type', v as OfficeDocType)"
             >
                 <el-radio-button
@@ -91,6 +90,11 @@ const icons: Record<string, string> = {
         gap: 4px;
     }
 
+    .btn-text {
+        margin-left: 4px;
+        font-size: 13px;
+    }
+
     .toolbar-divider {
         width: 1px;
         height: 20px;
@@ -100,18 +104,5 @@ const icons: Record<string, string> = {
     .type-switch {
         margin-left: auto;
     }
-}
-
-.svg-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 1em;
-    height: 1em;
-    margin-right: 4px;
-}
-.svg-icon :deep(svg) {
-    width: 100%;
-    height: 100%;
 }
 </style>

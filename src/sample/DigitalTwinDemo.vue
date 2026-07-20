@@ -2,17 +2,17 @@
 /**
  * 数字孪生 Demo - 工业场景演示
  *
- * 默认加载"工厂车间"场景模板（厂房 + 4 储罐 + 2 泵 + 2 阀门 + 换热器 + 管道 + 控制室）
+ * 默认加载"工厂车间"场景模板（厂房 + 4 储罐 + 2 泵 + 2 阀门 + 换热器 + 管道 + 控制室 + 水塔）
  * 顶部"切换模板"按钮：在 3 个模板（工厂车间/数据中心/能源站）间循环切换
- * 启用动画（泵电机旋转、阀门手轮旋转）
+ * 启用动画（泵电机旋转、阀门手轮旋转、水塔警示灯闪烁）
  * 启用数据模拟（温度/压力/流量实时更新）
  * 部分设备预设报警状态（出料泵 P2 报警，原料罐 T2 警告）
  */
 import { computed, ref } from "vue";
-import { DigitalTwinViewer } from "@/components/digitaltwin";
+import { DigitalTwinDesigner } from "@/components/digitaltwin";
 import { i18n } from "@/lang";
 import type { DtScene } from "@/components/digitaltwin";
-import { DT_SCENE_TEMPLATES, dtCreateModelInstance, createDtEntity } from "@/components/digitaltwin";
+import { DT_SCENE_TEMPLATES } from "@/components/digitaltwin";
 
 /** 模板序号（0=工厂车间 / 1=数据中心 / 2=能源站） */
 const currentTemplateIndex = ref(0);
@@ -20,12 +20,14 @@ const currentTemplateIndex = ref(0);
 /** 当前场景（默认从工厂车间模板克隆） */
 const buildSceneFromTemplate = (templateIndex: number): DtScene => {
     const template = DT_SCENE_TEMPLATES[templateIndex];
-    return {
+    const scene: DtScene = {
         id: `dt_demo_${template.id}`,
         name: template.labelKey,
         // 深拷贝模板实体（确保切换时互不干扰）
         entities: JSON.parse(JSON.stringify(template.entities)),
     };
+    (scene as any).templateId = template.id;
+    return scene;
 };
 
 const scene = ref<DtScene>(buildSceneFromTemplate(0));
@@ -34,6 +36,7 @@ const scene = ref<DtScene>(buildSceneFromTemplate(0));
 const handleSwitchTemplate = (): void => {
     currentTemplateIndex.value = (currentTemplateIndex.value + 1) % DT_SCENE_TEMPLATES.length;
     scene.value = buildSceneFromTemplate(currentTemplateIndex.value);
+    applyPresetStatus(scene.value);
 };
 
 /** 给模板中部分设备预设报警/警告状态（用于演示） */
@@ -55,9 +58,10 @@ const handleSelectEntity = (id: string | null) => {
     console.log("selected entity:", id);
 };
 
-// 抑制未使用告警（这两个函数保留供未来扩展使用）
-void dtCreateModelInstance;
-void createDtEntity;
+const handleSaveScene = (s: DtScene) => {
+    // eslint-disable-next-line no-console
+    console.log("save scene:", s);
+};
 </script>
 
 <template>
@@ -69,11 +73,12 @@ void createDtEntity;
             </el-button>
         </div>
         <div class="demo-viewer">
-            <DigitalTwinViewer
+            <DigitalTwinDesigner
                 :key="scene.id"
                 :scene="scene"
                 :auto-sim="true"
                 @select-entity="handleSelectEntity"
+                @save-scene="handleSaveScene"
             />
         </div>
     </div>

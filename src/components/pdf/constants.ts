@@ -28,18 +28,18 @@ export const MM_TO_PX = 3.7795275591;
 
 /** 元素类型预设 */
 export const PDF_ELEMENT_TYPE_PRESETS: PdfElementTypePreset[] = [
-    { type: "heading", label: i18n("pdf.element.heading"), icon: "Header" },
-    { type: "text", label: i18n("pdf.element.text"), icon: "Document" },
-    { type: "paragraph", label: i18n("pdf.element.paragraph"), icon: "Memo" },
-    { type: "image", label: i18n("pdf.element.image"), icon: "Picture" },
-    { type: "table", label: i18n("pdf.element.table"), icon: "Grid" },
-    { type: "divider", label: i18n("pdf.element.divider"), icon: "Minus" },
-    { type: "pageBreak", label: i18n("pdf.element.pageBreak"), icon: "DocumentCopy" },
-    { type: "barcode", label: i18n("pdf.element.barcode"), icon: "Barcode" },
-    { type: "qrcode", label: i18n("pdf.element.qrcode"), icon: "Grid" },
-    { type: "signature", label: i18n("pdf.element.signature"), icon: "EditPen" },
-    { type: "checkbox", label: i18n("pdf.element.checkbox"), icon: "Select" },
-    { type: "date", label: i18n("pdf.element.date"), icon: "Calendar" },
+    { type: "heading", label: i18n("pdf.element.heading"), icon: "heading" },
+    { type: "text", label: i18n("pdf.element.text"), icon: "text" },
+    { type: "paragraph", label: i18n("pdf.element.paragraph"), icon: "paragraph" },
+    { type: "image", label: i18n("pdf.element.image"), icon: "image" },
+    { type: "table", label: i18n("pdf.element.table"), icon: "table" },
+    { type: "divider", label: i18n("pdf.element.divider"), icon: "divider" },
+    { type: "pageBreak", label: i18n("pdf.element.pageBreak"), icon: "pageBreak" },
+    { type: "barcode", label: i18n("pdf.element.barcode"), icon: "barcode" },
+    { type: "qrcode", label: i18n("pdf.element.qrcode"), icon: "qrcode" },
+    { type: "signature", label: i18n("pdf.element.signature"), icon: "signature" },
+    { type: "checkbox", label: i18n("pdf.element.checkbox"), icon: "checkbox" },
+    { type: "date", label: i18n("pdf.element.date"), icon: "date" },
 ];
 
 /** 字体族预设 */
@@ -72,7 +72,7 @@ export const createTemplate = (overrides: Partial<PdfTemplate> = {}): PdfTemplat
 
 /** 创建元素工厂 */
 export const createElement = (type: PdfElementType, overrides: Partial<any> = {}) => {
-    const id = `pdf_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
+    const id = pdf__;
     const base = {
         id,
         x: 20,

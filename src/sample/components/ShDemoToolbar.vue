@@ -8,6 +8,7 @@
  */
 import { computed } from "vue";
 import { i18n } from "@/lang";
+import { ShSvgIcon } from "@/components/shared";
 import { groupActions } from "./demoTypes";
 import type { ShDemoAction, ShDemoToolbarProps } from "./demoTypes";
 
@@ -63,9 +64,7 @@ const onClick = (action: ShDemoAction, e: MouseEvent): void => {
                             size="small"
                             @click="onClick(action, $event)"
                         >
-                            <el-icon v-if="action.icon">
-                                <component :is="action.icon" />
-                            </el-icon>
+                            <ShSvgIcon v-if="action.icon" :name="action.icon" size="14px" />
                             <span
                                 v-if="!action.iconOnly && action.labelKey"
                                 class="btn-label"
@@ -88,9 +87,7 @@ const onClick = (action: ShDemoAction, e: MouseEvent): void => {
                             size="small"
                             @click="onClick(action, $event)"
                         >
-                            <el-icon v-if="action.icon">
-                                <component :is="action.icon" />
-                            </el-icon>
+                            <ShSvgIcon v-if="action.icon" :name="action.icon" size="14px" />
                             <span
                                 v-if="!action.iconOnly && action.labelKey"
                                 class="btn-label"
@@ -122,9 +119,7 @@ const onClick = (action: ShDemoAction, e: MouseEvent): void => {
                             size="small"
                             @click="onClick(action, $event)"
                         >
-                            <el-icon v-if="action.icon">
-                                <component :is="action.icon" />
-                            </el-icon>
+                            <ShSvgIcon v-if="action.icon" :name="action.icon" size="14px" />
                             <span
                                 v-if="!action.iconOnly && action.labelKey"
                                 class="btn-label"
@@ -147,9 +142,7 @@ const onClick = (action: ShDemoAction, e: MouseEvent): void => {
                             size="small"
                             @click="onClick(action, $event)"
                         >
-                            <el-icon v-if="action.icon">
-                                <component :is="action.icon" />
-                            </el-icon>
+                            <ShSvgIcon v-if="action.icon" :name="action.icon" size="14px" />
                             <span
                                 v-if="!action.iconOnly && action.labelKey"
                                 class="btn-label"

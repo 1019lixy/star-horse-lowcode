@@ -60,13 +60,12 @@ const handleToolClick = (tool: WhiteboardTool) => {
             <el-button
                 v-for="t in toolList"
                 :key="t.tool"
-
                 :type="designer.state.tool === t.tool ? 'primary' : 'default'"
                 :disabled="readonly && t.tool !== 'select'"
                 :title="i18n(t.labelKey as any)"
                 @click="handleToolClick(t.tool)"
             >
-                <star-horse-icon :icon-class="t.icon.replace('sh-', '')" cursor="pointer"/>
+                <star-horse-icon :icon-class="t.icon.replace('sh-', '')" cursor="pointer" :color="designer.state.tool === t.tool ?'var(--star-horse-white)':''"/>
                 <span class="tool-label">{{ i18n(t.labelKey as any) }}</span>
             </el-button>
         </el-button-group>
@@ -97,7 +96,7 @@ const handleToolClick = (tool: WhiteboardTool) => {
             <el-select
                 v-model="designer.state.strokeWidth"
 
-                style="width: 80px;"
+                style="width: 80px !important;"
             >
                 <el-option
                     v-for="w in WB_LINE_WIDTH_PRESETS"
@@ -113,7 +112,7 @@ const handleToolClick = (tool: WhiteboardTool) => {
             <el-select
                 v-model="designer.state.opacity"
 
-                style="width: 90px;"
+                style="width: 90px !important;"
             >
                 <el-option
                     v-for="o in WB_OPACITY_PRESETS"
@@ -129,7 +128,7 @@ const handleToolClick = (tool: WhiteboardTool) => {
             <el-select
                 v-model="designer.state.fontSize"
 
-                style="width: 80px;"
+                style="width: 80px !important;"
             >
                 <el-option
                     v-for="s in WB_FONT_SIZE_PRESETS"

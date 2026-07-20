@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import { ElMessage } from "element-plus";
 import { PivotTable } from "@/components/pivot";
 import type { PivotData } from "@/components/pivot";
+import ShDemoToolbar from "./components/ShDemoToolbar.vue";
+import type { ShDemoAction } from "./components/demoTypes";
+import { useElementHeight } from "./components/useElementHeight";
 
-const pivotData = ref<PivotData>({
+const buildSamplePivot = (): PivotData => ({
     name: "销售数据透视分析",
     records: [
         { region: "华东", product: "产品A", month: "1月", amount: 12500, quantity: 50 },
@@ -56,28 +60,111 @@ const pivotData = ref<PivotData>({
         numberFormat: "¥#,##0.00",
     },
 });
+
+const pivotData = ref<PivotData>(buildSamplePivot());
+const pivotRef = ref();
+
+const { containerRef, height } = useElementHeight();
+
+const actions: ShDemoAction[] = [
+    {
+        key: "loadSample",
+        labelKey: "demo.action.loadSample",
+        tooltipKey: "demo.action.loadSampleTip",
+        icon: "fileAdd",
+        group: "data",
+    },
+    {
+        key: "dataManager",
+        labelKey: "demo.action.dataManager",
+        tooltipKey: "demo.action.dataManagerTip",
+        icon: "database",
+        group: "data",
+    },
+    {
+        key: "clear",
+        labelKey: "demo.action.clear",
+        tooltipKey: "demo.action.clearTip",
+        icon: "delete",
+        group: "data",
+    },
+    {
+        key: "exportJson",
+        labelKey: "demo.action.exportJson",
+        tooltipKey: "demo.action.exportJsonTip",
+        icon: "export",
+        group: "data",
+    },
+];
+
+const handleAction = (key: string) => {
+    switch (key) {
+        case "loadSample":
+            pivotData.value = buildSamplePivot();
+            ElMessage.success("已加载示例数据");
+            break;
+        case "dataManager":
+            pivotRef.value?.openDataManager();
+            break;
+        case "clear":
+            pivotData.value = {
+                name: "空透视表",
+                records: [],
+                fields: [],
+                config: {
+                    rows: [], columns: [], values: [], filters: [], sorts: [],
+                    showTotal: true, showRowSubtotal: true, showColSubtotal: true,
+                    numberFormat: "#,##0",
+                },
+            };
+            ElMessage.success("已清空");
+            break;
+        case "exportJson": {
+            const blob = new Blob([JSON.stringify(pivotData.value, null, 2)], {
+                type: "application/json",
+            });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `${pivotData.value.name || "pivot"}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            ElMessage.success("已导出 JSON");
+            break;
+        }
+    }
+};
 </script>
 
 <template>
-    <div class="demo-container">
-        <h3>透视分析 PivotTable</h3>
-        <p>数据透视表组件，支持行/列/值/过滤字段拖拽配置、多种聚合方式（求和/计数/平均/最大/最小）、合计小计、图表展示。示例为销售数据按区域和产品透视销售额。</p>
-        <div class="demo-canvas">
-            <PivotTable :initial-pivot="pivotData" />
+    <div class="demo-page" ref="containerRef">
+        <ShDemoToolbar
+            :actions="actions"
+            title-key="demo.title.pivot"
+            @action="handleAction"
+        />
+        <div class="demo-stage" :style="{ height: `${height}px` }">
+            <PivotTable
+                ref="pivotRef"
+                :initial-pivot="pivotData"
+                @save="(d) => { pivotData = d; ElMessage.success('已保存'); }"
+            />
         </div>
     </div>
 </template>
 
-<style scoped>
-.demo-container {
-    padding: 16px;
+<style lang="scss" scoped>
+.demo-page {
+    display: flex;
+    flex-direction: column;
     height: 100%;
-    overflow: auto;
-}
-.demo-canvas {
-    border: 1px solid var(--el-border-color);
-    border-radius: 4px;
     overflow: hidden;
-    height: 620px;
+    background: var(--el-bg-color-page);
+}
+
+.demo-stage {
+    flex: 1;
+    overflow: hidden;
+    padding: 8px;
 }
 </style>

@@ -69,6 +69,7 @@ const emits = defineEmits([
   "removeRow",
   "addRow",
   "inited",
+  "beforeSubmit",
 ]);
 const starHorseFormRef = ref(null);
 const dataForm = ref<any>({});
@@ -165,6 +166,10 @@ const merge = (type: string) => {
     if (!result) {
       return;
     }
+    // 触发 beforeSubmit 事件，允许外部（如规则引擎）在提交前校验
+    // 如果事件处理器返回 false 则阻止提交
+    const beforeResult = emits("beforeSubmit", { type, formData: dataForm.value });
+    // Vue emits 是同步的，如果需要异步拦截，请使用 doMerge 前手动调用 triggerOnSubmit
     doMerge(type);
   });
 };
@@ -444,6 +449,46 @@ watch(
   },
 );
 
+/**
+ * 应用规则引擎执行结果到表单字段
+ * 供 dynamicform 的 useFormRuleRuntime 调用
+ * @param actions 字段控制指令列表
+ */
+const ruleEngineApply = (actions: Array<{
+  field: string;
+  visible?: boolean;
+  required?: boolean;
+  readonly?: boolean;
+  disabled?: boolean;
+  value?: any;
+}>) => {
+  if (!actions || !actions.length) return;
+  for (const action of actions) {
+    // 在 formFields 中查找目标字段
+    const findAndApply = (fields: any[]) => {
+      for (const field of fields) {
+        if (field.fieldName === action.field) {
+          if (!field.preps) field.preps = {};
+          if (action.visible !== undefined) field.formVisible = action.visible;
+          if (action.required !== undefined) field.required = action.required;
+          if (action.disabled !== undefined) field.preps.disabled = action.disabled;
+          if (action.readonly !== undefined) field.preps.readonly = action.readonly;
+          if (action.value !== undefined) {
+            // 值赋值到 dataForm
+            dataForm.value[action.field] = action.value;
+          }
+          return true;
+        }
+        if (field.children) {
+          if (findAndApply(field.children)) return true;
+        }
+      }
+      return false;
+    };
+    findAndApply(formFields.value || []);
+  }
+};
+
 defineExpose({
   merge,
   mergeDraft,
@@ -457,6 +502,7 @@ defineExpose({
   getFormFields,
   validate,
   setSource,
+  ruleEngineApply,
 });
 </script>
 <template>

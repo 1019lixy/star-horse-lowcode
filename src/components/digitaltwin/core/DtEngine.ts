@@ -83,7 +83,7 @@ export class DtEngine {
             shadowMapEnabled: opts.shadowMapEnabled ?? true,
             enablePostProcessing: opts.enablePostProcessing ?? false,
             renderMode: opts.renderMode ?? "always",
-            background: opts.background ?? 0x1e1e1e,
+            background: opts.background ?? 0xeef1f5,
             assetBase: opts.assetBase ?? "/assets/",
             fov: opts.fov ?? 50,
             near: opts.near ?? 0.1,

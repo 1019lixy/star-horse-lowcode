@@ -4,6 +4,7 @@ import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 import type { IDomEditor } from "@wangeditor/editor";
 import { ElMessage } from "element-plus";
 import { i18n } from "@/lang";
+import { ShSvgIcon, insertVariableBadge } from "@/components/shared";
 import { useDocTemplateDesigner } from "./composables/useDocTemplateDesigner";
 import DocVariablePanel from "./panels/DocVariablePanel.vue";
 import DocVariableDialog from "./dialogs/DocVariableDialog.vue";
@@ -49,7 +50,7 @@ const handleEditorCreated = (editor: IDomEditor) => {
 const handleInsertVariable = (varName: string) => {
     const editor = editorRef.value;
     if (!editor) return;
-    editor.insertText(`\${${varName}}`);
+    insertVariableBadge(editor, varName);
 };
 
 const handleEditVariable = (id: string) => {
@@ -90,12 +91,12 @@ const handleSave = () => {
                 </el-select>
             </div>
             <div class="right-group">
-                <el-button  @click="previewVisible = true">
-                    <el-icon><View/></el-icon>
+                <el-button @click="previewVisible = true">
+                    <ShSvgIcon name="preview" size="14px" />
                     {{ i18n("doctemplate.btn.preview") }}
                 </el-button>
-                <el-button  type="primary" :disabled="readonly" @click="handleSave">
-                    <el-icon><Check/></el-icon>
+                <el-button type="primary" :disabled="readonly" @click="handleSave">
+                    <ShSvgIcon name="save" size="14px" />
                     {{ i18n("dialog.save") }}
                 </el-button>
             </div>
@@ -112,13 +113,40 @@ const handleSave = () => {
             </el-splitter-panel>
             <el-splitter-panel>
                 <div class="editor-area">
-                    <Toolbar
-                        v-if="!readonly"
-                        :editor="editorRef"
-                        :defaultConfig="toolbarConfig"
-                        mode="default"
-                        class="doc-toolbar"
-                    />
+                    <div class="editor-toolbar-wrap" v-if="!readonly">
+                        <Toolbar
+                            :editor="editorRef"
+                            :defaultConfig="toolbarConfig"
+                            mode="default"
+                            class="doc-toolbar"
+                        />
+                        <el-dropdown
+                            trigger="click"
+                            @command="(cmd: string) => handleInsertVariable(cmd)"
+                            :disabled="designer.state.variables.length === 0"
+                        >
+                            <el-button class="var-btn">
+                                <ShSvgIcon name="variable" size="14px" />
+                                {{ i18n("template.variable.insertVariable") }}
+                                <ShSvgIcon name="arrowDown" size="12px" />
+                            </el-button>
+                            <template #dropdown>
+                                <el-dropdown-menu>
+                                    <el-dropdown-item
+                                        v-for="v in designer.state.variables"
+                                        :key="v.id"
+                                        :command="v.name"
+                                    >
+                                        <span class="var-name">{{ v.name }}</span>
+                                        <span class="var-label" v-if="v.label">{{ v.label }}</span>
+                                    </el-dropdown-item>
+                                    <el-dropdown-item v-if="designer.state.variables.length === 0" disabled>
+                                        {{ i18n("template.variable.noVariables") }}
+                                    </el-dropdown-item>
+                                </el-dropdown-menu>
+                            </template>
+                        </el-dropdown>
+                    </div>
                     <Editor
                         v-model="designer.state.content"
                         :defaultConfig="editorConfig"
@@ -142,11 +170,6 @@ const handleSave = () => {
         />
     </div>
 </template>
-
-<script lang="ts">
-import { View, Check } from "@element-plus/icons-vue";
-export default { components: { View, Check } };
-</script>
 
 <style src="@wangeditor/editor/dist/css/style.css"></style>
 <style lang="scss" scoped>
@@ -185,8 +208,23 @@ export default { components: { View, Check } };
             flex-direction: column;
             background: var(--el-bg-color);
 
-            .doc-toolbar {
+            .editor-toolbar-wrap {
+                display: flex;
+                align-items: center;
                 border-bottom: 1px solid var(--el-border-color-lighter);
+                background: var(--el-bg-color);
+                .doc-toolbar {
+                    flex: 1;
+                    border-bottom: none;
+                    overflow-x: auto;
+                }
+                .var-btn {
+                    margin: 0 4px;
+                    flex-shrink: 0;
+                    display: flex;
+                    align-items: center;
+                    gap: 4px;
+                }
             }
 
             .doc-editor {

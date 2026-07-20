@@ -2,6 +2,7 @@
 import { computed, ref } from "vue";
 import { ElMessage } from "element-plus";
 import { i18n } from "@/lang";
+import { ShSvgIcon } from "@/components/shared";
 import {
     OFFICE_SHAPE_TYPE_PRESETS,
     OFFICE_SLIDE_CANVAS_HEIGHT,
@@ -217,30 +218,39 @@ const thumbElements = (slide: Slide): string => {
 
 const thumbSvg = (slide: Slide): string =>
     `<svg viewBox="0 0 ${OFFICE_SLIDE_CANVAS_WIDTH / 4} ${OFFICE_SLIDE_CANVAS_HEIGHT / 4}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">${thumbElements(slide)}</svg>`;
-
-/** 内联 SVG 图标（替代 Element Plus 图标，减少依赖） */
-const icons: Record<string, string> = {
-    plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>',
-    caretBottom: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>'
-};
 </script>
 
 <template>
     <div class="slide-editor">
         <div class="slide-toolbar">
-            <el-button  type="primary" @click="addSlide">
-                <span class="svg-icon" v-html="icons.plus"></span>{{ i18n("office.slide.addSlide") }}
-            </el-button>
-            <el-button  @click="duplicateSlide">{{ i18n("office.slide.duplicateSlide") }}</el-button>
-            <el-button  type="danger" :disabled="content.slides.length <= 1" @click="removeSlide">
-                {{ i18n("office.slide.removeSlide") }}
-            </el-button>
-            <el-divider direction="vertical"/>
-            <el-button  @click="addText">{{ i18n("office.slide.addText") }}</el-button>
-            <el-dropdown  @command="(cmd: OfficeShapeType) => addShape(cmd)">
-                <el-button >
-                    {{ i18n("office.slide.addShape") }}<span class="svg-icon" v-html="icons.caretBottom"></span>
+            <el-tooltip :content="i18n('office.slide.addSlide')" :show-after="500">
+                <el-button type="primary" @click="addSlide">
+                    <ShSvgIcon name="plus" size="14px" />
+                    {{ i18n("office.slide.addSlide") }}
                 </el-button>
+            </el-tooltip>
+            <el-tooltip :content="i18n('office.slide.duplicateSlide')" :show-after="500">
+                <el-button @click="duplicateSlide">
+                    <ShSvgIcon name="duplicate" size="14px" />
+                </el-button>
+            </el-tooltip>
+            <el-tooltip :content="i18n('office.slide.removeSlide')" :show-after="500">
+                <el-button type="danger" :disabled="content.slides.length <= 1" @click="removeSlide">
+                    <ShSvgIcon name="delete" size="14px" />
+                </el-button>
+            </el-tooltip>
+            <el-divider direction="vertical"/>
+            <el-tooltip :content="i18n('office.slide.addText')" :show-after="500">
+                <el-button @click="addText">
+                    <ShSvgIcon name="text" size="14px" />
+                </el-button>
+            </el-tooltip>
+            <el-dropdown @command="(cmd: OfficeShapeType) => addShape(cmd)">
+                <el-tooltip :content="i18n('office.slide.addShape')" :show-after="500">
+                    <el-button>
+                        <ShSvgIcon name="shape" size="14px" />
+                    </el-button>
+                </el-tooltip>
                 <template #dropdown>
                     <el-dropdown-menu>
                         <el-dropdown-item v-for="s in OFFICE_SHAPE_TYPE_PRESETS" :key="s.type" :command="s.type">
@@ -249,11 +259,17 @@ const icons: Record<string, string> = {
                     </el-dropdown-menu>
                 </template>
             </el-dropdown>
-            <el-button  @click="addImage">{{ i18n("office.slide.addImage") }}</el-button>
+            <el-tooltip :content="i18n('office.slide.addImage')" :show-after="500">
+                <el-button @click="addImage">
+                    <ShSvgIcon name="image" size="14px" />
+                </el-button>
+            </el-tooltip>
             <el-divider direction="vertical"/>
-            <el-button  type="danger" :disabled="!selectedElement" @click="deleteSelectedElement">
-                {{ i18n("office.slide.deleteElement") }}
-            </el-button>
+            <el-tooltip :content="i18n('office.slide.deleteElement')" :show-after="500">
+                <el-button type="danger" :disabled="!selectedElement" @click="deleteSelectedElement">
+                    <ShSvgIcon name="delete" size="14px" />
+                </el-button>
+            </el-tooltip>
         </div>
         <div class="slide-body">
             <!-- 左侧幻灯片列表 -->
@@ -499,17 +515,5 @@ const icons: Record<string, string> = {
         }
     }
 }
-
-.svg-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 1em;
-    height: 1em;
-    margin-right: 4px;
-}
-.svg-icon :deep(svg) {
-    width: 100%;
-    height: 100%;
-}
+/* end of styles */
 </style>

@@ -1,24 +1,18 @@
 <script setup lang="ts" name="DtLegendPanel">
 /**
- * 数字孪生 - 状态图例 + 实体统计
+ * 数字孪生 - 状态图例
+ *
+ * - 仅保留固定 4 种状态（normal/warning/alarm/offline）
+ * - 默认隐藏，通过工具栏按钮切换显示
  */
 import { i18n } from "@/lang";
 import { DT_STATUS_PRESETS } from "../constants";
 import type { UseDigitalTwinDesignerReturn } from "../composables/useDigitalTwinDesigner";
 
-const props = defineProps<{
-    designer: UseDigitalTwinDesignerReturn;
+defineProps<{
+    /** 保留透传，父组件仍通过 :designer 绑定，但图例不再依赖其数据 */
+    designer?: UseDigitalTwinDesignerReturn;
 }>();
-
-const designer = props.designer;
-
-const statRows = [
-    { key: "total", labelKey: "digitaltwin.legend.total", getValue: () => designer.stats.value.total },
-    { key: "normal", labelKey: "digitaltwin.legend.normal", getValue: () => designer.stats.value.normal },
-    { key: "warning", labelKey: "digitaltwin.legend.warning", getValue: () => designer.stats.value.warning },
-    { key: "alarm", labelKey: "digitaltwin.legend.alarm", getValue: () => designer.stats.value.alarm },
-    { key: "offline", labelKey: "digitaltwin.legend.offline", getValue: () => designer.stats.value.offline },
-] as const;
 </script>
 
 <template>
@@ -30,20 +24,10 @@ const statRows = [
         <div class="panel-body">
             <!-- 状态图例 -->
             <div class="section">
-                <div class="section-title">{{ i18n("digitaltwin.legend.title") }}</div>
+                <div class="section-title">{{ i18n("digitaltwin.legend.statusTitle") }}</div>
                 <div v-for="s in DT_STATUS_PRESETS" :key="s.status" class="legend-row">
-                    <span class="legend-dot" :style="{ background: s.color }" />
+                    <span class="legend-dot" :style="{ background: s.color, boxShadow: `0 0 6px ${s.color}` }" />
                     <span class="legend-label">{{ i18n(s.labelKey as any) }}</span>
-                    <span class="legend-color-desc">({{ i18n(s.colorLabelKey as any) }})</span>
-                </div>
-            </div>
-
-            <!-- 实体统计 -->
-            <div class="section">
-                <div class="section-title">{{ i18n("digitaltwin.legend.stats") }}</div>
-                <div v-for="row in statRows" :key="row.key" class="stat-row">
-                    <span class="stat-label">{{ i18n(row.labelKey as any) }}</span>
-                    <span class="stat-value">{{ row.getValue() }}</span>
                 </div>
             </div>
         </div>
@@ -55,16 +39,33 @@ const statRows = [
     display: flex;
     flex-direction: column;
     background: var(--el-bg-color);
-    border-top: 1px solid var(--el-border-color-lighter);
+    border: 1px solid var(--el-border-color-lighter);
+    border-radius: 6px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
     overflow: hidden;
-    max-height: 240px;
+    max-height: 260px;
+    width: 200px;
+    backdrop-filter: blur(4px);
+    background: rgba(var(--el-bg-color-rgb, 255, 255, 255), 0.92);
 
     .panel-header {
-        padding: 6px 12px;
+        padding: 8px 12px;
         border-bottom: 1px solid var(--el-border-color-lighter);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
 
         .panel-title {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .panel-badge {
             font-size: 12px;
+            padding: 1px 6px;
+            border-radius: 8px;
+            background: var(--el-color-primary-light-9);
+            color: var(--el-color-primary);
             font-weight: 600;
         }
     }
@@ -72,30 +73,30 @@ const statRows = [
     .panel-body {
         flex: 1;
         overflow: auto;
-        padding: 8px 12px;
-        display: flex;
-        gap: 16px;
-        flex-wrap: wrap;
+        padding: 10px 12px;
     }
 
     .section {
-        flex: 1;
-        min-width: 140px;
+        & + .section {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dashed var(--el-border-color-lighter);
+        }
 
         .section-title {
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 600;
             color: var(--el-text-color-secondary);
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
     }
 
     .legend-row {
         display: flex;
         align-items: center;
-        gap: 6px;
-        padding: 2px 0;
-        font-size: 11px;
+        gap: 8px;
+        padding: 4px 0;
+        font-size: 12px;
 
         .legend-dot {
             width: 10px;
@@ -107,28 +108,7 @@ const statRows = [
         .legend-label {
             color: var(--el-text-color-primary);
         }
-
-        .legend-color-desc {
-            color: var(--el-text-color-secondary);
-            font-size: 10px;
-        }
     }
 
-    .stat-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 2px 0;
-        font-size: 11px;
-
-        .stat-label {
-            color: var(--el-text-color-secondary);
-        }
-
-        .stat-value {
-            color: var(--el-text-color-primary);
-            font-weight: 600;
-        }
-    }
 }
 </style>

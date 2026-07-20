@@ -1,17 +1,8 @@
-import type { Component } from "vue";
-
-/**
- * ShDemoToolbar 声明式按钮定义
- *
- * 用于 16 个高级组件 Demo 的统一工具栏。
- * 每个 Demo 在自己的 constants.ts 中定义 ACTIONS / SECONDARY_ACTIONS 数组，
- * 传入 ShDemoToolbar 即可渲染。
- */
 export interface ShDemoAction {
     /** 唯一 key，触发 action 事件回传 */
     key: string;
-    /** Element Plus 图标组件（@element-plus/icons-vue） */
-    icon?: Component;
+    /** SVG 图标语义化名称（如 "undo"、"database"、"align-left"） */
+    icon?: string;
     /** 主标签 i18n key（iconOnly 时可省略） */
     labelKey?: string;
     /** tooltip i18n key（iconOnly 时必填） */

@@ -1,6 +1,7 @@
 <script setup lang="ts" name="ApiEndpointEditor">
 import { computed } from "vue";
 import { i18n } from "@/lang";
+import { ShSvgIcon } from "@/components/shared";
 import { API_HTTP_METHODS, METHOD_COLORS, PARAM_LOCATIONS } from "../constants";
 import type { ApiOrchestratorState } from "../composables/useApiOrchestrator";
 import type { ApiEndpointParam } from "../types";
@@ -64,16 +65,10 @@ const removeParam = (index: number) => {
     params.splice(index, 1);
     update("params", params);
 };
-
-/** 内联 SVG 图标（替代 Element Plus 图标，减少依赖） */
-const icons: Record<string, string> = {
-    delete: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M5 6v14a2 2 0 002 2h10a2 2 0 002-2V6M10 11v6M14 11v6"/></svg>'
-};
 </script>
 
 <template>
     <div class="api-endpoint-editor">
-        <div class="section-title">{{ i18n("api.endpoint.title") }}</div>
         <div v-if="!endpoint" class="empty-tip">{{ i18n("api.endpoint.empty") }}</div>
         <el-form v-else  label-width="80px" class="editor-form">
             <el-form-item :label="i18n('api.endpoint.name')">
@@ -83,7 +78,7 @@ const icons: Record<string, string> = {
                 <el-select
                     :model-value="endpoint.method"
                     @change="(v) => update('method', v)"
-                    style="width: 140px"
+                    style="width: 140px !important;"
                 >
                     <el-option v-for="m in API_HTTP_METHODS" :key="m.value" :label="m.label" :value="m.value" />
                 </el-select>
@@ -114,7 +109,7 @@ const icons: Record<string, string> = {
                         @change="(v) => updateHeaderValue(key, String(v))"
                     />
                     <el-button text type="danger"  @click="removeHeader(key)">
-                        <span class="svg-icon" v-html="icons.delete"></span>
+                        <ShSvgIcon name="delete" size="14px" />
                     </el-button>
                 </div>
                 <el-button  @click="addHeader">+ {{ i18n("api.endpoint.headers") }}</el-button>
@@ -150,7 +145,7 @@ const icons: Record<string, string> = {
                         @change="(v) => updateParam(Number(idx), 'defaultValue', String(v))"
                     />
                     <el-button text type="danger"  @click="removeParam(Number(idx))">
-                        <span class="svg-icon" v-html="icons.delete"></span>
+                        <ShSvgIcon name="delete" size="14px" />
                     </el-button>
                 </div>
                 <el-button  @click="addParam">+ {{ i18n("api.endpoint.params") }}</el-button>
@@ -175,13 +170,6 @@ const icons: Record<string, string> = {
     flex-direction: column;
     height: 100%;
     overflow: hidden;
-
-    .section-title {
-        padding: 6px 12px;
-        font-weight: 600;
-        border-bottom: 1px solid var(--el-border-color-lighter);
-        background: var(--el-fill-color-light);
-    }
 
     .empty-tip {
         padding: 40px 12px;
@@ -229,18 +217,5 @@ const icons: Record<string, string> = {
             }
         }
     }
-}
-
-.svg-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 1em;
-    height: 1em;
-    margin-right: 4px;
-}
-.svg-icon :deep(svg) {
-    width: 100%;
-    height: 100%;
 }
 </style>

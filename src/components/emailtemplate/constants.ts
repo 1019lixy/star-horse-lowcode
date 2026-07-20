@@ -53,7 +53,6 @@ export const EMAIL_TOOLBAR_BUTTONS = [
     "color", "bgColor", "|",
     "bulletedList", "numberedList", "|",
     "insertLink", "insertImage", "|",
-    "insertVariable", "|",
     "undo", "redo",
 ];
 

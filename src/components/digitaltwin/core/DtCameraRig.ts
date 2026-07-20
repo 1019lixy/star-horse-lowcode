@@ -103,6 +103,11 @@ export class DtCameraRig {
         this.inspectionCallback = null;
     }
 
+    /** OrbitControls 实例（用于 TransformControls 拖拽时暂停轨道） */
+    get orbitControls(): import("three/examples/jsm/controls/OrbitControls.js").OrbitControls | null {
+        return this.controls;
+    }
+
     /* ----------------------- 模式切换 ----------------------- */
 
     /** 当前模式 */

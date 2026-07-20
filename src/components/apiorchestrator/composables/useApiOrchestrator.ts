@@ -140,6 +140,41 @@ export const useApiOrchestrator = (
         arr[target] = tmp;
     };
 
+    /** 在指定步骤前插入新步骤 */
+    const insertStepBefore = (refStepId: string, endpointId: string): ApiChainStep | null => {
+        const ep = endpoints.find((e) => e.id === endpointId);
+        if (!ep) return null;
+        const idx = chain.steps.findIndex((s) => s.id === refStepId);
+        if (idx < 0) return null;
+        const step = createChainStep(endpointId, { stepName: `${idx + 1}. ${ep.name}` });
+        chain.steps.splice(idx, 0, step);
+        // 重新编号
+        renumberSteps();
+        return step;
+    };
+
+    /** 在指定步骤后插入新步骤 */
+    const insertStepAfter = (refStepId: string, endpointId: string): ApiChainStep | null => {
+        const ep = endpoints.find((e) => e.id === endpointId);
+        if (!ep) return null;
+        const idx = chain.steps.findIndex((s) => s.id === refStepId);
+        if (idx < 0) return null;
+        const step = createChainStep(endpointId, { stepName: `${idx + 2}. ${ep.name}` });
+        chain.steps.splice(idx + 1, 0, step);
+        renumberSteps();
+        return step;
+    };
+
+    /** 重新编号步骤名（基于位置） */
+    const renumberSteps = () => {
+        chain.steps.forEach((s, i) => {
+            const ep = endpoints.find((e) => e.id === s.endpointId);
+            const epName = ep ? ep.name : s.stepName;
+            // 保留用户自定义名称，只在没有自定义时自动编号
+            s.stepName = `${i + 1}. ${epName}`;
+        });
+    };
+
     const clearResults = () => {
         testResults.value.splice(0, testResults.value.length);
     };
@@ -314,6 +349,8 @@ export const useApiOrchestrator = (
         updateChainStep,
         removeChainStep,
         moveStep,
+        insertStepBefore,
+        insertStepAfter,
         selectEndpoint,
         selectStep,
         runChain,

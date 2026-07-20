@@ -33,6 +33,15 @@ export const METHOD_COLORS: Record<HttpMethod, string> = {
     PATCH: "#909399",
 };
 
+/** HTTP 方法短标签（用于流程节点显示） */
+export const METHOD_LABELS: Record<HttpMethod, string> = {
+    GET: "GET",
+    POST: "POST",
+    PUT: "PUT",
+    DELETE: "DEL",
+    PATCH: "PTCH",
+};
+
 /** 常用状态码预设 */
 export const STATUS_CODES: { value: number; label: string }[] = [
     { value: 200, label: i18n("api.statusCode.200") },

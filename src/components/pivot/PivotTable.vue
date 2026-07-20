@@ -37,6 +37,16 @@ const handleSave = () => {
     emits("update:pivot", data);
     emits("save", data);
 };
+
+/** 打开数据管理弹窗（供父组件通过 ref 调用） */
+const openDataManager = () => {
+    dataDialogVisible.value = true;
+};
+
+defineExpose({
+    openDataManager,
+    designer,
+});
 </script>
 
 <template>

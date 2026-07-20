@@ -20,6 +20,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
     (e: "edit-binding", entityId: string, binding: DtDataBinding | null): void;
+    (e: "entity-updated", id: string): void;
 }>();
 
 const designer = props.designer;
@@ -46,27 +47,67 @@ const entityTypeLabel = (type: string): string => {
 
 const handleStatusChange = (status: DtEntityStatus): void => {
     if (!entity.value) return;
-    designer.updateEntity(entity.value.id, { status });
+    designer.updateEntityWithHistory(entity.value.id, { status });
 };
 
 const statusColor = (status: DtEntityStatus): string => dtGetStatusPreset(status)?.color ?? "#8C8C8C";
+
+/** 名称 / 颜色 字段更新（基础字段） */
+const handleFieldUpdate = (field: "name" | "color", value: string): void => {
+    if (!entity.value) return;
+    designer.updateEntity(entity.value.id, { [field]: value } as any);
+    emit("entity-updated", entity.value.id);
+};
+
+/** 位置字段更新（实时拖拽用，不推栈；由父组件在拖拽结束时 commitUpdate） */
+const handlePositionUpdate = (axis: "x" | "y" | "z", value: number): void => {
+    if (!entity.value) return;
+    designer.updateEntity(entity.value.id, {
+        position: { ...entity.value.position, [axis]: value },
+    });
+    emit("entity-updated", entity.value.id);
+};
+
+/** 位置字段失焦时提交历史 */
+const handlePositionCommit = (): void => {
+    designer.commitUpdate();
+};
+
+/** 尺寸字段更新（实时） */
+const handleSizeUpdate = (field: "width" | "height" | "depth" | "radius", value: number): void => {
+    if (!entity.value) return;
+    designer.updateEntity(entity.value.id, {
+        size: { ...entity.value.size, [field]: value },
+    });
+    emit("entity-updated", entity.value.id);
+};
+
+/** 尺寸字段失焦时提交历史 */
+const handleSizeCommit = (): void => {
+    designer.commitUpdate();
+};
+
+/** 名称/颜色字段失焦时提交历史 */
+const handleFieldCommit = (): void => {
+    designer.commitUpdate();
+};
 
 /** 模型实例参数变更 */
 const handleParamChange = (name: string, value: any): void => {
     if (!modelInstance.value) return;
     const newValues = { ...modelInstance.value.parameterValues, [name]: value };
-    designer.updateEntity(modelInstance.value.id, { parameterValues: newValues } as any);
+    designer.updateEntityWithHistory(modelInstance.value.id, { parameterValues: newValues } as any);
 };
 
 /** 动画类型变更 */
 const handleAnimationTypeChange = (type: DtAnimationType | ""): void => {
     if (!modelInstance.value || !modelPreset.value) return;
     if (type === "") {
-        designer.updateEntity(modelInstance.value.id, { animation: undefined } as any);
+        designer.updateEntityWithHistory(modelInstance.value.id, { animation: undefined } as any);
         return;
     }
     const baseAnim = modelPreset.value.defaultAnimation ?? { type, speed: 180 };
-    designer.updateEntity(modelInstance.value.id, { animation: { ...baseAnim, type } } as any);
+    designer.updateEntityWithHistory(modelInstance.value.id, { animation: { ...baseAnim, type } } as any);
 };
 
 /** 动画速度变更 */
@@ -74,7 +115,7 @@ const handleAnimationSpeedChange = (speed: number): void => {
     if (!modelInstance.value) return;
     const current = modelInstance.value.animation ?? modelPreset.value?.defaultAnimation;
     if (!current) return;
-    designer.updateEntity(modelInstance.value.id, { animation: { ...current, speed } } as any);
+    designer.updateEntityWithHistory(modelInstance.value.id, { animation: { ...current, speed } } as any);
 };
 
 /** 新增绑定 */
@@ -157,7 +198,14 @@ const icons: Record<string, string> = {
                     <div class="section-title">{{ i18n("digitaltwin.dialog.basic") }}</div>
                     <div class="prop-row">
                         <span class="prop-label">{{ i18n("digitaltwin.entity.name") }}</span>
-                        <span class="prop-value">{{ entity.name }}</span>
+                        <el-input
+                            :model-value="entity.name"
+                            size="small"
+                            style="width: 140px"
+                            @update:model-value="(v) => handleFieldUpdate('name', v)"
+                            @blur="handleFieldCommit"
+                            @keyup.enter="handleFieldCommit"
+                        />
                     </div>
                     <div class="prop-row">
                         <span class="prop-label">{{ i18n("digitaltwin.entity.type") }}</span>
@@ -184,8 +232,12 @@ const icons: Record<string, string> = {
                     <div class="prop-row">
                         <span class="prop-label">{{ i18n("digitaltwin.entity.color") }}</span>
                         <span class="prop-value">
-                            <span class="color-dot" :style="{ background: entity.color }" />
-                            {{ entity.color }}
+                            <el-color-picker
+                                :model-value="entity.color"
+                                size="small"
+                                @update:model-value="(v) => v && handleFieldUpdate('color', v)"
+                                @change="handleFieldCommit"
+                            />
                         </span>
                     </div>
                 </div>
@@ -195,15 +247,36 @@ const icons: Record<string, string> = {
                     <div class="section-title">{{ i18n("digitaltwin.entity.position") }}</div>
                     <div class="prop-row">
                         <span class="prop-label">{{ i18n("digitaltwin.entity.x") }}</span>
-                        <span class="prop-value">{{ entity.position.x }}</span>
+                        <el-input-number
+                            :model-value="entity.position.x"
+                            size="small"
+                            :step="10"
+                            style="width: 120px"
+                            @update:model-value="(v) => handlePositionUpdate('x', v ?? 0)"
+                            @change="handlePositionCommit"
+                        />
                     </div>
                     <div class="prop-row">
                         <span class="prop-label">{{ i18n("digitaltwin.entity.y") }}</span>
-                        <span class="prop-value">{{ entity.position.y }}</span>
+                        <el-input-number
+                            :model-value="entity.position.y"
+                            size="small"
+                            :step="10"
+                            style="width: 120px"
+                            @update:model-value="(v) => handlePositionUpdate('y', v ?? 0)"
+                            @change="handlePositionCommit"
+                        />
                     </div>
                     <div class="prop-row">
                         <span class="prop-label">{{ i18n("digitaltwin.entity.z") }}</span>
-                        <span class="prop-value">{{ entity.position.z }}</span>
+                        <el-input-number
+                            :model-value="entity.position.z"
+                            size="small"
+                            :step="10"
+                            style="width: 120px"
+                            @update:model-value="(v) => handlePositionUpdate('z', v ?? 0)"
+                            @change="handlePositionCommit"
+                        />
                     </div>
                 </div>
 
@@ -213,31 +286,79 @@ const icons: Record<string, string> = {
                     <template v-if="entity.type === 'cube' || entity.type === 'plane'">
                         <div class="prop-row">
                             <span class="prop-label">{{ i18n("digitaltwin.entity.width") }}</span>
-                            <span class="prop-value">{{ entity.size.width }}</span>
+                            <el-input-number
+                                :model-value="entity.size.width"
+                                size="small"
+                                :step="5"
+                                :min="1"
+                                style="width: 120px"
+                                @update:model-value="(v) => handleSizeUpdate('width', v ?? 1)"
+                                @change="handleSizeCommit"
+                            />
                         </div>
                         <div class="prop-row" v-if="entity.type === 'cube'">
                             <span class="prop-label">{{ i18n("digitaltwin.entity.height") }}</span>
-                            <span class="prop-value">{{ entity.size.height }}</span>
+                            <el-input-number
+                                :model-value="entity.size.height"
+                                size="small"
+                                :step="5"
+                                :min="1"
+                                style="width: 120px"
+                                @update:model-value="(v) => handleSizeUpdate('height', v ?? 1)"
+                                @change="handleSizeCommit"
+                            />
                         </div>
                         <div class="prop-row">
                             <span class="prop-label">{{ i18n("digitaltwin.entity.depth") }}</span>
-                            <span class="prop-value">{{ entity.size.depth }}</span>
+                            <el-input-number
+                                :model-value="entity.size.depth"
+                                size="small"
+                                :step="5"
+                                :min="1"
+                                style="width: 120px"
+                                @update:model-value="(v) => handleSizeUpdate('depth', v ?? 1)"
+                                @change="handleSizeCommit"
+                            />
                         </div>
                     </template>
                     <template v-else-if="entity.type === 'cylinder'">
                         <div class="prop-row">
                             <span class="prop-label">{{ i18n("digitaltwin.entity.radius") }}</span>
-                            <span class="prop-value">{{ entity.size.radius }}</span>
+                            <el-input-number
+                                :model-value="entity.size.radius"
+                                size="small"
+                                :step="5"
+                                :min="1"
+                                style="width: 120px"
+                                @update:model-value="(v) => handleSizeUpdate('radius', v ?? 1)"
+                                @change="handleSizeCommit"
+                            />
                         </div>
                         <div class="prop-row">
                             <span class="prop-label">{{ i18n("digitaltwin.entity.height") }}</span>
-                            <span class="prop-value">{{ entity.size.height }}</span>
+                            <el-input-number
+                                :model-value="entity.size.height"
+                                size="small"
+                                :step="5"
+                                :min="1"
+                                style="width: 120px"
+                                @update:model-value="(v) => handleSizeUpdate('height', v ?? 1)"
+                                @change="handleSizeCommit"
+                            />
                         </div>
                     </template>
                     <template v-else-if="entity.type === 'sphere'">
                         <div class="prop-row">
                             <span class="prop-label">{{ i18n("digitaltwin.entity.radius") }}</span>
-                            <span class="prop-value">{{ entity.size.radius }}</span>
+                            <el-input-number
+                                :model-value="entity.size.radius"
+                                size="small"
+                                :step="5"
+                                :min="1"
+                                style="width: 120px"
+                                @update:model-value="(v) => handleSizeUpdate('radius', v ?? 1)"
+                                @change="handleSizeCommit"
+                            />
                         </div>
                     </template>
                 </div>

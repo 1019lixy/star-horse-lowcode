@@ -13,6 +13,12 @@ export type DtEntityStatus = "normal" | "warning" | "alarm" | "offline";
 /** 视角预设 */
 export type DtViewPreset = "top" | "front" | "side" | "iso";
 
+/** 3D 视角预设（DtSceneViewport 专用，与 DtViewPreset 等价） */
+export type DtViewPreset3D = DtViewPreset;
+
+/** 视口操作模式 */
+export type DtViewportMode = "view" | "edit" | "measure" | "annotation" | "inspection";
+
 /** 3D 点 */
 export interface DtPoint3D {
     x: number;
@@ -66,6 +72,10 @@ export interface DtEntity {
     sensorData?: DtSensorData;
     /** 是否可见 */
     visible?: boolean;
+    /** 是否锁定（锁定后不可拖拽/选中编辑） */
+    locked?: boolean;
+    /** 自定义组件标识（用于持久化自定义组件来源） */
+    customComponentType?: string;
 }
 
 /** 相机状态 */
@@ -331,4 +341,103 @@ export interface DtModelInstance extends DtEntity {
     animation?: DtAnimation;
     /** 数据绑定列表 */
     bindings?: DtDataBinding[];
+}
+
+// ==================== 企业级运营扩展类型 ====================
+
+/** 巡航路径航点 */
+export interface DtCruiseWaypoint {
+    /** 唯一 id */
+    id: string;
+    /** 航点名称 */
+    name: string;
+    /** 相机位置 */
+    position: DtPoint3D;
+    /** 相机看向目标 */
+    target: DtPoint3D;
+    /** 在该点停留时间（毫秒） */
+    stayMs?: number;
+    /** 过渡到下一航点的时间（毫秒） */
+    transitionMs?: number;
+}
+
+/** 巡航路径 */
+export interface DtCruisePath {
+    id: string;
+    /** 路径名称 */
+    name: string;
+    /** 航点列表 */
+    waypoints: DtCruiseWaypoint[];
+    /** 是否循环 */
+    loop: boolean;
+}
+
+/** 告警事件级别 */
+export type DtAlarmEventLevel = "info" | "warning" | "alarm" | "critical";
+
+/** 告警事件状态 */
+export type DtAlarmEventStatus = "active" | "acknowledged" | "resolved";
+
+/** 告警事件 */
+export interface DtAlarmEvent {
+    /** 唯一 id */
+    id: string;
+    /** 关联实体 id */
+    entityId?: string;
+    /** 关联实体名称（冗余字段，便于列表显示） */
+    entityName?: string;
+    /** 标题 */
+    title: string;
+    /** 描述 */
+    description?: string;
+    /** 级别 */
+    level: DtAlarmEventLevel;
+    /** 状态 */
+    status: DtAlarmEventStatus;
+    /** 触发时间戳 */
+    timestamp: number;
+    /** 确认时间戳 */
+    acknowledgedAt?: number;
+    /** 解决时间戳 */
+    resolvedAt?: number;
+    /** 来源（系统/手动/阈值触发） */
+    source?: "system" | "manual" | "threshold" | "schedule";
+    /** 关联数据点（如 "temperature=85.2"） */
+    metric?: string;
+}
+
+/** 视频监控点位 */
+export interface DtVideoCamera {
+    /** 唯一 id */
+    id: string;
+    /** 摄像头名称 */
+    name: string;
+    /** 在场景中的位置（用于点位标记） */
+    position: DtPoint3D;
+    /** 视频流地址（rtsp/hls/webrtc/mock） */
+    streamUrl: string;
+    /** 摄像头类型（枪机/球机/全景） */
+    cameraType?: "fixed" | "ptz" | "panoramic";
+    /** 是否在线 */
+    online: boolean;
+    /** 关联实体 id（可选，绑定到某个设备） */
+    entityId?: string;
+    /** 视场角（度） */
+    fov?: number;
+    /** 朝向（度，0=北，顺时针） */
+    heading?: number;
+}
+
+/** IFC 导入结果 */
+export interface DtIfcImportResult {
+    /** 导入文件名 */
+    fileName: string;
+    /** 解析出的实体列表 */
+    entities: DtEntity[];
+    /** 总元素数 */
+    totalElements: number;
+    /** 导入耗时（毫秒） */
+    elapsedMs: number;
+    /** 警告列表 */
+    warnings: string[];
 }

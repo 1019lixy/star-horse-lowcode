@@ -136,4 +136,26 @@ export {
     dtFindModelPreset,
 } from "./modelLibrary";
 
+// 企业级运营扩展导出
+export { useDtCruise } from "./composables/useDtCruise";
+export type { UseDtCruiseReturn, UseDtCruiseOptions } from "./composables/useDtCruise";
+export { useDtAlarmStream } from "./composables/useDtAlarmStream";
+export type { UseDtAlarmStreamReturn, DtAlarmFilter } from "./composables/useDtAlarmStream";
+export { useDtVideoMonitor, genDefaultCamerasForScene } from "./composables/useDtVideoMonitor";
+export type { UseDtVideoMonitorReturn } from "./composables/useDtVideoMonitor";
+export { importIfcFile, IFC_FILE_EXTENSIONS } from "./utils/DtIfcLoader";
+export type { DtIfcLoaderOptions, DtIfcLoaderProgress } from "./utils/DtIfcLoader";
+
+// 企业级运营面板组件
+export { default as DtAlarmCenterPanel } from "./panels/DtAlarmCenterPanel.vue";
+export { default as DtVideoMonitorPanel } from "./panels/DtVideoMonitorPanel.vue";
+export { default as DtCruisePanel } from "./panels/DtCruisePanel.vue";
+
+// 预设数据
+export {
+    DT_CRUISE_PATH_PRESETS,
+    DT_CAMERA_PRESETS,
+    DT_ALARM_EVENT_PRESETS,
+} from "./constants";
+
 export type * from "./types";

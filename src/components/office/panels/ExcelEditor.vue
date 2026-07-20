@@ -2,6 +2,7 @@
 import { computed, onMounted, ref } from "vue";
 import { ElMessage } from "element-plus";
 import { i18n } from "@/lang";
+import { ShSvgIcon } from "@/components/shared";
 import {
     OFFICE_EXCEL_COL_WIDTH,
     OFFICE_EXCEL_MAX_COLS,
@@ -244,12 +245,42 @@ onMounted(() => {
 <template>
     <div class="excel-editor">
         <div class="excel-toolbar">
-            <el-button  @click="addRow">{{ i18n("office.excel.addRow") }}</el-button>
-            <el-button  @click="addColumn">{{ i18n("office.excel.addColumn") }}</el-button>
-            <el-button  type="danger" @click="removeRow">{{ i18n("office.excel.removeRow") }}</el-button>
-            <el-button  type="danger" @click="removeColumn">{{ i18n("office.excel.removeColumn") }}</el-button>
-            <el-button  type="primary" @click="mergeCells">{{ i18n("office.excel.mergeCells") }}</el-button>
-            <el-button  @click="splitCells">{{ i18n("office.excel.splitCells") }}</el-button>
+            <el-tooltip :content="i18n('office.excel.addRow')" :show-after="500">
+                <el-button @click="addRow">
+                    <ShSvgIcon name="addRow" size="14px" />
+                    {{ i18n("office.excel.addRow") }}
+                </el-button>
+            </el-tooltip>
+            <el-tooltip :content="i18n('office.excel.addColumn')" :show-after="500">
+                <el-button @click="addColumn">
+                    <ShSvgIcon name="addColumn" size="14px" />
+                    {{ i18n("office.excel.addColumn") }}
+                </el-button>
+            </el-tooltip>
+            <el-tooltip :content="i18n('office.excel.removeRow')" :show-after="500">
+                <el-button type="danger" @click="removeRow">
+                    <ShSvgIcon name="removeRow" size="14px" />
+                    {{ i18n("office.excel.removeRow") }}
+                </el-button>
+            </el-tooltip>
+            <el-tooltip :content="i18n('office.excel.removeColumn')" :show-after="500">
+                <el-button type="danger" @click="removeColumn">
+                    <ShSvgIcon name="removeColumn" size="14px" />
+                    {{ i18n("office.excel.removeColumn") }}
+                </el-button>
+            </el-tooltip>
+            <el-tooltip :content="i18n('office.excel.mergeCells')" :show-after="500">
+                <el-button type="primary" @click="mergeCells">
+                    <ShSvgIcon name="cellMerge" size="14px" />
+                    {{ i18n("office.excel.mergeCells") }}
+                </el-button>
+            </el-tooltip>
+            <el-tooltip :content="i18n('office.excel.splitCells')" :show-after="500">
+                <el-button @click="splitCells">
+                    <ShSvgIcon name="cellSplit" size="14px" />
+                    {{ i18n("office.excel.splitCells") }}
+                </el-button>
+            </el-tooltip>
             <span v-if="selectedCell" class="cell-ref">
                 {{ officeColIndexToLetter(selectedCell.col) }}{{ selectedCell.row + 1 }}
             </span>

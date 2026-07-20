@@ -2,6 +2,7 @@
 import { computed } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { i18n } from "@/lang";
+import { ShSvgIcon } from "@/components/shared";
 import { findOfficeDocPreset } from "../constants";
 import type { OfficeDocument } from "../types";
 
@@ -64,21 +65,14 @@ const handleRename = (doc: OfficeDocument) => {
             /* 取消 */
         });
 };
-
-/** 内联 SVG 图标（替代 Element Plus 图标，减少依赖） */
-const icons: Record<string, string> = {
-    plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>',
-    editPen: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>',
-    delete: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M5 6v14a2 2 0 002 2h10a2 2 0 002-2V6M10 11v6M14 11v6"/></svg>'
-};
 </script>
 
 <template>
     <div class="office-doc-list">
         <div class="doc-list-header">
             <span class="title">{{ i18n("office.docList.title") }}</span>
-            <el-button  type="primary" @click="emit('create')">
-                <span class="svg-icon" v-html="icons.plus"></span>
+            <el-button type="primary" @click="emit('create')">
+                <ShSvgIcon name="plus" size="14px" />
                 {{ i18n("office.docList.create") }}
             </el-button>
         </div>
@@ -103,12 +97,16 @@ const icons: Record<string, string> = {
                     <div class="doc-time">{{ formatDate(doc.updatedAt) }}</div>
                 </div>
                 <div class="doc-actions" @click.stop>
-                    <el-button  link @click="handleRename(doc)">
-                        <span class="svg-icon" v-html="icons.editPen"></span>
-                    </el-button>
-                    <el-button  link type="danger" @click="handleDelete(doc)">
-                        <span class="svg-icon" v-html="icons.delete"></span>
-                    </el-button>
+                    <el-tooltip :content="i18n('office.docList.rename')" :show-after="500">
+                        <el-button link @click="handleRename(doc)">
+                            <ShSvgIcon name="editPen" size="14px" />
+                        </el-button>
+                    </el-tooltip>
+                    <el-tooltip :content="i18n('office.docList.delete')" :show-after="500">
+                        <el-button link type="danger" @click="handleDelete(doc)">
+                            <ShSvgIcon name="delete" size="14px" />
+                        </el-button>
+                    </el-tooltip>
                 </div>
             </div>
         </div>

@@ -2,13 +2,14 @@
 /**
  * 数字孪生 - 左侧实体列表
  *
- * 按类型分组 + 状态筛选
+ * 按类型分组 + 状态筛选 + 层级管理（上移/下移/显示隐藏/锁定/重命名/编辑/删除）
  */
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { i18n } from "@/lang";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { DT_ENTITY_TYPE_PRESETS, DT_STATUS_PRESETS, dtGetStatusPreset } from "../constants";
-import type { DtEntityStatus } from "../types";
+import { ShSvgIcon } from "@/components/shared";
+import type { DtEntity, DtEntityStatus } from "../types";
 import type { UseDigitalTwinDesignerReturn } from "../composables/useDigitalTwinDesigner";
 
 const props = defineProps<{
@@ -27,9 +28,13 @@ const statusFilter = computed({
     set: (v: DtEntityStatus | "all") => designer.setStatusFilter(v),
 });
 
+/** 内联重命名状态 */
+const renamingId = ref<string | null>(null);
+const renamingValue = ref("");
+
 /** 按类型分组的实体 */
 const groupedEntities = computed(() => {
-    const groups: { type: string; labelKey: string; items: typeof designer.filteredEntities.value }[] = [];
+    const groups: { type: string; labelKey: string; items: DtEntity[] }[] = [];
     DT_ENTITY_TYPE_PRESETS.forEach((preset) => {
         const items = designer.filteredEntities.value.filter((e) => e.type === preset.type);
         if (items.length > 0) {
@@ -47,6 +52,7 @@ const groupedEntities = computed(() => {
 });
 
 const handleSelect = (id: string): void => {
+    if (renamingId.value === id) return; // 重命名中不触发选中
     designer.selectEntity(id);
 };
 
@@ -65,31 +71,59 @@ const handleDelete = (id: string): void => {
         .catch(() => {});
 };
 
-const statusColor = (status: DtEntityStatus): string => dtGetStatusPreset(status)?.color ?? "#8C8C8C";
-
-// 阻止未使用变量告警
-void DT_STATUS_PRESETS;
-
-/** 内联 SVG 图标（替代 Element Plus 图标，减少依赖） */
-const icons: Record<string, string> = {
-    plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>',
-    edit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
-    delete: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M5 6v14a2 2 0 002 2h10a2 2 0 002-2V6M10 11v6M14 11v6"/></svg>'
+const handleMoveUp = (id: string): void => {
+    designer.moveEntityUp(id);
 };
+
+const handleMoveDown = (id: string): void => {
+    designer.moveEntityDown(id);
+};
+
+const handleToggleVisible = (item: DtEntity): void => {
+    designer.updateEntityWithHistory(item.id, { visible: item.visible === false });
+};
+
+const handleToggleLock = (item: DtEntity): void => {
+    designer.updateEntityWithHistory(item.id, { locked: !item.locked });
+};
+
+const handleStartRename = (item: DtEntity): void => {
+    renamingId.value = item.id;
+    renamingValue.value = item.name;
+};
+
+const handleConfirmRename = (): void => {
+    if (!renamingId.value) return;
+    const name = renamingValue.value.trim();
+    if (!name) {
+        ElMessage.warning(i18n("digitaltwin.message.nameRequired"));
+        return;
+    }
+    designer.updateEntityWithHistory(renamingId.value, { name });
+    renamingId.value = null;
+    renamingValue.value = "";
+};
+
+const handleCancelRename = (): void => {
+    renamingId.value = null;
+    renamingValue.value = "";
+};
+
+const statusColor = (status: DtEntityStatus): string => dtGetStatusPreset(status)?.color ?? "#8C8C8C";
 </script>
 
 <template>
     <div class="dt-entity-list">
         <div class="panel-header">
             <span class="panel-title">{{ i18n("digitaltwin.entity.title") }}</span>
-            <el-button  type="primary" @click="emit('add-entity')">
-                <span class="svg-icon" v-html="icons.plus"></span>
+            <el-button type="primary" size="small" @click="emit('add-entity')">
+                <ShSvgIcon name="plus" size="12px"/>
                 {{ i18n("digitaltwin.entity.add") }}
             </el-button>
         </div>
 
         <div class="filter-bar">
-            <el-select v-model="statusFilter"  style="width: 100%">
+            <el-select v-model="statusFilter" size="small" style="width: 100%">
                 <el-option :label="i18n('digitaltwin.status.normal')" value="all" />
                 <el-option
                     v-for="s in DT_STATUS_PRESETS"
@@ -111,20 +145,63 @@ const icons: Record<string, string> = {
                         v-for="item in group.items"
                         :key="item.id"
                         class="entity-item"
-                        :class="{ active: designer.state.selectedEntityId === item.id }"
+                        :class="{
+                            active: designer.state.selectedEntityId === item.id,
+                            hidden: item.visible === false,
+                            locked: item.locked,
+                        }"
                         @click="handleSelect(item.id)"
                     >
                         <span class="status-dot" :style="{ background: statusColor(item.status as DtEntityStatus) }" />
-                        <span class="entity-name">{{ item.name }}</span>
-                        <span class="entity-actions">
-                            <el-button  link @click.stop="handleEdit(item.id)">
-                                <span class="svg-icon" v-html="icons.edit"></span>
-                                {{ i18n("digitaltwin.entity.edit") }}
-                            </el-button>
-                            <el-button  link type="danger" @click.stop="handleDelete(item.id)">
-                                <span class="svg-icon" v-html="icons.delete"></span>
-                                {{ i18n("digitaltwin.entity.delete") }}
-                            </el-button>
+                        <!-- 重命名输入框 / 名称显示 -->
+                        <el-input
+                            v-if="renamingId === item.id"
+                            v-model="renamingValue"
+                            size="small"
+                            class="rename-input"
+                            @keyup.enter="handleConfirmRename"
+                            @keyup.esc="handleCancelRename"
+                            @blur="handleConfirmRename"
+                        />
+                        <span v-else class="entity-name" @dblclick.stop="handleStartRename(item)">
+                            {{ item.name }}
+                        </span>
+                        <span class="entity-actions" v-if="renamingId !== item.id">
+                            <el-tooltip :content="i18n('digitaltwin.entity.moveUp')" :show-after="500">
+                                <el-button link size="small" @click.stop="handleMoveUp(item.id)">
+                                    <ShSvgIcon name="moveUp" size="12px"/>
+                                </el-button>
+                            </el-tooltip>
+                            <el-tooltip :content="i18n('digitaltwin.entity.moveDown')" :show-after="500">
+                                <el-button link size="small" @click.stop="handleMoveDown(item.id)">
+                                    <ShSvgIcon name="moveDown" size="12px"/>
+                                </el-button>
+                            </el-tooltip>
+                            <el-tooltip :content="i18n(item.visible === false ? 'digitaltwin.entity.show' : 'digitaltwin.entity.hide')" :show-after="500">
+                                <el-button link size="small" @click.stop="handleToggleVisible(item)">
+                                    <ShSvgIcon :name="item.visible === false ? 'eyeOff' : 'eye'" size="12px"/>
+                                </el-button>
+                            </el-tooltip>
+                            <el-tooltip :content="i18n(item.locked ? 'digitaltwin.entity.unlock' : 'digitaltwin.entity.lock')" :show-after="500">
+                                <el-button link size="small" @click.stop="handleToggleLock(item)">
+                                    <ShSvgIcon :name="item.locked ? 'lock' : 'unlock'" size="12px"/>
+                                </el-button>
+                            </el-tooltip>
+                            <el-tooltip :content="i18n('digitaltwin.entity.rename')" :show-after="500">
+                                <el-button link size="small" @click.stop="handleStartRename(item)">
+                                    <ShSvgIcon name="editPen" size="12px"/>
+                                </el-button>
+                            </el-tooltip>
+                            <el-tooltip :content="i18n('digitaltwin.entity.edit')" :show-after="500">
+                                <el-button link size="small" @click.stop="handleEdit(item.id)">
+                                    <ShSvgIcon name="edit" size="12px"/>
+                                </el-button>
+                            </el-tooltip>
+                            <el-tooltip :content="i18n('digitaltwin.entity.delete')" :show-after="500">
+                                <el-button link size="small" type="danger" @click.stop="handleDelete(item.id)">
+                                    <ShSvgIcon name="delete" size="12px"/>
+                                </el-button>
+                            </el-tooltip>
                         </span>
                     </div>
                 </div>
@@ -136,7 +213,8 @@ const icons: Record<string, string> = {
 
 <style lang="scss" scoped>
 .dt-entity-list {
-    width: 240px;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     border-right: 1px solid var(--el-border-color-lighter);
@@ -186,6 +264,7 @@ const icons: Record<string, string> = {
     }
 
     .entity-item {
+        position: relative;
         display: flex;
         align-items: center;
         gap: 6px;
@@ -195,11 +274,33 @@ const icons: Record<string, string> = {
 
         &:hover {
             background: var(--el-fill-color-light);
+
+            .entity-actions {
+                opacity: 1;
+                width: auto;
+                margin-left: 4px;
+            }
+
+            .entity-name {
+                // hover 时让出空间给 actions
+                max-width: calc(100% - 110px);
+            }
         }
 
         &.active {
             background: var(--el-color-primary-light-9);
             color: var(--el-color-primary);
+        }
+
+        &.hidden {
+            .entity-name {
+                opacity: 0.5;
+                text-decoration: line-through;
+            }
+        }
+
+        &.locked .status-dot {
+            box-shadow: 0 0 0 2px var(--el-color-warning);
         }
 
         .status-dot {
@@ -214,25 +315,26 @@ const icons: Record<string, string> = {
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            max-width: 100%;
+            transition: max-width 0.15s;
+        }
+
+        .rename-input {
+            flex: 1;
+            :deep(.el-input__wrapper) {
+                padding: 0 8px;
+            }
         }
 
         .entity-actions {
             display: flex;
-            gap: 4px;
+            gap: 2px;
+            opacity: 0;
+            width: 0;
+            overflow: hidden;
+            transition: opacity 0.15s, width 0.15s;
+            flex-shrink: 0;
         }
     }
-}
-
-.svg-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 1em;
-    height: 1em;
-    margin-right: 4px;
-}
-.svg-icon :deep(svg) {
-    width: 100%;
-    height: 100%;
 }
 </style>

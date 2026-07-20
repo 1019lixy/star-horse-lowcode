@@ -1,5 +1,6 @@
 <script setup lang="ts" name="ApiEndpointPanel">
 import { i18n } from "@/lang";
+import { ShSvgIcon } from "@/components/shared";
 import { METHOD_COLORS } from "../constants";
 import type { ApiOrchestratorState } from "../composables/useApiOrchestrator";
 
@@ -15,12 +16,6 @@ const handleRemove = (id: string, e: Event) => {
     e.stopPropagation();
     props.state.removeEndpoint(id);
 };
-
-/** 内联 SVG 图标（替代 Element Plus 图标，减少依赖） */
-const icons: Record<string, string> = {
-    plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>',
-    delete: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M5 6v14a2 2 0 002 2h10a2 2 0 002-2V6M10 11v6M14 11v6"/></svg>'
-};
 </script>
 
 <template>
@@ -28,7 +23,7 @@ const icons: Record<string, string> = {
         <div class="panel-title">
             <span>{{ i18n("api.endpoint.title") }}</span>
             <el-button  type="primary" plain @click="handleAdd">
-                <span class="svg-icon" v-html="icons.plus"></span>
+                <ShSvgIcon name="plus" size="14px" />
                 {{ i18n("api.btn.addEndpoint") }}
             </el-button>
         </div>
@@ -43,6 +38,7 @@ const icons: Record<string, string> = {
                     class="endpoint-item"
                     :class="{ active: state.selectedEndpointId.value === ep.id }"
                     @click="handleSelect(ep.id)"
+                    :title="i18n('api.endpoint.clickToEdit')"
                 >
                     <span class="method-badge" :style="{ background: METHOD_COLORS[ep.method] }">
                         {{ ep.method }}
@@ -54,10 +50,9 @@ const icons: Record<string, string> = {
                     <el-button
                         text
                         type="danger"
-
                         @click="handleRemove(ep.id, $event)"
                     >
-                        <span class="svg-icon" v-html="icons.delete"></span>
+                        <ShSvgIcon name="delete" size="14px" />
                     </el-button>
                 </div>
             </div>
@@ -156,18 +151,5 @@ const icons: Record<string, string> = {
             }
         }
     }
-}
-
-.svg-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 1em;
-    height: 1em;
-    margin-right: 4px;
-}
-.svg-icon :deep(svg) {
-    width: 100%;
-    height: 100%;
 }
 </style>

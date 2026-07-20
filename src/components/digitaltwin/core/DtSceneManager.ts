@@ -96,6 +96,11 @@ export class DtSceneManager {
 
     /* ----------------------- 场景管理 ----------------------- */
 
+    /** 当前场景根 Group（供视口拾取/Gizmo 附加使用） */
+    get root(): Group {
+        return this.currentRoot;
+    }
+
     /** 创建新场景（不切换） */
     createScene(id: string, opts?: Partial<Omit<DtSceneAsset, "id" | "root">>): DtSceneAsset {
         if (this.scenes.has(id)) {
