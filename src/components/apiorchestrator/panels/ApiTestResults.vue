@@ -1,6 +1,7 @@
 <script setup lang="ts" name="ApiTestResults">
 import { ref } from "vue";
 import { i18n } from "@/lang";
+import { ShSvgIcon } from "@/components/shared";
 import type { ApiOrchestratorState } from "../composables/useApiOrchestrator";
 
 defineProps<{
@@ -55,7 +56,7 @@ const formatJson = (str: string): string => {
                         <span class="result-status" v-if="r.response.status">
                             {{ r.response.status }} · {{ r.response.duration }}ms
                         </span>
-                        <span class="svg-icon" v-html="expanded.has(r.stepId) ? icons.arrowUp : icons.arrowDown"></span>
+                        <ShSvgIcon :name="expanded.has(r.stepId) ? 'arrowUp' : 'arrowDown'" size="12px" />
                     </div>
                     <div v-show="expanded.has(r.stepId)" class="result-detail">
                         <div v-if="r.error" class="error-box">{{ r.error }}</div>

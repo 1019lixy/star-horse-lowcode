@@ -2,14 +2,14 @@
 /**
  * API 编排 - 右侧属性面板
  *
- * 三 Tab 设计：
- *  - 接口属性：选中接口时显示 ApiEndpointEditor，可关闭返回 Mock
- *  - Mock 配置：始终显示，按当前选中接口过滤
+ * 三 Tab 设计（始终注册，避免动态 v-if 导致 el-tabs 激活时序问题）：
+ *  - 接口属性：选中接口时显示编辑表单，未选中时显示空提示
+ *  - Mock 配置：按当前选中接口过滤
  *  - 测试结果：显示运行结果详情
  *
  * 取消 el-drawer，将接口编辑直接固定在右侧面板，避免遮挡流程图。
  */
-import { ref, watch } from "vue";
+import { ref, watch, nextTick } from "vue";
 import { i18n } from "@/lang";
 import { Close } from "@element-plus/icons-vue";
 import ApiEndpointEditor from "./ApiEndpointEditor.vue";
@@ -22,18 +22,19 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-    /** 关闭接口属性编辑页签 */
     (e: "close-editor"): void;
 }>();
 
 const activeTab = ref<"endpoint" | "mock" | "test">("mock");
 
-// 选中接口时自动切换到接口属性页签
+// 选中接口时自动切换到接口属性页签（nextTick 确保 el-tabs 已注册该页签）
 watch(
     () => props.state.selectedEndpointId.value,
     (id) => {
         if (id) {
-            activeTab.value = "endpoint";
+            nextTick(() => {
+                activeTab.value = "endpoint";
+            });
         }
     },
 );
@@ -47,21 +48,21 @@ const handleCloseEditor = () => {
 <template>
     <div class="api-right-panel">
         <el-tabs v-model="activeTab" type="border-card" class="right-tabs">
-            <el-tab-pane v-if="state.selectedEndpoint.value" name="endpoint" lazy>
+            <el-tab-pane name="endpoint">
                 <template #label>
                     <span class="tab-label">
-                        {{ i18n("api.endpoint.title") }}
-                        <el-icon class="tab-close" @click.stop="handleCloseEditor">
+                        {{ i18n("api.endpoint.editor") }}
+                        <el-icon v-if="state.selectedEndpoint.value" class="tab-close" @click.stop="handleCloseEditor">
                             <Close />
                         </el-icon>
                     </span>
                 </template>
                 <ApiEndpointEditor :state="state" />
             </el-tab-pane>
-            <el-tab-pane :label="i18n('api.mock.title')" name="mock" lazy>
+            <el-tab-pane :label="i18n('api.mock.title')" name="mock">
                 <ApiMockConfig :state="state" />
             </el-tab-pane>
-            <el-tab-pane :label="i18n('api.test.title')" name="test" lazy>
+            <el-tab-pane :label="i18n('api.test.title')" name="test">
                 <ApiTestResults :state="state" />
             </el-tab-pane>
         </el-tabs>

@@ -59,6 +59,7 @@ import type {
     DtSize3D,
 } from "../types";
 import DtPerformanceHud from "./DtPerformanceHud.vue";
+import { ShSvgIcon } from "@/components/shared";
 
 const props = withDefaults(
     defineProps<{
@@ -141,11 +142,11 @@ const fps = ref(0);
 const hoverNodePath = ref<string | null>(null);
 
 const modeList: Array<{ value: DtViewportMode; labelKey: string; icon: string }> = [
-    { value: "view", labelKey: "digitaltwin.viewport.mode.view", icon: "📷" },
-    { value: "edit", labelKey: "digitaltwin.viewport.mode.edit", icon: "✋" },
-    { value: "measure", labelKey: "digitaltwin.viewport.mode.measure", icon: "📏" },
-    { value: "annotation", labelKey: "digitaltwin.viewport.mode.annotation", icon: "🏷" },
-    { value: "inspection", labelKey: "digitaltwin.viewport.mode.inspection", icon: "🛰" },
+    { value: "view", labelKey: "digitaltwin.viewport.mode.view", icon: "modeView" },
+    { value: "edit", labelKey: "digitaltwin.viewport.mode.edit", icon: "modeEdit" },
+    { value: "measure", labelKey: "digitaltwin.viewport.mode.measure", icon: "modeMeasure" },
+    { value: "annotation", labelKey: "digitaltwin.viewport.mode.annotation", icon: "modeAnnotate" },
+    { value: "inspection", labelKey: "digitaltwin.viewport.mode.inspection", icon: "modeInspect" },
 ];
 
 const presetList: Array<{ value: DtViewPreset3D; labelKey: string }> = [
@@ -214,6 +215,11 @@ const handleCanvasClick = (e: MouseEvent) => {
         justFinishedBoxSelect = false;
         return;
     }
+    // Gizmo 拖拽刚结束的 click 不触发选中（防止清除选中导致 Gizmo detach）
+    if (justFinishedTransform) {
+        justFinishedTransform = false;
+        return;
+    }
     const inst = engine.value;
     const canvas = canvasRef.value;
     if (!inst || !canvas) return;
@@ -263,7 +269,8 @@ const handleModeChange = (m: DtViewportMode) => {
     currentMode.value = m;
     // edit 模式启用 Gizmo；其他模式分离
     if (m === "edit") {
-        if (props.editMode && props.selectedEntityId) {
+        // 不依赖 props.editMode（父组件可能尚未同步），有选中实体即附加
+        if (props.selectedEntityId) {
             attachTransformToSelected(props.selectedEntityId);
         }
     } else {
@@ -289,39 +296,60 @@ const handleReset = async () => {
 let transformControls: TransformControls | null = null;
 /** 拖拽中标志：用于跳过 entities 变化触发的全量重建，避免 Gizmo 被 detach */
 let isTransforming = false;
+/** Gizmo 拖拽刚结束标志：阻止紧随的 click 事件清除选中（类似 justFinishedBoxSelect） */
+let justFinishedTransform = false;
 
 const setupTransformControls = (): void => {
     const inst = engine.value;
     if (!inst || transformControls) return;
-    transformControls = new TransformControls(inst.cameraRig.camera, inst.renderer.domElement);
-    // 拖拽时禁用相机轨道
-    transformControls.addEventListener("dragging-changed", (event: { value: boolean }) => {
-        const orbit = inst.cameraRig.orbitControls;
-        if (orbit) orbit.enabled = !event.value;
-    });
-    // 拖拽中实时派发位置/尺寸变化
-    transformControls.addEventListener("objectChange", () => {
-        isTransforming = true;
-        const obj = transformControls?.object;
-        if (!obj) return;
-        const entityId = obj.userData?.entityId as string | undefined;
-        if (!entityId) return;
-        const position: DtPoint3D = { x: obj.position.x, y: obj.position.y, z: obj.position.z };
-        const size = extractSizeFromObject(obj);
-        emit("entity-transform", entityId, position, size);
-    });
-    // 拖拽结束（mouseUp）派发 entity-transform-end 以触发 pushHistory
-    transformControls.addEventListener("mouseUp", () => {
-        const obj = transformControls?.object;
-        const entityId = obj?.userData?.entityId as string | undefined;
-        if (entityId) emit("entity-transform-end", entityId);
-        // 拖拽结束后允许重建，使状态持久化并重新附加 Gizmo
-        isTransforming = false;
-        const entities = props.entities ?? props.scene?.entities ?? [];
-        syncEntitiesToScene(entities);
-    });
-    // Three.js 0.180+ TransformControls 继承 Controls，需通过 getHelper() 添加到场景
-    inst.sceneManager.current.add(transformControls.getHelper());
+    try {
+        transformControls = new TransformControls(inst.cameraRig.camera, inst.renderer.domElement);
+        // 拖拽时禁用相机轨道
+        transformControls.addEventListener("dragging-changed", (event: { value: boolean }) => {
+            const orbit = inst.cameraRig.orbitControls;
+            if (orbit) orbit.enabled = !event.value;
+        });
+        // 拖拽中实时派发位置/尺寸变化
+        transformControls.addEventListener("objectChange", () => {
+            isTransforming = true;
+            const obj = transformControls?.object;
+            if (!obj) return;
+            const entityId = obj.userData?.entityId as string | undefined;
+            if (!entityId) return;
+            const position: DtPoint3D = { x: obj.position.x, y: obj.position.y, z: obj.position.z };
+            const size = extractSizeFromObject(obj);
+            emit("entity-transform", entityId, position, size);
+        });
+        // 拖拽结束（mouseUp）派发 entity-transform-end 以触发 pushHistory
+        transformControls.addEventListener("mouseUp", () => {
+            const obj = transformControls?.object;
+            const entityId = obj?.userData?.entityId as string | undefined;
+            if (entityId) emit("entity-transform-end", entityId);
+            // 标记阻止紧随的 click 事件，防止清除选中导致 Gizmo detach
+            justFinishedTransform = true;
+            setTimeout(() => { justFinishedTransform = false; }, 150);
+            // 拖拽结束后允许重建，使状态持久化并重新附加 Gizmo
+            isTransforming = false;
+            const entities = props.entities ?? props.scene?.entities ?? [];
+            syncEntitiesToScene(entities);
+        });
+        // Three.js 0.180+ TransformControls 继承 Controls，需通过 getHelper() 添加到场景
+        const helper = transformControls.getHelper();
+        helper.name = "transform_controls_helper";
+        inst.sceneManager.current.add(helper);
+        // 注册渲染前回调，确保 Gizmo 每帧更新位置
+        inst.onBeforeRender(() => {
+            if (transformControls && transformControls.object) {
+                transformControls.updateMatrixWorld();
+            }
+        });
+        // eslint-disable-next-line no-console
+        console.log("[DtSceneViewport] TransformControls initialized, helper added to scene");
+    } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error("[DtSceneViewport] TransformControls init failed:", err);
+        transformControls = null;
+    }
 };
 
 /** 从 Object3D 提取 size（Group 从 userData.size，Mesh 从 geometry.parameters） */
@@ -350,8 +378,17 @@ const extractSizeFromObject = (obj: Object3D): DtSize3D => {
 
 /** 附加 Gizmo 到指定实体 */
 const attachTransformToSelected = (entityId: string | null): void => {
-    if (!transformControls || !engine.value) return;
-    if (!entityId || !props.editMode) {
+    if (!transformControls || !engine.value) {
+        // eslint-disable-next-line no-console
+        console.warn("[DtSceneViewport] attachTransform: transformControls or engine not ready", {
+            hasTransformControls: !!transformControls,
+            hasEngine: !!engine.value,
+        });
+        return;
+    }
+    // 仅在编辑模式（currentMode === edit 或 props.editMode）时附加
+    const editActive = currentMode.value === "edit" || props.editMode;
+    if (!entityId || !editActive) {
         transformControls.detach();
         return;
     }
@@ -362,14 +399,31 @@ const attachTransformToSelected = (entityId: string | null): void => {
     }
     const root = engine.value.sceneManager.root;
     let target: Object3D | null = null;
+    let candidateCount = 0;
     root.traverse((obj) => {
-        if (obj.userData?.entityId === entityId) target = obj;
+        if (obj.userData?.entityId === entityId) {
+            candidateCount++;
+            // 优先选 Group（复合模型根），其次 Mesh
+            if (!target || (target instanceof Mesh && obj instanceof Group)) {
+                target = obj;
+            }
+        }
     });
     if (target) {
         transformControls.attach(target);
         transformControls.setMode(props.transformMode);
+        // eslint-disable-next-line no-console
+        console.log("[DtSceneViewport] attachTransform: SUCCESS", {
+            entityId,
+            targetType: target instanceof Group ? "Group" : "Mesh",
+            candidateCount,
+            position: { x: target.position.x, y: target.position.y, z: target.position.z },
+            visible: target.visible,
+        });
     } else {
         transformControls.detach();
+        // eslint-disable-next-line no-console
+        console.warn("[DtSceneViewport] attachTransform: target not found", { entityId });
     }
 };
 
@@ -820,21 +874,6 @@ watch(
     { deep: true },
 );
 
-// mode 变化 → 同步内部视口模式与 Gizmo 状态
-watch(
-    () => props.mode,
-    (m) => {
-        currentMode.value = m;
-        if (m === "edit") {
-            if (props.editMode && props.selectedEntityId) {
-                attachTransformToSelected(props.selectedEntityId);
-            }
-        } else {
-            detachTransform();
-        }
-    },
-);
-
 const cursor = computed(() => {
     if (props.editMode) return "default";
     if (currentMode.value === "view") return hoverNodePath.value ? "pointer" : "grab";
@@ -942,7 +981,8 @@ defineExpose({
                         :title="i18n(m.labelKey as any)"
                         @click="handleModeChange(m.value)"
                     >
-                        <span class="dt-mode-icon">{{ m.icon }}</span>
+                        <ShSvgIcon :name="m.icon" size="14px" />
+                        <span class="dt-mode-label">{{ i18n(m.labelKey as any) }}</span>
                     </el-button>
                 </el-button-group>
             </div>
@@ -1039,6 +1079,18 @@ export default { components: { Warning, Refresh } };
     .dt-mode-icon {
         font-size: 14px;
         line-height: 1;
+    }
+
+    .dt-mode-label {
+        margin-left: 4px;
+        font-size: 12px;
+        line-height: 1;
+    }
+
+    :deep(.el-button) {
+        display: inline-flex;
+        align-items: center;
+        padding: 0 10px;
     }
 
     :deep(.el-divider--vertical) {

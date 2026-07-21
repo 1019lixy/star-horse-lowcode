@@ -1,6 +1,7 @@
 <script setup lang="ts" name="ApiMockConfig">
 import { computed } from "vue";
 import { i18n } from "@/lang";
+import { ShSvgIcon } from "@/components/shared";
 import { STATUS_CODES } from "../constants";
 import type { ApiOrchestratorState } from "../composables/useApiOrchestrator";
 import type { MockResponse } from "../types";
@@ -47,11 +48,6 @@ const removeHeader = (key: string) => {
     update("headers", headers);
 };
 const headerEntries = computed(() => Object.entries(mock.value?.headers ?? {}));
-
-/** 内联 SVG 图标（替代 Element Plus 图标，减少依赖） */
-const icons: Record<string, string> = {
-    delete: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M5 6v14a2 2 0 002 2h10a2 2 0 002-2V6M10 11v6M14 11v6"/></svg>'
-};
 </script>
 
 <template>
@@ -96,7 +92,7 @@ const icons: Record<string, string> = {
                         @change="(v) => updateHeaderValue(key, String(v))"
                     />
                     <el-button text type="danger"  @click="removeHeader(key)">
-                        <span class="svg-icon" v-html="icons.delete"></span>
+                        <ShSvgIcon name="delete" size="14px" />
                     </el-button>
                 </div>
                 <el-button  @click="addHeader">+ {{ i18n("api.mock.headers") }}</el-button>
@@ -157,18 +153,5 @@ const icons: Record<string, string> = {
             }
         }
     }
-}
-
-.svg-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 1em;
-    height: 1em;
-    margin-right: 4px;
-}
-.svg-icon :deep(svg) {
-    width: 100%;
-    height: 100%;
 }
 </style>
