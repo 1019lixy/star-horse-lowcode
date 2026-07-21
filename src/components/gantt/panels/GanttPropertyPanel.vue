@@ -83,7 +83,7 @@ watch(
                     <el-input v-model="formData.assignee"/>
                 </el-form-item>
                 <el-form-item :label="i18n('gantt.task.workHours')">
-                    <el-input-number v-model="formData.workHours" :min="0" :precision="1" style="width: 100%"/>
+                    <el-input-number v-model="formData.workHours" :min="0" :precision="1" controls-position="right" style="width: 100%"/>
                 </el-form-item>
                 <el-form-item :label="i18n('gantt.task.isMilestone')">
                     <el-switch v-model="formData.isMilestone"/>

@@ -132,7 +132,7 @@ onBeforeUnmount(() => {
             @insert-after="handleInsertAfter"
         />
         <el-splitter class="designer-body" direction="horizontal">
-            <el-splitter-panel size="280px" min="200px" max="420px">
+            <el-splitter-panel size="350px" min="200px" max="420px">
                 <gantt-task-list-panel
                     ref="taskListRef"
                     :designer="designer"
