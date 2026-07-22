@@ -1,5 +1,5 @@
 <script setup lang="ts" name="PdfCanvas">
-import { computed, ref, onMounted, onBeforeUnmount } from "vue";
+import { computed, ref, nextTick, onMounted, onBeforeUnmount } from "vue";
 import { i18n } from "@/lang";
 import { ShSvgIcon } from "@/components/shared";
 import type { PdfDesigner } from "../composables/usePdfDesigner";
@@ -24,7 +24,7 @@ const marginLeftPx = computed(() => props.designer.state.page.marginLeft * MM_TO
 const marginRightPx = computed(() => props.designer.state.page.marginRight * MM_TO_PX * scale.value);
 const marginBottomPx = computed(() => props.designer.state.page.marginBottom * MM_TO_PX * scale.value);
 
-/** 内容区域尺寸（减去页边距） */
+/** 内容区域尺寸 */
 const contentWidthPx = computed(() => pageWidthPx.value - marginLeftPx.value - marginRightPx.value);
 const contentHeightPx = computed(() => pageHeightPx.value - marginTopPx.value - marginBottomPx.value);
 
@@ -43,16 +43,16 @@ const dragState = ref<{
     moved: boolean;
 } | null>(null);
 
-/** 辅助线（拖拽时显示） */
+/** 辅助线 */
 const guideLines = ref<{ horizontal: number[]; vertical: number[] }>({ horizontal: [], vertical: [] });
 
-/** 当前选中元素 ID 列表（解包 ref，模板直接用数组方法） */
+/** 选中元素 ID 列表 */
 const selectedElementIds = computed(() => props.designer.selectedElementIds.value);
 
 /** 框选状态 */
 const boxSelect = ref<{ startX: number; startY: number; endX: number; endY: number } | null>(null);
 
-/** 右键上下文菜单 */
+/** 右键菜单 */
 const contextMenu = ref<{
     visible: boolean;
     x: number;
@@ -65,6 +65,11 @@ const scrollLeft = ref(0);
 const scrollTop = ref(0);
 
 const canvasRef = ref<HTMLElement | null>(null);
+
+/* ── 原地编辑 ── */
+const editingId = ref<string | null>(null);
+const editText = ref("");
+const editRef = ref<HTMLDivElement | null>(null);
 
 /** 判断是否文本类型 */
 const isTextType = (type: string): boolean => ["text", "heading", "paragraph", "date"].includes(type);
@@ -100,7 +105,6 @@ const computeSnapGuides = (el: PdfElement) => {
     const hLines: number[] = [];
     const vLines: number[] = [];
 
-    // 页面特征线
     const pageFeatures = {
         v: [0, page.marginLeft, page.marginLeft + contentW / 2, page.width - page.marginRight, page.width],
         h: [0, page.marginTop, page.marginTop + contentH / 2, page.height - page.marginBottom, page.height],
@@ -108,28 +112,20 @@ const computeSnapGuides = (el: PdfElement) => {
 
     const elCx = el.x + el.width / 2;
     const elCy = el.y + el.height / 2;
-
-    // 元素特征点
     const elVFeatures = [el.x, elCx, el.x + el.width];
     const elHFeatures = [el.y, elCy, el.y + el.height];
 
-    // 与页面特征线吸附
     for (const ef of elVFeatures) {
         for (const pf of pageFeatures.v) {
-            if (Math.abs(ef - pf) < SNAP_THRESHOLD) {
-                vLines.push(pf);
-            }
+            if (Math.abs(ef - pf) < SNAP_THRESHOLD) vLines.push(pf);
         }
     }
     for (const ef of elHFeatures) {
         for (const pf of pageFeatures.h) {
-            if (Math.abs(ef - pf) < SNAP_THRESHOLD) {
-                hLines.push(pf);
-            }
+            if (Math.abs(ef - pf) < SNAP_THRESHOLD) hLines.push(pf);
         }
     }
 
-    // 与其他元素特征线吸附
     for (const other of props.designer.state.elements) {
         if (other.id === el.id) continue;
         const oCx = other.x + other.width / 2;
@@ -149,7 +145,6 @@ const computeSnapGuides = (el: PdfElement) => {
         }
     }
 
-    // 去重
     guideLines.value = {
         horizontal: [...new Set(hLines.map(l => Math.round(l * 10) / 10))],
         vertical: [...new Set(vLines.map(l => Math.round(l * 10) / 10))],
@@ -161,6 +156,7 @@ const handleCanvasClick = (e: MouseEvent) => {
     if (e.target === e.currentTarget) {
         props.designer.clearSelection();
         guideLines.value = { horizontal: [], vertical: [] };
+        editingId.value = null;
     }
     contextMenu.value.visible = false;
 };
@@ -172,9 +168,55 @@ const handleElementClick = (e: MouseEvent, el: PdfElement) => {
     contextMenu.value.visible = false;
 };
 
+/** 双击原地编辑文本 */
+const handleElementDblClick = (e: MouseEvent, el: PdfElement) => {
+    if (props.readonly) return;
+    e.stopPropagation();
+    if (!isTextType(el.type)) return;
+    editingId.value = el.id;
+    editText.value = (el as any).text || "";
+    nextTick(() => {
+        if (editRef.value) {
+            editRef.value.focus();
+            // 全选
+            const range = document.createRange();
+            range.selectNodeContents(editRef.value);
+            const sel = window.getSelection();
+            sel?.removeAllRanges();
+            sel?.addRange(range);
+        }
+    });
+};
+
+/** 原地编辑完成 */
+const finishEditing = () => {
+    if (!editingId.value) return;
+    const el = props.designer.state.elements.find(e => e.id === editingId.value);
+    if (el && isTextType(el.type)) {
+        const newText = editRef.value?.innerText ?? editText.value;
+        if ((el as any).text !== newText) {
+            props.designer.pushHistory();
+            (el as any).text = newText;
+        }
+    }
+    editingId.value = null;
+};
+
+/** 编辑时按键处理 */
+const handleEditKeyDown = (e: KeyboardEvent) => {
+    if (e.key === "Escape") {
+        finishEditing();
+    } else if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        finishEditing();
+    }
+    e.stopPropagation();
+};
+
 /** 元素拖拽/resize 开始 */
 const handleElementMouseDown = (e: MouseEvent, el: PdfElement, mode: string = "move") => {
     if (props.readonly) return;
+    if (editingId.value === el.id) return; // 编辑中不拖拽
     e.stopPropagation();
     e.preventDefault();
     if (!selectedElementIds.value.includes(el.id)) {
@@ -206,10 +248,8 @@ const handleMouseMove = (e: MouseEvent) => {
     if (!el) return;
     const mode = dragState.value.mode;
     if (mode === "move") {
-        // 允许负值（可以在页边距区域内），但不超出页面边界
         let newX = dragState.value.origX + dx;
         let newY = dragState.value.origY + dy;
-        // 吸附到页面特征线
         const page = props.designer.state.page;
         const contentW = page.width - page.marginLeft - page.marginRight;
         const contentH = page.height - page.marginTop - page.marginBottom;
@@ -219,7 +259,6 @@ const handleMouseMove = (e: MouseEvent) => {
         };
         const elCx = newX + el.width / 2;
         const elCy = newY + el.height / 2;
-        // 左边缘吸附
         for (const sp of snapPoints.v) {
             if (Math.abs(newX - sp) < SNAP_THRESHOLD) { newX = sp; break; }
             if (Math.abs(elCx - sp) < SNAP_THRESHOLD) { newX = sp - el.width / 2; break; }
@@ -245,14 +284,13 @@ const handleMouseMove = (e: MouseEvent) => {
 
 const handleMouseUp = () => {
     if (dragState.value?.moved) props.designer.pushHistory();
-    // 拖拽结束后隐藏辅助线
     guideLines.value = { horizontal: [], vertical: [] };
     dragState.value = null;
     document.removeEventListener("mousemove", handleMouseMove);
     document.removeEventListener("mouseup", handleMouseUp);
 };
 
-/** 拖拽放置 */
+/** 拖拽放置（从元素面板拖入画布） */
 const handleDrop = (e: DragEvent) => {
     if (props.readonly) return;
     e.preventDefault();
@@ -261,6 +299,7 @@ const handleDrop = (e: DragEvent) => {
     const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
     const x = (e.clientX - rect.left - marginLeftPx.value) / scale.value / MM_TO_PX;
     const y = (e.clientY - rect.top - marginTopPx.value) / scale.value / MM_TO_PX;
+    // addElement 内部已自动选中
     props.designer.addElement(type, { x, y });
     (window as any).__pdfDragType = null;
 };
@@ -268,6 +307,7 @@ const handleDrop = (e: DragEvent) => {
 // ======================== 框选 ========================
 const handleCanvasMouseDown = (e: MouseEvent) => {
     if (props.readonly || e.button !== 0) return;
+    if (editingId.value) { finishEditing(); return; }
     const tgt = e.target as HTMLElement;
     if (!tgt.classList.contains("pdf-page") && !tgt.classList.contains("elements-layer") && e.currentTarget !== e.target) return;
     const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
@@ -380,6 +420,7 @@ const isInputFocused = (): boolean => {
 
 const handleKeyDown = (e: KeyboardEvent) => {
     if (props.readonly || isInputFocused()) return;
+    if (editingId.value) return;
     const ctrl = e.ctrlKey || e.metaKey;
     if (e.key === "Delete" || e.key === "Backspace") { e.preventDefault(); props.designer.deleteSelected(); }
     else if (ctrl && e.key === "z" && !e.shiftKey) { e.preventDefault(); props.designer.undo(); }
@@ -389,14 +430,14 @@ const handleKeyDown = (e: KeyboardEvent) => {
     else if (ctrl && e.key === "v") { e.preventDefault(); props.designer.pasteElements(); }
     else if (ctrl && e.key === "a") { e.preventDefault(); props.designer.selectAll(); }
     else if (ctrl && e.key === "d") { e.preventDefault(); const id = props.designer.selectedElementId.value; if (id) props.designer.duplicateElement(id); }
-    else if (e.key === "Escape") { props.designer.clearSelection(); }
+    else if (e.key === "Escape") { props.designer.clearSelection(); editingId.value = null; }
     else if (e.key === "ArrowLeft") { e.preventDefault(); props.designer.moveSelectedBy(e.shiftKey ? -10 : -1, 0); }
     else if (e.key === "ArrowRight") { e.preventDefault(); props.designer.moveSelectedBy(e.shiftKey ? 10 : 1, 0); }
     else if (e.key === "ArrowUp") { e.preventDefault(); props.designer.moveSelectedBy(0, e.shiftKey ? -10 : -1); }
     else if (e.key === "ArrowDown") { e.preventDefault(); props.designer.moveSelectedBy(0, e.shiftKey ? 10 : 1); }
 };
 
-/** 标尺刻度（每10mm一个长刻度，每5mm一个短刻度，每1mm一个微小刻度） */
+/** 标尺刻度 */
 const rulerHTicks = computed(() => {
     const page = props.designer.state.page;
     const ticks: { x: number; h: number; label?: string }[] = [];
@@ -425,11 +466,29 @@ const rulerVTicks = computed(() => {
     return ticks;
 });
 
-/** 滚动事件 */
 const handleScroll = (e: Event) => {
     const target = e.currentTarget as HTMLElement;
     scrollLeft.value = target.scrollLeft;
     scrollTop.value = target.scrollTop;
+};
+
+/** 获取元素类型标签 */
+const getTypeLabel = (el: PdfElement): string => {
+    const labels: Record<string, string> = {
+        text: i18n("pdf.element.text"),
+        heading: i18n("pdf.element.heading"),
+        paragraph: i18n("pdf.element.paragraph"),
+        image: i18n("pdf.element.image"),
+        table: i18n("pdf.element.table"),
+        divider: i18n("pdf.element.divider"),
+        barcode: i18n("pdf.element.barcode"),
+        qrcode: i18n("pdf.element.qrcode"),
+        signature: i18n("pdf.element.signature"),
+        checkbox: i18n("pdf.element.checkbox"),
+        date: i18n("pdf.element.date"),
+        pageBreak: i18n("pdf.element.pageBreak"),
+    };
+    return labels[el.type] || el.type;
 };
 
 onMounted(() => { document.addEventListener("keydown", handleKeyDown); });
@@ -493,7 +552,7 @@ onBeforeUnmount(() => { document.removeEventListener("keydown", handleKeyDown); 
                     bottom: `${marginBottomPx}px`,
                 }">
                     <div class="elements-layer" :style="{ width: '100%', height: '100%', position: 'relative' }">
-                        <!-- 辅助线（仅拖拽时显示） -->
+                        <!-- 辅助线 -->
                         <template v-if="dragState && (guideLines.horizontal.length || guideLines.vertical.length)">
                             <div v-for="hLine in guideLines.horizontal" :key="'h-' + hLine" class="guide-line horizontal" :style="{ top: `${hLine * MM_TO_PX * scale}px` }" />
                             <div v-for="vLine in guideLines.vertical" :key="'v-' + vLine" class="guide-line vertical" :style="{ left: `${vLine * MM_TO_PX * scale}px` }" />
@@ -503,7 +562,10 @@ onBeforeUnmount(() => { document.removeEventListener("keydown", handleKeyDown); 
                             v-for="el in designer.state.elements"
                             :key="el.id"
                             class="element-wrapper"
-                            :class="{ selected: selectedElementIds.includes(el.id) }"
+                            :class="{
+                                selected: selectedElementIds.includes(el.id),
+                                editing: editingId === el.id,
+                            }"
                             :style="{
                                 position: 'absolute',
                                 left: `${el.x * MM_TO_PX * scale}px`,
@@ -514,42 +576,70 @@ onBeforeUnmount(() => { document.removeEventListener("keydown", handleKeyDown); 
                                 zIndex: el.zIndex ?? 0,
                             }"
                             @click="(e) => handleElementClick(e, el)"
+                            @dblclick="(e) => handleElementDblClick(e, el)"
                             @mousedown="(e) => handleElementMouseDown(e, el, 'move')"
                             @contextmenu="(e) => handleElementContextMenu(e, el)"
                         >
-                            <div class="element-content" :style="getContentStyle(el)">
-                                <template v-if="isTextType(el.type)">
-                                    <span v-if="el.type === 'heading'" :style="{ fontSize: '18px', fontWeight: 'bold' }">{{ (el as any).text || i18n('pdf.element.text') }}</span>
-                                    <span v-else>{{ (el as any).text || i18n('pdf.element.text') }}</span>
-                                </template>
-                                <template v-else-if="el.type === 'image' || el.type === 'signature'">
-                                    <img v-if="(el as any).src" :src="(el as any).src" style="width:100%;height:100%;object-fit:contain"/>
-                                    <span v-else class="placeholder">[{{ el.type === 'signature' ? 'Signature' : 'Image' }}]</span>
-                                </template>
-                                <template v-else-if="el.type === 'table'">
-                                    <table style="border-collapse:collapse;width:100%;font-size:12px">
-                                        <thead><tr><th v-for="(col, ci) in ((el as any).columns || [])" :key="ci" :style="{ border: '1px solid #ddd', padding: '4px', background: '#f5f7fa', textAlign: col.align || 'center', width: `${col.width * MM_TO_PX}px` }">{{ col.label }}</th></tr></thead>
-                                        <tbody><tr><td v-for="(col, ci) in ((el as any).columns || [])" :key="ci" :style="{ border: '1px solid #ddd', padding: '4px', textAlign: col.align || 'center' }">&nbsp;</td></tr></tbody>
-                                    </table>
-                                </template>
-                                <template v-else-if="el.type === 'divider'">
-                                    <div :style="{ borderTop: `${(el as any).thickness || 1}px ${(el as any).style || 'solid'} ${(el as any).color || '#000'}`, width: '100%', marginTop: '50%' }"></div>
-                                </template>
-                                <template v-else-if="el.type === 'barcode'">
-                                    <span style="font-family:'Courier New';letter-spacing:2px;font-size:14px">{{ (el as any).value || '' }}</span>
-                                </template>
-                                <template v-else-if="el.type === 'qrcode'">
-                                    <svg viewBox="0 0 100 100" width="100%" height="100%"><rect width="100" height="100" fill="#fff"/><rect x="0" y="0" width="30" height="30" fill="#000"/><rect x="70" y="0" width="30" height="30" fill="#000"/><rect x="0" y="70" width="30" height="30" fill="#000"/><rect x="30" y="30" width="10" height="10" fill="#000"/><rect x="45" y="45" width="10" height="10" fill="#000"/></svg>
-                                </template>
-                                <template v-else-if="el.type === 'checkbox'">
-                                    <div style="display:flex;align-items:center;gap:4px"><div style="width:14px;height:14px;border:1px solid #333;display:flex;align-items:center;justify-content:center">{{ (el as any).checked ? '✓' : '' }}</div><span v-if="(el as any).label">{{ (el as any).label }}</span></div>
-                                </template>
-                                <template v-else-if="el.type === 'pageBreak'">
-                                    <span style="color:#999;font-size:11px">--- Page Break ---</span>
-                                </template>
-                            </div>
+                            <!-- 原地编辑模式（文本类元素） -->
+                            <div
+                                v-if="editingId === el.id && isTextType(el.type)"
+                                class="element-edit"
+                                ref="editRef"
+                                contenteditable="true"
+                                :style="getContentStyle(el)"
+                                @blur="finishEditing"
+                                @keydown="handleEditKeyDown"
+                                v-text="(el as any).text || ''"
+                            />
+                            <!-- 正常渲染 -->
+                            <template v-else>
+                                <div class="element-content" :style="getContentStyle(el)">
+                                    <template v-if="isTextType(el.type)">
+                                        <span v-if="el.type === 'heading'" :style="{ fontSize: '18px', fontWeight: 'bold' }">{{ (el as any).text || getTypeLabel(el) }}</span>
+                                        <span v-else>{{ (el as any).text || getTypeLabel(el) }}</span>
+                                    </template>
+                                    <template v-else-if="el.type === 'image' || el.type === 'signature'">
+                                        <img v-if="(el as any).src" :src="(el as any).src" style="width:100%;height:100%;object-fit:contain"/>
+                                        <div v-else class="placeholder">
+                                            <span>{{ getTypeLabel(el) }}</span>
+                                        </div>
+                                    </template>
+                                    <template v-else-if="el.type === 'table'">
+                                        <table style="border-collapse:collapse;width:100%;font-size:12px">
+                                            <thead><tr><th v-for="(col, ci) in ((el as any).columns || [])" :key="ci" :style="{ border: '1px solid #ddd', padding: '4px', background: '#f5f7fa', textAlign: col.align || 'center', width: `${col.width * MM_TO_PX}px` }">{{ col.label }}</th></tr></thead>
+                                            <tbody><tr><td v-for="(col, ci) in ((el as any).columns || [])" :key="ci" :style="{ border: '1px solid #ddd', padding: '4px', textAlign: col.align || 'center' }">&nbsp;</td></tr></tbody>
+                                        </table>
+                                    </template>
+                                    <template v-else-if="el.type === 'divider'">
+                                        <div :style="{ borderTop: `${(el as any).thickness || 1}px ${(el as any).style || 'solid'} ${(el as any).color || '#000'}`, width: '100%', marginTop: '50%' }"></div>
+                                    </template>
+                                    <template v-else-if="el.type === 'barcode'">
+                                        <div class="barcode-display">
+                                            <div class="barcode-bars">
+                                                <span v-for="(_, bi) in 20" :key="bi" :style="{ display: 'inline-block', width: bi % 2 === 0 ? '3px' : '1px', height: '100%', background: '#000' }"></span>
+                                            </div>
+                                            <span style="font-family:'Courier New';font-size:11px;text-align:center;display:block">{{ (el as any).value || '1234567890' }}</span>
+                                        </div>
+                                    </template>
+                                    <template v-else-if="el.type === 'qrcode'">
+                                        <svg viewBox="0 0 100 100" width="100%" height="100%"><rect width="100" height="100" fill="#fff"/><rect x="0" y="0" width="30" height="30" fill="#000"/><rect x="70" y="0" width="30" height="30" fill="#000"/><rect x="0" y="70" width="30" height="30" fill="#000"/><rect x="30" y="30" width="10" height="10" fill="#000"/><rect x="45" y="45" width="10" height="10" fill="#000"/></svg>
+                                    </template>
+                                    <template v-else-if="el.type === 'checkbox'">
+                                        <div style="display:flex;align-items:center;gap:4px"><div style="width:14px;height:14px;border:1px solid #333;display:flex;align-items:center;justify-content:center">{{ (el as any).checked ? '✓' : '' }}</div><span v-if="(el as any).label">{{ (el as any).label }}</span></div>
+                                    </template>
+                                    <template v-else-if="el.type === 'pageBreak'">
+                                        <div class="pagebreak-line">
+                                            <span>--- {{ getTypeLabel(el) }} ---</span>
+                                        </div>
+                                    </template>
+                                </div>
+                                <!-- 类型标签（选中时显示） -->
+                                <div v-if="selectedElementIds.includes(el.id)" class="element-type-tag">
+                                    {{ getTypeLabel(el) }}
+                                </div>
+                            </template>
                             <!-- Resize 手柄 -->
-                            <template v-if="selectedElementIds.includes(el.id) && !readonly">
+                            <template v-if="selectedElementIds.includes(el.id) && !readonly && editingId !== el.id">
                                 <div class="resize-handle top-left" @mousedown.stop="(e) => handleElementMouseDown(e, el, 'resize-tl')"/>
                                 <div class="resize-handle top-right" @mousedown.stop="(e) => handleElementMouseDown(e, el, 'resize-tr')"/>
                                 <div class="resize-handle bottom-left" @mousedown.stop="(e) => handleElementMouseDown(e, el, 'resize-bl')"/>
@@ -567,7 +657,7 @@ onBeforeUnmount(() => { document.removeEventListener("keydown", handleKeyDown); 
             </div>
         </div>
 
-        <!-- 右键上下文菜单 -->
+        <!-- 右键菜单 -->
         <div v-if="contextMenu.visible" class="context-menu" :style="{ left: `${contextMenu.x}px`, top: `${contextMenu.y}px` }">
             <template v-for="(item, idx) in contextMenu.items" :key="idx">
                 <div v-if="item.divider" class="ctx-divider" />
@@ -586,13 +676,11 @@ onBeforeUnmount(() => { document.removeEventListener("keydown", handleKeyDown); 
     width: 100%; height: 100%; overflow: hidden; background: var(--el-bg-color-page);
     display: flex; flex-wrap: wrap; position: relative;
 
-    /* 标尺 */
     .ruler-corner {
         background: var(--el-bg-color);
         border-right: 1px solid var(--el-border-color-lighter);
         border-bottom: 1px solid var(--el-border-color-lighter);
-        z-index: 10;
-        flex-shrink: 0;
+        z-index: 10; flex-shrink: 0;
     }
     .ruler-h {
         position: absolute; top: 0; right: 0;
@@ -606,9 +694,7 @@ onBeforeUnmount(() => { document.removeEventListener("keydown", handleKeyDown); 
         border-right: 1px solid var(--el-border-color-lighter);
         z-index: 10; overflow: hidden;
     }
-    .ruler-svg-h, .ruler-svg-v {
-        display: block;
-    }
+    .ruler-svg-h, .ruler-svg-v { display: block; }
 
     .canvas-scroll {
         flex: 1; overflow: auto; padding: 16px; display: flex; justify-content: center; align-items: flex-start;
@@ -616,13 +702,10 @@ onBeforeUnmount(() => { document.removeEventListener("keydown", handleKeyDown); 
     .pdf-page {
         position: relative; background: #FFFFFF; box-shadow: 0 2px 12px rgba(0,0,0,0.1); flex-shrink: 0;
 
-        /* 页边距可视化遮罩 */
         .margin-overlay {
             position: absolute;
             border: 1px dashed rgba(64, 158, 255, 0.3);
-            /* 四边用渐变遮罩表示页边距区域 */
-            box-shadow:
-                inset 0 0 0 9999px rgba(0, 0, 0, 0.015);
+            box-shadow: inset 0 0 0 9999px rgba(0, 0, 0, 0.015);
         }
 
         .elements-layer {
@@ -630,9 +713,41 @@ onBeforeUnmount(() => { document.removeEventListener("keydown", handleKeyDown); 
                 cursor: move; outline: 1px solid transparent; box-sizing: border-box;
                 &:hover { outline: 1px dashed var(--el-color-primary); }
                 &.selected { outline: 2px solid var(--el-color-primary); }
+                &.editing { outline: 2px solid var(--el-color-success); }
+
                 .element-content {
                     pointer-events: none; word-break: break-all; white-space: pre-wrap;
-                    .placeholder { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; color: #999; font-size: 11px; border: 1px dashed #ccc; }
+                    .placeholder {
+                        display: flex; flex-direction: column; align-items: center; justify-content: center;
+                        width: 100%; height: 100%; color: var(--el-text-color-secondary);
+                        font-size: 12px; border: 1px dashed var(--el-border-color); border-radius: 2px;
+                        gap: 4px;
+                    }
+                    .barcode-display {
+                        width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;
+                        .barcode-bars { display: flex; height: 60%; width: 100%; }
+                    }
+                    .pagebreak-line {
+                        width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+                        color: var(--el-text-color-placeholder); font-size: 11px;
+                        border-top: 1px dashed var(--el-border-color);
+                    }
+                }
+
+                .element-edit {
+                    width: 100%; height: 100%;
+                    outline: none; word-break: break-all; white-space: pre-wrap;
+                    cursor: text; background: rgba(255, 255, 255, 0.9);
+                    border: 1px solid var(--el-color-success);
+                    box-shadow: 0 0 0 2px rgba(103, 194, 58, 0.2);
+                    border-radius: 2px;
+                }
+
+                .element-type-tag {
+                    position: absolute; top: -18px; left: 0;
+                    background: var(--el-color-primary); color: #fff;
+                    font-size: 10px; padding: 1px 6px; border-radius: 2px 2px 0 0;
+                    white-space: nowrap; pointer-events: none;
                 }
             }
         }

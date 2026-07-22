@@ -21,6 +21,12 @@ const isImageLike = computed(() =>
 
 const isTable = computed(() => el.value?.type === "table");
 
+const isDivider = computed(() => el.value?.type === "divider");
+
+const isBarcode = computed(() => el.value?.type === "barcode" || el.value?.type === "qrcode");
+
+const isCheckbox = computed(() => el.value?.type === "checkbox");
+
 const handleAddColumn = () => {
     if (!el.value) return;
     el.value.columns.push({
@@ -52,6 +58,12 @@ const handleRemoveColumn = (idx: number) => {
                 </el-form-item>
                 <el-form-item :label="i18n('pdf.property.height')">
                     <el-input-number v-model="el.height" :min="1" :precision="1"/>
+                </el-form-item>
+                <el-form-item :label="i18n('pdf.property.rotation')">
+                    <el-input-number v-model="el.rotation" :min="-360" :max="360" :step="15" :precision="0"/>
+                </el-form-item>
+                <el-form-item :label="i18n('pdf.property.zIndex')">
+                    <el-input-number v-model="el.zIndex" :min="0" :precision="0"/>
                 </el-form-item>
 
                 <template v-if="isTextLike">
@@ -122,6 +134,50 @@ const handleRemoveColumn = (idx: number) => {
                         <el-icon><Plus/></el-icon>
                         {{ i18n("pdf.property.addColumn") }}
                     </el-button>
+                </template>
+
+                <template v-if="isDivider">
+                    <el-form-item :label="i18n('pdf.property.dividerColor')">
+                        <el-color-picker v-model="el.color"/>
+                    </el-form-item>
+                    <el-form-item :label="i18n('pdf.property.dividerThickness')">
+                        <el-input-number v-model="el.thickness" :min="1" :max="10"/>
+                    </el-form-item>
+                    <el-form-item :label="i18n('pdf.property.dividerStyle')">
+                        <el-select v-model="el.style" style="width: 100%">
+                            <el-option value="solid" label="Solid"/>
+                            <el-option value="dashed" label="Dashed"/>
+                            <el-option value="dotted" label="Dotted"/>
+                        </el-select>
+                    </el-form-item>
+                </template>
+
+                <template v-if="isBarcode">
+                    <el-form-item :label="i18n('pdf.property.barcodeValue')">
+                        <el-input v-model="el.value"/>
+                    </el-form-item>
+                    <el-form-item :label="i18n('pdf.property.barcodeFormat')">
+                        <el-select v-model="el.format" style="width: 100%">
+                            <el-option value="CODE128" label="CODE128"/>
+                            <el-option value="EAN13" label="EAN13"/>
+                            <el-option value="QR" label="QR"/>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item :label="i18n('pdf.property.dataField')">
+                        <el-input v-model="el.dataField"/>
+                    </el-form-item>
+                </template>
+
+                <template v-if="isCheckbox">
+                    <el-form-item :label="i18n('pdf.property.checkboxLabel')">
+                        <el-input v-model="el.label"/>
+                    </el-form-item>
+                    <el-form-item :label="i18n('pdf.property.checkboxChecked')">
+                        <el-switch v-model="el.checked"/>
+                    </el-form-item>
+                    <el-form-item :label="i18n('pdf.property.dataField')">
+                        <el-input v-model="el.dataField"/>
+                    </el-form-item>
                 </template>
             </el-form>
         </div>

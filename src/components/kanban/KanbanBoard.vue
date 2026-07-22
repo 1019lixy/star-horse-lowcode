@@ -102,6 +102,7 @@ const icons: Record<string, string> = {
             :readonly="readonly"
             :can-add-card="canAddCard"
             :has-collapsed="hasCollapsed()"
+            :title="initialKanban.name"
             @save="handleSave"
             @add-card="handleAddCard()"
             @expand-all="expandAll"

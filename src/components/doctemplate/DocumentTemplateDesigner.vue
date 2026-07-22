@@ -58,11 +58,27 @@ const handleEditVariable = (id: string) => {
     varDialogVisible.value = true;
 };
 
+const handleAddVariable = () => {
+    editingVarId.value = null;
+    varDialogVisible.value = true;
+};
+
 const handleSave = () => {
     const data = designer.getData();
     emits("update:template", data);
     emits("save", data);
     ElMessage.success(i18n("doctemplate.message.saved"));
+};
+
+/** 分类切换时加载对应预设内容 */
+const handleCategoryChange = (category: string) => {
+    const preset = DOC_CATEGORY_PRESETS.find((c) => c.value === category);
+    if (preset?.template) {
+        designer.setContent(preset.template);
+        if (editorRef.value) {
+            editorRef.value.setHtml(preset.template);
+        }
+    }
 };
 </script>
 
@@ -78,9 +94,9 @@ const handleSave = () => {
                 />
                 <el-select
                     v-model="designer.state.category"
-
                     style="width: 140px"
                     :placeholder="i18n('doctemplate.template.category')"
+                    @change="handleCategoryChange"
                 >
                     <el-option
                         v-for="opt in DOC_CATEGORY_PRESETS"
@@ -109,6 +125,7 @@ const handleSave = () => {
                     :readonly="readonly"
                     @insert="handleInsertVariable"
                     @edit="handleEditVariable"
+                    @add="handleAddVariable"
                 />
             </el-splitter-panel>
             <el-splitter-panel>
@@ -172,6 +189,15 @@ const handleSave = () => {
 </template>
 
 <style src="@wangeditor/editor/dist/css/style.css"></style>
+<style lang="scss">
+/* wangEditor 下拉菜单 z-index 提升，避免被 el-splitter-panel 遮挡 */
+.w-e-toolbar .w-e-menu-tooltip-v5,
+.w-e-toolbar .w-e-drop-panel,
+.w-e-toolbar .w-e-modal,
+.w-e-bar-item .w-e-drop-panel {
+    z-index: 10000 !important;
+}
+</style>
 <style lang="scss" scoped>
 .doc-template-designer {
     display: flex;
@@ -213,6 +239,8 @@ const handleSave = () => {
                 align-items: center;
                 border-bottom: 1px solid var(--el-border-color-lighter);
                 background: var(--el-bg-color);
+                position: relative;
+                z-index: 100;
                 .doc-toolbar {
                     flex: 1;
                     border-bottom: none;

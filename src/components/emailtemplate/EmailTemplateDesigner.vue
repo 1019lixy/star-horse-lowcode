@@ -219,6 +219,15 @@ const handleSave = () => {
 </template>
 
 <style src="@wangeditor/editor/dist/css/style.css"></style>
+<style lang="scss">
+/* wangEditor 下拉菜单 z-index 提升，避免被 el-splitter-panel 遮挡 */
+.w-e-toolbar .w-e-menu-tooltip-v5,
+.w-e-toolbar .w-e-drop-panel,
+.w-e-toolbar .w-e-modal,
+.w-e-bar-item .w-e-drop-panel {
+    z-index: 10000 !important;
+}
+</style>
 <style lang="scss" scoped>
 .email-template-designer {
     display: flex;
@@ -270,6 +279,8 @@ const handleSave = () => {
                 align-items: center;
                 border-bottom: 1px solid var(--el-border-color-lighter);
                 background: var(--el-bg-color);
+                position: relative;
+                z-index: 100;
                 .email-toolbar {
                     flex: 1;
                     border-bottom: none;

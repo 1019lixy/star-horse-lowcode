@@ -1,7 +1,8 @@
 <script setup lang="ts" name="EmailVariablePanel">
 import { i18n } from "@/lang";
+import { ShSvgIcon } from "@/components/shared";
 import type { EmailTemplateDesigner } from "../composables/useEmailTemplateDesigner";
-import {DocumentAdd} from "@element-plus/icons-vue";
+import { EMAIL_VARIABLE_TYPE_PRESETS } from "../constants";
 
 const props = defineProps<{
     designer: EmailTemplateDesigner;
@@ -13,14 +14,17 @@ const emit = defineEmits<{
     (e: "edit", varId: string): void;
     (e: "add"): void;
 }>();
+
+const getTypeLabel = (type: string) =>
+    EMAIL_VARIABLE_TYPE_PRESETS.find((t) => t.value === type)?.label ?? type;
 </script>
 
 <template>
     <div class="email-variable-panel">
         <div class="panel-header">
             <span>{{ i18n("emailtemplate.variable.title") }}</span>
-            <el-button  text :disabled="readonly" @click="emit('add')">
-                <el-icon><Plus/></el-icon>
+            <el-button text :disabled="readonly" @click="emit('add')">
+                <ShSvgIcon name="plus" size="14px" />
             </el-button>
         </div>
         <div class="panel-body">
@@ -32,18 +36,21 @@ const emit = defineEmits<{
                 @click="designer.selectVariable(v.id)"
             >
                 <div class="var-info">
-                    <div class="var-label">{{ v.label }}</div>
-                    <el-tag >${{ v.name }}</el-tag>
+                    <div class="var-label">{{ v.label || v.name }}</div>
+                    <div class="var-meta">
+                        <el-tag size="small">${{ v.name }}</el-tag>
+                        <el-tag size="small" type="info">{{ getTypeLabel(v.type) }}</el-tag>
+                    </div>
                 </div>
                 <div class="var-actions" v-if="!readonly">
-                    <el-button  text @click.stop="emit('insert', v.name)">
-                        <el-icon><DocumentAdd/></el-icon>
+                    <el-button text size="small" @click.stop="emit('insert', v.name)">
+                        <ShSvgIcon name="plus" size="12px" />
                     </el-button>
-                    <el-button  text @click.stop="emit('edit', v.id)">
-                        <el-icon><Edit/></el-icon>
+                    <el-button text size="small" @click.stop="emit('edit', v.id)">
+                        <ShSvgIcon name="edit" size="12px" />
                     </el-button>
-                    <el-button  text @click.stop="designer.removeVariable(v.id)">
-                        <el-icon><Delete/></el-icon>
+                    <el-button text size="small" type="danger" @click.stop="designer.removeVariable(v.id)">
+                        <ShSvgIcon name="delete" size="12px" />
                     </el-button>
                 </div>
             </div>
@@ -53,11 +60,6 @@ const emit = defineEmits<{
         </div>
     </div>
 </template>
-
-<script lang="ts">
-import { Plus, DocumentAdd, Edit, Delete } from "@element-plus/icons-vue";
-export default { components: { Plus, DocumentAdd, Edit, Delete } };
-</script>
 
 <style lang="scss" scoped>
 .email-variable-panel {
@@ -102,10 +104,16 @@ export default { components: { Plus, DocumentAdd, Edit, Delete } };
             display: flex;
             flex-direction: column;
             gap: 2px;
+            flex: 1;
 
             .var-label {
                 font-size: 12px;
                 font-weight: 500;
+            }
+
+            .var-meta {
+                display: flex;
+                gap: 4px;
             }
         }
 

@@ -136,6 +136,7 @@ onMounted(() => {
         :rules="rules"
         :size="compSize"
         :item="temp"
+        :source="source"
         @addRow="addRow"
         :enableSubNode="temp.enableSubNode"
         @removeRow="removeRow"

@@ -72,7 +72,7 @@ export const createTemplate = (overrides: Partial<PdfTemplate> = {}): PdfTemplat
 
 /** 创建元素工厂 */
 export const createElement = (type: PdfElementType, overrides: Partial<any> = {}) => {
-    const id = pdf__;
+    const id = `pdf_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
     const base = {
         id,
         x: 20,

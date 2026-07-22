@@ -1,39 +1,41 @@
 <script setup lang="ts" name="DtPerformanceHud">
 /**
- * 数字孪生 - 性能 HUD 浮层
+ * 数字孪生 - 性能 HUD 浮层（TresJS 重构版）
  *
  * 职责：
- *  - 订阅 engine.performance.onStats 实时显示性能指标
- *  - 显示 FPS / FrameTime / DrawCalls / Triangles / Geometries /
- *    Textures / Programs / InstancedMeshes / JS Heap
- *  - FPS 三色警示（绿 ≥55 / 黄 ≥30 / 红 <30）
+ *  - 使用 requestAnimationFrame 自行计算 FPS / FrameTime
  *  - 可折叠（折叠时仅显示 FPS）
+ *  - FPS 三色警示（绿 ≥55 / 黄 ≥30 / 红 <30）
  *
- * 注：onStats 由 DtPerformanceMonitor 内部每秒触发一次，无需额外 rAF 节流。
+ * 注：v4.0 起不再依赖 DtEngine，改为独立 rAF 计数。
  *     不使用 jQuery，纯原生 + Vue 模板。
  */
-import { ref, computed, onMounted, onBeforeUnmount, watch } from "vue";
-import type { ShallowRef } from "vue";
-import type { DtEngine } from "../core/DtEngine";
-import type { DtPerformanceStats } from "../types";
+import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import { i18n } from "@/lang";
 
 const props = defineProps<{
-    /** 引擎实例（ShallowRef） */
-    engine: ShallowRef<DtEngine | null>;
-    /** 兜底 FPS（来自父组件 onStats 同步，引擎未就绪时显示） */
+    /** 兜底 FPS（rAF 未启动时显示） */
     fps?: number;
 }>();
 
 /** 当前性能快照 */
-const stats = ref<DtPerformanceStats | null>(null);
+const stats = ref<{ fps: number; frameTime: number }>({ fps: 0, frameTime: 0 });
 /** 是否展开（默认展开） */
 const expanded = ref(true);
-/** unsubscribe onStats 函数 */
-let unsubscribe: (() => void) | null = null;
+
+/** rAF 句柄 */
+let rafId: number | null = null;
+/** 上一帧时间戳 */
+let lastTime = 0;
+/** 帧计数（每秒重置） */
+let frameCount = 0;
+/** 帧累计时间（每秒重置） */
+let frameTimeAccum = 0;
+/** 上一秒时间戳 */
+let lastFpsTime = 0;
 
 /** 当前显示的 FPS（优先用 stats，其次 props.fps 兜底） */
-const displayFps = computed(() => stats.value?.fps ?? props.fps ?? 0);
+const displayFps = computed(() => stats.value.fps || props.fps || 0);
 
 /** FPS 颜色 class */
 const fpsClass = computed(() => {
@@ -43,67 +45,50 @@ const fpsClass = computed(() => {
     return "fps-bad";
 });
 
-/** 订阅引擎性能回调 */
-const subscribe = (engine: DtEngine | null) => {
-    // 先解绑旧订阅
-    if (unsubscribe) {
-        unsubscribe();
-        unsubscribe = null;
+/** rAF 循环：计算 FPS 与帧时间 */
+const tick = (now: number): void => {
+    if (lastTime > 0) {
+        const delta = now - lastTime;
+        frameCount++;
+        frameTimeAccum += delta;
+        // 每秒结算一次
+        if (now - lastFpsTime >= 1000) {
+            const avgFrameTime = frameCount > 0 ? frameTimeAccum / frameCount : 0;
+            stats.value = {
+                fps: Math.round(frameCount * 1000 / (now - lastFpsTime)),
+                frameTime: avgFrameTime,
+            };
+            frameCount = 0;
+            frameTimeAccum = 0;
+            lastFpsTime = now;
+        }
+    } else {
+        lastFpsTime = now;
     }
-    if (!engine) {
-        stats.value = null;
-        return;
-    }
-    // 立即同步一次当前快照（避免初始 1 秒空白）
-    stats.value = { ...engine.performance.stats };
-    unsubscribe = engine.performance.onStats((s) => {
-        stats.value = { ...s };
-    });
+    lastTime = now;
+    rafId = requestAnimationFrame(tick);
 };
 
 onMounted(() => {
-    subscribe(props.engine.value);
+    rafId = requestAnimationFrame(tick);
 });
 
 onBeforeUnmount(() => {
-    if (unsubscribe) {
-        unsubscribe();
-        unsubscribe = null;
+    if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
     }
 });
 
-// 引擎实例变化时重新订阅
-watch(
-    () => props.engine.value,
-    (inst) => subscribe(inst),
-);
-
 /* ----------------------- 数值格式化 ----------------------- */
-/** 大数字缩写：1234 → 1.2K，1234567 → 1.2M */
-const formatLargeNumber = (n: number): string => {
-    if (n < 1000) return String(n);
-    if (n < 1_000_000) return `${(n / 1000).toFixed(1)}K`;
-    return `${(n / 1_000_000).toFixed(2)}M`;
-};
-
-/** 字节 → MB */
-const formatBytes = (bytes?: number): string => {
-    if (bytes === undefined) return "-";
-    return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
-};
-
 /** 帧时间 → ms */
-const formatFrameTime = (ms?: number): string => {
-    if (ms === undefined) return "-";
-    return `${ms.toFixed(2)} ms`;
-};
+const formatFrameTime = (ms: number): string => `${ms.toFixed(2)} ms`;
 
 /** 切换折叠 */
-const toggleExpand = () => {
+const toggleExpand = (): void => {
     expanded.value = !expanded.value;
 };
 
-// 阻止未使用变量告警
 void props;
 </script>
 
@@ -124,35 +109,7 @@ void props;
             </div>
             <div class="dt-perf-row">
                 <span class="dt-perf-label">{{ i18n("digitaltwin.performance.frameTime") }}</span>
-                <span class="dt-perf-value">{{ formatFrameTime(stats?.frameTime) }}</span>
-            </div>
-            <div class="dt-perf-row">
-                <span class="dt-perf-label">{{ i18n("digitaltwin.performance.drawCalls") }}</span>
-                <span class="dt-perf-value">{{ stats?.drawCalls ?? 0 }}</span>
-            </div>
-            <div class="dt-perf-row">
-                <span class="dt-perf-label">{{ i18n("digitaltwin.performance.triangles") }}</span>
-                <span class="dt-perf-value">{{ formatLargeNumber(stats?.triangles ?? 0) }}</span>
-            </div>
-            <div class="dt-perf-row">
-                <span class="dt-perf-label">{{ i18n("digitaltwin.performance.geometries") }}</span>
-                <span class="dt-perf-value">{{ stats?.geometries ?? 0 }}</span>
-            </div>
-            <div class="dt-perf-row">
-                <span class="dt-perf-label">{{ i18n("digitaltwin.performance.textures") }}</span>
-                <span class="dt-perf-value">{{ stats?.textures ?? 0 }}</span>
-            </div>
-            <div class="dt-perf-row">
-                <span class="dt-perf-label">{{ i18n("digitaltwin.performance.programs") }}</span>
-                <span class="dt-perf-value">{{ stats?.programs ?? 0 }}</span>
-            </div>
-            <div class="dt-perf-row">
-                <span class="dt-perf-label">{{ i18n("digitaltwin.performance.instancedMeshes") }}</span>
-                <span class="dt-perf-value">{{ stats?.instancedMeshes ?? 0 }}</span>
-            </div>
-            <div v-if="stats?.jsHeapSize !== undefined" class="dt-perf-row">
-                <span class="dt-perf-label">{{ i18n("digitaltwin.performance.jsHeapSize") }}</span>
-                <span class="dt-perf-value">{{ formatBytes(stats?.jsHeapSize) }}</span>
+                <span class="dt-perf-value">{{ formatFrameTime(stats.frameTime) }}</span>
             </div>
         </div>
     </div>
@@ -207,15 +164,9 @@ export default { components: { ArrowUp, ArrowDown } };
         font-weight: 700;
         font-size: 12px;
 
-        &.fps-good {
-            color: #52c41a;
-        }
-        &.fps-warn {
-            color: #faad14;
-        }
-        &.fps-bad {
-            color: #f5222d;
-        }
+        &.fps-good { color: #52c41a; }
+        &.fps-warn { color: #faad14; }
+        &.fps-bad { color: #f5222d; }
     }
 
     .dt-perf-toggle {
@@ -243,15 +194,9 @@ export default { components: { ArrowUp, ArrowDown } };
         color: rgba(255, 255, 255, 0.92);
         font-weight: 500;
 
-        &.fps-good {
-            color: #52c41a;
-        }
-        &.fps-warn {
-            color: #faad14;
-        }
-        &.fps-bad {
-            color: #f5222d;
-        }
+        &.fps-good { color: #52c41a; }
+        &.fps-warn { color: #faad14; }
+        &.fps-bad { color: #f5222d; }
     }
 }
 </style>

@@ -158,6 +158,9 @@ const kanbanData = ref<KanbanData>({
     columnWidth: 280,
   },
 });
+const saveData = (data: any) => {
+  console.log(data);
+};
 </script>
 
 <template>
@@ -166,7 +169,7 @@ const kanbanData = ref<KanbanData>({
     <p>敏捷开发看板组件，支持多列卡片流转、WIP
       限制、拖拽排序、优先级、标签、负责人等。适用于任务管理、需求流转、状态跟踪等场景。</p>
     <div class="demo-canvas">
-      <KanbanBoard :initial-kanban="kanbanData"/>
+      <KanbanBoard :initial-kanban="kanbanData" @save="saveData"/>
     </div>
   </div>
 </template>

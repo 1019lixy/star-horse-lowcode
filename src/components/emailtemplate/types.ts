@@ -2,11 +2,15 @@
  * 邮件模板类型定义
  */
 
+/** 变量类型 */
+export type EmailVariableType = "string" | "number" | "date" | "boolean" | "select";
+
 /** 邮件变量 */
 export interface EmailVariable {
     id: string;
     name: string;
     label: string;
+    type?: EmailVariableType;
     defaultValue?: string;
     description?: string;
 }

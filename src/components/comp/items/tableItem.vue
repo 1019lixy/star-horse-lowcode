@@ -76,6 +76,7 @@ onMounted(() => {
       v-for="(temp, key) in item?.[batchFieldName]"
       :key="compKey(temp, key)"
   >
+
     <star-horse-form-table
         :size="compSize"
         :rules="rules"

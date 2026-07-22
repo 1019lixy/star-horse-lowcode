@@ -54,4 +54,6 @@ export interface DocTemplate {
 export interface DocTemplateCategoryPreset {
     value: string;
     label: string;
+    /** 分类对应的预设模板骨架内容 */
+    template?: string;
 }

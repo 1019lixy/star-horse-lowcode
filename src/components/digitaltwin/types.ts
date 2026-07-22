@@ -13,8 +13,66 @@ export type DtEntityStatus = "normal" | "warning" | "alarm" | "offline";
 /** 视角预设 */
 export type DtViewPreset = "top" | "front" | "side" | "iso";
 
-/** 3D 视角预设（DtSceneViewport 专用，与 DtViewPreset 等价） */
-export type DtViewPreset3D = DtViewPreset;
+/** 3D 视角预设（DtSceneViewport 专用，扩展 back/bottom） */
+export type DtViewPreset3D = DtViewPreset | "back" | "bottom";
+
+/** 节点 transform（位置/旋转/缩放，数组形式） */
+export type DtNodeTransform = {
+    position: [number, number, number];
+    rotation: [number, number, number];
+    scale: [number, number, number];
+};
+
+/** 场景节点（对应 Object3D） */
+export interface DtModelNode {
+    id: string;
+    name: string;
+    path: string;
+    object3D: import("three").Object3D;
+}
+
+/** 场景资产（多场景管理） */
+export interface DtSceneAsset {
+    id: string;
+    name: string;
+    root: import("three").Object3D;
+    background?: number | string;
+    fog?: import("three").Fog | null;
+    metadata?: Record<string, any>;
+}
+
+/** 相机模式 */
+export type DtCameraMode = "orbit" | "first-person" | "inspection" | "fixed";
+
+/** 相机状态（持久化用） */
+export interface DtCameraState {
+    mode: DtCameraMode;
+    position: [number, number, number];
+    target: [number, number, number];
+    fov: number;
+    near: number;
+    far: number;
+}
+
+/** 渲染模式 */
+export type DtRenderMode = "always" | "on-demand";
+
+/** 引擎选项 */
+export interface DtEngineOptions {
+    canvas: HTMLCanvasElement;
+    container: HTMLElement;
+    fallbackToWebGL1?: boolean;
+    antialias?: boolean;
+    maxPixelRatio?: number;
+    shadowMapEnabled?: boolean;
+    enablePostProcessing?: boolean;
+    renderMode?: DtRenderMode;
+    background?: number;
+    assetBase?: string;
+    fov?: number;
+    near?: number;
+    far?: number;
+}
 
 /** 视口操作模式 */
 export type DtViewportMode = "view" | "edit" | "measure" | "annotation" | "inspection";
@@ -76,6 +134,8 @@ export interface DtEntity {
     locked?: boolean;
     /** 自定义组件标识（用于持久化自定义组件来源） */
     customComponentType?: string;
+    /** 父实体 ID（支持层级结构） */
+    parentId?: string | null;
 }
 
 /** 相机状态 */

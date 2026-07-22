@@ -153,12 +153,12 @@ defineExpose({
     </el-scrollbar>
   </div>
 </template>
-<style lang="scss" >
+<style lang="scss" scoped>
 /* 查看视图：统一通过非scoped样式穿透子组件 */
 .star-horse-data-view .data-view-mode {
 
   /* ---- 表单行：el-descriptions 风格 ---- */
-  .el-form-item {
+  :deep(.el-form-item) {
     margin-bottom: 0 !important;
     border-bottom: 1px solid var(--el-border-color-lighter);
     min-height: 40px;
@@ -166,21 +166,21 @@ defineExpose({
   }
 
   /* 隐藏校验错误提示（去掉占位的16-18px高度） */
-  .el-form-item__error {
+  :deep(.el-form-item__error) {
     display: none !important;
   }
 
-  .el-form-item.is-error {
+  :deep(.el-form-item.is-error) {
     border-color: transparent;
   }
 
   /* 去掉必填星号 */
-  .el-form-item__label::before {
+  :deep(.el-form-item__label::before) {
     display: none !important;
   }
 
   /* 标签列 */
-  .el-form-item__label {
+  :deep(.el-form-item__label) {
     background-color: var(--el-bg-color) !important;
     color: var(--el-text-color-regular) !important;
     font-weight: 500;
@@ -190,7 +190,7 @@ defineExpose({
   }
 
   /* 内容列 */
-  .el-form-item__content {
+  :deep(.el-form-item__content) {
     padding: 6px 12px;
     color: var(--el-text-color-primary);
     flex: 1;
@@ -198,132 +198,132 @@ defineExpose({
   }
 
   /* ---- 所有禁用输入类组件：保留边框，去掉灰色背景 ---- */
-  .el-input.is-disabled .el-input__wrapper,
-  .el-textarea.is-disabled .el-textarea__inner,
-  .el-select.is-disabled .el-input__wrapper,
-  .el-select__wrapper.is-disabled,
-  .el-date-editor.is-disabled .el-input__wrapper,
-  .el-range-editor.is-disabled,
-  .el-cascader.is-disabled .el-input__wrapper,
-  .el-tree-select.is-disabled .el-input__wrapper,
-  .el-input-number.is-disabled .el-input__wrapper,
-  .el-autocomplete.is-disabled .el-input__wrapper,
-  .el-input__wrapper.is-disabled .el-range-input,
-  .el-input-tag.is-disabled {
+  :deep(.el-input.is-disabled .el-input__wrapper),
+  :deep(.el-textarea.is-disabled .el-textarea__inner),
+  :deep(.el-select.is-disabled .el-input__wrapper),
+  :deep(.el-select__wrapper.is-disabled),
+  :deep(.el-date-editor.is-disabled .el-input__wrapper),
+  :deep(.el-range-editor.is-disabled),
+  :deep(.el-cascader.is-disabled .el-input__wrapper),
+  :deep(.el-tree-select.is-disabled .el-input__wrapper),
+  :deep(.el-input-number.is-disabled .el-input__wrapper),
+  :deep(.el-autocomplete.is-disabled .el-input__wrapper),
+  :deep(.el-input__wrapper.is-disabled .el-range-input),
+  :deep(.el-input-tag.is-disabled) {
     background-color: var(--el-bg-color) !important;
     box-shadow: 0 0 0 1px var(--el-border-color) inset !important;
     cursor: default;
   }
 
-  .el-input-tag.is-disabled .el-input-tag__wrapper {
+  :deep(.el-input-tag.is-disabled .el-input-tag__wrapper) {
     background-color: var(--el-bg-color) !important;
     box-shadow: none !important;
   }
 
-  .el-input-tag.is-disabled .el-input-tag__input {
+  :deep(.el-input-tag.is-disabled .el-input-tag__input) {
     color: var(--el-text-color-primary) !important;
     -webkit-text-fill-color: var(--el-text-color-primary) !important;
   }
 
   /* 文本域特殊处理 */
-  .el-textarea.is-disabled .el-textarea__inner {
+  :deep(.el-textarea.is-disabled .el-textarea__inner) {
     box-shadow: none !important;
     border: 1px solid var(--el-border-color) !important;
     padding: 5px 11px;
   }
 
   /* ---- 所有禁用输入文字颜色修正 ---- */
-  .el-input.is-disabled .el-input__inner,
-  .el-textarea.is-disabled .el-textarea__inner,
-  .el-select.is-disabled .el-input__inner,
-  .el-date-editor.is-disabled .el-input__inner,
-  .el-range-editor.is-disabled .el-range-input,
-  .el-cascader.is-disabled .el-input__inner,
-  .el-tree-select.is-disabled .el-input__inner,
-  .el-input-number.is-disabled .el-input__inner,
-  .el-autocomplete.is-disabled .el-input__inner,
-  .el-input-tag.is-disabled .el-input-tag__input,
-  .el-select__wrapper.is-disabled .el-select__selected-item {
+  :deep(.el-input.is-disabled .el-input__inner),
+  :deep(.el-textarea.is-disabled .el-textarea__inner),
+  :deep(.el-select.is-disabled .el-input__inner),
+  :deep(.el-date-editor.is-disabled .el-input__inner),
+  :deep(.el-range-editor.is-disabled .el-range-input),
+  :deep(.el-cascader.is-disabled .el-input__inner),
+  :deep(.el-tree-select.is-disabled .el-input__inner),
+  :deep(.el-input-number.is-disabled .el-input__inner),
+  :deep(.el-autocomplete.is-disabled .el-input__inner),
+  :deep(.el-input-tag.is-disabled .el-input-tag__input),
+  :deep(.el-select__wrapper.is-disabled .el-select__selected-item) {
     color: var(--el-text-color-primary) !important;
     -webkit-text-fill-color: var(--el-text-color-primary) !important;
   }
 
   /* 数字输入居中修正 */
-  .el-input-number.is-center .el-input__inner {
+  :deep(.el-input-number.is-center .el-input__inner) {
     text-align: left;
   }
 
   /* ---- 隐藏所有前缀/后缀/图标/追加 ---- */
-  .el-input__prefix,
-  .el-input__suffix,
-  .el-input__prefix-icon,
-  .el-input__validateIcon,
-  .el-input__clear,
-  .el-select__suffix,
-  .el-date-editor .el-input__prefix,
-  .el-date-editor .el-input__suffix,
-  .el-cascader .el-input__suffix,
-  .el-tree-select .el-input__suffix,
-  .el-autocomplete .el-input__suffix,
-  .el-input-group__append,
-  .el-input-group__prepend,
-  .el-range__icon,
-  .data-selector-suffix {
+  :deep(.el-input__prefix),
+   :deep(.el-input__suffix),
+   :deep(.el-input__prefix-icon),
+   :deep(.el-input__validateIcon),
+   :deep(.el-input__clear),
+   :deep(.el-select__suffix),
+   :deep(.el-date-editor .el-input__prefix),
+   :deep(.el-date-editor .el-input__suffix),
+   :deep(.el-cascader .el-input__suffix),
+   :deep(.el-tree-select .el-input__suffix),
+   :deep(.el-autocomplete .el-input__suffix),
+   :deep(.el-input-group__append),
+   :deep(.el-input-group__prepend),
+   :deep(.el-range__icon),
+   :deep(.data-selector-suffix) {
     display: none !important;
   }
 
   /* 隐藏数字步进按钮 */
-  .el-input-number__decrease,
-  .el-input-number__increase {
+  :deep(.el-input-number__decrease),
+  :deep(.el-input-number__increase) {
     display: none !important;
   }
 
   /* ---- Switch/Radio/Checkbox/Rate/Slider 禁用态修正 ---- */
-  .el-switch.is-disabled {
+  :deep(.el-switch.is-disabled) {
     opacity: 1;
   }
 
-  .el-radio.is-disabled .el-radio__label,
-  .el-checkbox.is-disabled .el-checkbox__label {
+  :deep(.el-radio.is-disabled .el-radio__label),
+  :deep(.el-checkbox.is-disabled .el-checkbox__label) {
     color: var(--el-text-color-primary);
   }
 
-  .el-rate.is-disabled,
-  .el-slider.is-disabled {
+  :deep(.el-rate.is-disabled),
+  :deep(.el-slider.is-disabled) {
     opacity: 1;
   }
 
   /* ---- Upload：隐藏上传按钮 ---- */
-  .el-upload.is-disabled .el-upload-dragger,
-  .el-upload.is-disabled .el-button {
+  :deep(.el-upload.is-disabled .el-upload-dragger),
+  :deep(.el-upload.is-disabled .el-button) {
     display: none;
   }
 
-  .el-upload.is-disabled {
+  :deep(.el-upload.is-disabled) {
     border: none;
     background: transparent;
   }
 
-  .el-upload-list__item-status-label,
-  .el-upload-list__item-delete {
+  :deep(.el-upload-list__item-status-label),
+  :deep(.el-upload-list__item-delete) {
     display: none;
   }
 
   /* ---- Tag 禁用态修正 ---- */
-  .el-tag.is-disabled {
+  :deep(.el-tag.is-disabled) {
     opacity: 1;
     color: var(--el-text-color-primary);
   }
 }
 
 /* 移动端标签无边框 */
-.star-horse-app .data-view-mode .el-form-item__label {
+:deep(.star-horse-app .data-view-mode .el-form-item__label) {
   border-right: none !important;
 }
-.el-input__wrapper{
+:deep(.el-input__wrapper){
   padding: 0 !important;
 }
-.el-icon{
+:deep(.el-icon){
   display: none;
 }
 </style>

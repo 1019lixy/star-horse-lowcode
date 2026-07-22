@@ -10,6 +10,8 @@ import fs from "fs";
 //生产types文件插件
 import dts from "vite-plugin-dts";
 import {execSync} from "child_process";
+// TresJS 模板编译器选项（让 Vue 编译器识别 Tres 前缀标签）
+import { templateCompilerOptions } from "@tresjs/core";
 // import {copy} from "vite-plugin-copy";
 // https://vitejs.dev/config/
 const baseHost: string = "http://localhost:7719/";
@@ -61,8 +63,10 @@ export default defineConfig((mode) => {
             },
         );
     }
-    // 数字孪生 3D 引擎 Three.js 预构建（dev 与 prod 均需要）
+    // 数字孪生 3D 引擎 Three.js + TresJS 预构建（dev 与 prod 均需要）
     optimizeDepsList.push("three");
+    optimizeDepsList.push("@tresjs/core");
+    optimizeDepsList.push("@tresjs/cientos");
     return {
         base: "/",
         server: {
@@ -108,6 +112,15 @@ export default defineConfig((mode) => {
                 script: {
                     // 开启 defineModel
                     defineModel: true,
+                },
+                // TresJS：让 Vue 编译器识别 Tres* 标签
+                // 使用 TresJS 官方 templateCompilerOptions（已包含白名单逻辑，
+                // TresCanvas 等组件不会被当作自定义元素）
+                template: {
+                    compilerOptions: {
+                        isCustomElement: (tag: string) =>
+                            templateCompilerOptions.template.compilerOptions.isCustomElement(tag),
+                    },
                 },
             }),
           /*  copy({
@@ -276,6 +289,8 @@ export default defineConfig((mode) => {
                     "markdown-it",
                     "camelcase",
                     "three",
+                    "@tresjs/core",
+                    "@tresjs/cientos",
                     "sample/**/*",
                 ],
                 output: {

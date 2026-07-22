@@ -1,508 +1,284 @@
 <script setup lang="ts" name="DtPropertyPanel">
 /**
- * 数字孪生 - 右侧属性面板
+ * 数字孪生 - 属性面板
  *
- * 实体属性 + 传感器数据 + 状态切换 + 模型实例参数化编辑 + 动画 + 数据绑定
+ * 信号驱动：监听 objectSelected/objectChanged 自动更新表单
+ * 表单变化 → 实时更新 DtEntity → 派发 objectChanged 信号 → 视口自动同步
  */
-import { computed, ref } from "vue";
-import { i18n } from "@/lang";
-import { ElMessage, ElMessageBox } from "element-plus";
-import { DT_STATUS_PRESETS, dtGetEntityTypePreset, dtGetStatusPreset } from "../constants";
-import { dtFindModelPreset } from "../modelLibrary";
-import type { DtAnimationType, DtBindingSourceType, DtDataBinding, DtEntityStatus, DtModelInstance } from "../types";
-import type { UseDigitalTwinDesignerReturn } from "../composables/useDigitalTwinDesigner";
-import type { UseDigitalTwinTelemetryReturn } from "../composables/useDigitalTwinTelemetry";
-
-const props = defineProps<{
-    designer: UseDigitalTwinDesignerReturn;
-    telemetry: UseDigitalTwinTelemetryReturn;
-}>();
+import { ref } from "vue";
+import { ShSvgIcon } from "@/components/shared";
+import { dtApp, useAddSignal, useDispatchSignal, SIGNAL_NAMES } from "../core/DtApp";
+import { DT_ENTITY_TYPE_PRESETS, DT_STATUS_PRESETS } from "../constants";
+import type { DtEntity, DtEntityStatus, DtPoint3D, DtSize3D } from "../types";
 
 const emit = defineEmits<{
-    (e: "edit-binding", entityId: string, binding: DtDataBinding | null): void;
-    (e: "entity-updated", id: string): void;
+    (e: "edit-entity", id: string): void;
 }>();
 
-const designer = props.designer;
-const telemetry = props.telemetry;
+/* ----------------------- 当前实体 ----------------------- */
+const currentEntity = ref<DtEntity | null>(null);
 
-const entity = computed(() => designer.selectedEntity.value);
-const modelInstance = computed<DtModelInstance | null>(() => {
-    const e = entity.value;
-    if (!e) return null;
-    return (e as DtModelInstance).modelType ? (e as DtModelInstance) : null;
-});
-const modelPreset = computed(() => (modelInstance.value ? dtFindModelPreset(modelInstance.value.modelType) : null));
-const bindings = ref<DtDataBinding[]>([]);
-
-const entityMetrics = computed(() => {
-    if (!entity.value) return [];
-    return telemetry.getEntityMetrics(entity.value);
+useAddSignal(SIGNAL_NAMES.objectSelected, (entity: DtEntity | null) => {
+    currentEntity.value = entity ? { ...entity } : null;
 });
 
-const entityTypeLabel = (type: string): string => {
-    const preset = dtGetEntityTypePreset(type);
-    return preset ? i18n(preset.labelKey as any) : type;
-};
-
-const handleStatusChange = (status: DtEntityStatus): void => {
-    if (!entity.value) return;
-    designer.updateEntityWithHistory(entity.value.id, { status });
-};
-
-const statusColor = (status: DtEntityStatus): string => dtGetStatusPreset(status)?.color ?? "#8C8C8C";
-
-/** 名称 / 颜色 字段更新（基础字段） */
-const handleFieldUpdate = (field: "name" | "color", value: string): void => {
-    if (!entity.value) return;
-    designer.updateEntity(entity.value.id, { [field]: value } as any);
-    emit("entity-updated", entity.value.id);
-};
-
-/** 位置字段更新（实时拖拽用，不推栈；由父组件在拖拽结束时 commitUpdate） */
-const handlePositionUpdate = (axis: "x" | "y" | "z", value: number): void => {
-    if (!entity.value) return;
-    designer.updateEntity(entity.value.id, {
-        position: { ...entity.value.position, [axis]: value },
-    });
-    emit("entity-updated", entity.value.id);
-};
-
-/** 位置字段失焦时提交历史 */
-const handlePositionCommit = (): void => {
-    designer.commitUpdate();
-};
-
-/** 尺寸字段更新（实时） */
-const handleSizeUpdate = (field: "width" | "height" | "depth" | "radius", value: number): void => {
-    if (!entity.value) return;
-    designer.updateEntity(entity.value.id, {
-        size: { ...entity.value.size, [field]: value },
-    });
-    emit("entity-updated", entity.value.id);
-};
-
-/** 尺寸字段失焦时提交历史 */
-const handleSizeCommit = (): void => {
-    designer.commitUpdate();
-};
-
-/** 名称/颜色字段失焦时提交历史 */
-const handleFieldCommit = (): void => {
-    designer.commitUpdate();
-};
-
-/** 模型实例参数变更 */
-const handleParamChange = (name: string, value: any): void => {
-    if (!modelInstance.value) return;
-    const newValues = { ...modelInstance.value.parameterValues, [name]: value };
-    designer.updateEntityWithHistory(modelInstance.value.id, { parameterValues: newValues } as any);
-};
-
-/** 动画类型变更 */
-const handleAnimationTypeChange = (type: DtAnimationType | ""): void => {
-    if (!modelInstance.value || !modelPreset.value) return;
-    if (type === "") {
-        designer.updateEntityWithHistory(modelInstance.value.id, { animation: undefined } as any);
-        return;
+useAddSignal(SIGNAL_NAMES.objectChanged, (entity: DtEntity) => {
+    if (currentEntity.value?.id === entity.id) {
+        currentEntity.value = { ...entity };
     }
-    const baseAnim = modelPreset.value.defaultAnimation ?? { type, speed: 180 };
-    designer.updateEntityWithHistory(modelInstance.value.id, { animation: { ...baseAnim, type } } as any);
+});
+
+useAddSignal(SIGNAL_NAMES.objectDeselected, () => {
+    currentEntity.value = null;
+});
+
+/* ----------------------- 表单双向绑定（直接写回 DtEntity） ----------------------- */
+const updatePosition = (key: keyof DtPoint3D, value: number): void => {
+    if (!currentEntity.value) return;
+    const entity = dtApp.findEntity(currentEntity.value.id);
+    if (!entity) return;
+    entity.position[key] = value;
+    currentEntity.value.position[key] = value;
+    useDispatchSignal(SIGNAL_NAMES.objectChanged, entity);
 };
 
-/** 动画速度变更 */
-const handleAnimationSpeedChange = (speed: number): void => {
-    if (!modelInstance.value) return;
-    const current = modelInstance.value.animation ?? modelPreset.value?.defaultAnimation;
-    if (!current) return;
-    designer.updateEntityWithHistory(modelInstance.value.id, { animation: { ...current, speed } } as any);
+const updateSize = (key: keyof DtSize3D, value: number): void => {
+    if (!currentEntity.value) return;
+    const entity = dtApp.findEntity(currentEntity.value.id);
+    if (!entity) return;
+    entity.size[key] = value;
+    currentEntity.value.size[key] = value;
+    useDispatchSignal(SIGNAL_NAMES.objectChanged, entity);
 };
 
-/** 新增绑定 */
-const handleAddBinding = (): void => {
-    if (!entity.value) return;
-    emit("edit-binding", entity.value.id, null);
+const updateName = (value: string): void => {
+    if (!currentEntity.value) return;
+    const entity = dtApp.findEntity(currentEntity.value.id);
+    if (!entity) return;
+    entity.name = value;
+    currentEntity.value.name = value;
+    useDispatchSignal(SIGNAL_NAMES.objectChanged, entity);
 };
 
-/** 编辑绑定 */
-const handleEditBinding = (binding: DtDataBinding): void => {
-    if (!entity.value) return;
-    emit("edit-binding", entity.value.id, binding);
+const updateColor = (value: string): void => {
+    if (!currentEntity.value) return;
+    const entity = dtApp.findEntity(currentEntity.value.id);
+    if (!entity) return;
+    entity.color = value;
+    currentEntity.value.color = value;
+    useDispatchSignal(SIGNAL_NAMES.objectChanged, entity);
 };
 
-/** 删除绑定 */
-const handleDeleteBinding = (binding: DtDataBinding): void => {
-    ElMessageBox.confirm(i18n("digitaltwin.binding.confirmDelete"), i18n("digitaltwin.binding.delete"), {
-        type: "warning",
-    })
-        .then(() => {
-            bindings.value = bindings.value.filter((b) => b.id !== binding.id);
-            if (modelInstance.value) {
-                designer.updateEntity(modelInstance.value.id, {
-                    bindings: bindings.value,
-                } as any);
-            }
-            ElMessage.success(i18n("digitaltwin.message.bindingDeleted"));
-        })
-        .catch(() => {});
+const updateStatus = (value: DtEntityStatus): void => {
+    if (!currentEntity.value) return;
+    const entity = dtApp.findEntity(currentEntity.value.id);
+    if (!entity) return;
+    entity.status = value;
+    currentEntity.value.status = value;
+    useDispatchSignal(SIGNAL_NAMES.objectChanged, entity);
 };
 
-const animationTypeOptions: { value: DtAnimationType | ""; labelKey: string }[] = [
-    { value: "", labelKey: "digitaltwin.animation.disabled" },
-    { value: "rotation", labelKey: "digitaltwin.animation.rotation" },
-    { value: "translation", labelKey: "digitaltwin.animation.translation" },
-    { value: "blink", labelKey: "digitaltwin.animation.blink" },
-    { value: "color", labelKey: "digitaltwin.animation.color" },
-];
+const updateVisible = (value: boolean): void => {
+    if (!currentEntity.value) return;
+    const entity = dtApp.findEntity(currentEntity.value.id);
+    if (!entity) return;
+    entity.visible = value;
+    currentEntity.value.visible = value;
+    useDispatchSignal(SIGNAL_NAMES.objectChanged, entity);
+};
 
-const sourceTypeLabel = (s: DtBindingSourceType): string =>
-    i18n(`digitaltwin.binding.sourceType.${s}` as any);
-
-// 同步外部传入的绑定（当 dialog 保存后回传时由父组件更新 entity.bindings，这里同步刷新本地视图）
-const syncBindings = (): void => {
-    if (modelInstance.value?.bindings) {
-        bindings.value = [...modelInstance.value.bindings];
+const updateLocked = (value: boolean): void => {
+    if (!currentEntity.value) return;
+    if (value) {
+        dtApp.lock(currentEntity.value.id);
     } else {
-        bindings.value = [];
+        dtApp.unlock(currentEntity.value.id);
     }
 };
-// 监听 entity 变化时同步绑定列表（用 computed 触发即可）
-const _bindingTrigger = computed(() => {
-    void modelInstance.value?.bindings;
-    syncBindings();
-    return entity.value;
-});
-void _bindingTrigger;
 
-/** 内联 SVG 图标（替代 Element Plus 图标，减少依赖） */
-const icons: Record<string, string> = {
-    plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>',
-    edit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
-    delete: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M5 6v14a2 2 0 002 2h10a2 2 0 002-2V6M10 11v6M14 11v6"/></svg>'
-};
+/* ----------------------- 类型选项 ----------------------- */
+const typeOptions = DT_ENTITY_TYPE_PRESETS.map((p) => ({
+    label: p.type,
+    value: p.type,
+}));
+
+const statusOptions = DT_STATUS_PRESETS.map((s) => ({
+    label: s.status,
+    value: s.status,
+    color: s.color,
+}));
 </script>
 
 <template>
     <div class="dt-property-panel">
         <div class="panel-header">
-            <span class="panel-title">{{ i18n("digitaltwin.property.title") }}</span>
+            <span class="panel-title">属性面板</span>
         </div>
 
-        <div class="panel-body">
-            <template v-if="!entity">
-                <div class="empty-text">{{ i18n("digitaltwin.property.empty") }}</div>
-            </template>
-            <template v-else>
-                <!-- 基本信息 -->
-                <div class="section">
-                    <div class="section-title">{{ i18n("digitaltwin.dialog.basic") }}</div>
-                    <div class="prop-row">
-                        <span class="prop-label">{{ i18n("digitaltwin.entity.name") }}</span>
-                        <el-input
-                            :model-value="entity.name"
-                            size="small"
-                            style="width: 140px"
-                            @update:model-value="(v) => handleFieldUpdate('name', v)"
-                            @blur="handleFieldCommit"
-                            @keyup.enter="handleFieldCommit"
+        <div class="panel-body" v-if="currentEntity">
+            <!-- 基本信息 -->
+            <div class="section">
+                <div class="section-title">基本信息</div>
+                <div class="form-row">
+                    <label>名称</label>
+                    <el-input
+                        :model-value="currentEntity.name"
+                        size="small"
+                        @update:model-value="updateName"
+                    />
+                </div>
+                <div class="form-row">
+                    <label>类型</label>
+                    <el-select :model-value="currentEntity.type" size="small" disabled>
+                        <el-option
+                            v-for="t in typeOptions"
+                            :key="t.value"
+                            :label="t.label"
+                            :value="t.value"
                         />
-                    </div>
-                    <div class="prop-row">
-                        <span class="prop-label">{{ i18n("digitaltwin.entity.type") }}</span>
-                        <span class="prop-value">{{ entityTypeLabel(entity.type) }}</span>
-                    </div>
-                    <div class="prop-row">
-                        <span class="prop-label">{{ i18n("digitaltwin.entity.status") }}</span>
-                        <span class="prop-value">
-                            <el-select
-                                :model-value="entity.status"
-
-                                style="width: 120px"
-                                @update:model-value="(v) => handleStatusChange(v as DtEntityStatus)"
-                            >
-                                <el-option
-                                    v-for="s in DT_STATUS_PRESETS"
-                                    :key="s.status"
-                                    :label="i18n(s.labelKey as any)"
-                                    :value="s.status"
-                                />
-                            </el-select>
-                        </span>
-                    </div>
-                    <div class="prop-row">
-                        <span class="prop-label">{{ i18n("digitaltwin.entity.color") }}</span>
-                        <span class="prop-value">
-                            <el-color-picker
-                                :model-value="entity.color"
-                                size="small"
-                                @update:model-value="(v) => v && handleFieldUpdate('color', v)"
-                                @change="handleFieldCommit"
-                            />
-                        </span>
-                    </div>
+                    </el-select>
                 </div>
-
-                <!-- 位置 -->
-                <div class="section">
-                    <div class="section-title">{{ i18n("digitaltwin.entity.position") }}</div>
-                    <div class="prop-row">
-                        <span class="prop-label">{{ i18n("digitaltwin.entity.x") }}</span>
-                        <el-input-number
-                            :model-value="entity.position.x"
-                            size="small"
-                            :step="10"
-                            style="width: 120px"
-                            @update:model-value="(v) => handlePositionUpdate('x', v ?? 0)"
-                            @change="handlePositionCommit"
-                        />
-                    </div>
-                    <div class="prop-row">
-                        <span class="prop-label">{{ i18n("digitaltwin.entity.y") }}</span>
-                        <el-input-number
-                            :model-value="entity.position.y"
-                            size="small"
-                            :step="10"
-                            style="width: 120px"
-                            @update:model-value="(v) => handlePositionUpdate('y', v ?? 0)"
-                            @change="handlePositionCommit"
-                        />
-                    </div>
-                    <div class="prop-row">
-                        <span class="prop-label">{{ i18n("digitaltwin.entity.z") }}</span>
-                        <el-input-number
-                            :model-value="entity.position.z"
-                            size="small"
-                            :step="10"
-                            style="width: 120px"
-                            @update:model-value="(v) => handlePositionUpdate('z', v ?? 0)"
-                            @change="handlePositionCommit"
-                        />
-                    </div>
-                </div>
-
-                <!-- 尺寸 -->
-                <div class="section">
-                    <div class="section-title">{{ i18n("digitaltwin.entity.size") }}</div>
-                    <template v-if="entity.type === 'cube' || entity.type === 'plane'">
-                        <div class="prop-row">
-                            <span class="prop-label">{{ i18n("digitaltwin.entity.width") }}</span>
-                            <el-input-number
-                                :model-value="entity.size.width"
-                                size="small"
-                                :step="5"
-                                :min="1"
-                                style="width: 120px"
-                                @update:model-value="(v) => handleSizeUpdate('width', v ?? 1)"
-                                @change="handleSizeCommit"
-                            />
-                        </div>
-                        <div class="prop-row" v-if="entity.type === 'cube'">
-                            <span class="prop-label">{{ i18n("digitaltwin.entity.height") }}</span>
-                            <el-input-number
-                                :model-value="entity.size.height"
-                                size="small"
-                                :step="5"
-                                :min="1"
-                                style="width: 120px"
-                                @update:model-value="(v) => handleSizeUpdate('height', v ?? 1)"
-                                @change="handleSizeCommit"
-                            />
-                        </div>
-                        <div class="prop-row">
-                            <span class="prop-label">{{ i18n("digitaltwin.entity.depth") }}</span>
-                            <el-input-number
-                                :model-value="entity.size.depth"
-                                size="small"
-                                :step="5"
-                                :min="1"
-                                style="width: 120px"
-                                @update:model-value="(v) => handleSizeUpdate('depth', v ?? 1)"
-                                @change="handleSizeCommit"
-                            />
-                        </div>
-                    </template>
-                    <template v-else-if="entity.type === 'cylinder'">
-                        <div class="prop-row">
-                            <span class="prop-label">{{ i18n("digitaltwin.entity.radius") }}</span>
-                            <el-input-number
-                                :model-value="entity.size.radius"
-                                size="small"
-                                :step="5"
-                                :min="1"
-                                style="width: 120px"
-                                @update:model-value="(v) => handleSizeUpdate('radius', v ?? 1)"
-                                @change="handleSizeCommit"
-                            />
-                        </div>
-                        <div class="prop-row">
-                            <span class="prop-label">{{ i18n("digitaltwin.entity.height") }}</span>
-                            <el-input-number
-                                :model-value="entity.size.height"
-                                size="small"
-                                :step="5"
-                                :min="1"
-                                style="width: 120px"
-                                @update:model-value="(v) => handleSizeUpdate('height', v ?? 1)"
-                                @change="handleSizeCommit"
-                            />
-                        </div>
-                    </template>
-                    <template v-else-if="entity.type === 'sphere'">
-                        <div class="prop-row">
-                            <span class="prop-label">{{ i18n("digitaltwin.entity.radius") }}</span>
-                            <el-input-number
-                                :model-value="entity.size.radius"
-                                size="small"
-                                :step="5"
-                                :min="1"
-                                style="width: 120px"
-                                @update:model-value="(v) => handleSizeUpdate('radius', v ?? 1)"
-                                @change="handleSizeCommit"
-                            />
-                        </div>
-                    </template>
-                </div>
-
-                <!-- 传感器数据 -->
-                <div class="section">
-                    <div class="section-title">{{ i18n("digitaltwin.property.metrics") }}</div>
-                    <template v-if="entityMetrics.length === 0">
-                        <div class="empty-text small">-</div>
-                    </template>
-                    <div v-for="m in entityMetrics" :key="m.key" class="prop-row">
-                        <span class="prop-label">{{ i18n(m.labelKey as any) }}</span>
-                        <span class="prop-value">
-                            {{ m.value.toFixed(2) }} {{ i18n(m.unitKey as any) }}
-                        </span>
-                    </div>
-                </div>
-
-                <!-- 状态指示 -->
-                <div class="section">
-                    <div class="section-title">{{ i18n("digitaltwin.entity.status") }}</div>
-                    <div class="status-indicator">
-                        <span class="status-dot" :style="{ background: statusColor(entity.status as DtEntityStatus) }" />
-                        {{ i18n(dtGetStatusPreset(entity.status as DtEntityStatus)?.labelKey as any) }}
-                    </div>
-                </div>
-
-                <!-- 模型实例专属：参数化编辑 -->
-                <template v-if="modelInstance && modelPreset">
-                    <div class="section">
-                        <div class="section-title">{{ i18n("digitaltwin.library.title") }}</div>
-                        <div class="prop-row">
-                            <span class="prop-label">{{ i18n("digitaltwin.entity.type") }}</span>
-                            <span class="prop-value">{{ i18n(modelPreset.labelKey as any) }}</span>
-                        </div>
-                        <div
-                            v-for="param in modelPreset.parameters"
-                            :key="param.name"
-                            class="prop-row"
+                <div class="form-row">
+                    <label>状态</label>
+                    <el-select
+                        :model-value="currentEntity.status"
+                        size="small"
+                        @update:model-value="updateStatus"
+                    >
+                        <el-option
+                            v-for="s in statusOptions"
+                            :key="s.value"
+                            :label="s.label"
+                            :value="s.value"
                         >
-                            <span class="prop-label">{{ i18n(param.labelKey as any) }}</span>
-                            <span class="prop-value">
-                                <el-input-number
-                                    v-if="param.type === 'number'"
-                                    :model-value="modelInstance.parameterValues[param.name] ?? param.default"
-                                    size="small"
-                                    style="width: 120px"
-                                    @update:model-value="(v) => handleParamChange(param.name, v)"
-                                />
-                                <el-select
-                                    v-else-if="param.type === 'select'"
-                                    :model-value="modelInstance.parameterValues[param.name] ?? param.default"
-                                    size="small"
-                                    style="width: 120px"
-                                    @update:model-value="(v) => handleParamChange(param.name, v)"
-                                >
-                                    <el-option
-                                        v-for="opt in param.options ?? []"
-                                        :key="opt.value"
-                                        :label="opt.label"
-                                        :value="opt.value"
-                                    />
-                                </el-select>
-                                <el-input
-                                    v-else
-                                    :model-value="modelInstance.parameterValues[param.name] ?? param.default"
-                                    size="small"
-                                    style="width: 120px"
-                                    @update:model-value="(v) => handleParamChange(param.name, v)"
-                                />
-                                <span v-if="param.unitKey" class="unit-text">{{ i18n(param.unitKey as any) }}</span>
+                            <span class="status-option">
+                                <span class="status-dot" :style="{ background: s.color }" />
+                                {{ s.label }}
                             </span>
-                        </div>
-                    </div>
+                        </el-option>
+                    </el-select>
+                </div>
+                <div class="form-row">
+                    <label>颜色</label>
+                    <el-color-picker
+                        :model-value="currentEntity.color"
+                        size="small"
+                        @update:model-value="updateColor"
+                    />
+                </div>
+            </div>
 
-                    <!-- 动画配置 -->
-                    <div class="section">
-                        <div class="section-title">{{ i18n("digitaltwin.animation.title") }}</div>
-                        <div class="prop-row">
-                            <span class="prop-label">{{ i18n("digitaltwin.animation.type") }}</span>
-                            <span class="prop-value">
-                                <el-select
-                                    :model-value="modelInstance.animation?.type ?? (modelPreset.defaultAnimation?.type ?? '')"
-                                    size="small"
-                                    style="width: 120px"
-                                    @update:model-value="(v) => handleAnimationTypeChange(v as DtAnimationType | '')"
-                                >
-                                    <el-option
-                                        v-for="opt in animationTypeOptions"
-                                        :key="opt.value"
-                                        :label="i18n(opt.labelKey as any)"
-                                        :value="opt.value"
-                                    />
-                                </el-select>
-                            </span>
-                        </div>
-                        <div v-if="(modelInstance.animation ?? modelPreset.defaultAnimation)" class="prop-row">
-                            <span class="prop-label">{{ i18n("digitaltwin.animation.speed") }}</span>
-                            <span class="prop-value">
-                                <el-input-number
-                                    :model-value="(modelInstance.animation ?? modelPreset.defaultAnimation)?.speed ?? 180"
-                                    :min="0"
-                                    :step="30"
-                                    size="small"
-                                    style="width: 120px"
-                                    @update:model-value="(v) => handleAnimationSpeedChange(v)"
-                                />
-                            </span>
-                        </div>
-                    </div>
+            <!-- 位置 -->
+            <div class="section">
+                <div class="section-title">位置</div>
+                <div class="form-row">
+                    <label>X</label>
+                    <el-input-number
+                        :model-value="currentEntity.position.x"
+                        size="small"
+                        :step="10"
+                        @update:model-value="(v: number) => updatePosition('x', v)"
+                    />
+                </div>
+                <div class="form-row">
+                    <label>Y</label>
+                    <el-input-number
+                        :model-value="currentEntity.position.y"
+                        size="small"
+                        :step="10"
+                        @update:model-value="(v: number) => updatePosition('y', v)"
+                    />
+                </div>
+                <div class="form-row">
+                    <label>Z</label>
+                    <el-input-number
+                        :model-value="currentEntity.position.z"
+                        size="small"
+                        :step="10"
+                        @update:model-value="(v: number) => updatePosition('z', v)"
+                    />
+                </div>
+            </div>
 
-                    <!-- 数据绑定 -->
-                    <div class="section">
-                        <div class="section-title">
-                            {{ i18n("digitaltwin.binding.title") }}
-                            <el-button size="small" type="primary" link @click="handleAddBinding">
-                                <span class="svg-icon" v-html="icons.plus"></span>
-                                {{ i18n("digitaltwin.binding.add") }}
-                            </el-button>
-                        </div>
-                        <template v-if="bindings.length === 0">
-                            <div class="empty-text small">{{ i18n("digitaltwin.binding.empty") }}</div>
-                        </template>
-                        <div
-                            v-for="b in bindings"
-                            :key="b.id"
-                            class="binding-item"
-                        >
-                            <div class="binding-name">{{ b.name }}</div>
-                            <div class="binding-meta">{{ sourceTypeLabel(b.source) }} · {{ b.targetProperty }}</div>
-                            <div class="binding-actions">
-                                <el-button size="small" link @click="handleEditBinding(b)">
-                                    <span class="svg-icon" v-html="icons.edit"></span>
-                                    {{ i18n("digitaltwin.binding.edit") }}
-                                </el-button>
-                                <el-button size="small" link type="danger" @click="handleDeleteBinding(b)">
-                                    <span class="svg-icon" v-html="icons.delete"></span>
-                                    {{ i18n("digitaltwin.binding.delete") }}
-                                </el-button>
-                            </div>
-                        </div>
-                    </div>
-                </template>
-            </template>
+            <!-- 尺寸 -->
+            <div class="section">
+                <div class="section-title">尺寸</div>
+                <div class="form-row" v-if="currentEntity.type === 'cube' || currentEntity.type === 'plane'">
+                    <label>宽度</label>
+                    <el-input-number
+                        :model-value="currentEntity.size.width"
+                        size="small"
+                        :step="10"
+                        :min="0"
+                        @update:model-value="(v: number) => updateSize('width', v)"
+                    />
+                </div>
+                <div class="form-row" v-if="currentEntity.type === 'cube' || currentEntity.type === 'cylinder'">
+                    <label>高度</label>
+                    <el-input-number
+                        :model-value="currentEntity.size.height"
+                        size="small"
+                        :step="10"
+                        :min="0"
+                        @update:model-value="(v: number) => updateSize('height', v)"
+                    />
+                </div>
+                <div class="form-row" v-if="currentEntity.type === 'cube' || currentEntity.type === 'plane'">
+                    <label>深度</label>
+                    <el-input-number
+                        :model-value="currentEntity.size.depth"
+                        size="small"
+                        :step="10"
+                        :min="0"
+                        @update:model-value="(v: number) => updateSize('depth', v)"
+                    />
+                </div>
+                <div class="form-row" v-if="currentEntity.type === 'cylinder' || currentEntity.type === 'sphere'">
+                    <label>半径</label>
+                    <el-input-number
+                        :model-value="currentEntity.size.radius"
+                        size="small"
+                        :step="5"
+                        :min="0"
+                        @update:model-value="(v: number) => updateSize('radius', v)"
+                    />
+                </div>
+            </div>
+
+            <!-- 显示控制 -->
+            <div class="section">
+                <div class="section-title">显示控制</div>
+                <div class="form-row">
+                    <label>可见</label>
+                    <el-switch
+                        :model-value="currentEntity.visible !== false"
+                        @update:model-value="updateVisible"
+                    />
+                </div>
+                <div class="form-row">
+                    <label>锁定</label>
+                    <el-switch
+                        :model-value="!!currentEntity.locked"
+                        @update:model-value="updateLocked"
+                    />
+                </div>
+            </div>
+
+            <!-- 传感器数据 -->
+            <div class="section" v-if="currentEntity.sensorData && Object.keys(currentEntity.sensorData).length > 0">
+                <div class="section-title">传感器数据</div>
+                <div class="form-row" v-for="(metric, key) in currentEntity.sensorData" :key="key">
+                    <label>{{ key }}</label>
+                    <span class="metric-value">{{ metric.value }} {{ metric.unitKey }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 空状态 -->
+        <div class="empty-state" v-else>
+            <ShSvgIcon name="info" size="32px" />
+            <p>未选中实体</p>
+            <p class="hint">在场景中点击实体查看属性</p>
         </div>
     </div>
 </template>
@@ -513,7 +289,6 @@ const icons: Record<string, string> = {
     height: 100%;
     display: flex;
     flex-direction: column;
-    border-left: 1px solid var(--el-border-color-lighter);
     background: var(--el-bg-color);
     overflow: hidden;
 
@@ -530,115 +305,77 @@ const icons: Record<string, string> = {
     .panel-body {
         flex: 1;
         overflow: auto;
-        padding: 8px 0;
-    }
-
-    .empty-text {
-        padding: 24px 12px;
-        text-align: center;
-        color: var(--el-text-color-secondary);
-        font-size: 12px;
-
-        &.small {
-            padding: 4px 12px;
-        }
+        padding: 8px 12px;
     }
 
     .section {
-        padding: 0 12px 8px;
-        border-bottom: 1px dashed var(--el-border-color-lighter);
-        margin-bottom: 8px;
+        margin-bottom: 16px;
 
         .section-title {
             font-size: 12px;
             font-weight: 600;
-            color: var(--el-text-color-primary);
-            margin-bottom: 6px;
+            color: var(--el-text-color-secondary);
+            margin-bottom: 8px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid var(--el-border-color-lighter);
         }
     }
 
-    .prop-row {
+    .form-row {
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        padding: 3px 0;
-        font-size: 12px;
+        gap: 8px;
+        margin-bottom: 8px;
 
-        .prop-label {
+        label {
+            width: 48px;
+            font-size: 12px;
+            color: var(--el-text-color-regular);
+            flex-shrink: 0;
+        }
+
+        .el-input,
+        .el-select,
+        .el-input-number {
+            flex: 1;
+        }
+
+        .metric-value {
+            font-size: 12px;
             color: var(--el-text-color-secondary);
         }
+    }
 
-        .prop-value {
-            color: var(--el-text-color-primary);
-            display: flex;
-            align-items: center;
-            gap: 4px;
+    .empty-state {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        color: var(--el-text-color-secondary);
+
+        p {
+            font-size: 13px;
+            margin: 0;
+        }
+
+        .hint {
+            font-size: 11px;
+            opacity: 0.6;
         }
     }
 
-    .color-dot {
-        display: inline-block;
-        width: 12px;
-        height: 12px;
-        border-radius: 2px;
-        border: 1px solid var(--el-border-color);
-    }
-
-    .status-indicator {
+    .status-option {
         display: flex;
         align-items: center;
         gap: 6px;
-        font-size: 12px;
 
         .status-dot {
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
         }
     }
-
-    .unit-text {
-        font-size: 11px;
-        color: var(--el-text-color-secondary);
-        margin-left: 2px;
-    }
-
-    .binding-item {
-        padding: 6px 8px;
-        margin-bottom: 4px;
-        border: 1px solid var(--el-border-color-lighter);
-        border-radius: 4px;
-
-        .binding-name {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--el-text-color-primary);
-        }
-
-        .binding-meta {
-            font-size: 11px;
-            color: var(--el-text-color-secondary);
-            margin-top: 2px;
-        }
-
-        .binding-actions {
-            display: flex;
-            gap: 4px;
-            margin-top: 4px;
-        }
-    }
-}
-
-.svg-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 1em;
-    height: 1em;
-    margin-right: 4px;
-}
-.svg-icon :deep(svg) {
-    width: 100%;
-    height: 100%;
 }
 </style>

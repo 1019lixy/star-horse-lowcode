@@ -1,278 +1,198 @@
 <script setup lang="ts" name="MapField">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { i18n } from "@/lang";
-import { useMapField } from "./composables/useMapField";
-import { DEFAULT_MAP_BOUNDS, parseLngLat } from "./constants";
-import { renderTiles, lngLatToPixel, pixelToLngLat } from "./utils/TileRenderer";
+import { ShSvgIcon } from "@/components/shared";
+import { parseLngLat, formatLngLat } from "./constants";
 import type { MapBounds } from "./types";
-import MapPickerDialog from "./dialogs/MapPickerDialog.vue";
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
     modelValue?: string;
     bounds?: MapBounds;
-    backgroundImage?: string;
     readonly?: boolean;
     height?: number;
     placeholder?: string;
-}>();
+    /** 高德地图 JS API Key（必传） */
+    amapKey?: string;
+}>(), {
+    height: 400,
+    amapKey: "",
+});
 
 const emits = defineEmits<{
     (e: "update:modelValue", v: string): void;
     (e: "change", v: string): void;
 }>();
 
-const field = useMapField(props.modelValue, props.bounds ?? DEFAULT_MAP_BOUNDS);
-if (props.bounds) field.setBounds(props.bounds);
+const containerRef = ref<HTMLDivElement | null>(null);
+const mapInstance = ref<any>(null);
+const markerInstance = ref<any>(null);
+const searchInput = ref("");
+const searchResults = ref<any[]>([]);
+const showSearch = ref(false);
 
-const canvasHeight = ref(props.height ?? 280);
-const pickerVisible = ref(false);
+/** 解析当前值 */
+const parsedValue = computed(() => parseLngLat(props.modelValue || ""));
 
-const bounds = computed<MapBounds>(() => props.bounds ?? DEFAULT_MAP_BOUNDS);
+/** 高德地图 API 加载状态 */
+const mapLoaded = ref(false);
+const mapError = ref<string | null>(null);
 
-/** 地图状态 */
-const canvasRef = ref<HTMLCanvasElement | null>(null);
-const centerLng = ref(116.397); // 北京
-const centerLat = ref(39.908);
-const zoom = ref(10);
-let renderRaf = 0;
-
-/** 拖拽状态 */
-const isDragging = ref(false);
-const dragStart = ref<{ x: number; y: number; centerLng: number; centerLat: number } | null>(null);
-
-/** 悬浮坐标 */
-const hoverLngLat = ref<{ lng: number; lat: number } | null>(null);
-
-/** 标记点像素位置 */
-const markerPosition = computed(() => {
-    if (!field.lngLat.value || !canvasRef.value) return null;
-    const canvas = canvasRef.value;
-    const pos = lngLatToPixel(
-        field.lngLat.value.lng,
-        field.lngLat.value.lat,
-        centerLng.value,
-        centerLat.value,
-        zoom.value,
-        canvas.clientWidth,
-        canvas.clientHeight,
-    );
-    // 检查是否在可视区域内
-    if (pos.x < 0 || pos.x > canvas.clientWidth || pos.y < 0 || pos.y > canvas.clientHeight) return null;
-    return pos;
-});
-
-/** 请求渲染（防抖） */
-const requestRender = () => {
-    if (renderRaf) cancelAnimationFrame(renderRaf);
-    renderRaf = requestAnimationFrame(() => {
-        const canvas = canvasRef.value;
-        if (canvas) renderTiles(canvas, centerLng.value, centerLat.value, zoom.value);
+/** 动态加载高德地图 JS API */
+const loadAMapScript = (): Promise<void> => {
+    return new Promise((resolve, reject) => {
+        if ((window as any).AMap) { resolve(); return; }
+        const key = props.amapKey;
+        if (!key) { reject(new Error("AMap key is required")); return; }
+        const script = document.createElement("script");
+        script.src = `https://webapi.amap.com/maps?v=2.0&key=${key}`;
+        script.onload = () => resolve();
+        script.onerror = () => reject(new Error("Failed to load AMap JS API"));
+        document.head.appendChild(script);
     });
 };
 
-/** 获取 Canvas 的 CSS 像素尺寸 */
-const getCanvasLogicalSize = () => {
-    const canvas = canvasRef.value;
-    if (!canvas) return { w: 0, h: 0 };
-    return { w: canvas.clientWidth, h: canvas.clientHeight };
-};
+/** 初始化地图 */
+const initMap = async () => {
+    try {
+        await loadAMapScript();
+        const AMap = (window as any).AMap;
+        if (!containerRef.value) return;
 
-/** 点击地图设置标记 */
-const handleClick = (e: MouseEvent) => {
-    if (props.readonly || isDragging.value) return;
-    const canvas = canvasRef.value;
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const { w, h } = getCanvasLogicalSize();
-    const scaleX = canvas.width / w;
-    const scaleY = canvas.height / h;
-    const lngLat = pixelToLngLat(
-        x * scaleX,
-        y * scaleY,
-        centerLng.value,
-        centerLat.value,
-        zoom.value,
-        canvas.width,
-        canvas.height,
-    );
-    field.setLngLat(lngLat.lng, lngLat.lat);
-    emits("update:modelValue", field.value.value);
-    emits("change", field.value.value);
-};
+        const center = parsedValue.value
+            ? [parsedValue.value.lng, parsedValue.value.lat]
+            : [116.397, 39.908];
 
-/** 地图拖拽开始 */
-const handleDragStart = (e: MouseEvent) => {
-    if (props.readonly) return;
-    isDragging.value = true;
-    dragStart.value = {
-        x: e.clientX,
-        y: e.clientY,
-        centerLng: centerLng.value,
-        centerLat: centerLat.value,
-    };
-    document.addEventListener("mousemove", handleDragMove);
-    document.addEventListener("mouseup", handleDragEnd);
-};
+        mapInstance.value = new AMap.Map(containerRef.value, {
+            zoom: 13,
+            center,
+            resizeEnable: true,
+        });
 
-const handleDragMove = (e: MouseEvent) => {
-    if (!isDragging.value || !dragStart.value) return;
-    const canvas = canvasRef.value;
-    if (!canvas) return;
-    const dx = e.clientX - dragStart.value.x;
-    const dy = e.clientY - dragStart.value.y;
-    // 反向移动（拖拽方向 = 地图移动方向）
-    const { w, h } = getCanvasLogicalSize();
-    const scaleX = canvas.width / w;
-    const scaleY = canvas.height / h;
-    const delta = pixelToLngLat(
-        (dragStart.value.x - dx) * scaleX,
-        (dragStart.value.y - dy) * scaleY,
-        dragStart.value.centerLng,
-        dragStart.value.centerLat,
-        zoom.value,
-        canvas.width,
-        canvas.height,
-    );
-    centerLng.value = delta.lng;
-    centerLat.value = delta.lat;
-    requestRender();
-};
+        // 如果已有值，添加标记
+        if (parsedValue.value) {
+            addMarker(parsedValue.value.lng, parsedValue.value.lat);
+        }
 
-const handleDragEnd = () => {
-    isDragging.value = false;
-    dragStart.value = null;
-    document.removeEventListener("mousemove", handleDragMove);
-    document.removeEventListener("mouseup", handleDragEnd);
-};
+        // 点击地图设置标记
+        if (!props.readonly) {
+            mapInstance.value.on("click", (e: any) => {
+                const lng = e.lnglat.getLng();
+                const lat = e.lnglat.getLat();
+                addMarker(lng, lat);
+                const val = formatLngLat(lng, lat);
+                emits("update:modelValue", val);
+                emits("change", val);
+            });
+        }
 
-/** 滚轮缩放 */
-const handleWheel = (e: WheelEvent) => {
-    e.preventDefault();
-    if (e.deltaY < 0) zoomIn();
-    else zoomOut();
-};
+        // 添加搜索控件
+        if (!props.readonly) {
+            AMap.plugin(["AMap.PlaceSearch", "AMap.AutoComplete"], () => {
+                // 自动完成已就绪
+            });
+        }
 
-const zoomIn = () => {
-    if (zoom.value < 18) {
-        zoom.value++;
-        requestRender();
+        mapLoaded.value = true;
+    } catch (err: any) {
+        mapError.value = err.message;
     }
 };
 
-const zoomOut = () => {
-    if (zoom.value > 1) {
-        zoom.value--;
-        requestRender();
+/** 添加/更新标记 */
+const addMarker = (lng: number, lat: number) => {
+    const AMap = (window as any).AMap;
+    if (!AMap || !mapInstance.value) return;
+    if (markerInstance.value) {
+        markerInstance.value.setPosition([lng, lat]);
+    } else {
+        markerInstance.value = new AMap.Marker({
+            position: [lng, lat],
+            draggable: !props.readonly,
+        });
+        mapInstance.value.add(markerInstance.value);
+
+        // 标记拖拽结束
+        if (!props.readonly) {
+            markerInstance.value.on("dragend", (e: any) => {
+                const pos = markerInstance.value.getPosition();
+                const val = formatLngLat(pos.lng, pos.lat);
+                emits("update:modelValue", val);
+                emits("change", val);
+            });
+        }
     }
+    mapInstance.value.setCenter([lng, lat]);
 };
 
-/** 鼠标移动显示坐标 */
-const handleMouseMove = (e: MouseEvent) => {
-    const canvas = canvasRef.value;
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const { w, h } = getCanvasLogicalSize();
-    const scaleX = canvas.width / w;
-    const scaleY = canvas.height / h;
-    hoverLngLat.value = pixelToLngLat(
-        x * scaleX,
-        y * scaleY,
-        centerLng.value,
-        centerLat.value,
-        zoom.value,
-        canvas.width,
-        canvas.height,
-    );
+/** 地址搜索 */
+const handleSearch = async () => {
+    if (!searchInput.value.trim()) return;
+    const AMap = (window as any).AMap;
+    if (!AMap) return;
+
+    AMap.plugin(["AMap.PlaceSearch"], () => {
+        const placeSearch = new AMap.PlaceSearch({
+            pageSize: 5,
+            pageIndex: 1,
+        });
+        placeSearch.search(searchInput.value, (status: string, result: any) => {
+            if (status === "complete" && result.poiList) {
+                searchResults.value = result.poiList.pois;
+                showSearch.value = true;
+            } else {
+                searchResults.value = [];
+            }
+        });
+    });
 };
 
-const handleMouseLeave = () => {
-    hoverLngLat.value = null;
+/** 选择搜索结果 */
+const handleSelectPlace = (poi: any) => {
+    const lng = poi.location.getLng();
+    const lat = poi.location.getLat();
+    addMarker(lng, lat);
+    const val = formatLngLat(lng, lat);
+    emits("update:modelValue", val);
+    emits("change", val);
+    showSearch.value = false;
+    searchInput.value = poi.name;
 };
 
-/** 清除 */
+/** 清除标记 */
 const handleClear = () => {
-    field.clear();
+    if (markerInstance.value && mapInstance.value) {
+        mapInstance.value.remove(markerInstance.value);
+        markerInstance.value = null;
+    }
     emits("update:modelValue", "");
     emits("change", "");
 };
 
-/** 选点确认 */
-const handlePickerConfirm = (v: string) => {
-    field.setValue(v);
-    emits("update:modelValue", v);
-    emits("change", v);
-    pickerVisible.value = false;
-    // 定位到选中点
-    const parsed = parseLngLat(v);
-    if (parsed) {
-        centerLng.value = parsed.lng;
-        centerLat.value = parsed.lat;
-        requestRender();
-    }
+/** 定位到当前标记 */
+const handleLocate = () => {
+    if (!parsedValue.value || !mapInstance.value) return;
+    mapInstance.value.setCenter([parsedValue.value.lng, parsedValue.value.lat]);
+    mapInstance.value.setZoom(15);
 };
 
-/** 解析坐标值 */
-const parsedValue = computed(() => parseLngLat(field.value.value));
-
-/** 内联 SVG 图标 */
-const icons = {
-    location: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>',
-    delete: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M5 6v14a2 2 0 002 2h10a2 2 0 002-2V6M10 11v6M14 11v6"/></svg>',
-};
-
-/** modelValue 变化时同步地图中心 */
+/** modelValue 变化同步 */
 watch(
     () => props.modelValue,
     (v) => {
-        if (v) {
+        if (v && mapInstance.value) {
             const parsed = parseLngLat(v);
-            if (parsed) {
-                centerLng.value = parsed.lng;
-                centerLat.value = parsed.lat;
-                requestRender();
-            }
+            if (parsed) addMarker(parsed.lng, parsed.lat);
         }
     },
 );
 
-/** ResizeObserver */
-let resizeObserver: ResizeObserver | null = null;
-
-onMounted(() => {
-    const canvas = canvasRef.value;
-    if (canvas) {
-        const dpr = window.devicePixelRatio || 1;
-        canvas.width = canvas.clientWidth * dpr;
-        canvas.height = canvas.clientHeight * dpr;
-        const ctx = canvas.getContext("2d");
-        if (ctx) ctx.scale(dpr, dpr);
-        requestRender();
-    }
-
-    // ResizeObserver
-    resizeObserver = new ResizeObserver(() => {
-        const canvas = canvasRef.value;
-        if (canvas) {
-            const dpr = window.devicePixelRatio || 1;
-            canvas.width = canvas.clientWidth * dpr;
-            canvas.height = canvas.clientHeight * dpr;
-            const ctx = canvas.getContext("2d");
-            if (ctx) ctx.scale(dpr, dpr);
-            requestRender();
-        }
-    });
-    if (canvas?.parentElement) resizeObserver.observe(canvas.parentElement);
-});
+onMounted(() => { initMap(); });
 
 onBeforeUnmount(() => {
-    if (renderRaf) cancelAnimationFrame(renderRaf);
-    if (resizeObserver) resizeObserver.disconnect();
-    document.removeEventListener("mousemove", handleDragMove);
-    document.removeEventListener("mouseup", handleDragEnd);
+    if (mapInstance.value) {
+        mapInstance.value.destroy();
+        mapInstance.value = null;
+    }
 });
 </script>
 
@@ -280,7 +200,7 @@ onBeforeUnmount(() => {
     <div class="map-field">
         <div class="field-header">
             <el-input
-                :model-value="field.value.value"
+                :model-value="modelValue"
                 :placeholder="placeholder || i18n('map.field.placeholder')"
                 :readonly="true"
                 class="coord-input"
@@ -289,58 +209,53 @@ onBeforeUnmount(() => {
                     <span class="coord-label">{{ i18n("map.field.lngLat") }}</span>
                 </template>
             </el-input>
-            <div class="field-actions" v-if="!readonly">
-                <el-button @click="pickerVisible = true">
-                    <span class="svg-icon" v-html="icons.location"></span>
-                    {{ i18n("map.field.select") }}
-                </el-button>
-                <el-button :disabled="!field.hasValue.value" @click="handleClear">
-                    <span class="svg-icon" v-html="icons.delete"></span>
-                </el-button>
-            </div>
-        </div>
-        <div class="field-canvas" :style="{ height: `${canvasHeight}px` }">
-            <canvas
-                ref="canvasRef"
-                @click="handleClick"
-                @wheel="handleWheel"
-                @mousedown="handleDragStart"
-                @mousemove="handleMouseMove"
-                @mouseleave="handleMouseLeave"
-                :class="{ clickable: !readonly }"
-            />
-            <!-- 标记点覆盖层 -->
-            <div
-                v-if="markerPosition"
-                class="marker-overlay"
-                :style="{ left: `${markerPosition.x}px`, top: `${markerPosition.y}px` }"
+            <!-- 地址搜索 -->
+            <el-input
+                v-if="!readonly && mapLoaded"
+                v-model="searchInput"
+                :placeholder="i18n('map.field.searchPlaceholder')"
+                class="search-input"
+                @keydown.enter="handleSearch"
             >
-                <div class="marker-pin"></div>
-                <div class="marker-pulse"></div>
+                <template #append>
+                    <el-button @click="handleSearch">
+                        <ShSvgIcon name="search" size="14px" />
+                    </el-button>
+                </template>
+            </el-input>
+            <div class="field-actions" v-if="!readonly">
+                <el-button @click="handleLocate" :disabled="!parsedValue">
+                    <ShSvgIcon name="preview" size="14px" />
+                    {{ i18n("map.field.locate") }}
+                </el-button>
+                <el-button :disabled="!parsedValue" @click="handleClear">
+                    <ShSvgIcon name="delete" size="14px" />
+                </el-button>
             </div>
-            <!-- 缩放控件 -->
-            <div class="zoom-control">
-                <el-button size="small" @click="zoomIn">+</el-button>
-                <span class="zoom-level">{{ zoom }}</span>
-                <el-button size="small" @click="zoomOut">-</el-button>
-            </div>
-            <!-- 坐标显示 -->
-            <div class="coord-display" v-if="hoverLngLat">
-                {{ hoverLngLat.lng.toFixed(4) }}, {{ hoverLngLat.lat.toFixed(4) }}
-            </div>
-            <!-- 标记点坐标 -->
-            <div class="marker-coord" v-if="parsedValue">
-                {{ parsedValue.lng.toFixed(4) }}, {{ parsedValue.lat.toFixed(4) }}
-            </div>
-
         </div>
-        <map-picker-dialog
-            v-model:visible="pickerVisible"
-            :initial-value="field.value.value"
-            :bounds="bounds"
-            :background-image="backgroundImage"
-            @confirm="handlePickerConfirm"
-        />
+
+        <!-- 搜索结果下拉 -->
+        <div v-if="showSearch && searchResults.length > 0" class="search-results">
+            <div
+                v-for="poi in searchResults"
+                :key="poi.id"
+                class="search-item"
+                @click="handleSelectPlace(poi)"
+            >
+                <span class="poi-name">{{ poi.name }}</span>
+                <span class="poi-address">{{ poi.address }}</span>
+            </div>
+        </div>
+
+        <!-- 地图容器 -->
+        <div class="field-map" :style="{ height: `${height}px` }">
+            <div v-if="mapError" class="map-error">
+                <ShSvgIcon name="alarm" size="24px" />
+                <span>{{ mapError }}</span>
+                <span class="error-hint">{{ i18n("map.field.amapKeyRequired") }}</span>
+            </div>
+            <div v-else ref="containerRef" class="amap-container" />
+        </div>
     </div>
 </template>
 
@@ -352,139 +267,66 @@ onBeforeUnmount(() => {
         display: flex;
         gap: 8px;
         margin-bottom: 6px;
+        flex-wrap: wrap;
 
-        .coord-input {
-            flex: 1;
-        }
+        .coord-input { flex: 1; min-width: 200px; }
+        .search-input { flex: 1; min-width: 200px; }
+        .coord-label { font-size: 12px; color: var(--el-text-color-secondary); }
+        .field-actions { display: flex; gap: 4px; }
+    }
 
-        .coord-label {
-            font-size: 12px;
-            color: var(--el-text-color-secondary);
-        }
+    .search-results {
+        background: var(--el-bg-color-overlay);
+        border: 1px solid var(--el-border-color-lighter);
+        border-radius: 4px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        max-height: 240px;
+        overflow-y: auto;
+        margin-bottom: 6px;
+        z-index: 100;
 
-        .field-actions {
-            display: flex;
-            gap: 4px;
+        .search-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--el-border-color-lighter);
+            transition: background 0.15s;
+
+            &:hover { background: var(--el-fill-color-light); }
+            &:last-child { border-bottom: none; }
+
+            .poi-name { font-size: 13px; font-weight: 500; display: block; }
+            .poi-address { font-size: 11px; color: var(--el-text-color-secondary); display: block; margin-top: 2px; }
         }
     }
 
-    .field-canvas {
+    .field-map {
         position: relative;
         border: 1px solid var(--el-border-color);
         border-radius: 4px;
         overflow: hidden;
-        background: var(--el-fill-color-light);
-        cursor: grab;
 
-        &:active {
-            cursor: grabbing;
-        }
-
-        canvas {
+        .amap-container {
             width: 100%;
             height: 100%;
-            display: block;
-
-            &.clickable {
-                cursor: crosshair;
-            }
         }
 
-        .marker-overlay {
-            position: absolute;
-            transform: translate(-50%, -100%);
-            pointer-events: none;
-
-            .marker-pin {
-                width: 20px;
-                height: 20px;
-                background: #f56c6c;
-                border-radius: 50% 50% 50% 0;
-                transform: rotate(-45deg);
-                border: 2px solid #fff;
-            }
-
-            .marker-pulse {
-                position: absolute;
-                width: 30px;
-                height: 30px;
-                border-radius: 50%;
-                background: rgba(245, 108, 108, 0.2);
-                animation: pulse 2s infinite;
-                left: -5px;
-                top: -5px;
-            }
-        }
-
-        .zoom-control {
-            position: absolute;
-            right: 12px;
-            bottom: 12px;
+        .map-error {
+            width: 100%;
+            height: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
-            background: var(--el-bg-color);
-            padding: 4px;
-            border-radius: 4px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            justify-content: center;
+            gap: 8px;
+            background: var(--el-fill-color-light);
+            color: var(--el-text-color-secondary);
+            font-size: 13px;
 
-            .zoom-level {
+            .error-hint {
                 font-size: 11px;
-                color: var(--el-text-color-secondary);
-                text-align: center;
-                min-width: 20px;
+                color: var(--el-text-color-placeholder);
             }
         }
-
-        .coord-display {
-            position: absolute;
-            left: 12px;
-            bottom: 12px;
-            background: rgba(0, 0, 0, 0.6);
-            color: #fff;
-            padding: 2px 8px;
-            border-radius: 3px;
-            font-size: 11px;
-            font-family: monospace;
-        }
-
-        .marker-coord {
-            position: absolute;
-            left: 12px;
-            top: 12px;
-            background: rgba(64, 158, 255, 0.9);
-            color: #fff;
-            padding: 2px 8px;
-            border-radius: 3px;
-            font-size: 11px;
-            font-family: monospace;
-        }
-
-    }
-}
-
-.svg-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 1em;
-    height: 1em;
-    margin-right: 4px;
-}
-.svg-icon :deep(svg) {
-    width: 100%;
-    height: 100%;
-}
-
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-        opacity: 1;
-    }
-    100% {
-        transform: scale(2);
-        opacity: 0;
     }
 }
 </style>

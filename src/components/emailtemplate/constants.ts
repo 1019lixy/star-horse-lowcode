@@ -2,7 +2,16 @@
  * 邮件模板常量
  */
 import { i18n } from "@/lang";
-import type { EmailCategoryPreset, EmailTemplate, EmailVariable } from "./types";
+import type { EmailCategoryPreset, EmailTemplate, EmailVariable, EmailVariableType } from "./types";
+
+/** 变量类型预设 */
+export const EMAIL_VARIABLE_TYPE_PRESETS: { value: EmailVariableType; label: string }[] = [
+    { value: "string", label: i18n("emailtemplate.varType.string") },
+    { value: "number", label: i18n("emailtemplate.varType.number") },
+    { value: "date", label: i18n("emailtemplate.varType.date") },
+    { value: "boolean", label: i18n("emailtemplate.varType.boolean") },
+    { value: "select", label: i18n("emailtemplate.varType.select") },
+];
 
 /** 分类预设 */
 export const EMAIL_CATEGORY_PRESETS: EmailCategoryPreset[] = [

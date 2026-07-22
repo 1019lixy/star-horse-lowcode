@@ -1,6 +1,6 @@
 import {closeLoad, createCondition, dynamicUrlOperation, isJson, load,} from "@/api/star_horse_utils";
 import {userFunction} from "@/api/user_func";
-import {ApiLinkageDetail, ItemRelation, RelationDetail, SelectOption,} from "@/components/types";
+import {ApiLinkageDetail, ItemRelation, RelationDetail, RulePreps, SelectOption,} from "@/components/types";
 import {error, warning} from "@/utils/message";
 import {i18n} from "@/lang";
 import {computed, nextTick, Ref, unref, watch} from "vue";
@@ -298,7 +298,7 @@ const ruleEngineDispatcher = async (
     e: any,
     formData: Ref<Record<string, any>>,
 ) => {
-    const {relationFields, matchFieldValue, matchType} = item;
+    const {matchFieldValue} = item;
 
     // 匹配检查：与 dataLinkage 保持一致的匹配逻辑
     const matchValues = ensureArray(matchFieldValue);
@@ -307,10 +307,9 @@ const ruleEngineDispatcher = async (
     }
 
     // 获取 formId 和规则引擎 API 配置
-    const ruleEngineConfig = item.ruleEngineConfig || {};
+    const ruleEngineConfig = item.ruleEngineConfig || {} as RulePreps;
     const formId = ruleEngineConfig.formId || props.formId || props.field?.preps?.formId;
-    const triggerEvent = ruleEngineConfig.triggerEvent || "ON_CHANGE";
-    const apiBasePath = ruleEngineConfig.apiBasePath || "/userdb/ruleEngine";
+    const apiBasePath = ruleEngineConfig.proxyUrl || "/system-config/redirect/ruleExecute";
 
     if (!formId) {
         console.warn("[ruleEngineDispatcher] formId 未配置，跳过规则引擎调用");
@@ -319,9 +318,11 @@ const ruleEngineDispatcher = async (
 
     try {
         const currentFormData = unref(formData);
-        const res = await postRequest(
-            `${apiBasePath}/executeByForm/${formId}?triggerEvent=${triggerEvent}`,
-            currentFormData,
+        const res = await postRequest(apiBasePath,
+            {
+                instanceData: currentFormData,
+                configData: ruleEngineConfig,
+            }
         );
 
         const data = res?.data?.data;
@@ -550,6 +551,7 @@ const relationEvent = (
             case "eqRequired":
             case "eqUnRequired":
             // 规则引擎控制动作 - 复用 controlFieldProps 机制
+            // eslint-disable-next-line no-fallthrough
             case "ruleHide":
             case "ruleVisible":
             case "ruleDisable":
@@ -795,7 +797,7 @@ const convertData = (data: any) => {
  * @param emits
  * @param formData
  */
-const userActionEvent = (action: PreOrPendEventConfig,props:any,emits:any,formData:any) => {
+const userActionEvent = (action: PreOrPendEventConfig, props: any, emits: any, formData: any) => {
     if (action.eventType === "custom") {
         buttonAction(props, emits, formData, action.customCode);
     } else if (action.eventType === "linkage" || action.eventType === "dataSource") {
