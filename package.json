@@ -17,10 +17,10 @@
     "星马低代码核心库"
   ],
   "license": "MIT",
-  "homepage": "https://gitee.com/lixingyu/knowledge_demo",
+  "homepage": "https://github.com/1019lixy/star-horse-lowcode.git",
   "repository": {
     "type": "git",
-    "url": "https://gitee.com/lixingyu/knowledge_demo"
+    "url": "https://github.com/1019lixy/star-horse-lowcode.git"
   },
   "main": "dist/index.es.js",
   "module": "dist/index.es.js",
