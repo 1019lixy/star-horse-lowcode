@@ -2,6 +2,7 @@
 
 [English](README_EN.md) | [中文](README.md)
 
+
 ## 使用说明
 
 1. 安装依赖
@@ -644,20 +645,8 @@ barcode        条形码组件
 ```
 --修复修复误将element-plus 排除，导致组件显示英文
 ```
-流程图
-甘特图
-看板
-调度视图
-透视分析
-PDF模板
-协同富文本
-文档模板
-邮件模板
-地图GIS
-ETL管道
-API编排
-IoT监控
-Office编辑
-白板
-知识图谱
-数字孪生
+#### v3.1.15
+
+```
+--barcode-item 组件删除vue3-varcode 插件改用jsbarcode
+```

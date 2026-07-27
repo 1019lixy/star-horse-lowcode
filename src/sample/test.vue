@@ -18,6 +18,7 @@ import FormRelationOperation from "@/sample/FormRelationOperation.vue";
 import ValidDialogFormRelation from "@/sample/ValidDialogFormRelation.vue";
 import ValidMulitSameFormTab from "@/sample/ValidMulitSameFormTab.vue";
 import AdvancedComponentsDemo from "@/sample/AdvancedComponentsDemo.vue";
+import BarcodeTest from "@/sample/BarcodeTest.vue";
 
 const visible = ref<boolean>(false);
 const actName = ref<string>("component");
@@ -72,6 +73,7 @@ onMounted(() => {
         <DataPickerDemo/>
       </el-tab-pane>
     </el-tabs>-->
+<!--    <barcode-test/>-->
     <el-tabs v-model="actName" class="h-full">
       <el-tab-pane name="component" label="组件测试">
         <ComponentTester />

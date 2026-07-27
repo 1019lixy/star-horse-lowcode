@@ -11,7 +11,7 @@ import fs from "fs";
 import dts from "vite-plugin-dts";
 import {execSync} from "child_process";
 // TresJS 模板编译器选项（让 Vue 编译器识别 Tres 前缀标签）
-import { templateCompilerOptions } from "@tresjs/core";
+import {templateCompilerOptions} from "@tresjs/core";
 // import {copy} from "vite-plugin-copy";
 // https://vitejs.dev/config/
 const baseHost: string = "http://localhost:7719/";
@@ -123,11 +123,11 @@ export default defineConfig((mode) => {
                     },
                 },
             }),
-          /*  copy({
-                targets: [
-                    { src: 'public/pcas-code.json', dest: 'dist/' }
-                ]
-            }),*/
+            /*  copy({
+                  targets: [
+                      { src: 'public/pcas-code.json', dest: 'dist/' }
+                  ]
+              }),*/
             dts({
                 entryRoot: "./src",
                 outDir: "dist/types",
@@ -241,7 +241,7 @@ export default defineConfig((mode) => {
                 external: [
                     "vue",
                     "pinia",
-                   // "element-plus",
+                    // "element-plus",
                     "@element-plus/icons-vue",
                     "@vueuse/core",
                     "axios",
@@ -252,8 +252,8 @@ export default defineConfig((mode) => {
                     "smooth-signature",
                     "qrcode.vue",
                     "vanilla-jsoneditor",
-                    "vue3-barcode",
                     "vue3-ts-jsoneditor",
+                    "jsbarcode",
                     "vue3-signature",
                     "json5",
                     "vue-m-message",
