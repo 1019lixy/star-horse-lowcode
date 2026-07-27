@@ -112,9 +112,10 @@ const icons: Record<string, string> = {
                 <el-splitter-panel
                     v-for="col in designer.sortedColumns.value"
                     :key="col.id"
-                    :size="collapsedIds.has(col.id) ? '48px' : '280px'"
+                    :size="collapsedIds.has(col.id) ? '48px' : undefined"
                     :min="collapsedIds.has(col.id) ? '48px' : '180px'"
                     :max="collapsedIds.has(col.id) ? '48px' : '500px'"
+                    :collapsible="true"
                 >
                     <kanban-column-panel
                         :column="col"

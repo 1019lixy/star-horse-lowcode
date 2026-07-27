@@ -562,6 +562,9 @@ const icons: Record<string, string> = {
 
     .column-bottom-add {
       flex-shrink: 0;
+      position: sticky;
+      bottom: 0;
+      z-index: 1;
       padding: 6px 8px;
       text-align: center;
       color: var(--el-text-color-secondary);

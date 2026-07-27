@@ -72,7 +72,7 @@ const handleCommand = (cmd: DropdownCmd): void => {
               <el-dropdown-item command="redo" :disabled="readonly">{{ i18n("kanban.btn.redo") }}</el-dropdown-item>
               <el-dropdown-item command="addCard" :disabled="readonly" v-if="canAddCard" divided>{{ i18n("kanban.btn.addCard") }}</el-dropdown-item>
               <el-dropdown-item command="addColumn" :disabled="readonly">{{ i18n("kanban.btn.addColumn") }}</el-dropdown-item>
-              <el-dropdown-item command="expandAll" v-if="hasCollapsed" divided>{{ i18n("kanban.btn.expandAll") }}</el-dropdown-item>
+              <el-dropdown-item command="expandAll" divided>{{ i18n("kanban.btn.expandAll") }}</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -146,7 +146,7 @@ const handleCommand = (cmd: DropdownCmd): void => {
               <el-dropdown-item command="addColumn" :disabled="readonly" :divided="!!canAddCard">
                 {{ i18n("kanban.btn.addColumn") }}
               </el-dropdown-item>
-              <el-dropdown-item command="expandAll" v-if="hasCollapsed" divided>
+              <el-dropdown-item command="expandAll" divided>
                 {{ i18n("kanban.btn.expandAll") }}
               </el-dropdown-item>
             </el-dropdown-menu>
