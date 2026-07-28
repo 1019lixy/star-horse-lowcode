@@ -26,7 +26,6 @@ export const OFFICE_DOC_TYPE_PRESETS: OfficeDocTypePreset[] = [
 
 /** 字体预设 */
 export const OFFICE_FONT_FAMILY_PRESETS: OfficeFontPreset[] = [
-    { value: "Microsoft YaHei", label: "微软雅黑" },
     { value: "SimSun", label: "宋体" },
     { value: "KaiTi", label: "楷体" },
     { value: "SimHei", label: "黑体" },
