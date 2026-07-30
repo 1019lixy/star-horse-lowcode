@@ -8,6 +8,7 @@ import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import { ItemPreps } from "@/components/types/ItemPreps";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
 import { i18n } from "@/lang";
+import { isMobile } from "@/api/device";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -87,19 +88,19 @@ onUpdated(() => {
   >
     <div class="pcDemo">
       <div class="inner_button" v-if="source != 3">
-        <el-menu mode="horizontal" style="height: inherit; width: 100%">
+        <el-menu mode="horizontal" style="height: inherit; width: 100%" :class="{ 'is-mobile': isMobile }">
           <el-menu-item @click="clear">
-            <el-tooltip :content="i18n('item.clear')">
+            <el-tooltip :content="i18n('item.clear')" :trigger="isMobile ? 'click' : 'hover'">
               <star-horse-icon icon-class="reset" />
             </el-tooltip>
           </el-menu-item>
           <el-menu-item @click="undo">
-            <el-tooltip :content="i18n('item.undo')">
+            <el-tooltip :content="i18n('item.undo')" :trigger="isMobile ? 'click' : 'hover'">
               <star-horse-icon icon-class="undo" />
             </el-tooltip>
           </el-menu-item>
           <el-menu-item @click="handlePreview">
-            <el-tooltip :content="i18n('item.preview')">
+            <el-tooltip :content="i18n('item.preview')" :trigger="isMobile ? 'click' : 'hover'">
               <star-horse-icon icon-class="preview" />
             </el-tooltip>
           </el-menu-item>
@@ -127,6 +128,19 @@ onUpdated(() => {
 
   .tip {
     color: #108eff;
+  }
+}
+
+/* 移动端：菜单防溢出 */
+@media (max-width: 768px) {
+  :deep(.el-menu--horizontal.is-mobile) {
+    flex-wrap: wrap;
+    height: auto !important;
+
+    .el-menu-item {
+      height: 40px;
+      line-height: 40px;
+    }
   }
 }
 </style>

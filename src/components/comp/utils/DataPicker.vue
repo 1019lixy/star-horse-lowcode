@@ -320,10 +320,12 @@ const onOpen = async () => {
   } else {
     await loadData();
   }
-  dataOptions.value = Array.isArray(value.value)
-    ? value.value
-    : value.value
-      ? [value.value]
+  // 直接读 props.modelValue，避免 useVModel passive 模式下 local ref 同步时序问题
+  const mv = props.modelValue;
+  dataOptions.value = Array.isArray(mv)
+    ? mv
+    : mv
+      ? [mv]
       : [];
   activeIndex.value = -1;
   nextTick(() => {

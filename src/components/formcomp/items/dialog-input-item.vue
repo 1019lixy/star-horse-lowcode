@@ -17,6 +17,7 @@ import {i18n} from "@/lang";
 import {Search} from "@element-plus/icons-vue";
 import {StarHorseIcon} from "@/components/comp";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
+import {isMobile} from "@/api/device";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -219,7 +220,7 @@ onMounted(async () => {
                   ref="dialogInputTableRef"
                   :dialogInput="true"
                   :multipleSelect="multipleSelect"
-                  height="400px"
+                  :height="isMobile ? '50vh' : '400px'"
                   :filterCondition="field.preps?.['filterCondition']"
                   :orderBy="field.preps?.['orderBy']"
                   @selectItem="selectItem"
@@ -248,7 +249,7 @@ onMounted(async () => {
               </el-input>
               <el-table
                   :data="filteredSelectedData"
-                  height="400px"
+                  :height="isMobile ? '50vh' : '400px'"
                   border
                   class="selected-table"
               >
@@ -272,7 +273,7 @@ onMounted(async () => {
 
                         @click="removeSelected(row)"
                     >
-                      <el-tooltip :content="i18n('item.removeSelected')">
+                      <el-tooltip :content="i18n('item.removeSelected')" :trigger="isMobile ? 'click' : 'hover'">
                         <star-horse-icon icon-class="delete" color="var(--el-primary-danger)"/>
                       </el-tooltip>
                     </el-button>

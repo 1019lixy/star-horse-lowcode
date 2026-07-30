@@ -19,6 +19,7 @@ import { dateTypes, parseDateByType } from "@/api/date_utils";
 import { ApiUrls, DyCompField, FieldInfo } from "@/components/types";
 import StarHorseItem from "@/components/comp/StarHorseItem.vue";
 import { processFieldList } from "@/api/form_utils";
+import { isMobile } from "@/api/device";
 
 const props = defineProps({
   compUrl: { type: Object as PropType<ApiUrls> },
@@ -235,8 +236,8 @@ onMounted(() => {
       <template v-if="item.preps?.showComp">
         <el-popover
           ref="popover"
-          :placement="item.preps.placement || 'left'"
-          :width="'auto'"
+          :placement="isMobile ? 'bottom' : (item.preps.placement || 'left')"
+          :width="isMobile ? '80vw' : 'auto'"
           v-if="item.preps.popover"
           @show="showOperation"
         >

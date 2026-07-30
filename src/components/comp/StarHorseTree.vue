@@ -20,6 +20,9 @@ import {
   unref,
 } from "vue";
 import { getGlobalConfigStore } from "@/store/StoreManager";
+import { isMobile } from "@/api/device";
+import { useMobilePicker } from "@/components/formcomp/utils/useMobilePicker";
+import ShMobilePicker from "@/components/formcomp/utils/ShMobilePicker.vue";
 
 const props = defineProps({
   preps: {
@@ -115,6 +118,15 @@ const changeArrow = (evt: MouseEvent) => {
   menuIcon.value = unref(menuIcon) == "expand" ? "collapse" : "expand";
   emits("changeCollapse", collapse.value);
 };
+// APP 端抽屉
+const {
+  pickerVisible: treePickerVisible,
+  placement: treePlacement,
+  size: treeSize,
+  openPicker: openTreePicker,
+  closePicker: closeTreePicker,
+} = useMobilePicker(() => ({ preps: {} } as any));
+
 const treeOperation = (cmd: string) => {
   if (props.treeType == "tree") {
     if (cmd == "add") {
@@ -327,10 +339,11 @@ defineExpose({
           />
         </template>
       </el-input>
+      <!-- PC 端：el-dropdown -->
       <el-dropdown
+        v-if="showDropdown && !isMobile"
         placement="bottom"
         @command="treeOperation"
-        v-if="showDropdown"
       >
         <star-horse-icon
           icon-class="v-dot"
@@ -351,6 +364,38 @@ defineExpose({
           </el-dropdown-menu>
         </template>
       </el-dropdown>
+      <!-- APP 端：触发器 + 抽屉动作面板 -->
+      <star-horse-icon
+        v-if="showDropdown && isMobile"
+        icon-class="v-dot"
+        color="var(--star-horse-style)"
+        size="20px"
+        style="cursor: pointer"
+        @click="openTreePicker"
+      />
+      <ShMobilePicker
+        v-if="isMobile"
+        v-model="treePickerVisible"
+        title="操作"
+        :placement="treePlacement"
+        :size="treeSize"
+        :show-footer="false"
+      >
+        <div class="tree-action-panel">
+          <div class="tree-action-panel__item" @click="treeOperation('add'); closeTreePicker();" v-if="btnVisible">
+            <star-horse-icon icon-class="plus" />
+            <span>{{ i18n("ui.addData") }}</span>
+          </div>
+          <div class="tree-action-panel__item" @click="treeOperation('expand'); closeTreePicker();">
+            <star-horse-icon icon-class="folder" />
+            <span>{{ i18n("ui.expandAll") }}</span>
+          </div>
+          <div class="tree-action-panel__item" @click="treeOperation('collapse'); closeTreePicker();">
+            <star-horse-icon icon-class="document" />
+            <span>{{ i18n("ui.collapseAll") }}</span>
+          </div>
+        </div>
+      </ShMobilePicker>
     </div>
     <el-divider v-if="showSearch" />
     <div class="tree-content">
@@ -386,7 +431,7 @@ defineExpose({
                 </template>
               </div>
               <div v-if="btnVisible || rmvVisible" class="btn">
-                <el-tooltip :content="btnTitle">
+                <el-tooltip v-if="!isMobile" :content="btnTitle">
                   <star-horse-icon
                     cursor="pointer"
                     v-if="btnVisible"
@@ -394,7 +439,13 @@ defineExpose({
                     icon-class="plus"
                   />
                 </el-tooltip>
-                <el-tooltip :content="rmvTitle">
+                <star-horse-icon
+                  v-else-if="btnVisible"
+                  cursor="pointer"
+                  @click.stop="addData(data)"
+                  icon-class="plus"
+                />
+                <el-tooltip v-if="!isMobile" :content="rmvTitle">
                   <star-horse-icon
                     cursor="pointer"
                     v-if="rmvVisible"
@@ -403,6 +454,13 @@ defineExpose({
                     icon-class="minus"
                   />
                 </el-tooltip>
+                <star-horse-icon
+                  v-else-if="rmvVisible"
+                  cursor="pointer"
+                  @click.stop="removeData(data)"
+                  color="var(--el-color-danger)"
+                  icon-class="minus"
+                />
               </div>
             </div>
           </template>
@@ -508,5 +566,34 @@ defineExpose({
 
 :deep(.el-divider--horizontal) {
   margin: 5px 0 !important;
+}
+
+/* APP 端动作面板 */
+.tree-action-panel {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0;
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--el-border-color-lighter, #ebeef5);
+
+    &:active {
+      background: var(--el-fill-color, #f5f7fa);
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    span {
+      font-size: 15px;
+      color: var(--el-text-color-primary, #303133);
+    }
+  }
 }
 </style>

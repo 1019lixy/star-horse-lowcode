@@ -8,6 +8,7 @@ import { i18n } from "@/lang";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
 import Help from "@/components/help.vue";
 import { isMobile } from "@/api/device";
+import { MOBILE_POPPER_OPTIONS } from "@/components/formcomp/utils/useMobilePicker";
 import { getGlobalConfigStore } from "@/store/StoreManager";
 
 let matchTypeList = ref<SelectOption[]>();
@@ -147,7 +148,9 @@ defineExpose({
         >
           <el-select
             :size="compSize"
-            style="width: 90px !important; height: 100%; padding-top: 2px"
+            :style="isMobile ? 'width: 72px !important; height: 100%; padding-top: 2px' : 'width: 90px !important; height: 100%; padding-top: 2px'"
+            :teleported="!isMobile"
+            :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined"
             v-model="item['matchType']"
             @change="(val) => matchTypeChange(val, item)"
             clearable
@@ -185,7 +188,9 @@ defineExpose({
         >
           <el-select
             :size="compSize"
-            style="width: 90px !important; height: 100%; padding-top: 2px"
+            :style="isMobile ? 'width: 72px !important; height: 100%; padding-top: 2px' : 'width: 90px !important; height: 100%; padding-top: 2px'"
+            :teleported="!isMobile"
+            :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined"
             v-model="item['matchType']"
             clearable
             filterable

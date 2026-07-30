@@ -14,6 +14,7 @@ import UTableColumn from "@/components/comp/items/UTableColumn.vue";
 import StarHorseForm from "@/components/comp/StarHorseForm.vue";
 import {FieldInfo} from "@/components/types";
 import {Sort, UploadFilled} from "@element-plus/icons-vue";
+import {isMobile} from "@/api/device";
 
 let importDialogVisible = ref<boolean>(false);
 let rowDialogVisible = ref<boolean>(false);
@@ -506,7 +507,7 @@ watch(
                   color="var(--star-horse-white)"
                   size="12px"
               />
-              <el-tooltip :content="i18n('ui.downloadTemplate')"
+              <el-tooltip :content="i18n('ui.downloadTemplate')" :trigger="isMobile ? 'click' : 'hover'"
               >{{ i18n("ui.downloadTemplate") }}
               </el-tooltip>
             </el-button>
@@ -528,7 +529,7 @@ watch(
               v-if="importInfo?.importDataUrl && !subFlag"
               @click="excelOperation"
           >
-            <el-tooltip :content="i18n('ui.importExcel')">
+            <el-tooltip :content="i18n('ui.importExcel')" :trigger="isMobile ? 'click' : 'hover'">
               <star-horse-icon
                   icon-class="upload"
                   color="var(--star-horse-style)"
@@ -537,7 +538,7 @@ watch(
             </el-tooltip>
           </li>
           <li v-if="enableSubNode" @click="expandSubNodes">
-            <el-tooltip :content="i18n(!expandFlag?'ui.expandAll':'ui.collapseAll')">
+            <el-tooltip :content="i18n(!expandFlag?'ui.expandAll':'ui.collapseAll')" :trigger="isMobile ? 'click' : 'hover'">
               <star-horse-icon
                   :icon-class="!expandFlag?'expand':'collapse'"
                   size="22px"
@@ -545,7 +546,7 @@ watch(
             </el-tooltip>
           </li>
           <li @click="clearAll">
-            <el-tooltip :content="i18n('ui.clearList')">
+            <el-tooltip :content="i18n('ui.clearList')" :trigger="isMobile ? 'click' : 'hover'">
               <star-horse-icon
                   icon-class="dustbin"
                   color="var(--el-color-danger)"

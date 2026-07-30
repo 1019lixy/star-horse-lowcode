@@ -14,6 +14,7 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref } from "vue";
 import { warning } from "@/utils/message";
 import { labelVisibleCheck, validMsg } from "@/api/form_utils";
 import { getDesignFormStore } from "@/store/StoreManager";
+import { isMobile } from "@/api/device";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -203,7 +204,8 @@ const finishEditLabel = () => {
         <template #label v-if="isEdit">
           <span
             v-if="!editingLabel"
-            @dblclick.stop="startEditLabel"
+            @click.stop="isMobile ? startEditLabel() : null"
+            @dblclick.stop="!isMobile ? startEditLabel() : null"
             style="cursor: text"
             >{{ labelVisibleCheck(field) }}</span
           >
@@ -241,13 +243,13 @@ const finishEditLabel = () => {
         :key="`header-actions-${currentItemId}-${refreshFlag}`"
       >
         <div class="drag-handler">
-          <el-tooltip :content="i18n('form.drag')">
+          <el-tooltip :content="i18n('form.drag')" :trigger="isMobile ? 'click' : 'hover'">
             <star-horse-icon
               icon-class="drag"
               style="cursor: move; color: var(--star-horse-white)"
             />
           </el-tooltip>
-          <el-tooltip :content="field?.preps['itemNameLabel']">
+          <el-tooltip :content="field?.preps['itemNameLabel']" :trigger="isMobile ? 'click' : 'hover'">
             <span
               style="color: var(--star-horse-white); cursor: pointer"
               @click="selectData(field)"
@@ -261,6 +263,7 @@ const finishEditLabel = () => {
         <div class="field-action" v-else-if="!disabled">
           <el-tooltip
             :content="i18n('form.selectParentContainer')"
+            :trigger="isMobile ? 'click' : 'hover'"
             v-if="parentField?.itemType"
           >
             <star-horse-icon
@@ -270,7 +273,7 @@ const finishEditLabel = () => {
               style="color: var(--star-horse-white)"
             />
           </el-tooltip>
-          <el-tooltip :content="i18n('form.changeComponent')">
+          <el-tooltip :content="i18n('form.changeComponent')" :trigger="isMobile ? 'click' : 'hover'">
             <star-horse-icon
               @click.stop="exchangeItem"
               icon-class="exchange"
@@ -278,7 +281,7 @@ const finishEditLabel = () => {
               style="color: var(--star-horse-white)"
             />
           </el-tooltip>
-          <el-tooltip :content="i18n('form.moveUp')">
+          <el-tooltip :content="i18n('form.moveUp')" :trigger="isMobile ? 'click' : 'hover'">
             <star-horse-icon
               @click.stop="moveUpItem(isEdit, field?.preps, parentField)"
               icon-class="move-up"
@@ -286,7 +289,7 @@ const finishEditLabel = () => {
               style="color: var(--star-horse-white)"
             />
           </el-tooltip>
-          <el-tooltip :content="i18n('form.moveDown')">
+          <el-tooltip :content="i18n('form.moveDown')" :trigger="isMobile ? 'click' : 'hover'">
             <star-horse-icon
               @click.stop="moveDownItem(isEdit, field?.preps, parentField)"
               icon-class="move-down"
@@ -294,7 +297,7 @@ const finishEditLabel = () => {
               style="color: var(--star-horse-white)"
             />
           </el-tooltip>
-          <el-tooltip :content="i18n('form.deleteComponent')">
+          <el-tooltip :content="i18n('form.deleteComponent')" :trigger="isMobile ? 'click' : 'hover'">
             <star-horse-icon
               @click.stop="removeItem(isEdit, field?.preps, parentField)"
               icon-class="clear-all"

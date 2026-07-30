@@ -5,6 +5,8 @@ import { BtnHideCondition } from "@/components/types/Params";
 
 import { compKey } from "@/api/system";
 import { isMobile } from "@/api/device";
+import { useMobilePicker } from "@/components/formcomp/utils/useMobilePicker";
+import ShMobilePicker from "@/components/formcomp/utils/ShMobilePicker.vue";
 
 const props = defineProps({
   //按钮列表
@@ -73,6 +75,16 @@ const btnHideCheck = (btn: string, row: any) => {
   }
   return hasBtn ? flag : true;
 };
+
+// APP 端动作面板
+const { pickerVisible, placement, size, openPicker, closePicker } =
+  useMobilePicker(() => ({ preps: {} } as any));
+
+const handleActionClick = (item: any) => {
+  item.funcName?.(props.row);
+  closePicker();
+};
+
 onMounted(() => {
   nextTick(() => {
     init();
@@ -87,83 +99,206 @@ onMounted(() => {
       'justify-end': isMobile,
     }"
   >
-    <template v-if="validButtonList.length > 3">
-      <el-tooltip
-        :content="item.btnName"
-        v-for="(item, key) in validButtonList.slice(0, 3)"
-        :key="compKey(item, key)"
-      >
+    <!-- PC 端：原 el-tooltip + el-dropdown 逻辑 -->
+    <template v-if="!isMobile">
+      <template v-if="validButtonList.length > 3">
+        <el-tooltip
+          :content="item.btnName"
+          v-for="(item, key) in validButtonList.slice(0, 3)"
+          :key="compKey(item, key)"
+        >
+          <star-horse-icon
+            v-if="permissions[item.authority!]"
+            @click="item.funcName!(row)"
+            :icon-class="item.icon || 'edit'"
+            style="cursor: pointer"
+            :color="
+              item.authority == 'delete'
+                ? 'var(--el-color-danger)'
+                : 'var(--star-horse-style)'
+            "
+          />
+        </el-tooltip>
+        <el-dropdown>
+          <span class="el-dropdown-link">
+            <star-horse-icon
+              icon-class="ellipsis"
+              style="color: var(--star-horse-style)"
+            />
+          </span>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item
+                v-for="(auth, key) in validButtonList.slice(
+                  3,
+                  validButtonList.length,
+                )"
+                :key="compKey(auth, key)"
+                :v-if="permissions[auth.authority!]"
+              >
+                <el-button
+                  @click="auth.funcName(row)"
+                  link
+                  title=""
+                  style="cursor: pointer; color: var(--star-horse-style)"
+                  :size="compSize"
+                >
+                  <star-horse-icon
+                    :icon-class="auth.icon || 'edit'"
+                    :color="
+                      auth.authority == 'delete'
+                        ? 'var(--el-color-danger)'
+                        : 'var(--star-horse-style)'
+                    "
+                  />
+                  {{ auth["btnName"] }}
+                </el-button>
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+      </template>
+      <template v-else>
+        <el-tooltip
+          :content="item.btnName"
+          v-for="(item, key) in validButtonList"
+          :key="compKey(item, key)"
+        >
+          <star-horse-icon
+            v-if="permissions[item.authority]"
+            @click="item.funcName(row)"
+            :icon-class="item.icon || 'edit'"
+            style="cursor: pointer"
+            :color="
+              item.authority == 'delete'
+                ? 'var(--el-color-danger)'
+                : 'var(--star-horse-style)'
+            "
+          />
+        </el-tooltip>
+      </template>
+    </template>
+
+    <!-- APP 端：最多显示 2 个按钮 + "更多"触发抽屉动作面板 -->
+    <template v-else>
+      <template v-if="validButtonList.length > 2">
         <star-horse-icon
+          v-for="(item, key) in validButtonList.slice(0, 2)"
+          :key="compKey(item, key)"
           v-if="permissions[item.authority!]"
           @click="item.funcName!(row)"
           :icon-class="item.icon || 'edit'"
-          style="cursor: pointer"
+          style="cursor: pointer; margin-left: 8px"
           :color="
             item.authority == 'delete'
               ? 'var(--el-color-danger)'
               : 'var(--star-horse-style)'
           "
         />
-      </el-tooltip>
-      <el-dropdown>
-        <span class="el-dropdown-link">
+        <div class="more-btn" @click="openPicker">
           <star-horse-icon
             icon-class="ellipsis"
             style="color: var(--star-horse-style)"
           />
-        </span>
-        <template #dropdown>
-          <el-dropdown-menu>
-            <el-dropdown-item
-              v-for="(auth, key) in validButtonList.slice(
-                3,
-                validButtonList.length,
-              )"
-              :key="compKey(auth, key)"
-              :v-if="permissions[auth.authority!]"
-            >
-              <el-button
-                @click="auth.funcName(row)"
-                link
-                title=""
-                style="cursor: pointer; color: var(--star-horse-style)"
-                :size="compSize"
-              >
-                <star-horse-icon
-                  :icon-class="auth.icon || 'edit'"
-                  :color="
-                    auth.authority == 'delete'
-                      ? 'var(--el-color-danger)'
-                      : 'var(--star-horse-style)'
-                  "
-                />
-                {{ auth["btnName"] }}
-              </el-button>
-            </el-dropdown-item>
-          </el-dropdown-menu>
-        </template>
-      </el-dropdown>
-    </template>
-    <template v-else>
-      <el-tooltip
-        :content="item.btnName"
-        v-for="(item, key) in validButtonList"
-        :key="compKey(item, key)"
-      >
+        </div>
+      </template>
+      <template v-else>
         <star-horse-icon
+          v-for="(item, key) in validButtonList"
+          :key="compKey(item, key)"
           v-if="permissions[item.authority]"
           @click="item.funcName(row)"
           :icon-class="item.icon || 'edit'"
-          style="cursor: pointer"
+          style="cursor: pointer; margin-left: 8px"
           :color="
             item.authority == 'delete'
               ? 'var(--el-color-danger)'
               : 'var(--star-horse-style)'
           "
         />
-      </el-tooltip>
+      </template>
+
+      <ShMobilePicker
+        v-model="pickerVisible"
+        title="更多操作"
+        :placement="placement"
+        :size="size"
+        :show-footer="false"
+      >
+        <div class="mobile-action-panel">
+          <div
+            v-for="(item, key) in validButtonList"
+            :key="compKey(item, key)"
+            v-if="permissions[item.authority!]"
+            class="mobile-action-panel__item"
+            @click="handleActionClick(item)"
+          >
+            <star-horse-icon
+              :icon-class="item.icon || 'edit'"
+              :color="
+                item.authority == 'delete'
+                  ? 'var(--el-color-danger)'
+                  : 'var(--star-horse-style)'
+              "
+              class="mobile-action-panel__icon"
+            />
+            <span class="mobile-action-panel__label">{{ item.btnName }}</span>
+          </div>
+        </div>
+      </ShMobilePicker>
     </template>
   </div>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.more-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin-left: 8px;
+  cursor: pointer;
+  border-radius: 4px;
+
+  &:active {
+    background: var(--el-fill-color, #f5f7fa);
+  }
+}
+
+.mobile-action-panel {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0;
+  height: 100%;
+  overflow-y: auto;
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--el-border-color-lighter, #ebeef5);
+    transition: background 0.15s;
+
+    &:active {
+      background: var(--el-fill-color, #f5f7fa);
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &__icon {
+    font-size: 20px !important;
+    flex-shrink: 0;
+  }
+
+  &__label {
+    font-size: 15px;
+    color: var(--el-text-color-primary, #303133);
+  }
+}
+</style>

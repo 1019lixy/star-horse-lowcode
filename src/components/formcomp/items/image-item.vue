@@ -212,6 +212,13 @@ onMounted(() => {
   }
 }
 
+/* 移动端：删除按钮常驻显示 */
+@media (max-width: 768px) {
+  .image-area .image-remove {
+    visibility: visible;
+  }
+}
+
 .demo-image__error .image-slot {
   font-size: 30px;
 }

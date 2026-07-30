@@ -33,7 +33,12 @@
         {{ field.preps?.prependText }}
       </template>
       <template #prepend v-if="prependList?.length > 0">
-        <el-select v-model="formData[preName]" style="width: 115px !important">
+        <el-select
+            v-model="formData[preName]"
+            :teleported="!isMobile"
+            :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined"
+            :style="isMobile ? 'width: 80px !important' : 'width: 115px !important'"
+        >
           <el-option
               v-for="item in prependList"
               :key="item.value"
@@ -55,7 +60,12 @@
         />
       </template>
       <template #append v-if="appendList?.length > 0">
-        <el-select v-model="formData[appName]" style="width: 115px !important">
+        <el-select
+            v-model="formData[appName]"
+            :teleported="!isMobile"
+            :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined"
+            :style="isMobile ? 'width: 80px !important' : 'width: 115px !important'"
+        >
           <el-option
               v-for="item in appendList"
               :key="item.value"
@@ -81,6 +91,8 @@ import {getDynamicEvents} from "@/api/system";
 
 import {ItemPreps} from "@/components/types/ItemPreps";
 import {StarHorseIcon} from "@/components/comp";
+import {isMobile} from "@/api/device";
+import {MOBILE_POPPER_OPTIONS} from "@/components/formcomp/utils/useMobilePicker";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
