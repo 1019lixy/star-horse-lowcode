@@ -441,6 +441,16 @@ const fieldList = ref<PageFieldInfo>({
       },
     },
     {
+      label: "color",
+      fieldName: "color",
+      type: "color",
+    },
+    {
+      label: "signature",
+      fieldName: "signature",
+      type: "signature",
+    },
+    {
       label: "年",
       fieldName: "fieldYear",
       type: "date",

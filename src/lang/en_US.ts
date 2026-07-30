@@ -456,6 +456,9 @@ export default {
   "comp.deleteData": "Delete Data",
   "comp.underDevelopment":
     "Function under development, now click submit button to export all data",
+  "comp.presetColors":"Preset Colors",
+  "comp.customColor":"Custom Color",
+  "message.clear":"清空",
   /**
    * JSON Editor Strings
    */

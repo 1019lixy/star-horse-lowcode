@@ -452,6 +452,9 @@ export default {
   "comp.treeMenu": "树形菜单",
   "comp.addData": "添加数据",
   "comp.deleteData": "删除数据",
+  "comp.presetColors":"预设颜色",
+  "comp.customColor":"自定义颜色",
+  "message.clear":"清空",
   /**
    * JSON Editor Strings
    */
