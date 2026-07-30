@@ -1,14 +1,12 @@
 <script setup lang="ts">
-import { nextTick, onMounted, onUpdated, ref, shallowRef } from "vue";
+import {computed, nextTick, ref, watch} from "vue";
 import SmoothSignature from "smooth-signature";
-import { warning } from "@/utils/message";
+import {warning} from "@/utils/message";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
-
-import { ItemPreps } from "@/components/types/ItemPreps";
+import {ItemPreps} from "@/components/types/ItemPreps";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
-import { i18n } from "@/lang";
-import { isMobile } from "@/api/device";
+import {i18n} from "@/lang";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -19,127 +17,229 @@ const props = withDefaults(defineProps<ItemPreps>(), {
 });
 const emits = defineEmits(["selfFunc", "selectItem"]);
 const formData = defineModel("formData");
-let previewDialog = shallowRef<boolean>(false);
-let signature = ref<SmoothSignature>(null);
-// 明确声明 ref 类型为 HTMLCanvasElement 或 null
-const signatureCanvas = ref<any>(null);
-let options = {
-  width: Math.min(window.innerWidth, 350),
-  height: 100,
-  minWidth: 2,
-  maxWidth: 6,
-  bgColor: "#f6f6f6",
-  onEnd: (val) => {
-    formData.value[props.field.fieldName] =
-      props.field.preps?.imageType == "jpg"
-        ? signature.value?.getJPG()
-        : signature.value?.getPNG();
-  },
+
+// 弹窗控制：签名编辑弹窗
+const signDialogVisible = ref(false);
+// 大图预览弹窗（保留原有预览功能）
+const previewDialog = ref(false);
+
+// 签名实例
+let signature = ref<SmoothSignature | null>(null);
+const signatureCanvas = ref<HTMLCanvasElement | null>(null);
+
+// 签名配置
+const getSignatureOptions = () => {
+  return {
+    // width: Math.min(window.innerWidth - 60, 550),
+    // height: 220,
+    minWidth: 2,
+    maxWidth: 6,
+    bgColor: "#f6f6f6",
+    ...props.field?.preps,
+  };
 };
-const init = async () => {
-  options = { ...options, ...props.field?.preps };
-  await nextTick(() => {
-    if (!signature.value && signatureCanvas.value) {
-      signature.value = new SmoothSignature(signatureCanvas.value, options);
+
+// 初始化签名画布（弹窗打开后执行）
+const initSignature = async () => {
+  await nextTick();
+  if (signatureCanvas.value) {
+    // 销毁旧实例防止重复创建
+    if (signature.value) {
+      signature.value.destroy?.();
+      signature.value = null;
     }
-  });
+    signature.value = new SmoothSignature(signatureCanvas.value, getSignatureOptions());
+
+    // 如果已有历史签名base64，回填画布
+    const base64 = formData.value[props.field.fieldName];
+    if (base64) {
+      signature.value.fromDataURL(base64);
+    }
+  }
 };
-const clear = (evt: MouseEvent) => {
-  evt && evt.defaultPrevented;
+
+// 清空画布
+const clear = () => {
   signature.value && signature.value.clear();
 };
-const undo = (evt: MouseEvent) => {
-  evt && evt.defaultPrevented;
+
+// 撤销
+const undo = () => {
   signature.value && signature.value.undo();
 };
-const handlePreview = (evt: MouseEvent) => {
-  evt && evt.defaultPrevented;
+
+// 确认签名
+const confirmSign = () => {
+  if (!signature.value) return;
   const isEmpty = signature.value.isEmpty();
   if (isEmpty) {
     warning(i18n("item.pleaseSignFirst"));
     return;
   }
+  // 赋值到表单字段
+  formData.value[props.field.fieldName] =
+      props.field.preps?.imageType == "jpg"
+          ? signature.value.getJPG()
+          : signature.value.getPNG();
+
+  signDialogVisible.value = false;
+};
+
+// 打开签名弹窗
+const openSignDialog = () => {
+  if (props.disabled) return;
+  signDialogVisible.value = true;
+};
+
+// 大图预览
+const handlePreview = () => {
+  const base64 = formData.value[props.field.fieldName];
+  if (!base64) {
+    warning(i18n("item.pleaseSignFirst"));
+    return;
+  }
   previewDialog.value = true;
 };
-onMounted(() => {
-  init();
+
+// 弹窗打开后初始化
+watch(signDialogVisible, (val) => {
+  if (val) {
+    nextTick(initSignature);
+  } else {
+    // 关闭弹窗销毁实例释放内存
+    if (signature.value) {
+      signature.value.destroy?.();
+      signature.value = null;
+    }
+  }
 });
-onUpdated(() => {
-  init();
+
+// 获取当前签名图片base64
+const signImage = computed(() => {
+  return formData.value?.[props.field.fieldName] || "";
 });
 </script>
+
 <template>
+  <!-- 大图预览弹窗（原有功能保留） -->
   <star-horse-dialog
-    v-model="previewDialog"
-    :source="3"
-    :self-func="true"
-    @closeAction="previewDialog = false"
+      v-model="previewDialog"
+      :source="3"
+      :self-func="true"
+      @closeAction="previewDialog = false"
   >
-    <el-image :src="signature?.getPNG()" />
+    <el-image :src="signImage" fit="contain" style="width:100%"/>
+  </star-horse-dialog>
+
+  <!-- 签名编辑弹窗【核心】画布只在这里 -->
+  <star-horse-dialog
+      v-model="signDialogVisible"
+      title="手写签名"
+      @merge="confirmSign"
+      width="600px"
+      :self-func="true"
+  >
+    <div class="signature-wrapper">
+      <div class="sign-toolbar">
+        <el-button size="small" @click="clear">
+          <star-horse-icon icon-class="reset"/>
+          清空
+        </el-button>
+        <el-button size="small" @click="undo">
+          <star-horse-icon icon-class="undo"/>
+          撤销
+        </el-button>
+      </div>
+      <canvas ref="signatureCanvas" class="sign-canvas"/>
+    </div>
   </star-horse-dialog>
 
   <starhorse-form-item
-    :showFormItem="showFormItem"
-    :isDesign="isDesign"
-    :disabled="disabled"
-    :bareFlag="bareFlag"
-    :field="field"
-    :parentField="parentField"
+      :showFormItem="showFormItem"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      :field="field"
+      :parentField="parentField"
   >
-    <div class="pcDemo">
-      <div class="inner_button" v-if="source != 3">
-        <el-menu mode="horizontal" style="height: inherit; width: 100%" :class="{ 'is-mobile': isMobile }">
-          <el-menu-item @click="clear">
-            <el-tooltip :content="i18n('item.clear')" :trigger="isMobile ? 'click' : 'hover'">
-              <star-horse-icon icon-class="reset" />
-            </el-tooltip>
-          </el-menu-item>
-          <el-menu-item @click="undo">
-            <el-tooltip :content="i18n('item.undo')" :trigger="isMobile ? 'click' : 'hover'">
-              <star-horse-icon icon-class="undo" />
-            </el-tooltip>
-          </el-menu-item>
-          <el-menu-item @click="handlePreview">
-            <el-tooltip :content="i18n('item.preview')" :trigger="isMobile ? 'click' : 'hover'">
-              <star-horse-icon icon-class="preview" />
-            </el-tooltip>
-          </el-menu-item>
-        </el-menu>
+    <div class="signature-container">
+      <!-- 无签名：显示按钮 -->
+      <el-button
+          v-if="!signImage"
+          type="primary"
+          @click="openSignDialog"
+          :disabled="disabled"
+      >
+        <star-horse-icon icon-class="edit"/>
+        点击进行签名
+      </el-button>
+
+      <!-- 已有签名：展示图片，点击可重新编辑 -->
+      <div
+          v-else
+          class="sign-preview-box"
+          :class="{ disabled: disabled }"
+          @click="openSignDialog"
+      >
+        <el-image
+            :src="signImage"
+            fit="contain"
+            style="max-height:120px;max-width:100%"
+        />
+        <div class="edit-tip">点击图片重新编辑签名</div>
+        <el-button size="small" link @click.stop="handlePreview">大图预览</el-button>
       </div>
-      <canvas ref="signatureCanvas" />
     </div>
   </starhorse-form-item>
 </template>
+
 <style lang="scss" scoped>
-.pcDemo {
-  button {
-    margin-right: 10px;
-    font-size: 18px;
+.signature-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  .sign-toolbar {
+    display: flex;
+    gap: 8px;
   }
 
-  canvas {
+  .sign-canvas {
+    width: 100%;
+    height: calc(100vh - 150px);
     border: 2px dashed #ccc;
     cursor: crosshair;
+    background: #f6f6f6;
   }
 
-  .actions {
-    margin: 30px 0;
-  }
-
-  .tip {
-    color: #108eff;
+  .sign-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
   }
 }
 
-/* 移动端：菜单防溢出 */
-@media (max-width: 768px) {
-  :deep(.el-menu--horizontal.is-mobile) {
-    flex-wrap: wrap;
-    height: auto !important;
+.signature-container {
+  .sign-preview-box {
+    border: 1px solid #e4e7ed;
+    border-radius: 4px;
+    padding: 10px;
+    cursor: pointer;
+    transition: 0.2s;
 
-    .el-menu-item {
-      height: 40px;
-      line-height: 40px;
+    &:hover {
+      border-color: #409eff;
+    }
+
+    .edit-tip {
+      font-size: 12px;
+      color: #909399;
+      margin-top: 4px;
+    }
+
+    &.disabled {
+      cursor: not-allowed;
+      opacity: 0.7;
     }
   }
 }
