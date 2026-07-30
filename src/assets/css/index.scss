@@ -1162,3 +1162,383 @@ button.el-collapse-item__header {
 .el-popper {
   z-index: 3999 !important;
 }
+
+/* ==================== APP 端下拉分离模式抽屉内样式优化 ==================== */
+/* 抽屉内直接渲染原生列表 / 自动展开的 picker 面板，避免位移错乱和页面挤压变形 */
+.sh-mobile-picker {
+  .el-drawer__body {
+    padding: 0;
+  }
+
+  .sh-mobile-picker__body {
+    padding: 12px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .el-cascader-panel {
+      height: 100%;
+    }
+
+    .el-cascader-menu__wrap {
+      height: 100%;
+    }
+  }
+
+  /* —— 通用原生选择列表样式（select-item / autocomplete-item） —— */
+  .sh-mobile-select-list,
+  .sh-mobile-autocomplete {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 8px;
+  }
+
+  .sh-mobile-select-list__search,
+  .sh-mobile-autocomplete__keyword {
+    flex-shrink: 0;
+  }
+
+  .sh-mobile-select-list__all {
+    flex-shrink: 0;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--el-border-color-lighter);
+  }
+
+  .sh-mobile-select-list__options,
+  .sh-mobile-autocomplete__list {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .sh-mobile-select-list__item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--el-border-color-lighter);
+    cursor: pointer;
+    transition: background-color 0.15s;
+    min-height: 40px;
+
+    &:active {
+      background-color: var(--el-fill-color-light);
+    }
+
+    &.is-selected {
+      background-color: var(--el-color-primary-light-9);
+      color: var(--el-color-primary);
+    }
+  }
+
+  .sh-mobile-select-list__label {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .sh-mobile-select-list__check {
+    color: var(--el-color-primary);
+    flex-shrink: 0;
+  }
+
+  .sh-mobile-select-list__empty,
+  .sh-mobile-autocomplete__empty,
+  .sh-mobile-tree-panel__empty,
+  .sh-mobile-tree-select-panel__empty {
+    padding: 24px;
+    text-align: center;
+    color: var(--el-text-color-secondary);
+  }
+
+  /* autocomplete 建议项 */
+  .sh-mobile-autocomplete__item {
+    padding: 10px 12px;
+    min-height: 40px;
+    font-size: 14px;
+    border-bottom: 1px solid var(--el-border-color-lighter);
+    cursor: pointer;
+    transition: background-color 0.15s;
+
+    &:active {
+      background-color: var(--el-fill-color-light);
+    }
+
+    &.is-active {
+      background-color: var(--el-color-primary-light-9);
+      color: var(--el-color-primary);
+    }
+  }
+
+  /* —— el-cascader-panel 直接渲染 —— */
+  .sh-mobile-cascader-panel {
+    flex: 1;
+    overflow: hidden;
+    border: 1px solid var(--el-border-color-light) !important;
+    border-radius: 4px;
+
+    .el-cascader-menu {
+      min-width: 110px;
+      max-width: 160px;
+      flex: 1;
+    }
+  }
+
+  /* —— el-tree 直接渲染 —— */
+  .sh-mobile-tree-panel,
+  .sh-mobile-tree-select-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 8px;
+  }
+
+  .sh-mobile-tree-panel__search,
+  .sh-mobile-tree-select-panel__search {
+    flex-shrink: 0;
+  }
+
+  .sh-mobile-tree-panel__tree,
+  .sh-mobile-tree-select-panel__tree {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+
+    .el-tree-node__content {
+      height: 40px;
+    }
+  }
+
+  .sh-mobile-tree-panel__label,
+  .sh-mobile-tree-select-panel__label {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* —— date / time picker 自动展开面板（teleported=false 后渲染在抽屉内） —— */
+  .el-date-editor.el-input,
+  .el-date-editor.el-input__wrapper,
+  .el-date-editor .el-range-editor,
+  .sh-mobile-date-picker,
+  .sh-mobile-datetime-picker,
+  .sh-mobile-time-select,
+  .sh-mobile-time-picker {
+    width: 100% !important;
+  }
+
+  /* picker popper 面板（teleported=false 时渲染在抽屉内） */
+  .sh-mobile-date-popper,
+  .sh-mobile-datetime-popper,
+  .sh-mobile-time-select-popper,
+  .sh-mobile-time-picker-popper {
+    position: relative !important;
+    top: 0 !important;
+    left: 0 !important;
+    transform: none !important;
+    box-shadow: none !important;
+    border: 1px solid var(--el-border-color-light) !important;
+    margin-top: 4px;
+    width: 100% !important;
+  }
+
+  .el-picker-panel,
+  .el-time-panel {
+    box-shadow: none !important;
+    border: 1px solid var(--el-border-color-light) !important;
+  }
+}
+
+/* 抽屉遮罩在 APP 端的微调 */
+.sh-mobile-picker-modal {
+  background-color: rgba(0, 0, 0, 0.45);
+}
+
+/* APP 端只读输入框样式微调 */
+@media (max-width: 768px) {
+  .sh-mobile-picker {
+    .el-drawer {
+      max-width: 100%;
+    }
+  }
+}
+
+/* ==================== APP 端滚轮选择器全局样式 ==================== */
+.sh-mobile-wheel-picker {
+  width: 100%;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  gap: 5px;
+}
+
+/* 注意：选中指示线由组件 scoped 中的 .sh-mobile-wheel-picker__indicator 提供，
+   此处不再添加 ::after 或 mask border，避免重复指示线 */
+
+.sh-mobile-wheel-picker__item {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ==================== APP 端网格选择器全局样式 ==================== */
+.sh-mobile-grid-picker__grid {
+  -webkit-overflow-scrolling: touch;
+}
+
+.sh-mobile-grid-picker__cell {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sh-mobile-grid-picker__cal-day {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ==================== APP 端卡片式列表增强样式 ==================== */
+.sh-mobile-picker {
+  .sh-mobile-select-list {
+    gap: 6px;
+  }
+
+  .sh-mobile-select-list__item {
+    position: relative;
+    padding: 10px 12px;
+    margin: 2px 0;
+    border: 1px solid var(--el-border-color-lighter, #ebeef5);
+    border-radius: 8px;
+    background: #fff;
+    transition: all 0.15s ease;
+    min-height: 40px;
+    gap: 8px;
+
+    &:active {
+      transform: scale(0.98);
+      background-color: var(--el-color-primary-light-9, #ecf5ff);
+    }
+
+    &.is-selected {
+      background-color: var(--el-color-primary-light-9, #ecf5ff);
+      border-color: var(--el-color-primary-light-5, #a0cfff);
+      color: var(--el-color-primary, #409eff);
+    }
+  }
+
+  .sh-mobile-select-list__label {
+    font-size: 14px;
+    line-height: 1.3;
+  }
+
+  .sh-mobile-select-list__check {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--el-color-primary, #409eff);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  .sh-mobile-select-list__all {
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 1;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--el-border-color-lighter, #ebeef5);
+    margin: 0;
+    font-size: 14px;
+  }
+
+  /* 搜索框：扁平化，去掉圆角胶囊，与列表风格一致 */
+  .sh-mobile-select-list__search {
+    margin-bottom: 4px;
+    flex-shrink: 0;
+
+    :deep(.el-input__wrapper) {
+      border-radius: 8px;
+      padding: 0 10px;
+      height: 36px;
+      box-shadow: 0 0 0 1px var(--el-border-color, #dcdfe6) inset;
+    }
+
+    :deep(.el-input__wrapper.is-focus) {
+      box-shadow: 0 0 0 1px var(--el-color-primary, #409eff) inset;
+    }
+
+    :deep(.el-input__prefix) {
+      margin-right: 4px;
+      color: var(--el-text-color-placeholder, #c0c4cc);
+    }
+
+    :deep(.el-input__prefix-inner) {
+      font-size: 16px;
+    }
+  }
+
+  /* autocomplete 建议项同步紧凑化 */
+  .sh-mobile-autocomplete__item {
+    padding: 10px 12px;
+    min-height: 40px;
+    font-size: 14px;
+  }
+}
+
+/* ==================== APP 端级联面板增强样式 ==================== */
+.sh-mobile-picker {
+  .sh-mobile-cascader-panel {
+    border: none !important;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+
+    .el-cascader-menu {
+      border-right: 1px solid var(--el-border-color-lighter, #ebeef5);
+    }
+
+    .el-cascader-node {
+      padding: 0 12px;
+      height: 44px;
+      line-height: 44px;
+      font-size: 14px;
+
+      &.is-active {
+        background-color: var(--el-color-primary-light-9, #ecf5ff);
+      }
+
+      &:hover {
+        background-color: var(--el-fill-color-light, #f5f7fa);
+      }
+    }
+  }
+}
+
+/* ==================== APP 端树形面板增强样式 ==================== */
+.sh-mobile-picker {
+  .sh-mobile-tree-panel__tree,
+  .sh-mobile-tree-select-panel__tree {
+    background: #fff;
+    border-radius: 8px;
+    padding: 8px;
+
+    .el-tree-node__content {
+      height: 44px;
+      border-radius: 6px;
+      margin: 2px 0;
+    }
+
+    .el-tree-node__content:hover {
+      background-color: var(--el-fill-color-light, #f5f7fa);
+    }
+
+    .is-current > .el-tree-node__content {
+      background-color: var(--el-color-primary-light-9, #ecf5ff);
+    }
+  }
+}
+

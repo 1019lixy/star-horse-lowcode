@@ -8,6 +8,7 @@
     :parentField="parentField"
   >
     <el-date-picker
+      v-if="!isSeparate"
       :fid="field.fieldName"
       :disabled="checkIsDisabled(props)"
       v-bind="prepsFilter(field.preps)"
@@ -18,32 +19,50 @@
       @change="itemAction('change')"
       v-model="formData[field.fieldName]"
     />
+
+    <template v-else>
+      <el-input
+        :model-value="displayText"
+        :placeholder="field.preps?.placeholder || i18n('starhorse.pleaseSelect')"
+        :disabled="checkIsDisabled(props)"
+        readonly
+        @click="openPicker"
+      >
+        <template #suffix>
+          <star-horse-icon icon-class="date" />
+        </template>
+      </el-input>
+
+      <ShMobilePicker
+        v-model="pickerVisible"
+        :title="title"
+        :placement="placement"
+        :size="size"
+        @confirm="handleConfirm"
+        @cancel="handleCancel"
+      >
+        <ShMobileWheelPicker
+          ref="wheelPickerRef"
+          :model-value="formData[field.fieldName]"
+          :type="wheelType"
+          :value-format="wheelValueFormat"
+          :min-year="minYear"
+          :max-year="maxYear"
+        />
+      </ShMobilePicker>
+    </template>
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {
-  computed,
-  nextTick,
-  onBeforeMount,
-  onMounted,
-  ref,
-  shallowRef,
-  watch,
-} from "vue";
-import {
-  allAction,
-  checkIsDisabled,
-  initCompCallEvent,
-  prepsFilter,
-} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import { computed, nextTick, onBeforeMount, onMounted, ref, shallowRef, watch } from "vue";
+import { allAction, checkIsDisabled, initCompCallEvent, prepsFilter } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { getDynamicEvents } from "@/api/system";
-
 import { ItemPreps } from "@/components/types/ItemPreps";
-import {
-  getDateDisplayFormat,
-  getDateValueFormat,
-  normalizeDateModel,
-} from "@/api/date_utils";
+import { getDateDisplayFormat, getDateValueFormat, normalizeDateModel } from "@/api/date_utils";
+import { useMobilePicker } from "@/components/formcomp/utils/useMobilePicker";
+import ShMobilePicker from "@/components/formcomp/utils/ShMobilePicker.vue";
+import ShMobileWheelPicker from "@/components/formcomp/utils/ShMobileWheelPicker.vue";
+import { i18n } from "@/lang";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -56,32 +75,101 @@ const emits = defineEmits(["selfFunc", "selectItem"]);
 const formData = defineModel("formData");
 const disabledDate = shallowRef<any>([]);
 
-// 确定子类型：preps.type > field.type > "datetime"
 const effectiveType = computed(() => {
   return props.field.preps?.type || props.field.type || "datetime";
 });
 
-// 根据 subType 推导 value-format 和 display format
 const valueFormat = computed(() => getDateValueFormat(effectiveType.value));
 const displayFormat = computed(() => getDateDisplayFormat(effectiveType.value));
+
+const {
+  isSeparate,
+  pickerVisible,
+  placement,
+  size,
+  title,
+  openPicker,
+  closePicker,
+} = useMobilePicker(() => props.field);
+
+/* datetime → "datetime"，datetimerange → "datetimerange" */
+const wheelType = computed(() => {
+  const t = effectiveType.value;
+  if (t === "datetimerange") return "datetimerange";
+  return "datetime";
+});
+
+const wheelValueFormat = computed(() => {
+  return props.field.preps?.valueFormat || valueFormat.value;
+});
+
+const minYear = computed(() => {
+  const min = props.field.preps?.minYear;
+  return min ? parseInt(min) : 1900;
+});
+
+const maxYear = computed(() => {
+  const max = props.field.preps?.maxYear;
+  return max ? parseInt(max) : 2099;
+});
+
+const wheelPickerRef = ref<any>(null);
+
+const displayText = computed(() => {
+  const val = formData.value?.[props.field.fieldName];
+  if (val === undefined || val === null || val === "") return "";
+  if (Array.isArray(val)) {
+    return val.map((v) => formatSingle(v)).join(" ~ ");
+  }
+  return formatSingle(val);
+});
+
+const formatSingle = (val: any) => {
+  if (!val) return "";
+  if (typeof val === "string") return val;
+  if (val instanceof Date) {
+    try {
+      const yyyy = val.getFullYear();
+      const mm = String(val.getMonth() + 1).padStart(2, "0");
+      const dd = String(val.getDate()).padStart(2, "0");
+      const hh = String(val.getHours()).padStart(2, "0");
+      const mi = String(val.getMinutes()).padStart(2, "0");
+      const ss = String(val.getSeconds()).padStart(2, "0");
+      return `${yyyy}-${mm}-${dd} ${hh}:${mi}:${ss}`;
+    } catch {
+      return String(val);
+    }
+  }
+  return String(val);
+};
+
+const handleConfirm = () => {
+  const val = wheelPickerRef.value?.getFormattedValue?.();
+  if (val !== undefined) formData.value[props.field.fieldName] = val;
+  itemAction("change");
+  closePicker();
+};
+
+const handleCancel = () => {
+  closePicker();
+};
 
 const itemAction = (prep: any) => {
   if (prep == "change" && effectiveType.value?.includes("range")) {
     let val = formData.value[props.field.fieldName];
-    if (props.field.preps?.needSplitName) {
+    if (props.field.preps?.needSplitName && Array.isArray(val)) {
       formData.value[props.field.fieldName + "Start"] = val[0];
       formData.value[props.field.fieldName + "End"] = val[1];
     }
   }
   allAction(props, emits, formData, prep);
 };
+
 onBeforeMount(() => {
   if (!props.field.preps) {
     props.field.preps = {};
   }
-  // 设置 preps.type，兼容旧逻辑
   props.field.preps["type"] = effectiveType.value;
-  // 数据格式化已由下方持久化 watch 统一处理，无需在此初始化
   const disableDate = props.field.preps?.disableDate;
   if (typeof disableDate === "function") {
     disabledDate.value = disableDate() || [];
@@ -90,8 +178,8 @@ onBeforeMount(() => {
   }
   delete props.field.preps?.disabledDate;
 });
+
 onMounted(() => {
-  //后面增加判断规则
   props.field.preps["disabledDate"] = (date: Date) => {
     return disabledDate.value.includes(date.getDate().toString());
   };
@@ -99,8 +187,8 @@ onMounted(() => {
     initCompCallEvent(props, emits, formData);
   });
 });
+
 const closeWatch = ref<() => void>();
-// 持久化 watch：后端数据异步到达时自动格式化，无论何时到达都能正确处理
 closeWatch.value = watch(
   () => formData.value?.[props.field.fieldName],
   (val) => {
@@ -112,13 +200,8 @@ closeWatch.value = watch(
       const name = props.field.fieldName;
       const vf = props.field.preps?.valueFormat || valueFormat.value;
       const normalized = normalizeDateModel(val, effectiveType.value, vf);
-      // 幂等保护：仅当格式化结果与原值不同时写回，防止无限循环
       if (Array.isArray(normalized)) {
-        if (
-          !Array.isArray(val) ||
-          normalized.length !== val.length ||
-          normalized.some((v: any, i: number) => v !== val[i])
-        ) {
+        if (!Array.isArray(val) || normalized.length !== val.length || normalized.some((v: any, i: number) => v !== val[i])) {
           formData.value[name] = normalized;
           closeWatch.value?.();
         }

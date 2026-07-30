@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { nextTick, onMounted, ref, shallowRef, watch } from "vue";
+import { nextTick, onMounted, ref, shallowRef, watch, computed } from "vue";
 import { PageProps } from "@/components/types/PageProps";
 import { closeLoad, createCondition, load } from "@/api/star_horse_utils";
 import { postRequest } from "@/api/star_horse_apis";
@@ -21,6 +21,10 @@ import { SearchFields } from "@/components/types";
 
 import { ItemPreps } from "@/components/types/ItemPreps";
 import { i18n } from "@/lang";
+import {
+  useMobilePicker,
+} from "@/components/formcomp/utils/useMobilePicker";
+import ShMobilePicker from "@/components/formcomp/utils/ShMobilePicker.vue";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -272,6 +276,53 @@ const assignVal = () => {
     props.field.preps?.["recall"](multipleSelection.value);
   }
 };
+
+// ============ APP 端分离逻辑 ============
+const {
+  isSeparate,
+  pickerVisible,
+  placement,
+  size,
+  title,
+  openPicker,
+  closePicker,
+} = useMobilePicker(() => props.field);
+
+const multiple = computed(() => !!props.field.preps?.multiple);
+
+/** APP 端展示文本 */
+const displayText = computed(() => {
+  const sel = multipleSelection.value || [];
+  const displayField = props.field.preps?.displayField;
+  if (!sel.length) return "";
+  if (!displayField) {
+    // 退回到 formData 取值
+    const val = formData.value?.[props.field.fieldName];
+    if (Array.isArray(val)) return val.join(", ");
+    return val ?? "";
+  }
+  return sel.map((r: any) => r[displayField]).join(", ");
+});
+
+/** 抽屉打开后回显当前页选中行 */
+watch(pickerVisible, async (val) => {
+  if (val) {
+    await nextTick();
+    echoSelection();
+  }
+});
+
+/** APP 端确认：多选确认 */
+const handleConfirm = () => {
+  itemAction("change");
+  closePicker();
+};
+
+/** APP 端取消 */
+const handleCancel = () => {
+  closePicker();
+};
+
 watch(
   () => props.field.preps?.["dataUrl"],
   () => {
@@ -317,7 +368,9 @@ onMounted(async () => {
     :field="field"
     :parentField="parentField"
   >
+    <!-- PC 端：完全保持原逻辑 -->
     <el-select
+      v-if="!isSeparate"
       :fid="field.fieldName"
       v-bind="prepsFilter(field.preps)"
       :disabled="checkIsDisabled(props)"
@@ -421,6 +474,109 @@ onMounted(async () => {
         />
       </template>
     </el-select>
+
+    <!-- APP 端分离模式：只读输入框 + 抽屉内复用表格搜索/分页逻辑 -->
+    <template v-else>
+      <el-input
+        :model-value="displayText"
+        :placeholder="field.preps?.placeholder || i18n('api.pleaseSelectData2')"
+        :disabled="checkIsDisabled(props)"
+        readonly
+        @click="openPicker"
+      >
+        <template #suffix>
+          <star-horse-icon icon-class="arrow-down" />
+        </template>
+      </el-input>
+
+      <ShMobilePicker
+        v-model="pickerVisible"
+        :title="title"
+        :placement="placement"
+        :size="size"
+        :show-footer="multiple"
+        @confirm="handleConfirm"
+        @cancel="handleCancel"
+      >
+        <div class="sh-mobile-page-select-panel">
+          <!-- 搜索表单 -->
+          <div class="sh-mobile-page-select-panel__search">
+            <star-horse-search-comp
+              :formData="field.preps?.['searchFieldList']"
+              @searchData="(data: any) => searchDataFun(data)"
+              :mutComp="true"
+              :compUrl="field.preps?.['dataUrl']"
+            />
+          </div>
+
+          <!-- 数据表格 -->
+          <el-scrollbar tag="div" class="sh-mobile-page-select-panel__table-scroll">
+            <el-table
+              ref="starHorseTableCompRef"
+              :data="pageInfo.dataList"
+              @selection-change="handleSelectionChange"
+              @row-click="selectRow"
+              :stripe="true"
+              :row-key="getRowIdentity"
+              :fit="true"
+              :highlight-current-row="true"
+              :header-cell-style="{
+                background: '#f2f2f2',
+                color: '#707070',
+                'font-size': '13px',
+              }"
+              :cell-style="{ 'font-size': '12px' }"
+              border
+              size="small"
+            >
+              <el-table-column
+                type="selection"
+                align="center"
+                fixed="left"
+                :reserve-selection="true"
+                width="42"
+              />
+              <template
+                v-for="(item, key) in field.preps?.fieldList"
+                :key="compKey(item, key)"
+              >
+                <template v-if="Array.isArray(item)">
+                  <star-horse-table-column
+                    v-for="(sitem, skey) in item"
+                    :key="compKey(sitem, skey)"
+                    :compUrl="field.preps?.['dataUrl']"
+                    :cellEditable="false"
+                    :data-format="field.preps?.['dataFormat']"
+                    :item="sitem"
+                  />
+                </template>
+                <star-horse-table-column
+                  v-else
+                  :compUrl="field.preps?.['dataUrl']"
+                  :cellEditable="false"
+                  :data-format="field.preps?.['dataFormat']"
+                  :item="item"
+                />
+              </template>
+            </el-table>
+          </el-scrollbar>
+
+          <!-- 分页 -->
+          <div class="sh-mobile-page-select-panel__pagination">
+            <el-pagination
+              :total="pageInfo.totalData"
+              @current-change="pageChangeClick"
+              @size-change="pageSizeClick"
+              layout="total, prev, pager, next"
+              v-model:currentPage="pageInfo.currentPage"
+              v-model:page-size="pageInfo.pageSize"
+              v-model:page-count="pageInfo.totalPage"
+              :small="true"
+            />
+          </div>
+        </div>
+      </ShMobilePicker>
+    </template>
   </starhorse-form-item>
 </template>
 <style lang="scss" scoped>
@@ -430,5 +586,36 @@ onMounted(async () => {
 
 :deep(th.el-table__cell:first-child) {
   padding: 5px 0;
+}
+
+/* APP 端面板 */
+.sh-mobile-page-select-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 6px;
+
+  &__search {
+    flex-shrink: 0;
+  }
+
+  &__table-scroll {
+    flex: 1;
+    overflow: hidden;
+
+    :deep(.el-table) {
+      width: 100%;
+    }
+  }
+
+  &__pagination {
+    flex-shrink: 0;
+    padding: 4px 0;
+    border-top: 1px solid var(--el-border-color-lighter);
+
+    :deep(.el-pagination) {
+      justify-content: center;
+    }
+  }
 }
 </style>

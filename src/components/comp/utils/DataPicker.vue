@@ -245,6 +245,7 @@ const onSelectedKeydown = (e: KeyboardEvent) => {
 
 const dialogVisible = ref(false);
 const queryName = ref(null);
+const activeTab = ref<"pending" | "selected">("pending");
 
 const dataSearch = () => {
   if (props.dataUrl) {
@@ -312,6 +313,7 @@ const close = () => {
   dialogVisible.value = false;
 };
 const onOpen = async () => {
+  activeTab.value = "pending";
   dataOrgOptions.value = [];
   if (props.data?.length > 0) {
     dataOrgOptions.value = props.data;
@@ -382,7 +384,8 @@ defineExpose({
     boxWidth="60%"
     boxHeight="70%"
   >
-    <el-splitter>
+    <!-- ===== PC 端多选：左右 splitter 布局 ===== -->
+    <el-splitter v-if="!isMobile && multiple" layout="horizontal">
       <el-splitter-panel collapsible min="50%">
         <el-card shadow="never" class="org-card dialog-body">
           <template #header>
@@ -401,16 +404,16 @@ defineExpose({
               </div>
             </div>
           </template>
-          <div class="my-[5px] w-[95%] mx-auto">
+          <div class="dp-search-bar">
             <el-input
               v-model="queryName"
               :placeholder="i18n('datapicker.enterKeywords')"
-              :style="{ width: '100%' }"
               clearable
               @keyup.enter="dataSearch"
+              @clear="dataSearch"
             >
-              <template #append>
-                <div class="cursor-pointer" @click="dataSearch">
+              <template #suffix>
+                <div class="dp-search-btn" @click="dataSearch">
                   <star-horse-icon iconClass="search" />
                 </div>
               </template>
@@ -575,17 +578,331 @@ defineExpose({
         </el-card>
       </el-splitter-panel>
     </el-splitter>
+
+    <!-- ===== PC 端非多选：仅显示待选数据 ===== -->
+    <el-card
+      v-else-if="!isMobile"
+      shadow="never"
+      class="org-card dialog-body"
+    >
+      <template #header>
+        <div class="flex flex-row items-center w-full justify-center">
+          {{ i18n("datapicker.pendingDataArea") }}
+        </div>
+      </template>
+      <div class="dp-search-bar">
+        <el-input
+          v-model="queryName"
+          :placeholder="i18n('datapicker.enterKeywords')"
+          clearable
+          @keyup.enter="dataSearch"
+          @clear="dataSearch"
+        >
+          <template #suffix>
+            <div class="dp-search-btn" @click="dataSearch">
+              <star-horse-icon iconClass="search" />
+            </div>
+          </template>
+        </el-input>
+      </div>
+      <el-scrollbar tag="div" class="org-tree">
+        <el-tree
+          ref="orgTreeRef"
+          :node-key="displayValue"
+          :data="dataOrgOptions"
+          :default-expanded-keys="expandedKeys"
+          :props="treeProps"
+          :check-strictly="checkStrictly"
+          :filter-node-method="filterNode"
+          @node-click="onNodeClick"
+        >
+          <template #default="{ data }">
+            <div class="data-line">
+              <div class="menu-title">
+                <div class="flex flex-row items-center">
+                  <star-horse-icon
+                    :icon-class="
+                      data.children?.length > 0 ? 'folder' : 'document'
+                    "
+                  />
+                  &nbsp;{{ data[displayName] }}
+                </div>
+              </div>
+              <el-icon class="is-selected">
+                <Check />
+              </el-icon>
+            </div>
+          </template>
+        </el-tree>
+      </el-scrollbar>
+      <el-pagination
+        v-if="pageSize > 0"
+        :total="pageInfo.totalData"
+        @current-change="pageChangeClick"
+        @size-change="pageSizeClick"
+        :size="compSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        v-model:currentPage="pageInfo.currentPage"
+        v-model:page-size="pageInfo.pageSize"
+        v-model:page-count="pageInfo.totalPage"
+      />
+    </el-card>
+
+    <!-- ===== APP 端多选：Tab 切换布局，每个面板占满全屏 ===== -->
+    <div v-else-if="multiple" class="dp-mobile">
+      <el-tabs v-model="activeTab" class="dp-mobile__tabs">
+        <!-- 待选数据 Tab -->
+        <el-tab-pane name="pending">
+          <template #label>
+            <span class="dp-tab-label">{{ i18n("datapicker.pendingDataArea") }}</span>
+          </template>
+          <div v-if="multiple" class="dp-mobile-checkall">
+            <el-checkbox
+              v-model="checkAll"
+              :indeterminate="indeterminate"
+              @change="handleCheckAll"
+            >
+              {{ i18n("datapicker.selectAll") }}
+            </el-checkbox>
+          </div>
+          <div class="dp-search-bar">
+            <el-input
+              v-model="queryName"
+              :placeholder="i18n('datapicker.enterKeywords')"
+              clearable
+              @keyup.enter="dataSearch"
+              @clear="dataSearch"
+            >
+              <template #suffix>
+                <div class="dp-search-btn" @click="dataSearch">
+                  <star-horse-icon iconClass="search" />
+                </div>
+              </template>
+            </el-input>
+          </div>
+          <el-scrollbar tag="div" class="dp-mobile-tree">
+            <el-tree
+              ref="orgTreeRef"
+              :node-key="displayValue"
+              :data="dataOrgOptions"
+              :default-expanded-keys="expandedKeys"
+              :props="treeProps"
+              :check-strictly="checkStrictly"
+              :filter-node-method="filterNode"
+              @node-click="onNodeClick"
+            >
+              <template #default="{ data }">
+                <div class="data-line">
+                  <div class="menu-title">
+                    <div class="flex flex-row items-center">
+                      <star-horse-icon
+                        :icon-class="
+                          data.children?.length > 0 ? 'folder' : 'document'
+                        "
+                      />
+                      &nbsp;{{ data[displayName] }}
+                    </div>
+                  </div>
+                  <el-icon class="is-selected">
+                    <Check />
+                  </el-icon>
+                </div>
+              </template>
+            </el-tree>
+          </el-scrollbar>
+          <el-pagination
+            v-if="pageSize > 0"
+            :total="pageInfo.totalData"
+            @current-change="pageChangeClick"
+            @size-change="pageSizeClick"
+            :size="compSize"
+            layout="total, prev, pager, next"
+            v-model:currentPage="pageInfo.currentPage"
+            v-model:page-size="pageInfo.pageSize"
+            v-model:page-count="pageInfo.totalPage"
+            :small="true"
+          />
+        </el-tab-pane>
+
+        <!-- 已选数据 Tab -->
+        <el-tab-pane name="selected">
+          <template #label>
+            <span class="dp-tab-label">
+              {{ i18n("datapicker.selectedDataArea") }}
+              <el-badge
+                v-if="dataOptions.length > 0"
+                :value="dataOptions.length"
+                type="primary"
+                class="dp-tab-badge"
+              />
+            </span>
+          </template>
+          <el-scrollbar tag="div" class="dp-mobile-tree">
+            <div
+              ref="selectedListRef"
+              class="selected-list"
+              tabindex="0"
+              @keydown="onSelectedKeydown"
+            >
+              <div
+                v-for="(item, index) in dataOptions"
+                :key="item[displayValue]"
+                class="selected-item"
+                :class="{ 'is-active-item': activeIndex === index }"
+                :data-index="index"
+                :data-id="item[displayValue]"
+                @click="onSelectedItemClick(index)"
+              >
+                <div class="selected-item-content">
+                  <el-icon
+                    title="拖拽排序"
+                    v-if="multiple"
+                    class="drag-handle"
+                    :size="20"
+                  >
+                    <Sort />
+                  </el-icon>
+                  <star-horse-icon
+                    :icon-class="
+                      item.children?.length > 0 ? 'folder' : 'document'
+                    "
+                    size="18px"
+                  />
+                  <span class="selected-item-label">{{
+                    item[displayName]
+                  }}</span>
+                </div>
+                <div class="selected-item-actions">
+                  <el-icon
+                    :title="i18n('datapicker.moveToFirst')"
+                    v-if="multiple"
+                    :size="22"
+                    :class="{ 'is-disabled-action': index === 0 }"
+                    @click.stop="moveTop(index)"
+                  >
+                    <Upload />
+                  </el-icon>
+                  <el-icon
+                    :title="i18n('datapicker.moveUp')"
+                    v-if="multiple"
+                    :size="22"
+                    :class="{ 'is-disabled-action': index === 0 }"
+                    @click.stop="moveUp(index)"
+                  >
+                    <Top />
+                  </el-icon>
+                  <el-icon
+                    :title="i18n('datapicker.moveToEnd')"
+                    v-if="multiple"
+                    :size="22"
+                    :class="{
+                      'is-disabled-action': index === dataOptions.length - 1,
+                    }"
+                    @click.stop="moveEnd(index)"
+                  >
+                    <Download />
+                  </el-icon>
+                  <el-icon
+                    :title="i18n('datapicker.moveDown')"
+                    v-if="multiple"
+                    :size="22"
+                    :class="{
+                      'is-disabled-action': index === dataOptions.length - 1,
+                    }"
+                    @click.stop="moveDown(index)"
+                  >
+                    <Bottom />
+                  </el-icon>
+                  <el-icon
+                    :title="i18n('common.delete')"
+                    :size="22"
+                    class="remove-action"
+                    @click.stop="removeItem(index)"
+                  >
+                    <Delete style="color: var(--el-color-danger)" />
+                  </el-icon>
+                </div>
+              </div>
+              <div v-if="dataOptions.length === 0" class="empty-tip">
+                {{ i18n("datapicker.enterKeywords") }}
+              </div>
+            </div>
+          </el-scrollbar>
+        </el-tab-pane>
+      </el-tabs>
+    </div>
+
+    <!-- ===== APP 端非多选：仅显示待选数据 ===== -->
+    <div v-else class="dp-mobile">
+      <div class="dp-search-bar">
+        <el-input
+          v-model="queryName"
+          :placeholder="i18n('datapicker.enterKeywords')"
+          clearable
+          @keyup.enter="dataSearch"
+          @clear="dataSearch"
+        >
+          <template #suffix>
+            <div class="dp-search-btn" @click="dataSearch">
+              <star-horse-icon iconClass="search" />
+            </div>
+          </template>
+        </el-input>
+      </div>
+      <el-scrollbar tag="div" class="dp-mobile-tree">
+        <el-tree
+          ref="orgTreeRef"
+          :node-key="displayValue"
+          :data="dataOrgOptions"
+          :default-expanded-keys="expandedKeys"
+          :props="treeProps"
+          :check-strictly="checkStrictly"
+          :filter-node-method="filterNode"
+          @node-click="onNodeClick"
+        >
+          <template #default="{ data }">
+            <div class="data-line">
+              <div class="menu-title">
+                <div class="flex flex-row items-center">
+                  <star-horse-icon
+                    :icon-class="
+                      data.children?.length > 0 ? 'folder' : 'document'
+                    "
+                  />
+                  &nbsp;{{ data[displayName] }}
+                </div>
+              </div>
+              <el-icon class="is-selected">
+                <Check />
+              </el-icon>
+            </div>
+          </template>
+        </el-tree>
+      </el-scrollbar>
+      <el-pagination
+        v-if="pageSize > 0"
+        :total="pageInfo.totalData"
+        @current-change="pageChangeClick"
+        @size-change="pageSizeClick"
+        :size="compSize"
+        layout="total, prev, pager, next"
+        v-model:currentPage="pageInfo.currentPage"
+        v-model:page-size="pageInfo.pageSize"
+        v-model:page-count="pageInfo.totalPage"
+        :small="true"
+      />
+    </div>
   </star-horse-dialog>
 </template>
 
 <style scoped lang="scss">
 :deep {
   .el-tree {
-    --el-tree-node-content-height: 40px;
+    --el-tree-node-content-height: 36px;
 
     .el-tree-node__content {
       border-radius: 8px;
-      margin: 2px 0 2px 0;
+      margin: 1px 0;
     }
 
     .is-active {
@@ -602,7 +919,7 @@ defineExpose({
   background-color: transparent;
 
   :deep(.el-card__header) {
-    padding: 10px !important;
+    padding: 8px 10px !important;
   }
 
   :deep(.el-card__body) {
@@ -612,7 +929,7 @@ defineExpose({
 
 .org-tree {
   height: 100%;
-  padding: 5px;
+  padding: 4px;
 }
 
 .data-line {
@@ -627,7 +944,38 @@ defineExpose({
   padding-right: 15px;
 }
 
-// ===== 已选数据列表 =====
+/* ===== 搜索框 ===== */
+.dp-search-bar {
+  padding: 4px 10px 6px;
+
+  :deep(.el-input__wrapper) {
+    border-radius: 8px;
+  }
+
+  :deep(.el-input__suffix) {
+    cursor: pointer;
+  }
+
+  :deep(.el-input__suffix-inner) {
+    color: var(--el-text-color-placeholder, #c0c4cc);
+    font-size: 16px;
+  }
+}
+
+/* 搜索按钮 */
+.dp-search-btn {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: var(--el-text-color-placeholder, #c0c4cc);
+  transition: color 0.2s;
+
+  &:active {
+    color: var(--el-color-primary);
+  }
+}
+
+/* ===== 已选数据列表 ===== */
 .selected-list {
   outline: none;
   min-height: 100%;
@@ -637,8 +985,8 @@ defineExpose({
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 10px;
-  margin: 2px 0;
+  padding: 6px 8px;
+  margin: 1px 0;
   border-radius: 6px;
   cursor: pointer;
   transition: background 0.2s;
@@ -658,7 +1006,7 @@ defineExpose({
 .selected-item-content {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   flex: 1;
   min-width: 0;
   overflow: hidden;
@@ -689,9 +1037,9 @@ defineExpose({
 .selected-item-actions {
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 1px;
   flex-shrink: 0;
-  margin-left: 4px;
+  margin-left: 2px;
   color: var(--el-text-color-regular);
   opacity: 0;
   transition: opacity 0.2s;
@@ -699,7 +1047,7 @@ defineExpose({
   .el-icon {
     cursor: pointer;
     border-radius: 4px;
-    padding: 3px;
+    padding: 2px;
 
     &:hover {
       background: var(--el-fill-color);
@@ -729,7 +1077,7 @@ defineExpose({
   opacity: 1;
 }
 
-// Sortable 样式
+/* Sortable 样式 */
 :deep(.sortable-ghost) {
   opacity: 0.4;
   background: var(--el-color-primary-light-9);
@@ -760,5 +1108,111 @@ defineExpose({
   padding: 40px 0;
   color: var(--el-text-color-placeholder);
   font-size: 13px;
+}
+
+/* ===== 移动端 Tab 布局适配 ===== */
+.dp-mobile {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.dp-mobile__tabs {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  :deep(.el-tabs__header) {
+    margin: 0;
+    flex-shrink: 0;
+  }
+
+  :deep(.el-tabs__content) {
+    flex: 1;
+    overflow: hidden;
+    padding: 6px;
+  }
+
+  :deep(.el-tab-pane) {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.dp-tab-label {
+  font-size: 14px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dp-tab-badge {
+  :deep(.el-badge__content) {
+    font-size: 11px;
+    height: 16px;
+    line-height: 16px;
+    padding: 0 4px;
+  }
+}
+
+.dp-mobile-checkall {
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--el-border-color-lighter);
+  flex-shrink: 0;
+}
+
+.dp-mobile-tree {
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ===== 移动端紧凑适配 ===== */
+@media (max-width: 768px) {
+  :deep {
+    .el-tree {
+      --el-tree-node-content-height: 32px;
+
+      .el-tree-node__content {
+        margin: 0;
+      }
+    }
+  }
+
+  .dp-search-bar {
+    padding: 2px 6px 4px;
+    flex-shrink: 0;
+
+    :deep(.el-input__wrapper) {
+      height: 34px;
+    }
+  }
+
+  .selected-item {
+    padding: 4px 6px;
+    margin: 0;
+  }
+
+  .selected-item-content {
+    gap: 4px;
+  }
+
+  .selected-item-label {
+    font-size: 13px;
+  }
+
+  .selected-item-actions {
+    gap: 0;
+
+    .el-icon {
+      padding: 1px;
+    }
+  }
+
+  .org-tree {
+    padding: 2px;
+  }
 }
 </style>

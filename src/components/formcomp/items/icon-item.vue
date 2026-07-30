@@ -7,7 +7,9 @@
     :field="field"
     :parentField="parentField"
   >
+    <!-- PC 端：完全保持原逻辑 -->
     <el-popover
+      v-if="!isSeparate"
       :popper-style="{ width: 'inherit !important' }"
       ref="popoverRef"
       :placement="field.preps?.placement ?? 'bottom-start'"
@@ -82,6 +84,95 @@
         </ul>
       </div>
     </el-popover>
+
+    <!-- APP 端分离模式：只读触发器 + 抽屉式图标选择 -->
+    <template v-else>
+      <div class="icon-app-trigger" @click="openPicker">
+        <el-avatar
+          v-if="iconType == 'system'"
+          fit="fill"
+          shape="square"
+          :style="{
+            'font-size': field.preps?.listView ? '22px' : '24px',
+            background: field.preps?.listView
+              ? 'unset'
+              : 'var(--el-avatar-bg-color)',
+          }"
+          :icon="formData[field.fieldName]"
+        />
+        <star-horse-icon
+          :icon-class="formData[field.fieldName]"
+          v-else
+          size="30px"
+          style="
+            color: var(--star-horse-style);
+            border-radius: 3px;
+            border: 1px solid var(--star-horse-light-gray);
+          "
+          cursor="pointer"
+        />
+      </div>
+
+      <ShMobilePicker
+        v-model="pickerVisible"
+        :title="title"
+        :placement="placement"
+        :size="size"
+        :show-footer="false"
+        @cancel="handleCancel"
+      >
+        <div class="sh-mobile-icon-panel">
+          <!-- 搜索框 -->
+          <el-input
+            v-model="searchName"
+            class="sh-mobile-icon-panel__search"
+            :placeholder="i18n('item.searchIconPlaceholder')"
+            clearable
+            @input="dataSearch"
+          >
+            <template #prefix>
+              <star-horse-icon icon-class="search" />
+            </template>
+          </el-input>
+
+          <!-- 图标网格 -->
+          <el-scrollbar tag="div" class="sh-mobile-icon-panel__grid-scroll">
+            <ul class="sh-mobile-icon-panel__grid">
+              <li
+                v-for="sdata in iconList"
+                @click="assignIcon(sdata.value)"
+                :title="sdata.name"
+                :key="sdata.value"
+                :class="{
+                  'icon-active': sdata.value == formData[field.fieldName],
+                }"
+              >
+                <el-icon
+                  class="star-icon"
+                  v-if="iconType == 'system'"
+                >
+                  <component :is="sdata.value" :key="sdata.value + '_comp'" />
+                </el-icon>
+                <star-horse-icon
+                  :icon-class="sdata.value"
+                  v-else
+                  size="30px"
+                  width="30px"
+                  height="30px"
+                  cursor="pointer"
+                />
+              </li>
+              <li
+                v-if="!iconList.length"
+                class="sh-mobile-icon-panel__empty"
+              >
+                {{ i18n("pivot.empty.noData") || "暂无数据" }}
+              </li>
+            </ul>
+          </el-scrollbar>
+        </div>
+      </ShMobilePicker>
+    </template>
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
@@ -93,6 +184,10 @@ import {
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
 import { compDynamicData } from "@/api/star_horse_utils";
+import {
+  useMobilePicker,
+} from "@/components/formcomp/utils/useMobilePicker";
+import ShMobilePicker from "@/components/formcomp/utils/ShMobilePicker.vue";
 
 import { ItemPreps } from "@/components/types/ItemPreps";
 import { i18n } from "@/lang";
@@ -113,8 +208,11 @@ let iconType = ref<string>("system");
 const popoverRef = shallowRef();
 const assignIcon = (iconName: string) => {
   formData.value[props.field.fieldName] = iconName;
-  unref(popoverRef).popperRef?.delayHide?.();
+  unref(popoverRef)?.popperRef?.delayHide?.();
   itemAction("blur");
+  if (isSeparate.value) {
+    closePicker();
+  }
 };
 const dataSearch = () => {
   if (!searchName.value) {
@@ -152,6 +250,23 @@ watch(
     itemAction("change");
   },
 );
+
+// ============ APP 端分离逻辑 ============
+const {
+  isSeparate,
+  pickerVisible,
+  placement,
+  size,
+  title,
+  openPicker,
+  closePicker,
+} = useMobilePicker(() => props.field);
+
+const handleCancel = () => {
+  searchName.value = "";
+  dataSearch();
+  closePicker();
+};
 </script>
 <style scoped>
 .icon-items {
@@ -172,5 +287,70 @@ watch(
 .search-box {
   width: 90%;
   margin: 0 auto;
+}
+
+/* APP 端触发器 */
+.icon-app-trigger {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+</style>
+
+<style lang="scss" scoped>
+.sh-mobile-icon-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 8px;
+
+  &__search {
+    flex-shrink: 0;
+  }
+
+  &__grid-scroll {
+    flex: 1;
+    overflow: hidden;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));
+    gap: 6px;
+    padding: 4px;
+    margin: 0;
+    list-style: none;
+
+    li {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 56px;
+      border: 1px solid var(--el-border-color-lighter);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+
+      &:active {
+        background: var(--el-color-primary-light-9);
+        border-color: var(--el-color-primary);
+      }
+
+      &.icon-active {
+        background: var(--el-color-primary-light-9);
+        border-color: var(--el-color-primary);
+        color: var(--el-color-primary);
+      }
+    }
+  }
+
+  &__empty {
+    grid-column: 1 / -1;
+    padding: 24px;
+    text-align: center;
+    color: var(--el-text-color-secondary);
+    border: none !important;
+    cursor: default !important;
+  }
 }
 </style>

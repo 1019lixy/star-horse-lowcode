@@ -7,7 +7,9 @@
     :field="field"
     :parentField="parentField"
   >
+    <!-- PC 端：完全保持原逻辑 -->
     <el-tree-select
+      v-if="!isSeparate"
       :fid="field.fieldName"
       :disabled="checkIsDisabled(props)"
       :default-expand-all="true"
@@ -27,7 +29,7 @@
         </el-checkbox>
       </template>
       <template v-if="field.preps?.showFooter" #footer>
-        <el-button v-if="!isAdding" text bg  @click="onAddOption">
+        <el-button v-if="!isAdding" text bg @click="onAddOption">
           {{ i18n("form.addComponentOption") }}
         </el-button>
         <template v-else>
@@ -36,18 +38,12 @@
               v-model="optionName"
               class="option-input flex-1"
               :placeholder="i18n('form.enterOptionName')"
-
             />
             <div class="flex-row flex justify-center w-[35%] mx-auto my-0">
-              <el-button
-                type="primary"
-                icon="add"
-
-                @click="onConfirm"
-              >
+              <el-button type="primary" icon="add" @click="onConfirm">
                 {{ i18n("form.add") }}
               </el-button>
-              <el-button  icon="cancel" @click="clear">{{
+              <el-button icon="cancel" @click="clear">{{
                 i18n("form.cancel")
               }}</el-button>
             </div>
@@ -55,10 +51,77 @@
         </template>
       </template>
     </el-tree-select>
+
+    <!-- APP 端分离模式：只读输入框 + 抽屉内直接渲染树 -->
+    <template v-else>
+      <el-input
+        :model-value="displayText"
+        :placeholder="field.preps?.placeholder || i18n('starhorse.pleaseSelect')"
+        :disabled="checkIsDisabled(props)"
+        readonly
+        @click="openPicker"
+      >
+        <template #suffix>
+          <star-horse-icon icon-class="arrow-down" />
+        </template>
+      </el-input>
+
+      <ShMobilePicker
+        v-model="pickerVisible"
+        :title="title"
+        :placement="placement"
+        :size="size"
+        :show-footer="multiple"
+        @confirm="handleConfirm"
+        @cancel="handleCancel"
+      >
+        <div class="sh-mobile-tree-panel">
+          <!-- 搜索框 -->
+          <el-input
+            v-if="field.preps?.filterable"
+            v-model="filterText"
+            class="sh-mobile-tree-panel__search"
+            :placeholder="i18n('starhorse.pleaseInput') || '搜索'"
+            clearable
+          >
+            <template #prefix>
+              <star-horse-icon icon-class="search" />
+            </template>
+          </el-input>
+
+          <!-- 直接渲染树形列表 -->
+          <el-tree
+            ref="treeRef"
+            :data="treeData"
+            :props="treeProps"
+            :node-key="nodeKey"
+            :show-checkbox="multiple"
+            :default-expand-all="true"
+            :default-checked-keys="multiple ? checkedKeys : undefined"
+            :highlight-current="!multiple"
+            :filter-node-method="filterNodeMethod"
+            :expand-on-click-node="false"
+            class="sh-mobile-tree-panel__tree"
+            @node-click="handleNodeClick"
+            @check="handleCheck"
+          >
+            <template #default="{ node, data }">
+              <span class="sh-mobile-tree-panel__label">
+                {{ renderNodeLabel(node, data) }}
+              </span>
+            </template>
+          </el-tree>
+
+          <div v-if="!treeData.length" class="sh-mobile-tree-panel__empty">
+            {{ i18n("pivot.empty.noData") || "暂无数据" }}
+          </div>
+        </div>
+      </ShMobilePicker>
+    </template>
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { nextTick, onMounted, ref, watch } from "vue";
+import { computed, nextTick, onMounted, ref, watch } from "vue";
 import { compDynamicData } from "@/api/star_horse_utils";
 import {
   allAction,
@@ -69,6 +132,10 @@ import {
 import { getDynamicEvents } from "@/api/system";
 import { warning } from "@/utils/message";
 import { i18n } from "@/lang";
+import {
+  useMobilePicker,
+} from "@/components/formcomp/utils/useMobilePicker";
+import ShMobilePicker from "@/components/formcomp/utils/ShMobilePicker.vue";
 
 import { ItemPreps } from "@/components/types/ItemPreps";
 const props = withDefaults(defineProps<ItemPreps>(), {
@@ -84,6 +151,191 @@ const checkAll = ref(false);
 const indeterminate = ref(false);
 const isAdding = ref(false);
 const optionName = ref("");
+
+const treeRef = ref();
+const filterText = ref("");
+
+// ============ APP 端分离逻辑 ============
+const {
+  isSeparate,
+  pickerVisible,
+  placement,
+  size,
+  title,
+  openPicker,
+  closePicker,
+} = useMobilePicker(() => props.field);
+
+const multiple = computed(() => !!props.field.preps?.multiple);
+const treeData = computed(() => props.field.preps?.data || []);
+const treeProps = computed(() => ({
+  label: props.field.preps?.props?.label || "name",
+  value: props.field.preps?.props?.value || "value",
+  children: props.field.preps?.props?.children || "children",
+}));
+const nodeKey = computed(
+  () => props.field.preps?.props?.value || "value",
+);
+
+const tempValue = ref<any>(multiple.value ? [] : undefined);
+const checkedKeys = ref<any[]>([]);
+
+/** 抽屉打开时初始化 */
+watch(pickerVisible, async (val) => {
+  if (val) {
+    tempValue.value = multiple.value
+      ? [...(formData.value?.[props.field.fieldName] || [])]
+      : formData.value?.[props.field.fieldName];
+    filterText.value = "";
+    await nextTick();
+    if (multiple.value && treeRef.value) {
+      checkedKeys.value = Array.isArray(tempValue.value) ? tempValue.value : [];
+      treeRef.value.setCheckedKeys(checkedKeys.value);
+    } else if (!multiple.value && treeRef.value) {
+      treeRef.value.setCurrentKey(tempValue.value);
+    }
+  }
+});
+
+/** 搜索过滤 */
+watch(filterText, (val) => {
+  treeRef.value?.filter(val);
+});
+
+const filterNodeMethod = (value: any, data: any) => {
+  if (!value) return true;
+  let name: any = props.field.preps?.props?.label || "label";
+  return String(data[name] ?? "").includes(value);
+};
+
+const renderNodeLabel = (node: any, data: any) => {
+  let labelName = props.field.preps?.props?.label || "label";
+  if (props.field.preps?.showCode) {
+    let codeName =
+      props.field.preps?.props?.code ||
+      props.field.preps?.props?.value ||
+      "value";
+    return `${data[labelName]}(${data["code"] || data[codeName] || ""})`;
+  }
+  return data[labelName];
+};
+
+/** PC 端 el-tree-select 的 render-content 回调 */
+const renderContent = (_h: Function, { node, data }: { node: any; data: any }) => {
+  return renderNodeLabel(node, data);
+};
+
+/** 单选：点击节点 */
+const handleNodeClick = (data: any) => {
+  if (multiple.value) return;
+  tempValue.value = data[nodeKey.value];
+  // 单选点选即确认
+  handleConfirm();
+};
+
+/** 多选：勾选 */
+const handleCheck = () => {
+  if (!multiple.value) return;
+  tempValue.value = treeRef.value?.getCheckedKeys() || [];
+  updateCheckAllState();
+};
+
+const updateCheckAllState = () => {
+  if (!multiple.value) return;
+  const total = countLeafNodes(treeData.value);
+  const selected = Array.isArray(tempValue.value) ? tempValue.value.length : 0;
+  checkAll.value = total > 0 && selected === total;
+  indeterminate.value = selected > 0 && selected < total;
+};
+
+const countLeafNodes = (nodes: any[]): number => {
+  let count = 0;
+  const childKey = treeProps.value.children;
+  for (const n of nodes) {
+    if (n[childKey]?.length) {
+      count += countLeafNodes(n[childKey]);
+    } else {
+      count += 1;
+    }
+  }
+  return count;
+};
+
+const handleCheckAll = (val: any) => {
+  if (!multiple.value) return;
+  if (val) {
+    const collectValues = (nodes: any[]) => {
+      let values: any[] = [];
+      const key = nodeKey.value;
+      const childKey = treeProps.value.children;
+      nodes.forEach((node) => {
+        values.push(node[key]);
+        if (node[childKey]) {
+          values = values.concat(collectValues(node[childKey]));
+        }
+      });
+      return values;
+    };
+    tempValue.value = collectValues(treeData.value);
+  } else {
+    tempValue.value = [];
+  }
+  treeRef.value?.setCheckedKeys(tempValue.value);
+  indeterminate.value = false;
+};
+
+/** 展示文本 */
+const displayText = computed(() => {
+  const val = formData.value?.[props.field.fieldName];
+  if (val === undefined || val === null || val === "") return "";
+  const data = treeData.value;
+  const labelKey = treeProps.value.label;
+  const valueKey = nodeKey.value;
+  const childrenKey = treeProps.value.children;
+
+  if (Array.isArray(val)) {
+    return val
+      .map((v) => findNodeLabel(v, data, labelKey, valueKey, childrenKey))
+      .join(", ");
+  }
+  return findNodeLabel(val, data, labelKey, valueKey, childrenKey);
+});
+
+const findNodeLabel = (
+  v: any,
+  data: any[],
+  labelKey: string,
+  valueKey: string,
+  childrenKey: string,
+): string => {
+  for (const node of data) {
+    if (node[valueKey] === v) return String(node[labelKey] ?? v);
+    if (node[childrenKey]?.length) {
+      const found = findNodeLabel(
+        v,
+        node[childrenKey],
+        labelKey,
+        valueKey,
+        childrenKey,
+      );
+      if (found !== String(v)) return found;
+    }
+  }
+  return String(v);
+};
+
+const handleConfirm = () => {
+  formData.value[props.field.fieldName] = tempValue.value;
+  itemAction("change");
+  closePicker();
+};
+
+const handleCancel = () => {
+  tempValue.value = multiple.value ? [] : undefined;
+  filterText.value = "";
+  closePicker();
+};
+
 const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
@@ -91,7 +343,6 @@ const onAddOption = () => {
   isAdding.value = true;
 };
 const onConfirm = () => {
-  // 校验输入
   if (!optionName.value) {
     warning(i18n("form.enterOptionName"));
     return;
@@ -102,11 +353,8 @@ const onConfirm = () => {
     props.field.preps?.props?.code ||
     props.field.preps?.props?.value ||
     "value";
-  // 校验重复
   if (
-    props.field.preps.data.find(
-      (item: any) => item[codeName] == optionName.value,
-    )
+    props.field.preps.data.find((item: any) => item[codeName] == optionName.value)
   ) {
     warning(i18n("form.optionNameDuplicate"));
     return;
@@ -121,46 +369,6 @@ const clear = () => {
   optionName.value = "";
   isAdding.value = false;
 };
-const handleCheckAll = (val: any) => {
-  indeterminate.value = false;
-  if (val) {
-    // 全选，选中所有数据包括所有子数据,选中所有子数据的子数据
-    const collectValues = (nodes: any[]) => {
-      let values: any[] = [];
-      nodes.forEach((node) => {
-        values.push(node.value);
-        if (node.children) {
-          values = values.concat(collectValues(node.children));
-        }
-      });
-      return values;
-    };
-    formData.value[props.field.fieldName] = collectValues(
-      props.field.preps.data,
-    );
-  } else {
-    // 取消全选
-    formData.value[props.field.fieldName] = [];
-  }
-};
-const filterNodeMethod = (value: any, data: any) => {
-  let name: any = props.field.preps["props"]?.label || "label";
-  return data[name].includes(value);
-};
-const renderContent = (_h: Function, data: any) => {
-  let labelName = props.field.preps.props?.label || "label";
-  if (props.field.preps["showCode"]) {
-    let codeName =
-      props.field.preps.props?.code ||
-      props.field.preps.props?.value ||
-      "value";
-    return `${data.data[labelName]}(${data.data["code"] || data.data[codeName] || ""})`;
-  }
-  return data.data[labelName];
-};
-/**
- * 动态获取数据
- */
 const initData = async () => {
   const dataa = await compDynamicData(props.field);
   if (dataa?.length) {
@@ -185,4 +393,38 @@ onMounted(() => {
   });
 });
 </script>
-<style scoped></style>
+<style lang="scss" scoped>
+.sh-mobile-tree-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 8px;
+
+  &__search {
+    flex-shrink: 0;
+  }
+
+  &__tree {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+
+    :deep(.el-tree-node__content) {
+      height: 40px;
+    }
+  }
+
+  &__label {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__empty {
+    padding: 24px;
+    text-align: center;
+    color: var(--el-text-color-secondary);
+  }
+}
+</style>

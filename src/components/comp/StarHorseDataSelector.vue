@@ -253,4 +253,20 @@ watch(
     border-left-color: var(--el-disabled-border-color);
   }
 }
+
+/* 移动端紧凑化 */
+@media (max-width: 768px) {
+  .data-selector-suffix {
+    width: 28px;
+  }
+
+  :deep(.el-input-tag) {
+    --el-input-tag-inner-padding: 2px 4px;
+  }
+
+  .el-tag {
+    padding: 0 2px;
+    font-size: 12px;
+  }
+}
 </style>
