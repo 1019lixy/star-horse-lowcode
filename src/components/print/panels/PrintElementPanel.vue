@@ -78,7 +78,7 @@ const handleDragStart = (e: DragEvent, type: string) => {
                     :key="item.type"
                     class="element-item"
                     :class="{ disabled: readonly }"
-                    draggable="!readonly"
+                    :draggable="!readonly"
                     @click="handleAdd(item.type)"
                     @dragstart="handleDragStart($event, item.type)"
                     :title="item.name"

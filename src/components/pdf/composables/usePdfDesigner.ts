@@ -287,6 +287,7 @@ export const usePdfDesigner = (initial?: Partial<PdfTemplate>) => {
         selectedElementIds,
         selectedElement,
         selectedCount,
+        clipboard,
         addElement,
         updateElement,
         removeElement,

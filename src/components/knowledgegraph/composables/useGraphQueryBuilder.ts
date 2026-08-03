@@ -12,6 +12,7 @@ import {
     kgGenId,
 } from "../constants";
 import type {
+    KgEdge,
     KgGraph,
     KgNode,
     KgQuery,

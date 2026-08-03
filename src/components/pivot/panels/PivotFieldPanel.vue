@@ -89,7 +89,8 @@ const fieldTypeLabelKey = (type: string): string => {
                 class="field-list"
                 @add="(e) => e.element && handleDropToUnused(e.element)"
             >
-                <template #item="{ element }">
+                <!-- @vue-ignore vuedraggable-es 未声明 #item slot 类型 -->
+                <template #item="{ element }: { element: PivotField }">
                     <div class="field-chip" @dblclick="emit('editField', element.name)">
                         <ShSvgIcon :name="fieldTypeIcon(element.type)" size="12px"/>
                         <span class="chip-text">{{ element.label }}</span>
@@ -114,7 +115,8 @@ const fieldTypeLabelKey = (type: string): string => {
                     :item-key="(f: PivotField) => f.name"
                     class="zone-content"
                 >
-                    <template #item="{ element }">
+                    <!-- @vue-ignore vuedraggable-es 未声明 #item slot 类型 -->
+                    <template #item="{ element }: { element: PivotField }">
                         <div class="field-chip row-chip">
                             <span class="chip-label">{{ element.label }}</span>
                             <el-tag size="small" effect="plain">{{ i18n(fieldTypeLabelKey(element.type)) }}</el-tag>
@@ -141,7 +143,8 @@ const fieldTypeLabelKey = (type: string): string => {
                     :item-key="(f: PivotField) => f.name"
                     class="zone-content"
                 >
-                    <template #item="{ element }">
+                    <!-- @vue-ignore vuedraggable-es 未声明 #item slot 类型 -->
+                    <template #item="{ element }: { element: PivotField }">
                         <div class="field-chip col-chip">
                             <span class="chip-label">{{ element.label }}</span>
                             <el-tag size="small" effect="plain">{{ i18n(fieldTypeLabelKey(element.type)) }}</el-tag>
@@ -168,7 +171,8 @@ const fieldTypeLabelKey = (type: string): string => {
                     :item-key="(f: PivotField) => f.name"
                     class="zone-content"
                 >
-                    <template #item="{ element }">
+                    <!-- @vue-ignore vuedraggable-es 未声明 #item slot 类型 -->
+                    <template #item="{ element }: { element: PivotField }">
                         <div class="field-chip value-chip">
                             <span class="chip-label">{{ element.label }}</span>
                             <el-tag size="small" effect="plain" type="warning">{{ element.aggregation }}</el-tag>

@@ -32,7 +32,7 @@ export function getDeviceInfo() {
     isHarmony: false,
     isOpenHarmony: false,
   };
-  if (isTest || window._isDebug_) {
+  if (isTest || (window as any)._isDebug_) {
     return {
       type: deviceType ?? "mobile",
       os: "unknown",

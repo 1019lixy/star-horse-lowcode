@@ -38,7 +38,7 @@ const marginDialogVisible = ref(false);
             <el-tooltip :content="i18n('pdf.btn.copyTip')" :show-after="500">
                 <el-button
                     :disabled="readonly || !designer.selectedElementId"
-                    @click="designer.selectedElementId && designer.duplicateElement(designer.selectedElementId)"
+                    @click="designer.selectedElementId && designer.duplicateElement(designer.selectedElementId.value)"
                 >
                     <ShSvgIcon name="duplicate" size="14px" />
                 </el-button>
@@ -46,7 +46,7 @@ const marginDialogVisible = ref(false);
             <el-tooltip :content="i18n('pdf.btn.deleteTip')" :show-after="500">
                 <el-button
                     :disabled="readonly || !designer.selectedElementId"
-                    @click="designer.selectedElementId && designer.removeElement(designer.selectedElementId)"
+                    @click="designer.selectedElementId && designer.removeElement(designer.selectedElementId.value)"
                 >
                     <ShSvgIcon name="delete" size="14px" />
                 </el-button>

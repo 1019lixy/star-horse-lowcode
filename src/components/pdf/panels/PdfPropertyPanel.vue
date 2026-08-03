@@ -126,7 +126,7 @@ const handleRemoveColumn = (idx: number) => {
                     <div v-for="(col, idx) in el.columns" :key="idx" class="col-row">
                         <el-input v-model="col.label"  :placeholder="i18n('pdf.property.columnLabel')"/>
                         <el-input-number v-model="col.width" :min="10"  style="width: 80px"/>
-                        <el-button  text @click="handleRemoveColumn(idx)">
+                        <el-button  text @click="handleRemoveColumn(Number(idx))">
                             <el-icon><Delete/></el-icon>
                         </el-button>
                     </div>

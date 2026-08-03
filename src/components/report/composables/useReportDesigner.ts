@@ -161,6 +161,13 @@ export function useReportDesigner(initialTemplate?: Partial<ReportTemplate>) {
         cell.style = { ...(cell.style || {}), ...style };
     };
 
+    /** 通用：合并更新单元格部分字段（dataType / expandDirection / groupField 等） */
+    const updateCell = (address: string, patch: Partial<ReportCell>) => {
+        if (state.readonly) return;
+        const cell = ensureCell(address);
+        Object.assign(cell, patch);
+    };
+
     const applyStyleToSelection = (style: Partial<ReportCell["style"]>) => {
         if (state.readonly) return;
         state.selectedAddresses.forEach((addr) => setCellStyle(addr, style));
@@ -387,6 +394,7 @@ export function useReportDesigner(initialTemplate?: Partial<ReportTemplate>) {
         setCellValue,
         setCellFormula,
         setCellStyle,
+        updateCell,
         applyStyleToSelection,
         deleteCells,
         mergeCells,

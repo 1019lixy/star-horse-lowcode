@@ -360,19 +360,19 @@ const handleElementContextMenu = (e: MouseEvent, el: PdfElement) => {
         items: [
             { key: "copy", label: i18n("pdf.context.copy"), icon: "copy" },
             { key: "cut", label: i18n("pdf.context.cut"), icon: "cut" },
-            { key: "paste", label: i18n("pdf.context.paste"), icon: "paste", disabled: props.designer.clipboard.length === 0 },
+            { key: "paste", label: i18n("pdf.context.paste"), icon: "paste", disabled: props.designer.clipboard.value.length === 0 },
             { key: "duplicate", label: i18n("pdf.context.duplicate"), icon: "duplicate" },
             { key: "delete", label: i18n("pdf.context.delete"), icon: "delete" },
             { key: "d1", label: "", icon: "", divider: true },
             { key: "bringToFront", label: i18n("pdf.context.bringToFront"), icon: "ctx-bringFront" },
             { key: "sendToBack", label: i18n("pdf.context.sendToBack"), icon: "ctx-sendBack" },
             { key: "d2", label: "", icon: "", divider: true },
-            { key: "alignLeft", label: i18n("pdf.context.alignLeft"), icon: "align-left", disabled: props.designer.selectedCount < 2 },
-            { key: "alignCenter", label: i18n("pdf.context.alignCenter"), icon: "align-center", disabled: props.designer.selectedCount < 2 },
-            { key: "alignRight", label: i18n("pdf.context.alignRight"), icon: "align-right", disabled: props.designer.selectedCount < 2 },
-            { key: "alignTop", label: i18n("pdf.context.alignTop"), icon: "align-top", disabled: props.designer.selectedCount < 2 },
-            { key: "alignMiddle", label: i18n("pdf.context.alignMiddle"), icon: "align-middle", disabled: props.designer.selectedCount < 2 },
-            { key: "alignBottom", label: i18n("pdf.context.alignBottom"), icon: "align-bottom", disabled: props.designer.selectedCount < 2 },
+            { key: "alignLeft", label: i18n("pdf.context.alignLeft"), icon: "align-left", disabled: props.designer.selectedCount.value < 2 },
+            { key: "alignCenter", label: i18n("pdf.context.alignCenter"), icon: "align-center", disabled: props.designer.selectedCount.value < 2 },
+            { key: "alignRight", label: i18n("pdf.context.alignRight"), icon: "align-right", disabled: props.designer.selectedCount.value < 2 },
+            { key: "alignTop", label: i18n("pdf.context.alignTop"), icon: "align-top", disabled: props.designer.selectedCount.value < 2 },
+            { key: "alignMiddle", label: i18n("pdf.context.alignMiddle"), icon: "align-middle", disabled: props.designer.selectedCount.value < 2 },
+            { key: "alignBottom", label: i18n("pdf.context.alignBottom"), icon: "align-bottom", disabled: props.designer.selectedCount.value < 2 },
         ],
     };
 };
@@ -382,7 +382,7 @@ const handleCanvasContextMenu = (e: MouseEvent) => {
     contextMenu.value = {
         visible: true, x: e.clientX, y: e.clientY,
         items: [
-            { key: "paste", label: i18n("pdf.context.paste"), icon: "paste", disabled: props.designer.clipboard.length === 0 },
+            { key: "paste", label: i18n("pdf.context.paste"), icon: "paste", disabled: props.designer.clipboard.value.length === 0 },
             { key: "selectAll", label: i18n("pdf.context.selectAll"), icon: "selectAll" },
         ],
     };

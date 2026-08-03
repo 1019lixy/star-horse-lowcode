@@ -69,7 +69,7 @@ export const useDocTemplateDesigner = (initial?: Partial<DocTemplate>) => {
 
     const getData = (): DocTemplate => JSON.parse(JSON.stringify(state));
 
-    return {
+    return reactive({
         state,
         selectedVariableId,
         selectedVariable,
@@ -82,7 +82,7 @@ export const useDocTemplateDesigner = (initial?: Partial<DocTemplate>) => {
         updateMeta,
         loadData,
         getData,
-    };
+    });
 };
 
 export type DocTemplateDesigner = ReturnType<typeof useDocTemplateDesigner>;

@@ -205,11 +205,12 @@ const icons: Record<string, string> = {
             :item-key="(card: KanbanCard) => card.id"
             class="card-list"
         >
-          <template #item="{ element }">
+          <!-- @vue-ignore -->
+          <template #item="{ element }: { element: KanbanCard }">
             <div
                 class="kanban-card"
                 :class="{
-                                selected: element.id === designer.selectedCardId,
+                                selected: element.id === designer.selectedCardId.value,
                                 'priority-urgent': element.priority === 'urgent',
                                 'priority-high': element.priority === 'high',
                                 overdue: isOverdue(element.dueDate),

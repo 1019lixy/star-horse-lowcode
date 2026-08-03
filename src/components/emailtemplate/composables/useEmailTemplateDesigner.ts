@@ -80,7 +80,7 @@ export const useEmailTemplateDesigner = (initial?: Partial<EmailTemplate>) => {
 
     const getData = (): EmailTemplate => JSON.parse(JSON.stringify(state));
 
-    return {
+    return reactive({
         state,
         selectedVariableId,
         selectedVariable,
@@ -94,7 +94,7 @@ export const useEmailTemplateDesigner = (initial?: Partial<EmailTemplate>) => {
         setContent,
         loadData,
         getData,
-    };
+    });
 };
 
 export type EmailTemplateDesigner = ReturnType<typeof useEmailTemplateDesigner>;

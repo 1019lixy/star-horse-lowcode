@@ -25,7 +25,8 @@ const signDialogVisible = ref(false);
 const previewDialog = ref(false);
 
 // 签名实例
-let signature = ref<SmoothSignature | null>(null);
+type SignatureInstance = SmoothSignature & { destroy?: () => void; fromDataURL?: (data: string) => void };
+let signature = ref<SignatureInstance | null>(null);
 const signatureCanvas = ref<HTMLCanvasElement | null>(null);
 
 // 签名配置

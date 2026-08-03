@@ -1,7 +1,7 @@
 <script setup lang="ts" name="GanttCanvas">
 import {computed, ref, watch} from "vue";
 import type {GanttDesigner} from "../composables/useGanttDesigner";
-import {CRITICAL_COLOR, GANTT_STATUS_PRESETS, MILESTONE_SIZE,} from "../constants";
+import {CRITICAL_COLOR, GANTT_STATUS_PRESETS, MILESTONE_SIZE, TODAY_LINE_COLOR,} from "../constants";
 import type {GanttTimelineCell} from "../utils/GanttDateUtils";
 import {
   formatDate,

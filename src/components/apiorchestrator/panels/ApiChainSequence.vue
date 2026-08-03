@@ -32,7 +32,7 @@ const endpointMethod = (endpointId: string): string => {
 
 const endpointPath = (endpointId: string): string => {
     const ep = props.state.endpoints.find((e) => e.id === endpointId);
-    return ep ? ep.path : "";
+    return ep ? ep.url : "";
 };
 
 /** 获取步骤测试结果 */
@@ -224,7 +224,7 @@ const hasSteps = computed(() => props.state.chain.steps.length > 0);
                                 <el-option
                                     v-for="ep in state.endpoints"
                                     :key="ep.id"
-                                    :label="`${ep.method} ${ep.name} (${ep.path})`"
+                                    :label="`${ep.method} ${ep.name} (${ep.url})`"
                                     :value="ep.id"
                                 />
                             </el-select>
@@ -339,7 +339,7 @@ const hasSteps = computed(() => props.state.chain.steps.length > 0);
                         {{ METHOD_LABELS[ep.method] || ep.method }}
                     </span>
                     <span class="ep-name">{{ ep.name }}</span>
-                    <span class="ep-path">{{ ep.path }}</span>
+                    <span class="ep-path">{{ ep.url }}</span>
                 </div>
             </div>
         </div>

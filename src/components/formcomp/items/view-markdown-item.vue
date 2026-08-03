@@ -30,7 +30,7 @@ const emits = defineEmits(["selfFunc", "selectItem"]);
 const formData = defineModel("formData");
 
 let markdownEditor = ref();
-let markdown = ref<MarkdownIt>(null);
+let markdown = ref<InstanceType<typeof MarkdownIt> | null>(null);
 const init = async () => {
   await nextTick(() => {
     if (!markdown.value && markdownEditor.value) {

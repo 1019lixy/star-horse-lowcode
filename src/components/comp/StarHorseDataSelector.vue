@@ -29,8 +29,8 @@ export interface DataSelectorProps {
   /** 是否允许创建不在数据列表中的自定义值（allowCreate） */
   allowCreate?: boolean;
   style?: CSSProperties;
-  tagType: "" | "primary" | "secondary" | "success" | "info" | "warning";
-  tagEffect: "" | "light" | "dark" | "plain";
+  tagType?: "" | "primary" | "secondary" | "success" | "info" | "warning";
+  tagEffect?: "" | "light" | "dark" | "plain";
 }
 
 const props = withDefaults(defineProps<DataSelectorProps>(), {
@@ -45,6 +45,8 @@ const props = withDefaults(defineProps<DataSelectorProps>(), {
   showTagLength: 3,
   allowCreate: true,
   placeholder: i18n("api.pleaseSelectData2"),
+  tagType: "info",
+  tagEffect: "light",
 });
 const emits = defineEmits<{
   (e: "update:modelValue", modelValue: ModelValueType): void;

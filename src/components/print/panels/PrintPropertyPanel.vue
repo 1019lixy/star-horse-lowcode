@@ -7,7 +7,7 @@
 import { computed, watch } from "vue";
 import { i18n } from "@/lang";
 import { BARCODE_SYMBOLOGY_OPTIONS, COLOR_PRESETS, FONT_SIZE_PRESETS, PRESET_PAPERS, SYSTEM_VAR_OPTIONS } from "../constants";
-import type { PrintElement, PrintPaper } from "../types";
+import type { PrintElement, PrintPaper, PrintDataBinding } from "../types";
 import type { UsePrintDesignerReturn } from "../composables/usePrintDesigner";
 
 const props = defineProps<{
@@ -135,7 +135,7 @@ watch(selected, () => {
                     >
                         <el-select
                             :model-value="selected.dataBinding.systemVar"
-                            @change="(v) => updateEl({ dataBinding: { ...(selected!.dataBinding || {}), systemVar: v } })"
+                            @change="(v) => updateEl({ dataBinding: { source: 'system', ...(selected!.dataBinding || {}), systemVar: v } as PrintDataBinding })"
                         >
                             <el-option
                                 v-for="opt in SYSTEM_VAR_OPTIONS"
