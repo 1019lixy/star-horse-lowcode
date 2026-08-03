@@ -76,9 +76,9 @@
         @cancel="handleCancel"
       >
         <div class="sh-mobile-tree-panel">
-          <!-- 搜索框 -->
+          <!-- 搜索框（filterable / allowCreate 时显示） -->
           <el-input
-            v-if="field.preps?.filterable"
+            v-if="field.preps?.filterable || allowCreate"
             v-model="filterText"
             class="sh-mobile-tree-panel__search"
             :placeholder="i18n('starhorse.pleaseInput') || '搜索'"
@@ -112,8 +112,13 @@
             </template>
           </el-tree>
 
-          <div v-if="!treeData.length" class="sh-mobile-tree-panel__empty">
+          <div v-if="!treeData.length && !showTreeCreateRow" class="sh-mobile-tree-panel__empty">
             {{ i18n("pivot.empty.noData") || "暂无数据" }}
+          </div>
+          <!-- allowCreate：创建新值 -->
+          <div v-if="showTreeCreateRow" class="sh-mobile-tree-panel__create" @click="createTreeCustomValue">
+            <star-horse-icon icon-class="add" />
+            <span>{{ i18n("form.add") }} "{{ filterText }}"</span>
           </div>
         </div>
       </ShMobilePicker>
@@ -167,6 +172,7 @@ const {
 } = useMobilePicker(() => props.field);
 
 const multiple = computed(() => !!props.field.preps?.multiple);
+const allowCreate = computed(() => !!props.field.preps?.allowCreate);
 const treeData = computed(() => props.field.preps?.data || []);
 const treeProps = computed(() => ({
   label: props.field.preps?.props?.label || "name",
@@ -206,6 +212,45 @@ const filterNodeMethod = (value: any, data: any) => {
   if (!value) return true;
   let name: any = props.field.preps?.props?.label || "label";
   return String(data[name] ?? "").includes(value);
+};
+
+/** allowCreate：搜索关键字是否已存在于树中 */
+const isKeywordExistsInTree = computed(() => {
+  if (!filterText.value) return true;
+  const kw = filterText.value.toLowerCase();
+  const labelName = treeProps.value.label;
+  const valueName = nodeKey.value;
+  const check = (nodes: any[]): boolean => {
+    for (const n of nodes) {
+      if (
+        String(n[labelName] ?? "").toLowerCase() === kw ||
+        String(n[valueName] ?? "").toLowerCase() === kw
+      ) return true;
+      if (n[treeProps.value.children]?.length && check(n[treeProps.value.children])) return true;
+    }
+    return false;
+  };
+  return check(treeData.value);
+});
+
+/** allowCreate：是否显示"创建 xxx"行 */
+const showTreeCreateRow = computed(
+  () => allowCreate.value && filterText.value.trim() !== "" && !isKeywordExistsInTree.value,
+);
+
+/** allowCreate：创建新值并加入选中 */
+const createTreeCustomValue = () => {
+  const val = filterText.value.trim();
+  if (!val) return;
+  if (multiple.value) {
+    if (!Array.isArray(tempValue.value)) tempValue.value = [];
+    if (!tempValue.value.includes(val)) tempValue.value.push(val);
+    updateCheckAllState();
+  } else {
+    tempValue.value = val;
+    handleConfirm();
+  }
+  filterText.value = "";
 };
 
 const renderNodeLabel = (node: any, data: any) => {
@@ -425,6 +470,29 @@ onMounted(() => {
     padding: 24px;
     text-align: center;
     color: var(--el-text-color-secondary);
+  }
+
+  &__create {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    background: var(--el-color-primary-light-9);
+    color: var(--el-color-primary);
+    font-size: 14px;
+    cursor: pointer;
+    flex-shrink: 0;
+
+    &:active {
+      background: var(--el-color-primary-light-8);
+    }
+
+    span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
   }
 }
 </style>

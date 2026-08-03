@@ -26,6 +26,8 @@ export interface DataSelectorProps {
   checkStrictly?: boolean;
   selectLeaf?: boolean;
   showTagLength?: number;
+  /** 是否允许创建不在数据列表中的自定义值（allowCreate） */
+  allowCreate?: boolean;
   style?: CSSProperties;
   tagType: "" | "primary" | "secondary" | "success" | "info" | "warning";
   tagEffect: "" | "light" | "dark" | "plain";
@@ -41,6 +43,7 @@ const props = withDefaults(defineProps<DataSelectorProps>(), {
   checkStrictly: true,
   selectLeaf: false,
   showTagLength: 3,
+  allowCreate: true,
   placeholder: i18n("api.pleaseSelectData2"),
 });
 const emits = defineEmits<{
@@ -117,6 +120,7 @@ const init = async () => {
 };
 
 const addTag = (val: any) => {
+  if (!props.allowCreate) return;
   const temp = {
     [props.displayName]: val,
     [props.displayValue]: val,
@@ -179,6 +183,7 @@ watch(
     v-model="valueArr"
     :tag-type="tagType"
     :disabled="disabled"
+    :readonly="!allowCreate"
     :tagEffect="tagEffect"
     :collapse-tags="true"
     :max-collapse-tags="showTagLength ?? 5"

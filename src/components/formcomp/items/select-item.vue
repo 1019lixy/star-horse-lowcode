@@ -86,9 +86,9 @@
         @cancel="handleCancel"
       >
         <div class="sh-mobile-select-list">
-          <!-- 搜索框 -->
+          <!-- 搜索框（filterable / remote / allowCreate 时显示） -->
           <el-input
-            v-if="field.preps?.filterable || remote"
+            v-if="field.preps?.filterable || remote || allowCreate"
             v-model="searchKey"
             class="sh-mobile-select-list__search"
             :placeholder="i18n('starhorse.pleaseInput') || '搜索'"
@@ -128,9 +128,14 @@
                 class="sh-mobile-select-list__check"
               />
             </div>
-            <div v-if="!filteredOptions.length" class="sh-mobile-select-list__empty">
+            <div v-if="!filteredOptions.length && !showCreateRow" class="sh-mobile-select-list__empty">
               {{ i18n("pivot.empty.noData") || "暂无数据" }}
             </div>
+          </div>
+          <!-- allowCreate：创建新值 -->
+          <div v-if="showCreateRow" class="sh-mobile-select-list__create" @click="createCustomValue">
+            <star-horse-icon icon-class="add" />
+            <span>{{ i18n("form.add") }} "{{ searchKey }}"</span>
           </div>
         </div>
       </ShMobilePicker>
@@ -194,6 +199,8 @@ const {
 
 /** 是否多选 */
 const multiple = computed(() => !!props.field.preps?.multiple);
+/** 是否允许创建新值（allowCreate） */
+const allowCreate = computed(() => !!props.field.preps?.allowCreate);
 
 /** label / value 字段名 */
 const labelKey = computed(() => props.field.preps?.props?.label || "name");
@@ -228,6 +235,36 @@ const filteredOptions = computed(() => {
       .includes(searchKey.value.toLowerCase()),
   );
 });
+
+/** allowCreate：搜索关键字是否已存在于选项中 */
+const isKeywordExists = computed(() => {
+  if (!searchKey.value) return true;
+  const kw = searchKey.value.toLowerCase();
+  return (props.field.preps?.values || []).some((item: any) =>
+    String(item[valueKey.value] ?? "").toLowerCase() === kw ||
+    String(item[labelKey.value] ?? "").toLowerCase() === kw,
+  );
+});
+
+/** allowCreate：是否显示"创建 xxx"行 */
+const showCreateRow = computed(
+  () => allowCreate.value && searchKey.value.trim() !== "" && !isKeywordExists.value,
+);
+
+/** allowCreate：创建新值并加入选中 */
+const createCustomValue = () => {
+  const val = searchKey.value.trim();
+  if (!val) return;
+  if (multiple.value) {
+    if (!Array.isArray(tempValue.value)) tempValue.value = [];
+    if (!tempValue.value.includes(val)) tempValue.value.push(val);
+    updateCheckAllState();
+  } else {
+    tempValue.value = val;
+    handleConfirm();
+  }
+  searchKey.value = "";
+};
 
 /** 是否选中 */
 const isSelected = (item: any) => {
@@ -380,5 +417,29 @@ onMounted(() => {
 <style lang="scss" scoped>
 .el-select {
   width: 100%;
+}
+
+/* allowCreate：创建新值行 */
+.sh-mobile-select-list__create {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: var(--el-color-primary-light-9);
+  color: var(--el-color-primary);
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: 4px;
+
+  &:active {
+    background: var(--el-color-primary-light-8);
+  }
+
+  span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 }
 </style>

@@ -118,9 +118,14 @@
             >
               {{ item[field.preps?.props?.label || 'name'] || item.value || item }}
             </div>
-            <div v-if="!suggestions.length" class="sh-mobile-autocomplete__empty">
+            <div v-if="!suggestions.length && !showCreateRow" class="sh-mobile-autocomplete__empty">
               {{ i18n("pivot.empty.noData") || "暂无数据" }}
             </div>
+          </div>
+          <!-- allowCreate：创建新值 -->
+          <div v-if="showCreateRow" class="sh-mobile-autocomplete__create" @click="createCustomValue">
+            <star-horse-icon icon-class="add" />
+            <span>{{ i18n("form.add") }} "{{ tempKeyword }}"</span>
           </div>
         </div>
       </ShMobilePicker>
@@ -128,7 +133,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { nextTick, onMounted, ref, watch } from "vue";
+import { computed, nextTick, onMounted, ref, watch } from "vue";
 import {
   compDynamicData,
   createFilter,
@@ -189,6 +194,9 @@ const {
   closePicker,
 } = useMobilePicker(() => props.field);
 
+/** 是否允许创建新值（allowCreate） */
+const allowCreate = computed(() => !!props.field.preps?.allowCreate);
+
 /** 临时关键字（用于抽屉内搜索） */
 const tempKeyword = ref("");
 /** 临时选中值：抽屉打开时拷贝，确认后写回 normalData */
@@ -243,6 +251,31 @@ const isSelected = (item: any) => {
 const selectSuggestion = (item: any) => {
   const valueKey = props.field.preps?.props?.value || "value";
   tempValue.value = item[valueKey];
+};
+
+/** allowCreate：搜索关键字是否已存在于建议列表中 */
+const isKeywordExists = computed(() => {
+  if (!tempKeyword.value) return true;
+  const kw = tempKeyword.value.toLowerCase();
+  const valueKey = props.field.preps?.props?.value || "value";
+  const labelKey = props.field.preps?.props?.label || "name";
+  return suggestions.value.some((item: any) =>
+    String(item[valueKey] ?? "").toLowerCase() === kw ||
+    String(item[labelKey] ?? "").toLowerCase() === kw,
+  );
+});
+
+/** allowCreate：是否显示"创建 xxx"行 */
+const showCreateRow = computed(
+  () => allowCreate.value && tempKeyword.value.trim() !== "" && !isKeywordExists.value,
+);
+
+/** allowCreate：创建新值并确认 */
+const createCustomValue = () => {
+  const val = tempKeyword.value.trim();
+  if (!val) return;
+  tempValue.value = val;
+  handleConfirm();
 };
 
 /** 确认：写回 normalData 并触发联动 */
@@ -357,6 +390,29 @@ const querySearch = async (queryString: string, cb: (arg: any) => void) => {
     padding: 24px;
     text-align: center;
     color: var(--el-text-color-secondary);
+  }
+
+  &__create {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    background: var(--el-color-primary-light-9);
+    color: var(--el-color-primary);
+    font-size: 14px;
+    cursor: pointer;
+    flex-shrink: 0;
+
+    &:active {
+      background: var(--el-color-primary-light-8);
+    }
+
+    span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
   }
 }
 </style>

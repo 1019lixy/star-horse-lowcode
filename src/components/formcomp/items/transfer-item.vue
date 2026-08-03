@@ -26,6 +26,7 @@
       :display-value="transferProps.key"
       :title="field.label"
       :disabled="disabled"
+      :allow-create="!!field.preps?.allowCreate"
       @update:selectedData="onSelectChange"
       @change="onSelectChange"
     />

@@ -130,6 +130,8 @@ const handleCancel = () => {
     display: flex;
     flex-direction: column;
     padding: 0;
+    /* 兼容 iOS 底部安全区（home indicator），避免内容被遮挡 ~10px */
+    padding-bottom: env(safe-area-inset-bottom);
     overflow: hidden;
   }
 
@@ -159,7 +161,7 @@ const handleCancel = () => {
 }
 
 .sh-mobile-picker__body {
-  padding: 4px 8px;
+  padding: 4px 8px calc(10px + env(safe-area-inset-bottom));
   flex: 1;
   min-height: 0;
   overflow: hidden;
