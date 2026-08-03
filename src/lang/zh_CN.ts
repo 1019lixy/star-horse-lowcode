@@ -128,6 +128,13 @@ export default {
   "datapicker.helpTitle": "操作提示",
   "datapicker.helpContent":
     "点击左侧待选数据可添加到已选区；点击已选数据可取消选中；拖拽已选数据可调整顺序；使用上下按钮或键盘↑↓键可调整选中项顺序",
+  "datapicker.hierarchyFilter": "层级筛选",
+  "datapicker.filteredBy": "已筛选",
+  "datapicker.selectedCount": "已选",
+  "datapicker.expand": "展开",
+  "datapicker.collapse": "收起",
+  "datapicker.confirmSelect": "确认选择",
+  "datapicker.noData": "暂无数据",
   /**
    * 数据选择器--------------
    */

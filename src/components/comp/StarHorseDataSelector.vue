@@ -21,6 +21,10 @@ export interface DataSelectorProps {
   compSize?: string;
   displayName?: string;
   displayValue?: string;
+  /** 显示模式：label 仅显示名称，label+code 显示 名称(编码) */
+  displayMode?: "label" | "label+code";
+  /** 编码字段名（displayMode=label+code 时使用） */
+  displayCode?: string;
   multiple?: boolean;
   disabled?: boolean;
   checkStrictly?: boolean;
@@ -31,6 +35,8 @@ export interface DataSelectorProps {
   style?: CSSProperties;
   tagType?: "" | "primary" | "secondary" | "success" | "info" | "warning";
   tagEffect?: "" | "light" | "dark" | "plain";
+  /** APP 端是否启用层级分类筛选 */
+  enableHierarchy?: boolean;
 }
 
 const props = withDefaults(defineProps<DataSelectorProps>(), {
@@ -40,6 +46,8 @@ const props = withDefaults(defineProps<DataSelectorProps>(), {
   pageSize: 0,
   displayName: "name",
   displayValue: "value",
+  displayMode: "label",
+  displayCode: "code",
   checkStrictly: true,
   selectLeaf: false,
   showTagLength: 3,
@@ -47,6 +55,7 @@ const props = withDefaults(defineProps<DataSelectorProps>(), {
   placeholder: i18n("api.pleaseSelectData2"),
   tagType: "info",
   tagEffect: "light",
+  enableHierarchy: true,
 });
 const emits = defineEmits<{
   (e: "update:modelValue", modelValue: ModelValueType): void;
@@ -134,12 +143,22 @@ const addTag = (val: any) => {
   }
 };
 
+/** 获取显示文本（支持 label+code 模式） */
+const getDisplayText = (val: any): string => {
+  const item = selectData.value?.find(
+    (i: any) => i?.[props.displayValue] === val,
+  );
+  if (!item) return val;
+  if (props.displayMode === "label+code") {
+    const code = item[props.displayCode];
+    const name = item[props.displayName];
+    return code ? `${name}（${code}）` : name;
+  }
+  return item[props.displayName] ?? val;
+};
+
 const tagVisible = (val: any) => {
-  return (Array.isArray(selectData?.value) &&
-          selectData?.value?.find(
-              (item: any) => item?.[props.displayValue] === val,
-          )?.[props.displayName]) ??
-      val;
+  return getDisplayText(val);
 };
 
 onMounted(() => {
@@ -176,9 +195,12 @@ watch(
     :page-size="pageSize"
     :display-name="displayName"
     :display-value="displayValue"
+    :display-mode="displayMode"
+    :display-code="displayCode"
     :checkStrictly="checkStrictly"
     :select-leaf="selectLeaf"
     :multiple="multiple"
+    :enable-hierarchy="enableHierarchy"
     v-model="selectData"
   />
   <el-input-tag

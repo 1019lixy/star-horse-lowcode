@@ -179,6 +179,19 @@ const fieldList = ref<PageFieldInfo>({
       }
     },
     {
+      label: "区域2",
+      fieldName: "fieldSh6C9f",
+      type: "datapicker",
+      preps: {
+        multiple:true,
+        data: areaList,
+        prop: {
+          label: "name",
+          value:"code"
+        }
+      }
+    },
+    {
       label: "选择树数据",
       fieldName: "fieldSh5C9D",
       type: "datapicker",

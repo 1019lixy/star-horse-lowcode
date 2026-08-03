@@ -64,6 +64,14 @@ onMounted(() => {
     props.field.preps["displayName"] = tempProps.label || "name";
     props.field.preps["displayValue"] = tempProps.value || "value";
   }
+  // 支持 label+code 显示模式
+  if (!props.field.preps["displayMode"]) {
+    props.field.preps["displayMode"] = "label";
+  }
+  // APP 端启用层级分类筛选
+  if (props.field.preps["enableHierarchy"] === undefined) {
+    props.field.preps["enableHierarchy"] = true;
+  }
   nextTick(() => {
     initCompCallEvent(props, emits, formData);
   });

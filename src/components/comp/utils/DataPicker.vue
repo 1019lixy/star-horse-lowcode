@@ -1,29 +1,16 @@
 <script setup lang="ts">
-import { useVModel } from "@vueuse/core";
-import { nextTick, onUnmounted, reactive, ref, watch } from "vue";
-import { i18n } from "@/lang";
-import { postRequest } from "@/api/star_horse_apis";
+import {useVModel} from "@vueuse/core";
+import {computed, nextTick, onUnmounted, reactive, ref, watch} from "vue";
+import {i18n} from "@/lang";
+import {postRequest} from "@/api/star_horse_apis";
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
-import { closeLoad, createCondition } from "@/api/star_horse_utils";
-import { PageProps } from "@/components/types/PageProps";
-import { SearchParams } from "@/components/types";
-import { isMobile } from "@/api/device";
-import {
-  buildPageParams,
-  buildRequestParams,
-  toggleNodeSelection,
-} from "@/components/comp/utils/DataSelectorUtils";
-import { StarHorseIcon } from "@/components/comp";
-import {
-  Bottom,
-  Check,
-  Delete,
-  Download,
-  QuestionFilled,
-  Sort,
-  Top,
-  Upload,
-} from "@element-plus/icons-vue";
+import {closeLoad, createCondition} from "@/api/star_horse_utils";
+import {PageProps} from "@/components/types/PageProps";
+import {SearchParams} from "@/components/types";
+import {isMobile} from "@/api/device";
+import {buildPageParams, buildRequestParams, toggleNodeSelection,} from "@/components/comp/utils/DataSelectorUtils";
+import {StarHorseIcon} from "@/components/comp";
+import {Bottom, Check, Delete, Download, QuestionFilled, Sort, Top, Upload,} from "@element-plus/icons-vue";
 import Sortable from "sortablejs";
 
 export type ModelValueType = any;
@@ -40,21 +27,30 @@ export interface DataDropdownProps {
   compSize?: string;
   displayName?: string;
   displayValue?: string;
+  /** 显示模式：label 仅显示名称，label+code 显示 名称(编码) */
+  displayMode?: "label" | "label+code";
+  /** 编码字段名（displayMode=label+code 时使用） */
+  displayCode?: string;
   multiple?: boolean;
   checkStrictly?: boolean;
   selectLeaf?: boolean;
   autoClose?: boolean;
+  /** APP 端是否启用层级分类筛选 */
+  enableHierarchy?: boolean;
 }
 
 const props = withDefaults(defineProps<DataDropdownProps>(), {
   displayName: "name",
   displayValue: "value",
+  displayMode: "label",
+  displayCode: "code",
   compSize: "default",
   pageSize: 0,
   multiple: false,
   autoClose: true,
   checkStrictly: true,
   selectLeaf: false,
+  enableHierarchy: true,
 });
 
 const emits = defineEmits<{
@@ -76,6 +72,212 @@ const expandedKeys = ref<string[]>([]);
 const checkAll = ref<boolean>(false);
 const indeterminate = ref<boolean>(false);
 
+/** 层级筛选是否展开（下拉式，默认收起） */
+const hierarchyExpanded = ref(false);
+const selectedHierarchyKey = ref<string>("");
+/** 层级筛选面板模式：true=级联标签式（每级一列），false=树形 */
+const hierarchyPanelMode = ref(false);
+/** 级联模式：当前各列选中的节点 key */
+const cascadeSelectedKeys = ref<string[]>([]);
+/** 级联模式：各列展示的节点 */
+const cascadeColumns = ref<any[][]>([[]]);
+/** 树最大层级数，用于自动切换面板模式 */
+const treeMaxLevel = ref(0);
+/** APP 端底部已选栏是否展开 */
+const selectedBarExpanded = ref(false);
+/** APP 端已选数据搜索关键字 */
+const selectedQuery = ref("");
+/** 完整原始树（不复制，直接引用 props.data） */
+const fullTreeData = ref<any[]>([]);
+/** 树形模式层级筛选树：仅保留分类节点（有 children） */
+const hierarchyTreeData = ref<any[]>([]);
+/** APP 端过滤后的已选数据 */
+const filteredSelectedItems = computed(() => {
+  if (!selectedQuery.value) return dataOptions.value;
+  const kw = selectedQuery.value.toLowerCase();
+  return dataOptions.value.filter((item: any) => {
+    const name = String(item[props.displayName] ?? "").toLowerCase();
+    const code = String(item[props.displayCode] ?? "").toLowerCase();
+    return name.includes(kw) || code.includes(kw);
+  });
+});
+const filteredDataOrgOptions = computed(() => {
+  // 本地分页模式下 dataOrgOptions 已经是 paged/flat 结果，直接展示
+  if (localPageEnabled.value) return dataOrgOptions.value;
+  if (!selectedHierarchyKey.value) return dataOrgOptions.value;
+  const node = findNodeByKey(fullTreeData.value, selectedHierarchyKey.value);
+  if (!node) return dataOrgOptions.value;
+  return node.children || [node];
+});
+
+/** 只保留有 children 的分类节点（不复制节点，仅引用） */
+const filterCategoryNodes = (nodes: any[] | undefined): any[] => {
+  if (!nodes?.length) return [];
+  return nodes.filter((n: any) => n.children?.length > 0);
+};
+
+/** 构建层级筛选树：仅保留分类节点（有 children），叶子只在下方面板展示 */
+const buildHierarchyData = (nodes: any[]): any[] => {
+  const walk = (arr: any[]): any[] => {
+    if (!arr?.length) return [];
+    return arr
+        .filter((n: any) => n.children?.length > 0)
+        .map((n: any) => ({
+          ...n,
+          children: walk(n.children),
+        }));
+  };
+  return walk(nodes || []);
+};
+
+/** 初始化级联模式第一列（仅分类节点） */
+const initCascadeColumns = () => {
+  fullTreeData.value = props.data?.length > 0 ? props.data : dataOrgOptions.value;
+  treeMaxLevel.value = getTreeMaxLevel(fullTreeData.value);
+  // 树形模式的层级树：只保留分类节点
+  hierarchyTreeData.value = buildHierarchyData(fullTreeData.value);
+  // 3 级以上（如省/市/区/街道4级）使用级联面板模式，展示更完整
+  hierarchyPanelMode.value = treeMaxLevel.value >= 3;
+  if (hierarchyPanelMode.value) {
+    cascadeSelectedKeys.value = [];
+    // 第一列：只展示有 children 的分类节点（省），街道等叶子不展示
+    cascadeColumns.value = [filterCategoryNodes(fullTreeData.value)];
+  }
+};
+
+/** 级联模式：点击某列节点 */
+const onCascadeNodeClick = (node: any, level: number) => {
+  // 更新选中
+  cascadeSelectedKeys.value = cascadeSelectedKeys.value.slice(0, level);
+  cascadeSelectedKeys.value[level] = node[props.displayValue];
+  // 裁剪列
+  cascadeColumns.value = cascadeColumns.value.slice(0, level + 1);
+  // 选择该节点作为筛选条件
+  selectedHierarchyKey.value = node[props.displayValue];
+
+  // 本地分页模式下：筛选完整树后扁平化 + 分页
+  if (localPageEnabled.value && props.data?.length > 0) {
+    const subtreeRoot = findNodeByKey(props.data, node[props.displayValue]);
+    if (subtreeRoot) {
+      localFlatLeaves.value = flattenLeafNodes(
+          subtreeRoot.children?.length > 0 ? subtreeRoot.children : [subtreeRoot],
+      );
+    } else {
+      localFlatLeaves.value = flattenLeafNodes(props.data);
+    }
+    pageInfo.currentPage = 1;
+    pageInfo.totalData = localFlatLeaves.value.length;
+    const paged = getLocalPagedData();
+    dataOrgOptions.value = paged;
+  }
+
+  // 如果有子分类节点（过滤叶子），追加下一列
+  const nextCol = filterCategoryNodes(node.children);
+  if (nextCol.length > 0) {
+    cascadeColumns.value.push(nextCol);
+  } else {
+    // 已到最后一级分类节点：自动收起层级筛选面板
+    hierarchyExpanded.value = false;
+  }
+};
+
+/** 取消级联筛选 */
+const clearCascadeFilter = () => {
+  const fullTree = props.data?.length > 0 ? props.data : dataOrgOptions.value;
+  cascadeSelectedKeys.value = [];
+  // 仅展示分类节点（第一级）
+  cascadeColumns.value = [filterCategoryNodes(fullTree || [])];
+  selectedHierarchyKey.value = "";
+  // 本地分页模式重置
+  if (localPageEnabled.value && props.data?.length > 0) {
+    localFlatLeaves.value = flattenLeafNodes(props.data);
+    pageInfo.currentPage = 1;
+    pageInfo.totalData = localFlatLeaves.value.length;
+    dataOrgOptions.value = getLocalPagedData();
+  }
+};
+
+/** 根据 key 在树中递归查找节点 */
+const findNodeByKey = (nodes: any[], key: string): any => {
+  for (const node of nodes) {
+    if (node[props.displayValue] === key) return node;
+    if (node.children) {
+      const found = findNodeByKey(node.children, key);
+      if (found) return found;
+    }
+  }
+  return null;
+};
+
+/** 扁平化树：提取每个层级的直接节点用于筛选 */
+const flattenHierarchyLevels = (
+    nodes: any[],
+    level = 0,
+    result: { level: number; nodes: any[] }[] = [],
+) => {
+  if (!nodes?.length) return result;
+  if (!result[level]) result[level] = {level, nodes: []};
+  nodes.forEach((n) => {
+    result[level].nodes.push(n);
+    if (n.children?.length > 0) {
+      flattenHierarchyLevels(n.children, level + 1, result);
+    }
+  });
+  return result;
+};
+
+/** 计算树深度，决定层级筛选默认展开到哪一层 */
+const getTreeMaxLevel = (nodes: any[], level = 0): number => {
+  if (!nodes?.length) return level;
+  return Math.max(
+      level,
+      ...nodes.map((n) => (n.children?.length > 0 ? getTreeMaxLevel(n.children, level + 1) : level)),
+  );
+};
+
+/** 切换层级筛选（树形模式） */
+const onHierarchyClick = (node: any) => {
+  const newKey =
+      selectedHierarchyKey.value === node[props.displayValue]
+          ? ""
+          : node[props.displayValue];
+  selectedHierarchyKey.value = newKey;
+
+  // 本地分页模式下：同步筛选 props.data 中对应 subtree 并扁平化
+  if (localPageEnabled.value && props.data?.length > 0) {
+    if (!newKey) {
+      localFlatLeaves.value = flattenLeafNodes(props.data);
+    } else {
+      const subtreeRoot = findNodeByKey(props.data, newKey);
+      if (subtreeRoot) {
+        localFlatLeaves.value = flattenLeafNodes(
+            subtreeRoot.children?.length > 0 ? subtreeRoot.children : [subtreeRoot],
+        );
+      } else {
+        localFlatLeaves.value = flattenLeafNodes(props.data);
+      }
+    }
+    pageInfo.currentPage = 1;
+    pageInfo.totalData = localFlatLeaves.value.length;
+    dataOrgOptions.value = getLocalPagedData();
+  }
+
+  // 树形模式：如果该分类节点已无子分类（叶子分类），自动收起面板
+  if (!node.children?.length) {
+    hierarchyExpanded.value = false;
+  }
+};
+
+/** 显示文本（支持 label+code 模式） */
+const displayText = (item: any): string => {
+  const name = item[props.displayName];
+  if (props.displayMode === "label+code") {
+    const code = item[props.displayCode];
+    if (code) return `${name}（${code}）`;
+  }
+  return name;
+};
+
 // ===== 已选数据排序相关 =====
 const activeIndex = ref<number>(-1);
 const selectedListRef = ref<HTMLElement>();
@@ -90,11 +292,11 @@ const initSortable = () => {
     chosenClass: "sortable-chosen",
     dragClass: "sortable-drag",
     onEnd: (evt) => {
-      const { oldIndex, newIndex } = evt;
+      const {oldIndex, newIndex} = evt;
       if (
-        oldIndex === undefined ||
-        newIndex === undefined ||
-        oldIndex === newIndex
+          oldIndex === undefined ||
+          newIndex === undefined ||
+          oldIndex === newIndex
       )
         return;
       const list = [...dataOptions.value];
@@ -114,11 +316,11 @@ const destroySortable = () => {
 };
 
 watch(
-  () => props.multiple,
-  (val) => {
-    destroySortable();
-    if (val) nextTick(initSortable);
-  },
+    () => props.multiple,
+    (val) => {
+      destroySortable();
+      if (val) nextTick(initSortable);
+    },
 );
 
 const handleCheckAll = () => {
@@ -152,8 +354,11 @@ const onNodeClick = (treeNode: any) => {
 };
 
 // ===== 排序方法 =====
-const removeItem = (index: number) => {
+const removeItem = (item: any) => {
   const list = [...dataOptions.value];
+  // 根据传入item查找下标（根据唯一标识匹配，不要直接 ===，对象引用会失效！）
+  const index = list.findIndex((row) => row[props.displayValue] === item[props.displayValue]);
+  if (index === -1) return; // 没找到直接退出，防止splice异常
   list.splice(index, 1);
   dataOptions.value = list;
   if (activeIndex.value === index) activeIndex.value = -1;
@@ -207,23 +412,23 @@ const moveEnd = (index: number) => {
 const scrollToActive = () => {
   nextTick(() => {
     const el = selectedListRef.value?.querySelector(
-      `.selected-item[data-index="${activeIndex.value}"]`,
+        `.selected-item[data-index="${activeIndex.value}"]`,
     ) as HTMLElement;
-    el?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    el?.scrollIntoView({behavior: "smooth", block: "nearest"});
   });
 };
 
 const onSelectedItemClick = (index: number) => {
   if (!props.multiple) {
     dataOptions.value = toggleNodeSelection(
-      dataOptions.value[index],
-      dataOptions.value,
-      {
-        multiple: false,
-        checkStrictly: true,
-        selectLeaf: false,
-        displayValue: props.displayValue || "value",
-      },
+        dataOptions.value[index],
+        dataOptions.value,
+        {
+          multiple: false,
+          checkStrictly: true,
+          selectLeaf: false,
+          displayValue: props.displayValue || "value",
+        },
     );
     activeIndex.value = -1;
     return;
@@ -248,11 +453,17 @@ const queryName = ref(null);
 const activeTab = ref<"pending" | "selected">("pending");
 
 const dataSearch = () => {
+  // APP 端本地分页模式：走 applyLocalPageOrSearch 实现（搜索 + 分页 + 层级筛选）
+  if (localPageEnabled.value) {
+    pageInfo.currentPage = 1;
+    applyLocalPageOrSearch();
+    return;
+  }
   if (props.dataUrl) {
     loadData(
-      queryName.value
-        ? [createCondition(props.displayName, queryName.value, "lk")]
-        : [],
+        queryName.value
+            ? [createCondition(props.displayName, queryName.value, "lk")]
+            : [],
     );
   } else {
     if (!queryName.value) return;
@@ -277,34 +488,34 @@ const loadData = async (condition?: SearchParams[]) => {
     queryParams.push(...condition);
   }
   const baseParams = buildPageParams(
-    queryParams,
-    props.params,
-    pageInfo.currentPage,
-    props.pageSize || 0,
+      queryParams,
+      props.params,
+      pageInfo.currentPage,
+      props.pageSize || 0,
   );
-  const { url, params } = buildRequestParams(
-    props.dataUrl,
-    baseParams,
-    props.proxy,
-    props.proxyUrl,
+  const {url, params} = buildRequestParams(
+      props.dataUrl,
+      baseParams,
+      props.proxy,
+      props.proxyUrl,
   );
   await postRequest(url, params)
-    .then((res) => {
-      if (res?.data?.code) {
-        console.error(res?.data?.cnMessage);
-        return;
-      }
-      let redata = res?.data?.data;
-      dataOrgOptions.value = redata?.dataList || redata;
-      pageInfo.totalPage = redata?.totalPages;
-      pageInfo.totalData = redata?.totalDatas;
-    })
-    .catch((err: any) => {
-      console.error(err);
-    })
-    .finally(() => {
-      closeLoad();
-    });
+      .then((res) => {
+        if (res?.data?.code) {
+          console.error(res?.data?.cnMessage);
+          return;
+        }
+        let redata = res?.data?.data;
+        dataOrgOptions.value = redata?.dataList || redata;
+        pageInfo.totalPage = redata?.totalPages;
+        pageInfo.totalData = redata?.totalDatas;
+      })
+      .catch((err: any) => {
+        console.error(err);
+      })
+      .finally(() => {
+        closeLoad();
+      });
 };
 const open = () => {
   dialogVisible.value = true;
@@ -315,23 +526,78 @@ const close = () => {
 const onOpen = async () => {
   activeTab.value = "pending";
   dataOrgOptions.value = [];
+  selectedHierarchyKey.value = "";
+  // 初始化：构建完层级/分页后再赋值 dataOrgOptions，避免一次性渲染海量 DOM
   if (props.data?.length > 0) {
-    dataOrgOptions.value = props.data;
+    // APP 端大数据（>= 500 叶子）时，启用客户端分页 + 延迟渲染
+    const leafCount = countLeafNodes(props.data);
+    const enableLocalPage = isMobile && !props.dataUrl && leafCount >= 500;
+    localPageEnabled.value = enableLocalPage;
+    if (enableLocalPage) {
+      // 扁平化叶子，做分页
+      localFlatLeaves.value = flattenLeafNodes(props.data);
+      pageInfo.totalData = localFlatLeaves.value.length;
+      pageInfo.pageSize = props.pageSize || 50;
+      const paged = getLocalPagedData();
+      dataOrgOptions.value = paged;
+    } else {
+      dataOrgOptions.value = props.data;
+      pageInfo.totalData = leafCount;
+    }
   } else {
     await loadData();
   }
   // 直接读 props.modelValue，避免 useVModel passive 模式下 local ref 同步时序问题
   const mv = props.modelValue;
   dataOptions.value = Array.isArray(mv)
-    ? mv
-    : mv
-      ? [mv]
-      : [];
+      ? mv
+      : mv
+          ? [mv]
+          : [];
   activeIndex.value = -1;
+  // 初始化层级筛选（不复制树，直接引用）
+  initCascadeColumns();
   nextTick(() => {
     destroySortable();
     if (props.multiple) initSortable();
   });
+};
+
+/** 计算树中叶子节点总数 */
+const countLeafNodes = (nodes: any[]): number => {
+  let count = 0;
+  const walk = (arr: any[]) => {
+    for (const n of arr) {
+      if (n.children?.length > 0) walk(n.children);
+      else count++;
+    }
+  };
+  walk(nodes || []);
+  return count;
+};
+
+/** 扁平化所有叶子节点（含完整路径父节点的重建可选） */
+const flattenLeafNodes = (nodes: any[]): any[] => {
+  const leaves: any[] = [];
+  const walk = (arr: any[]) => {
+    for (const n of arr) {
+      if (n.children?.length > 0) walk(n.children);
+      else leaves.push(n);
+    }
+  };
+  walk(nodes || []);
+  return leaves;
+};
+
+/** APP 端本地分页：是否启用 */
+const localPageEnabled = ref(false);
+/** APP 端本地分页：所有扁平化叶子 */
+const localFlatLeaves = ref<any[]>([]);
+
+/** 获取本地当前分页数据（返回扁平列表直接展示） */
+const getLocalPagedData = (): any[] => {
+  const start = (pageInfo.currentPage - 1) * (pageInfo.pageSize || 50);
+  return localFlatLeaves.value.slice(start, start + (pageInfo.pageSize || 50));
 };
 const handelConfirm = () => {
   if (props.multiple) {
@@ -354,16 +620,46 @@ const resetData = () => {
 };
 const pageChangeClick = (val: number) => {
   pageInfo.currentPage = val;
-  dataSearch();
+  // APP 端本地分页模式
+  if (localPageEnabled.value) {
+    applyLocalPageOrSearch();
+  } else {
+    dataSearch();
+  }
 };
 const pageSizeClick = (val: number) => {
   pageInfo.pageSize = val;
   pageInfo.currentPage = 1;
-  dataSearch();
+  if (localPageEnabled.value) {
+    applyLocalPageOrSearch();
+  } else {
+    dataSearch();
+  }
+};
+
+/** APP 端本地搜索/分页：对已扁平化叶子过滤后再分页 */
+const applyLocalPageOrSearch = () => {
+  if (!localPageEnabled.value) return;
+  let source = localFlatLeaves.value;
+  if (queryName.value) {
+    const kw = String(queryName.value).toLowerCase();
+    source = localFlatLeaves.value.filter((it: any) => {
+      const name = String(it[props.displayName] ?? "").toLowerCase();
+      const code = String(it[props.displayCode] ?? "").toLowerCase();
+      return name.includes(kw) || code.includes(kw);
+    });
+  }
+  pageInfo.totalData = source.length;
+  const start = (pageInfo.currentPage - 1) * (pageInfo.pageSize || 50);
+  dataOrgOptions.value = source.slice(start, start + (pageInfo.pageSize || 50));
+};
+
+const onUnmountedCleanup = () => {
+  destroySortable();
 };
 
 onUnmounted(() => {
-  destroySortable();
+  onUnmountedCleanup();
 });
 
 defineExpose({
@@ -374,17 +670,17 @@ defineExpose({
 
 <template>
   <star-horse-dialog
-    :self-func="true"
-    v-model="dialogVisible"
-    @open="onOpen"
-    @merge="handelConfirm"
-    @resetForm="resetData"
-    :full-screen="isMobile"
-    @closeAction="dialogVisible = false"
-    draggable
-    :title="title || i18n('datapicker.selectData')"
-    boxWidth="60%"
-    boxHeight="70%"
+      :self-func="true"
+      v-model="dialogVisible"
+      @open="onOpen"
+      @merge="handelConfirm"
+      @resetForm="resetData"
+      :full-screen="isMobile"
+      @closeAction="dialogVisible = false"
+      draggable
+      :title="title || i18n('datapicker.selectData')"
+      boxWidth="60%"
+      boxHeight="70%"
   >
     <!-- ===== PC 端多选：左右 splitter 布局 ===== -->
     <el-splitter v-if="!isMobile && multiple" layout="horizontal">
@@ -393,11 +689,11 @@ defineExpose({
           <template #header>
             <div class="flex flex-row items-center w-full justify-between">
               <el-checkbox
-                v-model="checkAll"
-                class="!w-[30%]"
-                v-if="multiple"
-                :indeterminate="indeterminate"
-                @change="handleCheckAll"
+                  v-model="checkAll"
+                  class="!w-[30%]"
+                  v-if="multiple"
+                  :indeterminate="indeterminate"
+                  @change="handleCheckAll"
               >
                 {{ i18n("datapicker.selectAll") }}
               </el-checkbox>
@@ -408,59 +704,59 @@ defineExpose({
           </template>
           <div class="dp-search-bar">
             <el-input
-              v-model="queryName"
-              :placeholder="i18n('datapicker.enterKeywords')"
-              clearable
-              @keyup.enter="dataSearch"
-              @clear="dataSearch"
+                v-model="queryName"
+                :placeholder="i18n('datapicker.enterKeywords')"
+                clearable
+                @keyup.enter="dataSearch"
+                @clear="dataSearch"
             >
               <template #suffix>
                 <div class="dp-search-btn" @click="dataSearch">
-                  <star-horse-icon iconClass="search" />
+                  <star-horse-icon iconClass="search"/>
                 </div>
               </template>
             </el-input>
           </div>
           <el-scrollbar tag="div" class="org-tree">
             <el-tree
-              ref="orgTreeRef"
-              :node-key="displayValue"
-              :data="dataOrgOptions"
-              :default-expanded-keys="expandedKeys"
-              :props="treeProps"
-              :check-strictly="checkStrictly"
-              :filter-node-method="filterNode"
-              @node-click="onNodeClick"
+                ref="orgTreeRef"
+                :node-key="displayValue"
+                :data="dataOrgOptions"
+                :default-expanded-keys="expandedKeys"
+                :props="treeProps"
+                :check-strictly="checkStrictly"
+                :filter-node-method="filterNode"
+                @node-click="onNodeClick"
             >
               <template #default="{ data }">
                 <div class="data-line">
                   <div class="menu-title">
                     <div class="flex flex-row items-center">
                       <star-horse-icon
-                        :icon-class="
+                          :icon-class="
                           data.children?.length > 0 ? 'folder' : 'document'
                         "
                       />
-                      &nbsp;{{ data[displayName] }}
+                      &nbsp;{{ displayText(data) }}
                     </div>
                   </div>
                   <el-icon class="is-selected">
-                    <Check />
+                    <Check/>
                   </el-icon>
                 </div>
               </template>
             </el-tree>
           </el-scrollbar>
           <el-pagination
-            v-if="pageSize > 0"
-            :total="pageInfo.totalData"
-            @current-change="pageChangeClick"
-            @size-change="pageSizeClick"
-            :size="compSize"
-            layout="total, sizes, prev, pager, next, jumper"
-            v-model:currentPage="pageInfo.currentPage"
-            v-model:page-size="pageInfo.pageSize"
-            v-model:pageCount="pageInfo.totalPage"
+              v-if="pageSize > 0"
+              :total="pageInfo.totalData"
+              @current-change="pageChangeClick"
+              @size-change="pageSizeClick"
+              :size="compSize"
+              layout="total, sizes, prev, pager, next, jumper"
+              v-model:currentPage="pageInfo.currentPage"
+              v-model:page-size="pageInfo.pageSize"
+              v-model:pageCount="pageInfo.totalPage"
           />
         </el-card>
       </el-splitter-panel>
@@ -468,7 +764,7 @@ defineExpose({
         <el-card shadow="never" class="org-card dialog-body">
           <template #header>
             <div
-              class="flex flex-row items-center justify-between w-full h-[32px]"
+                class="flex flex-row items-center justify-between w-full h-[32px]"
             >
               <div class="flex-1 text-center">
                 {{ i18n("datapicker.selectedDataArea") }}[{{
@@ -476,99 +772,99 @@ defineExpose({
                 }}]
               </div>
               <el-tooltip
-                :content="i18n('datapicker.helpContent')"
-                placement="left"
-                effect="dark"
+                  :content="i18n('datapicker.helpContent')"
+                  placement="left"
+                  effect="dark"
               >
                 <el-icon class="help-icon" :size="16">
-                  <QuestionFilled />
+                  <QuestionFilled/>
                 </el-icon>
               </el-tooltip>
             </div>
           </template>
           <el-scrollbar tag="div" class="org-tree">
             <div
-              ref="selectedListRef"
-              class="selected-list"
-              tabindex="0"
-              @keydown="onSelectedKeydown"
+                ref="selectedListRef"
+                class="selected-list"
+                tabindex="0"
+                @keydown="onSelectedKeydown"
             >
               <div
-                v-for="(item, index) in dataOptions"
-                :key="item[displayValue]"
-                class="selected-item"
-                :class="{ 'is-active-item': activeIndex === index }"
-                :data-index="index"
-                :data-id="item[displayValue]"
-                @click="onSelectedItemClick(index)"
+                  v-for="(item, index) in dataOptions"
+                  :key="item[displayValue]"
+                  class="selected-item"
+                  :class="{ 'is-active-item': activeIndex === index }"
+                  :data-index="index"
+                  :data-id="item[displayValue]"
+                  @click="onSelectedItemClick(index)"
               >
                 <div class="selected-item-content">
                   <el-icon
-                    title="拖拽排序"
-                    v-if="multiple"
-                    class="drag-handle"
-                    :size="20"
+                      title="拖拽排序"
+                      v-if="multiple"
+                      class="drag-handle"
+                      :size="20"
                   >
-                    <Sort />
+                    <Sort/>
                   </el-icon>
                   <star-horse-icon
-                    :icon-class="
+                      :icon-class="
                       item.children?.length > 0 ? 'folder' : 'document'
                     "
-                    size="18px"
+                      size="18px"
                   />
                   <span class="selected-item-label">{{
-                    item[displayName]
-                  }}</span>
+                      displayText(item)
+                    }}</span>
                 </div>
                 <div class="selected-item-actions">
                   <el-icon
-                    :title="i18n('datapicker.moveToFirst')"
-                    v-if="multiple"
-                    :size="22"
-                    :class="{ 'is-disabled-action': index === 0 }"
-                    @click.stop="moveTop(index)"
+                      :title="i18n('datapicker.moveToFirst')"
+                      v-if="multiple"
+                      :size="22"
+                      :class="{ 'is-disabled-action': index === 0 }"
+                      @click.stop="moveTop(index)"
                   >
-                    <Upload />
+                    <Upload/>
                   </el-icon>
                   <el-icon
-                    :title="i18n('datapicker.moveUp')"
-                    v-if="multiple"
-                    :size="22"
-                    :class="{ 'is-disabled-action': index === 0 }"
-                    @click.stop="moveUp(index)"
+                      :title="i18n('datapicker.moveUp')"
+                      v-if="multiple"
+                      :size="22"
+                      :class="{ 'is-disabled-action': index === 0 }"
+                      @click.stop="moveUp(index)"
                   >
-                    <Top />
+                    <Top/>
                   </el-icon>
                   <el-icon
-                    :title="i18n('datapicker.moveToEnd')"
-                    v-if="multiple"
-                    :size="22"
-                    :class="{
+                      :title="i18n('datapicker.moveToEnd')"
+                      v-if="multiple"
+                      :size="22"
+                      :class="{
                       'is-disabled-action': index === dataOptions.length - 1,
                     }"
-                    @click.stop="moveEnd(index)"
+                      @click.stop="moveEnd(index)"
                   >
-                    <Download />
+                    <Download/>
                   </el-icon>
                   <el-icon
-                    :title="i18n('datapicker.moveDown')"
-                    v-if="multiple"
-                    :size="22"
-                    :class="{
+                      :title="i18n('datapicker.moveDown')"
+                      v-if="multiple"
+                      :size="22"
+                      :class="{
                       'is-disabled-action': index === dataOptions.length - 1,
                     }"
-                    @click.stop="moveDown(index)"
+                      @click.stop="moveDown(index)"
                   >
-                    <Bottom />
+                    <Bottom/>
                   </el-icon>
                   <el-icon
-                    :title="i18n('common.delete')"
-                    :size="22"
-                    class="remove-action"
-                    @click.stop="removeItem(index)"
+                      :title="i18n('common.delete')"
+                      :size="22"
+                      class="remove-action"
+                      @click.stop="removeItem(item)"
                   >
-                    <Delete style="color: var(--el-color-danger)" />
+                    <Delete style="color: var(--el-color-danger)"/>
                   </el-icon>
                 </div>
               </div>
@@ -583,9 +879,9 @@ defineExpose({
 
     <!-- ===== PC 端非多选：仅显示待选数据 ===== -->
     <el-card
-      v-else-if="!isMobile"
-      shadow="never"
-      class="org-card dialog-body"
+        v-else-if="!isMobile"
+        shadow="never"
+        class="org-card dialog-body"
     >
       <template #header>
         <div class="flex flex-row items-center w-full justify-center">
@@ -594,126 +890,234 @@ defineExpose({
       </template>
       <div class="dp-search-bar">
         <el-input
-          v-model="queryName"
-          :placeholder="i18n('datapicker.enterKeywords')"
-          clearable
-          @keyup.enter="dataSearch"
-          @clear="dataSearch"
+            v-model="queryName"
+            :placeholder="i18n('datapicker.enterKeywords')"
+            clearable
+            @keyup.enter="dataSearch"
+            @clear="dataSearch"
         >
           <template #suffix>
             <div class="dp-search-btn" @click="dataSearch">
-              <star-horse-icon iconClass="search" />
+              <star-horse-icon iconClass="search"/>
             </div>
           </template>
         </el-input>
       </div>
       <el-scrollbar tag="div" class="org-tree">
         <el-tree
-          ref="orgTreeRef"
-          :node-key="displayValue"
-          :data="dataOrgOptions"
-          :default-expanded-keys="expandedKeys"
-          :props="treeProps"
-          :check-strictly="checkStrictly"
-          :filter-node-method="filterNode"
-          @node-click="onNodeClick"
+            ref="orgTreeRef"
+            :node-key="displayValue"
+            :data="dataOrgOptions"
+            :default-expanded-keys="expandedKeys"
+            :props="treeProps"
+            :check-strictly="checkStrictly"
+            :filter-node-method="filterNode"
+            @node-click="onNodeClick"
         >
           <template #default="{ data }">
             <div class="data-line">
               <div class="menu-title">
                 <div class="flex flex-row items-center">
                   <star-horse-icon
-                    :icon-class="
+                      :icon-class="
                       data.children?.length > 0 ? 'folder' : 'document'
                     "
                   />
-                  &nbsp;{{ data[displayName] }}
+                  &nbsp;{{ displayText(data) }}
                 </div>
               </div>
               <el-icon class="is-selected">
-                <Check />
+                <Check/>
               </el-icon>
             </div>
           </template>
         </el-tree>
       </el-scrollbar>
       <el-pagination
-        v-if="pageSize > 0"
-        :total="pageInfo.totalData"
-        @current-change="pageChangeClick"
-        @size-change="pageSizeClick"
-        :size="compSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        v-model:currentPage="pageInfo.currentPage"
-        v-model:page-size="pageInfo.pageSize"
-        v-model:page-count="pageInfo.totalPage"
+          v-if="pageSize > 0"
+          :total="pageInfo.totalData"
+          @current-change="pageChangeClick"
+          @size-change="pageSizeClick"
+          :size="compSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          v-model:currentPage="pageInfo.currentPage"
+          v-model:page-size="pageInfo.pageSize"
+          v-model:page-count="pageInfo.totalPage"
       />
     </el-card>
 
-    <!-- ===== APP 端多选：Tab 切换布局，每个面板占满全屏 ===== -->
-    <div v-else-if="multiple" class="dp-mobile">
-      <el-tabs v-model="activeTab" class="dp-mobile__tabs">
-        <!-- 待选数据 Tab -->
-        <el-tab-pane name="pending">
-          <template #label>
-            <span class="dp-tab-label">{{ i18n("datapicker.pendingDataArea") }}</span>
-          </template>
-          <div v-if="multiple" class="dp-mobile-checkall">
-            <el-checkbox
-              v-model="checkAll"
-              :indeterminate="indeterminate"
-              @change="handleCheckAll"
-            >
-              {{ i18n("datapicker.selectAll") }}
-            </el-checkbox>
-          </div>
-          <div class="dp-search-bar">
-            <el-input
+    <!-- ===== APP 端：头部搜索+层级下拉 + 数据列表 + 底部选择栏 ===== -->
+    <div v-else class="dp-mobile">
+      <!-- 头部：搜索框 + 层级筛选按钮 -->
+      <div class="dp-mobile-header">
+        <div class="dp-search-bar dp-mobile-header__search">
+          <el-input
               v-model="queryName"
               :placeholder="i18n('datapicker.enterKeywords')"
               clearable
               @keyup.enter="dataSearch"
               @clear="dataSearch"
+          >
+            <template #suffix>
+              <div class="dp-search-btn" @click="dataSearch">
+                <star-horse-icon iconClass="search"/>
+              </div>
+            </template>
+          </el-input>
+        </div>
+        <div
+            v-if="enableHierarchy && fullTreeData.length > 0"
+            class="dp-mobile-header__filter"
+            :class="{ 'is-active': hierarchyExpanded || selectedHierarchyKey }"
+            @click="hierarchyExpanded = !hierarchyExpanded"
+        >
+          <star-horse-icon iconClass="filter" size="16px"/>
+          <span v-if="selectedHierarchyKey" class="dp-mobile-header__filter-label">
+            {{ findNodeByKey(fullTreeData, selectedHierarchyKey)?.[displayName] }}
+          </span>
+          <span v-else class="dp-mobile-header__filter-label">{{
+              i18n("datapicker.hierarchyFilter")
+            }}</span>
+          <star-horse-icon
+              :icon-class="hierarchyExpanded ? 'arrow-up' : 'arrow-down'"
+              size="12px"
+          />
+        </div>
+      </div>
+
+      <!-- 层级筛选下拉面板 -->
+      <div
+          v-if="hierarchyExpanded && enableHierarchy && fullTreeData.length > 0"
+          class="dp-mobile-hierarchy-dropdown"
+      >
+        <!-- 级联面板模式（≥3 级树，如省/市/区/街道） -->
+        <div v-if="hierarchyPanelMode" class="dp-mobile-hierarchy__panel">
+          <div class="dp-mobile-hierarchy__panel-cols">
+            <el-scrollbar
+                v-for="(colNodes, colIdx) in cascadeColumns"
+                :key="colIdx"
+                class="dp-mobile-hierarchy__panel-col"
+                tag="div"
             >
-              <template #suffix>
-                <div class="dp-search-btn" @click="dataSearch">
-                  <star-horse-icon iconClass="search" />
-                </div>
-              </template>
-            </el-input>
+              <div
+                  v-for="n in colNodes"
+                  :key="n[displayValue]"
+                  class="dp-cascade-item"
+                  :class="{
+                  'is-active': cascadeSelectedKeys[colIdx] === n[displayValue],
+                }"
+                  @click="onCascadeNodeClick(n, colIdx)"
+              >
+                <span class="dp-cascade-item__label">{{ n[displayName] }}</span>
+                <star-horse-icon
+                    v-if="n.children?.length > 0"
+                    icon-class="arrow-right"
+                    size="12px"
+                />
+              </div>
+            </el-scrollbar>
           </div>
-          <el-scrollbar tag="div" class="dp-mobile-tree">
-            <el-tree
+        </div>
+        <!-- 树形模式（<3 级树，用 el-tree，只展示分类节点） -->
+        <el-scrollbar v-else class="dp-mobile-hierarchy__tree">
+          <el-tree
+              :node-key="displayValue"
+              :data="hierarchyTreeData"
+              :props="{ label: displayName, children: 'children' }"
+              :default-expanded-keys="expandedKeys"
+              :current-node-key="selectedHierarchyKey"
+              highlight-current
+              @node-click="onHierarchyClick"
+          >
+            <template #default="{ data }">
+              <div
+                  class="dp-hierarchy-node"
+                  :class="{ 'is-active': selectedHierarchyKey === data[displayValue] }"
+              >
+                <star-horse-icon
+                    :icon-class="data.children?.length > 0 ? 'folder' : 'document'"
+                    size="14px"
+                />
+                <span class="dp-hierarchy-node__label">{{ data[displayName] }}</span>
+              </div>
+            </template>
+          </el-tree>
+        </el-scrollbar>
+
+        <!-- 底部操作栏：重置 + 完成 -->
+        <div class="dp-mobile-hierarchy__actions">
+          <button
+              v-if="selectedHierarchyKey"
+              class="dp-mobile-hierarchy__btn dp-mobile-hierarchy__btn--reset"
+              @click="hierarchyPanelMode ? clearCascadeFilter() : (selectedHierarchyKey = '')"
+          >
+            {{ i18n("common.reset") }}
+          </button>
+          <button
+              class="dp-mobile-hierarchy__btn dp-mobile-hierarchy__btn--confirm"
+              @click="hierarchyExpanded = false"
+          >
+            {{ i18n("common.yes") }}
+          </button>
+        </div>
+      </div>
+
+      <!-- 主体：数据列表（全宽） -->
+      <div class="dp-mobile-content">
+        <!-- 全选 + 筛选标签 -->
+        <div v-if="multiple" class="dp-mobile-checkall">
+          <el-checkbox
+              v-model="checkAll"
+              :indeterminate="indeterminate"
+              @change="handleCheckAll"
+          >
+            {{ i18n("datapicker.selectAll") }}
+          </el-checkbox>
+          <el-tag
+              v-if="selectedHierarchyKey"
+              size="small"
+              type="info"
+              effect="plain"
+              closable
+              @close="hierarchyPanelMode ? clearCascadeFilter() : (selectedHierarchyKey = '')"
+          >
+            {{ findNodeByKey(fullTreeData, selectedHierarchyKey)?.[displayName] }}
+          </el-tag>
+        </div>
+
+        <el-scrollbar tag="div" class="dp-mobile-tree">
+          <el-tree
               ref="orgTreeRef"
               :node-key="displayValue"
-              :data="dataOrgOptions"
+              :data="filteredDataOrgOptions"
               :default-expanded-keys="expandedKeys"
               :props="treeProps"
               :check-strictly="checkStrictly"
               :filter-node-method="filterNode"
               @node-click="onNodeClick"
-            >
-              <template #default="{ data }">
-                <div class="data-line">
-                  <div class="menu-title">
-                    <div class="flex flex-row items-center">
-                      <star-horse-icon
+          >
+            <template #default="{ data }">
+              <div class="data-line">
+                <div class="menu-title">
+                  <div class="flex flex-row items-center">
+                    <star-horse-icon
                         :icon-class="
-                          data.children?.length > 0 ? 'folder' : 'document'
-                        "
-                      />
-                      &nbsp;{{ data[displayName] }}
-                    </div>
+                        data.children?.length > 0 ? 'folder' : 'document'
+                      "
+                    />
+                    &nbsp;{{ displayText(data) }}
                   </div>
-                  <el-icon class="is-selected">
-                    <Check />
-                  </el-icon>
                 </div>
-              </template>
-            </el-tree>
-          </el-scrollbar>
-          <el-pagination
-            v-if="pageSize > 0"
+                <el-icon class="is-selected">
+                  <Check/>
+                </el-icon>
+              </div>
+            </template>
+          </el-tree>
+        </el-scrollbar>
+
+        <el-pagination
+            v-if="pageSize > 0 || localPageEnabled"
             :total="pageInfo.totalData"
             @current-change="pageChangeClick"
             @size-change="pageSizeClick"
@@ -723,176 +1127,70 @@ defineExpose({
             v-model:page-size="pageInfo.pageSize"
             v-model:page-count="pageInfo.totalPage"
             :small="true"
-          />
-        </el-tab-pane>
+        />
+      </div>
 
-        <!-- 已选数据 Tab -->
-        <el-tab-pane name="selected">
-          <template #label>
-            <span class="dp-tab-label">
-              {{ i18n("datapicker.selectedDataArea") }}
-              <el-badge
-                v-if="dataOptions.length > 0"
-                :value="dataOptions.length"
-                type="primary"
-                class="dp-tab-badge"
-              />
-            </span>
-          </template>
-          <el-scrollbar tag="div" class="dp-mobile-tree">
-            <div
-              ref="selectedListRef"
-              class="selected-list"
-              tabindex="0"
-              @keydown="onSelectedKeydown"
-            >
-              <div
-                v-for="(item, index) in dataOptions"
-                :key="item[displayValue]"
-                class="selected-item"
-                :class="{ 'is-active-item': activeIndex === index }"
-                :data-index="index"
-                :data-id="item[displayValue]"
-                @click="onSelectedItemClick(index)"
+      <!-- 底部已选数据栏（仅多选时显示） -->
+      <div v-if="multiple" class="dp-mobile-selected-bar">
+        <div class="dp-mobile-selected-bar__header">
+          <span class="dp-mobile-selected-bar__count">
+            {{ i18n("datapicker.selectedCount") }}（{{ dataOptions.length }}）
+          </span>
+
+          <div
+              class="dp-mobile-selected-bar__toggle"
+          >
+            <div class="dp-mobile-selected-bar__search" v-if="selectedBarExpanded">
+              <el-input
+                  v-model="selectedQuery"
+                  :placeholder="i18n('datapicker.enterKeywords')"
+                  clearable
+                  size="small"
               >
-                <div class="selected-item-content">
-                  <el-icon
-                    title="拖拽排序"
-                    v-if="multiple"
-                    class="drag-handle"
-                    :size="20"
-                  >
-                    <Sort />
-                  </el-icon>
-                  <star-horse-icon
-                    :icon-class="
-                      item.children?.length > 0 ? 'folder' : 'document'
-                    "
-                    size="18px"
-                  />
-                  <span class="selected-item-label">{{
-                    item[displayName]
-                  }}</span>
-                </div>
-                <div class="selected-item-actions">
-                  <el-icon
-                    :title="i18n('datapicker.moveToFirst')"
-                    v-if="multiple"
-                    :size="22"
-                    :class="{ 'is-disabled-action': index === 0 }"
-                    @click.stop="moveTop(index)"
-                  >
-                    <Upload />
-                  </el-icon>
-                  <el-icon
-                    :title="i18n('datapicker.moveUp')"
-                    v-if="multiple"
-                    :size="22"
-                    :class="{ 'is-disabled-action': index === 0 }"
-                    @click.stop="moveUp(index)"
-                  >
-                    <Top />
-                  </el-icon>
-                  <el-icon
-                    :title="i18n('datapicker.moveToEnd')"
-                    v-if="multiple"
-                    :size="22"
-                    :class="{
-                      'is-disabled-action': index === dataOptions.length - 1,
-                    }"
-                    @click.stop="moveEnd(index)"
-                  >
-                    <Download />
-                  </el-icon>
-                  <el-icon
-                    :title="i18n('datapicker.moveDown')"
-                    v-if="multiple"
-                    :size="22"
-                    :class="{
-                      'is-disabled-action': index === dataOptions.length - 1,
-                    }"
-                    @click.stop="moveDown(index)"
-                  >
-                    <Bottom />
-                  </el-icon>
-                  <el-icon
-                    :title="i18n('common.delete')"
-                    :size="22"
-                    class="remove-action"
-                    @click.stop="removeItem(index)"
-                  >
-                    <Delete style="color: var(--el-color-danger)" />
-                  </el-icon>
-                </div>
-              </div>
-              <div v-if="dataOptions.length === 0" class="empty-tip">
-                {{ i18n("datapicker.enterKeywords") }}
-              </div>
+                <template #suffix>
+                  <div class="dp-search-btn">
+                    <star-horse-icon iconClass="search"/>
+                  </div>
+                </template>
+              </el-input>
+            </div>
+            <div class="flex flex-row items-center" @click="selectedBarExpanded = !selectedBarExpanded">
+              <span v-if="!selectedBarExpanded">{{ i18n("datapicker.expand") }}</span>
+              <span v-else>{{ i18n("datapicker.collapse") }}</span>
+              <star-horse-icon
+                  :icon-class="selectedBarExpanded ? 'arrow-down' : 'arrow-up'"
+                  size="14px"
+              />
+            </div>
+          </div>
+        </div>
+        <div v-show="selectedBarExpanded" class="dp-mobile-selected-bar__body">
+
+          <el-scrollbar tag="div" class="dp-mobile-selected-list">
+            <div
+                v-for="(item, index) in filteredSelectedItems"
+                :key="item[displayValue]"
+                class="dp-mobile-selected-item"
+                @click="onSelectedItemClick(item)"
+            >
+              <span class="dp-mobile-selected-item__label">{{
+                  displayText(item)
+                }}</span>
+              <star-horse-icon
+                  icon-class="close"
+                  class="dp-mobile-selected-item__remove"
+                  @click.stop="removeItem(item)"
+              />
+            </div>
+            <div
+                v-if="filteredSelectedItems.length === 0"
+                class="dp-mobile-selected-bar__empty"
+            >
+              {{ i18n("datapicker.noData") }}
             </div>
           </el-scrollbar>
-        </el-tab-pane>
-      </el-tabs>
-    </div>
-
-    <!-- ===== APP 端非多选：仅显示待选数据 ===== -->
-    <div v-else class="dp-mobile">
-      <div class="dp-search-bar">
-        <el-input
-          v-model="queryName"
-          :placeholder="i18n('datapicker.enterKeywords')"
-          clearable
-          @keyup.enter="dataSearch"
-          @clear="dataSearch"
-        >
-          <template #suffix>
-            <div class="dp-search-btn" @click="dataSearch">
-              <star-horse-icon iconClass="search" />
-            </div>
-          </template>
-        </el-input>
+        </div>
       </div>
-      <el-scrollbar tag="div" class="dp-mobile-tree">
-        <el-tree
-          ref="orgTreeRef"
-          :node-key="displayValue"
-          :data="dataOrgOptions"
-          :default-expanded-keys="expandedKeys"
-          :props="treeProps"
-          :check-strictly="checkStrictly"
-          :filter-node-method="filterNode"
-          @node-click="onNodeClick"
-        >
-          <template #default="{ data }">
-            <div class="data-line">
-              <div class="menu-title">
-                <div class="flex flex-row items-center">
-                  <star-horse-icon
-                    :icon-class="
-                      data.children?.length > 0 ? 'folder' : 'document'
-                    "
-                  />
-                  &nbsp;{{ data[displayName] }}
-                </div>
-              </div>
-              <el-icon class="is-selected">
-                <Check />
-              </el-icon>
-            </div>
-          </template>
-        </el-tree>
-      </el-scrollbar>
-      <el-pagination
-        v-if="pageSize > 0"
-        :total="pageInfo.totalData"
-        @current-change="pageChangeClick"
-        @size-change="pageSizeClick"
-        :size="compSize"
-        layout="total, prev, pager, next"
-        v-model:currentPage="pageInfo.currentPage"
-        v-model:page-size="pageInfo.pageSize"
-        v-model:page-count="pageInfo.totalPage"
-        :small="true"
-      />
     </div>
   </star-horse-dialog>
 </template>
@@ -1112,63 +1410,377 @@ defineExpose({
   font-size: 13px;
 }
 
-/* ===== 移动端 Tab 布局适配 ===== */
+/* ===== 移动端布局 ===== */
 .dp-mobile {
   display: flex;
   flex-direction: column;
   height: 100%;
 }
 
-.dp-mobile__tabs {
+/* 头部：搜索框 + 层级筛选按钮 */
+.dp-mobile-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px 4px;
+  flex-shrink: 0;
+}
+
+.dp-mobile-header__search {
+  flex: 1;
+  padding: 0;
+}
+
+.dp-mobile-header__filter {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  border: 1px solid var(--el-border-color);
+  border-radius: 6px;
+  background: var(--el-fill-color-lighter);
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--el-text-color-regular);
+  transition: all 0.15s;
+  max-width: 120px;
+
+  &:active,
+  &.is-active {
+    border-color: var(--el-color-primary);
+    color: var(--el-color-primary);
+    background: var(--el-color-primary-light-9);
+  }
+}
+
+.dp-mobile-header__filter-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 70px;
+}
+
+/* 层级筛选下拉面板 */
+.dp-mobile-hierarchy-dropdown {
+  flex-shrink: 0;
+  max-height: 40%;
+  min-height: 120px;
+  border-bottom: 1px solid var(--el-border-color);
+  background: var(--el-fill-color-lighter);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* 级联面板样式 */
+.dp-mobile-hierarchy__panel {
   flex: 1;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+}
 
-  :deep(.el-tabs__header) {
-    margin: 0;
-    flex-shrink: 0;
-  }
+.dp-mobile-hierarchy__panel-cols {
+  flex: 1;
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  min-height: 0;
+}
 
-  :deep(.el-tabs__content) {
+.dp-mobile-hierarchy__panel-col {
+  flex: 0 0 110px;
+  width: 110px;
+  border-right: 1px solid var(--el-border-color-lighter);
+  overflow: hidden;
+
+  &:last-child {
+    border-right: none;
     flex: 1;
-    overflow: hidden;
-    padding: 6px;
-  }
-
-  :deep(.el-tab-pane) {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
+    width: auto;
   }
 }
 
-.dp-tab-label {
-  font-size: 14px;
-  font-weight: 500;
-  display: inline-flex;
+.dp-cascade-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  margin: 1px 3px;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+  overflow: hidden;
+
+  &:hover,
+  &:active {
+    background: var(--el-fill-color);
+  }
+
+  &.is-active {
+    background: var(--el-color-primary-light-9);
+    color: var(--el-color-primary);
+    font-weight: 500;
+  }
+}
+
+.dp-cascade-item__label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-right: 2px;
+}
+
+.dp-mobile-hierarchy__panel-clear {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 5px 0;
+  font-size: 11px;
+  color: var(--el-text-color-placeholder);
+  border-top: 1px solid var(--el-border-color-lighter);
+  cursor: pointer;
+
+  &:hover,
+  &:active {
+    color: var(--el-color-danger);
+  }
+}
+
+.dp-mobile-hierarchy__tree {
+  flex: 1;
+  overflow: hidden;
+}
+
+/* 底部操作栏 */
+.dp-mobile-hierarchy__actions {
+  flex-shrink: 0;
+  display: flex;
+  gap: 8px;
+  padding: 6px 10px 8px;
+  border-top: 1px solid var(--el-border-color-lighter);
+  background: var(--el-fill-color-lighter);
+  justify-content: flex-end;
+}
+
+.dp-mobile-hierarchy__btn {
+  padding: 6px 14px;
+  font-size: 12px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &--reset {
+    background: var(--el-bg-color);
+    border-color: var(--el-border-color);
+    color: var(--el-text-color-regular);
+
+    &:active {
+      color: var(--el-color-danger);
+      border-color: var(--el-color-danger);
+    }
+  }
+
+  &--confirm {
+    background: var(--el-color-primary);
+    border-color: var(--el-color-primary);
+    color: #fff;
+    font-weight: 500;
+
+    &:active {
+      opacity: 0.85;
+    }
+  }
+}
+
+.dp-hierarchy-node {
+  display: flex;
   align-items: center;
   gap: 4px;
+  padding: 4px 6px;
+  font-size: 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &.is-active,
+  &:active {
+    background: var(--el-color-primary-light-9);
+    color: var(--el-color-primary);
+  }
+
+  &:hover {
+    background: var(--el-fill-color);
+  }
 }
 
-.dp-tab-badge {
-  :deep(.el-badge__content) {
-    font-size: 11px;
-    height: 16px;
-    line-height: 16px;
-    padding: 0 4px;
-  }
+.dp-hierarchy-node__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 数据列表区 */
+.dp-mobile-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
 }
 
 .dp-mobile-checkall {
-  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 5px;
   border-bottom: 1px solid var(--el-border-color-lighter);
+  flex-shrink: 0;
+  flex-wrap: nowrap;
+  overflow: hidden;
+
+  .el-tag {
+    flex-shrink: 0;
+    max-width: 60%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.dp-filter-clear {
+  cursor: pointer;
+  margin-left: 2px;
   flex-shrink: 0;
 }
 
 .dp-mobile-tree {
   flex: 1;
   overflow: hidden;
+}
+
+/* 底部已选栏 */
+.dp-mobile-selected-bar {
+  flex-shrink: 0;
+  border-top: 1px solid var(--el-border-color);
+  background: var(--el-bg-color);
+  max-height: 50%;
+  display: flex;
+  flex-direction: column;
+}
+
+.dp-mobile-selected-bar__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 6px;
+  cursor: pointer;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.dp-mobile-selected-bar__count {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--el-text-color-primary);
+}
+
+.dp-mobile-selected-bar__toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--el-color-primary);
+}
+
+.dp-mobile-selected-bar__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 120px;
+}
+
+.dp-mobile-selected-bar__search {
+  padding: 6px 10px 4px;
+  min-width: 100px;
+  max-width: 200px;
+
+  :deep(.el-input__wrapper) {
+    border-radius: 6px;
+  }
+}
+
+.dp-mobile-selected-list {
+  flex: 1;
+  overflow: hidden;
+  padding: 0 8px;
+}
+
+.dp-mobile-selected-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  margin: 2px 0;
+  border-radius: 6px;
+  background: var(--el-fill-color-lighter);
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover {
+    background: var(--el-fill-color);
+  }
+}
+
+.dp-mobile-selected-item__label {
+  flex: 1;
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dp-mobile-selected-item__remove {
+  cursor: pointer;
+  color: var(--el-text-color-placeholder);
+  flex-shrink: 0;
+
+  &:hover {
+    color: var(--el-color-danger);
+  }
+}
+
+.dp-mobile-selected-bar__empty {
+  text-align: center;
+  padding: 20px 0;
+  color: var(--el-text-color-placeholder);
+  font-size: 13px;
+}
+
+.dp-mobile-selected-bar__confirm {
+  flex-shrink: 0;
+  margin: 8px 14px 12px;
+  padding: 10px 16px;
+  background: var(--el-color-primary);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:active {
+    opacity: 0.85;
+  }
 }
 
 /* ===== 移动端紧凑适配 ===== */
@@ -1192,25 +1804,31 @@ defineExpose({
     }
   }
 
-  .selected-item {
-    padding: 4px 6px;
-    margin: 0;
+  .dp-mobile-header__filter {
+    padding: 4px 8px;
+    max-width: 100px;
   }
 
-  .selected-item-content {
-    gap: 4px;
+  .dp-mobile-selected-bar__header {
+    padding: 8px 12px;
   }
 
-  .selected-item-label {
-    font-size: 13px;
+  .dp-mobile-selected-bar__search {
+    padding: 4px 8px 2px;
   }
 
-  .selected-item-actions {
-    gap: 0;
+  .dp-mobile-selected-bar__confirm {
+    margin: 6px 12px 10px;
+    padding: 8px 14px;
+    font-size: 14px;
+  }
 
-    .el-icon {
-      padding: 1px;
-    }
+  .dp-mobile-selected-item {
+    padding: 6px 8px;
+  }
+
+  .dp-mobile-selected-item__label {
+    font-size: 12px;
   }
 
   .org-tree {

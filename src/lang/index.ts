@@ -108,9 +108,9 @@ export const isZH = () => currentLang === LangType.ZH_CN;
  * @param key
  * @param args
  */
-export function i18n(key: keyof typeof zh_CN, ...args: any[]): any;
-export function i18n(key: string, ...args: any[]): any;
-export function i18n(key: string, ...args: any[]) {
+// export function i18n(key: keyof typeof zh_CN, ...args: any[]): any;
+// export function i18n(key: string, ...args: any[]): any;
+export function i18n(key: keyof typeof zh_CN, ...args: any[]) {
   // 优先从当前语言包获取
   if (Object.keys(langSet || {}).length === 0) {
     langSet = zh_CN;

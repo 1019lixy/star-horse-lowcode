@@ -123,6 +123,13 @@ export default {
   "datapicker.helpTitle": "Help",
   "datapicker.helpContent":
     "Click left panel to add data; Click selected data to deselect; Drag selected items to reorder; Use up/down buttons or ↑↓ keys to adjust order",
+  "datapicker.hierarchyFilter": "Hierarchy Filter",
+  "datapicker.filteredBy": "Filtered by",
+  "datapicker.selectedCount": "Selected",
+  "datapicker.expand": "Expand",
+  "datapicker.collapse": "Collapse",
+  "datapicker.confirmSelect": "Confirm",
+  "datapicker.noData": "No Data",
   /**
    * Data Selector--------------
    */
