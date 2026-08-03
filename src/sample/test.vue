@@ -1,24 +1,17 @@
 <script setup lang="ts" name="Areainfo">
-import { onMounted, ref } from "vue";
-import DytableContainerInstanceValid from "@/sample/DytableContainerInstanceValid.vue";
-import BoxContainerInstanceDemo from "@/sample/BoxContainerInstanceDemo.vue";
-import ComponentTester from "@/sample/ComponentTester.vue";
-import DytableContainerViewValid from "@/sample/DytableContainerViewValid.vue";
-import BoxContainerViewDemo from "@/sample/BoxContainerViewDemo.vue";
-import ComplexFormValid from "@/sample/ComplexFormValid.vue";
-import ComplexFormAnalysis from "@/sample/ComplexFormAnalysis.vue";
-import DataPickerDemo from "@/sample/DataPickerDemo.vue";
-import FormValid from "@/sample/FormValid.vue";
-import NormalFormValid from "@/sample/NormalFormValid.vue";
-import CodeEditorTest from "@/sample/CodeEditorTest.vue";
-import CodeDiffEditorTest from "@/sample/CodeDiffEditorTest.vue";
-import EditorTest from "@/sample/EditorTest.vue";
-import ImagePreviewTest from "@/sample/ImagePreviewTest.vue";
-import FormRelationOperation from "@/sample/FormRelationOperation.vue";
-import ValidDialogFormRelation from "@/sample/ValidDialogFormRelation.vue";
-import ValidMulitSameFormTab from "@/sample/ValidMulitSameFormTab.vue";
-import AdvancedComponentsDemo from "@/sample/AdvancedComponentsDemo.vue";
-import BarcodeTest from "@/sample/BarcodeTest.vue";
+import { defineAsyncComponent, onMounted, ref } from "vue";
+// 全部改为异步组件：ES 模块仅在 tab 首次激活时才加载，避免 Monaco/CodeMirror/pcas-code.json 等重型库常驻内存
+const DytableContainerInstanceValid = defineAsyncComponent(() => import("@/sample/DytableContainerInstanceValid.vue"));
+const BoxContainerInstanceDemo = defineAsyncComponent(() => import("@/sample/BoxContainerInstanceDemo.vue"));
+const ComponentTester = defineAsyncComponent(() => import("@/sample/ComponentTester.vue"));
+const DytableContainerViewValid = defineAsyncComponent(() => import("@/sample/DytableContainerViewValid.vue"));
+const BoxContainerViewDemo = defineAsyncComponent(() => import("@/sample/BoxContainerViewDemo.vue"));
+const ComplexFormValid = defineAsyncComponent(() => import("@/sample/ComplexFormValid.vue"));
+const ComplexFormAnalysis = defineAsyncComponent(() => import("@/sample/ComplexFormAnalysis.vue"));
+const DataPickerDemo = defineAsyncComponent(() => import("@/sample/DataPickerDemo.vue"));
+const NormalFormValid = defineAsyncComponent(() => import("@/sample/NormalFormValid.vue"));
+const CodeEditorTest = defineAsyncComponent(() => import("@/sample/CodeEditorTest.vue"));
+const AdvancedComponentsDemo = defineAsyncComponent(() => import("@/sample/AdvancedComponentsDemo.vue"));
 
 const visible = ref<boolean>(false);
 const actName = ref<string>("component");
@@ -76,41 +69,39 @@ onMounted(() => {
 <!--    <barcode-test/>-->
     <el-tabs v-model="actName" class="h-full">
       <el-tab-pane name="component" label="组件测试">
-        <ComponentTester />
+        <ComponentTester v-if="actName === 'component'" />
       </el-tab-pane>
       <el-tab-pane name="a" label="动态列表实例">
-        <DytableContainerInstanceValid />
+        <DytableContainerInstanceValid v-if="actName === 'a'" />
       </el-tab-pane>
 
       <el-tab-pane name="d" label="动态实例Box">
-        <BoxContainerInstanceDemo />
+        <BoxContainerInstanceDemo v-if="actName === 'd'" />
       </el-tab-pane>
       <el-tab-pane name="e" label="动态列表查看视图">
-        <DytableContainerViewValid />
+        <DytableContainerViewValid v-if="actName === 'e'" />
       </el-tab-pane>
       <el-tab-pane name="f" label="动态栅格查看视图">
-        <BoxContainerViewDemo />
+        <BoxContainerViewDemo v-if="actName === 'f'" />
       </el-tab-pane>
 
       <el-tab-pane name="h" label="数据选择器">
-        <!--      <DataPickerDemo />-->
-        <!--      <InformationsUi/>-->
-        <ComplexFormValid />
+        <ComplexFormValid v-if="actName === 'h'" />
       </el-tab-pane>
       <el-tab-pane name="h1" label="数据选择器2">
-        <DataPickerDemo />
+        <DataPickerDemo v-if="actName === 'h1'" />
       </el-tab-pane>
       <el-tab-pane name="h2" label="正常表单">
-        <NormalFormValid />
+        <NormalFormValid v-if="actName === 'h2'" />
       </el-tab-pane>
       <el-tab-pane name="i" label="验证容器">
-        <ComplexFormAnalysis />
+        <ComplexFormAnalysis v-if="actName === 'i'" />
       </el-tab-pane>
       <el-tab-pane name="j" label="代码编辑器">
-        <CodeEditorTest />
+        <CodeEditorTest v-if="actName === 'j'" />
       </el-tab-pane>
       <el-tab-pane name="k" label="高级组件库">
-        <AdvancedComponentsDemo />
+        <AdvancedComponentsDemo v-if="actName === 'k'" />
       </el-tab-pane>
     </el-tabs>
   </div>

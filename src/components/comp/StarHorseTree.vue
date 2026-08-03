@@ -374,7 +374,7 @@ defineExpose({
         @click="openTreePicker"
       />
       <ShMobilePicker
-        v-if="isMobile"
+        v-if="isMobile && treePickerVisible"
         v-model="treePickerVisible"
         title="操作"
         :placement="treePlacement"

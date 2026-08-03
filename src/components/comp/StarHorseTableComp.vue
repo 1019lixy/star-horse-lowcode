@@ -638,7 +638,7 @@ const loadByPage = (initPageInfo?: boolean) => {
           if (!pageInfo.value.dataList) {
             pageInfo.value.dataList = [];
           }
-          const maxCachePages = 10;
+          const maxCachePages = isMobile ? 3 : 10;
           const maxCacheSize = pageInfo.value.pageSize * maxCachePages;
           pageInfo.value.dataList.push(...newData);
           if (pageInfo.value.dataList.length > maxCacheSize) {
@@ -1447,12 +1447,22 @@ defineExpose({
                   :label="item?.label"
               >
                 <el-tooltip
+                    v-if="!isMobile"
                     :content="formatCellValue(item, data, dataFormat)"
                 >
                   <span class="desc-value" @click="selectRow(data)" @dblclick="editData(data)">
                     {{ formatCellValue(item, data, dataFormat) }}
                   </span>
                 </el-tooltip>
+                <span
+                    v-else
+                    class="desc-value"
+                    :title="formatCellValue(item, data, dataFormat)"
+                    @click="selectRow(data)"
+                    @dblclick="editData(data)"
+                >
+                  {{ formatCellValue(item, data, dataFormat) }}
+                </span>
               </el-descriptions-item>
             </el-descriptions>
             <template #footer>

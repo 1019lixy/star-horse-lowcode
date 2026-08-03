@@ -88,6 +88,7 @@ onMounted(() => {
       <slot></slot>
     </div>
     <ShMobilePicker
+      v-if="isMobile && pickerVisible"
       v-model="pickerVisible"
       :title="pickerTitle"
       :placement="placement"

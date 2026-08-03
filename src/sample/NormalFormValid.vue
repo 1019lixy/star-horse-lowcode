@@ -8,6 +8,7 @@ import {warning} from "@/utils/message";
 import {ApiUrls, SearchInfo} from "@/components/types";
 import {parseDateByType} from "@/api/date_utils";
 import areaList from "@/api/pcas-code.json";
+import {isMobile} from "@/api/device";
 
 const dataUrl: ApiUrls = apiInstance(
     "userdb-manage",
@@ -1004,7 +1005,7 @@ onMounted(() => {
           :compUrl="dataUrl"
       />
     </star-horse-dialog>
-    <div class="search-content">
+    <div class="search-content" v-if="!isMobile">
       <div class="search_btn">
         <star-horse-search-comp
             @searchData="

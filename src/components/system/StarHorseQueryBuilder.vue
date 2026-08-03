@@ -1118,7 +1118,7 @@ const singleDisplay = (item: any, type: "prop" | "cond") => {
 
     <!-- APP 端单选抽屉（属性/匹配方式） -->
     <ShMobilePicker
-      v-if="isMobile"
+      v-if="isMobile && singlePickerVisible"
       v-model="singlePickerVisible"
       :title="singlePickerType === 'prop' ? effectivePlaceholder : i18n('queryBuilder.placeholder.condition')"
       placement="bottom"
@@ -1151,7 +1151,7 @@ const singleDisplay = (item: any, type: "prop" | "cond") => {
 
     <!-- APP 端多选值抽屉（ini/ins 条件） -->
     <ShMobilePicker
-      v-if="isMobile"
+      v-if="isMobile && multiPickerVisible"
       v-model="multiPickerVisible"
       :title="i18n('queryBuilder.placeholder.multi')"
       placement="bottom"

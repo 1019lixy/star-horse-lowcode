@@ -67,6 +67,7 @@
       </el-input>
 
       <ShMobilePicker
+        v-if="isSeparate && pickerVisible"
         v-model="pickerVisible"
         :title="title"
         :placement="placement"

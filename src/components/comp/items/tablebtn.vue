@@ -5,7 +5,6 @@ import { BtnHideCondition } from "@/components/types/Params";
 
 import { compKey } from "@/api/system";
 import { isMobile } from "@/api/device";
-import { useMobilePicker } from "@/components/formcomp/utils/useMobilePicker";
 import ShMobilePicker from "@/components/formcomp/utils/ShMobilePicker.vue";
 
 const props = defineProps({
@@ -76,9 +75,12 @@ const btnHideCheck = (btn: string, row: any) => {
   return hasBtn ? flag : true;
 };
 
-// APP 端动作面板
-const { pickerVisible, placement, size, openPicker, closePicker } =
-  useMobilePicker(() => ({ preps: {} } as any));
+// APP 端动作面板：使用轻量 ref 替代 useMobilePicker，避免随卡片行数线性膨胀
+const pickerVisible = ref(false);
+const placement = "bottom" as const;
+const size = "auto";
+const openPicker = () => { pickerVisible.value = true; };
+const closePicker = () => { pickerVisible.value = false; };
 
 const handleActionClick = (item: any) => {
   item.funcName?.(props.row);
@@ -182,19 +184,19 @@ onMounted(() => {
     <!-- APP 端：最多显示 2 个按钮 + "更多"触发抽屉动作面板 -->
     <template v-else>
       <template v-if="validButtonList.length > 2">
-        <star-horse-icon
-          v-for="(item, key) in validButtonList.slice(0, 2)"
-          :key="compKey(item, key)"
-          v-if="permissions[item.authority!]"
-          @click="item.funcName!(row)"
-          :icon-class="item.icon || 'edit'"
-          style="cursor: pointer; margin-left: 8px"
-          :color="
-            item.authority == 'delete'
-              ? 'var(--el-color-danger)'
-              : 'var(--star-horse-style)'
-          "
-        />
+        <template v-for="(item, key) in validButtonList.slice(0, 2)" :key="compKey(item, key)">
+          <star-horse-icon
+            v-if="permissions[item.authority!]"
+            @click="item.funcName!(row)"
+            :icon-class="item.icon || 'edit'"
+            style="cursor: pointer; margin-left: 8px"
+            :color="
+              item.authority == 'delete'
+                ? 'var(--el-color-danger)'
+                : 'var(--star-horse-style)'
+            "
+          />
+        </template>
         <div class="more-btn" @click="openPicker">
           <star-horse-icon
             icon-class="ellipsis"
@@ -203,22 +205,23 @@ onMounted(() => {
         </div>
       </template>
       <template v-else>
-        <star-horse-icon
-          v-for="(item, key) in validButtonList"
-          :key="compKey(item, key)"
-          v-if="permissions[item.authority]"
-          @click="item.funcName(row)"
-          :icon-class="item.icon || 'edit'"
-          style="cursor: pointer; margin-left: 8px"
-          :color="
-            item.authority == 'delete'
-              ? 'var(--el-color-danger)'
-              : 'var(--star-horse-style)'
-          "
-        />
+        <template v-for="(item, key) in validButtonList" :key="compKey(item, key)">
+          <star-horse-icon
+            v-if="permissions[item.authority]"
+            @click="item.funcName(row)"
+            :icon-class="item.icon || 'edit'"
+            style="cursor: pointer; margin-left: 8px"
+            :color="
+              item.authority == 'delete'
+                ? 'var(--el-color-danger)'
+                : 'var(--star-horse-style)'
+            "
+          />
+        </template>
       </template>
 
       <ShMobilePicker
+        v-if="isMobile && pickerVisible"
         v-model="pickerVisible"
         title="更多操作"
         :placement="placement"
@@ -226,24 +229,24 @@ onMounted(() => {
         :show-footer="false"
       >
         <div class="mobile-action-panel">
-          <div
-            v-for="(item, key) in validButtonList"
-            :key="compKey(item, key)"
-            v-if="permissions[item.authority!]"
-            class="mobile-action-panel__item"
-            @click="handleActionClick(item)"
-          >
-            <star-horse-icon
-              :icon-class="item.icon || 'edit'"
-              :color="
-                item.authority == 'delete'
-                  ? 'var(--el-color-danger)'
-                  : 'var(--star-horse-style)'
-              "
-              class="mobile-action-panel__icon"
-            />
-            <span class="mobile-action-panel__label">{{ item.btnName }}</span>
-          </div>
+          <template v-for="(item, key) in validButtonList" :key="compKey(item, key)">
+            <div
+              v-if="permissions[item.authority!]"
+              class="mobile-action-panel__item"
+              @click="handleActionClick(item)"
+            >
+              <star-horse-icon
+                :icon-class="item.icon || 'edit'"
+                :color="
+                  item.authority == 'delete'
+                    ? 'var(--el-color-danger)'
+                    : 'var(--star-horse-style)'
+                "
+                class="mobile-action-panel__icon"
+              />
+              <span class="mobile-action-panel__label">{{ item.btnName }}</span>
+            </div>
+          </template>
         </div>
       </ShMobilePicker>
     </template>

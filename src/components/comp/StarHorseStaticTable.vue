@@ -339,7 +339,7 @@ defineExpose({
           <Tools />
         </el-icon>
         <ShMobilePicker
-          v-if="isMobile"
+          v-if="isMobile && columnPickerVisible"
           v-model="columnPickerVisible"
           :title="i18n('comp.showHideColumns')"
           :placement="columnPlacement"
