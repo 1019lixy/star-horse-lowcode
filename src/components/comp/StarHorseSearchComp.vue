@@ -2,7 +2,6 @@
 import {isMobile} from "@/api/device";
 import StarHorseSearchForm from "@/components/comp/StarHorseSearchForm.vue";
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
-import MenuShot from "@/components/comp/app/MenuShot.vue";
 import StarHorseQueryBuilder from "@/components/system/StarHorseQueryBuilder.vue";
 import {i18n} from "@/lang";
 import {computed, defineComponent, h, PropType, reactive, ref, watch,} from "vue";
@@ -204,6 +203,11 @@ const handleClose = () => {
 const handleAdvancedClose = () => {
   advancedVisible.value = false;
 };
+
+defineExpose({
+  handleMobileSearch,
+});
+
 </script>
 <template>
   <!-- ── 桌面端：内联搜索表单 + 高级查询入口 ───────────────────── -->
@@ -225,18 +229,6 @@ const handleAdvancedClose = () => {
       </template>
     </StarHorseSearchForm>
   </div>
-
-  <!-- ── 移动端：悬浮入口按钮 ───────────────────────────────── -->
-  <MenuShot
-      v-if="isMobile"
-      icon="search"
-      :position="{
-      top: '50px',
-      right: '20px',
-      bottom: 'unset',
-    }"
-      @change="handleMobileSearch"
-  />
 
   <!-- ── 移动端：搜索弹窗（简单 / 高级 切换） ─────────────────── -->
   <star-horse-dialog

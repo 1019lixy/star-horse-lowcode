@@ -128,13 +128,16 @@ const uploadSuccess = (_response: any, _file: any, _fileList: any) => {
 };
 const buttonList = computed(() => {
   const baseBtn = extendBtnFunction();
-  baseBtn.push({
-    btnName: i18n("comp.refresh"),
-    icon: "refresh",
-    authority: "view",
-    priority: 200,
-    funcName: (actionName: string) => tableCompFunc("refresh"),
-  });
+  // 刷新按钮仅在 PC 端加入，APP 端由顶部工具栏提供
+  if (!isMobile) {
+    baseBtn.push({
+      btnName: i18n("comp.refresh"),
+      icon: "refresh",
+      authority: "view",
+      priority: 200,
+      funcName: (actionName: string) => tableCompFunc("refresh"),
+    });
+  }
   return baseBtn;
 });
 /**

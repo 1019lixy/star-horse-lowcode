@@ -17,7 +17,7 @@ import {SelectOption} from "@/components/types/SearchProps";
 import {BatchFieldInfo, FieldInfo, OrderByInfo, PageFieldInfo, TabFieldInfo,} from "@/components/types/PageFieldInfo";
 import {ApiUrls} from "@/components/types/ApiUrls";
 import {DialogProps} from "@/components/types/DialogProps";
-import {createDatetime} from "@/api/date_utils";
+import {createDatetime, dateTypes, parseDateByType} from "@/api/date_utils";
 import {i18n} from "@/lang";
 import {ApiLinkageDetail} from "@/components/types";
 
@@ -135,6 +135,48 @@ export function commonParseCodeToName(name: string, cellValue: any) {
     } else {
         return cellValue;
     }
+}
+
+/**
+ * 单元格数据格式化（从 StarHorseTableColumn.currentDataFormat 抽取的公共函数）
+ * 处理顺序：日期解析 -> select/checkbox/radio 值名映射 -> 系统字段名转换 -> 用户自定义 dataFormat
+ * @param item 字段元数据
+ * @param row 当前行数据
+ * @param dataFormat 用户自定义格式化函数 (name, val, row) => any
+ */
+export function formatCellValue(
+    item: FieldInfo | any,
+    row: any,
+    dataFormat?: Function | ((name: string, val: any, row: any) => any),
+) {
+    if (!item || !row) return "";
+    const name: string = item?.hideFieldName || item?.fieldName;
+    let val: any = row?.[name];
+    // 日期类型优先解析
+    if (dateTypes.includes(item?.type)) {
+        return parseDateByType(val, item.type, item.preps?.type);
+    }
+    // 下拉、checkbox、radio 切换为对应的名称
+    let fname: string = "";
+    if (
+        item?.type == "select" ||
+        item?.type == "checkbox" ||
+        item?.type == "radio"
+    ) {
+        fname = item?.preps?.values?.find(
+            (temp: any) => String(temp.value) == val,
+        )?.name;
+    }
+    if (fname) {
+        return fname;
+    }
+    // 系统公共字段转换
+    val = commonParseCodeToName(name, val);
+    // 用户自定义格式化
+    if (typeof dataFormat === "function") {
+        return (dataFormat as Function)(name, val, row);
+    }
+    return val;
 }
 
 /**

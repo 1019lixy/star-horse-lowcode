@@ -10,12 +10,11 @@ import {
   unref,
 } from "vue";
 import { postRequest } from "@/api/star_horse_apis";
-import { closeLoad, commonParseCodeToName } from "@/api/star_horse_utils";
+import { closeLoad, formatCellValue } from "@/api/star_horse_utils";
 import { error, success, warning } from "@/utils/message";
 import { i18n } from "@/lang";
 import { Config } from "@/api/settings";
 import { createComponent, uuid } from "@/api/system";
-import { dateTypes, parseDateByType } from "@/api/date_utils";
 import { ApiUrls, DyCompField, FieldInfo } from "@/components/types";
 import StarHorseItem from "@/components/comp/StarHorseItem.vue";
 import { processFieldList } from "@/api/form_utils";
@@ -151,31 +150,7 @@ const cellClick = (row: any, column: any) => {
   changeStyle("visible");
 };
 const currentDataFormat = (scope: any) => {
-  let item = props.item;
-  let name = item?.hideFieldName || item?.fieldName;
-  let val: string = scope?.row?.[name];
-  //下拉数据,checkbox,radio切换为对应的名称
-  let fname: string = "";
-  if (dateTypes.includes(item?.type)) {
-    return parseDateByType(val, item.type, item.preps?.type);
-  }
-  if (
-    item?.type == "select" ||
-    item?.type == "checkbox" ||
-    item?.type == "radio"
-  ) {
-    fname = item?.preps?.values?.find(
-      (temp: any) => String(temp.value) == val,
-    )?.name;
-  }
-  if (fname) {
-    return fname;
-  }
-  val = commonParseCodeToName(name, val);
-  if (typeof props.dataFormat === "function") {
-    return props.dataFormat(name, val, scope?.row);
-  }
-  return val;
+  return formatCellValue(props.item, scope?.row, props.dataFormat);
 };
 const popover = ref();
 const showOperation = async () => {

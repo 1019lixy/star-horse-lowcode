@@ -1030,6 +1030,7 @@ onMounted(() => {
           :primaryKey="primaryKey"
           :compUrl="dataUrl"
           :preview="true"
+          :searchFormData="searchFormData"
           :btn-permissions="{
           edit: 'edit',
           view: 'view',

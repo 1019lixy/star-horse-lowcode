@@ -1,36 +1,22 @@
 <script setup lang="ts" name="StarHorseTableComp">
-import {
-  deleteByIds,
-  download,
-  loadData,
-  postRequest,
-} from "@/api/star_horse_apis";
-import {
-  closeLoad,
-  createCondition,
-  isJson,
-  load,
-} from "@/api/star_horse_utils";
-import { compKey, removeEmptyCondition, uuid } from "@/api/system";
+import {deleteByIds, download, loadData, postRequest,} from "@/api/star_horse_apis";
+import {closeLoad, createCondition, formatCellValue, isJson, load,} from "@/api/star_horse_utils";
+import {compKey, removeEmptyCondition, uuid} from "@/api/system";
 import Tablebtn from "@/components/comp/items/tablebtn.vue";
 import TableColumnItem from "@/components/comp/items/tableColumnItem.vue";
 import Help from "@/components/help.vue";
-import { DialogProps } from "@/components/types/DialogProps";
-import {
-  FieldInfo,
-  OrderByInfo,
-  UserFuncInfo,
-} from "@/components/types/PageFieldInfo";
-import { DataListProps, PageProps } from "@/components/types/PageProps";
-import { BtnHideCondition, SearchParams } from "@/components/types/Params";
+import {DialogProps} from "@/components/types/DialogProps";
+import {FieldInfo, OrderByInfo, UserFuncInfo,} from "@/components/types/PageFieldInfo";
+import {DataListProps, PageProps} from "@/components/types/PageProps";
+import {BtnHideCondition, SearchParams} from "@/components/types/Params";
 import piniaInstance from "@/store";
-import { useButtonPermissionStore } from "@/store/ButtonPermission";
-import { useDynamicFormStore } from "@/store/DynamicForm";
-import { useGlobalConfigStore } from "@/store/GlobalConfig";
-import { isSystemManage } from "@/utils/auth";
-import { error, warning } from "@/utils/message";
+import {useButtonPermissionStore} from "@/store/ButtonPermission";
+import {useDynamicFormStore} from "@/store/DynamicForm";
+import {useGlobalConfigStore} from "@/store/GlobalConfig";
+import {isSystemManage} from "@/utils/auth";
+import {error, warning} from "@/utils/message";
 import Sortable from "sortablejs";
-import { i18n } from "@/lang";
+import {i18n} from "@/lang";
 import {
   computed,
   inject,
@@ -39,14 +25,15 @@ import {
   onMounted,
   onUnmounted,
   provide,
+  reactive,
   ref,
   unref,
   watch,
 } from "vue";
-import { isMobile } from "@/api/device";
-import { convertCompToAppComps } from "@/api/form_utils";
-import type { PreValid } from "@/components/types";
-import { Sort } from "@element-plus/icons-vue";
+import {isMobile} from "@/api/device";
+import {convertCompToAppComps} from "@/api/form_utils";
+import type {PreValid} from "@/components/types";
+import {Sort} from "@element-plus/icons-vue";
 
 const dynamicForm = useDynamicFormStore(piniaInstance);
 const props = withDefaults(defineProps<DataListProps>(), {
@@ -71,7 +58,7 @@ let configStore = useGlobalConfigStore(piniaInstance);
 let permissions = ref<Record<string, string>>({});
 const configInfo = computed(() => configStore.configFormInfo);
 let compSize = computed(
-  () => configStore.configFormInfo?.inputSize || "default",
+    () => configStore.configFormInfo?.inputSize || "default",
 );
 const multipleSelection = ref<any>([]);
 const cardSelection = ref<any>([]);
@@ -91,7 +78,7 @@ const cancelAllEdit = () => {
   const row = editingRow.value;
   if (!row) return;
   const originalValue =
-    row.starHorseBakeValue === "_" ? null : row.starHorseBakeValue;
+      row.starHorseBakeValue === "_" ? null : row.starHorseBakeValue;
   if (row.selectName) row[row.selectName] = originalValue;
   delete row.isSelected;
   delete row.selectName;
@@ -109,6 +96,12 @@ let fieldVisible = ref<boolean>(false);
 let dialogProps = inject("dialogProps") as DialogProps;
 let toolFields = ref<Array<any>>([]);
 const exportOperationVisible = ref<boolean>(false);
+// APP端：搜索组件引用 + 列显隐弹窗
+const mobileSearchRef = ref<any>(null);
+const mobileFieldVisible = ref(false);
+const openMobileSearch = () => {
+  mobileSearchRef.value?.handleMobileSearch();
+};
 /**
  * Button area event
  * @param authority Permission code
@@ -190,12 +183,12 @@ const exportData = () => {
     condition["orderBy"] = props.fieldList?.orderBy;
   }
   download(props.compUrl!.exportAllUrl!, condition)
-    .catch((err: any) => {
-      error(i18n("comp.interfaceNotFoundOrNetworkError") + err);
-    })
-    .finally(() => {
-      closeLoad();
-    });
+      .catch((err: any) => {
+        error(i18n("comp.interfaceNotFoundOrNetworkError") + err);
+      })
+      .finally(() => {
+        closeLoad();
+      });
 };
 const getIds = () => {
   let selectDatas = unref(multipleSelection);
@@ -224,8 +217,8 @@ const batchDelete = async () => {
  */
 const searchFlag = ref<boolean>(false);
 const createSearchParams = (
-  formData: SearchParams[],
-  orderBy: OrderByInfo[] = [],
+    formData: SearchParams[],
+    orderBy: OrderByInfo[] = [],
 ) => {
   searchFields.value = formData;
   orderBys.value = orderBy;
@@ -245,10 +238,10 @@ const init = async () => {
   // } else {
   pagePermission.setPermissionUrl(props.compUrl?.permissionsUrl);
   permissions.value = await pagePermission.addRoute(
-    window.__hostRouter__?.currentRoute.value,
+      window.__hostRouter__?.currentRoute.value,
   );
   // }
-  permissions.value = { ...permissions.value, ...props.btnPermissions };
+  permissions.value = {...permissions.value, ...props.btnPermissions};
   emits("permission", permissions.value);
   if (!props.fieldList?.stopAutoLoad) {
     loadByPage();
@@ -261,26 +254,26 @@ const init = async () => {
   }
   moveColumn();
   reCreateData();
-  if (isMobile) {
-    cardFieldList.value = loadField();
-  }
+  // PC/APP 端均初始化字段缓存：
+  // PC 端卡片模式列表及设置弹窗均依赖 cacheAppCompList 响应式更新
+  loadField();
 };
 // Listen for changes in data passed in from outside
 watch(
-  () => props.tableDataList?.length,
-  (val) => {
-    if (props.fieldList?.stopAutoLoad) {
-      pageInfo.value.dataList = props.tableDataList;
-    }
-  },
-  { immediate: false },
+    () => props.tableDataList?.length,
+    (val) => {
+      if (props.fieldList?.stopAutoLoad) {
+        pageInfo.value.dataList = props.tableDataList;
+      }
+    },
+    {immediate: false},
 );
 watch(
-  () => cardSelection.value,
-  (val) => {
-    multipleSelection.value = Array.isArray(val) ? val : [val];
-  },
-  { immediate: false },
+    () => cardSelection.value,
+    (val) => {
+      multipleSelection.value = Array.isArray(val) ? val : [val];
+    },
+    {immediate: false},
 );
 const assignData = (dataList: Array<any>) => {
   for (const temp of dataList) {
@@ -316,10 +309,10 @@ const shColumnsTableRef = ref<any>(null);
 const moveColumn = () => {
   // 优先通过 ref 定位表格实例，避免全局 querySelector 误匹配多实例
   const tableEl: HTMLElement | null =
-    shColumnsTableRef.value?.$el ??
-    (document.querySelector(".sh-columns") as HTMLElement | null);
+      shColumnsTableRef.value?.$el ??
+      (document.querySelector(".sh-columns") as HTMLElement | null);
   const tbody = tableEl?.querySelector(
-    ".el-table__body-wrapper tbody",
+      ".el-table__body-wrapper tbody",
   ) as HTMLElement | null;
   if (tbody) {
     if (sortableInstance) {
@@ -330,15 +323,27 @@ const moveColumn = () => {
       animation: 200,
       ghostClass: "ghost",
       onEnd(event: any) {
-        const { oldIndex, newIndex } = event;
-        if (oldIndex === newIndex || !props.fieldList?.fieldList) {
+        const {oldIndex, newIndex} = event;
+        if (oldIndex === newIndex) {
           return;
         }
-        let oitem = props.fieldList.fieldList[oldIndex];
-        let nitem = props.fieldList.fieldList[newIndex];
-        if (oitem && nitem) {
-          props.fieldList.fieldList[newIndex] = oitem;
-          props.fieldList.fieldList[oldIndex] = nitem;
+        // 同步排序到原 fieldList
+        if (props.fieldList?.fieldList) {
+          let oitem = props.fieldList.fieldList[oldIndex];
+          let nitem = props.fieldList.fieldList[newIndex];
+          if (oitem && nitem) {
+            props.fieldList.fieldList[newIndex] = oitem;
+            props.fieldList.fieldList[oldIndex] = nitem;
+          }
+        }
+        // 同步排序到 cacheAppCompList（卡片模式及设置弹窗数据源）
+        if (cacheAppCompList.value?.length) {
+          let oApp = cacheAppCompList.value[oldIndex];
+          let nApp = cacheAppCompList.value[newIndex];
+          if (oApp && nApp) {
+            cacheAppCompList.value[newIndex] = oApp;
+            cacheAppCompList.value[oldIndex] = nApp;
+          }
         }
       },
     });
@@ -403,8 +408,8 @@ const handleSelectionChange = (val: any) => {
             let bflag: number = 0;
             for (const skey in stemp) {
               if (
-                Object.prototype.hasOwnProperty.call(temp, skey) &&
-                stemp[skey] == temp[skey]
+                  Object.prototype.hasOwnProperty.call(temp, skey) &&
+                  stemp[skey] == temp[skey]
               ) {
                 bflag++;
               }
@@ -417,10 +422,10 @@ const handleSelectionChange = (val: any) => {
         multipleSelection.value = filters;
       } else {
         let ids = multipleSelection.value.map(
-          (item: any) => item?.[keys],
+            (item: any) => item?.[keys],
         ) as Array<any>;
         multipleSelection.value = val.filter(
-          (item: any) => !ids.includes(item?.[keys]),
+            (item: any) => !ids.includes(item?.[keys]),
         );
       }
       let data = multipleSelection.value[0];
@@ -542,10 +547,10 @@ const exportSingleFile = async (id: any, type: string) => {
   }
   let action = props.compUrl?.exportSingleDataAction;
   action &&
-    action({
-      id,
-      type,
-    });
+  action({
+    id,
+    type,
+  });
 };
 const pageSizeClick = (pageSize: number) => {
   pageInfo.value.pageSize = pageSize;
@@ -579,7 +584,7 @@ const createParams = () => {
   // Add shared person information
   if (props.commonPersons?.length && !isSystemManage()) {
     searchTemp.push(
-      createCondition(props.userColumnName, props.commonPersons, "in"),
+        createCondition(props.userColumnName, props.commonPersons, "in"),
     );
   }
   if (!props.compUrl?.pageListUrl) {
@@ -616,65 +621,65 @@ const loadByPage = (initPageInfo?: boolean) => {
       searchInfo: params,
     };
     url =
-      props.compUrl?.redirectPageListUrl ?? "/system-config/redirect/pageList";
+        props.compUrl?.redirectPageListUrl ?? "/system-config/redirect/pageList";
   }
   if (props.needLoad) {
     load(i18n("comp.dataLoading"));
   }
   postRequest(url, params)
-    .then((res: any) => {
-      if (res?.data?.code != 0) {
-        res && console.error(res?.data?.cnMessage || res?.data?.enMessage);
-        return;
-      }
-      let redata = res?.data?.data;
-      const newData = redata?.dataList || redata;
-      if ((props.pageKeepOldData || isMobile) && !searchFlag.value) {
-        if (!pageInfo.value.dataList) {
-          pageInfo.value.dataList = [];
+      .then((res: any) => {
+        if (res?.data?.code != 0) {
+          res && console.error(res?.data?.cnMessage || res?.data?.enMessage);
+          return;
         }
-        const maxCachePages = 10;
-        const maxCacheSize = pageInfo.value.pageSize * maxCachePages;
-        pageInfo.value.dataList.push(...newData);
-        if (pageInfo.value.dataList.length > maxCacheSize) {
-          pageInfo.value.dataList.splice(
-            0,
-            pageInfo.value.dataList.length - maxCacheSize,
-          );
+        let redata = res?.data?.data;
+        const newData = redata?.dataList || redata;
+        if ((props.pageKeepOldData || isMobile) && !searchFlag.value) {
+          if (!pageInfo.value.dataList) {
+            pageInfo.value.dataList = [];
+          }
+          const maxCachePages = 10;
+          const maxCacheSize = pageInfo.value.pageSize * maxCachePages;
+          pageInfo.value.dataList.push(...newData);
+          if (pageInfo.value.dataList.length > maxCacheSize) {
+            pageInfo.value.dataList.splice(
+                0,
+                pageInfo.value.dataList.length - maxCacheSize,
+            );
+          }
+        } else {
+          pageInfo.value.dataList = newData;
         }
-      } else {
-        pageInfo.value.dataList = newData;
-      }
-      searchFlag.value = false;
+        searchFlag.value = false;
 
-      if (props.dialogInput) {
-        nextTick(() => {
-          filterData();
-        });
-      }
-      pageInfo.value.totalPage = redata?.totalPages;
-      pageInfo.value.totalData = redata?.totalDatas;
-    })
-    .catch((err: any) => {
-      console.error(err);
-    })
-    .finally(() => {
-      closeLoad();
-    });
+        if (props.dialogInput) {
+          nextTick(() => {
+            filterData();
+          });
+        }
+        pageInfo.value.totalPage = redata?.totalPages;
+        pageInfo.value.totalData = redata?.totalDatas;
+      })
+      .catch((err: any) => {
+        console.error(err);
+      })
+      .finally(() => {
+        closeLoad();
+      });
 };
 const filterData = () => {
   let name = unref(inputFieldName) as string;
   if (pageInfo.value.dataList && name && inputFieldVal.value) {
     const values = Array.isArray(inputFieldVal.value)
-      ? inputFieldVal.value
-      : [inputFieldVal.value];
+        ? inputFieldVal.value
+        : [inputFieldVal.value];
     for (const val of values) {
       const exists = multipleSelection.value.some(
-        (item: any) => item?.[name] == val,
+          (item: any) => item?.[name] == val,
       );
       if (exists) continue;
       let row = pageInfo.value.dataList.find(
-        (item: any) => item?.[name] == val,
+          (item: any) => item?.[name] == val,
       );
       if (row) {
         multipleSelection.value.push(row);
@@ -715,7 +720,7 @@ const selectRow = (row: any, _column?: any, evt?: Event) => {
     }
   }
   const selected = multipleSelection.value?.some(
-    (item: any) => item?.[props.primaryKey] === row?.[props.primaryKey],
+      (item: any) => item?.[props.primaryKey] === row?.[props.primaryKey],
   );
   if (!selected) {
     multipleSelection.value.push(row);
@@ -787,7 +792,7 @@ const extendBtnFunction = (): Array<UserFuncInfo> => {
       });
     }
     let exportForm = arr.filter(
-      (item) => item.authority == "exportForm",
+        (item) => item.authority == "exportForm",
     )?.length;
     if (!exportForm) {
       arr.push({
@@ -799,7 +804,7 @@ const extendBtnFunction = (): Array<UserFuncInfo> => {
       });
     }
     let exportPdf = arr.filter(
-      (item) => item.authority == "exportPdf",
+        (item) => item.authority == "exportPdf",
     )?.length;
     if (!exportPdf) {
       arr.push({
@@ -812,8 +817,8 @@ const extendBtnFunction = (): Array<UserFuncInfo> => {
     }
   }
   arr.sort(
-    (a: UserFuncInfo, b: UserFuncInfo) =>
-      (a.priority || 60) - (b.priority || 60),
+      (a: UserFuncInfo, b: UserFuncInfo) =>
+          (a.priority || 60) - (b.priority || 60),
   );
   return arr;
 };
@@ -848,11 +853,11 @@ const expandCommonFun = (name: string, row: any, parentRow: any) => {
  * @param orderBys Sorting
  */
 const getDatas = async (
-  limitSize: number = 0,
-  params: SearchParams[] = [],
-  orderBys: OrderByInfo[] = [],
-  url: string = "",
-  usePageCondition: boolean = true,
+    limitSize: number = 0,
+    params: SearchParams[] = [],
+    orderBys: OrderByInfo[] = [],
+    url: string = "",
+    usePageCondition: boolean = true,
 ) => {
   let tempSearchParams: SearchParams[] = [];
   if (usePageCondition) {
@@ -875,30 +880,91 @@ const getDatas = async (
 };
 
 let dataShowType = ref<string>("list");
-let cardFieldList = ref<FieldInfo[]>([]);
 const cacheAppCompList = ref<FieldInfo[]>([]);
+// APP端系统公共字段名（默认隐藏）
+const SYSTEM_FIELD_NAMES = [
+  "createdBy",
+  "createdTime",
+  "updatedBy",
+  "updatedTime",
+  "remark",
+  "createTime",
+  "updateTime",
+  "editTime",
+  "isDel",
+];
+/**
+ * 初始化 APP 端 appListVisible 默认值：
+ * - 系统公共字段（创建人/创建时间等）默认隐藏
+ * - 其余字段按 PC 端 listVisible 决定
+ */
+const initAppListVisible = (fields: FieldInfo[]) => {
+  fields.forEach((f: any) => {
+    if (!f.preps) f.preps = {};
+    if (f.preps.appListVisible === undefined) {
+      const isSystem = SYSTEM_FIELD_NAMES.some((s) =>
+          f.fieldName?.toLowerCase().includes(s.toLowerCase()),
+      );
+      f.preps.appListVisible = isSystem ? false : !!f.listVisible;
+    }
+  });
+};
 const loadField = (): FieldInfo[] => {
   //同一个页面将数据缓存，而不是每次都去解析一遍
   if (!cacheAppCompList.value.length) {
-    let { fieldList } = convertCompToAppComps(props.fieldList);
-    cacheAppCompList.value = fieldList as unknown as FieldInfo[];
+    const result = convertCompToAppComps(props.fieldList);
+    // convertCompToAppComps 返回 { fieldList: [{ appList: [...] }] }
+    // 扁平化提取真实字段，并做深拷贝 + reactive 包装：
+    // 原字段来自 props.fieldList 的引用，直接新增 preps.appListVisible 属性
+    // 在 Vue3 中不会被 ref 追踪，导致 el-switch 切换后卡片不更新
+    const rawList: any[] = result.fieldList || [];
+    const fields: FieldInfo[] = [];
+    for (const item of rawList) {
+      if (item?.appList && Array.isArray(item.appList)) {
+        for (const sub of item.appList) {
+          fields.push(reactive(JSON.parse(JSON.stringify(sub))));
+        }
+      } else if (Array.isArray(item)) {
+        for (const sub of item) {
+          fields.push(reactive(JSON.parse(JSON.stringify(sub))));
+        }
+      } else if (item) {
+        fields.push(reactive(JSON.parse(JSON.stringify(item))));
+      }
+    }
+    initAppListVisible(fields);
+    cacheAppCompList.value = fields;
   }
   if (!cacheAppCompList.value?.length) {
     return [];
   }
-  if (isMobile) {
-    const appFields = cacheAppCompList.value.filter(
-      (item: FieldInfo) => item.preps?.appListVisible,
-    );
-    if (appFields && appFields.length) {
-      return appFields.sort(
-        (a: FieldInfo, b: FieldInfo) =>
-          (a.preps?.dataIndex || 100) - (b.preps?.dataIndex || 100),
+  return cacheAppCompList.value
+      .filter((item: FieldInfo) => item.preps?.appListVisible)
+      .sort(
+          (a: FieldInfo, b: FieldInfo) =>
+              (a.preps?.dataIndex || 100) - (b.preps?.dataIndex || 100),
       );
-    }
-  }
-  return cacheAppCompList.value.filter((item) => item.listVisible).slice(0, 3);
 };
+/**
+ * 卡片展示字段：
+ * - PC 端：按 listVisible 过滤（字段顶层属性，设置弹窗绑定此属性）
+ * - APP 端：按 appListVisible 过滤（preps 内属性，设置弹窗绑定此属性）
+ * 均按 dataIndex 排序
+ */
+const cardFieldList = computed<FieldInfo[]>(() => {
+  if (!cacheAppCompList.value?.length) return [];
+  return cacheAppCompList.value
+      .filter((item: any) => {
+        // listVisible 在字段顶层，appListVisible 在 preps 内
+        return isMobile
+            ? item.preps?.appListVisible
+            : item.listVisible;
+      })
+      .sort(
+          (a: FieldInfo, b: FieldInfo) =>
+              (a.preps?.dataIndex || 100) - (b.preps?.dataIndex || 100),
+      );
+});
 let typeTitle = ref<string>(i18n("table.switchToCardMode"));
 let typeIcon = ref<string>("card1");
 
@@ -909,8 +975,9 @@ let typeIcon = ref<string>("card1");
 const showType = (type: string) => {
   type = type == "card" ? "list" : "card";
   dataShowType.value = type;
-  if (type == "card" && cardFieldList.value.length == 0) {
-    cardFieldList.value = loadField();
+  // cardFieldList 已为 computed，仅确保缓存已初始化
+  if (type == "card" && !cacheAppCompList.value.length) {
+    loadField();
   }
   if (type == "card") {
     typeTitle.value = i18n("table.switchToListMode");
@@ -933,11 +1000,11 @@ const removeSelection = (row: any) => {
   let keys: any = props.primaryKey;
   if (Array.isArray(keys)) {
     multipleSelection.value = multipleSelection.value.filter((item: any) =>
-      keys.some((k: string) => item?.[k] !== row?.[k]),
+        keys.some((k: string) => item?.[k] !== row?.[k]),
     );
   } else {
     multipleSelection.value = multipleSelection.value.filter(
-      (item: any) => item?.[keys] !== row?.[keys],
+        (item: any) => item?.[keys] !== row?.[keys],
     );
   }
 };
@@ -969,7 +1036,8 @@ const assignStaticData = (data: any) => {
 const clearData = () => {
   pageInfo.value.dataList = [];
 };
-onActivated(() => {});
+onActivated(() => {
+});
 onMounted(() => {
   const data = configStore.configFormInfo;
   if (data?.tableType == "card") {
@@ -1015,197 +1083,256 @@ defineExpose({
 </script>
 <template>
   <star-horse-dialog
-    :isShowBtnContinue="false"
-    :selfFunc="true"
-    @merge="selectedFields"
-    v-model="exportOperationVisible"
-    @closeAction="exportOperationVisible = false"
+      :isShowBtnContinue="false"
+      :selfFunc="true"
+      @merge="selectedFields"
+      v-model="exportOperationVisible"
+      @closeAction="exportOperationVisible = false"
   >
     {{ i18n("comp.underDevelopment") }}
   </star-horse-dialog>
   <div class="star-horse-table">
+    <!-- APP端顶部工具栏：查询 / 刷新 / 设置 -->
+    <div class="app-toolbar" v-if="!dialogInput && isMobile">
+      <span v-if="title" class="app-toolbar__title">{{ title }}</span>
+      <div class="app-toolbar__icons">
+        <star-horse-icon
+            v-if="searchFormData"
+            :title="i18n('search.query')"
+            icon-class="search"
+            @click="openMobileSearch"
+            class="app-toolbar__icon"
+        />
+        <star-horse-icon
+            :title="i18n('comp.refresh')"
+            icon-class="refresh"
+            @click="tableCompFunc('refresh')"
+            class="app-toolbar__icon"
+        />
+        <el-popover
+            v-model:visible="mobileFieldVisible"
+            trigger="click"
+            placement="bottom-end"
+            :width="220"
+        >
+          <template #reference>
+            <star-horse-icon
+                :title="i18n('comp.showHideColumns')"
+                icon-class="setting"
+                class="app-toolbar__icon"
+            />
+          </template>
+          <div class="app-field-list">
+            <div
+                v-for="(item, idx) in cacheAppCompList"
+                :key="idx"
+                class="app-field-item"
+            >
+              <el-switch
+                  v-model="item.preps.appListVisible"
+                  :active-value="true"
+                  :inactive-value="false"
+                  size="small"
+              />
+              <span class="app-field-item__label">{{ item.label }}</span>
+            </div>
+            <div v-if="!cacheAppCompList.length" class="app-field-empty">
+              {{ i18n("pivot.empty.noData") }}
+            </div>
+          </div>
+        </el-popover>
+      </div>
+    </div>
+    <!-- APP端搜索组件（隐藏触发器，仅提供弹窗） -->
+    <star-horse-search-comp
+        v-if="isMobile && searchFormData"
+        ref="mobileSearchRef"
+        :formData="searchFormData"
+        :compUrl="compUrl"
+        @searchData="(data: any) => createSearchParams(data)"
+    />
     <div
-      class="flex w-full justify-between"
-      style="border-bottom: var(--star-horse-style) 1px solid"
-      v-if="!dialogInput && !isMobile"
+        class="flex w-full justify-between"
+        style="border-bottom: var(--star-horse-style) 1px solid"
+        v-if="!dialogInput && !isMobile"
     >
       <div class="tb_title">
         <div v-if="title || helpMsg">
-          <help :message="helpMsg" v-if="helpMsg" />
+          <help :message="helpMsg" v-if="helpMsg"/>
           <star-horse-icon
-            icon-class="info"
-            v-else
-            size="14px"
-            style="font-weight: bold; color: var(--star-horse-style)"
+              icon-class="info"
+              v-else
+              size="14px"
+              style="font-weight: bold; color: var(--star-horse-style)"
           />
           {{ title }}
         </div>
         <star-horse-button-list
-          @tableCompFunc="(fun: any) => tableCompFunc(fun)"
-          :compUrl="compUrl"
-          :btnPermissions="permissions"
-          :extendBtns="extendBtns"
-          :dialogProps="dialogProps"
-          :preValidFunc="preValidFunc"
-          v-if="!hideButtonList && !isMobile"
+            @tableCompFunc="(fun: any) => tableCompFunc(fun)"
+            :compUrl="compUrl"
+            :btnPermissions="permissions"
+            :extendBtns="extendBtns"
+            :dialogProps="dialogProps"
+            :preValidFunc="preValidFunc"
+            v-if="!hideButtonList && !isMobile"
         />
       </div>
       <div class="flex items-center flex-row-reverse">
         <star-horse-icon
-          :title="i18n('comp.refresh')"
-          @click="loadByPage"
-          icon-class="refresh"
-          style="cursor: pointer; color: var(--star-horse-style)"
+            :title="i18n('comp.refresh')"
+            @click="loadByPage"
+            icon-class="refresh"
+            style="cursor: pointer; color: var(--star-horse-style)"
         />
         <el-popover
-          v-if="dataShowType == 'list'"
-          trigger="click"
-          :title="i18n('comp.showHideColumns')"
-          :popper-style="{ width: 'unset !important' }"
-          placement="left-end"
+
+            trigger="click"
+            :title="i18n('comp.showHideColumns')"
+            :popper-style="{ width: 'unset !important' }"
+            placement="left-end"
         >
           <template #reference>
             <star-horse-icon
-              @click="fieldVisible = !fieldVisible"
-              :title="i18n('comp.showHideColumns')"
-              icon-class="setting"
-              style="color: var(--star-horse-style); cursor: pointer"
+                @click="fieldVisible = !fieldVisible"
+                :title="i18n('comp.showHideColumns')"
+                icon-class="setting"
+                style="color: var(--star-horse-style); cursor: pointer"
             />
           </template>
           <el-table
-            class="sh-columns"
-            ref="shColumnsTableRef"
-            :data="toolFields"
-            :strip="true"
-            :fit="true"
-            :highlight-current-row="true"
-            max-height="400px"
-            row-key="prop"
-            style="width: 100%"
-            :size="compSize"
-            :border="true"
+              class="sh-columns"
+              ref="shColumnsTableRef"
+              :data="cacheAppCompList"
+              :strip="true"
+              :fit="true"
+              :highlight-current-row="true"
+              max-height="400px"
+              row-key="prop"
+              style="width: 100%"
+              :size="compSize"
+              :border="true"
           >
             <el-table-column prop="" :label="i18n('comp.sort')" width="60">
               <el-tag class="move" style="cursor: move">
                 <el-icon style="cursor: move">
-                  <Sort />
+                  <Sort/>
                 </el-icon>
               </el-tag>
             </el-table-column>
             <el-table-column
-              prop="label"
-              :label="i18n('comp.columnName')"
-              :show-overflow-tooltip="true"
+                prop="label"
+                :label="i18n('comp.columnName')"
+                :show-overflow-tooltip="true"
             >
               <template #default="scope">
                 <el-tag
-                  round
-                  :effect="scope.row.listVisible ? 'dark' : 'light'"
-                  :size="compSize"
+                    round
+                    :effect="scope.row.listVisible ? 'dark' : 'light'"
+                    :size="compSize"
                 >
                   {{ scope.row.label }}
                 </el-tag>
               </template>
             </el-table-column>
             <el-table-column
-              prop="listVisible"
-              :label="i18n('comp.showHide')"
-              width="100"
+                prop="listVisible"
+                :label="i18n('comp.showHide')"
+                width="100"
             >
               <template #default="scope">
                 <el-switch
-                  v-model="scope.row.listVisible"
-                  :size="compSize"
-                  :active-value="true"
-                  :inactive-value="false"
+                    v-model="scope.row.listVisible"
+                    :size="compSize"
+                    :active-value="true"
+                    :inactive-value="false"
                 />
               </template>
             </el-table-column>
           </el-table>
         </el-popover>
         <star-horse-icon
-          @click="showType(dataShowType)"
-          :title="typeTitle"
-          :icon-class="typeIcon"
-          style="cursor: pointer; color: var(--star-horse-style)"
+            @click="showType(dataShowType)"
+            :title="typeTitle"
+            :icon-class="typeIcon"
+            style="cursor: pointer; color: var(--star-horse-style)"
         />
       </div>
     </div>
     <div class="data-list-area" v-if="dataShowType == 'list' && !isMobile">
       <el-table
-        ref="starHorseTableCompRef"
-        :data="pageInfo.dataList"
-        @selection-change="handleSelectionChange"
-        @row-click="selectRow"
-        @row-dblclick="editData"
-        :row-key="getRowIdentity"
-        :stripe="true"
-        :fit="true"
-        :size="compSize"
-        :min-height="height"
-        :highlight-current-row="true"
-        :default-expand-all="expand"
-        :row-style="{ height: lineHeight }"
-        :cell-style="{ height: lineHeight, 'font-size': '12px' }"
-        :header-cell-style="{
+          ref="starHorseTableCompRef"
+          :data="pageInfo.dataList"
+          @selection-change="handleSelectionChange"
+          @row-click="selectRow"
+          @row-dblclick="editData"
+          :row-key="getRowIdentity"
+          :stripe="true"
+          :fit="true"
+          :size="compSize"
+          :min-height="height"
+          :highlight-current-row="true"
+          :default-expand-all="expand"
+          :row-style="{ height: lineHeight }"
+          :cell-style="{ height: lineHeight, 'font-size': '12px' }"
+          :header-cell-style="{
           background: '#f2f2f2',
           color: '#707070',
           'font-size': '13px',
           'background-image':
             '-webkit-gradient(linear,left 0,left 100%,from(#f8f8f8),to(#ececec))',
         }"
-        :border="true"
+          :border="true"
       >
         <el-table-column
-          type="selection"
-          :align="'center'"
-          fixed="left"
-          :reserve-selection="true"
-          v-if="showSelection"
+            type="selection"
+            :align="'center'"
+            fixed="left"
+            :reserve-selection="true"
+            v-if="showSelection"
         />
         <el-table-column type="expand" v-if="expandTable">
           <template #default="scope">
             <div class="expand-table">
               <h4>{{ expandTable?.title }}</h4>
               <el-table
-                :data="scope.row?.[expandTable?.dataField]"
-                :row-key="getRowIdentity"
-                :stripe="true"
-                :fit="true"
-                :size="compSize"
-                :highlight-current-row="true"
-                :max-height="'400px'"
-                :row-style="{ height: '30px' }"
-                :cell-style="{ height: '30px', 'font-size': '12px' }"
-                :border="true"
+                  :data="scope.row?.[expandTable?.dataField]"
+                  :row-key="getRowIdentity"
+                  :stripe="true"
+                  :fit="true"
+                  :size="compSize"
+                  :highlight-current-row="true"
+                  :max-height="'400px'"
+                  :row-style="{ height: '30px' }"
+                  :cell-style="{ height: '30px', 'font-size': '12px' }"
+                  :border="true"
               >
                 <el-table-column
-                  fixed="left"
-                  :label="i18n('table.operation')"
-                  :width="160"
-                  v-if="
+                    fixed="left"
+                    :label="i18n('table.operation')"
+                    :width="160"
+                    v-if="
                     expandTable?.showButton &&
                     expandTable?.extendFuncs?.length > 0
                   "
                 >
                   <template #default="innerScope">
                     <template
-                      v-for="epd in expandTable?.extendFuncs"
-                      :key="compKey(epd, epd?.authority)"
+                        v-for="epd in expandTable?.extendFuncs"
+                        :key="compKey(epd, epd?.authority)"
                     >
                       <el-tooltip :content="epd?.btnName">
                         <star-horse-icon
-                          v-if="permissions?.[epd?.authority!]"
-                          @click="
+                            v-if="permissions?.[epd?.authority!]"
+                            @click="
                             expandCommonFun(
                               epd?.authority!,
                               innerScope.row,
                               scope.row,
                             )
                           "
-                          :icon-class="epd?.icon || 'edit'"
-                          style="cursor: pointer"
-                          :color="
+                            :icon-class="epd?.icon || 'edit'"
+                            style="cursor: pointer"
+                            :color="
                             epd?.authority == 'delete'
                               ? 'var(--el-color-danger)'
                               : 'var(--star-horse-style)'
@@ -1216,44 +1343,44 @@ defineExpose({
                   </template>
                 </el-table-column>
                 <table-column
-                  :fieldList="expandTable"
-                  :compSize="configInfo?.inputSize"
-                  :compUrl="compUrl"
-                  :dataFormat="dataFormat"
-                  :sortable="false"
-                  :globalConfig="globalConfig"
-                  :isDynamic="isDynamic"
-                  :showBatchField="showBatchField"
+                    :fieldList="expandTable"
+                    :compSize="configInfo?.inputSize"
+                    :compUrl="compUrl"
+                    :dataFormat="dataFormat"
+                    :sortable="false"
+                    :globalConfig="globalConfig"
+                    :isDynamic="isDynamic"
+                    :showBatchField="showBatchField"
                 />
               </el-table>
             </div>
           </template>
         </el-table-column>
         <table-column-item
-          :fieldList="fieldList"
-          :compSize="configInfo?.inputSize"
-          :compUrl="compUrl"
-          :dataFormat="dataFormat"
-          :globalConfig="globalConfig"
-          :isDynamic="isDynamic"
-          :showBatchField="showBatchField"
+            :fieldList="fieldList"
+            :compSize="configInfo?.inputSize"
+            :compUrl="compUrl"
+            :dataFormat="dataFormat"
+            :globalConfig="globalConfig"
+            :isDynamic="isDynamic"
+            :showBatchField="showBatchField"
         />
         <el-table-column
-          v-if="
+            v-if="
             buttonList.length > 0 && Object.keys(permissions || {}).length > 0
           "
-          fixed="right"
-          :label="i18n('table.operation')"
-          :width="buttonList.length > 3 ? 160 : 110"
+            fixed="right"
+            :label="i18n('table.operation')"
+            :width="buttonList.length > 3 ? 160 : 110"
         >
           <template #default="scope">
             <tablebtn
-              :row="scope.row"
-              :permissions="permissions"
-              :buttonList="buttonList"
-              :hideBtnCondition="hideBtnCondition"
-              :compSize="compSize"
-              class="flex"
+                :row="scope.row"
+                :permissions="permissions"
+                :buttonList="buttonList"
+                :hideBtnCondition="hideBtnCondition"
+                :compSize="compSize"
+                class="flex"
             />
           </template>
         </el-table-column>
@@ -1261,85 +1388,81 @@ defineExpose({
     </div>
     <div class="data-card-area" v-else>
       <star-horse-button-list
-        @tableCompFunc="(fun: any) => tableCompFunc(fun)"
-        :compUrl="compUrl"
-        :btnPermissions="permissions"
-        :extendBtns="extendBtns"
-        :dialogProps="dialogProps"
-        :preValidFunc="preValidFunc"
-        v-if="!hideButtonList && isMobile"
+          @tableCompFunc="(fun: any) => tableCompFunc(fun)"
+          :compUrl="compUrl"
+          :btnPermissions="permissions"
+          :extendBtns="extendBtns"
+          :dialogProps="dialogProps"
+          :preValidFunc="preValidFunc"
+          v-if="!hideButtonList && isMobile"
       />
       <el-scrollbar height="100%" style="width: 99%" @endReached="endReached">
         <el-space
-          :style="{ width: `${isMobile ? '100%' : 'auto'}` }"
-          :fill="isMobile"
-          wrap
+            :style="{ width: `${isMobile ? '100%' : 'auto'}` }"
+            :fill="isMobile"
+            wrap
         >
           <el-card
-            v-for="(data, key) in pageInfo.dataList"
-            :key="compKey(data, key)"
-            class="box-card"
-            :style="{
-              width: `${isMobile ? '100%' : '250px'} !important`,
-              height: '180px !important',
-            }"
-            shadow="hover"
+              v-for="(data, key) in pageInfo.dataList"
+              :key="compKey(data, key)"
+              class="box-card"
+              :class="{ 'box-card--mobile': isMobile }"
+              :style="{width:isMobile ? '100%' : '390px'}"
+              shadow="hover"
           >
             <template #header>
               <div
-                class="card-header justify-start gap-3"
-                @click="selectRow(data)"
-                @dblclick="editData(data)"
+                  class="card-header justify-start gap-3"
+                  style="margin: 0 !important;"
+                  @click="selectRow(data)"
+                  @dblclick="editData(data)"
               >
                 <template v-if="multipleSelect">
-                  <el-checkbox v-model="cardSelection" :value="data" />
+                  <el-checkbox v-model="cardSelection" :value="data"/>
                 </template>
                 <template v-else>
-                  <el-radio v-model="cardSelection" :value="data" />
+                  <el-radio v-model="cardSelection" :value="data"/>
                 </template>
 
                 <span>
                   {{
-                    dataFormat?.(
-                      cardFieldList?.[0]?.fieldName,
-                      data?.[cardFieldList?.[0]?.fieldName],
-                      data,
-                    )
+                    formatCellValue(cardFieldList?.[0], data, dataFormat)
                   }}</span
                 >
               </div>
             </template>
-            <div
-              class="card-item item"
-              style="width: 99%; margin: 1px auto"
-              :Key="compKey(item, key)"
-              v-for="(item, key) in cardFieldList?.slice(1)"
+            <!-- 卡片内容统一使用 el-descriptions 展示，PC/APP 显示一致 -->
+            <el-descriptions
+                :column="1"
+                :colon="true"
+                border
+                label-width="120px"
+                :size="compSize"
+                class="card-descriptions"
             >
-              <label>{{ item?.label }} :</label>
-              <div
-                class="content"
-                @click="selectRow(data)"
-                @dblclick="editData(data)"
+              <el-descriptions-item
+                  v-for="(item, key) in cardFieldList?.slice(1)"
+                  :key="compKey(item, key)"
+                  label-align="right"
+                  :label="item?.label"
               >
                 <el-tooltip
-                  :content="
-                    dataFormat?.(item?.fieldName, data?.[item?.fieldName], data)
-                  "
+                    :content="formatCellValue(item, data, dataFormat)"
                 >
-                  {{
-                    dataFormat?.(item?.fieldName, data?.[item?.fieldName], data)
-                  }}
+                  <span class="desc-value" @click="selectRow(data)" @dblclick="editData(data)">
+                    {{ formatCellValue(item, data, dataFormat) }}
+                  </span>
                 </el-tooltip>
-              </div>
-            </div>
+              </el-descriptions-item>
+            </el-descriptions>
             <template #footer>
               <tablebtn
-                :row="data"
-                :permissions="permissions"
-                :buttonList="buttonList"
-                :showLimit="6"
-                :hideBtnCondition="hideBtnCondition"
-                :compSize="compSize"
+                  :row="data"
+                  :permissions="permissions"
+                  :buttonList="buttonList"
+                  :showLimit="6"
+                  :hideBtnCondition="hideBtnCondition"
+                  :compSize="compSize"
               />
             </template>
           </el-card>
@@ -1348,23 +1471,23 @@ defineExpose({
     </div>
 
     <el-pagination
-      v-if="showPageBar && !isMobile"
-      :total="pageInfo.totalData"
-      @current-change="pageChangeClick"
-      @size-change="pageSizeClick"
-      :size="compSize"
-      :page-sizes="pageCombList"
-      :layout="pageBarLayout"
-      v-model:currentPage="pageInfo.currentPage"
-      v-model:page-size="pageInfo.pageSize"
-      v-model:pageCount="pageInfo.totalPage"
+        v-if="showPageBar && !isMobile"
+        :total="pageInfo.totalData"
+        @current-change="pageChangeClick"
+        @size-change="pageSizeClick"
+        :size="compSize"
+        :page-sizes="pageCombList"
+        :layout="pageBarLayout"
+        v-model:currentPage="pageInfo.currentPage"
+        v-model:page-size="pageInfo.pageSize"
+        v-model:pageCount="pageInfo.totalPage"
     >
       <el-button
-        text
-        icon="refresh"
-        :size="compSize"
-        @click="loadByPage"
-        :title="i18n('table.refresh')"
+          text
+          icon="refresh"
+          :size="compSize"
+          @click="loadByPage"
+          :title="i18n('table.refresh')"
       />
     </el-pagination>
   </div>
@@ -1405,6 +1528,54 @@ defineExpose({
   background: var(--star-horse-shadow);
 }
 
+/* PC端卡片固定宽度，高度自适应内容 */
+.box-card {
+  height: auto !important;
+  min-height: 120px;
+  margin-bottom: 8px;
+}
+
+/* APP端卡片占满宽度 */
+.box-card--mobile {
+  width: 100% !important;
+  margin-bottom: 8px;
+
+  :deep(.el-card__body) {
+    padding: 8px 12px;
+  }
+}
+
+/*!* el-descriptions 卡片内容样式 *!*/
+.card-descriptions {
+  :deep(.el-descriptions__body) {
+    background: transparent;
+  }
+
+  :deep(.el-descriptions__label) {
+    width: 120px;
+    max-width: 120px;
+    min-width: 120px;
+    font-weight: 500;
+    color: var(--el-text-color-secondary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  :deep(.el-descriptions__content) {
+    color: var(--el-text-color-primary);
+  }
+
+  .desc-value {
+    cursor: pointer;
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
 :deep(.el-table__cell) {
   padding: 0;
 }
@@ -1428,5 +1599,65 @@ defineExpose({
 :deep(.el-card__footer) {
   padding: 5px 20px;
   display: flex;
+}
+
+/* APP端顶部工具栏 */
+.app-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 44px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--el-border-color-lighter);
+  background: var(--star-horse-white);
+
+  &__title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--star-horse-style);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__icons {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-shrink: 0;
+  }
+
+  &__icon {
+    cursor: pointer;
+    color: var(--star-horse-style);
+    font-size: 20px;
+  }
+}
+
+.app-field-list {
+  max-height: 300px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+
+  .app-field-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 4px;
+
+    &__label {
+      font-size: 13px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .app-field-empty {
+    text-align: center;
+    color: var(--el-text-color-placeholder);
+    font-size: 13px;
+    padding: 12px 0;
+  }
 }
 </style>

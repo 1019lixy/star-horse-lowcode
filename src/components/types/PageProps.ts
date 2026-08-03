@@ -5,7 +5,7 @@ import type {
   PageFieldInfo,
   UserFuncInfo,
 } from "@/components/types/PageFieldInfo";
-import type { BtnHideCondition, SearchParams } from "@/components/types/Params";
+import type { BtnHideCondition, SearchInfo, SearchParams } from "@/components/types/Params";
 import type { PreValid } from "@/components/types/BtnAuth";
 import type { EditCondition } from "@/components/types/SearchProps";
 
@@ -183,4 +183,8 @@ export declare interface DataListProps {
    * 是否预览模式
    */
   preview: boolean;
+  /**
+   * APP 端查询表单配置（传入后 APP 端顶部显示查询图标）
+   */
+  searchFormData?: SearchInfo;
 }
