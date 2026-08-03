@@ -36,6 +36,7 @@ const source = ref<number>(3);
 const platformFields = computed(() =>
     convertPcCompToFitPlatformComps(props.fieldList),
 );
+const borderStyle = computed(() => isMobile ? "none" : " 1px solid var(--el-border-color-lighter)");
 const mappingFields = computed(() => formFieldMapping(unref(platformFields)));
 onMounted(() => {
   if (dialogProps?.ids) {
@@ -185,7 +186,7 @@ defineExpose({
     color: var(--el-text-color-regular) !important;
     font-weight: 500;
     padding: 8px 12px !important;
-    border-right: 1px solid var(--el-border-color-lighter);
+    border-right: v-bind(borderStyle);
     flex-shrink: 0;
   }
 
@@ -255,20 +256,20 @@ defineExpose({
 
   /* ---- 隐藏所有前缀/后缀/图标/追加 ---- */
   :deep(.el-input__prefix),
-   :deep(.el-input__suffix),
-   :deep(.el-input__prefix-icon),
-   :deep(.el-input__validateIcon),
-   :deep(.el-input__clear),
-   :deep(.el-select__suffix),
-   :deep(.el-date-editor .el-input__prefix),
-   :deep(.el-date-editor .el-input__suffix),
-   :deep(.el-cascader .el-input__suffix),
-   :deep(.el-tree-select .el-input__suffix),
-   :deep(.el-autocomplete .el-input__suffix),
-   :deep(.el-input-group__append),
-   :deep(.el-input-group__prepend),
-   :deep(.el-range__icon),
-   :deep(.data-selector-suffix) {
+  :deep(.el-input__suffix),
+  :deep(.el-input__prefix-icon),
+  :deep(.el-input__validateIcon),
+  :deep(.el-input__clear),
+  :deep(.el-select__suffix),
+  :deep(.el-date-editor .el-input__prefix),
+  :deep(.el-date-editor .el-input__suffix),
+  :deep(.el-cascader .el-input__suffix),
+  :deep(.el-tree-select .el-input__suffix),
+  :deep(.el-autocomplete .el-input__suffix),
+  :deep(.el-input-group__append),
+  :deep(.el-input-group__prepend),
+  :deep(.el-range__icon),
+  :deep(.data-selector-suffix) {
     display: none !important;
   }
 
@@ -320,10 +321,12 @@ defineExpose({
 :deep(.star-horse-app .data-view-mode .el-form-item__label) {
   border-right: none !important;
 }
-:deep(.el-input__wrapper){
+
+:deep(.el-input__wrapper) {
   padding: 0 !important;
 }
-:deep(.el-icon){
+
+:deep(.el-icon) {
   display: none;
 }
 </style>

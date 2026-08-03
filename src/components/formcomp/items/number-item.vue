@@ -11,6 +11,7 @@
       :fid="field.fieldName"
       :disabled="checkIsDisabled(props)"
       v-bind="prepsFilter(field.preps)"
+      :controls-position="field.controlsPosition??'right'"
       v-on="getDynamicEvents(props, itemAction, formData)"
       v-model="formData[field.fieldName]"
     >
@@ -47,6 +48,7 @@ defineOptions({
 });
 import { ItemPreps } from "@/components/types/ItemPreps";
 import { StarHorseIcon } from "@/components/comp";
+import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
   disabled: false,

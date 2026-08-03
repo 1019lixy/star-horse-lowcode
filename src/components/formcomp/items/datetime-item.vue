@@ -23,7 +23,7 @@
     <template v-else>
       <el-input
         :model-value="displayText"
-        :placeholder="field.preps?.placeholder || i18n('starhorse.pleaseSelect')"
+        :placeholder="field.preps?.placeholder"
         :disabled="checkIsDisabled(props)"
         readonly
         @click="openPicker"
@@ -92,11 +92,21 @@ const {
   closePicker,
 } = useMobilePicker(() => props.field);
 
-/* datetime → "datetime"，datetimerange → "datetimerange" */
+/* 滚轮类型映射：根据 effectiveType 精确映射，避免 year/month/week 显示为 datetime */
 const wheelType = computed(() => {
   const t = effectiveType.value;
-  if (t === "datetimerange") return "datetimerange";
-  return "datetime";
+  switch (t) {
+    case "year": return "year";
+    case "month": return "month";
+    case "week":
+    case "date": return "date";
+    case "daterange": return "daterange";
+    case "monthrange": return "monthrange";
+    case "yearrange": return "yearrange";
+    case "datetimerange": return "datetimerange";
+    case "datetime":
+    default: return "datetime";
+  }
 });
 
 const wheelValueFormat = computed(() => {

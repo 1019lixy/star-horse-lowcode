@@ -7,6 +7,7 @@ import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import {ItemPreps} from "@/components/types/ItemPreps";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
 import {i18n} from "@/lang";
+import {isMobile} from "@/api/device";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -168,12 +169,12 @@ const signImage = computed(() => {
     <div class="signature-container">
       <!-- 无签名：显示按钮 -->
       <el-button
-          v-if="!signImage"
+          v-if="!signImage&&source!=3"
           type="primary"
           @click="openSignDialog"
           :disabled="disabled"
       >
-        <star-horse-icon icon-class="edit"/>
+        <star-horse-icon icon-class="edit" color="var(--star-horse-white)"/>
         点击进行签名
       </el-button>
 
@@ -182,15 +183,29 @@ const signImage = computed(() => {
           v-else
           class="sign-preview-box"
           :class="{ disabled: disabled }"
-          @click="openSignDialog"
       >
         <el-image
             :src="signImage"
             fit="contain"
             class="sign-preview-img"
+            @click="openSignDialog"
         />
-        <div class="edit-tip">点击图片重新编辑签名</div>
-        <el-button size="small" link @click.stop="handlePreview">大图预览</el-button>
+        <div class="sign-preview-actions" v-if="source!=3">
+          <el-tooltip :content="i18n('item.editSignature')" :trigger="isMobile ? 'click' : 'hover'">
+            <star-horse-icon
+                icon-class="edit"
+                class="sign-action-icon"
+                @click.stop="openSignDialog"
+            />
+          </el-tooltip>
+          <el-tooltip :content="i18n('item.previewSignature')" :trigger="isMobile ? 'click' : 'hover'">
+            <star-horse-icon
+                icon-class="data-view"
+                class="sign-action-icon"
+                @click.stop="handlePreview"
+            />
+          </el-tooltip>
+        </div>
       </div>
     </div>
   </starhorse-form-item>
@@ -239,39 +254,55 @@ const signImage = computed(() => {
     border: 1px solid #e4e7ed;
     border-radius: 4px;
     padding: 4px;
-    cursor: pointer;
     transition: 0.2s;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
     position: relative;
+    overflow: hidden;
 
     &:hover {
       border-color: #409eff;
+
+      .sign-preview-actions {
+        opacity: 1;
+      }
     }
 
     .sign-preview-img {
       width: 100%;
       height: 100%;
-      flex: 1;
-      min-height: 0;
+      cursor: pointer;
     }
 
-    .edit-tip {
-      font-size: 12px;
-      color: #909399;
-      margin-top: 4px;
+    /* 操作图标悬浮在右上角，鼠标移入显示 */
+    .sign-preview-actions {
       position: absolute;
-      bottom: -20px;
-      left: 0;
-      right: 0;
-      text-align: center;
+      top: 4px;
+      right: 4px;
+      display: flex;
+      gap: 4px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 4px;
+      padding: 2px 4px;
+      opacity: 0;
+      transition: opacity 0.2s;
+
+      .sign-action-icon {
+        cursor: pointer;
+        font-size: 16px;
+        color: var(--el-text-color-regular, #606266);
+
+        &:hover {
+          color: var(--el-color-primary, #409eff);
+        }
+      }
     }
 
     &.disabled {
       cursor: not-allowed;
       opacity: 0.7;
+
+      .sign-preview-actions {
+        display: none;
+      }
     }
   }
 }

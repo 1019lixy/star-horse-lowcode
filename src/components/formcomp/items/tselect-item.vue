@@ -56,7 +56,7 @@
     <template v-else>
       <el-input
         :model-value="displayText"
-        :placeholder="field.preps?.placeholder || i18n('starhorse.pleaseSelect')"
+        :placeholder="field.preps?.placeholder"
         :disabled="checkIsDisabled(props)"
         readonly
         @click="openPicker"

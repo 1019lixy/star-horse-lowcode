@@ -841,6 +841,8 @@ export default {
    */
   "item.pleaseSetValue": "请赋值",
   "item.pleaseSignFirst": "请先签名",
+  "item.editSignature": "编辑签名",
+  "item.previewSignature": "预览签名",
   "item.clear": "清除",
   "item.undo": "后退",
   "item.preview": "预览",

@@ -848,6 +848,8 @@ export default {
    */
   "item.pleaseSetValue": "Please set value for",
   "item.pleaseSignFirst": "Please sign first",
+  "item.editSignature": "Edit Signature",
+  "item.previewSignature": "Preview Signature",
   "item.clear": "Clear",
   "item.undo": "Undo",
   "item.preview": "Preview",

@@ -171,6 +171,7 @@ export function dateCompList() {
  * 给组件添加placeholder属性
  * @param item
  * @param itemType
+ * @param source
  */
 export function fieldPlaceholder(item: any, itemType: string, source?: number) {
   if (!item.preps) {
@@ -207,6 +208,7 @@ export function fieldPlaceholder(item: any, itemType: string, source?: number) {
       item.preps["maxPlaceholder"]?.trim() || i18n("api.pleaseInputMaxValue");
   }
   if (item.preps["noPlaceholder"] || source == 3) {
+    console.log(item.preps["placeholder"]);
     delete item.preps["placeholder"];
     delete item.preps["startPlaceholder"];
     delete item.preps["endPlaceholder"];

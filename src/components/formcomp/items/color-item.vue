@@ -27,7 +27,7 @@
           <el-icon v-if="!formData[field.fieldName]"><Plus/></el-icon>
         </span>
         <span class="color-trigger__text">
-          {{ formData[field.fieldName] || i18n('starhorse.pleaseSelect') }}
+          {{ formData[field.fieldName] || "" }}
         </span>
       </div>
 
@@ -127,7 +127,7 @@ const {
   title,
   openPicker,
   closePicker,
-} = useMobilePicker(() => props.field);
+} = useMobilePicker(() => props.field,props.source);
 
 // 临时颜色
 const tempColor = ref("");
