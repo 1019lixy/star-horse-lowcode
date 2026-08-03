@@ -30,8 +30,9 @@ const signatureCanvas = ref<HTMLCanvasElement | null>(null);
 // 签名配置
 const getSignatureOptions = () => {
   return {
-    // width: Math.min(window.innerWidth - 60, 550),
-    // height: 220,
+    // 固定宽高，保证签名图片尺寸一致，不受弹窗大小影响
+    width: 500,
+    height: 200,
     minWidth: 2,
     maxWidth: 6,
     bgColor: "#f6f6f6",
@@ -150,7 +151,9 @@ const signImage = computed(() => {
           撤销
         </el-button>
       </div>
-      <canvas ref="signatureCanvas" class="sign-canvas"/>
+      <div class="sign-canvas-wrap">
+        <canvas ref="signatureCanvas" class="sign-canvas"/>
+      </div>
     </div>
   </star-horse-dialog>
 
@@ -174,7 +177,7 @@ const signImage = computed(() => {
         点击进行签名
       </el-button>
 
-      <!-- 已有签名：展示图片，点击可重新编辑 -->
+      <!-- 已有签名：固定宽高展示图片，点击可重新编辑 -->
       <div
           v-else
           class="sign-preview-box"
@@ -184,7 +187,7 @@ const signImage = computed(() => {
         <el-image
             :src="signImage"
             fit="contain"
-            style="max-height:120px;max-width:100%"
+            class="sign-preview-img"
         />
         <div class="edit-tip">点击图片重新编辑签名</div>
         <el-button size="small" link @click.stop="handlePreview">大图预览</el-button>
@@ -204,12 +207,21 @@ const signImage = computed(() => {
     gap: 8px;
   }
 
+  .sign-canvas-wrap {
+    /* 容器居中显示固定尺寸的 canvas */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
   .sign-canvas {
-    width: 100%;
-    height: calc(100vh - 150px);
+    /* 固定宽高，与 SmoothSignature 配置一致 */
+    width: 500px;
+    height: 200px;
     border: 2px dashed #ccc;
     cursor: crosshair;
     background: #f6f6f6;
+    display: block;
   }
 
   .sign-footer {
@@ -221,20 +233,40 @@ const signImage = computed(() => {
 
 .signature-container {
   .sign-preview-box {
+    /* 固定宽高容器，防止图片按原始尺寸拉伸 */
+    width: 250px;
+    height: 100px;
     border: 1px solid #e4e7ed;
     border-radius: 4px;
-    padding: 10px;
+    padding: 4px;
     cursor: pointer;
     transition: 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
 
     &:hover {
       border-color: #409eff;
+    }
+
+    .sign-preview-img {
+      width: 100%;
+      height: 100%;
+      flex: 1;
+      min-height: 0;
     }
 
     .edit-tip {
       font-size: 12px;
       color: #909399;
       margin-top: 4px;
+      position: absolute;
+      bottom: -20px;
+      left: 0;
+      right: 0;
+      text-align: center;
     }
 
     &.disabled {

@@ -296,7 +296,7 @@ const fields = [
               staticData: true,
               visiblePlatform: "all",
               textContent:
-                '<p style="text-align: center;"><span style="font-size: 19px;">四川华平通讯设备有限公司 </span></p><p style="text-align: center;"><span style="font-size: 19px;">DIP IPQC巡查表 &nbsp;</span></p>',
+                '<p style="text-align: center;"><span style="font-size: 19px;">星马个人工作室 </span></p><p style="text-align: center;"><span style="font-size: 19px;">DIP IPQC巡查表 &nbsp;</span></p>',
               colWidth: "56px",
             },
             {

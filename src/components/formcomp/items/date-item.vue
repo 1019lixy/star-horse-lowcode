@@ -58,6 +58,8 @@
           :value-format="gridValueFormat"
           :min-year="minYear"
           :max-year="maxYear"
+          :every-year="everyYear"
+          @every-year-change="onEveryYearChange"
         />
       </ShMobilePicker>
     </template>
@@ -150,6 +152,16 @@ const maxYear = computed(() => {
   return max ? parseInt(max) : 2099;
 });
 
+/** 月份多选时是否为"每年"模式（不绑定年份，值仅为 MM），支持用户在界面切换 */
+const everyYear = ref(false);
+
+/** 监听子组件每年模式切换 */
+const onEveryYearChange = (val: boolean) => {
+  everyYear.value = val;
+  // 清空已选数据（值格式不同）
+  formData.value[props.field.fieldName] = [];
+};
+
 const wheelPickerRef = ref<any>(null);
 const gridPickerRef = ref<any>(null);
 
@@ -158,7 +170,12 @@ const displayText = computed(() => {
   if (val === undefined || val === null || val === "") return "";
   if (Array.isArray(val)) {
     if (isMultiSelect.value) {
-      return val.length > 3 ? `已选 ${val.length} 项` : val.join(", ");
+      // 每年月份模式：值是 "01"-"12"，显示为 "1月, 3月"
+      if (everyYear.value && gridMode.value === "month") {
+        const labels = val.map((v: any) => `${parseInt(String(v))}${i18n('cron.month')}`);
+        return labels.length > 3 ? `${i18n('item.selectedData')}(${labels.length})` : labels.join(", ");
+      }
+      return val.length > 3 ? `${i18n('item.selectedData')}(${val.length})` : val.join(", ");
     }
     return val.map((v) => formatSingle(v)).join(" ~ ");
   }
@@ -213,6 +230,8 @@ onBeforeMount(() => {
     props.field.preps = {};
   }
   props.field.preps["type"] = effectiveType.value;
+  // 初始化每年模式：从配置读取
+  everyYear.value = !!props.field.preps.everyYear;
   const disableDate = props.field.preps?.disableDate;
   if (typeof disableDate === "function") {
     disabledDate.value = disableDate() || [];

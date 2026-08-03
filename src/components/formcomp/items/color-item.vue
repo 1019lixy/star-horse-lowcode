@@ -49,7 +49,7 @@
             />
             <el-input
                 v-model="tempColor"
-                placeholder="#FFFFFF"
+                :placeholder="i18n('comp.colorHexPlaceholder')"
                 size="default"
                 class="color-mobile-panel__hex"
             >
@@ -274,8 +274,8 @@ onMounted(() => {
 
   &__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-    gap: 8px;
+    grid-template-columns: repeat(auto-fill, minmax(36px, 1fr));
+    gap: 6px;
   }
 
   &__cell {
@@ -287,7 +287,7 @@ onMounted(() => {
     align-items: center;
     justify-content: center;
     transition: transform 0.1s;
-    width: 80px;
+    width: 36px;
 
     &:active {
       transform: scale(0.9);
@@ -298,7 +298,7 @@ onMounted(() => {
 
       .el-icon {
         color: #fff;
-        font-size: 14px;
+        font-size: 12px;
         filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.5));
       }
     }

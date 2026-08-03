@@ -458,7 +458,10 @@ export default {
     "Function under development, now click submit button to export all data",
   "comp.presetColors":"Preset Colors",
   "comp.customColor":"Custom Color",
-  "message.clear":"清空",
+  "comp.colorHexPlaceholder":"Enter hex color",
+  "comp.selectedCount":"{n} selected",
+  "comp.weekdays":"Sun,Mon,Tue,Wed,Thu,Fri,Sat",
+  "message.clear":"Clear",
   /**
    * JSON Editor Strings
    */

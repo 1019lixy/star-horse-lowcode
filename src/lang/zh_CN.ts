@@ -454,6 +454,9 @@ export default {
   "comp.deleteData": "删除数据",
   "comp.presetColors":"预设颜色",
   "comp.customColor":"自定义颜色",
+  "comp.colorHexPlaceholder":"请输入色值",
+  "comp.selectedCount":"已选 {n} 项",
+  "comp.weekdays":"日,一,二,三,四,五,六",
   "message.clear":"清空",
   /**
    * JSON Editor Strings

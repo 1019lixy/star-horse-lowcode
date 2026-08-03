@@ -2,8 +2,8 @@
   <div class="sh-mobile-grid-picker">
     <!-- 已选数量提示 -->
     <div class="sh-mobile-grid-picker__bar">
-      <span class="sh-mobile-grid-picker__count">已选 {{ selected.length }} 项</span>
-      <span class="sh-mobile-grid-picker__clear" @click="clearAll">清空</span>
+      <span class="sh-mobile-grid-picker__count">{{ i18n('item.selectedData') }}({{ selected.length }})</span>
+      <span class="sh-mobile-grid-picker__clear" @click="clearAll">{{ i18n('message.clear') }}</span>
     </div>
 
     <!-- 年份选择 -->
@@ -24,12 +24,22 @@
       </div>
     </template>
 
-    <!-- 月份选择：带年份导航 -->
+    <!-- 月份选择 -->
     <template v-else-if="mode === 'month'">
       <div class="sh-mobile-grid-picker__nav">
-        <span class="sh-mobile-grid-picker__nav-btn" @click="prevYear">‹</span>
-        <span class="sh-mobile-grid-picker__nav-title">{{ curYear }}年</span>
-        <span class="sh-mobile-grid-picker__nav-btn" @click="nextYear">›</span>
+        <div class="sh-mobile-grid-picker__nav-left">
+          <template v-if="!isEveryYear">
+            <span class="sh-mobile-grid-picker__nav-btn" @click="prevYear">‹</span>
+            <span class="sh-mobile-grid-picker__nav-title">{{ curYear }}{{ i18n('cron.year') }}</span>
+            <span class="sh-mobile-grid-picker__nav-btn" @click="nextYear">›</span>
+          </template>
+          <span v-else class="sh-mobile-grid-picker__nav-title">{{ i18n('cron.everyYear') }}</span>
+        </div>
+        <span
+          class="sh-mobile-grid-picker__nav-toggle"
+          :class="{ 'is-active': isEveryYear }"
+          @click="toggleEveryYear"
+        >{{ i18n('cron.everyYear') }}</span>
       </div>
       <div class="sh-mobile-grid-picker__grid">
         <div
@@ -47,11 +57,11 @@
       <div class="sh-mobile-grid-picker__cal">
         <div class="sh-mobile-grid-picker__cal-nav">
           <span class="sh-mobile-grid-picker__cal-btn" @click="prevMonth">‹</span>
-          <span class="sh-mobile-grid-picker__cal-title">{{ calYear }}年{{ calMonth + 1 }}月</span>
+          <span class="sh-mobile-grid-picker__cal-title">{{ calYear }}{{ i18n('cron.year') }}{{ calMonth + 1 }}{{ i18n('cron.month') }}</span>
           <span class="sh-mobile-grid-picker__cal-btn" @click="nextMonth">›</span>
         </div>
         <div class="sh-mobile-grid-picker__cal-weekdays">
-          <span v-for="w in weekdays" :key="w">{{ w }}</span>
+          <span v-for="(w, i) in weekdays" :key="i">{{ w }}</span>
         </div>
         <div class="sh-mobile-grid-picker__cal-days">
           <div
@@ -74,6 +84,7 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
+import { i18n } from "@/lang";
 
 type GridMode = "year" | "month" | "date";
 
@@ -84,20 +95,39 @@ const props = withDefaults(
     valueFormat?: string;
     minYear?: number;
     maxYear?: number;
+    /** 月份多选时是否为"每年"模式（不绑定年份，值仅为 MM） */
+    everyYear?: boolean;
   }>(),
   {
     valueFormat: "",
     minYear: 1900,
     maxYear: 2099,
+    everyYear: false,
   },
 );
 
 const emit = defineEmits<{
   (e: "update:modelValue", val: any[]): void;
   (e: "change", val: any[]): void;
+  (e: "update:everyYear", val: boolean): void;
+  (e: "everyYearChange", val: boolean): void;
 }>();
 
 const selected = ref<any[]>([]);
+
+/** 内部每年模式状态（可由用户在界面切换） */
+const isEveryYear = ref(props.everyYear);
+
+/** 切换每年模式：清空已选（值格式不同），通知父组件 */
+const toggleEveryYear = () => {
+  isEveryYear.value = !isEveryYear.value;
+  // 切换模式时清空已选，防止 YYYY-MM 与 MM 格式混淆
+  selected.value = [];
+  emit("update:modelValue", []);
+  emit("change", []);
+  emit("update:everyYear", isEveryYear.value);
+  emit("everyYearChange", isEveryYear.value);
+};
 
 watch(
   () => props.modelValue,
@@ -113,7 +143,7 @@ watch(
   { immediate: true },
 );
 
-const weekdays = ["日", "一", "二", "三", "四", "五", "六"];
+const weekdays = computed(() => i18n('comp.weekdays').split(','));
 
 // ===== 年份导航 =====
 const yearRangeStart = ref(0);
@@ -155,7 +185,7 @@ const nextYear = () => {
 const yearPageItems = computed(() => {
   const items: { label: string; value: string }[] = [];
   for (let y = yearRangeStart.value; y <= yearRangeEnd.value; y++) {
-    items.push({ label: `${y}年`, value: String(y) });
+    items.push({ label: `${y}${i18n('cron.year')}`, value: String(y) });
   }
   return items;
 });
@@ -175,8 +205,8 @@ watch(
         yearRangeStart.value = Math.floor(minY / 10) * 10;
         yearRangeEnd.value = yearRangeStart.value + 9;
       }
-    } else if (props.mode === "month" && val.length > 0) {
-      // 月份模式：selected 存的是 "2024-01" 这样的格式
+    } else if (props.mode === "month" && val.length > 0 && !isEveryYear.value) {
+      // 月份模式（非每年）：selected 存的是 "2024-01" 这样的格式
       const nums = val
         .map((v: any) => {
           const parts = String(v).split("-");
@@ -204,9 +234,16 @@ watch(
 );
 
 const monthItems = computed(() => {
-  // 月份值格式：YYYY-MM
+  if (isEveryYear.value) {
+    // 每年模式：值仅为 MM，不绑定年份
+    return Array.from({ length: 12 }, (_, i) => ({
+      label: `${i + 1}${i18n('cron.month')}`,
+      value: String(i + 1).padStart(2, "0"),
+    }));
+  }
+  // 正常模式：月份值格式 YYYY-MM
   return Array.from({ length: 12 }, (_, i) => ({
-    label: `${i + 1}月`,
+    label: `${i + 1}${i18n('cron.month')}`,
     value: `${curYear.value}-${String(i + 1).padStart(2, "0")}`,
   }));
 });
@@ -347,6 +384,35 @@ defineExpose({ getSelectedValues });
   align-items: center;
   padding: 8px 14px;
   flex-shrink: 0;
+}
+
+.sh-mobile-grid-picker__nav-left {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sh-mobile-grid-picker__nav-toggle {
+  padding: 4px 12px;
+  font-size: 13px;
+  border-radius: 14px;
+  border: 1px solid var(--el-border-color, #dcdfe6);
+  color: var(--el-text-color-regular, #606266);
+  background: #fff;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.15s;
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &.is-active {
+    background: var(--el-color-primary, #409eff);
+    border-color: var(--el-color-primary, #409eff);
+    color: #fff;
+    font-weight: 600;
+  }
 }
 
 .sh-mobile-grid-picker__nav-title {
