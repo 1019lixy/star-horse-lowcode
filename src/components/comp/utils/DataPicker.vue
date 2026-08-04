@@ -85,6 +85,10 @@ const cascadeColumns = ref<any[][]>([[]]);
 const treeMaxLevel = ref(0);
 /** APP 端底部已选栏是否展开 */
 const selectedBarExpanded = ref(false);
+/** APP 端已选栏高度（可拖拽调整） */
+const selectedBarHeight = ref(260);
+/** APP 端已选栏拖拽中 */
+const isDraggingSelectedBar = ref(false);
 /** APP 端已选数据搜索关键字 */
 const selectedQuery = ref("");
 /** 完整原始树（不复制，直接引用 props.data） */
@@ -434,6 +438,33 @@ const onSelectedItemClick = (index: number) => {
     return;
   }
   activeIndex.value = activeIndex.value === index ? -1 : index;
+};
+
+/** 拖拽已选栏上边框调整高度 */
+const onDragStart = (e: PointerEvent) => {
+  e.preventDefault();
+  // 捕获 pointer，确保后续 move/up 都能收到，不被浏览器拦截
+  (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+  isDraggingSelectedBar.value = true;
+  const startY = e.clientY;
+  const startHeight = selectedBarHeight.value;
+
+  const onMove = (ev: PointerEvent) => {
+    ev.preventDefault();
+    const delta = startY - ev.clientY;
+    const newH = Math.max(120, Math.min(startHeight + delta, window.innerHeight - 200));
+    selectedBarHeight.value = newH;
+  };
+  const onUp = (ev: PointerEvent) => {
+    isDraggingSelectedBar.value = false;
+    (e.currentTarget as HTMLElement).releasePointerCapture(ev.pointerId);
+    document.removeEventListener("pointermove", onMove);
+    document.removeEventListener("pointerup", onUp);
+    document.body.style.userSelect = "";
+  };
+  document.body.style.userSelect = "none";
+  document.addEventListener("pointermove", onMove, { passive: false });
+  document.addEventListener("pointerup", onUp);
 };
 
 // ===== 键盘操作 =====
@@ -948,7 +979,7 @@ defineExpose({
 
     <!-- ===== APP 端：头部搜索+层级下拉 + 数据列表 + 底部选择栏 ===== -->
     <div v-else class="dp-mobile">
-      <!-- 头部：搜索框 + 层级筛选按钮 -->
+      <!-- 头部：搜索框 + 层级筛选按钮（Popover 承载筛选面板） -->
       <div class="dp-mobile-header">
         <div class="dp-search-bar dp-mobile-header__search">
           <el-input
@@ -965,101 +996,111 @@ defineExpose({
             </template>
           </el-input>
         </div>
-        <div
+        <el-popover
             v-if="enableHierarchy && fullTreeData.length > 0"
-            class="dp-mobile-header__filter"
-            :class="{ 'is-active': hierarchyExpanded || selectedHierarchyKey }"
-            @click="hierarchyExpanded = !hierarchyExpanded"
+            v-model:visible="hierarchyExpanded"
+            placement="bottom-start"
+            trigger="click"
+            popper-class="dp-hierarchy-popover"
+            :offset="4"
+            width="100%"
+            :show-arrow="false"
+            :close-on-click-modal="true"
         >
-          <star-horse-icon iconClass="filter" size="16px"/>
-          <span v-if="selectedHierarchyKey" class="dp-mobile-header__filter-label">
-            {{ findNodeByKey(fullTreeData, selectedHierarchyKey)?.[displayName] }}
-          </span>
-          <span v-else class="dp-mobile-header__filter-label">{{
-              i18n("datapicker.hierarchyFilter")
-            }}</span>
-          <star-horse-icon
-              :icon-class="hierarchyExpanded ? 'arrow-up' : 'arrow-down'"
-              size="12px"
-          />
-        </div>
-      </div>
-
-      <!-- 层级筛选下拉面板 -->
-      <div
-          v-if="hierarchyExpanded && enableHierarchy && fullTreeData.length > 0"
-          class="dp-mobile-hierarchy-dropdown"
-      >
-        <!-- 级联面板模式（≥3 级树，如省/市/区/街道） -->
-        <div v-if="hierarchyPanelMode" class="dp-mobile-hierarchy__panel">
-          <div class="dp-mobile-hierarchy__panel-cols">
-            <el-scrollbar
-                v-for="(colNodes, colIdx) in cascadeColumns"
-                :key="colIdx"
-                class="dp-mobile-hierarchy__panel-col"
-                tag="div"
-            >
-              <div
-                  v-for="n in colNodes"
-                  :key="n[displayValue]"
-                  class="dp-cascade-item"
-                  :class="{
-                  'is-active': cascadeSelectedKeys[colIdx] === n[displayValue],
-                }"
-                  @click="onCascadeNodeClick(n, colIdx)"
-              >
-                <span class="dp-cascade-item__label">{{ n[displayName] }}</span>
-                <star-horse-icon
-                    v-if="n.children?.length > 0"
-                    icon-class="arrow-right"
-                    size="12px"
-                />
+          <!-- Popover 内容：层级筛选面板 -->
+          <div class="dp-hierarchy-popover__content">
+            <!-- 级联面板模式（≥3 级树，如省/市/区/街道） -->
+            <div v-if="hierarchyPanelMode" class="dp-mobile-hierarchy__panel">
+              <div class="dp-mobile-hierarchy__panel-cols">
+                <el-scrollbar
+                    v-for="(colNodes, colIdx) in cascadeColumns"
+                    :key="colIdx"
+                    class="dp-mobile-hierarchy__panel-col"
+                    tag="div"
+                >
+                  <div
+                      v-for="n in colNodes"
+                      :key="n[displayValue]"
+                      class="dp-cascade-item"
+                      :class="{
+                      'is-active': cascadeSelectedKeys[colIdx] === n[displayValue],
+                    }"
+                      @click="onCascadeNodeClick(n, colIdx)"
+                  >
+                    <span class="dp-cascade-item__label">{{ n[displayName] }}</span>
+                    <star-horse-icon
+                        v-if="n.children?.length > 0"
+                        icon-class="arrow-right"
+                        size="12px"
+                    />
+                  </div>
+                </el-scrollbar>
               </div>
+            </div>
+            <!-- 树形模式（<3 级树，用 el-tree，只展示分类节点） -->
+            <el-scrollbar v-else class="dp-mobile-hierarchy__tree">
+              <el-tree
+                  :node-key="displayValue"
+                  :data="hierarchyTreeData"
+                  :props="{ label: displayName??'name', value:displayValue??'value', children: 'children' }"
+                  :default-expanded-keys="expandedKeys"
+                  :current-node-key="selectedHierarchyKey"
+                  highlight-current
+                  @node-click="onHierarchyClick"
+              >
+                <template #default="{ data }">
+                  <div
+                      class="dp-hierarchy-node"
+                      :class="{ 'is-active': selectedHierarchyKey === data[displayValue] }"
+                  >
+                    <star-horse-icon
+                        :icon-class="data.children?.length > 0 ? 'folder' : 'document'"
+                        size="14px"
+                    />
+                    <span class="dp-hierarchy-node__label">{{ data[displayName] }}</span>
+                  </div>
+                </template>
+              </el-tree>
             </el-scrollbar>
-          </div>
-        </div>
-        <!-- 树形模式（<3 级树，用 el-tree，只展示分类节点） -->
-        <el-scrollbar v-else class="dp-mobile-hierarchy__tree">
-          <el-tree
-              :node-key="displayValue"
-              :data="hierarchyTreeData"
-              :props="{ label: displayName, children: 'children' }"
-              :default-expanded-keys="expandedKeys"
-              :current-node-key="selectedHierarchyKey"
-              highlight-current
-              @node-click="onHierarchyClick"
-          >
-            <template #default="{ data }">
-              <div
-                  class="dp-hierarchy-node"
-                  :class="{ 'is-active': selectedHierarchyKey === data[displayValue] }"
-              >
-                <star-horse-icon
-                    :icon-class="data.children?.length > 0 ? 'folder' : 'document'"
-                    size="14px"
-                />
-                <span class="dp-hierarchy-node__label">{{ data[displayName] }}</span>
-              </div>
-            </template>
-          </el-tree>
-        </el-scrollbar>
 
-        <!-- 底部操作栏：重置 + 完成 -->
-        <div class="dp-mobile-hierarchy__actions">
-          <button
-              v-if="selectedHierarchyKey"
-              class="dp-mobile-hierarchy__btn dp-mobile-hierarchy__btn--reset"
-              @click="hierarchyPanelMode ? clearCascadeFilter() : (selectedHierarchyKey = '')"
-          >
-            {{ i18n("common.reset") }}
-          </button>
-          <button
-              class="dp-mobile-hierarchy__btn dp-mobile-hierarchy__btn--confirm"
-              @click="hierarchyExpanded = false"
-          >
-            {{ i18n("common.yes") }}
-          </button>
-        </div>
+            <!-- 底部操作栏：重置 + 完成 -->
+            <div class="dp-mobile-hierarchy__actions">
+              <button
+                  v-if="selectedHierarchyKey"
+                  class="dp-mobile-hierarchy__btn dp-mobile-hierarchy__btn--reset"
+                  @click="hierarchyPanelMode ? clearCascadeFilter() : (selectedHierarchyKey = '')"
+              >
+                {{ i18n("common.reset") }}
+              </button>
+              <button
+                  class="dp-mobile-hierarchy__btn dp-mobile-hierarchy__btn--confirm"
+                  @click="hierarchyExpanded = false"
+              >
+                {{ i18n("common.yes") }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Popover 触发锚点：筛选按钮 -->
+          <template #reference>
+            <div
+                class="dp-mobile-header__filter"
+                :class="{ 'is-active': hierarchyExpanded || selectedHierarchyKey }"
+            >
+              <star-horse-icon iconClass="filter" size="16px"/>
+              <span v-if="selectedHierarchyKey" class="dp-mobile-header__filter-label">
+                {{ findNodeByKey(fullTreeData, selectedHierarchyKey)?.[displayName] }}
+              </span>
+              <span v-else class="dp-mobile-header__filter-label">{{
+                  i18n("datapicker.hierarchyFilter")
+                }}</span>
+              <star-horse-icon
+                  :icon-class="hierarchyExpanded ? 'arrow-up' : 'arrow-down'"
+                  size="12px"
+              />
+            </div>
+          </template>
+        </el-popover>
       </div>
 
       <!-- 主体：数据列表（全宽） -->
@@ -1130,8 +1171,21 @@ defineExpose({
         />
       </div>
 
-      <!-- 底部已选数据栏（仅多选时显示） -->
-      <div v-if="multiple" class="dp-mobile-selected-bar">
+      <!-- 底部已选数据栏（浮动覆盖待选区，不压缩高度） -->
+      <div
+        v-if="multiple"
+        class="dp-mobile-selected-bar"
+        :class="{ 'is-expanded': selectedBarExpanded }"
+        :style="selectedBarExpanded ? { height: selectedBarHeight + 'px' } : {}"
+      >
+        <!-- 拖拽手柄：展开时显示，拖动改变高度 -->
+        <div
+          v-if="selectedBarExpanded"
+          class="dp-mobile-selected-bar__drag"
+          @pointerdown="onDragStart"
+        >
+          <span class="dp-mobile-selected-bar__drag-icon"></span>
+        </div>
         <div class="dp-mobile-selected-bar__header">
           <span class="dp-mobile-selected-bar__count">
             {{ i18n("datapicker.selectedCount") }}（{{ dataOptions.length }}）
@@ -1168,14 +1222,14 @@ defineExpose({
 
           <el-scrollbar tag="div" class="dp-mobile-selected-list">
             <div
-                v-for="(item, index) in filteredSelectedItems"
+                v-for="item in filteredSelectedItems"
                 :key="item[displayValue]"
                 class="dp-mobile-selected-item"
                 @click="onSelectedItemClick(item)"
             >
               <span class="dp-mobile-selected-item__label">{{
-                  displayText(item)
-                }}</span>
+                displayText(item)
+              }}</span>
               <star-horse-icon
                   icon-class="close"
                   class="dp-mobile-selected-item__remove"
@@ -1412,9 +1466,11 @@ defineExpose({
 
 /* ===== 移动端布局 ===== */
 .dp-mobile {
+  position: relative;
   display: flex;
   flex-direction: column;
   height: 100%;
+  overflow: hidden;
 }
 
 /* 头部：搜索框 + 层级筛选按钮 */
@@ -1461,24 +1517,13 @@ defineExpose({
   max-width: 70px;
 }
 
-/* 层级筛选下拉面板 */
-.dp-mobile-hierarchy-dropdown {
-  flex-shrink: 0;
-  max-height: 40%;
-  min-height: 120px;
-  border-bottom: 1px solid var(--el-border-color);
-  background: var(--el-fill-color-lighter);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
 /* 级联面板样式 */
 .dp-mobile-hierarchy__panel {
   flex: 1;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  min-height: 0;
 }
 
 .dp-mobile-hierarchy__panel-cols {
@@ -1487,18 +1532,19 @@ defineExpose({
   overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
-  min-height: 0;
+  min-height: 200px;
 }
 
 .dp-mobile-hierarchy__panel-col {
-  flex: 0 0 110px;
-  width: 110px;
+  flex: 0 0 100px;
+  min-width: 150px;
   border-right: 1px solid var(--el-border-color-lighter);
   overflow: hidden;
+  height: 500px;
 
   &:last-child {
     border-right: none;
-    flex: 1;
+    flex: 1 1 120px;
     width: auto;
   }
 }
@@ -1557,6 +1603,8 @@ defineExpose({
 .dp-mobile-hierarchy__tree {
   flex: 1;
   overflow: hidden;
+  min-height: 200px;
+  max-height: 500px;
 }
 
 /* 底部操作栏 */
@@ -1667,14 +1715,48 @@ defineExpose({
   overflow: hidden;
 }
 
-/* 底部已选栏 */
+/* 底部已选栏（浮动覆盖待选区，不压缩待选区高度） */
 .dp-mobile-selected-bar {
-  flex-shrink: 0;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 80;
   border-top: 1px solid var(--el-border-color);
   background: var(--el-bg-color);
-  max-height: 50%;
   display: flex;
   flex-direction: column;
+  /* 收起时只显示 header 高度 */
+  height: auto;
+  /* 展开时由 inline style 设置 height */
+  &.is-expanded {
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.1);
+    border-radius: 12px 12px 0 0;
+  }
+}
+
+/* 拖拽手柄 */
+.dp-mobile-selected-bar__drag {
+  flex-shrink: 0;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: ns-resize;
+  border-bottom: 1px solid var(--el-border-color-lighter);
+  /* 禁止浏览器默认触摸行为（滚动/长按），保证触屏拖拽顺畅 */
+  touch-action: none;
+
+  &:active {
+    background: var(--el-fill-color);
+  }
+}
+
+.dp-mobile-selected-bar__drag-icon {
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--el-text-color-disabled);
 }
 
 .dp-mobile-selected-bar__header {
@@ -1712,7 +1794,7 @@ defineExpose({
 .dp-mobile-selected-bar__search {
   padding: 6px 10px 4px;
   min-width: 100px;
-  max-width: 200px;
+  max-width: 180px;
 
   :deep(.el-input__wrapper) {
     border-radius: 6px;
@@ -1834,5 +1916,35 @@ defineExpose({
   .org-tree {
     padding: 2px;
   }
+}
+</style>
+
+<style lang="scss">
+/* el-popover 通过 popper-class 挂到 body 下，需要全局样式（非 scoped） */
+.dp-hierarchy-popover.el-popover {
+  --el-popover-padding: 0;
+  padding: 0 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.06);
+  /* 宽高由内容撑开，仅设上限防止超出视口 */
+  max-width: calc(100vw - 16px) !important;
+  max-height: calc(100vh - 120px) !important;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.dp-hierarchy-popover .dp-hierarchy-popover__content {
+  /* 不设固定宽度，让级联列自然撑开 */
+  width: auto;
+  max-width: calc(100vw - 16px);
+  /* 高度由内容决定，仅设上限 */
+  max-height: calc(100vh - 120px);
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--el-bg-color);
+  border-radius: 8px;
 }
 </style>
