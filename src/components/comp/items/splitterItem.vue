@@ -51,7 +51,7 @@ onMounted(() => {
     <el-splitter v-bind="prepsFilter(item.preps)">
       <template v-for="(splitterItem, key) in item.splitterList">
         <el-splitter-panel
-          v-if="Object.keys(splitterItem).length > 0"
+          v-if="Object.keys(splitterItem).length > 0 && splitterItem.formVisible !== false"
           v-bind="splitterItem.preps"
           :index="
             checkObject(dataForm, splitterItem, key, dataIndex, propPrefix)

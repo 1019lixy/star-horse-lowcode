@@ -427,4 +427,110 @@ const icons: Record<string, string> = {
     width: 100%;
     height: 100%;
 }
+
+/* ============ App 端（移动端/窄屏）响应式适配 ============ */
+@media (max-width: 768px) {
+    .iot-alarm-center {
+        .stats-bar {
+            gap: 8px;
+            padding: 6px 8px;
+
+            .stat-card {
+                min-width: 50px;
+
+                .stat-value { font-size: 16px; }
+                .stat-label { font-size: 10px; }
+            }
+            .level-badges {
+                margin-left: 0;
+                gap: 4px;
+                width: 100%;
+                justify-content: flex-start;
+
+                .level-badge {
+                    font-size: 10px;
+                    padding: 2px 6px;
+                }
+            }
+        }
+
+        .filter-bar {
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 6px 8px;
+
+            .filter-title {
+                font-size: 12px;
+                flex: 1 1 100%;
+            }
+            .filter-controls {
+                flex-wrap: wrap;
+                gap: 6px;
+                width: 100%;
+
+                /* 覆盖行内 style 固定宽度 */
+                :deep(.el-select) {
+                    width: 100% !important;
+                    flex: 1 1 calc(50% - 6px);
+                    min-width: 120px;
+                }
+                :deep(.el-tag) {
+                    font-size: 11px;
+                }
+            }
+        }
+
+        .alarm-list {
+            .alarm-item {
+                flex-wrap: wrap;
+                gap: 6px;
+                padding: 8px;
+
+                .alarm-level {
+                    width: 32px;
+                    height: 32px;
+                    font-size: 10px;
+                }
+
+                .alarm-body {
+                    flex: 1 1 calc(100% - 38px);
+                    min-width: 0;
+
+                    .alarm-head {
+                        flex-wrap: wrap;
+                        gap: 4px;
+
+                        .alarm-device {
+                            font-size: 12px;
+                            white-space: normal;
+                        }
+                        .alarm-time {
+                            font-size: 10px;
+                        }
+                    }
+                    .alarm-message {
+                        font-size: 11px;
+                    }
+                }
+
+                .alarm-actions {
+                    flex-direction: row;
+                    flex: 1 1 100%;
+                    justify-content: flex-start;
+                    gap: 6px;
+
+                    :deep(.el-button) {
+                        padding: 6px 8px;
+                        font-size: 11px;
+                    }
+                }
+
+                /* 触屏无 :hover，用 :active 兜底高亮 */
+                &:active {
+                    background: var(--el-fill-color-light);
+                }
+            }
+        }
+    }
+}
 </style>

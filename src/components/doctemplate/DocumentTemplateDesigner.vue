@@ -4,7 +4,7 @@ import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 import type { IDomEditor } from "@wangeditor/editor";
 import { ElMessage } from "element-plus";
 import { i18n } from "@/lang";
-import { ShSvgIcon, insertVariableBadge } from "@/components/shared";
+import { ShSvgIcon, insertVariableBadge, DesignerMobileShell } from "@/components/shared";
 import { useDocTemplateDesigner } from "./composables/useDocTemplateDesigner";
 import DocVariablePanel from "./panels/DocVariablePanel.vue";
 import DocVariableDialog from "./dialogs/DocVariableDialog.vue";
@@ -84,51 +84,47 @@ const handleCategoryChange = (category: string) => {
 
 <template>
     <div class="doc-template-designer">
-        <div class="designer-toolbar">
-            <div class="left-group">
-                <el-input
-                    v-model="designer.state.name"
+        <DesignerMobileShell
+            :panels="[
+                { key: 'variables', label: '变量', side: 'left', width: 240, min: 200 },
+            ]"
+        >
+            <template #toolbar>
+                <div class="designer-toolbar">
+                    <div class="left-group">
+                        <el-input
+                            v-model="designer.state.name"
 
-                    style="width: 200px"
-                    :placeholder="i18n('doctemplate.template.namePlaceholder')"
-                />
-                <el-select
-                    v-model="designer.state.category"
-                    style="width: 140px"
-                    :placeholder="i18n('doctemplate.template.category')"
-                    @change="handleCategoryChange"
-                >
-                    <el-option
-                        v-for="opt in DOC_CATEGORY_PRESETS"
-                        :key="opt.value"
-                        :label="opt.label"
-                        :value="opt.value"
-                    />
-                </el-select>
-            </div>
-            <div class="right-group">
-                <el-button @click="previewVisible = true">
-                    <ShSvgIcon name="preview" size="14px" />
-                    {{ i18n("doctemplate.btn.preview") }}
-                </el-button>
-                <el-button type="primary" :disabled="readonly" @click="handleSave">
-                    <ShSvgIcon name="save" size="14px" />
-                    {{ i18n("dialog.save") }}
-                </el-button>
-            </div>
-        </div>
-
-        <el-splitter class="designer-body" direction="horizontal">
-            <el-splitter-panel size="240px" min="180px" max="380px">
-                <doc-variable-panel
-                    :designer="designer"
-                    :readonly="readonly"
-                    @insert="handleInsertVariable"
-                    @edit="handleEditVariable"
-                    @add="handleAddVariable"
-                />
-            </el-splitter-panel>
-            <el-splitter-panel>
+                            style="width: 200px"
+                            :placeholder="i18n('doctemplate.template.namePlaceholder')"
+                        />
+                        <el-select
+                            v-model="designer.state.category"
+                            style="width: 140px"
+                            :placeholder="i18n('doctemplate.template.category')"
+                            @change="handleCategoryChange"
+                        >
+                            <el-option
+                                v-for="opt in DOC_CATEGORY_PRESETS"
+                                :key="opt.value"
+                                :label="opt.label"
+                                :value="opt.value"
+                            />
+                        </el-select>
+                    </div>
+                    <div class="right-group">
+                        <el-button @click="previewVisible = true">
+                            <ShSvgIcon name="preview" size="14px" />
+                            {{ i18n("doctemplate.btn.preview") }}
+                        </el-button>
+                        <el-button type="primary" :disabled="readonly" @click="handleSave">
+                            <ShSvgIcon name="save" size="14px" />
+                            {{ i18n("dialog.save") }}
+                        </el-button>
+                    </div>
+                </div>
+            </template>
+            <template #canvas>
                 <div class="editor-area">
                     <div class="editor-toolbar-wrap" v-if="!readonly">
                         <Toolbar
@@ -173,8 +169,17 @@ const handleCategoryChange = (category: string) => {
                         @onCreated="handleEditorCreated"
                     />
                 </div>
-            </el-splitter-panel>
-        </el-splitter>
+            </template>
+            <template #panel-variables>
+                <doc-variable-panel
+                    :designer="designer"
+                    :readonly="readonly"
+                    @insert="handleInsertVariable"
+                    @edit="handleEditVariable"
+                    @add="handleAddVariable"
+                />
+            </template>
+        </DesignerMobileShell>
 
         <doc-variable-dialog
             v-model:visible="varDialogVisible"
@@ -223,42 +228,37 @@ const handleCategoryChange = (category: string) => {
         }
     }
 
-    .designer-body {
-        flex: 1;
-        overflow: hidden;
+    .editor-area {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        background: var(--el-bg-color);
 
-        .editor-area {
-            width: 100%;
-            height: 100%;
+        .editor-toolbar-wrap {
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            border-bottom: 1px solid var(--el-border-color-lighter);
             background: var(--el-bg-color);
-
-            .editor-toolbar-wrap {
+            position: relative;
+            z-index: 100;
+            .doc-toolbar {
+                flex: 1;
+                border-bottom: none;
+                overflow-x: auto;
+            }
+            .var-btn {
+                margin: 0 4px;
+                flex-shrink: 0;
                 display: flex;
                 align-items: center;
-                border-bottom: 1px solid var(--el-border-color-lighter);
-                background: var(--el-bg-color);
-                position: relative;
-                z-index: 100;
-                .doc-toolbar {
-                    flex: 1;
-                    border-bottom: none;
-                    overflow-x: auto;
-                }
-                .var-btn {
-                    margin: 0 4px;
-                    flex-shrink: 0;
-                    display: flex;
-                    align-items: center;
-                    gap: 4px;
-                }
+                gap: 4px;
             }
+        }
 
-            .doc-editor {
-                flex: 1;
-                overflow-y: auto;
-            }
+        .doc-editor {
+            flex: 1;
+            overflow-y: auto;
         }
     }
 }

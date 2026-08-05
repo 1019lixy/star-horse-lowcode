@@ -12,6 +12,7 @@ import ReportCanvas from "./panels/ReportCanvas.vue";
 import ReportPropertyPanel from "./panels/ReportPropertyPanel.vue";
 import ReportDatasetDialog from "./dialogs/ReportDatasetDialog.vue";
 import ReportPreviewDialog from "./dialogs/ReportPreviewDialog.vue";
+import { DesignerMobileShell } from "@/components/shared";
 import type { ReportTemplate } from "./types";
 
 const props = defineProps<{
@@ -61,19 +62,29 @@ const handleDatasetSave = (list: typeof designer.state.template.datasets) => {
 
 <template>
     <div class="report-designer" :class="{ readonly }">
-        <report-toolbar
-            :designer="designer"
-            :readonly="readonly"
-            @save="handleSave"
-            @preview="handlePreview"
-            @dataset="handleDataset"
-            @param="() => {}"
-            @paper="() => {}"
-        />
-        <div class="designer-body">
-            <report-canvas :designer="designer"/>
-            <report-property-panel :designer="designer"/>
-        </div>
+        <DesignerMobileShell
+            :panels="[
+                { key: 'props', label: '属性', side: 'right', width: 280, min: 220 },
+            ]"
+        >
+            <template #toolbar>
+                <report-toolbar
+                    :designer="designer"
+                    :readonly="readonly"
+                    @save="handleSave"
+                    @preview="handlePreview"
+                    @dataset="handleDataset"
+                    @param="() => {}"
+                    @paper="() => {}"
+                />
+            </template>
+            <template #canvas>
+                <report-canvas :designer="designer"/>
+            </template>
+            <template #panel-props>
+                <report-property-panel :designer="designer"/>
+            </template>
+        </DesignerMobileShell>
 
         <report-dataset-dialog
             v-model:visible="datasetVisible"
@@ -97,11 +108,5 @@ const handleDatasetSave = (list: typeof designer.state.template.datasets) => {
     width: 100%;
     background: var(--el-bg-color-page);
     overflow: hidden;
-
-    .designer-body {
-        flex: 1;
-        display: flex;
-        overflow: hidden;
-    }
 }
 </style>

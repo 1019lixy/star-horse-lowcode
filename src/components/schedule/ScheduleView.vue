@@ -7,6 +7,7 @@ import ScheduleCanvas from "./panels/ScheduleCanvas.vue";
 import SchedulePropertyPanel from "./panels/SchedulePropertyPanel.vue";
 import ScheduleEventDialog from "./dialogs/ScheduleEventDialog.vue";
 import ScheduleResourceDialog from "./dialogs/ScheduleResourceDialog.vue";
+import { DesignerMobileShell } from "@/components/shared";
 import type { ScheduleData } from "./types";
 
 const props = defineProps<{
@@ -143,25 +144,24 @@ onBeforeUnmount(() => {
 
 <template>
     <div class="schedule-view">
-        <schedule-toolbar
-            :designer="designer"
-            :readonly="readonly"
-            @save="handleSave"
-            @preview="handleAddEvent"
-            @add-event="handleAddEvent"
-            @insert-before="handleInsertBefore"
-            @insert-after="handleInsertAfter"
-        />
-        <el-splitter class="view-body" direction="horizontal">
-            <el-splitter-panel size="220px" min="160px" max="360px">
-                <schedule-resource-panel
-                    ref="resourcePanelRef"
+        <DesignerMobileShell
+            :panels="[
+                { key: 'resources', label: '资源', side: 'left', width: 220, min: 180 },
+                { key: 'props', label: '属性', side: 'right', width: 260, min: 200 },
+            ]"
+        >
+            <template #toolbar>
+                <schedule-toolbar
                     :designer="designer"
                     :readonly="readonly"
-                    @edit-resource="handleEditResource"
+                    @save="handleSave"
+                    @preview="handleAddEvent"
+                    @add-event="handleAddEvent"
+                    @insert-before="handleInsertBefore"
+                    @insert-after="handleInsertAfter"
                 />
-            </el-splitter-panel>
-            <el-splitter-panel>
+            </template>
+            <template #canvas>
                 <schedule-canvas
                     ref="canvasRef"
                     :designer="designer"
@@ -169,14 +169,22 @@ onBeforeUnmount(() => {
                     @edit="handleEditEvent"
                     @create="handleCreateEvent"
                 />
-            </el-splitter-panel>
-            <el-splitter-panel size="260px" min="200px" max="400px">
+            </template>
+            <template #panel-resources>
+                <schedule-resource-panel
+                    ref="resourcePanelRef"
+                    :designer="designer"
+                    :readonly="readonly"
+                    @edit-resource="handleEditResource"
+                />
+            </template>
+            <template #panel-props>
                 <schedule-property-panel
                     :designer="designer"
                     :readonly="readonly"
                 />
-            </el-splitter-panel>
-        </el-splitter>
+            </template>
+        </DesignerMobileShell>
 
         <schedule-event-dialog
             v-model:visible="eventDialogVisible"
@@ -201,10 +209,5 @@ onBeforeUnmount(() => {
     width: 100%;
     background: var(--el-bg-color-page);
     overflow: hidden;
-
-    .view-body {
-        flex: 1;
-        overflow: hidden;
-    }
 }
 </style>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { nextTick, onMounted, ref, watch } from "vue";
+import {nextTick, onMounted, ref, watch} from "vue";
 import CrontabSecond from "@/components/cron/Crontab-Second.vue";
 import CrontabMin from "@/components/cron/Crontab-Min.vue";
 import CrontabHour from "@/components/cron/Crontab-Hour.vue";
@@ -7,9 +7,9 @@ import CrontabDay from "@/components/cron/Crontab-Day.vue";
 import Crontabmonth from "@/components/cron/Crontab-Month.vue";
 import CrontabWeek from "@/components/cron/Crontab-Week.vue";
 import CrontabYear from "@/components/cron/Crontab-Year.vue";
-import { useVModel } from "@vueuse/core";
-import { i18n } from "@/lang";
-import { copyText } from "@/api/system";
+import {useVModel} from "@vueuse/core";
+import {i18n} from "@/lang";
+import {copyText} from "@/api/system";
 
 defineOptions({
   name: "Crontab",
@@ -55,18 +55,18 @@ let contabValueString = ref<string>("");
 const contabValueStringFun = () => {
   let obj = contabValueObj.value;
   let val =
-    obj.second +
-    " " +
-    obj.min +
-    " " +
-    obj.hour +
-    " " +
-    obj.day +
-    " " +
-    obj.month +
-    " " +
-    obj.week +
-    (obj.year == "" ? "" : " " + obj.year);
+      obj.second +
+      " " +
+      obj.min +
+      " " +
+      obj.hour +
+      " " +
+      obj.day +
+      " " +
+      obj.month +
+      " " +
+      obj.week +
+      (obj.year == "" ? "" : " " + obj.year);
   contabValueString.value = val;
   if (!prototypeCron.includes(val)) {
     emits("update:modelValue", val);
@@ -145,8 +145,8 @@ const parseCheckList = (refObj: any, value: string) => {
 //赋值到组件
 const changeRadio = async (name: string, value: string) => {
   let arr = ["second", "min", "hour", "month"],
-    refName = "cron" + name,
-    insValue;
+      refName = "cron" + name,
+      insValue;
   let refObj = getRefObj(refName);
   await nextTick();
   if (arr.includes(name)) {
@@ -155,15 +155,15 @@ const changeRadio = async (name: string, value: string) => {
     } else if (value.indexOf("-") > -1) {
       let indexArr: Array<any> = value.split("-");
       isNaN(indexArr[0])
-        ? (refObj.value.cycle01 = 0)
-        : (refObj.value.cycle01 = indexArr[0]);
+          ? (refObj.value.cycle01 = 0)
+          : (refObj.value.cycle01 = indexArr[0]);
       refObj.value.cycle02 = indexArr[1];
       insValue = 2;
     } else if (value.indexOf("/") > -1) {
       let indexArr: Array<any> = value.split("/");
       isNaN(indexArr[0])
-        ? (refObj.value.average01 = 0)
-        : (refObj.value.average01 = indexArr[0]);
+          ? (refObj.value.average01 = 0)
+          : (refObj.value.average01 = indexArr[0]);
       refObj.value.average02 = indexArr[1];
       insValue = 3;
     } else {
@@ -182,22 +182,22 @@ const changeRadio = async (name: string, value: string) => {
     } else if (value.indexOf("-") > -1) {
       let indexArr: Array<any> = value.split("-");
       isNaN(indexArr[0])
-        ? (refObj.value.cycle01 = 0)
-        : (refObj.value.cycle01 = parseInt(indexArr[0]));
+          ? (refObj.value.cycle01 = 0)
+          : (refObj.value.cycle01 = parseInt(indexArr[0]));
       refObj.value.cycle02 = parseInt(indexArr[1]);
       insValue = 3;
     } else if (value.indexOf("/") > -1) {
       let indexArr: Array<any> = value.split("/");
       isNaN(indexArr[0])
-        ? (refObj.value.average01 = 0)
-        : (refObj.value.average01 = parseInt(indexArr[0]));
+          ? (refObj.value.average01 = 0)
+          : (refObj.value.average01 = parseInt(indexArr[0]));
       refObj.value.average02 = parseInt(indexArr[1]);
       insValue = 4;
     } else if (value.indexOf("W") > -1) {
       let indexArr: Array<any> = value.split("W");
       isNaN(indexArr[0])
-        ? (refObj.value.workday = 0)
-        : (refObj.value.workday = parseInt(indexArr[0]));
+          ? (refObj.value.workday = 0)
+          : (refObj.value.workday = parseInt(indexArr[0]));
       insValue = 5;
     } else if (value === "L") {
       insValue = 6;
@@ -213,22 +213,22 @@ const changeRadio = async (name: string, value: string) => {
     } else if (value.indexOf("-") > -1) {
       let indexArr: Array<any> = value.split("-");
       isNaN(indexArr[0])
-        ? (refObj.value.cycle01 = 0)
-        : (refObj.value.cycle01 = parseInt(indexArr[0]));
+          ? (refObj.value.cycle01 = 0)
+          : (refObj.value.cycle01 = parseInt(indexArr[0]));
       refObj.value.cycle02 = parseInt(indexArr[1]);
       insValue = 3;
     } else if (value.indexOf("#") > -1) {
       let indexArr: Array<any> = value.split("#");
       isNaN(indexArr[0])
-        ? (refObj.value.average01 = 1)
-        : (refObj.value.average01 = parseInt(indexArr[0]));
+          ? (refObj.value.average01 = 1)
+          : (refObj.value.average01 = parseInt(indexArr[0]));
       refObj.value.average02 = parseInt(indexArr[1]);
       insValue = 4;
     } else if (value.indexOf("L") > -1) {
       let indexArr: Array<any> = value.split("L");
       isNaN(indexArr[0])
-        ? (refObj.value.weekday = 1)
-        : (refObj.value.weekday = parseInt(indexArr[0]));
+          ? (refObj.value.weekday = 1)
+          : (refObj.value.weekday = parseInt(indexArr[0]));
       insValue = 5;
     } else {
       insValue = 7;
@@ -281,11 +281,11 @@ onMounted(() => {
   resolveExp();
 });
 watch(
-  () => contabValueObj.value,
-  () => {
-    contabValueStringFun();
-  },
-  { immediate: false, deep: true },
+    () => contabValueObj.value,
+    () => {
+      contabValueStringFun();
+    },
+    {immediate: false, deep: true},
 );
 defineExpose({
   clearCron,
@@ -297,138 +297,138 @@ defineExpose({
     <div class="flex-grow-1 flex-1 overflow-auto min-h-0">
       <el-tabs type="border-card" v-model="tabActive">
         <el-tab-pane
-          :label="i18n('cron.second')"
-          name="0"
-          v-if="shouldHide('second')"
+            :label="i18n('cron.second')"
+            name="0"
+            v-if="shouldHide('second')"
         >
           <CrontabSecond
-            @update="updateContabValue"
-            :cron="contabValueObj"
-            :check="checkNumber"
-            ref="cronsecond"
+              @update="updateContabValue"
+              :cron="contabValueObj"
+              :check="checkNumber"
+              ref="cronsecond"
           />
         </el-tab-pane>
         <el-tab-pane
-          :label="i18n('cron.minute')"
-          name="1"
-          v-if="shouldHide('min')"
+            :label="i18n('cron.minute')"
+            name="1"
+            v-if="shouldHide('min')"
         >
           <CrontabMin
-            @update="updateContabValue"
-            :check="checkNumber"
-            :cron="contabValueObj"
-            ref="cronmin"
+              @update="updateContabValue"
+              :check="checkNumber"
+              :cron="contabValueObj"
+              ref="cronmin"
           />
         </el-tab-pane>
         <el-tab-pane
-          :label="i18n('cron.hour')"
-          name="2"
-          v-if="shouldHide('hour')"
+            :label="i18n('cron.hour')"
+            name="2"
+            v-if="shouldHide('hour')"
         >
           <CrontabHour
-            @update="updateContabValue"
-            :check="checkNumber"
-            :cron="contabValueObj"
-            ref="cronhour"
+              @update="updateContabValue"
+              :check="checkNumber"
+              :cron="contabValueObj"
+              ref="cronhour"
           />
         </el-tab-pane>
         <el-tab-pane
-          :label="i18n('cron.day')"
-          name="3"
-          v-if="shouldHide('day')"
+            :label="i18n('cron.day')"
+            name="3"
+            v-if="shouldHide('day')"
         >
           <CrontabDay
-            @update="updateContabValue"
-            :check="checkNumber"
-            :cron="contabValueObj"
-            ref="cronday"
+              @update="updateContabValue"
+              :check="checkNumber"
+              :cron="contabValueObj"
+              ref="cronday"
           />
         </el-tab-pane>
         <el-tab-pane
-          :label="i18n('cron.month')"
-          name="4"
-          v-if="shouldHide('month')"
+            :label="i18n('cron.month')"
+            name="4"
+            v-if="shouldHide('month')"
         >
           <Crontabmonth
-            @update="updateContabValue"
-            :check="checkNumber"
-            :cron="contabValueObj"
-            ref="cronmonth"
+              @update="updateContabValue"
+              :check="checkNumber"
+              :cron="contabValueObj"
+              ref="cronmonth"
           />
         </el-tab-pane>
         <el-tab-pane
-          :label="i18n('cron.week')"
-          name="5"
-          v-if="shouldHide('week')"
+            :label="i18n('cron.week')"
+            name="5"
+            v-if="shouldHide('week')"
         >
           <CrontabWeek
-            @update="updateContabValue"
-            :check="checkNumber"
-            :cron="contabValueObj"
-            ref="cronweek"
+              @update="updateContabValue"
+              :check="checkNumber"
+              :cron="contabValueObj"
+              ref="cronweek"
           />
         </el-tab-pane>
         <el-tab-pane
-          :label="i18n('cron.year')"
-          name="6"
-          v-if="shouldHide('year')"
+            :label="i18n('cron.year')"
+            name="6"
+            v-if="shouldHide('year')"
         >
           <CrontabYear
-            @update="updateContabValue"
-            :check="checkNumber"
-            :cron="contabValueObj"
-            ref="cronyear"
+              @update="updateContabValue"
+              :check="checkNumber"
+              :cron="contabValueObj"
+              ref="cronyear"
           />
         </el-tab-pane>
       </el-tabs>
     </div>
     <div class="popup-main">
       <div class="popup-result">
-        <p class="title">{{ i18n("cron.timeExpression") }}</p>
+        <div class="popup-title">{{ i18n("cron.timeExpression") }}</div>
         <table>
           <thead>
-            <tr>
-              <th v-for="item of tabTitles" width="40" :key="item">
-                {{ item }}
-              </th>
-              <th>{{ i18n("cron.completeExpression") }}</th>
-            </tr>
+          <tr>
+            <th v-for="item of tabTitles" width="40" :key="item">
+              {{ item }}
+            </th>
+            <th>{{ i18n("cron.completeExpression") }}</th>
+          </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>
-                <el-tag>{{ contabValueObj.second }}</el-tag>
-              </td>
-              <td>
-                <el-tag>{{ contabValueObj.min }}</el-tag>
-              </td>
-              <td>
-                <el-tag>{{ contabValueObj.hour }}</el-tag>
-              </td>
-              <td>
-                <el-tag>{{ contabValueObj.day }}</el-tag>
-              </td>
-              <td>
-                <el-tag>{{ contabValueObj.month }}</el-tag>
-              </td>
-              <td>
-                <el-tag>{{ contabValueObj.week }}</el-tag>
-              </td>
-              <td>
-                <el-tag>{{ contabValueObj.year }}</el-tag>
-              </td>
-              <td>
-                <el-tag
+          <tr>
+            <td>
+              <el-tag>{{ contabValueObj.second }}</el-tag>
+            </td>
+            <td>
+              <el-tag>{{ contabValueObj.min }}</el-tag>
+            </td>
+            <td>
+              <el-tag>{{ contabValueObj.hour }}</el-tag>
+            </td>
+            <td>
+              <el-tag>{{ contabValueObj.day }}</el-tag>
+            </td>
+            <td>
+              <el-tag>{{ contabValueObj.month }}</el-tag>
+            </td>
+            <td>
+              <el-tag>{{ contabValueObj.week }}</el-tag>
+            </td>
+            <td>
+              <el-tag>{{ contabValueObj.year }}</el-tag>
+            </td>
+            <td>
+              <el-tag
                   style="cursor: pointer"
                   @click="copyText(contabValueString)"
-                  >{{ contabValueString }}
-                </el-tag>
-              </td>
-            </tr>
+              >{{ contabValueString }}
+              </el-tag>
+            </td>
+          </tr>
           </tbody>
         </table>
       </div>
-      <CrontabResult :ex="contabValueString" />
+      <CrontabResult :ex="contabValueString"/>
     </div>
   </div>
 </template>
@@ -468,14 +468,14 @@ defineExpose({
     width: 100%;
     border: 1px solid #ccc;
     font-size: 14px;
+    overflow-x: auto;
 
-    .title {
+    .popup-title {
       display: flex;
       width: 100%;
       justify-content: center;
       align-items: center;
       flex-direction: row;
-      overflow: hidden;
       line-height: 34px;
       background: #f2f2f2;
     }

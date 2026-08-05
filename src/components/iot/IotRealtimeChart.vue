@@ -293,4 +293,65 @@ const icons: Record<string, string> = {
     width: 100%;
     height: 100%;
 }
+
+/* ============ App 端（移动端/窄屏）响应式适配 ============ */
+@media (max-width: 768px) {
+    .iot-realtime-chart {
+        .chart-toolbar {
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 6px 8px;
+
+            .title {
+                font-size: 13px;
+                flex: 1 1 100%;
+            }
+            .toolbar-actions {
+                flex-wrap: wrap;
+                gap: 6px;
+                width: 100%;
+
+                :deep(.el-button) {
+                    padding: 6px 8px;
+                    font-size: 12px;
+                }
+                :deep(.el-tag) {
+                    font-size: 11px;
+                    padding: 0 6px;
+                    height: 22px;
+                }
+            }
+        }
+
+        .config-panel {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 8px;
+            padding: 8px;
+
+            .config-row {
+                width: 100%;
+
+                label {
+                    flex-shrink: 0;
+                    min-width: 70px;
+                }
+
+                /* 覆盖行内 style 的固定宽度 */
+                :deep(.el-input) {
+                    width: 100% !important;
+                }
+                :deep(.el-input-number) {
+                    width: 100% !important;
+                }
+
+                &.series-row {
+                    .series-list {
+                        gap: 8px;
+                    }
+                }
+            }
+        }
+    }
+}
 </style>

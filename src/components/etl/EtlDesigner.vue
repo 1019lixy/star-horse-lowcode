@@ -9,6 +9,7 @@ import EtlNodePanel from "./panels/EtlNodePanel.vue";
 import EtlCanvas from "./panels/EtlCanvas.vue";
 import EtlPropertyPanel from "./panels/EtlPropertyPanel.vue";
 import EtlPreviewDialog from "./dialogs/EtlPreviewDialog.vue";
+import { DesignerMobileShell } from "@/components/shared";
 import type { EtlPipeline, EtlNodeType } from "./types";
 
 const props = defineProps<{
@@ -56,23 +57,30 @@ const icons: Record<string, string> = {
 
 <template>
     <div class="etl-designer">
-        <etl-toolbar
-            :designer="designer"
-            :executor="executor"
-            @preview="previewVisible = true"
-            @save="handleSave"
-        />
-        <el-splitter class="designer-body" direction="horizontal">
-            <el-splitter-panel size="220px" min="160px" max="360px">
-                <etl-node-panel @add="handleAddNode" />
-            </el-splitter-panel>
-            <el-splitter-panel>
+        <DesignerMobileShell
+            :panels="[
+                { key: 'nodes', label: '节点', side: 'left', width: 220, min: 180 },
+                { key: 'props', label: '属性', side: 'right', width: 320, min: 240 },
+            ]"
+        >
+            <template #toolbar>
+                <etl-toolbar
+                    :designer="designer"
+                    :executor="executor"
+                    @preview="previewVisible = true"
+                    @save="handleSave"
+                />
+            </template>
+            <template #canvas>
                 <etl-canvas :designer="designer" @drop-node="handleDropNode" />
-            </el-splitter-panel>
-            <el-splitter-panel size="320px" min="240px" max="520px">
+            </template>
+            <template #panel-nodes>
+                <etl-node-panel @add="handleAddNode" />
+            </template>
+            <template #panel-props>
                 <etl-property-panel :designer="designer" />
-            </el-splitter-panel>
-        </el-splitter>
+            </template>
+        </DesignerMobileShell>
         <div class="log-panel" :class="{ collapsed: logCollapsed }">
             <div class="log-header" @click="logCollapsed = !logCollapsed">
                 <span class="log-title">
@@ -119,12 +127,6 @@ const icons: Record<string, string> = {
     width: 100%;
     background: var(--el-bg-color-page);
     overflow: hidden;
-
-    .designer-body {
-        flex: 1;
-        overflow: hidden;
-        min-height: 0;
-    }
 
     .log-panel {
         height: 160px;

@@ -1,5 +1,5 @@
 <script setup lang="ts" name="StarHorseItem">
-import { computed, inject, ModelRef, onMounted, PropType, ref } from "vue";
+import { computed, inject, isRef, ModelRef, onMounted, PropType, ref } from "vue";
 import {
   compKey,
   dateCompList,
@@ -141,20 +141,24 @@ const compPreps = () => {
   //过滤掉查询表单的信息
   if (props.source != 4 && formFields) {
     let fieldName = props.item.fieldName;
+    // 兼容 formFields 为 ref(shallowRef) 的情况,统一取 .value 操作
+    // formFields.value 可能为 null/undefined(初始化未完成),此时跳过注册
+    const formFieldsArr: any = isRef(formFields) ? formFields.value : formFields;
+    if (!Array.isArray(formFieldsArr)) return;
     //如果数据来源于列表
     if (props.batchName) {
-      let batchFields = formFields[props.batchName];
+      let batchFields = formFieldsArr[props.batchName];
       if (!batchFields) {
-        formFields[props.batchName] = [];
+        formFieldsArr[props.batchName] = [];
       }
-      let row = formFields[props.batchName][dataForm.value["xh"] - 1];
+      let row = formFieldsArr[props.batchName][dataForm.value["xh"] - 1];
       if (!row) {
-        formFields[props.batchName].push([]);
+        formFieldsArr[props.batchName].push([]);
       } else {
         row.push(props.item);
       }
     } else {
-      formFields[fieldName] = props.item;
+      formFieldsArr[fieldName] = props.item;
     }
   }
   //将表单属性存储起来

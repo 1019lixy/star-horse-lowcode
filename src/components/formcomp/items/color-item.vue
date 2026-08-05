@@ -99,6 +99,7 @@ import {
   checkIsDisabled,
   initCompCallEvent,
   prepsFilter,
+  relationEventDispatcher,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import {getDynamicEvents} from "@/api/system";
 import {ItemPreps} from "@/components/types/ItemPreps";
@@ -151,6 +152,18 @@ function handleClear() {
   tempColor.value = "";
   formData.value[props.field.fieldName] = "";
   itemAction("change");
+  // App 端抽屉化选择不经过 el-color-picker 的 v-on(getDynamicEvents),
+  // 需手动触发 dataRelation 联动(PC 端通过 getDynamicEvents 绑定的 change 事件触发)
+  const dataRelation = props.field.preps?.dataRelation;
+  if (dataRelation?.actionName) {
+    relationEventDispatcher(
+      props,
+      dataRelation,
+      "",
+      formData,
+      dataRelation.actionName,
+    );
+  }
   closePicker();
 }
 
@@ -161,6 +174,18 @@ function handleConfirm() {
   }
   formData.value[props.field.fieldName] = color;
   itemAction("change");
+  // App 端抽屉化选择不经过 el-color-picker 的 v-on(getDynamicEvents),
+  // 需手动触发 dataRelation 联动(PC 端通过 getDynamicEvents 绑定的 change 事件触发)
+  const dataRelation = props.field.preps?.dataRelation;
+  if (dataRelation?.actionName) {
+    relationEventDispatcher(
+      props,
+      dataRelation,
+      color,
+      formData,
+      dataRelation.actionName,
+    );
+  }
   closePicker();
 }
 

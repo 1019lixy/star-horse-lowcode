@@ -12,6 +12,7 @@ const DataPickerDemo = defineAsyncComponent(() => import("@/sample/DataPickerDem
 const NormalFormValid = defineAsyncComponent(() => import("@/sample/NormalFormValid.vue"));
 const CodeEditorTest = defineAsyncComponent(() => import("@/sample/CodeEditorTest.vue"));
 const AdvancedComponentsDemo = defineAsyncComponent(() => import("@/sample/AdvancedComponentsDemo.vue"));
+const CronTaskUiDemo = defineAsyncComponent(() => import("@/sample/CronTaskUiDemo.vue"));
 
 const visible = ref<boolean>(false);
 const actName = ref<string>("component");
@@ -102,6 +103,9 @@ onMounted(() => {
       </el-tab-pane>
       <el-tab-pane name="k" label="高级组件库">
         <AdvancedComponentsDemo v-if="actName === 'k'" />
+      </el-tab-pane>
+      <el-tab-pane name="l" label="容器控制验证">
+        <CronTaskUiDemo v-if="actName === 'l'" />
       </el-tab-pane>
     </el-tabs>
   </div>

@@ -210,4 +210,35 @@ export default { components: { Grid, Delete } };
         }
     }
 }
+
+/* ============ App 端（移动端/窄屏）响应式适配 ============ */
+@media (max-width: 768px) {
+    .map-heatmap {
+        .heatmap-controls {
+            gap: 6px;
+            padding: 6px 8px;
+
+            .control-group {
+                flex: 1 1 100%;
+                gap: 4px;
+
+                /* 覆盖行内 style 固定 slider 宽度（140px / 120px） */
+                :deep(.el-slider) {
+                    width: 100% !important;
+                    flex: 1;
+                    min-width: 0;
+                }
+
+                .control-label {
+                    font-size: 11px;
+                }
+
+                :deep(.el-button) {
+                    padding: 6px 8px;
+                    font-size: 11px;
+                }
+            }
+        }
+    }
+}
 </style>

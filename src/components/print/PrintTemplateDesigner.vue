@@ -25,6 +25,7 @@ import PrintLayerPanel from "./panels/PrintLayerPanel.vue";
 import PrintPreviewDialog from "./dialogs/PrintPreviewDialog.vue";
 import PrintDataSourceDialog from "./dialogs/PrintDataSourceDialog.vue";
 import PrintTemplateManagerDialog from "./dialogs/PrintTemplateManagerDialog.vue";
+import { DesignerMobileShell } from "@/components/shared";
 import type { PrintTemplate } from "./types";
 
 const props = defineProps<{
@@ -126,30 +127,40 @@ const savedTemplatesList = computed(() => props.savedTemplates || []);
 
 <template>
     <div class="print-template-designer" :class="{ readonly }">
-        <print-toolbar
-            :designer="designer"
-            :readonly="readonly"
-            @save="handleSave"
-            @preview="handlePreview"
-            @datasource="handleDatasource"
-            @manage="handleManage"
-        />
-        <div class="designer-body">
-            <print-element-panel
-                :readonly="readonly"
-                @add="handleAddElement"
-                @drag-start="() => {}"
-            />
-            <print-canvas :designer="designer"/>
-            <div class="right-panel">
-                <div class="right-top">
-                    <print-property-panel :designer="designer"/>
-                </div>
-                <div class="right-bottom">
-                    <print-layer-panel :designer="designer"/>
-                </div>
-            </div>
-        </div>
+        <DesignerMobileShell
+            :panels="[
+                { key: 'elements', label: '元素', side: 'left', width: 200, min: 160 },
+                { key: 'props', label: '属性', side: 'right', width: 280, min: 220 },
+                { key: 'layers', label: '图层', side: 'right', width: 240 },
+            ]"
+        >
+            <template #toolbar>
+                <print-toolbar
+                    :designer="designer"
+                    :readonly="readonly"
+                    @save="handleSave"
+                    @preview="handlePreview"
+                    @datasource="handleDatasource"
+                    @manage="handleManage"
+                />
+            </template>
+            <template #canvas>
+                <print-canvas :designer="designer"/>
+            </template>
+            <template #panel-elements>
+                <print-element-panel
+                    :readonly="readonly"
+                    @add="handleAddElement"
+                    @drag-start="() => {}"
+                />
+            </template>
+            <template #panel-props>
+                <print-property-panel :designer="designer"/>
+            </template>
+            <template #panel-layers>
+                <print-layer-panel :designer="designer"/>
+            </template>
+        </DesignerMobileShell>
 
         <!-- 预览弹窗 -->
         <print-preview-dialog
@@ -190,32 +201,6 @@ const savedTemplatesList = computed(() => props.savedTemplates || []);
 
     &.readonly {
         opacity: 0.95;
-    }
-
-    .designer-body {
-        flex: 1;
-        display: flex;
-        overflow: hidden;
-    }
-
-    .right-panel {
-        width: 280px;
-        display: flex;
-        flex-direction: column;
-        border-left: 1px solid var(--el-border-color-lighter);
-        flex-shrink: 0;
-
-        .right-top {
-            flex: 1;
-            overflow: hidden;
-            border-bottom: 1px solid var(--el-border-color-lighter);
-        }
-
-        .right-bottom {
-            height: 240px;
-            overflow: hidden;
-            flex-shrink: 0;
-        }
     }
 }
 </style>

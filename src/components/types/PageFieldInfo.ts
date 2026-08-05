@@ -20,6 +20,11 @@ export declare interface TabFieldInfo {
    */
   disabled?: boolean;
   /**
+   * 容器项本身是否显示,false 时该 tab/collapse/card 项不渲染
+   * 与 dataRelation 的 eqVisible/eqHide 策略(controlTarget=container)联动
+   */
+  formVisible?: boolean;
+  /**
    * fieldList 是否是子表单
    */
   subFormFlag: string;

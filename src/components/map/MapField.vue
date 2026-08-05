@@ -329,4 +329,51 @@ onBeforeUnmount(() => {
         }
     }
 }
+
+/* ============ App 端（移动端/窄屏）响应式适配 ============ */
+@media (max-width: 768px) {
+    .map-field {
+        .field-header {
+            gap: 6px;
+
+            .coord-input,
+            .search-input {
+                flex: 1 1 100%;
+                min-width: 0;
+            }
+
+            .coord-label { font-size: 11px; }
+
+            .field-actions {
+                flex: 1 1 100%;
+                justify-content: flex-start;
+
+                :deep(.el-button) {
+                    padding: 6px 8px;
+                    font-size: 12px;
+                }
+            }
+        }
+
+        .search-results {
+            max-height: 200px;
+
+            .search-item {
+                padding: 6px 8px;
+
+                /* 触屏无 :hover，用 :active 兜底高亮 */
+                &:active { background: var(--el-fill-color-light); }
+
+                .poi-name { font-size: 12px; }
+                .poi-address { font-size: 10px; }
+            }
+        }
+
+        /* 覆盖行内 style 固定高度 height: 400px（via props.height） */
+        .field-map {
+            height: 60vh !important;
+            min-height: 300px;
+        }
+    }
+}
 </style>

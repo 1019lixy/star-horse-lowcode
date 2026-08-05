@@ -60,7 +60,7 @@ onMounted(() => {
         style="margin-bottom: 10px"
         :key="compKey(cardItem, key)"
         v-bind="cardItem.preps"
-        v-if="Object.keys(cardItem).length > 0 && !cardItem.preps?.hideCard"
+        v-if="Object.keys(cardItem).length > 0 && cardItem.formVisible !== false && !cardItem.preps?.hideCard"
         :index="checkObject(dataForm, cardItem, key, dataIndex, propPrefix)"
       >
         <template #header>

@@ -6,6 +6,7 @@ import GanttTaskListPanel from "./panels/GanttTaskListPanel.vue";
 import GanttCanvas from "./panels/GanttCanvas.vue";
 import GanttPropertyPanel from "./panels/GanttPropertyPanel.vue";
 import GanttTaskDialog from "./dialogs/GanttTaskDialog.vue";
+import {DesignerMobileShell} from "@/components/shared";
 import type {GanttData} from "./types";
 
 const props = defineProps<{
@@ -126,40 +127,47 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="gantt-chart">
-    <gantt-toolbar
-        :designer="designer"
-        :readonly="readonly"
-        :title="initialGantt.name"
-        @save="handleSave"
-        @preview="handlePreview"
-        @add-task="handleAddTask"
-        @insert-before="handleInsertBefore"
-        @insert-after="handleInsertAfter"
-    />
-    <el-splitter class="designer-body" direction="horizontal">
-      <el-splitter-panel size="350px" min="200px" max="420px">
-        <gantt-task-list-panel
-            ref="taskListRef"
+    <DesignerMobileShell
+      :panels="[
+        { key: 'taskList', label: '任务', side: 'left', width: 350, min: 200 },
+        { key: 'props', label: '属性', side: 'right', width: 280, min: 220 },
+      ]"
+    >
+      <template #toolbar>
+        <gantt-toolbar
             :designer="designer"
             :readonly="readonly"
-            @edit="handleEditTask"
+            :title="initialGantt.name"
+            @save="handleSave"
+            @preview="handlePreview"
+            @add-task="handleAddTask"
+            @insert-before="handleInsertBefore"
+            @insert-after="handleInsertAfter"
         />
-      </el-splitter-panel>
-      <el-splitter-panel>
+      </template>
+      <template #canvas>
         <gantt-canvas
             ref="canvasRef"
             :designer="designer"
             :readonly="readonly"
             @edit="handleEditTask"
         />
-      </el-splitter-panel>
-      <el-splitter-panel size="280px" min="220px" max="480px">
+      </template>
+      <template #panel-taskList>
+        <gantt-task-list-panel
+            ref="taskListRef"
+            :designer="designer"
+            :readonly="readonly"
+            @edit="handleEditTask"
+        />
+      </template>
+      <template #panel-props>
         <gantt-property-panel
             :designer="designer"
             :readonly="readonly"
         />
-      </el-splitter-panel>
-    </el-splitter>
+      </template>
+    </DesignerMobileShell>
 
     <gantt-task-dialog
         v-model:visible="taskDialogVisible"
@@ -178,10 +186,5 @@ onBeforeUnmount(() => {
   width: 100%;
   background: var(--el-bg-color-page);
   overflow: hidden;
-
-  .designer-body {
-    flex: 1;
-    overflow: hidden;
-  }
 }
 </style>

@@ -191,6 +191,17 @@ export interface RelationDetail {
      * 规则引擎配置
      */
     ruleEngineConfig?: RulePreps;
+    /**
+     * 控制目标：field(默认,普通组件) | container(容器项,如tab/collapse/card/splitter子项)
+     * - field: 走原有 controlFieldProps 逻辑,relationFields 为 fieldName
+     * - container: 走容器控制逻辑,relationFields 为容器项的 tabName
+     */
+    controlTarget?: "field" | "container";
+    /**
+     * 当 controlTarget=container 时,指定容器所在 field 的 fieldName(如配置了 tabList 的 field)
+     * 不指定则全局查找所有容器
+     */
+    containerField?: string;
 }
 
 export interface ApiParam {

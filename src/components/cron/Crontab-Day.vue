@@ -1,117 +1,126 @@
 <template>
   <div class="cron-content">
-    <div class="cron-item">
-      <el-radio  v-model="radioValue" :label="1" border>
+    <div :class="{'cron-item-app':isMobile,'cron-item':!isMobile}">
+      <el-radio v-model="radioValue" :label="1" border>
         {{ i18n("cron.day") }}{{ i18n("cron.wildcardsWithL") }}
       </el-radio>
     </div>
-    <div class="cron-item">
-      <el-radio  v-model="radioValue" :label="2" border>
+    <div :class="{'cron-item-app':isMobile,'cron-item':!isMobile}">
+      <el-radio v-model="radioValue" :label="2" border>
         {{ i18n("cron.notSpecified") }}
       </el-radio>
     </div>
-    <div class="cron-item">
-      <el-radio  v-model="radioValue" :label="3" border>
+    <div :class="{'cron-item-app':isMobile,'cron-item':!isMobile}">
+      <el-radio v-model="radioValue" :label="3" border>
         {{ i18n("cron.period") }}
       </el-radio>
+      <div class="item-content" v-show="radioValue==3">
       <span style="margin-left: 10px; margin-right: 5px">{{
-        i18n("cron.from")
-      }}</span>
-      <el-input-number
+          i18n("cron.from")
+        }}</span>
+        <el-input-number
 
-        v-model="cycle01"
-        :min="0"
-        :max="31"
-        controls-position="right"
-      />
-      <span style="margin-left: 10px; margin-right: 5px">{{
-        i18n("cron.to")
-      }}</span>
-      <el-input-number
+            v-model="cycle01"
+            :min="0"
+            :max="31"
+            controls-position="right"
+        />
+        <span style="margin-left: 10px; margin-right: 5px">{{
+            i18n("cron.to")
+          }}</span>
+        <el-input-number
 
-        v-model="cycle02"
-        :min="0"
-        :max="31"
-        controls-position="right"
-      />
-      <span style="margin-left: 10px; margin-right: 5px">{{
-        i18n("cron.day")
-      }}</span>
+            v-model="cycle02"
+            :min="0"
+            :max="31"
+            controls-position="right"
+        />
+        <span style="margin-left: 10px; margin-right: 5px">{{
+            i18n("cron.day")
+          }}</span>
+      </div>
     </div>
-    <div class="cron-item">
-      <el-radio  v-model="radioValue" :label="4" border>
+    <div :class="{'cron-item-app':isMobile,'cron-item':!isMobile}">
+      <el-radio v-model="radioValue" :label="4" border>
         {{ i18n("cron.loop") }}
       </el-radio>
+      <div class="item-content" v-show="radioValue==4">
       <span style="margin-left: 10px; margin-right: 5px">{{
-        i18n("cron.from")
-      }}</span>
-      <el-input-number
+          i18n("cron.from")
+        }}</span>
+        <el-input-number
 
-        v-model="average01"
-        :min="0"
-        :max="31"
-        controls-position="right"
-      />
-      <span style="margin-left: 10px; margin-right: 5px"
+            v-model="average01"
+            :min="0"
+            :max="31"
+            controls-position="right"
+        />
+        <span style="margin-left: 10px; margin-right: 5px"
         >{{ i18n("cron.day") }}{{ i18n("cron.start") }}，{{
-          i18n("cron.every")
-        }}</span
-      >
-      <el-input-number
+            i18n("cron.every")
+          }}</span
+        >
+        <el-input-number
 
-        v-model="average02"
-        :min="0"
-        :max="31"
-        controls-position="right"
-      />
-      <span style="margin-left: 10px; margin-right: 5px"
+            v-model="average02"
+            :min="0"
+            :max="31"
+            controls-position="right"
+        />
+        <span style="margin-left: 10px; margin-right: 5px"
         >{{ i18n("cron.day") }}{{ i18n("cron.executeOnce") }}</span
-      >
+        >
+      </div>
     </div>
-    <div class="cron-item">
-      <el-radio  v-model="radioValue" :label="5" border>
+    <div :class="{'cron-item-app':isMobile,'cron-item':!isMobile}">
+      <el-radio v-model="radioValue" :label="5" border>
         {{ i18n("cron.workDay") }}
       </el-radio>
+      <div class="item-content" v-show="radioValue==5">
       <span style="margin-left: 10px; margin-right: 5px">{{
-        i18n("cron.every")
-      }}</span>
-      <el-input-number
+          i18n("cron.every")
+        }}</span>
+        <el-input-number
 
-        v-model="workday"
-        :min="0"
-        :max="31"
-        controls-position="right"
-      />
-      <span style="margin-left: 10px; margin-right: 5px"
+            v-model="workday"
+            :min="0"
+            :max="31"
+            controls-position="right"
+        />
+        <span style="margin-left: 10px; margin-right: 5px"
         >{{ i18n("cron.day") }}{{ i18n("cron.nearestWorkDay") }}</span
-      >
+        >
+      </div>
     </div>
-    <div class="cron-item">
-      <el-radio  v-model="radioValue" :label="6" border>
+    <div :class="{'cron-item-app':isMobile,'cron-item':!isMobile}">
+      <el-radio v-model="radioValue" :label="6" border>
         {{ i18n("cron.lastDayOfMonth") }}
       </el-radio>
     </div>
-    <div class="cron-item">
-      <el-radio  v-model="radioValue" :label="7" border>
+    <div :class="{'cron-item-app':isMobile,'cron-item':!isMobile}">
+      <el-radio v-model="radioValue" :label="7" border>
         {{ i18n("cron.specify") }}
       </el-radio>
-      <el-checkbox-group  v-model="checkboxList">
-        <el-checkbox
-          class="my-[5px]"
-          :border="true"
-          v-for="item in 31"
-          :key="item"
-          :value="item - 1"
-          :label="item < 11 ? '0' + (item - 1) : item - 1"
-        />
-      </el-checkbox-group>
+      <div class="item-content" v-show="radioValue==7">
+        <el-checkbox-group v-model="checkboxList">
+          <el-checkbox
+              class="my-[5px]"
+              :border="true"
+              v-for="item in 31"
+              :key="item"
+              :value="item - 1"
+              :label="item < 11 ? '0' + (item - 1) : item - 1"
+          />
+        </el-checkbox-group>
+      </div>
     </div>
   </div>
 </template>
 <style lang="scss" scoped></style>
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
-import { i18n } from "@/lang";
+import {computed, ref, watch} from "vue";
+import {i18n} from "@/lang";
+import {isMobile} from "@/api/device";
 
 defineOptions({
   name: "crontab-day",
@@ -125,8 +134,8 @@ let average02 = ref(1);
 
 let checkboxList = ref([]);
 const props = defineProps({
-  check: { type: Function },
-  cron: { type: Object },
+  check: {type: Function},
+  cron: {type: Object},
 });
 
 const emits = defineEmits(["update"]);
@@ -216,24 +225,24 @@ const checkboxChange = () => {
 //   }
 // };
 watch(
-  () => radioValue.value,
-  (_val) => radioChange(),
+    () => radioValue.value,
+    (_val) => radioChange(),
 );
 watch(
-  () => cycleTotal.value,
-  (_val) => cycleChange(),
+    () => cycleTotal.value,
+    (_val) => cycleChange(),
 );
 watch(
-  () => averageTotal.value,
-  (_val) => averageChange(),
+    () => averageTotal.value,
+    (_val) => averageChange(),
 );
 watch(
-  () => workdayCheck.value,
-  (_val) => workdayChange(),
+    () => workdayCheck.value,
+    (_val) => workdayChange(),
 );
 watch(
-  () => checkboxString.value,
-  (_val) => checkboxChange(),
+    () => checkboxString.value,
+    (_val) => checkboxChange(),
 );
 defineExpose({
   cycle01,

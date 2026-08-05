@@ -6,6 +6,7 @@ import DiagramNodePanel from "./panels/DiagramNodePanel.vue";
 import DiagramCanvas from "./panels/DiagramCanvas.vue";
 import DiagramPropertyPanel from "./panels/DiagramPropertyPanel.vue";
 import DiagramPreviewDialog from "./dialogs/DiagramPreviewDialog.vue";
+import { DesignerMobileShell } from "@/components/shared";
 import type { DiagramData, NodeTypePreset } from "./types";
 
 const props = defineProps<{
@@ -52,27 +53,34 @@ const handleSave = () => {
 
 <template>
     <div class="diagram-designer">
-        <diagram-toolbar
-            :designer="designer"
-            :readonly="readonly"
-            @save="handleSave"
-            @preview="previewVisible = true"
-        />
-        <el-splitter class="designer-body" direction="horizontal">
-            <el-splitter-panel size="200px" min="160px" max="360px">
+        <DesignerMobileShell
+            :panels="[
+                { key: 'nodes', label: '节点', side: 'left', width: 200, min: 160 },
+                { key: 'props', label: '属性', side: 'right', width: 280, min: 220 },
+            ]"
+        >
+            <template #toolbar>
+                <diagram-toolbar
+                    :designer="designer"
+                    :readonly="readonly"
+                    @save="handleSave"
+                    @preview="previewVisible = true"
+                />
+            </template>
+            <template #canvas>
+                <diagram-canvas ref="canvasRef" :designer="designer" />
+            </template>
+            <template #panel-nodes>
                 <diagram-node-panel
                     :readonly="readonly"
                     @add="handleAddNode"
                     @drag-start="handleDragStart"
                 />
-            </el-splitter-panel>
-            <el-splitter-panel>
-                <diagram-canvas :designer="designer"/>
-            </el-splitter-panel>
-            <el-splitter-panel size="280px" min="220px" max="480px">
-                <diagram-property-panel :designer="designer"/>
-            </el-splitter-panel>
-        </el-splitter>
+            </template>
+            <template #panel-props>
+                <diagram-property-panel :designer="designer" />
+            </template>
+        </DesignerMobileShell>
 
         <diagram-preview-dialog
             v-model:visible="previewVisible"
@@ -89,10 +97,5 @@ const handleSave = () => {
     width: 100%;
     background: var(--el-bg-color-page);
     overflow: hidden;
-
-    .designer-body {
-        flex: 1;
-        overflow: hidden;
-    }
 }
 </style>

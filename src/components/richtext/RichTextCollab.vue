@@ -5,6 +5,7 @@ import type { IDomEditor, IEditorConfig, IToolbarConfig } from "@wangeditor/edit
 import { i18n } from "@/lang";
 import { useCollabEditor } from "./composables/useCollabEditor";
 import { createCollabUser, TOOLBAR_PRESETS } from "./constants";
+import { isMobile } from "@/api/device";
 
 const props = defineProps<{
     html?: string;
@@ -89,6 +90,7 @@ onBeforeUnmount(() => {
                     v-for="user in editor.onlineUsers"
                     :key="user.id"
                     :content="user.name"
+                    :trigger="isMobile ? 'click' : 'hover'"
                 >
                     <el-avatar
                         :size="24"
@@ -201,6 +203,29 @@ onBeforeUnmount(() => {
         .word-count {
             font-size: 12px;
             color: var(--el-text-color-secondary);
+        }
+    }
+}
+
+/* App 端（窄屏）响应式适配 */
+@media (max-width: 768px) {
+    .rich-text-collab {
+        .toolbar-wrapper {
+            overflow-x: auto;
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
+
+            :deep(.w-e-bar) {
+                flex-wrap: nowrap;
+            }
+
+            :deep(.w-e-bar-item-btn) {
+                padding: 4px 6px;
+            }
+        }
+
+        .footer-bar .word-count {
+            font-size: 11px;
         }
     }
 }

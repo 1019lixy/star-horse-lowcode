@@ -11,6 +11,7 @@ import WordEditor from "./panels/WordEditor.vue";
 import ExcelEditor from "./panels/ExcelEditor.vue";
 import SlideEditor from "./panels/SlideEditor.vue";
 import OfficeExportDialog from "./dialogs/OfficeExportDialog.vue";
+import {DesignerMobileShell} from "@/components/shared";
 import type { OfficeDocType, OfficeDocument } from "./types";
 
 const props = defineProps<{
@@ -153,31 +154,25 @@ const handleRename = (id: string, name: string) => designer.renameDoc(id, name);
 
 <template>
     <div class="office-editor" :style="{ height: containerHeight }">
-        <office-toolbar
-            :can-undo="history.canUndo.value"
-            :can-redo="history.canRedo.value"
-            :active-type="activeType"
-            @new="handleNew"
-            @save="handleSave"
-            @export="handleExport"
-            @undo="handleUndo"
-            @redo="handleRedo"
-            @switch-type="handleSwitchType"
-        />
-        <el-splitter class="office-main" direction="horizontal">
-            <el-splitter-panel size="240px" min="180px" max="380px">
-                <div class="office-left">
-                    <office-document-list
-                        :documents="designer.state.documents"
-                        :current-doc-id="designer.state.currentDocId"
-                        @select="handleSelect"
-                        @create="handleCreate"
-                        @delete="handleDelete"
-                        @rename="handleRename"
-                    />
-                </div>
-            </el-splitter-panel>
-            <el-splitter-panel>
+        <DesignerMobileShell
+            :panels="[
+                { key: 'documents', label: '文档', side: 'left', width: 240, min: 180 },
+            ]"
+        >
+            <template #toolbar>
+                <office-toolbar
+                    :can-undo="history.canUndo.value"
+                    :can-redo="history.canRedo.value"
+                    :active-type="activeType"
+                    @new="handleNew"
+                    @save="handleSave"
+                    @export="handleExport"
+                    @undo="handleUndo"
+                    @redo="handleRedo"
+                    @switch-type="handleSwitchType"
+                />
+            </template>
+            <template #canvas>
                 <div class="office-right">
                     <div v-if="!currentDoc" class="no-doc">
                         {{ i18n("office.message.noDocSelected") }}
@@ -201,8 +196,18 @@ const handleRename = (id: string, name: string) => designer.renameDoc(id, name);
                         @update="handleSlideUpdate"
                     />
                 </div>
-            </el-splitter-panel>
-        </el-splitter>
+            </template>
+            <template #panel-documents>
+                <office-document-list
+                    :documents="designer.state.documents"
+                    :current-doc-id="designer.state.currentDocId"
+                    @select="handleSelect"
+                    @create="handleCreate"
+                    @delete="handleDelete"
+                    @rename="handleRename"
+                />
+            </template>
+        </DesignerMobileShell>
         <!-- 新建文档对话框 -->
         <el-dialog
             v-model="designer.createDialogVisible.value"

@@ -950,13 +950,38 @@ button.el-collapse-item__header {
     display: flex;
     flex-wrap: nowrap;
 
-    span {
-      font-size: 12px;
-      white-space: nowrap;
-    }
+    .item-content {
+      span {
+        font-size: 12px;
+        white-space: nowrap;
+      }
 
-    label {
-      margin-right: 5px;
+      label {
+        margin-right: 5px;
+      }
+    }
+  }
+
+  .cron-item-app {
+    flex-direction: column;
+    align-items: start;
+    display: flex;
+    flex-wrap: nowrap;
+    border: 1px solid var(--star-horse-light-gray);
+    border-radius: 5px;
+    justify-content: center;
+    padding: 5px;
+    margin: 5px;
+
+    .item-content {
+      span {
+        font-size: 12px;
+        white-space: nowrap;
+      }
+
+      label {
+        margin-bottom: 5px;
+      }
     }
   }
 }

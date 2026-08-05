@@ -14,6 +14,7 @@ import {
   checkIsDisabled,
   initCompCallEvent,
   prepsFilter,
+  relationEventDispatcher,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { compKey, getDynamicEvents } from "@/api/system";
 import { warning } from "@/utils/message";
@@ -315,6 +316,18 @@ watch(pickerVisible, async (val) => {
 /** APP 端确认：多选确认 */
 const handleConfirm = () => {
   itemAction("change");
+  // App 端抽屉化选择不经过 el-select 的 v-on(getDynamicEvents),
+  // 需手动触发 dataRelation 联动(PC 端通过 getDynamicEvents 绑定的 change 事件触发)
+  const dataRelation = props.field.preps?.dataRelation;
+  if (dataRelation?.actionName) {
+    relationEventDispatcher(
+      props,
+      dataRelation,
+      formData.value[props.field.fieldName],
+      formData,
+      dataRelation.actionName,
+    );
+  }
   closePicker();
 };
 

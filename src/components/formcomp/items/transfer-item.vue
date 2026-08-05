@@ -40,6 +40,7 @@ import {
   allAction,
   initCompCallEvent,
   prepsFilter,
+  relationEventDispatcher,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { getDynamicEvents } from "@/api/system";
 import { isMobile } from "@/api/device";
@@ -94,6 +95,18 @@ watch(
 // 选择变化回调
 const onSelectChange = () => {
   itemAction("change");
+  // App 端 StarHorseDataSelector 选择不经过 el-transfer 的 v-on(getDynamicEvents),
+  // 需手动触发 dataRelation 联动(PC 端通过 getDynamicEvents 绑定的 change 事件触发)
+  const dataRelation = props.field.preps?.dataRelation;
+  if (dataRelation?.actionName) {
+    relationEventDispatcher(
+      props,
+      dataRelation,
+      pickerData.value,
+      formData,
+      dataRelation.actionName,
+    );
+  }
 };
 const initData = async () => {
   const dataa = await compDynamicData(props.field);

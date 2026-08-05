@@ -7,6 +7,7 @@ import PivotTablePanel from "./panels/PivotTablePanel.vue";
 import PivotChartPanel from "./panels/PivotChartPanel.vue";
 import PivotFieldDialog from "./dialogs/PivotFieldDialog.vue";
 import PivotDataDialog from "./dialogs/PivotDataDialog.vue";
+import { DesignerMobileShell } from "@/components/shared";
 import type { PivotData } from "./types";
 
 const props = defineProps<{
@@ -51,27 +52,33 @@ defineExpose({
 
 <template>
     <div class="pivot-table-component">
-        <pivot-toolbar
-            :designer="designer"
-            :readonly="readonly"
-            @save="handleSave"
-            @preview="dataDialogVisible = true"
-        />
-        <el-splitter class="designer-body" direction="horizontal">
-            <el-splitter-panel size="260px" min="200px" max="400px">
+        <DesignerMobileShell
+            :panels="[
+                { key: 'fields', label: '字段', side: 'left', width: 260, min: 200 },
+            ]"
+        >
+            <template #toolbar>
+                <pivot-toolbar
+                    :designer="designer"
+                    :readonly="readonly"
+                    @save="handleSave"
+                    @preview="dataDialogVisible = true"
+                />
+            </template>
+            <template #canvas>
+                <div class="content-area">
+                    <pivot-chart-panel v-if="designer.showChart" :designer="designer"/>
+                    <pivot-table-panel v-else :designer="designer"/>
+                </div>
+            </template>
+            <template #panel-fields>
                 <pivot-field-panel
                     :designer="designer"
                     :readonly="readonly"
                     @edit-field="handleEditField"
                 />
-            </el-splitter-panel>
-            <el-splitter-panel>
-                <div class="content-area">
-                    <pivot-chart-panel v-if="designer.showChart" :designer="designer"/>
-                    <pivot-table-panel v-else :designer="designer"/>
-                </div>
-            </el-splitter-panel>
-        </el-splitter>
+            </template>
+        </DesignerMobileShell>
 
         <pivot-field-dialog
             v-model:visible="fieldDialogVisible"
@@ -94,15 +101,10 @@ defineExpose({
     background: var(--el-bg-color-page);
     overflow: hidden;
 
-    .designer-body {
-        flex: 1;
+    .content-area {
+        width: 100%;
+        height: 100%;
         overflow: hidden;
-
-        .content-area {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-        }
     }
 }
 </style>

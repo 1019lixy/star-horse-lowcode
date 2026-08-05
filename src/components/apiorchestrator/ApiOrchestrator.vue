@@ -1,6 +1,7 @@
 <script setup lang="ts" name="ApiOrchestrator">
 import { ElMessage } from "element-plus";
 import { i18n } from "@/lang";
+import { DesignerMobileShell } from "@/components/shared";
 import { useApiOrchestrator } from "./composables/useApiOrchestrator";
 import { SAMPLE_CHAIN, SAMPLE_ENDPOINTS, SAMPLE_MOCKS } from "./constants";
 import ApiToolbar from "./panels/ApiToolbar.vue";
@@ -40,18 +41,26 @@ const handleSave = () => {
 
 <template>
     <div class="api-orchestrator">
-        <api-toolbar :state="state" @save="handleSave" />
-        <el-splitter class="designer-body" direction="horizontal">
-            <el-splitter-panel size="240px" min="180px" max="380px">
-                <api-endpoint-panel :state="state" />
-            </el-splitter-panel>
-            <el-splitter-panel>
+        <DesignerMobileShell
+            :panels="[
+                { key: 'endpoints', label: '接口', side: 'left', width: 240, min: 200 },
+                { key: 'right', label: '详情', side: 'right', width: 400, min: 300 },
+            ]"
+            canvas-label="编辑"
+        >
+            <template #toolbar>
+                <api-toolbar :state="state" @save="handleSave" />
+            </template>
+            <template #canvas>
                 <api-chain-panel :state="state" />
-            </el-splitter-panel>
-            <el-splitter-panel size="400px" min="300px" max="600px">
+            </template>
+            <template #panel-endpoints>
+                <api-endpoint-panel :state="state" />
+            </template>
+            <template #panel-right>
                 <api-right-panel :state="state" />
-            </el-splitter-panel>
-        </el-splitter>
+            </template>
+        </DesignerMobileShell>
     </div>
 </template>
 
@@ -63,10 +72,5 @@ const handleSave = () => {
     width: 100%;
     background: var(--el-bg-color-page);
     overflow: hidden;
-
-    .designer-body {
-        flex: 1;
-        overflow: hidden;
-        min-height: 0;
-    }
-}</style>
+}
+</style>

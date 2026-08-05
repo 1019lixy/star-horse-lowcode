@@ -97,6 +97,7 @@ import {
   checkIsDisabled,
   initCompCallEvent,
   prepsFilter,
+  relationEventDispatcher,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { ItemPreps } from "@/components/types/ItemPreps";
 import { i18n } from "@/lang";
@@ -209,6 +210,18 @@ function selectSearchResult(item: FlatNode) {
   cachedLabels.value = item.pathLabels.join(" / ");
   formData.value[props.field.fieldName] = [...item.pathValues];
   itemAction("change");
+  // App 端抽屉化选择不经过 el-cascader 的 v-on(getDynamicEvents),
+  // 需手动触发 dataRelation 联动(PC 端通过 getDynamicEvents 绑定的 change 事件触发)
+  const dataRelation = props.field.preps?.dataRelation;
+  if (dataRelation?.actionName) {
+    relationEventDispatcher(
+      props,
+      dataRelation,
+      [...item.pathValues],
+      formData,
+      dataRelation.actionName,
+    );
+  }
   searchKeyword.value = "";
   closePicker();
 }
@@ -372,6 +385,18 @@ function handleConfirm() {
     // 缓存 label 用于显示
     cachedLabels.value = labels.length > 0 ? labels.join(" / ") : "";
     itemAction("change");
+    // App 端抽屉化选择不经过 el-cascader 的 v-on(getDynamicEvents),
+    // 需手动触发 dataRelation 联动(PC 端通过 getDynamicEvents 绑定的 change 事件触发)
+    const dataRelation = props.field.preps?.dataRelation;
+    if (dataRelation?.actionName) {
+      relationEventDispatcher(
+        props,
+        dataRelation,
+        [...values],
+        formData,
+        dataRelation.actionName,
+      );
+    }
   }
   closePicker();
 }

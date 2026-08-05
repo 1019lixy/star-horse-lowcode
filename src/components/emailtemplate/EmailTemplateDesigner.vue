@@ -4,7 +4,7 @@ import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 import type { IDomEditor } from "@wangeditor/editor";
 import { ElMessage } from "element-plus";
 import { i18n } from "@/lang";
-import { ShSvgIcon, insertVariableBadge } from "@/components/shared";
+import { ShSvgIcon, insertVariableBadge, DesignerMobileShell } from "@/components/shared";
 import { useEmailTemplateDesigner } from "./composables/useEmailTemplateDesigner";
 import EmailVariablePanel from "./panels/EmailVariablePanel.vue";
 import EmailAttachmentPanel from "./panels/EmailAttachmentPanel.vue";
@@ -85,68 +85,65 @@ const handleSave = () => {
 
 <template>
     <div class="email-template-designer">
-        <div class="designer-toolbar">
-            <div class="left-group">
-                <el-input
-                    v-model="designer.state.name"
+        <DesignerMobileShell
+            :panels="[
+                { key: 'variables', label: '变量', side: 'left', width: 220, min: 180 },
+                { key: 'attachments', label: '附件', side: 'right', width: 220, min: 180 },
+            ]"
+        >
+            <template #toolbar>
+                <div class="designer-toolbar">
+                    <div class="left-group">
+                        <el-input
+                            v-model="designer.state.name"
 
-                    style="width: 200px"
-                    :placeholder="i18n('emailtemplate.template.namePlaceholder')"
-                />
-                <el-select
-                    v-model="designer.state.category"
+                            style="width: 200px"
+                            :placeholder="i18n('emailtemplate.template.namePlaceholder')"
+                        />
+                        <el-select
+                            v-model="designer.state.category"
 
-                    style="width: 140px"
-                    :placeholder="i18n('emailtemplate.template.category')"
-                >
-                    <el-option
-                        v-for="opt in EMAIL_CATEGORY_PRESETS"
-                        :key="opt.value"
-                        :label="opt.label"
-                        :value="opt.value"
-                    />
-                </el-select>
-            </div>
-            <div class="right-group">
-                <el-button @click="previewVisible = true">
-                    <ShSvgIcon name="preview" size="14px" />
-                    {{ i18n("emailtemplate.btn.preview") }}
-                </el-button>
-                <el-button type="primary" :disabled="readonly" @click="handleSave">
-                    <ShSvgIcon name="save" size="14px" />
-                    {{ i18n("dialog.save") }}
-                </el-button>
-            </div>
-        </div>
-
-        <div class="designer-meta">
-            <el-form label-width="80px"  :disabled="readonly">
-                <el-form-item :label="i18n('emailtemplate.template.subject')">
-                    <el-input v-model="designer.state.subject"/>
-                </el-form-item>
-                <el-form-item :label="i18n('emailtemplate.template.fromName')">
-                    <el-input v-model="designer.state.fromName" style="width: 240px"/>
-                </el-form-item>
-                <el-form-item :label="i18n('emailtemplate.template.cc')">
-                    <el-input v-model="designer.state.cc" style="width: 240px"/>
-                </el-form-item>
-                <el-form-item :label="i18n('emailtemplate.template.bcc')">
-                    <el-input v-model="designer.state.bcc" style="width: 240px"/>
-                </el-form-item>
-            </el-form>
-        </div>
-
-        <el-splitter class="designer-body" direction="horizontal">
-            <el-splitter-panel size="220px" min="160px" max="360px">
-                <email-variable-panel
-                    :designer="designer"
-                    :readonly="readonly"
-                    @insert="handleInsertVariable"
-                    @edit="handleEditVariable"
-                    @add="handleAddVariable"
-                />
-            </el-splitter-panel>
-            <el-splitter-panel>
+                            style="width: 140px"
+                            :placeholder="i18n('emailtemplate.template.category')"
+                        >
+                            <el-option
+                                v-for="opt in EMAIL_CATEGORY_PRESETS"
+                                :key="opt.value"
+                                :label="opt.label"
+                                :value="opt.value"
+                            />
+                        </el-select>
+                    </div>
+                    <div class="right-group">
+                        <el-button @click="previewVisible = true">
+                            <ShSvgIcon name="preview" size="14px" />
+                            {{ i18n("emailtemplate.btn.preview") }}
+                        </el-button>
+                        <el-button type="primary" :disabled="readonly" @click="handleSave">
+                            <ShSvgIcon name="save" size="14px" />
+                            {{ i18n("dialog.save") }}
+                        </el-button>
+                    </div>
+                </div>
+            </template>
+            <template #canvas>
+              <div class="canvas-inner">
+                <div class="designer-meta">
+                    <el-form label-width="80px"  :disabled="readonly">
+                        <el-form-item :label="i18n('emailtemplate.template.subject')">
+                            <el-input v-model="designer.state.subject"/>
+                        </el-form-item>
+                        <el-form-item :label="i18n('emailtemplate.template.fromName')">
+                            <el-input v-model="designer.state.fromName" style="width: 240px"/>
+                        </el-form-item>
+                        <el-form-item :label="i18n('emailtemplate.template.cc')">
+                            <el-input v-model="designer.state.cc" style="width: 240px"/>
+                        </el-form-item>
+                        <el-form-item :label="i18n('emailtemplate.template.bcc')">
+                            <el-input v-model="designer.state.bcc" style="width: 240px"/>
+                        </el-form-item>
+                    </el-form>
+                </div>
                 <div class="editor-area">
                     <div class="editor-toolbar-wrap" v-if="!readonly">
                         <Toolbar
@@ -191,15 +188,25 @@ const handleSave = () => {
                         @onCreated="handleEditorCreated"
                     />
                 </div>
-            </el-splitter-panel>
-            <el-splitter-panel size="220px" min="160px" max="360px">
+              </div>
+            </template>
+            <template #panel-variables>
+                <email-variable-panel
+                    :designer="designer"
+                    :readonly="readonly"
+                    @insert="handleInsertVariable"
+                    @edit="handleEditVariable"
+                    @add="handleAddVariable"
+                />
+            </template>
+            <template #panel-attachments>
                 <email-attachment-panel
                     :designer="designer"
                     :readonly="readonly"
                     @add="handleAddAttachment"
                 />
-            </el-splitter-panel>
-        </el-splitter>
+            </template>
+        </DesignerMobileShell>
 
         <email-variable-dialog
             v-model:visible="varDialogVisible"
@@ -263,42 +270,46 @@ const handleSave = () => {
         }
     }
 
-    .designer-body {
-        flex: 1;
+    .canvas-inner {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
         overflow: hidden;
+    }
 
-        .editor-area {
-            width: 100%;
-            height: 100%;
+    .editor-area {
+        flex: 1;
+        min-height: 0;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        background: var(--el-bg-color);
+
+        .editor-toolbar-wrap {
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            border-bottom: 1px solid var(--el-border-color-lighter);
             background: var(--el-bg-color);
-
-            .editor-toolbar-wrap {
+            position: relative;
+            z-index: 100;
+            .email-toolbar {
+                flex: 1;
+                border-bottom: none;
+                overflow-x: auto;
+            }
+            .var-btn {
+                margin: 0 4px;
+                flex-shrink: 0;
                 display: flex;
                 align-items: center;
-                border-bottom: 1px solid var(--el-border-color-lighter);
-                background: var(--el-bg-color);
-                position: relative;
-                z-index: 100;
-                .email-toolbar {
-                    flex: 1;
-                    border-bottom: none;
-                    overflow-x: auto;
-                }
-                .var-btn {
-                    margin: 0 4px;
-                    flex-shrink: 0;
-                    display: flex;
-                    align-items: center;
-                    gap: 4px;
-                }
+                gap: 4px;
             }
+        }
 
-            .email-editor {
-                flex: 1;
-                overflow-y: auto;
-            }
+        .email-editor {
+            flex: 1;
+            overflow-y: auto;
         }
     }
 }

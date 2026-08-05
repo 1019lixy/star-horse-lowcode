@@ -368,4 +368,56 @@ export default {
         }
     }
 }
+
+/* ============ App 端（移动端/窄屏）响应式适配 ============ */
+@media (max-width: 768px) {
+    .iot-topology {
+        .topology-header {
+            padding: 6px 8px;
+            gap: 6px;
+
+            .title { font-size: 13px; }
+            .legend {
+                gap: 8px;
+                font-size: 11px;
+
+                .legend-item .dot {
+                    width: 6px;
+                    height: 6px;
+                }
+            }
+        }
+
+        .topology-canvas {
+            /* 触屏横向/纵向滚动 */
+            overflow: auto;
+            -webkit-overflow-scrolling: touch;
+
+            .topology-svg {
+                /* 让 SVG 可以超出容器触发滚动 */
+                min-width: 0;
+                max-width: none;
+            }
+
+            .node-group {
+                /* 节点稍小，便于触屏点击 */
+                .node-name { font-size: 11px; }
+                .node-meta { font-size: 9px; }
+            }
+        }
+
+        .hover-card {
+            /* 窄屏下移到左下角避免遮挡 */
+            top: auto;
+            bottom: 8px;
+            right: 8px;
+            left: 8px;
+            min-width: 0;
+            max-width: none;
+            font-size: 11px;
+
+            .hc-title { font-size: 12px; }
+        }
+    }
+}
 </style>

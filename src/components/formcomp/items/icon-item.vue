@@ -181,6 +181,7 @@ import { nextTick, onMounted, ref, shallowRef, unref, watch } from "vue";
 import {
   checkIsDisabled,
   initCompCallEvent,
+  relationEventDispatcher,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
@@ -211,6 +212,18 @@ const assignIcon = (iconName: string) => {
   formData.value[props.field.fieldName] = iconName;
   unref(popoverRef)?.popperRef?.delayHide?.();
   itemAction("blur");
+  // App 端抽屉化选择不经过 el-select 的 v-on(getDynamicEvents),
+  // 需手动触发 dataRelation 联动(PC 端通过 getDynamicEvents 绑定的 change 事件触发)
+  const dataRelation = props.field.preps?.dataRelation;
+  if (dataRelation?.actionName) {
+    relationEventDispatcher(
+      props,
+      dataRelation,
+      iconName,
+      formData,
+      dataRelation.actionName,
+    );
+  }
   if (isSeparate.value) {
     closePicker();
   }

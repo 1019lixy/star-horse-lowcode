@@ -155,6 +155,7 @@ import {
   checkIsDisabled,
   initCompCallEvent,
   prepsFilter,
+  relationEventDispatcher,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { ItemPreps } from "@/components/types/ItemPreps";
 import { SearchParams } from "@/components/types/Params";
@@ -343,6 +344,18 @@ const displayText = computed(() => {
 const handleConfirm = () => {
   formData.value[props.field.fieldName] = tempValue.value;
   itemAction("change");
+  // App 端抽屉化选择不经过 el-select 的 v-on(getDynamicEvents),
+  // 需手动触发 dataRelation 联动(PC 端通过 getDynamicEvents 绑定的 change 事件触发)
+  const dataRelation = props.field.preps?.dataRelation;
+  if (dataRelation?.actionName) {
+    relationEventDispatcher(
+      props,
+      dataRelation,
+      tempValue.value,
+      formData,
+      dataRelation.actionName,
+    );
+  }
   closePicker();
 };
 
@@ -410,6 +423,8 @@ onMounted(() => {
   props.field.preps["filterable"] = true;
   props.field.preps["collapseTags"] = true;
   initData();
+  // eslint-disable-next-line no-console
+  console.log("[select-item.onMounted] field=" + props.field?.fieldName + " hasDataRelation=" + !!props.field?.preps?.dataRelation + " isSeparate=" + isSeparate);
   nextTick(() => {
     initCompCallEvent(props, emits, formData);
   });

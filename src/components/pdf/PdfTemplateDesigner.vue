@@ -1,5 +1,6 @@
 <script setup lang="ts" name="PdfTemplateDesigner">
 import { ref } from "vue";
+import { DesignerMobileShell } from "@/components/shared";
 import { usePdfDesigner } from "./composables/usePdfDesigner";
 import PdfToolbar from "./panels/PdfToolbar.vue";
 import PdfElementPanel from "./panels/PdfElementPanel.vue";
@@ -33,23 +34,30 @@ const handleSave = () => {
 
 <template>
     <div class="pdf-template-designer">
-        <pdf-toolbar
-            :designer="designer"
-            :readonly="readonly"
-            @save="handleSave"
-            @preview="previewVisible = true"
-        />
-        <el-splitter class="designer-body" direction="horizontal">
-            <el-splitter-panel size="220px" min="160px" max="360px">
-                <pdf-element-panel :designer="designer" :readonly="readonly"/>
-            </el-splitter-panel>
-            <el-splitter-panel>
+        <DesignerMobileShell
+            :panels="[
+                { key: 'elements', label: '元素', side: 'left', width: 220, min: 180 },
+                { key: 'props', label: '属性', side: 'right', width: 280, min: 220 },
+            ]"
+        >
+            <template #toolbar>
+                <pdf-toolbar
+                    :designer="designer"
+                    :readonly="readonly"
+                    @save="handleSave"
+                    @preview="previewVisible = true"
+                />
+            </template>
+            <template #canvas>
                 <pdf-canvas :designer="designer" :readonly="readonly"/>
-            </el-splitter-panel>
-            <el-splitter-panel size="280px" min="220px" max="480px">
+            </template>
+            <template #panel-elements>
+                <pdf-element-panel :designer="designer" :readonly="readonly"/>
+            </template>
+            <template #panel-props>
                 <pdf-property-panel :designer="designer" :readonly="readonly"/>
-            </el-splitter-panel>
-        </el-splitter>
+            </template>
+        </DesignerMobileShell>
 
         <pdf-preview-dialog
             v-model:visible="previewVisible"
@@ -66,10 +74,5 @@ const handleSave = () => {
     width: 100%;
     background: var(--el-bg-color-page);
     overflow: hidden;
-
-    .designer-body {
-        flex: 1;
-        overflow: hidden;
-    }
 }
 </style>

@@ -320,4 +320,75 @@ export default {components: {VideoPlay, VideoPause, SwitchButton}};
     }
   }
 }
+
+/* ============ App 端（移动端/窄屏）响应式适配 ============ */
+@media (max-width: 768px) {
+  .map-track-player {
+    .player-canvas {
+      /* 窄屏下高度适当减小 */
+      min-height: 200px;
+    }
+
+    .player-controls {
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 6px 8px;
+
+      .left-controls,
+      .center-controls,
+      .right-controls {
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .left-controls {
+        flex: 1 1 100%;
+        justify-content: flex-start;
+
+        :deep(.el-button) {
+          padding: 6px 8px;
+          font-size: 12px;
+        }
+        /* 覆盖行内 180px !important 宽度 */
+        :deep(.el-select) {
+          width: calc(100% - 12px) !important;
+          min-width: 0 !important;
+          flex: 1 1 auto;
+        }
+      }
+
+      .center-controls {
+        /* 去掉 min-width 让其可收缩 */
+        flex: 1 1 100%;
+        min-width: 0;
+
+        :deep(.el-slider) {
+          flex: 1;
+          min-width: 0;
+          margin: 0 6px !important;
+        }
+
+        .control-label { font-size: 11px; }
+        .progress-text {
+          font-size: 11px;
+          min-width: 50px;
+        }
+      }
+
+      .right-controls {
+        flex: 1 1 100%;
+        justify-content: flex-start;
+
+        /* 覆盖行内 90px !important 宽度 */
+        :deep(.el-select) {
+          width: 90px !important;
+          min-width: 0;
+        }
+
+        .control-label { font-size: 11px; }
+        .current-time { font-size: 11px; }
+      }
+    }
+  }
+}
 </style>

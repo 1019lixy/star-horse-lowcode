@@ -56,7 +56,7 @@
 </template>
 <script setup lang="ts">
 import { computed, nextTick, onBeforeMount, onMounted, ref, watch } from "vue";
-import { allAction, checkIsDisabled, initCompCallEvent, prepsFilter } from "@/components/formcomp/utils/ItemRelationEventUtils";
+import { allAction, checkIsDisabled, initCompCallEvent, prepsFilter, relationEventDispatcher } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { getDynamicEvents } from "@/api/system";
 import { i18n } from "@/lang";
 import { ItemPreps } from "@/components/types/ItemPreps";
@@ -112,6 +112,18 @@ const handleConfirm = () => {
   const val = wheelPickerRef.value?.getFormattedValue?.();
   if (val !== undefined) formData.value[props.field.fieldName] = val;
   itemAction("change");
+  // App 端抽屉化选择不经过 el-time-picker 的 v-on(getDynamicEvents),
+  // 需手动触发 dataRelation 联动(PC 端通过 getDynamicEvents 绑定的 change 事件触发)
+  const dataRelation = props.field.preps?.dataRelation;
+  if (dataRelation?.actionName) {
+    relationEventDispatcher(
+      props,
+      dataRelation,
+      val,
+      formData,
+      dataRelation.actionName,
+    );
+  }
   closePicker();
 };
 

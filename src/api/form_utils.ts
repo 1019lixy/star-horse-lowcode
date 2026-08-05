@@ -471,7 +471,57 @@ function checkContainerType(data: FieldInfo) {
   }
 }
 
-function analysisComps(fieldList: any) {
+/**
+ * App 端拆解上下文
+ * containerRelationNames: 配了容器联动(controlTarget=container)的 tabName 集合
+ *   这些容器在 App 端拆解时需保留"影子"对象,供 findContainerItems 定位实现显隐控制
+ */
+interface AppConvertCtx {
+  containerRelationNames: Set<string>;
+}
+
+/**
+ * 扫描 fieldList,收集所有 dataRelation 中 controlTarget=container 的 relationFields(tabName)
+ * 用于判断哪些容器在 App 端拆解后仍需保留以支持容器级联动控制
+ */
+const collectContainerRelationNames = (fieldList: any): Set<string> => {
+  const names = new Set<string>();
+  if (!Array.isArray(fieldList)) return names;
+  const scan = (fields: any[]) => {
+    if (!Array.isArray(fields)) return;
+    for (const field of fields) {
+      if (Array.isArray(field)) {
+        scan(field);
+        continue;
+      }
+      if (field == null || typeof field !== "object") continue;
+      const relation = field?.preps?.dataRelation;
+      if (relation?.relationDetails && Array.isArray(relation.relationDetails)) {
+        for (const detail of relation.relationDetails) {
+          if (detail?.controlTarget === "container") {
+            const rf = detail.relationFields;
+            const arr = Array.isArray(rf) ? rf : rf ? [rf] : [];
+            arr.forEach((n: string) => names.add(n));
+          }
+        }
+      }
+      if (Array.isArray(field.children)) scan(field.children);
+      for (const key of ["tabList", "cardList", "collapseList", "splitterList", "dytableList"]) {
+        const list = (field as any)[key];
+        if (Array.isArray(list)) {
+          for (const item of list) {
+            if (item?.fieldList) scan(item.fieldList);
+          }
+        }
+      }
+    }
+  };
+  scan(fieldList);
+  return names;
+};
+
+function analysisComps(fieldList: any, ctx?: AppConvertCtx) {
+  const _ctx = ctx || { containerRelationNames: collectContainerRelationNames(fieldList) };
   const tempFieldList: any[] = [];
   if (!Array.isArray(fieldList)) {
     return fieldList ? [fieldList] : [];
@@ -484,7 +534,7 @@ function analysisComps(fieldList: any) {
     if (filed.dytableList) {
       processDytable(filed.dytableList, tempFieldList);
     } else if (commonContainer) {
-      processContainer(filed, commonContainer, tempFieldList);
+      processContainer(filed, commonContainer, tempFieldList, _ctx);
     } else if (filed.batchFieldList) {
       processBatchField(filed, tempFieldList);
     } else if (filed.appList) {
@@ -516,12 +566,12 @@ function processDytable(dytableList: any[], result: any[]) {
   }
 }
 
-function processContainer(filed: any, commonContainer: any, result: any[]) {
+function processContainer(filed: any, commonContainer: any, result: any[], ctx: AppConvertCtx) {
   const dataList = commonContainer.dataList;
   for (let j = 0; j < dataList.length; j++) {
     const container = dataList[j];
     const subForm = container.subFormFlag == "Y";
-    const commonFieldList = analysisComps(container.fieldList);
+    const commonFieldList = analysisComps(container.fieldList, ctx);
 
     if (subForm) {
       const newItem = {
@@ -531,7 +581,22 @@ function processContainer(filed: any, commonContainer: any, result: any[]) {
       };
       result.push({ appList: [newItem] });
     } else {
+      // 非子表单容器:内部字段展开到同级
       result.push(...commonFieldList);
+      // 如果该容器被配了容器联动(controlTarget=container),
+      // 保留一个"影子"容器对象(只保留控制必要属性 + 字段引用),供 findContainerItems 定位
+      // fieldList 引用 commonFieldList(共享同一组字段对象,不复制),供 syncContainerVisibility 同步 __containerHidden
+      // 不用 ...container 全量浅拷贝,避免持有不必要的属性占用内存
+      if (container.tabName && ctx.containerRelationNames.has(container.tabName)) {
+        result.push({
+          tabName: container.tabName,
+          title: container.title,
+          formVisible: container.formVisible,
+          disabled: container.disabled,
+          fieldList: commonFieldList,
+          __appContainer: true,
+        });
+      }
     }
   }
 }

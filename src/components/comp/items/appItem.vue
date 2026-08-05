@@ -57,61 +57,64 @@ onMounted(() => {
 
 <template>
   <template v-if="item.appList?.length > 0">
-    <template v-for="(appItem, key) in item.appList">
-      <div
-        class="group-label"
-        v-if="
-          appItem.staticData === true &&
-          ['app', 'all'].includes(appItem.visiblePlatform)
-        "
-      >
-        <div class="group-label-text" v-html="appItem.preps?.textContent"></div>
-      </div>
-      <template v-else>
-        <template v-if="appItem.title">
-          <star-horse-item
-            :primaryKey="primaryKey"
-            :compSize="compSize"
-            v-model:dataForm="dataForm"
-            :commonFormat="commonFormat"
-            :item="loadItem(appItem)"
-            :dataIndex="dataIndex"
+    <template v-for="(appItem, key) in item.appList" :key="key">
+      <!-- 跳过容器联动影子项(__appContainer)和被隐藏字段(__containerHidden) -->
+      <template v-if="!appItem?.__appContainer && !appItem?.__containerHidden">
+        <div
+          class="group-label"
+          v-if="
+            appItem.staticData === true &&
+            ['app', 'all'].includes(appItem.visiblePlatform)
+          "
+        >
+          <div class="group-label-text" v-html="appItem.preps?.textContent"></div>
+        </div>
+        <template v-else>
+          <template v-if="appItem.title">
+            <star-horse-item
+              :primaryKey="primaryKey"
+              :compSize="compSize"
+              v-model:dataForm="dataForm"
+              :commonFormat="commonFormat"
+              :item="loadItem(appItem)"
+              :dataIndex="dataIndex"
+              :source="source"
+            />
+          </template>
+          <star-horse-form-item
             :source="source"
+            :compUrl="compUrl"
+            :compSize="compSize"
+            :commonFormat="commonFormat"
+            :dataForm="
+              getFormData(
+                appItem,
+                dataForm,
+                propPrefix,
+                dataIndex,
+                item.groupData ? key : 0,
+              )
+            "
+            :dataIndex="
+              getDataIndex(
+                appItem,
+                propPrefix,
+                dataIndex,
+                item.groupData ? key : 0,
+              )
+            "
+            :propPrefix="
+              getPrefix(appItem, propPrefix, dataIndex, item.groupData ? key : 0)
+            "
+            :objectName="appItem.objectName"
+            @addRow="addRow"
+            @removeRow="removeRow"
+            :fieldList="createFieldList(appItem)"
+            :rules="rules"
+            :subFormFlag="appItem.subFormFlag"
+            :primaryKey="primaryKey"
           />
         </template>
-        <star-horse-form-item
-          :source="source"
-          :compUrl="compUrl"
-          :compSize="compSize"
-          :commonFormat="commonFormat"
-          :dataForm="
-            getFormData(
-              appItem,
-              dataForm,
-              propPrefix,
-              dataIndex,
-              item.groupData ? key : 0,
-            )
-          "
-          :dataIndex="
-            getDataIndex(
-              appItem,
-              propPrefix,
-              dataIndex,
-              item.groupData ? key : 0,
-            )
-          "
-          :propPrefix="
-            getPrefix(appItem, propPrefix, dataIndex, item.groupData ? key : 0)
-          "
-          :objectName="appItem.objectName"
-          @addRow="addRow"
-          @removeRow="removeRow"
-          :fieldList="createFieldList(appItem)"
-          :rules="rules"
-          :subFormFlag="appItem.subFormFlag"
-          :primaryKey="primaryKey"
-        />
       </template>
     </template>
   </template>

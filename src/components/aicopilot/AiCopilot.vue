@@ -7,6 +7,7 @@
 import { computed, ref } from "vue";
 import { i18n } from "@/lang";
 import { ElMessage, ElMessageBox } from "element-plus";
+import { DesignerMobileShell } from "@/components/shared";
 import AiToolbar from "./panels/AiToolbar.vue";
 import AiConversationList from "./panels/AiConversationList.vue";
 import AiChatPanel from "./panels/AiChatPanel.vue";
@@ -115,29 +116,23 @@ void computed;
 
 <template>
     <div class="ai-copilot">
-        <ai-toolbar
-            :history-visible="historyVisible"
-            @new-conversation="handleNewConversation"
-            @toggle-history="handleToggleHistory"
-            @clear="handleClear"
-            @open-settings="settingsVisible = true"
-        />
-
-        <div class="copilot-body">
-            <!-- 左侧会话列表 -->
-            <div v-if="historyVisible" class="conv-sidebar">
-                <ai-conversation-list
-                    :conversations="copilot.conversations.value"
-                    :current-id="copilot.currentConversationId.value"
-                    @new="handleNewConversation"
-                    @select="copilot.loadConversation"
-                    @delete="copilot.deleteConversation"
-                    @rename="copilot.renameConversation"
+        <DesignerMobileShell
+            :panels="[
+                { key: 'conversations', label: '会话', side: 'left', width: 240, min: 200 },
+                { key: 'context', label: '上下文', side: 'right', width: 280, min: 220 },
+            ]"
+            canvas-label="聊天"
+        >
+            <template #toolbar>
+                <ai-toolbar
+                    :history-visible="historyVisible"
+                    @new-conversation="handleNewConversation"
+                    @toggle-history="handleToggleHistory"
+                    @clear="handleClear"
+                    @open-settings="settingsVisible = true"
                 />
-            </div>
-
-            <!-- 中央对话面板 -->
-            <div class="chat-area">
+            </template>
+            <template #canvas>
                 <ai-chat-panel
                     :messages="copilot.messages.value"
                     :is-generating="copilot.isGenerating.value"
@@ -145,18 +140,27 @@ void computed;
                     @stop="handleStop"
                     @apply-action="handleApplyMessageAction"
                 />
-            </div>
-
-            <!-- 右侧上下文面板 -->
-            <div class="context-sidebar">
+            </template>
+            <template #panel-conversations>
+                <ai-conversation-list
+                    v-if="historyVisible"
+                    :conversations="copilot.conversations.value"
+                    :current-id="copilot.currentConversationId.value"
+                    @new="handleNewConversation"
+                    @select="copilot.loadConversation"
+                    @delete="copilot.deleteConversation"
+                    @rename="copilot.renameConversation"
+                />
+            </template>
+            <template #panel-context>
                 <ai-context-panel
                     :context="copilot.context.value"
                     :actions="copilot.pendingActions.value"
                     @apply-action="handleApplyActionById"
                     @reject-action="handleRejectActionById"
                 />
-            </div>
-        </div>
+            </template>
+        </DesignerMobileShell>
 
         <ai-settings-dialog
             v-model:visible="settingsVisible"
@@ -174,31 +178,5 @@ void computed;
     width: 100%;
     background: var(--el-bg-color-page);
     overflow: hidden;
-
-    .copilot-body {
-        flex: 1;
-        display: flex;
-        overflow: hidden;
-
-        .conv-sidebar {
-            width: 240px;
-            border-right: 1px solid var(--el-border-color-lighter);
-            flex-shrink: 0;
-            overflow: hidden;
-        }
-
-        .chat-area {
-            flex: 1;
-            min-width: 0;
-            overflow: hidden;
-        }
-
-        .context-sidebar {
-            width: 280px;
-            border-left: 1px solid var(--el-border-color-lighter);
-            flex-shrink: 0;
-            overflow: hidden;
-        }
-    }
 }
 </style>

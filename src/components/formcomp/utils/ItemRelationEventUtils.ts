@@ -3,7 +3,7 @@ import {userFunction} from "@/api/user_func";
 import {ApiLinkageDetail, ItemRelation, RelationDetail, RulePreps, SelectOption,} from "@/components/types";
 import {error, warning} from "@/utils/message";
 import {i18n} from "@/lang";
-import {computed, nextTick, Ref, unref, watch} from "vue";
+import {computed, isRef, nextTick, Ref, unref, watch} from "vue";
 import JSON5 from "json5";
 import {
     executeFormulaWithFill,
@@ -23,11 +23,57 @@ const ensureArray = (val: any): any[] => {
     return val;
 };
 
+/**
+ * 归一化 formInfo 为数组
+ * 兼容上游传入 shallowRef/ref 对象(取 .value)、单个 field 对象、非数组值
+ * 避免因 props.formInfo 未被解包导致 findField/findContainerItems 静默失败
+ */
+const resolveFormInfo = (formInfo: any): any[] => {
+    if (formInfo == null) return [];
+    // ref/shallowRef 对象:取 .value(isRef 是 Vue 官方 API,稳定可靠)
+    if (isRef(formInfo)) {
+        const val = formInfo.value;
+        return Array.isArray(val) ? val : [];
+    }
+    if (Array.isArray(formInfo)) return formInfo;
+    return [];
+};
+
 /** 查找字段并确保 preps 存在，支持递归查找 children */
-const findField = (props: any, fieldName: string, fieldList?: any[]): any => {
-    const list = fieldList || props.formInfo || [];
+/** 容器子节点属性名列表(tabList/cardList/collapseList/splitterList/dytableList) */
+const CONTAINER_LIST_KEYS = [
+    "tabList",
+    "cardList",
+    "collapseList",
+    "splitterList",
+    "dytableList",
+];
+
+const findField = (
+    props: any,
+    fieldName: string,
+    fieldList?: any[],
+    visited?: WeakSet<any>,
+): any => {
+    const list = fieldList || resolveFormInfo(props.formInfo);
+    // 容错:formInfo 可能不是数组(如传入单个 field 对象或非数组值)
+    if (!Array.isArray(list)) return null;
+    // 循环引用防护:防止用户配置 A.children=[A] 导致栈溢出
+    if (!visited) visited = new WeakSet();
 
     for (const field of list) {
+        // 容错:fieldList 中的元素可能是数组(如 [[field1, field2], field3])
+        if (Array.isArray(field)) {
+            const found = findField(props, fieldName, field, visited);
+            if (found) return found;
+            continue;
+        }
+        // 容错:field 可能是 null/undefined 或非对象(字符串/数字等)
+        if (field == null || typeof field !== "object") continue;
+        // 循环引用防护:已访问的对象跳过
+        if (visited.has(field)) continue;
+        visited.add(field);
+
         if (field.fieldName === fieldName) {
             if (!field.preps) {
                 field.preps = {};
@@ -35,8 +81,33 @@ const findField = (props: any, fieldName: string, fieldList?: any[]): any => {
             return field;
         }
         // 递归查找 children 中的字段
-        if (field.children && Array.isArray(field.children)) {
-            const found = findField(props, fieldName, field.children);
+        if (Array.isArray(field.children)) {
+            const found = findField(props, fieldName, field.children, visited);
+            if (found) {
+                return found;
+            }
+        }
+        // 递归查找容器子节点(tabList/cardList/collapseList/splitterList/dytableList)内的 fieldList
+        // 使普通字段控制策略(controlFieldProps)能定位到容器内的字段
+        for (const key of CONTAINER_LIST_KEYS) {
+            const containerList = field[key];
+            if (!Array.isArray(containerList)) continue;
+            for (const containerItem of containerList) {
+                if (containerItem == null || typeof containerItem !== "object") continue;
+                const innerList =
+                    containerItem?.fieldList ||
+                    containerItem?.headerFieldList;
+                if (Array.isArray(innerList) && innerList.length > 0) {
+                    const found = findField(props, fieldName, innerList, visited);
+                    if (found) {
+                        return found;
+                    }
+                }
+            }
+        }
+        // App 端:递归查找 appList 内的字段(App 端扁平化后字段都在 appList 里)
+        if (Array.isArray(field.appList)) {
+            const found = findField(props, fieldName, field.appList, visited);
             if (found) {
                 return found;
             }
@@ -160,6 +231,144 @@ const controlFieldProps = (props: any, item: RelationDetail, e: any) => {
             field.preps[action.targetProp] = finalValue;
         } else {
             field[action.targetProp] = finalValue;
+        }
+    });
+};
+
+// ==================== 容器项控制(独立于普通字段控制) ====================
+
+/**
+ * 容器动作映射表
+ * 容器项的 disabled/formVisible 都是直接属性(不走 preps),与 controlFieldProps 不同
+ */
+const CONTAINER_ACTION_MAP: Record<string, { targetProp: string; negate: boolean }> = {
+    eqHide: {targetProp: "formVisible", negate: true},
+    eqVisible: {targetProp: "formVisible", negate: false},
+    eqDisable: {targetProp: "disabled", negate: false},
+    eqEditable: {targetProp: "disabled", negate: true},
+    ruleHide: {targetProp: "formVisible", negate: true},
+    ruleVisible: {targetProp: "formVisible", negate: false},
+    ruleDisable: {targetProp: "disabled", negate: false},
+    ruleEditable: {targetProp: "disabled", negate: true},
+};
+
+/**
+ * 按 tabName 在容器列表中查找容器项
+ * @param props 表单组件 props(含 formInfo)
+ * @param tabNames 要查找的 tabName 列表
+ * @param containerField 指定容器所在 field 的 fieldName;不指定则全局查找
+ * @returns 匹配到的容器项数组
+ */
+const findContainerItems = (
+    props: any,
+    tabNames: string[],
+    containerField?: string,
+): any[] => {
+    const result: any[] = [];
+    const list = resolveFormInfo(props.formInfo);
+    // 容错:formInfo 可能不是数组
+    if (!Array.isArray(list)) return result;
+    // 循环引用防护
+    const visited = new WeakSet();
+    const search = (fields: any[]) => {
+        // 容错:fields 可能不是数组
+        if (!Array.isArray(fields)) return;
+        for (const field of fields) {
+            // 容错:field 可能是 null/undefined 或非对象
+            if (field == null || typeof field !== "object") continue;
+            // 循环引用防护
+            if (visited.has(field)) continue;
+            visited.add(field);
+            // 限定 containerField 时跳过不匹配的 field
+            if (containerField && field.fieldName !== containerField) {
+                // 但仍需递归 children/appList,因为容器可能嵌套在 group 下
+                if (Array.isArray(field.children)) search(field.children);
+                if (Array.isArray(field.appList)) search(field.appList);
+                continue;
+            }
+            for (const key of CONTAINER_LIST_KEYS) {
+                const containerList = field[key];
+                if (!Array.isArray(containerList)) continue;
+                for (const containerItem of containerList) {
+                    if (containerItem == null || typeof containerItem !== "object") continue;
+                    if (
+                        containerItem?.tabName &&
+                        tabNames.includes(containerItem.tabName)
+                    ) {
+                        if (!containerItem.preps) containerItem.preps = {};
+                        result.push(containerItem);
+                    }
+                }
+            }
+            // App 端:识别 __appContainer 标记的影子容器项(非子表单容器拆解后保留)
+            if (field.__appContainer && field.tabName && tabNames.includes(field.tabName)) {
+                if (!field.preps) field.preps = {};
+                result.push(field);
+            }
+            // App 端:appList 内的子表单容器(带 tabName + oldType)也需要识别
+            if (Array.isArray(field.appList)) {
+                for (const appItem of field.appList) {
+                    if (appItem == null || typeof appItem !== "object") continue;
+                    if (appItem?.tabName && tabNames.includes(appItem.tabName)) {
+                        if (!appItem.preps) appItem.preps = {};
+                        result.push(appItem);
+                    }
+                }
+                // 递归 appList 内部可能嵌套的结构
+                search(field.appList);
+            }
+            if (Array.isArray(field.children)) search(field.children);
+        }
+    };
+    search(list);
+    // eslint-disable-next-line no-console
+    console.log("[findContainerItems] tabNames=" + JSON.stringify(tabNames) + " containerField=" + containerField + " found=" + result.length + " foundItems=" + JSON.stringify(result.map((c: any) => ({ tabName: c?.tabName, appCont: !!c?.__appContainer, fieldListLen: c?.fieldList?.length }))));
+    return result;
+};
+
+/**
+ * 同步容器显隐状态(PC 端 formVisible + App 端字段 __containerHidden)
+ * App 端扁平化后字段直接在 appList 渲染,不经过容器组件,
+ * 因此影子容器(__appContainer)的 fieldList 内字段需要通过 __containerHidden 同步显隐
+ */
+const syncContainerVisibility = (container: any, visible: boolean) => {
+    container.formVisible = visible;
+    if (container.__appContainer && Array.isArray(container.fieldList)) {
+        container.fieldList.forEach((f: any) => {
+            if (f && typeof f === "object" && !Array.isArray(f)) {
+                f.__containerHidden = !visible;
+            }
+        });
+    }
+};
+
+/**
+ * 容器显隐/禁用控制(独立于 controlFieldProps)
+ * 直接修改容器项的 formVisible/disabled 属性,不走 preps
+ */
+const controlContainerProps = (props: any, item: RelationDetail, e: any) => {
+    const {
+        matchFieldValue,
+        matchType,
+        controlCondition,
+        relationFields,
+        containerField,
+    } = item;
+    const matchResult = isMatch(matchType, ensureArray(matchFieldValue), e);
+    const action = CONTAINER_ACTION_MAP[controlCondition];
+    if (!action) return;
+    const finalValue = action.negate ? !matchResult : matchResult;
+    const containers = findContainerItems(
+        props,
+        ensureArray(relationFields) as string[],
+        containerField,
+    );
+    containers.forEach((containerItem) => {
+        if (action.targetProp === "formVisible") {
+            // 显隐控制:走同步函数(PC 端 formVisible + App 端 __containerHidden)
+            syncContainerVisibility(containerItem, finalValue);
+        } else {
+            containerItem[action.targetProp] = finalValue;
         }
     });
 };
@@ -533,10 +742,77 @@ const relationEvent = (
         console.error(i18n("api.relationDetailsMustBeArray"), relationDetails);
         return;
     }
+    // eslint-disable-next-line no-console
+    console.log("[relationEvent] enter triggerField=" + props.field?.fieldName + " value=" + e + " formInfoIsArray=" + Array.isArray(props.formInfo) + " formInfoIsRef=" + isRef(props.formInfo) + " resolvedLen=" + resolveFormInfo(props.formInfo).length + " resolvedHas=" + JSON.stringify(resolveFormInfo(props.formInfo).map((f: any) => ({ fn: f?.fieldName, appCont: !!f?.__appContainer, hasAppList: !!f?.appList, hasTabList: !!f?.tabList }))));
+
+    // 预处理：对 visible/hide 类规则,先重置所有涉及的字段/容器为默认值
+    // 并在后续遍历中跳过不匹配的规则,避免不匹配规则覆盖匹配规则设置的值
+    // 场景：channel 切换时,多个渠道的 eqVisible 规则共享 content 等字段,
+    //       需先全部重置,再只让匹配的规则设值(OR 逻辑)
+    const visibleConditions = new Set(["eqVisible", "ruleVisible"]);
+    const hideConditions = new Set(["eqHide", "ruleHide"]);
+    const skipIfNotMatched = new Set([
+        ...visibleConditions,
+        ...hideConditions,
+    ]);
+    const visibleFieldNames = new Set<string>();
+    const visibleContainerNames = new Set<string>();
+    const hideFieldNames = new Set<string>();
+    const hideContainerNames = new Set<string>();
+    relationDetails.forEach((item: RelationDetail) => {
+        if (!skipIfNotMatched.has(item.controlCondition)) return;
+        const isContainer = item.controlTarget === "container";
+        ensureArray(item.relationFields).forEach((name: string) => {
+            if (visibleConditions.has(item.controlCondition)) {
+                isContainer
+                    ? visibleContainerNames.add(name)
+                    : visibleFieldNames.add(name);
+            } else {
+                isContainer
+                    ? hideContainerNames.add(name)
+                    : hideFieldNames.add(name);
+            }
+        });
+    });
+    // visible 类:先设 false(默认隐藏,匹配后显示)
+    visibleFieldNames.forEach((name) => {
+        const field = findField(props, name);
+        if (field) field.formVisible = false;
+    });
+    if (visibleContainerNames.size > 0) {
+        findContainerItems(props, Array.from(visibleContainerNames)).forEach(
+            (c) => {
+                syncContainerVisibility(c, false);
+            },
+        );
+    }
+    // hide 类:先设 true(默认显示,匹配后隐藏)
+    hideFieldNames.forEach((name) => {
+        const field = findField(props, name);
+        if (field) field.formVisible = true;
+    });
+    if (hideContainerNames.size > 0) {
+        findContainerItems(props, Array.from(hideContainerNames)).forEach(
+            (c) => {
+                syncContainerVisibility(c, true);
+            },
+        );
+    }
+
     relationDetails?.forEach(async (item: RelationDetail) => {
         const {controlCondition, relationFields} = item;
         if (!relationFields || item.isWorking) {
             return;
+        }
+
+        // 对 visible/hide 类规则,不匹配时跳过(预处理已设默认值,只让匹配规则生效)
+        if (skipIfNotMatched.has(controlCondition)) {
+            const matchResult = isMatch(
+                item.matchType,
+                ensureArray(item.matchFieldValue),
+                e,
+            );
+            if (!matchResult) return;
         }
 
         switch (controlCondition) {
@@ -558,7 +834,12 @@ const relationEvent = (
             case "ruleEditable":
             case "ruleRequired":
             case "ruleUnRequired":
-                controlFieldProps(props, item, e);
+                // 容器项控制(target=container)走独立分支,与普通字段控制分离
+                if (item.controlTarget === "container") {
+                    controlContainerProps(props, item, e);
+                } else {
+                    controlFieldProps(props, item, e);
+                }
                 break;
             case "assignValue":
                 assignValue(props, item, e);
@@ -676,6 +957,8 @@ const initRelationEvent = (props: any, formData: any, needWatch?: boolean) => {
     const dataRelation = props.field.preps?.dataRelation;
     const actionName = dataRelation?.actionName;
     if (actionName) {
+        // eslint-disable-next-line no-console
+        console.log("[initRelationEvent] field=" + props.field?.fieldName + " actionName=" + actionName + " formInfoIsArray=" + Array.isArray(props.formInfo) + " formInfoIsRef=" + isRef(props.formInfo) + " resolvedLen=" + resolveFormInfo(props.formInfo).length);
         if (
             (Object.keys(formData.value || {}).length == 0 ||
                 !formData.value?.[props.field?.fieldName]) &&
@@ -699,7 +982,7 @@ const initRelationEvent = (props: any, formData: any, needWatch?: boolean) => {
             );
             return;
         }
-        relationEvent(
+        relationEventDispatcher(
             props,
             dataRelation,
             formData.value[props.field.fieldName],
@@ -816,6 +1099,7 @@ export {
     buttonRuleEngineDispatcher,
     checkIsDisabled,
     initCompCallEvent,
+    initRelationEvent,
     prepsFilter,
     relationEvent,
     relationEventDispatcher,

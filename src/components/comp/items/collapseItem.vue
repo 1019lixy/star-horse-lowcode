@@ -57,6 +57,7 @@ onMounted(() => {
         <el-collapse-item
           v-if="
             Object.keys(collapseItem).length > 0 &&
+            collapseItem.formVisible !== false &&
             !collapseItem.preps?.hideCollapseItem
           "
           :name="collapseItem.tabName || key"

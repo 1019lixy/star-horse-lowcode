@@ -2,6 +2,7 @@
 import {onMounted, ref, watch} from "vue";
 import {ElMessage} from "element-plus";
 import {i18n} from "@/lang";
+import {DesignerMobileShell} from "@/components/shared";
 import GraphViewerToolbar from "./panels/GraphViewerToolbar.vue";
 import GraphViewerCanvas from "./panels/GraphViewerCanvas.vue";
 import GraphViewerDetailPanel from "./panels/GraphViewerDetailPanel.vue";
@@ -96,71 +97,80 @@ const icons: Record<string, string> = {
 
 <template>
   <div class="kg-viewer">
-    <graph-viewer-toolbar :viewer="viewer"/>
-    <div class="viewer-body">
-      <!-- 路径查询条 -->
-      <div class="path-bar">
-        <span class="path-label">{{ i18n("knowledgegraph.viewer.pathQuery") }}</span>
-        <el-select
-            :model-value="pathFromId"
-            @update:model-value="setPathFrom"
-            :placeholder="i18n('knowledgegraph.viewer.pathFrom')"
+    <DesignerMobileShell
+      :panels="[
+        { key: 'detail', label: '详情', side: 'right', width: 320, min: 240 },
+      ]"
+      canvas-label="图谱"
+    >
+      <template #toolbar>
+        <graph-viewer-toolbar :viewer="viewer"/>
+      </template>
+      <template #canvas>
+        <div class="viewer-body">
+          <!-- 路径查询条 -->
+          <div class="path-bar">
+            <span class="path-label">{{ i18n("knowledgegraph.viewer.pathQuery") }}</span>
+            <el-select
+                :model-value="pathFromId"
+                @update:model-value="setPathFrom"
+                :placeholder="i18n('knowledgegraph.viewer.pathFrom')"
 
-            filterable
-            clearable
-            style="width: 180px !important;"
-        >
-          <el-option
-              v-for="n in viewer.state.graph.nodes"
-              :key="n.id"
-              :label="n.label"
-              :value="n.id"
-          />
-        </el-select>
-        <span class="svg-icon" v-html="icons.right"></span>
-        <el-select
-            :model-value="pathToId"
-            @update:model-value="setPathTo"
-            :placeholder="i18n('knowledgegraph.viewer.pathTo')"
+                filterable
+                clearable
+                style="width: 180px !important;"
+            >
+              <el-option
+                  v-for="n in viewer.state.graph.nodes"
+                  :key="n.id"
+                  :label="n.label"
+                  :value="n.id"
+              />
+            </el-select>
+            <span class="svg-icon" v-html="icons.right"></span>
+            <el-select
+                :model-value="pathToId"
+                @update:model-value="setPathTo"
+                :placeholder="i18n('knowledgegraph.viewer.pathTo')"
 
-            filterable
-            clearable
-            style="width: 180px !important;"
-        >
-          <el-option
-              v-for="n in viewer.state.graph.nodes"
-              :key="n.id"
-              :label="n.label"
-              :value="n.id"
-          />
-        </el-select>
-        <el-button type="primary" @click="runPathQuery">
-          {{ i18n("knowledgegraph.viewer.findPath") }}
-        </el-button>
-        <div v-if="viewer.state.pathNodeIds.length > 0" class="path-result">
-          {{ i18n("knowledgegraph.viewer.pathResult") }}:
-          <span v-for="(id, idx) in viewer.state.pathNodeIds" :key="id" class="path-node">
+                filterable
+                clearable
+                style="width: 180px !important;"
+            >
+              <el-option
+                  v-for="n in viewer.state.graph.nodes"
+                  :key="n.id"
+                  :label="n.label"
+                  :value="n.id"
+              />
+            </el-select>
+            <el-button type="primary" @click="runPathQuery">
+              {{ i18n("knowledgegraph.viewer.findPath") }}
+            </el-button>
+            <div v-if="viewer.state.pathNodeIds.length > 0" class="path-result">
+              {{ i18n("knowledgegraph.viewer.pathResult") }}:
+              <span v-for="(id, idx) in viewer.state.pathNodeIds" :key="id" class="path-node">
                         {{ idx > 0 ? " → " : "" }}{{ viewer.state.graph.nodes.find(n => n.id === id)?.label ?? id }}
                     </span>
-          <span class="path-length"> ({{ viewer.state.pathNodeIds.length - 1 }})</span>
+              <span class="path-length"> ({{ viewer.state.pathNodeIds.length - 1 }})</span>
+            </div>
+          </div>
+          <div class="canvas-area">
+            <graph-viewer-canvas
+                ref="canvasRef"
+                :viewer="viewer"
+                :force="force"
+            />
+          </div>
         </div>
-      </div>
-      <el-splitter class="canvas-area" direction="horizontal">
-        <el-splitter-panel>
-          <graph-viewer-canvas
-              ref="canvasRef"
-              :viewer="viewer"
-              :force="force"
-          />
-        </el-splitter-panel>
-        <el-splitter-panel size="320px" min="240px" max="500px">
-          <graph-viewer-detail-panel
-              :viewer="viewer"
-              @select-node="handleSelectFromDetail"
-          />
-        </el-splitter-panel>
-      </el-splitter>
-    </div>
+      </template>
+      <template #panel-detail>
+        <graph-viewer-detail-panel
+            :viewer="viewer"
+            @select-node="handleSelectFromDetail"
+        />
+      </template>
+    </DesignerMobileShell>
   </div>
 </template>
 
@@ -175,7 +185,7 @@ const icons: Record<string, string> = {
   overflow: hidden;
 
   .viewer-body {
-    flex: 1;
+    height: 100%;
     display: flex;
     flex-direction: column;
     overflow: hidden;

@@ -116,6 +116,7 @@ const icons: Record<string, string> = {
                     :min="collapsedIds.has(col.id) ? '48px' : '180px'"
                     :max="collapsedIds.has(col.id) ? '48px' : '500px'"
                     :collapsible="true"
+                    :class="{ 'is-column-collapsed': collapsedIds.has(col.id) }"
                 >
                     <kanban-column-panel
                         :column="col"
@@ -190,5 +191,24 @@ const icons: Record<string, string> = {
 .svg-icon :deep(svg) {
     width: 100%;
     height: 100%;
+}
+
+/* App 端（窄屏）响应式适配：列横向滚动，保持每列可读宽度 */
+@media (max-width: 768px) {
+    .kanban-board {
+        .board-body {
+            overflow-x: auto;
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
+
+            :deep(.el-splitter-panel) {
+                flex-shrink: 0;
+            }
+
+            :deep(.el-splitter-panel:not(.is-column-collapsed)) {
+                min-width: 280px;
+            }
+        }
+    }
 }
 </style>

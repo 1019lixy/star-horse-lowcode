@@ -1,92 +1,99 @@
 <template>
   <div class="cron-content">
-    <div class="cron-item">
-      <el-radio  :label="1" v-model="radioValue" border>
+    <div :class="{'cron-item-app':isMobile,'cron-item':!isMobile}">
+      <el-radio :label="1" v-model="radioValue" border>
         {{ i18n("cron.fillIn") }}{{ i18n("cron.wildcards") }}
       </el-radio>
     </div>
-    <div class="cron-item">
-      <el-radio  :label="2" v-model="radioValue" border>
+    <div :class="{'cron-item-app':isMobile,'cron-item':!isMobile}">
+      <el-radio :label="2" v-model="radioValue" border>
         {{ i18n("cron.everyYear") }}
       </el-radio>
     </div>
-    <div class="cron-item">
-      <el-radio  :label="3" v-model="radioValue" border>
+    <div :class="{'cron-item-app':isMobile,'cron-item':!isMobile}">
+      <el-radio :label="3" v-model="radioValue" border>
         {{ i18n("cron.period") }}
       </el-radio>
+      <div class="item-content" v-show="radioValue==3">
       <span style="margin-left: 10px; margin-right: 5px">{{
-        i18n("cron.from")
-      }}</span>
-      <el-input-number
+          i18n("cron.from")
+        }}</span>
+        <el-input-number
 
-        v-model="cycle01"
-        :min="fullYear"
-        controls-position="right"
-      />
-      <span style="margin-left: 10px; margin-right: 5px">{{
-        i18n("cron.to")
-      }}</span>
-      <el-input-number
+            v-model="cycle01"
+            :min="fullYear"
+            controls-position="right"
+        />
+        <span style="margin-left: 10px; margin-right: 5px">{{
+            i18n("cron.to")
+          }}</span>
+        <el-input-number
 
-        v-model="cycle02"
-        :min="fullYear"
-        controls-position="right"
-      />
+            v-model="cycle02"
+            :min="fullYear"
+            controls-position="right"
+        />
+      </div>
     </div>
-    <div class="cron-item">
-      <el-radio  :label="4" v-model="radioValue" border>
+    <div :class="{'cron-item-app':isMobile,'cron-item':!isMobile}">
+      <el-radio :label="4" v-model="radioValue" border>
         {{ i18n("cron.loop") }}
       </el-radio>
+      <div class="item-content" v-show="radioValue==4">
       <span style="margin-left: 10px; margin-right: 5px">{{
-        i18n("cron.from")
-      }}</span>
-      <el-input-number
+          i18n("cron.from")
+        }}</span>
+        <el-input-number
 
-        v-model="average01"
-        :min="fullYear"
-        controls-position="right"
-      />
-      <span style="margin-left: 10px; margin-right: 5px"
+            v-model="average01"
+            :min="fullYear"
+            controls-position="right"
+        />
+        <span style="margin-left: 10px; margin-right: 5px"
         >{{ i18n("cron.year") }}{{ i18n("cron.start") }}，{{
-          i18n("cron.every")
-        }}</span
-      >
-      <el-input-number
+            i18n("cron.every")
+          }}</span
+        >
+        <el-input-number
 
-        v-model="average02"
-        :min="fullYear"
-        controls-position="right"
-      />
-      <span style="margin-left: 10px; margin-right: 5px"
+            v-model="average02"
+            :min="fullYear"
+            controls-position="right"
+        />
+        <span style="margin-left: 10px; margin-right: 5px"
         >{{ i18n("cron.year") }}{{ i18n("cron.executeOnce") }}</span
-      >
+        >
+      </div>
     </div>
-    <div class="cron-item">
-      <el-radio  :label="5" v-model="radioValue" border>
+    <div :class="{'cron-item-app':isMobile,'cron-item':!isMobile}">
+      <el-radio :label="5" v-model="radioValue" border>
         {{ i18n("cron.specify") }}
       </el-radio>
-      <el-checkbox-group  v-model="checkboxList">
-        <el-checkbox
-          class="my-[5px]"
-          :border="true"
-          v-for="item in 20"
-          :key="item"
-          :value="item - 1 + fullYear"
-          :label="item - 1 + fullYear"
-        />
-      </el-checkbox-group>
+      <div class="item-content" v-show="radioValue==5">
+        <el-checkbox-group v-model="checkboxList">
+          <el-checkbox
+              class="my-[5px]"
+              :border="true"
+              v-for="item in 20"
+              :key="item"
+              :value="item - 1 + fullYear"
+              :label="item - 1 + fullYear"
+          />
+        </el-checkbox-group>
+      </div>
     </div>
   </div>
 </template>
 <style lang="scss" scoped></style>
 <script lang="ts" setup name="crontab-year">
-import { computed, onMounted, ref, watch } from "vue";
-import { i18n } from "@/lang";
+import {computed, onMounted, ref, watch} from "vue";
+import {i18n} from "@/lang";
+import {isMobile} from "@/api/device";
 
 const props = defineProps({
-  check: { type: Function },
+  check: {type: Function},
   month: {},
-  cron: { type: Object },
+  cron: {type: Object},
 });
 const emits = defineEmits(["update"]);
 let fullYear = ref(0);
@@ -99,23 +106,23 @@ let checkboxList = ref([]);
 // 计算两个周期值
 const cycleTotalFun = () => {
   cycle01.value = props.check?.(
-    cycle01.value,
-    fullYear.value,
-    fullYear.value + 100,
+      cycle01.value,
+      fullYear.value,
+      fullYear.value + 100,
   );
   cycle02.value = props.check?.(
-    cycle02.value,
-    fullYear.value + 1,
-    fullYear.value + 101,
+      cycle02.value,
+      fullYear.value + 1,
+      fullYear.value + 101,
   );
   return cycle01.value + "-" + cycle02.value;
 };
 // 计算平均用到的值
 const averageTotalFun = () => {
   average01.value = props.check?.(
-    average01.value,
-    fullYear.value,
-    fullYear.value + 100,
+      average01.value,
+      fullYear.value,
+      fullYear.value + 100,
   );
   average02.value = props.check?.(average02.value, 1, 10);
   return average01.value + "/" + average02.value;
@@ -166,20 +173,20 @@ const checkboxChange = () => {
   }
 };
 watch(
-  () => radioValue.value,
-  (_val) => radioChange(),
+    () => radioValue.value,
+    (_val) => radioChange(),
 );
 watch(
-  () => cycleTotal.value,
-  (_val) => cycleChange(),
+    () => cycleTotal.value,
+    (_val) => cycleChange(),
 );
 watch(
-  () => averageTotal.value,
-  (_val) => averageChange(),
+    () => averageTotal.value,
+    (_val) => averageChange(),
 );
 watch(
-  () => checkboxString.value,
-  (_val) => checkboxChange(),
+    () => checkboxString.value,
+    (_val) => checkboxChange(),
 );
 
 onMounted(() => {
