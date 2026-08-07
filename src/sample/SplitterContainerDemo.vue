@@ -1,8 +1,8 @@
 <script setup lang="ts" name="SplitterContainerDemo">
-import { nextTick, onMounted, provide, reactive, ref } from "vue";
-import { dialogPreps } from "@/api/star_horse_utils";
-import type { PageFieldInfo } from "@/components/types";
-import { StarHorseForm, StarHorseDialog } from "@/components/comp";
+import {nextTick, onMounted, provide, reactive, ref} from "vue";
+import {dialogPreps} from "@/api/star_horse_utils";
+import type {PageFieldInfo} from "@/components/types";
+import {StarHorseDialog, StarHorseForm} from "@/components/comp";
 
 /**
  * 验证场景：通过 editMode 的 dataRelation 策略(controlTarget=container)
@@ -12,29 +12,29 @@ import { StarHorseForm, StarHorseDialog } from "@/components/comp";
  */
 
 const editModeOptions = [
-  { name: "可视化", value: "visual" },
-  { name: "代码", value: "code" },
-  { name: "预览", value: "preview" },
+  {name: "可视化", value: "visual"},
+  {name: "代码", value: "code"},
+  {name: "预览", value: "preview"},
 ];
 const canvasSizeOptions = [
-  { name: "800 × 600", value: "800x600" },
-  { name: "1024 × 768", value: "1024x768" },
-  { name: "1920 × 1080", value: "1920x1080" },
+  {name: "800 × 600", value: "800x600"},
+  {name: "1024 × 768", value: "1024x768"},
+  {name: "1920 × 1080", value: "1920x1080"},
 ];
 const themeOptions = [
-  { name: "明亮", value: "light" },
-  { name: "暗黑", value: "dark" },
-  { name: "跟随系统", value: "auto" },
+  {name: "明亮", value: "light"},
+  {name: "暗黑", value: "dark"},
+  {name: "跟随系统", value: "auto"},
 ];
 const languageOptions = [
-  { name: "JavaScript", value: "javascript" },
-  { name: "TypeScript", value: "typescript" },
-  { name: "Python", value: "python" },
+  {name: "JavaScript", value: "javascript"},
+  {name: "TypeScript", value: "typescript"},
+  {name: "Python", value: "python"},
 ];
 const editorThemeOptions = [
-  { name: "GitHub", value: "github" },
-  { name: "Monokai", value: "monokai" },
-  { name: "Dracula", value: "dracula" },
+  {name: "GitHub", value: "github"},
+  {name: "Monokai", value: "monokai"},
+  {name: "Dracula", value: "dracula"},
 ];
 
 /**
@@ -72,12 +72,12 @@ const container = reactive<any>({
         {
           label: "画布尺寸", fieldName: "canvasSize", type: "select", required: true,
           formVisible: true, defaultValue: "1024x768",
-          preps: { values: canvasSizeOptions },
+          preps: {values: canvasSizeOptions},
         },
         {
           label: "主题", fieldName: "theme", type: "select",
           formVisible: true, defaultValue: "light",
-          preps: { values: themeOptions },
+          preps: {values: themeOptions},
         },
       ],
     },
@@ -91,12 +91,12 @@ const container = reactive<any>({
         {
           label: "语言", fieldName: "language", type: "select", required: true,
           formVisible: true, defaultValue: "typescript",
-          preps: { values: languageOptions },
+          preps: {values: languageOptions},
         },
         {
           label: "编辑器主题", fieldName: "editorTheme", type: "select",
           formVisible: true, defaultValue: "monokai",
-          preps: { values: editorThemeOptions },
+          preps: {values: editorThemeOptions},
         },
       ],
     },
@@ -107,11 +107,11 @@ const container = reactive<any>({
       objectName: "previewConfig",
       formVisible: false,
       fieldList: [
-        { label: "缩放比例(%)", fieldName: "zoomLevel", type: "number", formVisible: true, defaultValue: 100 },
+        {label: "缩放比例(%)", fieldName: "zoomLevel", type: "number", formVisible: true, defaultValue: 100},
         {
           label: "显示标尺", fieldName: "showRuler", type: "switch",
           formVisible: true, defaultValue: "N",
-          preps: { activeValue: "Y", inactiveValue: "N", activeText: "是", inactiveText: "否" },
+          preps: {activeValue: "Y", inactiveValue: "N", activeText: "是", inactiveText: "否"},
         },
       ],
     },
@@ -120,7 +120,7 @@ const container = reactive<any>({
 
 const tableFieldList = reactive<PageFieldInfo | any>({
   fieldList: [
-    { label: "主键", fieldName: "id", formVisible: false },
+    {label: "主键", fieldName: "id", formVisible: false},
     {
       label: "编辑模式", fieldName: "editMode", type: "select", required: true,
       formVisible: true, listVisible: true, defaultValue: "visual",
@@ -135,7 +135,7 @@ const tableFieldList = reactive<PageFieldInfo | any>({
 });
 
 const rules = {
-  editMode: [{ required: true, message: "请选择编辑模式", trigger: "change" }],
+  editMode: [{required: true, message: "请选择编辑模式", trigger: "change"}],
 };
 
 const dialogProps = dialogPreps("编辑器配置");
@@ -158,17 +158,18 @@ const onFormInited = () => {
   });
 };
 
-onMounted(() => {});
+onMounted(() => {
+});
 </script>
 
 <template>
   <div class="flex flex-col h-full overflow-auto p-4">
     <el-alert
-      title="验证说明"
-      type="info"
-      :closable="false"
-      show-icon
-      style="margin-bottom: 12px"
+        title="验证说明"
+        type="info"
+        :closable="false"
+        show-icon
+        style="margin-bottom: 12px"
     >
       <template #default>
         切换「编辑模式」下拉框,下方分栏面板应同步只显示对应模式(其余隐藏)。
@@ -176,16 +177,16 @@ onMounted(() => {});
       </template>
     </el-alert>
     <star-horse-dialog
-      v-model="editVisible"
-      :isShowBtnContinue="true"
-      title="分栏容器控制验证"
-      @update:dialogVisible="syncEditVisible"
+        v-model="editVisible"
+        :isShowBtnContinue="true"
+        title="分栏容器控制验证"
+        @update:dialogVisible="syncEditVisible"
     >
       <star-horse-form
-        ref="formRef"
-        :fieldList="tableFieldList"
-        :rules="rules"
-        @inited="onFormInited"
+          ref="formRef"
+          :fieldList="tableFieldList"
+          :rules="rules"
+          @inited="onFormInited"
       />
     </star-horse-dialog>
   </div>

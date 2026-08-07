@@ -1,13 +1,9 @@
 <script setup lang="ts">
-import {
-  allAction,
-  checkIsDisabled,
-  prepsFilter,
-} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {allAction, checkIsDisabled, prepsFilter,} from "@/components/formcomp/utils/ItemRelationEventUtils";
 
-import { ItemPreps } from "@/components/types/ItemPreps";
-import { StarHorseIcon } from "@/components/comp";
-import { getDynamicEvents } from "@/api/system";
+import {ItemPreps} from "@/components/types/ItemPreps";
+import {StarHorseIcon} from "@/components/comp";
+import {getDynamicEvents} from "@/api/system";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -31,31 +27,31 @@ const tagType = (val: any) => {
 </script>
 <template>
   <starhorse-form-item
-    :showFormItem="showFormItem"
-    :isDesign="isDesign"
-    :disabled="disabled"
-    :bareFlag="bareFlag"
-    :field="field"
-    :parentField="parentField"
+      :showFormItem="showFormItem"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      :field="field"
+      :parentField="parentField"
   >
     <el-input-tag
-      :disabled="checkIsDisabled(props)"
-      v-bind="prepsFilter(field.preps)"
-      :tagType="tagType(formData[field.fieldName])"
-      v-on="getDynamicEvents(props, itemAction, formData)"
-      v-model="formData[field.fieldName]"
+        :disabled="checkIsDisabled(props)"
+        v-bind="prepsFilter(field.preps)"
+        :tagType="tagType(formData[field.fieldName])"
+        v-on="getDynamicEvents(props, itemAction, formData)"
+        v-model="formData[field.fieldName]"
     >
       <template #prefix>
         <star-horse-icon
-          :icon-class="field.preps?.prefixIcon"
-          v-if="field.preps?.prefixIcon"
+            :icon-class="field.preps?.prefixIcon"
+            v-if="field.preps?.prefixIcon"
         />
         <span v-if="field.preps?.prefix">{{ field.preps?.prefix }}</span>
       </template>
       <template #suffix>
         <star-horse-icon
-          :icon-class="field.preps?.suffixIcon"
-          v-if="field.preps?.suffixIcon"
+            :icon-class="field.preps?.suffixIcon"
+            v-if="field.preps?.suffixIcon"
         />
         <span v-if="field.preps?.suffix">{{ field.preps?.suffix }}</span>
       </template>

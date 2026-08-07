@@ -1,44 +1,36 @@
 <script setup lang="ts" name="StarHorseTableColumn">
-import {
-  computed,
-  ComputedRef,
-  inject,
-  nextTick,
-  onMounted,
-  PropType,
-  ref,
-  unref,
-} from "vue";
-import { postRequest } from "@/api/star_horse_apis";
-import { closeLoad, formatCellValue } from "@/api/star_horse_utils";
-import { error, success, warning } from "@/utils/message";
-import { i18n } from "@/lang";
-import { Config } from "@/api/settings";
-import { createComponent, uuid } from "@/api/system";
-import { ApiUrls, DyCompField, FieldInfo } from "@/components/types";
+import {computed, ComputedRef, inject, nextTick, onMounted, PropType, ref, unref,} from "vue";
+import {postRequest} from "@/api/star_horse_apis";
+import {closeLoad, formatCellValue} from "@/api/star_horse_utils";
+import {error, success, warning} from "@/utils/message";
+import {i18n} from "@/lang";
+import {Config} from "@/api/settings";
+import {createComponent, uuid} from "@/api/system";
+import {ApiUrls, DyCompField, FieldInfo} from "@/components/types";
 import StarHorseItem from "@/components/comp/StarHorseItem.vue";
-import { processFieldList } from "@/api/form_utils";
-import { isMobile } from "@/api/device";
+import {processFieldList} from "@/api/form_utils";
+import {isMobile} from "@/api/device";
 
 const props = defineProps({
-  compUrl: { type: Object as PropType<ApiUrls> },
-  batchName: { type: String, default: "" },
-  item: { type: Object as PropType<FieldInfo>, required: true },
-  dataFormat: { type: Function, required: true },
-  cellEditable: { type: Boolean, default: true },
+  compUrl: {type: Object as PropType<ApiUrls>},
+  batchName: {type: String, default: ""},
+  item: {type: Object as PropType<FieldInfo>, required: true},
+  dataFormat: {type: Function, required: true},
+  cellEditable: {type: Boolean, default: true},
   //全局配置，动态页面使用
-  globalConfig: { type: Object as PropType<any>, required: false },
+  globalConfig: {type: Object as PropType<any>, required: false},
   //是否动态页面
-  isDynamic: { type: Boolean, default: false },
+  isDynamic: {type: Boolean, default: false},
   //是否显示批量属性
-  showBatchField: { type: Boolean, default: false },
+  showBatchField: {type: Boolean, default: false},
   //是否显示排序
-  sortable: { type: Boolean, default: true },
-  compSize: { type: String, default: "default" },
-  source: { type: Number, default: 5 },
+  sortable: {type: Boolean, default: true},
+  compSize: {type: String, default: "default"},
+  source: {type: Number, default: 5},
   commonFormat: {
     type: Function,
-    default: () => {},
+    default: () => {
+    },
   },
 });
 const emits = defineEmits(["focusEvent", "blurEvent"]);
@@ -46,21 +38,24 @@ const compInfo: ComputedRef<DyCompField> = computed(() => {
   return {
     ...unref(props.item.preps?.compInfo),
     props: {
-      data: { type: Object },
-      item: { type: Object },
+      data: {type: Object},
+      item: {type: Object},
     },
   };
 });
 const currentRow = ref<any>({});
 const columnId = ref<string>(uuid());
 // 父组件提供的取消当前编辑行的方法（O(1) 编辑互斥）
-const cancelAllEdit = inject<() => void>("starHorseCancelAllEdit", () => {});
+const cancelAllEdit = inject<() => void>("starHorseCancelAllEdit", () => {
+});
 // 父组件提供的设置当前编辑行引用的方法
 const setEditingRow = inject<(row: any) => void>(
-  "starHorseSetEditingRow",
-  () => {},
+    "starHorseSetEditingRow",
+    () => {
+    },
 );
-const focusEvent = (_column: any) => {};
+const focusEvent = (_column: any) => {
+};
 const blurEvent = (column: any, params: any) => {
   const data = Array.isArray(params) ? params[0] : params;
   let bakeValue = data["starHorseBakeValue"];
@@ -81,24 +76,24 @@ const blurEvent = (column: any, params: any) => {
     reqParams = data;
   }
   postRequest(props.compUrl?.mergeUrl!, reqParams)
-    .then((res) => {
-      if (res?.data?.code != 0) {
-        warning(res?.data?.cnMessage);
-      } else {
-        success(res?.data?.cnMessage);
-      }
-    })
-    .catch((err) => {
-      error(i18n("api.interfaceCallError2") + err);
-    })
-    .finally(() => {
-      closeLoad();
-    });
+      .then((res) => {
+        if (res?.data?.code != 0) {
+          warning(res?.data?.cnMessage);
+        } else {
+          success(res?.data?.cnMessage);
+        }
+      })
+      .catch((err) => {
+        error(i18n("api.interfaceCallError2") + err);
+      })
+      .finally(() => {
+        closeLoad();
+      });
 };
 // 在script部分添加取消方法
 const cancelEdit = (row: any) => {
   const originalValue =
-    row.starHorseBakeValue === "_" ? null : row.starHorseBakeValue;
+      row.starHorseBakeValue === "_" ? null : row.starHorseBakeValue;
   row[row.selectName] = originalValue;
   delete row.isSelected;
   delete row.selectName;
@@ -117,7 +112,7 @@ const changeStyle = (type: string) => {
     }
     // 自动聚焦第一个表单元素
     const input = container.querySelector(
-      "input, select, textarea",
+        "input, select, textarea",
     ) as HTMLElement | null;
     if (input) {
       // select 元素调用 select() 选中全部文本，其他元素调用 focus()
@@ -130,9 +125,9 @@ const changeStyle = (type: string) => {
 };
 const cellClick = (row: any, column: any) => {
   if (
-    !props.cellEditable ||
-    props.item.preps?.["disabled"] ||
-    props.item.preps?.["editDisabled"]
+      !props.cellEditable ||
+      props.item.preps?.["disabled"] ||
+      props.item.preps?.["editDisabled"]
   ) {
     warning(i18n("api.columnNotEditable"));
     return;
@@ -160,14 +155,14 @@ const prototypeCheck = (item: any) => {
   let flag = Object.keys(item).includes("listPrototypeDisplay");
   if (flag) {
     return typeof item.listPrototypeDisplay == "boolean"
-      ? item.listPrototypeDisplay
-      : true;
+        ? item.listPrototypeDisplay
+        : true;
   } else {
     flag = Object.keys(item.preps || {}).includes("listPrototypeDisplay");
     if (flag) {
       return typeof item.preps?.listPrototypeDisplay == "boolean"
-        ? item.preps?.listPrototypeDisplay
-        : true;
+          ? item.preps?.listPrototypeDisplay
+          : true;
     }
   }
   return false;
@@ -186,7 +181,7 @@ const loadInnerFields = (data: any) => {
   const result: any = [];
   processFieldList(data, "inner", result);
   return result?.map((temp) => {
-    return { ...temp.item };
+    return {...temp.item};
   });
 };
 onMounted(() => {
@@ -195,99 +190,99 @@ onMounted(() => {
 </script>
 <template>
   <el-table-column
-    :prop="item.hideFieldName || item.fieldName"
-    :label="item.label"
-    :min-width="(item.minWidth || Config.defaultColumnWidth) + 'px'"
-    :formatter="dataFormat"
-    v-if="
+      :prop="item.hideFieldName || item.fieldName"
+      :label="item.label"
+      :min-width="(item.minWidth || Config.defaultColumnWidth) + 'px'"
+      :formatter="dataFormat"
+      v-if="
       item.listVisible &&
       !item.preps?.staticData &&
       (!item.children || item.children?.length == 0)
     "
-    :sortable="sortable"
-    :show-overflow-tooltip="!currentRow.isSelected"
+      :sortable="sortable"
+      :show-overflow-tooltip="!currentRow.isSelected"
   >
     <template #default="scope">
       <template v-if="item.preps?.showComp">
         <el-popover
-          ref="popover"
-          :placement="isMobile ? 'bottom' : (item.preps.placement || 'left')"
-          :width="isMobile ? '80vw' : 'auto'"
-          v-if="item.preps.popover"
-          @show="showOperation"
+            ref="popover"
+            :placement="isMobile ? 'bottom' : (item.preps.placement || 'left')"
+            :width="isMobile ? '80vw' : 'auto'"
+            v-if="item.preps.popover"
+            @show="showOperation"
         >
           <template #reference>
             <star-horse-item
-              v-model:dataForm="scope.row"
-              :item="item"
-              :column="scope.column"
-              :batchName="batchName"
-              :bareFlag="true"
-              :compSize="compSize"
+                v-model:dataForm="scope.row"
+                :item="item"
+                :column="scope.column"
+                :batchName="batchName"
+                :bareFlag="true"
+                :compSize="compSize"
             />
           </template>
           <component
-            :is="createComponent(compInfo)"
-            :item="item"
-            :data="scope.row"
-            v-if="compInfo.name"
+              :is="createComponent(compInfo)"
+              :item="item"
+              :data="scope.row"
+              v-if="compInfo.name"
           />
         </el-popover>
         <star-horse-item
-          v-model:dataForm="scope.row"
-          :item="item"
-          :column="scope.column"
-          :batchName="batchName"
-          :compSize="compSize"
-          v-else
+            v-model:dataForm="scope.row"
+            :item="item"
+            :column="scope.column"
+            :batchName="batchName"
+            :compSize="compSize"
+            v-else
         />
       </template>
       <template v-else-if="prototypeCheck(item)">
         <component
-          :is="
+            :is="
             (item.listPrototypeDisplay === true ||
             item.preps?.listPrototypeDisplay === true
               ? item.type || 'input'
               : item.listPrototypeDisplay || item.preps?.listPrototypeDisplay) +
             '-item'
           "
-          :bareFlag="true"
-          :callBack="() => currentDataFormat(scope)"
-          :field="createPreps(item)"
-          :formData="scope.row"
+            :bareFlag="true"
+            :callBack="() => currentDataFormat(scope)"
+            :field="createPreps(item)"
+            :formData="scope.row"
         />
       </template>
       <template v-else>
         <div
-          class="edit-container"
-          :id="columnId"
-          v-if="
+            class="edit-container"
+            :id="columnId"
+            v-if="
             scope.row.isSelected &&
             scope.row.selectName == scope.column.property
           "
         >
           <div class="action-buttons">
             <el-button
-              type="primary"
+                type="primary"
 
-              @click.stop="blurEvent(scope.column, scope.row)"
-              >✔
+                @click.stop="blurEvent(scope.column, scope.row)"
+            >✔
             </el-button>
-            <el-button  @click.stop="cancelEdit(scope.row)"
-              >✖
+            <el-button @click.stop="cancelEdit(scope.row)"
+            >✖
             </el-button>
           </div>
           <star-horse-item
-            v-model:dataForm="scope.row"
-            :item="item"
-            :column="scope.column"
-            :batchName="batchName"
-            @focus="focusEvent"
-            :compSize="compSize"
-            :commonFormat="commonFormat"
-            @blur="blurEvent"
-            :source="source"
-            :autofocus="true"
+              v-model:dataForm="scope.row"
+              :item="item"
+              :column="scope.column"
+              :batchName="batchName"
+              @focus="focusEvent"
+              :compSize="compSize"
+              :commonFormat="commonFormat"
+              @blur="blurEvent"
+              :source="source"
+              :autofocus="true"
           />
         </div>
         <p @click.stop="cellClick(scope.row, scope.column)" v-else>
@@ -300,17 +295,17 @@ onMounted(() => {
   <template v-else-if="item.children?.length > 0">
     <el-table-column :label="item.label" header-align="center">
       <StarHorseTableColumn
-        v-for="temp in loadInnerFields(item.children)"
-        :item="temp"
-        :compSize="compSize"
-        :cellEditable="cellEditable"
-        :compUrl="compUrl"
-        :dataFormat="dataFormat"
-        :commonFormat="commonFormat"
-        :globalConfig="globalConfig"
-        :sortable="sortable"
-        :isDynamic="isDynamic"
-        :showBatchField="showBatchField"
+          v-for="temp in loadInnerFields(item.children)"
+          :item="temp"
+          :compSize="compSize"
+          :cellEditable="cellEditable"
+          :compUrl="compUrl"
+          :dataFormat="dataFormat"
+          :commonFormat="commonFormat"
+          :globalConfig="globalConfig"
+          :sortable="sortable"
+          :isDynamic="isDynamic"
+          :showBatchField="showBatchField"
       />
     </el-table-column>
   </template>
@@ -321,7 +316,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   width: 100%;
-  z-index:999;
+  z-index: 999;
 
   .action-buttons {
     .el-button {

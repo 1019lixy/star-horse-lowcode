@@ -1,9 +1,9 @@
 /**
  * IoT 告警中心状态管理
  */
-import { computed, reactive, ref } from "vue";
-import { createAlarm } from "../constants";
-import type { IotAlarm, IotAlarmLevel, IotAlarmStats } from "../types";
+import {computed, reactive, ref} from "vue";
+import {createAlarm} from "../constants";
+import type {IotAlarm, IotAlarmLevel, IotAlarmStats} from "../types";
 
 export const useAlarmCenter = (initialAlarms: IotAlarm[] = []) => {
     // 告警列表（按时间倒序）
@@ -66,7 +66,7 @@ export const useAlarmCenter = (initialAlarms: IotAlarm[] = []) => {
             active: 0,
             acknowledged: 0,
             resolved: 0,
-            byLevel: { info: 0, warning: 0, error: 0, critical: 0 },
+            byLevel: {info: 0, warning: 0, error: 0, critical: 0},
         };
         for (const a of alarms) {
             stats.byLevel[a.level]++;

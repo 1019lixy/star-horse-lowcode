@@ -129,7 +129,7 @@ const {
   title,
   openPicker,
   closePicker,
-} = useMobilePicker(() => props.field,props.source);
+} = useMobilePicker(() => props.field, props.source);
 
 // 临时颜色
 const tempColor = ref("");
@@ -157,11 +157,11 @@ function handleClear() {
   const dataRelation = props.field.preps?.dataRelation;
   if (dataRelation?.actionName) {
     relationEventDispatcher(
-      props,
-      dataRelation,
-      "",
-      formData,
-      dataRelation.actionName,
+        props,
+        dataRelation,
+        "",
+        formData,
+        dataRelation.actionName,
     );
   }
   closePicker();
@@ -179,11 +179,11 @@ function handleConfirm() {
   const dataRelation = props.field.preps?.dataRelation;
   if (dataRelation?.actionName) {
     relationEventDispatcher(
-      props,
-      dataRelation,
-      color,
-      formData,
-      dataRelation.actionName,
+        props,
+        dataRelation,
+        color,
+        formData,
+        dataRelation.actionName,
     );
   }
   closePicker();

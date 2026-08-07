@@ -3,6 +3,7 @@ import JsBarcode from "jsbarcode";
 import {nextTick, onMounted, ref, watch} from "vue";
 import {allAction} from "../utils/ItemRelationEventUtils";
 import {ItemPreps} from "@/components/types/ItemPreps";
+
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
   disabled: false,

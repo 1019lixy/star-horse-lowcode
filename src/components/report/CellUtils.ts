@@ -57,7 +57,7 @@ export const parseRange = (range: string): { startRow: number; startCol: number;
 
 /** 区域转地址数组 */
 export const rangeToAddresses = (range: string): string[] => {
-    const { startRow, startCol, endRow, endCol } = parseRange(range);
+    const {startRow, startCol, endRow, endCol} = parseRange(range);
     const addresses: string[] = [];
     for (let r = startRow; r <= endRow; r++) {
         for (let c = startCol; c <= endCol; c++) {
@@ -91,7 +91,7 @@ export const isAddressInRange = (
     endRow: number,
     endCol: number,
 ): boolean => {
-    const { row, col } = fromAddress(address);
+    const {row, col} = fromAddress(address);
     return (
         row >= startRow &&
         row <= endRow &&
@@ -118,6 +118,6 @@ export const offsetAddress = (
     rowOffset: number,
     colOffset: number,
 ): string => {
-    const { row, col } = fromAddress(address);
+    const {row, col} = fromAddress(address);
     return toAddress(row + rowOffset, col + colOffset);
 };

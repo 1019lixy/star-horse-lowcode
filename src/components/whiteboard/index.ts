@@ -1,11 +1,11 @@
-export { default as Whiteboard } from "./Whiteboard.vue";
-export { default as WbToolbar } from "./panels/WbToolbar.vue";
-export { default as WbCanvas } from "./panels/WbCanvas.vue";
-export { default as WbLayerPanel } from "./panels/WbLayerPanel.vue";
-export { default as WbPropertyPanel } from "./panels/WbPropertyPanel.vue";
-export { default as WbExportDialog } from "./dialogs/WbExportDialog.vue";
-export { useWhiteboardDesigner } from "./composables/useWhiteboardDesigner";
-export { useWhiteboardHistory } from "./composables/useWhiteboardHistory";
+export {default as Whiteboard} from "./Whiteboard.vue";
+export {default as WbToolbar} from "./panels/WbToolbar.vue";
+export {default as WbCanvas} from "./panels/WbCanvas.vue";
+export {default as WbLayerPanel} from "./panels/WbLayerPanel.vue";
+export {default as WbPropertyPanel} from "./panels/WbPropertyPanel.vue";
+export {default as WbExportDialog} from "./dialogs/WbExportDialog.vue";
+export {useWhiteboardDesigner} from "./composables/useWhiteboardDesigner";
+export {useWhiteboardHistory} from "./composables/useWhiteboardHistory";
 export {
     WB_TOOL_PRESETS,
     WB_SHAPE_TYPE_PRESETS,

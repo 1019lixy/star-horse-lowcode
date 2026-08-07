@@ -5,7 +5,7 @@
  * 注意：常量统一使用 WB_ 前缀，避免与其他模块冲突
  */
 
-import { i18n } from "@/lang";
+import {i18n} from "@/lang";
 import type {
     WbColorPreset,
     WbLineWidthPreset,
@@ -43,71 +43,71 @@ export const WB_MAX_HISTORY = 50;
 
 /** 工具预设列表 */
 export const WB_TOOL_PRESETS: WbToolPreset[] = [
-    { tool: "select", icon: "sh-select", labelKey: "whiteboard.tool.select" },
-    { tool: "pen", icon: "sh-edit", labelKey: "whiteboard.tool.pen" },
-    { tool: "eraser", icon: "sh-delete", labelKey: "whiteboard.tool.eraser" },
-    { tool: "line", icon: "sh-line_arrow", labelKey: "whiteboard.tool.line" },
-    { tool: "rect", icon: "sh-rectangle", labelKey: "whiteboard.tool.rect" },
-    { tool: "circle", icon: "sh-rectangle", labelKey: "whiteboard.tool.circle" },
-    { tool: "triangle", icon: "sh-rectangle", labelKey: "whiteboard.tool.triangle" },
-    { tool: "diamond", icon: "sh-rectangle", labelKey: "whiteboard.tool.diamond" },
-    { tool: "arrow", icon: "sh-line_arrow", labelKey: "whiteboard.tool.arrow" },
-    { tool: "text", icon: "sh-text", labelKey: "whiteboard.tool.text" },
+    {tool: "select", icon: "sh-select", labelKey: "whiteboard.tool.select"},
+    {tool: "pen", icon: "sh-edit", labelKey: "whiteboard.tool.pen"},
+    {tool: "eraser", icon: "sh-delete", labelKey: "whiteboard.tool.eraser"},
+    {tool: "line", icon: "sh-line_arrow", labelKey: "whiteboard.tool.line"},
+    {tool: "rect", icon: "sh-rectangle", labelKey: "whiteboard.tool.rect"},
+    {tool: "circle", icon: "sh-rectangle", labelKey: "whiteboard.tool.circle"},
+    {tool: "triangle", icon: "sh-rectangle", labelKey: "whiteboard.tool.triangle"},
+    {tool: "diamond", icon: "sh-rectangle", labelKey: "whiteboard.tool.diamond"},
+    {tool: "arrow", icon: "sh-line_arrow", labelKey: "whiteboard.tool.arrow"},
+    {tool: "text", icon: "sh-text", labelKey: "whiteboard.tool.text"},
 ];
 
 /** 形状预设列表 */
 export const WB_SHAPE_TYPE_PRESETS: WbShapePreset[] = [
-    { shape: "rect", labelKey: "whiteboard.shape.rect", width: 120, height: 80 },
-    { shape: "circle", labelKey: "whiteboard.shape.circle", width: 100, height: 100 },
-    { shape: "triangle", labelKey: "whiteboard.shape.triangle", width: 100, height: 90 },
-    { shape: "diamond", labelKey: "whiteboard.shape.diamond", width: 120, height: 90 },
-    { shape: "arrow", labelKey: "whiteboard.shape.arrow", width: 140, height: 60 },
+    {shape: "rect", labelKey: "whiteboard.shape.rect", width: 120, height: 80},
+    {shape: "circle", labelKey: "whiteboard.shape.circle", width: 100, height: 100},
+    {shape: "triangle", labelKey: "whiteboard.shape.triangle", width: 100, height: 90},
+    {shape: "diamond", labelKey: "whiteboard.shape.diamond", width: 120, height: 90},
+    {shape: "arrow", labelKey: "whiteboard.shape.arrow", width: 140, height: 60},
 ];
 
 /** 颜色预设 */
 export const WB_COLOR_PRESETS: WbColorPreset[] = [
-    { label: i18n("whiteboard.color.transparent"), value: "transparent" },
-    { label: "#000000", value: "#000000" },
-    { label: "#FFFFFF", value: "#FFFFFF" },
-    { label: "#1890FF", value: "#1890FF" },
-    { label: "#52C41A", value: "#52C41A" },
-    { label: "#FAAD14", value: "#FAAD14" },
-    { label: "#F5222D", value: "#F5222D" },
-    { label: "#722ED1", value: "#722ED1" },
-    { label: "#13C2C2", value: "#13C2C2" },
-    { label: "#EB2F96", value: "#EB2F96" },
-    { label: "#8C8C8C", value: "#8C8C8C" },
+    {label: i18n("whiteboard.color.transparent"), value: "transparent"},
+    {label: "#000000", value: "#000000"},
+    {label: "#FFFFFF", value: "#FFFFFF"},
+    {label: "#1890FF", value: "#1890FF"},
+    {label: "#52C41A", value: "#52C41A"},
+    {label: "#FAAD14", value: "#FAAD14"},
+    {label: "#F5222D", value: "#F5222D"},
+    {label: "#722ED1", value: "#722ED1"},
+    {label: "#13C2C2", value: "#13C2C2"},
+    {label: "#EB2F96", value: "#EB2F96"},
+    {label: "#8C8C8C", value: "#8C8C8C"},
 ];
 
 /** 线宽预设 */
 export const WB_LINE_WIDTH_PRESETS: WbLineWidthPreset[] = [
-    { label: "1", value: 1 },
-    { label: "2", value: 2 },
-    { label: "4", value: 4 },
-    { label: "6", value: 6 },
-    { label: "8", value: 8 },
-    { label: "12", value: 12 },
+    {label: "1", value: 1},
+    {label: "2", value: 2},
+    {label: "4", value: 4},
+    {label: "6", value: 6},
+    {label: "8", value: 8},
+    {label: "12", value: 12},
 ];
 
 /** 透明度预设 */
 export const WB_OPACITY_PRESETS: WbLineWidthPreset[] = [
-    { label: "100%", value: 1 },
-    { label: "80%", value: 0.8 },
-    { label: "60%", value: 0.6 },
-    { label: "40%", value: 0.4 },
-    { label: "20%", value: 0.2 },
+    {label: "100%", value: 1},
+    {label: "80%", value: 0.8},
+    {label: "60%", value: 0.6},
+    {label: "40%", value: 0.4},
+    {label: "20%", value: 0.2},
 ];
 
 /** 字号预设 */
 export const WB_FONT_SIZE_PRESETS: WbLineWidthPreset[] = [
-    { label: "12", value: 12 },
-    { label: "14", value: 14 },
-    { label: "16", value: 16 },
-    { label: "18", value: 18 },
-    { label: "20", value: 20 },
-    { label: "24", value: 24 },
-    { label: "28", value: 28 },
-    { label: "32", value: 32 },
+    {label: "12", value: 12},
+    {label: "14", value: 14},
+    {label: "16", value: 16},
+    {label: "18", value: 18},
+    {label: "20", value: 20},
+    {label: "24", value: 24},
+    {label: "28", value: 28},
+    {label: "32", value: 32},
 ];
 
 /** 生成元素 ID */
@@ -217,7 +217,7 @@ export const createWbElement = (
         case "triangle":
         case "diamond":
         case "arrow":
-            return createWbShapeElement({ ...(params as any), shape: tool });
+            return createWbShapeElement({...(params as any), shape: tool});
         case "line":
             return createWbLineElement(params as any);
         case "text":
@@ -239,7 +239,7 @@ export const createWbInitialState = (
     strokeWidth: WB_DEFAULT_STROKE_WIDTH,
     opacity: WB_DEFAULT_OPACITY,
     fontSize: WB_DEFAULT_FONT_SIZE,
-    canvas: { ...WB_DEFAULT_CANVAS },
+    canvas: {...WB_DEFAULT_CANVAS},
     readonly: false,
 });
 

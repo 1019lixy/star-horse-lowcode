@@ -1,7 +1,7 @@
 <script setup lang="ts" name="GanttCanvas">
 import {computed, ref, watch} from "vue";
 import type {GanttDesigner} from "../composables/useGanttDesigner";
-import {CRITICAL_COLOR, GANTT_STATUS_PRESETS, MILESTONE_SIZE, TODAY_LINE_COLOR,} from "../constants";
+import {CRITICAL_COLOR, GANTT_STATUS_PRESETS, MILESTONE_SIZE,} from "../constants";
 import type {GanttTimelineCell} from "../utils/GanttDateUtils";
 import {
   formatDate,
@@ -102,7 +102,7 @@ const getTaskColor = (task: GanttTask) => {
   if (task.isCritical && props.designer.state.config.showCritical) return CRITICAL_COLOR;
   const today = new Date();
   const endDate = new Date(task.endDate);
-  if (today> endDate && task.status !== "completed") {
+  if (today > endDate && task.status !== "completed") {
     return "#F56C6C";
   }
   return GANTT_STATUS_PRESETS.find((s) => s.value === task.status)?.color ?? "#409EFF";

@@ -1,9 +1,9 @@
 /**
  * Office 文档设计器状态管理：文档列表 + 当前文档
  */
-import { computed, reactive, ref } from "vue";
-import { createOfficeDoc, genOfficeId } from "../constants";
-import type { OfficeDocType, OfficeDocument } from "../types";
+import {computed, reactive, ref} from "vue";
+import {createOfficeDoc, genOfficeId} from "../constants";
+import type {OfficeDocType, OfficeDocument} from "../types";
 
 export interface OfficeDesignerState {
     documents: OfficeDocument[];
@@ -44,7 +44,7 @@ export const useOfficeDesigner = (initialDocs: OfficeDocument[] = []) => {
     /** 确认新建文档 */
     const confirmCreate = (): OfficeDocument | null => {
         if (!createForm.name.trim()) return null;
-        const doc = createOfficeDoc({ name: createForm.name.trim(), type: createForm.type });
+        const doc = createOfficeDoc({name: createForm.name.trim(), type: createForm.type});
         state.documents.push(doc);
         state.currentDocId = doc.id;
         createDialogVisible.value = false;
@@ -53,7 +53,7 @@ export const useOfficeDesigner = (initialDocs: OfficeDocument[] = []) => {
 
     /** 直接新建文档（不弹窗） */
     const createDoc = (name: string, type: OfficeDocType): OfficeDocument => {
-        const doc = createOfficeDoc({ name, type });
+        const doc = createOfficeDoc({name, type});
         state.documents.push(doc);
         state.currentDocId = doc.id;
         return doc;

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { allAction } from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {allAction} from "@/components/formcomp/utils/ItemRelationEventUtils";
 
-import { ItemPreps } from "@/components/types/ItemPreps";
+import {ItemPreps} from "@/components/types/ItemPreps";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
-import { computed } from "vue";
+import {computed} from "vue";
 import JSON5 from "json5";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
@@ -29,19 +29,19 @@ const itemAction = (prep: any) => {
 </script>
 <template>
   <starhorse-form-item
-    :showFormItem="showFormItem"
-    :isDesign="isDesign"
-    :disabled="disabled"
-    :bareFlag="bareFlag"
-    :field="field"
-    :parentField="parentField"
+      :showFormItem="showFormItem"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      :field="field"
+      :parentField="parentField"
   >
     <div class="h-full w-full" @click="itemAction('click')">
       <div class="user_html" :style="styles">
         {{
           field.preps?.staticData
-            ? field.preps?.textContent
-            : formData[field.fieldName]
+              ? field.preps?.textContent
+              : formData[field.fieldName]
         }}
       </div>
     </div>

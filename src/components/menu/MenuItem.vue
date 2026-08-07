@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { computed, PropType } from "vue";
-import { compKey } from "@/api/system";
+import {computed, PropType} from "vue";
+import {compKey} from "@/api/system";
 
 defineOptions({
   name: "MenuItem",
 });
 const props = defineProps({
-  item: { type: Object as PropType<any>, required: true },
+  item: {type: Object as PropType<any>, required: true},
   preps: {
     type: Object as PropType<any>,
     default: () => {
@@ -19,46 +19,46 @@ const props = defineProps({
       };
     },
   },
-  level: { type: Number, default: 1 },
+  level: {type: Number, default: 1},
 });
 const emits = defineEmits(["selectItem"]);
 const selectItem = (item: any) => {
   emits("selectItem", item);
 };
 let menuColor = computed(() =>
-  props.level > 1 ? "var(--star-horse-shadow)" : "var(--star-horse-background)",
+    props.level > 1 ? "var(--star-horse-shadow)" : "var(--star-horse-background)",
 );
 </script>
 <template>
   <el-sub-menu
-    popper-class="popper-class"
-    v-if="item[preps.children ?? 'children']?.length > 0"
-    :index="item[preps.id]"
-    @click="selectItem(item)"
+      popper-class="popper-class"
+      v-if="item[preps.children ?? 'children']?.length > 0"
+      :index="item[preps.id]"
+      @click="selectItem(item)"
   >
     <template #title>
       <el-icon class="star-icon">
-        <component :is="item[preps.icon] || 'document'" />
+        <component :is="item[preps.icon] || 'document'"/>
       </el-icon>
       <span>{{ item[preps.label] }} </span>
     </template>
     <MenuItem
-      :item="sitem"
-      :level="level + 1"
-      :preps="preps"
-      @selectItem="selectItem"
-      v-for="(sitem, key) in item[preps.children ?? 'children']"
-      :key="compKey(sitem, key)"
+        :item="sitem"
+        :level="level + 1"
+        :preps="preps"
+        @selectItem="selectItem"
+        v-for="(sitem, key) in item[preps.children ?? 'children']"
+        :key="compKey(sitem, key)"
     />
   </el-sub-menu>
   <el-menu-item
-    popper-class="popper-class"
-    v-else
-    :index="item[preps.id]"
-    @click="selectItem(item)"
+      popper-class="popper-class"
+      v-else
+      :index="item[preps.id]"
+      @click="selectItem(item)"
   >
     <el-icon class="star-icon">
-      <component :is="item[preps.icon] || 'document'" />
+      <component :is="item[preps.icon] || 'document'"/>
     </el-icon>
     <template #title>
       <span>{{ item[preps.label] }} </span>

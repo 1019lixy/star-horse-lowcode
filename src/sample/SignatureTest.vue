@@ -5,29 +5,29 @@
     <div class="controls">
       <div class="control-group">
         <label>画笔颜色：</label>
-        <input type="color" v-model="options.penColor" />
+        <input type="color" v-model="options.penColor"/>
       </div>
 
       <div class="control-group">
         <label>背景颜色：</label>
-        <input type="color" v-model="options.backgroundColor" />
+        <input type="color" v-model="options.backgroundColor"/>
       </div>
 
       <div class="control-group">
         <label>
-          <input type="checkbox" v-model="isDisabled" />
+          <input type="checkbox" v-model="isDisabled"/>
           只读模式
         </label>
       </div>
     </div>
 
     <Vue3Signature
-      ref="signature"
-      :sigOption="options"
-      :disabled="isDisabled"
-      :w="'100%'"
-      :h="'400px'"
-      class="signature-pad"
+        ref="signature"
+        :sigOption="options"
+        :disabled="isDisabled"
+        :w="'100%'"
+        :h="'400px'"
+        class="signature-pad"
     />
 
     <div class="button-group">
@@ -46,15 +46,15 @@
 
     <div v-if="preview" class="preview">
       <h3>预览：</h3>
-      <img :src="preview" alt="签名预览" />
+      <img :src="preview" alt="签名预览"/>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import {ref, watch} from "vue";
 import Vue3Signature from "vue3-signature";
-import { warning } from "@/utils/message.js";
+import {warning} from "@/utils/message.js";
 
 const signature = ref(null);
 const preview = ref("");
@@ -105,10 +105,10 @@ const addWatermark = () => {
   });
 };
 watch(
-  () => signature.value?.save(),
-  (val) => {
-    console.log(val);
-  },
+    () => signature.value?.save(),
+    (val) => {
+      console.log(val);
+    },
 );
 </script>
 

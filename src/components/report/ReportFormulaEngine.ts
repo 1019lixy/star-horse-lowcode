@@ -12,8 +12,8 @@
  * 单一职责：只做公式求值，不处理 UI
  */
 
-import { fromAddress, parseRange } from "./CellUtils";
-import type { ReportCell, ReportRenderContext } from "./types";
+import {parseRange} from "./CellUtils";
+import type {ReportCell, ReportRenderContext} from "./types";
 
 /** 求值上下文 */
 export interface FormulaEvalContext {
@@ -109,7 +109,7 @@ const evalRangeRef = (expr: string, ctx: FormulaEvalContext): any[] => {
     if (!expr.includes(":")) return null;
     try {
         const addresses = (() => {
-            const { startRow, startCol, endRow, endCol } = parseRange(expr);
+            const {startRow, startCol, endRow, endCol} = parseRange(expr);
             const list: string[] = [];
             for (let r = startRow; r <= endRow; r++) {
                 for (let c = startCol; c <= endCol; c++) {

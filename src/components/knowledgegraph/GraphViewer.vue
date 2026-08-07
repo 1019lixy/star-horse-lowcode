@@ -98,10 +98,10 @@ const icons: Record<string, string> = {
 <template>
   <div class="kg-viewer">
     <DesignerMobileShell
-      :panels="[
+        :panels="[
         { key: 'detail', label: '详情', side: 'right', width: 320, min: 240 },
       ]"
-      canvas-label="图谱"
+        canvas-label="图谱"
     >
       <template #toolbar>
         <graph-viewer-toolbar :viewer="viewer"/>

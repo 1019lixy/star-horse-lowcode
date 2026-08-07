@@ -1,13 +1,10 @@
 <script setup lang="ts">
-import type { ImageSettings } from "qrcode.vue";
+import type {ImageSettings} from "qrcode.vue";
 import QrcodeVue from "qrcode.vue";
-import { nextTick, onMounted, ref, watch } from "vue";
-import {
-  allAction,
-  prepsFilter,
-} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {nextTick, onMounted, ref, watch} from "vue";
+import {allAction, prepsFilter,} from "@/components/formcomp/utils/ItemRelationEventUtils";
 
-import { ItemPreps } from "@/components/types/ItemPreps";
+import {ItemPreps} from "@/components/types/ItemPreps";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -16,7 +13,7 @@ const props = withDefaults(defineProps<ItemPreps>(), {
   bareFlag: false,
   isSearch: false,
 });
-const imageSettings = ref<ImageSettings>({ height: 0, src: "", width: 0 });
+const imageSettings = ref<ImageSettings>({height: 0, src: "", width: 0});
 const emits = defineEmits(["selfFunc", "selectItem"]);
 const formData = defineModel("formData");
 const dataValue = ref<string>("");
@@ -41,27 +38,27 @@ onMounted(() => {
   });
 });
 watch(
-  () => props.field.preps,
-  () => {
-    createCode();
-    allAction(props, emits, formData, "change", false);
-  },
-  { immediate: false, deep: true },
+    () => props.field.preps,
+    () => {
+      createCode();
+      allAction(props, emits, formData, "change", false);
+    },
+    {immediate: false, deep: true},
 );
 </script>
 <template>
   <starhorse-form-item
-    :showFormItem="showFormItem"
-    :isDesign="isDesign"
-    :disabled="disabled"
-    :bareFlag="bareFlag"
-    :field="field"
-    :parentField="parentField"
+      :showFormItem="showFormItem"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      :field="field"
+      :parentField="parentField"
   >
     <qrcode-vue
-      :value="dataValue"
-      v-bind="prepsFilter(field.preps)"
-      :image-settings="imageSettings"
+        :value="dataValue"
+        v-bind="prepsFilter(field.preps)"
+        :image-settings="imageSettings"
     />
   </starhorse-form-item>
 </template>

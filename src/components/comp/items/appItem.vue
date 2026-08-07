@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { getDataIndex, getFormData, getPrefix } from "@/api/form_utils";
+import {getDataIndex, getFormData, getPrefix} from "@/api/form_utils";
 import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
-import { ContainerPreps } from "@/components/types/ItemPreps";
-import { ModelRef, onMounted } from "vue";
+import {ContainerPreps} from "@/components/types/ItemPreps";
+import {ModelRef, onMounted} from "vue";
 import StarHorseItem from "@/components/comp/StarHorseItem.vue";
 
 const props = withDefaults(defineProps<ContainerPreps>(), {
@@ -45,7 +45,7 @@ const loadItem = (item: any) => {
   };
 };
 const createFieldList = (item: any) => {
-  return { fieldList: Array.isArray(item) ? item : [item] };
+  return {fieldList: Array.isArray(item) ? item : [item]};
 };
 const init = () => {
   console.log(props.item);
@@ -61,8 +61,8 @@ onMounted(() => {
       <!-- 跳过容器联动影子项(__appContainer)和被隐藏字段(__containerHidden) -->
       <template v-if="!appItem?.__appContainer && !appItem?.__containerHidden">
         <div
-          class="group-label"
-          v-if="
+            class="group-label"
+            v-if="
             appItem.staticData === true &&
             ['app', 'all'].includes(appItem.visiblePlatform)
           "
@@ -72,21 +72,21 @@ onMounted(() => {
         <template v-else>
           <template v-if="appItem.title">
             <star-horse-item
-              :primaryKey="primaryKey"
-              :compSize="compSize"
-              v-model:dataForm="dataForm"
-              :commonFormat="commonFormat"
-              :item="loadItem(appItem)"
-              :dataIndex="dataIndex"
-              :source="source"
+                :primaryKey="primaryKey"
+                :compSize="compSize"
+                v-model:dataForm="dataForm"
+                :commonFormat="commonFormat"
+                :item="loadItem(appItem)"
+                :dataIndex="dataIndex"
+                :source="source"
             />
           </template>
           <star-horse-form-item
-            :source="source"
-            :compUrl="compUrl"
-            :compSize="compSize"
-            :commonFormat="commonFormat"
-            :dataForm="
+              :source="source"
+              :compUrl="compUrl"
+              :compSize="compSize"
+              :commonFormat="commonFormat"
+              :dataForm="
               getFormData(
                 appItem,
                 dataForm,
@@ -95,7 +95,7 @@ onMounted(() => {
                 item.groupData ? key : 0,
               )
             "
-            :dataIndex="
+              :dataIndex="
               getDataIndex(
                 appItem,
                 propPrefix,
@@ -103,16 +103,16 @@ onMounted(() => {
                 item.groupData ? key : 0,
               )
             "
-            :propPrefix="
+              :propPrefix="
               getPrefix(appItem, propPrefix, dataIndex, item.groupData ? key : 0)
             "
-            :objectName="appItem.objectName"
-            @addRow="addRow"
-            @removeRow="removeRow"
-            :fieldList="createFieldList(appItem)"
-            :rules="rules"
-            :subFormFlag="appItem.subFormFlag"
-            :primaryKey="primaryKey"
+              :objectName="appItem.objectName"
+              @addRow="addRow"
+              @removeRow="removeRow"
+              :fieldList="createFieldList(appItem)"
+              :rules="rules"
+              :subFormFlag="appItem.subFormFlag"
+              :primaryKey="primaryKey"
           />
         </template>
       </template>

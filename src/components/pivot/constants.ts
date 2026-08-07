@@ -1,15 +1,8 @@
 /**
  * 透视分析常量定义
  */
-import { i18n } from "@/lang";
-import type {
-    PivotAggregation,
-    PivotAggregationPreset,
-    PivotChartType,
-    PivotChartTypePreset,
-    PivotConfig,
-    PivotField,
-} from "./types";
+import {i18n} from "@/lang";
+import type {PivotAggregation, PivotAggregationPreset, PivotChartTypePreset, PivotConfig, PivotField,} from "./types";
 
 /** 默认配置 */
 export const DEFAULT_PIVOT_CONFIG: PivotConfig = {
@@ -26,47 +19,47 @@ export const DEFAULT_PIVOT_CONFIG: PivotConfig = {
 
 /** 聚合方式预设 */
 export const PIVOT_AGGREGATION_PRESETS: PivotAggregationPreset[] = [
-    { value: "sum", label: i18n("pivot.aggregation.sum") },
-    { value: "count", label: i18n("pivot.aggregation.count") },
-    { value: "avg", label: i18n("pivot.aggregation.avg") },
-    { value: "min", label: i18n("pivot.aggregation.min") },
-    { value: "max", label: i18n("pivot.aggregation.max") },
-    { value: "distinct", label: i18n("pivot.aggregation.distinct") },
+    {value: "sum", label: i18n("pivot.aggregation.sum")},
+    {value: "count", label: i18n("pivot.aggregation.count")},
+    {value: "avg", label: i18n("pivot.aggregation.avg")},
+    {value: "min", label: i18n("pivot.aggregation.min")},
+    {value: "max", label: i18n("pivot.aggregation.max")},
+    {value: "distinct", label: i18n("pivot.aggregation.distinct")},
 ];
 
 /** 图表类型预设 */
 export const PIVOT_CHART_TYPE_PRESETS: PivotChartTypePreset[] = [
-    { value: "bar", label: i18n("pivot.chart.bar"), icon: "Histogram" },
-    { value: "line", label: i18n("pivot.chart.line"), icon: "TrendCharts" },
-    { value: "area", label: i18n("pivot.chart.area"), icon: "AreaChart" },
-    { value: "pie", label: i18n("pivot.chart.pie"), icon: "PieChart" },
-    { value: "radar", label: i18n("pivot.chart.radar"), icon: "Rank" },
-    { value: "scatter", label: i18n("pivot.chart.scatter"), icon: "DataAnalysis" },
+    {value: "bar", label: i18n("pivot.chart.bar"), icon: "Histogram"},
+    {value: "line", label: i18n("pivot.chart.line"), icon: "TrendCharts"},
+    {value: "area", label: i18n("pivot.chart.area"), icon: "AreaChart"},
+    {value: "pie", label: i18n("pivot.chart.pie"), icon: "PieChart"},
+    {value: "radar", label: i18n("pivot.chart.radar"), icon: "Rank"},
+    {value: "scatter", label: i18n("pivot.chart.scatter"), icon: "DataAnalysis"},
 ];
 
 /** 字段类型预设 */
 export const PIVOT_FIELD_TYPE_PRESETS = [
-    { value: "string", label: i18n("pivot.fieldType.string") },
-    { value: "number", label: i18n("pivot.fieldType.number") },
-    { value: "date", label: i18n("pivot.fieldType.date") },
+    {value: "string", label: i18n("pivot.fieldType.string")},
+    {value: "number", label: i18n("pivot.fieldType.number")},
+    {value: "date", label: i18n("pivot.fieldType.date")},
 ];
 
 /** 字段角色预设 */
 export const PIVOT_FIELD_ROLE_PRESETS = [
-    { value: "row", label: i18n("pivot.fieldRole.row") },
-    { value: "column", label: i18n("pivot.fieldRole.column") },
-    { value: "value", label: i18n("pivot.fieldRole.value") },
-    { value: "filter", label: i18n("pivot.fieldRole.filter") },
+    {value: "row", label: i18n("pivot.fieldRole.row")},
+    {value: "column", label: i18n("pivot.fieldRole.column")},
+    {value: "value", label: i18n("pivot.fieldRole.value")},
+    {value: "filter", label: i18n("pivot.fieldRole.filter")},
 ];
 
 /** 数字格式预设 */
 export const PIVOT_NUMBER_FORMAT_PRESETS = [
-    { value: "#,##0", label: i18n("pivot.format.integer") },
-    { value: "#,##0.00", label: i18n("pivot.format.decimal2") },
-    { value: "#,##0.0000", label: i18n("pivot.format.decimal4") },
-    { value: "0.00%", label: i18n("pivot.format.percent") },
-    { value: "¥#,##0.00", label: i18n("pivot.format.currency") },
-    { value: "#,##0.00,,", label: i18n("pivot.format.million") },
+    {value: "#,##0", label: i18n("pivot.format.integer")},
+    {value: "#,##0.00", label: i18n("pivot.format.decimal2")},
+    {value: "#,##0.0000", label: i18n("pivot.format.decimal4")},
+    {value: "0.00%", label: i18n("pivot.format.percent")},
+    {value: "¥#,##0.00", label: i18n("pivot.format.currency")},
+    {value: "#,##0.00,,", label: i18n("pivot.format.million")},
 ];
 
 /** 创建字段 */

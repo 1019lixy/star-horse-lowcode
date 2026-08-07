@@ -1,8 +1,8 @@
 /**
  * 协同富文本常量定义
  */
-import { i18n } from "@/lang";
-import type { RichTextConfig, ToolbarPreset } from "./types";
+import {i18n} from "@/lang";
+import type {RichTextConfig, ToolbarPreset} from "./types";
 
 /** 默认配置 */
 export const DEFAULT_RICHTEXT_CONFIG: RichTextConfig = {
@@ -56,7 +56,12 @@ export const COLLAB_USER_COLORS = [
 ];
 
 /** 创建协同用户 */
-export const createCollabUser = (overrides: Partial<{ id: string; name: string; avatar: string; color: string }> = {}) => {
+export const createCollabUser = (overrides: Partial<{
+    id: string;
+    name: string;
+    avatar: string;
+    color: string
+}> = {}) => {
     const idx = Math.floor(Math.random() * COLLAB_USER_COLORS.length);
     return {
         id: `user_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,

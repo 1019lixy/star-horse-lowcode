@@ -1,9 +1,9 @@
 /**
  * 协同富文本状态管理
  */
-import { reactive, ref } from "vue";
-import { DEFAULT_RICHTEXT_CONFIG } from "../constants";
-import type { CollabOperation, CollabUser, RichTextConfig } from "../types";
+import {reactive, ref} from "vue";
+import {DEFAULT_RICHTEXT_CONFIG} from "../constants";
+import type {CollabOperation, CollabUser, RichTextConfig} from "../types";
 
 export const useCollabEditor = (initial?: { html?: string; config?: Partial<RichTextConfig> }) => {
     const html = ref(initial?.html ?? "");
@@ -73,7 +73,7 @@ export const useCollabEditor = (initial?: { html?: string; config?: Partial<Rich
         text: text.value,
         onlineUsers: JSON.parse(JSON.stringify(onlineUsers)),
         operations: JSON.parse(JSON.stringify(operations)),
-        config: { ...config },
+        config: {...config},
     });
 
     return {

@@ -4,10 +4,11 @@
  * 管理 elements / 当前工具 / 颜色 / 线宽 / 透明度 / 选择 / 历史栈
  */
 
-import { computed, reactive, ref } from "vue";
-import { ElMessage, ElMessageBox } from "element-plus";
-import { i18n } from "@/lang";
+import {computed, reactive, ref} from "vue";
+import {ElMessage, ElMessageBox} from "element-plus";
+import {i18n} from "@/lang";
 import {
+    createWbInitialState,
     WB_DEFAULT_CANVAS,
     WB_DEFAULT_FILL,
     WB_DEFAULT_FONT_SIZE,
@@ -15,16 +16,10 @@ import {
     WB_DEFAULT_STROKE,
     WB_DEFAULT_STROKE_WIDTH,
     WB_MAX_HISTORY,
-    createWbInitialState,
     wbGenId,
 } from "../constants";
-import type {
-    WbCanvasConfig,
-    WhiteboardElement,
-    WhiteboardState,
-    WhiteboardTool,
-} from "../types";
-import { useWhiteboardHistory } from "./useWhiteboardHistory";
+import type {WbCanvasConfig, WhiteboardElement, WhiteboardState, WhiteboardTool,} from "../types";
+import {useWhiteboardHistory} from "./useWhiteboardHistory";
 
 const snapshotElements = (state: WhiteboardState): WhiteboardElement[] =>
     JSON.parse(JSON.stringify(state.elements));
@@ -165,7 +160,7 @@ export function useWhiteboardDesigner(initial?: Partial<WhiteboardState>) {
         if (!el) return;
         switch (el.type) {
             case "pen":
-                (el as any).points = (el as any).points.map((p: any) => ({ x: p.x + dx, y: p.y + dy }));
+                (el as any).points = (el as any).points.map((p: any) => ({x: p.x + dx, y: p.y + dy}));
                 break;
             case "shape":
             case "text":
@@ -344,7 +339,7 @@ export function useWhiteboardDesigner(initial?: Partial<WhiteboardState>) {
         state.strokeWidth = WB_DEFAULT_STROKE_WIDTH;
         state.opacity = WB_DEFAULT_OPACITY;
         state.fontSize = WB_DEFAULT_FONT_SIZE;
-        state.canvas = { ...WB_DEFAULT_CANVAS };
+        state.canvas = {...WB_DEFAULT_CANVAS};
         history.reset([]);
     };
 

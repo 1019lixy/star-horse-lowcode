@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import type { SplitNode, TabInfo } from "./types";
+import {computed, ref} from "vue";
+import type {SplitNode, TabInfo} from "./types";
 import EditorPane from "./EditorPane.vue";
 
 /**
@@ -36,11 +36,11 @@ const containerRef = ref<HTMLElement>();
 
 /** 容器节点才有两个子节点 */
 const isContainer = computed(
-  () => !!props.node.direction && !!props.node.children,
+    () => !!props.node.direction && !!props.node.children,
 );
 
 const directionClass = computed(() =>
-  props.node.direction === "horizontal" ? "split-horizontal" : "split-vertical",
+    props.node.direction === "horizontal" ? "split-horizontal" : "split-vertical",
 );
 
 /** 第一个子节点占比（百分比） */
@@ -79,7 +79,7 @@ const onResizeStart = (e: MouseEvent) => {
     document.body.style.userSelect = "";
   };
   document.body.style.cursor =
-    props.node.direction === "horizontal" ? "col-resize" : "row-resize";
+      props.node.direction === "horizontal" ? "col-resize" : "row-resize";
   document.body.style.userSelect = "none";
   document.addEventListener("mousemove", onMove);
   document.addEventListener("mouseup", onUp);
@@ -88,65 +88,65 @@ const onResizeStart = (e: MouseEvent) => {
 
 <template>
   <div
-    v-if="isContainer"
-    ref="containerRef"
-    class="split-container"
-    :class="directionClass"
+      v-if="isContainer"
+      ref="containerRef"
+      class="split-container"
+      :class="directionClass"
   >
     <div
-      class="split-child split-child-first"
-      :style="
+        class="split-child split-child-first"
+        :style="
         directionClass === 'split-horizontal'
           ? { width: firstSizePercent + '%' }
           : { height: firstSizePercent + '%' }
       "
     >
       <SplitView
-        :node="node.children![0]"
-        :active-group-id="activeGroupId"
-        :groups="groups"
-        :breadcrumb-paths="breadcrumbPaths"
-        :language-labels="languageLabels"
-        :can-compile-map="canCompileMap"
-        :can-run-map="canRunMap"
-        :theme="theme"
-        @compile="(gid: string) => emit('compile', gid)"
-        @run="(gid: string) => emit('run', gid)"
+          :node="node.children![0]"
+          :active-group-id="activeGroupId"
+          :groups="groups"
+          :breadcrumb-paths="breadcrumbPaths"
+          :language-labels="languageLabels"
+          :can-compile-map="canCompileMap"
+          :can-run-map="canRunMap"
+          :theme="theme"
+          @compile="(gid: string) => emit('compile', gid)"
+          @run="(gid: string) => emit('run', gid)"
       />
     </div>
     <div
-      class="split-resizer"
-      :class="directionClass === 'split-horizontal' ? 'resizer-h' : 'resizer-v'"
-      @mousedown="onResizeStart"
+        class="split-resizer"
+        :class="directionClass === 'split-horizontal' ? 'resizer-h' : 'resizer-v'"
+        @mousedown="onResizeStart"
     />
     <div class="split-child split-child-second">
       <SplitView
-        :node="node.children![1]"
-        :active-group-id="activeGroupId"
-        :groups="groups"
-        :breadcrumb-paths="breadcrumbPaths"
-        :language-labels="languageLabels"
-        :can-compile-map="canCompileMap"
-        :can-run-map="canRunMap"
-        :theme="theme"
-        @compile="(gid: string) => emit('compile', gid)"
-        @run="(gid: string) => emit('run', gid)"
+          :node="node.children![1]"
+          :active-group-id="activeGroupId"
+          :groups="groups"
+          :breadcrumb-paths="breadcrumbPaths"
+          :language-labels="languageLabels"
+          :can-compile-map="canCompileMap"
+          :can-run-map="canRunMap"
+          :theme="theme"
+          @compile="(gid: string) => emit('compile', gid)"
+          @run="(gid: string) => emit('run', gid)"
       />
     </div>
   </div>
   <EditorPane
-    v-else
-    :group-id="node.groupId!"
-    :tabs="groups[node.groupId!]?.tabs || []"
-    :active-tab-id="groups[node.groupId!]?.activeTabId || ''"
-    :is-active="node.groupId === activeGroupId"
-    :theme="theme"
-    :breadcrumb-path="breadcrumbPaths[node.groupId!] || ''"
-    :language-label="languageLabels[node.groupId!] || 'plaintext'"
-    :can-compile="canCompileMap[node.groupId!] || false"
-    :can-run="canRunMap[node.groupId!] || false"
-    @compile="emit('compile', node.groupId!)"
-    @run="emit('run', node.groupId!)"
+      v-else
+      :group-id="node.groupId!"
+      :tabs="groups[node.groupId!]?.tabs || []"
+      :active-tab-id="groups[node.groupId!]?.activeTabId || ''"
+      :is-active="node.groupId === activeGroupId"
+      :theme="theme"
+      :breadcrumb-path="breadcrumbPaths[node.groupId!] || ''"
+      :language-label="languageLabels[node.groupId!] || 'plaintext'"
+      :can-compile="canCompileMap[node.groupId!] || false"
+      :can-run="canRunMap[node.groupId!] || false"
+      @compile="emit('compile', node.groupId!)"
+      @run="emit('run', node.groupId!)"
   />
 </template>
 
@@ -162,6 +162,7 @@ const onResizeStart = (e: MouseEvent) => {
   &.split-horizontal {
     flex-direction: row;
   }
+
   &.split-vertical {
     flex-direction: column;
   }
@@ -176,6 +177,7 @@ const onResizeStart = (e: MouseEvent) => {
   .split-horizontal & {
     height: 100%;
   }
+
   .split-vertical & {
     width: 100%;
   }
@@ -202,14 +204,17 @@ const onResizeStart = (e: MouseEvent) => {
     width: 4px;
     cursor: col-resize;
     height: 100%;
+
     &:hover {
       background: var(--ide-accent, #007acc);
     }
   }
+
   &.resizer-v {
     height: 4px;
     cursor: row-resize;
     width: 100%;
+
     &:hover {
       background: var(--ide-accent, #007acc);
     }

@@ -5,26 +5,16 @@
  * 不涉及渲染细节，渲染逻辑由 renderers/* 负责
  */
 
-import { computed, reactive, ref } from "vue";
-import {
-    DEFAULT_PAPER,
-    DEFAULT_SNAP_THRESHOLD,
-    ELEMENT_FACTORIES,
-    MAX_HISTORY_SIZE,
-} from "../constants";
-import type {
-    PrintDesignerState,
-    PrintElement,
-    PrintPaper,
-    PrintTemplate,
-} from "../types";
+import {computed, reactive} from "vue";
+import {DEFAULT_PAPER, DEFAULT_SNAP_THRESHOLD, ELEMENT_FACTORIES, MAX_HISTORY_SIZE,} from "../constants";
+import type {PrintDesignerState, PrintElement, PrintPaper, PrintTemplate,} from "../types";
 
 /** 创建初始模板 */
 const createInitialTemplate = (): PrintTemplate => ({
     id: `tpl_${Date.now()}`,
     name: "",
     code: "",
-    paper: { ...DEFAULT_PAPER },
+    paper: {...DEFAULT_PAPER},
     elements: [],
     dataSources: [],
     version: 1,
@@ -32,7 +22,7 @@ const createInitialTemplate = (): PrintTemplate => ({
 
 /** 创建初始状态 */
 const createInitialState = (template?: Partial<PrintTemplate>): PrintDesignerState => {
-    const tpl = { ...createInitialTemplate(), ...template };
+    const tpl = {...createInitialTemplate(), ...template};
     return {
         template: tpl,
         selectedIds: [],
@@ -106,7 +96,7 @@ export function usePrintDesigner(initialTemplate?: Partial<PrintTemplate>) {
         if (state.readonly) return;
         const el = state.template.elements.find((e) => e.id === id);
         if (!el) return;
-        el.style = { ...(el.style || {}), ...stylePatch };
+        el.style = {...(el.style || {}), ...stylePatch};
     };
 
     const deleteElements = (ids: string[] = state.selectedIds) => {

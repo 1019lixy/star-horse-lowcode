@@ -14,10 +14,11 @@
  *  - Object3D 由视口层从 DtEntity 自动同步（entityToObject3D）
  *  - 命令操作 DtEntity 数据层，信号通知视图刷新
  */
-import { DtHistory } from "./DtHistory";
-import { dtSignals, useDispatchSignal, useAddSignal, useSetSignalActive, SIGNAL_NAMES } from "./DtSignals";
-export { useDispatchSignal, useAddSignal, useSetSignalActive, SIGNAL_NAMES, dtSignals };
-import type { DtEntity } from "../types";
+import {DtHistory} from "./DtHistory";
+import {dtSignals, SIGNAL_NAMES, useAddSignal, useDispatchSignal, useSetSignalActive} from "./DtSignals";
+import type {DtEntity} from "../types";
+
+export {useDispatchSignal, useAddSignal, useSetSignalActive, SIGNAL_NAMES, dtSignals};
 
 export class DtApp {
     /** 场景实体列表 */

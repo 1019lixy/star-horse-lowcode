@@ -2,26 +2,16 @@
  * 甘特图状态管理
  * 单一职责：仅管理状态和操作逻辑，不含 UI 渲染
  */
-import { computed, reactive, ref } from "vue";
-import { createTask, DEFAULT_GANTT_CONFIG } from "../constants";
-import {
-    addDays,
-    daysBetween,
-    parseDate,
-} from "../utils/GanttDateUtils";
-import type {
-    GanttConfig,
-    GanttData,
-    GanttLink,
-    GanttLinkType,
-    GanttTask,
-} from "../types";
+import {computed, reactive, ref} from "vue";
+import {createTask, DEFAULT_GANTT_CONFIG} from "../constants";
+import {addDays, daysBetween, parseDate,} from "../utils/GanttDateUtils";
+import type {GanttConfig, GanttData, GanttLink, GanttLinkType, GanttTask,} from "../types";
 
 export const useGanttDesigner = (initial?: Partial<GanttData>) => {
     const state = reactive<GanttData>({
         tasks: initial?.tasks ?? [],
         links: initial?.links ?? [],
-        config: { ...DEFAULT_GANTT_CONFIG, ...(initial?.config ?? {}) },
+        config: {...DEFAULT_GANTT_CONFIG, ...(initial?.config ?? {})},
         name: initial?.name ?? "",
     });
 
@@ -70,7 +60,7 @@ export const useGanttDesigner = (initial?: Partial<GanttData>) => {
     const addTask = (overrides: Partial<GanttTask> = {}): GanttTask => {
         pushHistory();
         const order = state.tasks.length;
-        const task = createTask({ ...overrides, order });
+        const task = createTask({...overrides, order});
         state.tasks.push(task);
         return task;
     };

@@ -4,14 +4,17 @@
  * 管理实体与外部数据源的绑定关系
  * 实际项目中业务可注入真实 Provider（MQTT/HTTP/WS）
  */
-import { ref, reactive } from "vue";
-import type { DtBindingSourceType, DtDataBinding } from "../types";
+import {reactive, ref} from "vue";
+import type {DtBindingSourceType, DtDataBinding} from "../types";
 
 /** 数据绑定 Provider 接口 */
 export interface DtBindingProvider {
     type: DtBindingSourceType;
+
     connect(address: string): Promise<void>;
+
     subscribe(path: string, callback: (value: any) => void): void;
+
     disconnect(): void;
 }
 

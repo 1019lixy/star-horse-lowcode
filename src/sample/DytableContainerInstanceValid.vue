@@ -2,7 +2,7 @@
   <el-scrollbar>
     <!--    <dytable-item :dataForm="formData" :item="dataItem"  :formInfo="{}" />-->
     <!--    {{starHorseFormRef?.getFormData()}}-->
-    <star-horse-form :fieldList="dataItem" ref="starHorseFormRef" />
+    <star-horse-form :fieldList="dataItem" ref="starHorseFormRef"/>
     <!--    <template v-for="data in formData">
       -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;<br>
       <template v-for="item in Object.entries(data)">
@@ -13,10 +13,10 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from "vue";
-import { analysisCompDatas, analysisComps } from "@/api/form_utils";
-import { getDesignFormStore } from "@/store/StoreManager";
-import { parseDateByType } from "@/api/date_utils";
+import {onMounted, ref} from "vue";
+import {analysisCompDatas, analysisComps} from "@/api/form_utils";
+import {getDesignFormStore} from "@/store/StoreManager";
+import {parseDateByType} from "@/api/date_utils";
 
 let designForm = getDesignFormStore();
 const testDateFormat = (item) => {
@@ -296,7 +296,7 @@ const fields = [
               staticData: true,
               visiblePlatform: "all",
               textContent:
-                '<p style="text-align: center;"><span style="font-size: 19px;">星马个人工作室 </span></p><p style="text-align: center;"><span style="font-size: 19px;">DIP IPQC巡查表 &nbsp;</span></p>',
+                  '<p style="text-align: center;"><span style="font-size: 19px;">星马个人工作室 </span></p><p style="text-align: center;"><span style="font-size: 19px;">DIP IPQC巡查表 &nbsp;</span></p>',
               colWidth: "56px",
             },
             {
@@ -1228,7 +1228,7 @@ const fields = [
               staticData: true,
               visiblePlatform: "all",
               textContent:
-                "确认物料料号和实物一致，并确认上料记录（根据生产计划执行稽查）；",
+                  "确认物料料号和实物一致，并确认上料记录（根据生产计划执行稽查）；",
             },
             {
               id: "shad18981c-0b83-47ad-9a87-359d383304c3",
@@ -2759,7 +2759,7 @@ const fields = [
               staticData: true,
               visiblePlatform: "all",
               textContent:
-                "元器件的插件位置方向正确，元件需要插到位，无漏插现象; ",
+                  "元器件的插件位置方向正确，元件需要插到位，无漏插现象; ",
             },
             {
               id: "sh09237b71-276d-4a53-9f4b-3b06dcfce52f",
@@ -3482,7 +3482,7 @@ const fields = [
               staticData: true,
               visiblePlatform: "all",
               textContent:
-                "波峰焊温区参数、低温区参数、链条速度、浸锡时间、助焊剂喷雾速度和气压与炉温曲线图和SOP一致。",
+                  "波峰焊温区参数、低温区参数、链条速度、浸锡时间、助焊剂喷雾速度和气压与炉温曲线图和SOP一致。",
             },
             {
               id: "sh739a1dea-9871-48b9-b2d0-dc72cb89ff37",
@@ -3981,7 +3981,7 @@ const fields = [
               staticData: true,
               visiblePlatform: "all",
               textContent:
-                "检查焊盘上锡饱满,无批量假焊、虚焊、空焊、冷焊、连锡、少锡现象；",
+                  "检查焊盘上锡饱满,无批量假焊、虚焊、空焊、冷焊、连锡、少锡现象；",
             },
             {
               id: "shda85f115-32a6-4bcd-8dc8-b05eadfdf859",
@@ -4275,7 +4275,7 @@ const fields = [
               staticData: true,
               visiblePlatform: "all",
               textContent:
-                "检查电源插座和网口物料Pin角面是否存在异物，Pin脚变形现象。",
+                  "检查电源插座和网口物料Pin角面是否存在异物，Pin脚变形现象。",
             },
             {
               id: "shca6e7d49-fe4c-4dcd-8d0a-d2a1cf5de159",
@@ -4569,7 +4569,7 @@ const fields = [
               staticData: true,
               visiblePlatform: "all",
               textContent:
-                "PCB板面CCD下确认每600mm²范围内允许≤5个合格尺寸（0.05mm≥D≤0.13mm）锡珠（单面），反之拒收预警分析",
+                  "PCB板面CCD下确认每600mm²范围内允许≤5个合格尺寸（0.05mm≥D≤0.13mm）锡珠（单面），反之拒收预警分析",
             },
             {
               id: "sh0ee70ac7-249e-4241-8647-9344ca4987b1",
@@ -4863,7 +4863,7 @@ const fields = [
               staticData: true,
               visiblePlatform: "all",
               textContent:
-                '<p><span style="color: rgb(225, 60, 57);">每季度确认测试工程是否有安排从锡池内取样锡送测第三方检测，并确认其报告存档结果记录是否OK（注意：稽核时间不晚于每季度结束前15天）</span></p>',
+                  '<p><span style="color: rgb(225, 60, 57);">每季度确认测试工程是否有安排从锡池内取样锡送测第三方检测，并确认其报告存档结果记录是否OK（注意：稽核时间不晚于每季度结束前15天）</span></p>',
             },
             {
               id: "shf67aee4b-ac05-4936-901e-eb408d08d53d",
@@ -5073,7 +5073,7 @@ const fields = [
               staticData: true,
               visiblePlatform: "all",
               textContent:
-                "烙铁使用前有经量测（温度及漏电压）其结果确认符合规定并作记录；",
+                  "烙铁使用前有经量测（温度及漏电压）其结果确认符合规定并作记录；",
             },
             {
               id: "sh74880881-f57d-4ea8-9f24-48bae74e9755",
@@ -6925,7 +6925,7 @@ const fields = [
               staticData: true,
               visiblePlatform: "all",
               textContent:
-                "测试人员对测试不良品进行标识和记录，不良品放置在不良品区域内;",
+                  "测试人员对测试不良品进行标识和记录，不良品放置在不良品区域内;",
             },
             {
               id: "she75aeeef-ad8a-4cfc-b418-712b2d6f9bac",
@@ -8776,7 +8776,7 @@ const fields = [
               staticData: true,
               visiblePlatform: "all",
               textContent:
-                "测试人员对测试不良品有进行标识和记录，不良品放置在不良品区域内;",
+                  "测试人员对测试不良品有进行标识和记录，不良品放置在不良品区域内;",
             },
             {
               id: "she532fd7c-e6a0-4cba-9c51-637e6b661761",
@@ -9206,7 +9206,7 @@ const fields = [
               staticData: true,
               visiblePlatform: "all",
               textContent:
-                "检查焊接面无空焊、假焊、倒角、短路、虚焊、连锡、少锡、多锡、包锡等异常；",
+                  "检查焊接面无空焊、假焊、倒角、短路、虚焊、连锡、少锡、多锡、包锡等异常；",
             },
             {
               id: "sh8403aac4-08c0-4aa6-836f-980b8882ebe9",
@@ -9793,7 +9793,7 @@ const fields = [
               staticData: true,
               visiblePlatform: "all",
               textContent:
-                "稽查拿板时用手指托拿板边，禁止用手握捏卡槽、屏蔽盖等部件；",
+                  "稽查拿板时用手指托拿板边，禁止用手握捏卡槽、屏蔽盖等部件；",
             },
             {
               id: "sh2f45cb59-ed46-48de-8e33-872e208b3c09",
@@ -10087,7 +10087,7 @@ const fields = [
               staticData: true,
               visiblePlatform: "all",
               textContent:
-                "无集中性批量不良发生(相同不良≥3pcs/H 时，第一时间反馈管理人员)；",
+                  "无集中性批量不良发生(相同不良≥3pcs/H 时，第一时间反馈管理人员)；",
             },
             {
               id: "shcfe3b1ed-c587-49dc-8681-1168652e7773",
@@ -10513,7 +10513,7 @@ const fields = [
               staticData: true,
               visiblePlatform: "all",
               textContent:
-                "确认目检后PCBA放入托盘中的方向保持一致或符合SOP要求。",
+                  "确认目检后PCBA放入托盘中的方向保持一致或符合SOP要求。",
             },
             {
               id: "sh90255d3d-9711-4cc7-acc1-d76c0d46f22b",
@@ -11236,7 +11236,7 @@ const fields = [
               staticData: true,
               visiblePlatform: "all",
               textContent:
-                "确认现场封箱依照标签工单、出货地划分，进行独立包装作业。",
+                  "确认现场封箱依照标签工单、出货地划分，进行独立包装作业。",
             },
             {
               id: "shbc5d65e5-5607-4f25-b605-227a277d1a17",
@@ -11534,7 +11534,7 @@ const fields = [
               staticData: true,
               visiblePlatform: "all",
               textContent:
-                "烙铁使用前有经量测（温度及漏电压）其结果确认符合规定并作记录；",
+                  "烙铁使用前有经量测（温度及漏电压）其结果确认符合规定并作记录；",
             },
             {
               id: "sh60105f42-a50c-4b33-9333-d2d851b5bf30",
@@ -11785,7 +11785,7 @@ const fields = [
               staticData: true,
               visiblePlatform: "all",
               textContent:
-                "物料盒内的物料确认做区分（良品、不良品）并确认料号正确；",
+                  "物料盒内的物料确认做区分（良品、不良品）并确认料号正确；",
             },
             {
               id: "sh16f299a2-0a5e-4732-b331-779c80eaa2e0",
@@ -12079,7 +12079,7 @@ const fields = [
               staticData: true,
               visiblePlatform: "all",
               textContent:
-                "维修OK的产品及待维修产品确认有做区域划分并做状态区分；",
+                  "维修OK的产品及待维修产品确认有做区域划分并做状态区分；",
             },
             {
               id: "sh6ff9ae44-521f-447b-9897-e1e6cec3d808",
@@ -12671,7 +12671,7 @@ const fields = [
               staticData: true,
               visiblePlatform: "all",
               textContent:
-                "测试仪器确认进行校验并贴有校验标签，确认在校验合格有效期内使用；",
+                  "测试仪器确认进行校验并贴有校验标签，确认在校验合格有效期内使用；",
             },
             {
               id: "shcbdf92bf-7639-4b4c-8a39-ef6535a70c56",
@@ -13083,7 +13083,7 @@ const fields = [
               staticData: true,
               visiblePlatform: "all",
               textContent:
-                "在线治具确认进行验收并粘贴验收合格标签；确认各工序测试夹具与夹具共用清单机型或者SOP机型一致；",
+                  "在线治具确认进行验收并粘贴验收合格标签；确认各工序测试夹具与夹具共用清单机型或者SOP机型一致；",
             },
             {
               id: "sh6c6c6afe-405e-47a5-8c11-f74e0c50c31f",
@@ -15289,7 +15289,7 @@ const fields = [
               staticData: true,
               visiblePlatform: "all",
               textContent:
-                "确认作业员操作手法与SOP一致；各工位生产叠板作业和存放的情况",
+                  "确认作业员操作手法与SOP一致；各工位生产叠板作业和存放的情况",
             },
             {
               id: "shc98412d2-6daa-423b-a69a-fd816e962312",
@@ -15715,7 +15715,7 @@ const fields = [
               staticData: true,
               visiblePlatform: "all",
               textContent:
-                "生产线辅料（酒精、洗板水、防潮油等）是否有做标识，标识是否清楚。",
+                  "生产线辅料（酒精、洗板水、防潮油等）是否有做标识，标识是否清楚。",
             },
             {
               id: "she13c318c-f0f5-4197-9698-e23673292846",
@@ -16141,7 +16141,7 @@ const fields = [
               staticData: true,
               visiblePlatform: "all",
               textContent:
-                "已测试与未测试的产品作区分并贴有标示卡（备注清楚状态：机型、工单、数量、状态、日期）；",
+                  "已测试与未测试的产品作区分并贴有标示卡（备注清楚状态：机型、工单、数量、状态、日期）；",
             },
             {
               id: "sh0337d286-5703-4f64-9287-8484cef5fe04",
@@ -16937,7 +16937,7 @@ const fields = [
               staticData: true,
               visiblePlatform: "all",
               textContent:
-                "<p>1、缺点定义：</p><p>一般：对品质未造成直接或间接的伤害或隐患（稽核问题再次确认时还未改善则转为主要缺点）</p><p>异常：直接或间接对品质生产隐患或造成重工（具体依照停线与停线标准进行判定）</p><p>停线：稽核与检查时发现单个或批量性错料、反向、错位、ECN未导入等（具体依照停线与异常标准进行判定）</p><p>2、如附表内容不适用，需填写NA。</p><p><br></p>",
+                  "<p>1、缺点定义：</p><p>一般：对品质未造成直接或间接的伤害或隐患（稽核问题再次确认时还未改善则转为主要缺点）</p><p>异常：直接或间接对品质生产隐患或造成重工（具体依照停线与停线标准进行判定）</p><p>停线：稽核与检查时发现单个或批量性错料、反向、错位、ECN未导入等（具体依照停线与异常标准进行判定）</p><p>2、如附表内容不适用，需填写NA。</p><p><br></p>",
               colWidth: "56px",
             },
             {

@@ -1,24 +1,25 @@
 <template>
   <starhorse-form-item
-    :showFormItem="showFormItem"
-    :isDesign="isDesign"
-    :disabled="disabled"
-    :bareFlag="bareFlag"
-    :field="field"
-    :parentField="parentField"
+      :showFormItem="showFormItem"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      :field="field"
+      :parentField="parentField"
   >
     <div
-      ref="markdownEditor"
-      class="markdown-editor"
-      v-html="markdown.render(formData[field.fieldName] || '')"
+        ref="markdownEditor"
+        class="markdown-editor"
+        v-html="markdown.render(formData[field.fieldName] || '')"
     />
   </starhorse-form-item>
 </template>
 <script setup lang="ts" name="view-markdown">
-import { nextTick, onMounted, onUpdated, ref } from "vue";
+import {nextTick, onMounted, onUpdated, ref} from "vue";
 import MarkdownIt from "markdown-it";
 
-import { ItemPreps } from "@/components/types/ItemPreps";
+import {ItemPreps} from "@/components/types/ItemPreps";
+
 withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
   disabled: false,

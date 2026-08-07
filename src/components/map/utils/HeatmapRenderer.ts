@@ -1,8 +1,8 @@
 /**
  * 热力图渲染器（纯 Canvas 算法，无依赖）
  */
-import type { HeatGradientStop, HeatPoint, MapBounds } from "../types";
-import { project } from "./MapProjection";
+import type {HeatGradientStop, HeatPoint, MapBounds} from "../types";
+import {project} from "./MapProjection";
 
 /**
  * 渲染热力图到指定 Canvas
@@ -36,7 +36,7 @@ export const renderHeatmap = (
     if (!tempCtx) return;
 
     for (const p of points) {
-        const px = project({ lng: p.lng, lat: p.lat }, bounds, width, height);
+        const px = project({lng: p.lng, lat: p.lat}, bounds, width, height);
         const w = Math.max(0.01, Math.min(1, p.weight));
         const r = Math.max(1, radius);
         const grad = tempCtx.createRadialGradient(px.x, px.y, 0, px.x, px.y, r);
@@ -68,11 +68,11 @@ export const renderHeatmap = (
 };
 
 const DEFAULT_GRADIENT: HeatGradientStop[] = [
-    { offset: 0, color: "rgba(0,0,255,0)" },
-    { offset: 0.25, color: "rgba(0,0,255,0.4)" },
-    { offset: 0.5, color: "rgba(0,255,0,0.6)" },
-    { offset: 0.75, color: "rgba(255,255,0,0.8)" },
-    { offset: 1, color: "rgba(255,0,0,1)" },
+    {offset: 0, color: "rgba(0,0,255,0)"},
+    {offset: 0.25, color: "rgba(0,0,255,0.4)"},
+    {offset: 0.5, color: "rgba(0,255,0,0.6)"},
+    {offset: 0.75, color: "rgba(255,255,0,0.8)"},
+    {offset: 1, color: "rgba(255,0,0,1)"},
 ];
 
 const pickGradientColor = (stops: HeatGradientStop[], t: number): string => {
@@ -104,5 +104,5 @@ const parseRgba = (color: string): { r: number; g: number; b: number; a: number 
             a: m[4] !== undefined ? parseFloat(m[4]) : 1,
         };
     }
-    return { r: 255, g: 0, b: 0, a: 1 };
+    return {r: 255, g: 0, b: 0, a: 1};
 };

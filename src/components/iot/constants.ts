@@ -1,7 +1,7 @@
 /**
  * IoT 监控常量、预设、示例数据与工厂函数（i18n 化）
  */
-import { i18n } from "@/lang";
+import {i18n} from "@/lang";
 import type {
     IotAlarm,
     IotAlarmLevel,
@@ -17,11 +17,11 @@ import type {
 
 /** 设备类型预设表 */
 export const DEVICE_TYPE_PRESETS: IotDeviceTypePreset[] = [
-    { type: "gateway", label: i18n("iot.deviceType.gateway"), icon: "Connection", color: "#409EFF" },
-    { type: "controller", label: i18n("iot.deviceType.controller"), icon: "Cpu", color: "#67C23A" },
-    { type: "sensor", label: i18n("iot.deviceType.sensor"), icon: "Odometer", color: "#E6A23C" },
-    { type: "actuator", label: i18n("iot.deviceType.actuator"), icon: "Switch", color: "#909399" },
-    { type: "camera", label: i18n("iot.deviceType.camera"), icon: "VideoCamera", color: "#9C27B0" },
+    {type: "gateway", label: i18n("iot.deviceType.gateway"), icon: "Connection", color: "#409EFF"},
+    {type: "controller", label: i18n("iot.deviceType.controller"), icon: "Cpu", color: "#67C23A"},
+    {type: "sensor", label: i18n("iot.deviceType.sensor"), icon: "Odometer", color: "#E6A23C"},
+    {type: "actuator", label: i18n("iot.deviceType.actuator"), icon: "Switch", color: "#909399"},
+    {type: "camera", label: i18n("iot.deviceType.camera"), icon: "VideoCamera", color: "#9C27B0"},
 ];
 
 /** 设备状态颜色映射 */
@@ -127,13 +127,13 @@ export const autoLayoutTopology = (devices: IotDevice[]): IotTopologyNode[] => {
     const depthMap = new Map<string, number>();
     const roots = childrenMap.get(null) ?? [];
     let maxDepth = 0;
-    const queue: Array<{ device: IotDevice; depth: number }> = roots.map((d) => ({ device: d, depth: 0 }));
+    const queue: Array<{ device: IotDevice; depth: number }> = roots.map((d) => ({device: d, depth: 0}));
     while (queue.length > 0) {
-        const { device, depth } = queue.shift()!;
+        const {device, depth} = queue.shift()!;
         depthMap.set(device.id, depth);
         maxDepth = Math.max(maxDepth, depth);
         const kids = childrenMap.get(device.id) ?? [];
-        for (const k of kids) queue.push({ device: k, depth: depth + 1 });
+        for (const k of kids) queue.push({device: k, depth: depth + 1});
     }
 
     // 3. 自底向上分配叶子序号，计算每个节点占据的横向槽位
@@ -186,7 +186,7 @@ export const buildTopologyEdges = (devices: IotDevice[]): IotTopologyEdge[] => {
 
 /** 计算拓扑视图所需尺寸 */
 export const computeTopologySize = (nodes: IotTopologyNode[]): { width: number; height: number } => {
-    if (nodes.length === 0) return { width: 600, height: 400 };
+    if (nodes.length === 0) return {width: 600, height: 400};
     let maxX = 0;
     let maxY = 0;
     for (const n of nodes) {
@@ -213,9 +213,9 @@ const generateSeries = (
         const ts = now - i * 5000;
         const wave = Math.sin(i / 3) * amplitude;
         const noise = (Math.random() - 0.5) * amplitude * 0.4;
-        data.push({ timestamp: ts, value: Number((base + wave + noise).toFixed(2)) });
+        data.push({timestamp: ts, value: Number((base + wave + noise).toFixed(2))});
     }
-    return { name, color, data, visible: true };
+    return {name, color, data, visible: true};
 };
 
 /** 示例时序数据（温度/湿度/压力） */
@@ -235,11 +235,11 @@ export const SAMPLE_DEVICES: IotDevice[] = [
         parentId: null,
         location: "数据中心-A栋",
         lastSeen: Date.now() - 2000,
-        properties: { vendor: "StarHorse", model: "EG-200", firmware: "v2.4.1", ip: "10.0.0.1" },
+        properties: {vendor: "StarHorse", model: "EG-200", firmware: "v2.4.1", ip: "10.0.0.1"},
         metrics: [
-            createMetric({ name: "CPU", value: 42, unit: "%" }),
-            createMetric({ name: "Memory", value: 68, unit: "%" }),
-            createMetric({ name: "Throughput", value: 1280, unit: "KB/s" }),
+            createMetric({name: "CPU", value: 42, unit: "%"}),
+            createMetric({name: "Memory", value: 68, unit: "%"}),
+            createMetric({name: "Throughput", value: 1280, unit: "KB/s"}),
         ],
     }),
     createDevice({
@@ -250,10 +250,10 @@ export const SAMPLE_DEVICES: IotDevice[] = [
         parentId: "gw-001",
         location: "车间1-主控柜",
         lastSeen: Date.now() - 3000,
-        properties: { model: "PLC-1200", channels: 16, protocol: "Modbus-TCP" },
+        properties: {model: "PLC-1200", channels: 16, protocol: "Modbus-TCP"},
         metrics: [
-            createMetric({ name: "CPU", value: 35, unit: "%" }),
-            createMetric({ name: "Temperature", value: 38, unit: "℃" }),
+            createMetric({name: "CPU", value: 35, unit: "%"}),
+            createMetric({name: "Temperature", value: 38, unit: "℃"}),
         ],
     }),
     createDevice({
@@ -264,10 +264,10 @@ export const SAMPLE_DEVICES: IotDevice[] = [
         parentId: "gw-001",
         location: "车间2-主控柜",
         lastSeen: Date.now() - 4000,
-        properties: { model: "PLC-1200", channels: 12, protocol: "Modbus-TCP" },
+        properties: {model: "PLC-1200", channels: 12, protocol: "Modbus-TCP"},
         metrics: [
-            createMetric({ name: "CPU", value: 28, unit: "%" }),
-            createMetric({ name: "Temperature", value: 36, unit: "℃" }),
+            createMetric({name: "CPU", value: 28, unit: "%"}),
+            createMetric({name: "Temperature", value: 36, unit: "℃"}),
         ],
     }),
     createDevice({
@@ -278,10 +278,10 @@ export const SAMPLE_DEVICES: IotDevice[] = [
         parentId: "gw-001",
         location: "车间3-主控柜",
         lastSeen: Date.now() - 600000,
-        properties: { model: "PLC-1500", channels: 20, protocol: "OPC-UA" },
+        properties: {model: "PLC-1500", channels: 20, protocol: "OPC-UA"},
         metrics: [
-            createMetric({ name: "CPU", value: 0, unit: "%" }),
-            createMetric({ name: "Temperature", value: 0, unit: "℃" }),
+            createMetric({name: "CPU", value: 0, unit: "%"}),
+            createMetric({name: "Temperature", value: 0, unit: "℃"}),
         ],
     }),
     createDevice({
@@ -292,10 +292,10 @@ export const SAMPLE_DEVICES: IotDevice[] = [
         parentId: "ctrl-001",
         location: "车间1-工位A",
         lastSeen: Date.now() - 1000,
-        properties: { model: "TH-100", battery: 87, range: "-20~80℃" },
+        properties: {model: "TH-100", battery: 87, range: "-20~80℃"},
         metrics: [
-            createMetric({ name: "Temperature", value: 24.5, unit: "℃" }),
-            createMetric({ name: "Humidity", value: 58, unit: "%" }),
+            createMetric({name: "Temperature", value: 24.5, unit: "℃"}),
+            createMetric({name: "Humidity", value: 58, unit: "%"}),
         ],
     }),
     createDevice({
@@ -306,10 +306,10 @@ export const SAMPLE_DEVICES: IotDevice[] = [
         parentId: "ctrl-001",
         location: "车间1-工位B",
         lastSeen: Date.now() - 5000,
-        properties: { model: "TH-100", battery: 21, range: "-20~80℃" },
+        properties: {model: "TH-100", battery: 21, range: "-20~80℃"},
         metrics: [
-            createMetric({ name: "Temperature", value: 31.2, unit: "℃" }),
-            createMetric({ name: "Humidity", value: 72, unit: "%" }),
+            createMetric({name: "Temperature", value: 31.2, unit: "℃"}),
+            createMetric({name: "Humidity", value: 72, unit: "%"}),
         ],
     }),
     createDevice({
@@ -320,10 +320,10 @@ export const SAMPLE_DEVICES: IotDevice[] = [
         parentId: "ctrl-001",
         location: "车间1-入口",
         lastSeen: Date.now() - 500,
-        properties: { resolution: "1080P", fps: 25, model: "CAM-IR" },
+        properties: {resolution: "1080P", fps: 25, model: "CAM-IR"},
         metrics: [
-            createMetric({ name: "Bitrate", value: 4096, unit: "Kbps" }),
-            createMetric({ name: "FPS", value: 25, unit: "fps" }),
+            createMetric({name: "Bitrate", value: 4096, unit: "Kbps"}),
+            createMetric({name: "FPS", value: 25, unit: "fps"}),
         ],
     }),
     createDevice({
@@ -334,9 +334,9 @@ export const SAMPLE_DEVICES: IotDevice[] = [
         parentId: "ctrl-002",
         location: "车间2-管道",
         lastSeen: Date.now() - 2000,
-        properties: { model: "PS-200", range: "0~10MPa" },
+        properties: {model: "PS-200", range: "0~10MPa"},
         metrics: [
-            createMetric({ name: "Pressure", value: 1.02, unit: "MPa" }),
+            createMetric({name: "Pressure", value: 1.02, unit: "MPa"}),
         ],
     }),
     createDevice({
@@ -347,9 +347,9 @@ export const SAMPLE_DEVICES: IotDevice[] = [
         parentId: "ctrl-002",
         location: "车间2-阀门",
         lastSeen: Date.now() - 1500,
-        properties: { model: "VL-50", type: "电磁阀", state: "OPEN" },
+        properties: {model: "VL-50", type: "电磁阀", state: "OPEN"},
         metrics: [
-            createMetric({ name: "State", value: "OPEN", unit: "" }),
+            createMetric({name: "State", value: "OPEN", unit: ""}),
         ],
     }),
     createDevice({
@@ -360,9 +360,9 @@ export const SAMPLE_DEVICES: IotDevice[] = [
         parentId: "ctrl-003",
         location: "车间3-出口",
         lastSeen: Date.now() - 7200000,
-        properties: { resolution: "720P", fps: 0, model: "CAM-IR" },
+        properties: {resolution: "720P", fps: 0, model: "CAM-IR"},
         metrics: [
-            createMetric({ name: "Bitrate", value: 0, unit: "Kbps" }),
+            createMetric({name: "Bitrate", value: 0, unit: "Kbps"}),
         ],
     }),
 ];

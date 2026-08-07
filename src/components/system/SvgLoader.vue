@@ -2,15 +2,15 @@
   <div ref="svgContainer"></div>
 </template>
 <script lang="ts" setup>
-import { onMounted, ref, watch } from "vue";
+import {onMounted, ref, watch} from "vue";
 
 const props = defineProps({
-  path: { type: String, required: true },
-  size: { type: String, default: "20px" },
-  cursor: { type: String, default: "normal" },
-  marginLeft: { type: String, default: "1px" },
-  marginRight: { type: String, default: "1px" },
-  color: { type: String, default: "var(--star-horse-style)" },
+  path: {type: String, required: true},
+  size: {type: String, default: "20px"},
+  cursor: {type: String, default: "normal"},
+  marginLeft: {type: String, default: "1px"},
+  marginRight: {type: String, default: "1px"},
+  color: {type: String, default: "var(--star-horse-style)"},
 });
 const svgContainer = ref(null);
 const loadSvg = async () => {

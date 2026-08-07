@@ -1,41 +1,42 @@
 <template>
   <starhorse-form-item
-    :showFormItem="showFormItem"
-    :isDesign="isDesign"
-    :disabled="disabled"
-    :bareFlag="bareFlag"
-    :field="field"
-    :parentField="parentField"
+      :showFormItem="showFormItem"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      :field="field"
+      :parentField="parentField"
   >
     <!-- PC 端：完全保持原逻辑 -->
     <el-select
-      v-if="!isSeparate"
-      :fid="field.fieldName"
-      :remote="remote"
-      :disabled="checkIsDisabled(props)"
-      v-bind="prepsFilter(field.preps)"
-      :show-arrow="true"
-      :remote-method="remoteMethod"
-      v-on="getDynamicEvents(props, itemAction, formData)"
-      v-model="formData[field.fieldName]"
+        v-if="!isSeparate"
+        :fid="field.fieldName"
+        :remote="remote"
+        :disabled="checkIsDisabled(props)"
+        v-bind="prepsFilter(field.preps)"
+        :placeholder="field.preps?.placeholder??''"
+        :show-arrow="true"
+        :remote-method="remoteMethod"
+        v-on="getDynamicEvents(props, itemAction, formData)"
+        v-model="formData[field.fieldName]"
     >
       <template v-if="field.preps?.multiple" #header>
         <el-checkbox
-          v-model="checkAll"
-          :indeterminate="indeterminate"
-          @change="handleCheckAll"
+            v-model="checkAll"
+            :indeterminate="indeterminate"
+            @change="handleCheckAll"
         >
           {{ i18n("common.selectAll") }}
         </el-checkbox>
       </template>
       <template
-        v-for="item in field.preps?.values"
-        :key="item[field.preps?.props?.value ?? 'value']"
+          v-for="item in field.preps?.values"
+          :key="item[field.preps?.props?.value ?? 'value']"
       >
         <el-option
-          :disabled="item['disabled']"
-          :label="item[field.preps?.props?.label ?? 'name']"
-          :value="item[field.preps?.props?.value ?? 'value']"
+            :disabled="item['disabled']"
+            :label="item[field.preps?.props?.label ?? 'name']"
+            :value="item[field.preps?.props?.value ?? 'value']"
         />
       </template>
       <template v-if="field.preps?.showFooter" #footer>
@@ -45,9 +46,9 @@
         <template v-else>
           <div class="flex-row flex w-full justify-between">
             <el-input
-              v-model="optionName"
-              class="option-input flex-1"
-              :placeholder="i18n('form.enterOptionName')"
+                v-model="optionName"
+                class="option-input flex-1"
+                :placeholder="i18n('form.enterOptionName')"
             />
             <div class="flex-row flex justify-center w-[35%] mx-auto my-0">
               <el-button type="primary" icon="add" @click="onConfirm">
@@ -65,48 +66,48 @@
     <!-- APP 端分离模式：只读输入框 + 抽屉式原生列表 -->
     <template v-else>
       <el-input
-        :model-value="displayText"
-        :placeholder="field.preps?.placeholder"
-        :disabled="checkIsDisabled(props)"
-        readonly
-        @click="openPicker"
+          :model-value="displayText"
+          :placeholder="field.preps?.placeholder"
+          :disabled="checkIsDisabled(props)"
+          readonly
+          @click="openPicker"
       >
         <template #suffix>
-          <star-horse-icon icon-class="arrow-down" />
+          <star-horse-icon icon-class="arrow-down"/>
         </template>
       </el-input>
 
       <ShMobilePicker
-        v-if="isSeparate && pickerVisible"
-        v-model="pickerVisible"
-        :title="title"
-        :placement="placement"
-        :size="size"
-        :show-footer="multiple"
-        @confirm="handleConfirm"
-        @cancel="handleCancel"
+          v-if="isSeparate && pickerVisible"
+          v-model="pickerVisible"
+          :title="title"
+          :placement="placement"
+          :size="size"
+          :show-footer="multiple"
+          @confirm="handleConfirm"
+          @cancel="handleCancel"
       >
         <div class="sh-mobile-select-list">
           <!-- 搜索框（filterable / remote / allowCreate 时显示） -->
           <el-input
-            v-if="field.preps?.filterable || remote || allowCreate"
-            v-model="searchKey"
-            class="sh-mobile-select-list__search"
-            :placeholder="i18n('starhorse.pleaseInput') || '搜索'"
-            clearable
-            @input="handleSearch"
+              v-if="field.preps?.filterable || remote || allowCreate"
+              v-model="searchKey"
+              class="sh-mobile-select-list__search"
+              :placeholder="i18n('starhorse.pleaseInput') || '搜索'"
+              clearable
+              @input="handleSearch"
           >
             <template #prefix>
-              <star-horse-icon icon-class="search" />
+              <star-horse-icon icon-class="search"/>
             </template>
           </el-input>
 
           <!-- 全选（多选时） -->
           <div v-if="multiple" class="sh-mobile-select-list__all">
             <el-checkbox
-              v-model="checkAll"
-              :indeterminate="indeterminate"
-              @change="handleCheckAll"
+                v-model="checkAll"
+                :indeterminate="indeterminate"
+                @change="handleCheckAll"
             >
               {{ i18n("common.selectAll") }}
             </el-checkbox>
@@ -115,18 +116,18 @@
           <!-- 选项列表 -->
           <div class="sh-mobile-select-list__options">
             <div
-              v-for="item in filteredOptions"
-              :key="item[valueKey]"
-              class="sh-mobile-select-list__item"
-              :class="{ 'is-selected': isSelected(item) }"
-              @click="toggleOption(item)"
+                v-for="item in filteredOptions"
+                :key="item[valueKey]"
+                class="sh-mobile-select-list__item"
+                :class="{ 'is-selected': isSelected(item) }"
+                @click="toggleOption(item)"
             >
-              <el-checkbox v-if="multiple" :model-value="isSelected(item)" @click.stop />
+              <el-checkbox v-if="multiple" :model-value="isSelected(item)" @click.stop/>
               <span class="sh-mobile-select-list__label">{{ item[labelKey] }}</span>
               <star-horse-icon
-                v-if="!multiple && isSelected(item)"
-                icon-class="check"
-                class="sh-mobile-select-list__check"
+                  v-if="!multiple && isSelected(item)"
+                  icon-class="check"
+                  class="sh-mobile-select-list__check"
               />
             </div>
             <div v-if="!filteredOptions.length && !showCreateRow" class="sh-mobile-select-list__empty">
@@ -135,7 +136,7 @@
           </div>
           <!-- allowCreate：创建新值 -->
           <div v-if="showCreateRow" class="sh-mobile-select-list__create" @click="createCustomValue">
-            <star-horse-icon icon-class="add" />
+            <star-horse-icon icon-class="add"/>
             <span>{{ i18n("form.add") }} "{{ searchKey }}"</span>
           </div>
         </div>
@@ -144,12 +145,8 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {
-  compDynamicData,
-  createFilter,
-  dynamicUrlOperation,
-} from "@/api/star_horse_utils";
-import { getDynamicEvents } from "@/api/system";
+import {compDynamicData, createFilter, dynamicUrlOperation,} from "@/api/star_horse_utils";
+import {getDynamicEvents} from "@/api/system";
 import {
   allAction,
   checkIsDisabled,
@@ -157,15 +154,14 @@ import {
   prepsFilter,
   relationEventDispatcher,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
-import { ItemPreps } from "@/components/types/ItemPreps";
-import { SearchParams } from "@/components/types/Params";
-import { warning } from "@/utils/message";
-import { computed, nextTick, onMounted, ref, watch } from "vue";
-import { i18n } from "@/lang";
-import {
-  useMobilePicker,
-} from "@/components/formcomp/utils/useMobilePicker";
+import {ItemPreps} from "@/components/types/ItemPreps";
+import {SearchParams} from "@/components/types/Params";
+import {warning} from "@/utils/message";
+import {computed, nextTick, onMounted, ref, watch} from "vue";
+import {i18n} from "@/lang";
+import {useMobilePicker,} from "@/components/formcomp/utils/useMobilePicker";
 import ShMobilePicker from "@/components/formcomp/utils/ShMobilePicker.vue";
+import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -197,7 +193,7 @@ const {
   title,
   openPicker,
   closePicker,
-} = useMobilePicker(() => props.field);
+} = useMobilePicker(() => props.field,props.source);
 
 /** 是否多选 */
 const multiple = computed(() => !!props.field.preps?.multiple);
@@ -220,8 +216,8 @@ const displayOptions = ref<any[]>([]);
 watch(pickerVisible, async (val) => {
   if (val) {
     tempValue.value = multiple.value
-      ? [...(formData.value?.[props.field.fieldName] || [])]
-      : formData.value?.[props.field.fieldName];
+        ? [...(formData.value?.[props.field.fieldName] || [])]
+        : formData.value?.[props.field.fieldName];
     searchKey.value = "";
     displayOptions.value = props.field.preps?.values || [];
     updateCheckAllState();
@@ -232,9 +228,9 @@ watch(pickerVisible, async (val) => {
 const filteredOptions = computed(() => {
   if (!searchKey.value) return displayOptions.value;
   return displayOptions.value.filter((item: any) =>
-    String(item[labelKey.value] ?? "")
-      .toLowerCase()
-      .includes(searchKey.value.toLowerCase()),
+      String(item[labelKey.value] ?? "")
+          .toLowerCase()
+          .includes(searchKey.value.toLowerCase()),
   );
 });
 
@@ -243,14 +239,14 @@ const isKeywordExists = computed(() => {
   if (!searchKey.value) return true;
   const kw = searchKey.value.toLowerCase();
   return (props.field.preps?.values || []).some((item: any) =>
-    String(item[valueKey.value] ?? "").toLowerCase() === kw ||
-    String(item[labelKey.value] ?? "").toLowerCase() === kw,
+      String(item[valueKey.value] ?? "").toLowerCase() === kw ||
+      String(item[labelKey.value] ?? "").toLowerCase() === kw,
   );
 });
 
 /** allowCreate：是否显示"创建 xxx"行 */
 const showCreateRow = computed(
-  () => allowCreate.value && searchKey.value.trim() !== "" && !isKeywordExists.value,
+    () => allowCreate.value && searchKey.value.trim() !== "" && !isKeywordExists.value,
 );
 
 /** allowCreate：创建新值并加入选中 */
@@ -330,11 +326,11 @@ const displayText = computed(() => {
   const values = props.field.preps?.values || [];
   if (Array.isArray(val)) {
     return val
-      .map((v) => {
-        const item = values.find((it: any) => it[valueKey.value] === v);
-        return item ? item[labelKey.value] : v;
-      })
-      .join(", ");
+        .map((v) => {
+          const item = values.find((it: any) => it[valueKey.value] === v);
+          return item ? item[labelKey.value] : v;
+        })
+        .join(", ");
   }
   const item = values.find((it: any) => it[valueKey.value] === val);
   return item ? item[labelKey.value] : String(val);
@@ -349,11 +345,11 @@ const handleConfirm = () => {
   const dataRelation = props.field.preps?.dataRelation;
   if (dataRelation?.actionName) {
     relationEventDispatcher(
-      props,
-      dataRelation,
-      tempValue.value,
-      formData,
-      dataRelation.actionName,
+        props,
+        dataRelation,
+        tempValue.value,
+        formData,
+        dataRelation.actionName,
     );
   }
   closePicker();
@@ -410,8 +406,8 @@ const remoteMethod = async (queryString: string) => {
     temp["values"] = await dynamicUrlOperation(temp, searchParams);
   } else {
     temp["values"] = queryString
-      ? temp["values"]?.filter(createFilter(queryString))
-      : temp["values"];
+        ? temp["values"]?.filter(createFilter(queryString))
+        : temp["values"];
   }
 };
 onMounted(() => {
@@ -419,12 +415,10 @@ onMounted(() => {
     props.field.preps = {};
   }
   props.field.preps["remote"] =
-    props.field.preps["remote"] || props.field.preps["dataSource"] == "url";
+      props.field.preps["remote"] || props.field.preps["dataSource"] == "url";
   props.field.preps["filterable"] = true;
   props.field.preps["collapseTags"] = true;
   initData();
-  // eslint-disable-next-line no-console
-  console.log("[select-item.onMounted] field=" + props.field?.fieldName + " hasDataRelation=" + !!props.field?.preps?.dataRelation + " isSeparate=" + isSeparate);
   nextTick(() => {
     initCompCallEvent(props, emits, formData);
   });

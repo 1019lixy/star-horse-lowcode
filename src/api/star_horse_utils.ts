@@ -603,7 +603,7 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
             } else if (
                 temp &&
                 (temp["tabList"] || temp["collapseList"] || temp["cardList"] ||
-                 temp["splitterList"] || temp["dytableList"])
+                    temp["splitterList"] || temp["dytableList"])
             ) {
                 //如果是tabList/collapseList/cardList/splitterList/dytableList
                 //将容器字段本身也放入 formFields,供 dataRelation 容器控制策略(controlTarget=container)查找
@@ -617,8 +617,6 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
                 // App 端扁平化结构: { appList: [字段, 影子容器, 子表单容器, ...] }
                 // 递归处理 appList 内的元素,将字段和影子容器都注册到 formFields
                 // 否则 findField/findContainerItems 无法定位 App 端字段和容器,导致联动失效
-                // eslint-disable-next-line no-console
-                console.log("[formFieldMapping] enter appList branch, appListLen=" + temp.appList.length);
                 for (const appItem of temp.appList) {
                     if (Array.isArray(appItem)) {
                         // appList 内的数组(如 box 列数组)按数组处理
@@ -626,16 +624,12 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
                     } else if (appItem?.__appContainer) {
                         // 影子容器:只注册容器本身,供 findContainerItems 按 tabName 定位
                         // 其 fieldList 内字段已在 appList 中作为普通字段注册,不重复注册(避免 formFields 膨胀)
-                        // eslint-disable-next-line no-console
-                        console.log("[formFieldMapping] register shadow container tabName=" + appItem.tabName);
                         formFields.push(appItem);
                     } else if (appItem?.appList) {
                         // 嵌套的子表单容器 { appList: [container] }
                         fieldsOperation([appItem], defaultData);
                     } else if (appItem) {
                         // 普通字段
-                        // eslint-disable-next-line no-console
-                        console.log("[formFieldMapping] register field=" + appItem.fieldName);
                         fieldsOperation([appItem], defaultData);
                     }
                 }

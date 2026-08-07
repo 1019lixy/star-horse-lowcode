@@ -1,9 +1,9 @@
 /**
  * IoT 设备拓扑状态管理
  */
-import { computed, reactive, ref } from "vue";
-import { autoLayoutTopology, buildTopologyEdges } from "../constants";
-import type { IotDevice, IotDeviceStatus, IotTopologyEdge, IotTopologyNode } from "../types";
+import {computed, reactive, ref} from "vue";
+import {autoLayoutTopology, buildTopologyEdges} from "../constants";
+import type {IotDevice, IotDeviceStatus, IotTopologyEdge, IotTopologyNode} from "../types";
 
 export const useIotTopology = (initialDevices: IotDevice[] = []) => {
     // 设备列表（响应式）
@@ -56,7 +56,7 @@ export const useIotTopology = (initialDevices: IotDevice[] = []) => {
         const build = (parentId: string | null): Array<IotDevice & { children: IotDevice[] }> => {
             return devices
                 .filter((d) => (d.parentId ?? null) === parentId)
-                .map((d) => ({ ...d, children: build(d.id) }));
+                .map((d) => ({...d, children: build(d.id)}));
         };
         return build(null);
     };

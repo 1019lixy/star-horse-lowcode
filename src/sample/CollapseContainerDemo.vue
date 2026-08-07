@@ -1,8 +1,8 @@
 <script setup lang="ts" name="CollapseContainerDemo">
-import { nextTick, onMounted, provide, reactive, ref } from "vue";
-import { dialogPreps } from "@/api/star_horse_utils";
-import type { PageFieldInfo } from "@/components/types";
-import { StarHorseForm, StarHorseDialog } from "@/components/comp";
+import {nextTick, onMounted, provide, reactive, ref} from "vue";
+import {dialogPreps} from "@/api/star_horse_utils";
+import type {PageFieldInfo} from "@/components/types";
+import {StarHorseDialog, StarHorseForm} from "@/components/comp";
 
 /**
  * 验证场景：通过 configType 的 dataRelation 策略(controlTarget=container)
@@ -12,20 +12,20 @@ import { StarHorseForm, StarHorseDialog } from "@/components/comp";
  */
 
 const configTypeOptions = [
-  { name: "基础配置", value: "basic" },
-  { name: "高级配置", value: "advanced" },
-  { name: "安全配置", value: "security" },
-  { name: "网络配置", value: "network" },
+  {name: "基础配置", value: "basic"},
+  {name: "高级配置", value: "advanced"},
+  {name: "安全配置", value: "security"},
+  {name: "网络配置", value: "network"},
 ];
 const encryptModeOptions = [
-  { name: "MD5", value: "md5" },
-  { name: "SHA256", value: "sha256" },
-  { name: "AES", value: "aes" },
+  {name: "MD5", value: "md5"},
+  {name: "SHA256", value: "sha256"},
+  {name: "AES", value: "aes"},
 ];
 const protocolOptions = [
-  { name: "HTTP", value: "http" },
-  { name: "HTTPS", value: "https" },
-  { name: "TCP", value: "tcp" },
+  {name: "HTTP", value: "http"},
+  {name: "HTTPS", value: "https"},
+  {name: "TCP", value: "tcp"},
 ];
 
 /**
@@ -60,7 +60,7 @@ const container = reactive<any>({
       objectName: "basicConfig",
       formVisible: true,
       fieldList: [
-        { label: "配置名称", fieldName: "configName", required: true, formVisible: true, defaultValue: "default" },
+        {label: "配置名称", fieldName: "configName", required: true, formVisible: true, defaultValue: "default"},
         {
           label: "是否启用日志", fieldName: "enableLog", type: "switch",
           formVisible: true, defaultValue: "N",
@@ -69,12 +69,12 @@ const container = reactive<any>({
             dataRelation: {
               actionName: "change",
               relationDetails: [
-                { matchType: "eq", controlCondition: "eqVisible", relationFields: ["logPath"], matchFieldValue: ["Y"] },
+                {matchType: "eq", controlCondition: "eqVisible", relationFields: ["logPath"], matchFieldValue: ["Y"]},
               ],
             },
           },
         },
-        { label: "日志路径", fieldName: "logPath", formVisible: false, preps: { placeholder: "/var/log/app.log" } },
+        {label: "日志路径", fieldName: "logPath", formVisible: false, preps: {placeholder: "/var/log/app.log"}},
       ],
     },
     // ========== advanced 高级配置 ==========
@@ -84,7 +84,7 @@ const container = reactive<any>({
       objectName: "advancedConfig",
       formVisible: false,
       fieldList: [
-        { label: "最大重试次数", fieldName: "maxRetry", type: "number", formVisible: true, defaultValue: 3 },
+        {label: "最大重试次数", fieldName: "maxRetry", type: "number", formVisible: true, defaultValue: 3},
         {
           label: "是否启用缓存", fieldName: "enableCache", type: "switch",
           formVisible: true, defaultValue: "N",
@@ -93,12 +93,12 @@ const container = reactive<any>({
             dataRelation: {
               actionName: "change",
               relationDetails: [
-                { matchType: "eq", controlCondition: "eqVisible", relationFields: ["cacheTtl"], matchFieldValue: ["Y"] },
+                {matchType: "eq", controlCondition: "eqVisible", relationFields: ["cacheTtl"], matchFieldValue: ["Y"]},
               ],
             },
           },
         },
-        { label: "缓存时长(秒)", fieldName: "cacheTtl", type: "number", formVisible: false, defaultValue: 300 },
+        {label: "缓存时长(秒)", fieldName: "cacheTtl", type: "number", formVisible: false, defaultValue: 300},
       ],
     },
     // ========== security 安全配置 ==========
@@ -116,16 +116,22 @@ const container = reactive<any>({
             dataRelation: {
               actionName: "change",
               relationDetails: [
-                { matchType: "eq", controlCondition: "eqVisible", relationFields: ["authToken"], matchFieldValue: ["Y"] },
+                {matchType: "eq", controlCondition: "eqVisible", relationFields: ["authToken"], matchFieldValue: ["Y"]},
               ],
             },
           },
         },
-        { label: "认证令牌", fieldName: "authToken", type: "password", formVisible: false, preps: { placeholder: "Bearer Token" } },
+        {
+          label: "认证令牌",
+          fieldName: "authToken",
+          type: "password",
+          formVisible: false,
+          preps: {placeholder: "Bearer Token"}
+        },
         {
           label: "加密方式", fieldName: "encryptMode", type: "select",
           formVisible: true, defaultValue: "sha256",
-          preps: { values: encryptModeOptions },
+          preps: {values: encryptModeOptions},
         },
       ],
     },
@@ -139,10 +145,10 @@ const container = reactive<any>({
         {
           label: "协议", fieldName: "protocol", type: "select", required: true,
           formVisible: true, defaultValue: "https",
-          preps: { values: protocolOptions },
+          preps: {values: protocolOptions},
         },
-        { label: "主机地址", fieldName: "host", formVisible: true, defaultValue: "127.0.0.1" },
-        { label: "端口", fieldName: "port", type: "number", formVisible: true, defaultValue: 8080 },
+        {label: "主机地址", fieldName: "host", formVisible: true, defaultValue: "127.0.0.1"},
+        {label: "端口", fieldName: "port", type: "number", formVisible: true, defaultValue: 8080},
       ],
     },
   ],
@@ -150,7 +156,7 @@ const container = reactive<any>({
 
 const tableFieldList = reactive<PageFieldInfo | any>({
   fieldList: [
-    { label: "主键", fieldName: "id", formVisible: false },
+    {label: "主键", fieldName: "id", formVisible: false},
     {
       label: "配置类型", fieldName: "configType", type: "select", required: true,
       formVisible: true, listVisible: true, defaultValue: "basic",
@@ -165,7 +171,7 @@ const tableFieldList = reactive<PageFieldInfo | any>({
 });
 
 const rules = {
-  configType: [{ required: true, message: "请选择配置类型", trigger: "change" }],
+  configType: [{required: true, message: "请选择配置类型", trigger: "change"}],
 };
 
 const dialogProps = dialogPreps("配置面板");
@@ -188,17 +194,18 @@ const onFormInited = () => {
   });
 };
 
-onMounted(() => {});
+onMounted(() => {
+});
 </script>
 
 <template>
   <div class="flex flex-col h-full overflow-auto p-4">
     <el-alert
-      title="验证说明"
-      type="info"
-      :closable="false"
-      show-icon
-      style="margin-bottom: 12px"
+        title="验证说明"
+        type="info"
+        :closable="false"
+        show-icon
+        style="margin-bottom: 12px"
     >
       <template #default>
         切换「配置类型」下拉框,下方折叠面板应同步只显示对应配置项(其余隐藏,而非 disabled)。
@@ -207,16 +214,16 @@ onMounted(() => {});
       </template>
     </el-alert>
     <star-horse-dialog
-      v-model="editVisible"
-      :isShowBtnContinue="true"
-      title="折叠面板容器控制验证"
-      @update:dialogVisible="syncEditVisible"
+        v-model="editVisible"
+        :isShowBtnContinue="true"
+        title="折叠面板容器控制验证"
+        @update:dialogVisible="syncEditVisible"
     >
       <star-horse-form
-        ref="formRef"
-        :fieldList="tableFieldList"
-        :rules="rules"
-        @inited="onFormInited"
+          ref="formRef"
+          :fieldList="tableFieldList"
+          :rules="rules"
+          @inited="onFormInited"
       />
     </star-horse-dialog>
   </div>

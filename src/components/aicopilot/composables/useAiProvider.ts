@@ -4,14 +4,9 @@
  * registerProvider / getProvider / mockProvider / streamResponse（打字机效果）
  */
 
-import { AI_DEFAULT_SETTINGS, AI_STREAM_CHUNK_SIZE, AI_STREAM_INTERVAL } from "../constants";
-import { aiGenerateMockResponse } from "../utils/AiMockEngine";
-import type {
-    AiProvider,
-    AiProviderRequest,
-    AiProviderResponse,
-    AiStreamCallbacks,
-} from "../types";
+import {AI_DEFAULT_SETTINGS, AI_STREAM_CHUNK_SIZE, AI_STREAM_INTERVAL} from "../constants";
+import {aiGenerateMockResponse} from "../utils/AiMockEngine";
+import type {AiProvider, AiProviderRequest, AiProviderResponse, AiStreamCallbacks,} from "../types";
 
 /** Provider 注册表（模块级单例） */
 const providerRegistry: Map<string, AiProvider> = new Map();

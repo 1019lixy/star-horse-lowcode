@@ -1,9 +1,9 @@
 /**
  * 透视分析状态管理
  */
-import { computed, reactive, ref } from "vue";
-import { createField, DEFAULT_PIVOT_CONFIG } from "../constants";
-import type { PivotConfig, PivotData, PivotField, PivotRecord } from "../types";
+import {computed, reactive, ref} from "vue";
+import {createField, DEFAULT_PIVOT_CONFIG} from "../constants";
+import type {PivotConfig, PivotData, PivotField, PivotRecord} from "../types";
 
 /** 通过点路径取值（如 "data.list" → obj.data.list） */
 const getPath = (obj: any, path: string): any => {
@@ -35,7 +35,7 @@ export const usePivotDesigner = (initial?: Partial<PivotData>) => {
     const state = reactive<PivotData>({
         records: initial?.records ?? [],
         fields: initial?.fields ?? [],
-        config: { ...DEFAULT_PIVOT_CONFIG, ...(initial?.config ?? {}) },
+        config: {...DEFAULT_PIVOT_CONFIG, ...(initial?.config ?? {})},
         name: initial?.name ?? "",
     });
 
@@ -162,7 +162,7 @@ export const usePivotDesigner = (initial?: Partial<PivotData>) => {
     ): Promise<PivotRecord[]> => {
         const res = await fetch(url, {
             method: opts?.method ?? "GET",
-            headers: opts?.headers ?? { "Content-Type": "application/json" },
+            headers: opts?.headers ?? {"Content-Type": "application/json"},
             body: opts?.body ? JSON.stringify(opts.body) : undefined,
         });
         if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);

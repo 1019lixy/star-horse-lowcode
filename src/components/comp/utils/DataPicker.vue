@@ -463,7 +463,7 @@ const onDragStart = (e: PointerEvent) => {
     document.body.style.userSelect = "";
   };
   document.body.style.userSelect = "none";
-  document.addEventListener("pointermove", onMove, { passive: false });
+  document.addEventListener("pointermove", onMove, {passive: false});
   document.addEventListener("pointerup", onUp);
 };
 
@@ -1173,16 +1173,16 @@ defineExpose({
 
       <!-- 底部已选数据栏（浮动覆盖待选区，不压缩高度） -->
       <div
-        v-if="multiple"
-        class="dp-mobile-selected-bar"
-        :class="{ 'is-expanded': selectedBarExpanded }"
-        :style="selectedBarExpanded ? { height: selectedBarHeight + 'px' } : {}"
+          v-if="multiple"
+          class="dp-mobile-selected-bar"
+          :class="{ 'is-expanded': selectedBarExpanded }"
+          :style="selectedBarExpanded ? { height: selectedBarHeight + 'px' } : {}"
       >
         <!-- 拖拽手柄：展开时显示，拖动改变高度 -->
         <div
-          v-if="selectedBarExpanded"
-          class="dp-mobile-selected-bar__drag"
-          @pointerdown="onDragStart"
+            v-if="selectedBarExpanded"
+            class="dp-mobile-selected-bar__drag"
+            @pointerdown="onDragStart"
         >
           <span class="dp-mobile-selected-bar__drag-icon"></span>
         </div>
@@ -1228,8 +1228,8 @@ defineExpose({
                 @click="onSelectedItemClick(item)"
             >
               <span class="dp-mobile-selected-item__label">{{
-                displayText(item)
-              }}</span>
+                  displayText(item)
+                }}</span>
               <star-horse-icon
                   icon-class="close"
                   class="dp-mobile-selected-item__remove"

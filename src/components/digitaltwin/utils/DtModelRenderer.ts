@@ -4,10 +4,18 @@
  * 将 DtModelInstance 按 preset parts 渲染为多个基础几何体
  * 复用 DtEntityRenderer 的 dtDrawCube/dtDrawCylinder/dtDrawPlane/dtDrawSphere
  */
-import { dtFindModelPreset } from "../modelLibrary";
-import { dtDrawCube, dtDrawCylinder, dtDrawPlane, dtDrawSphere, dtDrawEntityLabel, dtDrawHighlight, type DtRenderContext } from "./DtEntityRenderer";
-import { dtEntityBoundingBox } from "./DtProjection";
-import type { DtEntity, DtModelInstance, DtModelPart } from "../types";
+import {dtFindModelPreset} from "../modelLibrary";
+import {
+    dtDrawCube,
+    dtDrawCylinder,
+    dtDrawEntityLabel,
+    dtDrawHighlight,
+    dtDrawPlane,
+    dtDrawSphere,
+    type DtRenderContext
+} from "./DtEntityRenderer";
+import {dtEntityBoundingBox} from "./DtProjection";
+import type {DtEntity, DtModelInstance, DtModelPart} from "../types";
 
 /** 根据 part 构造临时 entity 用于复用基础渲染器 */
 const buildPartEntity = (instance: DtModelInstance, part: DtModelPart): DtEntity => {
@@ -20,7 +28,7 @@ const buildPartEntity = (instance: DtModelInstance, part: DtModelPart): DtEntity
             y: instance.position.y + part.offset.y,
             z: instance.position.z + part.offset.z,
         },
-        size: { ...part.size },
+        size: {...part.size},
         color: part.color ?? instance.color,
         status: instance.status,
         visible: instance.visible,
@@ -73,15 +81,15 @@ export const dtDrawModelInstanceWithParts = (
 
 /** 模型实例高亮：基于 preset.defaultSize 计算包围盒 */
 export const dtDrawModelInstanceHighlight = (instance: DtModelInstance, rc: DtRenderContext): void => {
-    const { ctx, camera } = rc;
+    const {ctx, camera} = rc;
     const preset = dtFindModelPreset(instance.modelType);
     if (!preset) return;
     const bboxEntity: DtEntity = {
         id: `${instance.id}_bbox`,
         type: "cube",
         name: "",
-        position: { ...instance.position },
-        size: { ...preset.defaultSize },
+        position: {...instance.position},
+        size: {...preset.defaultSize},
         color: instance.color,
         status: instance.status,
         visible: true,

@@ -1,10 +1,10 @@
 /**
  * IoT 实时图表渲染器（纯 Canvas 实现，无第三方依赖）
  */
-import type { IotChartConfig, IotChartSeries } from "../types";
+import type {IotChartConfig, IotChartSeries} from "../types";
 
 /** 坐标轴边距 */
-const PADDING = { top: 20, right: 24, bottom: 36, left: 56 };
+const PADDING = {top: 20, right: 24, bottom: 36, left: 56};
 /** 网格颜色 */
 const GRID_COLOR = "rgba(180, 180, 180, 0.25)";
 /** 轴标签颜色 */
@@ -48,9 +48,9 @@ export const niceScale = (
     const niceMin = Math.floor(min / niceStep) * niceStep;
     const niceMax = Math.ceil(max / niceStep) * niceStep;
     if (niceMax <= niceMin) {
-        return { niceMin, niceMax: niceMin + niceStep, step: niceStep };
+        return {niceMin, niceMax: niceMin + niceStep, step: niceStep};
     }
-    return { niceMin, niceMax, step: niceStep };
+    return {niceMin, niceMax, step: niceStep};
 };
 
 /**

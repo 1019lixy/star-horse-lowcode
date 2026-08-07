@@ -1,69 +1,66 @@
 <template>
   <star-horse-dialog
-    :title="field.preps?.dialogTitle || i18n('item.configureButtonEvent')"
-    :selfFunc="true"
-    @merge="operResultAction"
-    v-model="btnDialogVisible"
-    :boxWidth="field.preps?.boxWidth || '50%'"
-    :isShowReset="field.preps?.isShowReset ?? false"
-    @closeAction="close"
-    :btnText="field.preps?.dialogBtn ?? i18n('item.confirm')"
+      :title="field.preps?.dialogTitle || i18n('item.configureButtonEvent')"
+      :selfFunc="true"
+      @merge="operResultAction"
+      v-model="btnDialogVisible"
+      :boxWidth="field.preps?.boxWidth || '50%'"
+      :isShowReset="field.preps?.isShowReset ?? false"
+      @closeAction="close"
+      :btnText="field.preps?.dialogBtn ?? i18n('item.confirm')"
   >
     <star-horse-form
-      ref="btnFormRef"
-      :fieldList="{
+        ref="btnFormRef"
+        :fieldList="{
         fieldList: field.preps?.fieldList,
       }"
-      v-if="field.preps?.viewType == 'form'"
+        v-if="field.preps?.viewType == 'form'"
     />
     <component
-      :is="field.preps?.componentName"
-      ref="btnCompRef"
-      v-else-if="field.preps?.viewType == 'usercomp'"
-      :params="field.preps?.params"
+        :is="field.preps?.componentName"
+        ref="btnCompRef"
+        v-else-if="field.preps?.viewType == 'usercomp'"
+        :params="field.preps?.params"
     />
     <star-horse-editor
-      v-else-if="field.preps?.viewType == 'code'"
-      ref="btnCompRef"
+        v-else-if="field.preps?.viewType == 'code'"
+        ref="btnCompRef"
     />
   </star-horse-dialog>
   <starhorse-form-item
-    :showFormItem="showFormItem"
-    :isDesign="isDesign"
-    :disabled="disabled"
-    :bareFlag="bareFlag"
-    :field="field"
-    :parentField="parentField"
+      :showFormItem="showFormItem"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      :field="field"
+      :parentField="parentField"
   >
     <el-button
-      :disabled="checkIsDisabled(props)"
-      v-bind="prepsFilter(field.preps)"
-      @click="dynamicFunc(field.preps?.code)"
+        :disabled="checkIsDisabled(props)"
+        v-bind="prepsFilter(field.preps)"
+        @click="dynamicFunc(field.preps?.code)"
     >
       <star-horse-icon
-        v-if="field.preps?.icon"
-        :icon-class="field.preps.icon"
-        style="vertical-align: middle; color: var(--star-horse-style)"
+          v-if="field.preps?.icon"
+          :icon-class="field.preps.icon"
+          style="vertical-align: middle; color: var(--star-horse-style)"
       />
       {{ field?.label }}
     </el-button>
   </starhorse-form-item>
 </template>
 <script setup lang="ts" name="buttonItem">
-import { onMounted, shallowRef, unref } from "vue";
-import {
-  buttonAction,
-  checkIsDisabled,
-  prepsFilter,
-} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import { httpRequest } from "@/api/star_horse_apis";
-import { operationConfirm, warning } from "@/utils/message";
-import { BtnAction, DynamicParamField } from "@/components/types/BtnAction";
-import { SearchParams } from "@/components/types/Params";
-import { createCondition } from "@/api/star_horse_utils";
+import {onMounted, shallowRef, unref} from "vue";
+import {buttonAction, checkIsDisabled, prepsFilter,} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {httpRequest} from "@/api/star_horse_apis";
+import {operationConfirm, warning} from "@/utils/message";
+import {BtnAction, DynamicParamField} from "@/components/types/BtnAction";
+import {SearchParams} from "@/components/types/Params";
+import {createCondition} from "@/api/star_horse_utils";
 
-import { ItemPreps } from "@/components/types/ItemPreps";
-import { i18n } from "@/lang";
+import {ItemPreps} from "@/components/types/ItemPreps";
+import {i18n} from "@/lang";
+
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
   disabled: false,
@@ -82,7 +79,7 @@ const operResultAction = async () => {
   let formData: any = {};
   if (action?.viewType == "comp") {
     formData = await btnCompRef.value?.getFormData(
-      i18n("item.pleaseFillFormData"),
+        i18n("item.pleaseFillFormData"),
     );
     if (!formData) {
       return;
@@ -107,7 +104,7 @@ const openDialog = async () => {
   //执行代码块
   if (action?.needConfirm) {
     let result = await operationConfirm(
-      action.confirmMsg ?? i18n("item.confirmToExecute"),
+        action.confirmMsg ?? i18n("item.confirmToExecute"),
     );
     if (!result) {
       return;
@@ -118,17 +115,17 @@ const openDialog = async () => {
     let urlParam: any = {};
     if (action.isDynamicParam == "Y") {
       let dynamicParams: SearchParams[] | DynamicParamField[] | any =
-        action.params;
+          action.params;
       let params: SearchParams[] = [];
       dynamicParams?.forEach((dynamicParam: any) => {
         let value =
-          formData.value[dynamicParam.paramName] ?? dynamicParam.defaultValue;
+            formData.value[dynamicParam.paramName] ?? dynamicParam.defaultValue;
         params.push(
-          createCondition(
-            dynamicParam.paramName,
-            value,
-            dynamicParam.matchType,
-          ),
+            createCondition(
+                dynamicParam.paramName,
+                value,
+                dynamicParam.matchType,
+            ),
         );
       });
       urlParam["fieldList"] = params;
@@ -140,35 +137,35 @@ const openDialog = async () => {
       return;
     }
     httpRequest(action.url!, action.method ?? "POST", urlParam).then(
-      (res: any) => {
-        //仅仅执行，则直接调用接口
-        console.log(res);
-        let reData = res.data;
-        if (reData.code) {
-          warning(reData.cnMessage);
-          return;
-        }
-        let datas = reData?.data;
-        if (action?.afterAction) {
-          if (!datas) {
-            warning(i18n("item.returnDataEmpty"));
+        (res: any) => {
+          //仅仅执行，则直接调用接口
+          console.log(res);
+          let reData = res.data;
+          if (reData.code) {
+            warning(reData.cnMessage);
             return;
           }
-          if (Array.isArray(datas)) {
-            warning(i18n("item.returnDataIsArray"));
-            return;
+          let datas = reData?.data;
+          if (action?.afterAction) {
+            if (!datas) {
+              warning(i18n("item.returnDataEmpty"));
+              return;
+            }
+            if (Array.isArray(datas)) {
+              warning(i18n("item.returnDataIsArray"));
+              return;
+            }
+            //执行后搜集返回结果
+            if (action?.afterAction == "assignCurrentName") {
+              formData.value[props.field.fieldName] = datas;
+            } else if (action?.afterAction == "assignForm") {
+              let entries = Object.entries(datas);
+              entries.forEach(([key, value]) => {
+                formData.value[key] = value;
+              });
+            }
           }
-          //执行后搜集返回结果
-          if (action?.afterAction == "assignCurrentName") {
-            formData.value[props.field.fieldName] = datas;
-          } else if (action?.afterAction == "assignForm") {
-            let entries = Object.entries(datas);
-            entries.forEach(([key, value]) => {
-              formData.value[key] = value;
-            });
-          }
-        }
-      },
+        },
     );
   } else if (action?.viewType == "code") {
     if (!action.code) {

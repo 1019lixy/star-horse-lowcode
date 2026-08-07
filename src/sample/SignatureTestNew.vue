@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { VueSignaturePad } from "@selemondev/vue3-signature-pad";
-import type { Signature } from "@selemondev/vue3-signature-pad";
-import { ref, useTemplateRef } from "vue";
-import { warning } from "@/utils/message";
+import type {Signature} from "@selemondev/vue3-signature-pad";
+import {VueSignaturePad} from "@selemondev/vue3-signature-pad";
+import {ref, useTemplateRef} from "vue";
+import {warning} from "@/utils/message";
 
 const state = ref({
   disabled: false,
@@ -22,8 +22,9 @@ function dataURLToBlob(dataURL: string) {
     uInt8Array[i] = raw.charCodeAt(i);
   }
 
-  return new Blob([uInt8Array], { type: contentType });
+  return new Blob([uInt8Array], {type: contentType});
 }
+
 function handleSave(dataURL: string, downloadFormat: string) {
   if (signature.value?.isCanvasEmpty())
     return warning("Signature cannot be empty!");
@@ -40,9 +41,11 @@ function handleSave(dataURL: string, downloadFormat: string) {
   a.click();
   window.URL.revokeObjectURL(url);
 }
+
 function handleClear() {
   return signature.value?.clearCanvas();
 }
+
 function handleUndo() {
   return signature.value?.undo();
 }
@@ -53,18 +56,18 @@ function handleUndo() {
     <div class="flex flex-col items-center space-y-4">
       <div class="bg-gray-100 p-6">
         <VueSignaturePad
-          ref="signature"
-          height="400px"
-          width="1280px"
-          :max-width="2"
-          :min-width="2"
-          :disabled="state.disabled"
+            ref="signature"
+            height="400px"
+            width="1280px"
+            :max-width="2"
+            :min-width="2"
+            :disabled="state.disabled"
         />
       </div>
 
       <button
-        type="button"
-        @click="handleSave('image/jpeg', 'signature-pad.jpg')"
+          type="button"
+          @click="handleSave('image/jpeg', 'signature-pad.jpg')"
       >
         Save
       </button>

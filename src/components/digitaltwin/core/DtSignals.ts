@@ -108,7 +108,7 @@ export const dtSignals = new SignalManager();
 
 /* ----------------------- Hooks 封装（对标 useAddSignal/useDispatchSignal） ----------------------- */
 
-import { onBeforeUnmount, getCurrentInstance } from "vue";
+import {getCurrentInstance, onBeforeUnmount} from "vue";
 
 /** 注册信号监听，自动在组件卸载时取消（对标 useAddSignal） */
 export function useAddSignal(name: string, listener: SignalListener): () => void {

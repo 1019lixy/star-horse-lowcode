@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { TabInfo } from "./types";
-import { getFileIcon } from "./constants";
-import { computed } from "vue";
+import type {TabInfo} from "./types";
+import {getFileIcon} from "./constants";
+import {computed} from "vue";
 
 const props = defineProps<{
   tabs: TabInfo[];
@@ -30,11 +30,11 @@ const shouldShowPath = (tab: TabInfo) => {
 <template>
   <div class="sh-tabbar">
     <div
-      v-for="tab in tabs"
-      :key="tab.id"
-      class="ide-tab"
-      :class="{ active: tab.id === activeId }"
-      @click="emit('switch', tab.id)"
+        v-for="tab in tabs"
+        :key="tab.id"
+        class="ide-tab"
+        :class="{ active: tab.id === activeId }"
+        @click="emit('switch', tab.id)"
     >
       <span class="tab-icon">{{ getFileIcon(tab.name) }}</span>
       <span class="tab-name">
@@ -55,14 +55,17 @@ const shouldShowPath = (tab: TabInfo) => {
   overflow-x: auto;
   flex-shrink: 0;
   height: 35px;
+
   &::-webkit-scrollbar {
     height: 3px;
   }
+
   &::-webkit-scrollbar-thumb {
     background: var(--ide-scrollbar);
     border-radius: 2px;
   }
 }
+
 .ide-tab {
   display: flex;
   align-items: center;
@@ -77,19 +80,23 @@ const shouldShowPath = (tab: TabInfo) => {
   user-select: none;
   position: relative;
   color: var(--ide-fg);
+
   &.active {
     background: var(--ide-tab-active-bg);
     border-top: 2px solid var(--ide-accent);
   }
+
   &:hover {
     background: var(--ide-bg-hover);
   }
 }
+
 .tab-icon {
   margin-right: 4px;
   font-size: 13px;
   flex-shrink: 0;
 }
+
 .tab-name {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -98,6 +105,7 @@ const shouldShowPath = (tab: TabInfo) => {
   align-items: baseline;
   gap: 4px;
 }
+
 .tab-path {
   font-size: 11px;
   color: var(--ide-fg-dim, #858585);
@@ -107,12 +115,14 @@ const shouldShowPath = (tab: TabInfo) => {
   text-overflow: ellipsis;
   min-width: 0;
 }
+
 .tab-modified {
   color: var(--ide-modified-dot);
   margin-left: 4px;
   font-size: 10px;
   flex-shrink: 0;
 }
+
 .tab-close {
   margin-left: 6px;
   width: 18px;
@@ -124,10 +134,12 @@ const shouldShowPath = (tab: TabInfo) => {
   font-size: 16px;
   opacity: 0;
   flex-shrink: 0;
+
   &:hover {
     background: rgba(255, 255, 255, 0.1);
   }
 }
+
 .ide-tab:hover .tab-close,
 .ide-tab.active .tab-close {
   opacity: 0.7;

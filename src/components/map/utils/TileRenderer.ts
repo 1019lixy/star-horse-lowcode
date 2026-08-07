@@ -12,7 +12,7 @@ const lngLatToMercator = (lng: number, lat: number, zoom: number, tileSize: numb
     const latRad = (lat * Math.PI) / 180;
     const clampedLat = Math.max(-85, Math.min(85, latRad)); // 避免极点溢出
     const y = ((1 - Math.log(Math.tan(clampedLat) + 1 / Math.cos(clampedLat)) / Math.PI) / 2) * n * tileSize;
-    return { x, y };
+    return {x, y};
 };
 
 /** 墨卡托逆投影：像素 → 经纬度 */
@@ -21,7 +21,7 @@ const mercatorToLngLat = (x: number, y: number, zoom: number, tileSize: number) 
     const lng = (x / (n * tileSize)) * 360 - 180;
     const latRad = Math.atan(Math.sinh(Math.PI * (1 - (2 * y) / (n * tileSize))));
     const lat = (latRad * 180) / Math.PI;
-    return { lng, lat };
+    return {lng, lat};
 };
 
 /** 简化世界大陆轮廓（经纬度多边形） */
@@ -118,16 +118,16 @@ const CHINA: [number, number][] = [
 
 /** 主要城市标注 */
 const CITIES: { name: string; lng: number; lat: number }[] = [
-    { name: "北京", lng: 116.4, lat: 39.9 },
-    { name: "上海", lng: 121.5, lat: 31.2 },
-    { name: "广州", lng: 113.3, lat: 23.1 },
-    { name: "东京", lng: 139.7, lat: 35.7 },
-    { name: "纽约", lng: -74.0, lat: 40.7 },
-    { name: "伦敦", lng: -0.1, lat: 51.5 },
-    { name: "巴黎", lng: 2.3, lat: 48.9 },
-    { name: "莫斯科", lng: 37.6, lat: 55.8 },
-    { name: "悉尼", lng: 151.2, lat: -33.9 },
-    { name: "开罗", lng: 31.2, lat: 30.0 },
+    {name: "北京", lng: 116.4, lat: 39.9},
+    {name: "上海", lng: 121.5, lat: 31.2},
+    {name: "广州", lng: 113.3, lat: 23.1},
+    {name: "东京", lng: 139.7, lat: 35.7},
+    {name: "纽约", lng: -74.0, lat: 40.7},
+    {name: "伦敦", lng: -0.1, lat: 51.5},
+    {name: "巴黎", lng: 2.3, lat: 48.9},
+    {name: "莫斯科", lng: 37.6, lat: 55.8},
+    {name: "悉尼", lng: 151.2, lat: -33.9},
+    {name: "开罗", lng: 31.2, lat: 30.0},
 ];
 
 /** 渲染离线矢量地图到 Canvas */
@@ -279,9 +279,9 @@ const drawSpecialLatitudes = (
     minLng: number, maxLng: number,
 ) => {
     const specialLines = [
-        { lat: 0, label: "赤道", color: "rgba(255, 0, 0, 0.25)" },
-        { lat: 23.44, label: "北回归线", color: "rgba(255, 165, 0, 0.2)" },
-        { lat: -23.44, label: "南回归线", color: "rgba(255, 165, 0, 0.2)" },
+        {lat: 0, label: "赤道", color: "rgba(255, 0, 0, 0.25)"},
+        {lat: 23.44, label: "北回归线", color: "rgba(255, 165, 0, 0.2)"},
+        {lat: -23.44, label: "南回归线", color: "rgba(255, 165, 0, 0.2)"},
     ];
 
     for (const line of specialLines) {
@@ -323,7 +323,8 @@ const drawPolygon = (
 };
 
 /** 清除缓存（离线模式无需缓存，保留接口兼容） */
-export const clearTileCache = () => { /* no-op */ };
+export const clearTileCache = () => { /* no-op */
+};
 
 /** 经纬度 → 像素（在 Canvas 内） */
 export const lngLatToPixel = (

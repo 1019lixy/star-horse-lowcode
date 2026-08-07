@@ -1,30 +1,30 @@
 export enum ThemeType {
-  Light = "light",
-  Dark = "dark",
-  DarkDimmed = "darkDimmed",
-  FollowOs = "followOs",
+    Light = "light",
+    Dark = "dark",
+    DarkDimmed = "darkDimmed",
+    FollowOs = "followOs",
 }
 
 export enum EditorThemeType {
-  DashboardLightTheme = "DashboardLightTheme",
-  DashboardBlackTheme = "DashboardBlackTheme",
+    DashboardLightTheme = "DashboardLightTheme",
+    DashboardBlackTheme = "DashboardBlackTheme",
 }
 
 export enum PrimaryColorType {
-  Polar_Green = "polar-green",
-  Golden_Purple = "golden-purple",
-  Polar_Blue = "polar-blue",
-  Silver = "silver",
-  Red = "red",
-  Orange = "orange",
-  Blue2 = "blue2",
-  Gold = "gold",
+    Polar_Green = "polar-green",
+    Golden_Purple = "golden-purple",
+    Polar_Blue = "polar-blue",
+    Silver = "silver",
+    Red = "red",
+    Orange = "orange",
+    Blue2 = "blue2",
+    Gold = "gold",
 }
 
 export enum LangType {
-  EN_US = "en_US",
-  ZH_CN = "zh_CN",
-  // ZH_TW = "zh_TW",
-  // JA_JP = "ja_JP",
-  // DE_DE = "de_DE",
+    EN_US = "en_US",
+    ZH_CN = "zh_CN",
+    // ZH_TW = "zh_TW",
+    // JA_JP = "ja_JP",
+    // DE_DE = "de_DE",
 }

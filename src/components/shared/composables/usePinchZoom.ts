@@ -1,4 +1,4 @@
-import {ref, onBeforeUnmount} from "vue";
+import {onBeforeUnmount, ref} from "vue";
 
 /**
  * 双指捏合缩放 composable

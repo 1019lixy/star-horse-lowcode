@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {ref} from "vue";
-import {GanttChart} from "@/components/gantt";
 import type {GanttData} from "@/components/gantt";
+import {GanttChart} from "@/components/gantt";
 
 const ganttData = ref<GanttData>({
   name: "产品研发项目计划",

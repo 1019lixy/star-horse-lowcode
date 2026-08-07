@@ -8,8 +8,8 @@
  * - 通过 onNewAlarm 回调通知 UI 弹窗
  * - 提供 stats computed（按级别统计）
  */
-import { ref, computed, type ComputedRef } from "vue";
-import type { DtAlarmEvent, DtAlarmEventLevel, DtAlarmEventStatus } from "../types";
+import {computed, type ComputedRef, ref} from "vue";
+import type {DtAlarmEvent, DtAlarmEventLevel, DtAlarmEventStatus} from "../types";
 
 export interface UseDtAlarmStreamOptions {
     /** 最大保留条数（默认 200） */
@@ -63,7 +63,7 @@ const genId = (): string => {
 export function useDtAlarmStream(options: UseDtAlarmStreamOptions = {}): UseDtAlarmStreamReturn {
     const maxItems = options.maxItems ?? 200;
     const events = ref<DtAlarmEvent[]>([]);
-    const filter = ref<DtAlarmFilter>({ level: "all", status: "all", source: "all", keyword: "" });
+    const filter = ref<DtAlarmFilter>({level: "all", status: "all", source: "all", keyword: ""});
     const unreadCount = ref(0);
 
     const filteredEvents = computed(() => {
@@ -87,7 +87,7 @@ export function useDtAlarmStream(options: UseDtAlarmStreamOptions = {}): UseDtAl
     const activeCount = computed(() => events.value.filter((e) => e.status === "active").length);
 
     const stats = computed(() => {
-        const result = { info: 0, warning: 0, alarm: 0, critical: 0 };
+        const result = {info: 0, warning: 0, alarm: 0, critical: 0};
         for (const e of events.value) {
             if (e.status === "active") {
                 result[e.level] += 1;

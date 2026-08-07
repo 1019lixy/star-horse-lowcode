@@ -1,13 +1,11 @@
 <script setup lang="ts" name="Areainfo">
-import {onMounted, provide, ref} from "vue";
+import {nextTick, onMounted, provide, ref} from "vue";
 import {PageFieldInfo} from "@/components/types/PageFieldInfo";
 import {StarHorseForm, StarHorseTableComp} from "@/components/comp";
 import {apiInstance, closeLoad, dialogPreps, load,} from "@/api/star_horse_utils";
 import {download} from "@/api/star_horse_apis";
 import {warning} from "@/utils/message";
 import {ApiUrls, SearchInfo} from "@/components/types";
-import {parseDateByType} from "@/api/date_utils";
-import areaList from "@/api/pcas-code.json";
 import {isMobile} from "@/api/device";
 
 const dataUrl: ApiUrls = apiInstance(
@@ -113,7 +111,7 @@ const fieldList = ref<PageFieldInfo>({
         ],
       }
     },
-    {
+    /*{
       label: "区域",
       fieldName: "fieldSh6C9D",
       type: "cascade",
@@ -123,7 +121,7 @@ const fieldList = ref<PageFieldInfo>({
           label: "name"
         }
       }
-    },
+    },*/
     {
       label: "选择树数据",
       fieldName: "fieldSh4C9D",
@@ -178,19 +176,19 @@ const fieldList = ref<PageFieldInfo>({
         ],
       }
     },
-    {
-      label: "区域2",
-      fieldName: "fieldSh6C9f",
-      type: "datapicker",
-      preps: {
-        multiple:true,
-        data: areaList,
-        prop: {
-          label: "name",
-          value:"code"
-        }
-      }
-    },
+    /* {
+       label: "区域2",
+       fieldName: "fieldSh6C9f",
+       type: "datapicker",
+       preps: {
+         multiple: true,
+         data: areaList,
+         prop: {
+           label: "name",
+           value: "code"
+         }
+       }
+     },*/
     {
       label: "选择树数据",
       fieldName: "fieldSh5C9D",
@@ -943,6 +941,9 @@ const fieldList = ref<PageFieldInfo>({
 });
 
 const initData = async () => {
+  nextTick(() => {
+    // codeGeneratorRef.value?.initData([{}, {}]);
+  });
 };
 const primaryKey = "idValidDateNew";
 const codeGeneratorRef = ref();
@@ -1029,15 +1030,11 @@ onMounted(() => {
         />
       </div>
     </div>
-    <el-drawer v-model="drawerVisible">
-      <el-button @click="dialogProps.editVisible=true">Click</el-button>
-    </el-drawer>
-    <el-button @click="drawerVisible=true">Click</el-button>
+    <!--    <el-drawer v-model="drawerVisible">
+          <el-button @click="dialogProps.editVisible=true">Click</el-button>
+        </el-drawer>-->
+    <el-button @click="dialogProps.editVisible=true">Valid Click</el-button>
     <el-card class="inner_content">
-      {{ parseDateByType('2026-06-30 00:00:00', 'date') }}
-      {{ parseDateByType('2026-6-30 00:00:00', 'date') }}
-      {{ parseDateByType('26-6-30 00:00:00', 'date') }}
-      {{ parseDateByType('26-6-32 00:00:00', 'date') }}
       <star-horse-table-comp
           ref="codeGeneratorRef"
           :fieldList="fieldList"

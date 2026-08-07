@@ -1,20 +1,20 @@
 <template>
   <starhorse-form-item
-    :showFormItem="showFormItem"
-    :isDesign="isDesign"
-    :disabled="disabled"
-    :bareFlag="bareFlag"
-    :field="field"
-    :parentField="parentField"
+      :showFormItem="showFormItem"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      :field="field"
+      :parentField="parentField"
   >
     <audio :fid="field.fieldName" ref="audio" controls></audio>
   </starhorse-form-item>
 </template>
 <script setup lang="ts" name="audioItem">
-import { onMounted, ref } from "vue";
-import { blobData } from "@/api/star_horse_apis";
+import {onMounted, ref} from "vue";
+import {blobData} from "@/api/star_horse_apis";
 
-import { ItemPreps } from "@/components/types/ItemPreps";
+import {ItemPreps} from "@/components/types/ItemPreps";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -48,9 +48,9 @@ const init = async () => {
       let frameCount = endOffset - startOffset;
       let newAudioBuffer;
       newAudioBuffer = new AudioContext().createBuffer(
-        channels,
-        endOffset - startOffset,
-        rate,
+          channels,
+          endOffset - startOffset,
+          rate,
       );
       let anotherArray = new Float32Array(frameCount);
       let offset = 0;
@@ -87,14 +87,14 @@ const init = async () => {
 // Convert AudioBuffer to a Blob using WAVE representation
 const bufferToWave = (abuffer: any, len: number) => {
   let numOfChan = abuffer.numberOfChannels,
-    length = len * numOfChan * 2 + 44,
-    buffer = new ArrayBuffer(length),
-    view = new DataView(buffer),
-    channels = [],
-    i,
-    sample,
-    offset = 0,
-    pos = 0;
+      length = len * numOfChan * 2 + 44,
+      buffer = new ArrayBuffer(length),
+      view = new DataView(buffer),
+      channels = [],
+      i,
+      sample,
+      offset = 0,
+      pos = 0;
   const setUint16 = (data: any) => {
     view.setUint16(pos, data, true);
     pos += 2;
@@ -132,7 +132,7 @@ const bufferToWave = (abuffer: any, len: number) => {
     offset++; // next source sample
   }
   // create Blob
-  return new Blob([buffer], { type: "audio/wav" });
+  return new Blob([buffer], {type: "audio/wav"});
 };
 onMounted(() => {
   init();

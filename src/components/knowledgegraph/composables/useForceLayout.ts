@@ -4,10 +4,10 @@
  * 使用 requestAnimationFrame 循环驱动 kgForceStep
  */
 
-import { onBeforeUnmount, ref, type Ref } from "vue";
-import { KG_DEFAULT_FORCE_OPTIONS } from "../constants";
-import { kgForceStep } from "../utils/KgGraphLayout";
-import type { KgEdge, KgForceLayoutOptions, KgNode } from "../types";
+import {onBeforeUnmount, ref, type Ref} from "vue";
+import {KG_DEFAULT_FORCE_OPTIONS} from "../constants";
+import {kgForceStep} from "../utils/KgGraphLayout";
+import type {KgEdge, KgForceLayoutOptions, KgNode} from "../types";
 
 interface ForceNodeState {
     id: string;
@@ -23,7 +23,7 @@ export function useForceLayout(nodesRef: Ref<KgNode[]>, edgesRef: Ref<KgEdge[]>)
     const iteration = ref(0);
     let rafId: number | null = null;
     let workNodes: ForceNodeState[] = [];
-    let options: Required<KgForceLayoutOptions> = { ...KG_DEFAULT_FORCE_OPTIONS };
+    let options: Required<KgForceLayoutOptions> = {...KG_DEFAULT_FORCE_OPTIONS};
     let maxIterations = options.iterations;
     let onStepCb: (() => void) | null = null;
 
@@ -73,7 +73,7 @@ export function useForceLayout(nodesRef: Ref<KgNode[]>, edgesRef: Ref<KgEdge[]>)
     /** 启动力布局动画 */
     const start = (opts?: Partial<KgForceLayoutOptions>) => {
         if (opts) {
-            options = { ...options, ...opts };
+            options = {...options, ...opts};
             if (opts.iterations != null) maxIterations = opts.iterations;
         }
         syncWorkNodes();

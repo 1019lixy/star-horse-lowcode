@@ -1,9 +1,9 @@
 /**
  * 轨迹回放状态管理
  */
-import { computed, reactive, ref, shallowRef } from "vue";
-import { interpolate } from "../utils/MapProjection";
-import type { LngLat, TrackData, TrackPoint } from "../types";
+import {computed, reactive, ref, shallowRef} from "vue";
+import {interpolate} from "../utils/MapProjection";
+import type {LngLat, TrackData, TrackPoint} from "../types";
 
 export const useTrackPlayer = (initialTracks: TrackData[] = []) => {
     const tracks = reactive<TrackData[]>(JSON.parse(JSON.stringify(initialTracks)));
@@ -39,7 +39,7 @@ export const useTrackPlayer = (initialTracks: TrackData[] = []) => {
         const idx = currentIndex.value;
         const pt = track.points[idx];
         if (!pt) return null;
-        return { point: pt, position: currentPosition.value ?? { lng: pt.lng, lat: pt.lat }, index: idx };
+        return {point: pt, position: currentPosition.value ?? {lng: pt.lng, lat: pt.lat}, index: idx};
     });
 
     const setCurrentTrack = (id: string) => {
@@ -79,9 +79,9 @@ export const useTrackPlayer = (initialTracks: TrackData[] = []) => {
         const cur = track.points[idx];
         if (next && cur) {
             const localT = clamped * (track.points.length - 1) - idx;
-            currentPosition.value = interpolate({ lng: cur.lng, lat: cur.lat }, { lng: next.lng, lat: next.lat }, localT);
+            currentPosition.value = interpolate({lng: cur.lng, lat: cur.lat}, {lng: next.lng, lat: next.lat}, localT);
         } else if (cur) {
-            currentPosition.value = { lng: cur.lng, lat: cur.lat };
+            currentPosition.value = {lng: cur.lng, lat: cur.lat};
         }
         elapsed.value = clamped * totalDuration.value;
     };
@@ -103,7 +103,7 @@ export const useTrackPlayer = (initialTracks: TrackData[] = []) => {
             }
             currentIndex.value = newIdx;
             const cur = currentTrack.value!.points[newIdx];
-            currentPosition.value = { lng: cur.lng, lat: cur.lat };
+            currentPosition.value = {lng: cur.lng, lat: cur.lat};
             progress.value = newIdx / (totalPoints.value - 1);
         } else {
             elapsed.value += delta * speed.value;

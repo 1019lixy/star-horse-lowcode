@@ -3,13 +3,13 @@
  *
  * 汇总所有分类的模型预设 + 提供查找/分类辅助函数
  */
-import type { DtModelCategory, DtModelPreset } from "../types";
-import { DT_INDUSTRIAL_MODELS } from "./IndustrialModels";
-import { DT_LOGISTICS_MODELS } from "./LogisticsModels";
-import { DT_INFRASTRUCTURE_MODELS } from "./InfrastructureModels";
-import { DT_DATACENTER_MODELS } from "./DataCenterModels";
-import { DT_ENERGY_MODELS } from "./EnergyModels";
-import { DT_DECORATIVE_MODELS } from "./DecorativeModels";
+import type {DtModelCategory, DtModelPreset} from "../types";
+import {DT_INDUSTRIAL_MODELS} from "./IndustrialModels";
+import {DT_LOGISTICS_MODELS} from "./LogisticsModels";
+import {DT_INFRASTRUCTURE_MODELS} from "./InfrastructureModels";
+import {DT_DATACENTER_MODELS} from "./DataCenterModels";
+import {DT_ENERGY_MODELS} from "./EnergyModels";
+import {DT_DECORATIVE_MODELS} from "./DecorativeModels";
 
 export * from "./IndustrialModels";
 export * from "./LogisticsModels";

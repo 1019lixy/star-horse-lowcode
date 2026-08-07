@@ -6,10 +6,10 @@
       <h3>{{ i18n("test.currentLanguage") }}: {{ currentLang }}</h3>
       <div class="lang-buttons">
         <button
-          v-for="lang in languages"
-          :key="lang.value"
-          @click="switchToLanguage(lang.value)"
-          :class="{ active: currentLang === lang.value }"
+            v-for="lang in languages"
+            :key="lang.value"
+            @click="switchToLanguage(lang.value)"
+            :class="{ active: currentLang === lang.value }"
         >
           {{ lang.label }}
         </button>
@@ -34,14 +34,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from "vue";
-import { i18n, currentLang, changeLanguage, onLanguageChange } from "@/lang";
-import { LangType } from "@/theme/theme";
+import {onMounted, onUnmounted, ref} from "vue";
+import {changeLanguage, currentLang, i18n, onLanguageChange} from "@/lang";
+import {LangType} from "@/theme/theme";
 
 // 语言选项
 const languages = ref([
-  { value: LangType.ZH_CN, label: "简体中文" },
-  { value: LangType.EN_US, label: "English" },
+  {value: LangType.ZH_CN, label: "简体中文"},
+  {value: LangType.EN_US, label: "English"},
 ]);
 
 // 已加载的语言

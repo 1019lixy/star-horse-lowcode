@@ -21,42 +21,42 @@ import type {
 
 /** 节点类型预设 */
 export const KG_NODE_TYPE_PRESETS: KgNodeTypePreset[] = [
-    { type: "person", labelKey: "knowledgegraph.nodeType.person", color: "#1890FF", radius: 22 },
-    { type: "company", labelKey: "knowledgegraph.nodeType.company", color: "#52C41A", radius: 26 },
-    { type: "project", labelKey: "knowledgegraph.nodeType.project", color: "#722ED1", radius: 22 },
-    { type: "location", labelKey: "knowledgegraph.nodeType.location", color: "#FA8C16", radius: 20 },
-    { type: "event", labelKey: "knowledgegraph.nodeType.event", color: "#EB2F96", radius: 20 },
+    {type: "person", labelKey: "knowledgegraph.nodeType.person", color: "#1890FF", radius: 22},
+    {type: "company", labelKey: "knowledgegraph.nodeType.company", color: "#52C41A", radius: 26},
+    {type: "project", labelKey: "knowledgegraph.nodeType.project", color: "#722ED1", radius: 22},
+    {type: "location", labelKey: "knowledgegraph.nodeType.location", color: "#FA8C16", radius: 20},
+    {type: "event", labelKey: "knowledgegraph.nodeType.event", color: "#EB2F96", radius: 20},
 ];
 
 /** 关系类型预设 */
 export const KG_EDGE_TYPE_PRESETS: KgEdgeTypePreset[] = [
-    { type: "founder", labelKey: "knowledgegraph.edgeType.founder", color: "#1890FF", directed: true },
-    { type: "employee", labelKey: "knowledgegraph.edgeType.employee", color: "#52C41A", directed: true },
-    { type: "investor", labelKey: "knowledgegraph.edgeType.investor", color: "#FA541C", directed: true },
-    { type: "partner", labelKey: "knowledgegraph.edgeType.partner", color: "#13C2C2", directed: false },
-    { type: "customer", labelKey: "knowledgegraph.edgeType.customer", color: "#FAAD14", directed: true },
-    { type: "location", labelKey: "knowledgegraph.edgeType.location", color: "#FA8C16", directed: true },
-    { type: "participant", labelKey: "knowledgegraph.edgeType.participant", color: "#722ED1", directed: true },
+    {type: "founder", labelKey: "knowledgegraph.edgeType.founder", color: "#1890FF", directed: true},
+    {type: "employee", labelKey: "knowledgegraph.edgeType.employee", color: "#52C41A", directed: true},
+    {type: "investor", labelKey: "knowledgegraph.edgeType.investor", color: "#FA541C", directed: true},
+    {type: "partner", labelKey: "knowledgegraph.edgeType.partner", color: "#13C2C2", directed: false},
+    {type: "customer", labelKey: "knowledgegraph.edgeType.customer", color: "#FAAD14", directed: true},
+    {type: "location", labelKey: "knowledgegraph.edgeType.location", color: "#FA8C16", directed: true},
+    {type: "participant", labelKey: "knowledgegraph.edgeType.participant", color: "#722ED1", directed: true},
 ];
 
 /** 运算符预设 */
 export const KG_OPERATOR_PRESETS: KgOperatorPreset[] = [
-    { value: "eq", labelKey: "knowledgegraph.query.operator.eq" },
-    { value: "ne", labelKey: "knowledgegraph.query.operator.ne" },
-    { value: "gt", labelKey: "knowledgegraph.query.operator.gt" },
-    { value: "lt", labelKey: "knowledgegraph.query.operator.lt" },
-    { value: "gte", labelKey: "knowledgegraph.query.operator.gte" },
-    { value: "lte", labelKey: "knowledgegraph.query.operator.lte" },
-    { value: "contains", labelKey: "knowledgegraph.query.operator.contains" },
-    { value: "startsWith", labelKey: "knowledgegraph.query.operator.startsWith" },
-    { value: "endsWith", labelKey: "knowledgegraph.query.operator.endsWith" },
+    {value: "eq", labelKey: "knowledgegraph.query.operator.eq"},
+    {value: "ne", labelKey: "knowledgegraph.query.operator.ne"},
+    {value: "gt", labelKey: "knowledgegraph.query.operator.gt"},
+    {value: "lt", labelKey: "knowledgegraph.query.operator.lt"},
+    {value: "gte", labelKey: "knowledgegraph.query.operator.gte"},
+    {value: "lte", labelKey: "knowledgegraph.query.operator.lte"},
+    {value: "contains", labelKey: "knowledgegraph.query.operator.contains"},
+    {value: "startsWith", labelKey: "knowledgegraph.query.operator.startsWith"},
+    {value: "endsWith", labelKey: "knowledgegraph.query.operator.endsWith"},
 ];
 
 /** 布局预设 */
 export const KG_LAYOUT_PRESETS: KgLayoutPreset[] = [
-    { value: "force", labelKey: "knowledgegraph.viewer.layout.force" },
-    { value: "circle", labelKey: "knowledgegraph.viewer.layout.circle" },
-    { value: "grid", labelKey: "knowledgegraph.viewer.layout.grid" },
+    {value: "force", labelKey: "knowledgegraph.viewer.layout.force"},
+    {value: "circle", labelKey: "knowledgegraph.viewer.layout.circle"},
+    {value: "grid", labelKey: "knowledgegraph.viewer.layout.grid"},
 ];
 
 /** 默认力布局参数 */
@@ -67,7 +67,7 @@ export const KG_DEFAULT_FORCE_OPTIONS: Required<KgForceLayoutOptions> = {
     centerStrength: 0.02,
     damping: 0.85,
     iterations: 300,
-    center: { x: 500, y: 350 },
+    center: {x: 500, y: 350},
 };
 
 /** 默认视口 */
@@ -132,7 +132,7 @@ export const createKgNode = (
     y,
     radius: kgGetNodeTypePreset(type)?.radius ?? 20,
     color: kgGetNodeTypePreset(type)?.color,
-    properties: properties ? { ...properties } : {},
+    properties: properties ? {...properties} : {},
     visible: true,
     collapsed: false,
     vx: 0,
@@ -153,7 +153,7 @@ export const createKgEdge = (
     target,
     type,
     label,
-    properties: properties ? { ...properties } : {},
+    properties: properties ? {...properties} : {},
     visible: true,
     weight: 1,
 });

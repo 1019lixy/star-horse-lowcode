@@ -30,7 +30,7 @@ export function useMobilePicker(fieldGetter: () => any, source?: number) {
     const fieldLevelEnabled = computed<boolean>(() => {
         const field = fieldGetter();
         const val = field?.preps?.mobileSeparateEnabled;
-        if (val === false || val === "false") return false;
+        if (val === false || val === "false" || source == 3) return false;
         return true;
     });
 

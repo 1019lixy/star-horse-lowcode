@@ -5,9 +5,9 @@
  * Object3D 由视口的 syncEntitiesToScene 自动从 entity 重建。
  * 这样命令可序列化、可回放，且不依赖 Three.js 运行时。
  */
-import { Command } from "./index";
-import { useDispatchSignal, SIGNAL_NAMES } from "../DtSignals";
-import type { DtEntity, DtPoint3D, DtSize3D } from "../../types";
+import {Command} from "./index";
+import {SIGNAL_NAMES, useDispatchSignal} from "../DtSignals";
+import type {DtEntity, DtPoint3D, DtSize3D} from "../../types";
 
 /** 添加实体命令 */
 export class AddEntityCommand extends Command {
@@ -19,7 +19,7 @@ export class AddEntityCommand extends Command {
         this.type = "AddEntityCommand";
         this.name = "添加实体";
         this.entity = entity;
-        this.parent = { entities };
+        this.parent = {entities};
     }
 
     execute(): void {
@@ -49,7 +49,7 @@ export class RemoveEntityCommand extends Command {
         this.type = "RemoveEntityCommand";
         this.name = "删除实体";
         this.entity = entity;
-        this.parent = { entities };
+        this.parent = {entities};
     }
 
     execute(): void {
@@ -85,23 +85,23 @@ export class SetPositionCommand extends Command {
         this.name = "设置位置";
         this.updatable = true;
         this.entityId = entityId;
-        this.newValue = { ...newPosition };
+        this.newValue = {...newPosition};
         const entity = entities.find((e) => e.id === entityId);
-        this.oldValue = oldPosition ? { ...oldPosition } : { ...(entity?.position ?? { x: 0, y: 0, z: 0 }) };
+        this.oldValue = oldPosition ? {...oldPosition} : {...(entity?.position ?? {x: 0, y: 0, z: 0})};
         this.entities = entities;
     }
 
     execute(): void {
         const entity = this.entities.find((e) => e.id === this.entityId);
         if (!entity) return;
-        entity.position = { ...this.newValue };
+        entity.position = {...this.newValue};
         useDispatchSignal(SIGNAL_NAMES.objectChanged, entity);
     }
 
     undo(): void {
         const entity = this.entities.find((e) => e.id === this.entityId);
         if (!entity) return;
-        entity.position = { ...this.oldValue };
+        entity.position = {...this.oldValue};
         useDispatchSignal(SIGNAL_NAMES.objectChanged, entity);
     }
 
@@ -125,23 +125,23 @@ export class SetSizeCommand extends Command {
         this.name = "设置尺寸";
         this.updatable = true;
         this.entityId = entityId;
-        this.newValue = { ...newSize };
+        this.newValue = {...newSize};
         const entity = entities.find((e) => e.id === entityId);
-        this.oldValue = oldSize ? { ...oldSize } : { ...(entity?.size ?? { width: 0, height: 0, depth: 0, radius: 0 }) };
+        this.oldValue = oldSize ? {...oldSize} : {...(entity?.size ?? {width: 0, height: 0, depth: 0, radius: 0})};
         this.entities = entities;
     }
 
     execute(): void {
         const entity = this.entities.find((e) => e.id === this.entityId);
         if (!entity) return;
-        entity.size = { ...this.newValue };
+        entity.size = {...this.newValue};
         useDispatchSignal(SIGNAL_NAMES.objectChanged, entity);
     }
 
     undo(): void {
         const entity = this.entities.find((e) => e.id === this.entityId);
         if (!entity) return;
-        entity.size = { ...this.oldValue };
+        entity.size = {...this.oldValue};
         useDispatchSignal(SIGNAL_NAMES.objectChanged, entity);
     }
 

@@ -25,25 +25,25 @@ export const DT_ENTITY_TYPE_PRESETS: DtEntityTypePreset[] = [
         type: "cube",
         labelKey: "digitaltwin.type.cube",
         color: "#1890FF",
-        defaultSize: { width: 60, height: 60, depth: 60, radius: 0 },
+        defaultSize: {width: 60, height: 60, depth: 60, radius: 0},
     },
     {
         type: "cylinder",
         labelKey: "digitaltwin.type.cylinder",
         color: "#722ED1",
-        defaultSize: { width: 0, height: 80, depth: 0, radius: 30 },
+        defaultSize: {width: 0, height: 80, depth: 0, radius: 30},
     },
     {
         type: "plane",
         labelKey: "digitaltwin.type.plane",
         color: "#8C8C8C",
-        defaultSize: { width: 200, height: 0, depth: 200, radius: 0 },
+        defaultSize: {width: 200, height: 0, depth: 200, radius: 0},
     },
     {
         type: "sphere",
         labelKey: "digitaltwin.type.sphere",
         color: "#13C2C2",
-        defaultSize: { width: 0, height: 0, depth: 0, radius: 25 },
+        defaultSize: {width: 0, height: 0, depth: 0, radius: 25},
     },
 ];
 
@@ -77,10 +77,10 @@ export const DT_STATUS_PRESETS: DtStatusPreset[] = [
 
 /** 视角预设 */
 export const DT_VIEW_PRESETS: DtViewPresetItem[] = [
-    { preset: "top", labelKey: "digitaltwin.toolbar.view.top", camera: { yaw: 0, pitch: 90 } },
-    { preset: "front", labelKey: "digitaltwin.toolbar.view.front", camera: { yaw: 0, pitch: 0 } },
-    { preset: "side", labelKey: "digitaltwin.toolbar.view.side", camera: { yaw: 90, pitch: 0 } },
-    { preset: "iso", labelKey: "digitaltwin.toolbar.view.iso", camera: { yaw: 45, pitch: 30 } },
+    {preset: "top", labelKey: "digitaltwin.toolbar.view.top", camera: {yaw: 0, pitch: 90}},
+    {preset: "front", labelKey: "digitaltwin.toolbar.view.front", camera: {yaw: 0, pitch: 0}},
+    {preset: "side", labelKey: "digitaltwin.toolbar.view.side", camera: {yaw: 90, pitch: 0}},
+    {preset: "iso", labelKey: "digitaltwin.toolbar.view.iso", camera: {yaw: 45, pitch: 30}},
 ];
 
 /** 默认颜色（未指定状态时） */
@@ -150,18 +150,42 @@ export const dtCreateSensorData = (type: DtEntityType | string): DtSensorData =>
     switch (type) {
         case "cube":
             return {
-                temperature: { labelKey: "digitaltwin.property.metric.temperature", unitKey: "digitaltwin.property.unit.celsius", value: rand(40, 80) },
-                speed: { labelKey: "digitaltwin.property.metric.speed", unitKey: "digitaltwin.property.unit.rpm", value: rand(1000, 3000) },
-                power: { labelKey: "digitaltwin.property.metric.power", unitKey: "digitaltwin.property.unit.watt", value: rand(500, 2000) },
+                temperature: {
+                    labelKey: "digitaltwin.property.metric.temperature",
+                    unitKey: "digitaltwin.property.unit.celsius",
+                    value: rand(40, 80)
+                },
+                speed: {
+                    labelKey: "digitaltwin.property.metric.speed",
+                    unitKey: "digitaltwin.property.unit.rpm",
+                    value: rand(1000, 3000)
+                },
+                power: {
+                    labelKey: "digitaltwin.property.metric.power",
+                    unitKey: "digitaltwin.property.unit.watt",
+                    value: rand(500, 2000)
+                },
             };
         case "cylinder":
             return {
-                pressure: { labelKey: "digitaltwin.property.metric.pressure", unitKey: "digitaltwin.property.unit.pascal", value: rand(100, 500) },
-                efficiency: { labelKey: "digitaltwin.property.metric.efficiency", unitKey: "digitaltwin.property.unit.percent", value: rand(60, 95) },
+                pressure: {
+                    labelKey: "digitaltwin.property.metric.pressure",
+                    unitKey: "digitaltwin.property.unit.pascal",
+                    value: rand(100, 500)
+                },
+                efficiency: {
+                    labelKey: "digitaltwin.property.metric.efficiency",
+                    unitKey: "digitaltwin.property.unit.percent",
+                    value: rand(60, 95)
+                },
             };
         case "sphere":
             return {
-                temperature: { labelKey: "digitaltwin.property.metric.temperature", unitKey: "digitaltwin.property.unit.celsius", value: rand(20, 60) },
+                temperature: {
+                    labelKey: "digitaltwin.property.metric.temperature",
+                    unitKey: "digitaltwin.property.unit.celsius",
+                    value: rand(20, 60)
+                },
             };
         default:
             return {};
@@ -184,7 +208,7 @@ export const dtDefaultSize = (type: DtEntityType | string): DtSize3D => {
 export const createDtEntity = (
     type: DtEntityType | string,
     name: string,
-    position = { x: 0, y: 0, z: 0 },
+    position = {x: 0, y: 0, z: 0},
     size?: Partial<DtSize3D>,
     color?: string,
     status: DtEntity["status"] = "normal",
@@ -196,11 +220,11 @@ export const createDtEntity = (
         id: dtGenId("dt"),
         type,
         name,
-        position: { ...position },
-        size: { ...baseSize, ...size },
+        position: {...position},
+        size: {...baseSize, ...size},
         color: color ?? preset?.color ?? "#8C8C8C",
         status,
-        properties: properties ? { ...properties } : {},
+        properties: properties ? {...properties} : {},
         sensorData: dtCreateSensorData(type),
         visible: true,
     };
@@ -228,8 +252,8 @@ export const dtCreateModelInstance = (
         id: dtGenId("model"),
         type: modelType,
         name,
-        position: { ...position },
-        size: { width: 60, height: 60, depth: 60, radius: 0 },
+        position: {...position},
+        size: {width: 60, height: 60, depth: 60, radius: 0},
         color: "#8C8C8C",
         status,
         properties: {},
@@ -251,47 +275,108 @@ export const DT_SCENE_TEMPLATES: DtSceneTemplate[] = [
         labelKey: "digitaltwin.template.factory",
         descKey: "digitaltwin.template.desc.factory",
         thumbnail: DT_TEMPLATE_THUMBNAIL_FACTORY,
-        camera: { yaw: 45, pitch: 30, zoom: 0.8 },
+        camera: {yaw: 45, pitch: 30, zoom: 0.8},
         entities: [
             // 地面
-            createDtEntity("plane", "工厂地面", { x: 0, y: 0, z: 0 }, { width: 700, height: 0, depth: 500, radius: 0 }, "#D9D9D9"),
+            createDtEntity("plane", "工厂地面", {x: 0, y: 0, z: 0}, {
+                width: 700,
+                height: 0,
+                depth: 500,
+                radius: 0
+            }, "#D9D9D9"),
             // 厂房
-            dtCreateModelInstance("workshop", "主厂房", { x: 0, y: 0, z: -150 }),
+            dtCreateModelInstance("workshop", "主厂房", {x: 0, y: 0, z: -150}),
             // 4 储罐（原料区）
-            dtCreateModelInstance("tank", "原料罐 T1", { x: -200, y: 0, z: 50 }, "normal"),
-            dtCreateModelInstance("tank", "原料罐 T2", { x: -100, y: 0, z: 50 }, "warning"),
-            dtCreateModelInstance("tank", "成品罐 T3", { x: 100, y: 0, z: 50 }, "normal"),
-            dtCreateModelInstance("tank", "成品罐 T4", { x: 200, y: 0, z: 50 }, "normal"),
+            dtCreateModelInstance("tank", "原料罐 T1", {x: -200, y: 0, z: 50}, "normal"),
+            dtCreateModelInstance("tank", "原料罐 T2", {x: -100, y: 0, z: 50}, "warning"),
+            dtCreateModelInstance("tank", "成品罐 T3", {x: 100, y: 0, z: 50}, "normal"),
+            dtCreateModelInstance("tank", "成品罐 T4", {x: 200, y: 0, z: 50}, "normal"),
             // 2 泵
-            dtCreateModelInstance("pump", "进料泵 P1", { x: -200, y: 0, z: 150 }, "normal", { type: "rotation", partId: "motor", axis: "y", speed: 360 }),
-            dtCreateModelInstance("pump", "出料泵 P2", { x: 200, y: 0, z: 150 }, "alarm", { type: "rotation", partId: "motor", axis: "y", speed: 720 }),
+            dtCreateModelInstance("pump", "进料泵 P1", {x: -200, y: 0, z: 150}, "normal", {
+                type: "rotation",
+                partId: "motor",
+                axis: "y",
+                speed: 360
+            }),
+            dtCreateModelInstance("pump", "出料泵 P2", {x: 200, y: 0, z: 150}, "alarm", {
+                type: "rotation",
+                partId: "motor",
+                axis: "y",
+                speed: 720
+            }),
             // 2 阀门
-            dtCreateModelInstance("valve", "阀 V1", { x: -50, y: 0, z: 150 }, "normal", { type: "rotation", partId: "wheel", axis: "y", speed: 90 }),
-            dtCreateModelInstance("valve", "阀 V2", { x: 50, y: 0, z: 150 }, "normal", { type: "rotation", partId: "wheel", axis: "y", speed: 90 }),
+            dtCreateModelInstance("valve", "阀 V1", {x: -50, y: 0, z: 150}, "normal", {
+                type: "rotation",
+                partId: "wheel",
+                axis: "y",
+                speed: 90
+            }),
+            dtCreateModelInstance("valve", "阀 V2", {x: 50, y: 0, z: 150}, "normal", {
+                type: "rotation",
+                partId: "wheel",
+                axis: "y",
+                speed: 90
+            }),
             // 1 换热器
-            dtCreateModelInstance("heatExchanger", "换热器 E1", { x: 0, y: 0, z: 220 }, "normal"),
+            dtCreateModelInstance("heatExchanger", "换热器 E1", {x: 0, y: 0, z: 220}, "normal"),
             // 1 控制室
-            createDtEntity("cube", "控制室", { x: 250, y: 0, z: -100 }, { width: 100, height: 60, depth: 80, radius: 0 }, "#722ED1"),
+            createDtEntity("cube", "控制室", {x: 250, y: 0, z: -100}, {
+                width: 100,
+                height: 60,
+                depth: 80,
+                radius: 0
+            }, "#722ED1"),
             // 装卸区物流设备（工业级）
             // 半挂车（停泊在月台）
-            dtCreateModelInstance("trailerTruck", "半挂车 T1", { x: 0, y: 0, z: 105 }, "normal", { type: "rotation", partId: "frontWheelL", axis: "x", speed: 360 }),
+            dtCreateModelInstance("trailerTruck", "半挂车 T1", {x: 0, y: 0, z: 105}, "normal", {
+                type: "rotation",
+                partId: "frontWheelL",
+                axis: "x",
+                speed: 360
+            }),
             // 2 传送带（生产线输送）
-            dtCreateModelInstance("conveyor", "传送带 C1", { x: -260, y: 0, z: -10 }, "normal", { type: "rotation", partId: "roller1", axis: "x", speed: 360 }),
-            dtCreateModelInstance("conveyor", "传送带 C2", { x: 260, y: 0, z: -10 }, "normal", { type: "rotation", partId: "roller1", axis: "x", speed: 360 }),
+            dtCreateModelInstance("conveyor", "传送带 C1", {x: -260, y: 0, z: -10}, "normal", {
+                type: "rotation",
+                partId: "roller1",
+                axis: "x",
+                speed: 360
+            }),
+            dtCreateModelInstance("conveyor", "传送带 C2", {x: 260, y: 0, z: -10}, "normal", {
+                type: "rotation",
+                partId: "roller1",
+                axis: "x",
+                speed: 360
+            }),
             // 2 货架（仓储区）
-            dtCreateModelInstance("rackShelf", "货架 R1", { x: -280, y: 0, z: -180 }, "normal"),
-            dtCreateModelInstance("rackShelf", "货架 R2", { x: 280, y: 0, z: -180 }, "normal"),
+            dtCreateModelInstance("rackShelf", "货架 R1", {x: -280, y: 0, z: -180}, "normal"),
+            dtCreateModelInstance("rackShelf", "货架 R2", {x: 280, y: 0, z: -180}, "normal"),
             // 2 AGV（智能搬运）
-            dtCreateModelInstance("agv", "AGV A1", { x: -150, y: 0, z: 120 }, "normal", { type: "translation", partId: "body", translateAxis: "x", range: 80, translateSpeed: 0.3 }),
-            dtCreateModelInstance("agv", "AGV A2", { x: 150, y: 0, z: 120 }, "normal", { type: "translation", partId: "body", translateAxis: "x", range: 80, translateSpeed: 0.4 }),
+            dtCreateModelInstance("agv", "AGV A1", {x: -150, y: 0, z: 120}, "normal", {
+                type: "translation",
+                partId: "body",
+                translateAxis: "x",
+                range: 80,
+                translateSpeed: 0.3
+            }),
+            dtCreateModelInstance("agv", "AGV A2", {x: 150, y: 0, z: 120}, "normal", {
+                type: "translation",
+                partId: "body",
+                translateAxis: "x",
+                range: 80,
+                translateSpeed: 0.4
+            }),
             // 5 管道
-            dtCreateModelInstance("pipeline", "管道 L1", { x: -200, y: 0, z: 100 }, "normal"),
-            dtCreateModelInstance("pipeline", "管道 L2", { x: 200, y: 0, z: 100 }, "normal"),
-            dtCreateModelInstance("pipeline", "管道 L3", { x: -100, y: 0, z: 200 }, "normal"),
-            dtCreateModelInstance("pipeline", "管道 L4", { x: 100, y: 0, z: 200 }, "normal"),
-            dtCreateModelInstance("pipeline", "管道 L5", { x: 0, y: 0, z: 250 }, "normal"),
+            dtCreateModelInstance("pipeline", "管道 L1", {x: -200, y: 0, z: 100}, "normal"),
+            dtCreateModelInstance("pipeline", "管道 L2", {x: 200, y: 0, z: 100}, "normal"),
+            dtCreateModelInstance("pipeline", "管道 L3", {x: -100, y: 0, z: 200}, "normal"),
+            dtCreateModelInstance("pipeline", "管道 L4", {x: 100, y: 0, z: 200}, "normal"),
+            dtCreateModelInstance("pipeline", "管道 L5", {x: 0, y: 0, z: 250}, "normal"),
             // 1 水塔（高位储水系统，工厂级落地组件）
-            dtCreateModelInstance("waterTower", "高位水塔 W1", { x: -320, y: 0, z: -200 }, "normal", { type: "blink", partId: "beacon", frequency: 1 }),
+            dtCreateModelInstance("waterTower", "高位水塔 W1", {x: -320, y: 0, z: -200}, "normal", {
+                type: "blink",
+                partId: "beacon",
+                frequency: 1
+            }),
         ],
         hierarchy: {
             id: "node_factory",
@@ -306,9 +391,9 @@ export const DT_SCENE_TEMPLATES: DtSceneTemplate[] = [
                     name: "原料区",
                     expanded: true,
                     children: [
-                        { id: "node_t1", type: "equipment", name: "原料罐 T1", entityId: "" },
-                        { id: "node_t2", type: "equipment", name: "原料罐 T2", entityId: "" },
-                        { id: "node_p1", type: "equipment", name: "进料泵 P1", entityId: "" },
+                        {id: "node_t1", type: "equipment", name: "原料罐 T1", entityId: ""},
+                        {id: "node_t2", type: "equipment", name: "原料罐 T2", entityId: ""},
+                        {id: "node_p1", type: "equipment", name: "进料泵 P1", entityId: ""},
                     ],
                 },
                 {
@@ -318,8 +403,8 @@ export const DT_SCENE_TEMPLATES: DtSceneTemplate[] = [
                     name: "生产区",
                     expanded: true,
                     children: [
-                        { id: "node_e1", type: "equipment", name: "换热器 E1", entityId: "" },
-                        { id: "node_v1", type: "equipment", name: "阀 V1", entityId: "" },
+                        {id: "node_e1", type: "equipment", name: "换热器 E1", entityId: ""},
+                        {id: "node_v1", type: "equipment", name: "阀 V1", entityId: ""},
                     ],
                 },
                 {
@@ -329,7 +414,7 @@ export const DT_SCENE_TEMPLATES: DtSceneTemplate[] = [
                     name: "控制区",
                     expanded: true,
                     children: [
-                        { id: "node_ctrl_room", type: "equipment", name: "控制室", entityId: "" },
+                        {id: "node_ctrl_room", type: "equipment", name: "控制室", entityId: ""},
                     ],
                 },
             ],
@@ -340,25 +425,64 @@ export const DT_SCENE_TEMPLATES: DtSceneTemplate[] = [
         labelKey: "digitaltwin.template.datacenter",
         descKey: "digitaltwin.template.desc.datacenter",
         thumbnail: DT_TEMPLATE_THUMBNAIL_DATACENTER,
-        camera: { yaw: 30, pitch: 35, zoom: 0.7 },
+        camera: {yaw: 30, pitch: 35, zoom: 0.7},
         entities: [
-            createDtEntity("plane", "机房地面", { x: 0, y: 0, z: 0 }, { width: 600, height: 0, depth: 400, radius: 0 }, "#D9D9D9"),
-            dtCreateModelInstance("workshop", "主机房", { x: 0, y: 0, z: -100 }),
+            createDtEntity("plane", "机房地面", {x: 0, y: 0, z: 0}, {
+                width: 600,
+                height: 0,
+                depth: 400,
+                radius: 0
+            }, "#D9D9D9"),
+            dtCreateModelInstance("workshop", "主机房", {x: 0, y: 0, z: -100}),
             // 6 机柜两排
-            dtCreateModelInstance("serverRack", "机柜 R1", { x: -180, y: 0, z: 0 }, "normal", { type: "blink", partId: "led1", frequency: 2 }),
-            dtCreateModelInstance("serverRack", "机柜 R2", { x: -90, y: 0, z: 0 }, "normal", { type: "blink", partId: "led1", frequency: 1.5 }),
-            dtCreateModelInstance("serverRack", "机柜 R3", { x: 0, y: 0, z: 0 }, "warning", { type: "blink", partId: "led1", frequency: 3 }),
-            dtCreateModelInstance("serverRack", "机柜 R4", { x: -180, y: 0, z: 120 }, "normal", { type: "blink", partId: "led1", frequency: 1.8 }),
-            dtCreateModelInstance("serverRack", "机柜 R5", { x: -90, y: 0, z: 120 }, "normal", { type: "blink", partId: "led1", frequency: 2.2 }),
-            dtCreateModelInstance("serverRack", "机柜 R6", { x: 0, y: 0, z: 120 }, "normal", { type: "blink", partId: "led1", frequency: 2 }),
+            dtCreateModelInstance("serverRack", "机柜 R1", {x: -180, y: 0, z: 0}, "normal", {
+                type: "blink",
+                partId: "led1",
+                frequency: 2
+            }),
+            dtCreateModelInstance("serverRack", "机柜 R2", {x: -90, y: 0, z: 0}, "normal", {
+                type: "blink",
+                partId: "led1",
+                frequency: 1.5
+            }),
+            dtCreateModelInstance("serverRack", "机柜 R3", {x: 0, y: 0, z: 0}, "warning", {
+                type: "blink",
+                partId: "led1",
+                frequency: 3
+            }),
+            dtCreateModelInstance("serverRack", "机柜 R4", {x: -180, y: 0, z: 120}, "normal", {
+                type: "blink",
+                partId: "led1",
+                frequency: 1.8
+            }),
+            dtCreateModelInstance("serverRack", "机柜 R5", {x: -90, y: 0, z: 120}, "normal", {
+                type: "blink",
+                partId: "led1",
+                frequency: 2.2
+            }),
+            dtCreateModelInstance("serverRack", "机柜 R6", {x: 0, y: 0, z: 120}, "normal", {
+                type: "blink",
+                partId: "led1",
+                frequency: 2
+            }),
             // 2 精密空调
-            dtCreateModelInstance("crac", "精密空调 A", { x: 150, y: 0, z: 0 }, "normal", { type: "rotation", partId: "fan1", axis: "y", speed: 720 }),
-            dtCreateModelInstance("crac", "精密空调 B", { x: 150, y: 0, z: 150 }, "normal", { type: "rotation", partId: "fan1", axis: "y", speed: 720 }),
+            dtCreateModelInstance("crac", "精密空调 A", {x: 150, y: 0, z: 0}, "normal", {
+                type: "rotation",
+                partId: "fan1",
+                axis: "y",
+                speed: 720
+            }),
+            dtCreateModelInstance("crac", "精密空调 B", {x: 150, y: 0, z: 150}, "normal", {
+                type: "rotation",
+                partId: "fan1",
+                axis: "y",
+                speed: 720
+            }),
             // 1 UPS
-            dtCreateModelInstance("ups", "UPS", { x: 220, y: 0, z: 75 }, "normal"),
+            dtCreateModelInstance("ups", "UPS", {x: 220, y: 0, z: 75}, "normal"),
             // 2 工作人员
-            dtCreateModelInstance("worker", "运维人员 W1", { x: -120, y: 0, z: 220 }, "normal"),
-            dtCreateModelInstance("worker", "运维人员 W2", { x: 60, y: 0, z: 220 }, "normal"),
+            dtCreateModelInstance("worker", "运维人员 W1", {x: -120, y: 0, z: 220}, "normal"),
+            dtCreateModelInstance("worker", "运维人员 W2", {x: 60, y: 0, z: 220}, "normal"),
         ],
         hierarchy: {
             id: "node_dc",
@@ -373,9 +497,9 @@ export const DT_SCENE_TEMPLATES: DtSceneTemplate[] = [
                     labelKey: "digitaltwin.hierarchy.zone",
                     expanded: true,
                     children: [
-                        { id: "node_r1", type: "equipment", name: "机柜 R1", entityId: "" },
-                        { id: "node_r2", type: "equipment", name: "机柜 R2", entityId: "" },
-                        { id: "node_r3", type: "equipment", name: "机柜 R3", entityId: "" },
+                        {id: "node_r1", type: "equipment", name: "机柜 R1", entityId: ""},
+                        {id: "node_r2", type: "equipment", name: "机柜 R2", entityId: ""},
+                        {id: "node_r3", type: "equipment", name: "机柜 R3", entityId: ""},
                     ],
                 },
                 {
@@ -385,9 +509,9 @@ export const DT_SCENE_TEMPLATES: DtSceneTemplate[] = [
                     labelKey: "digitaltwin.hierarchy.zone",
                     expanded: true,
                     children: [
-                        { id: "node_r4", type: "equipment", name: "机柜 R4", entityId: "" },
-                        { id: "node_r5", type: "equipment", name: "机柜 R5", entityId: "" },
-                        { id: "node_r6", type: "equipment", name: "机柜 R6", entityId: "" },
+                        {id: "node_r4", type: "equipment", name: "机柜 R4", entityId: ""},
+                        {id: "node_r5", type: "equipment", name: "机柜 R5", entityId: ""},
+                        {id: "node_r6", type: "equipment", name: "机柜 R6", entityId: ""},
                     ],
                 },
                 {
@@ -397,9 +521,9 @@ export const DT_SCENE_TEMPLATES: DtSceneTemplate[] = [
                     labelKey: "digitaltwin.hierarchy.zone",
                     expanded: true,
                     children: [
-                        { id: "node_crac1", type: "equipment", name: "精密空调 A", entityId: "" },
-                        { id: "node_crac2", type: "equipment", name: "精密空调 B", entityId: "" },
-                        { id: "node_ups", type: "equipment", name: "UPS", entityId: "" },
+                        {id: "node_crac1", type: "equipment", name: "精密空调 A", entityId: ""},
+                        {id: "node_crac2", type: "equipment", name: "精密空调 B", entityId: ""},
+                        {id: "node_ups", type: "equipment", name: "UPS", entityId: ""},
                     ],
                 },
             ],
@@ -410,22 +534,45 @@ export const DT_SCENE_TEMPLATES: DtSceneTemplate[] = [
         labelKey: "digitaltwin.template.energystation",
         descKey: "digitaltwin.template.desc.energystation",
         thumbnail: DT_TEMPLATE_THUMBNAIL_ENERGY,
-        camera: { yaw: 30, pitch: 25, zoom: 0.6 },
+        camera: {yaw: 30, pitch: 25, zoom: 0.6},
         entities: [
-            createDtEntity("plane", "能源站地面", { x: 0, y: 0, z: 0 }, { width: 800, height: 0, depth: 600, radius: 0 }, "#D9D9D9"),
+            createDtEntity("plane", "能源站地面", {x: 0, y: 0, z: 0}, {
+                width: 800,
+                height: 0,
+                depth: 600,
+                radius: 0
+            }, "#D9D9D9"),
             // 4 太阳能板阵列
-            dtCreateModelInstance("solarPanel", "太阳能板 S1", { x: -250, y: 0, z: -100 }, "normal"),
-            dtCreateModelInstance("solarPanel", "太阳能板 S2", { x: -150, y: 0, z: -100 }, "normal"),
-            dtCreateModelInstance("solarPanel", "太阳能板 S3", { x: -250, y: 0, z: 0 }, "normal"),
-            dtCreateModelInstance("solarPanel", "太阳能板 S4", { x: -150, y: 0, z: 0 }, "normal"),
+            dtCreateModelInstance("solarPanel", "太阳能板 S1", {x: -250, y: 0, z: -100}, "normal"),
+            dtCreateModelInstance("solarPanel", "太阳能板 S2", {x: -150, y: 0, z: -100}, "normal"),
+            dtCreateModelInstance("solarPanel", "太阳能板 S3", {x: -250, y: 0, z: 0}, "normal"),
+            dtCreateModelInstance("solarPanel", "太阳能板 S4", {x: -150, y: 0, z: 0}, "normal"),
             // 2 风力发电机
-            dtCreateModelInstance("windTurbine", "风机 WT1", { x: 150, y: 0, z: -100 }, "normal", { type: "rotation", partId: "blade1", axis: "z", speed: 360 }),
-            dtCreateModelInstance("windTurbine", "风机 WT2", { x: 150, y: 0, z: 100 }, "normal", { type: "rotation", partId: "blade1", axis: "z", speed: 360 }),
+            dtCreateModelInstance("windTurbine", "风机 WT1", {x: 150, y: 0, z: -100}, "normal", {
+                type: "rotation",
+                partId: "blade1",
+                axis: "z",
+                speed: 360
+            }),
+            dtCreateModelInstance("windTurbine", "风机 WT2", {x: 150, y: 0, z: 100}, "normal", {
+                type: "rotation",
+                partId: "blade1",
+                axis: "z",
+                speed: 360
+            }),
             // 1 变压器
-            dtCreateModelInstance("transformer", "变压器 T1", { x: 280, y: 0, z: -100 }, "normal"),
+            dtCreateModelInstance("transformer", "变压器 T1", {x: 280, y: 0, z: -100}, "normal"),
             // 2 配电柜
-            dtCreateModelInstance("distributionBox", "配电柜 D1", { x: 280, y: 0, z: 0 }, "normal", { type: "blink", partId: "led1", frequency: 1.5 }),
-            dtCreateModelInstance("distributionBox", "配电柜 D2", { x: 280, y: 0, z: 100 }, "normal", { type: "blink", partId: "led1", frequency: 1.5 }),
+            dtCreateModelInstance("distributionBox", "配电柜 D1", {x: 280, y: 0, z: 0}, "normal", {
+                type: "blink",
+                partId: "led1",
+                frequency: 1.5
+            }),
+            dtCreateModelInstance("distributionBox", "配电柜 D2", {x: 280, y: 0, z: 100}, "normal", {
+                type: "blink",
+                partId: "led1",
+                frequency: 1.5
+            }),
         ],
         hierarchy: {
             id: "node_es",
@@ -440,10 +587,10 @@ export const DT_SCENE_TEMPLATES: DtSceneTemplate[] = [
                     labelKey: "digitaltwin.hierarchy.zone",
                     expanded: true,
                     children: [
-                        { id: "node_s1", type: "equipment", name: "太阳能板 S1", entityId: "" },
-                        { id: "node_s2", type: "equipment", name: "太阳能板 S2", entityId: "" },
-                        { id: "node_s3", type: "equipment", name: "太阳能板 S3", entityId: "" },
-                        { id: "node_s4", type: "equipment", name: "太阳能板 S4", entityId: "" },
+                        {id: "node_s1", type: "equipment", name: "太阳能板 S1", entityId: ""},
+                        {id: "node_s2", type: "equipment", name: "太阳能板 S2", entityId: ""},
+                        {id: "node_s3", type: "equipment", name: "太阳能板 S3", entityId: ""},
+                        {id: "node_s4", type: "equipment", name: "太阳能板 S4", entityId: ""},
                     ],
                 },
                 {
@@ -453,8 +600,8 @@ export const DT_SCENE_TEMPLATES: DtSceneTemplate[] = [
                     labelKey: "digitaltwin.hierarchy.zone",
                     expanded: true,
                     children: [
-                        { id: "node_wt1", type: "equipment", name: "风机 WT1", entityId: "" },
-                        { id: "node_wt2", type: "equipment", name: "风机 WT2", entityId: "" },
+                        {id: "node_wt1", type: "equipment", name: "风机 WT1", entityId: ""},
+                        {id: "node_wt2", type: "equipment", name: "风机 WT2", entityId: ""},
                     ],
                 },
                 {
@@ -464,9 +611,9 @@ export const DT_SCENE_TEMPLATES: DtSceneTemplate[] = [
                     labelKey: "digitaltwin.hierarchy.zone",
                     expanded: true,
                     children: [
-                        { id: "node_trans", type: "equipment", name: "变压器 T1", entityId: "" },
-                        { id: "node_d1", type: "equipment", name: "配电柜 D1", entityId: "" },
-                        { id: "node_d2", type: "equipment", name: "配电柜 D2", entityId: "" },
+                        {id: "node_trans", type: "equipment", name: "变压器 T1", entityId: ""},
+                        {id: "node_d1", type: "equipment", name: "配电柜 D1", entityId: ""},
+                        {id: "node_d2", type: "equipment", name: "配电柜 D2", entityId: ""},
                     ],
                 },
             ],
@@ -487,11 +634,46 @@ export const DT_CRUISE_PATH_PRESETS: DtCruisePath[] = [
         name: "全景概览",
         loop: true,
         waypoints: [
-            { id: "wp1", name: "主入口", position: { x: 400, y: 250, z: 400 }, target: { x: 0, y: 50, z: 0 }, stayMs: 2000, transitionMs: 4000 },
-            { id: "wp2", name: "厂房正面", position: { x: 0, y: 200, z: 500 }, target: { x: 0, y: 50, z: 0 }, stayMs: 2500, transitionMs: 4000 },
-            { id: "wp3", name: "储罐区", position: { x: -400, y: 250, z: 200 }, target: { x: -200, y: 0, z: 0 }, stayMs: 2500, transitionMs: 4000 },
-            { id: "wp4", name: "水塔俯瞰", position: { x: -500, y: 400, z: -300 }, target: { x: -320, y: 160, z: -200 }, stayMs: 2500, transitionMs: 4000 },
-            { id: "wp5", name: "俯视图", position: { x: 0, y: 600, z: 0 }, target: { x: 0, y: 0, z: 0 }, stayMs: 2000, transitionMs: 4000 },
+            {
+                id: "wp1",
+                name: "主入口",
+                position: {x: 400, y: 250, z: 400},
+                target: {x: 0, y: 50, z: 0},
+                stayMs: 2000,
+                transitionMs: 4000
+            },
+            {
+                id: "wp2",
+                name: "厂房正面",
+                position: {x: 0, y: 200, z: 500},
+                target: {x: 0, y: 50, z: 0},
+                stayMs: 2500,
+                transitionMs: 4000
+            },
+            {
+                id: "wp3",
+                name: "储罐区",
+                position: {x: -400, y: 250, z: 200},
+                target: {x: -200, y: 0, z: 0},
+                stayMs: 2500,
+                transitionMs: 4000
+            },
+            {
+                id: "wp4",
+                name: "水塔俯瞰",
+                position: {x: -500, y: 400, z: -300},
+                target: {x: -320, y: 160, z: -200},
+                stayMs: 2500,
+                transitionMs: 4000
+            },
+            {
+                id: "wp5",
+                name: "俯视图",
+                position: {x: 0, y: 600, z: 0},
+                target: {x: 0, y: 0, z: 0},
+                stayMs: 2000,
+                transitionMs: 4000
+            },
         ],
     },
     {
@@ -499,10 +681,38 @@ export const DT_CRUISE_PATH_PRESETS: DtCruisePath[] = [
         name: "泵区巡检",
         loop: false,
         waypoints: [
-            { id: "wp1", name: "P1 进料泵", position: { x: 150, y: 80, z: 200 }, target: { x: 150, y: 30, z: 0 }, stayMs: 3000, transitionMs: 3000 },
-            { id: "wp2", name: "P2 出料泵", position: { x: 220, y: 80, z: 200 }, target: { x: 220, y: 30, z: 0 }, stayMs: 3000, transitionMs: 3000 },
-            { id: "wp3", name: "换热器", position: { x: 300, y: 100, z: 150 }, target: { x: 300, y: 30, z: 0 }, stayMs: 3000, transitionMs: 3000 },
-            { id: "wp4", name: "V1 主阀", position: { x: 0, y: 80, z: 200 }, target: { x: 0, y: 30, z: 0 }, stayMs: 3000, transitionMs: 3000 },
+            {
+                id: "wp1",
+                name: "P1 进料泵",
+                position: {x: 150, y: 80, z: 200},
+                target: {x: 150, y: 30, z: 0},
+                stayMs: 3000,
+                transitionMs: 3000
+            },
+            {
+                id: "wp2",
+                name: "P2 出料泵",
+                position: {x: 220, y: 80, z: 200},
+                target: {x: 220, y: 30, z: 0},
+                stayMs: 3000,
+                transitionMs: 3000
+            },
+            {
+                id: "wp3",
+                name: "换热器",
+                position: {x: 300, y: 100, z: 150},
+                target: {x: 300, y: 30, z: 0},
+                stayMs: 3000,
+                transitionMs: 3000
+            },
+            {
+                id: "wp4",
+                name: "V1 主阀",
+                position: {x: 0, y: 80, z: 200},
+                target: {x: 0, y: 30, z: 0},
+                stayMs: 3000,
+                transitionMs: 3000
+            },
         ],
     },
     {
@@ -510,10 +720,38 @@ export const DT_CRUISE_PATH_PRESETS: DtCruisePath[] = [
         name: "周界安防",
         loop: true,
         waypoints: [
-            { id: "wp1", name: "东南角", position: { x: 500, y: 150, z: 500 }, target: { x: 200, y: 0, z: 200 }, stayMs: 1500, transitionMs: 5000 },
-            { id: "wp2", name: "东北角", position: { x: 500, y: 150, z: -500 }, target: { x: 200, y: 0, z: -200 }, stayMs: 1500, transitionMs: 5000 },
-            { id: "wp3", name: "西北角", position: { x: -500, y: 150, z: -500 }, target: { x: -200, y: 0, z: -200 }, stayMs: 1500, transitionMs: 5000 },
-            { id: "wp4", name: "西南角", position: { x: -500, y: 150, z: 500 }, target: { x: -200, y: 0, z: 200 }, stayMs: 1500, transitionMs: 5000 },
+            {
+                id: "wp1",
+                name: "东南角",
+                position: {x: 500, y: 150, z: 500},
+                target: {x: 200, y: 0, z: 200},
+                stayMs: 1500,
+                transitionMs: 5000
+            },
+            {
+                id: "wp2",
+                name: "东北角",
+                position: {x: 500, y: 150, z: -500},
+                target: {x: 200, y: 0, z: -200},
+                stayMs: 1500,
+                transitionMs: 5000
+            },
+            {
+                id: "wp3",
+                name: "西北角",
+                position: {x: -500, y: 150, z: -500},
+                target: {x: -200, y: 0, z: -200},
+                stayMs: 1500,
+                transitionMs: 5000
+            },
+            {
+                id: "wp4",
+                name: "西南角",
+                position: {x: -500, y: 150, z: 500},
+                target: {x: -200, y: 0, z: 200},
+                stayMs: 1500,
+                transitionMs: 5000
+            },
         ],
     },
 ];
@@ -524,12 +762,66 @@ export const DT_CRUISE_PATH_PRESETS: DtCruisePath[] = [
  * 部署 6 个摄像头覆盖关键区域，2 个离线模拟故障
  */
 export const DT_CAMERA_PRESETS: DtVideoCamera[] = [
-    { id: "cam_main_gate", name: "主出入口", position: { x: 0, y: 120, z: 250 }, streamUrl: "mock://cam_main_gate", cameraType: "ptz", online: true, fov: 75, heading: 0 },
-    { id: "cam_tank_area", name: "储罐区", position: { x: -200, y: 100, z: 100 }, streamUrl: "mock://cam_tank_area", cameraType: "fixed", online: true, fov: 60, heading: 90 },
-    { id: "cam_pump_zone", name: "泵区", position: { x: 200, y: 100, z: 100 }, streamUrl: "mock://cam_pump_zone", cameraType: "fixed", online: true, fov: 60, heading: 270 },
-    { id: "cam_workshop", name: "厂房顶部", position: { x: 0, y: 150, z: 0 }, streamUrl: "mock://cam_workshop", cameraType: "panoramic", online: true, fov: 360, heading: 0 },
-    { id: "cam_tower", name: "水塔附近", position: { x: -320, y: 100, z: -100 }, streamUrl: "mock://cam_tower", cameraType: "fixed", online: false, fov: 60, heading: 180 },
-    { id: "cam_perimeter_e", name: "东侧周界", position: { x: 400, y: 100, z: 0 }, streamUrl: "mock://cam_perimeter_e", cameraType: "ptz", online: false, fov: 75, heading: 270 },
+    {
+        id: "cam_main_gate",
+        name: "主出入口",
+        position: {x: 0, y: 120, z: 250},
+        streamUrl: "mock://cam_main_gate",
+        cameraType: "ptz",
+        online: true,
+        fov: 75,
+        heading: 0
+    },
+    {
+        id: "cam_tank_area",
+        name: "储罐区",
+        position: {x: -200, y: 100, z: 100},
+        streamUrl: "mock://cam_tank_area",
+        cameraType: "fixed",
+        online: true,
+        fov: 60,
+        heading: 90
+    },
+    {
+        id: "cam_pump_zone",
+        name: "泵区",
+        position: {x: 200, y: 100, z: 100},
+        streamUrl: "mock://cam_pump_zone",
+        cameraType: "fixed",
+        online: true,
+        fov: 60,
+        heading: 270
+    },
+    {
+        id: "cam_workshop",
+        name: "厂房顶部",
+        position: {x: 0, y: 150, z: 0},
+        streamUrl: "mock://cam_workshop",
+        cameraType: "panoramic",
+        online: true,
+        fov: 360,
+        heading: 0
+    },
+    {
+        id: "cam_tower",
+        name: "水塔附近",
+        position: {x: -320, y: 100, z: -100},
+        streamUrl: "mock://cam_tower",
+        cameraType: "fixed",
+        online: false,
+        fov: 60,
+        heading: 180
+    },
+    {
+        id: "cam_perimeter_e",
+        name: "东侧周界",
+        position: {x: 400, y: 100, z: 0},
+        streamUrl: "mock://cam_perimeter_e",
+        cameraType: "ptz",
+        online: false,
+        fov: 75,
+        heading: 270
+    },
 ];
 
 /**

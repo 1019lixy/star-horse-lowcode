@@ -1,66 +1,72 @@
 <template>
   <starhorse-form-item
-    :showFormItem="showFormItem"
-    :isDesign="isDesign"
-    :disabled="disabled"
-    :bareFlag="bareFlag"
-    :field="field"
-    :parentField="parentField"
+      :showFormItem="showFormItem"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      :field="field"
+      :parentField="parentField"
   >
     <el-time-picker
-      v-if="!isSeparate"
-      :fid="field.fieldName"
-      :disabled="checkIsDisabled(props)"
-      v-bind="prepsFilter(field.preps)"
-      :is-range="isRange"
-      :range-separator="field.preps?.rangeSeparator || i18n('api.to')"
-      :format="field.preps?.format || 'HH:mm:ss'"
-      :value-format="field.preps?.valueFormat || 'HH:mm:ss'"
-      v-on="getDynamicEvents(props, itemAction, formData)"
-      @change="itemAction('change')"
-      v-model="formData[field.fieldName]"
+        v-if="!isSeparate"
+        :fid="field.fieldName"
+        :disabled="checkIsDisabled(props)"
+        v-bind="prepsFilter(field.preps)"
+        :is-range="isRange"
+        :range-separator="field.preps?.rangeSeparator || i18n('api.to')"
+        :format="field.preps?.format || 'HH:mm:ss'"
+        :value-format="field.preps?.valueFormat || 'HH:mm:ss'"
+        v-on="getDynamicEvents(props, itemAction, formData)"
+        @change="itemAction('change')"
+        v-model="formData[field.fieldName]"
     />
 
     <template v-else>
       <el-input
-        :model-value="displayText"
-        :placeholder="field.preps?.placeholder"
-        :disabled="checkIsDisabled(props)"
-        readonly
-        @click="openPicker"
+          :model-value="displayText"
+          :placeholder="field.preps?.placeholder"
+          :disabled="checkIsDisabled(props)"
+          readonly
+          @click="openPicker"
       >
         <template #suffix>
-          <star-horse-icon icon-class="time" />
+          <star-horse-icon icon-class="time"/>
         </template>
       </el-input>
 
       <ShMobilePicker
-        v-if="isSeparate && pickerVisible"
-        v-model="pickerVisible"
-        :title="title"
-        :placement="placement"
-        :size="size"
-        @confirm="handleConfirm"
-        @cancel="handleCancel"
+          v-if="isSeparate && pickerVisible"
+          v-model="pickerVisible"
+          :title="title"
+          :placement="placement"
+          :size="size"
+          @confirm="handleConfirm"
+          @cancel="handleCancel"
       >
         <ShMobileWheelPicker
-          ref="wheelPickerRef"
-          :model-value="formData[field.fieldName]"
-          :type="isRange ? 'timerange' : 'time'"
-          :value-format="wheelValueFormat"
-          :show-second="showSecond"
+            ref="wheelPickerRef"
+            :model-value="formData[field.fieldName]"
+            :type="isRange ? 'timerange' : 'time'"
+            :value-format="wheelValueFormat"
+            :show-second="showSecond"
         />
       </ShMobilePicker>
     </template>
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { computed, nextTick, onBeforeMount, onMounted, ref, watch } from "vue";
-import { allAction, checkIsDisabled, initCompCallEvent, prepsFilter, relationEventDispatcher } from "@/components/formcomp/utils/ItemRelationEventUtils";
-import { getDynamicEvents } from "@/api/system";
-import { i18n } from "@/lang";
-import { ItemPreps } from "@/components/types/ItemPreps";
-import { useMobilePicker } from "@/components/formcomp/utils/useMobilePicker";
+import {computed, nextTick, onBeforeMount, onMounted, ref, watch} from "vue";
+import {
+  allAction,
+  checkIsDisabled,
+  initCompCallEvent,
+  prepsFilter,
+  relationEventDispatcher
+} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {getDynamicEvents} from "@/api/system";
+import {i18n} from "@/lang";
+import {ItemPreps} from "@/components/types/ItemPreps";
+import {useMobilePicker} from "@/components/formcomp/utils/useMobilePicker";
 import ShMobilePicker from "@/components/formcomp/utils/ShMobilePicker.vue";
 import ShMobileWheelPicker from "@/components/formcomp/utils/ShMobileWheelPicker.vue";
 
@@ -117,11 +123,11 @@ const handleConfirm = () => {
   const dataRelation = props.field.preps?.dataRelation;
   if (dataRelation?.actionName) {
     relationEventDispatcher(
-      props,
-      dataRelation,
-      val,
-      formData,
-      dataRelation.actionName,
+        props,
+        dataRelation,
+        val,
+        formData,
+        dataRelation.actionName,
     );
   }
   closePicker();
@@ -158,7 +164,7 @@ function normalizeTimePickerSingle(val: any, vf: string): any {
   if (vf === "HH:mm" && /^\d{1,2}:\d{2}:\d{2}$/.test(val))
     return val.substring(0, 5);
   const tzMatch = val.match(
-    /^\d{4}-\d{2}-\d{2}\s+(\d{1,2}):(\d{2})(?::(\d{2}))?/,
+      /^\d{4}-\d{2}-\d{2}\s+(\d{1,2}):(\d{2})(?::(\d{2}))?/,
   );
   if (tzMatch) {
     const h = tzMatch[1];
@@ -168,7 +174,7 @@ function normalizeTimePickerSingle(val: any, vf: string): any {
     return h + ":" + m + ":" + s;
   }
   const isoMatch = val.match(
-    /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})/,
+      /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})/,
   );
   if (isoMatch) {
     const h = isoMatch[4];
@@ -198,27 +204,27 @@ onMounted(() => {
 
 const closeWatch = ref<() => void>();
 closeWatch.value = watch(
-  () => formData.value?.[props.field.fieldName],
-  (val) => {
-    if (props.source == 1) {
-      closeWatch.value?.();
-      return;
-    }
-    if (val != null && val !== "") {
-      const name = props.field.fieldName;
-      const normalized = normalizeTimePickerValue(val);
-      if (Array.isArray(normalized)) {
-        if (!Array.isArray(val) || normalized.length !== val.length || normalized.some((v: any, i: number) => v !== val[i])) {
+    () => formData.value?.[props.field.fieldName],
+    (val) => {
+      if (props.source == 1) {
+        closeWatch.value?.();
+        return;
+      }
+      if (val != null && val !== "") {
+        const name = props.field.fieldName;
+        const normalized = normalizeTimePickerValue(val);
+        if (Array.isArray(normalized)) {
+          if (!Array.isArray(val) || normalized.length !== val.length || normalized.some((v: any, i: number) => v !== val[i])) {
+            formData.value[name] = normalized;
+            closeWatch.value?.();
+          }
+        } else if (normalized !== val) {
           formData.value[name] = normalized;
           closeWatch.value?.();
         }
-      } else if (normalized !== val) {
-        formData.value[name] = normalized;
-        closeWatch.value?.();
       }
-    }
-  },
-  { immediate: true },
+    },
+    {immediate: true},
 );
 </script>
 <style lang="scss" scoped>

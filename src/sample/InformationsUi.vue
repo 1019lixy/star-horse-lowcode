@@ -1,16 +1,10 @@
 <script setup lang="ts" name="Rolesinfo">
-import { onMounted, provide, reactive, ref } from "vue";
-import { isSystemManage } from "@/utils/auth";
-import { i18n } from "@/lang";
-import { StarHorseTableComp } from "@/components/comp";
-import {
-  ApiUrls,
-  PageFieldInfo,
-  SearchFields,
-  SelectOption,
-  UserFuncInfo,
-} from "@/components/types";
-import { apiInstance, dialogPreps } from "@/api/star_horse_utils";
+import {onMounted, provide, reactive, ref} from "vue";
+import {isSystemManage} from "@/utils/auth";
+import {i18n} from "@/lang";
+import {StarHorseTableComp} from "@/components/comp";
+import {ApiUrls, PageFieldInfo, SearchFields, SelectOption, UserFuncInfo,} from "@/components/types";
+import {apiInstance, dialogPreps} from "@/api/star_horse_utils";
 
 const dataUrl: ApiUrls = apiInstance("system-config", "system/rolesinfo");
 let departmentList = ref<SelectOption[]>([]);
@@ -20,16 +14,16 @@ let selfBtnFunc = ref<UserFuncInfo[]>([]);
 const starHorseTableCompRef = ref();
 // 0 普通角色 1高级角色 2普通管理员 3 超级管理员 默认 0
 const roleTypes = ref<SelectOption[]>([
-  { name: "普通管理员", value: 0 },
-  { name: "高级管理员", value: 1 },
-  { name: "超级管理员", value: 2 },
+  {name: "普通管理员", value: 0},
+  {name: "高级管理员", value: 1},
+  {name: "超级管理员", value: 2},
 ]);
 const sessionTimeOut = [
-  { name: "15分钟", value: 15 },
-  { name: "30分钟", value: 30 },
-  { name: "60分钟", value: 60 },
-  { name: "180分钟", value: 180 },
-  { name: "无限制", value: 0 },
+  {name: "15分钟", value: 15},
+  {name: "30分钟", value: 30},
+  {name: "60分钟", value: 60},
+  {name: "180分钟", value: 180},
+  {name: "无限制", value: 0},
 ];
 const searchFormData = reactive<SearchFields>({
   fieldList: [
@@ -201,7 +195,7 @@ const dataFormat = (name: string, cellValue: any, row: any): any => {
   let data = [] as Array<any>;
   if (name == "roleType") {
     let fdata = roleTypes.value.find(
-      (item) => item.value == parseInt(cellValue),
+        (item) => item.value == parseInt(cellValue),
     );
     return fdata?.name || cellValue;
   } else if (name == "departments" && row) {
@@ -249,14 +243,14 @@ const recallFun = (id: string, datas: any): any => {
 
 const initData = async () => {
   let params: any = [
-    { propertyName: "isDel", value: 0 },
-    { propertyName: "statusCode", value: "1" },
+    {propertyName: "isDel", value: 0},
+    {propertyName: "statusCode", value: "1"},
   ];
   // departmentList.value = await loadDepartmentInfo(params);
   // systemList.value = await loadSystemInfo(params);
   //只有系统管理员可以看到系统管理员
   if (isSystemManage()) {
-    roleTypes.value.push({ name: "系统用户组", value: 3 });
+    roleTypes.value.push({name: "系统用户组", value: 3});
   }
 };
 onMounted(async () => {
@@ -267,50 +261,50 @@ onMounted(async () => {
 <template>
   <div class="flex flex-col h-full overflow-hidden">
     <star-horse-dialog
-      :isShowBtnContinue="true"
-      :dialogVisible="dialogProps.editVisible"
-      :dialogProps="dialogProps"
+        :isShowBtnContinue="true"
+        :dialogVisible="dialogProps.editVisible"
+        :dialogProps="dialogProps"
     >
       <star-horse-form
-        :compUrl="dataUrl"
-        @refresh="starHorseTableCompRef?.loadByPage()"
-        :fieldList="tableFieldList"
-        :rules="rules"
+          :compUrl="dataUrl"
+          @refresh="starHorseTableCompRef?.loadByPage()"
+          :fieldList="tableFieldList"
+          :rules="rules"
       />
     </star-horse-dialog>
     <star-horse-dialog
-      v-model="dialogProps.viewVisible"
-      :dialogProps="dialogProps"
-      :source="3"
+        v-model="dialogProps.viewVisible"
+        :dialogProps="dialogProps"
+        :source="3"
     >
       <star-horse-data-view
-        :dataFormat="dataFormat"
-        :field-list="tableFieldList"
-        :compUrl="dataUrl"
+          :dataFormat="dataFormat"
+          :field-list="tableFieldList"
+          :compUrl="dataUrl"
       />
     </star-horse-dialog>
     <div class="search-content">
       <div class="search_btn">
         <star-horse-search-comp
-          @searchData="
+            @searchData="
             (data: any) => starHorseTableCompRef?.createSearchParams(data)
           "
-          :formData="searchFormData"
-          :compUrl="dataUrl"
+            :formData="searchFormData"
+            :compUrl="dataUrl"
         />
       </div>
     </div>
     <el-card class="inner_content">
       <star-horse-table-comp
-        ref="starHorseTableCompRef"
-        :fieldList="tableFieldList"
-        :primaryKey="primaryKey"
-        :btn-permissions="{
+          ref="starHorseTableCompRef"
+          :fieldList="tableFieldList"
+          :primaryKey="primaryKey"
+          :btn-permissions="{
           view: 'view',
           edit: 'edit',
         }"
-        :compUrl="dataUrl"
-        :dataFormat="dataFormat"
+          :compUrl="dataUrl"
+          :dataFormat="dataFormat"
       />
     </el-card>
   </div>

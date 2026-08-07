@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import { RichTextCollab } from "@/components/richtext";
+import {ref} from "vue";
+import {RichTextCollab} from "@/components/richtext";
 
 const toolbarMode = ref<"simple" | "default" | "full">("default");
 
@@ -20,61 +20,65 @@ const htmlContent = ref<string>(
 );
 
 const modeOptions = [
-    { label: "简洁模式 (simple)", value: "simple" },
-    { label: "默认模式 (default)", value: "default" },
-    { label: "完整模式 (full)", value: "full" },
+  {label: "简洁模式 (simple)", value: "simple"},
+  {label: "默认模式 (default)", value: "default"},
+  {label: "完整模式 (full)", value: "full"},
 ];
 </script>
 
 <template>
-    <div class="demo-container">
-        <h3>协同富文本 RichTextCollab</h3>
-        <p>基于 wangEditor 封装的协同富文本编辑器，支持多种工具栏模式、协同用户展示、字数统计、@提及等。下方可切换三种工具栏模式查看效果。</p>
+  <div class="demo-container">
+    <h3>协同富文本 RichTextCollab</h3>
+    <p>基于 wangEditor
+      封装的协同富文本编辑器，支持多种工具栏模式、协同用户展示、字数统计、@提及等。下方可切换三种工具栏模式查看效果。</p>
 
-        <div class="demo-toolbar">
-            <span class="toolbar-label">工具栏模式：</span>
-            <el-radio-group v-model="toolbarMode">
-                <el-radio-button
-                    v-for="opt in modeOptions"
-                    :key="opt.value"
-                    :value="opt.value"
-                >
-                    {{ opt.label }}
-                </el-radio-button>
-            </el-radio-group>
-        </div>
-
-        <div class="demo-canvas">
-            <RichTextCollab
-                :key="toolbarMode"
-                v-model:html="htmlContent"
-                :toolbar-mode="toolbarMode"
-                :config="{ enableCollaboration: true, maxLength: 100000 }"
-            />
-        </div>
+    <div class="demo-toolbar">
+      <span class="toolbar-label">工具栏模式：</span>
+      <el-radio-group v-model="toolbarMode">
+        <el-radio-button
+            v-for="opt in modeOptions"
+            :key="opt.value"
+            :value="opt.value"
+        >
+          {{ opt.label }}
+        </el-radio-button>
+      </el-radio-group>
     </div>
+
+    <div class="demo-canvas">
+      <RichTextCollab
+          :key="toolbarMode"
+          v-model:html="htmlContent"
+          :toolbar-mode="toolbarMode"
+          :config="{ enableCollaboration: true, maxLength: 100000 }"
+      />
+    </div>
+  </div>
 </template>
 
 <style scoped>
 .demo-container {
-    padding: 16px;
-    height: 100%;
-    overflow: auto;
+  padding: 16px;
+  height: 100%;
+  overflow: auto;
 }
+
 .demo-toolbar {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
 }
+
 .toolbar-label {
-    font-size: 14px;
-    color: var(--el-text-color-secondary);
+  font-size: 14px;
+  color: var(--el-text-color-secondary);
 }
+
 .demo-canvas {
-    border: 1px solid var(--el-border-color);
-    border-radius: 4px;
-    overflow: hidden;
-    height: 560px;
+  border: 1px solid var(--el-border-color);
+  border-radius: 4px;
+  overflow: hidden;
+  height: 560px;
 }
 </style>

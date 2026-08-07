@@ -2,8 +2,8 @@
  * PDF 签章状态管理
  * 单一职责：管理签名列表、签名采集
  */
-import { reactive, ref } from "vue";
-import type { PdfSignatureInfo } from "../types";
+import {reactive, ref} from "vue";
+import type {PdfSignatureInfo} from "../types";
 
 export const usePdfSigner = (initial?: { signatures?: PdfSignatureInfo[] }) => {
     const signatures = reactive<PdfSignatureInfo[]>(initial?.signatures ? JSON.parse(JSON.stringify(initial.signatures)) : []);
@@ -76,7 +76,12 @@ export const usePdfSigner = (initial?: { signatures?: PdfSignatureInfo[] }) => {
     });
 
     /** 加载 */
-    const loadData = (data: { signatures: PdfSignatureInfo[]; enableCertificate?: boolean; penColor?: string; penWidth?: number }) => {
+    const loadData = (data: {
+        signatures: PdfSignatureInfo[];
+        enableCertificate?: boolean;
+        penColor?: string;
+        penWidth?: number
+    }) => {
         signatures.splice(0, signatures.length, ...JSON.parse(JSON.stringify(data.signatures)));
         enableCertificate.value = data.enableCertificate ?? false;
         penColor.value = data.penColor ?? "#000000";

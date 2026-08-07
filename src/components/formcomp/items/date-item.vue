@@ -1,82 +1,88 @@
 <template>
   <starhorse-form-item
-    :showFormItem="showFormItem"
-    :isDesign="isDesign"
-    :disabled="disabled"
-    :bareFlag="bareFlag"
-    :field="field"
-    :parentField="parentField"
+      :showFormItem="showFormItem"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      :field="field"
+      :parentField="parentField"
   >
     <el-date-picker
-      v-if="!isSeparate"
-      :fid="field.fieldName"
-      :disabled="checkIsDisabled(props)"
-      v-bind="prepsFilter(field.preps)"
-      :type="effectiveType"
-      :format="field.preps?.format || displayFormat"
-      :value-format="field.preps?.valueFormat || valueFormat"
-      v-on="getDynamicEvents(props, itemAction, formData)"
-      @change="itemAction('change')"
-      v-model="formData[field.fieldName]"
+        v-if="!isSeparate"
+        :fid="field.fieldName"
+        :disabled="checkIsDisabled(props)"
+        v-bind="prepsFilter(field.preps)"
+        :type="effectiveType"
+        :format="field.preps?.format || displayFormat"
+        :value-format="field.preps?.valueFormat || valueFormat"
+        v-on="getDynamicEvents(props, itemAction, formData)"
+        @change="itemAction('change')"
+        v-model="formData[field.fieldName]"
     />
 
     <template v-else>
       <el-input
-        :model-value="displayText"
-        :placeholder="field.preps?.placeholder"
-        :disabled="checkIsDisabled(props)"
-        readonly
-        @click="openPicker"
+          :model-value="displayText"
+          :placeholder="field.preps?.placeholder"
+          :disabled="checkIsDisabled(props)"
+          readonly
+          @click="openPicker"
       >
         <template #suffix>
-          <star-horse-icon icon-class="date" />
+          <star-horse-icon icon-class="date"/>
         </template>
       </el-input>
 
       <ShMobilePicker
-        v-if="isSeparate && pickerVisible"
-        v-model="pickerVisible"
-        :title="title"
-        :placement="placement"
-        :size="size"
-        @confirm="handleConfirm"
-        @cancel="handleCancel"
+          v-if="isSeparate && pickerVisible"
+          v-model="pickerVisible"
+          :title="title"
+          :placement="placement"
+          :size="size"
+          @confirm="handleConfirm"
+          @cancel="handleCancel"
       >
         <ShMobileWheelPicker
-          v-if="!isMultiSelect"
-          ref="wheelPickerRef"
-          :model-value="formData[field.fieldName]"
-          :type="wheelType"
-          :value-format="wheelValueFormat"
-          :min-year="minYear"
-          :max-year="maxYear"
+            v-if="!isMultiSelect"
+            ref="wheelPickerRef"
+            :model-value="formData[field.fieldName]"
+            :type="wheelType"
+            :value-format="wheelValueFormat"
+            :min-year="minYear"
+            :max-year="maxYear"
         />
         <ShMobileGridPicker
-          v-else
-          ref="gridPickerRef"
-          :model-value="formData[field.fieldName] || []"
-          :mode="gridMode"
-          :value-format="gridValueFormat"
-          :min-year="minYear"
-          :max-year="maxYear"
-          :every-year="everyYear"
-          @every-year-change="onEveryYearChange"
+            v-else
+            ref="gridPickerRef"
+            :model-value="formData[field.fieldName] || []"
+            :mode="gridMode"
+            :value-format="gridValueFormat"
+            :min-year="minYear"
+            :max-year="maxYear"
+            :every-year="everyYear"
+            @every-year-change="onEveryYearChange"
         />
       </ShMobilePicker>
     </template>
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { computed, nextTick, onBeforeMount, onMounted, ref, shallowRef, watch } from "vue";
-import { allAction, checkIsDisabled, initCompCallEvent, prepsFilter, relationEventDispatcher } from "@/components/formcomp/utils/ItemRelationEventUtils";
-import { getDynamicEvents } from "@/api/system";
-import { ItemPreps } from "@/components/types/ItemPreps";
-import { getDateDisplayFormat, getDateValueFormat, normalizeDateModel } from "@/api/date_utils";
-import { useMobilePicker } from "@/components/formcomp/utils/useMobilePicker";
+import {computed, nextTick, onBeforeMount, onMounted, ref, shallowRef, watch} from "vue";
+import {
+  allAction,
+  checkIsDisabled,
+  initCompCallEvent,
+  prepsFilter,
+  relationEventDispatcher
+} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {getDynamicEvents} from "@/api/system";
+import {ItemPreps} from "@/components/types/ItemPreps";
+import {getDateDisplayFormat, getDateValueFormat, normalizeDateModel} from "@/api/date_utils";
+import {useMobilePicker} from "@/components/formcomp/utils/useMobilePicker";
 import ShMobilePicker from "@/components/formcomp/utils/ShMobilePicker.vue";
 import ShMobileWheelPicker from "@/components/formcomp/utils/ShMobileWheelPicker.vue";
 import ShMobileGridPicker from "@/components/formcomp/utils/ShMobileGridPicker.vue";
-import { i18n } from "@/lang";
+import {i18n} from "@/lang";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -116,14 +122,21 @@ const isMultiSelect = computed(() => {
 const wheelType = computed(() => {
   const t = effectiveType.value;
   switch (t) {
-    case "daterange": return "daterange";
-    case "monthrange": return "monthrange";
-    case "yearrange": return "yearrange";
-    case "year": return "year";
-    case "month": return "month";
+    case "daterange":
+      return "daterange";
+    case "monthrange":
+      return "monthrange";
+    case "yearrange":
+      return "yearrange";
+    case "year":
+      return "year";
+    case "month":
+      return "month";
     case "week":
-    case "date": return "date";
-    default: return "date";
+    case "date":
+      return "date";
+    default:
+      return "date";
   }
 });
 
@@ -213,11 +226,11 @@ const handleConfirm = () => {
   const dataRelation = props.field.preps?.dataRelation;
   if (dataRelation?.actionName) {
     relationEventDispatcher(
-      props,
-      dataRelation,
-      formData.value[props.field.fieldName],
-      formData,
-      dataRelation.actionName,
+        props,
+        dataRelation,
+        formData.value[props.field.fieldName],
+        formData,
+        dataRelation.actionName,
     );
   }
   closePicker();
@@ -265,28 +278,28 @@ onMounted(() => {
 
 const closeWatch = ref<() => void>();
 closeWatch.value = watch(
-  () => formData.value?.[props.field.fieldName],
-  (val) => {
-    if (props.source == 1) {
-      closeWatch.value?.();
-      return;
-    }
-    if (val != null && val !== "") {
-      const name = props.field.fieldName;
-      const vf = props.field.preps?.valueFormat || valueFormat.value;
-      const normalized = normalizeDateModel(val, effectiveType.value, vf);
-      if (Array.isArray(normalized)) {
-        if (!Array.isArray(val) || normalized.length !== val.length || normalized.some((v: any, i: number) => v !== val[i])) {
+    () => formData.value?.[props.field.fieldName],
+    (val) => {
+      if (props.source == 1) {
+        closeWatch.value?.();
+        return;
+      }
+      if (val != null && val !== "") {
+        const name = props.field.fieldName;
+        const vf = props.field.preps?.valueFormat || valueFormat.value;
+        const normalized = normalizeDateModel(val, effectiveType.value, vf);
+        if (Array.isArray(normalized)) {
+          if (!Array.isArray(val) || normalized.length !== val.length || normalized.some((v: any, i: number) => v !== val[i])) {
+            formData.value[name] = normalized;
+            closeWatch.value?.();
+          }
+        } else if (normalized !== val) {
           formData.value[name] = normalized;
           closeWatch.value?.();
         }
-      } else if (normalized !== val) {
-        formData.value[name] = normalized;
-        closeWatch.value?.();
       }
-    }
-  },
-  { immediate: true },
+    },
+    {immediate: true},
 );
 </script>
 <style lang="scss" scoped>

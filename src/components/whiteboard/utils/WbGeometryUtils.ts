@@ -5,13 +5,7 @@
  * 注意：函数统一以 wb 前缀命名，避免与 diagram/constants.getShapePath 等冲突
  */
 
-import type {
-    PenElement,
-    ShapeElement,
-    TextElement,
-    WbBoundingBox,
-    WhiteboardElement,
-} from "../types";
+import type {PenElement, ShapeElement, TextElement, WbBoundingBox, WhiteboardElement,} from "../types";
 
 /** 两点距离平方 */
 export const wbDistanceSq = (x1: number, y1: number, x2: number, y2: number): number => {
@@ -174,7 +168,7 @@ export const wbGetBoundingBox = (el: WhiteboardElement): WbBoundingBox => {
     switch (el.type) {
         case "pen": {
             const pts = (el as PenElement).points;
-            if (!pts || pts.length === 0) return { x: 0, y: 0, width: 0, height: 0 };
+            if (!pts || pts.length === 0) return {x: 0, y: 0, width: 0, height: 0};
             let minX = pts[0].x;
             let minY = pts[0].y;
             let maxX = pts[0].x;
@@ -185,11 +179,11 @@ export const wbGetBoundingBox = (el: WhiteboardElement): WbBoundingBox => {
                 if (pts[i].x > maxX) maxX = pts[i].x;
                 if (pts[i].y > maxY) maxY = pts[i].y;
             }
-            return { x: minX, y: minY, width: Math.max(1, maxX - minX), height: Math.max(1, maxY - minY) };
+            return {x: minX, y: minY, width: Math.max(1, maxX - minX), height: Math.max(1, maxY - minY)};
         }
         case "shape": {
             const s = el as ShapeElement;
-            return { x: s.x, y: s.y, width: s.width, height: s.height };
+            return {x: s.x, y: s.y, width: s.width, height: s.height};
         }
         case "line": {
             const l: any = el;
@@ -197,14 +191,14 @@ export const wbGetBoundingBox = (el: WhiteboardElement): WbBoundingBox => {
             const minY = Math.min(l.y1, l.y2);
             const maxX = Math.max(l.x1, l.x2);
             const maxY = Math.max(l.y1, l.y2);
-            return { x: minX, y: minY, width: Math.max(1, maxX - minX), height: Math.max(1, maxY - minY) };
+            return {x: minX, y: minY, width: Math.max(1, maxX - minX), height: Math.max(1, maxY - minY)};
         }
         case "text": {
             const t = el as TextElement;
-            return { x: t.x, y: t.y, width: t.width, height: t.height };
+            return {x: t.x, y: t.y, width: t.width, height: t.height};
         }
         default:
-            return { x: 0, y: 0, width: 0, height: 0 };
+            return {x: 0, y: 0, width: 0, height: 0};
     }
 };
 
@@ -313,11 +307,11 @@ export const wbUnionBox = (
     a: WbBoundingBox,
     b: WbBoundingBox,
 ): WbBoundingBox => {
-    if (a.width === 0 || a.height === 0) return { ...b };
-    if (b.width === 0 || b.height === 0) return { ...a };
+    if (a.width === 0 || a.height === 0) return {...b};
+    if (b.width === 0 || b.height === 0) return {...a};
     const x = Math.min(a.x, b.x);
     const y = Math.min(a.y, b.y);
     const x2 = Math.max(a.x + a.width, b.x + b.width);
     const y2 = Math.max(a.y + a.height, b.y + b.height);
-    return { x, y, width: x2 - x, height: y2 - y };
+    return {x, y, width: x2 - x, height: y2 - y};
 };

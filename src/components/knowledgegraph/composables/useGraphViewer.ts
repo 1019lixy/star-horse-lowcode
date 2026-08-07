@@ -4,22 +4,11 @@
  * graph / viewport / selectedNode / highlightNodes / path / search / collapse
  */
 
-import { computed, reactive, ref } from "vue";
-import {
-    KG_DEFAULT_VIEWPORT,
-    KG_ZOOM_MAX,
-    KG_ZOOM_MIN,
-    kgDefaultLayoutType,
-} from "../constants";
-import { kgBfsShortestPath, kgFindNeighborEdges, kgFindNeighbors } from "../utils/KgGraphAlgorithms";
-import { kgCircleLayout, kgForceLayout, kgGridLayout } from "../utils/KgGraphLayout";
-import type {
-    KgGraph,
-    KgLayoutType,
-    KgNode,
-    KgPoint,
-    KgViewport,
-} from "../types";
+import {computed, reactive, ref} from "vue";
+import {KG_DEFAULT_VIEWPORT, KG_ZOOM_MAX, KG_ZOOM_MIN, kgDefaultLayoutType,} from "../constants";
+import {kgBfsShortestPath, kgFindNeighborEdges, kgFindNeighbors} from "../utils/KgGraphAlgorithms";
+import {kgCircleLayout, kgForceLayout, kgGridLayout} from "../utils/KgGraphLayout";
+import type {KgGraph, KgLayoutType, KgNode, KgPoint, KgViewport,} from "../types";
 
 const createInitialViewerState = (graph?: Partial<KgGraph>) => ({
     graph: {
@@ -29,7 +18,7 @@ const createInitialViewerState = (graph?: Partial<KgGraph>) => ({
         edges: [],
         ...graph,
     } as KgGraph,
-    viewport: { ...KG_DEFAULT_VIEWPORT } as KgViewport,
+    viewport: {...KG_DEFAULT_VIEWPORT} as KgViewport,
     layout: kgDefaultLayoutType,
     selectedNodeId: null as string | null,
     selectedEdgeId: null as string | null,
@@ -204,15 +193,15 @@ export function useGraphViewer(initial?: Partial<KgGraph>) {
     };
 
     /** 应用布局 */
-    const applyLayout = (center: KgPoint = { x: 500, y: 350 }) => {
+    const applyLayout = (center: KgPoint = {x: 500, y: 350}) => {
         const nodes = state.graph.nodes;
         let positions: Map<string, KgPoint>;
         if (state.layout === "circle") {
-            positions = kgCircleLayout(nodes, { centerX: center.x, centerY: center.y, radius: 260 });
+            positions = kgCircleLayout(nodes, {centerX: center.x, centerY: center.y, radius: 260});
         } else if (state.layout === "grid") {
-            positions = kgGridLayout(nodes, { startX: 80, startY: 80, cellWidth: 160, cellHeight: 120 });
+            positions = kgGridLayout(nodes, {startX: 80, startY: 80, cellWidth: 160, cellHeight: 120});
         } else {
-            positions = kgForceLayout(nodes, state.graph.edges, { center, iterations: 300 });
+            positions = kgForceLayout(nodes, state.graph.edges, {center, iterations: 300});
         }
         nodes.forEach((n) => {
             const p = positions.get(n.id);

@@ -26,7 +26,7 @@ const props = defineProps({
   batchName: {type: String, default: "batchDataList"},
   primaryKey: {type: [String, Object] as PropType<string | any>},
   initRows: {type: Number, default: 0},
-  importInfo: {type: Object as PropType<any>},
+  importInfo: {type: Object as PropType<ApiUrls>},
   title: {type: String, default: ""},
   helpMsg: {type: String, default: ""},
   rules: {type: Object},
@@ -480,7 +480,7 @@ watch(
           :on-success="uploadSuccess"
           :show-file-list="false"
           accept=".xls,.xlsx"
-          :action="importInfo?.importDataUrl"
+          :action="importInfo?.analyzeDataUrl"
           :headers="{ token: getToken() }"
           class="upload"
           name="file"
@@ -526,7 +526,7 @@ watch(
       <div class="flex items-center">
         <ul class="inner_button" v-if="source != 3">
           <li
-              v-if="importInfo?.importDataUrl && !subFlag"
+              v-if="importInfo?.analyzeDataUrl && !subFlag"
               @click="excelOperation"
           >
             <el-tooltip :content="i18n('ui.importExcel')" :trigger="isMobile ? 'click' : 'hover'">
@@ -538,7 +538,8 @@ watch(
             </el-tooltip>
           </li>
           <li v-if="enableSubNode" @click="expandSubNodes">
-            <el-tooltip :content="i18n(!expandFlag?'ui.expandAll':'ui.collapseAll')" :trigger="isMobile ? 'click' : 'hover'">
+            <el-tooltip :content="i18n(!expandFlag?'ui.expandAll':'ui.collapseAll')"
+                        :trigger="isMobile ? 'click' : 'hover'">
               <star-horse-icon
                   :icon-class="!expandFlag?'expand':'collapse'"
                   size="22px"

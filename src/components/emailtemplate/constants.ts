@@ -1,26 +1,26 @@
 /**
  * 邮件模板常量
  */
-import { i18n } from "@/lang";
-import type { EmailCategoryPreset, EmailTemplate, EmailVariable, EmailVariableType } from "./types";
+import {i18n} from "@/lang";
+import type {EmailCategoryPreset, EmailTemplate, EmailVariable, EmailVariableType} from "./types";
 
 /** 变量类型预设 */
 export const EMAIL_VARIABLE_TYPE_PRESETS: { value: EmailVariableType; label: string }[] = [
-    { value: "string", label: i18n("emailtemplate.varType.string") },
-    { value: "number", label: i18n("emailtemplate.varType.number") },
-    { value: "date", label: i18n("emailtemplate.varType.date") },
-    { value: "boolean", label: i18n("emailtemplate.varType.boolean") },
-    { value: "select", label: i18n("emailtemplate.varType.select") },
+    {value: "string", label: i18n("emailtemplate.varType.string")},
+    {value: "number", label: i18n("emailtemplate.varType.number")},
+    {value: "date", label: i18n("emailtemplate.varType.date")},
+    {value: "boolean", label: i18n("emailtemplate.varType.boolean")},
+    {value: "select", label: i18n("emailtemplate.varType.select")},
 ];
 
 /** 分类预设 */
 export const EMAIL_CATEGORY_PRESETS: EmailCategoryPreset[] = [
-    { value: "notification", label: i18n("emailtemplate.category.notification") },
-    { value: "verification", label: i18n("emailtemplate.category.verification") },
-    { value: "marketing", label: i18n("emailtemplate.category.marketing") },
-    { value: "welcome", label: i18n("emailtemplate.category.welcome") },
-    { value: "reset", label: i18n("emailtemplate.category.reset") },
-    { value: "custom", label: i18n("emailtemplate.category.custom") },
+    {value: "notification", label: i18n("emailtemplate.category.notification")},
+    {value: "verification", label: i18n("emailtemplate.category.verification")},
+    {value: "marketing", label: i18n("emailtemplate.category.marketing")},
+    {value: "welcome", label: i18n("emailtemplate.category.welcome")},
+    {value: "reset", label: i18n("emailtemplate.category.reset")},
+    {value: "custom", label: i18n("emailtemplate.category.custom")},
 ];
 
 /** 默认模板内容 */

@@ -2,7 +2,7 @@
  * 调度视图日期工具
  * 单一职责：纯函数
  */
-import type { ScheduleViewMode } from "../types";
+import type {ScheduleViewMode} from "../types";
 
 /** 时间字符串转 Date */
 export const parseTime = (timeStr: string): Date => {

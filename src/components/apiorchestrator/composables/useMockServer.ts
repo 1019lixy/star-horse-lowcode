@@ -2,7 +2,7 @@
  * Mock 服务：响应匹配、模拟请求、变量提取
  * 全部使用浏览器原生 API，不依赖第三方库
  */
-import type { ApiEndpoint, MockResponse, VariableExtraction } from "../types";
+import type {ApiEndpoint, MockResponse, VariableExtraction} from "../types";
 
 /** 在 mocks 中查找指定接口启用的 mock 响应 */
 export const matchMock = (

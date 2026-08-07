@@ -4,13 +4,8 @@
  * query / addStep / removeStep / runQuery / saveTemplate / loadTemplate
  */
 
-import { reactive, ref } from "vue";
-import {
-    createKgCondition,
-    createKgQuery,
-    createKgStep,
-    kgGenId,
-} from "../constants";
+import {reactive, ref} from "vue";
+import {createKgCondition, createKgQuery, createKgStep, kgGenId,} from "../constants";
 import type {
     KgEdge,
     KgGraph,
@@ -23,7 +18,7 @@ import type {
 } from "../types";
 
 const createInitialBuilderState = (query?: Partial<KgQuery>) => ({
-    query: { ...createKgQuery(), ...query } as KgQuery,
+    query: {...createKgQuery(), ...query} as KgQuery,
     results: [] as KgQueryResultItem[],
     executed: false,
     templates: [] as KgQueryTemplate[],

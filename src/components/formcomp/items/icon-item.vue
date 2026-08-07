@@ -1,84 +1,84 @@
 <template>
   <starhorse-form-item
-    :showFormItem="showFormItem"
-    :isDesign="isDesign"
-    :disabled="disabled"
-    :bareFlag="bareFlag"
-    :field="field"
-    :parentField="parentField"
+      :showFormItem="showFormItem"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      :field="field"
+      :parentField="parentField"
   >
     <!-- PC 端：完全保持原逻辑 -->
     <el-popover
-      v-if="!isSeparate"
-      :popper-style="{ width: 'inherit !important' }"
-      ref="popoverRef"
-      :placement="field.preps?.placement ?? 'bottom-start'"
-      :disabled="checkIsDisabled(props) || field.preps?.listView"
-      trigger="click"
+        v-if="!isSeparate"
+        :popper-style="{ width: 'inherit !important' }"
+        ref="popoverRef"
+        :placement="field.preps?.placement ?? 'bottom-start'"
+        :disabled="checkIsDisabled(props) || field.preps?.listView"
+        trigger="click"
     >
       <template #reference>
         <el-avatar
-          v-if="iconType == 'system'"
-          fit="fill"
-          shape="square"
-          @dblclick.stop="formData[field.fieldName]=''"
-          :style="{
+            v-if="iconType == 'system'"
+            fit="fill"
+            shape="square"
+            @dblclick.stop="formData[field.fieldName]=''"
+            :style="{
             'font-size': field.preps?.listView ? '22px' : '24px',
             background: field.preps?.listView
               ? 'unset'
               : 'var(--el-avatar-bg-color)',
           }"
-          :icon="formData[field.fieldName]"
+            :icon="formData[field.fieldName]"
         />
         <star-horse-icon
-          :icon-class="formData[field.fieldName]"
-          v-else
-          @dblclick.stop="formData[field.fieldName]=''"
-          size="30px"
-          style="
+            :icon-class="formData[field.fieldName]"
+            v-else
+            @dblclick.stop="formData[field.fieldName]=''"
+            size="30px"
+            style="
             color: var(--star-horse-style);
             border-radius: 3px;
             border: 1px solid var(--star-horse-light-gray);
           "
-          cursor="pointer"
+            cursor="pointer"
         />
       </template>
       <div class="icon-items">
         <div class="search-box">
           <el-input
-            v-model="searchName"
-            @keydown.enter="dataSearch"
-            clearable
-            :placeholder="i18n('item.searchIconPlaceholder')"
+              v-model="searchName"
+              @keydown.enter="dataSearch"
+              clearable
+              :placeholder="i18n('item.searchIconPlaceholder')"
           >
             <template #prefix>
-              <star-horse-icon icon-class="search" @click="dataSearch" />
+              <star-horse-icon icon-class="search" @click="dataSearch"/>
             </template>
           </el-input>
         </div>
         <ul class="system-icon">
           <li
-            v-for="sdata in iconList"
-            @click="assignIcon(sdata.value)"
-            :title="sdata.name"
-            :key="sdata.value"
-            :class="{ 'icon-active': sdata.value == formData[field.fieldName] }"
+              v-for="sdata in iconList"
+              @click="assignIcon(sdata.value)"
+              :title="sdata.name"
+              :key="sdata.value"
+              :class="{ 'icon-active': sdata.value == formData[field.fieldName] }"
           >
             <el-icon
-              class="star-icon"
-              style="font-size: 35px; color: var(--star-horse-style)"
-              v-if="iconType == 'system'"
+                class="star-icon"
+                style="font-size: 35px; color: var(--star-horse-style)"
+                v-if="iconType == 'system'"
             >
-              <component :is="sdata.value" :key="sdata.value + '_comp'" />
+              <component :is="sdata.value" :key="sdata.value + '_comp'"/>
             </el-icon>
             <star-horse-icon
-              :icon-class="sdata.value"
-              v-else
-              size="30px"
-              width="30px"
-              height="30px"
-              style="color: var(--star-horse-style)"
-              cursor="pointer"
+                :icon-class="sdata.value"
+                v-else
+                size="30px"
+                width="30px"
+                height="30px"
+                style="color: var(--star-horse-style)"
+                cursor="pointer"
             />
           </li>
         </ul>
@@ -89,50 +89,50 @@
     <template v-else>
       <div class="icon-app-trigger" @click="openPicker">
         <el-avatar
-          v-if="iconType == 'system'"
-          fit="fill"
-          shape="square"
-          :style="{
+            v-if="iconType == 'system'"
+            fit="fill"
+            shape="square"
+            :style="{
             'font-size': field.preps?.listView ? '22px' : '24px',
             background: field.preps?.listView
               ? 'unset'
               : 'var(--el-avatar-bg-color)',
           }"
-          :icon="formData[field.fieldName]"
+            :icon="formData[field.fieldName]"
         />
         <star-horse-icon
-          :icon-class="formData[field.fieldName]"
-          v-else
-          size="30px"
-          style="
+            :icon-class="formData[field.fieldName]"
+            v-else
+            size="30px"
+            style="
             color: var(--star-horse-style);
             border-radius: 3px;
             border: 1px solid var(--star-horse-light-gray);
           "
-          cursor="pointer"
+            cursor="pointer"
         />
       </div>
 
       <ShMobilePicker
-        v-if="isSeparate && pickerVisible"
-        v-model="pickerVisible"
-        :title="title"
-        :placement="placement"
-        :size="size"
-        :show-footer="false"
-        @cancel="handleCancel"
+          v-if="isSeparate && pickerVisible"
+          v-model="pickerVisible"
+          :title="title"
+          :placement="placement"
+          :size="size"
+          :show-footer="false"
+          @cancel="handleCancel"
       >
         <div class="sh-mobile-icon-panel">
           <!-- 搜索框 -->
           <el-input
-            v-model="searchName"
-            class="sh-mobile-icon-panel__search"
-            :placeholder="i18n('item.searchIconPlaceholder')"
-            clearable
-            @input="dataSearch"
+              v-model="searchName"
+              class="sh-mobile-icon-panel__search"
+              :placeholder="i18n('item.searchIconPlaceholder')"
+              clearable
+              @input="dataSearch"
           >
             <template #prefix>
-              <star-horse-icon icon-class="search" />
+              <star-horse-icon icon-class="search"/>
             </template>
           </el-input>
 
@@ -140,32 +140,32 @@
           <el-scrollbar tag="div" class="sh-mobile-icon-panel__grid-scroll">
             <ul class="sh-mobile-icon-panel__grid">
               <li
-                v-for="sdata in iconList"
-                @click="assignIcon(sdata.value)"
-                :title="sdata.name"
-                :key="sdata.value"
-                :class="{
+                  v-for="sdata in iconList"
+                  @click="assignIcon(sdata.value)"
+                  :title="sdata.name"
+                  :key="sdata.value"
+                  :class="{
                   'icon-active': sdata.value == formData[field.fieldName],
                 }"
               >
                 <el-icon
-                  class="star-icon"
-                  v-if="iconType == 'system'"
+                    class="star-icon"
+                    v-if="iconType == 'system'"
                 >
-                  <component :is="sdata.value" :key="sdata.value + '_comp'" />
+                  <component :is="sdata.value" :key="sdata.value + '_comp'"/>
                 </el-icon>
                 <star-horse-icon
-                  :icon-class="sdata.value"
-                  v-else
-                  size="30px"
-                  width="30px"
-                  height="30px"
-                  cursor="pointer"
+                    :icon-class="sdata.value"
+                    v-else
+                    size="30px"
+                    width="30px"
+                    height="30px"
+                    cursor="pointer"
                 />
               </li>
               <li
-                v-if="!iconList.length"
-                class="sh-mobile-icon-panel__empty"
+                  v-if="!iconList.length"
+                  class="sh-mobile-icon-panel__empty"
               >
                 {{ i18n("pivot.empty.noData") || "暂无数据" }}
               </li>
@@ -177,7 +177,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { nextTick, onMounted, ref, shallowRef, unref, watch } from "vue";
+import {nextTick, onMounted, ref, shallowRef, unref, watch} from "vue";
 import {
   checkIsDisabled,
   initCompCallEvent,
@@ -185,14 +185,13 @@ import {
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
-import { compDynamicData } from "@/api/star_horse_utils";
-import {
-  useMobilePicker,
-} from "@/components/formcomp/utils/useMobilePicker";
+import {compDynamicData} from "@/api/star_horse_utils";
+import {useMobilePicker,} from "@/components/formcomp/utils/useMobilePicker";
 import ShMobilePicker from "@/components/formcomp/utils/ShMobilePicker.vue";
 
-import { ItemPreps } from "@/components/types/ItemPreps";
-import { i18n } from "@/lang";
+import {ItemPreps} from "@/components/types/ItemPreps";
+import {i18n} from "@/lang";
+
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
   disabled: false,
@@ -217,11 +216,11 @@ const assignIcon = (iconName: string) => {
   const dataRelation = props.field.preps?.dataRelation;
   if (dataRelation?.actionName) {
     relationEventDispatcher(
-      props,
-      dataRelation,
-      iconName,
-      formData,
-      dataRelation.actionName,
+        props,
+        dataRelation,
+        iconName,
+        formData,
+        dataRelation.actionName,
     );
   }
   if (isSeparate.value) {
@@ -234,7 +233,7 @@ const dataSearch = () => {
   } else {
     iconList.value = allIconList.value.filter((item: any) => {
       return (
-        item.name.toLowerCase().indexOf(searchName.value.toLowerCase()) > -1
+          item.name.toLowerCase().indexOf(searchName.value.toLowerCase()) > -1
       );
     });
   }
@@ -259,10 +258,10 @@ onMounted(() => {
   });
 });
 watch(
-  () => formData.value[props.field.fieldName],
-  (newVal, oldVal) => {
-    itemAction("change");
-  },
+    () => formData.value[props.field.fieldName],
+    (newVal, oldVal) => {
+      itemAction("change");
+    },
 );
 
 // ============ APP 端分离逻辑 ============

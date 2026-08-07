@@ -1,8 +1,8 @@
 /**
  * 文档模板常量定义
  */
-import { i18n } from "@/lang";
-import type { DocTemplate, DocTemplateCategoryPreset, DocVariable, DocVariableType } from "./types";
+import {i18n} from "@/lang";
+import type {DocTemplate, DocTemplateCategoryPreset, DocVariable, DocVariableType} from "./types";
 
 /** 分类预设（含对应模板骨架） */
 export const DOC_CATEGORY_PRESETS: DocTemplateCategoryPreset[] = [
@@ -31,19 +31,19 @@ export const DOC_CATEGORY_PRESETS: DocTemplateCategoryPreset[] = [
         label: i18n("doctemplate.category.letter"),
         template: `<h1>${i18n("doctemplate.category.letter")}</h1><p>收件人：\${recipient}</p><p>&nbsp;</p><p>尊敬的 \${recipient}：</p><p>&nbsp;</p><p>...</p><p>&nbsp;</p><p>此致</p><p>敬礼</p><p>\${sender}</p><p>\${sendDate}</p>`,
     },
-    { value: "custom", label: i18n("doctemplate.category.custom") },
+    {value: "custom", label: i18n("doctemplate.category.custom")},
 ];
 
 /** 变量类型预设 */
 export const DOC_VARIABLE_TYPE_PRESETS: { value: DocVariableType; label: string }[] = [
-    { value: "string", label: i18n("doctemplate.varType.string") },
-    { value: "number", label: i18n("doctemplate.varType.number") },
-    { value: "date", label: i18n("doctemplate.varType.date") },
-    { value: "boolean", label: i18n("doctemplate.varType.boolean") },
-    { value: "select", label: i18n("doctemplate.varType.select") },
-    { value: "richtext", label: i18n("doctemplate.varType.richtext") },
-    { value: "image", label: i18n("doctemplate.varType.image") },
-    { value: "table", label: i18n("doctemplate.varType.table") },
+    {value: "string", label: i18n("doctemplate.varType.string")},
+    {value: "number", label: i18n("doctemplate.varType.number")},
+    {value: "date", label: i18n("doctemplate.varType.date")},
+    {value: "boolean", label: i18n("doctemplate.varType.boolean")},
+    {value: "select", label: i18n("doctemplate.varType.select")},
+    {value: "richtext", label: i18n("doctemplate.varType.richtext")},
+    {value: "image", label: i18n("doctemplate.varType.image")},
+    {value: "table", label: i18n("doctemplate.varType.table")},
 ];
 
 /** 创建变量 */

@@ -128,7 +128,7 @@ onBeforeUnmount(() => {
 <template>
   <div class="gantt-chart">
     <DesignerMobileShell
-      :panels="[
+        :panels="[
         { key: 'taskList', label: '任务', side: 'left', width: 350, min: 200 },
         { key: 'props', label: '属性', side: 'right', width: 280, min: 220 },
       ]"

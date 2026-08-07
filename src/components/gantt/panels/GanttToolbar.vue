@@ -232,32 +232,32 @@ const handleCommand = (cmd: DropdownCmd): void => {
       <template v-else>
         <div class="left-group">
           <!-- 任务操作组 -->
-            <el-button :disabled="readonly" @click="emit('addTask')" :title="i18n('gantt.btn.addTask')">
+          <el-button :disabled="readonly" @click="emit('addTask')" :title="i18n('gantt.btn.addTask')">
+            <svg class="gantt-svg-icon" viewBox="0 0 24 24" width="16" height="16">
+              <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+            </svg>
+            <span class="btn-label">{{ i18n("gantt.btn.addTask") }}</span>
+          </el-button>
+          <el-dropdown trigger="click" @command="handleCommand">
+            <el-button :disabled="readonly || !selectedTaskId">
               <svg class="gantt-svg-icon" viewBox="0 0 24 24" width="16" height="16">
                 <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
               </svg>
-              <span class="btn-label">{{ i18n("gantt.btn.addTask") }}</span>
             </el-button>
-            <el-dropdown trigger="click" @command="handleCommand">
-              <el-button :disabled="readonly || !selectedTaskId">
-                <svg class="gantt-svg-icon" viewBox="0 0 24 24" width="16" height="16">
-                  <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
-                </svg>
-              </el-button>
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item command="insertBefore" :disabled="readonly || !selectedTaskId">
-                    {{ i18n("gantt.btn.insertBefore") }}
-                  </el-dropdown-item>
-                  <el-dropdown-item command="insertAfter" :disabled="readonly || !selectedTaskId">
-                    {{ i18n("gantt.btn.insertAfter") }}
-                  </el-dropdown-item>
-                  <el-dropdown-item command="removeTask" :disabled="readonly || !selectedTaskId" divided>
-                    {{ i18n("gantt.btn.removeTask") }}
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item command="insertBefore" :disabled="readonly || !selectedTaskId">
+                  {{ i18n("gantt.btn.insertBefore") }}
+                </el-dropdown-item>
+                <el-dropdown-item command="insertAfter" :disabled="readonly || !selectedTaskId">
+                  {{ i18n("gantt.btn.insertAfter") }}
+                </el-dropdown-item>
+                <el-dropdown-item command="removeTask" :disabled="readonly || !selectedTaskId" divided>
+                  {{ i18n("gantt.btn.removeTask") }}
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
 
           <!-- 撤销重做组 -->
           <el-button-group>

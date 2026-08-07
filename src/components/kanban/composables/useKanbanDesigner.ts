@@ -2,20 +2,15 @@
  * 看板状态管理
  * 单一职责：状态管理 + 操作逻辑
  */
-import { computed, reactive, ref } from "vue";
-import {
-    createCard,
-    createColumn,
-    DEFAULT_KANBAN_COLUMNS,
-    DEFAULT_KANBAN_CONFIG,
-} from "../constants";
-import type { KanbanCard, KanbanColumn, KanbanConfig, KanbanData } from "../types";
+import {computed, reactive, ref} from "vue";
+import {createCard, createColumn, DEFAULT_KANBAN_COLUMNS, DEFAULT_KANBAN_CONFIG,} from "../constants";
+import type {KanbanCard, KanbanColumn, KanbanConfig, KanbanData} from "../types";
 
 export const useKanbanDesigner = (initial?: Partial<KanbanData>) => {
     const state = reactive<KanbanData>({
         columns: initial?.columns ?? [...DEFAULT_KANBAN_COLUMNS],
         cards: initial?.cards ?? [],
-        config: { ...DEFAULT_KANBAN_CONFIG, ...(initial?.config ?? {}) },
+        config: {...DEFAULT_KANBAN_CONFIG, ...(initial?.config ?? {})},
         name: initial?.name ?? "",
     });
 
@@ -66,7 +61,7 @@ export const useKanbanDesigner = (initial?: Partial<KanbanData>) => {
     /** 检查 WIP 限制 */
     const checkWipLimit = (columnId: string): { exceeded: boolean; max: number; current: number } => {
         const col = state.columns.find((c) => c.id === columnId);
-        if (!col?.wipLimit?.enabled) return { exceeded: false, max: 0, current: 0 };
+        if (!col?.wipLimit?.enabled) return {exceeded: false, max: 0, current: 0};
         const current = state.cards.filter((c) => c.columnId === columnId).length;
         return {
             exceeded: current >= col.wipLimit.max,
@@ -79,7 +74,7 @@ export const useKanbanDesigner = (initial?: Partial<KanbanData>) => {
     const addCard = (columnId: string, overrides: Partial<KanbanCard> = {}): KanbanCard => {
         pushHistory();
         const order = state.cards.filter((c) => c.columnId === columnId).length;
-        const card = createCard({ ...overrides, columnId, order });
+        const card = createCard({...overrides, columnId, order});
         state.cards.push(card);
         return card;
     };
@@ -89,7 +84,7 @@ export const useKanbanDesigner = (initial?: Partial<KanbanData>) => {
         const card = state.cards.find((c) => c.id === id);
         if (!card) return;
         pushHistory();
-        Object.assign(card, updates, { updatedAt: new Date().toISOString() });
+        Object.assign(card, updates, {updatedAt: new Date().toISOString()});
     };
 
     /** 删除卡片 */
@@ -158,7 +153,7 @@ export const useKanbanDesigner = (initial?: Partial<KanbanData>) => {
     const addColumn = (overrides: Partial<KanbanColumn> = {}): KanbanColumn => {
         pushHistory();
         const order = state.columns.length;
-        const col = createColumn({ ...overrides, order });
+        const col = createColumn({...overrides, order});
         state.columns.push(col);
         return col;
     };

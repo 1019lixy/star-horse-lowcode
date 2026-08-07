@@ -349,6 +349,7 @@ export default {components: {VideoPlay, VideoPause, SwitchButton}};
           padding: 6px 8px;
           font-size: 12px;
         }
+
         /* 覆盖行内 180px !important 宽度 */
         :deep(.el-select) {
           width: calc(100% - 12px) !important;
@@ -368,7 +369,10 @@ export default {components: {VideoPlay, VideoPause, SwitchButton}};
           margin: 0 6px !important;
         }
 
-        .control-label { font-size: 11px; }
+        .control-label {
+          font-size: 11px;
+        }
+
         .progress-text {
           font-size: 11px;
           min-width: 50px;
@@ -385,8 +389,13 @@ export default {components: {VideoPlay, VideoPause, SwitchButton}};
           min-width: 0;
         }
 
-        .control-label { font-size: 11px; }
-        .current-time { font-size: 11px; }
+        .control-label {
+          font-size: 11px;
+        }
+
+        .current-time {
+          font-size: 11px;
+        }
       }
     }
   }

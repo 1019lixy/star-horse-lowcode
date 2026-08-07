@@ -4,14 +4,8 @@
  * 将白板元素序列化为独立 SVG / PNG / JSON
  */
 
-import type { WhiteboardElement } from "../types";
-import {
-    wbArrowPath,
-    wbGetBoundingBox,
-    wbPointsToPath,
-    wbShapePath,
-    wbUnionBox,
-} from "./WbGeometryUtils";
+import type {WhiteboardElement} from "../types";
+import {wbArrowPath, wbGetBoundingBox, wbPointsToPath, wbShapePath, wbUnionBox,} from "./WbGeometryUtils";
 
 /** XML 转义 */
 const wbXmlEscape = (s: string): string =>
@@ -53,14 +47,14 @@ export const wbElementToSvg = (el: WhiteboardElement): string => {
                 t.textAlign === "center"
                     ? "middle"
                     : t.textAlign === "right"
-                      ? "end"
-                      : "start";
+                        ? "end"
+                        : "start";
             const tx =
                 t.textAlign === "center"
                     ? t.x + t.width / 2
                     : t.textAlign === "right"
-                      ? t.x + t.width
-                      : t.x;
+                        ? t.x + t.width
+                        : t.x;
             const content = lines
                 .map(
                     (line: string, i: number) =>
@@ -77,7 +71,7 @@ export const wbElementToSvg = (el: WhiteboardElement): string => {
 /** 计算所有元素的合并包围盒 */
 export const wbGetElementsBounds = (elements: WhiteboardElement[]) => {
     if (elements.length === 0) {
-        return { x: 0, y: 0, width: 800, height: 600 };
+        return {x: 0, y: 0, width: 800, height: 600};
     }
     let box = wbGetBoundingBox(elements[0]);
     for (let i = 1; i < elements.length; i++) {
@@ -128,7 +122,7 @@ export const wbSvgXmlToPng = (
 ): Promise<Blob> => {
     return new Promise((resolve, reject) => {
         try {
-            const blob = new Blob([svgXml], { type: "image/svg+xml;charset=utf-8" });
+            const blob = new Blob([svgXml], {type: "image/svg+xml;charset=utf-8"});
             const url = URL.createObjectURL(blob);
             const img = new Image();
             img.crossOrigin = "anonymous";
@@ -183,6 +177,6 @@ export const wbDownloadText = (
     filename: string,
     mime = "text/plain;charset=utf-8",
 ): void => {
-    const blob = new Blob([text], { type: mime });
+    const blob = new Blob([text], {type: mime});
     wbDownloadBlob(blob, filename);
 };

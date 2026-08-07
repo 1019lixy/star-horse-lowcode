@@ -5,8 +5,8 @@
  * 纯函数：输入节点和边，输出带新坐标的节点位置映射
  */
 
-import { KG_DEFAULT_FORCE_OPTIONS } from "../constants";
-import type { KgEdge, KgForceLayoutOptions, KgNode, KgPoint } from "../types";
+import {KG_DEFAULT_FORCE_OPTIONS} from "../constants";
+import type {KgEdge, KgForceLayoutOptions, KgNode, KgPoint} from "../types";
 
 /**
  * 力导向布局（迭代 N 次返回最终位置）
@@ -19,7 +19,7 @@ export const kgForceLayout = (
     edges: KgEdge[],
     options?: KgForceLayoutOptions,
 ): Map<string, KgPoint> => {
-    const opts: Required<KgForceLayoutOptions> = { ...KG_DEFAULT_FORCE_OPTIONS, ...options };
+    const opts: Required<KgForceLayoutOptions> = {...KG_DEFAULT_FORCE_OPTIONS, ...options};
     const result = new Map<string, KgPoint>();
     if (nodes.length === 0) return result;
 
@@ -104,7 +104,7 @@ export const kgForceLayout = (
     }
 
     positions.forEach((p) => {
-        result.set(p.id, { x: p.x, y: p.y });
+        result.set(p.id, {x: p.x, y: p.y});
     });
     return result;
 };
@@ -115,7 +115,7 @@ export const kgForceStep = (
     edges: KgEdge[],
     options?: KgForceLayoutOptions,
 ): void => {
-    const opts: Required<KgForceLayoutOptions> = { ...KG_DEFAULT_FORCE_OPTIONS, ...options };
+    const opts: Required<KgForceLayoutOptions> = {...KG_DEFAULT_FORCE_OPTIONS, ...options};
     const posMap = new Map(positions.map((p) => [p.id, p]));
 
     // 1. 节点斥力
@@ -230,5 +230,5 @@ export const kgApplyLayout = (
 ): KgNode[] =>
     nodes.map((n) => {
         const p = positions.get(n.id);
-        return p ? { ...n, x: p.x, y: p.y } : n;
+        return p ? {...n, x: p.x, y: p.y} : n;
     });

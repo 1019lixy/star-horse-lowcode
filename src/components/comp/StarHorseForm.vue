@@ -1,22 +1,13 @@
 <script setup lang="ts" name="StarHorseForm">
-import { loadById, postRequest } from "@/api/star_horse_apis";
-import {
-  closeLoad,
-  formFieldMapping,
-  isJson,
-  load,
-} from "@/api/star_horse_utils";
+import {loadById, postRequest} from "@/api/star_horse_apis";
+import {closeLoad, formFieldMapping, isJson, load,} from "@/api/star_horse_utils";
 import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
-import { ApiUrls } from "@/components/types/ApiUrls";
-import { DialogProps } from "@/components/types/DialogProps";
-import {
-  BatchFieldInfo,
-  FieldInfo,
-  PageFieldInfo,
-} from "@/components/types/PageFieldInfo";
-import { SelectOption } from "@/components/types/SearchProps";
-import { error, success, warning } from "@/utils/message";
-import { i18n } from "@/lang";
+import {ApiUrls} from "@/components/types/ApiUrls";
+import {DialogProps} from "@/components/types/DialogProps";
+import {BatchFieldInfo, FieldInfo, PageFieldInfo,} from "@/components/types/PageFieldInfo";
+import {SelectOption} from "@/components/types/SearchProps";
+import {error, success, warning} from "@/utils/message";
+import {i18n} from "@/lang";
 import {
   computed,
   ComputedRef,
@@ -33,29 +24,30 @@ import {
   unref,
   watch,
 } from "vue";
-import { isMobile } from "@/api/device";
-import { convertPcCompToFitPlatformComps } from "@/api/form_utils";
+import {isMobile} from "@/api/device";
+import {convertPcCompToFitPlatformComps} from "@/api/form_utils";
 
+console.log(`[StarHorseForm] ⚡ setup called T=${(performance.now() - performance.timing.navigationStart).toFixed(0)}ms`);
 const props = defineProps({
-  compUrl: { type: Object as PropType<ApiUrls> },
-  fieldList: { type: Object as PropType<PageFieldInfo>, required: true },
-  batchName: { type: String, default: "batchDataList" },
-  batchFieldName: { type: String, default: "batchFieldList" },
-  outerFormData: { type: Object as PropType<any> },
-  primaryKey: { type: [String, Object] as PropType<string | any> },
-  globalCondition: { type: Object },
-  rules: { type: Object },
-  formSize: { type: String, default: "default" },
-  labelPosition: { type: String, default: "left" },
-  typeModel: { type: String },
-  dynamicForm: { type: Boolean, default: false },
-  preview: { type: Boolean, default: false },
+  compUrl: {type: Object as PropType<ApiUrls>},
+  fieldList: {type: Object as PropType<PageFieldInfo>, required: true},
+  batchName: {type: String, default: "batchDataList"},
+  batchFieldName: {type: String, default: "batchFieldList"},
+  outerFormData: {type: Object as PropType<any>},
+  primaryKey: {type: [String, Object] as PropType<string | any>},
+  globalCondition: {type: Object},
+  rules: {type: Object},
+  formSize: {type: String, default: "default"},
+  labelPosition: {type: String, default: "left"},
+  typeModel: {type: String},
+  dynamicForm: {type: Boolean, default: false},
+  preview: {type: Boolean, default: false},
   selectData: {
     type: Array<SelectOption>,
     default: () => {
       return [
-        { name: i18n("comp.normal"), value: "1" },
-        { name: i18n("comp.disabled"), value: "2" },
+        {name: i18n("comp.normal"), value: "1"},
+        {name: i18n("comp.disabled"), value: "2"},
       ];
     },
   },
@@ -76,7 +68,7 @@ const dataForm = ref<any>({});
 // source:{type:Number,default:1},
 const source = ref<number>(1);
 const platformFields: ComputedRef = computed(() =>
-  convertPcCompToFitPlatformComps(props.fieldList),
+    convertPcCompToFitPlatformComps(props.fieldList),
 );
 const mappingFields = computed(() => formFieldMapping(unref(platformFields)));
 //更新外面传进来的数据
@@ -87,17 +79,19 @@ const exportData = () => {
 //向外实时导出数据
 
 const closeDialog = inject("closeDialog") as Function;
-let dialogOperation = inject("dialogOperation");
+let dialogOperation = inject("dialogOperation") as any;
 const dialogProps = inject<DialogProps>("dialogProps", {});
 const formFields = shallowRef<Array<FieldInfo>>([]);
 provide("formFields", formFields);
+// 暴露 el-form 实例给嵌套组件（如 stepItem），用于调用 validateField / clearValidate
+provide("starHorseFormRef", starHorseFormRef);
 const loadData = async () => {
   if (!props.compUrl || !props.compUrl?.loadByIdUrl || !dialogProps?.ids) {
     return;
   }
   await nextTick();
   if (props.preview) {
-    dataForm.value = { ...dialogProps?.ids };
+    dataForm.value = {...dialogProps?.ids};
     return;
   }
   let ids = dialogProps?.ids;
@@ -107,7 +101,7 @@ const loadData = async () => {
   let params = props.globalCondition || {};
   //如果是Json 对象
   if (isJson(id)) {
-    params = { ...params, ...id };
+    params = {...params, ...id};
     objData = await loadById(props.compUrl?.loadByIdUrl!, "", params);
   } else {
     objData = await loadById(props.compUrl?.loadByIdUrl!, id, params);
@@ -119,7 +113,7 @@ const loadData = async () => {
     for (let i in params) {
       let temp = params[i];
       if (!temp.subTabFlag) {
-        let subTemp = { ...objData };
+        let subTemp = {...objData};
         delete subTemp[temp.tableName];
         dataForm.value[temp.tableName] = [subTemp];
       }
@@ -168,8 +162,9 @@ const merge = (type: string) => {
     }
     // 触发 beforeSubmit 事件，允许外部（如规则引擎）在提交前校验
     // 如果事件处理器返回 false 则阻止提交
-    const beforeResult = emits("beforeSubmit", { type, formData: dataForm.value });
+    emits("beforeSubmit", {type, formData: dataForm.value});
     // Vue emits 是同步的，如果需要异步拦截，请使用 doMerge 前手动调用 triggerOnSubmit
+
     doMerge(type);
   });
 };
@@ -179,7 +174,7 @@ const merge = (type: string) => {
 const assignStatusName = () => {
   if (dataForm.value.statusCode) {
     let sData = props.selectData?.find(
-      (item: any) => item.value === dataForm.value.statusCode,
+        (item: any) => item.value === dataForm.value.statusCode,
     );
     if (sData) {
       dataForm.value["statusName"] = sData.name;
@@ -189,13 +184,13 @@ const assignStatusName = () => {
   batchFields?.forEach((item: BatchFieldInfo) => {
     if (dataForm.value[item.batchName]) {
       for (
-        let index = 0;
-        index < dataForm.value[item.batchName]?.length;
-        index++
+          let index = 0;
+          index < dataForm.value[item.batchName]?.length;
+          index++
       ) {
         let temp = dataForm.value[item.batchName][index];
         let sData = props.selectData?.find(
-          (sitem: any) => sitem.value === temp.statusCode,
+            (sitem: any) => sitem.value === temp.statusCode,
         );
         if (sData) {
           dataForm.value[item.batchName][index]["statusName"] = sData.name;
@@ -214,8 +209,8 @@ const analysisSameToParentField = (): Array<string> => {
   const analysis = (batchFields: BatchFieldInfo[]) => {
     batchFields?.forEach((item: BatchFieldInfo) => {
       if (
-        false === item.subFormFlag ||
-        "n" == item.subFormFlag?.toString()?.toLowerCase()
+          false === item.subFormFlag ||
+          "n" == item.subFormFlag?.toString()?.toLowerCase()
       ) {
         batchName.push(item.batchName);
       }
@@ -259,7 +254,7 @@ const mergeResult = (type: string, formData: any, res: any) => {
 const doMerge = (type: string) => {
   assignStatusName();
   let tempForm: any = [];
-  let tempDatas = { ...dataForm.value };
+  let tempDatas = {...dataForm.value};
   let mergeUrl = props.compUrl?.mergeUrl;
   let flag = true;
   //单独批量数据和嵌入fieldList 里的批量数据
@@ -277,7 +272,7 @@ const doMerge = (type: string) => {
         if (parseInt(i) > 0) {
           delete tempDatas[props.primaryKey];
         }
-        tempForm.push({ ...tempDatas, ...batchDatas[i] });
+        tempForm.push({...tempDatas, ...batchDatas[i]});
       }
     });
   }
@@ -306,28 +301,28 @@ const doMerge = (type: string) => {
     });
   } else {
     postRequest(mergeUrl!, formData)
-      .then((res) => {
-        closeLoad();
-        if (res?.data?.code != 0) {
-          warning(res?.data?.cnMessage);
-          return;
-        } else {
-          success(res?.data?.cnMessage);
-        }
-        mergeResult(type, formData, res);
-        //关闭弹窗
-      })
-      .catch((err) => {
-        error(i18n("comp.interfaceCallException") + err);
-      })
-      .finally(() => {
-        closeLoad();
-      });
+        .then((res) => {
+          closeLoad();
+          if (res?.data?.code != 0) {
+            warning(res?.data?.cnMessage);
+            return;
+          } else {
+            success(res?.data?.cnMessage);
+          }
+          mergeResult(type, formData, res);
+          //关闭弹窗
+        })
+        .catch((err) => {
+          error(i18n("comp.interfaceCallException") + err);
+        })
+        .finally(() => {
+          closeLoad();
+        });
   }
 };
 const resetForm = () => {
   dataForm.value = {};
-  dataForm.value = { ...unref(mappingFields)?.defaultDatas };
+  dataForm.value = {...unref(mappingFields)?.defaultDatas};
   let data = unref(props.outerFormData);
   if (Object.keys(data || {}).length > 0) {
     Object.assign(dataForm.value, data);
@@ -392,61 +387,59 @@ const tableListRef = ref<any>([]);
 onActivated(() => {
   recordFieldInfo();
 });
-onDeactivated(() => {});
-onBeforeUnmount(() => {});
+onDeactivated(() => {
+});
+onBeforeUnmount(() => {
+});
 onMounted(() => {
   recordFieldInfo();
 });
 watch(
-  () => dataForm.value,
-  () => {
-    exportData();
-  },
-  { immediate: false },
+    () => dataForm.value,
+    () => {
+      exportData();
+    },
+    {immediate: false},
 );
 watch(
-  () => props.outerFormData,
-  (val: any) => {
-    if (val) {
-      resetForm();
-    }
-  },
-  { immediate: true, deep: true },
+    () => props.outerFormData,
+    (val: any) => {
+      if (val) {
+        resetForm();
+      }
+    },
+    {immediate: true},
 );
 watch(
-  () => dialogOperation,
-  (val: any) => {
-    const handlers: any = {
-      merge: () => merge(val.type),
-      mergeDraft: () => mergeDraft(val.type),
-      resetForm: () => resetForm(),
-    };
-    if (val.funcName) {
-      handlers[val.funcName]?.();
-      dialogOperation["funcName"] = "";
-      dialogOperation["type"] = "";
-    }
-  },
-  {
-    immediate: false,
-    deep: true,
-  },
+    () => dialogOperation.funcName,
+    (funcName: string) => {
+      if (!funcName) return;
+      const type = dialogOperation.type;
+      const handlers: any = {
+        merge: () => merge(type),
+        mergeDraft: () => mergeDraft(type),
+        resetForm: () => resetForm(),
+      };
+      handlers[funcName]?.();
+      dialogOperation.funcName = "";
+      dialogOperation.type = "";
+    },
 );
 watch(
-  () => dialogProps.ids,
-  (val) => {
-    if (val == -1) {
-      source.value = 1;
-      setFormData(dataForm.value);
-    } else if (val && val !== "") {
-      source.value = 2;
-      loadData();
-    }
-  },
-  {
-    immediate: true,
-    deep: false,
-  },
+    () => dialogProps.ids,
+    (val) => {
+      if (val == -1) {
+        source.value = 1;
+        setFormData(dataForm.value);
+      } else if (val && val !== "") {
+        source.value = 2;
+        loadData();
+      }
+    },
+    {
+      immediate: true,
+      deep: false,
+    },
 );
 
 /**
@@ -509,54 +502,54 @@ defineExpose({
   <div class="w-full h-full flex flex-col overflow-hidden">
     <el-scrollbar height="100%" class="flex-1">
       <el-form
-        :model="dataForm"
-        :size="formSize"
-        :rules="rules"
-        :scroll-to-error="true"
-        :scroll-into-view-options="true"
-        :inline-message="false"
-        :status-icon="true"
-        :label-position="isMobile ? 'top' : labelPosition"
-        require-asterisk-position="right"
-        label-width="auto"
-        class="data-form"
-        ref="starHorseFormRef"
+          :model="dataForm"
+          :size="formSize"
+          :rules="rules"
+          :scroll-to-error="true"
+          :scroll-into-view-options="true"
+          :inline-message="false"
+          :status-icon="true"
+          :label-position="isMobile ? 'top' : labelPosition"
+          require-asterisk-position="right"
+          label-width="auto"
+          class="data-form"
+          ref="starHorseFormRef"
       >
         <star-horse-form-item
-          :primaryKey="primaryKey"
-          :compUrl="compUrl"
-          :fieldList="platformFields"
-          :rules="rules"
-          :compSize="formSize"
-          v-model:dataForm="dataForm"
-          :source="source"
-          @addRow="addRow"
-          @removeRow="removeRow"
-          :batchName="batchName"
-          :batchFieldName="batchFieldName"
+            :primaryKey="primaryKey"
+            :compUrl="compUrl"
+            :fieldList="platformFields"
+            :rules="rules"
+            :compSize="formSize"
+            v-model:dataForm="dataForm"
+            :source="source"
+            @addRow="addRow"
+            @removeRow="removeRow"
+            :batchName="batchName"
+            :batchFieldName="batchFieldName"
         />
       </el-form>
     </el-scrollbar>
     <div
-      class="my-3 flex items-center justify-center w-full h-[45px]"
-      v-if="typeModel == 'form'"
+        class="my-3 flex items-center justify-center w-full h-[45px]"
+        v-if="typeModel == 'form'"
     >
       <el-button
-        @click="merge"
-        style="
+          @click="merge"
+          style="
           background: var(--star-horse-style);
           color: var(--star-horse-white);
         "
-        :size="formSize"
+          :size="formSize"
       >
         <star-horse-icon
-          icon-class="save"
-          style="color: var(--star-horse-white)"
+            icon-class="save"
+            style="color: var(--star-horse-white)"
         />
         {{ i18n("form.submit") }}
       </el-button>
       <el-button @click="resetForm" :size="formSize" link>
-        <star-horse-icon icon-class="undo" />
+        <star-horse-icon icon-class="undo"/>
         {{ i18n("form.reset") }}
       </el-button>
     </div>

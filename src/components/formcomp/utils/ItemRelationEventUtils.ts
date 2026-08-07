@@ -321,8 +321,6 @@ const findContainerItems = (
         }
     };
     search(list);
-    // eslint-disable-next-line no-console
-    console.log("[findContainerItems] tabNames=" + JSON.stringify(tabNames) + " containerField=" + containerField + " found=" + result.length + " foundItems=" + JSON.stringify(result.map((c: any) => ({ tabName: c?.tabName, appCont: !!c?.__appContainer, fieldListLen: c?.fieldList?.length }))));
     return result;
 };
 
@@ -742,8 +740,6 @@ const relationEvent = (
         console.error(i18n("api.relationDetailsMustBeArray"), relationDetails);
         return;
     }
-    // eslint-disable-next-line no-console
-    console.log("[relationEvent] enter triggerField=" + props.field?.fieldName + " value=" + e + " formInfoIsArray=" + Array.isArray(props.formInfo) + " formInfoIsRef=" + isRef(props.formInfo) + " resolvedLen=" + resolveFormInfo(props.formInfo).length + " resolvedHas=" + JSON.stringify(resolveFormInfo(props.formInfo).map((f: any) => ({ fn: f?.fieldName, appCont: !!f?.__appContainer, hasAppList: !!f?.appList, hasTabList: !!f?.tabList }))));
 
     // 预处理：对 visible/hide 类规则,先重置所有涉及的字段/容器为默认值
     // 并在后续遍历中跳过不匹配的规则,避免不匹配规则覆盖匹配规则设置的值
@@ -957,8 +953,6 @@ const initRelationEvent = (props: any, formData: any, needWatch?: boolean) => {
     const dataRelation = props.field.preps?.dataRelation;
     const actionName = dataRelation?.actionName;
     if (actionName) {
-        // eslint-disable-next-line no-console
-        console.log("[initRelationEvent] field=" + props.field?.fieldName + " actionName=" + actionName + " formInfoIsArray=" + Array.isArray(props.formInfo) + " formInfoIsRef=" + isRef(props.formInfo) + " resolvedLen=" + resolveFormInfo(props.formInfo).length);
         if (
             (Object.keys(formData.value || {}).length == 0 ||
                 !formData.value?.[props.field?.fieldName]) &&

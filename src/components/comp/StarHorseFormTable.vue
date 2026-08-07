@@ -1,17 +1,21 @@
 <script setup lang="ts" name="StarHorseFormItem">
 import {batchFieldDefaultValues} from "@/api/star_horse_utils";
-import {ModelRef, PropType, ref} from "vue";
+import {ModelRef, ref} from "vue";
 
-defineProps({
-  item: {type: Object as PropType<any>, required: true},
-  rules: {type: Object},
-  initRows: {type: Number, default: 0},
-  size: {type: String, default: "default"},
-  source: {type: Number, default: 1},
-  enableSubNode: {type: Boolean, default: false},
-  commonFormat: {
-    type: Function, default: () => {
-    }
+withDefaults(defineProps<{
+  item: any,
+  rules?: any,
+  initRows?: number,
+  size?: string,
+  source?: number,
+  enableSubNode?: boolean,
+  commonFormat?: Function,
+}>(), {
+  initRows: 0,
+  size: "default",
+  source: 1,
+  enableSubNode: false,
+  commonFormat: () => {
   },
 });
 const emits = defineEmits(["addRow", "removeRow"]);
@@ -40,7 +44,6 @@ const removeRow = (row: any) => {
       :primaryKey="item['primaryKey']"
       :batchName="item['batchName']"
       :initRows="item['initRows']"
-      :batchUrl="item['batchUrl']"
       :title="item['title']"
       :size="size"
       :enableSubNode="enableSubNode"
@@ -50,7 +53,6 @@ const removeRow = (row: any) => {
       v-if="!item['disVisible']"
       :helpMsg="item['helpMsg']"
       :staticColumn="item.staticColumn ?? 'Y'"
-      :downloadTemplateUrl="item['downloadTemplateUrl']"
       :importInfo="item['importInfo']"
       :defaultValues="batchFieldDefaultValues(item, dataForm)"
       ref="currentTableRef"

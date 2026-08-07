@@ -1,19 +1,19 @@
 <script lang="ts" setup name="StarHorsePopover">
-import { onMounted, ref } from "vue";
-import { postRequest } from "@/api/star_horse_apis";
-import { warning } from "@/utils/message";
-import { compKey } from "@/api/system";
-import { isMobile } from "@/api/device";
-import { useMobilePicker } from "@/components/formcomp/utils/useMobilePicker";
+import {onMounted, ref} from "vue";
+import {postRequest} from "@/api/star_horse_apis";
+import {warning} from "@/utils/message";
+import {compKey} from "@/api/system";
+import {isMobile} from "@/api/device";
+import {useMobilePicker} from "@/components/formcomp/utils/useMobilePicker";
 import ShMobilePicker from "@/components/formcomp/utils/ShMobilePicker.vue";
 
 const props = defineProps({
-  menuIcon: { type: String },
-  iconUrl: { type: String },
-  iconSize: { type: Number, default: 48 },
-  icons: { type: Array, default: () => [] },
+  menuIcon: {type: String},
+  iconUrl: {type: String},
+  iconSize: {type: Number, default: 48},
+  icons: {type: Array, default: () => []},
   // 抽屉标题（移动端）
-  title: { type: String, default: "" },
+  title: {type: String, default: ""},
 });
 const emits = defineEmits(["selectIcon"]);
 let iconList = ref<Array<any>>([]);
@@ -46,7 +46,7 @@ const {
   size: pickerSize,
   openPicker,
   closePicker,
-} = useMobilePicker(() => ({ preps: {} } as any));
+} = useMobilePicker(() => ({preps: {}} as any));
 
 const pickerTitle = props.title || "选择图标";
 
@@ -57,25 +57,25 @@ onMounted(() => {
 <template>
   <!-- PC 端：保留原 el-popover -->
   <el-popover
-    v-if="!isMobile"
-    placement="bottom"
-    :popper-style="{ width: 'unset !important' }"
-    trigger="click"
+      v-if="!isMobile"
+      placement="bottom"
+      :popper-style="{ width: 'unset !important' }"
+      trigger="click"
   >
     <template #reference>
       <slot></slot>
     </template>
     <ul class="system-icon">
       <li
-        v-for="(sdata, key) in iconList"
-        :key="compKey(sdata, key)"
-        @click="menuIconSelect(sdata.menuIcon)"
-        :class="menuIcon == sdata.menuIcon ? 'icon-active' : ''"
+          v-for="(sdata, key) in iconList"
+          :key="compKey(sdata, key)"
+          @click="menuIconSelect(sdata.menuIcon)"
+          :class="menuIcon == sdata.menuIcon ? 'icon-active' : ''"
       >
         <el-tooltip :content="sdata.label">
           <star-horse-icon
-            :icon-class="sdata.menuIcon"
-            style="color: var(--star-horse-style); vertical-align: middle; font-size: 48px;"
+              :icon-class="sdata.menuIcon"
+              style="color: var(--star-horse-style); vertical-align: middle; font-size: 48px;"
           />
         </el-tooltip>
       </li>
@@ -88,24 +88,24 @@ onMounted(() => {
       <slot></slot>
     </div>
     <ShMobilePicker
-      v-if="isMobile && pickerVisible"
-      v-model="pickerVisible"
-      :title="pickerTitle"
-      :placement="placement"
-      :size="pickerSize"
-      :show-footer="false"
+        v-if="isMobile && pickerVisible"
+        v-model="pickerVisible"
+        :title="pickerTitle"
+        :placement="placement"
+        :size="pickerSize"
+        :show-footer="false"
     >
       <div class="mobile-icon-grid">
         <div
-          v-for="(sdata, key) in iconList"
-          :key="compKey(sdata, key)"
-          class="mobile-icon-grid__item"
-          :class="{ 'is-active': menuIcon == sdata.menuIcon }"
-          @click="menuIconSelect(sdata.menuIcon)"
+            v-for="(sdata, key) in iconList"
+            :key="compKey(sdata, key)"
+            class="mobile-icon-grid__item"
+            :class="{ 'is-active': menuIcon == sdata.menuIcon }"
+            @click="menuIconSelect(sdata.menuIcon)"
         >
           <star-horse-icon
-            :icon-class="sdata.menuIcon"
-            class="mobile-icon-grid__icon"
+              :icon-class="sdata.menuIcon"
+              class="mobile-icon-grid__icon"
           />
           <div class="mobile-icon-grid__label">{{ sdata.label }}</div>
         </div>

@@ -1,29 +1,16 @@
 /**
  * 调度视图状态管理
  */
-import { computed, reactive, ref } from "vue";
-import {
-    createEvent,
-    createResource,
-    DEFAULT_SCHEDULE_CONFIG,
-} from "../constants";
-import {
-    isTimeOverlap,
-    parseTime,
-} from "../utils/ScheduleDateUtils";
-import type {
-    ScheduleConfig,
-    ScheduleData,
-    ScheduleEvent,
-    ScheduleResource,
-    ScheduleViewMode,
-} from "../types";
+import {computed, reactive, ref} from "vue";
+import {createEvent, createResource, DEFAULT_SCHEDULE_CONFIG,} from "../constants";
+import {isTimeOverlap, parseTime,} from "../utils/ScheduleDateUtils";
+import type {ScheduleConfig, ScheduleData, ScheduleEvent, ScheduleResource, ScheduleViewMode,} from "../types";
 
 export const useScheduleDesigner = (initial?: Partial<ScheduleData>) => {
     const state = reactive<ScheduleData>({
         events: initial?.events ?? [],
         resources: initial?.resources ?? [],
-        config: { ...DEFAULT_SCHEDULE_CONFIG, ...(initial?.config ?? {}) },
+        config: {...DEFAULT_SCHEDULE_CONFIG, ...(initial?.config ?? {})},
         name: initial?.name ?? "",
     });
 
@@ -98,7 +85,7 @@ export const useScheduleDesigner = (initial?: Partial<ScheduleData>) => {
     const updateEvent = (id: string, updates: Partial<ScheduleEvent>) => {
         const event = state.events.find((e) => e.id === id);
         if (!event) return;
-        const merged = { ...event, ...updates };
+        const merged = {...event, ...updates};
         const conflict = checkConflict(merged, id);
         if (conflict) return;
         pushHistory();
@@ -143,7 +130,7 @@ export const useScheduleDesigner = (initial?: Partial<ScheduleData>) => {
         const start = parseTime(event.startTime);
         const end = parseTime(newEnd);
         if (end <= start) return;
-        const merged: ScheduleEvent = { ...event, endTime: newEnd };
+        const merged: ScheduleEvent = {...event, endTime: newEnd};
         const conflict = checkConflict(merged, id);
         if (conflict) return;
         pushHistory();
@@ -169,7 +156,7 @@ export const useScheduleDesigner = (initial?: Partial<ScheduleData>) => {
     const addResource = (overrides: Partial<ScheduleResource> = {}): ScheduleResource => {
         pushHistory();
         const order = state.resources.length;
-        const resource = createResource({ ...overrides, order });
+        const resource = createResource({...overrides, order});
         state.resources.push(resource);
         return resource;
     };

@@ -11,7 +11,7 @@
  * CDN：https://unpkg.com/web-ifc@0.0.66/
  * 在浏览器侧通过动态 import() 加载
  */
-import type { DtEntity, DtIfcImportResult, DtPoint3D, DtSize3D } from "../types";
+import type {DtEntity, DtIfcImportResult, DtPoint3D, DtSize3D} from "../types";
 
 export interface DtIfcLoaderProgress {
     /** 0-100 */
@@ -73,11 +73,11 @@ export async function importIfcFile(
     const warnings: string[] = [];
     const elapsed = () => Math.round(performance.now() - startTime);
 
-    options.onProgress?.({ percent: 5, stage: "读取文件中" });
+    options.onProgress?.({percent: 5, stage: "读取文件中"});
     const arrayBuffer = await file.arrayBuffer();
     const buffer = new Uint8Array(arrayBuffer);
 
-    options.onProgress?.({ percent: 25, stage: "加载 IFC 解析引擎" });
+    options.onProgress?.({percent: 25, stage: "加载 IFC 解析引擎"});
 
     let entities: DtEntity[] = [];
     let totalElements = 0;
@@ -89,8 +89,8 @@ export async function importIfcFile(
             wasmPath: options.wasm === false ? undefined : DEFAULT_WASM_PATH,
         });
 
-        options.onProgress?.({ percent: 50, stage: "解析 IFC 数据" });
-        const modelId = ifcApi.OpenModel(buffer, { COORDINATE_TO_ORIGIN: true });
+        options.onProgress?.({percent: 50, stage: "解析 IFC 数据"});
+        const modelId = ifcApi.OpenModel(buffer, {COORDINATE_TO_ORIGIN: true});
 
         const meshes: { position: DtPoint3D; size: DtSize3D; color: string; ifcType: string }[] = [];
         let meshCount = 0;
@@ -120,8 +120,8 @@ export async function importIfcFile(
                 if (w <= 0 || h <= 0 || d <= 0) return;
                 const cx = (minX + maxX) / 2, cy = (minY + maxY) / 2, cz = (minZ + maxZ) / 2;
                 meshes.push({
-                    position: { x: cx, y: cy, z: cz },
-                    size: { width: w, height: h, depth: d, radius: 0 },
+                    position: {x: cx, y: cy, z: cz},
+                    size: {width: w, height: h, depth: d, radius: 0},
                     color: "#B0BEC5",
                     ifcType: meshData.expressID ? `IFC_${meshData.expressID}` : "IFC_ELEMENT",
                 });
@@ -137,7 +137,7 @@ export async function importIfcFile(
             }
         });
 
-        options.onProgress?.({ percent: 90, stage: "转换为场景实体" });
+        options.onProgress?.({percent: 90, stage: "转换为场景实体"});
 
         // 按体积合并：过大场景时按 IFC 类型聚合成单个实体（避免 10w+ 实体）
         const byType = new Map<string, typeof meshes>();
@@ -159,7 +159,7 @@ export async function importIfcFile(
                     color: m.color,
                     status: "normal",
                     visible: true,
-                    properties: { ifcType: type, source: "ifc" },
+                    properties: {ifcType: type, source: "ifc"},
                 });
             }
         });
@@ -174,17 +174,17 @@ export async function importIfcFile(
             id: `ifc_placeholder_${Date.now()}`,
             type: "cube",
             name: file.name.replace(/\.ifc$/i, ""),
-            position: { x: 0, y: 0, z: 0 },
-            size: { width: 100, height: 100, depth: 100, radius: 0 },
+            position: {x: 0, y: 0, z: 0},
+            size: {width: 100, height: 100, depth: 100, radius: 0},
             color: "#B0BEC5",
             status: "normal",
             visible: true,
-            properties: { source: "ifc-placeholder", fileName: file.name },
+            properties: {source: "ifc-placeholder", fileName: file.name},
         });
         totalElements = entities.length;
     }
 
-    options.onProgress?.({ percent: 100, stage: "完成" });
+    options.onProgress?.({percent: 100, stage: "完成"});
 
     return {
         fileName: file.name,

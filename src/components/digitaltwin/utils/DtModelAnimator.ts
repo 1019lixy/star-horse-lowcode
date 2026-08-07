@@ -4,7 +4,7 @@
  * 根据动画类型计算部件变换（offset / color），返回新部件供渲染器使用
  * 旋转动画在 Canvas 2D 简化场景下表现为颜色相位变化（实际几何旋转需要扩展渲染器）
  */
-import type { DtAnimation, DtModelPart, DtPoint3D } from "../types";
+import type {DtAnimation, DtModelPart, DtPoint3D} from "../types";
 
 export interface DtAnimationState {
     /** 累计时间（ms） */
@@ -25,7 +25,7 @@ export const dtAnimatePart = (
             const phase = (Math.sin(t * (speed / 360) * Math.PI * 2) + 1) / 2;
             const originalColor = part.color ?? "#8C8C8C";
             const shaded = dtShadeHex(originalColor, 0.7 + phase * 0.5);
-            return { ...part, color: shaded };
+            return {...part, color: shaded};
         }
         case "translation": {
             const axis = animation.translateAxis ?? "y";
@@ -34,20 +34,20 @@ export const dtAnimatePart = (
             const offset = (Math.sin(t * speed * Math.PI * 2) * range) / 2;
             return {
                 ...part,
-                offset: { ...part.offset, [axis]: part.offset[axis] + offset } as DtPoint3D,
+                offset: {...part.offset, [axis]: part.offset[axis] + offset} as DtPoint3D,
             };
         }
         case "blink": {
             const freq = animation.frequency ?? 1;
             const visible = Math.sin(t * freq * Math.PI * 2) > 0;
-            return { ...part, color: visible ? part.color : "#333333" };
+            return {...part, color: visible ? part.color : "#333333"};
         }
         case "color": {
             // 颜色循环：在原色和告警色间过渡
             const freq = animation.frequency ?? 0.5;
             const phase = (Math.sin(t * freq * Math.PI * 2) + 1) / 2;
             const originalColor = part.color ?? "#13C2C2";
-            return { ...part, color: dtBlendHex(originalColor, "#FAAD14", phase) };
+            return {...part, color: dtBlendHex(originalColor, "#FAAD14", phase)};
         }
         default:
             return part;

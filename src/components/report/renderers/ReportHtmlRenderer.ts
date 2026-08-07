@@ -5,9 +5,9 @@
  * 求值公式 + 应用样式 + 处理合并单元格
  */
 
-import { evalFormula, type FormulaEvalContext } from "../ReportFormulaEngine";
-import { toAddress } from "../CellUtils";
-import type { ReportCell, ReportRenderContext, ReportTemplate } from "../types";
+import {evalFormula, type FormulaEvalContext} from "../ReportFormulaEngine";
+import {toAddress} from "../CellUtils";
+import type {ReportCell, ReportRenderContext, ReportTemplate} from "../types";
 
 /** 渲染单元格样式 */
 const renderStyle = (cell?: ReportCell): string => {

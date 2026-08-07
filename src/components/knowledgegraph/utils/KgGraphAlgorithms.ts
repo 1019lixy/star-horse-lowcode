@@ -4,7 +4,7 @@
  * BFS 最短路径 / 邻居 / 子图 / 连通分量
  */
 
-import type { KgEdge, KgGraph, KgNode } from "../types";
+import type {KgEdge, KgGraph, KgNode} from "../types";
 
 /** 构建邻接表（无向，便于 BFS） */
 export const kgBuildAdjacency = (graph: KgGraph): Map<string, string[]> => {

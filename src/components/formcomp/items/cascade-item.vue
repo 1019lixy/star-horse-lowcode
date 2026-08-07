@@ -28,7 +28,7 @@
           @click="openPicker"
       >
         <template #suffix>
-          <star-horse-icon icon-class="arrow-down" />
+          <star-horse-icon icon-class="arrow-down"/>
         </template>
       </el-input>
 
@@ -52,7 +52,7 @@
                 size="default"
             >
               <template #suffix>
-                <star-horse-icon icon-class="search" />
+                <star-horse-icon icon-class="search"/>
               </template>
             </el-input>
           </div>
@@ -66,7 +66,9 @@
                 @click="selectSearchResult(item)"
             >
               <span class="cascade-mobile-panel__result-path">{{ item.pathLabels.join(' / ') }}</span>
-              <el-icon v-if="item.checked" class="cascade-mobile-panel__result-check"><Check /></el-icon>
+              <el-icon v-if="item.checked" class="cascade-mobile-panel__result-check">
+                <Check/>
+              </el-icon>
             </div>
           </div>
           <div v-else-if="searchKeyword && searchResults.length === 0" class="cascade-mobile-panel__empty">
@@ -88,10 +90,10 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref, watch } from "vue";
-import { Check } from "@element-plus/icons-vue";
-import { compDynamicData } from "@/api/star_horse_utils";
-import { getDynamicEvents } from "@/api/system";
+import {computed, nextTick, onMounted, ref, watch} from "vue";
+import {Check} from "@element-plus/icons-vue";
+import {compDynamicData} from "@/api/star_horse_utils";
+import {getDynamicEvents} from "@/api/system";
 import {
   allAction,
   checkIsDisabled,
@@ -99,10 +101,11 @@ import {
   prepsFilter,
   relationEventDispatcher,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
-import { ItemPreps } from "@/components/types/ItemPreps";
-import { i18n } from "@/lang";
-import { useMobilePicker } from "@/components/formcomp/utils/useMobilePicker";
+import {ItemPreps} from "@/components/types/ItemPreps";
+import {i18n} from "@/lang";
+import {useMobilePicker} from "@/components/formcomp/utils/useMobilePicker";
 import ShMobilePicker from "@/components/formcomp/utils/ShMobilePicker.vue";
+
 defineOptions({
   name: "cascadeItem",
 });
@@ -159,7 +162,7 @@ interface FlatNode {
 
 // 扁平化 options 树，构建搜索索引（叶子节点）
 const flatNodes = computed<FlatNode[]>(() => {
-  const { label: lf, value: vf, children: cf } = fieldConfig.value;
+  const {label: lf, value: vf, children: cf} = fieldConfig.value;
   const options = props.field.preps?.options ?? areaData.value ?? [];
   const result: FlatNode[] = [];
 
@@ -192,16 +195,16 @@ const searchResults = computed<FlatNode[]>(() => {
   const kw = searchKeyword.value.trim().toLowerCase();
   if (!kw) return [];
   return flatNodes.value
-    .filter((n) => {
-      // 任意一级 label 命中即可
-      return n.pathLabels.some((l) => String(l).toLowerCase().includes(kw));
-    })
-    .map((n) => ({
-      ...n,
-      checked:
-        panelValue.value.length === n.pathValues.length &&
-        n.pathValues.every((v, i) => panelValue.value[i] === v),
-    }));
+      .filter((n) => {
+        // 任意一级 label 命中即可
+        return n.pathLabels.some((l) => String(l).toLowerCase().includes(kw));
+      })
+      .map((n) => ({
+        ...n,
+        checked:
+            panelValue.value.length === n.pathValues.length &&
+            n.pathValues.every((v, i) => panelValue.value[i] === v),
+      }));
 });
 
 // 点击搜索结果：直接写入并关闭抽屉
@@ -215,11 +218,11 @@ function selectSearchResult(item: FlatNode) {
   const dataRelation = props.field.preps?.dataRelation;
   if (dataRelation?.actionName) {
     relationEventDispatcher(
-      props,
-      dataRelation,
-      [...item.pathValues],
-      formData,
-      dataRelation.actionName,
+        props,
+        dataRelation,
+        [...item.pathValues],
+        formData,
+        dataRelation.actionName,
     );
   }
   searchKeyword.value = "";
@@ -390,11 +393,11 @@ function handleConfirm() {
     const dataRelation = props.field.preps?.dataRelation;
     if (dataRelation?.actionName) {
       relationEventDispatcher(
-        props,
-        dataRelation,
-        [...values],
-        formData,
-        dataRelation.actionName,
+          props,
+          dataRelation,
+          [...values],
+          formData,
+          dataRelation.actionName,
       );
     }
   }

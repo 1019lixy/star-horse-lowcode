@@ -1,7 +1,7 @@
 /**
  * Office 模块预设常量、工厂函数与示例数据
  */
-import { i18n } from "@/lang";
+import {i18n} from "@/lang";
 import type {
     ExcelCell,
     ExcelSheet,
@@ -19,49 +19,49 @@ import type {
 
 /** 文档类型预设 */
 export const OFFICE_DOC_TYPE_PRESETS: OfficeDocTypePreset[] = [
-    { type: "word", label: i18n("office.docType.word"), icon: "Document", color: "#409EFF" },
-    { type: "excel", label: i18n("office.docType.excel"), icon: "Grid", color: "#67C23A" },
-    { type: "slide", label: i18n("office.docType.slide"), icon: "Film", color: "#E6A23C" },
+    {type: "word", label: i18n("office.docType.word"), icon: "Document", color: "#409EFF"},
+    {type: "excel", label: i18n("office.docType.excel"), icon: "Grid", color: "#67C23A"},
+    {type: "slide", label: i18n("office.docType.slide"), icon: "Film", color: "#E6A23C"},
 ];
 
 /** 字体预设 */
 export const OFFICE_FONT_FAMILY_PRESETS: OfficeFontPreset[] = [
-    { value: "SimSun", label: "宋体" },
-    { value: "KaiTi", label: "楷体" },
-    { value: "SimHei", label: "黑体" },
-    { value: "Arial", label: "Arial" },
-    { value: "Times New Roman", label: "Times New Roman" },
-    { value: "Courier New", label: "Courier New" },
+    {value: "SimSun", label: "宋体"},
+    {value: "KaiTi", label: "楷体"},
+    {value: "SimHei", label: "黑体"},
+    {value: "Arial", label: "Arial"},
+    {value: "Times New Roman", label: "Times New Roman"},
+    {value: "Courier New", label: "Courier New"},
 ];
 
 /** 字号预设 */
 export const OFFICE_FONT_SIZE_PRESETS: OfficeFontSizePreset[] = [
-    { value: 12, label: "12" },
-    { value: 14, label: "14" },
-    { value: 16, label: "16" },
-    { value: 18, label: "18" },
-    { value: 20, label: "20" },
-    { value: 24, label: "24" },
-    { value: 28, label: "28" },
-    { value: 32, label: "32" },
-    { value: 36, label: "36" },
-    { value: 48, label: "48" },
+    {value: 12, label: "12"},
+    {value: 14, label: "14"},
+    {value: 16, label: "16"},
+    {value: 18, label: "18"},
+    {value: 20, label: "20"},
+    {value: 24, label: "24"},
+    {value: 28, label: "28"},
+    {value: 32, label: "32"},
+    {value: 36, label: "36"},
+    {value: 48, label: "48"},
 ];
 
 /** 文本对齐预设 */
 export const OFFICE_TEXT_ALIGN_PRESETS: OfficeTextAlignPreset[] = [
-    { value: "left", label: i18n("office.word.alignLeft"), icon: "DCaret" },
-    { value: "center", label: i18n("office.word.alignCenter"), icon: "Operation" },
-    { value: "right", label: i18n("office.word.alignRight"), icon: "DCaret" },
-    { value: "justify", label: i18n("office.word.alignJustify"), icon: "Operation" },
+    {value: "left", label: i18n("office.word.alignLeft"), icon: "DCaret"},
+    {value: "center", label: i18n("office.word.alignCenter"), icon: "Operation"},
+    {value: "right", label: i18n("office.word.alignRight"), icon: "DCaret"},
+    {value: "justify", label: i18n("office.word.alignJustify"), icon: "Operation"},
 ];
 
 /** 形状预设 */
 export const OFFICE_SHAPE_TYPE_PRESETS: OfficeShapePreset[] = [
-    { type: "rect", label: i18n("office.slide.shape.rect"), icon: "FullScreen" },
-    { type: "circle", label: i18n("office.slide.shape.circle"), icon: "Sunny" },
-    { type: "triangle", label: i18n("office.slide.shape.triangle"), icon: "CaretTop" },
-    { type: "arrow", label: i18n("office.slide.shape.arrow"), icon: "Right" },
+    {type: "rect", label: i18n("office.slide.shape.rect"), icon: "FullScreen"},
+    {type: "circle", label: i18n("office.slide.shape.circle"), icon: "Sunny"},
+    {type: "triangle", label: i18n("office.slide.shape.triangle"), icon: "CaretTop"},
+    {type: "arrow", label: i18n("office.slide.shape.arrow"), icon: "Right"},
 ];
 
 /** 幻灯片默认画布宽度（16:9） */
@@ -128,7 +128,7 @@ export const createSlide = (elements: SlideElement[] = []): Slide => ({
 });
 
 /** 创建 Word 内容 */
-export const createWordContent = (html = ""): WordContent => ({ html });
+export const createWordContent = (html = ""): WordContent => ({html});
 
 /** 列索引转字母（0 -> A, 1 -> B, ..., 26 -> AA） */
 export const officeColIndexToLetter = (col: number): string => {
@@ -164,7 +164,7 @@ export const createOfficeDoc = (overrides: Partial<OfficeDocument> = {}): Office
     // 根据类型初始化对应内容（不覆盖外部传入的内容）
     if (type === "word") doc.wordContent = overrides.wordContent ?? createWordContent("<p><br></p>");
     if (type === "excel") {
-        doc.excelContent = overrides.excelContent ?? { sheets: [createExcelSheet()], activeSheetId: undefined };
+        doc.excelContent = overrides.excelContent ?? {sheets: [createExcelSheet()], activeSheetId: undefined};
         if (!doc.excelContent!.activeSheetId && doc.excelContent!.sheets.length > 0) {
             doc.excelContent!.activeSheetId = doc.excelContent!.sheets[0].id;
         }

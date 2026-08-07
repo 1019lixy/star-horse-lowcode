@@ -2,17 +2,17 @@
  * 透视分析引擎
  * 单一职责：纯函数,负责数据聚合、过滤、排序
  */
-import { AGGREGATORS } from "./constants";
+import {AGGREGATORS} from "./constants";
 import type {
     PivotAggregation,
-    PivotConfig,
-    PivotFilter,
-    PivotField,
-    PivotRecord,
-    PivotTableResult,
     PivotCell,
     PivotChartResult,
     PivotChartSeries,
+    PivotConfig,
+    PivotField,
+    PivotFilter,
+    PivotRecord,
+    PivotTableResult,
 } from "./types";
 
 /** 过滤记录 */
@@ -22,14 +22,22 @@ export const filterRecords = (records: PivotRecord[], filters: PivotFilter[]): P
         filters.every((f) => {
             const val = rec[f.field];
             switch (f.operator) {
-                case "eq": return val === f.value;
-                case "neq": return val !== f.value;
-                case "in": return Array.isArray(f.value) && f.value.includes(val);
-                case "notIn": return Array.isArray(f.value) && !f.value.includes(val);
-                case "gt": return val > f.value;
-                case "gte": return val >= f.value;
-                case "lt": return val < f.value;
-                case "lte": return val <= f.value;
+                case "eq":
+                    return val === f.value;
+                case "neq":
+                    return val !== f.value;
+                case "in":
+                    return Array.isArray(f.value) && f.value.includes(val);
+                case "notIn":
+                    return Array.isArray(f.value) && !f.value.includes(val);
+                case "gt":
+                    return val > f.value;
+                case "gte":
+                    return val >= f.value;
+                case "lt":
+                    return val < f.value;
+                case "lte":
+                    return val <= f.value;
                 case "between":
                     return Array.isArray(f.value) && val >= f.value[0] && val <= f.value[1];
                 case "contains":
@@ -209,7 +217,7 @@ export const computePivotChart = (
             return typeof v === "number" ? v : null;
         }),
     }));
-    return { categories, series, chartType };
+    return {categories, series, chartType};
 };
 
 /** 格式化数字 */
@@ -222,16 +230,16 @@ export const formatNumber = (value: number | string | null, format: string): str
         return (value * 100).toFixed(2) + "%";
     }
     if (format.includes(".0000")) {
-        return value.toLocaleString(undefined, { minimumFractionDigits: 4, maximumFractionDigits: 4 });
+        return value.toLocaleString(undefined, {minimumFractionDigits: 4, maximumFractionDigits: 4});
     }
     if (format.includes(".00")) {
-        return value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        return value.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
     }
     if (format.includes("¥")) {
-        return "¥" + value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        return "¥" + value.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
     }
     if (format.includes(",,", 4)) {
-        return (value / 1000000).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        return (value / 1000000).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
     }
     return Math.round(value).toLocaleString();
 };

@@ -1,8 +1,8 @@
 /**
  * IoT 实时图表状态管理（模拟实时数据推送）
  */
-import { onBeforeUnmount, reactive, ref, shallowRef } from "vue";
-import type { IotChartConfig, IotChartSeries, IotTimeSeriesPoint } from "../types";
+import {onBeforeUnmount, reactive, ref, shallowRef} from "vue";
+import type {IotChartConfig, IotChartSeries, IotTimeSeriesPoint} from "../types";
 
 export const useRealtimeChart = (
     initialSeries: IotChartSeries[] = [],
@@ -44,7 +44,7 @@ export const useRealtimeChart = (
         const lastVal = last ? Number(last.value) : 50;
         const delta = (Math.random() - 0.5) * 8;
         const nextVal = Number(Math.max(0, lastVal + delta).toFixed(2));
-        return { timestamp: Date.now(), value: nextVal };
+        return {timestamp: Date.now(), value: nextVal};
     };
 
     /** 开始实时推送 */

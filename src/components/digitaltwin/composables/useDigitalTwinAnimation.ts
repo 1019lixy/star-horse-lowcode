@@ -4,13 +4,13 @@
  * 使用 requestAnimationFrame 维护全局动画状态（累计时间）
  * 渲染器在每帧从 state 读取 elapsed 用于计算部件变换
  */
-import { ref, onBeforeUnmount } from "vue";
-import { dtUpdateAnimationState, type DtAnimationState } from "../utils/DtModelAnimator";
+import {onBeforeUnmount, ref} from "vue";
+import {type DtAnimationState, dtUpdateAnimationState} from "../utils/DtModelAnimator";
 
 /** 动画循环 composable */
 export const useDigitalTwinAnimation = () => {
     const animating = ref(false);
-    const state = ref<DtAnimationState>({ elapsed: 0 });
+    const state = ref<DtAnimationState>({elapsed: 0});
     let rafId: number | null = null;
     let lastTime = 0;
 
@@ -42,7 +42,7 @@ export const useDigitalTwinAnimation = () => {
 
     /** 重置动画时间 */
     const reset = (): void => {
-        state.value = { elapsed: 0 };
+        state.value = {elapsed: 0};
         lastTime = 0;
     };
 

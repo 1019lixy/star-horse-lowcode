@@ -7,8 +7,8 @@
  * - 通过 onCameraClick 回调通知 UI 弹出视频播放器
  * - 默认 mock 流：使用 canvas 渲染循环动画模拟视频
  */
-import { ref, computed, type ComputedRef } from "vue";
-import type { DtVideoCamera, DtPoint3D } from "../types";
+import {computed, type ComputedRef, ref} from "vue";
+import type {DtPoint3D, DtVideoCamera} from "../types";
 
 export interface UseDtVideoMonitorReturn {
     /** 摄像头列表 */
@@ -101,13 +101,17 @@ export function useDtVideoMonitor(): UseDtVideoMonitorReturn {
 /**
  * 工厂级预设摄像头点位生成器（基于场景实体自动布局）
  */
-export function genDefaultCamerasForScene(entities: Array<{ id: string; name: string; position: DtPoint3D }>): DtVideoCamera[] {
+export function genDefaultCamerasForScene(entities: Array<{
+    id: string;
+    name: string;
+    position: DtPoint3D
+}>): DtVideoCamera[] {
     const result: DtVideoCamera[] = [];
     entities.forEach((e, idx) => {
         result.push({
             id: `cam_preset_${idx + 1}`,
             name: `监控-${e.name}`,
-            position: { x: e.position.x + 50, y: e.position.y + 80, z: e.position.z + 50 },
+            position: {x: e.position.x + 50, y: e.position.y + 80, z: e.position.z + 50},
             streamUrl: `mock://camera/${e.id}`,
             cameraType: idx % 3 === 0 ? "ptz" : "fixed",
             online: idx % 5 !== 0,

@@ -1,7 +1,7 @@
 /**
  * API 编排器状态管理
  */
-import { reactive, ref } from "vue";
+import {reactive, ref} from "vue";
 import {
     createChain,
     createChainStep,
@@ -11,14 +11,8 @@ import {
     SAMPLE_ENDPOINTS,
     SAMPLE_MOCKS,
 } from "../constants";
-import { extractVariables, matchMock, simulateRequest } from "./useMockServer";
-import type {
-    ApiChain,
-    ApiChainStep,
-    ApiEndpoint,
-    ApiTestResult,
-    MockResponse,
-} from "../types";
+import {extractVariables, matchMock, simulateRequest} from "./useMockServer";
+import type {ApiChain, ApiChainStep, ApiEndpoint, ApiTestResult, MockResponse,} from "../types";
 
 export const useApiOrchestrator = (
     initialEndpoints?: ApiEndpoint[],
@@ -110,7 +104,7 @@ export const useApiOrchestrator = (
     const addChainStep = (endpointId: string): ApiChainStep | null => {
         const ep = endpoints.find((e) => e.id === endpointId);
         if (!ep) return null;
-        const step = createChainStep(endpointId, { stepName: `${chain.steps.length + 1}. ${ep.name}` });
+        const step = createChainStep(endpointId, {stepName: `${chain.steps.length + 1}. ${ep.name}`});
         chain.steps.push(step);
         return step;
     };
@@ -146,7 +140,7 @@ export const useApiOrchestrator = (
         if (!ep) return null;
         const idx = chain.steps.findIndex((s) => s.id === refStepId);
         if (idx < 0) return null;
-        const step = createChainStep(endpointId, { stepName: `${idx + 1}. ${ep.name}` });
+        const step = createChainStep(endpointId, {stepName: `${idx + 1}. ${ep.name}`});
         chain.steps.splice(idx, 0, step);
         // 重新编号
         renumberSteps();
@@ -159,7 +153,7 @@ export const useApiOrchestrator = (
         if (!ep) return null;
         const idx = chain.steps.findIndex((s) => s.id === refStepId);
         if (idx < 0) return null;
-        const step = createChainStep(endpointId, { stepName: `${idx + 2}. ${ep.name}` });
+        const step = createChainStep(endpointId, {stepName: `${idx + 2}. ${ep.name}`});
         chain.steps.splice(idx + 1, 0, step);
         renumberSteps();
         return step;
@@ -204,7 +198,7 @@ export const useApiOrchestrator = (
         clearResults();
 
         // 初始化运行时变量
-        const runtimeVars: Record<string, any> = { ...chain.variables };
+        const runtimeVars: Record<string, any> = {...chain.variables};
 
         let success = true;
         for (const step of chain.steps) {
@@ -221,8 +215,8 @@ export const useApiOrchestrator = (
                 testResults.value.push({
                     stepId: step.id,
                     stepName: step.stepName,
-                    request: { method: "GET", url: "", headers: {}, body: "" },
-                    response: { status: 0, statusText: "", body: "", duration: 0 },
+                    request: {method: "GET", url: "", headers: {}, body: ""},
+                    response: {status: 0, statusText: "", body: "", duration: 0},
                     success: false,
                     error: `Endpoint not found: ${step.endpointId}`,
                     extractedVars: {},
@@ -238,10 +232,10 @@ export const useApiOrchestrator = (
                     request: {
                         method: endpoint.method,
                         url: endpoint.url,
-                        headers: { ...endpoint.headers },
+                        headers: {...endpoint.headers},
                         body: endpoint.body,
                     },
-                    response: { status: 0, statusText: "", body: "", duration: 0 },
+                    response: {status: 0, statusText: "", body: "", duration: 0},
                     success: false,
                     error: "No active mock response",
                     extractedVars: {},
@@ -262,7 +256,7 @@ export const useApiOrchestrator = (
                     request: {
                         method: endpoint.method,
                         url: endpoint.url,
-                        headers: { ...endpoint.headers },
+                        headers: {...endpoint.headers},
                         body: endpoint.body,
                     },
                     response: {
@@ -286,10 +280,10 @@ export const useApiOrchestrator = (
                     request: {
                         method: endpoint.method,
                         url: endpoint.url,
-                        headers: { ...endpoint.headers },
+                        headers: {...endpoint.headers},
                         body: endpoint.body,
                     },
-                    response: { status: 0, statusText: "", body: "", duration: 0 },
+                    response: {status: 0, statusText: "", body: "", duration: 0},
                     success: false,
                     error: err?.message ?? String(err),
                     extractedVars: {},

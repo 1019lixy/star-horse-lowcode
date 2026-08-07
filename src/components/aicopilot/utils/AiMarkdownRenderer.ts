@@ -145,7 +145,7 @@ export const aiRenderMarkdown = (md: string): string => {
             !/^>\s?/.test(lines[i]) &&
             !/^[-*+]\s+/.test(lines[i]) &&
             !/^\d+\.\s+/.test(lines[i])
-        ) {
+            ) {
             paraLines.push(lines[i]);
             i++;
         }

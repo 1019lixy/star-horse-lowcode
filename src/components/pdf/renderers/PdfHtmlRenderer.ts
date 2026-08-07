@@ -2,8 +2,8 @@
  * PDF HTML 渲染器
  * 单一职责：把模板渲染为 HTML 字符串，供打印或导出
  */
-import { MM_TO_PX } from "../constants";
-import type { PdfElement, PdfTemplate } from "../types";
+import {MM_TO_PX} from "../constants";
+import type {PdfElement, PdfTemplate} from "../types";
 
 /** 单元素样式生成 */
 const buildElementStyle = (el: PdfElement): string => {
@@ -146,7 +146,7 @@ export const renderTemplateToHtml = (template: PdfTemplate, data?: Record<string
     const elementsHtml = template.elements
         .map((el) => {
             // 简单数据绑定替换
-            const replaced: any = { ...el };
+            const replaced: any = {...el};
             if (data && (el as any).dataField) {
                 const val = data[(el as any).dataField];
                 if (val !== undefined) {

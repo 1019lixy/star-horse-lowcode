@@ -1,9 +1,9 @@
 /**
  * 邮件模板状态管理
  */
-import { reactive, ref } from "vue";
-import { createEmailTemplate, createEmailVariable } from "../constants";
-import type { EmailAttachment, EmailTemplate, EmailVariable } from "../types";
+import {reactive, ref} from "vue";
+import {createEmailTemplate, createEmailVariable} from "../constants";
+import type {EmailAttachment, EmailTemplate, EmailVariable} from "../types";
 
 export const useEmailTemplateDesigner = (initial?: Partial<EmailTemplate>) => {
     const state = reactive<EmailTemplate>(createEmailTemplate(initial ?? {}));
@@ -62,7 +62,7 @@ export const useEmailTemplateDesigner = (initial?: Partial<EmailTemplate>) => {
 
     /** 更新元信息 */
     const updateMeta = (updates: Partial<EmailTemplate>) => {
-        Object.assign(state, updates, { updatedAt: new Date().toISOString() });
+        Object.assign(state, updates, {updatedAt: new Date().toISOString()});
     };
 
     /** 设置内容 */

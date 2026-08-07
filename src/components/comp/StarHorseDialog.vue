@@ -59,10 +59,9 @@ let windowsType = computed({
 const _compKey = compKey;
 
 let isFullScreen = ref<boolean>(false);
-// 最小化状态
 let isMinimized = ref<boolean>(false);
-// 记住最小化前是否全屏
 let wasFullScreenBeforeMinimize = ref<boolean>(false);
+let firstOpenStart = 0;
 
 const dialogStyle = computed(() => {
   return {
@@ -98,6 +97,8 @@ const activeZIndex = ref<number | undefined>(undefined);
 const {nextZIndex} = useZIndex();
 
 const open = () => {
+  const t = (performance.now() - firstOpenStart).toFixed(1);
+  console.log(`[StarHorseDialog] el-dialog @open 触发 t=${t}ms`);
   emits("open");
 };
 
@@ -132,34 +133,34 @@ const operation = (funcName: any, type: string) => {
     clickFunction["funcName"] = funcName;
     clickFunction["type"] = type;
   }
-  console.log(clickFunction);
 };
 watch(
     () => windowsType.value,
     (val: boolean) => {
       if (val) {
-        // 在 el-dialog 内部打开逻辑之前计算 z-index：
-        // 通过 EP 全局 nextZIndex() 递增计数器，保证本次打开的 z-index
-        // 高于此前所有 dialog / drawer / popover 等弹层；
-        // 同时计数器被推进，后续任何 EP 弹层都会再高于本弹窗，避免互相遮盖
+        firstOpenStart = performance.now();
+        (window as any).__shDialogStart = firstOpenStart;
+        console.log(`[StarHorseDialog] ✅ 用户点击，dialogVisible=true`);
         activeZIndex.value = props.zIndex > 0 ? props.zIndex : nextZIndex();
-        // 打开时重置最小化状态
         isMinimized.value = false;
-        // 手机模式默认最大化
         if (isMobile) {
           isFullScreen.value = true;
         }
+        nextTick(() => {
+          console.log(`[StarHorseDialog] ✅ nextTick1 (模板patch完成) t=${(performance.now() - firstOpenStart).toFixed(1)}ms`);
+          nextTick(() => {
+            console.log(`[StarHorseDialog] ✅ nextTick2 (子组件mounted) t=${(performance.now() - firstOpenStart).toFixed(1)}ms`);
+          });
+        });
       }
     },
     {
       immediate: true,
-      deep: true,
     },
 );
 </script>
 <template>
   <Teleport to="body">
-    <!-- 最小化后的折叠图标 -->
     <div
         v-if="isMinimized && windowsType"
         class="dialog-minimized-bar"
@@ -181,128 +182,129 @@ watch(
           (source == 3 ? i18n("dialog.viewTitle") : i18n("dialog.editTitle"))
         }}</span>
     </div>
+  </Teleport>
 
-    <div class="di animated animate__fadeIn" v-show="!isMinimized" ref="diRef">
-      <el-dialog
-          :append-to-body="false"
-          :append-to="appendTo"
-          :center="false"
-          :destroy-on-close="true"
-          :close-on-click-modal="false"
-          :close-on-press-escape="false"
-          :lock-scroll="true"
-          class="dialog-settings"
-          :fullscreen="isFullScreen || isMobile"
-          :show-close="false"
-          :draggable="draggable && !isFullScreen && !isMobile"
-          :align-center="true"
-          v-model="windowsType"
-          @close="beforeClose"
-          @open="open"
-          :width="boxWidth"
-          :zIndex="activeZIndex"
-          :style="dialogStyle"
-      >
-        <template #header="{ close }">
-          <h3 @dblclick="fullScreen">
-            {{
-              title ||
-              (source == 3
-                  ? i18n("dialog.viewTitle")
-                  : i18n("dialog.editTitle"))
-            }}
-          </h3>
-          <div class="my-header">
-            <template v-if="!isMobile">
-              <el-button
-                  style="
+  <div class="di animated animate__fadeIn" v-show="!isMinimized" ref="diRef">
+    <el-dialog
+        :append-to-body="false"
+        :append-to="appendTo"
+        :center="false"
+        :destroy-on-close="true"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+        :lock-scroll="true"
+        class="dialog-settings"
+        :fullscreen="isFullScreen || isMobile"
+        :show-close="false"
+        :draggable="draggable && !isFullScreen && !isMobile"
+        :align-center="true"
+        v-model="windowsType"
+        @close="beforeClose"
+        @open="open"
+        :width="boxWidth"
+        :zIndex="activeZIndex"
+        :style="dialogStyle"
+    >
+      <template #header="{ close }">
+        <h3 @dblclick="fullScreen">
+          {{
+            title ||
+            (source == 3
+                ? i18n("dialog.viewTitle")
+                : i18n("dialog.editTitle"))
+          }}
+        </h3>
+        <div class="my-header">
+          <template v-if="!isMobile">
+            <el-button
+                style="
                   background: var(--star-horse-style);
                   color: var(--star-horse-white);
                 "
-                  :size="compSize"
-                  @click="minimize"
-                  link
-                  v-if="!hideMinimizeIcon"
-                  :title="i18n('dialog.minimize')"
+                :size="compSize"
+                @click="minimize"
+                link
+                v-if="!hideMinimizeIcon"
+                :title="i18n('dialog.minimize')"
+            >
+              <svg
+                  viewBox="0 0 16 16"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  style="cursor: pointer"
               >
-                <svg
-                    viewBox="0 0 16 16"
-                    width="16"
-                    height="16"
-                    fill="currentColor"
-                    style="cursor: pointer"
-                >
-                  <path
-                      d="M2 8h12"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      fill="none"
-                  />
-                </svg>
+                <path
+                    d="M2 8h12"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    fill="none"
+                />
+              </svg>
+            </el-button>
+            <template v-if="!hideFullScreenIcon">
+              <el-button
+                  style="
+                    background: var(--star-horse-style);
+                    color: var(--star-horse-white);
+                  "
+                  :size="compSize"
+                  @click="fullScreen"
+                  link
+                  v-if="!!isFullScreen && draggable"
+                  :title="i18n('dialog.resize')"
+              >
+                <star-horse-icon
+                    icon-class="fullscreen-shrink"
+                    color="var(--star-horse-white)"
+                    cursor="pointer"
+                />
               </el-button>
-              <template v-if="!hideFullScreenIcon">
-                <el-button
-                    style="
+              <el-button
+                  style="
                     background: var(--star-horse-style);
                     color: var(--star-horse-white);
                   "
-                    :size="compSize"
-                    @click="fullScreen"
-                    link
-                    v-if="!!isFullScreen && draggable"
-                    :title="i18n('dialog.resize')"
-                >
-                  <star-horse-icon
-                      icon-class="fullscreen-shrink"
-                      color="var(--star-horse-white)"
-                      cursor="pointer"
-                  />
-                </el-button>
-                <el-button
-                    style="
-                    background: var(--star-horse-style);
-                    color: var(--star-horse-white);
-                  "
-                    :size="compSize"
-                    @click="fullScreen"
-                    link
-                    v-if="!isFullScreen && draggable"
-                    :title="i18n('dialog.fullScreen')"
-                >
-                  <star-horse-icon
-                      icon-class="fullscreen-expand"
-                      color="var(--star-horse-white)"
-                      cursor="pointer"
-                  />
-                </el-button>
-              </template>
+                  :size="compSize"
+                  @click="fullScreen"
+                  link
+                  v-if="!isFullScreen && draggable"
+                  :title="i18n('dialog.fullScreen')"
+              >
+                <star-horse-icon
+                    icon-class="fullscreen-expand"
+                    color="var(--star-horse-white)"
+                    cursor="pointer"
+                />
+              </el-button>
             </template>
-            <el-button
-                style="
+          </template>
+          <el-button
+              style="
                 background: var(--star-horse-style);
                 color: var(--star-horse-white);
               "
-                :size="compSize"
-                @click="close"
-                link
-                :title="i18n('dialog.close')"
-            >
-              <star-horse-icon
-                  icon-class="close"
-                  color="var(--star-horse-white)"
-                  cursor="pointer"
-              />
-            </el-button>
-          </div>
-        </template>
-        <slot name="header"></slot>
-        <div class="shdialog" :class="{ 'overflow-hidden': source == 3 }">
-          <div class="dialog-body">
-            <slot></slot>
-            <div v-if="false" class="w-full h-[80px]"></div>
-          </div>
+              :size="compSize"
+              @click="close"
+              link
+              :title="i18n('dialog.close')"
+          >
+            <star-horse-icon
+                icon-class="close"
+                color="var(--star-horse-white)"
+                cursor="pointer"
+            />
+          </el-button>
         </div>
-        <template #footer>
+      </template>
+      <slot name="header"></slot>
+      <div class="shdialog" :class="{ 'overflow-hidden': source == 3 }">
+        <div class="dialog-body">
+          <slot></slot>
+          <div v-if="false" class="w-full h-[80px]"></div>
+        </div>
+      </div>
+      <template #footer>
           <span
               class="dialog-footer"
               :class="{ 'app-btn': false }"
@@ -402,11 +404,10 @@ watch(
               {{ i18n("dialog.reset") }}</el-button
             >
           </span>
-          <slot name="footer"></slot>
-        </template>
-      </el-dialog>
-    </div>
-  </Teleport>
+        <slot name="footer"></slot>
+      </template>
+    </el-dialog>
+  </div>
 </template>
 <style lang="scss" scoped>
 :deep(.el-dialog__footer) {

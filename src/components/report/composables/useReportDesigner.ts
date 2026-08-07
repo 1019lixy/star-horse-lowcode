@@ -4,13 +4,9 @@
  * 职责：管理选中、复制、合并、行列操作、历史等
  */
 
-import { computed, reactive } from "vue";
-import { colToLetter, toAddress } from "../CellUtils";
-import type {
-    ReportCell,
-    ReportDesignerState,
-    ReportTemplate,
-} from "../types";
+import {computed, reactive} from "vue";
+import {toAddress} from "../CellUtils";
+import type {ReportCell, ReportDesignerState, ReportTemplate,} from "../types";
 
 const DEFAULT_ROW_COUNT = 50;
 const DEFAULT_COL_COUNT = 20;
@@ -26,11 +22,11 @@ const createInitialTemplate = (): ReportTemplate => ({
     defaultRowHeight: DEFAULT_ROW_HEIGHT,
     defaultColWidth: DEFAULT_COL_WIDTH,
     cells: {},
-    rows: Array.from({ length: DEFAULT_ROW_COUNT }, (_, i) => ({
+    rows: Array.from({length: DEFAULT_ROW_COUNT}, (_, i) => ({
         index: i + 1,
         height: DEFAULT_ROW_HEIGHT,
     })),
-    columns: Array.from({ length: DEFAULT_COL_COUNT }, (_, i) => ({
+    columns: Array.from({length: DEFAULT_COL_COUNT}, (_, i) => ({
         index: i + 1,
         width: DEFAULT_COL_WIDTH,
     })),
@@ -48,7 +44,7 @@ const createInitialTemplate = (): ReportTemplate => ({
 });
 
 const createInitialState = (tpl?: Partial<ReportTemplate>): ReportDesignerState => {
-    const template = { ...createInitialTemplate(), ...tpl };
+    const template = {...createInitialTemplate(), ...tpl};
     return {
         template,
         selectedAddresses: [],
@@ -113,7 +109,7 @@ export function useReportDesigner(initialTemplate?: Partial<ReportTemplate>) {
 
     const ensureCell = (address: string): ReportCell => {
         if (!state.template.cells[address]) {
-            const { row, col } = parseAddr(address);
+            const {row, col} = parseAddr(address);
             state.template.cells[address] = {
                 address,
                 row,
@@ -158,7 +154,7 @@ export function useReportDesigner(initialTemplate?: Partial<ReportTemplate>) {
     const setCellStyle = (address: string, style: Partial<ReportCell["style"]>) => {
         if (state.readonly) return;
         const cell = ensureCell(address);
-        cell.style = { ...(cell.style || {}), ...style };
+        cell.style = {...(cell.style || {}), ...style};
     };
 
     /** 通用：合并更新单元格部分字段（dataType / expandDirection / groupField 等） */
@@ -429,7 +425,7 @@ const parseAddr = (address: string): { row: number; col: number } => {
     for (let i = 0; i < match[1].length; i++) {
         col = col * 26 + (match[1].toUpperCase().charCodeAt(i) - 64);
     }
-    return { row: parseInt(match[2], 10), col };
+    return {row: parseInt(match[2], 10), col};
 };
 
 export type UseReportDesignerReturn = ReturnType<typeof useReportDesigner>;

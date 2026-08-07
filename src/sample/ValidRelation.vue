@@ -1,9 +1,9 @@
 <script setup lang="ts" name="Areainfo">
-import { apiInstance, dialogPreps } from "@/api/star_horse_utils";
-import { ApiUrls } from "@/components/types/ApiUrls";
-import { PageFieldInfo } from "@/components/types/PageFieldInfo";
-import { SearchFields, SelectOption } from "@/components/types/SearchProps";
-import { nextTick, onMounted, provide, reactive, ref, watch } from "vue";
+import {apiInstance, dialogPreps} from "@/api/star_horse_utils";
+import {ApiUrls} from "@/components/types/ApiUrls";
+import {PageFieldInfo} from "@/components/types/PageFieldInfo";
+import {SearchFields, SelectOption} from "@/components/types/SearchProps";
+import {nextTick, onMounted, provide, reactive, ref, watch} from "vue";
 
 const dataUrl: ApiUrls = apiInstance("system-config", "system/areainfo");
 const linkExecServerList = ref<SelectOption[]>([]);
@@ -46,7 +46,7 @@ const tableFieldList = reactive<PageFieldInfo>({
                 formVisible: true,
                 fieldName: "singleImageFlag",
                 preps: {
-                  values: [{ name: "使用唯一镜像名称", value: "Y" }],
+                  values: [{name: "使用唯一镜像名称", value: "Y"}],
                   colspan: 6,
                   border: "Y",
                 },
@@ -234,10 +234,10 @@ const initData = async () => {
 };
 const assignValues = () => {
   areaFormRef.value?.setFormData({
-    result: { errorReport: "N", successReport: "N" },
+    result: {errorReport: "N", successReport: "N"},
     resultReport: [
-      { errorReport: "Y", successReport: "N" },
-      { errorReport: "Y", successReport: "N" },
+      {errorReport: "Y", successReport: "N"},
+      {errorReport: "Y", successReport: "N"},
     ],
   });
 };
@@ -245,60 +245,60 @@ onMounted(() => {
   initData();
 });
 watch(
-  () => dialogProps.editVisible,
-  (newVal: boolean) => {
-    if (newVal) {
-      initData();
-    }
-  },
+    () => dialogProps.editVisible,
+    (newVal: boolean) => {
+      if (newVal) {
+        initData();
+      }
+    },
 );
 </script>
 <template>
   <div class="flex flex-col h-full overflow-hidden">
     <star-horse-dialog
-      :isShowBtnContinue="true"
-      :dialogVisible="dialogProps.editVisible"
-      :dialogProps="dialogProps"
+        :isShowBtnContinue="true"
+        :dialogVisible="dialogProps.editVisible"
+        :dialogProps="dialogProps"
     >
       {{ areaFormRef?.getFormData() }}
       <el-button type="primary" @click="assignValues">赋值</el-button>
       <star-horse-form
-        ref="areaFormRef"
-        @refresh="areainfoRef?.loadByPage()"
-        :compUrl="dataUrl"
-        :fieldList="tableFieldList"
-        :rules="rules"
+          ref="areaFormRef"
+          @refresh="areainfoRef?.loadByPage()"
+          :compUrl="dataUrl"
+          :fieldList="tableFieldList"
+          :rules="rules"
       />
     </star-horse-dialog>
     <star-horse-dialog
-      v-model="dialogProps.viewVisible"
-      :dialogProps="dialogProps"
-      :source="3"
+        v-model="dialogProps.viewVisible"
+        :dialogProps="dialogProps"
+        :source="3"
     >
       <star-horse-data-view
-        :dataFormat="dataFormat"
-        :field-list="tableFieldList"
-        :compUrl="dataUrl"
+          :dataFormat="dataFormat"
+          :field-list="tableFieldList"
+          :compUrl="dataUrl"
       />
     </star-horse-dialog>
     <div class="search-content">
       <div class="search_btn">
         <star-horse-search-comp
-          @searchData="(data: any) => areainfoRef?.createSearchParams(data)"
-          :formData="searchFormData"
-          :compUrl="dataUrl"
+            @searchData="(data: any) => areainfoRef?.createSearchParams(data)"
+            :formData="searchFormData"
+            :compUrl="dataUrl"
         />
       </div>
     </div>
     <el-card class="inner_content">
       <star-horse-table-comp
-        ref="areainfoRef"
-        :fieldList="tableFieldList"
-        :btnPermissions="btnPermissions"
-        :primaryKey="primaryKey"
-        :compUrl="dataUrl"
-        :dataFormat="dataFormat"
-        :showPageBar="false"
+          ref="areainfoRef"
+          :fieldList="tableFieldList"
+          :btnPermissions="btnPermissions"
+          :primaryKey="primaryKey"
+          :compUrl="dataUrl"
+          :dataFormat="dataFormat"
+          :showPageBar="false"
       />
     </el-card>
   </div>

@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { computed, ModelRef } from "vue";
-import { i18n } from "@/lang";
+import {computed, ModelRef} from "vue";
+import {i18n} from "@/lang";
 
 const props = defineProps({
-  level: { type: Number, default: 1, required: true },
-  menuType: { type: String, default: "url" },
+  level: {type: Number, default: 1, required: true},
+  menuType: {type: String, default: "url"},
 });
 const emits = defineEmits(["selectMenu"]);
 const dataList: ModelRef<any> = defineModel("dataList");
 let menuColor = computed(() =>
-  props.level > 1 ? "var(--star-horse-shadow)" : "var(--star-horse-background)",
+    props.level > 1 ? "var(--star-horse-shadow)" : "var(--star-horse-background)",
 );
 const selectMenu = (menu: any) => {
   emits("selectMenu", menu);
@@ -22,19 +22,19 @@ const selectMenu = (menu: any) => {
         <div class="menu-item-content">
           <div class="flex flex-row items-center gap-3">
             <el-icon class="star-icon">
-              <component :is="item.meta?.menuIcon || 'document'" />
+              <component :is="item.meta?.menuIcon || 'document'"/>
             </el-icon>
             <span @click="selectMenu(item)"
-              >{{ item.meta?.title || i18n("item.unknown") }}
+            >{{ item.meta?.title || i18n("item.unknown") }}
             </span>
           </div>
         </div>
         <div class="menu-children">
           <MainSubBar
-            v-model:dataList="item.children"
-            :level="level + 1"
-            @selectMenu="selectMenu"
-            :menuType="menuType"
+              v-model:dataList="item.children"
+              :level="level + 1"
+              @selectMenu="selectMenu"
+              :menuType="menuType"
           />
         </div>
       </div>
@@ -42,10 +42,10 @@ const selectMenu = (menu: any) => {
     <div v-else class="menu-item leaf-menu-item">
       <div class="flex flex-row items-center h-[35px] gap-1 cursor-pointer">
         <el-icon class="star-icon">
-          <component :is="item.meta?.menuIcon || 'document'" />
+          <component :is="item.meta?.menuIcon || 'document'"/>
         </el-icon>
         <span @click="selectMenu(item)"
-          >{{ item.meta?.title || i18n("item.unknown") }}
+        >{{ item.meta?.title || i18n("item.unknown") }}
         </span>
       </div>
     </div>

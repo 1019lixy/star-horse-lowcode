@@ -1,15 +1,10 @@
 <script lang="ts" setup>
-import { onActivated, onMounted, provide, reactive, ref } from "vue";
-import { i18n } from "@/lang";
-import { apiInstance, dialogPreps } from "@/api/star_horse_utils";
-import {
-  ApiUrls,
-  PageFieldInfo,
-  SearchFields,
-  SelectOption,
-} from "@/components/types";
-import { postRequest } from "@/api/star_horse_apis";
-import { StarHorseTableComp } from "@/components/comp";
+import {onActivated, onMounted, provide, reactive, ref} from "vue";
+import {i18n} from "@/lang";
+import {apiInstance, dialogPreps} from "@/api/star_horse_utils";
+import {ApiUrls, PageFieldInfo, SearchFields, SelectOption,} from "@/components/types";
+import {postRequest} from "@/api/star_horse_apis";
+import {StarHorseTableComp} from "@/components/comp";
 
 let informationsList = ref<any>([]);
 const dataUrl: ApiUrls = apiInstance("system-config", "system/informations");
@@ -38,7 +33,7 @@ const searchFormData = reactive<SearchFields>({
       type: "number",
       matchType: "bt",
     },
-     {
+    {
       label: "Select",
       fieldName: "select",
       formVisible: false,
@@ -59,10 +54,10 @@ const testFun = (formData: any) => {
     return;
   }
   postRequest(dataUrl.loadByIdUrl + "/" + formData["parentId"], {}).then(
-    (res) => {
-      let redata = res.data.data;
-      formData["idCustomer"] = redata["idCustomer"];
-    },
+      (res) => {
+        let redata = res.data.data;
+        formData["idCustomer"] = redata["idCustomer"];
+      },
   );
 };
 const tableFieldList = reactive<PageFieldInfo>({
@@ -78,7 +73,7 @@ const tableFieldList = reactive<PageFieldInfo>({
         fieldName: "parentId",
         type: "select",
         formVisible: true,
-        actions: { change: testFun },
+        actions: {change: testFun},
         preps: {
           values: informationsList,
         },
@@ -143,7 +138,7 @@ const tableFieldList = reactive<PageFieldInfo>({
       type: "textarea",
       formVisible: true,
       listVisible: true,
-      actions: { input: testFun },
+      actions: {input: testFun},
     },
     {
       label: "绑定表单",
@@ -157,8 +152,8 @@ const tableFieldList = reactive<PageFieldInfo>({
           pageListUrl: "/userdb-manage/userdb/dynamicForm/pageList",
         },
         needField: [
-          { sourceField: "formName", distField: "bindFormName" },
-          { sourceField: "dataNo", distField: "formId" },
+          {sourceField: "formName", distField: "bindFormName"},
+          {sourceField: "dataNo", distField: "formId"},
         ],
         searchFieldList: [],
         fieldList: [
@@ -175,7 +170,7 @@ const tableFieldList = reactive<PageFieldInfo>({
             listVisible: true,
             preps: {
               iconType: "user",
-              values:[],
+              values: [],
             },
           },
           {
@@ -198,14 +193,14 @@ const tableFieldList = reactive<PageFieldInfo>({
     {
       label: i18n("system.updated.by"),
       preps: {
-        appendAction:[
+        appendAction: [
           {
-            title:"xxx",
-            icon:"edit",
-            actions:{
-              eventType:"custom",
-              customCode:"const params={\n" +
-                      "    \"apiInfo\": {\n" +
+            title: "xxx",
+            icon: "edit",
+            actions: {
+              eventType: "custom",
+              customCode: "const params={\n" +
+                  "    \"apiInfo\": {\n" +
                   "        \"apiType\": \"thirdApi\",\n" +
                   "        \"codePath\": \"code\",\n" +
                   "        \"dataPath\": \"data\",\n" +
@@ -409,20 +404,20 @@ provide("dialogProps", dialogProps);
 const dataFormat = (name: string, cellValue: object): any => {
   if (name == "parentId") {
     return (
-      informationsList.value.find(
-        (item: SelectOption) => item.value == cellValue,
-      )?.name || cellValue
+        informationsList.value.find(
+            (item: SelectOption) => item.value == cellValue,
+        )?.name || cellValue
     );
   } else if (name == "idCustomer") {
     return (
-      customerList.value.find((item: SelectOption) => item.value == cellValue)
-        ?.name || cellValue
+        customerList.value.find((item: SelectOption) => item.value == cellValue)
+            ?.name || cellValue
     );
   }
   return cellValue;
 };
 const initData = async () => {
-  let params = [{ propertyName: "statusCode", value: "1" }];
+  let params = [{propertyName: "statusCode", value: "1"}];
   // const datas = await loadSystemInfo(params);
   // const customs = await loadCustomInfo(params);
   // informationsList.value = datas;
@@ -432,54 +427,55 @@ const initData = async () => {
 onMounted(async () => {
   await initData();
 });
-onActivated(() => {});
+onActivated(() => {
+});
 </script>
 <template>
   <div class="flex flex-col h-full overflow-hidden">
     <star-horse-dialog
-      :isShowBtnContinue="true"
-      v-model="dialogProps.editVisible"
-      :dialogProps="dialogProps"
+        :isShowBtnContinue="true"
+        v-model="dialogProps.editVisible"
+        :dialogProps="dialogProps"
     >
       <star-horse-form
-        @refresh="informationsRef?.loadByPage()"
-        :compUrl="dataUrl"
-        :fieldList="tableFieldList"
-        :rules="rules"
+          @refresh="informationsRef?.loadByPage()"
+          :compUrl="dataUrl"
+          :fieldList="tableFieldList"
+          :rules="rules"
       />
     </star-horse-dialog>
     <star-horse-dialog
-      v-model="dialogProps.viewVisible"
-      :dialogProps="dialogProps"
-      :source="3"
+        v-model="dialogProps.viewVisible"
+        :dialogProps="dialogProps"
+        :source="3"
     >
       <star-horse-data-view
-        :data-format="dataFormat"
-        :field-list="tableFieldList"
-        :compUrl="dataUrl"
+          :data-format="dataFormat"
+          :field-list="tableFieldList"
+          :compUrl="dataUrl"
       />
     </star-horse-dialog>
     <div class="search-content">
       <div class="search_btn">
         <star-horse-search-comp
-          @searchData="(data: any) => informationsRef?.createSearchParams(data)"
-          :formData="searchFormData"
-          :compUrl="dataUrl"
+            @searchData="(data: any) => informationsRef?.createSearchParams(data)"
+            :formData="searchFormData"
+            :compUrl="dataUrl"
         />
       </div>
     </div>
     <el-card class="inner_content">
       <star-horse-table-comp
-        ref="informationsRef"
-        :fieldList="tableFieldList"
-        :primaryKey="primaryKey"
-        :btn-permissions="{
+          ref="informationsRef"
+          :fieldList="tableFieldList"
+          :primaryKey="primaryKey"
+          :btn-permissions="{
           view: 'view',
           add: 'add',
           edit: 'edit',
         }"
-        :compUrl="dataUrl"
-        :dataFormat="dataFormat"
+          :compUrl="dataUrl"
+          :dataFormat="dataFormat"
       />
     </el-card>
   </div>

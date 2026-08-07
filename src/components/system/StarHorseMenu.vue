@@ -1,8 +1,8 @@
 <script setup lang="ts" name="StarHorseHmenu">
-import { computed, ModelRef, onMounted, PropType } from "vue";
+import {computed, ModelRef, onMounted, PropType} from "vue";
 import MenuItem from "@/components/menu/MenuItem.vue";
-import { compKey } from "@/api/system";
-import { isMobile } from "@/api/device";
+import {compKey} from "@/api/system";
+import {isMobile} from "@/api/device";
 
 defineProps({
   preps: {
@@ -23,7 +23,8 @@ let dataList: ModelRef<any> = defineModel("dataList");
 const fontColor = computed(() => {
   return isMobile ? "var(--star-horse-white) !important" : "unset";
 });
-const initData = async () => {};
+const initData = async () => {
+};
 const selectItem = (item: any) => {
   emits("selectItem", item);
 };
@@ -33,15 +34,15 @@ onMounted(() => {
 </script>
 <template>
   <el-menu
-    :class="{ 'system-menu': !isMobile, 'system-app-menu': isMobile }"
-    v-bind="$attrs"
+      :class="{ 'system-menu': !isMobile, 'system-app-menu': isMobile }"
+      v-bind="$attrs"
   >
     <MenuItem
-      v-for="(sitem, key) in dataList"
-      :key="compKey(sitem, key)"
-      :item="sitem"
-      @selectItem="selectItem"
-      :preps="preps"
+        v-for="(sitem, key) in dataList"
+        :key="compKey(sitem, key)"
+        :item="sitem"
+        @selectItem="selectItem"
+        :preps="preps"
     />
   </el-menu>
 </template>

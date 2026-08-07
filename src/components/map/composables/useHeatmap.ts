@@ -1,9 +1,9 @@
 /**
  * 热力图状态管理
  */
-import { computed, reactive, ref } from "vue";
-import { DEFAULT_HEAT_GRADIENT, DEFAULT_HEAT_RADIUS } from "../constants";
-import type { HeatGradientStop, HeatPoint } from "../types";
+import {computed, reactive, ref} from "vue";
+import {DEFAULT_HEAT_GRADIENT, DEFAULT_HEAT_RADIUS} from "../constants";
+import type {HeatGradientStop, HeatPoint} from "../types";
 
 export const useHeatmap = (initialPoints: HeatPoint[] = []) => {
     const points = reactive<HeatPoint[]>(JSON.parse(JSON.stringify(initialPoints)));
@@ -16,11 +16,11 @@ export const useHeatmap = (initialPoints: HeatPoint[] = []) => {
     const maxWeight = computed(() => points.reduce((m, p) => Math.max(m, p.weight), 0));
 
     const addPoint = (p: HeatPoint) => {
-        points.push({ ...p });
+        points.push({...p});
     };
 
     const addPoints = (ps: HeatPoint[]) => {
-        points.push(...ps.map((p) => ({ ...p })));
+        points.push(...ps.map((p) => ({...p})));
     };
 
     const removePoint = (idx: number) => {
@@ -42,7 +42,7 @@ export const useHeatmap = (initialPoints: HeatPoint[] = []) => {
                 ex.lat = (ex.lat + p.lat) / 2;
                 ex.weight += p.weight;
             } else {
-                map.set(key, { ...p });
+                map.set(key, {...p});
             }
         }
         points.splice(0, points.length, ...Array.from(map.values()));

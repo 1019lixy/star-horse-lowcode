@@ -1,19 +1,19 @@
 <template>
   <el-scrollbar>
     <star-horse-data-view
-      :dataForm="formData"
-      :fieldList="dataItem"
-      :formInfo="{}"
+        :dataForm="formData"
+        :fieldList="dataItem"
+        :formInfo="{}"
     />
   </el-scrollbar>
 </template>
 
 <script lang="ts" setup>
 import piniaInstance from "@/store";
-import { useDesignFormStore } from "@/store/DesignForm";
-import { onMounted, ref } from "vue";
-import { analysisCompDatas } from "@/api/form_utils";
-import { StarHorseDataView } from "@/components/comp";
+import {useDesignFormStore} from "@/store/DesignForm";
+import {onMounted, ref} from "vue";
+import {analysisCompDatas} from "@/api/form_utils";
+import {StarHorseDataView} from "@/components/comp";
 
 let designForm = useDesignFormStore(piniaInstance);
 const formData = ref<any>({

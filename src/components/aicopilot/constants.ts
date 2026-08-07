@@ -93,21 +93,21 @@ export const AI_COMMAND_TEMPLATE_PRESETS: AiCommandTemplate[] = [
 
 /** 上下文类型预设 */
 export const AI_CONTEXT_TYPE_PRESETS: AiContextTypePreset[] = [
-    { type: "form", labelKey: "aicopilot.context.form" },
-    { type: "page", labelKey: "aicopilot.context.page" },
-    { type: "component", labelKey: "aicopilot.context.component" },
-    { type: "field", labelKey: "aicopilot.context.field" },
-    { type: "unknown", labelKey: "aicopilot.context.empty" },
+    {type: "form", labelKey: "aicopilot.context.form"},
+    {type: "page", labelKey: "aicopilot.context.page"},
+    {type: "component", labelKey: "aicopilot.context.component"},
+    {type: "field", labelKey: "aicopilot.context.field"},
+    {type: "unknown", labelKey: "aicopilot.context.empty"},
 ];
 
 /** 动作类型预设 */
 export const AI_ACTION_TYPE_PRESETS: AiActionTypePreset[] = [
-    { type: "addField", labelKey: "aicopilot.action.type.addField" },
-    { type: "modifyProperty", labelKey: "aicopilot.action.type.modifyProperty" },
-    { type: "generateCode", labelKey: "aicopilot.action.type.generateCode" },
-    { type: "suggestLayout", labelKey: "aicopilot.action.type.suggestLayout" },
-    { type: "removeField", labelKey: "aicopilot.action.type.addField" },
-    { type: "custom", labelKey: "aicopilot.action.type.modifyProperty" },
+    {type: "addField", labelKey: "aicopilot.action.type.addField"},
+    {type: "modifyProperty", labelKey: "aicopilot.action.type.modifyProperty"},
+    {type: "generateCode", labelKey: "aicopilot.action.type.generateCode"},
+    {type: "suggestLayout", labelKey: "aicopilot.action.type.suggestLayout"},
+    {type: "removeField", labelKey: "aicopilot.action.type.addField"},
+    {type: "custom", labelKey: "aicopilot.action.type.modifyProperty"},
 ];
 
 /** 工具：生成唯一 ID */

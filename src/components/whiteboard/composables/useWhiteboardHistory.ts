@@ -4,7 +4,7 @@
  * 维护 past / future 两个快照栈
  * 通过 push(snapshot) 推入新状态、undo/redo 进行切换
  */
-import { computed, ref } from "vue";
+import {computed, ref} from "vue";
 
 export const useWhiteboardHistory = <T>(initial: T, maxLen = 50) => {
     const past = ref<T[]>([]) as unknown as { value: T[] };

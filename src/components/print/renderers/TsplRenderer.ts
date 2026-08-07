@@ -17,12 +17,7 @@
  *   PRINT 打印
  */
 
-import type {
-    PrintElement,
-    PrintPaper,
-    PrintRenderContext,
-    PrintTemplate,
-} from "../types";
+import type {PrintElement, PrintRenderContext, PrintTemplate,} from "../types";
 
 /** TSPL 默认单位为 dot，203 DPI */
 const DPI = 203;
@@ -185,7 +180,7 @@ const renderElement = (el: PrintElement, ctx: PrintRenderContext): string => {
 
 /** 渲染整页 TSPL */
 export const renderTspl = (template: PrintTemplate, ctx: PrintRenderContext): string => {
-    const { paper } = template;
+    const {paper} = template;
     const widthMm = paper.width;
     const heightMm = paper.height;
 

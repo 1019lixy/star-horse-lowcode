@@ -16,12 +16,7 @@
  *   ^BC CODE128 ^BQ 二维码
  */
 
-import type {
-    PrintElement,
-    PrintPaper,
-    PrintRenderContext,
-    PrintTemplate,
-} from "../types";
+import type {PrintElement, PrintRenderContext, PrintTemplate,} from "../types";
 
 /** DOT 转换：ZPL 默认 8 dots/mm (203 DPI)，部分机型 12 (300DPI) / 24 (600DPI) */
 const DPI = 203;
@@ -35,11 +30,11 @@ const fontSizeToZpl = (pt: number = 12): { font: string; height: number; width: 
     // ZPL 内置字体 0-9，A=字体 0，常用 0/1/A-E
     // 简化：pt ≤ 8 → 字体 A，高度 = pt * 1.5；其余按比例
     const dot = Math.max(1, Math.round(pt * DOTS_PER_MM / 72 * 2));
-    if (pt <= 8) return { font: "A", height: dot, width: Math.round(dot * 0.6) };
-    if (pt <= 12) return { font: "B", height: dot, width: Math.round(dot * 0.6) };
-    if (pt <= 16) return { font: "C", height: dot, width: Math.round(dot * 0.7) };
-    if (pt <= 24) return { font: "D", height: dot, width: Math.round(dot * 0.8) };
-    return { font: "E", height: dot, width: Math.round(dot * 0.9) };
+    if (pt <= 8) return {font: "A", height: dot, width: Math.round(dot * 0.6)};
+    if (pt <= 12) return {font: "B", height: dot, width: Math.round(dot * 0.6)};
+    if (pt <= 16) return {font: "C", height: dot, width: Math.round(dot * 0.7)};
+    if (pt <= 24) return {font: "D", height: dot, width: Math.round(dot * 0.8)};
+    return {font: "E", height: dot, width: Math.round(dot * 0.9)};
 };
 
 /** 对齐映射 */
@@ -151,7 +146,7 @@ const renderElement = (el: PrintElement, ctx: PrintRenderContext): string => {
             const val = escapeZpl(evalBinding(el, ctx));
             const q: any = el;
             // ^BQ 方向,模型,放大倍数,纠错,掩码
-            const ecMap: Record<string, string> = { L: "L", M: "M", Q: "Q", H: "H" };
+            const ecMap: Record<string, string> = {L: "L", M: "M", Q: "Q", H: "H"};
             const ec = ecMap[q.errorCorrectionLevel || "M"];
             const size = Math.max(1, Math.round(mmToDot(el.width || 40) / 10));
             // QR 模型 = 2 (标准 QR)
@@ -218,7 +213,7 @@ const renderElement = (el: PrintElement, ctx: PrintRenderContext): string => {
 
 /** 渲染整页 ZPL */
 export const renderZpl = (template: PrintTemplate, ctx: PrintRenderContext): string => {
-    const { paper } = template;
+    const {paper} = template;
     const widthDot = mmToDot(paper.width);
     const [mt, , , ml] = paper.margin;
 

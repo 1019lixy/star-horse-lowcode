@@ -7,36 +7,43 @@
     - 内部通过 default slot 复用原 Element Plus 选择器，保持联动事件链
   -->
   <el-drawer
-    v-model="visible"
-    :title="title"
-    :direction="direction"
-    :size="size"
-    :with-header="showHeader"
-    :modal="true"
-    resizable
-    :modal-class="'sh-mobile-picker-modal'"
-    :class="['sh-mobile-picker', `sh-mobile-picker--${placement}`]"
-    :close-on-click-modal="true"
-    :destroy-on-close="true"
-    append-to-body
-    :show-close="false"
-    @open="handleOpen"
-    @close="handleClose"
+      v-model="visible"
+      :title="title"
+      :direction="direction"
+      :size="size"
+      :with-header="showHeader"
+      :modal="true"
+      resizable
+      :modal-class="'sh-mobile-picker-modal'"
+      :class="['sh-mobile-picker', `sh-mobile-picker--${placement}`]"
+      :close-on-click-modal="true"
+      :destroy-on-close="true"
+      append-to-body
+      :show-close="false"
+      @open="handleOpen"
+      @close="handleClose"
   >
     <template v-if="showHeader" #header>
       <div class="sh-mobile-picker__header">
-        <span class="sh-mobile-picker__title flex ">  <star-horse-icon iconClass="document" color="var(--star-horse-white)" />{{ title }}</span>
-          <div class="flex flex-row items-center gap-3">
-            <div class="flex flex-row items-center cursor-pointer" @click="handleCancel"><star-horse-icon iconClass="close" color="var(--star-horse-white)"/>{{ cancelText }}</div>
-            <div class="flex flex-row items-center cursor-pointer" @click="handleConfirm">
-              <star-horse-icon iconClass="save" color="var(--star-horse-white)" /> {{ confirmText }}
-            </div>
+        <span class="sh-mobile-picker__title flex ">  <star-horse-icon iconClass="document"
+                                                                       color="var(--star-horse-white)"/>{{
+            title
+          }}</span>
+        <div class="flex flex-row items-center gap-3">
+          <div class="flex flex-row items-center cursor-pointer" @click="handleCancel">
+            <star-horse-icon iconClass="close" color="var(--star-horse-white)"/>
+            {{ cancelText }}
           </div>
+          <div class="flex flex-row items-center cursor-pointer" @click="handleConfirm">
+            <star-horse-icon iconClass="save" color="var(--star-horse-white)"/>
+            {{ confirmText }}
+          </div>
+        </div>
       </div>
     </template>
 
     <div class="sh-mobile-picker__body">
-      <slot :confirm="handleConfirm" :cancel="handleCancel" />
+      <slot :confirm="handleConfirm" :cancel="handleCancel"/>
     </div>
 
 
@@ -44,39 +51,39 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
-import { i18n } from "@/lang";
-import { StarHorseIcon } from "@/components/comp";
+import {computed, ref, watch} from "vue";
+import {i18n} from "@/lang";
+import {StarHorseIcon} from "@/components/comp";
 
 const props = withDefaults(
-  defineProps<{
-    modelValue: boolean;
-    title?: string;
-    /** 面板位置：底部 / 顶部 */
-    placement?: "bottom" | "top";
-    /** 面板高度占比 */
-    size?: string;
-    /** 是否显示头部 */
-    showHeader?: boolean;
-    /** 是否显示底部确认按钮 */
-    showFooter?: boolean;
-    /** 是否显示关闭图标 */
-    showClose?: boolean;
-    /** 确认按钮文案 */
-    confirmText?: string;
-    /** 取消按钮文案 */
-    cancelText?: string;
-  }>(),
-  {
-    title: "",
-    placement: "bottom",
-    size: "50%",
-    showHeader: true,
-    showFooter: true,
-    showClose: true,
-    confirmText: () => i18n("message.confirm") || "确认",
-    cancelText: () => i18n("message.cancel") || "取消",
-  },
+    defineProps<{
+      modelValue: boolean;
+      title?: string;
+      /** 面板位置：底部 / 顶部 */
+      placement?: "bottom" | "top";
+      /** 面板高度占比 */
+      size?: string;
+      /** 是否显示头部 */
+      showHeader?: boolean;
+      /** 是否显示底部确认按钮 */
+      showFooter?: boolean;
+      /** 是否显示关闭图标 */
+      showClose?: boolean;
+      /** 确认按钮文案 */
+      confirmText?: string;
+      /** 取消按钮文案 */
+      cancelText?: string;
+    }>(),
+    {
+      title: "",
+      placement: "bottom",
+      size: "50%",
+      showHeader: true,
+      showFooter: true,
+      showClose: true,
+      confirmText: () => i18n("message.confirm") || "确认",
+      cancelText: () => i18n("message.cancel") || "取消",
+    },
 );
 
 const emits = defineEmits<{
@@ -90,11 +97,11 @@ const emits = defineEmits<{
 const visible = ref(false);
 
 watch(
-  () => props.modelValue,
-  (val) => {
-    visible.value = val;
-  },
-  { immediate: true },
+    () => props.modelValue,
+    (val) => {
+      visible.value = val;
+    },
+    {immediate: true},
 );
 
 watch(visible, (val) => {
@@ -102,7 +109,7 @@ watch(visible, (val) => {
 });
 
 const direction = computed<"btt" | "ttb">(() =>
-  props.placement === "top" ? "ttb" : "btt",
+    props.placement === "top" ? "ttb" : "btt",
 );
 
 const handleOpen = () => emits("open");

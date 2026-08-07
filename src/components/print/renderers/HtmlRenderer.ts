@@ -5,13 +5,8 @@
  * 不依赖任何运行时框架，纯字符串拼接，便于服务端渲染
  */
 
-import { MM_TO_PX } from "../constants";
-import type {
-    PrintElement,
-    PrintPaper,
-    PrintRenderContext,
-    PrintTemplate,
-} from "../types";
+import {MM_TO_PX} from "../constants";
+import type {PrintElement, PrintRenderContext, PrintTemplate,} from "../types";
 
 /** 求值数据绑定值 */
 const evalBinding = (
@@ -295,7 +290,7 @@ export const renderPageHtml = (
     template: PrintTemplate,
     ctx: PrintRenderContext,
 ): string => {
-    const { paper } = template;
+    const {paper} = template;
     const pageWidthPx = mmToPx(paper.width);
     const pageHeightPx = mmToPx(paper.height);
     const [mt, mr, mb, ml] = paper.margin;
@@ -330,12 +325,12 @@ export const renderPrintHtml = (
     template: PrintTemplate,
     ctx: PrintRenderContext,
 ): string => {
-    const { paper } = template;
+    const {paper} = template;
     const orientation = paper.orientation === "landscape" ? "landscape" : "portrait";
-    const pageCtx: PrintRenderContext = { ...ctx, pageCount: ctx.pageCount || 1 };
+    const pageCtx: PrintRenderContext = {...ctx, pageCount: ctx.pageCount || 1};
     const pages: string[] = [];
     for (let i = 1; i <= pageCtx.pageCount; i++) {
-        pages.push(renderPageHtml(template, { ...pageCtx, pageNumber: i }));
+        pages.push(renderPageHtml(template, {...pageCtx, pageNumber: i}));
     }
     return `<!DOCTYPE html>
 <html lang="zh-CN">

@@ -13,10 +13,11 @@ export abstract class Command {
     protected name: string = "";
 
     abstract execute(): void;
+
     abstract undo(): void;
 
     toJSON(): { type: string; id: number; name: string } {
-        return { type: this.type, id: this.id, name: this.name };
+        return {type: this.type, id: this.id, name: this.name};
     }
 
     fromJSON(json: { id: number; name: string }): void {
@@ -25,5 +26,6 @@ export abstract class Command {
     }
 
     /** 可合并命令的合并方法（默认空实现） */
-    update(_cmd: Command): void {}
+    update(_cmd: Command): void {
+    }
 }

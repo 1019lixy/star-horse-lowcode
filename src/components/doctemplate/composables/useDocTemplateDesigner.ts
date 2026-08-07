@@ -1,9 +1,9 @@
 /**
  * 文档模板状态管理
  */
-import { reactive, ref } from "vue";
-import { createTemplate, createVariable } from "../constants";
-import type { DocTemplate, DocVariable } from "../types";
+import {reactive, ref} from "vue";
+import {createTemplate, createVariable} from "../constants";
+import type {DocTemplate, DocVariable} from "../types";
 
 export const useDocTemplateDesigner = (initial?: Partial<DocTemplate>) => {
     const state = reactive<DocTemplate>(createTemplate(initial ?? {}));
@@ -57,7 +57,7 @@ export const useDocTemplateDesigner = (initial?: Partial<DocTemplate>) => {
 
     /** 更新元信息 */
     const updateMeta = (updates: Partial<Pick<DocTemplate, "name" | "category" | "description">>) => {
-        Object.assign(state, updates, { updatedAt: new Date().toISOString() });
+        Object.assign(state, updates, {updatedAt: new Date().toISOString()});
     };
 
     /** 加载数据 */

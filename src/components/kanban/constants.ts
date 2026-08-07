@@ -1,8 +1,8 @@
 /**
  * 看板常量定义
  */
-import { i18n } from "@/lang";
-import type { KanbanCard, KanbanColumn, KanbanConfig, KanbanPriorityPreset } from "./types";
+import {i18n} from "@/lang";
+import type {KanbanCard, KanbanColumn, KanbanConfig, KanbanPriorityPreset} from "./types";
 
 /** 默认看板列 */
 export const DEFAULT_KANBAN_COLUMNS: KanbanColumn[] = [
@@ -11,7 +11,7 @@ export const DEFAULT_KANBAN_COLUMNS: KanbanColumn[] = [
         name: i18n("kanban.column.todo"),
         color: "#909399",
         order: 0,
-        wipLimit: { enabled: false, max: 10, strategy: "warn" },
+        wipLimit: {enabled: false, max: 10, strategy: "warn"},
         removable: true,
     },
     {
@@ -19,7 +19,7 @@ export const DEFAULT_KANBAN_COLUMNS: KanbanColumn[] = [
         name: i18n("kanban.column.doing"),
         color: "#409EFF",
         order: 1,
-        wipLimit: { enabled: true, max: 5, strategy: "warn" },
+        wipLimit: {enabled: true, max: 5, strategy: "warn"},
         removable: true,
     },
     {
@@ -27,7 +27,7 @@ export const DEFAULT_KANBAN_COLUMNS: KanbanColumn[] = [
         name: i18n("kanban.column.testing"),
         color: "#E6A23C",
         order: 2,
-        wipLimit: { enabled: false, max: 5, strategy: "warn" },
+        wipLimit: {enabled: false, max: 5, strategy: "warn"},
         removable: true,
     },
     {
@@ -42,10 +42,10 @@ export const DEFAULT_KANBAN_COLUMNS: KanbanColumn[] = [
 
 /** 优先级预设 */
 export const KANBAN_PRIORITY_PRESETS: KanbanPriorityPreset[] = [
-    { value: "low", label: i18n("kanban.priority.low"), color: "#909399" },
-    { value: "medium", label: i18n("kanban.priority.medium"), color: "#409EFF" },
-    { value: "high", label: i18n("kanban.priority.high"), color: "#E6A23C" },
-    { value: "urgent", label: i18n("kanban.priority.urgent"), color: "#F56C6C" },
+    {value: "low", label: i18n("kanban.priority.low"), color: "#909399"},
+    {value: "medium", label: i18n("kanban.priority.medium"), color: "#409EFF"},
+    {value: "high", label: i18n("kanban.priority.high"), color: "#E6A23C"},
+    {value: "urgent", label: i18n("kanban.priority.urgent"), color: "#F56C6C"},
 ];
 
 /** 默认配置 */
@@ -79,7 +79,7 @@ export const createColumn = (overrides: Partial<KanbanColumn> = {}): KanbanColum
     name: i18n("kanban.column.newColumn"),
     color: "#909399",
     order: 0,
-    wipLimit: { enabled: false, max: 5, strategy: "warn" },
+    wipLimit: {enabled: false, max: 5, strategy: "warn"},
     removable: true,
     ...overrides,
 });

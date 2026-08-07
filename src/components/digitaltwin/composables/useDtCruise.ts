@@ -7,8 +7,8 @@
  * - 与 useDigitalTwinCamera 联动：暂停时手动控制不冲突
  * - 路径变化时通过 onUpdate 回调通知（用于绘制路径预览线）
  */
-import { ref, shallowRef, computed, onUnmounted, type ComputedRef, type ShallowRef } from "vue";
-import type { DtCruisePath, DtCruiseWaypoint } from "../types";
+import {computed, type ComputedRef, onUnmounted, ref, shallowRef, type ShallowRef} from "vue";
+import type {DtCruisePath, DtCruiseWaypoint} from "../types";
 
 export interface UseDtCruiseOptions {
     /** 路径变化时回调（用于绘制预览线） */
@@ -54,8 +54,8 @@ export function useDtCruise(options: UseDtCruiseOptions): UseDtCruiseReturn {
     let startTime = 0;
     let pauseElapsed = 0;
     let phase: "transition" | "stay" = "transition";
-    let fromPos = { x: 0, y: 0, z: 0 };
-    let fromTarget = { x: 0, y: 0, z: 0 };
+    let fromPos = {x: 0, y: 0, z: 0};
+    let fromTarget = {x: 0, y: 0, z: 0};
 
     const totalWaypoints = computed(() => currentPath.value?.waypoints.length ?? 0);
 
@@ -121,8 +121,8 @@ export function useDtCruise(options: UseDtCruiseOptions): UseDtCruiseReturn {
                 }
                 const nextWp = path.waypoints[currentWaypointIndex.value];
                 options.onWaypointChange?.(currentWaypointIndex.value, nextWp);
-                fromPos = { ...wp.position };
-                fromTarget = { ...wp.target };
+                fromPos = {...wp.position};
+                fromTarget = {...wp.target};
                 phase = "transition";
                 startTime = ts;
                 pauseElapsed = 0;
@@ -145,8 +145,8 @@ export function useDtCruise(options: UseDtCruiseOptions): UseDtCruiseReturn {
         // 起始位置取相机当前位置（由调用方在第一次 tick 前传入）
         // 这里简单取第一个航点作为起点
         const first = path.waypoints[0];
-        fromPos = { ...first.position };
-        fromTarget = { ...first.target };
+        fromPos = {...first.position};
+        fromTarget = {...first.target};
         isCruising.value = true;
         options.onPathChange?.(path);
         options.onWaypointChange?.(0, first);
@@ -193,8 +193,8 @@ export function useDtCruise(options: UseDtCruiseOptions): UseDtCruiseReturn {
         if (!path || index < 0 || index >= path.waypoints.length) return;
         currentWaypointIndex.value = index;
         const wp = path.waypoints[index];
-        fromPos = { ...wp.position };
-        fromTarget = { ...wp.target };
+        fromPos = {...wp.position};
+        fromTarget = {...wp.target};
         phase = "transition";
         startTime = 0;
         pauseElapsed = 0;

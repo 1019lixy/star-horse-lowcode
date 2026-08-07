@@ -3,9 +3,9 @@
  *
  * 支持多选、对齐、剪贴板、自动布局、右键菜单等企业级功能
  */
-import { computed, reactive, ref } from "vue";
-import { createElement, createTemplate } from "../constants";
-import type { PdfElement, PdfElementType, PdfPage, PdfTemplate } from "../types";
+import {computed, reactive, ref} from "vue";
+import {createElement, createTemplate} from "../constants";
+import type {PdfElement, PdfElementType, PdfPage, PdfTemplate} from "../types";
 
 export const usePdfDesigner = (initial?: Partial<PdfTemplate>) => {
     const state = reactive<PdfTemplate>(
@@ -196,32 +196,44 @@ export const usePdfDesigner = (initial?: Partial<PdfTemplate>) => {
         switch (type) {
             case "left": {
                 const minX = Math.min(...selected.map((e) => e.x));
-                selected.forEach((e) => { e.x = minX; });
+                selected.forEach((e) => {
+                    e.x = minX;
+                });
                 break;
             }
             case "center": {
                 const avgCenterX = selected.reduce((s, e) => s + e.x + e.width / 2, 0) / selected.length;
-                selected.forEach((e) => { e.x = avgCenterX - e.width / 2; });
+                selected.forEach((e) => {
+                    e.x = avgCenterX - e.width / 2;
+                });
                 break;
             }
             case "right": {
                 const maxRight = Math.max(...selected.map((e) => e.x + e.width));
-                selected.forEach((e) => { e.x = maxRight - e.width; });
+                selected.forEach((e) => {
+                    e.x = maxRight - e.width;
+                });
                 break;
             }
             case "top": {
                 const minY = Math.min(...selected.map((e) => e.y));
-                selected.forEach((e) => { e.y = minY; });
+                selected.forEach((e) => {
+                    e.y = minY;
+                });
                 break;
             }
             case "middle": {
                 const avgCenterY = selected.reduce((s, e) => s + e.y + e.height / 2, 0) / selected.length;
-                selected.forEach((e) => { e.y = avgCenterY - e.height / 2; });
+                selected.forEach((e) => {
+                    e.y = avgCenterY - e.height / 2;
+                });
                 break;
             }
             case "bottom": {
                 const maxBottom = Math.max(...selected.map((e) => e.y + e.height));
-                selected.forEach((e) => { e.y = maxBottom - e.height; });
+                selected.forEach((e) => {
+                    e.y = maxBottom - e.height;
+                });
                 break;
             }
         }

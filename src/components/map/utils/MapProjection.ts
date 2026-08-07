@@ -1,7 +1,7 @@
 /**
  * 地图坐标投影工具：经纬度 ↔ 像素坐标
  */
-import type { LngLat, MapBounds } from "../types";
+import type {LngLat, MapBounds} from "../types";
 
 export interface Pixel {
     x: number;
@@ -29,7 +29,7 @@ export const project = (
     const x = padding + ((lngLat.lng - lngMin) / (lngMax - lngMin)) * w;
     // 纬度方向相反（北朝上）
     const y = padding + ((latMax - lngLat.lat) / (latMax - latMin)) * h;
-    return { x, y };
+    return {x, y};
 };
 
 /**
@@ -47,7 +47,7 @@ export const unproject = (
     const h = height - padding * 2;
     const lng = lngMin + ((pixel.x - padding) / w) * (lngMax - lngMin);
     const lat = latMax - ((pixel.y - padding) / h) * (latMax - latMin);
-    return { lng, lat };
+    return {lng, lat};
 };
 
 /**
@@ -92,5 +92,5 @@ export const generateGridLines = (
     for (let lat = Math.ceil(latMin / latStep) * latStep; lat <= latMax; lat += latStep) {
         lats.push(lat);
     }
-    return { lngs, lats };
+    return {lngs, lats};
 };

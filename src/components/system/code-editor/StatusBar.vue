@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { i18n } from "@/lang/index";
+import {i18n} from "@/lang/index";
 
 defineProps<{
   cursorLine: number;
@@ -21,39 +21,39 @@ const emit = defineEmits<{
   <div class="sh-statusbar">
     <div class="status-left">
       <span
-        v-if="showLsp"
-        class="status-item"
-        :class="lspConnected ? 'status-ok' : 'status-err'"
+          v-if="showLsp"
+          class="status-item"
+          :class="lspConnected ? 'status-ok' : 'status-err'"
       >
-        <span class="status-dot" />
+        <span class="status-dot"/>
         LSP
         {{
           lspConnected
-            ? i18n("ide.status.lspConnected")
-            : i18n("ide.status.lspDisconnected")
+              ? i18n("ide.status.lspConnected")
+              : i18n("ide.status.lspDisconnected")
         }}
       </span>
       <span v-if="loading" class="status-item status-loading"
-        >⏳ {{ i18n("ide.status.loading") }}</span
+      >⏳ {{ i18n("ide.status.loading") }}</span
       >
       <span v-if="saving" class="status-item status-saving"
-        >💾 {{ i18n("ide.status.saving") }}</span
+      >💾 {{ i18n("ide.status.saving") }}</span
       >
     </div>
     <div class="status-right">
       <span class="status-item"
-        >{{ i18n("ide.status.line") }} {{ cursorLine }},
+      >{{ i18n("ide.status.line") }} {{ cursorLine }},
         {{ i18n("ide.status.col") }} {{ cursorCol }}</span
       >
       <span class="status-item">{{ language }}</span>
       <span class="status-item">UTF-8</span>
       <span class="status-item">{{ i18n("ide.status.spaces") }}</span>
       <span
-        class="status-item status-clickable"
-        :class="{ 'status-console-active': consoleVisible }"
-        :title="i18n('ide.status.toggleConsole')"
-        @click="emit('toggle-console')"
-        >{{ consoleVisible ? "⬛" : "⬜" }}
+          class="status-item status-clickable"
+          :class="{ 'status-console-active': consoleVisible }"
+          :title="i18n('ide.status.toggleConsole')"
+          @click="emit('toggle-console')"
+      >{{ consoleVisible ? "⬛" : "⬜" }}
         {{ i18n("ide.console.title") }}</span
       >
     </div>
@@ -72,12 +72,14 @@ const emit = defineEmits<{
   color: var(--ide-statusbar-fg);
   flex-shrink: 0;
 }
+
 .status-left,
 .status-right {
   display: flex;
   align-items: center;
   gap: 12px;
 }
+
 .status-item {
   display: flex;
   align-items: center;
@@ -85,35 +87,43 @@ const emit = defineEmits<{
   white-space: nowrap;
   cursor: default;
 }
+
 .status-dot {
   width: 7px;
   height: 7px;
   border-radius: 50%;
   display: inline-block;
 }
+
 .status-ok .status-dot {
   background: #52c41a;
   box-shadow: 0 0 4px #52c41a;
 }
+
 .status-err .status-dot {
   background: #ff4d4f;
 }
+
 .status-clickable {
   cursor: pointer;
   transition: background 0.15s;
   padding: 0 6px;
   border-radius: 3px;
+
   &:hover {
     background: var(--ide-statusbar-hover, rgba(255, 255, 255, 0.12));
   }
 }
+
 .status-console-active {
   background: var(--ide-statusbar-hover, rgba(255, 255, 255, 0.12));
 }
+
 .status-loading,
 .status-saving {
   animation: pulse 1.2s ease-in-out infinite;
 }
+
 @keyframes pulse {
   0%,
   100% {

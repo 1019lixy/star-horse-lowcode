@@ -1,17 +1,14 @@
 <script setup lang="ts">
-import { nextTick, onMounted, provide, reactive, ref, watch } from "vue";
-import { i18n } from "@/lang";
+import {nextTick, onMounted, provide, reactive, ref, watch} from "vue";
+import {i18n} from "@/lang";
 import CommonSkeleton from "./CommonSkeleton.vue";
-import {
-  FormDataProp,
-  loadDynamicFormData,
-} from "@/sample/commonpage/dynamic_form_utils";
-import { getFormDataCacheStore } from "@/store/StoreManager";
-import { UserFuncInfo } from "@/components/types";
-import { userAction } from "@/api/user_func";
-import { dialogPreps } from "@/api/star_horse_utils";
-import { createDatetime } from "@/api/date_utils";
-import { isMobile } from "@/api/device";
+import {FormDataProp, loadDynamicFormData,} from "@/sample/commonpage/dynamic_form_utils";
+import {getFormDataCacheStore} from "@/store/StoreManager";
+import {UserFuncInfo} from "@/components/types";
+import {userAction} from "@/api/user_func";
+import {dialogPreps} from "@/api/star_horse_utils";
+import {createDatetime} from "@/api/date_utils";
+import {isMobile} from "@/api/device";
 
 const normalPageRef = ref();
 const normalFormRef = ref();
@@ -24,7 +21,7 @@ const isLoading = ref(true);
 let extBtns = ref<Array<UserFuncInfo>>([]);
 const formData = ref<FormDataProp | any>({});
 const props = defineProps({
-  param: { type: String, required: true },
+  param: {type: String, required: true},
 });
 
 // 使用Pinia store管理表单数据缓存
@@ -51,9 +48,9 @@ const loadFormData = async (formId: string) => {
     formData.value = formDataCacheStore.getFormData(formId)!;
     formData.value.tableFieldList["stopAutoLoad"] = true;
     extBtns.value = userAction(
-      normalPageRef,
-      formData.value.primaryKey,
-      formData.value.tableFieldList["userTableFuncs"],
+        normalPageRef,
+        formData.value.primaryKey,
+        formData.value.tableFieldList["userTableFuncs"],
     );
     isLoading.value = false;
 
@@ -86,9 +83,9 @@ const loadFormData = async (formId: string) => {
   formData.value = data;
   formData.value.tableFieldList["stopAutoLoad"] = true;
   extBtns.value = userAction(
-    normalPageRef,
-    formData.value.primaryKey,
-    formData.value.tableFieldList["userTableFuncs"],
+      normalPageRef,
+      formData.value.primaryKey,
+      formData.value.tableFieldList["userTableFuncs"],
   );
   isLoading.value = false;
   isLoadingRef.value = false; // 重置加载状态
@@ -127,13 +124,13 @@ const dataFormat = (name: string, cellValue: any, row: any): any => {
   }
   const subFormat = (name: string, cellValue: any, row: any) => {
     if (
-      formData.value.dataSource &&
-      Object.keys(formData.value.dataSource).length > 0
+        formData.value.dataSource &&
+        Object.keys(formData.value.dataSource).length > 0
     ) {
       let temp = formData.value.dataSource[name];
       if (temp) {
         let stemp = temp.datas?.find(
-          (item: any) => item[temp.valueField] == cellValue,
+            (item: any) => item[temp.valueField] == cellValue,
         );
         return stemp ? stemp[temp.labelField] : cellValue || "--";
       }
@@ -141,11 +138,11 @@ const dataFormat = (name: string, cellValue: any, row: any): any => {
     return "null" == cellValue ? "--" : cellValue || "--";
   };
   if (
-    formData.value.fieldMappingList &&
-    formData.value.fieldMappingList?.length > 0
+      formData.value.fieldMappingList &&
+      formData.value.fieldMappingList?.length > 0
   ) {
     let temp = formData.value.fieldMappingList.find(
-      (item: any) => item["fieldName"] == name,
+        (item: any) => item["fieldName"] == name,
     );
     if (temp) {
       return row[temp.mappingDisplayField] || subFormat(name, cellValue, row);
@@ -163,88 +160,88 @@ onMounted(async () => {
 });
 
 watch(
-  () => props.param,
-  (val) => {
-    // 更新当前活跃的param，用于防止竞态条件
-    currentParamRef.value = val;
-    try {
-      console.log("watch------------------------" + val);
-      loadFormData(<string>val);
-    } catch (e) {
-      console.log(i18n("commonPage.dataTypeMismatch"));
-    } finally {
-      isLoading.value = false;
-    }
-  },
+    () => props.param,
+    (val) => {
+      // 更新当前活跃的param，用于防止竞态条件
+      currentParamRef.value = val;
+      try {
+        console.log("watch------------------------" + val);
+        loadFormData(<string>val);
+      } catch (e) {
+        console.log(i18n("commonPage.dataTypeMismatch"));
+      } finally {
+        isLoading.value = false;
+      }
+    },
 );
 // 暴露refreshForm方法供外部调用
-defineExpose({ refreshForm });
+defineExpose({refreshForm});
 </script>
 <template>
   <div class="flex flex-col h-full overflow-hidden" :key="param">
     <!-- 使用通用骨架屏组件 -->
     <CommonSkeleton
-      v-if="isLoading"
-      :showSearch="true"
-      :showHeader="true"
-      :showTable="true"
-      :tableRowCount="5"
+        v-if="isLoading"
+        :showSearch="true"
+        :showHeader="true"
+        :showTable="true"
+        :tableRowCount="5"
     />
 
     <!-- 正常内容 -->
     <template v-else-if="formData.hasData">
       <star-horse-dialog
-        :isShowBtnContinue="true"
-        v-model="dialogProps.editVisible"
-        :dialogProps="dialogProps"
+          :isShowBtnContinue="true"
+          v-model="dialogProps.editVisible"
+          :dialogProps="dialogProps"
       >
         <star-horse-form
-          @refresh="normalPageRef?.loadByPage()"
-          :compUrl="formData.dataUrl"
-          :fieldList="formData.tableFieldList"
-          :primary-key="formData.primaryKey"
-          :rules="formData.rules"
-          ref="normalFormRef"
-          :globalCondition="formData.relationTables"
-          :dynamicForm="true"
+            @refresh="normalPageRef?.loadByPage()"
+            :compUrl="formData.dataUrl"
+            :fieldList="formData.tableFieldList"
+            :primary-key="formData.primaryKey"
+            :rules="formData.rules"
+            ref="normalFormRef"
+            :globalCondition="formData.relationTables"
+            :dynamicForm="true"
         />
       </star-horse-dialog>
       <star-horse-dialog
-        v-model="dialogProps.viewVisible"
-        :dialogProps="dialogProps"
-        :source="3"
+          v-model="dialogProps.viewVisible"
+          :dialogProps="dialogProps"
+          :source="3"
       >
         <star-horse-data-view
-          :dataFormat="dataFormat"
-          :field-list="formData.tableFieldList"
-          :globalCondition="formData.relationTables"
-          :dynamicForm="true"
-          :compUrl="formData.dataUrl"
+            :dataFormat="dataFormat"
+            :field-list="formData.tableFieldList"
+            :globalCondition="formData.relationTables"
+            :dynamicForm="true"
+            :compUrl="formData.dataUrl"
         />
       </star-horse-dialog>
       <div
-        class="search-content"
-        v-if="formData.searchFormData.fieldList?.length > 0"
+          class="search-content"
+          v-if="formData.searchFormData.fieldList?.length > 0"
       >
         <div class="search_btn">
           <star-horse-search-comp
-            @searchData="(data: any) => normalPageRef?.createSearchParams(data)"
-            :formData="formData.searchFormData"
-            :compUrl="formData.dataUrl"
+              @searchData="(data: any) => normalPageRef?.createSearchParams(data)"
+              :formData="formData.searchFormData"
+              :compUrl="formData.dataUrl"
           />
         </div>
       </div>
       <el-card class="inner_content">
         <star-horse-table-comp
-          ref="normalPageRef"
-          :fieldList="formData.tableFieldList"
-          :primaryKey="formData.primaryKey"
-          :globalConfig="formData.relationTables"
-          :isDynamic="true"
-          :extendBtns="extBtns"
-          :compUrl="formData.dataUrl"
-          :showBatchField="true"
-          :dataFormat="dataFormat"
+            ref="normalPageRef"
+            :fieldList="formData.tableFieldList"
+            :primaryKey="formData.primaryKey"
+            :globalConfig="formData.relationTables"
+            :isDynamic="true"
+            :extendBtns="extBtns"
+            :compUrl="formData.dataUrl"
+            :showBatchField="true"
+            :dataFormat="dataFormat"
         />
       </el-card>
     </template>

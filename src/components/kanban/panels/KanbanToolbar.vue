@@ -36,20 +36,36 @@ const icons: Record<string, string> = {
 
 /** 下拉菜单命令 */
 type DropdownCmd =
-  | "undo" | "redo" | "addCard" | "addColumn" | "expandAll"
-  | "toggleAvatar" | "toggleLabels" | "togglePriority";
+    | "undo" | "redo" | "addCard" | "addColumn" | "expandAll"
+    | "toggleAvatar" | "toggleLabels" | "togglePriority";
 
 const handleCommand = (cmd: DropdownCmd): void => {
   const d = props.designer;
   switch (cmd) {
-    case "undo": d.undo(); break;
-    case "redo": d.redo(); break;
-    case "addCard": emit("add-card"); break;
-    case "addColumn": d.addColumn(); break;
-    case "expandAll": emit("expand-all"); break;
-    case "toggleAvatar": d.updateConfig({showAvatar: !d.state.config.showAvatar}); break;
-    case "toggleLabels": d.updateConfig({showLabels: !d.state.config.showLabels}); break;
-    case "togglePriority": d.updateConfig({showPriority: !d.state.config.showPriority}); break;
+    case "undo":
+      d.undo();
+      break;
+    case "redo":
+      d.redo();
+      break;
+    case "addCard":
+      emit("add-card");
+      break;
+    case "addColumn":
+      d.addColumn();
+      break;
+    case "expandAll":
+      emit("expand-all");
+      break;
+    case "toggleAvatar":
+      d.updateConfig({showAvatar: !d.state.config.showAvatar});
+      break;
+    case "toggleLabels":
+      d.updateConfig({showLabels: !d.state.config.showLabels});
+      break;
+    case "togglePriority":
+      d.updateConfig({showPriority: !d.state.config.showPriority});
+      break;
   }
 };
 </script>
@@ -64,14 +80,21 @@ const handleCommand = (cmd: DropdownCmd): void => {
           <el-button size="small">
             <span class="svg-icon" v-html="icons.plus"></span>
             <span>操作</span>
-            <el-icon class="el-icon--right"><ArrowDown/></el-icon>
+            <el-icon class="el-icon--right">
+              <ArrowDown/>
+            </el-icon>
           </el-button>
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item command="undo" :disabled="readonly">{{ i18n("kanban.btn.undo") }}</el-dropdown-item>
               <el-dropdown-item command="redo" :disabled="readonly">{{ i18n("kanban.btn.redo") }}</el-dropdown-item>
-              <el-dropdown-item command="addCard" :disabled="readonly" v-if="canAddCard" divided>{{ i18n("kanban.btn.addCard") }}</el-dropdown-item>
-              <el-dropdown-item command="addColumn" :disabled="readonly">{{ i18n("kanban.btn.addColumn") }}</el-dropdown-item>
+              <el-dropdown-item command="addCard" :disabled="readonly" v-if="canAddCard" divided>
+                {{ i18n("kanban.btn.addCard") }}
+              </el-dropdown-item>
+              <el-dropdown-item command="addColumn" :disabled="readonly">{{
+                  i18n("kanban.btn.addColumn")
+                }}
+              </el-dropdown-item>
               <el-dropdown-item command="expandAll" divided>{{ i18n("kanban.btn.expandAll") }}</el-dropdown-item>
             </el-dropdown-menu>
           </template>
@@ -81,7 +104,9 @@ const handleCommand = (cmd: DropdownCmd): void => {
           <el-button size="small">
             <span class="svg-icon" v-html="icons.user"></span>
             <span>显示</span>
-            <el-icon class="el-icon--right"><ArrowDown/></el-icon>
+            <el-icon class="el-icon--right">
+              <ArrowDown/>
+            </el-icon>
           </el-button>
           <template #dropdown>
             <el-dropdown-menu>
@@ -136,7 +161,9 @@ const handleCommand = (cmd: DropdownCmd): void => {
           <el-button size="small">
             <span class="svg-icon" v-html="icons.plus"></span>
             <span class="btn-label">新增</span>
-            <el-icon class="el-icon--right"><ArrowDown/></el-icon>
+            <el-icon class="el-icon--right">
+              <ArrowDown/>
+            </el-icon>
           </el-button>
           <template #dropdown>
             <el-dropdown-menu>
@@ -160,7 +187,9 @@ const handleCommand = (cmd: DropdownCmd): void => {
           <el-button size="small">
             <span class="svg-icon" v-html="icons.user"></span>
             <span class="btn-label">显示</span>
-            <el-icon class="el-icon--right"><ArrowDown/></el-icon>
+            <el-icon class="el-icon--right">
+              <ArrowDown/>
+            </el-icon>
           </el-button>
           <template #dropdown>
             <el-dropdown-menu>
@@ -197,6 +226,7 @@ const handleCommand = (cmd: DropdownCmd): void => {
 
 <script lang="ts">
 import {ArrowDown} from "@element-plus/icons-vue";
+
 export default {components: {ArrowDown}};
 </script>
 

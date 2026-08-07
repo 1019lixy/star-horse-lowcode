@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { computed, onMounted, PropType, ref } from "vue";
-import { DynamicNode } from "@/components/types/DynamicNode";
-import { dynamicPageContextMenuData } from "@/plugins/AblesPlugin";
-import { compKey } from "@/api/system";
+import {computed, onMounted, PropType, ref} from "vue";
+import {DynamicNode} from "@/components/types/DynamicNode";
+import {dynamicPageContextMenuData} from "@/plugins/AblesPlugin";
+import {compKey} from "@/api/system";
 
 defineOptions({
   name: "StarHorseDraggable",
@@ -39,7 +39,7 @@ const props = defineProps({
 // 用于显示宽高信息的ref
 const sizeInfoRef = ref<HTMLElement | null>(null);
 const sizeInfoContent = ref<string>("");
-const sizeInfoPosition = ref<any>({ x: 0, y: 0 });
+const sizeInfoPosition = ref<any>({x: 0, y: 0});
 const nodeRef = ref<HTMLDivElement>();
 const nodeStyles = computed(() => {
   let styles = props.node.styles;
@@ -47,13 +47,13 @@ const nodeStyles = computed(() => {
     props.node.styles = {};
     styles = props.node.styles;
   }
-  let temp = { ...styles };
+  let temp = {...styles};
   //将所有数字转换为px或百分比
   for (let key in temp) {
     if (typeof temp[key] === "number" && !["flex", "zIndex"].includes(key)) {
       if (
-        props.sizeControlType === "percent" &&
-        ["width", "height"].includes(key)
+          props.sizeControlType === "percent" &&
+          ["width", "height"].includes(key)
       ) {
         temp[key] = temp[key] + "%";
       } else {
@@ -129,7 +129,7 @@ const startRotate = (evt: MouseEvent) => {
   const centerY = nodeRect.top + nodeRect.height / 2;
 
   startAngle =
-    (Math.atan2(evt.clientY - centerY, evt.clientX - centerX) * 180) / Math.PI;
+      (Math.atan2(evt.clientY - centerY, evt.clientX - centerX) * 180) / Math.PI;
 
   // 添加鼠标移动和释放事件监听器
   document.addEventListener("mousemove", handleRotate);
@@ -146,8 +146,8 @@ const handleRotate = (evt: MouseEvent) => {
   requestAnimationFrame(() => {
     // 计算当前鼠标相对于组件中心的角度
     const currentMouseAngle =
-      (Math.atan2(evt.clientY - centerY, evt.clientX - centerX) * 180) /
-      Math.PI;
+        (Math.atan2(evt.clientY - centerY, evt.clientX - centerX) * 180) /
+        Math.PI;
 
     // 计算旋转角度
     const deltaAngle = currentMouseAngle - startAngle;
@@ -218,7 +218,7 @@ const rangeMove = (evt: MouseEvent, direction: string) => {
   const baselineTop = initialTopEdge - initialTopOffset;
 
   const clamp = (v: number, min: number, max: number) =>
-    Math.min(Math.max(v, min), max);
+      Math.min(Math.max(v, min), max);
 
   // 使用事件监听器替代直接赋值，避免覆盖其他实例的事件
   const handleMouseMove = (e: MouseEvent) => {
@@ -241,9 +241,9 @@ const rangeMove = (evt: MouseEvent, direction: string) => {
       case "right": {
         // 右边缘随鼠标，宽度=初始宽度+右侧位移
         const targetRight = clamp(
-          initialRightEdge + dxRight,
-          initialLeftEdge + 1,
-          parentWidth,
+            initialRightEdge + dxRight,
+            initialLeftEdge + 1,
+            parentWidth,
         );
         newWidth = Math.max(1, targetRight - initialLeftEdge);
         break;
@@ -260,9 +260,9 @@ const rangeMove = (evt: MouseEvent, direction: string) => {
       }
       case "bottom": {
         const targetBottom = clamp(
-          initialBottomEdge + dyBottom,
-          initialTopEdge + 1,
-          parentHeight,
+            initialBottomEdge + dyBottom,
+            initialTopEdge + 1,
+            parentHeight,
         );
         newHeight = Math.max(1, targetBottom - initialTopEdge);
         break;
@@ -276,14 +276,14 @@ const rangeMove = (evt: MouseEvent, direction: string) => {
       }
       case "bottom-right": {
         const targetRight = clamp(
-          initialRightEdge + dxRight,
-          initialLeftEdge + 1,
-          parentWidth,
+            initialRightEdge + dxRight,
+            initialLeftEdge + 1,
+            parentWidth,
         );
         const targetBottom = clamp(
-          initialBottomEdge + dyBottom,
-          initialTopEdge + 1,
-          parentHeight,
+            initialBottomEdge + dyBottom,
+            initialTopEdge + 1,
+            parentHeight,
         );
         newWidth = Math.max(1, targetRight - initialLeftEdge);
         newHeight = Math.max(1, targetBottom - initialTopEdge);
@@ -296,18 +296,18 @@ const rangeMove = (evt: MouseEvent, direction: string) => {
         newWidth = Math.max(1, initialRightEdge - targetLeft);
 
         const targetBottom = clamp(
-          initialBottomEdge + dyBottom,
-          initialTopEdge + 1,
-          parentHeight,
+            initialBottomEdge + dyBottom,
+            initialTopEdge + 1,
+            parentHeight,
         );
         newHeight = Math.max(1, targetBottom - initialTopEdge);
         break;
       }
       case "top-right": {
         const targetRight = clamp(
-          initialRightEdge + dxRight,
-          initialLeftEdge + 1,
-          parentWidth,
+            initialRightEdge + dxRight,
+            initialLeftEdge + 1,
+            parentWidth,
         );
         newWidth = Math.max(1, targetRight - initialLeftEdge);
 
@@ -383,7 +383,7 @@ const rangeMove = (evt: MouseEvent, direction: string) => {
 
       // 更新宽高信息
       sizeInfoContent.value = `${Math.round(newWidth)}px × ${Math.round(newHeight)}px`;
-      sizeInfoPosition.value = { x: e.clientX + 10, y: e.clientY + 10 };
+      sizeInfoPosition.value = {x: e.clientX + 10, y: e.clientY + 10};
     });
   };
 
@@ -481,14 +481,14 @@ onMounted(() => {
 
 <template>
   <div
-    class="node"
-    :class="{ active: isActive && isDesign }"
-    :style="nodeStyles"
-    @contextmenu="contextmenu"
-    @mousedown="dragStart"
-    @click.stop="selectItem"
-    v-if="isDesign"
-    ref="nodeRef"
+      class="node"
+      :class="{ active: isActive && isDesign }"
+      :style="nodeStyles"
+      @contextmenu="contextmenu"
+      @mousedown="dragStart"
+      @click.stop="selectItem"
+      v-if="isDesign"
+      ref="nodeRef"
   >
     <div v-if="isActive" class="node-rotate" @mousedown="startRotate">
       <!-- 使用简单的旋转箭头符号代替图标组件 -->
@@ -496,8 +496,8 @@ onMounted(() => {
     </div>
     <div class="w-full h-full">
       <div
-        v-if="isActive && showLine"
-        style="
+          v-if="isActive && showLine"
+          style="
           position: fixed;
           border-top: 1px dashed var(--star-horse-style);
           width: 100%;
@@ -506,8 +506,8 @@ onMounted(() => {
       />
       <!--顶部辅助线-->
       <div
-        v-if="isActive && showLine"
-        style="
+          v-if="isActive && showLine"
+          style="
           position: fixed;
           border-right: 1px dashed var(--star-horse-style);
           height: 100%;
@@ -516,12 +516,12 @@ onMounted(() => {
       />
       <!--左侧辅助线-->
       <div
-        class="node-point"
-        :class="'node-point-' + item"
-        v-for="(item, key) in pointList"
-        :key="compKey(item, key)"
-        @mousedown="rangeMove($event, item)"
-        v-if="isActive"
+          class="node-point"
+          :class="'node-point-' + item"
+          v-for="(item, key) in pointList"
+          :key="compKey(item, key)"
+          @mousedown="rangeMove($event, item)"
+          v-if="isActive"
       ></div>
       <slot></slot>
     </div>
@@ -531,15 +531,15 @@ onMounted(() => {
   </div>
   <Teleport to="body">
     <ContentMenu
-      ref="contentMenuRef"
-      :menu-data="dynamicPageContextMenuData(node, recallFunction)"
+        ref="contentMenuRef"
+        :menu-data="dynamicPageContextMenuData(node, recallFunction)"
     />
     <!-- 显示宽高信息的元素 -->
     <div
-      v-if="sizeInfoContent"
-      ref="sizeInfoRef"
-      class="size-info-tooltip"
-      :style="{
+        v-if="sizeInfoContent"
+        ref="sizeInfoRef"
+        class="size-info-tooltip"
+        :style="{
         left: `${sizeInfoPosition.x}px`,
         top: `${sizeInfoPosition.y}px`,
       }"

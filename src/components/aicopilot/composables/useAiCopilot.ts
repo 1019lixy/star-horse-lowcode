@@ -5,16 +5,10 @@
  * sendMessage / newConversation / loadConversation / clearHistory / applyAction
  */
 
-import { computed, reactive, ref } from "vue";
-import { AI_DEFAULT_SETTINGS, createAiConversation, createAiMessage } from "../constants";
-import { useAiProvider } from "./useAiProvider";
-import type {
-    AiAction,
-    AiContext,
-    AiConversation,
-    AiMessage,
-    AiProviderSettings,
-} from "../types";
+import {computed, reactive, ref} from "vue";
+import {AI_DEFAULT_SETTINGS, createAiConversation, createAiMessage} from "../constants";
+import {useAiProvider} from "./useAiProvider";
+import type {AiAction, AiContext, AiConversation, AiMessage, AiProviderSettings,} from "../types";
 
 export function useAiCopilot(initial?: {
     conversations?: AiConversation[];
@@ -24,7 +18,7 @@ export function useAiCopilot(initial?: {
     const providerManager = useAiProvider();
 
     const conversations = ref<AiConversation[]>(
-        initial?.conversations ? initial.conversations.map((c) => ({ ...c })) : [],
+        initial?.conversations ? initial.conversations.map((c) => ({...c})) : [],
     );
     const currentConversationId = ref<string | null>(
         conversations.value[0]?.id ?? null,
@@ -113,7 +107,7 @@ export function useAiCopilot(initial?: {
 
     /** 更新设置 */
     const updateSettings = (patch: Partial<AiProviderSettings>): void => {
-        settings.value = { ...settings.value, ...patch };
+        settings.value = {...settings.value, ...patch};
     };
 
     /** 停止生成的控制器 */

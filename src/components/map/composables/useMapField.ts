@@ -1,9 +1,9 @@
 /**
  * 地图选点字段状态管理
  */
-import { computed, ref } from "vue";
-import { formatLngLat, parseLngLat } from "../constants";
-import type { LngLat, MapBounds } from "../types";
+import {computed, ref} from "vue";
+import {formatLngLat, parseLngLat} from "../constants";
+import type {LngLat, MapBounds} from "../types";
 
 export const useMapField = (initialValue?: string, bounds?: MapBounds) => {
     const value = ref<string>(initialValue ?? "");
@@ -11,7 +11,7 @@ export const useMapField = (initialValue?: string, bounds?: MapBounds) => {
 
     const lngLat = computed<LngLat | null>(() => {
         const parsed = parseLngLat(value.value);
-        return parsed ? { lng: parsed.lng, lat: parsed.lat } : null;
+        return parsed ? {lng: parsed.lng, lat: parsed.lat} : null;
     });
 
     const hasValue = computed(() => lngLat.value !== null);

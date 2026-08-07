@@ -1,12 +1,12 @@
 /**
  * 调度视图常量定义
  */
-import { i18n } from "@/lang";
+import {i18n} from "@/lang";
 import type {
     ScheduleConfig,
     ScheduleEvent,
-    ScheduleEventTypePreset,
     ScheduleEventType,
+    ScheduleEventTypePreset,
     ScheduleResource,
     ScheduleResourceTypePreset,
     ScheduleViewMode,
@@ -29,28 +29,28 @@ export const DEFAULT_SCHEDULE_CONFIG: ScheduleConfig = {
 
 /** 事件类型预设 */
 export const SCHEDULE_EVENT_TYPE_PRESETS: ScheduleEventTypePreset[] = [
-    { value: "meeting", label: i18n("schedule.event.meeting"), color: "#409EFF" },
-    { value: "task", label: i18n("schedule.event.task"), color: "#67C23A" },
-    { value: "appointment", label: i18n("schedule.event.appointment"), color: "#E6A23C" },
-    { value: "leave", label: i18n("schedule.event.leave"), color: "#909399" },
-    { value: "training", label: i18n("schedule.event.training"), color: "#9C27B0" },
-    { value: "maintenance", label: i18n("schedule.event.maintenance"), color: "#F56C6C" },
-    { value: "custom", label: i18n("schedule.event.custom"), color: "#00BCD4" },
+    {value: "meeting", label: i18n("schedule.event.meeting"), color: "#409EFF"},
+    {value: "task", label: i18n("schedule.event.task"), color: "#67C23A"},
+    {value: "appointment", label: i18n("schedule.event.appointment"), color: "#E6A23C"},
+    {value: "leave", label: i18n("schedule.event.leave"), color: "#909399"},
+    {value: "training", label: i18n("schedule.event.training"), color: "#9C27B0"},
+    {value: "maintenance", label: i18n("schedule.event.maintenance"), color: "#F56C6C"},
+    {value: "custom", label: i18n("schedule.event.custom"), color: "#00BCD4"},
 ];
 
 /** 资源类型预设 */
 export const SCHEDULE_RESOURCE_TYPE_PRESETS: ScheduleResourceTypePreset[] = [
-    { value: "person", label: i18n("schedule.resource.person"), icon: "User" },
-    { value: "equipment", label: i18n("schedule.resource.equipment"), icon: "Box" },
-    { value: "room", label: i18n("schedule.resource.room"), icon: "House" },
-    { value: "vehicle", label: i18n("schedule.resource.vehicle"), icon: "Van" },
+    {value: "person", label: i18n("schedule.resource.person"), icon: "User"},
+    {value: "equipment", label: i18n("schedule.resource.equipment"), icon: "Box"},
+    {value: "room", label: i18n("schedule.resource.room"), icon: "House"},
+    {value: "vehicle", label: i18n("schedule.resource.vehicle"), icon: "Van"},
 ];
 
 /** 视图模式选项 */
 export const SCHEDULE_VIEW_MODE_OPTIONS: { value: ScheduleViewMode; label: string }[] = [
-    { value: "day", label: i18n("schedule.view.day") },
-    { value: "week", label: i18n("schedule.view.week") },
-    { value: "month", label: i18n("schedule.view.month") },
+    {value: "day", label: i18n("schedule.view.day")},
+    {value: "week", label: i18n("schedule.view.week")},
+    {value: "month", label: i18n("schedule.view.month")},
 ];
 
 /** 创建事件 */

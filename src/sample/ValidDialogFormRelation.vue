@@ -1,28 +1,27 @@
 <template>
   {{ areaFormRef?.getFormData() }}
   <star-horse-dialog
-    :dialogVisible="dataRelationDialogVisible"
-    :title="'数据联动策略配置'"
-    :isBatch="false"
-    @merge="dataRelationMerge"
-    @closeAction="closeAction"
-    @resetForm="dataRelationReset"
-    :selfFunc="true"
+      :dialogVisible="dataRelationDialogVisible"
+      :title="'数据联动策略配置'"
+      :isBatch="false"
+      @merge="dataRelationMerge"
+      @closeAction="closeAction"
+      @resetForm="dataRelationReset"
+      :selfFunc="true"
   >
     <star-horse-form
-      primary-key=""
-      ref="areaFormRef"
-      :fieldList="tableFieldList"
+        primary-key=""
+        ref="areaFormRef"
+        :fieldList="tableFieldList"
     />
   </star-horse-dialog>
   <el-button @click="editData">Test</el-button>
 </template>
 
 <script lang="ts" setup>
-import { PageFieldInfo } from "@/components/types/PageFieldInfo";
-import { SelectOption } from "@/components/types/SearchProps";
-import { onMounted, ref } from "vue";
-import { analysisCompDatas } from "@/api/form_utils";
+import {PageFieldInfo} from "@/components/types/PageFieldInfo";
+import {SelectOption} from "@/components/types/SearchProps";
+import {onMounted, ref} from "vue";
 
 const areaFormRef = ref();
 const dataRelationDialogVisible = ref<boolean>(false);
@@ -137,20 +136,20 @@ const closeAction = () => {
  */
 const fields: SelectOption[] = [];
 const eventList: SelectOption[] = [
-  { name: "Change", value: "change" },
-  { name: "Input", value: "input" },
+  {name: "Change", value: "change"},
+  {name: "Input", value: "input"},
 ];
 const controlConditionList: SelectOption[] = [
-  { name: "满足条件触发数据联动", value: "eqConditionDataLinkage" },
-  { name: "数据作为参数触发数据联动", value: "asParamDataLinkage" },
-  { name: "等于指定值时禁用被关联字段", value: "eqDisable" },
-  { name: "等于指定值时可编辑被关联字段", value: "eqEditable" },
-  { name: "等于指定值时隐藏被关联字段", value: "eqHide" },
-  { name: "等于指定值时显示被关联字段", value: "eqVisible" },
-  { name: "等于指定值时被关联字段必填", value: "eqRequired" },
-  { name: "等于指定值时被关联字段赋予新值", value: "assignValue" },
-  { name: "数据等于指定值时被关联字段改变字段类型", value: "changeType" },
-  { name: "测试数据", value: "button_authority" },
+  {name: "满足条件触发数据联动", value: "eqConditionDataLinkage"},
+  {name: "数据作为参数触发数据联动", value: "asParamDataLinkage"},
+  {name: "等于指定值时禁用被关联字段", value: "eqDisable"},
+  {name: "等于指定值时可编辑被关联字段", value: "eqEditable"},
+  {name: "等于指定值时隐藏被关联字段", value: "eqHide"},
+  {name: "等于指定值时显示被关联字段", value: "eqVisible"},
+  {name: "等于指定值时被关联字段必填", value: "eqRequired"},
+  {name: "等于指定值时被关联字段赋予新值", value: "assignValue"},
+  {name: "数据等于指定值时被关联字段改变字段类型", value: "changeType"},
+  {name: "测试数据", value: "button_authority"},
 ];
 const fieldType = ref<string>("input");
 const fieldLinkVisible = ref<boolean>(false);
@@ -192,7 +191,7 @@ const dataList = [
                 valueType: "static",
                 paramName: "P-Auth",
                 paramValue:
-                  "u_Mjc2MWI1ZXZqYmI1azJhN3Y4bF4WNzU5ODEWMZ9ONTE5MzIxMTU4MjkyMjg20831",
+                    "u_Mjc2MWI1ZXZqYmI1azJhN3Y4bF4WNzU5ODEWMZ9ONTE5MzIxMTU4MjkyMjg20831",
                 xh: 1,
               },
             ],
@@ -215,7 +214,7 @@ const dataList = [
                 paramValue: "1",
                 xh: 3,
               },
-              { valueType: "static", paramName: "wo", paramValue: "", xh: 4 },
+              {valueType: "static", paramName: "wo", paramValue: "", xh: 4},
             ],
             responseTemplate: "result_data_list",
             codePath: "code",
@@ -282,12 +281,12 @@ const dataList = [
           },
           isolationDetails: [],
           headersDefaultValue: [
-            { valueType: "static" },
-            { valueType: "static" },
+            {valueType: "static"},
+            {valueType: "static"},
           ],
           requestParamsDefaultValue: [
-            { valueType: "static" },
-            { valueType: "static" },
+            {valueType: "static"},
+            {valueType: "static"},
           ],
           fieldMappingsDefaultValue: [{}],
           isolationDetailsDefaultValue: [{}],
@@ -350,7 +349,7 @@ const dataList = [
           method: "getAllByCondition",
           url: "http://172.26.224.1:8749/system-config/system/dictinfo/getAllByCondition",
         },
-        optionField: { labelField: "dictName", valueField: "dictCode" },
+        optionField: {labelField: "dictName", valueField: "dictCode"},
         authInfo: {
           apiType: "systemApi",
           httpMethod: "GET",
@@ -649,7 +648,7 @@ const tableFieldList = ref<PageFieldInfo>({
                   valueType: "static",
                   paramName: "P-Auth",
                   paramValue:
-                    "u_Mjc2MWI1ZXZqYmI1azJhN3Y4bF4WNzU5ODEWMZ9ONTE5MzIxMTU4MjkyMjg20831",
+                      "u_Mjc2MWI1ZXZqYmI1azJhN3Y4bF4WNzU5ODEWMZ9ONTE5MzIxMTU4MjkyMjg20831",
                   xh: 1,
                 },
               ],
@@ -672,7 +671,7 @@ const tableFieldList = ref<PageFieldInfo>({
                   paramValue: "1",
                   xh: 3,
                 },
-                { valueType: "static", paramName: "wo", paramValue: "", xh: 4 },
+                {valueType: "static", paramName: "wo", paramValue: "", xh: 4},
               ],
               responseTemplate: "result_data_list",
               codePath: "code",
@@ -741,12 +740,12 @@ const tableFieldList = ref<PageFieldInfo>({
             dataPath: "data",
             isolationDetails: [],
             headersDefaultValue: [
-              { valueType: "static" },
-              { valueType: "static" },
+              {valueType: "static"},
+              {valueType: "static"},
             ],
             requestParamsDefaultValue: [
-              { valueType: "static" },
-              { valueType: "static" },
+              {valueType: "static"},
+              {valueType: "static"},
             ],
             fieldMappingsDefaultValue: [{}],
             isolationDetailsDefaultValue: [{}],
@@ -778,16 +777,16 @@ const tableFieldList = ref<PageFieldInfo>({
         filterable: true,
         clearable: true,
         values: [
-          { name: "新增", value: "add" },
-          { name: "批量新增", value: "batchAdd" },
-          { name: "编辑", value: "edit" },
-          { name: "查看", value: "view" },
-          { name: "删除", value: "delete" },
-          { name: "下载", value: "download" },
-          { name: "执行", value: "execution" },
-          { name: "上传", value: "upload" },
-          { name: "导出", value: "export" },
-          { name: "批量删除", value: "batchDelete" },
+          {name: "新增", value: "add"},
+          {name: "批量新增", value: "batchAdd"},
+          {name: "编辑", value: "edit"},
+          {name: "查看", value: "view"},
+          {name: "删除", value: "delete"},
+          {name: "下载", value: "download"},
+          {name: "执行", value: "execution"},
+          {name: "上传", value: "upload"},
+          {name: "导出", value: "export"},
+          {name: "批量删除", value: "batchDelete"},
         ],
         apiDataSource: {
           apiInfo: {
@@ -813,7 +812,7 @@ const tableFieldList = ref<PageFieldInfo>({
             method: "getAllByCondition",
             url: "http://172.26.224.1:8749/system-config/system/dictinfo/getAllByCondition",
           },
-          optionField: { labelField: "dictName", valueField: "dictCode" },
+          optionField: {labelField: "dictName", valueField: "dictCode"},
           authInfo: {
             apiType: "systemApi",
             httpMethod: "GET",

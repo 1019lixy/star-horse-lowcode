@@ -1,19 +1,9 @@
 <script setup lang="ts">
-import {
-  computed,
-  inject,
-  nextTick,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  shallowRef,
-  toRaw,
-  watch,
-} from "vue";
+import {computed, inject, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, toRaw, watch,} from "vue";
 import * as monaco from "monaco-editor";
-import type { DropZone, SplitSide, TabDragPayload, TabInfo } from "./types";
-import { getFileIcon } from "./constants";
-import { i18n } from "@/lang/index";
+import type {DropZone, SplitSide, TabDragPayload, TabInfo} from "./types";
+import {getFileIcon} from "./constants";
+import {i18n} from "@/lang/index";
 
 interface EditorPaneApi {
   // Tab actions
@@ -34,9 +24,9 @@ interface EditorPaneApi {
   editorContentChange: (gid: string, tabId: string, content: string) => void;
   // Drop handling
   handleDrop: (
-    toGid: string,
-    payload: TabDragPayload,
-    zone: DropZone,
+      toGid: string,
+      payload: TabDragPayload,
+      zone: DropZone,
   ) => void;
   // Model access
   getModel: (tabId: string) => monaco.editor.ITextModel | undefined;
@@ -91,7 +81,7 @@ const shouldShowPath = (tab: TabInfo) => {
 };
 
 const activeTab = computed(
-  () => props.tabs.find((t) => t.id === props.activeTabId) || null,
+    () => props.tabs.find((t) => t.id === props.activeTabId) || null,
 );
 
 const hasTabs = computed(() => props.tabs.length > 0);
@@ -118,12 +108,12 @@ const initEditor = async () => {
     suggestOnTriggerCharacters: true,
     acceptSuggestionOnEnter: "on",
     quickSuggestions: true,
-    parameterHints: { enabled: true },
+    parameterHints: {enabled: true},
     folding: true,
     foldingStrategy: "indentation",
     showFoldingControls: "mouseover",
-    bracketPairColorization: { enabled: true },
-    guides: { bracketPairs: true, indentation: true },
+    bracketPairColorization: {enabled: true},
+    guides: {bracketPairs: true, indentation: true},
     renderWhitespace: "selection",
     cursorBlinking: "smooth",
     smoothScrolling: true,
@@ -140,9 +130,9 @@ const initEditor = async () => {
   editor.onDidChangeModelContent(() => {
     if (props.activeTabId) {
       api.editorContentChange(
-        props.groupId,
-        props.activeTabId,
-        editor.getValue(),
+          props.groupId,
+          props.activeTabId,
+          editor.getValue(),
       );
     }
   });
@@ -267,7 +257,7 @@ const onPaneDragOver = (e: DragEvent) => {
 const onPaneDragLeave = (e: DragEvent) => {
   const target = e.currentTarget as HTMLElement;
   const rect = target.getBoundingClientRect();
-  const { clientX: x, clientY: y } = e;
+  const {clientX: x, clientY: y} = e;
   if (x < rect.left || x >= rect.right || y < rect.top || y >= rect.bottom) {
     currentDropZone.value = null;
   }
@@ -281,7 +271,8 @@ const onPaneDrop = (e: DragEvent) => {
   try {
     const raw = e.dataTransfer?.getData("application/json");
     if (raw) payload = JSON.parse(raw) as TabDragPayload;
-  } catch {}
+  } catch {
+  }
   if (!payload) payload = api.draggingTab();
   if (!payload) return;
   api.handleDrop(props.groupId, payload, zone);
@@ -289,31 +280,31 @@ const onPaneDrop = (e: DragEvent) => {
 
 // ============== Watchers ==============
 watch(
-  () => props.activeTabId,
-  () => {
-    nextTick(() => syncActiveModel());
-  },
+    () => props.activeTabId,
+    () => {
+      nextTick(() => syncActiveModel());
+    },
 );
 
 watch(
-  () => props.theme,
-  (val) => {
-    monaco.editor.setTheme(val);
-  },
+    () => props.theme,
+    (val) => {
+      monaco.editor.setTheme(val);
+    },
 );
 
 watch(
-  () => props.isActive,
-  (val) => {
-    // 非活动组时降低视觉强调
-    if (val && editorContainer.value) {
-      editorContainer.value.classList.add("pane-active");
-      editorContainer.value.classList.remove("pane-inactive");
-    } else if (editorContainer.value) {
-      editorContainer.value.classList.remove("pane-active");
-      editorContainer.value.classList.add("pane-inactive");
-    }
-  },
+    () => props.isActive,
+    (val) => {
+      // 非活动组时降低视觉强调
+      if (val && editorContainer.value) {
+        editorContainer.value.classList.add("pane-active");
+        editorContainer.value.classList.remove("pane-inactive");
+      } else if (editorContainer.value) {
+        editorContainer.value.classList.remove("pane-active");
+        editorContainer.value.classList.add("pane-inactive");
+      }
+    },
 );
 
 // ============== 生命周期 ==============
@@ -330,35 +321,35 @@ onBeforeUnmount(() => {
 
 <template>
   <div
-    class="sh-editor-pane"
-    :class="{
+      class="sh-editor-pane"
+      :class="{
       'pane-active': isActive,
       'pane-inactive': !isActive,
     }"
-    @dragover="onPaneDragOver"
-    @dragleave="onPaneDragLeave"
-    @drop="onPaneDrop"
+      @dragover="onPaneDragOver"
+      @dragleave="onPaneDragLeave"
+      @drop="onPaneDrop"
   >
     <!-- 标签栏（始终渲染，含操作按钮） -->
     <div class="pane-tabbar">
       <div v-if="tabs.length > 0" class="pane-tabs-scroll">
         <div
-          v-for="tab in tabs"
-          :key="tab.id"
-          class="pane-tab"
-          :class="{ active: tab.id === activeTabId }"
-          draggable="true"
-          @click="handleSwitch(tab.id)"
-          @contextmenu="handleContextmenu(tab.id, $event)"
-          @dragstart="onTabDragStart($event, tab.id)"
-          @dragend="onTabDragEnd"
+            v-for="tab in tabs"
+            :key="tab.id"
+            class="pane-tab"
+            :class="{ active: tab.id === activeTabId }"
+            draggable="true"
+            @click="handleSwitch(tab.id)"
+            @contextmenu="handleContextmenu(tab.id, $event)"
+            @dragstart="onTabDragStart($event, tab.id)"
+            @dragend="onTabDragEnd"
         >
           <span class="tab-icon">{{ getFileIcon(tab.name) }}</span>
           <span class="tab-name">
             {{ tab.name }}
             <span v-if="shouldShowPath(tab)" class="tab-path">{{
-              tab.path
-            }}</span>
+                tab.path
+              }}</span>
           </span>
           <span v-if="tab.modified" class="tab-modified">●</span>
           <span class="tab-close" @click.stop="handleClose(tab.id)">×</span>
@@ -367,25 +358,25 @@ onBeforeUnmount(() => {
       <!-- 组操作按钮 -->
       <div class="pane-tabbar-actions">
         <button
-          class="pane-action-btn"
-          :title="i18n('ide.ctx.splitRight')"
-          @click="handleSplit('right')"
+            class="pane-action-btn"
+            :title="i18n('ide.ctx.splitRight')"
+            @click="handleSplit('right')"
         >
           <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor">
             <path
-              d="M1.75 1A1.75 1.75 0 0 0 0 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0 0 16 13.25V2.75A1.75 1.75 0 0 0 14.25 1H1.75zm0 1.5h5.375v11H1.75a.25.25 0 0 1-.25-.25V2.75a.25.25 0 0 1 .25-.25zm6.875 11v-11h5.625a.25.25 0 0 1 .25.25v10.5a.25.25 0 0 1-.25.25H8.625z"
+                d="M1.75 1A1.75 1.75 0 0 0 0 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0 0 16 13.25V2.75A1.75 1.75 0 0 0 14.25 1H1.75zm0 1.5h5.375v11H1.75a.25.25 0 0 1-.25-.25V2.75a.25.25 0 0 1 .25-.25zm6.875 11v-11h5.625a.25.25 0 0 1 .25.25v10.5a.25.25 0 0 1-.25.25H8.625z"
             />
           </svg>
         </button>
         <button
-          v-if="canClose"
-          class="pane-action-btn"
-          :title="i18n('ide.ctx.closeGroup')"
-          @click="handleCloseGroup"
+            v-if="canClose"
+            class="pane-action-btn"
+            :title="i18n('ide.ctx.closeGroup')"
+            @click="handleCloseGroup"
         >
           <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor">
             <path
-              d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"
+                d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"
             />
           </svg>
         </button>
@@ -398,18 +389,18 @@ onBeforeUnmount(() => {
       <span class="breadcrumb-lang">{{ languageLabel }}</span>
       <div v-if="canCompile || canRun" class="breadcrumb-actions">
         <button
-          v-if="canCompile"
-          class="breadcrumb-btn compile-btn"
-          :title="i18n('ide.menu.build.compile')"
-          @click="emit('compile')"
+            v-if="canCompile"
+            class="breadcrumb-btn compile-btn"
+            :title="i18n('ide.menu.build.compile')"
+            @click="emit('compile')"
         >
           ▶
         </button>
         <button
-          v-if="canRun"
-          class="breadcrumb-btn run-btn"
-          :title="i18n('ide.menu.build.run')"
-          @click="emit('run')"
+            v-if="canRun"
+            class="breadcrumb-btn run-btn"
+            :title="i18n('ide.menu.build.run')"
+            @click="emit('run')"
         >
           ►
         </button>
@@ -418,40 +409,40 @@ onBeforeUnmount(() => {
 
     <!-- Monaco 编辑器容器 -->
     <div
-      ref="editorContainer"
-      class="pane-monaco"
-      v-show="hasTabs"
+        ref="editorContainer"
+        class="pane-monaco"
+        v-show="hasTabs"
     />
 
     <!-- 拖拽 drop zones 覆盖层 -->
     <template v-if="isDragging && currentDropZone">
       <div
-        v-if="currentDropZone === 'left'"
-        class="drop-overlay drop-left"
+          v-if="currentDropZone === 'left'"
+          class="drop-overlay drop-left"
       >
         <span>{{ i18n("ide.split.dropLeft") }}</span>
       </div>
       <div
-        v-if="currentDropZone === 'right'"
-        class="drop-overlay drop-right"
+          v-if="currentDropZone === 'right'"
+          class="drop-overlay drop-right"
       >
         <span>{{ i18n("ide.split.dropRight") }}</span>
       </div>
       <div
-        v-if="currentDropZone === 'top'"
-        class="drop-overlay drop-top"
+          v-if="currentDropZone === 'top'"
+          class="drop-overlay drop-top"
       >
         <span>{{ i18n("ide.split.dropTop") }}</span>
       </div>
       <div
-        v-if="currentDropZone === 'bottom'"
-        class="drop-overlay drop-bottom"
+          v-if="currentDropZone === 'bottom'"
+          class="drop-overlay drop-bottom"
       >
         <span>{{ i18n("ide.split.dropBottom") }}</span>
       </div>
       <div
-        v-if="currentDropZone === 'center'"
-        class="drop-overlay drop-center"
+          v-if="currentDropZone === 'center'"
+          class="drop-overlay drop-center"
       >
         <span>{{ i18n("ide.split.dropCenter") }}</span>
       </div>
@@ -460,23 +451,28 @@ onBeforeUnmount(() => {
     <!-- 空状态 -->
     <div v-if="!hasTabs" class="pane-empty">
       <div class="pane-empty-icon">
-        <svg viewBox="0 0 100 100" width="60" height="60" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="30,25 15,50 30,75" />
-          <polyline points="70,25 85,50 70,75" />
-          <line x1="55" y1="20" x2="45" y2="80" />
+        <svg viewBox="0 0 100 100" width="60" height="60" fill="none" stroke="currentColor" stroke-width="3"
+             stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="30,25 15,50 30,75"/>
+          <polyline points="70,25 85,50 70,75"/>
+          <line x1="55" y1="20" x2="45" y2="80"/>
         </svg>
       </div>
       <p>{{ i18n("ide.welcome.hint") }}</p>
       <div class="pane-empty-actions">
         <button class="pane-action-link" @click="handleSplit('right')">
-          <svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor" style="vertical-align: middle; margin-right: 4px;">
-            <path d="M1.75 1A1.75 1.75 0 0 0 0 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0 0 16 13.25V2.75A1.75 1.75 0 0 0 14.25 1H1.75zm0 1.5h5.375v11H1.75a.25.25 0 0 1-.25-.25V2.75a.25.25 0 0 1 .25-.25zm6.875 11v-11h5.625a.25.25 0 0 1 .25.25v10.5a.25.25 0 0 1-.25.25H8.625z" />
+          <svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor"
+               style="vertical-align: middle; margin-right: 4px;">
+            <path
+                d="M1.75 1A1.75 1.75 0 0 0 0 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0 0 16 13.25V2.75A1.75 1.75 0 0 0 14.25 1H1.75zm0 1.5h5.375v11H1.75a.25.25 0 0 1-.25-.25V2.75a.25.25 0 0 1 .25-.25zm6.875 11v-11h5.625a.25.25 0 0 1 .25.25v10.5a.25.25 0 0 1-.25.25H8.625z"/>
           </svg>
           {{ i18n("ide.ctx.splitRight") }}
         </button>
         <button v-if="canClose" class="pane-action-link" @click="handleCloseGroup">
-          <svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor" style="vertical-align: middle; margin-right: 4px;">
-            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+          <svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor"
+               style="vertical-align: middle; margin-right: 4px;">
+            <path
+                d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
           </svg>
           {{ i18n("ide.ctx.closeGroup") }}
         </button>
@@ -501,6 +497,7 @@ onBeforeUnmount(() => {
     .pane-tabbar {
       opacity: 0.7;
     }
+
     .pane-breadcrumb {
       opacity: 0.7;
     }
@@ -525,6 +522,7 @@ onBeforeUnmount(() => {
   &::-webkit-scrollbar {
     height: 3px;
   }
+
   &::-webkit-scrollbar-thumb {
     background: var(--ide-scrollbar, #4e4e4e);
     border-radius: 2px;
@@ -551,13 +549,16 @@ onBeforeUnmount(() => {
     background: var(--ide-tab-active-bg, #1e1e1e);
     border-top: 2px solid var(--ide-accent, #007acc);
   }
+
   &:hover {
     background: var(--ide-bg-hover, #2a2d2e);
   }
+
   // 拖拽视觉反馈
   &[draggable="true"] {
     cursor: grab;
   }
+
   &[draggable="true"]:active {
     cursor: grabbing;
   }
@@ -773,24 +774,28 @@ onBeforeUnmount(() => {
   bottom: 4px;
   width: calc(50% - 6px);
 }
+
 .drop-right {
   right: 4px;
   top: 4px;
   bottom: 4px;
   width: calc(50% - 6px);
 }
+
 .drop-top {
   left: 4px;
   right: 4px;
   top: 4px;
   height: calc(50% - 6px);
 }
+
 .drop-bottom {
   left: 4px;
   right: 4px;
   bottom: 4px;
   height: calc(50% - 6px);
 }
+
 .drop-center {
   left: 25%;
   right: 25%;

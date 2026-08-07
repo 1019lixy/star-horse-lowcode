@@ -9,15 +9,9 @@
  *     新代码请使用 DtSceneViewport + DtEngine。
  */
 
-import { dtGetEntityColor } from "../constants";
-import {
-    dtCubeVertices,
-    dtEntityBoundingBox,
-    dtPlaneVertices,
-    dtProjectPoint,
-    dtShadeColor,
-} from "./DtProjection";
-import type { DtCamera, DtEntity } from "../types";
+import {dtGetEntityColor} from "../constants";
+import {dtCubeVertices, dtEntityBoundingBox, dtPlaneVertices, dtProjectPoint, dtShadeColor,} from "./DtProjection";
+import type {DtCamera, DtEntity} from "../types";
 
 export interface DtRenderContext {
     ctx: CanvasRenderingContext2D;
@@ -28,7 +22,7 @@ export interface DtRenderContext {
 
 /** 绘制立方体（3 个可见面 + 描边） */
 export const dtDrawCube = (entity: DtEntity, rc: DtRenderContext): void => {
-    const { ctx, camera } = rc;
+    const {ctx, camera} = rc;
     const verts3D = dtCubeVertices(entity);
     const pts = verts3D.map((p) => dtProjectPoint(p, camera));
     const baseColor = dtGetEntityColor(entity);
@@ -43,9 +37,9 @@ export const dtDrawCube = (entity: DtEntity, rc: DtRenderContext): void => {
 
     // 三个面不同亮度（顶面亮、前面中、右面暗）
     const faces: { pts: typeof top; color: string }[] = [
-        { pts: right, color: dtShadeColor(baseColor, 0.7) },
-        { pts: front, color: dtShadeColor(baseColor, 0.85) },
-        { pts: top, color: dtShadeColor(baseColor, 1.1) },
+        {pts: right, color: dtShadeColor(baseColor, 0.7)},
+        {pts: front, color: dtShadeColor(baseColor, 0.85)},
+        {pts: top, color: dtShadeColor(baseColor, 1.1)},
     ];
 
     faces.forEach((face) => {
@@ -65,14 +59,14 @@ export const dtDrawCube = (entity: DtEntity, rc: DtRenderContext): void => {
 
 /** 绘制圆柱（顶椭圆 + 底椭圆 + 侧面渐变） */
 export const dtDrawCylinder = (entity: DtEntity, rc: DtRenderContext): void => {
-    const { ctx, camera } = rc;
-    const { position, size } = entity;
+    const {ctx, camera} = rc;
+    const {position, size} = entity;
     const r = size.radius;
     const h = size.height;
     const baseColor = dtGetEntityColor(entity);
 
-    const centerTop = dtProjectPoint({ x: position.x, y: position.y + h, z: position.z }, camera);
-    const centerBottom = dtProjectPoint({ x: position.x, y: position.y, z: position.z }, camera);
+    const centerTop = dtProjectPoint({x: position.x, y: position.y + h, z: position.z}, camera);
+    const centerBottom = dtProjectPoint({x: position.x, y: position.y, z: position.z}, camera);
 
     // 椭圆 y 半径（基于俯视角）= r * cos(pitch) * scale；x 半径 = r * scale
     const pitchRad = (camera.pitch * Math.PI) / 180;
@@ -111,7 +105,7 @@ export const dtDrawCylinder = (entity: DtEntity, rc: DtRenderContext): void => {
 
 /** 绘制平面（4 顶点多边形） */
 export const dtDrawPlane = (entity: DtEntity, rc: DtRenderContext): void => {
-    const { ctx, camera } = rc;
+    const {ctx, camera} = rc;
     const verts3D = dtPlaneVertices(entity);
     const pts = verts3D.map((p) => dtProjectPoint(p, camera));
     const baseColor = dtGetEntityColor(entity);
@@ -133,8 +127,8 @@ export const dtDrawPlane = (entity: DtEntity, rc: DtRenderContext): void => {
 
 /** 绘制球体（圆形 + 径向渐变） */
 export const dtDrawSphere = (entity: DtEntity, rc: DtRenderContext): void => {
-    const { ctx, camera } = rc;
-    const { position, size } = entity;
+    const {ctx, camera} = rc;
+    const {position, size} = entity;
     const r = size.radius;
     const baseColor = dtGetEntityColor(entity);
     const center = dtProjectPoint(position, camera);
@@ -163,9 +157,9 @@ export const dtDrawSphere = (entity: DtEntity, rc: DtRenderContext): void => {
 
 /** 绘制实体名称 */
 export const dtDrawEntityLabel = (entity: DtEntity, rc: DtRenderContext): void => {
-    const { ctx, camera } = rc;
+    const {ctx, camera} = rc;
     const center = dtProjectPoint(
-        { x: entity.position.x, y: entity.position.y + (entity.size.height || entity.size.radius), z: entity.position.z },
+        {x: entity.position.x, y: entity.position.y + (entity.size.height || entity.size.radius), z: entity.position.z},
         camera,
     );
     ctx.save();
@@ -183,7 +177,7 @@ export const dtDrawEntityLabel = (entity: DtEntity, rc: DtRenderContext): void =
 
 /** 绘制选中高亮（黄色虚线包围盒） */
 export const dtDrawHighlight = (entity: DtEntity, rc: DtRenderContext): void => {
-    const { ctx, camera } = rc;
+    const {ctx, camera} = rc;
     const bbox = dtEntityBoundingBox(entity, camera);
     if (!bbox) return;
     const pad = 6;

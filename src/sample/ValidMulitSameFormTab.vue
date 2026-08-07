@@ -1,13 +1,13 @@
 <script setup lang="ts" name="Areainfo">
-import { onMounted, provide, ref } from "vue";
-import { PageFieldInfo } from "@/components/types/PageFieldInfo";
-import { StarHorseForm, StarHorseTableComp } from "@/components/comp";
-import { apiInstance, dialogPreps } from "@/api/star_horse_utils";
-import { ApiUrls, SearchInfo } from "@/components/types";
+import {onMounted, provide, ref} from "vue";
+import {PageFieldInfo} from "@/components/types/PageFieldInfo";
+import {StarHorseForm, StarHorseTableComp} from "@/components/comp";
+import {apiInstance, dialogPreps} from "@/api/star_horse_utils";
+import {ApiUrls, SearchInfo} from "@/components/types";
 
 const dataUrl: ApiUrls = apiInstance(
-  "userdb-manage",
-  "userdb/formInstance/tbValidDatesNew/idValidDateNew/381167130139165693",
+    "userdb-manage",
+    "userdb/formInstance/tbValidDatesNew/idValidDateNew/381167130139165693",
 );
 console.log(dataUrl);
 
@@ -104,7 +104,7 @@ const fieldList = ref<PageFieldInfo>({
     {
       fieldName: "apiInfo",
       formVisible: true,
-      tabList: [
+      stepList: [
         {
           fieldList: [
             {
@@ -277,7 +277,7 @@ const fieldList = ref<PageFieldInfo>({
                             },
                           ],
                           helpMsg:
-                            "配置自定义请求头，支持静态值和动态值（从表单数据获取）",
+                              "配置自定义请求头，支持静态值和动态值（从表单数据获取）",
                           initRows: 0,
                           title: "请求头",
                         },
@@ -330,7 +330,7 @@ const fieldList = ref<PageFieldInfo>({
                             },
                           ],
                           helpMsg:
-                            "配置接口请求参数，动态值将从表单当前数据中获取",
+                              "配置接口请求参数，动态值将从表单当前数据中获取",
                           initRows: 0,
                           title: "请求参数",
                         },
@@ -349,7 +349,7 @@ const fieldList = ref<PageFieldInfo>({
                       fieldName: "responseTemplate",
                       formVisible: true,
                       helpMsg:
-                        "选择接口返回的数据结构模板，用于正确解析响应数据",
+                          "选择接口返回的数据结构模板，用于正确解析响应数据",
                       id: "shfa903305-624e-4f42-aba7-e243c909ed89",
                       label: "响应模板",
                       listVisible: true,
@@ -395,7 +395,7 @@ const fieldList = ref<PageFieldInfo>({
                         fieldName: "successCode",
                         formVisible: true,
                         helpMsg:
-                          "接口返回成功的状态码值，如：200、0、success等",
+                            "接口返回成功的状态码值，如：200、0、success等",
                         id: "shbd3b9f0c-d735-43e8-b9ea-179ae2ac109b",
                         label: "成功状态码",
                         listVisible: true,
@@ -727,7 +727,7 @@ const fieldList = ref<PageFieldInfo>({
                             },
                           ],
                           helpMsg:
-                            "配置自定义请求头，支持静态值和动态值（从表单数据获取）",
+                              "配置自定义请求头，支持静态值和动态值（从表单数据获取）",
                           initRows: 0,
                           title: "请求头",
                         },
@@ -780,7 +780,7 @@ const fieldList = ref<PageFieldInfo>({
                             },
                           ],
                           helpMsg:
-                            "配置接口请求参数，动态值将从表单当前数据中获取",
+                              "配置接口请求参数，动态值将从表单当前数据中获取",
                           initRows: 0,
                           title: "请求参数",
                         },
@@ -799,7 +799,7 @@ const fieldList = ref<PageFieldInfo>({
                       fieldName: "responseTemplate",
                       formVisible: true,
                       helpMsg:
-                        "选择接口返回的数据结构模板，用于正确解析响应数据",
+                          "选择接口返回的数据结构模板，用于正确解析响应数据",
                       id: "sh39e3b966-ffc6-4f43-afdb-e9c1247c0ce9",
                       label: "响应模板",
                       listVisible: true,
@@ -845,7 +845,7 @@ const fieldList = ref<PageFieldInfo>({
                         fieldName: "successCode",
                         formVisible: true,
                         helpMsg:
-                          "接口返回成功的状态码值，如：200、0、success等",
+                            "接口返回成功的状态码值，如：200、0、success等",
                         id: "sh4bddcfa3-ee91-4124-8c6f-ce1d44088c15",
                         label: "成功状态码",
                         listVisible: true,
@@ -909,7 +909,8 @@ const fieldList = ref<PageFieldInfo>({
     },
   ],
 });
-const initData = async () => {};
+const initData = async () => {
+};
 const primaryKey = "idValidDateNew";
 const codeGeneratorRef = ref();
 const rules = {};
@@ -927,57 +928,56 @@ onMounted(() => {
 <template>
   <div class="flex flex-col h-full overflow-hidden">
     <star-horse-dialog
-      :isShowBtnContinue="true"
-      :dialogVisible="dialogProps.editVisible"
-      :dialogProps="dialogProps"
-      :selfFunc="false"
-      @merge="generateMerge"
-      @closeAction="closeAction"
-      boxHeight="85%"
+        :isShowBtnContinue="true"
+        v-model="dialogProps.editVisible"
+        :dialogProps="dialogProps"
+        :selfFunc="false"
+        @merge="generateMerge"
+        @closeAction="closeAction"
+        boxHeight="85%"
     >
-      {{ generateFormRef?.getFormData() }}
       <star-horse-form
-        ref="generateFormRef"
-        @refresh="
+          ref="generateFormRef"
+          @refresh="
           (formData, result) => codeGeneratorRef?.assignStaticData(formData)
         "
-        :compUrl="dataUrl"
-        :preview="true"
-        formSize="default"
-        :fieldList="fieldList"
-        :rules="rules"
+          :compUrl="dataUrl"
+          :preview="true"
+          formSize="default"
+          :fieldList="fieldList"
+          :rules="rules"
       />
     </star-horse-dialog>
     <star-horse-dialog
-      v-model="dialogProps.viewVisible"
-      :dialogProps="dialogProps"
-      :source="3"
+        v-model="dialogProps.viewVisible"
+        :dialogProps="dialogProps"
+        :source="3"
     >
       <star-horse-data-view
-        :preview="true"
-        :field-list="fieldList"
-        :compUrl="dataUrl"
+          :preview="true"
+          :field-list="fieldList"
+          :compUrl="dataUrl"
       />
     </star-horse-dialog>
     <div class="search-content">
       <div class="search_btn">
         <star-horse-search-comp
-          @searchData="
+            @searchData="
             (data: any) => codeGeneratorRef?.createSearchParams(data)
           "
-          :formData="searchFormData"
-          :compUrl="dataUrl"
+            :formData="searchFormData"
+            :compUrl="dataUrl"
         />
       </div>
     </div>
     <el-card class="inner_content">
       <star-horse-table-comp
-        ref="codeGeneratorRef"
-        :fieldList="fieldList"
-        :primaryKey="primaryKey"
-        :compUrl="dataUrl"
-        :preview="true"
-        :btn-permissions="{
+          ref="codeGeneratorRef"
+          :fieldList="fieldList"
+          :primaryKey="primaryKey"
+          :compUrl="dataUrl"
+          :preview="true"
+          :btn-permissions="{
           edit: 'edit',
           view: 'view',
           delete: 'delete',

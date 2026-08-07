@@ -4,8 +4,8 @@
  * 维护 undos/redos 两个栈。
  * 支持可合并命令（updatable）：相同类型+相同实体的命令在 500ms 内合并。
  */
-import { useDispatchSignal, SIGNAL_NAMES } from "./DtSignals";
-import type { Command } from "./commands";
+import {SIGNAL_NAMES, useDispatchSignal} from "./DtSignals";
+import type {Command} from "./commands";
 
 const MERGE_TIME_MS = 500;
 
@@ -35,7 +35,7 @@ export class DtHistory {
             last.time = now;
         } else {
             cmd.execute();
-            const entry: HistoryEntry = { cmd, id: ++this.idCounter, time: now };
+            const entry: HistoryEntry = {cmd, id: ++this.idCounter, time: now};
             this.undos.push(entry);
             // 超出上限移除最早
             if (this.undos.length > this.limit) {

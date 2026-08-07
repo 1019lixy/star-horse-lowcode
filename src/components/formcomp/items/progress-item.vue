@@ -1,30 +1,26 @@
 <template>
   <starhorse-form-item
-    :showFormItem="showFormItem"
-    :isDesign="isDesign"
-    :disabled="disabled"
-    :bareFlag="bareFlag"
-    :field="field"
-    :parentField="parentField"
+      :showFormItem="showFormItem"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      :field="field"
+      :parentField="parentField"
   >
     <el-progress
-      v-bind="prepsFilter(field.preps)"
-      :percentage="computedPercentage"
-      :status="field.preps?.status"
-      :stroke-width="field.preps?.strokeWidth || 6"
-      :text-inside="field.preps?.textInside"
-      :color="field.preps?.color"
+        v-bind="prepsFilter(field.preps)"
+        :percentage="computedPercentage"
+        :status="field.preps?.status"
+        :stroke-width="field.preps?.strokeWidth || 6"
+        :text-inside="field.preps?.textInside"
+        :color="field.preps?.color"
     />
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {
-  allAction,
-  checkIsDisabled,
-  prepsFilter,
-} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import { ItemPreps } from "@/components/types/ItemPreps";
-import { computed } from "vue";
+import {allAction, prepsFilter,} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {ItemPreps} from "@/components/types/ItemPreps";
+import {computed} from "vue";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,

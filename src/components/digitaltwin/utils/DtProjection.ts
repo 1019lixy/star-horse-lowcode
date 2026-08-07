@@ -9,8 +9,8 @@
  *     新代码请使用 DtSceneViewport + DtEngine。
  */
 
-import { DT_PROJECTION_SCALE } from "../constants";
-import type { DtCamera, DtEntity, DtPoint3D, DtProjectedPoint } from "../types";
+import {DT_PROJECTION_SCALE} from "../constants";
+import type {DtCamera, DtEntity, DtPoint3D, DtProjectedPoint} from "../types";
 
 const DEG2RAD = Math.PI / 180;
 
@@ -72,14 +72,14 @@ export const dtProjectPoint = (p: DtPoint3D, camera: DtCamera): DtProjectedPoint
     const sy = (rotated.x + rotated.z) * isoSin * scale - rotated.y * scale + camera.panY;
     // 深度：旋转后 z 越大表示越远
     const depth = rotated.z;
-    return { x: sx, y: sy, depth };
+    return {x: sx, y: sy, depth};
 };
 
 /**
  * 计算实体中心点（用于深度排序）
  */
 export const dtEntityCenter = (entity: DtEntity): DtPoint3D => {
-    const { position, size, type } = entity;
+    const {position, size, type} = entity;
     if (type === "cube" || type === "plane") {
         return {
             x: position.x,
@@ -95,7 +95,7 @@ export const dtEntityCenter = (entity: DtEntity): DtPoint3D => {
         };
     }
     // sphere
-    return { x: position.x, y: position.y, z: position.z };
+    return {x: position.x, y: position.y, z: position.z};
 };
 
 /**
@@ -115,7 +115,7 @@ export const dtProjectEntity = (entity: DtEntity, camera: DtCamera): DtProjected
  */
 export const dtDepthSort = (entities: DtEntity[], camera: DtCamera): DtEntity[] => {
     return entities
-        .map((e) => ({ e, depth: dtProjectEntity(e, camera).depth }))
+        .map((e) => ({e, depth: dtProjectEntity(e, camera).depth}))
         .sort((a, b) => b.depth - a.depth)
         .map((item) => item.e);
 };
@@ -128,7 +128,7 @@ export const dtDepthSort = (entities: DtEntity[], camera: DtCamera): DtEntity[] 
  *   4: 顶前左  5: 顶前右  6: 顶后右  7: 顶后左
  */
 export const dtCubeVertices = (entity: DtEntity): DtPoint3D[] => {
-    const { position, size } = entity;
+    const {position, size} = entity;
     const w = size.width / 2;
     const h = size.height;
     const d = size.depth / 2;
@@ -136,14 +136,14 @@ export const dtCubeVertices = (entity: DtEntity): DtPoint3D[] => {
     const y = position.y;
     const z = position.z;
     return [
-        { x: x - w, y, z: z + d }, // 0 底前左
-        { x: x + w, y, z: z + d }, // 1 底前右
-        { x: x + w, y, z: z - d }, // 2 底后右
-        { x: x - w, y, z: z - d }, // 3 底后左
-        { x: x - w, y: y + h, z: z + d }, // 4 顶前左
-        { x: x + w, y: y + h, z: z + d }, // 5 顶前右
-        { x: x + w, y: y + h, z: z - d }, // 6 顶后右
-        { x: x - w, y: y + h, z: z - d }, // 7 顶后左
+        {x: x - w, y, z: z + d}, // 0 底前左
+        {x: x + w, y, z: z + d}, // 1 底前右
+        {x: x + w, y, z: z - d}, // 2 底后右
+        {x: x - w, y, z: z - d}, // 3 底后左
+        {x: x - w, y: y + h, z: z + d}, // 4 顶前左
+        {x: x + w, y: y + h, z: z + d}, // 5 顶前右
+        {x: x + w, y: y + h, z: z - d}, // 6 顶后右
+        {x: x - w, y: y + h, z: z - d}, // 7 顶后左
     ];
 };
 
@@ -151,17 +151,17 @@ export const dtCubeVertices = (entity: DtEntity): DtPoint3D[] => {
  * 取得平面 4 个顶点（XZ 平面）
  */
 export const dtPlaneVertices = (entity: DtEntity): DtPoint3D[] => {
-    const { position, size } = entity;
+    const {position, size} = entity;
     const w = size.width / 2;
     const d = size.depth / 2;
     const x = position.x;
     const y = position.y;
     const z = position.z;
     return [
-        { x: x - w, y, z: z + d },
-        { x: x + w, y, z: z + d },
-        { x: x + w, y, z: z - d },
-        { x: x - w, y, z: z - d },
+        {x: x - w, y, z: z + d},
+        {x: x + w, y, z: z + d},
+        {x: x + w, y, z: z - d},
+        {x: x - w, y, z: z - d},
     ];
 };
 
@@ -188,22 +188,22 @@ export const dtEntityBoundingBox = (
     } else if (entity.type === "cylinder") {
         const r = entity.size.radius;
         pts = [
-            { x: entity.position.x - r, y: entity.position.y, z: entity.position.z },
-            { x: entity.position.x + r, y: entity.position.y, z: entity.position.z },
-            { x: entity.position.x, y: entity.position.y, z: entity.position.z - r },
-            { x: entity.position.x, y: entity.position.y, z: entity.position.z + r },
-            { x: entity.position.x - r, y: entity.position.y + entity.size.height, z: entity.position.z },
-            { x: entity.position.x + r, y: entity.position.y + entity.size.height, z: entity.position.z },
+            {x: entity.position.x - r, y: entity.position.y, z: entity.position.z},
+            {x: entity.position.x + r, y: entity.position.y, z: entity.position.z},
+            {x: entity.position.x, y: entity.position.y, z: entity.position.z - r},
+            {x: entity.position.x, y: entity.position.y, z: entity.position.z + r},
+            {x: entity.position.x - r, y: entity.position.y + entity.size.height, z: entity.position.z},
+            {x: entity.position.x + r, y: entity.position.y + entity.size.height, z: entity.position.z},
         ];
     } else if (entity.type === "sphere") {
         const r = entity.size.radius;
         pts = [
-            { x: entity.position.x - r, y: entity.position.y, z: entity.position.z },
-            { x: entity.position.x + r, y: entity.position.y, z: entity.position.z },
-            { x: entity.position.x, y: entity.position.y - r, z: entity.position.z },
-            { x: entity.position.x, y: entity.position.y + r, z: entity.position.z },
-            { x: entity.position.x, y: entity.position.y, z: entity.position.z - r },
-            { x: entity.position.x, y: entity.position.y, z: entity.position.z + r },
+            {x: entity.position.x - r, y: entity.position.y, z: entity.position.z},
+            {x: entity.position.x + r, y: entity.position.y, z: entity.position.z},
+            {x: entity.position.x, y: entity.position.y - r, z: entity.position.z},
+            {x: entity.position.x, y: entity.position.y + r, z: entity.position.z},
+            {x: entity.position.x, y: entity.position.y, z: entity.position.z - r},
+            {x: entity.position.x, y: entity.position.y, z: entity.position.z + r},
         ];
     } else {
         return null;

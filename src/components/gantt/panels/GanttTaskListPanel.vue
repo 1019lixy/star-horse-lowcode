@@ -193,10 +193,12 @@ watch(() => props.designer.selectedTaskId.value, (id) => {
         justify-content: flex-start;
         padding-left: 8px;
       }
+
       &.cell-assignee {
         width: 72px;
         min-width: 72px;
       }
+
       &.cell-date {
         width: 100px;
         min-width: 100px;
@@ -214,6 +216,7 @@ watch(() => props.designer.selectedTaskId.value, (id) => {
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
+
     &::-webkit-scrollbar {
       width: 6px;
     }
@@ -287,6 +290,7 @@ watch(() => props.designer.selectedTaskId.value, (id) => {
           text-overflow: ellipsis;
         }
       }
+
       &.cell-assignee {
         width: 72px;
         min-width: 72px;
@@ -294,6 +298,7 @@ watch(() => props.designer.selectedTaskId.value, (id) => {
         color: var(--el-text-color-regular);
         font-size: 11px;
       }
+
       &.cell-date {
         width: 100px;
         min-width: 100px;

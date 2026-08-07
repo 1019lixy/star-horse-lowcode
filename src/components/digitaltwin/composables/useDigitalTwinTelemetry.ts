@@ -4,9 +4,9 @@
  * startSim / stopSim / updateSensorData / getEntityMetrics
  */
 
-import { ref } from "vue";
-import { DT_DEFAULT_SIM_INTERVAL, dtCreateSensorData } from "../constants";
-import type { DtEntity, DtSensorData } from "../types";
+import {ref} from "vue";
+import {DT_DEFAULT_SIM_INTERVAL, dtCreateSensorData} from "../constants";
+import type {DtEntity, DtSensorData} from "../types";
 
 const rand = (min: number, max: number) =>
     Math.round((min + Math.random() * (max - min)) * 100) / 100;
@@ -27,7 +27,7 @@ export function useDigitalTwinTelemetry() {
             const base = metric.value;
             const delta = base * 0.05;
             const next = rand(base - delta, base + delta);
-            updated[key] = { ...metric, value: next };
+            updated[key] = {...metric, value: next};
         });
         entity.sensorData = updated;
     };
@@ -67,7 +67,12 @@ export function useDigitalTwinTelemetry() {
     };
 
     /** 取得实体的指标列表（用于属性面板展示） */
-    const getEntityMetrics = (entity: DtEntity): { key: string; labelKey: string; unitKey: string; value: number }[] => {
+    const getEntityMetrics = (entity: DtEntity): {
+        key: string;
+        labelKey: string;
+        unitKey: string;
+        value: number
+    }[] => {
         if (!entity.sensorData) return [];
         return Object.entries(entity.sensorData).map(([key, m]) => ({
             key,

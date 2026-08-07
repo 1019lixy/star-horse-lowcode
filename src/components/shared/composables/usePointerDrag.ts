@@ -1,4 +1,4 @@
-import {ref, onBeforeUnmount} from "vue";
+import {onBeforeUnmount, ref} from "vue";
 
 /**
  * 统一指针拖拽 composable（PointerEvent 同时覆盖 mouse + touch + 笔）

@@ -7,8 +7,8 @@
  *   - 简单算术：A1+B1, A1*2-B2
  *   - 字面量数字
  */
-import { officeColLetterToIndex } from "../constants";
-import type { ExcelCell } from "../types";
+import {officeColLetterToIndex} from "../constants";
+import type {ExcelCell} from "../types";
 
 /** 单元格查找索引（row_col -> cell） */
 type CellMap = Map<string, ExcelCell>;
@@ -43,7 +43,7 @@ export const parseCellRef = (ref: string): { row: number; col: number } | null =
     if (!m) return null;
     const col = officeColLetterToIndex(m[1]);
     const row = Number(m[2]) - 1; // 行号从 1 开始
-    return { row, col };
+    return {row, col};
 };
 
 /** 解析区域引用 "A1:A3" 返回包含的所有单元格坐标 */
@@ -60,7 +60,7 @@ export const parseRange = (range: string): Array<{ row: number; col: number }> |
     const list: Array<{ row: number; col: number }> = [];
     for (let r = rMin; r <= rMax; r++) {
         for (let c = cMin; c <= cMax; c++) {
-            list.push({ row: r, col: c });
+            list.push({row: r, col: c});
         }
     }
     return list;
@@ -161,7 +161,7 @@ export const isFormula = (value: string): boolean => value.startsWith("=");
 
 /** 重新计算所有公式单元格的 display 值 */
 export const recalcSheet = (cells: ExcelCell[]): ExcelCell[] => {
-    const result = cells.map((c) => ({ ...c }));
+    const result = cells.map((c) => ({...c}));
     for (const c of result) {
         if (c.isFormula) {
             const v = evaluateFormula(c.value, result);

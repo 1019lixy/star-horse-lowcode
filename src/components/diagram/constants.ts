@@ -4,15 +4,15 @@
  * 节点预设库（流程图 / 网络拓扑 / 组织架构 / UML 等）
  */
 
-import { i18n } from "@/lang";
-import type { NodeTypePreset, DiagramNode } from "./types";
+import {i18n} from "@/lang";
+import type {DiagramNode, NodeTypePreset} from "./types";
 
 /** 通用端口（四向） */
 const DEFAULT_PORTS = [
-    { id: "top", position: "top" as const, input: true, output: true },
-    { id: "right", position: "right" as const, input: true, output: true },
-    { id: "bottom", position: "bottom" as const, input: true, output: true },
-    { id: "left", position: "left" as const, input: true, output: true },
+    {id: "top", position: "top" as const, input: true, output: true},
+    {id: "right", position: "right" as const, input: true, output: true},
+    {id: "bottom", position: "bottom" as const, input: true, output: true},
+    {id: "left", position: "left" as const, input: true, output: true},
 ];
 
 /** 节点类型预设库 */
@@ -27,7 +27,7 @@ export const NODE_PRESETS: NodeTypePreset[] = [
         height: 40,
         defaultText: i18n("diagram.preset.flowStart"),
         category: i18n("diagram.category.flowchart"),
-        style: { fill: "#52C41A", stroke: "#389E0D", textColor: "#FFFFFF", fontSize: 14, fontWeight: "bold" },
+        style: {fill: "#52C41A", stroke: "#389E0D", textColor: "#FFFFFF", fontSize: 14, fontWeight: "bold"},
         ports: DEFAULT_PORTS,
     },
     {
@@ -39,7 +39,7 @@ export const NODE_PRESETS: NodeTypePreset[] = [
         height: 40,
         defaultText: i18n("diagram.preset.flowEnd"),
         category: i18n("diagram.category.flowchart"),
-        style: { fill: "#F5222D", stroke: "#CF1322", textColor: "#FFFFFF", fontSize: 14, fontWeight: "bold" },
+        style: {fill: "#F5222D", stroke: "#CF1322", textColor: "#FFFFFF", fontSize: 14, fontWeight: "bold"},
         ports: DEFAULT_PORTS,
     },
     {
@@ -51,7 +51,7 @@ export const NODE_PRESETS: NodeTypePreset[] = [
         height: 50,
         defaultText: i18n("diagram.preset.process"),
         category: i18n("diagram.category.flowchart"),
-        style: { fill: "#1890FF", stroke: "#096DD9", textColor: "#FFFFFF", fontSize: 13 },
+        style: {fill: "#1890FF", stroke: "#096DD9", textColor: "#FFFFFF", fontSize: 13},
         ports: DEFAULT_PORTS,
     },
     {
@@ -63,7 +63,7 @@ export const NODE_PRESETS: NodeTypePreset[] = [
         height: 80,
         defaultText: i18n("diagram.preset.decision"),
         category: i18n("diagram.category.flowchart"),
-        style: { fill: "#FAAD14", stroke: "#D48806", textColor: "#FFFFFF", fontSize: 13 },
+        style: {fill: "#FAAD14", stroke: "#D48806", textColor: "#FFFFFF", fontSize: 13},
         ports: DEFAULT_PORTS,
     },
     {
@@ -75,7 +75,7 @@ export const NODE_PRESETS: NodeTypePreset[] = [
         height: 50,
         defaultText: i18n("diagram.preset.io"),
         category: i18n("diagram.category.flowchart"),
-        style: { fill: "#13C2C2", stroke: "#08979C", textColor: "#FFFFFF", fontSize: 13 },
+        style: {fill: "#13C2C2", stroke: "#08979C", textColor: "#FFFFFF", fontSize: 13},
         ports: DEFAULT_PORTS,
     },
     // ============ 网络拓扑 ============
@@ -88,7 +88,7 @@ export const NODE_PRESETS: NodeTypePreset[] = [
         height: 80,
         defaultText: i18n("diagram.preset.server"),
         category: i18n("diagram.category.network"),
-        style: { fill: "#722ED1", stroke: "#531DAB", textColor: "#FFFFFF", fontSize: 12 },
+        style: {fill: "#722ED1", stroke: "#531DAB", textColor: "#FFFFFF", fontSize: 12},
         ports: DEFAULT_PORTS,
     },
     {
@@ -100,7 +100,7 @@ export const NODE_PRESETS: NodeTypePreset[] = [
         height: 60,
         defaultText: i18n("diagram.preset.database"),
         category: i18n("diagram.category.network"),
-        style: { fill: "#EB2F96", stroke: "#C41D7F", textColor: "#FFFFFF", fontSize: 12 },
+        style: {fill: "#EB2F96", stroke: "#C41D7F", textColor: "#FFFFFF", fontSize: 12},
         ports: DEFAULT_PORTS,
     },
     {
@@ -112,7 +112,7 @@ export const NODE_PRESETS: NodeTypePreset[] = [
         height: 50,
         defaultText: i18n("diagram.preset.firewall"),
         category: i18n("diagram.category.network"),
-        style: { fill: "#FA541C", stroke: "#D4380D", textColor: "#FFFFFF", fontSize: 13 },
+        style: {fill: "#FA541C", stroke: "#D4380D", textColor: "#FFFFFF", fontSize: 13},
         ports: DEFAULT_PORTS,
     },
     {
@@ -124,7 +124,7 @@ export const NODE_PRESETS: NodeTypePreset[] = [
         height: 80,
         defaultText: i18n("diagram.preset.cloud"),
         category: i18n("diagram.category.network"),
-        style: { fill: "#1890FF", stroke: "#096DD9", textColor: "#FFFFFF", fontSize: 13 },
+        style: {fill: "#1890FF", stroke: "#096DD9", textColor: "#FFFFFF", fontSize: 13},
         ports: DEFAULT_PORTS,
     },
     // ============ 组织架构 ============
@@ -137,7 +137,7 @@ export const NODE_PRESETS: NodeTypePreset[] = [
         height: 60,
         defaultText: i18n("diagram.preset.department"),
         category: i18n("diagram.category.organization"),
-        style: { fill: "#1890FF", stroke: "#096DD9", textColor: "#FFFFFF", fontSize: 14, fontWeight: "bold" },
+        style: {fill: "#1890FF", stroke: "#096DD9", textColor: "#FFFFFF", fontSize: 14, fontWeight: "bold"},
         ports: DEFAULT_PORTS,
     },
     {
@@ -149,7 +149,7 @@ export const NODE_PRESETS: NodeTypePreset[] = [
         height: 50,
         defaultText: i18n("diagram.preset.role"),
         category: i18n("diagram.category.organization"),
-        style: { fill: "#52C41A", stroke: "#389E0D", textColor: "#FFFFFF", fontSize: 13 },
+        style: {fill: "#52C41A", stroke: "#389E0D", textColor: "#FFFFFF", fontSize: 13},
         ports: DEFAULT_PORTS,
     },
     {
@@ -161,7 +161,7 @@ export const NODE_PRESETS: NodeTypePreset[] = [
         height: 60,
         defaultText: i18n("diagram.preset.person"),
         category: i18n("diagram.category.organization"),
-        style: { fill: "#FAAD14", stroke: "#D48806", textColor: "#FFFFFF", fontSize: 12 },
+        style: {fill: "#FAAD14", stroke: "#D48806", textColor: "#FFFFFF", fontSize: 12},
         ports: DEFAULT_PORTS,
     },
     // ============ 基础形状 ============
@@ -174,7 +174,7 @@ export const NODE_PRESETS: NodeTypePreset[] = [
         height: 30,
         defaultText: i18n("diagram.preset.text"),
         category: i18n("diagram.category.basic"),
-        style: { fill: "transparent", stroke: "transparent", textColor: "#000000", fontSize: 14 },
+        style: {fill: "transparent", stroke: "transparent", textColor: "#000000", fontSize: 14},
     },
     {
         type: "basic-image",
@@ -185,7 +185,7 @@ export const NODE_PRESETS: NodeTypePreset[] = [
         height: 100,
         defaultText: "",
         category: i18n("diagram.category.basic"),
-        style: { fill: "#F5F5F5", stroke: "#D9D9D9", image: "" },
+        style: {fill: "#F5F5F5", stroke: "#D9D9D9", image: ""},
     },
 ];
 
@@ -215,7 +215,7 @@ export const createNode = (preset: NodeTypePreset, x: number, y: number): Diagra
         width: preset.width,
         height: preset.height,
         ports: preset.ports ? JSON.parse(JSON.stringify(preset.ports)) : [],
-        style: preset.style ? { ...preset.style } : {},
+        style: preset.style ? {...preset.style} : {},
         data: {},
     };
 };
@@ -273,18 +273,18 @@ export const getPortPosition = (
     portId: string,
 ): { x: number; y: number } => {
     const port = node.ports?.find((p) => p.id === portId);
-    if (!port) return { x: node.x + node.width / 2, y: node.y + node.height / 2 };
+    if (!port) return {x: node.x + node.width / 2, y: node.y + node.height / 2};
     switch (port.position) {
         case "top":
-            return { x: node.x + node.width / 2, y: node.y };
+            return {x: node.x + node.width / 2, y: node.y};
         case "right":
-            return { x: node.x + node.width, y: node.y + node.height / 2 };
+            return {x: node.x + node.width, y: node.y + node.height / 2};
         case "bottom":
-            return { x: node.x + node.width / 2, y: node.y + node.height };
+            return {x: node.x + node.width / 2, y: node.y + node.height};
         case "left":
-            return { x: node.x, y: node.y + node.height / 2 };
+            return {x: node.x, y: node.y + node.height / 2};
         default:
-            return { x: node.x + node.width / 2, y: node.y + node.height / 2 };
+            return {x: node.x + node.width / 2, y: node.y + node.height / 2};
     }
 };
 

@@ -420,10 +420,11 @@ const singleDisplay = (item: any, type: "prop" | "cond") => {
                     <el-option v-for="a in aliasOpts" :key="a.value" :label="a.name" :value="a.value"/>
                   </el-select>
                   <el-input v-else v-model="item[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                            :disabled="disabled" />
+                            :disabled="disabled"/>
                 </div>
                 <div class="dqb-item-prop">
-                  <el-select v-if="propertyOptions.length && !isMobile" v-model="item[PK]" :placeholder="effectivePlaceholder"
+                  <el-select v-if="propertyOptions.length && !isMobile" v-model="item[PK]"
+                             :placeholder="effectivePlaceholder"
                              filterable allow-create default-first-option :disabled="disabled"
                              :teleported="!isMobile"
                              :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
@@ -432,12 +433,15 @@ const singleDisplay = (item: any, type: "prop" | "cond") => {
                   <el-input v-else-if="propertyOptions.length && isMobile"
                             :model-value="singleDisplay(item, 'prop')" readonly :placeholder="effectivePlaceholder"
                             :disabled="disabled" @click="openSinglePicker(item, 'prop')">
-                    <template #suffix><star-horse-icon icon-class="arrow-down" /></template>
+                    <template #suffix>
+                      <star-horse-icon icon-class="arrow-down"/>
+                    </template>
                   </el-input>
                   <el-input v-else v-model="item[PK]" :placeholder="effectivePlaceholder" :disabled="disabled"/>
                 </div>
                 <div class="dqb-item-cond">
-                  <el-select v-if="!isMobile" v-model="item[CK]" :placeholder="i18n('queryBuilder.placeholder.condition')"
+                  <el-select v-if="!isMobile" v-model="item[CK]"
+                             :placeholder="i18n('queryBuilder.placeholder.condition')"
                              :disabled="disabled" @change="onConditionChange(item)"
                              :teleported="!isMobile"
                              :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
@@ -447,7 +451,9 @@ const singleDisplay = (item: any, type: "prop" | "cond") => {
                             :model-value="singleDisplay(item, 'cond')" readonly
                             :placeholder="i18n('queryBuilder.placeholder.condition')"
                             :disabled="disabled" @click="openSinglePicker(item, 'cond')">
-                    <template #suffix><star-horse-icon icon-class="arrow-down" /></template>
+                    <template #suffix>
+                      <star-horse-icon icon-class="arrow-down"/>
+                    </template>
                   </el-input>
                 </div>
                 <div class="dqb-item-val">
@@ -462,9 +468,14 @@ const singleDisplay = (item: any, type: "prop" | "cond") => {
                   <el-select v-if="isMulti(item[CK]) && !isMobile" v-model="item[VK]"
                              multiple filterable allow-create
                              :placeholder="i18n('queryBuilder.placeholder.multi')" :disabled="disabled"/>
-                  <div v-else-if="isMulti(item[CK]) && isMobile" class="dqb-multi-trigger" @click="openMultiPicker(item)">
-                    <span v-if="!item[VK]?.length" class="dqb-multi-placeholder">{{ i18n('queryBuilder.placeholder.multi') }}</span>
-                    <el-tag v-for="tag in item[VK]" :key="tag" closable @close.stop="removeMultiTag(item, tag)">{{ tag }}</el-tag>
+                  <div v-else-if="isMulti(item[CK]) && isMobile" class="dqb-multi-trigger"
+                       @click="openMultiPicker(item)">
+                    <span v-if="!item[VK]?.length"
+                          class="dqb-multi-placeholder">{{ i18n('queryBuilder.placeholder.multi') }}</span>
+                    <el-tag v-for="tag in item[VK]" :key="tag" closable @close.stop="removeMultiTag(item, tag)">{{
+                        tag
+                      }}
+                    </el-tag>
                   </div>
                   <slot v-else name="value-input" :item="item" :value-key="VK" :prop="item[PK]" :condition="item[CK]"
                         :disabled="disabled">
@@ -472,7 +483,7 @@ const singleDisplay = (item: any, type: "prop" | "cond") => {
                               :disabled="disabled"/>
                   </slot>
                 </div>
-                <el-button v-if="!disabled" type="danger" text   class="dqb-item-del"
+                <el-button v-if="!disabled" type="danger" text class="dqb-item-del"
                            @click="removeItem(idx)">
                   <star-horse-icon icon-class="delete" color="var(--el-color-danger)"/>
                 </el-button>
@@ -483,34 +494,43 @@ const singleDisplay = (item: any, type: "prop" | "cond") => {
                   <div class="dqb-item-alias">
                     <el-select v-if="hasAliasOpts" v-model="orCond[AK]"
                                :placeholder="i18n('queryBuilder.placeholder.alias')" clearable filterable allow-create
-                               default-first-option :disabled="disabled" :teleported="!isMobile" :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
+                               default-first-option :disabled="disabled" :teleported="!isMobile"
+                               :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
                       <el-option v-for="a in aliasOpts" :key="a.value" :label="a.name" :value="a.value"/>
                     </el-select>
                     <el-input v-else v-model="orCond[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                              :disabled="disabled" />
+                              :disabled="disabled"/>
                   </div>
                   <div class="dqb-item-prop">
-                    <el-select v-if="propertyOptions.length && !isMobile" v-model="orCond[PK]" :placeholder="effectivePlaceholder"
-                               filterable allow-create default-first-option :disabled="disabled" :teleported="!isMobile" :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
+                    <el-select v-if="propertyOptions.length && !isMobile" v-model="orCond[PK]"
+                               :placeholder="effectivePlaceholder"
+                               filterable allow-create default-first-option :disabled="disabled" :teleported="!isMobile"
+                               :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
                       <el-option v-for="p in propertyOptions" :key="p.value" :label="p.name" :value="p.value"/>
                     </el-select>
                     <el-input v-else-if="propertyOptions.length && isMobile"
                               :model-value="singleDisplay(orCond, 'prop')" readonly :placeholder="effectivePlaceholder"
                               :disabled="disabled" @click="openSinglePicker(orCond, 'prop')">
-                      <template #suffix><star-horse-icon icon-class="arrow-down" /></template>
+                      <template #suffix>
+                        <star-horse-icon icon-class="arrow-down"/>
+                      </template>
                     </el-input>
                     <el-input v-else v-model="orCond[PK]" :placeholder="effectivePlaceholder" :disabled="disabled"/>
                   </div>
                   <div class="dqb-item-cond">
-                    <el-select v-if="!isMobile" v-model="orCond[CK]" :placeholder="i18n('queryBuilder.placeholder.condition')"
-                               :disabled="disabled" @change="onConditionChange(orCond)" :teleported="!isMobile" :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
+                    <el-select v-if="!isMobile" v-model="orCond[CK]"
+                               :placeholder="i18n('queryBuilder.placeholder.condition')"
+                               :disabled="disabled" @change="onConditionChange(orCond)" :teleported="!isMobile"
+                               :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
                       <el-option v-for="m in matchList" :key="m.value" :label="m.name" :value="m.value"/>
                     </el-select>
                     <el-input v-else
                               :model-value="singleDisplay(orCond, 'cond')" readonly
                               :placeholder="i18n('queryBuilder.placeholder.condition')"
                               :disabled="disabled" @click="openSinglePicker(orCond, 'cond')">
-                      <template #suffix><star-horse-icon icon-class="arrow-down" /></template>
+                      <template #suffix>
+                        <star-horse-icon icon-class="arrow-down"/>
+                      </template>
                     </el-input>
                   </div>
                   <div class="dqb-item-val">
@@ -522,12 +542,17 @@ const singleDisplay = (item: any, type: "prop" | "cond") => {
                       <el-input v-model="orCond[VK][1]" :placeholder="i18n('queryBuilder.placeholder.max')"
                                 :disabled="disabled"/>
                     </div>
-                    <el-select v-if="isMulti(orCond[CK]) && !isMobile" v-model="orCond[VK]" multiple filterable allow-create
+                    <el-select v-if="isMulti(orCond[CK]) && !isMobile" v-model="orCond[VK]" multiple filterable
+                               allow-create
                                default-first-option :placeholder="i18n('queryBuilder.placeholder.multi')"
                                :disabled="disabled"/>
-                    <div v-else-if="isMulti(orCond[CK]) && isMobile" class="dqb-multi-trigger" @click="openMultiPicker(orCond)">
-                      <span v-if="!orCond[VK]?.length" class="dqb-multi-placeholder">{{ i18n('queryBuilder.placeholder.multi') }}</span>
-                      <el-tag v-for="tag in orCond[VK]" :key="tag" closable @close.stop="removeMultiTag(orCond, tag)">{{ tag }}</el-tag>
+                    <div v-else-if="isMulti(orCond[CK]) && isMobile" class="dqb-multi-trigger"
+                         @click="openMultiPicker(orCond)">
+                      <span v-if="!orCond[VK]?.length"
+                            class="dqb-multi-placeholder">{{ i18n('queryBuilder.placeholder.multi') }}</span>
+                      <el-tag v-for="tag in orCond[VK]" :key="tag" closable @close.stop="removeMultiTag(orCond, tag)">
+                        {{ tag }}
+                      </el-tag>
                     </div>
                     <slot v-else name="value-input" :item="orCond" :value-key="VK" :prop="orCond[PK]"
                           :condition="orCond[CK]" :disabled="disabled">
@@ -535,22 +560,24 @@ const singleDisplay = (item: any, type: "prop" | "cond") => {
                                 :disabled="disabled"/>
                     </slot>
                   </div>
-                  <el-button v-if="!disabled" type="danger" text   class="dqb-item-del"
+                  <el-button v-if="!disabled" type="danger" text class="dqb-item-del"
                              @click="removeOrCondition(item, oi)">
                     <star-horse-icon icon-class="delete" color="var(--el-color-danger)"/>
                   </el-button>
                 </div>
               </div>
               <div v-if="!disabled && depth < maxDepth - 1" class="dqb-or-action">
-                <el-button type="warning" text   @click="addOrCondition(item)">
-                  <star-horse-icon icon-class="add" /> {{ i18n('queryBuilder.action.addOr') }}
+                <el-button type="warning" text @click="addOrCondition(item)">
+                  <star-horse-icon icon-class="add"/>
+                  {{ i18n('queryBuilder.action.addOr') }}
                 </el-button>
               </div>
             </div>
           </div>
           <div v-if="!disabled" class="dqb-actions">
-            <el-button type="primary" text   @click="addItem">
-              <star-horse-icon icon-class="add" />{{ i18n('queryBuilder.action.addCondition') }}
+            <el-button type="primary" text @click="addItem">
+              <star-horse-icon icon-class="add"/>
+              {{ i18n('queryBuilder.action.addCondition') }}
             </el-button>
           </div>
         </template>
@@ -568,16 +595,18 @@ const singleDisplay = (item: any, type: "prop" | "cond") => {
           <div v-for="(s, si) in localSort" :key="s.id" class="dqb-item">
             <div class="dqb-item-alias">
               <el-select v-if="hasAliasOpts" v-model="s[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                         clearable filterable allow-create default-first-option :disabled="disabled" :teleported="!isMobile" :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
+                         clearable filterable allow-create default-first-option :disabled="disabled"
+                         :teleported="!isMobile" :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
                 <el-option v-for="a in aliasOpts" :key="a.value" :label="a.name" :value="a.value"/>
               </el-select>
               <el-input v-else v-model="s[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                        :disabled="disabled" />
+                        :disabled="disabled"/>
             </div>
             <div class="dqb-sort-field">
               <el-select v-if="propertyOptions.length" v-model="s[sortName]"
                          :placeholder="i18n('queryBuilder.sort.selectField')"
-                         filterable allow-create default-first-option :disabled="disabled" :teleported="!isMobile" :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
+                         filterable allow-create default-first-option :disabled="disabled" :teleported="!isMobile"
+                         :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
                 <el-option v-for="p in propertyOptions" :key="p.value" :label="p.name" :value="p.value"/>
               </el-select>
               <el-input v-else v-model="s[sortName]" :placeholder="i18n('queryBuilder.sort.selectField')"
@@ -590,15 +619,16 @@ const singleDisplay = (item: any, type: "prop" | "cond") => {
               </el-radio-group>
             </div>
             <div class="dqb-item-val"></div>
-            <el-button v-if="!disabled" type="danger" text   class="dqb-item-del"
+            <el-button v-if="!disabled" type="danger" text class="dqb-item-del"
                        @click="removeSort(si)">
               <star-horse-icon icon-class="delete" color="var(--el-color-danger)"/>
             </el-button>
           </div>
         </div>
         <div v-if="!disabled" class="dqb-actions">
-          <el-button type="primary" text   @click="addSort">
-            <star-horse-icon icon-class="add" /> {{ i18n('queryBuilder.action.addSort') }}
+          <el-button type="primary" text @click="addSort">
+            <star-horse-icon icon-class="add"/>
+            {{ i18n('queryBuilder.action.addSort') }}
           </el-button>
         </div>
       </el-tab-pane>
@@ -619,16 +649,18 @@ const singleDisplay = (item: any, type: "prop" | "cond") => {
             <div v-for="(a, ai) in localAgg" :key="a.id" class="dqb-item">
               <div class="dqb-item-alias">
                 <el-select v-if="hasAliasOpts" v-model="a[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                           clearable filterable allow-create default-first-option :disabled="disabled" :teleported="!isMobile" :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
+                           clearable filterable allow-create default-first-option :disabled="disabled"
+                           :teleported="!isMobile" :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
                   <el-option v-for="a2 in aliasOpts" :key="a2.value" :label="a2.name" :value="a2.value"/>
                 </el-select>
                 <el-input v-else v-model="a[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                          :disabled="disabled" />
+                          :disabled="disabled"/>
               </div>
               <div class="dqb-agg-field">
                 <el-select v-if="propertyOptions.length" v-model="a[aggName]"
                            :placeholder="i18n('queryBuilder.agg.selectField')" filterable allow-create
-                           default-first-option :disabled="disabled" :teleported="!isMobile" :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
+                           default-first-option :disabled="disabled" :teleported="!isMobile"
+                           :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
                   <el-option v-for="p in propertyOptions" :key="p.value" :label="p.name" :value="p.value"/>
                 </el-select>
                 <el-input v-else v-model="a[aggName]" :placeholder="i18n('queryBuilder.agg.selectField')"
@@ -636,20 +668,22 @@ const singleDisplay = (item: any, type: "prop" | "cond") => {
               </div>
               <div class="dqb-agg-func">
                 <el-select v-model="a.aggFunction" :placeholder="i18n('queryBuilder.agg.selectFunc')"
-                           :disabled="disabled" :teleported="!isMobile" :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
+                           :disabled="disabled" :teleported="!isMobile"
+                           :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
                   <el-option v-for="fn in AGG_FUNCTIONS" :key="fn" :label="fn" :value="fn"/>
                 </el-select>
               </div>
               <div class="dqb-item-val"></div>
-              <el-button v-if="!disabled" type="danger" text   class="dqb-item-del"
+              <el-button v-if="!disabled" type="danger" text class="dqb-item-del"
                          @click="removeAgg(ai)">
                 <star-horse-icon icon-class="delete" color="var(--el-color-danger)"/>
               </el-button>
             </div>
           </div>
           <div v-if="!disabled" class="dqb-actions">
-            <el-button type="primary" text   @click="addAgg">
-              <star-horse-icon icon-class="add" /> {{ i18n('queryBuilder.action.addAggregate') }}
+            <el-button type="primary" text @click="addAgg">
+              <star-horse-icon icon-class="add"/>
+              {{ i18n('queryBuilder.action.addAggregate') }}
             </el-button>
           </div>
         </div>
@@ -666,31 +700,34 @@ const singleDisplay = (item: any, type: "prop" | "cond") => {
             <div v-for="(g, gi) in localGroupBy" :key="g.id" class="dqb-item">
               <div class="dqb-item-alias">
                 <el-select v-if="hasAliasOpts" v-model="g[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                           clearable filterable allow-create default-first-option :disabled="disabled" :teleported="!isMobile" :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
+                           clearable filterable allow-create default-first-option :disabled="disabled"
+                           :teleported="!isMobile" :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
                   <el-option v-for="a in aliasOpts" :key="a.value" :label="a.name" :value="a.value"/>
                 </el-select>
                 <el-input v-else v-model="g[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                          :disabled="disabled" />
+                          :disabled="disabled"/>
               </div>
               <div class="dqb-groupby-field">
                 <el-select v-if="propertyOptions.length" v-model="g[PK]"
                            :placeholder="i18n('queryBuilder.groupBy.selectField')" filterable allow-create
-                           default-first-option :disabled="disabled" :teleported="!isMobile" :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
+                           default-first-option :disabled="disabled" :teleported="!isMobile"
+                           :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
                   <el-option v-for="p in propertyOptions" :key="p.value" :label="p.name" :value="p.value"/>
                 </el-select>
                 <el-input v-else v-model="g[PK]" :placeholder="i18n('queryBuilder.groupBy.selectField')"
                           :disabled="disabled"/>
               </div>
               <div class="dqb-item-val"></div>
-              <el-button v-if="!disabled" type="danger" text   class="dqb-item-del"
+              <el-button v-if="!disabled" type="danger" text class="dqb-item-del"
                          @click="removeGroupBy(gi)">
                 <star-horse-icon icon-class="delete" color="var(--el-color-danger)"/>
               </el-button>
             </div>
           </div>
           <div v-if="!disabled" class="dqb-actions">
-            <el-button type="primary" text   @click="addGroupBy">
-              <star-horse-icon icon-class="add" />{{ i18n('queryBuilder.action.addGroupBy') }}
+            <el-button type="primary" text @click="addGroupBy">
+              <star-horse-icon icon-class="add"/>
+              {{ i18n('queryBuilder.action.addGroupBy') }}
             </el-button>
           </div>
         </div>
@@ -711,22 +748,25 @@ const singleDisplay = (item: any, type: "prop" | "cond") => {
             <div v-for="(h, hi) in localHaving" :key="h.id" class="dqb-item">
               <div class="dqb-item-alias">
                 <el-select v-if="hasAliasOpts" v-model="h[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                           clearable filterable allow-create default-first-option :disabled="disabled" :teleported="!isMobile" :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
+                           clearable filterable allow-create default-first-option :disabled="disabled"
+                           :teleported="!isMobile" :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
                   <el-option v-for="a in aliasOpts" :key="a.value" :label="a.name" :value="a.value"/>
                 </el-select>
                 <el-input v-else v-model="h[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                          :disabled="disabled" />
+                          :disabled="disabled"/>
               </div>
               <div class="dqb-having-func">
                 <el-select v-model="h.aggFunction" :placeholder="i18n('queryBuilder.agg.selectFunc')"
-                           :disabled="disabled" :teleported="!isMobile" :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
+                           :disabled="disabled" :teleported="!isMobile"
+                           :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
                   <el-option v-for="fn in AGG_FUNCTIONS" :key="fn" :label="fn" :value="fn"/>
                 </el-select>
               </div>
               <div class="dqb-having-field">
                 <el-select v-if="propertyOptions.length" v-model="h[aggName]"
                            :placeholder="i18n('queryBuilder.agg.selectField')" filterable allow-create
-                           default-first-option :disabled="disabled" :teleported="!isMobile" :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
+                           default-first-option :disabled="disabled" :teleported="!isMobile"
+                           :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
                   <el-option v-for="p in propertyOptions" :key="p.value" :label="p.name" :value="p.value"/>
                 </el-select>
                 <el-input v-else v-model="h[aggName]" :placeholder="i18n('queryBuilder.agg.selectField')"
@@ -734,7 +774,8 @@ const singleDisplay = (item: any, type: "prop" | "cond") => {
               </div>
               <div class="dqb-having-cond">
                 <el-select v-model="h[CK]" :placeholder="i18n('queryBuilder.placeholder.condition')"
-                           :disabled="disabled" @change="onHavingConditionChange(h)" :teleported="!isMobile" :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
+                           :disabled="disabled" @change="onHavingConditionChange(h)" :teleported="!isMobile"
+                           :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
                   <el-option v-for="m in matchList" :key="m.value" :label="m.name" :value="m.value"/>
                 </el-select>
               </div>
@@ -751,21 +792,27 @@ const singleDisplay = (item: any, type: "prop" | "cond") => {
                            default-first-option :placeholder="i18n('queryBuilder.placeholder.multi')"
                            :disabled="disabled"/>
                 <div v-else-if="isMulti(h[CK]) && isMobile" class="dqb-multi-trigger" @click="openMultiPicker(h)">
-                  <span v-if="!h[VK]?.length" class="dqb-multi-placeholder">{{ i18n('queryBuilder.placeholder.multi') }}</span>
-                  <el-tag v-for="tag in h[VK]" :key="tag" closable @close.stop="removeMultiTag(h, tag)">{{ tag }}</el-tag>
+                  <span v-if="!h[VK]?.length" class="dqb-multi-placeholder">{{
+                      i18n('queryBuilder.placeholder.multi')
+                    }}</span>
+                  <el-tag v-for="tag in h[VK]" :key="tag" closable @close.stop="removeMultiTag(h, tag)">{{
+                      tag
+                    }}
+                  </el-tag>
                 </div>
                 <el-input v-else v-model="h[VK]" :placeholder="i18n('queryBuilder.placeholder.value')"
                           :disabled="disabled"/>
               </div>
-              <el-button v-if="!disabled" type="danger" text   class="dqb-item-del"
+              <el-button v-if="!disabled" type="danger" text class="dqb-item-del"
                          @click="removeHaving(hi)">
                 <star-horse-icon icon-class="delete" color="var(--el-color-danger)"/>
               </el-button>
             </div>
           </div>
           <div v-if="!disabled" class="dqb-actions">
-            <el-button type="primary" text   @click="addHaving">
-              <star-horse-icon icon-class="add" />{{ i18n('queryBuilder.action.addHaving') }}
+            <el-button type="primary" text @click="addHaving">
+              <star-horse-icon icon-class="add"/>
+              {{ i18n('queryBuilder.action.addHaving') }}
             </el-button>
           </div>
         </div>
@@ -788,22 +835,25 @@ const singleDisplay = (item: any, type: "prop" | "cond") => {
             <div class="dqb-item">
               <div class="dqb-item-alias">
                 <el-select v-if="hasAliasOpts" v-model="item[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                           clearable filterable allow-create default-first-option :disabled="disabled" :teleported="!isMobile" :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
+                           clearable filterable allow-create default-first-option :disabled="disabled"
+                           :teleported="!isMobile" :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
                   <el-option v-for="a in aliasOpts" :key="a.value" :label="a.name" :value="a.value"/>
                 </el-select>
                 <el-input v-else v-model="item[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                          :disabled="disabled" />
+                          :disabled="disabled"/>
               </div>
               <div class="dqb-item-prop">
                 <el-select v-if="propertyOptions.length" v-model="item[PK]" :placeholder="effectivePlaceholder"
-                           filterable allow-create default-first-option :disabled="disabled" :teleported="!isMobile" :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
+                           filterable allow-create default-first-option :disabled="disabled" :teleported="!isMobile"
+                           :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
                   <el-option v-for="p in propertyOptions" :key="p.value" :label="p.name" :value="p.value"/>
                 </el-select>
                 <el-input v-else v-model="item[PK]" :placeholder="effectivePlaceholder" :disabled="disabled"/>
               </div>
               <div class="dqb-item-cond">
                 <el-select v-model="item[CK]" :placeholder="i18n('queryBuilder.placeholder.condition')"
-                           :disabled="disabled" @change="onConditionChange(item)" :teleported="!isMobile" :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
+                           :disabled="disabled" @change="onConditionChange(item)" :teleported="!isMobile"
+                           :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
                   <el-option v-for="m in matchList" :key="m.value" :label="m.name" :value="m.value"/>
                 </el-select>
               </div>
@@ -820,13 +870,18 @@ const singleDisplay = (item: any, type: "prop" | "cond") => {
                            default-first-option :placeholder="i18n('queryBuilder.placeholder.multi')"
                            :disabled="disabled"/>
                 <div v-else-if="isMulti(item[CK]) && isMobile" class="dqb-multi-trigger" @click="openMultiPicker(item)">
-                  <span v-if="!item[VK]?.length" class="dqb-multi-placeholder">{{ i18n('queryBuilder.placeholder.multi') }}</span>
-                  <el-tag v-for="tag in item[VK]" :key="tag" closable @close.stop="removeMultiTag(item, tag)">{{ tag }}</el-tag>
+                  <span v-if="!item[VK]?.length" class="dqb-multi-placeholder">{{
+                      i18n('queryBuilder.placeholder.multi')
+                    }}</span>
+                  <el-tag v-for="tag in item[VK]" :key="tag" closable @close.stop="removeMultiTag(item, tag)">{{
+                      tag
+                    }}
+                  </el-tag>
                 </div>
                 <el-input v-else v-model="item[VK]" :placeholder="i18n('queryBuilder.placeholder.value')"
                           :disabled="disabled"/>
               </div>
-              <el-button v-if="!disabled" type="danger" text   class="dqb-item-del"
+              <el-button v-if="!disabled" type="danger" text class="dqb-item-del"
                          @click="removeItem(idx)">
                 <star-horse-icon icon-class="delete" color="var(--el-color-danger)"/>
               </el-button>
@@ -843,7 +898,7 @@ const singleDisplay = (item: any, type: "prop" | "cond") => {
                     <el-option v-for="a in aliasOpts" :key="a.value" :label="a.name" :value="a.value"/>
                   </el-select>
                   <el-input v-else v-model="orCond[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                            :disabled="disabled" />
+                            :disabled="disabled"/>
                 </div>
                 <div class="dqb-item-prop">
                   <el-select v-if="propertyOptions.length" v-model="orCond[PK]" :placeholder="effectivePlaceholder"
@@ -871,32 +926,39 @@ const singleDisplay = (item: any, type: "prop" | "cond") => {
                     <el-input v-model="orCond[VK][1]" :placeholder="i18n('queryBuilder.placeholder.max')"
                               :disabled="disabled"/>
                   </div>
-                  <el-select v-if="isMulti(orCond[CK]) && !isMobile" v-model="orCond[VK]" multiple filterable allow-create
+                  <el-select v-if="isMulti(orCond[CK]) && !isMobile" v-model="orCond[VK]" multiple filterable
+                             allow-create
                              default-first-option :placeholder="i18n('queryBuilder.placeholder.multi')"
                              :disabled="disabled"/>
-                  <div v-else-if="isMulti(orCond[CK]) && isMobile" class="dqb-multi-trigger" @click="openMultiPicker(orCond)">
-                    <span v-if="!orCond[VK]?.length" class="dqb-multi-placeholder">{{ i18n('queryBuilder.placeholder.multi') }}</span>
-                    <el-tag v-for="tag in orCond[VK]" :key="tag" closable @close.stop="removeMultiTag(orCond, tag)">{{ tag }}</el-tag>
+                  <div v-else-if="isMulti(orCond[CK]) && isMobile" class="dqb-multi-trigger"
+                       @click="openMultiPicker(orCond)">
+                    <span v-if="!orCond[VK]?.length"
+                          class="dqb-multi-placeholder">{{ i18n('queryBuilder.placeholder.multi') }}</span>
+                    <el-tag v-for="tag in orCond[VK]" :key="tag" closable @close.stop="removeMultiTag(orCond, tag)">
+                      {{ tag }}
+                    </el-tag>
                   </div>
                   <el-input v-else v-model="orCond[VK]" :placeholder="i18n('queryBuilder.placeholder.value')"
                             :disabled="disabled"/>
                 </div>
-                <el-button v-if="!disabled" type="danger" text   class="dqb-item-del"
+                <el-button v-if="!disabled" type="danger" text class="dqb-item-del"
                            @click="removeOrCondition(item, oi)">
                   <star-horse-icon icon-class="delete" color="var(--el-color-danger)"/>
                 </el-button>
               </div>
             </div>
             <div v-if="!disabled && depth < maxDepth - 1" class="dqb-or-action">
-              <el-button type="warning" text   @click="addOrCondition(item)">
-                <star-horse-icon icon-class="add" /> {{ i18n('queryBuilder.action.addOr') }}
+              <el-button type="warning" text @click="addOrCondition(item)">
+                <star-horse-icon icon-class="add"/>
+                {{ i18n('queryBuilder.action.addOr') }}
               </el-button>
             </div>
           </div>
         </div>
         <div v-if="!disabled" class="dqb-actions">
-          <el-button type="primary" text   @click="addItem">
-            <star-horse-icon icon-class="add" /> {{ i18n('queryBuilder.action.addCondition') }}
+          <el-button type="primary" text @click="addItem">
+            <star-horse-icon icon-class="add"/>
+            {{ i18n('queryBuilder.action.addCondition') }}
           </el-button>
         </div>
       </template>
@@ -913,16 +975,18 @@ const singleDisplay = (item: any, type: "prop" | "cond") => {
           <div v-for="(s, si) in localSort" :key="s.id" class="dqb-item">
             <div class="dqb-item-alias">
               <el-select v-if="hasAliasOpts" v-model="s[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                         clearable filterable allow-create default-first-option :disabled="disabled" :teleported="!isMobile" :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
+                         clearable filterable allow-create default-first-option :disabled="disabled"
+                         :teleported="!isMobile" :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
                 <el-option v-for="a in aliasOpts" :key="a.value" :label="a.name" :value="a.value"/>
               </el-select>
               <el-input v-else v-model="s[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                        :disabled="disabled" />
+                        :disabled="disabled"/>
             </div>
             <div class="dqb-sort-field">
               <el-select v-if="propertyOptions.length" v-model="s[sortName]"
                          :placeholder="i18n('queryBuilder.sort.selectField')" filterable allow-create
-                         default-first-option :disabled="disabled" :teleported="!isMobile" :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
+                         default-first-option :disabled="disabled" :teleported="!isMobile"
+                         :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
                 <el-option v-for="p in propertyOptions" :key="p.value" :label="p.name" :value="p.value"/>
               </el-select>
               <el-input v-else v-model="s[sortName]" :placeholder="i18n('queryBuilder.sort.selectField')"
@@ -935,15 +999,16 @@ const singleDisplay = (item: any, type: "prop" | "cond") => {
               </el-radio-group>
             </div>
             <div class="dqb-item-val"></div>
-            <el-button v-if="!disabled" type="danger" text   class="dqb-item-del"
+            <el-button v-if="!disabled" type="danger" text class="dqb-item-del"
                        @click="removeSort(si)">
               <star-horse-icon icon-class="delete" color="var(--el-color-danger)"/>
             </el-button>
           </div>
         </div>
         <div v-if="!disabled" class="dqb-actions">
-          <el-button type="primary" text   @click="addSort">
-            <star-horse-icon icon-class="add" /> {{ i18n('queryBuilder.action.addSort') }}
+          <el-button type="primary" text @click="addSort">
+            <star-horse-icon icon-class="add"/>
+            {{ i18n('queryBuilder.action.addSort') }}
           </el-button>
         </div>
       </template>
@@ -963,16 +1028,18 @@ const singleDisplay = (item: any, type: "prop" | "cond") => {
             <div v-for="(a, ai) in localAgg" :key="a.id" class="dqb-item">
               <div class="dqb-item-alias">
                 <el-select v-if="hasAliasOpts" v-model="a[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                           clearable filterable allow-create default-first-option :disabled="disabled" :teleported="!isMobile" :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
+                           clearable filterable allow-create default-first-option :disabled="disabled"
+                           :teleported="!isMobile" :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
                   <el-option v-for="a2 in aliasOpts" :key="a2.value" :label="a2.name" :value="a2.value"/>
                 </el-select>
                 <el-input v-else v-model="a[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                          :disabled="disabled" />
+                          :disabled="disabled"/>
               </div>
               <div class="dqb-agg-field">
                 <el-select v-if="propertyOptions.length" v-model="a[aggName]"
                            :placeholder="i18n('queryBuilder.agg.selectField')" filterable allow-create
-                           default-first-option :disabled="disabled" :teleported="!isMobile" :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
+                           default-first-option :disabled="disabled" :teleported="!isMobile"
+                           :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
                   <el-option v-for="p in propertyOptions" :key="p.value" :label="p.name" :value="p.value"/>
                 </el-select>
                 <el-input v-else v-model="a[aggName]" :placeholder="i18n('queryBuilder.agg.selectField')"
@@ -980,20 +1047,22 @@ const singleDisplay = (item: any, type: "prop" | "cond") => {
               </div>
               <div class="dqb-agg-func">
                 <el-select v-model="a.aggFunction" :placeholder="i18n('queryBuilder.agg.selectFunc')"
-                           :disabled="disabled" :teleported="!isMobile" :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
+                           :disabled="disabled" :teleported="!isMobile"
+                           :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
                   <el-option v-for="fn in AGG_FUNCTIONS" :key="fn" :label="fn" :value="fn"/>
                 </el-select>
               </div>
               <div class="dqb-item-val"></div>
-              <el-button v-if="!disabled" type="danger" text   class="dqb-item-del"
+              <el-button v-if="!disabled" type="danger" text class="dqb-item-del"
                          @click="removeAgg(ai)">
                 <star-horse-icon icon-class="delete" color="var(--el-color-danger)"/>
               </el-button>
             </div>
           </div>
           <div v-if="!disabled" class="dqb-actions">
-            <el-button type="primary" text   @click="addAgg">
-              <star-horse-icon icon-class="add" /> {{ i18n('queryBuilder.action.addAggregate') }}
+            <el-button type="primary" text @click="addAgg">
+              <star-horse-icon icon-class="add"/>
+              {{ i18n('queryBuilder.action.addAggregate') }}
             </el-button>
           </div>
         </div>
@@ -1010,31 +1079,34 @@ const singleDisplay = (item: any, type: "prop" | "cond") => {
             <div v-for="(g, gi) in localGroupBy" :key="g.id" class="dqb-item">
               <div class="dqb-item-alias">
                 <el-select v-if="hasAliasOpts" v-model="g[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                           clearable filterable allow-create default-first-option :disabled="disabled" :teleported="!isMobile" :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
+                           clearable filterable allow-create default-first-option :disabled="disabled"
+                           :teleported="!isMobile" :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
                   <el-option v-for="a in aliasOpts" :key="a.value" :label="a.name" :value="a.value"/>
                 </el-select>
                 <el-input v-else v-model="g[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                          :disabled="disabled" />
+                          :disabled="disabled"/>
               </div>
               <div class="dqb-groupby-field">
                 <el-select v-if="propertyOptions.length" v-model="g[PK]"
                            :placeholder="i18n('queryBuilder.groupBy.selectField')" filterable allow-create
-                           default-first-option :disabled="disabled" :teleported="!isMobile" :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
+                           default-first-option :disabled="disabled" :teleported="!isMobile"
+                           :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
                   <el-option v-for="p in propertyOptions" :key="p.value" :label="p.name" :value="p.value"/>
                 </el-select>
                 <el-input v-else v-model="g[PK]" :placeholder="i18n('queryBuilder.groupBy.selectField')"
                           :disabled="disabled"/>
               </div>
               <div class="dqb-item-val"></div>
-              <el-button v-if="!disabled" type="danger" text   class="dqb-item-del"
+              <el-button v-if="!disabled" type="danger" text class="dqb-item-del"
                          @click="removeGroupBy(gi)">
                 <star-horse-icon icon-class="delete" color="var(--el-color-danger)"/>
               </el-button>
             </div>
           </div>
           <div v-if="!disabled" class="dqb-actions">
-            <el-button type="primary" text   @click="addGroupBy">
-              <star-horse-icon icon-class="add" /> {{ i18n('queryBuilder.action.addGroupBy') }}
+            <el-button type="primary" text @click="addGroupBy">
+              <star-horse-icon icon-class="add"/>
+              {{ i18n('queryBuilder.action.addGroupBy') }}
             </el-button>
           </div>
         </div>
@@ -1055,22 +1127,25 @@ const singleDisplay = (item: any, type: "prop" | "cond") => {
             <div v-for="(h, hi) in localHaving" :key="h.id" class="dqb-item">
               <div class="dqb-item-alias">
                 <el-select v-if="hasAliasOpts" v-model="h[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                           clearable filterable allow-create default-first-option :disabled="disabled" :teleported="!isMobile" :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
+                           clearable filterable allow-create default-first-option :disabled="disabled"
+                           :teleported="!isMobile" :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
                   <el-option v-for="a in aliasOpts" :key="a.value" :label="a.name" :value="a.value"/>
                 </el-select>
                 <el-input v-else v-model="h[AK]" :placeholder="i18n('queryBuilder.placeholder.alias')"
-                          :disabled="disabled" />
+                          :disabled="disabled"/>
               </div>
               <div class="dqb-having-func">
                 <el-select v-model="h.aggFunction" :placeholder="i18n('queryBuilder.agg.selectFunc')"
-                           :disabled="disabled" :teleported="!isMobile" :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
+                           :disabled="disabled" :teleported="!isMobile"
+                           :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
                   <el-option v-for="fn in AGG_FUNCTIONS" :key="fn" :label="fn" :value="fn"/>
                 </el-select>
               </div>
               <div class="dqb-having-field">
                 <el-select v-if="propertyOptions.length" v-model="h[aggName]"
                            :placeholder="i18n('queryBuilder.agg.selectField')" filterable allow-create
-                           default-first-option :disabled="disabled" :teleported="!isMobile" :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
+                           default-first-option :disabled="disabled" :teleported="!isMobile"
+                           :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
                   <el-option v-for="p in propertyOptions" :key="p.value" :label="p.name" :value="p.value"/>
                 </el-select>
                 <el-input v-else v-model="h[aggName]" :placeholder="i18n('queryBuilder.agg.selectField')"
@@ -1078,7 +1153,8 @@ const singleDisplay = (item: any, type: "prop" | "cond") => {
               </div>
               <div class="dqb-having-cond">
                 <el-select v-model="h[CK]" :placeholder="i18n('queryBuilder.placeholder.condition')"
-                           :disabled="disabled" @change="onHavingConditionChange(h)" :teleported="!isMobile" :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
+                           :disabled="disabled" @change="onHavingConditionChange(h)" :teleported="!isMobile"
+                           :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined">
                   <el-option v-for="m in matchList" :key="m.value" :label="m.name" :value="m.value"/>
                 </el-select>
               </div>
@@ -1095,21 +1171,27 @@ const singleDisplay = (item: any, type: "prop" | "cond") => {
                            default-first-option :placeholder="i18n('queryBuilder.placeholder.multi')"
                            :disabled="disabled"/>
                 <div v-else-if="isMulti(h[CK]) && isMobile" class="dqb-multi-trigger" @click="openMultiPicker(h)">
-                  <span v-if="!h[VK]?.length" class="dqb-multi-placeholder">{{ i18n('queryBuilder.placeholder.multi') }}</span>
-                  <el-tag v-for="tag in h[VK]" :key="tag" closable @close.stop="removeMultiTag(h, tag)">{{ tag }}</el-tag>
+                  <span v-if="!h[VK]?.length" class="dqb-multi-placeholder">{{
+                      i18n('queryBuilder.placeholder.multi')
+                    }}</span>
+                  <el-tag v-for="tag in h[VK]" :key="tag" closable @close.stop="removeMultiTag(h, tag)">{{
+                      tag
+                    }}
+                  </el-tag>
                 </div>
                 <el-input v-else v-model="h[VK]" :placeholder="i18n('queryBuilder.placeholder.value')"
                           :disabled="disabled"/>
               </div>
-              <el-button v-if="!disabled" type="danger" text   class="dqb-item-del"
+              <el-button v-if="!disabled" type="danger" text class="dqb-item-del"
                          @click="removeHaving(hi)">
                 <star-horse-icon icon-class="delete" color="var(--el-color-danger)"/>
               </el-button>
             </div>
           </div>
           <div v-if="!disabled" class="dqb-actions">
-            <el-button type="primary" text   @click="addHaving">
-              <star-horse-icon icon-class="add" /> {{ i18n('queryBuilder.action.addHaving') }}
+            <el-button type="primary" text @click="addHaving">
+              <star-horse-icon icon-class="add"/>
+              {{ i18n('queryBuilder.action.addHaving') }}
             </el-button>
           </div>
         </div>
@@ -1118,12 +1200,12 @@ const singleDisplay = (item: any, type: "prop" | "cond") => {
 
     <!-- APP 端单选抽屉（属性/匹配方式） -->
     <ShMobilePicker
-      v-if="isMobile && singlePickerVisible"
-      v-model="singlePickerVisible"
-      :title="singlePickerType === 'prop' ? effectivePlaceholder : i18n('queryBuilder.placeholder.condition')"
-      placement="bottom"
-      size="50%"
-      :show-footer="false"
+        v-if="isMobile && singlePickerVisible"
+        v-model="singlePickerVisible"
+        :title="singlePickerType === 'prop' ? effectivePlaceholder : i18n('queryBuilder.placeholder.condition')"
+        placement="bottom"
+        size="50%"
+        :show-footer="false"
     >
       <div class="dqb-single-drawer">
         <el-input v-if="singlePickerType === 'prop'"
@@ -1131,7 +1213,9 @@ const singleDisplay = (item: any, type: "prop" | "cond") => {
                   class="dqb-single-drawer__search"
                   :placeholder="i18n('starhorse.pleaseInput')"
                   clearable>
-          <template #prefix><star-horse-icon icon-class="search" /></template>
+          <template #prefix>
+            <star-horse-icon icon-class="search"/>
+          </template>
         </el-input>
         <div class="dqb-single-drawer__options">
           <div v-for="opt in singleFiltered" :key="opt.value"
@@ -1139,10 +1223,10 @@ const singleDisplay = (item: any, type: "prop" | "cond") => {
                :class="{ 'is-selected': isSingleSelected(opt) }"
                @click="selectSingle(opt)">
             <span>{{ opt.name }}</span>
-            <star-horse-icon v-if="isSingleSelected(opt)" icon-class="check" class="dqb-single-drawer__check" />
+            <star-horse-icon v-if="isSingleSelected(opt)" icon-class="check" class="dqb-single-drawer__check"/>
           </div>
           <div v-if="showSingleCreateRow" class="dqb-single-drawer__create" @click="createSingleValue">
-            <star-horse-icon icon-class="add" />
+            <star-horse-icon icon-class="add"/>
             <span>{{ i18n('form.add') }} "{{ singleSearchText }}"</span>
           </div>
         </div>
@@ -1151,22 +1235,22 @@ const singleDisplay = (item: any, type: "prop" | "cond") => {
 
     <!-- APP 端多选值抽屉（ini/ins 条件） -->
     <ShMobilePicker
-      v-if="isMobile && multiPickerVisible"
-      v-model="multiPickerVisible"
-      :title="i18n('queryBuilder.placeholder.multi')"
-      placement="bottom"
-      size="55%"
-      :show-footer="true"
-      @confirm="multiPickerVisible = false"
-      @cancel="multiPickerVisible = false"
+        v-if="isMobile && multiPickerVisible"
+        v-model="multiPickerVisible"
+        :title="i18n('queryBuilder.placeholder.multi')"
+        placement="bottom"
+        size="55%"
+        :show-footer="true"
+        @confirm="multiPickerVisible = false"
+        @cancel="multiPickerVisible = false"
     >
       <div class="dqb-multi-drawer">
         <el-input
-          v-model="multiInputText"
-          class="dqb-multi-drawer__input"
-          :placeholder="i18n('starhorse.pleaseInput')"
-          clearable
-          @keyup.enter="addMultiInput"
+            v-model="multiInputText"
+            class="dqb-multi-drawer__input"
+            :placeholder="i18n('starhorse.pleaseInput')"
+            clearable
+            @keyup.enter="addMultiInput"
         >
           <template #suffix>
             <el-button type="primary" text @click="addMultiInput">{{ i18n('form.add') }}</el-button>
@@ -1174,12 +1258,12 @@ const singleDisplay = (item: any, type: "prop" | "cond") => {
         </el-input>
         <div class="dqb-multi-drawer__options">
           <div
-            v-for="tag in (multiPickerItem?.[VK] || [])"
-            :key="tag"
-            class="dqb-multi-drawer__item is-selected"
-            @click="toggleMultiOption({ value: tag })"
+              v-for="tag in (multiPickerItem?.[VK] || [])"
+              :key="tag"
+              class="dqb-multi-drawer__item is-selected"
+              @click="toggleMultiOption({ value: tag })"
           >
-            <el-checkbox :model-value="true" @click.stop />
+            <el-checkbox :model-value="true" @click.stop/>
             <span class="dqb-multi-drawer__label">{{ tag }}</span>
           </div>
           <div v-if="!multiPickerItem?.[VK]?.length" class="dqb-multi-drawer__empty">

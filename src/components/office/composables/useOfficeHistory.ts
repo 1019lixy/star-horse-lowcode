@@ -1,7 +1,7 @@
 /**
  * Office 文档撤销/重做栈：维护 past 与 future 两个快照栈
  */
-import { computed, ref } from "vue";
+import {computed, ref} from "vue";
 
 export interface OfficeHistory<T> {
     past: T[];

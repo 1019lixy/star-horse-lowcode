@@ -33,7 +33,7 @@ import {
 import {isMobile} from "@/api/device";
 import {convertCompToAppComps} from "@/api/form_utils";
 import type {PreValid} from "@/components/types";
-import {Sort} from "@element-plus/icons-vue";
+import FieldVisibleControl from "@/components/comp/utils/FieldVisibleControl.vue";
 
 const dynamicForm = useDynamicFormStore(piniaInstance);
 const props = withDefaults(defineProps<DataListProps>(), {
@@ -254,8 +254,8 @@ const init = async () => {
   }
   moveColumn();
   reCreateData();
-  // PC/APP 端均初始化字段缓存：
-  // PC 端卡片模式列表及设置弹窗均依赖 cacheAppCompList 响应式更新
+  // 初始化 APP 端字段缓存（卡片模式 + APP popover 数据源）
+  // PC 端设置弹窗直接绑定 props.fieldList.fieldList 原数据，listVisible 改动即时生效
   loadField();
 };
 // Listen for changes in data passed in from outside
@@ -1184,72 +1184,7 @@ defineExpose({
             icon-class="refresh"
             style="cursor: pointer; color: var(--star-horse-style)"
         />
-        <el-popover
-
-            trigger="click"
-            :title="i18n('comp.showHideColumns')"
-            :popper-style="{ width: 'unset !important' }"
-            placement="left-end"
-        >
-          <template #reference>
-            <star-horse-icon
-                @click="fieldVisible = !fieldVisible"
-                :title="i18n('comp.showHideColumns')"
-                icon-class="setting"
-                style="color: var(--star-horse-style); cursor: pointer"
-            />
-          </template>
-          <el-table
-              class="sh-columns"
-              ref="shColumnsTableRef"
-              :data="cacheAppCompList"
-              :strip="true"
-              :fit="true"
-              :highlight-current-row="true"
-              max-height="400px"
-              row-key="prop"
-              style="width: 100%"
-              :size="compSize"
-              :border="true"
-          >
-            <el-table-column prop="" :label="i18n('comp.sort')" width="60">
-              <el-tag class="move" style="cursor: move">
-                <el-icon style="cursor: move">
-                  <Sort/>
-                </el-icon>
-              </el-tag>
-            </el-table-column>
-            <el-table-column
-                prop="label"
-                :label="i18n('comp.columnName')"
-                :show-overflow-tooltip="true"
-            >
-              <template #default="scope">
-                <el-tag
-                    round
-                    :effect="scope.row.listVisible ? 'dark' : 'light'"
-                    :size="compSize"
-                >
-                  {{ scope.row.label }}
-                </el-tag>
-              </template>
-            </el-table-column>
-            <el-table-column
-                prop="listVisible"
-                :label="i18n('comp.showHide')"
-                width="100"
-            >
-              <template #default="scope">
-                <el-switch
-                    v-model="scope.row.listVisible"
-                    :size="compSize"
-                    :active-value="true"
-                    :inactive-value="false"
-                />
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-popover>
+        <field-visible-control :fields="fieldList?.fieldList"/>
         <star-horse-icon
             @click="showType(dataShowType)"
             :title="typeTitle"

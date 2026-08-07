@@ -2,14 +2,8 @@
  * 甘特图常量定义
  * 单一职责：仅导出常量与工厂函数
  */
-import { i18n } from "@/lang";
-import type {
-    GanttConfig,
-    GanttPriorityPreset,
-    GanttStatusPreset,
-    GanttTask,
-    GanttTimeUnit,
-} from "./types";
+import {i18n} from "@/lang";
+import type {GanttConfig, GanttPriorityPreset, GanttStatusPreset, GanttTask, GanttTimeUnit,} from "./types";
 
 /** 默认每日像素宽度 */
 export const DEFAULT_DAY_WIDTH = 40;
@@ -39,28 +33,28 @@ export const DEFAULT_GANTT_CONFIG: GanttConfig = {
 
 /** 任务状态预设 */
 export const GANTT_STATUS_PRESETS: GanttStatusPreset[] = [
-    { value: "pending", label: i18n("gantt.status.pending"), color: "#909399" },
-    { value: "inProgress", label: i18n("gantt.status.inProgress"), color: "#409EFF" },
-    { value: "completed", label: i18n("gantt.status.completed"), color: "#67C23A" },
-    { value: "delayed", label: i18n("gantt.status.delayed"), color: "#F56C6C" },
-    { value: "paused", label: i18n("gantt.status.paused"), color: "#E6A23C" },
+    {value: "pending", label: i18n("gantt.status.pending"), color: "#909399"},
+    {value: "inProgress", label: i18n("gantt.status.inProgress"), color: "#409EFF"},
+    {value: "completed", label: i18n("gantt.status.completed"), color: "#67C23A"},
+    {value: "delayed", label: i18n("gantt.status.delayed"), color: "#F56C6C"},
+    {value: "paused", label: i18n("gantt.status.paused"), color: "#E6A23C"},
 ];
 
 /** 任务优先级预设 */
 export const GANTT_PRIORITY_PRESETS: GanttPriorityPreset[] = [
-    { value: "low", label: i18n("gantt.priority.low"), color: "#909399" },
-    { value: "medium", label: i18n("gantt.priority.medium"), color: "#409EFF" },
-    { value: "high", label: i18n("gantt.priority.high"), color: "#E6A23C" },
-    { value: "urgent", label: i18n("gantt.priority.urgent"), color: "#F56C6C" },
+    {value: "low", label: i18n("gantt.priority.low"), color: "#909399"},
+    {value: "medium", label: i18n("gantt.priority.medium"), color: "#409EFF"},
+    {value: "high", label: i18n("gantt.priority.high"), color: "#E6A23C"},
+    {value: "urgent", label: i18n("gantt.priority.urgent"), color: "#F56C6C"},
 ];
 
 /** 时间单位选项 */
 export const GANTT_TIME_UNIT_OPTIONS: { value: GanttTimeUnit; label: string }[] = [
-    { value: "day", label: i18n("gantt.unit.day") },
-    { value: "week", label: i18n("gantt.unit.week") },
-    { value: "month", label: i18n("gantt.unit.month") },
-    { value: "quarter", label: i18n("gantt.unit.quarter") },
-    { value: "year", label: i18n("gantt.unit.year") },
+    {value: "day", label: i18n("gantt.unit.day")},
+    {value: "week", label: i18n("gantt.unit.week")},
+    {value: "month", label: i18n("gantt.unit.month")},
+    {value: "quarter", label: i18n("gantt.unit.quarter")},
+    {value: "year", label: i18n("gantt.unit.year")},
 ];
 
 /** 创建新任务工厂函数 */

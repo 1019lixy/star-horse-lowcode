@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {ref} from "vue";
-import {DiagramDesigner} from "@/components/diagram";
 import type {DiagramData} from "@/components/diagram";
+import {DiagramDesigner} from "@/components/diagram";
 
 const diagramData = ref<DiagramData>({
   id: "demo_diagram",
@@ -164,7 +164,7 @@ const diagramData = ref<DiagramData>({
 }
 
 .demo-canvas {
-  flex:1;
+  flex: 1;
   border: 1px solid var(--el-border-color);
   border-radius: 4px;
   overflow: hidden;

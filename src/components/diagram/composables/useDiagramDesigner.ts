@@ -2,9 +2,9 @@
  * 通用图编辑器 - 状态管理
  */
 
-import { computed, reactive } from "vue";
-import { DEFAULT_CANVAS, MAX_HISTORY, createNode } from "../constants";
-import type { DiagramData, DiagramDesignerState, DiagramEdge, DiagramNode, NodeTypePreset } from "../types";
+import {computed, reactive} from "vue";
+import {createNode, DEFAULT_CANVAS, MAX_HISTORY} from "../constants";
+import type {DiagramData, DiagramDesignerState, DiagramEdge, DiagramNode, NodeTypePreset} from "../types";
 
 const createInitialDiagram = (): DiagramData => ({
     id: `dg_${Date.now()}`,
@@ -22,11 +22,11 @@ const createInitialDiagram = (): DiagramData => ({
         },
     ],
     activeLayerId: "layer_default",
-    canvas: { ...DEFAULT_CANVAS },
+    canvas: {...DEFAULT_CANVAS},
 });
 
 const createInitialState = (diagram?: Partial<DiagramData>): DiagramDesignerState => {
-    const dg = { ...createInitialDiagram(), ...diagram };
+    const dg = {...createInitialDiagram(), ...diagram};
     return {
         diagram: dg,
         selectedNodeIds: [],
@@ -107,7 +107,7 @@ export function useDiagramDesigner(initial?: Partial<DiagramData>) {
     const updateNodeStyle = (id: string, patch: Record<string, any>) => {
         const node = state.diagram.nodes.find((n) => n.id === id);
         if (!node) return;
-        node.style = { ...(node.style || {}), ...patch };
+        node.style = {...(node.style || {}), ...patch};
     };
 
     const deleteNodes = (ids: string[] = state.selectedNodeIds) => {

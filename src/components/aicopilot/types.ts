@@ -141,6 +141,7 @@ export interface AiProviderResponse {
 /** AI Provider 接口 */
 export interface AiProvider {
     name: string;
+
     /** 生成响应 */
     generate(request: AiProviderRequest): Promise<AiProviderResponse>;
 }

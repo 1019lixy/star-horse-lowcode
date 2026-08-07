@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { nextTick, onMounted, PropType, ref, watch } from "vue";
+import {nextTick, onMounted, PropType, ref, watch} from "vue";
 
 const props = defineProps({
-  menus: { type: Array<any>, default: () => [] },
-  icon: { type: String, default: "menu" },
+  menus: {type: Array<any>, default: () => []},
+  icon: {type: String, default: "menu"},
   prop: {
     type: Object as PropType<Record<string, string>>,
     default: () => {
@@ -13,7 +13,7 @@ const props = defineProps({
       };
     },
   },
-  position: { type: Object as PropType<Record<string, any>>, default: {} },
+  position: {type: Object as PropType<Record<string, any>>, default: {}},
 });
 const emits = defineEmits(["change"]);
 let startX = ref<any>(undefined); //判断是否要打开下拉
@@ -163,43 +163,43 @@ onMounted(async () => {
   await init();
 });
 watch(
-  () => props.position,
-  (val) => {
-    if (Object.keys(val || {}).length > 0) {
-      assignPosition();
-    }
-  },
-  { immediate: false, deep: true },
+    () => props.position,
+    (val) => {
+      if (Object.keys(val || {}).length > 0) {
+        assignPosition();
+      }
+    },
+    {immediate: false, deep: true},
 );
 </script>
 <template>
   <div v-show="show" ref="screenshot" id="screenshot" class="screenshot">
     <div
-      ref="screenshotDropdown"
-      v-if="dropDownVisible"
-      class="screenshot-dropdown"
+        ref="screenshotDropdown"
+        v-if="dropDownVisible"
+        class="screenshot-dropdown"
     >
       <div
-        class="flex items-center gap-1 h-[30px] cursor-pointer"
-        v-for="(menu, i) in menus"
-        :key="i"
-        @click="changeMenu(menu)"
+          class="flex items-center gap-1 h-[30px] cursor-pointer"
+          v-for="(menu, i) in menus"
+          :key="i"
+          @click="changeMenu(menu)"
       >
         <star-horse-icon
-          :icon-class="menu[prop.iconName ?? 'icon'] || 'document'"
+            :icon-class="menu[prop.iconName ?? 'icon'] || 'document'"
         />
         <span>{{ menu[prop.label ?? "btnName"] }}</span>
       </div>
     </div>
     <el-button
-      ref="screenshotBtnRef"
-      id="screenshotBtn"
-      circle
-      @click.native.prevent.stop="showDropDown"
-      class="screenshot-btn el-dropdown-link"
-      type="primary"
+        ref="screenshotBtnRef"
+        id="screenshotBtn"
+        circle
+        @click.native.prevent.stop="showDropDown"
+        class="screenshot-btn el-dropdown-link"
+        type="primary"
     >
-      <star-horse-icon :icon-class="icon" color="var(--star-horse-white)" />
+      <star-horse-icon :icon-class="icon" color="var(--star-horse-white)"/>
     </el-button>
   </div>
 </template>

@@ -1,9 +1,9 @@
 /**
  * ETL 管道执行模拟器（前端模拟，真实场景需对接后端执行引擎）
  */
-import { ref } from "vue";
-import type { EtlPipeline, EtlNode } from "../types";
-import { findPreset } from "../constants";
+import {ref} from "vue";
+import type {EtlNode, EtlPipeline} from "../types";
+import {findPreset} from "../constants";
 
 export const useEtlExecutor = () => {
     const isRunning = ref(false);
@@ -79,7 +79,7 @@ export const useEtlExecutor = () => {
         node.duration = duration;
         node.rowCount = rowCount;
         node.status = "success";
-        return { rowCount };
+        return {rowCount};
     };
 
     /** 执行整个管道 */

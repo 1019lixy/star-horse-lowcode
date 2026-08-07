@@ -1,16 +1,10 @@
 <script setup lang="ts">
-import {
-  checkObject,
-  getDataIndex,
-  getFormData,
-  getPrefix,
-} from "@/api/form_utils";
+import {checkObject, getDataIndex, getFormData, getPrefix,} from "@/api/form_utils";
 
 import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
-import { ContainerPreps } from "@/components/types/ItemPreps";
-import { ModelRef, onMounted } from "vue";
-import { prepsFilter } from "@/components/formcomp/utils/ItemRelationEventUtils";
-import StarHorseItem from "@/components/comp/StarHorseItem.vue";
+import {ContainerPreps} from "@/components/types/ItemPreps";
+import {ModelRef, onMounted} from "vue";
+import {prepsFilter} from "@/components/formcomp/utils/ItemRelationEventUtils";
 
 withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
@@ -40,7 +34,8 @@ const addRow = (row: any) => {
 const removeRow = (row: any) => {
   emits("removeRow", row);
 };
-const init = () => {};
+const init = () => {
+};
 onMounted(() => {
   init();
 });
@@ -51,21 +46,21 @@ onMounted(() => {
     <el-splitter v-bind="prepsFilter(item.preps)">
       <template v-for="(splitterItem, key) in item.splitterList">
         <el-splitter-panel
-          v-if="Object.keys(splitterItem).length > 0 && splitterItem.formVisible !== false"
-          v-bind="splitterItem.preps"
-          :index="
+            v-if="Object.keys(splitterItem).length > 0 && splitterItem.formVisible !== false"
+            v-bind="splitterItem.preps"
+            :index="
             checkObject(dataForm, splitterItem, key, dataIndex, propPrefix)
           "
         >
           <star-horse-form-item
-            :source="source"
-            :compUrl="compUrl"
-            :compSize="compSize"
-            @addRow="addRow"
-            :commonFormat="commonFormat"
-            @removeRow="removeRow"
-            :objectName="splitterItem.objectName"
-            :dataForm="
+              :source="source"
+              :compUrl="compUrl"
+              :compSize="compSize"
+              @addRow="addRow"
+              :commonFormat="commonFormat"
+              @removeRow="removeRow"
+              :objectName="splitterItem.objectName"
+              :dataForm="
               getFormData(
                 splitterItem,
                 dataForm,
@@ -74,7 +69,7 @@ onMounted(() => {
                 item.groupData ? key : 0,
               )
             "
-            :dataIndex="
+              :dataIndex="
               getDataIndex(
                 splitterItem,
                 propPrefix,
@@ -82,7 +77,7 @@ onMounted(() => {
                 item.groupData ? key : 0,
               )
             "
-            :propPrefix="
+              :propPrefix="
               getPrefix(
                 splitterItem,
                 propPrefix,
@@ -90,11 +85,11 @@ onMounted(() => {
                 item.groupData ? key : 0,
               )
             "
-            :fieldList="splitterItem"
-            :rules="rules"
-            :subFormFlag="splitterItem.subFormFlag"
-            :enableSubNode="splitterItem.enableSubNode"
-            :primaryKey="primaryKey"
+              :fieldList="splitterItem"
+              :rules="rules"
+              :subFormFlag="splitterItem.subFormFlag"
+              :enableSubNode="splitterItem.enableSubNode"
+              :primaryKey="primaryKey"
           />
         </el-splitter-panel>
       </template>

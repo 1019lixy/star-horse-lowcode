@@ -1,9 +1,9 @@
 /**
  * ETL 管道设计器状态管理
  */
-import { reactive, ref } from "vue";
-import { createEdge, createEtlNode, createPipeline, findPreset, NODE_HEIGHT, NODE_WIDTH } from "../constants";
-import type { EtlEdge, EtlNode, EtlPipeline, EtlNodeType } from "../types";
+import {reactive, ref} from "vue";
+import {createEdge, createEtlNode, createPipeline, findPreset, NODE_HEIGHT, NODE_WIDTH} from "../constants";
+import type {EtlEdge, EtlNode, EtlNodeType, EtlPipeline} from "../types";
 
 export const useEtlDesigner = (initial?: Partial<EtlPipeline>) => {
     const state = reactive<EtlPipeline>(createPipeline(initial ?? {}));
