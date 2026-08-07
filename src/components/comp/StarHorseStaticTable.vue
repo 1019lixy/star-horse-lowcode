@@ -247,6 +247,13 @@ const addData = (data: any) => {
     staticDataList.value.splice(0, 0, data);
   }
 };
+const deleteRow = (index: number, row: any) => {
+  if (props.primaryKey) {
+    if (typeof props.primaryKey === "string") {
+      staticDataList.value = staticDataList.value.filter((item: any) => item[props.primaryKey] !== row[props.primaryKey]);
+    }
+  }
+};
 //导出方法和变量
 defineExpose({
   getIds,
@@ -363,7 +370,7 @@ defineExpose({
                            color="var(--el-color-danger)"
                            cursor="pointer"
                            :title="i18n('api.btn.delete')"
-                           @click.stop="deleteRow(scope.row)"
+                           @click.stop="deleteRow(scope.$index,scope.row)"
           />
         </template>
       </el-table-column>

@@ -156,7 +156,7 @@ const taskConditionTabs = reactive<any>({
       title: "数据库操作",
       tabName: "DATABASE",
       objectName: "taskCondition",
-      disabled: true,
+      disabled: false,
       formVisible: false,
       fieldList: [
         [
@@ -348,7 +348,7 @@ const taskConditionTabs = reactive<any>({
       title: "消息通知",
       tabName: "MESSAGE",
       objectName: "taskCondition",
-      disabled: true,
+      disabled: false,
       formVisible: false,
       fieldList: [
         {
@@ -485,7 +485,7 @@ const taskConditionTabs = reactive<any>({
       title: "脚本执行",
       tabName: "SHELL",
       objectName: "taskCondition",
-      disabled: true,
+      disabled: false,
       formVisible: false,
       fieldList: [
         {
@@ -582,7 +582,7 @@ const taskConditionTabs = reactive<any>({
       title: "跑批组合",
       tabName: "BATCH",
       objectName: "taskCondition",
-      disabled: true,
+      disabled: false,
       formVisible: false,
       fieldList: [
         {
@@ -604,7 +604,7 @@ const taskConditionTabs = reactive<any>({
       title: "反射调用",
       tabName: "REFLECT",
       objectName: "taskCondition",
-      disabled: true,
+      disabled: false,
       formVisible: false,
       fieldList: [
         {
@@ -661,7 +661,7 @@ const taskConditionTabs = reactive<any>({
       title: "自定义",
       tabName: "CUSTOM",
       objectName: "taskCondition",
-      disabled: true,
+      disabled: false,
       formVisible: false,
       fieldList: [
         {

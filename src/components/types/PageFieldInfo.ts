@@ -91,6 +91,12 @@ export declare interface SplitterFieldInfo extends TabFieldInfo {
 }
 
 /**
+ * Step 容器信息
+ */
+export declare interface StepFieldInfo extends TabFieldInfo {
+}
+
+/**
  * 表单属性
  */
 export declare interface FieldInfo {
@@ -192,6 +198,10 @@ export declare interface FieldInfo {
      * 传统table布局表单，对应动态表格(dytable)容器
      */
     dytableList?: FieldInfo[];
+    /**
+     * 步骤容器数据
+     */
+    stepList?: StepFieldInfo[];
     /**
      * 列表属性，对应动态列表（table) 容器
      */

@@ -138,20 +138,12 @@ watch(
     () => windowsType.value,
     (val: boolean) => {
       if (val) {
-        firstOpenStart = performance.now();
-        (window as any).__shDialogStart = firstOpenStart;
-        console.log(`[StarHorseDialog] ✅ 用户点击，dialogVisible=true`);
         activeZIndex.value = props.zIndex > 0 ? props.zIndex : nextZIndex();
         isMinimized.value = false;
         if (isMobile) {
           isFullScreen.value = true;
         }
-        nextTick(() => {
-          console.log(`[StarHorseDialog] ✅ nextTick1 (模板patch完成) t=${(performance.now() - firstOpenStart).toFixed(1)}ms`);
-          nextTick(() => {
-            console.log(`[StarHorseDialog] ✅ nextTick2 (子组件mounted) t=${(performance.now() - firstOpenStart).toFixed(1)}ms`);
-          });
-        });
+
       }
     },
     {

@@ -240,6 +240,8 @@ const tabColapseCardAnalysis = (item: any) => {
         fieldInfo.collapseList = dataList;
     } else if (item.itemType == "splitter") {
         fieldInfo.splitterList = dataList;
+    } else if (item.itemType == "step") {
+        fieldInfo.stepList = dataList;
     } else {
         console.error("Unknown itemType: ", item.itemType);
     }
@@ -329,6 +331,10 @@ export const analysisCompDatas = (dataList: any) => {
         const comp = compList[i];
         if (comp.compType == "container") {
             const result = getContainerResult(comp);
+            if (null == result) {
+                console.warn("[analysisCompDatas]:container content is null");
+                continue;
+            }
             const {currentLayerContainer, boxItems, fieldList, searchItemList} =
                 result;
 
@@ -432,7 +438,7 @@ function getContainerResult(comp: any) {
         return boxDytableAnalysis(comp);
     } else if (comp.itemType === "table") {
         return tableAnalysis(comp);
-    } else if (["tab", "collapse", "card", "splitter"].includes(comp.itemType)) {
+    } else if (["tab", "collapse", "card", "splitter", "step"].includes(comp.itemType)) {
         return tabColapseCardAnalysis(comp);
     } else if (comp.itemType === "condition") {
         return conditionAnalysis(comp);
@@ -461,6 +467,8 @@ function checkContainerType(data: FieldInfo) {
         return {type: "collapse", dataList: data.collapseList};
     } else if (data.splitterList) {
         return {type: "splitter", dataList: data.splitterList};
+    } else if (data.stepList) {
+        return {type: "step", dataList: data.stepList};
     } else {
         return null;
     }
@@ -501,7 +509,7 @@ const collectContainerRelationNames = (fieldList: any): Set<string> => {
                 }
             }
             if (Array.isArray(field.children)) scan(field.children);
-            for (const key of ["tabList", "cardList", "collapseList", "splitterList", "dytableList"]) {
+            for (const key of ["tabList", "cardList", "collapseList", "splitterList", "dytableList", "stepList"]) {
                 const list = (field as any)[key];
                 if (Array.isArray(list)) {
                     for (const item of list) {
@@ -1066,6 +1074,14 @@ export const processFieldList = (
                 processFieldList(
                     splitterItems.fieldList,
                     `${key}_splitter_${splitterIndex}`,
+                    result,
+                );
+            });
+        } else if (item.stepList?.length > 0) {
+            item.stepList.forEach((stepItems: any, stepIndex: number) => {
+                processFieldList(
+                    stepItems.fieldList,
+                    `${key}_step_${stepIndex}`,
                     result,
                 );
             });

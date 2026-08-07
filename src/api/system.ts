@@ -108,24 +108,6 @@ const selectType: Array<string> = [
     "dialog-input",
     "page-select",
 ];
-const dateType: Array<string> = [
-    "year",
-    "years",
-    "month",
-    "months",
-    "date",
-    "dates",
-    "datetime",
-    "week",
-    "datetimerange",
-    "daterange",
-    "monthrange",
-    "yearrange",
-    "time",
-    "time-picker",
-    "timerange",
-];
-
 // dateCompList 专用：仅包含应路由到 datetime-item 的日期类型
 // time / time-picker / timerange 有独立组件，不应路由到 datetime-item
 const dateCompType: Array<string> = [

@@ -19,7 +19,7 @@ const emits = defineEmits(["refresh"]);
 const starHorseFormRef = ref();
 const dataForm = ref<any>({});
 const closeDialog = inject("closeDialog") as Function;
-const dialogOperation = inject("dialogOperation");
+const dialogOperation = inject("dialogOperation") as any;
 const dialogProps = inject<DialogProps>("dialogProps", {});
 provide("starHorseFormRef", starHorseFormRef);
 const assignDefault = () => {

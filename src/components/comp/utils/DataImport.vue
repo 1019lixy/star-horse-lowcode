@@ -11,8 +11,11 @@ import {download} from "@/api/star_horse_apis";
 import {error, success, warning} from "@/utils/message";
 
 const props = withDefaults(defineProps<{
-  importInfo: ApiUrls
-}>(), {});
+  importInfo: ApiUrls,
+  compSize?: string
+}>(), {
+  compSize: "default",
+});
 const emits = defineEmits<{
   (e: "update:modelValue", dataList: Array<any>): void;
 }>();
@@ -87,7 +90,7 @@ const uploadSuccess = (response: any, _file: any, _fileList: any) => {
             <el-button
                 @click="downloadTemplate"
                 title=""
-                :size="size"
+                :size="compSize"
                 link
                 v-if="importInfo?.downloadTemplateUrl"
             >

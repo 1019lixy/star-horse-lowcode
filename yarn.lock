@@ -817,9 +817,9 @@
     "@lezer/lr" "^1.4.0"
 
 "@lucide/vue@^1.16.0":
-  version "1.28.0"
-  resolved "https://registry.npmjs.org/@lucide/vue/-/vue-1.28.0.tgz#05173964580340b30de46b83e68cebfa66373963"
-  integrity sha512-cO89UyNM/0i2Srdi04nFWeEOQkqzDZlM2ehtWyBhcMpRTJDKpMZPCGAVlmVBgBgr5HaeL5L6FsU8RHsOdwXtKw==
+  version "1.29.0"
+  resolved "https://registry.npmjs.org/@lucide/vue/-/vue-1.29.0.tgz#88968aa034e165e91bbded4b92e1f45478b444be"
+  integrity sha512-UnbPPAdxWGqABrjcQJZFqawSgZTBmeKOrNFPI9sqKaDkgLoEbYyx+ivIdiYRR1YoYhWWg7dCdvjtCwK6zBxWDQ==
 
 "@marijn/find-cluster-break@^1.0.0":
   version "1.0.3"
@@ -3551,7 +3551,7 @@ postcss-selector-parser@^7.1.4:
     cssesc "^3.0.0"
     util-deprecate "^1.0.2"
 
-postcss@^8.5.19, postcss@^8.5.23:
+postcss@^8.5.19, postcss@^8.5.25:
   version "8.5.26"
   resolved "https://registry.npmjs.org/postcss/-/postcss-8.5.26.tgz#6e75135780c7e10df3433bf2266c552d35c8c620"
   integrity sha512-u82N74LFzG8ca+dD8puPnplTXoGH4fTPpVGuIbt36G3qvNlkvfD0lEAZSxaly3KX8TS/L1A1gsCEmvKmBcVbkQ==
@@ -3668,7 +3668,7 @@ reusify@^1.0.4:
   resolved "https://registry.npmjs.org/reusify/-/reusify-1.1.0.tgz#0fe13b9522e1473f51b558ee796e08f11f9b489f"
   integrity sha512-g6QUff04oZpHs0eG5p83rFLhHeV00ug/Yf9nZM6fLeUrPguBTkTQOdpAWWspMh55TZfVQDPaN3NQJfbVRAxdIw==
 
-rolldown@~1.2.0:
+rolldown@~1.2.1:
   version "1.2.3"
   resolved "https://registry.npmjs.org/rolldown/-/rolldown-1.2.3.tgz#103bdcbbd575d51265277b8b510f080827b6eb6f"
   integrity sha512-rn9wpmxplLf7NLNyCk9FyWh3FM43DbY8jOzCdEPzH7uflhTftRbCEpqi6Ly2osgoU8OwObtmavMbWLaWy4LX7A==
@@ -4325,15 +4325,15 @@ vite-plugin-dts@^5.0.3:
   dependencies:
     unplugin-dts "1.0.3"
 
-vite@^8.2.0:
-  version "8.2.0"
-  resolved "https://registry.npmjs.org/vite/-/vite-8.2.0.tgz#902fcd3dc0312f553c85b6cbc4625dcaca2d8df8"
-  integrity sha512-pn+CFpM0lwDeKwmOq1ZaBK/9sjorZcgqxki6MbY/jPEVd9vichIlmlD4HmQ5wdP5EgqQCFRaACBxMC7uEGc6lQ==
+vite@^8.2.1:
+  version "8.2.1"
+  resolved "https://registry.npmjs.org/vite/-/vite-8.2.1.tgz#6fc8d8bb843bd52353091fac978e194d4de5b31d"
+  integrity sha512-EU/eS7BH3XROHh2YnBefjM6DBKA6ZeMZEYQbj7NLWg5wHYlhB8B/Mayd5XsgWq+NFYccDOTemRpdETWR6Ka/lw==
   dependencies:
     lightningcss "^1.33.0"
     picomatch "^4.0.5"
-    postcss "^8.5.23"
-    rolldown "~1.2.0"
+    postcss "^8.5.25"
+    rolldown "~1.2.1"
     tinyglobby "^0.2.17"
   optionalDependencies:
     fsevents "~2.3.3"
