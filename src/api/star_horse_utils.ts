@@ -963,26 +963,17 @@ export function apiInstance(
         exportSingleDataUrl: url("exportSingleData"),
         condition,
     };
-    apiUrls.pageAction = (params: SearchInfo) =>
-        postRequest(apiUrls.pageListUrl, params);
-    apiUrls.mergeAction = (param: any) =>
-        postRequest(apiUrls.mergeUrl, param);
-    apiUrls.mergeDraftAction = (param: any) =>
-        postRequest(apiUrls.mergeDraftUrl, param);
-    apiUrls.batchMergeAction = (param: any) =>
-        postRequest(apiUrls.batchMergeUrl, param);
-    apiUrls.batchMergeDraftAction = (param: any) =>
-        postRequest(apiUrls.batchMergeDraftUrl, param);
+    apiUrls.pageAction = (params: SearchInfo) =>postRequest(apiUrls.pageListUrl, params);
+    apiUrls.mergeAction = (param: any) =>postRequest(apiUrls.mergeUrl, param);
+    apiUrls.mergeDraftAction = (param: any) =>postRequest(apiUrls.mergeDraftUrl, param);
+    apiUrls.batchMergeAction = (param: any) =>postRequest(apiUrls.batchMergeUrl, param);
+    apiUrls.batchMergeDraftAction = (param: any) =>postRequest(apiUrls.batchMergeDraftUrl, param);
     apiUrls.loadByIdAction = (id: any, isView: boolean, params: any = {}) =>
         loadById(isView ? apiUrls.loadByIdForViewUrl : apiUrls.loadByIdUrl, id, params);
-    apiUrls.deleteAction = (params: any) =>
-        deleteByIds(apiUrls.deleteUrl, params);
-    apiUrls.deleteByConditionAction = (params: any) =>
-        postRequest(apiUrls.deleteByConditionUrl, params);
-    apiUrls.exportDataAction = async (param: any) =>
-        download(apiUrls.exportAllUrl, param);
-    apiUrls.downloadTemplateAction = async (param: any) =>
-        download(apiUrls.downloadTemplateUrl, param || {});
+    apiUrls.deleteAction = (params: any) =>deleteByIds(apiUrls.deleteUrl, params);
+    apiUrls.deleteByConditionAction = (params: any) =>postRequest(apiUrls.deleteByConditionUrl, params);
+    apiUrls.exportDataAction = async (param: any) =>download(apiUrls.exportAllUrl, param);
+    apiUrls.downloadTemplateAction = async (param: any) =>download(apiUrls.downloadTemplateUrl, param || {});
     apiUrls.queryConditionAction = (
         params: SearchParams[] | any,
         orderBy: OrderByInfo[] = [],
@@ -991,18 +982,12 @@ export function apiInstance(
         params: SearchParams[] | any,
         orderBy: OrderByInfo[] = [],
     ) => loadData(apiUrls.oneConditionUrl, params, orderBy);
-    apiUrls.importAction = (param: any) =>
-        uploadRequest(apiUrls.importUrl, param);
-    apiUrls.analyzeAction = (param: any) =>
-        uploadRequest(apiUrls.analyzeDataUrl, param);
-    apiUrls.uploadAction = (param: any) =>
-        uploadRequest(apiUrls.uploadUrl, param);
-    apiUrls.executeAction = (param: any) =>
-        postRequest(apiUrls.executeUrl, param);
-    apiUrls.modifyColumnsAction = (param: any) =>
-        postRequest(apiUrls.modifyColumnsUrl, param);
-    apiUrls.exportSingleDataAction = async (param: any) =>
-        download(apiUrls.exportSingleDataUrl, param);
+    apiUrls.importAction = (param: any) =>uploadRequest(apiUrls.importUrl, param);
+    apiUrls.analyzeAction = (param: any) =>uploadRequest(apiUrls.analyzeDataUrl, param);
+    apiUrls.uploadAction = (param: any) =>uploadRequest(apiUrls.uploadUrl, param);
+    apiUrls.executeAction = (param: any) =>postRequest(apiUrls.executeUrl, param);
+    apiUrls.modifyColumnsAction = (param: any) =>postRequest(apiUrls.modifyColumnsUrl, param);
+    apiUrls.exportSingleDataAction = async (param: any) =>download(apiUrls.exportSingleDataUrl, param);
 
     return apiUrls;
 }
