@@ -177,7 +177,7 @@ export const loadSelectedData = async (
 
     try {
         const res = await postRequest(url, params);
-        if (res?.data?.code) {
+        if (res?.data?.code!=200) {
             console.error(res?.data?.cnMessage);
             return [];
         }

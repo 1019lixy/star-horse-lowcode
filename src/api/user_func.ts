@@ -105,7 +105,7 @@ export function userAction(
                         postRequest(content, {
                             fieldList: fieldList,
                         }).then((res) => {
-                            if (res?.data?.code) {
+                            if (res?.data?.code!=200) {
                                 warning(res?.data?.cnMessage);
                                 return;
                             }

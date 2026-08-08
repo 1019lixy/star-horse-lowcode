@@ -238,7 +238,7 @@ const loadByPage = async () => {
   };
   postRequest(props.compUrl?.pageListUrl!, params)
       .then((res: any) => {
-        if (!res || res?.data?.code != 0) {
+        if (!res || res?.data?.code != 200) {
           console.error(res?.data?.cnMessage || i18n("api.interfaceError"));
           return;
         }

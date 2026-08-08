@@ -303,7 +303,7 @@ const doMerge = (type: string) => {
     postRequest(mergeUrl!, formData)
         .then((res) => {
           closeLoad();
-          if (res?.data?.code != 0) {
+          if (res?.data?.code != 200) {
             warning(res?.data?.cnMessage);
             return;
           } else {

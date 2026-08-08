@@ -175,7 +175,7 @@ export async function viewColumns(param: string) {
         viewToken: param,
     }).then((res) => {
         const redata = res.data;
-        if (redata.code != 0) {
+        if (redata.code != 200) {
             error(redata.cnMessage);
             return;
         }
@@ -237,7 +237,7 @@ export async function viewDataList(
     await postRequest("${serviceName}/consumer/api/pageList", dataPo)
         .then((res) => {
             const redata = res.data;
-            if (redata.code != 0) {
+            if (redata.code != 200) {
                 error = redata.cnMessage;
             } else {
                 viewDatas = redata.data;

@@ -69,7 +69,7 @@ export const useButtonPermissionStore = defineStore("buttonPermission", () => {
                     `${permissionUrlPrefix.value}${userId}/${menuId}`,
                     {},
                 ).then((res) => {
-                    if (res?.data?.code) {
+                    if (res?.data?.code!=200) {
                         console.log(res?.data?.cnMessage);
                         return;
                     }

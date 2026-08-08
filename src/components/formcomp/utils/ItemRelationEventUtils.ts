@@ -331,6 +331,12 @@ const findContainerItems = (
  */
 const syncContainerVisibility = (container: any, visible: boolean) => {
     container.formVisible = visible;
+    //App 端:同步设置原始容器的 formVisible(与 PC 端一致)
+    //原始容器是 reactive 对象,设置后触发 platformFields computed 重算,
+    //重算后新 title 文本项的 formVisible 读取到最新值,实现显隐同步
+    if (container.__originContainer) {
+        container.__originContainer.formVisible = visible;
+    }
     if (container.__appContainer && Array.isArray(container.fieldList)) {
         container.fieldList.forEach((f: any) => {
             if (f && typeof f === "object" && !Array.isArray(f)) {
@@ -460,7 +466,7 @@ export const apiLinkageOperation = (
         .then((response) => {
             const result = response?.data;
             closeLoad();
-            if (result?.code) {
+            if (result?.code!=200) {
                 warning(result.cnMessage);
                 return;
             }

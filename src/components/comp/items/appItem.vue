@@ -3,7 +3,6 @@ import {getDataIndex, getFormData, getPrefix} from "@/api/form_utils";
 import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
 import {ContainerPreps} from "@/components/types/ItemPreps";
 import {ModelRef, onMounted} from "vue";
-import StarHorseItem from "@/components/comp/StarHorseItem.vue";
 
 const props = withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
@@ -33,18 +32,11 @@ const addRow = (row: any) => {
 const removeRow = (row: any) => {
   emits("removeRow", row);
 };
-const loadItem = (item: any) => {
-  return {
-    type: "text",
-    formVisible: true,
-    fieldName: "textTemp",
-    preps: {
-      staticData: true,
-      textContent: item.title,
-    },
-  };
-};
 const createFieldList = (item: any) => {
+  //容器对象(子表单/批量表单)自身携带 fieldList,需用其内部字段渲染,而非将容器当作叶子字段
+  if (item && Array.isArray(item.fieldList)) {
+    return {fieldList: item.fieldList};
+  }
   return {fieldList: Array.isArray(item) ? item : [item]};
 };
 const init = () => {
@@ -58,8 +50,9 @@ onMounted(() => {
 <template>
   <template v-if="item.appList?.length > 0">
     <template v-for="(appItem, key) in item.appList" :key="key">
-      <!-- 跳过容器联动影子项(__appContainer)和被隐藏字段(__containerHidden) -->
-      <template v-if="!appItem?.__appContainer && !appItem?.__containerHidden">
+      <!-- 跳过容器联动影子项(__appContainer)、被隐藏字段(__containerHidden)和 formVisible=false 的项 -->
+      <!-- formVisible 检查与 PC 端 tabItem.vue 的 v-if="tabItem.formVisible !== false" 一致 -->
+      <template v-if="!appItem?.__appContainer && !appItem?.__containerHidden && appItem?.formVisible !== false">
         <div
             class="group-label"
             v-if="
@@ -71,15 +64,9 @@ onMounted(() => {
         </div>
         <template v-else>
           <template v-if="appItem.title">
-            <star-horse-item
-                :primaryKey="primaryKey"
-                :compSize="compSize"
-                v-model:dataForm="dataForm"
-                :commonFormat="commonFormat"
-                :item="loadItem(appItem)"
-                :dataIndex="dataIndex"
-                :source="source"
-            />
+            <div class="group-label">
+              <div class="group-label-text" v-html="appItem.title"></div>
+            </div>
           </template>
           <star-horse-form-item
               :source="source"

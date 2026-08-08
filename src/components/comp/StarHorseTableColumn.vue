@@ -77,7 +77,7 @@ const blurEvent = (column: any, params: any) => {
   }
   postRequest(props.compUrl?.mergeUrl!, reqParams)
       .then((res) => {
-        if (res?.data?.code != 0) {
+        if (res?.data?.code != 200) {
           warning(res?.data?.cnMessage);
         } else {
           success(res?.data?.cnMessage);

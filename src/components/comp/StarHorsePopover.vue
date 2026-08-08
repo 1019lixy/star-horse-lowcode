@@ -28,7 +28,7 @@ const init = () => {
   if (props.iconUrl) {
     postRequest(props.iconUrl, {}).then((res) => {
       const resData = res.data;
-      if (resData.code) {
+      if (resData.code!=200) {
         warning(resData.cnMessage);
         return;
       }

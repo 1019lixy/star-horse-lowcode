@@ -46,7 +46,7 @@ const uploadError = (_err: any, _file: any, _fileList: any) => {
  * 上传成功
  */
 const uploadSuccess = (response: any, _file: any, _fileList: any) => {
-  if (response.code != 0) {
+  if (response.code != 200) {
     warning(i18n("ui.dataAnalysisError"));
     return;
   }

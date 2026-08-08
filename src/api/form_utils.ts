@@ -1,5 +1,5 @@
 import {getValidType} from "@/api/valid_utils";
-import {unref} from "vue";
+import {reactive, unref} from "vue";
 import {i18n} from "@/lang";
 import {BatchFieldInfo, FieldInfo, PageFieldInfo, SearchProps,} from "@/components/types";
 import {compKey, uuid} from "@/api/system";
@@ -574,8 +574,21 @@ function processContainer(filed: any, commonContainer: any, result: any[], ctx: 
     for (let j = 0; j < dataList.length; j++) {
         const container = dataList[j];
         const subForm = container.subFormFlag == "Y";
+        const title = container.title;
         const commonFieldList = analysisComps(container.fieldList, ctx);
-
+        if (title && !subForm) {
+            //子表单容器的标题由 appItem.vue 通过 appItem.title 渲染,不重复添加
+            //使用 reactive 包裹:容器联动通过 __containerHidden 控制显隐,需响应式才能触发重渲染
+            commonFieldList.splice(0, 0, reactive({
+                type: "text",
+                staticData: true,
+                formVisible: container.formVisible,
+                visiblePlatform:"app",
+                preps: {
+                    textContent: title
+                }
+            }));
+        }
         if (subForm) {
             const newItem = {
                 ...container,
@@ -598,6 +611,9 @@ function processContainer(filed: any, commonContainer: any, result: any[], ctx: 
                     disabled: container.disabled,
                     fieldList: commonFieldList,
                     __appContainer: true,
+                    //引用原始容器:syncContainerVisibility 通过此引用设置 formVisible,
+                    //触发 platformFields 重算后,新 title 文本项读取到最新的 formVisible 值
+                    __originContainer: container,
                 });
             }
         }

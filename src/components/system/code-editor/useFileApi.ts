@@ -69,7 +69,7 @@ export function useFileApi(loadUrl: string, saveUrl: string) {
         try {
             const res: any = await postRequest(loadUrl, params || {});
             const data = res?.data;
-            if (data?.code === 0 && data?.data) {
+            if (data?.code === 200 && data?.data) {
                 // 保存 commitId（如果后端返回）
                 if (data?.commitId) {
                     baseCommitId.value = data.commitId;
@@ -77,7 +77,7 @@ export function useFileApi(loadUrl: string, saveUrl: string) {
                 return data.data as FileNode[];
             }
             // code 4 = EMPTY（后端返回空列表时的正常状态）
-            if (data?.code === 4) {
+            if (data?.code === 404) {
                 return [];
             }
             // 兼容直接返回数组
@@ -122,7 +122,7 @@ export function useFileApi(loadUrl: string, saveUrl: string) {
             const data = res?.data;
 
             // 检查是否返回冲突信息
-            if (data?.code === 0 && data?.data) {
+            if (data?.code === 200 && data?.data) {
                 const responseData = data.data;
                 // 后端返回 CodeSavePo，检查 extra.hasConflict
                 if (responseData?.extra?.hasConflict) {
@@ -136,7 +136,7 @@ export function useFileApi(loadUrl: string, saveUrl: string) {
                 }
             }
 
-            if (data?.code === 0) {
+            if (data?.code === 200) {
                 return {success: true, hasConflict: false};
             }
 
@@ -163,11 +163,11 @@ export function useFileApi(loadUrl: string, saveUrl: string) {
         try {
             const res: any = await postRequest(loadUrl, params || {});
             const data = res?.data;
-            if (data?.code === 0 && data?.data) {
+            if (data?.code === 200 && data?.data) {
                 const commitId = data?.commitId || "";
                 return {tree: data.data as FileNode[], commitId};
             }
-            if (data?.code === 4) return {tree: [], commitId: ""};
+            if (data?.code === 404) return {tree: [], commitId: ""};
             if (Array.isArray(data)) return {tree: data, commitId: ""};
             if (Array.isArray(data?.data)) return {tree: data.data, commitId: ""};
             return {tree: [], commitId: ""};
@@ -186,7 +186,7 @@ export function useFileApi(loadUrl: string, saveUrl: string) {
         try {
             const res: any = await postRequest(url, {fileId});
             const data = res?.data;
-            if (data?.code === 0 && data?.data != null) return data.data;
+            if (data?.code === 200 && data?.data != null) return data.data;
             return null;
         } catch {
             return null;

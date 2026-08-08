@@ -532,7 +532,7 @@ const loadData = async (condition?: SearchParams[]) => {
   );
   await postRequest(url, params)
       .then((res) => {
-        if (res?.data?.code) {
+        if (res?.data?.code!=200) {
           console.error(res?.data?.cnMessage);
           return;
         }

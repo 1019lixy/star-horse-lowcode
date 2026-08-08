@@ -51,7 +51,7 @@ const doMerge = () => {
   postRequest(props.compUrl?.mergeUrl!, dataForm.value)
       .then((res) => {
         closeLoad();
-        if (res?.data?.code != 0) {
+        if (res?.data?.code != 200) {
           warning(res?.data?.cnMessage);
           return;
         } else {

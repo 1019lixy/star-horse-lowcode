@@ -141,7 +141,7 @@ const openDialog = async () => {
           //仅仅执行，则直接调用接口
           console.log(res);
           let reData = res.data;
-          if (reData.code) {
+          if (reData.code!=200) {
             warning(reData.cnMessage);
             return;
           }

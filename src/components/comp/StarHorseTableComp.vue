@@ -628,7 +628,7 @@ const loadByPage = (initPageInfo?: boolean) => {
   }
   postRequest(url, params)
       .then((res: any) => {
-        if (res?.data?.code != 0) {
+        if (res?.data?.code != 200) {
           res && console.error(res?.data?.cnMessage || res?.data?.enMessage);
           return;
         }
