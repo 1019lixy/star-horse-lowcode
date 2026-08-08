@@ -198,6 +198,10 @@ export type ApiUrls = {
      */
     importAction?: Function;
     /**
+     * 解析数据函数
+     */
+    analyzeAction?: Function;
+    /**
      * 执行接口
      */
     executeAction?: Function;

@@ -603,14 +603,14 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
             } else if (
                 temp &&
                 (temp["tabList"] || temp["collapseList"] || temp["cardList"] ||
-                    temp["splitterList"] || temp["dytableList"]||temp["stepList"])
+                    temp["splitterList"] || temp["dytableList"] || temp["stepList"])
             ) {
                 //如果是tabList/collapseList/cardList/splitterList/dytableList/stepList
                 //将容器字段本身也放入 formFields,供 dataRelation 容器控制策略(controlTarget=container)查找
                 formFields.push(temp);
                 const tabList: Array<TabFieldInfo> =
                     temp["tabList"] || temp["collapseList"] || temp["cardList"] ||
-                    temp["splitterList"] || temp["dytableList"]||temp["stepList"] || [];
+                    temp["splitterList"] || temp["dytableList"] || temp["stepList"] || [];
                 for (const element of tabList) {
                     tabOperation(element);
                 }
@@ -881,9 +881,10 @@ export function createFilter(queryString: string) {
 }
 
 /**
- * 规范化路径，移除多余的斜杠，确保路径格式正确
+ * 规范化路径:移除首尾斜杠,内部反斜杠统一为正斜杠
+ * http/https 完整 URL 原样返回
  * @param path 需要规范化的路径
- * @returns 规范化后的路径（不以斜杠开头和结尾，除非是根路径）
+ * @returns 规范化后的路径(不以斜杠开头和结尾)
  */
 function normalizePath(path: string): string {
     if (!path) return "";
@@ -903,21 +904,17 @@ function normalizePath(path: string): string {
 }
 
 /**
- * 拼接路径，确保路径分隔符正确
+ * 拼接路径,确保路径分隔符正确
  * @param segments 路径片段
  * @returns 拼接后的路径
  */
 function joinPath(...segments: string[]): string {
-    // 过滤空字符串并规范化每个片段
-    const normalizedSegments = segments
-        .filter(
-            (segment) => segment !== undefined && segment !== null && segment !== "",
-        )
-        .map(normalizePath);
-
-    // 用正斜杠连接所有片段
-    return normalizedSegments.join("/");
+    return segments
+        .filter((s) => s !== undefined && s !== null && s !== "")
+        .map(normalizePath)
+        .join("/");
 }
+
 
 /**
  * 公共 Api 接口
@@ -930,101 +927,83 @@ export function apiInstance(
     urlPrefix: string,
     condition: Array<any> = [],
 ): ApiUrls {
-    // 规范化路径参数
     const normalizedAppName = normalizePath(appName);
     const normalizedUrlPrefix = normalizePath(urlPrefix);
-
     let prefix: string = joinPath(normalizedAppName, normalizedUrlPrefix);
-
     // 如果是完整的 URL（http/https），则特殊处理
     if (appName.startsWith("https:") || appName.startsWith("http:")) {
         prefix = `${normalizedAppName}/${normalizedUrlPrefix}`;
     }
+    // 路径工厂:统一拼接 suffix,避免 15+ 处重复 `${prefix}/xxx`
+    const url = (suffix: string) => `${prefix}/${suffix}`;
 
     const apiUrls: ApiUrls = {
         basePrefix: prefix,
-        appName: appName,
+        appName: normalizedAppName,
         subPrefix: normalizedUrlPrefix,
-        pageListUrl: `${prefix}/pageList`,
-        mergeUrl: `${prefix}/merge`,
-        mergeDraftUrl: `${prefix}/mergeDraft`,
-        batchMergeUrl: `${prefix}/mergeBatch`,
-        batchMergeDraftUrl: `${prefix}/mergeBatchDraft`,
-        loadByIdUrl: `${prefix}/getById`,
-        loadByIdForViewUrl: `${prefix}/getByIdForView`,
-        deleteUrl: `${prefix}/batchDeleteById`,
-        deleteByConditionUrl: `${prefix}/deleteByCondition`,
-        exportAllUrl: `${prefix}/exportData`,
-        downloadTemplateUrl: `${prefix}/downloadTemplate`,
-        listConditionUrl: `${prefix}/getAllByCondition`,
-        oneConditionUrl: `${prefix}/getOneByCondition`,
-        importUrl: `${prefix}/importData`,
-        uploadUrl: `${normalizedAppName}/annex/upload/common`,
-        modifyColumnsUrl: `${prefix}/modifyColumns`,
-        exportSingleDataUrl: `${prefix}/exportSingleData`,
-        condition: condition,
+        pageListUrl: url("pageList"),
+        mergeUrl: url("merge"),
+        mergeDraftUrl: url("mergeDraft"),
+        batchMergeUrl: url("mergeBatch"),
+        batchMergeDraftUrl: url("mergeBatchDraft"),
+        loadByIdUrl: url("getById"),
+        loadByIdForViewUrl: url("getByIdForView"),
+        deleteUrl: url("batchDeleteById"),
+        deleteByConditionUrl: url("deleteByCondition"),
+        exportAllUrl: url("exportData"),
+        downloadTemplateUrl: url("downloadTemplate"),
+        listConditionUrl: url("getAllByCondition"),
+        oneConditionUrl: url("getOneByCondition"),
+        importUrl: url("importData"),
+        analyzeDataUrl: url("analyzeData"),
+        executeUrl: url("execute"),
+        // uploadUrl 使用 appName 级路径(不属于 urlPrefix),用 joinPath 保证分隔符一致
+        uploadUrl: joinPath(normalizedAppName, "annex/upload/common"),
+        modifyColumnsUrl: url("modifyColumns"),
+        exportSingleDataUrl: url("exportSingleData"),
+        condition,
     };
-    apiUrls.pageAction = (params: SearchInfo) => {
-        return postRequest(apiUrls.pageListUrl!, params);
-    };
-    apiUrls.mergeAction = (param: any) => {
-        return postRequest(apiUrls.mergeUrl!, param);
-    };
-    apiUrls.mergeDraftAction = (param: any) => {
-        return postRequest(apiUrls.mergeDraftUrl!, param);
-    };
-    apiUrls.batchMergeAction = (param: any) => {
-        return postRequest(apiUrls.batchMergeUrl!, param);
-    };
-    apiUrls.batchMergeDraftAction = (param: any) => {
-        return postRequest(apiUrls.batchMergeDraftUrl!, param);
-    };
-    apiUrls.loadByIdAction = (id: any, isView: boolean, params: any = {}) => {
-        return loadById(
-            isView ? apiUrls.loadByIdForViewUrl! : apiUrls.loadByIdUrl!,
-            id,
-            params,
-        );
-    };
-    apiUrls.deleteAction = (params: any) => {
-        return deleteByIds(apiUrls.deleteUrl!, params);
-    };
-    apiUrls.deleteByConditionAction = (params: any) => {
-        return postRequest(apiUrls.deleteByConditionUrl!, params);
-    };
-    apiUrls.exportDataAction = async (param: any) => {
-        return await download(apiUrls.exportAllUrl!, param);
-    };
-    apiUrls.downloadTemplateAction = async (param: any) => {
-        return await download(apiUrls.downloadTemplateUrl!, param || {});
-    };
+    apiUrls.pageAction = (params: SearchInfo) =>
+        postRequest(apiUrls.pageListUrl, params);
+    apiUrls.mergeAction = (param: any) =>
+        postRequest(apiUrls.mergeUrl, param);
+    apiUrls.mergeDraftAction = (param: any) =>
+        postRequest(apiUrls.mergeDraftUrl, param);
+    apiUrls.batchMergeAction = (param: any) =>
+        postRequest(apiUrls.batchMergeUrl, param);
+    apiUrls.batchMergeDraftAction = (param: any) =>
+        postRequest(apiUrls.batchMergeDraftUrl, param);
+    apiUrls.loadByIdAction = (id: any, isView: boolean, params: any = {}) =>
+        loadById(isView ? apiUrls.loadByIdForViewUrl : apiUrls.loadByIdUrl, id, params);
+    apiUrls.deleteAction = (params: any) =>
+        deleteByIds(apiUrls.deleteUrl, params);
+    apiUrls.deleteByConditionAction = (params: any) =>
+        postRequest(apiUrls.deleteByConditionUrl, params);
+    apiUrls.exportDataAction = async (param: any) =>
+        download(apiUrls.exportAllUrl, param);
+    apiUrls.downloadTemplateAction = async (param: any) =>
+        download(apiUrls.downloadTemplateUrl, param || {});
     apiUrls.queryConditionAction = (
         params: SearchParams[] | any,
         orderBy: OrderByInfo[] = [],
-    ) => {
-        return loadData(apiUrls.listConditionUrl!, params, orderBy);
-    };
+    ) => loadData(apiUrls.listConditionUrl, params, orderBy);
     apiUrls.queryOneByConditionAction = (
         params: SearchParams[] | any,
         orderBy: OrderByInfo[] = [],
-    ) => {
-        return loadData(apiUrls.oneConditionUrl!, params, orderBy);
-    };
-    apiUrls.importAction = (param: any) => {
-        return uploadRequest(apiUrls.importUrl!, param);
-    };
-    apiUrls.uploadAction = (param: any) => {
-        return uploadRequest(apiUrls.uploadUrl!, param);
-    };
-    apiUrls.executeAction = (param: any) => {
-        return postRequest(apiUrls.executeUrl!, param);
-    };
-    apiUrls.modifyColumnsAction = (param: any) => {
-        return postRequest(apiUrls.modifyColumnsUrl!, param);
-    };
-    apiUrls.exportSingleDataAction = async (param: any) => {
-        return await download(apiUrls.exportSingleDataUrl!, param);
-    };
+    ) => loadData(apiUrls.oneConditionUrl, params, orderBy);
+    apiUrls.importAction = (param: any) =>
+        uploadRequest(apiUrls.importUrl, param);
+    apiUrls.analyzeAction = (param: any) =>
+        uploadRequest(apiUrls.analyzeDataUrl, param);
+    apiUrls.uploadAction = (param: any) =>
+        uploadRequest(apiUrls.uploadUrl, param);
+    apiUrls.executeAction = (param: any) =>
+        postRequest(apiUrls.executeUrl, param);
+    apiUrls.modifyColumnsAction = (param: any) =>
+        postRequest(apiUrls.modifyColumnsUrl, param);
+    apiUrls.exportSingleDataAction = async (param: any) =>
+        download(apiUrls.exportSingleDataUrl, param);
+
     return apiUrls;
 }
 
