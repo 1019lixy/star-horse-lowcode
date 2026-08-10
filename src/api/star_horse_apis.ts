@@ -23,7 +23,7 @@ starHorseAxios.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
         let token = getToken();
         if (!token) {
-            token = "e262f84938814b2f84d083b348854646";
+            token = "8f7b2fa27ff54576a515c3487dfe7cce";
         }
         const fingerToken = getFingerId();
         // 请求头带上token
@@ -174,30 +174,14 @@ export function getRequest(url: string) {
 }
 
 /**
- * Request 请求
- * @param url 请求地址
- * @param data 请求参数
- * @param method 请求方法
- */
-export function httpRequest(url: string, method: string, data: any) {
-    return getAxiosInstance().request({
-        url: url,
-        method: method,
-        data: data,
-    });
-}
-
-type FetchProgressCallback = (loaded: number, total: number) => void
-
-/**
  * 通用请求封装
  * ✅ 普通POST/GET/PUT/DELETE JSON请求
  * ✅ FormData 文件上传
  * ✅ 文件下载（blob二进制）
  * @param url 请求地址
+ * @param data 请求body / get参数 / FormData上传数据
  * @param method 请求方式 默认post
  * @param header 请求头
- * @param data 请求body / get参数 / FormData上传数据
  * @param isDownload 是否下载模式(true 返回Blob)
  * @param onUploadProgress 上传进度回调
  * @param onDownloadProgress 下载进度回调
@@ -205,9 +189,9 @@ type FetchProgressCallback = (loaded: number, total: number) => void
  */
 export function request(
     url: string,
+    data?: any,
     method: string = "post",
     header?: Record<string, any>,
-    data?: any,
     isDownload = false,
     onUploadProgress?: FetchProgressCallback,
     onDownloadProgress?: FetchProgressCallback,
@@ -345,6 +329,22 @@ export function request(
         xhr.send(sendBody);
     });
 }
+
+/**
+ * Request 请求
+ * @param url 请求地址
+ * @param data 请求参数
+ * @param method 请求方法
+ */
+export function httpRequest(url: string, method: string, data: any) {
+    return getAxiosInstance().request({
+        url: url,
+        method: method,
+        data: data,
+    });
+}
+
+type FetchProgressCallback = (loaded: number, total: number) => void
 
 /**
  * Post Upload 请求

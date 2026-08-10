@@ -463,6 +463,12 @@ export default {
     "comp.deleteData": "Delete Data",
     "comp.underDevelopment":
         "Function under development, now click submit button to export all data",
+    "comp.exportSelectFields": "Select Export Fields",
+    "comp.exportFieldTip": "{n} / {total} fields selected",
+    "comp.exportFieldEmpty": "Please select at least one export field",
+    "comp.exportSelectAll": "Select All",
+    "comp.exportClearAll": "Clear All",
+    "comp.exportResetDefault": "Reset Default",
     "comp.presetColors": "Preset Colors",
     "comp.customColor": "Custom Color",
     "comp.colorHexPlaceholder": "Enter hex color",

@@ -1047,6 +1047,8 @@ onMounted(() => {
           view: 'view',
           delete: 'delete',
           add: 'add',
+          export: 'export',
+          download:'download'
         }"
       />
     </el-card>

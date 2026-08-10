@@ -485,6 +485,12 @@ export default {
     "jsonEditor.structure": "结构",
     "jsonEditor.preview": "预览",
     "comp.underDevelopment": "功能开发中，现在点击提交按钮导出所有数据",
+    "comp.exportSelectFields": "选择导出字段",
+    "comp.exportFieldTip": "已选 {n} / {total} 个字段",
+    "comp.exportFieldEmpty": "请至少选择一个导出字段",
+    "comp.exportSelectAll": "全选",
+    "comp.exportClearAll": "取消全选",
+    "comp.exportResetDefault": "恢复默认",
     /**
      * Additional Component Strings
      */

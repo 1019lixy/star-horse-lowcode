@@ -473,6 +473,8 @@ onActivated(() => {
           view: 'view',
           add: 'add',
           edit: 'edit',
+          export: 'export',
+          download:'download'
         }"
           :compUrl="dataUrl"
           :dataFormat="dataFormat"
