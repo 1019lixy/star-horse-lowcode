@@ -36,7 +36,6 @@ export {default as transferItem} from "./transfer-item.vue";
 export {default as tselectItem} from "./tselect-item.vue";
 export {default as unknownItem} from "./unknown-item.vue";
 export {default as uploadItem} from "./upload-item.vue";
-export {default as userItem} from "./user-item.vue";
 export {default as usercompItem} from "./usercomp-item.vue";
 export {default as viewMarkdownItem} from "./view-markdown-item.vue";
 export {default as qrcodeItem} from "./qrcode-item.vue";

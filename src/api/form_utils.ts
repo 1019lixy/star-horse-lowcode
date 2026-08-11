@@ -242,6 +242,14 @@ const tabColapseCardAnalysis = (item: any) => {
         fieldInfo.splitterList = dataList;
     } else if (item.itemType == "step") {
         fieldInfo.stepList = dataList;
+    }else if (item.itemType == "descriptions") {
+        fieldInfo.descriptionsList = dataList;
+    } else if (item.itemType == "dialog") {
+        fieldInfo.dialogList = dataList;
+    } else if (item.itemType == "drawer") {
+        fieldInfo.drawerList = dataList;
+    } else if (item.itemType == "fieldset") {
+        fieldInfo.fieldsetList = dataList;
     } else {
         console.error("Unknown itemType: ", item.itemType);
     }
@@ -469,6 +477,14 @@ function checkContainerType(data: FieldInfo) {
         return {type: "splitter", dataList: data.splitterList};
     } else if (data.stepList) {
         return {type: "step", dataList: data.stepList};
+    } else if (data.descriptionsList) {
+        return {type: "descriptions", dataList: data.descriptionsList};
+    } else if (data.dialogList) {
+        return {type: "dialog", dataList: data.dialogList};
+    }else if (data.drawerList) {
+        return {type: "drawer", dataList: data.drawerList};
+    }else if (data.fieldsetList) {
+        return {type: "fieldset", dataList: data.fieldsetList};
     } else {
         return null;
     }
@@ -509,7 +525,7 @@ const collectContainerRelationNames = (fieldList: any): Set<string> => {
                 }
             }
             if (Array.isArray(field.children)) scan(field.children);
-            for (const key of ["tabList", "cardList", "collapseList", "splitterList", "dytableList", "stepList"]) {
+            for (const key of formContainerListKeys) {
                 const list = (field as any)[key];
                 if (Array.isArray(list)) {
                     for (const item of list) {
@@ -1101,6 +1117,38 @@ export const processFieldList = (
                     result,
                 );
             });
+        }else if (item.descriptionsList?.length > 0) {
+            item.descriptionsList.forEach((descItems: any, descIndex: number) => {
+                processFieldList(
+                    descItems.fieldList,
+                    `${key}_desc_${descIndex}`,
+                    result,
+                );
+            });
+        }else if (item.dialogList?.length > 0) {
+            item.dialogList.forEach((dialogItems: any, dialogIndex: number) => {
+                processFieldList(
+                    dialogItems.fieldList,
+                    `${key}_dialog_${dialogIndex}`,
+                    result,
+                );
+            });
+        }else if (item.drawerList?.length > 0) {
+            item.drawerList.forEach((drawerItems: any, drawerIndex: number) => {
+                processFieldList(
+                    drawerItems.fieldList,
+                    `${key}_drawer_${drawerIndex}`,
+                    result,
+                );
+            });
+        }else if (item.fieldsetList?.length > 0) {
+            item.fieldsetList.forEach((fieldsetItems: any, fieldsetIndex: number) => {
+                processFieldList(
+                    fieldsetItems.fieldList,
+                    `${key}_drawer_${fieldsetIndex}`,
+                    result,
+                );
+            });
         } else if (item.dytableList?.length > 0) {
             item.dytableList.forEach((tabItems: any, dytableIndex: number) => {
                 processFieldList(
@@ -1127,7 +1175,7 @@ export const processFieldList = (
 };
 
 // 表单类容器列表属性（排除 batchFieldList/dytableList，表格由组件自行校验）
-const formContainerListKeys = ["tabList", "cardList", "collapseList", "splitterList", "stepList"];
+const formContainerListKeys = ["tabList", "cardList", "collapseList", "splitterList", "dytableList", "stepList","descriptionsList","dialogList","drawerList","fieldsetList"];
 
 /**
  * 递归收集容器内字段的 prop 路径（与 otherItem 渲染时的 loadProp 逻辑一致）

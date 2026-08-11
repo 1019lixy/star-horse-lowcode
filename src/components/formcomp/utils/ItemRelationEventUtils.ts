@@ -47,6 +47,12 @@ const CONTAINER_LIST_KEYS = [
     "collapseList",
     "splitterList",
     "dytableList",
+    "stepList",
+    "dialogList",
+    "conditionList",
+    "drawerList",
+    "descriptionsList",
+    "fieldsetList"
 ];
 
 const findField = (

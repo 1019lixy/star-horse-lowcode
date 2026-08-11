@@ -54,6 +54,14 @@ const checkItemType = (item: any) => {
     return "dytable-item";
   } else if (item.stepList?.length > 0) {
     return "step-item";
+  }else if (item.descriptionsList?.length > 0) {
+    return "descriptions-item";
+  }else if (item.dialogList?.length > 0) {
+    return "dialog-item";
+  }else if (item.drawerList?.length > 0) {
+    return "drawer-item";
+  }else if (item.fieldsetList?.length > 0) {
+    return "fieldset-item";
   } else if (item.tabList?.length > 0 || item.batchFieldList?.length > 0) {
     return "tab-item";
   } else {

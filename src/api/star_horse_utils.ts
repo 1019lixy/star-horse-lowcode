@@ -603,14 +603,14 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
             } else if (
                 temp &&
                 (temp["tabList"] || temp["collapseList"] || temp["cardList"] ||
-                    temp["splitterList"] || temp["dytableList"] || temp["stepList"])
+                    temp["splitterList"] || temp["dytableList"] || temp["stepList"]|| temp["descriptionsList"]|| temp["dialogList"]|| temp["drawerList"]|| temp["fieldsetList"])
             ) {
                 //如果是tabList/collapseList/cardList/splitterList/dytableList/stepList
                 //将容器字段本身也放入 formFields,供 dataRelation 容器控制策略(controlTarget=container)查找
                 formFields.push(temp);
                 const tabList: Array<TabFieldInfo> =
                     temp["tabList"] || temp["collapseList"] || temp["cardList"] ||
-                    temp["splitterList"] || temp["dytableList"] || temp["stepList"] || [];
+                    temp["splitterList"] || temp["dytableList"] || temp["stepList"] ||temp["descriptionsList"]|| temp["dialogList"]|| temp["drawerList"]|| temp["fieldsetList"]|| [];
                 for (const element of tabList) {
                     tabOperation(element);
                 }

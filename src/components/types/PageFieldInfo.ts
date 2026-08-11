@@ -97,6 +97,30 @@ export declare interface StepFieldInfo extends TabFieldInfo {
 }
 
 /**
+ * Descriptions 容器信息
+ */
+export declare interface DescriptionsFieldInfo extends TabFieldInfo {
+}
+
+/**
+ * Dialog 容器信息
+ */
+export declare interface DialogFieldInfo extends TabFieldInfo {
+}
+
+/**
+ * Drawer 容器信息
+ */
+export declare interface DrawerFieldInfo extends TabFieldInfo {
+}
+
+/**
+ * Fieldset 容器信息
+ */
+export declare interface FieldsetFieldInfo extends TabFieldInfo {
+}
+
+/**
  * 表单属性
  */
 export declare interface FieldInfo {
@@ -202,6 +226,22 @@ export declare interface FieldInfo {
      * 步骤容器数据
      */
     stepList?: StepFieldInfo[];
+    /**
+     * 弹窗容器数据
+     */
+    dialogList?: DialogFieldInfo[];
+    /**
+     * 抽屉容器数据
+     */
+    drawerList?: DrawerFieldInfo[];
+    /**
+     * 描述数据容器
+     */
+    descriptionsList?: DescriptionsFieldInfo[];
+    /**
+     * 分组容器数据
+     */
+    fieldsetList?: FieldsetFieldInfo[];
     /**
      * 列表属性，对应动态列表（table) 容器
      */
