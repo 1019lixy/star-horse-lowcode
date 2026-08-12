@@ -650,3 +650,10 @@ barcode        条形码组件
 ```
 --barcode-item 组件删除vue3-varcode 插件改用jsbarcode
 ```
+#### v3.1.16
+
+```
+-- 增加dialog,drawer,descriptions,fieldset 容器组件
+-- 增加StarHorseDrawer 抽屉组件
+-- 增加StarHorsePanel 组件，此组件通过类型 dialog 或者drawer匹配对应的StarHorseDialog和StarHorseDrawer
+```
