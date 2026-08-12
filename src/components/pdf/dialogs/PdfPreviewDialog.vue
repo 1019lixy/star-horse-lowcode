@@ -2,7 +2,6 @@
 import {computed, ref} from "vue";
 import {ElMessage} from "element-plus";
 import {i18n} from "@/lang";
-import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import type {PdfDesigner} from "../composables/usePdfDesigner";
 import {renderPrintableHtml} from "../renderers/PdfHtmlRenderer";
 import {StarHorsePanel} from "@/components/comp";

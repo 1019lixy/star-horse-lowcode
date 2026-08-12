@@ -1,7 +1,6 @@
 <script setup lang="ts" name="KanbanColumnDialog">
 import {computed, ref, watch} from "vue";
 import {i18n} from "@/lang";
-import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import type {KanbanDesigner} from "../composables/useKanbanDesigner";
 import {createColumn} from "../constants";
 import type {KanbanColumn} from "../types";

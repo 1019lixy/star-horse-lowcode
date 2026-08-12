@@ -2,7 +2,6 @@
 import {computed, ref} from "vue";
 import {ElMessage} from "element-plus";
 import {i18n} from "@/lang";
-import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import {ShSvgIcon} from "@/components/shared";
 import type {PivotDesigner} from "../composables/usePivotDesigner";
 import type {PivotRecord} from "../types";

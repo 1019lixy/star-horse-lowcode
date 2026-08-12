@@ -67,7 +67,7 @@ import {PageFieldInfo} from "@/components/types/PageFieldInfo";
 import {allAction, checkIsDisabled, convertData,} from "@/components/formcomp/utils/ItemRelationEventUtils";
 import {getDynamicEvents} from "@/api/system";
 import JSON5 from "json5";
-import {StarHorseDialog, StarHorsePanel} from "@/components/comp";
+import {StarHorsePanel} from "@/components/comp";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
 import {i18n} from "@/lang";
 
@@ -82,7 +82,7 @@ const props = defineProps({
   parentField: {type: Object as PropType<any>},
   formInfo: {type: Object as PropType<any>},
   source:{type:Number,default:1},
-  dialogType:{type:String as ()=>"dialog"|"drawer",default:"dialog"},
+  dialogType:{type:String as ()=>"dialog"|"drawer"},
   // 新增：区分 JSON 对象/数组的关键参数
   dataType: {
     type: String,

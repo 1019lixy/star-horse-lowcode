@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {checkVisible, labelVisibleCheck, loadProp, validMsg,} from "@/api/form_utils";
+import {checkVisible, loadProp, validMsg,} from "@/api/form_utils";
 import {ContainerPreps} from "@/components/types/ItemPreps";
 import {initRelationEvent} from "@/components/formcomp/utils/ItemRelationEventUtils";
 import {inject, ModelRef, nextTick, onMounted, ref, unref, watch} from "vue";

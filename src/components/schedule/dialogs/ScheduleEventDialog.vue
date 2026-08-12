@@ -2,7 +2,6 @@
 import {computed, ref, watch} from "vue";
 import {ElMessage} from "element-plus";
 import {i18n} from "@/lang";
-import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import type {ScheduleDesigner} from "../composables/useScheduleDesigner";
 import {createEvent, SCHEDULE_EVENT_TYPE_PRESETS} from "../constants";
 import type {ScheduleEvent} from "../types";

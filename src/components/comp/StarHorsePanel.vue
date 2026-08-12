@@ -2,6 +2,7 @@
 import {computed} from "vue";
 import StarHorseDialog from "./StarHorseDialog.vue";
 import StarHorseDrawer from "./StarHorseDrawer.vue";
+import {getGlobalConfigStore} from "@/store/StoreManager";
 
 defineOptions({inheritAttrs: false});
 
@@ -10,12 +11,16 @@ const props = defineProps({
    * 弹层类型：dialog(对话框) | drawer(抽屉)
    * 父组件可通过条件动态切换：:type="isWide ? 'dialog' : 'drawer'"
    */
-  type: {type: String as () => "dialog" | "drawer", default: "dialog"},
+  type: {type: String as () => "dialog" | "drawer"},
 });
-
-const currentComponent = computed(() =>
-    props.type === "drawer" ? StarHorseDrawer : StarHorseDialog,
-);
+const configInfo = computed(() => getGlobalConfigStore().configFormInfo);
+const currentComponent = computed(() => {
+  let dialogType: string = props.type;
+  if (configInfo.value?.dialogType) {
+    dialogType = configInfo.value.dialogType;
+  }
+  return dialogType === "drawer" ? StarHorseDrawer : StarHorseDialog;
+});
 </script>
 
 <template>

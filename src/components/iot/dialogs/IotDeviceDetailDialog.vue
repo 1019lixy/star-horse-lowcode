@@ -1,7 +1,6 @@
 <script setup lang="ts" name="IotDeviceDetailDialog">
 import {computed} from "vue";
 import {i18n} from "@/lang";
-import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import {
   ALARM_LEVEL_COLORS,
   ALARM_LEVEL_LABELS,

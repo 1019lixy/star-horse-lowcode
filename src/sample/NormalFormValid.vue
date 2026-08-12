@@ -7,6 +7,7 @@ import {download} from "@/api/star_horse_apis";
 import {warning} from "@/utils/message";
 import {ApiUrls, SearchInfo} from "@/components/types";
 import {isMobile} from "@/api/device";
+import {PageConfig} from "@/components/system";
 
 const dataUrl: ApiUrls = apiInstance(
     "userdb-manage",
@@ -1014,6 +1015,7 @@ onMounted(() => {
 });
 </script>
 <template>
+  <PageConfig v-model="drawerVisible"/>
   <div class="flex flex-col h-full overflow-hidden">
     <star-horse-panel
         type="drawer"
@@ -1065,7 +1067,7 @@ onMounted(() => {
     <!--    <el-drawer v-model="drawerVisible">
           <el-button @click="dialogProps.editVisible=true">Click</el-button>
         </el-drawer>-->
-    <el-button @click="dialogProps.editVisible=true">Valid Click</el-button>
+    <el-button @click="drawerVisible=true">Valid Click</el-button>
     <el-card class="inner_content">
       <star-horse-table-comp
           ref="codeGeneratorRef"
@@ -1073,6 +1075,7 @@ onMounted(() => {
           :primaryKey="primaryKey"
           :compUrl="dataUrl"
           :preview="true"
+          :dialogType="'drawer'"
           :searchFormData="searchFormData"
           :btn-permissions="{
           edit: 'edit',

@@ -1,5 +1,4 @@
 <script setup lang="ts" name="StarHorseFormItem">
-import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import FieldList from "@/components/formcomp/utils/FieldList.vue";
 import {ItemPreps} from "@/components/types/ItemPreps";
 import {i18n} from "@/lang";

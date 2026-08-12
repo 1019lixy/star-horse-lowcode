@@ -42,6 +42,7 @@ const props = defineProps({
   typeModel: {type: String},
   dynamicForm: {type: Boolean, default: false},
   preview: {type: Boolean, default: false},
+  dialogType: {type: String as () => "dialog" | "drawer"},
   selectData: {
     type: Array<SelectOption>,
     default: () => {
@@ -521,6 +522,7 @@ defineExpose({
             :fieldList="platformFields"
             :rules="rules"
             :compSize="formSize"
+            :dialogType="dialogType"
             v-model:dataForm="dataForm"
             :source="source"
             @addRow="addRow"

@@ -1,7 +1,6 @@
 <script setup lang="ts" name="EtlPreviewDialog">
 import {computed, ref, watch} from "vue";
 import {i18n} from "@/lang";
-import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import type {EtlPipeline, EtlPreviewData} from "../types";
 import {findPreset} from "../constants";
 import {StarHorsePanel} from "@/components/comp";

@@ -1,6 +1,7 @@
 <script setup lang="ts" name="StarHorseFormItem">
 import {batchFieldDefaultValues} from "@/api/star_horse_utils";
 import {ModelRef, ref} from "vue";
+import StarHorseFormList from "@/components/comp/StarHorseFormList.vue";
 
 withDefaults(defineProps<{
   item: any,
@@ -10,6 +11,7 @@ withDefaults(defineProps<{
   source?: number,
   enableSubNode?: boolean,
   commonFormat?: Function,
+  dialogType?:"dialog"|"drawer"
 }>(), {
   initRows: 0,
   size: "default",
@@ -46,6 +48,7 @@ const removeRow = (row: any) => {
       :initRows="item['initRows']"
       :title="item['title']"
       :size="size"
+      :dialogType="dialogType"
       :enableSubNode="enableSubNode"
       :commonFormat="commonFormat"
       @addRow="addRow"

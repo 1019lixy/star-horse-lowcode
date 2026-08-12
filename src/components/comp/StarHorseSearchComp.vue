@@ -1,7 +1,6 @@
 <script setup lang="ts" name="StarHorseSearchComp">
 import {isMobile} from "@/api/device";
 import StarHorseSearchForm from "@/components/comp/StarHorseSearchForm.vue";
-import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import StarHorseQueryBuilder from "@/components/system/StarHorseQueryBuilder.vue";
 import {i18n} from "@/lang";
 import {computed, defineComponent, h, PropType, reactive, ref, watch,} from "vue";
@@ -37,7 +36,7 @@ const props = defineProps({
   defaultCondition: {type: Array as PropType<SearchParams[]>},
   /** 是否展示「高级查询」入口，默认开启 */
   showAdvanced: {type: Boolean, default: true},
-  dialogType: {type: String as () => "dialog" | "drawer", default: "dialog"},
+  dialogType: {type: String as () => "dialog" | "drawer"},
 });
 
 /** 从 formData.fieldList 派生 QueryBuilder 所需的字段下拉选项 */
@@ -216,6 +215,7 @@ defineExpose({
   <div v-if="!isMobile">
     <StarHorseSearchForm
         ref="searchFormRef"
+        :dialogType="dialogType"
         v-bind="props"
         @searchData="handleSearchData"
     >
@@ -241,6 +241,7 @@ defineExpose({
       :source="3"
       :box-height="'100%'"
       :box-width="'100%'"
+      :selfFunc="true"
       :hide-full-screen-icon="true"
       @closeAction="handleClose"
   >
@@ -258,6 +259,7 @@ defineExpose({
     <StarHorseSearchForm
         v-if="mobileMode === 'simple'"
         ref="searchFormRef"
+        :dialogType="dialogType"
         v-bind="props"
         @searchData="handleSearchData"
     />
@@ -313,6 +315,7 @@ defineExpose({
       :box-height="'70vh'"
       :box-width="'760px'"
       :hide-full-screen-icon="false"
+      :selfFunc="true"
       @closeAction="handleAdvancedClose"
   >
     <StarHorseQueryBuilder

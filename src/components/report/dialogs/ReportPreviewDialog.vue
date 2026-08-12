@@ -5,7 +5,6 @@
  */
 import {computed, ref, watch} from "vue";
 import {i18n} from "@/lang";
-import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import {renderReportPrintHtml} from "../renderers/ReportHtmlRenderer";
 import type {ReportRenderContext, ReportTemplate} from "../types";
 import {StarHorsePanel} from "@/components/comp";

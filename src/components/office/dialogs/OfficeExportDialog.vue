@@ -2,7 +2,6 @@
 import {computed, ref} from "vue";
 import {ElMessage} from "element-plus";
 import {i18n} from "@/lang";
-import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import {officeColIndexToLetter} from "../constants";
 import {recalcSheet} from "../utils/OfficeFormulaUtils";
 import type {OfficeDocument, OfficeExportFormat} from "../types";

@@ -1,7 +1,6 @@
 <script setup lang="ts" name="EmailAttachmentDialog">
 import {computed, ref, watch} from "vue";
 import {i18n} from "@/lang";
-import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import type {EmailTemplateDesigner} from "../composables/useEmailTemplateDesigner";
 import {StarHorsePanel} from "@/components/comp";
 

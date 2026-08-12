@@ -6,7 +6,6 @@
  */
 import {computed, ref, watch} from "vue";
 import {i18n} from "@/lang";
-import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import {AI_DEFAULT_SETTINGS, AI_DEFAULT_SYSTEM_PROMPT} from "../constants";
 import type {AiProviderName, AiProviderSettings} from "../types";
 import {success} from "@/utils/message";

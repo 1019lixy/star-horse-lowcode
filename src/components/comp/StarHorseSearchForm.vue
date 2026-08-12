@@ -10,6 +10,7 @@ import Help from "@/components/help.vue";
 import {isMobile} from "@/api/device";
 import {MOBILE_POPPER_OPTIONS} from "@/components/formcomp/utils/useMobilePicker";
 import {getGlobalConfigStore} from "@/store/StoreManager";
+import StarHorseItem from "@/components/comp/StarHorseItem.vue";
 
 let matchTypeList = ref<SelectOption[]>();
 const emits = defineEmits(["searchData", "initComplete"]);
@@ -19,6 +20,7 @@ const props = withDefaults(
       defaultCondition?: SearchParams[];
       dialogInput: boolean;
       mutComp: boolean;
+      dialogType?: "dialog" | "drawer";
     }>(),
     {
       dialogInput: false,
@@ -180,6 +182,7 @@ defineExpose({
         <star-horse-item
             v-model:data-form="searchForm"
             :compSize="compSize"
+            :dialogType="dialogType"
             :item="item"
             :source="4"
             @dataSearch="dataSearch"
@@ -213,6 +216,7 @@ defineExpose({
         <star-horse-item
             v-model:data-form="searchForm"
             :compSize="compSize"
+            :dialogType="dialogType"
             :item="item"
             :source="4"
             @dataSearch="dataSearch"

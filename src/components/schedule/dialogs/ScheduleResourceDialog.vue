@@ -1,7 +1,6 @@
 <script setup lang="ts" name="ScheduleResourceDialog">
 import {computed, ref, watch} from "vue";
 import {i18n} from "@/lang";
-import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import type {ScheduleDesigner} from "../composables/useScheduleDesigner";
 import {createResource, SCHEDULE_RESOURCE_TYPE_PRESETS} from "../constants";
 import type {ScheduleResource} from "../types";

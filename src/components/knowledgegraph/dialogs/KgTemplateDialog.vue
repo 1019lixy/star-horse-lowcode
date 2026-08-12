@@ -2,7 +2,6 @@
 import {computed, ref} from "vue";
 import {ElMessage, ElMessageBox} from "element-plus";
 import {i18n} from "@/lang";
-import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import type {UseGraphQueryBuilderReturn} from "../composables/useGraphQueryBuilder";
 import {StarHorsePanel} from "@/components/comp";
 

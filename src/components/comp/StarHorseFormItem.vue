@@ -54,13 +54,13 @@ const checkItemType = (item: any) => {
     return "dytable-item";
   } else if (item.stepList?.length > 0) {
     return "step-item";
-  }else if (item.descriptionsList?.length > 0) {
+  } else if (item.descriptionsList?.length > 0) {
     return "descriptions-item";
-  }else if (item.dialogList?.length > 0) {
+  } else if (item.dialogList?.length > 0) {
     return "dialog-item";
-  }else if (item.drawerList?.length > 0) {
+  } else if (item.drawerList?.length > 0) {
     return "drawer-item";
-  }else if (item.fieldsetList?.length > 0) {
+  } else if (item.fieldsetList?.length > 0) {
     return "fieldset-item";
   } else if (item.tabList?.length > 0 || item.batchFieldList?.length > 0) {
     return "tab-item";
@@ -87,6 +87,7 @@ const removeRow = (row: any) => {
         :batchFieldName="batchFieldName"
         :batchName="batchName"
         :compSize="compSize"
+        :dialogType="dialogType"
         :compUrl="compUrl"
         :subFormFlag="subFormFlag"
         :source="source"
@@ -109,6 +110,7 @@ const removeRow = (row: any) => {
       :subFormFlag="subFormFlag"
       :enableSubNode="enableSubNode"
       :source="source"
+      :dialogType="dialogType"
       :commonFormat="itemCommonFormat"
       :objectName="objectName"
       :dataIndex="dataIndex"

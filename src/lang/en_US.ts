@@ -695,6 +695,15 @@ export default {
     "pageConfig.buttonDisplayStyle": "Page Button Display Style",
     "pageConfig.resetDefaultConfig": "Reset to Default Configuration",
     "pageConfig.pageStyle": "Page Style",
+    "pageConfig.dialogFormat": "Dialog Format",
+    "pageConfig.dialog": "Dialog",
+    "pageConfig.drawer": "Drawer",
+    "pageConfig.section.theme": "Theme & Color",
+    "pageConfig.section.size": "Size & Display",
+    "pageConfig.section.menu": "Menu Settings",
+    "pageConfig.section.other": "Other Configuration",
+    "pageConfig.classicColors": "Classic Colors",
+    "pageConfig.customColor": "Custom Color",
     /**
      * Color Names
      */

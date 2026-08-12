@@ -6,7 +6,6 @@
  */
 import {computed, ref} from "vue";
 import {i18n} from "@/lang";
-import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import type {PrintTemplate} from "../types";
 import {StarHorsePanel} from "@/components/comp";
 

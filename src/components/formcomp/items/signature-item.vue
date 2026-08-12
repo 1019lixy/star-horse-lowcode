@@ -3,7 +3,6 @@ import {computed, nextTick, ref, watch} from "vue";
 import SmoothSignature from "smooth-signature";
 import {warning} from "@/utils/message";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
-import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import {ItemPreps} from "@/components/types/ItemPreps";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
 import {i18n} from "@/lang";

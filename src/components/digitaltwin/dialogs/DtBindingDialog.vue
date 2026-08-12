@@ -7,7 +7,6 @@
 import {computed, ref, watch} from "vue";
 import {i18n} from "@/lang";
 import {ElMessage} from "element-plus";
-import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import {dtGenId} from "../constants";
 import type {DtAlarmLevel, DtAlarmOp, DtBindingSourceType, DtDataBinding} from "../types";
 import {StarHorsePanel} from "@/components/comp";

@@ -7,7 +7,6 @@
 import {computed} from "vue";
 import {i18n} from "@/lang";
 import {ElMessage, ElMessageBox} from "element-plus";
-import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import {DT_SCENE_TEMPLATES} from "../constants";
 import type {DtSceneTemplate} from "../types";
 import {StarHorsePanel} from "@/components/comp";

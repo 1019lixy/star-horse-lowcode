@@ -1,7 +1,6 @@
 <script setup lang="ts" name="DocPreviewDialog">
 import {computed, ref} from "vue";
 import {i18n} from "@/lang";
-import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import type {DocTemplateDesigner} from "../composables/useDocTemplateDesigner";
 import {renderTemplateContent} from "../constants";
 import {StarHorsePanel} from "@/components/comp";

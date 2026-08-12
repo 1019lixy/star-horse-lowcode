@@ -60,6 +60,7 @@ onMounted(() => {
               :size="compSize"
               @addRow="addRow"
               :source="source"
+              :dialogType="dialogType"
               @removeRow="removeRow"
               :enableSubNode="enableSubNode"
               :commonFormat="commonFormat"

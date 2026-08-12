@@ -1,7 +1,6 @@
 <script setup lang="ts" name="PivotFieldDialog">
 import {computed, ref, watch} from "vue";
 import {i18n} from "@/lang";
-import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import type {PivotDesigner} from "../composables/usePivotDesigner";
 import {createField, PIVOT_AGGREGATION_PRESETS, PIVOT_FIELD_TYPE_PRESETS} from "../constants";
 import type {PivotField} from "../types";

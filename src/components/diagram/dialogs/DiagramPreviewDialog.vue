@@ -1,7 +1,6 @@
 <script setup lang="ts" name="DiagramPreviewDialog">
 import {computed} from "vue";
 import {i18n} from "@/lang";
-import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import {getPortPosition, getShapePath} from "../constants";
 import type {DiagramData} from "../types";
 import {StarHorsePanel} from "@/components/comp";

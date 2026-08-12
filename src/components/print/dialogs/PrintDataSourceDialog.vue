@@ -6,7 +6,6 @@
  */
 import {computed, ref, watch} from "vue";
 import {i18n} from "@/lang";
-import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import {DEFAULT_DATA_FIELDS} from "../constants";
 import type {PrintDataField, PrintDataSource} from "../types";
 import {StarHorsePanel} from "@/components/comp";

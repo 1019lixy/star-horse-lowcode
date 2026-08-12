@@ -2,7 +2,6 @@
 import {computed, ref, watch} from "vue";
 import {ElMessage} from "element-plus";
 import {i18n} from "@/lang";
-import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import type {WbExportFormat, WhiteboardElement} from "../types";
 import {
   wbDownloadBlob,

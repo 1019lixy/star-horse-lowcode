@@ -2,7 +2,6 @@
 import {computed, ref} from "vue";
 import {ElMessage} from "element-plus";
 import {i18n} from "@/lang";
-import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import type {EmailTemplateDesigner} from "../composables/useEmailTemplateDesigner";
 import {renderEmailContent} from "../constants";
 import {StarHorsePanel} from "@/components/comp";

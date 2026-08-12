@@ -1,7 +1,6 @@
 <script setup lang="ts" name="DocVariableDialog">
 import {computed, ref, watch} from "vue";
 import {i18n} from "@/lang";
-import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import type {DocTemplateDesigner} from "../composables/useDocTemplateDesigner";
 import {createVariable, DOC_VARIABLE_TYPE_PRESETS} from "../constants";
 import type {DocVariable} from "../types";

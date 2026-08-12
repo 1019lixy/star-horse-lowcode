@@ -6,7 +6,6 @@
  */
 import {computed, ref, watch} from "vue";
 import {i18n} from "@/lang";
-import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import {renderPrintHtml} from "../renderers/HtmlRenderer";
 import {renderZpl} from "../renderers/ZplRenderer";
 import {renderTspl} from "../renderers/TsplRenderer";

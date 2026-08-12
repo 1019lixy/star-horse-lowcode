@@ -7,7 +7,6 @@
 import {computed, ref, watch} from "vue";
 import {i18n} from "@/lang";
 import {ElMessage} from "element-plus";
-import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import {createDtEntity, DT_ENTITY_TYPE_PRESETS, DT_STATUS_PRESETS, dtDefaultSize,} from "../constants";
 import type {DtEntity, DtEntityStatus, DtEntityType} from "../types";
 import {StarHorsePanel} from "@/components/comp";

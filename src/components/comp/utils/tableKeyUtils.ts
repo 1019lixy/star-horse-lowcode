@@ -1,5 +1,6 @@
 import {isJson} from "@/api/star_horse_utils";
 import {uuid} from "@/api/system";
+
 /**
  * 按点号路径拆分取值:支持 "a.b.c" 形式的嵌套属性访问
  * @param key 属性路径

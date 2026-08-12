@@ -2,7 +2,6 @@
 import {computed, ref} from "vue";
 import {ElMessage} from "element-plus";
 import {i18n} from "@/lang";
-import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import {DEFAULT_MAP_BOUNDS, formatLngLat, parseLngLat} from "../constants";
 import {generateGridLines, project, unproject} from "../utils/MapProjection";
 import type {MapBounds} from "../types";

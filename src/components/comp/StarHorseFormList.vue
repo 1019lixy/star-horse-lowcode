@@ -38,7 +38,7 @@ const props = defineProps({
   selectAll: {type: Boolean, default: false},
   subFlag: {type: Boolean, default: false},
   enableSubNode: {type: Boolean, default: false},
-  dialogType: {type: String as () => "dialog" | "drawer", default: "dialog"},
+  dialogType: {type: String as () => "dialog" | "drawer"},
   commonFormat: {
     type: Function,
     default: () => {
@@ -474,6 +474,7 @@ watch(
       v-model="importDialogVisible"
       :boxWidth="'30%'"
       :source="3"
+      :selfFunc="true"
       :draggable="false"
       @closeAction="importDialogVisible = false"
   >

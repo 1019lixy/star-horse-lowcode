@@ -1,7 +1,6 @@
 <script setup lang="ts" name="KanbanCardDialog">
 import {computed, ref, watch} from "vue";
 import {i18n} from "@/lang";
-import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import type {KanbanDesigner} from "../composables/useKanbanDesigner";
 import {createCard, KANBAN_PRIORITY_PRESETS} from "../constants";
 import type {KanbanCard} from "../types";

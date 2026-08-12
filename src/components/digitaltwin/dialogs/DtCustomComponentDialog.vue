@@ -11,7 +11,6 @@
 import {computed, ref, watch} from "vue";
 import {i18n} from "@/lang";
 import {ElMessage, ElMessageBox} from "element-plus";
-import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import {ShSvgIcon} from "@/components/shared";
 import {DT_MODEL_CATEGORIES} from "../modelLibrary";
 import type {DtEntity, DtModelCategoryKey, DtModelPart, DtModelPartType, DtModelPreset} from "../types";

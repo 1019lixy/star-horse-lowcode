@@ -48,7 +48,7 @@ const props = defineProps({
   },
   placeholder: String,
   initialContent: String,
-  dialogType:{type:String as ()=>"dialog"|"drawer",default:"dialog"}
+  dialogType:{type:String as ()=>"dialog"|"drawer"}
 });
 
 const content = ref("");

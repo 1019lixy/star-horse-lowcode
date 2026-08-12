@@ -3,7 +3,6 @@ import {useVModel} from "@vueuse/core";
 import {computed, nextTick, onUnmounted, reactive, ref, watch} from "vue";
 import {i18n} from "@/lang";
 import {postRequest} from "@/api/star_horse_apis";
-import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import {closeLoad, createCondition} from "@/api/star_horse_utils";
 import {PageProps} from "@/components/types/PageProps";
 import {SearchParams} from "@/components/types";
@@ -710,7 +709,7 @@ defineExpose({
       @resetForm="resetData"
       :full-screen="isMobile"
       @closeAction="dialogVisible = false"
-      draggable
+      :draggable="true"
       :title="title || i18n('datapicker.selectData')"
       boxWidth="60%"
       boxHeight="70%"

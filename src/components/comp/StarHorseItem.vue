@@ -16,7 +16,8 @@ const props = withDefaults(defineProps<{
   compSize?: string,
   showLabel?: boolean,
   source?: number,
-  commonFormat?: Function
+  commonFormat?: Function,
+  dialogType?: "dialog" | "drawer",
 }>(), {
   dataIndex: -1,
   bareFlag: false,
@@ -233,6 +234,7 @@ onMounted(() => {
         ref="componentRef"
         :isSearch="source == 4"
         :bareFlag="bareFlag"
+        :dialogType="dialogType"
         :source="source"
         :field="item"
         v-model:formData="dataForm"
@@ -246,6 +248,7 @@ onMounted(() => {
           v-if="checkVisible(temp, dataForm)"
           :primaryKey="primaryKey"
           :compSize="compSize"
+          :dialogType="dialogType"
           v-model:dataForm="dataForm"
           :item="temp"
           :dataIndex="dataIndex"

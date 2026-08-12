@@ -16,17 +16,7 @@ import {useGlobalConfigStore} from "@/store/GlobalConfig";
 import {isSystemManage} from "@/utils/auth";
 import {warning} from "@/utils/message";
 import {i18n} from "@/lang";
-import {
-  computed,
-  inject,
-  nextTick,
-  onActivated,
-  onMounted,
-  onUnmounted,
-  provide,
-  ref,
-  watch,
-} from "vue";
+import {computed, inject, nextTick, onActivated, onMounted, onUnmounted, provide, ref, watch,} from "vue";
 import {isMobile} from "@/api/device";
 import type {PreValid} from "@/components/types";
 import FieldVisibleControl from "@/components/comp/utils/FieldVisibleControl.vue";

@@ -689,6 +689,15 @@ export default {
     "pageConfig.buttonDisplayStyle": "页面按钮显示风格",
     "pageConfig.resetDefaultConfig": "一键默认配置",
     "pageConfig.pageStyle": "页面风格",
+    "pageConfig.dialogFormat": "弹窗格式",
+    "pageConfig.dialog": "弹窗",
+    "pageConfig.drawer": "抽屉",
+    "pageConfig.section.theme": "主题与配色",
+    "pageConfig.section.size": "尺寸与展示",
+    "pageConfig.section.menu": "菜单设置",
+    "pageConfig.section.other": "其他配置",
+    "pageConfig.classicColors": "经典配色",
+    "pageConfig.customColor": "自定义颜色",
     /**
      * Color Names
      */

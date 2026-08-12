@@ -1,7 +1,6 @@
 <script setup lang="ts" name="GanttTaskDialog">
 import {computed, ref, watch} from "vue";
 import {i18n} from "@/lang";
-import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import type {GanttDesigner} from "../composables/useGanttDesigner";
 import {createTask, GANTT_PRIORITY_PRESETS, GANTT_STATUS_PRESETS} from "../constants";
 import type {GanttTask} from "../types";
