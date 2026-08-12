@@ -9,6 +9,7 @@ import {warning} from "@/utils/message";
 import {labelVisibleCheck, validMsg} from "@/api/form_utils";
 import {getDesignFormStore} from "@/store/StoreManager";
 import {isMobile} from "@/api/device";
+import {StarHorsePanel} from "@/components/comp";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -139,7 +140,8 @@ const finishEditLabel = () => {
 };
 </script>
 <template>
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       v-if="isDesign"
       box-width="450px"
       box-height="70%"
@@ -156,7 +158,7 @@ const finishEditLabel = () => {
       </el-button>
     </template>
     <field-list @selectData="changeItem"/>
-  </star-horse-dialog>
+  </star-horse-panel>
   <div
       class="w-fill"
       :class="{ 'item-info': field?.preps?.itemType != 'usercomp' }"

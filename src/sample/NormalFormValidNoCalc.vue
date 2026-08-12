@@ -7,6 +7,7 @@ import {download} from "@/api/star_horse_apis";
 import {warning} from "@/utils/message";
 import {ApiUrls, SearchInfo} from "@/components/types";
 import {isMobile} from "@/api/device";
+import StarHorseDrawer from "@/components/comp/StarHorseDrawer.vue";
 
 const dataUrl: ApiUrls = apiInstance(
     "userdb-manage",
@@ -928,9 +929,9 @@ onMounted(() => {
         />
       </div>
     </div>
-    <el-drawer v-model="drawerVisible">
+    <star-horse-drawer v-model="drawerVisible">
       <el-button @click="dialogProps.editVisible=true">Click</el-button>
-    </el-drawer>
+    </star-horse-drawer>
     <el-button @click="drawerVisible=true">Click</el-button>
     <el-card class="inner_content">
       <star-horse-table-comp

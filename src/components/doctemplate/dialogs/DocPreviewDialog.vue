@@ -4,10 +4,12 @@ import {i18n} from "@/lang";
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import type {DocTemplateDesigner} from "../composables/useDocTemplateDesigner";
 import {renderTemplateContent} from "../constants";
+import {StarHorsePanel} from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
   designer: DocTemplateDesigner;
+  dialogType?:"dialog"|"drawer";
 }>();
 
 const emit = defineEmits<{
@@ -52,7 +54,8 @@ const handleExport = () => {
 </script>
 
 <template>
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       v-model="innerVisible"
       :title="i18n('doctemplate.preview.title')"
       box-width="900px"
@@ -113,7 +116,7 @@ const handleExport = () => {
     <template #footer>
       <el-button @click="innerVisible = false">{{ i18n("dialog.close") }}</el-button>
     </template>
-  </star-horse-dialog>
+  </star-horse-panel>
 </template>
 
 <script lang="ts">

@@ -15,11 +15,13 @@ import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import {ShSvgIcon} from "@/components/shared";
 import {DT_MODEL_CATEGORIES} from "../modelLibrary";
 import type {DtEntity, DtModelCategoryKey, DtModelPart, DtModelPartType, DtModelPreset} from "../types";
+import {StarHorsePanel} from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
   /** 当前选中的实体（用于"保存组件"页签预填） */
   selectedEntity?: DtEntity | null;
+  dialogType?:"dialog"|"drawer";
 }>();
 
 const emit = defineEmits<{
@@ -171,7 +173,8 @@ watch(
 </script>
 
 <template>
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       v-model="innerVisible"
       :title="i18n('digitaltwin.customComponentDialog.title')"
       box-width="640px"
@@ -262,7 +265,7 @@ watch(
         </div>
       </el-tab-pane>
     </el-tabs>
-  </star-horse-dialog>
+  </star-horse-panel>
 </template>
 
 <style lang="scss" scoped>

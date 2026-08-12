@@ -206,16 +206,7 @@ const checkClassName = () => {
     return "comp-info";
   }
 };
-const dataFormat = (item: any) => {
-  let name = props.item?.fieldName;
-  let val = "";
-  try {
-    val = dataForm.value?.[name];
-    return props.commonFormat(name, val, dataForm.value) ?? "--";
-  } catch (e) {
-    return val || "--";
-  }
-};
+
 onMounted(() => {
   init();
 });

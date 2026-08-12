@@ -10,6 +10,7 @@ import {ElMessage} from "element-plus";
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import {createDtEntity, DT_ENTITY_TYPE_PRESETS, DT_STATUS_PRESETS, dtDefaultSize,} from "../constants";
 import type {DtEntity, DtEntityStatus, DtEntityType} from "../types";
+import {StarHorsePanel} from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
@@ -17,6 +18,7 @@ const props = defineProps<{
   entityId?: string | null;
   /** 编辑时传入当前实体列表（用于回填） */
   sourceEntity?: DtEntity | null;
+  dialogType?:"dialog"|"drawer";
 }>();
 
 const emit = defineEmits<{
@@ -77,7 +79,8 @@ const dialogTitle = computed(() =>
 </script>
 
 <template>
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       v-model="innerVisible"
       :title="dialogTitle"
       box-width="640px"
@@ -199,7 +202,7 @@ const dialogTitle = computed(() =>
       <el-button @click="handleClose">{{ i18n("digitaltwin.dialog.close") }}</el-button>
       <el-button type="primary" @click="handleSubmit">{{ i18n("digitaltwin.dialog.confirm") }}</el-button>
     </template>
-  </star-horse-dialog>
+  </star-horse-panel>
 </template>
 
 <style lang="scss" scoped>

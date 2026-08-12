@@ -5,11 +5,13 @@ import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import type {PivotDesigner} from "../composables/usePivotDesigner";
 import {createField, PIVOT_AGGREGATION_PRESETS, PIVOT_FIELD_TYPE_PRESETS} from "../constants";
 import type {PivotField} from "../types";
+import {StarHorsePanel} from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
   designer: PivotDesigner;
   fieldName?: string | null;
+  dialogType?:"dialog"|"drawer";
 }>();
 
 const emit = defineEmits<{
@@ -53,7 +55,8 @@ const handleSubmit = () => {
 </script>
 
 <template>
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       v-model="innerVisible"
       :title="isNew ? i18n('pivot.dialog.addField') : i18n('pivot.dialog.editField')"
       box-width="500px"
@@ -91,5 +94,5 @@ const handleSubmit = () => {
         <el-input v-model="form.format" :placeholder="i18n('pivot.field.formatPlaceholder')"/>
       </el-form-item>
     </el-form>
-  </star-horse-dialog>
+  </star-horse-panel>
 </template>

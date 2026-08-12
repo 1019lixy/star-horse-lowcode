@@ -12,10 +12,12 @@ import {
   wbToJson,
   wbToSvgXml,
 } from "../utils/WbExportUtils";
+import {StarHorsePanel} from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
   elements: WhiteboardElement[];
+  dialogType?:"dialog"|"drawer";
 }>();
 
 const emit = defineEmits<{
@@ -124,7 +126,8 @@ const handleClose = () => {
 </script>
 
 <template>
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       v-model="innerVisible"
       :title="i18n('whiteboard.export.title')"
       box-width="780px"
@@ -180,7 +183,7 @@ const handleClose = () => {
         {{ i18n("whiteboard.export.confirm") }}
       </el-button>
     </template>
-  </star-horse-dialog>
+  </star-horse-panel>
 </template>
 
 <style lang="scss" scoped>

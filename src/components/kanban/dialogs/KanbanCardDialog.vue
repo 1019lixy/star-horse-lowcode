@@ -5,12 +5,14 @@ import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import type {KanbanDesigner} from "../composables/useKanbanDesigner";
 import {createCard, KANBAN_PRIORITY_PRESETS} from "../constants";
 import type {KanbanCard} from "../types";
+import {StarHorsePanel} from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
   designer: KanbanDesigner;
   cardId?: string | null;
   columnId?: string;
+  dialogType?:"dialog"|"drawer";
 }>();
 
 const emit = defineEmits<{
@@ -67,7 +69,8 @@ const handleRemoveLabel = (idx: number) => {
 </script>
 
 <template>
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       v-model="innerVisible"
       :title="isNew ? i18n('kanban.dialog.addCard') : i18n('kanban.dialog.editCard')"
       box-width="600px"
@@ -151,7 +154,7 @@ const handleRemoveLabel = (idx: number) => {
         </div>
       </el-form-item>
     </el-form>
-  </star-horse-dialog>
+  </star-horse-panel>
 </template>
 
 <style lang="scss" scoped>

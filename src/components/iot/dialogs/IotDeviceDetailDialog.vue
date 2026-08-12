@@ -10,12 +10,14 @@ import {
   STATUS_LABELS,
 } from "../constants";
 import type {IotAlarm, IotDevice} from "../types";
+import {StarHorsePanel} from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
   device: IotDevice | null;
   /** 该设备的最近告警（可选，由外部传入） */
   alarms?: IotAlarm[];
+  dialogType?:"dialog"|"drawer";
 }>();
 
 const emit = defineEmits<{
@@ -77,7 +79,8 @@ const relativeTime = (ts: number): string => {
 </script>
 
 <template>
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       v-model="innerVisible"
       :title="i18n('iot.btn.detail')"
       box-width="60%"
@@ -181,7 +184,7 @@ const relativeTime = (ts: number): string => {
     <template #footer>
       <el-button @click="innerVisible = false">{{ i18n("dialog.close") }}</el-button>
     </template>
-  </star-horse-dialog>
+  </star-horse-panel>
 </template>
 
 <script lang="ts">

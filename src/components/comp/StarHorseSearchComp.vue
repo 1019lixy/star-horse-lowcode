@@ -11,6 +11,7 @@ import type {SearchFields, SelectOption} from "@/components/types/SearchProps";
 import type {SearchParams} from "@/components/types/Params";
 import type {OrderByInfo} from "@/components/types/PageFieldInfo";
 import {StarHorseIcon} from "@/components/comp/index";
+import StarHorsePanel from "@/components/comp/StarHorsePanel.vue";
 
 const searchFormRef = ref<InstanceType<typeof StarHorseSearchForm> | null>(
     null,
@@ -36,6 +37,7 @@ const props = defineProps({
   defaultCondition: {type: Array as PropType<SearchParams[]>},
   /** 是否展示「高级查询」入口，默认开启 */
   showAdvanced: {type: Boolean, default: true},
+  dialogType: {type: String as () => "dialog" | "drawer", default: "dialog"},
 });
 
 /** 从 formData.fieldList 派生 QueryBuilder 所需的字段下拉选项 */
@@ -231,7 +233,8 @@ defineExpose({
   </div>
 
   <!-- ── 移动端：搜索弹窗（简单 / 高级 切换） ─────────────────── -->
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       v-model="dialogVisible"
       :title="i18n('search.query')"
       :full-screen="false"
@@ -298,10 +301,11 @@ defineExpose({
         </el-button>
       </div>
     </div>
-  </star-horse-dialog>
+  </star-horse-panel>
 
   <!-- ── 桌面端：高级查询弹窗 ───────────────────────────────── -->
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       v-model="advancedVisible"
       :title="i18n('search.advancedQuery')"
       :full-screen="false"
@@ -354,7 +358,7 @@ defineExpose({
         </el-button>
       </div>
     </template>
-  </star-horse-dialog>
+  </star-horse-panel>
 </template>
 <style lang="scss" scoped>
 /* 高级查询弹窗底部操作区：主次分组 + 顶部细分割，避免紧贴边缘的廉价感 */

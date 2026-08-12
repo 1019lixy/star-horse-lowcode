@@ -242,7 +242,7 @@ const tabColapseCardAnalysis = (item: any) => {
         fieldInfo.splitterList = dataList;
     } else if (item.itemType == "step") {
         fieldInfo.stepList = dataList;
-    }else if (item.itemType == "descriptions") {
+    } else if (item.itemType == "descriptions") {
         fieldInfo.descriptionsList = dataList;
     } else if (item.itemType == "dialog") {
         fieldInfo.dialogList = dataList;
@@ -446,7 +446,7 @@ function getContainerResult(comp: any) {
         return boxDytableAnalysis(comp);
     } else if (comp.itemType === "table") {
         return tableAnalysis(comp);
-    } else if (["tab", "collapse", "card", "splitter", "step"].includes(comp.itemType)) {
+    } else if (["tab", "collapse", "card", "splitter", "step", "dialog", "drawer", "descriptions", "fieldset"].includes(comp.itemType)) {
         return tabColapseCardAnalysis(comp);
     } else if (comp.itemType === "condition") {
         return conditionAnalysis(comp);
@@ -481,9 +481,9 @@ function checkContainerType(data: FieldInfo) {
         return {type: "descriptions", dataList: data.descriptionsList};
     } else if (data.dialogList) {
         return {type: "dialog", dataList: data.dialogList};
-    }else if (data.drawerList) {
+    } else if (data.drawerList) {
         return {type: "drawer", dataList: data.drawerList};
-    }else if (data.fieldsetList) {
+    } else if (data.fieldsetList) {
         return {type: "fieldset", dataList: data.fieldsetList};
     } else {
         return null;
@@ -599,7 +599,7 @@ function processContainer(filed: any, commonContainer: any, result: any[], ctx: 
                 type: "text",
                 staticData: true,
                 formVisible: container.formVisible,
-                visiblePlatform:"app",
+                visiblePlatform: "app",
                 preps: {
                     textContent: title
                 }
@@ -1117,7 +1117,7 @@ export const processFieldList = (
                     result,
                 );
             });
-        }else if (item.descriptionsList?.length > 0) {
+        } else if (item.descriptionsList?.length > 0) {
             item.descriptionsList.forEach((descItems: any, descIndex: number) => {
                 processFieldList(
                     descItems.fieldList,
@@ -1125,7 +1125,7 @@ export const processFieldList = (
                     result,
                 );
             });
-        }else if (item.dialogList?.length > 0) {
+        } else if (item.dialogList?.length > 0) {
             item.dialogList.forEach((dialogItems: any, dialogIndex: number) => {
                 processFieldList(
                     dialogItems.fieldList,
@@ -1133,7 +1133,7 @@ export const processFieldList = (
                     result,
                 );
             });
-        }else if (item.drawerList?.length > 0) {
+        } else if (item.drawerList?.length > 0) {
             item.drawerList.forEach((drawerItems: any, drawerIndex: number) => {
                 processFieldList(
                     drawerItems.fieldList,
@@ -1141,7 +1141,7 @@ export const processFieldList = (
                     result,
                 );
             });
-        }else if (item.fieldsetList?.length > 0) {
+        } else if (item.fieldsetList?.length > 0) {
             item.fieldsetList.forEach((fieldsetItems: any, fieldsetIndex: number) => {
                 processFieldList(
                     fieldsetItems.fieldList,
@@ -1175,7 +1175,7 @@ export const processFieldList = (
 };
 
 // 表单类容器列表属性（排除 batchFieldList/dytableList，表格由组件自行校验）
-const formContainerListKeys = ["tabList", "cardList", "collapseList", "splitterList", "dytableList", "stepList","descriptionsList","dialogList","drawerList","fieldsetList"];
+const formContainerListKeys = ["tabList", "cardList", "collapseList", "splitterList", "dytableList", "stepList", "descriptionsList", "dialogList", "drawerList", "fieldsetList"];
 
 /**
  * 递归收集容器内字段的 prop 路径（与 otherItem 渲染时的 loadProp 逻辑一致）

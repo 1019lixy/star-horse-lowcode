@@ -5,11 +5,13 @@ import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import type {KanbanDesigner} from "../composables/useKanbanDesigner";
 import {createColumn} from "../constants";
 import type {KanbanColumn} from "../types";
+import {StarHorsePanel} from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
   designer: KanbanDesigner;
   columnId?: string | null;
+  dialogType?:"dialog"|"drawer";
 }>();
 
 const emit = defineEmits<{
@@ -53,7 +55,8 @@ const handleSubmit = () => {
 </script>
 
 <template>
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       v-model="innerVisible"
       :title="isNew ? i18n('kanban.dialog.addColumn') : i18n('kanban.dialog.editColumn')"
       box-width="500px"
@@ -83,5 +86,5 @@ const handleSubmit = () => {
         </el-radio-group>
       </el-form-item>
     </el-form>
-  </star-horse-dialog>
+  </star-horse-panel>
 </template>

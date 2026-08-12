@@ -3,10 +3,12 @@ import {computed, ref, watch} from "vue";
 import {i18n} from "@/lang";
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import type {EmailTemplateDesigner} from "../composables/useEmailTemplateDesigner";
+import {StarHorsePanel} from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
   designer: EmailTemplateDesigner;
+  dialogType?:"dialog"|"drawer";
 }>();
 
 const emit = defineEmits<{
@@ -45,7 +47,8 @@ const handleSubmit = () => {
 </script>
 
 <template>
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       v-model="innerVisible"
       :title="i18n('emailtemplate.dialog.addAttachment')"
       box-width="480px"
@@ -63,5 +66,5 @@ const handleSubmit = () => {
         <el-input-number v-model="form.size" :min="0" style="width: 100%" controls-position="right"/>
       </el-form-item>
     </el-form>
-  </star-horse-dialog>
+  </star-horse-panel>
 </template>

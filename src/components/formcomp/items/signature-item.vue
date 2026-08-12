@@ -8,6 +8,7 @@ import {ItemPreps} from "@/components/types/ItemPreps";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
 import {i18n} from "@/lang";
 import {isMobile} from "@/api/device";
+import {StarHorsePanel} from "@/components/comp";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -125,17 +126,19 @@ const signImage = computed(() => {
 
 <template>
   <!-- 大图预览弹窗（原有功能保留） -->
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       v-model="previewDialog"
       :source="3"
       :self-func="true"
       @closeAction="previewDialog = false"
   >
     <el-image :src="signImage" fit="contain" style="width:100%"/>
-  </star-horse-dialog>
+  </star-horse-panel>
 
   <!-- 签名编辑弹窗【核心】画布只在这里 -->
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       v-model="signDialogVisible"
       title="手写签名"
       @merge="confirmSign"
@@ -157,7 +160,7 @@ const signImage = computed(() => {
         <canvas ref="signatureCanvas" class="sign-canvas"/>
       </div>
     </div>
-  </star-horse-dialog>
+  </star-horse-panel>
 
   <starhorse-form-item
       :showFormItem="showFormItem"

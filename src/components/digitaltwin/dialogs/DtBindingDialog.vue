@@ -10,6 +10,7 @@ import {ElMessage} from "element-plus";
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import {dtGenId} from "../constants";
 import type {DtAlarmLevel, DtAlarmOp, DtBindingSourceType, DtDataBinding} from "../types";
+import {StarHorsePanel} from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
@@ -19,6 +20,7 @@ const props = defineProps<{
   sourceBinding?: DtDataBinding | null;
   /** 关联实体 ID（生成绑定 id 时使用） */
   entityId?: string;
+  dialogType?:"dialog"|"drawer";
 }>();
 
 const emit = defineEmits<{
@@ -114,7 +116,8 @@ const dialogTitle = computed(() =>
 </script>
 
 <template>
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       v-model="innerVisible"
       :title="dialogTitle"
       box-width="560px"
@@ -188,5 +191,5 @@ const dialogTitle = computed(() =>
       <el-button @click="innerVisible = false">{{ i18n("digitaltwin.dialog.close") }}</el-button>
       <el-button type="primary" @click="handleSubmit">{{ i18n("digitaltwin.dialog.confirm") }}</el-button>
     </template>
-  </star-horse-dialog>
+  </star-horse-panel>
 </template>

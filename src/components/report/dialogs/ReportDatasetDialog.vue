@@ -7,10 +7,12 @@ import {computed, ref, watch} from "vue";
 import {i18n} from "@/lang";
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import type {DatasetField, ReportDataset} from "../types";
+import {StarHorsePanel} from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
   datasets: ReportDataset[];
+  dialogType?:"dialog"|"drawer";
 }>();
 
 const emits = defineEmits<{
@@ -97,7 +99,8 @@ const fieldTypes: Array<{ label: string; value: DatasetField["type"] }> = [
 </script>
 
 <template>
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       v-model="innerVisible"
       :title="i18n('report.dataset.title')"
       box-width="70%"
@@ -180,7 +183,7 @@ const fieldTypes: Array<{ label: string; value: DatasetField["type"] }> = [
     <template #footer>
       <el-button @click="innerVisible = false">{{ i18n('dialog.close') }}</el-button>
     </template>
-  </star-horse-dialog>
+  </star-horse-panel>
 </template>
 
 <style lang="scss" scoped>

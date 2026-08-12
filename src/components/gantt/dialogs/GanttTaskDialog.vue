@@ -5,6 +5,7 @@ import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import type {GanttDesigner} from "../composables/useGanttDesigner";
 import {createTask, GANTT_PRIORITY_PRESETS, GANTT_STATUS_PRESETS} from "../constants";
 import type {GanttTask} from "../types";
+import {StarHorsePanel} from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
@@ -13,6 +14,7 @@ const props = defineProps<{
   taskId?: string | null;
   /** 父任务ID */
   parentId?: string | null;
+  dialogType?:"dialog"|"drawer";
 }>();
 
 const emit = defineEmits<{
@@ -64,7 +66,8 @@ const handleSubmit = () => {
 </script>
 
 <template>
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       v-model="innerVisible"
       :title="isNew ? i18n('gantt.dialog.addTask') : i18n('gantt.dialog.editTask')"
       box-width="600px"
@@ -154,5 +157,5 @@ const handleSubmit = () => {
         <el-input v-model="form.remark" type="textarea" :rows="3"/>
       </el-form-item>
     </el-form>
-  </star-horse-dialog>
+  </star-horse-panel>
 </template>

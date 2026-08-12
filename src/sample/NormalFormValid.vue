@@ -434,24 +434,54 @@ const fieldList = ref<PageFieldInfo>({
     },
     // ===== ternary 三元 =====
     {
-      label: "分数",
-      fieldName: "tnScore",
-      type: "number",
-      preps: {defaultValue: 85},
+      label: "控制下面的组件",
+      fieldName: "fmtPercentage",
+      type: "select",
+      preps: {
+        values: [{name: "A", value: "a"}, {name: "B", value: "b"}, {name: "C", value: "c"}],
+        dataRelation: {
+          actionName: "change",
+          relationDetails: [{
+            matchType: "eq",
+            controlCondition: "eqVisible",
+            controlTarget: "container" as const,
+            relationFields: ["modResult"],
+            matchFieldValue: ["a"],
+          }],
+        }
+      }
     },
     {
-      label: "及格判定(ternary)",
-      fieldName: "tnResult",
-      type: "input",
-      preps: {
-        formula: {
-          enable: true,
-          type: "ternary",
-          sourceFields: ["tnScore"],
-          expression: "${tnScore}>=60?'及格':'不及格'",
+      descriptionsList: [{
+        title: "计算分数",
+        objectName: "modResult",
+        tabName: "modResult",
+        formVisible: false,
+        preps:{
+
         },
-      },
+        fieldList: [{
+          label: "分数",
+          fieldName: "tnScore",
+          type: "number",
+          preps: {defaultValue: 85},
+        },
+          {
+            label: "及格判定(ternary)",
+            fieldName: "tnResult",
+            type: "input",
+            preps: {
+              formula: {
+                enable: true,
+                type: "ternary",
+                sourceFields: ["tnScore"],
+                expression: "${tnScore}>=60?'及格':'不及格'",
+              },
+            },
+          },]
+      }]
     },
+
     {
       label: "color",
       fieldName: "color",
@@ -985,7 +1015,8 @@ onMounted(() => {
 </script>
 <template>
   <div class="flex flex-col h-full overflow-hidden">
-    <star-horse-dialog
+    <star-horse-panel
+        type="drawer"
         :isShowBtnContinue="true"
         v-model="dialogProps.editVisible"
         :dialogProps="dialogProps"
@@ -1007,8 +1038,9 @@ onMounted(() => {
           :fieldList="fieldList"
           :rules="rules"
       />
-    </star-horse-dialog>
-    <star-horse-dialog
+    </star-horse-panel>
+    <star-horse-panel
+        type="dialog"
         v-model="dialogProps.viewVisible"
         :source="3"
         boxHeight="85%"
@@ -1018,7 +1050,7 @@ onMounted(() => {
           :field-list="fieldList"
           :compUrl="dataUrl"
       />
-    </star-horse-dialog>
+    </star-horse-panel>
     <div class="search-content" v-if="!isMobile">
       <div class="search_btn">
         <star-horse-search-comp

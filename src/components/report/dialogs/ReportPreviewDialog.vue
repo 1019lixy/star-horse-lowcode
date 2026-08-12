@@ -8,6 +8,7 @@ import {i18n} from "@/lang";
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import {renderReportPrintHtml} from "../renderers/ReportHtmlRenderer";
 import type {ReportRenderContext, ReportTemplate} from "../types";
+import {StarHorsePanel} from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
@@ -15,6 +16,7 @@ const props = defineProps<{
   data?: Record<string, any[]>;
   params?: Record<string, any>;
   operator?: string;
+  dialogType?:"dialog"|"drawer";
 }>();
 
 const emits = defineEmits<{
@@ -75,7 +77,8 @@ const handleExportHtml = () => {
 </script>
 
 <template>
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       v-model="innerVisible"
       :title="i18n('report.preview.title')"
       box-width="80%"
@@ -100,7 +103,7 @@ const handleExportHtml = () => {
     <template #footer>
       <el-button @click="innerVisible = false">{{ i18n('dialog.close') }}</el-button>
     </template>
-  </star-horse-dialog>
+  </star-horse-panel>
 </template>
 
 <style lang="scss" scoped>

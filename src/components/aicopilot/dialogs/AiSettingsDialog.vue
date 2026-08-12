@@ -10,10 +10,12 @@ import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import {AI_DEFAULT_SETTINGS, AI_DEFAULT_SYSTEM_PROMPT} from "../constants";
 import type {AiProviderName, AiProviderSettings} from "../types";
 import {success} from "@/utils/message";
+import {StarHorsePanel} from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
   settings: AiProviderSettings;
+  dialogType?:"dialog"|"drawer";
 }>();
 
 const emit = defineEmits<{
@@ -57,7 +59,8 @@ const handleReset = (): void => {
 </script>
 
 <template>
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       v-model="innerVisible"
       :title="i18n('aicopilot.settings.title')"
       box-width="640px"
@@ -119,7 +122,7 @@ const handleReset = (): void => {
       </el-form>
     </div>
 
-  </star-horse-dialog>
+  </star-horse-panel>
 </template>
 
 <style lang="scss" scoped>

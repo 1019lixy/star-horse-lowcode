@@ -5,10 +5,12 @@ import {i18n} from "@/lang";
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import type {EmailTemplateDesigner} from "../composables/useEmailTemplateDesigner";
 import {renderEmailContent} from "../constants";
+import {StarHorsePanel} from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
   designer: EmailTemplateDesigner;
+  dialogType?:"dialog"|"drawer";
 }>();
 
 const emit = defineEmits<{
@@ -72,7 +74,8 @@ const handleSendTest = () => {
 </script>
 
 <template>
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       v-model="innerVisible"
       :title="i18n('emailtemplate.preview.title')"
       box-width="960px"
@@ -129,7 +132,7 @@ const handleSendTest = () => {
     <template #footer>
       <el-button @click="innerVisible = false">{{ i18n("dialog.close") }}</el-button>
     </template>
-  </star-horse-dialog>
+  </star-horse-panel>
 </template>
 
 <script lang="ts">

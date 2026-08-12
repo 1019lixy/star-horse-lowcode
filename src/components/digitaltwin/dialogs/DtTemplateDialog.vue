@@ -10,9 +10,11 @@ import {ElMessage, ElMessageBox} from "element-plus";
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import {DT_SCENE_TEMPLATES} from "../constants";
 import type {DtSceneTemplate} from "../types";
+import {StarHorsePanel} from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
+  dialogType?:"dialog"|"drawer";
 }>();
 
 const emit = defineEmits<{
@@ -40,7 +42,8 @@ const handleApply = (template: DtSceneTemplate): void => {
 </script>
 
 <template>
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       v-model="innerVisible"
       :title="i18n('digitaltwin.template.title')"
       box-width="720px"
@@ -65,7 +68,7 @@ const handleApply = (template: DtSceneTemplate): void => {
     <template #footer>
       <el-button @click="innerVisible = false">{{ i18n("digitaltwin.dialog.close") }}</el-button>
     </template>
-  </star-horse-dialog>
+  </star-horse-panel>
 </template>
 
 <style lang="scss" scoped>

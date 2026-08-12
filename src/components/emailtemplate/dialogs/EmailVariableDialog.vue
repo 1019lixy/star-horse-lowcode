@@ -5,11 +5,13 @@ import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import type {EmailTemplateDesigner} from "../composables/useEmailTemplateDesigner";
 import {createEmailVariable} from "../constants";
 import type {EmailVariable} from "../types";
+import {StarHorsePanel} from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
   designer: EmailTemplateDesigner;
   varId?: string | null;
+  dialogType?:"dialog"|"drawer";
 }>();
 
 const emit = defineEmits<{
@@ -54,7 +56,8 @@ const handleSubmit = () => {
 </script>
 
 <template>
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       v-model="innerVisible"
       :title="isNew ? i18n('emailtemplate.dialog.addVar') : i18n('emailtemplate.dialog.editVar')"
       box-width="480px"
@@ -79,5 +82,5 @@ const handleSubmit = () => {
         <el-input v-model="form.description" type="textarea" :rows="2"/>
       </el-form-item>
     </el-form>
-  </star-horse-dialog>
+  </star-horse-panel>
 </template>

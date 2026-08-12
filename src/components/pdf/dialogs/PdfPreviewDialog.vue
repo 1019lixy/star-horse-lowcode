@@ -5,11 +5,13 @@ import {i18n} from "@/lang";
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import type {PdfDesigner} from "../composables/usePdfDesigner";
 import {renderPrintableHtml} from "../renderers/PdfHtmlRenderer";
+import {StarHorsePanel} from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
   designer: PdfDesigner;
   data?: Record<string, any>;
+  dialogType?:"dialog"|"drawer";
 }>();
 
 const emit = defineEmits<{
@@ -64,7 +66,8 @@ const handleOpened = () => {
 </script>
 
 <template>
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       v-model="innerVisible"
       :title="i18n('pdf.preview.title')"
       box-width="80%"
@@ -94,7 +97,7 @@ const handleOpened = () => {
     <template #footer>
       <el-button @click="innerVisible = false">{{ i18n("dialog.close") }}</el-button>
     </template>
-  </star-horse-dialog>
+  </star-horse-panel>
 </template>
 
 <script lang="ts">

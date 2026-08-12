@@ -5,6 +5,7 @@ export default {
     "starhorse.pleaseInput": "请输入",
     "starhorse.pleaseSelect": "请选择",
     "starhorse.notAllowEmpty": "不能为空",
+    "btn":"按钮",
     /**
      * 登录页面------------
      */

@@ -15,7 +15,7 @@ import {getDynamicEvents} from "@/api/system";
 import {ItemPreps} from "@/components/types/ItemPreps";
 import {i18n} from "@/lang";
 import {Search} from "@element-plus/icons-vue";
-import {StarHorseIcon} from "@/components/comp";
+import {StarHorseIcon, StarHorsePanel} from "@/components/comp";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
 import {isMobile} from "@/api/device";
 
@@ -182,7 +182,8 @@ onMounted(async () => {
 });
 </script>
 <template>
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       :title="field.label + i18n('item.dataSelect')"
       :self-func="true"
       boxHeight="80%"
@@ -290,7 +291,7 @@ onMounted(async () => {
 
       </el-card>
     </div>
-  </star-horse-dialog>
+  </star-horse-panel>
   <starhorse-form-item
       :showFormItem="showFormItem"
       :isDesign="isDesign"

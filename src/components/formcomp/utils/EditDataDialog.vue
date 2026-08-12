@@ -1,5 +1,6 @@
 <template>
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       :title="title"
       :box-width="boxWidth"
       :self-func="true"
@@ -19,12 +20,13 @@
         :placeholder="placeholder"
         :autofocus="true"
     />
-  </star-horse-dialog>
+  </star-horse-panel>
 </template>
 
 <script setup lang="ts">
 import {ref, watch} from "vue";
 import {i18n} from "@/lang";
+import {StarHorsePanel} from "@/components/comp";
 
 const props = defineProps({
   modelValue: Boolean,
@@ -46,6 +48,7 @@ const props = defineProps({
   },
   placeholder: String,
   initialContent: String,
+  dialogType:{type:String as ()=>"dialog"|"drawer",default:"dialog"}
 });
 
 const content = ref("");

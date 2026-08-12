@@ -37,6 +37,7 @@ export interface DataDropdownProps {
   autoClose?: boolean;
   /** APP 端是否启用层级分类筛选 */
   enableHierarchy?: boolean;
+  dialogType?:"dialog"|"drawer";
 }
 
 const props = withDefaults(defineProps<DataDropdownProps>(), {
@@ -700,7 +701,8 @@ defineExpose({
 </script>
 
 <template>
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       :self-func="true"
       v-model="dialogVisible"
       @open="onOpen"
@@ -1246,7 +1248,7 @@ defineExpose({
         </div>
       </div>
     </div>
-  </star-horse-dialog>
+  </star-horse-panel>
 </template>
 
 <style scoped lang="scss">

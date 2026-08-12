@@ -4,10 +4,12 @@ import {ElMessage, ElMessageBox} from "element-plus";
 import {i18n} from "@/lang";
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import type {UseGraphQueryBuilderReturn} from "../composables/useGraphQueryBuilder";
+import {StarHorsePanel} from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
   builder: UseGraphQueryBuilderReturn;
+  dialogType?:"dialog"|"drawer";
 }>();
 
 const emit = defineEmits<{
@@ -72,7 +74,8 @@ const handleOpen = () => {
 </script>
 
 <template>
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       v-model="innerVisible"
       :title="i18n('knowledgegraph.query.template.title')"
       box-width="720px"
@@ -163,7 +166,7 @@ const handleOpen = () => {
     <template #footer>
       <el-button @click="innerVisible = false">{{ i18n("dialog.close") }}</el-button>
     </template>
-  </star-horse-dialog>
+  </star-horse-panel>
 </template>
 
 <style lang="scss" scoped>

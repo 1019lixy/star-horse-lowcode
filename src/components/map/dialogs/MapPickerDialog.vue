@@ -6,12 +6,14 @@ import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import {DEFAULT_MAP_BOUNDS, formatLngLat, parseLngLat} from "../constants";
 import {generateGridLines, project, unproject} from "../utils/MapProjection";
 import type {MapBounds} from "../types";
+import {StarHorsePanel} from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
   initialValue?: string;
   bounds?: MapBounds;
   backgroundImage?: string;
+  dialogType?:"dialog"|"drawer";
 }>();
 
 const emit = defineEmits<{
@@ -106,7 +108,8 @@ const handleSearch = () => {
 </script>
 
 <template>
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       v-model="innerVisible"
       :title="i18n('map.field.select')"
       box-width="960px"
@@ -233,7 +236,7 @@ const handleSearch = () => {
         </div>
       </div>
     </div>
-  </star-horse-dialog>
+  </star-horse-panel>
 </template>
 
 <script lang="ts">

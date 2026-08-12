@@ -6,10 +6,12 @@ import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import {officeColIndexToLetter} from "../constants";
 import {recalcSheet} from "../utils/OfficeFormulaUtils";
 import type {OfficeDocument, OfficeExportFormat} from "../types";
+import {StarHorsePanel} from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
   doc: OfficeDocument | null;
+  dialogType?:"dialog"|"drawer";
 }>();
 
 const emit = defineEmits<{
@@ -155,7 +157,8 @@ const previewContent = computed(() => {
 </script>
 
 <template>
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       v-model="innerVisible"
       :title="i18n('office.export.title')"
       box-width="800px"
@@ -181,7 +184,7 @@ const previewContent = computed(() => {
         {{ i18n("office.export.confirm") }}
       </el-button>
     </template>
-  </star-horse-dialog>
+  </star-horse-panel>
 </template>
 
 <style lang="scss" scoped>

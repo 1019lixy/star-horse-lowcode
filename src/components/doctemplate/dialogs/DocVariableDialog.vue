@@ -5,6 +5,7 @@ import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import type {DocTemplateDesigner} from "../composables/useDocTemplateDesigner";
 import {createVariable, DOC_VARIABLE_TYPE_PRESETS} from "../constants";
 import type {DocVariable} from "../types";
+import {StarHorsePanel} from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
@@ -62,7 +63,8 @@ const handleRemoveOption = (idx: number) => {
 </script>
 
 <template>
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       v-model="innerVisible"
       :title="isNew ? i18n('doctemplate.dialog.addVar') : i18n('doctemplate.dialog.editVar')"
       box-width="500px"
@@ -115,7 +117,7 @@ const handleRemoveOption = (idx: number) => {
         </el-button>
       </template>
     </el-form>
-  </star-horse-dialog>
+  </star-horse-panel>
 </template>
 
 <script lang="ts">

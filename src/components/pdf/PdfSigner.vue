@@ -5,11 +5,13 @@ import {i18n} from "@/lang";
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import {usePdfSigner} from "./composables/usePdfSigner";
 import type {PdfSignatureInfo} from "./types";
+import {StarHorsePanel} from "@/components/comp";
 
 const props = defineProps<{
   sourceUrl?: string;
   signatures?: PdfSignatureInfo[];
   readonly?: boolean;
+  dialogType?:"dialog"|"drawer";
 }>();
 
 const emits = defineEmits<{
@@ -253,7 +255,8 @@ onBeforeUnmount(() => {
     </div>
 
     <!-- 签名采集弹窗 -->
-    <star-horse-dialog
+    <star-horse-panel
+        :type="dialogType"
         v-model="innerSignDialogVisible"
         :title="i18n('pdf.signer.dialog.title')"
         box-width="600px"
@@ -288,7 +291,7 @@ onBeforeUnmount(() => {
         />
         <div class="sign-tip">{{ i18n("pdf.signer.tip") }}</div>
       </div>
-    </star-horse-dialog>
+    </star-horse-panel>
   </div>
 </template>
 

@@ -1,6 +1,7 @@
 <template>
   <!-- 对话框部分（与原 json-item.vue 完全一致） -->
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       :title="field.label + i18n('item.jsonEditor')"
       :self-func="true"
       :boxHeight="field.preps?.boxHeight ?? '65%'"
@@ -16,7 +17,7 @@
         style="height: 100%"
     />
     <star-horse-form v-else :field-list="jsonTableField" ref="jsonFormRef"/>
-  </star-horse-dialog>
+  </star-horse-panel>
 
   <!-- 输入框+按钮部分（与原 json-item.vue 完全一致） -->
   <starhorse-form-item
@@ -66,7 +67,7 @@ import {PageFieldInfo} from "@/components/types/PageFieldInfo";
 import {allAction, checkIsDisabled, convertData,} from "@/components/formcomp/utils/ItemRelationEventUtils";
 import {getDynamicEvents} from "@/api/system";
 import JSON5 from "json5";
-import {StarHorseDialog} from "@/components/comp";
+import {StarHorseDialog, StarHorsePanel} from "@/components/comp";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
 import {i18n} from "@/lang";
 
@@ -80,6 +81,8 @@ const props = defineProps({
   field: {type: Object as PropType<any>, required: true},
   parentField: {type: Object as PropType<any>},
   formInfo: {type: Object as PropType<any>},
+  source:{type:Number,default:1},
+  dialogType:{type:String as ()=>"dialog"|"drawer",default:"dialog"},
   // 新增：区分 JSON 对象/数组的关键参数
   dataType: {
     type: String,

@@ -6,7 +6,7 @@ import piniaInstance from "@/store";
 import {useDark, useToggle, useVModel} from "@vueuse/core";
 import {Config} from "@/api/settings";
 import {i18n} from "@/lang";
-import {StarHorseIcon} from "@/components/comp";
+import StarHorseDrawer from "@/components/comp/StarHorseDrawer.vue";
 
 const props = withDefaults(
     defineProps<{
@@ -264,237 +264,220 @@ defineExpose({
 });
 </script>
 <template>
-  <el-drawer
+  <star-horse-drawer
       v-model="visible"
       :direction="direction"
-      header-class="hstyle"
-      :close-on-click-modal="false"
-      :close-on-press-escape="false"
+      :title="title"
+      @merge="saveData"
+      @resetForm="resetDefault"
       :resizable="resizable"
   >
-    <template #header>
-      <h3>{{ title }}</h3>
-    </template>
-    <template #default>
-      <el-card class="inner_content">
-        <el-scrollbar height="100%" v-if="!hideDefaultConfig">
-          <el-form
-              class="page-config"
-              :model="configInfo"
-              :size="compSize"
-              label-position="top"
-          >
-            <slot name="header" :form="configInfo"></slot>
-            <!--            <el-divider content-position="left">
-                          {{i18n('pageConfig.pageStyle')}}
-                        </el-divider>
-                        <el-select v-model="configInfo.pageStyle" :options="pageStyleList" :props="{
-                          label:'name'
-                        }"/>-->
-            <el-divider content-position="left">
-              <el-form-item
-                  prop="themeColor"
-                  :label="i18n('pageConfig.color')"
-                  :label-position="'left'"
-              >
-                <el-color-picker
-                    v-model="configInfo.themeColor"
-                    @change="changeOperation"
-                />
-              </el-form-item>
-            </el-divider>
+    <el-card class="inner_content">
+      <el-scrollbar height="100%" v-if="!hideDefaultConfig">
+        <el-form
+            class="page-config"
+            :model="configInfo"
+            :size="compSize"
+            label-position="top"
+        >
+          <slot name="header" :form="configInfo"></slot>
+          <!--            <el-divider content-position="left">
+                        {{i18n('pageConfig.pageStyle')}}
+                      </el-divider>
+                      <el-select v-model="configInfo.pageStyle" :options="pageStyleList" :props="{
+                        label:'name'
+                      }"/>-->
+          <el-divider content-position="left">
             <el-form-item
                 prop="themeColor"
-                :label="i18n('pageConfig.themeColor')"
-                style="height: 200px; width: 100%; overflow: auto"
+                :label="i18n('pageConfig.color')"
+                :label-position="'left'"
             >
-              <template v-for="item in classicsList">
-                <div class="theme-item" @click="classicsTheme(item.color)">
-                  <el-tag
-                      :color="item.color"
-                      style="margin-right: 8px"
-                      :size="Config.compSize"
-                  />
-                  <span>{{ item.name }}</span>
-                </div>
-              </template>
+              <el-color-picker
+                  v-model="configInfo.themeColor"
+                  @change="changeOperation"
+              />
             </el-form-item>
-            <el-divider content-position="left">
-              <h4>{{ i18n("pageConfig.sizeAndList") }}</h4>
-            </el-divider>
-            <el-row gutter="10">
-              <el-col :span="8">
-                <el-form-item
-                    prop="inputSize"
-                    :label="i18n('pageConfig.componentSize')"
+          </el-divider>
+          <el-form-item
+              prop="themeColor"
+              :label="i18n('pageConfig.themeColor')"
+              style="height: 200px; width: 100%; overflow: auto"
+          >
+            <template v-for="item in classicsList">
+              <div class="theme-item" @click="classicsTheme(item.color)">
+                <el-tag
+                    :color="item.color"
+                    style="margin-right: 8px"
+                    :size="Config.compSize"
+                />
+                <span>{{ item.name }}</span>
+              </div>
+            </template>
+          </el-form-item>
+          <el-divider content-position="left">
+            <h4>{{ i18n("pageConfig.sizeAndList") }}</h4>
+          </el-divider>
+          <el-row gutter="10">
+            <el-col :span="8">
+              <el-form-item
+                  prop="inputSize"
+                  :label="i18n('pageConfig.componentSize')"
+              >
+                <el-select
+                    v-model="configInfo.inputSize"
+                    @change="changeOperation"
                 >
-                  <el-select
-                      v-model="configInfo.inputSize"
-                      @change="changeOperation"
-                  >
-                    <el-option
-                        v-for="item in sizeList"
-                        :value="item.value"
-                        :label="item.name"
-                        :key="item.value"
-                    />
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item
-                    prop="buttonSize"
-                    :label="i18n('pageConfig.buttonSize')"
+                  <el-option
+                      v-for="item in sizeList"
+                      :value="item.value"
+                      :label="item.name"
+                      :key="item.value"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item
+                  prop="buttonSize"
+                  :label="i18n('pageConfig.buttonSize')"
+              >
+                <el-select
+                    v-model="configInfo.buttonSize"
+                    @change="changeOperation"
                 >
-                  <el-select
-                      v-model="configInfo.buttonSize"
-                      @change="changeOperation"
-                  >
-                    <el-option
-                        v-for="item in sizeList"
-                        :value="item.value"
-                        :label="item.name"
-                        :key="item.value"
-                    />
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item
-                    prop="tableType"
-                    :label="i18n('pageConfig.dataDisplay')"
+                  <el-option
+                      v-for="item in sizeList"
+                      :value="item.value"
+                      :label="item.name"
+                      :key="item.value"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item
+                  prop="tableType"
+                  :label="i18n('pageConfig.dataDisplay')"
+              >
+                <el-select
+                    v-model="configInfo.tableType"
+                    @change="changeOperation"
                 >
-                  <el-select
-                      v-model="configInfo.tableType"
-                      @change="changeOperation"
-                  >
-                    <el-option
-                        v-for="item in tableTypeList"
-                        :value="item.value"
-                        :label="item.name"
-                        :key="item.value"
-                    />
-                  </el-select>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-divider content-position="left">
-              <h4>{{ i18n("pageConfig.menu") }}</h4>
-            </el-divider>
-            <el-row gutter="10">
-              <el-col :span="12">
-                <el-form-item
-                    prop="position"
-                    :label="i18n('pageConfig.menuPosition')"
+                  <el-option
+                      v-for="item in tableTypeList"
+                      :value="item.value"
+                      :label="item.name"
+                      :key="item.value"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-divider content-position="left">
+            <h4>{{ i18n("pageConfig.menu") }}</h4>
+          </el-divider>
+          <el-row gutter="10">
+            <el-col :span="12">
+              <el-form-item
+                  prop="position"
+                  :label="i18n('pageConfig.menuPosition')"
+              >
+                <el-radio-group
+                    v-model="configInfo.position"
+                    @change="changeOperation"
                 >
-                  <el-radio-group
-                      v-model="configInfo.position"
-                      @change="changeOperation"
-                  >
-                    <el-radio :label="i18n('pageConfig.top')" value="top"/>
-                    <el-radio :label="i18n('pageConfig.left')" value="left"/>
-                    <el-radio :label="i18n('pageConfig.right')" value="right"/>
-                  </el-radio-group>
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item
-                    prop="menusCfg"
-                    :label="i18n('pageConfig.menuStyle')"
+                  <el-radio :label="i18n('pageConfig.top')" value="top"/>
+                  <el-radio :label="i18n('pageConfig.left')" value="left"/>
+                  <el-radio :label="i18n('pageConfig.right')" value="right"/>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item
+                  prop="menusCfg"
+                  :label="i18n('pageConfig.menuStyle')"
+              >
+                <el-radio-group
+                    v-model="configInfo.menusCfg"
+                    @change="changeOperation"
                 >
-                  <el-radio-group
-                      v-model="configInfo.menusCfg"
-                      @change="changeOperation"
-                  >
-                    <el-radio
-                        :label="i18n('pageConfig.traditionalStyle')"
-                        value="tradition"
-                    />
-                    <el-radio
-                        :label="i18n('pageConfig.fixedWidth')"
-                        value="fixed"
-                    />
-                  </el-radio-group>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <slot name="content" :form="configInfo"></slot>
-            <slot :form="configInfo"></slot>
-            <el-divider content-position="left">
-              <h4>{{ i18n("pageConfig.otherConfig") }}</h4>
-            </el-divider>
-            <el-row :gutter="10">
-              <el-col :span="8">
-                <el-form-item
-                    prop="tagsView"
-                    :label="i18n('pageConfig.tagsView')"
-                >
-                  <el-switch
-                      v-model="configInfo.tagsView"
-                      :active-value="'Y'"
-                      :inactive-value="'N'"
-                      @change="changeOperation"
-                  >
-                  </el-switch>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item
-                    prop="shortCutMenus"
-                    :label="i18n('pageConfig.shortcutMenu')"
-                >
-                  <el-switch
-                      v-model="configInfo.shortCutMenus"
-                      :active-value="'Y'"
-                      :inactive-value="'N'"
-                      @change="changeOperation"
-                  >
-                  </el-switch>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item
-                    prop="buttonShowType"
-                    :label="i18n('pageConfig.buttonDisplayStyle')"
-                >
-                  <el-select
-                      v-model="configInfo.buttonShowType"
-                      @change="changeOperation"
-                  >
-                    <el-option
-                        v-for="item in showTypeList"
-                        :value="item.value"
-                        :label="item.name"
-                        :key="item.value"
-                    />
-                  </el-select>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <slot name="footer" :form="configInfo"></slot>
-          </el-form>
-        </el-scrollbar>
-        <div class="flex flex-col w-full h-full" v-else>
-          <slot name="header" :form="configInfo"></slot>
+                  <el-radio
+                      :label="i18n('pageConfig.traditionalStyle')"
+                      value="tradition"
+                  />
+                  <el-radio
+                      :label="i18n('pageConfig.fixedWidth')"
+                      value="fixed"
+                  />
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+          </el-row>
           <slot name="content" :form="configInfo"></slot>
           <slot :form="configInfo"></slot>
+          <el-divider content-position="left">
+            <h4>{{ i18n("pageConfig.otherConfig") }}</h4>
+          </el-divider>
+          <el-row :gutter="10">
+            <el-col :span="8">
+              <el-form-item
+                  prop="tagsView"
+                  :label="i18n('pageConfig.tagsView')"
+              >
+                <el-switch
+                    v-model="configInfo.tagsView"
+                    :active-value="'Y'"
+                    :inactive-value="'N'"
+                    @change="changeOperation"
+                >
+                </el-switch>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item
+                  prop="shortCutMenus"
+                  :label="i18n('pageConfig.shortcutMenu')"
+              >
+                <el-switch
+                    v-model="configInfo.shortCutMenus"
+                    :active-value="'Y'"
+                    :inactive-value="'N'"
+                    @change="changeOperation"
+                >
+                </el-switch>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item
+                  prop="buttonShowType"
+                  :label="i18n('pageConfig.buttonDisplayStyle')"
+              >
+                <el-select
+                    v-model="configInfo.buttonShowType"
+                    @change="changeOperation"
+                >
+                  <el-option
+                      v-for="item in showTypeList"
+                      :value="item.value"
+                      :label="item.name"
+                      :key="item.value"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
           <slot name="footer" :form="configInfo"></slot>
-        </div>
-      </el-card>
-    </template>
-    <template #footer>
-      <div class="footer-button">
-        <el-button :size="compSize" @click="saveData" type="primary">
-          <star-horse-icon icon-class="save" color="#fff"/>
-          {{ i18n("form.confirm") }}
-        </el-button>
-        <el-button :size="compSize" type="text" @click="resetDefault">
-          <star-horse-icon icon-class="reset"/>
-          {{ i18n("pageConfig.resetDefaultConfig") }}
-        </el-button>
+        </el-form>
+      </el-scrollbar>
+      <div class="flex flex-col w-full h-full" v-else>
+        <slot name="header" :form="configInfo"></slot>
+        <slot name="content" :form="configInfo"></slot>
+        <slot :form="configInfo"></slot>
+        <slot name="footer" :form="configInfo"></slot>
       </div>
-    </template>
-  </el-drawer>
+    </el-card>
+  </star-horse-drawer>
 </template>
 <style scoped lang="scss">
 .page-config {

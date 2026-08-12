@@ -8,11 +8,13 @@ import {computed, ref} from "vue";
 import {i18n} from "@/lang";
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import type {PrintTemplate} from "../types";
+import {StarHorsePanel} from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
   /** 已保存的模板列表（外部存储） */
   savedTemplates: PrintTemplate[];
+  dialogType?:"dialog"|"drawer";
 }>();
 
 const emits = defineEmits<{
@@ -55,7 +57,8 @@ const handleExport = (template: PrintTemplate) => {
 </script>
 
 <template>
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       v-model="innerVisible"
       :title="i18n('print.templateManager.title')"
       box-width="70%"
@@ -106,7 +109,7 @@ const handleExport = (template: PrintTemplate) => {
     <template #footer>
       <el-button @click="innerVisible = false">{{ i18n('dialog.close') }}</el-button>
     </template>
-  </star-horse-dialog>
+  </star-horse-panel>
 </template>
 
 <style lang="scss" scoped>

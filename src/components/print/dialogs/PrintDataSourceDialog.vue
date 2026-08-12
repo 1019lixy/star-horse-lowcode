@@ -9,10 +9,12 @@ import {i18n} from "@/lang";
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import {DEFAULT_DATA_FIELDS} from "../constants";
 import type {PrintDataField, PrintDataSource} from "../types";
+import {StarHorsePanel} from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
   dataSources: PrintDataSource[];
+  dialogType?:"dialog"|"drawer";
 }>();
 
 const emits = defineEmits<{
@@ -101,7 +103,8 @@ const fieldTypes: Array<{ label: string; value: PrintDataField["type"] }> = [
 </script>
 
 <template>
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       v-model="innerVisible"
       :title="i18n('print.datasource.title')"
       box-width="70%"
@@ -227,7 +230,7 @@ const fieldTypes: Array<{ label: string; value: PrintDataField["type"] }> = [
       <el-button @click="innerVisible = false">{{ i18n('dialog.close') }}</el-button>
       <el-button type="primary" @click="handleSave">{{ i18n('dialog.save') }}</el-button>
     </template>
-  </star-horse-dialog>
+  </star-horse-panel>
 </template>
 
 <style lang="scss" scoped>

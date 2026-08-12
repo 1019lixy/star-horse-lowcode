@@ -54,6 +54,7 @@ export interface ItemPreps {
      * 组件来源
      */
     source?: number;
+    dialogType?: "dialog"|"drawer";
 }
 
 export interface ContainerPreps {
@@ -123,6 +124,7 @@ export interface ContainerPreps {
      * 是否添加运行子节点
      */
     enableSubNode?: boolean;
+    dialogType?: "dialog"|"drawer";
 }
 
 /**

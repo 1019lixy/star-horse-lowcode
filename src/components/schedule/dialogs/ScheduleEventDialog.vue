@@ -6,6 +6,7 @@ import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import type {ScheduleDesigner} from "../composables/useScheduleDesigner";
 import {createEvent, SCHEDULE_EVENT_TYPE_PRESETS} from "../constants";
 import type {ScheduleEvent} from "../types";
+import {StarHorsePanel} from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
@@ -13,6 +14,7 @@ const props = defineProps<{
   eventId?: string | null;
   defaultStartTime?: string;
   defaultResourceId?: string;
+  dialogType?:"dialog"|"drawer";
 }>();
 
 const emit = defineEmits<{
@@ -67,7 +69,8 @@ const handleSubmit = () => {
 </script>
 
 <template>
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       v-model="innerVisible"
       :title="isNew ? i18n('schedule.dialog.addEvent') : i18n('schedule.dialog.editEvent')"
       box-width="600px"
@@ -136,5 +139,5 @@ const handleSubmit = () => {
         <el-input v-model="form.remark" type="textarea" :rows="2"/>
       </el-form-item>
     </el-form>
-  </star-horse-dialog>
+  </star-horse-panel>
 </template>

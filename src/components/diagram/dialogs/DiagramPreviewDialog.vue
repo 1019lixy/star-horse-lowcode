@@ -4,10 +4,12 @@ import {i18n} from "@/lang";
 import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import {getPortPosition, getShapePath} from "../constants";
 import type {DiagramData} from "../types";
+import {StarHorsePanel} from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
   diagram: DiagramData;
+  dialogType:"dialog"|"drawer";
 }>();
 
 const emits = defineEmits<{
@@ -101,7 +103,8 @@ const handleExportPng = async () => {
 </script>
 
 <template>
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       v-model="innerVisible"
       :title="i18n('diagram.preview.title')"
       box-width="80%"
@@ -124,7 +127,7 @@ const handleExportPng = async () => {
     <template #footer>
       <el-button @click="innerVisible = false">{{ i18n('dialog.close') }}</el-button>
     </template>
-  </star-horse-dialog>
+  </star-horse-panel>
 </template>
 
 <style lang="scss" scoped>

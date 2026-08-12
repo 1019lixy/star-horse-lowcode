@@ -339,7 +339,7 @@ const taskConditionTabs = reactive<any>({
           type: "textarea",
           formVisible: false,
           listVisible: false,
-          preps: {rows: 4, placeholder: 'JSON格式'}
+          preps: {rows: 4, placeholder: "JSON格式"}
         },
       ],
     },

@@ -5,11 +5,13 @@ import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import type {ScheduleDesigner} from "../composables/useScheduleDesigner";
 import {createResource, SCHEDULE_RESOURCE_TYPE_PRESETS} from "../constants";
 import type {ScheduleResource} from "../types";
+import {StarHorsePanel} from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
   designer: ScheduleDesigner;
   resourceId?: string | null;
+  dialogType?:"dialog"|"drawer";
 }>();
 
 const emit = defineEmits<{
@@ -53,7 +55,8 @@ const handleSubmit = () => {
 </script>
 
 <template>
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       v-model="innerVisible"
       :title="isNew ? i18n('schedule.dialog.addResource') : i18n('schedule.dialog.editResource')"
       box-width="500px"
@@ -84,5 +87,5 @@ const handleSubmit = () => {
         <el-switch v-model="form.enabled"/>
       </el-form-item>
     </el-form>
-  </star-horse-dialog>
+  </star-horse-panel>
 </template>

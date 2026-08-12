@@ -6,10 +6,12 @@ import StarHorseDialog from "@/components/comp/StarHorseDialog.vue";
 import {ShSvgIcon} from "@/components/shared";
 import type {PivotDesigner} from "../composables/usePivotDesigner";
 import type {PivotRecord} from "../types";
+import {StarHorsePanel} from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
   designer: PivotDesigner;
+  dialogType?:"dialog"|"drawer";
 }>();
 
 const emit = defineEmits<{
@@ -159,7 +161,8 @@ const handleDialogOpen = () => {
 </script>
 
 <template>
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       v-model="innerVisible"
       :title="i18n('pivot.dialog.dataManager')"
       box-width="760px"
@@ -285,7 +288,7 @@ const handleDialogOpen = () => {
         </el-tab-pane>
       </el-tabs>
     </div>
-  </star-horse-dialog>
+  </star-horse-panel>
 </template>
 
 <script lang="ts">

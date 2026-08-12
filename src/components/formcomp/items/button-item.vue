@@ -1,5 +1,6 @@
 <template>
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       :title="field.preps?.dialogTitle || i18n('item.configureButtonEvent')"
       :selfFunc="true"
       @merge="operResultAction"
@@ -26,7 +27,7 @@
         v-else-if="field.preps?.viewType == 'code'"
         ref="btnCompRef"
     />
-  </star-horse-dialog>
+  </star-horse-panel>
   <starhorse-form-item
       :showFormItem="showFormItem"
       :isDesign="isDesign"
@@ -60,6 +61,7 @@ import {createCondition} from "@/api/star_horse_utils";
 
 import {ItemPreps} from "@/components/types/ItemPreps";
 import {i18n} from "@/lang";
+import {StarHorsePanel} from "@/components/comp";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,

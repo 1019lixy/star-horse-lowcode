@@ -182,4 +182,8 @@ export declare interface DataListProps {
      * APP 端查询表单配置（传入后 APP 端顶部显示查询图标）
      */
     searchFormData?: SearchInfo;
+    /**
+     * 弹窗类型
+     */
+    dialogType: "dialog" | "drawer";
 }

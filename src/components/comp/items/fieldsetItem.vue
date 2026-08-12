@@ -2,7 +2,8 @@
 import {getDataIndex, getFormData, getPrefix,} from "@/api/form_utils";
 import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
 import {ContainerPreps} from "@/components/types/ItemPreps";
-import {ModelRef, onMounted, ref} from "vue";
+import {initRelationEvent} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {computed, inject, ModelRef, nextTick, onMounted, ref, unref, watch} from "vue";
 
 const props = withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
@@ -18,6 +19,9 @@ const props = withDefaults(defineProps<ContainerPreps>(), {
 });
 const emits = defineEmits(["addRow", "removeRow"]);
 const dataForm: ModelRef<any> = defineModel("dataForm");
+// inject 表单字段列表,用于构造 initRelationEvent 所需的 props.formInfo
+const formFields = inject("formFields", ref<any[]>([]));
+const collapsible=computed(()=>props.item.preps?.collapsible??true);
 /**
  * 列表添加行数据
  * @param row
@@ -37,8 +41,64 @@ const init = () => {
 };
 const innerCollapsed = ref<boolean>(false);
 const toggleInner = () => {
-  if (props.item?.preps?.collapsible) innerCollapsed.value = !innerCollapsed.value;
+  if (collapsible.value) innerCollapsed.value = !innerCollapsed.value;
 };
+
+/**
+ * 递归遍历 fieldList,对有 dataRelation 的字段重新触发初始联动
+ * 用于 fieldset 子项从隐藏变可见时,补触子项内字段因组件未挂载而遗漏的初始联动
+ */
+const reTriggerRelation = (fields: any[], visited?: WeakSet<any>) => {
+  if (!Array.isArray(fields)) return;
+  if (!visited) visited = new WeakSet();
+  fields.forEach((field: any) => {
+    if (Array.isArray(field)) {
+      reTriggerRelation(field, visited);
+    } else if (field == null || typeof field !== "object") {
+      return;
+    } else if (visited.has(field)) {
+      return;
+    } else {
+      visited.add(field);
+      if (field?.preps?.dataRelation?.actionName) {
+        const formInfoVal = unref(formFields);
+        initRelationEvent(
+            {field, formInfo: formInfoVal},
+            dataForm,
+            true,
+        );
+      }
+    }
+  });
+};
+
+/**
+ * 监听 fieldsetList 子项的 formVisible 变化:
+ * 子项从隐藏变可见时,重新触发子项内有 dataRelation 的字段的初始联动
+ * (子项隐藏时内部字段组件未挂载,onMounted 中的 initCompCallEvent 未执行)
+ */
+watch(
+    () => {
+      const list = props.item?.fieldsetList;
+      return Array.isArray(list) ? list.map((c: any) => c?.formVisible) : [];
+    },
+    (newVals, oldVals) => {
+      const list = props.item?.fieldsetList;
+      if (!Array.isArray(list)) return;
+      list.forEach((child: any, index: number) => {
+        if (child == null) return;
+        const wasVisible = oldVals?.[index] !== false;
+        const isVisible = newVals?.[index] !== false;
+        if (!wasVisible && isVisible) {
+          nextTick(() => {
+            reTriggerRelation(child.fieldList);
+          });
+        }
+      });
+    },
+    {deep: true, immediate: true},
+);
+
 onMounted(() => {
   init();
 });
@@ -46,37 +106,38 @@ onMounted(() => {
 
 <template>
   <template v-if="item.fieldsetList?.length > 0">
-    <fieldset
-        class="fieldset-container"
-        :class="{
-          'border-dashed': item.preps['borderStyle'] === 'dashed',
-          'border-none': item.preps['borderStyle'] === 'none',
-          'is-collapsible': item.preps['collapsible'],
+    <template v-for="(fiedsetItem, key) in item.fieldsetList">
+      <fieldset
+          v-if="fiedsetItem.formVisible !== false"
+          class="fieldset-container"
+          :class="{
+          'border-dashed': item.preps?.borderStyle === 'dashed',
+          'border-none': item.preps?.borderStyle === 'none',
+          'is-collapsible': collapsible,
           'is-collapsed': innerCollapsed
         }"
-    >
-      <legend
-          class="fieldset-legend"
-          :class="{ 'clickable': item.preps['collapsible'] }"
-          @click="toggleInner"
       >
-        <svg
-            v-if="item.preps['collapsible']"
-            :class="['legend-arrow', { 'rotated': innerCollapsed }]"
-            viewBox="0 0 10 6" fill="none" width="10" height="10"
+        <legend
+            class="fieldset-legend"
+            :class="{ 'clickable': collapsible}"
+            @click="toggleInner"
         >
-          <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5"
-                stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+          <svg
+              v-if="collapsible"
+              :class="['legend-arrow', { 'rotated': innerCollapsed }]"
+              viewBox="0 0 10 6" fill="none" width="10" height="10"
+          >
+            <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
 
-        <span
-            class="legend-text"
-        >
-          {{ item.preps['fieldsetTitle'] }}
+          <span
+              class="legend-text"
+          >
+          {{ fiedsetItem.title || "FieldSet" }}
         </span>
-      </legend>
-      <div v-show="!innerCollapsed" class="fieldset-body">
-        <template v-for="(fiedsetItem, key) in item.fieldsetList">
+        </legend>
+        <div v-show="!innerCollapsed" class="fieldset-body">
           <star-horse-form-item
               :source="source"
               :compUrl="compUrl"
@@ -111,10 +172,10 @@ onMounted(() => {
               :enableSubNode="fiedsetItem.enableSubNode"
               :primaryKey="primaryKey"
           />
-        </template>
-      </div>
-    </fieldset>
 
+        </div>
+      </fieldset>
+    </template>
   </template>
 </template>
 
@@ -184,7 +245,6 @@ onMounted(() => {
 .fieldset-body {
   padding-top: 4px;
 }
-
 
 
 </style>

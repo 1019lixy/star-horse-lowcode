@@ -15,6 +15,7 @@ import StarHorseForm from "@/components/comp/StarHorseForm.vue";
 import {FieldInfo} from "@/components/types";
 import {Sort, UploadFilled} from "@element-plus/icons-vue";
 import {isMobile} from "@/api/device";
+import StarHorsePanel from "@/components/comp/StarHorsePanel.vue";
 
 let importDialogVisible = ref<boolean>(false);
 let rowDialogVisible = ref<boolean>(false);
@@ -37,6 +38,7 @@ const props = defineProps({
   selectAll: {type: Boolean, default: false},
   subFlag: {type: Boolean, default: false},
   enableSubNode: {type: Boolean, default: false},
+  dialogType: {type: String as () => "dialog" | "drawer", default: "dialog"},
   commonFormat: {
     type: Function,
     default: () => {
@@ -450,7 +452,8 @@ watch(
 );
 </script>
 <template>
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       :title="i18n('dialog.editTitle')"
       v-model="rowDialogVisible"
       :boxWidth="'50%'"
@@ -463,8 +466,9 @@ watch(
         :fieldList="{ fieldList: fieldList }"
         ref="rowDataFormRef"
     />
-  </star-horse-dialog>
-  <star-horse-dialog
+  </star-horse-panel>
+  <star-horse-panel
+      :type="dialogType"
       v-if="!subFlag"
       :title="i18n('ui.importFile')"
       v-model="importDialogVisible"
@@ -515,7 +519,7 @@ watch(
         </template>
       </el-upload>
     </el-card>
-  </star-horse-dialog>
+  </star-horse-panel>
   <div class="form-list">
     <div class="dynamic-tools">
       <div class="flex items-center" v-if="!subFlag">

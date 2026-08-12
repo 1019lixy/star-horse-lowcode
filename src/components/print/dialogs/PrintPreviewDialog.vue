@@ -11,6 +11,7 @@ import {renderPrintHtml} from "../renderers/HtmlRenderer";
 import {renderZpl} from "../renderers/ZplRenderer";
 import {renderTspl} from "../renderers/TsplRenderer";
 import type {PrintRenderContext, PrintRenderTarget, PrintTemplate} from "../types";
+import {StarHorsePanel} from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
@@ -23,6 +24,7 @@ const props = defineProps<{
   printerName?: string;
   /** 默认页数 */
   pageCount?: number;
+  dialogType?:"dialog"|"drawer";
 }>();
 
 const emits = defineEmits<{
@@ -107,7 +109,8 @@ const handlePrint = () => {
 </script>
 
 <template>
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       v-model="innerVisible"
       :title="i18n('print.preview.title')"
       box-width="80%"
@@ -155,7 +158,7 @@ const handlePrint = () => {
     <template #footer>
       <el-button @click="innerVisible = false">{{ i18n('dialog.close') }}</el-button>
     </template>
-  </star-horse-dialog>
+  </star-horse-panel>
 </template>
 
 <style lang="scss" scoped>

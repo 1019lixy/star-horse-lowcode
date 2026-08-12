@@ -34,6 +34,7 @@ import {useTableExport} from "@/components/comp/utils/useTableExport";
 import {useTableFields} from "@/components/comp/utils/useTableFields";
 import {useTableSelection} from "@/components/comp/utils/useTableSelection";
 import {useTableCrud} from "@/components/comp/utils/useTableCrud";
+import StarHorsePanel from "@/components/comp/StarHorsePanel.vue";
 
 const dynamicForm = useDynamicFormStore(piniaInstance);
 const props = withDefaults(defineProps<DataListProps>(), {
@@ -453,7 +454,8 @@ defineExpose({
 });
 </script>
 <template>
-  <star-horse-dialog
+  <star-horse-panel
+      :type="dialogType"
       :isShowBtnContinue="false"
       :selfFunc="true"
       :title="i18n('comp.exportSelectFields')"
@@ -496,7 +498,7 @@ defineExpose({
         </el-checkbox>
       </el-checkbox-group>
     </div>
-  </star-horse-dialog>
+  </star-horse-panel>
   <div class="star-horse-table">
     <!-- APP端顶部工具栏：查询 / 刷新 / 设置 -->
     <div class="app-toolbar" v-if="!dialogInput && isMobile">
