@@ -58,10 +58,10 @@ const buildEditModeContainerRelation = () => {
 const container = reactive<any>({
   fieldName: "editSplitter",
   label: "编辑器面板",
-  type: "splitterList",
+  containerType: "splitter",
   formVisible: true,
   listVisible: false,
-  splitterList: [
+  containerFields: [
     // ========== visual 可视化 ==========
     {
       title: "可视化编辑",

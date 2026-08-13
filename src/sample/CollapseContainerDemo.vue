@@ -49,10 +49,10 @@ const buildConfigTypeContainerRelation = () => {
 const container = reactive<any>({
   fieldName: "basic", // 默认激活展开项
   label: "配置面板",
-  type: "collapseList",
+  containerType: "collapse",
   formVisible: true,
   listVisible: false,
-  collapseList: [
+  containerFields: [
     // ========== basic 基础配置 ==========
     {
       title: "基础配置",

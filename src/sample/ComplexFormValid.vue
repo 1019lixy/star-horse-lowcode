@@ -516,7 +516,7 @@ const tableFieldList = reactive<PageFieldInfo>({
           tabName: "tab5",
           containerFields: [
             {
-              containerType: "batchTable",
+              containerType: "table",
               tabName: "deployList",
               fieldList: [
                 [

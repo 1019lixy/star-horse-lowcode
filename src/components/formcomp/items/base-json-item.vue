@@ -105,7 +105,7 @@ const jsonData = shallowRef<any>({}); // 统一存储解析后的 JSON 数据（
 const jsonTableField = reactive<PageFieldInfo>({
   containerFields: [
     {
-      containerType: "batchTable",
+      containerType: "table",
       tabName: "jsonDatas",
       fieldList: [
         {

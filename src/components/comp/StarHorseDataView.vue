@@ -141,7 +141,7 @@ defineExpose({
         :scroll-into-view-options="true"
         :inline-message="false"
         :status-icon="true"
-        :label-position="isMobile ? 'top' : 'left'"
+        :label-position="isMobile ? 'top' : (labelPosition || 'left')"
         require-asterisk-position="right"
         label-width="auto"
         class="data-form data-view-mode"
@@ -166,6 +166,7 @@ defineExpose({
 </template>
 <style lang="scss" scoped>
 /* 查看视图：统一通过非scoped样式穿透子组件 */
+
 .star-horse-data-view .data-view-mode {
   /* ---- 表单行：el-descriptions 风格 ---- */
   :deep(.el-form-item) {
@@ -191,11 +192,11 @@ defineExpose({
 
   /* 标签列 */
   :deep(.el-form-item__label) {
-    background-color: var(--el-bg-color) !important;
+   // background-color: var(--el-bg-color) !important;
     color: var(--el-text-color-regular) !important;
     font-weight: 500;
-    padding: 8px 12px !important;
-    border-right: v-bind(borderStyle);
+   // padding: 8px 12px !important;
+   // border-right: v-bind(borderStyle);
     flex-shrink: 0;
   }
 
@@ -256,11 +257,13 @@ defineExpose({
   :deep(.el-select__wrapper.is-disabled .el-select__selected-item) {
     color: var(--el-text-color-primary) !important;
     -webkit-text-fill-color: var(--el-text-color-primary) !important;
+    padding-left:10px !important;
   }
 
   /* 数字输入居中修正 */
   :deep(.el-input-number.is-center .el-input__inner) {
     text-align: left;
+
   }
 
   /* ---- 隐藏所有前缀/后缀/图标/追加 ---- */

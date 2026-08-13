@@ -187,7 +187,7 @@ const assignStatusName = () => {
   }
   const _pf: any = unref(platformFields);
   let batchFields = Array.isArray(_pf?.containerFields)
-    ? _pf.containerFields.filter((c: any) => c?.containerType === "batchTable")
+    ? _pf.containerFields.filter((c: any) => c?.containerType === "table")
     : [];
   batchFields?.forEach((item: any) => {
     const batchKey = item.tabName;
@@ -212,7 +212,7 @@ const analysisSameToParentField = (): Array<string> => {
   let batchName: Array<string> = [];
   const _pf2: any = unref(platformFields);
   let batchFields = Array.isArray(_pf2?.containerFields)
-    ? _pf2.containerFields.filter((c: any) => c?.containerType === "batchTable")
+    ? _pf2.containerFields.filter((c: any) => c?.containerType === "table")
     : [];
   const analysis = (batchFields: any[]) => {
     batchFields?.forEach((item: any) => {
@@ -235,11 +235,11 @@ const analysisSameToParentField = (): Array<string> => {
         arrayFieldList(temp);
       } else if (
         Array.isArray(temp.containerFields) &&
-        temp.containerFields.some((c: any) => c?.containerType === "batchTable")
+        temp.containerFields.some((c: any) => c?.containerType === "table")
       ) {
         analysis(
           temp.containerFields.filter(
-            (c: any) => c?.containerType === "batchTable",
+            (c: any) => c?.containerType === "table",
           ),
         );
       } else if (temp.appList) {
@@ -424,10 +424,10 @@ watch(
   { immediate: true },
 );
 watch(
-  () => dialogOperation.funcName,
+  () => dialogOperation?.funcName,
   (funcName: string) => {
     if (!funcName) return;
-    const type = dialogOperation.type;
+    const type = dialogOperation?.type;
     const handlers: any = {
       merge: () => merge(type),
       mergeDraft: () => mergeDraft(type),

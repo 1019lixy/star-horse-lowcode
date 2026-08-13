@@ -168,7 +168,7 @@ const tableAnalysis = (item: any) => {
     });
   }
   batchFieldInfos.push({
-    containerType: "batchTable",
+    containerType: "table",
     tabName: item.batchName,
     disabled: item.disabled,
     title: item.preps?.label ?? item.preps?.itemNameLabel,
@@ -540,7 +540,7 @@ function analysisComps(fieldList: any, ctx?: AppConvertCtx) {
         const dyData =
           commonContainer.dataList[0]?.fieldList || commonContainer.dataList;
         processDytableFieldList(dyData, tempFieldList);
-      } else if (commonContainer.type === "batchTable") {
+      } else if (commonContainer.type === "table") {
         processBatchFieldContainer(commonContainer.dataList, tempFieldList);
       } else {
         processContainer(filed, commonContainer, tempFieldList, _ctx);
@@ -638,7 +638,7 @@ function processContainer(
 }
 
 /**
- * 统一容器版批量表格处理:数据来自 containerFields(containerType='batchTable')
+ * 统一容器版批量表格处理:数据来自 containerFields(containerType='table')
  * 与 processBatchField 等价,但 item 为 ContainerFieldInfo(tabName/preps 结构)
  */
 function processBatchFieldContainer(containers: any[], result: any[]) {

@@ -177,7 +177,7 @@ const dataSourceField = reactive<PageFieldInfo | any>({
           objectName: "queryParams",
           containerFields: [
             {
-              containerType: "batchTable",
+              containerType: "table",
               tabName: "queryParams",
               fieldList: [
                 {

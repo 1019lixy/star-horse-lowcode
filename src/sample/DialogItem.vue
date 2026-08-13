@@ -30,7 +30,7 @@ const fields = ref<Array<any>>([
       fieldList: {
         containerFields: [
           {
-            containerType: "batchTable",
+            containerType: "table",
             tabName: "imageInfo",
             fieldList: [
               {

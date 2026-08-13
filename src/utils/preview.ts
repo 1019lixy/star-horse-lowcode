@@ -249,7 +249,7 @@ export function analysisFields(compList: Array<any>) {
             } else {
               const batchList = Array.isArray(temp.containerFields)
                 ? temp.containerFields.filter(
-                    (c: any) => c?.containerType === "batchTable",
+                    (c: any) => c?.containerType === "table",
                   )
                 : [];
               if (batchList.length > 0) {

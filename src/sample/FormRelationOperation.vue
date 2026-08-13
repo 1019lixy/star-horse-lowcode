@@ -19,7 +19,7 @@ const searchFormData = reactive<SearchFields>({
 const imageFieldList = reactive<PageFieldInfo>({
   containerFields: [
     {
-      containerType: "batchTable",
+      containerType: "table",
       tabName: "imageInfo",
       fieldList: [
         {

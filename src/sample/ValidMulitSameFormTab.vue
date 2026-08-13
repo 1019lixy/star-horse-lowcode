@@ -235,7 +235,7 @@ const fieldList = ref<PageFieldInfo>({
                     {
                       containerFields: [
                         {
-                          containerType: "batchTable",
+                          containerType: "table",
                           tabName: "headers",
                           fieldList: [
                             {
@@ -291,7 +291,7 @@ const fieldList = ref<PageFieldInfo>({
                     {
                       containerFields: [
                         {
-                          containerType: "batchTable",
+                          containerType: "table",
                           tabName: "requestParams",
                           fieldList: [
                             {
@@ -468,7 +468,7 @@ const fieldList = ref<PageFieldInfo>({
             {
               containerFields: [
                 {
-                  containerType: "batchTable",
+                  containerType: "table",
                   tabName: "fieldMappings",
                   fieldList: [
                     {
@@ -695,7 +695,7 @@ const fieldList = ref<PageFieldInfo>({
                     {
                       containerFields: [
                         {
-                          containerType: "batchTable",
+                          containerType: "table",
                           tabName: "headers",
                           fieldList: [
                             {
@@ -751,7 +751,7 @@ const fieldList = ref<PageFieldInfo>({
                     {
                       containerFields: [
                         {
-                          containerType: "batchTable",
+                          containerType: "table",
                           tabName: "requestParams",
                           fieldList: [
                             {

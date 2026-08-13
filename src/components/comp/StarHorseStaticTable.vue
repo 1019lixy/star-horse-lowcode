@@ -40,7 +40,7 @@ const props = defineProps({
 const batchFieldContainers = computed(() => {
   const fl: any = props.fieldList;
   return Array.isArray(fl?.containerFields)
-    ? fl.containerFields.filter((c: any) => c?.containerType === "batchTable")
+    ? fl.containerFields.filter((c: any) => c?.containerType === "table")
     : [];
 });
 // const emits = defineEmits(["selectItem"]);

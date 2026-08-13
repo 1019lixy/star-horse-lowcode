@@ -75,10 +75,10 @@ const buildModuleContainerRelation = () => {
 const container = reactive<any>({
   fieldName: "moduleCards",
   label: "报表模块配置",
-  type: "cardList",
+  containerType: "card",
   formVisible: true,
   listVisible: false,
-  cardList: [
+  containerFields: [
     // ========== sales 销售 ==========
     {
       title: "销售报表",

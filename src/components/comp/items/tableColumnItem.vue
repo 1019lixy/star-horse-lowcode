@@ -39,7 +39,7 @@ const normalizedFieldList = computed(() => {
   if (props.showBatchField) {
     const batchList = Array.isArray(compFieldInfo?.containerFields)
       ? compFieldInfo.containerFields.filter(
-          (c: any) => c?.containerType === "batchTable",
+          (c: any) => c?.containerType === "table",
         )
       : [];
     batchList?.forEach((item: any, index: number) => {

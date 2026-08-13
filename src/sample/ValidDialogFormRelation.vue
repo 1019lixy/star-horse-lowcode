@@ -445,7 +445,7 @@ const dataList = [
     {
       containerFields: [
         {
-          containerType: "batchTable",
+          containerType: "table",
           subFormFlag: "Y",
           tabName: "relationDetails",
           preps: {

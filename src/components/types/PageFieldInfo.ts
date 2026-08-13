@@ -77,7 +77,7 @@ export declare interface ContainerFieldInfo extends Omit<
   "title" | "tabName" | "subFormFlag" | "primaryKey"
 > {
   /**
-   * 容器类型标识: tab|card|collapse|splitter|step|dialog|drawer|descriptions|fieldset|app|dytable|batchTable
+   * 容器类型标识: tab|card|collapse|splitter|step|dialog|drawer|descriptions|fieldset|app|dytable|table
    * 与 containerFields 配合,所有容器数据统一存于 containerFields
    */
   containerType?: string;
@@ -173,7 +173,7 @@ export declare interface FieldInfo {
   containerType?: string;
   /**
    * 统一容器字段(替代 dytableList/batchFieldList),与 containerType 配合
-   * 所有容器(tab/card/collapse/splitter/step/dialog/drawer/descriptions/fieldset/app/dytable/batchTable)数据统一存于此
+   * 所有容器(tab/card/collapse/splitter/step/dialog/drawer/descriptions/fieldset/app/dytable/table)数据统一存于此
    * 新增容器类型无需新增属性,差异化属性放 preps
    */
   containerFields?: ContainerFieldInfo[];
@@ -428,7 +428,7 @@ export declare interface DytablePreps {
 }
 
 /**
- * batchTable 容器特有属性(存于 ContainerFieldInfo.preps,containerType='batchTable')
+ * table 容器特有属性(存于 ContainerFieldInfo.preps,containerType='table')
  * 由原 BatchFieldInfo 差异属性迁移而来,方便查看该容器支持的参数
  */
 export declare interface BatchTablePreps {

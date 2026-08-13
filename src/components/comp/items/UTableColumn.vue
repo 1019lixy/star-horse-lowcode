@@ -23,7 +23,7 @@ const exclusionFields: string[] = ["divider", "button", "usercomp"];
 const batchContainers = computed(() => {
   const item: any = props.item;
   return Array.isArray(item?.containerFields)
-    ? item.containerFields.filter((c: any) => c?.containerType === "batchTable")
+    ? item.containerFields.filter((c: any) => c?.containerType === "table")
     : [];
 });
 </script>
