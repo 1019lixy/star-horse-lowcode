@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import {ref} from "vue";
-import type {ScheduleData} from "@/components/schedule";
-import {ScheduleView} from "@/components/schedule";
+import { ref } from "vue";
+import type { ScheduleData } from "@/components/schedule";
+import { ScheduleView } from "@/components/schedule";
 
 const scheduleData = ref<ScheduleData>({
   name: "团队资源调度视图",
@@ -145,9 +145,10 @@ const scheduleData = ref<ScheduleData>({
   <div class="demo-container">
     <h3>调度视图 ScheduleView</h3>
     <p>
-      资源调度视图组件，支持按人/设备/房间等资源维度进行事件排期，支持日/周/月视图、工作时间、重叠检测等。左侧为资源列表，右侧为时间轴事件区。</p>
+      资源调度视图组件，支持按人/设备/房间等资源维度进行事件排期，支持日/周/月视图、工作时间、重叠检测等。左侧为资源列表，右侧为时间轴事件区。
+    </p>
     <div class="demo-canvas">
-      <ScheduleView :initial-schedule="scheduleData"/>
+      <ScheduleView :initial-schedule="scheduleData" />
     </div>
   </div>
 </template>

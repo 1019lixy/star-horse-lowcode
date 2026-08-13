@@ -1,27 +1,40 @@
 <script setup lang="ts" name="StarHorseEditor">
-import {computed, nextTick, onMounted, PropType, ref} from "vue";
-import {basicSetup} from "codemirror";
-import {EditorView, keymap} from "@codemirror/view";
-import {Compartment} from "@codemirror/state";
-import {historyKeymap, insertTab, standardKeymap} from "@codemirror/commands";
-import {autocompletion, CompletionContext} from "@codemirror/autocomplete";
-import {python} from "@codemirror/lang-python";
-import {javascript, javascriptLanguage, scopeCompletionSource,} from "@codemirror/lang-javascript";
-import {java} from "@codemirror/lang-java";
-import {json} from "@codemirror/lang-json";
-import {yaml} from "@codemirror/lang-yaml";
-import {css} from "@codemirror/lang-css";
-import {vue} from "@codemirror/lang-vue";
-import {html} from "@codemirror/lang-html";
-import {cpp} from "@codemirror/lang-cpp";
-import {xml} from "@codemirror/lang-xml";
-import {markdown} from "@codemirror/lang-markdown";
-import {go} from "@codemirror/lang-go";
-import {sql} from "@codemirror/lang-sql";
-import {showMinimap} from "@replit/codemirror-minimap";
-import {amy, ayuLight, barf, bespin, birdsOfParadise, boysAndGirls, clouds, dracula,} from "thememirror";
-import {i18n} from "@/lang";
-import {ArrowDown} from "@element-plus/icons-vue";
+import { computed, nextTick, onMounted, PropType, ref } from "vue";
+import { basicSetup } from "codemirror";
+import { EditorView, keymap } from "@codemirror/view";
+import { Compartment } from "@codemirror/state";
+import { historyKeymap, insertTab, standardKeymap } from "@codemirror/commands";
+import { autocompletion, CompletionContext } from "@codemirror/autocomplete";
+import { python } from "@codemirror/lang-python";
+import {
+  javascript,
+  javascriptLanguage,
+  scopeCompletionSource,
+} from "@codemirror/lang-javascript";
+import { java } from "@codemirror/lang-java";
+import { json } from "@codemirror/lang-json";
+import { yaml } from "@codemirror/lang-yaml";
+import { css } from "@codemirror/lang-css";
+import { vue } from "@codemirror/lang-vue";
+import { html } from "@codemirror/lang-html";
+import { cpp } from "@codemirror/lang-cpp";
+import { xml } from "@codemirror/lang-xml";
+import { markdown } from "@codemirror/lang-markdown";
+import { go } from "@codemirror/lang-go";
+import { sql } from "@codemirror/lang-sql";
+import { showMinimap } from "@replit/codemirror-minimap";
+import {
+  amy,
+  ayuLight,
+  barf,
+  bespin,
+  birdsOfParadise,
+  boysAndGirls,
+  clouds,
+  dracula,
+} from "thememirror";
+import { i18n } from "@/lang";
+import { ArrowDown } from "@element-plus/icons-vue";
 
 /**
  * ToolbarItem - 外部配置的工具栏按钮
@@ -43,32 +56,32 @@ interface ToolbarItem {
   children?: Array<{ label: string; handler: () => void }>;
 }
 
-const model = defineModel<string>("value", {default: ""});
+const model = defineModel<string>("value", { default: "" });
 const editorLang = ref<any>(javascript());
 const editorTheme = ref<any>(dracula);
 const props = defineProps({
-  funcName: {type: String, default: ""},
-  fieldName: {type: String, default: ""},
-  lang: {type: String, default: null},
-  theme: {type: String, default: "dracula"},
-  boxHeight: {type: String, default: "95%"},
-  btnList: {type: Object as PropType<Array<any>>, default: () => []},
-  helpMsg: {type: String},
+  funcName: { type: String, default: "" },
+  fieldName: { type: String, default: "" },
+  lang: { type: String, default: null },
+  theme: { type: String, default: "dracula" },
+  boxHeight: { type: String, default: "95%" },
+  btnList: { type: Object as PropType<Array<any>>, default: () => [] },
+  helpMsg: { type: String },
   /** 外部配置的工具栏按钮 */
   toolbarItems: {
     type: Array as PropType<ToolbarItem[]>,
     default: () => [],
   },
   /** 是否显示工具栏 */
-  showToolbar: {type: Boolean, default: true},
+  showToolbar: { type: Boolean, default: true },
 });
 
 // 分离用户配置的左右按钮
 const userLeftItems = computed(() =>
-    (props.toolbarItems || []).filter((i) => i.position !== "right"),
+  (props.toolbarItems || []).filter((i) => i.position !== "right"),
 );
 const userRightItems = computed(() =>
-    (props.toolbarItems || []).filter((i) => i.position === "right"),
+  (props.toolbarItems || []).filter((i) => i.position === "right"),
 );
 
 // Editor settings state
@@ -82,24 +95,24 @@ const config = ref<any>({
   schema: {},
 });
 const languages = ref<Array<any>>([
-  {name: "Java", value: "java", obj: java(), icon: "setting"},
-  {name: "Python", value: "python", obj: python(), icon: "setting"},
-  {name: "JSON", value: "json", obj: json(), icon: "setting"},
-  {name: "Sql", value: "sql", obj: sql(config.value), icon: "setting"},
+  { name: "Java", value: "java", obj: java(), icon: "setting" },
+  { name: "Python", value: "python", obj: python(), icon: "setting" },
+  { name: "JSON", value: "json", obj: json(), icon: "setting" },
+  { name: "Sql", value: "sql", obj: sql(config.value), icon: "setting" },
   {
     name: "JavaScript",
     value: "javascript",
     obj: javascript(),
     icon: "setting",
   },
-  {name: "Vue", value: "vue", obj: vue(), icon: "setting"},
-  {name: "Css", value: "css", obj: css(), icon: "setting"},
-  {name: "YAML", value: "yaml", obj: yaml(), icon: "setting"},
-  {name: "XML", value: "xml", obj: xml(), icon: "setting"},
-  {name: "Markdown", value: "markdown", obj: markdown(), icon: "setting"},
-  {name: "Go", value: "go", obj: go(), icon: "setting"},
-  {name: "C++", value: "cpp", obj: cpp(), icon: "setting"},
-  {name: "Html", value: "html", obj: html(), icon: "setting"},
+  { name: "Vue", value: "vue", obj: vue(), icon: "setting" },
+  { name: "Css", value: "css", obj: css(), icon: "setting" },
+  { name: "YAML", value: "yaml", obj: yaml(), icon: "setting" },
+  { name: "XML", value: "xml", obj: xml(), icon: "setting" },
+  { name: "Markdown", value: "markdown", obj: markdown(), icon: "setting" },
+  { name: "Go", value: "go", obj: go(), icon: "setting" },
+  { name: "C++", value: "cpp", obj: cpp(), icon: "setting" },
+  { name: "Html", value: "html", obj: html(), icon: "setting" },
 ]);
 const themesConf = new Compartment();
 const themes = ref<Array<any>>([
@@ -115,12 +128,12 @@ const themes = ref<Array<any>>([
     obj: boysAndGirls,
     icon: "setting",
   },
-  {name: "Amy", value: "amy", obj: amy, icon: "setting"},
-  {name: "AyuLight", value: "ayuLight", obj: ayuLight, icon: "setting"},
-  {name: "Bespin", value: "bespin", obj: bespin, icon: "setting"},
-  {name: "Clouds", value: "clouds", obj: clouds, icon: "setting"},
-  {name: "Barf", value: "barf", obj: barf, icon: "setting"},
-  {name: "Dracula", value: "dracula", obj: dracula, icon: "setting"},
+  { name: "Amy", value: "amy", obj: amy, icon: "setting" },
+  { name: "AyuLight", value: "ayuLight", obj: ayuLight, icon: "setting" },
+  { name: "Bespin", value: "bespin", obj: bespin, icon: "setting" },
+  { name: "Clouds", value: "clouds", obj: clouds, icon: "setting" },
+  { name: "Barf", value: "barf", obj: barf, icon: "setting" },
+  { name: "Dracula", value: "dracula", obj: dracula, icon: "setting" },
 ]);
 const editor = ref<EditorView>();
 const codemirror = ref();
@@ -128,7 +141,7 @@ const codemirror = ref();
 // 当前选中的语言/主题标签（工具栏显示用）
 const currentLangLabel = computed(() => {
   const found = languages.value.find(
-      (l) => l.value === (props.lang || "javascript"),
+    (l) => l.value === (props.lang || "javascript"),
   );
   return found?.name || "JavaScript";
 });
@@ -176,19 +189,19 @@ const jsHint = (context: CompletionContext) => {
         detail: i18n("item.formInstance"),
         apply: "formInstance",
       },
-      {label: "formData", detail: i18n("item.formData"), apply: "formData"},
+      { label: "formData", detail: i18n("item.formData"), apply: "formData" },
       {
         label: "formFields",
         detail: i18n("item.formFields"),
         apply: "formFields",
       },
-      {label: "userInfo", detail: i18n("item.userInfo"), apply: "userInfo"},
+      { label: "userInfo", detail: i18n("item.userInfo"), apply: "userInfo" },
       {
         label: "postRequest",
         detail: "PostRequest",
         apply: "postRequest(url,params)",
       },
-      {label: "getRequest", detail: "GetRequest", apply: "getRequest(url)"},
+      { label: "getRequest", detail: "GetRequest", apply: "getRequest(url)" },
       {
         label: "download",
         detail: i18n("item.download"),
@@ -235,7 +248,7 @@ const init = async () => {
     }
     let create = (_v: EditorView) => {
       const dom = document.createElement("div");
-      return {dom};
+      return { dom };
     };
     editor.value = new EditorView({
       doc: model.value,
@@ -246,7 +259,7 @@ const init = async () => {
         keymap.of([
           ...standardKeymap,
           ...historyKeymap,
-          {key: "Tab", run: insertTab},
+          { key: "Tab", run: insertTab },
         ]),
         languageConf.of(editorLang.value),
         autocompletion({
@@ -260,19 +273,19 @@ const init = async () => {
           }
         }),
         ...(showMinimapEnabled.value
-            ? [
+          ? [
               showMinimap.compute(["doc"], (_state: any) => {
                 return {
                   create,
                   displayText: "blocks",
                   showOverlay: "always",
-                  gutters: [{1: "#00FF00", 2: "#00FF00"}],
+                  gutters: [{ 1: "#00FF00", 2: "#00FF00" }],
                 };
               }),
             ]
-            : []),
+          : []),
         EditorView.theme({
-          "&": {fontSize: `${fontSize.value}px`},
+          "&": { fontSize: `${fontSize.value}px` },
         }),
       ],
       parent: codemirror.value,
@@ -297,7 +310,7 @@ const setAutoCompletion = (dbName: string, datas: any) => {
       apply: item.tableName,
     });
     config.value["schema"][dbName + "." + item.tableName] = item.fields.map(
-        (sitem: any) => sitem.fieldName,
+      (sitem: any) => sitem.fieldName,
     );
   });
   langInfo("sql");
@@ -305,7 +318,7 @@ const setAutoCompletion = (dbName: string, datas: any) => {
 
 const setValue = (val: any) => {
   editor.value?.dispatch({
-    changes: {from: 0, to: editor.value.state.doc.length, insert: val},
+    changes: { from: 0, to: editor.value.state.doc.length, insert: val },
   });
 };
 
@@ -326,19 +339,19 @@ defineExpose({
           <el-dropdown trigger="click" v-if="item.type === 'dropdown'">
             <span class="toolbar-btn">
               <star-horse-icon
-                  v-if="item.icon"
-                  :icon-class="item.icon"
-                  size="15px"
+                v-if="item.icon"
+                :icon-class="item.icon"
+                size="15px"
               />
               <span v-if="item.label">{{ item.label }}</span>
-              <el-icon><arrow-down/></el-icon>
+              <el-icon><arrow-down /></el-icon>
             </span>
             <template #dropdown>
               <el-dropdown-menu>
                 <el-dropdown-item
-                    v-for="(child, ci) in item.children"
-                    :key="ci"
-                    @click="child.handler"
+                  v-for="(child, ci) in item.children"
+                  :key="ci"
+                  @click="child.handler"
                 >
                   {{ child.label }}
                 </el-dropdown-item>
@@ -349,9 +362,9 @@ defineExpose({
           <el-tooltip v-else :content="item.label || ''" placement="bottom">
             <span class="toolbar-btn" @click="item.handler">
               <star-horse-icon
-                  v-if="item.icon"
-                  :icon-class="item.icon"
-                  size="15px"
+                v-if="item.icon"
+                :icon-class="item.icon"
+                size="15px"
               />
               <span v-if="item.label && !item.icon">{{ item.label }}</span>
             </span>
@@ -366,19 +379,19 @@ defineExpose({
           <el-dropdown trigger="click" v-if="item.type === 'dropdown'">
             <span class="toolbar-btn">
               <star-horse-icon
-                  v-if="item.icon"
-                  :icon-class="item.icon"
-                  size="15px"
+                v-if="item.icon"
+                :icon-class="item.icon"
+                size="15px"
               />
               <span v-if="item.label">{{ item.label }}</span>
-              <el-icon><arrow-down/></el-icon>
+              <el-icon><arrow-down /></el-icon>
             </span>
             <template #dropdown>
               <el-dropdown-menu>
                 <el-dropdown-item
-                    v-for="(child, ci) in item.children"
-                    :key="ci"
-                    @click="child.handler"
+                  v-for="(child, ci) in item.children"
+                  :key="ci"
+                  @click="child.handler"
                 >
                   {{ child.label }}
                 </el-dropdown-item>
@@ -388,9 +401,9 @@ defineExpose({
           <el-tooltip v-else :content="item.label || ''" placement="bottom">
             <span class="toolbar-btn" @click="item.handler">
               <star-horse-icon
-                  v-if="item.icon"
-                  :icon-class="item.icon"
-                  size="15px"
+                v-if="item.icon"
+                :icon-class="item.icon"
+                size="15px"
               />
               <span v-if="item.label && !item.icon">{{ item.label }}</span>
             </span>
@@ -403,14 +416,14 @@ defineExpose({
         <el-dropdown trigger="click" v-if="!lang">
           <span class="toolbar-btn">
             {{ currentLangLabel }}
-            <el-icon><arrow-down/></el-icon>
+            <el-icon><arrow-down /></el-icon>
           </span>
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item
-                  @click="langInfo(item.value)"
-                  v-for="item in languages"
-                  :key="item.value"
+                @click="langInfo(item.value)"
+                v-for="item in languages"
+                :key="item.value"
               >
                 {{ item.name }}
               </el-dropdown-item>
@@ -422,14 +435,14 @@ defineExpose({
         <el-dropdown trigger="click">
           <span class="toolbar-btn">
             {{ currentThemeLabel }}
-            <el-icon><arrow-down/></el-icon>
+            <el-icon><arrow-down /></el-icon>
           </span>
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item
-                  @click="customerTheme(item.value)"
-                  v-for="item in themes"
-                  :key="item.value"
+                @click="customerTheme(item.value)"
+                v-for="item in themes"
+                :key="item.value"
               >
                 {{ item.name }}
               </el-dropdown-item>
@@ -441,57 +454,50 @@ defineExpose({
         <el-dropdown trigger="click">
           <span class="toolbar-btn">
             {{ fontSize }}px
-            <el-icon><arrow-down/></el-icon>
+            <el-icon><arrow-down /></el-icon>
           </span>
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item @click="changeFontSize(12)"
-              >12px
-              </el-dropdown-item
-              >
+                >12px
+              </el-dropdown-item>
               <el-dropdown-item @click="changeFontSize(14)"
-              >14px
-              </el-dropdown-item
-              >
+                >14px
+              </el-dropdown-item>
               <el-dropdown-item @click="changeFontSize(16)"
-              >16px
-              </el-dropdown-item
-              >
+                >16px
+              </el-dropdown-item>
               <el-dropdown-item @click="changeFontSize(17)"
-              >17px
-              </el-dropdown-item
-              >
+                >17px
+              </el-dropdown-item>
               <el-dropdown-item @click="changeFontSize(18)"
-              >18px
-              </el-dropdown-item
-              >
+                >18px
+              </el-dropdown-item>
               <el-dropdown-item @click="changeFontSize(20)"
-              >20px
-              </el-dropdown-item
-              >
+                >20px
+              </el-dropdown-item>
               <el-dropdown-item @click="changeFontSize(24)"
-              >24px
-              </el-dropdown-item
-              >
+                >24px
+              </el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
 
         <!-- Minimap 开关（默认项） -->
         <el-tooltip
-            :content="showMinimapEnabled ? 'Hide Minimap' : 'Show Minimap'"
-            placement="bottom"
+          :content="showMinimapEnabled ? 'Hide Minimap' : 'Show Minimap'"
+          placement="bottom"
         >
           <span class="toolbar-btn" @click="toggleMinimap">
             <star-horse-icon
-                :icon-class="showMinimapEnabled ? 'eye-open' : 'eye-close'"
-                size="15px"
+              :icon-class="showMinimapEnabled ? 'eye-open' : 'eye-close'"
+              size="15px"
             />
           </span>
         </el-tooltip>
 
         <!-- 帮助 -->
-        <help :message="helpMsg" v-if="helpMsg"/>
+        <help :message="helpMsg" v-if="helpMsg" />
       </div>
     </div>
 

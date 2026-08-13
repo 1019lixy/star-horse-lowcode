@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import {ref} from "vue";
-import type {EmailTemplate} from "@/components/emailtemplate";
-import {EmailTemplateDesigner} from "@/components/emailtemplate";
+import { ref } from "vue";
+import type { EmailTemplate } from "@/components/emailtemplate";
+import { EmailTemplateDesigner } from "@/components/emailtemplate";
 
 const emailTemplate = ref<EmailTemplate>({
   id: "email_demo_001",
@@ -13,23 +13,23 @@ const emailTemplate = ref<EmailTemplate>({
   cc: "",
   bcc: "",
   content:
-      '<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;">' +
-      '<h2 style="color:#409EFF;">欢迎加入 ${appName}！</h2>' +
-      '<p>亲爱的 <strong>${userName}</strong>，</p>' +
-      '<p>感谢您注册 ${appName}，您的账号 <strong>${account}</strong> 已成功创建。</p>' +
-      '<p>您可以立即开始体验以下功能：</p>' +
-      '<ul>' +
-      '<li>个人中心管理</li>' +
-      '<li>在线数据看板</li>' +
-      '<li>团队协作空间</li>' +
-      '</ul>' +
-      '<p style="margin:24px 0;">' +
-      '<a href="${verifyUrl}" style="display:inline-block;padding:10px 24px;background:#409EFF;color:#fff;text-decoration:none;border-radius:4px;">立即验证邮箱</a>' +
-      '</p>' +
-      '<p>如有任何问题，请随时回复本邮件或联系客服。</p>' +
-      '<hr style="border:none;border-top:1px solid #eee;margin:20px 0;"/>' +
-      '<p style="color:#999;font-size:12px;">这是一封系统自动发送的邮件，请勿直接回复。</p>' +
-      '</div>',
+    '<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;">' +
+    '<h2 style="color:#409EFF;">欢迎加入 ${appName}！</h2>' +
+    "<p>亲爱的 <strong>${userName}</strong>，</p>" +
+    "<p>感谢您注册 ${appName}，您的账号 <strong>${account}</strong> 已成功创建。</p>" +
+    "<p>您可以立即开始体验以下功能：</p>" +
+    "<ul>" +
+    "<li>个人中心管理</li>" +
+    "<li>在线数据看板</li>" +
+    "<li>团队协作空间</li>" +
+    "</ul>" +
+    '<p style="margin:24px 0;">' +
+    '<a href="${verifyUrl}" style="display:inline-block;padding:10px 24px;background:#409EFF;color:#fff;text-decoration:none;border-radius:4px;">立即验证邮箱</a>' +
+    "</p>" +
+    "<p>如有任何问题，请随时回复本邮件或联系客服。</p>" +
+    '<hr style="border:none;border-top:1px solid #eee;margin:20px 0;"/>' +
+    '<p style="color:#999;font-size:12px;">这是一封系统自动发送的邮件，请勿直接回复。</p>' +
+    "</div>",
   textContent: "",
   variables: [
     {
@@ -77,10 +77,12 @@ const emailTemplate = ref<EmailTemplate>({
 <template>
   <div class="demo-container">
     <h3>邮件模板设计器 EmailTemplateDesigner</h3>
-    <p>邮件模板设计器，支持主题、发件人、抄送/密送配置，富文本正文编辑，变量占位符插入与附件管理，可预览与发送测试。示例初始化了“欢迎注册邮件”模板，含
-      appName、userName、account、verifyUrl 四个变量。</p>
+    <p>
+      邮件模板设计器，支持主题、发件人、抄送/密送配置，富文本正文编辑，变量占位符插入与附件管理，可预览与发送测试。示例初始化了“欢迎注册邮件”模板，含
+      appName、userName、account、verifyUrl 四个变量。
+    </p>
     <div class="demo-canvas">
-      <EmailTemplateDesigner :initial-template="emailTemplate"/>
+      <EmailTemplateDesigner :initial-template="emailTemplate" />
     </div>
   </div>
 </template>

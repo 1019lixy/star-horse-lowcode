@@ -1,8 +1,8 @@
 <script setup lang="ts" name="ApiEndpointPanel">
-import {i18n} from "@/lang";
-import {ShSvgIcon} from "@/components/shared";
-import {METHOD_COLORS} from "../constants";
-import type {ApiOrchestratorState} from "../composables/useApiOrchestrator";
+import { i18n } from "@/lang";
+import { ShSvgIcon } from "@/components/shared";
+import { METHOD_COLORS } from "../constants";
+import type { ApiOrchestratorState } from "../composables/useApiOrchestrator";
 
 const props = defineProps<{
   state: ApiOrchestratorState;
@@ -23,7 +23,7 @@ const handleRemove = (id: string, e: Event) => {
     <div class="panel-title">
       <span>{{ i18n("api.endpoint.title") }}</span>
       <el-button type="primary" plain @click="handleAdd">
-        <ShSvgIcon name="plus" size="14px"/>
+        <ShSvgIcon name="plus" size="14px" />
         {{ i18n("api.btn.addEndpoint") }}
       </el-button>
     </div>
@@ -33,33 +33,31 @@ const handleRemove = (id: string, e: Event) => {
       </div>
       <div v-else class="endpoint-list">
         <div
-            v-for="ep in state.endpoints"
-            :key="ep.id"
-            class="endpoint-item"
-            :class="{ active: state.selectedEndpointId.value === ep.id }"
-            @click="handleSelect(ep.id)"
-            :title="i18n('api.endpoint.clickToEdit')"
+          v-for="ep in state.endpoints"
+          :key="ep.id"
+          class="endpoint-item"
+          :class="{ active: state.selectedEndpointId.value === ep.id }"
+          @click="handleSelect(ep.id)"
+          :title="i18n('api.endpoint.clickToEdit')"
         >
-                    <span class="method-badge" :style="{ background: METHOD_COLORS[ep.method] }">
-                        {{ ep.method }}
-                    </span>
+          <span
+            class="method-badge"
+            :style="{ background: METHOD_COLORS[ep.method] }"
+          >
+            {{ ep.method }}
+          </span>
           <div class="endpoint-info">
             <div class="endpoint-name">{{ ep.name }}</div>
             <div class="endpoint-url">{{ ep.url }}</div>
           </div>
-          <el-button
-              text
-              type="danger"
-              @click="handleRemove(ep.id, $event)"
-          >
-            <ShSvgIcon name="delete" size="14px"/>
+          <el-button text type="danger" @click="handleRemove(ep.id, $event)">
+            <ShSvgIcon name="delete" size="14px" />
           </el-button>
         </div>
       </div>
     </div>
   </div>
 </template>
-
 
 <style lang="scss" scoped>
 .api-endpoint-panel {

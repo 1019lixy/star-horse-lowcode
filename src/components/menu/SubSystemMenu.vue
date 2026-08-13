@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import {PropType, ref} from "vue";
+import { PropType, ref } from "vue";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
-import {i18n} from "@/lang";
-import {compKey} from "@/api/system";
+import { i18n } from "@/lang";
+import { compKey } from "@/api/system";
 
 defineProps({
-  dataList: {type: Array<any>, required: true},
+  dataList: { type: Array<any>, required: true },
   preps: {
     type: Object as PropType<any>,
     default: () => {
@@ -16,10 +16,10 @@ defineProps({
       };
     },
   },
-  btnTitle: {type: String, default: i18n("menu.addData")},
-  rmvTitle: {type: String, default: i18n("menu.removeData")},
-  btnVisible: {type: Boolean, default: false},
-  rmvVisible: {type: Boolean, default: false},
+  btnTitle: { type: String, default: i18n("menu.addData") },
+  rmvTitle: { type: String, default: i18n("menu.removeData") },
+  btnVisible: { type: Boolean, default: false },
+  rmvVisible: { type: Boolean, default: false },
 });
 const emits = defineEmits(["selectData", "addData", "removeData"]);
 let currentItem = ref<any>({});
@@ -45,55 +45,55 @@ const removeData = (item: any) => {
 <template>
   <template v-for="(item, key) in dataList" :key="compKey(item, key)">
     <el-sub-menu
-        v-if="item?.children?.length > 0"
-        :class="{ 'is-active': item[preps.value] == currentItem[preps.value] }"
-        :index="item[preps.value]"
+      v-if="item?.children?.length > 0"
+      :class="{ 'is-active': item[preps.value] == currentItem[preps.value] }"
+      :index="item[preps.value]"
     >
       <template #title>
         <el-icon class="star-icon">
-          <component is="folder"/>
+          <component is="folder" />
         </el-icon>
         <div class="menu-title" @click="selectData(item, $event)">
           <div class="name">{{ item[preps.label] }}</div>
           <div v-if="btnVisible || rmvVisible" class="btn">
             <el-tooltip :content="btnTitle">
               <star-horse-icon
-                  cursor="pointer"
-                  v-if="btnVisible"
-                  @click.stop="addData(item)"
-                  icon-class="plus"
+                cursor="pointer"
+                v-if="btnVisible"
+                @click.stop="addData(item)"
+                icon-class="plus"
               />
             </el-tooltip>
             <el-tooltip :content="rmvTitle">
               <star-horse-icon
-                  cursor="pointer"
-                  v-if="rmvVisible"
-                  @click.stop="removeData(item)"
-                  color="var(--el-color-danger)"
-                  icon-class="minus"
+                cursor="pointer"
+                v-if="rmvVisible"
+                @click.stop="removeData(item)"
+                color="var(--el-color-danger)"
+                icon-class="minus"
               />
             </el-tooltip>
           </div>
         </div>
       </template>
       <SubSystemMenu
-          :dataList="item.children"
-          :preps="preps"
-          @selectData="selectData"
-          @removeData="removeData"
-          :btnVisible="btnVisible"
-          :btnTitle="btnTitle"
-          :rmvVisible="rmvVisible"
-          :rmvTitle="rmvTitle"
+        :dataList="item.children"
+        :preps="preps"
+        @selectData="selectData"
+        @removeData="removeData"
+        :btnVisible="btnVisible"
+        :btnTitle="btnTitle"
+        :rmvVisible="rmvVisible"
+        :rmvTitle="rmvTitle"
       />
     </el-sub-menu>
     <el-menu-item
-        v-else
-        :index="item[preps.value]"
-        :class="{ 'is-active': item[preps.value] == currentItem[preps.value] }"
+      v-else
+      :index="item[preps.value]"
+      :class="{ 'is-active': item[preps.value] == currentItem[preps.value] }"
     >
       <el-icon class="star-icon">
-        <component is="document"/>
+        <component is="document" />
       </el-icon>
       <template #title>
         <div class="menu-title" @click="selectData(item, $event)">
@@ -101,19 +101,19 @@ const removeData = (item: any) => {
           <div v-if="btnVisible || rmvVisible" class="btn">
             <el-tooltip :content="btnTitle">
               <star-horse-icon
-                  cursor="pointer"
-                  v-if="btnVisible"
-                  @click.stop="addData(item)"
-                  icon-class="plus"
+                cursor="pointer"
+                v-if="btnVisible"
+                @click.stop="addData(item)"
+                icon-class="plus"
               />
             </el-tooltip>
             <el-tooltip :content="rmvTitle">
               <star-horse-icon
-                  cursor="pointer"
-                  v-if="rmvVisible"
-                  @click.stop="removeData(item)"
-                  color="var(--el-color-danger)"
-                  icon-class="minus"
+                cursor="pointer"
+                v-if="rmvVisible"
+                @click.stop="removeData(item)"
+                color="var(--el-color-danger)"
+                icon-class="minus"
               />
             </el-tooltip>
           </div>

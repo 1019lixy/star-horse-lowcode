@@ -1,10 +1,15 @@
 <script lang="ts" setup>
-import {onActivated, onMounted, provide, reactive, ref} from "vue";
-import {i18n} from "@/lang";
-import {apiInstance, dialogPreps} from "@/api/star_horse_utils";
-import {ApiUrls, PageFieldInfo, SearchFields, SelectOption,} from "@/components/types";
-import {postRequest} from "@/api/star_horse_apis";
-import {StarHorseTableComp} from "@/components/comp";
+import { onActivated, onMounted, provide, reactive, ref } from "vue";
+import { i18n } from "@/lang";
+import { apiInstance, dialogPreps } from "@/api/star_horse_utils";
+import {
+  ApiUrls,
+  PageFieldInfo,
+  SearchFields,
+  SelectOption,
+} from "@/components/types";
+import { postRequest } from "@/api/star_horse_apis";
+import { StarHorseTableComp } from "@/components/comp";
 
 let informationsList = ref<any>([]);
 const dataUrl: ApiUrls = apiInstance("system-config", "system/informations");
@@ -54,10 +59,10 @@ const testFun = (formData: any) => {
     return;
   }
   postRequest(dataUrl.loadByIdUrl + "/" + formData["parentId"], {}).then(
-      (res) => {
-        let redata = res.data.data;
-        formData["idCustomer"] = redata["idCustomer"];
-      },
+    (res) => {
+      let redata = res.data.data;
+      formData["idCustomer"] = redata["idCustomer"];
+    },
   );
 };
 const tableFieldList = reactive<PageFieldInfo>({
@@ -73,7 +78,7 @@ const tableFieldList = reactive<PageFieldInfo>({
         fieldName: "parentId",
         type: "select",
         formVisible: true,
-        actions: {change: testFun},
+        actions: { change: testFun },
         preps: {
           values: informationsList,
         },
@@ -138,7 +143,7 @@ const tableFieldList = reactive<PageFieldInfo>({
       type: "textarea",
       formVisible: true,
       listVisible: true,
-      actions: {input: testFun},
+      actions: { input: testFun },
     },
     {
       label: "绑定表单",
@@ -152,8 +157,8 @@ const tableFieldList = reactive<PageFieldInfo>({
           pageListUrl: "/userdb-manage/userdb/dynamicForm/pageList",
         },
         needField: [
-          {sourceField: "formName", distField: "bindFormName"},
-          {sourceField: "dataNo", distField: "formId"},
+          { sourceField: "formName", distField: "bindFormName" },
+          { sourceField: "dataNo", distField: "formId" },
         ],
         searchFieldList: [],
         fieldList: [
@@ -186,8 +191,7 @@ const tableFieldList = reactive<PageFieldInfo>({
       formVisible: true,
       listVisible: true,
       actions: {
-        change: (val: any) => {
-        },
+        change: (val: any) => {},
       },
     },
     {
@@ -199,146 +203,146 @@ const tableFieldList = reactive<PageFieldInfo>({
             icon: "edit",
             actions: {
               eventType: "custom",
-              customCode: "const params={\n" +
-                  "    \"apiInfo\": {\n" +
-                  "        \"apiType\": \"thirdApi\",\n" +
-                  "        \"codePath\": \"code\",\n" +
-                  "        \"dataPath\": \"data\",\n" +
-                  "        \"dataType\": \"JSON\",\n" +
-                  "        \"headers\": [\n" +
-                  "            {\n" +
-                  "                \"paramName\": \"P-Auth\",\n" +
-                  "                \"paramValue\": \"u_Mjc2MWI1ZXZqYmI1azJhN3Y4bF4WNzU5ODEWMZ9ONTE5MzIxMTU4MjkyMjg20831\",\n" +
-                  "                \"valueType\": \"static\",\n" +
-                  "            }\n" +
-                  "        ],\n" +
-                  "        \"httpMethod\": \"POST\",\n" +
-                  "        \"protocol\": \"http\",\n" +
-                  "        \"requestParams\": [\n" +
-                  "            {\n" +
-                  "                \"paramName\": \"DataType\",\n" +
-                  "                \"paramValue\": \"${DataType}\",\n" +
-                  "                \"valueType\": \"isolation\",\n" +
-                  "            },\n" +
-                  "            {\n" +
-                  "                \"matchType\": \"eq\",\n" +
-                  "                \"paramName\": \"Id\",\n" +
-                  "                \"paramValue\": \"${fieldSh6Cd03}\",\n" +
-                  "                \"starHorseEditing\": \"no\",\n" +
-                  "                \"valueType\": \"dynamic\",\n" +
-                  "            },\n" +
-                  "            {\n" +
-                  "                \"paramName\": \"typeid\",\n" +
-                  "                \"paramValue\": \"1\",\n" +
-                  "                \"valueType\": \"static\",\n" +
-                  "            },\n" +
-                  "            {\n" +
-                  "                \"paramName\": \"wo\",\n" +
-                  "                \"paramValue\": \"\",\n" +
-                  "                \"valueType\": \"static\",\n" +
-                  "            }\n" +
-                  "        ],\n" +
-                  "        \"responseTemplate\": \"result_data_list\",\n" +
-                  "        \"successCode\": \"200\",\n" +
-                  "        \"url\": \"http://192.168.20.102:8092/tims\"\n" +
-                  "    },\n" +
-                  "    \"authInfo\": {\n" +
-                  "        \"apiType\": \"systemApi\",\n" +
-                  "        \"codePath\": \"code\",\n" +
-                  "        \"dataPath\": \"data\",\n" +
-                  "        \"dataType\": \"JSON\",\n" +
-                  "        \"headers\": [],\n" +
-                  "        \"httpMethod\": \"POST\",\n" +
-                  "        \"protocol\": \"http\",\n" +
-                  "        \"requestParams\": [],\n" +
-                  "        \"responseTemplate\": \"result_data_list\"\n" +
-                  "    },\n" +
-                  "    \"codePath\": \"code\",\n" +
-                  "    \"conditionFields\": [\n" +
-                  "        \"userInfo\",\n" +
-                  "        \"fieldShcad6\"\n" +
-                  "    ],\n" +
-                  "    \"dataPath\": \"data\",\n" +
-                  "    \"dataType\": \"JSON\",\n" +
-                  "    \"fieldMappings\": [\n" +
-                  "        {\n" +
-                  "            \"distField\": \"fieldShf0E11\",\n" +
-                  "            \"sourceField\": \"line\",\n" +
-                  "            \"starHorseEditing\": \"no\",\n" +
-                  "        },\n" +
-                  "        {\n" +
-                  "            \"distField\": \"fieldShb7C14\",\n" +
-                  "            \"sourceField\": \"partdesc\",\n" +
-                  "            \"starHorseEditing\": \"no\",\n" +
-                  "        },\n" +
-                  "        {\n" +
-                  "            \"distField\": \"fieldSh38Bc5\",\n" +
-                  "            \"sourceField\": \"partno\",\n" +
-                  "\n" +
-                  "        }\n" +
-                  "    ],\n" +
-                  "\n" +
-                  "    \"headers\": [],\n" +
-                  "    \"httpMethod\": \"POST\",\n" +
-                  "    \"isolationConfig\": {\n" +
-                  "        \"isolationDetails\": [\n" +
-                  "            {\n" +
-                  "                \"isolationCode\": \"1\",\n" +
-                  "                \"isolationName\": \"385623805101343740\",\n" +
-                  "                \"paramName\": \"DataType\",\n" +
-                  "                \"starHorseEditing\": \"no\",\n" +
-                  "                \"xh\": 1\n" +
-                  "            },\n" +
-                  "            {\n" +
-                  "                \"isolationCode\": \"2\",\n" +
-                  "                \"isolationName\": \"388963577039422460\",\n" +
-                  "                \"paramName\": \"DataType\",\n" +
-                  "                \"starHorseEditing\": \"no\",\n" +
-                  "                \"xh\": 2\n" +
-                  "            },\n" +
-                  "            {\n" +
-                  "                \"isolationCode\": \"1\",\n" +
-                  "                \"isolationName\": \"default\",\n" +
-                  "                \"paramName\": \"DataType\",\n" +
-                  "                \"xh\": 3\n" +
-                  "            }\n" +
-                  "        ],\n" +
-                  "        \"isolationType\": \"role\"\n" +
-                  "    },\n" +
-                  "    \"protocol\": \"http\",\n" +
-                  "    \"proxyUrl\": \"/system-config/redirect/apiLinkage\",\n" +
-                  "    \"redirect\": true,\n" +
-                  "    \"requestParams\": [],\n" +
-                  "    \"requestParamsDefaultValue\": [\n" +
-                  "        {\n" +
-                  "            \"valueType\": \"static\"\n" +
-                  "        },\n" +
-                  "        {\n" +
-                  "            \"valueType\": \"static\"\n" +
-                  "        }\n" +
-                  "    ],\n" +
-                  "    \"responseTemplate\": \"result_data_list\"\n" +
-                  "};\n" +
-                  " params[\"formData\"]=formData;\n" +
-                  "postRequest(\"/system-config/redirect/apiLinkage\",params).then((response)=>{\n" +
-                  "    const result = response?.data;\n" +
-                  "            if (result?.code) {\n" +
-                  "                warning(result.cnMessage);\n" +
-                  "                return;\n" +
-                  "            }\n" +
-                  "            const data = result?.data;\n" +
-                  "            if (data) {\n" +
-                  "                for (let key in data) {\n" +
-                  "                    if (\"_value\" != key) {\n" +
-                  "                        formData[key] = data[key];\n" +
-                  "                    }\n" +
-                  "                }\n" +
-                  "            }\n" +
-                  "});"
-            }
-
-          }
-        ]
+              customCode:
+                "const params={\n" +
+                '    "apiInfo": {\n' +
+                '        "apiType": "thirdApi",\n' +
+                '        "codePath": "code",\n' +
+                '        "dataPath": "data",\n' +
+                '        "dataType": "JSON",\n' +
+                '        "headers": [\n' +
+                "            {\n" +
+                '                "paramName": "P-Auth",\n' +
+                '                "paramValue": "u_Mjc2MWI1ZXZqYmI1azJhN3Y4bF4WNzU5ODEWMZ9ONTE5MzIxMTU4MjkyMjg20831",\n' +
+                '                "valueType": "static",\n' +
+                "            }\n" +
+                "        ],\n" +
+                '        "httpMethod": "POST",\n' +
+                '        "protocol": "http",\n' +
+                '        "requestParams": [\n' +
+                "            {\n" +
+                '                "paramName": "DataType",\n' +
+                '                "paramValue": "${DataType}",\n' +
+                '                "valueType": "isolation",\n' +
+                "            },\n" +
+                "            {\n" +
+                '                "matchType": "eq",\n' +
+                '                "paramName": "Id",\n' +
+                '                "paramValue": "${fieldSh6Cd03}",\n' +
+                '                "starHorseEditing": "no",\n' +
+                '                "valueType": "dynamic",\n' +
+                "            },\n" +
+                "            {\n" +
+                '                "paramName": "typeid",\n' +
+                '                "paramValue": "1",\n' +
+                '                "valueType": "static",\n' +
+                "            },\n" +
+                "            {\n" +
+                '                "paramName": "wo",\n' +
+                '                "paramValue": "",\n' +
+                '                "valueType": "static",\n' +
+                "            }\n" +
+                "        ],\n" +
+                '        "responseTemplate": "result_data_list",\n' +
+                '        "successCode": "200",\n' +
+                '        "url": "http://192.168.20.102:8092/tims"\n' +
+                "    },\n" +
+                '    "authInfo": {\n' +
+                '        "apiType": "systemApi",\n' +
+                '        "codePath": "code",\n' +
+                '        "dataPath": "data",\n' +
+                '        "dataType": "JSON",\n' +
+                '        "headers": [],\n' +
+                '        "httpMethod": "POST",\n' +
+                '        "protocol": "http",\n' +
+                '        "requestParams": [],\n' +
+                '        "responseTemplate": "result_data_list"\n' +
+                "    },\n" +
+                '    "codePath": "code",\n' +
+                '    "conditionFields": [\n' +
+                '        "userInfo",\n' +
+                '        "fieldShcad6"\n' +
+                "    ],\n" +
+                '    "dataPath": "data",\n' +
+                '    "dataType": "JSON",\n' +
+                '    "fieldMappings": [\n' +
+                "        {\n" +
+                '            "distField": "fieldShf0E11",\n' +
+                '            "sourceField": "line",\n' +
+                '            "starHorseEditing": "no",\n' +
+                "        },\n" +
+                "        {\n" +
+                '            "distField": "fieldShb7C14",\n' +
+                '            "sourceField": "partdesc",\n' +
+                '            "starHorseEditing": "no",\n' +
+                "        },\n" +
+                "        {\n" +
+                '            "distField": "fieldSh38Bc5",\n' +
+                '            "sourceField": "partno",\n' +
+                "\n" +
+                "        }\n" +
+                "    ],\n" +
+                "\n" +
+                '    "headers": [],\n' +
+                '    "httpMethod": "POST",\n' +
+                '    "isolationConfig": {\n' +
+                '        "isolationDetails": [\n' +
+                "            {\n" +
+                '                "isolationCode": "1",\n' +
+                '                "isolationName": "385623805101343740",\n' +
+                '                "paramName": "DataType",\n' +
+                '                "starHorseEditing": "no",\n' +
+                '                "xh": 1\n' +
+                "            },\n" +
+                "            {\n" +
+                '                "isolationCode": "2",\n' +
+                '                "isolationName": "388963577039422460",\n' +
+                '                "paramName": "DataType",\n' +
+                '                "starHorseEditing": "no",\n' +
+                '                "xh": 2\n' +
+                "            },\n" +
+                "            {\n" +
+                '                "isolationCode": "1",\n' +
+                '                "isolationName": "default",\n' +
+                '                "paramName": "DataType",\n' +
+                '                "xh": 3\n' +
+                "            }\n" +
+                "        ],\n" +
+                '        "isolationType": "role"\n' +
+                "    },\n" +
+                '    "protocol": "http",\n' +
+                '    "proxyUrl": "/system-config/redirect/apiLinkage",\n' +
+                '    "redirect": true,\n' +
+                '    "requestParams": [],\n' +
+                '    "requestParamsDefaultValue": [\n' +
+                "        {\n" +
+                '            "valueType": "static"\n' +
+                "        },\n" +
+                "        {\n" +
+                '            "valueType": "static"\n' +
+                "        }\n" +
+                "    ],\n" +
+                '    "responseTemplate": "result_data_list"\n' +
+                "};\n" +
+                ' params["formData"]=formData;\n' +
+                'postRequest("/system-config/redirect/apiLinkage",params).then((response)=>{\n' +
+                "    const result = response?.data;\n" +
+                "            if (result?.code) {\n" +
+                "                warning(result.cnMessage);\n" +
+                "                return;\n" +
+                "            }\n" +
+                "            const data = result?.data;\n" +
+                "            if (data) {\n" +
+                "                for (let key in data) {\n" +
+                '                    if ("_value" != key) {\n' +
+                "                        formData[key] = data[key];\n" +
+                "                    }\n" +
+                "                }\n" +
+                "            }\n" +
+                "});",
+            },
+          },
+        ],
       },
       fieldName: "fieldSh6Cd03",
       formVisible: true,
@@ -404,20 +408,20 @@ provide("dialogProps", dialogProps);
 const dataFormat = (name: string, cellValue: object): any => {
   if (name == "parentId") {
     return (
-        informationsList.value.find(
-            (item: SelectOption) => item.value == cellValue,
-        )?.name || cellValue
+      informationsList.value.find(
+        (item: SelectOption) => item.value == cellValue,
+      )?.name || cellValue
     );
   } else if (name == "idCustomer") {
     return (
-        customerList.value.find((item: SelectOption) => item.value == cellValue)
-            ?.name || cellValue
+      customerList.value.find((item: SelectOption) => item.value == cellValue)
+        ?.name || cellValue
     );
   }
   return cellValue;
 };
 const initData = async () => {
-  let params = [{propertyName: "statusCode", value: "1"}];
+  let params = [{ propertyName: "statusCode", value: "1" }];
   // const datas = await loadSystemInfo(params);
   // const customs = await loadCustomInfo(params);
   // informationsList.value = datas;
@@ -427,57 +431,56 @@ const initData = async () => {
 onMounted(async () => {
   await initData();
 });
-onActivated(() => {
-});
+onActivated(() => {});
 </script>
 <template>
   <div class="flex flex-col h-full overflow-hidden">
     <star-horse-dialog
-        :isShowBtnContinue="true"
-        v-model="dialogProps.editVisible"
-        :dialogProps="dialogProps"
+      :isShowBtnContinue="true"
+      v-model="dialogProps.editVisible"
+      :dialogProps="dialogProps"
     >
       <star-horse-form
-          @refresh="informationsRef?.loadByPage()"
-          :compUrl="dataUrl"
-          :fieldList="tableFieldList"
-          :rules="rules"
+        @refresh="informationsRef?.loadByPage()"
+        :compUrl="dataUrl"
+        :fieldList="tableFieldList"
+        :rules="rules"
       />
     </star-horse-dialog>
     <star-horse-dialog
-        v-model="dialogProps.viewVisible"
-        :dialogProps="dialogProps"
-        :source="3"
+      v-model="dialogProps.viewVisible"
+      :dialogProps="dialogProps"
+      :source="3"
     >
       <star-horse-data-view
-          :data-format="dataFormat"
-          :field-list="tableFieldList"
-          :compUrl="dataUrl"
+        :data-format="dataFormat"
+        :field-list="tableFieldList"
+        :compUrl="dataUrl"
       />
     </star-horse-dialog>
     <div class="search-content">
       <div class="search_btn">
         <star-horse-search-comp
-            @searchData="(data: any) => informationsRef?.createSearchParams(data)"
-            :formData="searchFormData"
-            :compUrl="dataUrl"
+          @searchData="(data: any) => informationsRef?.createSearchParams(data)"
+          :formData="searchFormData"
+          :compUrl="dataUrl"
         />
       </div>
     </div>
     <el-card class="inner_content">
       <star-horse-table-comp
-          ref="informationsRef"
-          :fieldList="tableFieldList"
-          :primaryKey="primaryKey"
-          :btn-permissions="{
+        ref="informationsRef"
+        :fieldList="tableFieldList"
+        :primaryKey="primaryKey"
+        :btn-permissions="{
           view: 'view',
           add: 'add',
           edit: 'edit',
           export: 'export',
-          download:'download'
+          download: 'download',
         }"
-          :compUrl="dataUrl"
-          :dataFormat="dataFormat"
+        :compUrl="dataUrl"
+        :dataFormat="dataFormat"
       />
     </el-card>
   </div>

@@ -4,12 +4,17 @@
  *
  * 新增/编辑实体：类型 / 位置 / 尺寸 / 颜色 / 名称 / 状态
  */
-import {computed, ref, watch} from "vue";
-import {i18n} from "@/lang";
-import {ElMessage} from "element-plus";
-import {createDtEntity, DT_ENTITY_TYPE_PRESETS, DT_STATUS_PRESETS, dtDefaultSize,} from "../constants";
-import type {DtEntity, DtEntityStatus, DtEntityType} from "../types";
-import {StarHorsePanel} from "@/components/comp";
+import { computed, ref, watch } from "vue";
+import { i18n } from "@/lang";
+import { ElMessage } from "element-plus";
+import {
+  createDtEntity,
+  DT_ENTITY_TYPE_PRESETS,
+  DT_STATUS_PRESETS,
+  dtDefaultSize,
+} from "../constants";
+import type { DtEntity, DtEntityStatus, DtEntityType } from "../types";
+import { StarHorsePanel } from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
@@ -17,7 +22,7 @@ const props = defineProps<{
   entityId?: string | null;
   /** 编辑时传入当前实体列表（用于回填） */
   sourceEntity?: DtEntity | null;
-  dialogType?:"dialog"|"drawer";
+  dialogType?: "dialog" | "drawer";
 }>();
 
 const emit = defineEmits<{
@@ -35,7 +40,7 @@ const form = ref<DtEntity>(createDtEntity("cube", "Entity"));
 
 /** 当类型变化时，重置尺寸为该类型默认值 */
 const handleTypeChange = (type: DtEntityType): void => {
-  form.value.size = {...dtDefaultSize(type)};
+  form.value.size = { ...dtDefaultSize(type) };
   const preset = DT_ENTITY_TYPE_PRESETS.find((p) => p.type === type);
   if (preset) {
     form.value.color = preset.color;
@@ -43,20 +48,20 @@ const handleTypeChange = (type: DtEntityType): void => {
 };
 
 watch(
-    () => [props.visible, props.entityId, props.sourceEntity] as const,
-    ([visible, , source]) => {
-      if (!visible) return;
-      if (source) {
-        // 编辑模式：深拷贝源实体
-        form.value = JSON.parse(JSON.stringify(source));
-        isNew.value = false;
-      } else {
-        // 新增模式
-        form.value = createDtEntity("cube", i18n("digitaltwin.type.cube"));
-        isNew.value = true;
-      }
-    },
-    {immediate: true},
+  () => [props.visible, props.entityId, props.sourceEntity] as const,
+  ([visible, , source]) => {
+    if (!visible) return;
+    if (source) {
+      // 编辑模式：深拷贝源实体
+      form.value = JSON.parse(JSON.stringify(source));
+      isNew.value = false;
+    } else {
+      // 新增模式
+      form.value = createDtEntity("cube", i18n("digitaltwin.type.cube"));
+      isNew.value = true;
+    }
+  },
+  { immediate: true },
 );
 
 const handleSubmit = (): void => {
@@ -73,41 +78,45 @@ const handleClose = (): void => {
 };
 
 const dialogTitle = computed(() =>
-    isNew.value ? i18n("digitaltwin.dialog.addTitle") : i18n("digitaltwin.dialog.editTitle"),
+  isNew.value
+    ? i18n("digitaltwin.dialog.addTitle")
+    : i18n("digitaltwin.dialog.editTitle"),
 );
 </script>
 
 <template>
   <star-horse-panel
-      :type="dialogType"
-      v-model="innerVisible"
-      :title="dialogTitle"
-      box-width="640px"
-      :self-func="true"
-      @merge="handleSubmit"
+    :type="dialogType"
+    v-model="innerVisible"
+    :title="dialogTitle"
+    box-width="640px"
+    :self-func="true"
+    @merge="handleSubmit"
   >
     <el-form :model="form" label-width="90px" size="default">
       <!-- 基本信息 -->
-      <el-divider content-position="left">{{ i18n("digitaltwin.dialog.basic") }}</el-divider>
+      <el-divider content-position="left">{{
+        i18n("digitaltwin.dialog.basic")
+      }}</el-divider>
       <el-row :gutter="12">
         <el-col :span="12">
           <el-form-item :label="i18n('digitaltwin.entity.name')">
-            <el-input v-model="form.name"/>
+            <el-input v-model="form.name" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item :label="i18n('digitaltwin.entity.type')">
             <el-select
-                :model-value="form.type"
-                style="width: 100%"
-                :disabled="!isNew"
-                @update:model-value="(v) => handleTypeChange(v as DtEntityType)"
+              :model-value="form.type"
+              style="width: 100%"
+              :disabled="!isNew"
+              @update:model-value="(v) => handleTypeChange(v as DtEntityType)"
             >
               <el-option
-                  v-for="p in DT_ENTITY_TYPE_PRESETS"
-                  :key="p.type"
-                  :label="i18n(p.labelKey as any)"
-                  :value="p.type"
+                v-for="p in DT_ENTITY_TYPE_PRESETS"
+                :key="p.type"
+                :label="i18n(p.labelKey as any)"
+                :value="p.type"
               />
             </el-select>
           </el-form-item>
@@ -116,28 +125,42 @@ const dialogTitle = computed(() =>
       <el-form-item :label="i18n('digitaltwin.entity.status')">
         <el-select v-model="form.status as DtEntityStatus" style="width: 100%">
           <el-option
-              v-for="s in DT_STATUS_PRESETS"
-              :key="s.status"
-              :label="i18n(s.labelKey as any)"
-              :value="s.status"
+            v-for="s in DT_STATUS_PRESETS"
+            :key="s.status"
+            :label="i18n(s.labelKey as any)"
+            :value="s.status"
           />
         </el-select>
       </el-form-item>
 
       <!-- 几何信息：位置 -->
-      <el-divider content-position="left">{{ i18n("digitaltwin.dialog.geometry") }}</el-divider>
+      <el-divider content-position="left">{{
+        i18n("digitaltwin.dialog.geometry")
+      }}</el-divider>
       <el-form-item :label="i18n('digitaltwin.entity.position')">
         <el-row :gutter="8" style="width: 100%">
           <el-col :span="8">
-            <el-input-number v-model="form.position.x" :step="10" style="width: 100%"/>
+            <el-input-number
+              v-model="form.position.x"
+              :step="10"
+              style="width: 100%"
+            />
             <div class="axis-label">X</div>
           </el-col>
           <el-col :span="8">
-            <el-input-number v-model="form.position.y" :step="10" style="width: 100%"/>
+            <el-input-number
+              v-model="form.position.y"
+              :step="10"
+              style="width: 100%"
+            />
             <div class="axis-label">Y</div>
           </el-col>
           <el-col :span="8">
-            <el-input-number v-model="form.position.z" :step="10" style="width: 100%"/>
+            <el-input-number
+              v-model="form.position.z"
+              :step="10"
+              style="width: 100%"
+            />
             <div class="axis-label">Z</div>
           </el-col>
         </el-row>
@@ -148,58 +171,120 @@ const dialogTitle = computed(() =>
         <el-row :gutter="8" style="width: 100%">
           <template v-if="form.type === 'cube'">
             <el-col :span="8">
-              <el-input-number v-model="form.size.width" :min="1" :step="5" style="width: 100%"/>
-              <div class="axis-label">{{ i18n("digitaltwin.entity.width") }}</div>
+              <el-input-number
+                v-model="form.size.width"
+                :min="1"
+                :step="5"
+                style="width: 100%"
+              />
+              <div class="axis-label">
+                {{ i18n("digitaltwin.entity.width") }}
+              </div>
             </el-col>
             <el-col :span="8">
-              <el-input-number v-model="form.size.height" :min="1" :step="5" style="width: 100%"/>
-              <div class="axis-label">{{ i18n("digitaltwin.entity.height") }}</div>
+              <el-input-number
+                v-model="form.size.height"
+                :min="1"
+                :step="5"
+                style="width: 100%"
+              />
+              <div class="axis-label">
+                {{ i18n("digitaltwin.entity.height") }}
+              </div>
             </el-col>
             <el-col :span="8">
-              <el-input-number v-model="form.size.depth" :min="1" :step="5" style="width: 100%"/>
-              <div class="axis-label">{{ i18n("digitaltwin.entity.depth") }}</div>
+              <el-input-number
+                v-model="form.size.depth"
+                :min="1"
+                :step="5"
+                style="width: 100%"
+              />
+              <div class="axis-label">
+                {{ i18n("digitaltwin.entity.depth") }}
+              </div>
             </el-col>
           </template>
           <template v-else-if="form.type === 'cylinder'">
             <el-col :span="12">
-              <el-input-number v-model="form.size.radius" :min="1" :step="5" style="width: 100%"/>
-              <div class="axis-label">{{ i18n("digitaltwin.entity.radius") }}</div>
+              <el-input-number
+                v-model="form.size.radius"
+                :min="1"
+                :step="5"
+                style="width: 100%"
+              />
+              <div class="axis-label">
+                {{ i18n("digitaltwin.entity.radius") }}
+              </div>
             </el-col>
             <el-col :span="12">
-              <el-input-number v-model="form.size.height" :min="1" :step="5" style="width: 100%"/>
-              <div class="axis-label">{{ i18n("digitaltwin.entity.height") }}</div>
+              <el-input-number
+                v-model="form.size.height"
+                :min="1"
+                :step="5"
+                style="width: 100%"
+              />
+              <div class="axis-label">
+                {{ i18n("digitaltwin.entity.height") }}
+              </div>
             </el-col>
           </template>
           <template v-else-if="form.type === 'plane'">
             <el-col :span="12">
-              <el-input-number v-model="form.size.width" :min="1" :step="10" style="width: 100%"/>
-              <div class="axis-label">{{ i18n("digitaltwin.entity.width") }}</div>
+              <el-input-number
+                v-model="form.size.width"
+                :min="1"
+                :step="10"
+                style="width: 100%"
+              />
+              <div class="axis-label">
+                {{ i18n("digitaltwin.entity.width") }}
+              </div>
             </el-col>
             <el-col :span="12">
-              <el-input-number v-model="form.size.depth" :min="1" :step="10" style="width: 100%"/>
-              <div class="axis-label">{{ i18n("digitaltwin.entity.depth") }}</div>
+              <el-input-number
+                v-model="form.size.depth"
+                :min="1"
+                :step="10"
+                style="width: 100%"
+              />
+              <div class="axis-label">
+                {{ i18n("digitaltwin.entity.depth") }}
+              </div>
             </el-col>
           </template>
           <template v-else-if="form.type === 'sphere'">
             <el-col :span="24">
-              <el-input-number v-model="form.size.radius" :min="1" :step="5" style="width: 100%"/>
-              <div class="axis-label">{{ i18n("digitaltwin.entity.radius") }}</div>
+              <el-input-number
+                v-model="form.size.radius"
+                :min="1"
+                :step="5"
+                style="width: 100%"
+              />
+              <div class="axis-label">
+                {{ i18n("digitaltwin.entity.radius") }}
+              </div>
             </el-col>
           </template>
         </el-row>
       </el-form-item>
 
       <!-- 外观 -->
-      <el-divider content-position="left">{{ i18n("digitaltwin.dialog.appearance") }}</el-divider>
+      <el-divider content-position="left">{{
+        i18n("digitaltwin.dialog.appearance")
+      }}</el-divider>
       <el-form-item :label="i18n('digitaltwin.entity.color')">
-        <el-color-picker v-model="form.color"/>
+        <el-color-picker v-model="form.color" />
         <span class="color-text">{{ form.color }}</span>
       </el-form-item>
     </el-form>
 
     <template #footer>
-      <el-button @click="handleClose">{{ i18n("digitaltwin.dialog.close") }}</el-button>
-      <el-button type="primary" @click="handleSubmit">{{ i18n("digitaltwin.dialog.confirm") }}</el-button>
+      <el-button @click="handleClose">{{
+        i18n("digitaltwin.dialog.close")
+      }}</el-button>
+      <el-button type="primary" @click="handleSubmit">{{
+        i18n("digitaltwin.dialog.confirm")
+      }}</el-button>
     </template>
   </star-horse-panel>
 </template>

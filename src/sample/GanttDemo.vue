@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import {ref} from "vue";
-import type {GanttData} from "@/components/gantt";
-import {GanttChart} from "@/components/gantt";
+import { ref } from "vue";
+import type { GanttData } from "@/components/gantt";
+import { GanttChart } from "@/components/gantt";
 
 const ganttData = ref<GanttData>({
   name: "产品研发项目计划",
@@ -106,13 +106,13 @@ const ganttData = ref<GanttData>({
     },
   ],
   links: [
-    {id: "l1", source: "t1", target: "t2", type: "finishToStart"},
-    {id: "l2", source: "t2", target: "t3", type: "finishToStart"},
-    {id: "l3", source: "t2", target: "t4", type: "finishToStart"},
-    {id: "l4", source: "t3", target: "t5", type: "finishToStart"},
-    {id: "l5", source: "t4", target: "t6", type: "finishToStart"},
-    {id: "l6", source: "t5", target: "t6", type: "finishToStart"},
-    {id: "l7", source: "t6", target: "t7", type: "finishToStart"},
+    { id: "l1", source: "t1", target: "t2", type: "finishToStart" },
+    { id: "l2", source: "t2", target: "t3", type: "finishToStart" },
+    { id: "l3", source: "t2", target: "t4", type: "finishToStart" },
+    { id: "l4", source: "t3", target: "t5", type: "finishToStart" },
+    { id: "l5", source: "t4", target: "t6", type: "finishToStart" },
+    { id: "l6", source: "t5", target: "t6", type: "finishToStart" },
+    { id: "l7", source: "t6", target: "t7", type: "finishToStart" },
   ],
   config: {
     timeUnit: "day",
@@ -134,10 +134,12 @@ const ganttData = ref<GanttData>({
 <template>
   <div class="demo-container">
     <h3>甘特图 GanttChart</h3>
-    <p>项目管理甘特图组件，支持任务 WBS
-      树形结构、依赖关系连线、进度展示、里程碑、关键路径等。左侧为任务列表，中间为时间轴条形图，右侧为属性面板。</p>
+    <p>
+      项目管理甘特图组件，支持任务 WBS
+      树形结构、依赖关系连线、进度展示、里程碑、关键路径等。左侧为任务列表，中间为时间轴条形图，右侧为属性面板。
+    </p>
     <div class="demo-canvas">
-      <GanttChart :initial-gantt="ganttData"/>
+      <GanttChart :initial-gantt="ganttData" />
     </div>
   </div>
 </template>

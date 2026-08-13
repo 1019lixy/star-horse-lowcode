@@ -1,48 +1,56 @@
 <script setup lang="ts" name="StarHorseFormList">
 import Sortable from "sortablejs";
-import {i18n} from "@/lang";
-import {inject, ModelRef, nextTick, onMounted, PropType, ref, ShallowReactive, watch,} from "vue";
-import {ApiUrls} from "@/components/types/ApiUrls";
+import { i18n } from "@/lang";
+import {
+  inject,
+  ModelRef,
+  nextTick,
+  onMounted,
+  PropType,
+  ref,
+  ShallowReactive,
+  watch,
+} from "vue";
+import { ApiUrls } from "@/components/types/ApiUrls";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
-import {rowClassName} from "@/api/star_horse_utils";
-import {error, operationConfirm, success, warning} from "@/utils/message";
-import {download} from "@/api/star_horse_apis";
-import {getToken} from "@/utils/auth";
+import { rowClassName } from "@/api/star_horse_utils";
+import { error, operationConfirm, success, warning } from "@/utils/message";
+import { download } from "@/api/star_horse_apis";
+import { getToken } from "@/utils/auth";
 import Help from "@/components/help.vue";
-import {compKey, uuid} from "@/api/system";
+import { compKey, uuid } from "@/api/system";
 import UTableColumn from "@/components/comp/items/UTableColumn.vue";
 import StarHorseForm from "@/components/comp/StarHorseForm.vue";
-import {FieldInfo} from "@/components/types";
-import {Sort, UploadFilled} from "@element-plus/icons-vue";
-import {isMobile} from "@/api/device";
+import { FieldInfo } from "@/components/types";
+import { Sort, UploadFilled } from "@element-plus/icons-vue";
+import { isMobile } from "@/api/device";
 import StarHorsePanel from "@/components/comp/StarHorsePanel.vue";
 
 let importDialogVisible = ref<boolean>(false);
 let rowDialogVisible = ref<boolean>(false);
 const rowDataFormRef = ref();
 const props = defineProps({
-  compUrl: {type: Object as PropType<ApiUrls>},
-  fieldList: {type: Object as PropType<FieldInfo[]>, required: true},
-  defaultValues: {type: Object, default: {}},
-  batchName: {type: String, default: "batchDataList"},
-  primaryKey: {type: [String, Object] as PropType<string | any>},
-  initRows: {type: Number, default: 0},
-  importInfo: {type: Object as PropType<ApiUrls>},
-  title: {type: String, default: ""},
-  helpMsg: {type: String, default: ""},
-  rules: {type: Object},
-  staticColumn: {type: String, default: "Y"},
-  size: {type: String, default: "default"},
-  source: {type: Number, default: 1},
-  showCheckBox: {type: Boolean, default: false},
-  selectAll: {type: Boolean, default: false},
-  subFlag: {type: Boolean, default: false},
-  enableSubNode: {type: Boolean, default: false},
-  dialogType: {type: String as () => "dialog" | "drawer"},
+  compUrl: { type: Object as PropType<ApiUrls> },
+  fieldList: { type: Object as PropType<FieldInfo[]>, required: true },
+  defaultValues: { type: Object, default: {} },
+  batchName: { type: String, default: "batchDataList" },
+  primaryKey: { type: [String, Object] as PropType<string | any> },
+  initRows: { type: Number, default: 0 },
+  importInfo: { type: Object as PropType<ApiUrls> },
+  title: { type: String, default: "" },
+  helpMsg: { type: String, default: "" },
+  rules: { type: Object },
+  staticColumn: { type: String, default: "Y" },
+  size: { type: String, default: "default" },
+  source: { type: Number, default: 1 },
+  showCheckBox: { type: Boolean, default: false },
+  selectAll: { type: Boolean, default: false },
+  subFlag: { type: Boolean, default: false },
+  enableSubNode: { type: Boolean, default: false },
+  dialogType: { type: String as () => "dialog" | "drawer" },
   commonFormat: {
     type: Function,
-    default: () => {
-    },
+    default: () => {},
   },
 });
 const emits = defineEmits(["addRow", "removeRow", "inited"]);
@@ -138,10 +146,13 @@ let childParentChildren = ref<any[] | null>(null);
  * 递归查找节点在树中的位置
  * @returns { parentChildren, index } 或 null
  */
-const findNodeInTree = (nodes: any[], nodeId: string): { parentChildren: any[], index: number } | null => {
+const findNodeInTree = (
+  nodes: any[],
+  nodeId: string,
+): { parentChildren: any[]; index: number } | null => {
   for (let i = 0; i < nodes.length; i++) {
     if (nodes[i].__nodeId === nodeId) {
-      return {parentChildren: nodes, index: i};
+      return { parentChildren: nodes, index: i };
     }
     if (nodes[i].children && nodes[i].children.length > 0) {
       const result = findNodeInTree(nodes[i].children, nodeId);
@@ -287,13 +298,13 @@ const dynamicHandleAddRow = (row: any, type: number) => {
     const tryScroll = (attempt = 0) => {
       const tableEl = starHorseFormListRef.value?.$el;
       const scrollContainer = tableEl?.querySelector(
-          ".el-table--scrollable-y .el-scrollbar__wrap",
+        ".el-table--scrollable-y .el-scrollbar__wrap",
       );
       if (scrollContainer) {
         // 仅在新行添加时滚动（type=1）
         if (type === 1) {
           scrollContainer.scrollTop =
-              scrollContainer.scrollHeight - scrollContainer.clientHeight;
+            scrollContainer.scrollHeight - scrollContainer.clientHeight;
         }
       } else if (attempt < 3) {
         // 最多重试3次
@@ -364,7 +375,7 @@ const moveColumn = () => {
         tbody.style.cursor = "move"; // 拖动时改变光标
       },
       onEnd(event: any) {
-        const {oldIndex, newIndex} = event;
+        const { oldIndex, newIndex } = event;
         if (oldIndex === newIndex) {
           return;
         }
@@ -386,8 +397,8 @@ const moveColumn = () => {
 };
 const clearAll = () => {
   if (
-      !dataForm.value[props.batchName] ||
-      dataForm.value[props.batchName]?.length == 0
+    !dataForm.value[props.batchName] ||
+    dataForm.value[props.batchName]?.length == 0
   ) {
     return;
   }
@@ -437,62 +448,62 @@ onMounted(async () => {
   await init();
 });
 watch(
-    () => dataForm.value[props.batchName]?.length,
-    () => {
-      if (props.showCheckBox && props.selectAll) {
-        const val = dataForm.value[props.batchName];
-        if (val && val.length > 0) {
-          nextTick(() => {
-            // 改用原生全选方法
-            starHorseFormListRef.value?.toggleAllSelection(true);
-          });
-        }
+  () => dataForm.value[props.batchName]?.length,
+  () => {
+    if (props.showCheckBox && props.selectAll) {
+      const val = dataForm.value[props.batchName];
+      if (val && val.length > 0) {
+        nextTick(() => {
+          // 改用原生全选方法
+          starHorseFormListRef.value?.toggleAllSelection(true);
+        });
       }
-    },
+    }
+  },
 );
 </script>
 <template>
   <star-horse-panel
-      :type="dialogType"
-      :title="i18n('dialog.editTitle')"
-      v-model="rowDialogVisible"
-      :boxWidth="'50%'"
-      :is-show-btn-continue="true"
-      :selfFunc="true"
-      @merge="mergeData"
-      @closeAction="closeAction"
+    :type="dialogType"
+    :title="i18n('dialog.editTitle')"
+    v-model="rowDialogVisible"
+    :boxWidth="'50%'"
+    :is-show-btn-continue="true"
+    :selfFunc="true"
+    @merge="mergeData"
+    @closeAction="closeAction"
   >
     <star-horse-form
-        :fieldList="{ fieldList: fieldList }"
-        ref="rowDataFormRef"
+      :fieldList="{ fieldList: fieldList }"
+      ref="rowDataFormRef"
     />
   </star-horse-panel>
   <star-horse-panel
-      :type="dialogType"
-      v-if="!subFlag"
-      :title="i18n('ui.importFile')"
-      v-model="importDialogVisible"
-      :boxWidth="'30%'"
-      :source="3"
-      :selfFunc="true"
-      :draggable="false"
-      @closeAction="importDialogVisible = false"
+    :type="dialogType"
+    v-if="!subFlag"
+    :title="i18n('ui.importFile')"
+    v-model="importDialogVisible"
+    :boxWidth="'30%'"
+    :source="3"
+    :selfFunc="true"
+    :draggable="false"
+    @closeAction="importDialogVisible = false"
   >
     <el-card>
       <el-upload
-          :auto-upload="true"
-          :on-error="uploadError"
-          :on-success="uploadSuccess"
-          :show-file-list="false"
-          accept=".xls,.xlsx"
-          :action="importInfo?.analyzeDataUrl"
-          :headers="{ token: getToken() }"
-          class="upload"
-          name="file"
-          drag
+        :auto-upload="true"
+        :on-error="uploadError"
+        :on-success="uploadSuccess"
+        :show-file-list="false"
+        accept=".xls,.xlsx"
+        :action="importInfo?.analyzeDataUrl"
+        :headers="{ token: getToken() }"
+        class="upload"
+        name="file"
+        drag
       >
         <el-icon class="el-icon--upload">
-          <upload-filled/>
+          <upload-filled />
         </el-icon>
         <div class="el-upload__text">
           {{ i18n("ui.uploadText") }}
@@ -501,19 +512,21 @@ watch(
           <div class="el-upload__tip">
             {{ i18n("ui.uploadTip") }}
             <el-button
-                @click="downloadTemplate"
-                title=""
-                :size="size"
-                link
-                v-if="importInfo?.downloadTemplateUrl"
+              @click="downloadTemplate"
+              title=""
+              :size="size"
+              link
+              v-if="importInfo?.downloadTemplateUrl"
             >
               <star-horse-icon
-                  icon-class="download"
-                  color="var(--star-horse-white)"
-                  size="12px"
+                icon-class="download"
+                color="var(--star-horse-white)"
+                size="12px"
               />
-              <el-tooltip :content="i18n('ui.downloadTemplate')" :trigger="isMobile ? 'click' : 'hover'"
-              >{{ i18n("ui.downloadTemplate") }}
+              <el-tooltip
+                :content="i18n('ui.downloadTemplate')"
+                :trigger="isMobile ? 'click' : 'hover'"
+                >{{ i18n("ui.downloadTemplate") }}
               </el-tooltip>
             </el-button>
           </div>
@@ -524,39 +537,47 @@ watch(
   <div class="form-list">
     <div class="dynamic-tools">
       <div class="flex items-center" v-if="!subFlag">
-        <star-horse-icon icon-class="config" size="14px"/>
+        <star-horse-icon icon-class="config" size="14px" />
         {{ title }}
-        <help v-if="helpMsg" :message="helpMsg" :width="400"/>
+        <help v-if="helpMsg" :message="helpMsg" :width="400" />
       </div>
       <div class="flex items-center">
         <ul class="inner_button" v-if="source != 3">
           <li
-              v-if="importInfo?.analyzeDataUrl && !subFlag"
-              @click="excelOperation"
+            v-if="importInfo?.analyzeDataUrl && !subFlag"
+            @click="excelOperation"
           >
-            <el-tooltip :content="i18n('ui.importExcel')" :trigger="isMobile ? 'click' : 'hover'">
+            <el-tooltip
+              :content="i18n('ui.importExcel')"
+              :trigger="isMobile ? 'click' : 'hover'"
+            >
               <star-horse-icon
-                  icon-class="upload"
-                  color="var(--star-horse-style)"
-                  size="18px"
+                icon-class="upload"
+                color="var(--star-horse-style)"
+                size="18px"
               />
             </el-tooltip>
           </li>
           <li v-if="enableSubNode" @click="expandSubNodes">
-            <el-tooltip :content="i18n(!expandFlag?'ui.expandAll':'ui.collapseAll')"
-                        :trigger="isMobile ? 'click' : 'hover'">
+            <el-tooltip
+              :content="i18n(!expandFlag ? 'ui.expandAll' : 'ui.collapseAll')"
+              :trigger="isMobile ? 'click' : 'hover'"
+            >
               <star-horse-icon
-                  :icon-class="!expandFlag?'expand':'collapse'"
-                  size="22px"
+                :icon-class="!expandFlag ? 'expand' : 'collapse'"
+                size="22px"
               />
             </el-tooltip>
           </li>
           <li @click="clearAll">
-            <el-tooltip :content="i18n('ui.clearList')" :trigger="isMobile ? 'click' : 'hover'">
+            <el-tooltip
+              :content="i18n('ui.clearList')"
+              :trigger="isMobile ? 'click' : 'hover'"
+            >
               <star-horse-icon
-                  icon-class="dustbin"
-                  color="var(--el-color-danger)"
-                  size="18px"
+                icon-class="dustbin"
+                color="var(--el-color-danger)"
+                size="18px"
               />
             </el-tooltip>
           </li>
@@ -564,51 +585,51 @@ watch(
       </div>
     </div>
     <el-table
-        v-loading="loading"
-        :data="dataForm[batchName]"
-        fit
-        border
-        sortable
-        :size="size"
-        :row-key="getRowIdentity"
-        :highlight-current-row="true"
-        :row-class-name="rowClassName"
-        :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
-        ref="starHorseFormListRef"
-        class="sh-columns"
-        :stripe="true"
-        max-height="400px"
-        :header-cell-style="{
+      v-loading="loading"
+      :data="dataForm[batchName]"
+      fit
+      border
+      sortable
+      :size="size"
+      :row-key="getRowIdentity"
+      :highlight-current-row="true"
+      :row-class-name="rowClassName"
+      :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+      ref="starHorseFormListRef"
+      class="sh-columns"
+      :stripe="true"
+      max-height="400px"
+      :header-cell-style="{
         background: '#f2f2f2',
         color: '#707070',
         'font-size': '12px',
         'background-image':
           '-webkit-gradient(linear,left 0,left 100%,from(#f8f8f8),to(#ececec))',
       }"
-        :cell-style="{ 'font-size': '12px' }"
+      :cell-style="{ 'font-size': '12px' }"
     >
       <el-table-column
-          type="selection"
-          fixed="left"
-          width="50"
-          align="center"
-          v-if="showCheckBox"
+        type="selection"
+        fixed="left"
+        width="50"
+        align="center"
+        v-if="showCheckBox"
       />
       <el-table-column
-          :label="i18n('ui.serialNumber')"
-          align="center"
-          prop="xh"
-          width="50"
+        :label="i18n('ui.serialNumber')"
+        align="center"
+        prop="xh"
+        width="50"
       />
       <el-table-column prop="" :label="i18n('ui.sort')" width="60">
         <template #default="scope">
           <el-tag
-              class="move"
-              style="cursor: move"
-              @mousedown="selectData(scope)"
+            class="move"
+            style="cursor: move"
+            @mousedown="selectData(scope)"
           >
             <el-icon style="cursor: move">
-              <Sort/>
+              <Sort />
             </el-icon>
           </el-tag>
         </template>
@@ -617,61 +638,69 @@ watch(
         <template v-if="Array.isArray(item)">
           <template v-for="(temp, skey) in item">
             <UTableColumn
-                :item="temp"
-                :key="compKey(temp, skey)"
-                v-if="temp.listVisible || temp.formVisible"
-                :size="size"
-                :commonFormat="commonFormat"
-                :rules="rules"
-                :source="source"
-                :batchName="batchName"
-                :primaryKey="primaryKey"
-                :staticColumn="staticColumn"
+              :item="temp"
+              :key="compKey(temp, skey)"
+              v-if="temp.listVisible || temp.formVisible"
+              :size="size"
+              :commonFormat="commonFormat"
+              :rules="rules"
+              :source="source"
+              :batchName="batchName"
+              :primaryKey="primaryKey"
+              :staticColumn="staticColumn"
             />
           </template>
         </template>
         <template v-else-if="item.listVisible || item.formVisible">
           <UTableColumn
-              :item="item"
-              :size="size"
-              :rules="rules"
-              :source="source"
-              :commonFormat="commonFormat"
-              :batchName="batchName"
-              :primaryKey="primaryKey"
-              :staticColumn="staticColumn"
+            :item="item"
+            :size="size"
+            :rules="rules"
+            :source="source"
+            :commonFormat="commonFormat"
+            :batchName="batchName"
+            :primaryKey="primaryKey"
+            :staticColumn="staticColumn"
           />
         </template>
       </template>
       <el-table-column
-          fixed="right"
-          :label="i18n('table.operation')"
-          width="100"
+        fixed="right"
+        :label="i18n('table.operation')"
+        width="100"
       >
         <template #default="scope" v-if="source != 3">
           <star-horse-icon
-              icon-class="edit"
-              v-if="staticColumn == 'Y'"
-              @click="scope.row.__isChild ? editSubData(scope.row) : dynamicHandleAddForm(scope.row, 'edit')"
-              :title="i18n('ui.edit')"
+            icon-class="edit"
+            v-if="staticColumn == 'Y'"
+            @click="
+              scope.row.__isChild
+                ? editSubData(scope.row)
+                : dynamicHandleAddForm(scope.row, 'edit')
+            "
+            :title="i18n('ui.edit')"
           />
           <star-horse-icon
-              icon-class="add"
-              v-if="enableSubNode"
-              @click="addSubData(scope.row)"
-              :title="i18n('ui.addSubData')"
+            icon-class="add"
+            v-if="enableSubNode"
+            @click="addSubData(scope.row)"
+            :title="i18n('ui.addSubData')"
           />
           <star-horse-icon
-              icon-class="delete"
-              @click="scope.row.__isChild ? removeSubData(scope.row) : handleAddDetails(scope.row, 2)"
-              :title="i18n('ui.deleteRow')"
-              color="var(--el-color-danger)"
+            icon-class="delete"
+            @click="
+              scope.row.__isChild
+                ? removeSubData(scope.row)
+                : handleAddDetails(scope.row, 2)
+            "
+            :title="i18n('ui.deleteRow')"
+            color="var(--el-color-danger)"
           />
         </template>
       </el-table-column>
     </el-table>
     <div class="add-row" v-if="source != 3" @click="handleAddDetails(null, 1)">
-      <star-horse-icon icon-class="plus" color="var(--star-horse-style)"/>
+      <star-horse-icon icon-class="plus" color="var(--star-horse-style)" />
       {{ staticColumn == "Y" ? i18n("ui.addData") : i18n("ui.addRow") }}
     </div>
   </div>

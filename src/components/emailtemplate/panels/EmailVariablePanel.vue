@@ -1,8 +1,8 @@
 <script setup lang="ts" name="EmailVariablePanel">
-import {i18n} from "@/lang";
-import {ShSvgIcon} from "@/components/shared";
-import type {EmailTemplateDesigner} from "../composables/useEmailTemplateDesigner";
-import {EMAIL_VARIABLE_TYPE_PRESETS} from "../constants";
+import { i18n } from "@/lang";
+import { ShSvgIcon } from "@/components/shared";
+import type { EmailTemplateDesigner } from "../composables/useEmailTemplateDesigner";
+import { EMAIL_VARIABLE_TYPE_PRESETS } from "../constants";
 
 const props = defineProps<{
   designer: EmailTemplateDesigner;
@@ -16,7 +16,7 @@ const emit = defineEmits<{
 }>();
 
 const getTypeLabel = (type: string) =>
-    EMAIL_VARIABLE_TYPE_PRESETS.find((t) => t.value === type)?.label ?? type;
+  EMAIL_VARIABLE_TYPE_PRESETS.find((t) => t.value === type)?.label ?? type;
 </script>
 
 <template>
@@ -24,16 +24,16 @@ const getTypeLabel = (type: string) =>
     <div class="panel-header">
       <span>{{ i18n("emailtemplate.variable.title") }}</span>
       <el-button text :disabled="readonly" @click="emit('add')">
-        <ShSvgIcon name="plus" size="14px"/>
+        <ShSvgIcon name="plus" size="14px" />
       </el-button>
     </div>
     <div class="panel-body">
       <div
-          v-for="v in designer.state.variables"
-          :key="v.id"
-          class="var-item"
-          :class="{ selected: v.id === designer.selectedVariableId }"
-          @click="designer.selectVariable(v.id)"
+        v-for="v in designer.state.variables"
+        :key="v.id"
+        class="var-item"
+        :class="{ selected: v.id === designer.selectedVariableId }"
+        @click="designer.selectVariable(v.id)"
       >
         <div class="var-info">
           <div class="var-label">{{ v.label || v.name }}</div>
@@ -44,13 +44,18 @@ const getTypeLabel = (type: string) =>
         </div>
         <div class="var-actions" v-if="!readonly">
           <el-button text size="small" @click.stop="emit('insert', v.name)">
-            <ShSvgIcon name="plus" size="12px"/>
+            <ShSvgIcon name="plus" size="12px" />
           </el-button>
           <el-button text size="small" @click.stop="emit('edit', v.id)">
-            <ShSvgIcon name="edit" size="12px"/>
+            <ShSvgIcon name="edit" size="12px" />
           </el-button>
-          <el-button text size="small" type="danger" @click.stop="designer.removeVariable(v.id)">
-            <ShSvgIcon name="delete" size="12px"/>
+          <el-button
+            text
+            size="small"
+            type="danger"
+            @click.stop="designer.removeVariable(v.id)"
+          >
+            <ShSvgIcon name="delete" size="12px" />
           </el-button>
         </div>
       </div>

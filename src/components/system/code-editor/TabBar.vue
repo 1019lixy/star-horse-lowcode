@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type {TabInfo} from "./types";
-import {getFileIcon} from "./constants";
-import {computed} from "vue";
+import type { TabInfo } from "./types";
+import { getFileIcon } from "./constants";
+import { computed } from "vue";
 
 const props = defineProps<{
   tabs: TabInfo[];
@@ -30,11 +30,11 @@ const shouldShowPath = (tab: TabInfo) => {
 <template>
   <div class="sh-tabbar">
     <div
-        v-for="tab in tabs"
-        :key="tab.id"
-        class="ide-tab"
-        :class="{ active: tab.id === activeId }"
-        @click="emit('switch', tab.id)"
+      v-for="tab in tabs"
+      :key="tab.id"
+      class="ide-tab"
+      :class="{ active: tab.id === activeId }"
+      @click="emit('switch', tab.id)"
     >
       <span class="tab-icon">{{ getFileIcon(tab.name) }}</span>
       <span class="tab-name">

@@ -4,16 +4,16 @@
  *
  * 网格展示模板缩略图 + 名称 + 描述 + 应用按钮
  */
-import {computed} from "vue";
-import {i18n} from "@/lang";
-import {ElMessage, ElMessageBox} from "element-plus";
-import {DT_SCENE_TEMPLATES} from "../constants";
-import type {DtSceneTemplate} from "../types";
-import {StarHorsePanel} from "@/components/comp";
+import { computed } from "vue";
+import { i18n } from "@/lang";
+import { ElMessage, ElMessageBox } from "element-plus";
+import { DT_SCENE_TEMPLATES } from "../constants";
+import type { DtSceneTemplate } from "../types";
+import { StarHorsePanel } from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
-  dialogType?:"dialog"|"drawer";
+  dialogType?: "dialog" | "drawer";
 }>();
 
 const emit = defineEmits<{
@@ -27,37 +27,45 @@ const innerVisible = computed({
 });
 
 const handleApply = (template: DtSceneTemplate): void => {
-  ElMessageBox.confirm(i18n("digitaltwin.template.confirmApply"), i18n("digitaltwin.template.title"), {
-    type: "warning",
-  })
-      .then(() => {
-        emit("apply-template", template);
-        ElMessage.success(i18n("digitaltwin.message.templateApplied"));
-        innerVisible.value = false;
-      })
-      .catch(() => {
-      });
+  ElMessageBox.confirm(
+    i18n("digitaltwin.template.confirmApply"),
+    i18n("digitaltwin.template.title"),
+    {
+      type: "warning",
+    },
+  )
+    .then(() => {
+      emit("apply-template", template);
+      ElMessage.success(i18n("digitaltwin.message.templateApplied"));
+      innerVisible.value = false;
+    })
+    .catch(() => {});
 };
 </script>
 
 <template>
   <star-horse-panel
-      :type="dialogType"
-      v-model="innerVisible"
-      :title="i18n('digitaltwin.template.title')"
-      box-width="720px"
+    :type="dialogType"
+    v-model="innerVisible"
+    :title="i18n('digitaltwin.template.title')"
+    box-width="720px"
   >
     <div class="template-grid">
       <div
-          v-for="tpl in DT_SCENE_TEMPLATES"
-          :key="tpl.id"
-          class="template-card"
+        v-for="tpl in DT_SCENE_TEMPLATES"
+        :key="tpl.id"
+        class="template-card"
       >
-        <div class="thumbnail" v-html="tpl.thumbnail ?? '<div class=placeholder></div>'"/>
+        <div
+          class="thumbnail"
+          v-html="tpl.thumbnail ?? '<div class=placeholder></div>'"
+        />
         <div class="info">
           <div class="name">{{ i18n(tpl.labelKey as any) }}</div>
           <div class="desc">{{ i18n(tpl.descKey as any) }}</div>
-          <div class="meta">{{ tpl.entities.length }} {{ i18n("digitaltwin.entity.title") }}</div>
+          <div class="meta">
+            {{ tpl.entities.length }} {{ i18n("digitaltwin.entity.title") }}
+          </div>
         </div>
         <el-button type="primary" size="small" @click="handleApply(tpl)">
           {{ i18n("digitaltwin.template.apply") }}
@@ -65,7 +73,9 @@ const handleApply = (template: DtSceneTemplate): void => {
       </div>
     </div>
     <template #footer>
-      <el-button @click="innerVisible = false">{{ i18n("digitaltwin.dialog.close") }}</el-button>
+      <el-button @click="innerVisible = false">{{
+        i18n("digitaltwin.dialog.close")
+      }}</el-button>
     </template>
   </star-horse-panel>
 </template>

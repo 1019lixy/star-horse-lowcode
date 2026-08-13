@@ -8,11 +8,11 @@
  * - 进度条 + 当前航点高亮
  * - 工具栏：新建/导入/导出路径
  */
-import {computed} from "vue";
-import {i18n} from "@/lang";
-import {ShSvgIcon} from "@/components/shared";
-import type {UseDtCruiseReturn} from "../composables/useDtCruise";
-import type {DtCruisePath} from "../types";
+import { computed } from "vue";
+import { i18n } from "@/lang";
+import { ShSvgIcon } from "@/components/shared";
+import type { UseDtCruiseReturn } from "../composables/useDtCruise";
+import type { DtCruisePath } from "../types";
 
 const props = defineProps<{
   cruise: UseDtCruiseReturn;
@@ -58,16 +58,16 @@ const handleJump = (pathId: string, idx: number, ev: Event): void => {
 <template>
   <div class="dt-cruise-panel" :class="{ floating }">
     <div class="panel-header">
-            <span class="panel-title">
-                <ShSvgIcon name="route"/>
-                {{ i18n("digitaltwin.cruise.title") }}
-            </span>
-      <div style="flex:1"/>
+      <span class="panel-title">
+        <ShSvgIcon name="route" />
+        {{ i18n("digitaltwin.cruise.title") }}
+      </span>
+      <div style="flex: 1" />
       <el-button text size="small" @click="emit('create-path')">
-        <ShSvgIcon name="plus"/>
+        <ShSvgIcon name="plus" />
       </el-button>
       <el-button text size="small" @click="emit('close')">
-        <ShSvgIcon name="close"/>
+        <ShSvgIcon name="close" />
       </el-button>
     </div>
 
@@ -75,18 +75,28 @@ const handleJump = (pathId: string, idx: number, ev: Event): void => {
     <div v-if="currentPath" class="current-cruise">
       <div class="cruise-info">
         <span class="path-name">{{ currentPath.name }}</span>
-        <span class="wp-progress">
-                    {{ currentIndex + 1 }} / {{ total }}
-                </span>
+        <span class="wp-progress"> {{ currentIndex + 1 }} / {{ total }} </span>
       </div>
-      <el-progress :percentage="Math.round(progress * 100)" :stroke-width="4" :show-text="false"/>
+      <el-progress
+        :percentage="Math.round(progress * 100)"
+        :stroke-width="4"
+        :show-text="false"
+      />
       <div class="cruise-actions">
-        <el-button size="small" :type="isCruising ? 'warning' : 'success'" @click="handleToggle">
-          <ShSvgIcon :name="isCruising ? 'videoPause' : 'videoPlay'"/>
-          {{ isCruising ? i18n("digitaltwin.cruise.pause") : i18n("digitaltwin.cruise.resume") }}
+        <el-button
+          size="small"
+          :type="isCruising ? 'warning' : 'success'"
+          @click="handleToggle"
+        >
+          <ShSvgIcon :name="isCruising ? 'videoPause' : 'videoPlay'" />
+          {{
+            isCruising
+              ? i18n("digitaltwin.cruise.pause")
+              : i18n("digitaltwin.cruise.resume")
+          }}
         </el-button>
         <el-button size="small" @click="handleStop">
-          <ShSvgIcon name="videoPause"/>
+          <ShSvgIcon name="videoPause" />
           {{ i18n("digitaltwin.cruise.stop") }}
         </el-button>
       </div>
@@ -97,27 +107,36 @@ const handleJump = (pathId: string, idx: number, ev: Event): void => {
         {{ i18n("digitaltwin.cruise.empty") }}
       </div>
       <div
-          v-for="p in availablePaths"
-          :key="p.id"
-          class="path-card"
-          :class="{ active: currentPath?.id === p.id }"
-          @click="handleSelect(p)"
+        v-for="p in availablePaths"
+        :key="p.id"
+        class="path-card"
+        :class="{ active: currentPath?.id === p.id }"
+        @click="handleSelect(p)"
       >
         <div class="path-header">
-          <ShSvgIcon name="route"/>
+          <ShSvgIcon name="route" />
           <span class="path-name">{{ p.name }}</span>
           <el-tag size="small" :type="p.loop ? 'success' : 'info'">
-            {{ p.loop ? i18n("digitaltwin.cruise.loop") : i18n("digitaltwin.cruise.once") }}
+            {{
+              p.loop
+                ? i18n("digitaltwin.cruise.loop")
+                : i18n("digitaltwin.cruise.once")
+            }}
           </el-tag>
-          <span class="waypoint-count">{{ p.waypoints.length }} {{ i18n("digitaltwin.cruise.waypoints") }}</span>
+          <span class="waypoint-count"
+            >{{ p.waypoints.length }}
+            {{ i18n("digitaltwin.cruise.waypoints") }}</span
+          >
         </div>
         <div class="waypoint-list">
           <div
-              v-for="(wp, idx) in p.waypoints"
-              :key="wp.id"
-              class="waypoint-item"
-              :class="{ current: currentPath?.id === p.id && idx === currentIndex }"
-              @click="handleJump(p.id, idx, $event)"
+            v-for="(wp, idx) in p.waypoints"
+            :key="wp.id"
+            class="waypoint-item"
+            :class="{
+              current: currentPath?.id === p.id && idx === currentIndex,
+            }"
+            @click="handleJump(p.id, idx, $event)"
           >
             <span class="wp-index">{{ idx + 1 }}</span>
             <span class="wp-name">{{ wp.name }}</span>

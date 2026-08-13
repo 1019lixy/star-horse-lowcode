@@ -4,11 +4,11 @@
  * 职责：渲染纸张、元素拖拽/选中、标尺、网格
  * 不处理属性编辑（由 PrintPropertyPanel 负责）
  */
-import {computed, ref} from "vue";
-import {i18n} from "@/lang";
-import {MM_TO_PX} from "../constants";
-import type {PrintElement} from "../types";
-import type {UsePrintDesignerReturn} from "../composables/usePrintDesigner";
+import { computed, ref } from "vue";
+import { i18n } from "@/lang";
+import { MM_TO_PX } from "../constants";
+import type { PrintElement } from "../types";
+import type { UsePrintDesignerReturn } from "../composables/usePrintDesigner";
 
 const props = defineProps<{
   designer: UsePrintDesignerReturn;
@@ -22,9 +22,15 @@ const zoom = computed(() => props.designer.state.zoom);
 const selectedIds = computed(() => props.designer.state.selectedIds);
 
 const paperWidthPx = computed(() => paper.value.width * MM_TO_PX * zoom.value);
-const paperHeightPx = computed(() => paper.value.height * MM_TO_PX * zoom.value);
-const marginTopPx = computed(() => paper.value.margin[0] * MM_TO_PX * zoom.value);
-const marginLeftPx = computed(() => paper.value.margin[3] * MM_TO_PX * zoom.value);
+const paperHeightPx = computed(
+  () => paper.value.height * MM_TO_PX * zoom.value,
+);
+const marginTopPx = computed(
+  () => paper.value.margin[0] * MM_TO_PX * zoom.value,
+);
+const marginLeftPx = computed(
+  () => paper.value.margin[3] * MM_TO_PX * zoom.value,
+);
 
 const elementStyle = (el: PrintElement) => {
   return {
@@ -54,8 +60,10 @@ const handleDrop = (e: DragEvent) => {
   const type = e.dataTransfer?.getData("print-element-type");
   if (!type || !canvasRef.value) return;
   const rect = canvasRef.value.getBoundingClientRect();
-  const x = (e.clientX - rect.left - marginLeftPx.value) / (MM_TO_PX * zoom.value);
-  const y = (e.clientY - rect.top - marginTopPx.value) / (MM_TO_PX * zoom.value);
+  const x =
+    (e.clientX - rect.left - marginLeftPx.value) / (MM_TO_PX * zoom.value);
+  const y =
+    (e.clientY - rect.top - marginTopPx.value) / (MM_TO_PX * zoom.value);
   props.designer.addElement(type, {
     x: props.designer.snapValue(Math.max(0, x)),
     y: props.designer.snapValue(Math.max(0, y)),
@@ -68,7 +76,13 @@ const handleDragOver = (e: DragEvent) => {
 };
 
 // 拖动元素
-const dragging = ref<{ id: string; startX: number; startY: number; origX: number; origY: number } | null>(null);
+const dragging = ref<{
+  id: string;
+  startX: number;
+  startY: number;
+  origX: number;
+  origY: number;
+} | null>(null);
 
 const startDrag = (e: MouseEvent, el: PrintElement) => {
   if (props.designer.state.readonly || el.locked) return;
@@ -92,7 +106,7 @@ const onMouseMove = (e: MouseEvent) => {
   const dy = (e.clientY - dragging.value.startY) / (MM_TO_PX * zoom.value);
   const newX = props.designer.snapValue(dragging.value.origX + dx);
   const newY = props.designer.snapValue(dragging.value.origY + dy);
-  props.designer.updateElement(dragging.value.id, {x: newX, y: newY});
+  props.designer.updateElement(dragging.value.id, { x: newX, y: newY });
 };
 
 const onMouseUp = () => {
@@ -145,10 +159,10 @@ const elementContent = (el: PrintElement): string => {
     <div class="ruler ruler-h" v-if="designer.state.showRuler">
       <div class="ruler-inner" :style="{ width: paperWidthPx + 'px' }">
         <div
-            v-for="tick in rulerTicks"
-            :key="tick.label"
-            class="ruler-tick"
-            :style="{ left: tick.pos + 'px' }"
+          v-for="tick in rulerTicks"
+          :key="tick.label"
+          class="ruler-tick"
+          :style="{ left: tick.pos + 'px' }"
         >
           <span class="ruler-label">{{ tick.label }}</span>
         </div>
@@ -158,10 +172,10 @@ const elementContent = (el: PrintElement): string => {
     <div class="ruler ruler-v" v-if="designer.state.showRuler">
       <div class="ruler-inner" :style="{ height: paperHeightPx + 'px' }">
         <div
-            v-for="tick in rulerTicks"
-            :key="tick.label"
-            class="ruler-tick"
-            :style="{ top: tick.pos + 'px' }"
+          v-for="tick in rulerTicks"
+          :key="tick.label"
+          class="ruler-tick"
+          :style="{ top: tick.pos + 'px' }"
         >
           <span class="ruler-label">{{ tick.label }}</span>
         </div>
@@ -172,43 +186,40 @@ const elementContent = (el: PrintElement): string => {
       <div class="canvas-inner" :style="{ padding: '20px' }">
         <!-- 纸张容器 -->
         <div
-            class="paper"
-            :style="{
-                        width: paperWidthPx + 'px',
-                        height: paperHeightPx + 'px',
-                        paddingTop: marginTopPx + 'px',
-                        paddingLeft: marginLeftPx + 'px',
-                    }"
-            @drop="handleDrop"
-            @dragover="handleDragOver"
+          class="paper"
+          :style="{
+            width: paperWidthPx + 'px',
+            height: paperHeightPx + 'px',
+            paddingTop: marginTopPx + 'px',
+            paddingLeft: marginLeftPx + 'px',
+          }"
+          @drop="handleDrop"
+          @dragover="handleDragOver"
         >
           <!-- 网格背景 -->
           <div
-              v-if="designer.state.showGrid"
-              class="grid-bg"
-              :style="{
-                            backgroundSize: gridSizePx + 'px ' + gridSizePx + 'px',
-                        }"
+            v-if="designer.state.showGrid"
+            class="grid-bg"
+            :style="{
+              backgroundSize: gridSizePx + 'px ' + gridSizePx + 'px',
+            }"
           ></div>
 
           <!-- 可绘制区域 -->
           <div class="content-area">
             <div
-                v-for="el in elements"
-                :key="el.id"
-                class="print-element"
-                :class="{
-                                selected: isSelected(el),
-                                locked: el.locked,
-                            }"
-                :style="elementStyle(el)"
-                @click="(e) => handleClick(e, el)"
-                @mousedown="(e) => startDrag(e, el)"
+              v-for="el in elements"
+              :key="el.id"
+              class="print-element"
+              :class="{
+                selected: isSelected(el),
+                locked: el.locked,
+              }"
+              :style="elementStyle(el)"
+              @click="(e) => handleClick(e, el)"
+              @mousedown="(e) => startDrag(e, el)"
             >
-              <component
-                  :is="el.type + '-preview'"
-                  v-if="false"
-              />
+              <component :is="el.type + '-preview'" v-if="false" />
               <div class="element-content">
                 {{ elementContent(el) }}
               </div>
@@ -229,7 +240,11 @@ const elementContent = (el: PrintElement): string => {
           <!-- 纸张信息 -->
           <div class="paper-info">
             {{ paper.width }}mm × {{ paper.height }}mm ·
-            {{ paper.orientation === 'portrait' ? i18n('print.paper.portrait') : i18n('print.paper.landscape') }}
+            {{
+              paper.orientation === "portrait"
+                ? i18n("print.paper.portrait")
+                : i18n("print.paper.landscape")
+            }}
           </div>
         </div>
       </div>
@@ -243,7 +258,7 @@ const elementContent = (el: PrintElement): string => {
   display: flex;
   position: relative;
   overflow: hidden;
-  background: #E0E0E0;
+  background: #e0e0e0;
 }
 
 .ruler {
@@ -316,7 +331,7 @@ const elementContent = (el: PrintElement): string => {
 
 .paper {
   position: relative;
-  background: #FFFFFF;
+  background: #ffffff;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
   flex-shrink: 0;
   box-sizing: border-box;
@@ -327,8 +342,9 @@ const elementContent = (el: PrintElement): string => {
     left: 0;
     right: 0;
     bottom: 0;
-    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+    background-image:
+      linear-gradient(to right, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
     pointer-events: none;
   }
 
@@ -379,7 +395,7 @@ const elementContent = (el: PrintElement): string => {
       width: 8px;
       height: 8px;
       background: var(--el-color-primary);
-      border: 1px solid #FFFFFF;
+      border: 1px solid #ffffff;
       border-radius: 50%;
       z-index: 1;
     }

@@ -1,8 +1,8 @@
 <template>
   <div
-      class="screen-title"
-      :class="`style-${styleType}`"
-      :style="{
+    class="screen-title"
+    :class="`style-${styleType}`"
+    :style="{
       width: width,
       '--main-color': mainColor,
       '--container-radius': containerRadius + 'px',
@@ -15,11 +15,11 @@
     <!-- 完全使用SVG实现双拼色背景和S形过渡 -->
     <svg class="bg-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
       <!-- 左侧背景 -->
-      <rect x="0" y="0" width="100" height="100" fill="var(--bg-color-left)"/>
+      <rect x="0" y="0" width="100" height="100" fill="var(--bg-color-left)" />
       <!-- 右侧背景 + Z字去角曲线过渡 -->
       <path
-          :d="`M${arcPosition} 0 C${arcPosition + 40} 0, ${arcPosition + 20} 40, ${arcPosition + 50} 50 C${arcPosition + 20} 60, ${arcPosition + 40} 100, ${arcPosition} 100 L100 100 L100 0 Z`"
-          fill="var(--bg-color-right)"
+        :d="`M${arcPosition} 0 C${arcPosition + 40} 0, ${arcPosition + 20} 40, ${arcPosition + 50} 50 C${arcPosition + 20} 60, ${arcPosition + 40} 100, ${arcPosition} 100 L100 100 L100 0 Z`"
+        fill="var(--bg-color-right)"
       />
     </svg>
 
@@ -33,105 +33,105 @@
     <div class="decor-right">
       <!-- 样式1：科技光效条 -->
       <svg
-          v-if="styleType === 'tech'"
-          class="tech-svg"
-          viewBox="0 0 100 40"
-          preserveAspectRatio="none"
+        v-if="styleType === 'tech'"
+        class="tech-svg"
+        viewBox="0 0 100 40"
+        preserveAspectRatio="none"
       >
         <defs>
           <linearGradient id="techGrad" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop
-                offset="0%"
-                stop-color="var(--main-color)"
-                stop-opacity="0.8"
+              offset="0%"
+              stop-color="var(--main-color)"
+              stop-opacity="0.8"
             />
             <stop
-                offset="100%"
-                stop-color="var(--main-color)"
-                stop-opacity="0"
+              offset="100%"
+              stop-color="var(--main-color)"
+              stop-opacity="0"
             />
           </linearGradient>
           <pattern
-              id="dashPattern"
-              width="10"
-              height="40"
-              patternUnits="userSpaceOnUse"
+            id="dashPattern"
+            width="10"
+            height="40"
+            patternUnits="userSpaceOnUse"
           >
             <rect
-                x="0"
-                y="0"
-                width="5"
-                height="40"
-                fill="rgba(255,255,255,0.2)"
+              x="0"
+              y="0"
+              width="5"
+              height="40"
+              fill="rgba(255,255,255,0.2)"
             />
           </pattern>
         </defs>
-        <rect x="0" y="10" width="80" height="2" fill="url(#techGrad)"/>
+        <rect x="0" y="10" width="80" height="2" fill="url(#techGrad)" />
         <rect x="20" y="18" width="60" height="4" fill="url(#dashPattern)">
           <animateTransform
-              attributeName="transform"
-              type="translate"
-              from="0 0"
-              to="10 0"
-              dur="3s"
-              repeatCount="indefinite"
+            attributeName="transform"
+            type="translate"
+            from="0 0"
+            to="10 0"
+            dur="3s"
+            repeatCount="indefinite"
           />
         </rect>
       </svg>
       <!-- 样式2：几何菱形 -->
       <svg
-          v-if="styleType === 'geometry'"
-          class="geo-svg"
-          viewBox="0 0 60 40"
-          preserveAspectRatio="none"
+        v-if="styleType === 'geometry'"
+        class="geo-svg"
+        viewBox="0 0 60 40"
+        preserveAspectRatio="none"
       >
         <polygon
-            points="0 20, 10 10, 20 20, 10 30"
-            fill="var(--main-color)"
-            opacity="0.7"
+          points="0 20, 10 10, 20 20, 10 30"
+          fill="var(--main-color)"
+          opacity="0.7"
         >
           <animate
-              attributeName="opacity"
-              values="0.7;0.3;0.7"
-              dur="2s"
-              repeatCount="indefinite"
+            attributeName="opacity"
+            values="0.7;0.3;0.7"
+            dur="2s"
+            repeatCount="indefinite"
           />
         </polygon>
         <polygon
-            points="30 20, 40 10, 50 20, 40 30"
-            fill="var(--main-color)"
-            opacity="0.5"
+          points="30 20, 40 10, 50 20, 40 30"
+          fill="var(--main-color)"
+          opacity="0.5"
         >
           <animate
-              attributeName="opacity"
-              values="0.5;0.2;0.5"
-              dur="2.5s"
-              repeatCount="indefinite"
+            attributeName="opacity"
+            values="0.5;0.2;0.5"
+            dur="2.5s"
+            repeatCount="indefinite"
           />
         </polygon>
       </svg>
       <!-- 样式3：动态粒子 -->
       <svg
-          v-if="styleType === 'particle'"
-          class="particle-svg"
-          viewBox="0 0 80 40"
-          preserveAspectRatio="none"
+        v-if="styleType === 'particle'"
+        class="particle-svg"
+        viewBox="0 0 80 40"
+        preserveAspectRatio="none"
       >
         <circle
-            v-for="i in 8"
-            :key="i"
-            cx="0"
-            cy="20"
-            r="1"
-            fill="var(--main-color)"
-            :transform="`translate(${i * 10}, 0)`"
+          v-for="i in 8"
+          :key="i"
+          cx="0"
+          cy="20"
+          r="1"
+          fill="var(--main-color)"
+          :transform="`translate(${i * 10}, 0)`"
         >
           <animate
-              attributeName="r"
-              values="1;2;1"
-              dur="1.5s"
-              :delay="`${i * 0.2}s`"
-              repeatCount="indefinite"
+            attributeName="r"
+            values="1;2;1"
+            dur="1.5s"
+            :delay="`${i * 0.2}s`"
+            repeatCount="indefinite"
           />
         </circle>
       </svg>
@@ -140,7 +140,7 @@
 </template>
 
 <script setup>
-import {defineProps} from "vue";
+import { defineProps } from "vue";
 
 // 外部配置参数
 const props = defineProps({

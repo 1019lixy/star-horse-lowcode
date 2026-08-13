@@ -4,10 +4,10 @@
  *
  * 当前上下文（类型 + 名称 + 字段列表）+ 动作建议列表
  */
-import {computed} from "vue";
-import {i18n} from "@/lang";
-import {aiGetActionTypePreset, aiGetContextTypePreset} from "../constants";
-import type {AiAction, AiContext} from "../types";
+import { computed } from "vue";
+import { i18n } from "@/lang";
+import { aiGetActionTypePreset, aiGetContextTypePreset } from "../constants";
+import type { AiAction, AiContext } from "../types";
 
 const props = defineProps<{
   context: AiContext | null;
@@ -56,18 +56,15 @@ const actionTypeLabel = (action: AiAction): string => {
           <span class="info-value">{{ context.name || "-" }}</span>
         </div>
         <div v-if="context.selectedName" class="info-row">
-          <span class="info-label">{{ i18n("aicopilot.context.component") }}：</span>
+          <span class="info-label"
+            >{{ i18n("aicopilot.context.component") }}：</span
+          >
           <span class="info-value">{{ context.selectedName }}</span>
         </div>
         <div v-if="context.fields && context.fields.length" class="info-fields">
           <div class="info-label">{{ i18n("aicopilot.context.fields") }}：</div>
           <div class="field-list">
-            <el-tag
-                v-for="f in context.fields"
-                :key="f.name"
-
-                class="field-tag"
-            >
+            <el-tag v-for="f in context.fields" :key="f.name" class="field-tag">
               {{ f.label || f.name }}
               <span v-if="f.required" class="required">*</span>
             </el-tag>
@@ -77,7 +74,7 @@ const actionTypeLabel = (action: AiAction): string => {
       <div v-else class="empty-tip">{{ i18n("aicopilot.context.empty") }}</div>
     </div>
 
-    <el-divider/>
+    <el-divider />
 
     <!-- 动作建议 -->
     <div class="panel-section action-section">
@@ -87,10 +84,10 @@ const actionTypeLabel = (action: AiAction): string => {
       </div>
       <div v-else class="action-list">
         <div
-            v-for="action in actions"
-            :key="action.id"
-            class="action-item"
-            :class="{ applied: action.applied }"
+          v-for="action in actions"
+          :key="action.id"
+          class="action-item"
+          :class="{ applied: action.applied }"
         >
           <div class="action-header">
             <el-tag type="warning">{{ actionTypeLabel(action) }}</el-tag>

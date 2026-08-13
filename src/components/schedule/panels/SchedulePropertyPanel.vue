@@ -1,8 +1,11 @@
 <script setup lang="ts" name="SchedulePropertyPanel">
-import {computed} from "vue";
-import {i18n} from "@/lang";
-import type {ScheduleDesigner} from "../composables/useScheduleDesigner";
-import {SCHEDULE_EVENT_TYPE_PRESETS, SCHEDULE_RESOURCE_TYPE_PRESETS,} from "../constants";
+import { computed } from "vue";
+import { i18n } from "@/lang";
+import type { ScheduleDesigner } from "../composables/useScheduleDesigner";
+import {
+  SCHEDULE_EVENT_TYPE_PRESETS,
+  SCHEDULE_RESOURCE_TYPE_PRESETS,
+} from "../constants";
 
 const props = defineProps<{
   designer: ScheduleDesigner;
@@ -26,15 +29,15 @@ const resourceData = computed(() => props.designer.selectedResource.value);
     <div class="panel-body" v-if="formData">
       <el-form label-width="80px" :disabled="readonly">
         <el-form-item :label="i18n('schedule.event.title')">
-          <el-input v-model="formData.title"/>
+          <el-input v-model="formData.title" />
         </el-form-item>
         <el-form-item :label="i18n('schedule.event.type')">
           <el-select v-model="formData.type" style="width: 100%">
             <el-option
-                v-for="t in SCHEDULE_EVENT_TYPE_PRESETS"
-                :key="t.value"
-                :label="t.label"
-                :value="t.value"
+              v-for="t in SCHEDULE_EVENT_TYPE_PRESETS"
+              :key="t.value"
+              :label="t.label"
+              :value="t.value"
             >
               <span :style="{ color: t.color }">●</span>
               {{ t.label }}
@@ -43,41 +46,41 @@ const resourceData = computed(() => props.designer.selectedResource.value);
         </el-form-item>
         <el-form-item :label="i18n('schedule.event.startTime')">
           <el-date-picker
-              v-model="formData.startTime"
-              type="datetime"
-              value-format="YYYY-MM-DDTHH:mm:ss.000Z"
-              style="width: 100%"
+            v-model="formData.startTime"
+            type="datetime"
+            value-format="YYYY-MM-DDTHH:mm:ss.000Z"
+            style="width: 100%"
           />
         </el-form-item>
         <el-form-item :label="i18n('schedule.event.endTime')">
           <el-date-picker
-              v-model="formData.endTime"
-              type="datetime"
-              value-format="YYYY-MM-DDTHH:mm:ss.000Z"
-              style="width: 100%"
+            v-model="formData.endTime"
+            type="datetime"
+            value-format="YYYY-MM-DDTHH:mm:ss.000Z"
+            style="width: 100%"
           />
         </el-form-item>
         <el-form-item :label="i18n('schedule.event.resource')">
           <el-select v-model="formData.resourceId" style="width: 100%">
             <el-option
-                v-for="r in designer.sortedResources.value"
-                :key="r.id"
-                :label="r.name"
-                :value="r.id"
+              v-for="r in designer.sortedResources.value"
+              :key="r.id"
+              :label="r.name"
+              :value="r.id"
             />
           </el-select>
         </el-form-item>
         <el-form-item :label="i18n('schedule.event.allDay')">
-          <el-switch v-model="formData.allDay"/>
+          <el-switch v-model="formData.allDay" />
         </el-form-item>
         <el-form-item :label="i18n('schedule.event.location')">
-          <el-input v-model="formData.location"/>
+          <el-input v-model="formData.location" />
         </el-form-item>
         <el-form-item :label="i18n('schedule.event.description')">
-          <el-input v-model="formData.description" type="textarea" :rows="3"/>
+          <el-input v-model="formData.description" type="textarea" :rows="3" />
         </el-form-item>
         <el-form-item :label="i18n('schedule.event.remark')">
-          <el-input v-model="formData.remark" type="textarea" :rows="2"/>
+          <el-input v-model="formData.remark" type="textarea" :rows="2" />
         </el-form-item>
       </el-form>
     </div>
@@ -86,33 +89,33 @@ const resourceData = computed(() => props.designer.selectedResource.value);
     <div class="panel-body" v-else-if="resourceData">
       <el-form label-width="80px" :disabled="readonly">
         <el-form-item :label="i18n('schedule.resource.name')">
-          <el-input v-model="resourceData.name"/>
+          <el-input v-model="resourceData.name" />
         </el-form-item>
         <el-form-item :label="i18n('schedule.resource.type')">
           <el-select v-model="resourceData.type" style="width: 100%">
             <el-option
-                v-for="t in SCHEDULE_RESOURCE_TYPE_PRESETS"
-                :key="t.value"
-                :label="t.label"
-                :value="t.value"
+              v-for="t in SCHEDULE_RESOURCE_TYPE_PRESETS"
+              :key="t.value"
+              :label="t.label"
+              :value="t.value"
             />
           </el-select>
         </el-form-item>
         <el-form-item :label="i18n('schedule.resource.color')">
-          <el-color-picker v-model="resourceData.color"/>
+          <el-color-picker v-model="resourceData.color" />
         </el-form-item>
         <el-form-item :label="i18n('schedule.resource.avatar')">
-          <el-input v-model="resourceData.avatar"/>
+          <el-input v-model="resourceData.avatar" />
         </el-form-item>
         <el-form-item :label="i18n('schedule.resource.enabled')">
-          <el-switch v-model="resourceData.enabled"/>
+          <el-switch v-model="resourceData.enabled" />
         </el-form-item>
       </el-form>
     </div>
 
     <!-- 无选中 -->
     <div class="panel-empty" v-else>
-      <el-empty :description="i18n('schedule.property.empty')"/>
+      <el-empty :description="i18n('schedule.property.empty')" />
     </div>
   </div>
 </template>

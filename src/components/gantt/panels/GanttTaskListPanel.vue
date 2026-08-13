@@ -1,8 +1,8 @@
 <script setup lang="ts" name="GanttTaskListPanel">
-import {computed, ref, watch} from "vue";
-import {i18n} from "@/lang";
-import type {GanttDesigner} from "../composables/useGanttDesigner";
-import {daysBetween} from "../utils/GanttDateUtils";
+import { computed, ref, watch } from "vue";
+import { i18n } from "@/lang";
+import type { GanttDesigner } from "../composables/useGanttDesigner";
+import { daysBetween } from "../utils/GanttDateUtils";
 
 const props = defineProps<{
   designer: GanttDesigner;
@@ -66,8 +66,8 @@ const handleDrop = (e: DragEvent, targetId: string) => {
   e.preventDefault();
   const sourceId = dragTaskId.value;
   if (!sourceId || sourceId === targetId) return;
-  const source = props.designer.state.tasks.find(t => t.id === sourceId);
-  const target = props.designer.state.tasks.find(t => t.id === targetId);
+  const source = props.designer.state.tasks.find((t) => t.id === sourceId);
+  const target = props.designer.state.tasks.find((t) => t.id === targetId);
   if (!source || !target) return;
   if (source.parentId !== target.parentId) return; // 只允许同级拖拽
   const tempOrder = source.order;
@@ -83,24 +83,28 @@ const handleDragEnd = () => {
 };
 
 /** 暴露滚动元素供 GanttChart 同步 */
-defineExpose({listScrollRef});
+defineExpose({ listScrollRef });
 
 /** 监听选中任务，自动滚动到可见区域 */
-watch(() => props.designer.selectedTaskId.value, (id) => {
-  if (!id) return;
-  const idx = flatTasks.value.findIndex(t => t.id === id);
-  if (idx < 0) return;
-  const container = listScrollRef.value;
-  if (!container) return;
-  const rowY = idx * rowHeight.value;
-  const headerHeight = 56; // 表头高度
-  const scrollTop = container.scrollTop;
-  const viewHeight = container.clientHeight - headerHeight;
-  const relativeY = rowY - (scrollTop - headerHeight);
-  if (relativeY < 0 || relativeY > viewHeight - rowHeight.value) {
-    container.scrollTop = rowY - viewHeight / 2 + rowHeight.value / 2 + headerHeight;
-  }
-});
+watch(
+  () => props.designer.selectedTaskId.value,
+  (id) => {
+    if (!id) return;
+    const idx = flatTasks.value.findIndex((t) => t.id === id);
+    if (idx < 0) return;
+    const container = listScrollRef.value;
+    if (!container) return;
+    const rowY = idx * rowHeight.value;
+    const headerHeight = 56; // 表头高度
+    const scrollTop = container.scrollTop;
+    const viewHeight = container.clientHeight - headerHeight;
+    const relativeY = rowY - (scrollTop - headerHeight);
+    if (relativeY < 0 || relativeY > viewHeight - rowHeight.value) {
+      container.scrollTop =
+        rowY - viewHeight / 2 + rowHeight.value / 2 + headerHeight;
+    }
+  },
+);
 </script>
 
 <template>
@@ -109,43 +113,63 @@ watch(() => props.designer.selectedTaskId.value, (id) => {
     <div class="list-header">
       <div class="header-cell cell-index">#</div>
       <div class="header-cell cell-name">{{ i18n("gantt.task.name") }}</div>
-      <div class="header-cell cell-assignee">{{ i18n("gantt.task.assignee") }}</div>
+      <div class="header-cell cell-assignee">
+        {{ i18n("gantt.task.assignee") }}
+      </div>
       <div class="header-cell cell-date">{{ i18n("print.field.date") }}</div>
-      <div class="header-cell cell-duration">{{ i18n("gantt.task.workHours") }}</div>
+      <div class="header-cell cell-duration">
+        {{ i18n("gantt.task.workHours") }}
+      </div>
     </div>
     <!-- 行列表 -->
     <div class="list-scroll" ref="listScrollRef">
       <div
-          v-for="(task, idx) in flatTasks"
-          :key="task.id"
-          class="list-row"
-          :class="{
-                    selected: task.id === selectedTaskId,
-                    'row-even': idx % 2 === 0,
-                    'row-odd': idx % 2 !== 0,
-                    dragging: task.id === dragTaskId,
-                    'drag-over': task.id === dragOverTaskId
-                }"
-          :style="{ height: `${rowHeight}px` }"
-          draggable="true"
-          @click="handleRowClick(task.id)"
-          @dblclick="handleRowDblClick(task.id)"
-          @dragstart="(e) => handleDragStart(e, task.id)"
-          @dragover="(e) => handleDragOver(e, task.id)"
-          @dragleave="handleDragLeave"
-          @drop="(e) => handleDrop(e, task.id)"
-          @dragend="handleDragEnd"
+        v-for="(task, idx) in flatTasks"
+        :key="task.id"
+        class="list-row"
+        :class="{
+          selected: task.id === selectedTaskId,
+          'row-even': idx % 2 === 0,
+          'row-odd': idx % 2 !== 0,
+          dragging: task.id === dragTaskId,
+          'drag-over': task.id === dragOverTaskId,
+        }"
+        :style="{ height: `${rowHeight}px` }"
+        draggable="true"
+        @click="handleRowClick(task.id)"
+        @dblclick="handleRowDblClick(task.id)"
+        @dragstart="(e) => handleDragStart(e, task.id)"
+        @dragover="(e) => handleDragOver(e, task.id)"
+        @dragleave="handleDragLeave"
+        @drop="(e) => handleDrop(e, task.id)"
+        @dragend="handleDragEnd"
       >
         <div class="row-cell cell-index">{{ idx + 1 }}</div>
-        <div class="row-cell cell-name" :style="{ paddingLeft: `${task.level * 16 + 8}px` }">
+        <div
+          class="row-cell cell-name"
+          :style="{ paddingLeft: `${task.level * 16 + 8}px` }"
+        >
           <span class="tree-indent" v-if="task.level > 0">└ </span>
-          <svg v-if="task.isMilestone" class="milestone-icon" viewBox="0 0 16 16" width="14" height="14">
-            <path d="M8 1L15 8L8 15L1 8Z" fill="#E6A23C" stroke="#C88520" stroke-width="1"/>
+          <svg
+            v-if="task.isMilestone"
+            class="milestone-icon"
+            viewBox="0 0 16 16"
+            width="14"
+            height="14"
+          >
+            <path
+              d="M8 1L15 8L8 15L1 8Z"
+              fill="#E6A23C"
+              stroke="#C88520"
+              stroke-width="1"
+            />
           </svg>
           <span class="task-name-text">{{ task.name }}</span>
         </div>
         <div class="row-cell cell-assignee">{{ task.assignee }}</div>
-        <div class="row-cell cell-date">{{ shortDate(task.startDate) + ' To ' + shortDate(task.endDate) }}</div>
+        <div class="row-cell cell-date">
+          {{ shortDate(task.startDate) + " To " + shortDate(task.endDate) }}
+        </div>
         <div class="row-cell cell-duration">{{ getDuration(task) }}天</div>
       </div>
     </div>

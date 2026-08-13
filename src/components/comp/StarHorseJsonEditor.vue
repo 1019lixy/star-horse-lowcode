@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import {computed, onBeforeUnmount, onMounted, PropType, ref,} from "vue";
+import { computed, onBeforeUnmount, onMounted, PropType, ref } from "vue";
 import JsonEditor from "vue3-ts-jsoneditor";
-import {isEn, isZH} from "@/lang";
+import { isEn, isZH } from "@/lang";
 
 // Map project language codes to JSON editor supported languages
 const editorLanguage = computed(() => {
@@ -12,7 +12,7 @@ const editorLanguage = computed(() => {
 });
 
 defineProps({
-  options: {type: Object as PropType<any>},
+  options: { type: Object as PropType<any> },
   currentMode: {
     type: Object as PropType<any>,
     default: "text",
@@ -23,7 +23,7 @@ defineProps({
   },
 });
 
-const json = defineModel<any>({default: () => ({})});
+const json = defineModel<any>({ default: () => ({}) });
 
 // 'javascript' | 'lodash' | 'jmespath' | 'jsonquery' | 'jsonpath'
 const queryLanguages: Array<any> = [
@@ -37,10 +37,8 @@ const queryLanguages: Array<any> = [
 // 全屏处理
 let editor = ref(null);
 
-const setEditorContent = (value) => {
-};
-const init = () => {
-};
+const setEditorContent = (value) => {};
+const init = () => {};
 onMounted(() => {
   init();
   setEditorContent(json.value);
@@ -55,13 +53,13 @@ defineExpose({
 </script>
 <template>
   <json-editor
-      ref="editor"
-      :mode="currentMode"
-      :language="editorLanguage"
-      :modes="modeList"
-      v-model="json"
-      :queryLanguagesIds="queryLanguages"
-      class="json-editor"
+    ref="editor"
+    :mode="currentMode"
+    :language="editorLanguage"
+    :modes="modeList"
+    v-model="json"
+    :queryLanguagesIds="queryLanguages"
+    class="json-editor"
   />
 </template>
 

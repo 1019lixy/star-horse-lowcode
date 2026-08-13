@@ -8,7 +8,7 @@ import itemComponent from "@/components/formcomp/items/allitem";
 import systemComponent from "@/components/system/SystemComp";
 // @ts-ignore
 import App from "@/App.vue";
-import {createApp} from "vue";
+import { createApp } from "vue";
 import draggable from "vuedraggable-es";
 import piniaInstance from "@/store";
 import ElementPlus from "element-plus";
@@ -27,7 +27,7 @@ app.use(systemComponent);
 app.use(piniaInstance);
 app.use(router);
 app.use(ElementPlus, {
-    locale: zhCn,
+  locale: zhCn,
 });
 app.config.performance = false;
 /**
@@ -37,7 +37,7 @@ app.config.performance = false;
  * @param info
  */
 app.config.errorHandler = (err, instance, info) => {
-    console.error(err, instance, info);
+  console.error(err, instance, info);
 };
 /**
  * 处理警告

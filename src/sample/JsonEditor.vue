@@ -1,6 +1,6 @@
 <script setup lang="ts" name="Areainfo">
 import StarHorseJsonEditor from "@/components/comp/StarHorseJsonEditor.vue";
-import {ref} from "vue";
+import { ref } from "vue";
 
 let json = ref<Array<any>>([
   {
@@ -25,7 +25,7 @@ let json = ref<Array<any>>([
       remote: false,
       dataSource: "data",
       analysisType: "func",
-      values: [{name: "abc", value: "abc", xh: 1}],
+      values: [{ name: "abc", value: "abc", xh: 1 }],
       httpMethod: "POST",
       protocol: "http",
       queryParams: [],
@@ -64,7 +64,7 @@ let json = ref<Array<any>>([
         remote: false,
         dataSource: "data",
         analysisType: "func",
-        values: [{name: "abc", value: "abc", xh: 1}],
+        values: [{ name: "abc", value: "abc", xh: 1 }],
         httpMethod: "POST",
         protocol: "http",
         queryParams: [],
@@ -112,7 +112,7 @@ let json = ref<Array<any>>([
 ]);
 </script>
 <template>
-  <StarHorseJsonEditor v-model="json" ref="editor"/>
+  <StarHorseJsonEditor v-model="json" ref="editor" />
   "
 </template>
 <style lang="scss" scoped></style>

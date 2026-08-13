@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import {ref} from "vue";
-import type {WhiteboardElement} from "@/components/whiteboard";
-import {Whiteboard} from "@/components/whiteboard";
+import { ref } from "vue";
+import type { WhiteboardElement } from "@/components/whiteboard";
+import { Whiteboard } from "@/components/whiteboard";
 
 /**
  * 演示场景：流程图示例
@@ -111,18 +111,18 @@ const initialElements = ref<WhiteboardElement[]>([
     id: "wb_demo_pen_1",
     type: "pen",
     points: [
-      {x: 80, y: 240},
-      {x: 100, y: 230},
-      {x: 130, y: 250},
-      {x: 170, y: 220},
-      {x: 220, y: 260},
-      {x: 280, y: 230},
-      {x: 340, y: 250},
-      {x: 400, y: 220},
-      {x: 460, y: 260},
-      {x: 520, y: 230},
-      {x: 580, y: 250},
-      {x: 640, y: 220},
+      { x: 80, y: 240 },
+      { x: 100, y: 230 },
+      { x: 130, y: 250 },
+      { x: 170, y: 220 },
+      { x: 220, y: 260 },
+      { x: 280, y: 230 },
+      { x: 340, y: 250 },
+      { x: 400, y: 220 },
+      { x: 460, y: 260 },
+      { x: 520, y: 230 },
+      { x: 580, y: 250 },
+      { x: 640, y: 220 },
     ],
     stroke: "#722ED1",
     strokeWidth: 3,
@@ -206,12 +206,13 @@ const handleChange = (els: WhiteboardElement[]) => {
   <div class="demo-container">
     <h3>{{ "白板组件 Whiteboard" }}</h3>
     <p>
-      基于 SVG 的协作风格白板组件，支持画笔、橡皮擦、形状（矩形/圆形/三角形/菱形/箭头）、直线、文本、
-      图层管理、撤销/重做、滚轮缩放、空格平移、框选、双击编辑文本、导出 PNG/SVG/JSON。
-      预置了一个"开始 → 处理 → 判断 → 结束"的流程图示例。
+      基于 SVG
+      的协作风格白板组件，支持画笔、橡皮擦、形状（矩形/圆形/三角形/菱形/箭头）、直线、文本、
+      图层管理、撤销/重做、滚轮缩放、空格平移、框选、双击编辑文本、导出
+      PNG/SVG/JSON。 预置了一个"开始 → 处理 → 判断 → 结束"的流程图示例。
     </p>
     <div class="demo-canvas">
-      <Whiteboard :elements="initialElements" @change="handleChange"/>
+      <Whiteboard :elements="initialElements" @change="handleChange" />
     </div>
   </div>
 </template>

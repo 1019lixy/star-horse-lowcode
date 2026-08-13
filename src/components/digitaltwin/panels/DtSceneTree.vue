@@ -4,12 +4,17 @@
  *
  * el-tree 拖拽层级 + 信号驱动刷新
  */
-import {computed, ref, watch} from "vue";
-import {ElMessage, ElMessageBox} from "element-plus";
-import {ShSvgIcon} from "@/components/shared";
-import {dtApp, SIGNAL_NAMES, useAddSignal, useDispatchSignal} from "../core/DtApp";
-import {dtGetStatusPreset} from "../constants";
-import type {DtEntity, DtEntityStatus} from "../types";
+import { computed, ref, watch } from "vue";
+import { ElMessage, ElMessageBox } from "element-plus";
+import { ShSvgIcon } from "@/components/shared";
+import {
+  dtApp,
+  SIGNAL_NAMES,
+  useAddSignal,
+  useDispatchSignal,
+} from "../core/DtApp";
+import { dtGetStatusPreset } from "../constants";
+import type { DtEntity, DtEntityStatus } from "../types";
 
 const emit = defineEmits<{
   (e: "edit-entity", id: string): void;
@@ -28,7 +33,9 @@ const treeData = computed<TreeNode[]>(() => buildTree(dtApp.entities));
 function buildTree(entities: DtEntity[]): TreeNode[] {
   const nodeMap = new Map<string, TreeNode>();
   const roots: TreeNode[] = [];
-  entities.forEach((e) => nodeMap.set(e.id, {id: e.id, entity: e, children: []}));
+  entities.forEach((e) =>
+    nodeMap.set(e.id, { id: e.id, entity: e, children: [] }),
+  );
   entities.forEach((e) => {
     const node = nodeMap.get(e.id)!;
     if (e.parentId && nodeMap.has(e.parentId)) {
@@ -60,13 +67,13 @@ const expandedKeys = ref<string[]>([]);
 
 // 默认展开所有根节点
 watch(
-    treeData,
-    (nodes) => {
-      if (expandedKeys.value.length === 0) {
-        expandedKeys.value = nodes.map((n) => n.id);
-      }
-    },
-    {immediate: true},
+  treeData,
+  (nodes) => {
+    if (expandedKeys.value.length === 0) {
+      expandedKeys.value = nodes.map((n) => n.id);
+    }
+  },
+  { immediate: true },
 );
 
 /* ----------------------- 操作 ----------------------- */
@@ -75,19 +82,18 @@ const handleEdit = (id: string): void => {
 };
 
 const handleDelete = (id: string): void => {
-  ElMessageBox.confirm("确认删除该实体？", "删除", {type: "warning"})
-      .then(() => {
-        const entity = dtApp.findEntity(id);
-        if (entity) {
-          dtApp.entities = dtApp.entities.filter((e) => e.id !== id);
-          if (dtApp.selectedId === id) dtApp.select(null);
-          useDispatchSignal(SIGNAL_NAMES.objectRemoved, entity);
-          useDispatchSignal(SIGNAL_NAMES.sceneGraphChanged);
-          ElMessage.success("删除成功");
-        }
-      })
-      .catch(() => {
-      });
+  ElMessageBox.confirm("确认删除该实体？", "删除", { type: "warning" })
+    .then(() => {
+      const entity = dtApp.findEntity(id);
+      if (entity) {
+        dtApp.entities = dtApp.entities.filter((e) => e.id !== id);
+        if (dtApp.selectedId === id) dtApp.select(null);
+        useDispatchSignal(SIGNAL_NAMES.objectRemoved, entity);
+        useDispatchSignal(SIGNAL_NAMES.sceneGraphChanged);
+        ElMessage.success("删除成功");
+      }
+    })
+    .catch(() => {});
 };
 
 const handleToggleVisible = (entity: DtEntity): void => {
@@ -144,11 +150,16 @@ const handleDrop = (dragNode: any, dropNode: any, dropType: string): void => {
   useDispatchSignal(SIGNAL_NAMES.sceneGraphChanged);
 };
 
-const allowDrop = (_dragNode: any, _dropNode: any, _dropType: string): boolean => true;
+const allowDrop = (
+  _dragNode: any,
+  _dropNode: any,
+  _dropType: string,
+): boolean => true;
 const allowDrag = (node: any): boolean => !node.data.entity?.locked;
 
 /* ----------------------- 工具 ----------------------- */
-const statusColor = (status: DtEntityStatus): string => dtGetStatusPreset(status)?.color ?? "#8C8C8C";
+const statusColor = (status: DtEntityStatus): string =>
+  dtGetStatusPreset(status)?.color ?? "#8C8C8C";
 </script>
 
 <template>
@@ -156,7 +167,7 @@ const statusColor = (status: DtEntityStatus): string => dtGetStatusPreset(status
     <div class="panel-header">
       <span class="panel-title">场景树</span>
       <el-button type="primary" size="small" @click="emit('add-entity')">
-        <ShSvgIcon name="plus" size="12px"/>
+        <ShSvgIcon name="plus" size="12px" />
         添加
       </el-button>
     </div>
@@ -166,61 +177,103 @@ const statusColor = (status: DtEntityStatus): string => dtGetStatusPreset(status
         <div class="empty-text">暂无实体</div>
       </template>
       <el-tree
-          v-else
-          :data="treeData"
-          :props="{ children: 'children', label: 'entity.name' }"
-          node-key="id"
-          :expand-on-click-node="false"
-          :current-node-key="currentSelected"
-          :default-expanded-keys="expandedKeys"
-          @node-click="handleNodeClick"
-          @node-drop="handleDrop"
-          :allow-drop="allowDrop"
-          :allow-drag="allowDrag"
-          draggable
+        v-else
+        :data="treeData"
+        :props="{ children: 'children', label: 'entity.name' }"
+        node-key="id"
+        :expand-on-click-node="false"
+        :current-node-key="currentSelected"
+        :default-expanded-keys="expandedKeys"
+        @node-click="handleNodeClick"
+        @node-drop="handleDrop"
+        :allow-drop="allowDrop"
+        :allow-drag="allowDrag"
+        draggable
       >
         <template #default="{ data }">
-          <div class="tree-node" :class="{ hidden: data.entity.visible === false, locked: data.entity.locked }">
-            <span class="status-dot" :style="{ background: statusColor(data.entity.status) }"/>
-            <el-input
-                v-if="renamingId === data.id"
-                v-model="renamingValue"
-                size="small"
-                class="rename-input"
-                @keyup.enter="handleConfirmRename"
-                @keyup.esc="handleCancelRename"
-                @blur="handleConfirmRename"
+          <div
+            class="tree-node"
+            :class="{
+              hidden: data.entity.visible === false,
+              locked: data.entity.locked,
+            }"
+          >
+            <span
+              class="status-dot"
+              :style="{ background: statusColor(data.entity.status) }"
             />
-            <span v-else class="entity-name" @dblclick.stop="handleStartRename(data.entity)">
-                            {{ data.entity.name }}
-                        </span>
+            <el-input
+              v-if="renamingId === data.id"
+              v-model="renamingValue"
+              size="small"
+              class="rename-input"
+              @keyup.enter="handleConfirmRename"
+              @keyup.esc="handleCancelRename"
+              @blur="handleConfirmRename"
+            />
+            <span
+              v-else
+              class="entity-name"
+              @dblclick.stop="handleStartRename(data.entity)"
+            >
+              {{ data.entity.name }}
+            </span>
             <span class="entity-actions" v-if="renamingId !== data.id">
-                            <el-tooltip :content="data.entity.visible === false ? '显示' : '隐藏'" :show-after="500">
-                                <el-button link size="small" @click.stop="handleToggleVisible(data.entity)">
-                                    <ShSvgIcon :name="data.entity.visible === false ? 'eyeOff' : 'eye'" size="12px"/>
-                                </el-button>
-                            </el-tooltip>
-                            <el-tooltip :content="data.entity.locked ? '解锁' : '锁定'" :show-after="500">
-                                <el-button link size="small" @click.stop="handleToggleLock(data.entity)">
-                                    <ShSvgIcon :name="data.entity.locked ? 'lock' : 'unlock'" size="12px"/>
-                                </el-button>
-                            </el-tooltip>
-                            <el-tooltip content="重命名" :show-after="500">
-                                <el-button link size="small" @click.stop="handleStartRename(data.entity)">
-                                    <ShSvgIcon name="editPen" size="12px"/>
-                                </el-button>
-                            </el-tooltip>
-                            <el-tooltip content="编辑" :show-after="500">
-                                <el-button link size="small" @click.stop="handleEdit(data.id)">
-                                    <ShSvgIcon name="edit" size="12px"/>
-                                </el-button>
-                            </el-tooltip>
-                            <el-tooltip content="删除" :show-after="500">
-                                <el-button link size="small" type="danger" @click.stop="handleDelete(data.id)">
-                                    <ShSvgIcon name="delete" size="12px"/>
-                                </el-button>
-                            </el-tooltip>
-                        </span>
+              <el-tooltip
+                :content="data.entity.visible === false ? '显示' : '隐藏'"
+                :show-after="500"
+              >
+                <el-button
+                  link
+                  size="small"
+                  @click.stop="handleToggleVisible(data.entity)"
+                >
+                  <ShSvgIcon
+                    :name="data.entity.visible === false ? 'eyeOff' : 'eye'"
+                    size="12px"
+                  />
+                </el-button>
+              </el-tooltip>
+              <el-tooltip
+                :content="data.entity.locked ? '解锁' : '锁定'"
+                :show-after="500"
+              >
+                <el-button
+                  link
+                  size="small"
+                  @click.stop="handleToggleLock(data.entity)"
+                >
+                  <ShSvgIcon
+                    :name="data.entity.locked ? 'lock' : 'unlock'"
+                    size="12px"
+                  />
+                </el-button>
+              </el-tooltip>
+              <el-tooltip content="重命名" :show-after="500">
+                <el-button
+                  link
+                  size="small"
+                  @click.stop="handleStartRename(data.entity)"
+                >
+                  <ShSvgIcon name="editPen" size="12px" />
+                </el-button>
+              </el-tooltip>
+              <el-tooltip content="编辑" :show-after="500">
+                <el-button link size="small" @click.stop="handleEdit(data.id)">
+                  <ShSvgIcon name="edit" size="12px" />
+                </el-button>
+              </el-tooltip>
+              <el-tooltip content="删除" :show-after="500">
+                <el-button
+                  link
+                  size="small"
+                  type="danger"
+                  @click.stop="handleDelete(data.id)"
+                >
+                  <ShSvgIcon name="delete" size="12px" />
+                </el-button>
+              </el-tooltip>
+            </span>
           </div>
         </template>
       </el-tree>

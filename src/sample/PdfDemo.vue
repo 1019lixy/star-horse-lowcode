@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import {ref} from "vue";
-import type {PdfSignatureInfo, PdfTemplate} from "@/components/pdf";
-import {PdfSigner, PdfTemplateDesigner} from "@/components/pdf";
+import { ref } from "vue";
+import type { PdfSignatureInfo, PdfTemplate } from "@/components/pdf";
+import { PdfSigner, PdfTemplateDesigner } from "@/components/pdf";
 
 const pdfTemplate = ref<PdfTemplate>({
   name: "销售合同模板",
@@ -16,12 +16,12 @@ const pdfTemplate = ref<PdfTemplate>({
     header: {
       text: "销售合同",
       align: "center",
-      font: {family: "SimSun", size: 10, color: "#999999"},
+      font: { family: "SimSun", size: 10, color: "#999999" },
     },
     footer: {
       text: "第 ${page} 页 / 共 ${totalPage} 页",
       align: "center",
-      font: {family: "SimSun", size: 9, color: "#999999"},
+      font: { family: "SimSun", size: 9, color: "#999999" },
       showPageNumber: true,
     },
   },
@@ -34,7 +34,7 @@ const pdfTemplate = ref<PdfTemplate>({
       width: 483,
       height: 36,
       text: "产品销售合同",
-      font: {family: "SimHei", size: 22, weight: "bold", color: "#333333"},
+      font: { family: "SimHei", size: 22, weight: "bold", color: "#333333" },
       align: "center",
     },
     {
@@ -45,7 +45,7 @@ const pdfTemplate = ref<PdfTemplate>({
       width: 240,
       height: 20,
       text: "合同编号:",
-      font: {family: "SimSun", size: 11, color: "#333333"},
+      font: { family: "SimSun", size: 11, color: "#333333" },
       align: "left",
       dataField: "contractNo",
     },
@@ -57,7 +57,7 @@ const pdfTemplate = ref<PdfTemplate>({
       width: 239,
       height: 20,
       text: "签订日期:",
-      font: {family: "SimSun", size: 11, color: "#333333"},
+      font: { family: "SimSun", size: 11, color: "#333333" },
       align: "right",
       dataField: "signDate",
     },
@@ -69,7 +69,7 @@ const pdfTemplate = ref<PdfTemplate>({
       width: 483,
       height: 20,
       text: "甲方（买方）：",
-      font: {family: "SimSun", size: 12, color: "#333333"},
+      font: { family: "SimSun", size: 12, color: "#333333" },
       align: "left",
       dataField: "partyA",
     },
@@ -81,7 +81,7 @@ const pdfTemplate = ref<PdfTemplate>({
       width: 483,
       height: 20,
       text: "乙方（卖方）：",
-      font: {family: "SimSun", size: 12, color: "#333333"},
+      font: { family: "SimSun", size: 12, color: "#333333" },
       align: "left",
       dataField: "partyB",
     },
@@ -93,7 +93,7 @@ const pdfTemplate = ref<PdfTemplate>({
       width: 483,
       height: 50,
       text: "经双方友好协商，就产品买卖事宜达成如下协议：",
-      font: {family: "SimSun", size: 11, color: "#333333"},
+      font: { family: "SimSun", size: 11, color: "#333333" },
       align: "left",
     },
     {
@@ -104,10 +104,10 @@ const pdfTemplate = ref<PdfTemplate>({
       width: 483,
       height: 120,
       columns: [
-        {field: "name", label: "产品名称", width: 180, align: "left"},
-        {field: "spec", label: "规格", width: 120, align: "center"},
-        {field: "qty", label: "数量", width: 80, align: "right"},
-        {field: "price", label: "单价(元)", width: 103, align: "right"},
+        { field: "name", label: "产品名称", width: 180, align: "left" },
+        { field: "spec", label: "规格", width: 120, align: "center" },
+        { field: "qty", label: "数量", width: 80, align: "right" },
+        { field: "price", label: "单价(元)", width: 103, align: "right" },
       ],
       dataSource: "items",
       headerBgColor: "#F5F7FA",
@@ -132,7 +132,7 @@ const pdfTemplate = ref<PdfTemplate>({
       width: 239,
       height: 24,
       text: "合计金额：¥",
-      font: {family: "SimHei", size: 14, weight: "bold", color: "#F56C6C"},
+      font: { family: "SimHei", size: 14, weight: "bold", color: "#F56C6C" },
       align: "right",
       dataField: "totalAmount",
     },
@@ -186,17 +186,20 @@ const signatures = ref<PdfSignatureInfo[]>([
 <template>
   <div class="demo-container">
     <h3>PDF 模板设计器与签章 PdfTemplateDesigner / PdfSigner</h3>
-    <p>PDF 模板设计器支持文本、标题、段落、图片、表格、分割线、二维码、签章等元素的可视化排版，支持数据字段绑定。下方 PdfSigner
-      提供手写签名采集与签章管理能力。</p>
+    <p>
+      PDF
+      模板设计器支持文本、标题、段落、图片、表格、分割线、二维码、签章等元素的可视化排版，支持数据字段绑定。下方
+      PdfSigner 提供手写签名采集与签章管理能力。
+    </p>
 
     <h4 class="section-title">一、PDF 模板设计器</h4>
     <div class="demo-canvas designer-canvas">
-      <PdfTemplateDesigner :initial-template="pdfTemplate"/>
+      <PdfTemplateDesigner :initial-template="pdfTemplate" />
     </div>
 
     <h4 class="section-title">二、PDF 签章组件</h4>
     <div class="demo-canvas signer-canvas">
-      <PdfSigner :signatures="signatures"/>
+      <PdfSigner :signatures="signatures" />
     </div>
   </div>
 </template>

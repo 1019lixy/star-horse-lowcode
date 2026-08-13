@@ -9,34 +9,44 @@
  *  - 手动 TransformControls → @tresjs/cientos <TransformControls>
  *  - 手动 RAF 循环 → useLoop
  */
-import {computed, onBeforeUnmount, ref, shallowRef} from "vue";
-import {TresCanvas} from "@tresjs/core";
-import {OrbitControls, TransformControls} from "@tresjs/cientos";
-import {Color, type Object3D,} from "three";
-import {ShSvgIcon} from "@/components/shared";
-import {dtApp, SIGNAL_NAMES, useAddSignal, useDispatchSignal} from "../core/DtApp";
-import type {DtEntity, DtPoint3D, DtSize3D, DtViewportMode} from "../types";
+import { computed, onBeforeUnmount, ref, shallowRef } from "vue";
+import { TresCanvas } from "@tresjs/core";
+import { OrbitControls, TransformControls } from "@tresjs/cientos";
+import { Color, type Object3D } from "three";
+import { ShSvgIcon } from "@/components/shared";
+import {
+  dtApp,
+  SIGNAL_NAMES,
+  useAddSignal,
+  useDispatchSignal,
+} from "../core/DtApp";
+import type { DtEntity, DtPoint3D, DtSize3D, DtViewportMode } from "../types";
 
 const props = withDefaults(
-    defineProps<{
-      entities: DtEntity[];
-      mode?: DtViewportMode;
-      transformMode?: "translate" | "rotate" | "scale";
-      showGrid?: boolean;
-      showAxes?: boolean;
-    }>(),
-    {
-      mode: "view",
-      transformMode: "translate",
-      showGrid: true,
-      showAxes: true,
-    },
+  defineProps<{
+    entities: DtEntity[];
+    mode?: DtViewportMode;
+    transformMode?: "translate" | "rotate" | "scale";
+    showGrid?: boolean;
+    showAxes?: boolean;
+  }>(),
+  {
+    mode: "view",
+    transformMode: "translate",
+    showGrid: true,
+    showAxes: true,
+  },
 );
 
 const emit = defineEmits<{
   (e: "ready"): void;
   (e: "select-entity", id: string | null): void;
-  (e: "entity-transform", entityId: string, position: DtPoint3D, size: DtSize3D): void;
+  (
+    e: "entity-transform",
+    entityId: string,
+    position: DtPoint3D,
+    size: DtSize3D,
+  ): void;
   (e: "entity-transform-end", entityId: string): void;
   (e: "context-menu", x: number, y: number, entityId: string | null): void;
 }>();
@@ -54,7 +64,11 @@ const transformKey = ref(0);
 const meshRefs = new Map<string, Object3D>();
 
 // 临时变换状态（拖拽中记录初始值）
-const transformSnapshot = ref<{ id: string; position: DtPoint3D; size: DtSize3D } | null>(null);
+const transformSnapshot = ref<{
+  id: string;
+  position: DtPoint3D;
+  size: DtSize3D;
+} | null>(null);
 
 /* ----------------------- 状态颜色映射 ----------------------- */
 const STATUS_COLORS: Record<string, number> = {
@@ -70,7 +84,12 @@ const getEntityColor = (entity: DtEntity): number => {
 };
 
 /* ----------------------- 实体几何参数计算 ----------------------- */
-const getGeometryArgs = (entity: DtEntity): [number, number] | [number, number, number] | [number, number, number, number] => {
+const getGeometryArgs = (
+  entity: DtEntity,
+):
+  | [number, number]
+  | [number, number, number]
+  | [number, number, number, number] => {
   const s = entity.size;
   switch (entity.type) {
     case "cube":
@@ -129,7 +148,10 @@ const handleClick = (entity: DtEntity, event: any): void => {
   emit("select-entity", entity.id);
 };
 
-const handleContextMenu = (entity: DtEntity | null, event: PointerEvent): void => {
+const handleContextMenu = (
+  entity: DtEntity | null,
+  event: PointerEvent,
+): void => {
   event.preventDefault();
   const id = entity?.id ?? null;
   if (id) {
@@ -151,8 +173,8 @@ const handleTransformStart = (): void => {
   if (!entity) return;
   transformSnapshot.value = {
     id: entity.id,
-    position: {...entity.position},
-    size: {...entity.size},
+    position: { ...entity.position },
+    size: { ...entity.size },
   };
 };
 
@@ -162,20 +184,25 @@ const handleTransformChange = (): void => {
   const obj = transformTarget.value;
   const entity = dtApp.findEntity(selectedId.value);
   if (!entity) return;
-  const newPosition = {x: obj.position.x, y: obj.position.y, z: obj.position.z};
+  const newPosition = {
+    x: obj.position.x,
+    y: obj.position.y,
+    z: obj.position.z,
+  };
   // 实时派发（不进历史栈）
-  emit("entity-transform", entity.id, newPosition, {...entity.size});
+  emit("entity-transform", entity.id, newPosition, { ...entity.size });
 };
 
 // TransformControls 拖拽结束 → 提交命令
 const handleTransformEnd = (): void => {
-  if (!transformTarget.value || !selectedId.value || !transformSnapshot.value) return;
+  if (!transformTarget.value || !selectedId.value || !transformSnapshot.value)
+    return;
   const obj = transformTarget.value;
   const entity = dtApp.findEntity(selectedId.value);
   if (!entity) return;
-  const newPos = {x: obj.position.x, y: obj.position.y, z: obj.position.z};
+  const newPos = { x: obj.position.x, y: obj.position.y, z: obj.position.z };
   // 更新实体数据
-  entity.position = {...newPos};
+  entity.position = { ...newPos };
   // 派发结束信号
   emit("entity-transform-end", entity.id);
   useDispatchSignal(SIGNAL_NAMES.objectChanged, entity);
@@ -183,13 +210,14 @@ const handleTransformEnd = (): void => {
 };
 
 /* ----------------------- 模式切换 ----------------------- */
-const modeList: Array<{ value: DtViewportMode; label: string; icon: string }> = [
-  {value: "view", label: "查看", icon: "eye"},
-  {value: "edit", label: "编辑", icon: "edit"},
-  {value: "measure", label: "测量", icon: "ruler"},
-  {value: "annotation", label: "标注", icon: "location"},
-  {value: "inspection", label: "巡检", icon: "monitor"},
-];
+const modeList: Array<{ value: DtViewportMode; label: string; icon: string }> =
+  [
+    { value: "view", label: "查看", icon: "eye" },
+    { value: "edit", label: "编辑", icon: "edit" },
+    { value: "measure", label: "测量", icon: "ruler" },
+    { value: "annotation", label: "标注", icon: "location" },
+    { value: "inspection", label: "巡检", icon: "monitor" },
+  ];
 
 const handleModeChange = (m: DtViewportMode): void => {
   useDispatchSignal(SIGNAL_NAMES.viewportModeChanged, m);
@@ -229,131 +257,153 @@ emit("ready");
     <!-- 模式切换按钮组 -->
     <div class="mode-bar">
       <button
-          v-for="m in modeList"
-          :key="m.value"
-          :class="['mode-btn', { active: mode === m.value }]"
-          :title="m.label"
-          @click="handleModeChange(m.value)"
+        v-for="m in modeList"
+        :key="m.value"
+        :class="['mode-btn', { active: mode === m.value }]"
+        :title="m.label"
+        @click="handleModeChange(m.value)"
       >
-        <ShSvgIcon :name="m.icon" size="14px"/>
+        <ShSvgIcon :name="m.icon" size="14px" />
         <span>{{ m.label }}</span>
       </button>
     </div>
 
     <!-- TresCanvas 声明式 3D 场景 -->
-    <TresCanvas
-        clear-color="#0a0e17"
-        shadows
-        :window-size="false"
-    >
+    <TresCanvas clear-color="#0a0e17" shadows :window-size="false">
       <!-- 透视相机 -->
-      <TresPerspectiveCamera :position="[300, 300, 300]" :fov="45" :near="0.1" :far="10000"/>
+      <TresPerspectiveCamera
+        :position="[300, 300, 300]"
+        :fov="45"
+        :near="0.1"
+        :far="10000"
+      />
 
       <!-- 轨道控制 -->
       <OrbitControls
-          :enable-damping="true"
-          :damping-factor="0.08"
-          :min-distance="50"
-          :max-distance="3000"
-          :enable-pan="true"
+        :enable-damping="true"
+        :damping-factor="0.08"
+        :min-distance="50"
+        :max-distance="3000"
+        :enable-pan="true"
       />
 
       <!-- 光照 -->
-      <TresAmbientLight :intensity="0.6"/>
+      <TresAmbientLight :intensity="0.6" />
       <TresDirectionalLight
-          :position="[200, 400, 200]"
-          :intensity="1.2"
-          cast-shadow
+        :position="[200, 400, 200]"
+        :intensity="1.2"
+        cast-shadow
       />
 
       <!-- 网格 -->
       <TresGridHelper
-          v-if="showGrid"
-          :args="[2000, 50, 0x1a2030, 0x141821]"
-          :position="[0, 0, 0]"
+        v-if="showGrid"
+        :args="[2000, 50, 0x1a2030, 0x141821]"
+        :position="[0, 0, 0]"
       />
 
       <!-- 坐标轴 -->
-      <TresAxesHelper v-if="showAxes" :args="[200]"/>
+      <TresAxesHelper v-if="showAxes" :args="[200]" />
 
       <!-- 实体列表（声明式渲染） -->
       <TresGroup
-          v-for="entity in entities"
-          :key="entity.id"
-          :position="[entity.position.x, entity.position.y, entity.position.z]"
-          :visible="entity.visible !== false"
-          @click="(e: any) => handleClick(entity, e)"
-          @contextmenu="(e: any) => handleContextMenu(entity, e)"
+        v-for="entity in entities"
+        :key="entity.id"
+        :position="[entity.position.x, entity.position.y, entity.position.z]"
+        :visible="entity.visible !== false"
+        @click="(e: any) => handleClick(entity, e)"
+        @contextmenu="(e: any) => handleContextMenu(entity, e)"
       >
         <!-- Cube -->
         <TresMesh
-            v-if="entity.type === 'cube'"
-            :ref="(el: any) => { if (el?.object) meshRefs.set(entity.id, el.object as Object3D) }"
-            cast-shadow
-            receive-shadow
+          v-if="entity.type === 'cube'"
+          :ref="
+            (el: any) => {
+              if (el?.object) meshRefs.set(entity.id, el.object as Object3D);
+            }
+          "
+          cast-shadow
+          receive-shadow
         >
-          <TresBoxGeometry :args="getGeometryArgs(entity)"/>
+          <TresBoxGeometry :args="getGeometryArgs(entity)" />
           <TresMeshStandardMaterial
-              :color="`#${getEntityColor(entity).toString(16).padStart(6, '0')}`"
-              :emissive="selectedId === entity.id ? '#ff6600' : '#000000'"
-              :emissive-intensity="selectedId === entity.id ? 0.3 : 0"
+            :color="`#${getEntityColor(entity).toString(16).padStart(6, '0')}`"
+            :emissive="selectedId === entity.id ? '#ff6600' : '#000000'"
+            :emissive-intensity="selectedId === entity.id ? 0.3 : 0"
           />
         </TresMesh>
 
         <!-- Cylinder -->
         <TresMesh
-            v-else-if="entity.type === 'cylinder'"
-            :ref="(el: any) => { if (el?.object) meshRefs.set(entity.id, el.object as Object3D) }"
-            cast-shadow
-            receive-shadow
+          v-else-if="entity.type === 'cylinder'"
+          :ref="
+            (el: any) => {
+              if (el?.object) meshRefs.set(entity.id, el.object as Object3D);
+            }
+          "
+          cast-shadow
+          receive-shadow
         >
-          <TresCylinderGeometry :args="getGeometryArgs(entity)"/>
+          <TresCylinderGeometry :args="getGeometryArgs(entity)" />
           <TresMeshStandardMaterial
-              :color="`#${getEntityColor(entity).toString(16).padStart(6, '0')}`"
-              :emissive="selectedId === entity.id ? '#ff6600' : '#000000'"
-              :emissive-intensity="selectedId === entity.id ? 0.3 : 0"
+            :color="`#${getEntityColor(entity).toString(16).padStart(6, '0')}`"
+            :emissive="selectedId === entity.id ? '#ff6600' : '#000000'"
+            :emissive-intensity="selectedId === entity.id ? 0.3 : 0"
           />
         </TresMesh>
 
         <!-- Sphere -->
         <TresMesh
-            v-else-if="entity.type === 'sphere'"
-            :ref="(el: any) => { if (el?.object) meshRefs.set(entity.id, el.object as Object3D) }"
-            cast-shadow
-            receive-shadow
+          v-else-if="entity.type === 'sphere'"
+          :ref="
+            (el: any) => {
+              if (el?.object) meshRefs.set(entity.id, el.object as Object3D);
+            }
+          "
+          cast-shadow
+          receive-shadow
         >
-          <TresSphereGeometry :args="getGeometryArgs(entity)"/>
+          <TresSphereGeometry :args="getGeometryArgs(entity)" />
           <TresMeshStandardMaterial
-              :color="`#${getEntityColor(entity).toString(16).padStart(6, '0')}`"
-              :emissive="selectedId === entity.id ? '#ff6600' : '#000000'"
-              :emissive-intensity="selectedId === entity.id ? 0.3 : 0"
+            :color="`#${getEntityColor(entity).toString(16).padStart(6, '0')}`"
+            :emissive="selectedId === entity.id ? '#ff6600' : '#000000'"
+            :emissive-intensity="selectedId === entity.id ? 0.3 : 0"
           />
         </TresMesh>
 
         <!-- Plane -->
         <TresMesh
-            v-else
-            :ref="(el: any) => { if (el?.object) meshRefs.set(entity.id, el.object as Object3D) }"
-            rotation-x="-Math.PI / 2"
-            receive-shadow
+          v-else
+          :ref="
+            (el: any) => {
+              if (el?.object) meshRefs.set(entity.id, el.object as Object3D);
+            }
+          "
+          rotation-x="-Math.PI / 2"
+          receive-shadow
         >
-          <TresPlaneGeometry :args="getGeometryArgs(entity)"/>
+          <TresPlaneGeometry :args="getGeometryArgs(entity)" />
           <TresMeshStandardMaterial
-              :color="`#${getEntityColor(entity).toString(16).padStart(6, '0')}`"
-              :emissive="selectedId === entity.id ? '#ff6600' : '#000000'"
-              :emissive-intensity="selectedId === entity.id ? 0.3 : 0"
+            :color="`#${getEntityColor(entity).toString(16).padStart(6, '0')}`"
+            :emissive="selectedId === entity.id ? '#ff6600' : '#000000'"
+            :emissive-intensity="selectedId === entity.id ? 0.3 : 0"
           />
         </TresMesh>
       </TresGroup>
 
       <!-- TransformControls（仅编辑模式且选中实体时显示） -->
       <TransformControls
-          v-if="isEditMode && transformTarget"
-          :key="transformKey"
-          :object="transformTarget"
-          :mode="transformMode"
-          @object-change="handleTransformChange"
-          @dragging-changed="(e: any) => { if (!e.value) handleTransformEnd(); else handleTransformStart(); }"
+        v-if="isEditMode && transformTarget"
+        :key="transformKey"
+        :object="transformTarget"
+        :mode="transformMode"
+        @object-change="handleTransformChange"
+        @dragging-changed="
+          (e: any) => {
+            if (!e.value) handleTransformEnd();
+            else handleTransformStart();
+          }
+        "
       />
     </TresCanvas>
   </div>

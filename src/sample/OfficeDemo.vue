@@ -1,6 +1,11 @@
 <script setup lang="ts">
-import type {OfficeDocument} from "@/components/office";
-import {createOfficeDoc, createSlide, createSlideElement, OfficeEditor} from "@/components/office";
+import type { OfficeDocument } from "@/components/office";
+import {
+  createOfficeDoc,
+  createSlide,
+  createSlideElement,
+  OfficeEditor,
+} from "@/components/office";
 
 /** 示例 Word 文档 1（普通） */
 const wordDoc1 = createOfficeDoc({
@@ -55,31 +60,55 @@ const excelDoc = createOfficeDoc({
         rows: 5,
         cols: 5,
         cells: [
-          {row: 0, col: 0, value: "产品"},
-          {row: 0, col: 1, value: "Q1"},
-          {row: 0, col: 2, value: "Q2"},
-          {row: 0, col: 3, value: "Q3"},
-          {row: 0, col: 4, value: "Q4"},
-          {row: 1, col: 0, value: "产品A"},
-          {row: 1, col: 1, value: "120"},
-          {row: 1, col: 2, value: "158"},
-          {row: 1, col: 3, value: "142"},
-          {row: 1, col: 4, value: "186"},
-          {row: 2, col: 0, value: "产品B"},
-          {row: 2, col: 1, value: "98"},
-          {row: 2, col: 2, value: "112"},
-          {row: 2, col: 3, value: "135"},
-          {row: 2, col: 4, value: "148"},
-          {row: 3, col: 0, value: "产品C"},
-          {row: 3, col: 1, value: "210"},
-          {row: 3, col: 2, value: "195"},
-          {row: 3, col: 3, value: "228"},
-          {row: 3, col: 4, value: "245"},
-          {row: 4, col: 0, value: "总计"},
-          {row: 4, col: 1, value: "=SUM(B2:B4)", isFormula: true, display: ""},
-          {row: 4, col: 2, value: "=SUM(C2:C4)", isFormula: true, display: ""},
-          {row: 4, col: 3, value: "=SUM(D2:D4)", isFormula: true, display: ""},
-          {row: 4, col: 4, value: "=AVG(E2:E4)", isFormula: true, display: ""},
+          { row: 0, col: 0, value: "产品" },
+          { row: 0, col: 1, value: "Q1" },
+          { row: 0, col: 2, value: "Q2" },
+          { row: 0, col: 3, value: "Q3" },
+          { row: 0, col: 4, value: "Q4" },
+          { row: 1, col: 0, value: "产品A" },
+          { row: 1, col: 1, value: "120" },
+          { row: 1, col: 2, value: "158" },
+          { row: 1, col: 3, value: "142" },
+          { row: 1, col: 4, value: "186" },
+          { row: 2, col: 0, value: "产品B" },
+          { row: 2, col: 1, value: "98" },
+          { row: 2, col: 2, value: "112" },
+          { row: 2, col: 3, value: "135" },
+          { row: 2, col: 4, value: "148" },
+          { row: 3, col: 0, value: "产品C" },
+          { row: 3, col: 1, value: "210" },
+          { row: 3, col: 2, value: "195" },
+          { row: 3, col: 3, value: "228" },
+          { row: 3, col: 4, value: "245" },
+          { row: 4, col: 0, value: "总计" },
+          {
+            row: 4,
+            col: 1,
+            value: "=SUM(B2:B4)",
+            isFormula: true,
+            display: "",
+          },
+          {
+            row: 4,
+            col: 2,
+            value: "=SUM(C2:C4)",
+            isFormula: true,
+            display: "",
+          },
+          {
+            row: 4,
+            col: 3,
+            value: "=SUM(D2:D4)",
+            isFormula: true,
+            display: "",
+          },
+          {
+            row: 4,
+            col: 4,
+            value: "=AVG(E2:E4)",
+            isFormula: true,
+            display: "",
+          },
         ],
       },
     ],
@@ -131,10 +160,38 @@ const slideDoc = createOfficeDoc({
           fontSize: 36,
           color: "#333333",
         }),
-        createSlideElement("shape", {shape: "rect", x: 80, y: 180, width: 240, height: 120, fill: "#409EFF"}),
-        createSlideElement("shape", {shape: "circle", x: 360, y: 180, width: 120, height: 120, fill: "#67C23A"}),
-        createSlideElement("shape", {shape: "triangle", x: 520, y: 180, width: 120, height: 120, fill: "#E6A23C"}),
-        createSlideElement("shape", {shape: "arrow", x: 700, y: 200, width: 180, height: 80, fill: "#F56C6C"}),
+        createSlideElement("shape", {
+          shape: "rect",
+          x: 80,
+          y: 180,
+          width: 240,
+          height: 120,
+          fill: "#409EFF",
+        }),
+        createSlideElement("shape", {
+          shape: "circle",
+          x: 360,
+          y: 180,
+          width: 120,
+          height: 120,
+          fill: "#67C23A",
+        }),
+        createSlideElement("shape", {
+          shape: "triangle",
+          x: 520,
+          y: 180,
+          width: 120,
+          height: 120,
+          fill: "#E6A23C",
+        }),
+        createSlideElement("shape", {
+          shape: "arrow",
+          x: 700,
+          y: 200,
+          width: 180,
+          height: 80,
+          fill: "#F56C6C",
+        }),
         createSlideElement("text", {
           text: "矩形、圆形、三角形、箭头四种形状",
           x: 80,
@@ -155,7 +212,14 @@ const slideDoc = createOfficeDoc({
           fontSize: 64,
           color: "#333333",
         }),
-        createSlideElement("shape", {shape: "circle", x: 380, y: 340, width: 200, height: 200, fill: "#409EFF"}),
+        createSlideElement("shape", {
+          shape: "circle",
+          x: 380,
+          y: 340,
+          width: 200,
+          height: 200,
+          fill: "#409EFF",
+        }),
         createSlideElement("text", {
           text: "Q & A",
           x: 420,
@@ -179,11 +243,13 @@ const docs: OfficeDocument[] = [wordDoc1, wordDoc2, excelDoc, slideDoc];
   <div class="demo-container">
     <h3>Office 文档编辑 OfficeEditor</h3>
     <p>
-      纯前端 Office 文档编辑组件，支持 Word 富文本编辑（粗体/斜体/下划线/标题/列表/对齐/字体/字号/颜色/表格/图片）、Excel
-      表格编辑（行列管理/单元格合并/SUM/AVG/MIN/MAX/COUNT 公式）、PowerPoint 幻灯片编辑（SVG 元素拖拽/形状/文本/图片）。所有实现基于浏览器原生
+      纯前端 Office 文档编辑组件，支持 Word
+      富文本编辑（粗体/斜体/下划线/标题/列表/对齐/字体/字号/颜色/表格/图片）、Excel
+      表格编辑（行列管理/单元格合并/SUM/AVG/MIN/MAX/COUNT 公式）、PowerPoint
+      幻灯片编辑（SVG 元素拖拽/形状/文本/图片）。所有实现基于浏览器原生
       API，无重依赖。
     </p>
-    <office-editor :documents="docs" :height="640"/>
+    <office-editor :documents="docs" :height="640" />
   </div>
 </template>
 

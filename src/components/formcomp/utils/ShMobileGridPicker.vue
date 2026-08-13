@@ -2,25 +2,32 @@
   <div class="sh-mobile-grid-picker">
     <!-- 已选数量提示 -->
     <div class="sh-mobile-grid-picker__bar">
-      <span class="sh-mobile-grid-picker__count">{{ i18n('item.selectedData') }}({{ selected.length }})</span>
-      <span class="sh-mobile-grid-picker__clear" @click="clearAll">{{ i18n('message.clear') }}</span>
+      <span class="sh-mobile-grid-picker__count"
+        >{{ i18n("item.selectedData") }}({{ selected.length }})</span
+      >
+      <span class="sh-mobile-grid-picker__clear" @click="clearAll">{{
+        i18n("message.clear")
+      }}</span>
     </div>
 
     <!-- 年份选择 -->
     <template v-if="mode === 'year'">
       <div class="sh-mobile-grid-picker__year-nav">
         <span class="sh-mobile-grid-picker__nav-btn" @click="prevYear">‹</span>
-        <span class="sh-mobile-grid-picker__nav-title">{{ yearRangeStart }}-{{ yearRangeEnd }}</span>
+        <span class="sh-mobile-grid-picker__nav-title"
+          >{{ yearRangeStart }}-{{ yearRangeEnd }}</span
+        >
         <span class="sh-mobile-grid-picker__nav-btn" @click="nextYear">›</span>
       </div>
       <div class="sh-mobile-grid-picker__grid">
         <div
-            v-for="item in yearPageItems"
-            :key="item.value"
-            class="sh-mobile-grid-picker__cell"
-            :class="{ 'is-selected': isSelected(item.value) }"
-            @click="toggleItem(item.value)"
-        >{{ item.label }}
+          v-for="item in yearPageItems"
+          :key="item.value"
+          class="sh-mobile-grid-picker__cell"
+          :class="{ 'is-selected': isSelected(item.value) }"
+          @click="toggleItem(item.value)"
+        >
+          {{ item.label }}
         </div>
       </div>
     </template>
@@ -30,26 +37,36 @@
       <div class="sh-mobile-grid-picker__nav">
         <div class="sh-mobile-grid-picker__nav-left">
           <template v-if="!isEveryYear">
-            <span class="sh-mobile-grid-picker__nav-btn" @click="prevYear">‹</span>
-            <span class="sh-mobile-grid-picker__nav-title">{{ curYear }}{{ i18n('cron.year') }}</span>
-            <span class="sh-mobile-grid-picker__nav-btn" @click="nextYear">›</span>
+            <span class="sh-mobile-grid-picker__nav-btn" @click="prevYear"
+              >‹</span
+            >
+            <span class="sh-mobile-grid-picker__nav-title"
+              >{{ curYear }}{{ i18n("cron.year") }}</span
+            >
+            <span class="sh-mobile-grid-picker__nav-btn" @click="nextYear"
+              >›</span
+            >
           </template>
-          <span v-else class="sh-mobile-grid-picker__nav-title">{{ i18n('cron.everyYear') }}</span>
+          <span v-else class="sh-mobile-grid-picker__nav-title">{{
+            i18n("cron.everyYear")
+          }}</span>
         </div>
         <span
-            class="sh-mobile-grid-picker__nav-toggle"
-            :class="{ 'is-active': isEveryYear }"
-            @click="toggleEveryYear"
-        >{{ i18n('cron.everyYear') }}</span>
+          class="sh-mobile-grid-picker__nav-toggle"
+          :class="{ 'is-active': isEveryYear }"
+          @click="toggleEveryYear"
+          >{{ i18n("cron.everyYear") }}</span
+        >
       </div>
       <div class="sh-mobile-grid-picker__grid">
         <div
-            v-for="item in monthItems"
-            :key="item.value"
-            class="sh-mobile-grid-picker__cell"
-            :class="{ 'is-selected': isSelected(item.value) }"
-            @click="toggleItem(item.value)"
-        >{{ item.label }}
+          v-for="item in monthItems"
+          :key="item.value"
+          class="sh-mobile-grid-picker__cell"
+          :class="{ 'is-selected': isSelected(item.value) }"
+          @click="toggleItem(item.value)"
+        >
+          {{ item.label }}
         </div>
       </div>
     </template>
@@ -58,27 +75,34 @@
     <template v-else-if="mode === 'date'">
       <div class="sh-mobile-grid-picker__cal">
         <div class="sh-mobile-grid-picker__cal-nav">
-          <span class="sh-mobile-grid-picker__cal-btn" @click="prevMonth">‹</span>
-          <span class="sh-mobile-grid-picker__cal-title">{{ calYear }}{{ i18n('cron.year') }}{{
-              calMonth + 1
-            }}{{ i18n('cron.month') }}</span>
-          <span class="sh-mobile-grid-picker__cal-btn" @click="nextMonth">›</span>
+          <span class="sh-mobile-grid-picker__cal-btn" @click="prevMonth"
+            >‹</span
+          >
+          <span class="sh-mobile-grid-picker__cal-title"
+            >{{ calYear }}{{ i18n("cron.year") }}{{ calMonth + 1
+            }}{{ i18n("cron.month") }}</span
+          >
+          <span class="sh-mobile-grid-picker__cal-btn" @click="nextMonth"
+            >›</span
+          >
         </div>
         <div class="sh-mobile-grid-picker__cal-weekdays">
           <span v-for="(w, i) in weekdays" :key="i">{{ w }}</span>
         </div>
         <div class="sh-mobile-grid-picker__cal-days">
           <div
-              v-for="(day, i) in calDays"
-              :key="i"
-              class="sh-mobile-grid-picker__cal-day"
-              :class="{
+            v-for="(day, i) in calDays"
+            :key="i"
+            class="sh-mobile-grid-picker__cal-day"
+            :class="{
               'is-other-month': !day.currentMonth,
-              'is-selected': day.currentMonth && isSelected(day.value)
+              'is-selected': day.currentMonth && isSelected(day.value),
             }"
-              @click="day.currentMonth && toggleItem(day.value)"
+            @click="day.currentMonth && toggleItem(day.value)"
           >
-            <span class="sh-mobile-grid-picker__cal-day-inner">{{ day.label }}</span>
+            <span class="sh-mobile-grid-picker__cal-day-inner">{{
+              day.label
+            }}</span>
           </div>
         </div>
       </div>
@@ -87,27 +111,27 @@
 </template>
 
 <script setup lang="ts">
-import {computed, ref, watch} from "vue";
-import {i18n} from "@/lang";
+import { computed, ref, watch } from "vue";
+import { i18n } from "@/lang";
 
 type GridMode = "year" | "month" | "date";
 
 const props = withDefaults(
-    defineProps<{
-      modelValue: any[];
-      mode: GridMode;
-      valueFormat?: string;
-      minYear?: number;
-      maxYear?: number;
-      /** 月份多选时是否为"每年"模式（不绑定年份，值仅为 MM） */
-      everyYear?: boolean;
-    }>(),
-    {
-      valueFormat: "",
-      minYear: 1900,
-      maxYear: 2099,
-      everyYear: false,
-    },
+  defineProps<{
+    modelValue: any[];
+    mode: GridMode;
+    valueFormat?: string;
+    minYear?: number;
+    maxYear?: number;
+    /** 月份多选时是否为"每年"模式（不绑定年份，值仅为 MM） */
+    everyYear?: boolean;
+  }>(),
+  {
+    valueFormat: "",
+    minYear: 1900,
+    maxYear: 2099,
+    everyYear: false,
+  },
 );
 
 const emit = defineEmits<{
@@ -134,20 +158,20 @@ const toggleEveryYear = () => {
 };
 
 watch(
-    () => props.modelValue,
-    (val) => {
-      if (Array.isArray(val)) {
-        selected.value = [...val];
-      } else if (val && !Array.isArray(val)) {
-        selected.value = [val];
-      } else {
-        selected.value = [];
-      }
-    },
-    {immediate: true},
+  () => props.modelValue,
+  (val) => {
+    if (Array.isArray(val)) {
+      selected.value = [...val];
+    } else if (val && !Array.isArray(val)) {
+      selected.value = [val];
+    } else {
+      selected.value = [];
+    }
+  },
+  { immediate: true },
 );
 
-const weekdays = computed(() => i18n('comp.weekdays').split(','));
+const weekdays = computed(() => i18n("comp.weekdays").split(","));
 
 // ===== 年份导航 =====
 const yearRangeStart = ref(0);
@@ -155,16 +179,16 @@ const yearRangeEnd = ref(0);
 
 // 初始化年份范围
 watch(
-    () => props.mode,
-    () => {
-      if (props.mode === "year") {
-        // 初始化为当前年份所在的十年
-        const now = new Date().getFullYear();
-        yearRangeStart.value = Math.floor(now / 10) * 10;
-        yearRangeEnd.value = yearRangeStart.value + 9;
-      }
-    },
-    {immediate: true},
+  () => props.mode,
+  () => {
+    if (props.mode === "year") {
+      // 初始化为当前年份所在的十年
+      const now = new Date().getFullYear();
+      yearRangeStart.value = Math.floor(now / 10) * 10;
+      yearRangeEnd.value = yearRangeStart.value + 9;
+    }
+  },
+  { immediate: true },
 );
 
 const prevYear = () => {
@@ -189,7 +213,7 @@ const nextYear = () => {
 const yearPageItems = computed(() => {
   const items: { label: string; value: string }[] = [];
   for (let y = yearRangeStart.value; y <= yearRangeEnd.value; y++) {
-    items.push({label: `${y}${i18n('cron.year')}`, value: String(y)});
+    items.push({ label: `${y}${i18n("cron.year")}`, value: String(y) });
   }
   return items;
 });
@@ -199,55 +223,57 @@ const curYear = ref(new Date().getFullYear());
 
 // 根据已选值推断起始年份
 watch(
-    () => selected.value,
-    (val) => {
-      if (props.mode === "year" && val.length > 0) {
-        // 年份模式：selected 存的是 "2024" 这样的字符串
-        const nums = val.map((v: any) => parseInt(String(v))).filter((n: number) => !isNaN(n));
-        if (nums.length) {
-          const minY = Math.min(...nums);
-          yearRangeStart.value = Math.floor(minY / 10) * 10;
-          yearRangeEnd.value = yearRangeStart.value + 9;
-        }
-      } else if (props.mode === "month" && val.length > 0 && !isEveryYear.value) {
-        // 月份模式（非每年）：selected 存的是 "2024-01" 这样的格式
-        const nums = val
-            .map((v: any) => {
-              const parts = String(v).split("-");
-              return parseInt(parts[0]);
-            })
-            .filter((n: number) => !isNaN(n));
-        if (nums.length) {
-          curYear.value = nums[0];
-        }
-      } else if (props.mode === "date" && val.length > 0) {
-        // 日期模式：selected 存的是 "2024-01-15" 这样的格式
-        const nums = val
-            .map((v: any) => {
-              const parts = String(v).split("-");
-              return parseInt(parts[0]);
-            })
-            .filter((n: number) => !isNaN(n));
-        if (nums.length) {
-          calYear.value = nums[0];
-          calMonth.value = parseInt(String(selected.value[0]).split("-")[1]) - 1;
-        }
+  () => selected.value,
+  (val) => {
+    if (props.mode === "year" && val.length > 0) {
+      // 年份模式：selected 存的是 "2024" 这样的字符串
+      const nums = val
+        .map((v: any) => parseInt(String(v)))
+        .filter((n: number) => !isNaN(n));
+      if (nums.length) {
+        const minY = Math.min(...nums);
+        yearRangeStart.value = Math.floor(minY / 10) * 10;
+        yearRangeEnd.value = yearRangeStart.value + 9;
       }
-    },
-    {immediate: true},
+    } else if (props.mode === "month" && val.length > 0 && !isEveryYear.value) {
+      // 月份模式（非每年）：selected 存的是 "2024-01" 这样的格式
+      const nums = val
+        .map((v: any) => {
+          const parts = String(v).split("-");
+          return parseInt(parts[0]);
+        })
+        .filter((n: number) => !isNaN(n));
+      if (nums.length) {
+        curYear.value = nums[0];
+      }
+    } else if (props.mode === "date" && val.length > 0) {
+      // 日期模式：selected 存的是 "2024-01-15" 这样的格式
+      const nums = val
+        .map((v: any) => {
+          const parts = String(v).split("-");
+          return parseInt(parts[0]);
+        })
+        .filter((n: number) => !isNaN(n));
+      if (nums.length) {
+        calYear.value = nums[0];
+        calMonth.value = parseInt(String(selected.value[0]).split("-")[1]) - 1;
+      }
+    }
+  },
+  { immediate: true },
 );
 
 const monthItems = computed(() => {
   if (isEveryYear.value) {
     // 每年模式：值仅为 MM，不绑定年份
-    return Array.from({length: 12}, (_, i) => ({
-      label: `${i + 1}${i18n('cron.month')}`,
+    return Array.from({ length: 12 }, (_, i) => ({
+      label: `${i + 1}${i18n("cron.month")}`,
       value: String(i + 1).padStart(2, "0"),
     }));
   }
   // 正常模式：月份值格式 YYYY-MM
-  return Array.from({length: 12}, (_, i) => ({
-    label: `${i + 1}${i18n('cron.month')}`,
+  return Array.from({ length: 12 }, (_, i) => ({
+    label: `${i + 1}${i18n("cron.month")}`,
     value: `${curYear.value}-${String(i + 1).padStart(2, "0")}`,
   }));
 });
@@ -300,9 +326,9 @@ const calDays = computed(() => {
 function formatDateValue(y: number, m: number, d: number): string {
   const fmt = props.valueFormat || "YYYY-MM-DD";
   return fmt
-      .replace("YYYY", String(y))
-      .replace("MM", String(m).padStart(2, "0"))
-      .replace("DD", String(d).padStart(2, "0"));
+    .replace("YYYY", String(y))
+    .replace("MM", String(m).padStart(2, "0"))
+    .replace("DD", String(d).padStart(2, "0"));
 }
 
 function prevMonth() {
@@ -348,7 +374,7 @@ function getSelectedValues(): any[] {
   return [...selected.value];
 }
 
-defineExpose({getSelectedValues});
+defineExpose({ getSelectedValues });
 </script>
 
 <style lang="scss" scoped>

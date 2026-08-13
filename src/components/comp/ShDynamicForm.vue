@@ -1,19 +1,19 @@
 <script setup lang="ts" name="ShDynamicForm">
-import {inject, PropType, provide, ref, watch} from "vue";
-import {ApiUrls} from "@/components/types/ApiUrls";
-import {error, success, warning} from "@/utils/message";
-import {loadById, postRequest} from "@/api/star_horse_apis";
-import {closeLoad, load} from "@/api/star_horse_utils";
-import {DialogProps} from "@/components/types/DialogProps";
-import {compKey, itemCheck} from "@/api/system";
-import {i18n} from "@/lang";
+import { inject, PropType, provide, ref, watch } from "vue";
+import { ApiUrls } from "@/components/types/ApiUrls";
+import { error, success, warning } from "@/utils/message";
+import { loadById, postRequest } from "@/api/star_horse_apis";
+import { closeLoad, load } from "@/api/star_horse_utils";
+import { DialogProps } from "@/components/types/DialogProps";
+import { compKey, itemCheck } from "@/api/system";
+import { i18n } from "@/lang";
 
 const props = defineProps({
-  compUrl: {type: Object as PropType<ApiUrls>, required: true},
-  fieldList: {type: Object as PropType<any>, required: true},
-  formInfo: {type: Object as PropType<any>, required: true},
-  rules: {type: Object},
-  typeModel: {type: String, default: "normal"},
+  compUrl: { type: Object as PropType<ApiUrls>, required: true },
+  fieldList: { type: Object as PropType<any>, required: true },
+  formInfo: { type: Object as PropType<any>, required: true },
+  rules: { type: Object },
+  typeModel: { type: String, default: "normal" },
 });
 const emits = defineEmits(["refresh"]);
 const starHorseFormRef = ref();
@@ -27,8 +27,8 @@ const assignDefault = () => {
 };
 const loadData = async () => {
   dataForm.value = await loadById(
-      props.compUrl?.loadByIdUrl!,
-      dialogProps?.ids,
+    props.compUrl?.loadByIdUrl!,
+    dialogProps?.ids,
   );
   //解决关闭并再次打开不触发watch监听
   if (dialogProps) {
@@ -49,59 +49,59 @@ const mergeDraft = (type: string) => {
 const doMerge = () => {
   load(i18n("common.dataProcessing"));
   postRequest(props.compUrl?.mergeUrl!, dataForm.value)
-      .then((res) => {
-        closeLoad();
-        if (res?.data?.code != 200) {
-          warning(res?.data?.cnMessage);
-          return;
-        } else {
-          success(res?.data?.cnMessage);
-        }
-        emits("refresh");
-        resetForm();
-        closeDialog();
-        //关闭弹窗
-      })
-      .catch((err) => {
-        error(i18n("common.interfaceCallError") + err);
-      })
-      .finally(() => {
-        closeLoad();
-      });
+    .then((res) => {
+      closeLoad();
+      if (res?.data?.code != 200) {
+        warning(res?.data?.cnMessage);
+        return;
+      } else {
+        success(res?.data?.cnMessage);
+      }
+      emits("refresh");
+      resetForm();
+      closeDialog();
+      //关闭弹窗
+    })
+    .catch((err) => {
+      error(i18n("common.interfaceCallError") + err);
+    })
+    .finally(() => {
+      closeLoad();
+    });
 };
 const resetForm = () => {
   assignDefault();
 };
 watch(
-    () => dialogOperation.funcName,
-    (funcName: string) => {
-      if (!funcName) return;
-      const type = dialogOperation.type;
-      if (funcName == "merge") {
-        merge(type);
-      } else if (funcName == "mergeDraft") {
-        mergeDraft(type);
-      } else if (funcName == "resetForm") {
-        resetForm();
-      }
-      dialogOperation.funcName = "";
-      dialogOperation.type = "";
-    },
+  () => dialogOperation.funcName,
+  (funcName: string) => {
+    if (!funcName) return;
+    const type = dialogOperation.type;
+    if (funcName == "merge") {
+      merge(type);
+    } else if (funcName == "mergeDraft") {
+      mergeDraft(type);
+    } else if (funcName == "resetForm") {
+      resetForm();
+    }
+    dialogOperation.funcName = "";
+    dialogOperation.type = "";
+  },
 );
 watch(
-    () => dialogProps?.ids,
-    (val) => {
-      if (val == -2) {
-        console.log("val == -2 不予处理");
-      } else if (!val || val == -1) {
-        assignDefault();
-      } else {
-        loadData();
-      }
-    },
-    {
-      immediate: true,
-    },
+  () => dialogProps?.ids,
+  (val) => {
+    if (val == -2) {
+      console.log("val == -2 不予处理");
+    } else if (!val || val == -1) {
+      assignDefault();
+    } else {
+      loadData();
+    }
+  },
+  {
+    immediate: true,
+  },
 );
 
 defineExpose({
@@ -114,47 +114,47 @@ defineExpose({
 
 <template>
   <el-form
-      :model="dataForm"
-      :rules="rules"
-      class="data-form"
-      ref="starHorseFormRef"
-      :disabled="formInfo['disabled'] ?? false"
-      :hide-required-asterisk="formInfo['hideRequiredAsterisk'] ?? false"
-      :inline="formInfo.inline ?? false"
-      :inline-message="formInfo['inlineMessage'] ?? false"
-      :label-position="formInfo['labelPosition']"
-      :label-suffix="formInfo['labelSuffix']"
-      :label-width="formInfo['labelWidth']??'auto'"
-      :require-asterisk-position="formInfo['requireAsteriskPosition']"
-      :scroll-to-error="formInfo['scrollToError'] ?? true"
-      :show-message="formInfo['showMessage'] ?? true"
-      :size="formInfo['size']"
-      :status-icon="formInfo['statusIcon'] ?? true"
-      :validate-on-rule-change="formInfo['validateOnRuleChange'] ?? true"
+    :model="dataForm"
+    :rules="rules"
+    class="data-form"
+    ref="starHorseFormRef"
+    :disabled="formInfo['disabled'] ?? false"
+    :hide-required-asterisk="formInfo['hideRequiredAsterisk'] ?? false"
+    :inline="formInfo.inline ?? false"
+    :inline-message="formInfo['inlineMessage'] ?? false"
+    :label-position="formInfo['labelPosition']"
+    :label-suffix="formInfo['labelSuffix']"
+    :label-width="formInfo['labelWidth'] ?? 'auto'"
+    :require-asterisk-position="formInfo['requireAsteriskPosition']"
+    :scroll-to-error="formInfo['scrollToError'] ?? true"
+    :show-message="formInfo['showMessage'] ?? true"
+    :size="formInfo['size']"
+    :status-icon="formInfo['statusIcon'] ?? true"
+    :validate-on-rule-change="formInfo['validateOnRuleChange'] ?? true"
   >
     <component
-        v-for="(data, key) in fieldList"
-        :key="compKey(data, key, false, 'dyform')"
-        :field="data"
-        :formData="dataForm"
-        :is="itemCheck(data)"
+      v-for="(data, key) in fieldList"
+      :key="compKey(data, key, false, 'dyform')"
+      :field="data"
+      :formData="dataForm"
+      :is="itemCheck(data)"
     />
     <el-form-item v-if="typeModel == 'tab'">
       <el-button
-          @click="merge"
-          style="
+        @click="merge"
+        style="
           background: var(--star-horse-style);
           color: var(--star-horse-white);
         "
       >
         <star-horse-icon
-            icon-class="save"
-            style="color: var(--star-horse-white)"
+          icon-class="save"
+          style="color: var(--star-horse-white)"
         />
         {{ i18n("common.submit") }}
       </el-button>
       <el-button @click="resetForm" link>
-        <star-horse-icon icon-class="undo"/>
+        <star-horse-icon icon-class="undo" />
         {{ i18n("common.reset") }}
       </el-button>
     </el-form-item>

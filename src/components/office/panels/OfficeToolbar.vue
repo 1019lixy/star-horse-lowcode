@@ -1,8 +1,8 @@
 <script setup lang="ts" name="OfficeToolbar">
-import {i18n} from "@/lang";
-import {ShSvgIcon} from "@/components/shared";
-import {OFFICE_DOC_TYPE_PRESETS} from "../constants";
-import type {OfficeDocType} from "../types";
+import { i18n } from "@/lang";
+import { ShSvgIcon } from "@/components/shared";
+import { OFFICE_DOC_TYPE_PRESETS } from "../constants";
+import type { OfficeDocType } from "../types";
 
 defineProps<{
   canUndo: boolean;
@@ -25,19 +25,19 @@ const emit = defineEmits<{
     <div class="toolbar-group">
       <el-tooltip :content="i18n('office.toolbar.new')" :show-after="500">
         <el-button type="primary" @click="emit('new')">
-          <ShSvgIcon name="plus" size="14px"/>
+          <ShSvgIcon name="plus" size="14px" />
           <span class="btn-text">{{ i18n("office.toolbar.new") }}</span>
         </el-button>
       </el-tooltip>
       <el-tooltip :content="i18n('office.toolbar.save')" :show-after="500">
         <el-button @click="emit('save')">
-          <ShSvgIcon name="save" size="14px"/>
+          <ShSvgIcon name="save" size="14px" />
           <span class="btn-text">{{ i18n("office.toolbar.save") }}</span>
         </el-button>
       </el-tooltip>
       <el-tooltip :content="i18n('office.toolbar.export')" :show-after="500">
         <el-button @click="emit('export')">
-          <ShSvgIcon name="export" size="14px"/>
+          <ShSvgIcon name="export" size="14px" />
           <span class="btn-text">{{ i18n("office.toolbar.export") }}</span>
         </el-button>
       </el-tooltip>
@@ -46,25 +46,28 @@ const emit = defineEmits<{
     <div class="toolbar-group">
       <el-tooltip :content="i18n('office.toolbar.undo')" :show-after="500">
         <el-button :disabled="!canUndo" @click="emit('undo')">
-          <ShSvgIcon name="undo" size="14px"/>
+          <ShSvgIcon name="undo" size="14px" />
         </el-button>
       </el-tooltip>
       <el-tooltip :content="i18n('office.toolbar.redo')" :show-after="500">
         <el-button :disabled="!canRedo" @click="emit('redo')">
-          <ShSvgIcon name="redo" size="14px"/>
+          <ShSvgIcon name="redo" size="14px" />
         </el-button>
       </el-tooltip>
     </div>
     <div class="toolbar-divider"></div>
     <div class="toolbar-group type-switch">
       <el-radio-group
-          :model-value="activeType ?? 'word'"
-          @change="(v: string | number | boolean | undefined) => emit('switch-type', v as OfficeDocType)"
+        :model-value="activeType ?? 'word'"
+        @change="
+          (v: string | number | boolean | undefined) =>
+            emit('switch-type', v as OfficeDocType)
+        "
       >
         <el-radio-button
-            v-for="p in OFFICE_DOC_TYPE_PRESETS"
-            :key="p.type"
-            :value="p.type"
+          v-for="p in OFFICE_DOC_TYPE_PRESETS"
+          :key="p.type"
+          :value="p.type"
         >
           {{ p.label }}
         </el-radio-button>
@@ -72,7 +75,6 @@ const emit = defineEmits<{
     </div>
   </div>
 </template>
-
 
 <style lang="scss" scoped>
 .office-toolbar {

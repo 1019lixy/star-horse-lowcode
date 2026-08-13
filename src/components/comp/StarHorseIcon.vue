@@ -1,40 +1,40 @@
 <script setup lang="ts" name="StarHorseIcon">
-import {computed} from "vue";
+import { computed } from "vue";
 
 const props = defineProps({
-  iconClass: {type: String, required: true},
-  className: {type: String},
-  title: {type: String, default: ""},
-  size: {type: String, default: "20px"},
-  marginLeft: {type: String, default: "0.1em"},
-  marginRight: {type: String, default: "0.2em"},
-  borderRadius: {type: String, default: "5px"},
-  borderPadding: {type: String, default: "3px"},
+  iconClass: { type: String, required: true },
+  className: { type: String },
+  title: { type: String, default: "" },
+  size: { type: String, default: "20px" },
+  marginLeft: { type: String, default: "0.1em" },
+  marginRight: { type: String, default: "0.2em" },
+  borderRadius: { type: String, default: "5px" },
+  borderPadding: { type: String, default: "3px" },
   // 图标是否有边框
-  boxShow: {type: Boolean, default: false},
-  border: {type: Boolean, default: false},
-  color: {type: String, default: "var(--star-horse-style)"},
-  cursor: {type: String, default: "default"},
-  svgIconName: {type: String, default: "sh_icon"},
+  boxShow: { type: Boolean, default: false },
+  border: { type: Boolean, default: false },
+  color: { type: String, default: "var(--star-horse-style)" },
+  cursor: { type: String, default: "default" },
+  svgIconName: { type: String, default: "sh_icon" },
 });
 const iconName = computed(() => `sh-${props.iconClass}`);
 const sizeNumber = computed(() => {
   const numberMatch =
-      props.size != null ? String(props.size).match(/\d+/) : null; // 正则匹配连续数字
+    props.size != null ? String(props.size).match(/\d+/) : null; // 正则匹配连续数字
   return numberMatch ? Number(numberMatch[0]) : 0; // 转换为数值，无匹配时返回0
 });
 const width = computed(() =>
-    sizeNumber.value ? `${sizeNumber.value + 3}px` : props.size,
+  sizeNumber.value ? `${sizeNumber.value + 3}px` : props.size,
 );
 const height = computed(() =>
-    sizeNumber.value ? `${sizeNumber.value + 3}px` : props.size,
+  sizeNumber.value ? `${sizeNumber.value + 3}px` : props.size,
 );
 const svgClass = computed(() => {
   let cls = props.border
-      ? `${props.svgIconName} svg-icon icon-border`
-      : props.boxShow
-          ? `${props.svgIconName} svg-icon icon-cls`
-          : `${props.svgIconName} svg-icon`;
+    ? `${props.svgIconName} svg-icon icon-border`
+    : props.boxShow
+      ? `${props.svgIconName} svg-icon icon-cls`
+      : `${props.svgIconName} svg-icon`;
   if (props.className) {
     return cls + " " + props.className;
   } else {
@@ -74,5 +74,5 @@ const svgClass = computed(() => {
 }
 </style>
 <template>
-  <i aria-hidden="false" :class="[svgClass, iconName]" :title="title"/>
+  <i aria-hidden="false" :class="[svgClass, iconName]" :title="title" />
 </template>

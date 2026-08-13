@@ -1,29 +1,32 @@
 <script setup lang="ts" name="KanbanBoard">
-import {reactive, ref} from "vue";
-import {i18n} from "@/lang";
-import {useKanbanDesigner} from "./composables/useKanbanDesigner";
+import { reactive, ref } from "vue";
+import { i18n } from "@/lang";
+import { useKanbanDesigner } from "./composables/useKanbanDesigner";
 import KanbanToolbar from "./panels/KanbanToolbar.vue";
 import KanbanColumnPanel from "./panels/KanbanColumnPanel.vue";
 import KanbanCardDialog from "./dialogs/KanbanCardDialog.vue";
 import KanbanColumnDialog from "./dialogs/KanbanColumnDialog.vue";
-import type {KanbanData} from "./types";
+import type { KanbanData } from "./types";
 
-const props = withDefaults(defineProps<{
-  kanban?: KanbanData;
-  initialKanban?: Partial<KanbanData>;
-  readonly?: boolean;
-  /** 是否允许添加卡片 */
-  canAddCard?: boolean;
-  /** 是否允许删除卡片 */
-  canDeleteCard?: boolean;
-  /** 是否允许拖拽卡片 */
-  canDragCard?: boolean;
-}>(), {
-  readonly: false,
-  canAddCard: true,
-  canDeleteCard: true,
-  canDragCard: true,
-});
+const props = withDefaults(
+  defineProps<{
+    kanban?: KanbanData;
+    initialKanban?: Partial<KanbanData>;
+    readonly?: boolean;
+    /** 是否允许添加卡片 */
+    canAddCard?: boolean;
+    /** 是否允许删除卡片 */
+    canDeleteCard?: boolean;
+    /** 是否允许拖拽卡片 */
+    canDragCard?: boolean;
+  }>(),
+  {
+    readonly: false,
+    canAddCard: true,
+    canDeleteCard: true,
+    canDragCard: true,
+  },
+);
 
 const emits = defineEmits<{
   (e: "update:kanban", v: KanbanData): void;
@@ -100,40 +103,40 @@ const icons: Record<string, string> = {
 <template>
   <div class="kanban-board">
     <kanban-toolbar
-        :designer="designer"
-        :readonly="readonly"
-        :can-add-card="canAddCard"
-        :has-collapsed="hasCollapsed()"
-        :title="initialKanban.name"
-        @save="handleSave"
-        @add-card="handleAddCard()"
-        @expand-all="expandAll"
+      :designer="designer"
+      :readonly="readonly"
+      :can-add-card="canAddCard"
+      :has-collapsed="hasCollapsed()"
+      :title="initialKanban.name"
+      @save="handleSave"
+      @add-card="handleAddCard()"
+      @expand-all="expandAll"
     />
     <div class="board-body">
       <el-splitter direction="horizontal">
         <el-splitter-panel
-            v-for="col in designer.sortedColumns.value"
-            :key="col.id"
-            :size="collapsedIds.has(col.id) ? '48px' : undefined"
-            :min="collapsedIds.has(col.id) ? '48px' : '180px'"
-            :max="collapsedIds.has(col.id) ? '48px' : '500px'"
-            :collapsible="true"
-            :class="{ 'is-column-collapsed': collapsedIds.has(col.id) }"
+          v-for="col in designer.sortedColumns.value"
+          :key="col.id"
+          :size="collapsedIds.has(col.id) ? '48px' : undefined"
+          :min="collapsedIds.has(col.id) ? '48px' : '180px'"
+          :max="collapsedIds.has(col.id) ? '48px' : '500px'"
+          :collapsible="true"
+          :class="{ 'is-column-collapsed': collapsedIds.has(col.id) }"
         >
           <kanban-column-panel
-              :column="col"
-              :designer="designer"
-              :readonly="readonly"
-              :collapsed="collapsedIds.has(col.id)"
-              :can-add-card="canAddCard"
-              :can-delete-card="canDeleteCard"
-              :can-drag-card="canDragCard"
-              @edit="handleEditCard"
-              @edit-column="handleEditColumn"
-              @add-card="handleAddCard"
-              @delete-card="handleDeleteCard"
-              @toggle-collapse="toggleCollapse"
-              @reorder-column="handleReorderColumn"
+            :column="col"
+            :designer="designer"
+            :readonly="readonly"
+            :collapsed="collapsedIds.has(col.id)"
+            :can-add-card="canAddCard"
+            :can-delete-card="canDeleteCard"
+            :can-drag-card="canDragCard"
+            @edit="handleEditCard"
+            @edit-column="handleEditColumn"
+            @add-card="handleAddCard"
+            @delete-card="handleDeleteCard"
+            @toggle-collapse="toggleCollapse"
+            @reorder-column="handleReorderColumn"
           />
         </el-splitter-panel>
         <el-splitter-panel size="auto" min="60px" v-if="!readonly">
@@ -148,15 +151,15 @@ const icons: Record<string, string> = {
     </div>
 
     <kanban-card-dialog
-        v-model:visible="cardDialogVisible"
-        :designer="designer"
-        :card-id="editingCardId"
-        :column-id="presetColumnId"
+      v-model:visible="cardDialogVisible"
+      :designer="designer"
+      :card-id="editingCardId"
+      :column-id="presetColumnId"
     />
     <kanban-column-dialog
-        v-model:visible="columnDialogVisible"
-        :designer="designer"
-        :column-id="editingColumnId"
+      v-model:visible="columnDialogVisible"
+      :designer="designer"
+      :column-id="editingColumnId"
     />
   </div>
 </template>

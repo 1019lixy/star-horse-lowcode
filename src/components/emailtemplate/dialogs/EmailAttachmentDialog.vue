@@ -1,13 +1,13 @@
 <script setup lang="ts" name="EmailAttachmentDialog">
-import {computed, ref, watch} from "vue";
-import {i18n} from "@/lang";
-import type {EmailTemplateDesigner} from "../composables/useEmailTemplateDesigner";
-import {StarHorsePanel} from "@/components/comp";
+import { computed, ref, watch } from "vue";
+import { i18n } from "@/lang";
+import type { EmailTemplateDesigner } from "../composables/useEmailTemplateDesigner";
+import { StarHorsePanel } from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
   designer: EmailTemplateDesigner;
-  dialogType?:"dialog"|"drawer";
+  dialogType?: "dialog" | "drawer";
 }>();
 
 const emit = defineEmits<{
@@ -26,12 +26,12 @@ const form = ref<{ name: string; url: string; size?: number }>({
 });
 
 watch(
-    () => props.visible,
-    (v) => {
-      if (v) {
-        form.value = {name: "", url: "", size: undefined};
-      }
-    },
+  () => props.visible,
+  (v) => {
+    if (v) {
+      form.value = { name: "", url: "", size: undefined };
+    }
+  },
 );
 
 const handleSubmit = () => {
@@ -47,22 +47,33 @@ const handleSubmit = () => {
 
 <template>
   <star-horse-panel
-      :type="dialogType"
-      v-model="innerVisible"
-      :title="i18n('emailtemplate.dialog.addAttachment')"
-      box-width="480px"
-      :self-func="true"
-      @merge="handleSubmit"
+    :type="dialogType"
+    v-model="innerVisible"
+    :title="i18n('emailtemplate.dialog.addAttachment')"
+    box-width="480px"
+    :self-func="true"
+    @merge="handleSubmit"
   >
     <el-form :model="form" label-width="100px" size="default">
       <el-form-item :label="i18n('emailtemplate.attachment.name')">
-        <el-input v-model="form.name" :placeholder="i18n('emailtemplate.attachment.namePlaceholder')"/>
+        <el-input
+          v-model="form.name"
+          :placeholder="i18n('emailtemplate.attachment.namePlaceholder')"
+        />
       </el-form-item>
       <el-form-item :label="i18n('emailtemplate.attachment.url')">
-        <el-input v-model="form.url" :placeholder="i18n('emailtemplate.attachment.urlPlaceholder')"/>
+        <el-input
+          v-model="form.url"
+          :placeholder="i18n('emailtemplate.attachment.urlPlaceholder')"
+        />
       </el-form-item>
       <el-form-item :label="i18n('emailtemplate.attachment.size')">
-        <el-input-number v-model="form.size" :min="0" style="width: 100%" controls-position="right"/>
+        <el-input-number
+          v-model="form.size"
+          :min="0"
+          style="width: 100%"
+          controls-position="right"
+        />
       </el-form-item>
     </el-form>
   </star-horse-panel>

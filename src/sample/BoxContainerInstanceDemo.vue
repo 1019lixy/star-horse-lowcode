@@ -1,19 +1,19 @@
 <template>
   <el-scrollbar>
     <box-item
-        v-for="item in dataItem"
-        :dataForm="formData"
-        :item="item"
-        :formInfo="{}"
+      v-for="item in dataItem"
+      :dataForm="formData"
+      :item="item"
+      :formInfo="{}"
     />
   </el-scrollbar>
 </template>
 
 <script lang="ts" setup>
 import piniaInstance from "@/store";
-import {useDesignFormStore} from "@/store/DesignForm";
-import {onMounted, ref} from "vue";
-import {analysisCompDatas} from "@/api/form_utils";
+import { useDesignFormStore } from "@/store/DesignForm";
+import { onMounted, ref } from "vue";
+import { analysisCompDatas } from "@/api/form_utils";
 import BoxItem from "@/components/comp/items/boxItem.vue";
 
 let designForm = useDesignFormStore(piniaInstance);

@@ -1,14 +1,14 @@
 <script setup lang="ts" name="DiagramPreviewDialog">
-import {computed} from "vue";
-import {i18n} from "@/lang";
-import {getPortPosition, getShapePath} from "../constants";
-import type {DiagramData} from "../types";
-import {StarHorsePanel} from "@/components/comp";
+import { computed } from "vue";
+import { i18n } from "@/lang";
+import { getPortPosition, getShapePath } from "../constants";
+import type { DiagramData } from "../types";
+import { StarHorsePanel } from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
   diagram: DiagramData;
-  dialogType:"dialog"|"drawer";
+  dialogType: "dialog" | "drawer";
 }>();
 
 const emits = defineEmits<{
@@ -59,15 +59,17 @@ const svgContent = computed(() => {
     if (node.text) {
       svg += `<text x="${node.width / 2}" y="${node.height / 2}" fill="${node.style?.textColor || "#333"}" font-size="${node.style?.fontSize || 13}" text-anchor="middle" dominant-baseline="middle">${node.text}</text>`;
     }
-    svg += `</g>`;
+    svg += "</g>";
   }
 
-  svg += `</svg>`;
+  svg += "</svg>";
   return svg;
 });
 
 const handleExportSvg = () => {
-  const blob = new Blob([svgContent.value], {type: "image/svg+xml;charset=utf-8"});
+  const blob = new Blob([svgContent.value], {
+    type: "image/svg+xml;charset=utf-8",
+  });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
@@ -97,34 +99,38 @@ const handleExportPng = async () => {
       URL.revokeObjectURL(url);
     });
   };
-  img.src = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svgString)));
+  img.src =
+    "data:image/svg+xml;base64," +
+    btoa(unescape(encodeURIComponent(svgString)));
 };
 </script>
 
 <template>
   <star-horse-panel
-      :type="dialogType"
-      v-model="innerVisible"
-      :title="i18n('diagram.preview.title')"
-      box-width="80%"
-      box-height="80%"
-      :is-show-reset="false"
-      :is-show-save="false"
-      :self-func="true"
+    :type="dialogType"
+    v-model="innerVisible"
+    :title="i18n('diagram.preview.title')"
+    box-width="80%"
+    box-height="80%"
+    :is-show-reset="false"
+    :is-show-save="false"
+    :self-func="true"
   >
     <div class="diagram-preview-dialog">
       <div class="preview-toolbar">
         <el-button @click="handleExportSvg">
-          {{ i18n('diagram.preview.exportSvg') }}
+          {{ i18n("diagram.preview.exportSvg") }}
         </el-button>
         <el-button @click="handleExportPng">
-          {{ i18n('diagram.preview.exportPng') }}
+          {{ i18n("diagram.preview.exportPng") }}
         </el-button>
       </div>
       <div class="preview-content" v-html="svgContent"></div>
     </div>
     <template #footer>
-      <el-button @click="innerVisible = false">{{ i18n('dialog.close') }}</el-button>
+      <el-button @click="innerVisible = false">{{
+        i18n("dialog.close")
+      }}</el-button>
     </template>
   </star-horse-panel>
 </template>
@@ -146,7 +152,7 @@ const handleExportPng = async () => {
     overflow: auto;
     border: 1px solid var(--el-border-color);
     border-radius: 4px;
-    background: #FFFFFF;
+    background: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;

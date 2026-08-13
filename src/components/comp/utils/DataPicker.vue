@@ -1,15 +1,28 @@
 <script setup lang="ts">
-import {useVModel} from "@vueuse/core";
-import {computed, nextTick, onUnmounted, reactive, ref, watch} from "vue";
-import {i18n} from "@/lang";
-import {postRequest} from "@/api/star_horse_apis";
-import {closeLoad, createCondition} from "@/api/star_horse_utils";
-import {PageProps} from "@/components/types/PageProps";
-import {SearchParams} from "@/components/types";
-import {isMobile} from "@/api/device";
-import {buildPageParams, buildRequestParams, toggleNodeSelection,} from "@/components/comp/utils/DataSelectorUtils";
-import {StarHorseIcon} from "@/components/comp";
-import {Bottom, Check, Delete, Download, QuestionFilled, Sort, Top, Upload,} from "@element-plus/icons-vue";
+import { useVModel } from "@vueuse/core";
+import { computed, nextTick, onUnmounted, reactive, ref, watch } from "vue";
+import { i18n } from "@/lang";
+import { postRequest } from "@/api/star_horse_apis";
+import { closeLoad, createCondition } from "@/api/star_horse_utils";
+import { PageProps } from "@/components/types/PageProps";
+import { SearchParams } from "@/components/types";
+import { isMobile } from "@/api/device";
+import {
+  buildPageParams,
+  buildRequestParams,
+  toggleNodeSelection,
+} from "@/components/comp/utils/DataSelectorUtils";
+import { StarHorseIcon } from "@/components/comp";
+import {
+  Bottom,
+  Check,
+  Delete,
+  Download,
+  QuestionFilled,
+  Sort,
+  Top,
+  Upload,
+} from "@element-plus/icons-vue";
 import Sortable from "sortablejs";
 
 export type ModelValueType = any;
@@ -36,7 +49,7 @@ export interface DataDropdownProps {
   autoClose?: boolean;
   /** APP 端是否启用层级分类筛选 */
   enableHierarchy?: boolean;
-  dialogType?:"dialog"|"drawer";
+  dialogType?: "dialog" | "drawer";
 }
 
 const props = withDefaults(defineProps<DataDropdownProps>(), {
@@ -125,18 +138,19 @@ const buildHierarchyData = (nodes: any[]): any[] => {
   const walk = (arr: any[]): any[] => {
     if (!arr?.length) return [];
     return arr
-        .filter((n: any) => n.children?.length > 0)
-        .map((n: any) => ({
-          ...n,
-          children: walk(n.children),
-        }));
+      .filter((n: any) => n.children?.length > 0)
+      .map((n: any) => ({
+        ...n,
+        children: walk(n.children),
+      }));
   };
   return walk(nodes || []);
 };
 
 /** 初始化级联模式第一列（仅分类节点） */
 const initCascadeColumns = () => {
-  fullTreeData.value = props.data?.length > 0 ? props.data : dataOrgOptions.value;
+  fullTreeData.value =
+    props.data?.length > 0 ? props.data : dataOrgOptions.value;
   treeMaxLevel.value = getTreeMaxLevel(fullTreeData.value);
   // 树形模式的层级树：只保留分类节点
   hierarchyTreeData.value = buildHierarchyData(fullTreeData.value);
@@ -164,7 +178,7 @@ const onCascadeNodeClick = (node: any, level: number) => {
     const subtreeRoot = findNodeByKey(props.data, node[props.displayValue]);
     if (subtreeRoot) {
       localFlatLeaves.value = flattenLeafNodes(
-          subtreeRoot.children?.length > 0 ? subtreeRoot.children : [subtreeRoot],
+        subtreeRoot.children?.length > 0 ? subtreeRoot.children : [subtreeRoot],
       );
     } else {
       localFlatLeaves.value = flattenLeafNodes(props.data);
@@ -215,12 +229,12 @@ const findNodeByKey = (nodes: any[], key: string): any => {
 
 /** 扁平化树：提取每个层级的直接节点用于筛选 */
 const flattenHierarchyLevels = (
-    nodes: any[],
-    level = 0,
-    result: { level: number; nodes: any[] }[] = [],
+  nodes: any[],
+  level = 0,
+  result: { level: number; nodes: any[] }[] = [],
 ) => {
   if (!nodes?.length) return result;
-  if (!result[level]) result[level] = {level, nodes: []};
+  if (!result[level]) result[level] = { level, nodes: [] };
   nodes.forEach((n) => {
     result[level].nodes.push(n);
     if (n.children?.length > 0) {
@@ -234,17 +248,19 @@ const flattenHierarchyLevels = (
 const getTreeMaxLevel = (nodes: any[], level = 0): number => {
   if (!nodes?.length) return level;
   return Math.max(
-      level,
-      ...nodes.map((n) => (n.children?.length > 0 ? getTreeMaxLevel(n.children, level + 1) : level)),
+    level,
+    ...nodes.map((n) =>
+      n.children?.length > 0 ? getTreeMaxLevel(n.children, level + 1) : level,
+    ),
   );
 };
 
 /** 切换层级筛选（树形模式） */
 const onHierarchyClick = (node: any) => {
   const newKey =
-      selectedHierarchyKey.value === node[props.displayValue]
-          ? ""
-          : node[props.displayValue];
+    selectedHierarchyKey.value === node[props.displayValue]
+      ? ""
+      : node[props.displayValue];
   selectedHierarchyKey.value = newKey;
 
   // 本地分页模式下：同步筛选 props.data 中对应 subtree 并扁平化
@@ -255,7 +271,9 @@ const onHierarchyClick = (node: any) => {
       const subtreeRoot = findNodeByKey(props.data, newKey);
       if (subtreeRoot) {
         localFlatLeaves.value = flattenLeafNodes(
-            subtreeRoot.children?.length > 0 ? subtreeRoot.children : [subtreeRoot],
+          subtreeRoot.children?.length > 0
+            ? subtreeRoot.children
+            : [subtreeRoot],
         );
       } else {
         localFlatLeaves.value = flattenLeafNodes(props.data);
@@ -296,11 +314,11 @@ const initSortable = () => {
     chosenClass: "sortable-chosen",
     dragClass: "sortable-drag",
     onEnd: (evt) => {
-      const {oldIndex, newIndex} = evt;
+      const { oldIndex, newIndex } = evt;
       if (
-          oldIndex === undefined ||
-          newIndex === undefined ||
-          oldIndex === newIndex
+        oldIndex === undefined ||
+        newIndex === undefined ||
+        oldIndex === newIndex
       )
         return;
       const list = [...dataOptions.value];
@@ -320,11 +338,11 @@ const destroySortable = () => {
 };
 
 watch(
-    () => props.multiple,
-    (val) => {
-      destroySortable();
-      if (val) nextTick(initSortable);
-    },
+  () => props.multiple,
+  (val) => {
+    destroySortable();
+    if (val) nextTick(initSortable);
+  },
 );
 
 const handleCheckAll = () => {
@@ -361,7 +379,9 @@ const onNodeClick = (treeNode: any) => {
 const removeItem = (item: any) => {
   const list = [...dataOptions.value];
   // 根据传入item查找下标（根据唯一标识匹配，不要直接 ===，对象引用会失效！）
-  const index = list.findIndex((row) => row[props.displayValue] === item[props.displayValue]);
+  const index = list.findIndex(
+    (row) => row[props.displayValue] === item[props.displayValue],
+  );
   if (index === -1) return; // 没找到直接退出，防止splice异常
   list.splice(index, 1);
   dataOptions.value = list;
@@ -416,23 +436,23 @@ const moveEnd = (index: number) => {
 const scrollToActive = () => {
   nextTick(() => {
     const el = selectedListRef.value?.querySelector(
-        `.selected-item[data-index="${activeIndex.value}"]`,
+      `.selected-item[data-index="${activeIndex.value}"]`,
     ) as HTMLElement;
-    el?.scrollIntoView({behavior: "smooth", block: "nearest"});
+    el?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   });
 };
 
 const onSelectedItemClick = (index: number) => {
   if (!props.multiple) {
     dataOptions.value = toggleNodeSelection(
-        dataOptions.value[index],
-        dataOptions.value,
-        {
-          multiple: false,
-          checkStrictly: true,
-          selectLeaf: false,
-          displayValue: props.displayValue || "value",
-        },
+      dataOptions.value[index],
+      dataOptions.value,
+      {
+        multiple: false,
+        checkStrictly: true,
+        selectLeaf: false,
+        displayValue: props.displayValue || "value",
+      },
     );
     activeIndex.value = -1;
     return;
@@ -452,7 +472,10 @@ const onDragStart = (e: PointerEvent) => {
   const onMove = (ev: PointerEvent) => {
     ev.preventDefault();
     const delta = startY - ev.clientY;
-    const newH = Math.max(120, Math.min(startHeight + delta, window.innerHeight - 200));
+    const newH = Math.max(
+      120,
+      Math.min(startHeight + delta, window.innerHeight - 200),
+    );
     selectedBarHeight.value = newH;
   };
   const onUp = (ev: PointerEvent) => {
@@ -463,7 +486,7 @@ const onDragStart = (e: PointerEvent) => {
     document.body.style.userSelect = "";
   };
   document.body.style.userSelect = "none";
-  document.addEventListener("pointermove", onMove, {passive: false});
+  document.addEventListener("pointermove", onMove, { passive: false });
   document.addEventListener("pointerup", onUp);
 };
 
@@ -492,9 +515,9 @@ const dataSearch = () => {
   }
   if (props.dataUrl) {
     loadData(
-        queryName.value
-            ? [createCondition(props.displayName, queryName.value, "lk")]
-            : [],
+      queryName.value
+        ? [createCondition(props.displayName, queryName.value, "lk")]
+        : [],
     );
   } else {
     if (!queryName.value) return;
@@ -519,34 +542,34 @@ const loadData = async (condition?: SearchParams[]) => {
     queryParams.push(...condition);
   }
   const baseParams = buildPageParams(
-      queryParams,
-      props.params,
-      pageInfo.currentPage,
-      props.pageSize || 0,
+    queryParams,
+    props.params,
+    pageInfo.currentPage,
+    props.pageSize || 0,
   );
-  const {url, params} = buildRequestParams(
-      props.dataUrl,
-      baseParams,
-      props.proxy,
-      props.proxyUrl,
+  const { url, params } = buildRequestParams(
+    props.dataUrl,
+    baseParams,
+    props.proxy,
+    props.proxyUrl,
   );
   await postRequest(url, params)
-      .then((res) => {
-        if (res?.data?.code!=200) {
-          console.error(res?.data?.cnMessage);
-          return;
-        }
-        let redata = res?.data?.data;
-        dataOrgOptions.value = redata?.dataList || redata;
-        pageInfo.totalPage = redata?.totalPages;
-        pageInfo.totalData = redata?.totalDatas;
-      })
-      .catch((err: any) => {
-        console.error(err);
-      })
-      .finally(() => {
-        closeLoad();
-      });
+    .then((res) => {
+      if (res?.data?.code != 200) {
+        console.error(res?.data?.cnMessage);
+        return;
+      }
+      let redata = res?.data?.data;
+      dataOrgOptions.value = redata?.dataList || redata;
+      pageInfo.totalPage = redata?.totalPages;
+      pageInfo.totalData = redata?.totalDatas;
+    })
+    .catch((err: any) => {
+      console.error(err);
+    })
+    .finally(() => {
+      closeLoad();
+    });
 };
 const open = () => {
   dialogVisible.value = true;
@@ -580,11 +603,7 @@ const onOpen = async () => {
   }
   // 直接读 props.modelValue，避免 useVModel passive 模式下 local ref 同步时序问题
   const mv = props.modelValue;
-  dataOptions.value = Array.isArray(mv)
-      ? mv
-      : mv
-          ? [mv]
-          : [];
+  dataOptions.value = Array.isArray(mv) ? mv : mv ? [mv] : [];
   activeIndex.value = -1;
   // 初始化层级筛选（不复制树，直接引用）
   initCascadeColumns();
@@ -701,18 +720,18 @@ defineExpose({
 
 <template>
   <star-horse-panel
-      :type="dialogType"
-      :self-func="true"
-      v-model="dialogVisible"
-      @open="onOpen"
-      @merge="handelConfirm"
-      @resetForm="resetData"
-      :full-screen="isMobile"
-      @closeAction="dialogVisible = false"
-      :draggable="true"
-      :title="title || i18n('datapicker.selectData')"
-      boxWidth="60%"
-      boxHeight="70%"
+    :type="dialogType"
+    :self-func="true"
+    v-model="dialogVisible"
+    @open="onOpen"
+    @merge="handelConfirm"
+    @resetForm="resetData"
+    :full-screen="isMobile"
+    @closeAction="dialogVisible = false"
+    :draggable="true"
+    :title="title || i18n('datapicker.selectData')"
+    boxWidth="60%"
+    boxHeight="70%"
   >
     <!-- ===== PC 端多选：左右 splitter 布局 ===== -->
     <el-splitter v-if="!isMobile && multiple" layout="horizontal">
@@ -721,11 +740,11 @@ defineExpose({
           <template #header>
             <div class="flex flex-row items-center w-full justify-between">
               <el-checkbox
-                  v-model="checkAll"
-                  class="!w-[30%]"
-                  v-if="multiple"
-                  :indeterminate="indeterminate"
-                  @change="handleCheckAll"
+                v-model="checkAll"
+                class="!w-[30%]"
+                v-if="multiple"
+                :indeterminate="indeterminate"
+                @change="handleCheckAll"
               >
                 {{ i18n("datapicker.selectAll") }}
               </el-checkbox>
@@ -736,36 +755,36 @@ defineExpose({
           </template>
           <div class="dp-search-bar">
             <el-input
-                v-model="queryName"
-                :placeholder="i18n('datapicker.enterKeywords')"
-                clearable
-                @keyup.enter="dataSearch"
-                @clear="dataSearch"
+              v-model="queryName"
+              :placeholder="i18n('datapicker.enterKeywords')"
+              clearable
+              @keyup.enter="dataSearch"
+              @clear="dataSearch"
             >
               <template #suffix>
                 <div class="dp-search-btn" @click="dataSearch">
-                  <star-horse-icon iconClass="search"/>
+                  <star-horse-icon iconClass="search" />
                 </div>
               </template>
             </el-input>
           </div>
           <el-scrollbar tag="div" class="org-tree">
             <el-tree
-                ref="orgTreeRef"
-                :node-key="displayValue"
-                :data="dataOrgOptions"
-                :default-expanded-keys="expandedKeys"
-                :props="treeProps"
-                :check-strictly="checkStrictly"
-                :filter-node-method="filterNode"
-                @node-click="onNodeClick"
+              ref="orgTreeRef"
+              :node-key="displayValue"
+              :data="dataOrgOptions"
+              :default-expanded-keys="expandedKeys"
+              :props="treeProps"
+              :check-strictly="checkStrictly"
+              :filter-node-method="filterNode"
+              @node-click="onNodeClick"
             >
               <template #default="{ data }">
                 <div class="data-line">
                   <div class="menu-title">
                     <div class="flex flex-row items-center">
                       <star-horse-icon
-                          :icon-class="
+                        :icon-class="
                           data.children?.length > 0 ? 'folder' : 'document'
                         "
                       />
@@ -773,22 +792,22 @@ defineExpose({
                     </div>
                   </div>
                   <el-icon class="is-selected">
-                    <Check/>
+                    <Check />
                   </el-icon>
                 </div>
               </template>
             </el-tree>
           </el-scrollbar>
           <el-pagination
-              v-if="pageSize > 0"
-              :total="pageInfo.totalData"
-              @current-change="pageChangeClick"
-              @size-change="pageSizeClick"
-              :size="compSize"
-              layout="total, sizes, prev, pager, next, jumper"
-              v-model:currentPage="pageInfo.currentPage"
-              v-model:page-size="pageInfo.pageSize"
-              v-model:pageCount="pageInfo.totalPage"
+            v-if="pageSize > 0"
+            :total="pageInfo.totalData"
+            @current-change="pageChangeClick"
+            @size-change="pageSizeClick"
+            :size="compSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            v-model:currentPage="pageInfo.currentPage"
+            v-model:page-size="pageInfo.pageSize"
+            v-model:pageCount="pageInfo.totalPage"
           />
         </el-card>
       </el-splitter-panel>
@@ -796,7 +815,7 @@ defineExpose({
         <el-card shadow="never" class="org-card dialog-body">
           <template #header>
             <div
-                class="flex flex-row items-center justify-between w-full h-[32px]"
+              class="flex flex-row items-center justify-between w-full h-[32px]"
             >
               <div class="flex-1 text-center">
                 {{ i18n("datapicker.selectedDataArea") }}[{{
@@ -804,99 +823,99 @@ defineExpose({
                 }}]
               </div>
               <el-tooltip
-                  :content="i18n('datapicker.helpContent')"
-                  placement="left"
-                  effect="dark"
+                :content="i18n('datapicker.helpContent')"
+                placement="left"
+                effect="dark"
               >
                 <el-icon class="help-icon" :size="16">
-                  <QuestionFilled/>
+                  <QuestionFilled />
                 </el-icon>
               </el-tooltip>
             </div>
           </template>
           <el-scrollbar tag="div" class="org-tree">
             <div
-                ref="selectedListRef"
-                class="selected-list"
-                tabindex="0"
-                @keydown="onSelectedKeydown"
+              ref="selectedListRef"
+              class="selected-list"
+              tabindex="0"
+              @keydown="onSelectedKeydown"
             >
               <div
-                  v-for="(item, index) in dataOptions"
-                  :key="item[displayValue]"
-                  class="selected-item"
-                  :class="{ 'is-active-item': activeIndex === index }"
-                  :data-index="index"
-                  :data-id="item[displayValue]"
-                  @click="onSelectedItemClick(index)"
+                v-for="(item, index) in dataOptions"
+                :key="item[displayValue]"
+                class="selected-item"
+                :class="{ 'is-active-item': activeIndex === index }"
+                :data-index="index"
+                :data-id="item[displayValue]"
+                @click="onSelectedItemClick(index)"
               >
                 <div class="selected-item-content">
                   <el-icon
-                      title="拖拽排序"
-                      v-if="multiple"
-                      class="drag-handle"
-                      :size="20"
+                    title="拖拽排序"
+                    v-if="multiple"
+                    class="drag-handle"
+                    :size="20"
                   >
-                    <Sort/>
+                    <Sort />
                   </el-icon>
                   <star-horse-icon
-                      :icon-class="
+                    :icon-class="
                       item.children?.length > 0 ? 'folder' : 'document'
                     "
-                      size="18px"
+                    size="18px"
                   />
                   <span class="selected-item-label">{{
-                      displayText(item)
-                    }}</span>
+                    displayText(item)
+                  }}</span>
                 </div>
                 <div class="selected-item-actions">
                   <el-icon
-                      :title="i18n('datapicker.moveToFirst')"
-                      v-if="multiple"
-                      :size="22"
-                      :class="{ 'is-disabled-action': index === 0 }"
-                      @click.stop="moveTop(index)"
+                    :title="i18n('datapicker.moveToFirst')"
+                    v-if="multiple"
+                    :size="22"
+                    :class="{ 'is-disabled-action': index === 0 }"
+                    @click.stop="moveTop(index)"
                   >
-                    <Upload/>
+                    <Upload />
                   </el-icon>
                   <el-icon
-                      :title="i18n('datapicker.moveUp')"
-                      v-if="multiple"
-                      :size="22"
-                      :class="{ 'is-disabled-action': index === 0 }"
-                      @click.stop="moveUp(index)"
+                    :title="i18n('datapicker.moveUp')"
+                    v-if="multiple"
+                    :size="22"
+                    :class="{ 'is-disabled-action': index === 0 }"
+                    @click.stop="moveUp(index)"
                   >
-                    <Top/>
+                    <Top />
                   </el-icon>
                   <el-icon
-                      :title="i18n('datapicker.moveToEnd')"
-                      v-if="multiple"
-                      :size="22"
-                      :class="{
+                    :title="i18n('datapicker.moveToEnd')"
+                    v-if="multiple"
+                    :size="22"
+                    :class="{
                       'is-disabled-action': index === dataOptions.length - 1,
                     }"
-                      @click.stop="moveEnd(index)"
+                    @click.stop="moveEnd(index)"
                   >
-                    <Download/>
+                    <Download />
                   </el-icon>
                   <el-icon
-                      :title="i18n('datapicker.moveDown')"
-                      v-if="multiple"
-                      :size="22"
-                      :class="{
+                    :title="i18n('datapicker.moveDown')"
+                    v-if="multiple"
+                    :size="22"
+                    :class="{
                       'is-disabled-action': index === dataOptions.length - 1,
                     }"
-                      @click.stop="moveDown(index)"
+                    @click.stop="moveDown(index)"
                   >
-                    <Bottom/>
+                    <Bottom />
                   </el-icon>
                   <el-icon
-                      :title="i18n('common.delete')"
-                      :size="22"
-                      class="remove-action"
-                      @click.stop="removeItem(item)"
+                    :title="i18n('common.delete')"
+                    :size="22"
+                    class="remove-action"
+                    @click.stop="removeItem(item)"
                   >
-                    <Delete style="color: var(--el-color-danger)"/>
+                    <Delete style="color: var(--el-color-danger)" />
                   </el-icon>
                 </div>
               </div>
@@ -910,11 +929,7 @@ defineExpose({
     </el-splitter>
 
     <!-- ===== PC 端非多选：仅显示待选数据 ===== -->
-    <el-card
-        v-else-if="!isMobile"
-        shadow="never"
-        class="org-card dialog-body"
-    >
+    <el-card v-else-if="!isMobile" shadow="never" class="org-card dialog-body">
       <template #header>
         <div class="flex flex-row items-center w-full justify-center">
           {{ i18n("datapicker.pendingDataArea") }}
@@ -922,36 +937,36 @@ defineExpose({
       </template>
       <div class="dp-search-bar">
         <el-input
-            v-model="queryName"
-            :placeholder="i18n('datapicker.enterKeywords')"
-            clearable
-            @keyup.enter="dataSearch"
-            @clear="dataSearch"
+          v-model="queryName"
+          :placeholder="i18n('datapicker.enterKeywords')"
+          clearable
+          @keyup.enter="dataSearch"
+          @clear="dataSearch"
         >
           <template #suffix>
             <div class="dp-search-btn" @click="dataSearch">
-              <star-horse-icon iconClass="search"/>
+              <star-horse-icon iconClass="search" />
             </div>
           </template>
         </el-input>
       </div>
       <el-scrollbar tag="div" class="org-tree">
         <el-tree
-            ref="orgTreeRef"
-            :node-key="displayValue"
-            :data="dataOrgOptions"
-            :default-expanded-keys="expandedKeys"
-            :props="treeProps"
-            :check-strictly="checkStrictly"
-            :filter-node-method="filterNode"
-            @node-click="onNodeClick"
+          ref="orgTreeRef"
+          :node-key="displayValue"
+          :data="dataOrgOptions"
+          :default-expanded-keys="expandedKeys"
+          :props="treeProps"
+          :check-strictly="checkStrictly"
+          :filter-node-method="filterNode"
+          @node-click="onNodeClick"
         >
           <template #default="{ data }">
             <div class="data-line">
               <div class="menu-title">
                 <div class="flex flex-row items-center">
                   <star-horse-icon
-                      :icon-class="
+                    :icon-class="
                       data.children?.length > 0 ? 'folder' : 'document'
                     "
                   />
@@ -959,22 +974,22 @@ defineExpose({
                 </div>
               </div>
               <el-icon class="is-selected">
-                <Check/>
+                <Check />
               </el-icon>
             </div>
           </template>
         </el-tree>
       </el-scrollbar>
       <el-pagination
-          v-if="pageSize > 0"
-          :total="pageInfo.totalData"
-          @current-change="pageChangeClick"
-          @size-change="pageSizeClick"
-          :size="compSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          v-model:currentPage="pageInfo.currentPage"
-          v-model:page-size="pageInfo.pageSize"
-          v-model:page-count="pageInfo.totalPage"
+        v-if="pageSize > 0"
+        :total="pageInfo.totalData"
+        @current-change="pageChangeClick"
+        @size-change="pageSizeClick"
+        :size="compSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        v-model:currentPage="pageInfo.currentPage"
+        v-model:page-size="pageInfo.pageSize"
+        v-model:page-count="pageInfo.totalPage"
       />
     </el-card>
 
@@ -984,29 +999,29 @@ defineExpose({
       <div class="dp-mobile-header">
         <div class="dp-search-bar dp-mobile-header__search">
           <el-input
-              v-model="queryName"
-              :placeholder="i18n('datapicker.enterKeywords')"
-              clearable
-              @keyup.enter="dataSearch"
-              @clear="dataSearch"
+            v-model="queryName"
+            :placeholder="i18n('datapicker.enterKeywords')"
+            clearable
+            @keyup.enter="dataSearch"
+            @clear="dataSearch"
           >
             <template #suffix>
               <div class="dp-search-btn" @click="dataSearch">
-                <star-horse-icon iconClass="search"/>
+                <star-horse-icon iconClass="search" />
               </div>
             </template>
           </el-input>
         </div>
         <el-popover
-            v-if="enableHierarchy && fullTreeData.length > 0"
-            v-model:visible="hierarchyExpanded"
-            placement="bottom-start"
-            trigger="click"
-            popper-class="dp-hierarchy-popover"
-            :offset="4"
-            width="100%"
-            :show-arrow="false"
-            :close-on-click-modal="true"
+          v-if="enableHierarchy && fullTreeData.length > 0"
+          v-model:visible="hierarchyExpanded"
+          placement="bottom-start"
+          trigger="click"
+          popper-class="dp-hierarchy-popover"
+          :offset="4"
+          width="100%"
+          :show-arrow="false"
+          :close-on-click-modal="true"
         >
           <!-- Popover 内容：层级筛选面板 -->
           <div class="dp-hierarchy-popover__content">
@@ -1014,25 +1029,28 @@ defineExpose({
             <div v-if="hierarchyPanelMode" class="dp-mobile-hierarchy__panel">
               <div class="dp-mobile-hierarchy__panel-cols">
                 <el-scrollbar
-                    v-for="(colNodes, colIdx) in cascadeColumns"
-                    :key="colIdx"
-                    class="dp-mobile-hierarchy__panel-col"
-                    tag="div"
+                  v-for="(colNodes, colIdx) in cascadeColumns"
+                  :key="colIdx"
+                  class="dp-mobile-hierarchy__panel-col"
+                  tag="div"
                 >
                   <div
-                      v-for="n in colNodes"
-                      :key="n[displayValue]"
-                      class="dp-cascade-item"
-                      :class="{
-                      'is-active': cascadeSelectedKeys[colIdx] === n[displayValue],
+                    v-for="n in colNodes"
+                    :key="n[displayValue]"
+                    class="dp-cascade-item"
+                    :class="{
+                      'is-active':
+                        cascadeSelectedKeys[colIdx] === n[displayValue],
                     }"
-                      @click="onCascadeNodeClick(n, colIdx)"
+                    @click="onCascadeNodeClick(n, colIdx)"
                   >
-                    <span class="dp-cascade-item__label">{{ n[displayName] }}</span>
+                    <span class="dp-cascade-item__label">{{
+                      n[displayName]
+                    }}</span>
                     <star-horse-icon
-                        v-if="n.children?.length > 0"
-                        icon-class="arrow-right"
-                        size="12px"
+                      v-if="n.children?.length > 0"
+                      icon-class="arrow-right"
+                      size="12px"
                     />
                   </div>
                 </el-scrollbar>
@@ -1041,24 +1059,34 @@ defineExpose({
             <!-- 树形模式（<3 级树，用 el-tree，只展示分类节点） -->
             <el-scrollbar v-else class="dp-mobile-hierarchy__tree">
               <el-tree
-                  :node-key="displayValue"
-                  :data="hierarchyTreeData"
-                  :props="{ label: displayName??'name', value:displayValue??'value', children: 'children' }"
-                  :default-expanded-keys="expandedKeys"
-                  :current-node-key="selectedHierarchyKey"
-                  highlight-current
-                  @node-click="onHierarchyClick"
+                :node-key="displayValue"
+                :data="hierarchyTreeData"
+                :props="{
+                  label: displayName ?? 'name',
+                  value: displayValue ?? 'value',
+                  children: 'children',
+                }"
+                :default-expanded-keys="expandedKeys"
+                :current-node-key="selectedHierarchyKey"
+                highlight-current
+                @node-click="onHierarchyClick"
               >
                 <template #default="{ data }">
                   <div
-                      class="dp-hierarchy-node"
-                      :class="{ 'is-active': selectedHierarchyKey === data[displayValue] }"
+                    class="dp-hierarchy-node"
+                    :class="{
+                      'is-active': selectedHierarchyKey === data[displayValue],
+                    }"
                   >
                     <star-horse-icon
-                        :icon-class="data.children?.length > 0 ? 'folder' : 'document'"
-                        size="14px"
+                      :icon-class="
+                        data.children?.length > 0 ? 'folder' : 'document'
+                      "
+                      size="14px"
                     />
-                    <span class="dp-hierarchy-node__label">{{ data[displayName] }}</span>
+                    <span class="dp-hierarchy-node__label">{{
+                      data[displayName]
+                    }}</span>
                   </div>
                 </template>
               </el-tree>
@@ -1067,15 +1095,19 @@ defineExpose({
             <!-- 底部操作栏：重置 + 完成 -->
             <div class="dp-mobile-hierarchy__actions">
               <button
-                  v-if="selectedHierarchyKey"
-                  class="dp-mobile-hierarchy__btn dp-mobile-hierarchy__btn--reset"
-                  @click="hierarchyPanelMode ? clearCascadeFilter() : (selectedHierarchyKey = '')"
+                v-if="selectedHierarchyKey"
+                class="dp-mobile-hierarchy__btn dp-mobile-hierarchy__btn--reset"
+                @click="
+                  hierarchyPanelMode
+                    ? clearCascadeFilter()
+                    : (selectedHierarchyKey = '')
+                "
               >
                 {{ i18n("common.reset") }}
               </button>
               <button
-                  class="dp-mobile-hierarchy__btn dp-mobile-hierarchy__btn--confirm"
-                  @click="hierarchyExpanded = false"
+                class="dp-mobile-hierarchy__btn dp-mobile-hierarchy__btn--confirm"
+                @click="hierarchyExpanded = false"
               >
                 {{ i18n("common.yes") }}
               </button>
@@ -1085,19 +1117,28 @@ defineExpose({
           <!-- Popover 触发锚点：筛选按钮 -->
           <template #reference>
             <div
-                class="dp-mobile-header__filter"
-                :class="{ 'is-active': hierarchyExpanded || selectedHierarchyKey }"
+              class="dp-mobile-header__filter"
+              :class="{
+                'is-active': hierarchyExpanded || selectedHierarchyKey,
+              }"
             >
-              <star-horse-icon iconClass="filter" size="16px"/>
-              <span v-if="selectedHierarchyKey" class="dp-mobile-header__filter-label">
-                {{ findNodeByKey(fullTreeData, selectedHierarchyKey)?.[displayName] }}
+              <star-horse-icon iconClass="filter" size="16px" />
+              <span
+                v-if="selectedHierarchyKey"
+                class="dp-mobile-header__filter-label"
+              >
+                {{
+                  findNodeByKey(fullTreeData, selectedHierarchyKey)?.[
+                    displayName
+                  ]
+                }}
               </span>
               <span v-else class="dp-mobile-header__filter-label">{{
-                  i18n("datapicker.hierarchyFilter")
-                }}</span>
+                i18n("datapicker.hierarchyFilter")
+              }}</span>
               <star-horse-icon
-                  :icon-class="hierarchyExpanded ? 'arrow-up' : 'arrow-down'"
-                  size="12px"
+                :icon-class="hierarchyExpanded ? 'arrow-up' : 'arrow-down'"
+                size="12px"
               />
             </div>
           </template>
@@ -1109,41 +1150,47 @@ defineExpose({
         <!-- 全选 + 筛选标签 -->
         <div v-if="multiple" class="dp-mobile-checkall">
           <el-checkbox
-              v-model="checkAll"
-              :indeterminate="indeterminate"
-              @change="handleCheckAll"
+            v-model="checkAll"
+            :indeterminate="indeterminate"
+            @change="handleCheckAll"
           >
             {{ i18n("datapicker.selectAll") }}
           </el-checkbox>
           <el-tag
-              v-if="selectedHierarchyKey"
-              size="small"
-              type="info"
-              effect="plain"
-              closable
-              @close="hierarchyPanelMode ? clearCascadeFilter() : (selectedHierarchyKey = '')"
+            v-if="selectedHierarchyKey"
+            size="small"
+            type="info"
+            effect="plain"
+            closable
+            @close="
+              hierarchyPanelMode
+                ? clearCascadeFilter()
+                : (selectedHierarchyKey = '')
+            "
           >
-            {{ findNodeByKey(fullTreeData, selectedHierarchyKey)?.[displayName] }}
+            {{
+              findNodeByKey(fullTreeData, selectedHierarchyKey)?.[displayName]
+            }}
           </el-tag>
         </div>
 
         <el-scrollbar tag="div" class="dp-mobile-tree">
           <el-tree
-              ref="orgTreeRef"
-              :node-key="displayValue"
-              :data="filteredDataOrgOptions"
-              :default-expanded-keys="expandedKeys"
-              :props="treeProps"
-              :check-strictly="checkStrictly"
-              :filter-node-method="filterNode"
-              @node-click="onNodeClick"
+            ref="orgTreeRef"
+            :node-key="displayValue"
+            :data="filteredDataOrgOptions"
+            :default-expanded-keys="expandedKeys"
+            :props="treeProps"
+            :check-strictly="checkStrictly"
+            :filter-node-method="filterNode"
+            @node-click="onNodeClick"
           >
             <template #default="{ data }">
               <div class="data-line">
                 <div class="menu-title">
                   <div class="flex flex-row items-center">
                     <star-horse-icon
-                        :icon-class="
+                      :icon-class="
                         data.children?.length > 0 ? 'folder' : 'document'
                       "
                     />
@@ -1151,7 +1198,7 @@ defineExpose({
                   </div>
                 </div>
                 <el-icon class="is-selected">
-                  <Check/>
+                  <Check />
                 </el-icon>
               </div>
             </template>
@@ -1159,31 +1206,31 @@ defineExpose({
         </el-scrollbar>
 
         <el-pagination
-            v-if="pageSize > 0 || localPageEnabled"
-            :total="pageInfo.totalData"
-            @current-change="pageChangeClick"
-            @size-change="pageSizeClick"
-            :size="compSize"
-            layout="total, prev, pager, next"
-            v-model:currentPage="pageInfo.currentPage"
-            v-model:page-size="pageInfo.pageSize"
-            v-model:page-count="pageInfo.totalPage"
-            :small="true"
+          v-if="pageSize > 0 || localPageEnabled"
+          :total="pageInfo.totalData"
+          @current-change="pageChangeClick"
+          @size-change="pageSizeClick"
+          :size="compSize"
+          layout="total, prev, pager, next"
+          v-model:currentPage="pageInfo.currentPage"
+          v-model:page-size="pageInfo.pageSize"
+          v-model:page-count="pageInfo.totalPage"
+          :small="true"
         />
       </div>
 
       <!-- 底部已选数据栏（浮动覆盖待选区，不压缩高度） -->
       <div
-          v-if="multiple"
-          class="dp-mobile-selected-bar"
-          :class="{ 'is-expanded': selectedBarExpanded }"
-          :style="selectedBarExpanded ? { height: selectedBarHeight + 'px' } : {}"
+        v-if="multiple"
+        class="dp-mobile-selected-bar"
+        :class="{ 'is-expanded': selectedBarExpanded }"
+        :style="selectedBarExpanded ? { height: selectedBarHeight + 'px' } : {}"
       >
         <!-- 拖拽手柄：展开时显示，拖动改变高度 -->
         <div
-            v-if="selectedBarExpanded"
-            class="dp-mobile-selected-bar__drag"
-            @pointerdown="onDragStart"
+          v-if="selectedBarExpanded"
+          class="dp-mobile-selected-bar__drag"
+          @pointerdown="onDragStart"
         >
           <span class="dp-mobile-selected-bar__drag-icon"></span>
         </div>
@@ -1192,54 +1239,59 @@ defineExpose({
             {{ i18n("datapicker.selectedCount") }}（{{ dataOptions.length }}）
           </span>
 
-          <div
-              class="dp-mobile-selected-bar__toggle"
-          >
-            <div class="dp-mobile-selected-bar__search" v-if="selectedBarExpanded">
+          <div class="dp-mobile-selected-bar__toggle">
+            <div
+              class="dp-mobile-selected-bar__search"
+              v-if="selectedBarExpanded"
+            >
               <el-input
-                  v-model="selectedQuery"
-                  :placeholder="i18n('datapicker.enterKeywords')"
-                  clearable
-                  size="small"
+                v-model="selectedQuery"
+                :placeholder="i18n('datapicker.enterKeywords')"
+                clearable
+                size="small"
               >
                 <template #suffix>
                   <div class="dp-search-btn">
-                    <star-horse-icon iconClass="search"/>
+                    <star-horse-icon iconClass="search" />
                   </div>
                 </template>
               </el-input>
             </div>
-            <div class="flex flex-row items-center" @click="selectedBarExpanded = !selectedBarExpanded">
-              <span v-if="!selectedBarExpanded">{{ i18n("datapicker.expand") }}</span>
+            <div
+              class="flex flex-row items-center"
+              @click="selectedBarExpanded = !selectedBarExpanded"
+            >
+              <span v-if="!selectedBarExpanded">{{
+                i18n("datapicker.expand")
+              }}</span>
               <span v-else>{{ i18n("datapicker.collapse") }}</span>
               <star-horse-icon
-                  :icon-class="selectedBarExpanded ? 'arrow-down' : 'arrow-up'"
-                  size="14px"
+                :icon-class="selectedBarExpanded ? 'arrow-down' : 'arrow-up'"
+                size="14px"
               />
             </div>
           </div>
         </div>
         <div v-show="selectedBarExpanded" class="dp-mobile-selected-bar__body">
-
           <el-scrollbar tag="div" class="dp-mobile-selected-list">
             <div
-                v-for="item in filteredSelectedItems"
-                :key="item[displayValue]"
-                class="dp-mobile-selected-item"
-                @click="onSelectedItemClick(item)"
+              v-for="item in filteredSelectedItems"
+              :key="item[displayValue]"
+              class="dp-mobile-selected-item"
+              @click="onSelectedItemClick(item)"
             >
               <span class="dp-mobile-selected-item__label">{{
-                  displayText(item)
-                }}</span>
+                displayText(item)
+              }}</span>
               <star-horse-icon
-                  icon-class="close"
-                  class="dp-mobile-selected-item__remove"
-                  @click.stop="removeItem(item)"
+                icon-class="close"
+                class="dp-mobile-selected-item__remove"
+                @click.stop="removeItem(item)"
               />
             </div>
             <div
-                v-if="filteredSelectedItems.length === 0"
-                class="dp-mobile-selected-bar__empty"
+              v-if="filteredSelectedItems.length === 0"
+              class="dp-mobile-selected-bar__empty"
             >
               {{ i18n("datapicker.noData") }}
             </div>
@@ -1559,7 +1611,9 @@ defineExpose({
   cursor: pointer;
   border-radius: 4px;
   margin: 1px 3px;
-  transition: background 0.15s, color 0.15s;
+  transition:
+    background 0.15s,
+    color 0.15s;
   white-space: nowrap;
   overflow: hidden;
 
@@ -1926,7 +1980,9 @@ defineExpose({
   --el-popover-padding: 0;
   padding: 0 !important;
   border-radius: 8px !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.12),
+    0 2px 6px rgba(0, 0, 0, 0.06);
   /* 宽高由内容撑开，仅设上限防止超出视口 */
   max-width: calc(100vw - 16px) !important;
   max-height: calc(100vh - 120px) !important;

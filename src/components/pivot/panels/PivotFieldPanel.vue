@@ -1,10 +1,10 @@
 <script setup lang="ts" name="PivotFieldPanel">
-import {computed} from "vue";
-import {i18n} from "@/lang";
+import { computed } from "vue";
+import { i18n } from "@/lang";
 import draggable from "vuedraggable-es";
-import type {PivotDesigner} from "../composables/usePivotDesigner";
-import type {PivotField} from "../types";
-import {ShSvgIcon} from "@/components/shared";
+import type { PivotDesigner } from "../composables/usePivotDesigner";
+import type { PivotField } from "../types";
+import { ShSvgIcon } from "@/components/shared";
 
 const props = defineProps<{
   designer: PivotDesigner;
@@ -24,7 +24,8 @@ const dragOptions = {
 
 /** 行字段列表（draggable v-model，必须用 computed 包装为可写响应式引用） */
 const rowFields = computed<PivotField[]>({
-  get: () => props.designer.state.config.rows
+  get: () =>
+    props.designer.state.config.rows
       .map((name) => props.designer.state.fields.find((f) => f.name === name))
       .filter(Boolean) as PivotField[],
   set: (val) => {
@@ -33,7 +34,8 @@ const rowFields = computed<PivotField[]>({
 });
 
 const colFields = computed<PivotField[]>({
-  get: () => props.designer.state.config.columns
+  get: () =>
+    props.designer.state.config.columns
       .map((name) => props.designer.state.fields.find((f) => f.name === name))
       .filter(Boolean) as PivotField[],
   set: (val) => {
@@ -42,7 +44,8 @@ const colFields = computed<PivotField[]>({
 });
 
 const valFields = computed<PivotField[]>({
-  get: () => props.designer.state.config.values
+  get: () =>
+    props.designer.state.config.values
       .map((name) => props.designer.state.fields.find((f) => f.name === name))
       .filter(Boolean) as PivotField[],
   set: (val) => {
@@ -83,20 +86,24 @@ const fieldTypeLabelKey = (type: string): string => {
     <div class="section">
       <div class="section-title">{{ i18n("pivot.section.fields") }}</div>
       <draggable
-          v-model="unusedFieldList"
-          v-bind="dragOptions"
-          :item-key="(f: PivotField) => f.name"
-          class="field-list"
-          @add="(e) => e.element && handleDropToUnused(e.element)"
+        v-model="unusedFieldList"
+        v-bind="dragOptions"
+        :item-key="(f: PivotField) => f.name"
+        class="field-list"
+        @add="(e) => e.element && handleDropToUnused(e.element)"
       >
         <!-- @vue-ignore vuedraggable-es 未声明 #item slot 类型 -->
         <template #item="{ element }: { element: PivotField }">
           <div class="field-chip" @dblclick="emit('editField', element.name)">
-            <ShSvgIcon :name="fieldTypeIcon(element.type)" size="12px"/>
+            <ShSvgIcon :name="fieldTypeIcon(element.type)" size="12px" />
             <span class="chip-text">{{ element.label }}</span>
-            <el-button text size="small" @click.stop="emit('editField', element.name)"
-                       :title="i18n('pivot.btn.configField')">
-              <ShSvgIcon name="settings" size="12px"/>
+            <el-button
+              text
+              size="small"
+              @click.stop="emit('editField', element.name)"
+              :title="i18n('pivot.btn.configField')"
+            >
+              <ShSvgIcon name="settings" size="12px" />
             </el-button>
           </div>
         </template>
@@ -107,27 +114,37 @@ const fieldTypeLabelKey = (type: string): string => {
       <!-- 行区域 -->
       <div class="drop-zone">
         <div class="zone-title">
-          <ShSvgIcon name="total" size="12px"/>
+          <ShSvgIcon name="total" size="12px" />
           {{ i18n("pivot.section.rows") }}
         </div>
         <draggable
-            v-model="rowFields"
-            v-bind="dragOptions"
-            :item-key="(f: PivotField) => f.name"
-            class="zone-content"
+          v-model="rowFields"
+          v-bind="dragOptions"
+          :item-key="(f: PivotField) => f.name"
+          class="zone-content"
         >
           <!-- @vue-ignore vuedraggable-es 未声明 #item slot 类型 -->
           <template #item="{ element }: { element: PivotField }">
             <div class="field-chip row-chip">
               <span class="chip-label">{{ element.label }}</span>
-              <el-tag size="small" effect="plain">{{ i18n(fieldTypeLabelKey(element.type)) }}</el-tag>
-              <el-button text size="small" @click.stop="emit('editField', element.name)"
-                         :title="i18n('pivot.btn.configField')">
-                <ShSvgIcon name="settings" size="12px"/>
+              <el-tag size="small" effect="plain">{{
+                i18n(fieldTypeLabelKey(element.type))
+              }}</el-tag>
+              <el-button
+                text
+                size="small"
+                @click.stop="emit('editField', element.name)"
+                :title="i18n('pivot.btn.configField')"
+              >
+                <ShSvgIcon name="settings" size="12px" />
               </el-button>
-              <el-button text size="small" @click.stop="designer.removeFromRow(element.name)"
-                         :title="i18n('pivot.btn.removeField')">
-                <ShSvgIcon name="close" size="12px"/>
+              <el-button
+                text
+                size="small"
+                @click.stop="designer.removeFromRow(element.name)"
+                :title="i18n('pivot.btn.removeField')"
+              >
+                <ShSvgIcon name="close" size="12px" />
               </el-button>
             </div>
           </template>
@@ -137,27 +154,37 @@ const fieldTypeLabelKey = (type: string): string => {
       <!-- 列区域 -->
       <div class="drop-zone">
         <div class="zone-title">
-          <ShSvgIcon name="total" size="12px"/>
+          <ShSvgIcon name="total" size="12px" />
           {{ i18n("pivot.section.columns") }}
         </div>
         <draggable
-            v-model="colFields"
-            v-bind="dragOptions"
-            :item-key="(f: PivotField) => f.name"
-            class="zone-content"
+          v-model="colFields"
+          v-bind="dragOptions"
+          :item-key="(f: PivotField) => f.name"
+          class="zone-content"
         >
           <!-- @vue-ignore vuedraggable-es 未声明 #item slot 类型 -->
           <template #item="{ element }: { element: PivotField }">
             <div class="field-chip col-chip">
               <span class="chip-label">{{ element.label }}</span>
-              <el-tag size="small" effect="plain">{{ i18n(fieldTypeLabelKey(element.type)) }}</el-tag>
-              <el-button text size="small" @click.stop="emit('editField', element.name)"
-                         :title="i18n('pivot.btn.configField')">
-                <ShSvgIcon name="settings" size="12px"/>
+              <el-tag size="small" effect="plain">{{
+                i18n(fieldTypeLabelKey(element.type))
+              }}</el-tag>
+              <el-button
+                text
+                size="small"
+                @click.stop="emit('editField', element.name)"
+                :title="i18n('pivot.btn.configField')"
+              >
+                <ShSvgIcon name="settings" size="12px" />
               </el-button>
-              <el-button text size="small" @click.stop="designer.removeFromColumn(element.name)"
-                         :title="i18n('pivot.btn.removeField')">
-                <ShSvgIcon name="close" size="12px"/>
+              <el-button
+                text
+                size="small"
+                @click.stop="designer.removeFromColumn(element.name)"
+                :title="i18n('pivot.btn.removeField')"
+              >
+                <ShSvgIcon name="close" size="12px" />
               </el-button>
             </div>
           </template>
@@ -167,27 +194,37 @@ const fieldTypeLabelKey = (type: string): string => {
       <!-- 值区域 -->
       <div class="drop-zone">
         <div class="zone-title">
-          <ShSvgIcon name="chart" size="12px"/>
+          <ShSvgIcon name="chart" size="12px" />
           {{ i18n("pivot.section.values") }}
         </div>
         <draggable
-            v-model="valFields"
-            v-bind="dragOptions"
-            :item-key="(f: PivotField) => f.name"
-            class="zone-content"
+          v-model="valFields"
+          v-bind="dragOptions"
+          :item-key="(f: PivotField) => f.name"
+          class="zone-content"
         >
           <!-- @vue-ignore vuedraggable-es 未声明 #item slot 类型 -->
           <template #item="{ element }: { element: PivotField }">
             <div class="field-chip value-chip">
               <span class="chip-label">{{ element.label }}</span>
-              <el-tag size="small" effect="plain" type="warning">{{ element.aggregation }}</el-tag>
-              <el-button text size="small" @click.stop="emit('editField', element.name)"
-                         :title="i18n('pivot.btn.configField')">
-                <ShSvgIcon name="settings" size="12px"/>
+              <el-tag size="small" effect="plain" type="warning">{{
+                element.aggregation
+              }}</el-tag>
+              <el-button
+                text
+                size="small"
+                @click.stop="emit('editField', element.name)"
+                :title="i18n('pivot.btn.configField')"
+              >
+                <ShSvgIcon name="settings" size="12px" />
               </el-button>
-              <el-button text size="small" @click.stop="designer.removeFromValue(element.name)"
-                         :title="i18n('pivot.btn.removeField')">
-                <ShSvgIcon name="close" size="12px"/>
+              <el-button
+                text
+                size="small"
+                @click.stop="designer.removeFromValue(element.name)"
+                :title="i18n('pivot.btn.removeField')"
+              >
+                <ShSvgIcon name="close" size="12px" />
               </el-button>
             </div>
           </template>
@@ -198,7 +235,7 @@ const fieldTypeLabelKey = (type: string): string => {
 </template>
 
 <script lang="ts">
-export default {components: {}};
+export default { components: {} };
 </script>
 
 <style lang="scss" scoped>

@@ -1,21 +1,24 @@
 <template>
   <div class="barcode-box">
     <!-- 唯一svg容器，只渲染1个条码 -->
-    <barcode-item :field="{
-      fieldName:'testBarcode',
-      preps:{}
-    }" v-model:form-data="formData"/>
+    <barcode-item
+      :field="{
+        fieldName: 'testBarcode',
+        preps: {},
+      }"
+      v-model:form-data="formData"
+    />
     <svg ref="barCodeRef"></svg>
 
     <!-- 输入框动态修改条码内容 -->
-    <input v-model="codeVal" placeholder="输入条码内容"/>
+    <input v-model="codeVal" placeholder="输入条码内容" />
     <!-- 下载按钮 -->
     <button @click="downloadBar">下载条码PNG</button>
   </div>
 </template>
 
 <script setup lang="ts">
-import {nextTick, onMounted, ref, watch} from "vue";
+import { nextTick, onMounted, ref, watch } from "vue";
 import JsBarcode from "jsbarcode";
 import BarcodeItem from "@/components/formcomp/items/barcode-item.vue";
 
@@ -23,7 +26,7 @@ import BarcodeItem from "@/components/formcomp/items/barcode-item.vue";
 const codeVal = ref("SN20260727001");
 const barCodeRef = ref(null);
 const formData = ref({
-  testBarcode: "SN20260727005"
+  testBarcode: "SN20260727005",
 });
 // 渲染条码通用方法
 const drawBarcode = () => {
@@ -36,7 +39,7 @@ const drawBarcode = () => {
     textMargin: 6,
     margin: 10,
     background: "#fff",
-    lineColor: "#000"
+    lineColor: "#000",
   });
 };
 
@@ -55,7 +58,7 @@ const downloadBar = () => {
   const svgEl = document.getElementById("barcode") as SVGSVGElement;
   const serializer = new XMLSerializer();
   const svgStr = serializer.serializeToString(svgEl);
-  const blob = new Blob([svgStr], {type: "image/svg+xml"});
+  const blob = new Blob([svgStr], { type: "image/svg+xml" });
   const url = URL.createObjectURL(blob);
 
   const img = new Image();

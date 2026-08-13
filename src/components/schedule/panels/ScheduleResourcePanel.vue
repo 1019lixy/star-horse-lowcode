@@ -1,8 +1,8 @@
 <script setup lang="ts" name="ScheduleResourcePanel">
-import {computed, ref, watch} from "vue";
-import {i18n} from "@/lang";
-import type {ScheduleDesigner} from "../composables/useScheduleDesigner";
-import {SCHEDULE_RESOURCE_TYPE_PRESETS} from "../constants";
+import { computed, ref, watch } from "vue";
+import { i18n } from "@/lang";
+import type { ScheduleDesigner } from "../composables/useScheduleDesigner";
+import { SCHEDULE_RESOURCE_TYPE_PRESETS } from "../constants";
 
 const props = defineProps<{
   designer: ScheduleDesigner;
@@ -15,11 +15,13 @@ const emit = defineEmits<{
 
 const listScrollRef = ref<HTMLElement>();
 const rowHeight = computed(() => props.designer.state.config.rowHeight);
-const selectedResourceId = computed(() => props.designer.selectedResourceId.value);
+const selectedResourceId = computed(
+  () => props.designer.selectedResourceId.value,
+);
 const resources = computed(() => props.designer.sortedResources.value);
 
 const getResTypeLabel = (type: string) =>
-    SCHEDULE_RESOURCE_TYPE_PRESETS.find((t) => t.value === type)?.label ?? type;
+  SCHEDULE_RESOURCE_TYPE_PRESETS.find((t) => t.value === type)?.label ?? type;
 
 /** 行点击 → 选中资源 */
 const handleRowClick = (id: string) => {
@@ -42,7 +44,9 @@ const handleNameDblClick = (e: MouseEvent, id: string, name: string) => {
 };
 const handleNameBlur = () => {
   if (editingId.value && editingName.value.trim()) {
-    props.designer.updateResource(editingId.value, {name: editingName.value.trim()});
+    props.designer.updateResource(editingId.value, {
+      name: editingName.value.trim(),
+    });
   }
   editingId.value = null;
 };
@@ -77,8 +81,8 @@ const handleDrop = (e: DragEvent, targetId: string) => {
   e.preventDefault();
   const sourceId = dragResourceId.value;
   if (!sourceId || sourceId === targetId) return;
-  const source = props.designer.state.resources.find(r => r.id === sourceId);
-  const target = props.designer.state.resources.find(r => r.id === targetId);
+  const source = props.designer.state.resources.find((r) => r.id === sourceId);
+  const target = props.designer.state.resources.find((r) => r.id === targetId);
   if (!source || !target) return;
   const tempOrder = source.order;
   source.order = target.order;
@@ -93,24 +97,28 @@ const handleDragEnd = () => {
 };
 
 /** 暴露滚动元素供 ScheduleView 同步 */
-defineExpose({listScrollRef});
+defineExpose({ listScrollRef });
 
 /** 监听选中资源，自动滚动到可见区域 */
-watch(() => props.designer.selectedResourceId.value, (id) => {
-  if (!id) return;
-  const idx = resources.value.findIndex(r => r.id === id);
-  if (idx < 0) return;
-  const container = listScrollRef.value;
-  if (!container) return;
-  const rowY = idx * rowHeight.value;
-  const headerHeight = 40;
-  const scrollTop = container.scrollTop;
-  const viewHeight = container.clientHeight - headerHeight;
-  const relativeY = rowY - (scrollTop - headerHeight);
-  if (relativeY < 0 || relativeY > viewHeight - rowHeight.value) {
-    container.scrollTop = rowY - viewHeight / 2 + rowHeight.value / 2 + headerHeight;
-  }
-});
+watch(
+  () => props.designer.selectedResourceId.value,
+  (id) => {
+    if (!id) return;
+    const idx = resources.value.findIndex((r) => r.id === id);
+    if (idx < 0) return;
+    const container = listScrollRef.value;
+    if (!container) return;
+    const rowY = idx * rowHeight.value;
+    const headerHeight = 40;
+    const scrollTop = container.scrollTop;
+    const viewHeight = container.clientHeight - headerHeight;
+    const relativeY = rowY - (scrollTop - headerHeight);
+    if (relativeY < 0 || relativeY > viewHeight - rowHeight.value) {
+      container.scrollTop =
+        rowY - viewHeight / 2 + rowHeight.value / 2 + headerHeight;
+    }
+  },
+);
 </script>
 
 <template>
@@ -120,68 +128,115 @@ watch(() => props.designer.selectedResourceId.value, (id) => {
       <span class="header-title">{{ i18n("schedule.resource.title") }}</span>
       <div class="header-actions">
         <button
-            v-if="!readonly"
-            class="svg-btn"
-            :title="i18n('schedule.btn.addResource')"
-            @click="designer.addResource()"
+          v-if="!readonly"
+          class="svg-btn"
+          :title="i18n('schedule.btn.addResource')"
+          @click="designer.addResource()"
         >
           <svg viewBox="0 0 24 24" width="14" height="14">
-            <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <path
+              d="M12 5v14M5 12h14"
+              stroke="currentColor"
+              stroke-width="2"
+              fill="none"
+              stroke-linecap="round"
+            />
           </svg>
         </button>
         <button
-            v-if="!readonly && selectedResourceId"
-            class="svg-btn"
-            :title="i18n('schedule.btn.moveToTop')"
-            @click="selectedResourceId && designer.moveResourceToTop(selectedResourceId)"
+          v-if="!readonly && selectedResourceId"
+          class="svg-btn"
+          :title="i18n('schedule.btn.moveToTop')"
+          @click="
+            selectedResourceId && designer.moveResourceToTop(selectedResourceId)
+          "
         >
           <svg viewBox="0 0 24 24" width="14" height="14">
-            <path d="M6 4h12M12 20V8M7 12l5-5 5 5" stroke="currentColor" stroke-width="2" fill="none"
-                  stroke-linecap="round" stroke-linejoin="round"/>
+            <path
+              d="M6 4h12M12 20V8M7 12l5-5 5 5"
+              stroke="currentColor"
+              stroke-width="2"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
           </svg>
         </button>
         <button
-            v-if="!readonly && selectedResourceId"
-            class="svg-btn"
-            :title="i18n('schedule.btn.moveUp')"
-            @click="selectedResourceId && designer.moveResourceUp(selectedResourceId)"
+          v-if="!readonly && selectedResourceId"
+          class="svg-btn"
+          :title="i18n('schedule.btn.moveUp')"
+          @click="
+            selectedResourceId && designer.moveResourceUp(selectedResourceId)
+          "
         >
           <svg viewBox="0 0 24 24" width="14" height="14">
-            <path d="M12 20V8M7 12l5-5 5 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"
-                  stroke-linejoin="round"/>
+            <path
+              d="M12 20V8M7 12l5-5 5 5"
+              stroke="currentColor"
+              stroke-width="2"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
           </svg>
         </button>
         <button
-            v-if="!readonly && selectedResourceId"
-            class="svg-btn"
-            :title="i18n('schedule.btn.moveDown')"
-            @click="selectedResourceId && designer.moveResourceDown(selectedResourceId)"
+          v-if="!readonly && selectedResourceId"
+          class="svg-btn"
+          :title="i18n('schedule.btn.moveDown')"
+          @click="
+            selectedResourceId && designer.moveResourceDown(selectedResourceId)
+          "
         >
           <svg viewBox="0 0 24 24" width="14" height="14">
-            <path d="M12 4v12M7 12l5 5 5-5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"
-                  stroke-linejoin="round"/>
+            <path
+              d="M12 4v12M7 12l5 5 5-5"
+              stroke="currentColor"
+              stroke-width="2"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
           </svg>
         </button>
         <button
-            v-if="!readonly && selectedResourceId"
-            class="svg-btn"
-            :title="i18n('schedule.btn.moveToBottom')"
-            @click="selectedResourceId && designer.moveResourceToBottom(selectedResourceId)"
+          v-if="!readonly && selectedResourceId"
+          class="svg-btn"
+          :title="i18n('schedule.btn.moveToBottom')"
+          @click="
+            selectedResourceId &&
+            designer.moveResourceToBottom(selectedResourceId)
+          "
         >
           <svg viewBox="0 0 24 24" width="14" height="14">
-            <path d="M6 20h12M12 4v12M7 12l5 5 5-5" stroke="currentColor" stroke-width="2" fill="none"
-                  stroke-linecap="round" stroke-linejoin="round"/>
+            <path
+              d="M6 20h12M12 4v12M7 12l5 5 5-5"
+              stroke="currentColor"
+              stroke-width="2"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
           </svg>
         </button>
         <button
-            v-if="!readonly && selectedResourceId"
-            class="svg-btn danger"
-            :title="i18n('schedule.btn.removeResource')"
-            @click="selectedResourceId && designer.removeResource(selectedResourceId)"
+          v-if="!readonly && selectedResourceId"
+          class="svg-btn danger"
+          :title="i18n('schedule.btn.removeResource')"
+          @click="
+            selectedResourceId && designer.removeResource(selectedResourceId)
+          "
         >
           <svg viewBox="0 0 24 24" width="14" height="14">
-            <path d="M6 7h12M9 7V5h6v2M8 7v12h8V7M10 11v5M14 11v5" stroke="currentColor" stroke-width="1.5" fill="none"
-                  stroke-linecap="round" stroke-linejoin="round"/>
+            <path
+              d="M6 7h12M9 7V5h6v2M8 7v12h8V7M10 11v5M14 11v5"
+              stroke="currentColor"
+              stroke-width="1.5"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
           </svg>
         </button>
       </div>
@@ -190,25 +245,28 @@ watch(() => props.designer.selectedResourceId.value, (id) => {
     <!-- 行列表 -->
     <div class="panel-body" ref="listScrollRef">
       <div
-          v-for="(resource, idx) in resources"
-          :key="resource.id"
-          class="resource-row"
-          :class="{
-                    selected: resource.id === selectedResourceId,
-                    'row-even': idx % 2 === 0,
-                    'row-odd': idx % 2 !== 0,
-                    dragging: resource.id === dragResourceId,
-                    'drag-over': resource.id === dragOverResourceId
-                }"
-          :style="{ height: `${rowHeight}px`, borderLeftColor: resource.color || 'var(--el-color-primary)' }"
-          draggable="true"
-          @click="handleRowClick(resource.id)"
-          @dblclick="handleRowDblClick(resource.id)"
-          @dragstart="(e) => handleDragStart(e, resource.id)"
-          @dragover="(e) => handleDragOver(e, resource.id)"
-          @dragleave="handleDragLeave"
-          @drop="(e) => handleDrop(e, resource.id)"
-          @dragend="handleDragEnd"
+        v-for="(resource, idx) in resources"
+        :key="resource.id"
+        class="resource-row"
+        :class="{
+          selected: resource.id === selectedResourceId,
+          'row-even': idx % 2 === 0,
+          'row-odd': idx % 2 !== 0,
+          dragging: resource.id === dragResourceId,
+          'drag-over': resource.id === dragOverResourceId,
+        }"
+        :style="{
+          height: `${rowHeight}px`,
+          borderLeftColor: resource.color || 'var(--el-color-primary)',
+        }"
+        draggable="true"
+        @click="handleRowClick(resource.id)"
+        @dblclick="handleRowDblClick(resource.id)"
+        @dragstart="(e) => handleDragStart(e, resource.id)"
+        @dragover="(e) => handleDragOver(e, resource.id)"
+        @dragleave="handleDragLeave"
+        @drop="(e) => handleDrop(e, resource.id)"
+        @dragend="handleDragEnd"
       >
         <div class="row-index">{{ idx + 1 }}</div>
         <div class="row-avatar">
@@ -218,19 +276,22 @@ watch(() => props.designer.selectedResourceId.value, (id) => {
         </div>
         <div class="row-info">
           <input
-              v-if="editingId === resource.id"
-              class="name-input"
-              v-model="editingName"
-              @blur="handleNameBlur"
-              @keydown="handleNameKeydown"
-              autofocus
+            v-if="editingId === resource.id"
+            class="name-input"
+            v-model="editingName"
+            @blur="handleNameBlur"
+            @keydown="handleNameKeydown"
+            autofocus
           />
           <span
-              v-else
-              class="resource-name"
-              @dblclick="(e) => handleNameDblClick(e, resource.id, resource.name)"
-          >{{ resource.name }}</span>
-          <span class="resource-type">{{ getResTypeLabel(resource.type) }}</span>
+            v-else
+            class="resource-name"
+            @dblclick="(e) => handleNameDblClick(e, resource.id, resource.name)"
+            >{{ resource.name }}</span
+          >
+          <span class="resource-type">{{
+            getResTypeLabel(resource.type)
+          }}</span>
         </div>
       </div>
       <div class="empty-tip" v-if="resources.length === 0">

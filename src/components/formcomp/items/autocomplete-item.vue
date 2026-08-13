@@ -1,40 +1,40 @@
 <template>
   <EditDataDialog
-      v-model="dialogInputVisible"
-      :disabled="checkIsDisabled(props)"
-      :initial-content="String(formData[field.fieldName])"
-      @confirm="handleContentConfirm"
+    v-model="dialogInputVisible"
+    :disabled="checkIsDisabled(props)"
+    :initial-content="String(formData[field.fieldName])"
+    @confirm="handleContentConfirm"
   />
   <starhorse-form-item
-      :showFormItem="showFormItem"
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :field="field"
-      :parentField="parentField"
+    :showFormItem="showFormItem"
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :bareFlag="bareFlag"
+    :field="field"
+    :parentField="parentField"
   >
     <!-- PC 端：完全保持原逻辑 -->
     <el-autocomplete
-        v-if="!isSeparate"
-        :fid="field.fieldName"
-        :disabled="checkIsDisabled(props)"
-        :fetch-suggestions="querySearch"
-        v-bind="prepsFilter(field.preps)"
-        v-on="getDynamicEvents(props, itemAction, formData)"
-        @dblclick.stop="editContent"
-        v-model="normalData"
+      v-if="!isSeparate"
+      :fid="field.fieldName"
+      :disabled="checkIsDisabled(props)"
+      :fetch-suggestions="querySearch"
+      v-bind="prepsFilter(field.preps)"
+      v-on="getDynamicEvents(props, itemAction, formData)"
+      @dblclick.stop="editContent"
+      v-model="normalData"
     >
       <template #prefix>
         <star-horse-icon
-            :icon-class="field.preps?.prefixIcon"
-            v-if="field.preps?.prefixIcon"
+          :icon-class="field.preps?.prefixIcon"
+          v-if="field.preps?.prefixIcon"
         />
         <span v-if="field.preps?.prefix">{{ field.preps?.prefix }}</span>
       </template>
       <template #suffix>
         <star-horse-icon
-            :icon-class="field.preps?.suffixIcon"
-            v-if="field.preps?.suffixIcon"
+          :icon-class="field.preps?.suffixIcon"
+          v-if="field.preps?.suffixIcon"
         />
         <span v-if="field.preps?.suffix">{{ field.preps?.suffix }}</span>
       </template>
@@ -44,10 +44,10 @@
       <template #prepend v-if="prependList?.length > 0">
         <el-select v-model="formData[preName]" style="width: 115px !important">
           <el-option
-              v-for="item in prependList"
-              :key="item.value"
-              :label="item.name"
-              :value="item.value"
+            v-for="item in prependList"
+            :key="item.value"
+            :label="item.name"
+            :value="item.value"
           />
         </el-select>
       </template>
@@ -56,19 +56,19 @@
       </template>
       <template #append v-if="field.preps?.appendAction">
         <star-horse-icon
-            :title="field.preps?.appendAction?.actionTitle"
-            style="cursor: pointer"
-            :icon-class="field.preps?.appendAction?.icon || 'document'"
-            @click="field.preps?.appendAction?.actions?.(formData)"
+          :title="field.preps?.appendAction?.actionTitle"
+          style="cursor: pointer"
+          :icon-class="field.preps?.appendAction?.icon || 'document'"
+          @click="field.preps?.appendAction?.actions?.(formData)"
         />
       </template>
       <template #append v-if="appendList?.length > 0">
         <el-select v-model="formData[appName]" style="width: 115px !important">
           <el-option
-              v-for="item in appendList"
-              :key="item.value"
-              :label="item.name"
-              :value="item.value"
+            v-for="item in appendList"
+            :key="item.value"
+            :label="item.name"
+            :value="item.value"
           />
         </el-select>
       </template>
@@ -77,55 +77,64 @@
     <!-- APP 端分离模式：输入框 + 抽屉式建议列表 -->
     <template v-else>
       <el-input
-          :model-value="normalData"
-          :placeholder="field.preps?.placeholder"
-          :disabled="checkIsDisabled(props)"
-          @dblclick.stop="editContent"
-          @click="openPicker"
-          readonly
+        :model-value="normalData"
+        :placeholder="field.preps?.placeholder"
+        :disabled="checkIsDisabled(props)"
+        @dblclick.stop="editContent"
+        @click="openPicker"
+        readonly
       >
         <template v-if="field.preps?.prefixIcon" #prefix>
-          <star-horse-icon :icon-class="field.preps?.prefixIcon"/>
+          <star-horse-icon :icon-class="field.preps?.prefixIcon" />
         </template>
         <template v-if="field.preps?.suffixIcon" #suffix>
-          <star-horse-icon :icon-class="field.preps?.suffixIcon"/>
+          <star-horse-icon :icon-class="field.preps?.suffixIcon" />
         </template>
       </el-input>
 
       <ShMobilePicker
-          v-if="isSeparate && pickerVisible"
-          v-model="pickerVisible"
-          :title="title"
-          :placement="placement"
-          :size="size"
-          :show-footer="showFooter"
-          @confirm="handleConfirm"
-          @cancel="handleCancel"
+        v-if="isSeparate && pickerVisible"
+        v-model="pickerVisible"
+        :title="title"
+        :placement="placement"
+        :size="size"
+        :show-footer="showFooter"
+        @confirm="handleConfirm"
+        @cancel="handleCancel"
       >
         <div class="sh-mobile-autocomplete">
           <el-input
-              v-model="tempKeyword"
-              :placeholder="i18n('starhorse.pleaseInput')"
-              clearable
-              class="sh-mobile-autocomplete__keyword"
+            v-model="tempKeyword"
+            :placeholder="i18n('starhorse.pleaseInput')"
+            clearable
+            class="sh-mobile-autocomplete__keyword"
           />
           <div class="sh-mobile-autocomplete__list">
             <div
-                v-for="(item, idx) in suggestions"
-                :key="idx"
-                class="sh-mobile-autocomplete__item"
-                :class="{ 'is-active': isSelected(item) }"
-                @click="selectSuggestion(item)"
+              v-for="(item, idx) in suggestions"
+              :key="idx"
+              class="sh-mobile-autocomplete__item"
+              :class="{ 'is-active': isSelected(item) }"
+              @click="selectSuggestion(item)"
             >
-              {{ item[field.preps?.props?.label || 'name'] || item.value || item }}
+              {{
+                item[field.preps?.props?.label || "name"] || item.value || item
+              }}
             </div>
-            <div v-if="!suggestions.length && !showCreateRow" class="sh-mobile-autocomplete__empty">
+            <div
+              v-if="!suggestions.length && !showCreateRow"
+              class="sh-mobile-autocomplete__empty"
+            >
               {{ i18n("pivot.empty.noData") || "暂无数据" }}
             </div>
           </div>
           <!-- allowCreate：创建新值 -->
-          <div v-if="showCreateRow" class="sh-mobile-autocomplete__create" @click="createCustomValue">
-            <star-horse-icon icon-class="add"/>
+          <div
+            v-if="showCreateRow"
+            class="sh-mobile-autocomplete__create"
+            @click="createCustomValue"
+          >
+            <star-horse-icon icon-class="add" />
             <span>{{ i18n("form.add") }} "{{ tempKeyword }}"</span>
           </div>
         </div>
@@ -134,9 +143,13 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {computed, nextTick, onMounted, ref, watch} from "vue";
-import {compDynamicData, createFilter, dynamicUrlOperation,} from "@/api/star_horse_utils";
-import {SearchParams} from "@/components/types/Params";
+import { computed, nextTick, onMounted, ref, watch } from "vue";
+import {
+  compDynamicData,
+  createFilter,
+  dynamicUrlOperation,
+} from "@/api/star_horse_utils";
+import { SearchParams } from "@/components/types/Params";
 import {
   allAction,
   checkIsDisabled,
@@ -144,15 +157,15 @@ import {
   prepsFilter,
   relationEventDispatcher,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
-import {getDynamicEvents} from "@/api/system";
+import { getDynamicEvents } from "@/api/system";
 
-import {ItemPreps} from "@/components/types/ItemPreps";
+import { ItemPreps } from "@/components/types/ItemPreps";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
-import {StarHorseIcon} from "@/components/comp";
-import {usePrefixSuffix} from "@/components/formcomp/utils/prefixSuffixUtils";
-import {useMobilePicker,} from "@/components/formcomp/utils/useMobilePicker";
+import { StarHorseIcon } from "@/components/comp";
+import { usePrefixSuffix } from "@/components/formcomp/utils/prefixSuffixUtils";
+import { useMobilePicker } from "@/components/formcomp/utils/useMobilePicker";
 import ShMobilePicker from "@/components/formcomp/utils/ShMobilePicker.vue";
-import {i18n} from "@/lang";
+import { i18n } from "@/lang";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -231,8 +244,8 @@ const fetchSuggestions = async (queryString: string) => {
   } else {
     const allValues = temp["values"] || [];
     suggestions.value = queryString
-        ? allValues.filter(createFilter(queryString))
-        : allValues;
+      ? allValues.filter(createFilter(queryString))
+      : allValues;
   }
 };
 
@@ -255,7 +268,8 @@ const isKeywordExists = computed(() => {
   const kw = tempKeyword.value.toLowerCase();
   const valueKey = props.field.preps?.props?.value || "value";
   const labelKey = props.field.preps?.props?.label || "name";
-  return suggestions.value.some((item: any) =>
+  return suggestions.value.some(
+    (item: any) =>
       String(item[valueKey] ?? "").toLowerCase() === kw ||
       String(item[labelKey] ?? "").toLowerCase() === kw,
   );
@@ -263,7 +277,10 @@ const isKeywordExists = computed(() => {
 
 /** allowCreate：是否显示"创建 xxx"行 */
 const showCreateRow = computed(
-    () => allowCreate.value && tempKeyword.value.trim() !== "" && !isKeywordExists.value,
+  () =>
+    allowCreate.value &&
+    tempKeyword.value.trim() !== "" &&
+    !isKeywordExists.value,
 );
 
 /** allowCreate：创建新值并确认 */
@@ -284,11 +301,11 @@ const handleConfirm = () => {
   const dataRelation = props.field.preps?.dataRelation;
   if (dataRelation?.actionName) {
     relationEventDispatcher(
-        props,
-        dataRelation,
-        tempValue.value,
-        formData,
-        dataRelation.actionName,
+      props,
+      dataRelation,
+      tempValue.value,
+      formData,
+      dataRelation.actionName,
     );
   }
   closePicker();
@@ -311,9 +328,9 @@ const handleContentConfirm = (newContent: string) => {
 };
 const editContent = () => {
   if (
-      !props.field.preps?.readonly &&
-      !props.field.preps?.disabled &&
-      !props.field.disabled
+    !props.field.preps?.readonly &&
+    !props.field.preps?.disabled &&
+    !props.field.disabled
   ) {
     dialogInputVisible.value = true;
   }
@@ -355,8 +372,8 @@ const querySearch = async (queryString: string, cb: (arg: any) => void) => {
     cb(temp["values"]);
   } else {
     const results = queryString
-        ? temp["values"]?.filter(createFilter(queryString))
-        : temp["values"];
+      ? temp["values"]?.filter(createFilter(queryString))
+      : temp["values"];
     cb(results ?? []);
   }
 };

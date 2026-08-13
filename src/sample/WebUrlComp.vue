@@ -1,7 +1,15 @@
 <script setup lang="ts">
-import {PageFieldInfo} from "@/components/types/PageFieldInfo";
-import {SelectOption} from "@/components/types/SearchProps";
-import {ModelRef, nextTick, onMounted, PropType, reactive, ref, watch,} from "vue";
+import { PageFieldInfo } from "@/components/types/PageFieldInfo";
+import { SelectOption } from "@/components/types/SearchProps";
+import {
+  ModelRef,
+  nextTick,
+  onMounted,
+  PropType,
+  reactive,
+  ref,
+  watch,
+} from "vue";
 
 defineOptions({
   name: "WebUrlComp",
@@ -9,20 +17,17 @@ defineOptions({
 const props = defineProps({
   formProps: {
     type: Object as PropType<any>,
-    default: () => {
-    },
+    default: () => {},
   },
 
   preps: {
     type: Object as PropType<any>,
-    default: () => {
-    },
+    default: () => {},
   },
 
   item: {
     type: Object as PropType<PageFieldInfo>,
-    default: () => {
-    },
+    default: () => {},
   },
   source: {
     type: Number,
@@ -83,8 +88,8 @@ const dataSourceField = reactive<PageFieldInfo | any>({
         listVisible: true,
         preps: {
           values: [
-            {name: "HTTP", value: "http"},
-            {name: "HTTPS", value: "https"},
+            { name: "HTTP", value: "http" },
+            { name: "HTTPS", value: "https" },
           ],
         },
       },
@@ -128,8 +133,7 @@ const dataSourceField = reactive<PageFieldInfo | any>({
         type: "button",
         formVisible: true,
         actions: {
-          click: async (val: any) => {
-          },
+          click: async (val: any) => {},
         },
         preps: {
           icon: "valid",
@@ -165,15 +169,16 @@ const dataSourceField = reactive<PageFieldInfo | any>({
     ],
     {
       fieldName: "queryParams",
-      containerType:"tab",
+      containerType: "tab",
       containerFields: [
         {
           title: "标准参数",
           tabName: "queryParams",
           objectName: "queryParams",
-          batchFieldList: [
+          containerFields: [
             {
-              batchName: "queryParams",
+              containerType: "batchTable",
+              tabName: "queryParams",
               fieldList: [
                 {
                   label: "参数名",
@@ -261,10 +266,10 @@ const getFormData = () => {
   return dataSourceFormRef.value?.getFormData();
 };
 watch(
-    () => dataForm.value?.dataSource,
-    (val) => {
-      currentTabName.value = val || "data";
-    },
+  () => dataForm.value?.dataSource,
+  (val) => {
+    currentTabName.value = val || "data";
+  },
 );
 onMounted(() => {
   init();
@@ -280,20 +285,20 @@ defineExpose({
 <template>
   <el-scrollbar height="100%">
     <star-horse-form
-        :fieldList="dataSourceField"
-        ref="dataSourceFormRef"
-        v-if="!dataForm"
+      :fieldList="dataSourceField"
+      ref="dataSourceFormRef"
+      v-if="!dataForm"
     />
     <star-horse-form-item
-        v-else
-        ref="dataSourceFormRef"
-        :fieldList="dataSourceField"
-        :subFormFlag="subFormFlag ? 'Y' : 'N'"
-        :propPrefix="batchName"
-        :key="createSubForm()"
-        :batchName="batchName"
-        :source="source"
-        v-model:dataForm="dataForm[batchName]"
+      v-else
+      ref="dataSourceFormRef"
+      :fieldList="dataSourceField"
+      :subFormFlag="subFormFlag ? 'Y' : 'N'"
+      :propPrefix="batchName"
+      :key="createSubForm()"
+      :batchName="batchName"
+      :source="source"
+      v-model:dataForm="dataForm[batchName]"
     />
   </el-scrollbar>
 </template>

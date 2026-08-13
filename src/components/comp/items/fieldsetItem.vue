@@ -1,9 +1,18 @@
 <script setup lang="ts">
-import {getDataIndex, getFormData, getPrefix,} from "@/api/form_utils";
+import { getDataIndex, getFormData, getPrefix } from "@/api/form_utils";
 import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
-import {ContainerPreps} from "@/components/types/ItemPreps";
-import {initRelationEvent} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import {computed, inject, ModelRef, nextTick, onMounted, ref, unref, watch} from "vue";
+import { ContainerPreps } from "@/components/types/ItemPreps";
+import { initRelationEvent } from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {
+  computed,
+  inject,
+  ModelRef,
+  nextTick,
+  onMounted,
+  ref,
+  unref,
+  watch,
+} from "vue";
 
 const props = withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
@@ -13,7 +22,7 @@ const props = withDefaults(defineProps<ContainerPreps>(), {
   parentPreps: {},
   subFormFlag: "N",
   batchName: "batchDataList",
-  batchFieldName: "batchFieldList",
+
   compSize: "default",
   source: 1,
 });
@@ -21,7 +30,7 @@ const emits = defineEmits(["addRow", "removeRow"]);
 const dataForm: ModelRef<any> = defineModel("dataForm");
 // inject 表单字段列表,用于构造 initRelationEvent 所需的 props.formInfo
 const formFields = inject("formFields", ref<any[]>([]));
-const collapsible=computed(()=>props.item.preps?.collapsible??true);
+const collapsible = computed(() => props.item.preps?.collapsible ?? true);
 /**
  * 列表添加行数据
  * @param row
@@ -37,8 +46,7 @@ const removeRow = (row: any) => {
   emits("removeRow", row);
 };
 
-const init = () => {
-};
+const init = () => {};
 const innerCollapsed = ref<boolean>(false);
 const toggleInner = () => {
   if (collapsible.value) innerCollapsed.value = !innerCollapsed.value;
@@ -62,11 +70,7 @@ const reTriggerRelation = (fields: any[], visited?: WeakSet<any>) => {
       visited.add(field);
       if (field?.preps?.dataRelation?.actionName) {
         const formInfoVal = unref(formFields);
-        initRelationEvent(
-            {field, formInfo: formInfoVal},
-            dataForm,
-            true,
-        );
+        initRelationEvent({ field, formInfo: formInfoVal }, dataForm, true);
       }
     }
   });
@@ -78,25 +82,25 @@ const reTriggerRelation = (fields: any[], visited?: WeakSet<any>) => {
  * (子项隐藏时内部字段组件未挂载,onMounted 中的 initCompCallEvent 未执行)
  */
 watch(
-    () => {
-      const list = props.item?.containerFields;
-      return Array.isArray(list) ? list.map((c: any) => c?.formVisible) : [];
-    },
-    (newVals, oldVals) => {
-      const list = props.item?.containerFields;
-      if (!Array.isArray(list)) return;
-      list.forEach((child: any, index: number) => {
-        if (child == null) return;
-        const wasVisible = oldVals?.[index] !== false;
-        const isVisible = newVals?.[index] !== false;
-        if (!wasVisible && isVisible) {
-          nextTick(() => {
-            reTriggerRelation(child.fieldList);
-          });
-        }
-      });
-    },
-    {deep: true, immediate: true},
+  () => {
+    const list = props.item?.containerFields;
+    return Array.isArray(list) ? list.map((c: any) => c?.formVisible) : [];
+  },
+  (newVals, oldVals) => {
+    const list = props.item?.containerFields;
+    if (!Array.isArray(list)) return;
+    list.forEach((child: any, index: number) => {
+      if (child == null) return;
+      const wasVisible = oldVals?.[index] !== false;
+      const isVisible = newVals?.[index] !== false;
+      if (!wasVisible && isVisible) {
+        nextTick(() => {
+          reTriggerRelation(child.fieldList);
+        });
+      }
+    });
+  },
+  { deep: true, immediate: true },
 );
 
 onMounted(() => {
@@ -108,71 +112,81 @@ onMounted(() => {
   <template v-if="item.containerFields?.length > 0">
     <template v-for="(fiedsetItem, key) in item.containerFields">
       <fieldset
-          v-if="fiedsetItem.formVisible !== false"
-          class="fieldset-container"
-          :class="{
+        v-if="fiedsetItem.formVisible !== false"
+        class="fieldset-container"
+        :class="{
           'border-dashed': item.preps?.borderStyle === 'dashed',
           'border-none': item.preps?.borderStyle === 'none',
           'is-collapsible': collapsible,
-          'is-collapsed': innerCollapsed
+          'is-collapsed': innerCollapsed,
         }"
       >
         <legend
-            class="fieldset-legend"
-            :class="{ 'clickable': collapsible}"
-            @click="toggleInner"
+          class="fieldset-legend"
+          :class="{ clickable: collapsible }"
+          @click="toggleInner"
         >
           <svg
-              v-if="collapsible"
-              :class="['legend-arrow', { 'rotated': innerCollapsed }]"
-              viewBox="0 0 10 6" fill="none" width="10" height="10"
+            v-if="collapsible"
+            :class="['legend-arrow', { rotated: innerCollapsed }]"
+            viewBox="0 0 10 6"
+            fill="none"
+            width="10"
+            height="10"
           >
-            <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5"
-                  stroke-linecap="round" stroke-linejoin="round"/>
+            <path
+              d="M1 1L5 5L9 1"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
           </svg>
 
-          <span
-              class="legend-text"
-          >
-          {{ fiedsetItem.title || "FieldSet" }}
-        </span>
+          <span class="legend-text">
+            {{ fiedsetItem.title || "FieldSet" }}
+          </span>
         </legend>
         <div v-show="!innerCollapsed" class="fieldset-body">
           <star-horse-form-item
-              :source="source"
-              :compUrl="compUrl"
-              :compSize="compSize"
-              :commonFormat="commonFormat"
-              :dataForm="
-            getFormData(
-              fiedsetItem,
-              dataForm,
-              propPrefix,
-              dataIndex,
-              item.groupData ? key : 0,
-            )
-          "
-              :dataIndex="
-            getDataIndex(
-              fiedsetItem,
-              propPrefix,
-              dataIndex,
-              item.groupData ? key : 0,
-            )
-          "
-              :propPrefix="
-            getPrefix(fiedsetItem, propPrefix, dataIndex, item.groupData ? key : 0)
-          "
-              :objectName="fiedsetItem.objectName"
-              @addRow="addRow"
-              @removeRow="removeRow"
-              :fieldList="fiedsetItem"
-              :rules="rules"
-              :subFormFlag="fiedsetItem.subFormFlag"
-              :enableSubNode="fiedsetItem.enableSubNode"
-              :primaryKey="primaryKey"
+            :source="source"
+            :compUrl="compUrl"
+            :compSize="compSize"
+            :commonFormat="commonFormat"
+            :dataForm="
+              getFormData(
+                fiedsetItem,
+                dataForm,
+                propPrefix,
+                dataIndex,
+                item.groupData ? key : 0,
+              )
+            "
+            :dataIndex="
+              getDataIndex(
+                fiedsetItem,
+                propPrefix,
+                dataIndex,
+                item.groupData ? key : 0,
+              )
+            "
+            :propPrefix="
+              getPrefix(
+                fiedsetItem,
+                propPrefix,
+                dataIndex,
+                item.groupData ? key : 0,
+              )
+            "
+            :objectName="fiedsetItem.objectName"
+            @addRow="addRow"
+            @removeRow="removeRow"
+            :fieldList="fiedsetItem"
+            :rules="rules"
+            :subFormFlag="fiedsetItem.subFormFlag"
+            :enableSubNode="fiedsetItem.enableSubNode"
+            :primaryKey="primaryKey"
           />
-
         </div>
       </fieldset>
     </template>
@@ -186,7 +200,9 @@ onMounted(() => {
   padding: 12px 16px 8px;
   margin: 0;
   position: relative;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 
   &:hover {
     border-color: #c0c4cc;
@@ -219,7 +235,6 @@ onMounted(() => {
   font-size: 14px;
   font-weight: 500;
   color: #303133;
-
 }
 
 .legend-text {
@@ -245,6 +260,4 @@ onMounted(() => {
 .fieldset-body {
   padding-top: 4px;
 }
-
-
 </style>

@@ -1,8 +1,8 @@
 <script setup lang="ts" name="ApiTestResults">
-import {ref} from "vue";
-import {i18n} from "@/lang";
-import {ShSvgIcon} from "@/components/shared";
-import type {ApiOrchestratorState} from "../composables/useApiOrchestrator";
+import { ref } from "vue";
+import { i18n } from "@/lang";
+import { ShSvgIcon } from "@/components/shared";
+import type { ApiOrchestratorState } from "../composables/useApiOrchestrator";
 
 defineProps<{
   state: ApiOrchestratorState;
@@ -38,25 +38,28 @@ const formatJson = (str: string): string => {
       </div>
       <div v-else class="result-list">
         <div
-            v-for="(r, idx) in state.testResults.value"
-            :key="r.stepId + idx"
-            class="result-item"
-            :class="{ success: r.success, error: !r.success }"
+          v-for="(r, idx) in state.testResults.value"
+          :key="r.stepId + idx"
+          class="result-item"
+          :class="{ success: r.success, error: !r.success }"
         >
           <div class="result-header" @click="toggle(r.stepId)">
             <span class="result-index">{{ idx + 1 }}</span>
             <span class="result-name">{{ r.stepName }}</span>
-            <el-tag
-                :type="r.success ? 'success' : 'danger'"
-
-                effect="light"
-            >
-              {{ r.success ? i18n("api.status.success") : i18n("api.status.error") }}
+            <el-tag :type="r.success ? 'success' : 'danger'" effect="light">
+              {{
+                r.success
+                  ? i18n("api.status.success")
+                  : i18n("api.status.error")
+              }}
             </el-tag>
             <span class="result-status" v-if="r.response.status">
-                            {{ r.response.status }} · {{ r.response.duration }}ms
-                        </span>
-            <ShSvgIcon :name="expanded.has(r.stepId) ? 'arrowUp' : 'arrowDown'" size="12px"/>
+              {{ r.response.status }} · {{ r.response.duration }}ms
+            </span>
+            <ShSvgIcon
+              :name="expanded.has(r.stepId) ? 'arrowUp' : 'arrowDown'"
+              size="12px"
+            />
           </div>
           <div v-show="expanded.has(r.stepId)" class="result-detail">
             <div v-if="r.error" class="error-box">{{ r.error }}</div>
@@ -70,9 +73,14 @@ const formatJson = (str: string): string => {
                 <span class="k">{{ i18n("api.endpoint.url") }}:</span>
                 <span class="v mono">{{ r.request.url }}</span>
               </div>
-              <div v-if="Object.keys(r.request.headers).length" class="kv-block">
+              <div
+                v-if="Object.keys(r.request.headers).length"
+                class="kv-block"
+              >
                 <span class="k">{{ i18n("api.endpoint.headers") }}:</span>
-                <pre class="v mono">{{ JSON.stringify(r.request.headers, null, 2) }}</pre>
+                <pre class="v mono">{{
+                  JSON.stringify(r.request.headers, null, 2)
+                }}</pre>
               </div>
               <div v-if="r.request.body" class="kv-block">
                 <span class="k">{{ i18n("api.endpoint.body") }}:</span>
@@ -83,7 +91,9 @@ const formatJson = (str: string): string => {
               <div class="detail-title">{{ i18n("api.test.response") }}</div>
               <div class="kv-line">
                 <span class="k">{{ i18n("api.test.status") }}:</span>
-                <span class="v">{{ r.response.status }} {{ r.response.statusText }}</span>
+                <span class="v"
+                  >{{ r.response.status }} {{ r.response.statusText }}</span
+                >
               </div>
               <div class="kv-line">
                 <span class="k">{{ i18n("api.test.duration") }}:</span>
@@ -94,9 +104,16 @@ const formatJson = (str: string): string => {
                 <pre class="v mono">{{ formatJson(r.response.body) }}</pre>
               </div>
             </div>
-            <div v-if="Object.keys(r.extractedVars).length" class="detail-section">
-              <div class="detail-title">{{ i18n("api.test.extractedVars") }}</div>
-              <pre class="v mono extracted">{{ JSON.stringify(r.extractedVars, null, 2) }}</pre>
+            <div
+              v-if="Object.keys(r.extractedVars).length"
+              class="detail-section"
+            >
+              <div class="detail-title">
+                {{ i18n("api.test.extractedVars") }}
+              </div>
+              <pre class="v mono extracted">{{
+                JSON.stringify(r.extractedVars, null, 2)
+              }}</pre>
             </div>
           </div>
         </div>

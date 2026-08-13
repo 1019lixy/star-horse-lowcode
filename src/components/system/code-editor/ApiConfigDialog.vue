@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import {computed, ref, watch} from "vue";
-import type {IdeApiConfig} from "./constants";
-import {API_METHOD_MAP} from "./constants";
+import { computed, ref, watch } from "vue";
+import type { IdeApiConfig } from "./constants";
+import { API_METHOD_MAP } from "./constants";
 
 const props = defineProps<{
   visible: boolean;
@@ -48,7 +48,7 @@ const API_GROUPS = [
         label: "编译",
         desc: "编译代码",
       },
-      {key: "runUrl" as keyof IdeApiConfig, label: "运行", desc: "运行代码"},
+      { key: "runUrl" as keyof IdeApiConfig, label: "运行", desc: "运行代码" },
       {
         key: "compileRegisterUrl" as keyof IdeApiConfig,
         label: "编译注册",
@@ -141,20 +141,20 @@ const API_GROUPS = [
 const editConfig = ref<IdeApiConfig>({});
 
 watch(
-    () => props.visible,
-    (v) => {
-      if (v) editConfig.value = {...props.config};
-    },
+  () => props.visible,
+  (v) => {
+    if (v) editConfig.value = { ...props.config };
+  },
 );
 
 const handleSave = () => {
-  emit("save", {...editConfig.value});
+  emit("save", { ...editConfig.value });
   emit("update:visible", false);
 };
 
 const handleReset = () => {
   emit("reset");
-  editConfig.value = {...props.resolvedConfig};
+  editConfig.value = { ...props.resolvedConfig };
 };
 
 const handleCancel = () => {
@@ -179,40 +179,40 @@ const overlayStyle = computed(() => {
   <Teleport to="body">
     <Transition name="api-dialog-fade">
       <div
-          v-if="visible"
-          class="api-dialog-overlay"
-          :style="overlayStyle"
-          @click.self="handleCancel"
+        v-if="visible"
+        class="api-dialog-overlay"
+        :style="overlayStyle"
+        @click.self="handleCancel"
       >
         <div class="api-dialog">
           <!-- 头部 -->
           <div class="api-dialog-header">
             <div class="api-dialog-title">
               <svg
-                  viewBox="0 0 16 16"
-                  width="18"
-                  height="18"
-                  fill="currentColor"
-                  style="opacity: 0.7"
+                viewBox="0 0 16 16"
+                width="18"
+                height="18"
+                fill="currentColor"
+                style="opacity: 0.7"
               >
                 <path
-                    d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"
+                  d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"
                 />
                 <path
-                    d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z"
+                  d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z"
                 />
               </svg>
               <span>API 接口配置</span>
             </div>
             <button class="api-dialog-close" @click="handleCancel">
               <svg
-                  viewBox="0 0 16 16"
-                  width="14"
-                  height="14"
-                  fill="currentColor"
+                viewBox="0 0 16 16"
+                width="14"
+                height="14"
+                fill="currentColor"
               >
                 <path
-                    d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"
+                  d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"
                 />
               </svg>
             </button>
@@ -221,9 +221,9 @@ const overlayStyle = computed(() => {
           <!-- 内容 -->
           <div class="api-dialog-body">
             <div
-                v-for="group in API_GROUPS"
-                :key="group.title"
-                class="api-group"
+              v-for="group in API_GROUPS"
+              :key="group.title"
+              class="api-group"
             >
               <div class="api-group-header">
                 <span class="api-group-icon">{{ group.icon }}</span>
@@ -231,15 +231,15 @@ const overlayStyle = computed(() => {
               </div>
               <div class="api-group-fields">
                 <div
-                    v-for="field in group.fields"
-                    :key="field.key"
-                    class="api-field"
+                  v-for="field in group.fields"
+                  :key="field.key"
+                  class="api-field"
                 >
                   <div class="api-field-label-row">
                     <label class="api-field-label">{{ field.label }}</label>
                     <span
-                        class="api-method-badge"
-                        :class="
+                      class="api-method-badge"
+                      :class="
                         API_METHOD_MAP[field.key] === 'GET'
                           ? 'api-method-badge--get'
                           : 'api-method-badge--post'
@@ -251,29 +251,29 @@ const overlayStyle = computed(() => {
                   </div>
                   <div class="api-field-input-wrap">
                     <input
-                        class="api-field-input"
-                        :value="editConfig[field.key] || ''"
-                        :placeholder="resolvedConfig[field.key] || '未配置'"
-                        @input="
+                      class="api-field-input"
+                      :value="editConfig[field.key] || ''"
+                      :placeholder="resolvedConfig[field.key] || '未配置'"
+                      @input="
                         editConfig[field.key] = (
                           $event.target as HTMLInputElement
                         ).value
                       "
                     />
                     <button
-                        v-if="editConfig[field.key]"
-                        class="api-field-clear"
-                        title="清除"
-                        @click="editConfig[field.key] = ''"
+                      v-if="editConfig[field.key]"
+                      class="api-field-clear"
+                      title="清除"
+                      @click="editConfig[field.key] = ''"
                     >
                       <svg
-                          viewBox="0 0 16 16"
-                          width="12"
-                          height="12"
-                          fill="currentColor"
+                        viewBox="0 0 16 16"
+                        width="12"
+                        height="12"
+                        fill="currentColor"
                       >
                         <path
-                            d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"
+                          d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"
                         />
                       </svg>
                     </button>
@@ -287,16 +287,16 @@ const overlayStyle = computed(() => {
           <div class="api-dialog-footer">
             <button class="api-btn api-btn-reset" @click="handleReset">
               <svg
-                  viewBox="0 0 16 16"
-                  width="14"
-                  height="14"
-                  fill="currentColor"
+                viewBox="0 0 16 16"
+                width="14"
+                height="14"
+                fill="currentColor"
               >
                 <path
-                    d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"
+                  d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"
                 />
                 <path
-                    d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"
+                  d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"
                 />
               </svg>
               重置为默认
@@ -306,18 +306,18 @@ const overlayStyle = computed(() => {
                 取消
               </button>
               <button
-                  class="api-btn api-btn-save"
-                  :disabled="!hasChanged()"
-                  @click="handleSave"
+                class="api-btn api-btn-save"
+                :disabled="!hasChanged()"
+                @click="handleSave"
               >
                 <svg
-                    viewBox="0 0 16 16"
-                    width="14"
-                    height="14"
-                    fill="currentColor"
+                  viewBox="0 0 16 16"
+                  width="14"
+                  height="14"
+                  fill="currentColor"
                 >
                   <path
-                      d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v4.293l-.854-.853a.5.5 0 1 0-.707.707l1.5 1.5a.5.5 0 0 0 .707 0l1.5-1.5a.5.5 0 1 0-.707-.707L9.5 6.293V2H13v12H2V2h2.5v1.5a.5.5 0 0 0 1 0V2h1V1H2z"
+                    d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v4.293l-.854-.853a.5.5 0 1 0-.707.707l1.5 1.5a.5.5 0 0 0 .707 0l1.5-1.5a.5.5 0 1 0-.707-.707L9.5 6.293V2H13v12H2V2h2.5v1.5a.5.5 0 0 0 1 0V2h1V1H2z"
                   />
                 </svg>
                 保存配置
@@ -521,14 +521,16 @@ const overlayStyle = computed(() => {
   background: var(--ide-bg-input, #3c3c3c);
   color: var(--ide-fg, #cccccc);
   outline: none;
-  transition: border-color 0.15s,
-  box-shadow 0.15s;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
   box-sizing: border-box;
 }
 
 .api-field-input:focus {
   border-color: var(--ide-accent, #007acc);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--ide-accent, #007acc) 25%, transparent);
+  box-shadow: 0 0 0 2px
+    color-mix(in srgb, var(--ide-accent, #007acc) 25%, transparent);
 }
 
 .api-field-input::placeholder {

@@ -1,14 +1,14 @@
 <script setup lang="ts" name="PivotTable">
-import {ref} from "vue";
-import {usePivotDesigner} from "./composables/usePivotDesigner";
+import { ref } from "vue";
+import { usePivotDesigner } from "./composables/usePivotDesigner";
 import PivotToolbar from "./panels/PivotToolbar.vue";
 import PivotFieldPanel from "./panels/PivotFieldPanel.vue";
 import PivotTablePanel from "./panels/PivotTablePanel.vue";
 import PivotChartPanel from "./panels/PivotChartPanel.vue";
 import PivotFieldDialog from "./dialogs/PivotFieldDialog.vue";
 import PivotDataDialog from "./dialogs/PivotDataDialog.vue";
-import {DesignerMobileShell} from "@/components/shared";
-import type {PivotData} from "./types";
+import { DesignerMobileShell } from "@/components/shared";
+import type { PivotData } from "./types";
 
 const props = defineProps<{
   pivot?: PivotData;
@@ -53,41 +53,41 @@ defineExpose({
 <template>
   <div class="pivot-table-component">
     <DesignerMobileShell
-        :panels="[
-                { key: 'fields', label: '字段', side: 'left', width: 260, min: 200 },
-            ]"
+      :panels="[
+        { key: 'fields', label: '字段', side: 'left', width: 260, min: 200 },
+      ]"
     >
       <template #toolbar>
         <pivot-toolbar
-            :designer="designer"
-            :readonly="readonly"
-            @save="handleSave"
-            @preview="dataDialogVisible = true"
+          :designer="designer"
+          :readonly="readonly"
+          @save="handleSave"
+          @preview="dataDialogVisible = true"
         />
       </template>
       <template #canvas>
         <div class="content-area">
-          <pivot-chart-panel v-if="designer.showChart" :designer="designer"/>
-          <pivot-table-panel v-else :designer="designer"/>
+          <pivot-chart-panel v-if="designer.showChart" :designer="designer" />
+          <pivot-table-panel v-else :designer="designer" />
         </div>
       </template>
       <template #panel-fields>
         <pivot-field-panel
-            :designer="designer"
-            :readonly="readonly"
-            @edit-field="handleEditField"
+          :designer="designer"
+          :readonly="readonly"
+          @edit-field="handleEditField"
         />
       </template>
     </DesignerMobileShell>
 
     <pivot-field-dialog
-        v-model:visible="fieldDialogVisible"
-        :designer="designer"
-        :field-name="editingFieldName"
+      v-model:visible="fieldDialogVisible"
+      :designer="designer"
+      :field-name="editingFieldName"
     />
     <pivot-data-dialog
-        v-model:visible="dataDialogVisible"
-        :designer="designer"
+      v-model:visible="dataDialogVisible"
+      :designer="designer"
     />
   </div>
 </template>

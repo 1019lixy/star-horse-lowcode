@@ -1,17 +1,22 @@
 <script setup lang="ts" name="Areainfo">
-import {nextTick, onMounted, provide, ref} from "vue";
-import {PageFieldInfo} from "@/components/types/PageFieldInfo";
-import {StarHorseForm, StarHorseTableComp} from "@/components/comp";
-import {apiInstance, closeLoad, dialogPreps, load,} from "@/api/star_horse_utils";
-import {download} from "@/api/star_horse_apis";
-import {warning} from "@/utils/message";
-import {ApiUrls, SearchInfo} from "@/components/types";
-import {isMobile} from "@/api/device";
+import { nextTick, onMounted, provide, ref } from "vue";
+import { PageFieldInfo } from "@/components/types/PageFieldInfo";
+import { StarHorseForm, StarHorseTableComp } from "@/components/comp";
+import {
+  apiInstance,
+  closeLoad,
+  dialogPreps,
+  load,
+} from "@/api/star_horse_utils";
+import { download } from "@/api/star_horse_apis";
+import { warning } from "@/utils/message";
+import { ApiUrls, SearchInfo } from "@/components/types";
+import { isMobile } from "@/api/device";
 import StarHorseDrawer from "@/components/comp/StarHorseDrawer.vue";
 
 const dataUrl: ApiUrls = apiInstance(
-    "userdb-manage",
-    "userdb/formInstance/tbValidDatesNew/idValidDateNew/381167130139165693",
+  "userdb-manage",
+  "userdb/formInstance/tbValidDatesNew/idValidDateNew/381167130139165693",
 );
 console.log(dataUrl);
 const testFormValidRef = ref();
@@ -77,20 +82,20 @@ const fieldList = ref<PageFieldInfo>({
       fieldName: "fieldSh3C9D",
       type: "select",
       preps: {
-        "values": [
+        values: [
           {
-            "name": "Windows",
-            "value": "windows",
-            "xh": 1
+            name: "Windows",
+            value: "windows",
+            xh: 1,
           },
           {
-            "name": "Linux",
-            "value": "linux",
-            "xh": 2,
-            "starHorseEditing": "no"
-          }
+            name: "Linux",
+            value: "linux",
+            xh: 2,
+            starHorseEditing: "no",
+          },
         ],
-      }
+      },
     },
     /*{
       label: "区域",
@@ -108,54 +113,54 @@ const fieldList = ref<PageFieldInfo>({
       fieldName: "fieldSh4C9D",
       type: "tselect",
       preps: {
-        "values": [
+        values: [
           {
-            "name": "Windows",
-            "value": "windows",
+            name: "Windows",
+            value: "windows",
             children: [
-              {name: "window7", value: "window7"},
-              {name: "window8", value: "window8"},
-              {name: "window10", value: "window10"},
-            ]
+              { name: "window7", value: "window7" },
+              { name: "window8", value: "window8" },
+              { name: "window10", value: "window10" },
+            ],
           },
           {
-            "name": "Linux",
-            "value": "linux",
+            name: "Linux",
+            value: "linux",
             children: [
-              {name: "centos", value: "centos"},
-              {name: "fedora", value: "fedora"},
-              {name: "ubuntu", value: "ubuntu"},
-            ]
-          }
+              { name: "centos", value: "centos" },
+              { name: "fedora", value: "fedora" },
+              { name: "ubuntu", value: "ubuntu" },
+            ],
+          },
         ],
-      }
+      },
     },
     {
       label: "穿梭框",
       fieldName: "fieldSh4C0D",
       type: "transfer",
       preps: {
-        "data": [
+        data: [
           {
-            "name": "Windows",
-            "value": "windows",
+            name: "Windows",
+            value: "windows",
             children: [
-              {name: "window7", value: "window7"},
-              {name: "window8", value: "window8"},
-              {name: "window10", value: "window10"},
-            ]
+              { name: "window7", value: "window7" },
+              { name: "window8", value: "window8" },
+              { name: "window10", value: "window10" },
+            ],
           },
           {
-            "name": "Linux",
-            "value": "linux",
+            name: "Linux",
+            value: "linux",
             children: [
-              {name: "centos", value: "centos"},
-              {name: "fedora", value: "fedora"},
-              {name: "ubuntu", value: "ubuntu"},
-            ]
-          }
+              { name: "centos", value: "centos" },
+              { name: "fedora", value: "fedora" },
+              { name: "ubuntu", value: "ubuntu" },
+            ],
+          },
         ],
-      }
+      },
     },
     /* {
        label: "区域2",
@@ -175,40 +180,40 @@ const fieldList = ref<PageFieldInfo>({
       fieldName: "fieldSh5C9D",
       type: "datapicker",
       preps: {
-        "data": [
+        data: [
           {
-            "name": "Windows",
-            "value": "windows",
+            name: "Windows",
+            value: "windows",
             children: [
-              {name: "window7", value: "window7"},
-              {name: "window8", value: "window8"},
-              {name: "window10", value: "window10"},
-            ]
+              { name: "window7", value: "window7" },
+              { name: "window8", value: "window8" },
+              { name: "window10", value: "window10" },
+            ],
           },
           {
-            "name": "Linux",
-            "value": "linux",
+            name: "Linux",
+            value: "linux",
             children: [
-              {name: "centos", value: "centos"},
-              {name: "fedora", value: "fedora"},
-              {name: "ubuntu", value: "ubuntu"},
-            ]
-          }
+              { name: "centos", value: "centos" },
+              { name: "fedora", value: "fedora" },
+              { name: "ubuntu", value: "ubuntu" },
+            ],
+          },
         ],
-      }
+      },
     },
     // ===== calc 计算 =====
     {
       label: "计算A",
       fieldName: "calcA",
       type: "number",
-      preps: {defaultValue: 10},
+      preps: { defaultValue: 10 },
     },
     {
       label: "计算B",
       fieldName: "calcB",
       type: "number",
-      preps: {defaultValue: 5},
+      preps: { defaultValue: 5 },
     },
     {
       label: "计算结果(calc)",
@@ -220,7 +225,7 @@ const fieldList = ref<PageFieldInfo>({
       label: "角度",
       fieldName: "trigAngle",
       type: "number",
-      preps: {defaultValue: 30},
+      preps: { defaultValue: 30 },
     },
     {
       label: "正弦sin(calc)",
@@ -238,13 +243,13 @@ const fieldList = ref<PageFieldInfo>({
       label: "被除数",
       fieldName: "modA",
       type: "number",
-      preps: {defaultValue: 17},
+      preps: { defaultValue: 17 },
     },
     {
       label: "除数",
       fieldName: "modB",
       type: "number",
-      preps: {defaultValue: 5},
+      preps: { defaultValue: 5 },
     },
     {
       label: "求余%(calc)",
@@ -257,13 +262,13 @@ const fieldList = ref<PageFieldInfo>({
       label: "拼接A",
       fieldName: "concatA",
       type: "input",
-      preps: {defaultValue: "Hello"},
+      preps: { defaultValue: "Hello" },
     },
     {
       label: "拼接B",
       fieldName: "concatB",
       type: "input",
-      preps: {defaultValue: "World"},
+      preps: { defaultValue: "World" },
     },
     {
       label: "拼接结果(concat)",
@@ -278,8 +283,8 @@ const fieldList = ref<PageFieldInfo>({
       type: "select",
       preps: {
         values: [
-          {name: "Windows", value: "win", xh: 1},
-          {name: "Linux", value: "linux", xh: 2},
+          { name: "Windows", value: "win", xh: 1 },
+          { name: "Linux", value: "linux", xh: 2 },
         ],
       },
     },
@@ -299,13 +304,13 @@ const fieldList = ref<PageFieldInfo>({
       label: "开始日期",
       fieldName: "dcStart",
       type: "date",
-      preps: {type: "date", subType: "date", clearable: true},
+      preps: { type: "date", subType: "date", clearable: true },
     },
     {
       label: "结束日期",
       fieldName: "dcEnd",
       type: "date",
-      preps: {type: "date", subType: "date", clearable: true},
+      preps: { type: "date", subType: "date", clearable: true },
     },
     {
       label: "日期差-天(dateCalc)",
@@ -318,7 +323,7 @@ const fieldList = ref<PageFieldInfo>({
       label: "金额",
       fieldName: "fmtMoney",
       type: "number",
-      preps: {defaultValue: 1234567},
+      preps: { defaultValue: 1234567 },
     },
     {
       label: "千分位(format)",
@@ -330,7 +335,7 @@ const fieldList = ref<PageFieldInfo>({
       label: "比率",
       fieldName: "fmtRate",
       type: "number",
-      preps: {defaultValue: 3.14159},
+      preps: { defaultValue: 3.14159 },
     },
     {
       label: "保留两位(format)",
@@ -343,7 +348,7 @@ const fieldList = ref<PageFieldInfo>({
       label: "分数",
       fieldName: "tnScore",
       type: "number",
-      preps: {defaultValue: 85},
+      preps: { defaultValue: 85 },
     },
     {
       label: "及格判定(ternary)",
@@ -835,7 +840,7 @@ const fieldList = ref<PageFieldInfo>({
         maxLength: 255,
         listVisible: true,
       },
-    }
+    },
   ],
 });
 
@@ -861,16 +866,16 @@ const generateMerge = (type: string) => {
       }
       let isError = false;
       download("/userdb-manage/generator/code/convertToCode", dataForm)
-          .catch((err) => {
-            isError = true;
-            warning(err);
-          })
-          .finally(() => {
-            closeLoad();
-            if (type != "continue" && !isError) {
-              closeAction();
-            }
-          });
+        .catch((err) => {
+          isError = true;
+          warning(err);
+        })
+        .finally(() => {
+          closeLoad();
+          if (type != "continue" && !isError) {
+            closeAction();
+          }
+        });
     }
   });
 };
@@ -885,63 +890,63 @@ onMounted(() => {
 <template>
   <div class="flex flex-col h-full overflow-hidden">
     <star-horse-dialog
-        :isShowBtnContinue="true"
-        v-model="dialogProps.editVisible"
-        :dialogProps="dialogProps"
-        :selfFunc="false"
-        @merge="generateMerge"
-        @closeAction="closeAction"
-        boxHeight="85%"
+      :isShowBtnContinue="true"
+      v-model="dialogProps.editVisible"
+      :dialogProps="dialogProps"
+      :selfFunc="false"
+      @merge="generateMerge"
+      @closeAction="closeAction"
+      boxHeight="85%"
     >
       {{ dialogProps.viewVisible }}
-      <el-button @click="dialogProps.viewVisible=true">Click</el-button>
+      <el-button @click="dialogProps.viewVisible = true">Click</el-button>
       <star-horse-form
-          ref="generateFormRef"
-          @refresh="
+        ref="generateFormRef"
+        @refresh="
           (formData, result) => codeGeneratorRef?.assignStaticData(formData)
         "
-          :compUrl="dataUrl"
-          :preview="true"
-          formSize="default"
-          :fieldList="fieldList"
-          :rules="rules"
+        :compUrl="dataUrl"
+        :preview="true"
+        formSize="default"
+        :fieldList="fieldList"
+        :rules="rules"
       />
     </star-horse-dialog>
     <star-horse-dialog
-        v-model="dialogProps.viewVisible"
-        :source="3"
-        boxHeight="85%"
+      v-model="dialogProps.viewVisible"
+      :source="3"
+      boxHeight="85%"
     >
       <star-horse-data-view
-          :preview="true"
-          :field-list="fieldList"
-          :compUrl="dataUrl"
+        :preview="true"
+        :field-list="fieldList"
+        :compUrl="dataUrl"
       />
     </star-horse-dialog>
     <div class="search-content" v-if="!isMobile">
       <div class="search_btn">
         <star-horse-search-comp
-            @searchData="
+          @searchData="
             (data: any) => codeGeneratorRef?.createSearchParams(data)
           "
-            :formData="searchFormData"
-            :compUrl="dataUrl"
+          :formData="searchFormData"
+          :compUrl="dataUrl"
         />
       </div>
     </div>
     <star-horse-drawer v-model="drawerVisible">
-      <el-button @click="dialogProps.editVisible=true">Click</el-button>
+      <el-button @click="dialogProps.editVisible = true">Click</el-button>
     </star-horse-drawer>
-    <el-button @click="drawerVisible=true">Click</el-button>
+    <el-button @click="drawerVisible = true">Click</el-button>
     <el-card class="inner_content">
       <star-horse-table-comp
-          ref="codeGeneratorRef"
-          :fieldList="fieldList"
-          :primaryKey="primaryKey"
-          :compUrl="dataUrl"
-          :preview="true"
-          :searchFormData="searchFormData"
-          :btn-permissions="{
+        ref="codeGeneratorRef"
+        :fieldList="fieldList"
+        :primaryKey="primaryKey"
+        :compUrl="dataUrl"
+        :preview="true"
+        :searchFormData="searchFormData"
+        :btn-permissions="{
           edit: 'edit',
           view: 'view',
           delete: 'delete',

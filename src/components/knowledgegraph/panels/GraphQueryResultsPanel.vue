@@ -1,9 +1,13 @@
 <script setup lang="ts" name="GraphQueryResultsPanel">
-import {computed, ref} from "vue";
-import {i18n} from "@/lang";
-import {KG_NODE_TYPE_PRESETS, kgGetNodeColor, kgGetNodeRadius,} from "../constants";
-import type {KgNode} from "../types";
-import type {UseGraphQueryBuilderReturn} from "../composables/useGraphQueryBuilder";
+import { computed, ref } from "vue";
+import { i18n } from "@/lang";
+import {
+  KG_NODE_TYPE_PRESETS,
+  kgGetNodeColor,
+  kgGetNodeRadius,
+} from "../constants";
+import type { KgNode } from "../types";
+import type { UseGraphQueryBuilderReturn } from "../composables/useGraphQueryBuilder";
 
 const props = defineProps<{
   builder: UseGraphQueryBuilderReturn;
@@ -46,14 +50,14 @@ const handleRowClick = (row: KgNode) => {
 
 // 子图小型预览的视口
 const previewZoom = ref(0.6);
-const previewPan = ref({x: 50, y: 30});
+const previewPan = ref({ x: 50, y: 30 });
 
 const propertySummary = (node: KgNode): string => {
   if (!node.properties) return "";
   return Object.entries(node.properties)
-      .slice(0, 3)
-      .map(([k, v]) => `${k}=${v}`)
-      .join("; ");
+    .slice(0, 3)
+    .map(([k, v]) => `${k}=${v}`)
+    .join("; ");
 };
 </script>
 
@@ -62,9 +66,9 @@ const propertySummary = (node: KgNode): string => {
     <div class="panel-header">
       <span>{{ i18n("knowledgegraph.query.results") }}</span>
       <div class="header-actions">
-                <span class="count">
-                    {{ i18n("knowledgegraph.query.results.count") }}: {{ results.length }}
-                </span>
+        <span class="count">
+          {{ i18n("knowledgegraph.query.results.count") }}: {{ results.length }}
+        </span>
         <el-radio-group v-model="viewMode">
           <el-radio-button value="table">Table</el-radio-button>
           <el-radio-button value="graph">Graph</el-radio-button>
@@ -84,25 +88,42 @@ const propertySummary = (node: KgNode): string => {
         <!-- 表格视图 -->
         <div v-if="viewMode === 'table'" class="table-view">
           <el-table
-              :data="tableRows"
-
-              border
-              highlight-current-row
-              @row-click="handleRowClick"
+            :data="tableRows"
+            border
+            highlight-current-row
+            @row-click="handleRowClick"
           >
-            <el-table-column prop="id" label="ID" width="120" show-overflow-tooltip/>
-            <el-table-column prop="label" :label="i18n('knowledgegraph.viewer.detail.label')" width="120"/>
-            <el-table-column :label="i18n('knowledgegraph.viewer.detail.type')" width="90">
+            <el-table-column
+              prop="id"
+              label="ID"
+              width="120"
+              show-overflow-tooltip
+            />
+            <el-table-column
+              prop="label"
+              :label="i18n('knowledgegraph.viewer.detail.label')"
+              width="120"
+            />
+            <el-table-column
+              :label="i18n('knowledgegraph.viewer.detail.type')"
+              width="90"
+            >
               <template #default="{ row }">
                 <el-tag
-
-                    :style="{ background: kgGetNodeColor(row), color: '#FFF', border: 'none' }"
+                  :style="{
+                    background: kgGetNodeColor(row),
+                    color: '#FFF',
+                    border: 'none',
+                  }"
                 >
                   {{ nodeTypeLabel(row.type) }}
                 </el-tag>
               </template>
             </el-table-column>
-            <el-table-column :label="i18n('knowledgegraph.viewer.detail.properties')" min-width="200">
+            <el-table-column
+              :label="i18n('knowledgegraph.viewer.detail.properties')"
+              min-width="200"
+            >
               <template #default="{ row }">
                 <span class="props">{{ propertySummary(row) }}</span>
               </template>
@@ -113,45 +134,52 @@ const propertySummary = (node: KgNode): string => {
         <!-- 子图视图 -->
         <div v-else class="graph-view">
           <svg
-              width="100%"
-              height="100%"
-              :viewBox="`0 0 800 500`"
-              preserveAspectRatio="xMidYMid meet"
-              style="background: #FAFAFA"
+            width="100%"
+            height="100%"
+            :viewBox="`0 0 800 500`"
+            preserveAspectRatio="xMidYMid meet"
+            style="background: #fafafa"
           >
-            <g :transform="`translate(${previewPan.x},${previewPan.y}) scale(${previewZoom})`">
+            <g
+              :transform="`translate(${previewPan.x},${previewPan.y}) scale(${previewZoom})`"
+            >
               <!-- 边 -->
               <line
-                  v-for="edge in subEdges"
-                  :key="edge.id"
-                  :x1="subNodes.find(n => n.id === edge.source)?.x ?? 0"
-                  :y1="subNodes.find(n => n.id === edge.source)?.y ?? 0"
-                  :x2="subNodes.find(n => n.id === edge.target)?.x ?? 0"
-                  :y2="subNodes.find(n => n.id === edge.target)?.y ?? 0"
-                  stroke="#8C8C8C"
-                  stroke-width="1"
+                v-for="edge in subEdges"
+                :key="edge.id"
+                :x1="subNodes.find((n) => n.id === edge.source)?.x ?? 0"
+                :y1="subNodes.find((n) => n.id === edge.source)?.y ?? 0"
+                :x2="subNodes.find((n) => n.id === edge.target)?.x ?? 0"
+                :y2="subNodes.find((n) => n.id === edge.target)?.y ?? 0"
+                stroke="#8C8C8C"
+                stroke-width="1"
               />
               <!-- 节点 -->
               <g
-                  v-for="node in subNodes"
-                  :key="node.id"
-                  :transform="`translate(${node.x},${node.y})`"
-                  style="cursor: pointer"
-                  @click="handleRowClick(node)"
+                v-for="node in subNodes"
+                :key="node.id"
+                :transform="`translate(${node.x},${node.y})`"
+                style="cursor: pointer"
+                @click="handleRowClick(node)"
               >
                 <circle
-                    :r="kgGetNodeRadius(node)"
-                    :fill="kgGetNodeColor(node)"
-                    stroke="#FFFFFF"
-                    stroke-width="1.5"
+                  :r="kgGetNodeRadius(node)"
+                  :fill="kgGetNodeColor(node)"
+                  stroke="#FFFFFF"
+                  stroke-width="1.5"
                 />
                 <text
-                    :y="kgGetNodeRadius(node) + 12"
-                    font-size="10"
-                    fill="#333"
-                    text-anchor="middle"
-                    style="paint-order: stroke; stroke: #FFFFFF; stroke-width: 2px"
-                >{{ node.label }}
+                  :y="kgGetNodeRadius(node) + 12"
+                  font-size="10"
+                  fill="#333"
+                  text-anchor="middle"
+                  style="
+                    paint-order: stroke;
+                    stroke: #ffffff;
+                    stroke-width: 2px;
+                  "
+                >
+                  {{ node.label }}
                 </text>
               </g>
             </g>

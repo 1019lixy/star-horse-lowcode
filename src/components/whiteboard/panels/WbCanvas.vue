@@ -5,11 +5,28 @@
  * 职责：SVG 渲染 / 绘制 / 选择 / 拖拽 / 框选 / 缩放 / 平移 / 文本编辑
  * 注：本组件承担多种交互逻辑，行数较多（合理超 350 行）
  */
-import {computed, onActivated, onBeforeUnmount, onMounted, ref, watch} from "vue";
-import {i18n} from "@/lang";
-import type {UseWhiteboardDesignerReturn} from "../composables/useWhiteboardDesigner";
-import {createWbLineElement, createWbPenElement, createWbShapeElement, createWbTextElement,} from "../constants";
-import type {PenElement, ShapeElement, TextElement, WhiteboardElement,} from "../types";
+import {
+  computed,
+  onActivated,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch,
+} from "vue";
+import { i18n } from "@/lang";
+import type { UseWhiteboardDesignerReturn } from "../composables/useWhiteboardDesigner";
+import {
+  createWbLineElement,
+  createWbPenElement,
+  createWbShapeElement,
+  createWbTextElement,
+} from "../constants";
+import type {
+  PenElement,
+  ShapeElement,
+  TextElement,
+  WhiteboardElement,
+} from "../types";
 import {
   wbArrowPath,
   wbElementIntersectsRect,
@@ -61,7 +78,7 @@ onBeforeUnmount(() => {
 // ============== 坐标转换：屏幕 -> 画布逻辑坐标 ==============
 const toCanvasPoint = (clientX: number, clientY: number) => {
   const rect = wrapperRef.value?.getBoundingClientRect();
-  if (!rect) return {x: 0, y: 0};
+  if (!rect) return { x: 0, y: 0 };
   return {
     x: (clientX - rect.left - state.canvas.panX) / state.canvas.zoom,
     y: (clientY - rect.top - state.canvas.panY) / state.canvas.zoom,
@@ -87,8 +104,8 @@ const onKeyDown = (e: KeyboardEvent) => {
     e.preventDefault();
     designer.undo();
   } else if (
-      (e.ctrlKey || e.metaKey) &&
-      (e.key.toLowerCase() === "y" || (e.shiftKey && e.key.toLowerCase() === "z"))
+    (e.ctrlKey || e.metaKey) &&
+    (e.key.toLowerCase() === "y" || (e.shiftKey && e.key.toLowerCase() === "z"))
   ) {
     e.preventDefault();
     designer.redo();
@@ -100,7 +117,11 @@ const onKeyUp = (e: KeyboardEvent) => {
 const isEditableTarget = (t: EventTarget | null): boolean => {
   if (!t) return false;
   const tag = (t as HTMLElement).tagName;
-  return tag === "INPUT" || tag === "TEXTAREA" || (t as HTMLElement).isContentEditable;
+  return (
+    tag === "INPUT" ||
+    tag === "TEXTAREA" ||
+    (t as HTMLElement).isContentEditable
+  );
 };
 
 // ============== 工具光标 ==============
@@ -114,7 +135,7 @@ const canvasCursor = computed(() => {
 
 // ============== 渲染辅助 ==============
 const visibleElements = computed(() =>
-    state.elements.filter((e) => e.visible !== false),
+  state.elements.filter((e) => e.visible !== false),
 );
 
 const draftingElement = computed(() => designer.drafting.value);
@@ -124,37 +145,56 @@ const isSelected = (id: string) => state.selectedIds.includes(id);
 const penPath = (el: PenElement): string => wbPointsToPath(el.points);
 
 const shapePathOf = (el: ShapeElement): string =>
-    wbShapePath(el.shape, el.width, el.height);
+  wbShapePath(el.shape, el.width, el.height);
 
-const arrowPathOf = (el: any): string => wbArrowPath(el.x1, el.y1, el.x2, el.y2);
+const arrowPathOf = (el: any): string =>
+  wbArrowPath(el.x1, el.y1, el.x2, el.y2);
 
 const selectionBox = (el: WhiteboardElement) => wbGetBoundingBox(el);
 
 // 选中元素的控制点（4 角 + 4 边中点）
-const handlePositions = (box: { x: number; y: number; width: number; height: number }) => {
-  const {x, y, width, height} = box;
+const handlePositions = (box: {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}) => {
+  const { x, y, width, height } = box;
   return [
-    {name: "nw", x, y},
-    {name: "n", x: x + width / 2, y},
-    {name: "ne", x: x + width, y},
-    {name: "e", x: x + width, y: y + height / 2},
-    {name: "se", x: x + width, y: y + height},
-    {name: "s", x: x + width / 2, y: y + height},
-    {name: "sw", x: x, y: y + height},
-    {name: "w", x: x, y: y + height / 2},
+    { name: "nw", x, y },
+    { name: "n", x: x + width / 2, y },
+    { name: "ne", x: x + width, y },
+    { name: "e", x: x + width, y: y + height / 2 },
+    { name: "se", x: x + width, y: y + height },
+    { name: "s", x: x + width / 2, y: y + height },
+    { name: "sw", x: x, y: y + height },
+    { name: "w", x: x, y: y + height / 2 },
   ];
 };
 
 // ============== 交互状态 ==============
 type DragMode =
-    | { type: "none" }
-    | { type: "draw"; startPoint: { x: number; y: number } }
-    | { type: "move"; startClient: { x: number; y: number }; lastClient: { x: number; y: number } }
-    | { type: "marquee"; startPoint: { x: number; y: number } }
-    | { type: "pan"; startClient: { x: number; y: number }; origPan: { x: number; y: number } };
+  | { type: "none" }
+  | { type: "draw"; startPoint: { x: number; y: number } }
+  | {
+      type: "move";
+      startClient: { x: number; y: number };
+      lastClient: { x: number; y: number };
+    }
+  | { type: "marquee"; startPoint: { x: number; y: number } }
+  | {
+      type: "pan";
+      startClient: { x: number; y: number };
+      origPan: { x: number; y: number };
+    };
 
-const drag = ref<DragMode>({type: "none"});
-const marqueeRect = ref<{ x: number; y: number; width: number; height: number } | null>(null);
+const drag = ref<DragMode>({ type: "none" });
+const marqueeRect = ref<{
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+} | null>(null);
 
 // ============== 鼠标事件 ==============
 const onMouseDown = (e: MouseEvent) => {
@@ -163,8 +203,8 @@ const onMouseDown = (e: MouseEvent) => {
     isPanning.value = true;
     drag.value = {
       type: "pan",
-      startClient: {x: e.clientX, y: e.clientY},
-      origPan: {x: state.canvas.panX, y: state.canvas.panY},
+      startClient: { x: e.clientX, y: e.clientY },
+      origPan: { x: state.canvas.panX, y: state.canvas.panY },
     };
     addWindowDragListeners();
     e.preventDefault();
@@ -194,13 +234,13 @@ const onMouseDown = (e: MouseEvent) => {
       }
       drag.value = {
         type: "move",
-        startClient: {x: e.clientX, y: e.clientY},
-        lastClient: {x: e.clientX, y: e.clientY},
+        startClient: { x: e.clientX, y: e.clientY },
+        lastClient: { x: e.clientX, y: e.clientY },
       };
     } else {
       if (!e.shiftKey) designer.clearSelection();
-      drag.value = {type: "marquee", startPoint: pt};
-      marqueeRect.value = {x: pt.x, y: pt.y, width: 0, height: 0};
+      drag.value = { type: "marquee", startPoint: pt };
+      marqueeRect.value = { x: pt.x, y: pt.y, width: 0, height: 0 };
     }
     addWindowDragListeners();
     return;
@@ -221,13 +261,13 @@ const onMouseDown = (e: MouseEvent) => {
 
   if (tool === "pen") {
     const el = createWbPenElement({
-      points: [{x: pt.x, y: pt.y}],
+      points: [{ x: pt.x, y: pt.y }],
       stroke: state.stroke,
       strokeWidth: state.strokeWidth,
       opacity: state.opacity,
     });
     designer.setDrafting(el);
-    drag.value = {type: "draw", startPoint: pt};
+    drag.value = { type: "draw", startPoint: pt };
     addWindowDragListeners();
     return;
   }
@@ -244,7 +284,7 @@ const onMouseDown = (e: MouseEvent) => {
       arrow: false,
     });
     designer.setDrafting(el);
-    drag.value = {type: "draw", startPoint: pt};
+    drag.value = { type: "draw", startPoint: pt };
     addWindowDragListeners();
     return;
   }
@@ -261,12 +301,17 @@ const onMouseDown = (e: MouseEvent) => {
       arrow: true,
     });
     designer.setDrafting(el);
-    drag.value = {type: "draw", startPoint: pt};
+    drag.value = { type: "draw", startPoint: pt };
     addWindowDragListeners();
     return;
   }
 
-  if (tool === "rect" || tool === "circle" || tool === "triangle" || tool === "diamond") {
+  if (
+    tool === "rect" ||
+    tool === "circle" ||
+    tool === "triangle" ||
+    tool === "diamond"
+  ) {
     const el = createWbShapeElement({
       shape: tool,
       x: pt.x,
@@ -279,7 +324,7 @@ const onMouseDown = (e: MouseEvent) => {
       opacity: state.opacity,
     });
     designer.setDrafting(el);
-    drag.value = {type: "draw", startPoint: pt};
+    drag.value = { type: "draw", startPoint: pt };
     addWindowDragListeners();
     return;
   }
@@ -301,7 +346,7 @@ const onMouseMove = (e: MouseEvent) => {
     if (!drafting) return;
     const sp = drag.value.startPoint;
     if (drafting.type === "pen") {
-      (drafting as PenElement).points.push({x: pt.x, y: pt.y});
+      (drafting as PenElement).points.push({ x: pt.x, y: pt.y });
     } else if (drafting.type === "line") {
       const l = drafting as any;
       l.x2 = pt.x;
@@ -323,7 +368,7 @@ const onMouseMove = (e: MouseEvent) => {
   if (drag.value.type === "move") {
     const dx = (e.clientX - drag.value.lastClient.x) / state.canvas.zoom;
     const dy = (e.clientY - drag.value.lastClient.y) / state.canvas.zoom;
-    drag.value.lastClient = {x: e.clientX, y: e.clientY};
+    drag.value.lastClient = { x: e.clientX, y: e.clientY };
     state.selectedIds.forEach((id) => designer.moveElement(id, dx, dy));
     return;
   }
@@ -334,7 +379,7 @@ const onMouseMove = (e: MouseEvent) => {
     const y = Math.min(sp.y, pt.y);
     const w = Math.abs(pt.x - sp.x);
     const h = Math.abs(pt.y - sp.y);
-    marqueeRect.value = {x, y, width: w, height: h};
+    marqueeRect.value = { x, y, width: w, height: h };
     return;
   }
 };
@@ -363,13 +408,13 @@ const onMouseUp = () => {
     const rect = marqueeRect.value;
     if (rect.width > 3 || rect.height > 3) {
       const ids = visibleElements.value
-          .filter((el) => wbElementIntersectsRect(el, rect))
-          .map((el) => el.id);
+        .filter((el) => wbElementIntersectsRect(el, rect))
+        .map((el) => el.id);
       if (ids.length > 0) designer.selectMany(ids);
     }
   }
   marqueeRect.value = null;
-  drag.value = {type: "none"};
+  drag.value = { type: "none" };
 };
 
 const addWindowDragListeners = () => {
@@ -428,46 +473,43 @@ const onElementClick = (e: MouseEvent, id: string) => {
 
 // viewBox 用于 svg 坐标系（这里使用 1:1 屏幕，靠 transform 缩放）
 const canvasTransform = computed(
-    () => `translate(${state.canvas.panX},${state.canvas.panY}) scale(${state.canvas.zoom})`,
+  () =>
+    `translate(${state.canvas.panX},${state.canvas.panY}) scale(${state.canvas.zoom})`,
 );
 
 const gridSize = computed(() => state.canvas.gridSize);
 
 // 当切换工具时关闭文本编辑
 watch(
-    () => state.tool,
-    () => {
-      if (editingTextId.value) finishTextEdit();
-    },
+  () => state.tool,
+  () => {
+    if (editingTextId.value) finishTextEdit();
+  },
 );
 </script>
 
 <template>
   <div
-      class="wb-canvas-wrapper"
-      ref="wrapperRef"
-      :style="{ cursor: canvasCursor, background: state.canvas.backgroundColor }"
-      @mousedown="onMouseDown"
-      @wheel="onWheel"
+    class="wb-canvas-wrapper"
+    ref="wrapperRef"
+    :style="{ cursor: canvasCursor, background: state.canvas.backgroundColor }"
+    @mousedown="onMouseDown"
+    @wheel="onWheel"
   >
-    <svg
-        :width="svgWidth"
-        :height="svgHeight"
-        class="wb-svg"
-    >
+    <svg :width="svgWidth" :height="svgHeight" class="wb-svg">
       <defs>
         <pattern
-            v-if="state.canvas.showGrid"
-            id="wb-grid"
-            :width="gridSize"
-            :height="gridSize"
-            patternUnits="userSpaceOnUse"
+          v-if="state.canvas.showGrid"
+          id="wb-grid"
+          :width="gridSize"
+          :height="gridSize"
+          patternUnits="userSpaceOnUse"
         >
           <path
-              :d="`M ${gridSize} 0 L 0 0 0 ${gridSize}`"
-              fill="none"
-              stroke="#E8E8E8"
-              stroke-width="0.5"
+            :d="`M ${gridSize} 0 L 0 0 0 ${gridSize}`"
+            fill="none"
+            stroke="#E8E8E8"
+            stroke-width="0.5"
           />
         </pattern>
       </defs>
@@ -475,132 +517,142 @@ watch(
       <g :transform="canvasTransform">
         <!-- 网格背景（覆盖整个画布范围） -->
         <rect
-            v-if="state.canvas.showGrid"
-            x="-100000"
-            y="-100000"
-            width="200000"
-            height="200000"
-            fill="url(#wb-grid)"
+          v-if="state.canvas.showGrid"
+          x="-100000"
+          y="-100000"
+          width="200000"
+          height="200000"
+          fill="url(#wb-grid)"
         />
 
         <!-- 元素层 -->
         <g
-            v-for="el in visibleElements"
-            :key="el.id"
-            :class="{ 'wb-el-selected': isSelected(el.id) }"
-            @click="(e) => onElementClick(e, el.id)"
+          v-for="el in visibleElements"
+          :key="el.id"
+          :class="{ 'wb-el-selected': isSelected(el.id) }"
+          @click="(e) => onElementClick(e, el.id)"
         >
           <!-- pen -->
           <path
-              v-if="el.type === 'pen'"
-              :d="penPath(el as PenElement)"
-              :stroke="(el as PenElement).stroke"
-              :stroke-width="(el as PenElement).strokeWidth"
-              fill="none"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              :opacity="el.opacity ?? 1"
+            v-if="el.type === 'pen'"
+            :d="penPath(el as PenElement)"
+            :stroke="(el as PenElement).stroke"
+            :stroke-width="(el as PenElement).strokeWidth"
+            fill="none"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            :opacity="el.opacity ?? 1"
           />
           <!-- shape -->
           <g
-              v-else-if="el.type === 'shape'"
-              :transform="`translate(${(el as ShapeElement).x},${(el as ShapeElement).y}) rotate(${el.rotation ?? 0} ${(el as ShapeElement).width / 2} ${(el as ShapeElement).height / 2})`"
+            v-else-if="el.type === 'shape'"
+            :transform="`translate(${(el as ShapeElement).x},${(el as ShapeElement).y}) rotate(${el.rotation ?? 0} ${(el as ShapeElement).width / 2} ${(el as ShapeElement).height / 2})`"
           >
             <path
-                :d="shapePathOf(el as ShapeElement)"
-                :stroke="(el as ShapeElement).stroke"
-                :stroke-width="(el as ShapeElement).strokeWidth"
-                :fill="(el as ShapeElement).fill === 'transparent' ? 'none' : (el as ShapeElement).fill"
-                :opacity="el.opacity ?? 1"
+              :d="shapePathOf(el as ShapeElement)"
+              :stroke="(el as ShapeElement).stroke"
+              :stroke-width="(el as ShapeElement).strokeWidth"
+              :fill="
+                (el as ShapeElement).fill === 'transparent'
+                  ? 'none'
+                  : (el as ShapeElement).fill
+              "
+              :opacity="el.opacity ?? 1"
             />
           </g>
           <!-- line / arrow -->
           <g v-else-if="el.type === 'line'">
             <path
-                v-if="(el as any).arrow"
-                :d="arrowPathOf(el)"
-                :stroke="(el as any).stroke"
-                :stroke-width="(el as any).strokeWidth"
-                fill="none"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                :opacity="el.opacity ?? 1"
+              v-if="(el as any).arrow"
+              :d="arrowPathOf(el)"
+              :stroke="(el as any).stroke"
+              :stroke-width="(el as any).strokeWidth"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              :opacity="el.opacity ?? 1"
             />
             <line
-                v-else
-                :x1="(el as any).x1"
-                :y1="(el as any).y1"
-                :x2="(el as any).x2"
-                :y2="(el as any).y2"
-                :stroke="(el as any).stroke"
-                :stroke-width="(el as any).strokeWidth"
-                :opacity="el.opacity ?? 1"
+              v-else
+              :x1="(el as any).x1"
+              :y1="(el as any).y1"
+              :x2="(el as any).x2"
+              :y2="(el as any).y2"
+              :stroke="(el as any).stroke"
+              :stroke-width="(el as any).strokeWidth"
+              :opacity="el.opacity ?? 1"
             />
           </g>
           <!-- text -->
           <g
-              v-else-if="el.type === 'text'"
-              :transform="`translate(${(el as TextElement).x},${(el as TextElement).y})`"
-              @dblclick="(e) => onTextDblClick(e, el as TextElement)"
+            v-else-if="el.type === 'text'"
+            :transform="`translate(${(el as TextElement).x},${(el as TextElement).y})`"
+            @dblclick="(e) => onTextDblClick(e, el as TextElement)"
           >
             <rect
-                :width="(el as TextElement).width"
-                :height="(el as TextElement).height"
-                fill="transparent"
+              :width="(el as TextElement).width"
+              :height="(el as TextElement).height"
+              fill="transparent"
             />
             <text
-                v-if="editingTextId !== el.id"
-                :x="0"
-                :y="(el as TextElement).fontSize"
-                :font-size="(el as TextElement).fontSize"
-                :fill="(el as TextElement).color"
-                :font-weight="(el as TextElement).fontWeight || 'normal'"
-            >{{ (el as TextElement).text }}
+              v-if="editingTextId !== el.id"
+              :x="0"
+              :y="(el as TextElement).fontSize"
+              :font-size="(el as TextElement).fontSize"
+              :fill="(el as TextElement).color"
+              :font-weight="(el as TextElement).fontWeight || 'normal'"
+            >
+              {{ (el as TextElement).text }}
             </text>
             <foreignObject
-                v-else
-                :width="(el as TextElement).width"
-                :height="(el as TextElement).height"
+              v-else
+              :width="(el as TextElement).width"
+              :height="(el as TextElement).height"
             >
-                            <textarea
-                                v-model="editingTextValue"
-                                class="wb-text-editor"
-                                :style="{
-                                    fontSize: (el as TextElement).fontSize + 'px',
-                                    color: (el as TextElement).color,
-                                    fontWeight: (el as TextElement).fontWeight || 'normal',
-                                }"
-                                @blur="finishTextEdit"
-                                @keydown.enter.exact.prevent="finishTextEdit"
-                            />
+              <textarea
+                v-model="editingTextValue"
+                class="wb-text-editor"
+                :style="{
+                  fontSize: (el as TextElement).fontSize + 'px',
+                  color: (el as TextElement).color,
+                  fontWeight: (el as TextElement).fontWeight || 'normal',
+                }"
+                @blur="finishTextEdit"
+                @keydown.enter.exact.prevent="finishTextEdit"
+              />
             </foreignObject>
           </g>
         </g>
 
         <!-- 选中元素的控制点 -->
-        <template v-if="designer.selectedElement.value && state.tool === 'select'">
-          <g v-for="sel in designer.selectedElements.value" :key="'sel-' + sel.id">
+        <template
+          v-if="designer.selectedElement.value && state.tool === 'select'"
+        >
+          <g
+            v-for="sel in designer.selectedElements.value"
+            :key="'sel-' + sel.id"
+          >
             <rect
-                v-if="selectionBox(sel)"
-                :x="selectionBox(sel).x - 2"
-                :y="selectionBox(sel).y - 2"
-                :width="selectionBox(sel).width + 4"
-                :height="selectionBox(sel).height + 4"
-                fill="none"
-                stroke="#1890FF"
-                stroke-width="1"
-                stroke-dasharray="3,3"
+              v-if="selectionBox(sel)"
+              :x="selectionBox(sel).x - 2"
+              :y="selectionBox(sel).y - 2"
+              :width="selectionBox(sel).width + 4"
+              :height="selectionBox(sel).height + 4"
+              fill="none"
+              stroke="#1890FF"
+              stroke-width="1"
+              stroke-dasharray="3,3"
             />
             <circle
-                v-for="h in handlePositions(selectionBox(sel))"
-                :key="'h-' + sel.id + '-' + h.name"
-                :cx="h.x"
-                :cy="h.y"
-                :r="4"
-                fill="#FFFFFF"
-                stroke="#1890FF"
-                stroke-width="1.5"
-                class="wb-handle"
+              v-for="h in handlePositions(selectionBox(sel))"
+              :key="'h-' + sel.id + '-' + h.name"
+              :cx="h.x"
+              :cy="h.y"
+              :r="4"
+              fill="#FFFFFF"
+              stroke="#1890FF"
+              stroke-width="1.5"
+              class="wb-handle"
             />
           </g>
         </template>
@@ -608,65 +660,73 @@ watch(
         <!-- drafting 预览 -->
         <g v-if="draftingElement">
           <path
-              v-if="draftingElement.type === 'pen'"
-              :d="penPath(draftingElement as PenElement)"
-              :stroke="(draftingElement as PenElement).stroke"
-              :stroke-width="(draftingElement as PenElement).strokeWidth"
-              fill="none"
-              stroke-linecap="round"
-              opacity="0.9"
+            v-if="draftingElement.type === 'pen'"
+            :d="penPath(draftingElement as PenElement)"
+            :stroke="(draftingElement as PenElement).stroke"
+            :stroke-width="(draftingElement as PenElement).strokeWidth"
+            fill="none"
+            stroke-linecap="round"
+            opacity="0.9"
           />
           <g
-              v-else-if="draftingElement.type === 'shape'"
-              :transform="`translate(${(draftingElement as ShapeElement).x},${(draftingElement as ShapeElement).y})`"
+            v-else-if="draftingElement.type === 'shape'"
+            :transform="`translate(${(draftingElement as ShapeElement).x},${(draftingElement as ShapeElement).y})`"
           >
             <path
-                :d="shapePathOf(draftingElement as ShapeElement)"
-                :stroke="(draftingElement as ShapeElement).stroke"
-                :stroke-width="(draftingElement as ShapeElement).strokeWidth"
-                :fill="(draftingElement as ShapeElement).fill === 'transparent' ? 'none' : (draftingElement as ShapeElement).fill"
-                opacity="0.9"
+              :d="shapePathOf(draftingElement as ShapeElement)"
+              :stroke="(draftingElement as ShapeElement).stroke"
+              :stroke-width="(draftingElement as ShapeElement).strokeWidth"
+              :fill="
+                (draftingElement as ShapeElement).fill === 'transparent'
+                  ? 'none'
+                  : (draftingElement as ShapeElement).fill
+              "
+              opacity="0.9"
             />
           </g>
           <path
-              v-else-if="draftingElement.type === 'line' && (draftingElement as any).arrow"
-              :d="arrowPathOf(draftingElement)"
-              :stroke="(draftingElement as any).stroke"
-              :stroke-width="(draftingElement as any).strokeWidth"
-              fill="none"
-              stroke-linecap="round"
-              opacity="0.9"
+            v-else-if="
+              draftingElement.type === 'line' && (draftingElement as any).arrow
+            "
+            :d="arrowPathOf(draftingElement)"
+            :stroke="(draftingElement as any).stroke"
+            :stroke-width="(draftingElement as any).strokeWidth"
+            fill="none"
+            stroke-linecap="round"
+            opacity="0.9"
           />
           <line
-              v-else-if="draftingElement.type === 'line'"
-              :x1="(draftingElement as any).x1"
-              :y1="(draftingElement as any).y1"
-              :x2="(draftingElement as any).x2"
-              :y2="(draftingElement as any).y2"
-              :stroke="(draftingElement as any).stroke"
-              :stroke-width="(draftingElement as any).strokeWidth"
-              opacity="0.9"
+            v-else-if="draftingElement.type === 'line'"
+            :x1="(draftingElement as any).x1"
+            :y1="(draftingElement as any).y1"
+            :x2="(draftingElement as any).x2"
+            :y2="(draftingElement as any).y2"
+            :stroke="(draftingElement as any).stroke"
+            :stroke-width="(draftingElement as any).strokeWidth"
+            opacity="0.9"
           />
         </g>
 
         <!-- 框选矩形 -->
         <rect
-            v-if="marqueeRect"
-            :x="marqueeRect.x"
-            :y="marqueeRect.y"
-            :width="marqueeRect.width"
-            :height="marqueeRect.height"
-            fill="rgba(24,144,255,0.1)"
-            stroke="#1890FF"
-            stroke-width="1"
-            stroke-dasharray="4,4"
+          v-if="marqueeRect"
+          :x="marqueeRect.x"
+          :y="marqueeRect.y"
+          :width="marqueeRect.width"
+          :height="marqueeRect.height"
+          fill="rgba(24,144,255,0.1)"
+          stroke="#1890FF"
+          stroke-width="1"
+          stroke-dasharray="4,4"
         />
       </g>
     </svg>
 
     <!-- 提示信息 -->
     <div class="wb-hint" v-if="state.tool !== 'select' && state.tool !== 'pan'">
-      <span v-if="state.tool === 'text'">{{ i18n("whiteboard.hint.doubleClickToEdit") }}</span>
+      <span v-if="state.tool === 'text'">{{
+        i18n("whiteboard.hint.doubleClickToEdit")
+      }}</span>
       <span v-else>{{ i18n("whiteboard.hint.dragToDraw") }}</span>
     </div>
     <div class="wb-hint wb-hint-tip" v-else>

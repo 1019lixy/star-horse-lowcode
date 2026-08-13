@@ -1,56 +1,56 @@
 <script setup lang="ts">
-import {computed, nextTick, onMounted, ref, watch} from "vue";
-import {FieldInfo, PageFieldInfo} from "@/components/types/PageFieldInfo";
-import {StarHorseForm} from "@/components/comp";
+import { computed, nextTick, onMounted, ref, watch } from "vue";
+import { FieldInfo, PageFieldInfo } from "@/components/types/PageFieldInfo";
+import { StarHorseForm } from "@/components/comp";
 
 const componentTypes = [
-  {name: "input", label: "输入框"},
-  {name: "number", label: "数字输入框"},
-  {name: "textarea", label: "文本域"},
-  {name: "password", label: "密码框"},
-  {name: "select", label: "下拉选择"},
-  {name: "tselect", label: "树形下拉"},
-  {name: "radio", label: "单选框"},
-  {name: "checkbox", label: "复选框"},
-  {name: "switch", label: "开关"},
-  {name: "slider", label: "滑块"},
-  {name: "rate", label: "评分"},
+  { name: "input", label: "输入框" },
+  { name: "number", label: "数字输入框" },
+  { name: "textarea", label: "文本域" },
+  { name: "password", label: "密码框" },
+  { name: "select", label: "下拉选择" },
+  { name: "tselect", label: "树形下拉" },
+  { name: "radio", label: "单选框" },
+  { name: "checkbox", label: "复选框" },
+  { name: "switch", label: "开关" },
+  { name: "slider", label: "滑块" },
+  { name: "rate", label: "评分" },
   /* { name: "date", label: "日期" },*/
-  {name: "datetime", label: "日期时间"},
-  {name: "time", label: "时间"},
-  {name: "time-picker", label: "时间选择器"},
-  {name: "datapicker", label: "数据选择"},
-  {name: "number-range", label: "数字范围"},
-  {name: "color", label: "颜色选择"},
-  {name: "icon", label: "图标选择"},
-  {name: "upload", label: "文件上传"},
-  {name: "image", label: "图片"},
-  {name: "audio", label: "音频"},
-  {name: "signature", label: "签名"},
-  {name: "qrcode", label: "二维码"},
-  {name: "barcode", label: "条形码"},
-  {name: "htmleditor", label: "富文本编辑器"},
-  {name: "markdown", label: "Markdown编辑器"},
-  {name: "json", label: "JSON编辑器"},
-  {name: "json-array", label: "JSON数组编辑器"},
-  {name: "cron", label: "Cron表达式"},
-  {name: "cascade", label: "级联选择"},
-  {name: "transfer", label: "穿梭框"},
-  {name: "autocomplete", label: "自动完成"},
-  {name: "tag", label: "标签"},
-  {name: "button", label: "按钮"},
-  {name: "divider", label: "分割线"},
-  {name: "text", label: "文本"},
-  {name: "html", label: "HTML"},
-  {name: "dialog", label: "模态框"},
-  {name: "drawer", label: "抽屉"},
-  {name: "dialog-input", label: "对话框输入"},
-  {name: "user", label: "用户选择"},
-  {name: "depart", label: "部门选择"},
-  {name: "page-select", label: "页面选择"},
-  {name: "area", label: "地区选择"},
-  {name: "usercomp", label: "自定义组件"},
-  {name: "input-tag", label: "标签输入组件"},
+  { name: "datetime", label: "日期时间" },
+  { name: "time", label: "时间" },
+  { name: "time-picker", label: "时间选择器" },
+  { name: "datapicker", label: "数据选择" },
+  { name: "number-range", label: "数字范围" },
+  { name: "color", label: "颜色选择" },
+  { name: "icon", label: "图标选择" },
+  { name: "upload", label: "文件上传" },
+  { name: "image", label: "图片" },
+  { name: "audio", label: "音频" },
+  { name: "signature", label: "签名" },
+  { name: "qrcode", label: "二维码" },
+  { name: "barcode", label: "条形码" },
+  { name: "htmleditor", label: "富文本编辑器" },
+  { name: "markdown", label: "Markdown编辑器" },
+  { name: "json", label: "JSON编辑器" },
+  { name: "json-array", label: "JSON数组编辑器" },
+  { name: "cron", label: "Cron表达式" },
+  { name: "cascade", label: "级联选择" },
+  { name: "transfer", label: "穿梭框" },
+  { name: "autocomplete", label: "自动完成" },
+  { name: "tag", label: "标签" },
+  { name: "button", label: "按钮" },
+  { name: "divider", label: "分割线" },
+  { name: "text", label: "文本" },
+  { name: "html", label: "HTML" },
+  { name: "dialog", label: "模态框" },
+  { name: "drawer", label: "抽屉" },
+  { name: "dialog-input", label: "对话框输入" },
+  { name: "user", label: "用户选择" },
+  { name: "depart", label: "部门选择" },
+  { name: "page-select", label: "页面选择" },
+  { name: "area", label: "地区选择" },
+  { name: "usercomp", label: "自定义组件" },
+  { name: "input-tag", label: "标签输入组件" },
 ];
 
 const selectedType = ref<string>("");
@@ -64,9 +64,9 @@ const filteredComponents = computed(() => {
   }
   const keyword = searchKeyword.value.toLowerCase();
   return componentTypes.filter(
-      (comp) =>
-          comp.label.toLowerCase().includes(keyword) ||
-          comp.name.toLowerCase().includes(keyword),
+    (comp) =>
+      comp.label.toLowerCase().includes(keyword) ||
+      comp.name.toLowerCase().includes(keyword),
   );
 });
 
@@ -76,7 +76,7 @@ const fieldList = ref<PageFieldInfo>({
 
 const newPropKey = ref("");
 const newPropType = ref<"string" | "number" | "boolean" | "array" | "object">(
-    "string",
+  "string",
 );
 const newPropValue = ref("");
 
@@ -257,22 +257,22 @@ onMounted(() => {
 });
 
 watch(
-    () => fieldList.value.fieldList.length,
-    (len) => {
-      if (len > 0) {
-        nextTick(() => {
-          updateFormDataDisplay();
-        });
-      }
-    },
-);
-watch(
-    () => testFormRef.value?.getFormData()?.value,
-    (val) => {
+  () => fieldList.value.fieldList.length,
+  (len) => {
+    if (len > 0) {
       nextTick(() => {
         updateFormDataDisplay();
       });
-    },
+    }
+  },
+);
+watch(
+  () => testFormRef.value?.getFormData()?.value,
+  (val) => {
+    nextTick(() => {
+      updateFormDataDisplay();
+    });
+  },
 );
 
 const prepsEntries = computed(() => {
@@ -287,19 +287,18 @@ const prepsEntries = computed(() => {
       <div class="panel-header">组件列表</div>
       <div class="search-container">
         <el-input
-            v-model="searchKeyword"
-            placeholder="搜索组件名称或编码"
-            clearable
-
-            prefix-icon="el-icon-search"
+          v-model="searchKeyword"
+          placeholder="搜索组件名称或编码"
+          clearable
+          prefix-icon="el-icon-search"
         />
       </div>
       <div class="component-list">
         <div
-            v-for="comp in filteredComponents"
-            :key="comp.name"
-            :class="['component-item', { active: selectedType === comp.name }]"
-            @click="selectComponent(comp.name)"
+          v-for="comp in filteredComponents"
+          :key="comp.name"
+          :class="['component-item', { active: selectedType === comp.name }]"
+          @click="selectComponent(comp.name)"
         >
           {{ comp.label }}
           <span class="component-code">{{ comp.name }}</span>
@@ -317,20 +316,16 @@ const prepsEntries = computed(() => {
       </div>
       <div class="form-container">
         <star-horse-form
-            v-if="fieldList.fieldList.length > 0"
-            ref="testFormRef"
-            :fieldList="fieldList"
+          v-if="fieldList.fieldList.length > 0"
+          ref="testFormRef"
+          :fieldList="fieldList"
         />
         <div v-else class="empty-tip">请从左侧选择一个组件</div>
       </div>
       <div class="panel-header">
         表单数据
-        <el-button
-
-            style="color: #fff"
-            link
-            @click="updateFormDataDisplay"
-        >刷新
+        <el-button style="color: #fff" link @click="updateFormDataDisplay"
+          >刷新
         </el-button>
       </div>
       <div class="form-data">
@@ -346,9 +341,9 @@ const prepsEntries = computed(() => {
           <div class="sub-header">当前属性</div>
           <div v-if="prepsEntries.length > 0" class="preps-list">
             <div
-                v-for="[key, value] in prepsEntries"
-                :key="key"
-                class="prep-item"
+              v-for="[key, value] in prepsEntries"
+              :key="key"
+              class="prep-item"
             >
               <span class="prep-key">{{ key }}:</span>
               <span class="prep-value">
@@ -358,7 +353,7 @@ const prepsEntries = computed(() => {
                 <template v-else>{{ value }}</template>
               </span>
               <el-button type="danger" @click="removeProperty(key)"
-              >删除
+                >删除
               </el-button>
             </div>
           </div>
@@ -369,46 +364,46 @@ const prepsEntries = computed(() => {
           <div class="sub-header">添加属性</div>
           <div class="add-form">
             <el-input
-                v-model="newPropKey"
-                placeholder="属性名"
-                class="prop-input"
+              v-model="newPropKey"
+              placeholder="属性名"
+              class="prop-input"
             />
             <el-select v-model="newPropType" class="prop-type">
-              <el-option label="字符串" value="string"/>
-              <el-option label="数字" value="number"/>
-              <el-option label="布尔" value="boolean"/>
-              <el-option label="数组" value="array"/>
-              <el-option label="对象" value="object"/>
+              <el-option label="字符串" value="string" />
+              <el-option label="数字" value="number" />
+              <el-option label="布尔" value="boolean" />
+              <el-option label="数组" value="array" />
+              <el-option label="对象" value="object" />
             </el-select>
 
             <div class="value-input">
               <template v-if="newPropType === 'string'">
-                <el-input v-model="newPropValue" placeholder="字符串值"/>
+                <el-input v-model="newPropValue" placeholder="字符串值" />
               </template>
 
               <template v-else-if="newPropType === 'number'">
                 <el-input-number
-                    v-model="newPropValue"
-                    :controls="false"
-                    placeholder="数字值"
-                    style="width: 100%"
+                  v-model="newPropValue"
+                  :controls="false"
+                  placeholder="数字值"
+                  style="width: 100%"
                 />
               </template>
 
               <template v-else-if="newPropType === 'boolean'">
                 <el-select v-model="newPropValue" style="width: 100%">
-                  <el-option label="true" value="true"/>
-                  <el-option label="false" value="false"/>
+                  <el-option label="true" value="true" />
+                  <el-option label="false" value="false" />
                 </el-select>
               </template>
 
               <template
-                  v-else-if="newPropType === 'array' || newPropType === 'object'"
+                v-else-if="newPropType === 'array' || newPropType === 'object'"
               >
                 <div class="array-config">
                   <json-item
-                      v-model:formData="currentArrayObject"
-                      :field="{
+                    v-model:formData="currentArrayObject"
+                    :field="{
                       fieldName: 'currentObject',
                       preps: {},
                     }"
@@ -423,52 +418,44 @@ const prepsEntries = computed(() => {
         <div class="common-preps">
           <div class="sub-header">常用属性快捷添加</div>
           <div class="quick-buttons">
-            <el-button
-
-                @click="currentField.preps.placeholder = '请输入...'"
-            >placeholder
+            <el-button @click="currentField.preps.placeholder = '请输入...'"
+              >placeholder
             </el-button>
             <el-button @click="currentField.preps.disabled = true"
-            >disabled
+              >disabled
             </el-button>
             <el-button @click="currentField.preps.clearable = true"
-            >clearable
+              >clearable
             </el-button>
             <el-button @click="currentField.preps.prefix = '前缀'"
-            >prefix
+              >prefix
             </el-button>
             <el-button @click="currentField.preps.suffix = '后缀'"
-            >suffix
+              >suffix
+            </el-button>
+            <el-button @click="currentField.preps.mergeAppend = true"
+              >mergeAppend
+            </el-button>
+            <el-button @click="currentField.preps.mergePrefix = true"
+              >mergePrefix
             </el-button>
             <el-button
-
-                @click="currentField.preps.mergeAppend = true"
-            >mergeAppend
-            </el-button>
-            <el-button
-
-                @click="currentField.preps.mergePrefix = true"
-            >mergePrefix
-            </el-button>
-            <el-button
-
-                @click="
+              @click="
                 currentField.preps.appendList = [
                   { name: '%', value: '%' },
                   { name: 'px', value: 'px' },
                 ]
               "
-            >appendList
+              >appendList
             </el-button>
             <el-button
-
-                @click="
+              @click="
                 currentField.preps.prependList = [
                   { name: 'http', value: 'http' },
                   { name: 'https', value: 'https' },
                 ]
               "
-            >prependList
+              >prependList
             </el-button>
           </div>
         </div>

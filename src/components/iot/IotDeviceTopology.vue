@@ -1,7 +1,7 @@
 <script setup lang="ts" name="IotDeviceTopology">
-import {computed, ref} from "vue";
-import {i18n} from "@/lang";
-import {useIotTopology} from "./composables/useIotTopology";
+import { computed, ref } from "vue";
+import { i18n } from "@/lang";
+import { useIotTopology } from "./composables/useIotTopology";
 import {
   computeTopologySize,
   findDevicePreset,
@@ -10,7 +10,7 @@ import {
   TOPOLOGY_NODE_HEIGHT,
   TOPOLOGY_NODE_WIDTH,
 } from "./constants";
-import type {IotDevice} from "./types";
+import type { IotDevice } from "./types";
 import IotDeviceDetailDialog from "./dialogs/IotDeviceDetailDialog.vue";
 
 const props = defineProps<{
@@ -27,21 +27,31 @@ const hoverId = ref<string | null>(null);
 const detailVisible = ref(false);
 
 const svgHeight = computed(() => props.height ?? 420);
-const svgSize = computed(() => computeTopologySize(topology.topologyNodes.value));
+const svgSize = computed(() =>
+  computeTopologySize(topology.topologyNodes.value),
+);
 
 /** 节点状态颜色 */
-const statusColor = (device: IotDevice) => IOT_STATUS_COLORS[device.status] ?? "#909399";
+const statusColor = (device: IotDevice) =>
+  IOT_STATUS_COLORS[device.status] ?? "#909399";
 /** 节点类型颜色 */
-const typeColor = (device: IotDevice) => findDevicePreset(device.type)?.color ?? "#409EFF";
+const typeColor = (device: IotDevice) =>
+  findDevicePreset(device.type)?.color ?? "#409EFF";
 /** 节点类型标签 */
-const typeLabel = (device: IotDevice) => findDevicePreset(device.type)?.label ?? device.type;
+const typeLabel = (device: IotDevice) =>
+  findDevicePreset(device.type)?.label ?? device.type;
 /** 状态标签 */
-const statusLabel = (device: IotDevice) => STATUS_LABELS[device.status] ?? device.status;
+const statusLabel = (device: IotDevice) =>
+  STATUS_LABELS[device.status] ?? device.status;
 
 /** 计算连线路径：父节点底部 -> 子节点顶部（贝塞尔曲线） */
 const edgePath = (sourceId: string, targetId: string): string => {
-  const src = topology.topologyNodes.value.find((n) => n.device.id === sourceId);
-  const tgt = topology.topologyNodes.value.find((n) => n.device.id === targetId);
+  const src = topology.topologyNodes.value.find(
+    (n) => n.device.id === sourceId,
+  );
+  const tgt = topology.topologyNodes.value.find(
+    (n) => n.device.id === targetId,
+  );
   if (!src || !tgt) return "";
   const x1 = src.x + TOPOLOGY_NODE_WIDTH / 2;
   const y1 = src.y + TOPOLOGY_NODE_HEIGHT;
@@ -64,18 +74,19 @@ const handleDetail = (device: IotDevice) => {
 
 /** 图例数据 */
 const legendItems = computed(() =>
-    Object.entries(IOT_STATUS_COLORS).map(([status, color]) => ({
-      status: status as IotDevice["status"],
-      color,
-      label: STATUS_LABELS[status as IotDevice["status"]],
-    })),
+  Object.entries(IOT_STATUS_COLORS).map(([status, color]) => ({
+    status: status as IotDevice["status"],
+    color,
+    label: STATUS_LABELS[status as IotDevice["status"]],
+  })),
 );
 
 /** 当前选中/悬停的设备 */
 const activeDevice = computed<IotDevice | null>(
-    () =>
-        topology.devices.find((d) => d.id === (hoverId.value ?? topology.selectedDeviceId.value)) ??
-        null,
+  () =>
+    topology.devices.find(
+      (d) => d.id === (hoverId.value ?? topology.selectedDeviceId.value),
+    ) ?? null,
 );
 </script>
 
@@ -86,13 +97,13 @@ const activeDevice = computed<IotDevice | null>(
       <div class="legend">
         <span class="legend-label">{{ i18n("iot.topology.legend") }}:</span>
         <span
-            v-for="item in legendItems"
-            :key="item.status"
-            class="legend-item"
+          v-for="item in legendItems"
+          :key="item.status"
+          class="legend-item"
         >
-                    <span class="dot" :style="{ background: item.color }"></span>
-                    {{ item.label }}
-                </span>
+          <span class="dot" :style="{ background: item.color }"></span>
+          {{ item.label }}
+        </span>
       </div>
     </div>
     <div class="topology-canvas" :style="{ height: `${svgHeight}px` }">
@@ -100,93 +111,91 @@ const activeDevice = computed<IotDevice | null>(
         {{ i18n("iot.message.noDevices") }}
       </div>
       <svg
-          v-else
-          class="topology-svg"
-          :width="svgSize.width"
-          :height="Math.max(svgSize.height, svgHeight)"
-          :viewBox="`0 0 ${svgSize.width} ${Math.max(svgSize.height, svgHeight)}`"
+        v-else
+        class="topology-svg"
+        :width="svgSize.width"
+        :height="Math.max(svgSize.height, svgHeight)"
+        :viewBox="`0 0 ${svgSize.width} ${Math.max(svgSize.height, svgHeight)}`"
       >
         <defs>
           <marker
-              id="iot-arrow"
-              markerWidth="8"
-              markerHeight="8"
-              refX="4"
-              refY="4"
-              orient="auto"
+            id="iot-arrow"
+            markerWidth="8"
+            markerHeight="8"
+            refX="4"
+            refY="4"
+            orient="auto"
           >
-            <path d="M0,0 L8,4 L0,8 Z" fill="rgba(144,147,153,0.6)"/>
+            <path d="M0,0 L8,4 L0,8 Z" fill="rgba(144,147,153,0.6)" />
           </marker>
         </defs>
         <!-- 连线 -->
         <g class="edges">
           <path
-              v-for="(edge, idx) in topology.topologyEdges.value"
-              :key="`edge-${idx}`"
-              :d="edgePath(edge.source, edge.target)"
-              fill="none"
-              stroke="rgba(144,147,153,0.45)"
-              stroke-width="1.5"
-              :marker-end="`url(#iot-arrow)`"
+            v-for="(edge, idx) in topology.topologyEdges.value"
+            :key="`edge-${idx}`"
+            :d="edgePath(edge.source, edge.target)"
+            fill="none"
+            stroke="rgba(144,147,153,0.45)"
+            stroke-width="1.5"
+            :marker-end="`url(#iot-arrow)`"
           />
         </g>
         <!-- 节点 -->
         <g
-            v-for="node in topology.topologyNodes.value"
-            :key="node.device.id"
-            class="node-group"
-            :class="{
-                        selected: topology.selectedDeviceId.value === node.device.id,
-                        hovered: hoverId === node.device.id,
-                    }"
-            :transform="`translate(${node.x}, ${node.y})`"
-            @click.stop="handleNodeClick(node.device)"
-            @mouseenter="hoverId = node.device.id"
-            @mouseleave="hoverId = null"
-            @dblclick.stop="handleDetail(node.device)"
+          v-for="node in topology.topologyNodes.value"
+          :key="node.device.id"
+          class="node-group"
+          :class="{
+            selected: topology.selectedDeviceId.value === node.device.id,
+            hovered: hoverId === node.device.id,
+          }"
+          :transform="`translate(${node.x}, ${node.y})`"
+          @click.stop="handleNodeClick(node.device)"
+          @mouseenter="hoverId = node.device.id"
+          @mouseleave="hoverId = null"
+          @dblclick.stop="handleDetail(node.device)"
         >
           <!-- 节点主体 -->
           <rect
-              :width="TOPOLOGY_NODE_WIDTH"
-              :height="TOPOLOGY_NODE_HEIGHT"
-              rx="6"
-              ry="6"
-              :fill="`rgba(255,255,255,0.95)`"
-              :stroke="statusColor(node.device)"
-              stroke-width="2"
+            :width="TOPOLOGY_NODE_WIDTH"
+            :height="TOPOLOGY_NODE_HEIGHT"
+            rx="6"
+            ry="6"
+            :fill="`rgba(255,255,255,0.95)`"
+            :stroke="statusColor(node.device)"
+            stroke-width="2"
           />
           <!-- 类型色条 -->
           <rect
-              x="0"
-              y="0"
-              width="4"
-              :height="TOPOLOGY_NODE_HEIGHT"
-              rx="2"
-              ry="2"
-              :fill="typeColor(node.device)"
+            x="0"
+            y="0"
+            width="4"
+            :height="TOPOLOGY_NODE_HEIGHT"
+            rx="2"
+            ry="2"
+            :fill="typeColor(node.device)"
           />
           <!-- 状态指示点 -->
           <circle
-              :cx="TOPOLOGY_NODE_WIDTH - 12"
-              :cy="12"
-              r="4"
-              :fill="statusColor(node.device)"
+            :cx="TOPOLOGY_NODE_WIDTH - 12"
+            :cy="12"
+            r="4"
+            :fill="statusColor(node.device)"
           >
             <animate
-                v-if="node.device.status === 'error' || node.device.status === 'warning'"
-                attributeName="opacity"
-                values="1;0.3;1"
-                dur="1.2s"
-                repeatCount="indefinite"
+              v-if="
+                node.device.status === 'error' ||
+                node.device.status === 'warning'
+              "
+              attributeName="opacity"
+              values="1;0.3;1"
+              dur="1.2s"
+              repeatCount="indefinite"
             />
           </circle>
           <!-- 设备名称 -->
-          <text
-              :x="12"
-              :y="22"
-              class="node-name"
-          >{{ node.device.name }}
-          </text>
+          <text :x="12" :y="22" class="node-name">{{ node.device.name }}</text>
           <!-- 类型 + 状态 -->
           <text :x="12" :y="40" class="node-meta">
             {{ typeLabel(node.device) }} · {{ statusLabel(node.device) }}
@@ -194,10 +203,7 @@ const activeDevice = computed<IotDevice | null>(
         </g>
       </svg>
       <!-- 悬浮信息卡 -->
-      <div
-          v-if="activeDevice && hoverId"
-          class="hover-card"
-      >
+      <div v-if="activeDevice && hoverId" class="hover-card">
         <div class="hc-title">{{ activeDevice.name }}</div>
         <div class="hc-row">
           <span class="hc-key">{{ i18n("iot.device.type") }}</span>
@@ -206,8 +212,8 @@ const activeDevice = computed<IotDevice | null>(
         <div class="hc-row">
           <span class="hc-key">{{ i18n("iot.device.status") }}</span>
           <span class="hc-val" :style="{ color: statusColor(activeDevice) }">
-                        {{ statusLabel(activeDevice) }}
-                    </span>
+            {{ statusLabel(activeDevice) }}
+          </span>
         </div>
         <div class="hc-row">
           <span class="hc-key">{{ i18n("iot.device.location") }}</span>
@@ -218,8 +224,8 @@ const activeDevice = computed<IotDevice | null>(
     </div>
     <!-- 设备详情弹窗 -->
     <iot-device-detail-dialog
-        v-model:visible="detailVisible"
-        :device="topology.selectedDevice.value"
+      v-model:visible="detailVisible"
+      :device="topology.selectedDevice.value"
     />
   </div>
 </template>
@@ -287,8 +293,9 @@ export default {
     flex: 1;
     overflow: auto;
     position: relative;
-    background: linear-gradient(0deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
+    background:
+      linear-gradient(0deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
     background-size: 20px 20px;
 
     .topology-svg {

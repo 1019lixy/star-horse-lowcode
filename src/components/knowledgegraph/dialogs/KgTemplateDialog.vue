@@ -1,14 +1,14 @@
 <script setup lang="ts" name="KgTemplateDialog">
-import {computed, ref} from "vue";
-import {ElMessage, ElMessageBox} from "element-plus";
-import {i18n} from "@/lang";
-import type {UseGraphQueryBuilderReturn} from "../composables/useGraphQueryBuilder";
-import {StarHorsePanel} from "@/components/comp";
+import { computed, ref } from "vue";
+import { ElMessage, ElMessageBox } from "element-plus";
+import { i18n } from "@/lang";
+import type { UseGraphQueryBuilderReturn } from "../composables/useGraphQueryBuilder";
+import { StarHorsePanel } from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
   builder: UseGraphQueryBuilderReturn;
-  dialogType?:"dialog"|"drawer";
+  dialogType?: "dialog" | "drawer";
 }>();
 
 const emit = defineEmits<{
@@ -27,8 +27,8 @@ const selectedTemplateId = ref<string | null>(null);
 
 const templates = computed(() => builder.state.templates);
 
-const selectedTemplate = computed(() =>
-    templates.value.find((t) => t.id === selectedTemplateId.value) ?? null,
+const selectedTemplate = computed(
+  () => templates.value.find((t) => t.id === selectedTemplateId.value) ?? null,
 );
 
 const handleSave = () => {
@@ -54,9 +54,9 @@ const handleDelete = async () => {
   if (!selectedTemplateId.value) return;
   try {
     await ElMessageBox.confirm(
-        i18n("knowledgegraph.query.template.confirmDelete"),
-        i18n("knowledgegraph.query.template.delete"),
-        {type: "warning"},
+      i18n("knowledgegraph.query.template.confirmDelete"),
+      i18n("knowledgegraph.query.template.delete"),
+      { type: "warning" },
     );
     builder.deleteTemplate(selectedTemplateId.value);
     selectedTemplateId.value = null;
@@ -74,12 +74,12 @@ const handleOpen = () => {
 
 <template>
   <star-horse-panel
-      :type="dialogType"
-      v-model="innerVisible"
-      :title="i18n('knowledgegraph.query.template.title')"
-      box-width="720px"
-      :self-func="true"
-      @open="handleOpen"
+    :type="dialogType"
+    v-model="innerVisible"
+    :title="i18n('knowledgegraph.query.template.title')"
+    box-width="720px"
+    :self-func="true"
+    @open="handleOpen"
   >
     <div class="kg-template-dialog">
       <div class="template-layout">
@@ -91,14 +91,16 @@ const handleOpen = () => {
           </div>
           <div class="list-body">
             <div
-                v-for="tpl in templates"
-                :key="tpl.id"
-                class="list-item"
-                :class="{ active: tpl.id === selectedTemplateId }"
-                @click="selectedTemplateId = tpl.id"
+              v-for="tpl in templates"
+              :key="tpl.id"
+              class="list-item"
+              :class="{ active: tpl.id === selectedTemplateId }"
+              @click="selectedTemplateId = tpl.id"
             >
               <div class="item-name">{{ tpl.name }}</div>
-              <div class="item-time">{{ new Date(tpl.createdAt).toLocaleString() }}</div>
+              <div class="item-time">
+                {{ new Date(tpl.createdAt).toLocaleString() }}
+              </div>
             </div>
             <div v-if="templates.length === 0" class="empty">
               {{ i18n("knowledgegraph.query.template.empty") }}
@@ -109,10 +111,14 @@ const handleOpen = () => {
         <!-- 右侧：保存 + 详情 -->
         <div class="template-detail">
           <div class="save-section">
-            <div class="section-title">{{ i18n("knowledgegraph.query.template.save") }}</div>
+            <div class="section-title">
+              {{ i18n("knowledgegraph.query.template.save") }}
+            </div>
             <el-input
-                v-model="newTemplateName"
-                :placeholder="i18n('knowledgegraph.query.template.namePlaceholder')"
+              v-model="newTemplateName"
+              :placeholder="
+                i18n('knowledgegraph.query.template.namePlaceholder')
+              "
             >
               <template #append>
                 <el-button @click="handleSave">
@@ -123,34 +129,40 @@ const handleOpen = () => {
           </div>
 
           <div class="detail-section">
-            <div class="section-title">{{ i18n("knowledgegraph.query.template.name") }}</div>
+            <div class="section-title">
+              {{ i18n("knowledgegraph.query.template.name") }}
+            </div>
             <div v-if="selectedTemplate" class="detail-content">
               <div class="detail-row">
-                <span class="label">{{ i18n("knowledgegraph.query.template.name") }}:</span>
+                <span class="label"
+                  >{{ i18n("knowledgegraph.query.template.name") }}:</span
+                >
                 <span class="value">{{ selectedTemplate.name }}</span>
               </div>
               <div class="detail-row">
-                <span class="label">{{ i18n("knowledgegraph.query.startNode") }}:</span>
-                <span class="value">{{ selectedTemplate.query.startNodeType }}</span>
+                <span class="label"
+                  >{{ i18n("knowledgegraph.query.startNode") }}:</span
+                >
+                <span class="value">{{
+                  selectedTemplate.query.startNodeType
+                }}</span>
               </div>
               <div class="detail-row">
-                <span class="label">{{ i18n("knowledgegraph.query.step") }}:</span>
-                <span class="value">{{ selectedTemplate.query.steps.length }}</span>
-              </div>
-              <pre class="detail-json">{{ JSON.stringify(selectedTemplate.query, null, 2) }}</pre>
-              <div class="detail-actions">
-                <el-button
-                    type="primary"
-
-                    @click="handleLoad"
+                <span class="label"
+                  >{{ i18n("knowledgegraph.query.step") }}:</span
                 >
+                <span class="value">{{
+                  selectedTemplate.query.steps.length
+                }}</span>
+              </div>
+              <pre class="detail-json">{{
+                JSON.stringify(selectedTemplate.query, null, 2)
+              }}</pre>
+              <div class="detail-actions">
+                <el-button type="primary" @click="handleLoad">
                   {{ i18n("knowledgegraph.query.template.load") }}
                 </el-button>
-                <el-button
-                    type="danger"
-
-                    @click="handleDelete"
-                >
+                <el-button type="danger" @click="handleDelete">
                   {{ i18n("knowledgegraph.query.template.delete") }}
                 </el-button>
               </div>
@@ -163,7 +175,9 @@ const handleOpen = () => {
       </div>
     </div>
     <template #footer>
-      <el-button @click="innerVisible = false">{{ i18n("dialog.close") }}</el-button>
+      <el-button @click="innerVisible = false">{{
+        i18n("dialog.close")
+      }}</el-button>
     </template>
   </star-horse-panel>
 </template>

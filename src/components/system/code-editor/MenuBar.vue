@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import {computed, onBeforeUnmount, onMounted, ref} from "vue";
-import type {MenuItemDef} from "./types";
-import {IDE_THEMES} from "./theme";
-import {i18n} from "@/lang/index";
+import { computed, onBeforeUnmount, onMounted, ref } from "vue";
+import type { MenuItemDef } from "./types";
+import { IDE_THEMES } from "./theme";
+import { i18n } from "@/lang/index";
 
 const props = defineProps<{
   menus: MenuItemDef[];
@@ -25,31 +25,31 @@ const defaultMenus: MenuItemDef[] = [
         action: "new-file",
         shortcut: "Ctrl+N",
       },
-      {label: i18n("ide.menu.file.newFolder"), action: "new-folder"},
-      {divider: true, label: ""},
+      { label: i18n("ide.menu.file.newFolder"), action: "new-folder" },
+      { divider: true, label: "" },
       {
         label: i18n("ide.menu.file.openFile"),
         action: "open-file",
         shortcut: "Ctrl+O",
       },
-      {label: i18n("ide.menu.file.openDirectory"), action: "open-directory"},
-      {label: i18n("ide.menu.file.loadServer"), action: "load-server"},
-      {divider: true, label: ""},
-      {label: i18n("ide.menu.file.save"), action: "save", shortcut: "Ctrl+S"},
+      { label: i18n("ide.menu.file.openDirectory"), action: "open-directory" },
+      { label: i18n("ide.menu.file.loadServer"), action: "load-server" },
+      { divider: true, label: "" },
+      { label: i18n("ide.menu.file.save"), action: "save", shortcut: "Ctrl+S" },
       {
         label: i18n("ide.menu.file.saveAll"),
         action: "save-all",
         shortcut: "Ctrl+Shift+S",
       },
-      {label: i18n("ide.menu.file.saveServer"), action: "save-server"},
-      {divider: true, label: ""},
+      { label: i18n("ide.menu.file.saveServer"), action: "save-server" },
+      { divider: true, label: "" },
       {
         label: i18n("ide.menu.file.closeTab"),
         action: "close-tab",
         shortcut: "Ctrl+W",
       },
-      {label: i18n("ide.menu.file.closeAll"), action: "close-all"},
-      {divider: true, label: ""},
+      { label: i18n("ide.menu.file.closeAll"), action: "close-all" },
+      { divider: true, label: "" },
       {
         label: i18n("ide.menu.file.resolveConflict"),
         action: "resolve-conflict",
@@ -59,34 +59,34 @@ const defaultMenus: MenuItemDef[] = [
   {
     label: i18n("ide.menu.edit"),
     children: [
-      {label: i18n("ide.menu.edit.undo"), action: "undo", shortcut: "Ctrl+Z"},
+      { label: i18n("ide.menu.edit.undo"), action: "undo", shortcut: "Ctrl+Z" },
       {
         label: i18n("ide.menu.edit.redo"),
         action: "redo",
         shortcut: "Ctrl+Shift+Z",
       },
-      {divider: true, label: ""},
-      {label: i18n("ide.menu.edit.cut"), action: "cut", shortcut: "Ctrl+X"},
-      {label: i18n("ide.menu.edit.copy"), action: "copy", shortcut: "Ctrl+C"},
+      { divider: true, label: "" },
+      { label: i18n("ide.menu.edit.cut"), action: "cut", shortcut: "Ctrl+X" },
+      { label: i18n("ide.menu.edit.copy"), action: "copy", shortcut: "Ctrl+C" },
       {
         label: i18n("ide.menu.edit.paste"),
         action: "paste",
         shortcut: "Ctrl+V",
       },
-      {divider: true, label: ""},
-      {label: i18n("ide.menu.edit.find"), action: "find", shortcut: "Ctrl+F"},
+      { divider: true, label: "" },
+      { label: i18n("ide.menu.edit.find"), action: "find", shortcut: "Ctrl+F" },
       {
         label: i18n("ide.menu.edit.replace"),
         action: "replace",
         shortcut: "Ctrl+H",
       },
-      {divider: true, label: ""},
+      { divider: true, label: "" },
       {
         label: i18n("ide.menu.edit.selectAll"),
         action: "select-all",
         shortcut: "Ctrl+A",
       },
-      {divider: true, label: ""},
+      { divider: true, label: "" },
       {
         label: i18n("ide.menu.edit.formatDocument"),
         action: "format-document",
@@ -106,13 +106,13 @@ const defaultMenus: MenuItemDef[] = [
         label: i18n("ide.menu.build.compileRegister"),
         action: "compile-register",
       },
-      {label: i18n("ide.menu.build.run"), action: "run", shortcut: "Ctrl+F5"},
-      {divider: true, label: ""},
-      {label: i18n("ide.menu.build.draftSave"), action: "draft-save"},
-      {divider: true, label: ""},
-      {label: i18n("ide.menu.build.unregisterAll"), action: "unregister-all"},
-      {label: i18n("ide.menu.build.healthCheck"), action: "health-check"},
-      {divider: true, label: ""},
+      { label: i18n("ide.menu.build.run"), action: "run", shortcut: "Ctrl+F5" },
+      { divider: true, label: "" },
+      { label: i18n("ide.menu.build.draftSave"), action: "draft-save" },
+      { divider: true, label: "" },
+      { label: i18n("ide.menu.build.unregisterAll"), action: "unregister-all" },
+      { label: i18n("ide.menu.build.healthCheck"), action: "health-check" },
+      { divider: true, label: "" },
       {
         label: i18n("ide.menu.build.console"),
         action: "toggle-console",
@@ -128,8 +128,8 @@ const defaultMenus: MenuItemDef[] = [
         action: "toggle-sidebar",
         shortcut: "Ctrl+B",
       },
-      {label: i18n("ide.menu.view.toggleMinimap"), action: "toggle-minimap"},
-      {divider: true, label: ""},
+      { label: i18n("ide.menu.view.toggleMinimap"), action: "toggle-minimap" },
+      { divider: true, label: "" },
       {
         label: i18n("ide.menu.view.zoomIn"),
         action: "zoom-in",
@@ -145,7 +145,7 @@ const defaultMenus: MenuItemDef[] = [
         action: "zoom-reset",
         shortcut: "Ctrl+0",
       },
-      {divider: true, label: ""},
+      { divider: true, label: "" },
       {
         label: i18n("ide.menu.view.diffEditor"),
         action: "diff-editor",
@@ -185,35 +185,35 @@ onBeforeUnmount(() => document.removeEventListener("click", onClickOutside));
 <template>
   <div class="sh-menubar" @click.stop>
     <div
-        v-for="(menu, i) in mergedMenus"
-        :key="i"
-        class="menubar-item"
-        :class="{ active: openIndex === i }"
-        @click="toggle(i)"
-        @mouseenter="openIndex !== null && (openIndex = i)"
+      v-for="(menu, i) in mergedMenus"
+      :key="i"
+      class="menubar-item"
+      :class="{ active: openIndex === i }"
+      @click="toggle(i)"
+      @mouseenter="openIndex !== null && (openIndex = i)"
     >
       <span class="menubar-label">{{ menu.label }}</span>
       <!-- 下拉菜单 -->
       <div v-if="openIndex === i && menu.children" class="menubar-dropdown">
         <template v-for="(child, ci) in menu.children" :key="ci">
-          <div v-if="child.divider" class="dropdown-divider"/>
+          <div v-if="child.divider" class="dropdown-divider" />
           <div v-else class="dropdown-item" @click.stop="handleAction(child)">
             <span class="dropdown-label">{{ child.label }}</span>
             <span v-if="child.shortcut" class="dropdown-shortcut">{{
-                child.shortcut
-              }}</span>
+              child.shortcut
+            }}</span>
           </div>
         </template>
       </div>
     </div>
 
-    <div class="menubar-spacer"/>
+    <div class="menubar-spacer" />
 
     <!-- 主题切换 -->
     <div class="menubar-item theme-switcher" @click.stop>
       <el-dropdown
-          trigger="click"
-          @command="(v: string) => emit('switch-theme', v)"
+        trigger="click"
+        @command="(v: string) => emit('switch-theme', v)"
       >
         <span class="menubar-label cursor-pointer">
           {{
@@ -225,10 +225,10 @@ onBeforeUnmount(() => document.removeEventListener("click", onClickOutside));
         <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item
-                v-for="t in IDE_THEMES"
-                :key="t.value"
-                :command="t.value"
-                :class="{ 'is-active': t.value === currentTheme }"
+              v-for="t in IDE_THEMES"
+              :key="t.value"
+              :command="t.value"
+              :class="{ 'is-active': t.value === currentTheme }"
             >
               {{ t.name }}
             </el-dropdown-item>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import {ContainerPreps} from "@/components/types/ItemPreps";
-import {ModelRef} from "vue";
+import { ContainerPreps } from "@/components/types/ItemPreps";
+import { ModelRef } from "vue";
 import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
 
 const props = withDefaults(defineProps<ContainerPreps>(), {
@@ -9,7 +9,7 @@ const props = withDefaults(defineProps<ContainerPreps>(), {
   parentPreps: {},
   subFormFlag: "N",
   batchName: "batchDataList",
-  batchFieldName: "batchFieldList",
+
   compSize: "default",
   source: 1,
   level: 0,
@@ -29,9 +29,9 @@ const shouldShow = () => {
 <template>
   <!-- 根据 formVisible 判断是否显示整个分组 -->
   <div
-      v-if="shouldShow()"
-      class="form-group"
-      :style="{ marginLeft: level * 16 + 'px' }"
+    v-if="shouldShow()"
+    class="form-group"
+    :style="{ marginLeft: level * 16 + 'px' }"
   >
     <!-- 非叶子节点显示为标签标题 -->
     <div class="group-label">
@@ -39,22 +39,21 @@ const shouldShow = () => {
     </div>
     <!-- 使用 StarHorseFormItem 递归渲染子节点，保持类型判断一致性 -->
     <star-horse-form-item
-        :fieldList="{ fieldList: item.children }"
-        :level="level + 1"
-        :primary-key="primaryKey"
-        :rules="rules"
-        :batchFieldName="batchFieldName"
-        :batchName="batchName"
-        :compSize="compSize"
-        :compUrl="compUrl"
-        :subFormFlag="subFormFlag"
-        :enableSubNode="enableSubNode"
-        :source="source"
-        :objectName="objectName"
-        :dataIndex="dataIndex"
-        :propPrefix="propPrefix"
-        v-model:dataForm="dataForm"
-        :parentPreps="parentPreps"
+      :fieldList="{ fieldList: item.children }"
+      :level="level + 1"
+      :primary-key="primaryKey"
+      :rules="rules"
+      :batchName="batchName"
+      :compSize="compSize"
+      :compUrl="compUrl"
+      :subFormFlag="subFormFlag"
+      :enableSubNode="enableSubNode"
+      :source="source"
+      :objectName="objectName"
+      :dataIndex="dataIndex"
+      :propPrefix="propPrefix"
+      v-model:dataForm="dataForm"
+      :parentPreps="parentPreps"
     />
   </div>
 </template>

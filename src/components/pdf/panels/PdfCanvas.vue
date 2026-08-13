@@ -1,10 +1,10 @@
 <script setup lang="ts" name="PdfCanvas">
-import {computed, nextTick, onBeforeUnmount, onMounted, ref} from "vue";
-import {i18n} from "@/lang";
-import {ShSvgIcon} from "@/components/shared";
-import type {PdfDesigner} from "../composables/usePdfDesigner";
-import {MM_TO_PX} from "../constants";
-import type {PdfElement} from "../types";
+import { computed, nextTick, onBeforeUnmount, onMounted, ref } from "vue";
+import { i18n } from "@/lang";
+import { ShSvgIcon } from "@/components/shared";
+import type { PdfDesigner } from "../composables/usePdfDesigner";
+import { MM_TO_PX } from "../constants";
+import type { PdfElement } from "../types";
 
 const props = defineProps<{
   designer: PdfDesigner;
@@ -17,16 +17,32 @@ const scale = ref(0.8);
 /** 标尺宽度（像素） */
 const RULER_SIZE = 24;
 
-const pageWidthPx = computed(() => props.designer.state.page.width * MM_TO_PX * scale.value);
-const pageHeightPx = computed(() => props.designer.state.page.height * MM_TO_PX * scale.value);
-const marginTopPx = computed(() => props.designer.state.page.marginTop * MM_TO_PX * scale.value);
-const marginLeftPx = computed(() => props.designer.state.page.marginLeft * MM_TO_PX * scale.value);
-const marginRightPx = computed(() => props.designer.state.page.marginRight * MM_TO_PX * scale.value);
-const marginBottomPx = computed(() => props.designer.state.page.marginBottom * MM_TO_PX * scale.value);
+const pageWidthPx = computed(
+  () => props.designer.state.page.width * MM_TO_PX * scale.value,
+);
+const pageHeightPx = computed(
+  () => props.designer.state.page.height * MM_TO_PX * scale.value,
+);
+const marginTopPx = computed(
+  () => props.designer.state.page.marginTop * MM_TO_PX * scale.value,
+);
+const marginLeftPx = computed(
+  () => props.designer.state.page.marginLeft * MM_TO_PX * scale.value,
+);
+const marginRightPx = computed(
+  () => props.designer.state.page.marginRight * MM_TO_PX * scale.value,
+);
+const marginBottomPx = computed(
+  () => props.designer.state.page.marginBottom * MM_TO_PX * scale.value,
+);
 
 /** 内容区域尺寸 */
-const contentWidthPx = computed(() => pageWidthPx.value - marginLeftPx.value - marginRightPx.value);
-const contentHeightPx = computed(() => pageHeightPx.value - marginTopPx.value - marginBottomPx.value);
+const contentWidthPx = computed(
+  () => pageWidthPx.value - marginLeftPx.value - marginRightPx.value,
+);
+const contentHeightPx = computed(
+  () => pageHeightPx.value - marginTopPx.value - marginBottomPx.value,
+);
 
 /** 拖拽状态 */
 const dragState = ref<{
@@ -44,21 +60,37 @@ const dragState = ref<{
 } | null>(null);
 
 /** 辅助线 */
-const guideLines = ref<{ horizontal: number[]; vertical: number[] }>({horizontal: [], vertical: []});
+const guideLines = ref<{ horizontal: number[]; vertical: number[] }>({
+  horizontal: [],
+  vertical: [],
+});
 
 /** 选中元素 ID 列表 */
-const selectedElementIds = computed(() => props.designer.selectedElementIds.value);
+const selectedElementIds = computed(
+  () => props.designer.selectedElementIds.value,
+);
 
 /** 框选状态 */
-const boxSelect = ref<{ startX: number; startY: number; endX: number; endY: number } | null>(null);
+const boxSelect = ref<{
+  startX: number;
+  startY: number;
+  endX: number;
+  endY: number;
+} | null>(null);
 
 /** 右键菜单 */
 const contextMenu = ref<{
   visible: boolean;
   x: number;
   y: number;
-  items: { key: string; label: string; icon: string; divider?: boolean; disabled?: boolean }[];
-}>({visible: false, x: 0, y: 0, items: []});
+  items: {
+    key: string;
+    label: string;
+    icon: string;
+    divider?: boolean;
+    disabled?: boolean;
+  }[];
+}>({ visible: false, x: 0, y: 0, items: [] });
 
 /** 滚动偏移 */
 const scrollLeft = ref(0);
@@ -72,7 +104,8 @@ const editText = ref("");
 const editRef = ref<HTMLDivElement | null>(null);
 
 /** 判断是否文本类型 */
-const isTextType = (type: string): boolean => ["text", "heading", "paragraph", "date"].includes(type);
+const isTextType = (type: string): boolean =>
+  ["text", "heading", "paragraph", "date"].includes(type);
 
 /** 获取元素内容样式 */
 const getContentStyle = (el: PdfElement) => {
@@ -106,8 +139,20 @@ const computeSnapGuides = (el: PdfElement) => {
   const vLines: number[] = [];
 
   const pageFeatures = {
-    v: [0, page.marginLeft, page.marginLeft + contentW / 2, page.width - page.marginRight, page.width],
-    h: [0, page.marginTop, page.marginTop + contentH / 2, page.height - page.marginBottom, page.height],
+    v: [
+      0,
+      page.marginLeft,
+      page.marginLeft + contentW / 2,
+      page.width - page.marginRight,
+      page.width,
+    ],
+    h: [
+      0,
+      page.marginTop,
+      page.marginTop + contentH / 2,
+      page.height - page.marginBottom,
+      page.height,
+    ],
   };
 
   const elCx = el.x + el.width / 2;
@@ -146,8 +191,8 @@ const computeSnapGuides = (el: PdfElement) => {
   }
 
   guideLines.value = {
-    horizontal: [...new Set(hLines.map(l => Math.round(l * 10) / 10))],
-    vertical: [...new Set(vLines.map(l => Math.round(l * 10) / 10))],
+    horizontal: [...new Set(hLines.map((l) => Math.round(l * 10) / 10))],
+    vertical: [...new Set(vLines.map((l) => Math.round(l * 10) / 10))],
   };
 };
 
@@ -155,7 +200,7 @@ const computeSnapGuides = (el: PdfElement) => {
 const handleCanvasClick = (e: MouseEvent) => {
   if (e.target === e.currentTarget) {
     props.designer.clearSelection();
-    guideLines.value = {horizontal: [], vertical: []};
+    guideLines.value = { horizontal: [], vertical: [] };
     editingId.value = null;
   }
   contextMenu.value.visible = false;
@@ -191,7 +236,9 @@ const handleElementDblClick = (e: MouseEvent, el: PdfElement) => {
 /** 原地编辑完成 */
 const finishEditing = () => {
   if (!editingId.value) return;
-  const el = props.designer.state.elements.find(e => e.id === editingId.value);
+  const el = props.designer.state.elements.find(
+    (e) => e.id === editingId.value,
+  );
   if (el && isTextType(el.type)) {
     const newText = editRef.value?.innerText ?? editText.value;
     if ((el as any).text !== newText) {
@@ -214,7 +261,11 @@ const handleEditKeyDown = (e: KeyboardEvent) => {
 };
 
 /** 元素拖拽/resize 开始 */
-const handleElementMouseDown = (e: MouseEvent, el: PdfElement, mode: string = "move") => {
+const handleElementMouseDown = (
+  e: MouseEvent,
+  el: PdfElement,
+  mode: string = "move",
+) => {
   if (props.readonly) return;
   if (editingId.value === el.id) return; // 编辑中不拖拽
   e.stopPropagation();
@@ -244,7 +295,9 @@ const handleMouseMove = (e: MouseEvent) => {
   const dx = (e.clientX - dragState.value.startX) / scale.value / MM_TO_PX;
   const dy = (e.clientY - dragState.value.startY) / scale.value / MM_TO_PX;
   if (Math.abs(dx) > 0.5 || Math.abs(dy) > 0.5) dragState.value.moved = true;
-  const el = props.designer.state.elements.find((item) => item.id === dragState.value!.elementId);
+  const el = props.designer.state.elements.find(
+    (item) => item.id === dragState.value!.elementId,
+  );
   if (!el) return;
   const mode = dragState.value.mode;
   if (mode === "move") {
@@ -254,8 +307,16 @@ const handleMouseMove = (e: MouseEvent) => {
     const contentW = page.width - page.marginLeft - page.marginRight;
     const contentH = page.height - page.marginTop - page.marginBottom;
     const snapPoints = {
-      v: [page.marginLeft, page.marginLeft + contentW / 2, page.width - page.marginRight],
-      h: [page.marginTop, page.marginTop + contentH / 2, page.height - page.marginBottom],
+      v: [
+        page.marginLeft,
+        page.marginLeft + contentW / 2,
+        page.width - page.marginRight,
+      ],
+      h: [
+        page.marginTop,
+        page.marginTop + contentH / 2,
+        page.height - page.marginBottom,
+      ],
     };
     const elCx = newX + el.width / 2;
     const elCy = newY + el.height / 2;
@@ -314,7 +375,7 @@ const handleMouseMove = (e: MouseEvent) => {
 
 const handleMouseUp = () => {
   if (dragState.value?.moved) props.designer.pushHistory();
-  guideLines.value = {horizontal: [], vertical: []};
+  guideLines.value = { horizontal: [], vertical: [] };
   dragState.value = null;
   document.removeEventListener("mousemove", handleMouseMove);
   document.removeEventListener("mouseup", handleMouseUp);
@@ -327,10 +388,11 @@ const handleDrop = (e: DragEvent) => {
   const type = (window as any).__pdfDragType;
   if (!type) return;
   const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-  const x = (e.clientX - rect.left - marginLeftPx.value) / scale.value / MM_TO_PX;
+  const x =
+    (e.clientX - rect.left - marginLeftPx.value) / scale.value / MM_TO_PX;
   const y = (e.clientY - rect.top - marginTopPx.value) / scale.value / MM_TO_PX;
   // addElement 内部已自动选中
-  props.designer.addElement(type, {x, y});
+  props.designer.addElement(type, { x, y });
   (window as any).__pdfDragType = null;
 };
 
@@ -342,13 +404,18 @@ const handleCanvasMouseDown = (e: MouseEvent) => {
     return;
   }
   const tgt = e.target as HTMLElement;
-  if (!tgt.classList.contains("pdf-page") && !tgt.classList.contains("elements-layer") && e.currentTarget !== e.target) return;
+  if (
+    !tgt.classList.contains("pdf-page") &&
+    !tgt.classList.contains("elements-layer") &&
+    e.currentTarget !== e.target
+  )
+    return;
   const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
   boxSelect.value = {
     startX: e.clientX - rect.left,
     startY: e.clientY - rect.top,
     endX: e.clientX - rect.left,
-    endY: e.clientY - rect.top
+    endY: e.clientY - rect.top,
   };
   document.addEventListener("mousemove", handleBoxSelectMove);
   document.addEventListener("mouseup", handleBoxSelectUp);
@@ -372,7 +439,13 @@ const handleBoxSelectUp = () => {
     if (maxX - minX > 2 || maxY - minY > 2) {
       const ids: string[] = [];
       for (const el of props.designer.state.elements) {
-        if (el.x >= minX && el.y >= minY && el.x + el.width <= maxX && el.y + el.height <= maxY) ids.push(el.id);
+        if (
+          el.x >= minX &&
+          el.y >= minY &&
+          el.x + el.width <= maxX &&
+          el.y + el.height <= maxY
+        )
+          ids.push(el.id);
       }
       if (ids.length > 0) props.designer.selectedElementIds.value = ids;
     }
@@ -383,13 +456,13 @@ const handleBoxSelectUp = () => {
 };
 
 const boxSelectStyle = computed(() => {
-  if (!boxSelect.value) return {display: "none"};
+  if (!boxSelect.value) return { display: "none" };
   const bs = boxSelect.value;
   return {
     left: `${Math.min(bs.startX, bs.endX)}px`,
     top: `${Math.min(bs.startY, bs.endY)}px`,
     width: `${Math.abs(bs.endX - bs.startX)}px`,
-    height: `${Math.abs(bs.endY - bs.startY)}px`
+    height: `${Math.abs(bs.endY - bs.startY)}px`,
   };
 });
 
@@ -397,59 +470,74 @@ const boxSelectStyle = computed(() => {
 const handleElementContextMenu = (e: MouseEvent, el: PdfElement) => {
   e.preventDefault();
   e.stopPropagation();
-  if (!selectedElementIds.value.includes(el.id)) props.designer.selectElement(el.id);
+  if (!selectedElementIds.value.includes(el.id))
+    props.designer.selectElement(el.id);
   contextMenu.value = {
-    visible: true, x: e.clientX, y: e.clientY,
+    visible: true,
+    x: e.clientX,
+    y: e.clientY,
     items: [
-      {key: "copy", label: i18n("pdf.context.copy"), icon: "copy"},
-      {key: "cut", label: i18n("pdf.context.cut"), icon: "cut"},
+      { key: "copy", label: i18n("pdf.context.copy"), icon: "copy" },
+      { key: "cut", label: i18n("pdf.context.cut"), icon: "cut" },
       {
         key: "paste",
         label: i18n("pdf.context.paste"),
         icon: "paste",
-        disabled: props.designer.clipboard.value.length === 0
+        disabled: props.designer.clipboard.value.length === 0,
       },
-      {key: "duplicate", label: i18n("pdf.context.duplicate"), icon: "duplicate"},
-      {key: "delete", label: i18n("pdf.context.delete"), icon: "delete"},
-      {key: "d1", label: "", icon: "", divider: true},
-      {key: "bringToFront", label: i18n("pdf.context.bringToFront"), icon: "ctx-bringFront"},
-      {key: "sendToBack", label: i18n("pdf.context.sendToBack"), icon: "ctx-sendBack"},
-      {key: "d2", label: "", icon: "", divider: true},
+      {
+        key: "duplicate",
+        label: i18n("pdf.context.duplicate"),
+        icon: "duplicate",
+      },
+      { key: "delete", label: i18n("pdf.context.delete"), icon: "delete" },
+      { key: "d1", label: "", icon: "", divider: true },
+      {
+        key: "bringToFront",
+        label: i18n("pdf.context.bringToFront"),
+        icon: "ctx-bringFront",
+      },
+      {
+        key: "sendToBack",
+        label: i18n("pdf.context.sendToBack"),
+        icon: "ctx-sendBack",
+      },
+      { key: "d2", label: "", icon: "", divider: true },
       {
         key: "alignLeft",
         label: i18n("pdf.context.alignLeft"),
         icon: "align-left",
-        disabled: props.designer.selectedCount.value < 2
+        disabled: props.designer.selectedCount.value < 2,
       },
       {
         key: "alignCenter",
         label: i18n("pdf.context.alignCenter"),
         icon: "align-center",
-        disabled: props.designer.selectedCount.value < 2
+        disabled: props.designer.selectedCount.value < 2,
       },
       {
         key: "alignRight",
         label: i18n("pdf.context.alignRight"),
         icon: "align-right",
-        disabled: props.designer.selectedCount.value < 2
+        disabled: props.designer.selectedCount.value < 2,
       },
       {
         key: "alignTop",
         label: i18n("pdf.context.alignTop"),
         icon: "align-top",
-        disabled: props.designer.selectedCount.value < 2
+        disabled: props.designer.selectedCount.value < 2,
       },
       {
         key: "alignMiddle",
         label: i18n("pdf.context.alignMiddle"),
         icon: "align-middle",
-        disabled: props.designer.selectedCount.value < 2
+        disabled: props.designer.selectedCount.value < 2,
       },
       {
         key: "alignBottom",
         label: i18n("pdf.context.alignBottom"),
         icon: "align-bottom",
-        disabled: props.designer.selectedCount.value < 2
+        disabled: props.designer.selectedCount.value < 2,
       },
     ],
   };
@@ -458,15 +546,21 @@ const handleElementContextMenu = (e: MouseEvent, el: PdfElement) => {
 const handleCanvasContextMenu = (e: MouseEvent) => {
   e.preventDefault();
   contextMenu.value = {
-    visible: true, x: e.clientX, y: e.clientY,
+    visible: true,
+    x: e.clientX,
+    y: e.clientY,
     items: [
       {
         key: "paste",
         label: i18n("pdf.context.paste"),
         icon: "paste",
-        disabled: props.designer.clipboard.value.length === 0
+        disabled: props.designer.clipboard.value.length === 0,
       },
-      {key: "selectAll", label: i18n("pdf.context.selectAll"), icon: "selectAll"},
+      {
+        key: "selectAll",
+        label: i18n("pdf.context.selectAll"),
+        icon: "selectAll",
+      },
     ],
   };
 };
@@ -526,7 +620,12 @@ const isInputFocused = (): boolean => {
   const el = document.activeElement;
   if (!el) return false;
   const tag = (el as HTMLElement).tagName;
-  return tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || (el as HTMLElement).isContentEditable;
+  return (
+    tag === "INPUT" ||
+    tag === "TEXTAREA" ||
+    tag === "SELECT" ||
+    (el as HTMLElement).isContentEditable
+  );
 };
 
 const handleKeyDown = (e: KeyboardEvent) => {
@@ -590,7 +689,7 @@ const rulerHTicks = computed(() => {
     } else if (mm % 5 === 0) {
       h = 10;
     }
-    ticks.push({x, h, label});
+    ticks.push({ x, h, label });
   }
   return ticks;
 });
@@ -608,7 +707,7 @@ const rulerVTicks = computed(() => {
     } else if (mm % 5 === 0) {
       h = 10;
     }
-    ticks.push({y, h, label});
+    ticks.push({ y, h, label });
   }
   return ticks;
 });
@@ -649,171 +748,292 @@ onBeforeUnmount(() => {
 <template>
   <div class="pdf-canvas" @mousedown="handleCanvasMouseDown">
     <!-- 标尺区域 -->
-    <div class="ruler-corner" :style="{ width: `${RULER_SIZE}px`, height: `${RULER_SIZE}px` }"></div>
-    <div class="ruler-h" :style="{ height: `${RULER_SIZE}px`, left: `${RULER_SIZE}px` }">
-      <svg :width="pageWidthPx + 40" :height="RULER_SIZE" class="ruler-svg-h"
-           :style="{ transform: `translateX(${-(scrollLeft - 16)}px)` }"
+    <div
+      class="ruler-corner"
+      :style="{ width: `${RULER_SIZE}px`, height: `${RULER_SIZE}px` }"
+    ></div>
+    <div
+      class="ruler-h"
+      :style="{ height: `${RULER_SIZE}px`, left: `${RULER_SIZE}px` }"
+    >
+      <svg
+        :width="pageWidthPx + 40"
+        :height="RULER_SIZE"
+        class="ruler-svg-h"
+        :style="{ transform: `translateX(${-(scrollLeft - 16)}px)` }"
       >
-        <line v-for="(tick, idx) in rulerHTicks" :key="idx"
-              :x1="tick.x + 20" :y1="0" :x2="tick.x + 20" :y2="tick.h"
-              stroke="var(--el-text-color-secondary)" stroke-width="0.5"
+        <line
+          v-for="(tick, idx) in rulerHTicks"
+          :key="idx"
+          :x1="tick.x + 20"
+          :y1="0"
+          :x2="tick.x + 20"
+          :y2="tick.h"
+          stroke="var(--el-text-color-secondary)"
+          stroke-width="0.5"
         />
-        <text v-for="(tick, idx) in rulerHTicks.filter(t => t.label)" :key="'l' + idx"
-              :x="tick.x! + 20" :y="RULER_SIZE - 2"
-              font-size="9" fill="var(--el-text-color-secondary)" text-anchor="middle"
-        >{{ tick.label }}
+        <text
+          v-for="(tick, idx) in rulerHTicks.filter((t) => t.label)"
+          :key="'l' + idx"
+          :x="tick.x! + 20"
+          :y="RULER_SIZE - 2"
+          font-size="9"
+          fill="var(--el-text-color-secondary)"
+          text-anchor="middle"
+        >
+          {{ tick.label }}
         </text>
       </svg>
     </div>
-    <div class="ruler-v" :style="{ width: `${RULER_SIZE}px`, top: `${RULER_SIZE}px` }">
-      <svg :width="RULER_SIZE" :height="pageHeightPx + 40" class="ruler-svg-v"
-           :style="{ transform: `translateY(${-(scrollTop - 16)}px)` }"
+    <div
+      class="ruler-v"
+      :style="{ width: `${RULER_SIZE}px`, top: `${RULER_SIZE}px` }"
+    >
+      <svg
+        :width="RULER_SIZE"
+        :height="pageHeightPx + 40"
+        class="ruler-svg-v"
+        :style="{ transform: `translateY(${-(scrollTop - 16)}px)` }"
       >
-        <line v-for="(tick, idx) in rulerVTicks" :key="idx"
-              :x1="0" :y1="tick.y + 20" :x2="tick.h" :y2="tick.y + 20"
-              stroke="var(--el-text-color-secondary)" stroke-width="0.5"
+        <line
+          v-for="(tick, idx) in rulerVTicks"
+          :key="idx"
+          :x1="0"
+          :y1="tick.y + 20"
+          :x2="tick.h"
+          :y2="tick.y + 20"
+          stroke="var(--el-text-color-secondary)"
+          stroke-width="0.5"
         />
-        <text v-for="(tick, idx) in rulerVTicks.filter(t => t.label)" :key="'l' + idx"
-              :x="RULER_SIZE - 2" :y="tick.y! + 20 + 3"
-              font-size="9" fill="var(--el-text-color-secondary)" text-anchor="end"
-        >{{ tick.label }}
+        <text
+          v-for="(tick, idx) in rulerVTicks.filter((t) => t.label)"
+          :key="'l' + idx"
+          :x="RULER_SIZE - 2"
+          :y="tick.y! + 20 + 3"
+          font-size="9"
+          fill="var(--el-text-color-secondary)"
+          text-anchor="end"
+        >
+          {{ tick.label }}
         </text>
       </svg>
     </div>
 
-    <div class="canvas-scroll" :style="{ marginTop: `${RULER_SIZE}px`, marginLeft: `${RULER_SIZE}px` }"
-         @scroll="handleScroll"
-         ref="canvasRef"
+    <div
+      class="canvas-scroll"
+      :style="{ marginTop: `${RULER_SIZE}px`, marginLeft: `${RULER_SIZE}px` }"
+      @scroll="handleScroll"
+      ref="canvasRef"
     >
       <div
-          class="pdf-page"
-          :style="{
-                    width: `${pageWidthPx}px`,
-                    height: `${pageHeightPx}px`,
-                    background: designer.state.page.background || '#FFFFFF'
-                }"
-          @click="handleCanvasClick"
-          @contextmenu="handleCanvasContextMenu"
-          @dragover="(e) => e.preventDefault()"
-          @drop="handleDrop"
+        class="pdf-page"
+        :style="{
+          width: `${pageWidthPx}px`,
+          height: `${pageHeightPx}px`,
+          background: designer.state.page.background || '#FFFFFF',
+        }"
+        @click="handleCanvasClick"
+        @contextmenu="handleCanvasContextMenu"
+        @dragover="(e) => e.preventDefault()"
+        @drop="handleDrop"
       >
         <!-- 页边距可视化遮罩 -->
-        <div class="margin-overlay" :style="{
-                    top: `${marginTopPx}px`,
-                    left: `${marginLeftPx}px`,
-                    right: `${marginRightPx}px`,
-                    bottom: `${marginBottomPx}px`,
-                }">
-          <div class="elements-layer" :style="{ width: '100%', height: '100%', position: 'relative' }">
+        <div
+          class="margin-overlay"
+          :style="{
+            top: `${marginTopPx}px`,
+            left: `${marginLeftPx}px`,
+            right: `${marginRightPx}px`,
+            bottom: `${marginBottomPx}px`,
+          }"
+        >
+          <div
+            class="elements-layer"
+            :style="{ width: '100%', height: '100%', position: 'relative' }"
+          >
             <!-- 辅助线 -->
-            <template v-if="dragState && (guideLines.horizontal.length || guideLines.vertical.length)">
-              <div v-for="hLine in guideLines.horizontal" :key="'h-' + hLine" class="guide-line horizontal"
-                   :style="{ top: `${hLine * MM_TO_PX * scale}px` }"/>
-              <div v-for="vLine in guideLines.vertical" :key="'v-' + vLine" class="guide-line vertical"
-                   :style="{ left: `${vLine * MM_TO_PX * scale}px` }"/>
+            <template
+              v-if="
+                dragState &&
+                (guideLines.horizontal.length || guideLines.vertical.length)
+              "
+            >
+              <div
+                v-for="hLine in guideLines.horizontal"
+                :key="'h-' + hLine"
+                class="guide-line horizontal"
+                :style="{ top: `${hLine * MM_TO_PX * scale}px` }"
+              />
+              <div
+                v-for="vLine in guideLines.vertical"
+                :key="'v-' + vLine"
+                class="guide-line vertical"
+                :style="{ left: `${vLine * MM_TO_PX * scale}px` }"
+              />
             </template>
             <!-- 元素渲染 -->
             <div
-                v-for="el in designer.state.elements"
-                :key="el.id"
-                class="element-wrapper"
-                :class="{
-                                selected: selectedElementIds.includes(el.id),
-                                editing: editingId === el.id,
-                            }"
-                :style="{
-                                position: 'absolute',
-                                left: `${el.x * MM_TO_PX * scale}px`,
-                                top: `${el.y * MM_TO_PX * scale}px`,
-                                width: `${el.width * MM_TO_PX * scale}px`,
-                                height: `${el.height * MM_TO_PX * scale}px`,
-                                transform: `rotate(${el.rotation || 0}deg)`,
-                                zIndex: el.zIndex ?? 0,
-                            }"
-                @click="(e) => handleElementClick(e, el)"
-                @dblclick="(e) => handleElementDblClick(e, el)"
-                @mousedown="(e) => handleElementMouseDown(e, el, 'move')"
-                @contextmenu="(e) => handleElementContextMenu(e, el)"
+              v-for="el in designer.state.elements"
+              :key="el.id"
+              class="element-wrapper"
+              :class="{
+                selected: selectedElementIds.includes(el.id),
+                editing: editingId === el.id,
+              }"
+              :style="{
+                position: 'absolute',
+                left: `${el.x * MM_TO_PX * scale}px`,
+                top: `${el.y * MM_TO_PX * scale}px`,
+                width: `${el.width * MM_TO_PX * scale}px`,
+                height: `${el.height * MM_TO_PX * scale}px`,
+                transform: `rotate(${el.rotation || 0}deg)`,
+                zIndex: el.zIndex ?? 0,
+              }"
+              @click="(e) => handleElementClick(e, el)"
+              @dblclick="(e) => handleElementDblClick(e, el)"
+              @mousedown="(e) => handleElementMouseDown(e, el, 'move')"
+              @contextmenu="(e) => handleElementContextMenu(e, el)"
             >
               <!-- 原地编辑模式（文本类元素） -->
               <div
-                  v-if="editingId === el.id && isTextType(el.type)"
-                  class="element-edit"
-                  ref="editRef"
-                  contenteditable="true"
-                  :style="getContentStyle(el)"
-                  @blur="finishEditing"
-                  @keydown="handleEditKeyDown"
-                  v-text="(el as any).text || ''"
+                v-if="editingId === el.id && isTextType(el.type)"
+                class="element-edit"
+                ref="editRef"
+                contenteditable="true"
+                :style="getContentStyle(el)"
+                @blur="finishEditing"
+                @keydown="handleEditKeyDown"
+                v-text="(el as any).text || ''"
               />
               <!-- 正常渲染 -->
               <template v-else>
                 <div class="element-content" :style="getContentStyle(el)">
                   <template v-if="isTextType(el.type)">
-                    <span v-if="el.type === 'heading'" :style="{ fontSize: '18px', fontWeight: 'bold' }">{{
-                        (el as any).text || getTypeLabel(el)
-                      }}</span>
-                    <span v-else>{{ (el as any).text || getTypeLabel(el) }}</span>
+                    <span
+                      v-if="el.type === 'heading'"
+                      :style="{ fontSize: '18px', fontWeight: 'bold' }"
+                      >{{ (el as any).text || getTypeLabel(el) }}</span
+                    >
+                    <span v-else>{{
+                      (el as any).text || getTypeLabel(el)
+                    }}</span>
                   </template>
-                  <template v-else-if="el.type === 'image' || el.type === 'signature'">
-                    <img v-if="(el as any).src" :src="(el as any).src"
-                         style="width:100%;height:100%;object-fit:contain"/>
+                  <template
+                    v-else-if="el.type === 'image' || el.type === 'signature'"
+                  >
+                    <img
+                      v-if="(el as any).src"
+                      :src="(el as any).src"
+                      style="width: 100%; height: 100%; object-fit: contain"
+                    />
                     <div v-else class="placeholder">
                       <span>{{ getTypeLabel(el) }}</span>
                     </div>
                   </template>
                   <template v-else-if="el.type === 'table'">
-                    <table style="border-collapse:collapse;width:100%;font-size:12px">
+                    <table
+                      style="
+                        border-collapse: collapse;
+                        width: 100%;
+                        font-size: 12px;
+                      "
+                    >
                       <thead>
-                      <tr>
-                        <th v-for="(col, ci) in ((el as any).columns || [])" :key="ci"
-                            :style="{ border: '1px solid #ddd', padding: '4px', background: '#f5f7fa', textAlign: col.align || 'center', width: `${col.width * MM_TO_PX}px` }">
-                          {{ col.label }}
-                        </th>
-                      </tr>
+                        <tr>
+                          <th
+                            v-for="(col, ci) in (el as any).columns || []"
+                            :key="ci"
+                            :style="{
+                              border: '1px solid #ddd',
+                              padding: '4px',
+                              background: '#f5f7fa',
+                              textAlign: col.align || 'center',
+                              width: `${col.width * MM_TO_PX}px`,
+                            }"
+                          >
+                            {{ col.label }}
+                          </th>
+                        </tr>
                       </thead>
                       <tbody>
-                      <tr>
-                        <td v-for="(col, ci) in ((el as any).columns || [])" :key="ci"
-                            :style="{ border: '1px solid #ddd', padding: '4px', textAlign: col.align || 'center' }">
-                          &nbsp;
-                        </td>
-                      </tr>
+                        <tr>
+                          <td
+                            v-for="(col, ci) in (el as any).columns || []"
+                            :key="ci"
+                            :style="{
+                              border: '1px solid #ddd',
+                              padding: '4px',
+                              textAlign: col.align || 'center',
+                            }"
+                          >
+                            &nbsp;
+                          </td>
+                        </tr>
                       </tbody>
                     </table>
                   </template>
                   <template v-else-if="el.type === 'divider'">
                     <div
-                        :style="{ borderTop: `${(el as any).thickness || 1}px ${(el as any).style || 'solid'} ${(el as any).color || '#000'}`, width: '100%', marginTop: '50%' }"></div>
+                      :style="{
+                        borderTop: `${(el as any).thickness || 1}px ${(el as any).style || 'solid'} ${(el as any).color || '#000'}`,
+                        width: '100%',
+                        marginTop: '50%',
+                      }"
+                    ></div>
                   </template>
                   <template v-else-if="el.type === 'barcode'">
                     <div class="barcode-display">
                       <div class="barcode-bars">
-                        <span v-for="(_, bi) in 20" :key="bi"
-                              :style="{ display: 'inline-block', width: bi % 2 === 0 ? '3px' : '1px', height: '100%', background: '#000' }"></span>
+                        <span
+                          v-for="(_, bi) in 20"
+                          :key="bi"
+                          :style="{
+                            display: 'inline-block',
+                            width: bi % 2 === 0 ? '3px' : '1px',
+                            height: '100%',
+                            background: '#000',
+                          }"
+                        ></span>
                       </div>
-                      <span style="font-family:'Courier New';font-size:11px;text-align:center;display:block">{{
-                          (el as any).value || '1234567890'
-                        }}</span>
+                      <span
+                        style="
+                          font-family: &quot;Courier New&quot;;
+                          font-size: 11px;
+                          text-align: center;
+                          display: block;
+                        "
+                        >{{ (el as any).value || "1234567890" }}</span
+                      >
                     </div>
                   </template>
                   <template v-else-if="el.type === 'qrcode'">
                     <svg viewBox="0 0 100 100" width="100%" height="100%">
-                      <rect width="100" height="100" fill="#fff"/>
-                      <rect x="0" y="0" width="30" height="30" fill="#000"/>
-                      <rect x="70" y="0" width="30" height="30" fill="#000"/>
-                      <rect x="0" y="70" width="30" height="30" fill="#000"/>
-                      <rect x="30" y="30" width="10" height="10" fill="#000"/>
-                      <rect x="45" y="45" width="10" height="10" fill="#000"/>
+                      <rect width="100" height="100" fill="#fff" />
+                      <rect x="0" y="0" width="30" height="30" fill="#000" />
+                      <rect x="70" y="0" width="30" height="30" fill="#000" />
+                      <rect x="0" y="70" width="30" height="30" fill="#000" />
+                      <rect x="30" y="30" width="10" height="10" fill="#000" />
+                      <rect x="45" y="45" width="10" height="10" fill="#000" />
                     </svg>
                   </template>
                   <template v-else-if="el.type === 'checkbox'">
-                    <div style="display:flex;align-items:center;gap:4px">
+                    <div style="display: flex; align-items: center; gap: 4px">
                       <div
-                          style="width:14px;height:14px;border:1px solid #333;display:flex;align-items:center;justify-content:center">
-                        {{ (el as any).checked ? '✓' : '' }}
+                        style="
+                          width: 14px;
+                          height: 14px;
+                          border: 1px solid #333;
+                          display: flex;
+                          align-items: center;
+                          justify-content: center;
+                        "
+                      >
+                        {{ (el as any).checked ? "✓" : "" }}
                       </div>
-                      <span v-if="(el as any).label">{{ (el as any).label }}</span></div>
+                      <span v-if="(el as any).label">{{
+                        (el as any).label
+                      }}</span>
+                    </div>
                   </template>
                   <template v-else-if="el.type === 'pageBreak'">
                     <div class="pagebreak-line">
@@ -822,50 +1042,104 @@ onBeforeUnmount(() => {
                   </template>
                 </div>
                 <!-- 类型标签（选中时显示） -->
-                <div v-if="selectedElementIds.includes(el.id)" class="element-type-tag">
+                <div
+                  v-if="selectedElementIds.includes(el.id)"
+                  class="element-type-tag"
+                >
                   {{ getTypeLabel(el) }}
                 </div>
               </template>
               <!-- Resize 手柄 -->
-              <template v-if="selectedElementIds.includes(el.id) && !readonly && editingId !== el.id">
-                <div class="resize-handle top-left"
-                     @mousedown.stop="(e) => handleElementMouseDown(e, el, 'resize-tl')"/>
-                <div class="resize-handle top-right"
-                     @mousedown.stop="(e) => handleElementMouseDown(e, el, 'resize-tr')"/>
-                <div class="resize-handle bottom-left"
-                     @mousedown.stop="(e) => handleElementMouseDown(e, el, 'resize-bl')"/>
-                <div class="resize-handle bottom-right"
-                     @mousedown.stop="(e) => handleElementMouseDown(e, el, 'resize-br')"/>
-                <div class="resize-handle top-center"
-                     @mousedown.stop="(e) => handleElementMouseDown(e, el, 'resize-tc')"/>
-                <div class="resize-handle bottom-center"
-                     @mousedown.stop="(e) => handleElementMouseDown(e, el, 'resize-bc')"/>
-                <div class="resize-handle middle-left"
-                     @mousedown.stop="(e) => handleElementMouseDown(e, el, 'resize-ml')"/>
-                <div class="resize-handle middle-right"
-                     @mousedown.stop="(e) => handleElementMouseDown(e, el, 'resize-mr')"/>
+              <template
+                v-if="
+                  selectedElementIds.includes(el.id) &&
+                  !readonly &&
+                  editingId !== el.id
+                "
+              >
+                <div
+                  class="resize-handle top-left"
+                  @mousedown.stop="
+                    (e) => handleElementMouseDown(e, el, 'resize-tl')
+                  "
+                />
+                <div
+                  class="resize-handle top-right"
+                  @mousedown.stop="
+                    (e) => handleElementMouseDown(e, el, 'resize-tr')
+                  "
+                />
+                <div
+                  class="resize-handle bottom-left"
+                  @mousedown.stop="
+                    (e) => handleElementMouseDown(e, el, 'resize-bl')
+                  "
+                />
+                <div
+                  class="resize-handle bottom-right"
+                  @mousedown.stop="
+                    (e) => handleElementMouseDown(e, el, 'resize-br')
+                  "
+                />
+                <div
+                  class="resize-handle top-center"
+                  @mousedown.stop="
+                    (e) => handleElementMouseDown(e, el, 'resize-tc')
+                  "
+                />
+                <div
+                  class="resize-handle bottom-center"
+                  @mousedown.stop="
+                    (e) => handleElementMouseDown(e, el, 'resize-bc')
+                  "
+                />
+                <div
+                  class="resize-handle middle-left"
+                  @mousedown.stop="
+                    (e) => handleElementMouseDown(e, el, 'resize-ml')
+                  "
+                />
+                <div
+                  class="resize-handle middle-right"
+                  @mousedown.stop="
+                    (e) => handleElementMouseDown(e, el, 'resize-mr')
+                  "
+                />
               </template>
             </div>
             <!-- 框选矩形 -->
-            <div v-if="boxSelect" class="box-select-rect" :style="boxSelectStyle"/>
+            <div
+              v-if="boxSelect"
+              class="box-select-rect"
+              :style="boxSelectStyle"
+            />
           </div>
         </div>
       </div>
     </div>
 
     <!-- 右键菜单 -->
-    <div v-if="contextMenu.visible" class="context-menu"
-         :style="{ left: `${contextMenu.x}px`, top: `${contextMenu.y}px` }">
+    <div
+      v-if="contextMenu.visible"
+      class="context-menu"
+      :style="{ left: `${contextMenu.x}px`, top: `${contextMenu.y}px` }"
+    >
       <template v-for="(item, idx) in contextMenu.items" :key="idx">
-        <div v-if="item.divider" class="ctx-divider"/>
-        <div v-else class="ctx-item" :class="{ disabled: item.disabled }"
-             @click="!item.disabled && handleContextAction(item.key)">
-          <ShSvgIcon :name="item.icon" size="14px"/>
+        <div v-if="item.divider" class="ctx-divider" />
+        <div
+          v-else
+          class="ctx-item"
+          :class="{ disabled: item.disabled }"
+          @click="!item.disabled && handleContextAction(item.key)"
+        >
+          <ShSvgIcon :name="item.icon" size="14px" />
           <span class="ctx-label">{{ item.label }}</span>
         </div>
       </template>
     </div>
-    <div class="scale-tip">{{ i18n("pdf.canvas.scale") }}: {{ Math.round(scale * 100) }}%</div>
+    <div class="scale-tip">
+      {{ i18n("pdf.canvas.scale") }}: {{ Math.round(scale * 100) }}%
+    </div>
   </div>
 </template>
 
@@ -907,7 +1181,8 @@ onBeforeUnmount(() => {
     overflow: hidden;
   }
 
-  .ruler-svg-h, .ruler-svg-v {
+  .ruler-svg-h,
+  .ruler-svg-v {
     display: block;
   }
 
@@ -922,7 +1197,7 @@ onBeforeUnmount(() => {
 
   .pdf-page {
     position: relative;
-    background: #FFFFFF;
+    background: #ffffff;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
     flex-shrink: 0;
 

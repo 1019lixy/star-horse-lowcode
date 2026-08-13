@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import {ref} from "vue";
-import {ElMessage} from "element-plus";
-import type {EtlPipeline} from "@/components/etl";
-import {createEdge, createEtlNode, EtlDesigner} from "@/components/etl";
+import { ref } from "vue";
+import { ElMessage } from "element-plus";
+import type { EtlPipeline } from "@/components/etl";
+import { createEdge, createEtlNode, EtlDesigner } from "@/components/etl";
 
 /** 构造一个示例管道：数据库源 → 过滤 → 字段映射 → 数据库目标 */
 const buildSamplePipeline = (): Partial<EtlPipeline> => {
@@ -18,16 +18,16 @@ const buildSamplePipeline = (): Partial<EtlPipeline> => {
   const map = createEtlNode("transform.map", 560, 120);
   map.name = "字段映射";
   map.config.mappings = [
-    {source: "id", target: "userId", expression: ""},
-    {source: "name", target: "userName", expression: ""},
-    {source: "age", target: "userAge", expression: ""},
+    { source: "id", target: "userId", expression: "" },
+    { source: "name", target: "userName", expression: "" },
+    { source: "age", target: "userAge", expression: "" },
   ];
 
   const aggregate = createEtlNode("transform.aggregate", 320, 280);
   aggregate.name = "年龄段统计";
   aggregate.config.groupBy = ["userAge"];
   aggregate.config.aggregations = [
-    {field: "userId", func: "count", alias: "userCount"},
+    { field: "userId", func: "count", alias: "userCount" },
   ];
 
   const dest = createEtlNode("destination.database", 800, 120);
@@ -53,7 +53,8 @@ const buildSamplePipeline = (): Partial<EtlPipeline> => {
 
   return {
     name: "用户数据处理管道",
-    description: "从用户表读取 → 过滤活跃用户 → 字段映射 → 写入分析库 / 导出统计 CSV",
+    description:
+      "从用户表读取 → 过滤活跃用户 → 字段映射 → 写入分析库 / 导出统计 CSV",
     nodes,
     edges,
   };
@@ -62,19 +63,23 @@ const buildSamplePipeline = (): Partial<EtlPipeline> => {
 const initialPipeline = ref<Partial<EtlPipeline>>(buildSamplePipeline());
 
 const handleSave = (data: EtlPipeline) => {
-  // eslint-disable-next-line no-console
   console.log("ETL pipeline saved:", data);
-  ElMessage.success(`管道已保存：${data.name}（${data.nodes.length} 节点 / ${data.edges.length} 连线）`);
+  ElMessage.success(
+    `管道已保存：${data.name}（${data.nodes.length} 节点 / ${data.edges.length} 连线）`,
+  );
 };
 </script>
 
 <template>
   <div class="demo-container">
     <h3>ETL 数据管道设计器 EtlDesigner</h3>
-    <p>可视化 ETL 数据管道设计器，支持 18 种节点类型（数据源/转换/目标/控制），拖拽连线、属性配置、拓扑排序执行模拟、数据预览、执行日志。预置了一个"用户数据处理管道"示例，包含
-      6 个节点和 5 条连线。</p>
+    <p>
+      可视化 ETL 数据管道设计器，支持 18
+      种节点类型（数据源/转换/目标/控制），拖拽连线、属性配置、拓扑排序执行模拟、数据预览、执行日志。预置了一个"用户数据处理管道"示例，包含
+      6 个节点和 5 条连线。
+    </p>
     <div class="designer-wrapper">
-      <EtlDesigner :pipeline="initialPipeline" @save="handleSave"/>
+      <EtlDesigner :pipeline="initialPipeline" @save="handleSave" />
     </div>
   </div>
 </template>

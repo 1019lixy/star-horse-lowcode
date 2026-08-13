@@ -1,8 +1,8 @@
 <script setup lang="ts" name="GanttPropertyPanel">
-import {computed, watch} from "vue";
-import {i18n} from "@/lang";
-import type {GanttDesigner} from "../composables/useGanttDesigner";
-import {GANTT_PRIORITY_PRESETS, GANTT_STATUS_PRESETS,} from "../constants";
+import { computed, watch } from "vue";
+import { i18n } from "@/lang";
+import type { GanttDesigner } from "../composables/useGanttDesigner";
+import { GANTT_PRIORITY_PRESETS, GANTT_STATUS_PRESETS } from "../constants";
 
 const props = defineProps<{
   designer: GanttDesigner;
@@ -14,10 +14,10 @@ const formData = computed(() => props.designer.selectedTask.value);
 
 /** 监听选中任务变化 */
 watch(
-    () => props.designer.selectedTaskId.value,
-    () => {
-      // 选中切换由 computed 自动响应
-    },
+  () => props.designer.selectedTaskId.value,
+  () => {
+    // 选中切换由 computed 自动响应
+  },
 );
 </script>
 
@@ -29,34 +29,34 @@ watch(
     <div class="panel-body" v-if="formData">
       <el-form label-width="90px" :disabled="readonly">
         <el-form-item :label="i18n('gantt.task.name')">
-          <el-input v-model="formData.name"/>
+          <el-input v-model="formData.name" />
         </el-form-item>
         <el-form-item :label="i18n('gantt.task.startDate')">
           <el-date-picker
-              v-model="formData.startDate"
-              type="date"
-              value-format="YYYY-MM-DD"
-              style="width: 100%"
+            v-model="formData.startDate"
+            type="date"
+            value-format="YYYY-MM-DD"
+            style="width: 100%"
           />
         </el-form-item>
         <el-form-item :label="i18n('gantt.task.endDate')">
           <el-date-picker
-              v-model="formData.endDate"
-              type="date"
-              value-format="YYYY-MM-DD"
-              style="width: 100%"
+            v-model="formData.endDate"
+            type="date"
+            value-format="YYYY-MM-DD"
+            style="width: 100%"
           />
         </el-form-item>
         <el-form-item :label="i18n('gantt.task.progress')">
-          <el-slider v-model="formData.progress" :min="0" :max="100"/>
+          <el-slider v-model="formData.progress" :min="0" :max="100" />
         </el-form-item>
         <el-form-item :label="i18n('gantt.task.status')">
           <el-select v-model="formData.status" style="width: 100%">
             <el-option
-                v-for="s in GANTT_STATUS_PRESETS"
-                :key="s.value"
-                :label="s.label"
-                :value="s.value"
+              v-for="s in GANTT_STATUS_PRESETS"
+              :key="s.value"
+              :label="s.label"
+              :value="s.value"
             >
               <span :style="{ color: s.color }">●</span>
               {{ s.label }}
@@ -66,10 +66,10 @@ watch(
         <el-form-item :label="i18n('gantt.task.priority')">
           <el-select v-model="formData.priority" style="width: 100%">
             <el-option
-                v-for="p in GANTT_PRIORITY_PRESETS"
-                :key="p.value"
-                :label="p.label"
-                :value="p.value"
+              v-for="p in GANTT_PRIORITY_PRESETS"
+              :key="p.value"
+              :label="p.label"
+              :value="p.value"
             >
               <span :style="{ color: p.color }">●</span>
               {{ p.label }}
@@ -77,25 +77,30 @@ watch(
           </el-select>
         </el-form-item>
         <el-form-item :label="i18n('gantt.task.assignee')">
-          <el-input v-model="formData.assignee"/>
+          <el-input v-model="formData.assignee" />
         </el-form-item>
         <el-form-item :label="i18n('gantt.task.workHours')">
-          <el-input-number v-model="formData.workHours" :min="0" :precision="1" controls-position="right"
-                           style="width: 100%"/>
+          <el-input-number
+            v-model="formData.workHours"
+            :min="0"
+            :precision="1"
+            controls-position="right"
+            style="width: 100%"
+          />
         </el-form-item>
         <el-form-item :label="i18n('gantt.task.isMilestone')">
-          <el-switch v-model="formData.isMilestone"/>
+          <el-switch v-model="formData.isMilestone" />
         </el-form-item>
         <el-form-item :label="i18n('gantt.task.isCritical')">
-          <el-switch v-model="formData.isCritical"/>
+          <el-switch v-model="formData.isCritical" />
         </el-form-item>
         <el-form-item :label="i18n('gantt.task.remark')">
-          <el-input v-model="formData.remark" type="textarea" :rows="3"/>
+          <el-input v-model="formData.remark" type="textarea" :rows="3" />
         </el-form-item>
       </el-form>
     </div>
     <div class="panel-empty" v-else>
-      <el-empty :description="i18n('gantt.property.empty')"/>
+      <el-empty :description="i18n('gantt.property.empty')" />
     </div>
   </div>
 </template>

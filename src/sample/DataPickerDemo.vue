@@ -1,8 +1,8 @@
 <template>
   <div class="h-[30px] my-5">
     <cascade-item
-        :formData="formData"
-        :field="{
+      :formData="formData"
+      :field="{
         label: '验证',
         fieldName: 'testValid',
         preps: {
@@ -17,15 +17,15 @@
   </div>
   {{ test }}
   <StarHorseDataSelector
-      v-model="test"
-      :data="datas"
-      :multiple="true"
-      @change="(data) => console.log(data)"
-      :checkStrictly="false"
+    v-model="test"
+    :data="datas"
+    :multiple="true"
+    @change="(data) => console.log(data)"
+    :checkStrictly="false"
   />
   <div class="h-[30px] my-5">
     <data-picker-item
-        :field="{
+      :field="{
         label: '测试',
         fieldName: 'test',
         preps: {
@@ -37,12 +37,12 @@
           colspan: 16,
         },
       }"
-        :formData="formData"
+      :formData="formData"
     />
   </div>
   <div class="h-[30px] my-5">
     <data-picker-item
-        :field="{
+      :field="{
         label: '测试2',
         fieldName: 'test2',
         preps: {
@@ -55,16 +55,16 @@
           displayValue: 'value',
         },
       }"
-        :formData="formData"
+      :formData="formData"
     />
   </div>
-  <star-horse-form ref="formRef" labelPosition="top" :fieldList="formFields"/>
+  <star-horse-form ref="formRef" labelPosition="top" :fieldList="formFields" />
 </template>
 
 <script lang="ts" setup>
 // import StarHorseJsonEditor from '@/components/comp/StarHorseJsonEditor.vue';
 import StarHorseDataSelector from "@/components/comp/StarHorseDataSelector.vue";
-import {reactive, ref} from "vue";
+import { reactive, ref } from "vue";
 import DataPickerItem from "@/components/formcomp/items/datapicker-item.vue";
 import CascadeItem from "@/components/formcomp/items/cascade-item.vue";
 
@@ -134,7 +134,7 @@ const formFields = reactive({
       formVisible: false,
       preps: {
         values: [
-          {name: "发起人", value: "sh9072d5fa-da03-4aaa-a22a-246e2919becf"},
+          { name: "发起人", value: "sh9072d5fa-da03-4aaa-a22a-246e2919becf" },
         ],
         placeholder: "请选择退回节点（仅退回时必填）",
       },
@@ -149,7 +149,7 @@ const cascadeItem = ref([
   {
     name: "test1",
     code: "123",
-    children: [{name: "test11", code: "234", children: []}],
+    children: [{ name: "test11", code: "234", children: [] }],
   },
 ]);
 const datas = ref([

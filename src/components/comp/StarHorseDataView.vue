@@ -1,42 +1,53 @@
 <script setup lang="ts" name="StarHorseDataView">
-import {ApiUrls} from "@/components/types/ApiUrls";
-import {computed, inject, nextTick, onMounted, PropType, ref, unref, watch,} from "vue";
-import {DialogProps} from "@/components/types/DialogProps";
-import {formFieldMapping, isJson} from "@/api/star_horse_utils";
-import {loadById} from "@/api/star_horse_apis";
+import { ApiUrls } from "@/components/types/ApiUrls";
+import {
+  computed,
+  inject,
+  nextTick,
+  onMounted,
+  PropType,
+  ref,
+  unref,
+  watch,
+} from "vue";
+import { DialogProps } from "@/components/types/DialogProps";
+import { formFieldMapping, isJson } from "@/api/star_horse_utils";
+import { loadById } from "@/api/star_horse_apis";
 import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
-import {convertPcCompToFitPlatformComps} from "@/api/form_utils";
-import {isMobile} from "@/api/device";
+import { convertPcCompToFitPlatformComps } from "@/api/form_utils";
+import { isMobile } from "@/api/device";
 
 const dataForm = ref<any>({});
 const props = defineProps({
-  compUrl: {type: Object as PropType<ApiUrls>},
-  objectName: {type: String},
-  subFormFlag: {type: String, default: "N"},
-  formSize: {type: String, default: "default"},
-  labelPosition: {type: String, default: "left"},
-  batchName: {type: String, default: "batchDataList"},
-  batchFieldName: {type: String, default: "batchFieldList"},
-  fieldList: {type: Object, required: true},
-  globalCondition: {type: Object},
-  outerData: {type: Object},
-  dynamicForm: {type: Boolean, default: false},
-  preview: {type: Boolean, default: false},
+  compUrl: { type: Object as PropType<ApiUrls> },
+  objectName: { type: String },
+  subFormFlag: { type: String, default: "N" },
+  formSize: { type: String, default: "default" },
+  labelPosition: { type: String, default: "left" },
+  batchName: { type: String, default: "batchDataList" },
+
+  fieldList: { type: Object, required: true },
+  globalCondition: { type: Object },
+  outerData: { type: Object },
+  dynamicForm: { type: Boolean, default: false },
+  preview: { type: Boolean, default: false },
   primaryKey: {
     type: [String, Object] as PropType<string | any>,
     default: "id",
   },
-  dataFormat: {type: Function, default: null},
-  useViewUrl: {type: Boolean, default: false},
-  slotType: {type: String, default: "normal"},
+  dataFormat: { type: Function, default: null },
+  useViewUrl: { type: Boolean, default: false },
+  slotType: { type: String, default: "normal" },
 });
 const emits = defineEmits(["dataLoaded"]);
 const dialogProps = inject<DialogProps>("dialogProps");
 const source = ref<number>(3);
 const platformFields = computed(() =>
-    convertPcCompToFitPlatformComps(props.fieldList),
+  convertPcCompToFitPlatformComps(props.fieldList),
 );
-const borderStyle = computed(() => isMobile ? "none" : " 1px solid var(--el-border-color-lighter)");
+const borderStyle = computed(() =>
+  isMobile ? "none" : " 1px solid var(--el-border-color-lighter)",
+);
 const mappingFields = computed(() => formFieldMapping(unref(platformFields)));
 onMounted(() => {
   if (dialogProps?.ids) {
@@ -46,22 +57,22 @@ onMounted(() => {
 const loadData = async () => {
   await nextTick();
   if (props.preview) {
-    setData({...dialogProps?.ids});
+    setData({ ...dialogProps?.ids });
     return;
   }
   let id = Array.isArray(dialogProps?.ids)
-      ? dialogProps.ids[0]
-      : dialogProps?.ids;
+    ? dialogProps.ids[0]
+    : dialogProps?.ids;
   if (!props.compUrl) {
     return;
   }
   let objData;
   let params = props.globalCondition || {};
   const url = props.useViewUrl
-      ? props.compUrl?.loadByIdForViewUrl
-      : props.compUrl?.loadByIdUrl;
+    ? props.compUrl?.loadByIdForViewUrl
+    : props.compUrl?.loadByIdUrl;
   if (isJson(id)) {
-    params = {...params, ...id};
+    params = { ...params, ...id };
     objData = await loadById(url, "", params);
   } else {
     objData = await loadById(url, id, params);
@@ -91,27 +102,27 @@ const setData = (data: any) => {
   dataForm.value = data;
 };
 watch(
-    () => props.outerData,
-    (val: any) => {
-      if (val) {
-        Object.assign(dataForm.value, val);
-      }
-    },
-    {immediate: true, deep: false},
+  () => props.outerData,
+  (val: any) => {
+    if (val) {
+      Object.assign(dataForm.value, val);
+    }
+  },
+  { immediate: true, deep: false },
 );
 watch(
-    () => dialogProps?.ids,
-    (val) => {
-      if (val != -2) {
-        if (!val || val == -1) {
-          dataForm.value = {};
-        } else {
-          source.value = 3;
-          loadData();
-        }
+  () => dialogProps?.ids,
+  (val) => {
+    if (val != -2) {
+      if (!val || val == -1) {
+        dataForm.value = {};
+      } else {
+        source.value = 3;
+        loadData();
       }
-    },
-    {deep: true},
+    }
+  },
+  { deep: true },
 );
 defineExpose({
   setData,
@@ -119,34 +130,33 @@ defineExpose({
 </script>
 <template>
   <div
-      class="w-full h-full flex flex-col overflow-hidden star-horse-data-view"
-      :class="{ 'star-horse-app': isMobile }"
+    class="w-full h-full flex flex-col overflow-hidden star-horse-data-view"
+    :class="{ 'star-horse-app': isMobile }"
   >
     <el-scrollbar height="100%" class="flex-1">
       <el-form
-          :model="dataForm"
-          :size="formSize"
-          :scroll-to-error="true"
-          :scroll-into-view-options="true"
-          :inline-message="false"
-          :status-icon="true"
-          :label-position="isMobile ? 'top' : 'left'"
-          require-asterisk-position="right"
-          label-width="auto"
-          class="data-form data-view-mode"
-          ref="starHorseFormRef"
-          v-if="slotType != 'user'"
+        :model="dataForm"
+        :size="formSize"
+        :scroll-to-error="true"
+        :scroll-into-view-options="true"
+        :inline-message="false"
+        :status-icon="true"
+        :label-position="isMobile ? 'top' : 'left'"
+        require-asterisk-position="right"
+        label-width="auto"
+        class="data-form data-view-mode"
+        ref="starHorseFormRef"
+        v-if="slotType != 'user'"
       >
         <star-horse-form-item
-            :primaryKey="primaryKey"
-            :compUrl="compUrl"
-            :fieldList="platformFields"
-            :compSize="formSize"
-            v-model:dataForm="dataForm"
-            :source="source"
-            :batchName="batchName"
-            :commonFormat="dataFormat"
-            :batchFieldName="batchFieldName"
+          :primaryKey="primaryKey"
+          :compUrl="compUrl"
+          :fieldList="platformFields"
+          :compSize="formSize"
+          v-model:dataForm="dataForm"
+          :source="source"
+          :batchName="batchName"
+          :commonFormat="dataFormat"
         />
         <slot name="ext" :dataForm="dataForm"></slot>
       </el-form>
@@ -157,7 +167,6 @@ defineExpose({
 <style lang="scss" scoped>
 /* 查看视图：统一通过非scoped样式穿透子组件 */
 .star-horse-data-view .data-view-mode {
-
   /* ---- 表单行：el-descriptions 风格 ---- */
   :deep(.el-form-item) {
     margin-bottom: 0 !important;

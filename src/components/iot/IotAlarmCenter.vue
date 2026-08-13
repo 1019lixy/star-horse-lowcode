@@ -1,9 +1,9 @@
 <script setup lang="ts" name="IotAlarmCenter">
-import {computed, nextTick, ref, watch} from "vue";
-import {i18n} from "@/lang";
-import {useAlarmCenter} from "./composables/useAlarmCenter";
-import {ALARM_LEVEL_COLORS, ALARM_LEVEL_LABELS} from "./constants";
-import type {IotAlarm, IotAlarmLevel} from "./types";
+import { computed, nextTick, ref, watch } from "vue";
+import { i18n } from "@/lang";
+import { useAlarmCenter } from "./composables/useAlarmCenter";
+import { ALARM_LEVEL_COLORS, ALARM_LEVEL_LABELS } from "./constants";
+import type { IotAlarm, IotAlarmLevel } from "./types";
 
 const props = defineProps<{
   alarms?: IotAlarm[];
@@ -17,18 +17,18 @@ const panelHeight = computed(() => props.height ?? 420);
 
 /** 级别过滤选项 */
 const levelOptions = computed(() => [
-  {value: "", label: i18n("iot.alarm.all")},
-  {value: "info", label: ALARM_LEVEL_LABELS.info},
-  {value: "warning", label: ALARM_LEVEL_LABELS.warning},
-  {value: "error", label: ALARM_LEVEL_LABELS.error},
-  {value: "critical", label: ALARM_LEVEL_LABELS.critical},
+  { value: "", label: i18n("iot.alarm.all") },
+  { value: "info", label: ALARM_LEVEL_LABELS.info },
+  { value: "warning", label: ALARM_LEVEL_LABELS.warning },
+  { value: "error", label: ALARM_LEVEL_LABELS.error },
+  { value: "critical", label: ALARM_LEVEL_LABELS.critical },
 ]);
 
 /** 确认状态过滤选项 */
 const ackOptions = computed(() => [
-  {value: "", label: i18n("iot.alarm.all")},
-  {value: "unack", label: i18n("iot.alarm.unacknowledged")},
-  {value: "ack", label: i18n("iot.alarm.acknowledged")},
+  { value: "", label: i18n("iot.alarm.all") },
+  { value: "unack", label: i18n("iot.alarm.unacknowledged") },
+  { value: "ack", label: i18n("iot.alarm.acknowledged") },
 ]);
 
 /** 级别过滤的双向绑定（el-select 用字符串） */
@@ -85,12 +85,12 @@ const statCards = computed(() => [
 
 /** 级别统计徽章 */
 const levelBadges = computed(() =>
-    (["critical", "error", "warning", "info"] as IotAlarmLevel[]).map((lv) => ({
-      level: lv,
-      count: stats.value.byLevel[lv],
-      color: ALARM_LEVEL_COLORS[lv],
-      label: ALARM_LEVEL_LABELS[lv],
-    })),
+  (["critical", "error", "warning", "info"] as IotAlarmLevel[]).map((lv) => ({
+    level: lv,
+    count: stats.value.byLevel[lv],
+    color: ALARM_LEVEL_COLORS[lv],
+    label: ALARM_LEVEL_LABELS[lv],
+  })),
 );
 
 /** 格式化时间 */
@@ -110,14 +110,16 @@ const scrollToLatest = () => {
 
 // 监听告警数量变化，自动滚动
 watch(
-    () => center.alarms.length,
-    () => scrollToLatest(),
+  () => center.alarms.length,
+  () => scrollToLatest(),
 );
 
 /** 内联 SVG 图标（替代 Element Plus 图标，减少依赖） */
 const icons: Record<string, string> = {
-  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg>',
-  circleCheck: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>'
+  check:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg>',
+  circleCheck:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>',
 };
 </script>
 
@@ -125,52 +127,42 @@ const icons: Record<string, string> = {
   <div class="iot-alarm-center">
     <!-- 统计摘要 -->
     <div class="stats-bar">
-      <div
-          v-for="card in statCards"
-          :key="card.key"
-          class="stat-card"
-      >
-        <span class="stat-value" :style="{ color: card.color }">{{ card.value }}</span>
+      <div v-for="card in statCards" :key="card.key" class="stat-card">
+        <span class="stat-value" :style="{ color: card.color }">{{
+          card.value
+        }}</span>
         <span class="stat-label">{{ card.label }}</span>
       </div>
       <div class="level-badges">
-                <span
-                    v-for="b in levelBadges"
-                    :key="b.level"
-                    class="level-badge"
-                    :style="{ borderColor: b.color, color: b.color }"
-                    :title="b.label"
-                >
-                    {{ b.label }} {{ b.count }}
-                </span>
+        <span
+          v-for="b in levelBadges"
+          :key="b.level"
+          class="level-badge"
+          :style="{ borderColor: b.color, color: b.color }"
+          :title="b.label"
+        >
+          {{ b.label }} {{ b.count }}
+        </span>
       </div>
     </div>
     <!-- 过滤栏 -->
     <div class="filter-bar">
       <span class="filter-title">{{ i18n("iot.alarm.title") }}</span>
       <div class="filter-controls">
-        <el-select
-            v-model="levelFilterValue"
-
-            style="width: 120px"
-        >
+        <el-select v-model="levelFilterValue" style="width: 120px">
           <el-option
-              v-for="opt in levelOptions"
-              :key="opt.value"
-              :label="opt.label"
-              :value="opt.value"
+            v-for="opt in levelOptions"
+            :key="opt.value"
+            :label="opt.label"
+            :value="opt.value"
           />
         </el-select>
-        <el-select
-            v-model="ackFilterValue"
-
-            style="width: 130px"
-        >
+        <el-select v-model="ackFilterValue" style="width: 130px">
           <el-option
-              v-for="opt in ackOptions"
-              :key="opt.value"
-              :label="opt.label"
-              :value="opt.value"
+            v-for="opt in ackOptions"
+            :key="opt.value"
+            :label="opt.label"
+            :value="opt.value"
           />
         </el-select>
         <el-tag type="info">
@@ -180,23 +172,23 @@ const icons: Record<string, string> = {
     </div>
     <!-- 告警列表 -->
     <div
-        ref="listRef"
-        class="alarm-list"
-        :style="{ maxHeight: `${panelHeight - 120}px` }"
+      ref="listRef"
+      class="alarm-list"
+      :style="{ maxHeight: `${panelHeight - 120}px` }"
     >
-      <div
-          v-if="center.filteredAlarms.value.length === 0"
-          class="empty"
-      >
+      <div v-if="center.filteredAlarms.value.length === 0" class="empty">
         {{ i18n("iot.message.noAlarms") }}
       </div>
       <div
-          v-for="alarm in center.filteredAlarms.value"
-          :key="alarm.id"
-          class="alarm-item"
-          :class="[`level-${alarm.level}`, { resolved: alarm.resolved }]"
+        v-for="alarm in center.filteredAlarms.value"
+        :key="alarm.id"
+        class="alarm-item"
+        :class="[`level-${alarm.level}`, { resolved: alarm.resolved }]"
       >
-        <div class="alarm-level" :style="{ background: ALARM_LEVEL_COLORS[alarm.level] }">
+        <div
+          class="alarm-level"
+          :style="{ background: ALARM_LEVEL_COLORS[alarm.level] }"
+        >
           {{ ALARM_LEVEL_LABELS[alarm.level] }}
         </div>
         <div class="alarm-body">
@@ -216,21 +208,19 @@ const icons: Record<string, string> = {
         </div>
         <div class="alarm-actions">
           <el-button
-              v-if="!alarm.acknowledged"
-
-              type="warning"
-              plain
-              @click="center.acknowledgeAlarm(alarm.id)"
+            v-if="!alarm.acknowledged"
+            type="warning"
+            plain
+            @click="center.acknowledgeAlarm(alarm.id)"
           >
             <span class="svg-icon" v-html="icons.check"></span>
             {{ i18n("iot.alarm.acknowledge") }}
           </el-button>
           <el-button
-              v-if="!alarm.resolved"
-
-              type="success"
-              plain
-              @click="center.resolveAlarm(alarm.id)"
+            v-if="!alarm.resolved"
+            type="success"
+            plain
+            @click="center.resolveAlarm(alarm.id)"
           >
             <span class="svg-icon" v-html="icons.circleCheck"></span>
             {{ i18n("iot.alarm.resolve") }}

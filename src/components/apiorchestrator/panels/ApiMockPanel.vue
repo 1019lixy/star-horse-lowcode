@@ -1,7 +1,7 @@
 <script setup lang="ts" name="ApiMockPanel">
 import ApiMockConfig from "./ApiMockConfig.vue";
 import ApiTestResults from "./ApiTestResults.vue";
-import type {ApiOrchestratorState} from "../composables/useApiOrchestrator";
+import type { ApiOrchestratorState } from "../composables/useApiOrchestrator";
 
 defineProps<{
   state: ApiOrchestratorState;
@@ -11,10 +11,10 @@ defineProps<{
 <template>
   <div class="api-mock-panel">
     <div class="panel-section top-section">
-      <ApiMockConfig :state="state"/>
+      <ApiMockConfig :state="state" />
     </div>
     <div class="panel-section bottom-section">
-      <ApiTestResults :state="state"/>
+      <ApiTestResults :state="state" />
     </div>
   </div>
 </template>

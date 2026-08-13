@@ -1,7 +1,7 @@
 <script setup lang="ts" name="MainContent">
-import {computed} from "vue";
-import {useRoute, useRouter} from "vue-router";
-import {i18n} from "@/lang";
+import { computed } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { i18n } from "@/lang";
 
 interface MainBarItem {
   id: string;
@@ -55,7 +55,7 @@ const handleSystemConfig = () => {
 const isActive = (item: MainBarItem) => {
   if (item.id === "system-config") {
     return (
-        route.name === "system-config" || route.path.includes("system-config")
+      route.name === "system-config" || route.path.includes("system-config")
     );
   }
   return route.path === item.route || route.name === item.id;
@@ -67,7 +67,7 @@ const isActive = (item: MainBarItem) => {
     <div v-if="position == 'top'" style="height: 60px; width: 100%"></div>
     <div class="main-content flex-1 relative">
       <keep-alive>
-        <router-view/>
+        <router-view />
       </keep-alive>
     </div>
     <div v-if="position == 'bottom'" style="height: 60px; width: 100%"></div>

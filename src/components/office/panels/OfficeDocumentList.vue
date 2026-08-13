@@ -1,10 +1,10 @@
 <script setup lang="ts" name="OfficeDocumentList">
-import {computed} from "vue";
-import {ElMessage, ElMessageBox} from "element-plus";
-import {i18n} from "@/lang";
-import {ShSvgIcon} from "@/components/shared";
-import {findOfficeDocPreset} from "../constants";
-import type {OfficeDocument} from "../types";
+import { computed } from "vue";
+import { ElMessage, ElMessageBox } from "element-plus";
+import { i18n } from "@/lang";
+import { ShSvgIcon } from "@/components/shared";
+import { findOfficeDocPreset } from "../constants";
+import type { OfficeDocument } from "../types";
 
 const props = defineProps<{
   documents: OfficeDocument[];
@@ -21,10 +21,10 @@ const emit = defineEmits<{
 const docs = computed(() => props.documents);
 
 const docTypeLabel = (doc: OfficeDocument): string =>
-    findOfficeDocPreset(doc.type)?.label ?? doc.type;
+  findOfficeDocPreset(doc.type)?.label ?? doc.type;
 
 const docTypeColor = (doc: OfficeDocument): string =>
-    findOfficeDocPreset(doc.type)?.color ?? "#409EFF";
+  findOfficeDocPreset(doc.type)?.color ?? "#409EFF";
 
 const formatDate = (iso: string): string => {
   try {
@@ -40,30 +40,38 @@ const handleSelect = (id: string) => {
 };
 
 const handleDelete = (doc: OfficeDocument) => {
-  ElMessageBox.confirm(i18n("office.message.confirmDelete"), i18n("office.docList.delete"), {
-    type: "warning",
-  })
-      .then(() => {
-        emit("delete", doc.id);
-        ElMessage.success(i18n("office.message.deleted"));
-      })
-      .catch(() => {
-        /* 取消 */
-      });
+  ElMessageBox.confirm(
+    i18n("office.message.confirmDelete"),
+    i18n("office.docList.delete"),
+    {
+      type: "warning",
+    },
+  )
+    .then(() => {
+      emit("delete", doc.id);
+      ElMessage.success(i18n("office.message.deleted"));
+    })
+    .catch(() => {
+      /* 取消 */
+    });
 };
 
 const handleRename = (doc: OfficeDocument) => {
-  ElMessageBox.prompt(i18n("office.docList.inputName"), i18n("office.docList.rename"), {
-    inputValue: doc.name,
-    inputPattern: /.+/,
-    inputErrorMessage: i18n("office.message.inputName"),
-  })
-      .then(({value}) => {
-        emit("rename", doc.id, value.trim());
-      })
-      .catch(() => {
-        /* 取消 */
-      });
+  ElMessageBox.prompt(
+    i18n("office.docList.inputName"),
+    i18n("office.docList.rename"),
+    {
+      inputValue: doc.name,
+      inputPattern: /.+/,
+      inputErrorMessage: i18n("office.message.inputName"),
+    },
+  )
+    .then(({ value }) => {
+      emit("rename", doc.id, value.trim());
+    })
+    .catch(() => {
+      /* 取消 */
+    });
 };
 </script>
 
@@ -72,7 +80,7 @@ const handleRename = (doc: OfficeDocument) => {
     <div class="doc-list-header">
       <span class="title">{{ i18n("office.docList.title") }}</span>
       <el-button type="primary" @click="emit('create')">
-        <ShSvgIcon name="plus" size="14px"/>
+        <ShSvgIcon name="plus" size="14px" />
         {{ i18n("office.docList.create") }}
       </el-button>
     </div>
@@ -81,30 +89,36 @@ const handleRename = (doc: OfficeDocument) => {
         {{ i18n("office.docList.empty") }}
       </div>
       <div
-          v-for="doc in docs"
-          :key="doc.id"
-          class="doc-item"
-          :class="{ active: doc.id === currentDocId }"
-          @click="handleSelect(doc.id)"
+        v-for="doc in docs"
+        :key="doc.id"
+        class="doc-item"
+        :class="{ active: doc.id === currentDocId }"
+        @click="handleSelect(doc.id)"
       >
         <div class="doc-main">
           <div class="doc-name-row">
-                        <span class="type-tag" :style="{ background: docTypeColor(doc) }">
-                            {{ docTypeLabel(doc) }}
-                        </span>
+            <span class="type-tag" :style="{ background: docTypeColor(doc) }">
+              {{ docTypeLabel(doc) }}
+            </span>
             <span class="doc-name" :title="doc.name">{{ doc.name }}</span>
           </div>
           <div class="doc-time">{{ formatDate(doc.updatedAt) }}</div>
         </div>
         <div class="doc-actions" @click.stop>
-          <el-tooltip :content="i18n('office.docList.rename')" :show-after="500">
+          <el-tooltip
+            :content="i18n('office.docList.rename')"
+            :show-after="500"
+          >
             <el-button link @click="handleRename(doc)">
-              <ShSvgIcon name="editPen" size="14px"/>
+              <ShSvgIcon name="editPen" size="14px" />
             </el-button>
           </el-tooltip>
-          <el-tooltip :content="i18n('office.docList.delete')" :show-after="500">
+          <el-tooltip
+            :content="i18n('office.docList.delete')"
+            :show-after="500"
+          >
             <el-button link type="danger" @click="handleDelete(doc)">
-              <ShSvgIcon name="delete" size="14px"/>
+              <ShSvgIcon name="delete" size="14px" />
             </el-button>
           </el-tooltip>
         </div>
@@ -112,7 +126,6 @@ const handleRename = (doc: OfficeDocument) => {
     </div>
   </div>
 </template>
-
 
 <style lang="scss" scoped>
 .office-doc-list {

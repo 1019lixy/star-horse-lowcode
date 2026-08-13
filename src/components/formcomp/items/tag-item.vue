@@ -1,8 +1,12 @@
 <script setup lang="ts">
-import {allAction, checkIsDisabled, prepsFilter,} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {
+  allAction,
+  checkIsDisabled,
+  prepsFilter,
+} from "@/components/formcomp/utils/ItemRelationEventUtils";
 
-import {ItemPreps} from "@/components/types/ItemPreps";
-import {i18n} from "@/lang";
+import { ItemPreps } from "@/components/types/ItemPreps";
+import { i18n } from "@/lang";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -26,19 +30,19 @@ const tagType = (val: any) => {
 </script>
 <template>
   <starhorse-form-item
-      :showFormItem="showFormItem"
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :field="field"
-      :parentField="parentField"
+    :showFormItem="showFormItem"
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :bareFlag="bareFlag"
+    :field="field"
+    :parentField="parentField"
   >
     <el-tag
-        v-bind="prepsFilter(field.preps)"
-        :disabled="checkIsDisabled(props)"
-        :type="tagType(formData[field.fieldName])"
-        @click="itemAction('click')"
-        class="relative"
+      v-bind="prepsFilter(field.preps)"
+      :disabled="checkIsDisabled(props)"
+      :type="tagType(formData[field.fieldName])"
+      @click="itemAction('click')"
+      class="relative"
     >
       {{
         (callBack && callBack()) ||

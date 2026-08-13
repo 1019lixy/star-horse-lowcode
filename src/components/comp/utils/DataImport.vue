@@ -1,21 +1,23 @@
 <script setup lang="ts">
-
-import {i18n} from "@/lang";
-import {getToken} from "@/utils/auth";
-import {isMobile} from "@/api/device";
-import {UploadFilled} from "@element-plus/icons-vue";
+import { i18n } from "@/lang";
+import { getToken } from "@/utils/auth";
+import { isMobile } from "@/api/device";
+import { UploadFilled } from "@element-plus/icons-vue";
 import StarHorseIcon from "../StarHorseIcon.vue";
-import {ApiUrls} from "@/components/types";
-import {ref} from "vue";
-import {download} from "@/api/star_horse_apis";
-import {error, success, warning} from "@/utils/message";
+import { ApiUrls } from "@/components/types";
+import { ref } from "vue";
+import { download } from "@/api/star_horse_apis";
+import { error, success, warning } from "@/utils/message";
 
-const props = withDefaults(defineProps<{
-  importInfo: ApiUrls,
-  compSize?: string
-}>(), {
-  compSize: "default",
-});
+const props = withDefaults(
+  defineProps<{
+    importInfo: ApiUrls;
+    compSize?: string;
+  }>(),
+  {
+    compSize: "default",
+  },
+);
 const emits = defineEmits<{
   (e: "update:modelValue", dataList: Array<any>): void;
 }>();
@@ -58,28 +60,28 @@ const uploadSuccess = (response: any, _file: any, _fileList: any) => {
 
 <template>
   <star-horse-dialog
-      :title="i18n('ui.importFile')"
-      v-model="importDialogVisible"
-      :boxWidth="'30%'"
-      :source="3"
-      :draggable="false"
-      @closeAction="importDialogVisible = false"
+    :title="i18n('ui.importFile')"
+    v-model="importDialogVisible"
+    :boxWidth="'30%'"
+    :source="3"
+    :draggable="false"
+    @closeAction="importDialogVisible = false"
   >
     <el-card>
       <el-upload
-          :auto-upload="true"
-          :on-error="uploadError"
-          :on-success="uploadSuccess"
-          :show-file-list="false"
-          accept=".xls,.xlsx"
-          :action="importInfo?.analyzeDataUrl"
-          :headers="{ token: getToken() }"
-          class="upload"
-          name="file"
-          drag
+        :auto-upload="true"
+        :on-error="uploadError"
+        :on-success="uploadSuccess"
+        :show-file-list="false"
+        accept=".xls,.xlsx"
+        :action="importInfo?.analyzeDataUrl"
+        :headers="{ token: getToken() }"
+        class="upload"
+        name="file"
+        drag
       >
         <el-icon class="el-icon--upload">
-          <upload-filled/>
+          <upload-filled />
         </el-icon>
         <div class="el-upload__text">
           {{ i18n("ui.uploadText") }}
@@ -88,19 +90,21 @@ const uploadSuccess = (response: any, _file: any, _fileList: any) => {
           <div class="el-upload__tip">
             {{ i18n("ui.uploadTip") }}
             <el-button
-                @click="downloadTemplate"
-                title=""
-                :size="compSize"
-                link
-                v-if="importInfo?.downloadTemplateUrl"
+              @click="downloadTemplate"
+              title=""
+              :size="compSize"
+              link
+              v-if="importInfo?.downloadTemplateUrl"
             >
               <star-horse-icon
-                  icon-class="download"
-                  color="var(--star-horse-white)"
-                  size="12px"
+                icon-class="download"
+                color="var(--star-horse-white)"
+                size="12px"
               />
-              <el-tooltip :content="i18n('ui.downloadTemplate')" :trigger="isMobile ? 'click' : 'hover'"
-              >{{ i18n("ui.downloadTemplate") }}
+              <el-tooltip
+                :content="i18n('ui.downloadTemplate')"
+                :trigger="isMobile ? 'click' : 'hover'"
+                >{{ i18n("ui.downloadTemplate") }}
               </el-tooltip>
             </el-button>
           </div>
@@ -109,15 +113,13 @@ const uploadSuccess = (response: any, _file: any, _fileList: any) => {
     </el-card>
   </star-horse-dialog>
   <star-horse-icon
-      :title="i18n('ui.importExcel')"
-      icon-class="upload"
-      v-if="importInfo?.analyzeDataUrl"
-      @click="excelOperation"
-      color="var(--star-horse-style)"
-      size="18px"
+    :title="i18n('ui.importExcel')"
+    icon-class="upload"
+    v-if="importInfo?.analyzeDataUrl"
+    @click="excelOperation"
+    color="var(--star-horse-style)"
+    size="18px"
   />
 </template>
 
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>

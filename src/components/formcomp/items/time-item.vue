@@ -1,70 +1,70 @@
 <template>
   <starhorse-form-item
-      :showFormItem="showFormItem"
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :field="field"
-      :parentField="parentField"
+    :showFormItem="showFormItem"
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :bareFlag="bareFlag"
+    :field="field"
+    :parentField="parentField"
   >
     <el-time-select
-        v-if="!isSeparate"
-        :fid="field.fieldName"
-        :disabled="checkIsDisabled(props)"
-        :start="field.preps?.start || '00:00'"
-        :end="field.preps?.end || '24:00'"
-        :step="field.preps?.step || '00:05'"
-        v-bind="prepsFilter(field.preps)"
-        v-on="getDynamicEvents(props, itemAction, formData)"
-        @change="itemAction('change')"
-        v-model="formData[field.fieldName]"
+      v-if="!isSeparate"
+      :fid="field.fieldName"
+      :disabled="checkIsDisabled(props)"
+      :start="field.preps?.start || '00:00'"
+      :end="field.preps?.end || '24:00'"
+      :step="field.preps?.step || '00:05'"
+      v-bind="prepsFilter(field.preps)"
+      v-on="getDynamicEvents(props, itemAction, formData)"
+      @change="itemAction('change')"
+      v-model="formData[field.fieldName]"
     />
 
     <template v-else>
       <el-input
-          :model-value="displayText"
-          :placeholder="field.preps?.placeholder"
-          :disabled="checkIsDisabled(props)"
-          readonly
-          @click="openPicker"
+        :model-value="displayText"
+        :placeholder="field.preps?.placeholder"
+        :disabled="checkIsDisabled(props)"
+        readonly
+        @click="openPicker"
       >
         <template #suffix>
-          <star-horse-icon icon-class="time"/>
+          <star-horse-icon icon-class="time" />
         </template>
       </el-input>
 
       <ShMobilePicker
-          v-if="isSeparate && pickerVisible"
-          v-model="pickerVisible"
-          :title="title"
-          :placement="placement"
-          :size="size"
-          @confirm="handleConfirm"
-          @cancel="handleCancel"
+        v-if="isSeparate && pickerVisible"
+        v-model="pickerVisible"
+        :title="title"
+        :placement="placement"
+        :size="size"
+        @confirm="handleConfirm"
+        @cancel="handleCancel"
       >
         <ShMobileWheelPicker
-            ref="wheelPickerRef"
-            :model-value="formData[field.fieldName]"
-            :type="isRange ? 'timerange' : 'time'"
-            :value-format="wheelValueFormat"
-            :show-second="showSecond"
+          ref="wheelPickerRef"
+          :model-value="formData[field.fieldName]"
+          :type="isRange ? 'timerange' : 'time'"
+          :value-format="wheelValueFormat"
+          :show-second="showSecond"
         />
       </ShMobilePicker>
     </template>
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {computed, nextTick, onMounted, ref, watch} from "vue";
+import { computed, nextTick, onMounted, ref, watch } from "vue";
 import {
   allAction,
   checkIsDisabled,
   initCompCallEvent,
   prepsFilter,
-  relationEventDispatcher
+  relationEventDispatcher,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
-import {getDynamicEvents} from "@/api/system";
-import {ItemPreps} from "@/components/types/ItemPreps";
-import {useMobilePicker} from "@/components/formcomp/utils/useMobilePicker";
+import { getDynamicEvents } from "@/api/system";
+import { ItemPreps } from "@/components/types/ItemPreps";
+import { useMobilePicker } from "@/components/formcomp/utils/useMobilePicker";
 import ShMobilePicker from "@/components/formcomp/utils/ShMobilePicker.vue";
 import ShMobileWheelPicker from "@/components/formcomp/utils/ShMobileWheelPicker.vue";
 
@@ -94,12 +94,14 @@ const isRange = computed(() => {
 });
 
 const showSecond = computed(() => {
-  const fmt = props.field.preps?.format || props.field.preps?.valueFormat || "HH:mm";
+  const fmt =
+    props.field.preps?.format || props.field.preps?.valueFormat || "HH:mm";
   return fmt.includes("ss");
 });
 
 const wheelValueFormat = computed(() => {
-  const fmt = props.field.preps?.valueFormat || props.field.preps?.format || "HH:mm";
+  const fmt =
+    props.field.preps?.valueFormat || props.field.preps?.format || "HH:mm";
   return fmt.includes("ss") ? "HH:mm:ss" : "HH:mm";
 });
 
@@ -121,11 +123,11 @@ const handleConfirm = () => {
   const dataRelation = props.field.preps?.dataRelation;
   if (dataRelation?.actionName) {
     relationEventDispatcher(
-        props,
-        dataRelation,
-        val,
-        formData,
-        dataRelation.actionName,
+      props,
+      dataRelation,
+      val,
+      formData,
+      dataRelation.actionName,
     );
   }
   closePicker();
@@ -162,23 +164,22 @@ onMounted(() => {
 
 const closeWatch = ref<() => void>();
 closeWatch.value = watch(
-    () => formData.value?.[props.field.fieldName],
-    (val) => {
-      if (props.source == 1) {
+  () => formData.value?.[props.field.fieldName],
+  (val) => {
+    if (props.source == 1) {
+      closeWatch.value?.();
+      return;
+    }
+    if (val != null && val !== "") {
+      const name = props.field.fieldName;
+      const normalized = normalizeTimeSelectValue(val);
+      if (normalized !== val) {
+        formData.value[name] = normalized;
         closeWatch.value?.();
-        return;
       }
-      if (val != null && val !== "") {
-        const name = props.field.fieldName;
-        const normalized = normalizeTimeSelectValue(val);
-        if (normalized !== val) {
-          formData.value[name] = normalized;
-          closeWatch.value?.();
-        }
-      }
-    },
-    {immediate: true},
+    }
+  },
+  { immediate: true },
 );
 </script>
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

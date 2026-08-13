@@ -1,24 +1,24 @@
 <template>
   <starhorse-form-item
-      :showFormItem="showFormItem"
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :field="field"
-      :parentField="parentField"
+    :showFormItem="showFormItem"
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :bareFlag="bareFlag"
+    :field="field"
+    :parentField="parentField"
   >
     <el-descriptions
-        v-bind="prepsFilter(field.preps)"
-        :column="field.preps?.column || 2"
-        :border="field.preps?.border ?? true"
-        :direction="field.preps?.direction"
-        :size="field.preps?.size || 'default'"
+      v-bind="prepsFilter(field.preps)"
+      :column="field.preps?.column || 2"
+      :border="field.preps?.border ?? true"
+      :direction="field.preps?.direction"
+      :size="field.preps?.size || 'default'"
     >
       <el-descriptions-item
-          v-for="item in descItems"
-          :key="item.label"
-          :label="item.label"
-          :span="item.span || 1"
+        v-for="item in descItems"
+        :key="item.label"
+        :label="item.label"
+        :span="item.span || 1"
       >
         {{ item.value }}
       </el-descriptions-item>
@@ -26,9 +26,12 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {allAction, prepsFilter,} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import {ItemPreps} from "@/components/types/ItemPreps";
-import {computed} from "vue";
+import {
+  allAction,
+  prepsFilter,
+} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import { ItemPreps } from "@/components/types/ItemPreps";
+import { computed } from "vue";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,

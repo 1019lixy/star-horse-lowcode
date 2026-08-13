@@ -12,7 +12,8 @@
 
   &.ide-drop-zone {
     border-color: var(--ide-accent, #007acc);
-    box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--ide-accent, #007acc) 25%, transparent);
+    box-shadow: inset 0 0 0 2px
+      color-mix(in srgb, var(--ide-accent, #007acc) 25%, transparent);
   }
 }
 
@@ -400,7 +401,8 @@
   font-weight: 500;
   color: var(--ide-accent, #007acc);
   background: color-mix(in srgb, var(--ide-accent, #007acc) 8%, transparent);
-  border: 1px solid color-mix(in srgb, var(--ide-accent, #007acc) 25%, transparent);
+  border: 1px solid
+    color-mix(in srgb, var(--ide-accent, #007acc) 25%, transparent);
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.15s;
@@ -408,9 +410,9 @@
   &:hover {
     background: color-mix(in srgb, var(--ide-accent, #007acc) 15%, transparent);
     border-color: color-mix(
-                    in srgb,
-                    var(--ide-accent, #007acc) 40%,
-                    transparent
+      in srgb,
+      var(--ide-accent, #007acc) 40%,
+      transparent
     );
   }
 }

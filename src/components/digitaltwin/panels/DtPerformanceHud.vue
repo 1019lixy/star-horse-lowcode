@@ -10,8 +10,8 @@
  * 注：v4.0 起不再依赖 DtEngine，改为独立 rAF 计数。
  *     不使用 jQuery，纯原生 + Vue 模板。
  */
-import {computed, onBeforeUnmount, onMounted, ref} from "vue";
-import {i18n} from "@/lang";
+import { computed, onBeforeUnmount, onMounted, ref } from "vue";
+import { i18n } from "@/lang";
 
 const props = defineProps<{
   /** 兜底 FPS（rAF 未启动时显示） */
@@ -19,7 +19,7 @@ const props = defineProps<{
 }>();
 
 /** 当前性能快照 */
-const stats = ref<{ fps: number; frameTime: number }>({fps: 0, frameTime: 0});
+const stats = ref<{ fps: number; frameTime: number }>({ fps: 0, frameTime: 0 });
 /** 是否展开（默认展开） */
 const expanded = ref(true);
 
@@ -55,7 +55,7 @@ const tick = (now: number): void => {
     if (now - lastFpsTime >= 1000) {
       const avgFrameTime = frameCount > 0 ? frameTimeAccum / frameCount : 0;
       stats.value = {
-        fps: Math.round(frameCount * 1000 / (now - lastFpsTime)),
+        fps: Math.round((frameCount * 1000) / (now - lastFpsTime)),
         frameTime: avgFrameTime,
       };
       frameCount = 0;
@@ -95,30 +95,40 @@ void props;
 <template>
   <div class="dt-perf-hud" :class="{ collapsed: !expanded }">
     <div class="dt-perf-header" @click="toggleExpand">
-      <span class="dt-perf-title">{{ i18n("digitaltwin.performance.title") }}</span>
-      <span class="dt-perf-fps-mini" :class="fpsClass">{{ displayFps }} FPS</span>
+      <span class="dt-perf-title">{{
+        i18n("digitaltwin.performance.title")
+      }}</span>
+      <span class="dt-perf-fps-mini" :class="fpsClass"
+        >{{ displayFps }} FPS</span
+      >
       <el-icon class="dt-perf-toggle">
-        <ArrowUp v-if="expanded"/>
-        <ArrowDown v-else/>
+        <ArrowUp v-if="expanded" />
+        <ArrowDown v-else />
       </el-icon>
     </div>
     <div v-show="expanded" class="dt-perf-body">
       <div class="dt-perf-row">
-        <span class="dt-perf-label">{{ i18n("digitaltwin.performance.fps") }}</span>
+        <span class="dt-perf-label">{{
+          i18n("digitaltwin.performance.fps")
+        }}</span>
         <span class="dt-perf-value" :class="fpsClass">{{ displayFps }}</span>
       </div>
       <div class="dt-perf-row">
-        <span class="dt-perf-label">{{ i18n("digitaltwin.performance.frameTime") }}</span>
-        <span class="dt-perf-value">{{ formatFrameTime(stats.frameTime) }}</span>
+        <span class="dt-perf-label">{{
+          i18n("digitaltwin.performance.frameTime")
+        }}</span>
+        <span class="dt-perf-value">{{
+          formatFrameTime(stats.frameTime)
+        }}</span>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import {ArrowUp, ArrowDown} from "@element-plus/icons-vue";
+import { ArrowUp, ArrowDown } from "@element-plus/icons-vue";
 
-export default {components: {ArrowUp, ArrowDown}};
+export default { components: { ArrowUp, ArrowDown } };
 </script>
 
 <style lang="scss" scoped>

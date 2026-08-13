@@ -1,6 +1,6 @@
 <script setup lang="ts" name="WbToolbar">
-import {i18n} from "@/lang";
-import type {UseWhiteboardDesignerReturn} from "../composables/useWhiteboardDesigner";
+import { i18n } from "@/lang";
+import type { UseWhiteboardDesignerReturn } from "../composables/useWhiteboardDesigner";
 import {
   WB_COLOR_PRESETS,
   WB_FONT_SIZE_PRESETS,
@@ -8,7 +8,7 @@ import {
   WB_OPACITY_PRESETS,
   WB_TOOL_PRESETS,
 } from "../constants";
-import type {WhiteboardTool} from "../types";
+import type { WhiteboardTool } from "../types";
 
 const props = defineProps<{
   designer: UseWhiteboardDesignerReturn;
@@ -37,20 +37,18 @@ const handleToolClick = (tool: WhiteboardTool) => {
     <!-- 撤销/重做 -->
     <el-button-group>
       <el-button
-
-          :disabled="readonly || !designer.canUndo.value"
-          @click="designer.undo()"
-          :title="i18n('whiteboard.undo')"
+        :disabled="readonly || !designer.canUndo.value"
+        @click="designer.undo()"
+        :title="i18n('whiteboard.undo')"
       >
-        <star-horse-icon icon-class="undo" cursor="pointer"/>
+        <star-horse-icon icon-class="undo" cursor="pointer" />
       </el-button>
       <el-button
-
-          :disabled="readonly || !designer.canRedo.value"
-          @click="designer.redo()"
-          :title="i18n('whiteboard.redo')"
+        :disabled="readonly || !designer.canRedo.value"
+        @click="designer.redo()"
+        :title="i18n('whiteboard.redo')"
       >
-        <star-horse-icon icon-class="redo" cursor="pointer"/>
+        <star-horse-icon icon-class="redo" cursor="pointer" />
       </el-button>
     </el-button-group>
     <div class="divider"></div>
@@ -58,15 +56,20 @@ const handleToolClick = (tool: WhiteboardTool) => {
     <!-- 工具集 -->
     <el-button-group>
       <el-button
-          v-for="t in toolList"
-          :key="t.tool"
-          :type="designer.state.tool === t.tool ? 'primary' : 'default'"
-          :disabled="readonly && t.tool !== 'select'"
-          :title="i18n(t.labelKey as any)"
-          @click="handleToolClick(t.tool)"
+        v-for="t in toolList"
+        :key="t.tool"
+        :type="designer.state.tool === t.tool ? 'primary' : 'default'"
+        :disabled="readonly && t.tool !== 'select'"
+        :title="i18n(t.labelKey as any)"
+        @click="handleToolClick(t.tool)"
       >
-        <star-horse-icon :icon-class="t.icon.replace('sh-', '')" cursor="pointer"
-                         :color="designer.state.tool === t.tool ?'var(--star-horse-white)':''"/>
+        <star-horse-icon
+          :icon-class="t.icon.replace('sh-', '')"
+          cursor="pointer"
+          :color="
+            designer.state.tool === t.tool ? 'var(--star-horse-white)' : ''
+          "
+        />
         <span class="tool-label">{{ i18n(t.labelKey as any) }}</span>
       </el-button>
     </el-button-group>
@@ -76,34 +79,39 @@ const handleToolClick = (tool: WhiteboardTool) => {
     <div class="control-group">
       <span class="control-label">{{ i18n("whiteboard.color.stroke") }}</span>
       <el-color-picker
-          v-model="designer.state.stroke"
-
-          :predefine="WB_COLOR_PRESETS.filter(p => p.value !== 'transparent').map(p => p.value)"
+        v-model="designer.state.stroke"
+        :predefine="
+          WB_COLOR_PRESETS.filter((p) => p.value !== 'transparent').map(
+            (p) => p.value,
+          )
+        "
       />
     </div>
     <!-- 填充色 -->
     <div class="control-group">
       <span class="control-label">{{ i18n("whiteboard.color.fill") }}</span>
       <el-color-picker
-          v-model="designer.state.fill"
-
-          show-alpha
-          :predefine="WB_COLOR_PRESETS.filter(p => p.value !== 'transparent').map(p => p.value)"
+        v-model="designer.state.fill"
+        show-alpha
+        :predefine="
+          WB_COLOR_PRESETS.filter((p) => p.value !== 'transparent').map(
+            (p) => p.value,
+          )
+        "
       />
     </div>
     <!-- 线宽 -->
     <div class="control-group">
       <span class="control-label">{{ i18n("whiteboard.lineWidth") }}</span>
       <el-select
-          v-model="designer.state.strokeWidth"
-
-          style="width: 80px !important;"
+        v-model="designer.state.strokeWidth"
+        style="width: 80px !important"
       >
         <el-option
-            v-for="w in WB_LINE_WIDTH_PRESETS"
-            :key="w.value"
-            :label="w.label"
-            :value="w.value"
+          v-for="w in WB_LINE_WIDTH_PRESETS"
+          :key="w.value"
+          :label="w.label"
+          :value="w.value"
         />
       </el-select>
     </div>
@@ -111,15 +119,14 @@ const handleToolClick = (tool: WhiteboardTool) => {
     <div class="control-group">
       <span class="control-label">{{ i18n("whiteboard.opacity") }}</span>
       <el-select
-          v-model="designer.state.opacity"
-
-          style="width: 90px !important;"
+        v-model="designer.state.opacity"
+        style="width: 90px !important"
       >
         <el-option
-            v-for="o in WB_OPACITY_PRESETS"
-            :key="o.value"
-            :label="o.label"
-            :value="o.value"
+          v-for="o in WB_OPACITY_PRESETS"
+          :key="o.value"
+          :label="o.label"
+          :value="o.value"
         />
       </el-select>
     </div>
@@ -127,15 +134,14 @@ const handleToolClick = (tool: WhiteboardTool) => {
     <div class="control-group">
       <span class="control-label">{{ i18n("whiteboard.fontSize") }}</span>
       <el-select
-          v-model="designer.state.fontSize"
-
-          style="width: 80px !important;"
+        v-model="designer.state.fontSize"
+        style="width: 80px !important"
       >
         <el-option
-            v-for="s in WB_FONT_SIZE_PRESETS"
-            :key="s.value"
-            :label="s.label"
-            :value="s.value"
+          v-for="s in WB_FONT_SIZE_PRESETS"
+          :key="s.value"
+          :label="s.label"
+          :value="s.value"
         />
       </el-select>
     </div>
@@ -144,42 +150,39 @@ const handleToolClick = (tool: WhiteboardTool) => {
 
     <!-- 缩放 -->
     <el-button-group>
-      <el-button @click="designer.zoomOut()" :title="i18n('whiteboard.canvas.zoomOut')">
-        <star-horse-icon icon-class="zoom_out" cursor="pointer"/>
+      <el-button
+        @click="designer.zoomOut()"
+        :title="i18n('whiteboard.canvas.zoomOut')"
+      >
+        <star-horse-icon icon-class="zoom_out" cursor="pointer" />
       </el-button>
       <el-button @click="designer.zoomReset()">
         {{ Math.round(designer.state.canvas.zoom * 100) }}%
       </el-button>
-      <el-button @click="designer.zoomIn()" :title="i18n('whiteboard.canvas.zoomIn')">
-        <star-horse-icon icon-class="zoom_in" cursor="pointer"/>
+      <el-button
+        @click="designer.zoomIn()"
+        :title="i18n('whiteboard.canvas.zoomIn')"
+      >
+        <star-horse-icon icon-class="zoom_in" cursor="pointer" />
       </el-button>
     </el-button-group>
     <el-button
-
-        :type="designer.state.canvas.showGrid ? 'primary' : 'default'"
-        @click="designer.toggleGrid()"
-        :title="i18n('whiteboard.canvas.fit')"
+      :type="designer.state.canvas.showGrid ? 'primary' : 'default'"
+      @click="designer.toggleGrid()"
+      :title="i18n('whiteboard.canvas.fit')"
     >
-      <star-horse-icon icon-class="grid" cursor="pointer"/>
+      <star-horse-icon icon-class="grid" cursor="pointer" />
     </el-button>
 
     <div class="divider"></div>
 
     <!-- 清空 -->
-    <el-button
-
-        :disabled="readonly"
-        @click="designer.clearBoard()"
-    >
+    <el-button :disabled="readonly" @click="designer.clearBoard()">
       {{ i18n("whiteboard.clear") }}
     </el-button>
     <!-- 导出 -->
-    <el-button
-
-        type="primary"
-        @click="emits('export')"
-    >
-      <star-horse-icon icon-class="download" cursor="pointer"/>
+    <el-button type="primary" @click="emits('export')">
+      <star-horse-icon icon-class="download" cursor="pointer" />
       {{ i18n("whiteboard.export") }}
     </el-button>
   </div>

@@ -4,12 +4,12 @@
  *
  * 消息列表 + 输入框 + 发送按钮 + 快捷指令 + 打字机效果 + 代码块复制
  */
-import {computed, nextTick, ref, watch} from "vue";
-import {i18n} from "@/lang";
-import {ElMessage} from "element-plus";
-import {AI_COMMAND_TEMPLATE_PRESETS} from "../constants";
-import {aiRenderMarkdown} from "../utils/AiMarkdownRenderer";
-import type {AiMessage} from "../types";
+import { computed, nextTick, ref, watch } from "vue";
+import { i18n } from "@/lang";
+import { ElMessage } from "element-plus";
+import { AI_COMMAND_TEMPLATE_PRESETS } from "../constants";
+import { aiRenderMarkdown } from "../utils/AiMarkdownRenderer";
+import type { AiMessage } from "../types";
 
 const props = defineProps<{
   messages: AiMessage[];
@@ -27,10 +27,10 @@ const listRef = ref<HTMLDivElement | null>(null);
 
 /** 渲染后的消息 HTML */
 const renderedMessages = computed(() =>
-    props.messages.map((m) => ({
-      ...m,
-      html: aiRenderMarkdown(m.content),
-    })),
+  props.messages.map((m) => ({
+    ...m,
+    html: aiRenderMarkdown(m.content),
+  })),
 );
 
 const handleSend = (): void => {
@@ -85,24 +85,29 @@ const scrollToBottom = (): void => {
 };
 
 watch(
-    () => props.messages.map((m) => m.content).join(""),
-    () => scrollToBottom(),
+  () => props.messages.map((m) => m.content).join(""),
+  () => scrollToBottom(),
 );
 
 watch(
-    () => props.messages.length,
-    () => scrollToBottom(),
+  () => props.messages.length,
+  () => scrollToBottom(),
 );
 
 /** 内联 SVG 图标（替代 Element Plus 图标，减少依赖） */
 const icons: Record<string, string> = {
-  chatDotRound: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>',
+  chatDotRound:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>',
   user: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
-  avatar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+  avatar:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
   cpu: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/></svg>',
-  copyDocument: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="8" y="2" width="12" height="16" rx="2"/><path d="M4 6h12v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6z"/></svg>',
-  videoPause: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>',
-  promotion: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>'
+  copyDocument:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="8" y="2" width="12" height="16" rx="2"/><path d="M4 6h12v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6z"/></svg>',
+  videoPause:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>',
+  promotion:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>',
 };
 </script>
 
@@ -117,10 +122,10 @@ const icons: Record<string, string> = {
       </div>
 
       <div
-          v-for="m in renderedMessages"
-          :key="m.id"
-          class="message-item"
-          :class="m.role"
+        v-for="m in renderedMessages"
+        :key="m.id"
+        class="message-item"
+        :class="m.role"
       >
         <div class="message-avatar">
           <span class="svg-icon" v-html="icons.user"></span>
@@ -129,34 +134,37 @@ const icons: Record<string, string> = {
         </div>
         <div class="message-body">
           <div class="message-role">
-            {{ m.role === "user" ? i18n("aicopilot.role.user") : i18n("aicopilot.role.assistant") }}
+            {{
+              m.role === "user"
+                ? i18n("aicopilot.role.user")
+                : i18n("aicopilot.role.assistant")
+            }}
             <span v-if="m.streaming" class="typing-indicator">
-                            {{ i18n("aicopilot.chat.typing") }}<span class="dots">...</span>
-                        </span>
+              {{ i18n("aicopilot.chat.typing") }}<span class="dots">...</span>
+            </span>
           </div>
           <div class="message-content" v-html="m.html"></div>
 
           <!-- 消息动作建议 -->
           <div v-if="m.actions && m.actions.length" class="message-actions">
             <div
-                v-for="action in m.actions"
-                :key="action.id"
-                class="action-chip"
-                :class="{ applied: action.applied }"
+              v-for="action in m.actions"
+              :key="action.id"
+              class="action-chip"
+              :class="{ applied: action.applied }"
             >
               <span class="action-desc">{{ action.description }}</span>
               <el-button
-                  v-if="!action.applied"
-
-                  type="primary"
-                  link
-                  @click="handleApplyAction(m.id, action.id)"
+                v-if="!action.applied"
+                type="primary"
+                link
+                @click="handleApplyAction(m.id, action.id)"
               >
                 {{ i18n("aicopilot.chat.applyAction") }}
               </el-button>
               <span v-else class="applied-tag">
-                                {{ i18n("aicopilot.chat.actionApplied") }}
-                            </span>
+                {{ i18n("aicopilot.chat.actionApplied") }}
+              </span>
             </div>
           </div>
 
@@ -176,11 +184,10 @@ const icons: Record<string, string> = {
       <span class="qc-label">{{ i18n("aicopilot.chat.quickCommands") }}：</span>
       <div class="qc-list">
         <el-button
-            v-for="cmd in AI_COMMAND_TEMPLATE_PRESETS"
-            :key="cmd.id"
-
-            :disabled="isGenerating"
-            @click="handleQuickCommand(cmd.command)"
+          v-for="cmd in AI_COMMAND_TEMPLATE_PRESETS"
+          :key="cmd.id"
+          :disabled="isGenerating"
+          @click="handleQuickCommand(cmd.command)"
         >
           {{ i18n(cmd.labelKey as any) }}
         </el-button>
@@ -190,30 +197,24 @@ const icons: Record<string, string> = {
     <!-- 输入区 -->
     <div class="input-area">
       <el-input
-          v-model="inputText"
-          type="textarea"
-          :rows="3"
-          :placeholder="i18n('aicopilot.chat.placeholder')"
-          :disabled="isGenerating"
-          @keydown="handleKeyDown"
-          resize="none"
+        v-model="inputText"
+        type="textarea"
+        :rows="3"
+        :placeholder="i18n('aicopilot.chat.placeholder')"
+        :disabled="isGenerating"
+        @keydown="handleKeyDown"
+        resize="none"
       />
       <div class="input-actions">
-        <el-button
-            v-if="isGenerating"
-            type="danger"
-
-            @click="handleStop"
-        >
+        <el-button v-if="isGenerating" type="danger" @click="handleStop">
           <span class="svg-icon" v-html="icons.videoPause"></span>
           {{ i18n("aicopilot.chat.stop") }}
         </el-button>
         <el-button
-            v-else
-            type="primary"
-
-            :disabled="!inputText.trim()"
-            @click="handleSend"
+          v-else
+          type="primary"
+          :disabled="!inputText.trim()"
+          @click="handleSend"
         >
           <span class="svg-icon" v-html="icons.promotion"></span>
           {{ i18n("aicopilot.chat.send") }}
@@ -334,7 +335,9 @@ const icons: Record<string, string> = {
       line-height: 1.6;
       word-break: break-word;
 
-      :deep(h1), :deep(h2), :deep(h3) {
+      :deep(h1),
+      :deep(h2),
+      :deep(h3) {
         margin: 8px 0 4px;
         font-weight: 600;
       }
@@ -355,7 +358,8 @@ const icons: Record<string, string> = {
         margin: 4px 0;
       }
 
-      :deep(ul), :deep(ol) {
+      :deep(ul),
+      :deep(ol) {
         margin: 4px 0;
         padding-left: 20px;
       }
@@ -473,7 +477,8 @@ const icons: Record<string, string> = {
 }
 
 @keyframes blink {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {

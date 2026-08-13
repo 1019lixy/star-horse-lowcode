@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import {checkVisible, loadProp, validMsg,} from "@/api/form_utils";
-import {ContainerPreps} from "@/components/types/ItemPreps";
-import {initRelationEvent} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import {inject, ModelRef, nextTick, onMounted, ref, unref, watch} from "vue";
+import { checkVisible, loadProp, validMsg } from "@/api/form_utils";
+import { ContainerPreps } from "@/components/types/ItemPreps";
+import { initRelationEvent } from "@/components/formcomp/utils/ItemRelationEventUtils";
+import { inject, ModelRef, nextTick, onMounted, ref, unref, watch } from "vue";
 import StarHorseItem from "@/components/comp/StarHorseItem.vue";
 
 const props = withDefaults(defineProps<ContainerPreps>(), {
@@ -13,7 +13,7 @@ const props = withDefaults(defineProps<ContainerPreps>(), {
   parentPreps: {},
   subFormFlag: "N",
   batchName: "batchDataList",
-  batchFieldName: "batchFieldList",
+
   compSize: "default",
   source: 1,
 });
@@ -22,9 +22,7 @@ const dataForm: ModelRef<any> = defineModel("dataForm");
 // inject 表单字段列表,用于构造 initRelationEvent 所需的 props.formInfo
 const formFields = inject("formFields", ref<any[]>([]));
 
-
-const init = () => {
-};
+const init = () => {};
 
 /**
  * 递归遍历 fieldList,对有 dataRelation 的字段重新触发初始联动
@@ -44,11 +42,7 @@ const reTriggerRelation = (fields: any[], visited?: WeakSet<any>) => {
       visited.add(field);
       if (field?.preps?.dataRelation?.actionName) {
         const formInfoVal = unref(formFields);
-        initRelationEvent(
-            {field, formInfo: formInfoVal},
-            dataForm,
-            true,
-        );
+        initRelationEvent({ field, formInfo: formInfoVal }, dataForm, true);
       }
     }
   });
@@ -60,25 +54,25 @@ const reTriggerRelation = (fields: any[], visited?: WeakSet<any>) => {
  * (子项隐藏时内部字段组件未挂载,onMounted 中的 initCompCallEvent 未执行)
  */
 watch(
-    () => {
-      const list = props.item?.containerFields;
-      return Array.isArray(list) ? list.map((c: any) => c?.formVisible) : [];
-    },
-    (newVals, oldVals) => {
-      const list = props.item?.containerFields;
-      if (!Array.isArray(list)) return;
-      list.forEach((child: any, index: number) => {
-        if (child == null) return;
-        const wasVisible = oldVals?.[index] !== false;
-        const isVisible = newVals?.[index] !== false;
-        if (!wasVisible && isVisible) {
-          nextTick(() => {
-            reTriggerRelation(child.fieldList);
-          });
-        }
-      });
-    },
-    {deep: true, immediate: true},
+  () => {
+    const list = props.item?.containerFields;
+    return Array.isArray(list) ? list.map((c: any) => c?.formVisible) : [];
+  },
+  (newVals, oldVals) => {
+    const list = props.item?.containerFields;
+    if (!Array.isArray(list)) return;
+    list.forEach((child: any, index: number) => {
+      if (child == null) return;
+      const wasVisible = oldVals?.[index] !== false;
+      const isVisible = newVals?.[index] !== false;
+      if (!wasVisible && isVisible) {
+        nextTick(() => {
+          reTriggerRelation(child.fieldList);
+        });
+      }
+    });
+  },
+  { deep: true, immediate: true },
 );
 
 onMounted(() => {
@@ -90,35 +84,35 @@ onMounted(() => {
   <template v-if="item.containerFields?.length > 0">
     <template v-for="descItm in item.containerFields" :key="descItm.id">
       <el-descriptions
-          v-if="descItm.formVisible !== false&&!item.preps?.hideDescriptions"
-          :title="descItm.title || ''"
-          :direction="descItm.preps?.direction || 'horizontal'"
-          :column="descItm.preps?.column || 1"
-          :border="descItm.preps?.border !== false"
-          :size="descItm.preps?.size || 'default'"
-          :extra="descItm.preps?.descExtra || ''"
-          :label-width=" descItm.preps?.descItemLabelWidth || '110px'"
+        v-if="descItm.formVisible !== false && !item.preps?.hideDescriptions"
+        :title="descItm.title || ''"
+        :direction="descItm.preps?.direction || 'horizontal'"
+        :column="descItm.preps?.column || 1"
+        :border="descItm.preps?.border !== false"
+        :size="descItm.preps?.size || 'default'"
+        :extra="descItm.preps?.descExtra || ''"
+        :label-width="descItm.preps?.descItemLabelWidth || '110px'"
       >
         <template v-for="field in descItm.fieldList">
           <el-descriptions-item
-              v-if="field.formVisible!==false"
-              :label="field.label || field.fieldName"
-              :rowspan=" descItm.preps?.descItemRowspan || 1"
-              :align=" descItm.preps?.descItemAlign || 'left'"
-              :class-name=" descItm.preps?.descItemClassName || ''"
-              :span="descItm.preps?.descItemSpan || 1"
-              :label-class-name=" descItm.preps?.descItemLabelClassName || ''"
+            v-if="field.formVisible !== false"
+            :label="field.label || field.fieldName"
+            :rowspan="descItm.preps?.descItemRowspan || 1"
+            :align="descItm.preps?.descItemAlign || 'left'"
+            :class-name="descItm.preps?.descItemClassName || ''"
+            :span="descItm.preps?.descItemSpan || 1"
+            :label-class-name="descItm.preps?.descItemLabelClassName || ''"
           >
             <el-form-item
-                :size="compSize"
-                class="flex w-full flex-1 my-5"
-                label=""
-                :prop="loadProp(propPrefix, field.fieldName, -1, -1)"
-                :labelPosition="
+              :size="compSize"
+              class="flex w-full flex-1 my-5"
+              label=""
+              :prop="loadProp(propPrefix, field.fieldName, -1, -1)"
+              :labelPosition="
                 field.preps?.labelPosition ?? parentPreps?.labelPosition
               "
-                :rules="validMsg(field, dataForm)"
-                v-if="
+              :rules="validMsg(field, dataForm)"
+              v-if="
                 (field.formVisible &&
                   field.label &&
                   field.preps?.headerFlag != 'Y') ||
@@ -126,22 +120,20 @@ onMounted(() => {
               "
             >
               <star-horse-item
-                  :primaryKey="primaryKey"
-                  :compSize="compSize"
-                  v-model:dataForm="dataForm"
-                  :commonFormat="commonFormat"
-                  :item="field"
-                  :dataIndex="dataIndex"
-                  :source="source"
+                :primaryKey="primaryKey"
+                :compSize="compSize"
+                v-model:dataForm="dataForm"
+                :commonFormat="commonFormat"
+                :item="field"
+                :dataIndex="dataIndex"
+                :source="source"
               />
             </el-form-item>
           </el-descriptions-item>
         </template>
-
       </el-descriptions>
     </template>
   </template>
-
 </template>
 
 <style scoped lang="scss">

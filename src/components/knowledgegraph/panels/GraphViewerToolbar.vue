@@ -1,8 +1,8 @@
 <script setup lang="ts" name="GraphViewerToolbar">
-import {computed} from "vue";
-import {i18n} from "@/lang";
-import {KG_LAYOUT_PRESETS} from "../constants";
-import type {UseGraphViewerReturn} from "../composables/useGraphViewer";
+import { computed } from "vue";
+import { i18n } from "@/lang";
+import { KG_LAYOUT_PRESETS } from "../constants";
+import type { UseGraphViewerReturn } from "../composables/useGraphViewer";
 
 const props = defineProps<{
   viewer: UseGraphViewerReturn;
@@ -34,11 +34,16 @@ const handleZoomOut = () => props.viewer.zoomOut();
 
 /** 内联 SVG 图标（替代 Element Plus 图标，减少依赖） */
 const icons: Record<string, string> = {
-  search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>',
-  zoomIn: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35M11 8v6M8 11h6"/></svg>',
-  zoomOut: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35M8 11h6"/></svg>',
-  fullScreen: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 00-2 2v3M21 8V5a2 2 0 00-2-2h-3M3 16v3a2 2 0 002 2h3M16 21h3a2 2 0 002-2v-3"/></svg>',
-  refresh: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M3.51 15a9 9 0 012.12-9.36L12 3M20.49 9a9 9 0 01-2.12 9.36L12 21"/></svg>'
+  search:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>',
+  zoomIn:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35M11 8v6M8 11h6"/></svg>',
+  zoomOut:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35M8 11h6"/></svg>',
+  fullScreen:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 00-2 2v3M21 8V5a2 2 0 00-2-2h-3M3 16v3a2 2 0 002 2h3M16 21h3a2 2 0 002-2v-3"/></svg>',
+  refresh:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M3.51 15a9 9 0 012.12-9.36L12 3M20.49 9a9 9 0 01-2.12 9.36L12 21"/></svg>',
 };
 </script>
 
@@ -46,55 +51,75 @@ const icons: Record<string, string> = {
   <div class="kg-toolbar">
     <div class="toolbar-left">
       <span class="title">{{ i18n("knowledgegraph.viewer.title") }}</span>
-      <el-divider direction="vertical"/>
-      <span class="stat-item">{{ i18n("knowledgegraph.viewer.stats.total") }}: {{ stats.total }}</span>
-      <span class="stat-item">{{ i18n("knowledgegraph.viewer.stats.visible") }}: {{ stats.visible }}</span>
-      <span class="stat-item">{{ i18n("knowledgegraph.viewer.stats.selected") }}: {{ stats.selected }}</span>
-      <span class="stat-item">{{ i18n("knowledgegraph.viewer.edges") }}: {{ stats.edges }}</span>
+      <el-divider direction="vertical" />
+      <span class="stat-item"
+        >{{ i18n("knowledgegraph.viewer.stats.total") }}:
+        {{ stats.total }}</span
+      >
+      <span class="stat-item"
+        >{{ i18n("knowledgegraph.viewer.stats.visible") }}:
+        {{ stats.visible }}</span
+      >
+      <span class="stat-item"
+        >{{ i18n("knowledgegraph.viewer.stats.selected") }}:
+        {{ stats.selected }}</span
+      >
+      <span class="stat-item"
+        >{{ i18n("knowledgegraph.viewer.edges") }}: {{ stats.edges }}</span
+      >
     </div>
     <div class="toolbar-right">
       <el-select
-          v-model="layout"
-
-          style="width: 110px !important;"
-          :placeholder="i18n('knowledgegraph.viewer.layout')"
+        v-model="layout"
+        style="width: 110px !important"
+        :placeholder="i18n('knowledgegraph.viewer.layout')"
       >
         <el-option
-            v-for="opt in KG_LAYOUT_PRESETS"
-            :key="opt.value"
-            :label="i18n(opt.labelKey)"
-            :value="opt.value"
+          v-for="opt in KG_LAYOUT_PRESETS"
+          :key="opt.value"
+          :label="i18n(opt.labelKey)"
+          :value="opt.value"
         />
       </el-select>
       <el-input
-          v-model="searchKeyword"
-
-          style="width: 180px !important;"
-          clearable
-          :placeholder="i18n('knowledgegraph.viewer.searchPlaceholder')"
+        v-model="searchKeyword"
+        style="width: 180px !important"
+        clearable
+        :placeholder="i18n('knowledgegraph.viewer.searchPlaceholder')"
       >
         <template #prefix>
           <span class="svg-icon" v-html="icons.search"></span>
         </template>
       </el-input>
       <el-button-group>
-        <el-button @click="handleZoomIn" :title="i18n('knowledgegraph.viewer.zoomIn')">
+        <el-button
+          @click="handleZoomIn"
+          :title="i18n('knowledgegraph.viewer.zoomIn')"
+        >
           <span class="svg-icon" v-html="icons.zoomIn"></span>
         </el-button>
-        <el-button @click="handleZoomOut" :title="i18n('knowledgegraph.viewer.zoomOut')">
+        <el-button
+          @click="handleZoomOut"
+          :title="i18n('knowledgegraph.viewer.zoomOut')"
+        >
           <span class="svg-icon" v-html="icons.zoomOut"></span>
         </el-button>
-        <el-button @click="handleFit" :title="i18n('knowledgegraph.viewer.fit')">
+        <el-button
+          @click="handleFit"
+          :title="i18n('knowledgegraph.viewer.fit')"
+        >
           <span class="svg-icon" v-html="icons.fullScreen"></span>
         </el-button>
-        <el-button @click="handleReset" :title="i18n('knowledgegraph.viewer.reset')">
+        <el-button
+          @click="handleReset"
+          :title="i18n('knowledgegraph.viewer.reset')"
+        >
           <span class="svg-icon" v-html="icons.refresh"></span>
         </el-button>
       </el-button-group>
     </div>
   </div>
 </template>
-
 
 <style lang="scss" scoped>
 .kg-toolbar {

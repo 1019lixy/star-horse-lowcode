@@ -1,14 +1,14 @@
 <script setup lang="ts" name="ScheduleView">
-import {onBeforeUnmount, onMounted, ref} from "vue";
-import {useScheduleDesigner} from "./composables/useScheduleDesigner";
+import { onBeforeUnmount, onMounted, ref } from "vue";
+import { useScheduleDesigner } from "./composables/useScheduleDesigner";
 import ScheduleToolbar from "./panels/ScheduleToolbar.vue";
 import ScheduleResourcePanel from "./panels/ScheduleResourcePanel.vue";
 import ScheduleCanvas from "./panels/ScheduleCanvas.vue";
 import SchedulePropertyPanel from "./panels/SchedulePropertyPanel.vue";
 import ScheduleEventDialog from "./dialogs/ScheduleEventDialog.vue";
 import ScheduleResourceDialog from "./dialogs/ScheduleResourceDialog.vue";
-import {DesignerMobileShell} from "@/components/shared";
-import type {ScheduleData} from "./types";
+import { DesignerMobileShell } from "@/components/shared";
+import type { ScheduleData } from "./types";
 
 const props = defineProps<{
   schedule?: ScheduleData;
@@ -32,7 +32,9 @@ const defaultResourceId = ref<string>("");
 const resourceDialogVisible = ref(false);
 const editingResourceId = ref<string | null>(null);
 
-const resourcePanelRef = ref<InstanceType<typeof ScheduleResourcePanel> | null>(null);
+const resourcePanelRef = ref<InstanceType<typeof ScheduleResourcePanel> | null>(
+  null,
+);
 const canvasRef = ref<InstanceType<typeof ScheduleCanvas> | null>(null);
 
 const handleEditEvent = (id: string) => {
@@ -57,7 +59,7 @@ const handleAddEvent = () => {
 const handleInsertBefore = () => {
   const id = designer.selectedEventId.value;
   if (!id) return;
-  const event = designer.state.events.find(e => e.id === id);
+  const event = designer.state.events.find((e) => e.id === id);
   if (!event) return;
   const newEvent = designer.addEvent({
     resourceId: event.resourceId,
@@ -70,7 +72,7 @@ const handleInsertBefore = () => {
 const handleInsertAfter = () => {
   const id = designer.selectedEventId.value;
   if (!id) return;
-  const event = designer.state.events.find(e => e.id === id);
+  const event = designer.state.events.find((e) => e.id === id);
   if (!event) return;
   const newEvent = designer.addEvent({
     resourceId: event.resourceId,
@@ -98,7 +100,7 @@ let isSyncingScroll = false;
 const syncListScroll = (e: Event) => {
   if (isSyncingScroll) return;
   isSyncingScroll = true;
-  const listEl = (e.target as HTMLElement);
+  const listEl = e.target as HTMLElement;
   const canvasEl = canvasRef.value?.canvasScrollRef;
   if (canvasEl) {
     canvasEl.scrollTop = listEl.scrollTop;
@@ -111,7 +113,7 @@ const syncListScroll = (e: Event) => {
 const syncCanvasScroll = (e: Event) => {
   if (isSyncingScroll) return;
   isSyncingScroll = true;
-  const canvasEl = (e.target as HTMLElement);
+  const canvasEl = e.target as HTMLElement;
   const listEl = resourcePanelRef.value?.listScrollRef;
   if (listEl) {
     listEl.scrollTop = canvasEl.scrollTop;
@@ -149,58 +151,55 @@ onBeforeUnmount(() => {
 <template>
   <div class="schedule-view">
     <DesignerMobileShell
-        :panels="[
-                { key: 'resources', label: '资源', side: 'left', width: 220, min: 180 },
-                { key: 'props', label: '属性', side: 'right', width: 260, min: 200 },
-            ]"
+      :panels="[
+        { key: 'resources', label: '资源', side: 'left', width: 220, min: 180 },
+        { key: 'props', label: '属性', side: 'right', width: 260, min: 200 },
+      ]"
     >
       <template #toolbar>
         <schedule-toolbar
-            :designer="designer"
-            :readonly="readonly"
-            @save="handleSave"
-            @preview="handleAddEvent"
-            @add-event="handleAddEvent"
-            @insert-before="handleInsertBefore"
-            @insert-after="handleInsertAfter"
+          :designer="designer"
+          :readonly="readonly"
+          @save="handleSave"
+          @preview="handleAddEvent"
+          @add-event="handleAddEvent"
+          @insert-before="handleInsertBefore"
+          @insert-after="handleInsertAfter"
         />
       </template>
       <template #canvas>
         <schedule-canvas
-            ref="canvasRef"
-            :designer="designer"
-            :readonly="readonly"
-            @edit="handleEditEvent"
-            @create="handleCreateEvent"
+          ref="canvasRef"
+          :designer="designer"
+          :readonly="readonly"
+          @edit="handleEditEvent"
+          @create="handleCreateEvent"
         />
       </template>
       <template #panel-resources>
         <schedule-resource-panel
-            ref="resourcePanelRef"
-            :designer="designer"
-            :readonly="readonly"
-            @edit-resource="handleEditResource"
+          ref="resourcePanelRef"
+          :designer="designer"
+          :readonly="readonly"
+          @edit-resource="handleEditResource"
         />
       </template>
       <template #panel-props>
-        <schedule-property-panel
-            :designer="designer"
-            :readonly="readonly"
-        />
+        <schedule-property-panel :designer="designer" :readonly="readonly" />
       </template>
     </DesignerMobileShell>
 
     <schedule-event-dialog
-        v-model:visible="eventDialogVisible"
-        :designer="designer"
-        :event-id="editingEventId"
-        :default-start-time="defaultStartTime"
-        :default-resource-id="defaultResourceId"
+      v-model:visible="eventDialogVisible"
+      :designer="designer"
+      :event-id="editingEventId"
+      :default-start-time="defaultStartTime"
+      :default-resource-id="defaultResourceId"
     />
     <schedule-resource-dialog
-        v-model:visible="resourceDialogVisible"
-        :designer="designer"
-        :resource-id="editingResourceId"
+      v-model:visible="resourceDialogVisible"
+      :designer="designer"
+      :resource-id="editingResourceId"
     />
   </div>
 </template>

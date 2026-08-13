@@ -1,6 +1,6 @@
 <script setup lang="ts" name="EmailAttachmentPanel">
-import {i18n} from "@/lang";
-import type {EmailTemplateDesigner} from "../composables/useEmailTemplateDesigner";
+import { i18n } from "@/lang";
+import type { EmailTemplateDesigner } from "../composables/useEmailTemplateDesigner";
 
 const props = defineProps<{
   designer: EmailTemplateDesigner;
@@ -25,29 +25,31 @@ const formatSize = (size?: number) => {
       <span>{{ i18n("emailtemplate.attachment.title") }}</span>
       <el-button text :disabled="readonly" @click="emit('add')">
         <el-icon>
-          <Plus/>
+          <Plus />
         </el-icon>
       </el-button>
     </div>
     <div class="panel-body">
       <div
-          v-for="att in designer.state.attachments"
-          :key="att.id"
-          class="att-item"
+        v-for="att in designer.state.attachments"
+        :key="att.id"
+        class="att-item"
       >
         <div class="att-info">
           <el-icon class="att-icon">
-            <Document/>
+            <Document />
           </el-icon>
           <div class="att-meta">
             <div class="att-name">{{ att.name }}</div>
-            <div class="att-size" v-if="att.size">{{ formatSize(att.size) }}</div>
+            <div class="att-size" v-if="att.size">
+              {{ formatSize(att.size) }}
+            </div>
           </div>
         </div>
         <div class="att-actions" v-if="!readonly">
           <el-button text @click="designer.removeAttachment(att.id)">
             <el-icon>
-              <Delete/>
+              <Delete />
             </el-icon>
           </el-button>
         </div>
@@ -60,9 +62,9 @@ const formatSize = (size?: number) => {
 </template>
 
 <script lang="ts">
-import {Plus, Delete, Document} from "@element-plus/icons-vue";
+import { Plus, Delete, Document } from "@element-plus/icons-vue";
 
-export default {components: {Plus, Delete, Document}};
+export default { components: { Plus, Delete, Document } };
 </script>
 
 <style lang="scss" scoped>

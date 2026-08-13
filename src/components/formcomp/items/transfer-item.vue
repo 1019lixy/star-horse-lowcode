@@ -1,52 +1,52 @@
 <template>
   <starhorse-form-item
-      :showFormItem="showFormItem"
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :field="field"
-      :parentField="parentField"
+    :showFormItem="showFormItem"
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :bareFlag="bareFlag"
+    :field="field"
+    :parentField="parentField"
   >
     <!-- PC 端：保留原生 el-transfer -->
     <el-transfer
-        v-if="!isMobile&&source!=3"
-        :fid="field?.preps['name']"
-        v-bind="prepsFilter(field.preps)"
-        :props="transferProps"
-        v-on="getDynamicEvents(props, itemAction, formData)"
-        v-model="formData[field.fieldName]"
+      v-if="!isMobile && source != 3"
+      :fid="field?.preps['name']"
+      v-bind="prepsFilter(field.preps)"
+      :props="transferProps"
+      v-on="getDynamicEvents(props, itemAction, formData)"
+      v-model="formData[field.fieldName]"
     />
     <!-- APP 端：直接复用 StarHorseDataSelector -->
     <StarHorseDataSelector
-        v-else
-        v-model="pickerData"
-        :data="field.preps?.data"
-        :multiple="true"
-        :display-name="transferProps.label"
-        :display-value="transferProps.key"
-        :title="field.label"
-        :disabled="disabled"
-        :allow-create="!!field.preps?.allowCreate"
-        @update:selectedData="onSelectChange"
-        @change="onSelectChange"
+      v-else
+      v-model="pickerData"
+      :data="field.preps?.data"
+      :multiple="true"
+      :display-name="transferProps.label"
+      :display-value="transferProps.key"
+      :title="field.label"
+      :disabled="disabled"
+      :allow-create="!!field.preps?.allowCreate"
+      @update:selectedData="onSelectChange"
+      @change="onSelectChange"
     />
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {computed, nextTick, onMounted, ref, shallowRef, watch} from "vue";
-import {compDynamicData} from "@/api/star_horse_utils";
-import {SelectOption} from "@/components/types/SearchProps";
+import { computed, nextTick, onMounted, ref, shallowRef, watch } from "vue";
+import { compDynamicData } from "@/api/star_horse_utils";
+import { SelectOption } from "@/components/types/SearchProps";
 import {
   allAction,
   initCompCallEvent,
   prepsFilter,
   relationEventDispatcher,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
-import {getDynamicEvents} from "@/api/system";
-import {isMobile} from "@/api/device";
-import {StarHorseDataSelector} from "@/components/comp";
+import { getDynamicEvents } from "@/api/system";
+import { isMobile } from "@/api/device";
+import { StarHorseDataSelector } from "@/components/comp";
 
-import {ItemPreps} from "@/components/types/ItemPreps";
+import { ItemPreps } from "@/components/types/ItemPreps";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
@@ -63,34 +63,34 @@ const itemAction = (prep: string) => {
   allAction(props, emits, formData, prep);
 };
 const transferProps = computed(
-    () => props.field?.preps?.props ?? {key: "value", label: "name"},
+  () => props.field?.preps?.props ?? { key: "value", label: "name" },
 );
 // StarHorseDataSelector 的 v-model（key[]，与 transfer 的 v-model 格式一致）
 const pickerData = ref<any>(
-    Array.isArray(formData.value?.[props.field.fieldName])
-        ? formData.value?.[props.field.fieldName]
-        : formData.value?.[props.field.fieldName]
-            ? [formData.value?.[props.field.fieldName]]
-            : [],
+  Array.isArray(formData.value?.[props.field.fieldName])
+    ? formData.value?.[props.field.fieldName]
+    : formData.value?.[props.field.fieldName]
+      ? [formData.value?.[props.field.fieldName]]
+      : [],
 );
 // pickerData 变化 → 同步回 formData
 watch(
-    pickerData,
-    (val) => {
-      formData.value[props.field.fieldName] = val;
-    },
-    {deep: true},
+  pickerData,
+  (val) => {
+    formData.value[props.field.fieldName] = val;
+  },
+  { deep: true },
 );
 // formData 外部变化 → 同步到 pickerData（如 reset）
 watch(
-    () => formData.value?.[props.field.fieldName],
-    (val) => {
-      const cur = Array.isArray(val) ? val : val != null ? [val] : [];
-      if (JSON.stringify(cur) !== JSON.stringify(pickerData.value)) {
-        pickerData.value = cur;
-      }
-    },
-    {deep: true},
+  () => formData.value?.[props.field.fieldName],
+  (val) => {
+    const cur = Array.isArray(val) ? val : val != null ? [val] : [];
+    if (JSON.stringify(cur) !== JSON.stringify(pickerData.value)) {
+      pickerData.value = cur;
+    }
+  },
+  { deep: true },
 );
 // 选择变化回调
 const onSelectChange = () => {
@@ -100,11 +100,11 @@ const onSelectChange = () => {
   const dataRelation = props.field.preps?.dataRelation;
   if (dataRelation?.actionName) {
     relationEventDispatcher(
-        props,
-        dataRelation,
-        pickerData.value,
-        formData,
-        dataRelation.actionName,
+      props,
+      dataRelation,
+      pickerData.value,
+      formData,
+      dataRelation.actionName,
     );
   }
 };

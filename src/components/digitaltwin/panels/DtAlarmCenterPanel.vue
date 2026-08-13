@@ -7,11 +7,15 @@
  * - 事件列表（带级别色条、确认/解决按钮）
  * - 实体联动：点击事件 → 通过 emit('locate-entity') 跳转到对应设备
  */
-import {computed} from "vue";
-import {i18n} from "@/lang";
-import {ShSvgIcon} from "@/components/shared";
-import type {UseDtAlarmStreamReturn} from "../composables/useDtAlarmStream";
-import type {DtAlarmEvent, DtAlarmEventLevel, DtAlarmEventStatus} from "../types";
+import { computed } from "vue";
+import { i18n } from "@/lang";
+import { ShSvgIcon } from "@/components/shared";
+import type { UseDtAlarmStreamReturn } from "../composables/useDtAlarmStream";
+import type {
+  DtAlarmEvent,
+  DtAlarmEventLevel,
+  DtAlarmEventStatus,
+} from "../types";
 
 const props = defineProps<{
   alarmStream: UseDtAlarmStreamReturn;
@@ -29,17 +33,17 @@ const filteredEvents = computed(() => props.alarmStream.filteredEvents.value);
 const filter = computed(() => props.alarmStream.filter.value);
 
 const levelOptions = [
-  {value: "all", labelKey: "digitaltwin.alarm.level.all"},
-  {value: "info", labelKey: "digitaltwin.alarm.level.info"},
-  {value: "warning", labelKey: "digitaltwin.alarm.level.warning"},
-  {value: "alarm", labelKey: "digitaltwin.alarm.level.alarm"},
-  {value: "critical", labelKey: "digitaltwin.alarm.level.critical"},
+  { value: "all", labelKey: "digitaltwin.alarm.level.all" },
+  { value: "info", labelKey: "digitaltwin.alarm.level.info" },
+  { value: "warning", labelKey: "digitaltwin.alarm.level.warning" },
+  { value: "alarm", labelKey: "digitaltwin.alarm.level.alarm" },
+  { value: "critical", labelKey: "digitaltwin.alarm.level.critical" },
 ];
 const statusOptions = [
-  {value: "all", labelKey: "digitaltwin.alarm.status.all"},
-  {value: "active", labelKey: "digitaltwin.alarm.status.active"},
-  {value: "acknowledged", labelKey: "digitaltwin.alarm.status.acknowledged"},
-  {value: "resolved", labelKey: "digitaltwin.alarm.status.resolved"},
+  { value: "all", labelKey: "digitaltwin.alarm.status.all" },
+  { value: "active", labelKey: "digitaltwin.alarm.status.active" },
+  { value: "acknowledged", labelKey: "digitaltwin.alarm.status.acknowledged" },
+  { value: "resolved", labelKey: "digitaltwin.alarm.status.resolved" },
 ];
 
 const levelColorMap: Record<DtAlarmEventLevel, string> = {
@@ -88,22 +92,31 @@ const handleClearResolved = (): void => props.alarmStream.clearResolved();
 <template>
   <div class="dt-alarm-center" :class="{ floating }">
     <div class="panel-header">
-            <span class="panel-title">
-                <ShSvgIcon name="alarm"/>
-                {{ i18n("digitaltwin.alarm.title") }}
-            </span>
+      <span class="panel-title">
+        <ShSvgIcon name="alarm" />
+        {{ i18n("digitaltwin.alarm.title") }}
+      </span>
       <span v-if="alarmStream.activeCount.value > 0" class="active-badge">
-                {{ alarmStream.activeCount.value }}
-            </span>
-      <div style="flex:1"/>
+        {{ alarmStream.activeCount.value }}
+      </span>
+      <div style="flex: 1" />
       <el-button text size="small" @click="emit('close')">
-        <ShSvgIcon name="close"/>
+        <ShSvgIcon name="close" />
       </el-button>
     </div>
 
     <div class="stats-cards">
-      <div v-for="lv in ['critical', 'alarm', 'warning', 'info'] as DtAlarmEventLevel[]" :key="lv" class="stat-card"
-           :class="`stat-${lv}`">
+      <div
+        v-for="lv in [
+          'critical',
+          'alarm',
+          'warning',
+          'info',
+        ] as DtAlarmEventLevel[]"
+        :key="lv"
+        class="stat-card"
+        :class="`stat-${lv}`"
+      >
         <div class="stat-num">{{ stats[lv] }}</div>
         <div class="stat-name">{{ i18n(levelLabelMap[lv] as any) }}</div>
       </div>
@@ -111,17 +124,37 @@ const handleClearResolved = (): void => props.alarmStream.clearResolved();
 
     <div class="filter-bar">
       <el-select v-model="filter.level" size="small" style="width: 90px">
-        <el-option v-for="o in levelOptions" :key="o.value" :label="i18n(o.labelKey as any)" :value="o.value"/>
+        <el-option
+          v-for="o in levelOptions"
+          :key="o.value"
+          :label="i18n(o.labelKey as any)"
+          :value="o.value"
+        />
       </el-select>
       <el-select v-model="filter.status" size="small" style="width: 100px">
-        <el-option v-for="o in statusOptions" :key="o.value" :label="i18n(o.labelKey as any)" :value="o.value"/>
+        <el-option
+          v-for="o in statusOptions"
+          :key="o.value"
+          :label="i18n(o.labelKey as any)"
+          :value="o.value"
+        />
       </el-select>
-      <el-input v-model="filter.keyword" size="small" :placeholder="i18n('digitaltwin.alarm.keywordPlaceholder')"
-                clearable style="flex:1"/>
+      <el-input
+        v-model="filter.keyword"
+        size="small"
+        :placeholder="i18n('digitaltwin.alarm.keywordPlaceholder')"
+        clearable
+        style="flex: 1"
+      />
     </div>
 
     <div class="action-bar">
-      <el-button size="small" type="primary" :disabled="alarmStream.activeCount.value === 0" @click="handleAckAll">
+      <el-button
+        size="small"
+        type="primary"
+        :disabled="alarmStream.activeCount.value === 0"
+        @click="handleAckAll"
+      >
         {{ i18n("digitaltwin.alarm.ackAll") }}
       </el-button>
       <el-button size="small" @click="handleClearResolved">
@@ -134,35 +167,53 @@ const handleClearResolved = (): void => props.alarmStream.clearResolved();
         {{ i18n("digitaltwin.alarm.empty") }}
       </div>
       <div
-          v-for="e in filteredEvents"
-          :key="e.id"
-          class="event-row"
-          :class="{ clickable: e.entityId }"
-          @click="handleLocate(e)"
+        v-for="e in filteredEvents"
+        :key="e.id"
+        class="event-row"
+        :class="{ clickable: e.entityId }"
+        @click="handleLocate(e)"
       >
-        <div class="level-bar" :style="{ background: levelColorMap[e.level] }"/>
+        <div
+          class="level-bar"
+          :style="{ background: levelColorMap[e.level] }"
+        />
         <div class="event-content">
           <div class="event-header">
-                        <span class="event-level-tag"
-                              :style="{ background: levelColorMap[e.level] + '22', color: levelColorMap[e.level] }">
-                            {{ i18n(levelLabelMap[e.level] as any) }}
-                        </span>
+            <span
+              class="event-level-tag"
+              :style="{
+                background: levelColorMap[e.level] + '22',
+                color: levelColorMap[e.level],
+              }"
+            >
+              {{ i18n(levelLabelMap[e.level] as any) }}
+            </span>
             <span class="event-time">{{ formatTime(e.timestamp) }}</span>
             <span class="event-status" :class="`status-${e.status}`">
-                            {{ i18n(statusLabelMap[e.status] as any) }}
-                        </span>
+              {{ i18n(statusLabelMap[e.status] as any) }}
+            </span>
           </div>
           <div class="event-title">{{ e.title }}</div>
           <div v-if="e.entityName" class="event-entity">
-            <ShSvgIcon name="location"/>
+            <ShSvgIcon name="location" />
             {{ e.entityName }}
           </div>
           <div v-if="e.metric" class="event-metric">{{ e.metric }}</div>
           <div class="event-actions">
-            <el-button v-if="e.status === 'active'" size="small" link @click="handleAck(e, $event)">
+            <el-button
+              v-if="e.status === 'active'"
+              size="small"
+              link
+              @click="handleAck(e, $event)"
+            >
               {{ i18n("digitaltwin.alarm.ack") }}
             </el-button>
-            <el-button v-if="e.status !== 'resolved'" size="small" link @click="handleResolve(e, $event)">
+            <el-button
+              v-if="e.status !== 'resolved'"
+              size="small"
+              link
+              @click="handleResolve(e, $event)"
+            >
               {{ i18n("digitaltwin.alarm.resolve") }}
             </el-button>
           </div>
@@ -244,19 +295,19 @@ const handleClearResolved = (): void => props.alarmStream.clearResolved();
       }
 
       &.stat-critical .stat-num {
-        color: #AD0E0E;
+        color: #ad0e0e;
       }
 
       &.stat-alarm .stat-num {
-        color: #F56C6C;
+        color: #f56c6c;
       }
 
       &.stat-warning .stat-num {
-        color: #E6A23C;
+        color: #e6a23c;
       }
 
       &.stat-info .stat-num {
-        color: #409EFF;
+        color: #409eff;
       }
     }
   }

@@ -8,10 +8,13 @@
  * 启用数据模拟（温度/压力/流量实时更新）
  * 部分设备预设报警状态（出料泵 P2 报警，原料罐 T2 警告）
  */
-import {computed, ref} from "vue";
-import type {DtScene} from "@/components/digitaltwin";
-import {DigitalTwinDesigner, DT_SCENE_TEMPLATES} from "@/components/digitaltwin";
-import {i18n} from "@/lang";
+import { computed, ref } from "vue";
+import type { DtScene } from "@/components/digitaltwin";
+import {
+  DigitalTwinDesigner,
+  DT_SCENE_TEMPLATES,
+} from "@/components/digitaltwin";
+import { i18n } from "@/lang";
 
 /** 模板序号（0=工厂车间 / 1=数据中心 / 2=能源站） */
 const currentTemplateIndex = ref(0);
@@ -33,7 +36,8 @@ const scene = ref<DtScene>(buildSceneFromTemplate(0));
 
 /** 切换到下一个模板 */
 const handleSwitchTemplate = (): void => {
-  currentTemplateIndex.value = (currentTemplateIndex.value + 1) % DT_SCENE_TEMPLATES.length;
+  currentTemplateIndex.value =
+    (currentTemplateIndex.value + 1) % DT_SCENE_TEMPLATES.length;
   scene.value = buildSceneFromTemplate(currentTemplateIndex.value);
   applyPresetStatus(scene.value);
 };
@@ -50,15 +54,15 @@ const applyPresetStatus = (s: DtScene): void => {
 applyPresetStatus(scene.value);
 
 /** 当前模板名称（翻译后展示） */
-const currentTemplateName = computed(() => i18n(DT_SCENE_TEMPLATES[currentTemplateIndex.value].labelKey as any));
+const currentTemplateName = computed(() =>
+  i18n(DT_SCENE_TEMPLATES[currentTemplateIndex.value].labelKey as any),
+);
 
 const handleSelectEntity = (id: string | null) => {
-  // eslint-disable-next-line no-console
   console.log("selected entity:", id);
 };
 
 const handleSaveScene = (s: DtScene) => {
-  // eslint-disable-next-line no-console
   console.log("save scene:", s);
 };
 </script>
@@ -73,11 +77,11 @@ const handleSaveScene = (s: DtScene) => {
     </div>
     <div class="demo-viewer">
       <DigitalTwinDesigner
-          :key="scene.id"
-          :scene="scene"
-          :auto-sim="true"
-          @select-entity="handleSelectEntity"
-          @save-scene="handleSaveScene"
+        :key="scene.id"
+        :scene="scene"
+        :auto-sim="true"
+        @select-entity="handleSelectEntity"
+        @save-scene="handleSaveScene"
       />
     </div>
   </div>

@@ -3,11 +3,11 @@
  * 报表预览弹窗
  * 强制使用 star-horse-dialog
  */
-import {computed, ref, watch} from "vue";
-import {i18n} from "@/lang";
-import {renderReportPrintHtml} from "../renderers/ReportHtmlRenderer";
-import type {ReportRenderContext, ReportTemplate} from "../types";
-import {StarHorsePanel} from "@/components/comp";
+import { computed, ref, watch } from "vue";
+import { i18n } from "@/lang";
+import { renderReportPrintHtml } from "../renderers/ReportHtmlRenderer";
+import type { ReportRenderContext, ReportTemplate } from "../types";
+import { StarHorsePanel } from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
@@ -15,7 +15,7 @@ const props = defineProps<{
   data?: Record<string, any[]>;
   params?: Record<string, any>;
   operator?: string;
-  dialogType?:"dialog"|"drawer";
+  dialogType?: "dialog" | "drawer";
 }>();
 
 const emits = defineEmits<{
@@ -38,7 +38,9 @@ const renderCtx = computed<ReportRenderContext>(() => ({
   renderTime: Date.now(),
 }));
 
-const htmlContent = computed(() => renderReportPrintHtml(props.template, renderCtx.value));
+const htmlContent = computed(() =>
+  renderReportPrintHtml(props.template, renderCtx.value),
+);
 
 const refreshIframe = () => {
   if (!iframeRef.value) return;
@@ -50,12 +52,12 @@ const refreshIframe = () => {
 };
 
 watch(
-    () => [props.visible, htmlContent.value],
-    () => {
-      if (props.visible) {
-        setTimeout(refreshIframe, 50);
-      }
-    },
+  () => [props.visible, htmlContent.value],
+  () => {
+    if (props.visible) {
+      setTimeout(refreshIframe, 50);
+    }
+  },
 );
 
 const handleBrowserPrint = () => {
@@ -65,7 +67,9 @@ const handleBrowserPrint = () => {
 };
 
 const handleExportHtml = () => {
-  const blob = new Blob([htmlContent.value], {type: "text/html;charset=utf-8"});
+  const blob = new Blob([htmlContent.value], {
+    type: "text/html;charset=utf-8",
+  });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
@@ -77,22 +81,22 @@ const handleExportHtml = () => {
 
 <template>
   <star-horse-panel
-      :type="dialogType"
-      v-model="innerVisible"
-      :title="i18n('report.preview.title')"
-      box-width="80%"
-      box-height="80%"
-      :is-show-reset="false"
-      :is-show-save="false"
-      :self-func="true"
+    :type="dialogType"
+    v-model="innerVisible"
+    :title="i18n('report.preview.title')"
+    box-width="80%"
+    box-height="80%"
+    :is-show-reset="false"
+    :is-show-save="false"
+    :self-func="true"
   >
     <div class="report-preview-dialog">
       <div class="preview-toolbar">
         <el-button type="primary" @click="handleBrowserPrint">
-          {{ i18n('report.preview.print') }}
+          {{ i18n("report.preview.print") }}
         </el-button>
         <el-button @click="handleExportHtml">
-          {{ i18n('report.preview.exportHtml') }}
+          {{ i18n("report.preview.exportHtml") }}
         </el-button>
       </div>
       <div class="preview-content">
@@ -100,7 +104,9 @@ const handleExportHtml = () => {
       </div>
     </div>
     <template #footer>
-      <el-button @click="innerVisible = false">{{ i18n('dialog.close') }}</el-button>
+      <el-button @click="innerVisible = false">{{
+        i18n("dialog.close")
+      }}</el-button>
     </template>
   </star-horse-panel>
 </template>

@@ -1,9 +1,9 @@
 <script setup lang="ts" name="crontab-result">
-import {onMounted, ref, watch} from "vue";
-import {i18n} from "@/lang";
+import { onMounted, ref, watch } from "vue";
+import { i18n } from "@/lang";
 
 const props = defineProps({
-  ex: {type: String},
+  ex: { type: String },
 });
 let dayRule = ref("");
 let dayRuleSup = ref<any | Array<any>>();
@@ -141,10 +141,10 @@ const expressionChange = () => {
         }
         // 判断日期的合法性，不合法的话也是跳出当前循环
         if (
-            !checkDate(YY + "-" + MM + "-" + thisDD + " 00:00:00") &&
-            dayRule.value !== "workDay" &&
-            dayRule.value !== "lastWeek" &&
-            dayRule.value !== "lastDay"
+          !checkDate(YY + "-" + MM + "-" + thisDD + " 00:00:00") &&
+          dayRule.value !== "workDay" &&
+          dayRule.value !== "lastWeek" &&
+          dayRule.value !== "lastDay"
         ) {
           resetDay();
           continue gomonth;
@@ -154,9 +154,9 @@ const expressionChange = () => {
           //如果不是合法日期则需要将前将日期调到合法日期即月末最后一天
           if (!checkDate(YY + "-" + MM + "-" + thisDD + " 00:00:00")) {
             while (
-                DD > 0 &&
-                !checkDate(YY + "-" + MM + "-" + thisDD + " 00:00:00")
-                ) {
+              DD > 0 &&
+              !checkDate(YY + "-" + MM + "-" + thisDD + " 00:00:00")
+            ) {
               DD--;
               thisDD = DD < 10 ? "0" + DD : DD;
             }
@@ -165,17 +165,17 @@ const expressionChange = () => {
           //校验并调整如果是2月30号这种日期传进来时需调整至正常月底
           if (!checkDate(YY + "-" + MM + "-" + thisDD + " 00:00:00")) {
             while (
-                DD > 0 &&
-                !checkDate(YY + "-" + MM + "-" + thisDD + " 00:00:00")
-                ) {
+              DD > 0 &&
+              !checkDate(YY + "-" + MM + "-" + thisDD + " 00:00:00")
+            ) {
               DD--;
               thisDD = DD < 10 ? "0" + DD : DD;
             }
           }
           // 获取达到条件的日期是星期X
           let thisWeek = formatDate(
-              new Date(YY + "-" + MM + "-" + thisDD + " 00:00:00"),
-              "week",
+            new Date(YY + "-" + MM + "-" + thisDD + " 00:00:00"),
+            "week",
           );
           // 当星期日时
           if (thisWeek == 0) {
@@ -198,8 +198,8 @@ const expressionChange = () => {
           //如果指定了是星期几
           //获取当前日期是属于星期几
           let thisWeek = formatDate(
-              new Date(YY + "-" + MM + "-" + DD + " 00:00:00"),
-              "week",
+            new Date(YY + "-" + MM + "-" + DD + " 00:00:00"),
+            "week",
           );
           //校验当前星期是否在星期池（dayRuleSup）中
           if (dayRuleSup.value.indexOf(thisWeek) < 0) {
@@ -218,15 +218,15 @@ const expressionChange = () => {
           //如果指定了是第几周的星期几
           //获取每月1号是属于星期几
           let thisWeek = formatDate(
-              new Date(YY + "-" + MM + "-" + DD + " 00:00:00"),
-              "week",
+            new Date(YY + "-" + MM + "-" + DD + " 00:00:00"),
+            "week",
           );
           if (dayRuleSup.value[1] >= thisWeek) {
             DD =
-                (dayRuleSup.value[0] - 1) * 7 +
-                dayRuleSup.value[1] -
-                thisWeek +
-                1;
+              (dayRuleSup.value[0] - 1) * 7 +
+              dayRuleSup.value[1] -
+              thisWeek +
+              1;
           } else {
             DD = dayRuleSup.value[0] * 7 + dayRuleSup.value[1] - thisWeek + 1;
           }
@@ -235,17 +235,17 @@ const expressionChange = () => {
           //校验并调整如果是2月30号这种日期传进来时需调整至正常月底
           if (!checkDate(YY + "-" + MM + "-" + thisDD + " 00:00:00")) {
             while (
-                DD > 0 &&
-                !checkDate(YY + "-" + MM + "-" + thisDD + " 00:00:00")
-                ) {
+              DD > 0 &&
+              !checkDate(YY + "-" + MM + "-" + thisDD + " 00:00:00")
+            ) {
               DD--;
               thisDD = DD < 10 ? "0" + DD : DD;
             }
           }
           //获取月末最后一天是星期几
           let thisWeek = formatDate(
-              new Date(YY + "-" + MM + "-" + thisDD + " 00:00:00"),
-              "week",
+            new Date(YY + "-" + MM + "-" + thisDD + " 00:00:00"),
+            "week",
           );
           //找到要求中最近的那个星期几
           if (dayRuleSup.value < thisWeek) {
@@ -306,7 +306,7 @@ const expressionChange = () => {
               // 添加当前时间（时间合法性在日期循环时已经判断）
               if (MM !== "00" && DD !== "00") {
                 resultArr.push(
-                    YY + "-" + MM + "-" + DD + " " + hh + ":" + mm + ":" + ss,
+                  YY + "-" + MM + "-" + DD + " " + hh + ":" + mm + ":" + ss,
                 );
                 nums++;
               }
@@ -346,7 +346,7 @@ const expressionChange = () => {
     resultList.value = resultArr;
     if (resultArr.length !== 5) {
       resultList.value.push(
-          i18n("item.onlyResultsAbove") +
+        i18n("item.onlyResultsAbove") +
           resultArr.length +
           i18n("item.resultCount"),
       );
@@ -558,17 +558,17 @@ const formatDate = (value: any, type: any) => {
   // 如果传递了type的话
   if (type == undefined) {
     return (
-        Y +
-        "-" +
-        (M < 10 ? "0" + M : M) +
-        "-" +
-        (D < 10 ? "0" + D : D) +
-        " " +
-        (h < 10 ? "0" + h : h) +
-        ":" +
-        (m < 10 ? "0" + m : m) +
-        ":" +
-        (s < 10 ? "0" + s : s)
+      Y +
+      "-" +
+      (M < 10 ? "0" + M : M) +
+      "-" +
+      (D < 10 ? "0" + D : D) +
+      " " +
+      (h < 10 ? "0" + h : h) +
+      ":" +
+      (m < 10 ? "0" + m : m) +
+      ":" +
+      (s < 10 ? "0" + s : s)
     );
   } else if (type == "week") {
     return week;
@@ -581,11 +581,11 @@ const checkDate = (value: any) => {
   return value == format;
 };
 watch(
-    () => props.ex,
-    () => {
-      expressionChange();
-    },
-    {immediate: true, deep: true},
+  () => props.ex,
+  () => {
+    expressionChange();
+  },
+  { immediate: true, deep: true },
 );
 onMounted(() => {
   expressionChange();
@@ -597,7 +597,7 @@ onMounted(() => {
     <div class="popup-result-scroll">
       <template v-if="isShow">
         <el-tag class="my-[5px]" v-for="item in resultList" :key="item"
-        >{{ item }}
+          >{{ item }}
         </el-tag>
       </template>
       <el-tag v-else>{{ i18n("cron.calculating") }}</el-tag>

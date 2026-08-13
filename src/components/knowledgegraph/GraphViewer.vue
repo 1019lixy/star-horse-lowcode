@@ -1,14 +1,14 @@
 <script setup lang="ts" name="GraphViewer">
-import {onMounted, ref, watch} from "vue";
-import {ElMessage} from "element-plus";
-import {i18n} from "@/lang";
-import {DesignerMobileShell} from "@/components/shared";
+import { onMounted, ref, watch } from "vue";
+import { ElMessage } from "element-plus";
+import { i18n } from "@/lang";
+import { DesignerMobileShell } from "@/components/shared";
 import GraphViewerToolbar from "./panels/GraphViewerToolbar.vue";
 import GraphViewerCanvas from "./panels/GraphViewerCanvas.vue";
 import GraphViewerDetailPanel from "./panels/GraphViewerDetailPanel.vue";
-import {useGraphViewer} from "./composables/useGraphViewer";
-import {useForceLayout} from "./composables/useForceLayout";
-import type {KgGraph} from "./types";
+import { useGraphViewer } from "./composables/useGraphViewer";
+import { useForceLayout } from "./composables/useForceLayout";
+import type { KgGraph } from "./types";
 
 const props = defineProps<{
   graph?: KgGraph;
@@ -20,30 +20,30 @@ const emit = defineEmits<{
   (e: "select-node", id: string | null): void;
 }>();
 
-const viewer = useGraphViewer(props.graph ? {...props.graph} : undefined);
+const viewer = useGraphViewer(props.graph ? { ...props.graph } : undefined);
 
 // 力布局需要响应式节点/边引用
 const nodesRef = viewer.state.graph.nodes;
 const edgesRef = viewer.state.graph.edges;
 const force = useForceLayout(
-    {value: nodesRef} as any,
-    {value: edgesRef} as any,
+  { value: nodesRef } as any,
+  { value: edgesRef } as any,
 );
 
 const canvasRef = ref<InstanceType<typeof GraphViewerCanvas>>();
 
 // 选中变化时通知父组件
 watch(
-    () => viewer.state.selectedNodeId,
-    (id) => emit("select-node", id),
+  () => viewer.state.selectedNodeId,
+  (id) => emit("select-node", id),
 );
 
 watch(
-    () => props.graph,
-    (g) => {
-      if (g) viewer.loadGraph(g);
-    },
-    {deep: false},
+  () => props.graph,
+  (g) => {
+    if (g) viewer.loadGraph(g);
+  },
+  { deep: false },
 );
 
 onMounted(() => {
@@ -91,57 +91,58 @@ defineExpose({
 
 /** 内联 SVG 图标（替代 Element Plus 图标，减少依赖） */
 const icons: Record<string, string> = {
-  right: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>'
+  right:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>',
 };
 </script>
 
 <template>
   <div class="kg-viewer">
     <DesignerMobileShell
-        :panels="[
+      :panels="[
         { key: 'detail', label: '详情', side: 'right', width: 320, min: 240 },
       ]"
-        canvas-label="图谱"
+      canvas-label="图谱"
     >
       <template #toolbar>
-        <graph-viewer-toolbar :viewer="viewer"/>
+        <graph-viewer-toolbar :viewer="viewer" />
       </template>
       <template #canvas>
         <div class="viewer-body">
           <!-- 路径查询条 -->
           <div class="path-bar">
-            <span class="path-label">{{ i18n("knowledgegraph.viewer.pathQuery") }}</span>
+            <span class="path-label">{{
+              i18n("knowledgegraph.viewer.pathQuery")
+            }}</span>
             <el-select
-                :model-value="pathFromId"
-                @update:model-value="setPathFrom"
-                :placeholder="i18n('knowledgegraph.viewer.pathFrom')"
-
-                filterable
-                clearable
-                style="width: 180px !important;"
+              :model-value="pathFromId"
+              @update:model-value="setPathFrom"
+              :placeholder="i18n('knowledgegraph.viewer.pathFrom')"
+              filterable
+              clearable
+              style="width: 180px !important"
             >
               <el-option
-                  v-for="n in viewer.state.graph.nodes"
-                  :key="n.id"
-                  :label="n.label"
-                  :value="n.id"
+                v-for="n in viewer.state.graph.nodes"
+                :key="n.id"
+                :label="n.label"
+                :value="n.id"
               />
             </el-select>
             <span class="svg-icon" v-html="icons.right"></span>
             <el-select
-                :model-value="pathToId"
-                @update:model-value="setPathTo"
-                :placeholder="i18n('knowledgegraph.viewer.pathTo')"
-
-                filterable
-                clearable
-                style="width: 180px !important;"
+              :model-value="pathToId"
+              @update:model-value="setPathTo"
+              :placeholder="i18n('knowledgegraph.viewer.pathTo')"
+              filterable
+              clearable
+              style="width: 180px !important"
             >
               <el-option
-                  v-for="n in viewer.state.graph.nodes"
-                  :key="n.id"
-                  :label="n.label"
-                  :value="n.id"
+                v-for="n in viewer.state.graph.nodes"
+                :key="n.id"
+                :label="n.label"
+                :value="n.id"
               />
             </el-select>
             <el-button type="primary" @click="runPathQuery">
@@ -149,31 +150,39 @@ const icons: Record<string, string> = {
             </el-button>
             <div v-if="viewer.state.pathNodeIds.length > 0" class="path-result">
               {{ i18n("knowledgegraph.viewer.pathResult") }}:
-              <span v-for="(id, idx) in viewer.state.pathNodeIds" :key="id" class="path-node">
-                        {{ idx > 0 ? " → " : "" }}{{ viewer.state.graph.nodes.find(n => n.id === id)?.label ?? id }}
-                    </span>
-              <span class="path-length"> ({{ viewer.state.pathNodeIds.length - 1 }})</span>
+              <span
+                v-for="(id, idx) in viewer.state.pathNodeIds"
+                :key="id"
+                class="path-node"
+              >
+                {{ idx > 0 ? " → " : ""
+                }}{{
+                  viewer.state.graph.nodes.find((n) => n.id === id)?.label ?? id
+                }}
+              </span>
+              <span class="path-length">
+                ({{ viewer.state.pathNodeIds.length - 1 }})</span
+              >
             </div>
           </div>
           <div class="canvas-area">
             <graph-viewer-canvas
-                ref="canvasRef"
-                :viewer="viewer"
-                :force="force"
+              ref="canvasRef"
+              :viewer="viewer"
+              :force="force"
             />
           </div>
         </div>
       </template>
       <template #panel-detail>
         <graph-viewer-detail-panel
-            :viewer="viewer"
-            @select-node="handleSelectFromDetail"
+          :viewer="viewer"
+          @select-node="handleSelectFromDetail"
         />
       </template>
     </DesignerMobileShell>
   </div>
 </template>
-
 
 <style lang="scss" scoped>
 .kg-viewer {

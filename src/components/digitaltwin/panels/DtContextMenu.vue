@@ -8,8 +8,8 @@
  *  - document click/contextmenu/Escape 关闭
  * 差异点：使用 ShSvgIcon 渲染图标
  */
-import {nextTick, onBeforeUnmount, onMounted, ref} from "vue";
-import {ShSvgIcon} from "@/components/shared";
+import { nextTick, onBeforeUnmount, onMounted, ref } from "vue";
+import { ShSvgIcon } from "@/components/shared";
 
 export interface DtContextMenuItem {
   label: string;
@@ -33,7 +33,7 @@ const emit = defineEmits<{
 }>();
 
 const menuRef = ref<HTMLElement>();
-const adjustedPos = ref({x: props.position.x, y: props.position.y});
+const adjustedPos = ref({ x: props.position.x, y: props.position.y });
 
 const handleAction = (item: DtContextMenuItem) => {
   if (item.disabled || !item.action) return;
@@ -82,23 +82,30 @@ const onEsc = (e: KeyboardEvent) => {
 <template>
   <Teleport to="body">
     <div
-        ref="menuRef"
-        class="dt-context-menu"
-        :style="{ left: adjustedPos.x + 'px', top: adjustedPos.y + 'px' }"
-        @click.stop
-        @contextmenu.prevent
+      ref="menuRef"
+      class="dt-context-menu"
+      :style="{ left: adjustedPos.x + 'px', top: adjustedPos.y + 'px' }"
+      @click.stop
+      @contextmenu.prevent
     >
       <template v-for="(item, i) in items" :key="i">
-        <div v-if="item.divider" class="ctx-divider"/>
+        <div v-if="item.divider" class="ctx-divider" />
         <div
-            v-else
-            class="ctx-item"
-            :class="{ 'ctx-danger': item.danger, 'ctx-disabled': item.disabled }"
-            @click="handleAction(item)"
+          v-else
+          class="ctx-item"
+          :class="{ 'ctx-danger': item.danger, 'ctx-disabled': item.disabled }"
+          @click="handleAction(item)"
         >
-          <ShSvgIcon v-if="item.icon" :name="item.icon" size="14px" class="ctx-icon"/>
+          <ShSvgIcon
+            v-if="item.icon"
+            :name="item.icon"
+            size="14px"
+            class="ctx-icon"
+          />
           <span class="ctx-label">{{ item.label }}</span>
-          <span v-if="item.shortcut" class="ctx-shortcut">{{ item.shortcut }}</span>
+          <span v-if="item.shortcut" class="ctx-shortcut">{{
+            item.shortcut
+          }}</span>
         </div>
       </template>
     </div>

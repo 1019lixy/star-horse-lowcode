@@ -1,33 +1,41 @@
 <script setup lang="ts" name="StarHorseItem">
-import {computed, inject, isRef, ModelRef, onMounted, ref} from "vue";
-import {compKey, dateCompList, fieldPlaceholder, inputCompList, uuid,} from "@/api/system";
+import { computed, inject, isRef, ModelRef, onMounted, ref } from "vue";
+import {
+  compKey,
+  dateCompList,
+  fieldPlaceholder,
+  inputCompList,
+  uuid,
+} from "@/api/system";
 
-import {checkVisible, filterProperties} from "@/api/form_utils";
+import { checkVisible, filterProperties } from "@/api/form_utils";
 import Help from "@/components/help.vue";
-import {getSelfOperationStore} from "@/store/StoreManager";
+import { getSelfOperationStore } from "@/store/StoreManager";
 
-const props = withDefaults(defineProps<{
-  item: any,
-  column?: any,
-  primaryKey?: string | number | Record<string, any>,
-  dataIndex?: number,
-  bareFlag?: boolean,
-  batchName?: string,
-  compSize?: string,
-  showLabel?: boolean,
-  source?: number,
-  commonFormat?: Function,
-  dialogType?: "dialog" | "drawer",
-}>(), {
-  dataIndex: -1,
-  bareFlag: false,
-  batchName: "",
-  compSize: "default",
-  showLabel: true,
-  source: 1,
-  commonFormat: () => {
-  }
-});
+const props = withDefaults(
+  defineProps<{
+    item: any;
+    column?: any;
+    primaryKey?: string | number | Record<string, any>;
+    dataIndex?: number;
+    bareFlag?: boolean;
+    batchName?: string;
+    compSize?: string;
+    showLabel?: boolean;
+    source?: number;
+    commonFormat?: Function;
+    dialogType?: "dialog" | "drawer";
+  }>(),
+  {
+    dataIndex: -1,
+    bareFlag: false,
+    batchName: "",
+    compSize: "default",
+    showLabel: true,
+    source: 1,
+    commonFormat: () => {},
+  },
+);
 const dataForm: ModelRef<any> = defineModel("dataForm");
 
 const itemType = computed(() => {
@@ -37,8 +45,8 @@ const itemType = computed(() => {
     //日期默认以时间戳赋值
   }
   type =
-      (dataForm.value && dataForm.value["_" + props.item.fieldName + "Type"]) ||
-      type;
+    (dataForm.value && dataForm.value["_" + props.item.fieldName + "Type"]) ||
+    type;
   // console.log("type", props.item);
   // console.log(type);
   return type;
@@ -56,9 +64,9 @@ const bareStyle = computed(() => ({
   minWidth: props.source == 4 ? "200px" : "unset",
   maxHeight: props.source == 4 ? "500px" : "unset",
   width:
-      props.source == 4
-          ? dragWidth.value || props.item.minWidth || "inherit"
-          : "100%",
+    props.source == 4
+      ? dragWidth.value || props.item.minWidth || "inherit"
+      : "100%",
   position: "relative" as const,
 }));
 /**
@@ -95,8 +103,8 @@ const fieldType = () => {
   const keys = Object.keys(props.item?.actions || {});
   if (props.source == 4) {
     const actionKey = inputCompList().includes(itemType.value)
-        ? "keyup.enter"
-        : "change";
+      ? "keyup.enter"
+      : "change";
     if (!keys.includes(actionKey)) {
       props.item.actions[actionKey] = actionKey;
     }
@@ -143,7 +151,9 @@ const compPreps = () => {
     let fieldName = props.item.fieldName;
     // 兼容 formFields 为 ref(shallowRef) 的情况,统一取 .value 操作
     // formFields.value 可能为 null/undefined(初始化未完成),此时跳过注册
-    const formFieldsArr: any = isRef(formFields) ? formFields.value : formFields;
+    const formFieldsArr: any = isRef(formFields)
+      ? formFields.value
+      : formFields;
     if (!Array.isArray(formFieldsArr)) return;
     //如果数据来源于列表
     if (props.batchName) {
@@ -214,46 +224,46 @@ onMounted(() => {
 </script>
 <template>
   <div
-      :class="checkClassName()"
-      :style="bareStyle"
-      @mousemove="onDrag"
-      @mouseup="stopDrag"
-      @mouseleave="stopDrag"
+    :class="checkClassName()"
+    :style="bareStyle"
+    @mousemove="onDrag"
+    @mouseup="stopDrag"
+    @mouseleave="stopDrag"
   >
     <div
-        class="drag-handle"
-        @mousedown.prevent="startDrag"
-        v-if="itemType != 'button' && item.fieldName && source == 4"
+      class="drag-handle"
+      @mousedown.prevent="startDrag"
+      v-if="itemType != 'button' && item.fieldName && source == 4"
     ></div>
-    <help :message="item.helpMsg" v-if="item.helpMsg"/>
+    <help :message="item.helpMsg" v-if="item.helpMsg" />
     <component
-        :key="item.id"
-        :is="itemType + '-item'"
-        :formInfo="formFields"
-        @selfFunc="actionDispatcher"
-        ref="componentRef"
-        :isSearch="source == 4"
-        :bareFlag="bareFlag"
-        :dialogType="dialogType"
-        :source="source"
-        :field="item"
-        v-model:formData="dataForm"
+      :key="item.id"
+      :is="itemType + '-item'"
+      :formInfo="formFields"
+      @selfFunc="actionDispatcher"
+      ref="componentRef"
+      :isSearch="source == 4"
+      :bareFlag="bareFlag"
+      :dialogType="dialogType"
+      :source="source"
+      :field="item"
+      v-model:formData="dataForm"
     />
-    <div v-if="item.brotherNodes" style="width: 15px"/>
+    <div v-if="item.brotherNodes" style="width: 15px" />
     <template
-        v-for="(temp, key) in item.brotherNodes"
-        :key="compKey(temp, key)"
+      v-for="(temp, key) in item.brotherNodes"
+      :key="compKey(temp, key)"
     >
       <star-horse-item
-          v-if="checkVisible(temp, dataForm)"
-          :primaryKey="primaryKey"
-          :compSize="compSize"
-          :dialogType="dialogType"
-          v-model:dataForm="dataForm"
-          :item="temp"
-          :dataIndex="dataIndex"
-          :bareFlag="true"
-          :source="source"
+        v-if="checkVisible(temp, dataForm)"
+        :primaryKey="primaryKey"
+        :compSize="compSize"
+        :dialogType="dialogType"
+        v-model:dataForm="dataForm"
+        :item="temp"
+        :dataIndex="dataIndex"
+        :bareFlag="true"
+        :source="source"
       />
     </template>
   </div>

@@ -1,23 +1,23 @@
 <script setup lang="ts" name="PdfSigner">
-import {computed, onBeforeUnmount, ref} from "vue";
-import {ElMessage} from "element-plus";
-import {i18n} from "@/lang";
-import {usePdfSigner} from "./composables/usePdfSigner";
-import type {PdfSignatureInfo} from "./types";
-import {StarHorsePanel} from "@/components/comp";
+import { computed, onBeforeUnmount, ref } from "vue";
+import { ElMessage } from "element-plus";
+import { i18n } from "@/lang";
+import { usePdfSigner } from "./composables/usePdfSigner";
+import type { PdfSignatureInfo } from "./types";
+import { StarHorsePanel } from "@/components/comp";
 
 const props = defineProps<{
   sourceUrl?: string;
   signatures?: PdfSignatureInfo[];
   readonly?: boolean;
-  dialogType?:"dialog"|"drawer";
+  dialogType?: "dialog" | "drawer";
 }>();
 
 const emits = defineEmits<{
   (e: "save", signatures: PdfSignatureInfo[]): void;
 }>();
 
-const signer = usePdfSigner({signatures: props.signatures});
+const signer = usePdfSigner({ signatures: props.signatures });
 
 /** 签名采集弹窗 */
 const signDialogVisible = ref(false);
@@ -193,19 +193,18 @@ onBeforeUnmount(() => {
   <div class="pdf-signer">
     <div class="signer-toolbar">
       <el-button
-
-          type="primary"
-          :disabled="readonly"
-          @click="handleOpenSignDialog"
+        type="primary"
+        :disabled="readonly"
+        @click="handleOpenSignDialog"
       >
         <el-icon>
-          <EditPen/>
+          <EditPen />
         </el-icon>
         {{ i18n("pdf.signer.addSignature") }}
       </el-button>
       <el-button type="success" :disabled="readonly" @click="handleSave">
         <el-icon>
-          <Check/>
+          <Check />
         </el-icon>
         {{ i18n("dialog.save") }}
       </el-button>
@@ -213,40 +212,45 @@ onBeforeUnmount(() => {
 
     <div class="signer-content">
       <div class="source-preview" v-if="sourceUrl">
-        <iframe :src="sourceUrl" class="preview-iframe"/>
+        <iframe :src="sourceUrl" class="preview-iframe" />
       </div>
       <div class="source-empty" v-else>
-        <el-empty :description="i18n('pdf.signer.sourceEmpty')"/>
+        <el-empty :description="i18n('pdf.signer.sourceEmpty')" />
       </div>
 
       <!-- 签名列表覆盖层 -->
       <div class="signatures-overlay">
         <div
-            v-for="sig in signer.signatures"
-            :key="sig.id"
-            class="signature-item"
-            :style="{
-                        left: `${sig.x}px`,
-                        top: `${sig.y}px`,
-                        width: `${sig.width}px`,
-                        height: `${sig.height}px`
-                    }"
-            @click="signer.selectSignature(sig.id)"
+          v-for="sig in signer.signatures"
+          :key="sig.id"
+          class="signature-item"
+          :style="{
+            left: `${sig.x}px`,
+            top: `${sig.y}px`,
+            width: `${sig.width}px`,
+            height: `${sig.height}px`,
+          }"
+          @click="signer.selectSignature(sig.id)"
         >
-          <img v-if="sig.imageDataUrl" :src="sig.imageDataUrl" class="signature-image"/>
+          <img
+            v-if="sig.imageDataUrl"
+            :src="sig.imageDataUrl"
+            class="signature-image"
+          />
           <div class="signature-meta">
             <span class="signer-name">{{ sig.signer }}</span>
-            <span class="signed-at">{{ sig.signedAt?.slice(0, 19).replace("T", " ") }}</span>
+            <span class="signed-at">{{
+              sig.signedAt?.slice(0, 19).replace("T", " ")
+            }}</span>
           </div>
           <el-button
-              v-if="!readonly"
-
-              text
-              class="remove-btn"
-              @click.stop="handleRemove(sig.id)"
+            v-if="!readonly"
+            text
+            class="remove-btn"
+            @click.stop="handleRemove(sig.id)"
           >
             <el-icon>
-              <Close/>
+              <Close />
             </el-icon>
           </el-button>
         </div>
@@ -255,38 +259,38 @@ onBeforeUnmount(() => {
 
     <!-- 签名采集弹窗 -->
     <star-horse-panel
-        :type="dialogType"
-        v-model="innerSignDialogVisible"
-        :title="i18n('pdf.signer.dialog.title')"
-        box-width="600px"
-        :self-func="true"
-        @merge="handleConfirmSign"
+      :type="dialogType"
+      v-model="innerSignDialogVisible"
+      :title="i18n('pdf.signer.dialog.title')"
+      box-width="600px"
+      :self-func="true"
+      @merge="handleConfirmSign"
     >
       <div class="sign-dialog-content">
         <div class="canvas-toolbar">
           <span class="label">{{ i18n("pdf.signer.penColor") }}:</span>
-          <el-color-picker v-model="signer.penColor.value"/>
+          <el-color-picker v-model="signer.penColor.value" />
           <span class="label">{{ i18n("pdf.signer.penWidth") }}:</span>
-          <el-input-number v-model="signer.penWidth.value" :min="1" :max="10"/>
+          <el-input-number v-model="signer.penWidth.value" :min="1" :max="10" />
           <el-button @click="handleClear">
             <el-icon>
-              <Delete/>
+              <Delete />
             </el-icon>
             {{ i18n("pdf.signer.clear") }}
           </el-button>
         </div>
         <canvas
-            ref="canvasRef"
-            width="500"
-            height="240"
-            class="sign-canvas"
-            @mousedown="handleMouseDown"
-            @mousemove="handleMouseMove"
-            @mouseup="handleMouseUp"
-            @mouseleave="handleMouseUp"
-            @touchstart="handleTouchStart"
-            @touchmove="handleTouchMove"
-            @touchend="handleMouseUp"
+          ref="canvasRef"
+          width="500"
+          height="240"
+          class="sign-canvas"
+          @mousedown="handleMouseDown"
+          @mousemove="handleMouseMove"
+          @mouseup="handleMouseUp"
+          @mouseleave="handleMouseUp"
+          @touchstart="handleTouchStart"
+          @touchmove="handleTouchMove"
+          @touchend="handleMouseUp"
         />
         <div class="sign-tip">{{ i18n("pdf.signer.tip") }}</div>
       </div>
@@ -295,9 +299,9 @@ onBeforeUnmount(() => {
 </template>
 
 <script lang="ts">
-import {EditPen, Check, Close, Delete} from "@element-plus/icons-vue";
+import { EditPen, Check, Close, Delete } from "@element-plus/icons-vue";
 
-export default {components: {EditPen, Check, Close, Delete}};
+export default { components: { EditPen, Check, Close, Delete } };
 </script>
 
 <style lang="scss" scoped>
@@ -380,7 +384,7 @@ export default {components: {EditPen, Check, Close, Delete}};
           top: -10px;
           right: -10px;
           background: var(--el-color-danger);
-          color: #FFFFFF;
+          color: #ffffff;
           border-radius: 50%;
           padding: 2px;
         }
@@ -409,7 +413,7 @@ export default {components: {EditPen, Check, Close, Delete}};
     border: 1px solid var(--el-border-color);
     border-radius: 4px;
     cursor: crosshair;
-    background: #FFFFFF;
+    background: #ffffff;
   }
 
   .sign-tip {

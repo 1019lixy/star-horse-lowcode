@@ -1,22 +1,25 @@
 <script setup lang="ts" name="MapField">
-import {computed, onBeforeUnmount, onMounted, ref, watch} from "vue";
-import {i18n} from "@/lang";
-import {ShSvgIcon} from "@/components/shared";
-import {formatLngLat, parseLngLat} from "./constants";
-import type {MapBounds} from "./types";
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { i18n } from "@/lang";
+import { ShSvgIcon } from "@/components/shared";
+import { formatLngLat, parseLngLat } from "./constants";
+import type { MapBounds } from "./types";
 
-const props = withDefaults(defineProps<{
-  modelValue?: string;
-  bounds?: MapBounds;
-  readonly?: boolean;
-  height?: number;
-  placeholder?: string;
-  /** 高德地图 JS API Key（必传） */
-  amapKey?: string;
-}>(), {
-  height: 400,
-  amapKey: "",
-});
+const props = withDefaults(
+  defineProps<{
+    modelValue?: string;
+    bounds?: MapBounds;
+    readonly?: boolean;
+    height?: number;
+    placeholder?: string;
+    /** 高德地图 JS API Key（必传） */
+    amapKey?: string;
+  }>(),
+  {
+    height: 400,
+    amapKey: "",
+  },
+);
 
 const emits = defineEmits<{
   (e: "update:modelValue", v: string): void;
@@ -65,8 +68,8 @@ const initMap = async () => {
     if (!containerRef.value) return;
 
     const center = parsedValue.value
-        ? [parsedValue.value.lng, parsedValue.value.lat]
-        : [116.397, 39.908];
+      ? [parsedValue.value.lng, parsedValue.value.lat]
+      : [116.397, 39.908];
 
     mapInstance.value = new AMap.Map(containerRef.value, {
       zoom: 13,
@@ -183,13 +186,13 @@ const handleLocate = () => {
 
 /** modelValue 变化同步 */
 watch(
-    () => props.modelValue,
-    (v) => {
-      if (v && mapInstance.value) {
-        const parsed = parseLngLat(v);
-        if (parsed) addMarker(parsed.lng, parsed.lat);
-      }
-    },
+  () => props.modelValue,
+  (v) => {
+    if (v && mapInstance.value) {
+      const parsed = parseLngLat(v);
+      if (parsed) addMarker(parsed.lng, parsed.lat);
+    }
+  },
 );
 
 onMounted(() => {
@@ -208,10 +211,10 @@ onBeforeUnmount(() => {
   <div class="map-field">
     <div class="field-header">
       <el-input
-          :model-value="modelValue"
-          :placeholder="placeholder || i18n('map.field.placeholder')"
-          :readonly="true"
-          class="coord-input"
+        :model-value="modelValue"
+        :placeholder="placeholder || i18n('map.field.placeholder')"
+        :readonly="true"
+        class="coord-input"
       >
         <template #prepend>
           <span class="coord-label">{{ i18n("map.field.lngLat") }}</span>
@@ -219,25 +222,25 @@ onBeforeUnmount(() => {
       </el-input>
       <!-- 地址搜索 -->
       <el-input
-          v-if="!readonly && mapLoaded"
-          v-model="searchInput"
-          :placeholder="i18n('map.field.searchPlaceholder')"
-          class="search-input"
-          @keydown.enter="handleSearch"
+        v-if="!readonly && mapLoaded"
+        v-model="searchInput"
+        :placeholder="i18n('map.field.searchPlaceholder')"
+        class="search-input"
+        @keydown.enter="handleSearch"
       >
         <template #append>
           <el-button @click="handleSearch">
-            <ShSvgIcon name="search" size="14px"/>
+            <ShSvgIcon name="search" size="14px" />
           </el-button>
         </template>
       </el-input>
       <div class="field-actions" v-if="!readonly">
         <el-button @click="handleLocate" :disabled="!parsedValue">
-          <ShSvgIcon name="preview" size="14px"/>
+          <ShSvgIcon name="preview" size="14px" />
           {{ i18n("map.field.locate") }}
         </el-button>
         <el-button :disabled="!parsedValue" @click="handleClear">
-          <ShSvgIcon name="delete" size="14px"/>
+          <ShSvgIcon name="delete" size="14px" />
         </el-button>
       </div>
     </div>
@@ -245,10 +248,10 @@ onBeforeUnmount(() => {
     <!-- 搜索结果下拉 -->
     <div v-if="showSearch && searchResults.length > 0" class="search-results">
       <div
-          v-for="poi in searchResults"
-          :key="poi.id"
-          class="search-item"
-          @click="handleSelectPlace(poi)"
+        v-for="poi in searchResults"
+        :key="poi.id"
+        class="search-item"
+        @click="handleSelectPlace(poi)"
       >
         <span class="poi-name">{{ poi.name }}</span>
         <span class="poi-address">{{ poi.address }}</span>
@@ -258,11 +261,11 @@ onBeforeUnmount(() => {
     <!-- 地图容器 -->
     <div class="field-map" :style="{ height: `${height}px` }">
       <div v-if="mapError" class="map-error">
-        <ShSvgIcon name="alarm" size="24px"/>
+        <ShSvgIcon name="alarm" size="24px" />
         <span>{{ mapError }}</span>
         <span class="error-hint">{{ i18n("map.field.amapKeyRequired") }}</span>
       </div>
-      <div v-else ref="containerRef" class="amap-container"/>
+      <div v-else ref="containerRef" class="amap-container" />
     </div>
   </div>
 </template>

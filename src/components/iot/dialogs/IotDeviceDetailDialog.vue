@@ -1,6 +1,6 @@
 <script setup lang="ts" name="IotDeviceDetailDialog">
-import {computed} from "vue";
-import {i18n} from "@/lang";
+import { computed } from "vue";
+import { i18n } from "@/lang";
 import {
   ALARM_LEVEL_COLORS,
   ALARM_LEVEL_LABELS,
@@ -8,15 +8,15 @@ import {
   IOT_STATUS_COLORS,
   STATUS_LABELS,
 } from "../constants";
-import type {IotAlarm, IotDevice} from "../types";
-import {StarHorsePanel} from "@/components/comp";
+import type { IotAlarm, IotDevice } from "../types";
+import { StarHorsePanel } from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
   device: IotDevice | null;
   /** 该设备的最近告警（可选，由外部传入） */
   alarms?: IotAlarm[];
-  dialogType?:"dialog"|"drawer";
+  dialogType?: "dialog" | "drawer";
 }>();
 
 const emit = defineEmits<{
@@ -30,12 +30,14 @@ const innerVisible = computed({
 
 /** 设备类型标签 */
 const typeLabel = computed(() =>
-    props.device ? findDevicePreset(props.device.type)?.label ?? props.device.type : "",
+  props.device
+    ? (findDevicePreset(props.device.type)?.label ?? props.device.type)
+    : "",
 );
 
 /** 状态标签与颜色 */
 const statusInfo = computed(() => {
-  if (!props.device) return {label: "", color: "#909399"};
+  if (!props.device) return { label: "", color: "#909399" };
   return {
     label: STATUS_LABELS[props.device.status] ?? props.device.status,
     color: IOT_STATUS_COLORS[props.device.status] ?? "#909399",
@@ -79,14 +81,14 @@ const relativeTime = (ts: number): string => {
 
 <template>
   <star-horse-panel
-      :type="dialogType"
-      v-model="innerVisible"
-      :title="i18n('iot.btn.detail')"
-      box-width="60%"
-      box-height="70%"
-      :is-show-reset="false"
-      :is-show-save="false"
-      :self-func="true"
+    :type="dialogType"
+    v-model="innerVisible"
+    :title="i18n('iot.btn.detail')"
+    box-width="60%"
+    box-height="70%"
+    :is-show-reset="false"
+    :is-show-save="false"
+    :self-func="true"
   >
     <div class="iot-device-detail">
       <template v-if="device">
@@ -101,7 +103,12 @@ const relativeTime = (ts: number): string => {
               {{ typeLabel }}
             </el-descriptions-item>
             <el-descriptions-item :label="i18n('iot.device.status')">
-              <el-tag :style="{ color: statusInfo.color, borderColor: statusInfo.color }">
+              <el-tag
+                :style="{
+                  color: statusInfo.color,
+                  borderColor: statusInfo.color,
+                }"
+              >
                 {{ statusInfo.label }}
               </el-tag>
             </el-descriptions-item>
@@ -109,7 +116,9 @@ const relativeTime = (ts: number): string => {
               {{ device.location || "-" }}
             </el-descriptions-item>
             <el-descriptions-item :label="i18n('iot.device.lastSeen')">
-              {{ formatTime(device.lastSeen) }} ({{ relativeTime(device.lastSeen) }})
+              {{ formatTime(device.lastSeen) }} ({{
+                relativeTime(device.lastSeen)
+              }})
             </el-descriptions-item>
             <el-descriptions-item label="ID">
               {{ device.id }}
@@ -120,8 +129,8 @@ const relativeTime = (ts: number): string => {
         <div class="section">
           <div class="section-title">{{ i18n("iot.device.properties") }}</div>
           <el-table :data="propertyRows" border max-height="160">
-            <el-table-column prop="key" label="Key" min-width="120"/>
-            <el-table-column prop="value" label="Value" min-width="160"/>
+            <el-table-column prop="key" label="Key" min-width="120" />
+            <el-table-column prop="value" label="Value" min-width="160" />
           </el-table>
         </div>
         <!-- 实时指标 -->
@@ -131,11 +140,7 @@ const relativeTime = (ts: number): string => {
             {{ i18n("iot.chart.noData") }}
           </div>
           <div v-else class="metric-grid">
-            <div
-                v-for="m in metricRows"
-                :key="m.name"
-                class="metric-card"
-            >
+            <div v-for="m in metricRows" :key="m.name" class="metric-card">
               <div class="metric-name">{{ m.name }}</div>
               <div class="metric-value">
                 {{ m.value }}<span class="metric-unit">{{ m.unit }}</span>
@@ -154,16 +159,28 @@ const relativeTime = (ts: number): string => {
             <el-table-column :label="i18n('iot.alarm.level')" width="90">
               <template #default="{ row }">
                 <el-tag
-
-                    :style="{ color: ALARM_LEVEL_COLORS[row.level], borderColor: ALARM_LEVEL_COLORS[row.level] }"
+                  :style="{
+                    color: ALARM_LEVEL_COLORS[row.level],
+                    borderColor: ALARM_LEVEL_COLORS[row.level],
+                  }"
                 >
-                  {{ ALARM_LEVEL_LABELS[row.level as keyof typeof ALARM_LEVEL_LABELS] }}
+                  {{
+                    ALARM_LEVEL_LABELS[
+                      row.level as keyof typeof ALARM_LEVEL_LABELS
+                    ]
+                  }}
                 </el-tag>
               </template>
             </el-table-column>
-            <el-table-column prop="message" :label="i18n('iot.alarm.message')" min-width="200"/>
+            <el-table-column
+              prop="message"
+              :label="i18n('iot.alarm.message')"
+              min-width="200"
+            />
             <el-table-column :label="i18n('iot.alarm.time')" width="160">
-              <template #default="{ row }">{{ formatTime(row.timestamp) }}</template>
+              <template #default="{ row }">{{
+                formatTime(row.timestamp)
+              }}</template>
             </el-table-column>
             <el-table-column :label="i18n('iot.alarm.resolve')" width="80">
               <template #default="{ row }">
@@ -181,13 +198,15 @@ const relativeTime = (ts: number): string => {
       <div v-else class="empty-cell">{{ i18n("iot.message.noDevices") }}</div>
     </div>
     <template #footer>
-      <el-button @click="innerVisible = false">{{ i18n("dialog.close") }}</el-button>
+      <el-button @click="innerVisible = false">{{
+        i18n("dialog.close")
+      }}</el-button>
     </template>
   </star-horse-panel>
 </template>
 
 <script lang="ts">
-export default {name: "IotDeviceDetailDialog"};
+export default { name: "IotDeviceDetailDialog" };
 </script>
 
 <style lang="scss" scoped>

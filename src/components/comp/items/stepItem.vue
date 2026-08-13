@@ -1,11 +1,16 @@
 <script setup lang="ts">
-import {compKey} from "@/api/system";
+import { compKey } from "@/api/system";
 import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
-import {ContainerPreps} from "@/components/types/ItemPreps";
-import {computed, inject, ModelRef, onMounted, ref, watch} from "vue";
-import {collectFieldProps, getDataIndex, getFormData, getPrefix} from "@/api/form_utils";
-import {i18n} from "@/lang";
-import {warning} from "@/utils/message";
+import { ContainerPreps } from "@/components/types/ItemPreps";
+import { computed, inject, ModelRef, onMounted, ref, watch } from "vue";
+import {
+  collectFieldProps,
+  getDataIndex,
+  getFormData,
+  getPrefix,
+} from "@/api/form_utils";
+import { i18n } from "@/lang";
+import { warning } from "@/utils/message";
 
 const props = withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
@@ -15,7 +20,7 @@ const props = withDefaults(defineProps<ContainerPreps>(), {
   parentPreps: {},
   subFormFlag: "N",
   batchName: "batchDataList",
-  batchFieldName: "batchFieldList",
+
   compSize: "default",
   source: 1,
 });
@@ -62,11 +67,16 @@ const stepStyle = computed(() => props.item?.preps?.stepStyle || "steps");
 // 是否每步必须完成才能进入下一步（默认开启，设为 "N" 可关闭；source=3 查看模式自动关闭）
 const mustCompleteStep = computed(() => {
   if (props.source == 3) return false;
-  return (props.item?.preps?.mustCompleteStep ?? props.item?.mustCompleteStep) !== "N";
+  return (
+    (props.item?.preps?.mustCompleteStep ?? props.item?.mustCompleteStep) !==
+    "N"
+  );
 });
 
 // 步骤条方向
-const stepDirection = computed(() => props.item?.preps?.direction || "horizontal");
+const stepDirection = computed(
+  () => props.item?.preps?.direction || "horizontal",
+);
 
 // 是否显示步骤条：pager 风格强制隐藏
 const showStepBar = computed(() => {
@@ -75,16 +85,22 @@ const showStepBar = computed(() => {
 });
 
 // 是否显示导航按钮
-const showNavButtons = computed(() => props.item?.preps?.showNavButtons !== "N");
+const showNavButtons = computed(
+  () => props.item?.preps?.showNavButtons !== "N",
+);
 
 // 简洁模式
 const stepSimple = computed(() => props.item?.preps?.simple === "Y");
 
 // 完成状态
-const finishStatus = computed(() => props.item?.preps?.finishStatus || "finish");
+const finishStatus = computed(
+  () => props.item?.preps?.finishStatus || "finish",
+);
 
 // 进行中状态
-const processStatus = computed(() => props.item?.preps?.processStatus || "process");
+const processStatus = computed(
+  () => props.item?.preps?.processStatus || "process",
+);
 
 // 居中对齐
 const alignCenter = computed(() => props.item?.preps?.alignCenter === "Y");
@@ -105,7 +121,12 @@ const validateStep = async (stepIndex: number): Promise<boolean> => {
   if (!step) return true;
   const formRef = starHorseFormRef.value;
   if (!formRef?.validateField) return true;
-  const stepPrefix = getPrefix(step, props.propPrefix, props.dataIndex, stepIndex);
+  const stepPrefix = getPrefix(
+    step,
+    props.propPrefix,
+    props.dataIndex,
+    stepIndex,
+  );
   const fieldProps = collectFieldProps(step.fieldList || [], stepPrefix);
   if (!fieldProps.length) return true;
   try {
@@ -122,7 +143,12 @@ const clearStepValidate = (stepIndex: number) => {
   if (!step) return;
   const formRef = starHorseFormRef.value;
   if (!formRef?.clearValidate) return;
-  const stepPrefix = getPrefix(step, props.propPrefix, props.dataIndex, stepIndex);
+  const stepPrefix = getPrefix(
+    step,
+    props.propPrefix,
+    props.dataIndex,
+    stepIndex,
+  );
   const fieldProps = collectFieldProps(step.fieldList || [], stepPrefix);
   if (fieldProps.length) formRef.clearValidate(fieldProps);
 };
@@ -138,7 +164,10 @@ const goPrev = () => {
 const goNext = async () => {
   if (activeStepIndex.value >= stepList.value.length - 1) {
     // 已是最后一步：校验通过则标记全部完成
-    if (mustCompleteStep.value && !(await validateStep(activeStepIndex.value))) {
+    if (
+      mustCompleteStep.value &&
+      !(await validateStep(activeStepIndex.value))
+    ) {
       stepValidationState.value[activeStepIndex.value] = "invalid";
       warning(i18n("dyform.step.stepIncomplete"));
       return;
@@ -203,66 +232,105 @@ watch(activeStepIndex, (idx) => {
   <div v-if="stepList.length > 0" class="step-item-wrapper">
     <!-- 自定义专业步骤条 -->
     <div
-        v-if="showStepBar"
-        class="sh-step-bar"
-        :class="[
-          `sh-step-bar--${stepDirection}`,
-          { 'sh-step-bar--simple': stepSimple, 'sh-step-bar--align-center': alignCenter }
-        ]"
+      v-if="showStepBar"
+      class="sh-step-bar"
+      :class="[
+        `sh-step-bar--${stepDirection}`,
+        {
+          'sh-step-bar--simple': stepSimple,
+          'sh-step-bar--align-center': alignCenter,
+        },
+      ]"
     >
       <div
-          v-for="(stepItem, idx) in stepList"
-          :key="compKey(stepItem, idx)"
-          class="sh-step-item"
-          :class="[`sh-step-item--${getStepStatus(Number(idx))}`]"
-          @click="handleStepClick(Number(idx))"
+        v-for="(stepItem, idx) in stepList"
+        :key="compKey(stepItem, idx)"
+        class="sh-step-item"
+        :class="[`sh-step-item--${getStepStatus(Number(idx))}`]"
+        @click="handleStepClick(Number(idx))"
       >
         <div class="sh-step-indicator">
           <div class="sh-step-circle">
-            <span v-if="getStepStatus(Number(idx)) === 'finish' || getStepStatus(Number(idx)) === 'success'"
-                  class="sh-step-icon">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3"
-                   stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="20 6 9 17 4 12"/>
+            <span
+              v-if="
+                getStepStatus(Number(idx)) === 'finish' ||
+                getStepStatus(Number(idx)) === 'success'
+              "
+              class="sh-step-icon"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="20"
+                height="20"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="20 6 9 17 4 12" />
               </svg>
             </span>
-            <span v-else-if="getStepStatus(Number(idx)) === 'error'" class="sh-step-icon">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3"
-                   stroke-linecap="round" stroke-linejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18"/>
-                <line x1="6" y1="6" x2="18" y2="18"/>
+            <span
+              v-else-if="getStepStatus(Number(idx)) === 'error'"
+              class="sh-step-icon"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="20"
+                height="20"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
               </svg>
             </span>
             <span v-else class="sh-step-number">{{ Number(idx) + 1 }}</span>
           </div>
-          <span v-if="getStepStatus(Number(idx)) === 'process'" class="sh-step-pulse"></span>
+          <span
+            v-if="getStepStatus(Number(idx)) === 'process'"
+            class="sh-step-pulse"
+          ></span>
         </div>
         <div class="sh-step-content">
-          <span class="sh-step-title">{{ stepItem.title || stepItem.label }}</span>
-          <span class="sh-step-index">{{ Number(idx) + 1 }} / {{ stepList.length }}</span>
+          <span class="sh-step-title">{{
+            stepItem.title || stepItem.label
+          }}</span>
+          <span class="sh-step-index"
+            >{{ Number(idx) + 1 }} / {{ stepList.length }}</span
+          >
         </div>
       </div>
     </div>
 
     <!-- 步骤内容区域 -->
     <div class="step-content-wrapper">
-      <template v-for="(stepItem, idx) in stepList" :key="compKey(stepItem, idx)">
+      <template
+        v-for="(stepItem, idx) in stepList"
+        :key="compKey(stepItem, idx)"
+      >
         <div v-show="Number(idx) === activeStepIndex" class="step-pane">
           <star-horse-form-item
-              :source="source"
-              :compUrl="compUrl"
-              :compSize="compSize"
-              :commonFormat="commonFormat"
-              :dataForm="getFormData(stepItem, dataForm, propPrefix, dataIndex, idx)"
-              :dataIndex="getDataIndex(stepItem, propPrefix, dataIndex, idx)"
-              :propPrefix="getPrefix(stepItem, propPrefix, dataIndex, idx)"
-              :objectName="stepItem.objectName"
-              @addRow="addRow"
-              @removeRow="removeRow"
-              :fieldList="stepItem"
-              :rules="rules"
-              :subFormFlag="sameForm ? 'N' : 'Y'"
-              :primaryKey="primaryKey"
+            :source="source"
+            :compUrl="compUrl"
+            :compSize="compSize"
+            :commonFormat="commonFormat"
+            :dataForm="
+              getFormData(stepItem, dataForm, propPrefix, dataIndex, idx)
+            "
+            :dataIndex="getDataIndex(stepItem, propPrefix, dataIndex, idx)"
+            :propPrefix="getPrefix(stepItem, propPrefix, dataIndex, idx)"
+            :objectName="stepItem.objectName"
+            @addRow="addRow"
+            @removeRow="removeRow"
+            :fieldList="stepItem"
+            :rules="rules"
+            :subFormFlag="sameForm ? 'N' : 'Y'"
+            :primaryKey="primaryKey"
           />
         </div>
       </template>
@@ -270,27 +338,25 @@ watch(activeStepIndex, (idx) => {
 
     <!-- 导航按钮：首尾页隐藏对应按钮 -->
     <div v-if="showNavButtons" class="step-nav-bar">
-      <el-button
-          v-if="activeStepIndex > 0"
-          size="default"
-          @click="goPrev"
-      >
+      <el-button v-if="activeStepIndex > 0" size="default" @click="goPrev">
         {{ i18n("dyform.step.prev") }}
       </el-button>
-      <span class="step-indicator">{{ activeStepIndex + 1 }} / {{ stepList.length }}</span>
+      <span class="step-indicator"
+        >{{ activeStepIndex + 1 }} / {{ stepList.length }}</span
+      >
       <el-button
-          v-if="activeStepIndex < stepList.length - 1"
-          size="default"
-          type="primary"
-          @click="goNext"
+        v-if="activeStepIndex < stepList.length - 1"
+        size="default"
+        type="primary"
+        @click="goNext"
       >
         {{ i18n("dyform.step.next") }}
       </el-button>
       <el-button
-          v-if="activeStepIndex === stepList.length - 1"
-          size="default"
-          type="success"
-          @click="goNext"
+        v-if="activeStepIndex === stepList.length - 1"
+        size="default"
+        type="success"
+        @click="goNext"
       >
         {{ i18n("dyform.step.complete") }}
       </el-button>

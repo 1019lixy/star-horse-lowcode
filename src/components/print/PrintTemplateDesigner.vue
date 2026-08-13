@@ -14,8 +14,8 @@
  *     @preview="onPreview"
  *   />
  */
-import {computed, ref} from "vue";
-import {usePrintDesigner} from "./composables/usePrintDesigner";
+import { computed, ref } from "vue";
+import { usePrintDesigner } from "./composables/usePrintDesigner";
 import PrintToolbar from "./panels/PrintToolbar.vue";
 import PrintElementPanel from "./panels/PrintElementPanel.vue";
 import PrintCanvas from "./panels/PrintCanvas.vue";
@@ -24,8 +24,8 @@ import PrintLayerPanel from "./panels/PrintLayerPanel.vue";
 import PrintPreviewDialog from "./dialogs/PrintPreviewDialog.vue";
 import PrintDataSourceDialog from "./dialogs/PrintDataSourceDialog.vue";
 import PrintTemplateManagerDialog from "./dialogs/PrintTemplateManagerDialog.vue";
-import {DesignerMobileShell} from "@/components/shared";
-import type {PrintTemplate} from "./types";
+import { DesignerMobileShell } from "@/components/shared";
+import type { PrintTemplate } from "./types";
 
 const props = defineProps<{
   /** 双向绑定模板 */
@@ -127,64 +127,64 @@ const savedTemplatesList = computed(() => props.savedTemplates || []);
 <template>
   <div class="print-template-designer" :class="{ readonly }">
     <DesignerMobileShell
-        :panels="[
-                { key: 'elements', label: '元素', side: 'left', width: 200, min: 160 },
-                { key: 'props', label: '属性', side: 'right', width: 280, min: 220 },
-                { key: 'layers', label: '图层', side: 'right', width: 240 },
-            ]"
+      :panels="[
+        { key: 'elements', label: '元素', side: 'left', width: 200, min: 160 },
+        { key: 'props', label: '属性', side: 'right', width: 280, min: 220 },
+        { key: 'layers', label: '图层', side: 'right', width: 240 },
+      ]"
     >
       <template #toolbar>
         <print-toolbar
-            :designer="designer"
-            :readonly="readonly"
-            @save="handleSave"
-            @preview="handlePreview"
-            @datasource="handleDatasource"
-            @manage="handleManage"
+          :designer="designer"
+          :readonly="readonly"
+          @save="handleSave"
+          @preview="handlePreview"
+          @datasource="handleDatasource"
+          @manage="handleManage"
         />
       </template>
       <template #canvas>
-        <print-canvas :designer="designer"/>
+        <print-canvas :designer="designer" />
       </template>
       <template #panel-elements>
         <print-element-panel
-            :readonly="readonly"
-            @add="handleAddElement"
-            @drag-start="() => {}"
+          :readonly="readonly"
+          @add="handleAddElement"
+          @drag-start="() => {}"
         />
       </template>
       <template #panel-props>
-        <print-property-panel :designer="designer"/>
+        <print-property-panel :designer="designer" />
       </template>
       <template #panel-layers>
-        <print-layer-panel :designer="designer"/>
+        <print-layer-panel :designer="designer" />
       </template>
     </DesignerMobileShell>
 
     <!-- 预览弹窗 -->
     <print-preview-dialog
-        v-model:visible="previewVisible"
-        :template="designer.state.template"
-        :data="previewData"
-        :operator="operator"
-        :printer-name="printerName"
-        @print="handlePreviewPrint"
+      v-model:visible="previewVisible"
+      :template="designer.state.template"
+      :data="previewData"
+      :operator="operator"
+      :printer-name="printerName"
+      @print="handlePreviewPrint"
     />
 
     <!-- 数据源弹窗 -->
     <print-data-source-dialog
-        v-model:visible="dsVisible"
-        :data-sources="designer.state.template.dataSources"
-        @save="handleDsSave"
+      v-model:visible="dsVisible"
+      :data-sources="designer.state.template.dataSources"
+      @save="handleDsSave"
     />
 
     <!-- 模板管理弹窗 -->
     <print-template-manager-dialog
-        v-model:visible="tplMgrVisible"
-        :saved-templates="savedTemplatesList"
-        @load="handleLoadTemplate"
-        @delete="handleDeleteTemplate"
-        @export="handleExportTemplate"
+      v-model:visible="tplMgrVisible"
+      :saved-templates="savedTemplatesList"
+      @load="handleLoadTemplate"
+      @delete="handleDeleteTemplate"
+      @export="handleExportTemplate"
     />
   </div>
 </template>

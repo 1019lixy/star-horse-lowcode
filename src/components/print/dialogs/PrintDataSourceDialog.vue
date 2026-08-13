@@ -4,16 +4,16 @@
  * 职责：管理模板的多个数据源（静态/API/SQL/表单）
  * 强制使用 star-horse-dialog
  */
-import {computed, ref, watch} from "vue";
-import {i18n} from "@/lang";
-import {DEFAULT_DATA_FIELDS} from "../constants";
-import type {PrintDataField, PrintDataSource} from "../types";
-import {StarHorsePanel} from "@/components/comp";
+import { computed, ref, watch } from "vue";
+import { i18n } from "@/lang";
+import { DEFAULT_DATA_FIELDS } from "../constants";
+import type { PrintDataField, PrintDataSource } from "../types";
+import { StarHorsePanel } from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
   dataSources: PrintDataSource[];
-  dialogType?:"dialog"|"drawer";
+  dialogType?: "dialog" | "drawer";
 }>();
 
 const emits = defineEmits<{
@@ -26,22 +26,24 @@ const innerVisible = computed({
   set: (v) => emits("update:visible", v),
 });
 
-const localList = ref<PrintDataSource[]>(JSON.parse(JSON.stringify(props.dataSources)));
+const localList = ref<PrintDataSource[]>(
+  JSON.parse(JSON.stringify(props.dataSources)),
+);
 const activeId = ref<string>("");
 const editing = ref<PrintDataSource | null>(null);
 
 watch(
-    () => props.visible,
-    (v) => {
-      if (v) {
-        localList.value = JSON.parse(JSON.stringify(props.dataSources));
-        if (localList.value.length && !activeId.value) {
-          activeId.value = localList.value[0].id;
-          editing.value = localList.value[0];
-        }
+  () => props.visible,
+  (v) => {
+    if (v) {
+      localList.value = JSON.parse(JSON.stringify(props.dataSources));
+      if (localList.value.length && !activeId.value) {
+        activeId.value = localList.value[0].id;
+        editing.value = localList.value[0];
       }
-    },
-    {immediate: true},
+    }
+  },
+  { immediate: true },
 );
 
 const selectSource = (id: string) => {
@@ -92,52 +94,50 @@ const handleSave = () => {
 };
 
 const fieldTypes: Array<{ label: string; value: PrintDataField["type"] }> = [
-  {label: i18n("print.field.type.string"), value: "string"},
-  {label: i18n("print.field.type.number"), value: "number"},
-  {label: i18n("print.field.type.date"), value: "date"},
-  {label: i18n("print.field.type.boolean"), value: "boolean"},
-  {label: i18n("print.field.type.object"), value: "object"},
-  {label: i18n("print.field.type.array"), value: "array"},
+  { label: i18n("print.field.type.string"), value: "string" },
+  { label: i18n("print.field.type.number"), value: "number" },
+  { label: i18n("print.field.type.date"), value: "date" },
+  { label: i18n("print.field.type.boolean"), value: "boolean" },
+  { label: i18n("print.field.type.object"), value: "object" },
+  { label: i18n("print.field.type.array"), value: "array" },
 ];
 </script>
 
 <template>
   <star-horse-panel
-      :type="dialogType"
-      v-model="innerVisible"
-      :title="i18n('print.datasource.title')"
-      box-width="70%"
-      box-height="70%"
-      :is-show-reset="false"
-      :self-func="true"
-      @merge="handleSave"
+    :type="dialogType"
+    v-model="innerVisible"
+    :title="i18n('print.datasource.title')"
+    box-width="70%"
+    box-height="70%"
+    :is-show-reset="false"
+    :self-func="true"
+    @merge="handleSave"
   >
     <div class="ds-dialog">
       <!-- 左侧数据源列表 -->
       <div class="ds-list">
         <div class="ds-list-header">
-          <span>{{ i18n('print.datasource.listTitle') }}</span>
+          <span>{{ i18n("print.datasource.listTitle") }}</span>
           <el-button type="primary" @click="addSource" plain>
-            <star-horse-icon icon-class="add" cursor="pointer"/>
+            <star-horse-icon icon-class="add" cursor="pointer" />
           </el-button>
         </div>
         <div class="ds-list-body">
           <div
-              v-for="ds in localList"
-              :key="ds.id"
-              class="ds-item"
-              :class="{ active: activeId === ds.id }"
-              @click="selectSource(ds.id)"
+            v-for="ds in localList"
+            :key="ds.id"
+            class="ds-item"
+            :class="{ active: activeId === ds.id }"
+            @click="selectSource(ds.id)"
           >
             <div class="ds-name">{{ ds.name }}</div>
-            <div class="ds-meta">{{ ds.type }} · {{ ds.fields.length }} {{ i18n('print.datasource.fields') }}</div>
-            <el-button
-
-                type="danger"
-                link
-                @click.stop="deleteSource(ds.id)"
-            >
-              <star-horse-icon icon-class="delete" cursor="pointer"/>
+            <div class="ds-meta">
+              {{ ds.type }} · {{ ds.fields.length }}
+              {{ i18n("print.datasource.fields") }}
+            </div>
+            <el-button type="danger" link @click.stop="deleteSource(ds.id)">
+              <star-horse-icon icon-class="delete" cursor="pointer" />
             </el-button>
           </div>
         </div>
@@ -147,74 +147,116 @@ const fieldTypes: Array<{ label: string; value: PrintDataField["type"] }> = [
       <div class="ds-edit" v-if="editing">
         <el-form label-width="100px">
           <el-form-item :label="i18n('print.datasource.name')">
-            <el-input v-model="editing.name"/>
+            <el-input v-model="editing.name" />
           </el-form-item>
           <el-form-item :label="i18n('print.datasource.type')">
             <el-select v-model="editing.type">
-              <el-option :label="i18n('print.datasource.type.static')" value="static"/>
-              <el-option :label="i18n('print.datasource.type.api')" value="api"/>
-              <el-option :label="i18n('print.datasource.type.sql')" value="sql"/>
-              <el-option :label="i18n('print.datasource.type.form')" value="form"/>
+              <el-option
+                :label="i18n('print.datasource.type.static')"
+                value="static"
+              />
+              <el-option
+                :label="i18n('print.datasource.type.api')"
+                value="api"
+              />
+              <el-option
+                :label="i18n('print.datasource.type.sql')"
+                value="sql"
+              />
+              <el-option
+                :label="i18n('print.datasource.type.form')"
+                value="form"
+              />
             </el-select>
           </el-form-item>
-          <el-form-item v-if="editing.type === 'api'" :label="i18n('print.datasource.apiUrl')">
-            <el-input v-model="editing.apiUrl" placeholder="https://..."/>
+          <el-form-item
+            v-if="editing.type === 'api'"
+            :label="i18n('print.datasource.apiUrl')"
+          >
+            <el-input v-model="editing.apiUrl" placeholder="https://..." />
           </el-form-item>
-          <el-form-item v-if="editing.type === 'sql'" :label="i18n('print.datasource.sql')">
-            <el-input v-model="editing.sql" type="textarea" :rows="3"/>
+          <el-form-item
+            v-if="editing.type === 'sql'"
+            :label="i18n('print.datasource.sql')"
+          >
+            <el-input v-model="editing.sql" type="textarea" :rows="3" />
           </el-form-item>
-          <el-form-item v-if="editing.type === 'form'" :label="i18n('print.datasource.formId')">
-            <el-input v-model="editing.formId"/>
+          <el-form-item
+            v-if="editing.type === 'form'"
+            :label="i18n('print.datasource.formId')"
+          >
+            <el-input v-model="editing.formId" />
           </el-form-item>
-          <el-form-item v-if="editing.type === 'static'" :label="i18n('print.datasource.staticData')">
+          <el-form-item
+            v-if="editing.type === 'static'"
+            :label="i18n('print.datasource.staticData')"
+          >
             <el-input
-                v-model="editing.staticData"
-                type="textarea"
-                :rows="4"
-                placeholder='{"field":"value"}'
+              v-model="editing.staticData"
+              type="textarea"
+              :rows="4"
+              placeholder='{"field":"value"}'
             />
           </el-form-item>
 
           <el-divider content-position="left">
-            <span>{{ i18n('print.datasource.fields') }}</span>
+            <span>{{ i18n("print.datasource.fields") }}</span>
             <el-button type="primary" link @click="addField">
-              <star-horse-icon icon-class="add" cursor="pointer"/>
-              {{ i18n('print.datasource.addField') }}
+              <star-horse-icon icon-class="add" cursor="pointer" />
+              {{ i18n("print.datasource.addField") }}
             </el-button>
           </el-divider>
 
           <el-table :data="editing.fields" border>
-            <el-table-column :label="i18n('print.datasource.fieldName')" prop="name" width="120">
+            <el-table-column
+              :label="i18n('print.datasource.fieldName')"
+              prop="name"
+              width="120"
+            >
               <template #default="{ row }">
-                <el-input v-model="row.name"/>
+                <el-input v-model="row.name" />
               </template>
             </el-table-column>
-            <el-table-column :label="i18n('print.datasource.fieldLabel')" prop="label" width="120">
+            <el-table-column
+              :label="i18n('print.datasource.fieldLabel')"
+              prop="label"
+              width="120"
+            >
               <template #default="{ row }">
-                <el-input v-model="row.label"/>
+                <el-input v-model="row.label" />
               </template>
             </el-table-column>
-            <el-table-column :label="i18n('print.datasource.fieldType')" prop="type" width="100">
+            <el-table-column
+              :label="i18n('print.datasource.fieldType')"
+              prop="type"
+              width="100"
+            >
               <template #default="{ row }">
                 <el-select v-model="row.type">
                   <el-option
-                      v-for="ft in fieldTypes"
-                      :key="ft.value"
-                      :label="ft.label"
-                      :value="ft.value"
+                    v-for="ft in fieldTypes"
+                    :key="ft.value"
+                    :label="ft.label"
+                    :value="ft.value"
                   />
                 </el-select>
               </template>
             </el-table-column>
-            <el-table-column :label="i18n('print.datasource.fieldSample')" prop="sample">
+            <el-table-column
+              :label="i18n('print.datasource.fieldSample')"
+              prop="sample"
+            >
               <template #default="{ row }">
-                <el-input v-model="row.sample"/>
+                <el-input v-model="row.sample" />
               </template>
             </el-table-column>
-            <el-table-column :label="i18n('print.datasource.operation')" width="80">
+            <el-table-column
+              :label="i18n('print.datasource.operation')"
+              width="80"
+            >
               <template #default="{ $index }">
                 <el-button type="danger" link @click="deleteField($index)">
-                  <star-horse-icon icon-class="delete" cursor="pointer"/>
+                  <star-horse-icon icon-class="delete" cursor="pointer" />
                 </el-button>
               </template>
             </el-table-column>
@@ -222,12 +264,16 @@ const fieldTypes: Array<{ label: string; value: PrintDataField["type"] }> = [
         </el-form>
       </div>
       <div v-else class="ds-empty">
-        {{ i18n('print.datasource.emptyTip') }}
+        {{ i18n("print.datasource.emptyTip") }}
       </div>
     </div>
     <template #footer>
-      <el-button @click="innerVisible = false">{{ i18n('dialog.close') }}</el-button>
-      <el-button type="primary" @click="handleSave">{{ i18n('dialog.save') }}</el-button>
+      <el-button @click="innerVisible = false">{{
+        i18n("dialog.close")
+      }}</el-button>
+      <el-button type="primary" @click="handleSave">{{
+        i18n("dialog.save")
+      }}</el-button>
     </template>
   </star-horse-panel>
 </template>

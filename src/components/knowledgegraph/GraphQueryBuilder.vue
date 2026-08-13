@@ -1,13 +1,13 @@
 <script setup lang="ts" name="GraphQueryBuilder">
-import {ref} from "vue";
-import {ElMessage} from "element-plus";
-import {i18n} from "@/lang";
+import { ref } from "vue";
+import { ElMessage } from "element-plus";
+import { i18n } from "@/lang";
 import GraphQueryBuilderPanel from "./panels/GraphQueryBuilderPanel.vue";
 import GraphQueryResultsPanel from "./panels/GraphQueryResultsPanel.vue";
 import KgTemplateDialog from "./dialogs/KgTemplateDialog.vue";
-import {useGraphQueryBuilder} from "./composables/useGraphQueryBuilder";
-import {kgCircleLayout} from "./utils/KgGraphLayout";
-import type {KgGraph, KgQuery, KgQueryTemplate} from "./types";
+import { useGraphQueryBuilder } from "./composables/useGraphQueryBuilder";
+import { kgCircleLayout } from "./utils/KgGraphLayout";
+import type { KgGraph, KgQuery, KgQueryTemplate } from "./types";
 
 const props = defineProps<{
   graph?: KgGraph;
@@ -63,26 +63,26 @@ const handleSelectNode = (id: string) => {
   emit("select-node", id);
 };
 
-defineExpose({builder});
+defineExpose({ builder });
 </script>
 
 <template>
   <div class="kg-query-builder">
     <div class="builder-body">
       <graph-query-builder-panel
-          :builder="builder"
-          @run="handleRun"
-          @open-template="handleOpenTemplate"
+        :builder="builder"
+        @run="handleRun"
+        @open-template="handleOpenTemplate"
       />
       <graph-query-results-panel
-          :builder="builder"
-          @select-node="handleSelectNode"
+        :builder="builder"
+        @select-node="handleSelectNode"
       />
     </div>
 
     <kg-template-dialog
-        v-model:visible="templateDialogVisible"
-        :builder="builder"
+      v-model:visible="templateDialogVisible"
+      :builder="builder"
     />
   </div>
 </template>

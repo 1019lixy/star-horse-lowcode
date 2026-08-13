@@ -1,24 +1,24 @@
 <script setup lang="ts" name="help">
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
-import {i18n} from "@/lang";
+import { i18n } from "@/lang";
 
 defineProps({
-  width: {type: Number, default: 340},
-  message: {type: String, required: true, default: i18n("common.help")},
+  width: { type: Number, default: 340 },
+  message: { type: String, required: true, default: i18n("common.help") },
 });
 </script>
 <template>
   <el-popover
-      trigger="hover"
-      :popper-style="{ width: 'unset !important', 'z-index': 10000 }"
-      placement="bottom-start"
+    trigger="hover"
+    :popper-style="{ width: 'unset !important', 'z-index': 10000 }"
+    placement="bottom-start"
   >
     <template #reference>
       <star-horse-icon
-          icon-class="help"
-          color="var(--star-horse-style)"
-          size="12px"
-          style="cursor: pointer"
+        icon-class="help"
+        color="var(--star-horse-style)"
+        size="12px"
+        style="cursor: pointer"
       />
     </template>
     <div class="help-content">

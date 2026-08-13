@@ -1,9 +1,9 @@
 <script setup lang="ts" name="PdfElementPanel">
-import {i18n} from "@/lang";
-import {ShSvgIcon} from "@/components/shared";
-import type {PdfDesigner} from "../composables/usePdfDesigner";
-import {PDF_ELEMENT_TYPE_PRESETS} from "../constants";
-import type {PdfElementType} from "../types";
+import { i18n } from "@/lang";
+import { ShSvgIcon } from "@/components/shared";
+import type { PdfDesigner } from "../composables/usePdfDesigner";
+import { PDF_ELEMENT_TYPE_PRESETS } from "../constants";
+import type { PdfElementType } from "../types";
 
 const props = defineProps<{
   designer: PdfDesigner;
@@ -26,15 +26,15 @@ const handleDragStart = (type: PdfElementType) => {
     <div class="panel-body">
       <div class="element-grid">
         <div
-            v-for="preset in PDF_ELEMENT_TYPE_PRESETS"
-            :key="preset.type"
-            class="element-item"
-            :class="{ disabled: readonly }"
-            @click="handleAdd(preset.type)"
-            draggable="true"
-            @dragstart="() => handleDragStart(preset.type)"
+          v-for="preset in PDF_ELEMENT_TYPE_PRESETS"
+          :key="preset.type"
+          class="element-item"
+          :class="{ disabled: readonly }"
+          @click="handleAdd(preset.type)"
+          draggable="true"
+          @dragstart="() => handleDragStart(preset.type)"
         >
-          <ShSvgIcon :name="preset.type" size="20px"/>
+          <ShSvgIcon :name="preset.type" size="20px" />
           <span class="label">{{ preset.label }}</span>
         </div>
       </div>

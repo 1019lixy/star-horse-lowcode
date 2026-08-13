@@ -1,7 +1,7 @@
-import {ref, Ref, watch} from "vue";
-import {i18n} from "@/lang";
-import {warning} from "@/utils/message";
-import {analysisPrimaryKeys} from "./tableKeyUtils";
+import { ref, Ref, watch } from "vue";
+import { i18n } from "@/lang";
+import { warning } from "@/utils/message";
+import { analysisPrimaryKeys } from "./tableKeyUtils";
 
 /** useTableSelection 入参 */
 export interface UseTableSelectionOptions {
@@ -22,7 +22,7 @@ export interface UseTableSelectionOptions {
  * 封装多选/单选、父子节点校验、选中行同步、弹窗模式数据过滤
  */
 export function useTableSelection(opts: UseTableSelectionOptions) {
-  const {props, starHorseTableCompRef, pageInfo, dynamicForm, emits} = opts;
+  const { props, starHorseTableCompRef, pageInfo, dynamicForm, emits } = opts;
 
   const multipleSelection = ref<any>([]);
   const cardSelection = ref<any>([]);
@@ -211,7 +211,7 @@ export function useTableSelection(opts: UseTableSelectionOptions) {
     (val) => {
       multipleSelection.value = Array.isArray(val) ? val : [val];
     },
-    {immediate: false},
+    { immediate: false },
   );
 
   return {

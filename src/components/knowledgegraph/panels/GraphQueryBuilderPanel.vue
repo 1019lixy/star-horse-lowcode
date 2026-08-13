@@ -1,10 +1,14 @@
 <script setup lang="ts" name="GraphQueryBuilderPanel">
-import {computed} from "vue";
-import {i18n} from "@/lang";
-import {ElMessage} from "element-plus";
-import {KG_EDGE_TYPE_PRESETS, KG_NODE_TYPE_PRESETS, KG_OPERATOR_PRESETS,} from "../constants";
-import type {KgQueryStep} from "../types";
-import type {UseGraphQueryBuilderReturn} from "../composables/useGraphQueryBuilder";
+import { computed } from "vue";
+import { i18n } from "@/lang";
+import { ElMessage } from "element-plus";
+import {
+  KG_EDGE_TYPE_PRESETS,
+  KG_NODE_TYPE_PRESETS,
+  KG_OPERATOR_PRESETS,
+} from "../constants";
+import type { KgQueryStep } from "../types";
+import type { UseGraphQueryBuilderReturn } from "../composables/useGraphQueryBuilder";
 
 const props = defineProps<{
   builder: UseGraphQueryBuilderReturn;
@@ -27,11 +31,13 @@ const handleAddStep = () => builder.addStep();
 const handleRemoveStep = (id: string) => builder.removeStep(id);
 
 const handleAddStartCondition = () => builder.addStartCondition();
-const handleRemoveStartCondition = (id: string) => builder.removeStartCondition(id);
+const handleRemoveStartCondition = (id: string) =>
+  builder.removeStartCondition(id);
 
-const handleAddStepCondition = (stepId: string) => builder.addStepCondition(stepId);
+const handleAddStepCondition = (stepId: string) =>
+  builder.addStepCondition(stepId);
 const handleRemoveStepCondition = (stepId: string, condId: string) =>
-    builder.removeStepCondition(stepId, condId);
+  builder.removeStepCondition(stepId, condId);
 
 const onRunResult = () => {
   ElMessage.success(i18n("knowledgegraph.message.queryExecuted"));
@@ -42,14 +48,18 @@ const runQuery = () => {
   onRunResult();
 };
 
-const stepIndex = (step: KgQueryStep): number => query.value.steps.indexOf(step) + 1;
+const stepIndex = (step: KgQueryStep): number =>
+  query.value.steps.indexOf(step) + 1;
 
 /** 内联 SVG 图标（替代 Element Plus 图标，减少依赖） */
 const icons: Record<string, string> = {
-  folderOpened: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h6a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-4 0v2H5"/></svg>',
-  videoPlay: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>',
-  delete: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M5 6v14a2 2 0 002 2h10a2 2 0 002-2V6M10 11v6M14 11v6"/></svg>',
-  plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>'
+  folderOpened:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h6a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-4 0v2H5"/></svg>',
+  videoPlay:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>',
+  delete:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M5 6v14a2 2 0 002 2h10a2 2 0 002-2V6M10 11v6M14 11v6"/></svg>',
+  plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>',
 };
 </script>
 
@@ -84,48 +94,55 @@ const icons: Record<string, string> = {
             <el-form-item :label="i18n('knowledgegraph.query.nodeType')">
               <el-select v-model="query.startNodeType" style="width: 100%">
                 <el-option
-                    v-for="opt in KG_NODE_TYPE_PRESETS"
-                    :key="opt.type"
-                    :label="i18n(opt.labelKey)"
-                    :value="opt.type"
+                  v-for="opt in KG_NODE_TYPE_PRESETS"
+                  :key="opt.type"
+                  :label="i18n(opt.labelKey)"
+                  :value="opt.type"
                 />
               </el-select>
             </el-form-item>
             <div v-if="query.startConditions.length > 0" class="conditions">
               <div
-                  v-for="cond in query.startConditions"
-                  :key="cond.id"
-                  class="condition-row"
+                v-for="cond in query.startConditions"
+                :key="cond.id"
+                class="condition-row"
               >
                 <el-input
-                    :model-value="cond.property"
-                    @update:model-value="(v) => builder.updateStartCondition(cond.id, { property: v })"
-                    placeholder="prop"
-                    style="width: 90px"
+                  :model-value="cond.property"
+                  @update:model-value="
+                    (v) =>
+                      builder.updateStartCondition(cond.id, { property: v })
+                  "
+                  placeholder="prop"
+                  style="width: 90px"
                 />
                 <el-select
-                    :model-value="cond.operator"
-                    @update:model-value="(v) => builder.updateStartCondition(cond.id, { operator: v })"
-                    style="width: 100px"
+                  :model-value="cond.operator"
+                  @update:model-value="
+                    (v) =>
+                      builder.updateStartCondition(cond.id, { operator: v })
+                  "
+                  style="width: 100px"
                 >
                   <el-option
-                      v-for="op in KG_OPERATOR_PRESETS"
-                      :key="op.value"
-                      :label="i18n(op.labelKey)"
-                      :value="op.value"
+                    v-for="op in KG_OPERATOR_PRESETS"
+                    :key="op.value"
+                    :label="i18n(op.labelKey)"
+                    :value="op.value"
                   />
                 </el-select>
                 <el-input
-                    :model-value="cond.value"
-                    @update:model-value="(v) => builder.updateStartCondition(cond.id, { value: v })"
-                    placeholder="value"
-                    style="flex: 1"
+                  :model-value="cond.value"
+                  @update:model-value="
+                    (v) => builder.updateStartCondition(cond.id, { value: v })
+                  "
+                  placeholder="value"
+                  style="flex: 1"
                 />
                 <el-button
-
-                    type="danger"
-                    link
-                    @click="handleRemoveStartCondition(cond.id)"
+                  type="danger"
+                  link
+                  @click="handleRemoveStartCondition(cond.id)"
                 >
                   <span class="svg-icon" v-html="icons.delete"></span>
                 </el-button>
@@ -140,20 +157,15 @@ const icons: Record<string, string> = {
       </div>
 
       <!-- 关系步骤 -->
-      <div
-          v-for="step in query.steps"
-          :key="step.id"
-          class="query-section"
-      >
+      <div v-for="step in query.steps" :key="step.id" class="query-section">
         <div class="section-title">
           <span class="step-badge">{{ stepIndex(step) }}</span>
           {{ i18n("knowledgegraph.query.step") }}
           <el-button
-
-              type="danger"
-              link
-              style="margin-left: auto"
-              @click="handleRemoveStep(step.id)"
+            type="danger"
+            link
+            style="margin-left: auto"
+            @click="handleRemoveStep(step.id)"
           >
             <span class="svg-icon" v-html="icons.delete"></span>
             {{ i18n("knowledgegraph.query.removeStep") }}
@@ -163,77 +175,103 @@ const icons: Record<string, string> = {
           <el-form label-width="90px">
             <el-form-item :label="i18n('knowledgegraph.query.direction')">
               <el-radio-group
-                  :model-value="step.direction"
-                  @update:model-value="(v) => builder.updateStep(step.id, { direction: v })"
+                :model-value="step.direction"
+                @update:model-value="
+                  (v) => builder.updateStep(step.id, { direction: v })
+                "
               >
-                <el-radio-button value="out">{{ i18n("knowledgegraph.query.direction.out") }}</el-radio-button>
-                <el-radio-button value="in">{{ i18n("knowledgegraph.query.direction.in") }}</el-radio-button>
-                <el-radio-button value="both">{{ i18n("knowledgegraph.query.direction.both") }}</el-radio-button>
+                <el-radio-button value="out">{{
+                  i18n("knowledgegraph.query.direction.out")
+                }}</el-radio-button>
+                <el-radio-button value="in">{{
+                  i18n("knowledgegraph.query.direction.in")
+                }}</el-radio-button>
+                <el-radio-button value="both">{{
+                  i18n("knowledgegraph.query.direction.both")
+                }}</el-radio-button>
               </el-radio-group>
             </el-form-item>
             <el-form-item :label="i18n('knowledgegraph.query.edgeType')">
               <el-select
-                  :model-value="step.edgeType"
-                  @update:model-value="(v) => builder.updateStep(step.id, { edgeType: v })"
-                  style="width: 100%"
+                :model-value="step.edgeType"
+                @update:model-value="
+                  (v) => builder.updateStep(step.id, { edgeType: v })
+                "
+                style="width: 100%"
               >
                 <el-option
-                    v-for="opt in KG_EDGE_TYPE_PRESETS"
-                    :key="opt.type"
-                    :label="i18n(opt.labelKey)"
-                    :value="opt.type"
+                  v-for="opt in KG_EDGE_TYPE_PRESETS"
+                  :key="opt.type"
+                  :label="i18n(opt.labelKey)"
+                  :value="opt.type"
                 />
               </el-select>
             </el-form-item>
             <el-form-item :label="i18n('knowledgegraph.query.nodeType')">
               <el-select
-                  :model-value="step.nodeType"
-                  @update:model-value="(v) => builder.updateStep(step.id, { nodeType: v })"
-                  style="width: 100%"
+                :model-value="step.nodeType"
+                @update:model-value="
+                  (v) => builder.updateStep(step.id, { nodeType: v })
+                "
+                style="width: 100%"
               >
                 <el-option
-                    v-for="opt in KG_NODE_TYPE_PRESETS"
-                    :key="opt.type"
-                    :label="i18n(opt.labelKey)"
-                    :value="opt.type"
+                  v-for="opt in KG_NODE_TYPE_PRESETS"
+                  :key="opt.type"
+                  :label="i18n(opt.labelKey)"
+                  :value="opt.type"
                 />
               </el-select>
             </el-form-item>
             <div v-if="step.conditions.length > 0" class="conditions">
               <div
-                  v-for="cond in step.conditions"
-                  :key="cond.id"
-                  class="condition-row"
+                v-for="cond in step.conditions"
+                :key="cond.id"
+                class="condition-row"
               >
                 <el-input
-                    :model-value="cond.property"
-                    @update:model-value="(v) => builder.updateStepCondition(step.id, cond.id, { property: v })"
-                    placeholder="prop"
-                    style="width: 90px"
+                  :model-value="cond.property"
+                  @update:model-value="
+                    (v) =>
+                      builder.updateStepCondition(step.id, cond.id, {
+                        property: v,
+                      })
+                  "
+                  placeholder="prop"
+                  style="width: 90px"
                 />
                 <el-select
-                    :model-value="cond.operator"
-                    @update:model-value="(v) => builder.updateStepCondition(step.id, cond.id, { operator: v })"
-                    style="width: 100px"
+                  :model-value="cond.operator"
+                  @update:model-value="
+                    (v) =>
+                      builder.updateStepCondition(step.id, cond.id, {
+                        operator: v,
+                      })
+                  "
+                  style="width: 100px"
                 >
                   <el-option
-                      v-for="op in KG_OPERATOR_PRESETS"
-                      :key="op.value"
-                      :label="i18n(op.labelKey)"
-                      :value="op.value"
+                    v-for="op in KG_OPERATOR_PRESETS"
+                    :key="op.value"
+                    :label="i18n(op.labelKey)"
+                    :value="op.value"
                   />
                 </el-select>
                 <el-input
-                    :model-value="cond.value"
-                    @update:model-value="(v) => builder.updateStepCondition(step.id, cond.id, { value: v })"
-                    placeholder="value"
-                    style="flex: 1"
+                  :model-value="cond.value"
+                  @update:model-value="
+                    (v) =>
+                      builder.updateStepCondition(step.id, cond.id, {
+                        value: v,
+                      })
+                  "
+                  placeholder="value"
+                  style="flex: 1"
                 />
                 <el-button
-
-                    type="danger"
-                    link
-                    @click="handleRemoveStepCondition(step.id, cond.id)"
+                  type="danger"
+                  link
+                  @click="handleRemoveStepCondition(step.id, cond.id)"
                 >
                   <span class="svg-icon" v-html="icons.delete"></span>
                 </el-button>
@@ -248,7 +286,12 @@ const icons: Record<string, string> = {
       </div>
 
       <div class="add-step-row">
-        <el-button type="primary" plain @click="handleAddStep" style="width: 100%">
+        <el-button
+          type="primary"
+          plain
+          @click="handleAddStep"
+          style="width: 100%"
+        >
           <span class="svg-icon" v-html="icons.plus"></span>
           {{ i18n("knowledgegraph.query.addStep") }}
         </el-button>
@@ -256,7 +299,6 @@ const icons: Record<string, string> = {
     </div>
   </div>
 </template>
-
 
 <style lang="scss" scoped>
 .kg-query-panel {
@@ -315,8 +357,8 @@ const icons: Record<string, string> = {
         width: 22px;
         height: 22px;
         border-radius: 50%;
-        background: var(--star-horse-style, #1890FF);
-        color: #FFF;
+        background: var(--star-horse-style, #1890ff);
+        color: #fff;
         font-size: 12px;
         font-weight: 600;
       }

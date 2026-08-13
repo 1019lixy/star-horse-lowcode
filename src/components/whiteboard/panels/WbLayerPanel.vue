@@ -1,7 +1,7 @@
 <script setup lang="ts" name="WbLayerPanel">
-import {i18n} from "@/lang";
-import type {UseWhiteboardDesignerReturn} from "../composables/useWhiteboardDesigner";
-import type {WhiteboardElement} from "../types";
+import { i18n } from "@/lang";
+import type { UseWhiteboardDesignerReturn } from "../composables/useWhiteboardDesigner";
+import type { WhiteboardElement } from "../types";
 
 const props = defineProps<{
   designer: UseWhiteboardDesignerReturn;
@@ -15,11 +15,15 @@ const elementName = (el: WhiteboardElement): string => {
     case "pen":
       return i18n("whiteboard.tool.pen" as any);
     case "shape":
-      return i18n("whiteboard.tool." + (el as any).shape as any);
+      return i18n(("whiteboard.tool." + (el as any).shape) as any);
     case "line":
-      return (el as any).arrow ? i18n("whiteboard.tool.arrow" as any) : i18n("whiteboard.tool.line" as any);
+      return (el as any).arrow
+        ? i18n("whiteboard.tool.arrow" as any)
+        : i18n("whiteboard.tool.line" as any);
     case "text":
-      return (el as any).text?.slice(0, 12) || i18n("whiteboard.tool.text" as any);
+      return (
+        (el as any).text?.slice(0, 12) || i18n("whiteboard.tool.text" as any)
+      );
     default:
       return "element";
   }
@@ -60,13 +64,12 @@ const handleVisibleToggle = (e: MouseEvent, id: string) => {
     <div class="panel-header">
       <span class="panel-title">{{ i18n("whiteboard.layer.title") }}</span>
       <el-button
-          v-if="designer.selectedElement.value"
-
-          link
-          @click="designer.duplicateElement(designer.state.selectedIds[0])"
-          :title="i18n('whiteboard.layer.duplicate')"
+        v-if="designer.selectedElement.value"
+        link
+        @click="designer.duplicateElement(designer.state.selectedIds[0])"
+        :title="i18n('whiteboard.layer.duplicate')"
       >
-        <star-horse-icon icon-class="copy" cursor="pointer"/>
+        <star-horse-icon icon-class="copy" cursor="pointer" />
       </el-button>
     </div>
     <div class="panel-body">
@@ -74,29 +77,35 @@ const handleVisibleToggle = (e: MouseEvent, id: string) => {
         {{ i18n("whiteboard.layer.empty") }}
       </div>
       <div
-          v-for="el in designer.reversedElements.value"
-          :key="el.id"
-          class="layer-item"
-          :class="{ 'layer-selected': designer.isSelected(el.id), 'layer-hidden': el.visible === false }"
-          @click="(e) => handleClick(el, e)"
-          @dblclick="handleDoubleClick(el)"
+        v-for="el in designer.reversedElements.value"
+        :key="el.id"
+        class="layer-item"
+        :class="{
+          'layer-selected': designer.isSelected(el.id),
+          'layer-hidden': el.visible === false,
+        }"
+        @click="(e) => handleClick(el, e)"
+        @dblclick="handleDoubleClick(el)"
       >
         <star-horse-icon
-            :icon-class="elementIcon(el)"
-            cursor="pointer"
-            class="layer-icon"
+          :icon-class="elementIcon(el)"
+          cursor="pointer"
+          class="layer-icon"
         />
         <span class="layer-name">{{ elementName(el) }}</span>
         <div class="layer-actions">
           <el-button
-
-              link
-              :title="el.visible === false ? i18n('whiteboard.layer.hidden') : i18n('whiteboard.layer.visible')"
-              @click="(e) => handleVisibleToggle(e, el.id)"
+            link
+            :title="
+              el.visible === false
+                ? i18n('whiteboard.layer.hidden')
+                : i18n('whiteboard.layer.visible')
+            "
+            @click="(e) => handleVisibleToggle(e, el.id)"
           >
             <star-horse-icon
-                :icon-class="el.visible === false ? 'eye-close' : 'eye'"
-                cursor="pointer"
+              :icon-class="el.visible === false ? 'eye-close' : 'eye'"
+              cursor="pointer"
             />
           </el-button>
         </div>
@@ -107,46 +116,41 @@ const handleVisibleToggle = (e: MouseEvent, id: string) => {
     <div class="layer-ops" v-if="designer.selectedElement.value">
       <el-button-group>
         <el-button
-
-            :disabled="readonly"
-            @click="designer.bringToFront(designer.state.selectedIds[0])"
-            :title="i18n('whiteboard.layer.bringToFront')"
+          :disabled="readonly"
+          @click="designer.bringToFront(designer.state.selectedIds[0])"
+          :title="i18n('whiteboard.layer.bringToFront')"
         >
-          <star-horse-icon icon-class="up-layer" cursor="pointer"/>
+          <star-horse-icon icon-class="up-layer" cursor="pointer" />
         </el-button>
         <el-button
-
-            :disabled="readonly"
-            @click="designer.bringForward(designer.state.selectedIds[0])"
-            :title="i18n('whiteboard.layer.bringForward')"
+          :disabled="readonly"
+          @click="designer.bringForward(designer.state.selectedIds[0])"
+          :title="i18n('whiteboard.layer.bringForward')"
         >
-          <star-horse-icon icon-class="move-up" cursor="pointer"/>
+          <star-horse-icon icon-class="move-up" cursor="pointer" />
         </el-button>
         <el-button
-
-            :disabled="readonly"
-            @click="designer.sendBackward(designer.state.selectedIds[0])"
-            :title="i18n('whiteboard.layer.sendBackward')"
+          :disabled="readonly"
+          @click="designer.sendBackward(designer.state.selectedIds[0])"
+          :title="i18n('whiteboard.layer.sendBackward')"
         >
-          <star-horse-icon icon-class="move-down" cursor="pointer"/>
+          <star-horse-icon icon-class="move-down" cursor="pointer" />
         </el-button>
         <el-button
-
-            :disabled="readonly"
-            @click="designer.sendToBack(designer.state.selectedIds[0])"
-            :title="i18n('whiteboard.layer.sendToBack')"
+          :disabled="readonly"
+          @click="designer.sendToBack(designer.state.selectedIds[0])"
+          :title="i18n('whiteboard.layer.sendToBack')"
         >
-          <star-horse-icon icon-class="down-layer" cursor="pointer"/>
+          <star-horse-icon icon-class="down-layer" cursor="pointer" />
         </el-button>
       </el-button-group>
       <el-button
-
-          type="danger"
-          :disabled="readonly"
-          @click="designer.deleteElements()"
-          :title="i18n('whiteboard.layer.delete')"
+        type="danger"
+        :disabled="readonly"
+        @click="designer.deleteElements()"
+        :title="i18n('whiteboard.layer.delete')"
       >
-        <star-horse-icon icon-class="delete" cursor="pointer"/>
+        <star-horse-icon icon-class="delete" cursor="pointer" />
       </el-button>
     </div>
   </div>

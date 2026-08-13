@@ -1,23 +1,23 @@
 <script setup lang="ts">
-import {computed, nextTick, onMounted, ref, shallowRef} from "vue";
-import {warning} from "@/utils/message";
-import {FieldInfo, FieldMapping} from "@/components/types/PageFieldInfo";
-import {isJson} from "@/api/star_horse_utils";
+import { computed, nextTick, onMounted, ref, shallowRef } from "vue";
+import { warning } from "@/utils/message";
+import { FieldInfo, FieldMapping } from "@/components/types/PageFieldInfo";
+import { isJson } from "@/api/star_horse_utils";
 import {
   allAction,
   checkIsDisabled,
   initCompCallEvent,
   prepsFilter,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
-import {SearchFields} from "@/components/types";
-import {getDynamicEvents} from "@/api/system";
+import { SearchFields } from "@/components/types";
+import { getDynamicEvents } from "@/api/system";
 
-import {ItemPreps} from "@/components/types/ItemPreps";
-import {i18n} from "@/lang";
-import {Search} from "@element-plus/icons-vue";
-import {StarHorseIcon, StarHorsePanel} from "@/components/comp";
+import { ItemPreps } from "@/components/types/ItemPreps";
+import { i18n } from "@/lang";
+import { Search } from "@element-plus/icons-vue";
+import { StarHorseIcon, StarHorsePanel } from "@/components/comp";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
-import {isMobile} from "@/api/device";
+import { isMobile } from "@/api/device";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -38,13 +38,13 @@ const activeTab = ref<"data" | "selected">("data");
 const selectedSearchKey = ref("");
 // 已选数据（来自表格组件的 multipleSelection）
 const selectedData = computed<any[]>(
-    () => dialogInputTableRef.value?.multipleSelection ?? [],
+  () => dialogInputTableRef.value?.multipleSelection ?? [],
 );
 // 已选列表展示的列（取 fieldList 中 listVisible 的字段）
 const selectedColumns = computed(() => {
   const list = props.field.preps?.["fieldList"] || [];
   return list.filter(
-      (f: FieldInfo) => f.listVisible !== false && !f.preps?.staticData,
+    (f: FieldInfo) => f.listVisible !== false && !f.preps?.staticData,
   );
 });
 // 按关键字过滤后的已选数据（匹配所有展示列）
@@ -53,10 +53,10 @@ const filteredSelectedData = computed(() => {
   if (!key) return selectedData.value;
   const cols = selectedColumns.value;
   return selectedData.value.filter((row) =>
-      cols.some((col: FieldInfo) => {
-        const v = row[col.fieldName];
-        return v != null && String(v).toLowerCase().includes(key);
-      }),
+    cols.some((col: FieldInfo) => {
+      const v = row[col.fieldName];
+      return v != null && String(v).toLowerCase().includes(key);
+    }),
   );
 });
 // 从已选列表移除指定行（同步取消表格选中）
@@ -153,7 +153,7 @@ onMounted(async () => {
   let inputPreps = props.field?.preps;
   if (!inputPreps) {
     warning(
-        i18n("item.propertyNeedsParams") +
+      i18n("item.propertyNeedsParams") +
         props.field?.label +
         i18n("item.propertyNeedsParamsSuffix"),
     );
@@ -163,7 +163,7 @@ onMounted(async () => {
     let searchFieldList: Array<SearchFields> = [];
     inputPreps.fieldList?.forEach((item: FieldInfo) => {
       if (item.searchVisible) {
-        let temp: any = {...item};
+        let temp: any = { ...item };
         if (item.prefix) {
           temp["fieldName"] = item.prefix + "." + temp["fieldName"];
         }
@@ -174,7 +174,7 @@ onMounted(async () => {
         searchFieldList.push(temp);
       }
     });
-    inputPreps.searchFieldList = {fieldList: searchFieldList};
+    inputPreps.searchFieldList = { fieldList: searchFieldList };
   }
   nextTick(() => {
     initCompCallEvent(props, emits, formData);
@@ -183,99 +183,96 @@ onMounted(async () => {
 </script>
 <template>
   <star-horse-panel
-      :type="dialogType"
-      :title="field.label + i18n('item.dataSelect')"
-      :self-func="true"
-      boxHeight="80%"
-      v-model="dialogInputVisible"
-      @merge="submitData"
-      @closeAction="closeAction"
+    :type="dialogType"
+    :title="field.label + i18n('item.dataSelect')"
+    :self-func="true"
+    boxHeight="80%"
+    v-model="dialogInputVisible"
+    @merge="submitData"
+    @closeAction="closeAction"
   >
     <div class="flex flex-col h-full overflow-hidden">
-
       <el-card class="inner_content">
         <el-tabs v-model="activeTab" class="dialog-input-tabs">
-          <el-tab-pane
-              :label="i18n('item.dataSelect')"
-              name="data"
-          >
+          <el-tab-pane :label="i18n('item.dataSelect')" name="data">
             <div class="search-content">
               <div class="search_btn">
                 <star-horse-search-comp
-                    @searchData="
-              (data: any) => dialogInputTableRef.createSearchParams(data)
-            "
-                    :formData="field.preps?.['searchFieldList']"
-                    :compUrl="field.preps?.['dataUrl']"
+                  @searchData="
+                    (data: any) => dialogInputTableRef.createSearchParams(data)
+                  "
+                  :formData="field.preps?.['searchFieldList']"
+                  :compUrl="field.preps?.['dataUrl']"
                 />
               </div>
             </div>
             <div class="tab-content">
               <star-horse-table-comp
-                  :fieldList="{
-              cellEditable: false,
-              fieldList: field.preps?.['fieldList'],
-            }"
-                  :primaryKey="field.preps?.['primaryKey']"
-                  :compUrl="field.preps?.['dataUrl']"
-                  ref="dialogInputTableRef"
-                  :dialogInput="true"
-                  :multipleSelect="multipleSelect"
-                  :height="isMobile ? '50vh' : '400px'"
-                  :filterCondition="field.preps?.['filterCondition']"
-                  :orderBy="field.preps?.['orderBy']"
-                  @selectItem="selectItem"
-                  :dataFormat="field.preps?.['dataFormat']"
-                  :disableAction="true"
+                :fieldList="{
+                  cellEditable: false,
+                  fieldList: field.preps?.['fieldList'],
+                }"
+                :primaryKey="field.preps?.['primaryKey']"
+                :compUrl="field.preps?.['dataUrl']"
+                ref="dialogInputTableRef"
+                :dialogInput="true"
+                :multipleSelect="multipleSelect"
+                :height="isMobile ? '50vh' : '400px'"
+                :filterCondition="field.preps?.['filterCondition']"
+                :orderBy="field.preps?.['orderBy']"
+                @selectItem="selectItem"
+                :dataFormat="field.preps?.['dataFormat']"
+                :disableAction="true"
               />
             </div>
           </el-tab-pane>
           <el-tab-pane
-              v-if="multipleSelect"
-              :label="`${i18n('item.selectedData')}(${selectedData.length})`"
-              name="selected"
+            v-if="multipleSelect"
+            :label="`${i18n('item.selectedData')}(${selectedData.length})`"
+            name="selected"
           >
             <div class="tab-content selected-pane">
               <el-input
-                  v-model="selectedSearchKey"
-                  :placeholder="i18n('item.searchSelected')"
-                  clearable
-                  class="selected-search"
+                v-model="selectedSearchKey"
+                :placeholder="i18n('item.searchSelected')"
+                clearable
+                class="selected-search"
               >
                 <template #prefix>
                   <el-icon>
-                    <Search/>
+                    <Search />
                   </el-icon>
                 </template>
               </el-input>
               <el-table
-                  :data="filteredSelectedData"
-                  :height="isMobile ? '50vh' : '400px'"
-                  border
-                  class="selected-table"
+                :data="filteredSelectedData"
+                :height="isMobile ? '50vh' : '400px'"
+                border
+                class="selected-table"
               >
                 <el-table-column
-                    v-for="col in selectedColumns"
-                    :key="col.fieldName"
-                    :prop="col.fieldName"
-                    :label="col.label"
-                    :min-width="(col.minWidth || 120) + 'px'"
-                    show-overflow-tooltip
+                  v-for="col in selectedColumns"
+                  :key="col.fieldName"
+                  :prop="col.fieldName"
+                  :label="col.label"
+                  :min-width="(col.minWidth || 120) + 'px'"
+                  show-overflow-tooltip
                 />
                 <el-table-column
-                    :label="i18n('table.operation')"
-                    width="100"
-                    fixed="right"
+                  :label="i18n('table.operation')"
+                  width="100"
+                  fixed="right"
                 >
                   <template #default="{ row }">
-                    <el-button
-                        type="danger"
-                        link
-
-                        @click="removeSelected(row)"
-                    >
-                      <el-tooltip :content="i18n('item.removeSelected')" :trigger="isMobile ? 'click' : 'hover'">
-                        <star-horse-icon icon-class="delete" color="var(--el-primary-danger)"/>
+                    <el-button type="danger" link @click="removeSelected(row)">
+                      <el-tooltip
+                        :content="i18n('item.removeSelected')"
+                        :trigger="isMobile ? 'click' : 'hover'"
+                      >
+                        <star-horse-icon
+                          icon-class="delete"
+                          color="var(--el-primary-danger)"
+                        />
                       </el-tooltip>
                     </el-button>
                   </template>
@@ -287,40 +284,40 @@ onMounted(async () => {
             </div>
           </el-tab-pane>
         </el-tabs>
-
-
       </el-card>
     </div>
   </star-horse-panel>
   <starhorse-form-item
-      :showFormItem="showFormItem"
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :field="field"
-      :parentField="parentField"
+    :showFormItem="showFormItem"
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :bareFlag="bareFlag"
+    :field="field"
+    :parentField="parentField"
   >
     <el-input-tag
-        :disabled="checkIsDisabled(props)"
-        type="text"
-        v-bind="prepsFilter(field.preps)"
-        :fid="field.fieldName"
-        v-on="getDynamicEvents(props, itemAction, formData)"
-        v-model="formData[field.fieldName]"
+      :disabled="checkIsDisabled(props)"
+      type="text"
+      v-bind="prepsFilter(field.preps)"
+      :fid="field.fieldName"
+      v-on="getDynamicEvents(props, itemAction, formData)"
+      v-model="formData[field.fieldName]"
     >
       <template #suffix>
         <div
-            class="data-selector-suffix"
-            :class="{ 'is-disabled': disabled }"
-            @click="showVisible"
+          class="data-selector-suffix"
+          :class="{ 'is-disabled': disabled }"
+          @click="showVisible"
         >
           <star-horse-icon
-              cursor="pointer"
-              icon-class="add"
-              size="18px"
-              :color="
-            !disabled ? 'var(--star-horse-style)' : 'var(--star-horse-disabled)'
-          "
+            cursor="pointer"
+            icon-class="add"
+            size="18px"
+            :color="
+              !disabled
+                ? 'var(--star-horse-style)'
+                : 'var(--star-horse-disabled)'
+            "
           />
         </div>
       </template>

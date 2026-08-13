@@ -1,22 +1,25 @@
 <template>
   <base-json-item
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :showFormItem="showFormItem"
-      :field="field"
-      @selectItem="itemAction"
-      :formInfo="formInfo"
-      v-model:formData="formData"
-      @selfFunc="itemAction"
-      :parentField="parentField"
-      dataType="array"
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :showFormItem="showFormItem"
+    :field="field"
+    @selectItem="itemAction"
+    :formInfo="formInfo"
+    v-model:formData="formData"
+    @selfFunc="itemAction"
+    :parentField="parentField"
+    dataType="array"
   />
 </template>
 <script setup lang="ts">
-import {nextTick, onMounted} from "vue";
-import {allAction, initCompCallEvent,} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import { nextTick, onMounted } from "vue";
+import {
+  allAction,
+  initCompCallEvent,
+} from "@/components/formcomp/utils/ItemRelationEventUtils";
 
-import {ItemPreps} from "@/components/types/ItemPreps";
+import { ItemPreps } from "@/components/types/ItemPreps";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,

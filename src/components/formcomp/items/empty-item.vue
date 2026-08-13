@@ -1,11 +1,11 @@
 <template>
   <starhorse-form-item
-      :showFormItem="showFormItem"
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :field="field"
-      :parentField="parentField"
+    :showFormItem="showFormItem"
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :bareFlag="bareFlag"
+    :field="field"
+    :parentField="parentField"
   >
     <!--    <div class="empty_comp">
       <span class="empty_text">{{ i18n('form.empty') }}</span>
@@ -13,7 +13,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {ItemPreps} from "@/components/types/ItemPreps";
+import { ItemPreps } from "@/components/types/ItemPreps";
 
 withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -29,10 +29,11 @@ const emits = defineEmits(["selfFunc", "selectItem"]);
   width: 100%;
   height: 100%;
   min-height: 25px;
-  background: linear-gradient(135deg, #f5f7fa 25%, transparent 25%) -10px 0,
-  linear-gradient(225deg, #f5f7fa 25%, transparent 25%) -10px 0,
-  linear-gradient(315deg, #f5f7fa 25%, transparent 25%),
-  linear-gradient(45deg, #f5f7fa 25%, transparent 25%);
+  background:
+    linear-gradient(135deg, #f5f7fa 25%, transparent 25%) -10px 0,
+    linear-gradient(225deg, #f5f7fa 25%, transparent 25%) -10px 0,
+    linear-gradient(315deg, #f5f7fa 25%, transparent 25%),
+    linear-gradient(45deg, #f5f7fa 25%, transparent 25%);
   background-size: 10px 10px;
   background-color: #f0f2f5;
   border: 2px dashed #c0c4cc;

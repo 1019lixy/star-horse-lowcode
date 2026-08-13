@@ -1,10 +1,10 @@
 <script setup lang="ts" name="ApiChainSequence">
-import {computed, ref} from "vue";
-import {i18n} from "@/lang";
-import {ShSvgIcon} from "@/components/shared";
-import {METHOD_COLORS, METHOD_LABELS} from "../constants";
-import type {ApiOrchestratorState} from "../composables/useApiOrchestrator";
-import type {VariableExtraction} from "../types";
+import { computed, ref } from "vue";
+import { i18n } from "@/lang";
+import { ShSvgIcon } from "@/components/shared";
+import { METHOD_COLORS, METHOD_LABELS } from "../constants";
+import type { ApiOrchestratorState } from "../composables/useApiOrchestrator";
+import type { VariableExtraction } from "../types";
 
 const props = defineProps<{
   state: ApiOrchestratorState;
@@ -14,7 +14,11 @@ const props = defineProps<{
 const expandedStepIds = ref<Set<string>>(new Set());
 
 /** 插入菜单显示状态 */
-const insertMenu = ref<{ visible: boolean; refStepId: string | null; position: "before" | "after" }>({
+const insertMenu = ref<{
+  visible: boolean;
+  refStepId: string | null;
+  position: "before" | "after";
+}>({
   visible: false,
   refStepId: null,
   position: "after",
@@ -62,9 +66,13 @@ const toggleExpand = (stepId: string) => {
 };
 
 /** 显示插入菜单 */
-const showInsertMenu = (refStepId: string, position: "before" | "after", e: MouseEvent) => {
+const showInsertMenu = (
+  refStepId: string,
+  position: "before" | "after",
+  e: MouseEvent,
+) => {
   e.stopPropagation();
-  insertMenu.value = {visible: true, refStepId, position};
+  insertMenu.value = { visible: true, refStepId, position };
 };
 
 /** 执行插入 */
@@ -89,23 +97,28 @@ const addExtraction = (stepId: string) => {
   if (!step) return;
   const extractions: VariableExtraction[] = [
     ...step.variableExtractions,
-    {sourceVar: "", targetVar: ""},
+    { sourceVar: "", targetVar: "" },
   ];
-  props.state.updateChainStep(stepId, {variableExtractions: extractions});
+  props.state.updateChainStep(stepId, { variableExtractions: extractions });
 };
-const updateExtraction = (stepId: string, index: number, key: keyof VariableExtraction, value: string) => {
+const updateExtraction = (
+  stepId: string,
+  index: number,
+  key: keyof VariableExtraction,
+  value: string,
+) => {
   const step = props.state.chain.steps.find((s) => s.id === stepId);
   if (!step) return;
   const extractions = [...step.variableExtractions];
-  extractions[index] = {...extractions[index], [key]: value};
-  props.state.updateChainStep(stepId, {variableExtractions: extractions});
+  extractions[index] = { ...extractions[index], [key]: value };
+  props.state.updateChainStep(stepId, { variableExtractions: extractions });
 };
 const removeExtraction = (stepId: string, index: number) => {
   const step = props.state.chain.steps.find((s) => s.id === stepId);
   if (!step) return;
   const extractions = [...step.variableExtractions];
   extractions.splice(index, 1);
-  props.state.updateChainStep(stepId, {variableExtractions: extractions});
+  props.state.updateChainStep(stepId, { variableExtractions: extractions });
 };
 
 /** 状态颜色 */
@@ -128,12 +141,18 @@ const hasSteps = computed(() => props.state.chain.steps.length > 0);
     <!-- 头部：标题 + 添加步骤按钮 -->
     <div class="flow-header">
       <div class="header-left">
-        <ShSvgIcon name="apiFlow" size="16px"/>
+        <ShSvgIcon name="apiFlow" size="16px" />
         <span class="header-title">{{ i18n("api.chain.steps") }}</span>
         <span class="step-count">{{ state.chain.steps.length }}</span>
       </div>
-      <el-button type="primary" plain size="small" @click.stop="handleAddStep" :disabled="state.endpoints.length === 0">
-        <ShSvgIcon name="plus" size="14px"/>
+      <el-button
+        type="primary"
+        plain
+        size="small"
+        @click.stop="handleAddStep"
+        :disabled="state.endpoints.length === 0"
+      >
+        <ShSvgIcon name="plus" size="14px" />
         {{ i18n("api.btn.addStep") }}
       </el-button>
     </div>
@@ -143,23 +162,32 @@ const hasSteps = computed(() => props.state.chain.steps.length > 0);
       <!-- 起始节点 -->
       <div class="flow-start" v-if="hasSteps">
         <div class="start-node">
-          <ShSvgIcon name="play" size="14px"/>
+          <ShSvgIcon name="play" size="14px" />
           <span>{{ i18n("api.flow.start") }}</span>
         </div>
-        <div class="connector-line"/>
-        <div class="insert-zone" @click.stop="showInsertMenu(state.chain.steps[0].id, 'before', $event)"
-             v-if="hasSteps">
-          <ShSvgIcon name="plus" size="12px"/>
+        <div class="connector-line" />
+        <div
+          class="insert-zone"
+          @click.stop="
+            showInsertMenu(state.chain.steps[0].id, 'before', $event)
+          "
+          v-if="hasSteps"
+        >
+          <ShSvgIcon name="plus" size="12px" />
         </div>
-        <div class="connector-line" v-if="hasSteps"/>
+        <div class="connector-line" v-if="hasSteps" />
       </div>
 
       <!-- 空状态 -->
       <div v-if="!hasSteps" class="empty-state">
-        <ShSvgIcon name="apiFlow" size="48px"/>
+        <ShSvgIcon name="apiFlow" size="48px" />
         <p>{{ i18n("api.chain.empty") }}</p>
-        <el-button type="primary" @click="handleAddStep" :disabled="state.endpoints.length === 0">
-          <ShSvgIcon name="plus" size="14px"/>
+        <el-button
+          type="primary"
+          @click="handleAddStep"
+          :disabled="state.endpoints.length === 0"
+        >
+          <ShSvgIcon name="plus" size="14px" />
           {{ i18n("api.btn.addStep") }}
         </el-button>
       </div>
@@ -167,18 +195,28 @@ const hasSteps = computed(() => props.state.chain.steps.length > 0);
       <!-- 步骤节点列表 -->
       <template v-if="hasSteps">
         <div
-            v-for="(step, idx) in state.chain.steps"
-            :key="step.id"
-            class="step-flow-item"
-            :class="[`status-${statusColor(step.id)}`, { expanded: expandedStepIds.has(step.id) }]"
+          v-for="(step, idx) in state.chain.steps"
+          :key="step.id"
+          class="step-flow-item"
+          :class="[
+            `status-${statusColor(step.id)}`,
+            { expanded: expandedStepIds.has(step.id) },
+          ]"
         >
           <!-- 节点卡片 -->
           <div class="node-card" @click="toggleExpand(step.id)">
             <div class="node-left">
-                            <span class="method-tag"
-                                  :style="{ background: METHOD_COLORS[endpointMethod(step.endpointId)] }">
-                                {{ METHOD_LABELS[endpointMethod(step.endpointId)] || endpointMethod(step.endpointId) }}
-                            </span>
+              <span
+                class="method-tag"
+                :style="{
+                  background: METHOD_COLORS[endpointMethod(step.endpointId)],
+                }"
+              >
+                {{
+                  METHOD_LABELS[endpointMethod(step.endpointId)] ||
+                  endpointMethod(step.endpointId)
+                }}
+              </span>
               <div class="node-info">
                 <div class="node-title">
                   <span class="step-no">{{ idx + 1 }}</span>
@@ -188,23 +226,47 @@ const hasSteps = computed(() => props.state.chain.steps.length > 0);
               </div>
             </div>
             <div class="node-right">
-                            <span class="status-dot" :class="`dot-${statusColor(step.id)}`" v-if="stepResult(step.id)">
-                                {{ stepResult(step.id)?.response.status || "ERR" }}
-                            </span>
-              <el-button text size="small" :disabled="idx === 0" @click.stop="state.moveStep(step.id, -1)"
-                         :title="i18n('api.btn.moveUp')">
-                <ShSvgIcon name="moveUp" size="14px"/>
+              <span
+                class="status-dot"
+                :class="`dot-${statusColor(step.id)}`"
+                v-if="stepResult(step.id)"
+              >
+                {{ stepResult(step.id)?.response.status || "ERR" }}
+              </span>
+              <el-button
+                text
+                size="small"
+                :disabled="idx === 0"
+                @click.stop="state.moveStep(step.id, -1)"
+                :title="i18n('api.btn.moveUp')"
+              >
+                <ShSvgIcon name="moveUp" size="14px" />
               </el-button>
-              <el-button text size="small" :disabled="idx === state.chain.steps.length - 1"
-                         @click.stop="state.moveStep(step.id, 1)" :title="i18n('api.btn.moveDown')">
-                <ShSvgIcon name="moveDown" size="14px"/>
+              <el-button
+                text
+                size="small"
+                :disabled="idx === state.chain.steps.length - 1"
+                @click.stop="state.moveStep(step.id, 1)"
+                :title="i18n('api.btn.moveDown')"
+              >
+                <ShSvgIcon name="moveDown" size="14px" />
               </el-button>
-              <el-button text size="small" type="danger" @click.stop="state.removeChainStep(step.id)"
-                         :title="i18n('api.btn.delete')">
-                <ShSvgIcon name="delete" size="14px"/>
+              <el-button
+                text
+                size="small"
+                type="danger"
+                @click.stop="state.removeChainStep(step.id)"
+                :title="i18n('api.btn.delete')"
+              >
+                <ShSvgIcon name="delete" size="14px" />
               </el-button>
-              <ShSvgIcon :name="expandedStepIds.has(step.id) ? 'arrowDown' : 'arrowRight'" size="12px"
-                         class="expand-icon"/>
+              <ShSvgIcon
+                :name="
+                  expandedStepIds.has(step.id) ? 'arrowDown' : 'arrowRight'
+                "
+                size="12px"
+                class="expand-icon"
+              />
             </div>
           </div>
 
@@ -213,113 +275,163 @@ const hasSteps = computed(() => props.state.chain.steps.length > 0);
             <div class="detail-row">
               <label>{{ i18n("api.chain.stepName") }}</label>
               <el-input
-                  :model-value="step.stepName"
-                  style="flex: 1"
-                  @click.stop
-                  @change="(v) => state.updateChainStep(step.id, { stepName: String(v) })"
+                :model-value="step.stepName"
+                style="flex: 1"
+                @click.stop
+                @change="
+                  (v) => state.updateChainStep(step.id, { stepName: String(v) })
+                "
               />
             </div>
             <div class="detail-row">
               <label>{{ i18n("api.chain.endpoint") }}</label>
               <el-select
-                  :model-value="step.endpointId"
-                  style="flex: 1"
-                  @click.stop
-                  @change="(v) => state.updateChainStep(step.id, { endpointId: String(v) })"
+                :model-value="step.endpointId"
+                style="flex: 1"
+                @click.stop
+                @change="
+                  (v) =>
+                    state.updateChainStep(step.id, { endpointId: String(v) })
+                "
               >
                 <el-option
-                    v-for="ep in state.endpoints"
-                    :key="ep.id"
-                    :label="`${ep.method} ${ep.name} (${ep.url})`"
-                    :value="ep.id"
+                  v-for="ep in state.endpoints"
+                  :key="ep.id"
+                  :label="`${ep.method} ${ep.name} (${ep.url})`"
+                  :value="ep.id"
                 />
               </el-select>
             </div>
 
             <div class="detail-section">
               <div class="section-label">
-                <ShSvgIcon name="variable" size="12px"/>
+                <ShSvgIcon name="variable" size="12px" />
                 {{ i18n("api.chain.variableExtractions") }}
               </div>
               <div
-                  v-for="(ext, eIdx) in step.variableExtractions"
-                  :key="eIdx"
-                  class="ext-row"
+                v-for="(ext, eIdx) in step.variableExtractions"
+                :key="eIdx"
+                class="ext-row"
               >
                 <el-input
-                    :model-value="ext.sourceVar"
-                    size="small"
-                    :placeholder="i18n('api.extraction.sourceVar')"
-                    @click.stop
-                    @change="(v) => updateExtraction(step.id, Number(eIdx), 'sourceVar', String(v))"
+                  :model-value="ext.sourceVar"
+                  size="small"
+                  :placeholder="i18n('api.extraction.sourceVar')"
+                  @click.stop
+                  @change="
+                    (v) =>
+                      updateExtraction(
+                        step.id,
+                        Number(eIdx),
+                        'sourceVar',
+                        String(v),
+                      )
+                  "
                 />
-                <ShSvgIcon name="arrowRight" size="12px"/>
+                <ShSvgIcon name="arrowRight" size="12px" />
                 <el-input
-                    :model-value="ext.targetVar"
-                    size="small"
-                    :placeholder="i18n('api.extraction.targetVar')"
-                    @click.stop
-                    @change="(v) => updateExtraction(step.id, Number(eIdx), 'targetVar', String(v))"
+                  :model-value="ext.targetVar"
+                  size="small"
+                  :placeholder="i18n('api.extraction.targetVar')"
+                  @click.stop
+                  @change="
+                    (v) =>
+                      updateExtraction(
+                        step.id,
+                        Number(eIdx),
+                        'targetVar',
+                        String(v),
+                      )
+                  "
                 />
-                <el-button text size="small" type="danger" @click.stop="removeExtraction(step.id, Number(eIdx))">
-                  <ShSvgIcon name="delete" size="12px"/>
+                <el-button
+                  text
+                  size="small"
+                  type="danger"
+                  @click.stop="removeExtraction(step.id, Number(eIdx))"
+                >
+                  <ShSvgIcon name="delete" size="12px" />
                 </el-button>
               </div>
               <el-button text size="small" @click.stop="addExtraction(step.id)">
-                <ShSvgIcon name="plus" size="12px"/>
+                <ShSvgIcon name="plus" size="12px" />
                 {{ i18n("api.chain.addExtraction") }}
               </el-button>
             </div>
 
             <div class="detail-section">
               <div class="section-label">
-                <ShSvgIcon name="condition" size="12px"/>
+                <ShSvgIcon name="condition" size="12px" />
                 {{ i18n("api.chain.condition") }}
               </div>
               <el-input
-                  :model-value="step.condition"
-                  size="small"
-                  placeholder='e.g. token != null'
-                  @click.stop
-                  @change="(v) => state.updateChainStep(step.id, { condition: String(v) })"
+                :model-value="step.condition"
+                size="small"
+                placeholder="e.g. token != null"
+                @click.stop
+                @change="
+                  (v) =>
+                    state.updateChainStep(step.id, { condition: String(v) })
+                "
               />
             </div>
 
             <!-- 测试结果 -->
             <div class="detail-section" v-if="stepResult(step.id)">
               <div class="section-label">
-                <ShSvgIcon name="document" size="12px"/>
+                <ShSvgIcon name="document" size="12px" />
                 {{ i18n("api.test.result") }}
               </div>
-              <div class="result-info" :class="{ 'result-error': !stepResult(step.id)?.success }">
+              <div
+                class="result-info"
+                :class="{ 'result-error': !stepResult(step.id)?.success }"
+              >
                 <span>Status: {{ stepResult(step.id)?.response.status }}</span>
-                <span>Duration: {{ stepResult(step.id)?.response.duration }}ms</span>
-                <span v-if="!stepResult(step.id)?.success" class="error-msg">{{ stepResult(step.id)?.error }}</span>
+                <span
+                  >Duration:
+                  {{ stepResult(step.id)?.response.duration }}ms</span
+                >
+                <span v-if="!stepResult(step.id)?.success" class="error-msg">{{
+                  stepResult(step.id)?.error
+                }}</span>
               </div>
             </div>
           </div>
 
           <!-- 连接器（节点间） -->
           <div class="node-connector" v-if="idx < state.chain.steps.length - 1">
-            <div class="connector-line"/>
-            <div class="insert-zone" @click.stop="showInsertMenu(state.chain.steps[idx + 1].id, 'before', $event)">
-              <ShSvgIcon name="plus" size="12px"/>
+            <div class="connector-line" />
+            <div
+              class="insert-zone"
+              @click.stop="
+                showInsertMenu(state.chain.steps[idx + 1].id, 'before', $event)
+              "
+            >
+              <ShSvgIcon name="plus" size="12px" />
             </div>
-            <div class="connector-line"/>
+            <div class="connector-line" />
           </div>
         </div>
       </template>
 
       <!-- 结束节点 -->
       <div class="flow-end" v-if="hasSteps">
-        <div class="connector-line"/>
-        <div class="insert-zone"
-             @click.stop="showInsertMenu(state.chain.steps[state.chain.steps.length - 1].id, 'after', $event)">
-          <ShSvgIcon name="plus" size="12px"/>
+        <div class="connector-line" />
+        <div
+          class="insert-zone"
+          @click.stop="
+            showInsertMenu(
+              state.chain.steps[state.chain.steps.length - 1].id,
+              'after',
+              $event,
+            )
+          "
+        >
+          <ShSvgIcon name="plus" size="12px" />
         </div>
-        <div class="connector-line"/>
+        <div class="connector-line" />
         <div class="end-node">
-          <ShSvgIcon name="stop" size="14px"/>
+          <ShSvgIcon name="stop" size="14px" />
           <span>{{ i18n("api.flow.end") }}</span>
         </div>
       </div>
@@ -327,24 +439,31 @@ const hasSteps = computed(() => props.state.chain.steps.length > 0);
 
     <!-- 插入步骤菜单 -->
     <div
-        v-if="insertMenu.visible"
-        class="insert-menu"
-        :style="{ left: '50%', transform: 'translateX(-50%)' }"
-        @click.stop
+      v-if="insertMenu.visible"
+      class="insert-menu"
+      :style="{ left: '50%', transform: 'translateX(-50%)' }"
+      @click.stop
     >
       <div class="insert-menu-header">
-        {{ insertMenu.position === "before" ? i18n("api.chain.insertBefore") : i18n("api.chain.insertAfter") }}
+        {{
+          insertMenu.position === "before"
+            ? i18n("api.chain.insertBefore")
+            : i18n("api.chain.insertAfter")
+        }}
       </div>
       <div class="insert-menu-list">
         <div
-            v-for="ep in state.endpoints"
-            :key="ep.id"
-            class="insert-menu-item"
-            @click="handleInsert(ep.id)"
+          v-for="ep in state.endpoints"
+          :key="ep.id"
+          class="insert-menu-item"
+          @click="handleInsert(ep.id)"
         >
-                    <span class="method-tag" :style="{ background: METHOD_COLORS[ep.method] }">
-                        {{ METHOD_LABELS[ep.method] || ep.method }}
-                    </span>
+          <span
+            class="method-tag"
+            :style="{ background: METHOD_COLORS[ep.method] }"
+          >
+            {{ METHOD_LABELS[ep.method] || ep.method }}
+          </span>
           <span class="ep-name">{{ ep.name }}</span>
           <span class="ep-path">{{ ep.url }}</span>
         </div>
@@ -413,7 +532,8 @@ const hasSteps = computed(() => props.state.chain.steps.length > 0);
 }
 
 /* 起始/结束节点 */
-.flow-start, .flow-end {
+.flow-start,
+.flow-end {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -421,7 +541,8 @@ const hasSteps = computed(() => props.state.chain.steps.length > 0);
   max-width: 560px;
 }
 
-.start-node, .end-node {
+.start-node,
+.end-node {
   display: flex;
   align-items: center;
   gap: 6px;

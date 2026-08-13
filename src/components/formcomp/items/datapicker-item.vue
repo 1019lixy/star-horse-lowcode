@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, nextTick, onMounted, ref, watch} from "vue";
+import { computed, nextTick, onMounted, ref, watch } from "vue";
 import {
   allAction,
   checkIsDisabled,
@@ -7,9 +7,9 @@ import {
   prepsFilter,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 
-import {StarHorseDataSelector} from "@/components/comp";
-import {ItemPreps} from "@/components/types/ItemPreps";
-import {SearchParams} from "@/components/types";
+import { StarHorseDataSelector } from "@/components/comp";
+import { ItemPreps } from "@/components/types/ItemPreps";
+import { SearchParams } from "@/components/types";
 
 defineOptions({
   name: "DataPickerItem",
@@ -27,7 +27,7 @@ const formData = defineModel<any>("formData");
 const pickerData = ref<any>([]);
 const preps = computed(() => {
   const temp = props.field.preps ?? {};
-  let preps = {...temp};
+  let preps = { ...temp };
   if (preps.dataSource !== "url") {
     delete preps.urlOrDictName;
   } else {
@@ -77,49 +77,49 @@ onMounted(() => {
   });
 });
 watch(
-    () => formData.value[props.field.fieldName],
-    (val) => {
-      if (val) {
-        // 优化数组转换逻辑
-        pickerData.value = props.field.preps?.multiple
-            ? Array.isArray(val)
-                ? val
-                : [val]
-            : val
-                ? [val]
-                : [];
-      }
-    },
-    {immediate: true, deep: true},
+  () => formData.value[props.field.fieldName],
+  (val) => {
+    if (val) {
+      // 优化数组转换逻辑
+      pickerData.value = props.field.preps?.multiple
+        ? Array.isArray(val)
+          ? val
+          : [val]
+        : val
+          ? [val]
+          : [];
+    }
+  },
+  { immediate: true, deep: true },
 );
 watch(
-    () => pickerData.value,
-    (val) => {
-      if (props.field.preps?.multiple) {
-        formData.value[props.field.fieldName] = val;
-      } else {
-        formData.value[props.field.fieldName] = Array.isArray(val) ? val[0] : val;
-      }
-    },
-    {deep: true},
+  () => pickerData.value,
+  (val) => {
+    if (props.field.preps?.multiple) {
+      formData.value[props.field.fieldName] = val;
+    } else {
+      formData.value[props.field.fieldName] = Array.isArray(val) ? val[0] : val;
+    }
+  },
+  { deep: true },
 );
 </script>
 <template>
   <starhorse-form-item
-      :showFormItem="showFormItem"
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :field="field"
-      :parentField="parentField"
+    :showFormItem="showFormItem"
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :bareFlag="bareFlag"
+    :field="field"
+    :parentField="parentField"
   >
     <!--里面用的el-input-tag -->
     <star-horse-data-selector
-        v-model="pickerData"
-        v-bind="prepsFilter(preps)"
-        :disabled="checkIsDisabled(props)"
-        @update:selectedData="(data) => itemAction('change')"
-        @selectedData="(data) => itemAction('change')"
+      v-model="pickerData"
+      v-bind="prepsFilter(preps)"
+      :disabled="checkIsDisabled(props)"
+      @update:selectedData="(data) => itemAction('change')"
+      @selectedData="(data) => itemAction('change')"
     />
   </starhorse-form-item>
 </template>

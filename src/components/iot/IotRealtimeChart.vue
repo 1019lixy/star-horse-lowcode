@@ -1,9 +1,9 @@
 <script setup lang="ts" name="IotRealtimeChart">
-import {computed, onBeforeUnmount, ref, shallowRef, watch} from "vue";
-import {i18n} from "@/lang";
-import {useRealtimeChart} from "./composables/useRealtimeChart";
-import {renderLineChart} from "./utils/IotChartRenderer";
-import type {IotChartConfig, IotChartSeries} from "./types";
+import { computed, onBeforeUnmount, ref, shallowRef, watch } from "vue";
+import { i18n } from "@/lang";
+import { useRealtimeChart } from "./composables/useRealtimeChart";
+import { renderLineChart } from "./utils/IotChartRenderer";
+import type { IotChartConfig, IotChartSeries } from "./types";
 
 const props = defineProps<{
   series?: IotChartSeries[];
@@ -37,9 +37,15 @@ const renderCanvas = () => {
 
 /** 监听数据与配置变化重绘 */
 watch(
-    () => [chart.series, chart.config, canvasWidth.value, canvasHeight.value] as const,
-    () => renderCanvas(),
-    {deep: true},
+  () =>
+    [
+      chart.series,
+      chart.config,
+      canvasWidth.value,
+      canvasHeight.value,
+    ] as const,
+  () => renderCanvas(),
+  { deep: true },
 );
 
 /** 响应式调整画布尺寸 */
@@ -67,38 +73,43 @@ onBeforeUnmount(() => {
 /** 刷新间隔（秒） */
 const refreshIntervalSec = computed({
   get: () => chart.config.refreshInterval / 1000,
-  set: (v: number) => chart.updateConfig({refreshInterval: Math.max(0.2, v) * 1000}),
+  set: (v: number) =>
+    chart.updateConfig({ refreshInterval: Math.max(0.2, v) * 1000 }),
 });
 
 /** 系列选择列表 */
 const seriesList = computed(() =>
-    chart.series.map((s, idx) => ({
-      index: idx,
-      name: s.name,
-      color: s.color,
-      visible: s.visible ?? true,
-      count: s.data.length,
-    })),
+  chart.series.map((s, idx) => ({
+    index: idx,
+    name: s.name,
+    color: s.color,
+    visible: s.visible ?? true,
+    count: s.data.length,
+  })),
 );
 
 /** 标题输入 */
 const titleValue = computed({
   get: () => chart.config.title,
-  set: (v: string) => chart.updateConfig({title: v}),
+  set: (v: string) => chart.updateConfig({ title: v }),
 });
 
 /** 单位输入 */
 const unitValue = computed({
   get: () => chart.config.unit,
-  set: (v: string) => chart.updateConfig({unit: v}),
+  set: (v: string) => chart.updateConfig({ unit: v }),
 });
 
 /** 内联 SVG 图标（替代 Element Plus 图标，减少依赖） */
 const icons: Record<string, string> = {
-  setting: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>',
-  delete: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M5 6v14a2 2 0 002 2h10a2 2 0 002-2V6M10 11v6M14 11v6"/></svg>',
-  videoPause: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>',
-  videoPlay: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>',
+  setting:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>',
+  delete:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M5 6v14a2 2 0 002 2h10a2 2 0 002-2V6M10 11v6M14 11v6"/></svg>',
+  videoPause:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>',
+  videoPlay:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>',
 };
 </script>
 
@@ -114,12 +125,18 @@ const icons: Record<string, string> = {
           {{ i18n("iot.chart.pause") }}
         </el-tag>
         <el-button
-
-            :type="chart.isRunning.value ? 'danger' : 'primary'"
-            @click="chart.toggle()"
+          :type="chart.isRunning.value ? 'danger' : 'primary'"
+          @click="chart.toggle()"
         >
-          <span class="svg-icon" v-html="chart.isRunning.value ? icons.videoPause : icons.videoPlay"></span>
-          {{ chart.isRunning.value ? i18n("iot.chart.stop") : i18n("iot.chart.start") }}
+          <span
+            class="svg-icon"
+            v-html="chart.isRunning.value ? icons.videoPause : icons.videoPlay"
+          ></span>
+          {{
+            chart.isRunning.value
+              ? i18n("iot.chart.stop")
+              : i18n("iot.chart.start")
+          }}
         </el-button>
         <el-button @click="showConfig = !showConfig">
           <span class="svg-icon" v-html="icons.setting"></span>
@@ -135,31 +152,30 @@ const icons: Record<string, string> = {
     <div v-show="showConfig" class="config-panel">
       <div class="config-row">
         <label>{{ i18n("iot.chart.title") }}</label>
-        <el-input v-model="titleValue" style="width: 160px"/>
+        <el-input v-model="titleValue" style="width: 160px" />
       </div>
       <div class="config-row">
         <label>{{ i18n("iot.chart.unit") }}</label>
-        <el-input v-model="unitValue" style="width: 100px"/>
+        <el-input v-model="unitValue" style="width: 100px" />
       </div>
       <div class="config-row">
         <label>{{ i18n("iot.chart.refreshInterval") }}(s)</label>
         <el-input-number
-            v-model="refreshIntervalSec"
-
-            :min="0.2"
-            :max="60"
-            :step="0.5"
-            style="width: 110px"
+          v-model="refreshIntervalSec"
+          :min="0.2"
+          :max="60"
+          :step="0.5"
+          style="width: 110px"
         />
       </div>
       <div class="config-row series-row">
         <label>{{ i18n("iot.chart.series") }}</label>
         <div class="series-list">
           <el-checkbox
-              v-for="s in seriesList"
-              :key="s.index"
-              :model-value="s.visible"
-              @change="chart.toggleSeries(Number(s.index))"
+            v-for="s in seriesList"
+            :key="s.index"
+            :model-value="s.visible"
+            @change="chart.toggleSeries(Number(s.index))"
           >
             <span class="series-dot" :style="{ background: s.color }"></span>
             {{ s.name }} ({{ s.count }})
@@ -169,14 +185,17 @@ const icons: Record<string, string> = {
     </div>
     <!-- 图表画布 -->
     <div
-        class="canvas-wrapper"
-        :style="{ height: `${canvasHeight}px` }"
-        :ref="(el) => el && handleWrapperMount(el as HTMLElement)"
+      class="canvas-wrapper"
+      :style="{ height: `${canvasHeight}px` }"
+      :ref="(el) => el && handleWrapperMount(el as HTMLElement)"
     >
-      <canvas ref="canvasRef" class="chart-canvas"/>
+      <canvas ref="canvasRef" class="chart-canvas" />
       <div
-          v-if="chart.series.length === 0 || chart.series.every((s) => s.data.length === 0)"
-          class="empty"
+        v-if="
+          chart.series.length === 0 ||
+          chart.series.every((s) => s.data.length === 0)
+        "
+        class="empty"
       >
         {{ i18n("iot.chart.noData") }}
       </div>

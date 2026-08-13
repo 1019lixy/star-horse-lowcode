@@ -1,10 +1,10 @@
 <script setup lang="ts" name="MapHeatmap">
-import {computed, onBeforeUnmount, ref, shallowRef, watch} from "vue";
-import {i18n} from "@/lang";
-import {useHeatmap} from "./composables/useHeatmap";
-import {DEFAULT_HEAT_GRADIENT, DEFAULT_MAP_BOUNDS} from "./constants";
-import {renderHeatmap} from "./utils/HeatmapRenderer";
-import type {HeatPoint, MapBounds} from "./types";
+import { computed, onBeforeUnmount, ref, shallowRef, watch } from "vue";
+import { i18n } from "@/lang";
+import { useHeatmap } from "./composables/useHeatmap";
+import { DEFAULT_HEAT_GRADIENT, DEFAULT_MAP_BOUNDS } from "./constants";
+import { renderHeatmap } from "./utils/HeatmapRenderer";
+import type { HeatPoint, MapBounds } from "./types";
 
 const props = defineProps<{
   points?: HeatPoint[];
@@ -30,11 +30,19 @@ const radius = ref(props.radius ?? 30);
 const opacity = ref(props.opacity ?? 0.6);
 
 watch(
-    () => [heat.points, radius.value, opacity.value, bounds.value, canvasWidth.value, canvasHeight.value] as const,
-    () => {
-      renderCanvas();
-    },
-    {deep: true},
+  () =>
+    [
+      heat.points,
+      radius.value,
+      opacity.value,
+      bounds.value,
+      canvasWidth.value,
+      canvasHeight.value,
+    ] as const,
+  () => {
+    renderCanvas();
+  },
+  { deep: true },
 );
 
 const renderCanvas = () => {
@@ -42,7 +50,14 @@ const renderCanvas = () => {
   if (!canvas) return;
   canvas.width = canvasWidth.value;
   canvas.height = canvasHeight.value;
-  renderHeatmap(canvas, heat.points, bounds.value, radius.value, DEFAULT_HEAT_GRADIENT, opacity.value);
+  renderHeatmap(
+    canvas,
+    heat.points,
+    bounds.value,
+    radius.value,
+    DEFAULT_HEAT_GRADIENT,
+    opacity.value,
+  );
 };
 
 const handleResize = () => {
@@ -90,10 +105,17 @@ const handleClear = () => heat.clear();
 
 <template>
   <div class="map-heatmap">
-    <div class="heatmap-canvas-wrapper" :style="{ height: `${canvasHeight}px` }"
-         :ref="(el) => el && handleMounted(el as HTMLElement)">
-      <canvas ref="canvasRef" class="heatmap-canvas"/>
-      <div class="heatmap-bg" v-if="backgroundImage" :style="{ backgroundImage: `url(${backgroundImage})` }"/>
+    <div
+      class="heatmap-canvas-wrapper"
+      :style="{ height: `${canvasHeight}px` }"
+      :ref="(el) => el && handleMounted(el as HTMLElement)"
+    >
+      <canvas ref="canvasRef" class="heatmap-canvas" />
+      <div
+        class="heatmap-bg"
+        v-if="backgroundImage"
+        :style="{ backgroundImage: `url(${backgroundImage})` }"
+      />
       <div class="heatmap-empty" v-if="heat.points.length === 0">
         {{ i18n("map.heatmap.empty") }}
       </div>
@@ -102,24 +124,24 @@ const handleClear = () => heat.clear();
       <div class="control-group">
         <span class="control-label">{{ i18n("map.heatmap.radius") }}</span>
         <el-slider
-            :model-value="radius"
-            :min="5"
-            :max="80"
-            :show-tooltip="false"
-            style="width: 140px;"
-            @input="handleRadiusChange"
+          :model-value="radius"
+          :min="5"
+          :max="80"
+          :show-tooltip="false"
+          style="width: 140px"
+          @input="handleRadiusChange"
         />
       </div>
       <div class="control-group">
         <span class="control-label">{{ i18n("map.heatmap.intensity") }}</span>
         <el-slider
-            :model-value="opacity"
-            :min="0.1"
-            :max="1"
-            :step="0.05"
-            :show-tooltip="false"
-            style="width: 120px;"
-            @input="handleOpacityChange"
+          :model-value="opacity"
+          :min="0.1"
+          :max="1"
+          :step="0.05"
+          :show-tooltip="false"
+          style="width: 120px"
+          @input="handleOpacityChange"
         />
       </div>
       <div class="control-group">
@@ -127,15 +149,18 @@ const handleClear = () => heat.clear();
         <el-tag>{{ heat.points.length }}</el-tag>
       </div>
       <div class="control-group">
-        <el-button @click="handleAggregate" :disabled="heat.points.length === 0">
+        <el-button
+          @click="handleAggregate"
+          :disabled="heat.points.length === 0"
+        >
           <el-icon>
-            <Grid/>
+            <Grid />
           </el-icon>
           {{ i18n("map.heatmap.aggregate") }}
         </el-button>
         <el-button @click="handleClear" :disabled="heat.points.length === 0">
           <el-icon>
-            <Delete/>
+            <Delete />
           </el-icon>
           {{ i18n("map.heatmap.clear") }}
         </el-button>
@@ -145,9 +170,9 @@ const handleClear = () => heat.clear();
 </template>
 
 <script lang="ts">
-import {Grid, Delete} from "@element-plus/icons-vue";
+import { Grid, Delete } from "@element-plus/icons-vue";
 
-export default {components: {Grid, Delete}};
+export default { components: { Grid, Delete } };
 </script>
 
 <style lang="scss" scoped>

@@ -1,11 +1,16 @@
 <script setup lang="ts">
-import {useVModel} from "@vueuse/core";
-import DataPicker, {type ModelValueType,} from "@/components/comp/utils/DataPicker.vue";
-import {computed, CSSProperties, nextTick, onMounted, ref, watch} from "vue";
+import { useVModel } from "@vueuse/core";
+import DataPicker, {
+  type ModelValueType,
+} from "@/components/comp/utils/DataPicker.vue";
+import { computed, CSSProperties, nextTick, onMounted, ref, watch } from "vue";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
-import {i18n} from "@/lang";
-import {SearchParams} from "@/components/types";
-import {findNodesInTree, loadSelectedData,} from "@/components/comp/utils/DataSelectorUtils";
+import { i18n } from "@/lang";
+import { SearchParams } from "@/components/types";
+import {
+  findNodesInTree,
+  loadSelectedData,
+} from "@/components/comp/utils/DataSelectorUtils";
 
 export interface DataSelectorProps {
   modelValue: ModelValueType;
@@ -69,8 +74,8 @@ const selectData: any = ref<any>(props.multiple ? [] : "");
 const valueArr = computed<string[]>(() => {
   if (selectData.value) {
     const temp = Array.isArray(selectData.value)
-        ? selectData.value
-        : [selectData.value];
+      ? selectData.value
+      : [selectData.value];
     return temp.map((item: any) => item?.[props.displayValue]);
   }
   return [];
@@ -96,7 +101,7 @@ const onClose = (data: any) => {
   if (props.multiple && Array.isArray(selectData.value)) {
     const targetValue = data?.[props.displayValue] ?? data;
     const selectIndex = selectData.value.findIndex(
-        (item: any) => item?.[props.displayValue] === targetValue,
+      (item: any) => item?.[props.displayValue] === targetValue,
     );
     const valueIndex = value.value?.indexOf(targetValue);
     if (selectIndex !== -1) {
@@ -119,18 +124,18 @@ const onClose = (data: any) => {
 const init = async () => {
   if (props.data) {
     selectData.value = findNodesInTree(
-        props.data,
-        value.value,
-        props.displayValue,
+      props.data,
+      value.value,
+      props.displayValue,
     );
   } else if (props.dataUrl && value.value?.length > 0) {
     selectData.value = await loadSelectedData(
-        props.dataUrl,
-        value.value,
-        props.displayValue,
-        props.params,
-        props.proxy,
-        props.proxyUrl,
+      props.dataUrl,
+      value.value,
+      props.displayValue,
+      props.params,
+      props.proxy,
+      props.proxyUrl,
     );
   }
 };
@@ -151,7 +156,7 @@ const addTag = (val: any) => {
 /** 获取显示文本（支持 label+code 模式） */
 const getDisplayText = (val: any): string => {
   const item = selectData.value?.find(
-      (i: any) => i?.[props.displayValue] === val,
+    (i: any) => i?.[props.displayValue] === val,
   );
   if (!item) return val;
   if (props.displayMode === "label+code") {
@@ -171,56 +176,56 @@ onMounted(() => {
 });
 
 watch(
-    () => selectData.value,
-    (newVal) => {
-      if (newVal) {
-        const tempNewValue = Array.isArray(newVal)
-            ? newVal.map((v) => v[props.displayValue])
-            : newVal?.[props.displayValue];
-        value.value = props.multiple ? tempNewValue : tempNewValue[0];
-        emitData.value = newVal;
-        emits("change", newVal);
-      } else {
-        console.error("dataselector error", newVal);
-      }
-    },
-    {deep: true},
+  () => selectData.value,
+  (newVal) => {
+    if (newVal) {
+      const tempNewValue = Array.isArray(newVal)
+        ? newVal.map((v) => v[props.displayValue])
+        : newVal?.[props.displayValue];
+      value.value = props.multiple ? tempNewValue : tempNewValue[0];
+      emitData.value = newVal;
+      emits("change", newVal);
+    } else {
+      console.error("dataselector error", newVal);
+    }
+  },
+  { deep: true },
 );
 </script>
 
 <template>
   <data-picker
-      v-if="pickerMounted"
-      ref="dataPickerRef"
-      :title="title"
-      :data="data"
-      :data-url="dataUrl"
-      :proxy="proxy"
-      :proxy-url="proxyUrl"
-      :params="params"
-      :page-size="pageSize"
-      :display-name="displayName"
-      :display-value="displayValue"
-      :display-mode="displayMode"
-      :display-code="displayCode"
-      :checkStrictly="checkStrictly"
-      :select-leaf="selectLeaf"
-      :multiple="multiple"
-      :enable-hierarchy="enableHierarchy"
-      v-model="selectData"
+    v-if="pickerMounted"
+    ref="dataPickerRef"
+    :title="title"
+    :data="data"
+    :data-url="dataUrl"
+    :proxy="proxy"
+    :proxy-url="proxyUrl"
+    :params="params"
+    :page-size="pageSize"
+    :display-name="displayName"
+    :display-value="displayValue"
+    :display-mode="displayMode"
+    :display-code="displayCode"
+    :checkStrictly="checkStrictly"
+    :select-leaf="selectLeaf"
+    :multiple="multiple"
+    :enable-hierarchy="enableHierarchy"
+    v-model="selectData"
   />
   <el-input-tag
-      v-model="valueArr"
-      :tag-type="tagType"
-      :disabled="disabled"
-      :readonly="!allowCreate"
-      :tagEffect="tagEffect"
-      :collapse-tags="true"
-      :max-collapse-tags="showTagLength ?? 5"
-      :collapse-tags-tooltip="true"
-      @clear="selectData = []"
-      @addTag="addTag"
-      @removeTag="(val) => onClose(val)"
+    v-model="valueArr"
+    :tag-type="tagType"
+    :disabled="disabled"
+    :readonly="!allowCreate"
+    :tagEffect="tagEffect"
+    :collapse-tags="true"
+    :max-collapse-tags="showTagLength ?? 5"
+    :collapse-tags-tooltip="true"
+    @clear="selectData = []"
+    @addTag="addTag"
+    @removeTag="(val) => onClose(val)"
   >
     <template #tag="{ value }">
       <div class="flex items-center">
@@ -229,15 +234,15 @@ watch(
     </template>
     <template #suffix>
       <div
-          class="data-selector-suffix"
-          :class="{ 'is-disabled': disabled }"
-          @click="openDataPicker"
+        class="data-selector-suffix"
+        :class="{ 'is-disabled': disabled }"
+        @click="openDataPicker"
       >
         <star-horse-icon
-            cursor="pointer"
-            icon-class="select-data"
-            size="18px"
-            :color="
+          cursor="pointer"
+          icon-class="select-data"
+          size="18px"
+          :color="
             !disabled ? 'var(--star-horse-style)' : 'var(--star-horse-disabled)'
           "
         />
@@ -273,8 +278,9 @@ watch(
   border-radius: 0;
   background: var(--el-fill-color-light);
   border-left: 1px solid var(--el-border-color);
-  transition: background 0.2s,
-  border-color 0.2s;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
   cursor: pointer;
 
   &:hover {

@@ -4,17 +4,22 @@
  *
  * 工具栏 + 会话列表 + 对话面板 + 上下文面板 + 设置弹窗
  */
-import {computed, ref} from "vue";
-import {i18n} from "@/lang";
-import {ElMessage, ElMessageBox} from "element-plus";
-import {DesignerMobileShell} from "@/components/shared";
+import { computed, ref } from "vue";
+import { i18n } from "@/lang";
+import { ElMessage, ElMessageBox } from "element-plus";
+import { DesignerMobileShell } from "@/components/shared";
 import AiToolbar from "./panels/AiToolbar.vue";
 import AiConversationList from "./panels/AiConversationList.vue";
 import AiChatPanel from "./panels/AiChatPanel.vue";
 import AiContextPanel from "./panels/AiContextPanel.vue";
 import AiSettingsDialog from "./dialogs/AiSettingsDialog.vue";
-import {useAiCopilot} from "./composables/useAiCopilot";
-import type {AiAction, AiContext, AiConversation, AiProviderSettings} from "./types";
+import { useAiCopilot } from "./composables/useAiCopilot";
+import type {
+  AiAction,
+  AiContext,
+  AiConversation,
+  AiProviderSettings,
+} from "./types";
 
 const props = defineProps<{
   /** 初始会话列表 */
@@ -49,15 +54,18 @@ const handleToggleHistory = (): void => {
 };
 
 const handleClear = (): void => {
-  ElMessageBox.confirm(i18n("aicopilot.toolbar.clear"), i18n("aicopilot.toolbar.clear"), {
-    type: "warning",
-  })
-      .then(() => {
-        copilot.clearHistory();
-        ElMessage.success(i18n("aicopilot.message.historyCleared"));
-      })
-      .catch(() => {
-      });
+  ElMessageBox.confirm(
+    i18n("aicopilot.toolbar.clear"),
+    i18n("aicopilot.toolbar.clear"),
+    {
+      type: "warning",
+    },
+  )
+    .then(() => {
+      copilot.clearHistory();
+      ElMessage.success(i18n("aicopilot.message.historyCleared"));
+    })
+    .catch(() => {});
 };
 
 const handleSend = (text: string): void => {
@@ -96,7 +104,10 @@ const handleRejectActionById = (actionId: string): void => {
 };
 
 /** 从消息内应用动作 */
-const handleApplyMessageAction = (messageId: string, actionId: string): void => {
+const handleApplyMessageAction = (
+  messageId: string,
+  actionId: string,
+): void => {
   void messageId;
   handleApplyActionById(actionId);
 };
@@ -118,55 +129,67 @@ void computed;
 <template>
   <div class="ai-copilot">
     <DesignerMobileShell
-        :panels="[
-                { key: 'conversations', label: '会话', side: 'left', width: 240, min: 200 },
-                { key: 'context', label: '上下文', side: 'right', width: 280, min: 220 },
-            ]"
-        canvas-label="聊天"
+      :panels="[
+        {
+          key: 'conversations',
+          label: '会话',
+          side: 'left',
+          width: 240,
+          min: 200,
+        },
+        {
+          key: 'context',
+          label: '上下文',
+          side: 'right',
+          width: 280,
+          min: 220,
+        },
+      ]"
+      canvas-label="聊天"
     >
       <template #toolbar>
         <ai-toolbar
-            :history-visible="historyVisible"
-            @new-conversation="handleNewConversation"
-            @toggle-history="handleToggleHistory"
-            @clear="handleClear"
-            @open-settings="settingsVisible = true"
+          :history-visible="historyVisible"
+          @new-conversation="handleNewConversation"
+          @toggle-history="handleToggleHistory"
+          @clear="handleClear"
+          @open-settings="settingsVisible = true"
         />
       </template>
       <template #canvas>
         <ai-chat-panel
-            :messages="copilot.messages.value"
-            :is-generating="copilot.isGenerating.value"
-            @send="handleSend"
-            @stop="handleStop"
-            @apply-action="handleApplyMessageAction"
+          :messages="copilot.messages.value"
+          :is-generating="copilot.isGenerating.value"
+          @send="handleSend"
+          @stop="handleStop"
+          @apply-action="handleApplyMessageAction"
         />
       </template>
       <template #panel-conversations>
         <ai-conversation-list
-            v-if="historyVisible"
-            :conversations="copilot.conversations.value"
-            :current-id="copilot.currentConversationId.value"
-            @new="handleNewConversation"
-            @select="copilot.loadConversation"
-            @delete="copilot.deleteConversation"
-            @rename="copilot.renameConversation"
+          v-if="historyVisible"
+          :conversations="copilot.conversations.value"
+          :current-id="copilot.currentConversationId.value"
+          @new="handleNewConversation"
+          @select="copilot.loadConversation"
+          @delete="copilot.deleteConversation"
+          @rename="copilot.renameConversation"
         />
       </template>
       <template #panel-context>
         <ai-context-panel
-            :context="copilot.context.value"
-            :actions="copilot.pendingActions.value"
-            @apply-action="handleApplyActionById"
-            @reject-action="handleRejectActionById"
+          :context="copilot.context.value"
+          :actions="copilot.pendingActions.value"
+          @apply-action="handleApplyActionById"
+          @reject-action="handleRejectActionById"
         />
       </template>
     </DesignerMobileShell>
 
     <ai-settings-dialog
-        v-model:visible="settingsVisible"
-        :settings="copilot.settings.value"
-        @save="handleSaveSettings"
+      v-model:visible="settingsVisible"
+      :settings="copilot.settings.value"
+      @save="handleSaveSettings"
     />
   </div>
 </template>

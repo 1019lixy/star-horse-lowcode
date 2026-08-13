@@ -1,22 +1,22 @@
 <script setup lang="ts">
-import {computed, ComputedRef, ref} from "vue";
-import {i18n} from "@/lang";
-import {getDesignFormStore} from "@/store/StoreManager";
+import { computed, ComputedRef, ref } from "vue";
+import { i18n } from "@/lang";
+import { getDesignFormStore } from "@/store/StoreManager";
 
 defineOptions({
   name: "FieldList",
 });
 withDefaults(
-    defineProps<{
-      showContainer?: boolean;
-      showFormItems?: boolean;
-      showThirdItems?: boolean;
-    }>(),
-    {
-      showContainer: true,
-      showFormItems: true,
-      showThirdItems: true,
-    },
+  defineProps<{
+    showContainer?: boolean;
+    showFormItems?: boolean;
+    showThirdItems?: boolean;
+  }>(),
+  {
+    showContainer: true,
+    showFormItems: true,
+    showThirdItems: true,
+  },
 );
 const containerRef = ref();
 const emits = defineEmits(["selectData"]);
@@ -30,7 +30,7 @@ const filteredContainerList = computed(() => {
     return containerFields.value;
   }
   return containerFields.value.filter((item: any) =>
-      item.itemName.toLowerCase().includes(searchQuery.value.toLowerCase()),
+    item.itemName.toLowerCase().includes(searchQuery.value.toLowerCase()),
   );
 });
 const filteredFormDataList = computed(() => {
@@ -38,7 +38,7 @@ const filteredFormDataList = computed(() => {
     return formDataList.value;
   }
   return formDataList.value.filter((item: any) =>
-      item.itemName.toLowerCase().includes(searchQuery.value.toLowerCase()),
+    item.itemName.toLowerCase().includes(searchQuery.value.toLowerCase()),
   );
 });
 const filteredSelfFormDataList = computed(() => {
@@ -46,7 +46,7 @@ const filteredSelfFormDataList = computed(() => {
     return selfFormDataList.value;
   }
   return selfFormDataList.value.filter((item: any) =>
-      item.itemName.toLowerCase().includes(searchQuery.value.toLowerCase()),
+    item.itemName.toLowerCase().includes(searchQuery.value.toLowerCase()),
   );
 });
 const selectData = (item: any) => {
@@ -72,23 +72,22 @@ const selectData = (item: any) => {
     <div class="flex flex-col h-full w-full" ref="containerRef">
       <div style="height: 30px">
         <el-input
-            v-model="searchQuery"
-            :placeholder="i18n('form.searchPlaceholder')"
-
-            clearable
+          v-model="searchQuery"
+          :placeholder="i18n('form.searchPlaceholder')"
+          clearable
         />
       </div>
       <div class="flex-1 overflow-hidden">
         <el-scrollbar>
           <el-divider content-position="left" v-if="showContainer"
-          >{{ i18n("form.container") }}
+            >{{ i18n("form.container") }}
           </el-divider>
           <ul id="container" class="my-2 min-h-[10px]" v-if="showContainer">
             <template v-for="item in filteredContainerList">
               <li class="field-item" @click="selectData(item)">
                 &nbsp;&nbsp;
                 <div class="flex items-center">
-                  <star-horse-icon :icon-class="item.itemIcon"/> &nbsp;{{
+                  <star-horse-icon :icon-class="item.itemIcon" /> &nbsp;{{
                     item.itemName
                   }}
                 </div>
@@ -96,14 +95,14 @@ const selectData = (item: any) => {
             </template>
           </ul>
           <el-divider content-position="left" v-if="showFormItems"
-          >{{ i18n("form.basicComponents") }}
+            >{{ i18n("form.basicComponents") }}
           </el-divider>
           <ul id="basic" class="my-2 min-h-[10px]" v-if="showFormItems">
             <template v-for="item in filteredFormDataList">
               <li class="field-item" @click="selectData(item)">
                 &nbsp;&nbsp;
                 <div class="flex items-center">
-                  <star-horse-icon :icon-class="item.itemIcon"/> &nbsp;{{
+                  <star-horse-icon :icon-class="item.itemIcon" /> &nbsp;{{
                     item.itemName
                   }}
                 </div>
@@ -111,14 +110,14 @@ const selectData = (item: any) => {
             </template>
           </ul>
           <el-divider content-position="left" v-if="showThirdItems"
-          >{{ i18n("form.customComponents") }}
+            >{{ i18n("form.customComponents") }}
           </el-divider>
           <ul id="self" class="my-2 min-h-[10px]" v-if="showThirdItems">
             <template v-for="item in filteredSelfFormDataList">
               <li class="field-item" @click="selectData(item)">
                 &nbsp;&nbsp;
                 <div class="flex items-center">
-                  <star-horse-icon :icon-class="item.itemIcon"/> &nbsp;{{
+                  <star-horse-icon :icon-class="item.itemIcon" /> &nbsp;{{
                     item.itemName
                   }}
                 </div>

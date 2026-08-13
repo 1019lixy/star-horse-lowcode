@@ -7,11 +7,11 @@
  * - 支持多路切换、PTZ 模拟控制
  * - 点击列表项 → emit('locate-camera', cameraId) 在 3D 场景中高亮点位
  */
-import {computed, onMounted, onUnmounted, ref, watch} from "vue";
-import {i18n} from "@/lang";
-import {ShSvgIcon} from "@/components/shared";
-import type {UseDtVideoMonitorReturn} from "../composables/useDtVideoMonitor";
-import type {DtVideoCamera} from "../types";
+import { computed, onMounted, onUnmounted, ref, watch } from "vue";
+import { i18n } from "@/lang";
+import { ShSvgIcon } from "@/components/shared";
+import type { UseDtVideoMonitorReturn } from "../composables/useDtVideoMonitor";
+import type { DtVideoCamera } from "../types";
 
 const props = defineProps<{
   videoMonitor: UseDtVideoMonitorReturn;
@@ -56,7 +56,7 @@ const renderMockStream = (): void => {
 
   // 远景轮廓
   for (let i = 0; i < 5; i++) {
-    const x = (i * 120 + (t * 30) % 120) % (W + 100) - 50;
+    const x = ((i * 120 + ((t * 30) % 120)) % (W + 100)) - 50;
     const h = 60 + Math.sin(i) * 20;
     ctx.strokeRect(x, H - h - 40, 80, h);
   }
@@ -79,11 +79,7 @@ const renderMockStream = (): void => {
   ctx.fillStyle = "rgba(255,255,255,0.7)";
   ctx.font = "11px monospace";
   const ts = new Date();
-  ctx.fillText(
-      `${ts.toLocaleDateString()} ${ts.toLocaleTimeString()}`,
-      10,
-      16,
-  );
+  ctx.fillText(`${ts.toLocaleDateString()} ${ts.toLocaleTimeString()}`, 10, 16);
   if (activeCamera.value) {
     ctx.fillText(`● ${activeCamera.value.name}`, 10, 32);
     ctx.fillText(`CAM-${activeCamera.value.id.slice(-4)}`, 10, 48);
@@ -130,7 +126,7 @@ const handleClose = (): void => {
 // PTZ 模拟控制
 const handlePtz = (direction: string): void => {
   // 模拟云台控制（mock）
-  // eslint-disable-next-line no-console
+
   console.log("PTZ:", direction);
 };
 </script>
@@ -138,16 +134,16 @@ const handlePtz = (direction: string): void => {
 <template>
   <div class="dt-video-monitor" :class="{ floating }">
     <div class="panel-header">
-            <span class="panel-title">
-                <ShSvgIcon name="camera"/>
-                {{ i18n("digitaltwin.video.title") }}
-            </span>
+      <span class="panel-title">
+        <ShSvgIcon name="camera" />
+        {{ i18n("digitaltwin.video.title") }}
+      </span>
       <span class="online-count">
-                {{ videoMonitor.onlineCount.value }}/{{ videoMonitor.totalCount.value }}
-            </span>
-      <div style="flex:1"/>
+        {{ videoMonitor.onlineCount.value }}/{{ videoMonitor.totalCount.value }}
+      </span>
+      <div style="flex: 1" />
       <el-button text size="small" @click="handleClose">
-        <ShSvgIcon name="close"/>
+        <ShSvgIcon name="close" />
       </el-button>
     </div>
 
@@ -155,22 +151,25 @@ const handlePtz = (direction: string): void => {
       <!-- 左侧摄像头列表 -->
       <div class="camera-list">
         <div
-            v-for="c in videoMonitor.cameras.value"
-            :key="c.id"
-            class="camera-item"
-            :class="{ active: c.id === videoMonitor.activeCameraId.value, offline: !c.online }"
-            @click="handleSelect(c)"
+          v-for="c in videoMonitor.cameras.value"
+          :key="c.id"
+          class="camera-item"
+          :class="{
+            active: c.id === videoMonitor.activeCameraId.value,
+            offline: !c.online,
+          }"
+          @click="handleSelect(c)"
         >
-          <span class="online-dot" :class="c.online ? 'online' : 'offline'"/>
+          <span class="online-dot" :class="c.online ? 'online' : 'offline'" />
           <span class="camera-name">{{ c.name }}</span>
           <el-button
-              size="small"
-              link
-              :disabled="!c.online"
-              @click.stop="handleLocate(c)"
-              :title="i18n('digitaltwin.video.locate')"
+            size="small"
+            link
+            :disabled="!c.online"
+            @click.stop="handleLocate(c)"
+            :title="i18n('digitaltwin.video.locate')"
           >
-            <ShSvgIcon name="location"/>
+            <ShSvgIcon name="location" />
           </el-button>
         </div>
       </div>
@@ -181,11 +180,13 @@ const handlePtz = (direction: string): void => {
           {{ i18n("digitaltwin.video.placeholder") }}
         </div>
         <template v-else>
-          <canvas ref="canvasRef" class="video-canvas"/>
+          <canvas ref="canvasRef" class="video-canvas" />
           <div class="video-overlay">
             <div class="overlay-info">
               <span class="overlay-name">{{ activeCamera.name }}</span>
-              <span class="overlay-type">{{ activeCamera.cameraType?.toUpperCase() }}</span>
+              <span class="overlay-type">{{
+                activeCamera.cameraType?.toUpperCase()
+              }}</span>
             </div>
             <!-- PTZ 控制（仅 ptz 类型） -->
             <div v-if="activeCamera.cameraType === 'ptz'" class="ptz-control">
@@ -193,7 +194,9 @@ const handlePtz = (direction: string): void => {
               <div class="ptz-row">
                 <el-button size="small" @click="handlePtz('left')">←</el-button>
                 <el-button size="small" @click="handlePtz('home')">●</el-button>
-                <el-button size="small" @click="handlePtz('right')">→</el-button>
+                <el-button size="small" @click="handlePtz('right')"
+                  >→</el-button
+                >
               </div>
               <el-button size="small" @click="handlePtz('down')">↓</el-button>
             </div>

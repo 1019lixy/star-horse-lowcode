@@ -5,9 +5,9 @@
  * 职责：SVG 渲染 / 节点拖拽 / 缩放平移 / 力布局动画 / 选中 / 双击展开 / 高亮
  * 注：本组件承担多种交互逻辑，行数较多（合理超 350 行）
  */
-import {computed, onBeforeUnmount, onMounted, ref} from "vue";
-import {i18n} from "@/lang";
-import {ElMessage} from "element-plus";
+import { computed, onBeforeUnmount, onMounted, ref } from "vue";
+import { i18n } from "@/lang";
+import { ElMessage } from "element-plus";
 import {
   KG_HIGHLIGHT_COLOR,
   KG_PATH_COLOR,
@@ -17,9 +17,9 @@ import {
   kgGetNodeColor,
   kgGetNodeRadius,
 } from "../constants";
-import type {KgEdge, KgNode} from "../types";
-import type {UseGraphViewerReturn} from "../composables/useGraphViewer";
-import type {UseForceLayoutReturn} from "../composables/useForceLayout";
+import type { KgEdge, KgNode } from "../types";
+import type { UseGraphViewerReturn } from "../composables/useGraphViewer";
+import type { UseForceLayoutReturn } from "../composables/useForceLayout";
 
 const props = defineProps<{
   viewer: UseGraphViewerReturn;
@@ -70,7 +70,7 @@ void viewer.tickCount;
 // ============== 坐标转换 ==============
 const toCanvasPoint = (clientX: number, clientY: number) => {
   const rect = wrapperRef.value?.getBoundingClientRect();
-  if (!rect) return {x: 0, y: 0};
+  if (!rect) return { x: 0, y: 0 };
   return {
     x: (clientX - rect.left - viewport.value.panX) / viewport.value.zoom,
     y: (clientY - rect.top - viewport.value.panY) / viewport.value.zoom,
@@ -111,11 +111,13 @@ const nodeOpacity = (node: KgNode): number => {
 const edgeOpacity = (edge: KgEdge): number => {
   if (viewer.state.pathNodeIds.length > 0) {
     const onPath =
-        pathIds.value.has(edge.source) && pathIds.value.has(edge.target);
+      pathIds.value.has(edge.source) && pathIds.value.has(edge.target);
     return onPath ? 1 : 0.1;
   }
   if (viewer.state.searchKeyword) {
-    const involved = highlightIds.value.has(edge.source) || highlightIds.value.has(edge.target);
+    const involved =
+      highlightIds.value.has(edge.source) ||
+      highlightIds.value.has(edge.target);
     return involved ? 0.8 : 0.1;
   }
   return 0.8;
@@ -124,8 +126,8 @@ const edgeOpacity = (edge: KgEdge): number => {
 const edgeMid = (edge: KgEdge): { x: number; y: number } => {
   const s = nodes.value.find((n) => n.id === edge.source);
   const t = nodes.value.find((n) => n.id === edge.target);
-  if (!s || !t) return {x: 0, y: 0};
-  return {x: (s.x + t.x) / 2, y: (s.y + t.y) / 2};
+  if (!s || !t) return { x: 0, y: 0 };
+  return { x: (s.x + t.x) / 2, y: (s.y + t.y) / 2 };
 };
 
 // ============== 节点点击 / 双击 ==============
@@ -158,7 +160,7 @@ const dragging = ref<{
   startClientX: number;
   startClientY: number;
   origX: number;
-  origY: number
+  origY: number;
 } | null>(null);
 
 const startNodeDrag = (e: MouseEvent, node: KgNode) => {
@@ -206,7 +208,12 @@ const removeDragListeners = () => {
 
 // ============== 平移 ==============
 const spacePressed = ref(false);
-const panning = ref<{ startX: number; startY: number; origPanX: number; origPanY: number } | null>(null);
+const panning = ref<{
+  startX: number;
+  startY: number;
+  origPanX: number;
+  origPanY: number;
+} | null>(null);
 
 const onKeyDown = (e: KeyboardEvent) => {
   if (e.code === "Space" && !isEditableTarget(e.target)) {
@@ -221,7 +228,12 @@ const isEditableTarget = (t: EventTarget | null): boolean => {
   if (!t) return false;
   const el = t as HTMLElement;
   const tag = el.tagName?.toLowerCase();
-  return tag === "input" || tag === "textarea" || tag === "select" || el.isContentEditable;
+  return (
+    tag === "input" ||
+    tag === "textarea" ||
+    tag === "select" ||
+    el.isContentEditable
+  );
 };
 
 const startPan = (e: MouseEvent) => {
@@ -241,8 +253,8 @@ const startPan = (e: MouseEvent) => {
 const onPanMove = (e: MouseEvent) => {
   if (!panning.value) return;
   viewer.setPan(
-      panning.value.origPanX + (e.clientX - panning.value.startX),
-      panning.value.origPanY + (e.clientY - panning.value.startY),
+    panning.value.origPanX + (e.clientX - panning.value.startX),
+    panning.value.origPanY + (e.clientY - panning.value.startY),
   );
 };
 
@@ -270,12 +282,12 @@ const toggleForce = () => {
   if (forceLayout.running.value) {
     forceLayout.stop();
   } else {
-    forceLayout.start({iterations: 200});
+    forceLayout.start({ iterations: 200 });
   }
 };
 
 const runLayoutOnce = () => {
-  viewer.applyLayout({x: svgWidth.value / 2, y: svgHeight.value / 2});
+  viewer.applyLayout({ x: svgWidth.value / 2, y: svgHeight.value / 2 });
 };
 
 // ============== 路径查询 ==============
@@ -301,78 +313,90 @@ defineExpose({
 
 /** 内联 SVG 图标（替代 Element Plus 图标，减少依赖） */
 const icons: Record<string, string> = {
-  refresh: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M3.51 15a9 9 0 012.12-9.36L12 3M20.49 9a9 9 0 01-2.12 9.36L12 21"/></svg>',
-  videoPlay: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>',
-  videoPause: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>',
+  refresh:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M3.51 15a9 9 0 012.12-9.36L12 3M20.49 9a9 9 0 01-2.12 9.36L12 21"/></svg>',
+  videoPlay:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>',
+  videoPause:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>',
 };
 </script>
 
 <template>
   <div
-      class="kg-canvas-wrapper"
-      ref="wrapperRef"
-      :class="{ panning: spacePressed }"
-      @click="handleCanvasClick"
-      @mousedown="startPan"
-      @wheel="handleWheel"
+    class="kg-canvas-wrapper"
+    ref="wrapperRef"
+    :class="{ panning: spacePressed }"
+    @click="handleCanvasClick"
+    @mousedown="startPan"
+    @wheel="handleWheel"
   >
     <svg
-        :width="svgWidth"
-        :height="svgHeight"
-        :style="{ background: '#FAFAFA', cursor: spacePressed ? 'grab' : 'default' }"
+      :width="svgWidth"
+      :height="svgHeight"
+      :style="{
+        background: '#FAFAFA',
+        cursor: spacePressed ? 'grab' : 'default',
+      }"
     >
       <defs>
         <marker
-            id="kg-arrow-default"
-            viewBox="0 0 10 10"
-            refX="10"
-            refY="5"
-            markerWidth="6"
-            markerHeight="6"
-            orient="auto-start-reverse"
+          id="kg-arrow-default"
+          viewBox="0 0 10 10"
+          refX="10"
+          refY="5"
+          markerWidth="6"
+          markerHeight="6"
+          orient="auto-start-reverse"
         >
-          <path d="M 0 0 L 10 5 L 0 10 z" fill="#8C8C8C"/>
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#8C8C8C" />
         </marker>
         <marker
-            id="kg-arrow-highlight"
-            viewBox="0 0 10 10"
-            refX="10"
-            refY="5"
-            markerWidth="6"
-            markerHeight="6"
-            orient="auto-start-reverse"
+          id="kg-arrow-highlight"
+          viewBox="0 0 10 10"
+          refX="10"
+          refY="5"
+          markerWidth="6"
+          markerHeight="6"
+          orient="auto-start-reverse"
         >
-          <path d="M 0 0 L 10 5 L 0 10 z" :fill="KG_PATH_COLOR"/>
+          <path d="M 0 0 L 10 5 L 0 10 z" :fill="KG_PATH_COLOR" />
         </marker>
       </defs>
 
-      <g :transform="`translate(${viewport.panX},${viewport.panY}) scale(${viewport.zoom})`">
+      <g
+        :transform="`translate(${viewport.panX},${viewport.panY}) scale(${viewport.zoom})`"
+      >
         <!-- 边 -->
         <g class="edges-layer">
           <line
-              v-for="edge in edges"
-              :key="edge.id"
-              :x1="nodes.find(n => n.id === edge.source)?.x ?? 0"
-              :y1="nodes.find(n => n.id === edge.source)?.y ?? 0"
-              :x2="nodes.find(n => n.id === edge.target)?.x ?? 0"
-              :y2="nodes.find(n => n.id === edge.target)?.y ?? 0"
-              :stroke="kgGetEdgeColor(edge)"
-              :stroke-width="1.5"
-              :stroke-opacity="edgeOpacity(edge)"
-              :marker-end="pathIds.has(edge.source) && pathIds.has(edge.target) ? 'url(#kg-arrow-highlight)' : 'url(#kg-arrow-default)'"
-              @click="(e) => handleEdgeClick(e, edge)"
+            v-for="edge in edges"
+            :key="edge.id"
+            :x1="nodes.find((n) => n.id === edge.source)?.x ?? 0"
+            :y1="nodes.find((n) => n.id === edge.source)?.y ?? 0"
+            :x2="nodes.find((n) => n.id === edge.target)?.x ?? 0"
+            :y2="nodes.find((n) => n.id === edge.target)?.y ?? 0"
+            :stroke="kgGetEdgeColor(edge)"
+            :stroke-width="1.5"
+            :stroke-opacity="edgeOpacity(edge)"
+            :marker-end="
+              pathIds.has(edge.source) && pathIds.has(edge.target)
+                ? 'url(#kg-arrow-highlight)'
+                : 'url(#kg-arrow-default)'
+            "
+            @click="(e) => handleEdgeClick(e, edge)"
           />
           <text
-              v-for="edge in edges.filter(e => e.label)"
-              :key="'label-' + edge.id"
-              :x="edgeMid(edge).x"
-              :y="edgeMid(edge).y"
-              :font-size="10"
-              :fill="kgGetEdgeColor(edge)"
-              :opacity="edgeOpacity(edge)"
-              text-anchor="middle"
-              pointer-events="none"
-              style="paint-order: stroke; stroke: #FFFFFF; stroke-width: 3px"
+            v-for="edge in edges.filter((e) => e.label)"
+            :key="'label-' + edge.id"
+            :x="edgeMid(edge).x"
+            :y="edgeMid(edge).y"
+            :font-size="10"
+            :fill="kgGetEdgeColor(edge)"
+            :opacity="edgeOpacity(edge)"
+            text-anchor="middle"
+            pointer-events="none"
+            style="paint-order: stroke; stroke: #ffffff; stroke-width: 3px"
           >
             {{ edge.label }}
           </text>
@@ -381,41 +405,42 @@ const icons: Record<string, string> = {
         <!-- 节点 -->
         <g class="nodes-layer">
           <g
-              v-for="node in nodes"
-              :key="node.id"
-              :transform="`translate(${node.x},${node.y})`"
-              :data-node-id="node.id"
-              :opacity="nodeOpacity(node)"
-              @click="(e) => handleNodeClick(e, node)"
-              @dblclick="(e) => handleNodeDblClick(e, node)"
-              @mousedown="(e) => startNodeDrag(e, node)"
+            v-for="node in nodes"
+            :key="node.id"
+            :transform="`translate(${node.x},${node.y})`"
+            :data-node-id="node.id"
+            :opacity="nodeOpacity(node)"
+            @click="(e) => handleNodeClick(e, node)"
+            @dblclick="(e) => handleNodeDblClick(e, node)"
+            @mousedown="(e) => startNodeDrag(e, node)"
           >
             <circle
-                :r="kgGetNodeRadius(node)"
-                :fill="nodeFill(node)"
-                :stroke="nodeStroke(node)"
-                :stroke-width="nodeStrokeWidth(node)"
+              :r="kgGetNodeRadius(node)"
+              :fill="nodeFill(node)"
+              :stroke="nodeStroke(node)"
+              :stroke-width="nodeStrokeWidth(node)"
             />
             <text
-                :y="kgGetNodeRadius(node) + 14"
-                :font-size="11"
-                fill="#333333"
-                text-anchor="middle"
-                pointer-events="none"
-                style="paint-order: stroke; stroke: #FFFFFF; stroke-width: 3px"
+              :y="kgGetNodeRadius(node) + 14"
+              :font-size="11"
+              fill="#333333"
+              text-anchor="middle"
+              pointer-events="none"
+              style="paint-order: stroke; stroke: #ffffff; stroke-width: 3px"
             >
               {{ node.label }}
             </text>
             <!-- 折叠标记 -->
             <text
-                v-if="isCollapsed(node)"
-                :y="4"
-                :font-size="14"
-                fill="#FFFFFF"
-                text-anchor="middle"
-                pointer-events="none"
-                font-weight="bold"
-            >+
+              v-if="isCollapsed(node)"
+              :y="4"
+              :font-size="14"
+              fill="#FFFFFF"
+              text-anchor="middle"
+              pointer-events="none"
+              font-weight="bold"
+            >
+              +
             </text>
           </g>
         </g>
@@ -425,23 +450,32 @@ const icons: Record<string, string> = {
     <!-- 浮动操作条 -->
     <div class="floating-actions">
       <el-button-group>
-        <el-button @click="runLayoutOnce" :title="i18n('knowledgegraph.viewer.reset')">
+        <el-button
+          @click="runLayoutOnce"
+          :title="i18n('knowledgegraph.viewer.reset')"
+        >
           <span class="svg-icon" v-html="icons.refresh"></span>
         </el-button>
         <el-button
-
-            :type="forceLayout && forceLayout.running.value ? 'primary' : 'default'"
-            @click="toggleForce"
-            v-if="forceLayout"
+          :type="
+            forceLayout && forceLayout.running.value ? 'primary' : 'default'
+          "
+          @click="toggleForce"
+          v-if="forceLayout"
         >
-          <span class="svg-icon"
-                v-html="forceLayout && !forceLayout.running.value ? icons.videoPlay : icons.videoPause"></span>
+          <span
+            class="svg-icon"
+            v-html="
+              forceLayout && !forceLayout.running.value
+                ? icons.videoPlay
+                : icons.videoPause
+            "
+          ></span>
         </el-button>
       </el-button-group>
     </div>
   </div>
 </template>
-
 
 <style lang="scss" scoped>
 .kg-canvas-wrapper {
@@ -449,7 +483,7 @@ const icons: Record<string, string> = {
   height: 100%;
   position: relative;
   overflow: hidden;
-  background: #FAFAFA;
+  background: #fafafa;
 
   &.panning {
     cursor: grab;

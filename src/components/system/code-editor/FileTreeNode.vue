@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import {computed, nextTick, ref, watch} from "vue";
-import type {FileNode} from "./types";
-import {FOLDER_ICONS, getFileIcon} from "./constants";
-import {i18n} from "@/lang/index";
+import { computed, nextTick, ref, watch } from "vue";
+import type { FileNode } from "./types";
+import { FOLDER_ICONS, getFileIcon } from "./constants";
+import { i18n } from "@/lang/index";
 
 const props = defineProps<{
   node: FileNode;
@@ -42,28 +42,28 @@ const isExpanded = () => props.expanded.has(props.node.idCodeFile);
 const isActive = () => props.node.idCodeFile === props.activeId;
 const isDragging = computed(() => props.draggingId === props.node.idCodeFile);
 const isDropTarget = computed(
-    () => isFolder && props.dropTargetId === props.node.idCodeFile,
+  () => isFolder && props.dropTargetId === props.node.idCodeFile,
 );
 const isModified = computed(
-    () => !isFolder && props.modifiedFiles?.has(props.node.idCodeFile),
+  () => !isFolder && props.modifiedFiles?.has(props.node.idCodeFile),
 );
 const isCompactHidden = computed(() =>
-    props.compactHidden?.has(props.node.idCodeFile),
+  props.compactHidden?.has(props.node.idCodeFile),
 );
 
 /** 紧凑路径显示名：如果有合并路径则显示合并路径，否则显示原名 */
 const displayName = computed(
-    () => props.compactLabels?.get(props.node.idCodeFile) || props.node.name,
+  () => props.compactLabels?.get(props.node.idCodeFile) || props.node.name,
 );
 
 const isEditing = computed(() => props.editingNodeId === props.node.idCodeFile);
 const isPendingNew = computed(
-    () =>
-        isEditing.value &&
-        (props.node.name === "untitled.txt" ||
-            props.node.name === i18n("ide.newFolder") ||
-            props.node.name.startsWith("untitled-") ||
-            props.node.name.startsWith(i18n("ide.newFolder") + "-")),
+  () =>
+    isEditing.value &&
+    (props.node.name === "untitled.txt" ||
+      props.node.name === i18n("ide.newFolder") ||
+      props.node.name.startsWith("untitled-") ||
+      props.node.name.startsWith(i18n("ide.newFolder") + "-")),
 );
 
 const editInputRef = ref<HTMLInputElement>();
@@ -81,16 +81,16 @@ const selectNameWithoutExt = () => {
 };
 
 watch(
-    () => props.editingNodeId,
-    async (val) => {
-      if (val === props.node.idCodeFile) {
-        editValue.value = props.node.name;
-        await nextTick();
-        editInputRef.value?.focus();
-        selectNameWithoutExt();
-      }
-    },
-    {immediate: true},
+  () => props.editingNodeId,
+  async (val) => {
+    if (val === props.node.idCodeFile) {
+      editValue.value = props.node.name;
+      await nextTick();
+      editInputRef.value?.focus();
+      selectNameWithoutExt();
+    }
+  },
+  { immediate: true },
 );
 
 const handleClick = () => {
@@ -177,9 +177,9 @@ const handleEditBlur = () => {
   <div v-if="!isCompactHidden">
     <!-- 正常显示行 -->
     <div
-        v-if="!isEditing"
-        class="tree-node"
-        :class="{
+      v-if="!isEditing"
+      class="tree-node"
+      :class="{
         'tree-folder': isFolder,
         'tree-file': !isFolder,
         'tree-active': isActive(),
@@ -187,30 +187,30 @@ const handleEditBlur = () => {
         'tree-drop-target': isDropTarget,
         'locate-highlight': props.highlightedId === props.node.idCodeFile,
       }"
-        :style="{ paddingLeft: depth * 16 + 8 + 'px' }"
-        :draggable="!isEditing"
-        @click.stop="handleClick"
-        @contextmenu="handleContextMenu"
-        @dragstart="handleDragStart"
-        @dragend="handleDragEnd"
-        @dragover="handleDragOver"
-        @dragleave="handleDragLeave"
-        @drop="handleDrop"
+      :style="{ paddingLeft: depth * 16 + 8 + 'px' }"
+      :draggable="!isEditing"
+      @click.stop="handleClick"
+      @contextmenu="handleContextMenu"
+      @dragstart="handleDragStart"
+      @dragend="handleDragEnd"
+      @dragover="handleDragOver"
+      @dragleave="handleDragLeave"
+      @drop="handleDrop"
     >
       <span
-          v-if="isFolder"
-          class="tree-arrow"
-          :class="{ expanded: isExpanded() }"
-      >&#9654;</span
+        v-if="isFolder"
+        class="tree-arrow"
+        :class="{ expanded: isExpanded() }"
+        >&#9654;</span
       >
       <span v-if="isFolder" class="tree-icon">{{
-          isExpanded() ? FOLDER_ICONS.open : FOLDER_ICONS.closed
-        }}</span>
+        isExpanded() ? FOLDER_ICONS.open : FOLDER_ICONS.closed
+      }}</span>
       <span v-else class="tree-icon">{{ getFileIcon(node.name) }}</span>
       <span
-          class="tree-name"
-          :class="{ 'compact-name': displayName !== node.name }"
-      >{{ displayName }}</span
+        class="tree-name"
+        :class="{ 'compact-name': displayName !== node.name }"
+        >{{ displayName }}</span
       >
       <!-- 修改标记 -->
       <span v-if="isModified" class="tree-modified-badge">M</span>
@@ -218,51 +218,51 @@ const handleEditBlur = () => {
 
     <!-- 内联编辑输入框 -->
     <div
-        v-else
-        class="tree-node tree-editing"
-        :style="{ paddingLeft: depth * 16 + 8 + 'px' }"
+      v-else
+      class="tree-node tree-editing"
+      :style="{ paddingLeft: depth * 16 + 8 + 'px' }"
     >
       <span v-if="isFolder" class="tree-icon">{{ FOLDER_ICONS.open }}</span>
       <span v-else class="tree-icon">{{ getFileIcon(editValue) }}</span>
       <input
-          ref="editInputRef"
-          v-model="editValue"
-          class="tree-input"
-          :placeholder="
+        ref="editInputRef"
+        v-model="editValue"
+        class="tree-input"
+        :placeholder="
           isPendingNew ? i18n('ide.inputName') : i18n('ide.renameHint')
         "
-          @keydown="handleEditKeydown"
-          @blur="handleEditBlur"
-          @click.stop
+        @keydown="handleEditKeydown"
+        @blur="handleEditBlur"
+        @click.stop
       />
     </div>
 
     <!-- 子节点 -->
     <template v-if="isFolder && isExpanded() && node.children">
       <FileTreeNode
-          v-for="child in node.children"
-          :key="child.idCodeFile"
-          :node="child"
-          :depth="depth + 1"
-          :expanded="expanded"
-          :active-id="activeId"
-          :editing-node-id="editingNodeId"
-          :dragging-id="draggingId"
-          :drop-target-id="dropTargetId"
-          :compact-hidden="compactHidden"
-          :compact-labels="compactLabels"
-          :compact-chains="compactChains"
-          :modified-files="modifiedFiles"
-          :highlighted-id="highlightedId"
-          @toggle="(id) => emit('toggle', id)"
-          @select="(f) => emit('select', f)"
-          @contextmenu="(n, e) => emit('contextmenu', n, e)"
-          @edit-confirm="(id, name) => emit('edit-confirm', id, name)"
-          @edit-cancel="(id) => emit('edit-cancel', id)"
-          @drag-start="(id) => emit('drag-start', id)"
-          @drag-end="emit('drag-end')"
-          @drop="(s, t) => emit('drop', s, t)"
-          @compact-drop-select="
+        v-for="child in node.children"
+        :key="child.idCodeFile"
+        :node="child"
+        :depth="depth + 1"
+        :expanded="expanded"
+        :active-id="activeId"
+        :editing-node-id="editingNodeId"
+        :dragging-id="draggingId"
+        :drop-target-id="dropTargetId"
+        :compact-hidden="compactHidden"
+        :compact-labels="compactLabels"
+        :compact-chains="compactChains"
+        :modified-files="modifiedFiles"
+        :highlighted-id="highlightedId"
+        @toggle="(id) => emit('toggle', id)"
+        @select="(f) => emit('select', f)"
+        @contextmenu="(n, e) => emit('contextmenu', n, e)"
+        @edit-confirm="(id, name) => emit('edit-confirm', id, name)"
+        @edit-cancel="(id) => emit('edit-cancel', id)"
+        @drag-start="(id) => emit('drag-start', id)"
+        @drag-end="emit('drag-end')"
+        @drop="(s, t) => emit('drop', s, t)"
+        @compact-drop-select="
           (s, t, c, p) => emit('compact-drop-select', s, t, c, p)
         "
       />
@@ -271,7 +271,7 @@ const handleEditBlur = () => {
 </template>
 
 <script lang="ts">
-export default {name: "FileTreeNode"};
+export default { name: "FileTreeNode" };
 </script>
 
 <style lang="scss" scoped>
@@ -305,9 +305,9 @@ export default {name: "FileTreeNode"};
 
   &.tree-drop-target {
     background: color-mix(
-            in srgb,
-            var(--ide-accent) 20%,
-            transparent
+      in srgb,
+      var(--ide-accent) 20%,
+      transparent
     ) !important;
     outline: 1px dashed var(--ide-accent);
     outline-offset: -1px;

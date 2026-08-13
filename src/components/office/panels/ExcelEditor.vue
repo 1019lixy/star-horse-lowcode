@@ -1,16 +1,16 @@
 <script setup lang="ts" name="ExcelEditor">
-import {computed, onMounted, ref} from "vue";
-import {ElMessage} from "element-plus";
-import {i18n} from "@/lang";
-import {ShSvgIcon} from "@/components/shared";
+import { computed, onMounted, ref } from "vue";
+import { ElMessage } from "element-plus";
+import { i18n } from "@/lang";
+import { ShSvgIcon } from "@/components/shared";
 import {
   OFFICE_EXCEL_COL_WIDTH,
   OFFICE_EXCEL_MAX_COLS,
   OFFICE_EXCEL_MAX_ROWS,
   officeColIndexToLetter,
 } from "../constants";
-import {recalcSheet} from "../utils/OfficeFormulaUtils";
-import type {ExcelCell, ExcelContent, ExcelSheet} from "../types";
+import { recalcSheet } from "../utils/OfficeFormulaUtils";
+import type { ExcelCell, ExcelContent, ExcelSheet } from "../types";
 
 const props = defineProps<{
   content: ExcelContent;
@@ -37,8 +37,12 @@ const rangeStart = ref<{ row: number; col: number } | null>(null);
 const rangeEnd = ref<{ row: number; col: number } | null>(null);
 
 /** 查找单元格 */
-const findCell = (sheet: ExcelSheet, row: number, col: number): ExcelCell | undefined =>
-    sheet.cells.find((c) => c.row === row && c.col === col);
+const findCell = (
+  sheet: ExcelSheet,
+  row: number,
+  col: number,
+): ExcelCell | undefined =>
+  sheet.cells.find((c) => c.row === row && c.col === col);
 
 /** 选区范围 */
 const selectionRange = computed(() => {
@@ -48,7 +52,7 @@ const selectionRange = computed(() => {
       rMin: selectedCell.value.row,
       rMax: selectedCell.value.row,
       cMin: selectedCell.value.col,
-      cMax: selectedCell.value.col
+      cMax: selectedCell.value.col,
     };
   }
   return {
@@ -77,17 +81,24 @@ const displayValue = (sheet: ExcelSheet, row: number, col: number): string => {
 /** 同步状态到父组件（深拷贝触发响应） */
 const syncToParent = (sheet: ExcelSheet) => {
   const newContent: ExcelContent = {
-    sheets: props.content.sheets.map((s) => (s.id === sheet.id ? {...s, cells: recalcSheet(s.cells)} : s)),
+    sheets: props.content.sheets.map((s) =>
+      s.id === sheet.id ? { ...s, cells: recalcSheet(s.cells) } : s,
+    ),
     activeSheetId: props.content.activeSheetId,
   };
   emit("update", newContent);
 };
 
 /** 设置单元格值 */
-const setCellValue = (sheet: ExcelSheet, row: number, col: number, value: string) => {
+const setCellValue = (
+  sheet: ExcelSheet,
+  row: number,
+  col: number,
+  value: string,
+) => {
   let c = findCell(sheet, row, col);
   if (!c) {
-    c = {row, col, value};
+    c = { row, col, value };
     sheet.cells.push(c);
   } else {
     c.value = value;
@@ -98,17 +109,22 @@ const setCellValue = (sheet: ExcelSheet, row: number, col: number, value: string
 
 /** 选中单元格 */
 const handleSelectCell = (row: number, col: number, e: MouseEvent) => {
-  selectedCell.value = {row, col};
+  selectedCell.value = { row, col };
   if (e.shiftKey) {
-    rangeEnd.value = {row, col};
+    rangeEnd.value = { row, col };
   } else {
-    rangeStart.value = {row, col};
-    rangeEnd.value = {row, col};
+    rangeStart.value = { row, col };
+    rangeEnd.value = { row, col };
   }
 };
 
 /** 单元格失焦提交 */
-const handleCellBlur = (sheet: ExcelSheet, row: number, col: number, e: Event) => {
+const handleCellBlur = (
+  sheet: ExcelSheet,
+  row: number,
+  col: number,
+  e: Event,
+) => {
   const td = e.target as HTMLElement;
   const value = td.innerText ?? "";
   setCellValue(sheet, row, col, value);
@@ -143,8 +159,8 @@ const removeRow = () => {
   const r = selectedCell.value.row;
   // 移除该行单元格，并将下方单元格 row-1
   sheet.cells = sheet.cells
-      .filter((c) => c.row !== r)
-      .map((c) => (c.row > r ? {...c, row: c.row - 1} : c));
+    .filter((c) => c.row !== r)
+    .map((c) => (c.row > r ? { ...c, row: c.row - 1 } : c));
   sheet.rows -= 1;
   selectedCell.value = null;
   rangeStart.value = null;
@@ -162,8 +178,8 @@ const removeColumn = () => {
   if (sheet.cols <= 1) return;
   const c = selectedCell.value.col;
   sheet.cells = sheet.cells
-      .filter((cell) => cell.col !== c)
-      .map((cell) => (cell.col > c ? {...cell, col: cell.col - 1} : cell));
+    .filter((cell) => cell.col !== c)
+    .map((cell) => (cell.col > c ? { ...cell, col: cell.col - 1 } : cell));
   sheet.cols -= 1;
   selectedCell.value = null;
   rangeStart.value = null;
@@ -186,7 +202,11 @@ const mergeCells = () => {
     return;
   }
   // 左上角单元格设置 colspan/rowspan，其他单元格标记 covered
-  const tl = findCell(sheet, r.rMin, r.cMin) ?? {row: r.rMin, col: r.cMin, value: ""};
+  const tl = findCell(sheet, r.rMin, r.cMin) ?? {
+    row: r.rMin,
+    col: r.cMin,
+    value: "",
+  };
   tl.rowspan = rowspan;
   tl.colspan = colspan;
   if (!sheet.cells.includes(tl)) sheet.cells.push(tl);
@@ -195,7 +215,7 @@ const mergeCells = () => {
       if (row === r.rMin && col === r.cMin) continue;
       let c = findCell(sheet, row, col);
       if (!c) {
-        c = {row, col, value: ""};
+        c = { row, col, value: "" };
         sheet.cells.push(c);
       }
       c.covered = true;
@@ -231,12 +251,12 @@ const splitCells = () => {
 /** 行号 */
 const rowNumbers = computed(() => {
   if (!activeSheet.value) return [];
-  return Array.from({length: activeSheet.value.rows}, (_, i) => i);
+  return Array.from({ length: activeSheet.value.rows }, (_, i) => i);
 });
 /** 列号 */
 const colHeaders = computed(() => {
   if (!activeSheet.value) return [];
-  return Array.from({length: activeSheet.value.cols}, (_, i) => i);
+  return Array.from({ length: activeSheet.value.cols }, (_, i) => i);
 });
 
 /** 挂载时重新计算公式（依赖 :key 切换文档时重新挂载） */
@@ -252,76 +272,82 @@ onMounted(() => {
     <div class="excel-toolbar">
       <el-tooltip :content="i18n('office.excel.addRow')" :show-after="500">
         <el-button @click="addRow">
-          <ShSvgIcon name="addRow" size="14px"/>
+          <ShSvgIcon name="addRow" size="14px" />
           {{ i18n("office.excel.addRow") }}
         </el-button>
       </el-tooltip>
       <el-tooltip :content="i18n('office.excel.addColumn')" :show-after="500">
         <el-button @click="addColumn">
-          <ShSvgIcon name="addColumn" size="14px"/>
+          <ShSvgIcon name="addColumn" size="14px" />
           {{ i18n("office.excel.addColumn") }}
         </el-button>
       </el-tooltip>
       <el-tooltip :content="i18n('office.excel.removeRow')" :show-after="500">
         <el-button type="danger" @click="removeRow">
-          <ShSvgIcon name="removeRow" size="14px"/>
+          <ShSvgIcon name="removeRow" size="14px" />
           {{ i18n("office.excel.removeRow") }}
         </el-button>
       </el-tooltip>
-      <el-tooltip :content="i18n('office.excel.removeColumn')" :show-after="500">
+      <el-tooltip
+        :content="i18n('office.excel.removeColumn')"
+        :show-after="500"
+      >
         <el-button type="danger" @click="removeColumn">
-          <ShSvgIcon name="removeColumn" size="14px"/>
+          <ShSvgIcon name="removeColumn" size="14px" />
           {{ i18n("office.excel.removeColumn") }}
         </el-button>
       </el-tooltip>
       <el-tooltip :content="i18n('office.excel.mergeCells')" :show-after="500">
         <el-button type="primary" @click="mergeCells">
-          <ShSvgIcon name="cellMerge" size="14px"/>
+          <ShSvgIcon name="cellMerge" size="14px" />
           {{ i18n("office.excel.mergeCells") }}
         </el-button>
       </el-tooltip>
       <el-tooltip :content="i18n('office.excel.splitCells')" :show-after="500">
         <el-button @click="splitCells">
-          <ShSvgIcon name="cellSplit" size="14px"/>
+          <ShSvgIcon name="cellSplit" size="14px" />
           {{ i18n("office.excel.splitCells") }}
         </el-button>
       </el-tooltip>
       <span v-if="selectedCell" class="cell-ref">
-                {{ officeColIndexToLetter(selectedCell.col) }}{{ selectedCell.row + 1 }}
-            </span>
+        {{ officeColIndexToLetter(selectedCell.col) }}{{ selectedCell.row + 1 }}
+      </span>
     </div>
     <div class="excel-body">
       <table v-if="activeSheet" class="excel-table">
         <thead>
-        <tr>
-          <th class="corner"></th>
-          <th v-for="col in colHeaders" :key="col" class="col-header">
-            {{ officeColIndexToLetter(col) }}
-          </th>
-        </tr>
+          <tr>
+            <th class="corner"></th>
+            <th v-for="col in colHeaders" :key="col" class="col-header">
+              {{ officeColIndexToLetter(col) }}
+            </th>
+          </tr>
         </thead>
         <tbody>
-        <tr v-for="row in rowNumbers" :key="row">
-          <th class="row-header">{{ row + 1 }}</th>
-          <td
+          <tr v-for="row in rowNumbers" :key="row">
+            <th class="row-header">{{ row + 1 }}</th>
+            <td
               v-for="col in colHeaders"
               :key="col"
               class="cell"
               :class="{ selected: inSelection(row, col) }"
-              :style="{ width: `${OFFICE_EXCEL_COL_WIDTH}px`, minWidth: `${OFFICE_EXCEL_COL_WIDTH}px` }"
+              :style="{
+                width: `${OFFICE_EXCEL_COL_WIDTH}px`,
+                minWidth: `${OFFICE_EXCEL_COL_WIDTH}px`,
+              }"
               v-show="!findCell(activeSheet, row, col)?.covered"
               :colspan="findCell(activeSheet, row, col)?.colspan"
               :rowspan="findCell(activeSheet, row, col)?.rowspan"
               @mousedown="handleSelectCell(row, col, $event)"
-          >
-            <div
+            >
+              <div
                 class="cell-content"
                 contenteditable="true"
                 @blur="handleCellBlur(activeSheet, row, col, $event)"
                 v-text="displayValue(activeSheet, row, col)"
-            ></div>
-          </td>
-        </tr>
+              ></div>
+            </td>
+          </tr>
         </tbody>
       </table>
       <div v-else class="empty">{{ i18n("office.docList.empty") }}</div>
@@ -330,7 +356,7 @@ onMounted(() => {
 </template>
 
 <script lang="ts">
-export default {name: "ExcelEditor"};
+export default { name: "ExcelEditor" };
 </script>
 
 <style lang="scss" scoped>

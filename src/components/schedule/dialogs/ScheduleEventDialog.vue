@@ -1,11 +1,11 @@
 <script setup lang="ts" name="ScheduleEventDialog">
-import {computed, ref, watch} from "vue";
-import {ElMessage} from "element-plus";
-import {i18n} from "@/lang";
-import type {ScheduleDesigner} from "../composables/useScheduleDesigner";
-import {createEvent, SCHEDULE_EVENT_TYPE_PRESETS} from "../constants";
-import type {ScheduleEvent} from "../types";
-import {StarHorsePanel} from "@/components/comp";
+import { computed, ref, watch } from "vue";
+import { ElMessage } from "element-plus";
+import { i18n } from "@/lang";
+import type { ScheduleDesigner } from "../composables/useScheduleDesigner";
+import { createEvent, SCHEDULE_EVENT_TYPE_PRESETS } from "../constants";
+import type { ScheduleEvent } from "../types";
+import { StarHorsePanel } from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
@@ -13,7 +13,7 @@ const props = defineProps<{
   eventId?: string | null;
   defaultStartTime?: string;
   defaultResourceId?: string;
-  dialogType?:"dialog"|"drawer";
+  dialogType?: "dialog" | "drawer";
 }>();
 
 const emit = defineEmits<{
@@ -29,24 +29,26 @@ const form = ref<ScheduleEvent>(createEvent());
 const isNew = ref(true);
 
 watch(
-    () => [props.visible, props.eventId] as const,
-    ([visible]) => {
-      if (!visible) return;
-      if (props.eventId) {
-        const event = props.designer.state.events.find((e) => e.id === props.eventId);
-        if (event) {
-          form.value = {...event};
-          isNew.value = false;
-          return;
-        }
+  () => [props.visible, props.eventId] as const,
+  ([visible]) => {
+    if (!visible) return;
+    if (props.eventId) {
+      const event = props.designer.state.events.find(
+        (e) => e.id === props.eventId,
+      );
+      if (event) {
+        form.value = { ...event };
+        isNew.value = false;
+        return;
       }
-      form.value = createEvent({
-        startTime: props.defaultStartTime ?? new Date().toISOString(),
-        resourceId: props.defaultResourceId ?? "",
-      });
-      isNew.value = true;
-    },
-    {immediate: true},
+    }
+    form.value = createEvent({
+      startTime: props.defaultStartTime ?? new Date().toISOString(),
+      resourceId: props.defaultResourceId ?? "",
+    });
+    isNew.value = true;
+  },
+  { immediate: true },
 );
 
 const handleSubmit = () => {
@@ -69,24 +71,28 @@ const handleSubmit = () => {
 
 <template>
   <star-horse-panel
-      :type="dialogType"
-      v-model="innerVisible"
-      :title="isNew ? i18n('schedule.dialog.addEvent') : i18n('schedule.dialog.editEvent')"
-      box-width="600px"
-      :self-func="true"
-      @merge="handleSubmit"
+    :type="dialogType"
+    v-model="innerVisible"
+    :title="
+      isNew
+        ? i18n('schedule.dialog.addEvent')
+        : i18n('schedule.dialog.editEvent')
+    "
+    box-width="600px"
+    :self-func="true"
+    @merge="handleSubmit"
   >
     <el-form :model="form" label-width="100px" size="default">
       <el-form-item :label="i18n('schedule.event.title')">
-        <el-input v-model="form.title"/>
+        <el-input v-model="form.title" />
       </el-form-item>
       <el-form-item :label="i18n('schedule.event.resource')">
         <el-select v-model="form.resourceId" style="width: 100%">
           <el-option
-              v-for="r in designer.sortedResources.value"
-              :key="r.id"
-              :label="r.name"
-              :value="r.id"
+            v-for="r in designer.sortedResources.value"
+            :key="r.id"
+            :label="r.name"
+            :value="r.id"
           />
         </el-select>
       </el-form-item>
@@ -94,20 +100,20 @@ const handleSubmit = () => {
         <el-col :span="12">
           <el-form-item :label="i18n('schedule.event.startTime')">
             <el-date-picker
-                v-model="form.startTime"
-                type="datetime"
-                value-format="YYYY-MM-DDTHH:mm:ss.000Z"
-                style="width: 100%"
+              v-model="form.startTime"
+              type="datetime"
+              value-format="YYYY-MM-DDTHH:mm:ss.000Z"
+              style="width: 100%"
             />
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item :label="i18n('schedule.event.endTime')">
             <el-date-picker
-                v-model="form.endTime"
-                type="datetime"
-                value-format="YYYY-MM-DDTHH:mm:ss.000Z"
-                style="width: 100%"
+              v-model="form.endTime"
+              type="datetime"
+              value-format="YYYY-MM-DDTHH:mm:ss.000Z"
+              style="width: 100%"
             />
           </el-form-item>
         </el-col>
@@ -115,10 +121,10 @@ const handleSubmit = () => {
       <el-form-item :label="i18n('schedule.event.type')">
         <el-select v-model="form.type" style="width: 100%">
           <el-option
-              v-for="t in SCHEDULE_EVENT_TYPE_PRESETS"
-              :key="t.value"
-              :label="t.label"
-              :value="t.value"
+            v-for="t in SCHEDULE_EVENT_TYPE_PRESETS"
+            :key="t.value"
+            :label="t.label"
+            :value="t.value"
           >
             <span :style="{ color: t.color }">●</span>
             {{ t.label }}
@@ -126,16 +132,16 @@ const handleSubmit = () => {
         </el-select>
       </el-form-item>
       <el-form-item :label="i18n('schedule.event.allDay')">
-        <el-switch v-model="form.allDay"/>
+        <el-switch v-model="form.allDay" />
       </el-form-item>
       <el-form-item :label="i18n('schedule.event.location')">
-        <el-input v-model="form.location"/>
+        <el-input v-model="form.location" />
       </el-form-item>
       <el-form-item :label="i18n('schedule.event.description')">
-        <el-input v-model="form.description" type="textarea" :rows="3"/>
+        <el-input v-model="form.description" type="textarea" :rows="3" />
       </el-form-item>
       <el-form-item :label="i18n('schedule.event.remark')">
-        <el-input v-model="form.remark" type="textarea" :rows="2"/>
+        <el-input v-model="form.remark" type="textarea" :rows="2" />
       </el-form-item>
     </el-form>
   </star-horse-panel>

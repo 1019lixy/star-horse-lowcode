@@ -20,8 +20,8 @@
  *     <template #panel-props><XxxPropertyPanel /></template>
  *   </DesignerMobileShell>
  */
-import {computed, ref, watch} from "vue";
-import {isMobile, isTablet} from "@/api/device";
+import { computed, ref, watch } from "vue";
+import { isMobile, isTablet } from "@/api/device";
 
 interface DesignerPanel {
   /** 面板唯一 key，对应 slot 名 `panel-${key}` */
@@ -37,26 +37,30 @@ interface DesignerPanel {
 }
 
 const props = withDefaults(
-    defineProps<{
-      /** 面板配置 */
-      panels?: DesignerPanel[];
-      /** 顶部标题（可选） */
-      title?: string;
-      /** App 端画布 Tab 标签文字，默认"画布" */
-      canvasLabel?: string;
-    }>(),
-    {
-      panels: () => [],
-      title: "",
-      canvasLabel: "画布",
-    },
+  defineProps<{
+    /** 面板配置 */
+    panels?: DesignerPanel[];
+    /** 顶部标题（可选） */
+    title?: string;
+    /** App 端画布 Tab 标签文字，默认"画布" */
+    canvasLabel?: string;
+  }>(),
+  {
+    panels: () => [],
+    title: "",
+    canvasLabel: "画布",
+  },
 );
 
 const isApp = isMobile || isTablet;
 
 // ============ PC 端面板分组 ============
-const leftPanels = computed(() => props.panels.filter((p) => p.side === "left"));
-const rightPanels = computed(() => props.panels.filter((p) => p.side === "right"));
+const leftPanels = computed(() =>
+  props.panels.filter((p) => p.side === "left"),
+);
+const rightPanels = computed(() =>
+  props.panels.filter((p) => p.side === "right"),
+);
 
 const normalizeSize = (v?: number | string, fallback = 280): string => {
   if (v == null || v === "") return `${fallback}px`;
@@ -79,16 +83,16 @@ const rightMin = computed(() => normalizeSize(rightPanels.value[0]?.min, 200));
 const activeLeft = ref(leftPanels.value[0]?.key || "");
 const activeRight = ref(rightPanels.value[0]?.key || "");
 watch(
-    () => props.panels,
-    (list) => {
-      if (!leftPanels.value.find((p) => p.key === activeLeft.value)) {
-        activeLeft.value = leftPanels.value[0]?.key || "";
-      }
-      if (!rightPanels.value.find((p) => p.key === activeRight.value)) {
-        activeRight.value = rightPanels.value[0]?.key || "";
-      }
-    },
-    {deep: true},
+  () => props.panels,
+  (list) => {
+    if (!leftPanels.value.find((p) => p.key === activeLeft.value)) {
+      activeLeft.value = leftPanels.value[0]?.key || "";
+    }
+    if (!rightPanels.value.find((p) => p.key === activeRight.value)) {
+      activeRight.value = rightPanels.value[0]?.key || "";
+    }
+  },
+  { deep: true },
 );
 
 // ============ App 端底部 Tab + 抽屉 ============
@@ -106,7 +110,9 @@ const selectCanvas = () => {
   drawerVisible.value = false;
 };
 
-const activePanel = computed(() => props.panels.find((p) => p.key === activeTab.value));
+const activePanel = computed(() =>
+  props.panels.find((p) => p.key === activeTab.value),
+);
 
 const drawerDirection = computed<"ltr" | "rtl" | "ttb" | "btt">(() => {
   // left 面板从左滑入，right 面板从右滑入
@@ -125,33 +131,36 @@ watch(activeTab, (v) => {
   <div class="designer-shell" :class="{ 'is-mobile': isApp }">
     <!-- 顶部 Toolbar -->
     <div class="designer-shell__toolbar">
-      <slot name="toolbar"/>
+      <slot name="toolbar" />
     </div>
 
     <!-- ============ PC 端：el-splitter 三栏 ============ -->
-    <el-splitter
-        v-if="!isApp"
-        layout="horizontal"
-        class="designer-shell__body"
-    >
+    <el-splitter v-if="!isApp" layout="horizontal" class="designer-shell__body">
       <!-- 左侧面板组 -->
       <el-splitter-panel
-          v-if="leftPanels.length"
-          :size="leftSize"
-          :min="leftMin"
+        v-if="leftPanels.length"
+        :size="leftSize"
+        :min="leftMin"
       >
         <div class="designer-shell__panel-side">
           <!-- 单面板：直接渲染 -->
-          <slot v-if="leftPanels.length === 1" :name="`panel-${leftPanels[0].key}`"/>
+          <slot
+            v-if="leftPanels.length === 1"
+            :name="`panel-${leftPanels[0].key}`"
+          />
           <!-- 多面板：el-tabs 切换 -->
-          <el-tabs v-else v-model="activeLeft" class="designer-shell__panel-tabs">
+          <el-tabs
+            v-else
+            v-model="activeLeft"
+            class="designer-shell__panel-tabs"
+          >
             <el-tab-pane
-                v-for="p in leftPanels"
-                :key="p.key"
-                :label="p.label"
-                :name="p.key"
+              v-for="p in leftPanels"
+              :key="p.key"
+              :label="p.label"
+              :name="p.key"
             >
-              <slot :name="`panel-${p.key}`"/>
+              <slot :name="`panel-${p.key}`" />
             </el-tab-pane>
           </el-tabs>
         </div>
@@ -160,26 +169,33 @@ watch(activeTab, (v) => {
       <!-- 画布 -->
       <el-splitter-panel>
         <div class="designer-shell__canvas">
-          <slot name="canvas"/>
+          <slot name="canvas" />
         </div>
       </el-splitter-panel>
 
       <!-- 右侧面板组 -->
       <el-splitter-panel
-          v-if="rightPanels.length"
-          :size="rightSize"
-          :min="rightMin"
+        v-if="rightPanels.length"
+        :size="rightSize"
+        :min="rightMin"
       >
         <div class="designer-shell__panel-side">
-          <slot v-if="rightPanels.length === 1" :name="`panel-${rightPanels[0].key}`"/>
-          <el-tabs v-else v-model="activeRight" class="designer-shell__panel-tabs">
+          <slot
+            v-if="rightPanels.length === 1"
+            :name="`panel-${rightPanels[0].key}`"
+          />
+          <el-tabs
+            v-else
+            v-model="activeRight"
+            class="designer-shell__panel-tabs"
+          >
             <el-tab-pane
-                v-for="p in rightPanels"
-                :key="p.key"
-                :label="p.label"
-                :name="p.key"
+              v-for="p in rightPanels"
+              :key="p.key"
+              :label="p.label"
+              :name="p.key"
             >
-              <slot :name="`panel-${p.key}`"/>
+              <slot :name="`panel-${p.key}`" />
             </el-tab-pane>
           </el-tabs>
         </div>
@@ -189,30 +205,35 @@ watch(activeTab, (v) => {
     <!-- ============ App 端：全屏画布 + 底部 Tab + 抽屉 ============ -->
     <template v-else>
       <div class="designer-shell__canvas designer-shell__canvas--mobile">
-        <slot name="canvas"/>
+        <slot name="canvas" />
       </div>
 
       <!-- 底部 Tab Bar -->
       <div class="designer-shell__tabbar">
         <div
-            class="tab-item"
-            :class="{ active: activeTab === CANVAS_TAB }"
-            @click="selectCanvas"
+          class="tab-item"
+          :class="{ active: activeTab === CANVAS_TAB }"
+          @click="selectCanvas"
         >
           <span class="tab-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="3" y="3" width="18" height="18" rx="2"/>
-              <path d="M3 9h18M9 21V9"/>
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <path d="M3 9h18M9 21V9" />
             </svg>
           </span>
           <span class="tab-label">{{ canvasLabel }}</span>
         </div>
         <div
-            v-for="p in panels"
-            :key="p.key"
-            class="tab-item"
-            :class="{ active: activeTab === p.key }"
-            @click="openPanel(p)"
+          v-for="p in panels"
+          :key="p.key"
+          class="tab-item"
+          :class="{ active: activeTab === p.key }"
+          @click="openPanel(p)"
         >
           <span class="tab-label">{{ p.label }}</span>
         </div>
@@ -220,15 +241,15 @@ watch(activeTab, (v) => {
 
       <!-- 面板抽屉 -->
       <el-drawer
-          v-model="drawerVisible"
-          :direction="drawerDirection"
-          :size="'85%'"
-          :title="drawerTitle"
-          :with-header="true"
-          class="designer-shell__drawer"
+        v-model="drawerVisible"
+        :direction="drawerDirection"
+        :size="'85%'"
+        :title="drawerTitle"
+        :with-header="true"
+        class="designer-shell__drawer"
       >
         <div class="designer-shell__drawer-body">
-          <slot :name="`panel-${activeTab}`"/>
+          <slot :name="`panel-${activeTab}`" />
         </div>
       </el-drawer>
     </template>

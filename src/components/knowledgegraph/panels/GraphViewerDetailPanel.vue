@@ -1,6 +1,6 @@
 <script setup lang="ts" name="GraphViewerDetailPanel">
-import {computed} from "vue";
-import {i18n} from "@/lang";
+import { computed } from "vue";
+import { i18n } from "@/lang";
 import {
   KG_EDGE_TYPE_PRESETS,
   KG_NODE_TYPE_PRESETS,
@@ -8,8 +8,8 @@ import {
   kgGetNodeColor,
   kgGetNodeRadius,
 } from "../constants";
-import type {KgEdge} from "../types";
-import type {UseGraphViewerReturn} from "../composables/useGraphViewer";
+import type { KgEdge } from "../types";
+import type { UseGraphViewerReturn } from "../composables/useGraphViewer";
 
 const props = defineProps<{
   viewer: UseGraphViewerReturn;
@@ -21,7 +21,11 @@ const selectedNode = computed(() => viewer.selectedNode.value);
 
 const selectedEdge = computed<KgEdge | null>(() => {
   if (!viewer.state.selectedEdgeId) return null;
-  return viewer.state.graph.edges.find((e) => e.id === viewer.state.selectedEdgeId) ?? null;
+  return (
+    viewer.state.graph.edges.find(
+      (e) => e.id === viewer.state.selectedEdgeId,
+    ) ?? null
+  );
 });
 
 const neighbors = computed(() => {
@@ -67,7 +71,9 @@ const handleCollapse = () => {
 };
 
 const isCollapsed = computed(() =>
-    selectedNode.value ? viewer.state.collapsedNodeIds.includes(selectedNode.value.id) : false,
+  selectedNode.value
+    ? viewer.state.collapsedNodeIds.includes(selectedNode.value.id)
+    : false,
 );
 </script>
 
@@ -85,22 +91,37 @@ const isCollapsed = computed(() =>
       <template v-else-if="selectedNode">
         <div class="detail-section">
           <div class="section-row">
-            <span class="label">{{ i18n("knowledgegraph.viewer.detail.id") }}</span>
+            <span class="label">{{
+              i18n("knowledgegraph.viewer.detail.id")
+            }}</span>
             <span class="value mono">{{ selectedNode.id }}</span>
           </div>
           <div class="section-row">
-            <span class="label">{{ i18n("knowledgegraph.viewer.detail.label") }}</span>
+            <span class="label">{{
+              i18n("knowledgegraph.viewer.detail.label")
+            }}</span>
             <span class="value">{{ selectedNode.label }}</span>
           </div>
           <div class="section-row">
-            <span class="label">{{ i18n("knowledgegraph.viewer.detail.type") }}</span>
-            <el-tag :style="{ background: kgGetNodeColor(selectedNode), color: '#FFF', border: 'none' }">
+            <span class="label">{{
+              i18n("knowledgegraph.viewer.detail.type")
+            }}</span>
+            <el-tag
+              :style="{
+                background: kgGetNodeColor(selectedNode),
+                color: '#FFF',
+                border: 'none',
+              }"
+            >
               {{ nodeTypeLabel(selectedNode.type) }}
             </el-tag>
           </div>
           <div class="section-row">
             <span class="label">X / Y</span>
-            <span class="value mono">{{ Math.round(selectedNode.x) }}, {{ Math.round(selectedNode.y) }}</span>
+            <span class="value mono"
+              >{{ Math.round(selectedNode.x) }},
+              {{ Math.round(selectedNode.y) }}</span
+            >
           </div>
           <div class="section-row">
             <span class="label">R</span>
@@ -109,40 +130,42 @@ const isCollapsed = computed(() =>
         </div>
 
         <div class="detail-section">
-          <div class="section-title">{{ i18n("knowledgegraph.viewer.detail.properties") }}</div>
-          <el-table v-if="propertyEntries.length" :data="propertyEntries" border>
-            <el-table-column prop="0" label="Key" width="100"/>
-            <el-table-column prop="1" label="Value"/>
+          <div class="section-title">
+            {{ i18n("knowledgegraph.viewer.detail.properties") }}
+          </div>
+          <el-table
+            v-if="propertyEntries.length"
+            :data="propertyEntries"
+            border
+          >
+            <el-table-column prop="0" label="Key" width="100" />
+            <el-table-column prop="1" label="Value" />
           </el-table>
           <div v-else class="empty-inline">—</div>
         </div>
 
         <div class="detail-section">
           <div class="section-title">
-            {{ i18n("knowledgegraph.viewer.neighbors") }} ({{ neighbors.length }})
+            {{ i18n("knowledgegraph.viewer.neighbors") }} ({{
+              neighbors.length
+            }})
             <el-button-group style="float: right">
-              <el-button
-
-                  :disabled="isCollapsed"
-                  @click="handleCollapse"
-              >{{ i18n("knowledgegraph.viewer.collapse") }}
+              <el-button :disabled="isCollapsed" @click="handleCollapse"
+                >{{ i18n("knowledgegraph.viewer.collapse") }}
               </el-button>
-              <el-button
-
-                  :disabled="!isCollapsed"
-                  @click="handleExpand"
-              >{{ i18n("knowledgegraph.viewer.expand") }}
+              <el-button :disabled="!isCollapsed" @click="handleExpand"
+                >{{ i18n("knowledgegraph.viewer.expand") }}
               </el-button>
             </el-button-group>
           </div>
           <div class="neighbor-list">
             <div
-                v-for="nb in neighbors"
-                :key="nb.id"
-                class="neighbor-item"
-                @click="handleNeighborClick(nb.id)"
+              v-for="nb in neighbors"
+              :key="nb.id"
+              class="neighbor-item"
+              @click="handleNeighborClick(nb.id)"
             >
-              <span class="dot" :style="{ background: kgGetNodeColor(nb) }"/>
+              <span class="dot" :style="{ background: kgGetNodeColor(nb) }" />
               <span class="nb-label">{{ nb.label }}</span>
               <span class="nb-type">{{ nodeTypeLabel(nb.type) }}</span>
             </div>
@@ -151,14 +174,22 @@ const isCollapsed = computed(() =>
         </div>
 
         <div class="detail-section">
-          <div class="section-title">{{ i18n("knowledgegraph.viewer.edges") }} ({{ neighborEdges.length }})</div>
+          <div class="section-title">
+            {{ i18n("knowledgegraph.viewer.edges") }} ({{
+              neighborEdges.length
+            }})
+          </div>
           <div class="edge-list">
             <div v-for="e in neighborEdges" :key="e.id" class="edge-item">
-              <span class="dot" :style="{ background: kgGetEdgeColor(e) }"/>
+              <span class="dot" :style="{ background: kgGetEdgeColor(e) }" />
               <span class="edge-label">{{ edgeTypeLabel(e.type) }}</span>
               <span class="edge-from">{{
-                  e.source === selectedNode.id ? "→ " + e.target : e.target === selectedNode.id ? "← " + e.source : e.source + " ↔ " + e.target
-                }}</span>
+                e.source === selectedNode.id
+                  ? "→ " + e.target
+                  : e.target === selectedNode.id
+                    ? "← " + e.source
+                    : e.source + " ↔ " + e.target
+              }}</span>
             </div>
             <div v-if="neighborEdges.length === 0" class="empty-inline">—</div>
           </div>
@@ -173,8 +204,16 @@ const isCollapsed = computed(() =>
             <span class="value mono">{{ selectedEdge.id }}</span>
           </div>
           <div class="section-row">
-            <span class="label">{{ i18n("knowledgegraph.query.edgeType") }}</span>
-            <el-tag :style="{ background: kgGetEdgeColor(selectedEdge), color: '#FFF', border: 'none' }">
+            <span class="label">{{
+              i18n("knowledgegraph.query.edgeType")
+            }}</span>
+            <el-tag
+              :style="{
+                background: kgGetEdgeColor(selectedEdge),
+                color: '#FFF',
+                border: 'none',
+              }"
+            >
               {{ edgeTypeLabel(selectedEdge.type) }}
             </el-tag>
           </div>
@@ -266,8 +305,10 @@ const isCollapsed = computed(() =>
     font-size: 12px;
   }
 
-  .neighbor-list, .edge-list {
-    .neighbor-item, .edge-item {
+  .neighbor-list,
+  .edge-list {
+    .neighbor-item,
+    .edge-item {
       display: flex;
       align-items: center;
       gap: 6px;
@@ -287,12 +328,14 @@ const isCollapsed = computed(() =>
         flex-shrink: 0;
       }
 
-      .nb-label, .edge-label {
+      .nb-label,
+      .edge-label {
         flex: 1;
         color: var(--el-text-color-primary);
       }
 
-      .nb-type, .edge-from {
+      .nb-type,
+      .edge-from {
         color: var(--el-text-color-secondary);
         font-size: 11px;
       }

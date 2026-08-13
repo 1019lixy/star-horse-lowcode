@@ -4,13 +4,17 @@
  * 职责：展示渲染结果，支持 HTML/PDF/ZPL/TSPL 多目标切换 + 调用浏览器打印
  * 强制使用 star-horse-dialog
  */
-import {computed, ref, watch} from "vue";
-import {i18n} from "@/lang";
-import {renderPrintHtml} from "../renderers/HtmlRenderer";
-import {renderZpl} from "../renderers/ZplRenderer";
-import {renderTspl} from "../renderers/TsplRenderer";
-import type {PrintRenderContext, PrintRenderTarget, PrintTemplate} from "../types";
-import {StarHorsePanel} from "@/components/comp";
+import { computed, ref, watch } from "vue";
+import { i18n } from "@/lang";
+import { renderPrintHtml } from "../renderers/HtmlRenderer";
+import { renderZpl } from "../renderers/ZplRenderer";
+import { renderTspl } from "../renderers/TsplRenderer";
+import type {
+  PrintRenderContext,
+  PrintRenderTarget,
+  PrintTemplate,
+} from "../types";
+import { StarHorsePanel } from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
@@ -23,7 +27,7 @@ const props = defineProps<{
   printerName?: string;
   /** 默认页数 */
   pageCount?: number;
-  dialogType?:"dialog"|"drawer";
+  dialogType?: "dialog" | "drawer";
 }>();
 
 const emits = defineEmits<{
@@ -50,9 +54,15 @@ const renderContext = computed<PrintRenderContext>(() => ({
   renderTime: Date.now(),
 }));
 
-const htmlContent = computed(() => renderPrintHtml(props.template, renderContext.value));
-const zplContent = computed(() => renderZpl(props.template, renderContext.value));
-const tsplContent = computed(() => renderTspl(props.template, renderContext.value));
+const htmlContent = computed(() =>
+  renderPrintHtml(props.template, renderContext.value),
+);
+const zplContent = computed(() =>
+  renderZpl(props.template, renderContext.value),
+);
+const tsplContent = computed(() =>
+  renderTspl(props.template, renderContext.value),
+);
 
 const currentContent = computed(() => {
   switch (activeTarget.value) {
@@ -65,7 +75,9 @@ const currentContent = computed(() => {
   }
 });
 
-const isCodeTarget = computed(() => activeTarget.value === "zpl" || activeTarget.value === "tspl");
+const isCodeTarget = computed(
+  () => activeTarget.value === "zpl" || activeTarget.value === "tspl",
+);
 
 const refreshIframe = () => {
   if (activeTarget.value !== "html" || !iframeRef.value) return;
@@ -77,12 +89,12 @@ const refreshIframe = () => {
 };
 
 watch(
-    () => [props.visible, activeTarget.value, htmlContent.value],
-    () => {
-      if (props.visible && activeTarget.value === "html") {
-        setTimeout(refreshIframe, 50);
-      }
-    },
+  () => [props.visible, activeTarget.value, htmlContent.value],
+  () => {
+    if (props.visible && activeTarget.value === "html") {
+      setTimeout(refreshIframe, 50);
+    }
+  },
 );
 
 const handleBrowserPrint = () => {
@@ -109,15 +121,15 @@ const handlePrint = () => {
 
 <template>
   <star-horse-panel
-      :type="dialogType"
-      v-model="innerVisible"
-      :title="i18n('print.preview.title')"
-      box-width="80%"
-      box-height="80%"
-      :is-show-reset="false"
-      :is-show-save="false"
-      :self-func="true"
-      @merge="handlePrint"
+    :type="dialogType"
+    v-model="innerVisible"
+    :title="i18n('print.preview.title')"
+    box-width="80%"
+    box-height="80%"
+    :is-show-reset="false"
+    :is-show-save="false"
+    :self-func="true"
+    @merge="handlePrint"
   >
     <div class="print-preview-dialog">
       <div class="preview-toolbar">
@@ -128,34 +140,31 @@ const handlePrint = () => {
         </el-radio-group>
         <div class="spacer"></div>
         <el-button
-            v-if="activeTarget === 'html'"
-
-            type="primary"
-            @click="handleBrowserPrint"
+          v-if="activeTarget === 'html'"
+          type="primary"
+          @click="handleBrowserPrint"
         >
-          <star-horse-icon icon-class="dayin" cursor="pointer"/>
-          {{ i18n('print.preview.browserPrint') }}
+          <star-horse-icon icon-class="dayin" cursor="pointer" />
+          {{ i18n("print.preview.browserPrint") }}
         </el-button>
-        <el-button
-            v-if="isCodeTarget"
-
-            @click="handleCopyCode"
-        >
-          <star-horse-icon icon-class="copy" cursor="pointer"/>
-          {{ i18n('print.preview.copyCode') }}
+        <el-button v-if="isCodeTarget" @click="handleCopyCode">
+          <star-horse-icon icon-class="copy" cursor="pointer" />
+          {{ i18n("print.preview.copyCode") }}
         </el-button>
       </div>
       <div class="preview-content">
         <iframe
-            v-if="activeTarget === 'html'"
-            ref="iframeRef"
-            class="preview-iframe"
+          v-if="activeTarget === 'html'"
+          ref="iframeRef"
+          class="preview-iframe"
         ></iframe>
         <pre v-else class="preview-code">{{ currentContent }}</pre>
       </div>
     </div>
     <template #footer>
-      <el-button @click="innerVisible = false">{{ i18n('dialog.close') }}</el-button>
+      <el-button @click="innerVisible = false">{{
+        i18n("dialog.close")
+      }}</el-button>
     </template>
   </star-horse-panel>
 </template>
@@ -183,14 +192,14 @@ const handlePrint = () => {
     overflow: hidden;
     border: 1px solid var(--el-border-color);
     border-radius: 4px;
-    background: #FFFFFF;
+    background: #ffffff;
   }
 
   .preview-iframe {
     width: 100%;
     height: 100%;
     border: none;
-    background: #FFFFFF;
+    background: #ffffff;
   }
 
   .preview-code {
@@ -199,10 +208,10 @@ const handlePrint = () => {
     margin: 0;
     padding: 12px;
     overflow: auto;
-    font-family: 'Consolas', 'Monaco', monospace;
+    font-family: "Consolas", "Monaco", monospace;
     font-size: 12px;
-    background: #1E1E1E;
-    color: #D4D4D4;
+    background: #1e1e1e;
+    color: #d4d4d4;
     box-sizing: border-box;
   }
 }

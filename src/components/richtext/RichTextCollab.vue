@@ -1,11 +1,15 @@
 <script setup lang="ts" name="RichTextCollab">
-import {computed, onBeforeUnmount, ref, shallowRef, watch} from "vue";
-import {Editor, Toolbar} from "@wangeditor/editor-for-vue";
-import type {IDomEditor, IEditorConfig, IToolbarConfig} from "@wangeditor/editor";
-import {i18n} from "@/lang";
-import {useCollabEditor} from "./composables/useCollabEditor";
-import {createCollabUser, TOOLBAR_PRESETS} from "./constants";
-import {isMobile} from "@/api/device";
+import { computed, onBeforeUnmount, ref, shallowRef, watch } from "vue";
+import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
+import type {
+  IDomEditor,
+  IEditorConfig,
+  IToolbarConfig,
+} from "@wangeditor/editor";
+import { i18n } from "@/lang";
+import { useCollabEditor } from "./composables/useCollabEditor";
+import { createCollabUser, TOOLBAR_PRESETS } from "./constants";
+import { isMobile } from "@/api/device";
 
 const props = defineProps<{
   html?: string;
@@ -21,7 +25,7 @@ const emits = defineEmits<{
 
 const editor = useCollabEditor({
   html: props.html,
-  config: {...props.config, readonly: props.readonly},
+  config: { ...props.config, readonly: props.readonly },
 });
 
 const editorRef = shallowRef<IDomEditor>();
@@ -40,16 +44,16 @@ const currentToolbarButtons = computed(() => {
 });
 
 watch(
-    () => props.readonly,
-    (val) => {
-      editor.updateConfig({readonly: val});
-      editorConfig.value.readOnly = val;
-      if (val) {
-        editorRef.value?.disable();
-      } else {
-        editorRef.value?.enable();
-      }
-    },
+  () => props.readonly,
+  (val) => {
+    editor.updateConfig({ readonly: val });
+    editorConfig.value.readOnly = val;
+    if (val) {
+      editorRef.value?.disable();
+    } else {
+      editorRef.value?.enable();
+    }
+  },
 );
 
 const handleChange = (newEditor: IDomEditor) => {
@@ -67,7 +71,7 @@ const handleCreated = (newEditor: IDomEditor) => {
 /** 模拟协同：加入当前用户 */
 const handleJoinCollab = () => {
   if (editor.config.enableCollaboration && !editor.currentUser.value) {
-    editor.joinCollab(createCollabUser({name: i18n("richtext.user.me")}));
+    editor.joinCollab(createCollabUser({ name: i18n("richtext.user.me") }));
   }
 };
 
@@ -87,52 +91,58 @@ onBeforeUnmount(() => {
     <div class="collab-bar" v-if="editor.config.enableCollaboration">
       <div class="user-list">
         <el-tooltip
-            v-for="user in editor.onlineUsers"
-            :key="user.id"
-            :content="user.name"
-            :trigger="isMobile ? 'click' : 'hover'"
+          v-for="user in editor.onlineUsers"
+          :key="user.id"
+          :content="user.name"
+          :trigger="isMobile ? 'click' : 'hover'"
         >
           <el-avatar
-              :size="24"
-              :src="user.avatar"
-              :style="{ border: `2px solid ${user.color}` }"
+            :size="24"
+            :src="user.avatar"
+            :style="{ border: `2px solid ${user.color}` }"
           >
             {{ user.name.charAt(0) }}
           </el-avatar>
         </el-tooltip>
       </div>
       <span class="online-count">
-                {{ editor.onlineUsers.length }} {{ i18n("richtext.collab.online") }}
-            </span>
+        {{ editor.onlineUsers.length }} {{ i18n("richtext.collab.online") }}
+      </span>
     </div>
 
     <!-- 工具栏 -->
-    <div class="toolbar-wrapper" v-if="editor.config.showToolbar && !editor.config.readonly">
+    <div
+      class="toolbar-wrapper"
+      v-if="editor.config.showToolbar && !editor.config.readonly"
+    >
       <Toolbar
-          :editor="editorRef"
-          :defaultConfig="{ ...toolbarConfig, toolbarKeys: currentToolbarButtons }"
-          :mode="mode"
-          class="rich-text-toolbar"
+        :editor="editorRef"
+        :defaultConfig="{
+          ...toolbarConfig,
+          toolbarKeys: currentToolbarButtons,
+        }"
+        :mode="mode"
+        class="rich-text-toolbar"
       />
     </div>
 
     <!-- 编辑器 -->
     <div class="editor-wrapper">
       <Editor
-          v-model="editor.html.value"
-          :defaultConfig="editorConfig"
-          :mode="mode"
-          class="rich-text-editor"
-          @onChange="handleChange"
-          @onCreated="handleCreated"
+        v-model="editor.html.value"
+        :defaultConfig="editorConfig"
+        :mode="mode"
+        class="rich-text-editor"
+        @onChange="handleChange"
+        @onCreated="handleCreated"
       />
     </div>
 
     <!-- 字数统计 -->
     <div class="footer-bar" v-if="editor.config.maxLength">
-            <span class="word-count">
-                {{ editor.text.value.length }} / {{ editor.config.maxLength }}
-            </span>
+      <span class="word-count">
+        {{ editor.text.value.length }} / {{ editor.config.maxLength }}
+      </span>
     </div>
   </div>
 </template>

@@ -1,14 +1,20 @@
 <script setup lang="ts" name="StarHorseFormItem">
 import FieldList from "@/components/formcomp/utils/FieldList.vue";
-import {ItemPreps} from "@/components/types/ItemPreps";
-import {i18n} from "@/lang";
-import {dynamicFormContextMenuData, getParentComp, moveDownItem, moveUpItem, removeItem,} from "@/plugins/AblesPlugin";
-import {computed, nextTick, onBeforeUnmount, onMounted, ref} from "vue";
-import {warning} from "@/utils/message";
-import {labelVisibleCheck, validMsg} from "@/api/form_utils";
-import {getDesignFormStore} from "@/store/StoreManager";
-import {isMobile} from "@/api/device";
-import {StarHorsePanel} from "@/components/comp";
+import { ItemPreps } from "@/components/types/ItemPreps";
+import { i18n } from "@/lang";
+import {
+  dynamicFormContextMenuData,
+  getParentComp,
+  moveDownItem,
+  moveUpItem,
+  removeItem,
+} from "@/plugins/AblesPlugin";
+import { computed, nextTick, onBeforeUnmount, onMounted, ref } from "vue";
+import { warning } from "@/utils/message";
+import { labelVisibleCheck, validMsg } from "@/api/form_utils";
+import { getDesignFormStore } from "@/store/StoreManager";
+import { isMobile } from "@/api/device";
+import { StarHorsePanel } from "@/components/comp";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -21,7 +27,7 @@ let designForm = getDesignFormStore();
 let isEdit = computed(() => props.isDesign);
 let editUserInfo = computed(() => {
   let userInfo = designForm.getCurrentCompEditUserInfo(
-      props.field?.id || props.field?.preps.id,
+    props.field?.id || props.field?.preps.id,
   );
   return userInfo ? userInfo.name + i18n("api.editingByOthers") : "";
 });
@@ -62,9 +68,9 @@ const selectData = (data: any) => {
   selectDebounceTimer = setTimeout(() => {
     designForm.setParentContainer(props.parentField);
     designForm.selectItem(
-        props.field,
-        data.itemType,
-        getParentComp(props.parentField),
+      props.field,
+      data.itemType,
+      getParentComp(props.parentField),
     );
     // Force component refresh after selection
     nextTick(() => {
@@ -108,8 +114,7 @@ onBeforeUnmount(() => {
   }
 });
 
-onMounted(() => {
-});
+onMounted(() => {});
 
 // 设计模式下双击标签编辑
 const editingLabel = ref(false);
@@ -127,9 +132,9 @@ const startEditLabel = () => {
 const finishEditLabel = () => {
   editingLabel.value = false;
   if (
-      props.field &&
-      (editingLabelText.value !== props.field.label ||
-          editingLabelText.value !== props.field.preps?.label)
+    props.field &&
+    (editingLabelText.value !== props.field.label ||
+      editingLabelText.value !== props.field.preps?.label)
   ) {
     props.field.label = editingLabelText.value;
     if (props.field.preps) {
@@ -140,117 +145,122 @@ const finishEditLabel = () => {
 </script>
 <template>
   <star-horse-panel
-      :type="dialogType"
-      v-if="isDesign"
-      box-width="450px"
-      box-height="70%"
-      :source="3"
-      :full-screen="false"
-      :title="i18n('form.changeComponent')"
-      :self-func="true"
-      v-model="componentVisible"
-      @closeAction="close"
+    :type="dialogType"
+    v-if="isDesign"
+    box-width="450px"
+    box-height="70%"
+    :source="3"
+    :full-screen="false"
+    :title="i18n('form.changeComponent')"
+    :self-func="true"
+    v-model="componentVisible"
+    @closeAction="close"
   >
     <template #footer>
       <el-button type="primary" size="default" @click="close"
-      >{{ i18n("form.confirm") }}
+        >{{ i18n("form.confirm") }}
       </el-button>
     </template>
-    <field-list @selectData="changeItem"/>
+    <field-list @selectData="changeItem" />
   </star-horse-panel>
   <div
-      class="w-fill"
-      :class="{ 'item-info': field?.preps?.itemType != 'usercomp' }"
-      :style="{
+    class="w-fill"
+    :class="{ 'item-info': field?.preps?.itemType != 'usercomp' }"
+    :style="{
       margin: field?.preps?.itemType === 'button' ? '5px auto' : 'unset',
     }"
-      v-if="bareFlag === true"
+    v-if="bareFlag === true"
   >
-    <help :message="field?.preps?.helpMsg" v-if="field?.preps?.helpMsg"/>
+    <help :message="field?.preps?.helpMsg" v-if="field?.preps?.helpMsg" />
     <slot></slot>
   </div>
   <div v-else class="form-item-operation">
     <div
-        class="w-full"
-        :class="{
+      class="w-full"
+      :class="{
         'design-star-horse': isEdit && !disabled,
         'field-item': true,
         'active-item': currentItemId == itemId && isEdit && !disabled,
       }"
-        @click="selectData(field)"
-        @contextmenu="itemContextMenu"
+      @click="selectData(field)"
+      @contextmenu="itemContextMenu"
     >
       <el-form-item
-          :size="field?.preps?.size || 'default'"
-          v-if="
+        :size="field?.preps?.size || 'default'"
+        v-if="
           showFormItem &&
           parentField?.itemType != 'table' &&
           field.preps?.itemType != 'divider' &&
           field?.preps?.headerFlag != 'Y' &&
           !field.preps?.staticData
         "
-          :style="{
+        :style="{
           marginBottom: isEdit && !disabled ? '1px' : '18px',
         }"
-          class="flex items-center w-full h-full"
-          :prop="field?.preps['name']"
-          :label="isEdit ? undefined : labelVisibleCheck(field)"
-          :labelPosition="field?.preps['labelPosition']"
-          :rules="validMsg(field, null)"
+        class="flex items-center w-full h-full"
+        :prop="field?.preps['name']"
+        :label="isEdit ? undefined : labelVisibleCheck(field)"
+        :labelPosition="field?.preps['labelPosition']"
+        :rules="validMsg(field, null)"
       >
         <template #label v-if="isEdit">
           <span
-              v-if="!editingLabel"
-              @click.stop="isMobile ? startEditLabel() : null"
-              @dblclick.stop="!isMobile ? startEditLabel() : null"
-              style="cursor: text"
-          >{{ labelVisibleCheck(field) }}</span
+            v-if="!editingLabel"
+            @click.stop="isMobile ? startEditLabel() : null"
+            @dblclick.stop="!isMobile ? startEditLabel() : null"
+            style="cursor: text"
+            >{{ labelVisibleCheck(field) }}</span
           >
           <el-input
-              v-else
-              ref="labelInputRef"
-              v-model="editingLabelText"
-
-              @blur="finishEditLabel"
-              @keyup.enter="finishEditLabel"
-              @click.stop
-              style="width: 120px"
+            v-else
+            ref="labelInputRef"
+            v-model="editingLabelText"
+            @blur="finishEditLabel"
+            @keyup.enter="finishEditLabel"
+            @click.stop
+            style="width: 120px"
           />
         </template>
 
-        <help :message="field.preps?.helpMsg" v-if="field.preps?.helpMsg"/>
+        <help :message="field.preps?.helpMsg" v-if="field.preps?.helpMsg" />
         <slot></slot>
       </el-form-item>
       <div
-          v-else
-          :class="{
+        v-else
+        :class="{
           'item-info': field?.preps?.itemType != 'usercomp',
         }"
-          :style="{
+        :style="{
           margin: field?.itemType === 'button' ? '5px auto' : 'unset',
         }"
-          @click.stop="selectData(field)"
+        @click.stop="selectData(field)"
       >
-        <help :message="field.preps?.helpMsg" v-if="field.preps?.helpMsg"/>
+        <help :message="field.preps?.helpMsg" v-if="field.preps?.helpMsg" />
         <slot></slot>
       </div>
       <div
-          class="component-header-actions"
-          v-if="isEdit && currentItemId == itemId"
-          :key="`header-actions-${currentItemId}-${refreshFlag}`"
+        class="component-header-actions"
+        v-if="isEdit && currentItemId == itemId"
+        :key="`header-actions-${currentItemId}-${refreshFlag}`"
       >
         <div class="drag-handler">
-          <el-tooltip :content="i18n('form.drag')" :trigger="isMobile ? 'click' : 'hover'">
+          <el-tooltip
+            :content="i18n('form.drag')"
+            :trigger="isMobile ? 'click' : 'hover'"
+          >
             <star-horse-icon
-                icon-class="drag"
-                style="cursor: move; color: var(--star-horse-white)"
+              icon-class="drag"
+              style="cursor: move; color: var(--star-horse-white)"
             />
           </el-tooltip>
-          <el-tooltip :content="field?.preps['itemNameLabel']" :trigger="isMobile ? 'click' : 'hover'">
+          <el-tooltip
+            :content="field?.preps['itemNameLabel']"
+            :trigger="isMobile ? 'click' : 'hover'"
+          >
             <span
-                style="color: var(--star-horse-white); cursor: pointer"
-                @click="selectData(field)"
-            >{{ field?.preps["itemNameLabel"] }}</span
+              style="color: var(--star-horse-white); cursor: pointer"
+              @click="selectData(field)"
+              >{{ field?.preps["itemNameLabel"] }}</span
             >
           </el-tooltip>
         </div>
@@ -259,47 +269,59 @@ const finishEditLabel = () => {
         </div>
         <div class="field-action" v-else-if="!disabled">
           <el-tooltip
-              :content="i18n('form.selectParentContainer')"
-              :trigger="isMobile ? 'click' : 'hover'"
-              v-if="parentField?.itemType"
+            :content="i18n('form.selectParentContainer')"
+            :trigger="isMobile ? 'click' : 'hover'"
+            v-if="parentField?.itemType"
           >
             <star-horse-icon
-                @click.stop="selectParentContainer()"
-                icon-class="select-parent"
-                cursor="pointer"
-                style="color: var(--star-horse-white)"
+              @click.stop="selectParentContainer()"
+              icon-class="select-parent"
+              cursor="pointer"
+              style="color: var(--star-horse-white)"
             />
           </el-tooltip>
-          <el-tooltip :content="i18n('form.changeComponent')" :trigger="isMobile ? 'click' : 'hover'">
+          <el-tooltip
+            :content="i18n('form.changeComponent')"
+            :trigger="isMobile ? 'click' : 'hover'"
+          >
             <star-horse-icon
-                @click.stop="exchangeItem"
-                icon-class="exchange"
-                cursor="pointer"
-                style="color: var(--star-horse-white)"
+              @click.stop="exchangeItem"
+              icon-class="exchange"
+              cursor="pointer"
+              style="color: var(--star-horse-white)"
             />
           </el-tooltip>
-          <el-tooltip :content="i18n('form.moveUp')" :trigger="isMobile ? 'click' : 'hover'">
+          <el-tooltip
+            :content="i18n('form.moveUp')"
+            :trigger="isMobile ? 'click' : 'hover'"
+          >
             <star-horse-icon
-                @click.stop="moveUpItem(isEdit, field?.preps, parentField)"
-                icon-class="move-up"
-                cursor="pointer"
-                style="color: var(--star-horse-white)"
+              @click.stop="moveUpItem(isEdit, field?.preps, parentField)"
+              icon-class="move-up"
+              cursor="pointer"
+              style="color: var(--star-horse-white)"
             />
           </el-tooltip>
-          <el-tooltip :content="i18n('form.moveDown')" :trigger="isMobile ? 'click' : 'hover'">
+          <el-tooltip
+            :content="i18n('form.moveDown')"
+            :trigger="isMobile ? 'click' : 'hover'"
+          >
             <star-horse-icon
-                @click.stop="moveDownItem(isEdit, field?.preps, parentField)"
-                icon-class="move-down"
-                cursor="pointer"
-                style="color: var(--star-horse-white)"
+              @click.stop="moveDownItem(isEdit, field?.preps, parentField)"
+              icon-class="move-down"
+              cursor="pointer"
+              style="color: var(--star-horse-white)"
             />
           </el-tooltip>
-          <el-tooltip :content="i18n('form.deleteComponent')" :trigger="isMobile ? 'click' : 'hover'">
+          <el-tooltip
+            :content="i18n('form.deleteComponent')"
+            :trigger="isMobile ? 'click' : 'hover'"
+          >
             <star-horse-icon
-                @click.stop="removeItem(isEdit, field?.preps, parentField)"
-                icon-class="clear-all"
-                cursor="pointer"
-                style="color: var(--star-horse-white)"
+              @click.stop="removeItem(isEdit, field?.preps, parentField)"
+              icon-class="clear-all"
+              cursor="pointer"
+              style="color: var(--star-horse-white)"
             />
           </el-tooltip>
         </div>
@@ -308,8 +330,8 @@ const finishEditLabel = () => {
 
     <Teleport to="body" v-if="isDesign">
       <ContentMenu
-          ref="itemContextMenuRef"
-          :menu-data="dynamicFormContextMenuData(field, parentField, 'item')"
+        ref="itemContextMenuRef"
+        :menu-data="dynamicFormContextMenuData(field, parentField, 'item')"
       />
     </Teleport>
   </div>

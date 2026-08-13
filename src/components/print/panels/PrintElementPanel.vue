@@ -3,7 +3,7 @@
  * 打印模板设计器 - 左侧元素面板
  * 职责：展示可拖入画布的元素分类
  */
-import {i18n} from "@/lang";
+import { i18n } from "@/lang";
 
 const props = defineProps<{
   readonly?: boolean;
@@ -24,30 +24,34 @@ const categories: { title: string; items: ElementCategory[] }[] = [
   {
     title: i18n("print.category.basic"),
     items: [
-      {name: i18n("print.element.text"), icon: "text", type: "text"},
-      {name: i18n("print.element.datetime"), icon: "datetime", type: "datetime"},
-      {name: i18n("print.element.counter"), icon: "number", type: "counter"},
+      { name: i18n("print.element.text"), icon: "text", type: "text" },
+      {
+        name: i18n("print.element.datetime"),
+        icon: "datetime",
+        type: "datetime",
+      },
+      { name: i18n("print.element.counter"), icon: "number", type: "counter" },
     ],
   },
   {
     title: i18n("print.category barcode"),
     items: [
-      {name: i18n("print.element.barcode"), icon: "qrcode", type: "barcode"},
-      {name: i18n("print.element.qrcode"), icon: "qrcode", type: "qrcode"},
+      { name: i18n("print.element.barcode"), icon: "qrcode", type: "barcode" },
+      { name: i18n("print.element.qrcode"), icon: "qrcode", type: "qrcode" },
     ],
   },
   {
     title: i18n("print.category.graphic"),
     items: [
-      {name: i18n("print.element.image"), icon: "image", type: "image"},
-      {name: i18n("print.element.line"), icon: "divider", type: "line"},
-      {name: i18n("print.element.rect"), icon: "rectangle", type: "rect"},
+      { name: i18n("print.element.image"), icon: "image", type: "image" },
+      { name: i18n("print.element.line"), icon: "divider", type: "line" },
+      { name: i18n("print.element.rect"), icon: "rectangle", type: "rect" },
     ],
   },
   {
     title: i18n("print.category.data"),
     items: [
-      {name: i18n("print.element.table"), icon: "table", type: "table"},
+      { name: i18n("print.element.table"), icon: "table", type: "table" },
     ],
   },
 ];
@@ -66,27 +70,20 @@ const handleDragStart = (e: DragEvent, type: string) => {
 
 <template>
   <div class="print-element-panel">
-    <div
-        v-for="(cat, idx) in categories"
-        :key="idx"
-        class="element-category"
-    >
+    <div v-for="(cat, idx) in categories" :key="idx" class="element-category">
       <div class="category-title">{{ cat.title }}</div>
       <div class="category-items">
         <div
-            v-for="item in cat.items"
-            :key="item.type"
-            class="element-item"
-            :class="{ disabled: readonly }"
-            :draggable="!readonly"
-            @click="handleAdd(item.type)"
-            @dragstart="handleDragStart($event, item.type)"
-            :title="item.name"
+          v-for="item in cat.items"
+          :key="item.type"
+          class="element-item"
+          :class="{ disabled: readonly }"
+          :draggable="!readonly"
+          @click="handleAdd(item.type)"
+          @dragstart="handleDragStart($event, item.type)"
+          :title="item.name"
         >
-          <star-horse-icon
-              :icon-class="item.icon"
-              cursor="pointer"
-          />
+          <star-horse-icon :icon-class="item.icon" cursor="pointer" />
           <span class="element-name">{{ item.name }}</span>
         </div>
       </div>

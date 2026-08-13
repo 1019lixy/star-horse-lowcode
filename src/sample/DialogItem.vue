@@ -2,19 +2,19 @@
   {{ formData }}
   <template v-for="data in fields">
     <component
-        :field="data"
-        v-model:formData="formData"
-        :isDesign="false"
-        :formInfo="fields"
-        :showFormItem="true"
-        :bareFlag="false"
-        :is="data.itemType + '-item'"
+      :field="data"
+      v-model:formData="formData"
+      :isDesign="false"
+      :formInfo="fields"
+      :showFormItem="true"
+      :bareFlag="false"
+      :is="data.itemType + '-item'"
     />
   </template>
 </template>
 
 <script lang="ts" setup>
-import {onMounted, ref} from "vue";
+import { onMounted, ref } from "vue";
 
 const formData = ref<any>({});
 const fields = ref<Array<any>>([
@@ -28,9 +28,10 @@ const fields = ref<Array<any>>([
     preps: {
       formVisible: true,
       fieldList: {
-        batchFieldList: [
+        containerFields: [
           {
-            batchName: "imageInfo",
+            containerType: "batchTable",
+            tabName: "imageInfo",
             fieldList: [
               {
                 fieldName: "imageType",
@@ -40,9 +41,9 @@ const fields = ref<Array<any>>([
                 defaultValue: "upload",
                 preps: {
                   values: [
-                    {name: "上传", value: "upload"},
-                    {name: "手动输入", value: "manual"},
-                    {name: "图库选择", value: "select"},
+                    { name: "上传", value: "upload" },
+                    { name: "手动输入", value: "manual" },
+                    { name: "图库选择", value: "select" },
                   ],
                   dataRelation: {
                     actionName: "change",
@@ -133,9 +134,9 @@ const fields = ref<Array<any>>([
     defaultValue: "outside",
     preps: {
       values: [
-        {name: "外部", value: "outside"},
-        {name: "内部", value: "inside"},
-        {name: "隐藏", value: "none"},
+        { name: "外部", value: "outside" },
+        { name: "内部", value: "inside" },
+        { name: "隐藏", value: "none" },
       ],
     },
   },
@@ -146,9 +147,9 @@ const fields = ref<Array<any>>([
     defaultValue: "hover",
     preps: {
       values: [
-        {name: "悬停时显示", value: "hover"},
-        {name: "一直显示", value: "always"},
-        {name: "隐藏", value: "never"},
+        { name: "悬停时显示", value: "hover" },
+        { name: "一直显示", value: "always" },
+        { name: "隐藏", value: "never" },
       ],
     },
   },
@@ -160,8 +161,7 @@ const fields = ref<Array<any>>([
     helpMsg: "组件层级 (z-index),控制组件的堆叠顺序，数值越大越靠前",
   },
 ]);
-onMounted(() => {
-});
+onMounted(() => {});
 </script>
 
 <style lang="scss" scoped></style>

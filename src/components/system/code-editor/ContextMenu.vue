@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {nextTick, onBeforeUnmount, onMounted, ref} from "vue";
+import { nextTick, onBeforeUnmount, onMounted, ref } from "vue";
 
 export interface ContextMenuItem {
   label: string;
@@ -21,7 +21,7 @@ const emit = defineEmits<{
 }>();
 
 const menuRef = ref<HTMLElement>();
-const adjustedPos = ref({x: props.position.x, y: props.position.y});
+const adjustedPos = ref({ x: props.position.x, y: props.position.y });
 
 const handleAction = (item: ContextMenuItem) => {
   if (item.disabled || !item.action) return;
@@ -70,24 +70,24 @@ const onEsc = (e: KeyboardEvent) => {
 <template>
   <Teleport to="body">
     <div
-        ref="menuRef"
-        class="sh-context-menu"
-        :style="{ left: adjustedPos.x + 'px', top: adjustedPos.y + 'px' }"
-        @click.stop
-        @contextmenu.prevent
+      ref="menuRef"
+      class="sh-context-menu"
+      :style="{ left: adjustedPos.x + 'px', top: adjustedPos.y + 'px' }"
+      @click.stop
+      @contextmenu.prevent
     >
       <template v-for="(item, i) in items" :key="i">
-        <div v-if="item.divider" class="ctx-divider"/>
+        <div v-if="item.divider" class="ctx-divider" />
         <div
-            v-else
-            class="ctx-item"
-            :class="{ 'ctx-danger': item.danger, 'ctx-disabled': item.disabled }"
-            @click="handleAction(item)"
+          v-else
+          class="ctx-item"
+          :class="{ 'ctx-danger': item.danger, 'ctx-disabled': item.disabled }"
+          @click="handleAction(item)"
         >
           <span class="ctx-label">{{ item.label }}</span>
           <span v-if="item.shortcut" class="ctx-shortcut">{{
-              item.shortcut
-            }}</span>
+            item.shortcut
+          }}</span>
         </div>
       </template>
     </div>

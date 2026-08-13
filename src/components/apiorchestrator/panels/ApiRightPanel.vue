@@ -9,13 +9,13 @@
  *
  * 取消 el-drawer，将接口编辑直接固定在右侧面板，避免遮挡流程图。
  */
-import {nextTick, ref, watch} from "vue";
-import {i18n} from "@/lang";
-import {Close} from "@element-plus/icons-vue";
+import { nextTick, ref, watch } from "vue";
+import { i18n } from "@/lang";
+import { Close } from "@element-plus/icons-vue";
 import ApiEndpointEditor from "./ApiEndpointEditor.vue";
 import ApiMockConfig from "./ApiMockConfig.vue";
 import ApiTestResults from "./ApiTestResults.vue";
-import type {ApiOrchestratorState} from "../composables/useApiOrchestrator";
+import type { ApiOrchestratorState } from "../composables/useApiOrchestrator";
 
 const props = defineProps<{
   state: ApiOrchestratorState;
@@ -29,14 +29,14 @@ const activeTab = ref<"endpoint" | "mock" | "test">("mock");
 
 // 选中接口时自动切换到接口属性页签（nextTick 确保 el-tabs 已注册该页签）
 watch(
-    () => props.state.selectedEndpointId.value,
-    (id) => {
-      if (id) {
-        nextTick(() => {
-          activeTab.value = "endpoint";
-        });
-      }
-    },
+  () => props.state.selectedEndpointId.value,
+  (id) => {
+    if (id) {
+      nextTick(() => {
+        activeTab.value = "endpoint";
+      });
+    }
+  },
 );
 
 const handleCloseEditor = () => {
@@ -50,20 +50,24 @@ const handleCloseEditor = () => {
     <el-tabs v-model="activeTab" type="border-card" class="right-tabs">
       <el-tab-pane name="endpoint">
         <template #label>
-                    <span class="tab-label">
-                        {{ i18n("api.endpoint.editor") }}
-                        <el-icon v-if="state.selectedEndpoint.value" class="tab-close" @click.stop="handleCloseEditor">
-                            <Close/>
-                        </el-icon>
-                    </span>
+          <span class="tab-label">
+            {{ i18n("api.endpoint.editor") }}
+            <el-icon
+              v-if="state.selectedEndpoint.value"
+              class="tab-close"
+              @click.stop="handleCloseEditor"
+            >
+              <Close />
+            </el-icon>
+          </span>
         </template>
-        <ApiEndpointEditor :state="state"/>
+        <ApiEndpointEditor :state="state" />
       </el-tab-pane>
       <el-tab-pane :label="i18n('api.mock.title')" name="mock">
-        <ApiMockConfig :state="state"/>
+        <ApiMockConfig :state="state" />
       </el-tab-pane>
       <el-tab-pane :label="i18n('api.test.title')" name="test">
-        <ApiTestResults :state="state"/>
+        <ApiTestResults :state="state" />
       </el-tab-pane>
     </el-tabs>
   </div>

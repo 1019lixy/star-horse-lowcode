@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import {computed, nextTick, ref, watch} from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 import SmoothSignature from "smooth-signature";
-import {warning} from "@/utils/message";
+import { warning } from "@/utils/message";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
-import {ItemPreps} from "@/components/types/ItemPreps";
+import { ItemPreps } from "@/components/types/ItemPreps";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
-import {i18n} from "@/lang";
-import {isMobile} from "@/api/device";
-import {StarHorsePanel} from "@/components/comp";
+import { i18n } from "@/lang";
+import { isMobile } from "@/api/device";
+import { StarHorsePanel } from "@/components/comp";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -25,7 +25,10 @@ const signDialogVisible = ref(false);
 const previewDialog = ref(false);
 
 // 签名实例
-type SignatureInstance = SmoothSignature & { destroy?: () => void; fromDataURL?: (data: string) => void };
+type SignatureInstance = SmoothSignature & {
+  destroy?: () => void;
+  fromDataURL?: (data: string) => void;
+};
 let signature = ref<SignatureInstance | null>(null);
 const signatureCanvas = ref<HTMLCanvasElement | null>(null);
 
@@ -51,7 +54,10 @@ const initSignature = async () => {
       signature.value.destroy?.();
       signature.value = null;
     }
-    signature.value = new SmoothSignature(signatureCanvas.value, getSignatureOptions());
+    signature.value = new SmoothSignature(
+      signatureCanvas.value,
+      getSignatureOptions(),
+    );
 
     // 如果已有历史签名base64，回填画布
     const base64 = formData.value[props.field.fieldName];
@@ -81,9 +87,9 @@ const confirmSign = () => {
   }
   // 赋值到表单字段
   formData.value[props.field.fieldName] =
-      props.field.preps?.imageType == "jpg"
-          ? signature.value.getJPG()
-          : signature.value.getPNG();
+    props.field.preps?.imageType == "jpg"
+      ? signature.value.getJPG()
+      : signature.value.getPNG();
 
   signDialogVisible.value = false;
 };
@@ -126,86 +132,88 @@ const signImage = computed(() => {
 <template>
   <!-- 大图预览弹窗（原有功能保留） -->
   <star-horse-panel
-      :type="dialogType"
-      v-model="previewDialog"
-      :source="3"
-      :self-func="true"
-      @closeAction="previewDialog = false"
+    :type="dialogType"
+    v-model="previewDialog"
+    :source="3"
+    :self-func="true"
+    @closeAction="previewDialog = false"
   >
-    <el-image :src="signImage" fit="contain" style="width:100%"/>
+    <el-image :src="signImage" fit="contain" style="width: 100%" />
   </star-horse-panel>
 
   <!-- 签名编辑弹窗【核心】画布只在这里 -->
   <star-horse-panel
-      :type="dialogType"
-      v-model="signDialogVisible"
-      title="手写签名"
-      @merge="confirmSign"
-      width="600px"
-      :self-func="true"
+    :type="dialogType"
+    v-model="signDialogVisible"
+    title="手写签名"
+    @merge="confirmSign"
+    width="600px"
+    :self-func="true"
   >
     <div class="signature-wrapper">
       <div class="sign-toolbar">
         <el-button size="small" @click="clear">
-          <star-horse-icon icon-class="reset"/>
+          <star-horse-icon icon-class="reset" />
           清空
         </el-button>
         <el-button size="small" @click="undo">
-          <star-horse-icon icon-class="undo"/>
+          <star-horse-icon icon-class="undo" />
           撤销
         </el-button>
       </div>
       <div class="sign-canvas-wrap">
-        <canvas ref="signatureCanvas" class="sign-canvas"/>
+        <canvas ref="signatureCanvas" class="sign-canvas" />
       </div>
     </div>
   </star-horse-panel>
 
   <starhorse-form-item
-      :showFormItem="showFormItem"
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :field="field"
-      :parentField="parentField"
+    :showFormItem="showFormItem"
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :bareFlag="bareFlag"
+    :field="field"
+    :parentField="parentField"
   >
     <div class="signature-container">
       <!-- 无签名：显示按钮 -->
       <el-button
-          v-if="!signImage&&source!=3"
-          type="primary"
-          @click="openSignDialog"
-          :disabled="disabled"
+        v-if="!signImage && source != 3"
+        type="primary"
+        @click="openSignDialog"
+        :disabled="disabled"
       >
-        <star-horse-icon icon-class="edit" color="var(--star-horse-white)"/>
+        <star-horse-icon icon-class="edit" color="var(--star-horse-white)" />
         点击进行签名
       </el-button>
 
       <!-- 已有签名：固定宽高展示图片，点击可重新编辑 -->
-      <div
-          v-else
-          class="sign-preview-box"
-          :class="{ disabled: disabled }"
-      >
+      <div v-else class="sign-preview-box" :class="{ disabled: disabled }">
         <el-image
-            :src="signImage"
-            fit="contain"
-            class="sign-preview-img"
-            @click="openSignDialog"
+          :src="signImage"
+          fit="contain"
+          class="sign-preview-img"
+          @click="openSignDialog"
         />
-        <div class="sign-preview-actions" v-if="source!=3">
-          <el-tooltip :content="i18n('item.editSignature')" :trigger="isMobile ? 'click' : 'hover'">
+        <div class="sign-preview-actions" v-if="source != 3">
+          <el-tooltip
+            :content="i18n('item.editSignature')"
+            :trigger="isMobile ? 'click' : 'hover'"
+          >
             <star-horse-icon
-                icon-class="edit"
-                class="sign-action-icon"
-                @click.stop="openSignDialog"
+              icon-class="edit"
+              class="sign-action-icon"
+              @click.stop="openSignDialog"
             />
           </el-tooltip>
-          <el-tooltip :content="i18n('item.previewSignature')" :trigger="isMobile ? 'click' : 'hover'">
+          <el-tooltip
+            :content="i18n('item.previewSignature')"
+            :trigger="isMobile ? 'click' : 'hover'"
+          >
             <star-horse-icon
-                icon-class="data-view"
-                class="sign-action-icon"
-                @click.stop="handlePreview"
+              icon-class="data-view"
+              class="sign-action-icon"
+              @click.stop="handlePreview"
             />
           </el-tooltip>
         </div>

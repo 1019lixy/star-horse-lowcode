@@ -1,30 +1,30 @@
 <template>
   <starhorse-form-item
-      :showFormItem="showFormItem"
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :field="field"
-      :parentField="parentField"
+    :showFormItem="showFormItem"
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :bareFlag="bareFlag"
+    :field="field"
+    :parentField="parentField"
   >
     <!-- PC 端：完全保持原逻辑 -->
     <el-tree-select
-        v-if="!isSeparate"
-        :fid="field.fieldName"
-        :disabled="checkIsDisabled(props)"
-        :default-expand-all="true"
-        v-bind="prepsFilter(field.preps)"
-        :filter-node-method="filterNodeMethod"
-        :placeholder="field.preps?.placeholder??''"
-        :render-content="renderContent"
-        v-on="getDynamicEvents(props, itemAction, formData)"
-        v-model="formData[field.fieldName]"
+      v-if="!isSeparate"
+      :fid="field.fieldName"
+      :disabled="checkIsDisabled(props)"
+      :default-expand-all="true"
+      v-bind="prepsFilter(field.preps)"
+      :filter-node-method="filterNodeMethod"
+      :placeholder="field.preps?.placeholder ?? ''"
+      :render-content="renderContent"
+      v-on="getDynamicEvents(props, itemAction, formData)"
+      v-model="formData[field.fieldName]"
     >
       <template v-if="field.preps?.multiple" #header>
         <el-checkbox
-            v-model="checkAll"
-            :indeterminate="indeterminate"
-            @change="handleCheckAll"
+          v-model="checkAll"
+          :indeterminate="indeterminate"
+          @change="handleCheckAll"
         >
           {{ i18n("common.selectAll") }}
         </el-checkbox>
@@ -36,17 +36,16 @@
         <template v-else>
           <div class="flex-row flex w-full justify-between">
             <el-input
-                v-model="optionName"
-                class="option-input flex-1"
-                :placeholder="i18n('form.enterOptionName')"
+              v-model="optionName"
+              class="option-input flex-1"
+              :placeholder="i18n('form.enterOptionName')"
             />
             <div class="flex-row flex justify-center w-[35%] mx-auto my-0">
               <el-button type="primary" icon="add" @click="onConfirm">
                 {{ i18n("form.add") }}
               </el-button>
-              <el-button icon="cancel" @click="clear">{{
-                  i18n("form.cancel")
-                }}
+              <el-button icon="cancel" @click="clear"
+                >{{ i18n("form.cancel") }}
               </el-button>
             </div>
           </div>
@@ -57,56 +56,56 @@
     <!-- APP 端分离模式：只读输入框 + 抽屉内直接渲染树 -->
     <template v-else>
       <el-input
-          :model-value="displayText"
-          :placeholder="field.preps?.placeholder"
-          :disabled="checkIsDisabled(props)"
-          readonly
-          @click="openPicker"
+        :model-value="displayText"
+        :placeholder="field.preps?.placeholder"
+        :disabled="checkIsDisabled(props)"
+        readonly
+        @click="openPicker"
       >
         <template #suffix>
-          <star-horse-icon icon-class="arrow-down"/>
+          <star-horse-icon icon-class="arrow-down" />
         </template>
       </el-input>
 
       <ShMobilePicker
-          v-if="isSeparate && pickerVisible"
-          v-model="pickerVisible"
-          :title="title"
-          :placement="placement"
-          :size="size"
-          :show-footer="multiple"
-          @confirm="handleConfirm"
-          @cancel="handleCancel"
+        v-if="isSeparate && pickerVisible"
+        v-model="pickerVisible"
+        :title="title"
+        :placement="placement"
+        :size="size"
+        :show-footer="multiple"
+        @confirm="handleConfirm"
+        @cancel="handleCancel"
       >
         <div class="sh-mobile-tree-panel">
           <!-- 搜索框（filterable / allowCreate 时显示） -->
           <el-input
-              v-if="field.preps?.filterable || allowCreate"
-              v-model="filterText"
-              class="sh-mobile-tree-panel__search"
-              :placeholder="i18n('starhorse.pleaseInput') || '搜索'"
-              clearable
+            v-if="field.preps?.filterable || allowCreate"
+            v-model="filterText"
+            class="sh-mobile-tree-panel__search"
+            :placeholder="i18n('starhorse.pleaseInput') || '搜索'"
+            clearable
           >
             <template #prefix>
-              <star-horse-icon icon-class="search"/>
+              <star-horse-icon icon-class="search" />
             </template>
           </el-input>
 
           <!-- 直接渲染树形列表 -->
           <el-tree
-              ref="treeRef"
-              :data="treeData"
-              :props="treeProps"
-              :node-key="nodeKey"
-              :show-checkbox="multiple"
-              :default-expand-all="true"
-              :default-checked-keys="multiple ? checkedKeys : undefined"
-              :highlight-current="!multiple"
-              :filter-node-method="filterNodeMethod"
-              :expand-on-click-node="false"
-              class="sh-mobile-tree-panel__tree"
-              @node-click="handleNodeClick"
-              @check="handleCheck"
+            ref="treeRef"
+            :data="treeData"
+            :props="treeProps"
+            :node-key="nodeKey"
+            :show-checkbox="multiple"
+            :default-expand-all="true"
+            :default-checked-keys="multiple ? checkedKeys : undefined"
+            :highlight-current="!multiple"
+            :filter-node-method="filterNodeMethod"
+            :expand-on-click-node="false"
+            class="sh-mobile-tree-panel__tree"
+            @node-click="handleNodeClick"
+            @check="handleCheck"
           >
             <template #default="{ node, data }">
               <span class="sh-mobile-tree-panel__label">
@@ -115,12 +114,19 @@
             </template>
           </el-tree>
 
-          <div v-if="!treeData.length && !showTreeCreateRow" class="sh-mobile-tree-panel__empty">
+          <div
+            v-if="!treeData.length && !showTreeCreateRow"
+            class="sh-mobile-tree-panel__empty"
+          >
             {{ i18n("pivot.empty.noData") || "暂无数据" }}
           </div>
           <!-- allowCreate：创建新值 -->
-          <div v-if="showTreeCreateRow" class="sh-mobile-tree-panel__create" @click="createTreeCustomValue">
-            <star-horse-icon icon-class="add"/>
+          <div
+            v-if="showTreeCreateRow"
+            class="sh-mobile-tree-panel__create"
+            @click="createTreeCustomValue"
+          >
+            <star-horse-icon icon-class="add" />
             <span>{{ i18n("form.add") }} "{{ filterText }}"</span>
           </div>
         </div>
@@ -129,8 +135,8 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {computed, nextTick, onMounted, ref, watch} from "vue";
-import {compDynamicData} from "@/api/star_horse_utils";
+import { computed, nextTick, onMounted, ref, watch } from "vue";
+import { compDynamicData } from "@/api/star_horse_utils";
 import {
   allAction,
   checkIsDisabled,
@@ -138,13 +144,13 @@ import {
   prepsFilter,
   relationEventDispatcher,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
-import {getDynamicEvents} from "@/api/system";
-import {warning} from "@/utils/message";
-import {i18n} from "@/lang";
-import {useMobilePicker,} from "@/components/formcomp/utils/useMobilePicker";
+import { getDynamicEvents } from "@/api/system";
+import { warning } from "@/utils/message";
+import { i18n } from "@/lang";
+import { useMobilePicker } from "@/components/formcomp/utils/useMobilePicker";
 import ShMobilePicker from "@/components/formcomp/utils/ShMobilePicker.vue";
 
-import {ItemPreps} from "@/components/types/ItemPreps";
+import { ItemPreps } from "@/components/types/ItemPreps";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -182,9 +188,7 @@ const treeProps = computed(() => ({
   value: props.field.preps?.props?.value || "value",
   children: props.field.preps?.props?.children || "children",
 }));
-const nodeKey = computed(
-    () => props.field.preps?.props?.value || "value",
-);
+const nodeKey = computed(() => props.field.preps?.props?.value || "value");
 
 const tempValue = ref<any>(multiple.value ? [] : undefined);
 const checkedKeys = ref<any[]>([]);
@@ -193,8 +197,8 @@ const checkedKeys = ref<any[]>([]);
 watch(pickerVisible, async (val) => {
   if (val) {
     tempValue.value = multiple.value
-        ? [...(formData.value?.[props.field.fieldName] || [])]
-        : formData.value?.[props.field.fieldName];
+      ? [...(formData.value?.[props.field.fieldName] || [])]
+      : formData.value?.[props.field.fieldName];
     filterText.value = "";
     await nextTick();
     if (multiple.value && treeRef.value) {
@@ -226,10 +230,15 @@ const isKeywordExistsInTree = computed(() => {
   const check = (nodes: any[]): boolean => {
     for (const n of nodes) {
       if (
-          String(n[labelName] ?? "").toLowerCase() === kw ||
-          String(n[valueName] ?? "").toLowerCase() === kw
-      ) return true;
-      if (n[treeProps.value.children]?.length && check(n[treeProps.value.children])) return true;
+        String(n[labelName] ?? "").toLowerCase() === kw ||
+        String(n[valueName] ?? "").toLowerCase() === kw
+      )
+        return true;
+      if (
+        n[treeProps.value.children]?.length &&
+        check(n[treeProps.value.children])
+      )
+        return true;
     }
     return false;
   };
@@ -238,7 +247,10 @@ const isKeywordExistsInTree = computed(() => {
 
 /** allowCreate：是否显示"创建 xxx"行 */
 const showTreeCreateRow = computed(
-    () => allowCreate.value && filterText.value.trim() !== "" && !isKeywordExistsInTree.value,
+  () =>
+    allowCreate.value &&
+    filterText.value.trim() !== "" &&
+    !isKeywordExistsInTree.value,
 );
 
 /** allowCreate：创建新值并加入选中 */
@@ -260,16 +272,19 @@ const renderNodeLabel = (node: any, data: any) => {
   let labelName = props.field.preps?.props?.label || "label";
   if (props.field.preps?.showCode) {
     let codeName =
-        props.field.preps?.props?.code ||
-        props.field.preps?.props?.value ||
-        "value";
+      props.field.preps?.props?.code ||
+      props.field.preps?.props?.value ||
+      "value";
     return `${data[labelName]}(${data["code"] || data[codeName] || ""})`;
   }
   return data[labelName];
 };
 
 /** PC 端 el-tree-select 的 render-content 回调 */
-const renderContent = (_h: Function, {node, data}: { node: any; data: any }) => {
+const renderContent = (
+  _h: Function,
+  { node, data }: { node: any; data: any },
+) => {
   return renderNodeLabel(node, data);
 };
 
@@ -343,28 +358,28 @@ const displayText = computed(() => {
 
   if (Array.isArray(val)) {
     return val
-        .map((v) => findNodeLabel(v, data, labelKey, valueKey, childrenKey))
-        .join(", ");
+      .map((v) => findNodeLabel(v, data, labelKey, valueKey, childrenKey))
+      .join(", ");
   }
   return findNodeLabel(val, data, labelKey, valueKey, childrenKey);
 });
 
 const findNodeLabel = (
-    v: any,
-    data: any[],
-    labelKey: string,
-    valueKey: string,
-    childrenKey: string,
+  v: any,
+  data: any[],
+  labelKey: string,
+  valueKey: string,
+  childrenKey: string,
 ): string => {
   for (const node of data) {
     if (node[valueKey] === v) return String(node[labelKey] ?? v);
     if (node[childrenKey]?.length) {
       const found = findNodeLabel(
-          v,
-          node[childrenKey],
-          labelKey,
-          valueKey,
-          childrenKey,
+        v,
+        node[childrenKey],
+        labelKey,
+        valueKey,
+        childrenKey,
       );
       if (found !== String(v)) return found;
     }
@@ -380,11 +395,11 @@ const handleConfirm = () => {
   const dataRelation = props.field.preps?.dataRelation;
   if (dataRelation?.actionName) {
     relationEventDispatcher(
-        props,
-        dataRelation,
-        tempValue.value,
-        formData,
-        dataRelation.actionName,
+      props,
+      dataRelation,
+      tempValue.value,
+      formData,
+      dataRelation.actionName,
     );
   }
   closePicker();
@@ -410,11 +425,13 @@ const onConfirm = () => {
 
   const labelName = props.field.preps?.props?.label || "label";
   const codeName =
-      props.field.preps?.props?.code ||
-      props.field.preps?.props?.value ||
-      "value";
+    props.field.preps?.props?.code ||
+    props.field.preps?.props?.value ||
+    "value";
   if (
-      props.field.preps.data.find((item: any) => item[codeName] == optionName.value)
+    props.field.preps.data.find(
+      (item: any) => item[codeName] == optionName.value,
+    )
   ) {
     warning(i18n("form.optionNameDuplicate"));
     return;
@@ -440,7 +457,7 @@ onMounted(() => {
     props.field.preps = {};
   }
   props.field.preps["remote"] =
-      props.field.preps["remote"] || props.field.preps["dataSource"] == "url";
+    props.field.preps["remote"] || props.field.preps["dataSource"] == "url";
   props.field.preps["filterable"] = true;
   props.field.preps["collapseTags"] = true;
   props.field.preps["props"] = props.field.preps["props"] || {

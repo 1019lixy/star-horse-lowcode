@@ -1,5 +1,5 @@
-import {isJson} from "@/api/star_horse_utils";
-import {uuid} from "@/api/system";
+import { isJson } from "@/api/star_horse_utils";
+import { uuid } from "@/api/system";
 
 /**
  * 按点号路径拆分取值:支持 "a.b.c" 形式的嵌套属性访问
@@ -8,16 +8,16 @@ import {uuid} from "@/api/system";
  * @returns 属性值,找不到时返回 uuid(保证行唯一性)
  */
 export const splitKey = (key: string, row: any): any => {
-    let arr = key?.split(".");
-    if (arr?.length > 1) {
-        let temp = row;
-        for (const k of arr) {
-            temp = temp?.[k];
-        }
-        return temp;
-    } else {
-        return row?.[key] ?? uuid();
+  let arr = key?.split(".");
+  if (arr?.length > 1) {
+    let temp = row;
+    for (const k of arr) {
+      temp = temp?.[k];
     }
+    return temp;
+  } else {
+    return row?.[key] ?? uuid();
+  }
 };
 /**
  * 解析主键:支持字符串/数组/对象别名形式
@@ -26,17 +26,17 @@ export const splitKey = (key: string, row: any): any => {
  * @returns 单主键返回值,复合主键返回 {dist1:val1, dist2:val2}
  */
 export const analysisPrimaryKeys = (keys: any, row: any): any => {
-    if (Array.isArray(keys)) {
-        let obj: any = {};
-        for (let key of keys) {
-            if (isJson(key)) {
-                obj[key.dist] = splitKey(key.source, row);
-            } else {
-                obj[key] = splitKey(key, row);
-            }
-        }
-        return obj;
-    } else {
-        return splitKey(keys, row);
+  if (Array.isArray(keys)) {
+    let obj: any = {};
+    for (let key of keys) {
+      if (isJson(key)) {
+        obj[key.dist] = splitKey(key.source, row);
+      } else {
+        obj[key] = splitKey(key, row);
+      }
     }
+    return obj;
+  } else {
+    return splitKey(keys, row);
+  }
 };

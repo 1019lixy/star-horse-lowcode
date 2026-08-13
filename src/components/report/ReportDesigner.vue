@@ -4,15 +4,15 @@
  *
  * 编排：工具栏 + 画布 + 属性面板 + 数据集弹窗 + 预览弹窗
  */
-import {ref} from "vue";
-import {useReportDesigner} from "./composables/useReportDesigner";
+import { ref } from "vue";
+import { useReportDesigner } from "./composables/useReportDesigner";
 import ReportToolbar from "./panels/ReportToolbar.vue";
 import ReportCanvas from "./panels/ReportCanvas.vue";
 import ReportPropertyPanel from "./panels/ReportPropertyPanel.vue";
 import ReportDatasetDialog from "./dialogs/ReportDatasetDialog.vue";
 import ReportPreviewDialog from "./dialogs/ReportPreviewDialog.vue";
-import {DesignerMobileShell} from "@/components/shared";
-import type {ReportTemplate} from "./types";
+import { DesignerMobileShell } from "@/components/shared";
+import type { ReportTemplate } from "./types";
 
 const props = defineProps<{
   template?: ReportTemplate;
@@ -62,39 +62,39 @@ const handleDatasetSave = (list: typeof designer.state.template.datasets) => {
 <template>
   <div class="report-designer" :class="{ readonly }">
     <DesignerMobileShell
-        :panels="[
-                { key: 'props', label: '属性', side: 'right', width: 280, min: 220 },
-            ]"
+      :panels="[
+        { key: 'props', label: '属性', side: 'right', width: 280, min: 220 },
+      ]"
     >
       <template #toolbar>
         <report-toolbar
-            :designer="designer"
-            :readonly="readonly"
-            @save="handleSave"
-            @preview="handlePreview"
-            @dataset="handleDataset"
-            @param="() => {}"
-            @paper="() => {}"
+          :designer="designer"
+          :readonly="readonly"
+          @save="handleSave"
+          @preview="handlePreview"
+          @dataset="handleDataset"
+          @param="() => {}"
+          @paper="() => {}"
         />
       </template>
       <template #canvas>
-        <report-canvas :designer="designer"/>
+        <report-canvas :designer="designer" />
       </template>
       <template #panel-props>
-        <report-property-panel :designer="designer"/>
+        <report-property-panel :designer="designer" />
       </template>
     </DesignerMobileShell>
 
     <report-dataset-dialog
-        v-model:visible="datasetVisible"
-        :datasets="designer.state.template.datasets"
-        @save="handleDatasetSave"
+      v-model:visible="datasetVisible"
+      :datasets="designer.state.template.datasets"
+      @save="handleDatasetSave"
     />
     <report-preview-dialog
-        v-model:visible="previewVisible"
-        :template="designer.state.template"
-        :data="previewData"
-        :operator="operator"
+      v-model:visible="previewVisible"
+      :template="designer.state.template"
+      :data="previewData"
+      :operator="operator"
     />
   </div>
 </template>

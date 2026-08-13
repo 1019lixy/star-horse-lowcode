@@ -72,7 +72,7 @@ const loadAppmenus = () => {
           },
         },
       ],
-      meta: {menuIcon: "document", title: "质量系统", menuId: "1_1"},
+      meta: { menuIcon: "document", title: "质量系统", menuId: "1_1" },
     },
   ];
   const appMenus: any = [
@@ -121,10 +121,10 @@ const cachedDatas = [];
 
 <template>
   <MainContainer
-      :categories="loadAppmenus()"
-      iconType="ele"
-      :cachedDatas="cachedDatas"
-      position="bottom"
+    :categories="loadAppmenus()"
+    iconType="ele"
+    :cachedDatas="cachedDatas"
+    position="bottom"
   />
 </template>
 

@@ -1,17 +1,18 @@
 <script setup lang="ts" name="Areainfo">
-import {defineAsyncComponent, onMounted, ref} from "vue";
+import { defineAsyncComponent, onMounted, ref } from "vue";
 // 全部改为异步组件：ES 模块仅在 tab 首次激活时才加载，避免 Monaco/CodeMirror/pcas-code.json 等重型库常驻内存
-const NormalFormValid = defineAsyncComponent(() => import("@/sample/NormalFormValid.vue"));
+const NormalFormValid = defineAsyncComponent(
+  () => import("@/sample/NormalFormValid.vue"),
+);
 
 const visible = ref<boolean>(false);
 const actName = ref<string>("component");
 const categories = ref<Array<any>>([
-  {id: "dashboard", name: "首页", icon: "home"},
-  {id: "production", name: "生产管理", icon: "production"},
-  {id: "quality", name: "质量管理", icon: "quality"},
+  { id: "dashboard", name: "首页", icon: "home" },
+  { id: "production", name: "生产管理", icon: "production" },
+  { id: "quality", name: "质量管理", icon: "quality" },
 ]);
-const initData = async () => {
-};
+const initData = async () => {};
 
 const handleSelect = (item: any) => {
   console.log(item);
@@ -58,7 +59,7 @@ onMounted(() => {
       </el-tab-pane>
     </el-tabs>-->
     <!--    <barcode-test/>-->
-    <NormalFormValid/>
+    <NormalFormValid />
     <!--    <el-tabs v-model="actName" class="h-full">
           <el-tab-pane name="component" label="组件测试">
             <ComponentTester v-if="actName === 'component'" />

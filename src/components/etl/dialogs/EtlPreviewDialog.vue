@@ -1,14 +1,14 @@
 <script setup lang="ts" name="EtlPreviewDialog">
-import {computed, ref, watch} from "vue";
-import {i18n} from "@/lang";
-import type {EtlPipeline, EtlPreviewData} from "../types";
-import {findPreset} from "../constants";
-import {StarHorsePanel} from "@/components/comp";
+import { computed, ref, watch } from "vue";
+import { i18n } from "@/lang";
+import type { EtlPipeline, EtlPreviewData } from "../types";
+import { findPreset } from "../constants";
+import { StarHorsePanel } from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
   pipeline: EtlPipeline;
-  dialogType?:"dialog"|"drawer";
+  dialogType?: "dialog" | "drawer";
 }>();
 
 const emit = defineEmits<{
@@ -23,22 +23,22 @@ const innerVisible = computed({
 const selectedNodeId = ref<string>("");
 
 watch(
-    () => props.visible,
-    (v) => {
-      if (v && props.pipeline.nodes.length > 0 && !selectedNodeId.value) {
-        selectedNodeId.value = props.pipeline.nodes[0].id;
-      }
-      if (!v) {
-        // 关闭时不清空，便于再次打开保留选择
-      }
-    },
+  () => props.visible,
+  (v) => {
+    if (v && props.pipeline.nodes.length > 0 && !selectedNodeId.value) {
+      selectedNodeId.value = props.pipeline.nodes[0].id;
+    }
+    if (!v) {
+      // 关闭时不清空，便于再次打开保留选择
+    }
+  },
 );
 
 const nodeOptions = computed(() =>
-    props.pipeline.nodes.map((n) => ({
-      id: n.id,
-      label: `${n.name} [${findPreset(n.type)?.label ?? n.type}]`,
-    })),
+  props.pipeline.nodes.map((n) => ({
+    id: n.id,
+    label: `${n.name} [${findPreset(n.type)?.label ?? n.type}]`,
+  })),
 );
 
 /** 模拟生成节点预览数据 */
@@ -60,35 +60,41 @@ const previewData = computed<EtlPreviewData | null>(() => {
 function simulateFields(node: EtlPipeline["nodes"][number]) {
   if (node.type === "source.database") {
     return [
-      {name: "id", type: "number" as const},
-      {name: "name", type: "string" as const},
-      {name: "amount", type: "number" as const},
-      {name: "createdAt", type: "date" as const},
+      { name: "id", type: "number" as const },
+      { name: "name", type: "string" as const },
+      { name: "amount", type: "number" as const },
+      { name: "createdAt", type: "date" as const },
     ];
   }
   if (node.type === "source.api") {
     return [
-      {name: "code", type: "number" as const},
-      {name: "message", type: "string" as const},
-      {name: "data", type: "object" as const},
+      { name: "code", type: "number" as const },
+      { name: "message", type: "string" as const },
+      { name: "data", type: "object" as const },
     ];
   }
   return [
-    {name: "id", type: "number" as const},
-    {name: "value", type: "string" as const},
-    {name: "ts", type: "date" as const},
+    { name: "id", type: "number" as const },
+    { name: "value", type: "string" as const },
+    { name: "ts", type: "date" as const },
   ];
 }
 
-function simulateRows(node: EtlPipeline["nodes"][number], fields: { name: string; type: string }[]) {
+function simulateRows(
+  node: EtlPipeline["nodes"][number],
+  fields: { name: string; type: string }[],
+) {
   const count = Math.min(20, Math.max(5, node.rowCount ?? 10));
   const rows: Record<string, any>[] = [];
   for (let i = 0; i < count; i++) {
     const row: Record<string, any> = {};
     for (const f of fields) {
       if (f.type === "number") row[f.name] = i + 1;
-      else if (f.type === "date") row[f.name] = new Date(Date.now() - i * 86400000).toISOString().slice(0, 10);
-      else if (f.type === "object") row[f.name] = {foo: "bar", idx: i};
+      else if (f.type === "date")
+        row[f.name] = new Date(Date.now() - i * 86400000)
+          .toISOString()
+          .slice(0, 10);
+      else if (f.type === "object") row[f.name] = { foo: "bar", idx: i };
       else row[f.name] = `${f.name}_${i + 1}`;
     }
     rows.push(row);
@@ -98,7 +104,9 @@ function simulateRows(node: EtlPipeline["nodes"][number], fields: { name: string
 
 const handleExport = () => {
   if (!previewData.value) return;
-  const blob = new Blob([JSON.stringify(previewData.value.rows, null, 2)], {type: "application/json;charset=utf-8"});
+  const blob = new Blob([JSON.stringify(previewData.value.rows, null, 2)], {
+    type: "application/json;charset=utf-8",
+  });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
@@ -109,25 +117,35 @@ const handleExport = () => {
 
 /** 内联 SVG 图标（替代 Element Plus 图标，减少依赖） */
 const icons: Record<string, string> = {
-  download: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>',
+  download:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>',
 };
 </script>
 
 <template>
   <star-horse-panel
-      :type="dialogType"
-      v-model="innerVisible"
-      :title="i18n('etl.preview.title')"
-      box-width="80%"
-      box-height="70%"
-      :is-show-reset="false"
-      :is-show-save="false"
-      :self-func="true"
+    :type="dialogType"
+    v-model="innerVisible"
+    :title="i18n('etl.preview.title')"
+    box-width="80%"
+    box-height="70%"
+    :is-show-reset="false"
+    :is-show-save="false"
+    :self-func="true"
   >
     <div class="etl-preview-dialog">
       <div class="preview-toolbar">
-        <el-select v-model="selectedNodeId" style="width: 280px" :placeholder="i18n('etl.preview.selectNode')">
-          <el-option v-for="opt in nodeOptions" :key="opt.id" :label="opt.label" :value="opt.id"/>
+        <el-select
+          v-model="selectedNodeId"
+          style="width: 280px"
+          :placeholder="i18n('etl.preview.selectNode')"
+        >
+          <el-option
+            v-for="opt in nodeOptions"
+            :key="opt.id"
+            :label="opt.label"
+            :value="opt.id"
+          />
         </el-select>
         <el-button :disabled="!previewData" @click="handleExport">
           <span class="svg-icon" v-html="icons.download"></span>
@@ -135,18 +153,32 @@ const icons: Record<string, string> = {
         </el-button>
       </div>
       <div class="preview-content">
-        <div v-if="!previewData" class="empty-tip">{{ i18n("etl.preview.empty") }}</div>
+        <div v-if="!previewData" class="empty-tip">
+          {{ i18n("etl.preview.empty") }}
+        </div>
         <template v-else>
           <div class="preview-meta">
-            {{ i18n("etl.preview.total").replace("{n}", String(previewData.total)) }}
+            {{
+              i18n("etl.preview.total").replace(
+                "{n}",
+                String(previewData.total),
+              )
+            }}
             ·
             {{ i18n("etl.preview.rowLimit").replace("{n}", "20") }}
           </div>
           <el-table :data="previewData.rows" border height="100%">
-            <el-table-column v-for="f in previewData.fields" :key="f.name" :prop="f.name" :label="f.name"
-                             min-width="120">
+            <el-table-column
+              v-for="f in previewData.fields"
+              :key="f.name"
+              :prop="f.name"
+              :label="f.name"
+              min-width="120"
+            >
               <template #default="{ row }">
-                <template v-if="typeof row[f.name] === 'object'">{{ JSON.stringify(row[f.name]) }}</template>
+                <template v-if="typeof row[f.name] === 'object'">{{
+                  JSON.stringify(row[f.name])
+                }}</template>
                 <template v-else>{{ row[f.name] }}</template>
               </template>
             </el-table-column>
@@ -155,7 +187,9 @@ const icons: Record<string, string> = {
       </div>
     </div>
     <template #footer>
-      <el-button @click="innerVisible = false">{{ i18n("dialog.close") }}</el-button>
+      <el-button @click="innerVisible = false">{{
+        i18n("dialog.close")
+      }}</el-button>
     </template>
   </star-horse-panel>
 </template>

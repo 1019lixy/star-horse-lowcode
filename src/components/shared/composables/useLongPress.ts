@@ -1,4 +1,4 @@
-import {onBeforeUnmount} from "vue";
+import { onBeforeUnmount } from "vue";
 
 /**
  * 长按检测 composable（替代桌面端右键菜单 @contextmenu）
@@ -20,74 +20,74 @@ import {onBeforeUnmount} from "vue";
  * - preventDefault 阻止系统长按菜单（如 iOS callout）
  */
 export interface LongPressOptions {
-    /** 长按触发回调 */
-    onLongPress: (e: PointerEvent | MouseEvent) => void;
-    /** 长按时长 ms，默认 500 */
-    duration?: number;
-    /** 长按过程中允许的最大移动距离 px，默认 10 */
-    moveTolerance?: number;
+  /** 长按触发回调 */
+  onLongPress: (e: PointerEvent | MouseEvent) => void;
+  /** 长按时长 ms，默认 500 */
+  duration?: number;
+  /** 长按过程中允许的最大移动距离 px，默认 10 */
+  moveTolerance?: number;
 }
 
 export function useLongPress(options: LongPressOptions) {
-    const {onLongPress, duration = 500, moveTolerance = 10} = options;
+  const { onLongPress, duration = 500, moveTolerance = 10 } = options;
 
-    let timer: ReturnType<typeof setTimeout> | null = null;
-    let startX = 0;
-    let startY = 0;
-    let fired = false;
-    let triggerEvent: PointerEvent | null = null;
+  let timer: ReturnType<typeof setTimeout> | null = null;
+  let startX = 0;
+  let startY = 0;
+  let fired = false;
+  let triggerEvent: PointerEvent | null = null;
 
-    const clear = () => {
-        if (timer !== null) {
-            clearTimeout(timer);
-            timer = null;
-        }
-        fired = false;
-        triggerEvent = null;
-    };
+  const clear = () => {
+    if (timer !== null) {
+      clearTimeout(timer);
+      timer = null;
+    }
+    fired = false;
+    triggerEvent = null;
+  };
 
-    const onPointerDown = (e: PointerEvent) => {
-        // 仅 touch/pen 启动长按计时；mouse 由 onContextMenu 处理
-        if (e.pointerType === "mouse") return;
-        clear();
-        startX = e.clientX;
-        startY = e.clientY;
-        triggerEvent = e;
-        fired = false;
-        timer = setTimeout(() => {
-            if (!fired && triggerEvent) {
-                fired = true;
-                onLongPress(triggerEvent);
-            }
-        }, duration);
-    };
+  const onPointerDown = (e: PointerEvent) => {
+    // 仅 touch/pen 启动长按计时；mouse 由 onContextMenu 处理
+    if (e.pointerType === "mouse") return;
+    clear();
+    startX = e.clientX;
+    startY = e.clientY;
+    triggerEvent = e;
+    fired = false;
+    timer = setTimeout(() => {
+      if (!fired && triggerEvent) {
+        fired = true;
+        onLongPress(triggerEvent);
+      }
+    }, duration);
+  };
 
-    const onPointerMove = (e: PointerEvent) => {
-        if (timer === null) return;
-        const dist = Math.hypot(e.clientX - startX, e.clientY - startY);
-        if (dist > moveTolerance) {
-            clear();
-        }
-    };
+  const onPointerMove = (e: PointerEvent) => {
+    if (timer === null) return;
+    const dist = Math.hypot(e.clientX - startX, e.clientY - startY);
+    if (dist > moveTolerance) {
+      clear();
+    }
+  };
 
-    const onPointerUp = () => {
-        clear();
-    };
+  const onPointerUp = () => {
+    clear();
+  };
 
-    /** 桌面端右键：直接触发，与长按走同一回调 */
-    const onContextMenu = (e: MouseEvent) => {
-        // 仅桌面端鼠标右键触发（button===2）；触摸长按由 pointerdown 计时处理，
-        // 此处忽略触摸产生的 contextmenu 事件避免重复触发
-        if (e.button === 2) {
-            e.preventDefault();
-            onLongPress(e);
-        }
-    };
+  /** 桌面端右键：直接触发，与长按走同一回调 */
+  const onContextMenu = (e: MouseEvent) => {
+    // 仅桌面端鼠标右键触发（button===2）；触摸长按由 pointerdown 计时处理，
+    // 此处忽略触摸产生的 contextmenu 事件避免重复触发
+    if (e.button === 2) {
+      e.preventDefault();
+      onLongPress(e);
+    }
+  };
 
-    onBeforeUnmount(clear);
+  onBeforeUnmount(clear);
 
-    return {
-        bindLongPress: {onPointerDown, onPointerMove, onPointerUp, onContextMenu},
-        clear,
-    };
+  return {
+    bindLongPress: { onPointerDown, onPointerMove, onPointerUp, onContextMenu },
+    clear,
+  };
 }

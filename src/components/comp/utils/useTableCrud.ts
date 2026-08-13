@@ -1,9 +1,9 @@
-import {computed, Ref} from "vue";
-import {deleteByIds} from "@/api/star_horse_apis";
-import {i18n} from "@/lang";
-import {warning} from "@/utils/message";
-import {UserFuncInfo} from "@/components/types/PageFieldInfo";
-import {analysisPrimaryKeys} from "./tableKeyUtils";
+import { computed, Ref } from "vue";
+import { deleteByIds } from "@/api/star_horse_apis";
+import { i18n } from "@/lang";
+import { warning } from "@/utils/message";
+import { UserFuncInfo } from "@/components/types/PageFieldInfo";
+import { analysisPrimaryKeys } from "./tableKeyUtils";
 
 /** useTableCrud 入参 */
 export interface UseTableCrudOptions {
@@ -24,7 +24,8 @@ export interface UseTableCrudOptions {
  * 封装查看/编辑/删除/导出单条、行操作按钮分发、操作按钮列表构建
  */
 export function useTableCrud(opts: UseTableCrudOptions) {
-  const {props, dialogProps, overrideOperation, searchFlag, loadByPage} = opts;
+  const { props, dialogProps, overrideOperation, searchFlag, loadByPage } =
+    opts;
 
   /** 查看数据 */
   const viewById = (id: any, isExpand: boolean = false) => {
@@ -83,10 +84,10 @@ export function useTableCrud(opts: UseTableCrudOptions) {
     }
     let action = props.compUrl?.exportSingleDataAction;
     action &&
-    action({
-      id,
-      type,
-    });
+      action({
+        id,
+        type,
+      });
   };
 
   /**

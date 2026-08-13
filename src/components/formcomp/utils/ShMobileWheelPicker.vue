@@ -4,76 +4,107 @@
     <div class="sh-mobile-wheel-picker__top">
       <template v-if="isRange">
         <span
-            class="sh-mobile-wheel-picker__tab"
-            :class="{ 'is-active': activeRange === 'start' }"
-            @click="activeRange = 'start'"
-        >{{ formatPreview(startValues) }}</span>
+          class="sh-mobile-wheel-picker__tab"
+          :class="{ 'is-active': activeRange === 'start' }"
+          @click="activeRange = 'start'"
+          >{{ formatPreview(startValues) }}</span
+        >
         <span class="sh-mobile-wheel-picker__sep">~</span>
         <span
-            class="sh-mobile-wheel-picker__tab"
-            :class="{ 'is-active': activeRange === 'end' }"
-            @click="activeRange = 'end'"
-        >{{ formatPreview(endValues) }}</span>
+          class="sh-mobile-wheel-picker__tab"
+          :class="{ 'is-active': activeRange === 'end' }"
+          @click="activeRange = 'end'"
+          >{{ formatPreview(endValues) }}</span
+        >
       </template>
       <template v-else>
-        <span class="sh-mobile-wheel-picker__single">{{ formatPreview(currentValues) }}</span>
+        <span class="sh-mobile-wheel-picker__single">{{
+          formatPreview(currentValues)
+        }}</span>
       </template>
     </div>
 
     <!-- 滚轮列：ref 用于 ResizeObserver 获取实际渲染尺寸 -->
-    <div ref="columnsRef" class="sh-mobile-wheel-picker__columns" :style="{ height: columnHeight + 'px' }">
+    <div
+      ref="columnsRef"
+      class="sh-mobile-wheel-picker__columns"
+      :style="{ height: columnHeight + 'px' }"
+    >
       <div
-          v-for="col in columns"
-          :key="col.key"
-          class="sh-mobile-wheel-picker__column"
-          :class="[`col-${col.key}`]"
-          @touchstart="onTouchStart(col.key, $event)"
-          @touchmove.prevent="onTouchMove(col.key, $event)"
-          @touchend="onTouchEnd(col.key)"
-          @mousedown="onMouseDown(col.key, $event)"
-          @wheel.prevent="onWheelScroll(col.key, $event)"
-          @click="onColumnClick(col.key, $event)"
+        v-for="col in columns"
+        :key="col.key"
+        class="sh-mobile-wheel-picker__column"
+        :class="[`col-${col.key}`]"
+        @touchstart="onTouchStart(col.key, $event)"
+        @touchmove.prevent="onTouchMove(col.key, $event)"
+        @touchend="onTouchEnd(col.key)"
+        @mousedown="onMouseDown(col.key, $event)"
+        @wheel.prevent="onWheelScroll(col.key, $event)"
+        @click="onColumnClick(col.key, $event)"
       >
         <!-- 顶部快捷按钮：跳到第一项 -->
         <div
-            class="sh-mobile-wheel-picker__btn sh-mobile-wheel-picker__btn--top"
-            @click.stop="jumpToFirst(col.key)"
-            @touchstart.stop="jumpToFirst(col.key)"
+          class="sh-mobile-wheel-picker__btn sh-mobile-wheel-picker__btn--top"
+          @click.stop="jumpToFirst(col.key)"
+          @touchstart.stop="jumpToFirst(col.key)"
         >
           <span>▲</span>
         </div>
         <!-- 底部快捷按钮：跳到最后一项 -->
         <div
-            class="sh-mobile-wheel-picker__btn sh-mobile-wheel-picker__btn--bottom"
-            @click.stop="jumpToLast(col.key)"
-            @touchstart.stop="jumpToLast(col.key)"
+          class="sh-mobile-wheel-picker__btn sh-mobile-wheel-picker__btn--bottom"
+          @click.stop="jumpToLast(col.key)"
+          @touchstart.stop="jumpToLast(col.key)"
         >
           <span>▼</span>
         </div>
         <div class="sh-mobile-wheel-picker__track" :style="trackStyle(col.key)">
           <div
-              v-for="(item, i) in col.items"
-              :key="i"
-              class="sh-mobile-wheel-picker__item"
-              :style="{ height: ITEM_HEIGHT + 'px', lineHeight: ITEM_HEIGHT + 'px' }"
-              :class="{ 'is-selected': i === getActiveIndex(col.key) }"
-          >{{ item.label }}
+            v-for="(item, i) in col.items"
+            :key="i"
+            class="sh-mobile-wheel-picker__item"
+            :style="{
+              height: ITEM_HEIGHT + 'px',
+              lineHeight: ITEM_HEIGHT + 'px',
+            }"
+            :class="{ 'is-selected': i === getActiveIndex(col.key) }"
+          >
+            {{ item.label }}
           </div>
         </div>
-        <div class="sh-mobile-wheel-picker__mask sh-mobile-wheel-picker__mask--top"/>
-        <div class="sh-mobile-wheel-picker__mask sh-mobile-wheel-picker__mask--bottom"/>
+        <div
+          class="sh-mobile-wheel-picker__mask sh-mobile-wheel-picker__mask--top"
+        />
+        <div
+          class="sh-mobile-wheel-picker__mask sh-mobile-wheel-picker__mask--bottom"
+        />
       </div>
-      <div class="sh-mobile-wheel-picker__indicator"/>
+      <div class="sh-mobile-wheel-picker__indicator" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import {computed, nextTick, onBeforeUnmount, onMounted, ref, watch} from "vue";
+import {
+  computed,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch,
+} from "vue";
 
 type WheelType =
-    | "year" | "month" | "date" | "datetime" | "time"
-    | "yearrange" | "monthrange" | "daterange" | "datetimerange" | "timerange";
+  | "year"
+  | "month"
+  | "date"
+  | "datetime"
+  | "time"
+  | "yearrange"
+  | "monthrange"
+  | "daterange"
+  | "datetimerange"
+  | "timerange";
 
 interface WheelValues {
   year: number;
@@ -95,20 +126,20 @@ interface Column {
 }
 
 const props = withDefaults(
-    defineProps<{
-      modelValue: any;
-      type: WheelType;
-      valueFormat?: string;
-      minYear?: number;
-      maxYear?: number;
-      showSecond?: boolean;
-    }>(),
-    {
-      valueFormat: "",
-      minYear: 1900,
-      maxYear: 2099,
-      showSecond: false,
-    },
+  defineProps<{
+    modelValue: any;
+    type: WheelType;
+    valueFormat?: string;
+    minYear?: number;
+    maxYear?: number;
+    showSecond?: boolean;
+  }>(),
+  {
+    valueFormat: "",
+    minYear: 1900,
+    maxYear: 2099,
+    showSecond: false,
+  },
 );
 
 const emit = defineEmits<{
@@ -156,8 +187,12 @@ const now = new Date();
 const isRange = computed(() => props.type.endsWith("range"));
 const baseType = computed(() => props.type.replace("range", ""));
 
-const hasYear = computed(() => ["year", "month", "date", "datetime"].includes(baseType.value));
-const hasMonth = computed(() => ["month", "date", "datetime"].includes(baseType.value));
+const hasYear = computed(() =>
+  ["year", "month", "date", "datetime"].includes(baseType.value),
+);
+const hasMonth = computed(() =>
+  ["month", "date", "datetime"].includes(baseType.value),
+);
 const hasDay = computed(() => ["date", "datetime"].includes(baseType.value));
 const hasTime = computed(() => ["datetime", "time"].includes(baseType.value));
 const hasSecond = computed(() => {
@@ -198,7 +233,7 @@ const activeValues = computed<WheelValues>(() => {
 const yearItems = computed<ColumnItem[]>(() => {
   const items: ColumnItem[] = [];
   for (let y = props.minYear; y <= props.maxYear; y++) {
-    items.push({label: `${y}年`, value: y});
+    items.push({ label: `${y}年`, value: y });
   }
   return items;
 });
@@ -212,41 +247,62 @@ type MakeCyclicOpts = {
   suffix?: string;
 };
 
-function makeCyclicItems(count: number, opts: MakeCyclicOpts = {}): ColumnItem[] {
-  const {padZero = false, startAtOne = false, suffix = ""} = opts;
+function makeCyclicItems(
+  count: number,
+  opts: MakeCyclicOpts = {},
+): ColumnItem[] {
+  const { padZero = false, startAtOne = false, suffix = "" } = opts;
   const result: ColumnItem[] = [];
   for (let r = 0; r < CYCLE_REPEAT; r++) {
     for (let i = 0; i < count; i++) {
       const display = startAtOne ? i + 1 : i;
       const label = padZero
-          ? `${String(display).padStart(2, "0")}${suffix}`
-          : `${display}${suffix}`;
-      result.push({label, value: startAtOne ? i + 1 : i});
+        ? `${String(display).padStart(2, "0")}${suffix}`
+        : `${display}${suffix}`;
+      result.push({ label, value: startAtOne ? i + 1 : i });
     }
   }
   return result;
 }
 
 // 月：1-12，不补0，后缀"月"
-const monthItems: ColumnItem[] = makeCyclicItems(12, {startAtOne: true, suffix: "月"});
+const monthItems: ColumnItem[] = makeCyclicItems(12, {
+  startAtOne: true,
+  suffix: "月",
+});
 
 // 日：1-当月天数，不补0，后缀"日"，动态生成
 const dayItems = computed<ColumnItem[]>(() => {
   const v = activeValues.value;
   const days = new Date(v.year, v.month, 0).getDate();
-  return makeCyclicItems(days, {startAtOne: true, suffix: "日"});
+  return makeCyclicItems(days, { startAtOne: true, suffix: "日" });
 });
 
 // 时：0-23，补0，后缀"时"
-const hourItems: ColumnItem[] = makeCyclicItems(24, {padZero: true, suffix: "时"});
+const hourItems: ColumnItem[] = makeCyclicItems(24, {
+  padZero: true,
+  suffix: "时",
+});
 // 分：0-59，补0，后缀"分"
-const minuteItems: ColumnItem[] = makeCyclicItems(60, {padZero: true, suffix: "分"});
+const minuteItems: ColumnItem[] = makeCyclicItems(60, {
+  padZero: true,
+  suffix: "分",
+});
 // 秒：0-59，补0，后缀"秒"
-const secondItems: ColumnItem[] = makeCyclicItems(60, {padZero: true, suffix: "秒"});
+const secondItems: ColumnItem[] = makeCyclicItems(60, {
+  padZero: true,
+  suffix: "秒",
+});
 
 // 哪些列是循环列
 function isCyclic(key: string): boolean {
-  return key === "month" || key === "day" || key === "hour" || key === "minute" || key === "second";
+  return (
+    key === "month" ||
+    key === "day" ||
+    key === "hour" ||
+    key === "minute" ||
+    key === "second"
+  );
 }
 
 // 循环列的基础长度（单组）
@@ -255,7 +311,11 @@ function getCycleBaseLen(key: string): number {
     case "month":
       return 12;
     case "day":
-      return new Date(activeValues.value.year, activeValues.value.month, 0).getDate();
+      return new Date(
+        activeValues.value.year,
+        activeValues.value.month,
+        0,
+      ).getDate();
     case "hour":
       return 24;
     case "minute":
@@ -269,13 +329,13 @@ function getCycleBaseLen(key: string): number {
 
 const columns = computed<Column[]>(() => {
   const cols: Column[] = [];
-  if (hasYear.value) cols.push({key: "year", items: yearItems.value});
-  if (hasMonth.value) cols.push({key: "month", items: monthItems});
-  if (hasDay.value) cols.push({key: "day", items: dayItems.value});
+  if (hasYear.value) cols.push({ key: "year", items: yearItems.value });
+  if (hasMonth.value) cols.push({ key: "month", items: monthItems });
+  if (hasDay.value) cols.push({ key: "day", items: dayItems.value });
   if (hasTime.value) {
-    cols.push({key: "hour", items: hourItems});
-    cols.push({key: "minute", items: minuteItems});
-    if (hasSecond.value) cols.push({key: "second", items: secondItems});
+    cols.push({ key: "hour", items: hourItems });
+    cols.push({ key: "minute", items: minuteItems });
+    if (hasSecond.value) cols.push({ key: "second", items: secondItems });
   }
   return cols;
 });
@@ -290,7 +350,9 @@ function getActiveIndex(key: string): number {
   if (isCyclic(key)) {
     // 循环列：定位到中间组
     const baseLen = getCycleBaseLen(key);
-    const baseIdx = col.items.slice(0, baseLen).findIndex((it) => it.value === actualValue);
+    const baseIdx = col.items
+      .slice(0, baseLen)
+      .findIndex((it) => it.value === actualValue);
     if (baseIdx < 0) return baseLen;
     return baseLen + baseIdx;
   }
@@ -313,7 +375,9 @@ function trackStyle(key: string): Record<string, string> {
   const offset = indicatorTop.value - idx * ITEM_HEIGHT;
   return {
     transform: `translate3d(0, ${offset}px, 0)`,
-    transition: skipTransition.value ? "none" : "transform 0.3s cubic-bezier(0.23, 1, 0.32, 1)",
+    transition: skipTransition.value
+      ? "none"
+      : "transform 0.3s cubic-bezier(0.23, 1, 0.32, 1)",
   };
 }
 
@@ -465,7 +529,7 @@ function onMouseDown(key: string, e: MouseEvent) {
     const delta = ev.clientY - startY;
     if (Math.abs(delta) > DRAG_THRESHOLD) wasDragging.value = true;
     currentOffset = startOffset + delta;
-    dragState.value = {key, startY, startOffset, currentOffset};
+    dragState.value = { key, startY, startOffset, currentOffset };
   };
 
   const onUp = () => {
@@ -550,12 +614,12 @@ function getDefaultFormat(): string {
 function formatValue(v: WheelValues): string {
   const fmt = props.valueFormat || getDefaultFormat();
   return fmt
-      .replace("YYYY", String(v.year))
-      .replace("MM", String(v.month).padStart(2, "0"))
-      .replace("DD", String(v.day).padStart(2, "0"))
-      .replace("HH", String(v.hour).padStart(2, "0"))
-      .replace("mm", String(v.minute).padStart(2, "0"))
-      .replace("ss", String(v.second).padStart(2, "0"));
+    .replace("YYYY", String(v.year))
+    .replace("MM", String(v.month).padStart(2, "0"))
+    .replace("DD", String(v.day).padStart(2, "0"))
+    .replace("HH", String(v.hour).padStart(2, "0"))
+    .replace("mm", String(v.minute).padStart(2, "0"))
+    .replace("ss", String(v.second).padStart(2, "0"));
 }
 
 function formatPreview(v: WheelValues): string {
@@ -589,7 +653,9 @@ function parseSingle(str: any): WheelValues {
   if (!str) return v;
   const s = String(str);
   // 日期时间: 2026-01-15 14:30:00
-  const dtMatch = s.match(/(\d{4})[-/](\d{1,2})[-/](\d{1,2})(?:\s+(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?/);
+  const dtMatch = s.match(
+    /(\d{4})[-/](\d{1,2})[-/](\d{1,2})(?:\s+(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?/,
+  );
   if (dtMatch) {
     v.year = parseInt(dtMatch[1]);
     v.month = parseInt(dtMatch[2]);
@@ -624,28 +690,33 @@ function parseSingle(str: any): WheelValues {
 }
 
 watch(
-    () => props.modelValue,
-    (val) => {
-      if (val === undefined || val === null || val === "") {
-        currentValues.value = initValues();
-        startValues.value = initValues();
-        endValues.value = {...initValues(), hour: now.getHours() + 1, minute: 0, second: 0};
-        return;
+  () => props.modelValue,
+  (val) => {
+    if (val === undefined || val === null || val === "") {
+      currentValues.value = initValues();
+      startValues.value = initValues();
+      endValues.value = {
+        ...initValues(),
+        hour: now.getHours() + 1,
+        minute: 0,
+        second: 0,
+      };
+      return;
+    }
+    if (isRange.value && Array.isArray(val)) {
+      startValues.value = parseSingle(val[0]);
+      endValues.value = parseSingle(val[1] || val[0]);
+      // 初始化时也确保 end >= start
+      syncEndIfNeeded();
+    } else if (!isRange.value) {
+      if (Array.isArray(val)) {
+        currentValues.value = parseSingle(val[0]);
+      } else {
+        currentValues.value = parseSingle(val);
       }
-      if (isRange.value && Array.isArray(val)) {
-        startValues.value = parseSingle(val[0]);
-        endValues.value = parseSingle(val[1] || val[0]);
-        // 初始化时也确保 end >= start
-        syncEndIfNeeded();
-      } else if (!isRange.value) {
-        if (Array.isArray(val)) {
-          currentValues.value = parseSingle(val[0]);
-        } else {
-          currentValues.value = parseSingle(val);
-        }
-      }
-    },
-    {immediate: true},
+    }
+  },
+  { immediate: true },
 );
 
 defineExpose({
@@ -772,13 +843,21 @@ defineExpose({
 .sh-mobile-wheel-picker__mask--top {
   top: 0;
   height: calc(50% - 18px);
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.4));
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.95),
+    rgba(255, 255, 255, 0.4)
+  );
 }
 
 .sh-mobile-wheel-picker__mask--bottom {
   bottom: 0;
   height: calc(50% - 18px);
-  background: linear-gradient(to top, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.4));
+  background: linear-gradient(
+    to top,
+    rgba(255, 255, 255, 0.95),
+    rgba(255, 255, 255, 0.4)
+  );
 }
 
 /* 头尾快捷按钮：点击跳到第一/最后一项 */
@@ -795,7 +874,9 @@ defineExpose({
   pointer-events: auto;
   font-size: 10px;
   color: var(--el-text-color-placeholder, #c0c4cc);
-  transition: color 0.15s, background 0.15s;
+  transition:
+    color 0.15s,
+    background 0.15s;
   user-select: none;
   -webkit-user-select: none;
 

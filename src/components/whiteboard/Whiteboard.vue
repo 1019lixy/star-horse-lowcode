@@ -1,13 +1,13 @@
 <script setup lang="ts" name="Whiteboard">
-import {ref, watch} from "vue";
-import {useWhiteboardDesigner} from "./composables/useWhiteboardDesigner";
+import { ref, watch } from "vue";
+import { useWhiteboardDesigner } from "./composables/useWhiteboardDesigner";
 import WbToolbar from "./panels/WbToolbar.vue";
 import WbCanvas from "./panels/WbCanvas.vue";
 import WbLayerPanel from "./panels/WbLayerPanel.vue";
 import WbPropertyPanel from "./panels/WbPropertyPanel.vue";
 import WbExportDialog from "./dialogs/WbExportDialog.vue";
-import {DesignerMobileShell} from "@/components/shared";
-import type {WhiteboardElement} from "./types";
+import { DesignerMobileShell } from "@/components/shared";
+import type { WhiteboardElement } from "./types";
 
 const props = defineProps<{
   /** 初始元素列表 */
@@ -33,12 +33,12 @@ if (props.elements && props.elements.length > 0) {
 
 // 元素变化通知
 watch(
-    () => designer.state.elements,
-    (els) => {
-      emits("update:elements", els);
-      emits("change", els);
-    },
-    {deep: true},
+  () => designer.state.elements,
+  (els) => {
+    emits("update:elements", els);
+    emits("change", els);
+  },
+  { deep: true },
 );
 
 const exportVisible = ref(false);
@@ -51,38 +51,32 @@ const handleExport = () => {
 <template>
   <div class="whiteboard-container">
     <DesignerMobileShell
-        :panels="[
-                { key: 'layers', label: '图层', side: 'left', width: 220, min: 180 },
-                { key: 'props', label: '属性', side: 'right', width: 260, min: 200 },
-            ]"
+      :panels="[
+        { key: 'layers', label: '图层', side: 'left', width: 220, min: 180 },
+        { key: 'props', label: '属性', side: 'right', width: 260, min: 200 },
+      ]"
     >
       <template #toolbar>
         <wb-toolbar
-            :designer="designer"
-            :readonly="readonly"
-            @export="handleExport"
+          :designer="designer"
+          :readonly="readonly"
+          @export="handleExport"
         />
       </template>
       <template #canvas>
-        <wb-canvas :designer="designer"/>
+        <wb-canvas :designer="designer" />
       </template>
       <template #panel-layers>
-        <wb-layer-panel
-            :designer="designer"
-            :readonly="readonly"
-        />
+        <wb-layer-panel :designer="designer" :readonly="readonly" />
       </template>
       <template #panel-props>
-        <wb-property-panel
-            :designer="designer"
-            :readonly="readonly"
-        />
+        <wb-property-panel :designer="designer" :readonly="readonly" />
       </template>
     </DesignerMobileShell>
 
     <wb-export-dialog
-        v-model:visible="exportVisible"
-        :elements="designer.state.elements"
+      v-model:visible="exportVisible"
+      :elements="designer.state.elements"
     />
   </div>
 </template>

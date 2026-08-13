@@ -2,10 +2,10 @@
   <div class="tts-demo">
     <!-- 输入框 -->
     <textarea
-        v-model="textToSpeak"
-        placeholder="请输入要转换为语音的文字..."
-        rows="5"
-        class="text-input"
+      v-model="textToSpeak"
+      placeholder="请输入要转换为语音的文字..."
+      rows="5"
+      class="text-input"
     ></textarea>
 
     <!-- 控制按钮 -->
@@ -23,28 +23,28 @@
       <label>
         语速：
         <input
-            type="range"
-            v-model.number="rate"
-            min="0.5"
-            max="2"
-            step="0.1"
+          type="range"
+          v-model.number="rate"
+          min="0.5"
+          max="2"
+          step="0.1"
         />
         {{ rate }}
       </label>
       <label>
         音量：
         <input
-            type="range"
-            v-model.number="volume"
-            min="0"
-            max="1"
-            step="0.1"
+          type="range"
+          v-model.number="volume"
+          min="0"
+          max="1"
+          step="0.1"
         />
         {{ volume }}
       </label>
       <label>
         音调：
-        <input type="range" v-model.number="pitch" min="0" max="2" step="0.1"/>
+        <input type="range" v-model.number="pitch" min="0" max="2" step="0.1" />
         {{ pitch }}
       </label>
     </div>
@@ -52,8 +52,8 @@
 </template>
 
 <script setup lang="ts">
-import {onUnmounted, ref} from "vue";
-import {warning} from "@/utils/message";
+import { onUnmounted, ref } from "vue";
+import { warning } from "@/utils/message";
 
 // 响应式数据
 const textToSpeak = ref(""); // 要转换的文字
@@ -71,7 +71,7 @@ const initSpeech = () => {
   // 检查浏览器是否支持
   if (!("speechSynthesis" in window)) {
     warning(
-        "你的浏览器不支持文字转语音功能，请更换现代浏览器（如Chrome、Edge）",
+      "你的浏览器不支持文字转语音功能，请更换现代浏览器（如Chrome、Edge）",
     );
     return null;
   }

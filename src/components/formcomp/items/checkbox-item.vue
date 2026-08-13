@@ -1,42 +1,42 @@
 <template>
   <starhorse-form-item
-      :showFormItem="showFormItem"
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :field="field"
-      :parentField="parentField"
+    :showFormItem="showFormItem"
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :bareFlag="bareFlag"
+    :field="field"
+    :parentField="parentField"
   >
     <el-checkbox-group
-        :fid="field.fieldName"
-        :disabled="checkIsDisabled(props)"
-        v-bind="prepsFilter(props)"
-        v-on="getDynamicEvents(props, itemAction, formData)"
-        v-model="formData[field.fieldName]"
+      :fid="field.fieldName"
+      :disabled="checkIsDisabled(props)"
+      v-bind="prepsFilter(props)"
+      v-on="getDynamicEvents(props, itemAction, formData)"
+      v-model="formData[field.fieldName]"
     >
       <el-checkbox
-          :border="item['border'] ?? true"
-          :checked="item['checked']"
-          :disabled="item['disabled'] || source == 3"
-          :label="item[field.preps?.props?.label || 'name']"
-          :value="item[field.preps?.props?.value || 'value']"
-          v-for="item in field.preps?.values"
+        :border="item['border'] ?? true"
+        :checked="item['checked']"
+        :disabled="item['disabled'] || source == 3"
+        :label="item[field.preps?.props?.label || 'name']"
+        :value="item[field.preps?.props?.value || 'value']"
+        v-for="item in field.preps?.values"
       />
     </el-checkbox-group>
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {nextTick, onMounted} from "vue";
+import { nextTick, onMounted } from "vue";
 import {
   allAction,
   checkIsDisabled,
   initCompCallEvent,
   prepsFilter,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
-import {compDynamicData} from "@/api/star_horse_utils";
-import {getDynamicEvents} from "@/api/system";
+import { compDynamicData } from "@/api/star_horse_utils";
+import { getDynamicEvents } from "@/api/system";
 
-import {ItemPreps} from "@/components/types/ItemPreps";
+import { ItemPreps } from "@/components/types/ItemPreps";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,

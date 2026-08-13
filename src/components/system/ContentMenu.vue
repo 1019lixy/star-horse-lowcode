@@ -1,6 +1,13 @@
 <script lang="ts" setup>
-import {computed, nextTick, onBeforeUnmount, onMounted, PropType, ref,} from "vue";
-import {compKey, useZIndex} from "@/api/system";
+import {
+  computed,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  PropType,
+  ref,
+} from "vue";
+import { compKey, useZIndex } from "@/api/system";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
 
 defineOptions({
@@ -8,10 +15,10 @@ defineOptions({
 });
 
 const props = defineProps({
-  menuData: {type: Array as PropType<any>, default: () => []},
-  isSubMenu: {type: Boolean, default: false},
-  autoHide: {type: Boolean, default: true},
-  active: {type: [String, Number], default: ""},
+  menuData: { type: Array as PropType<any>, default: () => [] },
+  isSubMenu: { type: Boolean, default: false },
+  autoHide: { type: Boolean, default: true },
+  active: { type: [String, Number], default: "" },
 });
 const emit = defineEmits<{
   hide: [];
@@ -39,7 +46,7 @@ const menuStyle = computed(() => ({
 }));
 
 const contains = (el: HTMLElement) =>
-    menu.value?.contains(el) || subMenu.value?.contains(el);
+  menu.value?.contains(el) || subMenu.value?.contains(el);
 
 const hide = () => {
   if (!visible.value) return;
@@ -142,39 +149,39 @@ defineExpose({
 <template>
   <transition name="fade">
     <div
-        v-show="visible"
-        class="content-menu"
-        ref="menu"
-        :style="menuStyle"
-        @mouseenter="mouseenterHandler()"
+      v-show="visible"
+      class="content-menu"
+      ref="menu"
+      :style="menuStyle"
+      @mouseenter="mouseenterHandler()"
     >
       <slot name="title"></slot>
 
       <template v-for="(item, index) in menuData" :key="compKey(item, index)">
-        <el-divider v-if="item.type == 'divider'" :direction="item.direction"/>
+        <el-divider v-if="item.type == 'divider'" :direction="item.direction" />
         <div
-            v-if="item.type == 'button' && item.display"
-            ref="buttons"
-            class="menu-item button"
-            :class="{ active: active && item.id === active }"
-            :data="item"
-            :key="index"
-            @mouseup="clickHandler(item)"
-            @mouseenter="showSubMenu(item, index)"
+          v-if="item.type == 'button' && item.display"
+          ref="buttons"
+          class="menu-item button"
+          :class="{ active: active && item.id === active }"
+          :data="item"
+          :key="index"
+          @mouseup="clickHandler(item)"
+          @mouseenter="showSubMenu(item, index)"
         >
-          <star-horse-icon :icon-class="item.icon"/>
+          <star-horse-icon :icon-class="item.icon" />
           {{ item.text }}
         </div>
       </template>
       <teleport to="body">
         <content-menu
-            v-if="subMenuData.length"
-            class="sub-menu"
-            ref="subMenu"
-            :active="active"
-            :menu-data="subMenuData"
-            :is-sub-menu="true"
-            @hide="hide"
+          v-if="subMenuData.length"
+          class="sub-menu"
+          ref="subMenu"
+          :active="active"
+          :menu-data="subMenuData"
+          :is-sub-menu="true"
+          @hide="hide"
         ></content-menu>
       </teleport>
     </div>

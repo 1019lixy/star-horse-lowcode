@@ -3,10 +3,10 @@
  * 打印模板设计器 - 图层面板
  * 职责：展示元素层级树，支持选中、显示切换、锁定、排序
  */
-import {computed} from "vue";
-import {i18n} from "@/lang";
-import type {PrintElement} from "../types";
-import type {UsePrintDesignerReturn} from "../composables/usePrintDesigner";
+import { computed } from "vue";
+import { i18n } from "@/lang";
+import type { PrintElement } from "../types";
+import type { UsePrintDesignerReturn } from "../composables/usePrintDesigner";
 
 const props = defineProps<{
   designer: UsePrintDesignerReturn;
@@ -14,7 +14,7 @@ const props = defineProps<{
 
 // 图层从上到下倒序展示（顶部元素在前）
 const layers = computed<PrintElement[]>(() =>
-    [...props.designer.state.template.elements].reverse(),
+  [...props.designer.state.template.elements].reverse(),
 );
 
 const selectedIds = computed(() => props.designer.state.selectedIds);
@@ -24,45 +24,53 @@ const handleClick = (el: PrintElement, e: MouseEvent) => {
 };
 
 const toggleVisible = (el: PrintElement) => {
-  props.designer.updateElement(el.id, {visible: el.visible === false});
+  props.designer.updateElement(el.id, { visible: el.visible === false });
 };
 
 const toggleLocked = (el: PrintElement) => {
-  props.designer.updateElement(el.id, {locked: !el.locked});
+  props.designer.updateElement(el.id, { locked: !el.locked });
 };
 </script>
 
 <template>
   <div class="print-layer-panel">
     <div class="layer-header">
-      <span class="layer-title">{{ i18n('print.layer.title') }}</span>
+      <span class="layer-title">{{ i18n("print.layer.title") }}</span>
       <span class="layer-count">{{ layers.length }}</span>
     </div>
     <div class="layer-list">
       <div
-          v-for="el in layers"
-          :key="el.id"
-          class="layer-item"
-          :class="{ selected: selectedIds.includes(el.id) }"
-          @click="(e) => handleClick(el, e)"
+        v-for="el in layers"
+        :key="el.id"
+        class="layer-item"
+        :class="{ selected: selectedIds.includes(el.id) }"
+        @click="(e) => handleClick(el, e)"
       >
-                <span class="layer-icon" @click.stop="toggleVisible(el)" :title="i18n('print.layer.toggleVisible')">
-                    <star-horse-icon
-                        :icon-class="el.visible === false ? 'eye-close' : 'eye'"
-                        cursor="pointer"
-                    />
-                </span>
-        <span class="layer-icon" @click.stop="toggleLocked(el)" :title="i18n('print.layer.toggleLock')">
-                    <star-horse-icon
-                        :icon-class="el.locked ? 'hide' : 'view'"
-                        cursor="pointer"
-                    />
-                </span>
+        <span
+          class="layer-icon"
+          @click.stop="toggleVisible(el)"
+          :title="i18n('print.layer.toggleVisible')"
+        >
+          <star-horse-icon
+            :icon-class="el.visible === false ? 'eye-close' : 'eye'"
+            cursor="pointer"
+          />
+        </span>
+        <span
+          class="layer-icon"
+          @click.stop="toggleLocked(el)"
+          :title="i18n('print.layer.toggleLock')"
+        >
+          <star-horse-icon
+            :icon-class="el.locked ? 'hide' : 'view'"
+            cursor="pointer"
+          />
+        </span>
         <span class="layer-name">{{ el.name }}</span>
         <span class="layer-type">{{ el.type }}</span>
       </div>
       <div v-if="!layers.length" class="empty">
-        {{ i18n('print.layer.empty') }}
+        {{ i18n("print.layer.empty") }}
       </div>
     </div>
   </div>

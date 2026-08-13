@@ -8,10 +8,10 @@
  * 命名规范：kebab-case 语义化名称，如 "align-left"、"database"、"undo"
  */
 export interface SvgIconDef {
-    /** SVG viewBox，默认 "0 0 24 24" */
-    viewBox?: string;
-    /** SVG 内部元素（path/rect/circle/polyline/line/g 等），会被 v-html 渲染到 <svg> 内 */
-    content: string;
+  /** SVG viewBox，默认 "0 0 24 24" */
+  viewBox?: string;
+  /** SVG 内部元素（path/rect/circle/polyline/line/g 等），会被 v-html 渲染到 <svg> 内 */
+  content: string;
 }
 
 type IconMap = Record<string, SvgIconDef>;
@@ -20,190 +20,614 @@ type IconMap = Record<string, SvgIconDef>;
 // 通用工具栏图标
 // ────────────────────────────────────────
 const toolbar: IconMap = {
-    undo: {content: '<path d="M3 10h10a5 5 0 015 5v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 10l4-4M3 10l4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'},
-    redo: {content: '<path d="M21 10H11a5 5 0 00-5 5v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 10l-4-4M21 10l-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'},
-    copy: {content: '<rect x="9" y="9" width="13" height="13" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" fill="none" stroke="currentColor" stroke-width="2"/>'},
-    cut: {content: '<circle cx="6" cy="6" r="3" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="6" cy="18" r="3" fill="none" stroke="currentColor" stroke-width="2"/><line x1="20" y1="4" x2="8.12" y2="15.88" stroke="currentColor" stroke-width="2"/><line x1="14.47" y1="14.48" x2="20" y2="20" stroke="currentColor" stroke-width="2"/><line x1="8.12" y1="8.12" x2="12" y2="12" stroke="currentColor" stroke-width="2"/>'},
-    paste: {content: '<path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1" fill="none" stroke="currentColor" stroke-width="2"/>'},
-    delete: {content: '<path d="M3 6h18M8 6V4h8v2M5 6v14a2 2 0 002 2h10a2 2 0 002-2V6M10 11v6M14 11v6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'},
-    save: {content: '<path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="17 21 17 13 7 13 7 21" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="7 3 7 8 15 8" fill="none" stroke="currentColor" stroke-width="2"/>'},
-    preview: {content: '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/>'},
-    margin: {content: '<rect x="3" y="3" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="7" y="7" width="10" height="10" rx="1" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 2"/>'},
-    variable: {content: '<path d="M4 7V4h16v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 20h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 4v16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'},
-    plus: {content: '<path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'},
-    minus: {content: '<path d="M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'},
-    edit: {content: '<path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" fill="none" stroke="currentColor" stroke-width="2"/>'},
-    legend: {content: '<path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="8" cy="6" r="2" fill="currentColor"/><circle cx="8" cy="12" r="2" fill="currentColor"/><circle cx="8" cy="18" r="2" fill="currentColor"/>'},
-    select: {content: '<path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M13 13l6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'},
-    search: {content: '<circle cx="11" cy="11" r="8" fill="none" stroke="currentColor" stroke-width="2"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2"/>'},
-    refresh: {content: '<path d="M23 4v6h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'},
-    run: {content: '<polygon points="5 3 19 12 5 21 5 3" fill="none" stroke="currentColor" stroke-width="2"/>'},
-    stop: {content: '<rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/>'},
-    play: {content: '<polygon points="5 3 19 12 5 21 5 3" fill="currentColor"/>'},
-    apiFlow: {content: '<rect x="3" y="3" width="6" height="6" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="15" y="15" width="6" height="6" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9 6h6a3 3 0 013 3v6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><polyline points="15 12 18 15 15 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>'},
-    condition: {content: '<path d="M12 2l9 5-9 5-9-5 9-5z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M3 12l9 5 9-5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M3 17l9 5 9-5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>'},
-    download: {content: '<path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="7 10 12 15 17 10" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2"/>'},
-    upload: {content: '<path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="17 8 12 3 7 8" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="3" x2="12" y2="15" stroke="currentColor" stroke-width="2"/>'},
-    export: {content: '<path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="7 10 12 15 17 10" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2"/>'},
-    filter: {content: '<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" fill="none" stroke="currentColor" stroke-width="2"/>'},
-    settings: {content: '<circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" fill="none" stroke="currentColor" stroke-width="2"/>'},
-    fullscreen: {content: '<path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'},
-    duplicate: {content: '<rect x="9" y="9" width="13" height="13" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" fill="none" stroke="currentColor" stroke-width="2"/>'},
-    grid: {content: '<rect x="3" y="3" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="3" y1="9" x2="21" y2="9" stroke="currentColor" stroke-width="2"/><line x1="3" y1="15" x2="21" y2="15" stroke="currentColor" stroke-width="2"/><line x1="9" y1="3" x2="9" y2="21" stroke="currentColor" stroke-width="2"/><line x1="15" y1="3" x2="15" y2="21" stroke="currentColor" stroke-width="2"/>'},
-    snap: {content: '<rect x="3" y="3" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="3" y1="9" x2="21" y2="9" stroke="currentColor" stroke-width="2" stroke-dasharray="3 3"/><line x1="3" y1="15" x2="21" y2="15" stroke="currentColor" stroke-width="2" stroke-dasharray="3 3"/><line x1="9" y1="3" x2="9" y2="21" stroke="currentColor" stroke-width="2" stroke-dasharray="3 3"/><line x1="15" y1="3" x2="15" y2="21" stroke="currentColor" stroke-width="2" stroke-dasharray="3 3"/>'},
-    zoomIn: {content: '<circle cx="11" cy="11" r="8" fill="none" stroke="currentColor" stroke-width="2"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2"/><line x1="11" y1="8" x2="11" y2="14" stroke="currentColor" stroke-width="2"/><line x1="8" y1="11" x2="14" y2="11" stroke="currentColor" stroke-width="2"/>'},
-    zoomOut: {content: '<circle cx="11" cy="11" r="8" fill="none" stroke="currentColor" stroke-width="2"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2"/><line x1="8" y1="11" x2="14" y2="11" stroke="currentColor" stroke-width="2"/>'},
-    zoomReset: {content: '<path d="M3 12a9 9 0 109-9" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="3 3 3 8 8 8" fill="none" stroke="currentColor" stroke-width="2"/>'},
-    fitView: {content: '<path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="7" y="7" width="10" height="10" rx="1" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="2 2"/>'},
-    ruler: {content: '<rect x="2" y="2" width="20" height="20" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="6" y1="2" x2="6" y2="6" stroke="currentColor" stroke-width="2"/><line x1="10" y1="2" x2="10" y2="8" stroke="currentColor" stroke-width="2"/><line x1="14" y1="2" x2="14" y2="6" stroke="currentColor" stroke-width="2"/><line x1="18" y1="2" x2="18" y2="8" stroke="currentColor" stroke-width="2"/>'},
-    selectAll: {content: '<rect x="3" y="3" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="9 11 12 14 22 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'},
-    moveUp: {content: '<path d="M12 19V5M5 12l7-7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'},
-    moveDown: {content: '<path d="M12 5v14M5 12l7 7 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'},
-    check: {content: '<polyline points="20 6 9 17 4 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'},
-    total: {content: '<path d="M3 3v18h18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M7 14l3-3 3 3 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'},
-    rowSubtotal: {content: '<rect x="3" y="3" width="18" height="18" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="3" y1="9" x2="21" y2="9" stroke="currentColor" stroke-width="1.5"/><line x1="9" y1="9" x2="9" y2="21" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="9" width="6" height="12" fill="currentColor" opacity="0.15"/>'},
-    colSubtotal: {content: '<rect x="3" y="3" width="18" height="18" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="3" y1="9" x2="21" y2="9" stroke="currentColor" stroke-width="1.5"/><line x1="9" y1="9" x2="9" y2="21" stroke="currentColor" stroke-width="1.5"/><rect x="9" y="3" width="12" height="6" fill="currentColor" opacity="0.15"/>'},
-    chart: {content: '<rect x="3" y="3" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 16V10M12 16V6M17 16v-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'},
-    close: {content: '<line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'},
-    fileAdd: {content: '<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="18" x2="12" y2="12" stroke="currentColor" stroke-width="2"/><line x1="9" y1="15" x2="15" y2="15" stroke="currentColor" stroke-width="2"/>'},
-    document: {content: '<path d="M6 2h8l6 6v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2z" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" fill="none" stroke="currentColor" stroke-width="2"/>'},
-    folder: {content: '<path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z" fill="none" stroke="currentColor" stroke-width="2"/>'},
-    link: {content: '<path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'},
-    image: {content: '<rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="8.5" cy="8.5" r="1.5" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="21 15 16 10 5 21" fill="none" stroke="currentColor" stroke-width="2"/>'},
-    info: {content: '<circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="16" x2="12" y2="12" stroke="currentColor" stroke-width="2"/><line x1="12" y1="8" x2="12.01" y2="8" stroke="currentColor" stroke-width="2"/>'},
-    warning: {content: '<path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="9" x2="12" y2="13" stroke="currentColor" stroke-width="2"/><line x1="12" y1="17" x2="12.01" y2="17" stroke="currentColor" stroke-width="2"/>'},
-    arrowRight: {content: '<path d="M5 12h14M12 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'},
-    arrowUp: {content: '<path d="M12 19V5M5 12l7-7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'},
-    arrowDown: {content: '<path d="M12 5v14M5 12l7 7 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'},
-    collapse: {content: '<polyline points="4 14 10 14 10 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="20 10 14 10 14 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="14" y1="10" x2="21" y2="3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="3" y1="21" x2="10" y2="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'},
-    editPen: {content: '<path d="M12 20h9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'},
-    // ─── Office 编辑器图标 ───
-    quote: {content: '<path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'},
-    alignJustify: {content: '<line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="18" x2="21" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'},
-    ul: {content: '<line x1="8" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="8" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="8" y1="18" x2="21" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="6" x2="3.01" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="12" x2="3.01" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="18" x2="3.01" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'},
-    ol: {content: '<line x1="10" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="10" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="10" y1="18" x2="21" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M4 6h1v4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 10h2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'},
-    clearFormat: {content: '<polyline points="4 7 4 4 14 4 14 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="9" y1="4" x2="9" y2="14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="14" y1="14" x2="20" y2="20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="20" y1="14" x2="14" y2="20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'},
-    table: {content: '<rect x="3" y="3" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="3" y1="9" x2="21" y2="9" stroke="currentColor" stroke-width="2"/><line x1="3" y1="15" x2="21" y2="15" stroke="currentColor" stroke-width="2"/><line x1="9" y1="3" x2="9" y2="21" stroke="currentColor" stroke-width="2"/><line x1="15" y1="3" x2="15" y2="21" stroke="currentColor" stroke-width="2"/>'},
-    addRow: {content: '<rect x="3" y="3" width="14" height="14" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="3" y1="8" x2="17" y2="8" stroke="currentColor" stroke-width="1.5"/><line x1="3" y1="12" x2="17" y2="12" stroke="currentColor" stroke-width="1.5"/><line x1="8" y1="3" x2="8" y2="17" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="8" width="14" height="4" fill="currentColor" opacity="0.25"/><circle cx="20" cy="20" r="3" fill="var(--el-bg-color)" stroke="currentColor" stroke-width="1.5"/><line x1="18.5" y1="20" x2="21.5" y2="20" stroke="currentColor" stroke-width="1.5"/><line x1="20" y1="18.5" x2="20" y2="21.5" stroke="currentColor" stroke-width="1.5"/>'},
-    addColumn: {content: '<rect x="3" y="3" width="14" height="14" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="3" y1="8" x2="17" y2="8" stroke="currentColor" stroke-width="1.5"/><line x1="3" y1="12" x2="17" y2="12" stroke="currentColor" stroke-width="1.5"/><line x1="8" y1="3" x2="8" y2="17" stroke="currentColor" stroke-width="1.5"/><rect x="8" y="3" width="4" height="14" fill="currentColor" opacity="0.25"/><circle cx="20" cy="20" r="3" fill="var(--el-bg-color)" stroke="currentColor" stroke-width="1.5"/><line x1="18.5" y1="20" x2="21.5" y2="20" stroke="currentColor" stroke-width="1.5"/><line x1="20" y1="18.5" x2="20" y2="21.5" stroke="currentColor" stroke-width="1.5"/>'},
-    removeRow: {content: '<rect x="3" y="3" width="14" height="14" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="3" y1="8" x2="17" y2="8" stroke="currentColor" stroke-width="1.5"/><line x1="3" y1="12" x2="17" y2="12" stroke="currentColor" stroke-width="1.5"/><line x1="8" y1="3" x2="8" y2="17" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="8" width="14" height="4" fill="currentColor" opacity="0.25"/><circle cx="20" cy="20" r="3" fill="var(--el-bg-color)" stroke="currentColor" stroke-width="1.5"/><line x1="18.5" y1="20" x2="21.5" y2="20" stroke="currentColor" stroke-width="1.5"/>'},
-    removeColumn: {content: '<rect x="3" y="3" width="14" height="14" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="3" y1="8" x2="17" y2="8" stroke="currentColor" stroke-width="1.5"/><line x1="3" y1="12" x2="17" y2="12" stroke="currentColor" stroke-width="1.5"/><line x1="8" y1="3" x2="8" y2="17" stroke="currentColor" stroke-width="1.5"/><rect x="8" y="3" width="4" height="14" fill="currentColor" opacity="0.25"/><circle cx="20" cy="20" r="3" fill="var(--el-bg-color)" stroke="currentColor" stroke-width="1.5"/><line x1="18.5" y1="20" x2="21.5" y2="20" stroke="currentColor" stroke-width="1.5"/>'},
-    cellMerge: {content: '<rect x="3" y="3" width="6" height="18" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="3" y1="12" x2="9" y2="12" stroke="currentColor" stroke-width="1.5"/><rect x="13" y="3" width="8" height="18" fill="currentColor" opacity="0.2" stroke="currentColor" stroke-width="1.5"/><line x1="9" y1="12" x2="13" y2="12" stroke="currentColor" stroke-width="2"/><polyline points="11 10 13 12 11 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>'},
-    cellSplit: {content: '<rect x="3" y="3" width="8" height="18" fill="currentColor" opacity="0.2" stroke="currentColor" stroke-width="1.5"/><rect x="15" y="3" width="6" height="18" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="15" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="1.5"/><line x1="11" y1="12" x2="15" y2="12" stroke="currentColor" stroke-width="2"/><polyline points="13 10 15 12 13 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>'},
-    text: {content: '<polyline points="4 7 4 4 20 4 20 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="9" y1="20" x2="15" y2="20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="4" x2="12" y2="20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'},
-    shape: {content: '<rect x="3" y="3" width="8" height="8" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="2"/><polygon points="7 15 11 21 3 21" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>'},
-    // ─── 数字孪生专用图标 ───
-    eye: {content: '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/>'},
-    eyeOff: {content: '<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="1" y1="1" x2="23" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'},
-    lock: {content: '<rect x="3" y="11" width="18" height="11" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 11V7a5 5 0 0110 0v4" fill="none" stroke="currentColor" stroke-width="2"/>'},
-    unlock: {content: '<rect x="3" y="11" width="18" height="11" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 11V7a5 5 0 019.9-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'},
-    component: {content: '<path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="3.27 6.96 12 12.01 20.73 6.96" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="22.08" x2="12" y2="12" stroke="currentColor" stroke-width="2"/>'},
-    layer: {content: '<polygon points="12 2 2 7 12 12 22 7 12 2" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="2 17 12 22 22 17" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="2 12 12 17 22 12" fill="none" stroke="currentColor" stroke-width="2"/>'},
-    newScene: {content: '<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="18" x2="12" y2="12" stroke="currentColor" stroke-width="2"/><line x1="9" y1="15" x2="15" y2="15" stroke="currentColor" stroke-width="2"/>'},
-    forward: {content: '<path d="M21 10H11a5 5 0 00-5 5v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 10l-4-4M21 10l-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'},
-    backward: {content: '<path d="M3 10h10a5 5 0 015 5v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 10l4-4M3 10l4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'},
-    gizmoMove: {content: '<path d="M12 2v20M2 12h20M5 9l-3 3 3 3M19 9l3 3-3 3M9 5l3-3 3 3M9 19l3 3 3-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'},
-    gizmoRotate: {content: '<path d="M21 12a9 9 0 11-3-6.7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><polyline points="21 3 21 9 15 9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'},
-    gizmoScale: {content: '<path d="M21 3l-9 9-9-9M3 21l9-9 9 9M12 12v0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'},
-    boxSelect: {content: '<rect x="3" y="3" width="18" height="18" rx="1" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="3 3"/><circle cx="9" cy="9" r="2" fill="currentColor"/><circle cx="15" cy="15" r="2" fill="currentColor"/>'},
-    // ─── 文件 IO 图标 ───
-    import: {content: '<path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="7 8 12 3 17 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="3" x2="12" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'},
-    videoPlay: {content: '<polygon points="6 4 20 12 6 20 6 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>'},
-    videoPause: {content: '<rect x="6" y="4" width="4" height="16" rx="1" fill="none" stroke="currentColor" stroke-width="2"/><rect x="14" y="4" width="4" height="16" rx="1" fill="none" stroke="currentColor" stroke-width="2"/>'},
-    monitor: {content: '<rect x="2" y="3" width="20" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="8" y1="21" x2="16" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="17" x2="12" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'},
-    route: {content: '<circle cx="6" cy="6" r="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="18" r="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 8v4a4 4 0 004 4h8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="16 14 18 16 20 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'},
-    alarm: {content: '<path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.73 21a2 2 0 01-3.46 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'},
-    camera: {content: '<path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="13" r="4" fill="none" stroke="currentColor" stroke-width="2"/>'},
-    files: {content: '<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><polyline points="14 2 14 8 20 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M8 2v2a2 2 0 002 2h6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" opacity="0.6"/>'},
-    list: {content: '<line x1="8" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="8" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="8" y1="18" x2="21" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="6" x2="3.01" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="12" x2="3.01" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="18" x2="3.01" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'},
-    // ─── 视口模式图标 ───
-    modeView: {content: '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/>'},
-    modeEdit: {content: '<path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" fill="none" stroke="currentColor" stroke-width="2"/>'},
-    modeMeasure: {content: '<rect x="2" y="6" width="20" height="12" rx="1" fill="none" stroke="currentColor" stroke-width="2" transform="rotate(45 12 12)"/><line x1="6" y1="6" x2="8" y2="8" stroke="currentColor" stroke-width="2" transform="rotate(45 12 12)"/><line x1="10" y1="6" x2="12" y2="8" stroke="currentColor" stroke-width="2" transform="rotate(45 12 12)"/><line x1="14" y1="6" x2="16" y2="8" stroke="currentColor" stroke-width="2" transform="rotate(45 12 12)"/>'},
-    modeAnnotate: {content: '<path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="7" cy="7" r="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/>'},
-    modeInspect: {content: '<circle cx="11" cy="11" r="8" fill="none" stroke="currentColor" stroke-width="2"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2"/><line x1="11" y1="8" x2="11" y2="14" stroke="currentColor" stroke-width="1.5"/><line x1="8" y1="11" x2="14" y2="11" stroke="currentColor" stroke-width="1.5"/>'},
+  undo: {
+    content:
+      '<path d="M3 10h10a5 5 0 015 5v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 10l4-4M3 10l4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  },
+  redo: {
+    content:
+      '<path d="M21 10H11a5 5 0 00-5 5v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 10l-4-4M21 10l-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  },
+  copy: {
+    content:
+      '<rect x="9" y="9" width="13" height="13" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" fill="none" stroke="currentColor" stroke-width="2"/>',
+  },
+  cut: {
+    content:
+      '<circle cx="6" cy="6" r="3" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="6" cy="18" r="3" fill="none" stroke="currentColor" stroke-width="2"/><line x1="20" y1="4" x2="8.12" y2="15.88" stroke="currentColor" stroke-width="2"/><line x1="14.47" y1="14.48" x2="20" y2="20" stroke="currentColor" stroke-width="2"/><line x1="8.12" y1="8.12" x2="12" y2="12" stroke="currentColor" stroke-width="2"/>',
+  },
+  paste: {
+    content:
+      '<path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1" fill="none" stroke="currentColor" stroke-width="2"/>',
+  },
+  delete: {
+    content:
+      '<path d="M3 6h18M8 6V4h8v2M5 6v14a2 2 0 002 2h10a2 2 0 002-2V6M10 11v6M14 11v6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  },
+  save: {
+    content:
+      '<path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="17 21 17 13 7 13 7 21" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="7 3 7 8 15 8" fill="none" stroke="currentColor" stroke-width="2"/>',
+  },
+  preview: {
+    content:
+      '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/>',
+  },
+  margin: {
+    content:
+      '<rect x="3" y="3" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="7" y="7" width="10" height="10" rx="1" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 2"/>',
+  },
+  variable: {
+    content:
+      '<path d="M4 7V4h16v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 20h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 4v16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+  },
+  plus: {
+    content:
+      '<path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+  },
+  minus: {
+    content:
+      '<path d="M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+  },
+  edit: {
+    content:
+      '<path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" fill="none" stroke="currentColor" stroke-width="2"/>',
+  },
+  legend: {
+    content:
+      '<path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="8" cy="6" r="2" fill="currentColor"/><circle cx="8" cy="12" r="2" fill="currentColor"/><circle cx="8" cy="18" r="2" fill="currentColor"/>',
+  },
+  select: {
+    content:
+      '<path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M13 13l6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+  },
+  search: {
+    content:
+      '<circle cx="11" cy="11" r="8" fill="none" stroke="currentColor" stroke-width="2"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2"/>',
+  },
+  refresh: {
+    content:
+      '<path d="M23 4v6h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  },
+  run: {
+    content:
+      '<polygon points="5 3 19 12 5 21 5 3" fill="none" stroke="currentColor" stroke-width="2"/>',
+  },
+  stop: {
+    content:
+      '<rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/>',
+  },
+  play: {
+    content: '<polygon points="5 3 19 12 5 21 5 3" fill="currentColor"/>',
+  },
+  apiFlow: {
+    content:
+      '<rect x="3" y="3" width="6" height="6" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="15" y="15" width="6" height="6" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9 6h6a3 3 0 013 3v6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><polyline points="15 12 18 15 15 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>',
+  },
+  condition: {
+    content:
+      '<path d="M12 2l9 5-9 5-9-5 9-5z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M3 12l9 5 9-5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M3 17l9 5 9-5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>',
+  },
+  download: {
+    content:
+      '<path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="7 10 12 15 17 10" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2"/>',
+  },
+  upload: {
+    content:
+      '<path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="17 8 12 3 7 8" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="3" x2="12" y2="15" stroke="currentColor" stroke-width="2"/>',
+  },
+  export: {
+    content:
+      '<path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="7 10 12 15 17 10" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2"/>',
+  },
+  filter: {
+    content:
+      '<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" fill="none" stroke="currentColor" stroke-width="2"/>',
+  },
+  settings: {
+    content:
+      '<circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" fill="none" stroke="currentColor" stroke-width="2"/>',
+  },
+  fullscreen: {
+    content:
+      '<path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  },
+  duplicate: {
+    content:
+      '<rect x="9" y="9" width="13" height="13" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" fill="none" stroke="currentColor" stroke-width="2"/>',
+  },
+  grid: {
+    content:
+      '<rect x="3" y="3" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="3" y1="9" x2="21" y2="9" stroke="currentColor" stroke-width="2"/><line x1="3" y1="15" x2="21" y2="15" stroke="currentColor" stroke-width="2"/><line x1="9" y1="3" x2="9" y2="21" stroke="currentColor" stroke-width="2"/><line x1="15" y1="3" x2="15" y2="21" stroke="currentColor" stroke-width="2"/>',
+  },
+  snap: {
+    content:
+      '<rect x="3" y="3" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="3" y1="9" x2="21" y2="9" stroke="currentColor" stroke-width="2" stroke-dasharray="3 3"/><line x1="3" y1="15" x2="21" y2="15" stroke="currentColor" stroke-width="2" stroke-dasharray="3 3"/><line x1="9" y1="3" x2="9" y2="21" stroke="currentColor" stroke-width="2" stroke-dasharray="3 3"/><line x1="15" y1="3" x2="15" y2="21" stroke="currentColor" stroke-width="2" stroke-dasharray="3 3"/>',
+  },
+  zoomIn: {
+    content:
+      '<circle cx="11" cy="11" r="8" fill="none" stroke="currentColor" stroke-width="2"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2"/><line x1="11" y1="8" x2="11" y2="14" stroke="currentColor" stroke-width="2"/><line x1="8" y1="11" x2="14" y2="11" stroke="currentColor" stroke-width="2"/>',
+  },
+  zoomOut: {
+    content:
+      '<circle cx="11" cy="11" r="8" fill="none" stroke="currentColor" stroke-width="2"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2"/><line x1="8" y1="11" x2="14" y2="11" stroke="currentColor" stroke-width="2"/>',
+  },
+  zoomReset: {
+    content:
+      '<path d="M3 12a9 9 0 109-9" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="3 3 3 8 8 8" fill="none" stroke="currentColor" stroke-width="2"/>',
+  },
+  fitView: {
+    content:
+      '<path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="7" y="7" width="10" height="10" rx="1" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="2 2"/>',
+  },
+  ruler: {
+    content:
+      '<rect x="2" y="2" width="20" height="20" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="6" y1="2" x2="6" y2="6" stroke="currentColor" stroke-width="2"/><line x1="10" y1="2" x2="10" y2="8" stroke="currentColor" stroke-width="2"/><line x1="14" y1="2" x2="14" y2="6" stroke="currentColor" stroke-width="2"/><line x1="18" y1="2" x2="18" y2="8" stroke="currentColor" stroke-width="2"/>',
+  },
+  selectAll: {
+    content:
+      '<rect x="3" y="3" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="9 11 12 14 22 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  },
+  moveUp: {
+    content:
+      '<path d="M12 19V5M5 12l7-7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  },
+  moveDown: {
+    content:
+      '<path d="M12 5v14M5 12l7 7 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  },
+  check: {
+    content:
+      '<polyline points="20 6 9 17 4 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  },
+  total: {
+    content:
+      '<path d="M3 3v18h18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M7 14l3-3 3 3 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  },
+  rowSubtotal: {
+    content:
+      '<rect x="3" y="3" width="18" height="18" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="3" y1="9" x2="21" y2="9" stroke="currentColor" stroke-width="1.5"/><line x1="9" y1="9" x2="9" y2="21" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="9" width="6" height="12" fill="currentColor" opacity="0.15"/>',
+  },
+  colSubtotal: {
+    content:
+      '<rect x="3" y="3" width="18" height="18" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="3" y1="9" x2="21" y2="9" stroke="currentColor" stroke-width="1.5"/><line x1="9" y1="9" x2="9" y2="21" stroke="currentColor" stroke-width="1.5"/><rect x="9" y="3" width="12" height="6" fill="currentColor" opacity="0.15"/>',
+  },
+  chart: {
+    content:
+      '<rect x="3" y="3" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 16V10M12 16V6M17 16v-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+  },
+  close: {
+    content:
+      '<line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+  },
+  fileAdd: {
+    content:
+      '<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="18" x2="12" y2="12" stroke="currentColor" stroke-width="2"/><line x1="9" y1="15" x2="15" y2="15" stroke="currentColor" stroke-width="2"/>',
+  },
+  document: {
+    content:
+      '<path d="M6 2h8l6 6v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2z" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" fill="none" stroke="currentColor" stroke-width="2"/>',
+  },
+  folder: {
+    content:
+      '<path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z" fill="none" stroke="currentColor" stroke-width="2"/>',
+  },
+  link: {
+    content:
+      '<path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+  },
+  image: {
+    content:
+      '<rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="8.5" cy="8.5" r="1.5" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="21 15 16 10 5 21" fill="none" stroke="currentColor" stroke-width="2"/>',
+  },
+  info: {
+    content:
+      '<circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="16" x2="12" y2="12" stroke="currentColor" stroke-width="2"/><line x1="12" y1="8" x2="12.01" y2="8" stroke="currentColor" stroke-width="2"/>',
+  },
+  warning: {
+    content:
+      '<path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="9" x2="12" y2="13" stroke="currentColor" stroke-width="2"/><line x1="12" y1="17" x2="12.01" y2="17" stroke="currentColor" stroke-width="2"/>',
+  },
+  arrowRight: {
+    content:
+      '<path d="M5 12h14M12 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  },
+  arrowUp: {
+    content:
+      '<path d="M12 19V5M5 12l7-7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  },
+  arrowDown: {
+    content:
+      '<path d="M12 5v14M5 12l7 7 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  },
+  collapse: {
+    content:
+      '<polyline points="4 14 10 14 10 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="20 10 14 10 14 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="14" y1="10" x2="21" y2="3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="3" y1="21" x2="10" y2="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  },
+  editPen: {
+    content:
+      '<path d="M12 20h9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  },
+  // ─── Office 编辑器图标 ───
+  quote: {
+    content:
+      '<path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  },
+  alignJustify: {
+    content:
+      '<line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="18" x2="21" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+  },
+  ul: {
+    content:
+      '<line x1="8" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="8" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="8" y1="18" x2="21" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="6" x2="3.01" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="12" x2="3.01" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="18" x2="3.01" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+  },
+  ol: {
+    content:
+      '<line x1="10" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="10" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="10" y1="18" x2="21" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M4 6h1v4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 10h2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  },
+  clearFormat: {
+    content:
+      '<polyline points="4 7 4 4 14 4 14 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="9" y1="4" x2="9" y2="14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="14" y1="14" x2="20" y2="20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="20" y1="14" x2="14" y2="20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+  },
+  table: {
+    content:
+      '<rect x="3" y="3" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="3" y1="9" x2="21" y2="9" stroke="currentColor" stroke-width="2"/><line x1="3" y1="15" x2="21" y2="15" stroke="currentColor" stroke-width="2"/><line x1="9" y1="3" x2="9" y2="21" stroke="currentColor" stroke-width="2"/><line x1="15" y1="3" x2="15" y2="21" stroke="currentColor" stroke-width="2"/>',
+  },
+  addRow: {
+    content:
+      '<rect x="3" y="3" width="14" height="14" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="3" y1="8" x2="17" y2="8" stroke="currentColor" stroke-width="1.5"/><line x1="3" y1="12" x2="17" y2="12" stroke="currentColor" stroke-width="1.5"/><line x1="8" y1="3" x2="8" y2="17" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="8" width="14" height="4" fill="currentColor" opacity="0.25"/><circle cx="20" cy="20" r="3" fill="var(--el-bg-color)" stroke="currentColor" stroke-width="1.5"/><line x1="18.5" y1="20" x2="21.5" y2="20" stroke="currentColor" stroke-width="1.5"/><line x1="20" y1="18.5" x2="20" y2="21.5" stroke="currentColor" stroke-width="1.5"/>',
+  },
+  addColumn: {
+    content:
+      '<rect x="3" y="3" width="14" height="14" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="3" y1="8" x2="17" y2="8" stroke="currentColor" stroke-width="1.5"/><line x1="3" y1="12" x2="17" y2="12" stroke="currentColor" stroke-width="1.5"/><line x1="8" y1="3" x2="8" y2="17" stroke="currentColor" stroke-width="1.5"/><rect x="8" y="3" width="4" height="14" fill="currentColor" opacity="0.25"/><circle cx="20" cy="20" r="3" fill="var(--el-bg-color)" stroke="currentColor" stroke-width="1.5"/><line x1="18.5" y1="20" x2="21.5" y2="20" stroke="currentColor" stroke-width="1.5"/><line x1="20" y1="18.5" x2="20" y2="21.5" stroke="currentColor" stroke-width="1.5"/>',
+  },
+  removeRow: {
+    content:
+      '<rect x="3" y="3" width="14" height="14" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="3" y1="8" x2="17" y2="8" stroke="currentColor" stroke-width="1.5"/><line x1="3" y1="12" x2="17" y2="12" stroke="currentColor" stroke-width="1.5"/><line x1="8" y1="3" x2="8" y2="17" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="8" width="14" height="4" fill="currentColor" opacity="0.25"/><circle cx="20" cy="20" r="3" fill="var(--el-bg-color)" stroke="currentColor" stroke-width="1.5"/><line x1="18.5" y1="20" x2="21.5" y2="20" stroke="currentColor" stroke-width="1.5"/>',
+  },
+  removeColumn: {
+    content:
+      '<rect x="3" y="3" width="14" height="14" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="3" y1="8" x2="17" y2="8" stroke="currentColor" stroke-width="1.5"/><line x1="3" y1="12" x2="17" y2="12" stroke="currentColor" stroke-width="1.5"/><line x1="8" y1="3" x2="8" y2="17" stroke="currentColor" stroke-width="1.5"/><rect x="8" y="3" width="4" height="14" fill="currentColor" opacity="0.25"/><circle cx="20" cy="20" r="3" fill="var(--el-bg-color)" stroke="currentColor" stroke-width="1.5"/><line x1="18.5" y1="20" x2="21.5" y2="20" stroke="currentColor" stroke-width="1.5"/>',
+  },
+  cellMerge: {
+    content:
+      '<rect x="3" y="3" width="6" height="18" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="3" y1="12" x2="9" y2="12" stroke="currentColor" stroke-width="1.5"/><rect x="13" y="3" width="8" height="18" fill="currentColor" opacity="0.2" stroke="currentColor" stroke-width="1.5"/><line x1="9" y1="12" x2="13" y2="12" stroke="currentColor" stroke-width="2"/><polyline points="11 10 13 12 11 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',
+  },
+  cellSplit: {
+    content:
+      '<rect x="3" y="3" width="8" height="18" fill="currentColor" opacity="0.2" stroke="currentColor" stroke-width="1.5"/><rect x="15" y="3" width="6" height="18" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="15" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="1.5"/><line x1="11" y1="12" x2="15" y2="12" stroke="currentColor" stroke-width="2"/><polyline points="13 10 15 12 13 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',
+  },
+  text: {
+    content:
+      '<polyline points="4 7 4 4 20 4 20 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="9" y1="20" x2="15" y2="20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="4" x2="12" y2="20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+  },
+  shape: {
+    content:
+      '<rect x="3" y="3" width="8" height="8" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="2"/><polygon points="7 15 11 21 3 21" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',
+  },
+  // ─── 数字孪生专用图标 ───
+  eye: {
+    content:
+      '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/>',
+  },
+  eyeOff: {
+    content:
+      '<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="1" y1="1" x2="23" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+  },
+  lock: {
+    content:
+      '<rect x="3" y="11" width="18" height="11" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 11V7a5 5 0 0110 0v4" fill="none" stroke="currentColor" stroke-width="2"/>',
+  },
+  unlock: {
+    content:
+      '<rect x="3" y="11" width="18" height="11" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 11V7a5 5 0 019.9-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+  },
+  component: {
+    content:
+      '<path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="3.27 6.96 12 12.01 20.73 6.96" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="22.08" x2="12" y2="12" stroke="currentColor" stroke-width="2"/>',
+  },
+  layer: {
+    content:
+      '<polygon points="12 2 2 7 12 12 22 7 12 2" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="2 17 12 22 22 17" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="2 12 12 17 22 12" fill="none" stroke="currentColor" stroke-width="2"/>',
+  },
+  newScene: {
+    content:
+      '<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="18" x2="12" y2="12" stroke="currentColor" stroke-width="2"/><line x1="9" y1="15" x2="15" y2="15" stroke="currentColor" stroke-width="2"/>',
+  },
+  forward: {
+    content:
+      '<path d="M21 10H11a5 5 0 00-5 5v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 10l-4-4M21 10l-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  },
+  backward: {
+    content:
+      '<path d="M3 10h10a5 5 0 015 5v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 10l4-4M3 10l4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  },
+  gizmoMove: {
+    content:
+      '<path d="M12 2v20M2 12h20M5 9l-3 3 3 3M19 9l3 3-3 3M9 5l3-3 3 3M9 19l3 3 3-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  },
+  gizmoRotate: {
+    content:
+      '<path d="M21 12a9 9 0 11-3-6.7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><polyline points="21 3 21 9 15 9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  },
+  gizmoScale: {
+    content:
+      '<path d="M21 3l-9 9-9-9M3 21l9-9 9 9M12 12v0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  },
+  boxSelect: {
+    content:
+      '<rect x="3" y="3" width="18" height="18" rx="1" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="3 3"/><circle cx="9" cy="9" r="2" fill="currentColor"/><circle cx="15" cy="15" r="2" fill="currentColor"/>',
+  },
+  // ─── 文件 IO 图标 ───
+  import: {
+    content:
+      '<path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="7 8 12 3 17 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="3" x2="12" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+  },
+  videoPlay: {
+    content:
+      '<polygon points="6 4 20 12 6 20 6 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',
+  },
+  videoPause: {
+    content:
+      '<rect x="6" y="4" width="4" height="16" rx="1" fill="none" stroke="currentColor" stroke-width="2"/><rect x="14" y="4" width="4" height="16" rx="1" fill="none" stroke="currentColor" stroke-width="2"/>',
+  },
+  monitor: {
+    content:
+      '<rect x="2" y="3" width="20" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="8" y1="21" x2="16" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="17" x2="12" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+  },
+  route: {
+    content:
+      '<circle cx="6" cy="6" r="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="18" r="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 8v4a4 4 0 004 4h8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="16 14 18 16 20 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  },
+  alarm: {
+    content:
+      '<path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.73 21a2 2 0 01-3.46 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+  },
+  camera: {
+    content:
+      '<path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="13" r="4" fill="none" stroke="currentColor" stroke-width="2"/>',
+  },
+  files: {
+    content:
+      '<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><polyline points="14 2 14 8 20 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M8 2v2a2 2 0 002 2h6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" opacity="0.6"/>',
+  },
+  list: {
+    content:
+      '<line x1="8" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="8" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="8" y1="18" x2="21" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="6" x2="3.01" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="12" x2="3.01" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="18" x2="3.01" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+  },
+  // ─── 视口模式图标 ───
+  modeView: {
+    content:
+      '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/>',
+  },
+  modeEdit: {
+    content:
+      '<path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" fill="none" stroke="currentColor" stroke-width="2"/>',
+  },
+  modeMeasure: {
+    content:
+      '<rect x="2" y="6" width="20" height="12" rx="1" fill="none" stroke="currentColor" stroke-width="2" transform="rotate(45 12 12)"/><line x1="6" y1="6" x2="8" y2="8" stroke="currentColor" stroke-width="2" transform="rotate(45 12 12)"/><line x1="10" y1="6" x2="12" y2="8" stroke="currentColor" stroke-width="2" transform="rotate(45 12 12)"/><line x1="14" y1="6" x2="16" y2="8" stroke="currentColor" stroke-width="2" transform="rotate(45 12 12)"/>',
+  },
+  modeAnnotate: {
+    content:
+      '<path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="7" cy="7" r="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/>',
+  },
+  modeInspect: {
+    content:
+      '<circle cx="11" cy="11" r="8" fill="none" stroke="currentColor" stroke-width="2"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2"/><line x1="11" y1="8" x2="11" y2="14" stroke="currentColor" stroke-width="1.5"/><line x1="8" y1="11" x2="14" y2="11" stroke="currentColor" stroke-width="1.5"/>',
+  },
 };
 
 // ────────────────────────────────────────
 // 对齐工具图标
 // ────────────────────────────────────────
 const alignment: IconMap = {
-    "align-left": {content: '<line x1="4" y1="4" x2="20" y2="4" stroke="currentColor" stroke-width="2"/><line x1="4" y1="9" x2="14" y2="9" stroke="currentColor" stroke-width="2"/><line x1="4" y1="14" x2="20" y2="14" stroke="currentColor" stroke-width="2"/><line x1="4" y1="19" x2="14" y2="19" stroke="currentColor" stroke-width="2"/><line x1="4" y1="2" x2="4" y2="21" stroke="currentColor" stroke-width="2" stroke-dasharray="2 2"/>'},
-    "align-center": {content: '<line x1="4" y1="4" x2="20" y2="4" stroke="currentColor" stroke-width="2"/><line x1="7" y1="9" x2="17" y2="9" stroke="currentColor" stroke-width="2"/><line x1="4" y1="14" x2="20" y2="14" stroke="currentColor" stroke-width="2"/><line x1="7" y1="19" x2="17" y2="19" stroke="currentColor" stroke-width="2"/><line x1="12" y1="2" x2="12" y2="21" stroke="currentColor" stroke-width="2" stroke-dasharray="2 2"/>'},
-    "align-right": {content: '<line x1="4" y1="4" x2="20" y2="4" stroke="currentColor" stroke-width="2"/><line x1="10" y1="9" x2="20" y2="9" stroke="currentColor" stroke-width="2"/><line x1="4" y1="14" x2="20" y2="14" stroke="currentColor" stroke-width="2"/><line x1="10" y1="19" x2="20" y2="19" stroke="currentColor" stroke-width="2"/><line x1="20" y1="2" x2="20" y2="21" stroke="currentColor" stroke-width="2" stroke-dasharray="2 2"/>'},
-    "align-top": {content: '<line x1="4" y1="4" x2="4" y2="20" stroke="currentColor" stroke-width="2"/><line x1="9" y1="4" x2="9" y2="14" stroke="currentColor" stroke-width="2"/><line x1="14" y1="4" x2="14" y2="20" stroke="currentColor" stroke-width="2"/><line x1="19" y1="4" x2="19" y2="14" stroke="currentColor" stroke-width="2"/><line x1="2" y1="4" x2="21" y2="4" stroke="currentColor" stroke-width="2" stroke-dasharray="2 2"/>'},
-    "align-middle": {content: '<line x1="4" y1="4" x2="4" y2="20" stroke="currentColor" stroke-width="2"/><line x1="9" y1="7" x2="9" y2="17" stroke="currentColor" stroke-width="2"/><line x1="14" y1="4" x2="14" y2="20" stroke="currentColor" stroke-width="2"/><line x1="19" y1="7" x2="19" y2="17" stroke="currentColor" stroke-width="2"/><line x1="2" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="2" stroke-dasharray="2 2"/>'},
-    "align-bottom": {content: '<line x1="4" y1="4" x2="4" y2="20" stroke="currentColor" stroke-width="2"/><line x1="9" y1="10" x2="9" y2="20" stroke="currentColor" stroke-width="2"/><line x1="14" y1="4" x2="14" y2="20" stroke="currentColor" stroke-width="2"/><line x1="19" y1="10" x2="19" y2="20" stroke="currentColor" stroke-width="2"/><line x1="2" y1="20" x2="21" y2="20" stroke="currentColor" stroke-width="2" stroke-dasharray="2 2"/>'},
-    "distribute-h": {content: '<line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2" stroke-dasharray="2 2"/><rect x="3" y="6" width="4" height="12" rx="1" fill="none" stroke="currentColor" stroke-width="2"/><rect x="10" y="6" width="4" height="12" rx="1" fill="none" stroke="currentColor" stroke-width="2"/><rect x="17" y="6" width="4" height="12" rx="1" fill="none" stroke="currentColor" stroke-width="2"/>'},
-    "distribute-v": {content: '<line x1="12" y1="4" x2="12" y2="20" stroke="currentColor" stroke-width="2" stroke-dasharray="2 2"/><rect x="6" y="3" width="12" height="4" rx="1" fill="none" stroke="currentColor" stroke-width="2"/><rect x="6" y="10" width="12" height="4" rx="1" fill="none" stroke="currentColor" stroke-width="2"/><rect x="6" y="17" width="12" height="4" rx="1" fill="none" stroke="currentColor" stroke-width="2"/>'},
+  "align-left": {
+    content:
+      '<line x1="4" y1="4" x2="20" y2="4" stroke="currentColor" stroke-width="2"/><line x1="4" y1="9" x2="14" y2="9" stroke="currentColor" stroke-width="2"/><line x1="4" y1="14" x2="20" y2="14" stroke="currentColor" stroke-width="2"/><line x1="4" y1="19" x2="14" y2="19" stroke="currentColor" stroke-width="2"/><line x1="4" y1="2" x2="4" y2="21" stroke="currentColor" stroke-width="2" stroke-dasharray="2 2"/>',
+  },
+  "align-center": {
+    content:
+      '<line x1="4" y1="4" x2="20" y2="4" stroke="currentColor" stroke-width="2"/><line x1="7" y1="9" x2="17" y2="9" stroke="currentColor" stroke-width="2"/><line x1="4" y1="14" x2="20" y2="14" stroke="currentColor" stroke-width="2"/><line x1="7" y1="19" x2="17" y2="19" stroke="currentColor" stroke-width="2"/><line x1="12" y1="2" x2="12" y2="21" stroke="currentColor" stroke-width="2" stroke-dasharray="2 2"/>',
+  },
+  "align-right": {
+    content:
+      '<line x1="4" y1="4" x2="20" y2="4" stroke="currentColor" stroke-width="2"/><line x1="10" y1="9" x2="20" y2="9" stroke="currentColor" stroke-width="2"/><line x1="4" y1="14" x2="20" y2="14" stroke="currentColor" stroke-width="2"/><line x1="10" y1="19" x2="20" y2="19" stroke="currentColor" stroke-width="2"/><line x1="20" y1="2" x2="20" y2="21" stroke="currentColor" stroke-width="2" stroke-dasharray="2 2"/>',
+  },
+  "align-top": {
+    content:
+      '<line x1="4" y1="4" x2="4" y2="20" stroke="currentColor" stroke-width="2"/><line x1="9" y1="4" x2="9" y2="14" stroke="currentColor" stroke-width="2"/><line x1="14" y1="4" x2="14" y2="20" stroke="currentColor" stroke-width="2"/><line x1="19" y1="4" x2="19" y2="14" stroke="currentColor" stroke-width="2"/><line x1="2" y1="4" x2="21" y2="4" stroke="currentColor" stroke-width="2" stroke-dasharray="2 2"/>',
+  },
+  "align-middle": {
+    content:
+      '<line x1="4" y1="4" x2="4" y2="20" stroke="currentColor" stroke-width="2"/><line x1="9" y1="7" x2="9" y2="17" stroke="currentColor" stroke-width="2"/><line x1="14" y1="4" x2="14" y2="20" stroke="currentColor" stroke-width="2"/><line x1="19" y1="7" x2="19" y2="17" stroke="currentColor" stroke-width="2"/><line x1="2" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="2" stroke-dasharray="2 2"/>',
+  },
+  "align-bottom": {
+    content:
+      '<line x1="4" y1="4" x2="4" y2="20" stroke="currentColor" stroke-width="2"/><line x1="9" y1="10" x2="9" y2="20" stroke="currentColor" stroke-width="2"/><line x1="14" y1="4" x2="14" y2="20" stroke="currentColor" stroke-width="2"/><line x1="19" y1="10" x2="19" y2="20" stroke="currentColor" stroke-width="2"/><line x1="2" y1="20" x2="21" y2="20" stroke="currentColor" stroke-width="2" stroke-dasharray="2 2"/>',
+  },
+  "distribute-h": {
+    content:
+      '<line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2" stroke-dasharray="2 2"/><rect x="3" y="6" width="4" height="12" rx="1" fill="none" stroke="currentColor" stroke-width="2"/><rect x="10" y="6" width="4" height="12" rx="1" fill="none" stroke="currentColor" stroke-width="2"/><rect x="17" y="6" width="4" height="12" rx="1" fill="none" stroke="currentColor" stroke-width="2"/>',
+  },
+  "distribute-v": {
+    content:
+      '<line x1="12" y1="4" x2="12" y2="20" stroke="currentColor" stroke-width="2" stroke-dasharray="2 2"/><rect x="6" y="3" width="12" height="4" rx="1" fill="none" stroke="currentColor" stroke-width="2"/><rect x="6" y="10" width="12" height="4" rx="1" fill="none" stroke="currentColor" stroke-width="2"/><rect x="6" y="17" width="12" height="4" rx="1" fill="none" stroke="currentColor" stroke-width="2"/>',
+  },
 };
 
 // ────────────────────────────────────────
 // ETL 节点类型图标
 // ────────────────────────────────────────
 const etlNode: IconMap = {
-    database: {content: '<ellipse cx="12" cy="5" rx="9" ry="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M21 5v14c0 1.66-4 3-9 3s-9-1.34-9-3V5" fill="none" stroke="currentColor" stroke-width="2"/>'},
-    api: {content: '<path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'},
-    file: {content: '<path d="M6 2h8l6 6v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2z" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" fill="none" stroke="currentColor" stroke-width="2"/>'},
-    json: {content: '<path d="M16 2v6h6M2 8a2 2 0 012-2h8l4 4v10a2 2 0 01-2 2H4a2 2 0 01-2-2V8z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 2h8l4 4v2" fill="none" stroke="currentColor" stroke-width="2"/><text x="7" y="17" font-size="7" font-family="monospace" fill="currentColor" stroke="none">{ }</text>'},
-    csv: {content: '<path d="M6 2h8l6 6v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2z" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" fill="none" stroke="currentColor" stroke-width="2"/><line x1="8" y1="13" x2="16" y2="13" stroke="currentColor" stroke-width="1.5"/><line x1="8" y1="16" x2="14" y2="16" stroke="currentColor" stroke-width="1.5"/><line x1="8" y1="19" x2="12" y2="19" stroke="currentColor" stroke-width="1.5"/>'},
-    filter: {content: '<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" fill="none" stroke="currentColor" stroke-width="2"/>'},
-    operation: {content: '<circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" fill="none" stroke="currentColor" stroke-width="2"/>'},
-    connection: {content: '<path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'},
-    dataAnalysis: {content: '<path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="3.27 6.96 12 12.01 20.73 6.96" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="22.08" x2="12" y2="12" stroke="currentColor" stroke-width="2"/>'},
-    sort: {content: '<path d="M3 6h18M3 12h12M3 18h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'},
-    merge: {content: '<path d="M8 3v6l4 4 4-4V3M12 13v8M4 7h4M16 7h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'},
-    share: {content: '<circle cx="18" cy="5" r="3" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="6" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="19" r="3" fill="none" stroke="currentColor" stroke-width="2"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49" stroke="currentColor" stroke-width="2"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49" stroke="currentColor" stroke-width="2"/>'},
-    promotion: {content: '<path d="M22 2L11 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M22 2l-7 20-4-9-9-4 20-7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>'},
-    magicStick: {content: '<path d="M15 4V2M15 16v-2M8 9h2M20 9h2M17.8 11.8L19 13M17.8 6.2L19 5M12.2 11.8L11 13M12.2 6.2L11 5M15 9l-6.5 6.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'},
+  database: {
+    content:
+      '<ellipse cx="12" cy="5" rx="9" ry="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M21 5v14c0 1.66-4 3-9 3s-9-1.34-9-3V5" fill="none" stroke="currentColor" stroke-width="2"/>',
+  },
+  api: {
+    content:
+      '<path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+  },
+  file: {
+    content:
+      '<path d="M6 2h8l6 6v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2z" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" fill="none" stroke="currentColor" stroke-width="2"/>',
+  },
+  json: {
+    content:
+      '<path d="M16 2v6h6M2 8a2 2 0 012-2h8l4 4v10a2 2 0 01-2 2H4a2 2 0 01-2-2V8z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 2h8l4 4v2" fill="none" stroke="currentColor" stroke-width="2"/><text x="7" y="17" font-size="7" font-family="monospace" fill="currentColor" stroke="none">{ }</text>',
+  },
+  csv: {
+    content:
+      '<path d="M6 2h8l6 6v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2z" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" fill="none" stroke="currentColor" stroke-width="2"/><line x1="8" y1="13" x2="16" y2="13" stroke="currentColor" stroke-width="1.5"/><line x1="8" y1="16" x2="14" y2="16" stroke="currentColor" stroke-width="1.5"/><line x1="8" y1="19" x2="12" y2="19" stroke="currentColor" stroke-width="1.5"/>',
+  },
+  filter: {
+    content:
+      '<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" fill="none" stroke="currentColor" stroke-width="2"/>',
+  },
+  operation: {
+    content:
+      '<circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" fill="none" stroke="currentColor" stroke-width="2"/>',
+  },
+  connection: {
+    content:
+      '<path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+  },
+  dataAnalysis: {
+    content:
+      '<path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="3.27 6.96 12 12.01 20.73 6.96" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="22.08" x2="12" y2="12" stroke="currentColor" stroke-width="2"/>',
+  },
+  sort: {
+    content:
+      '<path d="M3 6h18M3 12h12M3 18h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+  },
+  merge: {
+    content:
+      '<path d="M8 3v6l4 4 4-4V3M12 13v8M4 7h4M16 7h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  },
+  share: {
+    content:
+      '<circle cx="18" cy="5" r="3" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="6" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="19" r="3" fill="none" stroke="currentColor" stroke-width="2"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49" stroke="currentColor" stroke-width="2"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49" stroke="currentColor" stroke-width="2"/>',
+  },
+  promotion: {
+    content:
+      '<path d="M22 2L11 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M22 2l-7 20-4-9-9-4 20-7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',
+  },
+  magicStick: {
+    content:
+      '<path d="M15 4V2M15 16v-2M8 9h2M20 9h2M17.8 11.8L19 13M17.8 6.2L19 5M12.2 11.8L11 13M12.2 6.2L11 5M15 9l-6.5 6.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+  },
 };
 
 // ────────────────────────────────────────
 // PDF 元素类型图标
 // ────────────────────────────────────────
 const pdfElement: IconMap = {
-    heading: {content: '<path d="M6 4v16M18 4v16M6 12h12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'},
-    text: {content: '<path d="M4 7V4h16v3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9 20h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 4v16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'},
-    paragraph: {content: '<path d="M4 6h16M4 10h16M4 14h10M4 18h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'},
-    image: {content: '<rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="8.5" cy="8.5" r="1.5" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="21 15 16 10 5 21" fill="none" stroke="currentColor" stroke-width="2"/>'},
-    table: {content: '<rect x="3" y="3" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="3" y1="9" x2="21" y2="9" stroke="currentColor" stroke-width="2"/><line x1="3" y1="15" x2="21" y2="15" stroke="currentColor" stroke-width="2"/><line x1="9" y1="3" x2="9" y2="21" stroke="currentColor" stroke-width="2"/><line x1="15" y1="3" x2="15" y2="21" stroke="currentColor" stroke-width="2"/>'},
-    divider: {content: '<line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'},
-    pageBreak: {content: '<rect x="3" y="3" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="2" stroke-dasharray="3 3"/>'},
-    barcode: {content: '<line x1="4" y1="4" x2="4" y2="20" stroke="currentColor" stroke-width="2"/><line x1="7" y1="4" x2="7" y2="20" stroke="currentColor" stroke-width="2"/><line x1="10" y1="4" x2="10" y2="20" stroke="currentColor" stroke-width="3"/><line x1="13" y1="4" x2="13" y2="20" stroke="currentColor" stroke-width="1"/><line x1="16" y1="4" x2="16" y2="20" stroke="currentColor" stroke-width="2"/><line x1="19" y1="4" x2="19" y2="20" stroke="currentColor" stroke-width="3"/>'},
-    qrcode: {content: '<rect x="3" y="3" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2"/><rect x="14" y="3" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2"/><rect x="3" y="14" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2"/><rect x="14" y="14" width="3" height="3" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="19" y="14" width="2" height="2" fill="none" stroke="currentColor" stroke-width="1"/><rect x="14" y="19" width="2" height="2" fill="none" stroke="currentColor" stroke-width="1"/><rect x="19" y="19" width="2" height="2" fill="none" stroke="currentColor" stroke-width="1"/>'},
-    signature: {content: '<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="m15 5 4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'},
-    checkbox: {content: '<rect x="3" y="3" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="9 12 11 14 15 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'},
-    date: {content: '<rect x="3" y="4" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="2"/>'},
+  heading: {
+    content:
+      '<path d="M6 4v16M18 4v16M6 12h12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+  },
+  text: {
+    content:
+      '<path d="M4 7V4h16v3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9 20h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 4v16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+  },
+  paragraph: {
+    content:
+      '<path d="M4 6h16M4 10h16M4 14h10M4 18h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+  },
+  image: {
+    content:
+      '<rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="8.5" cy="8.5" r="1.5" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="21 15 16 10 5 21" fill="none" stroke="currentColor" stroke-width="2"/>',
+  },
+  table: {
+    content:
+      '<rect x="3" y="3" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="3" y1="9" x2="21" y2="9" stroke="currentColor" stroke-width="2"/><line x1="3" y1="15" x2="21" y2="15" stroke="currentColor" stroke-width="2"/><line x1="9" y1="3" x2="9" y2="21" stroke="currentColor" stroke-width="2"/><line x1="15" y1="3" x2="15" y2="21" stroke="currentColor" stroke-width="2"/>',
+  },
+  divider: {
+    content:
+      '<line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+  },
+  pageBreak: {
+    content:
+      '<rect x="3" y="3" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="2" stroke-dasharray="3 3"/>',
+  },
+  barcode: {
+    content:
+      '<line x1="4" y1="4" x2="4" y2="20" stroke="currentColor" stroke-width="2"/><line x1="7" y1="4" x2="7" y2="20" stroke="currentColor" stroke-width="2"/><line x1="10" y1="4" x2="10" y2="20" stroke="currentColor" stroke-width="3"/><line x1="13" y1="4" x2="13" y2="20" stroke="currentColor" stroke-width="1"/><line x1="16" y1="4" x2="16" y2="20" stroke="currentColor" stroke-width="2"/><line x1="19" y1="4" x2="19" y2="20" stroke="currentColor" stroke-width="3"/>',
+  },
+  qrcode: {
+    content:
+      '<rect x="3" y="3" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2"/><rect x="14" y="3" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2"/><rect x="3" y="14" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2"/><rect x="14" y="14" width="3" height="3" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="19" y="14" width="2" height="2" fill="none" stroke="currentColor" stroke-width="1"/><rect x="14" y="19" width="2" height="2" fill="none" stroke="currentColor" stroke-width="1"/><rect x="19" y="19" width="2" height="2" fill="none" stroke="currentColor" stroke-width="1"/>',
+  },
+  signature: {
+    content:
+      '<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="m15 5 4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+  },
+  checkbox: {
+    content:
+      '<rect x="3" y="3" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="9 12 11 14 15 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  },
+  date: {
+    content:
+      '<rect x="3" y="4" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="2"/>',
+  },
 };
 
 // ────────────────────────────────────────
 // 上下文菜单图标
 // ────────────────────────────────────────
 const contextMenu: IconMap = {
-    "ctx-copy": {content: '<rect x="9" y="9" width="13" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" fill="none" stroke="currentColor" stroke-width="2"/>'},
-    "ctx-cut": {content: '<circle cx="6" cy="6" r="3" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="6" cy="18" r="3" fill="none" stroke="currentColor" stroke-width="2"/><line x1="20" y1="4" x2="8.12" y2="15.88" stroke="currentColor" stroke-width="2"/><line x1="14.47" y1="14.48" x2="20" y2="20" stroke="currentColor" stroke-width="2"/>'},
-    "ctx-paste": {content: '<path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="8" y="2" width="8" height="4" rx="1" fill="none" stroke="currentColor" stroke-width="2"/>'},
-    "ctx-delete": {content: '<path d="M3 6h18M8 6V4h8v2M5 6v14a2 2 0 002 2h10a2 2 0 002-2V6" fill="none" stroke="currentColor" stroke-width="2"/>'},
-    "ctx-duplicate": {content: '<rect x="9" y="9" width="13" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" fill="none" stroke="currentColor" stroke-width="2"/>'},
-    "ctx-selectAll": {content: '<rect x="3" y="3" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="9 11 12 14 22 4" fill="none" stroke="currentColor" stroke-width="2"/>'},
-    "ctx-bringFront": {content: '<rect x="8" y="2" width="14" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="2" y="8" width="14" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="2 2"/>'},
-    "ctx-sendBack": {content: '<rect x="2" y="2" width="14" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="2 2"/><rect x="8" y="8" width="14" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/>'},
+  "ctx-copy": {
+    content:
+      '<rect x="9" y="9" width="13" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" fill="none" stroke="currentColor" stroke-width="2"/>',
+  },
+  "ctx-cut": {
+    content:
+      '<circle cx="6" cy="6" r="3" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="6" cy="18" r="3" fill="none" stroke="currentColor" stroke-width="2"/><line x1="20" y1="4" x2="8.12" y2="15.88" stroke="currentColor" stroke-width="2"/><line x1="14.47" y1="14.48" x2="20" y2="20" stroke="currentColor" stroke-width="2"/>',
+  },
+  "ctx-paste": {
+    content:
+      '<path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="8" y="2" width="8" height="4" rx="1" fill="none" stroke="currentColor" stroke-width="2"/>',
+  },
+  "ctx-delete": {
+    content:
+      '<path d="M3 6h18M8 6V4h8v2M5 6v14a2 2 0 002 2h10a2 2 0 002-2V6" fill="none" stroke="currentColor" stroke-width="2"/>',
+  },
+  "ctx-duplicate": {
+    content:
+      '<rect x="9" y="9" width="13" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" fill="none" stroke="currentColor" stroke-width="2"/>',
+  },
+  "ctx-selectAll": {
+    content:
+      '<rect x="3" y="3" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="9 11 12 14 22 4" fill="none" stroke="currentColor" stroke-width="2"/>',
+  },
+  "ctx-bringFront": {
+    content:
+      '<rect x="8" y="2" width="14" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="2" y="8" width="14" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="2 2"/>',
+  },
+  "ctx-sendBack": {
+    content:
+      '<rect x="2" y="2" width="14" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="2 2"/><rect x="8" y="8" width="14" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/>',
+  },
 };
 
 // ────────────────────────────────────────
 // 合并所有图标
 // ────────────────────────────────────────
 export const SVG_ICON_REGISTRY: IconMap = {
-    ...toolbar,
-    ...alignment,
-    ...etlNode,
-    ...pdfElement,
-    ...contextMenu,
+  ...toolbar,
+  ...alignment,
+  ...etlNode,
+  ...pdfElement,
+  ...contextMenu,
 };
 
 /**
  * 获取图标定义，缺失时返回默认占位图标
  */
 export const getSvgIcon = (name: string): SvgIconDef => {
-    return SVG_ICON_REGISTRY[name] ?? {content: '<circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/>'};
+  return (
+    SVG_ICON_REGISTRY[name] ?? {
+      content:
+        '<circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/>',
+    }
+  );
 };

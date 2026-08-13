@@ -1,11 +1,25 @@
 <script setup lang="ts">
-import {collectFieldProps, getDataIndex, getFormData, getPrefix,} from "@/api/form_utils";
+import {
+  collectFieldProps,
+  getDataIndex,
+  getFormData,
+  getPrefix,
+} from "@/api/form_utils";
 import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
-import {ContainerPreps} from "@/components/types/ItemPreps";
-import {initRelationEvent} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import {computed, inject, ModelRef, nextTick, onMounted, ref, unref, watch} from "vue";
-import {i18n} from "@/lang";
-import {warning} from "@/utils/message";
+import { ContainerPreps } from "@/components/types/ItemPreps";
+import { initRelationEvent } from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {
+  computed,
+  inject,
+  ModelRef,
+  nextTick,
+  onMounted,
+  ref,
+  unref,
+  watch,
+} from "vue";
+import { i18n } from "@/lang";
+import { warning } from "@/utils/message";
 import StarHorseDrawer from "@/components/comp/StarHorseDrawer.vue";
 
 const props = withDefaults(defineProps<ContainerPreps>(), {
@@ -16,7 +30,7 @@ const props = withDefaults(defineProps<ContainerPreps>(), {
   parentPreps: {},
   subFormFlag: "N",
   batchName: "batchDataList",
-  batchFieldName: "batchFieldList",
+
   compSize: "default",
   source: 1,
 });
@@ -27,7 +41,9 @@ const formFields = inject("formFields", ref<any[]>([]));
 // 注入 el-form 实例（由 StarHorseForm provide），用于调用 validateField / clearValidate
 const starHorseFormRef = inject("starHorseFormRef", ref<any>(null));
 const dialogVisible = ref<boolean>(false);
-const drawerFields = computed(() => props.item.containerFields?.length > 0 ? props.item.containerFields[0] : {});
+const drawerFields = computed(() =>
+  props.item.containerFields?.length > 0 ? props.item.containerFields[0] : {},
+);
 // 是否开启必填校验（默认开启，设为 "N" 可关闭；source=3 查看模式自动关闭）
 const mustComplete = computed(() => {
   if (props.source == 3) return false;
@@ -66,7 +82,12 @@ const getFieldProps = () => {
   if (!Array.isArray(list)) return fieldProps;
   list.forEach((child: any, idx: number) => {
     if (child == null || child.formVisible === false) return;
-    const childPrefix = getPrefix(child, props.propPrefix, props.dataIndex, props.item?.groupData ? idx : 0);
+    const childPrefix = getPrefix(
+      child,
+      props.propPrefix,
+      props.dataIndex,
+      props.item?.groupData ? idx : 0,
+    );
     fieldProps.push(...collectFieldProps(child.fieldList || [], childPrefix));
   });
   return fieldProps;
@@ -103,8 +124,7 @@ const resetForm = () => {
   formRef.resetFields(fields);
 };
 
-const init = () => {
-};
+const init = () => {};
 
 /**
  * 递归遍历 fieldList,对有 dataRelation 的字段重新触发初始联动
@@ -124,11 +144,7 @@ const reTriggerRelation = (fields: any[], visited?: WeakSet<any>) => {
       visited.add(field);
       if (field?.preps?.dataRelation?.actionName) {
         const formInfoVal = unref(formFields);
-        initRelationEvent(
-            {field, formInfo: formInfoVal},
-            dataForm,
-            true,
-        );
+        initRelationEvent({ field, formInfo: formInfoVal }, dataForm, true);
       }
     }
   });
@@ -140,25 +156,25 @@ const reTriggerRelation = (fields: any[], visited?: WeakSet<any>) => {
  * (子项隐藏时内部字段组件未挂载,onMounted 中的 initCompCallEvent 未执行)
  */
 watch(
-    () => {
-      const list = props.item?.containerFields;
-      return Array.isArray(list) ? list.map((c: any) => c?.formVisible) : [];
-    },
-    (newVals, oldVals) => {
-      const list = props.item?.containerFields;
-      if (!Array.isArray(list)) return;
-      list.forEach((child: any, index: number) => {
-        if (child == null) return;
-        const wasVisible = oldVals?.[index] !== false;
-        const isVisible = newVals?.[index] !== false;
-        if (!wasVisible && isVisible) {
-          nextTick(() => {
-            reTriggerRelation(child.fieldList);
-          });
-        }
-      });
-    },
-    {deep: true, immediate: true},
+  () => {
+    const list = props.item?.containerFields;
+    return Array.isArray(list) ? list.map((c: any) => c?.formVisible) : [];
+  },
+  (newVals, oldVals) => {
+    const list = props.item?.containerFields;
+    if (!Array.isArray(list)) return;
+    list.forEach((child: any, index: number) => {
+      if (child == null) return;
+      const wasVisible = oldVals?.[index] !== false;
+      const isVisible = newVals?.[index] !== false;
+      if (!wasVisible && isVisible) {
+        nextTick(() => {
+          reTriggerRelation(child.fieldList);
+        });
+      }
+    });
+  },
+  { deep: true, immediate: true },
 );
 
 onMounted(() => {
@@ -170,34 +186,40 @@ onMounted(() => {
   <div v-if="item.containerFields?.length > 0" class="drawer-trigger-wrapper">
     <div class="dialog-trigger">
       <el-button
-          v-if="drawerFields.formVisible !== false&&!drawerFields.preps?.hideDrawer"
-          :type="drawerFields.preps?.btnType || 'primary'"
-          :icon="drawerFields.preps?.btnIcon || undefined"
-          @click="handleOpen"
-          :disabled="drawerFields.preps?.disabled"
+        v-if="
+          drawerFields.formVisible !== false && !drawerFields.preps?.hideDrawer
+        "
+        :type="drawerFields.preps?.btnType || 'primary'"
+        :icon="drawerFields.preps?.btnIcon || undefined"
+        @click="handleOpen"
+        :disabled="drawerFields.preps?.disabled"
       >
-        {{ drawerFields.preps?.btnText || drawerFields.title || i18n("ide.ctx.open") }}
+        {{
+          drawerFields.preps?.btnText ||
+          drawerFields.title ||
+          i18n("ide.ctx.open")
+        }}
       </el-button>
     </div>
     <!-- 抽屉(设计模式和运行模式都可以打开) -->
     <star-horse-drawer
-        v-model="dialogVisible"
-        :self-func="true"
-        :title="drawerFields.title || drawerFields.preps?.btnText"
-        :direction="drawerFields.preps?.direction || 'rtl'"
-        :size="drawerFields.preps?.drawerSize || '40%'"
-        :resizable="drawerFields.preps?.resizable ?? true"
-        @resetForm="resetForm"
-        @merge="handleConfirm"
-        @closeAction="handleClose"
+      v-model="dialogVisible"
+      :self-func="true"
+      :title="drawerFields.title || drawerFields.preps?.btnText"
+      :direction="drawerFields.preps?.direction || 'rtl'"
+      :size="drawerFields.preps?.drawerSize || '40%'"
+      :resizable="drawerFields.preps?.resizable ?? true"
+      @resetForm="resetForm"
+      @merge="handleConfirm"
+      @closeAction="handleClose"
     >
       <template v-for="(drawerItem, key) in item.containerFields">
         <star-horse-form-item
-            :source="source"
-            :compUrl="compUrl"
-            :compSize="compSize"
-            :commonFormat="commonFormat"
-            :dataForm="
+          :source="source"
+          :compUrl="compUrl"
+          :compSize="compSize"
+          :commonFormat="commonFormat"
+          :dataForm="
             getFormData(
               drawerItem,
               dataForm,
@@ -206,7 +228,7 @@ onMounted(() => {
               item.groupData ? key : 0,
             )
           "
-            :dataIndex="
+          :dataIndex="
             getDataIndex(
               drawerItem,
               propPrefix,
@@ -214,17 +236,22 @@ onMounted(() => {
               item.groupData ? key : 0,
             )
           "
-            :propPrefix="
-            getPrefix(drawerItem, propPrefix, dataIndex, item.groupData ? key : 0)
+          :propPrefix="
+            getPrefix(
+              drawerItem,
+              propPrefix,
+              dataIndex,
+              item.groupData ? key : 0,
+            )
           "
-            :objectName="drawerItem.objectName"
-            @addRow="addRow"
-            @removeRow="removeRow"
-            :fieldList="drawerItem"
-            :rules="rules"
-            :subFormFlag="drawerItem.subFormFlag"
-            :enableSubNode="drawerItem.enableSubNode"
-            :primaryKey="primaryKey"
+          :objectName="drawerItem.objectName"
+          @addRow="addRow"
+          @removeRow="removeRow"
+          :fieldList="drawerItem"
+          :rules="rules"
+          :subFormFlag="drawerItem.subFormFlag"
+          :enableSubNode="drawerItem.enableSubNode"
+          :primaryKey="primaryKey"
         />
       </template>
     </star-horse-drawer>

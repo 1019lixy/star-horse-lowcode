@@ -1,9 +1,13 @@
 <script setup lang="ts" name="Areainfo">
-import {apiInstance, createSearchField, dialogPreps,} from "@/api/star_horse_utils";
-import {ApiUrls} from "@/components/types/ApiUrls";
-import {PageFieldInfo} from "@/components/types/PageFieldInfo";
-import {SearchFields} from "@/components/types/SearchProps";
-import {onMounted, provide, reactive, ref} from "vue";
+import {
+  apiInstance,
+  createSearchField,
+  dialogPreps,
+} from "@/api/star_horse_utils";
+import { ApiUrls } from "@/components/types/ApiUrls";
+import { PageFieldInfo } from "@/components/types/PageFieldInfo";
+import { SearchFields } from "@/components/types/SearchProps";
+import { onMounted, provide, reactive, ref } from "vue";
 
 const dataUrl: ApiUrls = apiInstance("system-config", "system/areainfo");
 const searchFormData = reactive<SearchFields>({
@@ -12,10 +16,11 @@ const searchFormData = reactive<SearchFields>({
     createSearchField("区域编码", "areaCode", true, "lk"),
   ],
 });
-const batchFieldList = reactive<PageFieldInfo>({
-  batchFieldList: [
+const imageFieldList = reactive<PageFieldInfo>({
+  containerFields: [
     {
-      batchName: "imageInfo",
+      containerType: "batchTable",
+      tabName: "imageInfo",
       fieldList: [
         {
           fieldName: "imageType",
@@ -25,9 +30,9 @@ const batchFieldList = reactive<PageFieldInfo>({
           defaultValue: "upload",
           preps: {
             values: [
-              {name: "上传", value: "upload"},
-              {name: "手动输入", value: "manual"},
-              {name: "图库选择", value: "select"},
+              { name: "上传", value: "upload" },
+              { name: "手动输入", value: "manual" },
+              { name: "图库选择", value: "select" },
             ],
             dataRelation: {
               actionName: "change",
@@ -77,7 +82,7 @@ const batchFieldList = reactive<PageFieldInfo>({
           fieldName: "path",
           formVisible: true,
         },
-        {label: "标题", type: "input", fieldName: "title", formVisible: true},
+        { label: "标题", type: "input", fieldName: "title", formVisible: true },
         {
           label: "描述",
           type: "input",
@@ -130,8 +135,8 @@ const tableFieldList = reactive<PageFieldInfo>({
       listVisible: true,
       preps: {
         values: [
-          {name: "按钮权限", value: "button_authority", xh: 1},
-          {name: "白名单过滤类型", value: "white_name_filter_type", xh: 2},
+          { name: "按钮权限", value: "button_authority", xh: 1 },
+          { name: "白名单过滤类型", value: "white_name_filter_type", xh: 2 },
         ],
         queryParams: [],
         dataRelation: {
@@ -171,7 +176,7 @@ const tableFieldList = reactive<PageFieldInfo>({
       listVisible: true,
     },
   ],
-  batchFieldList: [],
+  containerFields: [],
 });
 const primaryKey = "idAreainfo";
 const areainfoRef = ref();
@@ -189,8 +194,7 @@ const btnPermissions = {
 const dataFormat = (_name: string, cellValue: object): any => {
   return cellValue;
 };
-const initData = async () => {
-};
+const initData = async () => {};
 onMounted(() => {
   initData();
 });
@@ -198,47 +202,47 @@ onMounted(() => {
 <template>
   <div class="flex flex-col h-full overflow-hidden">
     <star-horse-dialog
-        :isShowBtnContinue="true"
-        :dialogVisible="dialogProps.editVisible"
-        :dialogProps="dialogProps"
+      :isShowBtnContinue="true"
+      :dialogVisible="dialogProps.editVisible"
+      :dialogProps="dialogProps"
     >
       <star-horse-form
-          ref="areaFormRef"
-          @refresh="areainfoRef?.loadByPage()"
-          :compUrl="dataUrl"
-          :fieldList="batchFieldList"
-          :rules="rules"
+        ref="areaFormRef"
+        @refresh="areainfoRef?.loadByPage()"
+        :compUrl="dataUrl"
+        :fieldList="imageFieldList"
+        :rules="rules"
       />
     </star-horse-dialog>
     <star-horse-dialog
-        v-model="dialogProps.viewVisible"
-        :dialogProps="dialogProps"
-        :source="3"
+      v-model="dialogProps.viewVisible"
+      :dialogProps="dialogProps"
+      :source="3"
     >
       <star-horse-data-view
-          :dataFormat="dataFormat"
-          :field-list="tableFieldList"
-          :compUrl="dataUrl"
+        :dataFormat="dataFormat"
+        :field-list="tableFieldList"
+        :compUrl="dataUrl"
       />
     </star-horse-dialog>
     <div class="search-content">
       <div class="search_btn">
         <star-horse-search-comp
-            @searchData="(data: any) => areainfoRef?.createSearchParams(data)"
-            :formData="searchFormData"
-            :compUrl="dataUrl"
+          @searchData="(data: any) => areainfoRef?.createSearchParams(data)"
+          :formData="searchFormData"
+          :compUrl="dataUrl"
         />
       </div>
     </div>
     <el-card class="inner_content">
       <star-horse-table-comp
-          ref="areainfoRef"
-          :fieldList="batchFieldList"
-          :btnPermissions="btnPermissions"
-          :primaryKey="primaryKey"
-          :compUrl="dataUrl"
-          :dataFormat="dataFormat"
-          :showPageBar="false"
+        ref="areainfoRef"
+        :fieldList="imageFieldList"
+        :btnPermissions="btnPermissions"
+        :primaryKey="primaryKey"
+        :compUrl="dataUrl"
+        :dataFormat="dataFormat"
+        :showPageBar="false"
       />
     </el-card>
   </div>

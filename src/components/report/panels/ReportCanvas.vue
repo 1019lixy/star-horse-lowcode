@@ -3,17 +3,19 @@
  * 报表设计器 - 中央画布（电子表格网格）
  * 职责：渲染行列网格、单元格选中、行列调整、双击编辑
  */
-import {computed, ref} from "vue";
-import {i18n} from "@/lang";
-import {colToLetter} from "../CellUtils";
-import type {UseReportDesignerReturn} from "../composables/useReportDesigner";
+import { computed, ref } from "vue";
+import { i18n } from "@/lang";
+import { colToLetter } from "../CellUtils";
+import type { UseReportDesignerReturn } from "../composables/useReportDesigner";
 
 const props = defineProps<{
   designer: UseReportDesignerReturn;
 }>();
 
 const template = computed(() => props.designer.state.template);
-const selectedAddresses = computed(() => props.designer.state.selectedAddresses);
+const selectedAddresses = computed(
+  () => props.designer.state.selectedAddresses,
+);
 const editingAddress = computed(() => props.designer.state.editingAddress);
 const showFormula = computed(() => props.designer.state.showFormula);
 
@@ -45,7 +47,8 @@ const cellDisplay = (addr: string): string => {
   return cell.value ?? "";
 };
 
-const isSelected = (addr: string): boolean => selectedAddresses.value.includes(addr);
+const isSelected = (addr: string): boolean =>
+  selectedAddresses.value.includes(addr);
 
 const handleCellClick = (e: MouseEvent, addr: string) => {
   if (e.shiftKey && selectedAddresses.value.length) {
@@ -93,7 +96,8 @@ const handleKeyDown = (e: KeyboardEvent) => {
     }
     case "ArrowRight": {
       const colNum = col.charCodeAt(0) - 64;
-      if (colNum < template.value.colCount) target = `${colToLetter(colNum + 1)}${row}`;
+      if (colNum < template.value.colCount)
+        target = `${colToLetter(colNum + 1)}${row}`;
       break;
     }
     case "Delete":
@@ -125,7 +129,9 @@ const handleMouseDown = (e: MouseEvent, addr: string) => {
 
 const onMouseMove = (e: MouseEvent) => {
   if (!dragStart.value) return;
-  const target = (e.target as HTMLElement)?.closest("td")?.getAttribute("data-addr");
+  const target = (e.target as HTMLElement)
+    ?.closest("td")
+    ?.getAttribute("data-addr");
   if (target && target !== dragEnd.value) {
     dragEnd.value = target;
     props.designer.selectRange(dragStart.value, target);
@@ -140,9 +146,19 @@ const onMouseUp = () => {
 };
 
 // 行列调整
-const resizing = ref<{ type: "row" | "col"; index: number; startPos: number; startSize: number } | null>(null);
+const resizing = ref<{
+  type: "row" | "col";
+  index: number;
+  startPos: number;
+  startSize: number;
+} | null>(null);
 
-const startResize = (e: MouseEvent, type: "row" | "col", index: number, currentSize: number) => {
+const startResize = (
+  e: MouseEvent,
+  type: "row" | "col",
+  index: number,
+  currentSize: number,
+) => {
   e.stopPropagation();
   resizing.value = {
     type,
@@ -156,7 +172,9 @@ const startResize = (e: MouseEvent, type: "row" | "col", index: number, currentS
 
 const onResizeMove = (e: MouseEvent) => {
   if (!resizing.value) return;
-  const delta = (resizing.value.type === "row" ? e.clientY : e.clientX) - resizing.value.startPos;
+  const delta =
+    (resizing.value.type === "row" ? e.clientY : e.clientX) -
+    resizing.value.startPos;
   const newSize = Math.max(15, resizing.value.startSize + delta);
   if (resizing.value.type === "row") {
     props.designer.setRowHeight(resizing.value.index, newSize);
@@ -178,7 +196,7 @@ const contextMenu = ref<{
   y: number;
   type: "row" | "col" | "cell";
   index: number;
-  addr: string
+  addr: string;
 }>({
   visible: false,
   x: 0,
@@ -188,9 +206,21 @@ const contextMenu = ref<{
   addr: "",
 });
 
-const handleContextMenu = (e: MouseEvent, type: "row" | "col" | "cell", index: number, addr: string = "") => {
+const handleContextMenu = (
+  e: MouseEvent,
+  type: "row" | "col" | "cell",
+  index: number,
+  addr: string = "",
+) => {
   e.preventDefault();
-  contextMenu.value = {visible: true, x: e.clientX, y: e.clientY, type, index, addr};
+  contextMenu.value = {
+    visible: true,
+    x: e.clientX,
+    y: e.clientY,
+    type,
+    index,
+    addr,
+  };
 };
 
 const closeContextMenu = () => {
@@ -216,55 +246,71 @@ const handleDeleteCol = () => {
 
 // 行列表头
 const colHeaders = computed(() =>
-    Array.from({length: template.value.colCount}, (_, i) => colToLetter(i + 1)),
+  Array.from({ length: template.value.colCount }, (_, i) => colToLetter(i + 1)),
 );
 const rowHeaders = computed(() =>
-    Array.from({length: template.value.rowCount}, (_, i) => i + 1),
+  Array.from({ length: template.value.rowCount }, (_, i) => i + 1),
 );
 </script>
 
 <template>
-  <div class="report-canvas-wrapper" @click="closeContextMenu" tabindex="0" @keydown="handleKeyDown">
+  <div
+    class="report-canvas-wrapper"
+    @click="closeContextMenu"
+    tabindex="0"
+    @keydown="handleKeyDown"
+  >
     <div class="report-canvas" @click.self="designer.clearSelection()">
       <table class="report-grid">
         <colgroup>
-          <col style="width: 36px"/>
+          <col style="width: 36px" />
           <col
-              v-for="c in template.columns"
-              :key="c.index"
-              :style="{ width: c.width + 'px' }"
+            v-for="c in template.columns"
+            :key="c.index"
+            :style="{ width: c.width + 'px' }"
           />
         </colgroup>
         <thead>
-        <tr>
-          <th class="corner"></th>
-          <th
+          <tr>
+            <th class="corner"></th>
+            <th
               v-for="ch in colHeaders"
               :key="ch"
               class="col-header"
-              @contextmenu="handleContextMenu($event, 'col', colHeaders.indexOf(ch) + 1)"
-          >
-            {{ ch }}
-            <div
+              @contextmenu="
+                handleContextMenu($event, 'col', colHeaders.indexOf(ch) + 1)
+              "
+            >
+              {{ ch }}
+              <div
                 class="resize-handle resize-col"
-                @mousedown="startResize($event, 'col', colHeaders.indexOf(ch) + 1, template.columns[colHeaders.indexOf(ch)].width)"
-            ></div>
-          </th>
-        </tr>
+                @mousedown="
+                  startResize(
+                    $event,
+                    'col',
+                    colHeaders.indexOf(ch) + 1,
+                    template.columns[colHeaders.indexOf(ch)].width,
+                  )
+                "
+              ></div>
+            </th>
+          </tr>
         </thead>
         <tbody>
-        <tr v-for="r in rowHeaders" :key="r">
-          <th
+          <tr v-for="r in rowHeaders" :key="r">
+            <th
               class="row-header"
               @contextmenu="handleContextMenu($event, 'row', r)"
-          >
-            {{ r }}
-            <div
+            >
+              {{ r }}
+              <div
                 class="resize-handle resize-row"
-                @mousedown="startResize($event, 'row', r, template.rows[r-1].height)"
-            ></div>
-          </th>
-          <td
+                @mousedown="
+                  startResize($event, 'row', r, template.rows[r - 1].height)
+                "
+              ></div>
+            </th>
+            <td
               v-for="c in colHeaders"
               :key="c + r"
               :data-addr="c + r"
@@ -275,8 +321,8 @@ const rowHeaders = computed(() =>
               @dblclick="handleCellDoubleClick(c + r)"
               @mousedown="handleMouseDown($event, c + r)"
               @contextmenu="handleContextMenu($event, 'cell', r, c + r)"
-          >
-            <input
+            >
+              <input
                 v-if="editingAddress === c + r"
                 :value="cellDisplay(c + r)"
                 @input="handleInput($event, c + r)"
@@ -285,34 +331,50 @@ const rowHeaders = computed(() =>
                 class="cell-input"
                 ref="inputRef"
                 autofocus
-            />
-            <span v-else class="cell-text">{{ cellDisplay(c + r) }}</span>
-          </td>
-        </tr>
+              />
+              <span v-else class="cell-text">{{ cellDisplay(c + r) }}</span>
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
 
     <!-- 右键菜单 -->
     <div
-        v-if="contextMenu.visible"
-        class="context-menu"
-        :style="{ left: contextMenu.x + 'px', top: contextMenu.y + 'px' }"
+      v-if="contextMenu.visible"
+      class="context-menu"
+      :style="{ left: contextMenu.x + 'px', top: contextMenu.y + 'px' }"
     >
       <template v-if="contextMenu.type === 'row'">
-        <div class="menu-item" @click="handleInsertRow">{{ i18n('report.canvas.insertRow') }}</div>
-        <div class="menu-item" @click="handleDeleteRow">{{ i18n('report.canvas.deleteRow') }}</div>
+        <div class="menu-item" @click="handleInsertRow">
+          {{ i18n("report.canvas.insertRow") }}
+        </div>
+        <div class="menu-item" @click="handleDeleteRow">
+          {{ i18n("report.canvas.deleteRow") }}
+        </div>
       </template>
       <template v-else-if="contextMenu.type === 'col'">
-        <div class="menu-item" @click="handleInsertCol">{{ i18n('report.canvas.insertCol') }}</div>
-        <div class="menu-item" @click="handleDeleteCol">{{ i18n('report.canvas.deleteCol') }}</div>
+        <div class="menu-item" @click="handleInsertCol">
+          {{ i18n("report.canvas.insertCol") }}
+        </div>
+        <div class="menu-item" @click="handleDeleteCol">
+          {{ i18n("report.canvas.deleteCol") }}
+        </div>
       </template>
       <template v-else>
-        <div class="menu-item" @click="designer.copyCells()">{{ i18n('report.toolbar.copy') }}</div>
-        <div class="menu-item" @click="designer.deleteCells()">{{ i18n('report.toolbar.delete') }}</div>
+        <div class="menu-item" @click="designer.copyCells()">
+          {{ i18n("report.toolbar.copy") }}
+        </div>
+        <div class="menu-item" @click="designer.deleteCells()">
+          {{ i18n("report.toolbar.delete") }}
+        </div>
         <div class="menu-divider"></div>
-        <div class="menu-item" @click="designer.mergeCells()">{{ i18n('report.toolbar.merge') }}</div>
-        <div class="menu-item" @click="designer.unmergeCells()">{{ i18n('report.toolbar.unmerge') }}</div>
+        <div class="menu-item" @click="designer.mergeCells()">
+          {{ i18n("report.toolbar.merge") }}
+        </div>
+        <div class="menu-item" @click="designer.unmergeCells()">
+          {{ i18n("report.toolbar.unmerge") }}
+        </div>
       </template>
     </div>
   </div>
@@ -322,7 +384,7 @@ const rowHeaders = computed(() =>
 .report-canvas-wrapper {
   flex: 1;
   overflow: auto;
-  background: #FFFFFF;
+  background: #ffffff;
   position: relative;
   outline: none;
 
@@ -335,14 +397,14 @@ const rowHeaders = computed(() =>
 .report-grid {
   border-collapse: collapse;
   table-layout: fixed;
-  font-family: 'Microsoft YaHei', sans-serif;
+  font-family: "Microsoft YaHei", sans-serif;
   font-size: 11pt;
 
   .corner {
     width: 36px;
     height: 24px;
-    background: #F5F5F5;
-    border: 1px solid #DDD;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
     position: sticky;
     top: 0;
     left: 0;
@@ -352,8 +414,8 @@ const rowHeaders = computed(() =>
   .col-header {
     min-width: 60px;
     height: 24px;
-    background: #F5F5F5;
-    border: 1px solid #DDD;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
     text-align: center;
     font-weight: normal;
     color: #666;
@@ -365,8 +427,8 @@ const rowHeaders = computed(() =>
 
   .row-header {
     width: 36px;
-    background: #F5F5F5;
-    border: 1px solid #DDD;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
     text-align: center;
     font-weight: normal;
     color: #666;
@@ -377,7 +439,7 @@ const rowHeaders = computed(() =>
   }
 
   .report-cell {
-    border: 1px solid #E0E0E0;
+    border: 1px solid #e0e0e0;
     padding: 2px 4px;
     height: 28px;
     cursor: cell;

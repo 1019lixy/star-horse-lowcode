@@ -1,11 +1,11 @@
 <script setup lang="ts" name="StarHorseDrawer">
-import {computed, onMounted, provide, reactive, ref, watch,} from "vue";
-import {useZIndex} from "element-plus";
-import {i18n} from "@/lang";
-import {UserFuncInfo} from "@/components/types/PageFieldInfo";
+import { computed, onMounted, provide, reactive, ref, watch } from "vue";
+import { useZIndex } from "element-plus";
+import { i18n } from "@/lang";
+import { UserFuncInfo } from "@/components/types/PageFieldInfo";
 
-import {compKey} from "@/api/system";
-import {isMobile} from "@/api/device";
+import { compKey } from "@/api/system";
+import { isMobile } from "@/api/device";
 
 const emits = defineEmits([
   "merge",
@@ -18,33 +18,33 @@ const emits = defineEmits([
   "update:modelValue",
 ]);
 const props = defineProps({
-  dialogVisible: {type: Boolean, default: false},
-  modelValue: {type: Boolean, default: false},
-  isShowReset: {type: Boolean, default: true},
-  isShowSave: {type: Boolean, default: false},
-  isShowBtnContinue: {type: Boolean, default: false},
-  resizable: {type: Boolean, default: true},
-  modal: {type: Boolean, default: true},
+  dialogVisible: { type: Boolean, default: false },
+  modelValue: { type: Boolean, default: false },
+  isShowReset: { type: Boolean, default: true },
+  isShowSave: { type: Boolean, default: false },
+  isShowBtnContinue: { type: Boolean, default: false },
+  resizable: { type: Boolean, default: true },
+  modal: { type: Boolean, default: true },
   //'rtl' | 'ltr' | 'ttb' | 'btt'
-  direction: {type: String, default: "rtl"},
-  boxWidth: {type: String, default: "60%"},
-  isBatch: {type: Boolean, default: false},
-  fullScreen: {type: Boolean, default: false},
-  hideFullScreenIcon: {type: Boolean, default: false},
-  hideMinimizeIcon: {type: Boolean, default: false},
+  direction: { type: String, default: "rtl" },
+  boxWidth: { type: String, default: "60%" },
+  isBatch: { type: Boolean, default: false },
+  fullScreen: { type: Boolean, default: false },
+  hideFullScreenIcon: { type: Boolean, default: false },
+  hideMinimizeIcon: { type: Boolean, default: false },
   //自定义提交
-  selfFunc: {type: Boolean, default: false},
+  selfFunc: { type: Boolean, default: false },
   //自定义关闭
-  selfClose: {type: Boolean, default: false},
-  btnText: {type: String},
-  userBtn: {type: Array<UserFuncInfo>, default: []},
-  btnTextContinue: {type: String, default: i18n("common.submitAndContinue")},
-  title: {type: String, default: ""},
-  source: {type: Number, default: 1},
-  compSize: {type: String, default: "default"},
+  selfClose: { type: Boolean, default: false },
+  btnText: { type: String },
+  userBtn: { type: Array<UserFuncInfo>, default: [] },
+  btnTextContinue: { type: String, default: i18n("common.submitAndContinue") },
+  title: { type: String, default: "" },
+  source: { type: Number, default: 1 },
+  compSize: { type: String, default: "default" },
   /** 手动指定 z-index；0 表示打开时自动计算（取当前页面最高弹层 +1） */
-  zIndex: {type: Number, default: 0},
-  appendTo: {type: String, default: "body"},
+  zIndex: { type: Number, default: 0 },
+  appendTo: { type: String, default: "body" },
 });
 let windowsType = computed({
   get() {
@@ -55,10 +55,12 @@ let windowsType = computed({
     // 两个事件都触发，外部两种v-model写法都能更新
     emits("update:dialogVisible", val);
     emits("update:modelValue", val);
-  }
+  },
 });
 let isFullScreen = ref<boolean>(false);
-const drawerWidth = computed(() => (isFullScreen.value || isMobile) ? "100%" : props.boxWidth);
+const drawerWidth = computed(() =>
+  isFullScreen.value || isMobile ? "100%" : props.boxWidth,
+);
 const _compKey = compKey;
 let isMinimized = ref<boolean>(false);
 let wasFullScreenBeforeMinimize = ref<boolean>(false);
@@ -80,7 +82,6 @@ const beforeClose = () => {
   if (props.selfClose) {
     return;
   }
-
 };
 // 新增：安全调用函数的方法
 const callFunc = (func: any) => {
@@ -95,14 +96,13 @@ const callFunc = (func: any) => {
 /** 当前弹窗的 z-index（打开前计算） */
 const activeZIndex = ref<number | undefined>(undefined);
 /** 复用 EP 全局 z-index 计数器，确保与 el-drawer / el-popover 等弹层正确叠加 */
-const {nextZIndex} = useZIndex();
+const { nextZIndex } = useZIndex();
 
 const open = () => {
   const t = (performance.now() - firstOpenStart).toFixed(1);
   console.log(`[StarHorseDrawer] el-drawer @open 触发 t=${t}ms`);
   emits("open");
 };
-
 
 onMounted(() => {
   // 手机模式默认最大化
@@ -136,155 +136,152 @@ const operation = (funcName: any, type: string) => {
   }
 };
 watch(
-    () => windowsType.value,
-    (val: boolean) => {
-      if (val) {
-        activeZIndex.value = props.zIndex > 0 ? props.zIndex : nextZIndex();
-        isMinimized.value = false;
-        if (isMobile) {
-          isFullScreen.value = true;
-        }
-
+  () => windowsType.value,
+  (val: boolean) => {
+    if (val) {
+      activeZIndex.value = props.zIndex > 0 ? props.zIndex : nextZIndex();
+      isMinimized.value = false;
+      if (isMobile) {
+        isFullScreen.value = true;
       }
-    },
-    {
-      immediate: true,
-    },
+    }
+  },
+  {
+    immediate: true,
+  },
 );
 </script>
 <template>
   <Teleport to="body">
     <div
-        v-if="isMinimized && windowsType"
-        class="dialog-minimized-bar"
-        @click="restoreFromMinimize"
-        :title="i18n('dialog.restore')"
+      v-if="isMinimized && windowsType"
+      class="dialog-minimized-bar"
+      @click="restoreFromMinimize"
+      :title="i18n('dialog.restore')"
     >
       <svg
-          viewBox="0 0 16 16"
-          width="16"
-          height="16"
-          fill="currentColor"
-          class="minimized-icon"
+        viewBox="0 0 16 16"
+        width="16"
+        height="16"
+        fill="currentColor"
+        class="minimized-icon"
       >
-        <path d="M3 3h10v10H3V3zm1 1v8h8V4H4z"/>
-        <path d="M6 6h4v4H6V6z" opacity="0.5"/>
+        <path d="M3 3h10v10H3V3zm1 1v8h8V4H4z" />
+        <path d="M6 6h4v4H6V6z" opacity="0.5" />
       </svg>
       <span class="minimized-title">{{
-          title ||
-          (source == 3 ? i18n("dialog.viewTitle") : i18n("dialog.editTitle"))
-        }}</span>
+        title ||
+        (source == 3 ? i18n("dialog.viewTitle") : i18n("dialog.editTitle"))
+      }}</span>
     </div>
   </Teleport>
 
   <div class="di animated animate__fadeIn" v-show="!isMinimized" ref="diRef">
     <el-drawer
-        :append-to-body="false"
-        :append-to="appendTo"
-        :destroy-on-close="true"
-        :close-on-click-modal="false"
-        :close-on-press-escape="false"
-        :lock-scroll="true"
-        class="dialog-settings"
-        :show-close="false"
-        :resizable="resizable && !isFullScreen && !isMobile"
-        :modal="modal"
-        :direction="direction"
-        v-model="windowsType"
-        @close="beforeClose"
-        @open="open"
-        :size="drawerWidth"
-        :zIndex="activeZIndex"
-        :style="dialogStyle"
+      :append-to-body="false"
+      :append-to="appendTo"
+      :destroy-on-close="true"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      :lock-scroll="true"
+      class="dialog-settings"
+      :show-close="false"
+      :resizable="resizable && !isFullScreen && !isMobile"
+      :modal="modal"
+      :direction="direction"
+      v-model="windowsType"
+      @close="beforeClose"
+      @open="open"
+      :size="drawerWidth"
+      :zIndex="activeZIndex"
+      :style="dialogStyle"
     >
       <template #header="{ close }">
         <h3 @dblclick="fullScreen">
           {{
             title ||
-            (source == 3
-                ? i18n("dialog.viewTitle")
-                : i18n("dialog.editTitle"))
+            (source == 3 ? i18n("dialog.viewTitle") : i18n("dialog.editTitle"))
           }}
         </h3>
         <div class="my-header">
           <template v-if="!isMobile">
             <el-button
-                style="
-                  background: var(--star-horse-style);
-                  color: var(--star-horse-white);
-                "
-                :size="compSize"
-                @click="minimize"
-                link
-                v-if="!hideMinimizeIcon"
-                :title="i18n('dialog.minimize')"
-            >
-              <svg
-                  viewBox="0 0 16 16"
-                  width="16"
-                  height="16"
-                  fill="currentColor"
-                  style="cursor: pointer"
-              >
-                <path
-                    d="M2 8h12"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    fill="none"
-                />
-              </svg>
-            </el-button>
-            <template v-if="!hideFullScreenIcon">
-              <el-button
-                  style="
-                    background: var(--star-horse-style);
-                    color: var(--star-horse-white);
-                  "
-                  :size="compSize"
-                  @click="fullScreen"
-                  link
-                  v-if="!!isFullScreen && resizable"
-                  :title="i18n('dialog.resize')"
-              >
-                <star-horse-icon
-                    icon-class="fullscreen-shrink"
-                    color="var(--star-horse-white)"
-                    cursor="pointer"
-                />
-              </el-button>
-              <el-button
-                  style="
-                    background: var(--star-horse-style);
-                    color: var(--star-horse-white);
-                  "
-                  :size="compSize"
-                  @click="fullScreen"
-                  link
-                  v-if="!isFullScreen && resizable"
-                  :title="i18n('dialog.fullScreen')"
-              >
-                <star-horse-icon
-                    icon-class="fullscreen-expand"
-                    color="var(--star-horse-white)"
-                    cursor="pointer"
-                />
-              </el-button>
-            </template>
-          </template>
-          <el-button
               style="
                 background: var(--star-horse-style);
                 color: var(--star-horse-white);
               "
               :size="compSize"
-              @click="close"
+              @click="minimize"
               link
-              :title="i18n('dialog.close')"
+              v-if="!hideMinimizeIcon"
+              :title="i18n('dialog.minimize')"
+            >
+              <svg
+                viewBox="0 0 16 16"
+                width="16"
+                height="16"
+                fill="currentColor"
+                style="cursor: pointer"
+              >
+                <path
+                  d="M2 8h12"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  fill="none"
+                />
+              </svg>
+            </el-button>
+            <template v-if="!hideFullScreenIcon">
+              <el-button
+                style="
+                  background: var(--star-horse-style);
+                  color: var(--star-horse-white);
+                "
+                :size="compSize"
+                @click="fullScreen"
+                link
+                v-if="!!isFullScreen && resizable"
+                :title="i18n('dialog.resize')"
+              >
+                <star-horse-icon
+                  icon-class="fullscreen-shrink"
+                  color="var(--star-horse-white)"
+                  cursor="pointer"
+                />
+              </el-button>
+              <el-button
+                style="
+                  background: var(--star-horse-style);
+                  color: var(--star-horse-white);
+                "
+                :size="compSize"
+                @click="fullScreen"
+                link
+                v-if="!isFullScreen && resizable"
+                :title="i18n('dialog.fullScreen')"
+              >
+                <star-horse-icon
+                  icon-class="fullscreen-expand"
+                  color="var(--star-horse-white)"
+                  cursor="pointer"
+                />
+              </el-button>
+            </template>
+          </template>
+          <el-button
+            style="
+              background: var(--star-horse-style);
+              color: var(--star-horse-white);
+            "
+            :size="compSize"
+            @click="close"
+            link
+            :title="i18n('dialog.close')"
           >
             <star-horse-icon
-                icon-class="close"
-                color="var(--star-horse-white)"
-                cursor="pointer"
+              icon-class="close"
+              color="var(--star-horse-white)"
+              cursor="pointer"
             />
           </el-button>
         </div>
@@ -297,106 +294,106 @@ watch(
         </div>
       </div>
       <template #footer>
-          <span
-              class="dialog-footer"
-              :class="{ 'app-btn': false }"
-              :style="{'justifyContent': isFullScreen?'center':'end'}"
-              v-if="source != 3"
+        <span
+          class="dialog-footer"
+          :class="{ 'app-btn': false }"
+          :style="{ justifyContent: isFullScreen ? 'center' : 'end' }"
+          v-if="source != 3"
+        >
+          <slot name="extend"></slot>
+          <el-button
+            @click="operation('merge', 'close')"
+            style="
+              background: var(--star-horse-style);
+              color: var(--star-horse-white);
+            "
+            :size="compSize"
           >
-            <slot name="extend"></slot>
-            <el-button
-                @click="operation('merge', 'close')"
-                style="
-                background: var(--star-horse-style);
-                color: var(--star-horse-white);
-              "
-                :size="compSize"
-            >
-              <star-horse-icon
-                  icon-class="save"
-                  cursor="pointer"
-                  style="color: var(--star-horse-white)"
-              />
-              {{ btnText ?? i18n("dialog.submit") }}
-            </el-button>
-            <el-button
-                @click="operation('merge', 'continue')"
-                style="
-                background: var(--star-horse-style);
-                color: var(--star-horse-white);
-              "
-                :size="compSize"
-                v-if="isShowBtnContinue"
-            >
-              <star-horse-icon
-                  icon-class="save_continue"
-                  cursor="pointer"
-                  style="color: var(--star-horse-white)"
-              />
-              {{ i18n("dialog.submitContinue") }}</el-button
-            >
-            <el-button
-                @click="operation('mergeDraft', 'close')"
-                :size="compSize"
-                link
-                style="
-                background: var(--star-horse-style);
-                color: var(--star-horse-white);
-              "
-                v-if="isShowSave"
-            >
-              <star-horse-icon icon-class="short_save" cursor="pointer"/>{{
-                i18n("dialog.save")
-              }}</el-button
-            >
-            <el-button
-                @click="operation('mergeDraft', 'continue')"
-                :size="compSize"
-                link
-                style="
-                background: var(--star-horse-style);
-                color: var(--star-horse-white);
-              "
-                v-if="isShowSave && isShowBtnContinue"
-            >
-              <star-horse-icon icon-class="save" cursor="pointer"/>{{
-                i18n("dialog.saveContinue")
-              }}</el-button
-            >
-            <el-button
-                v-for="item in userBtn"
-                :key="_compKey(item, item.authority)"
-                @click="callFunc(item.funcName)"
-                :disabled="item.disabled ?? false"
-                :style="{
-                background: item.disabled
-                  ? 'var(--star-horse-disable)'
-                  : 'var(--star-horse-style)',
-                color: 'var(--star-horse-white)',
-              }"
-                :size="compSize"
-            >
-              <star-horse-icon
-                  :icon-class="item.icon"
-                  cursor="pointer"
-                  style="color: var(--star-horse-white)"
-              />
-              {{ item.btnName }}
-            </el-button>
-            <el-button
-                @click="operation('resetForm', 'reset')"
-                :size="compSize"
-                link
-                v-if="isShowReset"
-            >
-              <star-horse-icon
-                  icon-class="undo"
-                  cursor="pointer"
-                  style="color: var(--star-horse-style)"
-              />
-              {{ i18n("dialog.reset") }}</el-button
-            >
-          </span>
+            <star-horse-icon
+              icon-class="save"
+              cursor="pointer"
+              style="color: var(--star-horse-white)"
+            />
+            {{ btnText ?? i18n("dialog.submit") }}
+          </el-button>
+          <el-button
+            @click="operation('merge', 'continue')"
+            style="
+              background: var(--star-horse-style);
+              color: var(--star-horse-white);
+            "
+            :size="compSize"
+            v-if="isShowBtnContinue"
+          >
+            <star-horse-icon
+              icon-class="save_continue"
+              cursor="pointer"
+              style="color: var(--star-horse-white)"
+            />
+            {{ i18n("dialog.submitContinue") }}</el-button
+          >
+          <el-button
+            @click="operation('mergeDraft', 'close')"
+            :size="compSize"
+            link
+            style="
+              background: var(--star-horse-style);
+              color: var(--star-horse-white);
+            "
+            v-if="isShowSave"
+          >
+            <star-horse-icon icon-class="short_save" cursor="pointer" />{{
+              i18n("dialog.save")
+            }}</el-button
+          >
+          <el-button
+            @click="operation('mergeDraft', 'continue')"
+            :size="compSize"
+            link
+            style="
+              background: var(--star-horse-style);
+              color: var(--star-horse-white);
+            "
+            v-if="isShowSave && isShowBtnContinue"
+          >
+            <star-horse-icon icon-class="save" cursor="pointer" />{{
+              i18n("dialog.saveContinue")
+            }}</el-button
+          >
+          <el-button
+            v-for="item in userBtn"
+            :key="_compKey(item, item.authority)"
+            @click="callFunc(item.funcName)"
+            :disabled="item.disabled ?? false"
+            :style="{
+              background: item.disabled
+                ? 'var(--star-horse-disable)'
+                : 'var(--star-horse-style)',
+              color: 'var(--star-horse-white)',
+            }"
+            :size="compSize"
+          >
+            <star-horse-icon
+              :icon-class="item.icon"
+              cursor="pointer"
+              style="color: var(--star-horse-white)"
+            />
+            {{ item.btnName }}
+          </el-button>
+          <el-button
+            @click="operation('resetForm', 'reset')"
+            :size="compSize"
+            link
+            v-if="isShowReset"
+          >
+            <star-horse-icon
+              icon-class="undo"
+              cursor="pointer"
+              style="color: var(--star-horse-style)"
+            />
+            {{ i18n("dialog.reset") }}</el-button
+          >
+        </span>
         <slot name="footer"></slot>
       </template>
     </el-drawer>

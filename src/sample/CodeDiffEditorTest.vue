@@ -1,8 +1,8 @@
 <script setup lang="ts" name="CodeDiffEditorTest">
-import {computed, ref} from "vue";
-import {StarHorseDiffEditor} from "@/components/system/code-editor/index";
-import {i18n} from "@/lang/index";
-import {ElMessage} from "element-plus";
+import { computed, ref } from "vue";
+import { StarHorseDiffEditor } from "@/components/system/code-editor/index";
+import { i18n } from "@/lang/index";
+import { ElMessage } from "element-plus";
 
 const diffVisible = ref(false);
 const originalContent = ref("");
@@ -21,8 +21,8 @@ const diffEditorRef = ref<InstanceType<typeof StarHorseDiffEditor>>();
 
 const hasChanges = computed(() => remainingChanges.value > 0);
 const allResolved = computed(
-    () =>
-        diffVisible.value && totalChanges.value > 0 && remainingChanges.value === 0,
+  () =>
+    diffVisible.value && totalChanges.value > 0 && remainingChanges.value === 0,
 );
 
 const detectLang = (name: string): string => {
@@ -154,9 +154,9 @@ const handleSubmit = () => {
 
 const detectConflictMarkers = (text: string): boolean => {
   return (
-      text.includes("<<<<<<<") &&
-      text.includes(">>>>>>>") &&
-      text.includes("=======")
+    text.includes("<<<<<<<") &&
+    text.includes(">>>>>>>") &&
+    text.includes("=======")
   );
 };
 
@@ -182,18 +182,18 @@ const handleDiffClose = () => {
         <div class="flex items-center justify-between">
           <span class="font-medium">{{ i18n("diff.original") }}</span>
           <span v-if="originalFileName" class="text-sm text-gray-500">{{
-              originalFileName
-            }}</span>
+            originalFileName
+          }}</span>
         </div>
         <input
-            ref="originalInputRef"
-            type="file"
-            class="hidden"
-            @change="handleOriginalFile"
+          ref="originalInputRef"
+          type="file"
+          class="hidden"
+          @change="handleOriginalFile"
         />
         <button
-            class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
-            @click="originalInputRef?.click()"
+          class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+          @click="originalInputRef?.click()"
         >
           选择文件
         </button>
@@ -207,18 +207,18 @@ const handleDiffClose = () => {
         <div class="flex items-center justify-between">
           <span class="font-medium">{{ i18n("diff.modified") }}</span>
           <span v-if="modifiedFileName" class="text-sm text-gray-500">{{
-              modifiedFileName
-            }}</span>
+            modifiedFileName
+          }}</span>
         </div>
         <input
-            ref="modifiedInputRef"
-            type="file"
-            class="hidden"
-            @change="handleModifiedFile"
+          ref="modifiedInputRef"
+          type="file"
+          class="hidden"
+          @change="handleModifiedFile"
         />
         <button
-            class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
-            @click="modifiedInputRef?.click()"
+          class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+          @click="modifiedInputRef?.click()"
         >
           选择文件
         </button>
@@ -231,9 +231,9 @@ const handleDiffClose = () => {
     <!-- 开始对比按钮 -->
     <div class="flex justify-center">
       <button
-          class="px-6 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
-          :disabled="!originalContent && !modifiedContent"
-          @click="startDiff"
+        class="px-6 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
+        :disabled="!originalContent && !modifiedContent"
+        @click="startDiff"
       >
         开始对比
       </button>
@@ -245,26 +245,26 @@ const handleDiffClose = () => {
       <div class="flex items-center gap-3 p-3 bg-gray-50 border rounded">
         <span class="text-sm font-medium text-gray-700">差异解决：</span>
         <button
-            class="px-4 py-1.5 bg-green-500 text-white rounded hover:bg-green-600 transition text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-            :disabled="!hasChanges"
-            @click="handleUseMine"
-            title="保留修改侧（右侧）的内容"
+          class="px-4 py-1.5 bg-green-500 text-white rounded hover:bg-green-600 transition text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+          :disabled="!hasChanges"
+          @click="handleUseMine"
+          title="保留修改侧（右侧）的内容"
         >
           {{ i18n("diff.useMine") }}
         </button>
         <button
-            class="px-4 py-1.5 bg-blue-500 text-white rounded hover:bg-blue-600 transition text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-            :disabled="!hasChanges"
-            @click="handleUseTheirs"
-            title="用原始侧（左侧）的内容替换"
+          class="px-4 py-1.5 bg-blue-500 text-white rounded hover:bg-blue-600 transition text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+          :disabled="!hasChanges"
+          @click="handleUseTheirs"
+          title="用原始侧（左侧）的内容替换"
         >
           {{ i18n("diff.useTheirs") }}
         </button>
         <button
-            class="px-4 py-1.5 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-            :disabled="!hasChanges"
-            @click="handleMerge"
-            title="保留双方内容"
+          class="px-4 py-1.5 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+          :disabled="!hasChanges"
+          @click="handleMerge"
+          title="保留双方内容"
         >
           {{ i18n("diff.merge") }}
         </button>
@@ -273,29 +273,29 @@ const handleDiffClose = () => {
 
         <!-- 导航按钮 -->
         <button
-            class="px-2 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-            :disabled="!hasChanges"
-            @click="handlePrevChange"
-            title="上一个差异"
+          class="px-2 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+          :disabled="!hasChanges"
+          @click="handlePrevChange"
+          title="上一个差异"
         >
           ↑
         </button>
         <button
-            class="px-2 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-            :disabled="!hasChanges"
-            @click="handleNextChange"
-            title="下一个差异"
+          class="px-2 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+          :disabled="!hasChanges"
+          @click="handleNextChange"
+          title="下一个差异"
         >
           ↓
         </button>
 
-        <div class="flex-1"/>
+        <div class="flex-1" />
 
         <!-- 差异状态 -->
         <span
-            v-if="totalChanges > 0"
-            class="text-sm"
-            :class="hasChanges ? 'text-red-500' : 'text-green-500'"
+          v-if="totalChanges > 0"
+          class="text-sm"
+          :class="hasChanges ? 'text-red-500' : 'text-green-500'"
         >
           <template v-if="hasChanges">
             剩余 {{ remainingChanges }} 处差异
@@ -307,14 +307,14 @@ const handleDiffClose = () => {
 
         <!-- 提交按钮 -->
         <button
-            class="px-4 py-1.5 rounded text-sm transition"
-            :class="
+          class="px-4 py-1.5 rounded text-sm transition"
+          :class="
             allResolved
               ? 'bg-purple-500 text-white hover:bg-purple-600'
               : 'bg-gray-300 text-gray-500 cursor-not-allowed'
           "
-            :disabled="!allResolved"
-            @click="handleSubmit"
+          :disabled="!allResolved"
+          @click="handleSubmit"
         >
           {{ i18n("diff.submit") }}
         </button>
@@ -323,19 +323,19 @@ const handleDiffClose = () => {
       <!-- Diff编辑器 -->
       <div class="flex-1 min-h-0">
         <StarHorseDiffEditor
-            ref="diffEditorRef"
-            :original="originalContent"
-            :modified="modifiedContent"
-            :language="diffLanguage"
-            :title="i18n('diff.title')"
-            :original-label="originalFileName || i18n('diff.original')"
-            :modified-label="modifiedFileName || i18n('diff.modified')"
-            :conflict-mode="conflictMode"
-            theme="vs-dark"
-            height="100%"
-            @save="handleDiffSave"
-            @close="handleDiffClose"
-            @conflict-change="handleConflictChange"
+          ref="diffEditorRef"
+          :original="originalContent"
+          :modified="modifiedContent"
+          :language="diffLanguage"
+          :title="i18n('diff.title')"
+          :original-label="originalFileName || i18n('diff.original')"
+          :modified-label="modifiedFileName || i18n('diff.modified')"
+          :conflict-mode="conflictMode"
+          theme="vs-dark"
+          height="100%"
+          @save="handleDiffSave"
+          @close="handleDiffClose"
+          @conflict-change="handleConflictChange"
         />
       </div>
     </div>
@@ -344,16 +344,15 @@ const handleDiffClose = () => {
     <div v-if="resolvedContent && !diffVisible" class="border rounded p-3">
       <div class="flex items-center justify-between mb-2">
         <span class="text-sm font-medium text-green-600">{{
-            i18n("diff.resolved")
-          }}</span>
+          i18n("diff.resolved")
+        }}</span>
         <span class="text-xs text-gray-400"
-        >{{ resolvedContent.length }} 字符</span
+          >{{ resolvedContent.length }} 字符</span
         >
       </div>
       <pre
-          class="text-xs bg-gray-50 p-2 rounded max-h-40 overflow-auto whitespace-pre-wrap"
-      >{{ resolvedContent }}</pre
-      >
+        class="text-xs bg-gray-50 p-2 rounded max-h-40 overflow-auto whitespace-pre-wrap"
+        >{{ resolvedContent }}</pre>
     </div>
   </div>
 </template>

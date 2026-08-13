@@ -1,5 +1,5 @@
 <script setup lang="ts" name="CodeEditorTest">
-import {ref} from "vue";
+import { ref } from "vue";
 import StarHorseCodeEditor from "@/components/system/StarHorseCodeEditor.vue";
 
 const readOnly = ref(false);
@@ -90,10 +90,10 @@ const apiConfig = {
 <template>
   <div class="flex flex-col h-full p-4 gap-4">
     <StarHorseCodeEditor
-        :api="apiConfig"
-        :read-only="readOnly"
-        box-height="100%"
-        @change="handleChange"
+      :api="apiConfig"
+      :read-only="readOnly"
+      box-height="100%"
+      @change="handleChange"
     />
   </div>
 </template>

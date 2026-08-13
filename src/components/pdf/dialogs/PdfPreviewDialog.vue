@@ -1,16 +1,16 @@
 <script setup lang="ts" name="PdfPreviewDialog">
-import {computed, ref} from "vue";
-import {ElMessage} from "element-plus";
-import {i18n} from "@/lang";
-import type {PdfDesigner} from "../composables/usePdfDesigner";
-import {renderPrintableHtml} from "../renderers/PdfHtmlRenderer";
-import {StarHorsePanel} from "@/components/comp";
+import { computed, ref } from "vue";
+import { ElMessage } from "element-plus";
+import { i18n } from "@/lang";
+import type { PdfDesigner } from "../composables/usePdfDesigner";
+import { renderPrintableHtml } from "../renderers/PdfHtmlRenderer";
+import { StarHorsePanel } from "@/components/comp";
 
 const props = defineProps<{
   visible: boolean;
   designer: PdfDesigner;
   data?: Record<string, any>;
-  dialogType?:"dialog"|"drawer";
+  dialogType?: "dialog" | "drawer";
 }>();
 
 const emit = defineEmits<{
@@ -24,7 +24,9 @@ const innerVisible = computed({
 
 const iframeRef = ref<HTMLIFrameElement | null>(null);
 
-const previewHtml = computed(() => renderPrintableHtml(props.designer.state, props.data));
+const previewHtml = computed(() =>
+  renderPrintableHtml(props.designer.state, props.data),
+);
 
 /** 渲染 iframe */
 const renderPreview = () => {
@@ -50,7 +52,9 @@ const handlePrint = () => {
 };
 
 const handleExportHtml = () => {
-  const blob = new Blob([previewHtml.value], {type: "text/html;charset=utf-8"});
+  const blob = new Blob([previewHtml.value], {
+    type: "text/html;charset=utf-8",
+  });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
@@ -66,43 +70,45 @@ const handleOpened = () => {
 
 <template>
   <star-horse-panel
-      :type="dialogType"
-      v-model="innerVisible"
-      :title="i18n('pdf.preview.title')"
-      box-width="80%"
-      box-height="80%"
-      :is-show-reset="false"
-      :is-show-save="false"
-      :self-func="true"
-      @open="handleOpened"
+    :type="dialogType"
+    v-model="innerVisible"
+    :title="i18n('pdf.preview.title')"
+    box-width="80%"
+    box-height="80%"
+    :is-show-reset="false"
+    :is-show-save="false"
+    :self-func="true"
+    @open="handleOpened"
   >
     <div class="pdf-preview-dialog">
       <div class="preview-toolbar">
         <el-button @click="handlePrint">
           <el-icon>
-            <Printer/>
+            <Printer />
           </el-icon>
           {{ i18n("pdf.btn.print") }}
         </el-button>
         <el-button @click="handleExportHtml">
           <el-icon>
-            <Download/>
+            <Download />
           </el-icon>
           {{ i18n("pdf.btn.exportHtml") }}
         </el-button>
       </div>
-      <iframe ref="iframeRef" class="preview-iframe"/>
+      <iframe ref="iframeRef" class="preview-iframe" />
     </div>
     <template #footer>
-      <el-button @click="innerVisible = false">{{ i18n("dialog.close") }}</el-button>
+      <el-button @click="innerVisible = false">{{
+        i18n("dialog.close")
+      }}</el-button>
     </template>
   </star-horse-panel>
 </template>
 
 <script lang="ts">
-import {Printer, Download} from "@element-plus/icons-vue";
+import { Printer, Download } from "@element-plus/icons-vue";
 
-export default {components: {Printer, Download}};
+export default { components: { Printer, Download } };
 </script>
 
 <style lang="scss" scoped>

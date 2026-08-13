@@ -1,13 +1,13 @@
 <script setup lang="ts" name="PdfTemplateDesigner">
-import {ref} from "vue";
-import {DesignerMobileShell} from "@/components/shared";
-import {usePdfDesigner} from "./composables/usePdfDesigner";
+import { ref } from "vue";
+import { DesignerMobileShell } from "@/components/shared";
+import { usePdfDesigner } from "./composables/usePdfDesigner";
 import PdfToolbar from "./panels/PdfToolbar.vue";
 import PdfElementPanel from "./panels/PdfElementPanel.vue";
 import PdfCanvas from "./panels/PdfCanvas.vue";
 import PdfPropertyPanel from "./panels/PdfPropertyPanel.vue";
 import PdfPreviewDialog from "./dialogs/PdfPreviewDialog.vue";
-import type {PdfTemplate} from "./types";
+import type { PdfTemplate } from "./types";
 
 const props = defineProps<{
   template?: PdfTemplate;
@@ -35,34 +35,31 @@ const handleSave = () => {
 <template>
   <div class="pdf-template-designer">
     <DesignerMobileShell
-        :panels="[
-                { key: 'elements', label: '元素', side: 'left', width: 220, min: 180 },
-                { key: 'props', label: '属性', side: 'right', width: 280, min: 220 },
-            ]"
+      :panels="[
+        { key: 'elements', label: '元素', side: 'left', width: 220, min: 180 },
+        { key: 'props', label: '属性', side: 'right', width: 280, min: 220 },
+      ]"
     >
       <template #toolbar>
         <pdf-toolbar
-            :designer="designer"
-            :readonly="readonly"
-            @save="handleSave"
-            @preview="previewVisible = true"
+          :designer="designer"
+          :readonly="readonly"
+          @save="handleSave"
+          @preview="previewVisible = true"
         />
       </template>
       <template #canvas>
-        <pdf-canvas :designer="designer" :readonly="readonly"/>
+        <pdf-canvas :designer="designer" :readonly="readonly" />
       </template>
       <template #panel-elements>
-        <pdf-element-panel :designer="designer" :readonly="readonly"/>
+        <pdf-element-panel :designer="designer" :readonly="readonly" />
       </template>
       <template #panel-props>
-        <pdf-property-panel :designer="designer" :readonly="readonly"/>
+        <pdf-property-panel :designer="designer" :readonly="readonly" />
       </template>
     </DesignerMobileShell>
 
-    <pdf-preview-dialog
-        v-model:visible="previewVisible"
-        :designer="designer"
-    />
+    <pdf-preview-dialog v-model:visible="previewVisible" :designer="designer" />
   </div>
 </template>
 

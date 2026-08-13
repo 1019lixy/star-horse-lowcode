@@ -4,10 +4,10 @@
  *
  * 新建 / 选择 / 删除 / 重命名（双击重命名）
  */
-import {ref} from "vue";
-import {i18n} from "@/lang";
-import {ElMessage, ElMessageBox} from "element-plus";
-import type {AiConversation} from "../types";
+import { ref } from "vue";
+import { i18n } from "@/lang";
+import { ElMessage, ElMessageBox } from "element-plus";
+import type { AiConversation } from "../types";
 
 const props = defineProps<{
   conversations: AiConversation[];
@@ -52,16 +52,15 @@ const handleCancelRename = (): void => {
 const handleDelete = (conv: AiConversation, ev: Event): void => {
   ev.stopPropagation();
   ElMessageBox.confirm(
-      i18n("aicopilot.conversation.confirmDelete"),
-      i18n("aicopilot.conversation.delete"),
-      {type: "warning"},
+    i18n("aicopilot.conversation.confirmDelete"),
+    i18n("aicopilot.conversation.delete"),
+    { type: "warning" },
   )
-      .then(() => {
-        emit("delete", conv.id);
-        ElMessage.success(i18n("aicopilot.message.conversationDeleted"));
-      })
-      .catch(() => {
-      });
+    .then(() => {
+      emit("delete", conv.id);
+      ElMessage.success(i18n("aicopilot.message.conversationDeleted"));
+    })
+    .catch(() => {});
 };
 
 const formatTime = (ts: number): string => {
@@ -79,14 +78,17 @@ void props;
 /** 内联 SVG 图标（替代 Element Plus 图标，减少依赖） */
 const icons: Record<string, string> = {
   plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>',
-  delete: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M5 6v14a2 2 0 002 2h10a2 2 0 002-2V6M10 11v6M14 11v6"/></svg>'
+  delete:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M5 6v14a2 2 0 002 2h10a2 2 0 002-2V6M10 11v6M14 11v6"/></svg>',
 };
 </script>
 
 <template>
   <div class="ai-conversation-list">
     <div class="list-header">
-      <span class="header-title">{{ i18n("aicopilot.conversation.title") }}</span>
+      <span class="header-title">{{
+        i18n("aicopilot.conversation.title")
+      }}</span>
       <el-button type="primary" @click="emit('new')">
         <span class="svg-icon" v-html="icons.plus"></span>
         {{ i18n("aicopilot.conversation.new") }}
@@ -98,21 +100,20 @@ const icons: Record<string, string> = {
         {{ i18n("aicopilot.conversation.empty") }}
       </div>
       <div
-          v-for="conv in conversations"
-          :key="conv.id"
-          class="conv-item"
-          :class="{ active: conv.id === currentId }"
-          @click="handleSelect(conv.id)"
-          @dblclick="handleStartRename(conv)"
+        v-for="conv in conversations"
+        :key="conv.id"
+        class="conv-item"
+        :class="{ active: conv.id === currentId }"
+        @click="handleSelect(conv.id)"
+        @dblclick="handleStartRename(conv)"
       >
         <template v-if="editingId === conv.id">
           <el-input
-              v-model="editingName"
-
-              autofocus
-              @keyup.enter="handleConfirmRename"
-              @keyup.esc="handleCancelRename"
-              @blur="handleConfirmRename"
+            v-model="editingName"
+            autofocus
+            @keyup.enter="handleConfirmRename"
+            @keyup.esc="handleCancelRename"
+            @blur="handleConfirmRename"
           />
         </template>
         <template v-else>
@@ -121,13 +122,15 @@ const icons: Record<string, string> = {
           </div>
           <div class="conv-meta">
             <span class="meta-time">{{ formatTime(conv.updatedAt) }}</span>
-            <span class="meta-count">{{ conv.messages.length }} {{ i18n("aicopilot.conversation.title") }}</span>
+            <span class="meta-count"
+              >{{ conv.messages.length }}
+              {{ i18n("aicopilot.conversation.title") }}</span
+            >
           </div>
           <el-button
-              class="conv-delete"
-
-              link
-              @click="handleDelete(conv, $event)"
+            class="conv-delete"
+            link
+            @click="handleDelete(conv, $event)"
           >
             <span class="svg-icon" v-html="icons.delete"></span>
           </el-button>
@@ -136,7 +139,6 @@ const icons: Record<string, string> = {
     </div>
   </div>
 </template>
-
 
 <style lang="scss" scoped>
 .ai-conversation-list {

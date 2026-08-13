@@ -1,39 +1,39 @@
 <template>
   <starhorse-form-item
-      :showFormItem="showFormItem"
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :field="field"
-      :parentField="parentField"
+    :showFormItem="showFormItem"
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :bareFlag="bareFlag"
+    :field="field"
+    :parentField="parentField"
   >
     <el-input-number
-        :fid="field.fieldName"
-        :disabled="checkIsDisabled(props)"
-        v-bind="prepsFilter(field.preps)"
-        :controls-position="field.controlsPosition??'right'"
-        v-on="getDynamicEvents(props, itemAction, formData)"
-        v-model="formData[field.fieldName]"
+      :fid="field.fieldName"
+      :disabled="checkIsDisabled(props)"
+      v-bind="prepsFilter(field.preps)"
+      :controls-position="field.controlsPosition ?? 'right'"
+      v-on="getDynamicEvents(props, itemAction, formData)"
+      v-model="formData[field.fieldName]"
     >
       <template #prefix>
         <span v-if="field.preps?.prefix">{{ field.preps["prefix"] }}</span>
         <star-horse-icon
-            :icon-class="field.preps?.prefixIcon"
-            v-if="field.preps?.prefixIcon"
+          :icon-class="field.preps?.prefixIcon"
+          v-if="field.preps?.prefixIcon"
         />
       </template>
       <template #suffix>
         <span v-if="field.preps?.suffix">{{ field.preps["suffix"] }}</span>
         <star-horse-icon
-            :icon-class="field.preps?.suffixIcon"
-            v-if="field.preps?.suffixIcon"
+          :icon-class="field.preps?.suffixIcon"
+          v-if="field.preps?.suffixIcon"
         />
       </template>
     </el-input-number>
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import {nextTick, onBeforeUnmount, onMounted, watch} from "vue";
+import { nextTick, onBeforeUnmount, onMounted, watch } from "vue";
 import {
   allAction,
   checkIsDisabled,
@@ -41,9 +41,9 @@ import {
   prepsFilter,
   setupFormulaWatchers,
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
-import {getDynamicEvents} from "@/api/system";
-import {ItemPreps} from "@/components/types/ItemPreps";
-import {StarHorseIcon} from "@/components/comp";
+import { getDynamicEvents } from "@/api/system";
+import { ItemPreps } from "@/components/types/ItemPreps";
+import { StarHorseIcon } from "@/components/comp";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
 
 defineOptions({
@@ -77,17 +77,17 @@ onMounted(() => {
   // 优先使用字段自身精度，其次公式精度，最后默认 0
   // 避免公式字段的小数结果被 el-input-number 的 precision=0 四舍五入
   props.field.preps["precision"] =
-      props.field.preps["precision"] ??
-      props.field.preps?.formula?.precision ??
-      0;
+    props.field.preps["precision"] ??
+    props.field.preps?.formula?.precision ??
+    0;
   nextTick(() => {
     initCompCallEvent(props, emits, formData);
     // 初始化公式计算监听
     formulaStops = setupFormulaWatchers(
-        props.field,
-        props.formInfo,
-        formData,
-        watch,
+      props.field,
+      props.formInfo,
+      formData,
+      watch,
     );
   });
 

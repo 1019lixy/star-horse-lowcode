@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import {computed, onMounted} from "vue";
+import { computed, onMounted } from "vue";
 
-import {ItemPreps} from "@/components/types/ItemPreps";
+import { ItemPreps } from "@/components/types/ItemPreps";
 import JSON5 from "json5";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
@@ -24,22 +24,22 @@ const formData = defineModel("formData");
 
 onMounted(() => {
   formData.value[props.field.fieldName] =
-      formData.value[props.field.fieldName] || props.field.preps?.content;
+    formData.value[props.field.fieldName] || props.field.preps?.content;
 });
 </script>
 <template>
   <starhorse-form-item
-      :showFormItem="showFormItem"
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :field="field"
-      :parentField="parentField"
+    :showFormItem="showFormItem"
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :bareFlag="bareFlag"
+    :field="field"
+    :parentField="parentField"
   >
     <div
-        class="user_html"
-        :style="styles"
-        v-html="
+      class="user_html"
+      :style="styles"
+      v-html="
         field.preps?.staticData
           ? field.preps?.textContent
           : formData[field.fieldName]

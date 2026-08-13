@@ -1,9 +1,9 @@
-import {computed, onUnmounted, reactive, ref} from "vue";
+import { computed, onUnmounted, reactive, ref } from "vue";
 import Sortable from "sortablejs";
-import {i18n} from "@/lang";
-import {isMobile} from "@/api/device";
-import {convertCompToAppComps} from "@/api/form_utils";
-import {FieldInfo} from "@/components/types/PageFieldInfo";
+import { i18n } from "@/lang";
+import { isMobile } from "@/api/device";
+import { convertCompToAppComps } from "@/api/form_utils";
+import { FieldInfo } from "@/components/types/PageFieldInfo";
 
 /** useTableFields 入参 */
 export interface UseTableFieldsOptions {
@@ -29,7 +29,7 @@ const SYSTEM_FIELD_NAMES = [
  * 封装字段配置解析、APP端卡片字段可见性、列拖拽排序、列表/卡片模式切换
  */
 export function useTableFields(opts: UseTableFieldsOptions) {
-  const {props} = opts;
+  const { props } = opts;
 
   /** 工具字段缓存（扁平化后的字段列表） */
   const toolFields = ref<Array<any>>([]);
@@ -48,7 +48,7 @@ export function useTableFields(opts: UseTableFieldsOptions) {
 
   /**
    * 将嵌套的字段配置扁平化到 toolFields
-   * 支持: 数组 / containerFields(第三类容器) / dytableList(第一类容器) / 单个字段对象
+   * 支持: 数组 / containerFields(统一容器) / 单个字段对象
    */
   const assignData = (dataList: Array<any>) => {
     for (const temp of dataList) {
@@ -58,12 +58,6 @@ export function useTableFields(opts: UseTableFieldsOptions) {
         for (const stemp of temp.containerFields) {
           if (stemp?.fieldList) {
             toolFields.value.push(...stemp.fieldList);
-          }
-        }
-      } else if (temp.dytableList?.length > 0) {
-        for (const stemp of temp.dytableList) {
-          if (stemp) {
-            toolFields.value.push(...stemp);
           }
         }
       } else {
@@ -98,7 +92,7 @@ export function useTableFields(opts: UseTableFieldsOptions) {
         animation: 200,
         ghostClass: "ghost",
         onEnd(event: any) {
-          const {oldIndex, newIndex} = event;
+          const { oldIndex, newIndex } = event;
           if (oldIndex === newIndex) {
             return;
           }

@@ -1,16 +1,20 @@
 <script setup lang="ts" name="DocumentTemplateDesigner">
-import {ref, shallowRef} from "vue";
-import {Editor, Toolbar} from "@wangeditor/editor-for-vue";
-import type {IDomEditor} from "@wangeditor/editor";
-import {ElMessage} from "element-plus";
-import {i18n} from "@/lang";
-import {DesignerMobileShell, insertVariableBadge, ShSvgIcon} from "@/components/shared";
-import {useDocTemplateDesigner} from "./composables/useDocTemplateDesigner";
+import { ref, shallowRef } from "vue";
+import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
+import type { IDomEditor } from "@wangeditor/editor";
+import { ElMessage } from "element-plus";
+import { i18n } from "@/lang";
+import {
+  DesignerMobileShell,
+  insertVariableBadge,
+  ShSvgIcon,
+} from "@/components/shared";
+import { useDocTemplateDesigner } from "./composables/useDocTemplateDesigner";
 import DocVariablePanel from "./panels/DocVariablePanel.vue";
 import DocVariableDialog from "./dialogs/DocVariableDialog.vue";
 import DocPreviewDialog from "./dialogs/DocPreviewDialog.vue";
-import {DOC_CATEGORY_PRESETS, DOC_TOOLBAR_BUTTONS} from "./constants";
-import type {DocTemplate} from "./types";
+import { DOC_CATEGORY_PRESETS, DOC_TOOLBAR_BUTTONS } from "./constants";
+import type { DocTemplate } from "./types";
 
 const props = defineProps<{
   template?: DocTemplate;
@@ -23,11 +27,13 @@ const emits = defineEmits<{
   (e: "save", v: DocTemplate): void;
 }>();
 
-const designer = useDocTemplateDesigner(props.initialTemplate || props.template);
+const designer = useDocTemplateDesigner(
+  props.initialTemplate || props.template,
+);
 if (props.template) designer.loadData(props.template);
 
 const editorRef = shallowRef<IDomEditor>();
-const toolbarConfig = ref({toolbarKeys: DOC_TOOLBAR_BUTTONS});
+const toolbarConfig = ref({ toolbarKeys: DOC_TOOLBAR_BUTTONS });
 const editorConfig = ref({
   placeholder: i18n("doctemplate.editor.placeholder"),
   readOnly: props.readonly,
@@ -85,40 +91,39 @@ const handleCategoryChange = (category: string) => {
 <template>
   <div class="doc-template-designer">
     <DesignerMobileShell
-        :panels="[
-                { key: 'variables', label: '变量', side: 'left', width: 240, min: 200 },
-            ]"
+      :panels="[
+        { key: 'variables', label: '变量', side: 'left', width: 240, min: 200 },
+      ]"
     >
       <template #toolbar>
         <div class="designer-toolbar">
           <div class="left-group">
             <el-input
-                v-model="designer.state.name"
-
-                style="width: 200px"
-                :placeholder="i18n('doctemplate.template.namePlaceholder')"
+              v-model="designer.state.name"
+              style="width: 200px"
+              :placeholder="i18n('doctemplate.template.namePlaceholder')"
             />
             <el-select
-                v-model="designer.state.category"
-                style="width: 140px"
-                :placeholder="i18n('doctemplate.template.category')"
-                @change="handleCategoryChange"
+              v-model="designer.state.category"
+              style="width: 140px"
+              :placeholder="i18n('doctemplate.template.category')"
+              @change="handleCategoryChange"
             >
               <el-option
-                  v-for="opt in DOC_CATEGORY_PRESETS"
-                  :key="opt.value"
-                  :label="opt.label"
-                  :value="opt.value"
+                v-for="opt in DOC_CATEGORY_PRESETS"
+                :key="opt.value"
+                :label="opt.label"
+                :value="opt.value"
               />
             </el-select>
           </div>
           <div class="right-group">
             <el-button @click="previewVisible = true">
-              <ShSvgIcon name="preview" size="14px"/>
+              <ShSvgIcon name="preview" size="14px" />
               {{ i18n("doctemplate.btn.preview") }}
             </el-button>
             <el-button type="primary" :disabled="readonly" @click="handleSave">
-              <ShSvgIcon name="save" size="14px"/>
+              <ShSvgIcon name="save" size="14px" />
               {{ i18n("dialog.save") }}
             </el-button>
           </div>
@@ -128,32 +133,35 @@ const handleCategoryChange = (category: string) => {
         <div class="editor-area">
           <div class="editor-toolbar-wrap" v-if="!readonly">
             <Toolbar
-                :editor="editorRef"
-                :defaultConfig="toolbarConfig"
-                mode="default"
-                class="doc-toolbar"
+              :editor="editorRef"
+              :defaultConfig="toolbarConfig"
+              mode="default"
+              class="doc-toolbar"
             />
             <el-dropdown
-                trigger="click"
-                @command="(cmd: string) => handleInsertVariable(cmd)"
-                :disabled="designer.state.variables.length === 0"
+              trigger="click"
+              @command="(cmd: string) => handleInsertVariable(cmd)"
+              :disabled="designer.state.variables.length === 0"
             >
               <el-button class="var-btn">
-                <ShSvgIcon name="variable" size="14px"/>
+                <ShSvgIcon name="variable" size="14px" />
                 {{ i18n("template.variable.insertVariable") }}
-                <ShSvgIcon name="arrowDown" size="12px"/>
+                <ShSvgIcon name="arrowDown" size="12px" />
               </el-button>
               <template #dropdown>
                 <el-dropdown-menu>
                   <el-dropdown-item
-                      v-for="v in designer.state.variables"
-                      :key="v.id"
-                      :command="v.name"
+                    v-for="v in designer.state.variables"
+                    :key="v.id"
+                    :command="v.name"
                   >
                     <span class="var-name">{{ v.name }}</span>
                     <span class="var-label" v-if="v.label">{{ v.label }}</span>
                   </el-dropdown-item>
-                  <el-dropdown-item v-if="designer.state.variables.length === 0" disabled>
+                  <el-dropdown-item
+                    v-if="designer.state.variables.length === 0"
+                    disabled
+                  >
                     {{ i18n("template.variable.noVariables") }}
                   </el-dropdown-item>
                 </el-dropdown-menu>
@@ -161,35 +169,32 @@ const handleCategoryChange = (category: string) => {
             </el-dropdown>
           </div>
           <Editor
-              v-model="designer.state.content"
-              :defaultConfig="editorConfig"
-              mode="default"
-              class="doc-editor"
-              @onChange="handleEditorChange"
-              @onCreated="handleEditorCreated"
+            v-model="designer.state.content"
+            :defaultConfig="editorConfig"
+            mode="default"
+            class="doc-editor"
+            @onChange="handleEditorChange"
+            @onCreated="handleEditorCreated"
           />
         </div>
       </template>
       <template #panel-variables>
         <doc-variable-panel
-            :designer="designer"
-            :readonly="readonly"
-            @insert="handleInsertVariable"
-            @edit="handleEditVariable"
-            @add="handleAddVariable"
+          :designer="designer"
+          :readonly="readonly"
+          @insert="handleInsertVariable"
+          @edit="handleEditVariable"
+          @add="handleAddVariable"
         />
       </template>
     </DesignerMobileShell>
 
     <doc-variable-dialog
-        v-model:visible="varDialogVisible"
-        :designer="designer"
-        :var-id="editingVarId"
+      v-model:visible="varDialogVisible"
+      :designer="designer"
+      :var-id="editingVarId"
     />
-    <doc-preview-dialog
-        v-model:visible="previewVisible"
-        :designer="designer"
-    />
+    <doc-preview-dialog v-model:visible="previewVisible" :designer="designer" />
   </div>
 </template>
 

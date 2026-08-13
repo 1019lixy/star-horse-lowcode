@@ -1,14 +1,14 @@
 <template>
   <div
-      class="gantt-sidebar"
-      :class="{ 'sidebar-expanded': isHovered }"
-      @mouseleave="isHovered = false"
+    class="gantt-sidebar"
+    :class="{ 'sidebar-expanded': isHovered }"
+    @mouseleave="isHovered = false"
   >
     <div class="sidebar-icon">
       <star-horse-icon
-          iconClass="menu"
-          cursor="pointer"
-          @mouseenter="isHovered = true"
+        iconClass="menu"
+        cursor="pointer"
+        @mouseenter="isHovered = true"
       />
     </div>
     <div class="sidebar-content">
@@ -23,8 +23,8 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from "vue";
-import {i18n} from "@/lang";
+import { ref } from "vue";
+import { i18n } from "@/lang";
 
 defineOptions({
   name: "StarHorseSidebar",
