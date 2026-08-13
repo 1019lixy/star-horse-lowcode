@@ -27,7 +27,7 @@ const formFields = inject("formFields", ref<any[]>([]));
 // 注入 el-form 实例（由 StarHorseForm provide），用于调用 validateField / clearValidate
 const starHorseFormRef = inject("starHorseFormRef", ref<any>(null));
 const dialogVisible = ref<boolean>(false);
-const drawerFields = computed(() => props.item.drawerList.length > 0 ? props.item.drawerList[0] : {});
+const drawerFields = computed(() => props.item.containerFields?.length > 0 ? props.item.containerFields[0] : {});
 // 是否开启必填校验（默认开启，设为 "N" 可关闭；source=3 查看模式自动关闭）
 const mustComplete = computed(() => {
   if (props.source == 3) return false;
@@ -61,7 +61,7 @@ const handleClose = () => {
  * @returns 校验通过返回 true，否则 false
  */
 const getFieldProps = () => {
-  const list = props.item?.drawerList;
+  const list = props.item?.containerFields;
   const fieldProps: string[] = [];
   if (!Array.isArray(list)) return fieldProps;
   list.forEach((child: any, idx: number) => {
@@ -135,17 +135,17 @@ const reTriggerRelation = (fields: any[], visited?: WeakSet<any>) => {
 };
 
 /**
- * 监听 drawerList 子项的 formVisible 变化:
+ * 监听 containerFields 子项的 formVisible 变化:
  * 子项从隐藏变可见时,重新触发子项内有 dataRelation 的字段的初始联动
  * (子项隐藏时内部字段组件未挂载,onMounted 中的 initCompCallEvent 未执行)
  */
 watch(
     () => {
-      const list = props.item?.drawerList;
+      const list = props.item?.containerFields;
       return Array.isArray(list) ? list.map((c: any) => c?.formVisible) : [];
     },
     (newVals, oldVals) => {
-      const list = props.item?.drawerList;
+      const list = props.item?.containerFields;
       if (!Array.isArray(list)) return;
       list.forEach((child: any, index: number) => {
         if (child == null) return;
@@ -167,7 +167,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div v-if="item.drawerList?.length > 0" class="drawer-trigger-wrapper">
+  <div v-if="item.containerFields?.length > 0" class="drawer-trigger-wrapper">
     <div class="dialog-trigger">
       <el-button
           v-if="drawerFields.formVisible !== false&&!drawerFields.preps?.hideDrawer"
@@ -191,7 +191,7 @@ onMounted(() => {
         @merge="handleConfirm"
         @closeAction="handleClose"
     >
-      <template v-for="(drawerItem, key) in item.drawerList">
+      <template v-for="(drawerItem, key) in item.containerFields">
         <star-horse-form-item
             :source="source"
             :compUrl="compUrl"

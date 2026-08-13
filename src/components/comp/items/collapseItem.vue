@@ -42,14 +42,14 @@ onMounted(() => {
 </script>
 
 <template>
-  <template v-if="item.collapseList?.length > 0">
+  <template v-if="item.containerFields?.length > 0">
     <el-collapse
         v-model="item.fieldName"
         v-bind="prepsFilter(item.preps)"
         v-if="!item.preps?.hideCollapse"
         v-on:change="(data) => item.actions?.['change']?.(data)"
     >
-      <template v-for="(collapseItem, key) in item.collapseList">
+      <template v-for="(collapseItem, key) in item.containerFields">
         <el-collapse-item
             v-if="
             Object.keys(collapseItem).length > 0 &&

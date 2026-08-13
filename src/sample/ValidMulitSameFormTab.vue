@@ -104,12 +104,14 @@ const fieldList = ref<PageFieldInfo>({
     {
       fieldName: "apiInfo",
       formVisible: true,
-      stepList: [
+      containerType:"step",
+      containerFields: [
         {
           fieldList: [
             {
               fieldName: "a",
-              tabList: [
+              containerType:"tab",
+              containerFields: [
                 {
                   fieldList: [
                     {
@@ -559,7 +561,8 @@ const fieldList = ref<PageFieldInfo>({
           fieldList: [
             {
               fieldName: "a",
-              tabList: [
+              containerType:"tab",
+              containerFields:[
                 {
                   fieldList: [
                     {

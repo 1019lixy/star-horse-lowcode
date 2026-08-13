@@ -42,9 +42,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <template v-if="item.splitterList?.length > 0">
+  <template v-if="item.containerFields?.length > 0">
     <el-splitter v-bind="prepsFilter(item.preps)">
-      <template v-for="(splitterItem, key) in item.splitterList">
+      <template v-for="(splitterItem, key) in item.containerFields">
         <el-splitter-panel
             v-if="Object.keys(splitterItem).length > 0 && splitterItem.formVisible !== false"
             v-bind="splitterItem.preps"

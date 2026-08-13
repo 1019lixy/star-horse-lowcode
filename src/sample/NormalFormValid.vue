@@ -453,7 +453,8 @@ const fieldList = ref<PageFieldInfo>({
       }
     },
     {
-      descriptionsList: [{
+      containerType:"descriptions",
+      containerFields: [{
         title: "计算分数",
         objectName: "modResult",
         tabName: "modResult",

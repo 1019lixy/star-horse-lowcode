@@ -30,39 +30,27 @@ const itemCommonFormat = (name: string, cellValue: any, row: any) => {
       : props.commonFormat(name, cellValue, row);
 };
 const checkItemType = (item: any) => {
-  // console.log(item);
   // 优先判断 children，有 children 的非叶子节点返回 group-item
   if (
       item.children &&
       Array.isArray(item.children) &&
       item.children.length > 0
   ) {
-    // console.log("ok,group-item");
     return "group-item";
   }
-  if (item.appList?.length > 0) {
-    return "app-item";
-  } else if (Array.isArray(item)) {
+  // 第三类容器统一派发:有 containerType 则派发对应容器组件
+  // 新增容器类型只需配置 containerType,无需修改此处
+  if (item.containerType && item.containerFields?.length > 0) {
+    return `${item.containerType}-item`;
+  }
+  if (Array.isArray(item)) {
     return "box-item";
-  } else if (item.cardList?.length > 0) {
-    return "card-item";
-  } else if (item.collapseList?.length > 0) {
-    return "collapse-item";
-  } else if (item.splitterList?.length > 0) {
-    return "splitter-item";
   } else if (item.dytableList?.length > 0) {
     return "dytable-item";
-  } else if (item.stepList?.length > 0) {
-    return "step-item";
-  } else if (item.descriptionsList?.length > 0) {
-    return "descriptions-item";
-  } else if (item.dialogList?.length > 0) {
-    return "dialog-item";
-  } else if (item.drawerList?.length > 0) {
-    return "drawer-item";
-  } else if (item.fieldsetList?.length > 0) {
-    return "fieldset-item";
-  } else if (item.tabList?.length > 0 || item.batchFieldList?.length > 0) {
+  } else if (item.appList?.length > 0) {
+    return "app-item";
+  } else if (item.batchFieldList?.length > 0) {
+    // 批量表单(第二类容器)复用 tab-item 渲染
     return "tab-item";
   } else {
     return "other-item";

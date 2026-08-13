@@ -40,19 +40,10 @@ const resolveFormInfo = (formInfo: any): any[] => {
 };
 
 /** 查找字段并确保 preps 存在，支持递归查找 children */
-/** 容器子节点属性名列表(tabList/cardList/collapseList/splitterList/dytableList) */
+/** 第三类容器统一列表属性(containerFields) + 第一类容器(dytableList);appList 单独处理 */
 const CONTAINER_LIST_KEYS = [
-    "tabList",
-    "cardList",
-    "collapseList",
-    "splitterList",
-    "dytableList",
-    "stepList",
-    "dialogList",
-    "conditionList",
-    "drawerList",
-    "descriptionsList",
-    "fieldsetList"
+    "containerFields",
+    "dytableList"
 ];
 
 const findField = (
@@ -96,9 +87,9 @@ const findField = (
         // 递归查找容器子节点(tabList/cardList/collapseList/splitterList/dytableList)内的 fieldList
         // 使普通字段控制策略(controlFieldProps)能定位到容器内的字段
         for (const key of CONTAINER_LIST_KEYS) {
-            const containerList = field[key];
-            if (!Array.isArray(containerList)) continue;
-            for (const containerItem of containerList) {
+            const containerFields = field[key];
+            if (!Array.isArray(containerFields)) continue;
+            for (const containerItem of containerFields) {
                 if (containerItem == null || typeof containerItem !== "object") continue;
                 const innerList =
                     containerItem?.fieldList ||
@@ -293,9 +284,9 @@ const findContainerItems = (
                 continue;
             }
             for (const key of CONTAINER_LIST_KEYS) {
-                const containerList = field[key];
-                if (!Array.isArray(containerList)) continue;
-                for (const containerItem of containerList) {
+                const containerFields = field[key];
+                if (!Array.isArray(containerFields)) continue;
+                for (const containerItem of containerFields) {
                     if (containerItem == null || typeof containerItem !== "object") continue;
                     if (
                         containerItem?.tabName &&

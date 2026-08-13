@@ -83,8 +83,8 @@ const assignData = (dataList: Array<any>) => {
   for (const temp of dataList) {
     if (temp instanceof Array) {
       toolFields.value.push(...temp);
-    } else if (temp.tabList?.length > 0) {
-      for (const stemp of temp.tabList) {
+    } else if (temp.containerFields?.length > 0) {
+      for (const stemp of temp.containerFields) {
         if (stemp["fieldList"]) {
           toolFields.value.push(...stemp["fieldList"]);
         }
@@ -341,13 +341,13 @@ defineExpose({
               v-for="(sitem, key) in item"
           />
         </template>
-        <template v-else-if="item.tabList?.length > 0">
+        <template v-else-if="item.containerFields?.length > 0">
           <star-horse-table-column
               :data-format="dataFormat"
               :cellEditable="fieldList['tableCellEditabled']"
               :item="sitem"
               :key="compKey(sitem, key)"
-              v-for="(sitem, key) in item.tabList.fieldList"
+              v-for="(sitem, key) in item.containerFields.fieldList"
           />
         </template>
         <star-horse-table-column

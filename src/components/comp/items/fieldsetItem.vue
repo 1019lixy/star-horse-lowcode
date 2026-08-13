@@ -73,17 +73,17 @@ const reTriggerRelation = (fields: any[], visited?: WeakSet<any>) => {
 };
 
 /**
- * 监听 fieldsetList 子项的 formVisible 变化:
+ * 监听 containerFields 子项的 formVisible 变化:
  * 子项从隐藏变可见时,重新触发子项内有 dataRelation 的字段的初始联动
  * (子项隐藏时内部字段组件未挂载,onMounted 中的 initCompCallEvent 未执行)
  */
 watch(
     () => {
-      const list = props.item?.fieldsetList;
+      const list = props.item?.containerFields;
       return Array.isArray(list) ? list.map((c: any) => c?.formVisible) : [];
     },
     (newVals, oldVals) => {
-      const list = props.item?.fieldsetList;
+      const list = props.item?.containerFields;
       if (!Array.isArray(list)) return;
       list.forEach((child: any, index: number) => {
         if (child == null) return;
@@ -105,8 +105,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <template v-if="item.fieldsetList?.length > 0">
-    <template v-for="(fiedsetItem, key) in item.fieldsetList">
+  <template v-if="item.containerFields?.length > 0">
+    <template v-for="(fiedsetItem, key) in item.containerFields">
       <fieldset
           v-if="fiedsetItem.formVisible !== false"
           class="fieldset-container"

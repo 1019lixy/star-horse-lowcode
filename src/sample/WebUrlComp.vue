@@ -165,7 +165,8 @@ const dataSourceField = reactive<PageFieldInfo | any>({
     ],
     {
       fieldName: "queryParams",
-      tabList: [
+      containerType:"tab",
+      containerFields: [
         {
           title: "标准参数",
           tabName: "queryParams",

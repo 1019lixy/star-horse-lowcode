@@ -46,8 +46,8 @@ const stepValidationState = ref<Record<number, "valid" | "invalid">>({});
 // 是否已完成所有步骤（最后一步通过校验后置为 true，用于显示全部完成）
 const allStepsCompleted = ref<boolean>(false);
 
-// 步骤列表（运行时字段名 stepList，与设计时 preps.elements 对应）
-const stepList = computed(() => props.item?.stepList || []);
+// 步骤列表(第三类容器统一字段 containerFields,与设计时 preps.elements 对应)
+const stepList = computed(() => props.item?.containerFields || []);
 
 // 是否同属一个表单：运行时由各步骤的 subFormFlag 决定（"Y"=分表单，"N"/缺省=同表单）
 const sameForm = computed(() => {

@@ -180,7 +180,8 @@ const tableFieldList = reactive<PageFieldInfo>({
       preps: {
         type: "border-card",
       },
-      tabList: [
+      containerType:"tab",
+      containerFields: [
         {
           title: "项目配置",
           tabName: "tab2",
@@ -218,7 +219,8 @@ const tableFieldList = reactive<PageFieldInfo>({
             },
             {
               fieldName: "backendConfig",
-              tabList: [
+              containerType:"tab",
+              containerFields: [
                 {
                   title: "后端配置",
                   tabName: "backendConfig",

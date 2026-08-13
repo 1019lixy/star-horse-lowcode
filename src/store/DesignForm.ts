@@ -6,7 +6,7 @@ import {analysisCompDatas} from "@/api/form_utils";
 import {UserInfo} from "@/components/types";
 
 export const useDesignFormStore = defineStore("designForm", () => {
-    const containerList = ref<CompType[]>([]);
+    const containerFields = ref<CompType[]>([]);
     const formDataList = ref<CompType[]>([]);
     const selfFormDataList = ref<CompType[]>([]);
     const allFormDataList = ref<Array<any>>([]);
@@ -259,14 +259,14 @@ export const useDesignFormStore = defineStore("designForm", () => {
         }
     };
     const setContainerList = (list: CompType[]) => {
-        containerList.value = list;
+        containerFields.value = list;
     };
     const addContainerList = (list: CompType[]) => {
         //如果已存在，则要过滤掉,不能重复添加
         if (Array.isArray(list)) {
-            containerList.value = [...containerList.value, ...list];
+            containerFields.value = [...containerFields.value, ...list];
         } else {
-            containerList.value.push(list);
+            containerFields.value.push(list);
         }
     };
     const setFormDataList = (list: CompType[]) => {
@@ -428,7 +428,7 @@ export const useDesignFormStore = defineStore("designForm", () => {
         formData,
         formInfo,
         compList,
-        containerList,
+        containerFields,
         formDataList,
         selfFormDataList,
         allFormDataList,

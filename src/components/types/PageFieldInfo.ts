@@ -60,65 +60,12 @@ export declare interface TabFieldInfo {
      * 当subFormFlag为Y是映射关系 1 表示1对一，n表示1 对多,默认1
      */
     mapping?: "1" | "n";
-}
-
-/**
- * Card 容器信息
- */
-export declare interface CardFieldInfo extends TabFieldInfo {
     /**
      * 头部右侧组件信息
      */
     headerFieldList?: FieldInfo[];
 }
 
-/**
- * Collapse 容器信息
- */
-export declare interface CollapseFieldInfo extends TabFieldInfo {
-}
-
-/**
- * AppList App容器信息,专门处理有表单在app 中有主子表的情况
- */
-export declare interface AppFieldInfo extends TabFieldInfo {
-}
-
-/**
- * Splitter 容器信息
- */
-export declare interface SplitterFieldInfo extends TabFieldInfo {
-}
-
-/**
- * Step 容器信息
- */
-export declare interface StepFieldInfo extends TabFieldInfo {
-}
-
-/**
- * Descriptions 容器信息
- */
-export declare interface DescriptionsFieldInfo extends TabFieldInfo {
-}
-
-/**
- * Dialog 容器信息
- */
-export declare interface DialogFieldInfo extends TabFieldInfo {
-}
-
-/**
- * Drawer 容器信息
- */
-export declare interface DrawerFieldInfo extends TabFieldInfo {
-}
-
-/**
- * Fieldset 容器信息
- */
-export declare interface FieldsetFieldInfo extends TabFieldInfo {
-}
 
 /**
  * 表单属性
@@ -199,51 +146,22 @@ export declare interface FieldInfo {
      */
     editDisabled?: boolean;
     /**
-     * Tab容器数据
+     * 容器类型,标识该字段作为容器组件渲染时的类型
+     * 取值如:tab/card/collapse/splitter/step/dialog/drawer/descriptions/fieldset/app 等
+     * StarHorseItem 依据此属性解析对应容器组件,后续新增容器类型无需再修改 FieldInfo 定义
      */
-    tabList?: TabFieldInfo[];
+    containerType?: string;
     /**
-     * 专门处理app
+     * 第三类容器统一数据(tab/card/collapse/splitter/step/dialog/drawer/descriptions/fieldset/app 等)
+     * 与 containerType 配合使用,所有第三类容器数据均存于此,新增容器类型无需新增属性
      */
-    appList?: AppFieldInfo[];
+    containerFields?: TabFieldInfo[];
     /**
-     * Card 容器数据
-     */
-    cardList?: CardFieldInfo[];
-    /**
-     * 折叠容器(collapse)数据
-     */
-    collapseList?: CollapseFieldInfo[];
-    /**
-     * 分栏容器(splitter)数据
-     */
-    splitterList?: SplitterFieldInfo[];
-    /**
-     * 传统table布局表单，对应动态表格(dytable)容器
+     * 传统table布局表单，对应动态表格(dytable)容器,第一类容器(box 通过 fieldList 二维数组判断)
      */
     dytableList?: FieldInfo[];
     /**
-     * 步骤容器数据
-     */
-    stepList?: StepFieldInfo[];
-    /**
-     * 弹窗容器数据
-     */
-    dialogList?: DialogFieldInfo[];
-    /**
-     * 抽屉容器数据
-     */
-    drawerList?: DrawerFieldInfo[];
-    /**
-     * 描述数据容器
-     */
-    descriptionsList?: DescriptionsFieldInfo[];
-    /**
-     * 分组容器数据
-     */
-    fieldsetList?: FieldsetFieldInfo[];
-    /**
-     * 列表属性，对应动态列表（table) 容器
+     * 列表属性，对应动态列表（table) 容器,第二类容器
      */
     batchFieldList?: BatchFieldInfo[];
     /**

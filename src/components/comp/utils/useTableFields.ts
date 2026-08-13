@@ -48,14 +48,14 @@ export function useTableFields(opts: UseTableFieldsOptions) {
 
   /**
    * 将嵌套的字段配置扁平化到 toolFields
-   * 支持: 数组 / tabList / dytableList / 单个字段对象
+   * 支持: 数组 / containerFields(第三类容器) / dytableList(第一类容器) / 单个字段对象
    */
   const assignData = (dataList: Array<any>) => {
     for (const temp of dataList) {
       if (Array.isArray(temp)) {
         toolFields.value.push(...temp);
-      } else if (temp.tabList?.length > 0) {
-        for (const stemp of temp.tabList) {
+      } else if (temp.containerFields?.length > 0) {
+        for (const stemp of temp.containerFields) {
           if (stemp?.fieldList) {
             toolFields.value.push(...stemp.fieldList);
           }

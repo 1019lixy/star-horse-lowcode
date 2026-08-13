@@ -53,8 +53,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <template v-if="item.cardList?.length > 0">
-    <template v-for="(cardItem, key) in item.cardList">
+  <template v-if="item.containerFields?.length > 0">
+    <template v-for="(cardItem, key) in item.containerFields">
       <el-card
           shadow="hover"
           style="margin-bottom: 10px"

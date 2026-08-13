@@ -232,24 +232,11 @@ const tabColapseCardAnalysis = (item: any) => {
     if (dataList?.length > 0) {
         fieldInfo.fieldName = dataList[0].tabName;
     }
-    if (item.itemType == "tab") {
-        fieldInfo.tabList = dataList;
-    } else if (item.itemType == "card") {
-        fieldInfo.cardList = dataList;
-    } else if (item.itemType == "collapse") {
-        fieldInfo.collapseList = dataList;
-    } else if (item.itemType == "splitter") {
-        fieldInfo.splitterList = dataList;
-    } else if (item.itemType == "step") {
-        fieldInfo.stepList = dataList;
-    } else if (item.itemType == "descriptions") {
-        fieldInfo.descriptionsList = dataList;
-    } else if (item.itemType == "dialog") {
-        fieldInfo.dialogList = dataList;
-    } else if (item.itemType == "drawer") {
-        fieldInfo.drawerList = dataList;
-    } else if (item.itemType == "fieldset") {
-        fieldInfo.fieldsetList = dataList;
+    // 第三类容器统一:containerType 标识类型,containerFields 承载数据
+    // 后续新增容器类型无需修改此处
+    if (item.itemType) {
+        fieldInfo.containerType = item.itemType;
+        fieldInfo.containerFields = dataList;
     } else {
         console.error("Unknown itemType: ", item.itemType);
     }
@@ -262,7 +249,7 @@ const tabColapseCardAnalysis = (item: any) => {
     return {
         currentLayerContainer,
         boxItems,
-        fieldList: fieldInfo,
+        fieldList: [fieldInfo],
         searchItemList: searchItemList2,
     };
 };
@@ -446,12 +433,13 @@ function getContainerResult(comp: any) {
         return boxDytableAnalysis(comp);
     } else if (comp.itemType === "table") {
         return tableAnalysis(comp);
-    } else if (["tab", "collapse", "card", "splitter", "step", "dialog", "drawer", "descriptions", "fieldset"].includes(comp.itemType)) {
-        return tabColapseCardAnalysis(comp);
     } else if (comp.itemType === "condition") {
         return conditionAnalysis(comp);
+    } else  {
+        //其它相同类的容器
+        return tabColapseCardAnalysis(comp);
     }
-    return null;
+
 }
 
 /**
@@ -467,27 +455,11 @@ export const analysisAutoFitOsCompDatas = (fieldList: any) => {
 };
 
 function checkContainerType(data: FieldInfo) {
-    if (data.tabList) {
-        return {type: "tab", dataList: data.tabList};
-    } else if (data.cardList) {
-        return {type: "card", dataList: data.cardList};
-    } else if (data.collapseList) {
-        return {type: "collapse", dataList: data.collapseList};
-    } else if (data.splitterList) {
-        return {type: "splitter", dataList: data.splitterList};
-    } else if (data.stepList) {
-        return {type: "step", dataList: data.stepList};
-    } else if (data.descriptionsList) {
-        return {type: "descriptions", dataList: data.descriptionsList};
-    } else if (data.dialogList) {
-        return {type: "dialog", dataList: data.dialogList};
-    } else if (data.drawerList) {
-        return {type: "drawer", dataList: data.drawerList};
-    } else if (data.fieldsetList) {
-        return {type: "fieldset", dataList: data.fieldsetList};
-    } else {
-        return null;
+    // 第三类容器统一通过 containerType + containerFields 识别
+    if (data.containerType && Array.isArray(data.containerFields)) {
+        return {type: data.containerType, dataList: data.containerFields};
     }
+    return null;
 }
 
 /**
@@ -1081,71 +1053,12 @@ export const processFieldList = (
 
         if (Array.isArray(item)) {
             processFieldList(item, `${key}_array`, result);
-        } else if (item.tabList?.length > 0) {
-            item.tabList.forEach((tabItems: any, tabIndex: number) => {
-                processFieldList(tabItems.fieldList, `${key}_tab_${tabIndex}`, result);
-            });
-        } else if (item.cardList?.length > 0) {
-            item.cardList.forEach((cardItems: any, cardIndex: number) => {
+        } else if (item.containerFields?.length > 0) {
+            // 第三类容器统一处理:tab/card/collapse/splitter/step/descriptions/dialog/drawer/fieldset 等
+            item.containerFields.forEach((containerItems: any, containerIndex: number) => {
                 processFieldList(
-                    cardItems.fieldList,
-                    `${key}_card_${cardIndex}`,
-                    result,
-                );
-            });
-        } else if (item.collapseList?.length > 0) {
-            item.collapseList.forEach((collapseItems: any, collapseIndex: number) => {
-                processFieldList(
-                    collapseItems.fieldList,
-                    `${key}_collapse_${collapseIndex}`,
-                    result,
-                );
-            });
-        } else if (item.splitterList?.length > 0) {
-            item.splitterList.forEach((splitterItems: any, splitterIndex: number) => {
-                processFieldList(
-                    splitterItems.fieldList,
-                    `${key}_splitter_${splitterIndex}`,
-                    result,
-                );
-            });
-        } else if (item.stepList?.length > 0) {
-            item.stepList.forEach((stepItems: any, stepIndex: number) => {
-                processFieldList(
-                    stepItems.fieldList,
-                    `${key}_step_${stepIndex}`,
-                    result,
-                );
-            });
-        } else if (item.descriptionsList?.length > 0) {
-            item.descriptionsList.forEach((descItems: any, descIndex: number) => {
-                processFieldList(
-                    descItems.fieldList,
-                    `${key}_desc_${descIndex}`,
-                    result,
-                );
-            });
-        } else if (item.dialogList?.length > 0) {
-            item.dialogList.forEach((dialogItems: any, dialogIndex: number) => {
-                processFieldList(
-                    dialogItems.fieldList,
-                    `${key}_dialog_${dialogIndex}`,
-                    result,
-                );
-            });
-        } else if (item.drawerList?.length > 0) {
-            item.drawerList.forEach((drawerItems: any, drawerIndex: number) => {
-                processFieldList(
-                    drawerItems.fieldList,
-                    `${key}_drawer_${drawerIndex}`,
-                    result,
-                );
-            });
-        } else if (item.fieldsetList?.length > 0) {
-            item.fieldsetList.forEach((fieldsetItems: any, fieldsetIndex: number) => {
-                processFieldList(
-                    fieldsetItems.fieldList,
-                    `${key}_drawer_${fieldsetIndex}`,
+                    containerItems.fieldList,
+                    `${key}_${item.containerType}_${containerIndex}`,
                     result,
                 );
             });
@@ -1174,8 +1087,8 @@ export const processFieldList = (
     }
 };
 
-// 表单类容器列表属性（排除 batchFieldList/dytableList，表格由组件自行校验）
-const formContainerListKeys = ["tabList", "cardList", "collapseList", "splitterList", "dytableList", "stepList", "descriptionsList", "dialogList", "drawerList", "fieldsetList"];
+// 第三类容器统一列表属性(批量表格/动态表格由组件自行校验,App端扁平化结构 appList 单独处理)
+const formContainerListKeys = ["containerFields", "dytableList"];
 
 /**
  * 递归收集容器内字段的 prop 路径（与 otherItem 渲染时的 loadProp 逻辑一致）

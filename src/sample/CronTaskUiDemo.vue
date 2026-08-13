@@ -99,7 +99,8 @@ const taskConditionTabs = reactive<any>({
   type: "tabList",
   formVisible: true,
   listVisible: false,
-  tabList: [
+  containerType:"tab",
+  containerFields: [
     // ========== INTERFACE ==========
     {
       title: "接口调用",

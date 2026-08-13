@@ -40,10 +40,10 @@ const addRow = (row: any) => {
   emits("addRow", row);
 };
 const closeOperation = (tabName: any) => {
-  props.item.tabList?.forEach((item: any, index: number) => {
+  props.item.containerFields?.forEach((item: any, index: number) => {
     if (item.tabName == tabName) {
-      props.item.tabList.splice(index, 1);
-      props.item.fieldName = props.item.tabList[0]?.tabName;
+      props.item.containerFields.splice(index, 1);
+      props.item.fieldName = props.item.containerFields[0]?.tabName;
       let closeAction = props.item.actions?.["close"];
       closeAction && closeAction(item);
       return false;
@@ -93,8 +93,8 @@ const beforeLeave = async (activeName: string, oldActiveName: string) => {
     const result = await beforeLeaveAction(activeName, oldActiveName);
     if (result === false) return false;
   }
-  if (!mustCompleteTab.value || !props.item.tabList?.length) return true;
-  const tabs = props.item.tabList;
+  if (!mustCompleteTab.value || !props.item.containerFields?.length) return true;
+  const tabs = props.item.containerFields;
   const oldIdx = tabs.findIndex((t: any) => t.tabName === oldActiveName);
   const newIdx = tabs.findIndex((t: any) => t.tabName === activeName);
   // 向后切换或未找到：不校验，清除当前 tab 残留校验状态
@@ -164,12 +164,12 @@ const reTriggerRelationInTab = (fields: any[], visited?: WeakSet<any>) => {
  */
 watch(
     () => {
-      // 容错:tabList 可能不是数组(配置错误),返回空数组避免 .map crash
-      const tabs = props.item?.tabList;
+      // 容错:containerFields 可能不是数组(配置错误),返回空数组避免 .map crash
+      const tabs = props.item?.containerFields;
       return Array.isArray(tabs) ? tabs.map((t: any) => t?.formVisible) : [];
     },
     (newVals, oldVals) => {
-      const tabs = props.item?.tabList;
+      const tabs = props.item?.containerFields;
       if (!Array.isArray(tabs)) return;
       tabs.forEach((tab: any, index: number) => {
         if (tab == null) return;
@@ -196,7 +196,7 @@ watch(
 </script>
 
 <template>
-  <template v-if="item.tabList?.length > 0">
+  <template v-if="item.containerFields?.length > 0">
     <el-tabs
         v-model="item.fieldName"
         :type="item.preps?.type || ''"
@@ -208,7 +208,7 @@ watch(
         @tabAdd="(data) => item.actions?.['tabAdd']?.(data)"
         :before-leave="beforeLeave"
     >
-      <template v-for="(tabItem, key) in item.tabList">
+      <template v-for="(tabItem, key) in item.containerFields">
         <tabPanelItem
             :item="tabItem"
             v-if="tabItem.formVisible !== false && !tabItem.preps?.hideTabPanel"
