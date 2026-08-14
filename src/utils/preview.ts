@@ -231,10 +231,7 @@ export function analysisFields(compList: Array<any>) {
         const itempType = temp.itemType;
         if (itempType == "box" || itempType == "dytable") {
           loopAnalysis(temp.preps.elements);
-        } else if (
-          !["box","dytable","table"].includes(itempType)
-
-        ) {
+        } else if (!["box","dytable","table"].includes(itempType)) {
           tabListAnalysis(temp.preps.elements);
         } else if (itempType == "table") {
           tableListAnalysis(temp.preps);

@@ -5,7 +5,7 @@ import {StarHorseForm, StarHorseTableComp} from "@/components/comp";
 import {apiInstance, closeLoad, dialogPreps, load,} from "@/api/star_horse_utils";
 import {download} from "@/api/star_horse_apis";
 import {warning} from "@/utils/message";
-import {ApiUrls, SearchInfo} from "@/components/types";
+import {ApiUrls, SearchFields, SearchInfo} from "@/components/types";
 import {isMobile} from "@/api/device";
 import StarHorseDrawer from "@/components/comp/StarHorseDrawer.vue";
 
@@ -20,7 +20,7 @@ const outerData: any = {
   qrcode: "http://www.baidu.com",
   barcode: "22222223333",
 };
-const searchFormData = ref<SearchInfo>({
+const searchFormData = ref<SearchFields>({
   fieldList: [
     {
       defaultVisible: true,
