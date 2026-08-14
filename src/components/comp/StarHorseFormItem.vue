@@ -13,7 +13,7 @@ const props = withDefaults(defineProps<ContainerPreps>(), {
   propPrefix: "",
   parentPreps: {},
   subFormFlag: "N",
-  batchName: "batchDataList",
+  subTableName: "subDataList",
   compSize: "default",
   source: 1,
 });
@@ -66,13 +66,12 @@ const removeRow = (row: any) => {
         :primary-key="primaryKey"
         :item="item"
         :rules="rules"
-        :batchName="batchName"
+        :subTableName="subTableName"
         :compSize="compSize"
         :dialogType="dialogType"
         :compUrl="compUrl"
         :subFormFlag="subFormFlag"
         :source="source"
-        :objectName="objectName"
         :dataIndex="dataIndex"
         :propPrefix="propPrefix"
         :commonFormat="itemCommonFormat"
@@ -85,7 +84,7 @@ const removeRow = (row: any) => {
       :primary-key="primaryKey"
       :item="fieldList"
       :rules="rules"
-      :batchName="batchName"
+      :subTableName="subTableName"
       :compSize="compSize"
       :compUrl="compUrl"
       :subFormFlag="subFormFlag"
@@ -93,7 +92,6 @@ const removeRow = (row: any) => {
       :source="source"
       :dialogType="dialogType"
       :commonFormat="itemCommonFormat"
-      :objectName="objectName"
       :dataIndex="dataIndex"
       :propPrefix="propPrefix"
       v-model:dataForm="dataForm"

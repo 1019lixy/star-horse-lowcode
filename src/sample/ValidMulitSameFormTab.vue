@@ -226,8 +226,8 @@ const fieldList = ref<PageFieldInfo>({
                       },
                     ],
                   ],
-                  objectName: "a",
-                  tabName: "a",
+                  subTableName: "a",
+                  subTablePrimaryKey: "a",
                   title: "接口信息",
                 },
                 {
@@ -236,7 +236,7 @@ const fieldList = ref<PageFieldInfo>({
                       containerFields: [
                         {
                           containerType: "table",
-                          tabName: "headers",
+                          subTablePrimaryKey: "headers",
                           fieldList: [
                             {
                               fieldName: "name",
@@ -292,7 +292,7 @@ const fieldList = ref<PageFieldInfo>({
                       containerFields: [
                         {
                           containerType: "table",
-                          tabName: "requestParams",
+                          subTablePrimaryKey: "requestParams",
                           fieldList: [
                             {
                               fieldName: "paramName",
@@ -345,8 +345,8 @@ const fieldList = ref<PageFieldInfo>({
                       ],
                     },
                   ],
-                  objectName: "b",
-                  tabName: "b",
+                  subTableName: "b",
+                  subTablePrimaryKey: "b",
                   title: "入参配置",
                 },
                 {
@@ -451,16 +451,16 @@ const fieldList = ref<PageFieldInfo>({
                       },
                     ],
                   ],
-                  objectName: "c",
-                  tabName: "c",
+                  subTableName: "c",
+                  subTablePrimaryKey: "c",
                   title: "出参配置",
                 },
               ],
             },
           ],
-          objectName: "apiInfo",
+          subTableName: "apiInfo",
           subFormFlag: "Y",
-          tabName: "apiInfo",
+          subTablePrimaryKey: "apiInfo",
           title: "接口配置",
         },
         {
@@ -469,7 +469,7 @@ const fieldList = ref<PageFieldInfo>({
               containerFields: [
                 {
                   containerType: "table",
-                  tabName: "fieldMappings",
+                  subTablePrimaryKey: "fieldMappings",
                   fieldList: [
                     {
                       fieldName: "sourceField",
@@ -562,8 +562,8 @@ const fieldList = ref<PageFieldInfo>({
               ],
             },
           ],
-          objectName: "response",
-          tabName: "response",
+          subTableName: "response",
+          subTablePrimaryKey: "response",
           title: "响应与映射",
         },
         {
@@ -686,8 +686,8 @@ const fieldList = ref<PageFieldInfo>({
                       },
                     ],
                   ],
-                  objectName: "a",
-                  tabName: "a",
+                  subTableName: "a",
+                  subTablePrimaryKey: "a",
                   title: "接口信息",
                 },
                 {
@@ -696,7 +696,7 @@ const fieldList = ref<PageFieldInfo>({
                       containerFields: [
                         {
                           containerType: "table",
-                          tabName: "headers",
+                          subTablePrimaryKey: "headers",
                           fieldList: [
                             {
                               fieldName: "name",
@@ -752,7 +752,7 @@ const fieldList = ref<PageFieldInfo>({
                       containerFields: [
                         {
                           containerType: "table",
-                          tabName: "requestParams",
+                          subTablePrimaryKey: "requestParams",
                           fieldList: [
                             {
                               fieldName: "paramName",
@@ -805,8 +805,8 @@ const fieldList = ref<PageFieldInfo>({
                       ],
                     },
                   ],
-                  objectName: "b",
-                  tabName: "b",
+                  subTableName: "b",
+                  subTablePrimaryKey: "b",
                   title: "入参配置",
                 },
                 {
@@ -911,16 +911,16 @@ const fieldList = ref<PageFieldInfo>({
                       },
                     ],
                   ],
-                  objectName: "c",
-                  tabName: "c",
+                  subTableName: "c",
+                  subTablePrimaryKey: "c",
                   title: "出参配置",
                 },
               ],
             },
           ],
-          objectName: "authInfo",
+          subTableName: "authInfo",
           subFormFlag: "Y",
-          tabName: "authInfo",
+          subTablePrimaryKey: "authInfo",
           title: "认证配置",
         },
       ],

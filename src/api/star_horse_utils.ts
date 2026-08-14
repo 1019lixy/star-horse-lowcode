@@ -534,9 +534,9 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
   const tabOperation = (data: TabFieldInfo) => {
     const fieldList: Array<FieldInfo> = data.fieldList || [];
     if ("Y" == data.subFormFlag) {
-      defaultDatas[data.tabName] = {};
+      defaultDatas[data.subTablePrimaryKey] = {};
       //如果是子表
-      fieldsOperation(fieldList, defaultDatas[data.tabName]);
+      fieldsOperation(fieldList, defaultDatas[data.subTablePrimaryKey]);
     } else {
       fieldsOperation(fieldList, defaultDatas);
     }
@@ -547,7 +547,7 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
 
     for (const element of batchTempList) {
       const temp = element;
-      const batchKey = temp.tabName;
+      const batchKey = temp.subTablePrimaryKey;
       if (!defaultDatas[batchKey]) {
         defaultDatas[batchKey] = [];
       }
@@ -571,7 +571,7 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
         }
         if (item.actions) {
           actions.push({
-            batchName: batchKey,
+            subTableName: batchKey,
             actions: item.actions,
             fieldName: item.fieldName,
           });
@@ -627,7 +627,7 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
             // appList 内的数组(如 box 列数组)按数组处理
             fieldsOperation([appItem], defaultData);
           } else if (appItem?.__appContainer) {
-            // 影子容器:只注册容器本身,供 findContainerItems 按 tabName 定位
+            // 影子容器:只注册容器本身,供 findContainerItems 按 subTablePrimaryKey 定位
             // 其 fieldList 内字段已在 appList 中作为普通字段注册,不重复注册(避免 formFields 膨胀)
             formFields.push(appItem);
           } else if (appItem?.appList) {
@@ -711,7 +711,7 @@ export function batchFieldDefaultValues(datas: any, dataForm: any) {
     }
   }
   if (dataForm) {
-    let temp = unref(dataForm)?.[datas.tabName];
+    let temp = unref(dataForm)?.[datas.subTablePrimaryKey];
     if (temp) {
       defaultValues = { ...temp, ...defaultValues };
     }

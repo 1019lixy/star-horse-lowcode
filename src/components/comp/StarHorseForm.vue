@@ -35,7 +35,7 @@ import { convertPcCompToFitPlatformComps } from "@/api/form_utils";
 const props = defineProps({
   compUrl: { type: Object as PropType<ApiUrls> },
   fieldList: { type: Object as PropType<PageFieldInfo>, required: true },
-  batchName: { type: String, default: "batchDataList" },
+  subTableName: { type: String, default: "subDataList" },
 
   outerFormData: { type: Object as PropType<any> },
   primaryKey: { type: [String, Object] as PropType<string | any> },
@@ -190,7 +190,7 @@ const assignStatusName = () => {
     ? _pf.containerFields.filter((c: any) => c?.containerType === "table")
     : [];
   batchFields?.forEach((item: any) => {
-    const batchKey = item.tabName;
+    const batchKey = item.subTablePrimaryKey;
     if (dataForm.value[batchKey]) {
       for (let index = 0; index < dataForm.value[batchKey]?.length; index++) {
         let temp = dataForm.value[batchKey][index];
@@ -209,7 +209,7 @@ const mergeDraft = (type: string) => {
 };
 
 const analysisSameToParentField = (): Array<string> => {
-  let batchName: Array<string> = [];
+  let subTableName: Array<string> = [];
   const _pf2: any = unref(platformFields);
   let batchFields = Array.isArray(_pf2?.containerFields)
     ? _pf2.containerFields.filter((c: any) => c?.containerType === "table")
@@ -220,7 +220,7 @@ const analysisSameToParentField = (): Array<string> => {
         false === item.subFormFlag ||
         "n" == item.subFormFlag?.toString()?.toLowerCase()
       ) {
-        batchName.push(item.tabName);
+        subTableName.push(item.subTablePrimaryKey);
       }
     });
   };
@@ -248,7 +248,7 @@ const analysisSameToParentField = (): Array<string> => {
     }
   };
   arrayFieldList(fieldList);
-  return batchName;
+  return subTableName;
 };
 /**
  * 数据提交结果处理
@@ -279,9 +279,9 @@ const doMerge = (type: string) => {
     flag = false;
     mergeUrl = props.compUrl?.batchMergeUrl;
     tempForm = [];
-    sameBatchNames.forEach((batchName: string) => {
-      let batchDatas = tempDatas[batchName];
-      delete tempDatas[batchName];
+    sameBatchNames.forEach((subTableName: string) => {
+      let batchDatas = tempDatas[subTableName];
+      delete tempDatas[subTableName];
       for (let i in batchDatas) {
         //保留第一条数据的ID
         if (parseInt(i) > 0) {
@@ -543,7 +543,7 @@ defineExpose({
           :source="source"
           @addRow="addRow"
           @removeRow="removeRow"
-          :batchName="batchName"
+          :subTableName="subTableName"
         />
       </el-form>
     </el-scrollbar>

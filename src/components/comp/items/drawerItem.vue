@@ -29,7 +29,7 @@ const props = withDefaults(defineProps<ContainerPreps>(), {
   propPrefix: "",
   parentPreps: {},
   subFormFlag: "N",
-  batchName: "batchDataList",
+  subTableName: "subDataList",
 
   compSize: "default",
   source: 1,
@@ -209,6 +209,11 @@ onMounted(() => {
       :direction="drawerFields.preps?.direction || 'rtl'"
       :size="drawerFields.preps?.drawerSize || '40%'"
       :resizable="drawerFields.preps?.resizable ?? true"
+      :modal="drawerFields.preps?.modal ?? true"
+      :close-on-click-modal="drawerFields.preps?.closeOnClickModal ?? false"
+      :close-on-press-escape="drawerFields.preps?.closeOnPressEscape ?? false"
+      :show-close="drawerFields.preps?.showClose ?? false"
+      :with-header="drawerFields.preps?.withHeader ?? true"
       @resetForm="resetForm"
       @merge="handleConfirm"
       @closeAction="handleClose"
@@ -244,7 +249,7 @@ onMounted(() => {
               item.groupData ? key : 0,
             )
           "
-          :objectName="drawerItem.objectName"
+          :subTableName="drawerItem.subTableName"
           @addRow="addRow"
           @removeRow="removeRow"
           :fieldList="drawerItem"

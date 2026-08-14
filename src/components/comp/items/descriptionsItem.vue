@@ -12,7 +12,7 @@ const props = withDefaults(defineProps<ContainerPreps>(), {
   propPrefix: "",
   parentPreps: {},
   subFormFlag: "N",
-  batchName: "batchDataList",
+  subTableName: "subDataList",
 
   compSize: "default",
   source: 1,
@@ -88,6 +88,7 @@ onMounted(() => {
         :title="descItm.title || ''"
         :direction="descItm.preps?.direction || 'horizontal'"
         :column="descItm.preps?.column || 1"
+        style="margin: 5px 0"
         :border="descItm.preps?.border !== false"
         :size="descItm.preps?.size || 'default'"
         :extra="descItm.preps?.descExtra || ''"

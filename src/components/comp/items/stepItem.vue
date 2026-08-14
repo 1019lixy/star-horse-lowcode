@@ -19,7 +19,7 @@ const props = withDefaults(defineProps<ContainerPreps>(), {
   propPrefix: "",
   parentPreps: {},
   subFormFlag: "N",
-  batchName: "batchDataList",
+  subTableName: "subDataList",
 
   compSize: "default",
   source: 1,
@@ -104,6 +104,17 @@ const processStatus = computed(
 
 // 居中对齐
 const alignCenter = computed(() => props.item?.preps?.alignCenter === "Y");
+
+// 步骤条间距（el-steps space 属性）
+const stepSpace = computed(() => {
+  const space = props.item?.preps?.space;
+  if (space == null || space === "") return null;
+  const num = Number(space);
+  return isNaN(num) ? space : `${num}px`;
+});
+
+// 完成图标（el-steps finish-icon 属性）
+const finishIcon = computed(() => props.item?.preps?.finishIcon || "");
 
 // 步骤状态
 type StepStatus = "finish" | "process" | "wait" | "error" | "success";
@@ -208,7 +219,7 @@ const handleStepClick = async (index: number) => {
 const init = () => {
   const activeName = props.item?.fieldName;
   if (activeName) {
-    const idx = stepList.value.findIndex((s: any) => s.tabName === activeName);
+    const idx = stepList.value.findIndex((s: any) => s.subTablePrimaryKey === activeName);
     if (idx >= 0) activeStepIndex.value = idx;
   }
 };
@@ -216,14 +227,14 @@ onMounted(() => {
   init();
 });
 
-// 同步 item.fieldName 为当前步骤 tabName
+// 同步 item.fieldName 为当前步骤 subTablePrimaryKey
 watch(activeStepIndex, (idx) => {
   if (stepValidationState.value[idx] === "invalid") {
     delete stepValidationState.value[idx];
   }
   const step = stepList.value[idx];
-  if (step?.tabName) {
-    props.item.fieldName = step.tabName;
+  if (step?.subTablePrimaryKey) {
+    props.item.fieldName = step.subTablePrimaryKey;
   }
 });
 </script>
@@ -241,6 +252,7 @@ watch(activeStepIndex, (idx) => {
           'sh-step-bar--align-center': alignCenter,
         },
       ]"
+      :style="stepSpace != null ? { gap: stepSpace } : {}"
     >
       <div
         v-for="(stepItem, idx) in stepList"
@@ -258,7 +270,13 @@ watch(activeStepIndex, (idx) => {
               "
               class="sh-step-icon"
             >
+              <star-horse-icon
+                v-if="finishIcon"
+                :icon-class="finishIcon"
+                size="20px"
+              />
               <svg
+                v-else
                 viewBox="0 0 24 24"
                 width="20"
                 height="20"
@@ -324,7 +342,7 @@ watch(activeStepIndex, (idx) => {
             "
             :dataIndex="getDataIndex(stepItem, propPrefix, dataIndex, idx)"
             :propPrefix="getPrefix(stepItem, propPrefix, dataIndex, idx)"
-            :objectName="stepItem.objectName"
+            :subTableName="stepItem.subTableName"
             @addRow="addRow"
             @removeRow="removeRow"
             :fieldList="stepItem"

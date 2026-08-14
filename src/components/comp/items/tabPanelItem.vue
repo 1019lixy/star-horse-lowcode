@@ -51,7 +51,7 @@ onMounted(() => {
   <el-tab-pane
     v-if="!item['disVisible']"
     :label="item['title']"
-    :name="item.tabName || 'tab' + itemKey"
+    :name="item.subTablePrimaryKey || 'tab' + itemKey"
     :disabled="item.disabled"
     :closable="item.closable"
     v-bind="item.preps"
@@ -74,8 +74,8 @@ onMounted(() => {
         :compSize="compSize"
         @addRow="addRow"
         @removeRow="removeRow"
-        :objectName="item.objectName"
-        :batchName="item.batchName"
+        :subTableName="item.subTableName"
+
         :commonFormat="commonFormat"
         :dataForm="getFormData(item, dataForm, propPrefix, dataIndex, itemKey)"
         :dataIndex="getDataIndex(item, propPrefix, dataIndex, itemKey)"

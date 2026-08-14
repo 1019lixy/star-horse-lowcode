@@ -6,7 +6,7 @@ import { analysisCompDatas } from "@/api/form_utils";
 import { UserInfo } from "@/components/types";
 
 export const useDesignFormStore = defineStore("designForm", () => {
-  const containerFields = ref<CompType[]>([]);
+  const containerDataList = ref<CompType[]>([]);
   const formDataList = ref<CompType[]>([]);
   const selfFormDataList = ref<CompType[]>([]);
   const allFormDataList = ref<Array<any>>([]);
@@ -165,8 +165,8 @@ export const useDesignFormStore = defineStore("designForm", () => {
     currentSubItemId.value = subItem.id;
     currentSubItem.value = subItem;
   };
-  const setCurrentSubTabName = (tabName: string) => {
-    currentSubTabName.value = tabName;
+  const setCurrentSubTabName = (subTablePrimaryKey: string) => {
+    currentSubTabName.value = subTablePrimaryKey;
   };
   /**
    * 获取父级组件类型
@@ -259,14 +259,14 @@ export const useDesignFormStore = defineStore("designForm", () => {
     }
   };
   const setContainerList = (list: CompType[]) => {
-    containerFields.value = list;
+    containerDataList.value = list;
   };
   const addContainerList = (list: CompType[]) => {
     //如果已存在，则要过滤掉,不能重复添加
     if (Array.isArray(list)) {
-      containerFields.value = [...containerFields.value, ...list];
+      containerDataList.value = [...containerDataList.value, ...list];
     } else {
-      containerFields.value.push(list);
+      containerDataList.value.push(list);
     }
   };
   const setFormDataList = (list: CompType[]) => {
@@ -428,7 +428,7 @@ export const useDesignFormStore = defineStore("designForm", () => {
     formData,
     formInfo,
     compList,
-    containerFields,
+    containerDataList,
     formDataList,
     selfFormDataList,
     allFormDataList,

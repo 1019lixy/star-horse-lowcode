@@ -466,8 +466,8 @@ const fieldList = ref<PageFieldInfo>({
       containerFields: [
         {
           title: "计算分数",
-          objectName: "modResult",
-          tabName: "modResult",
+          subTableName: "modResult",
+          subTablePrimaryKey: "modResult",
           formVisible: false,
           preps: {},
           fieldList: [

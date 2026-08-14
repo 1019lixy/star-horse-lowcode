@@ -3079,4 +3079,6 @@ export default {
   "dyform.step.completeHint": "以下字段未填写：",
   "dyform.step.complete": "完成",
   "dyform.step.validateFailed": "以下必填字段未填写：",
+  "dyform.container.anchorSection": "区块",
+  "dyform.container.anchorNavTitle": "快速导航",
 };

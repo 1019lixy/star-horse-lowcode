@@ -303,7 +303,7 @@ export function compKey(
 ) {
   let name = "";
   if (item) {
-    name = item.id || item.fieldName || item.tabName;
+    name = item.id || item.fieldName || item.subTablePrimaryKey;
   }
   return (
     (prefix ?? "") +

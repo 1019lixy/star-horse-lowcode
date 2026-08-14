@@ -8,7 +8,7 @@ const props = withDefaults(defineProps<ContainerPreps>(), {
   propPrefix: "",
   parentPreps: {},
   subFormFlag: "N",
-  batchName: "batchDataList",
+  subTableName: "subDataList",
 
   compSize: "default",
   source: 1,
@@ -43,13 +43,13 @@ const shouldShow = () => {
       :level="level + 1"
       :primary-key="primaryKey"
       :rules="rules"
-      :batchName="batchName"
+      :subTableName="subTableName"
       :compSize="compSize"
       :compUrl="compUrl"
       :subFormFlag="subFormFlag"
       :enableSubNode="enableSubNode"
       :source="source"
-      :objectName="objectName"
+
       :dataIndex="dataIndex"
       :propPrefix="propPrefix"
       v-model:dataForm="dataForm"

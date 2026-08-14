@@ -157,7 +157,7 @@ export async function loadBusinessData(
     [],
   );
   let error = "";
-  if (result.data.code) {
+  if (result.data.code!==200) {
     error = result.data.cnMessage;
   }
   let data = result.data.data;

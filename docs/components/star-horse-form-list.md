@@ -6,13 +6,13 @@
 
 | key | 类型 | 来源 | 说明 |
 |---|---|---|---|
-| `"formFields"` | `ShallowReactive<any>` | StarHorseForm | 注入表单字段配置（默认空数组），用于删除行时同步移除对应字段的验证状态；键为 batchName，值为数组 |
+| `"formFields"` | `ShallowReactive<any>` | StarHorseForm | 注入表单字段配置（默认空数组），用于删除行时同步移除对应字段的验证状态；键为 subTableName，值为数组 |
 
 ## Watch 监听
 
 | 监听目标 | 配置 | 触发逻辑 |
 |---|---|---|
-| `dataForm.value[batchName]` | `{ immediate: false, deep: true }` | 列表数据变化时，若 showCheckBox 且 selectAll 为 true，则自动调用 toggleAllSelection(true) 全选 |
+| `dataForm.value[subTableName]` | `{ immediate: false, deep: true }` | 列表数据变化时，若 showCheckBox 且 selectAll 为 true，则自动调用 toggleAllSelection(true) 全选 |
 
 ## 联动机制
 
@@ -40,7 +40,7 @@
 | downloadTemplate() | 下载导入模板 |
 | moveColumn() | 初始化 Sortable.js 拖拽排序——拖拽结束后同步数据顺序和序号 |
 | clearAll() | 清空列表数据（带确认对话框） |
-| init() | 初始化——确保 batchName 键存在，若 staticColumn == "N" 且列表为空则按 initRows 添加空行，初始化拖拽排序，emit inited |
+| init() | 初始化——确保 subTableName 键存在，若 staticColumn == "N" 且列表为空则按 initRows 添加空行，初始化拖拽排序，emit inited |
 
 ## 基础用法
 
@@ -61,7 +61,7 @@
 | compUrl | `ApiUrls` | 否 | — | 接口地址配置 |
 | fieldList | `FieldInfo[]` | **是** | — | 字段配置列表 |
 | defaultValues | `object` | 否 | `{}` | 新增行默认值 |
-| batchName | `string` | 否 | `'batchDataList'` | 批量数据 Key |
+| subTableName | `string` | 否 | `'subDataList'` | 批量数据 Key |
 | primaryKey | `string \| object` | 否 | — | 主键字段名 |
 | initRows | `number` | 否 | `0` | 初始行数 |
 | importInfo | `object` | 否 | — | 导入信息配置 |
@@ -144,12 +144,12 @@
 | compUrl | `ApiUrls` | 否 | — | 接口地址配置 |
 | fieldList | `PageFieldInfo \| any` | 否 | — | 字段配置 |
 | item | `any` | 否 | — | 组件配置项 |
-| objectName | `string` | 否 | — | 子集合 Key |
+| subTableName | `string` | 否 | — | 子集合 Key |
 | dataIndex | `number` | 否 | `-1` | 数据索引 |
 | propPrefix | `string` | 否 | `''` | 属性前缀 |
 | parentPreps | `any` | 否 | `{}` | 父组件属性 |
 | subFormFlag | `string` | 否 | `'N'` | 是否子表单 |
-| batchName | `string` | 否 | `'batchDataList'` | 批量数据 Key |
+| subTableName | `string` | 否 | `'subDataList'` | 批量数据 Key |
 | batchFieldName | `string` | 否 | `'batchFieldList'` | 批量字段 Key |
 | primaryKey | `string \| any` | 否 | — | 主键字段名 |
 | rules | `any` | 否 | — | 校验规则 |

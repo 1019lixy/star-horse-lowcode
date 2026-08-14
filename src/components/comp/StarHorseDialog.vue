@@ -44,6 +44,14 @@ const props = defineProps({
   /** 手动指定 z-index；0 表示打开时自动计算（取当前页面最高弹层 +1） */
   zIndex: { type: Number, default: 0 },
   appendTo: { type: String, default: "body" },
+  // ── el-dialog 属性透传（默认值与原硬编码一致，确保向后兼容） ──
+  modal: { type: Boolean, default: true },
+  top: { type: String, default: "15vh" },
+  closeOnClickModal: { type: Boolean, default: false },
+  closeOnPressEscape: { type: Boolean, default: false },
+  showClose: { type: Boolean, default: false },
+  center: { type: Boolean, default: false },
+  destroyOnClose: { type: Boolean, default: true },
 });
 let windowsType = computed({
   get() {
@@ -177,16 +185,18 @@ watch(
     <el-dialog
       :append-to-body="false"
       :append-to="appendTo"
-      :center="false"
-      :destroy-on-close="true"
-      :close-on-click-modal="false"
-      :close-on-press-escape="false"
+      :center="center"
+      :destroy-on-close="destroyOnClose"
+      :close-on-click-modal="closeOnClickModal"
+      :close-on-press-escape="closeOnPressEscape"
       :lock-scroll="true"
       class="dialog-settings"
       :fullscreen="isFullScreen || isMobile"
-      :show-close="false"
+      :show-close="showClose"
       :draggable="draggable && !isFullScreen && !isMobile"
       :align-center="true"
+      :modal="modal"
+      :top="top"
       v-model="windowsType"
       @close="beforeClose"
       @open="open"

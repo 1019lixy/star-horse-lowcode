@@ -447,7 +447,7 @@ const dataList = [
         {
           containerType: "table",
           subFormFlag: "Y",
-          tabName: "relationDetails",
+          subTablePrimaryKey: "relationDetails",
           preps: {
             staticData: "Y",
           },
@@ -612,7 +612,7 @@ const dataList = [
               preps: {
                 bareFlag: "Y",
                 subFormFlag: true,
-                batchName: "params",
+                subTableName: "params",
                 compName: WebUrlComp,
               },
             },

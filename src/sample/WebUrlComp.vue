@@ -33,7 +33,7 @@ const props = defineProps({
     type: Number,
     default: 0,
   },
-  batchName: {
+  subTableName: {
     type: String,
     default: "",
   },
@@ -173,12 +173,12 @@ const dataSourceField = reactive<PageFieldInfo | any>({
       containerFields: [
         {
           title: "标准参数",
-          tabName: "queryParams",
-          objectName: "queryParams",
+          subTablePrimaryKey: "queryParams",
+          subTableName: "queryParams",
           containerFields: [
             {
               containerType: "table",
-              tabName: "queryParams",
+              subTablePrimaryKey: "queryParams",
               fieldList: [
                 {
                   label: "参数名",
@@ -217,8 +217,8 @@ const dataSourceField = reactive<PageFieldInfo | any>({
         },
         {
           title: "自定义参数",
-          tabName: "customParams",
-          objectName: "customParams",
+          subTablePrimaryKey: "customParams",
+          subTableName: "customParams",
           fieldList: [
             {
               fieldName: "customParams",
@@ -244,14 +244,14 @@ const submitValid = async () => {
 };
 const isInited = ref<boolean>(false);
 const createSubForm = () => {
-  if (props.subFormFlag && !dataForm.value[props.batchName]) {
-    dataForm.value[props.batchName] = {};
+  if (props.subFormFlag && !dataForm.value[props.subTableName]) {
+    dataForm.value[props.subTableName] = {};
   }
-  return props.batchName;
+  return props.subTableName;
 };
 const init = () => {
   nextTick(() => {
-    if (props.preps?.objectName && dataForm.value) {
+    if (props.preps?.subTableName && dataForm.value) {
       let temp = dataForm.value;
       setFormData(temp);
       currentTabName.value = temp.dataSource || "data";
@@ -294,11 +294,11 @@ defineExpose({
       ref="dataSourceFormRef"
       :fieldList="dataSourceField"
       :subFormFlag="subFormFlag ? 'Y' : 'N'"
-      :propPrefix="batchName"
+      :propPrefix="subTableName"
       :key="createSubForm()"
-      :batchName="batchName"
+      :subTableName="subTableName"
       :source="source"
-      v-model:dataForm="dataForm[batchName]"
+      v-model:dataForm="dataForm[subTableName]"
     />
   </el-scrollbar>
 </template>

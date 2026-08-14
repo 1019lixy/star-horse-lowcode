@@ -73,7 +73,7 @@ export interface ContainerPreps {
   /**
    * 组件名称
    */
-  objectName?: string;
+  subTableName?: string;
   /**
    * 数据索引
    */
@@ -88,10 +88,7 @@ export interface ContainerPreps {
    * 子表单标识
    */
   subFormFlag?: string;
-  /**
-   * 批量操作名称
-   */
-  batchName?: string;
+
   /**
 
      * 主键
@@ -193,7 +190,7 @@ export interface RelationDetail {
   /**
    * 控制目标：field(默认,普通组件) | container(容器项,如tab/collapse/card/splitter子项)
    * - field: 走原有 controlFieldProps 逻辑,relationFields 为 fieldName
-   * - container: 走容器控制逻辑,relationFields 为容器项的 tabName
+   * - container: 走容器控制逻辑,relationFields 为容器项的 subTablePrimaryKey
    */
   controlTarget?: "field" | "container";
   /**

@@ -31,7 +31,7 @@ const fields = ref<Array<any>>([
         containerFields: [
           {
             containerType: "table",
-            tabName: "imageInfo",
+            subTablePrimaryKey: "imageInfo",
             fieldList: [
               {
                 fieldName: "imageType",

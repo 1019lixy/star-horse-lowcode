@@ -21,7 +21,7 @@
 |---|---|---|---|---|
 | compUrl | `ApiUrls` | 否 | — | 接口地址配置，详见 [ApiUrls 类型](../types/api-urls.md) |
 | fieldList | `PageFieldInfo` | **是** | — | 表单字段配置，详见 [PageFieldInfo 类型](../types/page-field-info.md) |
-| batchName | `string` | 否 | `'batchDataList'` | 提交后端批量数据的 Key 名称 |
+| subTableName | `string` | 否 | `'subDataList'` | 提交后端批量数据的 Key 名称 |
 | batchFieldName | `string` | 否 | `'batchFieldList'` | 批量字段列表的 Key 名称 |
 | outerFormData | `object` | 否 | — | 外部传入的表单数据 |
 | primaryKey | `string \| object` | 否 | — | 主键字段名 |

@@ -20,7 +20,7 @@ const imageFieldList = reactive<PageFieldInfo>({
   containerFields: [
     {
       containerType: "table",
-      tabName: "imageInfo",
+      subTablePrimaryKey: "imageInfo",
       fieldList: [
         {
           fieldName: "imageType",

@@ -31,14 +31,14 @@ export const useDynamicFormStore = defineStore("dynamicForm", () => {
   };
   /**
    * 向集合添加数据
-   * @param batchName
+   * @param subTableName
    * @param data
    */
-  const addBatchData = (batchName: string, data: any) => {
-    let batchDatas: Array<any> = dataForm.value[batchName] as Array<any>;
+  const addBatchData = (subTableName: string, data: any) => {
+    let batchDatas: Array<any> = dataForm.value[subTableName] as Array<any>;
     if (!batchDatas || batchDatas.length == 0) {
-      dataForm.value[batchName] = [];
-      batchDatas = dataForm.value[batchName];
+      dataForm.value[subTableName] = [];
+      batchDatas = dataForm.value[subTableName];
     }
     batchDatas.push(data);
   };
@@ -51,16 +51,16 @@ export const useDynamicFormStore = defineStore("dynamicForm", () => {
   };
   /**
    * 删除集合内指定的所有属性
-   * @param batchName 集合名称
+   * @param subTableName 集合名称
    * @param fieldName  属性名称
    * @param rowIndex 要删除属性所在的行 从1开始  -1 表示删除所有的属性
    */
   const delBatchField = (
-    batchName: string,
+    subTableName: string,
     fieldName: string,
     rowIndex: number = -1,
   ) => {
-    const batchDatas = dataForm.value[batchName];
+    const batchDatas = dataForm.value[subTableName];
     if (!batchDatas || batchDatas.length == 0) {
       return;
     }
@@ -86,21 +86,21 @@ export const useDynamicFormStore = defineStore("dynamicForm", () => {
   };
   /**
    * 在集合里新增或者修改属性的值
-   * @param batchName 集合名称
+   * @param subTableName 集合名称
    * @param fieldName 属性名称
    * @param value 值
    * @param rowIndex 集合索引 从1开始 -1 表示在所有的数据中新增或者修改指定的值
    */
   const batchAddOrUpdateField = (
-    batchName: string,
+    subTableName: string,
     fieldName: string,
     value: any,
     rowIndex: number = -1,
   ) => {
-    let batchDatas = dataForm.value[batchName];
+    let batchDatas = dataForm.value[subTableName];
     if (!batchDatas || batchDatas.length == 0) {
-      dataForm.value[batchName] = [];
-      batchDatas = dataForm.value[batchName];
+      dataForm.value[subTableName] = [];
+      batchDatas = dataForm.value[subTableName];
     }
     if (batchDatas instanceof Object) {
       batchDatas[fieldName] = value;
@@ -135,22 +135,22 @@ export const useDynamicFormStore = defineStore("dynamicForm", () => {
   };
   /**
    * 重命名集合属性，
-   * @param batchName 集合名称
+   * @param subTableName 集合名称
    * @param sourceField 原来的属性名
    * @param distField 新的属性名
    * @param newValue  新的值
    * @param rowIndex 指定重命名集合索引 从1开始 ，-1 表示重命名所有属性
    */
   const batchRenameField = (
-    batchName: string,
+    subTableName: string,
     sourceField: string,
     distField: string,
     newValue?: any,
     rowIndex: number = -1,
   ) => {
-    const batchDatas = dataForm.value[batchName];
+    const batchDatas = dataForm.value[subTableName];
     if (!batchDatas || batchDatas.length == 0) {
-      batchAddOrUpdateField(batchName, distField, newValue, rowIndex);
+      batchAddOrUpdateField(subTableName, distField, newValue, rowIndex);
       return;
     }
     const dataFun = (
@@ -192,16 +192,16 @@ export const useDynamicFormStore = defineStore("dynamicForm", () => {
   };
   /**
    * 获取集合指定属性的数据
-   * @param batchName 集合名称
+   * @param subTableName 集合名称
    * @param fieldName 属性名称
    * @param rowIndex 指定获取集合索引数据 从1开始，-1表示获取所有
    */
   const getBatchFieldValue = (
-    batchName: string,
+    subTableName: string,
     fieldName: string,
     rowIndex: number = -1,
   ) => {
-    const batchDatas = dataForm.value[batchName];
+    const batchDatas = dataForm.value[subTableName];
     if (!batchDatas) {
       return;
     }

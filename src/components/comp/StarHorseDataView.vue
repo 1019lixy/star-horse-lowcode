@@ -20,11 +20,11 @@ import { isMobile } from "@/api/device";
 const dataForm = ref<any>({});
 const props = defineProps({
   compUrl: { type: Object as PropType<ApiUrls> },
-  objectName: { type: String },
+  subTableName: { type: String },
   subFormFlag: { type: String, default: "N" },
   formSize: { type: String, default: "default" },
   labelPosition: { type: String, default: "left" },
-  batchName: { type: String, default: "batchDataList" },
+  subTableName: { type: String, default: "subDataList" },
 
   fieldList: { type: Object, required: true },
   globalCondition: { type: Object },
@@ -155,7 +155,7 @@ defineExpose({
           :compSize="formSize"
           v-model:dataForm="dataForm"
           :source="source"
-          :batchName="batchName"
+          :subTableName="subTableName"
           :commonFormat="dataFormat"
         />
         <slot name="ext" :dataForm="dataForm"></slot>

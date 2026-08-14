@@ -164,7 +164,7 @@ SVG 图标组件，支持系统图标库和自定义图标。
 | primaryKey | `any` | 否 | — | 主键 |
 | dataIndex | `number` | 否 | `-1` | 数据索引 |
 | bareFlag | `boolean` | 否 | `false` | 是否基础组件 |
-| batchName | `string` | 否 | `''` | 批量数据 Key |
+| subTableName | `string` | 否 | `''` | 批量数据 Key |
 | compSize | `string` | 否 | `'default'` | 组件尺寸 |
 | showLabel | `boolean` | 否 | `true` | 是否显示标签 |
 | source | `number` | 否 | `1` | 数据来源标识 |

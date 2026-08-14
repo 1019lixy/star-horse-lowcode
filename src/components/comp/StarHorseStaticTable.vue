@@ -367,7 +367,7 @@ defineExpose({
       <template
         v-if="showBatchField"
         v-for="item in batchFieldContainers"
-        :key="compKey(item, item.tabName)"
+        :key="compKey(item, item.subTablePrimaryKey)"
       >
         <star-horse-table-column :data-format="dataFormat" :item="item" />
       </template>

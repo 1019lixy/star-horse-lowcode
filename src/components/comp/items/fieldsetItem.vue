@@ -13,6 +13,7 @@ import {
   unref,
   watch,
 } from "vue";
+import {FieldInfo} from "@/components/types";
 
 const props = withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
@@ -21,7 +22,7 @@ const props = withDefaults(defineProps<ContainerPreps>(), {
   propPrefix: "",
   parentPreps: {},
   subFormFlag: "N",
-  batchName: "batchDataList",
+  subTableName: "subDataList",
 
   compSize: "default",
   source: 1,
@@ -30,7 +31,6 @@ const emits = defineEmits(["addRow", "removeRow"]);
 const dataForm: ModelRef<any> = defineModel("dataForm");
 // inject 表单字段列表,用于构造 initRelationEvent 所需的 props.formInfo
 const formFields = inject("formFields", ref<any[]>([]));
-const collapsible = computed(() => props.item.preps?.collapsible ?? true);
 /**
  * 列表添加行数据
  * @param row
@@ -48,8 +48,10 @@ const removeRow = (row: any) => {
 
 const init = () => {};
 const innerCollapsed = ref<boolean>(false);
-const toggleInner = () => {
-  if (collapsible.value) innerCollapsed.value = !innerCollapsed.value;
+const toggleInner = (item:FieldInfo) => {
+ if(item.preps){
+   item.preps.innerCollapsed =  !item.preps.innerCollapsed;
+ }
 };
 
 /**
@@ -115,20 +117,23 @@ onMounted(() => {
         v-if="fiedsetItem.formVisible !== false"
         class="fieldset-container"
         :class="{
-          'border-dashed': item.preps?.borderStyle === 'dashed',
-          'border-none': item.preps?.borderStyle === 'none',
-          'is-collapsible': collapsible,
-          'is-collapsed': innerCollapsed,
+          'border-dashed': fiedsetItem.preps?.borderStyle === 'dashed',
+          'border-none': fiedsetItem.preps?.borderStyle === 'none',
+          'is-collapsible': fiedsetItem.preps?.collapsible,
+          'is-collapsed': fiedsetItem.preps?.innerCollapsed
         }"
+        :disabled="fiedsetItem.preps?.disabled || undefined"
+        :form="fiedsetItem.preps?.form || undefined"
+        :name="fiedsetItem.preps?.name || undefined"
       >
         <legend
           class="fieldset-legend"
-          :class="{ clickable: collapsible }"
-          @click="toggleInner"
+          :class="{ clickable: fiedsetItem.preps?.collapsible }"
+          @click="toggleInner(fiedsetItem)"
         >
           <svg
-            v-if="collapsible"
-            :class="['legend-arrow', { rotated: innerCollapsed }]"
+            v-if="fiedsetItem.preps?.collapsible"
+            :class="['legend-arrow', { rotated: fiedsetItem.preps?.innerCollapsed }]"
             viewBox="0 0 10 6"
             fill="none"
             width="10"
@@ -147,7 +152,7 @@ onMounted(() => {
             {{ fiedsetItem.title || "FieldSet" }}
           </span>
         </legend>
-        <div v-show="!innerCollapsed" class="fieldset-body">
+        <div v-show="!fiedsetItem.preps?.innerCollapsed" class="fieldset-body">
           <star-horse-form-item
             :source="source"
             :compUrl="compUrl"
@@ -178,7 +183,7 @@ onMounted(() => {
                 item.groupData ? key : 0,
               )
             "
-            :objectName="fiedsetItem.objectName"
+            :subTableName="fiedsetItem.subTableName"
             @addRow="addRow"
             @removeRow="removeRow"
             :fieldList="fiedsetItem"
@@ -198,7 +203,7 @@ onMounted(() => {
   border: 1px solid #dcdfe6;
   border-radius: 6px;
   padding: 12px 16px 8px;
-  margin: 0;
+  margin: 5px 0;
   position: relative;
   transition:
     border-color 0.2s,

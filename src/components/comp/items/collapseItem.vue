@@ -18,7 +18,7 @@ withDefaults(defineProps<ContainerPreps>(), {
   propPrefix: "",
   parentPreps: {},
   subFormFlag: "N",
-  batchName: "batchDataList",
+  subTableName: "subDataList",
 
   compSize: "default",
   source: 1,
@@ -60,7 +60,7 @@ onMounted(() => {
             collapseItem.formVisible !== false &&
             !collapseItem.preps?.hideCollapseItem
           "
-          :name="collapseItem.tabName || key"
+          :name="collapseItem.subTablePrimaryKey || key"
           :disabled="collapseItem.disabled"
           v-bind="collapseItem.preps"
           :index="
@@ -89,7 +89,7 @@ onMounted(() => {
             @addRow="addRow"
             @removeRow="removeRow"
             :commonFormat="commonFormat"
-            :objectName="collapseItem.objectName"
+            :subTableName="collapseItem.subTableName"
             :dataForm="
               getFormData(
                 collapseItem,

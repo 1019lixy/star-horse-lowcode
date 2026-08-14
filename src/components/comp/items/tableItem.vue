@@ -11,7 +11,7 @@ const props = withDefaults(defineProps<ContainerPreps>(), {
   propPrefix: "",
   parentPreps: {},
   subFormFlag: "N",
-  batchName: "batchDataList",
+  subTableName: "subDataList",
 
   compSize: "default",
   source: 1,
@@ -21,9 +21,7 @@ const dataForm: ModelRef<any> = defineModel("dataForm");
 
 const batchContainers = computed(() => {
   const item: any = props.item;
-  return Array.isArray(item?.containerFields)
-    ? item.containerFields.filter((c: any) => c?.containerType === "table")
-    : [];
+  return item.containerType === "table" ? item.containerFields : [];
 });
 
 const init = () => {};
@@ -58,7 +56,7 @@ onMounted(() => {
         <el-tab-pane
           :label="temp['title']"
           v-if="!(temp['disVisible'] ?? temp.preps?.disVisible)"
-          :name="temp.tabName || 'sub_tab' + key"
+          :name="temp.subTablePrimaryKey || 'sub_tab' + key"
           :disabled="temp.disabled"
           class="h-full flex flex-col"
         >

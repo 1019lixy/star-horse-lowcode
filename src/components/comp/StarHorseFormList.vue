@@ -33,7 +33,7 @@ const props = defineProps({
   compUrl: { type: Object as PropType<ApiUrls> },
   fieldList: { type: Object as PropType<FieldInfo[]>, required: true },
   defaultValues: { type: Object, default: {} },
-  batchName: { type: String, default: "batchDataList" },
+  subTableName: { type: String, default: "subDataList" },
   primaryKey: { type: [String, Object] as PropType<string | any> },
   initRows: { type: Number, default: 0 },
   importInfo: { type: Object as PropType<ApiUrls> },
@@ -52,6 +52,10 @@ const props = defineProps({
     type: Function,
     default: () => {},
   },
+  // ── el-table 属性透传 ──
+  tableBorder: { type: Boolean, default: true },
+  tableStripe: { type: Boolean, default: true },
+  tableShowHeader: { type: Boolean, default: true },
 });
 const emits = defineEmits(["addRow", "removeRow", "inited"]);
 const dataForm: ModelRef<any> = defineModel("dataForm");
@@ -111,7 +115,7 @@ const editSubData = (row: any) => {
  */
 const removeSubData = (row: any) => {
   const doRemove = () => {
-    const batchArray = dataForm.value[props.batchName];
+    const batchArray = dataForm.value[props.subTableName];
     const found = findNodeInTree(batchArray, row.__nodeId);
     if (found) {
       found.parentChildren.splice(found.index, 1);
@@ -169,8 +173,8 @@ const findNodeInTree = (
 const dynamicHandleAddForm = async (row: any, type: string) => {
   currentRow.value = row;
   rowDialogVisible.value = true;
-  if (!dataForm.value[props.batchName]) {
-    dataForm.value[props.batchName] = [];
+  if (!dataForm.value[props.subTableName]) {
+    dataForm.value[props.subTableName] = [];
   }
   if (type == "edit") {
     row["starHorseEditing"] = "yes";
@@ -248,7 +252,7 @@ const mergeData = async (type: string) => {
       rowDataFormRef.value.resetForm();
     }
   } else {
-    dataForm.value[props.batchName].push(Object.assign({}, formData));
+    dataForm.value[props.subTableName].push(Object.assign({}, formData));
     if (type == "close") {
       closeAction();
     } else {
@@ -264,8 +268,8 @@ const closeAction = () => {
   document.removeEventListener("keydown", enterEvent);
 };
 const initDataList = () => {
-  if (!dataForm.value[props.batchName]) {
-    dataForm.value[props.batchName] = [];
+  if (!dataForm.value[props.subTableName]) {
+    dataForm.value[props.subTableName] = [];
   }
 };
 /**
@@ -278,12 +282,12 @@ const dynamicHandleAddRow = (row: any, type: number) => {
   if (type === 1) {
     let obj = JSON.parse(JSON.stringify(props.defaultValues || {}));
     obj["id"] = uuid();
-    dataForm.value[props.batchName].push(obj);
+    dataForm.value[props.subTableName].push(obj);
     emits("addRow", row);
   } else {
     let index = row.xh - 1;
-    formFields && formFields[props.batchName]?.splice(index, 1);
-    dataForm.value[props.batchName].splice(index, 1);
+    formFields && formFields[props.subTableName]?.splice(index, 1);
+    dataForm.value[props.subTableName].splice(index, 1);
     emits("removeRow", row);
   }
   //将事件传出去
@@ -352,7 +356,7 @@ const uploadSuccess = (response: any, _file: any, _fileList: any) => {
     return;
   }
   success(i18n("ui.importSuccess"));
-  dataForm.value[props.batchName] = response.data;
+  dataForm.value[props.subTableName] = response.data;
   importDialogVisible.value = false;
 };
 let currentItem = ref<any>({});
@@ -380,14 +384,14 @@ const moveColumn = () => {
           return;
         }
         // 新增数据交换逻辑
-        const data: any = dataForm.value[props.batchName];
+        const data: any = dataForm.value[props.subTableName];
         const movedItem = data.splice(oldIndex, 1)[0];
         data.splice(newIndex, 0, movedItem);
         // 新增序号同步逻辑
         data.forEach((item: any, index: number) => {
           item.xh = index + 1; // 更新序号
-          if (formFields && formFields[props.batchName]) {
-            const fieldItem = formFields[props.batchName][index];
+          if (formFields && formFields[props.subTableName]) {
+            const fieldItem = formFields[props.subTableName][index];
             if (fieldItem) fieldItem.xh = index + 1; // 同步更新表单字段
           }
         });
@@ -397,13 +401,13 @@ const moveColumn = () => {
 };
 const clearAll = () => {
   if (
-    !dataForm.value[props.batchName] ||
-    dataForm.value[props.batchName]?.length == 0
+    !dataForm.value[props.subTableName] ||
+    dataForm.value[props.subTableName]?.length == 0
   ) {
     return;
   }
   operationConfirm(i18n("ui.confirm")).then(() => {
-    dataForm.value[props.batchName] = [];
+    dataForm.value[props.subTableName] = [];
   });
 };
 const expandFlag = ref<boolean>(false);
@@ -420,21 +424,21 @@ const toggleAllExpand = (rows: any[], expand: boolean) => {
 };
 const expandSubNodes = () => {
   expandFlag.value = !expandFlag.value;
-  const batchArray = dataForm.value[props.batchName];
+  const batchArray = dataForm.value[props.subTableName];
   if (batchArray && batchArray.length > 0) {
     toggleAllExpand(batchArray, expandFlag.value);
   }
 };
 const init = async () => {
-  // console.log(Object.keys(dataForm.value), props.batchName);
-  if (!Object.keys(dataForm.value).includes(props.batchName)) {
-    dataForm.value[props.batchName] = [];
+  // console.log(Object.keys(dataForm.value), props.subTableName);
+  if (!Object.keys(dataForm.value).includes(props.subTableName)) {
+    dataForm.value[props.subTableName] = [];
   }
   /**
    * 如果列表为空的情况才初始化行数
    */
   if (props.staticColumn !== "Y") {
-    if (dataForm.value[props.batchName]?.length == 0) {
+    if (dataForm.value[props.subTableName]?.length == 0) {
       for (let i = 0; i < props.initRows; i++) {
         handleAddDetails(null, 1);
       }
@@ -448,10 +452,10 @@ onMounted(async () => {
   await init();
 });
 watch(
-  () => dataForm.value[props.batchName]?.length,
+  () => dataForm.value[props.subTableName]?.length,
   () => {
     if (props.showCheckBox && props.selectAll) {
-      const val = dataForm.value[props.batchName];
+      const val = dataForm.value[props.subTableName];
       if (val && val.length > 0) {
         nextTick(() => {
           // 改用原生全选方法
@@ -586,9 +590,9 @@ watch(
     </div>
     <el-table
       v-loading="loading"
-      :data="dataForm[batchName]"
+      :data="dataForm[subTableName]"
       fit
-      border
+      :border="tableBorder"
       sortable
       :size="size"
       :row-key="getRowIdentity"
@@ -597,7 +601,8 @@ watch(
       :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
       ref="starHorseFormListRef"
       class="sh-columns"
-      :stripe="true"
+      :stripe="tableStripe"
+      :show-header="tableShowHeader"
       max-height="400px"
       :header-cell-style="{
         background: '#f2f2f2',
@@ -645,7 +650,7 @@ watch(
               :commonFormat="commonFormat"
               :rules="rules"
               :source="source"
-              :batchName="batchName"
+              :subTableName="subTableName"
               :primaryKey="primaryKey"
               :staticColumn="staticColumn"
             />
@@ -658,7 +663,7 @@ watch(
             :rules="rules"
             :source="source"
             :commonFormat="commonFormat"
-            :batchName="batchName"
+            :subTableName="subTableName"
             :primaryKey="primaryKey"
             :staticColumn="staticColumn"
           />

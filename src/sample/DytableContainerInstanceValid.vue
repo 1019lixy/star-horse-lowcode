@@ -14,7 +14,7 @@
 
 <script lang="ts" setup>
 import { onMounted, ref } from "vue";
-import { analysisCompDatas, analysisComps } from "@/api/form_utils";
+import { analysisCompDatas, analysisAppComps } from "@/api/form_utils";
 import { getDesignFormStore } from "@/store/StoreManager";
 import { parseDateByType } from "@/api/date_utils";
 

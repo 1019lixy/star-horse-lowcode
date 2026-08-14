@@ -1,14 +1,9 @@
 <script setup lang="ts">
-import {
-  checkVisible,
-  labelVisibleCheck,
-  loadProp,
-  validMsg,
-} from "@/api/form_utils";
-import { ContainerPreps } from "@/components/types/ItemPreps";
-import { computed, ModelRef, onMounted, ref } from "vue";
+import {checkVisible, labelVisibleCheck, loadProp, validMsg,} from "@/api/form_utils";
+import {ContainerPreps} from "@/components/types/ItemPreps";
+import {computed, ModelRef, onMounted, ref} from "vue";
 import StarHorseItem from "@/components/comp/StarHorseItem.vue";
-import { FieldInfo } from "@/components/types";
+import {FieldInfo} from "@/components/types";
 
 const props = withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
@@ -17,7 +12,7 @@ const props = withDefaults(defineProps<ContainerPreps>(), {
   propPrefix: "",
   parentPreps: {},
   subFormFlag: "N",
-  batchName: "batchDataList",
+  subTableName: "subDataList",
 
   compSize: "default",
   source: 1,
@@ -25,7 +20,7 @@ const props = withDefaults(defineProps<ContainerPreps>(), {
 const dataForm: ModelRef<any> = defineModel("dataForm");
 const dytableData = computed(() => {
   const item: any = props.item;
-  return item?.containerFields?.[0]?.fieldList || [];
+  return item?.containerType == "dytable" ? item?.containerFields?.[0]?.fieldList : [];
 });
 const rowHeight = computed(() => {
   if (props.compSize == "large") {
@@ -53,7 +48,8 @@ const columnStructure = computed(() => {
   return colStructure;
 });
 
-const init = () => {};
+const init = () => {
+};
 onMounted(() => {
   init();
 });
@@ -78,14 +74,14 @@ const startWidth = ref(0);
 let resizeLine: HTMLElement | null = null;
 // 处理列宽调整开始
 const handleColResizeStart = (
-  e: MouseEvent,
-  row: FieldInfo[],
-  index: number,
+    e: MouseEvent,
+    row: FieldInfo[],
+    index: number,
 ) => {
   e.preventDefault();
   const leftCols = row?.slice(0, index) ?? [];
   const hideCell =
-    leftCols.filter((item) => !item.preps.cellVisible)?.length || 0;
+      leftCols.filter((item) => !item.preps?.cellVisible)?.length || 0;
   resizingColIndex.value = row ? index - hideCell + 1 : index;
   startX.value = e.clientX;
   document.body.style.userSelect = "none";
@@ -146,19 +142,23 @@ const handleColResizeEnd = () => {
 <template>
   <template v-if="dytableData.length > 0">
     <table
-      ref="containerTableRef"
-      :style="{
-        width: item.preps?.styles?.width ?? '100%',
+        ref="containerTableRef"
+        :style="{
+        width: item.preps?.tableWidth || (item.preps?.styles?.width ?? '100%'),
         height: item.preps?.styles?.height ?? '100%',
         overflow: item.preps?.styles?.overflow ?? 'auto',
       }"
-      class="dynamic-table instance-table"
+        :border="item.preps?.border ?? undefined"
+        :cellpadding="item.preps?.cellpadding ?? undefined"
+        :cellspacing="item.preps?.cellspacing ?? undefined"
+        class="dynamic-table instance-table"
+        :class="{ 'striped-table': item.preps?.striped }"
     >
       <!-- 隐藏的表头行，用于保持列结构和宽度 -->
-      <thead v-if="dytableData.length > 0">
-        <tr v-if="item.preps?.showLineNumber" class="hidden-header">
-          <td style="width: 30px; height: 10px; visibility: visible">NO.</td>
-          <td
+      <thead v-if="dytableData.length > 0 && item.preps?.showHeader !== false">
+      <tr v-if="item.preps?.showLineNumber" class="hidden-header">
+        <td style="width: 30px; height: 10px; visibility: visible">NO.</td>
+        <td
             v-for="(col, index) in columnStructure"
             :key="index"
             :style="{
@@ -169,18 +169,18 @@ const handleColResizeEnd = () => {
               visibility: 'visible',
             }"
             class="dy-cell no-cell"
-          >
-            {{ index + 1 }}
-            <div
+        >
+          {{ index + 1 }}
+          <div
               v-if="item.preps?.allowResize"
               class="col-resize-handle"
               :title="'拖动改变宽度' + index"
               @mousedown="(e) => handleColResizeStart(e, null, index)"
-            />
-          </td>
-        </tr>
-        <tr v-else class="hidden-header">
-          <td
+          />
+        </td>
+      </tr>
+      <tr v-else class="hidden-header">
+        <td
             v-for="(col, index) in columnStructure"
             :key="index"
             :style="{
@@ -191,60 +191,60 @@ const handleColResizeEnd = () => {
               background: 'rgba(247,250,250,0.8)',
               visibility: 'hidden',
             }"
-          >
-            <div
+        >
+          <div
               v-if="item.preps?.allowResize"
               class="col-resize-handle"
               :title="'拖动改变宽度' + index"
               @mousedown="(e) => handleColResizeStart(e, null, index)"
-            />
-          </td>
-        </tr>
+          />
+        </td>
+      </tr>
       </thead>
       <tbody>
-        <tr
+      <tr
           v-for="(row, rowIndex) in dytableData"
           :key="rowIndex"
           class="dy-tr"
-        >
-          <td class="dy-cell no-cell" v-if="item.preps?.showLineNumber">
-            {{ Number(rowIndex) + 1 }}
-          </td>
-          <template v-for="(sitem, colIndex) in row">
-            <td
-              v-if="checkItem(sitem).preps.cellVisible"
+      >
+        <td class="dy-cell no-cell" v-if="item.preps?.showLineNumber">
+          {{ Number(rowIndex) + 1 }}
+        </td>
+        <template v-for="(sitem, colIndex) in row">
+          <td
+              v-if="checkItem(sitem)?.preps?.cellVisible"
               :key="colIndex * rowIndex"
-              :colspan="checkItem(sitem).preps?.colspan || 1"
-              :rowspan="checkItem(sitem).preps?.rowspan || 1"
+              :colspan="checkItem(sitem)?.preps?.colspan || 1"
+              :rowspan="checkItem(sitem)?.preps?.rowspan || 1"
               :class="{
-                'title-style': checkItem(sitem).preps?.labelFlag == 'Y',
+                'title-style': checkItem(sitem)?.preps?.labelFlag == 'Y',
               }"
               :style="{
-                width: checkItem(sitem).preps?.colWidth || '100%',
-                minHeight: checkItem(sitem).preps?.colHeight || rowHeight,
-                'text-align': checkItem(sitem).preps?.textAlign ?? 'left',
+                width: checkItem(sitem)?.preps?.colWidth || '100%',
+                minHeight: checkItem(sitem)?.preps?.colHeight || rowHeight,
+                'text-align': checkItem(sitem)?.preps?.textAlign ?? 'left',
                 'white-space': sitem.staticData !== true ? 'nowrap' : 'unset',
-                'word-break': !!checkItem(sitem).preps?.wordBreak
+                'word-break': !!checkItem(sitem)?.preps?.wordBreak
                   ? 'break-all'
                   : 'normal',
                 'text-overflow': 'ellipsis',
                 position: 'relative',
               }"
-            >
-              <div
+          >
+            <div
                 class="h-full w-full flex-1 p-2 items-center justify-center flex flex-col"
                 v-if="sitem.staticData === true"
                 v-html="sitem.preps?.textContent"
-              />
-              <template v-else v-for="tempData in createArray(sitem)">
-                <template
+            />
+            <template v-else v-for="tempData in createArray(sitem)">
+              <template
                   v-if="
                     tempData.type != 'button' &&
                     tempData.type != 'usercomp' &&
                     !tempData.preps?.staticData
                   "
-                >
-                  <el-form-item
+              >
+                <el-form-item
                     :size="compSize"
                     :label="labelVisibleCheck(tempData)"
                     class="flex w-full flex-1 my-5"
@@ -260,17 +260,17 @@ const handleColResizeEnd = () => {
                         tempData.preps?.headerFlag != 'Y') ||
                       checkVisible(tempData, dataForm)
                     "
-                  >
-                    <star-horse-item
+                >
+                  <star-horse-item
                       :primaryKey="primaryKey"
                       :compSize="compSize"
                       v-model:dataForm="dataForm"
                       :item="tempData"
                       :dataIndex="dataIndex"
                       :source="source"
-                    />
-                  </el-form-item>
-                  <star-horse-item
+                  />
+                </el-form-item>
+                <star-horse-item
                     v-else-if="
                       tempData.viewVisible || checkVisible(tempData, dataForm)
                     "
@@ -281,27 +281,27 @@ const handleColResizeEnd = () => {
                     class="flex w-full flex-1"
                     :dataIndex="dataIndex"
                     :source="source"
-                  />
-                </template>
-                <template v-else-if="tempData.fieldName">
-                  <star-horse-item
+                />
+              </template>
+              <template v-else-if="tempData.fieldName">
+                <star-horse-item
                     :primaryKey="primaryKey"
                     :compSize="compSize"
                     v-model:dataForm="dataForm"
                     :item="tempData"
                     :dataIndex="dataIndex"
                     :source="source"
-                  />
-                </template>
+                />
               </template>
-              <!--            <div
-                          class="col-resize-handle"
-                          :title="'拖动改变宽度'+colIndex"
-                          @mousedown="(e) => handleColResizeStart(e, row,colIndex)"
-                      />-->
-            </td>
-          </template>
-        </tr>
+            </template>
+            <!--            <div
+                        class="col-resize-handle"
+                        :title="'拖动改变宽度'+colIndex"
+                        @mousedown="(e) => handleColResizeStart(e, row,colIndex)"
+                    />-->
+          </td>
+        </template>
+      </tr>
       </tbody>
     </table>
   </template>
@@ -399,5 +399,9 @@ tr {
       transform: translateY(-10%);
     }
   }
+}
+
+.striped-table tbody tr:nth-child(even) {
+  background: #fafafa;
 }
 </style>

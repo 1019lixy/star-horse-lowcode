@@ -28,7 +28,7 @@ const props = withDefaults(defineProps<ContainerPreps>(), {
   propPrefix: "",
   parentPreps: {},
   subFormFlag: "N",
-  batchName: "batchDataList",
+  subTableName: "subDataList",
 
   compSize: "default",
   source: 1,
@@ -206,9 +206,16 @@ onMounted(() => {
       :title="dialogFields.title || dialogFields.preps?.btnText"
       :boxWidth="dialogFields.preps?.boxWidth || '50%'"
       :selfFunc="true"
-      :close-on-click-modal="false"
+      :close-on-click-modal="dialogFields.preps?.closeOnClickModal ?? false"
+      :close-on-press-escape="dialogFields.preps?.closeOnPressEscape ?? false"
+      :show-close="dialogFields.preps?.showClose ?? false"
+      :draggable="dialogFields.preps?.draggable ?? true"
+      :center="dialogFields.preps?.center ?? false"
+      :destroy-on-close="dialogFields.preps?.destroyOnClose ?? true"
+      :modal="dialogFields.preps?.modal ?? true"
+      :top="dialogFields.preps?.top || '15vh'"
+      :fullScreen="dialogFields.preps?.fullscreen ?? false"
       append-to-body
-      destroy-on-close
       @resetForm="resetForm"
       @merge="handleConfirm"
       @closeAction="handleClose"
@@ -244,7 +251,7 @@ onMounted(() => {
               item.groupData ? key : 0,
             )
           "
-          :objectName="dialogItem.objectName"
+          :subTableName="dialogItem.subTableName"
           @addRow="addRow"
           @removeRow="removeRow"
           :fieldList="dialogItem"

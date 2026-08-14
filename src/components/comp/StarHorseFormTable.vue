@@ -46,7 +46,7 @@ const removeRow = (row: any) => {
     v-model:dataForm="dataForm"
     :compUrl="item.preps?.compUrl"
     :primaryKey="item['primaryKey']"
-    :batchName="item['tabName']"
+    :subTableName="item['subTableName']"
     :initRows="item.preps?.initRows"
     :title="item['title']"
     :size="size"
@@ -64,6 +64,9 @@ const removeRow = (row: any) => {
     :fieldList="item['fieldList']"
     :source="source"
     :rules="item['rules'] || rules"
+    :tableBorder="item.preps?.border ?? true"
+    :tableStripe="item.preps?.striped ?? true"
+    :tableShowHeader="item.preps?.showHeader ?? true"
   />
 </template>
 <style lang="scss" scoped></style>

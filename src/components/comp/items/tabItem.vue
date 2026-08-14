@@ -22,7 +22,7 @@ const props = withDefaults(defineProps<ContainerPreps>(), {
   propPrefix: "",
   parentPreps: {},
   subFormFlag: "N",
-  batchName: "batchDataList",
+  subTableName: "subDataList",
 
   compSize: "default",
   source: 1,
@@ -49,11 +49,11 @@ const mustCompleteTab = computed(() => {
 const addRow = (row: any) => {
   emits("addRow", row);
 };
-const closeOperation = (tabName: any) => {
+const closeOperation = (subTablePrimaryKey: any) => {
   props.item.containerFields?.forEach((item: any, index: number) => {
-    if (item.tabName == tabName) {
+    if (item.subTablePrimaryKey == subTablePrimaryKey) {
       props.item.containerFields.splice(index, 1);
-      props.item.fieldName = props.item.containerFields[0]?.tabName;
+      props.item.fieldName = props.item.containerFields[0]?.subTablePrimaryKey;
       let closeAction = props.item.actions?.["close"];
       closeAction && closeAction(item);
       return false;
@@ -106,8 +106,8 @@ const beforeLeave = async (activeName: string, oldActiveName: string) => {
   if (!mustCompleteTab.value || !props.item.containerFields?.length)
     return true;
   const tabs = props.item.containerFields;
-  const oldIdx = tabs.findIndex((t: any) => t.tabName === oldActiveName);
-  const newIdx = tabs.findIndex((t: any) => t.tabName === activeName);
+  const oldIdx = tabs.findIndex((t: any) => t.subTablePrimaryKey === oldActiveName);
+  const newIdx = tabs.findIndex((t: any) => t.subTablePrimaryKey === activeName);
   // 向后切换或未找到：不校验，清除当前 tab 残留校验状态
   if (oldIdx < 0 || newIdx < 0 || newIdx <= oldIdx) {
     if (oldIdx >= 0) clearTabValidate(tabs[oldIdx], oldIdx);
@@ -190,12 +190,12 @@ watch(
     });
     // 激活的 tab 被隐藏时,切换到第一个可见 tab
     const activeTab = tabs.find(
-      (t: any) => t?.tabName === props.item?.fieldName,
+      (t: any) => t?.subTablePrimaryKey === props.item?.fieldName,
     );
     if (activeTab && activeTab.formVisible === false) {
       const firstVisible = tabs.find((t: any) => t?.formVisible !== false);
       if (firstVisible) {
-        props.item.fieldName = firstVisible.tabName;
+        props.item.fieldName = firstVisible.subTablePrimaryKey;
       }
     }
   },

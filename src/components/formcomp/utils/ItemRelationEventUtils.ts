@@ -262,9 +262,9 @@ const CONTAINER_ACTION_MAP: Record<
 };
 
 /**
- * 按 tabName 在容器列表中查找容器项
+ * 按 subTablePrimaryKey 在容器列表中查找容器项
  * @param props 表单组件 props(含 formInfo)
- * @param tabNames 要查找的 tabName 列表
+ * @param tabNames 要查找的 subTablePrimaryKey 列表
  * @param containerField 指定容器所在 field 的 fieldName;不指定则全局查找
  * @returns 匹配到的容器项数组
  */
@@ -302,8 +302,8 @@ const findContainerItems = (
           if (containerItem == null || typeof containerItem !== "object")
             continue;
           if (
-            containerItem?.tabName &&
-            tabNames.includes(containerItem.tabName)
+            containerItem?.subTablePrimaryKey &&
+            tabNames.includes(containerItem.subTablePrimaryKey)
           ) {
             if (!containerItem.preps) containerItem.preps = {};
             result.push(containerItem);
@@ -313,17 +313,17 @@ const findContainerItems = (
       // App 端:识别 __appContainer 标记的影子容器项(非子表单容器拆解后保留)
       if (
         field.__appContainer &&
-        field.tabName &&
-        tabNames.includes(field.tabName)
+        field.subTablePrimaryKey &&
+        tabNames.includes(field.subTablePrimaryKey)
       ) {
         if (!field.preps) field.preps = {};
         result.push(field);
       }
-      // App 端:appList 内的子表单容器(带 tabName + oldType)也需要识别
+      // App 端:appList 内的子表单容器(带 subTablePrimaryKey + oldType)也需要识别
       if (Array.isArray(field.appList)) {
         for (const appItem of field.appList) {
           if (appItem == null || typeof appItem !== "object") continue;
-          if (appItem?.tabName && tabNames.includes(appItem.tabName)) {
+          if (appItem?.subTablePrimaryKey && tabNames.includes(appItem.subTablePrimaryKey)) {
             if (!appItem.preps) appItem.preps = {};
             result.push(appItem);
           }

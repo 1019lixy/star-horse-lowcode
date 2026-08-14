@@ -30,7 +30,7 @@ const protocolOptions = [
 
 /**
  * 构造 configType 的 dataRelation 容器控制配置
- * relationFields 为各 collapse item 的 tabName,匹配后 eqVisible
+ * relationFields 为各 collapse item 的 subTablePrimaryKey,匹配后 eqVisible
  */
 const buildConfigTypeContainerRelation = () => {
   const types = ["basic", "advanced", "security", "network"];
@@ -56,8 +56,8 @@ const container = reactive<any>({
     // ========== basic 基础配置 ==========
     {
       title: "基础配置",
-      tabName: "basic",
-      objectName: "basicConfig",
+      subTablePrimaryKey: "basic",
+      subTableName: "basicConfig",
       formVisible: true,
       fieldList: [
         {
@@ -102,8 +102,8 @@ const container = reactive<any>({
     // ========== advanced 高级配置 ==========
     {
       title: "高级配置",
-      tabName: "advanced",
-      objectName: "advancedConfig",
+      subTablePrimaryKey: "advanced",
+      subTableName: "advancedConfig",
       formVisible: false,
       fieldList: [
         {
@@ -149,8 +149,8 @@ const container = reactive<any>({
     // ========== security 安全配置 ==========
     {
       title: "安全配置",
-      tabName: "security",
-      objectName: "securityConfig",
+      subTablePrimaryKey: "security",
+      subTableName: "securityConfig",
       formVisible: false,
       fieldList: [
         {
@@ -197,8 +197,8 @@ const container = reactive<any>({
     // ========== network 网络配置 ==========
     {
       title: "网络配置",
-      tabName: "network",
-      objectName: "networkConfig",
+      subTablePrimaryKey: "network",
+      subTableName: "networkConfig",
       formVisible: false,
       fieldList: [
         {

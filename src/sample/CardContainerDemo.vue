@@ -56,7 +56,7 @@ const forecastModelOptions = [
 
 /**
  * 构造 module 的 dataRelation 容器控制配置
- * relationFields 为各 card 的 tabName,匹配后 eqVisible
+ * relationFields 为各 card 的 subTablePrimaryKey,匹配后 eqVisible
  */
 const buildModuleContainerRelation = () => {
   const types = ["sales", "inventory", "finance", "hr"];
@@ -82,8 +82,8 @@ const container = reactive<any>({
     // ========== sales 销售 ==========
     {
       title: "销售报表",
-      tabName: "sales",
-      objectName: "salesConfig",
+      subTablePrimaryKey: "sales",
+      subTableName: "salesConfig",
       formVisible: true,
       fieldList: [
         {
@@ -139,8 +139,8 @@ const container = reactive<any>({
     // ========== inventory 库存 ==========
     {
       title: "库存报表",
-      tabName: "inventory",
-      objectName: "inventoryConfig",
+      subTablePrimaryKey: "inventory",
+      subTableName: "inventoryConfig",
       formVisible: false,
       fieldList: [
         {
@@ -195,8 +195,8 @@ const container = reactive<any>({
     // ========== finance 财务 ==========
     {
       title: "财务报表",
-      tabName: "finance",
-      objectName: "financeConfig",
+      subTablePrimaryKey: "finance",
+      subTableName: "financeConfig",
       formVisible: false,
       fieldList: [
         {
@@ -252,8 +252,8 @@ const container = reactive<any>({
     // ========== hr 人事 ==========
     {
       title: "人事报表",
-      tabName: "hr",
-      objectName: "hrConfig",
+      subTablePrimaryKey: "hr",
+      subTableName: "hrConfig",
       formVisible: false,
       fieldList: [
         {

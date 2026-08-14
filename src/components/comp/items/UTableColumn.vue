@@ -9,7 +9,7 @@ const props = defineProps({
   rules: { type: Object },
   staticColumn: { type: String, default: "Y" },
   size: { type: String, default: "default" },
-  batchName: { type: String, default: "batchDataList" },
+  subTableName: { type: String, default: "subDataList" },
   primaryKey: { type: [String, Object] as PropType<string | any> },
   source: { type: Number, default: 1 },
   commonFormat: {
@@ -40,12 +40,12 @@ const batchContainers = computed(() => {
       <template v-if="batchContainers.length > 0">
         <star-horse-form-list
           v-for="sitem in batchContainers"
-          :key="_compKey(sitem, sitem.tabName)"
+          :key="_compKey(sitem, sitem.subTablePrimaryKey)"
           style="min-height: 100px; width: 100% !important"
           v-model:dataForm="scope.row"
           :compUrl="sitem.preps?.compUrl"
           :primaryKey="sitem['primaryKey']"
-          :batchName="sitem['tabName']"
+          :subTableName="sitem['subTableName']"
           :initRows="sitem.preps?.initRows"
           :subFlag="true"
           :size="size"
@@ -59,7 +59,7 @@ const batchContainers = computed(() => {
       <template v-else>
         <sh-table-list-column
           :primaryKey="primaryKey"
-          :batchName="batchName"
+          :subTableName="subTableName"
           :dataForm="scope.row"
           :size="size"
           :source="source"

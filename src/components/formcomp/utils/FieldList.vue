@@ -22,14 +22,14 @@ const containerRef = ref();
 const emits = defineEmits(["selectData"]);
 let designForm = getDesignFormStore();
 let formDataList: ComputedRef = computed(() => designForm.formDataList);
-let containerFields: ComputedRef = computed(() => designForm.containerFields);
+let containerDataList: ComputedRef = computed(() => designForm.containerDataList);
 let selfFormDataList: ComputedRef = computed(() => designForm.selfFormDataList);
 const searchQuery = ref("");
 const filteredContainerList = computed(() => {
   if (!searchQuery.value) {
-    return containerFields.value;
+    return containerDataList.value;
   }
-  return containerFields.value.filter((item: any) =>
+  return containerDataList.value.filter((item: any) =>
     item.itemName.toLowerCase().includes(searchQuery.value.toLowerCase()),
   );
 });

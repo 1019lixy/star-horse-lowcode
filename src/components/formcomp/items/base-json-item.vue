@@ -106,7 +106,7 @@ const jsonTableField = reactive<PageFieldInfo>({
   containerFields: [
     {
       containerType: "table",
-      tabName: "jsonDatas",
+      subTablePrimaryKey: "jsonDatas",
       fieldList: [
         {
           label: i18n("item.nameLabel"),

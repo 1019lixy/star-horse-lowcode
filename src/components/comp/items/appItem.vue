@@ -11,7 +11,7 @@ const props = withDefaults(defineProps<ContainerPreps>(), {
   propPrefix: "",
   parentPreps: {},
   subFormFlag: "N",
-  batchName: "batchDataList",
+  subTableName: "subDataList",
 
   compSize: "default",
   source: 1,
@@ -107,7 +107,7 @@ onMounted(() => {
                 item.groupData ? key : 0,
               )
             "
-            :objectName="appItem.objectName"
+            :subTableName="appItem.subTableName"
             @addRow="addRow"
             @removeRow="removeRow"
             :fieldList="createFieldList(appItem)"

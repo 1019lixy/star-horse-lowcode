@@ -1575,3 +1575,32 @@ button.el-collapse-item__header {
   display: flex;
   justify-content: center;
 }
+.section-title-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  background: linear-gradient(135deg, #ecf5ff 0%, #f5f7fa 100%);
+  border-left: 3px solid var(--star-horse-style, #409eff);
+  border-radius: 0 6px 6px 0;
+  .section-dot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    background: var(--star-horse-style, #409eff);
+    color: #fff;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .section-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #303133;
+  }
+}
+

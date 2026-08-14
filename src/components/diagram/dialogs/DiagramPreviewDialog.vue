@@ -8,7 +8,7 @@ import { StarHorsePanel } from "@/components/comp";
 const props = defineProps<{
   visible: boolean;
   diagram: DiagramData;
-  dialogType: "dialog" | "drawer";
+  dialogType?: "dialog" | "drawer";
 }>();
 
 const emits = defineEmits<{

@@ -39,7 +39,7 @@ const editorThemeOptions = [
 
 /**
  * 构造 editMode 的 dataRelation 容器控制配置
- * relationFields 为各 splitter panel 的 tabName,匹配后 eqVisible
+ * relationFields 为各 splitter panel 的 subTablePrimaryKey,匹配后 eqVisible
  */
 const buildEditModeContainerRelation = () => {
   const types = ["visual", "code", "preview"];
@@ -65,8 +65,8 @@ const container = reactive<any>({
     // ========== visual 可视化 ==========
     {
       title: "可视化编辑",
-      tabName: "visual",
-      objectName: "visualConfig",
+      subTablePrimaryKey: "visual",
+      subTableName: "visualConfig",
       formVisible: true,
       fieldList: [
         {
@@ -91,8 +91,8 @@ const container = reactive<any>({
     // ========== code 代码 ==========
     {
       title: "代码编辑",
-      tabName: "code",
-      objectName: "codeConfig",
+      subTablePrimaryKey: "code",
+      subTableName: "codeConfig",
       formVisible: false,
       fieldList: [
         {
@@ -117,8 +117,8 @@ const container = reactive<any>({
     // ========== preview 预览 ==========
     {
       title: "预览",
-      tabName: "preview",
-      objectName: "previewConfig",
+      subTablePrimaryKey: "preview",
+      subTableName: "previewConfig",
       formVisible: false,
       fieldList: [
         {

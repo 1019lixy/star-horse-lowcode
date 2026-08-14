@@ -23,8 +23,7 @@ const props = withDefaults(defineProps<ContainerPreps>(), {
   propPrefix: "",
   parentPreps: {},
   subFormFlag: "N",
-  batchName: "batchDataList",
-
+  subTableName: "subDataList",
   compSize: "default",
   source: 1,
 });
@@ -69,7 +68,7 @@ onMounted(() => {
         <template #header>
           <div class="card-header flex items-center justify-between">
             <div class="w-[60%]">
-              {{ cardItem.title || cardItem.label || cardItem.tabName }}
+              {{ cardItem.title || cardItem.label || cardItem.subTablePrimaryKey }}
               <help v-if="cardItem.helpMsg" :message="cardItem.helpMsg" />
             </div>
             <div
@@ -155,7 +154,7 @@ onMounted(() => {
           :propPrefix="
             getPrefix(cardItem, propPrefix, dataIndex, item.groupData ? key : 0)
           "
-          :objectName="cardItem.objectName"
+          :subTableName="cardItem.subTableName"
           @addRow="addRow"
           @removeRow="removeRow"
           :fieldList="cardItem"

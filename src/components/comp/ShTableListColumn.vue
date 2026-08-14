@@ -10,7 +10,7 @@ const props = defineProps({
   item: { type: Object as PropType<any>, required: true },
   staticColumn: { type: String, default: "Y" },
   primaryKey: { type: [String, Object] as PropType<string | any> },
-  batchName: { type: String, default: "batchDataList" },
+  subTableName: { type: String, default: "subDataList" },
   rules: { type: Object },
   size: { type: String, default: "default" },
   source: { type: Number, default: 1 },
@@ -48,12 +48,12 @@ const dataFormat = (val: any) => {
     v-else
     :size="size"
     :rules="validMsg(item, dataForm)"
-    :prop="`${batchName}.${index}.${item.fieldName}`"
+    :prop="`${subTableName}.${index}.${item.fieldName}`"
   >
     <star-horse-item
       :primaryKey="primaryKey"
       :compSize="size"
-      :batchName="batchName"
+      :subTableName="subTableName"
       :item="item"
       :data-form="dataForm"
       :source="source"

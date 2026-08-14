@@ -22,7 +22,7 @@ import { isMobile } from "@/api/device";
 
 const props = defineProps({
   compUrl: { type: Object as PropType<ApiUrls> },
-  batchName: { type: String, default: "" },
+  subTableName: { type: String, default: "" },
   item: { type: Object as PropType<FieldInfo>, required: true },
   dataFormat: { type: Function, required: true },
   cellEditable: { type: Boolean, default: true },
@@ -221,7 +221,7 @@ onMounted(() => {
               v-model:dataForm="scope.row"
               :item="item"
               :column="scope.column"
-              :batchName="batchName"
+              :subTableName="subTableName"
               :bareFlag="true"
               :compSize="compSize"
             />
@@ -237,7 +237,7 @@ onMounted(() => {
           v-model:dataForm="scope.row"
           :item="item"
           :column="scope.column"
-          :batchName="batchName"
+          :subTableName="subTableName"
           :compSize="compSize"
           v-else
         />
@@ -278,7 +278,7 @@ onMounted(() => {
             v-model:dataForm="scope.row"
             :item="item"
             :column="scope.column"
-            :batchName="batchName"
+            :subTableName="subTableName"
             @focus="focusEvent"
             :compSize="compSize"
             :commonFormat="commonFormat"

@@ -1,11 +1,11 @@
-﻿node.exe : npm warn Unknown user config "electronMirror". This will stop working in the next major version of npm. See 
+﻿node.exe : npm warn Unknown user config "electronMirror". This will stop working in the next major version of npm. See
 `npm help npmrc` for supported config options.
 所在位置 行:1 字符: 1
 + & "d:\nvm\nvm4w\nodejs/node.exe" "C:\Users\MES\AppData\Roaming\npm/no ...
 + ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     + CategoryInfo          : NotSpecified: (npm warn Unknow...config options.:String) [], RemoteException
     + FullyQualifiedErrorId : NativeCommandError
- 
+
 (node:28724) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HT
 TPS requests insecure by disabling certificate verification.
 (Use `node --trace-warnings ...` to show where the warning was created)
@@ -97,8 +97,8 @@ src/components/system/StarHorseDiffEditor.vue(937,7): error TS6133: 'moveToNextC
 src/main.ts(18,8): error TS2339: Property '__debug__' does not exist on type 'Window & typeof globalThis'.
 src/sample/BarcodeTest.vue(55,17): error TS2352: Conversion of type 'HTMLElement' to type 'SVGSVGElement' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
   Type 'HTMLElement' is missing the following properties from type 'SVGSVGElement': currentScale, currentTranslate, height, width, and 55 more.
-src/sample/BoxContainerInstanceDemo.vue(3,6): error TS2345: Argument of type '{ dataForm: any; item: any; formInfo: {}; }' is not assignable to parameter of type '{ readonly compUrl?: ApiUrls; readonly fieldList?: any; readonly item?: any; readonly objectName?: string; readonly dataIndex?: number; readonly propPrefix?: string; readonly parentPreps?: any; ... 12 more ...; readonly "onUpdate:dataForm"?: (value: any) => any; } & VNodeProps & AllowedComponentProps & ComponentCust...'.
-  Type '{ dataForm: any; item: any; formInfo: {}; }' is missing the following properties from type '{ readonly compUrl?: ApiUrls; readonly fieldList?: any; readonly item?: any; readonly objectName?: string; readonly dataIndex?: number; readonly propPrefix?: string; readonly parentPreps?: any; ... 12 more ...; readonly "onUpdate:dataForm"?: (value: any) => any; }': compSize, source
+src/sample/BoxContainerInstanceDemo.vue(3,6): error TS2345: Argument of type '{ dataForm: any; item: any; formInfo: {}; }' is not assignable to parameter of type '{ readonly compUrl?: ApiUrls; readonly fieldList?: any; readonly item?: any; readonly subTableName?: string; readonly dataIndex?: number; readonly propPrefix?: string; readonly parentPreps?: any; ... 12 more ...; readonly "onUpdate:dataForm"?: (value: any) => any; } & VNodeProps & AllowedComponentProps & ComponentCust...'.
+  Type '{ dataForm: any; item: any; formInfo: {}; }' is missing the following properties from type '{ readonly compUrl?: ApiUrls; readonly fieldList?: any; readonly item?: any; readonly subTableName?: string; readonly dataIndex?: number; readonly propPrefix?: string; readonly parentPreps?: any; ... 12 more ...; readonly "onUpdate:dataForm"?: (value: any) => any; }': compSize, source
 src/sample/BoxContainerInstanceDemo.vue(19,5): error TS6133: 'designForm' is declared but its value is never read.
 src/sample/BoxContainerViewDemo.vue(18,5): error TS6133: 'designForm' is declared but its value is never read.
 src/sample/commonpage/CommonSkeleton.vue(93,9): error TS2440: Import declaration conflicts with local declaration of 'defineProps'.

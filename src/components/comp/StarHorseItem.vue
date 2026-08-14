@@ -19,7 +19,7 @@ const props = withDefaults(
     primaryKey?: string | number | Record<string, any>;
     dataIndex?: number;
     bareFlag?: boolean;
-    batchName?: string;
+    subTableName?: string;
     compSize?: string;
     showLabel?: boolean;
     source?: number;
@@ -29,7 +29,7 @@ const props = withDefaults(
   {
     dataIndex: -1,
     bareFlag: false,
-    batchName: "",
+    subTableName: "",
     compSize: "default",
     showLabel: true,
     source: 1,
@@ -156,14 +156,14 @@ const compPreps = () => {
       : formFields;
     if (!Array.isArray(formFieldsArr)) return;
     //如果数据来源于列表
-    if (props.batchName) {
-      let batchFields = formFieldsArr[props.batchName];
+    if (props.subTableName) {
+      let batchFields = formFieldsArr[props.subTableName];
       if (!batchFields) {
-        formFieldsArr[props.batchName] = [];
+        formFieldsArr[props.subTableName] = [];
       }
-      let row = formFieldsArr[props.batchName][dataForm.value["xh"] - 1];
+      let row = formFieldsArr[props.subTableName][dataForm.value["xh"] - 1];
       if (!row) {
-        formFieldsArr[props.batchName].push([]);
+        formFieldsArr[props.subTableName].push([]);
       } else {
         row.push(props.item);
       }

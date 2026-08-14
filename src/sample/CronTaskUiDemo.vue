@@ -77,7 +77,7 @@ const mongoOpOptions = [
 
 /**
  * 构造 taskType 的 dataRelation 容器控制配置
- * relationFields 为各 tab 的 tabName,containerField 指定容器 fieldName
+ * relationFields 为各 tab 的 subTablePrimaryKey,containerField 指定容器 fieldName
  */
 const buildTaskTypeContainerRelation = () => {
   const types = [
@@ -112,8 +112,8 @@ const taskConditionTabs = reactive<any>({
     // ========== INTERFACE ==========
     {
       title: "接口调用",
-      tabName: "INTERFACE",
-      objectName: "taskCondition",
+      subTablePrimaryKey: "INTERFACE",
+      subTableName: "taskCondition",
       disabled: false,
       formVisible: true,
       fieldList: [
@@ -177,8 +177,8 @@ const taskConditionTabs = reactive<any>({
     // ========== DATABASE ==========
     {
       title: "数据库操作",
-      tabName: "DATABASE",
-      objectName: "taskCondition",
+      subTablePrimaryKey: "DATABASE",
+      subTableName: "taskCondition",
       disabled: false,
       formVisible: false,
       fieldList: [
@@ -488,8 +488,8 @@ const taskConditionTabs = reactive<any>({
     // ========== MESSAGE ==========
     {
       title: "消息通知",
-      tabName: "MESSAGE",
-      objectName: "taskCondition",
+      subTablePrimaryKey: "MESSAGE",
+      subTableName: "taskCondition",
       disabled: false,
       formVisible: false,
       fieldList: [
@@ -640,8 +640,8 @@ const taskConditionTabs = reactive<any>({
     // ========== SHELL ==========
     {
       title: "脚本执行",
-      tabName: "SHELL",
-      objectName: "taskCondition",
+      subTablePrimaryKey: "SHELL",
+      subTableName: "taskCondition",
       disabled: false,
       formVisible: false,
       fieldList: [
@@ -763,8 +763,8 @@ const taskConditionTabs = reactive<any>({
     // ========== BATCH ==========
     {
       title: "跑批组合",
-      tabName: "BATCH",
-      objectName: "taskCondition",
+      subTablePrimaryKey: "BATCH",
+      subTableName: "taskCondition",
       disabled: false,
       formVisible: false,
       fieldList: [
@@ -786,8 +786,8 @@ const taskConditionTabs = reactive<any>({
     // ========== REFLECT ==========
     {
       title: "反射调用",
-      tabName: "REFLECT",
-      objectName: "taskCondition",
+      subTablePrimaryKey: "REFLECT",
+      subTableName: "taskCondition",
       disabled: false,
       formVisible: false,
       fieldList: [
@@ -856,8 +856,8 @@ const taskConditionTabs = reactive<any>({
     // ========== CUSTOM ==========
     {
       title: "自定义",
-      tabName: "CUSTOM",
-      objectName: "taskCondition",
+      subTablePrimaryKey: "CUSTOM",
+      subTableName: "taskCondition",
       disabled: false,
       formVisible: false,
       fieldList: [

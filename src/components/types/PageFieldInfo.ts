@@ -12,9 +12,10 @@ export declare interface TabFieldInfo {
    */
   title: string;
   /**
-   * TabName 定义每个Tab 的名字
+   * 容器项的 UI 标识名(tab/collapse/card/step 等切换面板的 name)
+   * 仅用于前端 UI 标识,不参与后端关联表关系
    */
-  tabName: string;
+  subTablePrimaryKey: string;
   /**
    * 是否默认禁用
    */
@@ -33,15 +34,25 @@ export declare interface TabFieldInfo {
    */
   tableFlag?: string;
   /**
-   * 子集合Key 名称，如果配置了此名字，所有tab 下组件的数据将存入该名字下
-   * 该属性的使用场景是 1对1 或者1 对多关系时，tab里组件是另外一个表的情况
+   * 表单子对象数据在 dataForm 中的 key,所有 tab 下组件的数据将存入该名字下
+   * 使用场景:1对1 或 1对多关系时,tab 里组件是另外一个表的情况
    * eg:{
-   *  objectName:{
+   *  subTableName:{
    *     xx:[]
    *     yy:{}
    * }}
+   * 仅用于前端数据嵌套,不参与后端关联表关系
    */
-  objectName?: string;
+  /**
+   * 子表主键名,后端关联表关系(RelationTablesPo.primaryKey)取此值
+   * 与 subTableName 配合,用于 1对1/1对多子表单的关联关系
+   */
+  subTablePrimaryKey?: string;
+  /**
+   * 子表表名,后端关联表关系(RelationTablesPo.tableName)取此值
+   * 与 subTablePrimaryKey 配合,用于 1对1/1对多子表单的关联关系
+   */
+  subTableName?: string;
   /**
    * 主键
    */
@@ -74,15 +85,16 @@ export declare interface TabFieldInfo {
  */
 export declare interface ContainerFieldInfo extends Omit<
   TabFieldInfo,
-  "title" | "tabName" | "subFormFlag" | "primaryKey"
+  "title" | "subTablePrimaryKey" | "subFormFlag" | "primaryKey"
 > {
   /**
-   * 容器类型标识: tab|card|collapse|splitter|step|dialog|drawer|descriptions|fieldset|app|dytable|table
+   * 容器类型标识: tab|card|collapse|splitter|step|dialog|drawer|descriptions|fieldset|app|dytable|table|box|condition|anchor
    * 与 containerFields 配合,所有容器数据统一存于 containerFields
+   * anchor 为锚点导航容器,支持 anchorItem 独立配置(anchorTitle/anchorHref/anchorIcon/anchorDisabled)
    */
   containerType?: string;
   title?: string;
-  tabName?: string;
+  subTablePrimaryKey?: string;
   subFormFlag?: string;
   primaryKey?: string | Array<any>;
 }
@@ -400,7 +412,7 @@ export declare interface SubFieldInfo {
   /**
    * 对应后端dto 里的Object/Map属性名称
    */
-  objectName: string;
+  subTableName: string;
   /**
    * 主键名称，对应后端dto Object/Map泛型对象的主键名称
    */
@@ -478,7 +490,7 @@ export declare interface PageFieldInfo {
   /**
    * 表单有列表数据时,在提交后端是批量数据的Key名称
    */
-  batchName?: string;
+  subTableName?: string;
   /**
    * batchFieldList 和fieldList 是否同一个表，组件会根据这个字段校验数据是一对多关系
    * 还是单表的批量处理

@@ -209,8 +209,8 @@ export function analysisFields(compList: Array<any>) {
   const tabListAnalysis = (tabList: Array<any>) => {
     for (const index in tabList) {
       const temp = tabList[index];
-      tabNames.push(temp.tabName);
-      objectNames.push(temp.objectName);
+      tabNames.push(temp.subTablePrimaryKey);
+      objectNames.push(temp.subTableName);
       normalAnalysis(temp.items);
     }
   };
@@ -232,9 +232,8 @@ export function analysisFields(compList: Array<any>) {
         if (itempType == "box" || itempType == "dytable") {
           loopAnalysis(temp.preps.elements);
         } else if (
-          itempType == "tab" ||
-          itempType == "card" ||
-          itempType == "collapse"
+          !["box","dytable","table"].includes(itempType)
+
         ) {
           tabListAnalysis(temp.preps.elements);
         } else if (itempType == "table") {
