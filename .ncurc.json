@@ -1,6 +1,6 @@
 {
   "reject": [
-    "typescript"
+    "typescript","codemirror"
   ],
   "target": "minor"
 }
