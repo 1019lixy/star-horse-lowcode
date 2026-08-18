@@ -22,7 +22,7 @@ export interface UseTableSelectionOptions {
  * 封装多选/单选、父子节点校验、选中行同步、弹窗模式数据过滤
  */
 export function useTableSelection(opts: UseTableSelectionOptions) {
-  const { props, starHorseTableCompRef, pageInfo, dynamicForm, emits } = opts;
+  const { props, starHorseTableCompRef, pageInfo,  emits } = opts;
 
   const multipleSelection = ref<any>([]);
   const cardSelection = ref<any>([]);
@@ -150,7 +150,6 @@ export function useTableSelection(opts: UseTableSelectionOptions) {
    */
   const selectRow = (row: any, _column?: any, evt?: Event) => {
     if (!evt) {
-      dynamicForm.setSelectData(row);
       emits("selectItem", row);
       return;
     }
@@ -178,7 +177,6 @@ export function useTableSelection(opts: UseTableSelectionOptions) {
       });
       starHorseTableCompRef.value?.toggleRowSelection(row, false);
     }
-    dynamicForm.setSelectData(row);
     emits("selectItem", row);
   };
 

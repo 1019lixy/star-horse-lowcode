@@ -15,10 +15,8 @@
 <script lang="ts" setup>
 import { onMounted, ref } from "vue";
 import { analysisCompDatas, analysisAppComps } from "@/api/form_utils";
-import { getDesignFormStore } from "@/store/StoreManager";
 import { parseDateByType } from "@/api/date_utils";
 
-let designForm = getDesignFormStore();
 const testDateFormat = (item) => {
   const key = item[0];
   let type = key.split("field")?.[1]?.toLowerCase();

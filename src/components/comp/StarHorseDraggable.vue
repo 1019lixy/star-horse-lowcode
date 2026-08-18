@@ -1,8 +1,16 @@
 <script lang="ts" setup>
 import { computed, onMounted, PropType, ref } from "vue";
 import { DynamicNode } from "@/components/types/DynamicNode";
-import { dynamicPageContextMenuData } from "@/plugins/AblesPlugin";
 import { compKey } from "@/api/system";
+
+interface MenuItem {
+  type: "button" | "divider";
+  text?: string;
+  icon?: string;
+  display?: boolean | (() => boolean);
+  handler?: () => void;
+  direction?: string;
+}
 
 defineOptions({
   name: "StarHorseDraggable",
@@ -33,6 +41,13 @@ const props = defineProps({
   isDesign: {
     type: Boolean,
     default: false,
+  },
+  /**
+   * 右键菜单数据，由外部传入
+   */
+  menuData: {
+    type: Array as PropType<MenuItem[]>,
+    default: () => [],
   },
 });
 
@@ -471,9 +486,7 @@ const contextmenu = (e: MouseEvent) => {
   e.preventDefault();
   contentMenuRef.value?.show(e);
 };
-const recallFunction = (actionName: string, nodeInfo: DynamicNode) => {
-  emits("contextAction", actionName, nodeInfo);
-};
+
 onMounted(() => {
   init();
 });
@@ -532,7 +545,7 @@ onMounted(() => {
   <Teleport to="body">
     <ContentMenu
       ref="contentMenuRef"
-      :menu-data="dynamicPageContextMenuData(node, recallFunction)"
+      :menu-data="menuData"
     />
     <!-- 显示宽高信息的元素 -->
     <div

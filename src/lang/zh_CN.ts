@@ -917,27 +917,7 @@ export default {
   "item.noContentSet": "未设置内容",
   "item.editData": "编辑数据",
   "item.crontabConfig": "Crontab 配置器",
-  /**
-   * 右键菜单--------------
-   */
-  "context.new": "新建",
-  "context.cut": "剪切",
-  "context.copy": "复制",
-  "context.paste": "粘贴",
-  "context.selectAll": "全选",
-  "context.clear": "清空",
-  "context.preview": "预览",
-  "context.addComponent": "添加组件",
-  "context.selectContainer": "选中容器",
-  "context.undo": "撤销",
-  "context.delete": "删除",
-  "context.properties": "属性",
-  "context.centerHorizontally": "水平居中",
-  "context.moveUpLayer": "上移一层",
-  "context.moveDownLayer": "下移一层",
-  "context.bringToFront": "置顶",
-  "context.sendToBack": "置底",
-  "context.clearGuides": "清空参考线",
+
   /**
    * WebSocket--------------
    */

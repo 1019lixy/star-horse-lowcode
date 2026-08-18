@@ -16,7 +16,6 @@ import { DataListProps, PageProps } from "@/components/types/PageProps";
 import { BtnHideCondition, SearchParams } from "@/components/types/Params";
 import piniaInstance from "@/store";
 import { useButtonPermissionStore } from "@/store/ButtonPermission";
-import { useDynamicFormStore } from "@/store/DynamicForm";
 import { useGlobalConfigStore } from "@/store/GlobalConfig";
 import { isSystemManage } from "@/utils/auth";
 import { warning } from "@/utils/message";
@@ -41,7 +40,6 @@ import { useTableSelection } from "@/components/comp/utils/useTableSelection";
 import { useTableCrud } from "@/components/comp/utils/useTableCrud";
 import StarHorsePanel from "@/components/comp/StarHorsePanel.vue";
 
-const dynamicForm = useDynamicFormStore(piniaInstance);
 const props = withDefaults(defineProps<DataListProps>(), {
   hideBtnCondition: (): BtnHideCondition[] => [],
   height: "400",
@@ -131,7 +129,6 @@ const {
   props,
   starHorseTableCompRef,
   pageInfo,
-  dynamicForm,
   emits,
 });
 /**

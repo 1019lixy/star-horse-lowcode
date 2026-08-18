@@ -369,16 +369,13 @@ export const analysisCompDatas = (dataList: any) => {
 
             mergeObjects(compListResult, boxItems);
 
-            if (comp.itemType === "dytable") {
+            if (comp.itemType === "dytable"||comp.itemType==="gridtable") {
                 compFieldList.push({
                     fieldName: "",
-                    containerType: "dytable",
-                    containerFields: [
-                        {
-                            containerType: "dytable",
+                    containerType: comp.itemType,
+                    containerFields: [{
                             fieldList: fieldList,
-                        },
-                    ],
+                        }],
                     preps: getPreps(comp),
                 });
             } else {
@@ -463,7 +460,7 @@ const conditionAnalysis = (comp: any) => {
 };
 
 function getContainerResult(comp: any) {
-    if (comp.itemType === "box" || comp.itemType === "dytable") {
+    if (["box","dytable","gridtable"].includes(comp.itemType)) {
         return boxDytableAnalysis(comp);
     } else if (comp.itemType === "table") {
         return tableAnalysis(comp);
@@ -562,7 +559,7 @@ function analysisComps(fieldList: any, ctx?: AppConvertCtx) {
 
         if (commonContainer) {
             // 统一容器:数据均来自 containerFields,按 containerType 分发保持各容器处理语义
-            if (commonContainer.type === "dytable") {
+            if (commonContainer.type === "dytable"||commonContainer.type=="gridtable") {
                 const dyData =
                     commonContainer.dataList[0]?.fieldList || commonContainer.dataList;
                 processDytableFieldList(dyData, tempFieldList);

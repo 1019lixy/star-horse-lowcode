@@ -20,12 +20,10 @@ import { isMobile } from "@/api/device";
 const dataForm = ref<any>({});
 const props = defineProps({
   compUrl: { type: Object as PropType<ApiUrls> },
-  subTableName: { type: String },
   subFormFlag: { type: String, default: "N" },
   formSize: { type: String, default: "default" },
   labelPosition: { type: String, default: "left" },
   subTableName: { type: String, default: "subDataList" },
-
   fieldList: { type: Object, required: true },
   globalCondition: { type: Object },
   outerData: { type: Object },

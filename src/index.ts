@@ -25,8 +25,8 @@ export * from "@/api/finger_utils";
 export * from "@/api/form_utils";
 export * from "@/api/valid_utils";
 export * from "@/api/device";
-export * from "@/plugins/AblesPlugin";
-export * from "@/utils/FieldOperationUtils";
+
+
 export * from "@/components/formcomp/utils/ItemRelationEventUtils";
 export * from "@/components/formcomp/utils/prefixSuffixUtils";
 const items = import.meta.glob([
@@ -126,11 +126,7 @@ export * from "@/components/kanban";
 // export * from "@/components/aicopilot";
 // 导出所有store
 export * from "@/store/ButtonPermission";
-export * from "@/store/ConsumerView";
-export * from "@/store/CopyerOperation";
-export * from "@/store/DesignForm";
-export * from "@/store/DesignPage";
-export * from "@/store/DynamicForm";
+
 export * from "@/store/GlobalConfig";
 export * from "@/store/SelfOperation";
 export * from "@/store/UserInfo";

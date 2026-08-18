@@ -12,11 +12,6 @@ export declare interface TabFieldInfo {
    */
   title: string;
   /**
-   * 容器项的 UI 标识名(tab/collapse/card/step 等切换面板的 name)
-   * 仅用于前端 UI 标识,不参与后端关联表关系
-   */
-  subTablePrimaryKey: string;
-  /**
    * 是否默认禁用
    */
   disabled?: boolean;
