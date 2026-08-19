@@ -129,7 +129,7 @@ const tableFieldList = reactive<PageFieldInfo>({
     },
     ...commonField()
   ],
-  batchFieldList: []
+  containerFields: []
 });
 //主键
 const primaryKey = "idAreainfo";
@@ -159,21 +159,21 @@ onMounted(() => {
 });
 </script>
 <template>
-  <star-horse-dialog :isShowBtnContinue="true" :dialogVisible="dialogProps.editVisible" :dialogProps="dialogProps">
+  <star-horse-panel :isShowBtnContinue="true" v-model="dialogProps.editVisible" :dialogProps="dialogProps">
     <star-horse-form
         @refresh="testRef.loadByPage()"
         :compUrl="dataUrl"
         :fieldList="tableFieldList"
         :rules="rules"
     />
-  </star-horse-dialog>
-  <star-horse-dialog
+  </star-horse-panel>
+  <star-horse-panel
       v-model="dialogProps.viewVisible"
       :dialogProps="dialogProps"
       :source="3"
   >
     <star-horse-data-view :dataFormat="dataFormat" :field-list="tableFieldList" :compUrl="dataUrl"/>
-  </star-horse-dialog>
+  </star-horse-panel>
   <div class="search-content">
     <div class="search_btn" :style="{ 'flex-direction': Config.buttonStyle.value == 'line'? 'column' : 'row' }">
       <star-horse-search-comp
@@ -216,7 +216,6 @@ onMounted(() => {
 毕竟不是全职开发，因此帮助文档只能尽可能的抽时间写。
 具体表单的布局方式请参见发布包里的类别文件：PageFieldInfo.d.ts 这里面有对box 布局，tab 布局，table 布局的定义。
 目前支持的组件如下：
-area        区域组件 
 audio       视频组件
 autocomplete 自动完成组件
 button       按钮组件
@@ -225,7 +224,6 @@ checkbox     复选框组件
 color         颜色组件
 cron          Cron表达式组件
 datetime      日期组件
-depart         部门组件
 dialog-input   弹出选择器组件 
 divider        分割线
 html           html 只读组件
@@ -255,7 +253,6 @@ transfer      穿梭框组件
 tselect       树形选择器组件
 unknown       未知组件  无实际意义
 upload        上传组件
-user          用户组件 业务强关联不适合引用项目使用，后期会进行改造
 usercomp       用户自定义组件
 view-markdown  只读Markdown组件
 qrcode         二维码组件
@@ -264,396 +261,26 @@ barcode        条形码组件
 ```
 
 5.示例图片
+
 请到gitee 查看示例图片
-6.BUG 修改记录
 
-#### v2.8.29
-
-```
-- 增加StarHorseEditor 系统组件
-- api 接口增加loadData，loadGetData函数
-```
-
-#### v2.8.30
-
-```
-- Fix StarHorseEditor 不能正常显示问题
-```
-
-#### v2.8.31
-
-```
-- Fix StarHorseDialog 超出高度显示异常
-```
-
-#### v2.8.32
-
-```
-- Fix StarHorseDraggable 样式显示异常
-```
-
-#### v2.8.33
-
-```
-- 优化transfer-item 组件为自适应宽度
-```
-
-#### v2.8.34
-
-```
-- 优化StarHorseDraggable 组件拖拽的新能问题
-```
-
-#### v2.8.40
-
-```
-- 增加dialog 模态窗组件
-```
-
-#### v2.8.41
-
-```
-- 修复bug
-```
-
-#### v2.8.42
-
-```
-- 修复json 组件 bug
-```
-
-#### v2.8.43
-
-```
-- 修复json 组件 bug,移除测试代码
-```
-
-#### v2.8.44
-
-```
-- 修复联动更改类型不响应，修复upload 支持多文件上传不能记录所有文件名问题
-```
-
-#### v2.8.45
-
-```
-- 切换htmleditor 插件，原htmleditor 插件没法调整图片大小
-```
-
-#### v2.8.46
-
-```
-- input组件 增加属性是否将前缀(mergePrefix:boolean)或者后缀内容(margeAppend:boolean)合并到当前属性中去
-```
-
-#### v2.8.47
-
-```
-- 修复因新增input属性导致的bug,优化starhorsedraggable组件拖拽时卡顿问题
-```
-
-#### v2.8.48
-
-```
-- 修复barcode,qrcode，signature 组件bug
-```
-
-#### v2.8.49
-
-```
-- 优化StarHorseTableComp组件，增加自定义按钮可覆盖默认按钮功能逻辑,优化分页条可根据业务配置layout(参照element-plus）,以及自定义配置每页多少数据备选项
-```
-
-#### v2.8.50
-
-```
-- 新增页面风格操作习惯PageConfig组件
-```
-
-#### v2.8.51
-
-```
--优化ShForm 组件 在slot 中增加form 参数
-```
-
-#### v2.8.52
-
-```
--增加查询条件in查询选项,增加创建查询属性函数createSearchField和创建表单属性createField函数
--优化commonField 函数 可指定属性显示规则
--修改 ascOrDesc 函数 为 orderBy
-```
-
-#### v2.8.53
-
-```
--修复国际化显示异常
-```
-
-#### v2.8.54
-
-```
--优化dytable 容器和box 容器配置复杂表单显示异常
-```
-
-#### v2.8.55
-
-```
--优化dytable 容器和box 增加行,列,单元格配置,修复部分css 展示问题
-```
-
-#### v2.8.56
-
-```
--升级依赖插件，修复部分css 展示问题
-```
-
-#### v2.8.57
-
-```
--修复更新导致的bug
-```
-
-#### v2.8.60
-
-```
--修复input 组件 前缀，后缀 数据改变不更新异常
--升级依赖插件
-```
-
-#### v2.8.61
-
-```
--修复dialog-item数据绑定bug,增加drawer-item 组件
-```
-
-#### v2.8.62
-
-```
--修复解析函数,出现未设置组件情况，修复dytable-container 容器已知bug；
-```
-
-#### v2.8.63
-
-```
--修复列表容器不能删除组件bug,优化html和text 组件Css样式,优化栅格和动态表格容器查看视图异常
-```
-
-#### v2.8.64
-
-```
--修复列表容器拖拽放置时，定位困难bug.
-```
-
-#### v2.8.65
-
-```
--修复栅格容器,因css margin：8px auto !important 导致的显示bug
-```
-
-#### v2.8.66
-
-```
--修复数据选择器所选数据被截断，搜索不生效bug
-```
-
-#### v2.8.67
-
-```
--修复表格容器和栅格容器查看视图显示异常bug
-```
-
-#### v2.8.68
-
-```
--优化css样式
-```
-
-#### v2.8.69
-
-```
--修复因升级vite 导致的bug
-```
-
-#### v2.8.70
-
-```
--增加标签输入框，修复select组件没有设置preps 报错
-```
-
-#### v2.8.71
-
-```
--容器组件增加了mapping 参数，参数值1:表示1对1或者n:表示1对多, 解决表单中主子表对应关系的时候，是1对1 还是1对n
--修复联动是栅格容器因所有列都是隐藏时出现空行的bug
-```
-
-#### v2.8.72
-
-```
--修复表格组件显示异常和合并单元格列丢失异常
-```
-
-#### v2.8.73
-
-```
--优化表单查看组件，将自定义显示,改为表单组件禁用显示
--修复表格容器合并单元格的诸多问题
-```
-
-#### v2.8.74
-
-```
--将表单设计器耦合的容器组件分离，以解决因优化表单设计器导致此组件的频繁更新
--修复tag 组件因优化导致的bug
-```
-
-#### v3.0.0
-
-```
--增加根据不同设备访问，组件自动切换为兼容模式
-```
-
-#### v3.0.1
-
-```
--修复box容器布局失效问题
-```
-
-#### v3.0.2
-
-```
--修复StarHorseDataSelector 组件change  事件不响应问题
-```
-
-#### v3.0.3
-
-```
--修复cascade-item 组件数据渲染异常bug
-```
-
-#### v3.0.4
-
-```
--修复StarHorseDataSelector 组件bug
-```
-
-#### v3.0.5
-
-```
--修复StarHorseDataSelector,datapicker-item 组件删除元素bug
-```
-
-#### v3.0.6
-
-```
--修复StarHorseDialog 最大最小化和数据超过高度不滚动Bug,
-```
-
-#### v3.0.7
-```
--优化组件内存占用高问题
-```
-
-#### v3.0.8
-
-```
--优化apiInstance 接口当appName 是url地址时,多出斜线问题,
-```
-#### v3.0.9
-
-```
--优化获取属性出现undefined问题，修复app端切换菜单bug
-```
-#### v3.1.0
-
-```
--增加多表头支持，增加input,number 组件的值通过表单其它属性计算获取，优化国际化，将所有硬编码中文全部改为国际化文件配置
-```
-#### v3.1.1
-
-```
--修复dytable,box 在App端 静态数据显示异常bug
-```
-#### v3.1.2
-
-```
--修复app组件数据异常，删除页面测试数据
-```
-#### v3.1.3
-
-```
--修复日期和时间组件因数据格式不统一导致组件异常,
-```
-#### v3.1.4
-
-```
--修复日期和时间组件因数据格式不统一导致组件异常,
--增加代码编辑器StarHorseCodeEditor,对比组件StarHorseDiffEditor 
--修复StarHorseDialog 在app端的bug
-```
-#### v3.1.5
-
-```
--解决类型丢失问题
-```
-#### v3.1.6
-
-```
--优化DataPicker 数据操作习惯,增加按钮查询和回车查询兼容，已选数据区域增加排序
--删除 preview-image-js 插件,此插件导致和表单组件冲突，原imagesPreview 正常使用
-```
-#### v3.1.7
-
-```
--增加5个ApUrl 对象的自定义接口配置
--增加联动策略中调用第三方接口带出数据
-```
-#### v3.1.8
-
-```
---修复第三方接口bug 
-```
-#### v3.1.9
-
-```
---优化表格容器，增加在编辑数据时可调整单元格的宽度
-```
-#### v3.1.10
-
-```
---增加事件支持,优化dialog-input,autocomplete 组件，修复已知bug
-```
-#### v3.1.11
-
-```
---修复已知bug
-```
-#### v3.1.12
-
-```
---修复已知bug
-```
-#### v3.1.13
-
-```
---修复计算属性bug,优化列表添加数据不能增加子节点问题，开关enableSubNode:true/false
---去掉了area组件中的 城市编码，有外部传入
-```
-#### v3.1.14
-
-```
---修复修复误将element-plus 排除，导致组件显示英文
-```
-#### v3.1.15
-
-```
---barcode-item 组件删除vue3-varcode 插件改用jsbarcode
-```
-#### v3.1.16
-
-```
--- 增加dialog,drawer,descriptions,fieldset 容器组件
--- 增加StarHorseDrawer 抽屉组件
--- 增加StarHorsePanel 组件，此组件通过类型 dialog 或者drawer匹配对应的StarHorseDialog和StarHorseDrawer
+6.更新记录
+#### v4.0.0
+
+```
+-- 此次做了重大升级,如果用到了容器组件，和之前版本不兼容
+-- 1、容器组件目前支持box,gridtable,dytable,fieldset,card,splitter,collapse,table,drawer,dialog,descriptions,step,tab
+    这些容器组件，除了box,其它全部统一了数据结构 把原来的*List,全部统一为 containerType:"**",containerFields:[],
+    如：card 容器
+     {
+       containerType:"card",
+       containerFields:[{
+        subTableName:"", //子表名字
+        subTablePrimaryKey:"", //子表组件
+        subFormFlag:"", //是否子表 Y|N
+        title:"", //标题
+        fieldList:[] //表单字段
+       }]
+     }
+--2、完全剥离了表单设计器遗留在此组件的代码 
 ```
