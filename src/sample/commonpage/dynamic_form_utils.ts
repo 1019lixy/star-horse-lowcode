@@ -1,9 +1,11 @@
 import { i18n } from "@/lang";
 import { error } from "@/utils/message";
 import { loadData, postRequest } from "@/api/star_horse_apis";
-import { ApiUrls, SearchFields, PageFieldInfo } from "@/components/types";
+import { ApiUrls, PageFieldInfo, SearchFields } from "@/components/types";
 import { apiInstance, closeLoad, load } from "@/api/star_horse_utils";
+
 const serviceName = "quantity-manage";
+
 export interface FormDataProp {
   /**
    * 主键
@@ -155,7 +157,7 @@ export async function loadBusinessData(
     [],
   );
   let error = "";
-  if (result.data.code) {
+  if (result.data.code!==200) {
     error = result.data.cnMessage;
   }
   let data = result.data.data;
@@ -173,7 +175,7 @@ export async function viewColumns(param: string) {
     viewToken: param,
   }).then((res) => {
     const redata = res.data;
-    if (redata.code != 0) {
+    if (redata.code != 200) {
       error(redata.cnMessage);
       return;
     }
@@ -235,7 +237,7 @@ export async function viewDataList(
   await postRequest("${serviceName}/consumer/api/pageList", dataPo)
     .then((res) => {
       const redata = res.data;
-      if (redata.code != 0) {
+      if (redata.code != 200) {
         error = redata.cnMessage;
       } else {
         viewDatas = redata.data;

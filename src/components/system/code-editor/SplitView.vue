@@ -162,6 +162,7 @@ const onResizeStart = (e: MouseEvent) => {
   &.split-horizontal {
     flex-direction: row;
   }
+
   &.split-vertical {
     flex-direction: column;
   }
@@ -176,6 +177,7 @@ const onResizeStart = (e: MouseEvent) => {
   .split-horizontal & {
     height: 100%;
   }
+
   .split-vertical & {
     width: 100%;
   }
@@ -202,14 +204,17 @@ const onResizeStart = (e: MouseEvent) => {
     width: 4px;
     cursor: col-resize;
     height: 100%;
+
     &:hover {
       background: var(--ide-accent, #007acc);
     }
   }
+
   &.resizer-v {
     height: 4px;
     cursor: row-resize;
     width: 100%;
+
     &:hover {
       background: var(--ide-accent, #007acc);
     }

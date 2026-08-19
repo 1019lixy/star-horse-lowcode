@@ -5,7 +5,11 @@ import type {
   PageFieldInfo,
   UserFuncInfo,
 } from "@/components/types/PageFieldInfo";
-import type { BtnHideCondition, SearchInfo, SearchParams } from "@/components/types/Params";
+import type {
+  BtnHideCondition,
+  SearchInfo,
+  SearchParams,
+} from "@/components/types/Params";
 import type { PreValid } from "@/components/types/BtnAuth";
 import type { EditCondition } from "@/components/types/SearchProps";
 
@@ -39,7 +43,7 @@ export declare interface DataListProps {
   /**
    * 接口地址
    */
-  compUrl: ApiUrls | any;
+  compUrl?: ApiUrls | any;
   /**
    * 主键
    */
@@ -51,101 +55,101 @@ export declare interface DataListProps {
   /**
    * 隐藏按钮条件
    */
-  hideBtnCondition: BtnHideCondition[];
+  hideBtnCondition?: BtnHideCondition[];
   /**
    * 是否显示批量属性
    */
-  showBatchField: boolean;
+  showBatchField?: boolean;
   /**
    * 格式化函数
    */
-  dataFormat: Function;
+  dataFormat?: Function;
   /**
    * 禁用列表按钮
    */
-  disableAction: boolean;
+  disableAction?: boolean;
   /**
    * 弹窗模式
    */
-  dialogInput: boolean;
+  dialogInput?: boolean;
   /**
    * 高度
    */
-  height: string;
+  height?: string;
   /**
    * 数据过滤条
    */
-  filterCondition: SearchParams[];
+  filterCondition?: SearchParams[];
   /**
    * 排序条件
    */
-  orderBy: OrderByInfo[];
+  orderBy?: OrderByInfo[];
   /**
    * 是否显示分页条
    */
-  showPageBar: boolean;
+  showPageBar?: boolean;
   /**
    * 列表数据
    */
-  tableDataList: Array<any>;
+  tableDataList?: Array<any>;
   // Echo data list
-  reverseDataList: Array<any>;
+  reverseDataList?: Array<any>;
   /**
    * 是否运行选择父节点
    */
-  allowSelectParent: boolean;
+  allowSelectParent?: boolean;
   /**
    *是否默认展开所有子节点
    */
-  expand: boolean;
+  expand?: boolean;
   /**
    * 是否需要加载遮罩
    */
-  needLoad: boolean;
+  needLoad?: boolean;
   /**
    * 标题
    */
-  title: string;
+  title?: string;
   /**
    * 用户自定义按钮
    */
-  extendBtns: UserFuncInfo[];
+  extendBtns?: UserFuncInfo[];
   /**
    * 按钮是否可以点击的前置条件
    */
-  preValidFunc: PreValid[];
+  preValidFunc?: PreValid[];
   /**
    * 是否运行多选
    */
-  multipleSelect: boolean;
+  multipleSelect?: boolean;
   /**
    * 行高
    */
-  lineHeight: string;
+  lineHeight?: string;
   /**
    * 是否显示选择框
    */
-  showSelection: boolean;
+  showSelection?: boolean;
   /**
    * 嵌套表信息
    */
-  expandTable: ExpandTable;
+  expandTable?: ExpandTable;
   /**
    * 帮助提示
    */
-  helpMsg: string;
+  helpMsg?: string;
   /**
    * 全局配置
    */
-  globalConfig: Record<string, any>;
+  globalConfig?: Record<string, any>;
   /**
    * 是否动态表
    */
-  isDynamic: boolean;
+  isDynamic?: boolean;
   /**
    * 需要隐藏的按钮
    */
-  hideButtonList: boolean;
+  hideButtonList?: boolean;
 
   /**
    * Data sharer
@@ -154,37 +158,41 @@ export declare interface DataListProps {
    *   The above interface mainly returns the account of the sharer
    *   commonPersons.value = resultData?.data;
    */
-  commonPersons: Array<any>;
+  commonPersons?: Array<any>;
   /**
    * 在数据提权的时候需要指定通过那个字段做关联条件
    */
-  userColumnName: string;
+  userColumnName?: string;
   /**
    * 按钮自定义权限
    */
-  btnPermissions: Record<string, string>;
+  btnPermissions?: Record<string, string>;
   /**
    * 每页数据备选项
    */
-  pageCombList: number[];
+  pageCombList?: number[];
   /**
    * 分页条布局
    */
-  pageBarLayout: string;
+  pageBarLayout?: string;
   /**
    * 编辑条件
    */
-  editCondition: EditCondition[];
+  editCondition?: EditCondition[];
   /**
    * 翻页保留历史数据
    */
-  pageKeepOldData: boolean;
+  pageKeepOldData?: boolean;
   /**
    * 是否预览模式
    */
-  preview: boolean;
+  preview?: boolean;
   /**
    * APP 端查询表单配置（传入后 APP 端顶部显示查询图标）
    */
   searchFormData?: SearchInfo;
+  /**
+   * 弹窗类型
+   */
+  dialogType?: "dialog" | "drawer";
 }

@@ -14,6 +14,7 @@
       :remote="remote"
       :disabled="checkIsDisabled(props)"
       v-bind="prepsFilter(field.preps)"
+      :placeholder="field.preps?.placeholder ?? ''"
       :show-arrow="true"
       :remote-method="remoteMethod"
       v-on="getDynamicEvents(props, itemAction, formData)"
@@ -121,20 +122,33 @@
               :class="{ 'is-selected': isSelected(item) }"
               @click="toggleOption(item)"
             >
-              <el-checkbox v-if="multiple" :model-value="isSelected(item)" @click.stop />
-              <span class="sh-mobile-select-list__label">{{ item[labelKey] }}</span>
+              <el-checkbox
+                v-if="multiple"
+                :model-value="isSelected(item)"
+                @click.stop
+              />
+              <span class="sh-mobile-select-list__label">{{
+                item[labelKey]
+              }}</span>
               <star-horse-icon
                 v-if="!multiple && isSelected(item)"
                 icon-class="check"
                 class="sh-mobile-select-list__check"
               />
             </div>
-            <div v-if="!filteredOptions.length && !showCreateRow" class="sh-mobile-select-list__empty">
+            <div
+              v-if="!filteredOptions.length && !showCreateRow"
+              class="sh-mobile-select-list__empty"
+            >
               {{ i18n("pivot.empty.noData") || "暂无数据" }}
             </div>
           </div>
           <!-- allowCreate：创建新值 -->
-          <div v-if="showCreateRow" class="sh-mobile-select-list__create" @click="createCustomValue">
+          <div
+            v-if="showCreateRow"
+            class="sh-mobile-select-list__create"
+            @click="createCustomValue"
+          >
             <star-horse-icon icon-class="add" />
             <span>{{ i18n("form.add") }} "{{ searchKey }}"</span>
           </div>
@@ -162,10 +176,9 @@ import { SearchParams } from "@/components/types/Params";
 import { warning } from "@/utils/message";
 import { computed, nextTick, onMounted, ref, watch } from "vue";
 import { i18n } from "@/lang";
-import {
-  useMobilePicker,
-} from "@/components/formcomp/utils/useMobilePicker";
+import { useMobilePicker } from "@/components/formcomp/utils/useMobilePicker";
 import ShMobilePicker from "@/components/formcomp/utils/ShMobilePicker.vue";
+import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -197,7 +210,7 @@ const {
   title,
   openPicker,
   closePicker,
-} = useMobilePicker(() => props.field);
+} = useMobilePicker(() => props.field, props.source);
 
 /** 是否多选 */
 const multiple = computed(() => !!props.field.preps?.multiple);
@@ -242,15 +255,19 @@ const filteredOptions = computed(() => {
 const isKeywordExists = computed(() => {
   if (!searchKey.value) return true;
   const kw = searchKey.value.toLowerCase();
-  return (props.field.preps?.values || []).some((item: any) =>
-    String(item[valueKey.value] ?? "").toLowerCase() === kw ||
-    String(item[labelKey.value] ?? "").toLowerCase() === kw,
+  return (props.field.preps?.values || []).some(
+    (item: any) =>
+      String(item[valueKey.value] ?? "").toLowerCase() === kw ||
+      String(item[labelKey.value] ?? "").toLowerCase() === kw,
   );
 });
 
 /** allowCreate：是否显示"创建 xxx"行 */
 const showCreateRow = computed(
-  () => allowCreate.value && searchKey.value.trim() !== "" && !isKeywordExists.value,
+  () =>
+    allowCreate.value &&
+    searchKey.value.trim() !== "" &&
+    !isKeywordExists.value,
 );
 
 /** allowCreate：创建新值并加入选中 */
@@ -423,8 +440,6 @@ onMounted(() => {
   props.field.preps["filterable"] = true;
   props.field.preps["collapseTags"] = true;
   initData();
-  // eslint-disable-next-line no-console
-  console.log("[select-item.onMounted] field=" + props.field?.fieldName + " hasDataRelation=" + !!props.field?.preps?.dataRelation + " isSeparate=" + isSeparate);
   nextTick(() => {
     initCompCallEvent(props, emits, formData);
   });

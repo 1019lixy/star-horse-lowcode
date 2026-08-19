@@ -192,10 +192,11 @@ const tableFieldList = reactive<PageFieldInfo>({
       preps: {
         type: "border-card",
       },
-      tabList: [
+      containerType: "tab",
+      containerFields: [
         {
           title: "项目配置",
-          tabName: "tab2",
+          subTablePrimaryKey: "tab2",
           fieldList: [
             {
               label: "生成模块",
@@ -230,11 +231,12 @@ const tableFieldList = reactive<PageFieldInfo>({
             },
             {
               fieldName: "backendConfig",
-              tabList: [
+              containerType: "tab",
+              containerFields: [
                 {
                   title: "后端配置",
-                  tabName: "backendConfig",
-                  objectName: "backendConfig",
+                  subTablePrimaryKey: "backendConfig",
+                  subTableName: "backendConfig",
                   subFormFlag: "Y",
                   fieldList: [
                     [
@@ -348,8 +350,8 @@ const tableFieldList = reactive<PageFieldInfo>({
                 },
                 {
                   title: "前端配置",
-                  tabName: "frontendConfig",
-                  objectName: "frontendConfig",
+                  subTablePrimaryKey: "frontendConfig",
+                  subTableName: "frontendConfig",
                   subFormFlag: "Y",
                   fieldList: [
                     {
@@ -418,8 +420,8 @@ const tableFieldList = reactive<PageFieldInfo>({
                 },
                 {
                   title: "权限系统配置",
-                  tabName: "authConfig",
-                  objectName: "authConfig",
+                  subTablePrimaryKey: "authConfig",
+                  subTableName: "authConfig",
                   subFormFlag: "Y",
                   fieldList: [
                     {
@@ -445,8 +447,8 @@ const tableFieldList = reactive<PageFieldInfo>({
                 },
                 {
                   title: "应用注册中心配置",
-                  tabName: "registryConfig",
-                  objectName: "registryConfig",
+                  subTablePrimaryKey: "registryConfig",
+                  subTableName: "registryConfig",
                   subFormFlag: "Y",
                   fieldList: [
                     {
@@ -462,8 +464,8 @@ const tableFieldList = reactive<PageFieldInfo>({
                 },
                 {
                   title: "后端缓存配置",
-                  tabName: "cacheConfig",
-                  objectName: "cacheConfig",
+                  subTablePrimaryKey: "cacheConfig",
+                  subTableName: "cacheConfig",
                   subFormFlag: "Y",
                   fieldList: [
                     {
@@ -483,7 +485,7 @@ const tableFieldList = reactive<PageFieldInfo>({
         },
         {
           title: i18n("codegen.comment.related"),
-          tabName: "tab1",
+          subTablePrimaryKey: "tab1",
           fieldList: [
             {
               label: i18n("codegen.developer"),
@@ -511,10 +513,11 @@ const tableFieldList = reactive<PageFieldInfo>({
         },
         {
           title: "自动部署配置",
-          tabName: "tab5",
-          batchFieldList: [
+          subTablePrimaryKey: "tab5",
+          containerFields: [
             {
-              batchName: "deployList",
+              containerType: "table",
+              subTablePrimaryKey: "deployList",
               fieldList: [
                 [
                   {
@@ -705,7 +708,7 @@ const tableFieldList = reactive<PageFieldInfo>({
       formVisible: false,
     },
   ],
-  batchFieldList: [],
+  containerFields: [],
 });
 const primaryKey = "idCodeGenerator";
 const codeGeneratorRef = ref();

@@ -56,7 +56,13 @@
 </template>
 <script setup lang="ts">
 import { computed, nextTick, onBeforeMount, onMounted, ref, watch } from "vue";
-import { allAction, checkIsDisabled, initCompCallEvent, prepsFilter, relationEventDispatcher } from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {
+  allAction,
+  checkIsDisabled,
+  initCompCallEvent,
+  prepsFilter,
+  relationEventDispatcher,
+} from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { getDynamicEvents } from "@/api/system";
 import { i18n } from "@/lang";
 import { ItemPreps } from "@/components/types/ItemPreps";
@@ -81,7 +87,8 @@ const isRange = computed(() => {
 });
 
 const showSecond = computed(() => {
-  const fmt = props.field.preps?.format || props.field.preps?.valueFormat || "HH:mm:ss";
+  const fmt =
+    props.field.preps?.format || props.field.preps?.valueFormat || "HH:mm:ss";
   return fmt.includes("ss");
 });
 
@@ -208,7 +215,11 @@ closeWatch.value = watch(
       const name = props.field.fieldName;
       const normalized = normalizeTimePickerValue(val);
       if (Array.isArray(normalized)) {
-        if (!Array.isArray(val) || normalized.length !== val.length || normalized.some((v: any, i: number) => v !== val[i])) {
+        if (
+          !Array.isArray(val) ||
+          normalized.length !== val.length ||
+          normalized.some((v: any, i: number) => v !== val[i])
+        ) {
           formData.value[name] = normalized;
           closeWatch.value?.();
         }
@@ -221,5 +232,4 @@ closeWatch.value = watch(
   { immediate: true },
 );
 </script>
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

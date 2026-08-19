@@ -55,15 +55,32 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { computed, nextTick, onBeforeMount, onMounted, ref, shallowRef, watch } from "vue";
-import { allAction, checkIsDisabled, initCompCallEvent, prepsFilter, relationEventDispatcher } from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {
+  computed,
+  nextTick,
+  onBeforeMount,
+  onMounted,
+  ref,
+  shallowRef,
+  watch,
+} from "vue";
+import {
+  allAction,
+  checkIsDisabled,
+  initCompCallEvent,
+  prepsFilter,
+  relationEventDispatcher,
+} from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { getDynamicEvents } from "@/api/system";
 import { ItemPreps } from "@/components/types/ItemPreps";
-import { getDateDisplayFormat, getDateValueFormat, normalizeDateModel } from "@/api/date_utils";
+import {
+  getDateDisplayFormat,
+  getDateValueFormat,
+  normalizeDateModel,
+} from "@/api/date_utils";
 import { useMobilePicker } from "@/components/formcomp/utils/useMobilePicker";
 import ShMobilePicker from "@/components/formcomp/utils/ShMobilePicker.vue";
 import ShMobileWheelPicker from "@/components/formcomp/utils/ShMobileWheelPicker.vue";
-import { i18n } from "@/lang";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -97,16 +114,24 @@ const {
 const wheelType = computed(() => {
   const t = effectiveType.value;
   switch (t) {
-    case "year": return "year";
-    case "month": return "month";
+    case "year":
+      return "year";
+    case "month":
+      return "month";
     case "week":
-    case "date": return "date";
-    case "daterange": return "daterange";
-    case "monthrange": return "monthrange";
-    case "yearrange": return "yearrange";
-    case "datetimerange": return "datetimerange";
+    case "date":
+      return "date";
+    case "daterange":
+      return "daterange";
+    case "monthrange":
+      return "monthrange";
+    case "yearrange":
+      return "yearrange";
+    case "datetimerange":
+      return "datetimerange";
     case "datetime":
-    default: return "datetime";
+    default:
+      return "datetime";
   }
 });
 
@@ -224,7 +249,11 @@ closeWatch.value = watch(
       const vf = props.field.preps?.valueFormat || valueFormat.value;
       const normalized = normalizeDateModel(val, effectiveType.value, vf);
       if (Array.isArray(normalized)) {
-        if (!Array.isArray(val) || normalized.length !== val.length || normalized.some((v: any, i: number) => v !== val[i])) {
+        if (
+          !Array.isArray(val) ||
+          normalized.length !== val.length ||
+          normalized.some((v: any, i: number) => v !== val[i])
+        ) {
           formData.value[name] = normalized;
           closeWatch.value?.();
         }

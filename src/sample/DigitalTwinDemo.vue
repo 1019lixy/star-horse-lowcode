@@ -9,107 +9,110 @@
  * 部分设备预设报警状态（出料泵 P2 报警，原料罐 T2 警告）
  */
 import { computed, ref } from "vue";
-import { DigitalTwinDesigner } from "@/components/digitaltwin";
-import { i18n } from "@/lang";
 import type { DtScene } from "@/components/digitaltwin";
-import { DT_SCENE_TEMPLATES } from "@/components/digitaltwin";
+import {
+  DigitalTwinDesigner,
+  DT_SCENE_TEMPLATES,
+} from "@/components/digitaltwin";
+import { i18n } from "@/lang";
 
 /** 模板序号（0=工厂车间 / 1=数据中心 / 2=能源站） */
 const currentTemplateIndex = ref(0);
 
 /** 当前场景（默认从工厂车间模板克隆） */
 const buildSceneFromTemplate = (templateIndex: number): DtScene => {
-    const template = DT_SCENE_TEMPLATES[templateIndex];
-    const scene: DtScene = {
-        id: `dt_demo_${template.id}`,
-        name: template.labelKey,
-        // 深拷贝模板实体（确保切换时互不干扰）
-        entities: JSON.parse(JSON.stringify(template.entities)),
-    };
-    (scene as any).templateId = template.id;
-    return scene;
+  const template = DT_SCENE_TEMPLATES[templateIndex];
+  const scene: DtScene = {
+    id: `dt_demo_${template.id}`,
+    name: template.labelKey,
+    // 深拷贝模板实体（确保切换时互不干扰）
+    entities: JSON.parse(JSON.stringify(template.entities)),
+  };
+  (scene as any).templateId = template.id;
+  return scene;
 };
 
 const scene = ref<DtScene>(buildSceneFromTemplate(0));
 
 /** 切换到下一个模板 */
 const handleSwitchTemplate = (): void => {
-    currentTemplateIndex.value = (currentTemplateIndex.value + 1) % DT_SCENE_TEMPLATES.length;
-    scene.value = buildSceneFromTemplate(currentTemplateIndex.value);
-    applyPresetStatus(scene.value);
+  currentTemplateIndex.value =
+    (currentTemplateIndex.value + 1) % DT_SCENE_TEMPLATES.length;
+  scene.value = buildSceneFromTemplate(currentTemplateIndex.value);
+  applyPresetStatus(scene.value);
 };
 
 /** 给模板中部分设备预设报警/警告状态（用于演示） */
 const applyPresetStatus = (s: DtScene): void => {
-    s.entities.forEach((e) => {
-        // 工厂车间模板：出料泵 P2 报警、原料罐 T2 警告
-        if (e.name === "出料泵 P2") e.status = "alarm";
-        if (e.name === "原料罐 T2") e.status = "warning";
-    });
+  s.entities.forEach((e) => {
+    // 工厂车间模板：出料泵 P2 报警、原料罐 T2 警告
+    if (e.name === "出料泵 P2") e.status = "alarm";
+    if (e.name === "原料罐 T2") e.status = "warning";
+  });
 };
 
 applyPresetStatus(scene.value);
 
 /** 当前模板名称（翻译后展示） */
-const currentTemplateName = computed(() => i18n(DT_SCENE_TEMPLATES[currentTemplateIndex.value].labelKey as any));
+const currentTemplateName = computed(() =>
+  i18n(DT_SCENE_TEMPLATES[currentTemplateIndex.value].labelKey as any),
+);
 
 const handleSelectEntity = (id: string | null) => {
-    // eslint-disable-next-line no-console
-    console.log("selected entity:", id);
+  console.log("selected entity:", id);
 };
 
 const handleSaveScene = (s: DtScene) => {
-    // eslint-disable-next-line no-console
-    console.log("save scene:", s);
+  console.log("save scene:", s);
 };
 </script>
 
 <template>
-    <div class="demo-container">
-        <div class="demo-toolbar">
-            <span class="demo-title">3D 数字孪生 - 工业级场景 Demo</span>
-            <el-button type="primary" @click="handleSwitchTemplate">
-                切换模板（当前：{{ currentTemplateName }}）
-            </el-button>
-        </div>
-        <div class="demo-viewer">
-            <DigitalTwinDesigner
-                :key="scene.id"
-                :scene="scene"
-                :auto-sim="true"
-                @select-entity="handleSelectEntity"
-                @save-scene="handleSaveScene"
-            />
-        </div>
+  <div class="demo-container">
+    <div class="demo-toolbar">
+      <span class="demo-title">3D 数字孪生 - 工业级场景 Demo</span>
+      <el-button type="primary" @click="handleSwitchTemplate">
+        切换模板（当前：{{ currentTemplateName }}）
+      </el-button>
     </div>
+    <div class="demo-viewer">
+      <DigitalTwinDesigner
+        :key="scene.id"
+        :scene="scene"
+        :auto-sim="true"
+        @select-entity="handleSelectEntity"
+        @save-scene="handleSaveScene"
+      />
+    </div>
+  </div>
 </template>
 
 <style scoped>
 .demo-container {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .demo-toolbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 16px;
-    background: #f0f2f5;
-    border-bottom: 1px solid #e8e8e8;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  background: #f0f2f5;
+  border-bottom: 1px solid #e8e8e8;
 }
 
 .demo-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: #262626;
+  font-size: 14px;
+  font-weight: 600;
+  color: #262626;
 }
 
 .demo-viewer {
-    flex: 1;
-    overflow: hidden;
+  flex: 1;
+  overflow: hidden;
 }
 </style>

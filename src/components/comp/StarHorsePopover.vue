@@ -28,7 +28,7 @@ const init = () => {
   if (props.iconUrl) {
     postRequest(props.iconUrl, {}).then((res) => {
       const resData = res.data;
-      if (resData.code) {
+      if (resData.code != 200) {
         warning(resData.cnMessage);
         return;
       }
@@ -46,7 +46,7 @@ const {
   size: pickerSize,
   openPicker,
   closePicker,
-} = useMobilePicker(() => ({ preps: {} } as any));
+} = useMobilePicker(() => ({ preps: {} }) as any);
 
 const pickerTitle = props.title || "选择图标";
 
@@ -75,7 +75,11 @@ onMounted(() => {
         <el-tooltip :content="sdata.label">
           <star-horse-icon
             :icon-class="sdata.menuIcon"
-            style="color: var(--star-horse-style); vertical-align: middle; font-size: 48px;"
+            style="
+              color: var(--star-horse-style);
+              vertical-align: middle;
+              font-size: 48px;
+            "
           />
         </el-tooltip>
       </li>

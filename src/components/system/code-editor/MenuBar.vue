@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, computed } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import type { MenuItemDef } from "./types";
 import { IDE_THEMES } from "./theme";
 import { i18n } from "@/lang/index";
@@ -251,6 +251,7 @@ onBeforeUnmount(() => document.removeEventListener("click", onClickOutside));
   flex-shrink: 0;
   z-index: 100;
 }
+
 .menubar-item {
   position: relative;
   padding: 0 10px;
@@ -261,17 +262,21 @@ onBeforeUnmount(() => document.removeEventListener("click", onClickOutside));
   border-radius: 3px;
   font-size: 12.5px;
   color: var(--ide-fg);
+
   &:hover,
   &.active {
     background: var(--ide-bg-hover);
   }
 }
+
 .menubar-label {
   white-space: nowrap;
 }
+
 .menubar-spacer {
   flex: 1;
 }
+
 .menubar-dropdown {
   position: absolute;
   top: 100%;
@@ -284,30 +289,36 @@ onBeforeUnmount(() => document.removeEventListener("click", onClickOutside));
   z-index: 200;
   box-shadow: 0 4px 16px var(--ide-dropdown-shadow);
 }
+
 .dropdown-item {
   display: flex;
   justify-content: space-between;
   padding: 5px 20px;
   cursor: pointer;
   color: var(--ide-fg);
+
   &:hover {
     background: var(--ide-accent);
     color: #fff;
   }
 }
+
 .dropdown-divider {
   height: 1px;
   background: var(--ide-border);
   margin: 4px 0;
 }
+
 .dropdown-shortcut {
   color: var(--ide-fg-dim);
   font-size: 11px;
   margin-left: 20px;
 }
+
 .dropdown-item:hover .dropdown-shortcut {
   color: rgba(255, 255, 255, 0.7);
 }
+
 .theme-switcher {
   font-size: 12px;
 }

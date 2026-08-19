@@ -8,4 +8,20 @@ export * from "./types";
 export * from "./constants";
 // 注意：ScheduleDateUtils 中的 formatDate/addDays/isWeekend/isToday 与 gantt 模块重名，
 // 不通过 barrel 导出，外部如需使用请从 utils/ScheduleDateUtils 直接导入
-export { parseTime, formatDateTime, formatHourMinute, startOfDay, endOfDay, startOfWeek, startOfMonth, hoursBetween, minutesBetween, getViewDateRange, isTimeOverlap, isSameDay, formatDayLabel, formatWeekday, getHourSlots } from "./utils/ScheduleDateUtils";
+export {
+  parseTime,
+  formatDateTime,
+  formatHourMinute,
+  startOfDay,
+  endOfDay,
+  startOfWeek,
+  startOfMonth,
+  hoursBetween,
+  minutesBetween,
+  getViewDateRange,
+  isTimeOverlap,
+  isSameDay,
+  formatDayLabel,
+  formatWeekday,
+  getHourSlots,
+} from "./utils/ScheduleDateUtils";

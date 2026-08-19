@@ -2,7 +2,7 @@
 import { nextTick, onMounted, provide, reactive, ref } from "vue";
 import { dialogPreps } from "@/api/star_horse_utils";
 import type { PageFieldInfo } from "@/components/types";
-import { StarHorseForm, StarHorseDialog } from "@/components/comp";
+import { StarHorseDialog, StarHorseForm } from "@/components/comp";
 
 /**
  * 验证场景：通过 module 的 dataRelation 策略(controlTarget=container)
@@ -56,7 +56,7 @@ const forecastModelOptions = [
 
 /**
  * 构造 module 的 dataRelation 容器控制配置
- * relationFields 为各 card 的 tabName,匹配后 eqVisible
+ * relationFields 为各 card 的 subTablePrimaryKey,匹配后 eqVisible
  */
 const buildModuleContainerRelation = () => {
   const types = ["sales", "inventory", "finance", "hr"];
@@ -75,39 +75,63 @@ const buildModuleContainerRelation = () => {
 const container = reactive<any>({
   fieldName: "moduleCards",
   label: "报表模块配置",
-  type: "cardList",
+  containerType: "card",
   formVisible: true,
   listVisible: false,
-  cardList: [
+  containerFields: [
     // ========== sales 销售 ==========
     {
       title: "销售报表",
-      tabName: "sales",
-      objectName: "salesConfig",
+      subTablePrimaryKey: "sales",
+      subTableName: "salesConfig",
       formVisible: true,
       fieldList: [
         {
-          label: "销售区域", fieldName: "region", type: "select", required: true,
-          formVisible: true, defaultValue: "east",
+          label: "销售区域",
+          fieldName: "region",
+          type: "select",
+          required: true,
+          formVisible: true,
+          defaultValue: "east",
           preps: { values: regionOptions },
         },
-        { label: "销售目标", fieldName: "target", type: "number", formVisible: true, defaultValue: 100000 },
         {
-          label: "启用预测", fieldName: "enableForecast", type: "switch",
-          formVisible: true, defaultValue: "N",
+          label: "销售目标",
+          fieldName: "target",
+          type: "number",
+          formVisible: true,
+          defaultValue: 100000,
+        },
+        {
+          label: "启用预测",
+          fieldName: "enableForecast",
+          type: "switch",
+          formVisible: true,
+          defaultValue: "N",
           preps: {
-            activeValue: "Y", inactiveValue: "N", activeText: "是", inactiveText: "否",
+            activeValue: "Y",
+            inactiveValue: "N",
+            activeText: "是",
+            inactiveText: "否",
             dataRelation: {
               actionName: "change",
               relationDetails: [
-                { matchType: "eq", controlCondition: "eqVisible", relationFields: ["forecastModel"], matchFieldValue: ["Y"] },
+                {
+                  matchType: "eq",
+                  controlCondition: "eqVisible",
+                  relationFields: ["forecastModel"],
+                  matchFieldValue: ["Y"],
+                },
               ],
             },
           },
         },
         {
-          label: "预测模型", fieldName: "forecastModel", type: "select",
-          formVisible: false, defaultValue: "linear",
+          label: "预测模型",
+          fieldName: "forecastModel",
+          type: "select",
+          formVisible: false,
+          defaultValue: "linear",
           preps: { values: forecastModelOptions },
         },
       ],
@@ -115,94 +139,169 @@ const container = reactive<any>({
     // ========== inventory 库存 ==========
     {
       title: "库存报表",
-      tabName: "inventory",
-      objectName: "inventoryConfig",
+      subTablePrimaryKey: "inventory",
+      subTableName: "inventoryConfig",
       formVisible: false,
       fieldList: [
         {
-          label: "仓库类型", fieldName: "warehouse", type: "select", required: true,
-          formVisible: true, defaultValue: "central",
+          label: "仓库类型",
+          fieldName: "warehouse",
+          type: "select",
+          required: true,
+          formVisible: true,
+          defaultValue: "central",
           preps: { values: warehouseOptions },
         },
-        { label: "最低库存", fieldName: "minStock", type: "number", formVisible: true, defaultValue: 100 },
         {
-          label: "库存预警", fieldName: "enableAlert", type: "switch",
-          formVisible: true, defaultValue: "N",
+          label: "最低库存",
+          fieldName: "minStock",
+          type: "number",
+          formVisible: true,
+          defaultValue: 100,
+        },
+        {
+          label: "库存预警",
+          fieldName: "enableAlert",
+          type: "switch",
+          formVisible: true,
+          defaultValue: "N",
           preps: {
-            activeValue: "Y", inactiveValue: "N", activeText: "是", inactiveText: "否",
+            activeValue: "Y",
+            inactiveValue: "N",
+            activeText: "是",
+            inactiveText: "否",
             dataRelation: {
               actionName: "change",
               relationDetails: [
-                { matchType: "eq", controlCondition: "eqVisible", relationFields: ["alertThreshold"], matchFieldValue: ["Y"] },
+                {
+                  matchType: "eq",
+                  controlCondition: "eqVisible",
+                  relationFields: ["alertThreshold"],
+                  matchFieldValue: ["Y"],
+                },
               ],
             },
           },
         },
-        { label: "预警阈值", fieldName: "alertThreshold", type: "number", formVisible: false, defaultValue: 50 },
+        {
+          label: "预警阈值",
+          fieldName: "alertThreshold",
+          type: "number",
+          formVisible: false,
+          defaultValue: 50,
+        },
       ],
     },
     // ========== finance 财务 ==========
     {
       title: "财务报表",
-      tabName: "finance",
-      objectName: "financeConfig",
+      subTablePrimaryKey: "finance",
+      subTableName: "financeConfig",
       formVisible: false,
       fieldList: [
         {
-          label: "币种", fieldName: "currency", type: "select", required: true,
-          formVisible: true, defaultValue: "CNY",
+          label: "币种",
+          fieldName: "currency",
+          type: "select",
+          required: true,
+          formVisible: true,
+          defaultValue: "CNY",
           preps: { values: currencyOptions },
         },
         {
-          label: "统计周期", fieldName: "period", type: "select",
-          formVisible: true, defaultValue: "monthly",
+          label: "统计周期",
+          fieldName: "period",
+          type: "select",
+          formVisible: true,
+          defaultValue: "monthly",
           preps: { values: periodOptions },
         },
         {
-          label: "启用预算", fieldName: "enableBudget", type: "switch",
-          formVisible: true, defaultValue: "N",
+          label: "启用预算",
+          fieldName: "enableBudget",
+          type: "switch",
+          formVisible: true,
+          defaultValue: "N",
           preps: {
-            activeValue: "Y", inactiveValue: "N", activeText: "是", inactiveText: "否",
+            activeValue: "Y",
+            inactiveValue: "N",
+            activeText: "是",
+            inactiveText: "否",
             dataRelation: {
               actionName: "change",
               relationDetails: [
-                { matchType: "eq", controlCondition: "eqVisible", relationFields: ["budgetAmount"], matchFieldValue: ["Y"] },
+                {
+                  matchType: "eq",
+                  controlCondition: "eqVisible",
+                  relationFields: ["budgetAmount"],
+                  matchFieldValue: ["Y"],
+                },
               ],
             },
           },
         },
-        { label: "预算金额", fieldName: "budgetAmount", type: "number", formVisible: false, defaultValue: 500000 },
+        {
+          label: "预算金额",
+          fieldName: "budgetAmount",
+          type: "number",
+          formVisible: false,
+          defaultValue: 500000,
+        },
       ],
     },
     // ========== hr 人事 ==========
     {
       title: "人事报表",
-      tabName: "hr",
-      objectName: "hrConfig",
+      subTablePrimaryKey: "hr",
+      subTableName: "hrConfig",
       formVisible: false,
       fieldList: [
         {
-          label: "部门", fieldName: "dept", type: "select", required: true,
-          formVisible: true, defaultValue: "tech",
+          label: "部门",
+          fieldName: "dept",
+          type: "select",
+          required: true,
+          formVisible: true,
+          defaultValue: "tech",
           preps: { values: deptOptions },
         },
-        { label: "编制人数", fieldName: "headcount", type: "number", formVisible: true, defaultValue: 50 },
         {
-          label: "启用考核", fieldName: "enableReview", type: "switch",
-          formVisible: true, defaultValue: "N",
+          label: "编制人数",
+          fieldName: "headcount",
+          type: "number",
+          formVisible: true,
+          defaultValue: 50,
+        },
+        {
+          label: "启用考核",
+          fieldName: "enableReview",
+          type: "switch",
+          formVisible: true,
+          defaultValue: "N",
           preps: {
-            activeValue: "Y", inactiveValue: "N", activeText: "是", inactiveText: "否",
+            activeValue: "Y",
+            inactiveValue: "N",
+            activeText: "是",
+            inactiveText: "否",
             dataRelation: {
               actionName: "change",
               relationDetails: [
-                { matchType: "eq", controlCondition: "eqVisible", relationFields: ["reviewCycle"], matchFieldValue: ["Y"] },
+                {
+                  matchType: "eq",
+                  controlCondition: "eqVisible",
+                  relationFields: ["reviewCycle"],
+                  matchFieldValue: ["Y"],
+                },
               ],
             },
           },
         },
         {
-          label: "考核周期", fieldName: "reviewCycle", type: "select",
-          formVisible: false, defaultValue: "quarterly",
+          label: "考核周期",
+          fieldName: "reviewCycle",
+          type: "select",
+          formVisible: false,
+          defaultValue: "quarterly",
           preps: { values: reviewCycleOptions },
         },
       ],
@@ -214,8 +313,13 @@ const tableFieldList = reactive<PageFieldInfo | any>({
   fieldList: [
     { label: "主键", fieldName: "id", formVisible: false },
     {
-      label: "报表模块", fieldName: "module", type: "select", required: true,
-      formVisible: true, listVisible: true, defaultValue: "sales",
+      label: "报表模块",
+      fieldName: "module",
+      type: "select",
+      required: true,
+      formVisible: true,
+      listVisible: true,
+      defaultValue: "sales",
       preps: {
         values: moduleOptions,
         // 通过 dataRelation 容器控制策略,声明式控制 cardList 中各 card 的显隐
@@ -263,9 +367,10 @@ onMounted(() => {});
       style="margin-bottom: 12px"
     >
       <template #default>
-        切换「报表模块」下拉框,下方卡片应同步只显示对应模块(其余隐藏,而非 disabled)。
-        这是通过 module 的 dataRelation 配置 controlTarget="container" 实现的声明式 cardList 容器控制。
-        每个 card 内部还有字段级联动(如启用预测→显示预测模型)。
+        切换「报表模块」下拉框,下方卡片应同步只显示对应模块(其余隐藏,而非
+        disabled)。 这是通过 module 的 dataRelation 配置
+        controlTarget="container" 实现的声明式 cardList 容器控制。 每个 card
+        内部还有字段级联动(如启用预测→显示预测模型)。
       </template>
     </el-alert>
     <star-horse-dialog

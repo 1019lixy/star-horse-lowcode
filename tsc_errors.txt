@@ -1,0 +1,166 @@
+﻿node.exe : npm warn Unknown user config "electronMirror". This will stop working in the next major version of npm. See
+`npm help npmrc` for supported config options.
+所在位置 行:1 字符: 1
++ & "d:\nvm\nvm4w\nodejs/node.exe" "C:\Users\MES\AppData\Roaming\npm/no ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (npm warn Unknow...config options.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+(node:28724) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HT
+TPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Sandbox Network Error: hit restricted [104.16.4.34:443]
+Sandbox Network Error: hit restricted [104.16.8.34:443]
+Sandbox Network Error: hit restricted [104.16.0.34:443]
+Sandbox Network Error: hit restricted [104.16.5.34:443]
+Sandbox Network Error: hit restricted [104.16.10.34:443]
+Sandbox Network Error: hit restricted [104.16.1.34:443]
+Sandbox Network Error: hit restricted [104.16.7.34:443]
+Sandbox Network Error: hit restricted [104.16.11.34:443]
+Sandbox Network Error: hit restricted [104.16.3.34:443]
+Sandbox Network Error: hit restricted [104.16.2.34:443]
+Sandbox Network Error: hit restricted [104.16.9.34:443]
+Sandbox Network Error: hit restricted [104.16.6.34:443]
+Sandbox Network Error: hit restricted [104.16.4.34:443]
+Sandbox Network Error: hit restricted [104.16.8.34:443]
+Sandbox Network Error: hit restricted [104.16.0.34:443]
+Sandbox Network Error: hit restricted [104.16.5.34:443]
+Sandbox Network Error: hit restricted [104.16.10.34:443]
+Sandbox Network Error: hit restricted [104.16.1.34:443]
+Sandbox Network Error: hit restricted [104.16.7.34:443]
+Sandbox Network Error: hit restricted [104.16.11.34:443]
+Sandbox Network Error: hit restricted [104.16.3.34:443]
+Sandbox Network Error: hit restricted [104.16.2.34:443]
+Sandbox Network Error: hit restricted [104.16.9.34:443]
+Sandbox Network Error: hit restricted [104.16.6.34:443]
+Sandbox Network Error: hit restricted [104.16.4.34:443]
+Sandbox Network Error: hit restricted [104.16.8.34:443]
+Sandbox Network Error: hit restricted [104.16.0.34:443]
+Sandbox Network Error: hit restricted [104.16.5.34:443]
+Sandbox Network Error: hit restricted [104.16.10.34:443]
+Sandbox Network Error: hit restricted [104.16.1.34:443]
+Sandbox Network Error: hit restricted [104.16.7.34:443]
+Sandbox Network Error: hit restricted [104.16.11.34:443]
+Sandbox Network Error: hit restricted [104.16.3.34:443]
+Sandbox Network Error: hit restricted [104.16.2.34:443]
+Sandbox Network Error: hit restricted [104.16.9.34:443]
+Sandbox Network Error: hit restricted [104.16.6.34:443]
+npm notice run star-horse-lowcode@3.1.16 npx
+npm notice run vue-tsc --noEmit
+src/components/aicopilot/dialogs/AiSettingsDialog.vue(52,7): error TS6133: 'handleReset' is declared but its value is never read.
+src/components/apiorchestrator/panels/ApiChainSequence.vue(23,7): error TS6133: 'endpointName' is declared but its value is never read.
+src/components/comp/app/MainBar.vue(81,7): error TS6133: 'isExpanded' is declared but its value is never read.
+src/components/comp/app/MainContent.vue(33,7): error TS6133: 'computedCategories' is declared but its value is never read.
+src/components/comp/app/MainContent.vue(43,7): error TS6133: 'handleSelect' is declared but its value is never read.
+src/components/comp/app/MainContent.vue(50,7): error TS6133: 'handleSystemConfig' is declared but its value is never read.
+src/components/comp/app/MainContent.vue(55,7): error TS6133: 'isActive' is declared but its value is never read.
+src/components/comp/app/MainSubBar.vue(11,5): error TS6133: 'menuColor' is declared but its value is never read.
+src/components/comp/app/MainSubBar.vue(19,27): error TS6133: 'index' is declared but its value is never read.
+src/components/comp/items/cardItem.vue(64,51): error TS2345: Argument of type 'string | number' is not assignable to parameter of type 'number'.
+  Type 'string' is not assignable to type 'number'.
+src/components/comp/items/collapseItem.vue(63,49): error TS2345: Argument of type 'string | number' is not assignable to parameter of type 'number'.
+  Type 'string' is not assignable to type 'number'.
+src/components/comp/items/dytableItem.vue(213,21): error TS2362: The left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+src/components/comp/items/dytableItem.vue(213,32): error TS2363: The right-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+src/components/comp/items/splitterItem.vue(52,49): error TS2345: Argument of type 'string | number' is not assignable to parameter of type 'number'.
+  Type 'string' is not assignable to type 'number'.
+src/components/comp/items/stepItem.vue(84,7): error TS6133: 'finishStatus' is declared but its value is never read.
+src/components/comp/items/stepItem.vue(87,7): error TS6133: 'processStatus' is declared but its value is never read.
+src/components/comp/StarHorseDraggable.vue(40,7): error TS6133: 'sizeInfoRef' is declared but its value is never read.
+src/components/comp/StarHorseFormTable.vue(25,7): error TS6133: 'currentTableRef' is declared but its value is never read.
+src/components/comp/StarHorseItem.vue(49,7): error TS6133: 'componentRef' is declared but its value is never read.
+src/components/comp/StarHorseSearchComp.vue(15,7): error TS6133: 'searchFormRef' is declared but its value is never read.
+src/components/comp/StarHorseTableColumn.vue(150,7): error TS6133: 'popover' is declared but its value is never read.
+src/components/comp/utils/FieldVisibleControl.vue(23,7): error TS6133: 'shColumnsTableRef' is declared but its value is never read.
+src/components/diagram/DiagramDesigner.vue(27,7): error TS6133: 'canvasRef' is declared but its value is never read.
+src/components/diagram/DiagramDesigner.vue(85,6): error TS2345: Argument of type '{ visible: boolean; diagram: { id: string; name: string; nodes: { id: string; type: string; shape: NodeShape; text: string; x: number; y: number; width: number; height: number; ... 6 more ...; children?: string[]; }[]; ... 4 more ...; metadata?: Record<string, any>; }; }' is not assignable to parameter of type '{ readonly visible: boolean; readonly diagram: DiagramData; readonly dialogType: "dialog" | "drawer"; readonly "onUpdate:visible"?: (v: boolean) => any; } & VNodeProps & AllowedComponentProps & ComponentCustomProps & Record<...>'.
+  Property 'dialogType' is missing in type '{ visible: boolean; diagram: { id: string; name: string; nodes: { id: string; type: string; shape: NodeShape; text: string; x: number; y: number; width: number; height: number; ... 6 more ...; children?: string[]; }[]; ... 4 more ...; metadata?: Record<string, any>; }; }' but required in type '{ readonly visible: boolean; readonly diagram: DiagramData; readonly dialogType: "dialog" | "drawer"; readonly "onUpdate:visible"?: (v: boolean) => any; }'.
+src/components/doctemplate/dialogs/DocVariableDialog.vue(66,14): error TS2339: Property 'dialogType' does not exist on type '{ innerVisible: boolean; isNew: boolean; i18n: (key: string, ...args: any[]) => any; handleSubmit: () => void; form: { id: string; name: string; label: string; type: DocVariableType; defaultValue?: any; options?: { ...; }[]; required?: boolean; description?: string; }; ... 28 more ...; _pStores?: Record<...>; }'.
+src/components/formcomp/items/base-json-item.vue(90,52): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'string'.
+src/components/formcomp/items/color-item.vue(151,10): error TS6133: 'handleClear' is declared but its value is never read.
+src/components/formcomp/items/description-item.vue(43,7): error TS6133: 'itemAction' is declared but its value is never read.
+src/components/formcomp/items/htmleditor-item.vue(141,7): error TS6133: 'dataChange' is declared but its value is never read.
+src/components/formcomp/items/input-item.vue(123,7): error TS6133: 'inputItemRef' is declared but its value is never read.
+src/components/formcomp/items/progress-item.vue(35,7): error TS6133: 'itemAction' is declared but its value is never read.
+src/components/formcomp/utils/ShMobileWheelPicker.vue(425,5): error TS6133: 'dragStartY' is declared but its value is never read.
+src/components/gantt/panels/GanttCanvas.vue(499,26): error TS2339: Property 'TODAY_LINE_COLOR' does not exist on type '{ timelineWidth: number; timelineGroups: { label: string; count: number; }[]; cellWidth: number; timelineCells: GanttTimelineCell[]; getCellClass: (cell: GanttTimelineCell) => { ...; }; ... 35 more ...; _pStores?: Record<...>; }'.
+src/components/knowledgegraph/GraphViewer.vue(33,7): error TS6133: 'canvasRef' is declared but its value is never read.
+src/components/knowledgegraph/panels/GraphViewerCanvas.vue(71,7): error TS6133: 'toCanvasPoint' is declared but its value is never read.
+src/components/pdf/panels/PdfCanvas.vue(28,7): error TS6133: 'contentWidthPx' is declared but its value is never read.
+src/components/pdf/panels/PdfCanvas.vue(29,7): error TS6133: 'contentHeightPx' is declared but its value is never read.
+src/components/pdf/panels/PdfCanvas.vue(67,7): error TS6133: 'canvasRef' is declared but its value is never read.
+src/components/pivot/panels/PivotTablePanel.vue(27,7): error TS6133: 'valueFieldLabels' is declared but its value is never read.
+src/components/print/renderers/HtmlRenderer.ts(329,11): error TS6133: 'orientation' is declared but its value is never read.
+src/components/system/PageConfig.vue(227,7): error TS6133: 'toggle' is declared but its value is never read.
+src/components/system/StarHorseDiffEditor.vue(354,7): error TS6133: 'diffRoot' is declared but its value is never read.
+src/components/system/StarHorseDiffEditor.vue(937,7): error TS6133: 'moveToNextConflict' is declared but its value is never read.
+src/main.ts(18,8): error TS2339: Property '__debug__' does not exist on type 'Window & typeof globalThis'.
+src/sample/BarcodeTest.vue(55,17): error TS2352: Conversion of type 'HTMLElement' to type 'SVGSVGElement' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type 'HTMLElement' is missing the following properties from type 'SVGSVGElement': currentScale, currentTranslate, height, width, and 55 more.
+src/sample/BoxContainerInstanceDemo.vue(3,6): error TS2345: Argument of type '{ dataForm: any; item: any; formInfo: {}; }' is not assignable to parameter of type '{ readonly compUrl?: ApiUrls; readonly fieldList?: any; readonly item?: any; readonly subTableName?: string; readonly dataIndex?: number; readonly propPrefix?: string; readonly parentPreps?: any; ... 12 more ...; readonly "onUpdate:dataForm"?: (value: any) => any; } & VNodeProps & AllowedComponentProps & ComponentCust...'.
+  Type '{ dataForm: any; item: any; formInfo: {}; }' is missing the following properties from type '{ readonly compUrl?: ApiUrls; readonly fieldList?: any; readonly item?: any; readonly subTableName?: string; readonly dataIndex?: number; readonly propPrefix?: string; readonly parentPreps?: any; ... 12 more ...; readonly "onUpdate:dataForm"?: (value: any) => any; }': compSize, source
+src/sample/BoxContainerInstanceDemo.vue(19,5): error TS6133: 'designForm' is declared but its value is never read.
+src/sample/BoxContainerViewDemo.vue(18,5): error TS6133: 'designForm' is declared but its value is never read.
+src/sample/commonpage/CommonSkeleton.vue(93,9): error TS2440: Import declaration conflicts with local declaration of 'defineProps'.
+src/sample/commonpage/NormalPage.vue(15,7): error TS6133: 'normalFormRef' is declared but its value is never read.
+src/sample/commonpage/NormalPage.vue(154,7): error TS6133: 'init' is declared but its value is never read.
+src/sample/ComplexFormAnalysis.vue(12,5): error TS6133: 'systemIconList' is declared but its value is never read.
+src/sample/ComplexFormAnalysis.vue(32,7): error TS2353: Object literal may only specify known properties, and 'formVisible' does not exist in type 'SearchProps'.
+src/sample/ComplexFormAnalysis.vue(39,7): error TS2353: Object literal may only specify known properties, and 'formVisible' does not exist in type 'SearchProps'.
+src/sample/ComplexFormAnalysis.vue(46,7): error TS2353: Object literal may only specify known properties, and 'formVisible' does not exist in type 'SearchProps'.
+src/sample/ComplexFormAnalysis.vue(408,37): error TS2367: This comparison appears to be unintentional because the types 'string | number' and 'object' have no overlap.
+src/sample/ComplexFormAnalysis.vue(413,57): error TS2367: This comparison appears to be unintentional because the types 'string | number' and 'object' have no overlap.
+src/sample/ComplexFormAnalysis.vue(420,7): error TS6133: 'params' is declared but its value is never read.
+src/sample/ComplexFormValid.vue(94,7): error TS6133: 'appFieldList' is declared but its value is never read.
+src/sample/ComponentTester.vue(83,7): error TS6133: 'arrayItemValue' is declared but its value is never read.
+src/sample/ComponentTester.vue(90,7): error TS6133: 'objectKey' is declared but its value is never read.
+src/sample/ComponentTester.vue(91,7): error TS6133: 'objectValue' is declared but its value is never read.
+src/sample/DytableContainerInstanceValid.vue(17,28): error TS2724: '"@/api/form_utils"' has no exported member named 'analysisComps'. Did you mean 'analysisAppComps'?
+src/sample/DytableContainerInstanceValid.vue(17,28): error TS6133: 'analysisComps' is declared but its value is never read.
+src/sample/DytableContainerInstanceValid.vue(21,5): error TS6133: 'designForm' is declared but its value is never read.
+src/sample/DytableContainerInstanceValid.vue(22,7): error TS6133: 'testDateFormat' is declared but its value is never read.
+src/sample/DytableContainerInstanceValid.vue(31,7): error TS6133: 'formData' is declared but its value is never read.
+src/sample/DytableContainerViewValid.vue(17,5): error TS6133: 'designForm' is declared but its value is never read.
+src/sample/EditorTest.vue(109,10): error TS2322: Type '({ id: string; label: string; icon: string; position: "left"; type: "button"; handler: () => void; children?: unknown; } | { id: string; label: string; icon: string; position: "right"; type: "dropdown"; children: { ...; }[]; handler?: unknown; })[]' is not assignable to type 'ToolbarItem[]'.
+  Type '{ id: string; label: string; icon: string; position: "left"; type: "button"; handler: () => void; children?: unknown; } | { id: string; label: string; icon: string; position: "right"; type: "dropdown"; children: { ...; }[]; handler?: unknown; }' is not assignable to type 'ToolbarItem'.
+    Type '{ id: string; label: string; icon: string; position: "left"; type: "button"; handler: () => void; children?: unknown; }' is not assignable to type 'ToolbarItem'.
+      Types of property 'children' are incompatible.
+        Type '{}' is missing the following properties from type '{ label: string; handler: () => void; }[]': length, pop, push, concat, and 28 more.
+src/sample/FormRelationOperation.vue(179,7): error TS6133: 'areaFormRef' is declared but its value is never read.
+src/sample/InformationsUi.vue(10,5): error TS6133: 'departmentList' is declared but its value is never read.
+src/sample/InformationsUi.vue(13,5): error TS6133: 'selfBtnFunc' is declared but its value is never read.
+src/sample/InformationsUi.vue(245,7): error TS6133: 'params' is declared but its value is never read.
+src/sample/NormalFormValid.vue(17,7): error TS6133: 'testFormValidRef' is declared but its value is never read.
+src/sample/NormalFormValid.vue(18,7): error TS6133: 'outerData' is declared but its value is never read.
+src/sample/NormalFormValid.vue(26,7): error TS2353: Object literal may only specify known properties, and 'defaultVisible' does not exist in type 'SearchParams'.
+src/sample/NormalFormValid.vue(36,7): error TS2353: Object literal may only specify known properties, and 'defaultVisible' does not exist in type 'SearchParams'.
+src/sample/NormalFormValid.vue(46,7): error TS2353: Object literal may only specify known properties, and 'defaultVisible' does not exist in type 'SearchParams'.
+src/sample/NormalFormValid.vue(56,7): error TS2353: Object literal may only specify known properties, and 'defaultVisible' does not exist in type 'SearchParams'.
+src/sample/NormalFormValidNoCalc.vue(17,7): error TS6133: 'testFormValidRef' is declared but its value is never read.
+src/sample/NormalFormValidNoCalc.vue(18,7): error TS6133: 'outerData' is declared but its value is never read.
+src/sample/NormalFormValidNoCalc.vue(26,7): error TS2353: Object literal may only specify known properties, and 'defaultVisible' does not exist in type 'SearchParams'.
+src/sample/NormalFormValidNoCalc.vue(36,7): error TS2353: Object literal may only specify known properties, and 'defaultVisible' does not exist in type 'SearchParams'.
+src/sample/NormalFormValidNoCalc.vue(46,7): error TS2353: Object literal may only specify known properties, and 'defaultVisible' does not exist in type 'SearchParams'.
+src/sample/NormalFormValidNoCalc.vue(56,7): error TS2353: Object literal may only specify known properties, and 'defaultVisible' does not exist in type 'SearchParams'.
+src/sample/PivotDemo.vue(7,33): error TS2307: Cannot find module './components/demoTypes' or its corresponding type declarations.
+src/sample/PivotDemo.vue(140,6): error TS2345: Argument of type '{ actions: ShDemoAction[]; titleKey: string; onAction: any; }' is not assignable to parameter of type '{ readonly designer: { state: { records: PivotRecord[]; fields: { name: string; label: string; type: PivotFieldType; aggregation?: PivotAggregation; format?: string; }[]; config: { ...; }; name: string; }; ... 19 more ...; getData: () => PivotData; }; readonly readonly?: boolean; readonly onSave?: () => any; readonl...'.
+  Property 'designer' is missing in type '{ actions: ShDemoAction[]; titleKey: string; onAction: any; }' but required in type '{ readonly designer: { state: { records: PivotRecord[]; fields: { name: string; label: string; type: PivotFieldType; aggregation?: PivotAggregation; format?: string; }[]; config: { ...; }; name: string; }; ... 19 more ...; getData: () => PivotData; }; readonly readonly?: boolean; readonly onSave?: () => any; readonl...'.
+src/sample/PivotDemo.vue(145,50): error TS2339: Property 'height' does not exist on type '{ actions: ShDemoAction[]; handleAction: (key: string) => void; pivotData: { records: PivotRecord[]; fields: { name: string; label: string; type: PivotFieldType; aggregation?: PivotAggregation; format?: string; }[]; config: { ...; }; name: string; }; ... 20 more ...; _pStores?: Record<...>; }'.
+src/sample/test.vue(6,7): error TS6133: 'visible' is declared but its value is never read.
+src/sample/test.vue(7,7): error TS6133: 'actName' is declared but its value is never read.
+src/sample/test.vue(8,7): error TS6133: 'categories' is declared but its value is never read.
+src/sample/test.vue(16,7): error TS6133: 'handleSelect' is declared but its value is never read.
+src/sample/ValidDialogFormRelation.vue(9,19): error TS2551: Property 'dataRelationReset' does not exist on type '{ areaFormRef: any; dataRelationDialogVisible: boolean; dataRelationMerge: () => Promise<void>; closeAction: () => void; tableFieldList: { fieldList?: any; containerFields?: { containerType?: string; ... 13 more ...; headerFieldList?: { ...; }[]; }[]; ... 9 more ...; priority?: number; }; ... 19 more ...; _pStores?:...'. Did you mean 'dataRelationMerge'?
+src/sample/ValidDialogFormRelation.vue(137,7): error TS6133: 'fields' is declared but its value is never read.
+src/sample/ValidDialogFormRelation.vue(138,7): error TS6133: 'eventList' is declared but its value is never read.
+src/sample/ValidDialogFormRelation.vue(142,7): error TS6133: 'controlConditionList' is declared but its value is never read.
+src/sample/ValidDialogFormRelation.vue(154,7): error TS6133: 'fieldType' is declared but its value is never read.
+src/sample/ValidDialogFormRelation.vue(155,7): error TS6133: 'fieldLinkVisible' is declared but its value is never read.
+src/sample/ValidDialogFormRelation.vue(156,7): error TS6133: 'dataList' is declared but its value is never read.
+src/sample/ValidMulitSameFormTab.vue(17,7): error TS2353: Object literal may only specify known properties, and 'defaultVisible' does not exist in type 'SearchParams'.
+src/sample/ValidMulitSameFormTab.vue(27,7): error TS2353: Object literal may only specify known properties, and 'defaultVisible' does not exist in type 'SearchParams'.
+src/sample/ValidMulitSameFormTab.vue(37,7): error TS2353: Object literal may only specify known properties, and 'defaultVisible' does not exist in type 'SearchParams'.
+src/sample/ValidMulitSameFormTab.vue(47,7): error TS2353: Object literal may only specify known properties, and 'defaultVisible' does not exist in type 'SearchParams'.
+src/sample/ValidMulitSameFormTab.vue(937,7): error TS6133: 'generateFormRef' is declared but its value is never read.
+src/sample/ValidMulitSameFormTab.vue(953,17): error TS2339: Property 'generateMerge' does not exist on type '{ dialogProps: { batchDialogTitle?: string; dialogTitle?: string; batchEditVisible?: boolean; editVisible?: boolean; uploadVisible?: boolean; viewVisible?: boolean; bakeVisible1?: boolean; bakeVisible2?: boolean; bakeVisible3?: boolean; ids?: any; isExpand?: boolean; expandUrl?: { ...; }; }; ... 27 more ...; _pStore...'.
+src/sample/WebUrlComp.vue(44,7): error TS6133: 'disableUrl' is declared but its value is never read.

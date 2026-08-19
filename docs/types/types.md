@@ -167,7 +167,7 @@
 | cellEditable | `boolean` | 否 | 是否允许列表单元格可编辑 |
 | orderBy | `OrderByInfo[]` | 否 | 列表数据排序 |
 | conditions | `SearchParams[]` | 否 | 默认查询条件 |
-| batchName | `string` | 否 | 提交后端批量数据的 Key 名称 |
+| subTableName | `string` | 否 | 提交后端批量数据的 Key 名称 |
 | sameTable | `boolean` | 否 | batchFieldList 和 fieldList 是否同一个表 |
 | primaryKey | `string \| Array<any>` | 否 | 主键 |
 | priority | `number` | 否 | 优先级 |
@@ -178,7 +178,7 @@
 
 | 字段 | 类型 | 必填 | 说明 |
 |---|---|---|---|
-| batchName | `string` | 是 | 对应后端 dto 里的 List 属性名称 |
+| subTableName | `string` | 是 | 对应后端 dto 里的 List 属性名称 |
 | disabled | `string` | 否 | 是否禁用 |
 | disVisible | `boolean` | 否 | 禁止显示 |
 | title | `string` | 否 | 列表标题 |

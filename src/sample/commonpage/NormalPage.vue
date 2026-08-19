@@ -12,6 +12,7 @@ import { userAction } from "@/api/user_func";
 import { dialogPreps } from "@/api/star_horse_utils";
 import { createDatetime } from "@/api/date_utils";
 import { isMobile } from "@/api/device";
+import { StarHorsePanel } from "@/components/comp";
 
 const normalPageRef = ref();
 const normalFormRef = ref();
@@ -193,7 +194,7 @@ defineExpose({ refreshForm });
 
     <!-- 正常内容 -->
     <template v-else-if="formData.hasData">
-      <star-horse-dialog
+      <star-horse-panel
         :isShowBtnContinue="true"
         v-model="dialogProps.editVisible"
         :dialogProps="dialogProps"
@@ -208,8 +209,8 @@ defineExpose({ refreshForm });
           :globalCondition="formData.relationTables"
           :dynamicForm="true"
         />
-      </star-horse-dialog>
-      <star-horse-dialog
+      </star-horse-panel>
+      <star-horse-panel
         v-model="dialogProps.viewVisible"
         :dialogProps="dialogProps"
         :source="3"
@@ -221,7 +222,7 @@ defineExpose({ refreshForm });
           :dynamicForm="true"
           :compUrl="formData.dataUrl"
         />
-      </star-horse-dialog>
+      </star-horse-panel>
       <div
         class="search-content"
         v-if="formData.searchFormData.fieldList?.length > 0"

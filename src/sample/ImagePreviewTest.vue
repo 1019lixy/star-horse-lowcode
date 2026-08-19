@@ -1,9 +1,5 @@
 <script setup lang="ts" name="ImagePreviewTest">
-import {
-  imagesPreview,
-  ImagePreviewOptions,
-  ImageTransition,
-} from "@/api/star_horse_utils";
+import { imagesPreview, ImageTransition } from "@/api/star_horse_utils";
 import { ref } from "vue";
 
 const sampleImages = [
@@ -41,15 +37,15 @@ const openWithTransition = (type: ImageTransition) => {
     <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap">
       <el-button type="primary" @click="openSingle">单图预览</el-button>
       <el-button type="success" @click="openMulti"
-        >多图预览（{{ transitionType }}）</el-button
-      >
+        >多图预览（{{ transitionType }}）
+      </el-button>
     </div>
 
     <div style="margin-top: 8px">
       <span style="font-size: 14px; color: #666; margin-right: 8px"
         >过渡动画：</span
       >
-      <el-radio-group v-model="transitionType" >
+      <el-radio-group v-model="transitionType">
         <el-radio-button value="fade">淡入淡出</el-radio-button>
         <el-radio-button value="slide">滑动</el-radio-button>
         <el-radio-button value="zoom">缩放</el-radio-button>
@@ -74,24 +70,13 @@ const openWithTransition = (type: ImageTransition) => {
     </div>
 
     <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px">
-      <el-button  @click="openWithTransition('fade')"
-        >淡入淡出</el-button
-      >
-      <el-button  @click="openWithTransition('slide')"
-        >滑动</el-button
-      >
-      <el-button  @click="openWithTransition('zoom')"
-        >缩放</el-button
-      >
-      <el-button
-
-        type="warning"
-        @click="openWithTransition('flip3d')"
-        >3D翻转</el-button
-      >
-      <el-button  @click="openWithTransition('none')"
-        >无动画</el-button
-      >
+      <el-button @click="openWithTransition('fade')">淡入淡出 </el-button>
+      <el-button @click="openWithTransition('slide')">滑动 </el-button>
+      <el-button @click="openWithTransition('zoom')">缩放 </el-button>
+      <el-button type="warning" @click="openWithTransition('flip3d')"
+        >3D翻转
+      </el-button>
+      <el-button @click="openWithTransition('none')">无动画 </el-button>
     </div>
 
     <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px">

@@ -7,6 +7,7 @@ import {
 
 import { ItemPreps } from "@/components/types/ItemPreps";
 import { i18n } from "@/lang";
+
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
   disabled: false,

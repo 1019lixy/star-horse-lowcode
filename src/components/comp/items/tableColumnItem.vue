@@ -1,5 +1,5 @@
 <script setup lang="ts" name="tableColumnItem">
-import { computed, onMounted, PropType, watch } from "vue";
+import { computed, PropType } from "vue";
 import { ApiUrls } from "@/components/types/ApiUrls";
 import { compKey } from "@/api/system";
 import { StarHorseTableColumn } from "@/components/comp";
@@ -35,9 +35,14 @@ const normalizedFieldList = computed(() => {
   const compFieldInfo = props.fieldList;
   // Process main field list
   processFieldList(compFieldInfo?.fieldList || [], props.sourceName, result);
-  // Process batch field list if showBatchField is true
-  if (props.showBatchField && compFieldInfo?.batchFieldList) {
-    compFieldInfo?.batchFieldList?.forEach((item: any, index: number) => {
+  // Process batch field list if showBatchField is true (迁移期双读)
+  if (props.showBatchField) {
+    const batchList = Array.isArray(compFieldInfo?.containerFields)
+      ? compFieldInfo.containerFields.filter(
+          (c: any) => c?.containerType === "table",
+        )
+      : [];
+    batchList?.forEach((item: any, index: number) => {
       if (item?.fieldList) {
         processFieldList(item.fieldList, `batch_${index}`, result);
       } else {

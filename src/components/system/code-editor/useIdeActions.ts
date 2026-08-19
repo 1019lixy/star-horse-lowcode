@@ -1,5 +1,5 @@
 import { type Ref } from "vue";
-import { postRequest, getRequest } from "@/api/star_horse_apis";
+import { getRequest, postRequest } from "@/api/star_horse_apis";
 import { warning } from "@/utils/message";
 import { i18n } from "@/lang/index";
 import type { IdeApiConfig } from "./constants";
@@ -73,7 +73,7 @@ export function useIdeActions(deps: IdeActionsDeps) {
         fileName: getActiveFileName(),
       });
       const respData = res?.data;
-      if (respData?.code === 0 && respData?.data) {
+      if (respData?.code === 200 && respData?.data) {
         const result = respData.data;
         if (result.success) {
           appendConsole("success", i18n("ide.console.compileSuccess"));
@@ -127,7 +127,7 @@ export function useIdeActions(deps: IdeActionsDeps) {
         codeId: activeTabId.value,
       });
       const respData = res?.data;
-      if (respData?.code === 0 && respData?.data) {
+      if (respData?.code === 200 && respData?.data) {
         const result = respData.data;
         // 逐行输出捕获的 stdout
         if (result.output) {
@@ -183,7 +183,7 @@ export function useIdeActions(deps: IdeActionsDeps) {
     try {
       const res = await postRequest(url, { content: sourceCode });
       const result = res?.data;
-      if (result?.code === 0 || result?.code === 200) {
+      if (result?.code === 200) {
         const data = result.data;
         if (data?.success) {
           appendConsole("success", i18n("ide.console.compileRegisterSuccess"));
@@ -223,7 +223,7 @@ export function useIdeActions(deps: IdeActionsDeps) {
     try {
       const res = await postRequest(url.replace("{beanName}", beanName), {});
       const result = res?.data;
-      if (result?.code === 0 || result?.code === 200) {
+      if (result?.code === 200) {
         appendConsole(
           "success",
           i18n("ide.console.unregisterSuccess", beanName),
@@ -250,7 +250,7 @@ export function useIdeActions(deps: IdeActionsDeps) {
     try {
       const res = await postRequest(url, {});
       const result = res?.data;
-      if (result?.code === 0 || result?.code === 200) {
+      if (result?.code === 200) {
         appendConsole("success", i18n("ide.console.unregisterAllSuccess"));
       } else {
         appendConsole("error", result?.cnMessage || "注销失败");
@@ -279,7 +279,7 @@ export function useIdeActions(deps: IdeActionsDeps) {
     try {
       const res = await postRequest(url, { content: sourceCode });
       const result = res?.data;
-      if (result?.code === 0 || result?.code === 200) {
+      if (result?.code === 200) {
         appendConsole("success", i18n("ide.console.draftSaveSuccess"));
       } else {
         appendConsole("error", result?.cnMessage || "草稿保存失败");
@@ -303,7 +303,7 @@ export function useIdeActions(deps: IdeActionsDeps) {
     try {
       const res = await getRequest(url);
       const result = res?.data;
-      if (result?.code === 0 || result?.code === 200) {
+      if (result?.code === 200) {
         const data = result.data;
         if (data.recovered > 0) {
           appendConsole(
@@ -335,7 +335,7 @@ export function useIdeActions(deps: IdeActionsDeps) {
     try {
       const res = await postRequest(url, {});
       const data = res?.data;
-      if (data?.code === 0 && data?.data) {
+      if (data?.code === 200 && data?.data) {
         return Object.entries(data.data).map(([key, name]) => ({
           key,
           name: name as string,
@@ -365,7 +365,7 @@ export function useIdeActions(deps: IdeActionsDeps) {
         className,
       });
       const data = res?.data;
-      if (data?.code === 0 && data?.data != null) return data.data;
+      if (data?.code === 200 && data?.data != null) return data.data;
       warning(data?.cnMessage || i18n("ide.template.loadFailed"));
       return null;
     } catch (e: any) {

@@ -2,7 +2,7 @@
 import { nextTick, onMounted, provide, reactive, ref } from "vue";
 import { dialogPreps } from "@/api/star_horse_utils";
 import type { PageFieldInfo } from "@/components/types";
-import { StarHorseForm, StarHorseDialog } from "@/components/comp";
+import { StarHorseDialog, StarHorseForm } from "@/components/comp";
 
 /**
  * 验证场景：通过 editMode 的 dataRelation 策略(controlTarget=container)
@@ -39,7 +39,7 @@ const editorThemeOptions = [
 
 /**
  * 构造 editMode 的 dataRelation 容器控制配置
- * relationFields 为各 splitter panel 的 tabName,匹配后 eqVisible
+ * relationFields 为各 splitter panel 的 subTablePrimaryKey,匹配后 eqVisible
  */
 const buildEditModeContainerRelation = () => {
   const types = ["visual", "code", "preview"];
@@ -58,25 +58,32 @@ const buildEditModeContainerRelation = () => {
 const container = reactive<any>({
   fieldName: "editSplitter",
   label: "编辑器面板",
-  type: "splitterList",
+  containerType: "splitter",
   formVisible: true,
   listVisible: false,
-  splitterList: [
+  containerFields: [
     // ========== visual 可视化 ==========
     {
       title: "可视化编辑",
-      tabName: "visual",
-      objectName: "visualConfig",
+      subTablePrimaryKey: "visual",
+      subTableName: "visualConfig",
       formVisible: true,
       fieldList: [
         {
-          label: "画布尺寸", fieldName: "canvasSize", type: "select", required: true,
-          formVisible: true, defaultValue: "1024x768",
+          label: "画布尺寸",
+          fieldName: "canvasSize",
+          type: "select",
+          required: true,
+          formVisible: true,
+          defaultValue: "1024x768",
           preps: { values: canvasSizeOptions },
         },
         {
-          label: "主题", fieldName: "theme", type: "select",
-          formVisible: true, defaultValue: "light",
+          label: "主题",
+          fieldName: "theme",
+          type: "select",
+          formVisible: true,
+          defaultValue: "light",
           preps: { values: themeOptions },
         },
       ],
@@ -84,18 +91,25 @@ const container = reactive<any>({
     // ========== code 代码 ==========
     {
       title: "代码编辑",
-      tabName: "code",
-      objectName: "codeConfig",
+      subTablePrimaryKey: "code",
+      subTableName: "codeConfig",
       formVisible: false,
       fieldList: [
         {
-          label: "语言", fieldName: "language", type: "select", required: true,
-          formVisible: true, defaultValue: "typescript",
+          label: "语言",
+          fieldName: "language",
+          type: "select",
+          required: true,
+          formVisible: true,
+          defaultValue: "typescript",
           preps: { values: languageOptions },
         },
         {
-          label: "编辑器主题", fieldName: "editorTheme", type: "select",
-          formVisible: true, defaultValue: "monokai",
+          label: "编辑器主题",
+          fieldName: "editorTheme",
+          type: "select",
+          formVisible: true,
+          defaultValue: "monokai",
           preps: { values: editorThemeOptions },
         },
       ],
@@ -103,15 +117,29 @@ const container = reactive<any>({
     // ========== preview 预览 ==========
     {
       title: "预览",
-      tabName: "preview",
-      objectName: "previewConfig",
+      subTablePrimaryKey: "preview",
+      subTableName: "previewConfig",
       formVisible: false,
       fieldList: [
-        { label: "缩放比例(%)", fieldName: "zoomLevel", type: "number", formVisible: true, defaultValue: 100 },
         {
-          label: "显示标尺", fieldName: "showRuler", type: "switch",
-          formVisible: true, defaultValue: "N",
-          preps: { activeValue: "Y", inactiveValue: "N", activeText: "是", inactiveText: "否" },
+          label: "缩放比例(%)",
+          fieldName: "zoomLevel",
+          type: "number",
+          formVisible: true,
+          defaultValue: 100,
+        },
+        {
+          label: "显示标尺",
+          fieldName: "showRuler",
+          type: "switch",
+          formVisible: true,
+          defaultValue: "N",
+          preps: {
+            activeValue: "Y",
+            inactiveValue: "N",
+            activeText: "是",
+            inactiveText: "否",
+          },
         },
       ],
     },
@@ -122,8 +150,13 @@ const tableFieldList = reactive<PageFieldInfo | any>({
   fieldList: [
     { label: "主键", fieldName: "id", formVisible: false },
     {
-      label: "编辑模式", fieldName: "editMode", type: "select", required: true,
-      formVisible: true, listVisible: true, defaultValue: "visual",
+      label: "编辑模式",
+      fieldName: "editMode",
+      type: "select",
+      required: true,
+      formVisible: true,
+      listVisible: true,
+      defaultValue: "visual",
       preps: {
         values: editModeOptions,
         // 通过 dataRelation 容器控制策略,声明式控制 splitterList 中各 panel 的显隐
@@ -172,7 +205,8 @@ onMounted(() => {});
     >
       <template #default>
         切换「编辑模式」下拉框,下方分栏面板应同步只显示对应模式(其余隐藏)。
-        这是通过 editMode 的 dataRelation 配置 controlTarget="container" 实现的声明式 splitterList 容器控制。
+        这是通过 editMode 的 dataRelation 配置 controlTarget="container"
+        实现的声明式 splitterList 容器控制。
       </template>
     </el-alert>
     <star-horse-dialog

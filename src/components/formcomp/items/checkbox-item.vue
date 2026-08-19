@@ -26,7 +26,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { nextTick, onMounted, watch } from "vue";
+import { nextTick, onMounted } from "vue";
 import {
   allAction,
   checkIsDisabled,
@@ -37,6 +37,7 @@ import { compDynamicData } from "@/api/star_horse_utils";
 import { getDynamicEvents } from "@/api/system";
 
 import { ItemPreps } from "@/components/types/ItemPreps";
+
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
   disabled: false,

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, nextTick } from "vue";
+import { nextTick, onBeforeUnmount, onMounted, ref } from "vue";
 
 export interface ContextMenuItem {
   label: string;
@@ -107,6 +107,7 @@ const onEsc = (e: KeyboardEvent) => {
   font-size: 13px;
   user-select: none;
 }
+
 .ctx-item {
   display: flex;
   justify-content: space-between;
@@ -114,36 +115,44 @@ const onEsc = (e: KeyboardEvent) => {
   padding: 5px 20px;
   cursor: pointer;
   color: var(--ide-fg, #cccccc);
+
   &:hover {
     background: var(--ide-accent, #007acc);
     color: #fff;
   }
+
   &.ctx-danger {
     color: #ff4d4f;
+
     &:hover {
       background: #ff4d4f;
       color: #fff;
     }
   }
+
   &.ctx-disabled {
     opacity: 0.4;
     cursor: not-allowed;
+
     &:hover {
       background: none;
       color: inherit;
     }
   }
 }
+
 .ctx-divider {
   height: 1px;
   background: var(--ide-border, #3c3c3c);
   margin: 4px 0;
 }
+
 .ctx-shortcut {
   color: var(--ide-fg-dim, #858585);
   font-size: 11px;
   margin-left: 20px;
 }
+
 .ctx-item:hover .ctx-shortcut {
   color: rgba(255, 255, 255, 0.7);
 }

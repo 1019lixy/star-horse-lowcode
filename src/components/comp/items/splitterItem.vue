@@ -1,16 +1,11 @@
 <script setup lang="ts">
-import {
-  checkObject,
-  getDataIndex,
-  getFormData,
-  getPrefix,
-} from "@/api/form_utils";
+import {checkObject, getDataIndex, getFormData, getPrefix,} from "@/api/form_utils";
 
 import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
-import { ContainerPreps } from "@/components/types/ItemPreps";
-import { ModelRef, onMounted } from "vue";
-import { prepsFilter } from "@/components/formcomp/utils/ItemRelationEventUtils";
-import StarHorseItem from "@/components/comp/StarHorseItem.vue";
+import {ContainerPreps} from "@/components/types/ItemPreps";
+import {ModelRef, onMounted} from "vue";
+import {prepsFilter} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {i18n} from "@/lang";
 
 withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
@@ -19,8 +14,8 @@ withDefaults(defineProps<ContainerPreps>(), {
   propPrefix: "",
   parentPreps: {},
   subFormFlag: "N",
-  batchName: "batchDataList",
-  batchFieldName: "batchFieldList",
+  subTableName: "subDataList",
+
   compSize: "default",
   source: 1,
 });
@@ -40,32 +35,42 @@ const addRow = (row: any) => {
 const removeRow = (row: any) => {
   emits("removeRow", row);
 };
-const init = () => {};
+const init = () => {
+};
 onMounted(() => {
   init();
 });
 </script>
 
 <template>
-  <template v-if="item.splitterList?.length > 0">
+  <template v-if="item.containerFields?.length > 0">
     <el-splitter v-bind="prepsFilter(item.preps)">
-      <template v-for="(splitterItem, key) in item.splitterList">
+      <template v-for="(splitterItem, key) in item.containerFields">
         <el-splitter-panel
-          v-if="Object.keys(splitterItem).length > 0 && splitterItem.formVisible !== false"
-          v-bind="splitterItem.preps"
-          :index="
+            v-if="
+            Object.keys(splitterItem).length > 0 &&
+            splitterItem.formVisible !== false
+          "
+            v-bind="splitterItem.preps"
+            :index="
             checkObject(dataForm, splitterItem, key, dataIndex, propPrefix)
           "
         >
-          <star-horse-form-item
-            :source="source"
-            :compUrl="compUrl"
-            :compSize="compSize"
-            @addRow="addRow"
-            :commonFormat="commonFormat"
-            @removeRow="removeRow"
-            :objectName="splitterItem.objectName"
-            :dataForm="
+          <div class="section-title-bar">
+            <span class="section-name">{{
+                splitterItem.title
+              }}</span>
+          </div>
+          <div class="splitter-body">
+            <star-horse-form-item
+                :source="source"
+                :compUrl="compUrl"
+                :compSize="compSize"
+                @addRow="addRow"
+                :commonFormat="commonFormat"
+                @removeRow="removeRow"
+                :subTableName="splitterItem.subTableName"
+                :dataForm="
               getFormData(
                 splitterItem,
                 dataForm,
@@ -74,7 +79,7 @@ onMounted(() => {
                 item.groupData ? key : 0,
               )
             "
-            :dataIndex="
+                :dataIndex="
               getDataIndex(
                 splitterItem,
                 propPrefix,
@@ -82,7 +87,7 @@ onMounted(() => {
                 item.groupData ? key : 0,
               )
             "
-            :propPrefix="
+                :propPrefix="
               getPrefix(
                 splitterItem,
                 propPrefix,
@@ -90,12 +95,13 @@ onMounted(() => {
                 item.groupData ? key : 0,
               )
             "
-            :fieldList="splitterItem"
-            :rules="rules"
-            :subFormFlag="splitterItem.subFormFlag"
-            :enableSubNode="splitterItem.enableSubNode"
-            :primaryKey="primaryKey"
-          />
+                :fieldList="splitterItem"
+                :rules="rules"
+                :subFormFlag="splitterItem.subFormFlag"
+                :enableSubNode="splitterItem.enableSubNode"
+                :primaryKey="primaryKey"
+            />
+          </div>
         </el-splitter-panel>
       </template>
     </el-splitter>
@@ -103,18 +109,9 @@ onMounted(() => {
 </template>
 
 <style scoped lang="scss">
-.el-collapse {
-  margin: 5px 3px;
+.splitter-body {
+  margin: 5px 8px;
 
-  :deep(.el-collapse-item__header) {
-    border-bottom: 1px solid rgb(229, 230, 235);
-    border-top: 1px solid rgb(229, 230, 235);
-    height: 30px;
-  }
 
-  :deep(.el-collapse-item__wrap) {
-    margin-top: 10px;
-    border: unset;
-  }
 }
 </style>

@@ -1,101 +1,95 @@
 <template>
   <div class="cron-content">
-    <div :class="{'cron-item-app':isMobile,'cron-item':!isMobile}">
+    <div :class="{ 'cron-item-app': isMobile, 'cron-item': !isMobile }">
       <el-radio v-model="radioValue" :label="1" border>
         {{ i18n("cron.week") }}{{ i18n("cron.wildcardsWithLHash") }}
       </el-radio>
     </div>
-    <div :class="{'cron-item-app':isMobile,'cron-item':!isMobile}">
+    <div :class="{ 'cron-item-app': isMobile, 'cron-item': !isMobile }">
       <el-radio v-model="radioValue" :label="2" border>
         {{ i18n("cron.notSpecified") }}
       </el-radio>
     </div>
-    <div :class="{'cron-item-app':isMobile,'cron-item':!isMobile}">
+    <div :class="{ 'cron-item-app': isMobile, 'cron-item': !isMobile }">
       <el-radio v-model="radioValue" :label="3" border>
         {{ i18n("cron.period") }}
       </el-radio>
-      <div class="item-content" v-show="radioValue==3">
-      <span style="margin-left: 10px; margin-right: 5px"
-      >{{ i18n("cron.from") }}{{ i18n("cron.week") }}</span
-      >
+      <div class="item-content" v-show="radioValue == 3">
+        <span style="margin-left: 10px; margin-right: 5px"
+          >{{ i18n("cron.from") }}{{ i18n("cron.week") }}</span
+        >
         <el-input-number
-
-            v-model="cycle01"
-            :min="1"
-            :max="7"
-            controls-position="right"
+          v-model="cycle01"
+          :min="1"
+          :max="7"
+          controls-position="right"
         />
         <span style="margin-left: 10px; margin-right: 5px">{{
-            i18n("cron.to")
-          }}</span>
+          i18n("cron.to")
+        }}</span>
         <el-input-number
-
-            v-model="cycle02"
-            :min="1"
-            :max="7"
-            controls-position="right"
+          v-model="cycle02"
+          :min="1"
+          :max="7"
+          controls-position="right"
         />
       </div>
     </div>
-    <div :class="{'cron-item-app':isMobile,'cron-item':!isMobile}">
+    <div :class="{ 'cron-item-app': isMobile, 'cron-item': !isMobile }">
       <el-radio v-model="radioValue" :label="4" border>
         {{ i18n("cron.loop") }}
       </el-radio>
-      <div class="item-content" v-show="radioValue==4">
-      <span style="margin-left: 10px; margin-right: 5px">{{
+      <div class="item-content" v-show="radioValue == 4">
+        <span style="margin-left: 10px; margin-right: 5px">{{
           i18n("cron.every")
         }}</span>
         <el-input-number
-
-            v-model="average01"
-            :min="1"
-            :max="4"
-            controls-position="right"
+          v-model="average01"
+          :min="1"
+          :max="4"
+          controls-position="right"
         />
         <span style="margin-left: 10px; margin-right: 5px"
-        >{{ i18n("cron.week") }}{{
-            i18n("cron.day")
+          >{{ i18n("cron.week") }}{{ i18n("cron.day")
           }}{{ i18n("cron.weekDay") }}</span
         >
         <el-input-number
-
-            v-model="average02"
-            :min="1"
-            :max="7"
-            controls-position="right"
+          v-model="average02"
+          :min="1"
+          :max="7"
+          controls-position="right"
         />
       </div>
     </div>
-    <div :class="{'cron-item-app':isMobile,'cron-item':!isMobile}">
+    <div :class="{ 'cron-item-app': isMobile, 'cron-item': !isMobile }">
       <el-radio v-model="radioValue" :label="5" border>
         {{ i18n("cron.lastWeekday") }}
       </el-radio>
-      <div class="item-content" v-show="radioValue==5">
-      <span style="margin-left: 10px; margin-right: 5px">{{
+      <div class="item-content" v-show="radioValue == 5">
+        <span style="margin-left: 10px; margin-right: 5px">{{
           i18n("cron.weekDay")
         }}</span>
         <el-input-number
-
-            v-model="weekday"
-            :min="1"
-            :max="7"
-            controls-position="right"
+          v-model="weekday"
+          :min="1"
+          :max="7"
+          controls-position="right"
         />
       </div>
     </div>
-    <div :class="{'cron-item-app':isMobile,'cron-item':!isMobile}">
+    <div :class="{ 'cron-item-app': isMobile, 'cron-item': !isMobile }">
       <el-radio v-model="radioValue" :label="6" border>
         {{ i18n("cron.specify") }}
       </el-radio>
-      <div class="item-content" v-show="radioValue==6">
+      <div class="item-content" v-show="radioValue == 6">
         <el-checkbox-group v-model="checkboxList">
           <el-checkbox
-              class="my-[5px]"
-              :border="true"
-              v-for="item of weekList"
-              :key="item"
-              :value="item + 1"
-              :label="Number(item) < 10 ? '0' + item : item"
+            class="my-[5px]"
+            :border="true"
+            v-for="item of weekList"
+            :key="item"
+            :value="item + 1"
+            :label="Number(item) < 10 ? '0' + item : item"
           />
         </el-checkbox-group>
       </div>
@@ -104,13 +98,13 @@
 </template>
 <style lang="scss" scoped></style>
 <script setup lang="ts" name="crontab-week">
-import {computed, ref, watch} from "vue";
-import {i18n} from "@/lang";
-import {isMobile} from "@/api/device";
+import { computed, ref, watch } from "vue";
+import { i18n } from "@/lang";
+import { isMobile } from "@/api/device";
 
 const props = defineProps({
-  check: {type: Function},
-  cron: {type: Object},
+  check: { type: Function },
+  cron: { type: Object },
 });
 const emits = defineEmits(["update"]);
 let weekday = ref(0);
@@ -206,24 +200,24 @@ const checkboxChange = () => {
   }
 };
 watch(
-    () => radioValue.value,
-    (_val) => radioChange(),
+  () => radioValue.value,
+  (_val) => radioChange(),
 );
 watch(
-    () => cycleTotal.value,
-    (_val) => cycleChange(),
+  () => cycleTotal.value,
+  (_val) => cycleChange(),
 );
 watch(
-    () => averageTotal.value,
-    (_val) => averageChange(),
+  () => averageTotal.value,
+  (_val) => averageChange(),
 );
 watch(
-    () => weekdayCheck.value,
-    (_val) => weekdayChange(),
+  () => weekdayCheck.value,
+  (_val) => weekdayChange(),
 );
 watch(
-    () => checkboxString.value,
-    (_val) => checkboxChange(),
+  () => checkboxString.value,
+  (_val) => checkboxChange(),
 );
 
 defineExpose({

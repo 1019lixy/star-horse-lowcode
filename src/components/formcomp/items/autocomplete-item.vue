@@ -105,7 +105,7 @@
         <div class="sh-mobile-autocomplete">
           <el-input
             v-model="tempKeyword"
-            :placeholder="i18n('starhorse.pleaseInput') || '请输入'"
+            :placeholder="i18n('starhorse.pleaseInput')"
             clearable
             class="sh-mobile-autocomplete__keyword"
           />
@@ -117,14 +117,23 @@
               :class="{ 'is-active': isSelected(item) }"
               @click="selectSuggestion(item)"
             >
-              {{ item[field.preps?.props?.label || 'name'] || item.value || item }}
+              {{
+                item[field.preps?.props?.label || "name"] || item.value || item
+              }}
             </div>
-            <div v-if="!suggestions.length && !showCreateRow" class="sh-mobile-autocomplete__empty">
+            <div
+              v-if="!suggestions.length && !showCreateRow"
+              class="sh-mobile-autocomplete__empty"
+            >
               {{ i18n("pivot.empty.noData") || "暂无数据" }}
             </div>
           </div>
           <!-- allowCreate：创建新值 -->
-          <div v-if="showCreateRow" class="sh-mobile-autocomplete__create" @click="createCustomValue">
+          <div
+            v-if="showCreateRow"
+            class="sh-mobile-autocomplete__create"
+            @click="createCustomValue"
+          >
             <star-horse-icon icon-class="add" />
             <span>{{ i18n("form.add") }} "{{ tempKeyword }}"</span>
           </div>
@@ -154,9 +163,7 @@ import { ItemPreps } from "@/components/types/ItemPreps";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
 import { StarHorseIcon } from "@/components/comp";
 import { usePrefixSuffix } from "@/components/formcomp/utils/prefixSuffixUtils";
-import {
-  useMobilePicker,
-} from "@/components/formcomp/utils/useMobilePicker";
+import { useMobilePicker } from "@/components/formcomp/utils/useMobilePicker";
 import ShMobilePicker from "@/components/formcomp/utils/ShMobilePicker.vue";
 import { i18n } from "@/lang";
 
@@ -261,15 +268,19 @@ const isKeywordExists = computed(() => {
   const kw = tempKeyword.value.toLowerCase();
   const valueKey = props.field.preps?.props?.value || "value";
   const labelKey = props.field.preps?.props?.label || "name";
-  return suggestions.value.some((item: any) =>
-    String(item[valueKey] ?? "").toLowerCase() === kw ||
-    String(item[labelKey] ?? "").toLowerCase() === kw,
+  return suggestions.value.some(
+    (item: any) =>
+      String(item[valueKey] ?? "").toLowerCase() === kw ||
+      String(item[labelKey] ?? "").toLowerCase() === kw,
   );
 });
 
 /** allowCreate：是否显示"创建 xxx"行 */
 const showCreateRow = computed(
-  () => allowCreate.value && tempKeyword.value.trim() !== "" && !isKeywordExists.value,
+  () =>
+    allowCreate.value &&
+    tempKeyword.value.trim() !== "" &&
+    !isKeywordExists.value,
 );
 
 /** allowCreate：创建新值并确认 */

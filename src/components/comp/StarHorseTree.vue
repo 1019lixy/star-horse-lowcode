@@ -125,7 +125,7 @@ const {
   size: treeSize,
   openPicker: openTreePicker,
   closePicker: closeTreePicker,
-} = useMobilePicker(() => ({ preps: {} } as any));
+} = useMobilePicker(() => ({ preps: {} }) as any);
 
 const treeOperation = (cmd: string) => {
   if (props.treeType == "tree") {
@@ -247,7 +247,7 @@ const loadByPage = async () => {
   };
   postRequest(props.compUrl?.pageListUrl!, params)
     .then((res: any) => {
-      if (!res || res?.data?.code != 0) {
+      if (!res || res?.data?.code != 200) {
         console.error(res?.data?.cnMessage || i18n("api.interfaceError"));
         return;
       }
@@ -382,15 +382,34 @@ defineExpose({
         :show-footer="false"
       >
         <div class="tree-action-panel">
-          <div class="tree-action-panel__item" @click="treeOperation('add'); closeTreePicker();" v-if="btnVisible">
+          <div
+            class="tree-action-panel__item"
+            @click="
+              treeOperation('add');
+              closeTreePicker();
+            "
+            v-if="btnVisible"
+          >
             <star-horse-icon icon-class="plus" />
             <span>{{ i18n("ui.addData") }}</span>
           </div>
-          <div class="tree-action-panel__item" @click="treeOperation('expand'); closeTreePicker();">
+          <div
+            class="tree-action-panel__item"
+            @click="
+              treeOperation('expand');
+              closeTreePicker();
+            "
+          >
             <star-horse-icon icon-class="folder" />
             <span>{{ i18n("ui.expandAll") }}</span>
           </div>
-          <div class="tree-action-panel__item" @click="treeOperation('collapse'); closeTreePicker();">
+          <div
+            class="tree-action-panel__item"
+            @click="
+              treeOperation('collapse');
+              closeTreePicker();
+            "
+          >
             <star-horse-icon icon-class="document" />
             <span>{{ i18n("ui.collapseAll") }}</span>
           </div>

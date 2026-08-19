@@ -15,6 +15,7 @@
       :default-expand-all="true"
       v-bind="prepsFilter(field.preps)"
       :filter-node-method="filterNodeMethod"
+      :placeholder="field.preps?.placeholder ?? ''"
       :render-content="renderContent"
       v-on="getDynamicEvents(props, itemAction, formData)"
       v-model="formData[field.fieldName]"
@@ -43,9 +44,9 @@
               <el-button type="primary" icon="add" @click="onConfirm">
                 {{ i18n("form.add") }}
               </el-button>
-              <el-button icon="cancel" @click="clear">{{
-                i18n("form.cancel")
-              }}</el-button>
+              <el-button icon="cancel" @click="clear"
+                >{{ i18n("form.cancel") }}
+              </el-button>
             </div>
           </div>
         </template>
@@ -113,11 +114,18 @@
             </template>
           </el-tree>
 
-          <div v-if="!treeData.length && !showTreeCreateRow" class="sh-mobile-tree-panel__empty">
+          <div
+            v-if="!treeData.length && !showTreeCreateRow"
+            class="sh-mobile-tree-panel__empty"
+          >
             {{ i18n("pivot.empty.noData") || "暂无数据" }}
           </div>
           <!-- allowCreate：创建新值 -->
-          <div v-if="showTreeCreateRow" class="sh-mobile-tree-panel__create" @click="createTreeCustomValue">
+          <div
+            v-if="showTreeCreateRow"
+            class="sh-mobile-tree-panel__create"
+            @click="createTreeCustomValue"
+          >
             <star-horse-icon icon-class="add" />
             <span>{{ i18n("form.add") }} "{{ filterText }}"</span>
           </div>
@@ -139,12 +147,11 @@ import {
 import { getDynamicEvents } from "@/api/system";
 import { warning } from "@/utils/message";
 import { i18n } from "@/lang";
-import {
-  useMobilePicker,
-} from "@/components/formcomp/utils/useMobilePicker";
+import { useMobilePicker } from "@/components/formcomp/utils/useMobilePicker";
 import ShMobilePicker from "@/components/formcomp/utils/ShMobilePicker.vue";
 
 import { ItemPreps } from "@/components/types/ItemPreps";
+
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
   disabled: false,
@@ -181,9 +188,7 @@ const treeProps = computed(() => ({
   value: props.field.preps?.props?.value || "value",
   children: props.field.preps?.props?.children || "children",
 }));
-const nodeKey = computed(
-  () => props.field.preps?.props?.value || "value",
-);
+const nodeKey = computed(() => props.field.preps?.props?.value || "value");
 
 const tempValue = ref<any>(multiple.value ? [] : undefined);
 const checkedKeys = ref<any[]>([]);
@@ -227,8 +232,13 @@ const isKeywordExistsInTree = computed(() => {
       if (
         String(n[labelName] ?? "").toLowerCase() === kw ||
         String(n[valueName] ?? "").toLowerCase() === kw
-      ) return true;
-      if (n[treeProps.value.children]?.length && check(n[treeProps.value.children])) return true;
+      )
+        return true;
+      if (
+        n[treeProps.value.children]?.length &&
+        check(n[treeProps.value.children])
+      )
+        return true;
     }
     return false;
   };
@@ -237,7 +247,10 @@ const isKeywordExistsInTree = computed(() => {
 
 /** allowCreate：是否显示"创建 xxx"行 */
 const showTreeCreateRow = computed(
-  () => allowCreate.value && filterText.value.trim() !== "" && !isKeywordExistsInTree.value,
+  () =>
+    allowCreate.value &&
+    filterText.value.trim() !== "" &&
+    !isKeywordExistsInTree.value,
 );
 
 /** allowCreate：创建新值并加入选中 */
@@ -268,7 +281,10 @@ const renderNodeLabel = (node: any, data: any) => {
 };
 
 /** PC 端 el-tree-select 的 render-content 回调 */
-const renderContent = (_h: Function, { node, data }: { node: any; data: any }) => {
+const renderContent = (
+  _h: Function,
+  { node, data }: { node: any; data: any },
+) => {
   return renderNodeLabel(node, data);
 };
 
@@ -413,7 +429,9 @@ const onConfirm = () => {
     props.field.preps?.props?.value ||
     "value";
   if (
-    props.field.preps.data.find((item: any) => item[codeName] == optionName.value)
+    props.field.preps.data.find(
+      (item: any) => item[codeName] == optionName.value,
+    )
   ) {
     warning(i18n("form.optionNameDuplicate"));
     return;

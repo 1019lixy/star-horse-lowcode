@@ -8,6 +8,7 @@ interface ModuleItem {
   idCodeModule: string;
   name: string;
   description?: string;
+
   [key: string]: any;
 }
 
@@ -51,7 +52,7 @@ export function useModuleDialog(resolvedApi: Ref<IdeApiConfig>) {
         resolvedApi.value.moduleListUrl || resolvedApi.value.createModuleUrl!,
       );
       const data = res?.data;
-      if (data?.code === 0 && Array.isArray(data?.data))
+      if (data?.code === 200 && Array.isArray(data?.data))
         return data.data as ModuleItem[];
       if (Array.isArray(data)) return data;
       if (Array.isArray(data?.data)) return data.data;
@@ -109,7 +110,7 @@ export function useModuleDialog(resolvedApi: Ref<IdeApiConfig>) {
         description: newModuleDesc.value.trim(),
       });
       const data = res?.data;
-      if (data?.code === 0 && data?.data) {
+      if (data?.code === 200 && data?.data) {
         const newModule = data.data as ModuleItem;
         showCreateForm.value = false;
         moduleDialogVisible.value = false;

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { VueSignaturePad } from "@selemondev/vue3-signature-pad";
 import type { Signature } from "@selemondev/vue3-signature-pad";
+import { VueSignaturePad } from "@selemondev/vue3-signature-pad";
 import { ref, useTemplateRef } from "vue";
 import { warning } from "@/utils/message";
 
@@ -24,6 +24,7 @@ function dataURLToBlob(dataURL: string) {
 
   return new Blob([uInt8Array], { type: contentType });
 }
+
 function handleSave(dataURL: string, downloadFormat: string) {
   if (signature.value?.isCanvasEmpty())
     return warning("Signature cannot be empty!");
@@ -40,9 +41,11 @@ function handleSave(dataURL: string, downloadFormat: string) {
   a.click();
   window.URL.revokeObjectURL(url);
 }
+
 function handleClear() {
   return signature.value?.clearCanvas();
 }
+
 function handleUndo() {
   return signature.value?.undo();
 }

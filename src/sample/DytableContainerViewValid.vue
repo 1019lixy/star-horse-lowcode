@@ -12,9 +12,7 @@
 <script lang="ts" setup>
 import { onMounted, ref } from "vue";
 import { analysisCompDatas, convertCompToAppComps } from "@/api/form_utils";
-import { getDesignFormStore } from "@/store/StoreManager";
 
-let designForm = getDesignFormStore();
 const formData = ref<any>({
   test: "1-2-1",
 });

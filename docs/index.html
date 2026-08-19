@@ -906,7 +906,7 @@ function dataFormat(row: any, column: any, cellValue: any) {
         <h3>禁用判断逻辑</h3>
         <div class="code-label">ts</div>
         <pre><code>// checkIsDisabled 函数判断逻辑：
-const isDisabled = 
+const isDisabled =
   editDisabled === true ||                           // 编辑时禁用且非新增
   field.disabled === true ||                          // 字段显式禁用
   field.preps?.disabled === true ||                   // preps 中禁用
@@ -1864,7 +1864,7 @@ relationEventDispatcher()
           <tbody>
             <tr><td>compUrl</td><td><code>ApiUrls</code></td><td>否</td><td>—</td><td>接口地址配置</td></tr>
             <tr><td>fieldList</td><td><code>PageFieldInfo</code></td><td><strong>是</strong></td><td>—</td><td>表单字段配置</td></tr>
-            <tr><td>batchName</td><td><code>string</code></td><td>否</td><td><code>'batchDataList'</code></td><td>提交后端批量数据的 Key 名称</td></tr>
+            <tr><td>subTableName</td><td><code>string</code></td><td>否</td><td><code>'subDataList'</code></td><td>提交后端批量数据的 Key 名称</td></tr>
             <tr><td>batchFieldName</td><td><code>string</code></td><td>否</td><td><code>'batchFieldList'</code></td><td>批量字段列表的 Key 名称</td></tr>
             <tr><td>outerFormData</td><td><code>object</code></td><td>否</td><td>—</td><td>外部传入的表单数据</td></tr>
             <tr><td>primaryKey</td><td><code>string | object</code></td><td>否</td><td>—</td><td>主键字段名</td></tr>
@@ -2168,7 +2168,7 @@ tableRef.value.createSearchParams([{ propertyName: 'name', operation: 'lk', valu
           <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
           <tbody>
             <tr><td>compUrl</td><td><code>ApiUrls</code></td><td>否</td><td>—</td><td>接口地址配置</td></tr>
-            <tr><td>objectName</td><td><code>string</code></td><td>否</td><td>—</td><td>子集合 Key 名称</td></tr>
+            <tr><td>subTableName</td><td><code>string</code></td><td>否</td><td>—</td><td>子集合 Key 名称</td></tr>
             <tr><td>fieldList</td><td><code>object</code></td><td><strong>是</strong></td><td>—</td><td>表单字段配置</td></tr>
             <tr><td>outerData</td><td><code>object</code></td><td>否</td><td>—</td><td>外部传入数据</td></tr>
             <tr><td>dynamicForm</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否动态表单</td></tr>
@@ -2201,7 +2201,7 @@ tableRef.value.createSearchParams([{ propertyName: 'name', operation: 'lk', valu
             <tr><td>compUrl</td><td><code>ApiUrls</code></td><td>否</td><td>—</td><td>接口地址配置</td></tr>
             <tr><td>fieldList</td><td><code>FieldInfo[]</code></td><td><strong>是</strong></td><td>—</td><td>字段配置列表</td></tr>
             <tr><td>defaultValues</td><td><code>object</code></td><td>否</td><td><code>{}</code></td><td>新增行默认值</td></tr>
-            <tr><td>batchName</td><td><code>string</code></td><td>否</td><td><code>'batchDataList'</code></td><td>批量数据 Key</td></tr>
+            <tr><td>subTableName</td><td><code>string</code></td><td>否</td><td><code>'subDataList'</code></td><td>批量数据 Key</td></tr>
             <tr><td>primaryKey</td><td><code>string | object</code></td><td>否</td><td>—</td><td>主键字段名</td></tr>
             <tr><td>initRows</td><td><code>number</code></td><td>否</td><td><code>0</code></td><td>初始行数</td></tr>
             <tr><td>importInfo</td><td><code>object</code></td><td>否</td><td>—</td><td>导入信息配置</td></tr>

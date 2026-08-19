@@ -1,5 +1,6 @@
 <template>
-  <star-horse-dialog
+  <star-horse-panel
+    :type="dialogType"
     :title="i18n('item.crontabConfig')"
     box-width="50%"
     :self-func="true"
@@ -11,7 +12,7 @@
     <el-scrollbar>
       <Crontab ref="cronTabRef" v-model="cronDataValue" />
     </el-scrollbar>
-  </star-horse-dialog>
+  </star-horse-panel>
   <starhorse-form-item
     :showFormItem="showFormItem"
     :isDesign="isDesign"
@@ -47,6 +48,7 @@ import { getDynamicEvents } from "@/api/system";
 
 import { ItemPreps } from "@/components/types/ItemPreps";
 import { i18n } from "@/lang";
+import { StarHorsePanel } from "@/components/comp";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,

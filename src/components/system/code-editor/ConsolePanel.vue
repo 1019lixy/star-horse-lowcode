@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, nextTick } from "vue";
+import { nextTick, ref, watch } from "vue";
 import { i18n } from "@/lang/index";
 
 export interface ConsoleLine {
@@ -240,6 +240,7 @@ const handleResizeStart = (e: MouseEvent) => {
   display: flex;
   align-items: center;
 }
+
 .console-btn:hover {
   background: var(--ide-bg-hover, #2a2d2e);
   color: var(--ide-fg, #cccccc);
@@ -288,24 +289,31 @@ const handleResizeStart = (e: MouseEvent) => {
 .console-info .console-icon {
   color: var(--ide-accent, #007acc);
 }
+
 .console-info .console-text {
   color: var(--ide-fg, #cccccc);
 }
+
 .console-success .console-icon {
   color: var(--ide-success, #89d185);
 }
+
 .console-success .console-text {
   color: var(--ide-success, #89d185);
 }
+
 .console-warning .console-icon {
   color: #cca700;
 }
+
 .console-warning .console-text {
   color: #cca700;
 }
+
 .console-error .console-icon {
   color: var(--ide-error, #f14c4c);
 }
+
 .console-error .console-text {
   color: var(--ide-error, #f14c4c);
 }

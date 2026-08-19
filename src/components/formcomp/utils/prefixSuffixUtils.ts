@@ -1,4 +1,4 @@
-import { computed, ref, watch, type ComputedRef, type Ref } from "vue";
+import { computed, type ComputedRef, ref, type Ref, watch } from "vue";
 import { convertData } from "./ItemRelationEventUtils";
 
 export interface PrefixSuffixOptions {

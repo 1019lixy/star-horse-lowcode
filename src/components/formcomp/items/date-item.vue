@@ -67,11 +67,29 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { computed, nextTick, onBeforeMount, onMounted, ref, shallowRef, watch } from "vue";
-import { allAction, checkIsDisabled, initCompCallEvent, prepsFilter, relationEventDispatcher } from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {
+  computed,
+  nextTick,
+  onBeforeMount,
+  onMounted,
+  ref,
+  shallowRef,
+  watch,
+} from "vue";
+import {
+  allAction,
+  checkIsDisabled,
+  initCompCallEvent,
+  prepsFilter,
+  relationEventDispatcher,
+} from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { getDynamicEvents } from "@/api/system";
 import { ItemPreps } from "@/components/types/ItemPreps";
-import { getDateDisplayFormat, getDateValueFormat, normalizeDateModel } from "@/api/date_utils";
+import {
+  getDateDisplayFormat,
+  getDateValueFormat,
+  normalizeDateModel,
+} from "@/api/date_utils";
 import { useMobilePicker } from "@/components/formcomp/utils/useMobilePicker";
 import ShMobilePicker from "@/components/formcomp/utils/ShMobilePicker.vue";
 import ShMobileWheelPicker from "@/components/formcomp/utils/ShMobileWheelPicker.vue";
@@ -116,14 +134,21 @@ const isMultiSelect = computed(() => {
 const wheelType = computed(() => {
   const t = effectiveType.value;
   switch (t) {
-    case "daterange": return "daterange";
-    case "monthrange": return "monthrange";
-    case "yearrange": return "yearrange";
-    case "year": return "year";
-    case "month": return "month";
+    case "daterange":
+      return "daterange";
+    case "monthrange":
+      return "monthrange";
+    case "yearrange":
+      return "yearrange";
+    case "year":
+      return "year";
+    case "month":
+      return "month";
     case "week":
-    case "date": return "date";
-    default: return "date";
+    case "date":
+      return "date";
+    default:
+      return "date";
   }
 });
 
@@ -173,10 +198,16 @@ const displayText = computed(() => {
     if (isMultiSelect.value) {
       // 每年月份模式：值是 "01"-"12"，显示为 "1月, 3月"
       if (everyYear.value && gridMode.value === "month") {
-        const labels = val.map((v: any) => `${parseInt(String(v))}${i18n('cron.month')}`);
-        return labels.length > 3 ? `${i18n('item.selectedData')}(${labels.length})` : labels.join(", ");
+        const labels = val.map(
+          (v: any) => `${parseInt(String(v))}${i18n("cron.month")}`,
+        );
+        return labels.length > 3
+          ? `${i18n("item.selectedData")}(${labels.length})`
+          : labels.join(", ");
       }
-      return val.length > 3 ? `${i18n('item.selectedData')}(${val.length})` : val.join(", ");
+      return val.length > 3
+        ? `${i18n("item.selectedData")}(${val.length})`
+        : val.join(", ");
     }
     return val.map((v) => formatSingle(v)).join(" ~ ");
   }
@@ -276,7 +307,11 @@ closeWatch.value = watch(
       const vf = props.field.preps?.valueFormat || valueFormat.value;
       const normalized = normalizeDateModel(val, effectiveType.value, vf);
       if (Array.isArray(normalized)) {
-        if (!Array.isArray(val) || normalized.length !== val.length || normalized.some((v: any, i: number) => v !== val[i])) {
+        if (
+          !Array.isArray(val) ||
+          normalized.length !== val.length ||
+          normalized.some((v: any, i: number) => v !== val[i])
+        ) {
           formData.value[name] = normalized;
           closeWatch.value?.();
         }

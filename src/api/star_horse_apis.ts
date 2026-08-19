@@ -23,7 +23,7 @@ starHorseAxios.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     let token = getToken();
     if (!token) {
-      token = "e262f84938814b2f84d083b348854646";
+      token = "cbd451ac4d874c74bb1736449e873bab";
     }
     const fingerToken = getFingerId();
     // 请求头带上token
@@ -174,6 +174,171 @@ export function getRequest(url: string) {
 }
 
 /**
+ * 通用请求封装
+ * ✅ 普通POST/GET/PUT/DELETE JSON请求
+ * ✅ FormData 文件上传
+ * ✅ 文件下载（blob二进制）
+ * @param url 请求地址
+ * @param data 请求body / get参数 / FormData上传数据
+ * @param method 请求方式 默认post
+ * @param header 请求头
+ * @param isDownload 是否下载模式(true 返回Blob)
+ * @param onUploadProgress 上传进度回调
+ * @param onDownloadProgress 下载进度回调
+ * @param timeout
+ */
+export function request(
+  url: string,
+  data?: any,
+  method: string = "post",
+  header?: Record<string, any>,
+  isDownload = false,
+  onUploadProgress?: FetchProgressCallback,
+  onDownloadProgress?: FetchProgressCallback,
+  timeout = 15000,
+): Promise<any> {
+  return new Promise((resolve, reject) => {
+    // 参数校验
+    if (!url || typeof url !== "string") {
+      const err = new Error("[request] url不能为空且必须为字符串");
+      return reject(err);
+    }
+    const reqMethod = method.toUpperCase();
+
+    if (
+      ["POST", "PUT", "PATCH"].includes(reqMethod) &&
+      (data === undefined || data === null)
+    ) {
+      console.warn("[request] POST/PUT/PATCH 请求建议传入data参数", {
+        url,
+        method,
+      });
+    }
+
+    const xhr = new XMLHttpRequest();
+    // 超时
+    xhr.timeout = timeout;
+    // -------- 上传进度（这里真正生效）--------
+    if (onUploadProgress) {
+      xhr.upload.onprogress = (e) => {
+        if (e.lengthComputable) {
+          onUploadProgress(e.loaded, e.total);
+        }
+      };
+    }
+
+    // -------- 下载进度 --------
+    if (onDownloadProgress) {
+      xhr.onprogress = (e) => {
+        if (e.lengthComputable) {
+          onDownloadProgress(e.loaded, e.total);
+        }
+      };
+    }
+
+    let requestUrl = url;
+    // GET / DELETE 参数拼 query
+    if (["GET", "DELETE"].includes(reqMethod) && data != null) {
+      const searchParams = new URLSearchParams();
+      Object.entries(data).forEach(([k, v]) => {
+        if (v !== undefined && v !== null) {
+          searchParams.append(k, String(v));
+        }
+      });
+      const sep = requestUrl.includes("?") ? "&" : "?";
+      requestUrl += sep + searchParams.toString();
+    }
+
+    xhr.open(reqMethod, requestUrl, true);
+
+    // 请求头
+    const defaultHeaders: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+    const reqHeaders = { ...defaultHeaders, ...(header ?? {}) };
+
+    // setRequestHeader
+    Object.entries(reqHeaders).forEach(([k, v]) => {
+      xhr.setRequestHeader(k, v);
+    });
+
+    // 响应类型：下载二进制blob
+    if (isDownload) {
+      xhr.responseType = "blob";
+    }
+
+    xhr.onload = () => {
+      const status = xhr.status;
+      // 2xx
+      if (status >= 200 && status < 300) {
+        if (isDownload) {
+          // 下载模式直接返回blob
+          resolve(xhr.response);
+        } else {
+          // 普通接口解析json/text
+          const rawText = xhr.responseText;
+          let jsonData: any;
+          try {
+            jsonData = rawText ? JSON.parse(rawText) : null;
+          } catch {
+            jsonData = rawText;
+          }
+          resolve(jsonData);
+        }
+      } else {
+        // http错误，组装错误对象
+        let errData: any = null;
+        try {
+          if (!isDownload) {
+            errData = xhr.responseText ? JSON.parse(xhr.responseText) : null;
+          }
+        } catch {
+          /* */
+        }
+
+        const httpErr = new Error(`HTTP ${status}`);
+        Object.assign(httpErr, {
+          status,
+          statusText: xhr.statusText,
+          data: errData,
+        });
+        reject(httpErr);
+      }
+    };
+
+    xhr.onerror = () => {
+      const netErr = new Error("[request] 网络错误");
+      reject(netErr);
+    };
+
+    xhr.ontimeout = () => {
+      const timeoutErr = new Error(`[request] 请求超时 ${timeout}ms`);
+      reject(timeoutErr);
+    };
+
+    // -------- body处理 POST PUT PATCH --------
+    let sendBody: any = null;
+    if (["POST", "PUT", "PATCH"].includes(reqMethod) && data != null) {
+      if (data instanceof FormData) {
+        // FormData：删除Content‑Type，浏览器自动带boundary
+        xhr.setRequestHeader("Content-Type", "");
+        sendBody = data;
+      } else {
+        try {
+          sendBody = JSON.stringify(data);
+        } catch (e) {
+          const parseErr = new Error("[request] data JSON序列化失败");
+          (parseErr as any).cause = e;
+          return reject(parseErr);
+        }
+      }
+    }
+
+    xhr.send(sendBody);
+  });
+}
+
+/**
  * Request 请求
  * @param url 请求地址
  * @param data 请求参数
@@ -186,6 +351,8 @@ export function httpRequest(url: string, method: string, data: any) {
     data: data,
   });
 }
+
+type FetchProgressCallback = (loaded: number, total: number) => void;
 
 /**
  * Post Upload 请求
@@ -226,7 +393,7 @@ export async function loadData(
   await postRequest(url, cond)
     .then((res: any) => {
       const redata = res?.data;
-      if (redata?.code) {
+      if (redata?.code!==200) {
         error = redata?.cnMessage;
       } else {
         //先去分页数据，没有再去非分页数据
@@ -253,7 +420,7 @@ export async function loadGetData(url: string) {
   await getRequest(url)
     .then((res) => {
       const redata = res?.data;
-      if (redata?.code != 0) {
+      if (redata?.code != 200) {
         error = redata?.cnMessage;
       } else {
         data = redata?.data;
@@ -318,7 +485,7 @@ export async function deleteByIds(
   }
   await postRequest(url, ids)
     .then((res) => {
-      if (res?.data?.code == 0) {
+      if (res?.data?.code == 200) {
         success(res?.data?.cnMessage);
       } else {
         warning(res?.data?.cnMessage);
@@ -356,7 +523,7 @@ export async function dictData(
   await postRequest(userUrl ?? dictUrl, { fieldList: query })
     .then((res) => {
       const redata = res.data;
-      if (redata.code == 0) {
+      if (redata.code == 200) {
         redata.data?.forEach((item: any) => {
           if (exclusion?.includes(item.dictCode)) {
             return;

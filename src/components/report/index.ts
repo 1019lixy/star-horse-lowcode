@@ -9,20 +9,23 @@ export { default as ReportDatasetDialog } from "./dialogs/ReportDatasetDialog.vu
 export { default as ReportPreviewDialog } from "./dialogs/ReportPreviewDialog.vue";
 export { useReportDesigner } from "./composables/useReportDesigner";
 export {
-    colToLetter,
-    letterToCol,
-    toAddress,
-    fromAddress,
-    parseRange,
-    rangeToAddresses,
-    toRange,
-    offsetAddress,
+  colToLetter,
+  letterToCol,
+  toAddress,
+  fromAddress,
+  parseRange,
+  rangeToAddresses,
+  toRange,
+  offsetAddress,
 } from "./CellUtils";
 export {
-    evalFormula,
-    extractCellRefs,
-    extractDatasetRefs,
-    type FormulaEvalContext,
+  evalFormula,
+  extractCellRefs,
+  extractDatasetRefs,
+  type FormulaEvalContext,
 } from "./ReportFormulaEngine";
-export { renderReportHtml, renderReportPrintHtml } from "./renderers/ReportHtmlRenderer";
+export {
+  renderReportHtml,
+  renderReportPrintHtml,
+} from "./renderers/ReportHtmlRenderer";
 export type * from "./types";

@@ -22,7 +22,7 @@ import { isMobile } from "@/api/device";
 
 const props = defineProps({
   compUrl: { type: Object as PropType<ApiUrls> },
-  batchName: { type: String, default: "" },
+  subTableName: { type: String, default: "" },
   item: { type: Object as PropType<FieldInfo>, required: true },
   dataFormat: { type: Function, required: true },
   cellEditable: { type: Boolean, default: true },
@@ -82,7 +82,7 @@ const blurEvent = (column: any, params: any) => {
   }
   postRequest(props.compUrl?.mergeUrl!, reqParams)
     .then((res) => {
-      if (res?.data?.code != 0) {
+      if (res?.data?.code != 200) {
         warning(res?.data?.cnMessage);
       } else {
         success(res?.data?.cnMessage);
@@ -211,7 +211,7 @@ onMounted(() => {
       <template v-if="item.preps?.showComp">
         <el-popover
           ref="popover"
-          :placement="isMobile ? 'bottom' : (item.preps.placement || 'left')"
+          :placement="isMobile ? 'bottom' : item.preps.placement || 'left'"
           :width="isMobile ? '80vw' : 'auto'"
           v-if="item.preps.popover"
           @show="showOperation"
@@ -221,7 +221,7 @@ onMounted(() => {
               v-model:dataForm="scope.row"
               :item="item"
               :column="scope.column"
-              :batchName="batchName"
+              :subTableName="subTableName"
               :bareFlag="true"
               :compSize="compSize"
             />
@@ -237,7 +237,7 @@ onMounted(() => {
           v-model:dataForm="scope.row"
           :item="item"
           :column="scope.column"
-          :batchName="batchName"
+          :subTableName="subTableName"
           :compSize="compSize"
           v-else
         />
@@ -269,19 +269,16 @@ onMounted(() => {
           <div class="action-buttons">
             <el-button
               type="primary"
-
               @click.stop="blurEvent(scope.column, scope.row)"
               >✔
             </el-button>
-            <el-button  @click.stop="cancelEdit(scope.row)"
-              >✖
-            </el-button>
+            <el-button @click.stop="cancelEdit(scope.row)">✖ </el-button>
           </div>
           <star-horse-item
             v-model:dataForm="scope.row"
             :item="item"
             :column="scope.column"
-            :batchName="batchName"
+            :subTableName="subTableName"
             @focus="focusEvent"
             :compSize="compSize"
             :commonFormat="commonFormat"
@@ -321,7 +318,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   width: 100%;
-  z-index:999;
+  z-index: 999;
 
   .action-buttons {
     .el-button {

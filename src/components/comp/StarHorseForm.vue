@@ -9,11 +9,7 @@ import {
 import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
 import { ApiUrls } from "@/components/types/ApiUrls";
 import { DialogProps } from "@/components/types/DialogProps";
-import {
-  BatchFieldInfo,
-  FieldInfo,
-  PageFieldInfo,
-} from "@/components/types/PageFieldInfo";
+import { FieldInfo, PageFieldInfo } from "@/components/types/PageFieldInfo";
 import { SelectOption } from "@/components/types/SearchProps";
 import { error, success, warning } from "@/utils/message";
 import { i18n } from "@/lang";
@@ -39,8 +35,8 @@ import { convertPcCompToFitPlatformComps } from "@/api/form_utils";
 const props = defineProps({
   compUrl: { type: Object as PropType<ApiUrls> },
   fieldList: { type: Object as PropType<PageFieldInfo>, required: true },
-  batchName: { type: String, default: "batchDataList" },
-  batchFieldName: { type: String, default: "batchFieldList" },
+  subTableName: { type: String, default: "subDataList" },
+
   outerFormData: { type: Object as PropType<any> },
   primaryKey: { type: [String, Object] as PropType<string | any> },
   globalCondition: { type: Object },
@@ -50,6 +46,7 @@ const props = defineProps({
   typeModel: { type: String },
   dynamicForm: { type: Boolean, default: false },
   preview: { type: Boolean, default: false },
+  dialogType: { type: String as () => "dialog" | "drawer" },
   selectData: {
     type: Array<SelectOption>,
     default: () => {
@@ -87,10 +84,12 @@ const exportData = () => {
 //向外实时导出数据
 
 const closeDialog = inject("closeDialog") as Function;
-let dialogOperation = inject("dialogOperation");
+let dialogOperation = inject("dialogOperation") as any;
 const dialogProps = inject<DialogProps>("dialogProps", {});
 const formFields = shallowRef<Array<FieldInfo>>([]);
 provide("formFields", formFields);
+// 暴露 el-form 实例给嵌套组件（如 stepItem），用于调用 validateField / clearValidate
+provide("starHorseFormRef", starHorseFormRef);
 const loadData = async () => {
   if (!props.compUrl || !props.compUrl?.loadByIdUrl || !dialogProps?.ids) {
     return;
@@ -168,8 +167,9 @@ const merge = (type: string) => {
     }
     // 触发 beforeSubmit 事件，允许外部（如规则引擎）在提交前校验
     // 如果事件处理器返回 false 则阻止提交
-    const beforeResult = emits("beforeSubmit", { type, formData: dataForm.value });
+    emits("beforeSubmit", { type, formData: dataForm.value });
     // Vue emits 是同步的，如果需要异步拦截，请使用 doMerge 前手动调用 triggerOnSubmit
+
     doMerge(type);
   });
 };
@@ -185,20 +185,20 @@ const assignStatusName = () => {
       dataForm.value["statusName"] = sData.name;
     }
   }
-  let batchFields = unref(platformFields)?.batchFieldList || [];
-  batchFields?.forEach((item: BatchFieldInfo) => {
-    if (dataForm.value[item.batchName]) {
-      for (
-        let index = 0;
-        index < dataForm.value[item.batchName]?.length;
-        index++
-      ) {
-        let temp = dataForm.value[item.batchName][index];
+  const _pf: any = unref(platformFields);
+  let batchFields = Array.isArray(_pf?.containerFields)
+    ? _pf.containerFields.filter((c: any) => c?.containerType === "table")
+    : [];
+  batchFields?.forEach((item: any) => {
+    const batchKey = item.subTablePrimaryKey;
+    if (dataForm.value[batchKey]) {
+      for (let index = 0; index < dataForm.value[batchKey]?.length; index++) {
+        let temp = dataForm.value[batchKey][index];
         let sData = props.selectData?.find(
           (sitem: any) => sitem.value === temp.statusCode,
         );
         if (sData) {
-          dataForm.value[item.batchName][index]["statusName"] = sData.name;
+          dataForm.value[batchKey][index]["statusName"] = sData.name;
         }
       }
     }
@@ -209,15 +209,18 @@ const mergeDraft = (type: string) => {
 };
 
 const analysisSameToParentField = (): Array<string> => {
-  let batchName: Array<string> = [];
-  let batchFields = unref(platformFields)?.batchFieldList || [];
-  const analysis = (batchFields: BatchFieldInfo[]) => {
-    batchFields?.forEach((item: BatchFieldInfo) => {
+  let subTableName: Array<string> = [];
+  const _pf2: any = unref(platformFields);
+  let batchFields = Array.isArray(_pf2?.containerFields)
+    ? _pf2.containerFields.filter((c: any) => c?.containerType === "table")
+    : [];
+  const analysis = (batchFields: any[]) => {
+    batchFields?.forEach((item: any) => {
       if (
         false === item.subFormFlag ||
         "n" == item.subFormFlag?.toString()?.toLowerCase()
       ) {
-        batchName.push(item.batchName);
+        subTableName.push(item.subTablePrimaryKey);
       }
     });
   };
@@ -230,15 +233,22 @@ const analysisSameToParentField = (): Array<string> => {
       let temp: any = fieldList[index];
       if (Array.isArray(temp)) {
         arrayFieldList(temp);
-      } else if (temp.batchFieldList) {
-        analysis(temp.batchFieldList);
+      } else if (
+        Array.isArray(temp.containerFields) &&
+        temp.containerFields.some((c: any) => c?.containerType === "table")
+      ) {
+        analysis(
+          temp.containerFields.filter(
+            (c: any) => c?.containerType === "table",
+          ),
+        );
       } else if (temp.appList) {
         analysis(temp.appList);
       }
     }
   };
   arrayFieldList(fieldList);
-  return batchName;
+  return subTableName;
 };
 /**
  * 数据提交结果处理
@@ -269,9 +279,9 @@ const doMerge = (type: string) => {
     flag = false;
     mergeUrl = props.compUrl?.batchMergeUrl;
     tempForm = [];
-    sameBatchNames.forEach((batchName: string) => {
-      let batchDatas = tempDatas[batchName];
-      delete tempDatas[batchName];
+    sameBatchNames.forEach((subTableName: string) => {
+      let batchDatas = tempDatas[subTableName];
+      delete tempDatas[subTableName];
       for (let i in batchDatas) {
         //保留第一条数据的ID
         if (parseInt(i) > 0) {
@@ -308,7 +318,7 @@ const doMerge = (type: string) => {
     postRequest(mergeUrl!, formData)
       .then((res) => {
         closeLoad();
-        if (res?.data?.code != 0) {
+        if (res?.data?.code != 200) {
           warning(res?.data?.cnMessage);
           return;
         } else {
@@ -411,25 +421,21 @@ watch(
       resetForm();
     }
   },
-  { immediate: true, deep: true },
+  { immediate: true },
 );
 watch(
-  () => dialogOperation,
-  (val: any) => {
+  () => dialogOperation?.funcName,
+  (funcName: string) => {
+    if (!funcName) return;
+    const type = dialogOperation?.type;
     const handlers: any = {
-      merge: () => merge(val.type),
-      mergeDraft: () => mergeDraft(val.type),
+      merge: () => merge(type),
+      mergeDraft: () => mergeDraft(type),
       resetForm: () => resetForm(),
     };
-    if (val.funcName) {
-      handlers[val.funcName]?.();
-      dialogOperation["funcName"] = "";
-      dialogOperation["type"] = "";
-    }
-  },
-  {
-    immediate: false,
-    deep: true,
+    handlers[funcName]?.();
+    dialogOperation.funcName = "";
+    dialogOperation.type = "";
   },
 );
 watch(
@@ -454,14 +460,16 @@ watch(
  * 供 dynamicform 的 useFormRuleRuntime 调用
  * @param actions 字段控制指令列表
  */
-const ruleEngineApply = (actions: Array<{
-  field: string;
-  visible?: boolean;
-  required?: boolean;
-  readonly?: boolean;
-  disabled?: boolean;
-  value?: any;
-}>) => {
+const ruleEngineApply = (
+  actions: Array<{
+    field: string;
+    visible?: boolean;
+    required?: boolean;
+    readonly?: boolean;
+    disabled?: boolean;
+    value?: any;
+  }>,
+) => {
   if (!actions || !actions.length) return;
   for (const action of actions) {
     // 在 formFields 中查找目标字段
@@ -471,8 +479,10 @@ const ruleEngineApply = (actions: Array<{
           if (!field.preps) field.preps = {};
           if (action.visible !== undefined) field.formVisible = action.visible;
           if (action.required !== undefined) field.required = action.required;
-          if (action.disabled !== undefined) field.preps.disabled = action.disabled;
-          if (action.readonly !== undefined) field.preps.readonly = action.readonly;
+          if (action.disabled !== undefined)
+            field.preps.disabled = action.disabled;
+          if (action.readonly !== undefined)
+            field.preps.readonly = action.readonly;
           if (action.value !== undefined) {
             // 值赋值到 dataForm
             dataForm.value[action.field] = action.value;
@@ -528,12 +538,12 @@ defineExpose({
           :fieldList="platformFields"
           :rules="rules"
           :compSize="formSize"
+          :dialogType="dialogType"
           v-model:dataForm="dataForm"
           :source="source"
           @addRow="addRow"
           @removeRow="removeRow"
-          :batchName="batchName"
-          :batchFieldName="batchFieldName"
+          :subTableName="subTableName"
         />
       </el-form>
     </el-scrollbar>

@@ -22,6 +22,7 @@
 <script setup lang="ts">
 import { computed, onMounted } from "vue";
 import { ItemPreps } from "@/components/types/ItemPreps";
+
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
   disabled: false,

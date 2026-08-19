@@ -48,7 +48,7 @@
 | 属性名 | 类型 | 必填 | 默认值 | 说明 |
 |---|---|---|---|---|
 | compUrl | `ApiUrls` | 否 | — | 接口地址配置 |
-| batchName | `string` | 否 | `''` | 批量数据 Key |
+| subTableName | `string` | 否 | `''` | 批量数据 Key |
 | item | `FieldInfo` | **是** | — | 字段配置 |
 | dataFormat | `Function` | **是** | — | 格式化函数 |
 | cellEditable | `boolean` | 否 | `true` | 是否可编辑单元格 |
@@ -82,7 +82,7 @@
 | item | `object` | **是** | — | 字段配置 |
 | staticColumn | `string` | 否 | `'Y'` | 是否静态列 |
 | primaryKey | `string \| object` | 否 | — | 主键字段名 |
-| batchName | `string` | 否 | `'batchDataList'` | 批量数据 Key |
+| subTableName | `string` | 否 | `'subDataList'` | 批量数据 Key |
 | rules | `object` | 否 | — | 校验规则 |
 | size | `string` | 否 | `'default'` | 组件尺寸 |
 | source | `number` | 否 | `1` | 数据来源标识 |

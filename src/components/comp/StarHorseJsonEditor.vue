@@ -1,11 +1,5 @@
 <script setup lang="ts">
-import {
-  computed,
-  onBeforeUnmount,
-  onMounted,
-  PropType,
-  ref,
-} from "vue";
+import { computed, onBeforeUnmount, onMounted, PropType, ref } from "vue";
 import JsonEditor from "vue3-ts-jsoneditor";
 import { isEn, isZH } from "@/lang";
 

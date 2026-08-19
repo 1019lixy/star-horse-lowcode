@@ -1,10 +1,20 @@
 import { SearchParams } from "@/components/types/Params";
-import {SearchProps} from "@/components/types";
+import { SearchProps } from "@/components/types";
 
 /** 日期类型集合（与 el-date-picker type 对齐，不含纯时间类型） */
 const DATE_FIELD_TYPES = new Set([
-  "year", "years", "month", "months", "date", "dates", "datetime",
-  "datetimerange", "daterange", "monthrange", "yearrange", "week",
+  "year",
+  "years",
+  "month",
+  "months",
+  "date",
+  "dates",
+  "datetime",
+  "datetimerange",
+  "daterange",
+  "monthrange",
+  "yearrange",
+  "week",
 ]);
 
 /** 两位补零 */
@@ -37,7 +47,8 @@ function buildDateSearchValue(
   effectiveType: string,
   matchType: string | undefined,
 ): { value: any; operation: string } {
-  if (val == null || val === "") return { value: val, operation: matchType || "eq" };
+  if (val == null || val === "")
+    return { value: val, operation: matchType || "eq" };
 
   // 范围选择器类型：val 是 [start, end]
   if (effectiveType?.includes("range")) {
@@ -69,9 +80,15 @@ function buildDateSearchValue(
   if ((matchType || "") === "bt") {
     switch (effectiveType) {
       case "date":
-        return { value: [val + " 00:00:00", val + " 23:59:59"], operation: "bt" };
+        return {
+          value: [val + " 00:00:00", val + " 23:59:59"],
+          operation: "bt",
+        };
       case "year":
-        return { value: [val + "-01-01 00:00:00", val + "-12-31 23:59:59"], operation: "bt" };
+        return {
+          value: [val + "-01-01 00:00:00", val + "-12-31 23:59:59"],
+          operation: "bt",
+        };
       case "month": {
         const [y, m] = String(val).split("-").map(Number);
         return {
@@ -114,7 +131,10 @@ function buildDateSearchValue(
  * @param searchForm
  * @param searchFormData
  */
-export function analysisSearchData(searchForm: any, searchFormData: SearchProps[]) {
+export function analysisSearchData(
+  searchForm: any,
+  searchFormData: SearchProps[],
+) {
   const searchFields = [];
   for (const key in searchForm) {
     let val = searchForm[key];
@@ -124,7 +144,11 @@ export function analysisSearchData(searchForm: any, searchFormData: SearchProps[
       const effectiveType = temp?.preps?.type || temp?.type;
       let operation = temp?.matchType || "eq";
       if (effectiveType && DATE_FIELD_TYPES.has(effectiveType)) {
-        const result = buildDateSearchValue(val, effectiveType, temp?.matchType);
+        const result = buildDateSearchValue(
+          val,
+          effectiveType,
+          temp?.matchType,
+        );
         val = result.value;
         operation = result.operation;
       }
@@ -185,8 +209,8 @@ export function analysisFields(compList: Array<any>) {
   const tabListAnalysis = (tabList: Array<any>) => {
     for (const index in tabList) {
       const temp = tabList[index];
-      tabNames.push(temp.tabName);
-      objectNames.push(temp.objectName);
+      tabNames.push(temp.subTablePrimaryKey);
+      objectNames.push(temp.subTableName);
       normalAnalysis(temp.items);
     }
   };
@@ -205,13 +229,9 @@ export function analysisFields(compList: Array<any>) {
       for (const index in dataList) {
         const temp = dataList[index];
         const itempType = temp.itemType;
-        if (itempType == "box" || itempType == "dytable") {
+        if (["box", "dytable", "gridtable"].includes(itempType)) {
           loopAnalysis(temp.preps.elements);
-        } else if (
-          itempType == "tab" ||
-          itempType == "card" ||
-          itempType == "collapse"
-        ) {
+        } else if (!["box","dytable","table","gridtable"].includes(itempType)) {
           tabListAnalysis(temp.preps.elements);
         } else if (itempType == "table") {
           tableListAnalysis(temp.preps);
@@ -222,16 +242,23 @@ export function analysisFields(compList: Array<any>) {
                 item.dataIndex = priority++;
                 fieldList.push(item);
               });
-            } else if (temp.batchFieldList) {
-              temp.batchFieldList.forEach((item: any) => {
-                item.fieldList.forEach((sitem: any) => {
-                  sitem.dataIndex = priority++;
-                  fieldList.push(sitem);
-                });
-              });
             } else {
-              temp.dataIndex = priority++;
-              fieldList.push(temp);
+              const batchList = Array.isArray(temp.containerFields)
+                ? temp.containerFields.filter(
+                    (c: any) => c?.containerType === "table",
+                  )
+                : [];
+              if (batchList.length > 0) {
+                batchList.forEach((item: any) => {
+                  item.fieldList.forEach((sitem: any) => {
+                    sitem.dataIndex = priority++;
+                    fieldList.push(sitem);
+                  });
+                });
+              } else {
+                temp.dataIndex = priority++;
+                fieldList.push(temp);
+              }
             }
           }
         }

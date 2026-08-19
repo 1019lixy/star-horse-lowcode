@@ -1,8 +1,12 @@
 <script setup lang="ts" name="GanttCanvas">
-import {computed, ref, watch} from "vue";
-import type {GanttDesigner} from "../composables/useGanttDesigner";
-import {CRITICAL_COLOR, GANTT_STATUS_PRESETS, MILESTONE_SIZE, TODAY_LINE_COLOR,} from "../constants";
-import type {GanttTimelineCell} from "../utils/GanttDateUtils";
+import { computed, ref, watch } from "vue";
+import type { GanttDesigner } from "../composables/useGanttDesigner";
+import {
+  CRITICAL_COLOR,
+  GANTT_STATUS_PRESETS,
+  MILESTONE_SIZE,
+} from "../constants";
+import type { GanttTimelineCell } from "../utils/GanttDateUtils";
 import {
   formatDate,
   getTimelineCells,
@@ -11,7 +15,7 @@ import {
   isToday,
   parseDate,
 } from "../utils/GanttDateUtils";
-import type {GanttLinkType, GanttTask} from "../types";
+import type { GanttLinkType, GanttTask } from "../types";
 
 const props = defineProps<{
   designer: GanttDesigner;
@@ -25,7 +29,7 @@ const emit = defineEmits<{
 const canvasScrollRef = ref<HTMLElement>();
 
 /** 暴露滚动元素供 GanttChart 同步 */
-defineExpose({canvasScrollRef});
+defineExpose({ canvasScrollRef });
 
 /** 拖拽状态 */
 const dragState = ref<{
@@ -46,7 +50,7 @@ const timeUnit = computed(() => props.designer.state.config.timeUnit);
 
 /** 时间轴单元格列表（按时间单位聚合，非每日） */
 const timelineCells = computed<GanttTimelineCell[]>(() => {
-  const {projectStart, projectEnd} = props.designer.state.config;
+  const { projectStart, projectEnd } = props.designer.state.config;
   return getTimelineCells(projectStart, projectEnd, timeUnit.value);
 });
 
@@ -59,14 +63,14 @@ const timelineGroups = computed(() => {
   let count = 0;
   for (const c of cells) {
     if (c.topLabel !== prevKey) {
-      if (prevKey) groups.push({label: prevKey, count});
+      if (prevKey) groups.push({ label: prevKey, count });
       prevKey = c.topLabel;
       count = 1;
     } else {
       count++;
     }
   }
-  if (prevKey) groups.push({label: prevKey, count});
+  if (prevKey) groups.push({ label: prevKey, count });
   return groups;
 });
 
@@ -88,7 +92,7 @@ const sortedTaskList = computed(() => props.designer.sortedTasks.value);
 /** 计算任务条位置（基于时间单位聚合，不再按天计算） */
 const getTaskPosition = (task: GanttTask) => {
   const unit = timeUnit.value;
-  const {projectStart} = props.designer.state.config;
+  const { projectStart } = props.designer.state.config;
   const offsetUnits = getUnitOffset(projectStart, task.startDate, unit);
   const durationUnits = getUnitDuration(task.startDate, task.endDate, unit);
   return {
@@ -99,25 +103,33 @@ const getTaskPosition = (task: GanttTask) => {
 
 /** 获取任务颜色 */
 const getTaskColor = (task: GanttTask) => {
-  if (task.isCritical && props.designer.state.config.showCritical) return CRITICAL_COLOR;
+  if (task.isCritical && props.designer.state.config.showCritical)
+    return CRITICAL_COLOR;
   const today = new Date();
   const endDate = new Date(task.endDate);
-  if (today> endDate && task.status !== "completed") {
+  if (today > endDate && task.status !== "completed") {
     return "#F56C6C";
   }
-  return GANTT_STATUS_PRESETS.find((s) => s.value === task.status)?.color ?? "#409EFF";
+  return (
+    GANTT_STATUS_PRESETS.find((s) => s.value === task.status)?.color ??
+    "#409EFF"
+  );
 };
 
 /** 今日线位置（基于时间单位计算） */
 const todayLeft = computed(() => {
   const today = formatDate(new Date());
-  const {projectStart} = props.designer.state.config;
+  const { projectStart } = props.designer.state.config;
   const offsetUnits = getUnitOffset(projectStart, today, timeUnit.value);
   return offsetUnits * cellWidth.value + cellWidth.value / 2;
 });
 
 /** 处理任务条鼠标按下 */
-const handleTaskMouseDown = (e: MouseEvent, task: GanttTask, mode: "move" | "resize-start" | "resize-end") => {
+const handleTaskMouseDown = (
+  e: MouseEvent,
+  task: GanttTask,
+  mode: "move" | "resize-start" | "resize-end",
+) => {
   if (props.readonly) return;
   e.stopPropagation();
   e.preventDefault();
@@ -139,7 +151,9 @@ const handleMouseMove = (e: MouseEvent) => {
   const dx = e.clientX - dragState.value.startX;
   const unitOffset = Math.round(dx / cellWidth.value);
   if (unitOffset === 0) return;
-  const task = props.designer.state.tasks.find((t) => t.id === dragState.value!.taskId);
+  const task = props.designer.state.tasks.find(
+    (t) => t.id === dragState.value!.taskId,
+  );
   if (!task) return;
 
   const unit = timeUnit.value;
@@ -182,13 +196,17 @@ const handleMouseUp = () => {
 const handleLinkStart = (e: MouseEvent, task: GanttTask) => {
   if (props.readonly) return;
   e.stopPropagation();
-  linkState.value = {sourceId: task.id};
+  linkState.value = { sourceId: task.id };
 };
 
 /** 处理连线终点 */
 const handleLinkEnd = (task: GanttTask) => {
   if (!linkState.value || linkState.value.sourceId === task.id) return;
-  props.designer.addLink(linkState.value.sourceId, task.id, "finishToStart" as GanttLinkType);
+  props.designer.addLink(
+    linkState.value.sourceId,
+    task.id,
+    "finishToStart" as GanttLinkType,
+  );
   linkState.value = null;
 };
 
@@ -204,8 +222,12 @@ const getLinkPath = (link: { source: string; target: string }) => {
   if (!source || !target) return "";
   const sp = getTaskPosition(source);
   const tp = getTaskPosition(target);
-  const sourceIndex = props.designer.sortedTasks.value.findIndex((t) => t.id === source.id);
-  const targetIndex = props.designer.sortedTasks.value.findIndex((t) => t.id === target.id);
+  const sourceIndex = props.designer.sortedTasks.value.findIndex(
+    (t) => t.id === source.id,
+  );
+  const targetIndex = props.designer.sortedTasks.value.findIndex(
+    (t) => t.id === target.id,
+  );
   const sx = sp.left + sp.width;
   const sy = sourceIndex * rowHeight.value + rowHeight.value / 2;
   const tx = tp.left;
@@ -220,25 +242,33 @@ const getCellClass = (cell: GanttTimelineCell) => ({
   today: props.designer.state.config.showToday && isToday(cell.date),
 });
 
-const timelineWidth = computed(() => timelineCells.value.length * cellWidth.value);
-const bodyHeight = computed(() => props.designer.sortedTasks.value.length * rowHeight.value);
+const timelineWidth = computed(
+  () => timelineCells.value.length * cellWidth.value,
+);
+const bodyHeight = computed(
+  () => props.designer.sortedTasks.value.length * rowHeight.value,
+);
 
 /** 监听选中任务，自动滚动到可见区域 */
-watch(() => props.designer.selectedTaskId.value, (id) => {
-  if (!id) return;
-  const idx = props.designer.sortedTasks.value.findIndex(t => t.id === id);
-  if (idx < 0) return;
-  const container = canvasScrollRef.value;
-  if (!container) return;
-  const headerHeight = 52; // 时间轴头高度
-  const rowY = idx * rowHeight.value;
-  const scrollTop = container.scrollTop;
-  const viewHeight = container.clientHeight - headerHeight;
-  const relativeY = rowY - (scrollTop - headerHeight);
-  if (relativeY < 0 || relativeY > viewHeight - rowHeight.value) {
-    container.scrollTop = rowY - viewHeight / 2 + rowHeight.value / 2 + headerHeight;
-  }
-});
+watch(
+  () => props.designer.selectedTaskId.value,
+  (id) => {
+    if (!id) return;
+    const idx = props.designer.sortedTasks.value.findIndex((t) => t.id === id);
+    if (idx < 0) return;
+    const container = canvasScrollRef.value;
+    if (!container) return;
+    const headerHeight = 52; // 时间轴头高度
+    const rowY = idx * rowHeight.value;
+    const scrollTop = container.scrollTop;
+    const viewHeight = container.clientHeight - headerHeight;
+    const relativeY = rowY - (scrollTop - headerHeight);
+    if (relativeY < 0 || relativeY > viewHeight - rowHeight.value) {
+      container.scrollTop =
+        rowY - viewHeight / 2 + rowHeight.value / 2 + headerHeight;
+    }
+  },
+);
 </script>
 
 <template>
@@ -248,8 +278,8 @@ watch(() => props.designer.selectedTaskId.value, (id) => {
       <div class="timeline-row top-row">
         <template v-for="(group, idx) in timelineGroups" :key="idx">
           <div
-              class="timeline-cell top-cell"
-              :style="{ width: `${group.count * cellWidth}px` }"
+            class="timeline-cell top-cell"
+            :style="{ width: `${group.count * cellWidth}px` }"
           >
             {{ group.label }}
           </div>
@@ -257,11 +287,11 @@ watch(() => props.designer.selectedTaskId.value, (id) => {
       </div>
       <div class="timeline-row bottom-row">
         <div
-            v-for="cell in timelineCells"
-            :key="cell.date"
-            class="timeline-cell bottom-cell"
-            :class="getCellClass(cell)"
-            :style="{ width: `${cellWidth}px` }"
+          v-for="cell in timelineCells"
+          :key="cell.date"
+          class="timeline-cell bottom-cell"
+          :class="getCellClass(cell)"
+          :style="{ width: `${cellWidth}px` }"
         >
           {{ cell.label }}
         </div>
@@ -270,61 +300,64 @@ watch(() => props.designer.selectedTaskId.value, (id) => {
 
     <!-- 主体（网格 + 任务条 + 连线） -->
     <div class="gantt-body-wrapper">
-      <div class="gantt-body" :style="{ width: `${timelineWidth}px`, height: `${bodyHeight}px` }">
+      <div
+        class="gantt-body"
+        :style="{ width: `${timelineWidth}px`, height: `${bodyHeight}px` }"
+      >
         <!-- 网格列 -->
         <div class="grid-layer">
           <div
-              v-for="cell in timelineCells"
-              :key="cell.date"
-              class="grid-col"
-              :class="getCellClass(cell)"
-              :style="{ width: `${cellWidth}px` }"
+            v-for="cell in timelineCells"
+            :key="cell.date"
+            class="grid-col"
+            :class="getCellClass(cell)"
+            :style="{ width: `${cellWidth}px` }"
           />
         </div>
 
         <!-- 网格行 -->
         <div class="grid-row-layer">
           <div
-              v-for="(task, idx) in sortedTaskList"
-              :key="task.id"
-              class="grid-row"
-              :class="{ selected: task.id === selectedTaskId }"
-              :style="{ height: `${rowHeight}px`, top: `${idx * rowHeight}px` }"
-              @click="designer.selectTask(task.id)"
+            v-for="(task, idx) in sortedTaskList"
+            :key="task.id"
+            class="grid-row"
+            :class="{ selected: task.id === selectedTaskId }"
+            :style="{ height: `${rowHeight}px`, top: `${idx * rowHeight}px` }"
+            @click="designer.selectTask(task.id)"
           />
         </div>
 
         <!-- 今日线 -->
         <div
-            v-if="designer.state.config.showToday"
-            class="today-line"
-            :style="{ left: `${todayLeft}px` }"
+          v-if="designer.state.config.showToday"
+          class="today-line"
+          :style="{ left: `${todayLeft}px` }"
         />
 
         <!-- 任务条 -->
         <div class="task-layer">
           <div
-              v-for="(task, idx) in sortedTaskList"
-              :key="task.id"
-              class="task-bar-wrapper"
-              :style="{
-                            left: `${getTaskPosition(task).left}px`,
-                            width: `${getTaskPosition(task).width}px`,
-                            top: `${idx * rowHeight + 4}px`,
-                            height: `${rowHeight - 8}px`
-                        }"
+            v-for="(task, idx) in sortedTaskList"
+            :key="task.id"
+            class="task-bar-wrapper"
+            :style="{
+              left: `${getTaskPosition(task).left}px`,
+              width: `${getTaskPosition(task).width}px`,
+              top: `${idx * rowHeight + 4}px`,
+              height: `${rowHeight - 8}px`,
+            }"
           >
             <!-- 里程碑 -->
             <div
-                v-if="task.isMilestone"
-                class="milestone-marker"
-                :style="{
-                                borderColor: getTaskColor(task),
-                                width: `${MILESTONE_SIZE}px`,
-                                height: `${MILESTONE_SIZE}px`
-                            }"
-                @mousedown="(e) => handleTaskMouseDown(e, task, 'move')"
-                @dblclick="handleDblClick(task)"
+              v-if="task.isMilestone"
+              class="milestone-marker"
+              :style="{
+                borderColor: getTaskColor(task),
+                width: `${MILESTONE_SIZE}px`,
+                height: `${MILESTONE_SIZE}px`,
+              }"
+              @mousedown="(e) => handleTaskMouseDown(e, task, 'move')"
+              @dblclick="handleDblClick(task)"
             >
               <span class="milestone-text">{{ task.name }}</span>
             </div>
@@ -332,43 +365,46 @@ watch(() => props.designer.selectedTaskId.value, (id) => {
             <!-- 普通任务条 -->
             <template v-else>
               <div
-                  class="task-bar"
-                  :class="{
-                                    critical: task.isCritical && designer.state.config.showCritical,
-                                    selected: task.id === selectedTaskId
-                                }"
-                  :style="{
-                                    backgroundColor:  getTaskColor(task),
-                                    opacity: task.status === 'paused' ? 0.5 : 1
-                                }"
-                  @mousedown="(e) => handleTaskMouseDown(e, task, 'move')"
-                  @dblclick="handleDblClick(task)"
+                class="task-bar"
+                :class="{
+                  critical:
+                    task.isCritical && designer.state.config.showCritical,
+                  selected: task.id === selectedTaskId,
+                }"
+                :style="{
+                  backgroundColor: getTaskColor(task),
+                  opacity: task.status === 'paused' ? 0.5 : 1,
+                }"
+                @mousedown="(e) => handleTaskMouseDown(e, task, 'move')"
+                @dblclick="handleDblClick(task)"
               >
                 <!-- 进度条 -->
                 <div
-                    v-if="designer.state.config.showProgress"
-                    class="progress-bar"
-                    :style="{ width: `${task.progress}%` }"
+                  v-if="designer.state.config.showProgress"
+                  class="progress-bar"
+                  :style="{ width: `${task.progress}%` }"
                 />
-                <span class="task-label">{{ task.name }} {{ task.progress }}%</span>
+                <span class="task-label"
+                  >{{ task.name }} {{ task.progress }}%</span
+                >
               </div>
 
               <!-- 调整手柄 -->
               <div
-                  v-if="!readonly"
-                  class="resize-handle resize-left"
-                  @mousedown="(e) => handleTaskMouseDown(e, task, 'resize-start')"
+                v-if="!readonly"
+                class="resize-handle resize-left"
+                @mousedown="(e) => handleTaskMouseDown(e, task, 'resize-start')"
               />
               <div
-                  v-if="!readonly"
-                  class="resize-handle resize-right"
-                  @mousedown="(e) => handleTaskMouseDown(e, task, 'resize-end')"
+                v-if="!readonly"
+                class="resize-handle resize-right"
+                @mousedown="(e) => handleTaskMouseDown(e, task, 'resize-end')"
               />
               <div
-                  v-if="!readonly"
-                  class="link-handle"
-                  @mousedown="(e) => handleLinkStart(e, task)"
-                  @mouseup="handleLinkEnd(task)"
+                v-if="!readonly"
+                class="link-handle"
+                @mousedown="(e) => handleLinkStart(e, task)"
+                @mouseup="handleLinkEnd(task)"
               />
             </template>
           </div>
@@ -376,17 +412,17 @@ watch(() => props.designer.selectedTaskId.value, (id) => {
 
         <!-- 依赖连线 -->
         <svg
-            v-if="designer.state.config.showLinks"
-            class="link-layer"
-            :width="timelineWidth"
-            :height="bodyHeight"
+          v-if="designer.state.config.showLinks"
+          class="link-layer"
+          :width="timelineWidth"
+          :height="bodyHeight"
         >
           <path
-              v-for="link in designer.state.links"
-              :key="link.id"
-              :d="getLinkPath(link)"
-              class="link-path"
-              :class="{ critical: false }"
+            v-for="link in designer.state.links"
+            :key="link.id"
+            :d="getLinkPath(link)"
+            class="link-path"
+            :class="{ critical: false }"
           />
         </svg>
       </div>
@@ -515,7 +551,7 @@ watch(() => props.designer.selectedTaskId.value, (id) => {
           width: 100%;
           height: 100%;
           border-radius: 4px;
-          color: #FFFFFF;
+          color: #ffffff;
           font-size: 12px;
           cursor: move;
           position: relative;
@@ -529,7 +565,7 @@ watch(() => props.designer.selectedTaskId.value, (id) => {
           }
 
           &.selected {
-            border: 2px solid #096DD9;
+            border: 2px solid #096dd9;
             box-shadow: 0 0 8px rgba(64, 158, 255, 0.4);
           }
 
@@ -575,7 +611,7 @@ watch(() => props.designer.selectedTaskId.value, (id) => {
           width: 12px;
           height: 12px;
           border-radius: 50%;
-          background: #FFFFFF;
+          background: #ffffff;
           border: 2px solid var(--el-color-primary);
           cursor: crosshair;
           z-index: 2;
@@ -584,7 +620,7 @@ watch(() => props.designer.selectedTaskId.value, (id) => {
         .milestone-marker {
           position: relative;
           transform: rotate(45deg);
-          background: #FFFFFF;
+          background: #ffffff;
           border: 2px solid;
           display: flex;
           align-items: center;

@@ -1,11 +1,16 @@
 <script setup lang="ts">
-import {useVModel} from "@vueuse/core";
-import DataPicker, {type ModelValueType,} from "@/components/comp/utils/DataPicker.vue";
-import {computed, CSSProperties, onMounted, ref, watch} from "vue";
+import { useVModel } from "@vueuse/core";
+import DataPicker, {
+  type ModelValueType,
+} from "@/components/comp/utils/DataPicker.vue";
+import { computed, CSSProperties, nextTick, onMounted, ref, watch } from "vue";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
-import {i18n} from "@/lang";
-import {SearchParams} from "@/components/types";
-import {findNodesInTree, loadSelectedData,} from "@/components/comp/utils/DataSelectorUtils";
+import { i18n } from "@/lang";
+import { SearchParams } from "@/components/types";
+import {
+  findNodesInTree,
+  loadSelectedData,
+} from "@/components/comp/utils/DataSelectorUtils";
 
 export interface DataSelectorProps {
   modelValue: ModelValueType;
@@ -77,9 +82,14 @@ const valueArr = computed<string[]>(() => {
 });
 
 const dataPickerRef = ref<InstanceType<typeof DataPicker>>();
+const pickerMounted = ref(false);
 
-const openDataPicker = () => {
+const openDataPicker = async () => {
   if (props.disabled) return;
+  if (!pickerMounted.value) {
+    pickerMounted.value = true;
+    await nextTick();
+  }
   dataPickerRef.value?.open();
 };
 
@@ -185,6 +195,7 @@ watch(
 
 <template>
   <data-picker
+    v-if="pickerMounted"
     ref="dataPickerRef"
     :title="title"
     :data="data"

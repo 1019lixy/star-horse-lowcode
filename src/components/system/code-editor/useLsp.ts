@@ -1,4 +1,4 @@
-import { ref, toRaw, type Ref, type ShallowRef } from "vue";
+import { ref, type Ref, type ShallowRef, toRaw } from "vue";
 import * as monaco from "monaco-editor";
 
 /** 支持LSP的语言列表 */

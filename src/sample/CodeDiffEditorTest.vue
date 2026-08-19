@@ -1,5 +1,5 @@
 <script setup lang="ts" name="CodeDiffEditorTest">
-import { ref, computed } from "vue";
+import { computed, ref } from "vue";
 import { StarHorseDiffEditor } from "@/components/system/code-editor/index";
 import { i18n } from "@/lang/index";
 import { ElMessage } from "element-plus";
@@ -352,8 +352,7 @@ const handleDiffClose = () => {
       </div>
       <pre
         class="text-xs bg-gray-50 p-2 rounded max-h-40 overflow-auto whitespace-pre-wrap"
-        >{{ resolvedContent }}</pre
-      >
+        >{{ resolvedContent }}</pre>
     </div>
   </div>
 </template>

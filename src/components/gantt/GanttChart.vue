@@ -1,13 +1,13 @@
 <script setup lang="ts" name="GanttChart">
-import {computed, onBeforeUnmount, onMounted, ref} from "vue";
-import {useGanttDesigner} from "./composables/useGanttDesigner";
+import { computed, onBeforeUnmount, onMounted, ref } from "vue";
+import { useGanttDesigner } from "./composables/useGanttDesigner";
 import GanttToolbar from "./panels/GanttToolbar.vue";
 import GanttTaskListPanel from "./panels/GanttTaskListPanel.vue";
 import GanttCanvas from "./panels/GanttCanvas.vue";
 import GanttPropertyPanel from "./panels/GanttPropertyPanel.vue";
 import GanttTaskDialog from "./dialogs/GanttTaskDialog.vue";
-import {DesignerMobileShell} from "@/components/shared";
-import type {GanttData} from "./types";
+import { DesignerMobileShell } from "@/components/shared";
+import type { GanttData } from "./types";
 
 const props = defineProps<{
   gantt?: GanttData;
@@ -76,7 +76,7 @@ let isSyncingScroll = false;
 const syncListScroll = (e: Event) => {
   if (isSyncingScroll) return;
   isSyncingScroll = true;
-  const listEl = (e.target as HTMLElement);
+  const listEl = e.target as HTMLElement;
   const canvasEl = canvasRef.value?.canvasScrollRef;
   if (canvasEl) {
     canvasEl.scrollTop = listEl.scrollTop;
@@ -89,7 +89,7 @@ const syncListScroll = (e: Event) => {
 const syncCanvasScroll = (e: Event) => {
   if (isSyncingScroll) return;
   isSyncingScroll = true;
-  const canvasEl = (e.target as HTMLElement);
+  const canvasEl = e.target as HTMLElement;
   const listEl = taskListRef.value?.listScrollRef;
   if (listEl) {
     listEl.scrollTop = canvasEl.scrollTop;
@@ -135,45 +135,42 @@ onBeforeUnmount(() => {
     >
       <template #toolbar>
         <gantt-toolbar
-            :designer="designer"
-            :readonly="readonly"
-            :title="initialGantt.name"
-            @save="handleSave"
-            @preview="handlePreview"
-            @add-task="handleAddTask"
-            @insert-before="handleInsertBefore"
-            @insert-after="handleInsertAfter"
+          :designer="designer"
+          :readonly="readonly"
+          :title="initialGantt.name"
+          @save="handleSave"
+          @preview="handlePreview"
+          @add-task="handleAddTask"
+          @insert-before="handleInsertBefore"
+          @insert-after="handleInsertAfter"
         />
       </template>
       <template #canvas>
         <gantt-canvas
-            ref="canvasRef"
-            :designer="designer"
-            :readonly="readonly"
-            @edit="handleEditTask"
+          ref="canvasRef"
+          :designer="designer"
+          :readonly="readonly"
+          @edit="handleEditTask"
         />
       </template>
       <template #panel-taskList>
         <gantt-task-list-panel
-            ref="taskListRef"
-            :designer="designer"
-            :readonly="readonly"
-            @edit="handleEditTask"
+          ref="taskListRef"
+          :designer="designer"
+          :readonly="readonly"
+          @edit="handleEditTask"
         />
       </template>
       <template #panel-props>
-        <gantt-property-panel
-            :designer="designer"
-            :readonly="readonly"
-        />
+        <gantt-property-panel :designer="designer" :readonly="readonly" />
       </template>
     </DesignerMobileShell>
 
     <gantt-task-dialog
-        v-model:visible="taskDialogVisible"
-        :designer="designer"
-        :task-id="editingTaskId"
-        :parent-id="selectedTaskId"
+      v-model:visible="taskDialogVisible"
+      :designer="designer"
+      :task-id="editingTaskId"
+      :parent-id="selectedTaskId"
     />
   </div>
 </template>

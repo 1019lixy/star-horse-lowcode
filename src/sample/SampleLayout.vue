@@ -1,6 +1,6 @@
 <script setup lang="ts" name="SampleLayout">
 import { computed, ref } from "vue";
-import { useRoute, useRouter, RouteRecordRaw } from "vue-router";
+import { RouteRecordRaw, useRoute, useRouter } from "vue-router";
 import { isMobile } from "@/api/device";
 
 const route = useRoute();
@@ -46,12 +46,11 @@ const handleSelect = (path: string) => {
           @select="handleSelect"
         >
           <template v-for="g in menuGroups" :key="g.path">
-            <el-sub-menu
-              v-if="g.children?.length"
-              :index="g.path"
-            >
+            <el-sub-menu v-if="g.children?.length" :index="g.path">
               <template #title>
-                <el-icon><component :is="g.meta.icon || 'menu'" /></el-icon>
+                <el-icon>
+                  <component :is="g.meta.icon || 'menu'" />
+                </el-icon>
                 <span>{{ g.meta.title }}</span>
               </template>
               <el-menu-item
@@ -63,7 +62,9 @@ const handleSelect = (path: string) => {
               </el-menu-item>
             </el-sub-menu>
             <el-menu-item v-else :index="g.path">
-              <el-icon><component :is="g.meta.icon || 'menu'" /></el-icon>
+              <el-icon>
+                <component :is="g.meta.icon || 'menu'" />
+              </el-icon>
               <template #title>{{ g.meta.title }}</template>
             </el-menu-item>
           </template>
@@ -106,6 +107,7 @@ const handleSelect = (path: string) => {
   width: 100%;
   overflow: hidden;
 }
+
 .layout-sider {
   width: 220px;
   background: #001529;
@@ -113,10 +115,12 @@ const handleSelect = (path: string) => {
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
+
   &.collapsed {
     width: 64px;
   }
 }
+
 .logo {
   height: 48px;
   line-height: 48px;
@@ -128,13 +132,16 @@ const handleSelect = (path: string) => {
   overflow: hidden;
   white-space: nowrap;
 }
+
 .menu-scroll {
   flex: 1;
   overflow: hidden;
 }
+
 :deep(.el-menu) {
   border-right: none;
 }
+
 .layout-main {
   flex: 1;
   display: flex;
@@ -142,6 +149,7 @@ const handleSelect = (path: string) => {
   overflow: hidden;
   min-width: 0;
 }
+
 .layout-header {
   height: 48px;
   display: flex;
@@ -151,15 +159,18 @@ const handleSelect = (path: string) => {
   border-bottom: 1px solid #eee;
   flex-shrink: 0;
 }
+
 .header-left {
   display: flex;
   align-items: center;
   gap: 12px;
 }
+
 .collapse-btn {
   font-size: 18px;
   cursor: pointer;
 }
+
 .layout-content {
   flex: 1;
   overflow: auto;

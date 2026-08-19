@@ -14,6 +14,7 @@ import piniaInstance from "@/store";
 import ElementPlus from "element-plus";
 import zhCn from "element-plus/es/locale/lang/zh-cn";
 import router from "@/router";
+
 window.__debug__ = true;
 const app = createApp(App);
 app.component("draggable", draggable);
@@ -28,7 +29,7 @@ app.use(router);
 app.use(ElementPlus, {
   locale: zhCn,
 });
-app.config.performance = true;
+app.config.performance = false;
 /**
  * 处理未捕获异常
  * @param err

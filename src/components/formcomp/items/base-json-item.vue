@@ -1,6 +1,7 @@
 <template>
   <!-- 对话框部分（与原 json-item.vue 完全一致） -->
-  <star-horse-dialog
+  <star-horse-panel
+    :type="dialogType"
     :title="field.label + i18n('item.jsonEditor')"
     :self-func="true"
     :boxHeight="field.preps?.boxHeight ?? '65%'"
@@ -16,7 +17,7 @@
       style="height: 100%"
     />
     <star-horse-form v-else :field-list="jsonTableField" ref="jsonFormRef" />
-  </star-horse-dialog>
+  </star-horse-panel>
 
   <!-- 输入框+按钮部分（与原 json-item.vue 完全一致） -->
   <starhorse-form-item
@@ -70,7 +71,7 @@ import {
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { getDynamicEvents } from "@/api/system";
 import JSON5 from "json5";
-import { StarHorseDialog } from "@/components/comp";
+import { StarHorsePanel } from "@/components/comp";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
 import { i18n } from "@/lang";
 
@@ -84,6 +85,8 @@ const props = defineProps({
   field: { type: Object as PropType<any>, required: true },
   parentField: { type: Object as PropType<any> },
   formInfo: { type: Object as PropType<any> },
+  source: { type: Number, default: 1 },
+  dialogType: { type: String as () => "dialog" | "drawer" },
   // 新增：区分 JSON 对象/数组的关键参数
   dataType: {
     type: String,
@@ -100,9 +103,10 @@ const jsonData = shallowRef<any>({}); // 统一存储解析后的 JSON 数据（
 
 // 公共的表格字段配置（两个组件原有的 jsonTableField 完全一致）
 const jsonTableField = reactive<PageFieldInfo>({
-  batchFieldList: [
+  containerFields: [
     {
-      batchName: "jsonDatas",
+      containerType: "table",
+      subTablePrimaryKey: "jsonDatas",
       fieldList: [
         {
           label: i18n("item.nameLabel"),

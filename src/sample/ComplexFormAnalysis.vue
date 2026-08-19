@@ -38,7 +38,7 @@ const searchFormData = reactive<SearchFields>({
       type: "number",
       matchType: "bt",
     },
-     {
+    {
       label: "Select",
       fieldName: "select",
       formVisible: false,
@@ -175,7 +175,7 @@ const tableFieldList = reactive<PageFieldInfo>({
             listVisible: true,
             preps: {
               iconType: "user",
-              values:[],
+              values: [],
             },
           },
           {
@@ -191,159 +191,158 @@ const tableFieldList = reactive<PageFieldInfo>({
       formVisible: true,
       listVisible: true,
       actions: {
-        change: (val: any) => {
-        },
+        change: (val: any) => {},
       },
     },
     {
       label: i18n("system.updated.by"),
       preps: {
-        appendAction:[
+        appendAction: [
           {
-            title:"xxx",
-            icon:"edit",
-            actions:{
-              eventType:"custom",
-              customCode:"const params={\n" +
-                      "    \"apiInfo\": {\n" +
-                  "        \"apiType\": \"thirdApi\",\n" +
-                  "        \"codePath\": \"code\",\n" +
-                  "        \"dataPath\": \"data\",\n" +
-                  "        \"dataType\": \"JSON\",\n" +
-                  "        \"headers\": [\n" +
-                  "            {\n" +
-                  "                \"paramName\": \"P-Auth\",\n" +
-                  "                \"paramValue\": \"u_Mjc2MWI1ZXZqYmI1azJhN3Y4bF4WNzU5ODEWMZ9ONTE5MzIxMTU4MjkyMjg20831\",\n" +
-                  "                \"valueType\": \"static\",\n" +
-                  "            }\n" +
-                  "        ],\n" +
-                  "        \"httpMethod\": \"POST\",\n" +
-                  "        \"protocol\": \"http\",\n" +
-                  "        \"requestParams\": [\n" +
-                  "            {\n" +
-                  "                \"paramName\": \"DataType\",\n" +
-                  "                \"paramValue\": \"${DataType}\",\n" +
-                  "                \"valueType\": \"isolation\",\n" +
-                  "            },\n" +
-                  "            {\n" +
-                  "                \"matchType\": \"eq\",\n" +
-                  "                \"paramName\": \"Id\",\n" +
-                  "                \"paramValue\": \"${fieldSh6Cd03}\",\n" +
-                  "                \"starHorseEditing\": \"no\",\n" +
-                  "                \"valueType\": \"dynamic\",\n" +
-                  "            },\n" +
-                  "            {\n" +
-                  "                \"paramName\": \"typeid\",\n" +
-                  "                \"paramValue\": \"1\",\n" +
-                  "                \"valueType\": \"static\",\n" +
-                  "            },\n" +
-                  "            {\n" +
-                  "                \"paramName\": \"wo\",\n" +
-                  "                \"paramValue\": \"\",\n" +
-                  "                \"valueType\": \"static\",\n" +
-                  "            }\n" +
-                  "        ],\n" +
-                  "        \"responseTemplate\": \"result_data_list\",\n" +
-                  "        \"successCode\": \"200\",\n" +
-                  "        \"url\": \"http://192.168.20.102:8092/tims\"\n" +
-                  "    },\n" +
-                  "    \"authInfo\": {\n" +
-                  "        \"apiType\": \"systemApi\",\n" +
-                  "        \"codePath\": \"code\",\n" +
-                  "        \"dataPath\": \"data\",\n" +
-                  "        \"dataType\": \"JSON\",\n" +
-                  "        \"headers\": [],\n" +
-                  "        \"httpMethod\": \"POST\",\n" +
-                  "        \"protocol\": \"http\",\n" +
-                  "        \"requestParams\": [],\n" +
-                  "        \"responseTemplate\": \"result_data_list\"\n" +
-                  "    },\n" +
-                  "    \"codePath\": \"code\",\n" +
-                  "    \"conditionFields\": [\n" +
-                  "        \"userInfo\",\n" +
-                  "        \"fieldShcad6\"\n" +
-                  "    ],\n" +
-                  "    \"dataPath\": \"data\",\n" +
-                  "    \"dataType\": \"JSON\",\n" +
-                  "    \"fieldMappings\": [\n" +
-                  "        {\n" +
-                  "            \"distField\": \"fieldShf0E11\",\n" +
-                  "            \"sourceField\": \"line\",\n" +
-                  "            \"starHorseEditing\": \"no\",\n" +
-                  "        },\n" +
-                  "        {\n" +
-                  "            \"distField\": \"fieldShb7C14\",\n" +
-                  "            \"sourceField\": \"partdesc\",\n" +
-                  "            \"starHorseEditing\": \"no\",\n" +
-                  "        },\n" +
-                  "        {\n" +
-                  "            \"distField\": \"fieldSh38Bc5\",\n" +
-                  "            \"sourceField\": \"partno\",\n" +
-                  "\n" +
-                  "        }\n" +
-                  "    ],\n" +
-                  "\n" +
-                  "    \"headers\": [],\n" +
-                  "    \"httpMethod\": \"POST\",\n" +
-                  "    \"isolationConfig\": {\n" +
-                  "        \"isolationDetails\": [\n" +
-                  "            {\n" +
-                  "                \"isolationCode\": \"1\",\n" +
-                  "                \"isolationName\": \"385623805101343740\",\n" +
-                  "                \"paramName\": \"DataType\",\n" +
-                  "                \"starHorseEditing\": \"no\",\n" +
-                  "                \"xh\": 1\n" +
-                  "            },\n" +
-                  "            {\n" +
-                  "                \"isolationCode\": \"2\",\n" +
-                  "                \"isolationName\": \"388963577039422460\",\n" +
-                  "                \"paramName\": \"DataType\",\n" +
-                  "                \"starHorseEditing\": \"no\",\n" +
-                  "                \"xh\": 2\n" +
-                  "            },\n" +
-                  "            {\n" +
-                  "                \"isolationCode\": \"1\",\n" +
-                  "                \"isolationName\": \"default\",\n" +
-                  "                \"paramName\": \"DataType\",\n" +
-                  "                \"xh\": 3\n" +
-                  "            }\n" +
-                  "        ],\n" +
-                  "        \"isolationType\": \"role\"\n" +
-                  "    },\n" +
-                  "    \"protocol\": \"http\",\n" +
-                  "    \"proxyUrl\": \"/system-config/redirect/apiLinkage\",\n" +
-                  "    \"redirect\": true,\n" +
-                  "    \"requestParams\": [],\n" +
-                  "    \"requestParamsDefaultValue\": [\n" +
-                  "        {\n" +
-                  "            \"valueType\": \"static\"\n" +
-                  "        },\n" +
-                  "        {\n" +
-                  "            \"valueType\": \"static\"\n" +
-                  "        }\n" +
-                  "    ],\n" +
-                  "    \"responseTemplate\": \"result_data_list\"\n" +
-                  "};\n" +
-                  " params[\"formData\"]=formData;\n" +
-                  "postRequest(\"/system-config/redirect/apiLinkage\",params).then((response)=>{\n" +
-                  "    const result = response?.data;\n" +
-                  "            if (result?.code) {\n" +
-                  "                warning(result.cnMessage);\n" +
-                  "                return;\n" +
-                  "            }\n" +
-                  "            const data = result?.data;\n" +
-                  "            if (data) {\n" +
-                  "                for (let key in data) {\n" +
-                  "                    if (\"_value\" != key) {\n" +
-                  "                        formData[key] = data[key];\n" +
-                  "                    }\n" +
-                  "                }\n" +
-                  "            }\n" +
-                  "});"
-            }
-
-          }
-        ]
+            title: "xxx",
+            icon: "edit",
+            actions: {
+              eventType: "custom",
+              customCode:
+                "const params={\n" +
+                '    "apiInfo": {\n' +
+                '        "apiType": "thirdApi",\n' +
+                '        "codePath": "code",\n' +
+                '        "dataPath": "data",\n' +
+                '        "dataType": "JSON",\n' +
+                '        "headers": [\n' +
+                "            {\n" +
+                '                "paramName": "P-Auth",\n' +
+                '                "paramValue": "u_Mjc2MWI1ZXZqYmI1azJhN3Y4bF4WNzU5ODEWMZ9ONTE5MzIxMTU4MjkyMjg20831",\n' +
+                '                "valueType": "static",\n' +
+                "            }\n" +
+                "        ],\n" +
+                '        "httpMethod": "POST",\n' +
+                '        "protocol": "http",\n' +
+                '        "requestParams": [\n' +
+                "            {\n" +
+                '                "paramName": "DataType",\n' +
+                '                "paramValue": "${DataType}",\n' +
+                '                "valueType": "isolation",\n' +
+                "            },\n" +
+                "            {\n" +
+                '                "matchType": "eq",\n' +
+                '                "paramName": "Id",\n' +
+                '                "paramValue": "${fieldSh6Cd03}",\n' +
+                '                "starHorseEditing": "no",\n' +
+                '                "valueType": "dynamic",\n' +
+                "            },\n" +
+                "            {\n" +
+                '                "paramName": "typeid",\n' +
+                '                "paramValue": "1",\n' +
+                '                "valueType": "static",\n' +
+                "            },\n" +
+                "            {\n" +
+                '                "paramName": "wo",\n' +
+                '                "paramValue": "",\n' +
+                '                "valueType": "static",\n' +
+                "            }\n" +
+                "        ],\n" +
+                '        "responseTemplate": "result_data_list",\n' +
+                '        "successCode": "200",\n' +
+                '        "url": "http://192.168.20.102:8092/tims"\n' +
+                "    },\n" +
+                '    "authInfo": {\n' +
+                '        "apiType": "systemApi",\n' +
+                '        "codePath": "code",\n' +
+                '        "dataPath": "data",\n' +
+                '        "dataType": "JSON",\n' +
+                '        "headers": [],\n' +
+                '        "httpMethod": "POST",\n' +
+                '        "protocol": "http",\n' +
+                '        "requestParams": [],\n' +
+                '        "responseTemplate": "result_data_list"\n' +
+                "    },\n" +
+                '    "codePath": "code",\n' +
+                '    "conditionFields": [\n' +
+                '        "userInfo",\n' +
+                '        "fieldShcad6"\n' +
+                "    ],\n" +
+                '    "dataPath": "data",\n' +
+                '    "dataType": "JSON",\n' +
+                '    "fieldMappings": [\n' +
+                "        {\n" +
+                '            "distField": "fieldShf0E11",\n' +
+                '            "sourceField": "line",\n' +
+                '            "starHorseEditing": "no",\n' +
+                "        },\n" +
+                "        {\n" +
+                '            "distField": "fieldShb7C14",\n' +
+                '            "sourceField": "partdesc",\n' +
+                '            "starHorseEditing": "no",\n' +
+                "        },\n" +
+                "        {\n" +
+                '            "distField": "fieldSh38Bc5",\n' +
+                '            "sourceField": "partno",\n' +
+                "\n" +
+                "        }\n" +
+                "    ],\n" +
+                "\n" +
+                '    "headers": [],\n' +
+                '    "httpMethod": "POST",\n' +
+                '    "isolationConfig": {\n' +
+                '        "isolationDetails": [\n' +
+                "            {\n" +
+                '                "isolationCode": "1",\n' +
+                '                "isolationName": "385623805101343740",\n' +
+                '                "paramName": "DataType",\n' +
+                '                "starHorseEditing": "no",\n' +
+                '                "xh": 1\n' +
+                "            },\n" +
+                "            {\n" +
+                '                "isolationCode": "2",\n' +
+                '                "isolationName": "388963577039422460",\n' +
+                '                "paramName": "DataType",\n' +
+                '                "starHorseEditing": "no",\n' +
+                '                "xh": 2\n' +
+                "            },\n" +
+                "            {\n" +
+                '                "isolationCode": "1",\n' +
+                '                "isolationName": "default",\n' +
+                '                "paramName": "DataType",\n' +
+                '                "xh": 3\n' +
+                "            }\n" +
+                "        ],\n" +
+                '        "isolationType": "role"\n' +
+                "    },\n" +
+                '    "protocol": "http",\n' +
+                '    "proxyUrl": "/system-config/redirect/apiLinkage",\n' +
+                '    "redirect": true,\n' +
+                '    "requestParams": [],\n' +
+                '    "requestParamsDefaultValue": [\n' +
+                "        {\n" +
+                '            "valueType": "static"\n' +
+                "        },\n" +
+                "        {\n" +
+                '            "valueType": "static"\n' +
+                "        }\n" +
+                "    ],\n" +
+                '    "responseTemplate": "result_data_list"\n' +
+                "};\n" +
+                ' params["formData"]=formData;\n' +
+                'postRequest("/system-config/redirect/apiLinkage",params).then((response)=>{\n' +
+                "    const result = response?.data;\n" +
+                "            if (result?.code) {\n" +
+                "                warning(result.cnMessage);\n" +
+                "                return;\n" +
+                "            }\n" +
+                "            const data = result?.data;\n" +
+                "            if (data) {\n" +
+                "                for (let key in data) {\n" +
+                '                    if ("_value" != key) {\n' +
+                "                        formData[key] = data[key];\n" +
+                "                    }\n" +
+                "                }\n" +
+                "            }\n" +
+                "});",
+            },
+          },
+        ],
       },
       fieldName: "fieldSh6Cd03",
       formVisible: true,
@@ -477,6 +476,8 @@ onActivated(() => {});
           view: 'view',
           add: 'add',
           edit: 'edit',
+          export: 'export',
+          download: 'download',
         }"
         :compUrl="dataUrl"
         :dataFormat="dataFormat"

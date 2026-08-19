@@ -9,7 +9,7 @@
   >
     <!-- PC 端：保留原生 el-transfer -->
     <el-transfer
-      v-if="!isMobile"
+      v-if="!isMobile && source != 3"
       :fid="field?.preps['name']"
       v-bind="prepsFilter(field.preps)"
       :props="transferProps"

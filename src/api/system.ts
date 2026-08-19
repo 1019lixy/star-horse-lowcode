@@ -108,24 +108,6 @@ const selectType: Array<string> = [
   "dialog-input",
   "page-select",
 ];
-const dateType: Array<string> = [
-  "year",
-  "years",
-  "month",
-  "months",
-  "date",
-  "dates",
-  "datetime",
-  "week",
-  "datetimerange",
-  "daterange",
-  "monthrange",
-  "yearrange",
-  "time",
-  "time-picker",
-  "timerange",
-];
-
 // dateCompList 专用：仅包含应路由到 datetime-item 的日期类型
 // time / time-picker / timerange 有独立组件，不应路由到 datetime-item
 const dateCompType: Array<string> = [
@@ -180,6 +162,15 @@ export function fieldPlaceholder(item: any, itemType: string, source?: number) {
   item.preps["clearable"] = item.preps["clearable"] ?? true;
   item.preps["readonly"] = item?.readonly || item.preps["readonly"] || false;
   const label = item.label ?? "";
+
+  if (item.preps["noPlaceholder"] || source == 3) {
+    delete item.preps["placeholder"];
+    delete item.preps["startPlaceholder"];
+    delete item.preps["endPlaceholder"];
+    delete item.preps["minPlaceholder"];
+    delete item.preps["maxPlaceholder"];
+    return;
+  }
   if (inputType.includes(itemType)) {
     item.preps["placeholder"] =
       item.preps["placeholder"]?.trim() || i18n("api.pleaseInput") + label;
@@ -206,15 +197,6 @@ export function fieldPlaceholder(item: any, itemType: string, source?: number) {
       item.preps["minPlaceholder"]?.trim() || i18n("api.pleaseInputMinValue");
     item.preps["maxPlaceholder"] =
       item.preps["maxPlaceholder"]?.trim() || i18n("api.pleaseInputMaxValue");
-  }
-  if (item.preps["noPlaceholder"] || source == 3) {
-    console.log(item.preps["placeholder"]);
-    delete item.preps["placeholder"];
-    delete item.preps["startPlaceholder"];
-    delete item.preps["endPlaceholder"];
-    delete item.preps["minPlaceholder"];
-    delete item.preps["maxPlaceholder"];
-    return;
   }
 }
 
@@ -321,7 +303,7 @@ export function compKey(
 ) {
   let name = "";
   if (item) {
-    name = item.id || item.fieldName || item.tabName;
+    name = item.id || item.fieldName || item.subTablePrimaryKey;
   }
   return (
     (prefix ?? "") +
@@ -358,7 +340,6 @@ const handleEvent = (eventName: string, e: any, recall?: Function) => {
   if (eventName.includes(".")) {
     const modifier = eventName.split(".")[1];
     if (modifier == e.key.toLowerCase()) {
-      console.log("成功触发事件:", eventName);
       recall && recall(modifier); // 传递完整事件名称
     }
   } else {
@@ -377,7 +358,6 @@ export const baseRelationEvent = (
   actionName: string,
 ) => {
   return function handler(e: Event) {
-    console.log("baseRelationEvent2", actionName, formData);
     return handleEvent(actionName, e, (tempName) => {
       relationEventDispatcher(props, relation, e, formData, tempName);
     });

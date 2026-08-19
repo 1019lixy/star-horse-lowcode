@@ -1,31 +1,31 @@
 <template>
   <starhorse-form-item
-      :showFormItem="showFormItem"
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :field="field"
-      :parentField="parentField"
+    :showFormItem="showFormItem"
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :bareFlag="bareFlag"
+    :field="field"
+    :parentField="parentField"
   >
     <!-- PC 端：保持原逻辑 -->
     <el-cascader
-        v-if="!isSeparate"
-        :fid="field.fieldName"
-        v-bind="prepsFilter(field.preps)"
-        :options="field.preps?.options ?? areaData"
-        :disabled="checkIsDisabled(props)"
-        v-on="getDynamicEvents(props, itemAction, formData)"
-        v-model="formData[field.fieldName]"
+      v-if="!isSeparate"
+      :fid="field.fieldName"
+      v-bind="prepsFilter(field.preps)"
+      :options="field.preps?.options ?? areaData"
+      :disabled="checkIsDisabled(props)"
+      v-on="getDynamicEvents(props, itemAction, formData)"
+      v-model="formData[field.fieldName]"
     />
 
     <!-- APP 端分离模式：只读输入框 + 抽屉内 el-cascader-panel -->
     <template v-else>
       <el-input
-          :model-value="displayText"
-          :placeholder="field.preps?.placeholder"
-          :disabled="checkIsDisabled(props)"
-          readonly
-          @click="openPicker"
+        :model-value="displayText"
+        :placeholder="field.preps?.placeholder"
+        :disabled="checkIsDisabled(props)"
+        readonly
+        @click="openPicker"
       >
         <template #suffix>
           <star-horse-icon icon-class="arrow-down" />
@@ -33,23 +33,23 @@
       </el-input>
 
       <ShMobilePicker
-          v-if="isSeparate && pickerVisible"
-          v-model="pickerVisible"
-          :title="title"
-          :placement="placement"
-          :size="size"
-          :show-footer="false"
-          @confirm="handleConfirm"
-          @cancel="handleCancel"
+        v-if="isSeparate && pickerVisible"
+        v-model="pickerVisible"
+        :title="title"
+        :placement="placement"
+        :size="size"
+        :show-footer="false"
+        @confirm="handleConfirm"
+        @cancel="handleCancel"
       >
         <div class="cascade-mobile-panel">
           <!-- 搜索框 -->
           <div class="cascade-mobile-panel__search">
             <el-input
-                v-model="searchKeyword"
-                :placeholder="i18n('datapicker.enterKeywords')"
-                clearable
-                size="default"
+              v-model="searchKeyword"
+              :placeholder="i18n('datapicker.enterKeywords')"
+              clearable
+              size="default"
             >
               <template #suffix>
                 <star-horse-icon icon-class="search" />
@@ -58,29 +58,42 @@
           </div>
 
           <!-- 搜索结果列表 -->
-          <div v-if="searchKeyword && searchResults.length > 0" class="cascade-mobile-panel__results">
+          <div
+            v-if="searchKeyword && searchResults.length > 0"
+            class="cascade-mobile-panel__results"
+          >
             <div
-                v-for="(item, idx) in searchResults"
-                :key="idx"
-                class="cascade-mobile-panel__result-item"
-                @click="selectSearchResult(item)"
+              v-for="(item, idx) in searchResults"
+              :key="idx"
+              class="cascade-mobile-panel__result-item"
+              @click="selectSearchResult(item)"
             >
-              <span class="cascade-mobile-panel__result-path">{{ item.pathLabels.join(' / ') }}</span>
-              <el-icon v-if="item.checked" class="cascade-mobile-panel__result-check"><Check /></el-icon>
+              <span class="cascade-mobile-panel__result-path">{{
+                item.pathLabels.join(" / ")
+              }}</span>
+              <el-icon
+                v-if="item.checked"
+                class="cascade-mobile-panel__result-check"
+              >
+                <Check />
+              </el-icon>
             </div>
           </div>
-          <div v-else-if="searchKeyword && searchResults.length === 0" class="cascade-mobile-panel__empty">
-            {{ i18n('pivot.empty.noData') || '暂无数据' }}
+          <div
+            v-else-if="searchKeyword && searchResults.length === 0"
+            class="cascade-mobile-panel__empty"
+          >
+            {{ i18n("pivot.empty.noData") || "暂无数据" }}
           </div>
 
           <!-- 级联面板 -->
           <el-cascader-panel
-              v-show="!searchKeyword"
-              ref="cascaderPanelRef"
-              :key="panelKey"
-              v-bind="cascaderPanelProps"
-              v-model="panelValue"
-              :options="field.preps?.options ?? areaData"
+            v-show="!searchKeyword"
+            ref="cascaderPanelRef"
+            :key="panelKey"
+            v-bind="cascaderPanelProps"
+            v-model="panelValue"
+            :options="field.preps?.options ?? areaData"
           />
         </div>
       </ShMobilePicker>
@@ -103,6 +116,7 @@ import { ItemPreps } from "@/components/types/ItemPreps";
 import { i18n } from "@/lang";
 import { useMobilePicker } from "@/components/formcomp/utils/useMobilePicker";
 import ShMobilePicker from "@/components/formcomp/utils/ShMobilePicker.vue";
+
 defineOptions({
   name: "cascadeItem",
 });
@@ -145,8 +159,14 @@ const searchKeyword = ref("");
 
 // 字段名配置
 const fieldConfig = computed(() => ({
-  label: props.field.preps?.props?.label || props.field.preps?.displayName || "label",
-  value: props.field.preps?.props?.value || props.field.preps?.displayValue || "value",
+  label:
+    props.field.preps?.props?.label ||
+    props.field.preps?.displayName ||
+    "label",
+  value:
+    props.field.preps?.props?.value ||
+    props.field.preps?.displayValue ||
+    "value",
   children: props.field.preps?.props?.children || "children",
 }));
 
@@ -163,7 +183,12 @@ const flatNodes = computed<FlatNode[]>(() => {
   const options = props.field.preps?.options ?? areaData.value ?? [];
   const result: FlatNode[] = [];
 
-  const walk = (nodes: any[], parentValues: any[], parentLabels: string[], parentNodes: any[]) => {
+  const walk = (
+    nodes: any[],
+    parentValues: any[],
+    parentLabels: string[],
+    parentNodes: any[],
+  ) => {
     if (!nodes || !nodes.length) return;
     for (const node of nodes) {
       const curValues = [...parentValues, node[vf]];
@@ -245,13 +270,13 @@ const cascaderPanelProps = computed(() => {
 function normalizeToValuePath(savedVal: any[]): any[] {
   if (!savedVal.length) return [];
   const valueField =
-      props.field.preps?.props?.value ||
-      props.field.preps?.displayValue ||
-      "value";
+    props.field.preps?.props?.value ||
+    props.field.preps?.displayValue ||
+    "value";
   const displayField =
-      props.field.preps?.props?.label ||
-      props.field.preps?.displayName ||
-      "label";
+    props.field.preps?.props?.label ||
+    props.field.preps?.displayName ||
+    "label";
   const childrenField = props.field.preps?.props?.children || "children";
   const options = props.field.preps?.options ?? areaData.value ?? [];
 
@@ -279,7 +304,7 @@ function normalizeToValuePath(savedVal: any[]): any[] {
   let allMatchedAsLabel = true;
   for (const v of savedVal) {
     const byLabel = currentLevel.find(
-        (n: any) => n[displayField] === v || n[valueField] === v,
+      (n: any) => n[displayField] === v || n[valueField] === v,
     );
     if (byLabel) {
       labelResult.push(byLabel[valueField]);
@@ -327,13 +352,13 @@ const displayText = computed(() => {
   }
 
   const displayField =
-      props.field.preps?.props?.label ||
-      props.field.preps?.displayName ||
-      "label";
+    props.field.preps?.props?.label ||
+    props.field.preps?.displayName ||
+    "label";
   const valueField =
-      props.field.preps?.props?.value ||
-      props.field.preps?.displayValue ||
-      "value";
+    props.field.preps?.props?.value ||
+    props.field.preps?.displayValue ||
+    "value";
   const childrenField = props.field.preps?.props?.children || "children";
   const options = props.field.preps?.options ?? areaData.value ?? [];
 
@@ -342,7 +367,7 @@ const displayText = computed(() => {
     let currentLevel: any[] = options;
     for (const v of path) {
       const found = currentLevel.find(
-          (node: any) => node[valueField] === v || node[displayField] === v,
+        (node: any) => node[valueField] === v || node[displayField] === v,
       );
       if (found) {
         labels.push(found[displayField]);
@@ -355,9 +380,7 @@ const displayText = computed(() => {
     return labels;
   };
 
-  return paths
-      .map((path) => findLabels(path).join(" / "))
-      .join(", ");
+  return paths.map((path) => findLabels(path).join(" / ")).join(", ");
 });
 
 // 确认：通过 ref 调用 getCheckedNodes() 直接获取选中的 value 和 label 路径

@@ -35,9 +35,9 @@ const tableFieldList = reactive<PageFieldInfo>({
       collapseList: [
         {
           title: "高级设置",
-          tabName: "row1",
+          subTablePrimaryKey: "row1",
           subFormFlag: "N",
-          objectName: "advancedSetting",
+          subTableName: "advancedSetting",
           fieldList: [
             [
               {
@@ -66,9 +66,9 @@ const tableFieldList = reactive<PageFieldInfo>({
         },
         {
           title: "运行结果通知",
-          tabName: "result",
+          subTablePrimaryKey: "result",
           subFormFlag: "Y",
-          objectName: "resultReport",
+          subTableName: "resultReport",
           fieldList: [
             [
               {
@@ -200,7 +200,7 @@ const tableFieldList = reactive<PageFieldInfo>({
       ],
     },
   ],
-  batchFieldList: [],
+  containerFields: [],
 });
 const primaryKey = "idAreainfo";
 const areainfoRef = ref();

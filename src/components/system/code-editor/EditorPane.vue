@@ -27,17 +27,16 @@ interface EditorPaneApi {
   canCloseGroup: (gid: string) => boolean;
   moveTabToGroup: (gid: string, tabId: string, dir: "next" | "prev") => void;
   // Editor lifecycle
-  editorReady: (gid: string, editor: monaco.editor.IStandaloneCodeEditor) => void;
+  editorReady: (
+    gid: string,
+    editor: monaco.editor.IStandaloneCodeEditor,
+  ) => void;
   editorFocus: (gid: string) => void;
   editorDispose: (gid: string) => void;
   editorCursorChange: (gid: string, line: number, col: number) => void;
   editorContentChange: (gid: string, tabId: string, content: string) => void;
   // Drop handling
-  handleDrop: (
-    toGid: string,
-    payload: TabDragPayload,
-    zone: DropZone,
-  ) => void;
+  handleDrop: (toGid: string, payload: TabDragPayload, zone: DropZone) => void;
   // Model access
   getModel: (tabId: string) => monaco.editor.ITextModel | undefined;
   // Settings
@@ -134,7 +133,11 @@ const initEditor = async () => {
   api.editorReady(props.groupId, editor);
 
   editor.onDidChangeCursorPosition((e) => {
-    api.editorCursorChange(props.groupId, e.position.lineNumber, e.position.column);
+    api.editorCursorChange(
+      props.groupId,
+      e.position.lineNumber,
+      e.position.column,
+    );
   });
 
   editor.onDidChangeModelContent(() => {
@@ -417,42 +420,23 @@ onBeforeUnmount(() => {
     </div>
 
     <!-- Monaco 编辑器容器 -->
-    <div
-      ref="editorContainer"
-      class="pane-monaco"
-      v-show="hasTabs"
-    />
+    <div ref="editorContainer" class="pane-monaco" v-show="hasTabs" />
 
     <!-- 拖拽 drop zones 覆盖层 -->
     <template v-if="isDragging && currentDropZone">
-      <div
-        v-if="currentDropZone === 'left'"
-        class="drop-overlay drop-left"
-      >
+      <div v-if="currentDropZone === 'left'" class="drop-overlay drop-left">
         <span>{{ i18n("ide.split.dropLeft") }}</span>
       </div>
-      <div
-        v-if="currentDropZone === 'right'"
-        class="drop-overlay drop-right"
-      >
+      <div v-if="currentDropZone === 'right'" class="drop-overlay drop-right">
         <span>{{ i18n("ide.split.dropRight") }}</span>
       </div>
-      <div
-        v-if="currentDropZone === 'top'"
-        class="drop-overlay drop-top"
-      >
+      <div v-if="currentDropZone === 'top'" class="drop-overlay drop-top">
         <span>{{ i18n("ide.split.dropTop") }}</span>
       </div>
-      <div
-        v-if="currentDropZone === 'bottom'"
-        class="drop-overlay drop-bottom"
-      >
+      <div v-if="currentDropZone === 'bottom'" class="drop-overlay drop-bottom">
         <span>{{ i18n("ide.split.dropBottom") }}</span>
       </div>
-      <div
-        v-if="currentDropZone === 'center'"
-        class="drop-overlay drop-center"
-      >
+      <div v-if="currentDropZone === 'center'" class="drop-overlay drop-center">
         <span>{{ i18n("ide.split.dropCenter") }}</span>
       </div>
     </template>
@@ -460,7 +444,16 @@ onBeforeUnmount(() => {
     <!-- 空状态 -->
     <div v-if="!hasTabs" class="pane-empty">
       <div class="pane-empty-icon">
-        <svg viewBox="0 0 100 100" width="60" height="60" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <svg
+          viewBox="0 0 100 100"
+          width="60"
+          height="60"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="3"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
           <polyline points="30,25 15,50 30,75" />
           <polyline points="70,25 85,50 70,75" />
           <line x1="55" y1="20" x2="45" y2="80" />
@@ -469,14 +462,34 @@ onBeforeUnmount(() => {
       <p>{{ i18n("ide.welcome.hint") }}</p>
       <div class="pane-empty-actions">
         <button class="pane-action-link" @click="handleSplit('right')">
-          <svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor" style="vertical-align: middle; margin-right: 4px;">
-            <path d="M1.75 1A1.75 1.75 0 0 0 0 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0 0 16 13.25V2.75A1.75 1.75 0 0 0 14.25 1H1.75zm0 1.5h5.375v11H1.75a.25.25 0 0 1-.25-.25V2.75a.25.25 0 0 1 .25-.25zm6.875 11v-11h5.625a.25.25 0 0 1 .25.25v10.5a.25.25 0 0 1-.25.25H8.625z" />
+          <svg
+            viewBox="0 0 16 16"
+            width="12"
+            height="12"
+            fill="currentColor"
+            style="vertical-align: middle; margin-right: 4px"
+          >
+            <path
+              d="M1.75 1A1.75 1.75 0 0 0 0 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0 0 16 13.25V2.75A1.75 1.75 0 0 0 14.25 1H1.75zm0 1.5h5.375v11H1.75a.25.25 0 0 1-.25-.25V2.75a.25.25 0 0 1 .25-.25zm6.875 11v-11h5.625a.25.25 0 0 1 .25.25v10.5a.25.25 0 0 1-.25.25H8.625z"
+            />
           </svg>
           {{ i18n("ide.ctx.splitRight") }}
         </button>
-        <button v-if="canClose" class="pane-action-link" @click="handleCloseGroup">
-          <svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor" style="vertical-align: middle; margin-right: 4px;">
-            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+        <button
+          v-if="canClose"
+          class="pane-action-link"
+          @click="handleCloseGroup"
+        >
+          <svg
+            viewBox="0 0 16 16"
+            width="12"
+            height="12"
+            fill="currentColor"
+            style="vertical-align: middle; margin-right: 4px"
+          >
+            <path
+              d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"
+            />
           </svg>
           {{ i18n("ide.ctx.closeGroup") }}
         </button>
@@ -501,6 +514,7 @@ onBeforeUnmount(() => {
     .pane-tabbar {
       opacity: 0.7;
     }
+
     .pane-breadcrumb {
       opacity: 0.7;
     }
@@ -525,6 +539,7 @@ onBeforeUnmount(() => {
   &::-webkit-scrollbar {
     height: 3px;
   }
+
   &::-webkit-scrollbar-thumb {
     background: var(--ide-scrollbar, #4e4e4e);
     border-radius: 2px;
@@ -551,13 +566,16 @@ onBeforeUnmount(() => {
     background: var(--ide-tab-active-bg, #1e1e1e);
     border-top: 2px solid var(--ide-accent, #007acc);
   }
+
   &:hover {
     background: var(--ide-bg-hover, #2a2d2e);
   }
+
   // 拖拽视觉反馈
   &[draggable="true"] {
     cursor: grab;
   }
+
   &[draggable="true"]:active {
     cursor: grabbing;
   }
@@ -773,24 +791,28 @@ onBeforeUnmount(() => {
   bottom: 4px;
   width: calc(50% - 6px);
 }
+
 .drop-right {
   right: 4px;
   top: 4px;
   bottom: 4px;
   width: calc(50% - 6px);
 }
+
 .drop-top {
   left: 4px;
   right: 4px;
   top: 4px;
   height: calc(50% - 6px);
 }
+
 .drop-bottom {
   left: 4px;
   right: 4px;
   bottom: 4px;
   height: calc(50% - 6px);
 }
+
 .drop-center {
   left: 25%;
   right: 25%;

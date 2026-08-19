@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, computed, watch, nextTick } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 import type { FileNode } from "./types";
-import { getFileIcon, FOLDER_ICONS } from "./constants";
+import { FOLDER_ICONS, getFileIcon } from "./constants";
 import { i18n } from "@/lang/index";
 
 const props = defineProps<{
@@ -284,20 +284,25 @@ export default { name: "FileTreeNode" };
   font-size: 13px;
   user-select: none;
   transition: background 0.1s;
+
   &:hover {
     background: var(--ide-bg-hover);
   }
+
   &.tree-active {
     background: color-mix(in srgb, var(--ide-accent) 25%, transparent);
   }
+
   &.tree-editing {
     padding-top: 1px;
     padding-bottom: 1px;
     cursor: text;
   }
+
   &.tree-dragging {
     opacity: 0.4;
   }
+
   &.tree-drop-target {
     background: color-mix(
       in srgb,
@@ -307,12 +312,14 @@ export default { name: "FileTreeNode" };
     outline: 1px dashed var(--ide-accent);
     outline-offset: -1px;
   }
+
   &.locate-highlight {
     animation: locate-flash 1.5s ease-out;
     outline: 1px solid var(--ide-accent);
     outline-offset: -1px;
   }
 }
+
 @keyframes locate-flash {
   0% {
     background: color-mix(in srgb, var(--ide-accent) 50%, transparent);
@@ -321,6 +328,7 @@ export default { name: "FileTreeNode" };
     background: transparent;
   }
 }
+
 .tree-arrow {
   display: inline-block;
   width: 16px;
@@ -329,15 +337,18 @@ export default { name: "FileTreeNode" };
   transition: transform 0.15s;
   color: var(--ide-fg-dim);
   flex-shrink: 0;
+
   &.expanded {
     transform: rotate(90deg);
   }
 }
+
 .tree-icon {
   margin-right: 4px;
   font-size: 14px;
   flex-shrink: 0;
 }
+
 .tree-name {
   margin-left: 4px;
   overflow: hidden;
@@ -374,6 +385,7 @@ export default { name: "FileTreeNode" };
   border: 1px solid var(--ide-accent);
   border-radius: 2px;
   outline: none;
+
   &::placeholder {
     color: var(--ide-fg-dim);
   }

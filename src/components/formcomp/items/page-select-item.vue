@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { nextTick, onMounted, ref, shallowRef, watch, computed } from "vue";
+import { computed, nextTick, onMounted, ref, shallowRef, watch } from "vue";
 import { PageProps } from "@/components/types/PageProps";
 import { closeLoad, createCondition, load } from "@/api/star_horse_utils";
 import { postRequest } from "@/api/star_horse_apis";
@@ -22,9 +22,7 @@ import { SearchFields } from "@/components/types";
 
 import { ItemPreps } from "@/components/types/ItemPreps";
 import { i18n } from "@/lang";
-import {
-  useMobilePicker,
-} from "@/components/formcomp/utils/useMobilePicker";
+import { useMobilePicker } from "@/components/formcomp/utils/useMobilePicker";
 import ShMobilePicker from "@/components/formcomp/utils/ShMobilePicker.vue";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
@@ -429,7 +427,6 @@ onMounted(async () => {
               :stripe="true"
               :row-key="getRowIdentity"
               :fit="true"
-
               max-height="250px"
               :highlight-current-row="true"
               :header-cell-style="{
@@ -476,7 +473,6 @@ onMounted(async () => {
       </template>
       <template #footer>
         <el-pagination
-
           :total="pageInfo.totalData"
           @current-change="pageChangeClick"
           @size-change="pageSizeClick"
@@ -524,7 +520,10 @@ onMounted(async () => {
           </div>
 
           <!-- 数据表格 -->
-          <el-scrollbar tag="div" class="sh-mobile-page-select-panel__table-scroll">
+          <el-scrollbar
+            tag="div"
+            class="sh-mobile-page-select-panel__table-scroll"
+          >
             <el-table
               ref="starHorseTableCompRef"
               :data="pageInfo.dataList"

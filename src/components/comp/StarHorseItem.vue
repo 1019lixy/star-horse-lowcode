@@ -1,5 +1,5 @@
 <script setup lang="ts" name="StarHorseItem">
-import { computed, inject, isRef, ModelRef, onMounted, PropType, ref } from "vue";
+import { computed, inject, isRef, ModelRef, onMounted, ref } from "vue";
 import {
   compKey,
   dateCompList,
@@ -12,22 +12,30 @@ import { checkVisible, filterProperties } from "@/api/form_utils";
 import Help from "@/components/help.vue";
 import { getSelfOperationStore } from "@/store/StoreManager";
 
-const props = defineProps({
-  item: { type: Object as PropType<any>, required: true },
-  column: { type: Object as PropType<any> },
-  primaryKey: { type: Object as PropType<any> },
-  // 数据索引
-  dataIndex: { type: Number, default: -1 },
-  bareFlag: { type: Boolean, default: false },
-  batchName: { type: String, default: "" },
-  compSize: { type: String, default: "default" },
-  showLabel: { type: Boolean, default: true }, //是否显示标签
-  source: { type: Number, default: 1 },
-  commonFormat: {
-    type: Function,
-    default: () => {},
+const props = withDefaults(
+  defineProps<{
+    item: any;
+    column?: any;
+    primaryKey?: string | number | Record<string, any>;
+    dataIndex?: number;
+    bareFlag?: boolean;
+    subTableName?: string;
+    compSize?: string;
+    showLabel?: boolean;
+    source?: number;
+    commonFormat?: Function;
+    dialogType?: "dialog" | "drawer";
+  }>(),
+  {
+    dataIndex: -1,
+    bareFlag: false,
+    subTableName: "",
+    compSize: "default",
+    showLabel: true,
+    source: 1,
+    commonFormat: () => {},
   },
-});
+);
 const dataForm: ModelRef<any> = defineModel("dataForm");
 
 const itemType = computed(() => {
@@ -143,17 +151,19 @@ const compPreps = () => {
     let fieldName = props.item.fieldName;
     // 兼容 formFields 为 ref(shallowRef) 的情况,统一取 .value 操作
     // formFields.value 可能为 null/undefined(初始化未完成),此时跳过注册
-    const formFieldsArr: any = isRef(formFields) ? formFields.value : formFields;
+    const formFieldsArr: any = isRef(formFields)
+      ? formFields.value
+      : formFields;
     if (!Array.isArray(formFieldsArr)) return;
     //如果数据来源于列表
-    if (props.batchName) {
-      let batchFields = formFieldsArr[props.batchName];
+    if (props.subTableName) {
+      let batchFields = formFieldsArr[props.subTableName];
       if (!batchFields) {
-        formFieldsArr[props.batchName] = [];
+        formFieldsArr[props.subTableName] = [];
       }
-      let row = formFieldsArr[props.batchName][dataForm.value["xh"] - 1];
+      let row = formFieldsArr[props.subTableName][dataForm.value["xh"] - 1];
       if (!row) {
-        formFieldsArr[props.batchName].push([]);
+        formFieldsArr[props.subTableName].push([]);
       } else {
         row.push(props.item);
       }
@@ -207,16 +217,7 @@ const checkClassName = () => {
     return "comp-info";
   }
 };
-const dataFormat = (item: any) => {
-  let name = props.item?.fieldName;
-  let val = "";
-  try {
-    val = dataForm.value?.[name];
-    return props.commonFormat(name, val, dataForm.value) ?? "--";
-  } catch (e) {
-    return val || "--";
-  }
-};
+
 onMounted(() => {
   init();
 });
@@ -243,6 +244,7 @@ onMounted(() => {
       ref="componentRef"
       :isSearch="source == 4"
       :bareFlag="bareFlag"
+      :dialogType="dialogType"
       :source="source"
       :field="item"
       v-model:formData="dataForm"
@@ -256,6 +258,7 @@ onMounted(() => {
         v-if="checkVisible(temp, dataForm)"
         :primaryKey="primaryKey"
         :compSize="compSize"
+        :dialogType="dialogType"
         v-model:dataForm="dataForm"
         :item="temp"
         :dataIndex="dataIndex"

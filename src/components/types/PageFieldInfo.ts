@@ -12,10 +12,6 @@ export declare interface TabFieldInfo {
    */
   title: string;
   /**
-   * TabName 定义每个Tab 的名字
-   */
-  tabName: string;
-  /**
    * 是否默认禁用
    */
   disabled?: boolean;
@@ -33,15 +29,25 @@ export declare interface TabFieldInfo {
    */
   tableFlag?: string;
   /**
-   * 子集合Key 名称，如果配置了此名字，所有tab 下组件的数据将存入该名字下
-   * 该属性的使用场景是 1对1 或者1 对多关系时，tab里组件是另外一个表的情况
+   * 表单子对象数据在 dataForm 中的 key,所有 tab 下组件的数据将存入该名字下
+   * 使用场景:1对1 或 1对多关系时,tab 里组件是另外一个表的情况
    * eg:{
-   *  objectName:{
+   *  subTableName:{
    *     xx:[]
    *     yy:{}
    * }}
+   * 仅用于前端数据嵌套,不参与后端关联表关系
    */
-  objectName?: string;
+  /**
+   * 子表主键名,后端关联表关系(RelationTablesPo.primaryKey)取此值
+   * 与 subTableName 配合,用于 1对1/1对多子表单的关联关系
+   */
+  subTablePrimaryKey?: string;
+  /**
+   * 子表表名,后端关联表关系(RelationTablesPo.tableName)取此值
+   * 与 subTablePrimaryKey 配合,用于 1对1/1对多子表单的关联关系
+   */
+  subTableName?: string;
   /**
    * 主键
    */
@@ -51,21 +57,16 @@ export declare interface TabFieldInfo {
    */
   fieldList: Array<FieldInfo>;
   /**
-   * 批量表单属性,该属性对应的数据默认是其它表的数据，
-   */
-  batchFieldList?: Array<BatchFieldInfo>;
+
+     * 统一容器字段(替代 batchFieldList),嵌套容器子项统一存于此
+     */
+  containerFields?: ContainerFieldInfo[];
   //属性
   preps?: Record<string, any>;
   /**
    * 当subFormFlag为Y是映射关系 1 表示1对一，n表示1 对多,默认1
    */
   mapping?: "1" | "n";
-}
-
-/**
- * Card 容器信息
- */
-export declare interface CardFieldInfo extends TabFieldInfo {
   /**
    * 头部右侧组件信息
    */
@@ -73,19 +74,25 @@ export declare interface CardFieldInfo extends TabFieldInfo {
 }
 
 /**
- * Collapse 容器信息
+ * 统一容器项结构(替代 TabFieldInfo/BatchFieldInfo 的容器场景)
+ * 公共属性全部对齐到顶层,差异化属性全部下沉到 preps
+ * containerType 标识容器类别,新增容器类型无需改本接口
  */
-export declare interface CollapseFieldInfo extends TabFieldInfo {}
-
-/**
- * AppList App容器信息,专门处理有表单在app 中有主子表的情况
- */
-export declare interface AppFieldInfo extends TabFieldInfo {}
-
-/**
- * Splitter 容器信息
- */
-export declare interface SplitterFieldInfo extends TabFieldInfo {}
+export declare interface ContainerFieldInfo extends Omit<
+  TabFieldInfo,
+  "title" | "subTablePrimaryKey" | "subFormFlag" | "primaryKey"
+> {
+  /**
+   * 容器类型标识: tab|card|collapse|splitter|step|dialog|drawer|descriptions|fieldset|app|dytable|table|box|condition|anchor
+   * 与 containerFields 配合,所有容器数据统一存于 containerFields
+   * anchor 为锚点导航容器,支持 anchorItem 独立配置(anchorTitle/anchorHref/anchorIcon/anchorDisabled)
+   */
+  containerType?: string;
+  title?: string;
+  subTablePrimaryKey?: string;
+  subFormFlag?: string;
+  primaryKey?: string | Array<any>;
+}
 
 /**
  * 表单属性
@@ -166,36 +173,21 @@ export declare interface FieldInfo {
    */
   editDisabled?: boolean;
   /**
-   * Tab容器数据
+   * 容器类型,标识该字段作为容器组件渲染时的类型
+   * 取值如:tab/card/collapse/splitter/step/dialog/drawer/descriptions/fieldset/app 等
+   * StarHorseItem 依据此属性解析对应容器组件,后续新增容器类型无需再修改 FieldInfo 定义
    */
-  tabList?: TabFieldInfo[];
+  containerType?: string;
   /**
-   * 专门处理app
+   * 统一容器字段(替代 dytableList/batchFieldList),与 containerType 配合
+   * 所有容器(tab/card/collapse/splitter/step/dialog/drawer/descriptions/fieldset/app/dytable/table)数据统一存于此
+   * 新增容器类型无需新增属性,差异化属性放 preps
    */
-  appList?: AppFieldInfo[];
+  containerFields?: ContainerFieldInfo[];
   /**
-   * Card 容器数据
-   */
-  cardList?: CardFieldInfo[];
-  /**
-   * 折叠容器(collapse)数据
-   */
-  collapseList?: CollapseFieldInfo[];
-  /**
-   * 分栏容器(splitter)数据
-   */
-  splitterList?: SplitterFieldInfo[];
-  /**
-   * 传统table布局表单，对应动态表格(dytable)容器
-   */
-  dytableList?: FieldInfo[];
-  /**
-   * 列表属性，对应动态列表（table) 容器
-   */
-  batchFieldList?: BatchFieldInfo[];
-  /**
-   * 默认值，在重置表单时，自动填充默认值，自定义重置表单时失效
-   */
+
+     * 默认值，在重置表单时，自动填充默认值，自定义重置表单时失效
+     */
   defaultValue?: any;
   /**
    * 事件内容
@@ -415,7 +407,7 @@ export declare interface SubFieldInfo {
   /**
    * 对应后端dto 里的Object/Map属性名称
    */
-  objectName: string;
+  subTableName: string;
   /**
    * 主键名称，对应后端dto Object/Map泛型对象的主键名称
    */
@@ -432,66 +424,29 @@ export declare interface SubFieldInfo {
 }
 
 /**
- * 批量表单
+
+ * dytable 容器特有属性(存于 ContainerFieldInfo.preps,containerType='dytable')
+ * 方便查看该容器支持的参数
  */
-export declare interface BatchFieldInfo {
-  /**
-   * 对应后端dto 里的List属性名称
-   */
-  batchName: string;
-  /**
-   * 是否禁用
-   */
-  disabled?: string;
-  /**
-   * 禁止显示
-   */
-  disVisible?: boolean;
-  /**
-   * 列表标题
-   */
-  title?: string;
-  /**
-   * 帮助提示
-   */
-  helpMsg?: string;
-  /**
-   * 默认初始化行数
-   */
+export declare interface DytablePreps {
+  showLineNumber?: boolean;
+  allowResize?: boolean;
+  styles?: { width?: string; height?: string; overflow?: string };
+}
+
+/**
+ * table 容器特有属性(存于 ContainerFieldInfo.preps,containerType='table')
+ * 由原 BatchFieldInfo 差异属性迁移而来,方便查看该容器支持的参数
+ */
+export declare interface BatchTablePreps {
   initRows?: number;
-  /**
-   * 主键名称，对应后端dto List泛型对象的主键名称
-   */
-  primaryKey?: string;
-  /**
-   * 新增行时默认添加的属性
-   */
   batchDefaultData?: any;
-  /**
-   * 字段属性
-   */
-  fieldList: Array<FieldInfo> | any;
-  /**
-   * 当前组件接口
-   */
   compUrl?: ApiUrls;
-  /**
-   * 导入数据
-   */
   importInfo?: ImportInfo;
-  /**
-   * 是否静态数据 Y 是 N 否
-   */
   staticData?: string;
-  /**
-   * batchFieldList 和fieldList 是否同一个表，组件会根据这个字段校验数据是一对多关系
-   * 还是单表的批量处理
-   */
-  subFormFlag?: string | boolean;
-  /**
-   * 表单标识，如果需要作为form表单显示，则需要将该属性设置为Y
-   */
   formFlag?: string;
+  disVisible?: boolean;
+  helpMsg?: string;
 }
 
 /**
@@ -501,22 +456,15 @@ export declare interface PageFieldInfo {
   /**
    * 表单属性
    */
-  fieldList?: Array<FieldInfo> | any;
+  fieldList?: FieldInfo[] | any;
   /**
-   * 批量表单属性
-   * 对象格式的数据{} 数据格式为{
-   * tb1:{title:"xx",primaryKey:"xx",fieldList:[]},
-   * tb2:{title:"xx2",primaryKey:"xx2",fieldList:[]}
-   * }
-   * tb1 对应后端dto 里的List属性名称
-   * primaryKey 对应后端dto List泛型对象的主键名称
-   * fieldList 对应后端dto List泛型对象的属性
-   * 后面将废弃这种用法,此种用户没法保证动态表单设置的数据位置
+   * 统一容器字段(替代 batchFieldList),顶层容器子项统一存于此
    */
-  batchFieldList?: Array<BatchFieldInfo>;
+  containerFields?: ContainerFieldInfo[];
   /**
-   * 表格自定义方法
-   */
+
+     * 表格自定义方法
+     */
   userTableFuncs?: Array<UserFuncInfo>;
   /**
    * 是否阻止自动加载列表数据
@@ -537,7 +485,7 @@ export declare interface PageFieldInfo {
   /**
    * 表单有列表数据时,在提交后端是批量数据的Key名称
    */
-  batchName?: string;
+  subTableName?: string;
   /**
    * batchFieldList 和fieldList 是否同一个表，组件会根据这个字段校验数据是一对多关系
    * 还是单表的批量处理

@@ -3,8 +3,8 @@ import type {
   DropZone,
   EditorGroup,
   FileNode,
-  SplitSide,
   SplitNode,
+  SplitSide,
   TabInfo,
 } from "./types";
 import { detectLanguage } from "./constants";
@@ -47,11 +47,16 @@ export function useEditorGroups(opts?: {
   /** 深拷贝分屏树（用于触发响应式更新） */
   const cloneTree = (node: SplitNode): SplitNode => ({
     ...node,
-    children: node.children ? [cloneTree(node.children[0]), cloneTree(node.children[1])] : undefined,
+    children: node.children
+      ? [cloneTree(node.children[0]), cloneTree(node.children[1])]
+      : undefined,
   });
 
   /** 收集树中所有叶子节点（组ID） */
-  const collectLeafGroupIds = (node: SplitNode, out: string[] = []): string[] => {
+  const collectLeafGroupIds = (
+    node: SplitNode,
+    out: string[] = [],
+  ): string[] => {
     if (node.groupId) {
       out.push(node.groupId);
     } else if (node.children) {
@@ -323,7 +328,9 @@ export function useEditorGroups(opts?: {
     const parent = found.parent;
     if (!parent.children) return false;
     const sibling =
-      parent.children[0].groupId === gid ? parent.children[1] : parent.children[0];
+      parent.children[0].groupId === gid
+        ? parent.children[1]
+        : parent.children[0];
 
     // 把兄弟节点的内容提升到父节点位置
     parent.groupId = sibling.groupId;

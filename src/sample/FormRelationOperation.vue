@@ -16,10 +16,11 @@ const searchFormData = reactive<SearchFields>({
     createSearchField("区域编码", "areaCode", true, "lk"),
   ],
 });
-const batchFieldList = reactive<PageFieldInfo>({
-  batchFieldList: [
+const imageFieldList = reactive<PageFieldInfo>({
+  containerFields: [
     {
-      batchName: "imageInfo",
+      containerType: "table",
+      subTablePrimaryKey: "imageInfo",
       fieldList: [
         {
           fieldName: "imageType",
@@ -175,7 +176,7 @@ const tableFieldList = reactive<PageFieldInfo>({
       listVisible: true,
     },
   ],
-  batchFieldList: [],
+  containerFields: [],
 });
 const primaryKey = "idAreainfo";
 const areainfoRef = ref();
@@ -209,7 +210,7 @@ onMounted(() => {
         ref="areaFormRef"
         @refresh="areainfoRef?.loadByPage()"
         :compUrl="dataUrl"
-        :fieldList="batchFieldList"
+        :fieldList="imageFieldList"
         :rules="rules"
       />
     </star-horse-dialog>
@@ -236,7 +237,7 @@ onMounted(() => {
     <el-card class="inner_content">
       <star-horse-table-comp
         ref="areainfoRef"
-        :fieldList="batchFieldList"
+        :fieldList="imageFieldList"
         :btnPermissions="btnPermissions"
         :primaryKey="primaryKey"
         :compUrl="dataUrl"

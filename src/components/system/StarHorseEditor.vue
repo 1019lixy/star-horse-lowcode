@@ -1,5 +1,5 @@
 <script setup lang="ts" name="StarHorseEditor">
-import { nextTick, onMounted, PropType, ref, computed } from "vue";
+import { computed, nextTick, onMounted, PropType, ref } from "vue";
 import { basicSetup } from "codemirror";
 import { EditorView, keymap } from "@codemirror/view";
 import { Compartment } from "@codemirror/state";
@@ -33,7 +33,6 @@ import {
   clouds,
   dracula,
 } from "thememirror";
-import StarHorseSidebar from "@/components/system/StarHorseSidebar.vue";
 import { i18n } from "@/lang";
 import { ArrowDown } from "@element-plus/icons-vue";
 
@@ -460,26 +459,26 @@ defineExpose({
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item @click="changeFontSize(12)"
-                >12px</el-dropdown-item
-              >
+                >12px
+              </el-dropdown-item>
               <el-dropdown-item @click="changeFontSize(14)"
-                >14px</el-dropdown-item
-              >
+                >14px
+              </el-dropdown-item>
               <el-dropdown-item @click="changeFontSize(16)"
-                >16px</el-dropdown-item
-              >
+                >16px
+              </el-dropdown-item>
               <el-dropdown-item @click="changeFontSize(17)"
-                >17px</el-dropdown-item
-              >
+                >17px
+              </el-dropdown-item>
               <el-dropdown-item @click="changeFontSize(18)"
-                >18px</el-dropdown-item
-              >
+                >18px
+              </el-dropdown-item>
               <el-dropdown-item @click="changeFontSize(20)"
-                >20px</el-dropdown-item
-              >
+                >20px
+              </el-dropdown-item>
               <el-dropdown-item @click="changeFontSize(24)"
-                >24px</el-dropdown-item
-              >
+                >24px
+              </el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>

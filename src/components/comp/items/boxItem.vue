@@ -16,8 +16,8 @@ const props = withDefaults(defineProps<ContainerPreps>(), {
   propPrefix: "",
   parentPreps: {},
   subFormFlag: "N",
-  batchName: "batchDataList",
-  batchFieldName: "batchFieldList",
+  subTableName: "subDataList",
+
   compSize: "default",
   source: 1,
 });

@@ -72,12 +72,14 @@ const emit = defineEmits<{
   color: var(--ide-statusbar-fg);
   flex-shrink: 0;
 }
+
 .status-left,
 .status-right {
   display: flex;
   align-items: center;
   gap: 12px;
 }
+
 .status-item {
   display: flex;
   align-items: center;
@@ -85,35 +87,43 @@ const emit = defineEmits<{
   white-space: nowrap;
   cursor: default;
 }
+
 .status-dot {
   width: 7px;
   height: 7px;
   border-radius: 50%;
   display: inline-block;
 }
+
 .status-ok .status-dot {
   background: #52c41a;
   box-shadow: 0 0 4px #52c41a;
 }
+
 .status-err .status-dot {
   background: #ff4d4f;
 }
+
 .status-clickable {
   cursor: pointer;
   transition: background 0.15s;
   padding: 0 6px;
   border-radius: 3px;
+
   &:hover {
     background: var(--ide-statusbar-hover, rgba(255, 255, 255, 0.12));
   }
 }
+
 .status-console-active {
   background: var(--ide-statusbar-hover, rgba(255, 255, 255, 0.12));
 }
+
 .status-loading,
 .status-saving {
   animation: pulse 1.2s ease-in-out infinite;
 }
+
 @keyframes pulse {
   0%,
   100% {

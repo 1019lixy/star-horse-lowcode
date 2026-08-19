@@ -4,9 +4,8 @@ import { useGlobalConfigStore } from "@/store/GlobalConfig";
 import { SelectOption } from "@/components/types";
 import piniaInstance from "@/store";
 import { useDark, useToggle, useVModel } from "@vueuse/core";
-import { Config } from "@/api/settings";
 import { i18n } from "@/lang";
-import { StarHorseIcon } from "@/components/comp";
+import StarHorseDrawer from "@/components/comp/StarHorseDrawer.vue";
 
 const props = withDefaults(
   defineProps<{
@@ -41,6 +40,10 @@ const showTypeList = ref<Array<SelectOption>>([
 const tableTypeList = ref<Array<SelectOption>>([
   { name: i18n("displayStyle.list"), value: "list" },
   { name: i18n("displayStyle.card"), value: "card" },
+]);
+const dialogTypeList = ref<Array<SelectOption>>([
+  { name: i18n("pageConfig.dialog"), value: "dialog" },
+  { name: i18n("pageConfig.drawer"), value: "drawer" },
 ]);
 // const pageStyleList: SelectOption[] = [
 //   {name: i18n("displayStyle.computer"), value: "pc"},
@@ -238,6 +241,7 @@ const resetDefault = () => {
     position: "left",
     menusCfg: "tradition",
     shortCutMenus: "Y",
+    dialogType: "dialog",
   };
   configStore.setConfigFormInfo(defaultConfig);
 };
@@ -264,264 +268,402 @@ defineExpose({
 });
 </script>
 <template>
-  <el-drawer
+  <star-horse-drawer
     v-model="visible"
     :direction="direction"
-    header-class="hstyle"
-    :close-on-click-modal="false"
-    :close-on-press-escape="false"
+    :title="title"
+    :selfFunc="true"
+    @merge="saveData"
+    @resetForm="resetDefault"
     :resizable="resizable"
   >
-    <template #header>
-      <h3>{{ title }}</h3>
-    </template>
-    <template #default>
-      <el-card class="inner_content">
-        <el-scrollbar height="100%" v-if="!hideDefaultConfig">
-          <el-form
-            class="page-config"
-            :model="configInfo"
-            :size="compSize"
-            label-position="top"
-          >
-            <slot name="header" :form="configInfo"></slot>
-            <!--            <el-divider content-position="left">
-                          {{i18n('pageConfig.pageStyle')}}
-                        </el-divider>
-                        <el-select v-model="configInfo.pageStyle" :options="pageStyleList" :props="{
-                          label:'name'
-                        }"/>-->
-            <el-divider content-position="left">
-              <el-form-item
-                prop="themeColor"
-                :label="i18n('pageConfig.color')"
-                :label-position="'left'"
-              >
-                <el-color-picker
-                  v-model="configInfo.themeColor"
-                  @change="changeOperation"
-                />
-              </el-form-item>
-            </el-divider>
-            <el-form-item
-              prop="themeColor"
-              :label="i18n('pageConfig.themeColor')"
-              style="height: 200px; width: 100%; overflow: auto"
-            >
-              <template v-for="item in classicsList">
-                <div class="theme-item" @click="classicsTheme(item.color)">
-                  <el-tag
-                    :color="item.color"
-                    style="margin-right: 8px"
-                    :size="Config.compSize"
-                  />
-                  <span>{{ item.name }}</span>
-                </div>
-              </template>
-            </el-form-item>
-            <el-divider content-position="left">
-              <h4>{{ i18n("pageConfig.sizeAndList") }}</h4>
-            </el-divider>
-            <el-row gutter="10">
-              <el-col :span="8">
-                <el-form-item
-                  prop="inputSize"
-                  :label="i18n('pageConfig.componentSize')"
-                >
-                  <el-select
-                    v-model="configInfo.inputSize"
-                    @change="changeOperation"
-                  >
-                    <el-option
-                      v-for="item in sizeList"
-                      :value="item.value"
-                      :label="item.name"
-                      :key="item.value"
-                    />
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item
-                  prop="buttonSize"
-                  :label="i18n('pageConfig.buttonSize')"
-                >
-                  <el-select
-                    v-model="configInfo.buttonSize"
-                    @change="changeOperation"
-                  >
-                    <el-option
-                      v-for="item in sizeList"
-                      :value="item.value"
-                      :label="item.name"
-                      :key="item.value"
-                    />
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item
-                  prop="tableType"
-                  :label="i18n('pageConfig.dataDisplay')"
-                >
-                  <el-select
-                    v-model="configInfo.tableType"
-                    @change="changeOperation"
-                  >
-                    <el-option
-                      v-for="item in tableTypeList"
-                      :value="item.value"
-                      :label="item.name"
-                      :key="item.value"
-                    />
-                  </el-select>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-divider content-position="left">
-              <h4>{{ i18n("pageConfig.menu") }}</h4>
-            </el-divider>
-            <el-row gutter="10">
-              <el-col :span="12">
-                <el-form-item
-                  prop="position"
-                  :label="i18n('pageConfig.menuPosition')"
-                >
-                  <el-radio-group
-                    v-model="configInfo.position"
-                    @change="changeOperation"
-                  >
-                    <el-radio :label="i18n('pageConfig.top')" value="top" />
-                    <el-radio :label="i18n('pageConfig.left')" value="left" />
-                    <el-radio :label="i18n('pageConfig.right')" value="right" />
-                  </el-radio-group>
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item
-                  prop="menusCfg"
-                  :label="i18n('pageConfig.menuStyle')"
-                >
-                  <el-radio-group
-                    v-model="configInfo.menusCfg"
-                    @change="changeOperation"
-                  >
-                    <el-radio
-                      :label="i18n('pageConfig.traditionalStyle')"
-                      value="tradition"
-                    />
-                    <el-radio
-                      :label="i18n('pageConfig.fixedWidth')"
-                      value="fixed"
-                    />
-                  </el-radio-group>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <slot name="content" :form="configInfo"></slot>
-            <slot :form="configInfo"></slot>
-            <el-divider content-position="left">
-              <h4>{{ i18n("pageConfig.otherConfig") }}</h4>
-            </el-divider>
-            <el-row :gutter="10">
-              <el-col :span="8">
-                <el-form-item
-                  prop="tagsView"
-                  :label="i18n('pageConfig.tagsView')"
-                >
-                  <el-switch
-                    v-model="configInfo.tagsView"
-                    :active-value="'Y'"
-                    :inactive-value="'N'"
-                    @change="changeOperation"
-                  >
-                  </el-switch>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item
-                  prop="shortCutMenus"
-                  :label="i18n('pageConfig.shortcutMenu')"
-                >
-                  <el-switch
-                    v-model="configInfo.shortCutMenus"
-                    :active-value="'Y'"
-                    :inactive-value="'N'"
-                    @change="changeOperation"
-                  >
-                  </el-switch>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item
-                  prop="buttonShowType"
-                  :label="i18n('pageConfig.buttonDisplayStyle')"
-                >
-                  <el-select
-                    v-model="configInfo.buttonShowType"
-                    @change="changeOperation"
-                  >
-                    <el-option
-                      v-for="item in showTypeList"
-                      :value="item.value"
-                      :label="item.name"
-                      :key="item.value"
-                    />
-                  </el-select>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <slot name="footer" :form="configInfo"></slot>
-          </el-form>
-        </el-scrollbar>
-        <div class="flex flex-col w-full h-full" v-else>
+    <div class="page-config-wrapper">
+      <el-scrollbar height="100%" v-if="!hideDefaultConfig">
+        <el-form
+          class="page-config"
+          :model="configInfo"
+          :size="compSize"
+          label-position="top"
+        >
           <slot name="header" :form="configInfo"></slot>
+
+          <!-- 主题与配色 -->
+          <section class="config-section">
+            <div class="section-header">
+              <span class="section-bar"></span>
+              <span class="section-title">{{
+                i18n("pageConfig.section.theme")
+              }}</span>
+            </div>
+            <div class="section-body">
+              <el-form-item
+                :label="i18n('pageConfig.customColor')"
+                class="custom-color-row"
+              >
+                <div class="custom-color-inner">
+                  <el-color-picker
+                    v-model="configInfo.themeColor"
+                    @change="changeOperation"
+                    show-alpha
+                  />
+                  <span class="current-color-text">{{
+                    configInfo.themeColor
+                  }}</span>
+                  <el-button
+                    size="small"
+                    link
+                    type="primary"
+                    @click="
+                      configInfo.themeColor = '#409EFF';
+                      changeOperation();
+                    "
+                  >
+                    {{ i18n("pageConfig.resetDefaultConfig") }}
+                  </el-button>
+                </div>
+              </el-form-item>
+              <el-form-item :label="i18n('pageConfig.classicColors')">
+                <div class="color-palette">
+                  <div
+                    v-for="item in classicsList"
+                    :key="item.code"
+                    class="color-swatch"
+                    :class="{
+                      active:
+                        configInfo.themeColor?.toLowerCase() ===
+                        item.color.toLowerCase(),
+                    }"
+                    :style="{ background: item.color }"
+                    :title="item.name + ' (' + item.color + ')'"
+                    @click="classicsTheme(item.color)"
+                  ></div>
+                </div>
+              </el-form-item>
+            </div>
+          </section>
+
+          <!-- 尺寸与展示 -->
+          <section class="config-section">
+            <div class="section-header">
+              <span class="section-bar"></span>
+              <span class="section-title">{{
+                i18n("pageConfig.section.size")
+              }}</span>
+            </div>
+            <div class="section-body">
+              <el-row :gutter="12">
+                <el-col :span="12">
+                  <el-form-item :label="i18n('pageConfig.componentSize')">
+                    <el-select
+                      v-model="configInfo.inputSize"
+                      @change="changeOperation"
+                      style="width: 100%"
+                    >
+                      <el-option
+                        v-for="item in sizeList"
+                        :value="item.value"
+                        :label="item.name"
+                        :key="item.value"
+                      />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item :label="i18n('pageConfig.buttonSize')">
+                    <el-select
+                      v-model="configInfo.buttonSize"
+                      @change="changeOperation"
+                      style="width: 100%"
+                    >
+                      <el-option
+                        v-for="item in sizeList"
+                        :value="item.value"
+                        :label="item.name"
+                        :key="item.value"
+                      />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item :label="i18n('pageConfig.dataDisplay')">
+                    <el-select
+                      v-model="configInfo.tableType"
+                      @change="changeOperation"
+                      style="width: 100%"
+                    >
+                      <el-option
+                        v-for="item in tableTypeList"
+                        :value="item.value"
+                        :label="item.name"
+                        :key="item.value"
+                      />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item :label="i18n('pageConfig.dialogFormat')">
+                    <el-select
+                      v-model="configInfo.dialogType"
+                      @change="changeOperation"
+                      style="width: 100%"
+                    >
+                      <el-option
+                        v-for="item in dialogTypeList"
+                        :value="item.value"
+                        :label="item.name"
+                        :key="item.value"
+                      />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </div>
+          </section>
+
+          <!-- 菜单设置 -->
+          <section class="config-section">
+            <div class="section-header">
+              <span class="section-bar"></span>
+              <span class="section-title">{{
+                i18n("pageConfig.section.menu")
+              }}</span>
+            </div>
+            <div class="section-body">
+              <el-row :gutter="12">
+                <el-col :span="12">
+                  <el-form-item :label="i18n('pageConfig.menuPosition')">
+                    <el-radio-group
+                      v-model="configInfo.position"
+                      @change="changeOperation"
+                    >
+                      <el-radio-button value="top">{{
+                        i18n("pageConfig.top")
+                      }}</el-radio-button>
+                      <el-radio-button value="left">{{
+                        i18n("pageConfig.left")
+                      }}</el-radio-button>
+                      <el-radio-button value="right">{{
+                        i18n("pageConfig.right")
+                      }}</el-radio-button>
+                    </el-radio-group>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item :label="i18n('pageConfig.menuStyle')">
+                    <el-radio-group
+                      v-model="configInfo.menusCfg"
+                      @change="changeOperation"
+                    >
+                      <el-radio-button value="tradition">{{
+                        i18n("pageConfig.traditionalStyle")
+                      }}</el-radio-button>
+                      <el-radio-button value="fixed">{{
+                        i18n("pageConfig.fixedWidth")
+                      }}</el-radio-button>
+                    </el-radio-group>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </div>
+          </section>
+
           <slot name="content" :form="configInfo"></slot>
           <slot :form="configInfo"></slot>
+
+          <!-- 其他配置 -->
+          <section class="config-section">
+            <div class="section-header">
+              <span class="section-bar"></span>
+              <span class="section-title">{{
+                i18n("pageConfig.section.other")
+              }}</span>
+            </div>
+            <div class="section-body">
+              <el-row :gutter="12">
+                <el-col :span="12">
+                  <el-form-item :label="i18n('pageConfig.tagsView')">
+                    <el-switch
+                      v-model="configInfo.tagsView"
+                      active-value="Y"
+                      inactive-value="N"
+                      @change="changeOperation"
+                    />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item :label="i18n('pageConfig.shortcutMenu')">
+                    <el-switch
+                      v-model="configInfo.shortCutMenus"
+                      active-value="Y"
+                      inactive-value="N"
+                      @change="changeOperation"
+                    />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item :label="i18n('pageConfig.buttonDisplayStyle')">
+                    <el-select
+                      v-model="configInfo.buttonShowType"
+                      @change="changeOperation"
+                      style="width: 100%"
+                    >
+                      <el-option
+                        v-for="item in showTypeList"
+                        :value="item.value"
+                        :label="item.name"
+                        :key="item.value"
+                      />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </div>
+          </section>
+
           <slot name="footer" :form="configInfo"></slot>
-        </div>
-      </el-card>
-    </template>
-    <template #footer>
-      <div class="footer-button">
-        <el-button :size="compSize" @click="saveData" type="primary">
-          <star-horse-icon icon-class="save" color="#fff" />
-          {{ i18n("form.confirm") }}
-        </el-button>
-        <el-button :size="compSize" type="text" @click="resetDefault">
-          <star-horse-icon icon-class="reset" />
-          {{ i18n("pageConfig.resetDefaultConfig") }}
-        </el-button>
+        </el-form>
+      </el-scrollbar>
+      <div class="flex flex-col w-full h-full" v-else>
+        <slot name="header" :form="configInfo"></slot>
+        <slot name="content" :form="configInfo"></slot>
+        <slot :form="configInfo"></slot>
+        <slot name="footer" :form="configInfo"></slot>
       </div>
-    </template>
-  </el-drawer>
+    </div>
+  </star-horse-drawer>
 </template>
 <style scoped lang="scss">
-.page-config {
+.page-config-wrapper {
   height: 100%;
-  overflow: hidden;
-  width: 95%;
-  margin: 10px auto;
-}
-
-.footer-button {
   width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: start;
+  box-sizing: border-box;
+  padding: 4px 8px 16px;
 }
 
-.theme-item {
-  align-items: center;
-  cursor: pointer;
-  display: flex;
-  flex-direction: row;
-  width: 25%;
-  overflow: auto;
+.page-config {
+  width: 100%;
+  margin: 0 auto;
 }
 
-.el-tag {
-  border: none;
+/* 区块容器 */
+.config-section {
+  margin-bottom: 16px;
+  background: var(--star-horse-white);
+  border: 1px solid var(--star-horse-shadow);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  background: var(--star-horse-shadow);
+  border-bottom: 1px solid var(--star-horse-shadow);
+}
+
+.section-bar {
+  width: 4px;
+  height: 14px;
+  background: var(--star-horse-style);
+  border-radius: 2px;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--el-text-color-primary);
+}
+
+.section-body {
+  padding: 16px 14px 4px;
+}
+
+/* 自定义颜色行 */
+.custom-color-row {
+  margin-bottom: 12px;
+}
+
+.custom-color-inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.current-color-text {
+  font-size: 13px;
+  color: var(--el-text-color-regular);
+  font-family: Consolas, Monaco, monospace;
+  min-width: 80px;
+}
+
+/* 经典配色面板：自适应网格 */
+.color-palette {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(22px, 1fr));
+  gap: 6px;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 4px;
+  border: 1px solid var(--star-horse-shadow);
+  border-radius: 6px;
+}
+
+.color-swatch {
+  width: 100%;
   aspect-ratio: 1;
+  border-radius: 4px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  box-sizing: border-box;
+  transition:
+    transform 0.15s ease,
+    border-color 0.15s ease;
+  position: relative;
+
+  &:hover {
+    transform: scale(1.15);
+    z-index: 1;
+  }
+
+  &.active {
+    border-color: var(--star-horse-style);
+    box-shadow: 0 0 0 1px var(--star-horse-style);
+  }
+}
+
+/* 表单项紧凑化 */
+:deep(.el-form-item) {
+  margin-bottom: 14px;
+}
+
+:deep(.el-form-item__label) {
+  font-size: 13px;
+  padding-bottom: 4px;
+  line-height: 1.5;
+}
+
+:deep(.el-radio-group) {
+  flex-wrap: wrap;
+}
+
+/* 响应式：窄屏单列 */
+@media (max-width: 600px) {
+  .page-config-wrapper {
+    padding: 4px 4px 12px;
+  }
+
+  .custom-color-inner {
+    gap: 8px;
+  }
+
+  .current-color-text {
+    min-width: auto;
+  }
 }
 </style>

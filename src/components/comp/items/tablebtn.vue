@@ -79,8 +79,12 @@ const btnHideCheck = (btn: string, row: any) => {
 const pickerVisible = ref(false);
 const placement = "bottom" as const;
 const size = "auto";
-const openPicker = () => { pickerVisible.value = true; };
-const closePicker = () => { pickerVisible.value = false; };
+const openPicker = () => {
+  pickerVisible.value = true;
+};
+const closePicker = () => {
+  pickerVisible.value = false;
+};
 
 const handleActionClick = (item: any) => {
   item.funcName?.(props.row);
@@ -184,7 +188,10 @@ onMounted(() => {
     <!-- APP 端：最多显示 2 个按钮 + "更多"触发抽屉动作面板 -->
     <template v-else>
       <template v-if="validButtonList.length > 2">
-        <template v-for="(item, key) in validButtonList.slice(0, 2)" :key="compKey(item, key)">
+        <template
+          v-for="(item, key) in validButtonList.slice(0, 2)"
+          :key="compKey(item, key)"
+        >
           <star-horse-icon
             v-if="permissions[item.authority!]"
             @click="item.funcName!(row)"
@@ -205,7 +212,10 @@ onMounted(() => {
         </div>
       </template>
       <template v-else>
-        <template v-for="(item, key) in validButtonList" :key="compKey(item, key)">
+        <template
+          v-for="(item, key) in validButtonList"
+          :key="compKey(item, key)"
+        >
           <star-horse-icon
             v-if="permissions[item.authority]"
             @click="item.funcName(row)"
@@ -229,7 +239,10 @@ onMounted(() => {
         :show-footer="false"
       >
         <div class="mobile-action-panel">
-          <template v-for="(item, key) in validButtonList" :key="compKey(item, key)">
+          <template
+            v-for="(item, key) in validButtonList"
+            :key="compKey(item, key)"
+          >
             <div
               v-if="permissions[item.authority!]"
               class="mobile-action-panel__item"

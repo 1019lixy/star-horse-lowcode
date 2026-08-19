@@ -63,6 +63,7 @@ const emit = defineEmits<{
   padding-top: 4px;
   flex-shrink: 0;
 }
+
 .activity-item {
   width: 48px;
   height: 48px;
@@ -73,19 +74,23 @@ const emit = defineEmits<{
   color: var(--ide-fg-dim);
   border-left: 2px solid transparent;
   opacity: 0.7;
+
   &:hover {
     opacity: 1;
     color: var(--ide-fg);
   }
+
   &.active {
     opacity: 1;
     color: var(--ide-fg-bright);
     border-left-color: var(--ide-accent);
   }
+
   svg {
     pointer-events: none;
   }
 }
+
 .activity-spacer {
   flex: 1;
 }

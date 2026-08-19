@@ -18,8 +18,8 @@ withDefaults(defineProps<ContainerPreps>(), {
   propPrefix: "",
   parentPreps: {},
   subFormFlag: "N",
-  batchName: "batchDataList",
-  batchFieldName: "batchFieldList",
+  subTableName: "subDataList",
+
   compSize: "default",
   source: 1,
 });
@@ -46,21 +46,21 @@ onMounted(() => {
 </script>
 
 <template>
-  <template v-if="item.collapseList?.length > 0">
+  <template v-if="item.containerFields?.length > 0">
     <el-collapse
       v-model="item.fieldName"
       v-bind="prepsFilter(item.preps)"
       v-if="!item.preps?.hideCollapse"
       v-on:change="(data) => item.actions?.['change']?.(data)"
     >
-      <template v-for="(collapseItem, key) in item.collapseList">
+      <template v-for="(collapseItem, key) in item.containerFields">
         <el-collapse-item
           v-if="
             Object.keys(collapseItem).length > 0 &&
             collapseItem.formVisible !== false &&
             !collapseItem.preps?.hideCollapseItem
           "
-          :name="collapseItem.tabName || key"
+          :name="collapseItem.subTablePrimaryKey || key"
           :disabled="collapseItem.disabled"
           v-bind="collapseItem.preps"
           :index="
@@ -89,7 +89,7 @@ onMounted(() => {
             @addRow="addRow"
             @removeRow="removeRow"
             :commonFormat="commonFormat"
-            :objectName="collapseItem.objectName"
+            :subTableName="collapseItem.subTableName"
             :dataForm="
               getFormData(
                 collapseItem,

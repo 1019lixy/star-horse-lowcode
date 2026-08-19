@@ -4,8 +4,8 @@ import {
   nextTick,
   onBeforeUnmount,
   onMounted,
-  provide,
   PropType,
+  provide,
   ref,
   shallowRef,
   toRaw,
@@ -34,10 +34,10 @@ import { applyThemeVars, getThemeByValue } from "./code-editor/theme";
 import { useLsp } from "./code-editor/useLsp";
 import { useFileTree } from "./code-editor/useFileTree";
 import {
-  useFileApi,
   type ConflictCheckResult,
   type ConflictFile,
   type SaveResult,
+  useFileApi,
 } from "./code-editor/useFileApi";
 import { useConsole } from "./code-editor/useConsole";
 import { useModuleDialog } from "./code-editor/useModuleDialog";
@@ -473,11 +473,7 @@ const paneApi = {
     }
   },
   // ===== Drop 处理 =====
-  handleDrop: (
-    toGid: string,
-    payload: TabDragPayload,
-    zone: DropZone,
-  ) => {
+  handleDrop: (toGid: string, payload: TabDragPayload, zone: DropZone) => {
     editorGroups.handleDrop(payload.fromGroupId, payload.tabId, toGid, zone);
   },
   // ===== 模型访问 =====
@@ -523,9 +519,7 @@ const closeTab = (tabId: string, gid?: string) => {
   editorGroups.closeTabInGroup(targetGid, tabId);
   emit("file-close", { id: tabId });
   // 如果该文件在所有组中都关闭了，dispose 模型
-  const stillOpen = editorGroups
-    .getAllOpenTabs()
-    .some((t) => t.id === tabId);
+  const stillOpen = editorGroups.getAllOpenTabs().some((t) => t.id === tabId);
   if (!stillOpen) {
     const model = monacoModels.get(tabId);
     if (model) {
@@ -760,8 +754,14 @@ const handleTabContextMenu = (gid: string, tabId: string, e: MouseEvent) => {
   ];
   if (groupCount > 1) {
     items.push({ divider: true, label: "" });
-    items.push({ label: i18n("ide.ctx.moveToNextGroup"), action: "tab-move-next" });
-    items.push({ label: i18n("ide.ctx.moveToPrevGroup"), action: "tab-move-prev" });
+    items.push({
+      label: i18n("ide.ctx.moveToNextGroup"),
+      action: "tab-move-next",
+    });
+    items.push({
+      label: i18n("ide.ctx.moveToPrevGroup"),
+      action: "tab-move-prev",
+    });
   }
   contextMenuItems.value = items;
   contextMenuVisible.value = true;

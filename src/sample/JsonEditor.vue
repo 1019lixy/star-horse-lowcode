@@ -1,6 +1,7 @@
 <script setup lang="ts" name="Areainfo">
 import StarHorseJsonEditor from "@/components/comp/StarHorseJsonEditor.vue";
 import { ref } from "vue";
+
 let json = ref<Array<any>>([
   {
     id: "Idshb884094c-00b8-4c96-8c73-d483a7cde78c",
@@ -110,5 +111,8 @@ let json = ref<Array<any>>([
   },
 ]);
 </script>
-<template><StarHorseJsonEditor v-model="json" ref="editor" />"</template>
+<template>
+  <StarHorseJsonEditor v-model="json" ref="editor" />
+  "
+</template>
 <style lang="scss" scoped></style>

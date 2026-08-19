@@ -1,8 +1,8 @@
 <script setup lang="ts" name="ShDynamicForm">
-import { inject, PropType, Ref, ref, ShallowReactive, watch } from "vue";
+import { inject, PropType, provide, ref, watch } from "vue";
 import { ApiUrls } from "@/components/types/ApiUrls";
 import { error, success, warning } from "@/utils/message";
-import { postRequest, loadById } from "@/api/star_horse_apis";
+import { loadById, postRequest } from "@/api/star_horse_apis";
 import { closeLoad, load } from "@/api/star_horse_utils";
 import { DialogProps } from "@/components/types/DialogProps";
 import { compKey, itemCheck } from "@/api/system";
@@ -19,9 +19,9 @@ const emits = defineEmits(["refresh"]);
 const starHorseFormRef = ref();
 const dataForm = ref<any>({});
 const closeDialog = inject("closeDialog") as Function;
-const dialogOperation = inject("dialogOperation");
+const dialogOperation = inject("dialogOperation") as any;
 const dialogProps = inject<DialogProps>("dialogProps", {});
-
+provide("starHorseFormRef", starHorseFormRef);
 const assignDefault = () => {
   dataForm.value = {};
 };
@@ -51,7 +51,7 @@ const doMerge = () => {
   postRequest(props.compUrl?.mergeUrl!, dataForm.value)
     .then((res) => {
       closeLoad();
-      if (res?.data?.code != 0) {
+      if (res?.data?.code != 200) {
         warning(res?.data?.cnMessage);
         return;
       } else {
@@ -73,22 +73,19 @@ const resetForm = () => {
   assignDefault();
 };
 watch(
-  () => dialogOperation,
-  (val: any) => {
-    if (val["funcName"] == "merge") {
-      merge(val["type"]);
-    } else if (val["funcName"] == "mergeDraft") {
-      mergeDraft(val["type"]);
-    } else if (val["funcName"] == "resetForm") {
+  () => dialogOperation.funcName,
+  (funcName: string) => {
+    if (!funcName) return;
+    const type = dialogOperation.type;
+    if (funcName == "merge") {
+      merge(type);
+    } else if (funcName == "mergeDraft") {
+      mergeDraft(type);
+    } else if (funcName == "resetForm") {
       resetForm();
     }
-    //为了触发多次点击响应
-    dialogOperation["funcName"] = "";
-    dialogOperation["type"] = "";
-  },
-  {
-    immediate: false,
-    deep: true,
+    dialogOperation.funcName = "";
+    dialogOperation.type = "";
   },
 );
 watch(
@@ -127,7 +124,7 @@ defineExpose({
     :inline-message="formInfo['inlineMessage'] ?? false"
     :label-position="formInfo['labelPosition']"
     :label-suffix="formInfo['labelSuffix']"
-    :label-width="formInfo['labelWidth']??'auto'"
+    :label-width="formInfo['labelWidth'] ?? 'auto'"
     :require-asterisk-position="formInfo['requireAsteriskPosition']"
     :scroll-to-error="formInfo['scrollToError'] ?? true"
     :show-message="formInfo['showMessage'] ?? true"

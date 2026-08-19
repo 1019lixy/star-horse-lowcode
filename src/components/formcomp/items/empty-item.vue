@@ -14,7 +14,6 @@
 </template>
 <script setup lang="ts">
 import { ItemPreps } from "@/components/types/ItemPreps";
-import { i18n } from "@/lang";
 
 withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,

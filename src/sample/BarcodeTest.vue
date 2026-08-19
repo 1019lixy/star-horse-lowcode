@@ -1,10 +1,13 @@
 <template>
   <div class="barcode-box">
     <!-- 唯一svg容器，只渲染1个条码 -->
-    <barcode-item :field="{
-      fieldName:'testBarcode',
-      preps:{}
-    }" v-model:form-data="formData"/>
+    <barcode-item
+      :field="{
+        fieldName: 'testBarcode',
+        preps: {},
+      }"
+      v-model:form-data="formData"
+    />
     <svg ref="barCodeRef"></svg>
 
     <!-- 输入框动态修改条码内容 -->
@@ -15,15 +18,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, nextTick } from "vue";
+import { nextTick, onMounted, ref, watch } from "vue";
 import JsBarcode from "jsbarcode";
 import BarcodeItem from "@/components/formcomp/items/barcode-item.vue";
 
 // 条码值
 const codeVal = ref("SN20260727001");
-const barCodeRef=ref(null);
-const formData=ref({
-  testBarcode:"SN20260727005"
+const barCodeRef = ref(null);
+const formData = ref({
+  testBarcode: "SN20260727005",
 });
 // 渲染条码通用方法
 const drawBarcode = () => {
@@ -36,7 +39,7 @@ const drawBarcode = () => {
     textMargin: 6,
     margin: 10,
     background: "#fff",
-    lineColor: "#000"
+    lineColor: "#000",
   });
 };
 
@@ -82,11 +85,13 @@ const downloadBar = () => {
 .barcode-box {
   padding: 20px;
 }
+
 input {
   width: 320px;
   padding: 6px 10px;
   margin: 10px 0;
 }
+
 button {
   padding: 7px 16px;
   cursor: pointer;

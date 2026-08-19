@@ -22,7 +22,6 @@
 import { PageFieldInfo } from "@/components/types/PageFieldInfo";
 import { SelectOption } from "@/components/types/SearchProps";
 import { onMounted, ref } from "vue";
-import { analysisCompDatas } from "@/api/form_utils";
 
 const areaFormRef = ref();
 const dataRelationDialogVisible = ref<boolean>(false);
@@ -444,11 +443,14 @@ const dataList = [
       },
     },
     {
-      batchFieldList: [
+      containerFields: [
         {
-          staticData: "Y",
+          containerType: "table",
           subFormFlag: "Y",
-          batchName: "relationDetails",
+          subTablePrimaryKey: "relationDetails",
+          preps: {
+            staticData: "Y",
+          },
           fieldList: [
             {
               label: "控制条件",
@@ -610,7 +612,7 @@ const dataList = [
               preps: {
                 bareFlag: "Y",
                 subFormFlag: true,
-                batchName: "params",
+                subTableName: "params",
                 compName: WebUrlComp,
               },
             },

@@ -290,7 +290,6 @@ const prepsEntries = computed(() => {
           v-model="searchKeyword"
           placeholder="搜索组件名称或编码"
           clearable
-
           prefix-icon="el-icon-search"
         />
       </div>
@@ -325,11 +324,7 @@ const prepsEntries = computed(() => {
       </div>
       <div class="panel-header">
         表单数据
-        <el-button
-
-          style="color: #fff"
-          link
-          @click="updateFormDataDisplay"
+        <el-button style="color: #fff" link @click="updateFormDataDisplay"
           >刷新
         </el-button>
       </div>
@@ -357,7 +352,7 @@ const prepsEntries = computed(() => {
                 </template>
                 <template v-else>{{ value }}</template>
               </span>
-              <el-button type="danger"  @click="removeProperty(key)"
+              <el-button type="danger" @click="removeProperty(key)"
                 >删除
               </el-button>
             </div>
@@ -423,35 +418,28 @@ const prepsEntries = computed(() => {
         <div class="common-preps">
           <div class="sub-header">常用属性快捷添加</div>
           <div class="quick-buttons">
-            <el-button
-
-              @click="currentField.preps.placeholder = '请输入...'"
+            <el-button @click="currentField.preps.placeholder = '请输入...'"
               >placeholder
             </el-button>
-            <el-button  @click="currentField.preps.disabled = true"
+            <el-button @click="currentField.preps.disabled = true"
               >disabled
             </el-button>
-            <el-button  @click="currentField.preps.clearable = true"
+            <el-button @click="currentField.preps.clearable = true"
               >clearable
             </el-button>
-            <el-button  @click="currentField.preps.prefix = '前缀'"
+            <el-button @click="currentField.preps.prefix = '前缀'"
               >prefix
             </el-button>
-            <el-button  @click="currentField.preps.suffix = '后缀'"
+            <el-button @click="currentField.preps.suffix = '后缀'"
               >suffix
             </el-button>
-            <el-button
-
-              @click="currentField.preps.mergeAppend = true"
+            <el-button @click="currentField.preps.mergeAppend = true"
               >mergeAppend
             </el-button>
-            <el-button
-
-              @click="currentField.preps.mergePrefix = true"
+            <el-button @click="currentField.preps.mergePrefix = true"
               >mergePrefix
             </el-button>
             <el-button
-
               @click="
                 currentField.preps.appendList = [
                   { name: '%', value: '%' },
@@ -461,7 +449,6 @@ const prepsEntries = computed(() => {
               >appendList
             </el-button>
             <el-button
-
               @click="
                 currentField.preps.prependList = [
                   { name: 'http', value: 'http' },

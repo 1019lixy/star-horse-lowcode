@@ -34,8 +34,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from "vue";
-import { i18n, currentLang, changeLanguage, onLanguageChange } from "@/lang";
+import { onMounted, onUnmounted, ref } from "vue";
+import { changeLanguage, currentLang, i18n, onLanguageChange } from "@/lang";
 import { LangType } from "@/theme/theme";
 
 // 语言选项

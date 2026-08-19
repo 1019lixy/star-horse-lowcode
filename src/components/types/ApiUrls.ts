@@ -65,6 +65,10 @@ export type ApiUrls = {
    */
   importUrl?: string;
   /**
+   * 解析数据接口
+   */
+  analyzeDataUrl?: string;
+  /**
    * 执行接口
    */
   executeUrl?: string;
@@ -98,6 +102,11 @@ export type ApiUrls = {
   basePrefix?: string;
   /**
    * 权限接口,此接口需要用户自己赋值,如果不赋值则使用系统默认接口
+   * 返回的数据格式必须是：{
+   *     add:'add',
+   *     edit:'edit',
+   *     ...
+   * }
    */
   permissionsUrl?: string;
   /**
@@ -193,6 +202,10 @@ export type ApiUrls = {
    * 导入数据接口
    */
   importAction?: Function;
+  /**
+   * 解析数据函数
+   */
+  analyzeAction?: Function;
   /**
    * 执行接口
    */

@@ -7,21 +7,29 @@
           class="sh-mobile-wheel-picker__tab"
           :class="{ 'is-active': activeRange === 'start' }"
           @click="activeRange = 'start'"
-        >{{ formatPreview(startValues) }}</span>
+          >{{ formatPreview(startValues) }}</span
+        >
         <span class="sh-mobile-wheel-picker__sep">~</span>
         <span
           class="sh-mobile-wheel-picker__tab"
           :class="{ 'is-active': activeRange === 'end' }"
           @click="activeRange = 'end'"
-        >{{ formatPreview(endValues) }}</span>
+          >{{ formatPreview(endValues) }}</span
+        >
       </template>
       <template v-else>
-        <span class="sh-mobile-wheel-picker__single">{{ formatPreview(currentValues) }}</span>
+        <span class="sh-mobile-wheel-picker__single">{{
+          formatPreview(currentValues)
+        }}</span>
       </template>
     </div>
 
     <!-- 滚轮列：ref 用于 ResizeObserver 获取实际渲染尺寸 -->
-    <div ref="columnsRef" class="sh-mobile-wheel-picker__columns" :style="{ height: columnHeight + 'px' }">
+    <div
+      ref="columnsRef"
+      class="sh-mobile-wheel-picker__columns"
+      :style="{ height: columnHeight + 'px' }"
+    >
       <div
         v-for="col in columns"
         :key="col.key"
@@ -55,12 +63,21 @@
             v-for="(item, i) in col.items"
             :key="i"
             class="sh-mobile-wheel-picker__item"
-            :style="{ height: ITEM_HEIGHT + 'px', lineHeight: ITEM_HEIGHT + 'px' }"
+            :style="{
+              height: ITEM_HEIGHT + 'px',
+              lineHeight: ITEM_HEIGHT + 'px',
+            }"
             :class="{ 'is-selected': i === getActiveIndex(col.key) }"
-          >{{ item.label }}</div>
+          >
+            {{ item.label }}
+          </div>
         </div>
-        <div class="sh-mobile-wheel-picker__mask sh-mobile-wheel-picker__mask--top" />
-        <div class="sh-mobile-wheel-picker__mask sh-mobile-wheel-picker__mask--bottom" />
+        <div
+          class="sh-mobile-wheel-picker__mask sh-mobile-wheel-picker__mask--top"
+        />
+        <div
+          class="sh-mobile-wheel-picker__mask sh-mobile-wheel-picker__mask--bottom"
+        />
       </div>
       <div class="sh-mobile-wheel-picker__indicator" />
     </div>
@@ -68,11 +85,26 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch, onMounted, onBeforeUnmount, nextTick } from "vue";
+import {
+  computed,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch,
+} from "vue";
 
 type WheelType =
-  | "year" | "month" | "date" | "datetime" | "time"
-  | "yearrange" | "monthrange" | "daterange" | "datetimerange" | "timerange";
+  | "year"
+  | "month"
+  | "date"
+  | "datetime"
+  | "time"
+  | "yearrange"
+  | "monthrange"
+  | "daterange"
+  | "datetimerange"
+  | "timerange";
 
 interface WheelValues {
   year: number;
@@ -155,8 +187,12 @@ const now = new Date();
 const isRange = computed(() => props.type.endsWith("range"));
 const baseType = computed(() => props.type.replace("range", ""));
 
-const hasYear = computed(() => ["year", "month", "date", "datetime"].includes(baseType.value));
-const hasMonth = computed(() => ["month", "date", "datetime"].includes(baseType.value));
+const hasYear = computed(() =>
+  ["year", "month", "date", "datetime"].includes(baseType.value),
+);
+const hasMonth = computed(() =>
+  ["month", "date", "datetime"].includes(baseType.value),
+);
 const hasDay = computed(() => ["date", "datetime"].includes(baseType.value));
 const hasTime = computed(() => ["datetime", "time"].includes(baseType.value));
 const hasSecond = computed(() => {
@@ -211,7 +247,10 @@ type MakeCyclicOpts = {
   suffix?: string;
 };
 
-function makeCyclicItems(count: number, opts: MakeCyclicOpts = {}): ColumnItem[] {
+function makeCyclicItems(
+  count: number,
+  opts: MakeCyclicOpts = {},
+): ColumnItem[] {
   const { padZero = false, startAtOne = false, suffix = "" } = opts;
   const result: ColumnItem[] = [];
   for (let r = 0; r < CYCLE_REPEAT; r++) {
@@ -227,7 +266,10 @@ function makeCyclicItems(count: number, opts: MakeCyclicOpts = {}): ColumnItem[]
 }
 
 // 月：1-12，不补0，后缀"月"
-const monthItems: ColumnItem[] = makeCyclicItems(12, { startAtOne: true, suffix: "月" });
+const monthItems: ColumnItem[] = makeCyclicItems(12, {
+  startAtOne: true,
+  suffix: "月",
+});
 
 // 日：1-当月天数，不补0，后缀"日"，动态生成
 const dayItems = computed<ColumnItem[]>(() => {
@@ -237,27 +279,51 @@ const dayItems = computed<ColumnItem[]>(() => {
 });
 
 // 时：0-23，补0，后缀"时"
-const hourItems: ColumnItem[] = makeCyclicItems(24, { padZero: true, suffix: "时" });
+const hourItems: ColumnItem[] = makeCyclicItems(24, {
+  padZero: true,
+  suffix: "时",
+});
 // 分：0-59，补0，后缀"分"
-const minuteItems: ColumnItem[] = makeCyclicItems(60, { padZero: true, suffix: "分" });
+const minuteItems: ColumnItem[] = makeCyclicItems(60, {
+  padZero: true,
+  suffix: "分",
+});
 // 秒：0-59，补0，后缀"秒"
-const secondItems: ColumnItem[] = makeCyclicItems(60, { padZero: true, suffix: "秒" });
+const secondItems: ColumnItem[] = makeCyclicItems(60, {
+  padZero: true,
+  suffix: "秒",
+});
 
 // 哪些列是循环列
 function isCyclic(key: string): boolean {
-  return key === "month" || key === "day" || key === "hour" || key === "minute" || key === "second";
+  return (
+    key === "month" ||
+    key === "day" ||
+    key === "hour" ||
+    key === "minute" ||
+    key === "second"
+  );
 }
 
 // 循环列的基础长度（单组）
 function getCycleBaseLen(key: string): number {
   switch (key) {
-    case "month": return 12;
+    case "month":
+      return 12;
     case "day":
-      return new Date(activeValues.value.year, activeValues.value.month, 0).getDate();
-    case "hour": return 24;
-    case "minute": return 60;
-    case "second": return 60;
-    default: return 0;
+      return new Date(
+        activeValues.value.year,
+        activeValues.value.month,
+        0,
+      ).getDate();
+    case "hour":
+      return 24;
+    case "minute":
+      return 60;
+    case "second":
+      return 60;
+    default:
+      return 0;
   }
 }
 
@@ -284,7 +350,9 @@ function getActiveIndex(key: string): number {
   if (isCyclic(key)) {
     // 循环列：定位到中间组
     const baseLen = getCycleBaseLen(key);
-    const baseIdx = col.items.slice(0, baseLen).findIndex((it) => it.value === actualValue);
+    const baseIdx = col.items
+      .slice(0, baseLen)
+      .findIndex((it) => it.value === actualValue);
     if (baseIdx < 0) return baseLen;
     return baseLen + baseIdx;
   }
@@ -307,7 +375,9 @@ function trackStyle(key: string): Record<string, string> {
   const offset = indicatorTop.value - idx * ITEM_HEIGHT;
   return {
     transform: `translate3d(0, ${offset}px, 0)`,
-    transition: skipTransition.value ? "none" : "transform 0.3s cubic-bezier(0.23, 1, 0.32, 1)",
+    transition: skipTransition.value
+      ? "none"
+      : "transform 0.3s cubic-bezier(0.23, 1, 0.32, 1)",
   };
 }
 
@@ -526,12 +596,18 @@ function onWheelScroll(key: string, e: WheelEvent) {
 // ===== 格式化 =====
 function getDefaultFormat(): string {
   switch (baseType.value) {
-    case "year": return "YYYY";
-    case "month": return "YYYY-MM";
-    case "date": return "YYYY-MM-DD";
-    case "datetime": return "YYYY-MM-DD HH:mm:ss";
-    case "time": return hasSecond.value ? "HH:mm:ss" : "HH:mm";
-    default: return "YYYY-MM-DD";
+    case "year":
+      return "YYYY";
+    case "month":
+      return "YYYY-MM";
+    case "date":
+      return "YYYY-MM-DD";
+    case "datetime":
+      return "YYYY-MM-DD HH:mm:ss";
+    case "time":
+      return hasSecond.value ? "HH:mm:ss" : "HH:mm";
+    default:
+      return "YYYY-MM-DD";
   }
 }
 
@@ -577,7 +653,9 @@ function parseSingle(str: any): WheelValues {
   if (!str) return v;
   const s = String(str);
   // 日期时间: 2026-01-15 14:30:00
-  const dtMatch = s.match(/(\d{4})[-/](\d{1,2})[-/](\d{1,2})(?:\s+(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?/);
+  const dtMatch = s.match(
+    /(\d{4})[-/](\d{1,2})[-/](\d{1,2})(?:\s+(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?/,
+  );
   if (dtMatch) {
     v.year = parseInt(dtMatch[1]);
     v.month = parseInt(dtMatch[2]);
@@ -617,7 +695,12 @@ watch(
     if (val === undefined || val === null || val === "") {
       currentValues.value = initValues();
       startValues.value = initValues();
-      endValues.value = { ...initValues(), hour: now.getHours() + 1, minute: 0, second: 0 };
+      endValues.value = {
+        ...initValues(),
+        hour: now.getHours() + 1,
+        minute: 0,
+        second: 0,
+      };
       return;
     }
     if (isRange.value && Array.isArray(val)) {
@@ -708,7 +791,7 @@ defineExpose({
   display: flex;
   position: relative;
   padding: 0 4px;
-  flex:1;
+  flex: 1;
 }
 
 .sh-mobile-wheel-picker__column {
@@ -760,13 +843,21 @@ defineExpose({
 .sh-mobile-wheel-picker__mask--top {
   top: 0;
   height: calc(50% - 18px);
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.4));
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.95),
+    rgba(255, 255, 255, 0.4)
+  );
 }
 
 .sh-mobile-wheel-picker__mask--bottom {
   bottom: 0;
   height: calc(50% - 18px);
-  background: linear-gradient(to top, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.4));
+  background: linear-gradient(
+    to top,
+    rgba(255, 255, 255, 0.95),
+    rgba(255, 255, 255, 0.4)
+  );
 }
 
 /* 头尾快捷按钮：点击跳到第一/最后一项 */
@@ -783,7 +874,9 @@ defineExpose({
   pointer-events: auto;
   font-size: 10px;
   color: var(--el-text-color-placeholder, #c0c4cc);
-  transition: color 0.15s, background 0.15s;
+  transition:
+    color 0.15s,
+    background 0.15s;
   user-select: none;
   -webkit-user-select: none;
 

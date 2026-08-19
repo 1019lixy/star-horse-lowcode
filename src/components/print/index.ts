@@ -18,17 +18,17 @@ export { renderPrintHtml, renderPageHtml } from "./renderers/HtmlRenderer";
 export { renderZpl } from "./renderers/ZplRenderer";
 export { renderTspl } from "./renderers/TsplRenderer";
 export {
-    PRESET_PAPERS,
-    DEFAULT_PAPER,
-    DEFAULT_DATA_FIELDS,
-    ELEMENT_FACTORIES,
-    SYSTEM_VAR_OPTIONS,
-    BARCODE_SYMBOLOGY_OPTIONS,
-    FONT_SIZE_PRESETS,
-    COLOR_PRESETS,
-    MM_TO_PX,
-    PX_TO_MM,
-    MM_TO_PT,
-    PT_TO_MM,
+  PRESET_PAPERS,
+  DEFAULT_PAPER,
+  DEFAULT_DATA_FIELDS,
+  ELEMENT_FACTORIES,
+  SYSTEM_VAR_OPTIONS,
+  BARCODE_SYMBOLOGY_OPTIONS,
+  FONT_SIZE_PRESETS,
+  COLOR_PRESETS,
+  MM_TO_PX,
+  PX_TO_MM,
+  MM_TO_PT,
+  PT_TO_MM,
 } from "./constants";
 export type * from "./types";

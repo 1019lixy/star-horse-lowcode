@@ -110,7 +110,7 @@
             class="upload"
             name="file"
           >
-            <el-button type="text" text >
+            <el-button type="text" text>
               <el-tooltip :content="i18n('item.uploadImage')">
                 <star-horse-icon icon-class="upload" />
                 上传图片
@@ -128,7 +128,7 @@
       </el-image>
       <div class="image-remove" v-if="formData[field.fieldName] && isDesign">
         <el-tooltip :content="i18n('item.deleteImage')">
-          <el-button title=""  type="text" @click="removeImage">
+          <el-button title="" type="text" @click="removeImage">
             <star-horse-icon
               icon-class="delete"
               color="var(--el-color-danger)"
@@ -148,6 +148,7 @@ import { getToken } from "@/utils/auth";
 import { ItemPreps } from "@/components/types/ItemPreps";
 import { i18n } from "@/lang";
 import { Picture } from "@element-plus/icons-vue";
+
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
   disabled: false,

@@ -2,7 +2,7 @@
 import { nextTick, onMounted, provide, reactive, ref } from "vue";
 import { dialogPreps } from "@/api/star_horse_utils";
 import type { PageFieldInfo } from "@/components/types";
-import { StarHorseForm, StarHorseDialog } from "@/components/comp";
+import { StarHorseDialog, StarHorseForm } from "@/components/comp";
 
 /**
  * 验证场景：通过 configType 的 dataRelation 策略(controlTarget=container)
@@ -30,7 +30,7 @@ const protocolOptions = [
 
 /**
  * 构造 configType 的 dataRelation 容器控制配置
- * relationFields 为各 collapse item 的 tabName,匹配后 eqVisible
+ * relationFields 为各 collapse item 的 subTablePrimaryKey,匹配后 eqVisible
  */
 const buildConfigTypeContainerRelation = () => {
   const types = ["basic", "advanced", "security", "network"];
@@ -49,82 +49,147 @@ const buildConfigTypeContainerRelation = () => {
 const container = reactive<any>({
   fieldName: "basic", // 默认激活展开项
   label: "配置面板",
-  type: "collapseList",
+  containerType: "collapse",
   formVisible: true,
   listVisible: false,
-  collapseList: [
+  containerFields: [
     // ========== basic 基础配置 ==========
     {
       title: "基础配置",
-      tabName: "basic",
-      objectName: "basicConfig",
+      subTablePrimaryKey: "basic",
+      subTableName: "basicConfig",
       formVisible: true,
       fieldList: [
-        { label: "配置名称", fieldName: "configName", required: true, formVisible: true, defaultValue: "default" },
         {
-          label: "是否启用日志", fieldName: "enableLog", type: "switch",
-          formVisible: true, defaultValue: "N",
+          label: "配置名称",
+          fieldName: "configName",
+          required: true,
+          formVisible: true,
+          defaultValue: "default",
+        },
+        {
+          label: "是否启用日志",
+          fieldName: "enableLog",
+          type: "switch",
+          formVisible: true,
+          defaultValue: "N",
           preps: {
-            activeValue: "Y", inactiveValue: "N", activeText: "启用", inactiveText: "禁用",
+            activeValue: "Y",
+            inactiveValue: "N",
+            activeText: "启用",
+            inactiveText: "禁用",
             dataRelation: {
               actionName: "change",
               relationDetails: [
-                { matchType: "eq", controlCondition: "eqVisible", relationFields: ["logPath"], matchFieldValue: ["Y"] },
+                {
+                  matchType: "eq",
+                  controlCondition: "eqVisible",
+                  relationFields: ["logPath"],
+                  matchFieldValue: ["Y"],
+                },
               ],
             },
           },
         },
-        { label: "日志路径", fieldName: "logPath", formVisible: false, preps: { placeholder: "/var/log/app.log" } },
+        {
+          label: "日志路径",
+          fieldName: "logPath",
+          formVisible: false,
+          preps: { placeholder: "/var/log/app.log" },
+        },
       ],
     },
     // ========== advanced 高级配置 ==========
     {
       title: "高级配置",
-      tabName: "advanced",
-      objectName: "advancedConfig",
+      subTablePrimaryKey: "advanced",
+      subTableName: "advancedConfig",
       formVisible: false,
       fieldList: [
-        { label: "最大重试次数", fieldName: "maxRetry", type: "number", formVisible: true, defaultValue: 3 },
         {
-          label: "是否启用缓存", fieldName: "enableCache", type: "switch",
-          formVisible: true, defaultValue: "N",
+          label: "最大重试次数",
+          fieldName: "maxRetry",
+          type: "number",
+          formVisible: true,
+          defaultValue: 3,
+        },
+        {
+          label: "是否启用缓存",
+          fieldName: "enableCache",
+          type: "switch",
+          formVisible: true,
+          defaultValue: "N",
           preps: {
-            activeValue: "Y", inactiveValue: "N", activeText: "启用", inactiveText: "禁用",
+            activeValue: "Y",
+            inactiveValue: "N",
+            activeText: "启用",
+            inactiveText: "禁用",
             dataRelation: {
               actionName: "change",
               relationDetails: [
-                { matchType: "eq", controlCondition: "eqVisible", relationFields: ["cacheTtl"], matchFieldValue: ["Y"] },
+                {
+                  matchType: "eq",
+                  controlCondition: "eqVisible",
+                  relationFields: ["cacheTtl"],
+                  matchFieldValue: ["Y"],
+                },
               ],
             },
           },
         },
-        { label: "缓存时长(秒)", fieldName: "cacheTtl", type: "number", formVisible: false, defaultValue: 300 },
+        {
+          label: "缓存时长(秒)",
+          fieldName: "cacheTtl",
+          type: "number",
+          formVisible: false,
+          defaultValue: 300,
+        },
       ],
     },
     // ========== security 安全配置 ==========
     {
       title: "安全配置",
-      tabName: "security",
-      objectName: "securityConfig",
+      subTablePrimaryKey: "security",
+      subTableName: "securityConfig",
       formVisible: false,
       fieldList: [
         {
-          label: "是否启用认证", fieldName: "enableAuth", type: "switch",
-          formVisible: true, defaultValue: "N",
+          label: "是否启用认证",
+          fieldName: "enableAuth",
+          type: "switch",
+          formVisible: true,
+          defaultValue: "N",
           preps: {
-            activeValue: "Y", inactiveValue: "N", activeText: "启用", inactiveText: "禁用",
+            activeValue: "Y",
+            inactiveValue: "N",
+            activeText: "启用",
+            inactiveText: "禁用",
             dataRelation: {
               actionName: "change",
               relationDetails: [
-                { matchType: "eq", controlCondition: "eqVisible", relationFields: ["authToken"], matchFieldValue: ["Y"] },
+                {
+                  matchType: "eq",
+                  controlCondition: "eqVisible",
+                  relationFields: ["authToken"],
+                  matchFieldValue: ["Y"],
+                },
               ],
             },
           },
         },
-        { label: "认证令牌", fieldName: "authToken", type: "password", formVisible: false, preps: { placeholder: "Bearer Token" } },
         {
-          label: "加密方式", fieldName: "encryptMode", type: "select",
-          formVisible: true, defaultValue: "sha256",
+          label: "认证令牌",
+          fieldName: "authToken",
+          type: "password",
+          formVisible: false,
+          preps: { placeholder: "Bearer Token" },
+        },
+        {
+          label: "加密方式",
+          fieldName: "encryptMode",
+          type: "select",
+          formVisible: true,
+          defaultValue: "sha256",
           preps: { values: encryptModeOptions },
         },
       ],
@@ -132,17 +197,32 @@ const container = reactive<any>({
     // ========== network 网络配置 ==========
     {
       title: "网络配置",
-      tabName: "network",
-      objectName: "networkConfig",
+      subTablePrimaryKey: "network",
+      subTableName: "networkConfig",
       formVisible: false,
       fieldList: [
         {
-          label: "协议", fieldName: "protocol", type: "select", required: true,
-          formVisible: true, defaultValue: "https",
+          label: "协议",
+          fieldName: "protocol",
+          type: "select",
+          required: true,
+          formVisible: true,
+          defaultValue: "https",
           preps: { values: protocolOptions },
         },
-        { label: "主机地址", fieldName: "host", formVisible: true, defaultValue: "127.0.0.1" },
-        { label: "端口", fieldName: "port", type: "number", formVisible: true, defaultValue: 8080 },
+        {
+          label: "主机地址",
+          fieldName: "host",
+          formVisible: true,
+          defaultValue: "127.0.0.1",
+        },
+        {
+          label: "端口",
+          fieldName: "port",
+          type: "number",
+          formVisible: true,
+          defaultValue: 8080,
+        },
       ],
     },
   ],
@@ -152,8 +232,13 @@ const tableFieldList = reactive<PageFieldInfo | any>({
   fieldList: [
     { label: "主键", fieldName: "id", formVisible: false },
     {
-      label: "配置类型", fieldName: "configType", type: "select", required: true,
-      formVisible: true, listVisible: true, defaultValue: "basic",
+      label: "配置类型",
+      fieldName: "configType",
+      type: "select",
+      required: true,
+      formVisible: true,
+      listVisible: true,
+      defaultValue: "basic",
       preps: {
         values: configTypeOptions,
         // 通过 dataRelation 容器控制策略,声明式控制 collapseList 中各 collapse item 的显隐
@@ -165,7 +250,9 @@ const tableFieldList = reactive<PageFieldInfo | any>({
 });
 
 const rules = {
-  configType: [{ required: true, message: "请选择配置类型", trigger: "change" }],
+  configType: [
+    { required: true, message: "请选择配置类型", trigger: "change" },
+  ],
 };
 
 const dialogProps = dialogPreps("配置面板");
@@ -201,9 +288,10 @@ onMounted(() => {});
       style="margin-bottom: 12px"
     >
       <template #default>
-        切换「配置类型」下拉框,下方折叠面板应同步只显示对应配置项(其余隐藏,而非 disabled)。
-        这是通过 configType 的 dataRelation 配置 controlTarget="container" 实现的声明式 collapseList 容器控制。
-        每个 collapse item 内部还有字段级联动(如启用日志→显示日志路径)。
+        切换「配置类型」下拉框,下方折叠面板应同步只显示对应配置项(其余隐藏,而非
+        disabled)。 这是通过 configType 的 dataRelation 配置
+        controlTarget="container" 实现的声明式 collapseList 容器控制。 每个
+        collapse item 内部还有字段级联动(如启用日志→显示日志路径)。
       </template>
     </el-alert>
     <star-horse-dialog

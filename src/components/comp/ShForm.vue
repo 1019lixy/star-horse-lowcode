@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { provide, ref } from "vue";
 
 defineProps({
   needScroller: {
@@ -12,6 +12,7 @@ const dataForm = defineModel("dataForm");
 const getFields = () => {
   return shFormRef.value?.fields;
 };
+provide("starHorseFormRef", shFormRef);
 const validate = async () => {
   return await shFormRef.value?.validate();
 };

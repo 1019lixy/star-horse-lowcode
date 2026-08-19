@@ -1,21 +1,31 @@
 <script setup lang="ts">
 import { Config } from "@/api/settings";
 import { batchFieldDefaultValues } from "@/api/star_horse_utils";
-import { PropType } from "vue";
+import { computed, PropType } from "vue";
 import { compKey } from "@/api/system";
 
-defineProps({
+const props = defineProps({
   item: { type: Object as PropType<any>, required: true },
   rules: { type: Object },
   staticColumn: { type: String, default: "Y" },
   size: { type: String, default: "default" },
-  batchName: { type: String, default: "batchDataList" },
+  subTableName: { type: String, default: "subDataList" },
   primaryKey: { type: [String, Object] as PropType<string | any> },
   source: { type: Number, default: 1 },
-  commonFormat: { type: Function, default: () => {} },
+  commonFormat: {
+    type: Function,
+    default: () => {},
+  },
 });
 const _compKey = compKey;
 const exclusionFields: string[] = ["divider", "button", "usercomp"];
+
+const batchContainers = computed(() => {
+  const item: any = props.item;
+  return Array.isArray(item?.containerFields)
+    ? item.containerFields.filter((c: any) => c?.containerType === "table")
+    : [];
+});
 </script>
 
 <template>
@@ -27,16 +37,16 @@ const exclusionFields: string[] = ["divider", "button", "usercomp"];
     v-if="item.formVisible && !exclusionFields.includes(item.type)"
   >
     <template #default="scope">
-      <template v-if="item.batchFieldList?.length > 0">
+      <template v-if="batchContainers.length > 0">
         <star-horse-form-list
-          v-for="sitem in item.batchFieldList"
-          :key="_compKey(sitem, sitem.batchName)"
+          v-for="sitem in batchContainers"
+          :key="_compKey(sitem, sitem.subTablePrimaryKey)"
           style="min-height: 100px; width: 100% !important"
           v-model:dataForm="scope.row"
-          :compUrl="sitem['compUrl']"
+          :compUrl="sitem.preps?.compUrl"
           :primaryKey="sitem['primaryKey']"
-          :batchName="sitem['batchName']"
-          :initRows="sitem['initRows']"
+          :subTableName="sitem['subTableName']"
+          :initRows="sitem.preps?.initRows"
           :subFlag="true"
           :size="size"
           :source="source"
@@ -49,7 +59,7 @@ const exclusionFields: string[] = ["divider", "button", "usercomp"];
       <template v-else>
         <sh-table-list-column
           :primaryKey="primaryKey"
-          :batchName="batchName"
+          :subTableName="subTableName"
           :dataForm="scope.row"
           :size="size"
           :source="source"

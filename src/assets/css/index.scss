@@ -37,9 +37,10 @@ body {
   width: 100%;
   height: 100%;
   font-size: 12px;
-  font-family: "PingFang SC", "Lantinghei SC", "Microsoft YaHei", "HanHei SC",
-  "Helvetica Neue", "Open Sans", Arial, "Hiragino Sans GB",
-  STHeiti, "WenQuanYi Micro Hei", SimSun, sans-serif;
+  font-family:
+    "PingFang SC", "Lantinghei SC", "Microsoft YaHei", "HanHei SC",
+    "Helvetica Neue", "Open Sans", Arial, "Hiragino Sans GB", STHeiti,
+    "WenQuanYi Micro Hei", SimSun, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   margin: 0;
@@ -676,143 +677,6 @@ hr {
   margin-top: 10px;
 }
 
-.field-item {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  vertical-align: middle;
-  align-items: center;
-
-  .bare-item {
-    width: 100%;
-    height: 100%;
-  }
-
-  .component-header-actions {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    transform: translate(0, -100%) translateZ(0);
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-items: center;
-    justify-content: space-between;
-    z-index: 99;
-    background: transparent;
-    pointer-events: none;
-
-    .drag-handler,
-    .field-action {
-      position: relative;
-      top: auto;
-      left: auto;
-      right: auto;
-      transform: none;
-      display: flex;
-      flex-direction: row;
-      flex-wrap: nowrap;
-      align-items: center;
-      background: var(--star-horse-style);
-      z-index: 99;
-      pointer-events: auto;
-      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
-
-      .svg-icon {
-        font-size: 18px;
-        color: var(--star-horse-white);
-        margin: 3px 4px;
-        display: flex;
-        align-items: center;
-        cursor: pointer;
-      }
-    }
-
-    .drag-handler {
-      padding-right: 10px;
-      border-radius: 4px;
-      white-space: nowrap;
-
-      span {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 150px;
-      }
-    }
-
-    .field-action {
-      border-radius: 4px;
-    }
-  }
-
-  .field-action {
-    position: absolute;
-    top: 0;
-    transform: translate(0, -50%) translateZ(0);
-    right: 0;
-    align-items: center;
-    background: var(--star-horse-style);
-    z-index: 99;
-    display: flex;
-    vertical-align: middle;
-    /* 新增修复代码 */
-    white-space: nowrap; // 防止操作项换行
-    overflow: visible; // 允许内容溢出
-    flex-shrink: 0; // 禁止压缩
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15); // 添加阴影增强可视性
-
-    .svg-icon {
-      font-size: 18px;
-      color: var(--star-horse-white);
-      margin: 3px 4px;
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-    }
-  }
-
-  .drag-handler {
-    position: absolute;
-    top: 0;
-    left: 0;
-    display: flex;
-    align-items: center;
-    background: var(--star-horse-style);
-    z-index: 9999999;
-    transform: translate(0, -50%);
-
-    .svg-icon {
-      font-size: 18px;
-      color: var(--star-horse-white);
-      margin: 3px 4px;
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-
-      &:first-child {
-        cursor: move;
-      }
-
-      &:last-child {
-        cursor: pointer;
-      }
-    }
-  }
-}
-
-.field-action,
-.drag-handler {
-  :deep(.svg-icon) {
-    margin-left: 0;
-    margin-right: 0;
-  }
-}
-
-.drag-handler {
-  padding-right: 10px;
-}
 
 .dy-tr {
   min-height: 35px;
@@ -1045,8 +909,9 @@ button.el-collapse-item__header {
   -webkit-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  transition: width 0.2s,
-  height 0.2s;
+  transition:
+    width 0.2s,
+    height 0.2s;
   border: 1px solid var(--star-horse-border—color);
 
   .table-cell-action {
@@ -1564,6 +1429,41 @@ button.el-collapse-item__header {
     .is-current > .el-tree-node__content {
       background-color: var(--el-color-primary-light-9, #ecf5ff);
     }
+  }
+}
+
+.dialog-trigger {
+  margin: 10px auto;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.section-title-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  background: linear-gradient(135deg, #ecf5ff 0%, #f5f7fa 100%);
+  border-left: 3px solid var(--star-horse-style, #409eff);
+  border-radius: 0 6px 6px 0;
+  .section-dot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    background: var(--star-horse-style, #409eff);
+    color: #fff;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .section-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #303133;
   }
 }
 

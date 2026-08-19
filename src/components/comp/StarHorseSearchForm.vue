@@ -10,6 +10,7 @@ import Help from "@/components/help.vue";
 import { isMobile } from "@/api/device";
 import { MOBILE_POPPER_OPTIONS } from "@/components/formcomp/utils/useMobilePicker";
 import { getGlobalConfigStore } from "@/store/StoreManager";
+import StarHorseItem from "@/components/comp/StarHorseItem.vue";
 
 let matchTypeList = ref<SelectOption[]>();
 const emits = defineEmits(["searchData", "initComplete"]);
@@ -19,6 +20,7 @@ const props = withDefaults(
     defaultCondition?: SearchParams[];
     dialogInput: boolean;
     mutComp: boolean;
+    dialogType?: "dialog" | "drawer";
   }>(),
   {
     dialogInput: false,
@@ -153,7 +155,11 @@ defineExpose({
         >
           <el-select
             :size="compSize"
-            :style="isMobile ? 'width: 72px !important; height: 100%; padding-top: 2px' : 'width: 90px !important; height: 100%; padding-top: 2px'"
+            :style="
+              isMobile
+                ? 'width: 72px !important; height: 100%; padding-top: 2px'
+                : 'width: 90px !important; height: 100%; padding-top: 2px'
+            "
             :teleported="!isMobile"
             :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined"
             v-model="item['matchType']"
@@ -179,6 +185,7 @@ defineExpose({
         <star-horse-item
           v-model:data-form="searchForm"
           :compSize="compSize"
+          :dialogType="dialogType"
           :item="item"
           :source="4"
           @dataSearch="dataSearch"
@@ -193,7 +200,11 @@ defineExpose({
         >
           <el-select
             :size="compSize"
-            :style="isMobile ? 'width: 72px !important; height: 100%; padding-top: 2px' : 'width: 90px !important; height: 100%; padding-top: 2px'"
+            :style="
+              isMobile
+                ? 'width: 72px !important; height: 100%; padding-top: 2px'
+                : 'width: 90px !important; height: 100%; padding-top: 2px'
+            "
             :teleported="!isMobile"
             :popper-options="isMobile ? MOBILE_POPPER_OPTIONS : undefined"
             v-model="item['matchType']"
@@ -211,6 +222,7 @@ defineExpose({
         <star-horse-item
           v-model:data-form="searchForm"
           :compSize="compSize"
+          :dialogType="dialogType"
           :item="item"
           :source="4"
           @dataSearch="dataSearch"

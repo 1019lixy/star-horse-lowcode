@@ -5,6 +5,7 @@ export default {
   "starhorse.pleaseInput": "请输入",
   "starhorse.pleaseSelect": "请选择",
   "starhorse.notAllowEmpty": "不能为空",
+  btn: "按钮",
   /**
    * 登录页面------------
    */
@@ -268,7 +269,7 @@ export default {
   "ui.edit": "编辑",
   "ui.deleteRow": "删除当前行",
   "ui.addData": "添加数据",
-  "ui.addSubData":"添加子数据",
+  "ui.addSubData": "添加子数据",
   "ui.addRow": "加一行",
   "ui.pleaseInputKeyword": "请输入关键字",
   "ui.expandAll": "展开全部",
@@ -459,12 +460,12 @@ export default {
   "comp.treeMenu": "树形菜单",
   "comp.addData": "添加数据",
   "comp.deleteData": "删除数据",
-  "comp.presetColors":"预设颜色",
-  "comp.customColor":"自定义颜色",
-  "comp.colorHexPlaceholder":"请输入色值",
-  "comp.selectedCount":"已选 {n} 项",
-  "comp.weekdays":"日,一,二,三,四,五,六",
-  "message.clear":"清空",
+  "comp.presetColors": "预设颜色",
+  "comp.customColor": "自定义颜色",
+  "comp.colorHexPlaceholder": "请输入色值",
+  "comp.selectedCount": "已选 {n} 项",
+  "comp.weekdays": "日,一,二,三,四,五,六",
+  "message.clear": "清空",
   /**
    * JSON Editor Strings
    */
@@ -485,6 +486,12 @@ export default {
   "jsonEditor.structure": "结构",
   "jsonEditor.preview": "预览",
   "comp.underDevelopment": "功能开发中，现在点击提交按钮导出所有数据",
+  "comp.exportSelectFields": "选择导出字段",
+  "comp.exportFieldTip": "已选 {n} / {total} 个字段",
+  "comp.exportFieldEmpty": "请至少选择一个导出字段",
+  "comp.exportSelectAll": "全选",
+  "comp.exportClearAll": "取消全选",
+  "comp.exportResetDefault": "恢复默认",
   /**
    * Additional Component Strings
    */
@@ -682,6 +689,15 @@ export default {
   "pageConfig.buttonDisplayStyle": "页面按钮显示风格",
   "pageConfig.resetDefaultConfig": "一键默认配置",
   "pageConfig.pageStyle": "页面风格",
+  "pageConfig.dialogFormat": "弹窗格式",
+  "pageConfig.dialog": "弹窗",
+  "pageConfig.drawer": "抽屉",
+  "pageConfig.section.theme": "主题与配色",
+  "pageConfig.section.size": "尺寸与展示",
+  "pageConfig.section.menu": "菜单设置",
+  "pageConfig.section.other": "其他配置",
+  "pageConfig.classicColors": "经典配色",
+  "pageConfig.customColor": "自定义颜色",
   /**
    * Color Names
    */
@@ -901,27 +917,7 @@ export default {
   "item.noContentSet": "未设置内容",
   "item.editData": "编辑数据",
   "item.crontabConfig": "Crontab 配置器",
-  /**
-   * 右键菜单--------------
-   */
-  "context.new": "新建",
-  "context.cut": "剪切",
-  "context.copy": "复制",
-  "context.paste": "粘贴",
-  "context.selectAll": "全选",
-  "context.clear": "清空",
-  "context.preview": "预览",
-  "context.addComponent": "添加组件",
-  "context.selectContainer": "选中容器",
-  "context.undo": "撤销",
-  "context.delete": "删除",
-  "context.properties": "属性",
-  "context.centerHorizontally": "水平居中",
-  "context.moveUpLayer": "上移一层",
-  "context.moveDownLayer": "下移一层",
-  "context.bringToFront": "置顶",
-  "context.sendToBack": "置底",
-  "context.clearGuides": "清空参考线",
+
   /**
    * WebSocket--------------
    */
@@ -1200,7 +1196,8 @@ export default {
   "queryBuilder.groupBy.selectField": "选择分组字段",
   "queryBuilder.action.addGroupBy": "添加分组",
   "queryBuilder.action.addHaving": "添加过滤条件",
-  "queryBuilder.having.hint": "HAVING 用于对聚合结果进行过滤，例如：COUNT(id) > 5",
+  "queryBuilder.having.hint":
+    "HAVING 用于对聚合结果进行过滤，例如：COUNT(id) > 5",
 
   /**
    * 打印模板设计器 --------------
@@ -1855,7 +1852,8 @@ export default {
   "doctemplate.variable.remove": "删除",
   "doctemplate.template.new": "新文档模板",
   "doctemplate.template.titlePlaceholder": "文档标题",
-  "doctemplate.template.contentPlaceholder": "在此输入文档内容，使用 ${变量名} 插入变量",
+  "doctemplate.template.contentPlaceholder":
+    "在此输入文档内容，使用 ${变量名} 插入变量",
   "doctemplate.template.namePlaceholder": "请输入模板名称",
   "doctemplate.template.category": "分类",
   "doctemplate.sample.title": "示例合同",
@@ -2645,7 +2643,8 @@ export default {
   "digitaltwin.video.locate": "在场景中定位",
   "digitaltwin.video.placeholder": "请选择左侧摄像头",
   "digitaltwin.ifc.invalidFormat": "请选择 IFC 格式文件",
-  "digitaltwin.ifc.importSuccess": "IFC 文件导入成功：{count} 个元素，耗时 {ms}ms",
+  "digitaltwin.ifc.importSuccess":
+    "IFC 文件导入成功：{count} 个元素，耗时 {ms}ms",
   "digitaltwin.ifc.importFailed": "IFC 文件导入失败",
   "digitaltwin.toolbar.template": "场景模板",
   "digitaltwin.toolbar.hierarchy": "场景层级",
@@ -2795,9 +2794,12 @@ export default {
   "digitaltwin.template.factory": "工厂车间",
   "digitaltwin.template.datacenter": "数据中心",
   "digitaltwin.template.energystation": "能源站",
-  "digitaltwin.template.desc.factory": "包含厂房、储罐、泵、阀门、换热器与管道的标准工厂布局",
-  "digitaltwin.template.desc.datacenter": "包含机房、机柜、精密空调、UPS 与运维人员的数据中心布局",
-  "digitaltwin.template.desc.energystation": "包含太阳能板、风力发电机、变压器与配电柜的能源站布局",
+  "digitaltwin.template.desc.factory":
+    "包含厂房、储罐、泵、阀门、换热器与管道的标准工厂布局",
+  "digitaltwin.template.desc.datacenter":
+    "包含机房、机柜、精密空调、UPS 与运维人员的数据中心布局",
+  "digitaltwin.template.desc.energystation":
+    "包含太阳能板、风力发电机、变压器与配电柜的能源站布局",
   "digitaltwin.message.modelAdded": "模型已添加",
   "digitaltwin.message.templateApplied": "模板已应用",
   "digitaltwin.message.bindingSaved": "绑定已保存",
@@ -2887,9 +2889,11 @@ export default {
   "digitaltwin.customComponentDialog.partsCount": "共 {0} 个部件",
   "digitaltwin.customComponentDialog.save": "保存到库",
   "digitaltwin.customComponentDialog.empty": "请先在场景中选中一个实体",
-  "digitaltwin.customComponentDialog.libraryEmpty": "暂无自定义组件，可在“保存组件”页签中创建",
+  "digitaltwin.customComponentDialog.libraryEmpty":
+    "暂无自定义组件，可在“保存组件”页签中创建",
   "digitaltwin.customComponentDialog.search": "搜索组件...",
-  "digitaltwin.customComponentDialog.deleteConfirm": "确认删除自定义组件“{0}”？",
+  "digitaltwin.customComponentDialog.deleteConfirm":
+    "确认删除自定义组件“{0}”？",
   // ─── 视口（DtSceneViewport 已引用，补齐） ───
   "digitaltwin.viewport.webglUnavailable": "WebGL 不可用",
   "digitaltwin.viewport.reset": "重置视角",
@@ -2904,7 +2908,8 @@ export default {
   "digitaltwin.viewport.preset.side": "侧视",
   "digitaltwin.viewport.preset.iso": "斜视",
   "digitaltwin.viewport.hint.view": "点击实体选中 · 滚轮缩放",
-  "digitaltwin.viewport.hint.edit": "拖拽 Gizmo 移动 · Shift+拖拽 框选 · 右键 菜单",
+  "digitaltwin.viewport.hint.edit":
+    "拖拽 Gizmo 移动 · Shift+拖拽 框选 · 右键 菜单",
   "digitaltwin.viewport.hint.measure": "点击两点测量距离",
   "digitaltwin.viewport.hint.annotation": "点击实体添加标注",
   "digitaltwin.viewport.hint.inspection": "点击实体查看详情",
@@ -3035,7 +3040,25 @@ export default {
   "pivot.btn.applyApi": "应用",
   "pivot.message.apiUrlRequired": "请输入 API 地址",
   "pivot.message.apiHeadersInvalid": "请求头 JSON 格式错误",
-  "pivot.message.apiResponseMustBeArray": "API 响应必须是数组，或通过数据路径指向数组",
+  "pivot.message.apiResponseMustBeArray":
+    "API 响应必须是数组，或通过数据路径指向数组",
   "pivot.message.apiFetchFailed": "API 拉取失败",
-  "pivot.message.apiFetchSuccess": "拉取成功，共"
+  "pivot.message.apiFetchSuccess": "拉取成功，共",
+  // step 容器
+  "dyform.step.prev": "上一步",
+  "dyform.step.next": "下一步",
+  "dyform.step.add": "添加步骤",
+  "dyform.step.delete": "删除步骤",
+  "dyform.step.confirmDelete": "确定要删除当前步骤及其所有字段吗？",
+  "dyform.step.defaultName": "步骤",
+  "dyform.step.sameForm": "同属一个表单",
+  "dyform.step.sameFormHint": "当前模式",
+  "dyform.step.sameFormYes": "同表单",
+  "dyform.step.sameFormNo": "分表单",
+  "dyform.step.stepIncomplete": "请完成当前步骤的必填字段：",
+  "dyform.step.completeHint": "以下字段未填写：",
+  "dyform.step.complete": "完成",
+  "dyform.step.validateFailed": "以下必填字段未填写：",
+  "dyform.container.anchorSection": "区块",
+  "dyform.container.anchorNavTitle": "快速导航",
 };

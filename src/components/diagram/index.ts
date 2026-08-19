@@ -6,13 +6,13 @@ export { default as DiagramPropertyPanel } from "./panels/DiagramPropertyPanel.v
 export { default as DiagramPreviewDialog } from "./dialogs/DiagramPreviewDialog.vue";
 export { useDiagramDesigner } from "./composables/useDiagramDesigner";
 export {
-    NODE_PRESETS,
-    PRESET_CATEGORIES,
-    DEFAULT_CANVAS,
-    DEFAULT_EDGE_STYLE,
-    getShapePath,
-    getPortPosition,
-    getNodeCenter,
-    createNode,
+  NODE_PRESETS,
+  PRESET_CATEGORIES,
+  DEFAULT_CANVAS,
+  DEFAULT_EDGE_STYLE,
+  getShapePath,
+  getPortPosition,
+  getNodeCenter,
+  createNode,
 } from "./constants";
 export type * from "./types";

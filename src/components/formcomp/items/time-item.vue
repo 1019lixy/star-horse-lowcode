@@ -55,13 +55,18 @@
 </template>
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref, watch } from "vue";
-import { allAction, checkIsDisabled, initCompCallEvent, prepsFilter, relationEventDispatcher } from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {
+  allAction,
+  checkIsDisabled,
+  initCompCallEvent,
+  prepsFilter,
+  relationEventDispatcher,
+} from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { getDynamicEvents } from "@/api/system";
 import { ItemPreps } from "@/components/types/ItemPreps";
 import { useMobilePicker } from "@/components/formcomp/utils/useMobilePicker";
 import ShMobilePicker from "@/components/formcomp/utils/ShMobilePicker.vue";
 import ShMobileWheelPicker from "@/components/formcomp/utils/ShMobileWheelPicker.vue";
-import { i18n } from "@/lang";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -89,12 +94,14 @@ const isRange = computed(() => {
 });
 
 const showSecond = computed(() => {
-  const fmt = props.field.preps?.format || props.field.preps?.valueFormat || "HH:mm";
+  const fmt =
+    props.field.preps?.format || props.field.preps?.valueFormat || "HH:mm";
   return fmt.includes("ss");
 });
 
 const wheelValueFormat = computed(() => {
-  const fmt = props.field.preps?.valueFormat || props.field.preps?.format || "HH:mm";
+  const fmt =
+    props.field.preps?.valueFormat || props.field.preps?.format || "HH:mm";
   return fmt.includes("ss") ? "HH:mm:ss" : "HH:mm";
 });
 
@@ -175,5 +182,4 @@ closeWatch.value = watch(
   { immediate: true },
 );
 </script>
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

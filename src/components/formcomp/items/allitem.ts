@@ -1,9 +1,11 @@
-import { App, defineAsyncComponent } from "vue";
+import { App } from "vue";
 
-const items = import.meta.glob("@/components/formcomp/items/*.vue");
+const items = import.meta.glob("@/components/formcomp/items/*.vue", {
+  eager: true,
+});
 export default function install(app: App<Element>) {
-  for (const [key, value] of Object.entries(items)) {
+  for (const [key, mod] of Object.entries(items)) {
     const name = key.slice(key.lastIndexOf("/") + 1, key.lastIndexOf("."));
-    app.component(name, defineAsyncComponent(value as any));
+    app.component(name, (mod as any).default);
   }
 }

@@ -8,6 +8,10 @@ export { default as IotDeviceDetailDialog } from "./dialogs/IotDeviceDetailDialo
 export { useIotTopology } from "./composables/useIotTopology";
 export { useAlarmCenter } from "./composables/useAlarmCenter";
 export { useRealtimeChart } from "./composables/useRealtimeChart";
-export { renderLineChart, formatTime, niceScale } from "./utils/IotChartRenderer";
+export {
+  renderLineChart,
+  formatTime,
+  niceScale,
+} from "./utils/IotChartRenderer";
 export * from "./types";
 export * from "./constants";

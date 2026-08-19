@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, computed } from "vue";
+import { computed, ref, watch } from "vue";
 import type { IdeApiConfig } from "./constants";
 import { API_METHOD_MAP } from "./constants";
 
@@ -335,6 +335,7 @@ const overlayStyle = computed(() => {
 .api-dialog-fade-leave-active {
   transition: opacity 0.2s ease;
 }
+
 .api-dialog-fade-enter-from,
 .api-dialog-fade-leave-to {
   opacity: 0;
@@ -393,6 +394,7 @@ const overlayStyle = computed(() => {
   align-items: center;
   transition: all 0.15s;
 }
+
 .api-dialog-close:hover {
   background: var(--ide-bg-hover, #2a2d2e);
   color: var(--ide-fg, #cccccc);
@@ -411,9 +413,11 @@ const overlayStyle = computed(() => {
 .api-dialog-body::-webkit-scrollbar {
   width: 6px;
 }
+
 .api-dialog-body::-webkit-scrollbar-track {
   background: transparent;
 }
+
 .api-dialog-body::-webkit-scrollbar-thumb {
   background: var(--ide-fg-dim, rgba(121, 121, 121, 0.4));
   border-radius: 3px;
@@ -522,11 +526,13 @@ const overlayStyle = computed(() => {
     box-shadow 0.15s;
   box-sizing: border-box;
 }
+
 .api-field-input:focus {
   border-color: var(--ide-accent, #007acc);
   box-shadow: 0 0 0 2px
     color-mix(in srgb, var(--ide-accent, #007acc) 25%, transparent);
 }
+
 .api-field-input::placeholder {
   color: var(--ide-fg-dim, #555);
   font-style: italic;
@@ -545,6 +551,7 @@ const overlayStyle = computed(() => {
   align-items: center;
   transition: all 0.15s;
 }
+
 .api-field-clear:hover {
   color: var(--ide-error, #f14c4c);
   background: rgba(241, 76, 76, 0.1);
@@ -583,6 +590,7 @@ const overlayStyle = computed(() => {
 .api-btn-reset {
   color: var(--ide-fg-dim, #999);
 }
+
 .api-btn-reset:hover {
   background: var(--ide-bg-hover, #2a2d2e);
   color: var(--ide-fg, #cccccc);
@@ -597,9 +605,11 @@ const overlayStyle = computed(() => {
   border-color: var(--ide-accent, #007acc);
   color: #fff;
 }
+
 .api-btn-save:hover:not(:disabled) {
   background: var(--ide-accent-hover, #1a8ad4);
 }
+
 .api-btn-save:disabled {
   opacity: 0.4;
   cursor: not-allowed;

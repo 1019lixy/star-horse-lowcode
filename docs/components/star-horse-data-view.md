@@ -9,7 +9,7 @@
   <StarHorseDataView
     :compUrl="apiUrls"
     :fieldList="pageFieldInfo"
-    :objectName="'subData'"
+    :subTableName="'subData'"
     @dataLoaded="onDataLoaded"
   />
 </template>
@@ -20,11 +20,11 @@
 | 属性名 | 类型 | 必填 | 默认值 | 说明 |
 |---|---|---|---|---|
 | compUrl | `ApiUrls` | 否 | — | 接口地址配置 |
-| objectName | `string` | 否 | — | 子集合 Key 名称 |
+| subTableName | `string` | 否 | — | 子集合 Key 名称 |
 | subFormFlag | `string` | 否 | `'N'` | 是否子表单标识 |
 | formSize | `string` | 否 | `'default'` | 表单尺寸 |
 | labelPosition | `string` | 否 | `'left'` | 标签位置 |
-| batchName | `string` | 否 | `'batchDataList'` | 批量数据 Key |
+| subTableName | `string` | 否 | `'subDataList'` | 批量数据 Key |
 | batchFieldName | `string` | 否 | `'batchFieldList'` | 批量字段 Key |
 | fieldList | `object` | **是** | — | 表单字段配置 |
 | globalCondition | `object` | 否 | — | 全局过滤条件 |

@@ -195,9 +195,7 @@ function normalizeYear(year: string): string {
  * 通过 new Date(y, m-1, d, h, mi, s) 本地构造让 JS 自动进位，再用本地方法取值避免时区偏移
  * 非本地日期格式返回 null
  */
-function parseLocalDateTimeParts(
-  val: string,
-): {
+function parseLocalDateTimeParts(val: string): {
   year: string;
   month: string;
   day: string;
@@ -285,8 +283,7 @@ function tryAlreadyFormatted(
       // ISO → 直接取 UTC 年月日
       if (iso) return iso.year + split + iso.month + split + iso.day;
       // 本地日期/日期时间字符串 → 取年月日（标准化补零）
-      if (local)
-        return local.year + split + local.month + split + local.day;
+      if (local) return local.year + split + local.month + split + local.day;
       break;
     case "datetime":
     case "datetimerange":
@@ -296,13 +293,7 @@ function tryAlreadyFormatted(
           ? `${local.hour}:${local.minute}:${local.second}`
           : `${local.hour}:${local.minute}`;
         return (
-          local.year +
-          split +
-          local.month +
-          split +
-          local.day +
-          " " +
-          timePart
+          local.year + split + local.month + split + local.day + " " + timePart
         );
       }
       // ISO → 用 Date 转换保留时间部分（datetime 需要本地时间显示）

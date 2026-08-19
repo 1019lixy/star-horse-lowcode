@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import {ref} from "vue";
-import {DiagramDesigner} from "@/components/diagram";
-import type {DiagramData} from "@/components/diagram";
+import { ref } from "vue";
+import type { DiagramData } from "@/components/diagram";
+import { DiagramDesigner } from "@/components/diagram";
 
 const diagramData = ref<DiagramData>({
   id: "demo_diagram",
@@ -16,12 +16,18 @@ const diagramData = ref<DiagramData>({
       y: 80,
       width: 100,
       height: 40,
-      style: {fill: "#52C41A", stroke: "#389E0D", textColor: "#FFFFFF", fontSize: 14, fontWeight: "bold"},
+      style: {
+        fill: "#52C41A",
+        stroke: "#389E0D",
+        textColor: "#FFFFFF",
+        fontSize: 14,
+        fontWeight: "bold",
+      },
       ports: [
-        {id: "top", position: "top", input: true, output: true},
-        {id: "right", position: "right", input: true, output: true},
-        {id: "bottom", position: "bottom", input: true, output: true},
-        {id: "left", position: "left", input: true, output: true},
+        { id: "top", position: "top", input: true, output: true },
+        { id: "right", position: "right", input: true, output: true },
+        { id: "bottom", position: "bottom", input: true, output: true },
+        { id: "left", position: "left", input: true, output: true },
       ],
     },
     {
@@ -33,12 +39,17 @@ const diagramData = ref<DiagramData>({
       y: 80,
       width: 120,
       height: 50,
-      style: {fill: "#1890FF", stroke: "#096DD9", textColor: "#FFFFFF", fontSize: 13},
+      style: {
+        fill: "#1890FF",
+        stroke: "#096DD9",
+        textColor: "#FFFFFF",
+        fontSize: 13,
+      },
       ports: [
-        {id: "top", position: "top", input: true, output: true},
-        {id: "right", position: "right", input: true, output: true},
-        {id: "bottom", position: "bottom", input: true, output: true},
-        {id: "left", position: "left", input: true, output: true},
+        { id: "top", position: "top", input: true, output: true },
+        { id: "right", position: "right", input: true, output: true },
+        { id: "bottom", position: "bottom", input: true, output: true },
+        { id: "left", position: "left", input: true, output: true },
       ],
     },
     {
@@ -50,12 +61,17 @@ const diagramData = ref<DiagramData>({
       y: 70,
       width: 120,
       height: 80,
-      style: {fill: "#FAAD14", stroke: "#D48806", textColor: "#FFFFFF", fontSize: 13},
+      style: {
+        fill: "#FAAD14",
+        stroke: "#D48806",
+        textColor: "#FFFFFF",
+        fontSize: 13,
+      },
       ports: [
-        {id: "top", position: "top", input: true, output: true},
-        {id: "right", position: "right", input: true, output: true},
-        {id: "bottom", position: "bottom", input: true, output: true},
-        {id: "left", position: "left", input: true, output: true},
+        { id: "top", position: "top", input: true, output: true },
+        { id: "right", position: "right", input: true, output: true },
+        { id: "bottom", position: "bottom", input: true, output: true },
+        { id: "left", position: "left", input: true, output: true },
       ],
     },
     {
@@ -67,12 +83,17 @@ const diagramData = ref<DiagramData>({
       y: 80,
       width: 120,
       height: 50,
-      style: {fill: "#1890FF", stroke: "#096DD9", textColor: "#FFFFFF", fontSize: 13},
+      style: {
+        fill: "#1890FF",
+        stroke: "#096DD9",
+        textColor: "#FFFFFF",
+        fontSize: 13,
+      },
       ports: [
-        {id: "top", position: "top", input: true, output: true},
-        {id: "right", position: "right", input: true, output: true},
-        {id: "bottom", position: "bottom", input: true, output: true},
-        {id: "left", position: "left", input: true, output: true},
+        { id: "top", position: "top", input: true, output: true },
+        { id: "right", position: "right", input: true, output: true },
+        { id: "bottom", position: "bottom", input: true, output: true },
+        { id: "left", position: "left", input: true, output: true },
       ],
     },
     {
@@ -84,12 +105,18 @@ const diagramData = ref<DiagramData>({
       y: 80,
       width: 100,
       height: 40,
-      style: {fill: "#F5222D", stroke: "#CF1322", textColor: "#FFFFFF", fontSize: 14, fontWeight: "bold"},
+      style: {
+        fill: "#F5222D",
+        stroke: "#CF1322",
+        textColor: "#FFFFFF",
+        fontSize: 14,
+        fontWeight: "bold",
+      },
       ports: [
-        {id: "top", position: "top", input: true, output: true},
-        {id: "right", position: "right", input: true, output: true},
-        {id: "bottom", position: "bottom", input: true, output: true},
-        {id: "left", position: "left", input: true, output: true},
+        { id: "top", position: "top", input: true, output: true },
+        { id: "right", position: "right", input: true, output: true },
+        { id: "bottom", position: "bottom", input: true, output: true },
+        { id: "left", position: "left", input: true, output: true },
       ],
     },
     {
@@ -101,21 +128,63 @@ const diagramData = ref<DiagramData>({
       y: 220,
       width: 120,
       height: 50,
-      style: {fill: "#13C2C2", stroke: "#08979C", textColor: "#FFFFFF", fontSize: 13},
+      style: {
+        fill: "#13C2C2",
+        stroke: "#08979C",
+        textColor: "#FFFFFF",
+        fontSize: 13,
+      },
       ports: [
-        {id: "top", position: "top", input: true, output: true},
-        {id: "right", position: "right", input: true, output: true},
-        {id: "bottom", position: "bottom", input: true, output: true},
-        {id: "left", position: "left", input: true, output: true},
+        { id: "top", position: "top", input: true, output: true },
+        { id: "right", position: "right", input: true, output: true },
+        { id: "bottom", position: "bottom", input: true, output: true },
+        { id: "left", position: "left", input: true, output: true },
       ],
     },
   ],
   edges: [
-    {id: "e1", source: "n1", sourcePort: "right", target: "n2", targetPort: "left", type: "orthogonal"},
-    {id: "e2", source: "n2", sourcePort: "right", target: "n3", targetPort: "left", type: "orthogonal"},
-    {id: "e3", source: "n3", sourcePort: "right", target: "n4", targetPort: "left", type: "orthogonal", label: "是"},
-    {id: "e4", source: "n4", sourcePort: "right", target: "n5", targetPort: "left", type: "orthogonal"},
-    {id: "e5", source: "n3", sourcePort: "bottom", target: "n6", targetPort: "top", type: "orthogonal", label: "否"},
+    {
+      id: "e1",
+      source: "n1",
+      sourcePort: "right",
+      target: "n2",
+      targetPort: "left",
+      type: "orthogonal",
+    },
+    {
+      id: "e2",
+      source: "n2",
+      sourcePort: "right",
+      target: "n3",
+      targetPort: "left",
+      type: "orthogonal",
+    },
+    {
+      id: "e3",
+      source: "n3",
+      sourcePort: "right",
+      target: "n4",
+      targetPort: "left",
+      type: "orthogonal",
+      label: "是",
+    },
+    {
+      id: "e4",
+      source: "n4",
+      sourcePort: "right",
+      target: "n5",
+      targetPort: "left",
+      type: "orthogonal",
+    },
+    {
+      id: "e5",
+      source: "n3",
+      sourcePort: "bottom",
+      target: "n6",
+      targetPort: "top",
+      type: "orthogonal",
+      label: "否",
+    },
   ],
   layers: [
     {
@@ -146,10 +215,12 @@ const diagramData = ref<DiagramData>({
 <template>
   <div class="demo-container">
     <h3>流程图设计器 DiagramDesigner</h3>
-    <p>基于 SVG 自研的图编辑器，支持节点拖拽、连线、属性编辑。可用于流程设计、ER
-      图、架构图等场景。左侧为节点面板，中间为画布，右侧为属性面板。</p>
+    <p>
+      基于 SVG 自研的图编辑器，支持节点拖拽、连线、属性编辑。可用于流程设计、ER
+      图、架构图等场景。左侧为节点面板，中间为画布，右侧为属性面板。
+    </p>
     <div class="demo-canvas">
-      <DiagramDesigner :initial-diagram="diagramData"/>
+      <DiagramDesigner :initial-diagram="diagramData" />
     </div>
   </div>
 </template>
@@ -164,7 +235,7 @@ const diagramData = ref<DiagramData>({
 }
 
 .demo-canvas {
-  flex:1;
+  flex: 1;
   border: 1px solid var(--el-border-color);
   border-radius: 4px;
   overflow: hidden;

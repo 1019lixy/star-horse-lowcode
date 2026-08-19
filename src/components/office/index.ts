@@ -13,12 +13,12 @@ export { useOfficeHistory } from "./composables/useOfficeHistory";
 // 注意：parseRange 与 report 模块重名，
 // 不通过 barrel 导出，外部如需使用请从 utils/OfficeFormulaUtils 直接导入
 export {
-    evaluateFormula,
-    recalcSheet,
-    parseCellRef,
-    isFormula,
-    cellNumericValue,
-    buildCellMap,
+  evaluateFormula,
+  recalcSheet,
+  parseCellRef,
+  isFormula,
+  cellNumericValue,
+  buildCellMap,
 } from "./utils/OfficeFormulaUtils";
 export * from "./types";
 export * from "./constants";

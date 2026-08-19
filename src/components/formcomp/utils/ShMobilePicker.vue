@@ -25,21 +25,37 @@
   >
     <template v-if="showHeader" #header>
       <div class="sh-mobile-picker__header">
-        <span class="sh-mobile-picker__title flex ">  <star-horse-icon iconClass="document" color="var(--star-horse-white)" />{{ title }}</span>
-          <div class="flex flex-row items-center gap-3">
-            <div class="flex flex-row items-center cursor-pointer" @click="handleCancel"><star-horse-icon iconClass="close" color="var(--star-horse-white)"/>{{ cancelText }}</div>
-            <div class="flex flex-row items-center cursor-pointer" @click="handleConfirm">
-              <star-horse-icon iconClass="save" color="var(--star-horse-white)" /> {{ confirmText }}
-            </div>
+        <span class="sh-mobile-picker__title flex">
+          <star-horse-icon
+            iconClass="document"
+            color="var(--star-horse-white)"
+          />{{ title }}</span
+        >
+        <div class="flex flex-row items-center gap-3">
+          <div
+            class="flex flex-row items-center cursor-pointer"
+            @click="handleCancel"
+          >
+            <star-horse-icon
+              iconClass="close"
+              color="var(--star-horse-white)"
+            />
+            {{ cancelText }}
           </div>
+          <div
+            class="flex flex-row items-center cursor-pointer"
+            @click="handleConfirm"
+          >
+            <star-horse-icon iconClass="save" color="var(--star-horse-white)" />
+            {{ confirmText }}
+          </div>
+        </div>
       </div>
     </template>
 
     <div class="sh-mobile-picker__body">
       <slot :confirm="handleConfirm" :cancel="handleCancel" />
     </div>
-
-
   </el-drawer>
 </template>
 

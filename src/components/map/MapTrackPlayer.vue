@@ -1,10 +1,15 @@
 <script setup lang="ts" name="MapTrackPlayer">
-import {computed, onBeforeUnmount, ref, watch} from "vue";
-import {i18n} from "@/lang";
-import {useTrackPlayer} from "./composables/useTrackPlayer";
-import {DEFAULT_MAP_BOUNDS, DEFAULT_TRACK_COLOR, DEFAULT_TRAVELED_COLOR, TRACK_SPEED_PRESETS} from "./constants";
-import {project} from "./utils/MapProjection";
-import type {MapBounds, TrackData} from "./types";
+import { computed, onBeforeUnmount, ref, watch } from "vue";
+import { i18n } from "@/lang";
+import { useTrackPlayer } from "./composables/useTrackPlayer";
+import {
+  DEFAULT_MAP_BOUNDS,
+  DEFAULT_TRACK_COLOR,
+  DEFAULT_TRAVELED_COLOR,
+  TRACK_SPEED_PRESETS,
+} from "./constants";
+import { project } from "./utils/MapProjection";
+import type { MapBounds, TrackData } from "./types";
 
 const props = defineProps<{
   tracks?: TrackData[];
@@ -26,22 +31,37 @@ const bounds = computed<MapBounds>(() => props.bounds ?? DEFAULT_MAP_BOUNDS);
 
 /** 所有轨迹的像素路径 */
 const trackPaths = computed(() =>
-    player.tracks.map((track) => {
-      const pts = track.points.map((p) => project({
-        lng: p.lng,
-        lat: p.lat
-      }, bounds.value, canvasWidth.value, canvasHeight.value, 10));
-      const fullPath = pts.length > 0 ? `M ${pts[0].x},${pts[0].y} ` + pts.slice(1).map((p) => `L ${p.x},${p.y}`).join(" ") : "";
-      return {
-        id: track.id,
-        name: track.name,
-        color: track.color ?? DEFAULT_TRACK_COLOR,
-        traveledColor: track.traveledColor ?? DEFAULT_TRAVELED_COLOR,
-        fullPath,
-        points: pts,
-        totalCount: pts.length,
-      };
-    }),
+  player.tracks.map((track) => {
+    const pts = track.points.map((p) =>
+      project(
+        {
+          lng: p.lng,
+          lat: p.lat,
+        },
+        bounds.value,
+        canvasWidth.value,
+        canvasHeight.value,
+        10,
+      ),
+    );
+    const fullPath =
+      pts.length > 0
+        ? `M ${pts[0].x},${pts[0].y} ` +
+          pts
+            .slice(1)
+            .map((p) => `L ${p.x},${p.y}`)
+            .join(" ")
+        : "";
+    return {
+      id: track.id,
+      name: track.name,
+      color: track.color ?? DEFAULT_TRACK_COLOR,
+      traveledColor: track.traveledColor ?? DEFAULT_TRAVELED_COLOR,
+      fullPath,
+      points: pts,
+      totalCount: pts.length,
+    };
+  }),
 );
 
 /** 当前轨迹的已走过路径像素坐标 */
@@ -49,10 +69,18 @@ const currentTraveledPath = computed(() => {
   const track = player.currentTrack.value;
   if (!track || track.points.length === 0) return "";
   const idx = player.currentIndex.value;
-  const pts = track.points.slice(0, idx + 1).map((p) => project({
-    lng: p.lng,
-    lat: p.lat
-  }, bounds.value, canvasWidth.value, canvasHeight.value, 10));
+  const pts = track.points.slice(0, idx + 1).map((p) =>
+    project(
+      {
+        lng: p.lng,
+        lat: p.lat,
+      },
+      bounds.value,
+      canvasWidth.value,
+      canvasHeight.value,
+      10,
+    ),
+  );
   if (pts.length === 0) return "";
   if (pts.length === 1) return `M ${pts[0].x},${pts[0].y}`;
   let path = `M ${pts[0].x},${pts[0].y} `;
@@ -66,7 +94,13 @@ const currentTraveledPath = computed(() => {
 const currentMarker = computed(() => {
   const pos = player.currentPoint.value;
   if (!pos) return null;
-  return project(pos.position, bounds.value, canvasWidth.value, canvasHeight.value, 10);
+  return project(
+    pos.position,
+    bounds.value,
+    canvasWidth.value,
+    canvasHeight.value,
+    10,
+  );
 });
 
 const handlePlayPause = () => {
@@ -86,18 +120,18 @@ const handleSpeedChange = (s: number) => player.setSpeed(s);
 const handleTrackChange = (id: string) => player.setCurrentTrack(id);
 
 watch(
-    () => player.currentIndex.value,
-    (idx) => emits("point-change", idx),
+  () => player.currentIndex.value,
+  (idx) => emits("point-change", idx),
 );
 
 watch(
-    () => player.progress.value,
-    (p) => {
-      if (p >= 1) {
-        const track = player.currentTrack.value;
-        if (track) emits("reach-end", track.id);
-      }
-    },
+  () => player.progress.value,
+  (p) => {
+    if (p >= 1) {
+      const track = player.currentTrack.value;
+      if (track) emits("reach-end", track.id);
+    }
+  },
 );
 
 onBeforeUnmount(() => {
@@ -115,69 +149,90 @@ const formatTime = (ms: number) => {
   <div class="map-track-player">
     <div class="player-canvas" :style="{ height: `${canvasHeight}px` }">
       <svg
-          :viewBox="`0 0 ${canvasWidth} ${canvasHeight}`"
-          width="100%"
-          height="100%"
-          preserveAspectRatio="xMidYMid meet"
+        :viewBox="`0 0 ${canvasWidth} ${canvasHeight}`"
+        width="100%"
+        height="100%"
+        preserveAspectRatio="xMidYMid meet"
       >
         <image
-            v-if="backgroundImage"
-            :href="backgroundImage"
-            :x="10" :y="10"
-            :width="canvasWidth - 20"
-            :height="canvasHeight - 20"
-            preserveAspectRatio="xMidYMid slice"
-            opacity="0.4"
+          v-if="backgroundImage"
+          :href="backgroundImage"
+          :x="10"
+          :y="10"
+          :width="canvasWidth - 20"
+          :height="canvasHeight - 20"
+          preserveAspectRatio="xMidYMid slice"
+          opacity="0.4"
         />
         <rect
-            :x="10" :y="10"
-            :width="canvasWidth - 20"
-            :height="canvasHeight - 20"
-            fill="none"
-            stroke="var(--el-border-color)"
+          :x="10"
+          :y="10"
+          :width="canvasWidth - 20"
+          :height="canvasHeight - 20"
+          fill="none"
+          stroke="var(--el-border-color)"
         />
         <!-- 所有轨迹（灰色底层） -->
         <path
-            v-for="tp in trackPaths"
-            :key="tp.id"
-            :d="tp.fullPath"
-            fill="none"
-            :stroke="tp.color"
-            stroke-width="2"
-            stroke-opacity="0.35"
+          v-for="tp in trackPaths"
+          :key="tp.id"
+          :d="tp.fullPath"
+          fill="none"
+          :stroke="tp.color"
+          stroke-width="2"
+          stroke-opacity="0.35"
         />
         <!-- 当前轨迹已走过部分（高亮） -->
         <path
-            v-if="currentTraveledPath"
-            :d="currentTraveledPath"
-            fill="none"
-            :stroke="DEFAULT_TRAVELED_COLOR"
-            stroke-width="3"
+          v-if="currentTraveledPath"
+          :d="currentTraveledPath"
+          fill="none"
+          :stroke="DEFAULT_TRAVELED_COLOR"
+          stroke-width="3"
         />
         <!-- 当前位置标记 -->
         <g v-if="currentMarker">
           <circle
-              :cx="currentMarker.x"
-              :cy="currentMarker.y"
-              :r="8"
-              fill="#409EFF"
-              stroke="#FFFFFF"
-              stroke-width="2"
+            :cx="currentMarker.x"
+            :cy="currentMarker.y"
+            :r="8"
+            fill="#409EFF"
+            stroke="#FFFFFF"
+            stroke-width="2"
           />
-          <circle :cx="currentMarker.x" :cy="currentMarker.y" :r="14" fill="none" stroke="#409EFF" stroke-width="1"
-                  stroke-opacity="0.5">
-            <animate attributeName="r" from="8" to="20" dur="1.5s" repeatCount="indefinite"/>
-            <animate attributeName="stroke-opacity" from="0.6" to="0" dur="1.5s" repeatCount="indefinite"/>
+          <circle
+            :cx="currentMarker.x"
+            :cy="currentMarker.y"
+            :r="14"
+            fill="none"
+            stroke="#409EFF"
+            stroke-width="1"
+            stroke-opacity="0.5"
+          >
+            <animate
+              attributeName="r"
+              from="8"
+              to="20"
+              dur="1.5s"
+              repeatCount="indefinite"
+            />
+            <animate
+              attributeName="stroke-opacity"
+              from="0.6"
+              to="0"
+              dur="1.5s"
+              repeatCount="indefinite"
+            />
           </circle>
         </g>
         <!-- 空状态 -->
         <text
-            v-if="trackPaths.length === 0"
-            :x="canvasWidth / 2"
-            :y="canvasHeight / 2"
-            text-anchor="middle"
-            font-size="14"
-            fill="var(--el-text-color-placeholder)"
+          v-if="trackPaths.length === 0"
+          :x="canvasWidth / 2"
+          :y="canvasHeight / 2"
+          text-anchor="middle"
+          font-size="14"
+          fill="var(--el-text-color-placeholder)"
         >
           {{ i18n("map.track.empty") }}
         </text>
@@ -185,75 +240,80 @@ const formatTime = (ms: number) => {
     </div>
     <div class="player-controls">
       <div class="left-controls">
-        <el-button @click="handlePlayPause" :disabled="player.totalPoints.value < 2">
+        <el-button
+          @click="handlePlayPause"
+          :disabled="player.totalPoints.value < 2"
+        >
           <el-icon>
-            <VideoPlay v-if="!player.isPlaying.value"/>
-            <VideoPause v-else/>
+            <VideoPlay v-if="!player.isPlaying.value" />
+            <VideoPause v-else />
           </el-icon>
-          {{ player.isPlaying.value ? i18n("map.track.pause") : i18n("map.track.play") }}
+          {{
+            player.isPlaying.value
+              ? i18n("map.track.pause")
+              : i18n("map.track.play")
+          }}
         </el-button>
         <el-button @click="handleStop">
           <el-icon>
-            <SwitchButton/>
+            <SwitchButton />
           </el-icon>
           {{ i18n("map.track.stop") }}
         </el-button>
         <el-select
-            v-if="player.tracks.length > 1"
-            :model-value="player.currentTrackId.value"
-
-            style="width: 180px !important;"
-            @change="handleTrackChange"
+          v-if="player.tracks.length > 1"
+          :model-value="player.currentTrackId.value"
+          style="width: 180px !important"
+          @change="handleTrackChange"
         >
           <el-option
-              v-for="t in player.tracks"
-              :key="t.id"
-              :label="t.name || t.id"
-              :value="t.id"
+            v-for="t in player.tracks"
+            :key="t.id"
+            :label="t.name || t.id"
+            :value="t.id"
           />
         </el-select>
       </div>
       <div class="center-controls">
         <span class="control-label">{{ i18n("map.track.progress") }}</span>
         <el-slider
-            :model-value="player.progress.value"
-            :max="1"
-            :step="0.001"
-            :show-tooltip="false"
-            style="flex: 1; margin: 0 12px;"
-            @input="handleSeek"
+          :model-value="player.progress.value"
+          :max="1"
+          :step="0.001"
+          :show-tooltip="false"
+          style="flex: 1; margin: 0 12px"
+          @input="handleSeek"
         />
         <span class="progress-text">
-                    {{ player.currentIndex.value + 1 }} / {{ player.totalPoints.value }}
-                </span>
+          {{ player.currentIndex.value + 1 }} / {{ player.totalPoints.value }}
+        </span>
       </div>
       <div class="right-controls">
         <span class="control-label">{{ i18n("map.track.speed") }}</span>
         <el-select
-            :model-value="player.speed.value"
-
-            style="width: 90px !important;"
-            @change="handleSpeedChange"
+          :model-value="player.speed.value"
+          style="width: 90px !important"
+          @change="handleSpeedChange"
         >
           <el-option
-              v-for="opt in TRACK_SPEED_PRESETS"
-              :key="opt.value"
-              :label="opt.label"
-              :value="opt.value"
+            v-for="opt in TRACK_SPEED_PRESETS"
+            :key="opt.value"
+            :label="opt.label"
+            :value="opt.value"
           />
         </el-select>
         <span class="current-time" v-if="player.currentPoint.value?.point.time">
-                    {{ formatTime(player.currentPoint.value.point.time) }}
-                </span>
+          {{ formatTime(player.currentPoint.value.point.time) }}
+        </span>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import {VideoPlay, VideoPause, SwitchButton} from "@element-plus/icons-vue";
+import { VideoPlay, VideoPause, SwitchButton } from "@element-plus/icons-vue";
 
-export default {components: {VideoPlay, VideoPause, SwitchButton}};
+export default { components: { VideoPlay, VideoPause, SwitchButton } };
 </script>
 
 <style lang="scss" scoped>
@@ -349,6 +409,7 @@ export default {components: {VideoPlay, VideoPause, SwitchButton}};
           padding: 6px 8px;
           font-size: 12px;
         }
+
         /* 覆盖行内 180px !important 宽度 */
         :deep(.el-select) {
           width: calc(100% - 12px) !important;
@@ -368,7 +429,10 @@ export default {components: {VideoPlay, VideoPause, SwitchButton}};
           margin: 0 6px !important;
         }
 
-        .control-label { font-size: 11px; }
+        .control-label {
+          font-size: 11px;
+        }
+
         .progress-text {
           font-size: 11px;
           min-width: 50px;
@@ -385,8 +449,13 @@ export default {components: {VideoPlay, VideoPause, SwitchButton}};
           min-width: 0;
         }
 
-        .control-label { font-size: 11px; }
-        .current-time { font-size: 11px; }
+        .control-label {
+          font-size: 11px;
+        }
+
+        .current-time {
+          font-size: 11px;
+        }
       }
     }
   }

@@ -263,7 +263,7 @@ export default {
   "ui.edit": "Edit",
   "ui.deleteRow": "Delete current row",
   "ui.addData": "Add data",
-  "ui.addSubData":"Add child data",
+  "ui.addSubData": "Add child data",
   "ui.addRow": "Add row",
   "ui.pleaseInputKeyword": "Please input keyword",
   "ui.expandAll": "Expand all",
@@ -463,12 +463,18 @@ export default {
   "comp.deleteData": "Delete Data",
   "comp.underDevelopment":
     "Function under development, now click submit button to export all data",
-  "comp.presetColors":"Preset Colors",
-  "comp.customColor":"Custom Color",
-  "comp.colorHexPlaceholder":"Enter hex color",
-  "comp.selectedCount":"{n} selected",
-  "comp.weekdays":"Sun,Mon,Tue,Wed,Thu,Fri,Sat",
-  "message.clear":"Clear",
+  "comp.exportSelectFields": "Select Export Fields",
+  "comp.exportFieldTip": "{n} / {total} fields selected",
+  "comp.exportFieldEmpty": "Please select at least one export field",
+  "comp.exportSelectAll": "Select All",
+  "comp.exportClearAll": "Clear All",
+  "comp.exportResetDefault": "Reset Default",
+  "comp.presetColors": "Preset Colors",
+  "comp.customColor": "Custom Color",
+  "comp.colorHexPlaceholder": "Enter hex color",
+  "comp.selectedCount": "{n} selected",
+  "comp.weekdays": "Sun,Mon,Tue,Wed,Thu,Fri,Sat",
+  "message.clear": "Clear",
   /**
    * JSON Editor Strings
    */
@@ -689,6 +695,15 @@ export default {
   "pageConfig.buttonDisplayStyle": "Page Button Display Style",
   "pageConfig.resetDefaultConfig": "Reset to Default Configuration",
   "pageConfig.pageStyle": "Page Style",
+  "pageConfig.dialogFormat": "Dialog Format",
+  "pageConfig.dialog": "Dialog",
+  "pageConfig.drawer": "Drawer",
+  "pageConfig.section.theme": "Theme & Color",
+  "pageConfig.section.size": "Size & Display",
+  "pageConfig.section.menu": "Menu Settings",
+  "pageConfig.section.other": "Other Configuration",
+  "pageConfig.classicColors": "Classic Colors",
+  "pageConfig.customColor": "Custom Color",
   /**
    * Color Names
    */
@@ -909,27 +924,7 @@ export default {
   "item.noContentSet": "No content set",
   "item.editData": "Edit Data",
   "item.crontabConfig": "Crontab Configurator",
-  /**
-   * Context Menu--------------
-   */
-  "context.new": "New",
-  "context.cut": "Cut",
-  "context.copy": "Copy",
-  "context.paste": "Paste",
-  "context.selectAll": "Select All",
-  "context.clear": "Clear",
-  "context.preview": "Preview",
-  "context.addComponent": "Add Component",
-  "context.selectContainer": "Select Container",
-  "context.undo": "Undo",
-  "context.delete": "Delete",
-  "context.properties": "Properties",
-  "context.centerHorizontally": "Center Horizontally",
-  "context.moveUpLayer": "Move Up Layer",
-  "context.moveDownLayer": "Move Down Layer",
-  "context.bringToFront": "Bring to Front",
-  "context.sendToBack": "Send to Back",
-  "context.clearGuides": "Clear Guides",
+
   /**
    * WebSocket--------------
    */
@@ -1191,7 +1186,8 @@ export default {
   "queryBuilder.groupBy.selectField": "Select group field",
   "queryBuilder.action.addGroupBy": "Add Group By",
   "queryBuilder.action.addHaving": "Add Having",
-  "queryBuilder.having.hint": "HAVING filters aggregate results, e.g.: COUNT(id) > 5",
+  "queryBuilder.having.hint":
+    "HAVING filters aggregate results, e.g.: COUNT(id) > 5",
 
   /**
    * Print Template Designer --------------
@@ -1844,7 +1840,8 @@ export default {
   "doctemplate.variable.remove": "Delete",
   "doctemplate.template.new": "New Document Template",
   "doctemplate.template.titlePlaceholder": "Document Title",
-  "doctemplate.template.contentPlaceholder": "Enter content here, use ${varName} to insert variables",
+  "doctemplate.template.contentPlaceholder":
+    "Enter content here, use ${varName} to insert variables",
   "doctemplate.template.namePlaceholder": "Please input template name",
   "doctemplate.template.category": "Category",
   "doctemplate.sample.title": "Sample Contract",
@@ -1872,7 +1869,8 @@ export default {
   "emailtemplate.template.new": "New Email Template",
   "emailtemplate.template.titlePlaceholder": "Email Title",
   "emailtemplate.template.greeting": "Dear",
-  "emailtemplate.template.footer": "This is a system email, please do not reply directly",
+  "emailtemplate.template.footer":
+    "This is a system email, please do not reply directly",
   "emailtemplate.template.subjectPlaceholder": "Please input email subject",
   "emailtemplate.template.namePlaceholder": "Please input template name",
   "emailtemplate.template.category": "Category",
@@ -1898,7 +1896,8 @@ export default {
   "emailtemplate.attachment.name": "Name",
   "emailtemplate.attachment.namePlaceholder": "Please input attachment name",
   "emailtemplate.attachment.url": "URL",
-  "emailtemplate.attachment.urlPlaceholder": "Please input attachment download URL",
+  "emailtemplate.attachment.urlPlaceholder":
+    "Please input attachment download URL",
   "emailtemplate.attachment.size": "Size (B)",
   "emailtemplate.editor.placeholder": "Please enter email body",
   "emailtemplate.message.saved": "Saved successfully",
@@ -2483,7 +2482,8 @@ export default {
   "knowledgegraph.query.template.name": "Template Name",
   "knowledgegraph.query.template.empty": "No templates",
   "knowledgegraph.query.template.namePlaceholder": "Please enter template name",
-  "knowledgegraph.query.template.confirmDelete": "Are you sure to delete this template?",
+  "knowledgegraph.query.template.confirmDelete":
+    "Are you sure to delete this template?",
   "knowledgegraph.query.template.saved": "Template saved",
   "knowledgegraph.query.template.loaded": "Template loaded",
   "knowledgegraph.query.template.deleted": "Template deleted",
@@ -2780,13 +2780,17 @@ export default {
   "digitaltwin.hierarchy.empty": "No hierarchy",
   "digitaltwin.template.title": "Scene Templates",
   "digitaltwin.template.apply": "Apply",
-  "digitaltwin.template.confirmApply": "Applying this template will replace the current scene. Continue?",
+  "digitaltwin.template.confirmApply":
+    "Applying this template will replace the current scene. Continue?",
   "digitaltwin.template.factory": "Factory Workshop",
   "digitaltwin.template.datacenter": "Data Center",
   "digitaltwin.template.energystation": "Energy Station",
-  "digitaltwin.template.desc.factory": "Standard factory layout with workshop, tanks, pumps, valves, heat exchanger and pipelines",
-  "digitaltwin.template.desc.datacenter": "Data center layout with server room, racks, CRAC, UPS and workers",
-  "digitaltwin.template.desc.energystation": "Energy station layout with solar panels, wind turbines, transformer and distribution boxes",
+  "digitaltwin.template.desc.factory":
+    "Standard factory layout with workshop, tanks, pumps, valves, heat exchanger and pipelines",
+  "digitaltwin.template.desc.datacenter":
+    "Data center layout with server room, racks, CRAC, UPS and workers",
+  "digitaltwin.template.desc.energystation":
+    "Energy station layout with solar panels, wind turbines, transformer and distribution boxes",
   "digitaltwin.message.modelAdded": "Model added",
   "digitaltwin.message.templateApplied": "Template applied",
   "digitaltwin.message.bindingSaved": "Binding saved",
@@ -2850,7 +2854,8 @@ export default {
   "digitaltwin.message.customComponentDeleted": "Custom component deleted",
   "digitaltwin.message.invalidSceneFile": "Invalid scene file",
   "digitaltwin.message.boxSelected": "Selected {0} entities",
-  "digitaltwin.message.confirmNew": "Create a new scene? Unsaved scene will be lost",
+  "digitaltwin.message.confirmNew":
+    "Create a new scene? Unsaved scene will be lost",
   // ─── Context Menu ───
   "digitaltwin.contextMenu.title": "Scene Actions",
   "digitaltwin.contextMenu.new": "New Scene",
@@ -2875,10 +2880,13 @@ export default {
   "digitaltwin.customComponentDialog.parts": "Included Parts",
   "digitaltwin.customComponentDialog.partsCount": "{0} parts in total",
   "digitaltwin.customComponentDialog.save": "Save to Library",
-  "digitaltwin.customComponentDialog.empty": "Please select an entity in the scene first",
-  "digitaltwin.customComponentDialog.libraryEmpty": "No custom components yet. Create one in the “Save Component” tab",
+  "digitaltwin.customComponentDialog.empty":
+    "Please select an entity in the scene first",
+  "digitaltwin.customComponentDialog.libraryEmpty":
+    "No custom components yet. Create one in the “Save Component” tab",
   "digitaltwin.customComponentDialog.search": "Search components...",
-  "digitaltwin.customComponentDialog.deleteConfirm": "Delete custom component “{0}”?",
+  "digitaltwin.customComponentDialog.deleteConfirm":
+    "Delete custom component “{0}”?",
   // ─── Viewport (referenced by DtSceneViewport) ───
   "digitaltwin.viewport.webglUnavailable": "WebGL unavailable",
   "digitaltwin.viewport.reset": "Reset View",
@@ -2893,7 +2901,8 @@ export default {
   "digitaltwin.viewport.preset.side": "Side",
   "digitaltwin.viewport.preset.iso": "Iso",
   "digitaltwin.viewport.hint.view": "Click to select · Scroll to zoom",
-  "digitaltwin.viewport.hint.edit": "Drag Gizmo to move · Shift+Drag to box-select · Right-click for menu",
+  "digitaltwin.viewport.hint.edit":
+    "Drag Gizmo to move · Shift+Drag to box-select · Right-click for menu",
   "digitaltwin.viewport.hint.measure": "Click two points to measure",
   "digitaltwin.viewport.hint.annotation": "Click entity to annotate",
   "digitaltwin.viewport.hint.inspection": "Click entity to inspect",
@@ -2932,7 +2941,8 @@ export default {
   "aicopilot.conversation.rename": "Rename",
   "aicopilot.conversation.confirmDelete": "Delete this conversation?",
   "aicopilot.conversation.defaultName": "New Chat",
-  "aicopilot.chat.placeholder": "Type a message. Enter to send, Shift+Enter for newline.",
+  "aicopilot.chat.placeholder":
+    "Type a message. Enter to send, Shift+Enter for newline.",
   "aicopilot.chat.send": "Send",
   "aicopilot.chat.stop": "Stop",
   "aicopilot.chat.empty": "Start a new conversation",
@@ -2981,7 +2991,8 @@ export default {
   "aicopilot.settings.temperature": "Temperature",
   "aicopilot.settings.maxTokens": "Max Tokens",
   "aicopilot.settings.systemPrompt": "System Prompt",
-  "aicopilot.settings.systemPromptPlaceholder": "Enter system prompt to guide AI behavior",
+  "aicopilot.settings.systemPromptPlaceholder":
+    "Enter system prompt to guide AI behavior",
   "aicopilot.settings.save": "Save",
   "aicopilot.settings.reset": "Reset",
   "aicopilot.message.conversationCreated": "Conversation created",
@@ -2994,7 +3005,8 @@ export default {
   "aicopilot.error.providerNotAvailable": "AI provider not available",
   "aicopilot.error.generateFailed": "Generation failed, please retry",
   "template.variable.insertVariable": "Insert Variable",
-  "template.variable.noVariables": "No variables yet, please add variables first",
+  "template.variable.noVariables":
+    "No variables yet, please add variables first",
 
   "demo.title.pivot": "Pivot Analysis",
   "demo.action.loadSample": "Load Sample",
@@ -3024,7 +3036,27 @@ export default {
   "pivot.btn.applyApi": "Apply",
   "pivot.message.apiUrlRequired": "Please input API URL",
   "pivot.message.apiHeadersInvalid": "Headers JSON invalid",
-  "pivot.message.apiResponseMustBeArray": "API response must be an array, or data path must point to one",
+  "pivot.message.apiResponseMustBeArray":
+    "API response must be an array, or data path must point to one",
   "pivot.message.apiFetchFailed": "API fetch failed",
-  "pivot.message.apiFetchSuccess": "Fetch success, total"
+  "pivot.message.apiFetchSuccess": "Fetch success, total",
+  // step container
+  "dyform.step.prev": "Previous",
+  "dyform.step.next": "Next",
+  "dyform.step.add": "Add Step",
+  "dyform.step.delete": "Delete Step",
+  "dyform.step.confirmDelete":
+    "Are you sure to delete the current step and all its fields?",
+  "dyform.step.defaultName": "Step",
+  "dyform.step.sameForm": "Same Form",
+  "dyform.step.sameFormHint": "Current Mode",
+  "dyform.step.sameFormYes": "Same Form",
+  "dyform.step.sameFormNo": "Separate Forms",
+  "dyform.step.stepIncomplete":
+    "Please complete required fields of current step:",
+  "dyform.step.completeHint": "Following fields are empty:",
+  "dyform.step.complete": "Complete",
+  "dyform.step.validateFailed": "Following required fields are empty:",
+  "dyform.container.anchorSection": "Section",
+  "dyform.container.anchorNavTitle": "Quick Navigation",
 };

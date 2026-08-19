@@ -13,7 +13,6 @@
 import piniaInstance from "@/store";
 import { useDesignFormStore } from "@/store/DesignForm";
 import { onMounted, ref } from "vue";
-import DytableItem from "@/components/comp/items/dytableItem.vue";
 import { analysisCompDatas } from "@/api/form_utils";
 import BoxItem from "@/components/comp/items/boxItem.vue";
 

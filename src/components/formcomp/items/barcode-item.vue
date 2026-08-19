@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import JsBarcode from "jsbarcode";
-import {nextTick, onMounted, ref, watch} from "vue";
-import {allAction} from "../utils/ItemRelationEventUtils";
-import {ItemPreps} from "@/components/types/ItemPreps";
+import { nextTick, onMounted, ref, watch } from "vue";
+import { allAction } from "../utils/ItemRelationEventUtils";
+import { ItemPreps } from "@/components/types/ItemPreps";
+
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
   disabled: false,
@@ -17,7 +18,7 @@ const dataValue = ref<string>("");
 const createCode = () => {
   if (!dataValue.value) {
     dataValue.value =
-        props.field?.preps.value ?? formData.value[props.field.fieldName];
+      props.field?.preps.value ?? formData.value[props.field.fieldName];
   }
   JsBarcode(barcodeRef.value, dataValue.value, {
     format: props.field.preps?.format ?? "CODE128", //选择要使用的条形码类型
@@ -32,7 +33,7 @@ const createCode = () => {
     background: props.field.preps?.background ?? "#fff", //设置条形码的背景
     lineColor: props.field.preps?.lineColor ?? "#000", //设置条和文本的颜色。
     margin: props.field.preps?.margin ?? 10, //设置条形码周围的空白边距
-    ...props.field.preps
+    ...props.field.preps,
   });
 };
 onMounted(() => {
@@ -42,31 +43,31 @@ onMounted(() => {
   });
 });
 watch(
-    () => dataValue.value,
-    (newValue) => {
-      if (newValue) {
-        formData.value[props.field.fieldName] = newValue;
-      }
-    },
-    {immediate: true, deep: true},
+  () => dataValue.value,
+  (newValue) => {
+    if (newValue) {
+      formData.value[props.field.fieldName] = newValue;
+    }
+  },
+  { immediate: true, deep: true },
 );
 watch(
-    () => props.field.preps,
-    () => {
-      createCode();
-      allAction(props, emits, formData, "change", false);
-    },
-    {immediate: false, deep: true},
+  () => props.field.preps,
+  () => {
+    createCode();
+    allAction(props, emits, formData, "change", false);
+  },
+  { immediate: false, deep: true },
 );
 </script>
 <template>
   <starhorse-form-item
-      :showFormItem="showFormItem"
-      :isDesign="isDesign"
-      :disabled="disabled"
-      :bareFlag="bareFlag"
-      :field="field"
-      :parentField="parentField"
+    :showFormItem="showFormItem"
+    :isDesign="isDesign"
+    :disabled="disabled"
+    :bareFlag="bareFlag"
+    :field="field"
+    :parentField="parentField"
   >
     <svg ref="barcodeRef"></svg>
   </starhorse-form-item>

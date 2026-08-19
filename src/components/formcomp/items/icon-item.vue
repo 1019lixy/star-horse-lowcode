@@ -21,7 +21,7 @@
           v-if="iconType == 'system'"
           fit="fill"
           shape="square"
-          @dblclick.stop="formData[field.fieldName]=''"
+          @dblclick.stop="formData[field.fieldName] = ''"
           :style="{
             'font-size': field.preps?.listView ? '22px' : '24px',
             background: field.preps?.listView
@@ -33,7 +33,7 @@
         <star-horse-icon
           :icon-class="formData[field.fieldName]"
           v-else
-          @dblclick.stop="formData[field.fieldName]=''"
+          @dblclick.stop="formData[field.fieldName] = ''"
           size="30px"
           style="
             color: var(--star-horse-style);
@@ -148,10 +148,7 @@
                   'icon-active': sdata.value == formData[field.fieldName],
                 }"
               >
-                <el-icon
-                  class="star-icon"
-                  v-if="iconType == 'system'"
-                >
+                <el-icon class="star-icon" v-if="iconType == 'system'">
                   <component :is="sdata.value" :key="sdata.value + '_comp'" />
                 </el-icon>
                 <star-horse-icon
@@ -163,10 +160,7 @@
                   cursor="pointer"
                 />
               </li>
-              <li
-                v-if="!iconList.length"
-                class="sh-mobile-icon-panel__empty"
-              >
+              <li v-if="!iconList.length" class="sh-mobile-icon-panel__empty">
                 {{ i18n("pivot.empty.noData") || "暂无数据" }}
               </li>
             </ul>
@@ -186,13 +180,12 @@ import {
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
 import { compDynamicData } from "@/api/star_horse_utils";
-import {
-  useMobilePicker,
-} from "@/components/formcomp/utils/useMobilePicker";
+import { useMobilePicker } from "@/components/formcomp/utils/useMobilePicker";
 import ShMobilePicker from "@/components/formcomp/utils/ShMobilePicker.vue";
 
 import { ItemPreps } from "@/components/types/ItemPreps";
 import { i18n } from "@/lang";
+
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
   disabled: false,

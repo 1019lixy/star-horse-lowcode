@@ -2,26 +2,21 @@
 import { commonParseCodeToName } from "@/api/star_horse_utils";
 import { compKey } from "@/api/system";
 import { i18n } from "@/lang";
-import { warning } from "@/utils/message";
+import { operationConfirm, warning } from "@/utils/message";
 import Sortable from "sortablejs";
-import {
-  onMounted,
-  PropType,
-  provide,
-  reactive,
-  ref,
-  unref,
-} from "vue";
-import { Sort, Tools } from "@element-plus/icons-vue";
-import { isMobile } from "@/api/device";
-import { useMobilePicker } from "@/components/formcomp/utils/useMobilePicker";
-import ShMobilePicker from "@/components/formcomp/utils/ShMobilePicker.vue";
+import { computed, onMounted, PropType, provide, ref, unref } from "vue";
+import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
+import { ApiUrls } from "@/components/types";
+import DataImport from "@/components/comp/utils/DataImport.vue";
+import FieldVisibleControl from "@/components/comp/utils/FieldVisibleControl.vue";
+
 const props = defineProps({
   //主键
   primaryKey: {
     type: [String, Object] as PropType<string | any>,
     required: true,
   },
+  importInfo: { type: Object as PropType<ApiUrls> },
   //列名
   fieldList: { type: Object, required: true },
   //格式化方法
@@ -39,8 +34,14 @@ const props = defineProps({
   allowSelectParent: { type: Boolean, default: true },
   //标题
   title: { type: String },
-
   dataList: { type: Array },
+  hideAction: { type: Boolean, default: false },
+});
+const batchFieldContainers = computed(() => {
+  const fl: any = props.fieldList;
+  return Array.isArray(fl?.containerFields)
+    ? fl.containerFields.filter((c: any) => c?.containerType === "table")
+    : [];
 });
 // const emits = defineEmits(["selectItem"]);
 const multipleSelection = ref<any>([]);
@@ -66,16 +67,8 @@ provide("starHorseSetEditingRow", (row: any) => {
 // 字段配置表（.sh-columns）的 ref，替代 document.querySelector 全局查询
 const shColumnsTableRef = ref<any>(null);
 
-// APP 端列显隐抽屉
-const {
-  pickerVisible: columnPickerVisible,
-  placement: columnPlacement,
-  size: columnSize,
-  openPicker: openColumnPicker,
-  closePicker: closeColumnPicker,
-} = useMobilePicker(() => ({ preps: {} } as any));
 let staticDataList = ref<any>([]);
-let toolFields = reactive<Array<any>>([]);
+let toolFields = ref<Array<any>>([]);
 const getIds = () => {
   let selectDatas = unref(multipleSelection);
   let ids: any = [];
@@ -88,27 +81,27 @@ const init = async () => {
   moveColumn();
   reCreateData();
   if (props.dataList) {
-    setData(props.dataList);
+    initData(props.dataList);
   }
 };
 //监听外面传入数据的变化
 const assignData = (dataList: Array<any>) => {
   for (const temp of dataList) {
     if (temp instanceof Array) {
-      toolFields.push(...temp);
-    } else if (temp.tabList?.length > 0) {
-      for (const stemp of temp.tabList) {
+      toolFields.value.push(...temp);
+    } else if (temp.containerFields?.length > 0) {
+      for (const stemp of temp.containerFields) {
         if (stemp["fieldList"]) {
-          toolFields.push(...stemp["fieldList"]);
+          toolFields.value.push(...stemp["fieldList"]);
         }
       }
     } else {
-      toolFields.push(temp);
+      toolFields.value.push(temp);
     }
   }
 };
 const reCreateData = () => {
-  toolFields = [];
+  toolFields.value = [];
   let tempList = props.fieldList["fieldList"];
   if (tempList) {
     assignData(tempList);
@@ -232,17 +225,48 @@ const selectRow = (row: any, _column: any, _evt: any) => {
     shStaticTableCompRef.value?.toggleRowSelection(row, false);
   }
 };
+const clearAllDatas = () => {
+  if (!staticDataList.value?.length) return;
+  operationConfirm(i18n("ui.confirm")).then((result) => {
+    staticDataList.value = [];
+  });
+};
+
 /**
  * 列表赋值
  * @param data
  */
-const setData = (data: any) => {
+const initData = (data: any) => {
   staticDataList.value = data;
+};
+//将数据添加到第一条
+const addData = (data: any) => {
+  if (!staticDataList.value?.length) {
+    staticDataList.value = [];
+  }
+  if (!data) {
+    return;
+  }
+  if (Array.isArray(data)) {
+    staticDataList.value.splice(0, 0, ...data);
+  } else {
+    staticDataList.value.splice(0, 0, data);
+  }
+};
+const deleteRow = (index: number, row: any) => {
+  if (props.primaryKey) {
+    if (typeof props.primaryKey === "string") {
+      staticDataList.value = staticDataList.value.filter(
+        (item: any) => item[props.primaryKey] !== row[props.primaryKey],
+      );
+    }
+  }
 };
 //导出方法和变量
 defineExpose({
   getIds,
-  setData,
+  initData,
+  addData,
 });
 </script>
 <template>
@@ -265,137 +289,15 @@ defineExpose({
         {{ title }}
       </div>
       <div class="flex items-center flex-row-reverse">
-        <!-- PC 端：el-popover -->
-        <el-popover
-          v-if="!isMobile"
-          trigger="click"
-          :popper-style="{ width: 'unset !important' }"
-          placement="left-end"
-        >
-          <template #reference>
-            <el-icon class="star-page-icon" style="cursor: pointer">
-              <el-tooltip :content="i18n('comp.showHideColumns')">
-                <Tools />
-              </el-tooltip>
-            </el-icon>
-          </template>
-          <el-table
-            class="sh-columns"
-            ref="shColumnsTableRef"
-            :data="toolFields"
-            :strip="true"
-            :fit="true"
-            :highlight-current-row="true"
-            max-height="400px"
-            row-key="prop"
-            style="width: 100%"
-            :size="compSize"
-            :border="true"
-          >
-            <el-table-column prop="" :label="i18n('comp.sort')" width="60">
-              <el-tag class="move" style="cursor: move" :size="compSize">
-                <el-icon style="cursor: move">
-                  <Sort />
-                </el-icon>
-              </el-tag>
-            </el-table-column>
-            <el-table-column
-              prop="label"
-              :label="i18n('comp.columnName')"
-              :show-overflow-tooltip="true"
-            >
-              <template #default="scope">
-                <el-tag
-                  round
-                  :effect="scope.row.listVisible ? 'dark' : 'light'"
-                >
-                  {{ scope.row.label }}
-                </el-tag>
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="listVisible"
-              :label="i18n('comp.showHide')"
-              width="100"
-            >
-              <template #default="scope">
-                <el-switch
-                  v-model="scope.row.listVisible"
-                  :size="compSize"
-                  :active-value="true"
-                  :inactive-value="false"
-                />
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-popover>
-        <!-- APP 端：触发器 + 抽屉 -->
-        <el-icon
-          v-else
-          class="star-page-icon"
-          style="cursor: pointer"
-          @click="openColumnPicker"
-        >
-          <Tools />
-        </el-icon>
-        <ShMobilePicker
-          v-if="isMobile && columnPickerVisible"
-          v-model="columnPickerVisible"
-          :title="i18n('comp.showHideColumns')"
-          :placement="columnPlacement"
-          :size="columnSize"
-          :show-footer="false"
-        >
-          <el-table
-            class="sh-columns"
-            ref="shColumnsTableRef"
-            :data="toolFields"
-            :strip="true"
-            :fit="true"
-            :highlight-current-row="true"
-            max-height="100%"
-            row-key="prop"
-            style="width: 100%"
-            :size="compSize"
-            :border="true"
-          >
-            <el-table-column prop="" :label="i18n('comp.sort')" width="60">
-              <el-tag class="move" style="cursor: move" :size="compSize">
-                <el-icon style="cursor: move">
-                  <Sort />
-                </el-icon>
-              </el-tag>
-            </el-table-column>
-            <el-table-column
-              prop="label"
-              :label="i18n('comp.columnName')"
-              :show-overflow-tooltip="true"
-            >
-              <template #default="scope">
-                <el-tag
-                  round
-                  :effect="scope.row.listVisible ? 'dark' : 'light'"
-                >
-                  {{ scope.row.label }}
-                </el-tag>
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="listVisible"
-              :label="i18n('comp.showHide')"
-              width="100"
-            >
-              <template #default="scope">
-                <el-switch
-                  v-model="scope.row.listVisible"
-                  :size="compSize"
-                  :active-value="true"
-                  :inactive-value="false"
-                />
-              </template>
-            </el-table-column>
-          </el-table>
-        </ShMobilePicker>
+        <star-horse-icon
+          :title="i18n('context.clear')"
+          @click.stop="clearAllDatas"
+          icon-class="delete"
+          v-if="staticDataList?.length > 0"
+          style="cursor: pointer; color: var(--el-color-danger)"
+        />
+        <data-import :importInfo="importInfo" v-model="staticDataList" />
+        <field-visible-control :fields="toolFields" />
       </div>
     </div>
 
@@ -435,7 +337,7 @@ defineExpose({
       </el-table-column>
       <template
         v-for="item in fieldList['fieldList']"
-        :Key="compKey(item, item.id)"
+        :key="compKey(item, item.id)"
       >
         <template v-if="Array.isArray(item)">
           <star-horse-table-column
@@ -446,13 +348,13 @@ defineExpose({
             v-for="(sitem, key) in item"
           />
         </template>
-        <template v-else-if="item.tabList?.length > 0">
+        <template v-else-if="item.containerFields?.length > 0">
           <star-horse-table-column
             :data-format="dataFormat"
             :cellEditable="fieldList['tableCellEditabled']"
             :item="sitem"
             :key="compKey(sitem, key)"
-            v-for="(sitem, key) in item.tabList.fieldList"
+            v-for="(sitem, key) in item.containerFields.fieldList"
           />
         </template>
         <star-horse-table-column
@@ -464,11 +366,27 @@ defineExpose({
       </template>
       <template
         v-if="showBatchField"
-        v-for="item in fieldList['batchFieldList']"
-        :key="compKey(item, item.batchName)"
+        v-for="item in batchFieldContainers"
+        :key="compKey(item, item.subTablePrimaryKey)"
       >
         <star-horse-table-column :data-format="dataFormat" :item="item" />
       </template>
+      <el-table-column
+        v-if="!hideAction"
+        :label="i18n('table.operation')"
+        fixed="right"
+        width="60"
+      >
+        <template #default="scope">
+          <star-horse-icon
+            icon-class="delete"
+            color="var(--el-color-danger)"
+            cursor="pointer"
+            :title="i18n('api.btn.delete')"
+            @click.stop="deleteRow(scope.$index, scope.row)"
+          />
+        </template>
+      </el-table-column>
     </el-table>
   </div>
 </template>

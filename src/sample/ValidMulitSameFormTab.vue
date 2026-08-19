@@ -104,12 +104,14 @@ const fieldList = ref<PageFieldInfo>({
     {
       fieldName: "apiInfo",
       formVisible: true,
-      tabList: [
+      containerType: "step",
+      containerFields: [
         {
           fieldList: [
             {
               fieldName: "a",
-              tabList: [
+              containerType: "tab",
+              containerFields: [
                 {
                   fieldList: [
                     {
@@ -224,16 +226,17 @@ const fieldList = ref<PageFieldInfo>({
                       },
                     ],
                   ],
-                  objectName: "a",
-                  tabName: "a",
+                  subTableName: "a",
+                  subTablePrimaryKey: "a",
                   title: "接口信息",
                 },
                 {
                   fieldList: [
                     {
-                      batchFieldList: [
+                      containerFields: [
                         {
-                          batchName: "headers",
+                          containerType: "table",
+                          subTablePrimaryKey: "headers",
                           fieldList: [
                             {
                               fieldName: "name",
@@ -276,17 +279,20 @@ const fieldList = ref<PageFieldInfo>({
                               type: "select",
                             },
                           ],
-                          helpMsg:
-                            "配置自定义请求头，支持静态值和动态值（从表单数据获取）",
-                          initRows: 0,
                           title: "请求头",
+                          preps: {
+                            helpMsg:
+                              "配置自定义请求头，支持静态值和动态值（从表单数据获取）",
+                            initRows: 0,
+                          },
                         },
                       ],
                     },
                     {
-                      batchFieldList: [
+                      containerFields: [
                         {
-                          batchName: "requestParams",
+                          containerType: "table",
+                          subTablePrimaryKey: "requestParams",
                           fieldList: [
                             {
                               fieldName: "paramName",
@@ -329,16 +335,18 @@ const fieldList = ref<PageFieldInfo>({
                               type: "select",
                             },
                           ],
-                          helpMsg:
-                            "配置接口请求参数，动态值将从表单当前数据中获取",
-                          initRows: 0,
                           title: "请求参数",
+                          preps: {
+                            helpMsg:
+                              "配置接口请求参数，动态值将从表单当前数据中获取",
+                            initRows: 0,
+                          },
                         },
                       ],
                     },
                   ],
-                  objectName: "b",
-                  tabName: "b",
+                  subTableName: "b",
+                  subTablePrimaryKey: "b",
                   title: "入参配置",
                 },
                 {
@@ -443,24 +451,25 @@ const fieldList = ref<PageFieldInfo>({
                       },
                     ],
                   ],
-                  objectName: "c",
-                  tabName: "c",
+                  subTableName: "c",
+                  subTablePrimaryKey: "c",
                   title: "出参配置",
                 },
               ],
             },
           ],
-          objectName: "apiInfo",
+          subTableName: "apiInfo",
           subFormFlag: "Y",
-          tabName: "apiInfo",
+          subTablePrimaryKey: "apiInfo",
           title: "接口配置",
         },
         {
           fieldList: [
             {
-              batchFieldList: [
+              containerFields: [
                 {
-                  batchName: "fieldMappings",
+                  containerType: "table",
+                  subTablePrimaryKey: "fieldMappings",
                   fieldList: [
                     {
                       fieldName: "sourceField",
@@ -545,21 +554,24 @@ const fieldList = ref<PageFieldInfo>({
                       },
                     },
                   ],
-                  initRows: 0,
                   title: "字段映射",
+                  preps: {
+                    initRows: 0,
+                  },
                 },
               ],
             },
           ],
-          objectName: "response",
-          tabName: "response",
+          subTableName: "response",
+          subTablePrimaryKey: "response",
           title: "响应与映射",
         },
         {
           fieldList: [
             {
               fieldName: "a",
-              tabList: [
+              containerType: "tab",
+              containerFields: [
                 {
                   fieldList: [
                     {
@@ -674,16 +686,17 @@ const fieldList = ref<PageFieldInfo>({
                       },
                     ],
                   ],
-                  objectName: "a",
-                  tabName: "a",
+                  subTableName: "a",
+                  subTablePrimaryKey: "a",
                   title: "接口信息",
                 },
                 {
                   fieldList: [
                     {
-                      batchFieldList: [
+                      containerFields: [
                         {
-                          batchName: "headers",
+                          containerType: "table",
+                          subTablePrimaryKey: "headers",
                           fieldList: [
                             {
                               fieldName: "name",
@@ -726,17 +739,20 @@ const fieldList = ref<PageFieldInfo>({
                               type: "select",
                             },
                           ],
-                          helpMsg:
-                            "配置自定义请求头，支持静态值和动态值（从表单数据获取）",
-                          initRows: 0,
                           title: "请求头",
+                          preps: {
+                            helpMsg:
+                              "配置自定义请求头，支持静态值和动态值（从表单数据获取）",
+                            initRows: 0,
+                          },
                         },
                       ],
                     },
                     {
-                      batchFieldList: [
+                      containerFields: [
                         {
-                          batchName: "requestParams",
+                          containerType: "table",
+                          subTablePrimaryKey: "requestParams",
                           fieldList: [
                             {
                               fieldName: "paramName",
@@ -779,16 +795,18 @@ const fieldList = ref<PageFieldInfo>({
                               type: "select",
                             },
                           ],
-                          helpMsg:
-                            "配置接口请求参数，动态值将从表单当前数据中获取",
-                          initRows: 0,
                           title: "请求参数",
+                          preps: {
+                            helpMsg:
+                              "配置接口请求参数，动态值将从表单当前数据中获取",
+                            initRows: 0,
+                          },
                         },
                       ],
                     },
                   ],
-                  objectName: "b",
-                  tabName: "b",
+                  subTableName: "b",
+                  subTablePrimaryKey: "b",
                   title: "入参配置",
                 },
                 {
@@ -893,16 +911,16 @@ const fieldList = ref<PageFieldInfo>({
                       },
                     ],
                   ],
-                  objectName: "c",
-                  tabName: "c",
+                  subTableName: "c",
+                  subTablePrimaryKey: "c",
                   title: "出参配置",
                 },
               ],
             },
           ],
-          objectName: "authInfo",
+          subTableName: "authInfo",
           subFormFlag: "Y",
-          tabName: "authInfo",
+          subTablePrimaryKey: "authInfo",
           title: "认证配置",
         },
       ],
@@ -928,14 +946,13 @@ onMounted(() => {
   <div class="flex flex-col h-full overflow-hidden">
     <star-horse-dialog
       :isShowBtnContinue="true"
-      :dialogVisible="dialogProps.editVisible"
+      v-model="dialogProps.editVisible"
       :dialogProps="dialogProps"
       :selfFunc="false"
       @merge="generateMerge"
       @closeAction="closeAction"
       boxHeight="85%"
     >
-      {{ generateFormRef?.getFormData() }}
       <star-horse-form
         ref="generateFormRef"
         @refresh="

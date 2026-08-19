@@ -1,10 +1,16 @@
 <script setup lang="ts">
-import {compKey} from "@/api/system";
+import { compKey } from "@/api/system";
 import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
-import {ContainerPreps} from "@/components/types/ItemPreps";
-import {ModelRef, computed, onMounted, ref, watch} from "vue";
-import {getDataIndex, getFormData, getPrefix} from "@/api/form_utils";
-import {i18n} from "@/lang";
+import { ContainerPreps } from "@/components/types/ItemPreps";
+import { computed, inject, ModelRef, onMounted, ref, watch } from "vue";
+import {
+  collectFieldProps,
+  getDataIndex,
+  getFormData,
+  getPrefix,
+} from "@/api/form_utils";
+import { i18n } from "@/lang";
+import { warning } from "@/utils/message";
 
 const props = withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
@@ -13,13 +19,15 @@ const props = withDefaults(defineProps<ContainerPreps>(), {
   propPrefix: "",
   parentPreps: {},
   subFormFlag: "N",
-  batchName: "batchDataList",
-  batchFieldName: "batchFieldList",
+  subTableName: "subDataList",
+
   compSize: "default",
   source: 1,
 });
 const emits = defineEmits(["addRow", "removeRow"]);
 const dataForm: ModelRef<any> = defineModel("dataForm");
+// 注入 el-form 实例（由 StarHorseForm provide），用于调用 validateField / clearValidate
+const starHorseFormRef = inject("starHorseFormRef", ref<any>(null));
 
 /**
  * 列表添加行数据
@@ -38,24 +46,37 @@ const removeRow = (row: any) => {
 
 // 当前激活步骤索引
 const activeStepIndex = ref<number>(0);
+// 步骤校验状态：valid=通过(绿色打钩), invalid=失败(红色打叉), undefined=未校验
+const stepValidationState = ref<Record<number, "valid" | "invalid">>({});
+// 是否已完成所有步骤（最后一步通过校验后置为 true，用于显示全部完成）
+const allStepsCompleted = ref<boolean>(false);
 
-// 步骤列表（运行时字段名 stepList，与设计时 preps.elements 对应）
-const stepList = computed(() => props.item?.stepList || []);
+// 步骤列表(第三类容器统一字段 containerFields,与设计时 preps.elements 对应)
+const stepList = computed(() => props.item?.containerFields || []);
 
-// 是否同属一个表单
+// 是否同属一个表单：运行时由各步骤的 subFormFlag 决定（"Y"=分表单，"N"/缺省=同表单）
 const sameForm = computed(() => {
-  const val = props.item?.preps?.sameForm;
-  return val === "Y" || val === undefined || val === null;
+  const steps = stepList.value;
+  if (!steps.length) return true;
+  return steps[0]?.subFormFlag !== "Y";
 });
 
 // 步骤风格：steps(头部步骤条) / pager(底部导航分页)
 const stepStyle = computed(() => props.item?.preps?.stepStyle || "steps");
 
-// 是否每步必须完成才能进入下一步
-const mustCompleteStep = computed(() => props.item?.preps?.mustCompleteStep === "Y");
+// 是否每步必须完成才能进入下一步（默认开启，设为 "N" 可关闭；source=3 查看模式自动关闭）
+const mustCompleteStep = computed(() => {
+  if (props.source == 3) return false;
+  return (
+    (props.item?.preps?.mustCompleteStep ?? props.item?.mustCompleteStep) !==
+    "N"
+  );
+});
 
 // 步骤条方向
-const stepDirection = computed(() => props.item?.preps?.direction || "horizontal");
+const stepDirection = computed(
+  () => props.item?.preps?.direction || "horizontal",
+);
 
 // 是否显示步骤条：pager 风格强制隐藏
 const showStepBar = computed(() => {
@@ -64,121 +85,133 @@ const showStepBar = computed(() => {
 });
 
 // 是否显示导航按钮
-const showNavButtons = computed(() => props.item?.preps?.showNavButtons !== "N");
+const showNavButtons = computed(
+  () => props.item?.preps?.showNavButtons !== "N",
+);
 
 // 简洁模式
 const stepSimple = computed(() => props.item?.preps?.simple === "Y");
 
 // 完成状态
-const finishStatus = computed(() => props.item?.preps?.finishStatus || "finish");
+const finishStatus = computed(
+  () => props.item?.preps?.finishStatus || "finish",
+);
 
 // 进行中状态
-const processStatus = computed(() => props.item?.preps?.processStatus || "process");
+const processStatus = computed(
+  () => props.item?.preps?.processStatus || "process",
+);
 
 // 居中对齐
 const alignCenter = computed(() => props.item?.preps?.alignCenter === "Y");
 
+// 步骤条间距（el-steps space 属性）
+const stepSpace = computed(() => {
+  const space = props.item?.preps?.space;
+  if (space == null || space === "") return null;
+  const num = Number(space);
+  return isNaN(num) ? space : `${num}px`;
+});
+
+// 完成图标（el-steps finish-icon 属性）
+const finishIcon = computed(() => props.item?.preps?.finishIcon || "");
+
 // 步骤状态
 type StepStatus = "finish" | "process" | "wait" | "error" | "success";
 const getStepStatus = (idx: number): StepStatus => {
-  if (idx === activeStepIndex.value) {
-    return (processStatus.value as StepStatus) || "process";
-  }
-  if (idx < activeStepIndex.value) {
-    return (finishStatus.value as StepStatus) || "finish";
-  }
+  if (stepValidationState.value[idx] === "invalid") return "error";
+  if (allStepsCompleted.value || props.source == 3) return "finish";
+  if (idx === activeStepIndex.value) return "process";
+  if (idx < activeStepIndex.value) return "finish";
   return "wait";
 };
 
-// 容器类型集合（用于递归收集必填字段）
-const containerTypeList: Array<string> = [
-  "tab", "box", "table", "card", "dytable", "collapse", "splitter", "step", "condition",
-];
-
-// 递归收集必填字段
-const collectRequiredFields = (items: any[], result: any[] = []): any[] => {
-  if (!items || !items.length) return result;
-  items.forEach((item: any) => {
-    if (!item) return;
-    if (containerTypeList.includes(item.itemType)) {
-      if (item.itemType === "condition") {
-        collectRequiredFields(item.items || item.preps?.items || [], result);
-        const children = item.children || item.preps?.children || [];
-        children.forEach((child: any) => collectRequiredFields([child], result));
-      } else if (item.preps?.elements) {
-        item.preps.elements.forEach((el: any) => {
-          if (el.columns) {
-            el.columns.forEach((col: any) => {
-              collectRequiredFields(col.items || [], result);
-            });
-          }
-          collectRequiredFields(el.items || [], result);
-        });
-      }
-    } else if (item.compType === "formItem" || item.fieldName) {
-      if (item.preps?.required === true && item.fieldName) {
-        result.push({
-          fieldName: item.fieldName,
-          label: item.label || item.preps?.label || item.fieldName,
-        });
-      }
-    }
-  });
-  return result;
-};
-
-const isEmptyValue = (val: any): boolean => {
-  if (val === null || val === undefined) return true;
-  if (typeof val === "string") return val.trim() === "";
-  if (Array.isArray(val)) return val.length === 0;
-  if (typeof val === "object") return Object.keys(val).length === 0;
-  return false;
-};
-
-// 校验指定步骤
-const validateStep = (stepIndex: number): { valid: boolean; missingFields: any[] } => {
+// 校验指定步骤：调用 el-form 的 validateField 触发内联校验（红框 + 错误提示）
+const validateStep = async (stepIndex: number): Promise<boolean> => {
   const step = stepList.value[stepIndex];
-  if (!step) return {valid: true, missingFields: []};
-  const requiredFields = collectRequiredFields(step.fieldList || step.items || []);
-  const missing: any[] = [];
-  requiredFields.forEach((f: any) => {
-    const stepData = sameForm.value
-      ? dataForm.value
-      : dataForm.value?.[step.objectName];
-    const val = stepData?.[f.fieldName];
-    if (isEmptyValue(val)) {
-      missing.push(f);
-    }
-  });
-  return {valid: missing.length === 0, missingFields: missing};
+  if (!step) return true;
+  const formRef = starHorseFormRef.value;
+  if (!formRef?.validateField) return true;
+  const stepPrefix = getPrefix(
+    step,
+    props.propPrefix,
+    props.dataIndex,
+    stepIndex,
+  );
+  const fieldProps = collectFieldProps(step.fieldList || [], stepPrefix);
+  if (!fieldProps.length) return true;
+  try {
+    await formRef.validateField(fieldProps);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+// 清除指定步骤字段的校验状态（用于回退/切换时清除残留的红框）
+const clearStepValidate = (stepIndex: number) => {
+  const step = stepList.value[stepIndex];
+  if (!step) return;
+  const formRef = starHorseFormRef.value;
+  if (!formRef?.clearValidate) return;
+  const stepPrefix = getPrefix(
+    step,
+    props.propPrefix,
+    props.dataIndex,
+    stepIndex,
+  );
+  const fieldProps = collectFieldProps(step.fieldList || [], stepPrefix);
+  if (fieldProps.length) formRef.clearValidate(fieldProps);
 };
 
 const goPrev = () => {
   if (activeStepIndex.value > 0) {
+    clearStepValidate(activeStepIndex.value);
+    delete stepValidationState.value[activeStepIndex.value];
+    allStepsCompleted.value = false;
     activeStepIndex.value--;
   }
 };
-const goNext = () => {
-  if (activeStepIndex.value >= stepList.value.length - 1) return;
-  if (mustCompleteStep.value) {
-    const {valid, missingFields} = validateStep(activeStepIndex.value);
-    if (!valid) {
-      const names = missingFields.map((f: any) => f.label).join("、");
-      console.warn("[stepItem] 当前步骤必填字段未完成:", names);
+const goNext = async () => {
+  if (activeStepIndex.value >= stepList.value.length - 1) {
+    // 已是最后一步：校验通过则标记全部完成
+    if (
+      mustCompleteStep.value &&
+      !(await validateStep(activeStepIndex.value))
+    ) {
+      stepValidationState.value[activeStepIndex.value] = "invalid";
+      warning(i18n("dyform.step.stepIncomplete"));
       return;
     }
+    stepValidationState.value[activeStepIndex.value] = "valid";
+    allStepsCompleted.value = true;
+    return;
   }
+  if (mustCompleteStep.value && !(await validateStep(activeStepIndex.value))) {
+    stepValidationState.value[activeStepIndex.value] = "invalid";
+    warning(i18n("dyform.step.stepIncomplete"));
+    return;
+  }
+  stepValidationState.value[activeStepIndex.value] = "valid";
   activeStepIndex.value++;
 };
 
-const handleStepClick = (index: number) => {
+const handleStepClick = async (index: number) => {
   if (index === activeStepIndex.value) return;
   if (index > activeStepIndex.value && mustCompleteStep.value) {
     for (let i = activeStepIndex.value; i < index; i++) {
-      const {valid} = validateStep(i);
-      if (!valid) return;
+      if (!(await validateStep(i))) {
+        stepValidationState.value[i] = "invalid";
+        warning(i18n("dyform.step.stepIncomplete"));
+        activeStepIndex.value = i;
+        return;
+      }
+      stepValidationState.value[i] = "valid";
     }
   }
+  clearStepValidate(index);
+  delete stepValidationState.value[index];
+  allStepsCompleted.value = false;
   activeStepIndex.value = index;
 };
 
@@ -186,7 +219,7 @@ const handleStepClick = (index: number) => {
 const init = () => {
   const activeName = props.item?.fieldName;
   if (activeName) {
-    const idx = stepList.value.findIndex((s: any) => s.tabName === activeName);
+    const idx = stepList.value.findIndex((s: any) => s.subTablePrimaryKey === activeName);
     if (idx >= 0) activeStepIndex.value = idx;
   }
 };
@@ -194,11 +227,14 @@ onMounted(() => {
   init();
 });
 
-// 同步 item.fieldName 为当前步骤 tabName
+// 同步 item.fieldName 为当前步骤 subTablePrimaryKey
 watch(activeStepIndex, (idx) => {
+  if (stepValidationState.value[idx] === "invalid") {
+    delete stepValidationState.value[idx];
+  }
   const step = stepList.value[idx];
-  if (step?.tabName) {
-    props.item.fieldName = step.tabName;
+  if (step?.subTablePrimaryKey) {
+    props.item.fieldName = step.subTablePrimaryKey;
   }
 });
 </script>
@@ -207,63 +243,112 @@ watch(activeStepIndex, (idx) => {
   <div v-if="stepList.length > 0" class="step-item-wrapper">
     <!-- 自定义专业步骤条 -->
     <div
-        v-if="showStepBar"
-        class="sh-step-bar"
-        :class="[
-          `sh-step-bar--${stepDirection}`,
-          { 'sh-step-bar--simple': stepSimple, 'sh-step-bar--align-center': alignCenter }
-        ]"
+      v-if="showStepBar"
+      class="sh-step-bar"
+      :class="[
+        `sh-step-bar--${stepDirection}`,
+        {
+          'sh-step-bar--simple': stepSimple,
+          'sh-step-bar--align-center': alignCenter,
+        },
+      ]"
+      :style="stepSpace != null ? { gap: stepSpace } : {}"
     >
       <div
-          v-for="(stepItem, idx) in stepList"
-          :key="compKey(stepItem, idx)"
-          class="sh-step-item"
-          :class="[`sh-step-item--${getStepStatus(Number(idx))}`]"
-          @click="handleStepClick(Number(idx))"
+        v-for="(stepItem, idx) in stepList"
+        :key="compKey(stepItem, idx)"
+        class="sh-step-item"
+        :class="[`sh-step-item--${getStepStatus(Number(idx))}`]"
+        @click="handleStepClick(Number(idx))"
       >
         <div class="sh-step-indicator">
           <div class="sh-step-circle">
-            <span v-if="getStepStatus(Number(idx)) === 'finish' || getStepStatus(Number(idx)) === 'success'" class="sh-step-icon">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="20 6 9 17 4 12"/>
+            <span
+              v-if="
+                getStepStatus(Number(idx)) === 'finish' ||
+                getStepStatus(Number(idx)) === 'success'
+              "
+              class="sh-step-icon"
+            >
+              <star-horse-icon
+                v-if="finishIcon"
+                :icon-class="finishIcon"
+                size="20px"
+              />
+              <svg
+                v-else
+                viewBox="0 0 24 24"
+                width="20"
+                height="20"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="20 6 9 17 4 12" />
               </svg>
             </span>
-            <span v-else-if="getStepStatus(Number(idx)) === 'error'" class="sh-step-icon">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18"/>
-                <line x1="6" y1="6" x2="18" y2="18"/>
+            <span
+              v-else-if="getStepStatus(Number(idx)) === 'error'"
+              class="sh-step-icon"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="20"
+                height="20"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
               </svg>
             </span>
             <span v-else class="sh-step-number">{{ Number(idx) + 1 }}</span>
           </div>
-          <span v-if="getStepStatus(Number(idx)) === 'process'" class="sh-step-pulse"></span>
+          <span
+            v-if="getStepStatus(Number(idx)) === 'process'"
+            class="sh-step-pulse"
+          ></span>
         </div>
         <div class="sh-step-content">
-          <span class="sh-step-title">{{ stepItem.title || stepItem.label }}</span>
-          <span class="sh-step-index">{{ Number(idx) + 1 }} / {{ stepList.length }}</span>
+          <span class="sh-step-title">{{
+            stepItem.title || stepItem.label
+          }}</span>
+          <span class="sh-step-index"
+            >{{ Number(idx) + 1 }} / {{ stepList.length }}</span
+          >
         </div>
       </div>
     </div>
 
     <!-- 步骤内容区域 -->
     <div class="step-content-wrapper">
-      <template v-for="(stepItem, idx) in stepList" :key="compKey(stepItem, idx)">
+      <template
+        v-for="(stepItem, idx) in stepList"
+        :key="compKey(stepItem, idx)"
+      >
         <div v-show="Number(idx) === activeStepIndex" class="step-pane">
           <star-horse-form-item
-              :source="source"
-              :compUrl="compUrl"
-              :compSize="compSize"
-              :commonFormat="commonFormat"
-              :dataForm="getFormData(stepItem, dataForm, propPrefix, dataIndex, idx)"
-              :dataIndex="getDataIndex(stepItem, propPrefix, dataIndex, idx)"
-              :propPrefix="getPrefix(stepItem, propPrefix, dataIndex, idx)"
-              :objectName="stepItem.objectName"
-              @addRow="addRow"
-              @removeRow="removeRow"
-              :fieldList="stepItem"
-              :rules="rules"
-              :subFormFlag="sameForm ? 'N' : 'Y'"
-              :primaryKey="primaryKey"
+            :source="source"
+            :compUrl="compUrl"
+            :compSize="compSize"
+            :commonFormat="commonFormat"
+            :dataForm="
+              getFormData(stepItem, dataForm, propPrefix, dataIndex, idx)
+            "
+            :dataIndex="getDataIndex(stepItem, propPrefix, dataIndex, idx)"
+            :propPrefix="getPrefix(stepItem, propPrefix, dataIndex, idx)"
+            :subTableName="stepItem.subTableName"
+            @addRow="addRow"
+            @removeRow="removeRow"
+            :fieldList="stepItem"
+            :rules="rules"
+            :subFormFlag="sameForm ? 'N' : 'Y'"
+            :primaryKey="primaryKey"
           />
         </div>
       </template>
@@ -271,21 +356,27 @@ watch(activeStepIndex, (idx) => {
 
     <!-- 导航按钮：首尾页隐藏对应按钮 -->
     <div v-if="showNavButtons" class="step-nav-bar">
-      <el-button
-          v-if="activeStepIndex > 0"
-          size="default"
-          @click="goPrev"
-      >
+      <el-button v-if="activeStepIndex > 0" size="default" @click="goPrev">
         {{ i18n("dyform.step.prev") }}
       </el-button>
-      <span class="step-indicator">{{ activeStepIndex + 1 }} / {{ stepList.length }}</span>
+      <span class="step-indicator"
+        >{{ activeStepIndex + 1 }} / {{ stepList.length }}</span
+      >
       <el-button
-          v-if="activeStepIndex < stepList.length - 1"
-          size="default"
-          type="primary"
-          @click="goNext"
+        v-if="activeStepIndex < stepList.length - 1"
+        size="default"
+        type="primary"
+        @click="goNext"
       >
         {{ i18n("dyform.step.next") }}
+      </el-button>
+      <el-button
+        v-if="activeStepIndex === stepList.length - 1"
+        size="default"
+        type="success"
+        @click="goNext"
+      >
+        {{ i18n("dyform.step.complete") }}
       </el-button>
     </div>
   </div>
@@ -310,12 +401,14 @@ watch(activeStepIndex, (idx) => {
   &--horizontal {
     flex-direction: row;
     align-items: flex-start;
+
     .sh-step-item {
       flex: 1;
       flex-direction: column;
       align-items: center;
       text-align: center;
       cursor: pointer;
+
       &:not(:last-child)::after {
         content: "";
         position: absolute;
@@ -327,6 +420,7 @@ watch(activeStepIndex, (idx) => {
         transition: background 0.4s ease;
         z-index: 0;
       }
+
       &:not(:last-child).sh-step-item--finish::after,
       &:not(:last-child).sh-step-item--success::after {
         background: linear-gradient(90deg, #67c23a 0%, #95d475 100%);
@@ -338,6 +432,7 @@ watch(activeStepIndex, (idx) => {
   &--vertical {
     flex-direction: column;
     min-height: 200px;
+
     .sh-step-item {
       flex-direction: row;
       align-items: flex-start;
@@ -345,6 +440,7 @@ watch(activeStepIndex, (idx) => {
       padding: 0 0 24px 0;
       position: relative;
       cursor: pointer;
+
       &:not(:last-child)::after {
         content: "";
         position: absolute;
@@ -356,10 +452,12 @@ watch(activeStepIndex, (idx) => {
         transition: background 0.4s ease;
         z-index: 0;
       }
+
       &:not(:last-child).sh-step-item--finish::after,
       &:not(:last-child).sh-step-item--success::after {
         background: linear-gradient(180deg, #67c23a 0%, #95d475 100%);
       }
+
       .sh-step-content {
         margin-left: 12px;
         padding-bottom: 4px;
@@ -371,23 +469,43 @@ watch(activeStepIndex, (idx) => {
   // 简洁模式
   &--simple {
     padding: 6px 4px;
+
     .sh-step-item {
       flex-direction: row;
       align-items: center;
       gap: 8px;
       padding: 4px 12px;
       border-radius: 16px;
-      &::after { display: none !important; }
-      .sh-step-indicator { width: auto; height: auto; }
+
+      &::after {
+        display: none !important;
+      }
+
+      .sh-step-indicator {
+        width: auto;
+        height: auto;
+      }
+
       .sh-step-circle {
         width: 22px !important;
         height: 22px !important;
         border-radius: 6px !important;
         font-size: 11px !important;
       }
-      .sh-step-content { display: flex; align-items: center; gap: 6px; }
-      .sh-step-index { font-size: 11px; }
-      .sh-step-title { font-size: 13px; }
+
+      .sh-step-content {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .sh-step-index {
+        font-size: 11px;
+      }
+
+      .sh-step-title {
+        font-size: 13px;
+      }
     }
   }
 
@@ -436,14 +554,22 @@ watch(activeStepIndex, (idx) => {
     box-sizing: border-box;
   }
 
-  .sh-step-number { line-height: 1; }
-  .sh-step-icon { display: flex; align-items: center; justify-content: center; }
+  .sh-step-number {
+    line-height: 1;
+  }
+
+  .sh-step-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
   .sh-step-content {
     display: flex;
     flex-direction: column;
     gap: 2px;
     margin-top: 8px;
+
     .sh-step-title {
       font-size: 14px;
       font-weight: 500;
@@ -451,6 +577,7 @@ watch(activeStepIndex, (idx) => {
       line-height: 1.4;
       transition: color 0.3s ease;
     }
+
     .sh-step-index {
       font-size: 11px;
       color: #c0c4cc;
@@ -464,7 +591,10 @@ watch(activeStepIndex, (idx) => {
       background: #f9fafc;
       color: #a8abb2;
     }
-    .sh-step-title { color: #a8abb2; }
+
+    .sh-step-title {
+      color: #a8abb2;
+    }
   }
 
   &--process {
@@ -474,11 +604,15 @@ watch(activeStepIndex, (idx) => {
       color: #fff;
       box-shadow: 0 0 0 4px rgba(64, 158, 255, 0.15);
     }
+
     .sh-step-title {
       color: #303133;
       font-weight: 600;
     }
-    .sh-step-index { color: #409eff; }
+
+    .sh-step-index {
+      color: #409eff;
+    }
   }
 
   &--finish {
@@ -488,8 +622,14 @@ watch(activeStepIndex, (idx) => {
       color: #fff;
       box-shadow: 0 2px 8px rgba(103, 194, 58, 0.3);
     }
-    .sh-step-title { color: #606266; }
-    .sh-step-index { color: #67c23a; }
+
+    .sh-step-title {
+      color: #606266;
+    }
+
+    .sh-step-index {
+      color: #67c23a;
+    }
   }
 
   &--success {
@@ -499,8 +639,14 @@ watch(activeStepIndex, (idx) => {
       color: #fff;
       box-shadow: 0 2px 8px rgba(103, 194, 58, 0.3);
     }
-    .sh-step-title { color: #67c23a; }
-    .sh-step-index { color: #67c23a; }
+
+    .sh-step-title {
+      color: #67c23a;
+    }
+
+    .sh-step-index {
+      color: #67c23a;
+    }
   }
 
   &--error {
@@ -510,8 +656,14 @@ watch(activeStepIndex, (idx) => {
       color: #fff;
       box-shadow: 0 2px 8px rgba(245, 108, 108, 0.3);
     }
-    .sh-step-title { color: #f56c6c; }
-    .sh-step-index { color: #f56c6c; }
+
+    .sh-step-title {
+      color: #f56c6c;
+    }
+
+    .sh-step-index {
+      color: #f56c6c;
+    }
   }
 }
 
@@ -528,13 +680,25 @@ watch(activeStepIndex, (idx) => {
 }
 
 @keyframes sh-step-pulse-anim {
-  0% { transform: scale(1); opacity: 0.7; }
-  70% { transform: scale(1.6); opacity: 0; }
-  100% { transform: scale(1.6); opacity: 0; }
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  70% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sh-step-pulse { animation: none; display: none; }
+  .sh-step-pulse {
+    animation: none;
+    display: none;
+  }
 }
 
 .step-content-wrapper {
@@ -576,6 +740,7 @@ watch(activeStepIndex, (idx) => {
     border-radius: 18px;
     padding: 8px 24px;
     transition: all 0.25s ease;
+
     &:hover {
       transform: translateY(-1px);
       box-shadow: 0 4px 12px rgba(64, 158, 255, 0.25);

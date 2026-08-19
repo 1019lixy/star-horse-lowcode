@@ -15,15 +15,14 @@
 // ==================== 类型定义 ====================
 
 export type FormulaType =
-
-    | "calc"
-    | "concat"
-    | "condition"
-    | "lookup"
-    | "aggregate"
-    | "dateCalc"
-    | "format"
-    | "ternary";
+  | "calc"
+  | "concat"
+  | "condition"
+  | "lookup"
+  | "aggregate"
+  | "dateCalc"
+  | "format"
+  | "ternary";
 
 export interface ConditionBranch {
   when: string;
@@ -74,7 +73,10 @@ const safeNumber = (val: any): number => {
  * 安全沙箱清洗：移除危险的原型链与全局对象访问
  */
 const sanitizeExpression = (expr: string): string => {
-  return expr.replace(/\b(__proto__|constructor|prototype|window|document|globalThis|eval|Function)\b/g, "");
+  return expr.replace(
+    /\b(__proto__|constructor|prototype|window|document|globalThis|eval|Function)\b/g,
+    "",
+  );
 };
 
 /**
@@ -103,10 +105,9 @@ const safeEvalCondition = (expression: string): boolean => {
 
     // 执行代码
     // 使用 new Function 创建沙箱，仅允许访问 Math
-    const result = new Function(
-        "Math",
-        `"use strict"; return (${expr});`
-    )(Math);
+    const result = new Function("Math", `"use strict"; return (${expr});`)(
+      Math,
+    );
 
     return !!result;
   } catch (e) {
@@ -129,7 +130,6 @@ const safeEvalExpr = (expression: string): any => {
   }
 };
 
-
 /**
  * [核心修复] 将 ${fieldName} 替换为可执行的 JS 代码片段
  *
@@ -141,9 +141,9 @@ const safeEvalExpr = (expression: string): any => {
  * JS 引擎能完美解析，无需正则猜测运算符。
  */
 const resolveFieldRefs = (
-    expression: string,
-    formData: Record<string, any>,
-    emptyAsZero = true,
+  expression: string,
+  formData: Record<string, any>,
+  emptyAsZero = true,
 ): string => {
   if (!expression) return "";
 
@@ -174,8 +174,6 @@ const resolveFieldRefs = (
     return `'${escaped}'`;
   });
 };
-
-
 
 /** 解析 then 值：${fieldName} 引用取字段原始值，否则返回常量或拼接字符串 */
 const resolveThen = (then: any, formData: Record<string, any>): any => {
@@ -224,7 +222,11 @@ const parseDate = (val: any): Date | null => {
     // 兼容纯日期 YYYY-MM-DD（避免时区偏移问题）
     const dateOnly = val.match(/^(\d{4})-(\d{2})-(\d{2})$/);
     if (dateOnly) {
-      d = new Date(Number(dateOnly[1]), Number(dateOnly[2]) - 1, Number(dateOnly[3]));
+      d = new Date(
+        Number(dateOnly[1]),
+        Number(dateOnly[2]) - 1,
+        Number(dateOnly[3]),
+      );
       if (!Number.isNaN(d.getTime())) return d;
     }
   }
@@ -235,17 +237,18 @@ const parseDate = (val: any): Date | null => {
 // ==================== 8 种公式处理器 ====================
 
 const executeCalc = (
-    expression: string,
-    formData: Record<string, any>,
-    precision?: number,
-    prefix?: string,
-    suffix?: string,
+  expression: string,
+  formData: Record<string, any>,
+  precision?: number,
+  prefix?: string,
+  suffix?: string,
 ): any => {
   try {
     const resolved = resolveFieldRefs(expression, formData, true);
     const result = safeEvalExpr(resolved);
     const num = safeNumber(result);
-    const calcResult = precision !== undefined ? Number(num.toFixed(precision)) : num;
+    const calcResult =
+      precision !== undefined ? Number(num.toFixed(precision)) : num;
 
     if (prefix || suffix) {
       return `${prefix || ""}${calcResult}${suffix || ""}`;
@@ -261,7 +264,10 @@ const executeCalc = (
  * concat 独立实现纯字符串拼接，不走 resolveFieldRefs + safeEval
  * 避免空值被当作 "" 字面量文本拼入结果
  */
-const executeConcat = (expression: string, formData: Record<string, any>): string => {
+const executeConcat = (
+  expression: string,
+  formData: Record<string, any>,
+): string => {
   try {
     return expression.replace(/\$\{(\w+)\}/g, (_, fieldName) => {
       const val = formData[fieldName];
@@ -275,9 +281,9 @@ const executeConcat = (expression: string, formData: Record<string, any>): strin
 };
 
 const executeCondition = (
-    branches: ConditionBranch[],
-    formData: Record<string, any>,
-    defaultValue?: any,
+  branches: ConditionBranch[],
+  formData: Record<string, any>,
+  defaultValue?: any,
 ): any => {
   for (const branch of branches) {
     try {
@@ -295,9 +301,9 @@ const executeCondition = (
 };
 
 const executeLookup = (
-    lookupMappings: LookupMapping[],
-    sourceFields: string[],
-    formData: Record<string, any>,
+  lookupMappings: LookupMapping[],
+  sourceFields: string[],
+  formData: Record<string, any>,
 ): Record<string, any> | null => {
   if (!sourceFields?.length || !lookupMappings?.length) return null;
 
@@ -305,7 +311,9 @@ const executeLookup = (
     const keyValue = formData[sourceFields[0]];
     if (keyValue === undefined || keyValue === null) return null;
 
-    const matched = lookupMappings.find((m) => String(m.key) === String(keyValue));
+    const matched = lookupMappings.find(
+      (m) => String(m.key) === String(keyValue),
+    );
     return matched ? { ...matched.values } : null;
   } catch (e) {
     console.warn("[FormulaEngine] lookup 执行失败", e);
@@ -314,11 +322,11 @@ const executeLookup = (
 };
 
 const executeAggregate = (
-    expression: string,
-    sourceFields: string[],
-    aggregateField: string | undefined,
-    formData: Record<string, any>,
-    precision?: number,
+  expression: string,
+  sourceFields: string[],
+  aggregateField: string | undefined,
+  formData: Record<string, any>,
+  precision?: number,
 ): number => {
   try {
     if (!sourceFields?.length || !aggregateField) return 0;
@@ -331,8 +339,8 @@ const executeAggregate = (
     if (validItems.length === 0) return 0;
 
     const values = validItems
-        .map((item: any) => safeNumber(item?.[aggregateField]))
-        .filter((v: number) => !Number.isNaN(v));
+      .map((item: any) => safeNumber(item?.[aggregateField]))
+      .filter((v: number) => !Number.isNaN(v));
 
     if (values.length === 0) return 0;
 
@@ -344,7 +352,8 @@ const executeAggregate = (
         result = values.reduce((a: number, b: number) => a + b, 0);
         break;
       case "avg":
-        result = values.reduce((a: number, b: number) => a + b, 0) / values.length;
+        result =
+          values.reduce((a: number, b: number) => a + b, 0) / values.length;
         break;
       case "count":
         result = values.length;
@@ -368,12 +377,12 @@ const executeAggregate = (
 };
 
 const executeDateCalc = (
-    expression: string,
-    formData: Record<string, any>,
-    dateUnit: string = "day",
-    dateMode: string = "diff",
-    dateOffset?: number,
-    dateFormat?: string,
+  expression: string,
+  formData: Record<string, any>,
+  dateUnit: string = "day",
+  dateMode: string = "diff",
+  dateOffset?: number,
+  dateFormat?: string,
 ): any => {
   try {
     const resolved = resolveFieldRefs(expression, formData, false);
@@ -415,7 +424,10 @@ const dateDiff = (start: Date, end: Date, unit: string): number => {
     case "year":
       return end.getFullYear() - start.getFullYear();
     case "month":
-      return (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
+      return (
+        (end.getFullYear() - start.getFullYear()) * 12 +
+        (end.getMonth() - start.getMonth())
+      );
     case "day":
       return Math.round(ms / (1000 * 60 * 60 * 24));
     case "hour":
@@ -475,12 +487,12 @@ const formatDate = (date: Date, format: string): string => {
 };
 
 const executeFormat = (
-    expression: string,
-    formData: Record<string, any>,
-    formatType?: string,
-    formatArg?: string | number,
-    formatArg2?: string,
-    precision?: number,
+  expression: string,
+  formData: Record<string, any>,
+  formatType?: string,
+  formatArg?: string | number,
+  formatArg2?: string,
+  precision?: number,
 ): string => {
   try {
     const resolved = resolveFieldRefs(expression, formData, false);
@@ -499,7 +511,8 @@ const executeFormat = (
       case "toFixed": {
         const num = safeNumber(resolved);
         // precision 优先，其次 formatArg，最后默认 2；需防御 NaN
-        const p = precision ?? (formatArg !== undefined ? Number(formatArg) : 2);
+        const p =
+          precision ?? (formatArg !== undefined ? Number(formatArg) : 2);
         return num.toFixed(Number.isNaN(p) ? 2 : p);
       }
       case "regex": {
@@ -507,7 +520,10 @@ const executeFormat = (
         const replacement = formatArg2 ?? "";
         if (!pattern) return resolved;
         try {
-          return String(resolved).replace(new RegExp(pattern, "g"), replacement);
+          return String(resolved).replace(
+            new RegExp(pattern, "g"),
+            replacement,
+          );
         } catch {
           console.warn(`[FormulaEngine] format regex 非法正则: ${pattern}`);
           return resolved;
@@ -528,9 +544,9 @@ const executeFormat = (
  * 不再手动分割 ? 和 :
  */
 const executeTernary = (
-    expression: string,
-    formData: Record<string, any>,
-    defaultValue?: any,
+  expression: string,
+  formData: Record<string, any>,
+  defaultValue?: any,
 ): any => {
   try {
     const resolved = resolveFieldRefs(expression, formData, true);
@@ -544,26 +560,67 @@ const executeTernary = (
 
 // ==================== 公共 API ====================
 
-export const executeFormula = (formula: FormulaConfig, formData: Record<string, any>): any => {
+export const executeFormula = (
+  formula: FormulaConfig,
+  formData: Record<string, any>,
+): any => {
   if (!formula?.enable) return undefined;
 
   switch (formula.type) {
     case "calc":
-      return executeCalc(formula.expression || "", formData, formula.precision, formula.prefix, formula.suffix);
+      return executeCalc(
+        formula.expression || "",
+        formData,
+        formula.precision,
+        formula.prefix,
+        formula.suffix,
+      );
     case "concat":
       return executeConcat(formula.expression || "", formData);
     case "condition":
-      return executeCondition(formula.branches || [], formData, formula.defaultValue);
+      return executeCondition(
+        formula.branches || [],
+        formData,
+        formula.defaultValue,
+      );
     case "lookup":
-      return executeLookup(formula.lookupMappings || [], formula.sourceFields, formData);
+      return executeLookup(
+        formula.lookupMappings || [],
+        formula.sourceFields,
+        formData,
+      );
     case "aggregate":
-      return executeAggregate(formula.expression || "sum", formula.sourceFields, formula.aggregateField, formData, formula.precision);
+      return executeAggregate(
+        formula.expression || "sum",
+        formula.sourceFields,
+        formula.aggregateField,
+        formData,
+        formula.precision,
+      );
     case "dateCalc":
-      return executeDateCalc(formula.expression || "", formData, formula.dateUnit, formula.dateMode, formula.dateOffset, formula.dateFormat);
+      return executeDateCalc(
+        formula.expression || "",
+        formData,
+        formula.dateUnit,
+        formula.dateMode,
+        formula.dateOffset,
+        formula.dateFormat,
+      );
     case "format":
-      return executeFormat(formula.expression || "", formData, formula.formatType, formula.formatArg, formula.formatArg2, formula.precision);
+      return executeFormat(
+        formula.expression || "",
+        formData,
+        formula.formatType,
+        formula.formatArg,
+        formula.formatArg2,
+        formula.precision,
+      );
     case "ternary":
-      return executeTernary(formula.expression || "", formData, formula.defaultValue);
+      return executeTernary(
+        formula.expression || "",
+        formData,
+        formula.defaultValue,
+      );
     default:
       console.warn(`[FormulaEngine] 未知公式类型: ${(formula as any).type}`);
       return undefined;
@@ -571,15 +628,19 @@ export const executeFormula = (formula: FormulaConfig, formData: Record<string, 
 };
 
 export const executeFormulaWithFill = (
-    field: FormulaField,
-    formInfo: FormulaField[],
-    formData: Record<string, any>,
+  field: FormulaField,
+  formInfo: FormulaField[],
+  formData: Record<string, any>,
 ): void => {
   const formula = field.preps?.formula || field.formula;
   if (!formula?.enable) return;
 
   if (formula.type === "lookup") {
-    const result = executeLookup(formula.lookupMappings || [], formula.sourceFields, formData);
+    const result = executeLookup(
+      formula.lookupMappings || [],
+      formula.sourceFields,
+      formData,
+    );
     if (result) {
       Object.entries(result).forEach(([key, value]) => {
         const targetField = formInfo?.find((f) => f.fieldName === key);
@@ -596,11 +657,50 @@ export const executeFormulaWithFill = (
   }
 };
 
+const _pendingFields = new Map<
+  string,
+  { field: FormulaField; formInfo: FormulaField[]; formData: any }
+>();
+let _flushScheduled = false;
+
+const _flushPending = () => {
+  _flushScheduled = false;
+  if (_pendingFields.size === 0) return;
+  const entries = Array.from(_pendingFields.values());
+  _pendingFields.clear();
+  for (const { field, formInfo, formData } of entries) {
+    executeFormulaWithFill(field, formInfo, formData);
+  }
+};
+
+const _scheduleFlush = () => {
+  if (_flushScheduled) return;
+  _flushScheduled = true;
+  if (typeof requestAnimationFrame !== "undefined") {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => _flushPending());
+    });
+  } else {
+    setTimeout(_flushPending, 0);
+  }
+};
+
+const _queueField = (
+  field: FormulaField,
+  formInfo: FormulaField[],
+  formData: any,
+) => {
+  const key = field.fieldName;
+  if (_pendingFields.has(key)) return;
+  _pendingFields.set(key, { field, formInfo, formData });
+  _scheduleFlush();
+};
+
 export const setupFormulaWatchers = (
-    field: FormulaField,
-    formInfo: FormulaField[],
-    formData: any,
-    watchFn: typeof import("vue").watch,
+  field: FormulaField,
+  formInfo: FormulaField[],
+  formData: any,
+  watchFn: typeof import("vue").watch,
 ): (() => void)[] => {
   const formula = field.preps?.formula || field.formula;
   if (!formula?.enable || !formula.sourceFields?.length) return [];
@@ -609,22 +709,36 @@ export const setupFormulaWatchers = (
 
   formula.sourceFields.forEach((sourceField) => {
     const stop = watchFn(
-        () => formData.value?.[sourceField],
-        () => {
-          executeFormulaWithFill(field, formInfo, formData.value);
-        },
-        { immediate: true },
+      () => formData.value?.[sourceField],
+      () => {
+        executeFormulaWithFill(field, formInfo, formData.value);
+      },
     );
     stops.push(stop);
   });
 
+  _queueField(field, formInfo, formData.value);
+
   return stops;
 };
 
+export const batchExecuteFormulas = (
+  formInfo: FormulaField[],
+  formData: any,
+): void => {
+  if (!formInfo?.length) return;
+  for (const field of formInfo) {
+    const formula = field.preps?.formula || field.formula;
+    if (formula?.enable) {
+      _queueField(field, formInfo, formData);
+    }
+  }
+};
+
 export const initFormFormulaWatchers = (
-    formInfo: FormulaField[],
-    formData: any,
-    watchFn: typeof import("vue").watch,
+  formInfo: FormulaField[],
+  formData: any,
+  watchFn: typeof import("vue").watch,
 ): (() => void)[] => {
   if (!formInfo?.length) return [];
 
@@ -635,8 +749,6 @@ export const initFormFormulaWatchers = (
     if (formula?.enable) {
       const stops = setupFormulaWatchers(field, formInfo, formData, watchFn);
       allStops.push(...stops);
-      // 初始化时立即执行一次计算
-      executeFormulaWithFill(field, formInfo, formData.value);
     }
   });
 

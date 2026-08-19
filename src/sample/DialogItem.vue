@@ -28,9 +28,10 @@ const fields = ref<Array<any>>([
     preps: {
       formVisible: true,
       fieldList: {
-        batchFieldList: [
+        containerFields: [
           {
-            batchName: "imageInfo",
+            containerType: "table",
+            subTablePrimaryKey: "imageInfo",
             fieldList: [
               {
                 fieldName: "imageType",
