@@ -1466,4 +1466,6 @@ button.el-collapse-item__header {
     color: #303133;
   }
 }
-
+.is-message-box {
+  z-index: 4999 !important;
+}

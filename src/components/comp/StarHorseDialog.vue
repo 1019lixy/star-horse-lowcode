@@ -183,7 +183,7 @@ watch(
 
   <div class="di animated animate__fadeIn" v-show="!isMinimized" ref="diRef">
     <el-dialog
-      :append-to-body="false"
+      :append-to-body="true"
       :append-to="appendTo"
       :center="center"
       :destroy-on-close="destroyOnClose"
@@ -196,6 +196,7 @@ watch(
       :draggable="draggable && !isFullScreen && !isMobile"
       :align-center="true"
       :modal="modal"
+      :modal-class="isMinimized ? 'sh-dialog-minimized' : ''"
       :top="top"
       v-model="windowsType"
       @close="beforeClose"
@@ -406,11 +407,57 @@ watch(
     </el-dialog>
   </div>
 </template>
-<style lang="scss" scoped>
-:deep(.el-dialog__footer) {
-  text-align: center;
+<style lang="scss">
+/* teleport 到 body 后，el-dialog 不再是 .di 的子元素，
+   scoped 的 :deep(.el-dialog) 无法匹配。改用 .dialog-settings 全局锚定。 */
+.sh-dialog-minimized {
+  display: none !important;
 }
 
+.dialog-settings.el-dialog {
+  display: flex;
+  flex-direction: column;
+  padding: unset;
+
+  .el-dialog__header {
+    flex-shrink: 0;
+    height: 50px;
+    box-sizing: border-box;
+    padding: 12px;
+    background-color: var(--star-horse-style);
+    margin: 0;
+    border-bottom: var(--star-horse-shadow) 4px solid;
+    display: flex;
+    flex-direction: row;
+    color: var(--star-horse-white);
+
+    h3 {
+      flex: 1;
+      font-size: 14px;
+    }
+
+    .my-header {
+      width: 100px;
+      display: flex;
+      justify-content: right;
+      flex-direction: row;
+      right: 10px;
+    }
+  }
+
+  .el-dialog__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .el-dialog__footer {
+    text-align: center;
+  }
+}
+</style>
+<style lang="scss" scoped>
 // 最小化折叠栏
 .dialog-minimized-bar {
   position: fixed;
@@ -448,46 +495,6 @@ watch(
   }
 }
 
-.di {
-  :deep(.el-dialog) {
-    display: flex;
-    flex-direction: column;
-    padding: unset;
-
-    .el-dialog__header {
-      flex-shrink: 0;
-      height: 50px;
-      box-sizing: border-box;
-      padding: 12px;
-      background-color: var(--star-horse-style);
-      margin: 0;
-      border-bottom: var(--star-horse-shadow) 4px solid;
-      display: flex;
-      flex-direction: row;
-      color: var(--star-horse-white);
-
-      h3 {
-        flex: 1;
-        font-size: 14px;
-      }
-
-      .my-header {
-        width: 100px;
-        display: flex;
-        justify-content: right;
-        flex-direction: row;
-        right: 10px;
-      }
-    }
-
-    .el-dialog__body {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-  }
-}
 
 .shdialog {
   flex: 1;
