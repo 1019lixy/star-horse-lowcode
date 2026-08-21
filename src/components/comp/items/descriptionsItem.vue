@@ -85,14 +85,14 @@ onMounted(() => {
     <template v-for="descItm in item.containerFields" :key="descItm.id">
       <el-descriptions
         v-if="descItm.formVisible !== false && !item.preps?.hideDescriptions"
-        :title="descItm.title || ''"
-        :direction="descItm.preps?.direction || 'horizontal'"
-        :column="descItm.preps?.column || 1"
+        :title="item.title || ''"
+        :direction="item.preps?.direction || 'horizontal'"
+        :column="item.preps?.column || 1"
         style="margin: 5px 0"
-        :border="descItm.preps?.border !== false"
-        :size="descItm.preps?.size || 'default'"
-        :extra="descItm.preps?.descExtra || ''"
-        :label-width="descItm.preps?.descItemLabelWidth || '110px'"
+        :border="item.preps?.border !== false"
+        :size="item.preps?.size || 'default'"
+        :extra="item.preps?.descExtra || ''"
+        :label-width="item.preps?.descItemLabelWidth || '120px'"
       >
         <template v-for="field in descItm.fieldList">
           <el-descriptions-item

@@ -10,13 +10,10 @@
 </template>
 
 <script lang="ts" setup>
-import piniaInstance from "@/store";
-import { useDesignFormStore } from "@/store/DesignForm";
 import { onMounted, ref } from "vue";
 import { analysisCompDatas } from "@/api/form_utils";
 import BoxItem from "@/components/comp/items/boxItem.vue";
 
-let designForm = useDesignFormStore(piniaInstance);
 const formData = ref<any>({
   test: "1-2-1",
 });
