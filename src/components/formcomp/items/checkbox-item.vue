@@ -20,13 +20,13 @@
         :disabled="item['disabled'] || source == 3"
         :label="item[field.preps?.props?.label || 'name']"
         :value="item[field.preps?.props?.value || 'value']"
-        v-for="item in field.preps?.values"
+        v-for="item in ruleOptions"
       />
     </el-checkbox-group>
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { nextTick, onMounted } from "vue";
+import { computed, nextTick, onMounted } from "vue";
 import {
   allAction,
   checkIsDisabled,
@@ -35,6 +35,7 @@ import {
 } from "@/components/formcomp/utils/ItemRelationEventUtils";
 import { compDynamicData } from "@/api/star_horse_utils";
 import { getDynamicEvents } from "@/api/system";
+import { getOptionsOverride } from "@/components/formcomp/utils/ItemRuleEventUtils";
 
 import { ItemPreps } from "@/components/types/ItemPreps";
 
@@ -47,6 +48,15 @@ const props = withDefaults(defineProps<ItemPreps>(), {
 });
 const emits = defineEmits(["selfFunc", "selectItem"]);
 const formData = defineModel("formData");
+const ruleOptions = computed(() => {
+  const formId =
+    props.field.preps?.ruleEngineConfig?.formId || props.field.preps?.formId;
+  if (formId) {
+    const override = getOptionsOverride(formId, props.field.fieldName);
+    if (override) return override;
+  }
+  return props.field.preps?.values || [];
+});
 const itemAction = () => {
   allAction(props, emits, formData, "change");
 };

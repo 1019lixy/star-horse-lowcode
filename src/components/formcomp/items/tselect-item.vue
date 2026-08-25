@@ -149,6 +149,7 @@ import { warning } from "@/utils/message";
 import { i18n } from "@/lang";
 import { useMobilePicker } from "@/components/formcomp/utils/useMobilePicker";
 import ShMobilePicker from "@/components/formcomp/utils/ShMobilePicker.vue";
+import { getOptionsOverride } from "@/components/formcomp/utils/ItemRuleEventUtils";
 
 import { ItemPreps } from "@/components/types/ItemPreps";
 
@@ -182,7 +183,15 @@ const {
 
 const multiple = computed(() => !!props.field.preps?.multiple);
 const allowCreate = computed(() => !!props.field.preps?.allowCreate);
-const treeData = computed(() => props.field.preps?.data || []);
+const treeData = computed(() => {
+  const formId =
+    props.field.preps?.ruleEngineConfig?.formId || props.field.preps?.formId;
+  if (formId) {
+    const override = getOptionsOverride(formId, props.field.fieldName);
+    if (override) return override;
+  }
+  return props.field.preps?.data || [];
+});
 const treeProps = computed(() => ({
   label: props.field.preps?.props?.label || "name",
   value: props.field.preps?.props?.value || "value",

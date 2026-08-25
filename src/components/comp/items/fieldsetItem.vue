@@ -13,7 +13,7 @@ import {
   unref,
   watch,
 } from "vue";
-import {FieldInfo} from "@/components/types";
+import { FieldInfo } from "@/components/types";
 
 const props = withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
@@ -48,10 +48,10 @@ const removeRow = (row: any) => {
 
 const init = () => {};
 const innerCollapsed = ref<boolean>(false);
-const toggleInner = (item:FieldInfo) => {
- if(item.preps){
-   item.preps.innerCollapsed =  !item.preps.innerCollapsed;
- }
+const toggleInner = (item: FieldInfo) => {
+  if (item.preps) {
+    item.preps.innerCollapsed = !item.preps.innerCollapsed;
+  }
 };
 
 /**
@@ -120,7 +120,7 @@ onMounted(() => {
           'border-dashed': fiedsetItem.preps?.borderStyle === 'dashed',
           'border-none': fiedsetItem.preps?.borderStyle === 'none',
           'is-collapsible': fiedsetItem.preps?.collapsible,
-          'is-collapsed': fiedsetItem.preps?.innerCollapsed
+          'is-collapsed': fiedsetItem.preps?.innerCollapsed,
         }"
         :disabled="fiedsetItem.preps?.disabled || undefined"
         :form="fiedsetItem.preps?.form || undefined"
@@ -133,7 +133,10 @@ onMounted(() => {
         >
           <svg
             v-if="fiedsetItem.preps?.collapsible"
-            :class="['legend-arrow', { rotated: fiedsetItem.preps?.innerCollapsed }]"
+            :class="[
+              'legend-arrow',
+              { rotated: fiedsetItem.preps?.innerCollapsed },
+            ]"
             viewBox="0 0 10 6"
             fill="none"
             width="10"

@@ -23,7 +23,7 @@ starHorseAxios.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     let token = getToken();
     if (!token) {
-      token = "cbd451ac4d874c74bb1736449e873bab";
+      token = "baff1d8378c7409697c865bb4c509d49";
     }
     const fingerToken = getFingerId();
     // 请求头带上token
@@ -393,7 +393,7 @@ export async function loadData(
   await postRequest(url, cond)
     .then((res: any) => {
       const redata = res?.data;
-      if (redata?.code!==200) {
+      if (redata?.code !== 200) {
         error = redata?.cnMessage;
       } else {
         //先去分页数据，没有再去非分页数据

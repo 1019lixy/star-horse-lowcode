@@ -75,7 +75,6 @@ onMounted(() => {
         @addRow="addRow"
         @removeRow="removeRow"
         :subTableName="item.subTableName"
-
         :commonFormat="commonFormat"
         :dataForm="getFormData(item, dataForm, propPrefix, dataIndex, itemKey)"
         :dataIndex="getDataIndex(item, propPrefix, dataIndex, itemKey)"

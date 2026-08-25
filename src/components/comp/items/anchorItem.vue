@@ -1,9 +1,5 @@
 <script setup lang="ts">
-import {
-  getDataIndex,
-  getFormData,
-  getPrefix,
-} from "@/api/form_utils";
+import { getDataIndex, getFormData, getPrefix } from "@/api/form_utils";
 
 import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
 import { ContainerPreps } from "@/components/types/ItemPreps";
@@ -65,8 +61,12 @@ const showSectionNumber = computed(
   () => props.item?.preps?.showSectionNumber === true,
 );
 const smoothScroll = computed(() => props.item?.preps?.smoothScroll !== false);
-const scrollOffset = computed(() => Number(props.item?.preps?.scrollOffset) || 60);
-const stickyOffset = computed(() => Number(props.item?.preps?.stickyOffset) || 0);
+const scrollOffset = computed(
+  () => Number(props.item?.preps?.scrollOffset) || 60,
+);
+const stickyOffset = computed(
+  () => Number(props.item?.preps?.stickyOffset) || 0,
+);
 const highlightColor = computed(() => props.item?.preps?.highlightColor || "");
 const contentMaxHeight = computed(
   () => props.item?.preps?.contentMaxHeight || "70vh",
@@ -105,8 +105,8 @@ const contentPaddingStyle = computed(() => {
 });
 
 const navOrderStyle = computed(() => {
-  if (placement.value === "left") return {order: "1"};
-  return {order: "2"};
+  if (placement.value === "left") return { order: "1" };
+  return { order: "2" };
 });
 
 const scrollToSection = (href: string, disabled?: boolean) => {
@@ -218,7 +218,10 @@ onBeforeUnmount(() => {
       <template v-for="(anchorItem, idx) in anchorList" :key="idx">
         <div
           v-if="anchorItem.formVisible !== false"
-          :ref="(el) => setSectionRef(`#anchor-${anchorItem.subTableName}-${idx}`, el)"
+          :ref="
+            (el) =>
+              setSectionRef(`#anchor-${anchorItem.subTableName}-${idx}`, el)
+          "
           class="anchor-section"
         >
           <div class="section-title-bar">
@@ -318,14 +321,11 @@ onBeforeUnmount(() => {
   scroll-margin-top: 20px;
 }
 
-
-
 .section-items {
   padding: 0 12px;
 }
 
 .anchor-nav {
-
   background: #fff;
   border: 1px solid #ebeef5;
   border-radius: 8px;
@@ -384,10 +384,7 @@ onBeforeUnmount(() => {
   }
 
   &.active {
-    background: var(
-      --anchor-highlight-color,
-      var(--star-horse-style, #409eff)
-    );
+    background: var(--anchor-highlight-color, var(--star-horse-style, #409eff));
     color: #fff;
     font-weight: 500;
 

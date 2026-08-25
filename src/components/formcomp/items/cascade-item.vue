@@ -12,7 +12,7 @@
       v-if="!isSeparate"
       :fid="field.fieldName"
       v-bind="prepsFilter(field.preps)"
-      :options="field.preps?.options ?? areaData"
+      :options="ruleCascadeOptions"
       :disabled="checkIsDisabled(props)"
       v-on="getDynamicEvents(props, itemAction, formData)"
       v-model="formData[field.fieldName]"
@@ -93,7 +93,7 @@
             :key="panelKey"
             v-bind="cascaderPanelProps"
             v-model="panelValue"
-            :options="field.preps?.options ?? areaData"
+            :options="ruleCascadeOptions"
           />
         </div>
       </ShMobilePicker>
@@ -116,6 +116,7 @@ import { ItemPreps } from "@/components/types/ItemPreps";
 import { i18n } from "@/lang";
 import { useMobilePicker } from "@/components/formcomp/utils/useMobilePicker";
 import ShMobilePicker from "@/components/formcomp/utils/ShMobilePicker.vue";
+import { getOptionsOverride } from "@/components/formcomp/utils/ItemRuleEventUtils";
 
 defineOptions({
   name: "cascadeItem",
@@ -134,6 +135,15 @@ const itemAction = (prep: any) => {
 };
 
 const areaData = ref<any[]>([]);
+const ruleCascadeOptions = computed(() => {
+  const formId =
+    props.field.preps?.ruleEngineConfig?.formId || props.field.preps?.formId;
+  if (formId) {
+    const override = getOptionsOverride(formId, props.field.fieldName);
+    if (override) return override;
+  }
+  return props.field.preps?.options ?? areaData.value ?? [];
+});
 const cascaderPanelRef = ref<InstanceType<any>>();
 // 强制重建 panel 的 key，避免回显污染内部状态
 const panelKey = ref(0);
@@ -180,7 +190,7 @@ interface FlatNode {
 // 扁平化 options 树，构建搜索索引（叶子节点）
 const flatNodes = computed<FlatNode[]>(() => {
   const { label: lf, value: vf, children: cf } = fieldConfig.value;
-  const options = props.field.preps?.options ?? areaData.value ?? [];
+  const options = ruleCascadeOptions.value;
   const result: FlatNode[] = [];
 
   const walk = (
@@ -278,7 +288,7 @@ function normalizeToValuePath(savedVal: any[]): any[] {
     props.field.preps?.displayName ||
     "label";
   const childrenField = props.field.preps?.props?.children || "children";
-  const options = props.field.preps?.options ?? areaData.value ?? [];
+  const options = ruleCascadeOptions.value;
 
   // 先尝试按 value 匹配
   let currentLevel: any[] = options;
@@ -360,7 +370,7 @@ const displayText = computed(() => {
     props.field.preps?.displayValue ||
     "value";
   const childrenField = props.field.preps?.props?.children || "children";
-  const options = props.field.preps?.options ?? areaData.value ?? [];
+  const options = ruleCascadeOptions.value;
 
   const findLabels = (path: any[]): string[] => {
     const labels: string[] = [];

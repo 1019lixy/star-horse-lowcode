@@ -12,6 +12,7 @@
       v-if="!isMobile && source != 3"
       :fid="field?.preps['name']"
       v-bind="prepsFilter(field.preps)"
+      :data="ruleData"
       :props="transferProps"
       v-on="getDynamicEvents(props, itemAction, formData)"
       v-model="formData[field.fieldName]"
@@ -20,7 +21,7 @@
     <StarHorseDataSelector
       v-else
       v-model="pickerData"
-      :data="field.preps?.data"
+      :data="ruleData"
       :multiple="true"
       :display-name="transferProps.label"
       :display-value="transferProps.key"
@@ -45,6 +46,7 @@ import {
 import { getDynamicEvents } from "@/api/system";
 import { isMobile } from "@/api/device";
 import { StarHorseDataSelector } from "@/components/comp";
+import { getOptionsOverride } from "@/components/formcomp/utils/ItemRuleEventUtils";
 
 import { ItemPreps } from "@/components/types/ItemPreps";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
@@ -65,6 +67,15 @@ const itemAction = (prep: string) => {
 const transferProps = computed(
   () => props.field?.preps?.props ?? { key: "value", label: "name" },
 );
+const ruleData = computed(() => {
+  const formId =
+    props.field.preps?.ruleEngineConfig?.formId || props.field.preps?.formId;
+  if (formId) {
+    const override = getOptionsOverride(formId, props.field.fieldName);
+    if (override) return override;
+  }
+  return props.field.preps?.data || [];
+});
 // StarHorseDataSelector 的 v-model（key[]，与 transfer 的 v-model 格式一致）
 const pickerData = ref<any>(
   Array.isArray(formData.value?.[props.field.fieldName])

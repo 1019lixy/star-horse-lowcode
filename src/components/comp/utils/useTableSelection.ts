@@ -11,8 +11,6 @@ export interface UseTableSelectionOptions {
   starHorseTableCompRef: Ref<any>;
   /** 分页数据 ref（filterData 需读取 dataList） */
   pageInfo: Ref<any>;
-  /** dynamicForm store */
-  dynamicForm: any;
   /** emits 函数 */
   emits: (event: string, ...args: any[]) => void;
 }
@@ -22,7 +20,7 @@ export interface UseTableSelectionOptions {
  * 封装多选/单选、父子节点校验、选中行同步、弹窗模式数据过滤
  */
 export function useTableSelection(opts: UseTableSelectionOptions) {
-  const { props, starHorseTableCompRef, pageInfo,  emits } = opts;
+  const { props, starHorseTableCompRef, pageInfo, emits } = opts;
 
   const multipleSelection = ref<any>([]);
   const cardSelection = ref<any>([]);

@@ -2,6 +2,16 @@
 
 本文档详细说明组件库的联动策略（ItemRelation）和数据源（ApiLinkageDetail）机制，这是框架的核心能力之一。
 
+## 三套机制的分工
+
+| 机制 | 配置位置 | 适用场景 | 特点 |
+|---|---|---|---|
+| **联动策略** | `field.preps.dataRelation` | 字段间显隐/禁用/必填/选项联动、接口回填 | 声明式 JSON 配置，值变化即触发 |
+| **动态数据源** | `preps.dataSource` / `preps.apiDataSource` | 组件选项远程加载（url/字典） | 挂载时拉取一次 + 远程搜索 |
+| **规则引擎** | `preps.ruleEngineConfig.formId` | 复杂多分支业务流程（可视化编排 flowContent） | 前端本地执行，ON_LOAD/ON_CHANGE/ON_BUTTON_CLICK 触发，300ms 防抖 |
+
+三者相互独立、可叠加使用。规则引擎详见 [规则引擎文档](./rule-engine.md)，组件侧接入速览见 [表单项组件 · 公共机制](./components/form-items.md#规则引擎rule-engine)。
+
 ## 概述
 
 联动策略允许一个字段的变化自动影响其他字段的显隐、禁用、必填、选项数据等。配置在 `field.preps.dataRelation` 中。
@@ -439,3 +449,43 @@ relationEventDispatcher()
     │             │
     │             └─ 是 → apiLinkageOperation() 调用第三方接口回填
 ```
+
+---
+
+## 组件选项的动态数据源加载
+
+联动之外，选项类组件（select / datapicker / tselect / transfer / cascade 等）支持挂载时自动远程加载选项。入口函数为 `compDynamicData(field)`：
+
+```ts
+// 加载优先级
+dataSource === 'url' 或 preps.apiDataSource 存在
+    → dynamicUrlOperation(field, []) 远程拉取
+dataSource === 'dict'
+    → dictData(preps.urlOrDictName) 加载数据字典（未配置时报错提示）
+其他
+    → 回退静态 preps.values → preps.data → field.optionList
+```
+
+### dynamicUrlOperation 两种模式
+
+**① apiDataSource 结构化配置（推荐）**
+
+`preps.apiDataSource` 为 `ApiLinkageDetail` 对象时，请求经 `/system-config/redirect/apiLinkage` 代理执行，入参携带 `queryCondition.fieldList`（远程搜索时传入 SearchParams），直接返回 `data` 数组。
+
+**② url + 代理转发（兼容模式）**
+
+| 属性 | 说明 |
+|---|---|
+| url | 接口地址（必填） |
+| redirect | 默认 `true`：包装为 `{url, host, port, protocol, httpMethod, dataType, searchInfo}` 经 `/system-config/redirect/execute` 代理转发；`false` 时前端直连 |
+| httpMethod / dataType | 默认 `POST` / `JSON` |
+| queryParams | 静态参数 `[{name, value, matchType}]`，转为 SearchParams |
+| selectLabel / selectValue | 返回数据映射属性名，默认 `name` / `value` |
+
+返回数据含 `children` 时自动递归转换为树形选项。
+
+### 与联动的配合
+
+- **数据联动赋值**：`eqConditionDataLinkage` / `asParamDataLinkage` 获取的数据按目标组件类型写入 `values` / `data` / `options`，与静态数据源互不冲突（联动结果覆盖静态值）
+- **规则引擎覆盖**：规则流 setOptions 动作优先级最高，通过 optionsOverrideStore 响应式覆盖所有上述来源，见 [规则引擎文档](./rule-engine.md)
+- **远程搜索**：select 配置 `remote=true` 且 `selectLabel` 后，搜索关键字以 `{propertyName: selectLabel, value: 关键字, operation: 'lk'}` 触发重新拉取

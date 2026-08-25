@@ -31,6 +31,7 @@ import {
 } from "vue";
 import { isMobile } from "@/api/device";
 import { convertPcCompToFitPlatformComps } from "@/api/form_utils";
+import { registerFormFieldsRef } from "@/components/formcomp/utils/ItemRuleEventUtils";
 
 const props = defineProps({
   compUrl: { type: Object as PropType<ApiUrls> },
@@ -238,9 +239,7 @@ const analysisSameToParentField = (): Array<string> => {
         temp.containerFields.some((c: any) => c?.containerType === "table")
       ) {
         analysis(
-          temp.containerFields.filter(
-            (c: any) => c?.containerType === "table",
-          ),
+          temp.containerFields.filter((c: any) => c?.containerType === "table"),
         );
       } else if (temp.appList) {
         analysis(temp.appList);
@@ -395,6 +394,7 @@ const removeRow = (row: any) => {
  */
 const recordFieldInfo = async () => {
   formFields.value = unref(mappingFields)?.formFields;
+  registerFormFieldsRef(formFields.value, formFields);
   await nextTick();
   emits("inited");
 };

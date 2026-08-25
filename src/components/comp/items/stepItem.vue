@@ -219,7 +219,9 @@ const handleStepClick = async (index: number) => {
 const init = () => {
   const activeName = props.item?.fieldName;
   if (activeName) {
-    const idx = stepList.value.findIndex((s: any) => s.subTablePrimaryKey === activeName);
+    const idx = stepList.value.findIndex(
+      (s: any) => s.subTablePrimaryKey === activeName,
+    );
     if (idx >= 0) activeStepIndex.value = idx;
   }
 };

@@ -495,7 +495,6 @@ watch(
   }
 }
 
-
 .shdialog {
   flex: 1;
   display: flex;

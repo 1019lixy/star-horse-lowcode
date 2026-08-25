@@ -199,6 +199,7 @@
           <div class="nav-group-title">核心</div>
           <a class="nav-item" href="#internal-mechanisms" data-keyword="内部机制">内部机制</a>
           <a class="nav-item" href="#linkage-and-datasource" data-keyword="联动策略与数据源">联动策略与数据源</a>
+          <a class="nav-item" href="#rule-engine" data-keyword="规则引擎">规则引擎</a>
         </div>
         <div class="nav-group">
           <div class="nav-group-title">组件</div>
@@ -308,13 +309,13 @@ app.use(StarHorseLowcode, {
 │   ├── datetime-item          # 日期时间选择
 │   ├── time-item              # 时间选择
 │   ├── time-picker-item       # 时间选择器
-│   ├── tree-select-item       # 树选择
-│   ├── cascade-item           # 级联选择
+│   ├── tselect-item           # 树形下拉选择
+│   ├── cascade-item           # 级联选择（内置省市区数据）
 │   ├── datapicker-item        # 数据拾取选择
 │   ├── page-select-item       # 分页选择
 │   ├── dialog-input-item      # 弹窗输入
-│   ├── dialog-item            # 弹窗容器
-│   ├── drawer-item            # 抽屉容器
+│   ├── dialogItem             # 弹窗容器
+│   ├── drawerItem             # 抽屉容器
 │   ├── button-item            # 按钮
 │   ├── upload-item            # 文件上传
 │   ├── image-item             # 图片
@@ -340,10 +341,7 @@ app.use(StarHorseLowcode, {
 │   ├── divider-item           # 分割线
 │   ├── progress-item          # 进度条
 │   ├── cron-item              # Cron 表达式
-│   ├── user-item              # 用户选择
-│   ├── org-item               # 组织选择
-│   ├── depart-item            # 部门选择（未实现）
-│   ├── area-item              # 地区选择
+
 │   ├── location-item          # 位置选择
 │   ├── qrcode-item            # 二维码
 │   ├── barcode-item           # 条形码
@@ -941,6 +939,16 @@ const isDisabled =
       <section id="linkage-and-datasource">
         <h1>联动策略与数据源</h1>
         <p>本文档详细说明组件库的联动策略（ItemRelation）和数据源（ApiLinkageDetail）机制，这是框架的核心能力之一。</p>
+        <h2 id="联动-三套机制">三套机制的分工</h2>
+        <table>
+          <thead><tr><th>机制</th><th>配置位置</th><th>适用场景</th><th>特点</th></tr></thead>
+          <tbody>
+            <tr><td><strong>联动策略</strong></td><td><code>field.preps.dataRelation</code></td><td>字段间显隐/禁用/必填/选项联动、接口回填</td><td>声明式 JSON 配置，值变化即触发</td></tr>
+            <tr><td><strong>动态数据源</strong></td><td><code>preps.dataSource</code> / <code>preps.apiDataSource</code></td><td>组件选项远程加载（url/字典）</td><td>挂载时拉取一次 + 远程搜索</td></tr>
+            <tr><td><strong>规则引擎</strong></td><td><code>preps.ruleEngineConfig.formId</code></td><td>复杂多分支业务流程（可视化编排 flowContent）</td><td>前端本地执行，ON_LOAD/ON_CHANGE/ON_BUTTON_CLICK 触发，300ms 防抖</td></tr>
+          </tbody>
+        </table>
+        <p>三者相互独立、可叠加使用。规则引擎详见 <a href="#rule-engine">规则引擎</a>章节。</p>
         <h2 id="联动-概述">概述</h2>
         <p>联动策略允许一个字段的变化自动影响其他字段的显隐、禁用、必填、选项数据等。配置在 <code>field.preps.dataRelation</code> 中。</p>
         <div class="code-label">ts</div>
@@ -1245,6 +1253,242 @@ relationEventDispatcher()
     │             └─ 是 → apiLinkageOperation() 调用第三方接口回填</code></pre>
       </section>
 
+      <!-- ===== 规则引擎 ===== -->
+      <section id="rule-engine">
+        <h1>规则引擎</h1>
+        <p>组件库内置<strong>前端本地执行的规则引擎</strong>：规则以可视化流程（flowContent JSON）形式从后端拉取并缓存到浏览器内存，字段变更 / 按钮点击时本地零网络开销执行，实现对表单字段的显隐、必填、禁用、赋值、选项覆盖等控制。</p>
+        <h2 id="rule-架构总览">架构总览</h2>
+        <pre><code>业务应用层: configureRuleEngine({ fetchRulesHandler, httpCallHandler })
+（业务层实现接口调用，核心库不写死任何接口地址）
+        │ 注入
+        ▼
+核心库（star-horse-lowcode）
+  ON_LOAD 表单挂载      ON_CHANGE 字段变更       ON_BUTTON_CLICK 按钮
+     initRuleEvent    ruleEventDispatcher(300ms防抖)   ruleButtonAction
+        └────────► fetchAndCacheRules ──► ruleCache 内存缓存 ◄────┘
+                          │
+                          ▼
+              RuleFlowExecutor.executeFlows（本地执行流程）
+              http-call 节点 ──► httpCallHandler
+                          │ delta
+                          ▼
+                parseRuleEngineActions 解析控制指令
+                          │
+                          ▼
+             applyRuleEngineActionsToFields 应用到表单
+             （formVisible/required/disabled/readonly/赋值/选项覆盖）</code></pre>
+        <p>核心设计原则：</p>
+        <ul>
+          <li><strong>核心库无状态</strong>：所有后端交互通过 <code>configureRuleEngine</code> 从外部注入，核心库不感知接口地址与 HTTP 实现</li>
+          <li><strong>一次拉取，本地执行</strong>：规则仅在 ON_LOAD 时拉取一次并缓存；ON_CHANGE / ON_BUTTON_CLICK 直接读缓存执行，零网络开销</li>
+          <li><strong>与联动策略独立</strong>：联动是声明式配置，规则引擎是流程编排，二者各行其是、可叠加使用</li>
+        </ul>
+        <h2 id="rule-快速接入">快速接入</h2>
+        <h3>第一步：注入配置</h3>
+        <div class="code-label">ts</div>
+        <pre><code>import { configureRuleEngine } from "star-horse-lowcode";
+
+configureRuleEngine({
+  // 规则拉取处理器：接收 formId，返回 { triggerEvent → flowContent[] }
+  fetchRulesHandler: async (formId) =&gt; {
+    const res = await postRequest(`/userdb/ruleEngine/fetchRules/${formId}`, {});
+    return res?.data?.data ?? {};
+  },
+  // http-call 节点的 HTTP 执行器
+  httpCallHandler: async (url, method, body) =&gt; {
+    const res = method.toUpperCase() === "GET"
+      ? await getRequest(url, { params: body })
+      : await postRequest(url, body);
+    return res?.data?.data ?? res?.data;
+  },
+});</code></pre>
+        <blockquote><p>demo 场景可跳过后端，用 <code>injectRuleCache(formId, rules)</code> 直接注入规则缓存。</p></blockquote>
+        <h4>与上层 star-horse-form 包 configureRuleEngine 的关系</h4>
+        <p>存在<strong>两个同名但职责不同</strong>的 <code>configureRuleEngine</code>，按 import 路径区分：</p>
+        <table>
+          <thead><tr><th>来源</th><th>关注点</th><th>配置内容</th></tr></thead>
+          <tbody>
+            <tr><td><code>star-horse-lowcode</code>（本核心库）</td><td><strong>运行时行为注入</strong></td><td><code>fetchRulesHandler</code>（规则拉取）、<code>httpCallHandler</code>（HTTP 执行器）等处理器</td></tr>
+            <tr><td><code>star-horse-form</code>（上层组件包）</td><td><strong>API 端点配置</strong></td><td>规则 CRUD 9 组接口的 <code>serviceName</code> + 路径、WebSocket/代理/网关等全局端点</td></tr>
+          </tbody>
+        </table>
+        <p>典型分层用法：宿主应用先用 star-horse-form 的 <code>configureRuleEngine</code> / <code>configureAppEndpoints</code> 声明后端端点，再基于这些端点实现 fetchRulesHandler / httpCallHandler，最后通过本核心库的 <code>configureRuleEngine</code> 注入处理器：</p>
+        <div class="code-label">ts</div>
+        <pre><code>import {
+  configureRuleEngine as configureFormRuleApi,
+  configureAppEndpoints,
+} from "star-horse-form";
+import { configureRuleEngine } from "star-horse-lowcode";
+
+// 第一层：声明端点（star-horse-form）
+configureAppEndpoints({ gatewayPrefix: "/my-gateway" });
+configureFormRuleApi({ serviceName: "my-service" });
+
+// 第二层：注入运行时处理器（star-horse-lowcode），内部复用上述端点
+configureRuleEngine({
+  fetchRulesHandler: async (formId) =&gt; { /* 调用 /my-service/... */ },
+  httpCallHandler: async (url, method, body) =&gt; { /* ... */ },
+});</code></pre>
+        <h3>第二步：字段关联规则表单</h3>
+        <div class="code-label">ts</div>
+        <pre><code>{
+  fieldName: 'status',
+  type: 'select',
+  preps: {
+    values: [/* 静态兜底选项 */],
+    ruleEngineConfig: { formId: 'orderForm' },  // 方式一（推荐）
+    // formId: 'orderForm',                      // 方式二
+  }
+}</code></pre>
+        <h2 id="rule-触发事件">触发事件</h2>
+        <table>
+          <thead><tr><th>触发事件</th><th>入口函数</th><th>触发时机</th><th>特性</th></tr></thead>
+          <tbody>
+            <tr><td><code>ON_LOAD</code></td><td><code>initRuleEvent</code></td><td>表单挂载</td><td>每个 formId 仅执行一次</td></tr>
+            <tr><td><code>ON_CHANGE</code></td><td><code>ruleEventDispatcher</code></td><td>字段值变化</td><td><strong>300ms 防抖</strong>（同一 formId 连续变更合并），避免输入框逐字触发</td></tr>
+            <tr><td><code>ON_BUTTON_CLICK</code></td><td><code>ruleButtonAction</code></td><td>button-item 点击</td><td>context 注入 <code>__buttonKey</code> / <code>__buttonEvent</code></td></tr>
+          </tbody>
+        </table>
+        <p>以上入口由 StarHorseForm / StarHorseItem 内部自动接线，无需手动调用。</p>
+        <h4>拉取与缓存机制</h4>
+        <ul>
+          <li><strong>并发保护</strong>：同 formId 的并发拉取合并为同一个 Promise，不会重复请求</li>
+          <li><strong>失败降级</strong>：拉取失败时缓存空对象，不阻塞表单渲染；未注入 fetchRulesHandler 时引擎静默不工作</li>
+          <li><strong>手动清除</strong>：<code>clearRuleCache(formId?)</code> 清除指定/全部缓存（含防抖定时器与选项覆盖）</li>
+          <li><strong>多用户并发</strong>：缓存位于各浏览器会话内存中，天然按用户隔离；后端只需保证接口幂等，规则更新后重新打开表单即加载最新版本</li>
+        </ul>
+        <h2 id="rule-flowcontent">flowContent 规则流格式</h2>
+        <p><code>flowContent</code> 为 JSON 字符串：<code>{ nodes, edges }</code>。引擎从 start 节点沿边顺序执行至 end，最多 100 步（防死循环）。</p>
+        <div class="code-label">jsonc</div>
+        <pre><code>{
+  "nodes": [
+    { "id": "n1", "type": "start", "data": {} },
+    { "id": "n2", "type": "condition",
+      "data": { "logic": "AND",
+        "conditions": [{ "fieldName": "amount", "operator": "GT", "value": "10000" }] } },
+    { "id": "n3", "type": "action",
+      "data": { "actions": [
+        { "targetField": "approver", "actionType": "SET_REQUIRED" },
+        { "targetField": "remark", "actionType": "SET_VALUE",
+          "actionValueType": "EXPRESSION", "actionValue": "'金额:' + ${amount}" } ] } },
+    { "id": "n4", "type": "end", "data": {} }
+  ],
+  "edges": [
+    { "source": "n1", "target": "n2" },
+    { "source": "n2", "target": "n3", "label": "是" },
+    { "source": "n2", "target": "n4", "label": "否" },
+    { "source": "n3", "target": "n4" }
+  ]
+}</code></pre>
+        <h3>节点类型</h3>
+        <table>
+          <thead><tr><th>类型</th><th>data 关键属性</th><th>行为</th></tr></thead>
+          <tbody>
+            <tr><td><code>start</code> / <code>end</code></td><td>—</td><td>流程起止</td></tr>
+            <tr><td><code>condition</code></td><td><code>conditions[]</code>、<code>logic</code>(AND/OR)</td><td>条件满足走"是"分支边（label 匹配 是/true/y/✓/yes/满足），否则走"否"分支</td></tr>
+            <tr><td><code>action</code></td><td><code>actions[]</code></td><td>顺序执行动作列表（见下表）</td></tr>
+            <tr><td><code>exclusive-gateway</code></td><td><code>branches[]</code></td><td>多分支网关：按边 label 匹配 branch，branch 支持 conditions 或表达式，<code>"default"</code> 为默认分支</td></tr>
+            <tr><td><code>variable-assign</code></td><td><code>assignments[]</code></td><td>批量变量赋值：<code>{variableName, value, valueType}</code></td></tr>
+            <tr><td><code>script</code></td><td>—</td><td>占位节点，当前直接通过</td></tr>
+            <tr><td><code>http-call</code></td><td><code>url / method / body / responseVar / autoLoad</code></td><td>经 httpCallHandler 发起请求；<code>${field}</code> 占位符自动替换；响应存入 <code>context[responseVar]</code>；<code>autoLoad:false</code> 时 ON_LOAD 阶段跳过</td></tr>
+          </tbody>
+        </table>
+        <h3>条件操作符</h3>
+        <p><code>EQ</code> <code>NEQ</code> <code>GT</code> <code>GTE</code> <code>LT</code> <code>LTE</code> <code>CONTAINS</code> <code>NOT_CONTAINS</code> <code>IN</code> <code>NOT_IN</code> <code>IS_NULL</code> <code>IS_NOT_NULL</code> <code>STARTS_WITH</code> <code>ENDS_WITH</code> <code>BETWEEN</code>（数值比较自动转数字，IN 支持 <code>"a,b,c"</code> 逗号分隔字符串）。</p>
+        <h3>动作类型（action.actions[]）</h3>
+        <table>
+          <thead><tr><th>actionType</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td><code>SET_VALUE</code></td><td>赋值；<code>actionValueType</code>: CONSTANT（自动解析 JSON/数字/布尔）/ VARIABLE（取 context 路径）/ EXPRESSION（<code>${field}</code> 插值 + JS 表达式求值）</td></tr>
+            <tr><td><code>CLEAR_VALUE</code></td><td>清空目标字段</td></tr>
+            <tr><td><code>SHOW_FIELD</code> / <code>HIDE_FIELD</code></td><td>显示 / 隐藏</td></tr>
+            <tr><td><code>SET_ENABLED</code> / <code>SET_DISABLED</code></td><td>启用 / 禁用</td></tr>
+            <tr><td><code>SET_REQUIRED</code> / <code>SET_OPTIONAL</code></td><td>必填 / 非必填</td></tr>
+            <tr><td><code>SET_READONLY</code> / <code>SET_EDITABLE</code></td><td>只读 / 可编辑</td></tr>
+          </tbody>
+        </table>
+        <h2 id="rule-控制指令">结果应用（控制指令协议）</h2>
+        <p>流程输出的 delta 中，<strong><code>__</code> 前缀键为控制指令，其余键视为字段赋值</strong>：</p>
+        <table>
+          <thead><tr><th>delta 键</th><th>应用效果</th></tr></thead>
+          <tbody>
+            <tr><td><code>__visible_&lt;field&gt;</code></td><td>字段显示 / 隐藏（写 field.formVisible）</td></tr>
+            <tr><td><code>__required_&lt;field&gt;</code></td><td>必填 / 非必填（写 field.required）</td></tr>
+            <tr><td><code>__readonly_&lt;field&gt;</code></td><td>只读 / 可编辑（写 field.preps.readonly）</td></tr>
+            <tr><td><code>__disabled_&lt;field&gt;</code></td><td>禁用 / 启用（写 field.preps.disabled）</td></tr>
+            <tr><td><code>__options_&lt;field&gt;</code></td><td><strong>覆盖目标组件选项列表</strong>（见下节）</td></tr>
+            <tr><td>无前缀键</td><td>赋值 <code>formData[field]</code>（SET_VALUE 的最终体现）</td></tr>
+          </tbody>
+        </table>
+        <p>目标字段在全字段树中递归查找（含 children / containerFields / appList），支持子表与容器内字段。</p>
+        <h2 id="rule-optionsoverride">选项覆盖（optionsOverride）</h2>
+        <p>6 个选项类组件（select / radio / checkbox / tselect / transfer / cascade）的选项 computed 统一接入覆盖机制：</p>
+        <div class="code-label">ts</div>
+        <pre><code>// 组件内部（以 select-item 为例）
+const selectOptions = computed(() =&gt; {
+  const ruleFormId = props.field.preps?.ruleEngineConfig?.formId || props.field.preps?.formId;
+  if (ruleFormId) {
+    const override = getOptionsOverride(ruleFormId, props.field.fieldName);
+    if (override) return override;   // 规则下发的选项优先生效
+  }
+  return props.field.preps?.values || [];   // 静态兜底
+});</code></pre>
+        <p>规则流设置选项时：</p>
+        <ol>
+          <li>写入响应式存储 <code>optionsOverrideStore</code>（reactive Map，key 为 <code>${formId}:${fieldName}</code>）→ 组件 computed 自动重算，<strong>无需 triggerRef</strong></li>
+          <li>同时按组件类型落到对应 preps 属性：<code>values</code>（select/radio/checkbox 等）/ <code>data</code>（tselect/transfer）/ <code>options</code>（cascade）</li>
+          <li>读取入口 <code>getOptionsOverride(formId, fieldName)</code>，返回 undefined 表示无覆盖</li>
+        </ol>
+        <h2 id="rule-后端对接">与后端对接</h2>
+        <p>后端将「规则集 → 规则定义 → 规则集项」聚合为一个接口，按触发事件分组返回：</p>
+        <div class="code-label">json</div>
+        <pre><code>POST /userdb/ruleEngine/fetchRules/{formId}
+Response:
+{
+  "code": "200",
+  "data": {
+    "formId": "orderForm",
+    "rules": [
+      {
+        "idRuleDefinition": "...",
+        "ruleCode": "amount_check",
+        "ruleName": "大额审批校验",
+        "triggerEvent": "ON_CHANGE",
+        "priority": 1,
+        "itemIndex": 0,
+        "flowContent": "{\"nodes\":[...],\"edges\":[...]}"
+      }
+    ]
+  }
+}</code></pre>
+        <p>fetchRulesHandler 将其归一化为缓存格式：</p>
+        <div class="code-label">ts</div>
+        <pre><code>// { "ON_CHANGE": ["&lt;flowContent1&gt;", ...], "ON_LOAD": ["..."] }
+const grouped: Record&lt;string, string[]&gt; = {};
+for (const r of res.rules) {
+  (grouped[r.triggerEvent] ||= []).push(r.flowContent);
+}
+return grouped;</code></pre>
+        <blockquote><p>参考实现见 <code>src/sample/RuleEngineDemo.vue</code> 与 <code>src/sample/demo-rule-flows.ts</code>。</p></blockquote>
+        <h2 id="rule-api">API 参考</h2>
+        <table>
+          <thead><tr><th>函数</th><th>签名</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td><code>configureRuleEngine</code></td><td><code>(config) =&gt; void</code></td><td>注入 fetchRulesHandler / httpCallHandler（可多次调用增量合并）</td></tr>
+            <tr><td><code>initRuleEvent</code></td><td><code>(props, formData) =&gt; Promise&lt;void&gt;</code></td><td>ON_LOAD 入口（内部自动调用）</td></tr>
+            <tr><td><code>ruleEventDispatcher</code></td><td><code>(props, e, formData, triggerField?) =&gt; Promise&lt;void&gt;</code></td><td>ON_CHANGE 入口（300ms 防抖，内部自动调用）</td></tr>
+            <tr><td><code>ruleButtonAction</code></td><td><code>(props, formData, evtName?) =&gt; Promise&lt;void&gt;</code></td><td>ON_BUTTON_CLICK 入口（内部自动调用）</td></tr>
+            <tr><td><code>getOptionsOverride</code></td><td><code>(formId, fieldName) =&gt; any[] | undefined</code></td><td>读取选项覆盖值（组件 computed 订阅）</td></tr>
+            <tr><td><code>clearRuleCache</code></td><td><code>(formId?) =&gt; void</code></td><td>清除规则缓存 / 防抖定时器 / 选项覆盖</td></tr>
+            <tr><td><code>injectRuleCache</code></td><td><code>(formId, rules) =&gt; void</code></td><td>直注规则缓存（demo / 测试用）</td></tr>
+            <tr><td><code>setFormFieldsRef / registerFormFieldsRef</code></td><td><code>(formId, ref)</code></td><td>注册 formFields 引用（选项覆盖后 triggerRef 用）</td></tr>
+            <tr><td><code>parseRuleEngineActions</code></td><td><code>(delta) =&gt; FieldAction[]</code></td><td>delta → 字段控制指令数组</td></tr>
+            <tr><td><code>applyRuleEngineActionsToFields</code></td><td><code>(props, actions, formData, formId?) =&gt; void</code></td><td>应用控制指令到字段树</td></tr>
+            <tr><td><code>executeFlow / executeFlows</code></td><td><code>(flowContent, context, handler?) =&gt; Promise&lt;context&gt;</code></td><td>底层流程执行器（可独立使用）</td></tr>
+          </tbody>
+        </table>
+      </section>
+
       <!-- ===== 表单项组件 ===== -->
       <section id="form-items">
         <h1>表单项组件</h1>
@@ -1252,10 +1496,41 @@ relationEventDispatcher()
         <ol>
           <li><strong>Props 类型</strong>：<code>ItemPreps</code></li>
           <li><strong>属性透传</strong>：通过 <code>v-bind="prepsFilter(field.preps)"</code> 将 <code>field.preps</code> 中的属性透传给底层 Element Plus 组件</li>
-          <li><strong>联动策略</strong>：通过 <code>field.preps.dataRelation</code> 配置</li>
+          <li><strong>联动策略</strong>：通过 <code>field.preps.dataRelation</code> 配置，详见 <a href="#linkage-and-datasource">联动策略与数据源</a></li>
           <li><strong>公式计算</strong>：通过 <code>field.preps.formula</code> 配置</li>
           <li><strong>动态事件</strong>：通过 <code>v-on="getDynamicEvents()"</code> 绑定 <code>field.actions</code> 中配置的事件</li>
+          <li><strong>规则引擎</strong>：配置 <code>preps.ruleEngineConfig.formId</code> 后接入，详见 <a href="#rule-engine">规则引擎</a></li>
+          <li><strong>动态数据源</strong>：选项类组件支持 url / 字典远程加载</li>
+          <li><strong>移动端适配</strong>：下拉类组件通过 <code>useMobilePicker</code> 在 APP 端切换为抽屉列表模式</li>
         </ol>
+        <h2 id="表单项-渲染分发">渲染分发机制</h2>
+        <ul>
+          <li>所有 <code>*-item.vue</code> 组件按文件名全局注册，运行时由 <code>StarHorseItem</code> 通过 <code>&lt;component :is="itemType + '-item'"&gt;</code> 分发渲染</li>
+          <li><strong>日期类型路由</strong>：year/month/date/datetime/daterange 等类型统一由 <code>datetime-item</code> 渲染</li>
+          <li><strong>占位符自动化</strong>：挂载时自动补充 clearable/readonly，输入类生成"请输入+label"、选择类生成"请选择+label"</li>
+          <li><strong>值类型自动转换</strong>：preps 中的 'Y'/'N' 自动转布尔，'true'/'false' 字符串自动转布尔</li>
+        </ul>
+        <h2 id="表单项-source">source 数据来源标识</h2>
+        <table>
+          <thead><tr><th>值</th><th>含义</th><th>影响</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>表单新增</td><td>默认模式</td></tr>
+            <tr><td>2</td><td>表单编辑</td><td>默认模式</td></tr>
+            <tr><td>3</td><td>查看视图</td><td>强制只读、去除占位符</td></tr>
+            <tr><td>4</td><td>查询（搜索区）</td><td>输入类回车触发搜索，选择类变化触发</td></tr>
+            <tr><td>5</td><td>列表内嵌</td><td>change 事件额外触发 blur</td></tr>
+            <tr><td>6/7</td><td>表单设计/页面设计</td><td>设计器模式</td></tr>
+          </tbody>
+        </table>
+        <h2 id="表单项-规则引擎覆盖">规则引擎选项覆盖（optionsOverride）</h2>
+        <p>6 个选项类组件（select / radio / checkbox / tselect / transfer / cascade）的选项 computed 优先从规则引擎缓存读取：</p>
+        <div class="code-label">ts</div>
+        <pre><code>const options = computed(() =&gt; {
+  const formId = field.preps?.ruleEngineConfig?.formId || field.preps?.formId;
+  const override = formId &amp;&amp; getOptionsOverride(formId, field.fieldName);
+  return override ?? field.preps.values /* 或 data / options */ ?? [];
+});</code></pre>
+        <p>规则流 setOptions 动作写入响应式 Map（key <code>${formId}:${fieldName}</code>），组件自动重算刷新。详见 <a href="#rule-engine">规则引擎</a>章节。</p>
         <h2 id="表单项-公共接口">公共接口 ItemPreps</h2>
         <table>
           <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
@@ -1448,27 +1723,18 @@ relationEventDispatcher()
           </tbody>
         </table>
         <hr>
-        <h2 id="表单项-tree-select-item">tree-select-item 树选择</h2>
-        <p><strong>包装组件</strong>：<code>el-tree-select</code></p>
-        <table>
-          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
-          <tbody>
-            <tr><td>multiple</td><td><code>boolean</code></td><td><code>false</code></td><td>是否多选</td></tr>
-            <tr><td>checkStrictly</td><td><code>boolean</code></td><td><code>true</code></td><td>父子是否不关联</td></tr>
-            <tr><td>url</td><td><code>string</code></td><td>—</td><td>远程数据 URL</td></tr>
-            <tr><td>values / data</td><td><code>Array</code></td><td>—</td><td>本地数据</td></tr>
-          </tbody>
-        </table>
-        <hr>
         <h2 id="表单项-cascade-item">cascade-item 级联选择</h2>
-        <p><strong>包装组件</strong>：<code>el-cascader</code></p>
+        <p><strong>包装组件</strong>：<code>el-cascader</code>。未配置 options 时回退到内置中国省市区数据（可作地区选择器使用）。</p>
         <table>
           <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
           <tbody>
-            <tr><td>options</td><td><code>Array</code></td><td>—</td><td>级联选项数据</td></tr>
-            <tr><td>multiple</td><td><code>boolean</code></td><td><code>false</code></td><td>是否多选</td></tr>
-            <tr><td>showFooter</td><td><code>boolean</code></td><td><code>false</code></td><td>是否显示底部添加选项区</td></tr>
+            <tr><td>options</td><td><code>Array</code></td><td>内置省市区数据</td><td>级联选项数据；可被规则引擎 optionsOverride 覆盖</td></tr>
             <tr><td>props</td><td><code>object</code></td><td><code>{label:'name',value:'value',expandTrigger:'hover'}</code></td><td>属性映射</td></tr>
+            <tr><td>multiple</td><td><code>boolean</code></td><td><code>false</code></td><td>是否多选</td></tr>
+            <tr><td>displayName</td><td><code>string</code></td><td>—</td><td>回显文本字段：选中后写入 formData 的展示名称属性名</td></tr>
+            <tr><td>displayValue</td><td><code>string</code></td><td>—</td><td>回显取值字段：从选项节点取该属性作为显示文本</td></tr>
+            <tr><td>dataRelation</td><td><code>ItemRelation</code></td><td>—</td><td>联动策略配置</td></tr>
+            <tr><td>ruleEngineConfig.formId</td><td><code>string</code></td><td>—</td><td>规则引擎表单 ID，选项可被规则流 setOptions 覆盖</td></tr>
           </tbody>
         </table>
         <hr>
@@ -1512,29 +1778,36 @@ relationEventDispatcher()
           </tbody>
         </table>
         <hr>
-        <h2 id="表单项-dialog-item">dialog-item 弹窗容器</h2>
+        <h2 id="表单项-dialogItem">dialogItem / drawerItem 弹窗/抽屉容器</h2>
+        <p>属于 <code>comp/items</code> 布局容器族（全局注册名 <code>dialogItem</code> / <code>drawerItem</code>）。渲染为一个按钮，点击打开 el-dialog / el-drawer；内容渲染 <code>item.containerFields[0]</code> 中的子表单项；关闭时校验内部所有可见字段必填（查看态 source=3 自动跳过）。</p>
+        <h3>dialogItem field.preps</h3>
         <table>
           <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
           <tbody>
-            <tr><td>compName</td><td><code>string</code></td><td>—</td><td>弹窗内动态组件名</td></tr>
-            <tr><td>fieldList</td><td><code>Array</code></td><td>—</td><td>弹窗内表单字段列表</td></tr>
-            <tr><td>params</td><td><code>object</code></td><td>—</td><td>传递给弹窗内容的参数</td></tr>
-            <tr><td>compSize</td><td><code>string</code></td><td><code>'default'</code></td><td>组件大小</td></tr>
-            <tr><td>boxHeight</td><td><code>string</code></td><td><code>'60%'</code></td><td>弹窗高度</td></tr>
-            <tr><td>boxWidth</td><td><code>string</code></td><td><code>'50%'</code></td><td>弹窗宽度</td></tr>
+            <tr><td>btnText</td><td><code>string</code></td><td>i18n</td><td>按钮文字</td></tr>
+            <tr><td>btnType / btnIcon</td><td><code>string</code></td><td>—</td><td>按钮 type 与图标</td></tr>
+            <tr><td>disabled</td><td><code>boolean</code></td><td><code>false</code></td><td>禁用按钮</td></tr>
+            <tr><td>boxWidth / top</td><td><code>string</code></td><td>—</td><td>弹窗宽度 / 距顶部距离</td></tr>
+            <tr><td>fullscreen</td><td><code>boolean</code></td><td><code>false</code></td><td>是否全屏</td></tr>
+            <tr><td>modal</td><td><code>boolean</code></td><td><code>true</code></td><td>是否显示遮罩</td></tr>
+            <tr><td>closeOnClickModal / closeOnPressEscape</td><td><code>boolean</code></td><td>—</td><td>点击遮罩 / ESC 是否关闭</td></tr>
+            <tr><td>showClose</td><td><code>boolean</code></td><td><code>true</code></td><td>是否显示关闭按钮</td></tr>
+            <tr><td>draggable / center / destroyOnClose</td><td><code>boolean</code></td><td>—</td><td>可拖拽 / 居中 / 关闭时销毁内容</td></tr>
+            <tr><td>hideDialog</td><td><code>boolean</code></td><td><code>false</code></td><td>隐藏整个弹窗入口</td></tr>
+            <tr><td>mustComplete</td><td><code>'Y'|'N'</code></td><td><code>'Y'</code></td><td>关闭时是否强制校验内部字段</td></tr>
+            <tr><td>dataRelation</td><td><code>ItemRelation</code></td><td>—</td><td>联动策略配置</td></tr>
           </tbody>
         </table>
-        <hr>
-        <h2 id="表单项-drawer-item">drawer-item 抽屉容器</h2>
+        <h3>drawerItem field.preps</h3>
+        <p>在 dialogItem 基础上，将 <code>boxWidth/top/fullscreen/draggable/center/destroyOnClose/hideDialog</code> 替换为：</p>
         <table>
           <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
           <tbody>
-            <tr><td>compName</td><td><code>string</code></td><td>—</td><td>动态组件名</td></tr>
-            <tr><td>fieldList</td><td><code>Array</code></td><td>—</td><td>表单字段列表</td></tr>
-            <tr><td>params</td><td><code>object</code></td><td>—</td><td>传递给内容的参数</td></tr>
-            <tr><td>direction</td><td><code>string</code></td><td><code>'rtl'</code></td><td>抽屉方向</td></tr>
-            <tr><td>modal</td><td><code>boolean</code></td><td><code>true</code></td><td>是否显示遮罩</td></tr>
-            <tr><td>resizable</td><td><code>boolean</code></td><td><code>true</code></td><td>是否可调整大小</td></tr>
+            <tr><td>direction</td><td><code>string</code></td><td><code>'rtl'</code></td><td>抽屉方向（rtl/ltr/ttb/btt）</td></tr>
+            <tr><td>drawerSize</td><td><code>string</code></td><td>—</td><td>抽屉尺寸</td></tr>
+            <tr><td>resizable</td><td><code>boolean</code></td><td><code>true</code></td><td>是否可拖拽调宽</td></tr>
+            <tr><td>withHeader</td><td><code>boolean</code></td><td><code>true</code></td><td>是否显示头部</td></tr>
+            <tr><td>hideDrawer</td><td><code>boolean</code></td><td><code>false</code></td><td>隐藏整个抽屉入口</td></tr>
           </tbody>
         </table>
         <hr>
@@ -1764,30 +2037,8 @@ relationEventDispatcher()
         <h2 id="表单项-cron-item">cron-item Cron 表达式</h2>
         <p>点击按钮打开 Crontab 弹窗，确认后将表达式写回 formData。</p>
         <hr>
-        <h2 id="表单项-user-item">user-item 用户选择</h2>
-        <p><strong>包装组件</strong>：<code>el-mention</code> + 弹窗选择</p>
-        <table>
-          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
-          <tbody>
-            <tr><td>compName</td><td><code>string</code></td><td>—</td><td>弹窗中用户选择组件名</td></tr>
-            <tr><td>needField</td><td><code>FieldMapping[]</code></td><td>—</td><td>字段映射配置</td></tr>
-            <tr><td>aliasName</td><td><code>string</code></td><td>—</td><td>别名字段名</td></tr>
-            <tr><td>recall</td><td><code>Function</code></td><td>—</td><td>选择后回调函数</td></tr>
-          </tbody>
-        </table>
-        <hr>
-        <h2 id="表单项-org-item">org-item 组织选择</h2>
-        <p><strong>包装组件</strong>：<code>el-tree-select</code>。与 tree-select-item 基本一致，默认 value 属性名为 <code>'id'</code>。</p>
-        <hr>
-        <h2 id="表单项-area-item">area-item 地区选择</h2>
-        <p><strong>包装组件</strong>：<code>el-cascader</code></p>
-        <table>
-          <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
-          <tbody>
-            <tr><td>options</td><td><code>Array</code></td><td>内置省市区数据</td><td>级联选项数据</td></tr>
-            <tr><td>user</td><td><code>boolean</code></td><td>—</td><td>是否使用自定义数据</td></tr>
-          </tbody>
-        </table>
+        <h2 id="表单项-已移除组件">已移除的组件</h2>
+        <p>早期版本的 <code>tree-select-item</code>、<code>user-item</code>、<code>org-item</code>、<code>area-item</code> 已不再提供。树形选择请使用 <code>tselect-item</code>；地区选择使用 <code>cascade-item</code>（内置省市区数据）；用户/组织选择请通过 <code>dialog-input-item</code> 或 <code>usercomp-item</code> 承载业务组件实现。</p>
         <hr>
         <h2 id="表单项-location-item">location-item 位置选择</h2>
         <table>

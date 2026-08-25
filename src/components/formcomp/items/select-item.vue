@@ -30,7 +30,7 @@
         </el-checkbox>
       </template>
       <template
-        v-for="item in field.preps?.values"
+        v-for="item in selectOptions"
         :key="item[field.preps?.props?.value ?? 'value']"
       >
         <el-option
@@ -179,6 +179,7 @@ import { i18n } from "@/lang";
 import { useMobilePicker } from "@/components/formcomp/utils/useMobilePicker";
 import ShMobilePicker from "@/components/formcomp/utils/ShMobilePicker.vue";
 import StarhorseFormItem from "@/components/formcomp/items/starhorse-form-item.vue";
+import { getOptionsOverride } from "@/components/formcomp/utils/ItemRuleEventUtils";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -193,6 +194,20 @@ const checkAll = ref(false);
 const indeterminate = ref(false);
 const isAdding = ref(false);
 const optionName = ref("");
+
+/**
+ * select 选项列表：优先从规则引擎 optionsOverrideStore 取值，回退到 field.preps.values
+ * optionsOverrideStore 是 reactive Map，规则引擎设置 options 时自动触发 computed 重算
+ */
+const selectOptions = computed(() => {
+  const ruleFormId =
+    props.field.preps?.ruleEngineConfig?.formId || props.field.preps?.formId;
+  if (ruleFormId) {
+    const override = getOptionsOverride(ruleFormId, props.field.fieldName);
+    if (override) return override;
+  }
+  return props.field.preps?.values || [];
+});
 const remote = computed(() => {
   let temp = props.field.preps?.remote;
   if (typeof temp == "string") {
@@ -236,7 +251,7 @@ watch(pickerVisible, async (val) => {
       ? [...(formData.value?.[props.field.fieldName] || [])]
       : formData.value?.[props.field.fieldName];
     searchKey.value = "";
-    displayOptions.value = props.field.preps?.values || [];
+    displayOptions.value = selectOptions.value;
     updateCheckAllState();
   }
 });
@@ -255,7 +270,7 @@ const filteredOptions = computed(() => {
 const isKeywordExists = computed(() => {
   if (!searchKey.value) return true;
   const kw = searchKey.value.toLowerCase();
-  return (props.field.preps?.values || []).some(
+  return selectOptions.value.some(
     (item: any) =>
       String(item[valueKey.value] ?? "").toLowerCase() === kw ||
       String(item[labelKey.value] ?? "").toLowerCase() === kw,
@@ -336,7 +351,7 @@ const handleCheckAll = (val: any) => {
 const handleSearch = async (queryString: string) => {
   if (remote.value) {
     await remoteMethod(queryString);
-    displayOptions.value = props.field.preps?.values || [];
+    displayOptions.value = selectOptions.value;
   }
 };
 
@@ -344,7 +359,7 @@ const handleSearch = async (queryString: string) => {
 const displayText = computed(() => {
   const val = formData.value?.[props.field.fieldName];
   if (val === undefined || val === null || val === "") return "";
-  const values = props.field.preps?.values || [];
+  const values = selectOptions.value;
   if (Array.isArray(val)) {
     return val
       .map((v) => {

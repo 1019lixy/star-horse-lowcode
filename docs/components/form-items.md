@@ -4,9 +4,178 @@
 
 1. **Props 类型**：`ItemPreps`（见下方公共接口）
 2. **属性透传**：通过 `v-bind="prepsFilter(field.preps)"` 将 `field.preps` 中的属性透传给底层 Element Plus 组件，因此 **每个表单项组件支持其包装的 Element Plus 组件的所有 Props/Events**
-3. **联动策略**：通过 `field.preps.dataRelation` 配置，详见 [联动策略与数据源](../linkage-and-datasource.md)
+3. **联动策略**：通过 `field.preps.dataRelation` 配置，详见下方[联动策略](#联动策略datarelation)与 [联动策略与数据源](../linkage-and-datasource.md)
 4. **公式计算**：通过 `field.preps.formula` 配置，详见 [内部机制](../internal-mechanisms.md)
-5. **动态事件**：通过 `v-on="getDynamicEvents()"` 绑定 `field.actions` 中配置的事件
+5. **动态事件**：通过 `v-on="getDynamicEvents(props, itemAction, formData)"` 绑定 `field.actions` 中配置的事件
+6. **规则引擎**：配置 `preps.ruleEngineConfig.formId` 后接入，支持显隐/必填/禁用/赋值/选项覆盖，详见下方[规则引擎](#规则引擎rule-engine)与 [规则引擎文档](../rule-engine.md)
+7. **动态数据源**：选项类组件支持 url / 字典远程加载，详见下方[动态数据源](#动态数据源)
+8. **移动端适配**：下拉类组件通过 `useMobilePicker` 在 APP 端自动切换为"只读输入框 + 底部抽屉列表"分离模式
+
+## 渲染分发机制
+
+- 所有 `*-item.vue` 组件按文件名全局注册。运行时由 `StarHorseItem` 通过 `<component :is="itemType + '-item'">` 分发渲染，`itemType` 取自 `field.type || field.fieldType`
+- **日期类型路由**：`year/years/month/months/date/dates/datetime/week/datetimerange/daterange/monthrange/yearrange` 等类型统一由 `datetime-item` 渲染（见 `dateCompList()`），默认以时间戳赋值
+- **输入类类型**（input/textarea/password/number/view-markdown/json/json-array）在查询态按回车触发搜索；选择类类型（select/tselect/cascader/autocomplete/area/cron/transfer/icon/dialog-input/page-select）在变化时触发搜索
+- **占位符自动化**：挂载时自动补充 `clearable=true`、`readonly`；输入类自动生成"请输入+label"、选择类自动生成"请选择+label"占位符并强制 `filterable/collapseTags/collapseTagsTooltip`；范围类自动生成起止占位符。设置 `preps.noPlaceholder = true` 或查看态（source=3）可跳过
+- **值类型自动转换**：`preps` 中的 `'Y'/'N'/'y'/'n'` 自动转为布尔值，`'true'/'false'` 字符串自动转为布尔值
+
+## source 数据来源标识
+
+| 值 | 含义 | 对组件行为的影响 |
+|---|---|---|
+| 1 | 表单新增 | 默认模式 |
+| 2 | 表单编辑 | 默认模式 |
+| 3 | 查看视图 | 强制只读、去除占位符 |
+| 4 | 查询（搜索区） | 输入类回车触发 `dataSearch`，选择类变化触发；支持拖拽调宽 |
+| 5 | 列表内嵌 | change 事件额外触发 blur |
+| 6 | 表单设计 | 设计器模式 |
+| 7 | 页面设计 | 设计器模式 |
+
+## 联动策略（dataRelation）
+
+字段间的声明式联动，配置在 `field.preps.dataRelation` 中，值变化时自动触发：
+
+```ts
+preps: {
+  dataRelation: {
+    actionName: 'change',          // 触发事件：change / input / blur
+    relationDetails: [ /* RelationDetail[] */ ],
+    apiLinkage: { /* ApiLinkageDetail，第三方接口联动 */ },
+  }
+}
+```
+
+**能力速览**（`controlCondition`）：
+
+| 类型 | 作用 |
+|---|---|
+| eqHide / eqVisible | 匹配时隐藏 / 显示目标字段 |
+| eqDisable / eqEditable | 匹配时禁用 / 启用目标字段 |
+| eqRequired / eqUnRequired | 匹配时必填 / 非必填 |
+| eqConditionDataLinkage | 条件数据联动（按匹配值过滤接口数据作为目标字段选项） |
+| asParamDataLinkage | 参数数据联动（当前字段值作为查询参数获取选项数据） |
+| assignValue | 静态赋值（staticDatas 写入目标字段） |
+| changeType | 动态改变目标字段的渲染类型 |
+
+**触发时机**：① 字段值变化时自动触发；② 表单初始化时有初始值立即触发（无初始值则首次赋值后触发一次）；③ 查看态（source=3）`apiLinkage` 不执行但 `relationDetails` 正常执行。
+
+数据联动结果按目标组件类型自动写入 `values`（select/radio/checkbox/autocomplete）/ `data`（tselect/transfer）/ `options`（cascade）/ `defaultValue`（其他）。
+
+完整配置结构、matchType 匹配方式、ApiLinkageDetail 接口联动见 → [联动策略与数据源](../linkage-and-datasource.md)。
+
+---
+
+## 动态数据源
+
+除静态配置 `preps.values` 外，选项类组件支持挂载时远程加载选项。由 `compDynamicData(field)` 统一调度，优先级如下：
+
+```
+dataSource = 'url' 或 preps.apiDataSource 存在  →  dynamicUrlOperation 远程拉取
+dataSource = 'dict'                             →  按 urlOrDictName 加载数据字典
+均未命中                                        →  回退静态 values / data / optionList
+```
+
+### url 数据源配置（preps 内）
+
+| 属性名 | 类型 | 说明 |
+|---|---|---|
+| dataSource | `'url' \| 'dict'` | 数据源类型 |
+| urlOrDictName | `string` | 字典名（dict）或接口地址（url，配合下方属性） |
+| apiDataSource | `ApiLinkageDetail` | 结构化接口数据源（推荐），经 `/system-config/redirect/apiLinkage` 代理调用 |
+| url / host / port / protocol | `string` | 直连接口信息（redirect=true 时经 `/system-config/redirect/execute` 代理） |
+| httpMethod | `'GET' \| 'POST'` | 请求方式，默认 POST |
+| queryParams | `Array<{name, value, matchType}>` | 静态查询参数 |
+| selectLabel / selectValue | `string` | 返回数据的显示/取值属性名，默认 `name` / `value` |
+
+- **代理转发**：`redirect` 默认 `true`，跨域请求统一走后端代理；`false` 时前端直连
+- **树形数据**：返回数据含 `children` 时自动递归转换（tselect/cascade 树形选项）
+- **远程搜索**：select 配置 `remote=true` 后，搜索时以 `selectLabel + operation:'lk'` 为条件重新请求（300ms 内连续输入由 el-select 自身节流）
+
+---
+
+## 规则引擎（Rule Engine）
+
+规则引擎与联动策略相互独立：联动是**字段间声明式配置**，规则引擎是**可视化流程编排**（flowContent），适合复杂多分支场景。
+
+### 接入方式
+
+字段配置规则引擎归属表单 ID（任一即可）：`preps.ruleEngineConfig.formId` 或 `preps.formId`。
+
+业务侧应用启动时注入处理器（核心库无状态，不写死接口地址）：
+
+```ts
+import { configureRuleEngine } from "star-horse-lowcode";
+
+configureRuleEngine({
+  // 拉取规则：返回 { triggerEvent → flowContent[] }
+  fetchRulesHandler: async (formId) => {
+    const res = await postRequest(`/userdb/ruleEngine/fetchRules/${formId}`, {});
+    return res?.data?.data ?? {};
+  },
+  // http-call 节点的 HTTP 执行器
+  httpCallHandler: async (url, method, body) => {
+    const res = await request({ url, method, data: body });
+    return res?.data?.data ?? res?.data;
+  },
+});
+```
+
+### 触发时机
+
+| 触发事件 | 入口函数 | 时机 | 特性 |
+|---|---|---|---|
+| ON_LOAD | `initRuleEvent` | 表单挂载 | 每个 formId 仅执行一次；先拉取规则并缓存 |
+| ON_CHANGE | `ruleEventDispatcher` | 字段值变化 | **300ms 防抖**（避免输入框逐字触发）；本地读缓存零网络开销 |
+| ON_BUTTON_CLICK | `ruleButtonAction` | 按钮点击 | 本地读缓存；context 注入 `__buttonKey` / `__buttonEvent` |
+
+规则拉取带并发保护（同 formId 的重复请求合并为一次 Promise），缓存于内存 Map，可通过 `clearRuleCache(formId?)` 手动清除——多用户场景下每个浏览器会话各自缓存，互不影响。
+
+### 规则流格式（flowContent）
+
+JSON 字符串，包含 `nodes` 与 `edges`，从 start 节点沿边执行到 end（最多 100 步防死循环）。支持节点类型：
+
+| 节点类型 | data 关键属性 | 行为 |
+|---|---|---|
+| start / end | — | 流程起止 |
+| condition | `conditions[]`、`logic`(AND/OR) | 条件判断，按边 label（是/true/✓ …）分流 |
+| action | `actions[]` | 执行动作（见下表） |
+| exclusive-gateway | `branches[]` | 多分支网关，按分支条件或表达式分流 |
+| variable-assign | `assignments[]` | 变量赋值（CONSTANT/VARIABLE/EXPRESSION 三种取值模式） |
+| script | — | 占位（当前直接通过） |
+| http-call | `url`、`method`、`body`、`responseVar`、`autoLoad` | 经注入的 httpCallHandler 发起请求，响应存入 context；`autoLoad:false` 时 ON_LOAD 阶段跳过 |
+
+action 支持的动作：`SET_VALUE`（支持 CONSTANT/EXPRESSION `${field}` 表达式/VARIABLE）、`CLEAR_VALUE`、`SHOW_FIELD`/`HIDE_FIELD`、`SET_ENABLED`/`SET_DISABLED`、`SET_REQUIRED`/`SET_OPTIONAL`、`SET_READONLY`/`SET_EDITABLE`。
+
+条件操作符：EQ / NEQ / GT / GTE / LT / LTE / CONTAINS / NOT_CONTAINS / IN / NOT_IN / IS_NULL / IS_NOT_NULL / STARTS_WITH / ENDS_WITH / BETWEEN。
+
+### 结果应用（控制指令）
+
+流程输出 delta 中，`__` 前缀键为控制指令，其余为字段赋值，由 `applyRuleEngineActionsToFields` 应用到表单：
+
+| 指令前缀 | 应用效果 |
+|---|---|
+| `__visible_<field>` | 显示 / 隐藏字段（formVisible） |
+| `__required_<field>` | 必填 / 非必填 |
+| `__readonly_<field>` | 只读 / 可编辑 |
+| `__disabled_<field>` | 禁用 / 启用 |
+| `__options_<field>` | **覆盖目标组件选项列表**（见下） |
+| 无前缀键 | 直接赋值 `formData[field]` |
+
+### 选项覆盖（optionsOverride）
+
+6 个选项类组件（select / radio / checkbox / tselect / transfer / cascade）的选项 computed 统一接入覆盖机制：
+
+```ts
+const options = computed(() => {
+  const formId = field.preps?.ruleEngineConfig?.formId || field.preps?.formId;
+  const override = formId && getOptionsOverride(formId, field.fieldName);
+  return override ?? field.preps.values /* 或 data / options */ ?? [];
+});
+```
+
+规则流设置选项时，写入响应式 Map（key `${formId}:${fieldName}`）并同时落到对应 preps 属性（values/data/options 按组件类型区分），组件自动重算——**这是下拉框选项能被规则动态刷新的关键**。
+
+完整架构说明、后端对接规范见 → [规则引擎文档](../rule-engine.md)。
 
 ---
 
@@ -192,17 +361,26 @@
 ### field.preps 专属配置
 
 | 属性名 | 类型 | 默认值 | 说明 |
-|---|---|---|---|---|
-| values | `SelectOption[]` | — | **选项数据**，渲染为 el-option |
-| multiple | `boolean` | `false` | 是否多选 |
-| remote | `boolean \| string` | `false` | 是否远程搜索 |
-| dataSource | `string` | — | 数据源类型（`'url'` 时远程加载数据） |
-| selectLabel | `string` | — | 远程搜索标签属性名 |
-| showFooter | `boolean` | `false` | 是否显示底部动态添加选项区 |
+|---|---|---|---|
+| values | `SelectOption[]` | `[]` | **选项数据**（静态兜底），渲染为 el-option；可被规则引擎 optionsOverride 覆盖 |
 | props.label | `string` | `'name'` | 选项显示属性名 |
 | props.value | `string` | `'value'` | 选项值属性名 |
+| multiple | `boolean` | `false` | 是否多选（多选时下拉头部自动出现全选 checkbox） |
+| remote | `boolean \| string` | 自动 | 是否远程搜索；`dataSource === 'url'` 时自动置 true；支持 'true'/'yes'/'t' 字符串 |
+| dataSource | `string` | — | 数据源类型，`'url'` 时挂载后通过 `compDynamicData` 远程加载 values |
+| selectLabel | `string` | — | 远程搜索时模糊匹配的标签属性名（operation=lk） |
+| showFooter | `boolean` | `false` | 是否显示底部"动态添加选项"输入区 |
+| allowCreate | `boolean` | `false` | 是否允许创建新选项（APP 端抽屉列表同样支持） |
+| placeholder | `string` | 自动生成 | 占位文字 |
+| filterable / collapseTags / collapseTagsTooltip | `boolean` | `true`(自动) | 挂载时强制开启 |
+| dataRelation | `ItemRelation` | — | 联动策略配置 |
+| ruleEngineConfig.formId / formId | `string` | — | 规则引擎表单 ID，配置后选项可被规则流 setOptions 动作覆盖 |
 
 > **注意**：组件 onMounted 时会自动设置 `filterable=true` 和 `collapseTags=true`。
+
+### APP 端分离模式
+
+`useMobilePicker` 判定为移动端时，渲染为只读输入框 + ShMobilePicker 底部抽屉列表：支持搜索过滤、多选全选、allowCreate 创建新值；确认时写回 formData 并手动触发 change 与 dataRelation 联动。
 
 ### 常用 el-select 透传属性
 
@@ -255,10 +433,14 @@
 
 | 属性名 | 类型 | 默认值 | 说明 |
 |---|---|---|---|
-| values | `SelectOption[]` | — | 选项数据 |
+| values | `SelectOption[]` | — | 选项数据；可被规则引擎 optionsOverride 覆盖 |
+| props.label | `string` | `'name'` | 选项显示属性名 |
+| props.value | `string` | `'value'` | 选项值属性名 |
 | radioType | `string` | — | `'button'` 时使用按钮样式 |
-| readonly | `boolean` | `false` | 是否只读（双击可取消选中） |
+| readonly | `boolean` | `false` | 是否只读（只读态双击可取消选中） |
 | textColor | `string` | — | 选中时文字颜色 |
+| disabled | `boolean` | `false` | 禁用 |
+| ruleEngineConfig.formId / formId | `string` | — | 规则引擎表单 ID，选项可被规则流 setOptions 动作覆盖 |
 
 ---
 
@@ -266,15 +448,16 @@
 
 **包装组件**：`el-checkbox-group`
 
-> **支持 el-checkbox-group 的所有 Props / Events**。
+> **支持 el-checkbox-group 的所有 Props / Events**。v-model 值为数组。
 
 ### field.preps 专属配置
 
 | 属性名 | 类型 | 默认值 | 说明 |
 |---|---|---|---|
-| values | `SelectOption[]` | — | 选项数据 |
+| values | `SelectOption[]` | — | 选项数据；可被规则引擎 optionsOverride 覆盖 |
 | props.label | `string` | `'name'` | 选项显示属性名 |
 | props.value | `string` | `'value'` | 选项值属性名 |
+| ruleEngineConfig.formId / formId | `string` | — | 规则引擎表单 ID，选项可被规则流 setOptions 动作覆盖 |
 
 ---
 
@@ -388,26 +571,6 @@
 
 ---
 
-## tree-select-item 树选择
-
-**包装组件**：`el-tree-select`
-
-> **支持 el-tree-select 的所有 Props / Events**。
-
-### field.preps 专属配置
-
-| 属性名 | 类型 | 默认值 | 说明 |
-|---|---|---|---|
-| multiple | `boolean` | `false` | 是否多选 |
-| checkStrictly | `boolean` | `true` | 父子是否不关联 |
-| url | `string` | — | 远程数据 URL |
-| values / data | `Array` | — | 本地数据 |
-| props.label | `string` | `'name'` | 显示属性名 |
-| props.value | `string` | `'value'` | 值属性名 |
-| props.children | `string` | `'children'` | 子节点属性名 |
-
----
-
 ## cascade-item 级联选择
 
 **包装组件**：`el-cascader`
@@ -418,10 +581,16 @@
 
 | 属性名 | 类型 | 默认值 | 说明 |
 |---|---|---|---|
-| options | `Array` | — | 级联选项数据 |
+| options | `Array` | 内置省市区数据 | 级联选项数据；未配置时回退到内置中国省市区数据（可作地区选择器使用）；可被规则引擎 optionsOverride 覆盖 |
+| props | `object` | `{label:'name', value:'value', expandTrigger:'hover'}` | 属性映射（el-cascader Props 配置） |
 | multiple | `boolean` | `false` | 是否多选 |
-| showFooter | `boolean` | `false` | 是否显示底部添加选项区 |
-| props | `object` | `{label:'name',value:'value',expandTrigger:'hover'}` | 属性映射 |
+| displayName | `string` | — | 回显文本字段：选中后写入 formData 的展示名称属性名 |
+| displayValue | `string` | — | 回显取值字段：从选项节点取该属性作为显示文本 |
+| placeholder | `string` | 自动生成 | 占位文字 |
+| dataRelation | `ItemRelation` | — | 联动策略配置 |
+| ruleEngineConfig.formId / formId | `string` | — | 规则引擎表单 ID，选项可被规则流 setOptions 动作覆盖 |
+
+> 选项数据也可通过 `field.preps.dataSource = 'url'` 远程加载（`compDynamicData` 机制）。
 
 ---
 
@@ -487,38 +656,44 @@
 
 ---
 
-## dialog-item 弹窗容器
+## dialogItem / drawerItem 弹窗/抽屉容器
 
-弹窗容器表单项。
+> 属于 `comp/items` 布局容器族（全局注册名 `dialogItem` / `drawerItem`），此处仅列出表单配置中常用的 `field.preps`。渲染机制与完整容器说明见 [布局容器组件](./layout-components.md)。
 
-### field.preps 专属配置
+**行为**：渲染为一个按钮，点击打开 el-dialog / el-drawer；内容渲染 `item.containerFields[0]` 中的子表单项；关闭时校验内部所有可见字段必填（查看态 source=3 自动跳过校验）。
 
-| 属性名 | 类型 | 默认值 | 说明 |
-|---|---|---|---|
-| compName | `string` | — | 弹窗内动态组件名 |
-| fieldList | `Array` | — | 弹窗内表单字段列表 |
-| params | `object` | — | 传递给弹窗内容的参数 |
-| compSize | `string` | `'default'` | 组件大小 |
-| boxHeight | `string` | `'60%'` | 弹窗高度 |
-| boxWidth | `string` | `'50%'` | 弹窗宽度 |
-
----
-
-## drawer-item 抽屉容器
-
-抽屉容器表单项。
-
-### field.preps 专属配置
+### dialogItem field.preps
 
 | 属性名 | 类型 | 默认值 | 说明 |
 |---|---|---|---|
-| compName | `string` | — | 动态组件名 |
-| fieldList | `Array` | — | 表单字段列表 |
-| params | `object` | — | 传递给内容的参数 |
-| compSize | `string` | `'default'` | 组件大小 |
-| direction | `string` | `'rtl'` | 抽屉方向（rtl/ltr/ttb/btt） |
+| btnText | `string` | i18n | 按钮文字 |
+| btnType / btnIcon | `string` | — | 按钮 type 与图标 |
+| disabled | `boolean` | `false` | 禁用按钮 |
+| boxWidth | `string` | — | 弹窗宽度 |
+| top | `string` | — | 弹窗距顶部距离 |
+| fullscreen | `boolean` | `false` | 是否全屏 |
 | modal | `boolean` | `true` | 是否显示遮罩 |
-| resizable | `boolean` | `true` | 是否可调整大小 |
+| closeOnClickModal | `boolean` | — | 点击遮罩是否关闭 |
+| closeOnPressEscape | `boolean` | — | ESC 是否关闭 |
+| showClose | `boolean` | `true` | 是否显示关闭按钮 |
+| draggable | `boolean` | — | 是否可拖拽 |
+| center | `boolean` | — | 是否居中布局 |
+| destroyOnClose | `boolean` | — | 关闭时是否销毁内容 |
+| hideDialog | `boolean` | `false` | 隐藏整个弹窗入口 |
+| mustComplete | `'Y'\|'N'` | `'Y'` | 关闭时是否强制校验内部字段 |
+| dataRelation | `ItemRelation` | — | 联动策略配置 |
+
+### drawerItem field.preps
+
+在 dialogItem 基础上，将 `boxWidth/top/fullscreen/draggable/center/destroyOnClose/hideDialog` 替换为：
+
+| 属性名 | 类型 | 默认值 | 说明 |
+|---|---|---|---|
+| direction | `string` | `'rtl'` | 抽屉方向（rtl/ltr/ttb/btt） |
+| drawerSize | `string` | — | 抽屉尺寸 |
+| resizable | `boolean` | `true` | 是否可拖拽调宽 |
+| withHeader | `boolean` | `true` | 是否显示头部 |
+| hideDrawer | `boolean` | `false` | 隐藏整个抽屉入口 |
 
 ---
 
@@ -880,49 +1055,7 @@ HTML 内容渲染组件。
 
 ---
 
-## user-item 用户选择
-
-**包装组件**：`el-mention` + 弹窗选择
-
-### field.preps 专属配置
-
-| 属性名 | 类型 | 默认值 | 说明 |
-|---|---|---|---|
-| compName | `string` | — | 弹窗中用户选择组件名 |
-| needField | `FieldMapping[]` | — | 字段映射配置 |
-| aliasName | `string` | — | 别名字段名 |
-| recall | `Function` | — | 选择后回调函数 |
-
----
-
-## org-item 组织选择
-
-**包装组件**：`el-tree-select`
-
-> 与 tree-select-item 基本一致，默认 value 属性名为 `'id'`。
-
-### field.preps 专属配置
-
-| 属性名 | 类型 | 默认值 | 说明 |
-|---|---|---|---|
-| url | `string` | — | 远程数据 URL |
-| values / data | `Array` | — | 本地数据 |
-| props.label | `string` | `'name'` | 显示属性名 |
-| props.value | `string` | `'id'` | 值属性名 |
-
----
-
-## area-item 地区选择
-
-**包装组件**：`el-cascader`
-
-### field.preps 专属配置
-
-| 属性名 | 类型 | 默认值 | 说明 |
-|---|---|---|---|
-| options | `Array` | 内置省市区数据 | 级联选项数据 |
-| user | `boolean` | — | 是否使用自定义数据 |
-| props | `object` | `{label:'name',value:'code'}` | 属性映射 |
+> **已移除的组件**：早期版本的 `tree-select-item`、`user-item`、`org-item`、`area-item` 已不再提供。树形选择请使用 `tselect-item`；地区选择使用 `cascade-item`（内置省市区数据）；用户/组织选择请通过 `dialog-input-item` 或 `usercomp-item` 承载业务组件实现。
 
 ---
 
@@ -992,8 +1125,11 @@ HTML 内容渲染组件。
 
 | 属性名 | 类型 | 默认值 | 说明 |
 |---|---|---|---|
-| data | `Array` | — | 穿梭框数据 |
+| data | `Array` | — | 穿梭框数据；可被规则引擎 optionsOverride 覆盖 |
 | props | `object` | `{key:'value',label:'name'}` | 属性映射 |
+| allowCreate | `boolean` | `false` | 是否允许创建新条目 |
+| dataRelation | `ItemRelation` | — | 联动策略配置 |
+| ruleEngineConfig.formId / formId | `string` | — | 规则引擎表单 ID，数据可被规则流 setOptions 动作覆盖 |
 
 ---
 
@@ -1007,11 +1143,16 @@ HTML 内容渲染组件。
 
 | 属性名 | 类型 | 默认值 | 说明 |
 |---|---|---|---|
-| data | `Array` | — | 树形数据 |
+| data | `Array` | — | 树形数据；可被规则引擎 optionsOverride 覆盖 |
+| props | `object` | `{label:'name',value:'value'}` | 属性映射（含 children） |
 | multiple | `boolean` | `false` | 是否多选 |
 | showFooter | `boolean` | `false` | 是否显示底部添加区 |
-| showCode | `boolean` | — | 是否显示编码 |
-| props | `object` | `{label:'name',value:'value'}` | 属性映射 |
+| showCode | `boolean` | — | 选项文本后是否拼接编码 |
+| filterable | `boolean` | `true`(自动) | 是否可搜索 |
+| allowCreate | `boolean` | `false` | 是否允许创建新值 |
+| placeholder | `string` | 自动生成 | 占位文字 |
+| dataRelation | `ItemRelation` | — | 联动策略配置 |
+| ruleEngineConfig.formId / formId | `string` | — | 规则引擎表单 ID，数据可被规则流 setOptions 动作覆盖 |
 
 > 当 `dataSource === 'url'` 时自动设置 `remote=true`、`filterable=true`、`collapseTags=true`。
 
@@ -1032,3 +1173,17 @@ HTML 内容渲染组件。
 ## unknown-item 未知组件占位
 
 未知组件类型的占位显示组件，模板显示"未知组件"。
+
+---
+
+## 内部公共组件
+
+以下组件同样按文件名全局注册，主要供其他表单项内部使用，也可直接引用：
+
+### starhorse-form-item 表单项包装器
+
+所有表单项的最外层包装：负责 label 布局、必填星号、帮助提示（`field.helpMsg`）、设计模式选中/拖拽（`isDesign`）、禁用与 bare 模式样式。消费属性：`label / itemType / helpMsg / size / headerFlag / staticData`。
+
+### base-json-item JSON 编辑基座
+
+`json-item` 与 `json-array-item` 的共同实现，通过 `dataType` prop（`'object' | 'array'`）区分校验类型；双击打开 EditDataDialog 弹窗编辑。

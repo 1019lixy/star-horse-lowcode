@@ -32,7 +32,8 @@
 | typeModel | `string` | 否 | — | 类型模型 |
 | dynamicForm | `boolean` | 否 | `false` | 是否动态表单 |
 | preview | `boolean` | 否 | `false` | 是否预览模式（只读） |
-| selectData | `SelectOption[]` | 否 | `[{name:'正常',value:'1'},{name:'禁用',value:'2'}]` | 选择数据选项 |
+| selectData | `SelectOption[]` | 否 | `[{name:'正常',value:'1'},{name:'禁用',value:'2'}]` | 状态字段选项数据（statusCode → statusName 回显） |
+| dialogType | `'dialog' \| 'drawer'` | 否 | — | 弹层类型声明，透传给内部 StarHorseItem / 字段组件（影响部分组件的弹窗形态） |
 
 ## 事件 (Emits)
 
@@ -44,21 +45,25 @@
 | removeRow | `(row: any)` | 列表中删除行时触发 |
 | addRow | `(row: any)` | 列表中添加行时触发 |
 | inited | — | 表单初始化完成时触发 |
+| beforeSubmit | `({ type: string, formData: any })` | **提交流程钩子**：`merge()` 校验通过后、真正提交（doMerge）之前同步触发。可用于提交埋点、数据快照等。注意 Vue emit 为同步通知，处理器无法阻断后续提交；如需异步拦截（如二次确认），请在调用方自行控制 merge 的调用时机 |
 
 ## 方法 (Expose)
 
 | 方法名 | 参数 | 返回值 | 说明 |
 |---|---|---|---|
-| merge | `(type: string)` | `void` | 提交表单（含校验） |
-| mergeDraft | `(type: string)` | `void` | 暂存草稿（不含校验） |
+| merge | `(type: string)` | `void` | 提交表单（含校验）：validate 通过后触发 beforeSubmit 再执行 doMerge |
+| mergeDraft | `(type: string)` | `void` | 暂存草稿（不含校验，直接 doMerge） |
 | resetForm | — | `void` | 重置表单 |
-| setFormData | `(data: any)` | `void` | 设置表单数据 |
+| setFormData | `(data: any)` | `void` | 设置表单数据（默认值 + data 合并） |
 | getFormData | — | `Ref<any>` | 获取表单数据引用 |
 | updateFormData | `(data: any)` | `void` | 更新表单数据（Object.assign 合并） |
+| starHorseFormRef | — | `Ref<FormInstance>` | 内部 el-form 实例引用，可直接调用 validate/validateField/clearValidate/resetFields 等 el-form 原生方法 |
+| tableListRef | — | `Ref<any[]>` | 内部子表（StarHorseFormList）引用列表 |
 | getFields | — | `FieldInfo[]` | 获取表单字段信息 |
 | getFormFields | — | `any` | 获取 el-form 内部字段 |
 | validate | — | `Promise<boolean>` | 校验表单，返回校验结果 |
 | setSource | `(dataSource: number)` | `void` | 设置数据来源（1=新增, 2=编辑, 3=查看） |
+| ruleEngineApply | `(actions: FieldAction[])` | `void` | **应用规则引擎字段控制指令**：遍历指令 `{field, visible?, required?, readonly?, disabled?, value?}` 在字段树中查找目标字段并应用 formVisible/required/disabled/readonly，value 写入 formData。供外部规则运行时（如 dynamicform 的 useFormRuleRuntime）调用 |
 
 ## 计算属性 (Computed)
 

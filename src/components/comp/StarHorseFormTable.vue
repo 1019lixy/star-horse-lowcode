@@ -50,7 +50,7 @@ const removeRow = (row: any) => {
     :initRows="item.preps?.initRows"
     :title="item['title']"
     :size="size"
-    :dialogType="item.preps?.dialogType ??dialogType"
+    :dialogType="item.preps?.dialogType ?? dialogType"
     :enableSubNode="enableSubNode"
     :commonFormat="commonFormat"
     @addRow="addRow"

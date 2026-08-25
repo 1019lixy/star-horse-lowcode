@@ -113,6 +113,12 @@ const routes: RouteRecordRaw[] = [
             component: () => import("@/sample/DialogValid.vue"),
             meta: { title: "弹窗验证" },
           },
+          {
+            path: "/form/rule-engine",
+            name: "rule-engine-demo",
+            component: () => import("@/sample/RuleEngineDemo.vue"),
+            meta: { title: "规则引擎验证" },
+          },
         ],
       },
       // ========== 动态表格/容器 ==========

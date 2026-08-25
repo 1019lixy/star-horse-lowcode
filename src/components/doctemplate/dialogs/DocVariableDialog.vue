@@ -10,7 +10,7 @@ const props = defineProps<{
   visible: boolean;
   designer: DocTemplateDesigner;
   varId?: string | null;
-  dialogType?:"dialog"|"drawer";
+  dialogType?: "dialog" | "drawer";
 }>();
 
 const emit = defineEmits<{

@@ -671,9 +671,7 @@ export function formFieldMapping(fieldList: PageFieldInfo) {
 
   fieldsOperation(tempList, defaultDatas);
   const batchTempList = Array.isArray(fieldList.containerFields)
-    ? fieldList.containerFields.filter(
-        (c: any) => c?.containerType === "table",
-      )
+    ? fieldList.containerFields.filter((c: any) => c?.containerType === "table")
     : [];
   tableOperation(batchTempList);
   Object.assign(defaultDatas, batchDefaultValues);

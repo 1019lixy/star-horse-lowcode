@@ -74,6 +74,24 @@ const loadAppmenus = () => {
       ],
       meta: { menuIcon: "document", title: "质量系统", menuId: "1_1" },
     },
+    {
+      path: "#",
+      name: "#",
+      children: [
+        {
+          path: "/form/rule-engine",
+          name: "rule-engine-demo",
+          children: [],
+          meta: {
+            menuIcon: "document",
+            title: "规则引擎验证",
+            menuId: "2_rule_engine_demo",
+            keepAlive: "Y",
+          },
+        },
+      ],
+      meta: { menuIcon: "setting", title: "规则引擎", menuId: "1_2" },
+    },
   ];
   const appMenus: any = [
     {

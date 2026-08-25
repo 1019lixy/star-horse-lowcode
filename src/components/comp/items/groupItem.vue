@@ -49,7 +49,6 @@ const shouldShow = () => {
       :subFormFlag="subFormFlag"
       :enableSubNode="enableSubNode"
       :source="source"
-
       :dataIndex="dataIndex"
       :propPrefix="propPrefix"
       v-model:dataForm="dataForm"

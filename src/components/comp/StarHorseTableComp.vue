@@ -251,8 +251,6 @@ const editData = (row: any, _column?: any, evt?: Event) => {
     evt.stopPropagation();
   }
   let id = getRowIdentity(row);
-  dynamicForm.setDataId(id);
-  dynamicForm.setSelectData(row);
   if (!props.dialogInput) {
     viewById(id);
   } else {

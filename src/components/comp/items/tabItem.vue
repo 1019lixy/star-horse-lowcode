@@ -106,8 +106,12 @@ const beforeLeave = async (activeName: string, oldActiveName: string) => {
   if (!mustCompleteTab.value || !props.item.containerFields?.length)
     return true;
   const tabs = props.item.containerFields;
-  const oldIdx = tabs.findIndex((t: any) => t.subTablePrimaryKey === oldActiveName);
-  const newIdx = tabs.findIndex((t: any) => t.subTablePrimaryKey === activeName);
+  const oldIdx = tabs.findIndex(
+    (t: any) => t.subTablePrimaryKey === oldActiveName,
+  );
+  const newIdx = tabs.findIndex(
+    (t: any) => t.subTablePrimaryKey === activeName,
+  );
   // 向后切换或未找到：不校验，清除当前 tab 残留校验状态
   if (oldIdx < 0 || newIdx < 0 || newIdx <= oldIdx) {
     if (oldIdx >= 0) clearTabValidate(tabs[oldIdx], oldIdx);

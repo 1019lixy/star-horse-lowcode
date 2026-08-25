@@ -543,10 +543,7 @@ onMounted(() => {
     <slot></slot>
   </div>
   <Teleport to="body">
-    <ContentMenu
-      ref="contentMenuRef"
-      :menu-data="menuData"
-    />
+    <ContentMenu ref="contentMenuRef" :menu-data="menuData" />
     <!-- 显示宽高信息的元素 -->
     <div
       v-if="sizeInfoContent"

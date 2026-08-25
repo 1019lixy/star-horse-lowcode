@@ -68,7 +68,9 @@ onMounted(() => {
         <template #header>
           <div class="card-header flex items-center justify-between">
             <div class="w-[60%]">
-              {{ cardItem.title || cardItem.label || cardItem.subTablePrimaryKey }}
+              {{
+                cardItem.title || cardItem.label || cardItem.subTablePrimaryKey
+              }}
               <help v-if="cardItem.helpMsg" :message="cardItem.helpMsg" />
             </div>
             <div
