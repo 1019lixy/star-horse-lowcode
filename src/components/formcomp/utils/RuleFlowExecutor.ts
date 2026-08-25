@@ -141,6 +141,13 @@ const evaluateConditions = (
 ): boolean => {
     if (!conditions || conditions.length === 0) return true;
     const results = conditions.map((cond) => {
+        if (cond.type === "group") {
+            return evaluateConditions(
+                cond.conditions || [],
+                cond.logic || "AND",
+                context,
+            );
+        }
         const fieldValue = context[cond.fieldName];
         const targetValue = cond.value;
         return compareValues(fieldValue, cond.operator, targetValue);
