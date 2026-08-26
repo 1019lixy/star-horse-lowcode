@@ -1,5 +1,6 @@
 <script setup lang="ts" name="StarHorseSearchComp">
 import { isMobile } from "@/api/device";
+import { ensureFieldIds } from "@/api/form_utils";
 import StarHorseSearchForm from "@/components/comp/StarHorseSearchForm.vue";
 import StarHorseQueryBuilder from "@/components/system/StarHorseQueryBuilder.vue";
 import { i18n } from "@/lang";
@@ -49,6 +50,13 @@ const props = defineProps({
   showAdvanced: { type: Boolean, default: true },
   dialogType: { type: String as () => "dialog" | "drawer" },
 });
+
+// 渲染前为查询字段补充稳定 id，避免 key 变化导致查询组件重复挂载/重复初始化
+watch(
+  () => props.formData,
+  (val) => ensureFieldIds(val),
+  { immediate: true },
+);
 
 /** 从 formData.fieldList 派生 QueryBuilder 所需的字段下拉选项 */
 const propertyOptions = computed<SelectOption[]>(() =>

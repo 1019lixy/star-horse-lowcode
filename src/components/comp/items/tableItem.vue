@@ -58,6 +58,7 @@ onMounted(() => {
           v-if="!(temp['disVisible'] ?? temp.preps?.disVisible)"
           :name="temp.subTablePrimaryKey || 'sub_tab' + key"
           :disabled="temp.disabled"
+          :lazy="temp.preps?.lazy !== false"
           class="h-full flex flex-col"
         >
           <star-horse-form-table

@@ -55,6 +55,7 @@ onMounted(() => {
     :disabled="item.disabled"
     :closable="item.closable"
     v-bind="item.preps"
+    :lazy="item.preps?.lazy !== false"
     class="h-full flex flex-col w-[99%] mx-auto"
   >
     <template #label>

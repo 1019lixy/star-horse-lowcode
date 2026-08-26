@@ -710,6 +710,43 @@ export function analysisAppComps(dataList: any) {
 }
 
 /**
+ * 递归为字段补充稳定 id（在字段进入渲染前调用）
+ * id 参与组件 key 计算（compKey 取 item.id || item.fieldName），若首次渲染后才补 id
+ * （如 StarHorseItem 挂载时），会导致 key 变化、子树重新挂载、字段组件重复初始化
+ * （如 select 的选项接口被请求两次）。优先取 preps.id，其次 fieldName
+ * （与 compKey 的回退值一致，赋值前后 key 不变），最后 uuid
+ * @param pageInfo 页面字段结构（{ fieldList, containerFields }，兼容查询字段结构）
+ */
+export function ensureFieldIds(pageInfo: any) {
+  if (!pageInfo) {
+    return;
+  }
+  const assignIds = (node: any) => {
+    if (!node) {
+      return;
+    }
+    if (Array.isArray(node)) {
+      node.forEach(assignIds);
+      return;
+    }
+    if (typeof node != "object") {
+      return;
+    }
+    if (!node.id) {
+      node.id = node.preps?.id ?? node.fieldName ?? uuid();
+    }
+    // 递归处理子级结构：分组/级联子节点、APP 端列表、兄弟节点、容器及其内部字段
+    assignIds(node.children);
+    assignIds(node.appList);
+    assignIds(node.brotherNodes);
+    assignIds(node.containerFields);
+    assignIds(node.fieldList);
+  };
+  assignIds(pageInfo.fieldList);
+  assignIds(pageInfo.containerFields);
+}
+
+/**
  * 将pc模型转为app模型
  * @param pageInfo
  */

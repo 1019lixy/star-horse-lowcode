@@ -8,10 +8,10 @@ import {
 
 import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
 import { ContainerPreps } from "@/components/types/ItemPreps";
-import { ModelRef, onMounted } from "vue";
+import { ModelRef, onMounted, ref, watch } from "vue";
 import { prepsFilter } from "@/components/formcomp/utils/ItemRelationEventUtils";
 
-withDefaults(defineProps<ContainerPreps>(), {
+const props = withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
   dataIndex: -1,
   // 父节点名称
@@ -23,6 +23,49 @@ withDefaults(defineProps<ContainerPreps>(), {
   compSize: "default",
   source: 1,
 });
+
+/**
+ * 判断某个 collapse-item 是否处于展开状态
+ * el-collapse 的 v-model 为激活项 name 数组(非手风琴)或单个 name(手风琴)
+ * 仅展开的 collapse-item 才渲染子内容,避免折叠项内字段组件挂载触发所有事件
+ * @param collapseItem collapse 子项
+ * @param key 子项在 containerFields 中的索引
+ */
+const isCollapseExpanded = (collapseItem: any, key: number): boolean => {
+  const activeNames = props.item?.fieldName;
+  const name = collapseItem.subTablePrimaryKey || key;
+  if (Array.isArray(activeNames)) {
+    return activeNames.includes(name);
+  }
+  return activeNames === name;
+};
+
+/**
+ * 是否启用按需渲染(仅展开时才渲染子内容)
+ * 默认启用,可通过 preps.lazy=false 关闭以保持原有全部渲染行为
+ */
+const lazyRender = () => props.item?.preps?.lazy !== false;
+
+/**
+ * 已挂载过的 collapse 子项 name 集合(仿 el-tabs lazy 的 loaded 标记机制)
+ * 首次展开才挂载,之后保持挂载,避免反复折叠/展开重复触发子组件 onMounted 事件
+ */
+const loadedCollapse = ref<Set<any>>(new Set());
+const markCollapseLoaded = () => {
+  if (!lazyRender()) return;
+  const next = new Set(loadedCollapse.value);
+  (props.item?.containerFields || []).forEach((ci: any, key: number) => {
+    if (isCollapseExpanded(ci, key)) {
+      next.add(ci.subTablePrimaryKey || key);
+    }
+  });
+  loadedCollapse.value = next;
+};
+watch(
+  () => props.item?.fieldName,
+  () => markCollapseLoaded(),
+  { immediate: true, deep: true },
+);
 const emits = defineEmits(["addRow", "removeRow"]);
 const dataForm: ModelRef<any> = defineModel("dataForm");
 /**
@@ -83,6 +126,10 @@ onMounted(() => {
             </div>
           </template>
           <star-horse-form-item
+            v-if="
+              !lazyRender() ||
+              loadedCollapse.has(collapseItem.subTablePrimaryKey || key)
+            "
             :source="source"
             :compUrl="compUrl"
             :compSize="compSize"

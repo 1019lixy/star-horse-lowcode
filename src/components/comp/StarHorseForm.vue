@@ -30,7 +30,10 @@ import {
   watch,
 } from "vue";
 import { isMobile } from "@/api/device";
-import { convertPcCompToFitPlatformComps } from "@/api/form_utils";
+import {
+  convertPcCompToFitPlatformComps,
+  ensureFieldIds,
+} from "@/api/form_utils";
 import { registerFormFieldsRef } from "@/components/formcomp/utils/ItemRuleEventUtils";
 
 const props = defineProps({
@@ -73,6 +76,12 @@ const starHorseFormRef = ref(null);
 const dataForm = ref<any>({});
 // source:{type:Number,default:1},
 const source = ref<number>(1);
+// 渲染前为字段补充稳定 id，避免 key 变化导致字段组件重复挂载/重复初始化
+watch(
+  () => props.fieldList,
+  (val) => ensureFieldIds(val),
+  { immediate: true },
+);
 const platformFields: ComputedRef = computed(() =>
   convertPcCompToFitPlatformComps(props.fieldList),
 );

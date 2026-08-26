@@ -14,7 +14,10 @@ import { DialogProps } from "@/components/types/DialogProps";
 import { formFieldMapping, isJson } from "@/api/star_horse_utils";
 import { loadById } from "@/api/star_horse_apis";
 import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
-import { convertPcCompToFitPlatformComps } from "@/api/form_utils";
+import {
+  convertPcCompToFitPlatformComps,
+  ensureFieldIds,
+} from "@/api/form_utils";
 import { isMobile } from "@/api/device";
 
 const dataForm = ref<any>({});
@@ -40,6 +43,12 @@ const props = defineProps({
 const emits = defineEmits(["dataLoaded"]);
 const dialogProps = inject<DialogProps>("dialogProps");
 const source = ref<number>(3);
+// 渲染前为字段补充稳定 id，避免 key 变化导致字段组件重复挂载/重复初始化
+watch(
+  () => props.fieldList,
+  (val) => ensureFieldIds(val),
+  { immediate: true },
+);
 const platformFields = computed(() =>
   convertPcCompToFitPlatformComps(props.fieldList),
 );

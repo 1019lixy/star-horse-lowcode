@@ -73,6 +73,25 @@ const mustCompleteStep = computed(() => {
   );
 });
 
+/**
+ * 是否启用按需渲染(仅激活步骤才渲染子内容)
+ * 默认启用,可通过 preps.lazy=false 回退为 v-show 全渲染行为
+ * 启用后非激活步骤的字段组件不挂载,避免触发所有步骤的 actions/联动/规则事件
+ */
+const lazyRenderStep = computed(() => props.item?.preps?.lazy !== false);
+
+/**
+ * 已挂载过的步骤索引集合(仿 el-tabs lazy 的 loaded 标记机制)
+ * 首次激活才挂载,之后保持挂载,避免反复切换重复触发子组件 onMounted 事件
+ */
+const loadedSteps = ref<Set<number>>(new Set());
+const markStepLoaded = (idx: number) => {
+  if (loadedSteps.value.has(idx)) return;
+  const next = new Set(loadedSteps.value);
+  next.add(idx);
+  loadedSteps.value = next;
+};
+
 // 步骤条方向
 const stepDirection = computed(
   () => props.item?.preps?.direction || "horizontal",
@@ -92,7 +111,7 @@ const showNavButtons = computed(
 // 简洁模式
 const stepSimple = computed(() => props.item?.preps?.simple === "Y");
 
-// 完成状态
+/*// 完成状态
 const finishStatus = computed(
   () => props.item?.preps?.finishStatus || "finish",
 );
@@ -100,7 +119,7 @@ const finishStatus = computed(
 // 进行中状态
 const processStatus = computed(
   () => props.item?.preps?.processStatus || "process",
-);
+);*/
 
 // 居中对齐
 const alignCenter = computed(() => props.item?.preps?.alignCenter === "Y");
@@ -227,10 +246,12 @@ const init = () => {
 };
 onMounted(() => {
   init();
+  markStepLoaded(activeStepIndex.value);
 });
 
 // 同步 item.fieldName 为当前步骤 subTablePrimaryKey
 watch(activeStepIndex, (idx) => {
+  markStepLoaded(idx);
   if (stepValidationState.value[idx] === "invalid") {
     delete stepValidationState.value[idx];
   }
@@ -333,7 +354,11 @@ watch(activeStepIndex, (idx) => {
         v-for="(stepItem, idx) in stepList"
         :key="compKey(stepItem, idx)"
       >
-        <div v-show="Number(idx) === activeStepIndex" class="step-pane">
+        <div
+          v-if="!lazyRenderStep || loadedSteps.has(Number(idx))"
+          v-show="!lazyRenderStep || Number(idx) === activeStepIndex"
+          class="step-pane"
+        >
           <star-horse-form-item
             :source="source"
             :compUrl="compUrl"

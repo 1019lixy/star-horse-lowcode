@@ -38,6 +38,12 @@ const props = withDefaults(
 );
 const dataForm: ModelRef<any> = defineModel("dataForm");
 
+// 渲染前补充稳定 id（入口组件已统一处理，此处兜底直接使用 star-horse-item 的场景），
+// 避免挂载后才补 id 导致 :key 变化、内部字段组件重复挂载/重复初始化
+if (props.item && !props.item.id) {
+  props.item["id"] = props.item.preps?.id ?? props.item.fieldName ?? uuid();
+}
+
 const itemType = computed(() => {
   let type: string = props.item?.type || props.item?.fieldType || "input";
   if (dateCompList().includes(itemType.value)) {

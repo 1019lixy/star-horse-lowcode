@@ -32,6 +32,7 @@ import {
   watch,
 } from "vue";
 import { isMobile } from "@/api/device";
+import { ensureFieldIds } from "@/api/form_utils";
 import type { PreValid } from "@/components/types";
 import FieldVisibleControl from "@/components/comp/utils/FieldVisibleControl.vue";
 import { useTableExport } from "@/components/comp/utils/useTableExport";
@@ -57,6 +58,12 @@ const props = withDefaults(defineProps<DataListProps>(), {
   pageBarLayout: "total, sizes, prev, pager, next, jumper,slot",
 });
 const emits = defineEmits(["selectItem", "permission"]);
+// 渲染前为字段补充稳定 id，避免 key 变化导致列/单元格组件重复挂载/重复初始化
+watch(
+  () => props.fieldList,
+  (val) => ensureFieldIds(val),
+  { immediate: true },
+);
 let pagePermission = useButtonPermissionStore(piniaInstance);
 let configStore = useGlobalConfigStore(piniaInstance);
 let permissions = ref<Record<string, string>>({});

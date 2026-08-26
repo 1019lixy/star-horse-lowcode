@@ -29,3 +29,5 @@ components.d.ts
 .scannerwork/*
 yarn.lock
 package-lock.json
+.codegraph
+.codeartsdoer
