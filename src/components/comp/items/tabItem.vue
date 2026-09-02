@@ -1,19 +1,10 @@
 <script setup lang="ts">
-import { ContainerPreps } from "@/components/types/ItemPreps";
-import { initRelationEvent } from "@/components/formcomp/utils/ItemRelationEventUtils";
-import { collectFieldProps, getPrefix } from "@/api/form_utils";
-import { i18n } from "@/lang";
-import { warning } from "@/utils/message";
-import {
-  computed,
-  inject,
-  ModelRef,
-  nextTick,
-  onMounted,
-  ref,
-  unref,
-  watch,
-} from "vue";
+import {ContainerPreps} from "@/components/types/ItemPreps";
+import {initRelationEvent} from "@/components/formcomp/utils/ItemRelationEventUtils";
+import {collectFieldProps, getPrefix} from "@/api/form_utils";
+import {i18n} from "@/lang";
+import {warning} from "@/utils/message";
+import {computed, inject, ModelRef, nextTick, onMounted, ref, unref, watch,} from "vue";
 
 const props = withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
@@ -37,9 +28,7 @@ const starHorseFormRef = inject("starHorseFormRef", ref<any>(null));
 // 是否切换 tab 前必须完成当前 tab（默认开启，设为 "N" 可关闭；source=3 查看模式自动关闭）
 const mustCompleteTab = computed(() => {
   if (props.source == 3) return false;
-  return (
-    (props.item?.preps?.mustCompleteTab ?? props.item?.mustCompleteTab) !== "N"
-  );
+  return !!props.item?.preps?.mustCompleteTab;
 });
 
 /**
@@ -107,10 +96,10 @@ const beforeLeave = async (activeName: string, oldActiveName: string) => {
     return true;
   const tabs = props.item.containerFields;
   const oldIdx = tabs.findIndex(
-    (t: any) => t.subTablePrimaryKey === oldActiveName,
+      (t: any) => t.subTablePrimaryKey === oldActiveName,
   );
   const newIdx = tabs.findIndex(
-    (t: any) => t.subTablePrimaryKey === activeName,
+      (t: any) => t.subTablePrimaryKey === activeName,
   );
   // 向后切换或未找到：不校验，清除当前 tab 残留校验状态
   if (oldIdx < 0 || newIdx < 0 || newIdx <= oldIdx) {
@@ -133,7 +122,8 @@ const beforeLeave = async (activeName: string, oldActiveName: string) => {
 const removeRow = (row: any) => {
   emits("removeRow", row);
 };
-const init = () => {};
+const init = () => {
+};
 onMounted(() => {
   init();
 });
@@ -160,7 +150,7 @@ const reTriggerRelationInTab = (fields: any[], visited?: WeakSet<any>) => {
       if (field?.preps?.dataRelation?.actionName) {
         // formFields 可能是 ref(shallowRef),unref 统一取值;非 ref 则原样返回
         const formInfoVal = unref(formFields);
-        initRelationEvent({ field, formInfo: formInfoVal }, dataForm, true);
+        initRelationEvent({field, formInfo: formInfoVal}, dataForm, true);
       }
     }
   });
@@ -173,70 +163,70 @@ const reTriggerRelationInTab = (fields: any[], visited?: WeakSet<any>) => {
  * 2. 激活的 tab 被隐藏时,自动切换到第一个可见 tab,避免 el-tabs 显示空白
  */
 watch(
-  () => {
-    // 容错:containerFields 可能不是数组(配置错误),返回空数组避免 .map crash
-    const tabs = props.item?.containerFields;
-    return Array.isArray(tabs) ? tabs.map((t: any) => t?.formVisible) : [];
-  },
-  (newVals, oldVals) => {
-    const tabs = props.item?.containerFields;
-    if (!Array.isArray(tabs)) return;
-    tabs.forEach((tab: any, index: number) => {
-      if (tab == null) return;
-      const wasVisible = oldVals?.[index] !== false;
-      const isVisible = newVals?.[index] !== false;
-      // tab 从隐藏变可见:延迟重触发 tab 内字段的初始联动
-      if (!wasVisible && isVisible) {
-        nextTick(() => {
-          reTriggerRelationInTab(tab.fieldList);
-        });
+    () => {
+      // 容错:containerFields 可能不是数组(配置错误),返回空数组避免 .map crash
+      const tabs = props.item?.containerFields;
+      return Array.isArray(tabs) ? tabs.map((t: any) => t?.formVisible) : [];
+    },
+    (newVals, oldVals) => {
+      const tabs = props.item?.containerFields;
+      if (!Array.isArray(tabs)) return;
+      tabs.forEach((tab: any, index: number) => {
+        if (tab == null) return;
+        const wasVisible = oldVals?.[index] !== false;
+        const isVisible = newVals?.[index] !== false;
+        // tab 从隐藏变可见:延迟重触发 tab 内字段的初始联动
+        if (!wasVisible && isVisible) {
+          nextTick(() => {
+            reTriggerRelationInTab(tab.fieldList);
+          });
+        }
+      });
+      // 激活的 tab 被隐藏时,切换到第一个可见 tab
+      const activeTab = tabs.find(
+          (t: any) => t?.subTablePrimaryKey === props.item?.fieldName,
+      );
+      if (activeTab && activeTab.formVisible === false) {
+        const firstVisible = tabs.find((t: any) => t?.formVisible !== false);
+        if (firstVisible) {
+          props.item.fieldName = firstVisible.subTablePrimaryKey;
+        }
       }
-    });
-    // 激活的 tab 被隐藏时,切换到第一个可见 tab
-    const activeTab = tabs.find(
-      (t: any) => t?.subTablePrimaryKey === props.item?.fieldName,
-    );
-    if (activeTab && activeTab.formVisible === false) {
-      const firstVisible = tabs.find((t: any) => t?.formVisible !== false);
-      if (firstVisible) {
-        props.item.fieldName = firstVisible.subTablePrimaryKey;
-      }
-    }
-  },
-  { deep: true, immediate: true },
+    },
+    {deep: true, immediate: true},
 );
 </script>
 
 <template>
   <template v-if="item.containerFields?.length > 0">
     <el-tabs
-      v-model="item.fieldName"
-      :type="item.preps?.type || ''"
-      @tabRemove="closeOperation"
-      :closable="item.preps?.closable"
-      :addable="item.preps?.addable"
-      v-if="!item.preps?.hideTabs"
-      @tabChange="(data) => item.actions?.['tabChange']?.(data)"
-      @tabAdd="(data) => item.actions?.['tabAdd']?.(data)"
-      :before-leave="beforeLeave"
+        v-model="item.fieldName"
+        :type="item.preps?.type || ''"
+        @tabRemove="closeOperation"
+        :closable="item.preps?.closable"
+        :addable="item.preps?.addable"
+        v-if="!item.preps?.hideTabs"
+        @tabChange="(data) => item.actions?.['tabChange']?.(data)"
+        @tabAdd="(data) => item.actions?.['tabAdd']?.(data)"
+        :before-leave="beforeLeave"
     >
       <template v-for="(tabItem, key) in item.containerFields">
         <tabPanelItem
-          :item="tabItem"
-          v-if="tabItem.formVisible !== false && !tabItem.preps?.hideTabPanel"
-          :dataIndex="dataIndex"
-          :itemKey="item.groupData ? key : 0"
-          :source="source"
-          :enableSubNode="tabItem.enableSubNode"
-          parentType="tab"
-          :commonFormat="commonFormat"
-          :compUrl="compUrl"
-          :compSize="compSize"
-          :propPrefix="propPrefix"
-          @addRow="addRow"
-          v-model:dataForm="dataForm"
-          @removeRow="removeRow"
-          :rules="rules"
+            :item="tabItem"
+            v-if="tabItem.formVisible !== false && !tabItem.preps?.hideTabPanel"
+            :dataIndex="dataIndex"
+            :itemKey="item.groupData ? key : 0"
+            :source="source"
+            :enableSubNode="tabItem.enableSubNode"
+            parentType="tab"
+            :commonFormat="commonFormat"
+            :compUrl="compUrl"
+            :compSize="compSize"
+            :propPrefix="propPrefix"
+            @addRow="addRow"
+            v-model:dataForm="dataForm"
+            @removeRow="removeRow"
+            :rules="rules"
         />
       </template>
     </el-tabs>

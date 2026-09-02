@@ -61,16 +61,101 @@ const sameForm = computed(() => {
   return steps[0]?.subFormFlag !== "Y";
 });
 
-// 步骤风格：steps(头部步骤条) / pager(底部导航分页)
+// 步骤风格：steps(头部步骤条) / pager(底部导航分页) / flat(平铺单页)
 const stepStyle = computed(() => props.item?.preps?.stepStyle || "steps");
+// 平铺单页模式：所有分段同页纵向展示
+const flatMode = computed(() => stepStyle.value === "flat");
 
+// 流程上下文（运行时由后端注入 item.preps.flow；无流程时为 null，回退原有行为）
+const flow = computed(() =>
+  props.item?.preps?.flow?.enabled ? props.item.preps.flow : null,
+);
+
+// 段级权限：editable 可编辑 / readonly 只读 / hidden 不渲染；无流程时按 source 降级（3=查看）
+const segPermission = (key: string): "editable" | "readonly" | "hidden" => {
+  if (flow.value?.segments?.[key]) return flow.value.segments[key];
+  return props.source == 3 ? "readonly" : "editable";
+};
+
+// 段内组件渲染 source：只读段用查看模式(3)渲染，其余沿用当前 source
+const segSource = (key: string): number =>
+  flatMode.value && segPermission(key) === "readonly" ? 3 : props.source;
+
+// 平铺状态文案：优先取 i18n，语言包未收录时回退默认文案
+const flatText = (key: string, fallback: string): string => {
+  const t = i18n(key);
+  return t === key ? fallback : t;
+};
+
+// 平铺段折叠状态：显式操作记录在 map；未记录时默认已完成段折叠、其余展开
+const flatCollapsed = ref<Record<string, boolean>>({});
+const isFlatCollapsed = (step: any): boolean => {
+  const key = step?.subTablePrimaryKey;
+  if (key != null && key in flatCollapsed.value) {
+    return !!flatCollapsed.value[key];
+  }
+  const st = flow.value?.nodeStates?.[key];
+  return st?.status === "done";
+};
+const toggleFlatCollapse = (step: any) => {
+  const key = step?.subTablePrimaryKey;
+  if (key != null) flatCollapsed.value[key] = !isFlatCollapsed(step);
+};
+
+// 平铺段状态标签文案
+const flatStatusText = (step: any): string => {
+  const st = flow.value?.nodeStates?.[step?.subTablePrimaryKey];
+  if (st?.status === "done") {
+    return (
+      flatText("dyform.step.flatFilled", "已填写") +
+      (st.assignee?.name ? ` · ${st.assignee.name}` : "")
+    );
+  }
+  if (st?.status === "active") {
+    return flatText("dyform.step.flatCurrent", "待填写");
+  }
+  if (flow.value) return flatText("dyform.step.flatLocked", "未开始");
+  return "";
+};
+
+// 平铺段状态标签样式类
+const flatTagState = (step: any): string =>
+  flow.value?.nodeStates?.[step?.subTablePrimaryKey]?.status || "";
+
+// 平铺流转记录条节点（张三 → 李四(当前) → 待定）
+const flowTrail = computed(() => {
+  if (!flatMode.value || !flow.value?.nodeStates) return [];
+  return Object.keys(flow.value.nodeStates).map((key) => {
+    const step = stepList.value.find(
+      (s: any) => s.subTablePrimaryKey === key,
+    );
+    return {
+      key,
+      label: step?.title || step?.label || key,
+      status: flow.value.nodeStates[key]?.status,
+      assignee: flow.value.nodeStates[key]?.assignee,
+    };
+  });
+});
+const trailAvatar = (node: any): string =>
+  (node.assignee?.name || "?").charAt(0);
+
+// 流程模式下初始定位到当前待办节点
+watch(
+  flow,
+  (f) => {
+    if (!f?.currentNode) return;
+    const idx = stepList.value.findIndex(
+      (s: any) => s.subTablePrimaryKey === f.currentNode,
+    );
+    if (idx >= 0) activeStepIndex.value = idx;
+  },
+  { immediate: true },
+);
 // 是否每步必须完成才能进入下一步（默认开启，设为 "N" 可关闭；source=3 查看模式自动关闭）
 const mustCompleteStep = computed(() => {
   if (props.source == 3) return false;
-  return (
-    (props.item?.preps?.mustCompleteStep ?? props.item?.mustCompleteStep) !==
-    "N"
-  );
+  return !!props.item?.preps?.mustCompleteStep;
 });
 
 /**
@@ -97,9 +182,9 @@ const stepDirection = computed(
   () => props.item?.preps?.direction || "horizontal",
 );
 
-// 是否显示步骤条：pager 风格强制隐藏
+// 是否显示步骤条：pager/flat 风格强制隐藏
 const showStepBar = computed(() => {
-  if (stepStyle.value === "pager") return false;
+  if (stepStyle.value === "pager" || flatMode.value) return false;
   return props.item?.preps?.showStepBar !== "N";
 });
 
@@ -107,6 +192,9 @@ const showStepBar = computed(() => {
 const showNavButtons = computed(
   () => props.item?.preps?.showNavButtons !== "N",
 );
+
+// 平铺单页无上一步/下一步概念，隐藏导航栏
+const showNavBar = computed(() => showNavButtons.value && !flatMode.value);
 
 // 简洁模式
 const stepSimple = computed(() => props.item?.preps?.simple === "Y");
@@ -348,19 +436,101 @@ watch(activeStepIndex, (idx) => {
       </div>
     </div>
 
-    <!-- 步骤内容区域 -->
-    <div class="step-content-wrapper">
+    <!-- 平铺单页模式：流转记录条（有流程上下文时显示） -->
+    <div v-if="flatMode && flowTrail.length" class="flat-flow-trail">
+      <template v-for="(node, nIdx) in flowTrail" :key="node.key">
+        <svg
+          v-if="nIdx > 0"
+          class="trail-arrow"
+          viewBox="0 0 24 24"
+          width="14"
+          height="14"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="5" y1="12" x2="19" y2="12" />
+          <polyline points="12 5 19 12 12 19" />
+        </svg>
+        <span class="trail-node" :class="`is-${node.status || 'pending'}`">
+          <span class="trail-avatar">{{ trailAvatar(node) }}</span>
+          <span class="trail-info">
+            <span class="trail-label">{{ node.label }}</span>
+            <span class="trail-name">{{
+              node.assignee?.name ||
+                flatText("dyform.step.flatLocked", "未开始")
+            }}</span>
+          </span>
+        </span>
+      </template>
+    </div>
+
+    <!-- 步骤内容区域：steps/pager 单段切换；flat 全部已到段平铺 -->
+    <div class="step-content-wrapper" :class="{ 'is-flat': flatMode }">
       <template
         v-for="(stepItem, idx) in stepList"
         :key="compKey(stepItem, idx)"
       >
+        <!-- flat 段标题栏（hidden 段不渲染标题） -->
         <div
-          v-if="!lazyRenderStep || loadedSteps.has(Number(idx))"
-          v-show="!lazyRenderStep || Number(idx) === activeStepIndex"
+          v-if="
+            flatMode &&
+            segPermission(stepItem.subTablePrimaryKey) !== 'hidden'
+          "
+          class="flat-section-head"
+          @click="toggleFlatCollapse(stepItem)"
+        >
+          <svg
+            class="flat-caret"
+            :class="{ 'is-collapsed': isFlatCollapsed(stepItem) }"
+            viewBox="0 0 24 24"
+            width="14"
+            height="14"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+          <span class="flat-section-title">{{
+            stepItem.title || stepItem.label
+          }}</span>
+          <span
+            v-if="flatStatusText(stepItem)"
+            class="flat-section-tag"
+            :class="`is-${flatTagState(stepItem)}`"
+            >{{ flatStatusText(stepItem) }}</span
+          >
+        </div>
+
+        <!-- 段内容：flat 按权限+折叠控制，hidden 段不渲染（防数据泄露） -->
+        <div
+          v-if="
+            !flatMode
+              ? !lazyRenderStep || loadedSteps.has(Number(idx))
+              : segPermission(stepItem.subTablePrimaryKey) !== 'hidden'
+          "
+          v-show="
+            !flatMode
+              ? !lazyRenderStep || Number(idx) === activeStepIndex
+              : !isFlatCollapsed(stepItem)
+          "
           class="step-pane"
+          :class="
+            flatMode
+              ? [
+                  'flat-section',
+                  `flat-${segPermission(stepItem.subTablePrimaryKey)}`,
+                ]
+              : []
+          "
         >
           <star-horse-form-item
-            :source="source"
+            :source="segSource(stepItem.subTablePrimaryKey)"
             :compUrl="compUrl"
             :compSize="compSize"
             :commonFormat="commonFormat"
@@ -378,11 +548,38 @@ watch(activeStepIndex, (idx) => {
             :primaryKey="primaryKey"
           />
         </div>
+
+        <!-- flat 未开始段：仅锁定占位，不渲染任何字段 -->
+        <div
+          v-if="
+            flatMode &&
+            segPermission(stepItem.subTablePrimaryKey) === 'hidden'
+          "
+          class="flat-locked"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            width="14"
+            height="14"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          >
+            <rect x="4" y="11" width="16" height="10" rx="2" />
+            <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+          </svg>
+          <span
+            >{{ stepItem.title || stepItem.label }}（{{
+              flatText("dyform.step.flatLocked", "未开始")
+            }}）</span
+          >
+        </div>
       </template>
     </div>
 
-    <!-- 导航按钮：首尾页隐藏对应按钮 -->
-    <div v-if="showNavButtons" class="step-nav-bar">
+    <!-- 导航按钮：首尾页隐藏对应按钮（flat 模式无导航） -->
+    <div v-if="showNavBar" class="step-nav-bar">
       <el-button v-if="activeStepIndex > 0" size="default" @click="goPrev">
         {{ i18n("dyform.step.prev") }}
       </el-button>
@@ -773,5 +970,186 @@ watch(activeStepIndex, (idx) => {
       box-shadow: 0 4px 12px rgba(64, 158, 255, 0.25);
     }
   }
+}
+
+// ==================== 平铺单页（flat）模式 ====================
+// 流转记录条：张三 → 李四(当前) → 待定
+.flat-flow-trail {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px 12px;
+  background: #fafcff;
+  border: 1px solid #ebeef5;
+  border-radius: 6px;
+
+  .trail-arrow {
+    color: #c0c4cc;
+    flex-shrink: 0;
+  }
+
+  .trail-node {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px 3px 4px;
+    border-radius: 14px;
+    background: #fff;
+    border: 1px solid #e4e7ed;
+    transition: all 0.25s ease;
+
+    .trail-avatar {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      background: #f4f4f5;
+      color: #909399;
+      flex-shrink: 0;
+    }
+
+    .trail-info {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+
+      .trail-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: #606266;
+      }
+
+      .trail-name {
+        font-size: 11px;
+        color: #a8abb2;
+      }
+    }
+
+    // 当前节点高亮
+    &.is-active {
+      border-color: #409eff;
+      background: #ecf5ff;
+
+      .trail-avatar {
+        background: #409eff;
+        color: #fff;
+      }
+
+      .trail-name {
+        color: #409eff;
+      }
+    }
+
+    // 已完成节点
+    &.is-done {
+      .trail-avatar {
+        background: #f0f9eb;
+        color: #67c23a;
+      }
+    }
+  }
+}
+
+// flat 模式内容区：去掉内边距约束，改为分段卡片纵列
+.step-content-wrapper.is-flat {
+  padding: 0;
+  background: transparent;
+  border-color: transparent;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+// 段标题栏
+.flat-section-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #f5f7fa;
+  border: 1px solid #ebeef5;
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s;
+
+  &:hover {
+    background: #ecf5ff;
+  }
+
+  .flat-caret {
+    color: #909399;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+
+    &.is-collapsed {
+      transform: rotate(-90deg);
+    }
+  }
+
+  .flat-section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #303133;
+  }
+
+  .flat-section-tag {
+    margin-left: auto;
+    font-size: 12px;
+    padding: 1px 10px;
+    border-radius: 10px;
+    white-space: nowrap;
+    background: #f4f4f5;
+    color: #909399;
+
+    &.is-done {
+      background: #f0f9eb;
+      color: #67c23a;
+    }
+
+    &.is-active {
+      background: #ecf5ff;
+      color: #409eff;
+    }
+
+    &.is-pending {
+      background: #f4f4f5;
+      color: #c0c4cc;
+    }
+  }
+}
+
+// flat 段内容：与标题栏拼接成卡片
+.step-pane.flat-section {
+  border-radius: 0 0 6px 6px;
+
+  // 当前可编辑段：左侧高亮边
+  &.flat-editable {
+    box-shadow: inset 3px 0 0 0 #409eff;
+  }
+
+  // 只读段：整体弱化
+  &.flat-readonly {
+    background: #fafafa;
+  }
+}
+
+// flat 未开始段锁定占位
+.flat-locked {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px dashed #e4e7ed;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #a8abb2;
+  background: #fafafa;
 }
 </style>

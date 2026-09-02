@@ -9,7 +9,7 @@ import AutoImport from "unplugin-auto-import/vite";
 import fs from "fs";
 //生产types文件插件
 import dts from "vite-plugin-dts";
-import { execSync } from "child_process";
+
 // TresJS 模板编译器选项（让 Vue 编译器识别 Tres 前缀标签）
 import { templateCompilerOptions } from "@tresjs/core";
 // import {copy} from "vite-plugin-copy";
@@ -23,7 +23,7 @@ const isGateway: boolean = true;
 const env: string = "-dev";
 const rewrite = (path: string, name: string) => {
   if (isGateway) {
-    return path.replace(new RegExp(`^\/${name}`), `/${name}${env}/${name}`);
+    return path.replace(new RegExp(`^/${name}`), `/${name}${env}/${name}`);
   }
   return path;
 };
@@ -131,69 +131,11 @@ export default defineConfig((mode) => {
                   ]
               }),*/
       dts({
+        // 注意：vite-plugin-dts 5.x 用的是 outDirs(复数)，旧的 outDir 已失效
         entryRoot: "./src",
-        outDir: "dist/types",
+        outDirs: "dist/types",
         insertTypesEntry: true,
-        rollupTypes: false,
         tsconfigPath: "./tsconfig.build.json",
-        exclude: ["**/*.svg", "**/sample/**", "**/views/**"],
-        // 显式配置别名，确保 .d.ts 中的 @/ 被正确替换为相对路径
-        aliases: {
-          "@": resolve(dirname(fileURLToPath(import.meta.url)), "./src"),
-        },
-        async afterBuild() {
-          // vue-tsc 在有类型错误时默认不生成声明文件，需要显式传入 --noEmitOnError false
-          console.log("[dts] Running vue-tsc to generate type declarations...");
-          try {
-            execSync(
-              "npx vue-tsc -p tsconfig.build.json --noEmitOnError false",
-              { stdio: "pipe", cwd: process.cwd() },
-            );
-            console.log("[dts] Type declarations generated successfully.");
-          } catch {
-            console.log(
-              "[dts] Type declarations generated (with type warnings).",
-            );
-          }
-
-          // 后备修复：如果 aliases 选项未完全生效，手动替换 @/ 为相对路径
-          console.log("[dts] Fixing path aliases in declaration files...");
-          const fs = await import("fs");
-          const path = await import("path");
-          const typesDir = resolve(__dirname, "dist/types");
-
-          function fixPathsInFile(filePath: string) {
-            let content = fs.readFileSync(filePath, "utf-8");
-            if (!content.includes("@/")) return;
-
-            // 计算从当前文件到 types 根目录的相对路径
-            const relToRoot = path
-              .relative(path.dirname(filePath), typesDir)
-              .replace(/\\/g, "/");
-            const prefix = relToRoot ? relToRoot + "/" : "./";
-
-            // 替换 "@/xxx" 为 "./xxx" 或 "../xxx"
-            content = content.replace(/"@\//g, `"${prefix}`);
-            content = content.replace(/'@\//g, `'${prefix}`);
-
-            fs.writeFileSync(filePath, content, "utf-8");
-          }
-
-          function walkDir(dir: string) {
-            const entries = fs.readdirSync(dir, { withFileTypes: true });
-            for (const entry of entries) {
-              const fullPath = path.join(dir, entry.name);
-              if (entry.isDirectory()) {
-                walkDir(fullPath);
-              } else if (entry.name.endsWith(".d.ts")) {
-                fixPathsInFile(fullPath);
-              }
-            }
-          }
-
-          walkDir(typesDir);
-          console.log("[dts] Path aliases fixed successfully.");
-        },
       }),
       AutoImport({
         imports: [
