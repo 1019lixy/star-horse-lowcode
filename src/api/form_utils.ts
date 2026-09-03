@@ -76,6 +76,7 @@ const boxDytableAnalysis = (item: any) => {
   const children: Array<any> = [];
   const fieldList: FieldInfo[] | any = [];
   const searchItemList: SearchProps[] | any = [];
+  const selectList: Array<any> = [];
   elements?.forEach((row) => {
     const columnItems: FieldInfo[] | any = [];
     row.columns?.forEach((column) => {
@@ -105,6 +106,10 @@ const boxDytableAnalysis = (item: any) => {
           const { item, fieldInfo, layerItem, searchItem } = itemAnalysis(temp);
           mergeObjects(boxItems, item);
           children.push(layerItem);
+          selectList.push({
+            name: fieldInfo.label,
+            value: fieldInfo.fieldName,
+          });
           if (!fieldInfo.preps) {
             fieldInfo.preps = {};
           }
@@ -143,7 +148,7 @@ const boxDytableAnalysis = (item: any) => {
   });
   const currentLayerContainer = createContainer(item, children);
   boxItems[currentLayerContainer.id] = item;
-  return { currentLayerContainer, boxItems, fieldList, searchItemList };
+  return { currentLayerContainer, boxItems, fieldList, searchItemList, selectList };
 };
 
 /**
@@ -186,7 +191,7 @@ const tableAnalysis = (item: any) => {
   };
   const currentLayerContainer = createContainer(item, children);
   boxItems[currentLayerContainer.id] = item;
-  return { currentLayerContainer, boxItems, fieldList, searchItemList };
+  return { currentLayerContainer, boxItems, fieldList, searchItemList, selectList: [] };
 };
 const getPreps = (item: any) => {
   const preps: Record<string, any> = {};
@@ -242,13 +247,21 @@ const tabColapseCardAnalysis = (item: any) => {
   let fieldInfo: FieldInfo | any = {};
   const searchItemList2: SearchProps[] | any = [];
   const dataList: Array<any> = [];
+  const selectList: Array<any> = [];
   for (const element of elements) {
-    const { selectList, compListResult, fieldList, searchItemList } =
-      analysisCompDatas(element.items);
+    const {
+      selectList: innerSelectList,
+      compListResult,
+      fieldList,
+      searchItemList,
+    } = analysisCompDatas(element.items);
     mergeObjects(boxItems, compListResult);
-    const innerLayer = createContainer(element, selectList);
+    const innerLayer = createContainer(element, innerSelectList);
     boxItems[innerLayer.id] = element;
     currentLayerContainerList.push(innerLayer);
+    if (element.subFormFlag !== "Y") {
+      selectList.push(...(innerSelectList || []));
+    }
     dataList.push({
       subTablePrimaryKey: element.subTablePrimaryKey,
       subTableName: element.subTableName,
@@ -290,6 +303,7 @@ const tabColapseCardAnalysis = (item: any) => {
     boxItems,
     fieldList: [fieldInfo],
     searchItemList: searchItemList2,
+    selectList,
   };
 };
 /**
@@ -369,16 +383,16 @@ export const analysisCompDatas = (dataList: any) => {
         console.warn("[analysisCompDatas]:container content is null");
         continue;
       }
-      const { currentLayerContainer, boxItems, fieldList, searchItemList } =
+      const { boxItems, fieldList, searchItemList, selectList: innerSelectList } =
         result;
 
-      if (Array.isArray(currentLayerContainer)) {
-        selectList.push(...currentLayerContainer);
-      } else {
-        selectList.push(currentLayerContainer);
-      }
-
       mergeObjects(compListResult, boxItems);
+
+      const containerType = comp.itemType;
+      const subFormFlag = comp.preps?.subFormFlag ?? comp.subFormFlag;
+      if (containerType !== "table" && subFormFlag !== "Y") {
+        selectList.push(...(innerSelectList || []));
+      }
 
       if (comp.itemType === "dytable" || comp.itemType === "gridtable") {
         compFieldList.push({
@@ -403,9 +417,9 @@ export const analysisCompDatas = (dataList: any) => {
         searchFieldList.push(...searchItemList);
       }
     } else {
-      const { item, fieldInfo, layerItem, searchItem } = itemAnalysis(comp);
+      const { item, fieldInfo,  searchItem } = itemAnalysis(comp);
       compFieldList.push(fieldInfo);
-      selectList.push(layerItem);
+      selectList.push({ name: fieldInfo.label, value: fieldInfo.fieldName });
       mergeObjects(compListResult, item);
       if (hasKeys(searchItem)) {
         searchFieldList.push(searchItem);
@@ -431,6 +445,7 @@ const conditionAnalysis = (comp: any) => {
   const searchItemList: SearchProps[] = [];
   const childrenContainers: any[] = [];
   const childrenFieldList: any[] = [];
+  const selectList: Array<any> = [];
   // 递归处理 children（子条件组）
   if (comp.children?.length > 0) {
     for (const child of comp.children) {
@@ -443,8 +458,10 @@ const conditionAnalysis = (comp: any) => {
       }
       if (Array.isArray(childResult.selectList)) {
         childrenContainers.push(...childResult.selectList);
+        selectList.push(...childResult.selectList);
       } else {
         childrenContainers.push(childResult.selectList);
+        selectList.push(childResult.selectList);
       }
       if (childResult.searchItemList?.length > 0) {
         searchItemList.push(...childResult.searchItemList);
@@ -469,6 +486,7 @@ const conditionAnalysis = (comp: any) => {
     boxItems,
     fieldList: fieldInfo,
     searchItemList,
+    selectList,
   };
 };
 
