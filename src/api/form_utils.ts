@@ -107,7 +107,7 @@ const boxDytableAnalysis = (item: any) => {
           mergeObjects(boxItems, item);
           children.push(layerItem);
           selectList.push({
-            name: fieldInfo.label,
+            name: `${fieldInfo.label}(${fieldInfo.fieldName})`,
             value: fieldInfo.fieldName,
           });
           if (!fieldInfo.preps) {
@@ -162,11 +162,16 @@ const tableAnalysis = (item: any) => {
   const batchFieldInfos: any[] = [];
   const columnsList: FieldInfo[] | any = [];
   const searchItemList: SearchProps[] | any = [];
+  const selectList: Array<any> = [];
   for (const element of elements) {
     element?.items?.forEach((temp: any) => {
       const { item, fieldInfo, layerItem, searchItem } = itemAnalysis(temp);
       mergeObjects(boxItems, item);
       children.push(layerItem);
+      selectList.push({
+        name: fieldInfo.label,
+        value: fieldInfo.fieldName,
+      });
       columnsList.push(fieldInfo);
       if (hasKeys(searchItem)) {
         searchItemList.push(searchItem);
@@ -191,7 +196,7 @@ const tableAnalysis = (item: any) => {
   };
   const currentLayerContainer = createContainer(item, children);
   boxItems[currentLayerContainer.id] = item;
-  return { currentLayerContainer, boxItems, fieldList, searchItemList, selectList: [] };
+  return { currentLayerContainer, boxItems, fieldList, searchItemList, selectList };
 };
 const getPreps = (item: any) => {
   const preps: Record<string, any> = {};
@@ -390,7 +395,17 @@ export const analysisCompDatas = (dataList: any) => {
 
       const containerType = comp.itemType;
       const subFormFlag = comp.preps?.subFormFlag ?? comp.subFormFlag;
-      if (containerType !== "table" && subFormFlag !== "Y") {
+      if (containerType === "table" || subFormFlag === "Y") {
+        const title = comp.preps?.label ?? comp.preps?.itemNameLabel;
+        const subTablePrimaryKey =
+          comp.preps?.subTablePrimaryKey ?? comp.subTableName;
+        const subTableName = comp.preps?.subTableName;
+        selectList.push({
+          name: title || containerType,
+          value: subTablePrimaryKey || subTableName||uuid(),
+          children: innerSelectList || [],
+        });
+      } else {
         selectList.push(...(innerSelectList || []));
       }
 
@@ -419,14 +434,13 @@ export const analysisCompDatas = (dataList: any) => {
     } else {
       const { item, fieldInfo,  searchItem } = itemAnalysis(comp);
       compFieldList.push(fieldInfo);
-      selectList.push({ name: fieldInfo.label, value: fieldInfo.fieldName });
+      selectList.push({ name: `${fieldInfo.label}(${fieldInfo.fieldName})`, value: fieldInfo.fieldName });
       mergeObjects(compListResult, item);
       if (hasKeys(searchItem)) {
         searchFieldList.push(searchItem);
       }
     }
   }
-
   return {
     selectList,
     compListResult,

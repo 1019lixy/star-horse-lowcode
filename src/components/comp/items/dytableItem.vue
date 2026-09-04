@@ -253,7 +253,7 @@ const handleColResizeEnd = () => {
                   <el-form-item
                     :size="compSize"
                     :label="labelVisibleCheck(tempData)"
-                    class="flex w-full flex-1 my-5"
+                    class="flex w-full flex-1 h-full"
                     :prop="loadProp(propPrefix, tempData.fieldName, -1, -1)"
                     :labelPosition="
                       tempData.preps?.labelPosition ??
@@ -317,7 +317,9 @@ const handleColResizeEnd = () => {
 .no-cell {
   border: 1px solid var(--star-horse-style);
 }
-
+:deep(.el-form-item__content) {
+  height: 100% !important;
+}
 .col-resize-handle {
   position: absolute;
   top: 0;

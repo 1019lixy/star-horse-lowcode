@@ -208,6 +208,8 @@ defineExpose({ refreshForm });
           ref="normalFormRef"
           :globalCondition="formData.relationTables"
           :dynamicForm="true"
+          :formInfo="formData.formInfo"
+          :bindWorkFlowId="formData.bindWorkFlowId"
         />
       </star-horse-panel>
       <star-horse-panel

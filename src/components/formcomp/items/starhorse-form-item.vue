@@ -1,8 +1,8 @@
 <script setup lang="ts" name="StarHorseFormItem">
-import { ItemPreps } from "@/components/types/ItemPreps";
-import { computed, nextTick, ref } from "vue";
-import { labelVisibleCheck, validMsg } from "@/api/form_utils";
-import { isMobile } from "@/api/device";
+import {ItemPreps} from "@/components/types/ItemPreps";
+import {computed, nextTick, ref} from "vue";
+import {labelVisibleCheck, validMsg} from "@/api/form_utils";
+import {isMobile} from "@/api/device";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
   isDesign: false,
@@ -28,9 +28,9 @@ const startEditLabel = () => {
 const finishEditLabel = () => {
   editingLabel.value = false;
   if (
-    props.field &&
-    (editingLabelText.value !== props.field.label ||
-      editingLabelText.value !== props.field.preps?.label)
+      props.field &&
+      (editingLabelText.value !== props.field.label ||
+          editingLabelText.value !== props.field.preps?.label)
   ) {
     props.field.label = editingLabelText.value;
     if (props.field.preps) {
@@ -42,68 +42,68 @@ const finishEditLabel = () => {
 
 <template>
   <div
-    class="w-fill"
-    :class="{ 'item-info': field?.preps?.itemType != 'usercomp' }"
-    :style="{
+      class="w-fill"
+      :class="{ 'item-info': field?.preps?.itemType != 'usercomp' }"
+      :style="{
       margin: field?.preps?.itemType === 'button' ? '5px auto' : 'unset',
     }"
-    v-if="bareFlag === true"
+      v-if="bareFlag === true"
   >
-    <help :message="field?.preps?.helpMsg" v-if="field?.preps?.helpMsg" />
+    <help :message="field?.preps?.helpMsg" v-if="field?.preps?.helpMsg"/>
     <slot></slot>
   </div>
   <div v-else class="form-item-operation">
     <div class="w-full" :class="{ 'field-item': true }">
       <el-form-item
-        :size="field?.preps?.size || 'default'"
-        v-if="
+          :size="field?.preps?.size || 'default'"
+          v-if="
           showFormItem &&
           parentField?.itemType != 'table' &&
           field.preps?.itemType != 'divider' &&
           field?.preps?.headerFlag != 'Y' &&
           !field.preps?.staticData
         "
-        :style="{
+          :style="{
           marginBottom: isEdit && !disabled ? '1px' : '18px',
         }"
-        class="flex items-center w-full h-full"
-        :prop="field?.preps['name']"
-        :label="isEdit ? undefined : labelVisibleCheck(field)"
-        :labelPosition="field?.preps['labelPosition']"
-        :rules="validMsg(field, null)"
+          class="flex items-center w-full h-full"
+          :prop="field?.preps['name']"
+          :label="isEdit ? undefined : labelVisibleCheck(field)"
+          :labelPosition="field?.preps['labelPosition']"
+          :rules="validMsg(field, null)"
       >
         <template #label v-if="isEdit">
           <span
-            v-if="!editingLabel"
-            @click.stop="isMobile ? startEditLabel() : null"
-            @dblclick.stop="!isMobile ? startEditLabel() : null"
-            style="cursor: text"
-            >{{ labelVisibleCheck(field) }}</span
+              v-if="!editingLabel"
+              @click.stop="isMobile ? startEditLabel() : null"
+              @dblclick.stop="!isMobile ? startEditLabel() : null"
+              style="cursor: text"
+          >{{ labelVisibleCheck(field) }}</span
           >
           <el-input
-            v-else
-            ref="labelInputRef"
-            v-model="editingLabelText"
-            @blur="finishEditLabel"
-            @keyup.enter="finishEditLabel"
-            @click.stop
-            style="width: 120px"
+              v-else
+              ref="labelInputRef"
+              v-model="editingLabelText"
+              @blur="finishEditLabel"
+              @keyup.enter="finishEditLabel"
+              @click.stop
+              style="width: 120px"
           />
         </template>
 
-        <help :message="field.preps?.helpMsg" v-if="field.preps?.helpMsg" />
+        <help :message="field.preps?.helpMsg" v-if="field.preps?.helpMsg"/>
         <slot></slot>
       </el-form-item>
       <div
-        v-else
-        :class="{
+          v-else
+          :class="{
           'item-info': field?.preps?.itemType != 'usercomp',
         }"
-        :style="{
+          :style="{
           margin: field?.itemType === 'button' ? '5px auto' : 'unset',
         }"
       >
-        <help :message="field.preps?.helpMsg" v-if="field.preps?.helpMsg" />
+        <help :message="field.preps?.helpMsg" v-if="field.preps?.helpMsg"/>
         <slot></slot>
       </div>
     </div>
@@ -112,9 +112,11 @@ const finishEditLabel = () => {
 <style lang="scss" scoped>
 .form-item-operation {
   display: flex;
-  width: 100%;
+  width: 98%;
   flex: 1;
+  margin:0 auto;
   height: 100%;
+  padding: 0 5px;
 }
 
 .item-info {
@@ -122,6 +124,7 @@ const finishEditLabel = () => {
   width: 100%;
   flex: 1;
   height: 100%;
+  align-items: center;
   justify-content: start;
 }
 

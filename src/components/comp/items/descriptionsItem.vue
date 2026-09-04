@@ -109,7 +109,7 @@ onMounted(() => {
                 :label-class-name="descItm.preps?.descItemLabelClassName || ''"
             >
               <template #label>
-                <div class="desc-panel-header" :style="{'justify-content': descItm.preps?.descItemAlign || 'center'}">
+                <div class="desc-panel-header" :style="{'justify-content': descItm.preps?.descItemAlign || 'left'}">
                   <span class="editable-name">{{ field.label || field.fieldName }}
                   </span>
                   <div v-if="field.required" style="color: var(--el-color-danger)">*</div>
@@ -117,7 +117,7 @@ onMounted(() => {
               </template>
               <el-form-item
                   :size="compSize"
-                  class="flex w-full flex-1 my-5"
+                  class="flex w-full flex-1 h-full"
                   label=""
                   :prop="loadProp(propPrefix, field.fieldName, -1, -1)"
                   :labelPosition="
@@ -159,5 +159,8 @@ onMounted(() => {
   flex-direction: row;
 
   align-items: center;
+}
+:deep(.el-form-item__content) {
+  height: 100% !important;
 }
 </style>

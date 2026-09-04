@@ -1,12 +1,7 @@
 <script setup lang="ts">
-import {
-  checkVisible,
-  labelVisibleCheck,
-  loadProp,
-  validMsg,
-} from "@/api/form_utils";
-import { ContainerPreps } from "@/components/types/ItemPreps";
-import { computed, ModelRef, onMounted, ref } from "vue";
+import {checkVisible, labelVisibleCheck, loadProp, validMsg,} from "@/api/form_utils";
+import {ContainerPreps} from "@/components/types/ItemPreps";
+import {computed, ModelRef, onMounted, ref} from "vue";
 import StarHorseItem from "@/components/comp/StarHorseItem.vue";
 
 const props = withDefaults(defineProps<ContainerPreps>(), {
@@ -22,8 +17,8 @@ const dataForm: ModelRef<any> = defineModel("dataForm");
 const gridtableData = computed(() => {
   const item: any = props.item;
   return item?.containerType == "gridtable"
-    ? item?.containerFields?.[0]?.fieldList
-    : [];
+      ? item?.containerFields?.[0]?.fieldList
+      : [];
 });
 const rowHeight = computed(() => {
   if (props.compSize == "large") {
@@ -50,7 +45,7 @@ const gridTemplateColumns = computed(() => {
     const parts: string[] = [];
     for (const col of firstRow) {
       parts.push(
-        checkItem(col)?.preps?.colWidth || `calc(100% / ${totalCols.value})`,
+          checkItem(col)?.preps?.colWidth || `calc(100% / ${totalCols.value})`,
       );
     }
     return parts.join(" ");
@@ -58,7 +53,7 @@ const gridTemplateColumns = computed(() => {
   return `repeat(${totalCols.value}, 1fr)`;
 });
 const showLineNumber = computed(
-  () => (props.item as any)?.preps?.showLineNumber ?? false,
+    () => (props.item as any)?.preps?.showLineNumber ?? false,
 );
 
 const gridModel = computed(() => {
@@ -110,7 +105,8 @@ const getGridPosition = (rowIndex: number, colIndex: number, cell: any) => {
   };
 };
 
-const init = () => {};
+const init = () => {
+};
 onMounted(() => {
   init();
 });
@@ -182,8 +178,8 @@ const handleColResizeEnd = () => {
 const item = computed(() => props.item as any);
 const wrapperStyle = computed(() => {
   const baseWidth =
-    item.value?.preps?.tableWidth ||
-    (item.value?.preps?.styles?.width ?? "100%");
+      item.value?.preps?.tableWidth ||
+      (item.value?.preps?.styles?.width ?? "100%");
   const style: Record<string, any> = {
     height: item.value?.preps?.styles?.height ?? "100%",
     overflow: item.value?.preps?.styles?.overflow ?? "auto",
@@ -202,28 +198,28 @@ const wrapperStyle = computed(() => {
   <template v-if="gridtableData.length > 0">
     <div class="gridtable-wrapper" :style="wrapperStyle">
       <div
-        v-if="showLineNumber && gridtableData.length > 0"
-        class="gridtable-header"
-        :style="{ gridTemplateColumns: `30px ${gridTemplateColumns}` }"
+          v-if="showLineNumber && gridtableData.length > 0"
+          class="gridtable-header"
+          :style="{ gridTemplateColumns: `30px ${gridTemplateColumns}` }"
       >
         <div class="gridtable-header-cell no-cell"></div>
         <div
-          v-for="(col, index) in gridtableData[0]"
-          :key="index"
-          class="gridtable-header-cell no-cell col-resize-container"
-          :style="{ width: checkItem(col)?.preps?.colWidth || '100%' }"
+            v-for="(col, index) in gridtableData[0]"
+            :key="index"
+            class="gridtable-header-cell no-cell col-resize-container"
+            :style="{ width: checkItem(col)?.preps?.colWidth || '100%' }"
         >
           {{ index + 1 }}
           <div
-            v-if="item.preps?.allowResize"
-            class="col-resize-handle"
-            @mousedown="(e) => handleColResizeStart(e, index)"
+              v-if="item.preps?.allowResize"
+              class="col-resize-handle"
+              @mousedown="(e) => handleColResizeStart(e, index)"
           />
         </div>
       </div>
       <div
-        class="gridtable-body"
-        :style="{
+          class="gridtable-body"
+          :style="{
           gridTemplateColumns: showLineNumber
             ? `30px ${gridTemplateColumns}`
             : gridTemplateColumns,
@@ -231,17 +227,17 @@ const wrapperStyle = computed(() => {
       >
         <template v-for="(row, rowIndex) in gridtableData" :key="rowIndex">
           <div
-            v-if="showLineNumber"
-            class="gridtable-line-number no-cell"
-            :style="{ gridColumn: '1', gridRow: `${rowIndex + 1}` }"
+              v-if="showLineNumber"
+              class="gridtable-line-number no-cell"
+              :style="{ gridColumn: '1', gridRow: `${rowIndex + 1}` }"
           >
             {{ Number(rowIndex) + 1 }}
           </div>
           <template v-for="(sitem, colIndex) in row" :key="colIndex * rowIndex">
             <div
-              v-if="checkItem(sitem)?.preps?.cellVisible"
-              class="gridtable-cell"
-              :style="{
+                v-if="checkItem(sitem)?.preps?.cellVisible"
+                class="gridtable-cell"
+                :style="{
                 width: checkItem(sitem)?.preps?.colWidth || '100%',
                 minHeight: checkItem(sitem)?.preps?.colHeight || rowHeight,
                 ...getGridPosition(rowIndex, colIndex, checkItem(sitem)),
@@ -254,29 +250,29 @@ const wrapperStyle = computed(() => {
               }"
             >
               <div
-                class="h-full w-full flex-1 p-2 items-center justify-center flex flex-col"
-                v-if="sitem.staticData === true"
-                v-html="sitem.preps?.textContent"
+                  class="h-full w-full flex-1 p-2 items-center justify-center flex flex-col"
+                  v-if="sitem.staticData === true"
+                  v-html="sitem.preps?.textContent"
               />
               <template v-else v-for="tempData in createArray(sitem)">
                 <template
-                  v-if="
+                    v-if="
                     tempData.type != 'button' &&
                     tempData.type != 'usercomp' &&
                     !tempData.preps?.staticData
                   "
                 >
                   <el-form-item
-                    :size="compSize"
-                    :label="labelVisibleCheck(tempData)"
-                    class="flex w-full flex-1 my-5"
-                    :prop="loadProp(propPrefix, tempData.fieldName, -1, -1)"
-                    :labelPosition="
+                      :size="compSize"
+                      :label="labelVisibleCheck(tempData)"
+                      class="flex w-full flex-1 h-full"
+                      :prop="loadProp(propPrefix, tempData.fieldName, -1, -1)"
+                      :labelPosition="
                       tempData.preps?.labelPosition ??
                       parentPreps?.labelPosition
                     "
-                    :rules="validMsg(tempData, dataForm)"
-                    v-if="
+                      :rules="validMsg(tempData, dataForm)"
+                      v-if="
                       (tempData.formVisible &&
                         tempData.label &&
                         tempData.preps?.headerFlag != 'Y') ||
@@ -284,35 +280,35 @@ const wrapperStyle = computed(() => {
                     "
                   >
                     <star-horse-item
+                        :primaryKey="primaryKey"
+                        :compSize="compSize"
+                        v-model:dataForm="dataForm"
+                        :item="tempData"
+                        :dataIndex="dataIndex"
+                        :source="source"
+                    />
+                  </el-form-item>
+                  <star-horse-item
+                      v-else-if="
+                      tempData.viewVisible || checkVisible(tempData, dataForm)
+                    "
+                      :compSize="compSize"
+                      :primaryKey="primaryKey"
+                      v-model:dataForm="dataForm"
+                      :item="tempData"
+                      class="flex w-full flex-1"
+                      :dataIndex="dataIndex"
+                      :source="source"
+                  />
+                </template>
+                <template v-else-if="tempData.fieldName">
+                  <star-horse-item
                       :primaryKey="primaryKey"
                       :compSize="compSize"
                       v-model:dataForm="dataForm"
                       :item="tempData"
                       :dataIndex="dataIndex"
                       :source="source"
-                    />
-                  </el-form-item>
-                  <star-horse-item
-                    v-else-if="
-                      tempData.viewVisible || checkVisible(tempData, dataForm)
-                    "
-                    :compSize="compSize"
-                    :primaryKey="primaryKey"
-                    v-model:dataForm="dataForm"
-                    :item="tempData"
-                    class="flex w-full flex-1"
-                    :dataIndex="dataIndex"
-                    :source="source"
-                  />
-                </template>
-                <template v-else-if="tempData.fieldName">
-                  <star-horse-item
-                    :primaryKey="primaryKey"
-                    :compSize="compSize"
-                    v-model:dataForm="dataForm"
-                    :item="tempData"
-                    :dataIndex="dataIndex"
-                    :source="source"
                   />
                 </template>
               </template>
@@ -325,16 +321,23 @@ const wrapperStyle = computed(() => {
 </template>
 
 <style scoped lang="scss">
+:deep(.el-form-item__content) {
+  height: 100% !important;
+}
+
 .no-cell {
   border: 1px solid var(--star-horse-style);
 }
+
 .gridtable-wrapper {
   border: 1px solid var(--star-horse-style);
 }
+
 .gridtable-header {
   display: grid;
   border-bottom: 1px solid var(--star-horse-style);
 }
+
 .gridtable-header-cell {
   padding: 2px 4px;
   text-align: center;
@@ -343,9 +346,11 @@ const wrapperStyle = computed(() => {
   position: relative;
   min-height: 20px;
 }
+
 .gridtable-body {
   display: grid;
 }
+
 .gridtable-line-number {
   padding: 2px 4px;
   text-align: center;
@@ -356,6 +361,7 @@ const wrapperStyle = computed(() => {
   align-items: center;
   justify-content: center;
 }
+
 .gridtable-cell {
   border: 1px solid #ebeef5;
   min-height: 35px;
@@ -367,11 +373,13 @@ const wrapperStyle = computed(() => {
   :deep(.el-form-item) {
     margin-bottom: 0 !important;
   }
+
   :deep(.el-form-item__error) {
     top: 0 !important;
     transform: translateY(-10%);
   }
 }
+
 .col-resize-handle {
   position: absolute;
   top: 0;
@@ -383,13 +391,16 @@ const wrapperStyle = computed(() => {
   opacity: 0;
   transition: opacity 0.3s;
   z-index: 1000;
+
   &:hover {
     opacity: 1;
   }
 }
+
 .col-resize-container {
   position: relative;
 }
+
 .col-resize-container:hover .col-resize-handle {
   opacity: 1;
 }

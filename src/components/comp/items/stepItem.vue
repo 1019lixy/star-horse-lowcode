@@ -28,6 +28,8 @@ const emits = defineEmits(["addRow", "removeRow"]);
 const dataForm: ModelRef<any> = defineModel("dataForm");
 // 注入 el-form 实例（由 StarHorseForm provide），用于调用 validateField / clearValidate
 const starHorseFormRef = inject("starHorseFormRef", ref<any>(null));
+// 注入表单信息（由 StarHorseForm provide），含流程上下文、分段流程配置等
+const formInfo = inject("formInfo", ref<any>(null));
 
 /**
  * 列表添加行数据
@@ -66,10 +68,13 @@ const stepStyle = computed(() => props.item?.preps?.stepStyle || "steps");
 // 平铺单页模式：所有分段同页纵向展示
 const flatMode = computed(() => stepStyle.value === "flat");
 
-// 流程上下文（运行时由后端注入 item.preps.flow；无流程时为 null，回退原有行为）
-const flow = computed(() =>
-  props.item?.preps?.flow?.enabled ? props.item.preps.flow : null,
-);
+// 流程上下文：优先取容器自身 preps.flow，回退到 formInfo.flow（由后端注入）
+const flow = computed(() => {
+  const localFlow = props.item?.preps?.flow;
+  if (localFlow?.enabled) return localFlow;
+  const infoFlow = formInfo?.value?.flow;
+  return infoFlow?.enabled ? infoFlow : null;
+});
 
 // 段级权限：editable 可编辑 / readonly 只读 / hidden 不渲染；无流程时按 source 降级（3=查看）
 const segPermission = (key: string): "editable" | "readonly" | "hidden" => {
@@ -337,7 +342,7 @@ onMounted(() => {
   markStepLoaded(activeStepIndex.value);
 });
 
-// 同步 item.fieldName 为当前步骤 subTablePrimaryKey
+// 同步 item.fieldName 为当前步骤 subTablePrimaryKey，并写入 __currentStepKey 供后端触发分段流程
 watch(activeStepIndex, (idx) => {
   markStepLoaded(idx);
   if (stepValidationState.value[idx] === "invalid") {
@@ -346,6 +351,9 @@ watch(activeStepIndex, (idx) => {
   const step = stepList.value[idx];
   if (step?.subTablePrimaryKey) {
     props.item.fieldName = step.subTablePrimaryKey;
+    if (dataForm.value && typeof dataForm.value === "object") {
+      dataForm.value.__currentStepKey = step.subTablePrimaryKey;
+    }
   }
 });
 </script>

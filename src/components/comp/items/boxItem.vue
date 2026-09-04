@@ -100,7 +100,7 @@ onMounted(() => {
             <!--需解决只需要标签内容的情况-->
             <el-form-item
               :size="compSize"
-              class="flex w-full flex-1 my-5"
+              class="flex w-full flex-1 h-full"
               :label="labelVisibleCheck(tempData)"
               :prop="loadProp(propPrefix, tempData.fieldName, -1, -1)"
               :labelPosition="
@@ -160,5 +160,8 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+:deep(.el-form-item__content) {
+  height: 100% !important;
 }
 </style>

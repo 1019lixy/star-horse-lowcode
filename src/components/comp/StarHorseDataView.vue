@@ -178,7 +178,7 @@ defineExpose({
   /* ---- 表单行：el-descriptions 风格 ---- */
   :deep(.el-form-item) {
     margin-bottom: 0 !important;
-    border-bottom: 1px solid var(--el-border-color-lighter);
+    //border-bottom: 1px solid var(--el-border-color-lighter);
     min-height: 40px;
     align-items: center;
   }
@@ -209,7 +209,7 @@ defineExpose({
 
   /* 内容列 */
   :deep(.el-form-item__content) {
-    padding: 6px 12px;
+    //padding: 6px 12px;
     color: var(--el-text-color-primary);
     flex: 1;
     background-color: var(--el-bg-color);

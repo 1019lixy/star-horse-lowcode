@@ -51,6 +51,8 @@ const props = defineProps({
   dynamicForm: { type: Boolean, default: false },
   preview: { type: Boolean, default: false },
   dialogType: { type: String as () => "dialog" | "drawer" },
+  formInfo: { type: Object as PropType<any> },
+  bindWorkFlowId: { type: String, default: "" },
   selectData: {
     type: Array<SelectOption>,
     default: () => {
@@ -98,6 +100,8 @@ let dialogOperation = inject("dialogOperation") as any;
 const dialogProps = inject<DialogProps>("dialogProps", {});
 const formFields = shallowRef<Array<FieldInfo>>([]);
 provide("formFields", formFields);
+provide("formInfo", props.formInfo);
+provide("bindWorkFlowId", props.bindWorkFlowId);
 // 暴露 el-form 实例给嵌套组件（如 stepItem），用于调用 validateField / clearValidate
 provide("starHorseFormRef", starHorseFormRef);
 const loadData = async () => {
