@@ -1170,6 +1170,7 @@ export function filterProperties(obj: any, keysToRemove: string[]) {
  * @param item
  */
 export function labelVisibleCheck(item: any) {
+  console.log(item);
   if (item.preps?.hideLabel || item.preps?.staticData) {
     return "";
   }

@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
+import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import SampleLayout from "@/sample/SampleLayout.vue";
 
 const routes: RouteRecordRaw[] = [
@@ -6,6 +6,13 @@ const routes: RouteRecordRaw[] = [
     path: "/test",
     name: "test",
     component: () => import("@/sample/test.vue"),
+    props: true,
+    meta: { title: "测试", keepAlive: "N" },
+  },
+  {
+    path: "/page/:param",
+    name: "NormalPage",
+    component: () => import("@/sample/commonpage/NormalPage.vue"),
     props: true,
     meta: { title: "测试", keepAlive: "N" },
   },
@@ -416,13 +423,13 @@ const routes: RouteRecordRaw[] = [
       },
 
       // ========== 动态表单实例 ==========
-      {
+    /*  {
         path: "/general/page/:param",
         name: "NormalPage",
         component: () => import("@/sample/commonpage/NormalPage.vue"),
         props: true,
         meta: { title: "动态表单实例", keepAlive: "N" },
-      },
+      },*/
     ],
   },
   {
@@ -434,8 +441,11 @@ const routes: RouteRecordRaw[] = [
 ];
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory("/"),
   routes,
 });
-
+router.beforeEach((to) => {
+  console.log("【路由调试】path=", to.path);
+  console.log("【路由调试】matched=", to.matched.map(r=>r.name));
+});
 export default router;

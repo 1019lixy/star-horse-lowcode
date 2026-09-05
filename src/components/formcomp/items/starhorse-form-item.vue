@@ -57,7 +57,7 @@ const finishEditLabel = () => {
       <el-form-item
           :size="field?.preps?.size || 'default'"
           v-if="
-          showFormItem &&
+          isEdit&&showFormItem &&
           parentField?.itemType != 'table' &&
           field.preps?.itemType != 'divider' &&
           field?.preps?.headerFlag != 'Y' &&
@@ -68,7 +68,7 @@ const finishEditLabel = () => {
         }"
           class="flex items-center w-full h-full"
           :prop="field?.preps['name']"
-          :label="isEdit ? undefined : labelVisibleCheck(field)"
+          :label="labelVisibleCheck(field)"
           :labelPosition="field?.preps['labelPosition']"
           :rules="validMsg(field, null)"
       >

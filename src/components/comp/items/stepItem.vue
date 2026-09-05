@@ -28,8 +28,7 @@ const emits = defineEmits(["addRow", "removeRow"]);
 const dataForm: ModelRef<any> = defineModel("dataForm");
 // 注入 el-form 实例（由 StarHorseForm provide），用于调用 validateField / clearValidate
 const starHorseFormRef = inject("starHorseFormRef", ref<any>(null));
-// 注入表单信息（由 StarHorseForm provide），含流程上下文、分段流程配置等
-const formInfo = inject("formInfo", ref<any>(null));
+
 
 /**
  * 列表添加行数据
@@ -50,8 +49,7 @@ const removeRow = (row: any) => {
 const activeStepIndex = ref<number>(0);
 // 步骤校验状态：valid=通过(绿色打钩), invalid=失败(红色打叉), undefined=未校验
 const stepValidationState = ref<Record<number, "valid" | "invalid">>({});
-// 是否已完成所有步骤（最后一步通过校验后置为 true，用于显示全部完成）
-const allStepsCompleted = ref<boolean>(false);
+
 
 // 步骤列表(第三类容器统一字段 containerFields,与设计时 preps.elements 对应)
 const stepList = computed(() => props.item?.containerFields || []);
@@ -68,23 +66,57 @@ const stepStyle = computed(() => props.item?.preps?.stepStyle || "steps");
 // 平铺单页模式：所有分段同页纵向展示
 const flatMode = computed(() => stepStyle.value === "flat");
 
-// 流程上下文：优先取容器自身 preps.flow，回退到 formInfo.flow（由后端注入）
-const flow = computed(() => {
-  const localFlow = props.item?.preps?.flow;
-  if (localFlow?.enabled) return localFlow;
-  const infoFlow = formInfo?.value?.flow;
-  return infoFlow?.enabled ? infoFlow : null;
+// ============ 分段流程权限模型 ============
+// 权限配置：item.preps.step.segments，支持两种形态
+//   1) 字符串："readonly"/"editable"/"hidden"，对所有非当前段统一生效
+//   2) 对象：{ [stepKey]: "editable" | "readonly" | "hidden" }，按段单独配置
+// 当前阶段：编辑时由表单返回数据 starHorseCurrentStep 指定；新建(无值)默认第一段
+// 规则：当前段强制可编辑；其余段按 segments 配置；未配置默认可编辑；查看模式(source=3)全只读
+const stepSegmentsConf = computed<any>(
+  () => props.item?.preps?.segments,
+);
+
+// 是否启用流程控制（配置了 segments 才生效，未配置退化为普通步骤容器）
+const hasFlowControl = computed(() => {
+  const conf = stepSegmentsConf.value;
+  if (!conf) return false;
+  if (typeof conf === "string") return conf.length > 0;
+  return Object.keys(conf).length > 0;
 });
 
-// 段级权限：editable 可编辑 / readonly 只读 / hidden 不渲染；无流程时按 source 降级（3=查看）
+// 当前阶段 key：优先取后端返回数据中的 starHorseCurrentStep，缺省取第一段
+const currentStepKey = computed<string>(() => {
+  const fromBackend = (dataForm.value as any)?.starHorseCurrentStep;
+  if (fromBackend) return String(fromBackend);
+  return stepList.value[0]?.subTablePrimaryKey;
+});
+
+// 当前阶段在步骤列表中的索引
+const currentStepIndex = computed<number>(() => {
+  const idx = stepList.value.findIndex(
+    (s: any) => s.subTablePrimaryKey === currentStepKey.value,
+  );
+  return idx >= 0 ? idx : 0;
+});
+
+// 段级权限：editable 可编辑 / readonly 只读 / hidden 不渲染（防数据泄露）
 const segPermission = (key: string): "editable" | "readonly" | "hidden" => {
-  if (flow.value?.segments?.[key]) return flow.value.segments[key];
-  return props.source == 3 ? "readonly" : "editable";
+  if (props.source == 3) return "readonly";
+  const conf = stepSegmentsConf.value;
+  if (!conf || !hasFlowControl.value) return "editable";
+  // 当前段(后端 starHorseCurrentStep 指定的阶段)编辑时必须可编辑
+  if (key && key === currentStepKey.value) return "editable";
+  // 字符串形态：所有非当前段统一权限
+  if (typeof conf === "string") {
+    return conf as "editable" | "readonly" | "hidden";
+  }
+  // 对象形态：按段 key 配置，未配置默认可编辑
+  return (conf[key] as "editable" | "readonly" | "hidden") || "editable";
 };
 
-// 段内组件渲染 source：只读段用查看模式(3)渲染，其余沿用当前 source
+// 段内组件渲染 source：只读段用查看模式(3)渲染，可编辑段沿用当前 source
 const segSource = (key: string): number =>
-  flatMode.value && segPermission(key) === "readonly" ? 3 : props.source;
+  segPermission(key) === "readonly" ? 3 : props.source;
 
 // 平铺状态文案：优先取 i18n，语言包未收录时回退默认文案
 const flatText = (key: string, fallback: string): string => {
@@ -92,68 +124,74 @@ const flatText = (key: string, fallback: string): string => {
   return t === key ? fallback : t;
 };
 
-// 平铺段折叠状态：显式操作记录在 map；未记录时默认已完成段折叠、其余展开
+// 平铺段状态：当前段→active(待填写)，其余段(含只读)→pending(未开始)
+// 注意：readonly 是权限语义(当前不可编辑)，不代表"已填写"；
+// 填写进度缺少真实数据源，不做"已填写"推导，避免误导
+const flatStatusOf = (key: string): string => {
+  if (key && key === currentStepKey.value) return "active";
+  return "pending";
+};
+
+// 平铺段折叠状态：显式操作记录在 map；未记录时默认全部展开
 const flatCollapsed = ref<Record<string, boolean>>({});
 const isFlatCollapsed = (step: any): boolean => {
   const key = step?.subTablePrimaryKey;
   if (key != null && key in flatCollapsed.value) {
     return !!flatCollapsed.value[key];
   }
-  const st = flow.value?.nodeStates?.[key];
-  return st?.status === "done";
+  return false;
 };
 const toggleFlatCollapse = (step: any) => {
   const key = step?.subTablePrimaryKey;
   if (key != null) flatCollapsed.value[key] = !isFlatCollapsed(step);
 };
 
-// 平铺段状态标签文案
+// 平铺段状态标签文案（未启用流程控制时不显示标签）
 const flatStatusText = (step: any): string => {
-  const st = flow.value?.nodeStates?.[step?.subTablePrimaryKey];
-  if (st?.status === "done") {
-    return (
-      flatText("dyform.step.flatFilled", "已填写") +
-      (st.assignee?.name ? ` · ${st.assignee.name}` : "")
-    );
-  }
-  if (st?.status === "active") {
-    return flatText("dyform.step.flatCurrent", "待填写");
-  }
-  if (flow.value) return flatText("dyform.step.flatLocked", "未开始");
+  if (!hasFlowControl.value) return "";
+  const st = flatStatusOf(step?.subTablePrimaryKey);
+  if (st === "done") return flatText("dyform.step.flatFilled", "已填写");
+  if (st === "active") return flatText("dyform.step.flatCurrent", "待填写");
+  if (st === "pending") return flatText("dyform.step.flatLocked", "未开始");
   return "";
 };
 
 // 平铺段状态标签样式类
 const flatTagState = (step: any): string =>
-  flow.value?.nodeStates?.[step?.subTablePrimaryKey]?.status || "";
+  flatStatusOf(step?.subTablePrimaryKey);
 
-// 平铺流转记录条节点（张三 → 李四(当前) → 待定）
+// 平铺流转记录条节点，状态由段权限推导
 const flowTrail = computed(() => {
-  if (!flatMode.value || !flow.value?.nodeStates) return [];
-  return Object.keys(flow.value.nodeStates).map((key) => {
-    const step = stepList.value.find(
-      (s: any) => s.subTablePrimaryKey === key,
-    );
+  if (!flatMode.value || !hasFlowControl.value) return [];
+  return stepList.value.map((s: any) => {
+    const key = s.subTablePrimaryKey;
+    const st = flatStatusOf(key);
     return {
       key,
-      label: step?.title || step?.label || key,
-      status: flow.value.nodeStates[key]?.status,
-      assignee: flow.value.nodeStates[key]?.assignee,
+      label: s.title || s.label || key,
+      status: st,
+      statusText:
+        st === "done"
+          ? flatText("dyform.step.flatFilled", "已填写")
+          : st === "active"
+            ? flatText("dyform.step.flatCurrent", "待填写")
+            : flatText("dyform.step.flatLocked", "未开始"),
     };
   });
 });
-const trailAvatar = (node: any): string =>
-  (node.assignee?.name || "?").charAt(0);
+const trailAvatar = (node: any): string => (node.label || "?").charAt(0);
 
-// 流程模式下初始定位到当前待办节点
+// 后端返回新阶段(starHorseCurrentStep 变化)时：视图定位到当前阶段，
+// 并同步当前阶段 key 到 item.fieldName 与 dataForm.__currentStepKey（提交时告知后端当前段）
 watch(
-  flow,
-  (f) => {
-    if (!f?.currentNode) return;
-    const idx = stepList.value.findIndex(
-      (s: any) => s.subTablePrimaryKey === f.currentNode,
-    );
-    if (idx >= 0) activeStepIndex.value = idx;
+  currentStepKey,
+  (key) => {
+    if (!key) return;
+    activeStepIndex.value = currentStepIndex.value;
+    if (props.item) props.item.fieldName = key;
+    if (dataForm.value && typeof dataForm.value === "object") {
+      dataForm.value.__currentStepKey = key;
+    }
   },
   { immediate: true },
 );
@@ -228,13 +266,13 @@ const stepSpace = computed(() => {
 // 完成图标（el-steps finish-icon 属性）
 const finishIcon = computed(() => props.item?.preps?.finishIcon || "");
 
-// 步骤状态
+// 步骤条状态：以流程当前阶段(currentStepIndex，后端 starHorseCurrentStep 驱动)为准
 type StepStatus = "finish" | "process" | "wait" | "error" | "success";
 const getStepStatus = (idx: number): StepStatus => {
   if (stepValidationState.value[idx] === "invalid") return "error";
-  if (allStepsCompleted.value || props.source == 3) return "finish";
-  if (idx === activeStepIndex.value) return "process";
-  if (idx < activeStepIndex.value) return "finish";
+  if (props.source == 3) return "finish";
+  if (idx === currentStepIndex.value) return "process";
+  if (idx < currentStepIndex.value) return "finish";
   return "wait";
 };
 
@@ -276,29 +314,16 @@ const clearStepValidate = (stepIndex: number) => {
   if (fieldProps.length) formRef.clearValidate(fieldProps);
 };
 
+// 视图切换（goPrev/goNext/handleStepClick 仅切换查看的段，不改变流程当前阶段）
 const goPrev = () => {
   if (activeStepIndex.value > 0) {
     clearStepValidate(activeStepIndex.value);
     delete stepValidationState.value[activeStepIndex.value];
-    allStepsCompleted.value = false;
     activeStepIndex.value--;
   }
 };
 const goNext = async () => {
-  if (activeStepIndex.value >= stepList.value.length - 1) {
-    // 已是最后一步：校验通过则标记全部完成
-    if (
-      mustCompleteStep.value &&
-      !(await validateStep(activeStepIndex.value))
-    ) {
-      stepValidationState.value[activeStepIndex.value] = "invalid";
-      warning(i18n("dyform.step.stepIncomplete"));
-      return;
-    }
-    stepValidationState.value[activeStepIndex.value] = "valid";
-    allStepsCompleted.value = true;
-    return;
-  }
+  if (activeStepIndex.value >= stepList.value.length - 1) return;
   if (mustCompleteStep.value && !(await validateStep(activeStepIndex.value))) {
     stepValidationState.value[activeStepIndex.value] = "invalid";
     warning(i18n("dyform.step.stepIncomplete"));
@@ -323,37 +348,20 @@ const handleStepClick = async (index: number) => {
   }
   clearStepValidate(index);
   delete stepValidationState.value[index];
-  allStepsCompleted.value = false;
   activeStepIndex.value = index;
 };
 
-// 初始化激活步骤
-const init = () => {
-  const activeName = props.item?.fieldName;
-  if (activeName) {
-    const idx = stepList.value.findIndex(
-      (s: any) => s.subTablePrimaryKey === activeName,
-    );
-    if (idx >= 0) activeStepIndex.value = idx;
-  }
-};
 onMounted(() => {
-  init();
   markStepLoaded(activeStepIndex.value);
 });
 
-// 同步 item.fieldName 为当前步骤 subTablePrimaryKey，并写入 __currentStepKey 供后端触发分段流程
+// 视图切换时仅维护挂载标记与校验状态清理
+// 注意：__currentStepKey / item.fieldName 由 currentStepKey 的 watch 同步（后端数据驱动），
+// 不随用户查看切换变化，避免"查看即推进"篡改流程当前阶段
 watch(activeStepIndex, (idx) => {
   markStepLoaded(idx);
   if (stepValidationState.value[idx] === "invalid") {
     delete stepValidationState.value[idx];
-  }
-  const step = stepList.value[idx];
-  if (step?.subTablePrimaryKey) {
-    props.item.fieldName = step.subTablePrimaryKey;
-    if (dataForm.value && typeof dataForm.value === "object") {
-      dataForm.value.__currentStepKey = step.subTablePrimaryKey;
-    }
   }
 });
 </script>
@@ -466,10 +474,7 @@ watch(activeStepIndex, (idx) => {
           <span class="trail-avatar">{{ trailAvatar(node) }}</span>
           <span class="trail-info">
             <span class="trail-label">{{ node.label }}</span>
-            <span class="trail-name">{{
-              node.assignee?.name ||
-                flatText("dyform.step.flatLocked", "未开始")
-            }}</span>
+            <span class="trail-name">{{ node.statusText }}</span>
           </span>
         </span>
       </template>
@@ -515,12 +520,11 @@ watch(activeStepIndex, (idx) => {
           >
         </div>
 
-        <!-- 段内容：flat 按权限+折叠控制，hidden 段不渲染（防数据泄露） -->
+        <!-- 段内容：hidden 段不渲染任何字段（防数据泄露）；readonly 段以查看模式渲染 -->
         <div
           v-if="
-            !flatMode
-              ? !lazyRenderStep || loadedSteps.has(Number(idx))
-              : segPermission(stepItem.subTablePrimaryKey) !== 'hidden'
+            segPermission(stepItem.subTablePrimaryKey) !== 'hidden' &&
+            (!flatMode ? !lazyRenderStep || loadedSteps.has(Number(idx)) : true)
           "
           v-show="
             !flatMode
@@ -557,11 +561,11 @@ watch(activeStepIndex, (idx) => {
           />
         </div>
 
-        <!-- flat 未开始段：仅锁定占位，不渲染任何字段 -->
+        <!-- 未开始(hidden)段：仅锁定占位，不渲染任何字段（flat 常显，steps 激活时显示） -->
         <div
-          v-if="
-            flatMode &&
-            segPermission(stepItem.subTablePrimaryKey) === 'hidden'
+          v-if="segPermission(stepItem.subTablePrimaryKey) === 'hidden'"
+          v-show="
+            !flatMode ? !lazyRenderStep || Number(idx) === activeStepIndex : true
           "
           class="flat-locked"
         >

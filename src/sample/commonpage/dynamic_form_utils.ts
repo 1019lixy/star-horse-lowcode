@@ -4,7 +4,7 @@ import { loadData, postRequest } from "@/api/star_horse_apis";
 import { ApiUrls, PageFieldInfo, SearchFields } from "@/components/types";
 import { apiInstance, closeLoad, load } from "@/api/star_horse_utils";
 
-const serviceName = "quantity-manage";
+const serviceName = "userdb-manage";
 
 export interface FormDataProp {
   /**

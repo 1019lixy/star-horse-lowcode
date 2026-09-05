@@ -3057,6 +3057,9 @@ export default {
   "dyform.step.completeHint": "Following fields are empty:",
   "dyform.step.complete": "Complete",
   "dyform.step.validateFailed": "Following required fields are empty:",
+  "dyform.step.flatFilled": "Filled",
+  "dyform.step.flatCurrent": "Pending",
+  "dyform.step.flatLocked": "Not Started",
   "dyform.container.anchorSection": "Section",
   "dyform.container.anchorNavTitle": "Quick Navigation",
 };
