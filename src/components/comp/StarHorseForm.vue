@@ -85,7 +85,7 @@ watch(
   { immediate: true },
 );
 const platformFields: ComputedRef = computed(() =>
-  convertPcCompToFitPlatformComps(props.fieldList),
+  convertPcCompToFitPlatformComps(props.fieldList)
 );
 const mappingFields = computed(() => formFieldMapping(unref(platformFields)));
 //更新外面传进来的数据

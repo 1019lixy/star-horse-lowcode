@@ -10,7 +10,8 @@ const props = defineProps({
   //url地址
   compUrl: { type: Object as PropType<ApiUrls>, required: true },
   //列名
-  fieldList: { type: Object as PropType<PageFieldInfo>, required: true },
+  fieldList: { type: Object as PropType<any>, required: true },
+  cellEditable: { type: Boolean, default: false },
   //格式化方法
   dataFormat: { type: Function, default: null },
   //是否显示排序

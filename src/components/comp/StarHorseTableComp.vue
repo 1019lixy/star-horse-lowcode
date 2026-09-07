@@ -1,45 +1,28 @@
 <script setup lang="ts" name="StarHorseTableComp">
-import { loadData, postRequest } from "@/api/star_horse_apis";
-import {
-  closeLoad,
-  createCondition,
-  formatCellValue,
-  load,
-} from "@/api/star_horse_utils";
-import { compKey, removeEmptyCondition } from "@/api/system";
+import {loadData, postRequest} from "@/api/star_horse_apis";
+import {closeLoad, createCondition, formatCellValue, load,} from "@/api/star_horse_utils";
+import {compKey, removeEmptyCondition} from "@/api/system";
 import Tablebtn from "@/components/comp/items/tablebtn.vue";
 import TableColumnItem from "@/components/comp/items/tableColumnItem.vue";
 import Help from "@/components/help.vue";
-import { DialogProps } from "@/components/types/DialogProps";
-import { OrderByInfo } from "@/components/types/PageFieldInfo";
-import { DataListProps, PageProps } from "@/components/types/PageProps";
-import { BtnHideCondition, SearchParams } from "@/components/types/Params";
-import piniaInstance from "@/store";
-import { useButtonPermissionStore } from "@/store/ButtonPermission";
-import { useGlobalConfigStore } from "@/store/GlobalConfig";
-import { isSystemManage } from "@/utils/auth";
-import { warning } from "@/utils/message";
-import { i18n } from "@/lang";
-import {
-  computed,
-  inject,
-  nextTick,
-  onActivated,
-  onMounted,
-  onUnmounted,
-  provide,
-  ref,
-  watch,
-} from "vue";
-import { isMobile } from "@/api/device";
-import { ensureFieldIds } from "@/api/form_utils";
-import type { PreValid } from "@/components/types";
+import {DialogProps} from "@/components/types/DialogProps";
+import {OrderByInfo} from "@/components/types/PageFieldInfo";
+import {DataListProps, PageProps} from "@/components/types/PageProps";
+import {BtnHideCondition, SearchParams} from "@/components/types/Params";
+import {isSystemManage} from "@/utils/auth";
+import {warning} from "@/utils/message";
+import {i18n} from "@/lang";
+import {computed, inject, nextTick, onActivated, onMounted, onUnmounted, provide, ref, watch,} from "vue";
+import {isMobile} from "@/api/device";
+import {ensureFieldIds} from "@/api/form_utils";
+import type {PreValid} from "@/components/types";
 import FieldVisibleControl from "@/components/comp/utils/FieldVisibleControl.vue";
-import { useTableExport } from "@/components/comp/utils/useTableExport";
-import { useTableFields } from "@/components/comp/utils/useTableFields";
-import { useTableSelection } from "@/components/comp/utils/useTableSelection";
-import { useTableCrud } from "@/components/comp/utils/useTableCrud";
+import {useTableExport} from "@/components/comp/utils/useTableExport";
+import {useTableFields} from "@/components/comp/utils/useTableFields";
+import {useTableSelection} from "@/components/comp/utils/useTableSelection";
+import {useTableCrud} from "@/components/comp/utils/useTableCrud";
 import StarHorsePanel from "@/components/comp/StarHorsePanel.vue";
+import {getButtonPermissionStore, getGlobalConfigStore} from "@/store/StoreManager";
 
 const props = withDefaults(defineProps<DataListProps>(), {
   hideBtnCondition: (): BtnHideCondition[] => [],
@@ -60,16 +43,16 @@ const props = withDefaults(defineProps<DataListProps>(), {
 const emits = defineEmits(["selectItem", "permission"]);
 // 渲染前为字段补充稳定 id，避免 key 变化导致列/单元格组件重复挂载/重复初始化
 watch(
-  () => props.fieldList,
-  (val) => ensureFieldIds(val),
-  { immediate: true },
+    () => props.fieldList,
+    (val) => ensureFieldIds(val),
+    {immediate: true},
 );
-let pagePermission = useButtonPermissionStore(piniaInstance);
-let configStore = useGlobalConfigStore(piniaInstance);
+let pagePermission = getButtonPermissionStore();
+let configStore = getGlobalConfigStore();
 let permissions = ref<Record<string, string>>({});
 const configInfo = computed(() => configStore.configFormInfo);
 let compSize = computed(
-  () => configStore.configFormInfo?.inputSize || "default",
+    () => configStore.configFormInfo?.inputSize || "default",
 );
 const starHorseTableCompRef = ref();
 const baseInfo: PageProps = {
@@ -87,7 +70,7 @@ const cancelAllEdit = () => {
   const row = editingRow.value;
   if (!row) return;
   const originalValue =
-    row.starHorseBakeValue === "_" ? null : row.starHorseBakeValue;
+      row.starHorseBakeValue === "_" ? null : row.starHorseBakeValue;
   if (row.selectName) row[row.selectName] = originalValue;
   delete row.isSelected;
   delete row.selectName;
@@ -120,7 +103,7 @@ const {
   loadField,
   cardFieldList,
   showType,
-} = useTableFields({ props });
+} = useTableFields({props});
 // ===== composable: 选择管理（多选/单选/父子校验/选中同步） =====
 const {
   multipleSelection,
@@ -205,8 +188,8 @@ const batchDelete = async () => {
  */
 const searchFlag = ref<boolean>(false);
 const createSearchParams = (
-  formData: SearchParams[],
-  orderBy: OrderByInfo[] = [],
+    formData: SearchParams[],
+    orderBy: OrderByInfo[] = [],
 ) => {
   searchFields.value = formData;
   orderBys.value = orderBy;
@@ -223,9 +206,9 @@ const init = async () => {
   Object.assign(pageInfo.value, baseInfo);
   pagePermission.setPermissionUrl(props.compUrl?.permissionsUrl);
   permissions.value = await pagePermission.addRoute(
-    window.__hostRouter__?.currentRoute.value,
+      window.__hostRouter__?.currentRoute.value,
   );
-  permissions.value = { ...permissions.value, ...props.btnPermissions };
+  permissions.value = {...permissions.value, ...props.btnPermissions};
   emits("permission", permissions.value);
   if (!props.fieldList?.stopAutoLoad) {
     loadByPage();
@@ -244,13 +227,13 @@ const init = async () => {
 };
 // Listen for changes in data passed in from outside
 watch(
-  () => props.tableDataList?.length,
-  (val) => {
-    if (props.fieldList?.stopAutoLoad) {
-      pageInfo.value.dataList = props.tableDataList;
-    }
-  },
-  { immediate: false },
+    () => props.tableDataList?.length,
+    (val) => {
+      if (props.fieldList?.stopAutoLoad) {
+        pageInfo.value.dataList = props.tableDataList;
+      }
+    },
+    {immediate: false},
 );
 /** 双击行编辑 */
 const editData = (row: any, _column?: any, evt?: Event) => {
@@ -295,7 +278,7 @@ const createParams = () => {
   // Add shared person information
   if (props.commonPersons?.length && !isSystemManage()) {
     searchTemp.push(
-      createCondition(props.userColumnName, props.commonPersons, "in"),
+        createCondition(props.userColumnName, props.commonPersons, "in"),
     );
   }
   if (!props.compUrl?.pageListUrl) {
@@ -332,61 +315,61 @@ const loadByPage = (initPageInfo?: boolean) => {
       searchInfo: params,
     };
     url =
-      props.compUrl?.redirectPageListUrl ?? "/system-config/redirect/pageList";
+        props.compUrl?.redirectPageListUrl ?? "/system-config/redirect/pageList";
   }
   if (props.needLoad) {
     load(i18n("comp.dataLoading"));
   }
   postRequest(url, params)
-    .then((res: any) => {
-      if (res?.data?.code != 200) {
-        res && console.error(res?.data?.cnMessage || res?.data?.enMessage);
-        return;
-      }
-      let redata = res?.data?.data;
-      const newData = redata?.dataList || redata;
-      if ((props.pageKeepOldData || isMobile) && !searchFlag.value) {
-        if (!pageInfo.value.dataList) {
-          pageInfo.value.dataList = [];
+      .then((res: any) => {
+        if (res?.data?.code != 200) {
+          res && console.error(res?.data?.cnMessage || res?.data?.enMessage);
+          return;
         }
-        const maxCachePages = isMobile ? 3 : 10;
-        const maxCacheSize = pageInfo.value.pageSize * maxCachePages;
-        pageInfo.value.dataList.push(...newData);
-        if (pageInfo.value.dataList.length > maxCacheSize) {
-          pageInfo.value.dataList.splice(
-            0,
-            pageInfo.value.dataList.length - maxCacheSize,
-          );
+        let redata = res?.data?.data;
+        const newData = redata?.dataList || redata;
+        if ((props.pageKeepOldData || isMobile) && !searchFlag.value) {
+          if (!pageInfo.value.dataList) {
+            pageInfo.value.dataList = [];
+          }
+          const maxCachePages = isMobile ? 3 : 10;
+          const maxCacheSize = pageInfo.value.pageSize * maxCachePages;
+          pageInfo.value.dataList.push(...newData);
+          if (pageInfo.value.dataList.length > maxCacheSize) {
+            pageInfo.value.dataList.splice(
+                0,
+                pageInfo.value.dataList.length - maxCacheSize,
+            );
+          }
+        } else {
+          pageInfo.value.dataList = newData;
         }
-      } else {
-        pageInfo.value.dataList = newData;
-      }
-      searchFlag.value = false;
+        searchFlag.value = false;
 
-      if (props.dialogInput) {
-        nextTick(() => {
-          filterData();
-        });
-      }
-      pageInfo.value.totalPage = redata?.totalPages;
-      pageInfo.value.totalData = redata?.totalDatas;
-    })
-    .catch((err: any) => {
-      console.error(err);
-    })
-    .finally(() => {
-      closeLoad();
-    });
+        if (props.dialogInput) {
+          nextTick(() => {
+            filterData();
+          });
+        }
+        pageInfo.value.totalPage = redata?.totalPages;
+        pageInfo.value.totalData = redata?.totalDatas;
+      })
+      .catch((err: any) => {
+        console.error(err);
+      })
+      .finally(() => {
+        closeLoad();
+      });
 };
 // ===== composable: CRUD + 按钮列表（查看/编辑/删除/导出单条/行操作分发/按钮构建） =====
-const { viewById, editById, deleteById, expandCommonFun, buttonList } =
-  useTableCrud({
-    props,
-    dialogProps,
-    overrideOperation,
-    searchFlag,
-    loadByPage,
-  });
+const {viewById, editById, deleteById, expandCommonFun, buttonList} =
+    useTableCrud({
+      props,
+      dialogProps,
+      overrideOperation,
+      searchFlag,
+      loadByPage,
+    });
 /**
  * Get required data with the help of list component
  * @param limitSize Data to load
@@ -396,11 +379,11 @@ const { viewById, editById, deleteById, expandCommonFun, buttonList } =
  * @param orderBys Sorting
  */
 const getDatas = async (
-  limitSize: number = 0,
-  params: SearchParams[] = [],
-  orderBys: OrderByInfo[] = [],
-  url: string = "",
-  usePageCondition: boolean = true,
+    limitSize: number = 0,
+    params: SearchParams[] = [],
+    orderBys: OrderByInfo[] = [],
+    url: string = "",
+    usePageCondition: boolean = true,
 ) => {
   let tempSearchParams: SearchParams[] = [];
   if (usePageCondition) {
@@ -446,7 +429,8 @@ const assignStaticData = (data: any) => {
 const clearData = () => {
   pageInfo.value.dataList = [];
 };
-onActivated(() => {});
+onActivated(() => {
+});
 onMounted(() => {
   const data = configStore.configFormInfo;
   if (data?.tableType == "card") {
@@ -485,25 +469,25 @@ defineExpose({
 </script>
 <template>
   <star-horse-panel
-    :type="dialogType"
-    :isShowBtnContinue="false"
-    :selfFunc="true"
-    :title="i18n('comp.exportSelectFields')"
-    :boxWidth="isMobile ? '90%' : '50%'"
-    @merge="selectedFields"
-    v-model="exportOperationVisible"
-    @closeAction="exportOperationVisible = false"
+      :type="dialogType"
+      :isShowBtnContinue="false"
+      :selfFunc="true"
+      :title="i18n('comp.exportSelectFields')"
+      :boxWidth="isMobile ? '90%' : '50%'"
+      @merge="selectedFields"
+      v-model="exportOperationVisible"
+      @closeAction="exportOperationVisible = false"
   >
     <div class="export-field-panel">
       <div class="export-field-panel__header">
         <el-checkbox
-          v-model="exportFieldAllChecked"
-          :indeterminate="exportFieldIsIndeterminate"
+            v-model="exportFieldAllChecked"
+            :indeterminate="exportFieldIsIndeterminate"
         >
           {{
             exportFieldAllChecked
-              ? i18n("comp.exportClearAll")
-              : i18n("comp.exportSelectAll")
+                ? i18n("comp.exportClearAll")
+                : i18n("comp.exportSelectAll")
           }}
         </el-checkbox>
         <div class="export-field-panel__header-right">
@@ -513,21 +497,21 @@ defineExpose({
           <span class="export-field-panel__tip">
             {{
               i18n("comp.exportFieldTip")
-                .replace("{n}", String(exportFieldSelectedCount))
-                .replace("{total}", String(exportFieldOptions.length))
+                  .replace("{n}", String(exportFieldSelectedCount))
+                  .replace("{total}", String(exportFieldOptions.length))
             }}
           </span>
         </div>
       </div>
       <el-checkbox-group
-        v-model="exportFieldCheckedModel"
-        class="export-field-panel__body"
+          v-model="exportFieldCheckedModel"
+          class="export-field-panel__body"
       >
         <el-checkbox
-          v-for="opt in exportFieldOptions"
-          :key="opt.fieldName"
-          :label="opt.fieldName"
-          class="export-field-panel__item"
+            v-for="opt in exportFieldOptions"
+            :key="opt.fieldName"
+            :label="opt.fieldName"
+            class="export-field-panel__item"
         >
           {{ opt.label }}
         </el-checkbox>
@@ -540,42 +524,42 @@ defineExpose({
       <span v-if="title" class="app-toolbar__title">{{ title }}</span>
       <div class="app-toolbar__icons">
         <star-horse-icon
-          v-if="searchFormData"
-          :title="i18n('search.query')"
-          icon-class="search"
-          @click="openMobileSearch"
-          class="app-toolbar__icon"
+            v-if="searchFormData"
+            :title="i18n('search.query')"
+            icon-class="search"
+            @click="openMobileSearch"
+            class="app-toolbar__icon"
         />
         <star-horse-icon
-          :title="i18n('comp.refresh')"
-          icon-class="refresh"
-          @click="tableCompFunc('refresh')"
-          class="app-toolbar__icon"
+            :title="i18n('comp.refresh')"
+            icon-class="refresh"
+            @click="tableCompFunc('refresh')"
+            class="app-toolbar__icon"
         />
         <el-popover
-          v-model:visible="mobileFieldVisible"
-          trigger="click"
-          placement="bottom-end"
-          :width="220"
+            v-model:visible="mobileFieldVisible"
+            trigger="click"
+            placement="bottom-end"
+            :width="220"
         >
           <template #reference>
             <star-horse-icon
-              :title="i18n('comp.showHideColumns')"
-              icon-class="setting"
-              class="app-toolbar__icon"
+                :title="i18n('comp.showHideColumns')"
+                icon-class="setting"
+                class="app-toolbar__icon"
             />
           </template>
           <div class="app-field-list">
             <div
-              v-for="(item, idx) in cacheAppCompList"
-              :key="idx"
-              class="app-field-item"
+                v-for="(item, idx) in cacheAppCompList"
+                :key="idx"
+                class="app-field-item"
             >
               <el-switch
-                v-model="item.preps.appListVisible"
-                :active-value="true"
-                :inactive-value="false"
-                size="small"
+                  v-model="item.preps.appListVisible"
+                  :active-value="true"
+                  :inactive-value="false"
+                  size="small"
               />
               <span class="app-field-item__label">{{ item.label }}</span>
             </div>
@@ -588,129 +572,130 @@ defineExpose({
     </div>
     <!-- APP端搜索组件（隐藏触发器，仅提供弹窗） -->
     <star-horse-search-comp
-      v-if="isMobile && searchFormData"
-      ref="mobileSearchRef"
-      :formData="searchFormData"
-      :compUrl="compUrl"
-      @searchData="(data: any) => createSearchParams(data)"
+        v-if="isMobile && searchFormData"
+        ref="mobileSearchRef"
+        :formData="searchFormData"
+        :compUrl="compUrl"
+        @searchData="(data: any) => createSearchParams(data)"
     />
     <div
-      class="flex w-full justify-between"
-      style="border-bottom: var(--star-horse-style) 1px solid"
-      v-if="!dialogInput && !isMobile"
+        class="flex w-full justify-between"
+        style="border-bottom: var(--star-horse-style) 1px solid"
+        v-if="!dialogInput && !isMobile"
     >
       <div class="tb_title">
         <div v-if="title || helpMsg">
-          <help :message="helpMsg" v-if="helpMsg" />
+          <help :message="helpMsg" v-if="helpMsg"/>
           <star-horse-icon
-            icon-class="info"
-            v-else
-            size="14px"
-            style="font-weight: bold; color: var(--star-horse-style)"
+              icon-class="info"
+              v-else
+              size="14px"
+              style="font-weight: bold; color: var(--star-horse-style)"
           />
           {{ title }}
         </div>
         <star-horse-button-list
-          @tableCompFunc="(fun: any) => tableCompFunc(fun)"
-          :compUrl="compUrl"
-          :btnPermissions="permissions"
-          :extendBtns="extendBtns"
-          :dialogProps="dialogProps"
-          :preValidFunc="preValidFunc"
-          v-if="!hideButtonList && !isMobile"
+            @tableCompFunc="(fun: any) => tableCompFunc(fun)"
+            :compUrl="compUrl"
+            :btnPermissions="permissions"
+            :extendBtns="extendBtns"
+            :dialogProps="dialogProps"
+            :preValidFunc="preValidFunc"
+            v-if="!hideButtonList && !isMobile"
         />
       </div>
       <div class="flex items-center flex-row-reverse">
         <star-horse-icon
-          :title="i18n('comp.refresh')"
-          @click="loadByPage"
-          icon-class="refresh"
-          style="cursor: pointer; color: var(--star-horse-style)"
+            :title="i18n('comp.refresh')"
+            @click="loadByPage"
+            icon-class="refresh"
+            style="cursor: pointer; color: var(--star-horse-style)"
         />
-        <field-visible-control :fields="fieldList?.fieldList" />
+        <field-visible-control :fields="fieldList?.fieldList"/>
         <star-horse-icon
-          @click="showType(dataShowType)"
-          :title="typeTitle"
-          :icon-class="typeIcon"
-          style="cursor: pointer; color: var(--star-horse-style)"
+            @click="showType(dataShowType)"
+            :title="typeTitle"
+            :icon-class="typeIcon"
+            style="cursor: pointer; color: var(--star-horse-style)"
         />
       </div>
     </div>
     <div class="data-list-area" v-if="dataShowType == 'list' && !isMobile">
+
       <el-table
-        ref="starHorseTableCompRef"
-        :data="pageInfo.dataList"
-        @selection-change="handleSelectionChange"
-        @row-click="selectRow"
-        @row-dblclick="editData"
-        :row-key="getRowIdentity"
-        :stripe="true"
-        :fit="true"
-        :size="compSize"
-        :min-height="height"
-        :highlight-current-row="true"
-        :default-expand-all="expand"
-        :row-style="{ height: lineHeight }"
-        :cell-style="{ height: lineHeight, 'font-size': '12px' }"
-        :header-cell-style="{
+          ref="starHorseTableCompRef"
+          :data="pageInfo.dataList"
+          @selection-change="handleSelectionChange"
+          @row-click="selectRow"
+          @row-dblclick="editData"
+          :row-key="getRowIdentity"
+          :stripe="true"
+          :fit="true"
+          :size="compSize"
+          :min-height="height"
+          :highlight-current-row="true"
+          :default-expand-all="expand"
+          :row-style="{ height: lineHeight }"
+          :cell-style="{ height: lineHeight, 'font-size': '12px' }"
+          :header-cell-style="{
           background: '#f2f2f2',
           color: '#707070',
           'font-size': '13px',
           'background-image':
             '-webkit-gradient(linear,left 0,left 100%,from(#f8f8f8),to(#ececec))',
         }"
-        :border="true"
+          :border="true"
       >
         <el-table-column
-          type="selection"
-          :align="'center'"
-          fixed="left"
-          :reserve-selection="true"
-          v-if="showSelection"
+            type="selection"
+            :align="'center'"
+            fixed="left"
+            :reserve-selection="true"
+            v-if="showSelection"
         />
         <el-table-column type="expand" v-if="expandTable">
           <template #default="scope">
             <div class="expand-table">
               <h4>{{ expandTable?.title }}</h4>
               <el-table
-                :data="scope.row?.[expandTable?.dataField]"
-                :row-key="getRowIdentity"
-                :stripe="true"
-                :fit="true"
-                :size="compSize"
-                :highlight-current-row="true"
-                :max-height="'400px'"
-                :row-style="{ height: '30px' }"
-                :cell-style="{ height: '30px', 'font-size': '12px' }"
-                :border="true"
+                  :data="scope.row?.[expandTable?.dataField]"
+                  :row-key="getRowIdentity"
+                  :stripe="true"
+                  :fit="true"
+                  :size="compSize"
+                  :highlight-current-row="true"
+                  :max-height="'400px'"
+                  :row-style="{ height: '30px' }"
+                  :cell-style="{ height: '30px', 'font-size': '12px' }"
+                  :border="true"
               >
                 <el-table-column
-                  fixed="left"
-                  :label="i18n('table.operation')"
-                  :width="160"
-                  v-if="
+                    fixed="left"
+                    :label="i18n('table.operation')"
+                    :width="160"
+                    v-if="
                     expandTable?.showButton &&
                     expandTable?.extendFuncs?.length > 0
                   "
                 >
                   <template #default="innerScope">
                     <template
-                      v-for="epd in expandTable?.extendFuncs"
-                      :key="compKey(epd, epd?.authority)"
+                        v-for="epd in expandTable?.extendFuncs"
+                        :key="compKey(epd, epd?.authority)"
                     >
                       <el-tooltip :content="epd?.btnName">
                         <star-horse-icon
-                          v-if="permissions?.[epd?.authority!]"
-                          @click="
+                            v-if="permissions?.[epd?.authority!]"
+                            @click="
                             expandCommonFun(
                               epd?.authority!,
                               innerScope.row,
                               scope.row,
                             )
                           "
-                          :icon-class="epd?.icon || 'edit'"
-                          style="cursor: pointer"
-                          :color="
+                            :icon-class="epd?.icon || 'edit'"
+                            style="cursor: pointer"
+                            :color="
                             epd?.authority == 'delete'
                               ? 'var(--el-color-danger)'
                               : 'var(--star-horse-style)'
@@ -721,44 +706,44 @@ defineExpose({
                   </template>
                 </el-table-column>
                 <table-column
-                  :fieldList="expandTable"
-                  :compSize="configInfo?.inputSize"
-                  :compUrl="compUrl"
-                  :dataFormat="dataFormat"
-                  :sortable="false"
-                  :globalConfig="globalConfig"
-                  :isDynamic="isDynamic"
-                  :showBatchField="showBatchField"
+                    :fieldList="expandTable"
+                    :compSize="configInfo?.inputSize"
+                    :compUrl="compUrl"
+                    :dataFormat="dataFormat"
+                    :sortable="false"
+                    :globalConfig="globalConfig"
+                    :isDynamic="isDynamic"
+                    :showBatchField="showBatchField"
                 />
               </el-table>
             </div>
           </template>
         </el-table-column>
         <table-column-item
-          :fieldList="fieldList"
-          :compSize="configInfo?.inputSize"
-          :compUrl="compUrl"
-          :dataFormat="dataFormat"
-          :globalConfig="globalConfig"
-          :isDynamic="isDynamic"
-          :showBatchField="showBatchField"
+            :fieldList="fieldList"
+            :compSize="configInfo?.inputSize"
+            :compUrl="compUrl"
+            :dataFormat="dataFormat"
+            :globalConfig="globalConfig"
+            :isDynamic="isDynamic"
+            :showBatchField="showBatchField"
         />
         <el-table-column
-          v-if="
+            v-if="
             buttonList.length > 0 && Object.keys(permissions || {}).length > 0
           "
-          fixed="right"
-          :label="i18n('table.operation')"
-          :width="buttonList.length > 3 ? 160 : 110"
+            fixed="right"
+            :label="i18n('table.operation')"
+            :width="buttonList.length > 3 ? 160 : 110"
         >
           <template #default="scope">
             <tablebtn
-              :row="scope.row"
-              :permissions="permissions"
-              :buttonList="buttonList"
-              :hideBtnCondition="hideBtnCondition"
-              :compSize="compSize"
-              class="flex"
+                :row="scope.row"
+                :permissions="permissions"
+                :buttonList="buttonList"
+                :hideBtnCondition="hideBtnCondition"
+                :compSize="compSize"
+                class="flex"
             />
           </template>
         </el-table-column>
@@ -766,40 +751,40 @@ defineExpose({
     </div>
     <div class="data-card-area" v-else>
       <star-horse-button-list
-        @tableCompFunc="(fun: any) => tableCompFunc(fun)"
-        :compUrl="compUrl"
-        :btnPermissions="permissions"
-        :extendBtns="extendBtns"
-        :dialogProps="dialogProps"
-        :preValidFunc="preValidFunc"
-        v-if="!hideButtonList && isMobile"
+          @tableCompFunc="(fun: any) => tableCompFunc(fun)"
+          :compUrl="compUrl"
+          :btnPermissions="permissions"
+          :extendBtns="extendBtns"
+          :dialogProps="dialogProps"
+          :preValidFunc="preValidFunc"
+          v-if="!hideButtonList && isMobile"
       />
       <el-scrollbar height="100%" style="width: 99%" @endReached="endReached">
         <el-space
-          :style="{ width: `${isMobile ? '100%' : 'auto'}` }"
-          :fill="isMobile"
-          wrap
+            :style="{ width: `${isMobile ? '100%' : 'auto'}` }"
+            :fill="isMobile"
+            wrap
         >
           <el-card
-            v-for="(data, key) in pageInfo.dataList"
-            :key="compKey(data, key)"
-            class="box-card"
-            :class="{ 'box-card--mobile': isMobile }"
-            :style="{ width: isMobile ? '100%' : '390px' }"
-            shadow="hover"
+              v-for="(data, key) in pageInfo.dataList"
+              :key="compKey(data, key)"
+              class="box-card"
+              :class="{ 'box-card--mobile': isMobile }"
+              :style="{ width: isMobile ? '100%' : '390px' }"
+              shadow="hover"
           >
             <template #header>
               <div
-                class="card-header justify-start gap-3"
-                style="margin: 0 !important"
-                @click="selectRow(data)"
-                @dblclick="editData(data)"
+                  class="card-header justify-start gap-3"
+                  style="margin: 0 !important"
+                  @click="selectRow(data)"
+                  @dblclick="editData(data)"
               >
                 <template v-if="multipleSelect">
-                  <el-checkbox v-model="cardSelection" :value="data" />
+                  <el-checkbox v-model="cardSelection" :value="data"/>
                 </template>
                 <template v-else>
-                  <el-radio v-model="cardSelection" :value="data" />
+                  <el-radio v-model="cardSelection" :value="data"/>
                 </template>
 
                 <span>
@@ -811,37 +796,37 @@ defineExpose({
             </template>
             <!-- 卡片内容统一使用 el-descriptions 展示，PC/APP 显示一致 -->
             <el-descriptions
-              :column="1"
-              :colon="true"
-              border
-              label-width="120px"
-              :size="compSize"
-              class="card-descriptions"
+                :column="1"
+                :colon="true"
+                border
+                label-width="120px"
+                :size="compSize"
+                class="card-descriptions"
             >
               <el-descriptions-item
-                v-for="(item, key) in cardFieldList?.slice(1)"
-                :key="compKey(item, key)"
-                label-align="right"
-                :label="item?.label"
+                  v-for="(item, key) in cardFieldList?.slice(1)"
+                  :key="compKey(item, key)"
+                  label-align="right"
+                  :label="item?.label"
               >
                 <el-tooltip
-                  v-if="!isMobile"
-                  :content="formatCellValue(item, data, dataFormat)"
+                    v-if="!isMobile"
+                    :content="formatCellValue(item, data, dataFormat)"
                 >
                   <span
-                    class="desc-value"
-                    @click="selectRow(data)"
-                    @dblclick="editData(data)"
+                      class="desc-value"
+                      @click="selectRow(data)"
+                      @dblclick="editData(data)"
                   >
                     {{ formatCellValue(item, data, dataFormat) }}
                   </span>
                 </el-tooltip>
                 <span
-                  v-else
-                  class="desc-value"
-                  :title="formatCellValue(item, data, dataFormat)"
-                  @click="selectRow(data)"
-                  @dblclick="editData(data)"
+                    v-else
+                    class="desc-value"
+                    :title="formatCellValue(item, data, dataFormat)"
+                    @click="selectRow(data)"
+                    @dblclick="editData(data)"
                 >
                   {{ formatCellValue(item, data, dataFormat) }}
                 </span>
@@ -849,12 +834,12 @@ defineExpose({
             </el-descriptions>
             <template #footer>
               <tablebtn
-                :row="data"
-                :permissions="permissions"
-                :buttonList="buttonList"
-                :showLimit="6"
-                :hideBtnCondition="hideBtnCondition"
-                :compSize="compSize"
+                  :row="data"
+                  :permissions="permissions"
+                  :buttonList="buttonList"
+                  :showLimit="6"
+                  :hideBtnCondition="hideBtnCondition"
+                  :compSize="compSize"
               />
             </template>
           </el-card>
@@ -863,23 +848,23 @@ defineExpose({
     </div>
 
     <el-pagination
-      v-if="showPageBar && !isMobile"
-      :total="pageInfo.totalData"
-      @current-change="pageChangeClick"
-      @size-change="pageSizeClick"
-      :size="compSize"
-      :page-sizes="pageCombList"
-      :layout="pageBarLayout"
-      v-model:currentPage="pageInfo.currentPage"
-      v-model:page-size="pageInfo.pageSize"
-      v-model:pageCount="pageInfo.totalPage"
+        v-if="showPageBar && !isMobile"
+        :total="pageInfo.totalData"
+        @current-change="pageChangeClick"
+        @size-change="pageSizeClick"
+        :size="compSize"
+        :page-sizes="pageCombList"
+        :layout="pageBarLayout"
+        v-model:currentPage="pageInfo.currentPage"
+        v-model:page-size="pageInfo.pageSize"
+        v-model:pageCount="pageInfo.totalPage"
     >
       <el-button
-        text
-        icon="refresh"
-        :size="compSize"
-        @click="loadByPage"
-        :title="i18n('table.refresh')"
+          text
+          icon="refresh"
+          :size="compSize"
+          @click="loadByPage"
+          :title="i18n('table.refresh')"
       />
     </el-pagination>
   </div>
@@ -1052,9 +1037,11 @@ defineExpose({
     padding: 12px 0;
   }
 }
+
 /* 导出字段选择面板 */
 .export-field-panel {
   width: 100%;
+
   &__header {
     display: flex;
     align-items: center;
@@ -1063,15 +1050,18 @@ defineExpose({
     border-bottom: 1px solid var(--el-border-color-lighter);
     margin-bottom: 8px;
   }
+
   &__header-right {
     display: flex;
     align-items: center;
     gap: 12px;
   }
+
   &__tip {
     color: var(--el-text-color-secondary);
     font-size: 13px;
   }
+
   &__body {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -1080,6 +1070,7 @@ defineExpose({
     overflow-y: auto;
     padding: 4px 12px 12px;
   }
+
   &__item {
     margin-right: 0;
     min-width: 0;
@@ -1088,6 +1079,7 @@ defineExpose({
     white-space: nowrap;
   }
 }
+
 /* APP端单列布局 */
 @media screen and (max-width: 768px) {
   .export-field-panel__body {

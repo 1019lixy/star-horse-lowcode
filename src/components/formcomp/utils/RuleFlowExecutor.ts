@@ -253,7 +253,7 @@ const executeAction = (action: any, context: any): void => {
             context[`__required_${target}`] = false;
             break;
         case "SET_READONLY":
-            context[`__readonly_${target}`] = true;
+           context[`__readonly_${target}`] = true;
             break;
         case "SET_EDITABLE":
             context[`__readonly_${target}`] = false;

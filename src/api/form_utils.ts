@@ -795,6 +795,7 @@ export function convertPcCompToFitPlatformComps(pageInfo: PageFieldInfo) {
  * @param pageInfo
  */
 export function convertCompToAppComps(pageInfo: PageFieldInfo) {
+  console.error("xxxxxxxxxxxxxxxxxxxxxxxx");
   //如果不是手机端，则直接返回
   const tempFieldList = analysisComps(pageInfo.fieldList);
   const staticComps = tempFieldList.filter((item) => {
@@ -812,7 +813,7 @@ export function convertCompToAppComps(pageInfo: PageFieldInfo) {
         if (!item.preps) {
           item.preps = {};
         }
-        item.preps.hideLabel = false;
+        item.preps.hideLabel =false;
         item.label = staticData?.preps?.textContent;
         item.preps.placeholder = i18n("api.pleaseInput2") + item?.label;
       });

@@ -1,16 +1,11 @@
 <script setup lang="ts">
-import { compKey } from "@/api/system";
+import {compKey} from "@/api/system";
 import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
-import { ContainerPreps } from "@/components/types/ItemPreps";
-import { computed, inject, ModelRef, onMounted, ref, watch } from "vue";
-import {
-  collectFieldProps,
-  getDataIndex,
-  getFormData,
-  getPrefix,
-} from "@/api/form_utils";
-import { i18n } from "@/lang";
-import { warning } from "@/utils/message";
+import {ContainerPreps} from "@/components/types/ItemPreps";
+import {computed, inject, ModelRef, onMounted, ref, watch} from "vue";
+import {collectFieldProps, getDataIndex, getFormData, getPrefix,} from "@/api/form_utils";
+import {i18n} from "@/lang";
+import {warning} from "@/utils/message";
 
 const props = withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
@@ -73,7 +68,7 @@ const flatMode = computed(() => stepStyle.value === "flat");
 // 当前阶段：编辑时由表单返回数据 starHorseCurrentStep 指定；新建(无值)默认第一段
 // 规则：当前段强制可编辑；其余段按 segments 配置；未配置默认可编辑；查看模式(source=3)全只读
 const stepSegmentsConf = computed<any>(
-  () => props.item?.preps?.segments,
+    () => props.item?.preps?.segments,
 );
 
 // 是否启用流程控制（配置了 segments 才生效，未配置退化为普通步骤容器）
@@ -91,13 +86,6 @@ const currentStepKey = computed<string>(() => {
   return stepList.value[0]?.subTablePrimaryKey;
 });
 
-// 当前阶段在步骤列表中的索引
-const currentStepIndex = computed<number>(() => {
-  const idx = stepList.value.findIndex(
-    (s: any) => s.subTablePrimaryKey === currentStepKey.value,
-  );
-  return idx >= 0 ? idx : 0;
-});
 
 // 段级权限：editable 可编辑 / readonly 只读 / hidden 不渲染（防数据泄露）
 const segPermission = (key: string): "editable" | "readonly" | "hidden" => {
@@ -116,18 +104,27 @@ const segPermission = (key: string): "editable" | "readonly" | "hidden" => {
 
 // 段内组件渲染 source：只读段用查看模式(3)渲染，可编辑段沿用当前 source
 const segSource = (key: string): number =>
-  segPermission(key) === "readonly" ? 3 : props.source;
+    segPermission(key) === "readonly" ? 3 : props.source;
 
 // 平铺状态文案：优先取 i18n，语言包未收录时回退默认文案
 const flatText = (key: string, fallback: string): string => {
   const t = i18n(key);
   return t === key ? fallback : t;
 };
+// 当前阶段在步骤列表中的索引
+const currentStepIndex = computed<number>(() => {
+  const idx = stepList.value.findIndex(
+      (s: any) => s.subTablePrimaryKey === currentStepKey.value,
+  );
+  return idx >= 0 ? idx : 0;
+});
 
 // 平铺段状态：当前段→active(待填写)，其余段(含只读)→pending(未开始)
 // 注意：readonly 是权限语义(当前不可编辑)，不代表"已填写"；
 // 填写进度缺少真实数据源，不做"已填写"推导，避免误导
 const flatStatusOf = (key: string): string => {
+  const idx = stepList.value.findIndex((s: any) => s.subTablePrimaryKey === key);
+  if (parseInt(idx) < currentStepIndex.value) return "done";
   if (key && key === currentStepKey.value) return "active";
   return "pending";
 };
@@ -158,7 +155,7 @@ const flatStatusText = (step: any): string => {
 
 // 平铺段状态标签样式类
 const flatTagState = (step: any): string =>
-  flatStatusOf(step?.subTablePrimaryKey);
+    flatStatusOf(step?.subTablePrimaryKey);
 
 // 平铺流转记录条节点，状态由段权限推导
 const flowTrail = computed(() => {
@@ -171,11 +168,11 @@ const flowTrail = computed(() => {
       label: s.title || s.label || key,
       status: st,
       statusText:
-        st === "done"
-          ? flatText("dyform.step.flatFilled", "已填写")
-          : st === "active"
-            ? flatText("dyform.step.flatCurrent", "待填写")
-            : flatText("dyform.step.flatLocked", "未开始"),
+          st === "done"
+              ? flatText("dyform.step.flatFilled", "已填写")
+              : st === "active"
+                  ? flatText("dyform.step.flatCurrent", "待填写")
+                  : flatText("dyform.step.flatLocked", "未开始"),
     };
   });
 });
@@ -184,16 +181,16 @@ const trailAvatar = (node: any): string => (node.label || "?").charAt(0);
 // 后端返回新阶段(starHorseCurrentStep 变化)时：视图定位到当前阶段，
 // 并同步当前阶段 key 到 item.fieldName 与 dataForm.__currentStepKey（提交时告知后端当前段）
 watch(
-  currentStepKey,
-  (key) => {
-    if (!key) return;
-    activeStepIndex.value = currentStepIndex.value;
-    if (props.item) props.item.fieldName = key;
-    if (dataForm.value && typeof dataForm.value === "object") {
-      dataForm.value.__currentStepKey = key;
-    }
-  },
-  { immediate: true },
+    currentStepKey,
+    (key) => {
+      if (!key) return;
+      activeStepIndex.value = currentStepIndex.value;
+      if (props.item) props.item.fieldName = key;
+      if (dataForm.value && typeof dataForm.value === "object") {
+        dataForm.value.__currentStepKey = key;
+      }
+    },
+    {immediate: true},
 );
 // 是否每步必须完成才能进入下一步（默认开启，设为 "N" 可关闭；source=3 查看模式自动关闭）
 const mustCompleteStep = computed(() => {
@@ -222,7 +219,7 @@ const markStepLoaded = (idx: number) => {
 
 // 步骤条方向
 const stepDirection = computed(
-  () => props.item?.preps?.direction || "horizontal",
+    () => props.item?.preps?.direction || "horizontal",
 );
 
 // 是否显示步骤条：pager/flat 风格强制隐藏
@@ -233,7 +230,7 @@ const showStepBar = computed(() => {
 
 // 是否显示导航按钮
 const showNavButtons = computed(
-  () => props.item?.preps?.showNavButtons !== "N",
+    () => props.item?.preps?.showNavButtons !== "N",
 );
 
 // 平铺单页无上一步/下一步概念，隐藏导航栏
@@ -283,10 +280,10 @@ const validateStep = async (stepIndex: number): Promise<boolean> => {
   const formRef = starHorseFormRef.value;
   if (!formRef?.validateField) return true;
   const stepPrefix = getPrefix(
-    step,
-    props.propPrefix,
-    props.dataIndex,
-    stepIndex,
+      step,
+      props.propPrefix,
+      props.dataIndex,
+      stepIndex,
   );
   const fieldProps = collectFieldProps(step.fieldList || [], stepPrefix);
   if (!fieldProps.length) return true;
@@ -305,10 +302,10 @@ const clearStepValidate = (stepIndex: number) => {
   const formRef = starHorseFormRef.value;
   if (!formRef?.clearValidate) return;
   const stepPrefix = getPrefix(
-    step,
-    props.propPrefix,
-    props.dataIndex,
-    stepIndex,
+      step,
+      props.propPrefix,
+      props.dataIndex,
+      stepIndex,
   );
   const fieldProps = collectFieldProps(step.fieldList || [], stepPrefix);
   if (fieldProps.length) formRef.clearValidate(fieldProps);
@@ -370,83 +367,83 @@ watch(activeStepIndex, (idx) => {
   <div v-if="stepList.length > 0" class="step-item-wrapper">
     <!-- 自定义专业步骤条 -->
     <div
-      v-if="showStepBar"
-      class="sh-step-bar"
-      :class="[
+        v-if="showStepBar"
+        class="sh-step-bar"
+        :class="[
         `sh-step-bar--${stepDirection}`,
         {
           'sh-step-bar--simple': stepSimple,
           'sh-step-bar--align-center': alignCenter,
         },
       ]"
-      :style="stepSpace != null ? { gap: stepSpace } : {}"
+        :style="stepSpace != null ? { gap: stepSpace } : {}"
     >
       <div
-        v-for="(stepItem, idx) in stepList"
-        :key="compKey(stepItem, idx)"
-        class="sh-step-item"
-        :class="[`sh-step-item--${getStepStatus(Number(idx))}`]"
-        @click="handleStepClick(Number(idx))"
+          v-for="(stepItem, idx) in stepList"
+          :key="compKey(stepItem, idx)"
+          class="sh-step-item"
+          :class="[`sh-step-item--${getStepStatus(Number(idx))}`]"
+          @click="handleStepClick(Number(idx))"
       >
         <div class="sh-step-indicator">
           <div class="sh-step-circle">
             <span
-              v-if="
+                v-if="
                 getStepStatus(Number(idx)) === 'finish' ||
                 getStepStatus(Number(idx)) === 'success'
               "
-              class="sh-step-icon"
+                class="sh-step-icon"
             >
               <star-horse-icon
-                v-if="finishIcon"
-                :icon-class="finishIcon"
-                size="20px"
+                  v-if="finishIcon"
+                  :icon-class="finishIcon"
+                  size="20px"
               />
               <svg
-                v-else
-                viewBox="0 0 24 24"
-                width="20"
-                height="20"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="3"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                  v-else
+                  viewBox="0 0 24 24"
+                  width="20"
+                  height="20"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
               >
-                <polyline points="20 6 9 17 4 12" />
+                <polyline points="20 6 9 17 4 12"/>
               </svg>
             </span>
             <span
-              v-else-if="getStepStatus(Number(idx)) === 'error'"
-              class="sh-step-icon"
+                v-else-if="getStepStatus(Number(idx)) === 'error'"
+                class="sh-step-icon"
             >
               <svg
-                viewBox="0 0 24 24"
-                width="20"
-                height="20"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="3"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                  viewBox="0 0 24 24"
+                  width="20"
+                  height="20"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
               >
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
               </svg>
             </span>
             <span v-else class="sh-step-number">{{ Number(idx) + 1 }}</span>
           </div>
           <span
-            v-if="getStepStatus(Number(idx)) === 'process'"
-            class="sh-step-pulse"
+              v-if="getStepStatus(Number(idx)) === 'process'"
+              class="sh-step-pulse"
           ></span>
         </div>
         <div class="sh-step-content">
           <span class="sh-step-title">{{
-            stepItem.title || stepItem.label
-          }}</span>
+              stepItem.title || stepItem.label
+            }}</span>
           <span class="sh-step-index"
-            >{{ Number(idx) + 1 }} / {{ stepList.length }}</span
+          >{{ Number(idx) + 1 }} / {{ stepList.length }}</span
           >
         </div>
       </div>
@@ -456,19 +453,19 @@ watch(activeStepIndex, (idx) => {
     <div v-if="flatMode && flowTrail.length" class="flat-flow-trail">
       <template v-for="(node, nIdx) in flowTrail" :key="node.key">
         <svg
-          v-if="nIdx > 0"
-          class="trail-arrow"
-          viewBox="0 0 24 24"
-          width="14"
-          height="14"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+            v-if="nIdx > 0"
+            class="trail-arrow"
+            viewBox="0 0 24 24"
+            width="14"
+            height="14"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
         >
-          <line x1="5" y1="12" x2="19" y2="12" />
-          <polyline points="12 5 19 12 12 19" />
+          <line x1="5" y1="12" x2="19" y2="12"/>
+          <polyline points="12 5 19 12 12 19"/>
         </svg>
         <span class="trail-node" :class="`is-${node.status || 'pending'}`">
           <span class="trail-avatar">{{ trailAvatar(node) }}</span>
@@ -483,56 +480,56 @@ watch(activeStepIndex, (idx) => {
     <!-- 步骤内容区域：steps/pager 单段切换；flat 全部已到段平铺 -->
     <div class="step-content-wrapper" :class="{ 'is-flat': flatMode }">
       <template
-        v-for="(stepItem, idx) in stepList"
-        :key="compKey(stepItem, idx)"
+          v-for="(stepItem, idx) in stepList"
+          :key="compKey(stepItem, idx)"
       >
         <!-- flat 段标题栏（hidden 段不渲染标题） -->
         <div
-          v-if="
+            v-if="
             flatMode &&
             segPermission(stepItem.subTablePrimaryKey) !== 'hidden'
           "
-          class="flat-section-head"
-          @click="toggleFlatCollapse(stepItem)"
+            class="flat-section-head"
+            @click="toggleFlatCollapse(stepItem)"
         >
           <svg
-            class="flat-caret"
-            :class="{ 'is-collapsed': isFlatCollapsed(stepItem) }"
-            viewBox="0 0 24 24"
-            width="14"
-            height="14"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+              class="flat-caret"
+              :class="{ 'is-collapsed': isFlatCollapsed(stepItem) }"
+              viewBox="0 0 24 24"
+              width="14"
+              height="14"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
           >
-            <polyline points="9 18 15 12 9 6" />
+            <polyline points="9 18 15 12 9 6"/>
           </svg>
           <span class="flat-section-title">{{
-            stepItem.title || stepItem.label
-          }}</span>
+              stepItem.title || stepItem.label
+            }}</span>
           <span
-            v-if="flatStatusText(stepItem)"
-            class="flat-section-tag"
-            :class="`is-${flatTagState(stepItem)}`"
-            >{{ flatStatusText(stepItem) }}</span
+              v-if="flatStatusText(stepItem)"
+              class="flat-section-tag"
+              :class="`is-${flatTagState(stepItem)}`"
+          >{{ flatStatusText(stepItem) }}</span
           >
         </div>
 
         <!-- 段内容：hidden 段不渲染任何字段（防数据泄露）；readonly 段以查看模式渲染 -->
         <div
-          v-if="
+            v-if="
             segPermission(stepItem.subTablePrimaryKey) !== 'hidden' &&
             (!flatMode ? !lazyRenderStep || loadedSteps.has(Number(idx)) : true)
           "
-          v-show="
+            v-show="
             !flatMode
               ? !lazyRenderStep || Number(idx) === activeStepIndex
               : !isFlatCollapsed(stepItem)
           "
-          class="step-pane"
-          :class="
+            class="step-pane"
+            :class="
             flatMode
               ? [
                   'flat-section',
@@ -542,47 +539,47 @@ watch(activeStepIndex, (idx) => {
           "
         >
           <star-horse-form-item
-            :source="segSource(stepItem.subTablePrimaryKey)"
-            :compUrl="compUrl"
-            :compSize="compSize"
-            :commonFormat="commonFormat"
-            :dataForm="
+              :source="segSource(stepItem.subTablePrimaryKey)"
+              :compUrl="compUrl"
+              :compSize="compSize"
+              :commonFormat="commonFormat"
+              :dataForm="
               getFormData(stepItem, dataForm, propPrefix, dataIndex, idx)
             "
-            :dataIndex="getDataIndex(stepItem, propPrefix, dataIndex, idx)"
-            :propPrefix="getPrefix(stepItem, propPrefix, dataIndex, idx)"
-            :subTableName="stepItem.subTableName"
-            @addRow="addRow"
-            @removeRow="removeRow"
-            :fieldList="stepItem"
-            :rules="rules"
-            :subFormFlag="sameForm ? 'N' : 'Y'"
-            :primaryKey="primaryKey"
+              :dataIndex="getDataIndex(stepItem, propPrefix, dataIndex, idx)"
+              :propPrefix="getPrefix(stepItem, propPrefix, dataIndex, idx)"
+              :subTableName="stepItem.subTableName"
+              @addRow="addRow"
+              @removeRow="removeRow"
+              :fieldList="stepItem"
+              :rules="rules"
+              :subFormFlag="sameForm ? 'N' : 'Y'"
+              :primaryKey="primaryKey"
           />
         </div>
 
         <!-- 未开始(hidden)段：仅锁定占位，不渲染任何字段（flat 常显，steps 激活时显示） -->
         <div
-          v-if="segPermission(stepItem.subTablePrimaryKey) === 'hidden'"
-          v-show="
+            v-if="segPermission(stepItem.subTablePrimaryKey) === 'hidden'"
+            v-show="
             !flatMode ? !lazyRenderStep || Number(idx) === activeStepIndex : true
           "
-          class="flat-locked"
+            class="flat-locked"
         >
           <svg
-            viewBox="0 0 24 24"
-            width="14"
-            height="14"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
+              viewBox="0 0 24 24"
+              width="14"
+              height="14"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
           >
-            <rect x="4" y="11" width="16" height="10" rx="2" />
-            <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+            <rect x="4" y="11" width="16" height="10" rx="2"/>
+            <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
           </svg>
           <span
-            >{{ stepItem.title || stepItem.label }}（{{
+          >{{ stepItem.title || stepItem.label }}（{{
               flatText("dyform.step.flatLocked", "未开始")
             }}）</span
           >
@@ -596,21 +593,21 @@ watch(activeStepIndex, (idx) => {
         {{ i18n("dyform.step.prev") }}
       </el-button>
       <span class="step-indicator"
-        >{{ activeStepIndex + 1 }} / {{ stepList.length }}</span
+      >{{ activeStepIndex + 1 }} / {{ stepList.length }}</span
       >
       <el-button
-        v-if="activeStepIndex < stepList.length - 1"
-        size="default"
-        type="primary"
-        @click="goNext"
+          v-if="activeStepIndex < stepList.length - 1"
+          size="default"
+          type="primary"
+          @click="goNext"
       >
         {{ i18n("dyform.step.next") }}
       </el-button>
       <el-button
-        v-if="activeStepIndex === stepList.length - 1"
-        size="default"
-        type="success"
-        @click="goNext"
+          v-if="activeStepIndex === stepList.length - 1"
+          size="default"
+          type="success"
+          @click="goNext"
       >
         {{ i18n("dyform.step.complete") }}
       </el-button>
