@@ -118,18 +118,64 @@ const onClose = (data: any) => {
   emits("selectedData", selectData.value);
 };
 
+/** 将 modelValue 统一转为值数组（兼容单值/数组两种形态） */
+const toValueList = (): any[] => {
+  const v = value.value;
+  if (v === undefined || v === null || v === "") return [];
+  return Array.isArray(v) ? v : [v];
+};
+
+/** 将 selectData 统一转为对象数组形态 */
+const toSelectList = (): any[] => {
+  const s = selectData.value;
+  if (s === undefined || s === null || s === "") return [];
+  return Array.isArray(s) ? s : [s];
+};
+
+/** selectData 是否已覆盖 modelValue 的全部值（覆盖说明是内部更新，无需重新加载） */
+const isCovered = (): boolean => {
+  const vals = toValueList();
+  if (!vals.length) return true;
+  const exist = new Set(
+    toSelectList().map((i: any) => i?.[props.displayValue]),
+  );
+  return vals.every(
+    (v) => v === "" || v === undefined || v === null || exist.has(v),
+  );
+};
+
 /**
- * 初始化数据选择器 - 使用公共工具函数
+ * 以 modelValue 为准重建 selectData：
+ * 数据源命中的用真实数据，未命中的（手动输入的值不在数据源中）补临时项，保证回显
  */
-const init = async () => {
+const mergeSelectData = (loaded: any[] = []) => {
+  const vals = toValueList().filter(
+    (v) => v !== undefined && v !== null && v !== "",
+  );
+  if (!vals.length) {
+    if (toSelectList().length) {
+      selectData.value = props.multiple ? [] : "";
+    }
+    return;
+  }
+  const current = toSelectList();
+  const merged = vals.map((v) => {
+    const hit =
+      loaded.find((i: any) => i?.[props.displayValue] === v) ??
+      current.find((i: any) => i?.[props.displayValue] === v);
+    return hit ?? { [props.displayName]: v, [props.displayValue]: v };
+  });
+  if (JSON.stringify(merged) === JSON.stringify(current)) return;
+  selectData.value = merged;
+};
+
+/** 从数据源加载 modelValue 对应的真实数据 */
+const fetchLoaded = async (): Promise<any[]> => {
   if (props.data) {
-    selectData.value = findNodesInTree(
-      props.data,
-      value.value,
-      props.displayValue,
-    );
-  } else if (props.dataUrl && value.value?.length > 0) {
-    selectData.value = await loadSelectedData(
+    return findNodesInTree(props.data, value.value, props.displayValue);
+  }
+  if (props.dataUrl && value.value?.length > 0) {
+    return await loadSelectedData(
       props.dataUrl,
       value.value,
       props.displayValue,
@@ -138,7 +184,27 @@ const init = async () => {
       props.proxyUrl,
     );
   }
+  return [];
 };
+
+/**
+ * 初始化数据选择器 - 使用公共工具函数
+ */
+const init = async () => {
+  mergeSelectData(await fetchLoaded());
+};
+
+/** 外部回显/表单填充导致 modelValue 变化时重新同步 selectData（内部选择已覆盖时跳过） */
+watch(
+  () => props.modelValue,
+  async () => {
+    if (isCovered()) return;
+    const snapshot = JSON.stringify(toValueList());
+    const loaded = await fetchLoaded();
+    if (JSON.stringify(toValueList()) !== snapshot) return;
+    mergeSelectData(loaded);
+  },
+);
 
 const addTag = (val: any) => {
   if (!props.allowCreate) return;
