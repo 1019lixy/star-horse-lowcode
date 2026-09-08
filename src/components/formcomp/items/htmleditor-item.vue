@@ -33,7 +33,7 @@
           @onCreated="handleCreated"
       />
     </div>
-    <div v-html="formData[field.fieldName]" v-else class="view-content"/>
+    <div v-html="formData[field.fieldName]" v-else class="view-content" style="background: var(--el-disabled-bg-color)"/>
 
   </starhorse-form-item>
 </template>

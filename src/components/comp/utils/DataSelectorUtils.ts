@@ -1,5 +1,5 @@
 import { postRequest } from "@/api/star_horse_apis";
-import { createCondition } from "@/api/star_horse_utils";
+import { closeLoad, createCondition } from "@/api/star_horse_utils";
 import { SearchParams } from "@/components/types";
 import JSON5 from "json5";
 
@@ -7,6 +7,47 @@ import JSON5 from "json5";
  * 数据选择器公共工具
  * 抽取 DataPicker 和 StarHorseDataSelector 的共享逻辑
  */
+
+/** 选择器值类型：单选为原始值，多选为数组 */
+export type ModelValueType = any;
+
+/** DataPicker / StarHorseDataSelector 公共 props */
+export interface DataPickerBaseProps {
+  modelValue: ModelValueType;
+  dataUrl?: string;
+  proxy?: boolean;
+  proxyUrl?: string;
+  params?: SearchParams[];
+  pageSize?: number;
+  data?: Array<any>;
+  title?: string;
+  compSize?: string;
+  displayName?: string;
+  displayValue?: string;
+  /** 显示模式：label 仅显示名称，label+code 显示 名称(编码) */
+  displayMode?: "label" | "label+code";
+  /** 编码字段名（displayMode=label+code 时使用） */
+  displayCode?: string;
+  multiple?: boolean;
+  checkStrictly?: boolean;
+  selectLeaf?: boolean;
+  /** APP 端是否启用层级分类筛选 */
+  enableHierarchy?: boolean;
+}
+
+/** 公共 props 默认值（两个组件 withDefaults 共用） */
+export const dataPickerBaseDefaults = {
+  compSize: "default",
+  pageSize: 0,
+  displayName: "name",
+  displayValue: "value",
+  displayMode: "label" as const,
+  displayCode: "code",
+  multiple: false,
+  checkStrictly: true,
+  selectLeaf: false,
+  enableHierarchy: true,
+};
 
 /** 构建代理/直连请求参数 */
 export const buildRequestParams = (
@@ -149,6 +190,68 @@ export const toggleNodeSelection = (
   return selection;
 };
 
+/** 分页查询结果 */
+export interface PageResult {
+  list: any[];
+  totalData: number;
+  totalPage: number;
+}
+
+/**
+ * 统一的数据源分页查询出口（唯一后台请求实现）：
+ * - StarHorseDataSelector 回显已选数据（loadSelectedData 内部复用）
+ * - DataPicker 加载待选列表
+ */
+export const loadPageData = async (options: {
+  dataUrl: string;
+  conditions?: SearchParams[];
+  extraParams?: SearchParams[];
+  currentPage?: number;
+  pageSize?: number;
+  proxy?: boolean;
+  proxyUrl?: string;
+}): Promise<PageResult> => {
+  const {
+    dataUrl,
+    conditions = [],
+    extraParams,
+    currentPage = 0,
+    pageSize = 0,
+    proxy,
+    proxyUrl,
+  } = options;
+  const baseParams = buildPageParams(
+    conditions,
+    extraParams,
+    currentPage,
+    pageSize,
+  );
+  const { url, params } = buildRequestParams(
+    dataUrl,
+    baseParams,
+    proxy,
+    proxyUrl,
+  );
+  try {
+    const res = await postRequest(url, params);
+    if (res?.data?.code != 200) {
+      console.error(res?.data?.cnMessage);
+      return { list: [], totalData: 0, totalPage: 0 };
+    }
+    const redata = res?.data?.data;
+    return {
+      list: redata?.dataList || redata || [],
+      totalData: redata?.totalDatas ?? 0,
+      totalPage: redata?.totalPages ?? 0,
+    };
+  } catch (err) {
+    console.error("[DataSelectorUtils] loadPageData failed", err);
+    return { list: [], totalData: 0, totalPage: 0 };
+  } finally {
+    closeLoad();
+  }
+};
+
 /** 通过接口加载选中数据（用于初始化回显） */
 export const loadSelectedData = async (
   dataUrl: string,
@@ -161,31 +264,18 @@ export const loadSelectedData = async (
   if (!dataUrl || !value || (Array.isArray(value) && value.length === 0)) {
     return [];
   }
-  const queryParams: SearchParams[] = [
+  const conditions: SearchParams[] = [
     createCondition(displayValue, Array.isArray(value) ? value : [value], "in"),
   ];
   if (extraParams && extraParams.length > 0) {
-    queryParams.push(...extraParams);
+    conditions.push(...extraParams);
   }
-  const baseParams = buildPageParams(queryParams);
-  const { url, params } = buildRequestParams(
+  const { list } = await loadPageData({
     dataUrl,
-    baseParams,
+    conditions,
     proxy,
     proxyUrl,
-  );
-
-  try {
-    const res = await postRequest(url, params);
-    if (res?.data?.code != 200) {
-      console.error(res?.data?.cnMessage);
-      return [];
-    }
-    const redata = res?.data?.data;
-    const dataList = redata?.dataList || redata;
-    return findNodesInTree(dataList || [], value, displayValue);
-  } catch (err) {
-    console.error("[DataSelectorUtils] loadSelectedData failed", err);
-    return [];
-  }
+    pageSize: 100,
+  });
+  return findNodesInTree(list || [], value, displayValue);
 };

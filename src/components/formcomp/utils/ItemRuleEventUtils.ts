@@ -299,7 +299,7 @@ export const applyRuleEngineActionsToFields = (
         }
         if (action.readonly !== undefined) {
             forEachRelationField(props, action.field, (field) => {
-               field.preps.readonly = action.readonly;
+               // field.preps.readonly = action.readonly;
             });
         }
         if (action.value !== undefined) {

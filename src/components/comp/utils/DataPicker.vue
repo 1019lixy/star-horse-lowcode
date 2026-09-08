@@ -1,74 +1,34 @@
 <script setup lang="ts">
-import { useVModel } from "@vueuse/core";
-import { computed, nextTick, onUnmounted, reactive, ref, watch } from "vue";
-import { i18n } from "@/lang";
-import { postRequest } from "@/api/star_horse_apis";
-import { closeLoad, createCondition } from "@/api/star_horse_utils";
-import { PageProps } from "@/components/types/PageProps";
-import { SearchParams } from "@/components/types";
-import { isMobile } from "@/api/device";
-import {
-  buildPageParams,
-  buildRequestParams,
-  toggleNodeSelection,
-} from "@/components/comp/utils/DataSelectorUtils";
-import { StarHorseIcon } from "@/components/comp";
-import {
-  Bottom,
-  Check,
-  Delete,
-  Download,
-  QuestionFilled,
-  Sort,
-  Top,
-  Upload,
-} from "@element-plus/icons-vue";
+import {computed, nextTick, onUnmounted, reactive, ref, watch} from "vue";
+import {i18n} from "@/lang";
+import {createCondition} from "@/api/star_horse_utils";
+import {PageProps} from "@/components/types/PageProps";
+import {SearchParams} from "@/components/types";
+import {isMobile} from "@/api/device";
+import {dataPickerBaseDefaults, loadPageData, toggleNodeSelection, type DataPickerBaseProps, type ModelValueType} from "@/components/comp/utils/DataSelectorUtils";
+import {StarHorseIcon} from "@/components/comp";
+import {Bottom, Check, Delete, Download, QuestionFilled, Sort, Top, Upload,} from "@element-plus/icons-vue";
 import Sortable from "sortablejs";
 
-export type ModelValueType = any;
-
-export interface DataDropdownProps {
-  modelValue: ModelValueType;
-  dataUrl?: string;
-  proxy?: boolean;
-  proxyUrl?: string;
-  params?: SearchParams[];
-  pageSize?: number;
-  data?: Array<any>;
-  title?: string;
-  compSize?: string;
-  displayName?: string;
-  displayValue?: string;
-  /** 显示模式：label 仅显示名称，label+code 显示 名称(编码) */
-  displayMode?: "label" | "label+code";
-  /** 编码字段名（displayMode=label+code 时使用） */
-  displayCode?: string;
-  multiple?: boolean;
-  checkStrictly?: boolean;
-  selectLeaf?: boolean;
+/** DataPicker 私有扩展：继承公共 DataPickerBaseProps */
+export interface DataDropdownProps extends DataPickerBaseProps {
   autoClose?: boolean;
-  /** APP 端是否启用层级分类筛选 */
-  enableHierarchy?: boolean;
   dialogType?: "dialog" | "drawer";
 }
 
 const props = withDefaults(defineProps<DataDropdownProps>(), {
-  displayName: "name",
-  displayValue: "value",
-  displayMode: "label",
-  displayCode: "code",
-  compSize: "default",
-  pageSize: 0,
-  multiple: false,
+  ...dataPickerBaseDefaults,
   autoClose: true,
-  checkStrictly: true,
-  selectLeaf: false,
-  enableHierarchy: true,
 });
 
+/**
+ * 数据流说明（单向，无 useVModel）：
+ * 1. 打开弹窗时从 props.modelValue 读取已选，初始化内部 dataOptions
+ * 2. 弹窗内所有选择/排序/删除操作只修改 dataOptions
+ * 3. 点击确认时通过 update:modelValue 一次性回传父组件
+ */
 const emits = defineEmits<{
   (e: "update:modelValue", modelValue: ModelValueType): void;
-  (e: "dataSubmit", data: Array<any>): void;
 }>();
 const treeProps = {
   label: props.displayName,
@@ -77,13 +37,17 @@ const treeProps = {
   isLeaf: "leaf",
   class: (data: any, node: any) => renderClass(data, node),
 };
-const value: any = useVModel(props, "modelValue", emits);
+/** 弹窗内已选列表（工作状态，确认时回传） */
 const dataOptions = ref<Array<any>>([]);
+/** 待选数据列表（静态 data 或远程分页结果；APP 本地分页时为当前页扁平数据） */
 const dataOrgOptions = ref<Array<any>>([]);
 const orgTreeRef = ref<InstanceType<any>>();
 const expandedKeys = ref<string[]>([]);
 const checkAll = ref<boolean>(false);
-const indeterminate = ref<boolean>(false);
+/** APP 端本地分页：是否启用（静态数据 + 移动端 + 叶子数 >= 500） */
+const localPageEnabled = ref(false);
+/** APP 端本地分页：所有扁平化叶子 */
+const localFlatLeaves = ref<any[]>([]);
 
 /** 层级筛选是否展开（下拉式，默认收起） */
 const hierarchyExpanded = ref(false);
@@ -185,8 +149,7 @@ const onCascadeNodeClick = (node: any, level: number) => {
     }
     pageInfo.currentPage = 1;
     pageInfo.totalData = localFlatLeaves.value.length;
-    const paged = getLocalPagedData();
-    dataOrgOptions.value = paged;
+    dataOrgOptions.value = getLocalPagedData();
   }
 
   // 如果有子分类节点（过滤叶子），追加下一列
@@ -225,23 +188,6 @@ const findNodeByKey = (nodes: any[], key: string): any => {
     }
   }
   return null;
-};
-
-/** 扁平化树：提取每个层级的直接节点用于筛选 */
-const flattenHierarchyLevels = (
-  nodes: any[],
-  level = 0,
-  result: { level: number; nodes: any[] }[] = [],
-) => {
-  if (!nodes?.length) return result;
-  if (!result[level]) result[level] = { level, nodes: [] };
-  nodes.forEach((n) => {
-    result[level].nodes.push(n);
-    if (n.children?.length > 0) {
-      flattenHierarchyLevels(n.children, level + 1, result);
-    }
-  });
-  return result;
 };
 
 /** 计算树深度，决定层级筛选默认展开到哪一层 */
@@ -348,17 +294,21 @@ watch(
 const handleCheckAll = () => {
   if (!checkAll.value) {
     dataOptions.value = [];
-  } else {
-    const processAllNodes = (nodes: any[]) => {
-      nodes.forEach((node) => {
-        onNodeClick(node);
-        if (node.children) {
-          processAllNodes(node.children);
-        }
-      });
-    };
-    processAllNodes(dataOrgOptions.value);
+    return;
   }
+  const processAllNodes = (nodes: any[]) => {
+    nodes.forEach((node) => {
+      // 仅选中未选中的节点，避免 toggle 语义把已选项反选掉
+      const exists = dataOptions.value.some(
+        (e) => e[props.displayValue] === node[props.displayValue],
+      );
+      if (!exists) onNodeClick(node);
+      if (node.children) {
+        processAllNodes(node.children);
+      }
+    });
+  };
+  processAllNodes(dataOrgOptions.value);
 };
 const renderClass = (data: any, node: any): string => {
   let value = props.displayValue || "value";
@@ -503,9 +453,33 @@ const onSelectedKeydown = (e: KeyboardEvent) => {
 };
 
 const dialogVisible = ref(false);
-const queryName = ref(null);
-const activeTab = ref<"pending" | "selected">("pending");
+const queryName = ref("");
+let pageInfo = reactive<PageProps>({
+  pageSize: 20,
+  currentPage: 1,
+  totalData: 0,
+  totalPage: 0,
+  dataList: [],
+});
 
+/** 远程模式：分页加载待选列表（请求实现统一在 DataSelectorUtils.loadPageData） */
+const loadData = async (condition?: SearchParams[]) => {
+  if (!props.dataUrl) return;
+  const result = await loadPageData({
+    dataUrl: props.dataUrl,
+    conditions: condition,
+    extraParams: props.params,
+    currentPage: pageInfo.currentPage,
+    pageSize: props.pageSize || 0,
+    proxy: props.proxy,
+    proxyUrl: props.proxyUrl,
+  });
+  dataOrgOptions.value = result.list;
+  pageInfo.totalPage = result.totalPage;
+  pageInfo.totalData = result.totalData;
+};
+
+/** 关键字搜索：远程模式带条件重新查询，静态树模式走前端过滤 */
 const dataSearch = () => {
   // APP 端本地分页模式：走 applyLocalPageOrSearch 实现（搜索 + 分页 + 层级筛选）
   if (localPageEnabled.value) {
@@ -528,49 +502,6 @@ const filterNode = (value: string, data: any): boolean => {
   if (!value) return true;
   return data[props.displayName].includes(value);
 };
-let pageInfo = reactive<PageProps>({
-  pageSize: 20,
-  currentPage: 1,
-  totalData: 0,
-  totalPage: 0,
-  dataList: [],
-});
-const loadData = async (condition?: SearchParams[]) => {
-  if (!props.dataUrl) return;
-  const queryParams: SearchParams[] = [];
-  if (condition?.length > 0) {
-    queryParams.push(...condition);
-  }
-  const baseParams = buildPageParams(
-    queryParams,
-    props.params,
-    pageInfo.currentPage,
-    props.pageSize || 0,
-  );
-  const { url, params } = buildRequestParams(
-    props.dataUrl,
-    baseParams,
-    props.proxy,
-    props.proxyUrl,
-  );
-  await postRequest(url, params)
-    .then((res) => {
-      if (res?.data?.code != 200) {
-        console.error(res?.data?.cnMessage);
-        return;
-      }
-      let redata = res?.data?.data;
-      dataOrgOptions.value = redata?.dataList || redata;
-      pageInfo.totalPage = redata?.totalPages;
-      pageInfo.totalData = redata?.totalDatas;
-    })
-    .catch((err: any) => {
-      console.error(err);
-    })
-    .finally(() => {
-      closeLoad();
-    });
-};
 const open = () => {
   dialogVisible.value = true;
 };
@@ -578,22 +509,33 @@ const close = () => {
   dialogVisible.value = false;
 };
 const onOpen = async () => {
-  activeTab.value = "pending";
-  dataOrgOptions.value = [];
+  // 重置上次打开的残留状态
+  queryName.value = "";
+  checkAll.value = false;
   selectedHierarchyKey.value = "";
-  // 初始化：构建完层级/分页后再赋值 dataOrgOptions，避免一次性渲染海量 DOM
+  await initOptions();
+  initSelection();
+  // 初始化层级筛选（不复制树，直接引用）
+  initCascadeColumns();
+  nextTick(() => {
+    destroySortable();
+    if (props.multiple) initSortable();
+  });
+};
+
+/** 待选列表初始化：静态 data 直接使用（APP 端大数据启用本地分页），远程模式请求接口 */
+const initOptions = async () => {
+  dataOrgOptions.value = [];
   if (props.data?.length > 0) {
     // APP 端大数据（>= 500 叶子）时，启用客户端分页 + 延迟渲染
     const leafCount = countLeafNodes(props.data);
-    const enableLocalPage = isMobile && !props.dataUrl && leafCount >= 500;
-    localPageEnabled.value = enableLocalPage;
-    if (enableLocalPage) {
+    localPageEnabled.value = isMobile && !props.dataUrl && leafCount >= 500;
+    if (localPageEnabled.value) {
       // 扁平化叶子，做分页
       localFlatLeaves.value = flattenLeafNodes(props.data);
       pageInfo.totalData = localFlatLeaves.value.length;
       pageInfo.pageSize = props.pageSize || 50;
-      const paged = getLocalPagedData();
-      dataOrgOptions.value = paged;
+      dataOrgOptions.value = getLocalPagedData();
     } else {
       dataOrgOptions.value = props.data;
       pageInfo.totalData = leafCount;
@@ -601,16 +543,13 @@ const onOpen = async () => {
   } else {
     await loadData();
   }
-  // 直接读 props.modelValue，避免 useVModel passive 模式下 local ref 同步时序问题
+};
+
+/** 已选初始化：从 props.modelValue 读取（浅拷贝，弹窗内操作不影响父组件状态） */
+const initSelection = () => {
   const mv = props.modelValue;
-  dataOptions.value = Array.isArray(mv) ? mv : mv ? [mv] : [];
+  dataOptions.value = Array.isArray(mv) ? [...mv] : mv ? [mv] : [];
   activeIndex.value = -1;
-  // 初始化层级筛选（不复制树，直接引用）
-  initCascadeColumns();
-  nextTick(() => {
-    destroySortable();
-    if (props.multiple) initSortable();
-  });
 };
 
 /** 计算树中叶子节点总数 */
@@ -626,7 +565,7 @@ const countLeafNodes = (nodes: any[]): number => {
   return count;
 };
 
-/** 扁平化所有叶子节点（含完整路径父节点的重建可选） */
+/** 扁平化所有叶子节点 */
 const flattenLeafNodes = (nodes: any[]): any[] => {
   const leaves: any[] = [];
   const walk = (arr: any[]) => {
@@ -639,52 +578,45 @@ const flattenLeafNodes = (nodes: any[]): any[] => {
   return leaves;
 };
 
-/** APP 端本地分页：是否启用 */
-const localPageEnabled = ref(false);
-/** APP 端本地分页：所有扁平化叶子 */
-const localFlatLeaves = ref<any[]>([]);
-
 /** 获取本地当前分页数据（返回扁平列表直接展示） */
 const getLocalPagedData = (): any[] => {
   const start = (pageInfo.currentPage - 1) * (pageInfo.pageSize || 50);
   return localFlatLeaves.value.slice(start, start + (pageInfo.pageSize || 50));
 };
-const handelConfirm = () => {
-  if (props.multiple) {
-    value.value = dataOptions.value;
-  } else {
-    if (dataOptions.value?.length > 0) {
-      value.value = [dataOptions.value[0]];
-    } else {
-      value.value = [];
-    }
-  }
+
+/** 确认选择：多选回传全部已选，单选回传首项（统一数组形态），autoClose 时自动关闭 */
+const handleConfirm = () => {
+  const result = props.multiple
+    ? [...dataOptions.value]
+    : dataOptions.value.slice(0, 1);
+  emits("update:modelValue", result);
   if (props.autoClose) {
     dialogVisible.value = false;
   }
-  emits("dataSubmit", value.value);
 };
+
+/** 重置已选（弹窗重置按钮） */
 const resetData = () => {
   dataOptions.value = [];
   activeIndex.value = -1;
 };
-const pageChangeClick = (val: number) => {
-  pageInfo.currentPage = val;
-  // APP 端本地分页模式
+
+/** 翻页/改页大小后刷新待选列表：本地分页走本地切片，远程走接口查询 */
+const refreshList = () => {
   if (localPageEnabled.value) {
     applyLocalPageOrSearch();
   } else {
     dataSearch();
   }
 };
+const pageChangeClick = (val: number) => {
+  pageInfo.currentPage = val;
+  refreshList();
+};
 const pageSizeClick = (val: number) => {
   pageInfo.pageSize = val;
   pageInfo.currentPage = 1;
-  if (localPageEnabled.value) {
-    applyLocalPageOrSearch();
-  } else {
-    dataSearch();
-  }
+  refreshList();
 };
 
 /** APP 端本地搜索/分页：对已扁平化叶子过滤后再分页 */
@@ -704,12 +636,8 @@ const applyLocalPageOrSearch = () => {
   dataOrgOptions.value = source.slice(start, start + (pageInfo.pageSize || 50));
 };
 
-const onUnmountedCleanup = () => {
-  destroySortable();
-};
-
 onUnmounted(() => {
-  onUnmountedCleanup();
+  destroySortable();
 });
 
 defineExpose({
@@ -724,7 +652,7 @@ defineExpose({
     :self-func="true"
     v-model="dialogVisible"
     @open="onOpen"
-    @merge="handelConfirm"
+    @merge="handleConfirm"
     @resetForm="resetData"
     :full-screen="isMobile"
     @closeAction="dialogVisible = false"
@@ -743,7 +671,6 @@ defineExpose({
                 v-model="checkAll"
                 class="!w-[30%]"
                 v-if="multiple"
-                :indeterminate="indeterminate"
                 @change="handleCheckAll"
               >
                 {{ i18n("datapicker.selectAll") }}
@@ -1151,7 +1078,6 @@ defineExpose({
         <div v-if="multiple" class="dp-mobile-checkall">
           <el-checkbox
             v-model="checkAll"
-            :indeterminate="indeterminate"
             @change="handleCheckAll"
           >
             {{ i18n("datapicker.selectAll") }}

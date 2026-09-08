@@ -89,7 +89,7 @@ const currentStepKey = computed<string>(() => {
 
 // 段级权限：editable 可编辑 / readonly 只读 / hidden 不渲染（防数据泄露）
 const segPermission = (key: string): "editable" | "readonly" | "hidden" => {
-  if (props.source == 3) return "readonly";
+  if (props.source == 3 || currentStepKey.value == "end") return "readonly";
   const conf = stepSegmentsConf.value;
   if (!conf || !hasFlowControl.value) return "editable";
   // 当前段(后端 starHorseCurrentStep 指定的阶段)编辑时必须可编辑
@@ -113,6 +113,7 @@ const flatText = (key: string, fallback: string): string => {
 };
 // 当前阶段在步骤列表中的索引
 const currentStepIndex = computed<number>(() => {
+  if (currentStepKey.value == "end") return stepList.value.length;
   const idx = stepList.value.findIndex(
       (s: any) => s.subTablePrimaryKey === currentStepKey.value,
   );

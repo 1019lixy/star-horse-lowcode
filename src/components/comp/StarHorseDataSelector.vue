@@ -1,86 +1,145 @@
 <script setup lang="ts">
-import { useVModel } from "@vueuse/core";
-import DataPicker, {
-  type ModelValueType,
-} from "@/components/comp/utils/DataPicker.vue";
-import { computed, CSSProperties, nextTick, onMounted, ref, watch } from "vue";
+import DataPicker from "@/components/comp/utils/DataPicker.vue";
+import { CSSProperties, computed, nextTick, ref, watch } from "vue";
 import StarHorseIcon from "@/components/comp/StarHorseIcon.vue";
 import { i18n } from "@/lang";
-import { SearchParams } from "@/components/types";
 import {
+  dataPickerBaseDefaults,
   findNodesInTree,
   loadSelectedData,
+  type DataPickerBaseProps,
+  type ModelValueType,
 } from "@/components/comp/utils/DataSelectorUtils";
 
-export interface DataSelectorProps {
-  modelValue: ModelValueType;
-  selectedData?: any;
+/** StarHorseDataSelector 私有扩展：继承公共 DataPickerBaseProps */
+export interface DataSelectorProps extends DataPickerBaseProps {
   placeholder?: string;
-  dataUrl?: string;
-  proxy?: boolean;
-  proxyUrl?: string;
-  params?: SearchParams[];
-  data?: Array<any>;
-  pageSize?: number;
-  title?: string;
-  compSize?: string;
-  displayName?: string;
-  displayValue?: string;
-  /** 显示模式：label 仅显示名称，label+code 显示 名称(编码) */
-  displayMode?: "label" | "label+code";
-  /** 编码字段名（displayMode=label+code 时使用） */
-  displayCode?: string;
-  multiple?: boolean;
   disabled?: boolean;
-  checkStrictly?: boolean;
-  selectLeaf?: boolean;
   showTagLength?: number;
   /** 是否允许创建不在数据列表中的自定义值（allowCreate） */
   allowCreate?: boolean;
   style?: CSSProperties;
   tagType?: "" | "primary" | "secondary" | "success" | "info" | "warning";
   tagEffect?: "" | "light" | "dark" | "plain";
-  /** APP 端是否启用层级分类筛选 */
-  enableHierarchy?: boolean;
 }
 
 const props = withDefaults(defineProps<DataSelectorProps>(), {
-  multiple: false,
+  ...dataPickerBaseDefaults,
   disabled: false,
-  compSize: "default",
-  pageSize: 0,
-  displayName: "name",
-  displayValue: "value",
-  displayMode: "label",
-  displayCode: "code",
-  checkStrictly: true,
-  selectLeaf: false,
   showTagLength: 3,
   allowCreate: true,
   placeholder: i18n("api.pleaseSelectData2"),
   tagType: "info",
   tagEffect: "light",
-  enableHierarchy: true,
 });
 const emits = defineEmits<{
   (e: "update:modelValue", modelValue: ModelValueType): void;
-  (e: "update:selectedData", selectData: any): void;
-  (e: "selectedData", selectData: any): void;
-  (e: "change", selectData: any): void;
+  (e: "update:selectedData", selectData: any[]): void;
+  (e: "selectedData", selectData: any[]): void;
+  (e: "change", selectData: any[]): void;
 }>();
-const value: any = useVModel(props, "modelValue", emits);
-const emitData: any = useVModel(props, "selectedData", emits);
-const selectData: any = ref<any>(props.multiple ? [] : "");
-const valueArr = computed<string[]>(() => {
-  if (selectData.value) {
-    const temp = Array.isArray(selectData.value)
-      ? selectData.value
-      : [selectData.value];
-    return temp.map((item: any) => item?.[props.displayValue]);
+
+/**
+ * 数据流说明（单一数据源 + 单向同步，无 useVModel）：
+ * 1. selectedItems 是唯一工作状态：已选对象数组（单选/多选统一形态，单选时长度 0/1）
+ * 2. 内部变化（弹窗选择 / 手动增删标签）→ watch(selectedItems) 统一对外发事件
+ * 3. 外部变化（表单回填 / reset）→ watch(modelValue) 重建 selectedItems（已覆盖时跳过，防止循环）
+ */
+const selectedItems = ref<any[]>([]);
+
+/** 展示值数组：已选对象 → 值列表（el-input-tag 只读受控） */
+const valueArr = computed(() =>
+  selectedItems.value.map((item: any) => item?.[props.displayValue]),
+);
+
+/** modelValue 统一转值数组（兼容单值/数组两种形态） */
+const toValues = (v: ModelValueType): any[] => {
+  if (v === undefined || v === null || v === "") return [];
+  return Array.isArray(v) ? v : [v];
+};
+
+/** selectedItems 是否已覆盖全部值（内部回写引发的 modelValue 变化无需重新加载） */
+const isCovered = (values: any[]): boolean => {
+  if (!values.length) return selectedItems.value.length === 0;
+  const exist = new Set(
+    selectedItems.value.map((item: any) => item?.[props.displayValue]),
+  );
+  return values.every((v) => exist.has(v));
+};
+
+/** 拉取已选值对应的完整对象：静态 data 本地树查找，远程模式走统一请求出口 */
+const fetchSelectedItems = async (values: any[]): Promise<any[]> => {
+  if (props.data?.length) {
+    return findNodesInTree(props.data, values, props.displayValue);
+  }
+  if (props.dataUrl) {
+    return loadSelectedData(
+      props.dataUrl,
+      values,
+      props.displayValue,
+      props.params,
+      props.proxy,
+      props.proxyUrl,
+    );
   }
   return [];
-});
+};
 
+/**
+ * 以 values 顺序重建 selectedItems：
+ * 数据源命中的用真实对象，未命中的（如自定义输入值）补临时项保证回显
+ */
+const rebuildItems = (values: any[], loaded: any[]) => {
+  if (!values.length) {
+    selectedItems.value = [];
+    return;
+  }
+  const merged = values.map(
+    (v) =>
+      loaded.find((i: any) => i?.[props.displayValue] === v) ??
+      selectedItems.value.find((i: any) => i?.[props.displayValue] === v) ?? {
+        [props.displayName]: v,
+        [props.displayValue]: v,
+      },
+  );
+  if (JSON.stringify(merged) !== JSON.stringify(selectedItems.value)) {
+    selectedItems.value = merged;
+  }
+};
+
+/** 内部状态 → 父组件（唯一出口：值 + 已选对象统一在此发出） */
+watch(
+  selectedItems,
+  (items) => {
+    const values = items.map((item: any) => item?.[props.displayValue]);
+    emits("update:modelValue", props.multiple ? values : (values[0] ?? ""));
+    emits("update:selectedData", items);
+    emits("selectedData", items);
+    emits("change", items);
+  },
+  { deep: true },
+);
+
+/** 父组件 modelValue → 内部状态（回显入口，immediate 覆盖初始挂载场景） */
+watch(
+  () => props.modelValue,
+  async () => {
+    const values = toValues(props.modelValue).filter(
+      (v) => v !== "" && v !== undefined && v !== null,
+    );
+    if (isCovered(values)) return;
+    const loaded = await fetchSelectedItems(values);
+    // 请求期间 modelValue 再次变化则丢弃本次结果
+    const latest = toValues(props.modelValue).filter(
+      (v) => v !== "" && v !== undefined && v !== null,
+    );
+    if (JSON.stringify(latest) !== JSON.stringify(values)) return;
+    rebuildItems(latest, loaded);
+  },
+  { immediate: true },
+);
+
+/** 弹窗按需挂载（首次打开才渲染，减少初始组件数量） */
 const dataPickerRef = ref<InstanceType<typeof DataPicker>>();
 const pickerMounted = ref(false);
 
@@ -93,135 +152,29 @@ const openDataPicker = async () => {
   dataPickerRef.value?.open();
 };
 
-const onClose = (data: any) => {
-  if (!selectData.value) {
-    emits("change", selectData.value);
-    return;
-  }
-  if (props.multiple && Array.isArray(selectData.value)) {
-    const targetValue = data?.[props.displayValue] ?? data;
-    const selectIndex = selectData.value.findIndex(
-      (item: any) => item?.[props.displayValue] === targetValue,
-    );
-    const valueIndex = value.value?.indexOf(targetValue);
-    if (selectIndex !== -1) {
-      selectData.value.splice(selectIndex, 1);
-    }
-    if (valueIndex !== -1 && value.value) {
-      value.value.splice(valueIndex, 1);
-    }
-  } else {
-    selectData.value = [];
-    value.value = props.multiple ? [] : "";
-  }
-  emits("change", selectData.value);
-  emits("selectedData", selectData.value);
-};
-
-/** 将 modelValue 统一转为值数组（兼容单值/数组两种形态） */
-const toValueList = (): any[] => {
-  const v = value.value;
-  if (v === undefined || v === null || v === "") return [];
-  return Array.isArray(v) ? v : [v];
-};
-
-/** 将 selectData 统一转为对象数组形态 */
-const toSelectList = (): any[] => {
-  const s = selectData.value;
-  if (s === undefined || s === null || s === "") return [];
-  return Array.isArray(s) ? s : [s];
-};
-
-/** selectData 是否已覆盖 modelValue 的全部值（覆盖说明是内部更新，无需重新加载） */
-const isCovered = (): boolean => {
-  const vals = toValueList();
-  if (!vals.length) return true;
-  const exist = new Set(
-    toSelectList().map((i: any) => i?.[props.displayValue]),
+/** 删除标签（el-input-tag removeTag，val 为标签值） */
+const removeTag = (val: any) => {
+  const target = val?.[props.displayValue] ?? val;
+  const index = selectedItems.value.findIndex(
+    (item: any) => item?.[props.displayValue] === target,
   );
-  return vals.every(
-    (v) => v === "" || v === undefined || v === null || exist.has(v),
-  );
+  if (index !== -1) selectedItems.value.splice(index, 1);
 };
 
-/**
- * 以 modelValue 为准重建 selectData：
- * 数据源命中的用真实数据，未命中的（手动输入的值不在数据源中）补临时项，保证回显
- */
-const mergeSelectData = (loaded: any[] = []) => {
-  const vals = toValueList().filter(
-    (v) => v !== undefined && v !== null && v !== "",
-  );
-  if (!vals.length) {
-    if (toSelectList().length) {
-      selectData.value = props.multiple ? [] : "";
-    }
-    return;
-  }
-  const current = toSelectList();
-  const merged = vals.map((v) => {
-    const hit =
-      loaded.find((i: any) => i?.[props.displayValue] === v) ??
-      current.find((i: any) => i?.[props.displayValue] === v);
-    return hit ?? { [props.displayName]: v, [props.displayValue]: v };
-  });
-  if (JSON.stringify(merged) === JSON.stringify(current)) return;
-  selectData.value = merged;
-};
-
-/** 从数据源加载 modelValue 对应的真实数据 */
-const fetchLoaded = async (): Promise<any[]> => {
-  if (props.data) {
-    return findNodesInTree(props.data, value.value, props.displayValue);
-  }
-  if (props.dataUrl && value.value?.length > 0) {
-    return await loadSelectedData(
-      props.dataUrl,
-      value.value,
-      props.displayValue,
-      props.params,
-      props.proxy,
-      props.proxyUrl,
-    );
-  }
-  return [];
-};
-
-/**
- * 初始化数据选择器 - 使用公共工具函数
- */
-const init = async () => {
-  mergeSelectData(await fetchLoaded());
-};
-
-/** 外部回显/表单填充导致 modelValue 变化时重新同步 selectData（内部选择已覆盖时跳过） */
-watch(
-  () => props.modelValue,
-  async () => {
-    if (isCovered()) return;
-    const snapshot = JSON.stringify(toValueList());
-    const loaded = await fetchLoaded();
-    if (JSON.stringify(toValueList()) !== snapshot) return;
-    mergeSelectData(loaded);
-  },
-);
-
+/** 手动输入新标签（allowCreate 场景，值同时作为名称） */
 const addTag = (val: any) => {
   if (!props.allowCreate) return;
-  const temp = {
-    [props.displayName]: val,
-    [props.displayValue]: val,
-  };
-  if (props.multiple && Array.isArray(selectData.value)) {
-    selectData.value.push(temp);
+  const item = { [props.displayName]: val, [props.displayValue]: val };
+  if (props.multiple) {
+    selectedItems.value.push(item);
   } else {
-    selectData.value = [temp];
+    selectedItems.value = [item];
   }
 };
 
-/** 获取显示文本（支持 label+code 模式） */
+/** 标签显示文本（支持 label+code 模式） */
 const getDisplayText = (val: any): string => {
-  const item = selectData.value?.find(
+  const item = selectedItems.value.find(
     (i: any) => i?.[props.displayValue] === val,
   );
   if (!item) return val;
@@ -232,31 +185,6 @@ const getDisplayText = (val: any): string => {
   }
   return item[props.displayName] ?? val;
 };
-
-const tagVisible = (val: any) => {
-  return getDisplayText(val);
-};
-
-onMounted(() => {
-  init();
-});
-
-watch(
-  () => selectData.value,
-  (newVal) => {
-    if (newVal) {
-      const tempNewValue = Array.isArray(newVal)
-        ? newVal.map((v) => v[props.displayValue])
-        : newVal?.[props.displayValue];
-      value.value = props.multiple ? tempNewValue : tempNewValue[0];
-      emitData.value = newVal;
-      emits("change", newVal);
-    } else {
-      console.error("dataselector error", newVal);
-    }
-  },
-  { deep: true },
-);
 </script>
 
 <template>
@@ -270,6 +198,7 @@ watch(
     :proxy-url="proxyUrl"
     :params="params"
     :page-size="pageSize"
+    :comp-size="compSize"
     :display-name="displayName"
     :display-value="displayValue"
     :display-mode="displayMode"
@@ -278,10 +207,11 @@ watch(
     :select-leaf="selectLeaf"
     :multiple="multiple"
     :enable-hierarchy="enableHierarchy"
-    v-model="selectData"
+    v-model="selectedItems"
   />
   <el-input-tag
-    v-model="valueArr"
+    :model-value="valueArr"
+    :placeholder="placeholder"
     :tag-type="tagType"
     :disabled="disabled"
     :readonly="!allowCreate"
@@ -289,13 +219,13 @@ watch(
     :collapse-tags="true"
     :max-collapse-tags="showTagLength ?? 5"
     :collapse-tags-tooltip="true"
-    @clear="selectData = []"
+    @clear="selectedItems = []"
     @addTag="addTag"
-    @removeTag="(val) => onClose(val)"
+    @removeTag="removeTag"
   >
     <template #tag="{ value }">
       <div class="flex items-center">
-        <span>{{ tagVisible(value) }}</span>
+        <span>{{ getDisplayText(value) }}</span>
       </div>
     </template>
     <template #suffix>
