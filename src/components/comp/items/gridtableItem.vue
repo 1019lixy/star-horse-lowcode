@@ -209,11 +209,11 @@ const wrapperStyle = computed(() => {
             class="gridtable-header-cell no-cell col-resize-container"
             :style="{ width: checkItem(col)?.preps?.colWidth || '100%' }"
         >
-          {{ index + 1 }}
+          {{ Number(index) + 1 }}
           <div
               v-if="item.preps?.allowResize"
               class="col-resize-handle"
-              @mousedown="(e) => handleColResizeStart(e, index)"
+              @mousedown="(e) => handleColResizeStart(e, Number(index))"
           />
         </div>
       </div>
@@ -229,18 +229,18 @@ const wrapperStyle = computed(() => {
           <div
               v-if="showLineNumber"
               class="gridtable-line-number no-cell"
-              :style="{ gridColumn: '1', gridRow: `${rowIndex + 1}` }"
+              :style="{ gridColumn: '1', gridRow: `${Number(rowIndex) + 1}` }"
           >
             {{ Number(rowIndex) + 1 }}
           </div>
-          <template v-for="(sitem, colIndex) in row" :key="colIndex * rowIndex">
+          <template v-for="(sitem, colIndex) in row" :key="Number(colIndex) * Number(rowIndex)">
             <div
                 v-if="checkItem(sitem)?.preps?.cellVisible"
                 class="gridtable-cell"
                 :style="{
                 width: checkItem(sitem)?.preps?.colWidth || '100%',
                 minHeight: checkItem(sitem)?.preps?.colHeight || rowHeight,
-                ...getGridPosition(rowIndex, colIndex, checkItem(sitem)),
+                ...getGridPosition(Number(rowIndex), Number(colIndex), checkItem(sitem)),
                 'text-align': checkItem(sitem)?.preps?.textAlign ?? 'left',
                 'word-break': !!checkItem(sitem)?.preps?.wordBreak
                   ? 'break-all'

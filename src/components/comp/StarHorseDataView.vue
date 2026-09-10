@@ -174,12 +174,20 @@ defineExpose({
 <style lang="scss" scoped>
 /* 查看视图：统一通过非scoped样式穿透子组件 */
 
+.star-horse-data-view {
+  --star-horse-view-bg-color: #F5F7FA;
+  --star-horse-view-border-color: #E4E7ED;
+  --star-horse-view-color: #666;
+  --star-horse-box-shadow: none;
+  font-size: 13px;
+}
 .star-horse-data-view .data-view-mode {
   /* ---- 表单行：el-descriptions 风格 ---- */
   :deep(.el-form-item) {
     margin-bottom: 0 !important;
     //border-bottom: 1px solid var(--el-border-color-lighter);
     min-height: 40px;
+
     align-items: center;
   }
 
@@ -200,7 +208,7 @@ defineExpose({
   /* 标签列 */
   :deep(.el-form-item__label) {
     // background-color: var(--el-bg-color) !important;
-    color: var(--el-text-color-regular) !important;
+    color: var(--star-horse-view-color) !important;
     font-weight: 500;
     // padding: 8px 12px !important;
     // border-right: v-bind(borderStyle);
@@ -210,9 +218,9 @@ defineExpose({
   /* 内容列 */
   :deep(.el-form-item__content) {
     //padding: 6px 12px;
-    color: var(--el-text-color-primary);
+    color: var(--star-horse-view-color) !important;
     flex: 1;
-    background-color: var(--el-bg-color);
+    background-color: var(--star-horse-view-bg-color);
   }
 
   /* ---- 所有禁用输入类组件：保留边框，去掉灰色背景 ---- */
@@ -228,25 +236,25 @@ defineExpose({
   :deep(.el-autocomplete.is-disabled .el-input__wrapper),
   :deep(.el-input__wrapper.is-disabled .el-range-input),
   :deep(.el-input-tag.is-disabled) {
-    background-color: var(--el-bg-color) !important;
-    box-shadow: 0 0 0 1px var(--el-border-color) inset !important;
+    background-color: var(--star-horse-view-bg-color) !important;
+    box-shadow: var(--star-horse-box-shadow)  !important;
     cursor: default;
   }
 
   :deep(.el-input-tag.is-disabled .el-input-tag__wrapper) {
-    background-color: var(--el-bg-color) !important;
-    box-shadow: none !important;
+    background-color: var(--star-horse-view-bg-color) !important;
+    box-shadow: var(--star-horse-box-shadow) !important;
   }
 
   :deep(.el-input-tag.is-disabled .el-input-tag__input) {
-    color: var(--el-text-color-primary) !important;
-    -webkit-text-fill-color: var(--el-text-color-primary) !important;
+    color: var(--star-horse-view-color) !important;
+    -webkit-text-fill-color: var(--star-horse-view-color) !important;
   }
 
   /* 文本域特殊处理 */
   :deep(.el-textarea.is-disabled .el-textarea__inner) {
-    box-shadow: none !important;
-    border: 1px solid var(--el-border-color) !important;
+    box-shadow: var(--star-horse-box-shadow) !important;
+    border: 1px solid var(--star-horse-view-border-color) !important;
     padding: 5px 11px;
   }
 
@@ -262,9 +270,10 @@ defineExpose({
   :deep(.el-autocomplete.is-disabled .el-input__inner),
   :deep(.el-input-tag.is-disabled .el-input-tag__input),
   :deep(.el-select__wrapper.is-disabled .el-select__selected-item) {
-    color: var(--el-text-color-primary) !important;
-    -webkit-text-fill-color: var(--el-text-color-primary) !important;
+    color: var(--star-horse-view-color) !important;
+    -webkit-text-fill-color: var(--star-horse-view-color) !important;
     padding-left: 10px !important;
+    resize: none;
   }
 
   /* 数字输入居中修正 */
@@ -304,7 +313,7 @@ defineExpose({
 
   :deep(.el-radio.is-disabled .el-radio__label),
   :deep(.el-checkbox.is-disabled .el-checkbox__label) {
-    color: var(--el-text-color-primary);
+    color: var(--star-horse-view-color) ;
   }
 
   :deep(.el-rate.is-disabled),
@@ -319,7 +328,7 @@ defineExpose({
   }
 
   :deep(.el-upload.is-disabled) {
-    border: none;
+    border: 1px solid var(--star-horse-view-border-color) !important;
     background: transparent;
   }
 

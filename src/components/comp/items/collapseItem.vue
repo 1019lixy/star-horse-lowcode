@@ -107,7 +107,7 @@ onMounted(() => {
           :disabled="collapseItem.disabled"
           v-bind="collapseItem.preps"
           :index="
-            checkObject(dataForm, collapseItem, key, dataIndex, propPrefix)
+            checkObject(dataForm, collapseItem, Number(key), dataIndex, propPrefix)
           "
         >
           <template #title>

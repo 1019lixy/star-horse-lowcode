@@ -57,7 +57,7 @@ onMounted(() => {
           "
           v-bind="splitterItem.preps"
           :index="
-            checkObject(dataForm, splitterItem, key, dataIndex, propPrefix)
+            checkObject(dataForm, splitterItem, Number(key), dataIndex, propPrefix)
           "
         >
           <div class="section-title-bar">

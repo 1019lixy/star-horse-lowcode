@@ -63,7 +63,7 @@ onMounted(() => {
           cardItem.formVisible !== false &&
           !cardItem.preps?.hideCard
         "
-        :index="checkObject(dataForm, cardItem, key, dataIndex, propPrefix)"
+        :index="checkObject(dataForm, cardItem, Number(key), dataIndex, propPrefix)"
       >
         <template #header>
           <div class="card-header flex items-center justify-between">

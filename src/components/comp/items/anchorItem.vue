@@ -226,13 +226,13 @@ onBeforeUnmount(() => {
         >
           <div class="section-title-bar">
             <span v-if="showSectionNumber" class="section-dot">{{
-              idx + 1
+              Number(idx) + 1
             }}</span>
             <span class="section-name">{{
               anchorItem.anchorTitle ||
               anchorItem.label ||
               anchorItem.title ||
-              i18n("dyform.container.anchorSection") + " " + (idx + 1)
+              i18n("dyform.container.anchorSection") + " " + (Number(idx) + 1)
             }}</span>
           </div>
           <div class="section-items">

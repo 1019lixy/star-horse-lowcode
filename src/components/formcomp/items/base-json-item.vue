@@ -91,7 +91,7 @@ const props = defineProps({
   dataType: {
     type: String,
     default: "object",
-    validator: (v) => ["object", "array"].includes(v),
+    validator: (v:string) => ["object", "array"].includes(v),
   },
 });
 
