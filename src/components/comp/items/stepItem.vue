@@ -52,7 +52,6 @@ const stepList = computed(() => props.item?.containerFields || []);
 // 是否同属一个表单：运行时由各步骤的 subFormFlag 决定（"Y"=分表单，"N"/缺省=同表单）
 const sameForm = computed(() => {
   const steps = stepList.value;
-  assignFlagCollapsed();
   if (!steps.length) return true;
   return steps[0]?.subFormFlag !== "Y";
 });
@@ -131,17 +130,8 @@ const flatStatusOf = (key: string): string => {
   return "pending";
 };
 
-// 平铺段折叠状态：<= currentStepIndex 展开(false)，> currentStepIndex 折叠(true)
+// 平铺段折叠状态：显式操作记录在 map；未记录时默认全部展开
 const flatCollapsed = ref<Record<string, boolean>>({});
-const assignFlagCollapsed = () => {
-  flatCollapsed.value = {};
-  stepList.value.forEach((step: any, idx: number) => {
-    const key = step?.subTablePrimaryKey;
-    if (key != null) {
-      flatCollapsed.value[key] = idx > currentStepIndex.value;
-    }
-  });
-};
 const isFlatCollapsed = (step: any): boolean => {
   const key = step?.subTablePrimaryKey;
   if (key != null && key in flatCollapsed.value) {
@@ -153,10 +143,6 @@ const toggleFlatCollapse = (step: any) => {
   const key = step?.subTablePrimaryKey;
   if (key != null) flatCollapsed.value[key] = !isFlatCollapsed(step);
 };
-// 流程阶段推进时重新计算默认折叠状态（用户手动切换过的段会被覆盖，符合预期）
-watch(currentStepIndex, () => {
-  if (flatMode.value) assignFlagCollapsed();
-});
 
 // 平铺段状态标签文案（未启用流程控制时不显示标签）
 const flatStatusText = (step: any): string => {
@@ -254,6 +240,15 @@ const showNavBar = computed(() => showNavButtons.value && !flatMode.value);
 // 简洁模式
 const stepSimple = computed(() => props.item?.preps?.simple === "Y");
 
+/*// 完成状态
+const finishStatus = computed(
+  () => props.item?.preps?.finishStatus || "finish",
+);
+
+// 进行中状态
+const processStatus = computed(
+  () => props.item?.preps?.processStatus || "process",
+);*/
 
 // 居中对齐
 const alignCenter = computed(() => props.item?.preps?.alignCenter === "Y");
@@ -459,7 +454,7 @@ watch(activeStepIndex, (idx) => {
     <div v-if="flatMode && flowTrail.length" class="flat-flow-trail">
       <template v-for="(node, nIdx) in flowTrail" :key="node.key">
         <svg
-            v-if="Number(nIdx) > 0"
+            v-if="nIdx > 0"
             class="trail-arrow"
             viewBox="0 0 24 24"
             width="14"

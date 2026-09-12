@@ -41,38 +41,26 @@ const finishEditLabel = () => {
 </script>
 
 <template>
-  <div
-      class="w-fill"
-      :class="{ 'item-info': field?.preps?.itemType != 'usercomp' }"
-      :style="{
-      margin: field?.preps?.itemType === 'button' ? '5px auto' : 'unset',
-    }"
-      v-if="bareFlag === true"
-  >
-    <help :message="field?.preps?.helpMsg" v-if="field?.preps?.helpMsg"/>
-    <slot></slot>
-  </div>
-  <div v-else class="form-item-operation">
-    <div class="w-full" :class="{ 'field-item': true }">
-      <el-form-item
-          :size="field?.preps?.size || 'default'"
-          v-if="
-          isEdit&&showFormItem &&
+  <div class="form-item-operation  item-info">
+    <el-form-item
+        :size="field?.preps?.size || 'default'"
+        v-if="
+          isEdit&&showFormItem &&!bareFlag&&
           parentField?.itemType != 'table' &&
           field.preps?.itemType != 'divider' &&
           field?.preps?.headerFlag != 'Y' &&
           !field.preps?.staticData
         "
-          :style="{
+        :style="{
           marginBottom: isEdit && !disabled ? '1px' : '18px',
         }"
-          class="flex items-center w-full h-full"
-          :prop="field?.preps['name']"
-          :label="labelVisibleCheck(field)"
-          :labelPosition="field?.preps['labelPosition']"
-          :rules="validMsg(field, null)"
-      >
-        <template #label v-if="isEdit">
+        class="flex items-center w-full h-full"
+        :prop="field?.preps['name']"
+        :label="labelVisibleCheck(field)"
+        :labelPosition="field?.preps['labelPosition']"
+        :rules="validMsg(field, null)"
+    >
+      <template #label v-if="isEdit">
           <span
               v-if="!editingLabel"
               @click.stop="isMobile ? startEditLabel() : null"
@@ -80,48 +68,46 @@ const finishEditLabel = () => {
               style="cursor: text"
           >{{ labelVisibleCheck(field) }}</span
           >
-          <el-input
-              v-else
-              ref="labelInputRef"
-              v-model="editingLabelText"
-              @blur="finishEditLabel"
-              @keyup.enter="finishEditLabel"
-              @click.stop
-              style="width: 120px"
-          />
-        </template>
+        <el-input
+            v-else
+            ref="labelInputRef"
+            v-model="editingLabelText"
+            @blur="finishEditLabel"
+            @keyup.enter="finishEditLabel"
+            @click.stop
+            style="width: 120px"
+        />
+      </template>
 
-        <help :message="field.preps?.helpMsg" v-if="field.preps?.helpMsg"/>
-        <slot></slot>
-      </el-form-item>
-      <div
-          v-else
-          :class="{
+      <help :message="field.preps?.helpMsg" v-if="field.preps?.helpMsg"/>
+      <slot></slot>
+    </el-form-item>
+    <div
+        v-else
+        :class="{
           'item-info': field?.preps?.itemType != 'usercomp',
         }"
-          :style="{
+        :style="{
           margin: field?.itemType === 'button' ? '5px auto' : 'unset',
         }"
-      >
-        <help :message="field.preps?.helpMsg" v-if="field.preps?.helpMsg"/>
-        <slot></slot>
-      </div>
+    >
+      <help :message="field.preps?.helpMsg" v-if="field.preps?.helpMsg"/>
+      <slot></slot>
     </div>
   </div>
 </template>
 <style lang="scss" scoped>
 .form-item-operation {
   display: flex;
-  width: 98%;
+  width: 100%;
   flex: 1;
-  margin:0 auto;
+  margin: 0 auto;
   height: 100%;
-  padding: 0 5px;
 }
 
 .item-info {
   display: flex;
-  width: 100%;
+  width: 100% !important;
   flex: 1;
   height: 100%;
   align-items: center;
