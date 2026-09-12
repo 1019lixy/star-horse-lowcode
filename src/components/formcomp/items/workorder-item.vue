@@ -47,6 +47,10 @@ const prefix = computed<string>(() => preps.value.prefix ?? "NO");
 const fixedPart = computed<string>(
     () => preps.value.fixedPart ?? "{{date:YYYYMMDD}}",
 );
+const fixedPartPosition = computed<"start" | "between" | "end">(() => {
+  const p = preps.value.fixedPartPosition;
+  return p === "start" || p === "end" ? p : "between";
+});
 const fillChar = computed<string>(() => {
   const c = preps.value.fillChar;
   return c && String(c).length > 0 ? String(c)[0] : "0";
@@ -107,16 +111,18 @@ const buildSeqKey = (): string => {
 };
 
 const buildWorkorderConfig = (): WorkorderConfig => {
-  const segments: WorkorderSegment[] = [];
-  if (prefix.value) {
-    segments.push({type: "static", value: prefix.value, name: "prefix"});
-  }
-  const fixedSegments = parseTemplateSegments(fixedPart.value);
+  const prefixSeg: WorkorderSegment = {
+    type: "static",
+    value: prefix.value,
+    name: "prefix",
+  };
+  const fixedSegments: WorkorderSegment[] = parseTemplateSegments(
+      fixedPart.value,
+  );
   fixedSegments.forEach((s, idx) => {
     if (!s.name) s.name = `fixedPart[${idx}]`;
   });
-  segments.push(...fixedSegments);
-  segments.push({
+  const seqSeg: WorkorderSegment = {
     type: "sequence",
     length: seqLength.value,
     radix: seqRadix.value,
@@ -126,7 +132,21 @@ const buildWorkorderConfig = (): WorkorderConfig => {
     overflowStrategy: overflowStrategy.value,
     seqKey: buildSeqKey(),
     name: "sequence",
-  });
+  };
+  let segments: WorkorderSegment[] = [];
+  if (fixedPartPosition.value === "start") {
+    segments.push(...fixedSegments);
+    if (prefix.value) segments.push(prefixSeg);
+    segments.push(seqSeg);
+  } else if (fixedPartPosition.value === "end") {
+    if (prefix.value) segments.push(prefixSeg);
+    segments.push(seqSeg);
+    segments.push(...fixedSegments);
+  } else {
+    if (prefix.value) segments.push(prefixSeg);
+    segments.push(...fixedSegments);
+    segments.push(seqSeg);
+  }
   return {
     segments,
     expectedLength: expectedLength.value,

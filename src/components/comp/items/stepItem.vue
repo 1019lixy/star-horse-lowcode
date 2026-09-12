@@ -454,7 +454,7 @@ watch(activeStepIndex, (idx) => {
     <div v-if="flatMode && flowTrail.length" class="flat-flow-trail">
       <template v-for="(node, nIdx) in flowTrail" :key="node.key">
         <svg
-            v-if="nIdx > 0"
+            v-if="Number(nIdx) > 0"
             class="trail-arrow"
             viewBox="0 0 24 24"
             width="14"
