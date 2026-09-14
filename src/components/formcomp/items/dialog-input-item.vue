@@ -2,7 +2,7 @@
 import { computed, nextTick, onMounted, ref, shallowRef } from "vue";
 import { warning } from "@/utils/message";
 import { FieldInfo, FieldMapping } from "@/components/types/PageFieldInfo";
-import { isJson, buildListDataSource } from "@/api/star_horse_utils";
+import { isJson } from "@/api/star_horse_utils";
 import {
   allAction,
   checkIsDisabled,
@@ -29,10 +29,6 @@ const props = withDefaults(defineProps<ItemPreps>(), {
 const emits = defineEmits(["selfFunc", "selectItem"]);
 const formData = defineModel("formData");
 const dialogInputTableRef = ref();
-// 由统一接口配置(apiDataSource)构造被委派表格/搜索组件需要的 apiEndpoints(不改动被委派组件)
-const apiEndpoints = computed(() =>
-  buildListDataSource(props.field.preps?.apiDataSource),
-);
 let dialogInputVisible = shallowRef(false);
 // 是否多选模式
 const multipleSelect = computed(() => !!props.field.preps?.multiple);
@@ -200,16 +196,16 @@ onMounted(async () => {
         <el-tabs v-model="activeTab" class="dialog-input-tabs">
           <el-tab-pane :label="i18n('item.dataSelect')" name="data">
             <div class="search-content">
-                <div class="search_btn">
-                  <star-horse-search-comp
-                    @searchData="
-                      (data: any) => dialogInputTableRef.createSearchParams(data)
-                    "
-                    :formData="field.preps?.['searchFieldList']"
-                    :apiEndpoints="apiEndpoints"
-                  />
-                </div>
+              <div class="search_btn">
+                <star-horse-search-comp
+                  @searchData="
+                    (data: any) => dialogInputTableRef.createSearchParams(data)
+                  "
+                  :formData="field.preps?.['searchFieldList']"
+                  :apiEndpoints="field.preps?.['apiEndpoints']"
+                />
               </div>
+            </div>
             <div class="tab-content">
               <star-horse-table-comp
                 :fieldList="{
@@ -217,7 +213,7 @@ onMounted(async () => {
                   fieldList: field.preps?.['fieldList'],
                 }"
                 :primaryKey="field.preps?.['primaryKey']"
-                :apiEndpoints="apiEndpoints"
+                :apiEndpoints="field.preps?.['apiEndpoints']"
                 ref="dialogInputTableRef"
                 :dialogInput="true"
                 :multipleSelect="multipleSelect"

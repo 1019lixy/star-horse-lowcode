@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref, shallowRef, watch } from "vue";
 import { PageProps } from "@/components/types/PageProps";
-import { closeLoad, createCondition, load, loadPageData, buildListDataSource } from "@/api/star_horse_utils";
+import { closeLoad, createCondition, load } from "@/api/star_horse_utils";
+import { postRequest } from "@/api/star_horse_apis";
 import {
   FieldInfo,
   FieldMapping,
+  OrderByInfo,
 } from "@/components/types/PageFieldInfo";
 import { SearchParams } from "@/components/types/Params";
 import {
@@ -35,6 +37,8 @@ const formData = defineModel("formData");
 const starHorseTableCompRef = ref();
 const filterCondition = ref<Array<SearchParams>>([]);
 
+const orderBy = ref<Array<OrderByInfo>>([]);
+
 let multipleSelection = shallowRef<Array<any>>([]);
 let pageInfo = ref<PageProps>({
   pageSize: 20,
@@ -54,10 +58,6 @@ const pageChangeClick = (currentPage: number) => {
   loadByPage();
 };
 
-// 由统一接口配置(apiDataSource)构造被委派列组件/搜索组件需要的 apiEndpoints(不改动被委派组件)
-const apiEndpoints = computed(() =>
-  buildListDataSource(props.field.preps?.apiDataSource),
-);
 const loadByPage = (isInit: boolean = false) => {
   if (filterCondition.value?.length > 0) {
     searchData.value.push(...filterCondition.value);
@@ -80,29 +80,51 @@ const loadByPage = (isInit: boolean = false) => {
       }
     }
   }
-  const apiDataSource = props.field.preps?.apiDataSource;
-  if (!apiDataSource?.apiInfo?.url) {
+  let orderByTemp = [] as Array<OrderByInfo>;
+  if (orderBy.value?.length > 0) {
+    orderByTemp = orderBy.value;
+  }
+  if (!props.field.preps?.["apiEndpoints"]?.pageListUrl) {
     return;
   }
-  load(i18n("item.dataLoading"));
-  loadPageData({
-    apiDataSource,
-    conditions: searchData.value,
+  let params: any = {
     currentPage: pageInfo.value.currentPage,
     pageSize: pageInfo.value.pageSize,
-    proxy: props.field.preps?.proxy,
-    proxyUrl: apiDataSource.proxyUrl,
-  })
+    fieldList: searchData.value,
+    orderBy: orderByTemp,
+  };
+  let url: string = props.field.preps?.apiEndpoints?.pageListUrl;
+  if (props.field.preps?.apiEndpoints.redirect) {
+    params = {
+      url,
+      host: props.field.preps?.apiEndpoints?.host,
+      port: props.field.preps?.apiEndpoints?.port,
+      protocol: props.field.preps?.apiEndpoints?.protocol,
+      env: props.field.preps?.apiEndpoints?.env,
+      httpMethod: props.field.preps?.apiEndpoints?.httpMethod || "POST",
+      dataType: props.field.preps?.apiEndpoints?.dataType || "JSON",
+      searchInfo: params,
+    };
+    url =
+      props.field.preps?.apiEndpoints?.redirectPageListUrl ??
+      "/system-config/redirect/pageList";
+  }
+  load(i18n("item.dataLoading"));
+  postRequest(url, params)
     .then((res) => {
-      pageInfo.value.dataList = res.list;
-      pageInfo.value.totalPage = res.totalPage;
-      pageInfo.value.totalData = res.totalData;
+      let redata = res.data?.data;
+      pageInfo.value.dataList = redata?.dataList;
+      pageInfo.value.totalPage = redata?.totalPages;
+      pageInfo.value.totalData = redata?.totalDatas;
       // 回显已选数据：初始化加载时根据 formData 中的值勾选匹配行
       if (isInit) {
         nextTick(() => {
           echoSelection();
         });
       }
+    })
+    .catch((err) => {
+      console.error(err);
     })
     .finally(() => {
       closeLoad();
@@ -313,7 +335,7 @@ const handleCancel = () => {
 };
 
 watch(
-  () => props.field.preps?.apiDataSource,
+  () => props.field.preps?.["apiEndpoints"],
   () => {
     loadByPage();
   },
@@ -392,6 +414,7 @@ onMounted(async () => {
                 :formData="field.preps?.['searchFieldList']"
                 @searchData="(data: any) => searchDataFun(data)"
                 :mutComp="true"
+                :apiEndpoints="field.preps?.['apiEndpoints']"
               />
             </div>
           </div>
@@ -430,7 +453,7 @@ onMounted(async () => {
                   <star-horse-table-column
                     v-for="(sitem, skey) in item"
                     :key="compKey(sitem, skey)"
-                    :apiEndpoints="apiEndpoints"
+                    :apiEndpoints="field.preps?.['apiEndpoints']"
                     :cellEditable="false"
                     :data-format="field.preps?.['dataFormat']"
                     :item="sitem"
@@ -438,7 +461,7 @@ onMounted(async () => {
                 </template>
                 <star-horse-table-column
                   v-else
-                  :apiEndpoints="apiEndpoints"
+                  :apiEndpoints="field.preps?.['apiEndpoints']"
                   :cellEditable="false"
                   :data-format="field.preps?.['dataFormat']"
                   :item="item"
@@ -492,7 +515,7 @@ onMounted(async () => {
               :formData="field.preps?.['searchFieldList']"
               @searchData="(data: any) => searchDataFun(data)"
               :mutComp="true"
-              :apiEndpoints="apiEndpoints"
+              :apiEndpoints="field.preps?.['apiEndpoints']"
             />
           </div>
 
@@ -534,7 +557,7 @@ onMounted(async () => {
                   <star-horse-table-column
                     v-for="(sitem, skey) in item"
                     :key="compKey(sitem, skey)"
-                    :apiEndpoints="apiEndpoints"
+                    :apiEndpoints="field.preps?.['apiEndpoints']"
                     :cellEditable="false"
                     :data-format="field.preps?.['dataFormat']"
                     :item="sitem"
@@ -542,7 +565,7 @@ onMounted(async () => {
                 </template>
                 <star-horse-table-column
                   v-else
-                  :apiEndpoints="apiEndpoints"
+                  :apiEndpoints="field.preps?.['apiEndpoints']"
                   :cellEditable="false"
                   :data-format="field.preps?.['dataFormat']"
                   :item="item"
