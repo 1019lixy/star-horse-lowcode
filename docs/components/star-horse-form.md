@@ -8,7 +8,7 @@
 <template>
   <StarHorseForm
     ref="formRef"
-    :compUrl="apiUrls"
+    :apiEndpoints="apiUrls"
     :fieldList="pageFieldInfo"
     @refresh="onRefresh"
   />
@@ -19,7 +19,7 @@
 
 | 属性名 | 类型 | 必填 | 默认值 | 说明 |
 |---|---|---|---|---|
-| compUrl | `ApiUrls` | 否 | — | 接口地址配置，详见 [ApiUrls 类型](../types/api-urls.md) |
+| apiEndpoints | `ApiUrls` | 否 | — | 接口地址配置，详见 [ApiUrls 类型](../types/api-urls.md) |
 | fieldList | `PageFieldInfo` | **是** | — | 表单字段配置，详见 [PageFieldInfo 类型](../types/page-field-info.md) |
 | subTableName | `string` | 否 | `'subDataList'` | 提交后端批量数据的 Key 名称 |
 | batchFieldName | `string` | 否 | `'batchFieldList'` | 批量字段列表的 Key 名称 |
@@ -154,7 +154,7 @@ StarHorseForm 本身不直接包含 dataRelation/apiLinkage/formula 的实现，
 <template>
   <StarHorseForm
     ref="formRef"
-    :compUrl="apiUrls"
+    :apiEndpoints="apiUrls"
     :fieldList="pageFieldInfo"
     @refresh="onRefresh"
   />

@@ -61,7 +61,7 @@ export interface ContainerPreps {
     /**
      * 组件url
      */
-    compUrl?: ApiUrls;
+    apiEndpoints?: ApiUrls;
     /**
      * 组件属性
      */
@@ -316,9 +316,13 @@ export interface ApiInfo {
 
 export interface OptionField {
     /**
-     * 显示属性
+     * 显示属性（旧命名，与 labelField 等价，优先使用 labelField）
      */
-    displayField: string;
+    displayField?: string;
+    /**
+     * 显示属性（新命名，后端数据源常用 labelField）
+     */
+    labelField?: string;
     /**
      * 值属性
      */
@@ -367,7 +371,37 @@ export interface ApiLinkageDetail {
      */
     assignValueType?: "form" | "datasource";
     /** 接口来源模式 */
-    apiMode: "system" | "custom";
+    apiMode?: "system" | "custom";
+    /**
+     * 联动条件字段名列表（触发该数据源刷新的表单字段名）
+     */
+    conditionFields?: string[];
+    /**
+     * 每页条数；0 表示整树/非分页（整量加载，搜索在本地过滤），>0 表示分页列表（搜索走后端条件查询）
+     * 该值由 dynamicform 数据源配置界面的「每页条数」显式配置，不作为运行时推断。
+     */
+    pageSize?: number;
+    /**
+     * 响应模式，决定后端解析业务数据后返回的形状（单一职责）：
+     * - options: 按 optionField 解析为下拉选项 {name,value,children[,raw]}（默认，供下拉/数据选择器）
+     * - mapping: 按 fieldMappings 字段映射转换为表单字段对象（供联动回填）
+     * - list: 保留原始响应行，返回分页结构 {dataList,totalDatas,totalPages}
+     *         供 page-select/dialog-input 等表格型选择器多列展示与后端分页
+     * 对应后端 ApiLinkagePo.responseMode；由配置面板「响应模式」显式配置，不作为运行时推断。
+     */
+    responseMode?: "options" | "mapping" | "list";
+    /**
+     * 数据隔离配置（角色/组织等维度隔离）
+     */
+    isolationConfig?: {
+        isolationType?: string;
+        isolationDetails?: Array<{
+            isolationName?: string;
+            paramName?: string;
+            isolationCode?: string;
+            xh?: number;
+        }>;
+    };
 }
 
 /**

@@ -43,7 +43,7 @@ const emits = defineEmits(["searchData", "searchOrderBy"]);
 const props = defineProps({
   dialogInput: { type: Boolean, default: false },
   mutComp: { type: Boolean, default: false },
-  compUrl: { type: Object },
+  apiEndpoints: { type: Object },
   formData: { type: Object as PropType<SearchFields>, required: true },
   defaultCondition: { type: Array as PropType<SearchParams[]> },
   /** 是否展示「高级查询」入口，默认开启 */

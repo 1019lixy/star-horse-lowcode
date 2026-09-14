@@ -29,7 +29,7 @@
         label: '测试',
         fieldName: 'test',
         preps: {
-          dataUrl: '/system-config/system/dictinfoType/pageList',
+          apiEndpoints: '/system-config/system/dictinfoType/pageList',
           displayName: 'dictTypeName',
           multiple: true,
           displayValue: 'dictTypeCode',

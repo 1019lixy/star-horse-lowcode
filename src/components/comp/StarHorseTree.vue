@@ -58,7 +58,7 @@ const props = defineProps({
   //是否自动加载数据
   autoLoad: { type: Boolean, default: true },
   //接口地址
-  compUrl: { type: Object as PropType<ApiUrls> },
+  apiEndpoints: { type: Object as PropType<ApiUrls> },
   //默认排序
   orderBy: { type: Array as PropType<OrderByInfo[]>, default: () => [] },
   //按钮名称
@@ -245,7 +245,7 @@ const loadByPage = async () => {
     fieldList: searchParams,
     orderBy: temp,
   };
-  postRequest(props.compUrl?.pageListUrl!, params)
+  postRequest(props.apiEndpoints?.pageListUrl!, params)
     .then((res: any) => {
       if (!res || res?.data?.code != 200) {
         console.error(res?.data?.cnMessage || i18n("api.interfaceError"));
@@ -269,7 +269,7 @@ const loadByPage = async () => {
 
 const init = async () => {
   if (props.isDynamicData) {
-    if (!props.compUrl) {
+    if (!props.apiEndpoints) {
       warning(i18n("ui.dynamicInterfaceError"));
       return;
     }

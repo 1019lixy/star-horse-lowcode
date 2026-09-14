@@ -22,7 +22,7 @@ import { isMobile } from "@/api/device";
 
 const dataForm = ref<any>({});
 const props = defineProps({
-  compUrl: { type: Object as PropType<ApiUrls> },
+  apiEndpoints: { type: Object as PropType<ApiUrls> },
   subFormFlag: { type: String, default: "N" },
   formSize: { type: String, default: "default" },
   labelPosition: { type: String, default: "left" },
@@ -70,14 +70,14 @@ const loadData = async () => {
   let id = Array.isArray(dialogProps?.ids)
     ? dialogProps.ids[0]
     : dialogProps?.ids;
-  if (!props.compUrl) {
+  if (!props.apiEndpoints) {
     return;
   }
   let objData;
   let params = props.globalCondition || {};
   const url = props.useViewUrl
-    ? props.compUrl?.loadByIdForViewUrl
-    : props.compUrl?.loadByIdUrl;
+    ? props.apiEndpoints?.loadByIdForViewUrl
+    : props.apiEndpoints?.loadByIdUrl;
   if (isJson(id)) {
     params = { ...params, ...id };
     objData = await loadById(url, "", params);
@@ -157,7 +157,7 @@ defineExpose({
       >
         <star-horse-form-item
           :primaryKey="primaryKey"
-          :compUrl="compUrl"
+          :apiEndpoints="apiEndpoints"
           :fieldList="platformFields"
           :compSize="formSize"
           v-model:dataForm="dataForm"

@@ -12,11 +12,11 @@ import { download } from "@/api/star_horse_apis";
 import { warning } from "@/utils/message";
 import { ApiUrls } from "@/components/types";
 
-const dataUrl: ApiUrls = apiInstance(
+const apiEndpoints: ApiUrls = apiInstance(
   "http://userdb-manage",
   "////generator/code",
 );
-console.log(dataUrl);
+console.log(apiEndpoints);
 const testFormValidRef = ref();
 const outerData: any = {
   backgroundSize: "http你好%",
@@ -147,9 +147,19 @@ const fieldList = ref<PageFieldInfo>({
       fieldName: "datapicker",
       preps: {
         dataSource: "url",
-        urlOrDictName: "/system-config/system/usersinfo/pageList",
-        displayName: "name",
-        displayValue: "username",
+        apiDataSource: {
+          apiInfo: {
+            url: "/system-config/system/usersinfo/pageList",
+            httpMethod: "POST",
+            requestDataType: "json",
+            apiType: "systemApi",
+          },
+          optionField: {
+            labelField: "name",
+            valueField: "username",
+          },
+          responseMode: "options",
+        },
       }
     },
   ],
@@ -208,7 +218,7 @@ onMounted(() => {
         @refresh="
           (formData, result) => codeGeneratorRef?.assignStaticData(formData)
         "
-        :compUrl="dataUrl"
+        :apiEndpoints="apiEndpoints"
         :preview="true"
         formSize="default"
         :fieldList="fieldList"
@@ -223,7 +233,7 @@ onMounted(() => {
       <star-horse-data-view
         :preview="true"
         :field-list="fieldList"
-        :compUrl="dataUrl"
+        :apiEndpoints="apiEndpoints"
       />
     </star-horse-dialog>
     <div class="search-content">
@@ -233,7 +243,7 @@ onMounted(() => {
             (data: any) => codeGeneratorRef?.createSearchParams(data)
           "
           :formData="searchFormData"
-          :compUrl="dataUrl"
+          :apiEndpoints="apiEndpoints"
         />
       </div>
     </div>
@@ -242,7 +252,7 @@ onMounted(() => {
         ref="codeGeneratorRef"
         :fieldList="fieldList"
         :primaryKey="primaryKey"
-        :compUrl="dataUrl"
+        :apiEndpoints="apiEndpoints"
         :preview="true"
         :btn-permissions="{
           edit: 'edit',

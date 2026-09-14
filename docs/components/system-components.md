@@ -8,7 +8,7 @@
 <template>
   <StarHorseButtonList
     :dialogProps="dialogProps"
-    :compUrl="apiUrls"
+    :apiEndpoints="apiUrls"
     @btnOperation="onBtnOperation"
   />
 </template>
@@ -19,7 +19,7 @@
 | 属性名 | 类型 | 必填 | 默认值 | 说明 |
 |---|---|---|---|---|
 | dialogProps | `DialogProps` | **是** | — | 弹窗属性配置 |
-| compUrl | `ApiUrls` | **是** | — | 接口地址配置 |
+| apiEndpoints | `ApiUrls` | **是** | — | 接口地址配置 |
 | viewFlag | `boolean` | 否 | `false` | 是否查看模式 |
 | extendBtns | `UserFuncInfo[]` | 否 | — | 扩展按钮列表 |
 | preValidFunc | `PreValid[]` | 否 | — | 按钮前置校验 |

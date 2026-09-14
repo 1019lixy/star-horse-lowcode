@@ -20,7 +20,7 @@ import { dictData, download } from "@/api/star_horse_apis";
 import { warning } from "@/utils/message";
 import { createDatetime } from "@/api/date_utils";
 
-const dataUrl: ApiUrls = apiInstance("userdb-manage", "generator/code");
+const apiEndpoints: ApiUrls = apiInstance("userdb-manage", "generator/code");
 
 let dbInfoList = ref<Array<SelectOption>>([]);
 let tableInfoList = ref<Array<SelectOption>>([]);
@@ -843,7 +843,7 @@ const closeAction = () => {
       <star-horse-form
         ref="generateFormRef"
         @refresh="codeGeneratorRef?.loadByPage()"
-        :compUrl="dataUrl"
+        :apiEndpoints="apiEndpoints"
         formSize="default"
         :fieldList="tableFieldList"
         :rules="rules"
@@ -857,7 +857,7 @@ const closeAction = () => {
       <star-horse-data-view
         :dataFormat="dataFormat"
         :field-list="tableFieldList"
-        :compUrl="dataUrl"
+        :apiEndpoints="apiEndpoints"
       />
     </star-horse-dialog>
     <el-tabs v-model="codeGener" type="border-card">
@@ -884,7 +884,7 @@ const closeAction = () => {
             <star-horse-form
               ref="generateFormRef"
               @refresh="codeGeneratorRef?.loadByPage()"
-              :compUrl="dataUrl"
+              :apiEndpoints="apiEndpoints"
               formSize="default"
               :fieldList="tableFieldList"
               :rules="rules"
@@ -901,7 +901,7 @@ const closeAction = () => {
                   (data: any) => codeGeneratorRef?.createSearchParams(data)
                 "
                 :formData="searchFormData"
-                :compUrl="dataUrl"
+                :apiEndpoints="apiEndpoints"
               />
             </div>
           </div>
@@ -910,7 +910,7 @@ const closeAction = () => {
               ref="codeGeneratorRef"
               :fieldList="tableFieldList"
               :primaryKey="primaryKey"
-              :compUrl="dataUrl"
+              :apiEndpoints="apiEndpoints"
               :orderBy="orderBy"
               :btn-permissions="{
                 edit: 'edit',

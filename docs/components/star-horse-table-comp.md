@@ -8,7 +8,7 @@
 <template>
   <StarHorseTableComp
     ref="tableRef"
-    :compUrl="apiUrls"
+    :apiEndpoints="apiUrls"
     :primaryKey="'id'"
     :fieldList="pageFieldInfo"
     :showBatchField="false"
@@ -39,7 +39,7 @@
 
 | 属性名 | 类型 | 必填 | 默认值 | 说明 |
 |---|---|---|---|---|
-| compUrl | `ApiUrls \| any` | **是** | — | 接口地址配置 |
+| apiEndpoints | `ApiUrls \| any` | **是** | — | 接口地址配置 |
 | primaryKey | `string \| any` | **是** | — | 主键字段名 |
 | fieldList | `PageFieldInfo` | **是** | — | 页面字段配置 |
 | hideBtnCondition | `BtnHideCondition[]` | 否 | `[]` | 隐藏按钮条件 |
@@ -170,7 +170,7 @@ StarHorseTableComp 本身不直接使用 `source` prop，但通过以下配置�
 | init() | 初始化：合并默认分页配置、加载按钮权限、触发 permission 事件、根据 stopAutoLoad 决定加载或使用外部数据、初始化列拖拽排序、重建字段数据、移动端加载卡片字段 |
 | loadByPage(initPageInfo?) | 分页加载数据：构建查询参数，处理 redirect 代理 URL，调用 postRequest，支持 pageKeepOldData 累加模式和移动端缓存上限（10页），加载完成后对弹窗模式做 filterData 回显 |
 | createSearchParams(formData, orderBy) | 创建搜索条件并加载数据：保存搜索字段和排序，设置搜索标志，调用 loadByPage() |
-| createParams() | 构建查询参数对象：合并 filterCondition、orderBy、searchFields、compUrl.condition、commonPersons，返回包含分页和搜索条件的完整参数 |
+| createParams() | 构建查询参数对象：合并 filterCondition、orderBy、searchFields、apiEndpoints.condition、commonPersons，返回包含分页和搜索条件的完整参数 |
 | filterData() | 弹窗模式数据回显：根据 inputFieldName 和 inputFieldVal 在当前数据中查找匹配行，自动勾选 |
 | handleSelectionChange(val) | 处理选中变化：1. 检查是否选中父节点（非叶子节点限制）；2. 弹窗单选模式下只保留最新选中项；3. 多选模式直接赋值 |
 | editData(row) | 双击行编辑：设置 dynamicForm 的数据 ID 和选中数据，根据 dialogInput 决定弹窗编辑或触发 selectItem 事件 |

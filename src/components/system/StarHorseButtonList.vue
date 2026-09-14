@@ -18,7 +18,7 @@ import { closeLoad, load } from "@/api/star_horse_utils";
 
 const props = defineProps({
   dialogProps: { type: Object as PropType<DialogProps>, required: true },
-  compUrl: { type: Object as PropType<ApiUrls>, required: true },
+  apiEndpoints: { type: Object as PropType<ApiUrls>, required: true },
   viewFlag: { type: Boolean, default: false },
   //自定义按钮
   extendBtns: { type: Array as PropType<UserFuncInfo[]> },
@@ -98,7 +98,7 @@ const btnOperation = (funcName: string) => {
  * @param fileList
  */
 const downloadTemplate = () => {
-  download(props.compUrl?.downloadTemplateUrl!, {}).catch((err) => {
+  download(props.apiEndpoints?.downloadTemplateUrl!, {}).catch((err) => {
     error(i18n("dialog.interfaceError") + err);
   });
 };
@@ -318,7 +318,7 @@ defineExpose({
                 :show-file-list="false"
                 accept=".xls,.xlsx"
                 :before-upload="beforeUpload"
-                :action="compUrl?.importUrl"
+                :action="apiEndpoints?.importUrl"
                 :headers="{ token: getToken() }"
                 class="upload flex items-center w-[100%]"
                 name="file"
@@ -408,7 +408,7 @@ defineExpose({
               :show-file-list="false"
               accept=".xls,.xlsx"
               :before-upload="beforeUpload"
-              :action="compUrl?.importUrl"
+              :action="apiEndpoints?.importUrl"
               :headers="{ token: getToken() }"
               class="upload"
               name="file"

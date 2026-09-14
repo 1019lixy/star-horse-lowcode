@@ -62,7 +62,7 @@ export function useTableCrud(opts: UseTableCrudOptions) {
     if (overrideOperation("delete", id)) {
       return;
     }
-    let deleteUrl = props.compUrl?.deleteUrl!;
+    let deleteUrl = props.apiEndpoints?.deleteUrl!;
     if (isExpand) {
       deleteUrl = props.expandTable?.expandUrls?.deleteUrl!;
     }
@@ -82,7 +82,7 @@ export function useTableCrud(opts: UseTableCrudOptions) {
     if (overrideOperation(type, id)) {
       return;
     }
-    let action = props.compUrl?.exportSingleDataAction;
+    let action = props.apiEndpoints?.exportSingleDataAction;
     action &&
       action({
         id,

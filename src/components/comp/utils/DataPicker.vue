@@ -5,10 +5,18 @@ import {createCondition} from "@/api/star_horse_utils";
 import {PageProps} from "@/components/types/PageProps";
 import {SearchParams} from "@/components/types";
 import {isMobile} from "@/api/device";
-import {dataPickerBaseDefaults, loadPageData, toggleNodeSelection, type DataPickerBaseProps, type ModelValueType} from "@/components/comp/utils/DataSelectorUtils";
+import {dataPickerBaseDefaults, loadPageData, toggleNodeSelection, type DataPickerBaseProps, type ModelValueType} from "@/api/star_horse_utils";
 import {StarHorseIcon} from "@/components/comp";
 import {Bottom, Check, Delete, Download, QuestionFilled, Sort, Top, Upload,} from "@element-plus/icons-vue";
 import Sortable from "sortablejs";
+
+/**
+ * 远端非分页数据的内存缓存（跨打开复用）。
+ * 已加载过的数据源再打开时直接读缓存，避免 close/重开反复调后端；
+ * key 为数据源标识（apiEndpoints/apiDataSource/proxy/params），无关分页。
+ * 换数据源或需要最新数据（如点击搜索）时强制绕过缓存。
+ */
+const remoteOptionsCache = new Map<string, any[]>();
 
 /** DataPicker 私有扩展：继承公共 DataPickerBaseProps */
 export interface DataDropdownProps extends DataPickerBaseProps {
@@ -462,24 +470,62 @@ let pageInfo = reactive<PageProps>({
   dataList: [],
 });
 
-/** 远程模式：分页加载待选列表（请求实现统一在 DataSelectorUtils.loadPageData） */
-const loadData = async (condition?: SearchParams[]) => {
-  if (!props.dataUrl) return;
+/** 远端数据源标识（跨打开缓存 key，不含分页页码） */
+const remoteSourceKey = () =>
+  JSON.stringify({
+    apiEndpoints: props.apiEndpoints,
+    apiDataSource: props.apiDataSource,
+    proxy: props.proxy,
+    proxyUrl: props.proxyUrl,
+    params: props.params,
+  });
+
+/** 每页条数：优先取数据源配置(apiDataSource.pageSize)，回退到组件 pageSize prop；0=整树/非分页 */
+const effectivePageSize = computed(
+  () => Number(props.apiDataSource?.pageSize ?? props.pageSize ?? 0) || 0,
+);
+
+/** 远程模式：分页加载待选列表（统一走 loadPageData）；非分页已缓存则复用，不重复调后端 */
+const loadData = async (condition?: SearchParams[], fresh: boolean = false) => {
+  if (!props.apiEndpoints && !props.apiDataSource) return;
+  const cacheKey = remoteSourceKey();
+  // 非分页 && 有缓存 && 非强制刷新 → 直接复用内存，不再请求后端
+  if (!effectivePageSize.value && !fresh) {
+    const cached = remoteOptionsCache.get(cacheKey);
+    if (cached && cached.length > 0) {
+      dataOrgOptions.value = cached;
+      pageInfo.totalData = cached.length;
+      pageInfo.totalPage = 1;
+      pageInfo.currentPage = pageInfo.currentPage || 1;
+      return;
+    }
+  }
   const result = await loadPageData({
-    dataUrl: props.dataUrl,
+    apiEndpoints: props.apiEndpoints,
     conditions: condition,
     extraParams: props.params,
     currentPage: pageInfo.currentPage,
-    pageSize: props.pageSize || 0,
+    pageSize: effectivePageSize.value || 0,
     proxy: props.proxy,
     proxyUrl: props.proxyUrl,
+    apiDataSource: props.apiDataSource,
   });
   dataOrgOptions.value = result.list;
   pageInfo.totalPage = result.totalPage;
   pageInfo.totalData = result.totalData;
+  if (!effectivePageSize.value) {
+    remoteOptionsCache.set(cacheKey, result.list);
+  }
 };
 
-/** 关键字搜索：远程模式带条件重新查询，静态树模式走前端过滤 */
+/** 关键字搜索防抖定时器（避免每次输入都触发请求/重复过滤） */
+let searchDebounceTimer: any = null;
+const onSearchInput = () => {
+  if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+  searchDebounceTimer = setTimeout(() => dataSearch(), 400);
+};
+
+/** 关键字搜索：非分页树（整树已本地加载）用 el-tree 本地过滤、不打后端；分页源走后端条件查询；静态树用 el-tree 过滤 */
 const dataSearch = () => {
   // APP 端本地分页模式：走 applyLocalPageOrSearch 实现（搜索 + 分页 + 层级筛选）
   if (localPageEnabled.value) {
@@ -487,15 +533,21 @@ const dataSearch = () => {
     applyLocalPageOrSearch();
     return;
   }
-  if (props.dataUrl) {
-    loadData(
-      queryName.value
-        ? [createCondition(props.displayName, queryName.value, "lk")]
-        : [],
-    );
+  if (props.apiEndpoints || props.apiDataSource) {
+    if (!effectivePageSize.value) {
+      // 非分页远程（整树）：整树已本地加载，直接 el-tree 过滤（保留命中节点祖先），不再请求后端
+      orgTreeRef.value?.filter(queryName.value || "");
+    } else {
+      // 分页远程：携带条件走后端查询
+      loadData(
+        queryName.value
+          ? [createCondition(props.displayName, queryName.value, "lk")]
+          : [],
+        !!queryName.value,
+      );
+    }
   } else {
-    if (!queryName.value) return;
-    orgTreeRef.value?.filter(queryName.value);
+    orgTreeRef.value?.filter(queryName.value || "");
   }
 };
 const filterNode = (value: string, data: any): boolean => {
@@ -529,7 +581,8 @@ const initOptions = async () => {
   if (props.data?.length > 0) {
     // APP 端大数据（>= 500 叶子）时，启用客户端分页 + 延迟渲染
     const leafCount = countLeafNodes(props.data);
-    localPageEnabled.value = isMobile && !props.dataUrl && leafCount >= 500;
+    localPageEnabled.value =
+      isMobile && !props.apiEndpoints && !props.apiDataSource && leafCount >= 500;
     if (localPageEnabled.value) {
       // 扁平化叶子，做分页
       localFlatLeaves.value = flattenLeafNodes(props.data);
@@ -687,6 +740,7 @@ defineExpose({
               clearable
               @keyup.enter="dataSearch"
               @clear="dataSearch"
+              @input="onSearchInput"
             >
               <template #suffix>
                 <div class="dp-search-btn" @click="dataSearch">
@@ -869,6 +923,7 @@ defineExpose({
           clearable
           @keyup.enter="dataSearch"
           @clear="dataSearch"
+          @input="onSearchInput"
         >
           <template #suffix>
             <div class="dp-search-btn" @click="dataSearch">
@@ -931,6 +986,7 @@ defineExpose({
             clearable
             @keyup.enter="dataSearch"
             @clear="dataSearch"
+            @input="onSearchInput"
           >
             <template #suffix>
               <div class="dp-search-btn" @click="dataSearch">

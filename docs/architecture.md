@@ -186,7 +186,7 @@ star-horse-lowcode
 ```
 ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
 │ StarHorse    │     │ StarHorse    │     │  API 服务    │
-│ SearchForm   │────▶│ TableComp    │────▶│  (compUrl)   │
+│ SearchForm   │────▶│ TableComp    │────▶│  (apiEndpoints)   │
 │ (搜索条件)   │     │ (数据列表)   │◀────│              │
 └──────────────┘     └──────┬───────┘     └──────────────┘
                             │

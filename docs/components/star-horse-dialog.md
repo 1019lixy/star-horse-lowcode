@@ -13,7 +13,7 @@
     @closeAction="onClose"
   >
     <!-- 对话框内容 -->
-    <StarHorseForm ref="formRef" :compUrl="apiUrls" :fieldList="fieldList" />
+    <StarHorseForm ref="formRef" :apiEndpoints="apiUrls" :fieldList="fieldList" />
   </StarHorseDialog>
 </template>
 ```
@@ -113,7 +113,7 @@
   :selfFunc="true"
   @merge="handleCustomMerge"
 >
-  <StarHorseForm ref="formRef" :compUrl="apiUrls" :fieldList="fieldList" />
+  <StarHorseForm ref="formRef" :apiEndpoints="apiUrls" :fieldList="fieldList" />
 </StarHorseDialog>
 ```
 

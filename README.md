@@ -54,7 +54,7 @@ Node 版本 >20
  等；当前发布的组件是便于个人使用， 具体描述待后期知识库完善后，可在知识库上进行查看。
  此次发布只是低代码平台的核心组件库，后期会根据实际情况发布设计模块功能。
  该组件库里面存在着 两个接口会自动调用后端，一个是用户分享数据接口（下一个版本会屏蔽掉），一个是转发地址接口（配置了会调用）
- 后面用户只需要配置好 const dataUrl: ApiUrls = apiInstance("system-config", "system/areainfo");
+ 后面用户只需要配置好 const apiEndpoints: ApiUrls = apiInstance("system-config", "system/areainfo");
  //以分页接口pageListUrl为例，最终会映射成：/system-config/system/areainfo/pageListUrl,
  返回数据格式为：
  分页接口：{
@@ -88,7 +88,7 @@ import {
   PageFieldInfo, SearchFields, ApiUrls
 } from "star-horse-lowcode";
 // 接口地址
-const dataUrl: ApiUrls = apiInstance("system-config", "system/areainfo");
+const apiEndpoints: ApiUrls = apiInstance("system-config", "system/areainfo");
 // 搜索属性
 const searchFormData = reactive<SearchFields>({
   fieldList: [
@@ -162,7 +162,7 @@ onMounted(() => {
   <star-horse-panel :isShowBtnContinue="true" v-model="dialogProps.editVisible" :dialogProps="dialogProps">
     <star-horse-form
         @refresh="testRef.loadByPage()"
-        :compUrl="dataUrl"
+        :apiEndpoints="apiEndpoints"
         :fieldList="tableFieldList"
         :rules="rules"
     />
@@ -172,14 +172,14 @@ onMounted(() => {
       :dialogProps="dialogProps"
       :source="3"
   >
-    <star-horse-data-view :dataFormat="dataFormat" :field-list="tableFieldList" :compUrl="dataUrl"/>
+    <star-horse-data-view :dataFormat="dataFormat" :field-list="tableFieldList" :apiEndpoints="apiEndpoints"/>
   </star-horse-panel>
   <div class="search-content">
     <div class="search_btn" :style="{ 'flex-direction': Config.buttonStyle.value == 'line'? 'column' : 'row' }">
       <star-horse-search-comp
           @searchData="(data: any) => areainfoRef.createSearchParams(data)"
           :formData="searchFormData"
-          :compUrl="dataUrl"
+          :apiEndpoints="apiEndpoints"
       />
     </div>
   </div>
@@ -188,7 +188,7 @@ onMounted(() => {
         ref="testRef"
         :fieldList="tableFieldList"
         :primaryKey="primaryKey"
-        :compUrl="dataUrl"
+        :apiEndpoints="apiEndpoints"
         :btnPermissions="btnPermisson"
         :dataFormat="dataFormat"
         :showPageBar="true"

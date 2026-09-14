@@ -21,7 +21,7 @@ let importDialogVisible = ref<boolean>(false);
 let rowDialogVisible = ref<boolean>(false);
 const rowDataFormRef = ref();
 const props = defineProps({
-  compUrl: {type: Object as PropType<ApiUrls>},
+  apiEndpoints: {type: Object as PropType<ApiUrls>},
   fieldList: {type: Object as PropType<FieldInfo[]>, required: true},
   defaultValues: {type: Object, default: {}},
   subTableName: {type: String, default: "subDataList"},

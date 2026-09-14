@@ -9,7 +9,7 @@ import {
   loadSelectedData,
   type DataPickerBaseProps,
   type ModelValueType,
-} from "@/components/comp/utils/DataSelectorUtils";
+} from "@/api/star_horse_utils";
 
 /** StarHorseDataSelector 私有扩展：继承公共 DataPickerBaseProps */
 export interface DataSelectorProps extends DataPickerBaseProps {
@@ -72,14 +72,15 @@ const fetchSelectedItems = async (values: any[]): Promise<any[]> => {
   if (props.data?.length) {
     return findNodesInTree(props.data, values, props.displayValue);
   }
-  if (props.dataUrl) {
+  if (props.apiEndpoints || props.apiDataSource) {
     return loadSelectedData(
-      props.dataUrl,
+      props.apiEndpoints,
       values,
       props.displayValue,
       props.params,
       props.proxy,
       props.proxyUrl,
+      props.apiDataSource,
     );
   }
   return [];
@@ -193,9 +194,10 @@ const getDisplayText = (val: any): string => {
     ref="dataPickerRef"
     :title="title"
     :data="data"
-    :data-url="dataUrl"
+    :apiEndpoints="apiEndpoints"
     :proxy="proxy"
     :proxy-url="proxyUrl"
+    :api-data-source="apiDataSource"
     :params="params"
     :page-size="pageSize"
     :comp-size="compSize"

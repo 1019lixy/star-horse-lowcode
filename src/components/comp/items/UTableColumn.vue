@@ -43,7 +43,7 @@ const batchContainers = computed(() => {
           :key="_compKey(sitem, sitem.subTablePrimaryKey)"
           style="min-height: 100px; width: 100% !important"
           v-model:dataForm="scope.row"
-          :compUrl="sitem.preps?.compUrl"
+          :apiEndpoints="sitem.preps?.apiEndpoints"
           :primaryKey="sitem['primaryKey']"
           :subTableName="sitem['subTableName']"
           :initRows="sitem.preps?.initRows"

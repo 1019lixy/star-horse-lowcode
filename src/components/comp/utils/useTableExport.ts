@@ -138,7 +138,7 @@ export function useTableExport(opts: UseTableExportOptions) {
     if (params.length === 0) {
       params = [...searchFields.value];
     }
-    const defaultCond: any = removeEmptyCondition(props?.compUrl?.condition);
+    const defaultCond: any = removeEmptyCondition(props?.apiEndpoints?.condition);
     if (defaultCond?.length > 0) {
       params.push(...defaultCond);
     }
@@ -157,7 +157,7 @@ export function useTableExport(opts: UseTableExportOptions) {
     if (overrideOperation("export", ids)) return;
     load(i18n("comp.dataProcessing"));
     const condition = buildExportCondition();
-    download(props?.compUrl?.exportAllUrl, { condition, fields })
+    download(props?.apiEndpoints?.exportAllUrl, { condition, fields })
       .catch((err: any) => {
         error(i18n("comp.interfaceNotFoundOrNetworkError") + err);
       })

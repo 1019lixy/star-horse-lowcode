@@ -47,7 +47,7 @@
 
 | 属性名 | 类型 | 必填 | 默认值 | 说明 |
 |---|---|---|---|---|
-| compUrl | `ApiUrls` | 否 | — | 接口地址配置 |
+| apiEndpoints | `ApiUrls` | 否 | — | 接口地址配置 |
 | subTableName | `string` | 否 | `''` | 批量数据 Key |
 | item | `FieldInfo` | **是** | — | 字段配置 |
 | dataFormat | `Function` | **是** | — | 格式化函数 |

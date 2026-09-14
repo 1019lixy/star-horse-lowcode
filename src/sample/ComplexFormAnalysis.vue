@@ -12,8 +12,8 @@ import { postRequest } from "@/api/star_horse_apis";
 import { StarHorseTableComp } from "@/components/comp";
 
 let informationsList = ref<any>([]);
-const dataUrl: ApiUrls = apiInstance("system-config", "system/informations");
-dataUrl.loadByIdUrl = dataUrl.basePrefix + "/getInformationById";
+const apiEndpoints: ApiUrls = apiInstance("system-config", "system/informations");
+apiEndpoints.loadByIdUrl = apiEndpoints.basePrefix + "/getInformationById";
 let systemIconList = ref<SelectOption[]>([]);
 let customerList = ref<SelectOption[]>([]);
 const searchFormData = reactive<SearchFields>({
@@ -58,7 +58,7 @@ const testFun = (formData: any) => {
   if (!formData["parentId"]) {
     return;
   }
-  postRequest(dataUrl.loadByIdUrl + "/" + formData["parentId"], {}).then(
+  postRequest(apiEndpoints.loadByIdUrl + "/" + formData["parentId"], {}).then(
     (res) => {
       let redata = res.data.data;
       formData["idCustomer"] = redata["idCustomer"];
@@ -157,7 +157,7 @@ const tableFieldList = reactive<PageFieldInfo>({
           preps: {
             multiple: true,
             primaryKey: "idDynamicForm",
-            dataUrl: {
+            apiEndpoints: {
               pageListUrl: "/userdb-manage/userdb/dynamicForm/pageList",
             },
             needField: [
@@ -448,7 +448,7 @@ onActivated(() => {});
     >
       <star-horse-form
         @refresh="informationsRef?.loadByPage()"
-        :compUrl="dataUrl"
+        :apiEndpoints="apiEndpoints"
         :fieldList="tableFieldList"
         :rules="rules"
       />
@@ -461,7 +461,7 @@ onActivated(() => {});
       <star-horse-data-view
         :data-format="dataFormat"
         :field-list="tableFieldList"
-        :compUrl="dataUrl"
+        :apiEndpoints="apiEndpoints"
       />
     </star-horse-dialog>
     <div class="search-content">
@@ -469,7 +469,7 @@ onActivated(() => {});
         <star-horse-search-comp
           @searchData="(data: any) => informationsRef?.createSearchParams(data)"
           :formData="searchFormData"
-          :compUrl="dataUrl"
+          :apiEndpoints="apiEndpoints"
         />
       </div>
     </div>
@@ -485,7 +485,7 @@ onActivated(() => {});
           export: 'export',
           download: 'download',
         }"
-        :compUrl="dataUrl"
+        :apiEndpoints="apiEndpoints"
         :dataFormat="dataFormat"
       />
     </el-card>

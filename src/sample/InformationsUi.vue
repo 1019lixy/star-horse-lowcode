@@ -12,7 +12,7 @@ import {
 } from "@/components/types";
 import { apiInstance, dialogPreps } from "@/api/star_horse_utils";
 
-const dataUrl: ApiUrls = apiInstance("system-config", "system/rolesinfo");
+const apiEndpoints: ApiUrls = apiInstance("system-config", "system/rolesinfo");
 let departmentList = ref<SelectOption[]>([]);
 let systemList = ref<SelectOption[]>([]);
 let menusList = ref([]);
@@ -272,7 +272,7 @@ onMounted(async () => {
       :dialogProps="dialogProps"
     >
       <star-horse-form
-        :compUrl="dataUrl"
+        :apiEndpoints="apiEndpoints"
         @refresh="starHorseTableCompRef?.loadByPage()"
         :fieldList="tableFieldList"
         :rules="rules"
@@ -286,7 +286,7 @@ onMounted(async () => {
       <star-horse-data-view
         :dataFormat="dataFormat"
         :field-list="tableFieldList"
-        :compUrl="dataUrl"
+        :apiEndpoints="apiEndpoints"
       />
     </star-horse-dialog>
     <div class="search-content">
@@ -296,7 +296,7 @@ onMounted(async () => {
             (data: any) => starHorseTableCompRef?.createSearchParams(data)
           "
           :formData="searchFormData"
-          :compUrl="dataUrl"
+          :apiEndpoints="apiEndpoints"
         />
       </div>
     </div>
@@ -309,7 +309,7 @@ onMounted(async () => {
           view: 'view',
           edit: 'edit',
         }"
-        :compUrl="dataUrl"
+        :apiEndpoints="apiEndpoints"
         :dataFormat="dataFormat"
       />
     </el-card>

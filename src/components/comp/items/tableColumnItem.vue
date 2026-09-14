@@ -8,7 +8,7 @@ import { processFieldList } from "@/api/form_utils";
 
 const props = defineProps({
   //url地址
-  compUrl: { type: Object as PropType<ApiUrls>, required: true },
+  apiEndpoints: { type: Object as PropType<ApiUrls>, required: true },
   //列名
   fieldList: { type: Object as PropType<any>, required: true },
   cellEditable: { type: Boolean, default: false },
@@ -61,7 +61,7 @@ const normalizedFieldList = computed(() => {
 <template>
   <template v-for="field in normalizedFieldList" :key="field.key">
     <star-horse-table-column
-      :compUrl="compUrl"
+      :apiEndpoints="apiEndpoints"
       :cellEditable="fieldList['cellEditable']"
       :globalConfig="globalConfig"
       :isDynamic="isDynamic"

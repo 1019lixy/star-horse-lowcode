@@ -196,7 +196,7 @@ defineExpose({refreshForm});
       >
         <star-horse-form
             @refresh="normalPageRef?.loadByPage()"
-            :compUrl="formData.dataUrl"
+            :apiEndpoints="formData.apiEndpoints"
             :fieldList="formData.tableFieldList"
             :primary-key="formData.primaryKey"
             :rules="formData.rules"
@@ -217,7 +217,7 @@ defineExpose({refreshForm});
             :field-list="formData.tableFieldList"
             :globalCondition="formData.relationTables"
             :dynamicForm="true"
-            :compUrl="formData.dataUrl"
+            :apiEndpoints="formData.apiEndpoints"
         />
       </star-horse-panel>
       <div
@@ -228,7 +228,7 @@ defineExpose({refreshForm});
           <star-horse-search-comp
               @searchData="(data: any) => normalPageRef?.createSearchParams(data)"
               :formData="formData.searchFormData"
-              :compUrl="formData.dataUrl"
+              :apiEndpoints="formData.apiEndpoints"
           />
         </div>
       </div>
@@ -246,7 +246,7 @@ defineExpose({refreshForm});
             delete:'delete',
             view:'view',
           }"
-            :compUrl="formData.dataUrl"
+            :apiEndpoints="formData.apiEndpoints"
             :showBatchField="true"
             :dataFormat="dataFormat"
         />

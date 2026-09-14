@@ -204,7 +204,7 @@ const permissionList = () => {
 };
 const init = async () => {
   Object.assign(pageInfo.value, baseInfo);
-  pagePermission.setPermissionUrl(props.compUrl?.permissionsUrl);
+  pagePermission.setPermissionUrl(props.apiEndpoints?.permissionsUrl);
   permissions.value = await pagePermission.addRoute(
       window.__hostRouter__?.currentRoute.value,
   );
@@ -271,7 +271,7 @@ const createParams = () => {
   if (searchFields.value?.length > 0) {
     searchTemp.push(...searchFields.value);
   }
-  let condition: any = removeEmptyCondition(props.compUrl?.condition!);
+  let condition: any = removeEmptyCondition(props.apiEndpoints?.condition!);
   if (condition && condition.length > 0) {
     searchTemp.push(...condition);
   }
@@ -281,7 +281,7 @@ const createParams = () => {
         createCondition(props.userColumnName, props.commonPersons, "in"),
     );
   }
-  if (!props.compUrl?.pageListUrl) {
+  if (!props.apiEndpoints?.pageListUrl) {
     return;
   }
   let params: any = {
@@ -301,21 +301,21 @@ const loadByPage = (initPageInfo?: boolean) => {
     Object.assign(pageInfo.value, baseInfo);
     pageInfo.value.dataList = [];
   }
-  let url: string = props.compUrl?.pageListUrl as string;
+  let url: string = props.apiEndpoints?.pageListUrl as string;
   let params: any = createParams();
-  if (props.compUrl?.redirect) {
+  if (props.apiEndpoints?.redirect) {
     params = {
       url,
-      host: props.compUrl?.host,
-      port: props.compUrl?.port,
-      protocol: props.compUrl?.protocol,
-      env: props.compUrl?.env,
-      httpMethod: props.compUrl?.httpMethod || "POST",
-      dataType: props.compUrl?.dataType || "JSON",
+      host: props.apiEndpoints?.host,
+      port: props.apiEndpoints?.port,
+      protocol: props.apiEndpoints?.protocol,
+      env: props.apiEndpoints?.env,
+      httpMethod: props.apiEndpoints?.httpMethod || "POST",
+      dataType: props.apiEndpoints?.dataType || "JSON",
       searchInfo: params,
     };
     url =
-        props.compUrl?.redirectPageListUrl ?? "/system-config/redirect/pageList";
+        props.apiEndpoints?.redirectPageListUrl ?? "/system-config/redirect/pageList";
   }
   if (props.needLoad) {
     load(i18n("comp.dataLoading"));
@@ -394,7 +394,7 @@ const getDatas = async (
   if (params && params.length > 0) {
     tempSearchParams.push(...params);
   }
-  let result = await loadData(url || props.compUrl?.listConditionUrl!, {
+  let result = await loadData(url || props.apiEndpoints?.listConditionUrl!, {
     limits: limitSize,
     fieldList: tempSearchParams,
     orderBy: orderBys,
@@ -575,7 +575,7 @@ defineExpose({
         v-if="isMobile && searchFormData"
         ref="mobileSearchRef"
         :formData="searchFormData"
-        :compUrl="compUrl"
+        :apiEndpoints="apiEndpoints"
         @searchData="(data: any) => createSearchParams(data)"
     />
     <div
@@ -596,7 +596,7 @@ defineExpose({
         </div>
         <star-horse-button-list
             @tableCompFunc="(fun: any) => tableCompFunc(fun)"
-            :compUrl="compUrl"
+            :apiEndpoints="apiEndpoints"
             :btnPermissions="permissions"
             :extendBtns="extendBtns"
             :dialogProps="dialogProps"
@@ -708,7 +708,7 @@ defineExpose({
                 <table-column
                     :fieldList="expandTable"
                     :compSize="configInfo?.inputSize"
-                    :compUrl="compUrl"
+                    :apiEndpoints="apiEndpoints"
                     :dataFormat="dataFormat"
                     :sortable="false"
                     :globalConfig="globalConfig"
@@ -722,7 +722,7 @@ defineExpose({
         <table-column-item
             :fieldList="fieldList"
             :compSize="configInfo?.inputSize"
-            :compUrl="compUrl"
+            :apiEndpoints="apiEndpoints"
             :dataFormat="dataFormat"
             :globalConfig="globalConfig"
             :isDynamic="isDynamic"
@@ -752,7 +752,7 @@ defineExpose({
     <div class="data-card-area" v-else>
       <star-horse-button-list
           @tableCompFunc="(fun: any) => tableCompFunc(fun)"
-          :compUrl="compUrl"
+          :apiEndpoints="apiEndpoints"
           :btnPermissions="permissions"
           :extendBtns="extendBtns"
           :dialogProps="dialogProps"

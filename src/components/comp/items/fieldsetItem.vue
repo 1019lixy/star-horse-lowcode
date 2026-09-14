@@ -158,7 +158,7 @@ onMounted(() => {
         <div v-show="!fiedsetItem.preps?.innerCollapsed" class="fieldset-body">
           <star-horse-form-item
             :source="source"
-            :compUrl="compUrl"
+            :apiEndpoints="apiEndpoints"
             :compSize="compSize"
             :commonFormat="commonFormat"
             :dataForm="

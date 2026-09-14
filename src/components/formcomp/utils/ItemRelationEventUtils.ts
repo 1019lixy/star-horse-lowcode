@@ -1,4 +1,4 @@
-import {closeLoad, createCondition, dynamicUrlOperation, isJson, load,} from "@/api/star_horse_utils";
+import {closeLoad, createCondition, dynamicUrlOperation, isJson, load, requestApiLinkage,} from "@/api/star_horse_utils";
 import {userFunction} from "@/api/user_func";
 import {ApiLinkageDetail, ItemRelation, RelationDetail, SelectOption,} from "@/components/types";
 import {error, message, warning} from "@/utils/message";
@@ -10,7 +10,7 @@ import {
     initFormFormulaWatchers,
     setupFormulaWatchers,
 } from "@/components/formcomp/utils/FormulaEngine";
-import {postRequest} from "@/api/star_horse_apis";
+
 import {PreOrPendEventConfig} from "@/components/types/PreOrPendType";
 import {initRuleEvent, ruleButtonAction, ruleEventDispatcher,} from "@/components/formcomp/utils/ItemRuleEventUtils";
 
@@ -450,42 +450,34 @@ const relationEventDispatcher = (
  * @param apiLinkage
  * @param formData
  */
-export const apiLinkageOperation = (
+export const apiLinkageOperation = async (
     apiLinkage: ApiLinkageDetail,
     formData: Ref<Record<string, any>>,
 ) => {
-    //数据配置OK后
-    const condition = {
-        ...apiLinkage,
-        formData: unref(formData),
-    };
     load(i18n("ide.status.loading"));
-    postRequest(
-        apiLinkage.proxyUrl ?? "/system-config/redirect/apiLinkage",
-        condition,
-    )
-        .then((response) => {
-            const result = response?.data;
-            closeLoad();
-            if (result?.code != 200) {
-                warning(result.cnMessage);
-                return;
-            }
-            const data = result?.data;
-            if (data) {
-                for (let key in data) {
-                    if ("_value" != key) {
-                        //如果有数据不替换
-                        //任何时候都替换
-                        //如果数据和返回数据不一致替换
-                        unref(formData)[key] = data[key];
-                    }
+    try {
+        // 复用统一第三方接口取数核心（联动为不分页回填，条件仍由 formData 提供）
+        const result = await requestApiLinkage(
+            apiLinkage,
+            {},
+            unref(formData),
+        );
+        if (result.code != 200) {
+            if (result.message) warning(result.message);
+            return;
+        }
+        const data = result.data;
+        if (data) {
+            for (let key in data) {
+                if ("_value" != key) {
+                    //如果有数据不替换；任何时候都替换；如果数据和返回数据不一致替换
+                    unref(formData)[key] = data[key];
                 }
             }
-        })
-        .finally(() => {
-            closeLoad();
-        });
+        }
+    } finally {
+        closeLoad();
+    }
 };
 
 // ==================== 规则引擎（已独立到 ItemRuleEventUtils.ts） ====================

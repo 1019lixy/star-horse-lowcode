@@ -621,7 +621,7 @@ const options = computed(() => {
 
 | 属性名 | 类型 | 默认值 | 说明 |
 |---|---|---|---|
-| dataUrl | `ApiUrls` | — | 数据接口配置 |
+| apiEndpoints | `ApiUrls` | — | 数据接口配置 |
 | fieldList | `Array` | — | 列表字段配置 |
 | primaryKey | `string` | — | 主键字段名 |
 | multiple | `boolean` | `false` | 是否多选 |
@@ -646,7 +646,7 @@ const options = computed(() => {
 | needField | `FieldMapping[]` | — | 字段映射配置 |
 | aliasName | `string` | — | 别名字段名 |
 | primaryKey | `string` | — | 主键 |
-| dataUrl | `ApiUrls` | — | 数据接口配置 |
+| apiEndpoints | `ApiUrls` | — | 数据接口配置 |
 | fieldList | `Array` | — | 列表字段 |
 | searchFieldList | `Array` | — | 搜索字段 |
 | filterCondition | `SearchParams[]` | — | 过滤条件 |

@@ -45,7 +45,7 @@ const shouldShow = () => {
       :rules="rules"
       :subTableName="subTableName"
       :compSize="compSize"
-      :compUrl="compUrl"
+      :apiEndpoints="apiEndpoints"
       :subFormFlag="subFormFlag"
       :enableSubNode="enableSubNode"
       :source="source"

@@ -153,10 +153,10 @@ const handleConfirmSign = () => {
   const canvas = canvasRef.value;
   if (!canvas) return;
   // 裁剪空白边缘（简化版）
-  const dataUrl = canvas.toDataURL("image/png");
+  const apiEndpoints = canvas.toDataURL("image/png");
   signer.addSignature({
     signer: i18n("pdf.signer.currentSigner"),
-    imageDataUrl: dataUrl,
+    imageDataUrl: apiEndpoints,
     x: 20,
     y: 200,
     width: 100,

@@ -28,12 +28,6 @@ const pickerData = ref<any>([]);
 const preps = computed(() => {
   const temp = props.field.preps ?? {};
   let preps = { ...temp };
-  if (preps.dataSource !== "url") {
-    delete preps.urlOrDictName;
-  } else {
-    preps.dataUrl = preps.urlOrDictName;
-    delete preps.urlOrDictName;
-  }
   const requestParams: SearchParams[] = [];
   const queryParams = temp?.queryParams;
   queryParams?.forEach((item: any) => {
@@ -47,8 +41,22 @@ const preps = computed(() => {
     });
   });
   preps.params = requestParams;
+  // 兼容 apiDataSource 嵌套结构：映射 optionField → displayName/displayValue
+  // 旧扁平结构（displayName/displayValue 或 prop.label/prop.value）不受影响
+  const apiDs = temp?.apiDataSource;
+  if (apiDs?.optionField) {
+    const of = apiDs.optionField;
+    if (of.labelField || of.displayField) {
+      preps.displayName = of.labelField || of.displayField;
+    }
+    if (of.valueField) {
+      preps.displayValue = of.valueField;
+    }
+  }
   return preps;
 });
+// 独立透传 apiDataSource（prepsFilter 会删除对象类型属性，故不走 v-bind）
+const apiDataSource = computed(() => props.field.preps?.apiDataSource);
 const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
@@ -117,6 +125,7 @@ watch(
     <star-horse-data-selector
       v-model="pickerData"
       v-bind="prepsFilter(preps)"
+      :api-data-source="apiDataSource"
       :disabled="checkIsDisabled(props)"
       @update:selectedData="(data) => itemAction('change')"
       @selectedData="(data) => itemAction('change')"

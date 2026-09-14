@@ -128,7 +128,7 @@ function onSearch(params: SearchParams[]) {
 ```vue
 <template>
   <StarHorseSearchComp
-    :compUrl="apiUrls"
+    :apiEndpoints="apiUrls"
     :formData="searchFields"
     @searchData="onSearch"
   />
@@ -141,7 +141,7 @@ function onSearch(params: SearchParams[]) {
 |---|---|---|---|---|
 | dialogInput | `boolean` | 否 | `false` | 是否弹窗输入模式 |
 | mutComp | `boolean` | 否 | `false` | 是否多组件模式 |
-| compUrl | `object` | 否 | — | 接口地址配置 |
+| apiEndpoints | `object` | 否 | — | 接口地址配置 |
 | formData | `SearchFields` | **是** | — | 查询字段配置 |
 | defaultCondition | `SearchParams[]` | 否 | — | 默认查询条件 |
 | showAdvanced | `boolean` | 否 | `true` | 是否显示"高级查询"入口 |

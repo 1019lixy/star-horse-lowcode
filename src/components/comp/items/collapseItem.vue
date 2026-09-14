@@ -131,7 +131,7 @@ onMounted(() => {
               loadedCollapse.has(collapseItem.subTablePrimaryKey || key)
             "
             :source="source"
-            :compUrl="compUrl"
+            :apiEndpoints="apiEndpoints"
             :compSize="compSize"
             @addRow="addRow"
             @removeRow="removeRow"

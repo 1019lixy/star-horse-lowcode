@@ -75,14 +75,14 @@ const save = (format) => {
     return;
   }
 
-  const dataUrl = signature.value.save(format);
-  preview.value = dataUrl;
+  const apiEndpoints = signature.value.save(format);
+  preview.value = apiEndpoints;
 
   // 下载图片
   const link = document.createElement("a");
   const extension = format === "image/jpeg" ? "jpg" : "png";
   link.download = `signature.${extension}`;
-  link.href = dataUrl;
+  link.href = apiEndpoints;
   link.click();
 };
 

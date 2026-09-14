@@ -220,7 +220,7 @@ watch(
             :enableSubNode="tabItem.enableSubNode"
             parentType="tab"
             :commonFormat="commonFormat"
-            :compUrl="compUrl"
+            :apiEndpoints="apiEndpoints"
             :compSize="compSize"
             :propPrefix="propPrefix"
             @addRow="addRow"

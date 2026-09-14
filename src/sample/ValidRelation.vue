@@ -5,7 +5,7 @@ import { PageFieldInfo } from "@/components/types/PageFieldInfo";
 import { SearchFields, SelectOption } from "@/components/types/SearchProps";
 import { nextTick, onMounted, provide, reactive, ref, watch } from "vue";
 
-const dataUrl: ApiUrls = apiInstance("system-config", "system/areainfo");
+const apiEndpoints: ApiUrls = apiInstance("system-config", "system/areainfo");
 const linkExecServerList = ref<SelectOption[]>([]);
 const codeCommitorList = ref<SelectOption[]>([]);
 
@@ -265,7 +265,7 @@ watch(
       <star-horse-form
         ref="areaFormRef"
         @refresh="areainfoRef?.loadByPage()"
-        :compUrl="dataUrl"
+        :apiEndpoints="apiEndpoints"
         :fieldList="tableFieldList"
         :rules="rules"
       />
@@ -278,7 +278,7 @@ watch(
       <star-horse-data-view
         :dataFormat="dataFormat"
         :field-list="tableFieldList"
-        :compUrl="dataUrl"
+        :apiEndpoints="apiEndpoints"
       />
     </star-horse-dialog>
     <div class="search-content">
@@ -286,7 +286,7 @@ watch(
         <star-horse-search-comp
           @searchData="(data: any) => areainfoRef?.createSearchParams(data)"
           :formData="searchFormData"
-          :compUrl="dataUrl"
+          :apiEndpoints="apiEndpoints"
         />
       </div>
     </div>
@@ -296,7 +296,7 @@ watch(
         :fieldList="tableFieldList"
         :btnPermissions="btnPermissions"
         :primaryKey="primaryKey"
-        :compUrl="dataUrl"
+        :apiEndpoints="apiEndpoints"
         :dataFormat="dataFormat"
         :showPageBar="false"
       />

@@ -43,7 +43,7 @@ export declare interface DataListProps {
   /**
    * 接口地址
    */
-  compUrl?: ApiUrls | any;
+  apiEndpoints?: ApiUrls | any;
   /**
    * 主键
    */

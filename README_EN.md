@@ -49,7 +49,7 @@ It also provides custom components such as:
  etc.; The currently released components are for personal use. Specific descriptions will be available in the knowledge base after it is improved.
  This release is only the core component library of the low-code platform. Design module functions will be released later based on actual situations.
  There are two interfaces in this component library that will automatically call the backend: one is the user data sharing interface (will be blocked in the next version), and one is the forwarding address interface (will be called if configured).
- Later, users only need to configure const dataUrl: ApiUrls = apiInstance("system-config", "system/areainfo");
+ Later, users only need to configure const apiEndpoints: ApiUrls = apiInstance("system-config", "system/areainfo");
  // Taking the pagination interface pageListUrl as an example, it will eventually be mapped to: /system-config/system/areainfo/pageListUrl,
  The data return format is:
  Pagination interface: {
@@ -82,7 +82,7 @@ import {
   PageFieldInfo, SearchFields, ApiUrls
 } from "star-horse-lowcode";
 // API address
-const dataUrl: ApiUrls = apiInstance("system-config", "system/areainfo");
+const apiEndpoints: ApiUrls = apiInstance("system-config", "system/areainfo");
 // Search properties
 const searchFormData = reactive<SearchFields>({
   fieldList: [
@@ -156,7 +156,7 @@ onMounted(() => {
   <star-horse-dialog :isShowBtnContinue="true" :dialogVisible="dialogProps.editVisible" :dialogProps="dialogProps">
     <star-horse-form
         @refresh="testRef.loadByPage()"
-        :compUrl="dataUrl"
+        :apiEndpoints="apiEndpoints"
         :fieldList="tableFieldList"
         :rules="rules"
     />
@@ -166,14 +166,14 @@ onMounted(() => {
       :dialogProps="dialogProps"
       :source="3"
   >
-    <star-horse-data-view :dataFormat="dataFormat" :field-list="tableFieldList" :compUrl="dataUrl"/>
+    <star-horse-data-view :dataFormat="dataFormat" :field-list="tableFieldList" :apiEndpoints="apiEndpoints"/>
   </star-horse-dialog>
   <div class="search-content">
     <div class="search_btn" :style="{ 'flex-direction': Config.buttonStyle.value == 'line'? 'column' : 'row' }">
       <star-horse-search-comp
           @searchData="(data: any) => areainfoRef.createSearchParams(data)"
           :formData="searchFormData"
-          :compUrl="dataUrl"
+          :apiEndpoints="apiEndpoints"
       />
     </div>
   </div>
@@ -182,7 +182,7 @@ onMounted(() => {
         ref="testRef"
         :fieldList="tableFieldList"
         :primaryKey="primaryKey"
-        :compUrl="dataUrl"
+        :apiEndpoints="apiEndpoints"
         :btnPermissions="btnPermisson"
         :dataFormat="dataFormat"
         :showPageBar="true"
@@ -298,7 +298,7 @@ barcode     Barcode component
           },
           msg:'Please select project first'
         }]"
-        :compUrl="dataUrl"
+        :apiEndpoints="apiEndpoints"
         :dataFormat="dataFormat"
     />
 16. 2025-06-17 Framework encapsulated element-plus components, changed exhaustive parameters to v-bind, supporting element-plus latest version changes

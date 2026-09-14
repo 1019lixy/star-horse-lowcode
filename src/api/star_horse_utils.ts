@@ -729,13 +729,13 @@ export async function compDynamicData(
     const temp = field;
     let reDataList: SelectOption[] = [];
     const dataSource = temp.preps?.dataSource;
-    const urlOrDictName = temp.preps?.urlOrDictName;
+    const dictCode = temp.preps?.dictCode;
     if (dataSource == "url" || temp.preps?.apiDataSource) {
         reDataList = await dynamicUrlOperation(field, [], proxyUrl);
     } else if (dataSource == "dict") {
-        const dicts = await dictData(urlOrDictName);
+        const dicts = await dictData(dictCode);
         if (Object.keys(dicts).length == 0) {
-            error(i18n("utils.dictNotConfigured") + `【${urlOrDictName}】`);
+            error(i18n("utils.dictNotConfigured") + `【${dictCode}】`);
         } else {
             reDataList = dicts;
         }
@@ -771,101 +771,51 @@ export async function dynamicUrlOperation(
     const temp = preps.preps || preps;
     const apiDataSource = temp?.apiDataSource as ApiLinkageDetail;
     if (apiDataSource) {
-        let validResult = await loadData(
-            apiDataSource.proxyUrl ?? "/system-config/redirect/apiLinkage",
-            {
-                ...apiDataSource,
-                formData: {},
-                queryCondition: {
-                    fieldList: queryInfo ?? [],
-                },
-            },
-        );
-        return validResult.data;
-    }
-    /*************后面的代码将被废弃***************/
-    const redirect = temp?.redirect ?? true;
-    const reDataList: SelectOption[] = [];
-    const requestParams: SearchParams[] = [];
-    const queryParams = temp?.queryParams;
-    queryParams?.forEach((item: any) => {
-        if (!item.name && !item.propertyName) {
-            return;
-        }
-        requestParams.push({
-            propertyName: item.name ?? item.propertyName,
-            value: item.value || "",
-            operation: item.matchType,
-        });
-    });
-    //自定义查询
-    if (queryInfo && queryInfo.length > 0) {
-        requestParams.push(...queryInfo);
-    }
-    let url = temp.url;
-    if (!url) {
-        console.error(i18n("api.noUrlProvided"));
-        return;
-    }
-    let params: any = {
-        fieldList: requestParams,
-    };
-    // eslint-disable-next-line no-useless-assignment
-    let validResult: any = {};
-    //是否重定向
-    if (redirect) {
-        params = {
-            url: temp["url"] ?? temp["interfaceUrl"],
-            host: temp["host"],
-            port: temp["port"],
-            protocol: temp["protocol"],
-            env: temp["env"],
-            httpMethod: temp.httpMethod || "POST",
-            dataType: temp.dataType || "JSON",
-            searchInfo: {
-                fieldList: requestParams,
-            },
-        };
-        url = proxyUrl ?? "/system-config/redirect/execute";
-        validResult = await loadData(url, params);
-    } else {
-        if (temp?.httpMethod && temp.httpMethod.toUpperCase() === "GET") {
-            validResult = await loadGetData(url);
-        } else {
-            validResult = await loadData(url, params);
-        }
-    }
-    if (validResult.error) {
-        error(validResult.error);
-    } else {
-        const labelName = temp["selectLabel"] ?? temp["labelName"] ?? "name";
-        const valueName = temp["selectValue"] ?? temp["valueName"] ?? "value";
-        const childrenOperation = (list: Array<any>) => {
-            const options: SelectOption[] = [];
-            list?.forEach((item: any) => {
-                const option: SelectOption = {
-                    name: item[labelName],
-                    value: item[valueName],
-                };
-                if (item.children?.length > 0) {
-                    option.children = childrenOperation(item.children);
-                }
-                options.push(option);
-            });
-            return options;
-        };
-        validResult?.data?.forEach((item: any) => {
-            const option: SelectOption = {
-                name: item?.[labelName],
-                value: item?.[valueName],
-            };
-            if (item?.children?.length > 0) {
-                option.children = childrenOperation(item.children);
+        // 直连开关：preps.proxy === false 时不走后端代理，直连目标接口返回原始行（不做选项解析）
+        if (temp?.proxy === false) {
+            const url = apiDataSource.apiInfo?.url;
+            console.error(`[dynamicUrlOperation] ${url ? "直连" : "缺少接口地址"}`);
+            if (!url) return [];
+            const res: any = await postRequest(url, { fieldList: queryInfo ?? [] });
+            if (res?.data?.code != 200) {
+                console.error(res?.data?.cnMessage);
+                return [];
             }
-            reDataList.push(option);
+            return res?.data?.data;
+        }
+        // 统一代理取数出口（不分页）：由后端按 optionField 统一解析选项/字段映射
+        const {data} = await requestApiLinkage(apiDataSource, {
+            fieldList: queryInfo ?? [],
         });
+        return data;
     }
-    return reDataList;
+}
+
+/**
+ * 统一的第三方接口数据源取数核心（唯一代理取数出口）。
+ * 供不分页选项加载(compDynamicData/dynamicUrlOperation)、分页选择器(loadPageData)、联动策略(apiLinkageOperation)复用。
+ * 分页与否由 queryCondition 是否携带 currentPage/pageSize 决定。
+ * @param apiDataSource ApiLinkageDetail 数据源配置
+ * @param queryCondition 查询条件（fieldList/currentPage/pageSize/orderBy）
+ * @param formData 表单数据（联动回填表单时传入）
+ * @returns { code, data, message }，data 为业务负载（选项列表/字段映射对象）
+ */
+export async function requestApiLinkage(
+    apiDataSource: ApiLinkageDetail,
+    queryCondition: Record<string, any>,
+    formData: Record<string, any> = {},
+): Promise<{ code: number; data: any; message: string }> {
+    let result: any = {};
+    try {
+        const res: any = await postRequest(
+            apiDataSource.proxyUrl ?? "/system-config/redirect/apiLinkage",
+            { ...apiDataSource, formData, queryCondition },
+        );
+        result = res?.data || {};
+    } catch (e: any) {
+        console.error("[requestApiLinkage] failed", e);
+    }
+    return { code: result?.code, data: result?.data, message: result?.cnMessage };
 }
 
 /**
@@ -1105,3 +1055,339 @@ export function trim(data: string) {
     }
     return data.replace(/(^\s*)|(\s*$)/g, "");
 }
+
+// ============================================================
+// 数据选择器公共逻辑（原 src/components/comp/utils/DataSelectorUtils.ts，已整合至此）
+// loadPageData / loadSelectedData / buildRequestParams / findNodesInTree 等均由此文件提供
+// ============================================================
+
+/** 选择器值类型：单选为原始值，多选为数组 */
+export type ModelValueType = any;
+
+/** DataPicker / StarHorseDataSelector 公共 props */
+export interface DataPickerBaseProps {
+    modelValue: ModelValueType;
+    apiEndpoints?: string;
+    proxy?: boolean;
+    proxyUrl?: string;
+    params?: SearchParams[];
+    pageSize?: number;
+    data?: Array<any>;
+    title?: string;
+    compSize?: string;
+    displayName?: string;
+    displayValue?: string;
+    /** 显示模式：label 仅显示名称，label+code 显示 名称(编码) */
+    displayMode?: "label" | "label+code";
+    /** 编码字段名（displayMode=label+code 时使用） */
+    displayCode?: string;
+    multiple?: boolean;
+    checkStrictly?: boolean;
+    selectLeaf?: boolean;
+    /** APP 端是否启用层级分类筛选 */
+    enableHierarchy?: boolean;
+    /** API 数据源配置；存在时优先走后端代理 apiLinkage，与扁平 apiEndpoints/proxy/params 互斥 */
+    apiDataSource?: ApiLinkageDetail;
+}
+
+/** 公共 props 默认值（两个组件 withDefaults 共用） */
+export const dataPickerBaseDefaults = {
+    compSize: "default",
+    pageSize: 0,
+    displayName: "name",
+    displayValue: "value",
+    displayMode: "label" as const,
+    displayCode: "code",
+    multiple: false,
+    checkStrictly: true,
+    selectLeaf: false,
+    enableHierarchy: true,
+};
+
+/** 构建代理/直连请求参数 */
+export const buildRequestParams = (
+    apiEndpoints: string,
+    baseParams: Record<string, any>,
+    proxy?: boolean,
+    proxyUrl?: string,
+): { url: string; params: Record<string, any> } => {
+    let tempUrl = apiEndpoints;
+    let params: Record<string, any>;
+    if (proxy) {
+        tempUrl = proxyUrl ?? "/system-config/redirect/execute";
+        params = {
+            url: apiEndpoints,
+            httpMethod: "POST",
+            dataType: "JSON",
+            searchInfo: baseParams,
+        };
+    } else {
+        params = baseParams;
+    }
+    return { url: tempUrl, params };
+};
+
+/** 构建分页查询基础参数 */
+export const buildPageParams = (
+    queryParams: SearchParams[],
+    extraParams?: SearchParams[],
+    currentPage: number = 0,
+    pageSize: number = 100,
+): Record<string, any> => {
+    const allParams = [...queryParams];
+    if (extraParams && extraParams.length > 0) {
+        allParams.push(...extraParams);
+    }
+    return {
+        currentPage,
+        pageSize,
+        fieldList: allParams,
+        orderBy: [],
+    };
+};
+
+/** 递归查找树结构数据中匹配指定值的节点（保序） */
+export const findNodesInTree = (
+    nodes: any[],
+    targetValue: any,
+    displayValue: string = "value",
+): any[] => {
+    const result: any[] = [];
+    const walk = (items: any[]) => {
+        for (const node of items) {
+            const isMatch = Array.isArray(targetValue)
+                ? targetValue.includes(node[displayValue])
+                : node[displayValue] === targetValue;
+            if (isMatch) {
+                const temp = { ...node };
+                delete temp.children;
+                result.push(temp);
+            }
+            if (node.children) {
+                walk(node.children);
+            }
+        }
+    };
+    walk(nodes);
+    if (Array.isArray(targetValue)) {
+        const orderMap = new Map(targetValue.map((v: any, i: number) => [v, i]));
+        result.sort(
+            (a, b) =>
+                (orderMap.get(a[displayValue]) ?? 0) -
+                (orderMap.get(b[displayValue]) ?? 0),
+        );
+    }
+    return result;
+};
+
+/** 处理节点选择/取消选择逻辑 */
+export const toggleNodeSelection = (
+    node: any,
+    currentSelection: any[],
+    options: {
+        multiple: boolean;
+        checkStrictly: boolean;
+        selectLeaf: boolean;
+        displayValue: string;
+    },
+): any[] => {
+    const { multiple, checkStrictly, selectLeaf, displayValue } = options;
+    const data = JSON5.parse(JSON5.stringify(node));
+    const selection = [...currentSelection];
+
+    if (multiple) {
+        const index = selection.findIndex(
+            (e) => e[displayValue] === data[displayValue],
+        );
+        if (index === -1) {
+            if (checkStrictly) {
+                const temp = { ...data };
+                delete temp.children;
+                selection.push(temp);
+            } else {
+                const processChildren = (n: any) => {
+                    if (n.children) {
+                        if (!selectLeaf) {
+                            const temp = { ...n };
+                            delete temp.children;
+                            selection.push(temp);
+                        }
+                        n.children.forEach((child: any) => processChildren(child));
+                    } else {
+                        const childIdx = selection.findIndex(
+                            (e) => e[displayValue] === n[displayValue],
+                        );
+                        if (childIdx === -1) {
+                            const temp = { ...n };
+                            delete temp.children;
+                            selection.push(temp);
+                        }
+                    }
+                };
+                processChildren(data);
+            }
+        } else {
+            selection.splice(index, 1);
+        }
+    } else {
+        const index = selection.findIndex(
+            (e) => e[displayValue] === data[displayValue],
+        );
+        if (index === -1) {
+            delete data.children;
+            return [data];
+        } else {
+            selection.splice(index, 1);
+        }
+    }
+    return selection;
+};
+
+/** 分页查询结果 */
+export interface PageResult {
+    list: any[];
+    totalData: number;
+    totalPage: number;
+}
+
+/**
+ * 由统一接口配置(apiDataSource)构造被委派列表组件的取数参数(ApiUrls 形态)，
+ * 仅用于 page-select/dialog-input 等外层组件向 star-horse-table-comp/star-horse-table-column
+ * 传入其需要的 apiEndpoints，不改动被委派组件本身。
+ * @param apiDataSource 统一接口配置(ApiLinkageDetail)
+ * @returns 委派组件可消费的 ApiUrls(无配置时返回 undefined)
+ */
+export const buildListDataSource = (apiDataSource?: any): any => {
+    const info = apiDataSource?.apiInfo ?? apiDataSource;
+    if (!info?.url) return undefined;
+    return {
+        pageListUrl: info.url,
+        httpMethod: (info.httpMethod || "POST").toUpperCase(),
+        dataType: (info.requestDataType || "json").toUpperCase(),
+        redirect: info.redirect,
+        protocol: info.protocol,
+    };
+};
+
+/**
+ * 统一的数据源分页查询出口：
+ * - apiDataSource 走 requestApiLinkage（分页与否由 pageSize 决定：>0 带分页参数，否则不带）
+ * - apiEndpoints 走代理/直连提供商
+ * StarHorseDataSelector 回显（loadSelectedData）与 DataPicker 加载待选列表均走此方法
+ */
+export const loadPageData = async (options: {
+    apiEndpoints?: string;
+    conditions?: SearchParams[];
+    extraParams?: SearchParams[];
+    currentPage?: number;
+    pageSize?: number;
+    proxy?: boolean;
+    proxyUrl?: string;
+    apiDataSource?: ApiLinkageDetail;
+}): Promise<PageResult> => {
+    const {
+        apiEndpoints,
+        conditions = [],
+        extraParams,
+        currentPage = 0,
+        pageSize = 0,
+        proxy,
+        proxyUrl,
+        apiDataSource,
+    } = options;
+    try {
+        let payload: any;
+        if (apiDataSource) {
+            const allParams = [...conditions];
+            if (extraParams && extraParams.length > 0) allParams.push(...extraParams);
+            // 分页走分页参数，不分页走不分页参数：均由后端按 optionField 统一解析
+            const pageQuery =
+                pageSize > 0
+                    ? { fieldList: allParams, currentPage, pageSize, orderBy: [] }
+                    : { fieldList: allParams };
+            if (proxy !== false) {
+                const result = await requestApiLinkage(apiDataSource, pageQuery);
+                if (result.code != 200) {
+                    console.error(result.message);
+                    return { list: [], totalData: 0, totalPage: 0 };
+                }
+                payload = result.data;
+            } else {
+                // 非代理：直连目标接口返回原始行，不做选项解析
+                const url = apiDataSource.apiInfo?.url;
+                const res: any = await postRequest(url, pageQuery);
+                if (res?.data?.code != 200) {
+                    console.error(res?.data?.cnMessage);
+                    return { list: [], totalData: 0, totalPage: 0 };
+                }
+                payload = res?.data?.data;
+            }
+        } else {
+            if (!apiEndpoints) return { list: [], totalData: 0, totalPage: 0 };
+            const baseParams = buildPageParams(
+                conditions,
+                extraParams,
+                currentPage,
+                pageSize,
+            );
+            const { url, params } = buildRequestParams(
+                apiEndpoints,
+                baseParams,
+                proxy,
+                proxyUrl,
+            );
+            const res: any = await postRequest(url, params);
+            if (res?.data?.code != 200) {
+                console.error(res?.data?.cnMessage);
+                return { list: [], totalData: 0, totalPage: 0 };
+            }
+            payload = res?.data?.data;
+        }
+        const list = payload?.dataList || payload || [];
+        return {
+            list,
+            totalData:
+                payload?.totalDatas ?? (Array.isArray(list) ? list.length : 0),
+            totalPage: payload?.totalPages ?? 0,
+        };
+    } catch (err) {
+        console.error("[loadPageData] failed", err);
+        return { list: [], totalData: 0, totalPage: 0 };
+    } finally {
+        closeLoad();
+    }
+};
+
+/** 通过接口加载选中数据（用于初始化回显） */
+export const loadSelectedData = async (
+    apiEndpoints: string,
+    value: any,
+    displayValue: string = "value",
+    extraParams?: SearchParams[],
+    proxy?: boolean,
+    proxyUrl?: string,
+    apiDataSource?: ApiLinkageDetail,
+): Promise<any[]> => {
+    if (
+        (!apiEndpoints && !apiDataSource) ||
+        !value ||
+        (Array.isArray(value) && value.length === 0)
+    ) {
+        return [];
+    }
+    const conditions: SearchParams[] = [
+        createCondition(displayValue, Array.isArray(value) ? value : [value], "in"),
+    ];
+    if (extraParams && extraParams.length > 0) {
+        conditions.push(...extraParams);
+    }
+    const { list } = await loadPageData({
+        apiEndpoints,
+        conditions,
+        proxy,
+        proxyUrl,
+        apiDataSource,
+        pageSize: 100,
+    });
+    return findNodesInTree(list || [], value, displayValue);
+};

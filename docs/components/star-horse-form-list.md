@@ -49,7 +49,7 @@
   <StarHorseFormList
     v-model:dataForm="formData"
     :fieldList="fieldList"
-    :compUrl="apiUrls"
+    :apiEndpoints="apiUrls"
   />
 </template>
 ```
@@ -58,7 +58,7 @@
 
 | 属性名 | 类型 | 必填 | 默认值 | 说明 |
 |---|---|---|---|---|
-| compUrl | `ApiUrls` | 否 | — | 接口地址配置 |
+| apiEndpoints | `ApiUrls` | 否 | — | 接口地址配置 |
 | fieldList | `FieldInfo[]` | **是** | — | 字段配置列表 |
 | defaultValues | `object` | 否 | `{}` | 新增行默认值 |
 | subTableName | `string` | 否 | `'subDataList'` | 批量数据 Key |
@@ -141,7 +141,7 @@
 
 | 属性名 | 类型 | 必填 | 默认值 | 说明 |
 |---|---|---|---|---|
-| compUrl | `ApiUrls` | 否 | — | 接口地址配置 |
+| apiEndpoints | `ApiUrls` | 否 | — | 接口地址配置 |
 | fieldList | `PageFieldInfo \| any` | 否 | — | 字段配置 |
 | item | `any` | 否 | — | 组件配置项 |
 | subTableName | `string` | 否 | — | 子集合 Key |

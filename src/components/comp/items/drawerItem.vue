@@ -221,7 +221,7 @@ onMounted(() => {
       <template v-for="(drawerItem, key) in item.containerFields">
         <star-horse-form-item
           :source="source"
-          :compUrl="compUrl"
+          :apiEndpoints="apiEndpoints"
           :compSize="compSize"
           :commonFormat="commonFormat"
           :dataForm="

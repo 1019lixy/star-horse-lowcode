@@ -37,7 +37,7 @@ import {
 import { registerFormFieldsRef } from "@/components/formcomp/utils/ItemRuleEventUtils";
 
 const props = defineProps({
-  compUrl: { type: Object as PropType<ApiUrls> },
+  apiEndpoints: { type: Object as PropType<ApiUrls> },
   fieldList: { type: Object as PropType<PageFieldInfo>, required: true },
   subTableName: { type: String, default: "subDataList" },
 
@@ -105,7 +105,7 @@ provide("bindWorkFlowId", props.bindWorkFlowId);
 // 暴露 el-form 实例给嵌套组件（如 stepItem），用于调用 validateField / clearValidate
 provide("starHorseFormRef", starHorseFormRef);
 const loadData = async () => {
-  if (!props.compUrl || !props.compUrl?.loadByIdUrl || !dialogProps?.ids) {
+  if (!props.apiEndpoints || !props.apiEndpoints?.loadByIdUrl || !dialogProps?.ids) {
     return;
   }
   await nextTick();
@@ -121,9 +121,9 @@ const loadData = async () => {
   //如果是Json 对象
   if (isJson(id)) {
     params = { ...params, ...id };
-    objData = await loadById(props.compUrl?.loadByIdUrl!, "", params);
+    objData = await loadById(props.apiEndpoints?.loadByIdUrl!, "", params);
   } else {
-    objData = await loadById(props.compUrl?.loadByIdUrl!, id, params);
+    objData = await loadById(props.apiEndpoints?.loadByIdUrl!, id, params);
   }
   let data = unref(mappingFields);
   dataForm.value = objData;
@@ -282,14 +282,14 @@ const doMerge = (type: string) => {
   assignStatusName();
   let tempForm: any = [];
   let tempDatas = { ...dataForm.value };
-  let mergeUrl = props.compUrl?.mergeUrl;
+  let mergeUrl = props.apiEndpoints?.mergeUrl;
   let flag = true;
   //单独批量数据和嵌入fieldList 里的批量数据
   //原则上只支持1个批量表格，多个存在数据对称问题
   let sameBatchNames = analysisSameToParentField();
   if (sameBatchNames?.length > 0) {
     flag = false;
-    mergeUrl = props.compUrl?.batchMergeUrl;
+    mergeUrl = props.apiEndpoints?.batchMergeUrl;
     tempForm = [];
     sameBatchNames.forEach((subTableName: string) => {
       let batchDatas = tempDatas[subTableName];
@@ -547,7 +547,7 @@ defineExpose({
       >
         <star-horse-form-item
           :primaryKey="primaryKey"
-          :compUrl="compUrl"
+          :apiEndpoints="apiEndpoints"
           :fieldList="platformFields"
           :rules="rules"
           :compSize="formSize"

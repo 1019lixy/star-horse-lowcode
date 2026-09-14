@@ -187,7 +187,7 @@
 | primaryKey | `string` | 否 | 主键名称 |
 | batchDefaultData | `any` | 否 | 新增行时默认添加的属性 |
 | fieldList | `FieldInfo[] \| any` | 是 | 字段属性 |
-| compUrl | `ApiUrls` | 否 | 当前组件接口 |
+| apiEndpoints | `ApiUrls` | 否 | 当前组件接口 |
 | importInfo | `ImportInfo` | 否 | 导入数据 |
 | staticData | `string` | 否 | 是否静态数据 |
 | subFormFlag | `string \| boolean` | 否 | 是否同表 |
@@ -295,7 +295,7 @@
 | needField | `FieldMapping[]` | 是 | 选中数据时需要的字段 |
 | recall | `Function` | 否 | 回调函数 |
 | primaryKey | `string \| Array<any>` | 是 | 主键名称 |
-| dataUrl | `ApiUrls` | 是 | 接口地址 |
+| apiEndpoints | `ApiUrls` | 是 | 接口地址 |
 | fieldList | `FieldInfo[]` | 是 | 字段信息 |
 | condition | `SearchParams[]` | 否 | 接口过滤条件 |
 | orderBy | `OrderByInfo[]` | 否 | 列表数据排序 |

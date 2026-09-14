@@ -8,7 +8,7 @@
 <template>
   <StarHorseTree
     v-model:treeDatas="treeData"
-    :compUrl="apiUrls"
+    :apiEndpoints="apiUrls"
     :preps="{ label: 'name', value: 'id' }"
     @selectData="onSelect"
   />
@@ -35,7 +35,7 @@
 | showPageBar | `boolean` | 否 | `false` | 是否显示分页 |
 | isDynamicData | `boolean` | 否 | `false` | 是否动态数据 |
 | autoLoad | `boolean` | 否 | `true` | 是否自动加载数据 |
-| compUrl | `ApiUrls` | 否 | — | 接口地址配置 |
+| apiEndpoints | `ApiUrls` | 否 | — | 接口地址配置 |
 | orderBy | `OrderByInfo[]` | 否 | `[]` | 默认排序 |
 | btnTitle | `string` | 否 | `i18n("comp.addData")` | 添加按钮名称 |
 | btnVisible | `boolean` | 否 | `false` | 添加按钮是否可见 |
@@ -103,7 +103,7 @@
 | addData(item) / removeData(item) | emit 对应事件 |
 | pageSizeClick / pageChangeClick | 分页回调——更新 pageInfo 并重新加载 |
 | createSearchParams(params, orderBy) | 接收外部搜索参数，存储后调用 loadByPage() |
-| loadByPage() | 核心数据加载——组装分页参数 + 搜索条件 + 排序 + 共享人过滤条件，POST 请求 compUrl.pageListUrl，更新 treeDatas 和分页信息 |
+| loadByPage() | 核心数据加载——组装分页参数 + 搜索条件 + 排序 + 共享人过滤条件，POST 请求 apiEndpoints.pageListUrl，更新 treeDatas 和分页信息 |
 | init() | 初始化——若是动态数据 (isDynamicData) 且 autoLoad 则加载数据；否则仅展开节点 |
 | expandData() | 若 expand 为 true，延时 800ms 后自动展开所有节点 |
 
@@ -114,7 +114,7 @@
 ```vue
 <StarHorseTree
   v-model:treeDatas="treeData"
-  :compUrl="apiUrls"
+  :apiEndpoints="apiUrls"
   :showCheckBox="true"
   @selectData="onSelect"
 />
@@ -125,7 +125,7 @@
 ```vue
 <StarHorseTree
   v-model:treeDatas="treeData"
-  :compUrl="apiUrls"
+  :apiEndpoints="apiUrls"
   :showSearch="true"
   :showPageBar="true"
   :height="500"

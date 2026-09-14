@@ -21,7 +21,7 @@ import { processFieldList } from "@/api/form_utils";
 import { isMobile } from "@/api/device";
 
 const props = defineProps({
-  compUrl: { type: Object as PropType<ApiUrls> },
+  apiEndpoints: { type: Object as PropType<ApiUrls> },
   subTableName: { type: String, default: "" },
   item: { type: Object as PropType<FieldInfo>, required: true },
   dataFormat: { type: Function, required: true },
@@ -80,7 +80,7 @@ const blurEvent = (column: any, params: any) => {
   } else {
     reqParams = data;
   }
-  postRequest(props.compUrl?.mergeUrl!, reqParams)
+  postRequest(props.apiEndpoints?.mergeUrl!, reqParams)
     .then((res) => {
       if (res?.data?.code != 200) {
         warning(res?.data?.cnMessage);
@@ -301,7 +301,7 @@ onMounted(() => {
         :item="temp"
         :compSize="compSize"
         :cellEditable="cellEditable"
-        :compUrl="compUrl"
+        :apiEndpoints="apiEndpoints"
         :dataFormat="dataFormat"
         :commonFormat="commonFormat"
         :globalConfig="globalConfig"

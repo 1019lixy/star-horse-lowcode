@@ -8,7 +8,7 @@
 <template>
   <StarHorseDataSelector
     v-model="selectedValue"
-    :dataUrl="'/api/user/list'"
+    :apiEndpoints="'/api/user/list'"
     :displayName="'name'"
     :displayValue="'id'"
     @change="onChange"
@@ -23,7 +23,7 @@
 | modelValue | `any` | **是** | — | 绑定值，支持 `v-model` |
 | selectedData | `any` | 否 | — | 已选中的数据 |
 | placeholder | `string` | 否 | `i18n("api.pleaseSelectData2")` | 占位文字 |
-| dataUrl | `string` | 否 | — | 远程数据接口地址 |
+| apiEndpoints | `string` | 否 | — | 远程数据接口地址 |
 | proxy | `boolean` | 否 | — | 是否使用代理 |
 | proxyUrl | `string` | 否 | — | 代理地址 |
 | params | `SearchParams[]` | 否 | — | 查询参数 |
@@ -65,7 +65,7 @@
 
 ## 数据源联动
 
-组件通过 `DataPicker` 子组件实现数据源联动——`dataUrl` / `proxy` / `proxyUrl` / `params` 等配置影响数据加载来源。
+组件通过 `DataPicker` 子组件实现数据源联动——`apiEndpoints` / `proxy` / `proxyUrl` / `params` 等配置影响数据加载来源。
 
 ## 关键内部方法说明
 
@@ -73,7 +73,7 @@
 |---|---|
 | openDataPicker() | 打开数据选择器弹窗（若非 disabled） |
 | onClose(data) | 标签关闭回调——多选时从 selectData 和 value 中移除对应项；单选时清空全部。emit change 和 selectedData |
-| init() | 初始化选中数据——若有 props.data（静态数据），使用 findNodesInTree 在树中查找已选节点；若有 dataUrl 且 value 非空，则通过 loadSelectedData 从远程加载 |
+| init() | 初始化选中数据——若有 props.data（静态数据），使用 findNodesInTree 在树中查找已选节点；若有 apiEndpoints 且 value 非空，则通过 loadSelectedData 从远程加载 |
 | addTag(val) | 手动添加标签——构造 `{ [displayName]: val, [displayValue]: val }` 对象，多选追加，单选替换 |
 | tagVisible(val) | 查找标签的显示名称——在 selectData 中按 displayValue 匹配并返回 displayName，找不到则返回原始值 |
 
@@ -84,7 +84,7 @@
 ```vue
 <StarHorseDataSelector
   v-model="userId"
-  :dataUrl="'/api/user/list'"
+  :apiEndpoints="'/api/user/list'"
   displayName="name"
   displayValue="id"
   @change="onUserChange"
@@ -96,7 +96,7 @@
 ```vue
 <StarHorseDataSelector
   v-model="userIds"
-  :dataUrl="'/api/user/list'"
+  :apiEndpoints="'/api/user/list'"
   :multiple="true"
   :showTagLength="5"
   displayName="name"
@@ -134,7 +134,7 @@ const localData = [
 <template>
   <DataPicker
     v-model="selectedValue"
-    :dataUrl="'/api/data/list'"
+    :apiEndpoints="'/api/data/list'"
     :title="'选择数据'"
     @dataSubmit="onSubmit"
   />
@@ -146,7 +146,7 @@ const localData = [
 | 属性名 | 类型 | 必填 | 默认值 | 说明 |
 |---|---|---|---|---|
 | modelValue | `any` | **是** | — | 绑定值 |
-| dataUrl | `string` | 否 | — | 远程数据地址 |
+| apiEndpoints | `string` | 否 | — | 远程数据地址 |
 | proxy | `boolean` | 否 | — | 是否使用代理 |
 | proxyUrl | `string` | 否 | — | 代理地址 |
 | params | `SearchParams[]` | 否 | — | 查询参数 |

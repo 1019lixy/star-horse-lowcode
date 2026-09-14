@@ -9,7 +9,7 @@ import { PageFieldInfo } from "@/components/types/PageFieldInfo";
 import { SearchFields } from "@/components/types/SearchProps";
 import { onMounted, provide, reactive, ref } from "vue";
 
-const dataUrl: ApiUrls = apiInstance("system-config", "system/areainfo");
+const apiEndpoints: ApiUrls = apiInstance("system-config", "system/areainfo");
 const searchFormData = reactive<SearchFields>({
   fieldList: [
     createSearchField("区域名称", "areaName", true, "lk"),
@@ -209,7 +209,7 @@ onMounted(() => {
       <star-horse-form
         ref="areaFormRef"
         @refresh="areainfoRef?.loadByPage()"
-        :compUrl="dataUrl"
+        :apiEndpoints="apiEndpoints"
         :fieldList="imageFieldList"
         :rules="rules"
       />
@@ -222,7 +222,7 @@ onMounted(() => {
       <star-horse-data-view
         :dataFormat="dataFormat"
         :field-list="tableFieldList"
-        :compUrl="dataUrl"
+        :apiEndpoints="apiEndpoints"
       />
     </star-horse-dialog>
     <div class="search-content">
@@ -230,7 +230,7 @@ onMounted(() => {
         <star-horse-search-comp
           @searchData="(data: any) => areainfoRef?.createSearchParams(data)"
           :formData="searchFormData"
-          :compUrl="dataUrl"
+          :apiEndpoints="apiEndpoints"
         />
       </div>
     </div>
@@ -240,7 +240,7 @@ onMounted(() => {
         :fieldList="imageFieldList"
         :btnPermissions="btnPermissions"
         :primaryKey="primaryKey"
-        :compUrl="dataUrl"
+        :apiEndpoints="apiEndpoints"
         :dataFormat="dataFormat"
         :showPageBar="false"
       />

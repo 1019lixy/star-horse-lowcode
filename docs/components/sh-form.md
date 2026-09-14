@@ -56,7 +56,7 @@
 <template>
   <ShDynamicForm
     ref="formRef"
-    :compUrl="apiUrls"
+    :apiEndpoints="apiUrls"
     :fieldList="pageFieldInfo"
     :formInfo="formInfo"
     @refresh="onRefresh"
@@ -68,7 +68,7 @@
 
 | 属性名 | 类型 | 必填 | 默认值 | 说明 |
 |---|---|---|---|---|
-| compUrl | `ApiUrls` | **是** | — | 接口地址配置 |
+| apiEndpoints | `ApiUrls` | **是** | — | 接口地址配置 |
 | fieldList | `object` | **是** | — | 字段配置 |
 | formInfo | `object` | **是** | — | 表单信息 |
 | rules | `object` | 否 | — | 校验规则 |

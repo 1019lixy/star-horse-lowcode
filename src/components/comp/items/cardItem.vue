@@ -133,7 +133,7 @@ onMounted(() => {
         </template>
         <star-horse-form-item
           :source="source"
-          :compUrl="compUrl"
+          :apiEndpoints="apiEndpoints"
           :compSize="compSize"
           :commonFormat="commonFormat"
           :dataForm="

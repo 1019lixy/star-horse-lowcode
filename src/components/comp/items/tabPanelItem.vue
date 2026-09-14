@@ -7,7 +7,7 @@ import { getDataIndex, getFormData, getPrefix } from "@/api/form_utils";
 import { StarHorseFormTable } from "@/components/comp";
 
 defineProps({
-  compUrl: { type: Object as PropType<ApiUrls> },
+  apiEndpoints: { type: Object as PropType<ApiUrls> },
   item: { type: Array as PropType<Array<FieldInfo> | any>, required: true },
   // 数据索引
   dataIndex: { type: Number, default: -1 },
@@ -71,7 +71,7 @@ onMounted(() => {
     >
       <star-horse-form-item
         :source="source"
-        :compUrl="compUrl"
+        :apiEndpoints="apiEndpoints"
         :compSize="compSize"
         @addRow="addRow"
         @removeRow="removeRow"

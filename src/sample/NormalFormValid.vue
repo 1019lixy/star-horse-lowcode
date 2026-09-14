@@ -14,11 +14,11 @@ import { ApiUrls, SearchInfo } from "@/components/types";
 import { isMobile } from "@/api/device";
 import { PageConfig } from "@/components/system";
 
-const dataUrl: ApiUrls = apiInstance(
+const apiEndpoints: ApiUrls = apiInstance(
   "userdb-manage",
   "userdb/formInstance/tbValidDatesNew/idValidDateNew/381167130139165693",
 );
-console.log(dataUrl);
+console.log(apiEndpoints);
 const testFormValidRef = ref();
 const outerData: any = {
   backgroundSize: "http你好%",
@@ -1046,7 +1046,7 @@ onMounted(() => {
         @refresh="
           (formData, result) => codeGeneratorRef?.assignStaticData(formData)
         "
-        :compUrl="dataUrl"
+        :apiEndpoints="apiEndpoints"
         :preview="true"
         formSize="default"
         :fieldList="fieldList"
@@ -1062,7 +1062,7 @@ onMounted(() => {
       <star-horse-data-view
         :preview="true"
         :field-list="fieldList"
-        :compUrl="dataUrl"
+        :apiEndpoints="apiEndpoints"
       />
     </star-horse-panel>
     <div class="search-content" v-if="!isMobile">
@@ -1072,7 +1072,7 @@ onMounted(() => {
             (data: any) => codeGeneratorRef?.createSearchParams(data)
           "
           :formData="searchFormData"
-          :compUrl="dataUrl"
+          :apiEndpoints="apiEndpoints"
         />
       </div>
     </div>
@@ -1085,7 +1085,7 @@ onMounted(() => {
         ref="codeGeneratorRef"
         :fieldList="fieldList"
         :primaryKey="primaryKey"
-        :compUrl="dataUrl"
+        :apiEndpoints="apiEndpoints"
         :preview="true"
         :dialogType="'drawer'"
         :searchFormData="searchFormData"

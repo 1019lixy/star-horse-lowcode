@@ -9,7 +9,7 @@ import { compKey, itemCheck } from "@/api/system";
 import { i18n } from "@/lang";
 
 const props = defineProps({
-  compUrl: { type: Object as PropType<ApiUrls>, required: true },
+  apiEndpoints: { type: Object as PropType<ApiUrls>, required: true },
   fieldList: { type: Object as PropType<any>, required: true },
   formInfo: { type: Object as PropType<any>, required: true },
   rules: { type: Object },
@@ -27,7 +27,7 @@ const assignDefault = () => {
 };
 const loadData = async () => {
   dataForm.value = await loadById(
-    props.compUrl?.loadByIdUrl!,
+    props.apiEndpoints?.loadByIdUrl!,
     dialogProps?.ids,
   );
   //解决关闭并再次打开不触发watch监听
@@ -48,7 +48,7 @@ const mergeDraft = (type: string) => {
 };
 const doMerge = () => {
   load(i18n("common.dataProcessing"));
-  postRequest(props.compUrl?.mergeUrl!, dataForm.value)
+  postRequest(props.apiEndpoints?.mergeUrl!, dataForm.value)
     .then((res) => {
       closeLoad();
       if (res?.data?.code != 200) {

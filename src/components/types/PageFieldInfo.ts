@@ -299,7 +299,7 @@ export declare interface CompParams {
     /**
      * 接口地址
      */
-    dataUrl: ApiUrls;
+    apiEndpoints: ApiUrls;
     /**
      * 字段信息
      */
@@ -445,7 +445,7 @@ export declare interface DytablePreps {
 export declare interface BatchTablePreps {
     initRows?: number;
     batchDefaultData?: any;
-    compUrl?: ApiUrls;
+    apiEndpoints?: ApiUrls;
     importInfo?: ImportInfo;
     staticData?: string;
     formFlag?: string;

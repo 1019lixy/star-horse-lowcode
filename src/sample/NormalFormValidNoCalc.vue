@@ -11,11 +11,11 @@ import StarHorseDrawer from "@/components/comp/StarHorseDrawer.vue";
 import {StarHorseEditor} from "@/components/system";
 import {i18n} from "@/lang";
 
-const dataUrl: ApiUrls = apiInstance(
+const apiEndpoints: ApiUrls = apiInstance(
     "userdb-manage",
     "userdb/formInstance/tbValidDatesNew/idValidDateNew/381167130139165693",
 );
-console.log(dataUrl);
+console.log(apiEndpoints);
 const testFormValidRef = ref();
 const outerData: any = {
   backgroundSize: "http你好%",
@@ -97,38 +97,19 @@ const genericBasicPropsFields = [
     preps: {colspan:  12, iconType: "user", values: []},
   },
   {
-    label:"单号",
-    fieldName: "workNo",
-    type:"workorder",
-    "preps": {
-      "id": "Idsh6c28202e-c30e-4d74-8ba2-d5bfd688e5cc",
-      "label": "工单号",
-      "itemNameLabel": "工单号",
-      "name": "fieldSh6C28",
+    label: "数据选择",
+    fieldName: "datapicker",
+    type: "datapicker",
+    formVisible: true,
+    preps: {
+      "id": "Idsh4b409811-93c9-4a00-a08a-1a97c665fcef",
+      "label": "数据选择器",
+      "itemNameLabel": "数据选择器",
+      "name": "fieldSh4B40",
       "clearable": true,
       "readonly": false,
-      "hideLabel": true,
-      "appCompVisible": false,
-      "appLabelVisible": false,
-      "generateMode": "frontend",
-      "prefix": "ABCD",
-      "fixedPart": "LI",
-      "fillChar": "0",
-      "seqLength": 4,
-      "seqStart": 1,
-      "seqRadix": 10,
-      "fillSide": "left",
-      "overflowStrategy": "reset",
-      "backendDataPath": "data",
-      "fallbackToFrontend": true,
-      "copyable": true,
-      "tagType": "primary",
-      "tagEffect": "light",
-      "tagSize": "default",
-      "lengthMismatchStrategy": "error",
-      "lengthAdjustSide": "right",
-      "lengthAdjustChar": "0",
       "rules": [],
+      proxy:true,
       "maxLength": 255,
       "formVisible": true,
       "listVisible": true,
@@ -139,13 +120,89 @@ const genericBasicPropsFields = [
         "sourceFields": [],
         "expression": ""
       },
-      "rowNums": 1,
-      "columnNums": 1,
-      "fixedPartPosition": "middle",
-      "cacheKey": "test001",
-      "expectedLength": 15,
-      "placeholder": "a"
-    },
+      "filterable": true,
+      "collapseTags": true,
+      "displayMode": "label",
+      "enableHierarchy": true,
+      "apiDataSource": {
+        "proxyUrl": "/system-config/redirect/apiLinkage",
+        "conditionFields": [
+          "fieldSh4B40"
+        ],
+        "apiInfo": {
+          "apiType": "thirdApi",
+          "httpMethod": "POST",
+          "protocol": "http",
+          "redirect": true,
+          "url": "http://localhost:8749/system-config/system/contact/list",
+          "dataType": "JSON",
+          "headers": [],
+          "requestParams": [
+            {
+              "matchType": "eq",
+              "valueType": "static",
+              "paramName": "platform",
+              "paramValue": "WECOM",
+              "xh": 1
+            },
+            {
+              "matchType": "eq",
+              "valueType": "static",
+              "paramName": "appId",
+              "paramValue": "ww9f8004e2bac1f2f5",
+              "xh": 2
+            },
+            {
+              "matchType": "eq",
+              "valueType": "static",
+              "paramName": "appSecret",
+              "paramValue": "GifTP8o7umxPEHV0_goIn33L62GjuUIlPi_MGSkJXSY",
+              "xh": 3
+            },
+            {
+              "matchType": "eq",
+              "valueType": "static",
+              "paramName": "agentId",
+              "paramValue": "1000020",
+              "xh": 4
+            },
+            {
+              "matchType": "eq",
+              "valueType": "static",
+              "paramName": "refresh",
+              "paramValue": "true",
+              "xh": 5
+            }
+          ],
+          "responseTemplate": "result_data_list",
+          "codePath": "code",
+          "dataPath": "data.roots",
+          "successCode": "200"
+        },
+        "redirect": true,
+        "httpMethod": "GET",
+        "protocol": "http",
+        "dataType": "JSON",
+        "responseTemplate": "result_data_list",
+        "codePath": "code",
+        "dataPath": "data",
+        "optionField": {
+          "labelField": "name",
+          "valueField": "value",
+          "onlyParseConfigured": true,
+          "hasChildren": true,
+          "childrenField": "children"
+        },
+        "authInfo": {
+          "apiType": "systemApi",
+          "httpMethod": "GET",
+          "protocol": "http"
+        },
+        "isolationConfig": {
+          "isolationDetails": []
+        }
+      }
+    }
   }
 ];
 /**
@@ -785,7 +842,7 @@ onMounted(() => {
           @refresh="
           (formData, result) => codeGeneratorRef?.assignStaticData(formData)
         "
-          :compUrl="dataUrl"
+          :apiEndpoints="apiEndpoints"
           :preview="true"
           formSize="default"
           :fieldList="fieldList"
@@ -800,7 +857,7 @@ onMounted(() => {
       <star-horse-data-view
           :preview="true"
           :field-list="fieldList"
-          :compUrl="dataUrl"
+          :apiEndpoints="apiEndpoints"
       />
     </star-horse-dialog>
     <div class="search-content" v-if="!isMobile">
@@ -810,7 +867,7 @@ onMounted(() => {
             (data: any) => codeGeneratorRef?.createSearchParams(data)
           "
             :formData="searchFormData"
-            :compUrl="dataUrl"
+            :apiEndpoints="apiEndpoints"
         />
       </div>
     </div>
@@ -824,7 +881,7 @@ onMounted(() => {
           ref="codeGeneratorRef"
           :fieldList="fieldList"
           :primaryKey="primaryKey"
-          :compUrl="dataUrl"
+          :apiEndpoints="apiEndpoints"
           :preview="true"
           :searchFormData="searchFormData"
           :btn-permissions="{

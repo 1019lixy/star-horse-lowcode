@@ -52,7 +52,7 @@ import {
     <!-- 数据列表 -->
     <StarHorseTableComp
       ref="tableRef"
-      :compUrl="apiUrls"
+      :apiEndpoints="apiUrls"
       :fieldList="pageFieldInfo"
       :primaryKey="'id'"
       :showBatchField="false"
@@ -129,7 +129,7 @@ function dataFormat(row: any, column: any, cellValue: any) {
 <template>
   <StarHorseForm
     ref="formRef"
-    :compUrl="apiUrls"
+    :apiEndpoints="apiUrls"
     :fieldList="pageFieldInfo"
     @refresh="onRefresh"
   />
@@ -147,7 +147,7 @@ function dataFormat(row: any, column: any, cellValue: any) {
   >
     <StarHorseForm
       ref="formRef"
-      :compUrl="apiUrls"
+      :apiEndpoints="apiUrls"
       :fieldList="pageFieldInfo"
     />
   </StarHorseDialog>
@@ -172,7 +172,7 @@ function dataFormat(row: any, column: any, cellValue: any) {
 <template>
   <StarHorseDataSelector
     v-model="selectedValue"
-    :dataUrl="'/api/user/list'"
+    :apiEndpoints="'/api/user/list'"
     :displayName="'name'"
     :displayValue="'id'"
     :multiple="true"

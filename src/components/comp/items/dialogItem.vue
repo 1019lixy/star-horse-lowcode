@@ -223,7 +223,7 @@ onMounted(() => {
       <template v-for="(dialogItem, key) in item.containerFields">
         <star-horse-form-item
           :source="source"
-          :compUrl="compUrl"
+          :apiEndpoints="apiEndpoints"
           :compSize="compSize"
           :commonFormat="commonFormat"
           :dataForm="

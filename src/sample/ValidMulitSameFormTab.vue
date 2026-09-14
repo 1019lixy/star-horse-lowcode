@@ -5,11 +5,11 @@ import { StarHorseForm, StarHorseTableComp } from "@/components/comp";
 import { apiInstance, dialogPreps } from "@/api/star_horse_utils";
 import { ApiUrls, SearchInfo } from "@/components/types";
 
-const dataUrl: ApiUrls = apiInstance(
+const apiEndpoints: ApiUrls = apiInstance(
   "userdb-manage",
   "userdb/formInstance/tbValidDatesNew/idValidDateNew/381167130139165693",
 );
-console.log(dataUrl);
+console.log(apiEndpoints);
 
 const searchFormData = ref<SearchInfo>({
   fieldList: [
@@ -958,7 +958,7 @@ onMounted(() => {
         @refresh="
           (formData, result) => codeGeneratorRef?.assignStaticData(formData)
         "
-        :compUrl="dataUrl"
+        :apiEndpoints="apiEndpoints"
         :preview="true"
         formSize="default"
         :fieldList="fieldList"
@@ -973,7 +973,7 @@ onMounted(() => {
       <star-horse-data-view
         :preview="true"
         :field-list="fieldList"
-        :compUrl="dataUrl"
+        :apiEndpoints="apiEndpoints"
       />
     </star-horse-dialog>
     <div class="search-content">
@@ -983,7 +983,7 @@ onMounted(() => {
             (data: any) => codeGeneratorRef?.createSearchParams(data)
           "
           :formData="searchFormData"
-          :compUrl="dataUrl"
+          :apiEndpoints="apiEndpoints"
         />
       </div>
     </div>
@@ -992,7 +992,7 @@ onMounted(() => {
         ref="codeGeneratorRef"
         :fieldList="fieldList"
         :primaryKey="primaryKey"
-        :compUrl="dataUrl"
+        :apiEndpoints="apiEndpoints"
         :preview="true"
         :btn-permissions="{
           edit: 'edit',

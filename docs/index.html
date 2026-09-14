@@ -398,7 +398,7 @@ app.use(StarHorseLowcode, {
         <h2 id="架构-核心数据流">核心数据流</h2>
         <pre><code>┌──────────────┐     ┌──────────────┐     ┌──────────────┐
 │ StarHorse    │     │ StarHorse    │     │  API 服务    │
-│ SearchForm   │────▶│ TableComp    │────▶│  (compUrl)   │
+│ SearchForm   │────▶│ TableComp    │────▶│  (apiEndpoints)   │
 │ (搜索条件)   │     │ (数据列表)   │◀────│              │
 └──────────────┘     └──────┬───────┘     └──────────────┘
                             │
@@ -484,7 +484,7 @@ app.mount('#app')</code></pre>
     &lt;!-- 数据列表 --&gt;
     &lt;StarHorseTableComp
       ref="tableRef"
-      :compUrl="apiUrls"
+      :apiEndpoints="apiUrls"
       :fieldList="pageFieldInfo"
       :primaryKey="'id'"
       :showBatchField="false"
@@ -558,7 +558,7 @@ function dataFormat(row: any, column: any, cellValue: any) {
         <pre><code>&lt;template&gt;
   &lt;StarHorseForm
     ref="formRef"
-    :compUrl="apiUrls"
+    :apiEndpoints="apiUrls"
     :fieldList="pageFieldInfo"
     @refresh="onRefresh"
   /&gt;
@@ -573,7 +573,7 @@ function dataFormat(row: any, column: any, cellValue: any) {
   &gt;
     &lt;StarHorseForm
       ref="formRef"
-      :compUrl="apiUrls"
+      :apiEndpoints="apiUrls"
       :fieldList="pageFieldInfo"
     /&gt;
   &lt;/StarHorseDialog&gt;
@@ -592,7 +592,7 @@ function dataFormat(row: any, column: any, cellValue: any) {
         <pre><code>&lt;template&gt;
   &lt;StarHorseDataSelector
     v-model="selectedValue"
-    :dataUrl="'/api/user/list'"
+    :apiEndpoints="'/api/user/list'"
     :displayName="'name'"
     :displayValue="'id'"
     :multiple="true"
@@ -1757,7 +1757,7 @@ return grouped;</code></pre>
         <table>
           <thead><tr><th>属性名</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
           <tbody>
-            <tr><td>dataUrl</td><td><code>ApiUrls</code></td><td>—</td><td>数据接口配置</td></tr>
+            <tr><td>apiEndpoints</td><td><code>ApiUrls</code></td><td>—</td><td>数据接口配置</td></tr>
             <tr><td>fieldList</td><td><code>Array</code></td><td>—</td><td>列表字段配置</td></tr>
             <tr><td>primaryKey</td><td><code>string</code></td><td>—</td><td>主键字段名</td></tr>
             <tr><td>multiple</td><td><code>boolean</code></td><td><code>false</code></td><td>是否多选</td></tr>
@@ -1774,7 +1774,7 @@ return grouped;</code></pre>
             <tr><td>needField</td><td><code>FieldMapping[]</code></td><td>—</td><td>字段映射配置</td></tr>
             <tr><td>aliasName</td><td><code>string</code></td><td>—</td><td>别名字段名</td></tr>
             <tr><td>primaryKey</td><td><code>string</code></td><td>—</td><td>主键</td></tr>
-            <tr><td>dataUrl</td><td><code>ApiUrls</code></td><td>—</td><td>数据接口配置</td></tr>
+            <tr><td>apiEndpoints</td><td><code>ApiUrls</code></td><td>—</td><td>数据接口配置</td></tr>
           </tbody>
         </table>
         <hr>
@@ -2113,7 +2113,7 @@ return grouped;</code></pre>
         <table>
           <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
           <tbody>
-            <tr><td>compUrl</td><td><code>ApiUrls</code></td><td>否</td><td>—</td><td>接口地址配置</td></tr>
+            <tr><td>apiEndpoints</td><td><code>ApiUrls</code></td><td>否</td><td>—</td><td>接口地址配置</td></tr>
             <tr><td>fieldList</td><td><code>PageFieldInfo</code></td><td><strong>是</strong></td><td>—</td><td>表单字段配置</td></tr>
             <tr><td>subTableName</td><td><code>string</code></td><td>否</td><td><code>'subDataList'</code></td><td>提交后端批量数据的 Key 名称</td></tr>
             <tr><td>batchFieldName</td><td><code>string</code></td><td>否</td><td><code>'batchFieldList'</code></td><td>批量字段列表的 Key 名称</td></tr>
@@ -2188,7 +2188,7 @@ formRef.value.setSource(3)</code></pre>
         <table>
           <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
           <tbody>
-            <tr><td>compUrl</td><td><code>ApiUrls | any</code></td><td><strong>是</strong></td><td>—</td><td>接口地址配置</td></tr>
+            <tr><td>apiEndpoints</td><td><code>ApiUrls | any</code></td><td><strong>是</strong></td><td>—</td><td>接口地址配置</td></tr>
             <tr><td>primaryKey</td><td><code>string | any</code></td><td><strong>是</strong></td><td>—</td><td>主键字段名</td></tr>
             <tr><td>fieldList</td><td><code>PageFieldInfo</code></td><td><strong>是</strong></td><td>—</td><td>页面字段配置</td></tr>
             <tr><td>showBatchField</td><td><code>boolean</code></td><td><strong>是</strong></td><td>—</td><td>是否显示批量属性列</td></tr>
@@ -2344,7 +2344,7 @@ tableRef.value.createSearchParams([{ propertyName: 'name', operation: 'lk', valu
           <tbody>
             <tr><td>dialogInput</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否弹窗输入模式</td></tr>
             <tr><td>mutComp</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否多组件模式</td></tr>
-            <tr><td>compUrl</td><td><code>object</code></td><td>否</td><td>—</td><td>接口地址配置</td></tr>
+            <tr><td>apiEndpoints</td><td><code>object</code></td><td>否</td><td>—</td><td>接口地址配置</td></tr>
             <tr><td>formData</td><td><code>SearchFields</code></td><td><strong>是</strong></td><td>—</td><td>查询字段配置</td></tr>
             <tr><td>defaultCondition</td><td><code>SearchParams[]</code></td><td>否</td><td>—</td><td>默认查询条件</td></tr>
             <tr><td>showAdvanced</td><td><code>boolean</code></td><td>否</td><td><code>true</code></td><td>是否显示"高级查询"入口</td></tr>
@@ -2363,7 +2363,7 @@ tableRef.value.createSearchParams([{ propertyName: 'name', operation: 'lk', valu
             <tr><td>modelValue</td><td><code>any</code></td><td><strong>是</strong></td><td>—</td><td>绑定值，支持 v-model</td></tr>
             <tr><td>selectedData</td><td><code>any</code></td><td>否</td><td>—</td><td>已选中的数据</td></tr>
             <tr><td>placeholder</td><td><code>string</code></td><td>否</td><td>—</td><td>占位文字</td></tr>
-            <tr><td>dataUrl</td><td><code>string</code></td><td>否</td><td>—</td><td>远程数据接口地址</td></tr>
+            <tr><td>apiEndpoints</td><td><code>string</code></td><td>否</td><td>—</td><td>远程数据接口地址</td></tr>
             <tr><td>params</td><td><code>SearchParams[]</code></td><td>否</td><td>—</td><td>查询参数</td></tr>
             <tr><td>data</td><td><code>Array</code></td><td>否</td><td>—</td><td>本地数据</td></tr>
             <tr><td>pageSize</td><td><code>number</code></td><td>否</td><td><code>0</code></td><td>分页大小</td></tr>
@@ -2390,7 +2390,7 @@ tableRef.value.createSearchParams([{ propertyName: 'name', operation: 'lk', valu
           <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
           <tbody>
             <tr><td>modelValue</td><td><code>any</code></td><td><strong>是</strong></td><td>—</td><td>绑定值</td></tr>
-            <tr><td>dataUrl</td><td><code>string</code></td><td>否</td><td>—</td><td>远程数据地址</td></tr>
+            <tr><td>apiEndpoints</td><td><code>string</code></td><td>否</td><td>—</td><td>远程数据地址</td></tr>
             <tr><td>data</td><td><code>Array</code></td><td>否</td><td>—</td><td>本地数据</td></tr>
             <tr><td>displayName / displayValue</td><td><code>string</code></td><td>否</td><td><code>'name'</code>/<code>'value'</code></td><td>显示/值字段</td></tr>
             <tr><td>multiple</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否多选</td></tr>
@@ -2418,7 +2418,7 @@ tableRef.value.createSearchParams([{ propertyName: 'name', operation: 'lk', valu
         <table>
           <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
           <tbody>
-            <tr><td>compUrl</td><td><code>ApiUrls</code></td><td>否</td><td>—</td><td>接口地址配置</td></tr>
+            <tr><td>apiEndpoints</td><td><code>ApiUrls</code></td><td>否</td><td>—</td><td>接口地址配置</td></tr>
             <tr><td>subTableName</td><td><code>string</code></td><td>否</td><td>—</td><td>子集合 Key 名称</td></tr>
             <tr><td>fieldList</td><td><code>object</code></td><td><strong>是</strong></td><td>—</td><td>表单字段配置</td></tr>
             <tr><td>outerData</td><td><code>object</code></td><td>否</td><td>—</td><td>外部传入数据</td></tr>
@@ -2449,7 +2449,7 @@ tableRef.value.createSearchParams([{ propertyName: 'name', operation: 'lk', valu
         <table>
           <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
           <tbody>
-            <tr><td>compUrl</td><td><code>ApiUrls</code></td><td>否</td><td>—</td><td>接口地址配置</td></tr>
+            <tr><td>apiEndpoints</td><td><code>ApiUrls</code></td><td>否</td><td>—</td><td>接口地址配置</td></tr>
             <tr><td>fieldList</td><td><code>FieldInfo[]</code></td><td><strong>是</strong></td><td>—</td><td>字段配置列表</td></tr>
             <tr><td>defaultValues</td><td><code>object</code></td><td>否</td><td><code>{}</code></td><td>新增行默认值</td></tr>
             <tr><td>subTableName</td><td><code>string</code></td><td>否</td><td><code>'subDataList'</code></td><td>批量数据 Key</td></tr>
@@ -2497,7 +2497,7 @@ tableRef.value.createSearchParams([{ propertyName: 'name', operation: 'lk', valu
         <table>
           <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
           <tbody>
-            <tr><td>compUrl</td><td><code>ApiUrls</code></td><td>否</td><td>—</td><td>接口地址配置</td></tr>
+            <tr><td>apiEndpoints</td><td><code>ApiUrls</code></td><td>否</td><td>—</td><td>接口地址配置</td></tr>
             <tr><td>fieldList</td><td><code>PageFieldInfo</code></td><td>否</td><td>—</td><td>字段配置</td></tr>
             <tr><td>item</td><td><code>any</code></td><td>否</td><td>—</td><td>组件配置项</td></tr>
             <tr><td>dataIndex</td><td><code>number</code></td><td>否</td><td><code>-1</code></td><td>数据索引</td></tr>
@@ -2523,7 +2523,7 @@ tableRef.value.createSearchParams([{ propertyName: 'name', operation: 'lk', valu
             <tr><td>checkStrictly</td><td><code>boolean</code></td><td>否</td><td><code>true</code></td><td>父子是否不关联</td></tr>
             <tr><td>showPageBar</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否显示分页</td></tr>
             <tr><td>autoLoad</td><td><code>boolean</code></td><td>否</td><td><code>true</code></td><td>是否自动加载数据</td></tr>
-            <tr><td>compUrl</td><td><code>ApiUrls</code></td><td>否</td><td>—</td><td>接口地址配置</td></tr>
+            <tr><td>apiEndpoints</td><td><code>ApiUrls</code></td><td>否</td><td>—</td><td>接口地址配置</td></tr>
             <tr><td>orderBy</td><td><code>OrderByInfo[]</code></td><td>否</td><td><code>[]</code></td><td>默认排序</td></tr>
           </tbody>
         </table>
@@ -2683,7 +2683,7 @@ tableRef.value.createSearchParams([{ propertyName: 'name', operation: 'lk', valu
         <table>
           <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
           <tbody>
-            <tr><td>compUrl</td><td><code>ApiUrls</code></td><td><strong>是</strong></td><td>—</td><td>接口地址配置</td></tr>
+            <tr><td>apiEndpoints</td><td><code>ApiUrls</code></td><td><strong>是</strong></td><td>—</td><td>接口地址配置</td></tr>
             <tr><td>fieldList</td><td><code>object</code></td><td><strong>是</strong></td><td>—</td><td>字段配置</td></tr>
             <tr><td>formInfo</td><td><code>object</code></td><td><strong>是</strong></td><td>—</td><td>表单信息</td></tr>
             <tr><td>rules</td><td><code>object</code></td><td>否</td><td>—</td><td>校验规则</td></tr>
@@ -2711,7 +2711,7 @@ tableRef.value.createSearchParams([{ propertyName: 'name', operation: 'lk', valu
           <thead><tr><th>属性名</th><th>类型</th><th>必填</th><th>默认值</th><th>说明</th></tr></thead>
           <tbody>
             <tr><td>dialogProps</td><td><code>DialogProps</code></td><td><strong>是</strong></td><td>—</td><td>弹窗属性配置</td></tr>
-            <tr><td>compUrl</td><td><code>ApiUrls</code></td><td><strong>是</strong></td><td>—</td><td>接口地址配置</td></tr>
+            <tr><td>apiEndpoints</td><td><code>ApiUrls</code></td><td><strong>是</strong></td><td>—</td><td>接口地址配置</td></tr>
             <tr><td>viewFlag</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否查看模式</td></tr>
             <tr><td>extendBtns</td><td><code>UserFuncInfo[]</code></td><td>否</td><td>—</td><td>扩展按钮列表</td></tr>
           </tbody>

@@ -42,7 +42,7 @@ export interface FormDataProp {
   /**
    * 接口地址
    */
-  dataUrl: ApiUrls | any;
+  apiEndpoints: ApiUrls | any;
   /**
    * 错误日志
    */
@@ -81,7 +81,7 @@ export const loadDynamicFormData = async (
   let formInfo: Record<string, any> = {};
   let dateFields: Array<string> = [];
   let relationTables: Record<string, any> = {};
-  let dataUrl: ApiUrls | undefined;
+  let apiEndpoints: ApiUrls | undefined;
   let errorMsg = i18n("commonPage.dataLoading");
   let searchFormData: SearchFields | any = {};
   let tableFieldList: any = { fieldList: [] };
@@ -101,9 +101,9 @@ export const loadDynamicFormData = async (
       errorMsg = error;
     } else {
       hasData = data && Object.keys(data).length > 0;
-      dataUrl = apiInstance(
-        data["dataUrl"]?.appName,
-        data["dataUrl"]?.contextUrl,
+      apiEndpoints = apiInstance(
+        data["apiEndpoints"]?.appName,
+        data["apiEndpoints"]?.contextUrl,
       );
       searchFormData = data["searchFormData"] as SearchFields;
       primaryKey = data["primaryKey"];
@@ -132,7 +132,7 @@ export const loadDynamicFormData = async (
     fieldMappingList,
     relationTables,
     dataSource,
-    dataUrl,
+    apiEndpoints,
     hasData,
     errorMsg,
     processDefineNodes,

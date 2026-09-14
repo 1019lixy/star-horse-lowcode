@@ -44,7 +44,7 @@ const removeRow = (row: any) => {
   <star-horse-form-list
     style="min-height: 100px"
     v-model:dataForm="dataForm"
-    :compUrl="item.preps?.compUrl"
+    :apiEndpoints="item.preps?.apiEndpoints"
     :primaryKey="item['primaryKey']"
     :subTableName="item['subTableName']"
     :initRows="item.preps?.initRows"

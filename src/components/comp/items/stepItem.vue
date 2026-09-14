@@ -541,7 +541,7 @@ watch(activeStepIndex, (idx) => {
         >
           <star-horse-form-item
               :source="segSource(stepItem.subTablePrimaryKey)"
-              :compUrl="compUrl"
+              :apiEndpoints="apiEndpoints"
               :compSize="compSize"
               :commonFormat="commonFormat"
               :dataForm="

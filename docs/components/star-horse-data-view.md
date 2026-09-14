@@ -7,7 +7,7 @@
 ```vue
 <template>
   <StarHorseDataView
-    :compUrl="apiUrls"
+    :apiEndpoints="apiUrls"
     :fieldList="pageFieldInfo"
     :subTableName="'subData'"
     @dataLoaded="onDataLoaded"
@@ -19,7 +19,7 @@
 
 | 属性名 | 类型 | 必填 | 默认值 | 说明 |
 |---|---|---|---|---|
-| compUrl | `ApiUrls` | 否 | — | 接口地址配置 |
+| apiEndpoints | `ApiUrls` | 否 | — | 接口地址配置 |
 | subTableName | `string` | 否 | — | 子集合 Key 名称 |
 | subFormFlag | `string` | 否 | `'N'` | 是否子表单标识 |
 | formSize | `string` | 否 | `'default'` | 表单尺寸 |
@@ -89,7 +89,7 @@
 
 | 方法名 | 功能说明 |
 |---|---|
-| loadData() | 核心数据加载方法——根据 dialogProps.ids 和 compUrl 调用 loadById 获取数据；支持 JSON 类型 ID（合并为 params）；支持 useViewUrl 切换查看专用接口；加载后执行字段映射和动态表单填充，最后 emit dataLoaded |
+| loadData() | 核心数据加载方法——根据 dialogProps.ids 和 apiEndpoints 调用 loadById 获取数据；支持 JSON 类型 ID（合并为 params）；支持 useViewUrl 切换查看专用接口；加载后执行字段映射和动态表单填充，最后 emit dataLoaded |
 | setData(data) | 直接设置 dataForm 的值，用于预览模式或外部赋值 |
 
 ## 使用示例
@@ -98,7 +98,7 @@
 
 ```vue
 <StarHorseDataView
-  :compUrl="apiUrls"
+  :apiEndpoints="apiUrls"
   :fieldList="pageFieldInfo"
   :primaryKey="'id'"
 />
@@ -108,7 +108,7 @@
 
 ```vue
 <StarHorseDataView
-  :compUrl="apiUrls"
+  :apiEndpoints="apiUrls"
   :fieldList="pageFieldInfo"
   slotType="user"
 >
