@@ -1308,8 +1308,8 @@ export const loadPageData = async (options: {
                     : { fieldList: allParams };
             // proxy 参数显式传入时优先使用；未显式传入（undefined）时回退到 apiDataSource.proxy，
             // 与动态表单配置的 apiDataSource.proxy 开关保持一致，避免代理开关不生效
-            const useProxy = (proxy ?? apiDataSource?.proxy) !== false;
-            if (useProxy) {
+          //  const useProxy = (proxy || apiDataSource?.proxy) !== false;
+            if (apiDataSource?.proxy||proxy) {
                 const result = await requestApiLinkage(apiDataSource, pageQuery);
                 if (result.code != 200) {
                     console.error(result.message);

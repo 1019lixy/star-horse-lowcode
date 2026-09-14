@@ -109,7 +109,6 @@ const genericBasicPropsFields = [
       "clearable": true,
       "readonly": false,
       "rules": [],
-      proxy:true,
       "maxLength": 255,
       "formVisible": true,
       "listVisible": true,
@@ -125,6 +124,7 @@ const genericBasicPropsFields = [
       "displayMode": "label",
       "enableHierarchy": true,
       "apiDataSource": {
+        proxy:true,
         "proxyUrl": "/system-config/redirect/apiLinkage",
         "conditionFields": [
           "fieldSh4B40"
