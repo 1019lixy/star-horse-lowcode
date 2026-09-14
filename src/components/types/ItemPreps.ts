@@ -361,7 +361,10 @@ export interface ApiLinkageDetail {
      * 数据源中数据返回后的显示属性配置
      */
     optionField?: OptionField;
-
+    /**
+     * 是否代理接口
+     */
+    proxy?:boolean;
     /**
      * 代理接口
      */

@@ -771,8 +771,9 @@ export async function dynamicUrlOperation(
     const temp = preps.preps || preps;
     const apiDataSource = temp?.apiDataSource as ApiLinkageDetail;
     if (apiDataSource) {
-        // 直连开关：preps.proxy === false 时不走后端代理，直连目标接口返回原始行（不做选项解析）
-        if (temp?.proxy === false) {
+        // 直连开关：apiDataSource.proxy === false（与动态表单配置位置一致）时不走后端代理，
+        // 直连目标接口返回原始行（不做选项解析）；兼容旧 preps.proxy === false 写法
+        if (apiDataSource?.proxy === false || temp?.proxy === false) {
             const url = apiDataSource.apiInfo?.url;
             console.error(`[dynamicUrlOperation] ${url ? "直连" : "缺少接口地址"}`);
             if (!url) return [];
@@ -1305,7 +1306,10 @@ export const loadPageData = async (options: {
                 pageSize > 0
                     ? { fieldList: allParams, currentPage, pageSize, orderBy: [] }
                     : { fieldList: allParams };
-            if (proxy !== false) {
+            // proxy 参数显式传入时优先使用；未显式传入（undefined）时回退到 apiDataSource.proxy，
+            // 与动态表单配置的 apiDataSource.proxy 开关保持一致，避免代理开关不生效
+            const useProxy = (proxy ?? apiDataSource?.proxy) !== false;
+            if (useProxy) {
                 const result = await requestApiLinkage(apiDataSource, pageQuery);
                 if (result.code != 200) {
                     console.error(result.message);
