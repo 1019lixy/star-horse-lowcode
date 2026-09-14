@@ -290,7 +290,36 @@ export function makeOrderNo(bizKey: string, storage = new MemorySeqStorage()) {
 
 ## 与 workorder-item 组件的关系
 
-`workorder-item.vue` 组件内部调用本引擎：把简化 preps（`prefix`/`fixedPart`/`seqLength`/`seqRadix`/`fillSide`/...）映射为 `WorkorderConfig`，`fixedPart` 经 `parseTemplateSegments` 拆段，`cacheKey + 用户ID` 作为 `seqKey`。组件仅做配置映射与 Tag 展示，生成逻辑全部由引擎承担，可被其它程序直接复用。
+`workorder-item.vue` 组件内部调用本引擎：把简化 preps 映射为 `WorkorderConfig`，`fixedPart` 经 `parseTemplateSegments` 拆段，`cacheKey + 用户ID` 作为 `seqKey`。组件仅做配置映射与 Tag 展示，生成逻辑全部由引擎承担，可被其它程序直接复用。
+
+### 组件配置项（formExtendItems.ts）
+
+**基础属性（category 1）**：
+
+| fieldName | 类型 | 默认 | 说明 |
+| --- | --- | --- | --- |
+| `prefix` | input | `"WO"` | 前缀 |
+| `fixedPart` | input | `"{{date:YYYYMMDD}}"` | 固定部分模板，支持 `{{date:格式}}` / `{{field:字段名}}` 占位符 |
+| `fixedPartPosition` | select | `"between"` | 固定部分位置：`start`（最前）/ `between`（前缀后）/ `end`（末尾） |
+| `seqLength` | number | `4` | 流水号位数 |
+| `copyable` | switch | `true` | 是否可点击复制 |
+
+**高级属性（category 2）**：
+
+| fieldName | 类型 | 默认 | 说明 |
+| --- | --- | --- | --- |
+| `seqRadix` | number | `10` | 进制 2-62 |
+| `overflowStrategy` | select | `"reset"` | 溢出策略：reset / error / expand |
+
+### 前端 / 后端生成模式
+
+组件通过 `preps.dataSource` 判断生成模式（与 select-item.vue 等组件使用相同的数据源体系）：
+
+- **前端模式**（默认）：`dataSource` 未配置或为 `"data"` → 调用前端引擎 `generateWorkorder` 生成，流水号存 localStorage。
+- **后端模式**：`dataSource` 为 `"url"` / `"thirdParty"` 或存在 `preps.apiDataSource` → 调用 `dynamicUrlOperation`（复用 `@/api/star_horse_utils` 既有基础设施），经 `/system-config/redirect/apiLinkage` 代理请求后端接口，从响应中提取单号。
+- **后端失败回退**：后端调用失败时自动回退到前端生成并告警提示。
+
+后端接口配置通过设计器的**数据源配置面板**（DataSourceConfigPanel）完成，与 select 等组件配置方式完全一致，无需单独的后端 URL 输入框。
 ## 类别预设（Category Presets）
 
 按类别生成单号：传入类别名即可使用内置规则，无需手写段配置。未知类别回退通用 `serial` 规则并告警。

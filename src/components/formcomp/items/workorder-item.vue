@@ -4,13 +4,13 @@ import {allAction, checkIsDisabled, prepsFilter,} from "@/components/formcomp/ut
 import {ItemPreps} from "@/components/types/ItemPreps";
 import {i18n} from "@/lang";
 import {copyText} from "@/api/system";
-import {postRequest} from "@/api/star_horse_apis";
+import {dynamicUrlOperation} from "@/api/star_horse_utils";
 import {getUserInfo} from "@/utils/auth";
 import {error, warning} from "@/utils/message";
 import type {
   WorkorderConfig,
   WorkorderFillSide,
-  WorkorderLengthMismatchStrategy,
+
   WorkorderOverflowStrategy,
   WorkorderSegment,
   WorkorderSeqStorage,
@@ -29,20 +29,15 @@ const props = withDefaults(defineProps<ItemPreps>(), {
 const emits = defineEmits(["selfFunc", "selectItem"]);
 const formData = defineModel("formData");
 
-interface WorkorderBackendParam {
-  paramName: string;
-  paramValue: string;
-  valueType: "static" | "form";
-}
-
 const generating = ref<boolean>(false);
 const seqStorage: WorkorderSeqStorage = new LocalSeqStorage();
 
 const preps = computed<any>(() => props.field?.preps || {});
 
-const generateMode = computed<"frontend" | "backend">(() =>
-    preps.value.generateMode === "backend" ? "backend" : "frontend",
-);
+const isBackendMode = computed<boolean>(() => {
+  const ds = preps.value.dataSource;
+  return ds === "url" || ds === "thirdParty" || !!preps.value.apiDataSource;
+});
 const prefix = computed<string>(() => preps.value.prefix ?? "NO");
 const fixedPart = computed<string>(
     () => preps.value.fixedPart ?? "{{date:YYYYMMDD}}",
@@ -77,31 +72,8 @@ const overflowStrategy = computed<WorkorderOverflowStrategy>(() => {
 const cacheBizKey = computed<string>(
     () => preps.value.cacheKey || props.field?.fieldName || "workorder",
 );
-const expectedLength = computed<number | undefined>(() => {
-  const n = Number(preps.value.expectedLength);
-  return Number.isFinite(n) && n > 0 ? Math.floor(n) : undefined;
-});
-const lengthMismatchStrategy = computed<WorkorderLengthMismatchStrategy>(() => {
-  const s = preps.value.lengthMismatchStrategy;
-  return s === "truncate" || s === "pad" ? s : "error";
-});
-const lengthAdjustSide = computed<WorkorderFillSide>(() =>
-    preps.value.lengthAdjustSide === "left" ? "left" : "right",
-);
-const lengthAdjustChar = computed<string>(() => {
-  const c = preps.value.lengthAdjustChar;
-  return c && String(c).length > 0 ? String(c)[0] : "0";
-});
-const backendUrl = computed<string>(() => preps.value.backendUrl || "");
-const backendParams = computed<WorkorderBackendParam[]>(
-    () => preps.value.backendParams || [],
-);
-const backendDataPath = computed<string>(
-    () => preps.value.backendDataPath || "data",
-);
-const fallbackToFrontend = computed<boolean>(
-    () => preps.value.fallbackToFrontend !== false,
-);
+
+
 const copyable = computed<boolean>(() => preps.value.copyable !== false);
 
 const buildSeqKey = (): string => {
@@ -149,20 +121,27 @@ const buildWorkorderConfig = (): WorkorderConfig => {
   }
   return {
     segments,
-    expectedLength: expectedLength.value,
-    lengthMismatchStrategy: lengthMismatchStrategy.value,
-    lengthAdjustSide: lengthAdjustSide.value,
-    lengthAdjustChar: lengthAdjustChar.value,
+
   };
 };
 
 const generateFrontend = (): string => {
   if (props.source != 1) {
+    console.log("[WORKORDER] source != 1, skip. source =", props.source);
     return;
   }
-  const result = generateWorkorder(buildWorkorderConfig(), {
+  const config = buildWorkorderConfig();
+  console.log("[WORKORDER] config:", JSON.stringify(config));
+  console.log("[WORKORDER] preps:", JSON.stringify(preps.value));
+  const result = generateWorkorder(config, {
     fields: formData.value || {},
     storage: seqStorage,
+  });
+  console.log("[WORKORDER] result:", {
+    success: result.success,
+    value: result.value,
+    error: result.error,
+    warnings: result.warnings,
   });
   if (!result.success) {
     warning(result.error || i18n("item.workorderGenerateFailed"));
@@ -172,42 +151,28 @@ const generateFrontend = (): string => {
   return result.value;
 };
 
-const resolveDataPath = (data: any, path: string): any => {
-  if (data == null) return undefined;
-  if (!path) return data;
-  const segments = path.split(".");
-  let cur: any = data;
-  for (const seg of segments) {
-    if (cur == null) return undefined;
-    cur = cur[seg];
+const extractCode = (data: any): string => {
+  if (data == null) return "";
+  if (typeof data === "string") return data;
+  if (typeof data === "number") return String(data);
+  if (Array.isArray(data)) {
+    if (data.length === 0) return "";
+    return extractCode(data[0]);
   }
-  return cur;
-};
-
-const buildBackendRequestParams = (): Record<string, any> => {
-  const params: Record<string, any> = {};
-  for (const item of backendParams.value) {
-    if (!item || !item.paramName) continue;
-    if (item.valueType === "form") {
-      params[item.paramName] = formData.value?.[item.paramValue];
-    } else {
-      params[item.paramName] = item.paramValue;
-    }
+  if (typeof data === "object") {
+    const v = data.code ?? data.value ?? data.data ?? data.result;
+    return v != null ? String(v) : "";
   }
-  return params;
+  return "";
 };
 
 const generateBackend = async (): Promise<string> => {
-  if (!backendUrl.value) {
-    throw new Error("backendUrl is empty");
-  }
-  const params = buildBackendRequestParams();
-  const res: any = await postRequest(backendUrl.value, params);
-  const code = resolveDataPath(res?.data, backendDataPath.value);
-  if (code == null || String(code).length === 0) {
+  const result = await dynamicUrlOperation(props.field, []);
+  const code = extractCode(result);
+  if (!code) {
     throw new Error("backend response empty");
   }
-  return String(code);
+  return code;
 };
 
 const ensureWorkorder = async () => {
@@ -219,28 +184,27 @@ const ensureWorkorder = async () => {
   generating.value = true;
   try {
     let code = "";
-    if (generateMode.value === "backend") {
+    if (isBackendMode.value) {
       try {
         code = await generateBackend();
       } catch (e) {
-        if (fallbackToFrontend.value) {
-          warning(
-              i18n("item.workorderBackendFail") + i18n("item.workorderFallback"),
-          );
-          code = generateFrontend();
-        } else {
-          error(i18n("item.workorderGenerateFailed"));
-          return;
-        }
+        warning(
+            i18n("item.workorderBackendFail") + i18n("item.workorderFallback"),
+        );
+        code = generateFrontend();
       }
     } else {
       code = generateFrontend();
     }
     if (code) {
       formData.value[fieldName] = code;
+      console.log("[WORKORDER] wrote to formData:", fieldName, "=", code);
       allAction(props, emits, formData, "change");
+    } else {
+      console.log("[WORKORDER] code is empty, not writing to formData");
     }
   } catch (e) {
+    console.error("[WORKORDER] ensureWorkorder error:", e);
     error(i18n("item.workorderGenerateFailed"));
   } finally {
     generating.value = false;
@@ -287,7 +251,7 @@ onMounted(async () => {
       :parentField="parentField"
   >
     <el-tag
-        v-bind="prepsFilter(field.preps)"
+        v-bind="prepsFilter({...field.preps})"
         :type="tagType(formData[field.fieldName])"
         :effect="field.preps?.tagEffect || 'light'"
         :size="field.preps?.tagSize || 'default'"
