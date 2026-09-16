@@ -17,7 +17,7 @@ const props = withDefaults(defineProps<ItemPreps>(), {
   isSearch: false,
 });
 const imageSettings = ref<ImageSettings>({ height: 0, src: "", width: 0 });
-const emits = defineEmits(["selfFunc", "selectItem"]);
+const emits = defineEmits(["userAction", "selectItem"]);
 const formData = defineModel("formData");
 const dataValue = ref<string>("");
 const createCode = () => {

@@ -34,7 +34,7 @@
 | fullScreen | `boolean` | 否 | `false` | 是否默认全屏 |
 | hideFullScreenIcon | `boolean` | 否 | `false` | 是否隐藏全屏图标 |
 | hideMinimizeIcon | `boolean` | 否 | `false` | 是否隐藏最小化图标 |
-| selfFunc | `boolean` | 否 | `false` | 是否自定义提交逻辑（true 时不自动调用接口） |
+| userAction | `boolean` | 否 | `false` | 是否自定义提交逻辑（true 时不自动调用接口） |
 | selfClose | `boolean` | 否 | `false` | 是否自定义关闭逻辑（true 时不自动关闭） |
 | btnText | `string` | 否 | — | 提交按钮文字 |
 | userBtn | `UserFuncInfo[]` | 否 | `[]` | 自定义按钮列表 |
@@ -94,7 +94,7 @@
 | fullScreen() | 切换全屏状态；若 hideFullScreenIcon 则不执行 |
 | minimize() | 最小化对话框——记录当前全屏状态，设 isMinimized = true，触发 minimize 事件 |
 | restoreFromMinimize() | 从最小化恢复——恢复之前记忆的全屏状态 |
-| operation(funcName, type) | 核心操作分发：若 selfFunc 为 true 且非 resetForm / closeAction，则 emit 对应事件名；否则将 funcName 和 type 写入 clickFunction 响应式对象供子组件响应 |
+| operation(funcName, type) | 核心操作分发：若 userAction 为 true 且非 resetForm / closeAction，则 emit 对应事件名；否则将 funcName 和 type 写入 clickFunction 响应式对象供子组件响应 |
 
 ## source 值对行为的影响
 
@@ -110,7 +110,7 @@
 ```vue
 <StarHorseDialog
   v-model:dialogVisible="visible"
-  :selfFunc="true"
+  :userAction="true"
   @merge="handleCustomMerge"
 >
   <StarHorseForm ref="formRef" :apiEndpoints="apiUrls" :fieldList="fieldList" />

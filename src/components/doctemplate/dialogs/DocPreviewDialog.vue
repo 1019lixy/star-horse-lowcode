@@ -60,7 +60,7 @@ const handleExport = () => {
     v-model="innerVisible"
     :title="i18n('doctemplate.preview.title')"
     box-width="900px"
-    :self-func="true"
+    :userAction="true"
     @open="handleOpened"
   >
     <div class="doc-preview-dialog">

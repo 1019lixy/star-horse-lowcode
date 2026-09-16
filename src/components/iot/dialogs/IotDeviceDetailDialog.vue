@@ -88,7 +88,7 @@ const relativeTime = (ts: number): string => {
     box-height="70%"
     :is-show-reset="false"
     :is-show-save="false"
-    :self-func="true"
+    :userAction="true"
   >
     <div class="iot-device-detail">
       <template v-if="device">

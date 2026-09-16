@@ -2,16 +2,7 @@ import {JoinSearchParams, SearchInfo, SearchParams,} from "@/components/types/Pa
 import {reactive, Reactive, unref} from "vue";
 import {ElLoading} from "element-plus";
 import JSON5 from "json5";
-import {
-    deleteByIds,
-    dictData,
-    download,
-    loadById,
-    loadData,
-    loadGetData,
-    postRequest,
-    uploadRequest,
-} from "@/api/star_horse_apis";
+import {deleteByIds, download, loadById, loadData, postRequest, uploadRequest,} from "@/api/star_horse_apis";
 import {error, success} from "@/utils/message";
 import {SelectOption} from "@/components/types/SearchProps";
 import {FieldInfo, OrderByInfo, PageFieldInfo, TabFieldInfo,} from "@/components/types/PageFieldInfo";
@@ -727,18 +718,11 @@ export async function compDynamicData(
     proxyUrl?: string,
 ) {
     const temp = field;
+    // eslint-disable-next-line no-useless-assignment
     let reDataList: SelectOption[] = [];
     const dataSource = temp.preps?.dataSource;
-    const dictCode = temp.preps?.dictCode;
     if (dataSource == "url" || temp.preps?.apiDataSource) {
         reDataList = await dynamicUrlOperation(field, [], proxyUrl);
-    } else if (dataSource == "dict") {
-        const dicts = await dictData(dictCode);
-        if (Object.keys(dicts).length == 0) {
-            error(i18n("utils.dictNotConfigured") + `【${dictCode}】`);
-        } else {
-            reDataList = dicts;
-        }
     } else {
         reDataList = [];
     }
@@ -777,7 +761,7 @@ export async function dynamicUrlOperation(
             const url = apiDataSource.apiInfo?.url;
             console.error(`[dynamicUrlOperation] ${url ? "直连" : "缺少接口地址"}`);
             if (!url) return [];
-            const res: any = await postRequest(url, { fieldList: queryInfo ?? [] });
+            const res: any = await postRequest(url, {fieldList: queryInfo ?? []});
             if (res?.data?.code != 200) {
                 console.error(res?.data?.cnMessage);
                 return [];
@@ -810,13 +794,13 @@ export async function requestApiLinkage(
     try {
         const res: any = await postRequest(
             apiDataSource.proxyUrl ?? "/system-config/redirect/apiLinkage",
-            { ...apiDataSource, formData, queryCondition },
+            {...apiDataSource, formData, queryCondition},
         );
         result = res?.data || {};
     } catch (e: any) {
         console.error("[requestApiLinkage] failed", e);
     }
-    return { code: result?.code, data: result?.data, message: result?.cnMessage };
+    return {code: result?.code, data: result?.data, message: result?.cnMessage};
 }
 
 /**
@@ -868,6 +852,48 @@ function joinPath(...segments: string[]): string {
 }
 
 /**
+ * apiInstance 特殊接口全局默认配置。
+ * 这些接口无法由 appName/urlPrefix 拼接得到（权限、重定向、自定义接口等），
+ * 由引用项目在插件 install 时统一传入，每次调用 apiInstance 都会附到返回的 ApiUrls 上。
+ * 调用方仍可在 apiInstance 返回后覆盖具体字段。
+ */
+export interface ApiInstanceConfig {
+    /** 权限接口：返回按钮权限标识集合，全系统统一 */
+    permissionsUrl?: string;
+    /** 重定向执行接口 */
+    redirectExecutionUrl?: string;
+    /** 重定向分页接口 */
+    redirectPageListUrl?: string;
+  /*  /!** 用户自定义接口1 *!/
+    customerUrl1?: string;
+    /!** 用户自定义接口2 *!/
+    customerUrl2?: string;
+    /!** 用户自定义接口3 *!/
+    customerUrl3?: string;
+    /!** 用户自定义接口4 *!/
+    customerUrl4?: string;
+    /!** 用户自定义接口5 *!/
+    customerUrl5?: string;*/
+}
+
+let apiInstanceConfig: ApiInstanceConfig = {};
+
+/**
+ * 设置 apiInstance 特殊接口全局默认配置（通常由插件 install 时调用）。
+ * 多次调用会合并，后值覆盖前值。
+ */
+export const setApiInstanceConfig = (config?: ApiInstanceConfig) => {
+    if (config) {
+        apiInstanceConfig = { ...apiInstanceConfig, ...config };
+    }
+};
+
+/** 读取当前 apiInstance 特殊接口全局默认配置 */
+export const getApiInstanceConfig = (): ApiInstanceConfig => ({
+    ...apiInstanceConfig,
+});
+
+/**
  * 公共 Api 接口
  * @param appName 应用名称或者接口前缀
  * @param urlPrefix api 接口前缀
@@ -913,6 +939,10 @@ export function apiInstance(
         modifyColumnsUrl: url("modifyColumns"),
         exportSingleDataUrl: url("exportSingleData"),
         condition,
+        // 特殊接口：由引用项目在 install 时通过 apiInstanceConfig 统一配置，无法由 appName/urlPrefix 拼接
+        permissionsUrl: apiInstanceConfig.permissionsUrl,
+        redirectExecutionUrl: apiInstanceConfig.redirectExecutionUrl,
+        redirectPageListUrl: apiInstanceConfig.redirectPageListUrl,
     };
     apiUrls.pageAction = (params: SearchInfo) =>
         postRequest(apiUrls.pageListUrl, params);
@@ -1125,7 +1155,7 @@ export const buildRequestParams = (
     } else {
         params = baseParams;
     }
-    return { url: tempUrl, params };
+    return {url: tempUrl, params};
 };
 
 /** 构建分页查询基础参数 */
@@ -1154,13 +1184,15 @@ export const findNodesInTree = (
     displayValue: string = "value",
 ): any[] => {
     const result: any[] = [];
+    // 统一转字符串比较，避免后端返回数字主键与表单字符串值因类型不一致导致回显匹配失败
+    const sameValue = (a: any, b: any) => String(a) === String(b);
     const walk = (items: any[]) => {
         for (const node of items) {
             const isMatch = Array.isArray(targetValue)
-                ? targetValue.includes(node[displayValue])
-                : node[displayValue] === targetValue;
+                ? targetValue.some((v: any) => sameValue(node[displayValue], v))
+                : sameValue(node[displayValue], targetValue);
             if (isMatch) {
-                const temp = { ...node };
+                const temp = {...node};
                 delete temp.children;
                 result.push(temp);
             }
@@ -1171,11 +1203,13 @@ export const findNodesInTree = (
     };
     walk(nodes);
     if (Array.isArray(targetValue)) {
-        const orderMap = new Map(targetValue.map((v: any, i: number) => [v, i]));
+        const orderMap = new Map(
+            targetValue.map((v: any, i: number) => [String(v), i]),
+        );
         result.sort(
             (a, b) =>
-                (orderMap.get(a[displayValue]) ?? 0) -
-                (orderMap.get(b[displayValue]) ?? 0),
+                (orderMap.get(String(a[displayValue])) ?? 0) -
+                (orderMap.get(String(b[displayValue])) ?? 0),
         );
     }
     return result;
@@ -1192,7 +1226,7 @@ export const toggleNodeSelection = (
         displayValue: string;
     },
 ): any[] => {
-    const { multiple, checkStrictly, selectLeaf, displayValue } = options;
+    const {multiple, checkStrictly, selectLeaf, displayValue} = options;
     const data = JSON5.parse(JSON5.stringify(node));
     const selection = [...currentSelection];
 
@@ -1202,14 +1236,14 @@ export const toggleNodeSelection = (
         );
         if (index === -1) {
             if (checkStrictly) {
-                const temp = { ...data };
+                const temp = {...data};
                 delete temp.children;
                 selection.push(temp);
             } else {
                 const processChildren = (n: any) => {
                     if (n.children) {
                         if (!selectLeaf) {
-                            const temp = { ...n };
+                            const temp = {...n};
                             delete temp.children;
                             selection.push(temp);
                         }
@@ -1219,7 +1253,7 @@ export const toggleNodeSelection = (
                             (e) => e[displayValue] === n[displayValue],
                         );
                         if (childIdx === -1) {
-                            const temp = { ...n };
+                            const temp = {...n};
                             delete temp.children;
                             selection.push(temp);
                         }
@@ -1304,16 +1338,16 @@ export const loadPageData = async (options: {
             // 分页走分页参数，不分页走不分页参数：均由后端按 optionField 统一解析
             const pageQuery =
                 pageSize > 0
-                    ? { fieldList: allParams, currentPage, pageSize, orderBy: [] }
-                    : { fieldList: allParams };
+                    ? {fieldList: allParams, currentPage, pageSize, orderBy: []}
+                    : {fieldList: allParams};
             // proxy 参数显式传入时优先使用；未显式传入（undefined）时回退到 apiDataSource.proxy，
             // 与动态表单配置的 apiDataSource.proxy 开关保持一致，避免代理开关不生效
-          //  const useProxy = (proxy || apiDataSource?.proxy) !== false;
-            if (apiDataSource?.proxy||proxy) {
+            //  const useProxy = (proxy || apiDataSource?.proxy) !== false;
+            if (apiDataSource?.proxy || proxy) {
                 const result = await requestApiLinkage(apiDataSource, pageQuery);
                 if (result.code != 200) {
                     console.error(result.message);
-                    return { list: [], totalData: 0, totalPage: 0 };
+                    return {list: [], totalData: 0, totalPage: 0};
                 }
                 payload = result.data;
             } else {
@@ -1322,19 +1356,19 @@ export const loadPageData = async (options: {
                 const res: any = await postRequest(url, pageQuery);
                 if (res?.data?.code != 200) {
                     console.error(res?.data?.cnMessage);
-                    return { list: [], totalData: 0, totalPage: 0 };
+                    return {list: [], totalData: 0, totalPage: 0};
                 }
                 payload = res?.data?.data;
             }
         } else {
-            if (!apiEndpoints) return { list: [], totalData: 0, totalPage: 0 };
+            if (!apiEndpoints) return {list: [], totalData: 0, totalPage: 0};
             const baseParams = buildPageParams(
                 conditions,
                 extraParams,
                 currentPage,
                 pageSize,
             );
-            const { url, params } = buildRequestParams(
+            const {url, params} = buildRequestParams(
                 apiEndpoints,
                 baseParams,
                 proxy,
@@ -1343,7 +1377,7 @@ export const loadPageData = async (options: {
             const res: any = await postRequest(url, params);
             if (res?.data?.code != 200) {
                 console.error(res?.data?.cnMessage);
-                return { list: [], totalData: 0, totalPage: 0 };
+                return {list: [], totalData: 0, totalPage: 0};
             }
             payload = res?.data?.data;
         }
@@ -1356,7 +1390,7 @@ export const loadPageData = async (options: {
         };
     } catch (err) {
         console.error("[loadPageData] failed", err);
-        return { list: [], totalData: 0, totalPage: 0 };
+        return {list: [], totalData: 0, totalPage: 0};
     } finally {
         closeLoad();
     }
@@ -1385,12 +1419,13 @@ export const loadSelectedData = async (
     if (extraParams && extraParams.length > 0) {
         conditions.push(...extraParams);
     }
-    const { list } = await loadPageData({
+    const {list} = await loadPageData({
         apiEndpoints,
         conditions,
         proxy,
         proxyUrl,
         apiDataSource,
+        currentPage: 1,
         pageSize: 100,
     });
     return findNodesInTree(list || [], value, displayValue);

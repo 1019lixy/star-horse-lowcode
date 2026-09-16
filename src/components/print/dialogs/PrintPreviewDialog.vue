@@ -128,7 +128,7 @@ const handlePrint = () => {
     box-height="80%"
     :is-show-reset="false"
     :is-show-save="false"
-    :self-func="true"
+    :userAction="true"
     @merge="handlePrint"
   >
     <div class="print-preview-dialog">

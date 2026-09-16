@@ -79,10 +79,13 @@ const hasFlowControl = computed(() => {
   return Object.keys(conf).length > 0;
 });
 
-// 当前阶段 key：优先取后端返回数据中的 starHorseCurrentStep，缺省取第一段
+// 当前阶段 key 优先级：后端 starHorseCurrentStep > 上次持久化的 __currentStepKey > 第一段
+// 中间层兜底：后端异常未返回 starHorseCurrentStep 时，避免把已推进的流程错误回退到第一段
 const currentStepKey = computed<string>(() => {
   const fromBackend = (dataForm.value as any)?.starHorseCurrentStep;
   if (fromBackend) return String(fromBackend);
+  const persisted = (dataForm.value as any)?.__currentStepKey;
+  if (persisted) return String(persisted);
   return stepList.value[0]?.subTablePrimaryKey;
 });
 
@@ -181,13 +184,23 @@ const trailAvatar = (node: any): string => (node.label || "?").charAt(0);
 
 // 后端返回新阶段(starHorseCurrentStep 变化)时：视图定位到当前阶段，
 // 并同步当前阶段 key 到 item.fieldName 与 dataForm.__currentStepKey（提交时告知后端当前段）
+// 必须监听 dataForm 引用：loadData 中 dataForm.value = objData 整体替换会冲掉已写入的
+// __currentStepKey；后端异常未返回 starHorseCurrentStep 时 currentStepKey 恒为兜底值
+// 不变化，仅靠 currentStepKey/source 触发会导致该字段丢失，故以 dataForm 替换作为
+// "数据已就绪"信号强制重写一次（source 监听须用 getter 形式，直接传 props.source 无效）
 watch(
-    currentStepKey,
-    (key) => {
+    [currentStepKey, dataForm],
+    ([key]) => {
       if (!key) return;
-      activeStepIndex.value = currentStepIndex.value;
-      if (props.item) props.item.fieldName = key;
-      if (dataForm.value && typeof dataForm.value === "object") {
+      if (activeStepIndex.value !== currentStepIndex.value) {
+        activeStepIndex.value = currentStepIndex.value;
+      }
+      if (props.item && props.item.fieldName !== key) props.item.fieldName = key;
+      if (
+          dataForm.value &&
+          typeof dataForm.value === "object" &&
+          dataForm.value.__currentStepKey !== key
+      ) {
         dataForm.value.__currentStepKey = key;
       }
     },

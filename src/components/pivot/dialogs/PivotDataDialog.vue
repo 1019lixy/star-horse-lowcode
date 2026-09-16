@@ -176,7 +176,7 @@ const handleDialogOpen = () => {
     v-model="innerVisible"
     :title="i18n('pivot.dialog.dataManager')"
     box-width="760px"
-    :self-func="true"
+    :userAction="true"
     @merge="activeTab === 'json' ? handleImportJson() : handleApplyApi()"
     @open="handleDialogOpen"
   >

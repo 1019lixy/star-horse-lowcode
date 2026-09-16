@@ -434,7 +434,7 @@ const isDisabled =
 }
 ```
 
-> 同时，组件也会自动触发 `selfFunc` 事件（通过 `allAction`），参数为 `(actionName, currentData)`。
+> 同时，组件也会自动触发 `userAction` 事件（通过 `allAction`），参数为 `(actionName, currentData)`。
 
 ---
 

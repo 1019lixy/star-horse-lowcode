@@ -204,7 +204,7 @@ onMounted(() => {
     <!-- 抽屉(设计模式和运行模式都可以打开) -->
     <star-horse-drawer
       v-model="dialogVisible"
-      :self-func="true"
+      :userAction="true"
       :title="drawerFields.title || drawerFields.preps?.btnText"
       :direction="drawerFields.preps?.direction || 'rtl'"
       :size="drawerFields.preps?.drawerSize || '40%'"

@@ -88,7 +88,7 @@ const handleExportHtml = () => {
     box-height="80%"
     :is-show-reset="false"
     :is-show-save="false"
-    :self-func="true"
+    :userAction="true"
   >
     <div class="report-preview-dialog">
       <div class="preview-toolbar">

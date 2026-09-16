@@ -1,38 +1,3 @@
-<template>
-  <starhorse-form-item
-    :showFormItem="showFormItem"
-    :isDesign="isDesign"
-    :disabled="disabled"
-    :bareFlag="bareFlag"
-    :field="field"
-    :parentField="parentField"
-  >
-    <!-- PC 端：保留原生 el-transfer -->
-    <el-transfer
-      v-if="!isMobile && source != 3"
-      :fid="field?.preps['name']"
-      v-bind="prepsFilter(field.preps)"
-      :data="ruleData"
-      :props="transferProps"
-      v-on="getDynamicEvents(props, itemAction, formData)"
-      v-model="formData[field.fieldName]"
-    />
-    <!-- APP 端：直接复用 StarHorseDataSelector -->
-    <StarHorseDataSelector
-      v-else
-      v-model="pickerData"
-      :data="ruleData"
-      :multiple="true"
-      :display-name="transferProps.label"
-      :display-value="transferProps.key"
-      :title="field.label"
-      :disabled="disabled"
-      :allow-create="!!field.preps?.allowCreate"
-      @update:selectedData="onSelectChange"
-      @change="onSelectChange"
-    />
-  </starhorse-form-item>
-</template>
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref, shallowRef, watch } from "vue";
 import { compDynamicData } from "@/api/star_horse_utils";
@@ -58,7 +23,7 @@ const props = withDefaults(defineProps<ItemPreps>(), {
   bareFlag: false,
   isSearch: false,
 });
-const emits = defineEmits(["selfFunc", "selectItem"]);
+const emits = defineEmits(["userAction", "selectItem"]);
 const formData = defineModel("formData");
 let bakeData = shallowRef<SelectOption[]>([]);
 const itemAction = (prep: string) => {
@@ -137,4 +102,39 @@ onMounted(() => {
   });
 });
 </script>
+<template>
+  <starhorse-form-item
+      :showFormItem="showFormItem"
+      :isDesign="isDesign"
+      :disabled="disabled"
+      :bareFlag="bareFlag"
+      :field="field"
+      :parentField="parentField"
+  >
+    <!-- PC 端：保留原生 el-transfer -->
+    <el-transfer
+        v-if="!isMobile && source != 3"
+        :fid="field?.preps['name']"
+        v-bind="prepsFilter(field.preps)"
+        :data="ruleData"
+        :props="transferProps"
+        v-on="getDynamicEvents(props, itemAction, formData)"
+        v-model="formData[field.fieldName]"
+    />
+    <!-- APP 端：直接复用 StarHorseDataSelector -->
+    <StarHorseDataSelector
+        v-else
+        v-model="pickerData"
+        :data="ruleData"
+        :multiple="true"
+        :display-name="transferProps.label"
+        :display-value="transferProps.key"
+        :title="field.label"
+        :disabled="disabled||source == 3"
+        :allow-create="!!field.preps?.allowCreate"
+        @update:selectedData="onSelectChange"
+        @change="onSelectChange"
+    />
+  </starhorse-form-item>
+</template>
 <style lang="scss" scoped></style>

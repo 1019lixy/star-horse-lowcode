@@ -136,7 +136,7 @@ const dialogTitle = computed(() =>
     v-model="innerVisible"
     :title="dialogTitle"
     box-width="560px"
-    :self-func="true"
+    :userAction="true"
     @merge="handleSubmit"
   >
     <el-form :model="form" label-width="100px" size="default">

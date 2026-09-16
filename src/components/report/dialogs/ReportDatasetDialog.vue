@@ -105,7 +105,7 @@ const fieldTypes: Array<{ label: string; value: DatasetField["type"] }> = [
     box-width="70%"
     box-height="70%"
     :is-show-reset="false"
-    :self-func="true"
+    :userAction="true"
     @merge="handleSave"
   >
     <div class="ds-dialog">

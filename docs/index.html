@@ -922,7 +922,7 @@ const isDisabled =
     input: (formData) =&gt; { console.log('输入', formData) },
   }
 }</code></pre>
-        <blockquote><p>同时，组件也会自动触发 <code>selfFunc</code> 事件（通过 <code>allAction</code>），参数为 <code>(actionName, currentData)</code>。</p></blockquote>
+        <blockquote><p>同时，组件也会自动触发 <code>userAction</code> 事件（通过 <code>allAction</code>），参数为 <code>(actionName, currentData)</code>。</p></blockquote>
         <hr>
         <h2 id="内部机制-6-字段禁用状态">6. 字段禁用状态详细说明</h2>
         <p>字段的禁用状态由多个因素综合判断，优先级从高到低：</p>
@@ -2265,7 +2265,7 @@ tableRef.value.createSearchParams([{ propertyName: 'name', operation: 'lk', valu
             <tr><td>boxWidth</td><td><code>string</code></td><td>否</td><td><code>'60%'</code></td><td>对话框宽度</td></tr>
             <tr><td>isBatch</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否批量编辑模式</td></tr>
             <tr><td>fullScreen</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否默认全屏</td></tr>
-            <tr><td>selfFunc</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否自定义提交逻辑</td></tr>
+            <tr><td>userAction</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否自定义提交逻辑</td></tr>
             <tr><td>selfClose</td><td><code>boolean</code></td><td>否</td><td><code>false</code></td><td>是否自定义关闭逻辑</td></tr>
             <tr><td>title</td><td><code>string</code></td><td>否</td><td><code>''</code></td><td>对话框标题</td></tr>
             <tr><td>source</td><td><code>number</code></td><td>否</td><td><code>1</code></td><td>数据来源标识</td></tr>

@@ -122,7 +122,7 @@ defineOptions({
   name: "InputItem",
 });
 const props = defineProps<ItemPreps>();
-const emits = defineEmits(["selfFunc", "selectItem"]);
+const emits = defineEmits(["userAction", "selectItem"]);
 const formData = defineModel("formData");
 const inputItemRef = ref();
 const dialogInputVisible = ref<boolean>(false);

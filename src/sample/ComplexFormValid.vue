@@ -1,24 +1,13 @@
 <script setup lang="ts" name="EnvInfo">
-import { i18n } from "@/lang";
-import { onMounted, provide, reactive, ref } from "vue";
-import { StarHorseDataView, StarHorseTableComp } from "@/components/comp";
-import {
-  ApiUrls,
-  OrderByInfo,
-  PageFieldInfo,
-  SearchFields,
-  SelectOption,
-  UserFuncInfo,
-} from "@/components/types";
-import {
-  apiInstance,
-  closeLoad,
-  dialogPreps,
-  load,
-} from "@/api/star_horse_utils";
-import { dictData, download } from "@/api/star_horse_apis";
-import { warning } from "@/utils/message";
-import { createDatetime } from "@/api/date_utils";
+import {i18n} from "@/lang";
+import {onMounted, provide, reactive, ref} from "vue";
+import {StarHorseDataView, StarHorseTableComp} from "@/components/comp";
+import {ApiUrls, OrderByInfo, PageFieldInfo, SearchFields, SelectOption, UserFuncInfo,} from "@/components/types";
+import {apiInstance, closeLoad, dialogPreps, load,} from "@/api/star_horse_utils";
+import {download, postRequest} from "@/api/star_horse_apis";
+import {warning} from "@/utils/message";
+import {createDatetime} from "@/api/date_utils";
+import {ServiceEnums} from "@/components/enums/ServiceEnums";
 
 const apiEndpoints: ApiUrls = apiInstance("userdb-manage", "generator/code");
 
@@ -41,6 +30,43 @@ let moduleNameList = ref<Array<SelectOption>>([]);
 let osTypeList = ref<Array<SelectOption>>([]);
 //部署类型
 let deployTypeList = ref<Array<SelectOption>>([]);
+/**
+ * 字典接口
+ */
+const dictUrl: string = `${ServiceEnums.SYSTEM_PREFIX}dictinfo/getAllByCondition`;
+/**
+ * 根据字典类别获取字典数据
+ * @param dictType 字典类别
+ * @param exclusion 排除字典项
+ * @param userUrl 用户自定义接口
+ */
+const dictData = async (
+    dictType: string,
+    exclusion: Array<string> = [],
+): Promise<SelectOption[]> => {
+  const query = [];
+  query.push({
+    propertyName: "dictType",
+    value: dictType,
+  });
+  const dicts: SelectOption[] = [];
+  await postRequest(dictUrl, {fieldList: query})
+      .then((res) => {
+        const redata = res.data;
+        if (redata.code == 200) {
+          redata.data?.forEach((item: any) => {
+            if (exclusion?.includes(item.dictCode)) {
+              return;
+            }
+            dicts.push({name: item.dictName, value: item.dictCode});
+          });
+        }
+      })
+      .catch((err: any) => {
+        console.error("接口不存在或网络异常", err);
+      });
+  return dicts;
+};
 const loadTabInfo = async (val: any) => {
   let dataId = val["datasourceConfigId"];
   if (!dataId || dataId == "undefined") {
@@ -120,7 +146,7 @@ const tableFieldList = reactive<PageFieldInfo>({
         type: "select",
         required: true,
         formVisible: true,
-        actions: { change: loadTabInfo },
+        actions: {change: loadTabInfo},
         listVisible: true,
         preps: {
           values: dbInfoList,
@@ -205,11 +231,11 @@ const tableFieldList = reactive<PageFieldInfo>({
               helpMsg: "选择了前端/后端项目后,选择的前端或者后端代码自动失效",
               preps: {
                 values: [
-                  { name: "后端代码", value: "backendCode" },
-                  { name: "前端代码", value: "frontendCode" },
-                  { name: "后端项目", value: "backendProject" },
-                  { name: "前端项目", value: "frontendProject" },
-                  { name: "权限系统", value: "auth" },
+                  {name: "后端代码", value: "backendCode"},
+                  {name: "前端代码", value: "frontendCode"},
+                  {name: "后端项目", value: "backendProject"},
+                  {name: "前端项目", value: "frontendProject"},
+                  {name: "权限系统", value: "auth"},
                 ],
               },
               actions: {
@@ -217,12 +243,12 @@ const tableFieldList = reactive<PageFieldInfo>({
                   const modules = val["createModules"] ?? [];
                   if (modules.includes("backendProject")) {
                     val.createModules = modules.filter(
-                      (item: any) => item !== "backendCode",
+                        (item: any) => item !== "backendCode",
                     );
                   }
                   if (modules.includes("frontendProject")) {
                     val.createModules = modules.filter(
-                      (item: any) => item !== "frontendCode",
+                        (item: any) => item !== "frontendCode",
                     );
                   }
                   console.log(val);
@@ -600,8 +626,8 @@ const tableFieldList = reactive<PageFieldInfo>({
                   formVisible: true,
                   preps: {
                     values: [
-                      { name: "账号", value: "username" },
-                      { name: "证书", value: "authentication" },
+                      {name: "账号", value: "username"},
+                      {name: "证书", value: "authentication"},
                     ],
                     dataRelation: {
                       actionName: "change",
@@ -722,12 +748,13 @@ const orderBy = ref<OrderByInfo[]>([
   },
 ]);
 
-const selectItemFun = (_data: any) => {};
+const selectItemFun = (_data: any) => {
+};
 const dataFormat = (name: string, cellValue: any): any => {
   if (name == "datasourceConfigId") {
     return (
-      dbInfoList.value.find((item: any) => item.value == cellValue)?.name ||
-      cellValue
+        dbInfoList.value.find((item: any) => item.value == cellValue)?.name ||
+        cellValue
     );
   }
   if (name == "createdTime" || name == "updatedTime") {
@@ -788,15 +815,15 @@ let extendBtns = ref<UserFuncInfo[]>([
     funcName: (row: any) => {
       load("代码生成中，请稍后");
       download(
-        `/userdb-manage/generator/code/convertToCodeById/${row[primaryKey]}`,
-        {},
+          `/userdb-manage/generator/code/convertToCodeById/${row[primaryKey]}`,
+          {},
       )
-        .catch((err) => {
-          warning(err);
-        })
-        .finally(() => {
-          closeLoad();
-        });
+          .catch((err) => {
+            warning(err);
+          })
+          .finally(() => {
+            closeLoad();
+          });
     },
   },
 ]);
@@ -812,16 +839,16 @@ const generateMerge = (type: string) => {
       }
       let isError = false;
       download("/userdb-manage/generator/code/convertToCode", dataForm)
-        .catch((err) => {
-          isError = true;
-          warning(err);
-        })
-        .finally(() => {
-          closeLoad();
-          if (type != "continue" && !isError) {
-            closeAction();
-          }
-        });
+          .catch((err) => {
+            isError = true;
+            warning(err);
+          })
+          .finally(() => {
+            closeLoad();
+            if (type != "continue" && !isError) {
+              closeAction();
+            }
+          });
     }
   });
 };
@@ -832,32 +859,32 @@ const closeAction = () => {
 <template>
   <div class="flex flex-col h-full overflow-hidden">
     <star-horse-dialog
-      :isShowBtnContinue="true"
-      :dialogVisible="dialogProps.editVisible"
-      :dialogProps="dialogProps"
-      :selfFunc="true"
-      @merge="generateMerge"
-      @closeAction="closeAction"
-      boxHeight="85%"
+        :isShowBtnContinue="true"
+        :dialogVisible="dialogProps.editVisible"
+        :dialogProps="dialogProps"
+        :userAction="true"
+        @merge="generateMerge"
+        @closeAction="closeAction"
+        boxHeight="85%"
     >
       <star-horse-form
-        ref="generateFormRef"
-        @refresh="codeGeneratorRef?.loadByPage()"
-        :apiEndpoints="apiEndpoints"
-        formSize="default"
-        :fieldList="tableFieldList"
-        :rules="rules"
+          ref="generateFormRef"
+          @refresh="codeGeneratorRef?.loadByPage()"
+          :apiEndpoints="apiEndpoints"
+          formSize="default"
+          :fieldList="tableFieldList"
+          :rules="rules"
       />
     </star-horse-dialog>
     <star-horse-dialog
-      v-model="dialogProps.viewVisible"
-      :dialogProps="dialogProps"
-      :source="3"
+        v-model="dialogProps.viewVisible"
+        :dialogProps="dialogProps"
+        :source="3"
     >
       <star-horse-data-view
-        :dataFormat="dataFormat"
-        :field-list="tableFieldList"
-        :apiEndpoints="apiEndpoints"
+          :dataFormat="dataFormat"
+          :field-list="tableFieldList"
+          :apiEndpoints="apiEndpoints"
       />
     </star-horse-dialog>
     <el-tabs v-model="codeGener" type="border-card">
@@ -866,28 +893,28 @@ const closeAction = () => {
           <div class="flex items-center justify-end">
             <el-button type="primary" @click="generateMerge">
               <star-horse-icon
-                iconClass="export"
-                color="var(--star-horse-white)"
+                  iconClass="export"
+                  color="var(--star-horse-white)"
               />
               导出代码
             </el-button>
             <el-button type="warning">
               <star-horse-icon
-                iconClass="publish"
-                color="var(--star-horse-white)"
+                  iconClass="publish"
+                  color="var(--star-horse-white)"
               />
               发起部署
             </el-button>
           </div>
-          <el-divider />
+          <el-divider/>
           <div class="flex-1 overflow-hidden">
             <star-horse-form
-              ref="generateFormRef"
-              @refresh="codeGeneratorRef?.loadByPage()"
-              :apiEndpoints="apiEndpoints"
-              formSize="default"
-              :fieldList="tableFieldList"
-              :rules="rules"
+                ref="generateFormRef"
+                @refresh="codeGeneratorRef?.loadByPage()"
+                :apiEndpoints="apiEndpoints"
+                formSize="default"
+                :fieldList="tableFieldList"
+                :rules="rules"
             />
           </div>
         </div>
@@ -897,30 +924,30 @@ const closeAction = () => {
           <div class="search-content">
             <div class="search_btn">
               <star-horse-search-comp
-                @searchData="
+                  @searchData="
                   (data: any) => codeGeneratorRef?.createSearchParams(data)
                 "
-                :formData="searchFormData"
-                :apiEndpoints="apiEndpoints"
+                  :formData="searchFormData"
+                  :apiEndpoints="apiEndpoints"
               />
             </div>
           </div>
           <el-card class="inner_content">
             <star-horse-table-comp
-              ref="codeGeneratorRef"
-              :fieldList="tableFieldList"
-              :primaryKey="primaryKey"
-              :apiEndpoints="apiEndpoints"
-              :orderBy="orderBy"
-              :btn-permissions="{
+                ref="codeGeneratorRef"
+                :fieldList="tableFieldList"
+                :primaryKey="primaryKey"
+                :apiEndpoints="apiEndpoints"
+                :orderBy="orderBy"
+                :btn-permissions="{
                 edit: 'edit',
                 view: 'view',
                 delete: 'delete',
                 add: 'add',
               }"
-              :extendBtns="extendBtns"
-              :dataFormat="dataFormat"
-              @selectItem="selectItemFun"
+                :extendBtns="extendBtns"
+                :dataFormat="dataFormat"
+                @selectItem="selectItemFun"
             />
           </el-card>
         </div>

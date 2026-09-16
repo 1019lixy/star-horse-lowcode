@@ -85,7 +85,7 @@ const props = withDefaults(defineProps<ItemPreps>(), {
   bareFlag: false,
   isSearch: false,
 });
-const emits = defineEmits(["selfFunc", "selectItem"]);
+const emits = defineEmits(["userAction", "selectItem"]);
 const formData = defineModel("formData");
 let dataField = shallowRef([]);
 let headers = ref<any>({});
@@ -108,7 +108,7 @@ const selfAction = (
     //默认将上传成功的属性存入数据对象
   }
   console.log(prep, uploadFile, uploadFiles, param);
-  emits("selfFunc", prep, uploadFile, uploadFiles, param);
+  emits("userAction", prep, uploadFile, uploadFiles, param);
 };
 onMounted(async () => {
   if (!props.field.preps) {

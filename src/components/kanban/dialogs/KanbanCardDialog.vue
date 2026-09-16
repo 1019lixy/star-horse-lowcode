@@ -77,7 +77,7 @@ const handleRemoveLabel = (idx: number) => {
       isNew ? i18n('kanban.dialog.addCard') : i18n('kanban.dialog.editCard')
     "
     box-width="600px"
-    :self-func="true"
+    :userAction="true"
     @merge="handleSubmit"
   >
     <el-form :model="form" label-width="90px" size="default">

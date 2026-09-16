@@ -241,7 +241,7 @@ onMounted(() => {
         :key="item.id"
         :is="itemType + '-item'"
         :formInfo="formFields"
-        @selfFunc="actionDispatcher"
+        @userAction="actionDispatcher"
         ref="componentRef"
         :isSearch="source == 4"
         :bareFlag="bareFlag"

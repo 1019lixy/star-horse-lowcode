@@ -63,7 +63,7 @@ const handleSubmit = () => {
       isNew ? i18n('kanban.dialog.addColumn') : i18n('kanban.dialog.editColumn')
     "
     box-width="500px"
-    :self-func="true"
+    :userAction="true"
     @merge="handleSubmit"
   >
     <el-form :model="form" label-width="100px" size="default">

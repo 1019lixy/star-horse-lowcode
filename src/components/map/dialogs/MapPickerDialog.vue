@@ -148,7 +148,7 @@ const handleSearch = () => {
     v-model="innerVisible"
     :title="i18n('map.field.select')"
     box-width="960px"
-    :self-func="true"
+    :userAction="true"
     @merge="handleConfirm"
     @open="handleOpened"
   >

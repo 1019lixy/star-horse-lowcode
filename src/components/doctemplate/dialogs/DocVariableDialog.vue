@@ -74,7 +74,7 @@ const handleRemoveOption = (idx: number) => {
         : i18n('doctemplate.dialog.editVar')
     "
     box-width="500px"
-    :self-func="true"
+    :userAction="true"
     @merge="handleSubmit"
   >
     <el-form :model="form" label-width="100px" size="default">

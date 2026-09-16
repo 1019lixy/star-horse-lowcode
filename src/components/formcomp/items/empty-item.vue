@@ -22,7 +22,7 @@ withDefaults(defineProps<ItemPreps>(), {
   bareFlag: false,
   isSearch: false,
 });
-const emits = defineEmits(["selfFunc", "selectItem"]);
+const emits = defineEmits(["userAction", "selectItem"]);
 </script>
 <style scoped>
 .empty_comp {

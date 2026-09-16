@@ -31,7 +31,7 @@ const props = withDefaults(defineProps<ItemPreps>(), {
   isSearch: false,
   source: 0,
 });
-const emits = defineEmits(["selfFunc", "selectItem"]);
+const emits = defineEmits(["userAction", "selectItem"]);
 const formData = defineModel("formData");
 // const subDataInfo = ref<any>({});
 const currentComponent = computed(() => props.field["preps"].compName);

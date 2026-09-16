@@ -79,7 +79,7 @@ const handleSubmit = () => {
         : i18n('schedule.dialog.editEvent')
     "
     box-width="600px"
-    :self-func="true"
+    :userAction="true"
     @merge="handleSubmit"
   >
     <el-form :model="form" label-width="100px" size="default">

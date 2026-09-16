@@ -205,7 +205,7 @@ const options = computed(() => {
 
 | 事件名 | 参数 | 说明 |
 |---|---|---|
-| selfFunc | `(actionName: string, currentData: any)` | 自定义函数/事件回调，`actionName` 为触发的事件名（如 'change'/'blur'/'click'），`currentData` 为当前表单数据 |
+| userAction | `(actionName: string, currentData: any)` | 自定义函数/事件回调，`actionName` 为触发的事件名（如 'change'/'blur'/'click'），`currentData` 为当前表单数据 |
 | selectItem | `(field: any)` | 选中组件事件（设计模式使用） |
 
 ## 公共计算属性
@@ -743,7 +743,7 @@ const options = computed(() => {
 | headers | `object \| string` | — | 自定义请求头（支持 JSON 字符串） |
 | context | `string` | `'/system-config'` | 文件上下文路径 |
 
-> `selfFunc` emit 的 actionName 值为：`change` / `error` / `exceed` / `preview` / `progress` / `remove` / `success`
+> `userAction` emit 的 actionName 值为：`change` / `error` / `exceed` / `preview` / `progress` / `remove` / `success`
 
 ---
 

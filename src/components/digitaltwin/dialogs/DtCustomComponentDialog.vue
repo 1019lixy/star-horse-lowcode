@@ -192,7 +192,7 @@ watch(
     v-model="innerVisible"
     :title="i18n('digitaltwin.customComponentDialog.title')"
     box-width="640px"
-    :self-func="true"
+    :userAction="true"
   >
     <el-tabs v-model="activeTab">
       <!-- 保存组件 Tab -->

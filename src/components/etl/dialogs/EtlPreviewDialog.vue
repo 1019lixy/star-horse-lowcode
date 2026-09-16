@@ -131,7 +131,7 @@ const icons: Record<string, string> = {
     box-height="70%"
     :is-show-reset="false"
     :is-show-save="false"
-    :self-func="true"
+    :userAction="true"
   >
     <div class="etl-preview-dialog">
       <div class="preview-toolbar">

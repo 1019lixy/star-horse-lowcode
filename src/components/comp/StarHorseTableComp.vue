@@ -471,7 +471,7 @@ defineExpose({
   <star-horse-panel
       :type="dialogType"
       :isShowBtnContinue="false"
-      :selfFunc="true"
+      :userAction="true"
       :title="i18n('comp.exportSelectFields')"
       :boxWidth="isMobile ? '90%' : '50%'"
       @merge="selectedFields"

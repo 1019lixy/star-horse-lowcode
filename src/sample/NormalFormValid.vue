@@ -1,22 +1,17 @@
 <script setup lang="ts" name="Areainfo">
-import { nextTick, onMounted, provide, ref } from "vue";
-import { PageFieldInfo } from "@/components/types/PageFieldInfo";
-import { StarHorseForm, StarHorseTableComp } from "@/components/comp";
-import {
-  apiInstance,
-  closeLoad,
-  dialogPreps,
-  load,
-} from "@/api/star_horse_utils";
-import { download } from "@/api/star_horse_apis";
-import { warning } from "@/utils/message";
-import { ApiUrls, SearchInfo } from "@/components/types";
-import { isMobile } from "@/api/device";
-import { PageConfig } from "@/components/system";
+import {nextTick, onMounted, provide, ref} from "vue";
+import {PageFieldInfo} from "@/components/types/PageFieldInfo";
+import {StarHorseForm, StarHorseTableComp} from "@/components/comp";
+import {apiInstance, closeLoad, dialogPreps, load,} from "@/api/star_horse_utils";
+import {download} from "@/api/star_horse_apis";
+import {warning} from "@/utils/message";
+import {ApiUrls, SearchInfo} from "@/components/types";
+import {isMobile} from "@/api/device";
+import {PageConfig} from "@/components/system";
 
 const apiEndpoints: ApiUrls = apiInstance(
-  "userdb-manage",
-  "userdb/formInstance/tbValidDatesNew/idValidDateNew/381167130139165693",
+    "userdb-manage",
+    "userdb/formInstance/tbValidDatesNew/idValidDateNew/381167130139165693",
 );
 console.log(apiEndpoints);
 const testFormValidRef = ref();
@@ -96,25 +91,130 @@ const fieldList = ref<PageFieldInfo>({
       },
     },
     {
-      label: "选择数据",
+      label: "数据选择",
       fieldName: "fieldSh3C9D",
-      type: "select",
+      type: "datapicker",
+      formVisible: true,
+      defaultValue: "9017780",
+      "listVisible": true,
       preps: {
-        values: [
-          {
-            name: "Windows",
-            value: "windows",
-            xh: 1,
+        "id": "Idsh4b409811-93c9-4a00-a08a-1a97c665fcef",
+        "label": "数据选择器",
+        "itemNameLabel": "数据选择器",
+        "name": "fieldSh3C9D",
+        "clearable": true,
+        "readonly": false,
+        multiple: true,
+        "rules": [],
+        "maxLength": 255,
+        "formVisible": true,
+        "listVisible": true,
+        "viewVisible": true,
+        "formula": {
+          "enable": false,
+          "type": "calc",
+          "sourceFields": [],
+          "expression": ""
+        },
+        "filterable": true,
+        "collapseTags": true,
+        "displayMode": "label",
+        "enableHierarchy": true,
+        "apiDataSource": {
+          proxy: true,
+          "proxyUrl": "/system-config/redirect/apiLinkage",
+          "conditionFields": [
+            "fieldSh3C9D"
+          ],
+          "apiInfo": {
+            "apiType": "thirdApi",
+            "httpMethod": "POST",
+            "protocol": "http",
+            "redirect": true,
+            "url": "http://localhost:8749/system-config/system/contact/list",
+            "dataType": "JSON",
+            "headers": [],
+            "requestParams": [
+              {
+                "matchType": "eq",
+                "valueType": "static",
+                "paramName": "platform",
+                "paramValue": "WECOM",
+                "xh": 1
+              },
+              {
+                "matchType": "eq",
+                "valueType": "static",
+                "paramName": "appId",
+                "paramValue": "ww9f8004e2bac1f2f5",
+                "xh": 2
+              },
+              {
+                "matchType": "eq",
+                "valueType": "static",
+                "paramName": "appSecret",
+                "paramValue": "GifTP8o7umxPEHV0_goIn33L62GjuUIlPi_MGSkJXSY",
+                "xh": 3
+              },
+              {
+                "matchType": "eq",
+                "valueType": "static",
+                "paramName": "agentId",
+                "paramValue": "1000020",
+                "xh": 4
+              }
+
+            ],
+            "responseTemplate": "result_data_list",
+            "codePath": "code",
+            "dataPath": "data.roots",
+            "successCode": "200"
           },
-          {
-            name: "Linux",
-            value: "linux",
-            xh: 2,
-            starHorseEditing: "no",
+          "redirect": true,
+          "httpMethod": "GET",
+          "protocol": "http",
+          "dataType": "JSON",
+          "responseTemplate": "result_data_list",
+          "codePath": "code",
+          "dataPath": "data",
+          "optionField": {
+            "labelField": "name",
+            "valueField": "value",
+            "onlyParseConfigured": true,
+            "hasChildren": true,
+            "childrenField": "children"
           },
-        ],
-      },
-    },
+          "authInfo": {
+            "apiType": "systemApi",
+            "httpMethod": "GET",
+            "protocol": "http"
+          },
+          "isolationConfig": {
+            "isolationDetails": []
+          }
+        }
+      }
+    }
+    /* {
+       label: "选择数据",
+       fieldName: "fieldSh3C9D",
+       type: "select",
+       preps: {
+         values: [
+           {
+             name: "Windows",
+             value: "windows",
+             xh: 1,
+           },
+           {
+             name: "Linux",
+             value: "linux",
+             xh: 2,
+             starHorseEditing: "no",
+           },
+         ],
+       },
+     }*/,
     /*{
       label: "区域",
       fieldName: "fieldSh6C9D",
@@ -136,18 +236,18 @@ const fieldList = ref<PageFieldInfo>({
             name: "Windows",
             value: "windows",
             children: [
-              { name: "window7", value: "window7" },
-              { name: "window8", value: "window8" },
-              { name: "window10", value: "window10" },
+              {name: "window7", value: "window7"},
+              {name: "window8", value: "window8"},
+              {name: "window10", value: "window10"},
             ],
           },
           {
             name: "Linux",
             value: "linux",
             children: [
-              { name: "centos", value: "centos" },
-              { name: "fedora", value: "fedora" },
-              { name: "ubuntu", value: "ubuntu" },
+              {name: "centos", value: "centos"},
+              {name: "fedora", value: "fedora"},
+              {name: "ubuntu", value: "ubuntu"},
             ],
           },
         ],
@@ -163,18 +263,18 @@ const fieldList = ref<PageFieldInfo>({
             name: "Windows",
             value: "windows",
             children: [
-              { name: "window7", value: "window7" },
-              { name: "window8", value: "window8" },
-              { name: "window10", value: "window10" },
+              {name: "window7", value: "window7"},
+              {name: "window8", value: "window8"},
+              {name: "window10", value: "window10"},
             ],
           },
           {
             name: "Linux",
             value: "linux",
             children: [
-              { name: "centos", value: "centos" },
-              { name: "fedora", value: "fedora" },
-              { name: "ubuntu", value: "ubuntu" },
+              {name: "centos", value: "centos"},
+              {name: "fedora", value: "fedora"},
+              {name: "ubuntu", value: "ubuntu"},
             ],
           },
         ],
@@ -198,23 +298,24 @@ const fieldList = ref<PageFieldInfo>({
       fieldName: "fieldSh5C9D",
       type: "datapicker",
       preps: {
+        multiple: true,
         data: [
           {
             name: "Windows",
             value: "windows",
             children: [
-              { name: "window7", value: "window7" },
-              { name: "window8", value: "window8" },
-              { name: "window10", value: "window10" },
+              {name: "window7", value: "window7"},
+              {name: "window8", value: "window8"},
+              {name: "window10", value: "window10"},
             ],
           },
           {
             name: "Linux",
             value: "linux",
             children: [
-              { name: "centos", value: "centos" },
-              { name: "fedora", value: "fedora" },
-              { name: "ubuntu", value: "ubuntu" },
+              {name: "centos", value: "centos"},
+              {name: "fedora", value: "fedora"},
+              {name: "ubuntu", value: "ubuntu"},
             ],
           },
         ],
@@ -225,13 +326,13 @@ const fieldList = ref<PageFieldInfo>({
       label: "计算A",
       fieldName: "calcA",
       type: "number",
-      preps: { defaultValue: 10 },
+      preps: {defaultValue: 10},
     },
     {
       label: "计算B",
       fieldName: "calcB",
       type: "number",
-      preps: { defaultValue: 5 },
+      preps: {defaultValue: 5},
     },
     {
       label: "计算结果(calc)",
@@ -251,7 +352,7 @@ const fieldList = ref<PageFieldInfo>({
       label: "角度",
       fieldName: "trigAngle",
       type: "number",
-      preps: { defaultValue: 30 },
+      preps: {defaultValue: 30},
     },
     {
       label: "正弦sin(calc)",
@@ -285,13 +386,13 @@ const fieldList = ref<PageFieldInfo>({
       label: "被除数",
       fieldName: "modA",
       type: "number",
-      preps: { defaultValue: 17 },
+      preps: {defaultValue: 17},
     },
     {
       label: "除数",
       fieldName: "modB",
       type: "number",
-      preps: { defaultValue: 5 },
+      preps: {defaultValue: 5},
     },
     {
       label: "求余%(calc)",
@@ -312,13 +413,13 @@ const fieldList = ref<PageFieldInfo>({
       label: "拼接A",
       fieldName: "concatA",
       type: "input",
-      preps: { defaultValue: "Hello" },
+      preps: {defaultValue: "Hello"},
     },
     {
       label: "拼接B",
       fieldName: "concatB",
       type: "input",
-      preps: { defaultValue: "World" },
+      preps: {defaultValue: "World"},
     },
     {
       label: "拼接结果(concat)",
@@ -340,8 +441,8 @@ const fieldList = ref<PageFieldInfo>({
       type: "select",
       preps: {
         values: [
-          { name: "Windows", value: "win", xh: 1 },
-          { name: "Linux", value: "linux", xh: 2 },
+          {name: "Windows", value: "win", xh: 1},
+          {name: "Linux", value: "linux", xh: 2},
         ],
       },
     },
@@ -360,8 +461,8 @@ const fieldList = ref<PageFieldInfo>({
           type: "lookup",
           sourceFields: ["lookupKey"],
           lookupMappings: [
-            { key: "win", values: { lkPort: 3389, lkName: "Windows" } },
-            { key: "linux", values: { lkPort: 22, lkName: "Linux" } },
+            {key: "win", values: {lkPort: 3389, lkName: "Windows"}},
+            {key: "linux", values: {lkPort: 22, lkName: "Linux"}},
           ],
         },
       },
@@ -371,13 +472,13 @@ const fieldList = ref<PageFieldInfo>({
       label: "开始日期",
       fieldName: "dcStart",
       type: "date",
-      preps: { type: "date", subType: "date", clearable: true },
+      preps: {type: "date", subType: "date", clearable: true},
     },
     {
       label: "结束日期",
       fieldName: "dcEnd",
       type: "date",
-      preps: { type: "date", subType: "date", clearable: true },
+      preps: {type: "date", subType: "date", clearable: true},
     },
     {
       label: "日期差-天(dateCalc)",
@@ -399,7 +500,7 @@ const fieldList = ref<PageFieldInfo>({
       label: "金额",
       fieldName: "fmtMoney",
       type: "number",
-      preps: { defaultValue: 1234567 },
+      preps: {defaultValue: 1234567},
     },
     {
       label: "千分位(format)",
@@ -419,7 +520,7 @@ const fieldList = ref<PageFieldInfo>({
       label: "比率",
       fieldName: "fmtRate",
       type: "number",
-      preps: { defaultValue: 3.14159 },
+      preps: {defaultValue: 3.14159},
     },
     {
       label: "保留两位(format)",
@@ -443,9 +544,9 @@ const fieldList = ref<PageFieldInfo>({
       type: "select",
       preps: {
         values: [
-          { name: "A", value: "a" },
-          { name: "B", value: "b" },
-          { name: "C", value: "c" },
+          {name: "A", value: "a"},
+          {name: "B", value: "b"},
+          {name: "C", value: "c"},
         ],
         dataRelation: {
           actionName: "change",
@@ -475,7 +576,7 @@ const fieldList = ref<PageFieldInfo>({
               label: "分数",
               fieldName: "tnScore",
               type: "number",
-              preps: { defaultValue: 85 },
+              preps: {defaultValue: 85},
             },
             {
               label: "及格判定(ternary)",
@@ -1005,16 +1106,16 @@ const generateMerge = (type: string) => {
       }
       let isError = false;
       download("/userdb-manage/generator/code/convertToCode", dataForm)
-        .catch((err) => {
-          isError = true;
-          warning(err);
-        })
-        .finally(() => {
-          closeLoad();
-          if (type != "continue" && !isError) {
-            closeAction();
-          }
-        });
+          .catch((err) => {
+            isError = true;
+            warning(err);
+          })
+          .finally(() => {
+            closeLoad();
+            if (type != "continue" && !isError) {
+              closeAction();
+            }
+          });
     }
   });
 };
@@ -1027,52 +1128,53 @@ onMounted(() => {
 });
 </script>
 <template>
-  <PageConfig v-model="drawerVisible" />
+  <PageConfig v-model="drawerVisible"/>
   <div class="flex flex-col h-full overflow-hidden">
     <star-horse-panel
-      type="drawer"
-      :isShowBtnContinue="true"
-      v-model="dialogProps.editVisible"
-      :dialogProps="dialogProps"
-      :selfFunc="false"
-      @merge="generateMerge"
-      @closeAction="closeAction"
-      boxHeight="85%"
+        type="drawer"
+        :isShowBtnContinue="true"
+        v-model="dialogProps.editVisible"
+        :dialogProps="dialogProps"
+        :userAction="true"
+        :user-action-exclude-event-names="['resetForm']"
+        @merge="generateMerge"
+        @closeAction="closeAction"
+        boxHeight="85%"
     >
       {{ dialogProps.viewVisible }}
       <el-button @click="dialogProps.viewVisible = true">Click</el-button>
       <star-horse-form
-        ref="generateFormRef"
-        @refresh="
+          ref="generateFormRef"
+          @refresh="
           (formData, result) => codeGeneratorRef?.assignStaticData(formData)
         "
-        :apiEndpoints="apiEndpoints"
-        :preview="true"
-        formSize="default"
-        :fieldList="fieldList"
-        :rules="rules"
+          :apiEndpoints="apiEndpoints"
+
+          formSize="default"
+          :fieldList="fieldList"
+          :rules="rules"
       />
     </star-horse-panel>
     <star-horse-panel
-      type="dialog"
-      v-model="dialogProps.viewVisible"
-      :source="3"
-      boxHeight="85%"
+        type="dialog"
+        v-model="dialogProps.viewVisible"
+        :source="3"
+        boxHeight="85%"
     >
       <star-horse-data-view
-        :preview="true"
-        :field-list="fieldList"
-        :apiEndpoints="apiEndpoints"
+          :preview="true"
+          :field-list="fieldList"
+          :apiEndpoints="apiEndpoints"
       />
     </star-horse-panel>
     <div class="search-content" v-if="!isMobile">
       <div class="search_btn">
         <star-horse-search-comp
-          @searchData="
+            @searchData="
             (data: any) => codeGeneratorRef?.createSearchParams(data)
           "
-          :formData="searchFormData"
-          :apiEndpoints="apiEndpoints"
+            :formData="searchFormData"
+            :apiEndpoints="apiEndpoints"
         />
       </div>
     </div>
@@ -1082,14 +1184,14 @@ onMounted(() => {
     <el-button @click="drawerVisible = true">Valid Click</el-button>
     <el-card class="inner_content">
       <star-horse-table-comp
-        ref="codeGeneratorRef"
-        :fieldList="fieldList"
-        :primaryKey="primaryKey"
-        :apiEndpoints="apiEndpoints"
-        :preview="true"
-        :dialogType="'drawer'"
-        :searchFormData="searchFormData"
-        :btn-permissions="{
+          ref="codeGeneratorRef"
+          :fieldList="fieldList"
+          :primaryKey="primaryKey"
+          :apiEndpoints="apiEndpoints"
+          :preview="true"
+          :dialogType="'drawer'"
+          :searchFormData="searchFormData"
+          :btn-permissions="{
           edit: 'edit',
           view: 'view',
           delete: 'delete',

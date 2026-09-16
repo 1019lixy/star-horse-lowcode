@@ -78,7 +78,7 @@ const handleSendTest = () => {
     v-model="innerVisible"
     :title="i18n('emailtemplate.preview.title')"
     box-width="960px"
-    :self-func="true"
+    :userAction="true"
     @open="handleOpened"
   >
     <div class="email-preview-dialog">

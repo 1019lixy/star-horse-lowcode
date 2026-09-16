@@ -64,7 +64,7 @@ const handleExport = (template: PrintTemplate) => {
     box-height="70%"
     :is-show-reset="false"
     :is-show-save="false"
-    :self-func="true"
+    :userAction="true"
   >
     <div class="tpl-mgr">
       <div class="tpl-toolbar">

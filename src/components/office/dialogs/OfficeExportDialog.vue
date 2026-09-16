@@ -171,7 +171,7 @@ const previewContent = computed(() => {
     v-model="innerVisible"
     :title="i18n('office.export.title')"
     box-width="800px"
-    :self-func="true"
+    :userAction="true"
   >
     <div class="office-export-dialog">
       <el-form label-width="100px">

@@ -193,7 +193,7 @@ const props = withDefaults(defineProps<ItemPreps>(), {
   bareFlag: false,
   isSearch: false,
 });
-const emits = defineEmits(["selfFunc", "selectItem"]);
+const emits = defineEmits(["userAction", "selectItem"]);
 const formData = defineModel("formData");
 
 let searchName = ref<string>("");
@@ -234,7 +234,7 @@ const dataSearch = () => {
 };
 const itemAction = (prep: any) => {
   if (Object.keys(props.field.actions ?? {}).includes("change")) {
-    emits("selfFunc", prep, formData.value);
+    emits("userAction", prep, formData.value);
   }
 };
 const init = async () => {

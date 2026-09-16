@@ -16,7 +16,7 @@ const props = withDefaults(defineProps<ItemPreps>(), {
   bareFlag: false,
   isSearch: false,
 });
-const emits = defineEmits(["selfFunc", "selectItem"]);
+const emits = defineEmits(["userAction", "selectItem"]);
 const formData = defineModel("formData");
 
 // 弹窗控制：签名编辑弹窗
@@ -135,7 +135,7 @@ const signImage = computed(() => {
     :type="dialogType"
     v-model="previewDialog"
     :source="3"
-    :self-func="true"
+    :userAction="true"
     @closeAction="previewDialog = false"
   >
     <el-image :src="signImage" fit="contain" style="width: 100%" />
@@ -148,7 +148,7 @@ const signImage = computed(() => {
     title="手写签名"
     @merge="confirmSign"
     width="600px"
-    :self-func="true"
+    :userAction="true"
   >
     <div class="signature-wrapper">
       <div class="sign-toolbar">

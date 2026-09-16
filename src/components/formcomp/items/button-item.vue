@@ -2,7 +2,7 @@
   <star-horse-panel
     :type="dialogType"
     :title="field.preps?.dialogTitle || i18n('item.configureButtonEvent')"
-    :selfFunc="true"
+    :userAction="true"
     @merge="operResultAction"
     v-model="btnDialogVisible"
     :boxWidth="field.preps?.boxWidth || '50%'"
@@ -74,7 +74,7 @@ const props = withDefaults(defineProps<ItemPreps>(), {
   bareFlag: false,
   isSearch: false,
 });
-const emits = defineEmits(["selfFunc", "selectItem"]);
+const emits = defineEmits(["userAction", "selectItem"]);
 const formData = defineModel("formData");
 
 let btnDialogVisible = shallowRef<boolean>(false);

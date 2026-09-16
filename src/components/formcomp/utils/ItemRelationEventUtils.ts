@@ -610,7 +610,7 @@ const allAction = (
 ) => {
     const currentData = unref(formData);
     try {
-        emits("selfFunc", actionName, currentData);
+        emits("userAction", actionName, currentData);
     } catch (e) {
         error(i18n("api.eventTriggerError") + e);
     }
@@ -640,7 +640,7 @@ const buttonAction = (
                 actions[evtName]?.(formData);
             }
         } else {
-            emits("selfFunc", currentData);
+            emits("userAction", currentData);
         }
     }
 };

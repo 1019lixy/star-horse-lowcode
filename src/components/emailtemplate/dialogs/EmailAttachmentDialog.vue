@@ -51,7 +51,7 @@ const handleSubmit = () => {
     v-model="innerVisible"
     :title="i18n('emailtemplate.dialog.addAttachment')"
     box-width="480px"
-    :self-func="true"
+    :userAction="true"
     @merge="handleSubmit"
   >
     <el-form :model="form" label-width="100px" size="default">

@@ -272,7 +272,7 @@ defineExpose({
     v-model="visible"
     :direction="direction"
     :title="title"
-    :selfFunc="true"
+    :userAction="true"
     @merge="saveData"
     @resetForm="resetDefault"
     :resizable="resizable"

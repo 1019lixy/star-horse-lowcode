@@ -78,7 +78,7 @@ const handleSubmit = () => {
       isNew ? i18n('gantt.dialog.addTask') : i18n('gantt.dialog.editTask')
     "
     box-width="600px"
-    :self-func="true"
+    :userAction="true"
     @merge="handleSubmit"
   >
     <el-form :model="form" label-width="100px" size="default">

@@ -97,8 +97,12 @@ const rebuildItems = (values: any[], loaded: any[]) => {
   }
   const merged = values.map(
     (v) =>
-      loaded.find((i: any) => i?.[props.displayValue] === v) ??
-      selectedItems.value.find((i: any) => i?.[props.displayValue] === v) ?? {
+      loaded.find(
+        (i: any) => String(i?.[props.displayValue]) === String(v),
+      ) ??
+      selectedItems.value.find(
+        (i: any) => String(i?.[props.displayValue]) === String(v),
+      ) ?? {
         [props.displayName]: v,
         [props.displayValue]: v,
       },
@@ -176,7 +180,7 @@ const addTag = (val: any) => {
 /** 标签显示文本（支持 label+code 模式） */
 const getDisplayText = (val: any): string => {
   const item = selectedItems.value.find(
-    (i: any) => i?.[props.displayValue] === val,
+    (i: any) => String(i?.[props.displayValue]) === String(val),
   );
   if (!item) return val;
   if (props.displayMode === "label+code") {

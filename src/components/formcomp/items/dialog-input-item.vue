@@ -26,7 +26,7 @@ const props = withDefaults(defineProps<ItemPreps>(), {
   bareFlag: false,
   isSearch: false,
 });
-const emits = defineEmits(["selfFunc", "selectItem"]);
+const emits = defineEmits(["userAction", "selectItem"]);
 const formData = defineModel("formData");
 const dialogInputTableRef = ref();
 let dialogInputVisible = shallowRef(false);
@@ -185,7 +185,7 @@ onMounted(async () => {
   <star-horse-panel
     :type="dialogType"
     :title="field.label + i18n('item.dataSelect')"
-    :self-func="true"
+    :userAction="true"
     boxHeight="80%"
     v-model="dialogInputVisible"
     @merge="submitData"

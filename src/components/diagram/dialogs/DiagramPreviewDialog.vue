@@ -114,7 +114,7 @@ const handleExportPng = async () => {
     box-height="80%"
     :is-show-reset="false"
     :is-show-save="false"
-    :self-func="true"
+    :userAction="true"
   >
     <div class="diagram-preview-dialog">
       <div class="preview-toolbar">

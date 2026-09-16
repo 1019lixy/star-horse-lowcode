@@ -156,7 +156,7 @@ const props = withDefaults(defineProps<ItemPreps>(), {
   bareFlag: false,
   isSearch: false,
 });
-const emits = defineEmits(["selfFunc", "selectItem"]);
+const emits = defineEmits(["userAction", "selectItem"]);
 const formData = defineModel("formData");
 
 let defaultAction = "/system-config/annex/upload/common";
@@ -183,7 +183,7 @@ const selfAction = (
     });
     //console.log(param.data.path);
   }
-  emits("selfFunc", prep, uploadFile, uploadFiles, param);
+  emits("userAction", prep, uploadFile, uploadFiles, param);
 };
 onMounted(() => {
   nextTick(() => {

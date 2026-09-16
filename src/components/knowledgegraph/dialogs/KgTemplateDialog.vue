@@ -78,7 +78,7 @@ const handleOpen = () => {
     v-model="innerVisible"
     :title="i18n('knowledgegraph.query.template.title')"
     box-width="720px"
-    :self-func="true"
+    :userAction="true"
     @open="handleOpen"
   >
     <div class="kg-template-dialog">

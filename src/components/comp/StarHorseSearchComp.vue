@@ -265,7 +265,7 @@ defineExpose({
     :source="3"
     :box-height="'100%'"
     :box-width="'100%'"
-    :selfFunc="true"
+    :userAction="true"
     :hide-full-screen-icon="true"
     @closeAction="handleClose"
   >
@@ -343,7 +343,7 @@ defineExpose({
     :box-height="'70vh'"
     :box-width="'760px'"
     :hide-full-screen-icon="false"
-    :selfFunc="true"
+    :userAction="true"
     @closeAction="handleAdvancedClose"
   >
     <StarHorseQueryBuilder

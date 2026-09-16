@@ -66,7 +66,7 @@ const handleSubmit = () => {
         : i18n('emailtemplate.dialog.editVar')
     "
     box-width="480px"
-    :self-func="true"
+    :userAction="true"
     @merge="handleSubmit"
   >
     <el-form :model="form" label-width="100px" size="default">

@@ -263,7 +263,7 @@ onBeforeUnmount(() => {
       v-model="innerSignDialogVisible"
       :title="i18n('pdf.signer.dialog.title')"
       box-width="600px"
-      :self-func="true"
+      :userAction="true"
       @merge="handleConfirmSign"
     >
       <div class="sign-dialog-content">

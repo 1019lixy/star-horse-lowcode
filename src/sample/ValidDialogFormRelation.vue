@@ -7,7 +7,7 @@
     @merge="dataRelationMerge"
     @closeAction="closeAction"
     @resetForm="dataRelationReset"
-    :selfFunc="true"
+    :userAction="true"
   >
     <star-horse-form
       primary-key=""

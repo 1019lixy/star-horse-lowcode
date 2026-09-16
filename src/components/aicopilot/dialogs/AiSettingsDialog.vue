@@ -63,7 +63,7 @@ const handleReset = (): void => {
     v-model="innerVisible"
     :title="i18n('aicopilot.settings.title')"
     box-width="640px"
-    :self-func="true"
+    :userAction="true"
     @merge="handleSave"
     @closeAction="innerVisible = false"
   >

@@ -3,7 +3,7 @@
     :type="dialogType"
     :title="i18n('item.crontabConfig')"
     box-width="50%"
-    :self-func="true"
+    :userAction="true"
     @resetForm="resetForm"
     @closeAction="close"
     @merge="submit"
@@ -57,7 +57,7 @@ const props = withDefaults(defineProps<ItemPreps>(), {
   bareFlag: false,
   isSearch: false,
 });
-const emits = defineEmits(["selfFunc", "selectItem"]);
+const emits = defineEmits(["userAction", "selectItem"]);
 const formData = defineModel("formData");
 
 let cronDataValue = ref<any>("");

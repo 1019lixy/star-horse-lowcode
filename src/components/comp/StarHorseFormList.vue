@@ -469,7 +469,7 @@ watch(
       v-model="rowDialogVisible"
       :boxWidth="'50%'"
       :is-show-btn-continue="true"
-      :selfFunc="true"
+      :userAction="true"
       @merge="mergeData"
       @closeAction="closeAction"
   >
@@ -485,7 +485,7 @@ watch(
       v-model="importDialogVisible"
       :boxWidth="'30%'"
       :source="3"
-      :selfFunc="true"
+      :userAction="true"
       :draggable="false"
       @closeAction="importDialogVisible = false"
   >

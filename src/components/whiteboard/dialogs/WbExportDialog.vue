@@ -138,7 +138,7 @@ const handleClose = () => {
     v-model="innerVisible"
     :title="i18n('whiteboard.export.title')"
     box-width="780px"
-    :self-func="true"
+    :userAction="true"
     @close="handleClose"
   >
     <div class="wb-export-dialog">

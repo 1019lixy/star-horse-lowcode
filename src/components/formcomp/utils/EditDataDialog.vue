@@ -3,7 +3,7 @@
     :type="dialogType"
     :title="title"
     :box-width="boxWidth"
-    :self-func="true"
+    :userAction="true"
     @resetForm="handleReset"
     :hideFullScreenIcon="true"
     v-model="compVisible"

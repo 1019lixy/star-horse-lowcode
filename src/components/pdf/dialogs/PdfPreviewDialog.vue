@@ -77,7 +77,7 @@ const handleOpened = () => {
     box-height="80%"
     :is-show-reset="false"
     :is-show-save="false"
-    :self-func="true"
+    :userAction="true"
     @open="handleOpened"
   >
     <div class="pdf-preview-dialog">

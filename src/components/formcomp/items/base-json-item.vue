@@ -3,7 +3,7 @@
   <star-horse-panel
     :type="dialogType"
     :title="field.label + i18n('item.jsonEditor')"
-    :self-func="true"
+    :userAction="true"
     :boxHeight="field.preps?.boxHeight ?? '65%'"
     :boxWidth="field.preps?.boxWidth ?? '40%'"
     v-model="dialogInputVisible"
@@ -95,7 +95,7 @@ const props = defineProps({
   },
 });
 
-const emits = defineEmits(["selfFunc", "selectItem"]);
+const emits = defineEmits(["userAction", "selectItem"]);
 const formData = defineModel("formData");
 const dialogInputVisible = shallowRef(false);
 const jsonFormRef = shallowRef();

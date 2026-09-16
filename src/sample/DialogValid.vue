@@ -461,7 +461,7 @@ const fieldList = ref<PageFieldInfo>({
     v-model="visible"
     @closeAction="visible = false"
     box-height="80%"
-    :selfFunc="true"
+    :userAction="true"
     :compSize="'default'"
     :title="'NormalFormValid 配置测试'"
   >
