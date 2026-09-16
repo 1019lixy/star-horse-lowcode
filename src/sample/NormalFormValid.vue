@@ -16,8 +16,8 @@ const apiEndpoints: ApiUrls = apiInstance(
 console.log(apiEndpoints);
 const testFormValidRef = ref();
 const outerData: any = {
-  backgroundSize: "http你好%",
-  qrcode: "http://www.baidu.com",
+  fieldSh3C9D: "9017780",
+  fieldSh4C9D: "windows",
   barcode: "22222223333",
 };
 const searchFormData = ref<SearchInfo>({
@@ -95,7 +95,6 @@ const fieldList = ref<PageFieldInfo>({
       fieldName: "fieldSh3C9D",
       type: "datapicker",
       formVisible: true,
-      defaultValue: "9017780",
       "listVisible": true,
       preps: {
         "id": "Idsh4b409811-93c9-4a00-a08a-1a97c665fcef",
@@ -231,6 +230,7 @@ const fieldList = ref<PageFieldInfo>({
       fieldName: "fieldSh4C9D",
       type: "tselect",
       preps: {
+        disabled: true,
         values: [
           {
             name: "Windows",
@@ -1149,7 +1149,7 @@ onMounted(() => {
           (formData, result) => codeGeneratorRef?.assignStaticData(formData)
         "
           :apiEndpoints="apiEndpoints"
-
+          :outer-form-data="outerData"
           formSize="default"
           :fieldList="fieldList"
           :rules="rules"

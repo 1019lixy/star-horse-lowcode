@@ -1,18 +1,13 @@
 <script setup lang="ts" name="StarHorseForm">
-import { loadById, postRequest } from "@/api/star_horse_apis";
-import {
-  closeLoad,
-  formFieldMapping,
-  isJson,
-  load,
-} from "@/api/star_horse_utils";
+import {loadById, postRequest} from "@/api/star_horse_apis";
+import {closeLoad, formFieldMapping, isJson, load,} from "@/api/star_horse_utils";
 import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
-import { ApiUrls } from "@/components/types/ApiUrls";
-import { DialogProps } from "@/components/types/DialogProps";
-import { FieldInfo, PageFieldInfo } from "@/components/types/PageFieldInfo";
-import { SelectOption } from "@/components/types/SearchProps";
-import { error, success, warning } from "@/utils/message";
-import { i18n } from "@/lang";
+import {ApiUrls} from "@/components/types/ApiUrls";
+import {DialogProps} from "@/components/types/DialogProps";
+import {FieldInfo, PageFieldInfo} from "@/components/types/PageFieldInfo";
+import {SelectOption} from "@/components/types/SearchProps";
+import {error, success, warning} from "@/utils/message";
+import {i18n} from "@/lang";
 import {
   computed,
   ComputedRef,
@@ -29,36 +24,35 @@ import {
   unref,
   watch,
 } from "vue";
-import { isMobile } from "@/api/device";
-import {
-  convertPcCompToFitPlatformComps,
-  ensureFieldIds,
-} from "@/api/form_utils";
-import { registerFormFieldsRef } from "@/components/formcomp/utils/ItemRuleEventUtils";
+import {isMobile} from "@/api/device";
+import {convertPcCompToFitPlatformComps, ensureFieldIds,} from "@/api/form_utils";
+import {registerFormFieldsRef} from "@/components/formcomp/utils/ItemRuleEventUtils";
 
 const props = defineProps({
-  apiEndpoints: { type: Object as PropType<ApiUrls> },
-  fieldList: { type: Object as PropType<PageFieldInfo>, required: true },
-  subTableName: { type: String, default: "subDataList" },
+  apiEndpoints: {type: Object as PropType<ApiUrls>},
+  fieldList: {type: Object as PropType<PageFieldInfo>, required: true},
+  subTableName: {type: String, default: "subDataList"},
 
-  outerFormData: { type: Object as PropType<any> },
-  primaryKey: { type: [String, Object] as PropType<string | any> },
-  globalCondition: { type: Object },
-  rules: { type: Object },
-  formSize: { type: String, default: "default" },
-  labelPosition: { type: String, default: "left" },
-  typeModel: { type: String },
-  dynamicForm: { type: Boolean, default: false },
-  preview: { type: Boolean, default: false },
-  dialogType: { type: String as () => "dialog" | "drawer" },
-  formInfo: { type: Object as PropType<any> },
-  bindWorkFlowId: { type: String, default: "" },
+  outerFormData: {type: Object as PropType<any>},
+  primaryKey: {type: [String, Object] as PropType<string | any>},
+  globalCondition: {type: Object},
+  rules: {type: Object},
+  formSize: {type: String, default: "default"},
+  labelPosition: {type: String, default: "left"},
+  typeModel: {type: String},
+  dynamicForm: {type: Boolean, default: false},
+  preview: {type: Boolean, default: false},
+  dialogType: {type: String as () => "dialog" | "drawer"},
+  formInfo: {type: Object as PropType<any>},
+  bindWorkFlowId: {type: String, default: ""},
+  //重置表单是否清空禁用数据
+  resetFormClearDisableData: {type: Boolean, default: false},
   selectData: {
     type: Array<SelectOption>,
     default: () => {
       return [
-        { name: i18n("comp.normal"), value: "1" },
-        { name: i18n("comp.disabled"), value: "2" },
+        {name: i18n("comp.normal"), value: "1"},
+        {name: i18n("comp.disabled"), value: "2"},
       ];
     },
   },
@@ -80,12 +74,12 @@ const dataForm = ref<any>({});
 const source = ref<number>(1);
 // 渲染前为字段补充稳定 id，避免 key 变化导致字段组件重复挂载/重复初始化
 watch(
-  () => props.fieldList,
-  (val) => ensureFieldIds(val),
-  { immediate: true },
+    () => props.fieldList,
+    (val) => ensureFieldIds(val),
+    {immediate: true},
 );
 const platformFields: ComputedRef = computed(() =>
-  convertPcCompToFitPlatformComps(props.fieldList)
+    convertPcCompToFitPlatformComps(props.fieldList)
 );
 const mappingFields = computed(() => formFieldMapping(unref(platformFields)));
 //更新外面传进来的数据
@@ -110,7 +104,7 @@ const loadData = async () => {
   }
   await nextTick();
   if (props.preview) {
-    dataForm.value = { ...dialogProps?.ids };
+    dataForm.value = {...dialogProps?.ids};
     return;
   }
   let ids = dialogProps?.ids;
@@ -120,7 +114,7 @@ const loadData = async () => {
   let params = props.globalCondition || {};
   //如果是Json 对象
   if (isJson(id)) {
-    params = { ...params, ...id };
+    params = {...params, ...id};
     objData = await loadById(props.apiEndpoints?.loadByIdUrl!, "", params);
   } else {
     objData = await loadById(props.apiEndpoints?.loadByIdUrl!, id, params);
@@ -132,7 +126,7 @@ const loadData = async () => {
     for (let i in params) {
       let temp = params[i];
       if (!temp.subTabFlag) {
-        let subTemp = { ...objData };
+        let subTemp = {...objData};
         delete subTemp[temp.tableName];
         dataForm.value[temp.tableName] = [subTemp];
       }
@@ -181,7 +175,7 @@ const merge = (type: string) => {
     }
     // 触发 beforeSubmit 事件，允许外部（如规则引擎）在提交前校验
     // 如果事件处理器返回 false 则阻止提交
-    emits("beforeSubmit", { type, formData: dataForm.value });
+    emits("beforeSubmit", {type, formData: dataForm.value});
     // Vue emits 是同步的，如果需要异步拦截，请使用 doMerge 前手动调用 triggerOnSubmit
 
     doMerge(type);
@@ -193,7 +187,7 @@ const merge = (type: string) => {
 const assignStatusName = () => {
   if (dataForm.value.statusCode) {
     let sData = props.selectData?.find(
-      (item: any) => item.value === dataForm.value.statusCode,
+        (item: any) => item.value === dataForm.value.statusCode,
     );
     if (sData) {
       dataForm.value["statusName"] = sData.name;
@@ -201,15 +195,15 @@ const assignStatusName = () => {
   }
   const _pf: any = unref(platformFields);
   let batchFields = Array.isArray(_pf?.containerFields)
-    ? _pf.containerFields.filter((c: any) => c?.containerType === "table")
-    : [];
+      ? _pf.containerFields.filter((c: any) => c?.containerType === "table")
+      : [];
   batchFields?.forEach((item: any) => {
     const batchKey = item.subTablePrimaryKey;
     if (dataForm.value[batchKey]) {
       for (let index = 0; index < dataForm.value[batchKey]?.length; index++) {
         let temp = dataForm.value[batchKey][index];
         let sData = props.selectData?.find(
-          (sitem: any) => sitem.value === temp.statusCode,
+            (sitem: any) => sitem.value === temp.statusCode,
         );
         if (sData) {
           dataForm.value[batchKey][index]["statusName"] = sData.name;
@@ -226,13 +220,13 @@ const analysisSameToParentField = (): Array<string> => {
   let subTableName: Array<string> = [];
   const _pf2: any = unref(platformFields);
   let batchFields = Array.isArray(_pf2?.containerFields)
-    ? _pf2.containerFields.filter((c: any) => c?.containerType === "table")
-    : [];
+      ? _pf2.containerFields.filter((c: any) => c?.containerType === "table")
+      : [];
   const analysis = (batchFields: any[]) => {
     batchFields?.forEach((item: any) => {
       if (
-        false === item.subFormFlag ||
-        "n" == item.subFormFlag?.toString()?.toLowerCase()
+          false === item.subFormFlag ||
+          "n" == item.subFormFlag?.toString()?.toLowerCase()
       ) {
         subTableName.push(item.subTablePrimaryKey);
       }
@@ -248,11 +242,11 @@ const analysisSameToParentField = (): Array<string> => {
       if (Array.isArray(temp)) {
         arrayFieldList(temp);
       } else if (
-        Array.isArray(temp.containerFields) &&
-        temp.containerFields.some((c: any) => c?.containerType === "table")
+          Array.isArray(temp.containerFields) &&
+          temp.containerFields.some((c: any) => c?.containerType === "table")
       ) {
         analysis(
-          temp.containerFields.filter((c: any) => c?.containerType === "table"),
+            temp.containerFields.filter((c: any) => c?.containerType === "table"),
         );
       } else if (temp.appList) {
         analysis(temp.appList);
@@ -281,7 +275,7 @@ const mergeResult = (type: string, formData: any, res: any) => {
 const doMerge = (type: string) => {
   assignStatusName();
   let tempForm: any = [];
-  let tempDatas = { ...dataForm.value };
+  let tempDatas = {...dataForm.value};
   let mergeUrl = props.apiEndpoints?.mergeUrl;
   let flag = true;
   //单独批量数据和嵌入fieldList 里的批量数据
@@ -299,7 +293,7 @@ const doMerge = (type: string) => {
         if (parseInt(i) > 0) {
           delete tempDatas[props.primaryKey];
         }
-        tempForm.push({ ...tempDatas, ...batchDatas[i] });
+        tempForm.push({...tempDatas, ...batchDatas[i]});
       }
     });
   }
@@ -328,31 +322,90 @@ const doMerge = (type: string) => {
     });
   } else {
     postRequest(mergeUrl!, formData)
-      .then((res) => {
-        closeLoad();
-        if (res?.data?.code != 200) {
-          warning(res?.data?.cnMessage);
-          return;
-        } else {
-          success(res?.data?.cnMessage);
-        }
-        mergeResult(type, formData, res);
-        //关闭弹窗
-      })
-      .catch((err) => {
-        error(i18n("comp.interfaceCallException") + err);
-      })
-      .finally(() => {
-        closeLoad();
-      });
+        .then((res) => {
+          closeLoad();
+          if (res?.data?.code != 200) {
+            warning(res?.data?.cnMessage);
+            return;
+          } else {
+            success(res?.data?.cnMessage);
+          }
+          mergeResult(type, formData, res);
+          //关闭弹窗
+        })
+        .catch((err) => {
+          error(i18n("comp.interfaceCallException") + err);
+        })
+        .finally(() => {
+          closeLoad();
+        });
   }
 };
+/** 宽松布尔判断：兼容 true / 1 / "1" / "true" 的字段配置写法 */
+const isTruthyDisabled = (v: any): boolean =>
+    v === true || v === 1 || v === "1" || v === "true";
+
+/**
+ * 收集所有 disabled / editDisabled 字段：返回「需保留的值快照」和「需恢复的禁用标志」。
+ * 遍历真实字段配置(props.fieldList)，涵盖嵌套容器/兄弟节点/children/appList，
+ * 并递归恢复 field.disabled / field.preps?.disabled，避免重置后禁用状态被解除。
+ */
+const collectDisabledInfo = (): {
+  valueSnapshot: Record<string, any>;
+  disabledRestore: Array<{ f: any; viaPreps: boolean }>;
+} => {
+  const valueSnapshot: Record<string, any> = {};
+  const disabledRestore: Array<{ f: any; viaPreps: boolean }> = [];
+  const walk = (f: any) => {
+    if (!f || typeof f !== "object") return;
+    const disabled = isTruthyDisabled(f.disabled) || isTruthyDisabled(f.preps?.disabled);
+    const editDisabled =
+        (isTruthyDisabled(f.editDisabled) || isTruthyDisabled(f.preps?.editDisabled)) &&
+        f.preps?.starHorseFieldSource != 1;
+    if ((disabled || editDisabled) && f.fieldName) {
+      if (dataForm.value[f.fieldName] !== undefined) {
+        valueSnapshot[f.fieldName] = dataForm.value[f.fieldName];
+      }
+      if (isTruthyDisabled(f.disabled)) {
+        disabledRestore.push({f, viaPreps: false});
+      } else if (isTruthyDisabled(f.preps?.disabled)) {
+        disabledRestore.push({f, viaPreps: true});
+      }
+    }
+    for (const key of ["containerFields", "brotherNodes", "fieldList", "children", "appList"]) {
+      const sub = f[key];
+      if (Array.isArray(sub)) {
+        for (const c of sub) {
+          if (Array.isArray(c)) c.forEach((x) => walk(x));
+          else walk(c);
+        }
+      }
+    }
+  };
+  const root: any = props.fieldList ?? unref(platformFields);
+  walk(root);
+  return {valueSnapshot, disabledRestore};
+};
+
 const resetForm = () => {
+  // 默认(resetFormClearDisableData=false)保留禁用字段数据并恢复其禁用状态
+  const preserve = !props.resetFormClearDisableData;
+  const {valueSnapshot, disabledRestore} = preserve
+      ? collectDisabledInfo()
+      : {valueSnapshot: {}, disabledRestore: [] as Array<{f: any; viaPreps: boolean}>};
   dataForm.value = {};
-  dataForm.value = { ...unref(mappingFields)?.defaultDatas };
+  dataForm.value = {...unref(mappingFields)?.defaultDatas};
   let data = unref(props.outerFormData);
   if (Object.keys(data || {}).length > 0) {
     Object.assign(dataForm.value, data);
+  }
+  // 恢复禁用字段原值
+  Object.assign(dataForm.value, valueSnapshot);
+  // 恢复禁用标志，防止联动规则基于清空后的值解除禁用
+  for (const {f, viaPreps} of disabledRestore) {
+    if (!f.preps) f.preps = {};
+    if (viaPreps) f.preps.disabled = true;
+    else f.disabled = true;
   }
 };
 /**
@@ -415,57 +468,59 @@ const tableListRef = ref<any>([]);
 onActivated(() => {
   recordFieldInfo();
 });
-onDeactivated(() => {});
-onBeforeUnmount(() => {});
+onDeactivated(() => {
+});
+onBeforeUnmount(() => {
+});
 onMounted(() => {
   recordFieldInfo();
 });
 watch(
-  () => dataForm.value,
-  () => {
-    exportData();
-  },
-  { immediate: false },
+    () => dataForm.value,
+    () => {
+      exportData();
+    },
+    {immediate: false},
 );
 watch(
-  () => props.outerFormData,
-  (val: any) => {
-    if (val) {
-      resetForm();
-    }
-  },
-  { immediate: true },
+    () => props.outerFormData,
+    (val: any) => {
+      if (val) {
+        resetForm();
+      }
+    },
+    {immediate: true},
 );
 watch(
-  () => dialogOperation?.funcName,
-  (funcName: string) => {
-    if (!funcName) return;
-    const type = dialogOperation?.type;
-    const handlers: any = {
-      merge: () => merge(type),
-      mergeDraft: () => mergeDraft(type),
-      resetForm: () => resetForm(),
-    };
-    handlers[funcName]?.();
-    dialogOperation.funcName = "";
-    dialogOperation.type = "";
-  },
+    () => dialogOperation?.funcName,
+    (funcName: string) => {
+      if (!funcName) return;
+      const type = dialogOperation?.type;
+      const handlers: any = {
+        merge: () => merge(type),
+        mergeDraft: () => mergeDraft(type),
+        resetForm: () => resetForm(),
+      };
+      handlers[funcName]?.();
+      dialogOperation.funcName = "";
+      dialogOperation.type = "";
+    },
 );
 watch(
-  () => dialogProps.ids,
-  (val) => {
-    if (val == -1) {
-      source.value = 1;
-      setFormData(dataForm.value);
-    } else if (val && val !== "") {
-      source.value = 2;
-      loadData();
-    }
-  },
-  {
-    immediate: true,
-    deep: false,
-  },
+    () => dialogProps.ids,
+    (val) => {
+      if (val == -1) {
+        source.value = 1;
+        setFormData(dataForm.value);
+      } else if (val && val !== "") {
+        source.value = 2;
+        loadData();
+      }
+    },
+    {
+      immediate: true,
+      deep: false,
+    },
 );
 
 /**
@@ -474,14 +529,14 @@ watch(
  * @param actions 字段控制指令列表
  */
 const ruleEngineApply = (
-  actions: Array<{
-    field: string;
-    visible?: boolean;
-    required?: boolean;
-    readonly?: boolean;
-    disabled?: boolean;
-    value?: any;
-  }>,
+    actions: Array<{
+      field: string;
+      visible?: boolean;
+      required?: boolean;
+      readonly?: boolean;
+      disabled?: boolean;
+      value?: any;
+    }>,
 ) => {
   if (!actions || !actions.length) return;
   for (const action of actions) {
@@ -532,54 +587,54 @@ defineExpose({
   <div class="w-full h-full flex flex-col overflow-hidden">
     <el-scrollbar height="100%" class="flex-1">
       <el-form
-        :model="dataForm"
-        :size="formSize"
-        :rules="rules"
-        :scroll-to-error="true"
-        :scroll-into-view-options="true"
-        :inline-message="false"
-        :status-icon="true"
-        :label-position="isMobile ? 'top' : labelPosition"
-        require-asterisk-position="right"
-        label-width="auto"
-        class="data-form"
-        ref="starHorseFormRef"
+          :model="dataForm"
+          :size="formSize"
+          :rules="rules"
+          :scroll-to-error="true"
+          :scroll-into-view-options="true"
+          :inline-message="false"
+          :status-icon="true"
+          :label-position="isMobile ? 'top' : labelPosition"
+          require-asterisk-position="right"
+          label-width="auto"
+          class="data-form"
+          ref="starHorseFormRef"
       >
         <star-horse-form-item
-          :primaryKey="primaryKey"
-          :apiEndpoints="apiEndpoints"
-          :fieldList="platformFields"
-          :rules="rules"
-          :compSize="formSize"
-          :dialogType="dialogType"
-          v-model:dataForm="dataForm"
-          :source="source"
-          @addRow="addRow"
-          @removeRow="removeRow"
-          :subTableName="subTableName"
+            :primaryKey="primaryKey"
+            :apiEndpoints="apiEndpoints"
+            :fieldList="platformFields"
+            :rules="rules"
+            :compSize="formSize"
+            :dialogType="dialogType"
+            v-model:dataForm="dataForm"
+            :source="source"
+            @addRow="addRow"
+            @removeRow="removeRow"
+            :subTableName="subTableName"
         />
       </el-form>
     </el-scrollbar>
     <div
-      class="my-3 flex items-center justify-center w-full h-[45px]"
-      v-if="typeModel == 'form'"
+        class="my-3 flex items-center justify-center w-full h-[45px]"
+        v-if="typeModel == 'form'"
     >
       <el-button
-        @click="merge"
-        style="
+          @click="merge"
+          style="
           background: var(--star-horse-style);
           color: var(--star-horse-white);
         "
-        :size="formSize"
+          :size="formSize"
       >
         <star-horse-icon
-          icon-class="save"
-          style="color: var(--star-horse-white)"
+            icon-class="save"
+            style="color: var(--star-horse-white)"
         />
         {{ i18n("form.submit") }}
       </el-button>
       <el-button @click="resetForm" :size="formSize" link>
-        <star-horse-icon icon-class="undo" />
+        <star-horse-icon icon-class="undo"/>
         {{ i18n("form.reset") }}
       </el-button>
     </div>

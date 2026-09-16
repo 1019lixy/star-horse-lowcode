@@ -87,16 +87,16 @@ onMounted(() => {
 watch(
   () => formData.value[props.field.fieldName],
   (val) => {
-    if (val) {
-      // 优化数组转换逻辑
-      pickerData.value = props.field.preps?.multiple
-        ? Array.isArray(val)
-          ? val
-          : [val]
-        : val
-          ? [val]
-          : [];
+    // 表单重置后 val 变为 undefined/null/""，必须同步清空 pickerData
+    if (val === undefined || val === null || val === "") {
+      pickerData.value = props.field.preps?.multiple ? [] : "";
+      return;
     }
+    pickerData.value = props.field.preps?.multiple
+      ? Array.isArray(val)
+        ? val
+        : [val]
+      : val;
   },
   { immediate: true, deep: true },
 );
