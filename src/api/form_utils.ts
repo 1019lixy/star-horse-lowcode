@@ -651,6 +651,25 @@ function processContainer(
   result: any[],
   ctx: AppConvertCtx,
 ) {
+  // APP 端保留 step 容器分段结构，仅扁平化每段内部字段，避免各段字段被展开到同级
+  // 导致分段审批逻辑(segments 权限/当前阶段/只读隐藏)丢失；保留后由 stepItem.vue 渲染，
+  // 每段内部字段按 appItem.vue 显示
+  if (commonContainer.type === "step") {
+    if (filed.__appStepReserved) {
+      result.push(filed);
+      return;
+    }
+    const stepContainer = {
+      ...filed,
+      containerFields: commonContainer.dataList.map((step: any) => ({
+        ...step,
+        fieldList: analysisComps(step.fieldList, ctx),
+      })),
+      __appStepReserved: true,
+    };
+    result.push(stepContainer);
+    return;
+  }
   const dataList = commonContainer.dataList;
   for (let j = 0; j < dataList.length; j++) {
     const container = dataList[j];
@@ -791,34 +810,33 @@ export function convertPcCompToFitPlatformComps(pageInfo: PageFieldInfo) {
 }
 
 /**
- * 将pc模型转为app模型
- * @param pageInfo
+ * APP 端 label 规则：
+ * 1) labelFor: 静态文本组件(html/text)配 preps.labelFor 指向的字段，APP 端把 hideLabel 置 false
+ *    并回填 label/placeholder(用文本内容)
+ * 2) hideLabel: PC 端 hideLabel=true 的字段，APP 端默认显示 label(hideLabel=false)，
+ *    除非显式配 appLabelVisible
+ * 作用于扁平化后的字段数组；step 容器保留分段结构时，各段内部字段需收集后一并传入
  */
-export function convertCompToAppComps(pageInfo: PageFieldInfo) {
-  console.error("xxxxxxxxxxxxxxxxxxxxxxxx");
-  //如果不是手机端，则直接返回
-  const tempFieldList = analysisComps(pageInfo.fieldList);
-  const staticComps = tempFieldList.filter((item) => {
+const applyAppLabelRules = (comps: any[]) => {
+  if (!Array.isArray(comps)) return;
+  const staticComps = comps.filter((item) => {
     return item && (item?.type == "html" || item?.type == "text");
   });
   const labelForComps = staticComps.filter((item) => item?.preps?.labelFor);
-  let appVisibleComps = tempFieldList?.filter(
-    (item) => !item?.preps?.appCompVisible,
-  );
   labelForComps.forEach((staticData) => {
     const labelFors: string[] = staticData.preps?.labelFor;
-    appVisibleComps
+    comps
       ?.filter((item) => labelFors.includes(item.fieldName))
       ?.forEach((item) => {
         if (!item.preps) {
           item.preps = {};
         }
-        item.preps.hideLabel =false;
+        item.preps.hideLabel = false;
         item.label = staticData?.preps?.textContent;
         item.preps.placeholder = i18n("api.pleaseInput2") + item?.label;
       });
   });
-  appVisibleComps
+  comps
     ?.filter((item) => {
       return (
         !["html", "text"].includes(item?.type) &&
@@ -830,6 +848,32 @@ export function convertCompToAppComps(pageInfo: PageFieldInfo) {
     ?.forEach((item) => {
       item.preps.hideLabel = false;
     });
+};
+
+/**
+ * 将pc模型转为app模型
+ * @param pageInfo
+ */
+export function convertCompToAppComps(pageInfo: PageFieldInfo) {
+  console.error("xxxxxxxxxxxxxxxxxxxxxxxx");
+  //如果不是手机端，则直接返回
+  const tempFieldList = analysisComps(pageInfo.fieldList);
+  let appVisibleComps = tempFieldList?.filter(
+    (item) => !item?.preps?.appCompVisible,
+  );
+  // step 容器保留分段结构后，各段内部字段未在顶层；收集后与顶层字段统一应用 APP label 规则
+  // 字段对象引用共享，applyAppLabelRules 直接修改属性即生效于各段 fieldList
+  const stepInnerFields: any[] = [];
+  appVisibleComps?.forEach((item) => {
+    if (item?.containerType === "step" && Array.isArray(item.containerFields)) {
+      item.containerFields.forEach((step: any) => {
+        if (Array.isArray(step?.fieldList)) {
+          stepInnerFields.push(...step.fieldList);
+        }
+      });
+    }
+  });
+  applyAppLabelRules([...(appVisibleComps || []), ...stepInnerFields]);
   //将数据进行排序显示
   appVisibleComps = appVisibleComps?.sort((a, b) => {
     const indexA = a.preps?.dataIndex ?? 0;

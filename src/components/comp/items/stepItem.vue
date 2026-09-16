@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import {compKey} from "@/api/system";
 import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
+import AppItem from "@/components/comp/items/appItem.vue";
 import {ContainerPreps} from "@/components/types/ItemPreps";
 import {computed, inject, ModelRef, onMounted, ref, watch} from "vue";
 import {collectFieldProps, getDataIndex, getFormData, getPrefix,} from "@/api/form_utils";
 import {i18n} from "@/lang";
 import {warning} from "@/utils/message";
+import {isMobile} from "@/api/device";
 
 const props = withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
@@ -97,17 +99,34 @@ const segPermission = (key: string): "editable" | "readonly" | "hidden" => {
   if (!conf || !hasFlowControl.value) return "editable";
   // 当前段(后端 starHorseCurrentStep 指定的阶段)编辑时必须可编辑
   if (key && key === currentStepKey.value) return "editable";
+  let perm: "editable" | "readonly" | "hidden";
   // 字符串形态：所有非当前段统一权限
   if (typeof conf === "string") {
-    return conf as "editable" | "readonly" | "hidden";
+    perm = conf as "editable" | "readonly" | "hidden";
+  } else {
+    // 对象形态：按段 key 配置，未配置默认可编辑
+    perm = (conf[key] as "editable" | "readonly" | "hidden") || "editable";
   }
-  // 对象形态：按段 key 配置，未配置默认可编辑
-  return (conf[key] as "editable" | "readonly" | "hidden") || "editable";
+  // 编辑模式下，当前段之前的段(已提交)即使配 hidden 也降级只读显示，
+  // 作为当前编辑段的参照(否则看不到别人提交了啥)；当前段之后的段(未开始)按配置不渲染
+  if (perm === "hidden") {
+    const idx = stepList.value.findIndex(
+        (s: any) => s.subTablePrimaryKey === key,
+    );
+    if (idx >= 0 && idx < currentStepIndex.value) return "readonly";
+  }
+  return perm;
 };
 
 // 段内组件渲染 source：只读段用查看模式(3)渲染，可编辑段沿用当前 source
 const segSource = (key: string): number =>
     segPermission(key) === "readonly" ? 3 : props.source;
+
+// APP 端每段内部按 appItem.vue 渲染：将 step 的 fieldList 包装为 appList 结构
+const appStepItem = (step: any) => ({
+  ...step,
+  appList: step.fieldList,
+});
 
 // 平铺状态文案：优先取 i18n，语言包未收录时回退默认文案
 const flatText = (key: string, fallback: string): string => {
@@ -133,14 +152,31 @@ const flatStatusOf = (key: string): string => {
   return "pending";
 };
 
-// 平铺段折叠状态：显式操作记录在 map；未记录时默认全部展开
+// 已编辑段(当前段之前)默认是否展开：preps.expandEditedStep="Y" 时展开，默认折叠
+const expandEditedStep = computed(
+    () => props.item?.preps?.expandEditedStep === "Y",
+);
+
+// 平铺段折叠状态：显式操作记录在 map；未记录时按段位置与参数决定默认折叠
 const flatCollapsed = ref<Record<string, boolean>>({});
 const isFlatCollapsed = (step: any): boolean => {
   const key = step?.subTablePrimaryKey;
   if (key != null && key in flatCollapsed.value) {
     return !!flatCollapsed.value[key];
   }
-  return false;
+  // 查看模式(source=3)无编辑段，默认全展开
+  if (props.source == 3) return false;
+  // 当前编辑段默认展开
+  if (key === currentStepKey.value) return false;
+  // 已编辑段(当前段之前)：按 expandEditedStep 参数控制默认展开/折叠
+  const idx = stepList.value.findIndex(
+      (s: any) => s.subTablePrimaryKey === key,
+  );
+  if (idx >= 0 && idx < currentStepIndex.value) {
+    return !expandEditedStep.value;
+  }
+  // 未开始段(当前段之后)默认折叠
+  return true;
 };
 const toggleFlatCollapse = (step: any) => {
   const key = step?.subTablePrimaryKey;
@@ -504,6 +540,10 @@ watch(activeStepIndex, (idx) => {
             segPermission(stepItem.subTablePrimaryKey) !== 'hidden'
           "
             class="flat-section-head"
+            :class="{
+            'flat-editable':
+              segPermission(stepItem.subTablePrimaryKey) === 'editable',
+          }"
             @click="toggleFlatCollapse(stepItem)"
         >
           <svg
@@ -552,7 +592,27 @@ watch(activeStepIndex, (idx) => {
               : []
           "
         >
+          <app-item
+              v-if="isMobile"
+              :source="segSource(stepItem.subTablePrimaryKey)"
+              :apiEndpoints="apiEndpoints"
+              :compSize="compSize"
+              :commonFormat="commonFormat"
+              :dataForm="
+              getFormData(stepItem, dataForm, propPrefix, dataIndex, idx)
+            "
+              :dataIndex="getDataIndex(stepItem, propPrefix, dataIndex, idx)"
+              :propPrefix="getPrefix(stepItem, propPrefix, dataIndex, idx)"
+              :subTableName="stepItem.subTableName"
+              @addRow="addRow"
+              @removeRow="removeRow"
+              :item="appStepItem(stepItem)"
+              :rules="rules"
+              :subFormFlag="sameForm ? 'N' : 'Y'"
+              :primaryKey="primaryKey"
+          />
           <star-horse-form-item
+              v-else
               :source="segSource(stepItem.subTablePrimaryKey)"
               :apiEndpoints="apiEndpoints"
               :compSize="compSize"
@@ -1085,7 +1145,15 @@ watch(activeStepIndex, (idx) => {
   border-color: transparent;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  // 不用 gap：flat 下每段的标题栏与内容栏是两个并列子元素，gap 会在段内标题与内容之间
+  // 产生缺口破坏卡片拼接；改由段首元素(标题栏/锁定占位)的 margin-top 提供段间距，首段除外
+  > .flat-section-head,
+  > .flat-locked {
+    margin-top: 10px;
+  }
+  > :first-child {
+    margin-top: 0;
+  }
 }
 
 // 段标题栏
@@ -1097,10 +1165,17 @@ watch(activeStepIndex, (idx) => {
   background: #f5f7fa;
   border: 1px solid #ebeef5;
   border-bottom: none;
+  // 左侧高亮边与内容栏同宽(3px)贯穿，避免拼接处缺口
+  border-left: 3px solid #ebeef5;
   border-radius: 6px 6px 0 0;
   cursor: pointer;
   user-select: none;
   transition: background 0.2s;
+
+  // 当前可编辑段：左侧蓝色高亮边
+  &.flat-editable {
+    border-left-color: #409eff;
+  }
 
   &:hover {
     background: #ecf5ff;
@@ -1151,10 +1226,19 @@ watch(activeStepIndex, (idx) => {
 // flat 段内容：与标题栏拼接成卡片
 .step-pane.flat-section {
   border-radius: 0 0 6px 6px;
+  // 卡片右下边框补全(上边接标题栏)，与标题栏围成完整卡片
+  border-right: 1px solid #ebeef5;
+  border-bottom: 1px solid #ebeef5;
+  // 左侧高亮边与标题栏同宽(3px)贯穿，非 editable 段灰色保持卡片左边完整；
+  // 用 border-left 而非 inset box-shadow：border 占据盒模型空间，内容在 border 内侧，
+  // 不会被字段组件的白色背景遮盖
+  border-left: 3px solid #ebeef5;
+  // 段内边距：让字段组件与边框(含蓝色高亮边)留出间距，避免顶边
+  padding: 12px;
 
-  // 当前可编辑段：左侧高亮边
+  // 当前可编辑段：左侧蓝色高亮边
   &.flat-editable {
-    box-shadow: inset 3px 0 0 0 #409eff;
+    border-left-color: #409eff;
   }
 
   // 只读段：整体弱化
