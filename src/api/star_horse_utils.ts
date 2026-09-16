@@ -10,7 +10,7 @@ import {ApiUrls} from "@/components/types/ApiUrls";
 import {DialogProps} from "@/components/types/DialogProps";
 import {createDatetime, dateTypes, parseDateByType} from "@/api/date_utils";
 import {i18n} from "@/lang";
-import {ApiLinkageDetail} from "@/components/types";
+import {ApiLinkageDetail, ApiParam} from "@/components/types";
 
 let loading: any = null;
 
@@ -864,16 +864,16 @@ export interface ApiInstanceConfig {
     redirectExecutionUrl?: string;
     /** 重定向分页接口 */
     redirectPageListUrl?: string;
-  /*  /!** 用户自定义接口1 *!/
-    customerUrl1?: string;
-    /!** 用户自定义接口2 *!/
-    customerUrl2?: string;
-    /!** 用户自定义接口3 *!/
-    customerUrl3?: string;
-    /!** 用户自定义接口4 *!/
-    customerUrl4?: string;
-    /!** 用户自定义接口5 *!/
-    customerUrl5?: string;*/
+    /*  /!** 用户自定义接口1 *!/
+      customerUrl1?: string;
+      /!** 用户自定义接口2 *!/
+      customerUrl2?: string;
+      /!** 用户自定义接口3 *!/
+      customerUrl3?: string;
+      /!** 用户自定义接口4 *!/
+      customerUrl4?: string;
+      /!** 用户自定义接口5 *!/
+      customerUrl5?: string;*/
 }
 
 let apiInstanceConfig: ApiInstanceConfig = {};
@@ -884,7 +884,7 @@ let apiInstanceConfig: ApiInstanceConfig = {};
  */
 export const setApiInstanceConfig = (config?: ApiInstanceConfig) => {
     if (config) {
-        apiInstanceConfig = { ...apiInstanceConfig, ...config };
+        apiInstanceConfig = {...apiInstanceConfig, ...config};
     }
 };
 
@@ -1336,7 +1336,7 @@ export const loadPageData = async (options: {
             const allParams = [...conditions];
             if (extraParams && extraParams.length > 0) allParams.push(...extraParams);
             // 分页走分页参数，不分页走不分页参数：均由后端按 optionField 统一解析
-            const pageQuery =
+            let pageQuery: any =
                 pageSize > 0
                     ? {fieldList: allParams, currentPage, pageSize, orderBy: []}
                     : {fieldList: allParams};
@@ -1353,12 +1353,44 @@ export const loadPageData = async (options: {
             } else {
                 // 非代理：直连目标接口返回原始行，不做选项解析
                 const url = apiDataSource.apiInfo?.url;
-                const res: any = await postRequest(url, pageQuery);
-                if (res?.data?.code != 200) {
-                    console.error(res?.data?.cnMessage);
-                    return {list: [], totalData: 0, totalPage: 0};
+                if ("systemApi" == apiDataSource.apiInfo.apiType) {
+                    apiDataSource.apiInfo.requestParams?.forEach((param: ApiParam) => {
+                        pageQuery.fieldList.push(createCondition(param.paramName, param.paramValue, param.matchType));
+                    });
+                    const res: any = await postRequest(url, pageQuery);
+                    if (res?.data?.code != 200) {
+                        console.error(res?.data?.cnMessage);
+                        return {list: [], totalData: 0, totalPage: 0};
+                    }
+                    payload = res?.data?.data;
+                } else {
+                    pageQuery = {};
+                    const dataPath: string = apiDataSource.apiInfo.dataPath;
+                    const successCode: string = apiDataSource.apiInfo.successCode;
+                    const codePath: string = apiDataSource.apiInfo.codePath;
+                    apiDataSource.apiInfo.requestParams?.forEach((param: ApiParam) => {
+                        pageQuery[param.paramName] = param.paramValue;
+                    });
+                    const res: any = await postRequest(url, pageQuery);
+                    if (res?.data?.[codePath ?? "code"] != (successCode ?? 200)) {
+                        console.error(res?.data?.cnMessage);
+                        return {list: [], totalData: 0, totalPage: 0};
+                    }
+                    if (dataPath) {
+                        if (dataPath?.indexOf(".") == -1) {
+                            payload = res?.data?.[dataPath];
+                        } else {
+                            const arr: string[] = dataPath.split(".");
+                            let item: any = res?.data;
+                            for (let index = 0; index < arr.length; index++) {
+                                item = item[arr[index]];
+                            }
+                            payload = item;
+                        }
+                    } else {
+                        payload = res?.data?.data;
+                    }
                 }
-                payload = res?.data?.data;
             }
         } else {
             if (!apiEndpoints) return {list: [], totalData: 0, totalPage: 0};
