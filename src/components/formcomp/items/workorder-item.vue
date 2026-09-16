@@ -263,14 +263,14 @@ onMounted(async () => {
 
 // 表单重置后字段值被清空 → 自动重新生成
 watch(
-  () => formData.value?.[fieldName.value],
-  async (val) => {
-    if (props.isDesign) return;
-    if (val == null || String(val).length === 0) {
-      await nextTick();
-      await ensureWorkorder();
-    }
-  },
+    () => formData.value?.[fieldName.value],
+    async (val) => {
+      if (props.isDesign) return;
+      if (val == null || String(val).length === 0) {
+        await nextTick();
+        await ensureWorkorder();
+      }
+    },
 );
 </script>
 
@@ -317,7 +317,7 @@ watch(
         </el-tag>
         <!-- 刷新按钮：禁用字段也可重号（系统级重新生成，非编辑数据） -->
         <button
-            v-if="refreshable && !isDesign && source !== 4"
+            v-if="refreshable && !isDesign && (source==1||!formData?.[fieldName])"
             type="button"
             class="workorder-refresh"
             :class="{'is-loading': generating}"
@@ -402,9 +402,8 @@ watch(
   background: transparent;
   color: var(--el-text-color-secondary, #909399);
   cursor: pointer;
-  transition:
-    background 0.15s,
-    color 0.15s;
+  transition: background 0.15s,
+  color 0.15s;
   flex-shrink: 0;
 
   &:hover:not(:disabled) {

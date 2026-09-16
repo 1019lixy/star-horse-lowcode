@@ -176,6 +176,10 @@ const compPreps = () => {
   if (props.source != 4) {
     getSelfOperationStore().addFormItem(props.item);
   }
+  //在查询的时候强制将工单组件改为输入组件
+  if (props.source == 4 && props.item.type == "workorder") {
+    props.item.type = "input";
+  }
   /**
    * 组件初始化时赋值默认值,
    * 在表单操作过程中，不再进行默认值的处理

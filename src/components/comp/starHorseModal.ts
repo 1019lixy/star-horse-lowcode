@@ -40,7 +40,7 @@ const starHorseModalPropsBase = {
   //自定义事件排除事件名,在排除中的，则走系统默认事件
   userActionExcludeEventNames: {
     type: Array as PropType<Array<String>>,
-    default: () => [],
+    default: () => ["resetForm"],
   },
   btnText: { type: String },
   userBtn: {

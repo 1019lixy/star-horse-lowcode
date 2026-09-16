@@ -362,7 +362,10 @@ const collectDisabledInfo = (): {
     const editDisabled =
         (isTruthyDisabled(f.editDisabled) || isTruthyDisabled(f.preps?.editDisabled)) &&
         f.preps?.starHorseFieldSource != 1;
-    if ((disabled || editDisabled) && f.fieldName) {
+    // 只读/查看模式(source=3)字段数据须保留：stepItem 只读段位经 segSource 传 source=3，
+    // StarHorseItem init 时写入 preps.starHorseFieldSource=3，重置时不应清空其已填写数据
+    const readOnlySource = f.preps?.starHorseFieldSource == 3;
+    if ((disabled || editDisabled || readOnlySource) && f.fieldName) {
       if (dataForm.value[f.fieldName] !== undefined) {
         valueSnapshot[f.fieldName] = dataForm.value[f.fieldName];
       }
@@ -382,10 +385,15 @@ const collectDisabledInfo = (): {
       }
     }
   };
-  const root: any = props.fieldList ?? unref(platformFields);
+  const root: any = unref(platformFields);
   walk(root);
   return {valueSnapshot, disabledRestore};
 };
+
+// 重置时需保留的系统关键字：流程当前阶段(后端驱动)与前端持久化阶段 key
+// starHorseCurrentStep: 后端返回的当前流程阶段，编辑回显时驱动步骤定位
+// __currentStepKey: 前端持久化的当前阶段 key，提交时告知后端当前段
+const SYSTEM_PRESERVE_KEYS = ["starHorseCurrentStep", "__currentStepKey"];
 
 const resetForm = () => {
   // 默认(resetFormClearDisableData=false)保留禁用字段数据并恢复其禁用状态
@@ -393,6 +401,13 @@ const resetForm = () => {
   const {valueSnapshot, disabledRestore} = preserve
       ? collectDisabledInfo()
       : {valueSnapshot: {}, disabledRestore: [] as Array<{f: any; viaPreps: boolean}>};
+  // 快照系统关键字，避免重置后丢失流程步骤信息导致流程回退到第一段
+  const systemSnapshot: Record<string, any> = {};
+  for (const k of SYSTEM_PRESERVE_KEYS) {
+    if (dataForm.value[k] !== undefined) {
+      systemSnapshot[k] = dataForm.value[k];
+    }
+  }
   dataForm.value = {};
   dataForm.value = {...unref(mappingFields)?.defaultDatas};
   let data = unref(props.outerFormData);
@@ -401,6 +416,8 @@ const resetForm = () => {
   }
   // 恢复禁用字段原值
   Object.assign(dataForm.value, valueSnapshot);
+  // 恢复系统关键字
+  Object.assign(dataForm.value, systemSnapshot);
   // 恢复禁用标志，防止联动规则基于清空后的值解除禁用
   for (const {f, viaPreps} of disabledRestore) {
     if (!f.preps) f.preps = {};

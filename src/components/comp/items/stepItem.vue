@@ -82,11 +82,12 @@ const hasFlowControl = computed(() => {
 // 当前阶段 key 优先级：后端 starHorseCurrentStep > 上次持久化的 __currentStepKey > 第一段
 // 中间层兜底：后端异常未返回 starHorseCurrentStep 时，避免把已推进的流程错误回退到第一段
 const currentStepKey = computed<string>(() => {
-  const fromBackend = (dataForm.value as any)?.starHorseCurrentStep;
-  if (fromBackend) return String(fromBackend);
-  const persisted = (dataForm.value as any)?.__currentStepKey;
-  if (persisted) return String(persisted);
-  return stepList.value[0]?.subTablePrimaryKey;
+  // const fromBackend = (dataForm.value as any)?.starHorseCurrentStep;
+  // if (fromBackend) return String(fromBackend);
+  // const persisted = (dataForm.value as any)?.__currentStepKey;
+  // if (persisted) return String(persisted);
+  // return stepList.value[0]?.subTablePrimaryKey;
+  return "end";
 });
 
 
