@@ -1,5 +1,5 @@
 <script setup lang="ts" name="StarHorseItem">
-import {computed, inject, isRef, ModelRef, onMounted, ref} from "vue";
+import {computed, inject, isRef, ModelRef, onMounted, ref, watch} from "vue";
 import {compKey, dateCompList, fieldPlaceholder, inputCompList, uuid,} from "@/api/system";
 
 import {checkVisible, filterProperties} from "@/api/form_utils";
@@ -127,22 +127,25 @@ const init = () => {
   if (!props.item?.fieldName) {
     props.item["fieldName"] = props.item?.preps?.name ?? props.item?.id;
   }
+  if (!props.item?.preps) {
+    props.item.preps = {};
+  }
   fieldPlaceholder(props.item, itemType.value, props.source);
-  if (props.item?.preps) {
-    //防止name 与Vue重名,导致渲染异常
-    filterProperties(props.item?.preps, exclusions);
-    // props.item.preps["readonly"] = props.item?.readonly || props.source == 3;
-    props.item.preps["starHorseFieldSource"] = props.source;
-    let keys = Object.keys(props.item?.preps || {});
-    for (let key in keys) {
-      let val = props.item?.preps?.[key];
-      if (["Y", "N", "y", "n"].includes(val)) {
-        props.item.preps[key] = ["Y", "y"].includes(val);
-      } else if (typeof val == "string" && (val === "true" || val === "false")) {
-        props.item.preps[key] = val === "true";
-      }
+  // if (props.item?.preps) {
+  //防止name 与Vue重名,导致渲染异常
+  filterProperties(props.item?.preps, exclusions);
+  // props.item.preps["readonly"] = props.item?.readonly || props.source == 3;
+  props.item.preps["starHorseFieldSource"] = props.source;
+  let keys = Object.keys(props.item?.preps || {});
+  for (let key in keys) {
+    let val = props.item?.preps?.[key];
+    if (["Y", "N", "y", "n"].includes(val)) {
+      props.item.preps[key] = ["Y", "y"].includes(val);
+    } else if (typeof val == "string" && (val === "true" || val === "false")) {
+      props.item.preps[key] = val === "true";
     }
   }
+  // }
   compPreps();
 };
 const compPreps = () => {
@@ -226,6 +229,17 @@ const checkClassName = () => {
 onMounted(() => {
   init();
 });
+
+// source 后续变化时(如后端 starHorseCurrentStep 异步返回 "end" 致 segSource 由 2 变 3)
+// init 不会重跑，须同步更新 starHorseFieldSource，否则 resetForm 只读保留判断失效
+watch(
+    () => props.source,
+    (newSource) => {
+      if (props.item?.preps) {
+        props.item.preps["starHorseFieldSource"] = newSource;
+      }
+    },
+);
 </script>
 <template>
   <div

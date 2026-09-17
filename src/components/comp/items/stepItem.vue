@@ -3,7 +3,7 @@ import {compKey} from "@/api/system";
 import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
 import AppItem from "@/components/comp/items/appItem.vue";
 import {ContainerPreps} from "@/components/types/ItemPreps";
-import {computed, inject, ModelRef, onMounted, ref, watch} from "vue";
+import {computed, inject, ModelRef, onMounted, ref, watch, watchEffect} from "vue";
 import {collectFieldProps, getDataIndex, getFormData, getPrefix,} from "@/api/form_utils";
 import {i18n} from "@/lang";
 import {warning} from "@/utils/message";
@@ -121,6 +121,7 @@ const segPermission = (key: string): "editable" | "readonly" | "hidden" => {
 // 段内组件渲染 source：只读段用查看模式(3)渲染，可编辑段沿用当前 source
 const segSource = (key: string): number =>
     segPermission(key) === "readonly" ? 3 : props.source;
+
 
 // APP 端每段内部按 appItem.vue 渲染：将 step 的 fieldList 包装为 appList 结构
 const appStepItem = (step: any) => ({
@@ -416,6 +417,7 @@ watch(activeStepIndex, (idx) => {
 <template>
   <div v-if="stepList.length > 0" class="step-item-wrapper">
     <!-- 自定义专业步骤条 -->
+    {{currentStepKey}}
     <div
         v-if="showStepBar"
         class="sh-step-bar"

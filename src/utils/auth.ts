@@ -3,7 +3,7 @@ import { SearchParams } from "@/components/types/Params";
 import JSON5 from "json5";
 
 export function getToken() {
-  return sessionStorage.getItem(Config.TokenKey);
+  return sessionStorage.getItem(Config.TokenKey) || localStorage.getItem(Config.TokenKey);
 }
 
 export function setUserInfo(userInfo: any) {
