@@ -415,7 +415,6 @@ watch(activeStepIndex, (idx) => {
 <template>
   <div v-if="stepList.length > 0" class="step-item-wrapper">
     <!-- 自定义专业步骤条 -->
-    {{currentStepKey}}
     <div
         v-if="showStepBar"
         class="sh-step-bar"
