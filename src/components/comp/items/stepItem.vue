@@ -46,8 +46,6 @@ const removeRow = (row: any) => {
 const activeStepIndex = ref<number>(0);
 // 步骤校验状态：valid=通过(绿色打钩), invalid=失败(红色打叉), undefined=未校验
 const stepValidationState = ref<Record<number, "valid" | "invalid">>({});
-
-
 // 步骤列表(第三类容器统一字段 containerFields,与设计时 preps.elements 对应)
 const stepList = computed(() => props.item?.containerFields || []);
 
