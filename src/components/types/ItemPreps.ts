@@ -119,6 +119,10 @@ export interface ContainerPreps {
      */
     enableSubNode?: boolean;
     dialogType?: "dialog" | "drawer";
+    /**
+     * 容器类型
+     */
+    containerType?: string;
 }
 
 /**
@@ -364,7 +368,7 @@ export interface ApiLinkageDetail {
     /**
      * 是否代理接口
      */
-    proxy?:boolean;
+    proxy?: boolean;
     /**
      * 代理接口
      */

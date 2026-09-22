@@ -40,7 +40,7 @@ const createFieldList = (item: any) => {
   return { fieldList: Array.isArray(item) ? item : [item] };
 };
 const init = () => {
-  console.log(props.item);
+  // console.log(props.item);
 };
 onMounted(() => {
   init();

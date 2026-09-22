@@ -87,6 +87,7 @@ const currentStepKey = computed<string>(() => {
   const persisted = (dataForm.value as any)?.__currentStepKey;
   if (persisted) return String(persisted);
   return stepList.value[0]?.subTablePrimaryKey;
+  // return "end";
 });
 
 

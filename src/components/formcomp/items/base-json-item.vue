@@ -16,7 +16,7 @@
       v-model:modelValue="jsonData"
       style="height: 100%"
     />
-    <star-horse-form v-else :field-list="jsonTableField" ref="jsonFormRef" />
+    <star-horse-form v-else :fieldList="jsonTableField" ref="jsonFormRef" />
   </star-horse-panel>
 
   <!-- 输入框+按钮部分（与原 json-item.vue 完全一致） -->
@@ -105,8 +105,7 @@ const jsonData = shallowRef<any>({}); // 统一存储解析后的 JSON 数据（
 const jsonTableField = reactive<PageFieldInfo>({
   containerFields: [
     {
-      containerType: "table",
-      subTablePrimaryKey: "jsonDatas",
+      subTableName: "jsonDatas",
       fieldList: [
         {
           label: i18n("item.nameLabel"),
@@ -169,6 +168,7 @@ const selectItem = async () => {
     if (!flag) return;
 
     const temp = jsonFormRef.value.getFormData().value;
+    console.log(temp);
     const dataList = temp["jsonDatas"];
 
     // 数组直接使用，对象需要转换为键值对对象

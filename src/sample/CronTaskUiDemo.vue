@@ -1,7 +1,7 @@
 <script setup lang="ts" name="CronTaskUiDemo">
 import { nextTick, onMounted, provide, reactive, ref } from "vue";
-import { dialogPreps } from "@/api/star_horse_utils";
-import type { PageFieldInfo } from "@/components/types";
+import {apiInstance, dialogPreps} from "@/api/star_horse_utils";
+import type {ApiUrls, PageFieldInfo} from "@/components/types";
 import { StarHorseDialog, StarHorseForm } from "@/components/comp";
 
 /**
@@ -869,22 +869,44 @@ const taskConditionTabs = reactive<any>({
           listVisible: false,
           defaultValue:
             "自定义任务通过代码实现Runnable,无需配置参数。请在后端调用CronTaskUtils.schedule()注册。",
-          preps: { disabled: true, rows: 3 },
+          preps: { disabled: false, rows: 3 },
         },
       ],
     },
   ],
 });
-
+const userdbFormEndpoints: ApiUrls = apiInstance("userdb-manage", "userdb/dynamicForm");
 const tableFieldList = reactive<PageFieldInfo | any>({
   fieldList: [
     { label: "主键", fieldName: "idCronTask", formVisible: false },
     {
       label: "任务名称",
       fieldName: "taskName",
+      type:"markdown",
       required: true,
       formVisible: true,
       listVisible: true,
+    },
+    {
+      label: "绑定表单",
+      fieldName: "bindForm",
+      type: "transfer",
+      formVisible: true,
+      listVisible: true,
+      defaultValue:["No1727062024976","No1717661495167"],
+      preps: {
+        multiple: true,
+        apiEndpoints: userdbFormEndpoints,
+        primaryKey: "idDynamicForm",
+        displayField:"formName",
+        displayDistField:"formName",
+        needField: [{sourceField:"dataNo",distField:"bindForm"}],
+        fieldList: [
+          { label: "表单编号", fieldName: "dataNo", listVisible: true,searchVisible:true },
+          { label: "表单名称", fieldName: "formName", listVisible: true,searchVisible:true },
+        ],
+        placeholder: "点击选择已设计的表单",
+      },
     },
     {
       label: "任务类型",

@@ -28,8 +28,8 @@
     "declaration": true,
     "declarationDir": "dist/types",
     "emitDeclarationOnly": true,
+    "outDir": "dist"
   },
-  "outDir": "dist",  // 明确指定输出目录
   "include": ["src/api/**/*", "src/assets/**/*", "src/components/**/*", "src/lang/**/*", "src/plugins/**/*", "src/router/**/*", "src/store/**/*", "src/theme/**/*", "src/utils/**/*", "src/views/**/*", "src/*.ts", "src/*.vue", "types/**/*.ts", "node_modules/unplugin-auto-import/auto-imports.d.ts"],
   "exclude": ["dist", "node_modules", "src/sample/**/*"],
   "references": [

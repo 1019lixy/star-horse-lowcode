@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { compKey } from "@/api/system";
+import {compKey} from "@/api/system";
 import StarHorseFormTable from "@/components/comp/StarHorseFormTable.vue";
-import { ContainerPreps } from "@/components/types/ItemPreps";
-import { computed, ModelRef, onMounted } from "vue";
+import {ContainerPreps} from "@/components/types/ItemPreps";
+import {computed, ModelRef, onMounted} from "vue";
 
 const props = withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
@@ -21,10 +21,12 @@ const dataForm: ModelRef<any> = defineModel("dataForm");
 
 const batchContainers = computed(() => {
   const item: any = props.item;
-  return item.containerType === "table" ? item.containerFields : [];
+  //除了顶层
+  return item.containerType === "table" || props.containerType == "table" ? item.containerFields : [];
 });
 
-const init = () => {};
+const init = () => {
+};
 /**
  * 列表添加行数据
  * @param row
@@ -46,7 +48,7 @@ onMounted(() => {
 
 <template>
   <template
-    v-if="
+      v-if="
       batchContainers.length > 1 &&
       (!item.displayStyle || item.displayStyle == 'tab')
     "
@@ -54,44 +56,44 @@ onMounted(() => {
     <el-tabs v-model="item.fieldName" :type="item.preps?.type ?? 'border-card'">
       <template v-for="(temp, key) in batchContainers">
         <el-tab-pane
-          :label="temp['title']"
-          v-if="!(temp['disVisible'] ?? temp.preps?.disVisible)"
-          :name="temp.subTablePrimaryKey || 'sub_tab' + key"
-          :disabled="temp.disabled"
-          :lazy="temp.preps?.lazy !== false"
-          class="h-full flex flex-col"
+            :label="temp['title']"
+            v-if="!(temp['disVisible'] ?? temp.preps?.disVisible)"
+            :name="temp.subTablePrimaryKey || 'sub_tab' + key"
+            :disabled="temp.disabled"
+            :lazy="temp.preps?.lazy !== false"
+            class="h-full flex flex-col"
         >
           <star-horse-form-table
-            :size="compSize"
-            @addRow="addRow"
-            :source="source"
-            :dialogType="dialogType"
-            @removeRow="removeRow"
-            :enableSubNode="enableSubNode"
-            :commonFormat="commonFormat"
-            :rules="rules"
-            :item="temp"
-            v-model:dataForm="dataForm"
+              :size="compSize"
+              @addRow="addRow"
+              :source="source"
+              :dialogType="dialogType"
+              @removeRow="removeRow"
+              :enableSubNode="enableSubNode"
+              :commonFormat="commonFormat"
+              :rules="rules"
+              :item="temp"
+              v-model:dataForm="dataForm"
           />
         </el-tab-pane>
       </template>
     </el-tabs>
   </template>
   <template
-    v-else
-    v-for="(temp, key) in batchContainers"
-    :key="compKey(temp, key)"
+      v-else
+      v-for="(temp, key) in batchContainers"
+      :key="compKey(temp, key)"
   >
     <star-horse-form-table
-      :size="compSize"
-      :rules="rules"
-      :source="source"
-      @addRow="addRow"
-      @removeRow="removeRow"
-      :enableSubNode="enableSubNode"
-      :commonFormat="commonFormat"
-      :item="temp"
-      v-model:dataForm="dataForm"
+        :size="compSize"
+        :rules="rules"
+        :source="source"
+        @addRow="addRow"
+        @removeRow="removeRow"
+        :enableSubNode="enableSubNode"
+        :commonFormat="commonFormat"
+        :item="temp"
+        v-model:dataForm="dataForm"
     />
   </template>
 </template>

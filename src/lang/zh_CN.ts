@@ -113,6 +113,7 @@ export default {
    */
   "table.operation": "操作",
   "table.refresh": "刷新",
+  "table.noData": "暂无数据",
   /**
    * 数据选择器--------------
    */
@@ -286,6 +287,8 @@ export default {
   "message.prompt": "提示",
   "message.success": "成功",
   "message.error": "错误",
+  "message.copy.success": "复制成功",
+  "message.copy.failure": "复制失败",
   /**
    * Dialog Titles
    */

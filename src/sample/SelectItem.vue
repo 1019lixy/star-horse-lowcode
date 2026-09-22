@@ -15,9 +15,7 @@
 <script lang="ts" setup>
 import { onMounted, ref } from "vue";
 import piniaInstance from "@/store";
-import { useDesignFormStore } from "@/store/DesignForm";
 
-let designForm = useDesignFormStore(piniaInstance);
 const formData = ref<any>({
   test: "1-2-1",
 });
@@ -162,7 +160,6 @@ const fields = ref<Array<any>>([
   },
 ]);
 onMounted(() => {
-  designForm.clearAll(true);
 });
 </script>
 

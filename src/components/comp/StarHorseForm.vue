@@ -365,7 +365,6 @@ const collectDisabledInfo = (): {
     // 只读/查看模式(source=3)字段数据须保留：stepItem 只读段位经 segSource 传 source=3，
     // StarHorseItem init 时写入 preps.starHorseFieldSource=3，重置时不应清空其已填写数据
     const readOnlySource = f.preps?.starHorseFieldSource == 3;
-    console.log(f,(disabled || editDisabled || readOnlySource) && f.fieldName);
     if ((disabled || editDisabled || readOnlySource) && f.fieldName) {
       if (dataForm.value[f.fieldName] !== undefined) {
         valueSnapshot[f.fieldName] = dataForm.value[f.fieldName];

@@ -1462,3 +1462,62 @@ export const loadSelectedData = async (
     });
     return findNodesInTree(list || [], value, displayValue);
 };
+
+/**
+ * 复制文本到剪贴板，优先使用clipboard api，失败降级execCommand兜底
+ * @param msg 要复制的文本
+ * @returns Promise<boolean> true成功 false失败
+ */
+export function copy(msg: string): Promise<boolean> {
+    // 优先现代Clipboard API
+    if (navigator.clipboard) {
+        return navigator.clipboard.writeText(msg)
+            .then(() => {
+                success(i18n("message.copy.success"));
+                return true;
+            })
+            .catch(async () => {
+                // clipboard失败，尝试兜底方案
+                return fallbackCopy(msg);
+            });
+    } else {
+        // 浏览器不支持clipboard，直接走兜底
+        return fallbackCopy(msg);
+    }
+}
+
+/**
+ * 兜底复制方案：创建临时textarea，使用execCommand
+ */
+function fallbackCopy(msg: string): Promise<boolean> {
+    return new Promise((resolve) => {
+        const textArea = document.createElement("textarea");
+        textArea.value = msg;
+
+        // 样式隐藏，不影响页面布局
+        textArea.style.position = "fixed";
+        textArea.style.left = "-9999px";
+        textArea.style.top = "-9999px";
+        textArea.style.opacity = "0";
+        document.body.appendChild(textArea);
+        // 选中内容
+        textArea.focus();
+        textArea.select();
+        try {
+            const result = document.execCommand("copy");
+            if (result) {
+                success("message.copy.success");
+                resolve(true);
+            } else {
+                error("message.copy.failure");
+                resolve(false);
+            }
+        } catch (err) {
+            error("message.copy.failure");
+            resolve(false);
+        } finally {
+            // 移除临时dom
+            document.body.removeChild(textArea);
+        }
+    });
+}

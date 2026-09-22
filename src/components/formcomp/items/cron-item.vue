@@ -24,7 +24,8 @@
     <el-input
       :fid="field.fieldName"
       v-on="getDynamicEvents(props, itemAction, formData)"
-      v-model="formData[field.fieldName]"
+      :model-value="inputValue"
+      @update:model-value="onInputUpdate"
     >
       <template #append>
         <el-button
@@ -37,7 +38,7 @@
   </starhorse-form-item>
 </template>
 <script setup lang="ts">
-import { nextTick, onMounted, ref } from "vue";
+import { computed, nextTick, onMounted, ref, watch } from "vue";
 import Crontab from "@/components/cron/Crontab.vue";
 import {
   allAction,
@@ -63,6 +64,20 @@ const formData = defineModel("formData");
 let cronDataValue = ref<any>("");
 let cronVisible = ref(false);
 const cronTabRef = ref();
+const inputValue = ref("");
+watch(
+  () => formData.value?.[props.field.fieldName],
+  (val) => {
+    inputValue.value = val ?? "";
+  },
+  { immediate: true }
+);
+const onInputUpdate = (val: string) => {
+  inputValue.value = val;
+  if (formData.value) {
+    formData.value[props.field.fieldName] = val;
+  }
+};
 const itemAction = (prep: any) => {
   allAction(props, emits, formData, prep);
 };
@@ -75,12 +90,17 @@ const resetForm = () => {
 const close = () => {
   cronVisible.value = false;
 };
+const defaultCron = "* * * * * ?";
 const open = () => {
-  cronDataValue.value = formData.value[props.field.fieldName];
+  cronDataValue.value = formData.value?.[props.field.fieldName] || defaultCron;
   cronVisible.value = true;
 };
 const submit = () => {
-  formData.value[props.field.fieldName] = cronDataValue.value;
+  const cronVal = cronDataValue.value || defaultCron;
+  if (formData.value) {
+    formData.value[props.field.fieldName] = cronVal;
+  }
+  inputValue.value = cronVal;
   close();
 };
 onMounted(() => {

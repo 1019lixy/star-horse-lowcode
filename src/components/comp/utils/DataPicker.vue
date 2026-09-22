@@ -543,8 +543,9 @@ const onSelectedItemClick = (index: number) => {
 /** 拖拽已选栏上边框调整高度 */
 const onDragStart = (e: PointerEvent) => {
   e.preventDefault();
+  const target = e.currentTarget as HTMLElement;
   // 捕获 pointer，确保后续 move/up 都能收到，不被浏览器拦截
-  (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+  target.setPointerCapture(e.pointerId);
   isDraggingSelectedBar.value = true;
   const startY = e.clientY;
   const startHeight = selectedBarHeight.value;
@@ -560,7 +561,11 @@ const onDragStart = (e: PointerEvent) => {
   };
   const onUp = (ev: PointerEvent) => {
     isDraggingSelectedBar.value = false;
-    (e.currentTarget as HTMLElement).releasePointerCapture(ev.pointerId);
+    try {
+      target.releasePointerCapture(ev.pointerId);
+    } catch {
+      // 元素可能已卸载或未捕获，忽略
+    }
     document.removeEventListener("pointermove", onMove);
     document.removeEventListener("pointerup", onUp);
     document.body.style.userSelect = "";

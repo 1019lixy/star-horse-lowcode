@@ -236,7 +236,7 @@ const handleSelectNode = (id: string | null) => {
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .demo-container {
   height: 100%;
   width: 100%;

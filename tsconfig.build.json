@@ -1,14 +1,8 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "rootDir": "./src",
     "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "declaration": true,
-    "declarationDir": "dist/types",
-    "emitDeclarationOnly": true,
-    "noEmitOnError": false,
-    "skipLibCheck": true
+    "noUnusedParameters": false
   },
   "include": [
     "src/api/**/*",
