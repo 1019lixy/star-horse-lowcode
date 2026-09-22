@@ -5,6 +5,7 @@ import {
   CRITICAL_COLOR,
   GANTT_STATUS_PRESETS,
   MILESTONE_SIZE,
+  TODAY_LINE_COLOR
 } from "../constants";
 import type { GanttTimelineCell } from "../utils/GanttDateUtils";
 import {

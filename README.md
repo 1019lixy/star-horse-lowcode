@@ -314,3 +314,8 @@ barcode        条形码组件
 ```
 -- 修复v4.0.04 更新导致的bug,优化App端分段审批bug
 ```
+#### v4.0.07
+
+```
+-- 修复App模式下page-select,dialog-input等组件的数据显示bug
+```
