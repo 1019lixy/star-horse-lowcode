@@ -522,7 +522,7 @@ function getContainerResult(comp: any) {
  * @param fieldList
  */
 export const analysisAutoFitOsCompDatas = (fieldList: any) => {
-    if (isMobile) {
+    if (isMobile.value) {
         return analysisAppComps(fieldList);
     } else {
         return analysisCompDatas(fieldList);
@@ -805,8 +805,9 @@ export function ensureFieldIds(pageInfo: any) {
  * @param pageInfo
  */
 export function convertPcCompToFitPlatformComps(pageInfo: PageFieldInfo) {
-    //如果不是手机端，则直接返回
-    if (!isMobile) {
+    //如果不是手机端，则还原 APP 端转换期间被覆盖的 PC 原值后直接返回
+    if (!isMobile.value) {
+        restorePcOriginalsFromApp(pageInfo);
         return pageInfo;
     }
     return convertCompToAppComps(pageInfo);
@@ -822,6 +823,21 @@ export function convertPcCompToFitPlatformComps(pageInfo: PageFieldInfo) {
  */
 const applyAppLabelRules = (comps: any[]) => {
     if (!Array.isArray(comps)) return;
+    // 修改原始字段对象前，先在 _pcOrig 上记录 PC 端原值（仅首次记录，避免二次覆盖）
+    const preservePcOriginal = (item: any, keys: Array<string>) => {
+        if (!item) return;
+        if (!item._pcOrig) item._pcOrig = {};
+        const orig = item._pcOrig;
+        for (const k of keys) {
+            if (k === "preps.hideLabel" && !("prepsHideLabel" in orig)) {
+                orig.prepsHideLabel = item.preps?.hideLabel;
+            } else if (k === "preps.placeholder" && !("prepsPlaceholder" in orig)) {
+                orig.prepsPlaceholder = item.preps?.placeholder;
+            } else if (k === "label" && !("label" in orig)) {
+                orig.label = item.label;
+            }
+        }
+    };
     const staticComps = comps.filter((item) => {
         return item && (item?.type == "html" || item?.type == "text");
     });
@@ -834,6 +850,7 @@ const applyAppLabelRules = (comps: any[]) => {
                 if (!item.preps) {
                     item.preps = {};
                 }
+                preservePcOriginal(item, ["preps.hideLabel", "label", "preps.placeholder"]);
                 item.preps.hideLabel = false;
                 item.label = staticData?.preps?.textContent;
                 item.preps.placeholder = i18n("api.pleaseInput2") + item?.label;
@@ -849,8 +866,49 @@ const applyAppLabelRules = (comps: any[]) => {
             );
         })
         ?.forEach((item) => {
+            preservePcOriginal(item, ["preps.hideLabel"]);
             item.preps.hideLabel = false;
         });
+};
+
+/**
+ * 递归遍历 pageInfo 的字段结构，将 APP 端转换时被覆盖的 PC 原值还原回去
+ * 与 applyAppLabelRules 中的 preservePcOriginal 配对使用
+ */
+const restorePcOriginalsFromApp = (pageInfo: any) => {
+    if (!pageInfo) return;
+    const restoreOne = (item: any) => {
+        if (!item || !item._pcOrig) return;
+        const orig = item._pcOrig;
+        if (!item.preps) item.preps = {};
+        if ("prepsHideLabel" in orig) {
+            item.preps.hideLabel = orig.prepsHideLabel;
+        }
+        if ("prepsPlaceholder" in orig) {
+            item.preps.placeholder = orig.prepsPlaceholder;
+        }
+        if ("label" in orig) {
+            item.label = orig.label;
+        }
+        delete item._pcOrig;
+    };
+    const walk = (list: any) => {
+        if (!Array.isArray(list)) return;
+        for (const field of list) {
+            if (Array.isArray(field)) {
+                walk(field);
+            } else if (field?.containerFields?.length) {
+                for (const container of field.containerFields) {
+                    walk(container?.fieldList);
+                }
+            } else if (field?.fieldList?.length) {
+                walk(field.fieldList);
+            }
+            restoreOne(field);
+        }
+    };
+    walk(pageInfo.fieldList);
+    walk(pageInfo.containerFields);
 };
 
 /**

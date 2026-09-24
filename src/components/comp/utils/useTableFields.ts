@@ -1,8 +1,7 @@
-import {computed, onUnmounted, reactive, ref} from "vue";
+import {computed, onUnmounted, ref} from "vue";
 import Sortable from "sortablejs";
 import {i18n} from "@/lang";
 import {isMobile} from "@/api/device";
-import {convertCompToAppComps} from "@/api/form_utils";
 import {FieldInfo} from "@/components/types/PageFieldInfo";
 
 /** useTableFields 入参 */
@@ -118,78 +117,89 @@ export function useTableFields(opts: UseTableFieldsOptions) {
     };
 
     /**
-     * 初始化 APP 端 appListVisible 默认值：
-     * - 系统公共字段（创建人/创建时间等）默认隐藏
-     * - 其余字段按 PC 端 listVisible 决定
+     * 递归扁平化全部字段（对齐 PC 端 FieldVisibleControl.allColumns 的解析逻辑）
+     * 支持：数组 / containerFields(容器，含其 fieldList) / 单字段对象 / 带 fieldList 的分组
+     * 仅收集拥有 label 的可见字段，返回的是 props 中原始字段的引用，
+     * 因此对 preps.appListVisible 的修改会直接反映到卡片渲染。
      */
-    const initAppListVisible = (fields: FieldInfo[]) => {
-        fields.forEach((f: any) => {
+    const flattenFields = (
+        list: Array<any> | undefined,
+        out: Array<any>,
+    ): void => {
+        if (!Array.isArray(list)) return;
+        for (const field of list) {
+            if (Array.isArray(field)) {
+                flattenFields(field, out);
+            } else if (field?.containerFields?.length) {
+                for (const container of field.containerFields) {
+                    flattenFields(container?.fieldList, out);
+                }
+            } else if (field?.fieldList?.length) {
+                flattenFields(field.fieldList, out);
+            } else if (field?.label) {
+                out.push(field);
+            }
+        }
+    };
+
+    /** APP 端全部字段（扁平、原始引用），供字段显隐弹窗与卡片共用 */
+    const mobileAllFields = computed<FieldInfo[]>(() => {
+        const out: Array<any> = [];
+        flattenFields(props.fieldList?.fieldList, out);
+        return out as FieldInfo[];
+    });
+
+    /** 按 dataIndex 排序（缺省 100） */
+    const sortByDataIndex = (a: FieldInfo, b: FieldInfo) =>
+        ((a as any).preps?.dataIndex ?? 100) -
+        ((b as any).preps?.dataIndex ?? 100);
+
+    /**
+     * 初始化 APP 端 appListVisible 默认值：
+     * 卡片默认只展示「标题 + 2 行 = 3 个」字段——按 dataIndex 顺序取前 3 个非系统字段可见，
+     * 其余字段（含系统公共字段）默认隐藏；用户可在字段显隐弹窗中自由勾选。
+     * 已显式配置过 appListVisible 的字段保持原值不覆盖。
+     */
+    const ensureMobileDefaults = () => {
+        const ordered = [...mobileAllFields.value].sort(sortByDataIndex);
+        let visibleCount = 0;
+        ordered.forEach((f: any) => {
             if (!f.preps) f.preps = {};
+            const isSystem = SYSTEM_FIELD_NAMES.some((s) =>
+                f.fieldName?.toLowerCase().includes(s.toLowerCase()),
+            );
             if (f.preps.appListVisible === undefined) {
-                const isSystem = SYSTEM_FIELD_NAMES.some((s) =>
-                    f.fieldName?.toLowerCase().includes(s.toLowerCase()),
-                );
-                f.preps.appListVisible = isSystem ? false : !!f.listVisible;
+                const want = !isSystem && visibleCount < 3;
+                f.preps.appListVisible = want;
+                if (want) visibleCount++;
+            } else if (f.preps.appListVisible) {
+                visibleCount++;
             }
         });
     };
 
     /**
-     * 加载 APP 端字段缓存（同一页面缓存，避免重复解析）
-     * 返回按 appListVisible 过滤、dataIndex 排序后的字段列表
+     * 加载 APP 端字段：初始化默认显隐并同步 cacheAppCompList（保留列拖拽兼容）
      */
     const loadField = (): FieldInfo[] => {
-        if (!isMobile) {
-            return [];
-        }
-        if (!cacheAppCompList.value.length) {
-            const result = convertCompToAppComps(props.fieldList);
-            const rawList: any[] = result.fieldList || [];
-            const fields: FieldInfo[] = [];
-            for (const item of rawList) {
-                if (item?.appList && Array.isArray(item.appList)) {
-                    for (const sub of item.appList) {
-                        fields.push(reactive(JSON.parse(JSON.stringify(sub))));
-                    }
-                } else if (Array.isArray(item)) {
-                    for (const sub of item) {
-                        fields.push(reactive(JSON.parse(JSON.stringify(sub))));
-                    }
-                } else if (item) {
-                    fields.push(reactive(JSON.parse(JSON.stringify(item))));
-                }
-            }
-            initAppListVisible(fields);
-            cacheAppCompList.value = fields;
-        }
-        if (!cacheAppCompList.value?.length) {
-            return [];
-        }
-        return cacheAppCompList.value
-            .filter((item: FieldInfo) => item.preps?.appListVisible)
-            .sort(
-                (a: FieldInfo, b: FieldInfo) =>
-                    (a.preps?.dataIndex || 100) - (b.preps?.dataIndex || 100),
-            );
+        ensureMobileDefaults();
+        cacheAppCompList.value = mobileAllFields.value as FieldInfo[];
+        return cardFieldList.value;
     };
 
     /**
      * 卡片展示字段（computed）：
      * - PC 端：按 listVisible 过滤
      * - APP 端：按 appListVisible 过滤
-     * 均按 dataIndex 排序
+     * 均按 dataIndex 排序；解析源为扁平化后的全部字段，保证与字段显隐弹窗一致
      */
-    const cardFieldList = computed<FieldInfo[]>(() => {
-        if (!cacheAppCompList.value?.length) return [];
-        return cacheAppCompList.value
-            .filter((item: any) => {
-                return isMobile ? item.preps?.appListVisible : item.listVisible;
-            })
-            .sort(
-                (a: FieldInfo, b: FieldInfo) =>
-                    (a.preps?.dataIndex || 100) - (b.preps?.dataIndex || 100),
-            );
-    });
+    const cardFieldList = computed<FieldInfo[]>(() =>
+        mobileAllFields.value
+            .filter((item: any) =>
+                isMobile.value ? item.preps?.appListVisible : item.listVisible,
+            )
+            .sort(sortByDataIndex),
+    );
 
     /** 切换列表/卡片模式 */
     const showType = (type: string) => {
@@ -227,6 +237,7 @@ export function useTableFields(opts: UseTableFieldsOptions) {
         moveColumn,
         loadField,
         cardFieldList,
+        mobileAllFields,
         showType,
     };
 }

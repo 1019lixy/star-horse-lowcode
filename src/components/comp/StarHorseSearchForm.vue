@@ -61,7 +61,7 @@ const dataSearch = (val?: any) => {
   }
   // 移动端：来自字段 change 的事件（val 是数组）不触发查询，
   // 避免选日期/数据确认后误关闭查询弹窗；PC 端保持原行为
-  if (isMobile && Array.isArray(val)) {
+  if (isMobile.value && Array.isArray(val)) {
     return;
   }
   let searchDatas = createSearchParams(props.formData?.fieldList);

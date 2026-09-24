@@ -58,7 +58,7 @@ export const success = (msg: string) => {
     "success",
     3000,
     i18n("message.success"),
-    isMobile ? "top-right" : "bottom-right",
+    isMobile.value ? "top-right" : "bottom-right",
   );
 };
 /**
@@ -71,7 +71,7 @@ export const warning = (msg: string) => {
     "warning",
     3000,
     i18n("message.warning"),
-    isMobile ? "top-right" : "bottom-right",
+    isMobile.value ? "top-right" : "bottom-right",
   );
 };
 /**
@@ -84,6 +84,6 @@ export const error = (msg: string) => {
     "error",
     3000,
     i18n("message.error"),
-    isMobile ? "top-right" : "bottom-right",
+    isMobile.value ? "top-right" : "bottom-right",
   );
 };

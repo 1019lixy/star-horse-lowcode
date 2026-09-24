@@ -21,7 +21,7 @@ const emit = defineEmits<{
 }>();
 
 const selectedTaskId = computed(() => props.designer.selectedTaskId.value);
-const isCompact = computed(() => isMobile || isTablet);
+const isCompact = computed(() => isMobile.value || isTablet.value);
 
 /** 下拉菜单项命令 */
 type DropdownCmd =

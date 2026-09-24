@@ -5,7 +5,7 @@ import { isMobile } from "@/api/device";
 
 const route = useRoute();
 const router = useRouter();
-const collapse = ref(isMobile);
+const collapse = ref(isMobile.value);
 const activeMenu = computed(() => route.path);
 // 面包屑:从 matched 中提取标题
 const breadcrumbs = computed(() =>

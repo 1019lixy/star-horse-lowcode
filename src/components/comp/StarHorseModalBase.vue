@@ -47,7 +47,7 @@ let firstOpenStart = 0;
 
 /** 抽屉尺寸（仅 drawer 形态使用）：全屏/手机 100%，否则 boxWidth */
 const drawerWidth = computed(() =>
-  isFullScreen.value || isMobile ? "100%" : props.boxWidth,
+  isFullScreen.value || isMobile.value ? "100%" : props.boxWidth,
 );
 
 /** 容器整体样式：drawer 固定撑满；dialog 由 boxHeight / 全屏驱动 */
@@ -74,15 +74,15 @@ const containerProps = computed(() =>
     ? {
         destroyOnClose: true,
         withHeader: props.withHeader,
-        resizable: props.resizable && !isFullScreen.value && !isMobile,
+        resizable: props.resizable && !isFullScreen.value && !isMobile.value,
         direction: props.direction,
         size: drawerWidth.value,
       }
     : {
         center: props.center,
         destroyOnClose: props.destroyOnClose,
-        fullscreen: isFullScreen.value || isMobile,
-        draggable: props.draggable && !isFullScreen.value && !isMobile,
+        fullscreen: isFullScreen.value || isMobile.value,
+        draggable: props.draggable && !isFullScreen.value && !isMobile.value,
         alignCenter: true,
         width: props.boxWidth,
         top: props.top,
@@ -122,7 +122,7 @@ const open = () => {
 
 onMounted(() => {
   // 手机模式默认最大化
-  if (isMobile && windowsType.value) {
+  if (isMobile.value && windowsType.value) {
     isFullScreen.value = true;
   }
 });
@@ -162,7 +162,7 @@ watch(
     if (val) {
       activeZIndex.value = props.zIndex > 0 ? props.zIndex : nextZIndex();
       isMinimized.value = false;
-      if (isMobile) {
+      if (isMobile.value) {
         isFullScreen.value = true;
       }
     }
@@ -470,6 +470,7 @@ watch(
   .el-dialog__footer,
   .el-drawer__footer {
     text-align: center;
+    padding:5px 0 !important;
   }
 }
 </style>

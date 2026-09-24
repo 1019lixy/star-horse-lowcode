@@ -13,7 +13,7 @@ import {error, warning} from "@/utils/message";
 import {computed, nextTick, onMounted, PropType, ref} from "vue";
 import {i18n} from "@/lang";
 import {isMobile} from "@/api/device";
-import MenuShot from "@/components/comp/app/MenuShot.vue";
+
 import {closeLoad, load} from "@/api/star_horse_utils";
 
 const props = defineProps({
@@ -48,7 +48,7 @@ const dataForm = ref<any>({});
  * @param funcName
  */
 const tableCompFunc = (funcName: string) => {
-  if ((funcName == "upload" || funcName == "import") && isMobile) {
+  if ((funcName == "upload" || funcName == "import") && isMobile.value) {
     warning(i18n("item.notSupportedOnApp"));
     return;
   }
@@ -140,7 +140,7 @@ const uploadSuccess = (_response: any, _file: any, _fileList: any) => {
 const buttonList = computed(() => {
   const baseBtn = extendBtnFunction();
   // 刷新按钮仅在 PC 端加入，APP 端由顶部工具栏提供
-  if (!isMobile) {
+  if (!isMobile.value) {
     baseBtn.push({
       btnName: i18n("comp.refresh"),
       icon: "refresh",
@@ -257,6 +257,8 @@ onMounted(() => {
 });
 defineExpose({
   setFormData,
+  btnOperation,
+  buttonList,
 });
 </script>
 <template>
@@ -456,7 +458,7 @@ defineExpose({
       </template>
     </ul>
   </template>
-  <MenuShot v-if="isMobile" :menus="buttonList" @change="changeMenu"/>
+
 </template>
 <style lang="scss" scoped>
 :deep(.el-tooltip__trigger:focus-visible) {

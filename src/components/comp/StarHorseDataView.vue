@@ -53,7 +53,7 @@ const platformFields = computed(() =>
   convertPcCompToFitPlatformComps(props.fieldList),
 );
 const borderStyle = computed(() =>
-  isMobile ? "none" : " 1px solid var(--el-border-color-lighter)",
+  isMobile.value ? "none" : " 1px solid var(--el-border-color-lighter)",
 );
 const mappingFields = computed(() => formFieldMapping(unref(platformFields)));
 onMounted(() => {

@@ -21,7 +21,7 @@ defineProps({
 const emits = defineEmits(["selectItem"]);
 let dataList: ModelRef<any> = defineModel("dataList");
 const fontColor = computed(() => {
-  return isMobile ? "var(--star-horse-white) !important" : "unset";
+  return isMobile.value ? "var(--star-horse-white) !important" : "unset";
 });
 const initData = async () => {};
 const selectItem = (item: any) => {

@@ -18,7 +18,7 @@ const emit = defineEmits<{
   (e: "expand-all"): void;
 }>();
 
-const isCompact = computed(() => isMobile || isTablet);
+const isCompact = computed(() => isMobile.value || isTablet.value);
 
 /** 内联 SVG 图标 */
 const icons: Record<string, string> = {

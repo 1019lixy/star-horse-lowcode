@@ -198,7 +198,7 @@ function executeAdvancedSearch() {
   emits("searchData", conditions);
   emits("searchOrderBy", toOrderBy(advancedSort.value));
   advancedVisible.value = false;
-  if (isMobile) {
+  if (isMobile.value) {
     dialogVisible.value = false;
   }
 }
@@ -212,13 +212,19 @@ function resetAdvanced() {
 /** 简单查询回调：保持原有行为，仅抛出 searchData */
 const handleSearchData = (searchData: any) => {
   emits("searchData", searchData);
-  if (isMobile) {
+  if (isMobile.value) {
     handleClose();
   }
 };
 
 const handleMobileSearch = () => {
   mobileMode.value = "simple";
+  dialogVisible.value = true;
+};
+
+/** 移动端：直接以「高级查询」模式打开搜索面板（供列表头部筛选图标调用） */
+const handleMobileAdvanced = () => {
+  mobileMode.value = props.showAdvanced ? "advanced" : "simple";
   dialogVisible.value = true;
 };
 
@@ -232,6 +238,7 @@ const handleAdvancedClose = () => {
 
 defineExpose({
   handleMobileSearch,
+  handleMobileAdvanced,
 });
 </script>
 <template>

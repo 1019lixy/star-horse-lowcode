@@ -75,12 +75,45 @@ export function useTableExport(opts: UseTableExportOptions) {
     (f.listVisible === undefined && f.formVisible === true);
 
   /**
+   * 递归扁平化导出字段来源
+   * 对齐 PC 端列解析逻辑(FieldVisibleControl.allColumns)与 APP 端(useTableFields.flattenFields)：
+   * - 数组：逐项展开
+   * - 容器节点(containerFields)：递归进入每个容器的 fieldList，容器本身不作为可导出列
+   * - 分组节点(fieldList)：递归进入其 fieldList
+   * - 叶子字段(含 fieldName)：收集
+   * 之前仅读取 props.fieldList.fieldList 顶层数组，导致「容器内的字段」不会被解析进导出弹窗。
+   * 按 fieldName 去重，保证导出弹窗 checkbox-group 的 value 唯一。
+   */
+  const collectExportFields = (): Array<any> => {
+    const out: Array<any> = [];
+    const seen = new Set<string>();
+    const walk = (list: any) => {
+      if (!Array.isArray(list)) return;
+      for (const field of list) {
+        if (Array.isArray(field)) {
+          walk(field);
+        } else if (field?.containerFields?.length) {
+          for (const container of field.containerFields) {
+            walk(container?.fieldList);
+          }
+        } else if (field?.fieldList?.length) {
+          walk(field.fieldList);
+        } else if (field?.fieldName && !seen.has(field.fieldName)) {
+          seen.add(field.fieldName);
+          out.push(field);
+        }
+      }
+    };
+    walk(props?.fieldList?.fieldList);
+    return out;
+  };
+
+  /**
    * 初始化导出字段备选列表
-   * 取 fieldList.fieldList 中所有字段,按默认规则选中
+   * 递归收集(含容器内)所有字段,按默认规则选中
    */
   const initExportFieldOptions = () => {
-    const list: Array<any> = props?.fieldList?.fieldList || [];
-    exportFieldOptions.value = list.map((f: any) => ({
+    exportFieldOptions.value = collectExportFields().map((f: any) => ({
       fieldName: f.fieldName,
       label: f.label || f.fieldName,
       checked: isDefaultChecked(f),
@@ -91,10 +124,9 @@ export function useTableExport(opts: UseTableExportOptions) {
    * 恢复默认选中状态
    */
   const resetExportFieldOptions = () => {
+    const flat = collectExportFields();
     exportFieldOptions.value.forEach((f) => {
-      const origin = (props?.fieldList?.fieldList || []).find(
-        (item: any) => item.fieldName === f.fieldName,
-      );
+      const origin = flat.find((item: any) => item.fieldName === f.fieldName);
       f.checked = origin ? isDefaultChecked(origin) : false;
     });
   };

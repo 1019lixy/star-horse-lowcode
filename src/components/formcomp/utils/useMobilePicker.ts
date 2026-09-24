@@ -22,7 +22,7 @@ import { i18n } from "@/lang";
  *   } = useMobilePicker(() => props.field);
  */
 export function useMobilePicker(fieldGetter: () => any, source?: number) {
-  const isApp = isMobile || isTablet;
+  const isApp = computed(() => isMobile.value || isTablet.value);
 
   const pickerVisible = ref(false);
 
@@ -45,7 +45,7 @@ export function useMobilePicker(fieldGetter: () => any, source?: number) {
 
   /** 最终是否分离 */
   const isSeparate = computed<boolean>(() => {
-    if (!isApp) return false;
+    if (!isApp.value) return false;
     if (!globalEnabled.value) return false;
     return fieldLevelEnabled.value;
   });

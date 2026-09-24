@@ -52,7 +52,7 @@ const props = withDefaults(
   },
 );
 
-const isApp = isMobile || isTablet;
+const isApp = computed(() => isMobile.value || isTablet.value);
 
 // ============ PC 端面板分组 ============
 const leftPanels = computed(() =>

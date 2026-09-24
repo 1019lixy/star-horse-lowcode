@@ -20,7 +20,7 @@ let iconList = ref<Array<any>>([]);
 const menuIconSelect = (corn: any) => {
   emits("selectIcon", corn);
   // 移动端选择后关闭抽屉
-  if (isMobile) {
+  if (isMobile.value) {
     closePicker();
   }
 };

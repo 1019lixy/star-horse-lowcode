@@ -90,7 +90,7 @@ const loadFormData = async (formId: string) => {
   isLoadingRef.value = false; // 重置加载状态
   delete formData.value.tableFieldList["userTableFuncs"];
   nextTick(() => {
-    if (formDataCacheStore.getCacheSize() == 1 || isMobile) {
+    if (formDataCacheStore.getCacheSize() == 1 || isMobile.value) {
       console.log("----------------------1--------------");
       const handler = setTimeout(() => {
         console.log("----------------------3--------------");
@@ -236,6 +236,7 @@ defineExpose({refreshForm});
         <star-horse-table-comp
             ref="normalPageRef"
             :fieldList="formData.tableFieldList"
+            :searchFormData="formData.searchFormData"
             :primaryKey="formData.primaryKey"
             :globalConfig="formData.relationTables"
             :isDynamic="true"
@@ -245,6 +246,11 @@ defineExpose({refreshForm});
             edit:'edit',
             delete:'delete',
             view:'view',
+            batchAdd:'batchAdd',
+            export:'export',
+            upload:'upload',
+            import:'import',
+            execution:'execution',
           }"
             :apiEndpoints="formData.apiEndpoints"
             :showBatchField="true"

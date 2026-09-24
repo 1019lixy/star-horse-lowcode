@@ -338,7 +338,7 @@ const handleCheckAll = () => {
       if (n.children) walk(n.children);
     });
   walk(dataOrgOptions.value);
-  if (isMobile) {
+  if (isMobile.value) {
     // APP 端树无 checkbox，直接设置已选
     dataOptions.value = all;
     return;
@@ -388,7 +388,7 @@ const onCheckChange = () => {
 
 /** 回显已选到 checkbox 视觉（PC 多选）：initSelection 后调用；APP 端树无 checkbox 跳过 */
 const syncCheckboxesFromSelection = () => {
-  if (!props.multiple || isMobile) return;
+  if (!props.multiple || isMobile.value) return;
   orgTreeRef.value?.setCheckedKeys?.(
     dataOptions.value.map((it) => it?.[props.displayValue]),
   );
@@ -396,7 +396,7 @@ const syncCheckboxesFromSelection = () => {
 
 const onNodeClick = (treeNode: any) => {
   if (props.multiple) {
-    if (!isMobile) {
+    if (!isMobile.value) {
       // PC 多选：树上有 checkbox，点击文字转为切换 checkbox，勾选结果经 check-change 统一回流
       orgTreeRef.value?.setChecked?.(
           treeNode?.[props.displayValue],
@@ -417,7 +417,7 @@ const onNodeClick = (treeNode: any) => {
     return;
   }
   // 单选：移动端双击检测（触摸设备原生 dblclick 不可靠，在 node-click 里手动检测）
-  if (isMobile) {
+  if (isMobile.value) {
     const now = Date.now();
     const nodeKey = treeNode?.[props.displayValue];
     if (
@@ -765,7 +765,7 @@ const initOptions = async () => {
     // APP 端大数据（>= 500 叶子）时，启用客户端分页 + 延迟渲染
     const leafCount = countLeafNodes(props.data);
     localPageEnabled.value =
-        isMobile && !props.apiEndpoints && !props.apiDataSource && leafCount >= 500;
+        isMobile.value && !props.apiEndpoints && !props.apiDataSource && leafCount >= 500;
     if (localPageEnabled.value) {
       // 扁平化叶子，做分页
       localFlatLeaves.value = flattenLeafNodes(props.data);
