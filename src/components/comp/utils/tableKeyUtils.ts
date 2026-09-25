@@ -20,6 +20,14 @@ export const splitKey = (key: string, row: any): any => {
   }
 };
 /**
+ * 解析主键配置的字段名
+ * 字符串主键直接返回;{source, dist} 别名对象返回 dist(后端识别字段)
+ * @param key 主键配置项,字符串或 {source, dist} 对象
+ */
+export const resolveKeyName = (key: any): string =>
+  isJson(key) ? key.dist : key;
+
+/**
  * 解析主键:支持字符串/数组/对象别名形式
  * @param keys 主键,字符串或数组(支持 {source, dist} 别名)
  * @param row 数据行

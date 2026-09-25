@@ -5,7 +5,7 @@ import { removeEmptyCondition } from "@/api/system";
 import { error, warning } from "@/utils/message";
 import { i18n } from "@/lang";
 import { SearchParams } from "@/components/types/Params";
-import { analysisPrimaryKeys } from "./tableKeyUtils";
+import { analysisPrimaryKeys, resolveKeyName } from "./tableKeyUtils";
 
 /** 导出字段选项 */
 export interface ExportFieldOption {
@@ -144,7 +144,9 @@ export function useTableExport(opts: UseTableExportOptions) {
   };
 
   /**
+
    * 构建导出条件参数
+   * 优先级:选中行 > 查询条件 > 全量(无条件)
    */
   const buildExportCondition = () => {
     const ids = getIds();
@@ -153,12 +155,13 @@ export function useTableExport(opts: UseTableExportOptions) {
     if (ids.length > 0) {
       if (Array.isArray(keys)) {
         for (const key of keys) {
+          const propName = resolveKeyName(key);
           let temp: any[] = [];
           for (const id of ids) {
-            if (id[key]) temp.push(id[key]);
+            if (id[propName]) temp.push(id[propName]);
           }
           if (temp.length > 0) {
-            params.push(createCondition(key, temp, "in"));
+            params.push(createCondition(propName, temp, "in"));
           }
         }
       } else {

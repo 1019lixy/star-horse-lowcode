@@ -1,7 +1,7 @@
 import { ref, Ref, watch } from "vue";
 import { i18n } from "@/lang";
 import { warning } from "@/utils/message";
-import { analysisPrimaryKeys } from "./tableKeyUtils";
+import { analysisPrimaryKeys, resolveKeyName } from "./tableKeyUtils";
 
 /** useTableSelection 入参 */
 export interface UseTableSelectionOptions {
@@ -191,9 +191,13 @@ export function useTableSelection(opts: UseTableSelectionOptions) {
     starHorseTableCompRef.value?.toggleRowSelection(row, false);
     let keys: any = props.primaryKey;
     if (Array.isArray(keys)) {
-      multipleSelection.value = multipleSelection.value.filter((item: any) =>
-        keys.some((k: string) => item?.[k] !== row?.[k]),
-      );
+      const rowId = analysisPrimaryKeys(keys, row);
+      multipleSelection.value = multipleSelection.value.filter((item: any) => {
+        const itemId = analysisPrimaryKeys(keys, item);
+        return !keys.every(
+          (k: any) => itemId[resolveKeyName(k)] === rowId[resolveKeyName(k)],
+        );
+      });
     } else {
       multipleSelection.value = multipleSelection.value.filter(
         (item: any) => item?.[keys] !== row?.[keys],
