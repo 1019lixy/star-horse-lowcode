@@ -1,16 +1,29 @@
 <script setup lang="ts" name="ApiEndpointPanel">
+import { ref } from "vue";
 import { i18n } from "@/lang";
 import { ShSvgIcon } from "@/components/shared";
 import { METHOD_COLORS } from "../constants";
+import ApiEndpointEditor from "./ApiEndpointEditor.vue";
 import type { ApiOrchestratorState } from "../composables/useApiOrchestrator";
 
 const props = defineProps<{
   state: ApiOrchestratorState;
 }>();
 
-const handleAdd = () => props.state.addEndpoint();
+/** 接口配置弹窗显隐 */
+const dialogVisible = ref(false);
 
-const handleSelect = (id: string) => props.state.selectEndpoint(id);
+/** 新增接口：创建后立即弹出配置面板 */
+const handleAdd = () => {
+  props.state.addEndpoint();
+  dialogVisible.value = true;
+};
+
+/** 点击接口：选中并弹出配置面板 */
+const handleSelect = (id: string) => {
+  props.state.selectEndpoint(id);
+  dialogVisible.value = true;
+};
 
 const handleRemove = (id: string, e: Event) => {
   e.stopPropagation();
@@ -42,13 +55,13 @@ const handleRemove = (id: string, e: Event) => {
         >
           <span
             class="method-badge"
-            :style="{ background: METHOD_COLORS[ep.method] }"
+            :style="{ background: (METHOD_COLORS as Record<string, string>)[ep.apiInfo?.httpMethod] }"
           >
-            {{ ep.method }}
+            {{ ep.apiInfo?.httpMethod }}
           </span>
           <div class="endpoint-info">
             <div class="endpoint-name">{{ ep.name }}</div>
-            <div class="endpoint-url">{{ ep.url }}</div>
+            <div class="endpoint-url">{{ ep.apiInfo?.url }}</div>
           </div>
           <el-button text type="danger" @click="handleRemove(ep.id, $event)">
             <ShSvgIcon name="delete" size="14px" />
@@ -56,6 +69,8 @@ const handleRemove = (id: string, e: Event) => {
         </div>
       </div>
     </div>
+
+    <ApiEndpointEditor v-model="dialogVisible" :state="state" />
   </div>
 </template>
 

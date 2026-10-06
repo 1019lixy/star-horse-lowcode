@@ -4,6 +4,7 @@
 import { reactive, ref } from "vue";
 import {
   createChain,
+  createChainInput,
   createChainStep,
   createEndpoint,
   createMockResponse,
@@ -11,21 +12,146 @@ import {
   SAMPLE_ENDPOINTS,
   SAMPLE_MOCKS,
 } from "../constants";
-import { extractVariables, matchMock, simulateRequest } from "./useMockServer";
+import {
+  buildRequest,
+  extractVariables,
+  matchMock,
+  parseResponse,
+  simulateRequest,
+  realRequest,
+} from "./useMockServer";
+import type { AssembledRequest } from "./useMockServer";
 import type {
   ApiChain,
   ApiChainStep,
   ApiEndpoint,
+  ApiEndpointParam,
+  ApiKeyValue,
+  ApiTestRequest,
   ApiTestResult,
+  ChainInput,
+  HttpMethod,
   MockResponse,
+  RequestFormat,
 } from "../types";
+import type { ApiSourceConfigModel } from "@/components/system/ApiSourceConfig/types";
+
+/** ${field} → {{field}}（配置层用 ${}，执行层用 {{}}） */
+const toToken = (v: string): string => (v ?? "").replace(/\$\{(\w+)\}/g, "{{$1}}");
+
+/** dataType → requestFormat */
+const dataTypeToFormat = (dt: string): RequestFormat => {
+  switch ((dt || "").toUpperCase()) {
+    case "FORM":
+      return "x-www-form-urlencoded";
+    case "BINARY":
+      return "raw";
+    default:
+      return "json";
+  }
+};
+
+const genExecId = (p: string) =>
+  `${p}_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
+
+/**
+ * 把配置层 ApiSourceConfigModel 转成执行层 ApiEndpoint（useMockServer 消费）。
+ * 转换只在执行管线内部发生，编辑层不感知。
+ * 配置层结构与表单一致（ApiLinkageDetail）：url/httpMethod 等在 apiInfo 嵌套段。
+ */
+const toExecutable = (m: ApiSourceConfigModel): ApiEndpoint => {
+  const info = m.apiInfo ?? ({} as ApiSourceConfigModel["apiInfo"]);
+  const method = ((info.httpMethod || "GET").toUpperCase()) as HttpMethod;
+  const isBodyless = ["GET", "HEAD", "OPTIONS"].includes(method);
+  const format = dataTypeToFormat(info.dataType);
+  const isForm = format === "x-www-form-urlencoded" || format === "form-data";
+  const headers: Record<string, string> = {};
+  for (const h of m.headers ?? []) {
+    if (!h.paramName) continue;
+    headers[h.paramName] = toToken(h.paramValue ?? "");
+  }
+  const rows = (m.requestParams ?? []).filter((r) => r.paramName);
+  const params: ApiEndpointParam[] = isBodyless
+    ? rows.map((r) => ({
+        name: r.paramName,
+        location: "query" as const,
+        required: false,
+        defaultValue: toToken(r.paramValue ?? ""),
+        description: "",
+        enabled: true,
+        valueType: r.valueType === "dynamic" ? "dynamic" : "static",
+        sourceVar: r.valueType === "dynamic" ? r.paramValueField ?? "" : undefined,
+      }))
+    : [];
+  const bodyParams: ApiKeyValue[] =
+    !isBodyless && isForm
+      ? rows.map((r) => ({
+          id: genExecId("kv"),
+          name: r.paramName,
+          value: toToken(r.paramValue ?? ""),
+          enabled: true,
+          valueType: r.valueType === "dynamic" ? "dynamic" : "static",
+          sourceVar: r.valueType === "dynamic" ? r.paramValueField ?? "" : undefined,
+        }))
+      : [];
+  let body = "";
+  if (!isBodyless && format === "json") {
+    const obj: Record<string, unknown> = {};
+    for (const r of rows) if (r.paramName) obj[r.paramName] = toToken(r.paramValue ?? "");
+    body = JSON.stringify(obj, null, 2);
+  } else if (!isBodyless && format === "raw") {
+    body = toToken(rows[0]?.paramValue ?? "");
+  }
+  return {
+    id: m.id ?? "",
+    name: m.name ?? "",
+    method,
+    url: toToken(info.url ?? ""),
+    headers,
+    params,
+    requestFormat: isBodyless ? "none" : format,
+    body,
+    bodyParams,
+    description: m.description ?? "",
+    responseParsing: {
+      responseTemplate: info.responseTemplate ?? "result_data_list",
+      successCode: info.successCode ?? "",
+      codePath: info.codePath ?? "code",
+      dataPath: info.dataPath ?? "data",
+    },
+  };
+};
+
+/** 将入口参数字符串默认值按其 type 转成运行时值 */
+const castChainInputValue = (input: ChainInput): any => {
+  const raw = input.defaultValue ?? "";
+  if (raw === "") return "";
+  switch (input.type) {
+    case "number": {
+      const n = Number(raw);
+      return Number.isNaN(n) ? raw : n;
+    }
+    case "boolean":
+      return raw === "true" || raw === "1";
+    case "object":
+    case "array":
+      try {
+        return JSON.parse(raw);
+      } catch {
+        return raw;
+      }
+    case "string":
+    default:
+      return raw;
+  }
+};
 
 export const useApiOrchestrator = (
-  initialEndpoints?: ApiEndpoint[],
+  initialEndpoints?: ApiSourceConfigModel[],
   initialMocks?: MockResponse[],
   initialChain?: Partial<ApiChain>,
 ) => {
-  const endpoints = reactive<ApiEndpoint[]>(
+  const endpoints = reactive<ApiSourceConfigModel[]>(
     initialEndpoints ? JSON.parse(JSON.stringify(initialEndpoints)) : [],
   );
   const mocks = reactive<MockResponse[]>(
@@ -40,7 +166,7 @@ export const useApiOrchestrator = (
   const stopRequested = ref(false);
 
   /** 当前选中的接口 */
-  const selectedEndpoint = ref<ApiEndpoint | null>(null);
+  const selectedEndpoint = ref<ApiSourceConfigModel | null>(null);
   /** 当前选中的步骤 */
   const selectedStep = ref<ApiChainStep | null>(null);
 
@@ -58,17 +184,17 @@ export const useApiOrchestrator = (
       : null;
   };
 
-  const addEndpoint = (): ApiEndpoint => {
+  const addEndpoint = (): ApiSourceConfigModel => {
     const ep = createEndpoint();
     endpoints.push(ep);
     // 同步创建一份默认 mock
-    const mock = createMockResponse(ep.id);
+    const mock = createMockResponse(ep.id!);
     mocks.push(mock);
-    selectEndpoint(ep.id);
+    selectEndpoint(ep.id!);
     return ep;
   };
 
-  const updateEndpoint = (id: string, updates: Partial<ApiEndpoint>) => {
+  const updateEndpoint = (id: string, updates: Partial<ApiSourceConfigModel>) => {
     const ep = endpoints.find((e) => e.id === id);
     if (!ep) return;
     Object.assign(ep, updates);
@@ -191,6 +317,29 @@ export const useApiOrchestrator = (
     });
   };
 
+  /** 新增编排入口参数 */
+  const addChainInput = (
+    overrides: Partial<ChainInput> = {},
+  ): ChainInput => {
+    const input = createChainInput(overrides);
+    chain.inputs.push(input);
+    return input;
+  };
+
+  /** 更新编排入口参数 */
+  const updateChainInput = (id: string, updates: Partial<ChainInput>) => {
+    const input = chain.inputs.find((i) => i.id === id);
+    if (!input) return;
+    Object.assign(input, updates);
+  };
+
+  /** 删除编排入口参数 */
+  const removeChainInput = (id: string) => {
+    const idx = chain.inputs.findIndex((i) => i.id === id);
+    if (idx < 0) return;
+    chain.inputs.splice(idx, 1);
+  };
+
   const clearResults = () => {
     testResults.value.splice(0, testResults.value.length);
   };
@@ -214,16 +363,47 @@ export const useApiOrchestrator = (
     }
   };
 
-  /** 执行编排链 */
-  const runChain = async (): Promise<boolean> => {
+  /** 组装请求 → 测试快照 */
+  const toTestRequest = (req: AssembledRequest): ApiTestRequest => ({
+    method: req.method,
+    url: req.fullUrl,
+    headers: req.headers,
+    body: req.body,
+    fullUrl: req.fullUrl,
+    format: req.format,
+    query: req.query,
+  });
+
+  /**
+   * 执行编排链。
+   * @param options.mode 执行模式："mock"（默认，用 Mock 响应）/ "real"（发真实 HTTP 请求）
+   * @param options.inputs 外部传入参数，覆盖入口参数默认值后注入运行时变量，
+   *   实现「任务编排好后可配置参数传给编排接口」。传入的参数在编排内全局可见，
+   *   供所有接口的 {{变量}} 插值、dynamic 绑定、条件求值消费。
+   */
+  const runChain = async (
+    options?: { mode?: "mock" | "real"; inputs?: Record<string, any> },
+  ): Promise<boolean> => {
     if (isRunning.value) return false;
     if (chain.steps.length === 0) return false;
+    const runMode = options?.mode ?? "mock";
+    const externalInputs = options?.inputs ?? {};
     isRunning.value = true;
     stopRequested.value = false;
     clearResults();
 
-    // 初始化运行时变量
-    const runtimeVars: Record<string, any> = { ...chain.variables };
+    // 运行时变量：入口参数为基线，外部传入参数覆盖，再叠加全局变量与历史产出变量
+    const inputVars: Record<string, any> = {};
+    for (const inp of chain.inputs ?? []) {
+      if (!inp.name) continue;
+      inputVars[inp.name] = castChainInputValue(inp);
+    }
+    Object.assign(inputVars, externalInputs);
+    const runtimeVars: Record<string, any> = {
+      ...inputVars,
+      ...(chain.globalConfig?.variables ?? {}),
+      ...chain.variables,
+    };
 
     let success = true;
     for (const step of chain.steps) {
@@ -249,41 +429,57 @@ export const useApiOrchestrator = (
         success = false;
         break;
       }
-      const mock = matchMock(endpoint.id, mocks);
-      if (!mock) {
-        testResults.value.push({
-          stepId: step.id,
-          stepName: step.stepName,
-          request: {
-            method: endpoint.method,
-            url: endpoint.url,
-            headers: { ...endpoint.headers },
-            body: endpoint.body,
-          },
-          response: { status: 0, statusText: "", body: "", duration: 0 },
-          success: false,
-          error: "No active mock response",
-          extractedVars: {},
-        });
-        success = false;
-        break;
-      }
+      const execEndpoint = toExecutable(endpoint);
       try {
-        const res = await simulateRequest(endpoint, mock, runtimeVars);
-        const extracted = extractVariables(res.body, step.variableExtractions);
+        let res: any;
+        if (runMode === "real") {
+          res = await realRequest(execEndpoint, runtimeVars, chain.globalConfig);
+        } else {
+          const mock = matchMock(endpoint.id, mocks);
+          if (!mock) {
+            const req = buildRequest(execEndpoint, chain.globalConfig, runtimeVars);
+            testResults.value.push({
+              stepId: step.id,
+              stepName: step.stepName,
+              request: toTestRequest(req),
+              response: { status: 0, statusText: "", body: "", duration: 0 },
+              success: false,
+              error: "No active mock response",
+              extractedVars: {},
+            });
+            success = false;
+            break;
+          }
+          res = await simulateRequest(
+            execEndpoint,
+            mock,
+            runtimeVars,
+            chain.globalConfig,
+          );
+        }
+        // 响应解析：业务码校验 + dataPath 定位数据节点
+        const parsed = parseResponse(res.body, execEndpoint.responseParsing);
+        // 变量提取以解析后的数据节点为根（未命中回退响应根）
+        const extracted = extractVariables(
+          res.body,
+          step.variableExtractions,
+          execEndpoint.responseParsing,
+        );
         Object.assign(runtimeVars, extracted);
         // 回写到链变量，便于持久化与展示
         Object.assign(chain.variables, extracted);
-        const isOk = res.status >= 200 && res.status < 300;
+        const httpOk = res.status >= 200 && res.status < 300;
+        const isOk = httpOk && parsed.ok;
+        const error = !httpOk
+          ? `HTTP ${res.status}`
+          : !parsed.ok
+            ? `Business code mismatch: ${String(parsed.code)} != ${parsed.expectedCode}` +
+              (parsed.message ? ` - ${parsed.message}` : "")
+            : "";
         testResults.value.push({
           stepId: step.id,
           stepName: step.stepName,
-          request: {
-            method: endpoint.method,
-            url: endpoint.url,
-            headers: { ...endpoint.headers },
-            body: endpoint.body,
-          },
+          request: toTestRequest(res.request),
           response: {
             status: res.status,
             statusText: res.statusText,
@@ -291,23 +487,20 @@ export const useApiOrchestrator = (
             duration: res.duration,
           },
           success: isOk,
-          error: isOk ? "" : `HTTP ${res.status}`,
+          error,
           extractedVars: extracted,
+          parsedData: parsed.data,
         });
         if (!isOk) {
           success = false;
           break;
         }
       } catch (err: any) {
+        const req = buildRequest(execEndpoint, chain.globalConfig, runtimeVars);
         testResults.value.push({
           stepId: step.id,
           stepName: step.stepName,
-          request: {
-            method: endpoint.method,
-            url: endpoint.url,
-            headers: { ...endpoint.headers },
-            body: endpoint.body,
-          },
+          request: toTestRequest(req),
           response: { status: 0, statusText: "", body: "", duration: 0 },
           success: false,
           error: err?.message ?? String(err),
@@ -328,7 +521,7 @@ export const useApiOrchestrator = (
 
   /** 加载完整数据 */
   const loadData = (data: {
-    endpoints?: ApiEndpoint[];
+    endpoints?: ApiSourceConfigModel[];
     mocks?: MockResponse[];
     chain?: Partial<ApiChain>;
   }) => {
@@ -350,7 +543,7 @@ export const useApiOrchestrator = (
 
   /** 导出完整数据 */
   const getData = () => ({
-    endpoints: JSON.parse(JSON.stringify(endpoints)) as ApiEndpoint[],
+    endpoints: JSON.parse(JSON.stringify(endpoints)) as ApiSourceConfigModel[],
     mocks: JSON.parse(JSON.stringify(mocks)) as MockResponse[],
     chain: JSON.parse(JSON.stringify(chain)) as ApiChain,
     testResults: JSON.parse(
@@ -380,6 +573,9 @@ export const useApiOrchestrator = (
     moveStep,
     insertStepBefore,
     insertStepAfter,
+    addChainInput,
+    updateChainInput,
+    removeChainInput,
     selectEndpoint,
     selectStep,
     runChain,

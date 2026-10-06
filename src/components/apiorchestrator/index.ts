@@ -11,7 +11,10 @@ export {
   matchMock,
   generateMockBody,
   simulateRequest,
+  realRequest,
   extractVariables,
+  buildRequest,
+  interpolate,
 } from "./composables/useMockServer";
 export * from "./types";
 export * from "./constants";

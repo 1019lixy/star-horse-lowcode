@@ -73,6 +73,22 @@ const formatJson = (str: string): string => {
                 <span class="k">{{ i18n("api.endpoint.url") }}:</span>
                 <span class="v mono">{{ r.request.url }}</span>
               </div>
+              <div class="kv-line" v-if="r.request.format">
+                <span class="k">{{ i18n("api.endpoint.format") }}:</span>
+                <span class="v">{{ r.request.format }}</span>
+              </div>
+              <div
+                v-if="r.request.query && r.request.query.length"
+                class="kv-block"
+              >
+                <span class="k">{{ i18n("api.endpoint.params") }}:</span>
+                <pre class="v mono">{{
+                  r.request.query
+                    .filter((q) => q.name)
+                    .map((q) => `${q.name}=${q.value}`)
+                    .join("\n")
+                }}</pre>
+              </div>
               <div
                 v-if="Object.keys(r.request.headers).length"
                 class="kv-block"
@@ -102,6 +118,17 @@ const formatJson = (str: string): string => {
               <div v-if="r.response.body" class="kv-block">
                 <span class="k">{{ i18n("api.mock.body") }}:</span>
                 <pre class="v mono">{{ formatJson(r.response.body) }}</pre>
+              </div>
+              <div
+                v-if="r.parsedData !== undefined && r.parsedData !== null"
+                class="kv-block"
+              >
+                <span class="k">{{ i18n("api.test.parsedData") }}:</span>
+                <pre class="v mono">{{
+                  typeof r.parsedData === "object"
+                    ? JSON.stringify(r.parsedData, null, 2)
+                    : String(r.parsedData)
+                }}</pre>
               </div>
             </div>
             <div

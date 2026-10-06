@@ -33,7 +33,9 @@ const items = import.meta.glob([
   "@/components/comp/*.vue",
   "@/components/comp/items/*.vue",
   "@/components/system/*.vue",
+  "@/components/system/ApiSourceConfig/*.vue",
   "@/components/formcomp/items/*.vue",
+  "@/components/apiconfig/*.vue",
   "@/components/*.vue",
 ]);
 // 声明全局变量存储宿主应用的 router
@@ -109,6 +111,7 @@ export * from "@/components/types";
 // export * from "@/components/diagram";
 export * from "@/components/gantt";
 export * from "@/components/kanban";
+export * from "@/components/apiconfig";
 // export * from "@/components/schedule";
 // export * from "@/components/pivot";
 // export * from "@/components/pdf";
@@ -117,7 +120,7 @@ export * from "@/components/kanban";
 // export * from "@/components/emailtemplate";
 // export * from "@/components/map";
 // export * from "@/components/etl";
-// export * from "@/components/apiorchestrator";
+export * from "@/components/apiorchestrator";
 // export * from "@/components/iot";
 // export * from "@/components/office";
 // export * from "@/components/whiteboard";

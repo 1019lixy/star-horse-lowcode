@@ -8,10 +8,11 @@ import ApiToolbar from "./panels/ApiToolbar.vue";
 import ApiEndpointPanel from "./panels/ApiEndpointPanel.vue";
 import ApiChainPanel from "./panels/ApiChainPanel.vue";
 import ApiRightPanel from "./panels/ApiRightPanel.vue";
-import type { ApiChain, ApiEndpoint, MockResponse } from "./types";
+import type { ApiChain, MockResponse } from "./types";
+import type { ApiSourceConfigModel } from "@/components/system/ApiSourceConfig/types";
 
 const props = defineProps<{
-  endpoints?: ApiEndpoint[];
+  endpoints?: ApiSourceConfigModel[];
   mocks?: MockResponse[];
   chain?: Partial<ApiChain>;
   readonly?: boolean;
@@ -21,7 +22,7 @@ const emits = defineEmits<{
   (
     e: "save",
     data: {
-      endpoints: ApiEndpoint[];
+      endpoints: ApiSourceConfigModel[];
       mocks: MockResponse[];
       chain: ApiChain;
     },

@@ -2,7 +2,7 @@
 import { computed, ref } from "vue";
 import { i18n } from "@/lang";
 import { ShSvgIcon } from "@/components/shared";
-import { METHOD_COLORS, METHOD_LABELS } from "../constants";
+import { METHOD_COLORS, METHOD_LABELS, TYPE_CONVERSIONS } from "../constants";
 import type { ApiOrchestratorState } from "../composables/useApiOrchestrator";
 import type { VariableExtraction } from "../types";
 
@@ -31,12 +31,12 @@ const endpointName = (endpointId: string): string => {
 
 const endpointMethod = (endpointId: string): string => {
   const ep = props.state.endpoints.find((e) => e.id === endpointId);
-  return ep ? ep.method : "";
+  return ep ? ep.apiInfo?.httpMethod ?? "" : "";
 };
 
 const endpointPath = (endpointId: string): string => {
   const ep = props.state.endpoints.find((e) => e.id === endpointId);
-  return ep ? ep.url : "";
+  return ep ? ep.apiInfo?.url ?? "" : "";
 };
 
 /** 获取步骤测试结果 */
@@ -97,7 +97,7 @@ const addExtraction = (stepId: string) => {
   if (!step) return;
   const extractions: VariableExtraction[] = [
     ...step.variableExtractions,
-    { sourceVar: "", targetVar: "" },
+    { sourceVar: "", targetVar: "", typeConvert: "" },
   ];
   props.state.updateChainStep(stepId, { variableExtractions: extractions });
 };
@@ -297,7 +297,7 @@ const hasSteps = computed(() => props.state.chain.steps.length > 0);
                 <el-option
                   v-for="ep in state.endpoints"
                   :key="ep.id"
-                  :label="`${ep.method} ${ep.name} (${ep.url})`"
+                  :label="`${ep.apiInfo?.httpMethod} ${ep.name} (${ep.apiInfo?.url})`"
                   :value="ep.id"
                 />
               </el-select>
@@ -307,6 +307,9 @@ const hasSteps = computed(() => props.state.chain.steps.length > 0);
               <div class="section-label">
                 <ShSvgIcon name="variable" size="12px" />
                 {{ i18n("api.chain.variableExtractions") }}
+              </div>
+              <div class="ext-hint">
+                {{ i18n("api.extraction.pathHint") }}
               </div>
               <div
                 v-for="(ext, eIdx) in step.variableExtractions"
@@ -344,6 +347,29 @@ const hasSteps = computed(() => props.state.chain.steps.length > 0);
                       )
                   "
                 />
+                <el-select
+                  :model-value="ext.typeConvert ?? ''"
+                  size="small"
+                  style="width: 104px"
+                  :placeholder="i18n('api.extraction.typeConvert')"
+                  @click.stop
+                  @change="
+                    (v) =>
+                      updateExtraction(
+                        step.id,
+                        Number(eIdx),
+                        'typeConvert',
+                        String(v),
+                      )
+                  "
+                >
+                  <el-option
+                    v-for="c in TYPE_CONVERSIONS"
+                    :key="c.value"
+                    :label="c.label"
+                    :value="c.value"
+                  />
+                </el-select>
                 <el-button
                   text
                   size="small"
@@ -460,12 +486,12 @@ const hasSteps = computed(() => props.state.chain.steps.length > 0);
         >
           <span
             class="method-tag"
-            :style="{ background: METHOD_COLORS[ep.method] }"
+            :style="{ background: (METHOD_COLORS as Record<string, string>)[ep.apiInfo?.httpMethod] }"
           >
-            {{ METHOD_LABELS[ep.method] || ep.method }}
+            {{ (METHOD_LABELS as Record<string, string>)[ep.apiInfo?.httpMethod] || ep.apiInfo?.httpMethod }}
           </span>
           <span class="ep-name">{{ ep.name }}</span>
-          <span class="ep-path">{{ ep.url }}</span>
+          <span class="ep-path">{{ ep.apiInfo?.url }}</span>
         </div>
       </div>
     </div>
@@ -745,10 +771,22 @@ const hasSteps = computed(() => props.state.chain.steps.length > 0);
   }
 }
 
+.ext-hint {
+  font-size: 11px;
+  color: var(--el-text-color-secondary);
+  line-height: 1.5;
+}
+
 .ext-row {
   display: flex;
   align-items: center;
   gap: 4px;
+  flex-wrap: wrap;
+
+  :deep(.el-input) {
+    flex: 1;
+    min-width: 110px;
+  }
 }
 
 .result-info {

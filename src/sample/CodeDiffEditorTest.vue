@@ -1,6 +1,6 @@
 <script setup lang="ts" name="CodeDiffEditorTest">
 import { computed, ref } from "vue";
-import { StarHorseDiffEditor } from "@/components/system/code-editor/index";
+// import { StarHorseDiffEditor } from "@/components/system/code-editor/index";
 import { i18n } from "@/lang/index";
 import { ElMessage } from "element-plus";
 

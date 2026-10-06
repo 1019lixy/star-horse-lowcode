@@ -1,6 +1,6 @@
 <script setup lang="ts" name="CodeEditorTest">
 import { ref } from "vue";
-import StarHorseCodeEditor from "@/components/system/StarHorseCodeEditor.vue";
+// import StarHorseCodeEditor from "@/components/system/StarHorseCodeEditor.vue";
 
 const readOnly = ref(false);
 
