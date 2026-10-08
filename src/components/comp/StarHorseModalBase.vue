@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, provide, reactive, ref, watch } from "vue";
-import { ElDialog, ElDrawer, useZIndex } from "element-plus";
+import { ElDialog, ElDrawer } from "element-plus";
 import { i18n } from "@/lang";
 import { compKey } from "@/api/system";
 import { isMobile } from "@/api/device";
@@ -107,10 +107,6 @@ const callFunc = (func: any) => {
     // if (method) method();
   }
 };
-/** 当前弹窗的 z-index（打开前计算） */
-const activeZIndex = ref<number | undefined>(undefined);
-/** 复用 EP 全局 z-index 计数器，确保与 el-drawer / el-popover 等弹层正确叠加 */
-const { nextZIndex } = useZIndex();
 
 const open = () => {
   const t = (performance.now() - firstOpenStart).toFixed(1);
@@ -160,7 +156,7 @@ watch(
   () => windowsType.value,
   (val: boolean) => {
     if (val) {
-      activeZIndex.value = props.zIndex > 0 ? props.zIndex : nextZIndex();
+
       isMinimized.value = false;
       if (isMobile.value) {
         isFullScreen.value = true;
@@ -212,7 +208,7 @@ watch(
         v-model="windowsType"
         @close="beforeClose"
         @open="open"
-        :zIndex="activeZIndex"
+        :zIndex="props.zIndex > 0 ? props.zIndex : undefined"
         :style="dialogStyle"
         v-bind="containerProps"
     >

@@ -691,13 +691,13 @@ const initRelationEvent = (props: any, formData: any, needWatch?: boolean) => {
     if (actionName) {
         if (
             (Object.keys(formData.value || {}).length == 0 ||
-                !formData.value?.[props.field?.fieldName]) &&
+                !(props.field?.fieldName in (formData.value || {}))) &&
             needWatch
         ) {
             const stop = watch(
                 () => formData.value?.[props.field?.fieldName],
                 (val) => {
-                    if (val) {
+                    if (val != null) {
                         relationEventDispatcher(
                             props,
                             dataRelation,
