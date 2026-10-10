@@ -1,13 +1,14 @@
 <script setup lang="ts" name="GanttChart">
-import { computed, onBeforeUnmount, onMounted, ref } from "vue";
-import { useGanttDesigner } from "./composables/useGanttDesigner";
+import {computed, onBeforeUnmount, onMounted, ref} from "vue";
+import {useGanttDesigner} from "./composables/useGanttDesigner";
 import GanttToolbar from "./panels/GanttToolbar.vue";
 import GanttTaskListPanel from "./panels/GanttTaskListPanel.vue";
 import GanttCanvas from "./panels/GanttCanvas.vue";
 import GanttPropertyPanel from "./panels/GanttPropertyPanel.vue";
 import GanttTaskDialog from "./dialogs/GanttTaskDialog.vue";
-import { DesignerMobileShell } from "@/components/shared";
-import type { GanttData } from "./types";
+import {DesignerMobileShell} from "@/components/shared";
+import type {GanttData} from "./types";
+import {i18n} from "@/lang";
 
 const props = defineProps<{
   gantt?: GanttData;
@@ -128,49 +129,49 @@ onBeforeUnmount(() => {
 <template>
   <div class="gantt-chart">
     <DesignerMobileShell
-      :panels="[
-        { key: 'taskList', label: '任务', side: 'left', width: 350, min: 200 },
-        { key: 'props', label: '属性', side: 'right', width: 280, min: 220 },
+        :panels="[
+        { key: 'taskList', label: i18n('schedule.event.task'), side: 'left', width: 350, min: 200 },
+        { key: 'props', label: i18n('schedule.property.title'), side: 'right', width: 280, min: 220 },
       ]"
     >
       <template #toolbar>
         <gantt-toolbar
-          :designer="designer"
-          :readonly="readonly"
-          :title="initialGantt.name"
-          @save="handleSave"
-          @preview="handlePreview"
-          @add-task="handleAddTask"
-          @insert-before="handleInsertBefore"
-          @insert-after="handleInsertAfter"
+            :designer="designer"
+            :readonly="readonly"
+            :title="initialGantt.name"
+            @save="handleSave"
+            @preview="handlePreview"
+            @add-task="handleAddTask"
+            @insert-before="handleInsertBefore"
+            @insert-after="handleInsertAfter"
         />
       </template>
       <template #canvas>
         <gantt-canvas
-          ref="canvasRef"
-          :designer="designer"
-          :readonly="readonly"
-          @edit="handleEditTask"
+            ref="canvasRef"
+            :designer="designer"
+            :readonly="readonly"
+            @edit="handleEditTask"
         />
       </template>
       <template #panel-taskList>
         <gantt-task-list-panel
-          ref="taskListRef"
-          :designer="designer"
-          :readonly="readonly"
-          @edit="handleEditTask"
+            ref="taskListRef"
+            :designer="designer"
+            :readonly="readonly"
+            @edit="handleEditTask"
         />
       </template>
       <template #panel-props>
-        <gantt-property-panel :designer="designer" :readonly="readonly" />
+        <gantt-property-panel :designer="designer" :readonly="readonly"/>
       </template>
     </DesignerMobileShell>
 
     <gantt-task-dialog
-      v-model:visible="taskDialogVisible"
-      :designer="designer"
-      :task-id="editingTaskId"
-      :parent-id="selectedTaskId"
+        v-model:visible="taskDialogVisible"
+        :designer="designer"
+        :task-id="editingTaskId"
+        :parent-id="selectedTaskId"
     />
   </div>
 </template>

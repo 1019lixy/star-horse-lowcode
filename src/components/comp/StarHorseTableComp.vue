@@ -979,7 +979,7 @@ defineExpose({
         v-if="!dialogInput && !isMobile"
     >
       <div class="tb_title">
-        <div v-if="title || helpMsg">
+        <div class="flex items-center" v-if="title || helpMsg">
           <help :message="helpMsg" v-if="helpMsg"/>
           <star-horse-icon
               icon-class="info"

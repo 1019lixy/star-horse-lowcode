@@ -154,21 +154,58 @@ export async function blobData(url: string, method: string = "post") {
     return redata;
 }
 
+// ==================== 请求去重（相同接口+相同条件只发一次） ====================
 /**
- * Post 请求
+ * 进行中请求去重表：key(url+稳定序列化data) → Promise。
+ * 并发场景（如首屏多组件 onMounted 同时自动加载相同接口）合并为一次请求；
+ * 请求完成后即移除，不缓存历史结果，保证操作后重新加载仍拿到新数据。
+ */
+const inflightPosts = new Map<string, Promise<any>>();
+
+/** 稳定序列化：对象键递归排序，保证相同数据不同键顺序产生相同 key */
+function stableStringify(value: any): string {
+    if (value === null || value === undefined) return "null";
+    if (typeof value !== "object") return JSON.stringify(value);
+    if (Array.isArray(value)) {
+        return "[" + value.map((v) => stableStringify(v)).join(",") + "]";
+    }
+    const keys = Object.keys(value).sort();
+    return "{" + keys.map((k) => JSON.stringify(k) + ":" + stableStringify(value[k])).join(",") + "}";
+}
+
+/**
+ * Post 请求（自动去重：相同 url+data 的并发请求合并为一次）
  * @param url
  * @param data
  */
 export function postRequest(url: string, data: Array<any> | any) {
-    return getAxiosInstance().post(url, data);
+    const key = url + "::" + stableStringify(data ?? null);
+    const pending = inflightPosts.get(key);
+    if (pending) {
+        return pending;
+    }
+    const req = getAxiosInstance().post(url, data).finally(() => {
+        inflightPosts.delete(key);
+    });
+    inflightPosts.set(key, req);
+    return req;
 }
 
 /**
- * Get请求
+ * Get请求（自动去重：相同 url 的并发请求合并为一次）
  * @param url
  */
 export function getRequest(url: string) {
-    return getAxiosInstance().get(url);
+    const key = "GET::" + url;
+    const pending = inflightPosts.get(key);
+    if (pending) {
+        return pending;
+    }
+    const req = getAxiosInstance().get(url).finally(() => {
+        inflightPosts.delete(key);
+    });
+    inflightPosts.set(key, req);
+    return req;
 }
 
 /**

@@ -319,3 +319,8 @@ barcode        条形码组件
 ```
 -- 修复App模式下page-select,dialog-input等组件的数据显示bug
 ```
+#### v4.0.08
+
+```
+-- 修复switch 初始化联动不生效bug
+```
