@@ -58,6 +58,9 @@ const dataFormat = (val: any) => {
       :data-form="dataForm"
       :source="source"
     />
+    <template #error="{ error }">
+      <sh-error-tooltip :error="error || ''"/>
+    </template>
   </el-form-item>
 </template>
 <style scoped></style>

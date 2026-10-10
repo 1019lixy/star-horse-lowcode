@@ -563,7 +563,7 @@ const fieldList = ref<PageFieldInfo>({
       },
     },
     {
-      containerType: "descriptions",
+      containerType: "table",
       containerFields: [
         {
           title: "计算分数",

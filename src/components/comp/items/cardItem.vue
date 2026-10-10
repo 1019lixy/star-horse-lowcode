@@ -127,6 +127,9 @@ onMounted(() => {
                     )
                   "
                 />
+                <template #error="{ error }">
+                  <sh-error-tooltip :error="error || ''"/>
+                </template>
               </el-form-item>
             </div>
           </div>

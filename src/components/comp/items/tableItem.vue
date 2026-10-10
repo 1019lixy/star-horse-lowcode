@@ -57,7 +57,7 @@ onMounted(() => {
       <template v-for="(temp, key) in batchContainers">
         <el-tab-pane
             :label="temp['title']"
-            v-if="!(temp['disVisible'] ?? temp.preps?.disVisible)"
+            v-if="temp.formVisible !== false && !(temp['disVisible'] ?? temp.preps?.disVisible)"
             :name="temp.subTablePrimaryKey || 'sub_tab' + key"
             :disabled="temp.disabled"
             :lazy="temp.preps?.lazy !== false"
@@ -85,6 +85,7 @@ onMounted(() => {
       :key="compKey(temp, key)"
   >
     <star-horse-form-table
+        v-if="temp.formVisible !== false"
         :size="compSize"
         :rules="rules"
         :source="source"

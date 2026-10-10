@@ -1,9 +1,10 @@
 <script setup lang="ts" name="StarHorseFormItem">
 import {compKey} from "@/api/system";
-import {ModelRef} from "vue";
+import {ModelRef, computed, inject} from "vue";
 import {ContainerPreps} from "../types/ItemPreps";
 import {commonParseCodeToName} from "@/api/star_horse_utils";
 import {i18n} from "@/lang";
+import {wrapDefaultContainer} from "@/api/form_utils";
 import TableItem from "@/components/comp/items/tableItem.vue";
 
 const props = withDefaults(defineProps<ContainerPreps>(), {
@@ -19,6 +20,12 @@ const props = withDefaults(defineProps<ContainerPreps>(), {
 });
 const emits = defineEmits(["addRow", "removeRow"]);
 const dataForm: ModelRef<any> = defineModel("dataForm");
+// 未显式指定 containerType 的字段默认容器类型，由 StarHorseForm provide（groupItem 等递归路径自动覆盖）
+const defaultContainerType = inject("defaultContainerType", "descriptions");
+// 遍历前应用默认容器包装：数组行分组/普通字段统一包装为 descriptions 容器，已配置容器的项原样保留
+const innerFieldList = computed(() =>
+    wrapDefaultContainer(props.fieldList, defaultContainerType)
+);
 const itemCommonFormat = (name: string, cellValue: any, row: any) => {
   cellValue = commonParseCodeToName(name, cellValue);
   if (name == "isDel") {
@@ -58,7 +65,7 @@ const removeRow = (row: any) => {
 };
 </script>
 <template>
-  <template v-for="(item, index) in fieldList?.fieldList">
+  <template v-for="(item, index) in innerFieldList?.fieldList">
     <component
         v-if="item"
         :key="compKey(item, index, true)"

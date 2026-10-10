@@ -801,6 +801,144 @@ export function ensureFieldIds(pageInfo: any) {
 }
 
 /**
+ * 独占整行的字段类型注册表
+ * 这些类型在默认 descriptions 容器中强制独占一行（column:1）
+ * 可通过 registerFullRowType 扩展，后续加组件只需注册类型名
+ */
+const FULL_ROW_TYPES: Set<string> = new Set([
+    "transfer", "htmleditor", "markdown", "textarea",
+    "json", "json-array", "divider", "image", "progress",
+    "usercomp", "view-markdown","html","text"]);
+
+export function registerFullRowType(type: string) {
+    FULL_ROW_TYPES.add(type);
+}
+
+export function isFullRowType(type: string): boolean {
+    return FULL_ROW_TYPES.has(type);
+}
+
+/**
+ * 默认容器包装：未显式指定 containerType 的项统一包装为 descriptions 容器
+ * - 带 containerType 的项原样保留，按配置容器渲染
+ * - 连续字段（普通字段 + 数组行分组）统一聚合为单个 descriptions 容器，column 固定 2
+ * - 通过 field.preps.descItemSpan 控制每个字段占几列，保证所有 el-descriptions-item 对称对齐
+ * - 独占整行类型（如 transfer）span=column 占满整行，并自动补满前行剩余列
+ * - button/usercomp 裸渲染字段打断聚合，原样保留走既有 other-item 渲染
+ * - 包装时仅设置 field.preps.descItemSpan 控制列宽，其余属性不变；显隐/校验/联动/提交链路均不受影响
+ * - Memoize 缓存：相同 pageInfo 引用 + 相同结构签名 → 返回相同结果引用，避免 computed 重复创建对象导致下游 re-render
+ * @param pageInfo 页面字段结构
+ * @param defaultContainerType 默认容器类型，"none" 表示关闭默认包装（保持旧 box/other 渲染）
+ */
+const wrapCache = new WeakMap<object, { sig: string; result: any }>();
+
+function wrapSignature(fields: any[]): string {
+    let sig = "";
+    for (let i = 0; i < fields.length; i++) {
+        const item = fields[i];
+        if (Array.isArray(item)) {
+            sig += "[" + wrapSignature(item) + "]";
+        } else if (item) {
+            sig += (item.id || item.fieldName || "?")
+                + ":" + (item.type || "")
+                + ":" + (item.containerType || "")
+                + ":" + (item.formVisible === false ? "0" : "1");
+        } else {
+            sig += "N";
+        }
+        sig += ",";
+    }
+    return sig;
+}
+
+export function wrapDefaultContainer(pageInfo: any, defaultContainerType: string = "descriptions") {
+    if (!pageInfo || !Array.isArray(pageInfo.fieldList) || defaultContainerType === "none") {
+        return pageInfo;
+    }
+    const sig = defaultContainerType + "::" + wrapSignature(pageInfo.fieldList);
+    const cached = wrapCache.get(pageInfo);
+    if (cached && cached.sig === sig) {
+        return cached.result;
+    }
+    const DEFAULT_COLUMN = 2;
+    const result: any[] = [];
+    let plainBuffer: any[] = [];
+    let bufferAcc = 0;
+    const descPreps = (column: number) => ({
+        column,
+        border: true,
+        size: "small",
+        descItemLabelWidth: "100px",
+    });
+    const addToBuffer = (f: any) => {
+        if (!f || f.formVisible === false) {
+            return;
+        }
+        f.preps = f.preps || {};
+        if (isFullRowType(f.type)) {
+            if (bufferAcc > 0) {
+                const last = plainBuffer[plainBuffer.length - 1];
+                last.preps = last.preps || {};
+                last.preps.descItemSpan = (last.preps.descItemSpan || 1) + (DEFAULT_COLUMN - bufferAcc);
+            }
+            f.preps.descItemSpan = DEFAULT_COLUMN;
+            plainBuffer.push(f);
+            bufferAcc = 0;
+        } else {
+            f.preps.descItemSpan = 1;
+            plainBuffer.push(f);
+            bufferAcc += 1;
+            if (bufferAcc >= DEFAULT_COLUMN) {
+                bufferAcc = 0;
+            }
+        }
+    };
+    const flushPlain = () => {
+        if (plainBuffer.length === 0) {
+            return;
+        }
+        if (bufferAcc > 0) {
+            const last = plainBuffer[plainBuffer.length - 1];
+            last.preps = last.preps || {};
+            last.preps.descItemSpan = (last.preps.descItemSpan || 1) + (DEFAULT_COLUMN - bufferAcc);
+        }
+        result.push({
+            id: `sh_wrap_${plainBuffer[0]?.id ?? plainBuffer[0]?.fieldName ?? result.length}`,
+            containerType: "descriptions",
+            containerFields: [{fieldList: plainBuffer, formVisible: true}],
+            preps: descPreps(DEFAULT_COLUMN),
+        });
+        plainBuffer = [];
+        bufferAcc = 0;
+    };
+    for (const item of pageInfo.fieldList) {
+        if (!item) {
+            flushPlain();
+            result.push(item);
+            continue;
+        }
+        if (Array.isArray(item)) {
+            item.forEach((row: any) => {
+                const fields = Array.isArray(row) ? row : [row];
+                fields.forEach((f: any) => addToBuffer(f));
+            });
+        } else if (item.containerType) {
+            flushPlain();
+            result.push(item);
+        } else if (item.type == "button" || item.type == "usercomp") {
+            flushPlain();
+            result.push(item);
+        } else {
+            addToBuffer(item);
+        }
+    }
+    flushPlain();
+    const wrapped = {...pageInfo, fieldList: result};
+    wrapCache.set(pageInfo, {sig, result: wrapped});
+    return wrapped;
+}
+
+/**
  * 将pc模型转为app模型
  * @param pageInfo
  */
@@ -949,7 +1087,7 @@ export function convertCompToAppComps(pageInfo: PageFieldInfo) {
         }));
     }
     return {
-        fieldList: appVisibleComps?.length>0 ? [{appList: appVisibleComps}] : [],
+        fieldList: appVisibleComps?.length > 0 ? [{appList: appVisibleComps}] : [],
         containerFields: appContainerFields,
     };
 }

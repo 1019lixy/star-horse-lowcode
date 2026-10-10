@@ -4,6 +4,7 @@ import {ContainerPreps} from "@/components/types/ItemPreps";
 import {initRelationEvent} from "@/components/formcomp/utils/ItemRelationEventUtils";
 import {inject, ModelRef, nextTick, onMounted, ref, unref, watch} from "vue";
 import StarHorseItem from "@/components/comp/StarHorseItem.vue";
+import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
 
 const props = withDefaults(defineProps<ContainerPreps>(), {
   // 数据索引
@@ -75,7 +76,7 @@ watch(
         }
       });
     },
-    {deep: true, immediate: true},
+    {immediate: true},
 );
 
 onMounted(() => {
@@ -85,67 +86,89 @@ onMounted(() => {
 
 <template>
   <template v-if="item.containerFields?.length > 0">
-    <template v-for="descItm in item.containerFields" :key="descItm.id">
-      <el-descriptions
-          v-if="descItm.formVisible !== false && !item.preps?.hideDescriptions"
-          :title="item.title || ''"
-          :direction="item.preps?.direction || 'horizontal'"
-          :column="item.preps?.column || 2"
-          style="margin: 5px 0"
-          :border="item.preps?.border !== false"
-          :size="item.preps?.size || 'default'"
-          :extra="item.preps?.descExtra || ''"
-          :label-width="item.preps?.descItemLabelWidth || '120px'"
-      >
-        <template v-for="afield in descItm.fieldList">
-          <template v-for="field in checkData(afield)">
-            <el-descriptions-item
-                v-if="field.formVisible !== false"
-                :label="field.label || field.fieldName"
-                :rowspan="descItm.preps?.descItemRowspan || 1"
+    <div style="margin:5px 0;">
+      <template v-for="descItm in item.containerFields" :key="descItm.id">
+        <el-descriptions
+            v-if="descItm.formVisible !== false && !item.preps?.hideDescriptions"
+            :title="item.title || ''"
+            :direction="item.preps?.direction || 'horizontal'"
+            :column="item.preps?.column || 2"
 
-                :class-name="descItm.preps?.descItemClassName || ''"
-                :span="descItm.preps?.descItemSpan || 1"
-                :label-class-name="descItm.preps?.descItemLabelClassName || ''"
-            >
-              <template #label>
-                <div class="desc-panel-header" :style="{'justify-content': descItm.preps?.descItemAlign || 'left'}">
+            :border="item.preps?.border !== false"
+            :size="item.preps?.size || 'default'"
+            :extra="item.preps?.descExtra || ''"
+            :label-width="item.preps?.descItemLabelWidth || '120px'"
+        >
+          <template v-for="afield in descItm.fieldList">
+            <template v-for="field in checkData(afield)">
+              <el-descriptions-item
+                  v-if="field.formVisible !== false"
+                  :label="field.label || field.fieldName"
+                  :rowspan="descItm.preps?.descItemRowspan || 1"
+
+                  :class-name="descItm.preps?.descItemClassName || ''"
+                  :span="field.preps?.descItemSpan || descItm.preps?.descItemSpan || 1"
+                  :label-class-name="descItm.preps?.descItemLabelClassName || ''"
+              >
+                <template #label>
+                  <div class="desc-panel-header" :style="{'justify-content': descItm.preps?.descItemAlign || 'left'}">
                   <span class="editable-name">{{ field.label || field.fieldName }}
                   </span>
-                  <div v-if="field.required" style="color: var(--el-color-danger)">*</div>
-                </div>
-              </template>
-              <el-form-item
-                  :size="compSize"
-                  class="flex w-full flex-1 h-full"
-                  label=""
-                  :prop="loadProp(propPrefix, field.fieldName, -1, -1)"
-                  :labelPosition="
-                field.preps?.labelPosition ?? parentPreps?.labelPosition
-              "
-                  :rules="validMsg(field, dataForm)"
-                  v-if="
+                    <div v-if="field.required" style="color: var(--el-color-danger)">*</div>
+                  </div>
+                </template>
+                <star-horse-form-item
+                    v-if="field.containerType && field.containerFields?.length > 0 && field.formVisible !== false"
+                    :fieldList="{ fieldList: [field] }"
+                    :primary-key="primaryKey"
+                    :rules="rules"
+                    :subTableName="subTableName"
+                    :compSize="compSize"
+                    :dialogType="dialogType"
+                    :apiEndpoints="apiEndpoints"
+                    :subFormFlag="subFormFlag"
+                    :source="source"
+                    :dataIndex="dataIndex"
+                    :propPrefix="propPrefix"
+                    :commonFormat="commonFormat"
+                    v-model:dataForm="dataForm"
+                    :parentPreps="field.preps"
+                />
+                <el-form-item
+                    v-else-if="
                 (field.formVisible &&
                   field.label &&
                   field.preps?.headerFlag != 'Y') ||
                 checkVisible(field, dataForm)
               "
-              >
-                <star-horse-item
-                    :primaryKey="primaryKey"
-                    :compSize="compSize"
-                    v-model:dataForm="dataForm"
-                    :commonFormat="commonFormat"
-                    :item="field"
-                    :dataIndex="dataIndex"
-                    :source="source"
-                />
-              </el-form-item>
-            </el-descriptions-item>
+                    :size="compSize"
+                    class="flex w-full flex-1 h-full"
+                    label=""
+                    :prop="loadProp(propPrefix, field.fieldName, -1, -1)"
+                    :labelPosition="
+                field.preps?.labelPosition ?? parentPreps?.labelPosition
+              "
+                    :rules="validMsg(field, dataForm)"
+                >
+                  <star-horse-item
+                      :primaryKey="primaryKey"
+                      :compSize="compSize"
+                      v-model:dataForm="dataForm"
+                      :commonFormat="commonFormat"
+                      :item="field"
+                      :dataIndex="dataIndex"
+                      :source="source"
+                  />
+                  <template #error="{ error }">
+                    <sh-error-tooltip :error="error || ''"/>
+                  </template>
+                </el-form-item>
+              </el-descriptions-item>
+            </template>
           </template>
-        </template>
-      </el-descriptions>
-    </template>
+        </el-descriptions>
+      </template>
+    </div>
   </template>
 </template>
 
@@ -160,6 +183,7 @@ onMounted(() => {
 
   align-items: center;
 }
+
 :deep(.el-form-item__content) {
   height: 100% !important;
 }

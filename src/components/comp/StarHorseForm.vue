@@ -45,6 +45,8 @@ const props = defineProps({
   dialogType: {type: String as () => "dialog" | "drawer"},
   formInfo: {type: Object as PropType<any>},
   bindWorkFlowId: {type: String, default: ""},
+  //未显式指定 containerType 的字段默认容器类型："descriptions"(默认)包装为描述容器，"none" 保持旧 box/other 裸布局
+  defaultContainerType: {type: String, default: "descriptions"},
   //重置表单是否清空禁用数据
   resetFormClearDisableData: {type: Boolean, default: false},
   selectData: {
@@ -96,6 +98,7 @@ const formFields = shallowRef<Array<FieldInfo>>([]);
 provide("formFields", formFields);
 provide("formInfo", props.formInfo);
 provide("bindWorkFlowId", props.bindWorkFlowId);
+provide("defaultContainerType", props.defaultContainerType);
 // 暴露 el-form 实例给嵌套组件（如 stepItem），用于调用 validateField / clearValidate
 provide("starHorseFormRef", starHorseFormRef);
 const loadData = async () => {
@@ -657,4 +660,23 @@ defineExpose({
     </div>
   </div>
 </template>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+/* 校验错误提示已改为气泡（ShErrorTooltip，teleport 不占布局），
+   去掉 el-form-item 默认 margin-bottom:18px 的预留空白 */
+:deep(.el-form-item) {
+  margin-bottom: 0 !important;
+}
+/* 多个 el-descriptions 紧邻时合并为一个视觉表格：
+   去掉间距 + 第二个起去掉顶部双边框 */
+:deep(.el-descriptions + .el-descriptions) {
+  margin-top: -1px;
+  .el-descriptions__body {
+    .el-descriptions__table {
+      border-top: none;
+      tr:first-child td {
+        border-top: none;
+      }
+    }
+  }
+}
+</style>

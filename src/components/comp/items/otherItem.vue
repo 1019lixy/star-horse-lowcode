@@ -70,6 +70,9 @@ onMounted(() => {
       :dataIndex="dataIndex"
       :source="source"
     />
+    <template #error="{ error }">
+      <sh-error-tooltip :error="error || ''"/>
+    </template>
   </el-form-item>
 </template>
 

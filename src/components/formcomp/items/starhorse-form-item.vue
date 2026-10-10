@@ -81,6 +81,9 @@ const finishEditLabel = () => {
 
       <help :message="field.preps?.helpMsg" v-if="field.preps?.helpMsg"/>
       <slot></slot>
+      <template #error="{ error }">
+        <sh-error-tooltip :error="error || ''"/>
+      </template>
     </el-form-item>
     <div
         v-else
