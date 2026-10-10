@@ -34,7 +34,7 @@ const batchContainers = computed(() => {
     :label="item.label"
     sortable
     :min-width="item.minWidth || Config.defaultColumnWidth + 'px'"
-    v-if="item.formVisible && !exclusionFields.includes(item.type)"
+    v-if="item.formVisible !== false && !exclusionFields.includes(item.type)"
   >
     <template #default="scope">
       <template v-if="batchContainers.length > 0">

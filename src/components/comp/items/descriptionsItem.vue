@@ -136,7 +136,7 @@ onMounted(() => {
                 />
                 <el-form-item
                     v-else-if="
-                (field.formVisible &&
+                (field.formVisible !== false &&
                   field.label &&
                   field.preps?.headerFlag != 'Y') ||
                 checkVisible(field, dataForm)

@@ -37,7 +37,7 @@ const checkItem = (item: any) => {
 };
 const countSpan = (item: any) => {
   const visibleDatas =
-    Array.isArray(item) && item.filter((temp) => temp && temp.formVisible);
+    Array.isArray(item) && item.filter((temp) => temp && temp.formVisible !== false);
   const hasAssigned = visibleDatas?.filter((item) => item.preps?.colspan > 0);
   const unAssigned = visibleDatas?.filter((item) => !item.preps?.colspan);
   const assignedSum = hasAssigned?.reduce(
@@ -108,7 +108,7 @@ onMounted(() => {
               "
               :rules="validMsg(tempData, dataForm)"
               v-if="
-                (tempData.formVisible &&
+                (tempData.formVisible !== false &&
                   tempData.label &&
                   tempData.preps?.headerFlag != 'Y') ||
                 checkVisible(tempData, dataForm)

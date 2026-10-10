@@ -537,6 +537,15 @@ const fieldList = ref<PageFieldInfo>({
         },
       },
     },
+    {
+      label: "备注",
+      fieldName: "remark",
+    },
+    {
+      label: "数据编号",
+      formVisible: true,
+      fieldName: "dataNo",
+    },
     // ===== ternary 三元 =====
     {
       label: "控制下面的组件",

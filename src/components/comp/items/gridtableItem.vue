@@ -273,7 +273,7 @@ const wrapperStyle = computed(() => {
                     "
                       :rules="validMsg(tempData, dataForm)"
                       v-if="
-                      (tempData.formVisible &&
+                      (tempData.formVisible !== false &&
                         tempData.label &&
                         tempData.preps?.headerFlag != 'Y') ||
                       checkVisible(tempData, dataForm)
