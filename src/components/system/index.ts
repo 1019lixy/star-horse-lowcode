@@ -8,4 +8,4 @@ export { default as StarHorseSidebar } from "./StarHorseSidebar.vue";
 export { default as SvgLoader } from "./SvgLoader.vue";
 export { default as PageConfig } from "./PageConfig.vue";
 // 第三方接口配置组件（弹窗模式，从 dynamicform/DataSourceComp 抽离）
-export * from "./ApiSourceConfig";
+// export * from "./ApiSourceConfig";

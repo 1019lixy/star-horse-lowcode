@@ -136,7 +136,9 @@ export default defineConfig((mode) => {
         outDirs: "dist/types",
         insertTypesEntry: true,
         tsconfigPath: "./tsconfig.build.json",
+
       }),
+
       AutoImport({
         imports: [
           "vue",

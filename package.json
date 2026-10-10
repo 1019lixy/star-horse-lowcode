@@ -54,7 +54,7 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write \"./**/*.{jsx,ts,tsx,vue,css,scss,html}\"",
     "serve": " vite --mode development",
-    "build": "vite build --mode production",
+    "build": "vite build --mode production && node ./script/fix-dts-extensions.mjs",
     "preview": "vite preview --mode production",
     "clean": "rimraf node_modules/.vite && rimraf node_modules/.cache",
     "svgToFont": "node ./src/script/svgToFont.js",
