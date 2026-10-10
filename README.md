@@ -322,5 +322,6 @@ barcode        条形码组件
 #### v4.0.08
 
 ```
--- 修复switch 初始化联动不生效bug
+-- 修复switch 初始化联动不生效bug,优化表单默认渲染为el-descriptions 双列，
+-- 修复table容器联动不生效bug
 ```
