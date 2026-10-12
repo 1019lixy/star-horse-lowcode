@@ -503,6 +503,10 @@ export declare interface PageFieldInfo {
      * 优先级
      */
     priority?: number;
+    /**
+     * 表单列数
+     */
+    columns?: number;
 }
 
 /**

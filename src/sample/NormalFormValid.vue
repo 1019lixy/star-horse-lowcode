@@ -1091,6 +1091,7 @@ const fieldList = ref<PageFieldInfo>({
       },
     },
   ],
+  columns:3
 });
 
 const initData = async () => {

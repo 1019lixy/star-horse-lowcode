@@ -86,14 +86,14 @@ onMounted(() => {
 
 <template>
   <template v-if="item.containerFields?.length > 0">
-    <div style="margin:5px 0;">
+    <div style="margin:5px 0;width: 100%;box-sizing: border-box;overflow: hidden">
       <template v-for="descItm in item.containerFields" :key="descItm.id">
         <el-descriptions
             v-if="descItm.formVisible !== false && !item.preps?.hideDescriptions"
             :title="item.title || ''"
             :direction="item.preps?.direction || 'horizontal'"
             :column="item.preps?.column || 2"
-
+            style="width: 100%"
             :border="item.preps?.border !== false"
             :size="item.preps?.size || 'default'"
             :extra="item.preps?.descExtra || ''"
@@ -142,7 +142,7 @@ onMounted(() => {
                 checkVisible(field, dataForm)
               "
                     :size="compSize"
-                    class="flex w-full flex-1 h-full"
+                    class="flex w-full flex-1 h-full min-w-0"
                     label=""
                     :prop="loadProp(propPrefix, field.fieldName, -1, -1)"
                     :labelPosition="
@@ -184,7 +184,17 @@ onMounted(() => {
   align-items: center;
 }
 
+:deep(.el-descriptions__table) {
+  table-layout: fixed;
+}
+
+:deep(.el-descriptions__content) {
+  overflow: hidden;
+}
+
 :deep(.el-form-item__content) {
+  width: 100%;
   height: 100% !important;
+  overflow: hidden;
 }
 </style>

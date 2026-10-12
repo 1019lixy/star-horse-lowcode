@@ -808,7 +808,7 @@ export function ensureFieldIds(pageInfo: any) {
 const FULL_ROW_TYPES: Set<string> = new Set([
     "transfer", "htmleditor", "markdown", "textarea",
     "json", "json-array", "divider", "image", "progress",
-    "usercomp", "view-markdown","html","text"]);
+    "usercomp", "view-markdown", "html", "text"]);
 
 export function registerFullRowType(type: string) {
     FULL_ROW_TYPES.add(type);
@@ -851,7 +851,7 @@ function wrapSignature(fields: any[]): string {
     return sig;
 }
 
-export function wrapDefaultContainer(pageInfo: any, defaultContainerType: string = "descriptions") {
+export function wrapDefaultContainer(pageInfo: PageFieldInfo, defaultContainerType: string = "descriptions") {
     if (!pageInfo || !Array.isArray(pageInfo.fieldList) || defaultContainerType === "none") {
         return pageInfo;
     }
@@ -860,7 +860,7 @@ export function wrapDefaultContainer(pageInfo: any, defaultContainerType: string
     if (cached && cached.sig === sig) {
         return cached.result;
     }
-    const DEFAULT_COLUMN = 2;
+    const DEFAULT_COLUMN = pageInfo.columns ?? 2;
     const result: any[] = [];
     let plainBuffer: any[] = [];
     let bufferAcc = 0;

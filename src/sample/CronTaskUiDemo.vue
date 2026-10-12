@@ -973,6 +973,7 @@ const tableFieldList = reactive<PageFieldInfo | any>({
     },
     taskConditionTabs,
   ],
+  columns:3
 });
 
 const rules = {
