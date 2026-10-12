@@ -8,6 +8,11 @@ import {
   starHorseModalEmits,
   starHorseModalProps,
 } from "./starHorseModal";
+import {
+  resolveModalBtn,
+  type ModalBtnConfig,
+  type ModalBtnVariant,
+} from "@/components/types/ModalBtnConfig";
 
 /**
  * StarHorseModalBase：StarHorseDialog / StarHorseDrawer 的公共实现。
@@ -61,12 +66,22 @@ const headerToggleProp = computed(() =>
   isDrawer.value ? props.resizable : props.draggable,
 );
 
-/** 底部按钮区对齐：drawer 全屏居中/其余右对齐；dialog 走 class 居中（原实现） */
-const footerStyle = computed(() =>
-  isDrawer.value
+/** 底部按钮区对齐：btnAlign 优先；否则 drawer 全屏居中/其余右对齐，dialog 走 class 居中（原实现） */
+const BTN_ALIGN_MAP: Record<string, string> = {
+  center: "center",
+  start: "flex-start",
+  end: "flex-end",
+  between: "space-between",
+  around: "space-around",
+};
+const footerStyle = computed(() => {
+  if (props.btnAlign) {
+    return { justifyContent: BTN_ALIGN_MAP[props.btnAlign] ?? "center" };
+  }
+  return isDrawer.value
     ? { justifyContent: isFullScreen.value ? "center" : "end" }
-    : undefined,
-);
+    : undefined;
+});
 
 /** 容器差异属性：按 mode 只下发该容器支持的属性，避免无效属性落到另一容器 */
 const containerProps = computed(() =>
@@ -150,6 +165,37 @@ const operation = (funcName: any, type: string) => {
   } else {
     clickFunction["funcName"] = funcName;
     clickFunction["type"] = type;
+  }
+};
+
+/**
+ * btnActions 字典解析：传入时按预设合并覆盖、过滤显隐、按 priority 升序；
+ * 不传时返回 null，footer 回退到原硬编码按钮（向后兼容）。
+ */
+const resolvedBtnActions = computed<ModalBtnConfig[] | null>(() => {
+  if (!props.btnActions) return null;
+  return props.btnActions
+    .map(resolveModalBtn)
+    .filter((btn) => btn.visible !== false)
+    .sort((a, b) => (a.priority ?? 0) - (b.priority ?? 0));
+});
+
+/** 字典按钮文案：label 直接字符串优先，其次 labelKey 走 i18n */
+const btnLabel = (btn: ModalBtnConfig) =>
+  btn.label ? btn.label : i18n(btn.labelKey ?? `dialog.${btn.type}`);
+
+/** 字典按钮样式：primary/link 沿用主色背景白字（与原硬编码一致），default/plain 不加背景 */
+const btnStyle = (variant?: ModalBtnVariant) =>
+  variant === "primary" || variant === "link"
+    ? { background: "var(--star-horse-style)", color: "var(--star-horse-white)" }
+    : {};
+
+/** 字典按钮点击：action === "close" 直接关弹窗，其余走 operation 分发 */
+const handleBtnClick = (btn: ModalBtnConfig) => {
+  if (btn.action === "close") {
+    beforeClose();
+  } else {
+    operation(btn.action ?? btn.type, btn.actionType ?? "close");
   }
 };
 watch(
@@ -317,6 +363,26 @@ watch(
             v-if="source != 3"
         >
           <slot name="extend"></slot>
+          <template v-if="resolvedBtnActions">
+            <el-button
+              v-for="btn in resolvedBtnActions"
+              :key="btn.type + ':' + btn.priority"
+              @click="handleBtnClick(btn)"
+              :disabled="btn.disabled ?? false"
+              :link="btn.variant === 'link'"
+              :plain="btn.variant === 'plain'"
+              :size="compSize"
+              :style="btnStyle(btn.variant)"
+            >
+              <star-horse-icon
+                :icon-class="btn.icon"
+                cursor="pointer"
+                style="color: var(--star-horse-white)"
+              />
+              {{ btnLabel(btn) }}
+            </el-button>
+          </template>
+          <template v-else>
           <el-button
               @click="operation('merge', 'close')"
               style="
@@ -409,6 +475,7 @@ watch(
             />
             {{ i18n("dialog.reset") }}</el-button
           >
+          </template>
         </span>
         <slot name="footer"></slot>
       </template>

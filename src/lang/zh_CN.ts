@@ -59,6 +59,21 @@ export default {
   "image.preview.downloading": "下载中...",
   "dialog.editTitle": "编辑",
   "dialog.viewTitle": "查看",
+  "dialog.confirm": "确定",
+  "dialog.cancel": "取消",
+  "dialog.ok": "好的",
+  "dialog.draft": "暂存",
+  "dialog.draftContinue": "暂存并继续",
+  "dialog.apply": "应用",
+  "dialog.publish": "发布",
+  "dialog.publishContinue": "发布并继续",
+  "dialog.approve": "通过",
+  "dialog.reject": "驳回",
+  "dialog.withdraw": "撤回",
+  "dialog.next": "下一步",
+  "dialog.prev": "上一步",
+  "dialog.finish": "完成",
+  "dialog.print": "打印",
   /**
    * 流程设计器
    */

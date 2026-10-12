@@ -1,9 +1,13 @@
 import type { PropType } from "vue";
 import { i18n } from "@/lang";
 import { UserFuncInfo } from "@/components/types/PageFieldInfo";
+import type { ModalBtnConfig, ModalBtnType } from "@/components/types/ModalBtnConfig";
 
 /** StarHorseModal 容器形态：dialog=居中弹窗，drawer=侧滑抽屉 */
 export type StarHorseModalMode = "dialog" | "drawer";
+
+/** 底部按钮区整体对齐位置 */
+export type ModalBtnAlign = "center" | "start" | "end" | "between" | "around";
 
 /**
  * StarHorseDialog / StarHorseDrawer / StarHorseModalBase 共享 props。
@@ -48,6 +52,24 @@ const starHorseModalPropsBase = {
     default: () => [],
   },
   btnTextContinue: { type: String, default: i18n("common.submitAndContinue") },
+  /**
+   * 底部按钮动作字典。传入后按 MODAL_BTN_PRESETS 预设渲染按钮（文案/图标/样式/事件），
+   * 元素可为动作类型字符串（用预设）或 ModalBtnConfig 对象（覆盖预设）。
+   * 不传时保持 isShowReset / isShowSave / isShowBtnContinue 驱动的硬编码按钮（向后兼容）。
+   * 详见 docs/components/modal-btn-actions.md
+   */
+  btnActions: {
+    type: Array as PropType<Array<ModalBtnType | ModalBtnConfig>>,
+    default: undefined,
+  },
+  /**
+   * 底部按钮区整体对齐位置。不传时保持默认（dialog 居中 / drawer 靠右、全屏居中）。
+   * 传 "center"/"start"/"end"/"between"/"around" 覆盖默认对齐。
+   */
+  btnAlign: {
+    type: String as PropType<ModalBtnAlign>,
+    default: undefined,
+  },
   title: { type: String, default: "" },
   source: { type: Number, default: 1 },
   compSize: { type: String, default: "default" },
@@ -78,4 +100,14 @@ export const starHorseModalEmits = [
   "minimize",
   "update:dialogVisible",
   "update:modelValue",
+  // ── btnActions 字典扩展事件（配合 userAction=true 在外部监听）──
+  "publish",
+  "approve",
+  "reject",
+  "withdraw",
+  "next",
+  "prev",
+  "finish",
+  "print",
+  "apply",
 ];

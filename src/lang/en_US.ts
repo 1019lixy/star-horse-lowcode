@@ -55,6 +55,21 @@ export default {
     "image.preview.downloading": "Downloading...",
     "dialog.editTitle": "Edit",
     "dialog.viewTitle": "View",
+    "dialog.confirm": "Confirm",
+    "dialog.cancel": "Cancel",
+    "dialog.ok": "OK",
+    "dialog.draft": "Draft",
+    "dialog.draftContinue": "Draft&Continue",
+    "dialog.apply": "Apply",
+    "dialog.publish": "Publish",
+    "dialog.publishContinue": "Publish&Continue",
+    "dialog.approve": "Approve",
+    "dialog.reject": "Reject",
+    "dialog.withdraw": "Withdraw",
+    "dialog.next": "Next",
+    "dialog.prev": "Previous",
+    "dialog.finish": "Finish",
+    "dialog.print": "Print",
     /**
      * 流程设计器
      */

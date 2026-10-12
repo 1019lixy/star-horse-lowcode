@@ -5,7 +5,8 @@ import { ShSvgIcon } from "@/components/shared";
 import type { PdfDesigner } from "../composables/usePdfDesigner";
 import { PDF_PAPER_PRESETS } from "../constants";
 
-defineProps<{
+
+const props = defineProps<{
   designer: PdfDesigner;
   readonly?: boolean;
 }>();
@@ -17,6 +18,13 @@ const emit = defineEmits<{
 
 /** 页边距弹窗 */
 const marginDialogVisible = ref(false);
+
+/** 纸张预设切换 */
+const handlePaperChange = (v: string) => {
+  const preset = PDF_PAPER_PRESETS.find((p) => `${p.width}x${p.height}` === v);
+  if (preset)
+    props.designer.updatePage({ width: preset.width, height: preset.height });
+};
 </script>
 
 <template>
@@ -64,18 +72,7 @@ const marginDialogVisible = ref(false);
       <el-select
         :model-value="`${designer.state.page.width}x${designer.state.page.height}`"
         style="width: 120px"
-        @update:model-value="
-          (v: string) => {
-            const preset = PDF_PAPER_PRESETS.find(
-              (p) => `${p.width}x${p.height}` === v,
-            );
-            if (preset)
-              designer.updatePage({
-                width: preset.width,
-                height: preset.height,
-              });
-          }
-        "
+        @update:model-value="handlePaperChange"
       >
         <el-option
           v-for="opt in PDF_PAPER_PRESETS"

@@ -312,9 +312,6 @@ const handleDialogOpen = () => {
   </star-horse-panel>
 </template>
 
-<script lang="ts">
-export default { components: {} };
-</script>
 
 <style lang="scss" scoped>
 .pivot-data-dialog {

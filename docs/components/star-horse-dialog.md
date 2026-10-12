@@ -39,6 +39,8 @@
 | btnText | `string` | 否 | — | 提交按钮文字 |
 | userBtn | `UserFuncInfo[]` | 否 | `[]` | 自定义按钮列表 |
 | btnTextContinue | `string` | 否 | `i18n("common.submitAndContinue")` | "提交并继续"按钮文字 |
+| btnActions | `Array<ModalBtnType \| ModalBtnConfig>` | 否 | — | 底部按钮动作字典，传入后按预设渲染按钮（文案/图标/样式/事件），不传时保持 `isShowReset`/`isShowSave`/`isShowBtnContinue` 驱动的硬编码按钮。详见 [按钮动作字典](./modal-btn-actions.md) |
+| btnAlign | `"center" \| "start" \| "end" \| "between" \| "around"` | 否 | — | 底部按钮区整体对齐位置，不传时保持默认（dialog 居中 / drawer 靠右、全屏居中） |
 | title | `string` | 否 | `''` | 对话框标题 |
 | source | `number` | 否 | `1` | 数据来源标识（1=新增, 2=编辑, 3=查看） |
 | compSize | `string` | 否 | `'default'` | 组件尺寸（large/default/small） |
@@ -50,6 +52,15 @@
 | merge | `(type: string)` | 点击提交按钮时触发，type 为操作类型 |
 | mergeDraft | `(type: string)` | 点击暂存草稿按钮时触发 |
 | resetForm | — | 点击重置按钮时触发 |
+| publish | `(type: string)` | btnActions 含 `publish`/`publishContinue` 时触发 |
+| approve | `(type: string)` | btnActions 含 `approve` 时触发 |
+| reject | `(type: string)` | btnActions 含 `reject` 时触发 |
+| withdraw | `(type: string)` | btnActions 含 `withdraw` 时触发 |
+| next | `(type: string)` | btnActions 含 `next` 时触发 |
+| prev | `(type: string)` | btnActions 含 `prev` 时触发 |
+| finish | `(type: string)` | btnActions 含 `finish` 时触发 |
+| print | `(type: string)` | btnActions 含 `print` 时触发 |
+| apply | `(type: string)` | btnActions 含 `apply` 时触发 |
 | open | — | 对话框打开时触发 |
 | closeAction | — | 对话框关闭时触发 |
 | minimize | — | 对话框最小化时触发 |
@@ -146,3 +157,36 @@ const customButtons = [
 ]
 </script>
 ```
+### 按钮动作字典（推荐）
+
+通过 `btnActions` 传入动作类型即可切换按钮文案、图标与事件，无需手动拼按钮：
+
+```vue
+<!-- 暂存业务：暂存、暂存并继续、提交、取消 -->
+<StarHorseDialog
+  v-model:dialogVisible="visible"
+  :btn-actions="['draft', 'draftContinue', 'submit', 'cancel']"
+  :user-action="true"
+  @mergeDraft="onDraft"
+  @merge="onSubmit"
+/>
+
+<!-- 审批：通过、驳回、撤回 -->
+<StarHorseDialog
+  v-model:dialogVisible="visible"
+  :btn-actions="['approve', 'reject', 'withdraw']"
+  :user-action="true"
+  @approve="onApprove"
+  @reject="onReject"
+  @withdraw="onWithdraw"
+/>
+
+<!-- 覆盖文案：把"提交"改成"入库" -->
+<StarHorseDialog
+  :btn-actions="[{ type: 'submit', label: '入库', icon: 'warehouse-in' }, 'cancel']"
+  :user-action="true"
+  @merge="onMerge"
+/>
+```
+
+完整动作类型列表与覆盖方式详见 [按钮动作字典文档](./modal-btn-actions.md)。

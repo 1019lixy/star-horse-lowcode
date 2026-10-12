@@ -14,7 +14,7 @@ import type {
   RequestFormat,
   ResponseParsing,
 } from "./types";
-import type { ApiSourceConfigModel } from "@/components/system/ApiSourceConfig/types";
+import type { ApiSourceApiInfo, ApiSourceConfigModel } from "@/components/system/ApiSourceConfig/types";
 
 /** 生成简单唯一 id */
 const genId = (prefix: string): string =>
@@ -136,7 +136,9 @@ export const DEFAULT_RESPONSE_PARSING: ResponseParsing = {
 
 /** 创建接口 —— 结构与弹窗表单 getFormData 输出严格一致（ApiLinkageDetail：apiInfo 嵌套段） */
 export const createEndpoint = (
-  overrides: Partial<ApiSourceConfigModel> = {},
+  overrides: Omit<Partial<ApiSourceConfigModel>, "apiInfo"> & {
+    apiInfo?: Partial<ApiSourceApiInfo>;
+  } = {},
 ): ApiSourceConfigModel => {
   const {apiInfo, ...rest} = overrides;
   return {

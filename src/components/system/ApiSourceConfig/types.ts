@@ -21,6 +21,8 @@ export type ApiSourceMode = "dataSource" | "linkage";
 export interface ApiSourceHeaderRow {
   paramName: string;
   paramValue: string;
+  /** valueType=dynamic 时绑定的运行时变量名 */
+  paramValueField?: string;
   valueType?: ApiSourceValueType;
 }
 
