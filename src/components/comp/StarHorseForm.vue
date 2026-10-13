@@ -47,6 +47,8 @@ const props = defineProps({
   bindWorkFlowId: {type: String, default: ""},
   //未显式指定 containerType 的字段默认容器类型："descriptions"(默认)包装为描述容器，"none" 保持旧 box/other 裸布局
   defaultContainerType: {type: String, default: "descriptions"},
+  //默认描述容器列数，透传给 wrapDefaultContainer（优先级低于 fieldList.columns）
+  columns: {type: Number, default: undefined},
   //重置表单是否清空禁用数据
   resetFormClearDisableData: {type: Boolean, default: false},
   selectData: {
@@ -99,6 +101,7 @@ provide("formFields", formFields);
 provide("formInfo", props.formInfo);
 provide("bindWorkFlowId", props.bindWorkFlowId);
 provide("defaultContainerType", props.defaultContainerType);
+provide("defaultDescriptionColumns", props.columns);
 // 暴露 el-form 实例给嵌套组件（如 stepItem），用于调用 validateField / clearValidate
 provide("starHorseFormRef", starHorseFormRef);
 const loadData = async () => {

@@ -22,9 +22,10 @@ const emits = defineEmits(["addRow", "removeRow"]);
 const dataForm: ModelRef<any> = defineModel("dataForm");
 // 未显式指定 containerType 的字段默认容器类型，由 StarHorseForm provide（groupItem 等递归路径自动覆盖）
 const defaultContainerType = inject("defaultContainerType", "descriptions");
+const defaultDescriptionColumns = inject<any>("defaultDescriptionColumns", undefined);
 // 遍历前应用默认容器包装：数组行分组/普通字段统一包装为 descriptions 容器，已配置容器的项原样保留
 const innerFieldList = computed(() =>
-    wrapDefaultContainer(props.fieldList, defaultContainerType)
+    wrapDefaultContainer(props.fieldList, defaultContainerType, defaultDescriptionColumns)
 );
 const itemCommonFormat = (name: string, cellValue: any, row: any) => {
   cellValue = commonParseCodeToName(name, cellValue);

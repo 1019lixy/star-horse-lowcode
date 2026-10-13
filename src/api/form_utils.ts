@@ -851,16 +851,16 @@ function wrapSignature(fields: any[]): string {
     return sig;
 }
 
-export function wrapDefaultContainer(pageInfo: PageFieldInfo, defaultContainerType: string = "descriptions") {
+export function wrapDefaultContainer(pageInfo: PageFieldInfo, defaultContainerType: string = "descriptions", defaultColumns?: number) {
     if (!pageInfo || !Array.isArray(pageInfo.fieldList) || defaultContainerType === "none") {
         return pageInfo;
     }
-    const sig = defaultContainerType + "::" + wrapSignature(pageInfo.fieldList);
+    const sig = defaultContainerType + ":" + (defaultColumns ?? "") + ":" + wrapSignature(pageInfo.fieldList);
     const cached = wrapCache.get(pageInfo);
     if (cached && cached.sig === sig) {
         return cached.result;
     }
-    const DEFAULT_COLUMN = pageInfo.columns ?? 2;
+    const DEFAULT_COLUMN = pageInfo.columns ?? defaultColumns ?? 2;
     const result: any[] = [];
     let plainBuffer: any[] = [];
     let bufferAcc = 0;
