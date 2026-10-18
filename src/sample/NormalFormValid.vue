@@ -28,9 +28,44 @@ const searchFormData = ref<SearchInfo>({
       label: "年",
       matchType: "eq",
       preps: {
-        type: "year",
+        multiple: true,
+        primaryKey: "idDynamicForm",
+        apiEndpoints: {
+          pageListUrl: "/userdb-manage/userdb/dynamicForm/pageList",
+        },
+        needField: [
+          { sourceField: "formName", distField: "bindFormName" },
+          { sourceField: "dataNo", distField: "formId" },
+        ],
+        searchFieldList: [],
+        fieldList: [
+          {
+            label: "表单名称",
+            fieldName: "formName",
+            searchVisible: true,
+            listVisible: true,
+          },
+          {
+            label: "表单图标",
+            type: "icon",
+            fieldName: "formIcon",
+            listVisible: true,
+            preps: {
+              iconType: "user",
+              values: [],
+            },
+          },
+          {
+            label: "创建人",
+
+            fieldName: "createdBy",
+            formVisible: false,
+            listVisible: true,
+          },
+        ],
       },
-      type: "date",
+      type: "dialog-input",
+
     },
     {
       defaultVisible: true,

@@ -19,7 +19,7 @@ const systemHost: string = "http://localhost:8749/";
 const userDbHost: string = "http://localhost:7758/";
 const gatewayHost: string = "http://localhost:7780/";
 const workflowHost: string = "http://localhost:8999/";
-const isGateway: boolean = true;
+const isGateway: boolean = false;
 const env: string = "-dev";
 const rewrite = (path: string, name: string) => {
   if (isGateway) {

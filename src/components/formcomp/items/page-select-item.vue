@@ -107,6 +107,7 @@ const loadByPage = (isAppend: boolean = false) => {
         ];
       } else {
         pageInfo.value.dataList = redata?.dataList;
+        resolveDefaultFields(pageInfo.value.dataList?.[0]);
       }
       pageInfo.value.totalPage = redata?.totalPages;
       pageInfo.value.totalData = redata?.totalDatas;
@@ -152,14 +153,14 @@ const onMobileSearch = () => {
   loadByPage();
 };
 const getRowIdentity = (row: any) => {
-  return row[props.field.preps?.primaryKey];
+  return row[resolvePrimaryKey()];
 };
 const handleSelectionChange = (val: any) => {
   if (!props.field.preps?.multiple) {
     if (val.length <= 1) {
       multipleSelection.value = val;
     } else {
-      let keys: any = props.field.preps?.primaryKey;
+      let keys: any = props.field.preps?.primaryKey || defaultFields.value?.codeField || props.field.fieldName;
       if (Array.isArray(keys)) {
         let arr: any = [];
         for (let index in multipleSelection.value) {
@@ -211,8 +212,8 @@ const selectRow = (row: any, _column: any, _evt: any) => {
   }
   const selected = multipleSelection.value.some(
     (item: any) =>
-      item[props.field.preps?.primaryKey] ===
-      row[props.field.preps?.primaryKey],
+      item[resolvePrimaryKey()] ===
+      row[resolvePrimaryKey()],
   );
   if (!selected) {
     if (!props.field.preps?.multiple) {
@@ -236,11 +237,40 @@ const loadSourceField = (aliasFirst: boolean = true) => {
   let name = aliasFirst
     ? props.field.preps?.["aliasName"] || props.field.fieldName
     : props.field.fieldName;
-  return (
-    fields?.find((temp: FieldMapping) => temp.distField == name)?.sourceField ||
-    ""
-  );
+  const mapped = fields?.find((temp: FieldMapping) => temp.distField == name)?.sourceField;
+  if (mapped) return mapped;
+  // 无 needField 映射时用接口行数据解析的默认值字段兜底
+  return defaultFields.value?.codeField || "";
 };
+// 接口行数据解析的默认字段缓存：codeField 为存表单的值字段（fieldName 在行数据中存在则用之，否则取 ID 开头字段，再无则第一个字段），displayField 为显示字段（第一个非 ID 开头字段）
+const defaultFields = ref<{codeField: string, displayField: string} | null>(null);
+const resolveDefaultFields = (row: any) => {
+  if (defaultFields.value || !row || typeof row !== "object") return;
+  const keys = Object.keys(row);
+  if (!keys.length) return;
+  const idField = keys.find((k) => /^id/i.test(k));
+  const labelKey = keys.find((k) => !/^id/i.test(k));
+  const name = props.field.fieldName;
+  defaultFields.value = {
+    codeField: name in row ? name : (idField || keys[0]),
+    displayField: labelKey || keys[0],
+  };
+};
+// 行数据的值字段：fieldName 存在于行数据则用之，否则用默认解析的值字段，兜底 fieldName
+const resolveCodeField = (row: any): string => {
+  const name = props.field.fieldName;
+  if (row && typeof row === "object") {
+    resolveDefaultFields(row);
+    if (name in row) return name;
+  }
+  return defaultFields.value?.codeField || name;
+};
+// 显示字段：优先 displayField 配置，否则默认解析的显示字段（第一个非 ID 业务字段），兜底 fieldName
+const resolveDisplayField = (): string =>
+    props.field.preps?.displayField || defaultFields.value?.displayField || props.field.fieldName;
+// 主键字段：优先 primaryKey 配置，否则默认解析的值字段，兜底 fieldName
+const resolvePrimaryKey = (): string =>
+    props.field.preps?.primaryKey || defaultFields.value?.codeField || props.field.fieldName;
 const echoSelection = () => {
   let realName = props.field.aliasName || props.field.fieldName;
   let value: any = formData.value[realName];
@@ -314,7 +344,7 @@ const assignVal = () => {
       }
     });
   } else {
-    formData.value[name] = multipleSelection.value.map((item) => item[name]);
+    formData.value[name] = multipleSelection.value.map((item) => item[resolveCodeField(item)]);
   }
   if (props.field.preps?.["recall"]) {
     props.field.preps?.["recall"](multipleSelection.value);
@@ -340,7 +370,7 @@ const listColumns = computed(() => {
   );
 });
 const isRowSelected = (row: any) => {
-  const pk = props.field.preps?.primaryKey;
+  const pk = resolvePrimaryKey();
   return multipleSelection.value.some(
     (item: any) => item[pk] === row[pk],
   );
@@ -354,8 +384,9 @@ const onMobileRowClick = (row: any) => {
 };
 const toggleMobileRow = (row: any) => {
   if (isRowSelected(row)) {
+    const pk = resolvePrimaryKey();
     multipleSelection.value = multipleSelection.value.filter(
-      (item: any) => item[props.field.preps?.primaryKey] !== row[props.field.preps?.primaryKey],
+      (item: any) => item[pk] !== row[pk],
     );
   } else {
     multipleSelection.value = [...multipleSelection.value, row];
@@ -389,24 +420,19 @@ const onMobileScroll = ({ scrollTop, scrollHeight, clientHeight }: any) => {
 
 const tagList = computed<string[]>({
   get: () => {
-    const displayField = props.field.preps?.displayField;
     const sel = multipleSelection.value || [];
     if (!sel.length) {
       const val = formData.value?.[props.field.fieldName];
       if (val == null) return [];
       return Array.isArray(val) ? val : [val];
     }
-    if (!displayField) {
-      const val = formData.value?.[props.field.fieldName];
-      return Array.isArray(val) ? val : (val != null ? [val] : []);
-    }
-    return sel.map((r: any) => r[displayField]);
+    return sel.map((r: any) => r[resolveDisplayField()]);
   },
   set: (val) => {
-    const displayField = props.field.preps?.displayField;
     if (!val || val.length === 0) {
       multipleSelection.value = [];
-    } else if (displayField) {
+    } else {
+      const displayField = resolveDisplayField();
       multipleSelection.value = multipleSelection.value.filter(
         (r: any) => val.includes(r[displayField]),
       );
@@ -474,13 +500,12 @@ onMounted(async () => {
     });
     inputPreps.searchFieldList = { fieldList: searchFieldList };
   }
+  await loadByPage();
   loadSelectedRows();
-  loadByPage();
   nextTick(() => {
     initCompCallEvent(props, emits, formData);
   });
-});
-</script>
+});</script>
 <template>
   <starhorse-form-item
     :showFormItem="showFormItem"

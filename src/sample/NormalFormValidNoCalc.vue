@@ -30,9 +30,43 @@ const searchFormData = ref<SearchFields>({
       label: "年",
       matchType: "eq",
       preps: {
-        type: "year",
+        multiple: false,
+        primaryKey: "idDynamicForm",
+        displayField:"name",
+        apiEndpoints: {
+          pageListUrl: "/system-config/system/usersinfo/pageList",
+        },
+        needField: [
+          {sourceField: "username", distField: "username"},
+          {sourceField: "name", distField: "name"},
+        ],
+        searchFieldList: [],
+        fieldList: [
+          {
+            label: "名称",
+            fieldName: "name",
+            searchVisible: true,
+            listVisible: true,
+          },
+          {
+            label: "用户名",
+            fieldName: "username",
+            listVisible: true,
+            preps: {
+              iconType: "user",
+              values: [],
+            },
+          },
+          {
+            label: "创建人",
+
+            fieldName: "createdBy",
+            formVisible: false,
+            listVisible: true,
+          },
+        ],
       },
-      type: "date",
+      type: "dialog-input",
     },
     {
       defaultVisible: true,
@@ -79,7 +113,7 @@ const genericBasicPropsFields = [
     fieldName: "tbName",
     required: true,
     formVisible: true,
-    preps: {editDisabled: true, colspan:  12},
+    preps: {editDisabled: true, colspan: 12},
   },
   {
     label: i18n("dyform.formProp.primaryKey"),
@@ -94,7 +128,7 @@ const genericBasicPropsFields = [
     type: "icon",
     defaultValue: "document",
     formVisible: true,
-    preps: {colspan:  12, iconType: "user", values: []},
+    preps: {colspan: 12, iconType: "user", values: []},
   },
   {
     label: "数据选择",
@@ -124,7 +158,7 @@ const genericBasicPropsFields = [
       "displayMode": "label",
       "enableHierarchy": true,
       "apiDataSource": {
-        proxy:true,
+        proxy: true,
         "proxyUrl": "/system-config/redirect/apiLinkage",
         "conditionFields": [
           "fieldSh4B40"
@@ -219,7 +253,7 @@ const otherPropsFields = [
     label: i18n("dyform.formProp.labelPosition2"),
     fieldName: "labelPosition",
     defaultValue: "left",
-    type:"input",
+    type: "input",
     formVisible: true,
     preps: {values: []}
   },
@@ -233,7 +267,7 @@ const otherPropsFields = [
   {
     label: i18n("dyform.formProp.formStyle"),
     fieldName: "size",
-    type:"input",
+    type: "input",
     formVisible: true,
     preps: {values: []}
   },
@@ -314,7 +348,7 @@ const relationConfigTable = {
         {
           label: i18n("dyform.formProp.relationTable"),
           fieldName: "tableId",
-          type:"input",
+          type: "input",
           required: true,
           formVisible: true,
           preps: {values: []}
@@ -322,7 +356,7 @@ const relationConfigTable = {
         {
           label: i18n("dyform.formProp.relationType"),
           fieldName: "relationType",
-          type:"input",
+          type: "input",
           defaultValue: "1n",
           required: true,
           formVisible: true,
@@ -368,7 +402,7 @@ const publicPropsFields = [
           {
             label: i18n("dyform.formProp.fieldInfo"),
             fieldName: "fieldName",
-            type:"input",
+            type: "input",
             required: true,
             formVisible: true,
             preps: {values: commonField(), props: {label: "label", value: "fieldName"}}
@@ -412,7 +446,7 @@ const listConfigTable = {
         {
           label: i18n("dyform.formProp.fieldInfo"),
           fieldName: "fieldName",
-          type:"input",
+          type: "input",
           formVisible: true,
           required: true,
           preps: {values: []}
@@ -420,7 +454,7 @@ const listConfigTable = {
         {
           label: i18n("dyform.formProp.mappingTable"),
           fieldName: "mappingTable",
-          type:"input",
+          type: "input",
           formVisible: true,
           required: true,
           preps: {values: [], props: {label: "formName", value: "tbName"}},
@@ -432,7 +466,7 @@ const listConfigTable = {
         {
           label: i18n("dyform.formProp.relationField2"),
           fieldName: "mappingField",
-          type:"input",
+          type: "input",
           required: true,
           formVisible: true,
           preps: {values: []}
@@ -440,7 +474,7 @@ const listConfigTable = {
         {
           label: i18n("dyform.formProp.displayField"),
           fieldName: "mappingDisplayField",
-          type:"input",
+          type: "input",
           required: true,
           formVisible: true,
           preps: {values: []}
@@ -487,7 +521,7 @@ const listCustomEventTable = {
 
             label: i18n("dyform.formProp.eventCategory"),
             fieldName: "eventType",
-            type:"input",
+            type: "input",
             required: true,
             formVisible: true,
             actions: {
@@ -521,7 +555,7 @@ const listCustomEventTable = {
             label: i18n("dyform.formProp.requestMethod"),
             fieldName: "httpMethod",
             defaultValue: "POST",
-            type:"input",
+            type: "input",
             formVisible: false,
             preps: {values: httpMethod(), colspan: 5}
           },
@@ -544,7 +578,7 @@ const listSortFieldTable = {
         {
           label: i18n("dyform.formProp.sortField"),
           fieldName: "fieldName",
-          type:"input",
+          type: "input",
           required: true,
           formVisible: true,
           preps: {values: []}
@@ -552,7 +586,7 @@ const listSortFieldTable = {
         {
           label: i18n("dyform.formProp.sortOrder"),
           fieldName: "orderBy",
-          type:"input",
+          type: "input",
           formVisible: true,
           preps: {values: []}
         },
@@ -605,7 +639,7 @@ const bindModeField = {
           controlCondition: "eqExecution",
           relationFields: ["abc"],
           func: (val) => {
-           console.log(val);
+            console.log(val);
           },
           matchFieldValue: "design"
         },
@@ -616,7 +650,7 @@ const bindModeField = {
 const flowDefineIdField = {
   label: i18n("dyform.step.formFlowDefine"),
   fieldName: "flowDefineIdList",
-  type:"input",
+  type: "input",
   formVisible: false,
 
   preps: {values: [], multiple: true},
@@ -664,7 +698,7 @@ const fieldList = reactive<PageFieldInfo | any>({
         label: i18n("dyform.formProp.dataSource"),
         fieldName: "datasourceConfigId",
         helpMsg: "",
-        type:"input",
+        type: "input",
 
         required: true,
         formVisible: true,

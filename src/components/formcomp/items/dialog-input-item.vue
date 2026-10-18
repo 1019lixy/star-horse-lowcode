@@ -76,11 +76,9 @@ const selectItem = (row: any) => {
   // 选择只暂存 selectedRows + tagList，不写 formData，不关闭弹窗
   if (multipleSelect.value) {
     const selectDatas = dialogInputTableRef.value?.multipleSelection || [];
-    if (displayField.value) {
-      selectedRows.value = selectDatas;
-      tagList.value = selectDatas.map((item: any) => item[displayField.value]);
-      skipNextResolve = true;
-    }
+    selectedRows.value = selectDatas;
+    tagList.value = selectDatas.map(displayName);
+    skipNextResolve = true;
     return;
   }
   // 单选模式
@@ -92,11 +90,9 @@ const selectItem = (row: any) => {
   } else {
     data = row;
   }
-  if (displayField.value) {
-    selectedRows.value = [data];
-    tagList.value = [data[displayField.value]];
-    skipNextResolve = true;
-  }
+  selectedRows.value = [data];
+  tagList.value = [displayName(data)];
+  skipNextResolve = true;
 };
 const closeAction = () => {
   dialogInputVisible.value = false;
@@ -105,17 +101,10 @@ const showVisible = () => {
   dialogInputVisible.value = true;
   activeTab.value = "data";
   selectedSearchKey.value = "";
-  nextTick(() => {
-    let fields = props.field.preps?.needField;
-    let name = props.field.fieldName;
-    let realName = name;
-    if (props.field.aliasName) {
-      realName = props.field?.aliasName;
-    }
-    if (fields) {
-      name = fields.map((item: FieldMapping) => item.sourceField)[0];
-    }
-    dialogInputTableRef.value?.setDataInfo(name, formData.value[realName]);
+  nextTick(async () => {
+    await ensureDefaultFields(props.field.preps?.["apiEndpoints"] as ApiUrls);
+    const realName = props.field.aliasName || props.field.fieldName;
+    dialogInputTableRef.value?.setDataInfo(resolveBindSourceField(), formData.value[realName]);
   });
 };
 const submitData = (type: string) => {
@@ -128,7 +117,7 @@ const submitData = (type: string) => {
       return;
     }
     if (!needField) {
-      formData.value[name] = selectDatas.map((item: any) => item[name]);
+      formData.value[name] = selectDatas.map((item: any) => item[resolveCodeField(item)]);
     } else {
       needField.forEach((item: FieldMapping) => {
         const value = selectDatas.map((r: any) => r[item.sourceField]);
@@ -139,11 +128,9 @@ const submitData = (type: string) => {
         }
       });
     }
-    if (displayField.value) {
-      selectedRows.value = selectDatas;
-      tagList.value = selectDatas.map((item: any) => item[displayField.value]);
-      skipNextResolve = true;
-    }
+    selectedRows.value = selectDatas;
+    tagList.value = selectDatas.map(displayName);
+    skipNextResolve = true;
     if (props.field.preps?.recall) {
       props.field.preps?.["recall"](selectDatas);
     }
@@ -155,7 +142,7 @@ const submitData = (type: string) => {
     }
     let data = selectDatas[0];
     if (!needField) {
-      formData.value[name] = data[name];
+      formData.value[name] = data[resolveCodeField(data)];
     } else {
       needField.forEach((item: FieldMapping) => {
         if (needField.length == 1) {
@@ -165,11 +152,9 @@ const submitData = (type: string) => {
         }
       });
     }
-    if (displayField.value) {
-      selectedRows.value = [data];
-      tagList.value = [data[displayField.value]];
-      skipNextResolve = true;
-    }
+    selectedRows.value = [data];
+    tagList.value = [displayName(data)];
+    skipNextResolve = true;
     if (props.field.preps?.recall) {
       props.field.preps?.["recall"](data);
     }
@@ -219,29 +204,89 @@ onMounted(async () => {
     initCompCallEvent(props, emits, formData);
   });
 });
-const displayField = computed(() => (props.field.preps?.["displayField"] as string) || "");
+// 未设置 displayField 时用 fieldName 兜底
+const displayField = computed(() => (props.field.preps?.["displayField"] as string) || props.field.fieldName);
+// 反查 needField 中 distField 匹配的映射取接口字段名，未匹配则用原字段名兜底
+const resolveSourceField = (name: string): string =>
+    props.field.preps?.needField?.find(
+        (item: FieldMapping) => item.distField == name,
+    )?.sourceField || name;
+// 显示字段对应的接口取值字段
+const displaySourceField = computed(() => resolveSourceField(displayField.value));
+// 接口行数据解析的默认字段缓存：codeField 为存表单的值字段（fieldName 在行数据中存在则用之，否则取 ID 开头字段，再无则第一个字段），displayField 为显示字段（第一个非 ID 开头字段）
+const defaultFields = ref<{codeField: string, displayField: string} | null>(null);
+const resolveDefaultFields = (row: any) => {
+  if (defaultFields.value || !row || typeof row !== "object") return;
+  const keys = Object.keys(row);
+  if (!keys.length) return;
+  const idField = keys.find((k) => /^id/i.test(k));
+  const labelKey = keys.find((k) => !/^id/i.test(k));
+  const name = props.field.fieldName;
+  defaultFields.value = {
+    codeField: name in row ? name : (idField || keys[0]),
+    displayField: labelKey || keys[0],
+  };
+};
+// 默认字段未解析时先拉一页接口数据解析默认值字段与显示字段
+const ensureDefaultFields = async (apiEndpoints: ApiUrls) => {
+  if (defaultFields.value || !apiEndpoints?.pageListUrl) return;
+  const {list} = await loadPageData({
+    apiEndpoints: apiEndpoints.pageListUrl,
+    conditions: [],
+    currentPage: 1,
+    pageSize: 1,
+    proxy: props.field.preps?.["proxy"],
+    proxyUrl: props.field.preps?.["proxyUrl"],
+  });
+  resolveDefaultFields(list?.[0]);
+};
+// 行数据的值字段：fieldName 存在于行数据则用之，否则用默认解析的值字段，兜底 fieldName
+const resolveCodeField = (row: any): string => {
+  const name = props.field.fieldName;
+  if (row && typeof row === "object") {
+    resolveDefaultFields(row);
+    if (name in row) return name;
+  }
+  return defaultFields.value?.codeField || name;
+};
+// 表单绑定字段对应的接口查询字段（回显用），单映射直接取映射的 sourceField
+const resolveBindSourceField = (): string => {
+  const needField = props.field.preps?.needField;
+  if (!needField || needField.length === 0) {
+    return defaultFields.value?.codeField || props.field.fieldName;
+  }
+  if (needField.length === 1) return needField[0].sourceField;
+  return resolveSourceField(props.field.aliasName || props.field.fieldName);
+};
+// 行数据取显示名：优先取显示字段值，再兜底默认显示字段（接口第一个非 ID 业务字段）、绑定字段对应值
+const displayName = (row: any): string => {
+  resolveDefaultFields(row);
+  for (const k of [displaySourceField.value, defaultFields.value?.displayField, resolveBindSourceField()]) {
+    if (!k) continue;
+    const v = row[k];
+    if (v != null) return String(v);
+  }
+  return "";
+};
 let skipNextResolve = false;
 watch(() => formData.value[props.field.fieldName], async (val) => {
   if (skipNextResolve) {
     skipNextResolve = false;
     return;
   }
-  if (displayField.value && val != null) {
+  if (val != null) {
     const apiEndpoints = props.field.preps?.["apiEndpoints"] as ApiUrls;
     if (apiEndpoints) {
-      const needField = props.field.preps?.needField;
-      const sourceField = needField?.[0]?.sourceField || props.field.fieldName;
+      await ensureDefaultFields(apiEndpoints);
       const nodes = await loadSelectedData(
           apiEndpoints.pageListUrl,
           val,
-          sourceField,
+          resolveBindSourceField(),
           undefined,
           props.field.preps?.["proxy"],
           props.field.preps?.["proxyUrl"],
       );
-      const names = nodes
-          .map((n: any) => n[displayField.value])
-          .filter((n: any) => n != null);
+      const names = nodes.map(displayName).filter((n: string) => n);
       if (names.length > 0) {
         tagList.value = props.field.preps?.multiple ? names : [names[0]];
         return;
@@ -255,7 +300,6 @@ watch(() => formData.value[props.field.fieldName], async (val) => {
   }
 }, {immediate: true});
 watch(tagList, (val) => {
-  if (!displayField.value) return;
   if (!val || val.length === 0) {
     selectedRows.value = [];
     if (formData.value) {
@@ -266,13 +310,11 @@ watch(tagList, (val) => {
   }
   if (selectedRows.value.length === 0) return;
   const remaining = selectedRows.value.filter(
-    (r: any) => val.includes(r[displayField.value]),
+    (r: any) => val.includes(displayName(r)),
   );
   if (remaining.length !== selectedRows.value.length) {
     selectedRows.value = remaining;
-    const needField = props.field.preps?.needField;
-    const codeField = needField?.[0]?.sourceField || props.field.fieldName;
-    const codes = remaining.map((r: any) => r[codeField]);
+    const codes = remaining.map((r: any) => r[resolveCodeField(r)]);
     if (formData.value) {
       skipNextResolve = true;
       formData.value[props.field.fieldName] = props.field.preps?.multiple ? codes : (codes[0] ?? "");
@@ -316,6 +358,7 @@ const loadMobilePage = async (isAppend: boolean = false) => {
     mobilePageInfo.value.dataList = [...mobilePageInfo.value.dataList, ...list];
   } else {
     mobilePageInfo.value.dataList = list;
+    resolveDefaultFields(list?.[0]);
   }
   mobilePageInfo.value.totalData = totalData;
   mobilePageInfo.value.totalPage = totalPage;
@@ -366,7 +409,7 @@ const listColumns = computed(() => {
   );
 });
 const isRowSelected = (row: any) => {
-  const pk = props.field.preps?.primaryKey || props.field.fieldName;
+  const pk = props.field.preps?.primaryKey || defaultFields.value?.codeField || props.field.fieldName;
   return mobileSelection.value.some((item: any) => item[pk] === row[pk]);
 };
 const applyMobileSelection = () => {
@@ -375,7 +418,7 @@ const applyMobileSelection = () => {
   const selectDatas = mobileSelection.value;
   if (multipleSelect.value) {
     if (!needField) {
-      formData.value[name] = selectDatas.map((item: any) => item[name]);
+      formData.value[name] = selectDatas.map((item: any) => item[resolveCodeField(item)]);
     } else {
       needField.forEach((item: FieldMapping) => {
         const value = selectDatas.map((r: any) => r[item.sourceField]);
@@ -386,16 +429,14 @@ const applyMobileSelection = () => {
         }
       });
     }
-    if (displayField.value) {
-      selectedRows.value = selectDatas;
-      tagList.value = selectDatas.map((item: any) => item[displayField.value]);
-      skipNextResolve = true;
-    }
+    selectedRows.value = selectDatas;
+    tagList.value = selectDatas.map(displayName);
+    skipNextResolve = true;
   } else {
     if (selectDatas.length === 0) return;
     const data = selectDatas[0];
     if (!needField) {
-      formData.value[name] = data[name];
+      formData.value[name] = data[resolveCodeField(data)];
     } else {
       needField.forEach((item: FieldMapping) => {
         if (needField.length == 1) {
@@ -405,11 +446,9 @@ const applyMobileSelection = () => {
         }
       });
     }
-    if (displayField.value) {
-      selectedRows.value = [data];
-      tagList.value = [data[displayField.value]];
-      skipNextResolve = true;
-    }
+    selectedRows.value = [data];
+    tagList.value = [displayName(data)];
+    skipNextResolve = true;
   }
   if (props.field.preps?.recall) {
     props.field.preps?.["recall"](selectDatas);
@@ -428,7 +467,7 @@ const applyMobileSelection = () => {
 };
 const onMobileRowClick = (row: any) => {
   if (multipleSelect.value) {
-    const pk = props.field.preps?.primaryKey || props.field.fieldName;
+    const pk = props.field.preps?.primaryKey || defaultFields.value?.codeField || props.field.fieldName;
     if (mobileSelection.value.some((r: any) => r[pk] === row[pk])) {
       mobileSelection.value = mobileSelection.value.filter((r: any) => r[pk] !== row[pk]);
     } else {
