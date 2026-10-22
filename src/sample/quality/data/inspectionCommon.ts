@@ -5,6 +5,11 @@ export interface CheckTemplateItem {
     content: string;
     freq: string;
     mergeRule: "twoPerShift" | "every2h" | "every4h" | "onceAll";
+    /**
+     * 该检查项自身备选项(可选):不同检查项语义可不同,
+     * 数组 [{value,name}] 或字符串 "T:对,F:错";缺省用内置默认(空/OK/NG/NA)
+     */
+    options?: Array<{ value: string; name: string }> | string;
 }
 
 export interface CheckTemplateGroup {
@@ -31,18 +36,16 @@ export const defectNoteText = `1、缺点定义:一般=对品质未造成直接�
 2、如内容不适用,请填 NA。`;
 
 /**
- * 检查项模板即 checkmatrix 组件 preps.checkGroups 配置:
- * 一组/两组/三组均由该数组长度决定,直接透传给字段 preps
+ * 检查项模板转 checkmatrix 组件静态数据源 preps.values:
+ * 与 select 数据源结构对齐 [{name, value}]——name=分组标题,
+ * value=检查项数组(动态接口时亦可返回 JSON 字符串)
  */
-export function buildCheckGroups(
+export function buildCheckValues(
     groups: CheckTemplateGroup[],
-): CheckTemplateGroup[] {
-    return groups.map((group, gi) => ({
-        title: group.title,
-        items: group.items.map((item, ii) => ({
-            ...item,
-            id: `g${gi + 1}_i${ii + 1}`,
-        })),
+): Array<{ name: string; value: string }> {
+    return groups.map((group) => ({
+        name: group.title,
+        value: JSON.stringify(group.items),
     }));
 }
 

@@ -1,7 +1,7 @@
 import type {PageFieldInfo} from "@/components/types";
 import type {CheckTemplateGroup} from "./inspectionCommon";
 import {
-    buildCheckGroups,
+    buildCheckValues,
     buildInspectionHeaderFields,
     buildIssueTableFields,
     defectNoteText,
@@ -69,12 +69,13 @@ export function buildInspectionForm(
                     type: "checkmatrix",
                     formVisible: true,
                     preps: {
+                        dataIndex: 10,
                         hideLabel: true,
                         appLabelVisible: true,
                         matrixTitle: `${title} · 稽核结果`,
                         columnModel: "triState",
                         timeSlots: ipqcTimeSlots,
-                        checkGroups: buildCheckGroups(groups),
+                        values: buildCheckValues(groups),
                         showRemark: true,
                         allowKeyboard: true,
                         fillColumnOnHeaderClick: true,

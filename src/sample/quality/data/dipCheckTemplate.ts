@@ -72,8 +72,22 @@ export const dipCheckGroups: CheckTemplateGroup[] = [
   {
     title: "包装",
     items: [
-      {content: "确认 MES 系统扫描录入,单件流作业", freq: "4H/次", mergeRule: "every4h"},
-      {content: "确认现场封箱依照标签工单、出货地划分,进行独立包装作业", freq: "4H/次", mergeRule: "every4h"},
+      {
+        content: "确认 MES 系统扫描录入,单件流作业",
+        freq: "4H/次",
+        mergeRule: "every4h",
+        options: "T:对,F:错"
+      },
+      {
+        content: "确认现场封箱依照标签工单、出货地划分,进行独立包装作业",
+        freq: "4H/次",
+        mergeRule: "every4h",
+        options: [
+          {value: "OK", name: "合格"},
+          {value: "NG", name: "不合格"},
+          {value: "NA", name: "不适用"},
+        ]
+      },
     ],
   },
   {

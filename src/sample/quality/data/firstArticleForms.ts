@@ -1,5 +1,5 @@
 import type {CheckTemplateGroup} from "./inspectionCommon";
-import {buildCheckGroups} from "./inspectionCommon";
+import {buildCheckValues} from "./inspectionCommon";
 import type {InspectionFormDef} from "./inspectionForms";
 
 /**
@@ -197,11 +197,12 @@ function buildFirstArticleForm(
                     type: "checkmatrix",
                     formVisible: true,
                     preps: {
+                        dataIndex: 10,
                         hideLabel: true,
                         appLabelVisible: true,
                         matrixTitle: `${title} · 确认项目`,
                         columnModel: "rowEdit",
-                        checkGroups: buildCheckGroups(groups),
+                        values: buildCheckValues(groups),
                         editColumns: firstArticleEditColumns.map((column) => ({
                             ...column,
                         })),

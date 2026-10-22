@@ -1,12 +1,20 @@
 <script setup lang="ts">
 import {computed} from "vue";
 
+export interface ToolbarOptionStat {
+    value: string;
+    name: string;
+    count: number;
+}
+
 export interface ToolbarStats {
-    ok: number;
-    ng: number;
-    na: number;
+    /** 各备选项计数(按当前表配置动态,不硬编码 OK/NG/NA) */
+    byOption: ToolbarOptionStat[];
     empty: number;
     total: number;
+    /** 前两个非空选项的显示名(批量按钮文案用,按当前表配置) */
+    firstOptionName?: string;
+    secondOptionName?: string;
 }
 
 const props = defineProps<{
@@ -19,8 +27,7 @@ const props = defineProps<{
 }>();
 const emits = defineEmits([
     "update:currentKey",
-    "fill-all",
-    "fill-na",
+    "fill-option",
     "clear",
     "copy-last",
     "save",
@@ -55,8 +62,10 @@ const percent = computed(() => {
         v-if="kind === 'matrix'"
         class="it-stat"
     >
-      稽核结果 OK <b class="ok">{{ stats.ok }}</b> · NG
-      <b class="ng">{{ stats.ng }}</b> · NA <b class="na">{{ stats.na }}</b> ·
+      稽核结果
+      <template v-for="(opt, oi) in stats.byOption" :key="oi">
+        {{ opt.name }} <b :class="'opt' + (oi + 1)">{{ opt.count }}</b> ·
+      </template>
       未填 <b class="ng">{{ stats.empty }}</b> · 完成 {{ percent }}%
     </span>
     <span
@@ -65,8 +74,14 @@ const percent = computed(() => {
     >共 {{ stats.total }} 项待确认</span>
     <div class="it-actions">
       <template v-if="kind === 'matrix'">
-        <el-button @click="emits('fill-all')">全部填 OK</el-button>
-        <el-button @click="emits('fill-na')">全部填 NA</el-button>
+        <el-button
+            v-if="stats.firstOptionName"
+            @click="emits('fill-option', 0)"
+        >全部填 {{ stats.firstOptionName }}</el-button>
+        <el-button
+            v-if="stats.secondOptionName"
+            @click="emits('fill-option', 1)"
+        >全部填 {{ stats.secondOptionName }}</el-button>
         <el-button
             type="danger"
             plain
@@ -85,10 +100,10 @@ const percent = computed(() => {
       v-if="kind === 'matrix'"
       class="it-hint"
   >
-    <span><b>稽核格</b>: 单击循环 空→OK→NG→NA</span>
-    <span><kbd>1</kbd>OK <kbd>2</kbd>NG <kbd>3</kbd>NA <kbd>0</kbd>清空 <kbd>空格</kbd>循环</span>
-    <span>点击<b>列头时段</b>整列填 OK</span>
-    <span>点击<b>行号</b>整行循环 空→OK→NG→NA</span>
+    <span><b>稽核格</b>: 单击按本项配置的备选项循环</span>
+    <span><b>快捷键</b>(按配置生成,表格上方实时显示): 选中<b>单元格</b>按数字键设置该格;选中<b>行号</b>按数字键设置整行</span>
+    <span>点击<b>列头时段</b>整列填第一项</span>
+    <span>点击<b>行号</b>整行按本项备选项循环</span>
     <span>NG 行自动标红并提示登记问题点</span>
     <span>App 端: 分组卡片 → 点检查项 → 抽屉按块填写</span>
   </div>
@@ -129,12 +144,24 @@ const percent = computed(() => {
   b {
     color: #16a34a;
 
-    &.ng {
+    &.opt2 {
       color: #dc2626;
     }
 
-    &.na {
+    &.opt3 {
       color: #d97706;
+    }
+
+    &.opt4 {
+      color: #4b5bab;
+    }
+
+    &.opt5 {
+      color: #7c4bb0;
+    }
+
+    &.ng {
+      color: #dc2626;
     }
   }
 }

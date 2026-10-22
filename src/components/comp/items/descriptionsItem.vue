@@ -2,7 +2,8 @@
 import {checkVisible, loadProp, validMsg} from "@/api/form_utils";
 import {ContainerPreps} from "@/components/types/ItemPreps";
 import {initRelationEvent} from "@/components/formcomp/utils/ItemRelationEventUtils";
-import {inject, ModelRef, nextTick, onMounted, ref, unref, watch} from "vue";
+import {computed, inject, ModelRef, nextTick, onMounted, ref, unref, watch} from "vue";
+import {isMobile} from "@/api/device";
 import StarHorseItem from "@/components/comp/StarHorseItem.vue";
 import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
 
@@ -24,6 +25,24 @@ const dataForm: ModelRef<any> = defineModel("dataForm");
 const formFields = inject("formFields", ref<any[]>([]));
 
 const init = () => {
+};
+
+/**
+ * 移动端(APP)布局:descriptions 强制纵向单栏
+ * (label 在上、值在下),避免 horizontal + column>1 在窄屏呈现"两栏"挤压;
+ * PC 端保持容器配置的 direction/column
+ */
+const descDirection = computed(() =>
+    isMobile.value ? "vertical" : (props.item.preps?.direction || "horizontal"),
+);
+const descColumn = computed(() =>
+    isMobile.value ? 1 : (props.item.preps?.column || 2),
+);
+
+/** 字段跨度:移动端单栏时恒为 1,PC 端取配置跨度 */
+const descItemSpan = (field: any, descItm: any) => {
+    if (isMobile.value) return 1;
+    return field.preps?.descItemSpan || descItm.preps?.descItemSpan || 1;
 };
 
 /**
@@ -91,8 +110,8 @@ onMounted(() => {
         <el-descriptions
             v-if="descItm.formVisible !== false && !item.preps?.hideDescriptions"
             :title="item.title || ''"
-            :direction="item.preps?.direction || 'horizontal'"
-            :column="item.preps?.column || 2"
+            :direction="descDirection"
+            :column="descColumn"
             style="width: 100%"
             :border="item.preps?.border !== false"
             :size="item.preps?.size || 'default'"
@@ -107,7 +126,7 @@ onMounted(() => {
                   :rowspan="descItm.preps?.descItemRowspan || 1"
 
                   :class-name="descItm.preps?.descItemClassName || ''"
-                  :span="field.preps?.descItemSpan || descItm.preps?.descItemSpan || 1"
+                  :span="descItemSpan(field, descItm)"
                   :label-class-name="descItm.preps?.descItemLabelClassName || ''"
               >
                 <template #label>

@@ -45,7 +45,7 @@ const formOptions = documentForms.map((form) => ({
   <div class="quality-demo">
     <inspection-toolbar
         :title="currentFormDef.title"
-        :stats="{ok: 0, ng: 0, na: 0, empty: 0, total: 0}"
+        :stats="{byOption: [], empty: 0, total: 0}"
         kind="rowEdit"
         :form-options="formOptions"
         :current-key="currentKey"

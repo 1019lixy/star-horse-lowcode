@@ -470,12 +470,29 @@ export declare interface CheckEditColumn {
 }
 
 /**
- * checkmatrix 组件配置的单个检查项(存于 preps.checkGroups[].items)
+ * checkmatrix 单个备选项(单元格可选取值,与既有 name/value 体系一致):
+ * value 为存储值(如 OK/T/NG/F/空),name 为界面显示文案(如 合格/对/不合格/错)
+ */
+export declare interface CheckOption {
+    /**
+     * 存储值,空字符串表示"未填/空"
+     */
+    value: string;
+    /**
+     * 界面显示文案
+     */
+    name: string;
+}
+
+/**
+ * checkmatrix 组件配置的单个检查项(由通用数据源 values/apiDataSource 解析而来)
  * mergeRule 决定时段列合并方式:
  * - twoPerShift 每班2次: [0-2]/[3-5] 两块
  * - every2h 2H/次: 每时段独立格
  * - every4h 4H/次: [0-1]/[2-3]/[4-5] 三块
  * - onceAll 开班/每季度等: 整行一格
+ * options 为该检查项自身的备选项配置(每个单元格语义可不同,如 A 项配 OK/NG,
+ * B 项配 T:对,F:错),缺省时回退容器级 preps.options,再回退内置默认(空/OK/NG/NA)
  */
 export declare interface CheckGroupItem {
     /**
@@ -491,11 +508,16 @@ export declare interface CheckGroupItem {
      */
     freq?: string;
     mergeRule?: "twoPerShift" | "every2h" | "every4h" | "onceAll";
+    /**
+     * 本检查项备选项:数组 [{value,name}] / [{name,value}] 或字符串
+     * "T:对,F:错"(逗号分隔,value:name;单段则 value=name;空字符串项表示"空")
+     */
+    options?: Array<CheckOption | { name: string; value: string }> | string;
 }
 
 /**
- * checkmatrix 组件配置的检查分组(存于 preps.checkGroups)
- * 一组/两组/三组均由配置决定,渲染为左侧 rowspan 分组列
+ * checkmatrix 组件的检查分组(由通用数据源解析,见 useCheckMatrixState.parseCheckGroups)
+ * 一组/两组/三组由数据源条目数量决定,渲染为左侧 rowspan 分组列
  */
 export declare interface CheckMatrixGroup {
     /**
@@ -512,6 +534,11 @@ export declare interface CheckMatrixGroup {
  * - triState 模式: 检查项 x 时段 的 OK/NG/NA 三态矩阵
  * - rowEdit 模式: 每检查项一行的多列自由录入(时间/数据记录/异常对策/确认人)
  * 值存于 dataForm[field.fieldName],结构见 CheckMatrixValue
+ *
+ * 检查分组数据源与 select 等组件完全对齐(不自造配置):
+ * - 静态: preps.values = [{name: 分组标题, value: 检查项数组|JSON字符串}]
+ * - 动态: preps.apiDataSource(设计器 DataSourceConfigPanel 配置,proxy/dataPath 等通用规则)
+ * - 加载: compDynamicData(field) 统一拉取,name=分组标题,value=items(数组对象/JSON字符串均适配)
  */
 export declare interface CheckMatrixPreps {
     matrixTitle?: string;
@@ -519,12 +546,16 @@ export declare interface CheckMatrixPreps {
     timeSlots?: CheckTimeSlot[];
     editColumns?: CheckEditColumn[];
     /**
-     * 检查分组配置(一组/两组/三组...),静态配置于 preps,
-     * 亦可由引用方在渲染前注入(如后端模板接口回填)
+     * 容器级默认备选项(检查项未单独配 options 时使用):
+     * 数组 [{value,name}] 或字符串 "OK:OK,NG:NG,NA:NA";
+     * 双双缺省时内置默认 ["", "OK", "NG", "NA"](显示文案同名)
      */
-    checkGroups?: CheckMatrixGroup[];
+    options?: Array<CheckOption | { name: string; value: string }> | string;
     showRemark?: boolean;
     allowKeyboard?: boolean;
+    /**
+     * 兼容保留:旧结果标签配置,新配置请统一用 options
+     */
     resultLabels?: { ok?: string; ng?: string; na?: string };
     fillColumnOnHeaderClick?: boolean;
     fillRowOnIndexClick?: boolean;

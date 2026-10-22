@@ -1,11 +1,17 @@
 <script setup lang="ts">
 import {computed, ref} from "vue";
+import {i18n} from "@/lang";
 import type {CheckMatrixPreps, CheckMatrixValue} from "@/components/types";
 import {
     ensureCheckValue,
+    firstOptionOf,
     fillRowResults,
     getMergeBlocks,
-    rowHasNg,
+    optionIndex,
+    optionName,
+    resolveTimeSlots,
+    resolveEditColumns,
+    rowHasAbnormal,
     type CheckRenderRow,
 } from "@/components/comp/checkmatrix/useCheckMatrixState";
 import CheckMatrixDrawer from "@/components/comp/checkmatrix/CheckMatrixDrawer.vue";
@@ -23,9 +29,9 @@ const drawerVisible = ref(false);
 const activeRow = ref<CheckRenderRow | null>(null);
 
 const readonly = computed(() => props.disabled || props.source === 3);
-const slotCount = computed(() => props.preps?.timeSlots?.length || 6);
+const slotCount = computed(() => resolveTimeSlots(props.preps).length);
 const columnModel = computed(() => props.preps?.columnModel || "triState");
-const editColumns = computed(() => props.preps?.editColumns || []);
+const editColumns = computed(() => resolveEditColumns(props.preps));
 const showRemark = computed(() => props.preps?.showRemark !== false);
 
 const itemValue = computed(() =>
@@ -49,13 +55,19 @@ const blocksOf = (row: CheckRenderRow) =>
     getMergeBlocks(row.item.mergeRule, slotCount.value);
 
 const blockSummary = (row: CheckRenderRow) =>
-    blocksOf(row).map((block, bi) => ({
-        index: bi,
-        text: itemValue.value.rows[row.key]?.results?.[block.start] || "空",
-    }));
+    blocksOf(row).map((block, bi) => {
+        const raw = itemValue.value.rows[row.key]?.results?.[block.start] || "";
+        return {
+            index: bi,
+            text: optionName(row.options, raw) || i18n("checkmatrix.empty"),
+            cls: optionIndex(row.options, raw) >= 0
+                ? `opt-${optionIndex(row.options, raw)}`
+                : "",
+        };
+    });
 
-const rowNg = (row: CheckRenderRow) =>
-    columnModel.value === "triState" && rowHasNg(props.value, row);
+const rowAbnormal = (row: CheckRenderRow) =>
+    columnModel.value === "triState" && rowHasAbnormal(props.value, row);
 
 const openDrawer = (row: CheckRenderRow) => {
     if (readonly.value || columnModel.value !== "triState") return;
@@ -63,10 +75,22 @@ const openDrawer = (row: CheckRenderRow) => {
     drawerVisible.value = true;
 };
 
-const fillGroupOk = (group: {rows: CheckRenderRow[]}) => {
+/** 组级批量按钮文案:取该组首个检查项第一个非空选项的显示名(默认 OK) */
+const groupBatchLabel = (group: {rows: CheckRenderRow[]}) => {
+    const first = group.rows[0]?.options || [];
+    return optionName(first, firstOptionOf(first)) || "OK";
+};
+
+/** 组级批量:按该组各项自身选项的第一个非空项填充(默认即 OK) */
+const fillGroupFirstOption = (group: {rows: CheckRenderRow[]}) => {
     if (readonly.value) return;
     for (const row of group.rows) {
-        fillRowResults(props.value, row, "OK", props.preps);
+        fillRowResults(
+            props.value,
+            row,
+            firstOptionOf(row.options),
+            props.preps,
+        );
     }
     emits("change");
 };
@@ -101,21 +125,21 @@ const onDrawerConfirm = () => emits("change");
             link
             type="primary"
             size="small"
-            @click="fillGroupOk(group)"
-        >整组OK</el-button>
+            @click="fillGroupFirstOption(group)"
+        >{{ i18n("checkmatrix.groupBatchPrefix") }}{{ groupBatchLabel(group) }}</el-button>
       </div>
       <div
           v-for="row in group.rows"
           :key="row.key"
           class="cm-mobile-item"
-          :class="{'cm-mobile-item-ng': rowNg(row)}"
+          :class="{'cm-mobile-item-ng': rowAbnormal(row)}"
           @click="columnModel === 'triState' ? openDrawer(row) : undefined"
       >
         <div class="cm-mobile-content">{{ row.item.content }}</div>
         <div
             v-if="row.item.freq"
             class="cm-mobile-freq"
-        >稽核频率: {{ row.item.freq }}</div>
+        >{{ i18n("checkmatrix.freq") }}: {{ row.item.freq }}</div>
         <div
             v-if="columnModel === 'triState'"
             class="cm-mobile-stat"
@@ -124,12 +148,12 @@ const onDrawerConfirm = () => emits("change");
               v-for="block in blockSummary(row)"
               :key="block.index"
               class="cm-mobile-stat-chip"
-              :class="block.text"
+              :class="block.cls"
           >#{{ block.index + 1 }} {{ block.text }}</span>
           <span
               v-if="!readonly"
               class="cm-mobile-stat-action"
-          >点击填写</span>
+          >{{ i18n("checkmatrix.tapToFill") }}</span>
         </div>
         <template v-else>
           <div class="cm-mobile-edit">
@@ -159,7 +183,7 @@ const onDrawerConfirm = () => emits("change");
                   :model-value="itemValue.rows[row.key]?.values?.[column.key] || ''"
                   :disabled="readonly"
                   :type="column.type === 'number' ? 'number' : column.type === 'date' ? 'date' : 'text'"
-                  :placeholder="readonly ? '' : '请输入' + column.label"
+                  :placeholder="readonly ? '' : i18n('api.pleaseInput2') + column.label"
                   @update:model-value="(v: string) => onEditColumnInput(row, column.key, v || '')"
               />
             </div>
@@ -173,7 +197,7 @@ const onDrawerConfirm = () => emits("change");
               class="cm-mobile-remark-input"
               :value="itemValue.rows[row.key]?.remark || ''"
               :disabled="readonly"
-              :placeholder="preps?.remarkPlaceholder || '备注'"
+              :placeholder="preps?.remarkPlaceholder || i18n('checkmatrix.remark')"
               @input="onRemarkInput(row, $event)"
               @click.stop
           >
@@ -261,21 +285,33 @@ const onDrawerConfirm = () => emits("change");
   background: #f3f4f6;
   color: #4e5560;
 
-  &.OK {
+  &.opt-1 {
     background: #e8f6ee;
     color: #16a34a;
     font-weight: 600;
   }
 
-  &.NG {
+  &.opt-2 {
     background: #fdecec;
     color: #dc2626;
     font-weight: 600;
   }
 
-  &.NA {
+  &.opt-3 {
     background: #fdf3e3;
     color: #d97706;
+    font-weight: 600;
+  }
+
+  &.opt-4 {
+    background: #eef2fb;
+    color: #4b5bab;
+    font-weight: 600;
+  }
+
+  &.opt-5 {
+    background: #f3eefb;
+    color: #7c4bb0;
     font-weight: 600;
   }
 }

@@ -120,7 +120,7 @@ const currentKeyModel = computed({
   <div class="quality-demo">
     <inspection-toolbar
         :title="currentLedger.title"
-        :stats="{ok: 0, ng: 0, na: 0, empty: 0, total: currentRows.length}"
+        :stats="{byOption: [], empty: 0, total: currentRows.length}"
         kind="rowEdit"
         :form-options="formOptions"
         :current-key="currentKeyModel"

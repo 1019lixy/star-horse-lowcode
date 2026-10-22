@@ -1,13 +1,16 @@
 <script setup lang="ts">
-import {computed, watch} from "vue";
+import {computed, onMounted, ref, watch} from "vue";
 import {isMobile} from "@/api/device";
+import {i18n} from "@/lang";
 import {ItemPreps} from "@/components/types/ItemPreps";
 import type {CheckMatrixValue} from "@/components/types";
+import {compDynamicData} from "@/api/star_horse_utils";
 import CheckMatrixTable from "@/components/comp/checkmatrix/CheckMatrixTable.vue";
 import CheckMatrixMobile from "@/components/comp/checkmatrix/CheckMatrixMobile.vue";
 import {
     buildRenderRows,
     ensureCheckValue,
+    parseCheckGroups,
 } from "@/components/comp/checkmatrix/useCheckMatrixState";
 
 const props = withDefaults(defineProps<ItemPreps>(), {
@@ -22,23 +25,33 @@ const formData = defineModel("formData");
 const preps = computed(() => props.field.preps || {});
 
 /**
- * checkGroups 配置:数组直用;设计器 textarea 配置的 JSON 字符串自动解析
+ * 检查分组数据源(与 select 等组件完全对齐):
+ * - 静态: preps.values = [{name: 分组标题, value: 检查项数组|JSON字符串}]
+ * - 动态: preps.apiDataSource(设计器 DataSourceConfigPanel 配置)
+ * 静态同步解析(首帧即可见,不依赖异步时序),挂载后经 compDynamicData 统一拉取覆盖
  */
-const checkGroups = computed<any[]>(() => {
-  const groups = preps.value.checkGroups;
-  if (Array.isArray(groups)) return groups;
-  if (typeof groups === "string" && groups.trim()) {
-    try {
-      const parsed = JSON.parse(groups);
-      return Array.isArray(parsed) ? parsed : [];
-    } catch (e) {
-      return [];
+const groups = ref<any[]>(parseCheckGroups(props.field.preps?.values || []));
+const groupsLoaded = ref(groups.value.length > 0);
+
+const loadGroups = async () => {
+  try {
+    const data = await compDynamicData(props.field);
+    const parsed = parseCheckGroups(data || []);
+    if (parsed.length > 0) {
+      groups.value = parsed;
     }
+  } catch (e) {
+    console.error("[checkmatrix-item] 检查项数据源加载失败:", e);
+  } finally {
+    groupsLoaded.value = true;
   }
-  return [];
+};
+
+onMounted(() => {
+  loadGroups();
 });
 
-const renderRows = computed(() => buildRenderRows(checkGroups.value));
+const renderRows = computed(() => buildRenderRows(groups.value, preps.value));
 
 /**
  * 显式初始化 dataForm[fieldName] 值对象(而非 computed 副作用):
@@ -61,7 +74,7 @@ const ensureField = () => {
   );
 };
 watch(
-    () => [props.field.fieldName, checkGroups.value],
+    () => [props.field.fieldName, groups.value],
     ensureField,
     {immediate: true},
 );
@@ -72,9 +85,7 @@ const checkValue = computed<CheckMatrixValue>(
 
 const visible = computed(() => props.field.formVisible !== false);
 
-const groupsCount = computed(
-    () => checkGroups.value.length,
-);
+const groupsCount = computed(() => groups.value.length);
 </script>
 <template>
   <starhorse-form-item
@@ -89,7 +100,7 @@ const groupsCount = computed(
       <div
           v-if="isDesign"
           class="cm-comp-design-tip"
-      >checkmatrix · {{ groupsCount }} 组 · {{ renderRows.length }} 项</div>
+      >{{ i18n("checkmatrix.designTip", groupsCount, renderRows.length) }}</div>
       <div
           v-if="preps.matrixTitle"
           class="cm-comp-title"
@@ -115,6 +126,10 @@ const groupsCount = computed(
         />
       </template>
       <div
+          v-else-if="groupsLoaded"
+          class="cm-comp-empty"
+      >{{ i18n("checkmatrix.noGroups") }}</div>
+      <div
           v-if="preps.noteText && isMobile"
           class="cm-comp-note"
       >{{ preps.noteText }}</div>
@@ -135,6 +150,15 @@ const groupsCount = computed(
   border: 1px dashed #b6bcc4;
   border-radius: 6px;
   padding: 4px 8px;
+}
+
+.cm-comp-empty {
+  font-size: 13px;
+  color: #98a1aa;
+  border: 1px dashed #b6bcc4;
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
 }
 
 .cm-comp-title {

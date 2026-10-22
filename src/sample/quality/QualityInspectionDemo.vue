@@ -1,6 +1,8 @@
 <script setup lang="ts" name="QualityInspectionDemo">
-import {computed, ref, watch} from "vue";
+import {computed, onMounted, ref, watch} from "vue";
+import {useRoute} from "vue-router";
 import {ElMessage, ElMessageBox} from "element-plus";
+import {setTest} from "@/api/device";
 import StarHorseForm from "@/components/comp/StarHorseForm.vue";
 import InspectionToolbar from "@/sample/quality/components/InspectionToolbar.vue";
 import type {ToolbarStats} from "@/sample/quality/components/InspectionToolbar.vue";
@@ -10,12 +12,24 @@ import type {InspectionFormDef} from "@/sample/quality/data/inspectionForms";
 import {
     buildRenderRows,
     expandCheckRows,
+    fillAllByOptionIndex,
+    parseCheckGroups,
     fillAllResults,
     getCheckStats,
     restoreCheckData,
     snapshotCheckData,
     validateCoverage,
 } from "@/components/comp/checkmatrix/useCheckMatrixState";
+
+const route = useRoute();
+
+// 调试入口:URL ?layout=mobile 在 PC 浏览器模拟 APP 端(device.setTest 官方能力),
+// 用于实测 App 端分组卡片/抽屉渲染,非核心库行为
+onMounted(() => {
+  if (route.query.layout === "mobile") {
+    setTest(true, "mobile");
+  }
+});
 
 const allForms: InspectionFormDef[] = [...inspectionForms, ...firstArticleForms];
 const currentKey = ref(allForms[0].key);
@@ -36,8 +50,9 @@ const matrixField = computed(() => {
 
 const matrixPreps = computed(() => matrixField.value?.preps || {});
 
+// demo 页统计与组件同源:preps.values 经 parseCheckGroups 解析(组件内部同样链路)
 const renderRows = computed(() =>
-    buildRenderRows(matrixPreps.value.checkGroups || []),
+    buildRenderRows(parseCheckGroups(matrixPreps.value.values || []), matrixPreps.value),
 );
 
 const matrixValue = computed(
@@ -48,9 +63,26 @@ const onFormInited = () => {
     liveForm.value = formRef.value?.getFormData?.()?.value || null;
 };
 
-const stats = computed<ToolbarStats>(() =>
+const rawStats = computed(() =>
     getCheckStats(matrixValue.value, renderRows.value, matrixPreps.value),
 );
+
+/** 前两个非空选项的显示名(按当前表配置,批量按钮文案用) */
+const optionNames = computed(() => {
+    const nonEmpty = (renderRows.value[0]?.options || []).filter(
+        (opt) => opt.value !== "",
+    );
+    return {
+        first: nonEmpty[0]?.name,
+        second: nonEmpty[1]?.name,
+    };
+});
+
+const stats = computed<ToolbarStats>(() => ({
+    ...rawStats.value,
+    firstOptionName: optionNames.value.first,
+    secondOptionName: optionNames.value.second,
+}));
 
 const draftKey = computed(
     () => `sh_quality_demo_${currentFormDef.value.key}`,
@@ -75,13 +107,14 @@ const saveDraft = () => {
 };
 watch(currentKey, saveDraft);
 
-const onFillAll = () => {
+const onFillOption = (optIndex: number) => {
     if (!matrixValue.value) return;
-    fillAllResults(matrixValue.value, renderRows.value, "OK", matrixPreps.value);
-};
-const onFillNa = () => {
-    if (!matrixValue.value) return;
-    fillAllResults(matrixValue.value, renderRows.value, "NA", matrixPreps.value);
+    fillAllByOptionIndex(
+        matrixValue.value,
+        renderRows.value,
+        optIndex,
+        matrixPreps.value,
+    );
 };
 const onClear = () => {
     ElMessageBox.confirm("清空全部稽核结果?", "提示", {type: "warning"})
@@ -180,8 +213,7 @@ const formOptions = allForms.map((form) => ({
         :current-key="currentKey"
         :saving="saving"
         @update:current-key="currentKey = $event"
-        @fill-all="onFillAll"
-        @fill-na="onFillNa"
+        @fill-option="onFillOption"
         @clear="onClear"
         @copy-last="onCopyLast"
         @save="onSave"

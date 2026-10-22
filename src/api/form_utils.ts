@@ -820,6 +820,24 @@ export function isFullRowType(type: string): boolean {
 }
 
 /**
+ * 独立成块渲染的字段类型(不进默认 descriptions 包装):
+ * - button/usercomp: 裸渲染动作/自定义组件(既有行为)
+ * - checkmatrix 等整表字段: 表格需要完整宽度与自然高度,
+ *   el-descriptions-item 内容单元格的布局约束会导致表格塌陷
+ * 可通过 registerIndependentFieldType 扩展,后续加同类组件只需注册类型名
+ */
+const INDEPENDENT_FIELD_TYPES: Set<string> = new Set([
+    "button", "usercomp", "checkmatrix"]);
+
+export function registerIndependentFieldType(type: string) {
+    INDEPENDENT_FIELD_TYPES.add(type);
+}
+
+export function isIndependentFieldType(type: string): boolean {
+    return INDEPENDENT_FIELD_TYPES.has(type);
+}
+
+/**
  * 默认容器包装：未显式指定 containerType 的项统一包装为 descriptions 容器
  * - 带 containerType 的项原样保留，按配置容器渲染
  * - 连续字段（普通字段 + 数组行分组）统一聚合为单个 descriptions 容器，column 固定 2
@@ -926,7 +944,15 @@ export function wrapDefaultContainer(pageInfo: PageFieldInfo, defaultContainerTy
         } else if (item.containerType) {
             flushPlain();
             result.push(item);
-        } else if (item.type == "button" || item.type == "usercomp") {
+        } else if (item.appList?.length > 0) {
+            // APP 端扁平化容器产物(convertCompToAppComps 输出: {fieldList:[{appList:[...]}]})
+            // 须保持结构由 app-item 渲染;若被包装进 descriptions,内部 appList 会被当单字段
+            // (type/fieldType 均无 -> input)渲染,导致 APP 端整表字段丢失、只出现一个空输入框
+            flushPlain();
+            result.push(item);
+        } else if (isIndependentFieldType(item.type)) {
+            // 独立成块字段(button/usercomp 裸渲染;checkmatrix 等整表字段
+            // 不进 descriptions,避免内容单元格布局约束导致表格塌陷)
             flushPlain();
             result.push(item);
         } else {

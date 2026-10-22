@@ -1,15 +1,21 @@
 <script setup lang="ts">
 import {computed, onBeforeUnmount, onMounted, ref} from "vue";
+import {i18n} from "@/lang";
 import type {CheckMatrixPreps, CheckMatrixValue} from "@/components/types";
 import {
+    buildKeyMapHints,
     ensureCheckValue,
-    fillColumnResults,
     fillRowResults,
     getCheckStats,
     getMergeBlocks,
-    KEY_MAP,
-    nextCycleState,
-    rowHasNg,
+    keyToOptionValue,
+    type KeyHint,
+    nextOptionValue,
+    optionIndex,
+    optionName,
+    resolveTimeSlots,
+    resolveEditColumns,
+    rowHasAbnormal,
     setSlotResult,
     type CheckRenderRow,
 } from "@/components/comp/checkmatrix/useCheckMatrixState";
@@ -25,11 +31,14 @@ const emits = defineEmits(["change"]);
 
 const tableWrap = ref<HTMLElement | null>(null);
 const focusedKey = ref("");
+/** 整行选中的检查项 key(点行号选中后,数字键作用于整行) */
+const selectedRowKey = ref("");
 const readonly = computed(() => props.disabled || props.source === 3);
-const slotCount = computed(() => props.preps?.timeSlots?.length || 6);
+const timeSlots = computed(() => resolveTimeSlots(props.preps));
+const slotCount = computed(() => timeSlots.value.length);
 const showRemark = computed(() => props.preps?.showRemark !== false);
 const columnModel = computed(() => props.preps?.columnModel || "triState");
-const editColumns = computed(() => props.preps?.editColumns || []);
+const editColumns = computed(() => resolveEditColumns(props.preps));
 
 const itemValue = computed(() =>
     ensureCheckValue(props.value, props.rows, props.preps),
@@ -38,8 +47,8 @@ const itemValue = computed(() =>
 const blocksOf = (row: CheckRenderRow) =>
     getMergeBlocks(row.item.mergeRule, slotCount.value);
 
-const rowNg = (row: CheckRenderRow) =>
-    columnModel.value === "triState" && rowHasNg(props.value, row);
+const rowAbnormal = (row: CheckRenderRow) =>
+    columnModel.value === "triState" && rowHasAbnormal(props.value, row);
 
 const cellKey = (row: CheckRenderRow, slotIndex: number) =>
     `${row.key}_${slotIndex}`;
@@ -47,17 +56,33 @@ const cellKey = (row: CheckRenderRow, slotIndex: number) =>
 const isFocused = (row: CheckRenderRow, slotIndex: number) =>
     focusedKey.value === cellKey(row, slotIndex);
 
-const slotText = (row: CheckRenderRow, slotIndex: number) =>
+/** 单元格存储值 */
+const slotValue = (row: CheckRenderRow, slotIndex: number): string =>
     itemValue.value.rows[row.key]?.results?.[slotIndex] || "";
+
+/** 单元格显示文案(按本行配置的选项 name) */
+const slotText = (row: CheckRenderRow, slotIndex: number): string =>
+    optionName(row.options, slotValue(row, slotIndex));
+
+/** 单元格颜色类(按选项序号:opt-1/opt-2/opt-3...,不硬编码 OK/NG/NA) */
+const slotClass = (row: CheckRenderRow, slotIndex: number): string => {
+    const idx = optionIndex(row.options, slotValue(row, slotIndex));
+    return idx >= 0 ? `opt-${idx}` : "";
+};
+
+/** 该行首个非空选项(列头/行号批量填充目标,默认即 OK) */
+const firstOptionValue = (options: CheckRenderRow["options"]) =>
+    options.find((opt) => opt.value !== "")?.value ?? "";
 
 const onCellClick = (row: CheckRenderRow, slotIndex: number) => {
     if (readonly.value) return;
+    selectedRowKey.value = "";
     focusedKey.value = cellKey(row, slotIndex);
     setSlotResult(
         props.value,
         row,
         slotIndex,
-        nextCycleState(slotText(row, slotIndex)),
+        nextOptionValue(row.options, slotValue(row, slotIndex)),
         props.preps,
     );
     emits("change");
@@ -66,16 +91,28 @@ const onCellClick = (row: CheckRenderRow, slotIndex: number) => {
 const onHeaderClick = (slotIndex: number) => {
     if (readonly.value) return;
     if (props.preps?.fillColumnOnHeaderClick === false) return;
-    fillColumnResults(props.value, props.rows, slotIndex, "OK", props.preps);
+    // 整列填充:按各检查项自身选项的第一个非空项(默认配置即 OK)
+    for (const row of props.rows) {
+        setSlotResult(
+            props.value,
+            row,
+            slotIndex,
+            firstOptionValue(row.options),
+            props.preps,
+        );
+    }
     emits("change");
 };
 
 const onRowIndexClick = (row: CheckRenderRow) => {
     if (readonly.value) return;
+    // 选中整行:后续数字键作用于整行(设置行),同时保留单击循环切换
+    selectedRowKey.value = row.key;
+    focusedKey.value = "";
     if (props.preps?.fillRowOnIndexClick === false) return;
-    // 整行循环切换:以行首格当前值为基准 空→OK→NG→NA→空
+    // 整行循环切换:以行首格当前值为基准,按本行配置选项循环(默认 空→OK→NG→NA)
     const results = itemValue.value.rows[row.key]?.results || [];
-    const next = nextCycleState(results[0] || "");
+    const next = nextOptionValue(row.options, results[0] || "");
     fillRowResults(props.value, row, next, props.preps);
     emits("change");
 };
@@ -96,26 +133,48 @@ const onEditColumnInput = (row: CheckRenderRow, columnKey: string, val: string) 
 const handleKeydown = (e: KeyboardEvent) => {
     if (readonly.value) return;
     if (props.preps?.allowKeyboard === false) return;
-    if (!focusedKey.value) return;
     if (document.activeElement?.tagName === "INPUT") return;
-    const mapped = KEY_MAP[e.key];
-    if (mapped === undefined) {
+    // 目标:整行选中优先(设置行),否则当前单元格(设置单元格)
+    const rowKey = selectedRowKey.value || focusedKey.value.split("_")[0];
+    const target = rowKey ? findRow(rowKey) : null;
+    if (!target) return;
+    const isRowMode = !!selectedRowKey.value;
+    // 数字键按当前行备选项顺序取值(0=空,1..N=第 1..N 个非空项;按键数=选项数+1)
+    const mapped = keyToOptionValue(target.options, e.key);
+    if (mapped === null) {
         if (e.key === " ") {
             e.preventDefault();
-            applyFocused(nextCycleState(currentFocused()));
+            const current = isRowMode
+                ? itemValue.value.rows[target.key]?.results?.[0] || ""
+                : currentFocusedValue(target);
+            applyTarget(
+                target,
+                nextOptionValue(target.options, current),
+                isRowMode,
+            );
         }
         return;
     }
     e.preventDefault();
-    applyFocused(mapped);
+    applyTarget(target, mapped, isRowMode);
 };
 
-const currentFocused = () => {
-    const [rowKey, slotIndex] = focusedKey.value.split("_");
-    const row = findRow(rowKey);
-    if (!row) return "";
-    return slotText(row, Number(slotIndex));
+/** 按目标粒度写入:整行 或 单单元格 */
+const applyTarget = (
+    row: CheckRenderRow,
+    result: string,
+    rowMode: boolean,
+) => {
+    if (rowMode) {
+        fillRowResults(props.value, row, result, props.preps);
+    } else {
+        applyFocused(result);
+    }
+    emits("change");
 };
+
+const currentFocusedValue = (row: CheckRenderRow) =>
+    slotValue(row, Number(focusedKey.value.split("_")[1]));
 
 const findRow = (rowKey: string) =>
     props.rows.find((row) => row.key === rowKey) || null;
@@ -141,18 +200,59 @@ const slotColumnWidth = computed(
 );
 
 /**
- * 整行聚合状态(序号格着色): 行内所有格一致时返回该值,否则返回空
+ * 整行聚合状态(序号格着色): 行内所有格一致时返回其选项序号类,否则返回空
  */
 const rowState = (row: CheckRenderRow) => {
     const results = itemValue.value.rows[row.key]?.results || [];
     if (!results.length) return "";
     const first = results[0];
-    return results.every((result) => result === first) ? first : "";
+    return results.every((result) => result === first)
+        ? slotClass(row, 0)
+        : "";
 };
 
 /**
  * 表格总列数(note 行跨列用)
  */
+/** 聚焦行的按键提示(无聚焦时用首行配置,即表级默认;完全按配置生成) */
+const focusedRow = computed(() => {
+    if (!focusedKey.value) return null;
+    return findRow(focusedKey.value.split("_")[0]);
+});
+
+const keyHints = computed<KeyHint[]>(() =>
+    buildKeyMapHints(
+        (focusedRow.value || props.rows[0])?.options || [],
+    ),
+);
+
+/** 当前选中单元格描述(行内容 / 时段 / 当前值);未选中时返回空 */
+const selectedInfo = computed(() => {
+    const row = focusedRow.value;
+    if (row) {
+        const slotIndex = Number(focusedKey.value.split("_")[1]);
+        const slot = timeSlots.value[slotIndex];
+        const valueText =
+            optionName(row.options, slotValue(row, slotIndex)) ||
+            i18n("checkmatrix.empty");
+        const slotText =
+            slot?.label || i18n("checkmatrix.blockSlot", slotIndex + 1);
+        return `${row.item.content.slice(0, 18)} · ${slotText} = ${valueText}`;
+    }
+    if (selectedRowKey.value) {
+        const target = findRow(selectedRowKey.value);
+        if (target) {
+            const firstValue =
+                itemValue.value.rows[target.key]?.results?.[0] || "";
+            const valueText =
+                optionName(target.options, firstValue) ||
+                i18n("checkmatrix.empty");
+            return `${i18n("checkmatrix.wholeRow")} · ${target.item.content.slice(0, 18)} = ${valueText}`;
+        }
+    }
+    return "";
+});
+
 const totalColumns = computed(() => {
     let count = 3;
     if (columnModel.value === "triState") {
@@ -179,30 +279,48 @@ onBeforeUnmount(() => {
       tabindex="0"
       :style="{maxHeight: preps?.maxHeight || 'calc(100vh - 300px)'}"
   >
+    <div
+        v-if="columnModel === 'triState' && preps?.allowKeyboard !== false"
+        class="cm-key-hint"
+    >
+      <span class="cm-key-hint-label">{{ i18n("checkmatrix.keyHintLabel") }}</span>
+      <span
+          v-for="hint in keyHints"
+          :key="hint.key"
+          class="cm-key-chip"
+      ><kbd>{{ hint.key }}</kbd> {{ hint.name }}</span>
+      <span class="cm-key-chip"><kbd>空格</kbd> {{ i18n("checkmatrix.keyHintCycle") }}</span>
+      <span class="cm-key-hint-sel">
+        <template v-if="selectedInfo">
+          {{ i18n("checkmatrix.keyHintCurrent") }}: {{ selectedInfo }}
+        </template>
+        <template v-else>{{ i18n("checkmatrix.keyHintSelectTip") }}</template>
+      </span>
+    </div>
     <table class="cm-table">
       <thead>
       <tr v-if="columnModel === 'triState'">
-        <th class="cm-idx" title="点击行号整行循环切换 空→OK→NG→NA">#</th>
-        <th class="cm-pj">项目</th>
-        <th class="cm-item" :style="{width: itemColumnWidth}">检查内容</th>
-        <th class="cm-freq">稽核频率</th>
+        <th class="cm-idx" :title="i18n('checkmatrix.rowCycleTip')">#</th>
+        <th class="cm-pj">{{ i18n("checkmatrix.project") }}</th>
+        <th class="cm-item" :style="{width: itemColumnWidth}">{{ i18n("checkmatrix.item") }}</th>
+        <th class="cm-freq">{{ i18n("checkmatrix.freq") }}</th>
         <th
-            v-for="(slot, si) in preps?.timeSlots"
+            v-for="(slot, si) in timeSlots"
             :key="si"
             class="cm-slot"
             :style="{width: slotColumnWidth}"
-            title="点击整列填OK"
+            :title="i18n('checkmatrix.fillColumnTip')"
             @click="onHeaderClick(si)"
         >
           <div class="cm-slot-day">{{ slot.label }}</div>
           <div v-if="slot.sub" class="cm-slot-night">{{ slot.sub }}</div>
         </th>
-        <th v-if="showRemark" class="cm-remark">备注</th>
+        <th v-if="showRemark" class="cm-remark">{{ i18n("checkmatrix.remark") }}</th>
       </tr>
       <tr v-else>
         <th class="cm-idx">#</th>
-        <th class="cm-pj">项目</th>
-        <th class="cm-item" :style="{width: itemColumnWidth}">检查内容</th>
+        <th class="cm-pj">{{ i18n("checkmatrix.project") }}</th>
+        <th class="cm-item" :style="{width: itemColumnWidth}">{{ i18n("checkmatrix.item") }}</th>
         <th
             v-for="column in editColumns"
             :key="column.key"
@@ -211,19 +329,23 @@ onBeforeUnmount(() => {
         >
           {{ column.label }}
         </th>
-        <th v-if="showRemark" class="cm-remark">备注</th>
+        <th v-if="showRemark" class="cm-remark">{{ i18n("checkmatrix.remark") }}</th>
       </tr>
       </thead>
       <tbody>
       <tr
           v-for="(row, ri) in rows"
           :key="row.key"
-          :class="{'cm-row-ng': rowNg(row)}"
+          :class="{'cm-row-ng': rowAbnormal(row)}"
       >
         <td
             class="cm-idx"
-            :class="['cm-idx-state', rowState(row)]"
-            title="点击整行循环切换 空→OK→NG→NA"
+            :class="[
+              'cm-idx-state',
+              rowState(row),
+              {'cm-idx-selected': selectedRowKey === row.key},
+            ]"
+            :title="i18n('checkmatrix.rowCycleTip')"
             @click="onRowIndexClick(row)"
         >{{ ri + 1 }}</td>
         <td
@@ -242,14 +364,14 @@ onBeforeUnmount(() => {
               :key="row.key + '_b' + bi"
               class="cm-res"
               :class="[
-                  slotText(row, block.start),
+                  slotClass(row, block.start),
                   {'cm-cur': isFocused(row, block.start)},
               ]"
               :colspan="block.span"
               :tabindex="readonly ? -1 : 0"
               @click="onCellClick(row, block.start)"
               @focusin="focusedKey = cellKey(row, block.start)"
-          >{{ slotText(row, block.start) || "" }}</td>
+          >{{ slotText(row, block.start) }}</td>
         </template>
         <template v-else>
           <td
@@ -278,7 +400,7 @@ onBeforeUnmount(() => {
                 :disabled="readonly"
                 :type="column.type === 'number' ? 'number' : column.type === 'date' ? 'date' : 'text'"
                 size="small"
-                :placeholder="readonly ? '' : '请输入'"
+                :placeholder="readonly ? '' : i18n('api.pleaseInput2')"
                 @update:model-value="(v: string) => onEditColumnInput(row, column.key, v || '')"
             />
           </td>
@@ -288,7 +410,7 @@ onBeforeUnmount(() => {
               class="cm-remark-input"
               :value="itemValue.rows[row.key]?.remark || ''"
               :disabled="readonly"
-              :placeholder="preps?.remarkPlaceholder || '备注'"
+              :placeholder="preps?.remarkPlaceholder || i18n('checkmatrix.remark')"
               @input="onRemarkInput(row, $event)"
           >
         </td>
@@ -308,6 +430,54 @@ onBeforeUnmount(() => {
   border-radius: 8px;
   background: #fff;
   outline: none;
+}
+
+.cm-key-hint {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  padding: 6px 10px;
+  background: #fff;
+  border-bottom: 1px solid var(--sh-cm-bd, #c9cdd3);
+  font-size: 12px;
+  color: #57606a;
+
+  .cm-key-hint-label {
+    font-weight: 600;
+    color: #2f3540;
+  }
+
+  .cm-key-chip {
+    white-space: nowrap;
+
+    kbd {
+      display: inline-block;
+      min-width: 16px;
+      text-align: center;
+      background: #f4f5f7;
+      border: 1px solid #d0d3d9;
+      border-bottom-width: 2px;
+      border-radius: 4px;
+      padding: 0 4px;
+      margin-right: 2px;
+      font-size: 11px;
+      font-family: inherit;
+      color: #2f3540;
+    }
+  }
+
+  .cm-key-hint-sel {
+    margin-left: auto;
+    color: #2563eb;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 45%;
+  }
 }
 
 .cm-table {
@@ -351,17 +521,22 @@ onBeforeUnmount(() => {
       outline-offset: -2px;
     }
 
-    &.cm-idx-state.OK {
+    &.cm-idx-selected {
+      outline: 2px solid var(--sh-cm-accent, #2563eb);
+      outline-offset: -2px;
+    }
+
+    &.cm-idx-state.opt-1 {
       background: var(--sh-cm-ok-bg, #e8f6ee);
       color: var(--sh-cm-ok, #16a34a);
     }
 
-    &.cm-idx-state.NG {
+    &.cm-idx-state.opt-2 {
       background: var(--sh-cm-ng-bg, #fdecec);
       color: var(--sh-cm-ng, #dc2626);
     }
 
-    &.cm-idx-state.NA {
+    &.cm-idx-state.opt-3 {
       background: var(--sh-cm-na-bg, #fdf3e3);
       color: var(--sh-cm-na, #d97706);
     }
@@ -451,21 +626,33 @@ onBeforeUnmount(() => {
       outline-offset: -2px;
     }
 
-    &.OK {
+    &.opt-1 {
       background: var(--sh-cm-ok-bg, #e8f6ee);
       color: var(--sh-cm-ok, #16a34a);
       font-weight: 700;
     }
 
-    &.NG {
+    &.opt-2 {
       background: var(--sh-cm-ng-bg, #fdecec);
       color: var(--sh-cm-ng, #dc2626);
       font-weight: 700;
     }
 
-    &.NA {
+    &.opt-3 {
       background: var(--sh-cm-na-bg, #fdf3e3);
       color: var(--sh-cm-na, #d97706);
+      font-weight: 600;
+    }
+
+    &.opt-4 {
+      background: #eef2fb;
+      color: #4b5bab;
+      font-weight: 600;
+    }
+
+    &.opt-5 {
+      background: #f3eefb;
+      color: #7c4bb0;
       font-weight: 600;
     }
 
