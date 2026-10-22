@@ -103,7 +103,7 @@ onMounted(() => {
             <template v-for="field in checkData(afield)">
               <el-descriptions-item
                   v-if="field.formVisible !== false"
-                  :label="field.label || field.fieldName"
+                  :label="field.preps?.hideLabel ? undefined : (field.label || field.fieldName)"
                   :rowspan="descItm.preps?.descItemRowspan || 1"
 
                   :class-name="descItm.preps?.descItemClassName || ''"

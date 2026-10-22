@@ -422,6 +422,35 @@ const routes: RouteRecordRaw[] = [
         ],
       },
 
+      // ========== 质量系统表单验证 ==========
+      {
+        path: "/quality",
+        name: "quality-group",
+        meta: {title: "质量系统表单", icon: "list"},
+        children: [
+          {
+            path: "/quality/inspection",
+            name: "quality-inspection",
+            component: () =>
+              import("@/sample/quality/QualityInspectionDemo.vue"),
+            meta: {title: "点检矩阵容器(巡查/首件)"},
+          },
+          {
+            path: "/quality/document",
+            name: "quality-document",
+            component: () =>
+              import("@/sample/quality/QualityDocumentDemo.vue"),
+            meta: {title: "单据审批表单"},
+          },
+          {
+            path: "/quality/ledger",
+            name: "quality-ledger",
+            component: () =>
+              import("@/sample/quality/QualityLedgerDemo.vue"),
+            meta: {title: "台账统计列表"},
+          },
+        ],
+      },
       // ========== 动态表单实例 ==========
     /*  {
         path: "/general/page/:param",

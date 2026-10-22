@@ -439,18 +439,117 @@ export declare interface DytablePreps {
 }
 
 /**
- * table 容器特有属性(存于 ContainerFieldInfo.preps,containerType='table')
- * 由原 BatchFieldInfo 差异属性迁移而来,方便查看该容器支持的参数
+ * dytable 容器特有属性(存于 ContainerFieldInfo.preps,containerType='dytable')
+ * 方便查看该容器支持的参数
  */
-export declare interface BatchTablePreps {
-    initRows?: number;
-    batchDefaultData?: any;
-    apiEndpoints?: ApiUrls;
-    importInfo?: ImportInfo;
-    staticData?: string;
-    formFlag?: string;
-    disVisible?: boolean;
-    helpMsg?: string;
+export declare interface DytablePreps {
+    showLineNumber?: boolean;
+    allowResize?: boolean;
+    styles?: { width?: string; height?: string; overflow?: string };
+}
+
+/**
+ * checkmatrix 点检矩阵组件(field.type='checkmatrix')时段列定义
+ * label 为白班时段,sub 为夜班时段(可选,渲染为表头第二行)
+ */
+export declare interface CheckTimeSlot {
+    label: string;
+    sub?: string;
+}
+
+/**
+ * checkmatrix 组件 rowEdit 模式的可编辑列定义
+ * key 对应值行 values 中的键,type 支持 input/number/date/select
+ */
+export declare interface CheckEditColumn {
+    key: string;
+    label: string;
+    type?: "input" | "number" | "date" | "select";
+    width?: number;
+    values?: Array<{ name: string; value: string }>;
+}
+
+/**
+ * checkmatrix 组件配置的单个检查项(存于 preps.checkGroups[].items)
+ * mergeRule 决定时段列合并方式:
+ * - twoPerShift 每班2次: [0-2]/[3-5] 两块
+ * - every2h 2H/次: 每时段独立格
+ * - every4h 4H/次: [0-1]/[2-3]/[4-5] 三块
+ * - onceAll 开班/每季度等: 整行一格
+ */
+export declare interface CheckGroupItem {
+    /**
+     * 稳定标识,作为值行 key;缺省由 组序号_项序号 生成
+     */
+    id?: string;
+    /**
+     * 检查内容(行标题)
+     */
+    content: string;
+    /**
+     * 稽核频率(仅展示)
+     */
+    freq?: string;
+    mergeRule?: "twoPerShift" | "every2h" | "every4h" | "onceAll";
+}
+
+/**
+ * checkmatrix 组件配置的检查分组(存于 preps.checkGroups)
+ * 一组/两组/三组均由配置决定,渲染为左侧 rowspan 分组列
+ */
+export declare interface CheckMatrixGroup {
+    /**
+     * 分组稳定标识
+     */
+    id?: string;
+    title: string;
+    items: CheckGroupItem[];
+}
+
+/**
+ * checkmatrix 点检矩阵组件特有属性(存于 FieldInfo.preps,field.type='checkmatrix')
+ * 用于巡查表/首件确认表等点检类表单的高效录入:
+ * - triState 模式: 检查项 x 时段 的 OK/NG/NA 三态矩阵
+ * - rowEdit 模式: 每检查项一行的多列自由录入(时间/数据记录/异常对策/确认人)
+ * 值存于 dataForm[field.fieldName],结构见 CheckMatrixValue
+ */
+export declare interface CheckMatrixPreps {
+    matrixTitle?: string;
+    columnModel?: "triState" | "rowEdit";
+    timeSlots?: CheckTimeSlot[];
+    editColumns?: CheckEditColumn[];
+    /**
+     * 检查分组配置(一组/两组/三组...),静态配置于 preps,
+     * 亦可由引用方在渲染前注入(如后端模板接口回填)
+     */
+    checkGroups?: CheckMatrixGroup[];
+    showRemark?: boolean;
+    allowKeyboard?: boolean;
+    resultLabels?: { ok?: string; ng?: string; na?: string };
+    fillColumnOnHeaderClick?: boolean;
+    fillRowOnIndexClick?: boolean;
+    maxHeight?: string;
+    noteText?: string;
+    remarkPlaceholder?: string;
+    /**
+     * 检查内容列显式宽度(px),table-layout:fixed 下未显式设宽的列会被
+     * 其余固定列挤压,长文本折行过多导致行高过高;默认 320
+     */
+    itemColumnWidth?: number;
+    /**
+     * 时段列/三态结果列宽度(px),默认 84
+     */
+    slotColumnWidth?: number;
+}
+
+/**
+ * checkmatrix 组件的值结构(存于 dataForm[fieldName])
+ * rows 为 检查项 -> 值行 的映射,key 为 CheckGroupItem.id(缺省生成),
+ * 模板增删项不影响已有数据回填;每行为独立对象,triState 用 results,
+ * rowEdit 用 values,两种模式共用 remark
+ */
+export declare interface CheckMatrixValue {
+    rows?: Record<string, { results?: string[]; values?: Record<string, string>; remark?: string }>;
 }
 
 /**

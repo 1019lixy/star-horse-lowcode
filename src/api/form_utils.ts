@@ -616,6 +616,7 @@ function analysisComps(fieldList: any, ctx?: AppConvertCtx) {
                 processDytableFieldList(dyData, tempFieldList);
             } else if (commonContainer.type === "table") {
                 processBatchFieldContainer(commonContainer.dataList, tempFieldList);
+
             } else {
                 processContainer(filed, commonContainer, tempFieldList, _ctx);
             }
@@ -808,7 +809,7 @@ export function ensureFieldIds(pageInfo: any) {
 const FULL_ROW_TYPES: Set<string> = new Set([
     "transfer", "htmleditor", "markdown", "textarea",
     "json", "json-array", "divider", "image", "progress",
-    "usercomp", "view-markdown", "html", "text"]);
+    "usercomp", "view-markdown", "html", "text", "checkmatrix"]);
 
 export function registerFullRowType(type: string) {
     FULL_ROW_TYPES.add(type);
