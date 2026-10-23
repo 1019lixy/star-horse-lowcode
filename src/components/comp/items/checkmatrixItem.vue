@@ -845,6 +845,26 @@ onBeforeUnmount(() => {
   padding: 6px !important;
   vertical-align: middle;
   font-size: 13px;
+  transition: background 0.15s, box-shadow 0.15s;
+
+  /* 鼠标移上单元格:浅底高亮 + 细边框,提示可交互 */
+  &:hover {
+    background: #f7f9fc;
+    box-shadow: inset 0 0 0 1px var(--sh-cm-bd, #c9cdd3);
+  }
+
+  /* 可编辑格(输入控件/三态格)hover 更强提示:蓝框 */
+  &:has(> .cm-cell-form-item):hover,
+  &:has(> .cm-res):hover {
+    background: #f0f7ff;
+    box-shadow: inset 0 0 0 2px var(--sh-cm-accent, #2563eb);
+  }
+
+  /* 输入聚焦:整格蓝框 */
+  &:focus-within {
+    background: #fff;
+    box-shadow: inset 0 0 0 2px var(--sh-cm-accent, #2563eb);
+  }
 }
 
 .no-cell {
@@ -1156,8 +1176,18 @@ tr {
 }
 
 .dytable-cell :deep(.el-input__inner) {
-  text-align: center;
+  text-align: left;
   height: 100%;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+/* 静态文本格 hover 也可感知(跟随 .dytable-cell) */
+.cm-static-cell {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
 }
 
 /* 分组标题:group-label 全局样式已定义,此处补充箭头对齐 */
