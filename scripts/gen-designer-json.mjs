@@ -164,6 +164,7 @@ const buildCheckMatrixContainer = (title, elements, preps = {}) => {
       columnModel: preps.columnModel || "triState",
       showRemark: preps.showRemark !== false,
       allowKeyboard: preps.allowKeyboard !== false,
+      allowQuickOp: preps.allowQuickOp !== false,
       showLineNumber: preps.showLineNumber !== false,
       showStats: preps.showStats === true,
       fillColumnOnHeaderClick: preps.fillColumnOnHeaderClick !== false,

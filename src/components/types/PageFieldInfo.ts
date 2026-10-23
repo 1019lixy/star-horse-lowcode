@@ -554,6 +554,11 @@ export declare interface CheckMatrixPreps {
     showRemark?: boolean;
     allowKeyboard?: boolean;
     /**
+     * 是否允许快捷批量操作(整表一键完成/分组快捷设置/抽屉批量/chip循环/列头行号整列整行循环),
+     * 默认 true;部分业务禁止一键操作时置 false(单格点检与抽屉逐块填写仍可用)
+     */
+    allowQuickOp?: boolean;
+    /**
      * 兼容保留:旧结果标签配置,新配置请统一用 options
      */
     resultLabels?: { ok?: string; ng?: string; na?: string };

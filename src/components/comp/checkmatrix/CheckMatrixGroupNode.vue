@@ -39,7 +39,7 @@ const props = withDefaults(
       >{{ i18n("checkmatrix.statFilled") }}{{ api.groupStats(node).filled }} / {{ i18n("checkmatrix.statEmpty") }}{{ api.groupStats(node).empty }}</span>
       <span class="cm-mobile-card-actions" @click.stop>
         <el-dropdown
-            v-if="!readonly && api.groupOptions(node).length > 0"
+            v-if="!readonly && api.allowQuickOp.value !== false && api.groupOptions(node).length > 0"
             trigger="click"
             @command="(cmd: string) => api.fillGroup(node, cmd)"
         >
@@ -78,7 +78,7 @@ const props = withDefaults(
               :key="bi"
               class="cm-mobile-stat-chip"
               :class="block.cls"
-              @click.stop="api.chipCycle(item, Number(bi))"
+              @click.stop="api.allowQuickOp.value !== false && api.chipCycle(item, Number(bi))"
           >#{{ Number(bi) + 1 }} {{ block.text }}</span>
           <span
               v-if="!readonly"

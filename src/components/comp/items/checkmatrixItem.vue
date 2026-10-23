@@ -37,6 +37,8 @@ const readonly = computed(
     () => props.source === 3 || props.item?.preps?.disabled === true,
 );
 const allowKeyboard = computed(() => props.item?.preps?.allowKeyboard !== false);
+/** 快捷批量操作开关(默认开启;部分业务禁止一键操作时置 false,单点仍可用) */
+const allowQuickOp = computed(() => props.item?.preps?.allowQuickOp !== false);
 const showStats = computed(() => props.item?.preps?.showStats === true);
 /** 表头行(elements[0]) */
 const headerRow = computed(() => matrixData.value?.[0] || []);
@@ -98,7 +100,7 @@ const toggleCollapse = () => {
  * (数据行因 rowspan/colspan 列数不同,不能按数组索引定位,须用 preps.visualColIndex)
  */
 const cycleColumnByVisual = (visualCol: number) => {
-  if (readonly.value) return;
+  if (readonly.value || !allowQuickOp.value) return;
   const vc = Number(visualCol);
   // 基准值:第一行数据中该视觉列的 checkitem
   let baseField: any = null;
@@ -323,6 +325,8 @@ const mobileApi = {
   fillGroup: (node: any, value: string) => fillGroupByOption(node, value),
   blockSummary: (item: any) => mobileBlockSummary(item),
   chipCycle: (item: any, bi: number) => onMobileChipCycle(item, bi),
+  // 快捷操作开关(递归组件据此隐藏整组设置)
+  allowQuickOp: computed(() => allowQuickOp.value),
   openDrawer: (item: any) => openMobileDrawer(item),
 };
 
@@ -385,7 +389,7 @@ onBeforeUnmount(() => {
       </div>
       <template v-if="!collapsed">
         <div class="cm-mobile">
-          <div v-if="!readonly && wholeOptions.length > 0" class="cm-mobile-toolbar">
+          <div v-if="!readonly && allowQuickOp && wholeOptions.length > 0" class="cm-mobile-toolbar">
             <span class="cm-mobile-toolbar-count">{{ i18n("checkmatrix.wholeTable") }}</span>
             <el-dropdown trigger="click" @command="(cmd: string) => fillEntireMatrix(cmd)">
               <el-button link type="primary" size="small">
@@ -468,7 +472,7 @@ onBeforeUnmount(() => {
           <template v-else>{{ i18n("checkmatrix.keyHintSelectTip") }}</template>
         </span>
         <!-- 整表一键点检(按首个检查项的选项集渲染,跳过自定义文本) -->
-        <span v-if="!readonly && wholeOptions.length > 0" class="cm-key-hint-batch" @click.stop>
+        <span v-if="!readonly && allowQuickOp && wholeOptions.length > 0" class="cm-key-hint-batch" @click.stop>
           <el-button
               v-for="(opt, oi) in wholeOptions"
               :key="oi"
@@ -502,7 +506,7 @@ onBeforeUnmount(() => {
               v-for="(hcol, hi) in headerRow"
               :key="'h' + hi"
               class="cm-col-head"
-              :title="i18n('checkmatrix.fillColumnTip')"
+              :title="allowQuickOp ? i18n('checkmatrix.fillColumnTip') : ''"
               @click="cycleColumnByVisual(Number(hi))"
           >{{ checkItem(hcol)?.preps?.textContent || '' }}</th>
         </tr>
@@ -517,8 +521,8 @@ onBeforeUnmount(() => {
           <td
               v-if="item.preps?.showLineNumber"
               class="dy-cell no-cell cm-row-idx"
-              :title="i18n('checkmatrix.rowCycleTip')"
-              @click="cycleRow(Number(rowIndex) + 1)"
+              :title="allowQuickOp ? i18n('checkmatrix.rowCycleTip') : ''"
+              @click="allowQuickOp && cycleRow(Number(rowIndex) + 1)"
           >
             {{ Number(rowIndex) + 1 }}
           </td>
@@ -622,7 +626,7 @@ onBeforeUnmount(() => {
             </el-descriptions-item>
           </el-descriptions>
         </div>
-        <div class="cm-drawer-batch">
+        <div v-if="allowQuickOp" class="cm-drawer-batch">
           <div
               v-for="(opt, oi) in (mobileActiveItem?.fields?.[0] ? resolveOptions(mobileActiveItem.fields[0]) : [])"
               :key="oi"
