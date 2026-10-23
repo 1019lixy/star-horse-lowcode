@@ -3143,4 +3143,7 @@ export default {
   "checkmatrix.statEmpty": "Empty",
   "checkmatrix.statCustom": "Custom",
   "checkmatrix.groupSet": "Group Set",
+  "checkmatrix.clearAll": "Clear",
+  "checkmatrix.wholeTable": "All",
+  "checkmatrix.wholeSet": "Complete All",
 };

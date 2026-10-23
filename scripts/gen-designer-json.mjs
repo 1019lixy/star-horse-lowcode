@@ -70,6 +70,8 @@ const buildField = (field) => {
       values: field.preps?.values || [],
       rules: [],
       helpMsg: "",
+      hideLabel: field.preps?.hideLabel === true,
+      defaultCurrent: field.preps?.defaultCurrent === true,
       // checkitem 专有属性(时段合并规则/备选项)
       ...(field.type === "checkitem"
         ? {

@@ -1,5 +1,5 @@
 import type {CheckTemplateGroup} from "./inspectionCommon";
-import {buildCheckMatrixElements} from "./inspectionCommon";
+import {buildCheckMatrixElements, type FirstArticleColumn} from "./inspectionCommon";
 import type {InspectionFormDef} from "./inspectionForms";
 
 
@@ -199,10 +199,50 @@ function buildTestGlueFirstHeaderFields(prefix: string): Array<Record<string, an
  */
 const firstArticleConfigs: Record<string, {
     buildHeaderFields: (prefix: string) => Array<Record<string, any>>;
+    editColumns: FirstArticleColumn[];
 }> = {
-    smtFirst: {buildHeaderFields: buildSmtFirstHeaderFields},
-    dipFirst: {buildHeaderFields: buildDipFirstHeaderFields},
-    testGlueFirst: {buildHeaderFields: buildTestGlueFirstHeaderFields},
+    // 列语义优先选择/自动带出,减少手输:时间自动当前时刻,是否/结果用点检格
+    smtFirst: {
+        buildHeaderFields: buildSmtFirstHeaderFields,
+        editColumns: [
+            {label: "时间", type: "time", autoCurrent: true},
+            {label: "数据记录", type: "input"},
+            {label: "异常原因/对策", type: "input"},
+            {label: "确认人", type: "input"},
+        ],
+    },
+    dipFirst: {
+        buildHeaderFields: buildDipFirstHeaderFields,
+        editColumns: [
+            {
+                label: "内容是否涉及",
+                type: "checkitem",
+                values: [
+                    {name: "是", value: "Y"},
+                    {name: "否", value: "N"},
+                ],
+            },
+            {label: "确认记录", type: "input"},
+            {label: "确认人", type: "input"},
+        ],
+    },
+    testGlueFirst: {
+        buildHeaderFields: buildTestGlueFirstHeaderFields,
+        editColumns: [
+            {label: "数据记录", type: "input"},
+            {
+                label: "结果",
+                type: "checkitem",
+                values: [
+                    {name: "OK", value: "OK"},
+                    {name: "NG", value: "NG"},
+                    {name: "NA", value: "NA"},
+                ],
+            },
+            {label: "异常原因/对策", type: "input"},
+            {label: "确认人", type: "input"},
+        ],
+    },
 };
 
 /**
@@ -258,6 +298,8 @@ function buildFirstArticleForm(
                                 groups,
                                 "rowEdit",
                                 `checkmatrix_${key}`,
+                                undefined,
+                                config.editColumns,
                             ),
                         },
                     ],

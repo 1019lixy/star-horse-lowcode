@@ -3123,4 +3123,7 @@ export default {
   "checkmatrix.statEmpty": "未填",
   "checkmatrix.statCustom": "自定义",
   "checkmatrix.groupSet": "整组设置",
+  "checkmatrix.clearAll": "清空",
+  "checkmatrix.wholeTable": "全表",
+  "checkmatrix.wholeSet": "一键完成",
 };

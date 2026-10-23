@@ -289,8 +289,38 @@ onMounted(() => {
   props.field.preps["disabledDate"] = (date: Date) => {
     return disabledDate.value.includes(date.getDate().toString());
   };
+
+/** 默认当前日期/时间:无值且配 preps.defaultCurrent 时自动填入(免手输) */
+function fillCurrentIfNeeded(
+    fieldName: string,
+    formData: any,
+    kind: "date" | "time" | "datetime",
+    format: string,
+) {
+    const cur = formData?.value?.[fieldName];
+    if (cur !== undefined && cur !== null && cur !== "") return;
+    const now = new Date();
+    const p = (n: number) => String(n).padStart(2, "0");
+    const ymd = `${now.getFullYear()}-${p(now.getMonth() + 1)}-${p(now.getDate())}`;
+    const hms = `${p(now.getHours())}:${p(now.getMinutes())}:${p(now.getSeconds())}`;
+    const hm = `${p(now.getHours())}:${p(now.getMinutes())}`;
+    let val = "";
+    if (kind === "date") val = ymd;
+    else if (kind === "time") val = format.includes("ss") ? hms : hm;
+    else val = format.includes("ss") ? `${ymd} ${hms}` : `${ymd} ${hm}`;
+    formData.value[fieldName] = val;
+}
+
   nextTick(() => {
     initCompCallEvent(props, emits, formData);
+    if (props.field.preps?.defaultCurrent === true && props.source !== 3) {
+      fillCurrentIfNeeded(
+          props.field.fieldName,
+          formData,
+          "date",
+          "YYYY-MM-DD",
+      );
+    }
   });
 });
 

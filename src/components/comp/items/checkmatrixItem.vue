@@ -75,6 +75,8 @@ const {
   optionIndex,
   setCellValue,
   nextOptionValue,
+  fillEntireMatrix,
+  allCheckFields,
   onEditInput,
   onEditDone,
   stats,
@@ -163,6 +165,12 @@ const maxGroupVisualCol = computed(() => {
  * 单级:分组格视觉列 0(默认 groupLevel=1);多级:多个分组格各带 groupLevel(1..N)
  * 检查内容列 = 分组格最大视觉列 + 1,频率列 = +2(动态推断,支持列右移)
  */
+/** 整表一键点检的选项集(取首个 checkitem 的选项) */
+const wholeOptions = computed(() => {
+  const first = allCheckFields.value?.[0];
+  return first ? resolveOptions(first) : [];
+});
+
 const mobileGroupTree = computed(() => {
   const roots: any[] = [];
   const stack: Array<{level: number; node: any}> = [];
@@ -377,6 +385,24 @@ onBeforeUnmount(() => {
       </div>
       <template v-if="!collapsed">
         <div class="cm-mobile">
+          <div v-if="!readonly && wholeOptions.length > 0" class="cm-mobile-toolbar">
+            <span class="cm-mobile-toolbar-count">{{ i18n("checkmatrix.wholeTable") }}</span>
+            <el-dropdown trigger="click" @command="(cmd: string) => fillEntireMatrix(cmd)">
+              <el-button link type="primary" size="small">
+                {{ i18n("checkmatrix.wholeSet") }}
+                <el-icon class="el-icon--right"><ArrowDown/></el-icon>
+              </el-button>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item
+                      v-for="(opt, oi) in wholeOptions"
+                      :key="oi"
+                      :command="opt.value"
+                  >{{ i18n("checkmatrix.fillAllPrefix") }}{{ opt.name }}</el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+          </div>
           <check-matrix-group-node
               v-for="(node, ni) in mobileGroupTree"
               :key="ni"
@@ -440,6 +466,17 @@ onBeforeUnmount(() => {
             {{ i18n("checkmatrix.keyHintCurrent") }}: {{ selectedInfo }}
           </template>
           <template v-else>{{ i18n("checkmatrix.keyHintSelectTip") }}</template>
+        </span>
+        <!-- 整表一键点检(按首个检查项的选项集渲染,跳过自定义文本) -->
+        <span v-if="!readonly && wholeOptions.length > 0" class="cm-key-hint-batch" @click.stop>
+          <el-button
+              v-for="(opt, oi) in wholeOptions"
+              :key="oi"
+              size="small"
+              link
+              type="primary"
+              @click="fillEntireMatrix(opt.value)"
+          >{{ i18n("checkmatrix.fillAllPrefix") }}{{ opt.name }}</el-button>
         </span>
       </div>
       <table
@@ -664,6 +701,27 @@ onBeforeUnmount(() => {
 
 .cm-item-header + .cm-item-wrap {
   border-top: none;
+}
+
+.cm-key-hint-batch {
+  margin-left: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cm-mobile-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 0 4px 8px;
+}
+
+.cm-mobile-toolbar-count {
+  margin-right: auto;
+  font-size: 12px;
+  color: #8a919c;
 }
 
 .cm-key-hint {

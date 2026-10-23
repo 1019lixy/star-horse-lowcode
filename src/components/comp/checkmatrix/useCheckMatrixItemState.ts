@@ -210,9 +210,22 @@ export function useCheckMatrixItemState(options: {
         return result;
     });
 
-    /** 按键提示(按当前选中字段的选项生成,无选中时为空) */
+    /** 容器内全部 checkitem 字段(按视觉顺序) */
+    const allCheckFields = computed<any[]>(() => {
+        const list: any[] = [];
+        for (const row of rows.value) {
+            for (const cell of row) {
+                const field = extractCheckItem(cell);
+                if (field) list.push(field);
+            }
+        }
+        return list;
+    });
+
+    /** 按键提示:按当前选中字段的选项,无选中时回退首个 checkitem 的选项(保证初始有内容) */
     const keyHints = computed<KeyHint[]>(() => {
-        const field = findFieldByName(focusedField.value);
+        const focused = findFieldByName(focusedField.value);
+        const field = focused || allCheckFields.value[0];
         return buildKeyMapHints(field ? resolveOptions(field) : []);
     });
 
@@ -225,9 +238,30 @@ export function useCheckMatrixItemState(options: {
         return `${field.fieldName} = ${valueText}`;
     });
 
+    /** 整表一键点检:所有 checkitem 设为指定值(跳过自定义文本),支持任意层级/合并格 */
+    const fillEntireMatrix = (value: string) => {
+        if (readonly.value) return;
+        for (const field of allCheckFields.value) {
+            const cur = cellValue(field);
+            if (cur && optionIndex(resolveOptions(field), cur) < 0) continue;
+            setCellValue(field, value);
+        }
+    };
+
+    /** 整表清空(所有 checkitem 置空,含自定义文本) */
+    const clearEntireMatrix = () => {
+        if (readonly.value) return;
+        for (const field of allCheckFields.value) {
+            setCellValue(field, "");
+        }
+    };
+
     return {
         resolveOptions,
         cellValue,
+        fillEntireMatrix,
+        clearEntireMatrix,
+        allCheckFields,
         setCellValue,
         cellText,
         cellClass,

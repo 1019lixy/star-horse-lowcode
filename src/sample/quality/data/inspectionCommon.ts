@@ -139,21 +139,27 @@ function buildInputField(
     const field: Record<string, any> = {
         type: "input",
         fieldName: nextCheckMatrixFieldName(fieldPrefix),
-        preps: {},
+        preps: {
+            // 矩阵格内的 label 不显示:表头(时段/列名)已说明含义,格内重复显示会污染业务内容
+            hideLabel: true,
+        },
     };
     if (label) field.label = label;
     return field;
 }
 
 /**
- * 首件表行式点检字段列定义(时间/数据记录/异常对策/确认人)
+ * 首件表行式点检列(各表按 Excel 传入,含类型):
+ * type: date(默认当前时间) | select(下拉) | checkitem(点检是/否/OK等) | input | number
+ * 高效作业:能选择/自动带出的绝不手输
  */
-const firstArticleFieldColumns = [
-    {label: "时间"},
-    {label: "数据记录"},
-    {label: "异常对策"},
-    {label: "确认人"},
-];
+export interface FirstArticleColumn {
+    label: string;
+    /** date 默认当前时间;autoUser 默认当前登录人 */
+    type?: "date" | "time" | "datetime" | "select" | "checkitem" | "input" | "number";
+    values?: Array<{ name: string; value: string }>;
+    autoCurrent?: boolean;
+}
 
 /**
  * 检查项模板转 checkmatrix 容器 elements 二维数组(与 dytable 同构):
@@ -168,6 +174,7 @@ export function buildCheckMatrixElements(
     columnModel: "triState" | "rowEdit",
     fieldPrefix: string,
     timeSlots?: ReadonlyArray<{ label: string; sub: string }>,
+    editColumns?: FirstArticleColumn[],
 ): Array<Array<Record<string, any>>> {
     const rows: Array<Array<Record<string, any>>> = [];
     const slotCount = timeSlots?.length ?? 0;
@@ -223,10 +230,11 @@ export function buildCheckMatrixElements(
             });
         }
     } else {
+        const columns = editColumns || [];
         rows.push([
             buildStaticCell("项目"),
             buildStaticCell("检查内容"),
-            ...firstArticleFieldColumns.map((col) => buildStaticCell(col.label)),
+            ...columns.map((col) => buildStaticCell(col.label)),
             buildStaticCell("备注"),
         ]);
         for (const group of groups) {
@@ -243,10 +251,13 @@ export function buildCheckMatrixElements(
                     );
                 }
                 row.push(withVisualCol(buildStaticCell(item.content), vc++));
-                for (const col of firstArticleFieldColumns) {
+                // 按列语义生成字段:选择/点检/自动带出优先,减少手输
+                for (const col of columns) {
                     row.push(
                         withVisualCol(
-                            buildFieldCell(buildInputField(fieldPrefix, col.label)),
+                            buildFieldCell(
+                                buildFirstArticleField(fieldPrefix, col),
+                            ),
                             vc++,
                         ),
                     );
@@ -262,6 +273,49 @@ export function buildCheckMatrixElements(
         }
     }
     return rows;
+}
+
+/**
+ * 按首件表列定义生成单元格字段(高效:能选择/自动带出的绝不手输):
+ * - date: 日期/时间控件,autoCurrent 时默认当前时间
+ * - checkitem: 点检格(是/否/OK等,点击循环选择)
+ * - select: 下拉选择
+ * - number/input: 输入(数字/文本)
+ */
+function buildFirstArticleField(
+    fieldPrefix: string,
+    col: FirstArticleColumn,
+): Record<string, any> {
+    const fieldName = nextCheckMatrixFieldName(fieldPrefix);
+    const type = col.type || "input";
+    if (type === "checkitem") {
+        return {
+            type: "checkitem",
+            fieldName,
+            label: col.label,
+            preps: {
+                hideLabel: true,
+                mergeRule: "onceAll",
+                options:
+                    col.values ||
+                    [
+                        {name: "是", value: "Y"},
+                        {name: "否", value: "N"},
+                    ],
+            },
+        };
+    }
+    return {
+        type,
+        fieldName,
+        label: col.label,
+        preps: {
+            hideLabel: true,
+            values: col.values || [],
+            // 日期/时间默认当前值,确认人等默认当前登录人(免手输)
+            defaultCurrent: col.autoCurrent === true,
+        },
+    };
 }
 
 /**
