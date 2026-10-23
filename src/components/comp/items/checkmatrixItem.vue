@@ -845,22 +845,20 @@ onBeforeUnmount(() => {
   padding: 6px !important;
   vertical-align: middle;
   font-size: 13px;
-  transition: background 0.15s, box-shadow 0.15s;
+  transition: background 0.15s;
 
-  /* 鼠标移上单元格:浅底高亮 + 细边框,提示可交互 */
+  /* 鼠标移上单元格:仅浅底高亮(不带边框,避免与三态格选中/聚焦边框叠加成双边框) */
   &:hover {
     background: #f7f9fc;
-    box-shadow: inset 0 0 0 1px var(--sh-cm-bd, #c9cdd3);
   }
 
-  /* 可编辑格(输入控件/三态格)hover 更强提示:蓝框 */
+  /* 可编辑格(输入控件/三态格)hover:淡蓝底提示 */
   &:has(> .cm-cell-form-item):hover,
   &:has(> .cm-res):hover {
     background: #f0f7ff;
-    box-shadow: inset 0 0 0 2px var(--sh-cm-accent, #2563eb);
   }
 
-  /* 输入聚焦:整格蓝框 */
+  /* 输入聚焦:整格蓝框(编辑态,唯一在此处出现的边框) */
   &:focus-within {
     background: #fff;
     box-shadow: inset 0 0 0 2px var(--sh-cm-accent, #2563eb);
@@ -914,10 +912,7 @@ onBeforeUnmount(() => {
   transition: background 0.15s;
   border-radius: 2px;
 
-  &:hover {
-    outline: 2px solid var(--sh-cm-accent, #2563eb);
-    outline-offset: -2px;
-  }
+  /* hover 边框统一由父单元格 .dytable-cell:hover 提供,此处不再叠加(避免双边框) */
 
   &.opt-1 {
     background: var(--sh-cm-ok-bg, #e8f6ee);
@@ -1131,10 +1126,6 @@ tr {
   font-size: 13px;
   transition: background 0.15s;
 
-  &:hover {
-    outline: 2px solid #2563eb;
-    outline-offset: -2px;
-  }
 
   &.opt-1 { background: #e8f6ee; color: #16a34a; font-weight: 700; }
   &.opt-2 { background: #fdecec; color: #dc2626; font-weight: 700; }
