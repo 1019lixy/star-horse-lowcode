@@ -4,6 +4,7 @@ import {ContainerPreps} from "@/components/types/ItemPreps";
 import {initRelationEvent} from "@/components/formcomp/utils/ItemRelationEventUtils";
 import {computed, inject, ModelRef, nextTick, onMounted, ref, unref, watch} from "vue";
 import {isMobile} from "@/api/device";
+import {ArrowDown, ArrowRight} from "@element-plus/icons-vue";
 import StarHorseItem from "@/components/comp/StarHorseItem.vue";
 import StarHorseFormItem from "@/components/comp/StarHorseFormItem.vue";
 
@@ -101,15 +102,40 @@ watch(
 onMounted(() => {
   init();
 });
+
+/** APP 端 descriptions 默认展开(可手动折叠收紧) */
+const descCollapsed = ref(false);
+const toggleDescCollapsed = () => {
+  descCollapsed.value = !descCollapsed.value;
+};
 </script>
 
 <template>
   <template v-if="item.containerFields?.length > 0">
-    <div style="margin:5px 0;width: 100%;box-sizing: border-box;overflow: hidden">
+    <!-- 标题横幅(PC + APP 统一用 group-label;APP 端可点击折叠/展开) -->
+    <div
+        v-if="item.title || item.label"
+        class="group-label"
+        :class="{'group-label-clickable': true}"
+        @click="toggleDescCollapsed()"
+      >
+        <div
+            class="group-label-text"
+            v-html="item.title || item.label"
+        ></div>
+        <el-icon class="group-label-arrow">
+          <ArrowRight v-if="descCollapsed"/>
+          <ArrowDown v-else/>
+        </el-icon>
+    </div>
+    <div
+        v-show="!descCollapsed"
+        style="margin:5px 0;width: 100%;box-sizing: border-box;overflow: hidden;background: #fff;border:1px solid #e3e6eb;border-radius: 8px;"
+    >
       <template v-for="descItm in item.containerFields" :key="descItm.id">
         <el-descriptions
             v-if="descItm.formVisible !== false && !item.preps?.hideDescriptions"
-            :title="item.title || ''"
+            :title="''"
             :direction="descDirection"
             :column="descColumn"
             style="width: 100%"
@@ -216,4 +242,36 @@ onMounted(() => {
   height: 100% !important;
   overflow: hidden;
 }
+  /* APP 端:单列纵向,属性间紧凑(减小 el-descriptions 默认间距) */
+  @media (max-width: 768px) {
+    :deep(.el-descriptions) {
+      margin: 0;
+    }
+    :deep(.el-descriptions__body) {
+      .el-descriptions__table {
+        th.el-descriptions__cell,
+        td.el-descriptions__cell {
+          padding-bottom: 6px;
+          padding-top: 6px;
+        }
+      }
+    }
+  }
+
+  /* APP 端 group-label 可点击折叠 + 箭头图标 */
+  .group-label-clickable {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+
+    .group-label-text {
+      flex: 1;
+    }
+
+    .group-label-arrow {
+      flex: none;
+      font-size: 14px;
+      color: var(--el-text-color-secondary);
+    }
+  }
 </style>

@@ -409,7 +409,7 @@ export const analysisCompDatas = (dataList: any) => {
                 selectList.push(...(innerSelectList || []));
             }
 
-            if (comp.itemType === "dytable" || comp.itemType === "gridtable") {
+            if (comp.itemType === "dytable" || comp.itemType === "gridtable" || comp.itemType === "checkmatrix") {
                 compFieldList.push({
                     fieldName: "",
                     containerType: comp.itemType,
@@ -505,7 +505,7 @@ const conditionAnalysis = (comp: any) => {
 };
 
 function getContainerResult(comp: any) {
-    if (["box", "dytable", "gridtable"].includes(comp.itemType)) {
+    if (["box", "dytable", "gridtable", "checkmatrix"].includes(comp.itemType)) {
         return boxDytableAnalysis(comp);
     } else if (comp.itemType === "table") {
         return tableAnalysis(comp);
@@ -609,14 +609,53 @@ function analysisComps(fieldList: any, ctx?: AppConvertCtx) {
             // 统一容器:数据均来自 containerFields,按 containerType 分发保持各容器处理语义
             if (
                 commonContainer.type === "dytable" ||
-                commonContainer.type == "gridtable"
+                commonContainer.type == "gridtable" ||
+                commonContainer.type === "checkmatrix"
             ) {
-                const dyData =
-                    commonContainer.dataList[0]?.fieldList || commonContainer.dataList;
-                processDytableFieldList(dyData, tempFieldList);
+                // checkmatrix APP 端保留容器结构(与 dytable 同构,由 checkmatrixItem 渲染)
+                if (commonContainer.type === "checkmatrix") {
+                    if ((filed as any).__appCheckMatrixReserved) {
+                        tempFieldList.push(filed);
+                    } else {
+                        tempFieldList.push({
+                            ...filed,
+                            __appCheckMatrixReserved: true,
+                        });
+                    }
+                } else {
+                    const dyData =
+                        commonContainer.dataList[0]?.fieldList || commonContainer.dataList;
+                    processDytableFieldList(dyData, tempFieldList);
+                }
             } else if (commonContainer.type === "table") {
-                processBatchFieldContainer(commonContainer.dataList, tempFieldList);
-
+                // 子表(subFormFlag="Y"):APP 端保留容器结构,交由 tableItem ->
+                // StarHorseFormTable -> StarHorseFormList 渲染为可新增/编辑/删除的行列表
+                // (StarHorseFormList 自带移动端适配);批量字段(非 Y)保持原拍平逻辑
+                const hasSubForm = (commonContainer.dataList || []).some(
+                    (container: any) => container?.subFormFlag === "Y",
+                );
+                if (filed.__appTableReserved) {
+                    tempFieldList.push(filed);
+                } else if (hasSubForm) {
+                    tempFieldList.push({
+                        ...filed,
+                        __appTableReserved: true,
+                    });
+                } else {
+                    processBatchFieldContainer(commonContainer.dataList, tempFieldList);
+                }
+            } else if (commonContainer.type === "descriptions") {
+                // APP 端保留 descriptions 容器结构(不拍平),由 descriptionsItem 渲染为
+                // 单个 el-descriptions(vertical + column=1 一列纵向),避免拍平后字段流
+                // 被 wrapDefaultContainer 重新包装成多个 descriptions 造成属性间大间距
+                if (filed.__appDescriptionsReserved) {
+                    tempFieldList.push(filed);
+                } else {
+                    tempFieldList.push({
+                        ...filed,
+                        __appDescriptionsReserved: true,
+                    });
+                }
             } else {
                 processContainer(filed, commonContainer, tempFieldList, _ctx);
             }
@@ -809,7 +848,7 @@ export function ensureFieldIds(pageInfo: any) {
 const FULL_ROW_TYPES: Set<string> = new Set([
     "transfer", "htmleditor", "markdown", "textarea",
     "json", "json-array", "divider", "image", "progress",
-    "usercomp", "view-markdown", "html", "text", "checkmatrix"]);
+    "usercomp", "view-markdown", "html", "text"]);
 
 export function registerFullRowType(type: string) {
     FULL_ROW_TYPES.add(type);
@@ -822,12 +861,11 @@ export function isFullRowType(type: string): boolean {
 /**
  * 独立成块渲染的字段类型(不进默认 descriptions 包装):
  * - button/usercomp: 裸渲染动作/自定义组件(既有行为)
- * - checkmatrix 等整表字段: 表格需要完整宽度与自然高度,
- *   el-descriptions-item 内容单元格的布局约束会导致表格塌陷
+ * - html: 整行说明块
  * 可通过 registerIndependentFieldType 扩展,后续加同类组件只需注册类型名
  */
 const INDEPENDENT_FIELD_TYPES: Set<string> = new Set([
-    "button", "usercomp", "checkmatrix"]);
+    "button", "usercomp", "html"]);
 
 export function registerIndependentFieldType(type: string) {
     INDEPENDENT_FIELD_TYPES.add(type);

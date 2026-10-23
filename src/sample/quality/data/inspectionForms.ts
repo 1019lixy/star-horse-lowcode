@@ -1,7 +1,7 @@
 import type {PageFieldInfo} from "@/components/types";
 import type {CheckTemplateGroup} from "./inspectionCommon";
 import {
-    buildCheckValues,
+    buildCheckMatrixElements,
     buildInspectionHeaderFields,
     buildIssueTableFields,
     defectNoteText,
@@ -57,7 +57,8 @@ export function buildInspectionForm(
                         },
                     ],
                     preps: {
-                        direction: "horizontal",
+                        dataIndex: 1,
+                        direction: "vertical",
                         column: 3,
                         border: true,
                         descItemLabelWidth: "90px",
@@ -65,22 +66,33 @@ export function buildInspectionForm(
                 },
                 {
                     label: "稽核结果",
-                    fieldName: matrixFieldName,
-                    type: "checkmatrix",
+                    fieldName: `checkmatrix_${key}`,
+                    containerType: "checkmatrix",
                     formVisible: true,
+                    containerFields: [
+                        {
+                            fieldList: buildCheckMatrixElements(
+                                groups,
+                                "triState",
+                                `checkmatrix_${key}`,
+                                ipqcTimeSlots,
+                            ),
+                        },
+                    ],
                     preps: {
                         dataIndex: 10,
                         hideLabel: true,
                         appLabelVisible: true,
                         matrixTitle: `${title} · 稽核结果`,
                         columnModel: "triState",
-                        timeSlots: ipqcTimeSlots,
-                        values: buildCheckValues(groups),
                         showRemark: true,
                         allowKeyboard: true,
+                        showLineNumber: true,
+                        showHeader: false,
+                        itemColumnWidth: 320,
+                        slotColumnWidth: 84,
                         fillColumnOnHeaderClick: true,
                         fillRowOnIndexClick: true,
-                        noteText: defectNoteText,
                     },
                 },
                 {
@@ -99,13 +111,37 @@ export function buildInspectionForm(
                             preps: {},
                         },
                     ],
-                    preps: {},
+                    preps: {dataIndex: 20},
+                },
+                {
+                    label: "缺点定义",
+                    fieldName: `${key}DefectNote`,
+                    type: "html",
+                    formVisible: true,
+                    listVisible: false,
+                    preps: {
+                        dataIndex: 30,
+                        staticData: true,
+                        textContent:
+                            `<div style="border:1px solid #e3e6eb;border-radius:4px;padding:12px 14px;background:#fff;margin-top:8px;width:100%;">`
+                            + `<div style="font-weight:600;font-size:13px;color:#1f2329;margin-bottom:6px;">缺点定义</div>`
+                            + `<div style="font-size:12px;color:#57606a;line-height:1.8;">${defectNoteText}</div>`
+                            + `</div>`,
+                    },
                 },
             ],
         },
         dataForm: {
-            [matrixFieldName]: {rows: {}},
-            [`${key}Issues`]: [],
+
+            [`${key}Issues`]: [
+                {
+                    [`${key}IssueNo`]: 1,
+                    [`${key}ProblemPoint`]: "物料摆放标识缺失",
+                    [`${key}ImproveAction`]: "重新张贴标识并班前宣导",
+                    [`${key}RespUser`]: "张工",
+                    [`${key}VerifyResult`]: "待验证",
+                },
+            ],
         },
     };
 }

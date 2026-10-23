@@ -13,9 +13,16 @@ import {compKey, uuid} from "@/api/system";
 import UTableColumn from "@/components/comp/items/UTableColumn.vue";
 import StarHorseForm from "@/components/comp/StarHorseForm.vue";
 import {FieldInfo} from "@/components/types";
-import {Sort, UploadFilled} from "@element-plus/icons-vue";
+import {Sort, UploadFilled, ArrowDown, ArrowRight} from "@element-plus/icons-vue";
 import {isMobile} from "@/api/device";
 import StarHorsePanel from "@/components/comp/StarHorsePanel.vue";
+import StarHorseFormListApp from "@/components/comp/StarHorseFormListApp.vue";
+
+/** APP 端子表标题可折叠(收紧为气泡) */
+const listCollapsed = ref(false);
+const toggleListCollapsed = () => {
+  listCollapsed.value = !listCollapsed.value;
+};
 
 let importDialogVisible = ref<boolean>(false);
 let rowDialogVisible = ref<boolean>(false);
@@ -131,6 +138,29 @@ const handleAddDetails = (row: any, type: number) => {
   } else {
     dynamicHandleAddRow(row, type);
   }
+};
+/**
+ * APP 端(卡片列表)交互处理:
+ * - 新增/编辑统一走弹窗表单(移动端不做行内编辑),复用 dynamicHandleAddForm/mergeData
+ * - 删除按行对象引用定位(PC 端 dynamicHandleAddRow 依赖 xh 序号,移动端卡片无固定序号更可靠)
+ * - 子节点增删改复用既有 addSubData/editSubData/removeSubData
+ */
+/** APP 端新增:直接追加一张可编辑空卡片(不弹窗) */
+const appHandleAdd = () => {
+  dynamicHandleAddRow(null, 1);
+};
+const appHandleRemove = (row: any) => {
+  const list = dataForm.value[props.subTableName] || [];
+  const index = list.indexOf(row);
+  if (index < 0) return;
+  operationConfirm(i18n("ui.confirm")).then(() => {
+    formFields && formFields[props.subTableName]?.splice(index, 1);
+    list.splice(index, 1);
+    list.forEach((item: any, i: number) => {
+      item.xh = i + 1;
+    });
+    emits("removeRow", row);
+  });
 };
 let currentRow = ref<any>({});
 let editingNodeId = ref<string | null>(null);
@@ -535,13 +565,13 @@ watch(
     </el-card>
   </star-horse-panel>
   <div class="form-list">
-    <div class="dynamic-tools">
+    <div class="dynamic-tools" :class="{'dynamic-tools-clickable': true}" @click="toggleListCollapsed()">
       <div class="flex items-center" v-if="!subFlag">
-        <star-horse-icon icon-class="config" size="14px"/>
-        {{ title }}
+
+        <span class="dynamic-tools-title">{{ title }}</span>
         <help v-if="helpMsg" :message="helpMsg" :width="400"/>
       </div>
-      <div class="flex items-center">
+      <div class="flex items-center" v-show="!listCollapsed" @click.stop>
         <ul class="inner_button" v-if="source != 3">
           <li
               v-if="importInfo?.analyzeDataUrl && !subFlag"
@@ -583,8 +613,33 @@ watch(
           </li>
         </ul>
       </div>
+      <el-icon class="dynamic-tools-arrow">
+        <ArrowRight v-if="listCollapsed"/>
+        <ArrowDown v-else/>
+      </el-icon>
     </div>
+    <star-horse-form-list-app
+        v-if="isMobile && !listCollapsed"
+        :fieldList="fieldList"
+        :dataList="dataForm[subTableName] || []"
+        :subTableName="subTableName"
+        :primaryKey="primaryKey"
+        :rules="rules"
+        :size="size"
+        :source="source"
+        :staticColumn="staticColumn"
+        :enableSubNode="enableSubNode"
+        :showCheckBox="showCheckBox"
+        :commonFormat="commonFormat"
+        @add="appHandleAdd"
+        @remove="appHandleRemove"
+        @addChild="addSubData"
+        @editChild="editSubData"
+        @removeChild="removeSubData"
+    />
     <el-table
+        v-else-if="!isMobile"
+        v-show="!listCollapsed"
         v-loading="loading"
         :data="dataForm[subTableName]"
         fit
@@ -700,7 +755,7 @@ watch(
         </template>
       </el-table-column>
     </el-table>
-    <div class="add-row" v-if="source != 3" @click="handleAddDetails(null, 1)">
+    <div class="add-row" v-if="source != 3 && !listCollapsed && !isMobile" @click="handleAddDetails(null, 1)">
       <star-horse-icon icon-class="plus" color="var(--star-horse-style)"/>
       {{ staticColumn == "Y" ? i18n("ui.addData") : i18n("ui.addRow") }}
     </div>
@@ -720,14 +775,33 @@ watch(
   justify-content: space-between;
   width: 100%;
   align-items: center;
-  height: 30px;
-  border-bottom: var(--star-horse-style) 1px solid;
+  padding: 8px 12px;
+  background-color: #f5f7fa;
+  border-left: 3px solid var(--el-color-primary);
+  border-radius: 4px;
+  margin-bottom: 4px;
+}
+
+.dynamic-tools-clickable {
+  cursor: pointer;
+}
+
+.dynamic-tools-arrow {
+  font-size: 14px;
+  color: #8a919c;
+  margin-right: 4px;
+}
+
+.dynamic-tools-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--el-text-color-primary);
 }
 
 .form-list {
   display: flex;
   flex-direction: column;
-  width: 99%;
+  width: 100%;
   margin: 0 auto;
   flex: 1;
   height: 100%;

@@ -518,20 +518,22 @@ export interface CheckStats {
     byOption: CheckOptionStat[];
     empty: number;
     total: number;
+    /** 自定义文本数量(不在选项列表里的值,只计数不显示内容) */
+    custom: number;
 }
 
 /**
  * 统计全部检查项的备选项计数与未填数量(按每行配置的选项动态归并)
+ * 自定义文本(不在选项列表里的值)只计 custom 数量,不放入 byOption 显示内容
  */
 export function getCheckStats(
     value: CheckMatrixValue | null | undefined,
     rows: CheckRenderRow[],
     containerPreps?: CheckMatrixPreps,
 ): CheckStats {
-    const stats: CheckStats = {byOption: [], empty: 0, total: 0};
+    const stats: CheckStats = {byOption: [], empty: 0, total: 0, custom: 0};
     if (!value) return stats;
     ensureCheckValue(value, rows, containerPreps);
-    // 按 value 累加,显示名取首次出现的选项 name
     const buckets = new Map<string, CheckOptionStat>();
     const order: string[] = [];
     for (const row of rows) {
@@ -540,6 +542,11 @@ export function getCheckStats(
             const key = result ?? "";
             if (key === "") {
                 stats.empty++;
+                continue;
+            }
+            // 自定义文本(不在选项列表里)只计数,不显示内容
+            if (optionIndex(row.options, key) < 0) {
+                stats.custom++;
                 continue;
             }
             if (!buckets.has(key)) {

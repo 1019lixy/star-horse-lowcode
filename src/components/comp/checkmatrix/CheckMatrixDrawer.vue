@@ -4,7 +4,7 @@ import {i18n} from "@/lang";
 import type {CheckMatrixPreps, CheckMatrixValue} from "@/components/types";
 import {
     ensureCheckValue,
-    getBlockLabel,
+
     getMergeBlocks,
     resolveTimeSlots,
     type CheckRenderRow,
@@ -53,16 +53,11 @@ watch(
     },
 );
 
-const blockLabel = (blockIndex: number) =>
-    getBlockLabel(
-        props.row?.item.mergeRule || "every2h",
-        blockIndex,
-        slotCount.value,
-    );
-
-const slotLabel = (slotIndex: number) =>
-    timeSlots.value[slotIndex]?.label ||
-        i18n("checkmatrix.blockSlot", slotIndex + 1);
+const slotLabel = (slotIndex: number) => {
+    const slot = timeSlots.value[slotIndex];
+    if (!slot) return i18n("checkmatrix.blockSlot", slotIndex + 1);
+    return slot.sub ? `${slot.label} / ${slot.sub}` : slot.label;
+};
 
 const blockValue = (blockIndex: number) => {
     const block = blocks.value[blockIndex];
@@ -121,30 +116,39 @@ const onMaskClick = () => close();
           >{{ i18n("checkmatrix.freq") }}: {{ row.item.freq }}</div>
         </div>
         <div class="cm-drawer-body">
-          <div
+          <el-descriptions
               v-for="(block, bi) in blocks"
               :key="bi"
-              class="cm-drawer-block"
+              :column="1"
+              border
+              direction="vertical"
+              size="small"
+              class="cm-drawer-desc"
           >
-            <div class="cm-drawer-block-head">
-              <span class="cm-drawer-block-label">{{ blockLabel(bi) }}</span>
-              <span class="cm-drawer-block-range">
-                {{ slotLabel(block.start) }}
-              </span>
-            </div>
-            <div class="cm-drawer-options">
-              <div
-                  v-for="(opt, oi) in options"
-                  :key="oi"
-                  class="cm-drawer-option"
-                  :class="[
-                      optionClass(oi),
-                      {active: blockValue(bi) === opt.value},
-                  ]"
-                  @click="setBlock(bi, opt.value)"
-              >{{ opt.name }}</div>
-            </div>
-          </div>
+            <el-descriptions-item :label="slotLabel(block.start)">
+              <div class="cm-drawer-options">
+                <div
+                    v-for="(opt, oi) in options"
+                    :key="oi"
+                    class="cm-drawer-option"
+                    :class="[
+                        optionClass(oi),
+                        {active: blockValue(bi) === opt.value},
+                    ]"
+                    @click="setBlock(bi, opt.value)"
+                >{{ opt.name }}</div>
+              </div>
+            </el-descriptions-item>
+            <el-descriptions-item :label="i18n('checkmatrix.customNote')">
+              <el-input
+                  :model-value="blockValue(bi)"
+                  :disabled="readonly"
+                  size="small"
+                  :placeholder="i18n('checkmatrix.customNotePlaceholder')"
+                  @update:model-value="(v: string) => setBlock(bi, v || '')"
+              />
+            </el-descriptions-item>
+          </el-descriptions>
           <div
               v-if="preps?.showRemark !== false"
               class="cm-drawer-remark"
@@ -234,22 +238,36 @@ const onMaskClick = () => close();
   margin-bottom: 16px;
 }
 
-.cm-drawer-block-head {
+.cm-drawer-desc {
+  margin-bottom: 12px;
+}
+
+.cm-drawer-desc :deep(.el-descriptions__cell) {
+  padding: 8px 10px;
+}
+
+.cm-drawer-desc .cm-drawer-options {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
+  gap: 8px;
+  width: 100%;
 }
 
-.cm-drawer-block-label {
-  font-size: 14px;
-  font-weight: 600;
-  color: #1f2329;
+.cm-drawer-desc .cm-drawer-option {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+  padding: 8px 2px;
+  border-radius: 6px;
+  border: 1px solid #dfe2e7;
+  font-size: 13px;
+  line-height: 1.2;
+  color: #4e5560;
+  cursor: pointer;
+  user-select: none;
 }
 
-.cm-drawer-block-range {
-  font-size: 12px;
-  color: #8a919c;
+.cm-drawer-desc :deep(.el-input) {
+  width: 100%;
 }
 
 .cm-drawer-options {
@@ -259,6 +277,7 @@ const onMaskClick = () => close();
 
 /* 选项按钮:4 类(空/OK/NG/NA)等分一行,尺寸紧凑适配移动端 */
 .cm-drawer-option {
+  cursor: pointer;
   flex: 1;
   min-width: 0;
   text-align: center;

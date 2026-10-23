@@ -37,10 +37,9 @@ body {
   width: 100%;
   height: 100%;
 
-  font-family:
-    "PingFang SC", "Lantinghei SC", "Microsoft YaHei","Segoe UI", "HanHei SC",
-    "Helvetica Neue", "Open Sans", Arial, "Hiragino Sans GB", STHeiti,
-    "WenQuanYi Micro Hei", SimSun,BlinkMacSystemFont, sans-serif;
+  font-family: "PingFang SC", "Lantinghei SC", "Microsoft YaHei", "Segoe UI", "HanHei SC",
+  "Helvetica Neue", "Open Sans", Arial, "Hiragino Sans GB", STHeiti,
+  "WenQuanYi Micro Hei", SimSun, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   margin: 0;
@@ -908,9 +907,8 @@ button.el-collapse-item__header {
   -webkit-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  transition:
-    width 0.2s,
-    height 0.2s;
+  transition: width 0.2s,
+  height 0.2s;
   border: 1px solid var(--star-horse-border—color);
 
   .table-cell-action {
@@ -1035,11 +1033,14 @@ button.el-collapse-item__header {
 }
 
 .group-label {
-  margin-bottom: 12px;
+  margin: 5px 0;
   padding: 8px 12px;
   background-color: #f5f7fa;
   border-left: 3px solid var(--el-color-primary);
   border-radius: 4px;
+  display: flex;
+  align-items: center;
+  max-height: 40px;
 
   .group-label-text {
     font-weight: 600;
@@ -1437,6 +1438,7 @@ button.el-collapse-item__header {
   display: flex;
   justify-content: center;
 }
+
 .section-title-bar {
   display: flex;
   align-items: center;
@@ -1446,6 +1448,7 @@ button.el-collapse-item__header {
   background: linear-gradient(135deg, #ecf5ff 0%, #f5f7fa 100%);
   border-left: 3px solid var(--star-horse-style, #409eff);
   border-radius: 0 6px 6px 0;
+
   .section-dot {
     display: flex;
     align-items: center;
@@ -1465,6 +1468,7 @@ button.el-collapse-item__header {
     color: #303133;
   }
 }
+
 .is-message-box {
   z-index: 4999 !important;
 }

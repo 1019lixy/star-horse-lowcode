@@ -135,6 +135,16 @@
 | editColumns | 行式录入列配置 | **设计器以 JSON 字符串配置**，shplugin 经 `resolveEditColumns(preps)` 解析为数组 |
 | — | 数据源(values/dict/第三方) | 复用 DataSourceConfigPanel，产出 `preps.values` / `preps.apiDataSource`（检查项级 options 写在数据源条目 value 内） |
 
+## 表单区块顺序（与 Excel 排版一致）
+
+巡查表/首件表的推荐顺序（`preps.dataIndex` 控制 APP 端拍平排序）：
+
+```
+descriptions 基础信息(1) → checkmatrix 稽核矩阵(10) → table 问题点&改善记录(20) → html 缺点定义说明(30，最末)
+```
+
+缺点定义/填写说明**不内嵌在矩阵里**，而是用既有 `html` 类型字段独立成块排最后：`{type:"html", preps:{staticData:true, textContent:"..."}}`（组件内的 `noteText` 仍可用作矩阵内说明，按需选择其一，避免重复）。
+
 ## 检查项合并规则（CheckGroupItem.mergeRule）
 
 | mergeRule | 语义 | 合并块（6 时段） |

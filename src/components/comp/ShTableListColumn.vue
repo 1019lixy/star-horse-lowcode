@@ -6,7 +6,7 @@ import { i18n } from "@/lang";
 
 const props = defineProps({
   dataForm: { type: Object, required: true },
-  index: { type: Object, required: true },
+  index: { type: [Number, String, Object] as PropType<number | string | any>, required: true },
   item: { type: Object as PropType<any>, required: true },
   staticColumn: { type: String, default: "Y" },
   primaryKey: { type: [String, Object] as PropType<string | any> },

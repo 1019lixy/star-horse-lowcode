@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import {computed, onBeforeUnmount, onMounted, ref} from "vue";
+import {computed, nextTick, onBeforeUnmount, onMounted, ref, watch} from "vue";
 import {i18n} from "@/lang";
+import {isMobile} from "@/api/device";
+import {ArrowDown, ArrowRight} from "@element-plus/icons-vue";
 import type {CheckMatrixPreps, CheckMatrixValue} from "@/components/types";
 import {
     buildKeyMapHints,
@@ -31,6 +33,10 @@ const emits = defineEmits(["change"]);
 
 const tableWrap = ref<HTMLElement | null>(null);
 const focusedKey = ref("");
+/** Enter 进入文本编辑模式(选中单元格后按 Enter) */
+const editingKey = ref("");
+/** APP 端快捷键提示条收缩为气泡 */
+const hintCollapsed = ref(true);
 /** 整行选中的检查项 key(点行号选中后,数字键作用于整行) */
 const selectedRowKey = ref("");
 const readonly = computed(() => props.disabled || props.source === 3);
@@ -51,7 +57,7 @@ const rowAbnormal = (row: CheckRenderRow) =>
     columnModel.value === "triState" && rowHasAbnormal(props.value, row);
 
 const cellKey = (row: CheckRenderRow, slotIndex: number) =>
-    `${row.key}_${slotIndex}`;
+    `${row.key}|${slotIndex}`;
 
 const isFocused = (row: CheckRenderRow, slotIndex: number) =>
     focusedKey.value === cellKey(row, slotIndex);
@@ -70,50 +76,64 @@ const slotClass = (row: CheckRenderRow, slotIndex: number): string => {
     return idx >= 0 ? `opt-${idx}` : "";
 };
 
-/** 该行首个非空选项(列头/行号批量填充目标,默认即 OK) */
-const firstOptionValue = (options: CheckRenderRow["options"]) =>
-    options.find((opt) => opt.value !== "")?.value ?? "";
-
 const onCellClick = (row: CheckRenderRow, slotIndex: number) => {
     if (readonly.value) return;
     selectedRowKey.value = "";
-    focusedKey.value = cellKey(row, slotIndex);
-    setSlotResult(
-        props.value,
-        row,
-        slotIndex,
-        nextOptionValue(row.options, slotValue(row, slotIndex)),
-        props.preps,
-    );
+    const key = cellKey(row, slotIndex);
+    if (focusedKey.value === key) {
+        // 同一格已选中 → 再次点击循环切换选项
+        const currentVal = slotValue(row, slotIndex);
+        // 自定义文本(不在选项列表里)不参与循环,保留用户输入
+        if (currentVal && optionIndex(row.options, currentVal) < 0) return;
+        setSlotResult(
+            props.value,
+            row,
+            slotIndex,
+            nextOptionValue(row.options, currentVal),
+            props.preps,
+        );
+    } else {
+        // 不同格 → 仅选中(不循环),后续可按 Enter 编辑/数字键设值/空格循环
+        focusedKey.value = key;
+    }
     emits("change");
 };
 
 const onHeaderClick = (slotIndex: number) => {
     if (readonly.value) return;
     if (props.preps?.fillColumnOnHeaderClick === false) return;
-    // 整列填充:按各检查项自身选项的第一个非空项(默认配置即 OK)
+    // 整列循环:以第一行该列当前值为基准,按首行选项循环
+    const firstRow = props.rows[0];
+    if (!firstRow) return;
+    const next = nextOptionValue(firstRow.options, slotValue(firstRow, slotIndex));
     for (const row of props.rows) {
-        setSlotResult(
-            props.value,
-            row,
-            slotIndex,
-            firstOptionValue(row.options),
-            props.preps,
-        );
+        // 跳过自定义文本(值不在选项列表里的格保留用户输入)
+        const currentVal = slotValue(row, slotIndex);
+        if (currentVal && optionIndex(row.options, currentVal) < 0) continue;
+        setSlotResult(props.value, row, slotIndex, next, props.preps);
     }
     emits("change");
 };
 
 const onRowIndexClick = (row: CheckRenderRow) => {
     if (readonly.value) return;
-    // 选中整行:后续数字键作用于整行(设置行),同时保留单击循环切换
+    // 选中整行:后续数字键作用于整行(设置行)
     selectedRowKey.value = row.key;
     focusedKey.value = "";
     if (props.preps?.fillRowOnIndexClick === false) return;
-    // 整行循环切换:以行首格当前值为基准,按本行配置选项循环(默认 空→OK→NG→NA)
+    // 整行循环:以行首格当前值为基准,按本行选项循环
     const results = itemValue.value.rows[row.key]?.results || [];
     const next = nextOptionValue(row.options, results[0] || "");
-    fillRowResults(props.value, row, next, props.preps);
+    // 逐格设置,跳过自定义文本(值不在选项列表里的格保留原值)
+    const blocks = blocksOf(row);
+    for (const block of blocks) {
+        for (let k = 0; k < block.span; k++) {
+            const slotIdx = block.start + k;
+            const currentVal = results[slotIdx] || "";
+            if (currentVal && optionIndex(row.options, currentVal) < 0) continue;
+            setSlotResult(props.value, row, slotIdx, next, props.preps);
+        }
+    }
     emits("change");
 };
 
@@ -135,7 +155,7 @@ const handleKeydown = (e: KeyboardEvent) => {
     if (props.preps?.allowKeyboard === false) return;
     if (document.activeElement?.tagName === "INPUT") return;
     // 目标:整行选中优先(设置行),否则当前单元格(设置单元格)
-    const rowKey = selectedRowKey.value || focusedKey.value.split("_")[0];
+    const rowKey = selectedRowKey.value || focusedKey.value.split("|")[0];
     const target = rowKey ? findRow(rowKey) : null;
     if (!target) return;
     const isRowMode = !!selectedRowKey.value;
@@ -147,11 +167,16 @@ const handleKeydown = (e: KeyboardEvent) => {
             const current = isRowMode
                 ? itemValue.value.rows[target.key]?.results?.[0] || ""
                 : currentFocusedValue(target);
+            // 自定义文本(不在选项列表里)不参与循环,保留用户输入
+            if (current && optionIndex(target.options, current) < 0) return;
             applyTarget(
                 target,
                 nextOptionValue(target.options, current),
                 isRowMode,
             );
+        } else if (e.key === "Enter" && focusedKey.value) {
+            e.preventDefault();
+            editingKey.value = focusedKey.value;
         }
         return;
     }
@@ -174,13 +199,24 @@ const applyTarget = (
 };
 
 const currentFocusedValue = (row: CheckRenderRow) =>
-    slotValue(row, Number(focusedKey.value.split("_")[1]));
+    slotValue(row, Number(focusedKey.value.split("|")[1]));
 
 const findRow = (rowKey: string) =>
     props.rows.find((row) => row.key === rowKey) || null;
 
+const onEditInput = (row: CheckRenderRow, slotIndex: number, event: Event) => {
+    const rowValue = itemValue.value.rows[row.key];
+    if (!rowValue || !Array.isArray(rowValue.results)) return;
+    rowValue.results[slotIndex] = (event.target as HTMLInputElement).value;
+    emits("change");
+};
+
+const onEditDone = () => {
+    editingKey.value = "";
+};
+
 const applyFocused = (result: string) => {
-    const [rowKey, slotIndex] = focusedKey.value.split("_");
+    const [rowKey, slotIndex] = focusedKey.value.split("|");
     const row = findRow(rowKey);
     if (!row) return;
     setSlotResult(props.value, row, Number(slotIndex), result, props.preps);
@@ -217,7 +253,7 @@ const rowState = (row: CheckRenderRow) => {
 /** 聚焦行的按键提示(无聚焦时用首行配置,即表级默认;完全按配置生成) */
 const focusedRow = computed(() => {
     if (!focusedKey.value) return null;
-    return findRow(focusedKey.value.split("_")[0]);
+    return findRow(focusedKey.value.split("|")[0]);
 });
 
 const keyHints = computed<KeyHint[]>(() =>
@@ -230,7 +266,7 @@ const keyHints = computed<KeyHint[]>(() =>
 const selectedInfo = computed(() => {
     const row = focusedRow.value;
     if (row) {
-        const slotIndex = Number(focusedKey.value.split("_")[1]);
+        const slotIndex = Number(focusedKey.value.split("|")[1]);
         const slot = timeSlots.value[slotIndex];
         const valueText =
             optionName(row.options, slotValue(row, slotIndex)) ||
@@ -254,7 +290,7 @@ const selectedInfo = computed(() => {
 });
 
 const totalColumns = computed(() => {
-    let count = 3;
+    let count:number = 3;
     if (columnModel.value === "triState") {
         count = 4 + slotCount.value;
     } else {
@@ -262,6 +298,19 @@ const totalColumns = computed(() => {
     }
     if (showRemark.value) count += 1;
     return count;
+});
+
+/** Enter 激活编辑后自动聚焦输入框,光标定位到内容末尾 */
+watch(editingKey, (key) => {
+    if (!key) return;
+    nextTick(() => {
+        const input = tableWrap.value?.querySelector(".cm-cell-edit-input") as HTMLInputElement | null;
+        if (input) {
+            input.focus();
+            const len = input.value.length;
+            input.setSelectionRange(len, len);
+        }
+    });
 });
 
 onMounted(() => {
@@ -282,15 +331,23 @@ onBeforeUnmount(() => {
     <div
         v-if="columnModel === 'triState' && preps?.allowKeyboard !== false"
         class="cm-key-hint"
+        :class="{'cm-key-hint-collapsed': isMobile && hintCollapsed}"
+        @click="isMobile && (hintCollapsed = !hintCollapsed)"
     >
       <span class="cm-key-hint-label">{{ i18n("checkmatrix.keyHintLabel") }}</span>
+      <el-icon v-if="isMobile" class="cm-key-hint-arrow">
+        <ArrowRight v-if="hintCollapsed"/>
+        <ArrowDown v-else/>
+      </el-icon>
       <span
+          v-show="!isMobile || !hintCollapsed"
           v-for="hint in keyHints"
           :key="hint.key"
           class="cm-key-chip"
       ><kbd>{{ hint.key }}</kbd> {{ hint.name }}</span>
-      <span class="cm-key-chip"><kbd>空格</kbd> {{ i18n("checkmatrix.keyHintCycle") }}</span>
-      <span class="cm-key-hint-sel">
+      <span v-show="!isMobile || !hintCollapsed" class="cm-key-chip"><kbd>{{ i18n("checkmatrix.spaceKey") }}</kbd> {{ i18n("checkmatrix.keyHintCycle") }}</span>
+      <span v-show="!isMobile || !hintCollapsed" class="cm-key-chip"><kbd>Enter</kbd> {{ i18n("checkmatrix.enterToEdit") }}</span>
+      <span v-show="!isMobile || !hintCollapsed" class="cm-key-hint-sel">
         <template v-if="selectedInfo">
           {{ i18n("checkmatrix.keyHintCurrent") }}: {{ selectedInfo }}
         </template>
@@ -364,14 +421,28 @@ onBeforeUnmount(() => {
               :key="row.key + '_b' + bi"
               class="cm-res"
               :class="[
-                  slotClass(row, block.start),
+                  editingKey === cellKey(row, block.start) ? 'cm-editing' : slotClass(row, block.start),
                   {'cm-cur': isFocused(row, block.start)},
+                  {'cm-custom': slotValue(row, block.start) && optionIndex(row.options, slotValue(row, block.start)) < 0},
               ]"
               :colspan="block.span"
               :tabindex="readonly ? -1 : 0"
               @click="onCellClick(row, block.start)"
               @focusin="focusedKey = cellKey(row, block.start)"
-          >{{ slotText(row, block.start) }}</td>
+              @keydown="handleKeydown"
+          >
+            <input
+                v-if="editingKey === cellKey(row, block.start)"
+                class="cm-cell-edit-input"
+                :value="slotValue(row, block.start)"
+                @input="onEditInput(row, block.start, $event)"
+                @blur="onEditDone"
+                @keydown.enter.prevent="onEditDone"
+                @keydown.esc.prevent="onEditDone"
+                @click.stop
+            >
+            <template v-else>{{ slotText(row, block.start) }}</template>
+          </td>
         </template>
         <template v-else>
           <td
@@ -436,15 +507,17 @@ onBeforeUnmount(() => {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 6px 10px;
+  gap: 4px 8px;
   position: sticky;
   top: 0;
   z-index: 40;
-  padding: 6px 10px;
+  padding: 8px 10px;
   background: #fff;
   border-bottom: 1px solid var(--sh-cm-bd, #c9cdd3);
   font-size: 12px;
   color: #57606a;
+  line-height: 1.4;
+  cursor: pointer;
 
   .cm-key-hint-label {
     font-weight: 600;
@@ -456,15 +529,15 @@ onBeforeUnmount(() => {
 
     kbd {
       display: inline-block;
-      min-width: 16px;
+      min-width: 22px;
       text-align: center;
       background: #f4f5f7;
       border: 1px solid #d0d3d9;
       border-bottom-width: 2px;
       border-radius: 4px;
-      padding: 0 4px;
-      margin-right: 2px;
-      font-size: 11px;
+      padding: 1px 6px;
+      margin-right: 3px;
+      font-size: 12px;
       font-family: inherit;
       color: #2f3540;
     }
@@ -478,6 +551,18 @@ onBeforeUnmount(() => {
     text-overflow: ellipsis;
     max-width: 45%;
   }
+}
+
+.cm-key-hint-collapsed {
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+
+.cm-key-hint-arrow {
+  flex: none;
+  font-size: 12px;
+  color: #8a919c;
+  margin-left: 4px;
 }
 
 .cm-table {
@@ -662,8 +747,32 @@ onBeforeUnmount(() => {
     }
   }
 
-  .cm-row-ng .cm-item {
+  .cm-cell-edit-input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 13px;
+  text-align: left;
+  padding: 2px 6px;
+  box-sizing: border-box;
+}
+
+.cm-row-ng .cm-item {
     background: #fff7f7;
+  }
+
+  /* 编辑中的单元格:去掉选项背景色,变为白色 */
+  &.cm-editing {
+    background: #fff !important;
+  }
+
+  /* 自定义说明文本:淡色背景与选项颜色区分 */
+  &.cm-custom {
+    background: #f0f7ff;
+    color: #1f4e79;
+    font-size: 12px;
   }
 
   .cm-note-row td {

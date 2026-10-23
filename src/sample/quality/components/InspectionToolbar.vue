@@ -1,5 +1,20 @@
 <script setup lang="ts">
 import {computed} from "vue";
+import {i18n} from "@/lang";
+import {isMobile} from "@/api/device";
+import Help from "@/components/help.vue";
+
+/** APP 端提示条收缩为 help 气泡的内容 */
+const hintText = computed(() =>
+    [
+        "稽核格: 单击按本项配置的备选项循环",
+        "快捷键(按配置生成): 选中单元格按数字键设置该格;选中行号按数字键设置整行;空格循环;Enter 输入说明",
+        "点击列头时段整列循环",
+        "点击行号整行循环",
+        "NG 行自动标红并提示登记问题点",
+        "App 端: 分组卡片可折叠,点检查项开抽屉按块填写",
+    ].join("\n"),
+);
 
 export interface ToolbarOptionStat {
     value: string;
@@ -12,6 +27,8 @@ export interface ToolbarStats {
     byOption: ToolbarOptionStat[];
     empty: number;
     total: number;
+    /** 自定义文本数量(不在选项列表里的值,只计数不显示内容) */
+    custom?: number;
     /** 前两个非空选项的显示名(批量按钮文案用,按当前表配置) */
     firstOptionName?: string;
     secondOptionName?: string;
@@ -66,6 +83,9 @@ const percent = computed(() => {
       <template v-for="(opt, oi) in stats.byOption" :key="oi">
         {{ opt.name }} <b :class="'opt' + (oi + 1)">{{ opt.count }}</b> ·
       </template>
+      <template v-if="stats.custom > 0">
+        {{ i18n("checkmatrix.statCustom") }} <b class="opt4">{{ stats.custom }}</b> ·
+      </template>
       未填 <b class="ng">{{ stats.empty }}</b> · 完成 {{ percent }}%
     </span>
     <span
@@ -96,8 +116,9 @@ const percent = computed(() => {
       >校验并保存</el-button>
     </div>
   </div>
+  <!-- PC 端:展开显示提示 -->
   <div
-      v-if="kind === 'matrix'"
+      v-if="kind === 'matrix' && !isMobile"
       class="it-hint"
   >
     <span><b>稽核格</b>: 单击按本项配置的备选项循环</span>
@@ -106,6 +127,13 @@ const percent = computed(() => {
     <span>点击<b>行号</b>整行按本项备选项循环</span>
     <span>NG 行自动标红并提示登记问题点</span>
     <span>App 端: 分组卡片 → 点检查项 → 抽屉按块填写</span>
+  </div>
+  <!-- APP 端:收缩为 help 气泡(不占空间) -->
+  <div
+      v-if="kind === 'matrix' && isMobile"
+      class="it-hint-bubble"
+  >
+    <help :message="hintText" :width="340" />
   </div>
 </template>
 
@@ -197,5 +225,11 @@ const percent = computed(() => {
     font-size: 11px;
     font-family: inherit;
   }
+}
+
+.it-hint-bubble {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 8px;
 }
 </style>

@@ -1,6 +1,8 @@
 /**
  * 巡查表/首件表 checkmatrix demo 共用模板类型与常量
  */
+import {getMergeBlocks} from "@/components/comp/checkmatrix/useCheckMatrixState";
+
 export interface CheckTemplateItem {
     content: string;
     freq: string;
@@ -36,17 +38,242 @@ export const defectNoteText = `1、缺点定义:一般=对品质未造成直接�
 2、如内容不适用,请填 NA。`;
 
 /**
- * 检查项模板转 checkmatrix 组件静态数据源 preps.values:
- * 与 select 数据源结构对齐 [{name, value}]——name=分组标题,
- * value=检查项数组(动态接口时亦可返回 JSON 字符串)
+ * checkitem 默认备选项(空/OK/NG/NA)
  */
-export function buildCheckValues(
-    groups: CheckTemplateGroup[],
+const defaultCheckItemOptions = [
+    {name: "空", value: ""},
+    {name: "OK", value: "OK"},
+    {name: "NG", value: "NG"},
+    {name: "NA", value: "NA"},
+];
+
+/**
+ * checkmatrix 单元格字段名递增序号(保证全局唯一)
+ */
+let checkMatrixFieldSeq = 0;
+
+function nextCheckMatrixFieldName(prefix: string): string {
+    checkMatrixFieldSeq += 1;
+    return `${prefix}_f${checkMatrixFieldSeq}`;
+}
+
+/**
+ * 解析检查项备选项:支持 [{value,name}] 数组或 "T:对,F:错" 字符串,缺省用默认
+ */
+function resolveCheckItemOptions(
+    item: CheckTemplateItem,
 ): Array<{ name: string; value: string }> {
-    return groups.map((group) => ({
-        name: group.title,
-        value: JSON.stringify(group.items),
-    }));
+    if (!item.options) return defaultCheckItemOptions;
+    if (typeof item.options === "string") {
+        return item.options.split(",").map((pair) => {
+            const [value, name] = pair.split(":");
+            return {name: name ?? value, value};
+        });
+    }
+    return item.options;
+}
+
+/**
+ * 构造静态文本格(用于表头/分组名/检查内容等不可编辑文本)
+ */
+function buildStaticCell(
+    text: string,
+    rowspan = 1,
+    colspan = 1,
+): Record<string, any> {
+    return {
+        staticData: true,
+        preps: {
+            textContent: text,
+            rowspan,
+            colspan,
+            cellVisible: true,
+        },
+    };
+}
+
+/**
+ * 构造字段格(每格一个独立字段,绑定 dataForm[fieldName])
+ * 与 boxDytableAnalysis 产物一致: items.length==1 时直接放字段本身(不包 items 层)
+ */
+function buildFieldCell(
+    field: Record<string, any>,
+    rowspan = 1,
+    colspan = 1,
+): Record<string, any> {
+    return {
+        ...field,
+        preps: {
+            ...(field.preps || {}),
+            rowspan,
+            colspan,
+            cellVisible: true,
+        },
+    };
+}
+
+/**
+ * 构造 checkitem 字段(巡查表时段点检格)
+ */
+function buildCheckItemField(
+    item: CheckTemplateItem,
+    fieldPrefix: string,
+): Record<string, any> {
+    return {
+        type: "checkitem",
+        fieldName: nextCheckMatrixFieldName(fieldPrefix),
+        preps: {
+            mergeRule: item.mergeRule,
+            options: resolveCheckItemOptions(item),
+        },
+    };
+}
+
+/**
+ * 构造 input 字段(备注/数据记录等文本输入格)
+ */
+function buildInputField(
+    fieldPrefix: string,
+    label?: string,
+): Record<string, any> {
+    const field: Record<string, any> = {
+        type: "input",
+        fieldName: nextCheckMatrixFieldName(fieldPrefix),
+        preps: {},
+    };
+    if (label) field.label = label;
+    return field;
+}
+
+/**
+ * 首件表行式点检字段列定义(时间/数据记录/异常对策/确认人)
+ */
+const firstArticleFieldColumns = [
+    {label: "时间"},
+    {label: "数据记录"},
+    {label: "异常对策"},
+    {label: "确认人"},
+];
+
+/**
+ * 检查项模板转 checkmatrix 容器 elements 二维数组(与 dytable 同构):
+ * 每个外层元素 = 一行,内层数组 = 该行 columns[]。
+ * - columnModel "triState": 表头(项目/检查内容/稽核频率/时段1..N/备注) + 检查项行,
+ *   时段列为 checkitem 字段格,备注为 input 字段格,分组名用 rowspan 合并。
+ * - columnModel "rowEdit": 表头(项目/检查内容/时间/数据记录/异常对策/确认人/备注)
+ *   + 检查项行,字段列均为 input 字段格,分组名用 rowspan 合并。
+ */
+export function buildCheckMatrixElements(
+    groups: CheckTemplateGroup[],
+    columnModel: "triState" | "rowEdit",
+    fieldPrefix: string,
+    timeSlots?: ReadonlyArray<{ label: string; sub: string }>,
+): Array<Array<Record<string, any>>> {
+    const rows: Array<Array<Record<string, any>>> = [];
+    const slotCount = timeSlots?.length ?? 0;
+
+    if (columnModel === "triState") {
+        rows.push([
+            buildStaticCell("项目"),
+            buildStaticCell("检查内容"),
+            buildStaticCell("稽核频率"),
+            ...(timeSlots ?? []).map((slot) =>
+                buildStaticCell(slot.sub ? `${slot.label}\n${slot.sub}` : slot.label),
+            ),
+            buildStaticCell("备注"),
+        ]);
+        for (const group of groups) {
+            const groupSize = group.items.length;
+            group.items.forEach((item, idx) => {
+                const row: Array<Record<string, any>> = [];
+                // 视觉列索引:分组首行从0开始(含分组名),同组后续行从1开始(跳过分组名 rowspan)
+                let vc = idx === 0 ? 0 : 1;
+                if (idx === 0) {
+                    row.push(
+                        withVisualCol(
+                            buildStaticCell(group.title, groupSize, 1),
+                            vc++,
+                        ),
+                    );
+                }
+                row.push(withVisualCol(buildStaticCell(item.content), vc++));
+                row.push(withVisualCol(buildStaticCell(item.freq), vc++));
+                // 按 mergeRule 合并时段格(与重构前 getMergeBlocks 逻辑一致)
+                const blocks = getMergeBlocks(item.mergeRule, slotCount);
+                for (const block of blocks) {
+                    row.push(
+                        withVisualCol(
+                            buildFieldCell(
+                                buildCheckItemField(item, fieldPrefix),
+                                1,
+                                block.span,
+                            ),
+                            vc,
+                        ),
+                    );
+                    vc += block.span;
+                }
+                row.push(
+                    withVisualCol(
+                        buildFieldCell(buildInputField(fieldPrefix)),
+                        vc,
+                    ),
+                );
+                rows.push(row);
+            });
+        }
+    } else {
+        rows.push([
+            buildStaticCell("项目"),
+            buildStaticCell("检查内容"),
+            ...firstArticleFieldColumns.map((col) => buildStaticCell(col.label)),
+            buildStaticCell("备注"),
+        ]);
+        for (const group of groups) {
+            const groupSize = group.items.length;
+            group.items.forEach((item, idx) => {
+                const row: Array<Record<string, any>> = [];
+                let vc = idx === 0 ? 0 : 1;
+                if (idx === 0) {
+                    row.push(
+                        withVisualCol(
+                            buildStaticCell(group.title, groupSize, 1),
+                            vc++,
+                        ),
+                    );
+                }
+                row.push(withVisualCol(buildStaticCell(item.content), vc++));
+                for (const col of firstArticleFieldColumns) {
+                    row.push(
+                        withVisualCol(
+                            buildFieldCell(buildInputField(fieldPrefix, col.label)),
+                            vc++,
+                        ),
+                    );
+                }
+                row.push(
+                    withVisualCol(
+                        buildFieldCell(buildInputField(fieldPrefix)),
+                        vc,
+                    ),
+                );
+                rows.push(row);
+            });
+        }
+    }
+    return rows;
+}
+
+/**
+ * 给单元格标注视觉列索引(行内累计 colspan 得到,用于列头点击整列循环时定位)
+ */
+function withVisualCol(
+    cell: Record<string, any>,
+    visualColIndex: number,
+): Record<string, any> {
+    cell.preps = cell.preps || {};
+    cell.preps.visualColIndex = visualColIndex;
+    return cell;
 }
 
 /**

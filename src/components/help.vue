@@ -9,9 +9,9 @@ defineProps({
 </script>
 <template>
   <el-popover
-    trigger="hover"
-    :popper-style="{ width: 'unset !important', 'z-index': 10000 }"
-    placement="bottom-start"
+      trigger="hover"
+      :popper-style="{ width: width + 'px', 'max-width': 'calc(100vw - 24px) !important', 'z-index': 10000 }"
+      placement="bottom-start"
   >
     <template #reference>
       <star-horse-icon
